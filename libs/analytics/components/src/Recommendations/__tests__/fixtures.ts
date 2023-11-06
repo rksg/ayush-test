@@ -51,13 +51,35 @@ export const aiOpsListResult = {
       id: '2',
       code: 'c-txpower-same',
       updatedAt: '2023-06-16T06:06:02.839Z',
-      sliceValue: 'zone-2'
+      sliceValue: 'zone-2',
+      status: 'new'
     },
     {
       id: '3',
       code: 'c-bandbalancing-enable',
       updatedAt: '2023-07-06T06:05:21.004Z',
-      sliceValue: 'Deeps Place'
+      sliceValue: 'Deeps Place',
+      status: 'new'
+    }
+  ]
+}
+
+export const aiOpsNonNewListResult = {
+  aiOpsCount: 2,
+  recommendations: [
+    {
+      id: '2',
+      code: 'c-txpower-same',
+      updatedAt: '2023-06-16T06:06:02.839Z',
+      sliceValue: 'zone-2',
+      status: 'applied'
+    },
+    {
+      id: '3',
+      code: 'c-bandbalancing-enable',
+      updatedAt: '2023-07-06T06:05:21.004Z',
+      sliceValue: 'Deeps Place',
+      status: 'reverted'
     }
   ]
 }

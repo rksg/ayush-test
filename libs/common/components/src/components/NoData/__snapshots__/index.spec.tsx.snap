@@ -3,19 +3,19 @@
 exports[`NoActiveContent should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 iRdLpd"
+    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 eWWtzz"
   >
     <div
       class="ant-space-item"
     >
       <svg
-        class="styledComponents__GreenTickIcon-sc-m7jeli-3 bRCYfh"
+        class="styledComponents__GreenTickIcon-sc-m7jeli-5 nYuPz"
         data-testid="CheckMarkCircleSolid"
       />
     </div>
   </div>
   <div
-    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 styledComponents__NoDataTextWrapper-sc-m7jeli-4 eWWtzz elEaYV"
   >
     <div
       class="ant-space-item"
@@ -29,19 +29,19 @@ exports[`NoActiveContent should render correctly 1`] = `
 exports[`NoActiveContent should render correctly with the prop 1`] = `
 <DocumentFragment>
   <div
-    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 iRdLpd"
+    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 eWWtzz"
   >
     <div
       class="ant-space-item"
     >
       <svg
-        class="styledComponents__GreenTickIcon-sc-m7jeli-3 bRCYfh"
+        class="styledComponents__GreenTickIcon-sc-m7jeli-5 nYuPz"
         data-testid="CheckMarkCircleSolid"
       />
     </div>
   </div>
   <div
-    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 styledComponents__NoDataTextWrapper-sc-m7jeli-4 eWWtzz elEaYV"
   >
     <div
       class="ant-space-item"
@@ -58,19 +58,19 @@ exports[`NoActiveData should render correctly 1`] = `
     class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
   >
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 iRdLpd"
+      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 eWWtzz"
     >
       <div
         class="ant-space-item"
       >
         <svg
-          class="styledComponents__GreenTickIcon-sc-m7jeli-3 bRCYfh"
+          class="styledComponents__GreenTickIcon-sc-m7jeli-5 nYuPz"
           data-testid="CheckMarkCircleSolid"
         />
       </div>
     </div>
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 styledComponents__NoDataTextWrapper-sc-m7jeli-4 eWWtzz elEaYV"
     >
       <div
         class="ant-space-item"
@@ -88,19 +88,19 @@ exports[`NoActiveData should render correctly with the prop 1`] = `
     class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
   >
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 iRdLpd"
+      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 eWWtzz"
     >
       <div
         class="ant-space-item"
       >
         <svg
-          class="styledComponents__GreenTickIcon-sc-m7jeli-3 bRCYfh"
+          class="styledComponents__GreenTickIcon-sc-m7jeli-5 nYuPz"
           data-testid="CheckMarkCircleSolid"
         />
       </div>
     </div>
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 styledComponents__NoDataTextWrapper-sc-m7jeli-4 eWWtzz elEaYV"
     >
       <div
         class="ant-space-item"
@@ -112,13 +112,39 @@ exports[`NoActiveData should render correctly with the prop 1`] = `
 </DocumentFragment>
 `;
 
+exports[`NoAiOpsLicense should render correctly with the prop 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__NoAILicenseWrapper-sc-m7jeli-2 krVrbh"
+  >
+    <div
+      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 styledComponents__NoDataTextWrapper-sc-m7jeli-4 eWWtzz elEaYV"
+    >
+      <div
+        class="ant-space-item"
+      >
+        RUCKUS AI cannot analyse your zone due to inadequate licenses. Please ensure you have licenses fully applied for the zone for AI Operations optimizations.
+      </div>
+    </div>
+    <button
+      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kBDiup styledComponents__LicenseButton-sc-m7jeli-7 ioGehP"
+      type="button"
+    >
+      <span>
+        Update my licenses
+      </span>
+    </button>
+  </div>
+</DocumentFragment>
+`;
+
 exports[`NoData should render correctly 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
   >
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 styledComponents__NoDataTextWrapper-sc-m7jeli-4 eWWtzz elEaYV"
     >
       <div
         class="ant-space-item"
@@ -136,12 +162,43 @@ exports[`NoData should render correctly with the prop 1`] = `
     class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
   >
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 styledComponents__NoDataTextWrapper-sc-m7jeli-4 eWWtzz elEaYV"
     >
       <div
         class="ant-space-item"
       >
         No data available
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NoRecommendationData should render correctly with the prop 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__NoRecommendationDataWrapper-sc-m7jeli-1 bEBLFa"
+    style="margin-top: 0px;"
+  >
+    <div
+      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 eWWtzz"
+    >
+      <div
+        class="ant-space-item"
+      >
+        <svg
+          class="styledComponents__LargeGreenTickIcon-sc-m7jeli-6 dyGnJN"
+          data-testid="CheckMarkCircleSolid"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 styledComponents__NoDataTextWrapper-sc-m7jeli-4 eWWtzz elEaYV"
+    >
+      <div
+        class="ant-space-item"
+      >
+        Your network is already running in an optimal configuration and we dont have any AI Operations to recommend recently.
       </div>
     </div>
   </div>

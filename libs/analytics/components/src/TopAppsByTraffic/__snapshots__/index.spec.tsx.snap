@@ -63,7 +63,7 @@ exports[`TopAppsByTrafficWidget should render for empty data: NoData 1`] = `
               class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
             >
               <div
-                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 styledComponents__NoDataTextWrapper-sc-m7jeli-4 eWWtzz elEaYV"
               >
                 <div
                   class="ant-space-item"

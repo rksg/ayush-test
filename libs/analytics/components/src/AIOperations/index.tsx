@@ -47,8 +47,8 @@ function AIOperationsWidget ({
   const subtitle = $t({
     defaultMessage: 'Say goodbye to manual guesswork and hello to intelligent recommendations.' })
 
-  const checkNew = queryResults.data?.recommendations.filter(i => i.status !== 'new').length
-  const noLicense = true // get from API once task is complete
+  const checkNew = queryResults.data?.recommendations.filter(i => i.status === 'new').length
+  const noLicense = false // get from API once task is complete
 
   const iconList = {
     applied: <GreenTickIcon />,
