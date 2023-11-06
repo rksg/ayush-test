@@ -15,7 +15,8 @@ import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import {
   useAssignMspEcToIntegratorMutation,
   useMspCustomerListQuery,
-  useLazyGetAssignedMspEcToIntegratorQuery
+  useLazyGetAssignedMspEcToIntegratorQuery,
+  useAssignMspEcToMultiIntegratorsMutation
 } from '@acx-ui/msp/services'
 import {
   MspEc
@@ -57,6 +58,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
   }
 
   const [ assignMspCustomers ] = useAssignMspEcToIntegratorMutation()
+  const [ assignMspCustomerToMutipleIntegrator ] = useAssignMspEcToMultiIntegratorsMutation()
 
   const handleSave = async () => {
     const selectedRows = form.getFieldsValue(['integrator'])
@@ -70,12 +72,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
         const newEcList = ecData?.mspec_list.filter(e => e !== tenantId)
         const numOfDays = moment(ecData?.expiry_date).diff(moment(Date()), 'days')
 
-        let payload = techPartnerAssignEcsEnabled ? {
-          delegation_type: tenantType,
-          number_of_days: numOfDays,
-          mspec_list: newEcList,
-          isManageAllEcs: assignedEcAdmin
-        } : {
+        let payload = {
           delegation_type: tenantType,
           number_of_days: numOfDays,
           mspec_list: newEcList
@@ -93,12 +90,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
         const ecData = await getAssignedEc({ params: { mspIntegratorId: integrtorId,
           mspIntegratorType: tenantType } }).unwrap()
 
-        let payload = techPartnerAssignEcsEnabled ? {
-          delegation_type: tenantType,
-          number_of_days: '',
-          mspec_list: [] as string[],
-          isManageAllEcs: assignedEcAdmin
-        } : {
+        let payload = {
           delegation_type: tenantType,
           number_of_days: '',
           mspec_list: [] as string[]
@@ -113,6 +105,45 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
         payload.mspec_list = newEcList as string[]
 
         assignMspCustomers({ payload, params: { mspIntegratorId: integrtorId } })
+          .then(() => {
+            setVisible(false)
+            resetFields()
+          })
+      }
+    } else {
+      setSelected(tenantType as string, selectedRows.integrator)
+    }
+    setVisible(false)
+  }
+
+  const handleSaveMultiIntegrator = async () => {
+    const selectedRows = form.getFieldsValue(['integrator'])
+    if (tenantId && tenantType) {
+      if (selectedRows?.integrator.length > 0) {
+        const integrtorId = selectedRows.integrator[0].id
+
+        let integratorList = [
+          {
+            delegation_id: integrtorId,
+            delegation_type: tenantType,
+            number_of_days: '',
+            mspec_list: [tenantId]
+          }
+        ]
+        let payload = {
+          AssignMspEcListRequestV2: integratorList,
+          isManageAllEcs: assignedEcAdmin
+        }
+
+        // let newEcList = ecData?.mspec_list ? ecData.mspec_list : []
+        // newEcList = newEcList.concat([tenantId])
+        // const numOfDays =
+        //   ecData?.expiry_date ? moment(ecData?.expiry_date).diff(moment(Date()), 'days') : ''
+
+        // payload.number_of_days = numOfDays as string
+        // payload.mspec_list = newEcList as string[]
+
+        assignMspCustomerToMutipleIntegrator({ payload })
           .then(() => {
             setVisible(false)
             resetFields()
@@ -219,7 +250,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
   const footer =
     <Drawer.FormFooter
       onCancel={resetFields}
-      onSave={async () => handleSave()}
+      onSave={async () => techPartnerAssignEcsEnabled ? handleSaveMultiIntegrator() : handleSave()}
     />
 
   const title = tenantType === AccountType.MSP_INTEGRATOR

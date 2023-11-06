@@ -21,6 +21,7 @@ import {
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useAssignMspEcToIntegratorMutation,
+  useAssignMspEcToIntegrator_v1Mutation,
   useGetAssignedMspEcToIntegratorQuery,
   useMspCustomerListQuery
 } from '@acx-ui/msp/services'
@@ -62,6 +63,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
   }
 
   const [ assignMspCustomers ] = useAssignMspEcToIntegratorMutation()
+  const [ assignMspCustomers_v1 ] = useAssignMspEcToIntegrator_v1Mutation()
 
   const handleSave = () => {
     let payload = techPartnerAssignEcsEnabled ? {
@@ -82,11 +84,17 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
     }
 
     if (tenantId) {
-      assignMspCustomers({ payload, params: { mspIntegratorId: tenantId } })
-        .then(() => {
-          setVisible(false)
-          resetFields()
-        })
+      techPartnerAssignEcsEnabled
+        ? assignMspCustomers_v1({ payload, params: { mspIntegratorId: tenantId } })
+          .then(() => {
+            setVisible(false)
+            resetFields()
+          })
+        : assignMspCustomers({ payload, params: { mspIntegratorId: tenantId } })
+          .then(() => {
+            setVisible(false)
+            resetFields()
+          })
     } else {
       setSelected(selectedRows.ecCustomers)
     }

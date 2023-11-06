@@ -211,7 +211,7 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   assignMspEcToMultiIntegrators: {
     method: 'PATCH',
-    url: '/mspIntegrators/:mspEcTenantId',
+    url: '/mspCustomers/delegations',
     newApi: true
   },
   getAssignedMspEcToIntegrator: {
