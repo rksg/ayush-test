@@ -16,8 +16,8 @@ import {
   EditOutlinedIcon,
   EditOutlinedDisabledIcon
 } from '@acx-ui/icons'
-import { TenantLink, useParams }   from '@acx-ui/react-router-dom'
-import { TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
+import { TenantLink, useParams }                                           from '@acx-ui/react-router-dom'
+import { DateFilter, DateRange, TABLE_DEFAULT_PAGE_SIZE, encodeParameter } from '@acx-ui/utils'
 
 import { zoomStatsThresholds }                                                                         from '../VideoCallQoe/constants'
 import { useSearchClientsQuery, useUpdateCallQoeParticipantMutation, useVideoCallQoeTestDetailsQuery } from '../VideoCallQoe/services'
@@ -70,8 +70,14 @@ export function VideoCallQoeDetails (){
     if ( apID === 'Unknown') {
       apID = row.apDetails?.apMac?.toUpperCase()
     }
+    const { joinTime, leaveTime } = row
+    const callPeriod = encodeParameter<DateFilter>({
+      startDate: moment(joinTime).format(),
+      endDate: moment(leaveTime).format(),
+      range: DateRange.custom
+    })
     return <TenantLink
-      to={`/devices/wifi/${apID}/details/overview`}>
+      to={`/devices/wifi/${apID}/details/overview?period=${callPeriod}`}>
       {value as string}</TenantLink>
   }
 
@@ -80,12 +86,22 @@ export function VideoCallQoeDetails (){
       title: $t({ defaultMessage: 'Client MAC' }),
       dataIndex: 'macAddress',
       key: 'macAddress',
-      render: (_, row)=>{
-        if(row.networkType.toLowerCase() === 'wifi'){
+      render: (_, row: Participants) => {
+        const { macAddress, networkType, joinTime, leaveTime } = row
+        const callPeriod = encodeParameter<DateFilter>({
+          startDate: moment(joinTime).format(),
+          endDate: moment(leaveTime).format(),
+          range: DateRange.custom
+        })
+
+        if(networkType.toLowerCase() === 'wifi'){
           return <Space>
-            {row.macAddress ? <span>{row.macAddress.toUpperCase()}</span>
+            {row.macAddress ? <TenantLink
+              to={`/users/wifi/clients/${macAddress}/details/troubleshooting?period=${callPeriod}`}>
+              {macAddress.toUpperCase()}
+            </TenantLink>
               : <div style={{ width: '100px' }}>-</div>}
-            <Tooltip title={$t({ defaultMessage: 'Select Client MAC' })}>
+            <Tooltip title={$t({ defaultMessage: 'Select Client MAC', id: 'xiLyrR' })}>
               <EditOutlinedIcon style={{ height: '16px', width: '16px', cursor: 'pointer' }}
                 onClick={()=>{
                   setParticipantId(row.id)
@@ -128,13 +144,13 @@ export function VideoCallQoeDetails (){
       title: $t({ defaultMessage: 'AP' }),
       dataIndex: ['apDetails','apName'],
       key: 'apName',
-      render: (_, row)=>formatValue(row.apDetails?.apName, row)
+      render: (_, row) => formatValue(row.apDetails?.apMac, row)
     },
     {
       title: $t({ defaultMessage: 'AP MAC' }),
       dataIndex: ['apDetails','apMac'],
       key: 'apMac',
-      render: (_, row)=>formatValue(row.apDetails?.apMac, row)
+      render: (_, row) => formatValue(row.apDetails?.apMac, row)
     },
     {
       title: $t({ defaultMessage: 'SSID' }),

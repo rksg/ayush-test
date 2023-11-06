@@ -666,9 +666,11 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                     class="ant-space-item"
                                     style="margin-right: 8px;"
                                   >
-                                    <span>
+                                    <a
+                                      href="/tenant-id/t/users/wifi/clients/F0:81:73:20:84:39/details/troubleshooting?period=%7B%22startDate%22%3A%222023-04-18T10%3A22%3A17%2B00%3A00%22%2C%22endDate%22%3A%222023-04-18T10%3A29%3A01%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
+                                    >
                                       F0:81:73:20:84:39
-                                    </span>
+                                    </a>
                                   </div>
                                   <div
                                     class="ant-space-item"
@@ -746,12 +748,12 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                title="AP-Group-Issue"
+                                title="F0:3E:90:36:D3:00"
                               >
                                 <a
-                                  href="/tenant-id/t/devices/wifi/F0:3E:90:36:D3:00/details/overview"
+                                  href="/tenant-id/t/devices/wifi/F0:3E:90:36:D3:00/details/overview?period=%7B%22startDate%22%3A%222023-04-18T10%3A22%3A17%2B00%3A00%22%2C%22endDate%22%3A%222023-04-18T10%3A29%3A01%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
                                 >
-                                  AP-Group-Issue
+                                  F0:3E:90:36:D3:00
                                 </a>
                               </td>
                               <td
@@ -759,7 +761,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 title="F0:3E:90:36:D3:00"
                               >
                                 <a
-                                  href="/tenant-id/t/devices/wifi/F0:3E:90:36:D3:00/details/overview"
+                                  href="/tenant-id/t/devices/wifi/F0:3E:90:36:D3:00/details/overview?period=%7B%22startDate%22%3A%222023-04-18T10%3A22%3A17%2B00%3A00%22%2C%22endDate%22%3A%222023-04-18T10%3A29%3A01%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
                                 >
                                   F0:3E:90:36:D3:00
                                 </a>
@@ -5661,9 +5663,11 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                     class="ant-space-item"
                                     style="margin-right: 8px;"
                                   >
-                                    <span>
+                                    <a
+                                      href="/tenant-id/t/users/wifi/clients/A8:64:F1:1A:D0:33/details/troubleshooting?period=%7B%22startDate%22%3A%222023-04-11T04%3A40%3A20%2B00%3A00%22%2C%22endDate%22%3A%222023-04-11T04%3A44%3A06%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
+                                    >
                                       A8:64:F1:1A:D0:33
-                                    </span>
+                                    </a>
                                   </div>
                                   <div
                                     class="ant-space-item"
@@ -5741,12 +5745,12 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                title="Switch_client"
+                                title="C8:08:73:08:10:50"
                               >
                                 <a
-                                  href="/tenant-id/t/devices/wifi/9876543210/details/overview"
+                                  href="/tenant-id/t/devices/wifi/9876543210/details/overview?period=%7B%22startDate%22%3A%222023-04-11T04%3A40%3A20%2B00%3A00%22%2C%22endDate%22%3A%222023-04-11T04%3A44%3A06%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
                                 >
-                                  Switch_client
+                                  C8:08:73:08:10:50
                                 </a>
                               </td>
                               <td
@@ -5754,7 +5758,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 title="C8:08:73:08:10:50"
                               >
                                 <a
-                                  href="/tenant-id/t/devices/wifi/9876543210/details/overview"
+                                  href="/tenant-id/t/devices/wifi/9876543210/details/overview?period=%7B%22startDate%22%3A%222023-04-11T04%3A40%3A20%2B00%3A00%22%2C%22endDate%22%3A%222023-04-11T04%3A44%3A06%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
                                 >
                                   C8:08:73:08:10:50
                                 </a>
@@ -5817,9 +5821,11 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                     class="ant-space-item"
                                     style="margin-right: 8px;"
                                   >
-                                    <span>
+                                    <a
+                                      href="/tenant-id/t/users/wifi/clients/F0:B3:EC:2A:A8:05/details/troubleshooting?period=%7B%22startDate%22%3A%222023-04-11T04%3A41%3A28%2B00%3A00%22%2C%22endDate%22%3A%222023-04-11T04%3A43%3A39%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
+                                    >
                                       F0:B3:EC:2A:A8:05
-                                    </span>
+                                    </a>
                                   </div>
                                   <div
                                     class="ant-space-item"
@@ -5897,12 +5903,12 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                title="r320-11-154"
+                                title="B4:79:C8:12:8C:50"
                               >
                                 <a
-                                  href="/tenant-id/t/devices/wifi/6789012345/details/overview"
+                                  href="/tenant-id/t/devices/wifi/6789012345/details/overview?period=%7B%22startDate%22%3A%222023-04-11T04%3A41%3A28%2B00%3A00%22%2C%22endDate%22%3A%222023-04-11T04%3A43%3A39%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
                                 >
-                                  r320-11-154
+                                  B4:79:C8:12:8C:50
                                 </a>
                               </td>
                               <td
@@ -5910,7 +5916,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 title="B4:79:C8:12:8C:50"
                               >
                                 <a
-                                  href="/tenant-id/t/devices/wifi/6789012345/details/overview"
+                                  href="/tenant-id/t/devices/wifi/6789012345/details/overview?period=%7B%22startDate%22%3A%222023-04-11T04%3A41%3A28%2B00%3A00%22%2C%22endDate%22%3A%222023-04-11T04%3A43%3A39%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
                                 >
                                   B4:79:C8:12:8C:50
                                 </a>
