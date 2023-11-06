@@ -8,6 +8,7 @@ export * from './useTableQuery'
 export * from './validator'
 export * from './models'
 export * from './ApContext'
+export * from './SwitchContext'
 
 export * from './types'
 export * from './pipes'

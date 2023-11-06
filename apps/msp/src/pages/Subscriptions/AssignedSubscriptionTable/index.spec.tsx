@@ -57,6 +57,55 @@ const assignmentHistory =
     }
   ]
 
+const assignmentHistoryAgnostic =
+  [
+    {
+      createdBy: 'msp.eleu1658@rwbigdog.com',
+      dateAssignmentCreated: '2022-12-13 19:00:08.043Z',
+      dateAssignmentRevoked: null,
+      dateEffective: '2022-12-13 19:00:08Z',
+      dateExpires: '2024-02-12 07:59:59Z',
+      deviceType: 'MSP_APSW',
+      id: 130468,
+      mspEcTenantId: '1576b79db6b549f3b1f3a7177d7d4ca5',
+      mspTenantId: '3061bd56e37445a8993ac834c01e2710',
+      quantity: 2,
+      revokedBy: null,
+      status: 'VALID',
+      trialAssignment: false
+    },
+    {
+      createdBy: 'msp.eleu1658@rwbigdog.com',
+      dateAssignmentCreated: '2022-12-13 19:00:08.043Z',
+      dateAssignmentRevoked: null,
+      dateEffective: '2022-12-13 19:00:08Z',
+      dateExpires: '2024-02-12 07:59:59Z',
+      deviceType: 'MSP_APSW',
+      id: 130465,
+      mspEcTenantId: '1576b79db6b549f3b1f3a7177d7d4ca5',
+      mspTenantId: '3061bd56e37445a8993ac834c01e2710',
+      quantity: 1,
+      revokedBy: null,
+      status: 'VALID',
+      trialAssignment: true
+    },
+    {
+      createdBy: 'msp.eleu1658@rwbigdog.com',
+      dateAssignmentCreated: '2022-12-14 19:00:08.117Z',
+      dateAssignmentRevoked: null,
+      dateEffective: '2022-12-14 19:00:08Z',
+      dateExpires: '2023-02-13 07:59:59Z',
+      deviceType: 'MSP_APSW',
+      id: 130470,
+      mspEcTenantId: '1576b79db6b549f3b1f3a7177d7d4ca5',
+      mspTenantId: '3061bd56e37445a8993ac834c01e2710',
+      quantity: 2,
+      revokedBy: null,
+      status: 'EXPIRED',
+      trialAssignment: false
+    }
+  ]
+
 const services = require('@acx-ui/msp/services')
 jest.mock('@acx-ui/msp/services', () => ({
   ...jest.requireActual('@acx-ui/msp/services')
@@ -93,6 +142,10 @@ describe('AssignedSubscriptionTable', () => {
   })
   it('should render correctly feature flag on', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.DEVICE_AGNOSTIC)
+    services.useMspAssignmentHistoryQuery = jest.fn().mockImplementation(() => {
+      return { data: assignmentHistoryAgnostic }
+    })
+
     render(
       <Provider>
         <AssignedSubscriptionTable />
@@ -100,8 +153,7 @@ describe('AssignedSubscriptionTable', () => {
         route: { params, path: '/:tenantId/mspLicenses' }
       })
 
-    expect(await screen.findByText('Wi-Fi')).toBeVisible()
-    expect(screen.getByText('Switch')).toBeVisible()
+    expect(await screen.findByText('Paid Devices')).toBeVisible()
     expect(screen.queryByRole('button', { name: 'Generate Usage Report' })).toBeNull()
     expect(screen.queryByRole('button', { name: 'Manage Subscriptions' })).toBeNull()
     expect(screen.queryByRole('button', { name: 'Refresh' })).toBeNull()
