@@ -748,14 +748,7 @@ export function RadioSettings () {
         }
       }
     }
-
-    try {
-      setEditContextData({
-        ...editContextData,
-        isDirty: false
-      })
-      await deleteApRadio({ params: { tenantId, serialNumber } }).unwrap()
-
+    const getPayload = () => {
       const payload = { ...form.getFieldsValue() }
 
       const {
@@ -826,10 +819,26 @@ export function RadioSettings () {
         delete payload.apRadioParamsDual5G
       }
 
-      await updateApRadio({
-        params: { tenantId, serialNumber },
-        payload: payload
-      }).unwrap()
+      return payload
+    }
+
+    try {
+      setEditContextData({
+        ...editContextData,
+        isDirty: false
+      })
+
+      const payload = getPayload()
+      if (isEnablePerApRadioCustomizationFlag ? true : payload.useVenueSettings) {
+        await deleteApRadio({ params: { tenantId, serialNumber } }).unwrap()
+      }
+
+      if (isEnablePerApRadioCustomizationFlag ? true : !payload.useVenueSettings) {
+        await updateApRadio({
+          params: { tenantId, serialNumber },
+          payload: payload
+        }).unwrap()
+      }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
