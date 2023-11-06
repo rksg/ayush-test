@@ -11,6 +11,7 @@ import { Loader, PageHeader, Table, TableProps, Tooltip,
   cssStr,  Card, GridCol, GridRow,
   MultiLineTimeSeriesChart,NoData, Alert, TrendPill,
   Drawer, SearchBar }                from '@acx-ui/components'
+import { get }                       from '@acx-ui/config'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   EditOutlinedIcon,
@@ -66,8 +67,10 @@ export function VideoCallQoeDetails (){
   const formatValue = (value: unknown, row: Participants) => {
     if (!value)
       return '-'
-    let apID = row.apDetails?.apSerial
-    if ( apID === 'Unknown') {
+
+    const isRA = get('IS_MLISA_SA')
+    let apID = isRA ? row.apDetails?.apMac?.toUpperCase() : row.apDetails?.apSerial
+    if (apID === 'Unknown') {
       apID = row.apDetails?.apMac?.toUpperCase()
     }
     const { joinTime, leaveTime } = row
@@ -77,7 +80,8 @@ export function VideoCallQoeDetails (){
       range: DateRange.custom
     })
     return <TenantLink
-      to={`/devices/wifi/${apID}/details/overview?period=${callPeriod}`}>
+      // eslint-disable-next-line max-len
+      to={`/devices/wifi/${apID}/details/${get('IS_MLISA_SA') ? 'ai' : 'overview'}?period=${callPeriod}`}>
       {value as string}</TenantLink>
   }
 
@@ -144,7 +148,7 @@ export function VideoCallQoeDetails (){
       title: $t({ defaultMessage: 'AP' }),
       dataIndex: ['apDetails','apName'],
       key: 'apName',
-      render: (_, row) => formatValue(row.apDetails?.apMac, row)
+      render: (_, row) => formatValue(row.apDetails?.apName, row)
     },
     {
       title: $t({ defaultMessage: 'AP MAC' }),

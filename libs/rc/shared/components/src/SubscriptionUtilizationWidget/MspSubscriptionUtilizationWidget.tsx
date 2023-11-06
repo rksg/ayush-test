@@ -67,7 +67,7 @@ export const MspSubscriptionUtilizationWidget = (props: MspSubscriptionUtilizati
         <Tooltip
           title={tooltip}
           placement={'top'}
-        >Total: {total}</Tooltip>
+        >Total Paid: {total}</Tooltip>
         : <Typography.Text>
           {used} / {total}
         </Typography.Text>}
@@ -78,7 +78,7 @@ export const MspSubscriptionUtilizationWidget = (props: MspSubscriptionUtilizati
       <UI.LegendDot style={{ marginLeft: '15px', backgroundColor: usedBarColors[1] }} />
       <span >{$t({ defaultMessage: 'MSP Assigned' })} ({assigned})</span>
       <UI.LegendDot style={{ marginLeft: '15px', backgroundColor: usedBarColors[2] }} />
-      <span >{$t({ defaultMessage: 'Pending' })} ({total - used - assigned})</span>
+      <span >{$t({ defaultMessage: 'Available' })} ({total - used - assigned})</span>
     </div>
 
   </>
