@@ -140,7 +140,6 @@ export function MspCustomers () {
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
   const [techParnersData, setTechPartnerData] = useState([] as MspEc[])
-  const [mspEcAlarmList, setEcAlarmData] = useState({} as MspEcAlarmList)
 
   const { data: userProfile } = useUserProfileContext()
   const { data: mspLabel } = useGetMspLabelQuery({ params })
@@ -289,231 +288,235 @@ export function MspCustomers () {
     }
   }
 
-  const columns: TableProps<MspEc>['columns'] = [
-    {
-      title: $t({ defaultMessage: 'Customers' }),
-      dataIndex: 'name',
-      key: 'name',
-      searchable: true,
-      sorter: true,
-      defaultSortOrder: 'ascend',
-      onCell: (data) => {
-        return (data.status === 'Active' && !isSupportToMspDashboardAllowed) ? {
-          onClick: () => {
-            userProfile?.support
-              ? delegateToMspEcPath(data.id)
-              : checkDelegateAdmin(data.id, userProfile!.adminId)
-          }
-        } : {}
-      },
-      render: function (_, row, __, highlightFn) {
-        return (
-          (row.status === 'Active' && !isSupportToMspDashboardAllowed)
-            ? <Link to=''>{highlightFn(row.name)}</Link> : row.name
-        )
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Status' }),
-      dataIndex: 'status',
-      key: 'status',
-      sorter: true,
-      render: function (_, row) {
-        return getStatus(row)
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Address' }),
-      dataIndex: 'streetAddress',
-      key: 'streetAddress',
-      sorter: true
-    },
-    {
-      title: transformAdminCountHeader(),
-      dataIndex: 'mspAdminCount',
-      align: 'center',
-      key: 'mspAdminCount',
-      sorter: true,
-      onCell: (data) => {
-        return allowManageAdmin ? {
-          onClick: () => {
-            setTenantId(data.id)
-            setDrawerAdminVisible(true)
-          }
-        } : {}
-      },
-      render: function (_, row) {
-        return (
-          allowManageAdmin
-            ? <Link to=''>{transformAdminCount(row)}</Link> : transformAdminCount(row)
-        )
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Customer Admin Count' }),
-      dataIndex: 'mspEcAdminCount',
-      align: 'center',
-      key: 'mspEcAdminCount',
-      sorter: true,
-      show: false
-    },
-    ...(!isSupportEcAlarmCount ? [] : [{
-      title: $t({ defaultMessage: 'Alarm Count' }),
-      dataIndex: 'mspEcAlarmCount',
-      key: 'mspEcAlarmCount',
-      sorter: false,
-      render: function (_: React.ReactNode, row: MspEc) {
-        return mspUtils.transformAlarmCount(row, mspEcAlarmList)
-      }
-    }]),
-    ...(hideTechPartner ? [] : [{
-      title: $t({ defaultMessage: 'Integrator' }),
-      dataIndex: 'integrator',
-      key: 'integrator',
-      onCell: (data: MspEc) => {
-        return allowSelectTechPartner ? {
-          onClick: () => {
-            setTenantId(data.id)
-            setTenantType(AccountType.MSP_INTEGRATOR)
-            setDrawerIntegratorVisible(true)
-          }
-        } : {}
-      },
-      render: function (_: React.ReactNode, row: MspEc) {
-        const val = row?.integrator ? transformTechPartner(row.integrator) : '--'
-        return (
-          allowSelectTechPartner
-            ? <Link to=''>{val}</Link> : val
-        )
-      }
-    }]),
-    ...(hideTechPartner ? [] : [{
-      title: $t({ defaultMessage: 'Installer' }),
-      dataIndex: 'installer',
-      key: 'installer',
-      onCell: (data: MspEc) => {
-        return allowSelectTechPartner ? {
-          onClick: () => {
-            setDrawerIntegratorVisible(false)
-            setTenantId(data.id)
-            setTenantType(AccountType.MSP_INSTALLER)
-            setDrawerIntegratorVisible(true)
-          }
-        } : {}
-      },
-      render: function (_: React.ReactNode, row: MspEc) {
-        const val = row?.installer ? transformTechPartner(row.installer) : '--'
-        return (
-          allowSelectTechPartner
-            ? <Link to=''>{val}</Link> : val
-        )
-      }
-    }]),
-    ...(isDeviceAgnosticEnabled ? [
+  function useColumns (mspEcAlarmList?: MspEcAlarmList) {
+
+    const columns: TableProps<MspEc>['columns'] = [
       {
-        title: $t({ defaultMessage: 'Installed Devices' }),
-        dataIndex: 'apswLicenseInstalled',
-        key: 'apswLicenseInstalled',
+        title: $t({ defaultMessage: 'Customers' }),
+        dataIndex: 'name',
+        key: 'name',
+        searchable: true,
         sorter: true,
+        defaultSortOrder: 'ascend',
+        onCell: (data) => {
+          return (data.status === 'Active' && !isSupportToMspDashboardAllowed) ? {
+            onClick: () => {
+              userProfile?.support
+                ? delegateToMspEcPath(data.id)
+                : checkDelegateAdmin(data.id, userProfile!.adminId)
+            }
+          } : {}
+        },
+        render: function (_, row, __, highlightFn) {
+          return (
+            (row.status === 'Active' && !isSupportToMspDashboardAllowed)
+              ? <Link to=''>{highlightFn(row.name)}</Link> : row.name
+          )
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Status' }),
+        dataIndex: 'status',
+        key: 'status',
+        sorter: true,
+        render: function (_, row) {
+          return getStatus(row)
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Address' }),
+        dataIndex: 'streetAddress',
+        key: 'streetAddress',
+        sorter: true
+      },
+      {
+        title: transformAdminCountHeader(),
+        dataIndex: 'mspAdminCount',
+        align: 'center',
+        key: 'mspAdminCount',
+        sorter: true,
+        onCell: (data) => {
+          return allowManageAdmin ? {
+            onClick: () => {
+              setTenantId(data.id)
+              setDrawerAdminVisible(true)
+            }
+          } : {}
+        },
+        render: function (_, row) {
+          return (
+            allowManageAdmin
+              ? <Link to=''>{transformAdminCount(row)}</Link> : transformAdminCount(row)
+          )
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Customer Admin Count' }),
+        dataIndex: 'mspEcAdminCount',
+        align: 'center',
+        key: 'mspEcAdminCount',
+        sorter: true,
+        show: false
+      },
+      ...(!isSupportEcAlarmCount ? [] : [{
+        title: $t({ defaultMessage: 'Alarm Count' }),
+        dataIndex: 'mspEcAlarmCount',
+        key: 'mspEcAlarmCount',
+        sorter: false,
         render: function (_: React.ReactNode, row: MspEc) {
-          return mspUtils.transformInstalledDevice(row.entitlements ?? [])
-        }
-      },
-      {
-        title: $t({ defaultMessage: 'Assigned Device Subscriptions' }),
-        dataIndex: 'apswLicense',
-        key: 'apswLicense',
-        sorter: true,
-        render: function (data: React.ReactNode, row: MspEc) {
-          return mspUtils.transformDeviceEntitlement(row.entitlements ?? [])
-        }
-      },
-      {
-        title: $t({ defaultMessage: 'Device Subscriptions Utilization' }),
-        dataIndex: 'apswLicensesUtilization',
-        key: 'apswLicensesUtilization',
-        sorter: true,
-        render: function (data: React.ReactNode, row: MspEc) {
-          return mspUtils.transformDeviceUtilization(row.entitlements ?? [])
-        }
-      }
-    ] : [
-      {
-        title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
-        dataIndex: 'wifiLicense',
-        key: 'wifiLicense',
-        // align: 'center',
-        sorter: true,
-        render: function (data: React.ReactNode, row: MspEc) {
-          return transformApEntitlement(row)
-        }
-      },
-      {
-        title: $t({ defaultMessage: 'Wi-Fi License Utilization' }),
-        dataIndex: 'wifiLicensesUtilization',
-        // align: 'center',
-        key: 'wifiLicensesUtilization',
-        sorter: true,
-        render: function (data: React.ReactNode, row: MspEc) {
-          return transformUtilization(row, EntitlementNetworkDeviceType.WIFI)
-        }
-      },
-      {
-        title: $t({ defaultMessage: 'Switch Licenses' }),
-        dataIndex: 'switchLicense',
-        // align: 'center',
-        key: 'switchLicense',
-        sorter: true,
-        render: function (data: React.ReactNode, row: MspEc) {
-          return transformSwitchEntitlement(row)
-        }
-      },
-      {
-        title: $t({ defaultMessage: 'SmartEdge Licenses' }),
-        dataIndex: 'edgeLicenses',
-        // align: 'center',
-        key: 'edgeLicenses',
-        sorter: true,
-        show: edgeEnabled,
-        render: function (data: React.ReactNode, row: MspEc) {
-          return row?.edgeLicenses ? row?.edgeLicenses : 0
+          return mspUtils.transformAlarmCount(row, mspEcAlarmList)
         }
       }]),
-    {
-      title: $t({ defaultMessage: 'Active From' }),
-      dataIndex: 'creationDate',
-      key: 'creationDate',
-      sorter: true,
-      render: function (_, row) {
-        return transformCreationDate(row)
+      ...(hideTechPartner ? [] : [{
+        title: $t({ defaultMessage: 'Integrator' }),
+        dataIndex: 'integrator',
+        key: 'integrator',
+        onCell: (data: MspEc) => {
+          return allowSelectTechPartner ? {
+            onClick: () => {
+              setTenantId(data.id)
+              setTenantType(AccountType.MSP_INTEGRATOR)
+              setDrawerIntegratorVisible(true)
+            }
+          } : {}
+        },
+        render: function (_: React.ReactNode, row: MspEc) {
+          const val = row?.integrator ? transformTechPartner(row.integrator) : '--'
+          return (
+            allowSelectTechPartner
+              ? <Link to=''>{val}</Link> : val
+          )
+        }
+      }]),
+      ...(hideTechPartner ? [] : [{
+        title: $t({ defaultMessage: 'Installer' }),
+        dataIndex: 'installer',
+        key: 'installer',
+        onCell: (data: MspEc) => {
+          return allowSelectTechPartner ? {
+            onClick: () => {
+              setDrawerIntegratorVisible(false)
+              setTenantId(data.id)
+              setTenantType(AccountType.MSP_INSTALLER)
+              setDrawerIntegratorVisible(true)
+            }
+          } : {}
+        },
+        render: function (_: React.ReactNode, row: MspEc) {
+          const val = row?.installer ? transformTechPartner(row.installer) : '--'
+          return (
+            allowSelectTechPartner
+              ? <Link to=''>{val}</Link> : val
+          )
+        }
+      }]),
+      ...(isDeviceAgnosticEnabled ? [
+        {
+          title: $t({ defaultMessage: 'Installed Devices' }),
+          dataIndex: 'apswLicenseInstalled',
+          key: 'apswLicenseInstalled',
+          sorter: true,
+          render: function (_: React.ReactNode, row: MspEc) {
+            return mspUtils.transformInstalledDevice(row.entitlements ?? [])
+          }
+        },
+        {
+          title: $t({ defaultMessage: 'Assigned Device Subscriptions' }),
+          dataIndex: 'apswLicense',
+          key: 'apswLicense',
+          sorter: true,
+          render: function (data: React.ReactNode, row: MspEc) {
+            return mspUtils.transformDeviceEntitlement(row.entitlements ?? [])
+          }
+        },
+        {
+          title: $t({ defaultMessage: 'Device Subscriptions Utilization' }),
+          dataIndex: 'apswLicensesUtilization',
+          key: 'apswLicensesUtilization',
+          sorter: true,
+          render: function (data: React.ReactNode, row: MspEc) {
+            return mspUtils.transformDeviceUtilization(row.entitlements ?? [])
+          }
+        }
+      ] : [
+        {
+          title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
+          dataIndex: 'wifiLicense',
+          key: 'wifiLicense',
+          // align: 'center',
+          sorter: true,
+          render: function (data: React.ReactNode, row: MspEc) {
+            return transformApEntitlement(row)
+          }
+        },
+        {
+          title: $t({ defaultMessage: 'Wi-Fi License Utilization' }),
+          dataIndex: 'wifiLicensesUtilization',
+          // align: 'center',
+          key: 'wifiLicensesUtilization',
+          sorter: true,
+          render: function (data: React.ReactNode, row: MspEc) {
+            return transformUtilization(row, EntitlementNetworkDeviceType.WIFI)
+          }
+        },
+        {
+          title: $t({ defaultMessage: 'Switch Licenses' }),
+          dataIndex: 'switchLicense',
+          // align: 'center',
+          key: 'switchLicense',
+          sorter: true,
+          render: function (data: React.ReactNode, row: MspEc) {
+            return transformSwitchEntitlement(row)
+          }
+        },
+        {
+          title: $t({ defaultMessage: 'SmartEdge Licenses' }),
+          dataIndex: 'edgeLicenses',
+          // align: 'center',
+          key: 'edgeLicenses',
+          sorter: true,
+          show: edgeEnabled,
+          render: function (data: React.ReactNode, row: MspEc) {
+            return row?.edgeLicenses ? row?.edgeLicenses : 0
+          }
+        }]),
+      {
+        title: $t({ defaultMessage: 'Active From' }),
+        dataIndex: 'creationDate',
+        key: 'creationDate',
+        sorter: true,
+        render: function (_, row) {
+          return transformCreationDate(row)
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Service Expires On' }),
+        dataIndex: 'expirationDate',
+        key: 'expirationDate',
+        sorter: true,
+        render: function (_, row) {
+          const nextExpirationDate = transformExpirationDate(row)
+          if (nextExpirationDate === '--')
+            return nextExpirationDate
+          const remainingDays = EntitlementUtil.timeLeftInDays(nextExpirationDate)
+          const TimeLeftWrapper = remainingDays < 0
+            ? UI.Expired
+            : (remainingDays <= 60 ? UI.Warning : Space)
+          return <TimeLeftWrapper>
+            {(remainingDays < 0) && $t({ defaultMessage: 'Expired on' })}{nextExpirationDate}
+          </TimeLeftWrapper>
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Tenant ID' }),
+        dataIndex: 'id',
+        key: 'id',
+        show: false,
+        sorter: true
       }
-    },
-    {
-      title: $t({ defaultMessage: 'Service Expires On' }),
-      dataIndex: 'expirationDate',
-      key: 'expirationDate',
-      sorter: true,
-      render: function (_, row) {
-        const nextExpirationDate = transformExpirationDate(row)
-        if (nextExpirationDate === '--')
-          return nextExpirationDate
-        const remainingDays = EntitlementUtil.timeLeftInDays(nextExpirationDate)
-        const TimeLeftWrapper = remainingDays < 0
-          ? UI.Expired
-          : (remainingDays <= 60 ? UI.Warning : Space)
-        return <TimeLeftWrapper>
-          {(remainingDays < 0) && $t({ defaultMessage: 'Expired on' })}{nextExpirationDate}
-        </TimeLeftWrapper>
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Tenant ID' }),
-      dataIndex: 'id',
-      key: 'id',
-      show: false,
-      sorter: true
-    }
-  ]
+    ]
+    return columns
+  }
 
   const MspEcTable = () => {
     const [modalVisible, setModalVisible] = useState(false)
@@ -522,6 +525,7 @@ export function MspCustomers () {
     const [drawerScheduleFirmwareVisible, setDrawerScheduleFirmwareVisible] = useState(false)
     const [selEcTenantIds, setSelEcTenantIds] = useState([] as string[])
     const [mspEcTenantList, setMspEcTenantList] = useState([] as string[])
+    const [mspEcAlarmList, setEcAlarmData] = useState({} as MspEcAlarmList)
     const basePath = useTenantLink('/dashboard/mspcustomers/edit', 'v')
     const tableQuery = useTableQuery({
       useQuery: useMspCustomerListQuery,
@@ -543,7 +547,9 @@ export function MspCustomers () {
       if (alarmList?.data) {
         setEcAlarmData(alarmList?.data)
       }
-    }, [])
+    }, [tableQuery?.data?.data, alarmList?.data])
+
+    const columns = useColumns(mspEcAlarmList)
 
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
@@ -736,6 +742,8 @@ export function MspCustomers () {
         }
       }]
 
+    const columns = useColumns()
+
     return (
       <Loader states={[
         tableQuery,
@@ -768,6 +776,8 @@ export function MspCustomers () {
         searchTargetFields: supportPayload.searchTargetFields as string[]
       }
     })
+
+    const columns = useColumns()
 
     return (
       <Loader states={[
