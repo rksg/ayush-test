@@ -121,11 +121,11 @@ describe('ApLldpNeighbors', () => {
         (_, res, ctx) => res(ctx.json({})))
     )
 
-    const { debug } = render(<ApLldpNeighbors />, {
+    render(<ApLldpNeighbors />, {
       wrapper,
       route: { params, path: tabPath }
     })
-    debug(undefined,100000)
+
     await waitFor(() => expect(detectFn).toHaveBeenCalled())
 
     await waitFor(() => expect(screen.getByRole('button', { name: 'Detect' })).toBeEnabled())
