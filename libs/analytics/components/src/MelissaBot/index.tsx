@@ -270,10 +270,11 @@ export function MelissaBot (){
           setInputValue(e.target.value)
         }}
         onKeyDown={(e) => {
-          if (e.key === 'Enter') {
+          const trimedInputValue = inputValue.trim()
+          if (e.key === 'Enter' && trimedInputValue !== '') {
             const userMessage: Content = {
               type: 'user',
-              contentList: [{ text: { text: [inputValue] } }]
+              contentList: [{ text: { text: [trimedInputValue] } }]
             }
             messages.push(userMessage)
             setIsReplying(true)
