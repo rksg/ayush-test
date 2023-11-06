@@ -756,7 +756,8 @@ export function RadioSettings () {
       })
       await deleteApRadio({ params: { tenantId, serialNumber } }).unwrap()
 
-      const payload = { ...applyState(stateOfIsUseVenueSettings, form.getFieldsValue()) }
+      const payload = { ...form.getFieldsValue() }
+
       const {
         enable24G,
         enable50G,
@@ -863,7 +864,7 @@ export function RadioSettings () {
     const useSettings = isUseVenue ? venueRef.current : cachedDataRef.current
     const updatedSettings = useSettings ? applySettings(currentSettings, useSettings, currentTab, isEnablePerApRadioCustomizationFlag) : undefined
     if (updatedSettings) {
-      updateFormData(updatedSettings)
+      updateFormData(applyState(updatedState, updatedSettings))
     }
     // 4. set IsDual5gMode
     setIsDual5gMode((isSupportDual5G() && updatedSettings?.apRadioParamsDual5G?.enabled) || false)
@@ -966,6 +967,10 @@ export function RadioSettings () {
               </Button>
             </Col>
           </Row>
+          <Form.Item
+            name={['useVenueSettings']}
+            hidden
+          />
           {isSupportDual5GAp && <div style={{ marginTop: '1em' }}>
             <Row gutter={0}>
               <Col span={6}>
@@ -998,6 +1003,7 @@ export function RadioSettings () {
             <ApSingleRadioSettings
               isEnabled={isEnable24g}
               radioTypeName={getRadioTypeDisplayName(RadioType.Normal24GHz)}
+              useVenueSettingsFieldName={['apRadioParams24G', 'useVenueSettings']}
               enabledFieldName={['enable24G']}
               onEnableChanged={(checked: boolean) => handleEnableChanged(checked, 'enable24G')}
               radioType={ApRadioTypeEnum.Radio24G}
@@ -1011,6 +1017,7 @@ export function RadioSettings () {
             <ApSingleRadioSettings
               isEnabled={isEnable5g}
               radioTypeName={getRadioTypeDisplayName(RadioType.Normal5GHz)}
+              useVenueSettingsFieldName={['apRadioParams50G', 'useVenueSettings']}
               enabledFieldName={['enable50G']}
               onEnableChanged={(checked: boolean) => handleEnableChanged(checked, 'enable5G')}
               radioType={ApRadioTypeEnum.Radio5G}
@@ -1025,6 +1032,7 @@ export function RadioSettings () {
             <ApSingleRadioSettings
               isEnabled={isEnable6g}
               radioTypeName={getRadioTypeDisplayName(RadioType.Normal6GHz)}
+              useVenueSettingsFieldName={['apRadioParams6G', 'useVenueSettings']}
               enabledFieldName={['enable6G']}
               onEnableChanged={(checked: boolean) => handleEnableChanged(checked, 'enable6G')}
               radioType={ApRadioTypeEnum.Radio6G}
@@ -1040,6 +1048,7 @@ export function RadioSettings () {
                 <ApSingleRadioSettings
                   isEnabled={isEnableLower5g}
                   radioTypeName={getRadioTypeDisplayName(RadioType.Lower5GHz)}
+                  useVenueSettingsFieldName={['apRadioParamsDual5G', 'radioParamsLower5G', 'useVenueSettings']}
                   enabledFieldName={['apRadioParamsDual5G', 'lower5gEnabled']}
                   onEnableChanged={(checked: boolean) => handleEnableChanged(checked, 'enableLower5G')}
                   radioType={ApRadioTypeEnum.RadioLower5G}
@@ -1054,6 +1063,7 @@ export function RadioSettings () {
                 <ApSingleRadioSettings
                   isEnabled={isEnableUpper5g}
                   radioTypeName={getRadioTypeDisplayName(RadioType.Upper5GHz)}
+                  useVenueSettingsFieldName={['apRadioParamsDual5G', 'radioParamsUpper5G', 'useVenueSettings']}
                   enabledFieldName={['apRadioParamsDual5G', 'upper5gEnabled']}
                   onEnableChanged={(checked: boolean) => handleEnableChanged(checked, 'enableUpper5G')}
                   radioType={ApRadioTypeEnum.RadioUpper5G}
