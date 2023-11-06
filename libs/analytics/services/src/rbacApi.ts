@@ -26,11 +26,27 @@ export const rbacApi = baseRbacApi.injectEndpoints({
         } as QueryReturnValue<SystemMap, FetchBaseQueryError, FetchBaseQueryMeta>
       },
       providesTags: [{ type: 'RBAC', id: 'systems' }]
+    }),
+    updateInvitation: build.mutation<
+       string, { resourceGroupId: string, state: string, userId: string }
+    >({
+      query: ({ userId, resourceGroupId, state }) => {
+        return {
+          url: `${rbacApiURL}/invitations`,
+          method: 'put',
+          credentials: 'include',
+          headers: {
+            'x-mlisa-user-id': userId
+          },
+          body: { resourceGroupId, state },
+          responseHandler: 'text'
+        }
+      }
     })
   })
 })
 
-export const { useSystemsQuery } = rbacApi
+export const { useSystemsQuery, useUpdateInvitationMutation } = rbacApi
 
 export function useSystems () {
   return useSystemsQuery({}, { skip: !get('IS_MLISA_SA') })

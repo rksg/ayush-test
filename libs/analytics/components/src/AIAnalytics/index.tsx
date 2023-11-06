@@ -1,9 +1,10 @@
 import { useIntl } from 'react-intl'
 
-import { PageHeader, Tabs }                      from '@acx-ui/components'
-import { get }                                   from '@acx-ui/config'
-import { useIsSplitOn, Features }                from '@acx-ui/feature-toggle'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { PageHeader, Tabs, TimeRangeDropDownProvider } from '@acx-ui/components'
+import { get }                                         from '@acx-ui/config'
+import { useIsSplitOn, Features }                      from '@acx-ui/feature-toggle'
+import { useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
+import { DateRange }                                   from '@acx-ui/utils'
 
 import { useHeaderExtra }           from '../Header'
 import { IncidentTabContent }       from '../Incidents'
@@ -36,13 +37,13 @@ const useTabs = () : Tab[] => {
       key: AIAnalyticsTabEnum.CRRM,
       title: $t({ defaultMessage: 'AI-Driven RRM' }),
       component: <RecommendationTabContent />,
-      headerExtra: useHeaderExtra({ shouldQuerySwitch: true })
+      headerExtra: useHeaderExtra({ shouldQuerySwitch: true, datepicker: 'dropdown' })
     },
     {
       key: AIAnalyticsTabEnum.AIOPS,
       title: $t({ defaultMessage: 'AI Operations' }),
       component: <RecommendationTabContent />,
-      headerExtra: useHeaderExtra({ shouldQuerySwitch: true })
+      headerExtra: useHeaderExtra({ shouldQuerySwitch: true, datepicker: 'dropdown' })
     }
   ]
   return [
@@ -68,7 +69,10 @@ export function AIAnalytics ({ tab }:{ tab?: AIAnalyticsTabEnum }) {
   }
   const tabs = useTabs()
   const TabComp = tabs.find(({ key }) => key === tab)?.component
-  return <>
+  return <TimeRangeDropDownProvider availableRanges={[
+    DateRange.last7Days,
+    DateRange.last30Days
+  ]}>
     <PageHeader
       title={$t({ defaultMessage: 'AI Analytics' })}
       breadcrumb={[{ text: $t({ defaultMessage: 'AI Assurance' }) }]}
@@ -80,5 +84,5 @@ export function AIAnalytics ({ tab }:{ tab?: AIAnalyticsTabEnum }) {
       extra={tabs.find(({ key }) => key === tab)?.headerExtra}
     />
     {TabComp}
-  </>
+  </TimeRangeDropDownProvider>
 }

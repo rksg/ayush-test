@@ -5,7 +5,7 @@ import { Col, Form, Row, Select } from 'antd'
 import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 
-import { Loader }                                                                                                 from '@acx-ui/components'
+import { AnchorContext, Loader }                                                                                  from '@acx-ui/components'
 import { useGetVenueApCapabilitiesQuery, useGetVenueExternalAntennaQuery, useUpdateVenueExternalAntennaMutation } from '@acx-ui/rc/services'
 import { CapabilitiesApModel, ExternalAntenna }                                                                   from '@acx-ui/rc/utils'
 import { useParams }                                                                                              from '@acx-ui/react-router-dom'
@@ -23,6 +23,7 @@ export function ExternalAntennaSection () {
   const params = useParams()
   const { editRadioContextData,
     setEditRadioContextData } = useContext(VenueEditContext)
+  const { setReadyToScroll } = useContext(AnchorContext)
   const [handledApExternalAntennas, setHandledApExternalAntennas] = useState([] as ExternalAntenna[])
   const [selectOptions, setSelectOptions] = useState([])
   const [selectedApCapabilities, setSelectedApCapabilities] = useState(null as CapabilitiesApModel | null)
@@ -78,6 +79,8 @@ export function ExternalAntennaSection () {
       let selectItems = apExternalAntennas.map((item:ExternalAntenna) => ({ label: item.model, value: item.model })) || []
       selectItems.unshift({ label: $t({ defaultMessage: 'No model selected' }), value: '' })
       setSelectOptions(selectItems)
+
+      setReadyToScroll?.(r => [...(new Set(r.concat('External-Antenna')))])
     }
   }, [allApModelCapabilities, allApExternalAntennas])
 

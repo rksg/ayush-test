@@ -94,7 +94,7 @@ function useSANetworkHierarchy () {
   const { form } = useStepFormContext<ServiceGuardFormDto>()
   const systems = useSystems()
   const response = useNetworkHierarchyQuery(
-    { ...filter, shouldQuerySwitch: false }, {
+    { ...filter, shouldQueryAp: true, shouldQuerySwitch: false }, {
       skip: !get('IS_MLISA_SA') || !systems.data,
       selectFromResult: ({ data, ...rest }) => ({
         ...rest,

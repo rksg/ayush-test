@@ -1,6 +1,7 @@
 import moment        from 'moment-timezone'
 import { IntlShape } from 'react-intl'
 
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   firmwareTypeTrans,
   FirmwareCategory,
@@ -132,7 +133,9 @@ export const getVersionLabel = (intl: IntlShape, version: VersionLabelType, show
   const versionName = version?.name
   const versionType = transform(version?.category)
   const displayDate = version.releaseDate ?? version.onboardDate
-  const versionDate = displayDate ? toUserDate(displayDate) : ''
+  const versionDate = displayDate
+    ? formatter(DateFormatEnum.DateFormat)(displayDate)
+    : ''
 
   // eslint-disable-next-line max-len
   return `${versionName}${showType ? ` (${versionType}) ` : ' '}${versionDate ? '- ' + versionDate : ''}`
@@ -153,7 +156,7 @@ export const getSwitchVersionLabel = (intl: IntlShape, version: FirmwareVersion)
 
 export const toUserDate = (date: string): string => {
   if (date) {
-    return getDateByFormat(date, 'MM/DD/YYYY hh:mm A')
+    return formatter(DateFormatEnum.DateTimeFormatWith12HourSystem)(date)
   }
   return date
 }

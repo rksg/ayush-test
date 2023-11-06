@@ -1,12 +1,25 @@
-import { Form }    from 'antd'
-import { useIntl } from 'react-intl'
+import { useState } from 'react'
+
+import { Form, Button } from 'antd'
+import { useIntl }      from 'react-intl'
 
 import { PasswordInput }                                                                     from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
 import { NetworkSaveData, Demo, PortalLanguageEnum, GuestNetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
 import { getLanguage }          from '../../../../Services/commonUtils'
 import { AuthAccServerSummary } from '../CaptivePortal/AuthAccServerSummary'
 import * as UI                  from '../styledComponents'
+
+const extractDomainFromEmails = (emails: string[]) : string => {
+  if(emails.length === 0) {return ''}
+
+  const firstEmailAddress = emails[0]
+  // Split the email address at the @ symbol and get the domain
+  const parts = firstEmailAddress.split('@')
+  return parts[1]
+}
+
 export function PortalSummaryForm (props: {
   summaryData: NetworkSaveData;
   portalData?: Demo
@@ -15,6 +28,11 @@ export function PortalSummaryForm (props: {
   const intl = useIntl()
   const $t = intl.$t
   const isCloudPath = summaryData.guestPortal?.guestNetworkType===GuestNetworkTypeEnum.Cloudpath
+  const hostDomains = summaryData.guestPortal?.hostGuestConfig?.hostDomains
+  const hostEmails = summaryData.guestPortal?.hostGuestConfig?.hostEmails
+  const [showFullEmailContact, setShowFullEmailContact] = useState(false)
+  const HAEmailList_FeatureFlag = useIsSplitOn(Features.HOST_APPROVAL_EMAIL_LIST_TOGGLE)
+
   return (
     <>
       {isCloudPath&&
@@ -34,18 +52,45 @@ export function PortalSummaryForm (props: {
           {summaryData.guestPortal?.socialIdentities?.google&&
             <div><UI.Google/>{$t({ defaultMessage: 'Google' })}</div>}
           {summaryData.guestPortal?.socialIdentities?.twitter&&
-            <div><UI.Twitter/>{$t({ defaultMessage: 'Twitter' })}</div>}
+            <div><UI.Twitter/>{$t({ defaultMessage: 'X' })}</div>}
           {summaryData.guestPortal?.socialIdentities?.linkedin&&
-            <div><UI.LinkedIn/>{$t({ defaultMessage: 'LinkedIn' })}</div>}
+            <div><UI.LinkedIn/>{}</div>}
         </>}
       />
       }
-      {summaryData.guestPortal?.guestNetworkType===GuestNetworkTypeEnum.HostApproval&&<>
-        <Form.Item
-          label={$t({ defaultMessage: 'Host Domains:' })}
-          children={summaryData.guestPortal?.hostGuestConfig?.hostDomains.map(domain=>
-            <div key={domain}>{domain}</div>)}
-        />
+      { summaryData.guestPortal?.guestNetworkType===GuestNetworkTypeEnum.HostApproval && <>
+        {
+          hostDomains && <Form.Item
+            label={$t({ defaultMessage: 'Host Domains:' })}
+            children={hostDomains.map((domain)=> <div key={domain}>{domain}</div>)}
+          />
+        }
+        {
+          HAEmailList_FeatureFlag && hostEmails && <Form.Item
+            label={$t({ defaultMessage: 'Host Contacts:' })}
+          >
+            <Button
+              type='text'
+              style={{ paddingLeft: '0px', border: '0px', background: '#ffffff' }}
+              onClick={()=> setShowFullEmailContact(!showFullEmailContact)}>
+              {
+                showFullEmailContact ?
+                  $t({ defaultMessage: 'Specific E-mail Contacts' }) + ` (${hostEmails.length})` :
+                  extractDomainFromEmails(hostEmails) + $t({ defaultMessage: ' (Entire Domain)' })}
+            </Button>
+            <div style={showFullEmailContact ? {} : { display: 'none' }}>
+              {
+                hostEmails.map((email) => {
+                  return (
+                    <div style={{ color: '#808284', fontSize: '12px' }} key={email}>{
+                      email}
+                    </div>)
+                })
+              }
+            </div>
+          </Form.Item>
+        }
+
         <Form.Item
           label={$t({ defaultMessage: 'Password Expiration Options:' })}
           children={summaryData.guestPortal?.hostGuestConfig?.hostDurationChoices.map(choice=>{

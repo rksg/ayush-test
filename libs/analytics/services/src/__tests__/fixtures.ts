@@ -397,3 +397,60 @@ export const mockSystems = {
     { deviceId: '00000000-0000-0000-0000-000000000005', deviceName: 'system 5', onboarded: true, controllerVersion: '4.0' }
   ]
 }
+
+export const apDetailsFixture = {
+  network: {
+    ap: {
+      name: 'AL-Guest-R610',
+      networkPath: [
+        {
+          name: 'Network',
+          type: 'network'
+        },
+        {
+          name: 'vsz34',
+          type: 'system'
+        },
+        {
+          name: '04-US-CA-D4-Albert-Home',
+          type: 'domain'
+        },
+        {
+          name: 'Albert-Home-Main',
+          type: 'zone'
+        },
+        {
+          name: 'default',
+          type: 'apGroup'
+        },
+        {
+          name: '90:3A:72:24:D0:40',
+          type: 'AP'
+        }
+      ]
+    }
+  }
+}
+
+export const switchDetailsFixture = {
+  network: {
+    switch: {
+      name: 'AL-Guest-Switch',
+      networkPath: [
+        {
+          name: 'Network',
+          type: 'network'
+        },
+        {
+          name: 'vsz34',
+          type: 'system'
+        },
+        {
+          name: '90:3A:72:24:D0:40',
+          type: 'switch'
+        }
+      ]
+    }
+  }
+}
+

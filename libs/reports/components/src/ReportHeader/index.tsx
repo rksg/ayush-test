@@ -3,7 +3,6 @@ import { PageHeader } from '@acx-ui/components'
 import { ReportType }         from '../mapping/reportsMapping'
 import { usePageHeaderExtra } from '../PageHeaderExtra'
 
-
 export function ReportHeader (props: {
   name: string,
   showFilter?: boolean

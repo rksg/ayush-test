@@ -71,7 +71,8 @@ export interface Guest {
     guestStatus: GuestStatusEnum,
     clients?: GuestClient[],
     langCode?: string,
-    socialLogin?: string
+    socialLogin?: string,
+    hostApprovalEmail?: string
 }
 
 export interface GuestClient {

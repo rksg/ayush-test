@@ -79,6 +79,7 @@ export enum Features {
   WIFI_VENUE_BSS_COLORING_TOGGLE = 'wifi-fr-6029-fg1-toggle',
   WIFI_FR_6029_FG6_1_TOGGLE = 'wifi-fr-6029-fg6-1-toggle',
   WIFI_FR_6029_FG6_2_TOGGLE = 'wifi-fr-6029-fg6-2-toggle',
+  WIFI_FR_HOTSPOT20_R1_TOGGLE = 'wifi-fr-hotspot20-r1-toggle',
   WIFI_EDA_OWE_TRANSITION_TOGGLE = 'wifi-eda-owe-transition-toggle',
   AI_RECOMMENDATIONS = 'acx-ui-ai-recommendations-toggle',
   WIFI_DTIM_TOGGLE = 'wifi-dtim-toggle',
@@ -102,7 +103,6 @@ export enum Features {
   WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE = 'wifi-trunk-port-untagged-vlan-toggle',
   RUCKUS_WAN_GATEWAY_UI_SHOW = 'ruckus-wan-gateway-ui-show',
   MSP_AGGREGATE_NOTIFICATION_TOGGLE = 'aggregate-notification-toggle',
-  IDM_APPLICATION_KEY_TOGGLE = 'ptenant-application-key-toggle',
   SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE = 'acx-ui-support-to-msp-dashboard-toggle',
   INCIDENTS_EMAIL_NOTIFICATION_TOGGLE = 'acx-ui-incidents-notification-toggle',
   RECOMMENDATION_EMAIL_NOTIFICIATION_TOGGLE = 'acx-ui-recommendation-notification-toggle',
@@ -110,12 +110,17 @@ export enum Features {
   MSPEC_ALARM_COUNT_SUPPORT_TOGGLE = 'acx-ui-mspec-alarm-count-toggle',
   AP_AFC_TOGGLE = 'ap-afc-toggle',
   MSP_UPGRADE_MULTI_EC_FIRMWARE = 'mspservice-multi-ec-to-upgrade-ap-firmware',
-  VENUE_AP_MANAGEMENT_VLAN_TOGGLE = 'wifi-venue-ap-mgmt-vlan-toggle'
+  VENUE_AP_MANAGEMENT_VLAN_TOGGLE = 'wifi-venue-ap-mgmt-vlan-toggle',
+  HOST_APPROVAL_EMAIL_LIST_TOGGLE = 'guest-host-approval-email-list-toggle',
+  IDM_APPLICATION_KEY_TOGGLE = 'ptenant-application-key-toggle',
+  WIFI_EDA_PER_AP_RADIO_CUSTOMIZATION_TOGGLE = 'wifi-eda-per-ap-radio-customization-toggle',
+  TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
+  SSO = 'ADMN-SSO'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
-  BETA_MESH = 'BETA-MESH',
   BETA_CLB = 'BETA-CLB',
   BETA_AP_NEIGHBORS = 'AP-NEIGHBORS',
-  AP_CCD = 'AP-CCD'
+  AP_CCD = 'AP-CCD',
+  AP_70 = 'AP-70'
 }

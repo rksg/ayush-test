@@ -21,4 +21,17 @@ describe('RBAC API', () => {
     expect(status).toBe('fulfilled')
     expect(data).toEqual(groupBy(mockSystems.networkNodes, 'deviceName'))
   })
+  it('update invitation api should work', async () => {
+    mockServer.use(
+      rest.put(`${rbacApiURL}/invitations`, (_req, res, ctx) => res(ctx.text('Created')))
+    )
+    const { data } = await store.dispatch(
+      rbacApi.endpoints.updateInvitation.initiate({
+        resourceGroupId: '1',
+        userId: 'u1',
+        state: 'accepted'
+      })
+    ) as { data: string }
+    expect(data).toEqual('Created')
+  })
 })
