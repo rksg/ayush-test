@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import {
+  FirmwareSwitchVenue,
   FirmwareUrlsInfo
 } from '@acx-ui/rc/utils'
 import {
@@ -19,11 +20,12 @@ import {
   switchVenue,
   preference,
   switchRelease,
-  switchUpgradeStatusDetails_KittoVenue1,
   switchCurrentVersions,
   switchLatest,
   upgradeSwitchViewList_KittoVenue1
 } from '../__test__/fixtures'
+
+import { SwitchScheduleDrawer } from '.'
 
 
 
@@ -69,10 +71,6 @@ describe('SwitchFirmware - SwitchScheduleDrawer', () => {
         (req, res, ctx) => res(ctx.json(switchLatest))
       ),
       rest.post(
-        FirmwareUrlsInfo.getSwitchFirmwareStatusList.url,
-        (req, res, ctx) => res(ctx.json(switchUpgradeStatusDetails_KittoVenue1))
-      ),
-      rest.post(
         FirmwareUrlsInfo.getSwitchFirmwareList.url,
         (req, res, ctx) => res(ctx.json(upgradeSwitchViewList_KittoVenue1))
       )
@@ -92,6 +90,21 @@ describe('SwitchFirmware - SwitchScheduleDrawer', () => {
     expect(await screen.findByText('My-Venue')).toBeInTheDocument()
     await userEvent.click(await screen.findByRole('button', { name: /View Schedule/i }))
     expect(await screen.findByText('Scheduled update')).toBeInTheDocument()
+  })
+
+  it('should render SwitchScheduleDrawer', async () => {
+    render(
+      <Provider>
+        <SwitchScheduleDrawer
+          visible={true}
+          setVisible={() => { }}
+          data={switchVenue.upgradeVenueViewList[0] as FirmwareSwitchVenue}
+        />
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
+      })
+
+    expect(await screen.findByText('KittoVenue2')).toBeInTheDocument()
   })
 
 

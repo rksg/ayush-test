@@ -71,11 +71,9 @@ export const VenueFirmwareTable = (
   const [modelVisible, setModelVisible] = useState(false)
   const [updateNowWizardVisible, setUpdateNowWizardVisible] = useState(false)
   const [updateStatusDrawerVisible, setUpdateStatusDrawerVisible] = useState(false)
-  const [clickedUpdateStatusData, setClickedUpdateStatusData] =
+  const [clickedRowData, setClickedRowData] =
     useState<FirmwareSwitchVenue>({} as FirmwareSwitchVenue)
   const [switchScheduleDrawerVisible, setSwitchScheduleDrawerVisible] = useState(false)
-  const [clickedSwitchScheduleData, setClickedSwitchScheduleData] =
-      useState<FirmwareSwitchVenue>({} as FirmwareSwitchVenue)
 
   const [wizardType, setWizardType] =
     useState<SwitchFirmwareWizardType>(SwitchFirmwareWizardType.update)
@@ -180,7 +178,7 @@ export const VenueFirmwareTable = (
             size='small'
             ghost={true}
             onClick={() => {
-              setClickedUpdateStatusData(row)
+              setClickedRowData(row)
               setUpdateStatusDrawerVisible(true)
             }}>
             {$t({ defaultMessage: 'Check Status' })}
@@ -215,7 +213,7 @@ export const VenueFirmwareTable = (
               ghost={true}
               onClick={() => {
                 setSwitchScheduleDrawerVisible(true)
-                setClickedSwitchScheduleData(row)
+                setClickedRowData(row)
               }}>
               {intl.$t({ defaultMessage: 'View schedule' })}
             </UI.TextButton></div>
@@ -346,11 +344,11 @@ export const VenueFirmwareTable = (
       <VenueStatusDrawer
         visible={updateStatusDrawerVisible}
         setVisible={setUpdateStatusDrawerVisible}
-        data={clickedUpdateStatusData} />
+        data={clickedRowData} />
       <SwitchScheduleDrawer
         visible={switchScheduleDrawerVisible}
         setVisible={setSwitchScheduleDrawerVisible}
-        data={clickedSwitchScheduleData} />
+        data={clickedRowData} />
     </Loader>
   )
 }

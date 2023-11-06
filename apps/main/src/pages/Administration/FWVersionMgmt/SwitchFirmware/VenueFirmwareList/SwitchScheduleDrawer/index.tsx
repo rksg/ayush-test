@@ -37,7 +37,7 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
   const setSwitchList = async () => {
     const switchList = (await getSwitchFirmwareStatusList({
       payload: { venueIdList: [props.data.id] }
-    }, true)).data?.data
+    }, false)).data?.data
     if (switchList) {
       const venueDate = getNextScheduleTpl(intl, props.data)
       const filterSwitchList = switchList.filter(row => {
@@ -49,10 +49,10 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
   }
 
   useEffect(() => {
-    if(props.data.id){
+    if (props.data.id && props.visible) {
       setSwitchList()
     }
-  }, [props.data.id])
+  }, [props.data.id, props.visible])
 
   const onClose = () => {
     props.setVisible(false)
