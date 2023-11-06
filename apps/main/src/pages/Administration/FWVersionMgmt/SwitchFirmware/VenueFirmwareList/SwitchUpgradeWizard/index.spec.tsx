@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
@@ -15,7 +16,6 @@ import {
   screen,
   within
 } from '@acx-ui/test-utils'
-
 
 import {
   switchVenue,
@@ -201,7 +201,6 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
     expect(within(myVenue).getByRole('checkbox')).toBeChecked()
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
-    // eslint-disable-next-line max-len
     expect(await screen.findByText(/Please note that during the firmware update/i)).toBeInTheDocument()
 
     const radio09010f = screen.getByRole('radio', {
@@ -216,7 +215,6 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
     })
     userEvent.click(radio10010b176)
     expect(radio10010b176).toBeEnabled()
-
   })
 
   it('render SwitchUpgradeWizard - skip', async () => {

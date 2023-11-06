@@ -250,7 +250,6 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
-
     getSwitchFirmwareStatusList: build.query<TableResult<SwitchFirmwareStatus>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(FirmwareUrlsInfo.getSwitchFirmwareStatusList, params)
@@ -266,9 +265,6 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         } as unknown as TableResult<SwitchFirmwareStatus>
       }
     }),
-
-
-
     getSwitchFirmwareList: build.query<TableResult<SwitchFirmware>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(FirmwareUrlsInfo.getSwitchFirmwareList, params)
@@ -284,8 +280,6 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         } as unknown as TableResult<SwitchFirmware>
       }
     }),
-
-
     getSwitchFirmwarePredownload: build.query<PreDownload, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(FirmwareUrlsInfo.getSwitchFirmwarePredownload, params)

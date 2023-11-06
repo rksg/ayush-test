@@ -58,8 +58,6 @@ describe('UpdateNowStep', () => {
   })
 
   it('render UpdateNowStep - 1 Venue - Changed', async () => {
-    jest.useFakeTimers()
-    jest.setSystemTime(new Date('2023-11-01T00:00:00Z').getTime())
     render(
       <Provider>
         <Form>
@@ -82,9 +80,15 @@ describe('UpdateNowStep', () => {
     const release10010rc2 = screen.getByRole('radio', {
       name: /10\.0\.10_rc2 \(release - recommended\)/i
     })
-
     userEvent.click(release10010rc2)
     expect(release10010rc2).toBeEnabled()
+
+
+    const release10010acd3 = screen.getByRole('radio', {
+      name: /10\.0\.10a_cd3 \(release - recommended\)/i
+    })
+    userEvent.click(release10010acd3)
+    expect(release10010acd3).toBeEnabled()
 
     const release09010f = screen.getByRole('radio', {
       name: /9\.0\.10f \(release - recommended\)/i
@@ -92,7 +96,12 @@ describe('UpdateNowStep', () => {
     userEvent.click(release09010f)
     expect(release09010f).toBeEnabled()
 
-    jest.useRealTimers()
+    const release09010hcd2 = screen.getByRole('radio', {
+      name: /9\.0\.10h_cd2 \(release - recommended\)/i
+    })
+    userEvent.click(release09010hcd2)
+    expect(release09010hcd2).toBeEnabled()
+
   })
 
   it('render UpdateNowStep - 1 non8200 Switch', async () => {

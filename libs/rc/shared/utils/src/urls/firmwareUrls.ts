@@ -114,7 +114,6 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/switch/tenant/:tenantId/switch/upgrade/venue/currentVersions',
     newApi: true
   },
-
   getSwitchFirmwareList: {
     method: 'post',
     url: '/venues/switchFirmwares/switches/schedules/query',
@@ -125,7 +124,6 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/switchFirmwares/upgradeStatusDetails/query',
     newApi: true
   },
-
   getInvalidTimeSlots: {
     method: 'get',
     url: '/upgradeConfig/invalidTime',
