@@ -200,8 +200,7 @@ APsSelection.FieldSummary = function APsSelectionFieldSummary () {
     path: NetworkNodes,
     hierarchies: HierarchyNodeChild[]
   ) {
-    const matched = hierarchies
-      .find(item => path.some((node, i) => node.name === item.id)) // TODO fix this non sense
+    const matched = hierarchies.find(({ id }) => path.some(({ name }) => name === id))
 
     return {
       name: hierarchyName(path),
