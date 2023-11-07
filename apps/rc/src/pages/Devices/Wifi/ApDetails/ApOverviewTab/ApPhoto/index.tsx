@@ -6,11 +6,10 @@ import { Card, Loader, showToast } from '@acx-ui/components'
 import {
   useGetApPhotoQuery,
   useAddApPhotoMutation,
-  useApViewModelQuery,
-  useGetApCapabilitiesQuery
+  useApViewModelQuery
 } from '@acx-ui/rc/services'
-import { useApContext } from '@acx-ui/rc/utils'
-import { getIntl }      from '@acx-ui/utils'
+import { useApContext, Capabilities } from '@acx-ui/rc/utils'
+import { getIntl }                    from '@acx-ui/utils'
 
 import PlaceHolder from '../../../../../../assets/images/ap-models-images/placeholder.svg'
 
@@ -37,9 +36,8 @@ export function ApPhoto () {
     filters: { serialNumber: [params.serialNumber] }
   }
   const apViewModelQuery = useApViewModelQuery({ params, payload: apViewModelPayload })
-  const apCapabilitiesQuery = useGetApCapabilitiesQuery({ params })
   const currentAP = apViewModelQuery.data
-  const apCapabilities = apCapabilitiesQuery.data
+  const apCapabilities = params.capabilities as unknown as Capabilities
 
   const [addApPhoto] = useAddApPhotoMutation()
   const apPhoto = useGetApPhotoQuery({ params })
@@ -111,7 +109,7 @@ export function ApPhoto () {
   }
 
   return (
-    <Loader states={[apPhoto, apCapabilitiesQuery]}>
+    <Loader states={[apPhoto]}>
       <Card>
         <StyledSpace>
           <RoundIconDiv>

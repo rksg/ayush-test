@@ -723,7 +723,8 @@ export function RadioSettings () {
               bandwidthOptions={bandwidth6GOptions}
               handleChanged={handleChange}
               onResetDefaultValue={handleResetDefaultSettings}
-              lowPowerAPs={lowPowerAPQuantity} />
+              lowPowerAPs={lowPowerAPQuantity}
+              isAFCEnabled={supportChannelsData?.afcEnabled} />
           </div>
           }
           { isTriBandRadio && isDual5gMode &&

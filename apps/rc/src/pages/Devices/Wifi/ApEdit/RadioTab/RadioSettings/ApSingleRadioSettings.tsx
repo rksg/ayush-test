@@ -19,6 +19,7 @@ export interface ApSingleRadioSettingsPorps {
   isEnabled: boolean,
   radioTypeName: string,
   enabledFieldName: NamePath,
+  useVenueSettingsFieldName: NamePath,
   onEnableChanged: Function,
   disable?: boolean,
   inherit5G?: boolean,
@@ -29,16 +30,17 @@ export interface ApSingleRadioSettingsPorps {
   onResetDefaultValue?: Function,
   testId?: string,
   isUseVenueSettings?: boolean,
-  supportDfsChannels?: any
+  supportDfsChannels?: any,
+  isAFCEnabled? : boolean
 }
 
 // eslint-disable-max-len
 export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
   const { $t } = useIntl()
 
-  const { isEnabled, enabledFieldName, radioTypeName, onEnableChanged } = props
+  const { isEnabled, enabledFieldName, useVenueSettingsFieldName, radioTypeName, onEnableChanged } = props
   const { radioType, supportChannels, bandwidthOptions,
-    handleChanged, supportDfsChannels, isUseVenueSettings } = props
+    handleChanged, supportDfsChannels, isUseVenueSettings, isAFCEnabled } = props
 
   const handleEnableChanged = (checked: boolean) => {
     onEnableChanged(checked)
@@ -106,6 +108,10 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
   return (
     (bandwidthOptions.length > 0)?
       <>
+        <Form.Item
+          name={useVenueSettingsFieldName}
+          hidden
+        />
         <FieldLabel width='180px'>
           {$t({ defaultMessage: 'Enable {radioTypeName} band:' }, { radioTypeName: radioTypeName })}
           <Form.Item
@@ -133,6 +139,7 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
             handleChanged={handleChanged}
             isUseVenueSettings={isUseVenueSettings}
             LPIButtonText={setLPIToggleText()}
+            isAFCEnabled={isAFCEnabled}
           />
         )
         }
