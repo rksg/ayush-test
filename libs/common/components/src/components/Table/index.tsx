@@ -455,7 +455,7 @@ function Table <RecordType extends Record<string, any>> ({
         onHeaderCell: (column: TableColumn<RecordType, 'text'>) => ({
           onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width }),
           width: colWidth[column.key],
-          definedWidth: col.width
+          ...(enableResizableColumn ? { definedWidth: col.width } : {})
         })
       })
       : col

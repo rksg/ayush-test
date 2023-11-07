@@ -241,10 +241,10 @@ export const SelectSwitchStep = (
       sticky={false}
       tableAlertRender={false}
       showHeader={false}
-      expandIcon={
-        () => <></>
-      }
-      expandable={{ expandedRowRender: () => { return <></> } }}
+      expandable={{
+        expandedRowRender: () => { return <></> },
+        rowExpandable: () => false
+      }}
       rowKey='switchId'
       rowSelection={{
         type: 'checkbox',
