@@ -19,6 +19,7 @@ export interface ApSingleRadioSettingsPorps {
   isEnabled: boolean,
   radioTypeName: string,
   enabledFieldName: NamePath,
+  useVenueSettingsFieldName: NamePath,
   onEnableChanged: Function,
   disable?: boolean,
   inherit5G?: boolean,
@@ -37,7 +38,7 @@ export interface ApSingleRadioSettingsPorps {
 export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
   const { $t } = useIntl()
 
-  const { isEnabled, enabledFieldName, radioTypeName, onEnableChanged } = props
+  const { isEnabled, enabledFieldName, useVenueSettingsFieldName, radioTypeName, onEnableChanged } = props
   const { radioType, supportChannels, bandwidthOptions,
     handleChanged, supportDfsChannels, isUseVenueSettings, isAFCEnabled } = props
 
@@ -107,6 +108,10 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
   return (
     (bandwidthOptions.length > 0)?
       <>
+        <Form.Item
+          name={useVenueSettingsFieldName}
+          hidden
+        />
         <FieldLabel width='180px'>
           {$t({ defaultMessage: 'Enable {radioTypeName} band:' }, { radioTypeName: radioTypeName })}
           <Form.Item
