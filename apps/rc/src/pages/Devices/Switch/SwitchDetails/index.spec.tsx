@@ -1,12 +1,12 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { apApi }                                        from '@acx-ui/rc/services'
-import { CommonUrlsInfo, SwitchUrlsInfo }               from '@acx-ui/rc/utils'
-import { Provider, store }                              from '@acx-ui/store'
-import { mockRestApiQuery, mockServer, render, screen } from '@acx-ui/test-utils'
-import { RolesEnum }                                    from '@acx-ui/types'
-import { getUserProfile, setUserProfile }               from '@acx-ui/user'
+import { apApi }                                            from '@acx-ui/rc/services'
+import { CommonUrlsInfo, FirmwareUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                  from '@acx-ui/store'
+import { mockRestApiQuery, mockServer, render, screen }     from '@acx-ui/test-utils'
+import { RolesEnum }                                        from '@acx-ui/types'
+import { getUserProfile, setUserProfile }                   from '@acx-ui/user'
 
 import { switchDetailData } from './__tests__/fixtures'
 import { activities }       from './SwitchTimelineTab/__tests__/fixtures'
@@ -134,7 +134,9 @@ describe('SwitchDetails', () => {
       rest.post(SwitchUrlsInfo.getSwitchConfigBackupList.url,
         (req, res, ctx) => res(ctx.json(configBackupsList))),
       rest.get(SwitchUrlsInfo.getTroubleshooting.url,
-        (req, res, ctx) => res(ctx.json(troubleshootingResult_ping_emptyResult)))
+        (req, res, ctx) => res(ctx.json(troubleshootingResult_ping_emptyResult))),
+      rest.post(FirmwareUrlsInfo.getSwitchVenueVersionList.url,
+        (req, res, ctx) => res(ctx.json({ upgradeVenueViewList: [] })))
     )
   })
 
