@@ -106,7 +106,7 @@ describe('Integrators', () => {
         <Integrators />
       </Provider>, { route: { params, path: '/:tenantId/v/integrators' } })
     expect(screen.getByText('Tech Partners')).toBeVisible()
-    // expect(screen.getByText('Manage My Account')).toBeVisible()
+    expect(screen.getByText('Manage My Account')).toBeVisible()
     expect(screen.getByText('Add Tech Partner')).toBeVisible()
 
     // eslint-disable-next-line testing-library/no-node-access

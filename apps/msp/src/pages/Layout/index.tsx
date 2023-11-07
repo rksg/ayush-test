@@ -101,10 +101,10 @@ function Layout () {
       }
       leftHeaderContent={<>
         {isHspSupportEnabled && <TenantLink to='/dashboard'>
-          <UI.MyAccount>
+          <UI.Home>
             <LayoutUI.Icon children={<AdminSolid />} />
             {$t({ defaultMessage: 'My Account' })}
-          </UI.MyAccount></TenantLink>}
+          </UI.Home></TenantLink>}
         { showSupportHomeButton && (isBackToRC ?
           <a href={`/api/ui/v/${getJwtTokenPayload().tenantId}`}>
             <UI.Home>

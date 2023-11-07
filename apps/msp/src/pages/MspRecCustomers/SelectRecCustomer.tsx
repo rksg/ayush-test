@@ -60,9 +60,9 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
       defaultSortOrder: 'ascend'
     },
     {
-      title: $t({ defaultMessage: 'Email' }),
-      dataIndex: 'email_id',
-      key: 'email_id',
+      title: $t({ defaultMessage: 'Billing Address' }),
+      dataIndex: 'billing_street',
+      key: 'billing_street',
       sorter: true
     }
   ]
