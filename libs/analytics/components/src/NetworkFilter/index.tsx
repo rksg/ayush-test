@@ -104,7 +104,7 @@ export const getNetworkFilterData = (
   for (const { id, name, aps, switches } of data) {
     const venuePath = [
       defaultNetworkPath,
-      { type: 'zone', name: replaceVenueNameWithId ? id : name }
+      { type: aps?.length ? 'zone' : 'switchGroup', name: replaceVenueNameWithId ? id : name }
     ]
     if (!venues[name]) {
       const severityData = getSeverityCircles(
