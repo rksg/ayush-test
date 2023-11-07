@@ -10,6 +10,7 @@ function SearchBar (props: { onChange: (value: string) => void, placeHolder?: st
   const { onChange, placeHolder } = props
   const defaultPlaceHolder = useIntl().$t({ defaultMessage: 'Search for...' })
   return <Input
+    maxLength={64}
     placeholder={placeHolder || defaultPlaceHolder}
     prefix={<SearchOutlined />}
     onChange={({ target: { value } }) => onChange(value)}
