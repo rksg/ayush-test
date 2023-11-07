@@ -62,10 +62,9 @@ export function APList ({
       width: 130,
       searchable: true,
       sorter: { compare: sortProp('apName', defaultSort) },
-      render: (_, row: AP, __, highlightFn) => (
-        <TenantLink to={`/devices/wifi/${row.macAddress}/details/overview`}>
-          {highlightFn(row.apName)}
-        </TenantLink>
+      render: (_, row : AP, __, highlightFn) => (
+        <TenantLink to={`/devices/wifi/${row.macAddress}/details/ai`}>
+          {highlightFn(row.apName)}</TenantLink>
       )
     },
     {

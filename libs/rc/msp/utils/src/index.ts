@@ -77,7 +77,7 @@ export const MSPUtils = () => {
     }
   }
 
-  const transformAlarmCount = (row: MspEc, alarmCountData: MspEcAlarmList) => {
+  const transformAlarmCount = (row: MspEc, alarmCountData?: MspEcAlarmList) => {
     const count = alarmCountData?.mspEcAlarmCountList?.find(item =>
       item.tenantId === row.id)?.alarmCount
     return (count || 0)
