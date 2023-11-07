@@ -9,4 +9,7 @@ export const Input = styled(AntInput)`
     color: var(--acx-neutrals-50);
     font-style: italic;
   }
+  &.ant-input-affix-wrapper {
+    padding: 3.7px 11px
+  }
 `
