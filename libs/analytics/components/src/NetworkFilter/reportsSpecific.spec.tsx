@@ -185,6 +185,7 @@ describe('Network Filter:Reports Specific', () => {
     })
     const { asFragment } = render(<Provider><NetworkFilter
       shouldQuerySwitch
+      shouldQueryAp
       showRadioBand={true}
       filterFor='reports'
       filterMode={'switch'}

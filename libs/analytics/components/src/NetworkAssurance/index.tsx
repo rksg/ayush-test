@@ -60,6 +60,7 @@ const useTabs = () : Tab[] => {
         : <NetworkFilter
           key={getShowWithoutRbacCheckKey('network-filter')}
           shouldQuerySwitch={false}
+          shouldQueryAp
           withIncidents={false}
         />,
       <TimeRangeDropDown/>

@@ -17,6 +17,7 @@ export function usePageHeaderExtra (type: ReportType, showFilter = true) {
     $t({ defaultMessage: 'Radio Band is not available for this report.' }) : ''
 
   const shouldQuerySwitch = ['switch','both'].includes(mode)
+  const shouldQueryAp = ['ap','both'].includes(mode)
   const showRadioBand = ['ap','both'].includes(mode)
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
 
@@ -37,6 +38,7 @@ export function usePageHeaderExtra (type: ReportType, showFilter = true) {
       : <NetworkFilter
         key={getShowWithoutRbacCheckKey('reports-network-filter')}
         shouldQuerySwitch={shouldQuerySwitch}
+        shouldQueryAp={shouldQueryAp}
         showRadioBand={showRadioBand}
         multiple={true}
         filterMode={mode}

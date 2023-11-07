@@ -11,10 +11,10 @@ import { CascaderOption, Loader, StepsForm, useStepFormContext }  from '@acx-ui/
 import { get }                                                    from '@acx-ui/config'
 import { FilterListNode, DateRange, PathNode }                    from '@acx-ui/utils'
 
-import { getNetworkFilterData }                                                                            from '../../../../NetworkFilter'
-import { useRecentNetworkFilterQuery, Child as HierarchyNodeChild, useNetworkHierarchyQuery, NetworkNode } from '../../../../NetworkFilter/services'
-import { isAPListNodes, isNetworkNodes, ClientType as ClientTypeEnum }                                     from '../../../types'
-import { ClientType }                                                                                      from '../ClientType'
+import { getNetworkFilterData }                                                                        from '../../../../NetworkFilter'
+import { useVenuesHierarchyQuery, Child as HierarchyNodeChild, useNetworkHierarchyQuery, NetworkNode } from '../../../../NetworkFilter/services'
+import { isAPListNodes, isNetworkNodes, ClientType as ClientTypeEnum }                                 from '../../../types'
+import { ClientType }                                                                                  from '../ClientType'
 
 import { APsSelectionInput }  from './APsSelectionInput'
 import { deviceRequirements } from './deviceRequirements'
@@ -64,15 +64,16 @@ function useSANetworkHierarchy () {
 
 function useR1NetworkHierarchy () {
   const filter = useMemo(() => ({
+    shouldQueryAp: true,
     startDate: moment().subtract(1, 'day').format(),
     endDate: moment().format(),
     range: DateRange.last24Hours
   }), [])
   const { form } = useStepFormContext<ServiceGuardFormDto>()
-  const response = useRecentNetworkFilterQuery(filter, { skip: !!get('IS_MLISA_SA') })
+  const response = useVenuesHierarchyQuery(filter, { skip: !!get('IS_MLISA_SA') })
   return { ...response, options: getNetworkFilterData(
     filterAPwithDeviceRequirements(response.data ?? [], form.getFieldValue(ClientType.fieldName)),
-    {}, 'ap', false
+    {}, false
   ) }
 }
 
@@ -200,7 +201,7 @@ APsSelection.FieldSummary = function APsSelectionFieldSummary () {
     hierarchies: HierarchyNodeChild[]
   ) {
     const matched = hierarchies
-      .find(item => item.path.slice(1).some((node, i) => _.isEqual(path[i], node)))
+      .find(item => path.some((node, i) => node.name === item.id)) // TODO fix this non sense
 
     return {
       name: hierarchyName(path),

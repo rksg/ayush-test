@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
-import { omit, groupBy, pick, find } from 'lodash'
-import { SingleValueType }           from 'rc-cascader/lib/Cascader'
-import { useIntl }                   from 'react-intl'
+import { groupBy, pick, find } from 'lodash'
+import { SingleValueType }     from 'rc-cascader/lib/Cascader'
+import { useIntl }             from 'react-intl'
 
 import {
   useAnalyticsFilter,
@@ -16,9 +16,11 @@ import { NetworkPath, getIntl }        from '@acx-ui/utils'
 
 import { useIncidentsListQuery } from '../IncidentTable/services'
 
-import { Child, useNetworkFilterQuery, ApOrSwitch } from './services'
-import { SeverityCircles }                          from './SeverityCircles'
-import * as UI                                      from './styledComponents'
+import { useVenuesHierarchyQuery } from './services'
+import { SeverityCircles }         from './SeverityCircles'
+import * as UI                     from './styledComponents'
+
+import type { Child, ApOrSwitch } from './services'
 
 export type FilterMode = 'ap' | 'switch' | 'both' | 'none'
 
@@ -28,7 +30,8 @@ export type NodesWithSeverity = Pick<Incident, 'sliceType'> & {
 }
 export type VenuesWithSeverityNodes = { [key: string]: NodesWithSeverity[] }
 type ConnectedNetworkFilterProps = {
-    shouldQuerySwitch : boolean,
+    shouldQuerySwitch: boolean,
+    shouldQueryAp: boolean,
     withIncidents?: boolean,
     showRadioBand?: boolean,
     multiple?: boolean,
@@ -94,27 +97,16 @@ const getApsAndSwitches = ( data: Child[], name : string) =>
 export const getNetworkFilterData = (
   data: Child[],
   nodesWithSeverities: VenuesWithSeverityNodes,
-  filterMode: FilterMode,
   replaceVenueNameWithId: boolean
 ): CascaderOption[] => {
   const { $t } = getIntl()
   const venues: { [key: string]: CascaderOption } = {}
-  for (const { id, name, path, aps, switches } of data) {
-    const shouldPushVenue = ()=>{
-      if(filterMode === 'both')
-        return true
-      if(filterMode === 'ap' && aps?.length)
-        return true
-      if(filterMode === 'switch' && switches?.length)
-        return true
-
-      return false
-    }
-    // replace venue name with id to be compatible with rc/reports
-    const venuePath = replaceVenueNameWithId
-      ? [path[0], { ...path[1], name: id }]
-      : path
-    if (shouldPushVenue() && !venues[name]) {
+  for (const { id, name, aps, switches } of data) {
+    const venuePath = [
+      defaultNetworkPath,
+      { type: 'zone', name: replaceVenueNameWithId ? id : name }
+    ]
+    if (!venues[name]) {
       const severityData = getSeverityCircles(
         getApsAndSwitches(data, name),
         nodesWithSeverities[name],
@@ -128,8 +120,8 @@ export const getNetworkFilterData = (
       }
     }
     const venue = venues[name]
-    if (venue && aps?.length && venue.children && ['ap','both'].includes(filterMode)) {
-      venue.children.push({
+    if (aps?.length) {
+      venue.children!.push({
         label: $t({ defaultMessage: 'APs' }),
         extraLabel: <SeverityCircles
           severityCircles={getSeverityCircles(
@@ -152,8 +144,8 @@ export const getNetworkFilterData = (
         })
       })
     }
-    if (venue && switches?.length && venue.children && ['switch','both'].includes(filterMode)) {
-      venue.children.push({
+    if (switches?.length) {
+      venue.children!.push({
         label: $t({ defaultMessage: 'Switches' }),
         extraLabel: <SeverityCircles
           severityCircles={getSeverityCircles(
@@ -196,6 +188,7 @@ export { ConnectedNetworkFilter as NetworkFilter }
 
 function ConnectedNetworkFilter (
   { shouldQuerySwitch,
+    shouldQueryAp,
     withIncidents,
     showRadioBand,
     filterMode='both',
@@ -221,13 +214,16 @@ function ConnectedNetworkFilter (
       })
     }
   )
-
-  const networkFilter = { ...filters, shouldQuerySwitch }
-  const queryResults = useNetworkFilterQuery(omit(networkFilter, 'path', 'filter'), {
+  const incidents = incidentsList.data as VenuesWithSeverityNodes
+  const queryResults = useVenuesHierarchyQuery({
+    startDate: filters.startDate,
+    endDate: filters.endDate,
+    range: filters.range,
+    shouldQuerySwitch,
+    shouldQueryAp
+  }, {
     selectFromResult: ({ data, ...rest }) => ({
-      data: data ?
-        getNetworkFilterData(data, incidentsList.data as VenuesWithSeverityNodes,
-          filterMode, true) : [],
+      data: data ? getNetworkFilterData(data, incidents, true) : [],
       ...rest
     })
   })
