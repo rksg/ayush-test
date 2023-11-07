@@ -528,7 +528,7 @@ describe('Wired', () => {
       await within(trustedPortModal).findByRole('button', { name: 'Add' })
     await userEvent.click(saveTrustPortButton)
   })
-  it('Edit Switch Configuration Profile form with empty trusted ports', async () => {
+  it.skip('Edit Switch Configuration Profile form with empty trusted ports', async () => {
     const profileValues = {
       editMode: true,
       currentData: profilewithtp

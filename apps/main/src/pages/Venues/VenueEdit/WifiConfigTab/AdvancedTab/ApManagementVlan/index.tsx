@@ -1,8 +1,8 @@
 import { useContext, useEffect } from 'react'
 
-import { InputNumber, Form, Radio, Space, Row, Col } from 'antd'
-import { useIntl }                                   from 'react-intl'
-import { useParams }                                 from 'react-router-dom'
+import { InputNumber, Form, Space, Row, Col } from 'antd'
+import { useIntl }                            from 'react-intl'
+import { useParams }                          from 'react-router-dom'
 
 import { Loader, StepsFormLegacy, cssStr, showActionModal }                         from '@acx-ui/components'
 import { InformationSolid }                                                         from '@acx-ui/icons'
@@ -10,15 +10,10 @@ import { useGetVenueApManagementVlanQuery, useUpdateVenueApManagementVlanMutatio
 
 import { VenueEditContext } from '../../../index'
 
-const { useWatch } = Form
-
 export function ApManagementVlan () {
   const { $t } = useIntl()
   const { venueId } = useParams()
   const form = Form.useFormInstance()
-  const [ apMgmtVlanOverrideEnabled ] = [
-    useWatch('vlanOverrideEnabled')
-  ]
 
   const {
     editContextData,
@@ -39,10 +34,6 @@ export function ApManagementVlan () {
 
   }, [form, getVenueApManagementVlan?.data, getVenueApManagementVlan?.isLoading])
 
-  const onApMgmtVlanChange = () => {
-    onFormDataChanged()
-  }
-
   const onFormDataChanged = () => {
 
     setEditContextData && setEditContextData({
@@ -60,12 +51,10 @@ export function ApManagementVlan () {
 
   const getApManagementVlanDataFromFields = () => {
     const {
-      vlanOverrideEnabled,
       vlanId
     } = form.getFieldsValue()
 
     return {
-      vlanOverrideEnabled,
       vlanId
     }
   }
@@ -75,14 +64,14 @@ export function ApManagementVlan () {
     showActionModal({
       type: 'confirm',
       width: 450,
-      title: $t({ defaultMessage: 'AP Management VLAN' }),
+      title: $t({ defaultMessage: 'AP Management VLAN Change' }),
       content:
         // eslint-disable-next-line max-len
         $t({ defaultMessage:
-          `The VLAN tag configuration for managing traffic will be applied
-           throughout the venue. An incorrect settings between APs and
-           switches could result in losing access to your APs. Are you sure
-           you want to continue?` }),
+          `Modifying the AP management VLAN for managing traffic will
+          cause a reboot of all AP devices within this venue. Please note
+          that incorrect settings between APs and switches could result
+          in losing access to your APs. Are you sure you want to continue?` }),
       okText: $t({ defaultMessage: 'Continue' }),
       onOk: async () => {
         try {
@@ -109,61 +98,36 @@ export function ApManagementVlan () {
           width='max-content'
           style={{ marginTop: '6px', display: 'flex', alignItems: 'center', paddingLeft: '10px' }}
         >
-          <Form.Item
-            name='vlanOverrideEnabled'
-            label={$t({ defaultMessage: 'AP Management VLAN' })}
-            style={{ color: 'black' }}
-          >
-            <Radio.Group onChange={onApMgmtVlanChange}>
-              <Space direction='vertical'>
-                <Radio
-                  value={false}
-                  style={{ marginTop: '6px' }}
-                  data-testid='venue-mgmt-vlan-use-ap-settings'>
-                  {$t({ defaultMessage: 'Use AP’s settings' })}
-                </Radio>
-                <Radio value={true} data-testid='venue-mgmt-vlan-ap-toggle'>
-                  {$t({ defaultMessage: 'VLAN ID' })}
-                  {apMgmtVlanOverrideEnabled && <Form.Item noStyle
-                    name='vlanId'
-                    rules={[{
-                      required: true,
-                      message: $t({
-                        defaultMessage: 'Please enter a number between 1 and 4094'
-                      })
-                    }]}
-                    initialValue={1}
-                    children={<InputNumber
-                      data-testid='venue-ap-mgmt-vlan'
-                      min={1}
-                      max={4094}
-                      onChange={onFormDataChanged}
-                      style={{
-                        width: '81px',
-                        marginLeft: '13px'
-                      }}/>}
+          <Row>
+            <Col span={18}
+              style={{
+                marginBottom: '10px',
+                fontSize: cssStr('--acx-body-4-font-size'),
+                padding: '10px 50px 10px 0px',
+                color: cssStr('--acx-neutrals-60')
+              }}>
+              <Form.Item label={$t({ defaultMessage: 'Management VLAN' })}>
+                <Form.Item
+                  noStyle
+                  name='vlanId'
+                  children={<InputNumber
+                    data-testid='venue-ap-mgmt-vlan'
+                    onChange={onFormDataChanged}
+                    min={1}
+                    max={4094}
+                    style={{ width: '86px' }}
                   />}
-                </Radio>
-                <Row>
-                  <Col span={18}
-                    style={{
-                      marginBottom: '10px',
-                      fontSize: cssStr('--acx-body-4-font-size'),
-                      padding: '10px 50px 10px 0px',
-                      color: cssStr('--acx-neutrals-60')
-                    }}>
-                    <Space align='start'>
-                      <InformationSolid />
-                      {$t({ defaultMessage:
+                />
+              </Form.Item>
+              <Space align='start'>
+                <InformationSolid />
+                {$t({ defaultMessage:
                           `To avoid the isolation of the APs, it is essential to
                            configure the network switches with the corresponding settings.`
-                      })}
-                    </Space>
-                  </Col>
-                </Row>
+                })}
               </Space>
-            </Radio.Group>
-          </Form.Item>
+            </Col>
+          </Row>
         </StepsFormLegacy.FieldLabel>
       </Space>
     </Loader>
