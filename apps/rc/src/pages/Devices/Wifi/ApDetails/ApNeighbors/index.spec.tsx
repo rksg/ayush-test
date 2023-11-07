@@ -50,7 +50,11 @@ describe('ApNeighborsTab', () => {
       rest.patch(
         WifiUrlsInfo.detectApNeighbors.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123456789' }))
-      )
+      ),
+      rest.get(WifiUrlsInfo.getApCapabilities.url.replace(':serialNumber',''),
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.get(WifiUrlsInfo.getApCapabilities.url,
+        (_, res, ctx) => res(ctx.json({})))
     )
   })
 

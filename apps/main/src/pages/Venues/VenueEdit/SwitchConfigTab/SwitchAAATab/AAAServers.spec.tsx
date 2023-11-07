@@ -142,9 +142,13 @@ describe('AAAServers', () => {
     const deleteButton = screen.getByRole('button', { name: /delete/i })
     await userEvent.click(deleteButton)
 
+    const dialog = await screen.findByRole('dialog')
     await screen.findByText('Delete "r0"?')
     const deleteNetworkButton = await screen.findByText('Delete RADIUS Server')
     await userEvent.click(deleteNetworkButton)
+    await waitFor(async () => {
+      expect(dialog).not.toBeVisible()
+    })
   })
 
   it('should render RADIUS list correctly and show delete warning', async () => {

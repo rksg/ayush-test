@@ -136,10 +136,7 @@ describe('SwitchDetails', () => {
       rest.get(SwitchUrlsInfo.getTroubleshooting.url,
         (req, res, ctx) => res(ctx.json(troubleshootingResult_ping_emptyResult))),
       rest.post(FirmwareUrlsInfo.getSwitchVenueVersionList.url,
-        (req, res, ctx) => res(ctx.json({
-          upgradeVenueViewList: []
-        }))
-      )
+        (req, res, ctx) => res(ctx.json({ upgradeVenueViewList: [] })))
     )
   })
 
