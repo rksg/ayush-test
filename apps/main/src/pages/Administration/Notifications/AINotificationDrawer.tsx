@@ -106,7 +106,7 @@ export const AINotificationDrawer = ({
   const [{ preferences }, setState] = useState<Preferences>({ preferences: {} })
   useEffect(() => { setState({ preferences: query.data! }) }, [query.data])
   const [updatePrefrences] = useSetNotificationMutation()
-  const allowRecommandations = useIsSplitOn(Features.RECOMMENDATION_EMAIL_NOTIFICIATION_TOGGLE)
+  const allowRecommendations = useIsSplitOn(Features.RECOMMENDATION_EMAIL_NOTIFICIATION_TOGGLE)
   const onClose = () => setShowDrawer(false)
   const onApply = () => {
     updatePrefrences({ tenantId, preferences })
@@ -127,7 +127,9 @@ export const AINotificationDrawer = ({
       })
   }
   const incidentLabels = getPreferenceLabel(preferences, 'incident')
+  const crrmEnabled = useIsSplitOn(Features.AI_CRRM)
   const recommendationLabels = getPreferenceLabel(preferences, 'configRecommendation')
+    .filter(({ key }) => (key === 'crrm' && crrmEnabled) || key !== 'crrm')
   return <Drawer
     title={$t({ defaultMessage: 'AI Notifications' })}
     visible={showDrawer}
@@ -152,7 +154,7 @@ export const AINotificationDrawer = ({
         <div>{$t(title)}</div>
         <UI.SectionTitle>{$t({ defaultMessage: 'Incidents' })}</UI.SectionTitle>
         <OptionsList labels={incidentLabels} setState={setState} type='incident' />
-        { allowRecommandations && <>
+        { allowRecommendations && <>
           <UI.SectionTitle>{$t({ defaultMessage: 'Recommendations' })}</UI.SectionTitle>
           <OptionsList
             labels={recommendationLabels}
