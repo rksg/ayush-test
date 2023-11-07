@@ -115,7 +115,7 @@ export function ApManagementVlan () {
                     onChange={onFormDataChanged}
                     min={1}
                     max={4094}
-                    style={{ width: '65px' }}
+                    style={{ width: '86px' }}
                   />}
                 />
               </Form.Item>
