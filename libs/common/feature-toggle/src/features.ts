@@ -116,7 +116,7 @@ export enum Features {
   WIFI_EDA_PER_AP_RADIO_CUSTOMIZATION_TOGGLE = 'wifi-eda-per-ap-radio-customization-toggle',
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
   SSO = 'ADMN-SSO',
-  NON_VAR_INVITATION_TOGGLE = 'ptenant-non-var-invitation-support-toggle'
+  ANY_3RDPARTY_INVITE_TOGGLE = 'ptenant-any-3rdparty-invite-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

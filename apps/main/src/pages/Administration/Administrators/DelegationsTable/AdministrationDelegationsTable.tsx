@@ -49,7 +49,7 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
   const hasRevokeInvitationPermmision = hasRoles([RolesEnum.PRIME_ADMIN])
   const hasInvite3rdPartyPermmision = hasRoles([RolesEnum.PRIME_ADMIN])
   const isMultipleVarEnabled = useIsSplitOn(Features.MULTIPLE_VAR_INVITATION_TOGGLE)
-  const is3PartyVarEnabled = useIsSplitOn(Features.NON_VAR_INVITATION_TOGGLE)
+  const is3PartyVarEnabled = useIsSplitOn(Features.ANY_3RDPARTY_INVITE_TOGGLE)
   const MAX_VAR_INVITATIONS = 10
 
   const { data, isLoading, isFetching }= useGetDelegationsQuery({ params })
