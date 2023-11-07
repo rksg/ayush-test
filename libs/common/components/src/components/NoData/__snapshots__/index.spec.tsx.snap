@@ -9,13 +9,13 @@ exports[`NoActiveContent should render correctly 1`] = `
       class="ant-space-item"
     >
       <svg
-        class="styledComponents__GreenTickIcon-sc-m7jeli-5 nYuPz"
+        class="styledComponents__GreenTickIcon-sc-m7jeli-6 dutgAg"
         data-testid="CheckMarkCircleSolid"
       />
     </div>
   </div>
   <div
-    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 styledComponents__NoDataTextWrapper-sc-m7jeli-4 eWWtzz elEaYV"
+    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 styledComponents__NoDataTextWrapper-sc-m7jeli-5 eWWtzz iUuDTI"
   >
     <div
       class="ant-space-item"
@@ -35,13 +35,13 @@ exports[`NoActiveContent should render correctly with the prop 1`] = `
       class="ant-space-item"
     >
       <svg
-        class="styledComponents__GreenTickIcon-sc-m7jeli-5 nYuPz"
+        class="styledComponents__GreenTickIcon-sc-m7jeli-6 dutgAg"
         data-testid="CheckMarkCircleSolid"
       />
     </div>
   </div>
   <div
-    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 styledComponents__NoDataTextWrapper-sc-m7jeli-4 eWWtzz elEaYV"
+    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 styledComponents__NoDataTextWrapper-sc-m7jeli-5 eWWtzz iUuDTI"
   >
     <div
       class="ant-space-item"
@@ -64,13 +64,13 @@ exports[`NoActiveData should render correctly 1`] = `
         class="ant-space-item"
       >
         <svg
-          class="styledComponents__GreenTickIcon-sc-m7jeli-5 nYuPz"
+          class="styledComponents__GreenTickIcon-sc-m7jeli-6 dutgAg"
           data-testid="CheckMarkCircleSolid"
         />
       </div>
     </div>
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 styledComponents__NoDataTextWrapper-sc-m7jeli-4 eWWtzz elEaYV"
+      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 styledComponents__NoDataTextWrapper-sc-m7jeli-5 eWWtzz iUuDTI"
     >
       <div
         class="ant-space-item"
@@ -94,13 +94,13 @@ exports[`NoActiveData should render correctly with the prop 1`] = `
         class="ant-space-item"
       >
         <svg
-          class="styledComponents__GreenTickIcon-sc-m7jeli-5 nYuPz"
+          class="styledComponents__GreenTickIcon-sc-m7jeli-6 dutgAg"
           data-testid="CheckMarkCircleSolid"
         />
       </div>
     </div>
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 styledComponents__NoDataTextWrapper-sc-m7jeli-4 eWWtzz elEaYV"
+      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 styledComponents__NoDataTextWrapper-sc-m7jeli-5 eWWtzz iUuDTI"
     >
       <div
         class="ant-space-item"
@@ -115,10 +115,33 @@ exports[`NoActiveData should render correctly with the prop 1`] = `
 exports[`NoAiOpsLicense should render correctly with the prop 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__NoAILicenseWrapper-sc-m7jeli-2 krVrbh"
+    class="styledComponents__NoAILicenseWrapper-sc-m7jeli-2 eSkonA"
   >
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 styledComponents__NoDataTextWrapper-sc-m7jeli-4 eWWtzz elEaYV"
+      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 eWWtzz"
+      style="padding-top: 50px;"
+    >
+      <div
+        class="ant-space-item"
+      >
+        <svg
+          class="styledComponents__NoLicensesIcon-sc-m7jeli-9"
+          data-testid="NoData"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__NoLicenseTextWrapper-sc-m7jeli-4 xTDdT"
+    >
+      <div
+        class="ant-space-item"
+      >
+        No license
+      </div>
+    </div>
+    <div
+      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 styledComponents__NoDataTextWrapper-sc-m7jeli-5 eWWtzz iUuDTI"
+      style="padding-bottom: 100px;"
     >
       <div
         class="ant-space-item"
@@ -127,7 +150,7 @@ exports[`NoAiOpsLicense should render correctly with the prop 1`] = `
       </div>
     </div>
     <button
-      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kBDiup styledComponents__LicenseButton-sc-m7jeli-7 ioGehP"
+      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kBDiup styledComponents__LicenseButton-sc-m7jeli-8 kthOJg"
       type="button"
     >
       <span>
@@ -144,7 +167,7 @@ exports[`NoData should render correctly 1`] = `
     class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
   >
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 styledComponents__NoDataTextWrapper-sc-m7jeli-4 eWWtzz elEaYV"
+      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 styledComponents__NoDataTextWrapper-sc-m7jeli-5 eWWtzz iUuDTI"
     >
       <div
         class="ant-space-item"
@@ -162,7 +185,7 @@ exports[`NoData should render correctly with the prop 1`] = `
     class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
   >
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 styledComponents__NoDataTextWrapper-sc-m7jeli-4 eWWtzz elEaYV"
+      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 styledComponents__NoDataTextWrapper-sc-m7jeli-5 eWWtzz iUuDTI"
     >
       <div
         class="ant-space-item"
@@ -187,13 +210,13 @@ exports[`NoRecommendationData should render correctly with the prop 1`] = `
         class="ant-space-item"
       >
         <svg
-          class="styledComponents__LargeGreenTickIcon-sc-m7jeli-6 dyGnJN"
+          class="styledComponents__LargeGreenTickIcon-sc-m7jeli-7 jQNFlg"
           data-testid="CheckMarkCircleSolid"
         />
       </div>
     </div>
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 styledComponents__NoDataTextWrapper-sc-m7jeli-4 eWWtzz elEaYV"
+      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 styledComponents__NoDataTextWrapper-sc-m7jeli-5 eWWtzz iUuDTI"
     >
       <div
         class="ant-space-item"
