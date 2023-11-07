@@ -3,20 +3,16 @@ import { useIntl } from 'react-intl'
 import {
   PageHeader,
   Tabs,
-  TimeRangeDropDownProvider,
-  TimeRangeDropDown
+  TimeRangeDropDownProvider
 } from '@acx-ui/components'
 import { get }                        from '@acx-ui/config'
 import { useIsSplitOn, Features }     from '@acx-ui/feature-toggle'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { getShowWithoutRbacCheckKey } from '@acx-ui/user'
 import { DateRange }                  from '@acx-ui/utils'
 
 import { ConfigChange }    from '../ConfigChange'
 import { useHeaderExtra }  from '../Header'
 import { HealthPage }      from '../Health'
-import { NetworkFilter }   from '../NetworkFilter'
-import { SANetworkFilter } from '../NetworkFilter/SANetworkFilter'
 import { useServiceGuard } from '../ServiceGuard'
 import { useVideoCallQoe } from '../VideoCallQoe'
 
@@ -54,16 +50,11 @@ const useTabs = () : Tab[] => {
     key: NetworkAssuranceTabEnum.CONFIG_CHANGE,
     title: $t({ defaultMessage: 'Config Change' }),
     component: <ConfigChange/>,
-    headerExtra: [
-      get('IS_MLISA_SA')
-        ? <SANetworkFilter shouldQuerySwitch={false} />
-        : <NetworkFilter
-          key={getShowWithoutRbacCheckKey('network-filter')}
-          shouldQuerySwitch={false}
-          withIncidents={false}
-        />,
-      <TimeRangeDropDown/>
-    ]
+    headerExtra: useHeaderExtra({
+      shouldQuerySwitch: false,
+      withIncidents: false,
+      datepicker: 'dropdown'
+    })
   }
   const videoCallQoeTab = {
     key: NetworkAssuranceTabEnum.VIDEO_CALL_QOE,

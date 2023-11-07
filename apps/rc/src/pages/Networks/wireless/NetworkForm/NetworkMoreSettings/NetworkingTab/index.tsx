@@ -4,7 +4,7 @@ import { Form, Input, InputNumber, Radio, Space, Switch } from 'antd'
 import { useIntl, defineMessage }                         from 'react-intl'
 
 import { Tooltip }                                                                                               from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                from '@acx-ui/feature-toggle'
 import { RadiusOptionsForm }                                                                                     from '@acx-ui/rc/components'
 import { BasicServiceSetPriorityEnum, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
@@ -27,15 +27,16 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
   const labelWidth = '250px'
 
   const agileMultibandTooltipContent = $t({ defaultMessage:
-    `Enabling Agile Multi Band configures the WLAN to send an IE Multi Band Operation announcement 
+    `Enabling Agile Multi Band configures the WLAN to send an IE Multi Band Operation announcement
     including beacon report, channel non-preference, cellular capability, and association disallow.
-    Other Agile Multi Band capabilities including 802.11k, 802.11r, and 802.11w 
+    Other Agile Multi Band capabilities including 802.11k, 802.11r, and 802.11w
     are enabled or disabled separately.` })
 
   const ambFlag = useIsSplitOn(Features.WIFI_AMB_TOGGLE)
   const gtkRekeyFlag = useIsSplitOn(Features.WIFI_FR_6029_FG5_TOGGLE)
   const enableWPA3_80211R = useIsSplitOn(Features.WPA3_80211R)
   const enableBSSPriority = useIsSplitOn(Features.WIFI_EDA_BSS_PRIORITY_TOGGLE)
+  const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
   const isRadiusOptionsSupport = useIsSplitOn(Features.RADIUS_OPTIONS)
 
   const showRadiusOptions = isRadiusOptionsSupport && hasAuthRadius(data, wlanData)
@@ -412,7 +413,7 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
 
       <MulticastForm wlanData={wlanData}/>
 
-      {enableBSSPriority &&
+      {(enableBSSPriority && enableAP70) &&
       <>
         <UI.Subtitle>{$t({ defaultMessage: 'Basic Service Set' })}</UI.Subtitle>
         <Form.Item
@@ -444,7 +445,7 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
         />
       </>}
 
-      { wifi6AndWifi7Flag && <WiFi7 wlanData={wlanData} /> }
+      { wifi6AndWifi7Flag && enableAP70 && <WiFi7 wlanData={wlanData} /> }
 
       {showRadiusOptions &&
       <>
