@@ -1,6 +1,5 @@
 import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/dist/query'
 import { QueryReturnValue }                        from '@rtk-query/graphql-request-base-query/dist/GraphqlBaseQueryTypes'
-import { groupBy }                                 from 'lodash'
 
 import { get }                                from '@acx-ui/config'
 import { rbacApi as baseRbacApi, rbacApiURL } from '@acx-ui/store'
@@ -19,11 +18,8 @@ export const rbacApi = baseRbacApi.injectEndpoints({
     systems: build.query({
       async queryFn (_params, _queryApi, _extraOptions, fetch) {
         const result = await fetch(`${rbacApiURL}/systems`)
-        return {
-          ...result,
-          data: result.data && groupBy(
-            (result.data as { networkNodes: System[] }).networkNodes, 'deviceName')
-        } as QueryReturnValue<SystemMap, FetchBaseQueryError, FetchBaseQueryMeta>
+        return result as QueryReturnValue<
+          { networkNodes: System[] }, FetchBaseQueryError, FetchBaseQueryMeta>
       },
       providesTags: [{ type: 'RBAC', id: 'systems' }]
     }),

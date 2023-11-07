@@ -601,6 +601,7 @@ export const transformPathFromDB = (spec: ServiceGuardSpec, systemMap: SystemMap
 
 export function useServiceGuardSpecMutation () {
   const systems = useSystems()
+  const systemMap = systems.data && _.groupBy(systems.data.networkNodes, 'deviceName')
   const spec = useServiceGuardSpec()
   const editMode = !spec.isUninitialized
   const create = useCreateServiceGuardSpecMutation()
@@ -612,9 +613,9 @@ export function useServiceGuardSpecMutation () {
     editMode,
     spec: {
       ...spec,
-      ...(spec.data && systems.data && { data: transformPathFromDB(spec.data, systems.data) })
+      ...(spec.data && systems.data && { data: transformPathFromDB(spec.data, systemMap) })
     },
-    submit: (args: ServiceGuardFormDto) => submit(transformPathToDB(args, systems.data)),
+    submit: (args: ServiceGuardFormDto) => submit(transformPathToDB(args, systemMap)),
     response,
     systems
   }
