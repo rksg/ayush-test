@@ -152,7 +152,7 @@ const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
         />
       </div>
       { enableAppInsights
-        ? <div style={{ gridArea: 'a3' }}>
+        ? <div style={{ gridArea: 'd3' }}>
           <SLA pathFilters={pathFilters} />
         </div>
         : <div style={{ gridArea: 'd2' }}>
