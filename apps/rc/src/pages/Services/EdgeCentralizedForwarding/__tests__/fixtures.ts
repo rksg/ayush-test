@@ -105,7 +105,8 @@ export const mockEdgePortConfig = {
       ipMode: EdgeIpModeEnum.STATIC,
       ip: '1.1.1.1',
       subnet: '255.255.255.0',
-      gateway: '1.1.1.1'
+      gateway: '1.1.1.1',
+      corePortEnabled: true
     },
     {
       id: '20b445af-7270-438d-88a3-a5a2219c377b',
@@ -117,7 +118,8 @@ export const mockEdgePortConfig = {
       ipMode: EdgeIpModeEnum.STATIC,
       ip: '2.2.2.2',
       subnet: '255.255.255.0',
-      gateway: '2.2.2.2'
+      gateway: '2.2.2.2',
+      corePortEnabled: false
     },
     {
       id: 'cdecd42e-81e3-4d60-921c-6b05181a53ae',
@@ -129,7 +131,8 @@ export const mockEdgePortConfig = {
       ipMode: EdgeIpModeEnum.STATIC,
       ip: '3.3.3.3',
       subnet: '255.255.255.0',
-      gateway: '3.3.3.3'
+      gateway: '3.3.3.3',
+      corePortEnabled: false
     },
     {
       id: '6fcbcfc2-c207-4e45-b392-1f529cd1d6d4',
@@ -141,7 +144,8 @@ export const mockEdgePortConfig = {
       ipMode: EdgeIpModeEnum.STATIC,
       ip: '4.4.4.4',
       subnet: '255.255.255.0',
-      gateway: '4.4.4.4'
+      gateway: '4.4.4.4',
+      corePortEnabled: false
     },
     {
       id: '081a71a7-aaad-4a13-967b-1c82166de11a',
@@ -153,7 +157,8 @@ export const mockEdgePortConfig = {
       ipMode: EdgeIpModeEnum.DHCP,
       ip: '5.5.5.5',
       subnet: '255.255.255.0',
-      gateway: '5.5.5.5'
+      gateway: '5.5.5.5',
+      corePortEnabled: false
     }
   ]
 }
@@ -191,10 +196,10 @@ export const mockDeepNetworkList = {
 
 export const mockedCFService = {
   id: 'mocked_cf_id',
-  serviceName: 'mockedCFData',
+  name: 'mockedCFData',
   venueId: 'f28540166b95406cae64b46bd12b742f',
   edgeId: '9618C4AC2B1FC511EE8B2B000C2943FE7F',
-  corePortId: 'p2',
+  corePortMac: 'p2',
   networkIds: ['32e06116667b4749855ffbb991d8ac4b'],
   tunnelProfileId: 'f93802759efc49628c572df8af0718b8'
 }

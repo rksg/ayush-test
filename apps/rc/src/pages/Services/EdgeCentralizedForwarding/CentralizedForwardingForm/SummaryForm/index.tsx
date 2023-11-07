@@ -33,7 +33,7 @@ export const SummaryForm = () => {
             <StyledAntdDescriptions.Item
               label={$t({ defaultMessage: 'Service Name' })}
             >
-              {formValues.serviceName}
+              {formValues.name}
             </StyledAntdDescriptions.Item>
             <StyledAntdDescriptions.Item
               label={$t({ defaultMessage: 'Venue' })}

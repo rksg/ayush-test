@@ -4,10 +4,10 @@ import { Col, Form, Input, Row, Select } from 'antd'
 import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
-import { StepsForm, useStepFormContext }                                                 from '@acx-ui/components'
-import { SpaceWrapper, TunnelProfileAddModal }                                           from '@acx-ui/rc/components'
-import { useGetEdgeListQuery, useGetTunnelProfileViewDataListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
-import { EdgeCentralizedForwardingSetting, EdgeStatusEnum }                              from '@acx-ui/rc/utils'
+import { StepsForm, useStepFormContext }                                                                        from '@acx-ui/components'
+import { SpaceWrapper, TunnelProfileAddModal }                                                                  from '@acx-ui/rc/components'
+import { useGetEdgeListQuery, useGetPortConfigQuery, useGetTunnelProfileViewDataListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
+import { EdgeCentralizedForwardingSetting, EdgeStatusEnum, isDefaultTunnelProfile }                             from '@acx-ui/rc/utils'
 
 import { CorePortFormItem } from './CorePortFormItem'
 
@@ -18,16 +18,13 @@ const tunnelProfileDefaultPayload = {
   sortOrder: 'ASC'
 }
 
-interface SettingsFormProps {
-  editMode?: boolean
-}
-export const SettingsForm = (props: SettingsFormProps) => {
-  const { editMode = false } = props
+export const SettingsForm = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const { form } = useStepFormContext<EdgeCentralizedForwardingSetting>()
+  const { form, editMode } = useStepFormContext<EdgeCentralizedForwardingSetting>()
 
   const venueId = Form.useWatch('venueId', form)
+  const edgeId = Form.useWatch('edgeId', form)
 
   const {
     venueOptions,
@@ -58,8 +55,7 @@ export const SettingsForm = (props: SettingsFormProps) => {
       fields: [
         'name',
         'serialNumber',
-        'venueId',
-        'corePort'
+        'venueId'
       ],
       filters: {
         venueId: [venueId],
@@ -73,10 +69,21 @@ export const SettingsForm = (props: SettingsFormProps) => {
         edgeOptions: data?.data.map(item => ({
           label: item.name,
           value: item.serialNumber,
-          venueId: item.venueId,
-          corePort: item.corePort
+          venueId: item.venueId
         })),
         isLoading
+      }
+    }
+  })
+
+  // get corePort by portsConfig API
+  const { portsConfig } = useGetPortConfigQuery({
+    params: { serialNumber: edgeId }
+  }, {
+    skip: !edgeId,
+    selectFromResult: ({ data }) => {
+      return {
+        portsConfig: data?.ports ?? []
       }
     }
   })
@@ -89,21 +96,30 @@ export const SettingsForm = (props: SettingsFormProps) => {
   }, {
     selectFromResult: ({ data, isLoading }) => {
       return {
-        tunnelProfileOptions: data?.data.map(item => ({
-          label: item.name, value: item.id
-        })),
+        tunnelProfileOptions: data?.data
+          .filter(t => isDefaultTunnelProfile(t, params.tenantId!) === false)
+          .map(item => ({
+            label: item.name, value: item.id
+          })),
         isTunnelOptionsLoading: isLoading
       }
     }
   })
 
-  const hasDefaultProfile = tunnelProfileOptions?.some(item => item.value === params.tenantId)
-  if (!hasDefaultProfile)
-    tunnelProfileOptions?.unshift({ label: 'Default', value: params.tenantId as string })
-
+  // prepare venue info
   useEffect(() => {
     form.setFieldValue('venueName', venueOptions?.filter(i => i.value === venueId)[0]?.label)
   }, [venueId, venueOptions])
+
+  // prepare corePort info
+  useEffect(() => {
+    if (portsConfig) {
+    // find corePort
+      const corePort = portsConfig?.find(port => port.corePortEnabled)
+      form.setFieldValue('corePortMac', corePort?.mac)
+      form.setFieldValue('corePortName', corePort?.name)
+    }
+  }, [portsConfig])
 
   const onVenueChange = () => {
     form.setFieldValue('edgeId', undefined)
@@ -111,8 +127,6 @@ export const SettingsForm = (props: SettingsFormProps) => {
 
   const onEdgeChange = (val: string) => {
     const edgeData = edgeOptions?.filter(i => i.value === val)[0]
-    // TODO: fixme when IT
-    form.setFieldValue('corePortId', edgeData?.corePort)
     form.setFieldValue('edgeName', edgeData?.label)
   }
 
@@ -131,7 +145,7 @@ export const SettingsForm = (props: SettingsFormProps) => {
           <Row>
             <Col span={8}>
               <Form.Item
-                name='serviceName'
+                name='name'
                 label={$t({ defaultMessage: 'Service Name' })}
                 rules={[
                   { required: true },
@@ -186,16 +200,16 @@ export const SettingsForm = (props: SettingsFormProps) => {
               <Form.Item
                 noStyle
                 shouldUpdate={(prevValues, currentValues) =>
-                  prevValues.corePortId !== currentValues.corePortId
-                || prevValues.edgeId !== currentValues.edgeId}
+                  prevValues.corePortMac !== currentValues.corePortMac
+                }
               >
                 {({ getFieldValue }) => {
-                  const corePort = getFieldValue('corePortId')
-                  const edgeId = getFieldValue('edgeId')
+                  const corePort = getFieldValue('corePortMac')
+                  const corePortName = getFieldValue('corePortName')
                   const edgeName = getFieldValue('edgeName')
 
                   return <Form.Item
-                    name='corePortId'
+                    name='corePortMac'
                     noStyle
                     rules={[{
                       required: true
@@ -203,8 +217,10 @@ export const SettingsForm = (props: SettingsFormProps) => {
                   >
                     <CorePortFormItem
                       data={corePort}
+                      name={corePortName}
                       edgeId={edgeId}
                       edgeName={edgeName}
+                      portsData={portsConfig}
                     />
                   </Form.Item>
                 }}

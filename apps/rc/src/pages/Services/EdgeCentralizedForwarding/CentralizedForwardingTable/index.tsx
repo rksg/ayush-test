@@ -73,7 +73,7 @@ const mockedEdgeCFDataList = [{
   networkInfos: [],
   corePortMac: 'a2:51:0f:bc:89:c5',
   edgeAlarmSummary: {} as EdgeAlarmSummary,
-  serviceVersions: '1.0.0.100'
+  serviceVersion: '1.0.0.100'
 }]
 
 const venueOptionsDefaultPayload = {

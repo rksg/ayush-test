@@ -275,6 +275,27 @@ describe('EditEdge ports - ports general', () => {
     screen.getByRole('textbox', { name: 'Gateway' })
   })
 
+  it('change port type to WAN and undo the change', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <EdgePortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        }
+      })
+    const portTypeSelect = await screen.findByRole('combobox', { name: 'Port Type' })
+    await user.click(portTypeSelect)
+    await user.click(await screen.findByText('LAN'))
+    await user.click(portTypeSelect)
+    await user.click((await screen.findAllByText('WAN'))[1])
+    const nat = await screen.findByRole('switch',
+      { name: /Use NAT Service/ })
+    expect(nat).not.toBeChecked()
+  })
+
   it('switch port tab', async () => {
     const user = userEvent.setup()
     render(
@@ -307,6 +328,57 @@ describe('EditEdge ports - ports general', () => {
         }
       })
     expect(screen.getByText('No data to display')).toBeVisible()
+  })
+
+  it('should correctly display core port info', async () => {
+    render(
+      <Provider>
+        <EdgePortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        }
+      })
+
+    const corePortInput = await screen.findByRole('checkbox',
+      { name: /Use this port as Core Port/ })
+    expect(corePortInput).toBeChecked()
+    expect(corePortInput).not.toBeDisabled()
+
+    await userEvent.click(await screen.findByRole('tab', { name: 'Port 2' }))
+    const port2CorePort = await screen.findByRole('checkbox',
+      { name: /Use this port as Core Port/ })
+    expect(port2CorePort).not.toBeChecked()
+    expect(port2CorePort).toBeDisabled()
+  })
+
+  it('should disable NAT when core port is changed into enabled', async () => {
+    render(
+      <Provider>
+        <EdgePortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        }
+      })
+
+    const corePortInput = await screen.findByRole('checkbox',
+      { name: /Use this port as Core Port/ })
+
+    // uncheck current core port
+    await userEvent.click(corePortInput)
+
+    await userEvent.click(await screen.findByRole('tab', { name: 'Port 6' }))
+    const port6CorePort = await screen.findByRole('checkbox',
+      { name: /Use this port as Core Port/ })
+    expect(port6CorePort).not.toBeChecked()
+    expect(port6CorePort).not.toBeDisabled()
+    await userEvent.click(port6CorePort)
+    const port5nat = await screen.findByRole('switch',
+      { name: /Use NAT Service/ })
+    expect(port5nat).not.toBeChecked()
   })
 })
 

@@ -26,7 +26,7 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 const MockedStep1 = () => <div data-testid='rc-SettingsForm'>
-  <Form.Item name='serviceName' initialValue={'mockedServiceName'}>
+  <Form.Item name='name' initialValue={'mockedServiceName'}>
     <Input />
   </Form.Item>
   <div onClick={() => {}}>Apply</div>
@@ -45,7 +45,7 @@ const addSteps = [{
   title: 'Summary',
   content: <MockedStep3 />
 }]
-const editSteps = addSteps.slice(0, 2)
+
 const mockedFinishFn = jest.fn()
 
 describe('Edge Centralized Forwarding form', () => {
@@ -111,14 +111,26 @@ describe('Edge Centralized Forwarding form', () => {
       expect(await body.findByTestId('rc-SummaryForm')).toBeVisible()
 
       await click(actions.getByRole('button', { name: 'Add' }))
-      // TODO: submit data assertion when API ready.
+
       await waitFor(() => {
-        expect(mockedFinishFn).toBeCalledWith({ serviceName: 'mockedServiceName' })
+        expect(mockedFinishFn).toBeCalledWith({ name: 'mockedServiceName' })
       })
     })
   })
 
   describe('Edit', () => {
+    const MockedEditFormStep1 = () => <div data-testid='rc-SettingsForm'>
+      <Form.Item name='name'>
+        <Input />
+      </Form.Item>
+      <div onClick={() => {}}>Apply</div>
+    </div>
+    const editSteps = addSteps.slice(1, 2)
+    editSteps.unshift({
+      title: 'Settings',
+      content: <MockedEditFormStep1 />
+    })
+
     it('should correctly edit profile', async () => {
       render(<CentralizedForwardingForm
         steps={editSteps}

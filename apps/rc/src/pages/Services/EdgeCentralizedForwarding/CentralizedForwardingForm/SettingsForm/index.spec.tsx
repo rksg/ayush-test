@@ -14,11 +14,12 @@ import {
   render,
   renderHook,
   screen,
+  waitFor,
   waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
 
-import { mockEdgeList, mockedTunnelProfileViewData, mockedVenueList } from '../../__tests__/fixtures'
+import { mockEdgeList, mockedTunnelProfileViewData, mockedVenueList, mockEdgePortConfig } from '../../__tests__/fixtures'
 
 import { SettingsForm } from './'
 
@@ -73,6 +74,10 @@ describe('Edge centrailized forwarding form: settings', () => {
       rest.post(
         TunnelProfileUrls.getTunnelProfileViewDataList.url,
         (_, res, ctx) => res(ctx.json(mockedTunnelProfileViewData))
+      ),
+      rest.get(
+        EdgeUrlsInfo.getPortConfig.url,
+        (_, res, ctx) => res(ctx.json(mockEdgePortConfig))
       )
     )
   })
@@ -101,6 +106,7 @@ describe('Edge centrailized forwarding form: settings', () => {
     await userEvent.selectOptions(
       venueDropdown,
       'venue_00002')
+
     await waitForElementToBeRemoved(await within(formBody)
       .findAllByTestId('loadingIcon'))
 
@@ -112,9 +118,11 @@ describe('Edge centrailized forwarding form: settings', () => {
       '0000000002')
 
     expect(mockedSetFieldValue).toBeCalledWith('edgeName', 'Smart Edge 2')
-    // TODO: waiting for API
-    expect(mockedSetFieldValue).toBeCalledWith('corePortId', 'port_2')
     expect(within(formBody).queryByTestId('rc-CorePortFormItem')).toBeValid()
+
+    await waitFor(() => {
+      expect(mockedSetFieldValue).toBeCalledWith('corePortMac', '00:0c:29:b6:ad:04')
+    })
 
     await userEvent.selectOptions(
       await within(formBody).findByRole('combobox', { name: 'Tunnel Profile' }),

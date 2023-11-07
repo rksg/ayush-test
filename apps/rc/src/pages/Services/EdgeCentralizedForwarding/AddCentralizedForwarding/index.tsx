@@ -1,8 +1,10 @@
+import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { PageHeader }                 from '@acx-ui/components'
-import { getServiceListRoutePath }    from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { PageHeader }                              from '@acx-ui/components'
+import { useAddEdgeCentralizedForwardingMutation } from '@acx-ui/rc/services'
+import { getServiceListRoutePath }                 from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }              from '@acx-ui/react-router-dom'
 
 import CentralizedForwardingForm, { CentralizedForwardingFormModel } from '../CentralizedForwardingForm'
 import { ScopeForm }                                                 from '../CentralizedForwardingForm/ScopeForm'
@@ -21,8 +23,8 @@ const AddEdgeCentralizedForwarding = () => {
   // })
   const cfListRoute = getServiceListRoutePath()
   const linkToServiceList = useTenantLink(cfListRoute)
-  // TODO: waiting for API ready.
-  // const [addEdgeCentralizedForwarding] = useAddEdgeCentralizedForwardingMutation()
+  const [addEdgeCentralizedForwarding] = useAddEdgeCentralizedForwardingMutation()
+  const [form] = Form.useForm()
 
   const steps = [
     {
@@ -42,16 +44,15 @@ const AddEdgeCentralizedForwarding = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleFinish = async (formData: CentralizedForwardingFormModel) => {
     try {
-      // TODO: waiting for API ready.
-      // const payload = {
-      //   serviceName: formData.serviceName,
-      //   venueId: formData.venueId,
-      //   edgeId: formData.edgeId,
-      //   corePort: formData.corePortId,
-      //   networkIds: formData.activatedNetworks.map(network => network.id),
-      //   tunnelProfileId: formData.tunnelProfileId
-      // }
-      // await addEdgeCentralizedForwarding({ payload }).unwrap()
+      const payload = {
+        name: formData.name,
+        venueId: formData.venueId,
+        edgeId: formData.edgeId,
+        corePortMac: formData.corePortMac,
+        networkIds: formData.activatedNetworks.map(network => network.id),
+        tunnelProfileId: formData.tunnelProfileId
+      }
+      await addEdgeCentralizedForwarding({ payload }).unwrap()
       navigate(linkToServiceList, { replace: true })
     } catch(err) {
       // eslint-disable-next-line no-console
@@ -70,6 +71,7 @@ const AddEdgeCentralizedForwarding = () => {
         ]}
       />
       <CentralizedForwardingForm
+        form={form}
         steps={steps}
         onFinish={handleFinish}
       />

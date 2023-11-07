@@ -3,9 +3,10 @@ import { useState } from 'react'
 import { Typography, Space } from 'antd'
 import { useIntl }           from 'react-intl'
 
-import { cssStr, Loader, Modal, ModalType, Tabs }                from '@acx-ui/components'
-import { EdgePortsGeneral }                                      from '@acx-ui/rc/components'
-import { useGetEdgePortsStatusListQuery, useGetPortConfigQuery } from '@acx-ui/rc/services'
+import { cssStr, Loader, Modal, ModalType, Tabs } from '@acx-ui/components'
+import { EdgePortsGeneral }                       from '@acx-ui/rc/components'
+import { useGetEdgePortsStatusListQuery }         from '@acx-ui/rc/services'
+import { EdgePort }                               from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
@@ -13,17 +14,12 @@ const PortsGeneralModal = (props: {
     className?: string,
     edgeId: string,
     edgeName: string,
+    portsData: EdgePort[],
     visible: boolean,
     setVisible: (visible: boolean) => void;
   }) => {
   const { $t } = useIntl()
-  const { className, edgeId, edgeName, visible, setVisible } = props
-
-  const { data: portDataResponse, isLoading: isPortDataLoading } = useGetPortConfigQuery({
-    params: { serialNumber: edgeId }
-  })
-
-  const portData = portDataResponse?.ports || []
+  const { className, edgeId, edgeName, portsData, visible, setVisible } = props
 
   const portStatusPayload = {
     fields: ['port_id','ip'],
@@ -36,7 +32,7 @@ const PortsGeneralModal = (props: {
   const statusIpMap = Object.fromEntries((portStatusData || [])
     .map(status => [status.portId, status.ip]))
 
-  const portDataWithStatusIp = portData.map((item) => {
+  const portsDataWithStatusIp = portsData.map((item) => {
     return { ...item, statusIp: statusIpMap[item.id] }
   })
 
@@ -59,10 +55,10 @@ const PortsGeneralModal = (props: {
       <Tabs activeKey='ports-general'>
         <Tabs.TabPane tab={$t({ defaultMessage: 'Ports General' })} key='ports-general'>
           <Loader states={[{
-            isLoading: isPortDataLoading || isPortStatusLoading
+            isLoading: isPortStatusLoading
           }]}>
             <EdgePortsGeneral
-              data={portDataWithStatusIp}
+              data={portsDataWithStatusIp}
               edgeId={edgeId}
               onFinish={handleClose}
               onCancel={handleClose}
@@ -77,11 +73,19 @@ const PortsGeneralModal = (props: {
 
 export const CorePortFormItem = (props: {
     data: string,
+    name: string,
     edgeId: string | undefined,
-    edgeName: string
+    edgeName: string,
+    portsData: EdgePort[] | undefined,
   }) => {
   const { $t } = useIntl()
-  const { data: corePort, edgeId, edgeName } = props
+  const {
+    data: corePortMac,
+    name: corePortName,
+    edgeId,
+    edgeName,
+    portsData
+  } = props
   const [modalVisible, setModalVisible] = useState<boolean>(false)
 
   const handleClick = () => {
@@ -91,11 +95,11 @@ export const CorePortFormItem = (props: {
   return <Space direction='vertical'>
     <Typography.Text style={{ color: cssStr('--acx-neutrals-90') }}>
       {$t({ defaultMessage: 'Core Port: {corePort}' },
-        { corePort: corePort && edgeId ? corePort : 'N/A' })}
+        { corePort: corePortName && edgeId ? corePortName : 'N/A' })}
     </Typography.Text>
     <UI.AlertText>
       {
-        corePort || edgeId === undefined
+        corePortMac || edgeId === undefined
           ? null
           : <><Typography.Text>
             {$t({
@@ -111,6 +115,7 @@ export const CorePortFormItem = (props: {
           <PortsGeneralModal
             edgeId={edgeId}
             edgeName={edgeName}
+            portsData={portsData || []}
             visible={modalVisible}
             setVisible={setModalVisible}
           />

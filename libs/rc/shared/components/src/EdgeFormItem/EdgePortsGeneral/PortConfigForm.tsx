@@ -1,11 +1,11 @@
 import { useCallback, useLayoutEffect } from 'react'
 
-import { Col, Form, Input, Radio, Row, Select, Space, Switch } from 'antd'
-import TextArea                                                from 'antd/lib/input/TextArea'
-import _                                                       from 'lodash'
-import { useIntl }                                             from 'react-intl'
+import { Checkbox, Col, Form, FormInstance, Input, Radio, Row, Select, Space, Switch } from 'antd'
+import TextArea                                                                        from 'antd/lib/input/TextArea'
+import _                                                                               from 'lodash'
+import { useIntl }                                                                     from 'react-intl'
 
-import { StepsFormLegacy }                                                                                                                       from '@acx-ui/components'
+import { StepsFormLegacy, Tooltip }                                                                                                              from '@acx-ui/components'
 import { EdgeIpModeEnum, EdgePortWithStatus, EdgePortTypeEnum, isSubnetOverlap, serverIpAddressRegExp, subnetMaskIpRegExp, edgePortIpValidator } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
@@ -15,6 +15,7 @@ import { EdgePortConfigFormType } from '.'
 interface ConfigFormProps {
   formListKey: number
   index: number
+  isCFEnabled: boolean
 }
 
 export async function lanPortsubnetValidator (
@@ -36,10 +37,23 @@ export async function lanPortsubnetValidator (
   return Promise.resolve()
 }
 
+const getEnabledCorePort = (form: FormInstance) => {
+  const portsData = form.getFieldsValue() as EdgePortConfigFormType
+
+  let corePort
+  let portConfig
+  for(let portId in portsData) {
+    portConfig = portsData[portId][0]
+    if (portConfig.corePortEnabled)
+      corePort = portConfig.mac
+  }
+  return corePort
+}
+
 const { useWatch, useFormInstance } = Form
 
 export const PortConfigForm = (props: ConfigFormProps) => {
-  const { index, formListKey } = props
+  const { index, formListKey, isCFEnabled } = props
   const { $t } = useIntl()
   const form = useFormInstance<EdgePortConfigFormType>()
 
@@ -53,6 +67,9 @@ export const PortConfigForm = (props: ConfigFormProps) => {
 
   const statusIp = useWatch(getFieldFullPath('statusIp'), form)
   const mac = useWatch(getFieldFullPath('mac'), form)
+
+  const enabledCorePort = getEnabledCorePort(form)
+  const isCorePortDisabled = isCFEnabled || (!!enabledCorePort && enabledCorePort !== mac)
 
   useLayoutEffect(() => {
     form.validateFields()
@@ -190,10 +207,21 @@ export const PortConfigForm = (props: ConfigFormProps) => {
           <StepsFormLegacy.FieldLabel width='120px'>
             {$t({ defaultMessage: 'Use NAT Service' })}
             <Form.Item
-              name={getFieldPath('natEnabled')}
-              valuePropName='checked'
-              children={<Switch />}
-            />
+              noStyle
+              shouldUpdate={(prev, cur) => {
+                return _.get(prev, getFieldFullPath('corePortEnabled'))
+                  !== _.get(cur, getFieldFullPath('corePortEnabled'))
+              }}
+            >
+              { ({ getFieldValue }) => {
+                const corePortEnabled = getFieldValue(getFieldFullPath('corePortEnabled'))
+                return <Form.Item
+                  name={getFieldPath('natEnabled')}
+                  valuePropName='checked'
+                  children={<Switch disabled={corePortEnabled}/>}
+                />
+              }}
+            </Form.Item>
           </StepsFormLegacy.FieldLabel>
         </>
       )
@@ -244,6 +272,26 @@ export const PortConfigForm = (props: ConfigFormProps) => {
               const _ipMode = getFieldValue(getFieldFullPath('ipMode'))
               return (_portType === EdgePortTypeEnum.LAN || _portType === EdgePortTypeEnum.WAN) ? (
                 <>
+                  <Form.Item
+                    name={getFieldPath('corePortEnabled')}
+                    valuePropName='checked'
+                  >
+                    <Checkbox
+                      disabled={isCorePortDisabled}
+                    >
+                      {$t({ defaultMessage: 'Use this port as Core Port' })}
+                      <Tooltip
+                        placement='topRight'
+                        title={
+                          // eslint-disable-next-line max-len
+                          // TODO: still waiting for PLM
+                          $t({ defaultMessage: 'core port' })
+                        }
+                      >
+                        <UI.StyledQuestionIcon />
+                      </Tooltip>
+                    </Checkbox>
+                  </Form.Item>
                   <StepsFormLegacy.FieldLabel width='120px'>
                     {$t({ defaultMessage: 'Port Enabled' })}
                     <Form.Item

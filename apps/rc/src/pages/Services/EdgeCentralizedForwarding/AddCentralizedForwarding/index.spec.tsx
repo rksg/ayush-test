@@ -1,10 +1,12 @@
 import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { getServiceListRoutePath } from '@acx-ui/rc/utils'
+import { EdgeCentralizedForwardingUrls, getServiceListRoutePath } from '@acx-ui/rc/utils'
 import {
   Provider
 } from '@acx-ui/store'
 import {
+  mockServer,
   render,
   screen,
   waitFor
@@ -55,11 +57,18 @@ describe('Add Edge Centralized Forwarding service', () => {
   beforeEach(() => {
     mockedAddFn.mockReset()
     mockedSubmitDataGen.mockReset()
+
+    mockServer.use(
+      rest.post(
+        EdgeCentralizedForwardingUrls.addEdgeCentralizedForwarding.url,
+        (_, res, ctx) => res(ctx.json({ data: {} }))
+      )
+    )
   })
 
   it('should correctly add service', async () => {
     mockedSubmitDataGen.mockReturnValueOnce({
-      serviceName: 'testAddCFService'
+      name: 'testAddCFService'
     })
 
     // TODO: this should redirect to CF service list when page is ready
@@ -76,10 +85,9 @@ describe('Add Edge Centralized Forwarding service', () => {
 
     expect(await screen.findByTestId('rc-CentralizedForwardingForm')).toBeVisible()
     await click(screen.getByRole('button', { name: 'Submit' }))
-    // TODO: submit data assertion when API ready.
-    // await waitFor(() => {
-    //   expect(mockedAddFn).toBeCalledWith({ serviceName: 'mockedServiceName' })
-    // })
+    await waitFor(() => {
+      expect(mockedAddFn).toBeCalledWith({ name: 'mockedServiceName' })
+    })
     await waitFor(() => {
       expect(mockedNavigate).toBeCalledWith({
         hash: '',

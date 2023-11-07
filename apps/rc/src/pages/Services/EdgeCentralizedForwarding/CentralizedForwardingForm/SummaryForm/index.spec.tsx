@@ -15,12 +15,12 @@ describe('Summary form', () => {
   it('should correctly display', async () => {
     const mockedData = {
       id: '',
-      serviceName: 'testCFData',
+      name: 'testCFData',
       venueId: 'venue_00002',
       venueName: 'airport',
       edgeId: '0000000002',
       edgeName: 'Smart Edge 2',
-      corePortId: 'p2',
+      corePortMac: 'p2',
       networkIds: ['network_1'],
       tunnelProfileId: 'tunnelProfileId2',
       tunnelProfileName: 'tunnelProfile2',
@@ -50,12 +50,12 @@ describe('Summary form', () => {
   it('should correctly display when activatedNetworks not defined.', async () => {
     const mockedData_noNetworks = {
       id: '',
-      serviceName: 'testCFData2',
+      name: 'testCFData2',
       venueId: 'venue_00002',
       venueName: 'airport',
       edgeId: '0000000002',
       edgeName: 'Smart Edge 2',
-      corePortId: 'p2',
+      corePortMac: 'p2',
       networkIds: ['network_1'],
       tunnelProfileId: 'tunnelProfileId1',
       tunnelProfileName: 'tunnelProfile1',

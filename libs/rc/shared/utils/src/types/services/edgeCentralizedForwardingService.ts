@@ -2,10 +2,10 @@ import { EdgeAlarmSummary } from '../edge'
 
 export interface EdgeCentralizedForwardingSetting {
   id: string;
-  serviceName: string;
+  name: string;
   venueId: string;
   edgeId: string;
-  corePortId: string; // TODO: need to confirm
+  corePortMac: string;
   networkIds: string[];
   tunnelProfileId: string;
 }
@@ -15,18 +15,18 @@ export interface EdgeCentralizedForwardingViewData {
   tenantId?: string
   name?: string
   tags?: string[]
-  venueId?: string;
-  edgeId?: string;
-  networkIds?: string[];
-  tunnelProfileId?: string;
-  corePortMac?: string;
-  venueName?: string,
-  edgeName?: string,
+  venueId: string
+  edgeId: string
+  networkIds: string[]
+  tunnelProfileId: string
+  corePortMac: string
+  venueName?: string
+  edgeName?: string
   tunnelProfileName?: string,
   networkInfos?: {
-    networkId: string,
-    networkName: string,
+    networkId: string
+    networkName: string
     }[]
-  serviceVersion?: string;
+  serviceVersion?: string
   edgeAlarmSummary?: EdgeAlarmSummary
 }

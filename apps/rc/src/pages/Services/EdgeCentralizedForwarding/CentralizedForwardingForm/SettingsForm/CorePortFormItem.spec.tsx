@@ -36,10 +36,6 @@ const { click } = userEvent
 describe('Edge centrailized forwarding form: CorePortFormItem', () => {
   beforeEach(() => {
     mockServer.use(
-      rest.get(
-        EdgeUrlsInfo.getPortConfig.url,
-        (_, res, ctx) => res(ctx.json(mockEdgePortConfig))
-      ),
       rest.post(
         EdgeUrlsInfo.getEdgePortStatusList.url,
         (_, res, ctx) => res(ctx.json({ data: mockEdgePortStatus }))
@@ -52,16 +48,18 @@ describe('Edge centrailized forwarding form: CorePortFormItem', () => {
       <StepsForm>
         <StepsForm.StepForm>
           <CorePortFormItem
-            data='port 3'
+            data='00:0c:29:b6:ad:04'
+            name='port0'
             edgeId='0000000002'
             edgeName='Smart Edge 2'
+            portsData={mockEdgePortConfig.ports}
           />
         </StepsForm.StepForm>
       </StepsForm>
     </Provider>)
 
     const formBody = await screen.findByTestId('steps-form-body')
-    await within(formBody).findByText('Core Port: port 3')
+    await within(formBody).findByText('Core Port: port0')
   })
 
   it('should display N/A when core port is not defined', async () => {
@@ -70,8 +68,10 @@ describe('Edge centrailized forwarding form: CorePortFormItem', () => {
         <StepsForm.StepForm>
           <CorePortFormItem
             data=''
+            name=''
             edgeId='0000000003'
             edgeName='Smart Edge 3'
+            portsData={mockEdgePortConfig.ports}
           />
         </StepsForm.StepForm>
       </StepsForm>
@@ -93,9 +93,11 @@ describe('Edge centrailized forwarding form: CorePortFormItem', () => {
       <StepsForm>
         <StepsForm.StepForm>
           <CorePortFormItem
-            data='port 3'
+            data='00:0c:29:b6:ad:04'
+            name='port0'
             edgeId={undefined}
             edgeName=''
+            portsData={mockEdgePortConfig.ports}
           />
         </StepsForm.StepForm>
       </StepsForm>
