@@ -869,6 +869,7 @@ export const {
   useLazyApListQuery,
   useApDetailHeaderQuery,
   useApViewModelQuery,
+  useLazyApViewModelQuery,
   useApDetailsQuery,
   useApLanPortsQuery,
   useAddApMutation,

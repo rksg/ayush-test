@@ -17,8 +17,8 @@ import {
   StepsFormLegacyInstance,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
-import { GoogleMapWithPreference }       from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
+import { GoogleMapWithPreference } from '@acx-ui/rc/components'
 import {
   useApListQuery,
   useAddApMutation,
@@ -29,7 +29,8 @@ import {
   useVenuesListQuery,
   useWifiCapabilitiesQuery,
   useGetVenueVersionListQuery,
-  useLazyGetVenueApManagementVlanQuery
+  useLazyGetVenueApManagementVlanQuery,
+  useLazyApViewModelQuery
 } from '@acx-ui/rc/services'
 import {
   ApDeep,
@@ -105,6 +106,7 @@ export function ApForm () {
   const [getDhcpAp] = useLazyGetDhcpApQuery()
   const [apGroupList] = useLazyApGroupListQuery()
   const [getTargetVenueMgmtVlan] = useLazyGetVenueApManagementVlanQuery()
+  const [getCurrentApMgmtVlan] = useLazyApViewModelQuery()
 
   const isEditMode = action === 'edit'
   const [selectedVenue, setSelectedVenue] = useState({} as unknown as VenueExtended)
@@ -125,6 +127,15 @@ export function ApForm () {
 
 
   const BASE_VERSION = '6.2.1'
+
+  const apViewModelPayload = {
+    fields: ['serialNumber', 'venueName', 'venueId', 'apStatusData.APSystem.managementVlan'],
+    searchTargetFields: [
+      'apMac',
+      'serialNumber'
+    ],
+    searchString: params.serialNumber
+  }
 
   // the payload would different based on the feature flag
   const retrieveDhcpAp = (dhcpApResponse: DhcpAp) => {
@@ -253,14 +264,17 @@ export function ApForm () {
         type: 'confirm',
         width: 450,
         title: $t({ defaultMessage: 'AP Management VLAN Change' }),
-        content:
-          // eslint-disable-next-line max-len
-          $t({ defaultMessage:
-            `Moving to Venue: {venueName} will change the AP
+        content: (<FormattedMessage
+          defaultMessage={
+            `Moving to Venue: <b>{venueName}</b> will change the AP
             management VLAN and reboot this AP device. Incorrect
             settings between APs and switches could result in AP access
-            loss. Are you sure you want to continue?` },
-          { venueName: selectedVenue.name } ),
+            loss. Are you sure you want to continue?`
+          }
+          values={{
+            b: (text: string) => <strong>{text}</strong>,
+            venueName: selectedVenue.name
+          }}/>),
         okText: $t({ defaultMessage: 'Continue' }),
         onOk: async () => {
           processUpdateAp(values)
@@ -361,10 +375,14 @@ export function ApForm () {
     if (supportVenueMgmtVlan) {
       const targetVenueMgmtVlan = (await getTargetVenueMgmtVlan(
         { params: { venueId: value } })).data
+      const currentMgmtVlan = (await getCurrentApMgmtVlan(
+        { params, payload: apViewModelPayload })).data
       if (targetVenueMgmtVlan?.vlanOverrideEnabled === undefined ||
         targetVenueMgmtVlan?.vlanOverrideEnabled === false) {
         setChangeMgmtVlan(false)
-      } else if (targetVenueMgmtVlan?.vlanId) {
+      } else if (currentMgmtVlan?.apStatusData?.APSystem &&
+        currentMgmtVlan?.apStatusData?.APSystem.managementVlan
+         !== targetVenueMgmtVlan?.vlanId) {
         setChangeMgmtVlan(true)
       }
     }
