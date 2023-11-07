@@ -428,7 +428,7 @@ export const VenueFirmwareTable = (
   )
 }
 
-export function VenueFirmwareList () {
+export function VenueFirmwareListLegacy () {
   const venuePayload = useDefaultVenuePayload()
 
   const tableQuery = useTableQuery<FirmwareSwitchVenue>({
