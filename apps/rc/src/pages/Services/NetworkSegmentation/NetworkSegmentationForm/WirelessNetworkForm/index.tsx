@@ -8,13 +8,14 @@ import { CheckboxValueType }                       from 'antd/lib/checkbox/Group
 import { useIntl }                                 from 'react-intl'
 import { useParams }                               from 'react-router-dom'
 
-import { Loader, StepsForm, useStepFormContext }                                                                                     from '@acx-ui/components'
+import { Button, Loader, StepsForm, useStepFormContext }                                                                             from '@acx-ui/components'
 import { TunnelProfileAddModal }                                                                                                     from '@acx-ui/rc/components'
 import { useGetNetworkSegmentationViewDataListQuery, useGetTunnelProfileViewDataListQuery, useVenueNetworkActivationsDataListQuery } from '@acx-ui/rc/services'
 
 import { NetworkSegmentationGroupFormData } from '..'
 
-import * as UI from './styledComponents'
+import { AddDpskModal } from './AddDpskModal'
+import * as UI          from './styledComponents'
 
 const tunnelProfileDefaultPayload = {
   fields: ['name', 'id'],
@@ -31,6 +32,7 @@ export const WirelessNetworkForm = () => {
   const [unusedNetworkOptions, setUnusedNetworkOptions] =
   useState<{ label: string; value: string; }[]|undefined>(undefined)
   const [isFilterNetworksLoading, setIsFilterNetworksLoading] = useState(true)
+  const [dpskModalVisible, setDpskModalVisible] = useState(false)
   const venueId = form.getFieldValue('venueId')
   const venueName = form.getFieldValue('venueName')
 
@@ -113,6 +115,10 @@ export const WirelessNetworkForm = () => {
       .filter(item => !!item))
   }
 
+  const openDpskModal = () => {
+    setDpskModalVisible(true)
+  }
+
   return(
     <>
       <StepsForm.Title>{$t({ defaultMessage: 'Wireless Network Settings' })}</StepsForm.Title>
@@ -176,6 +182,15 @@ export const WirelessNetworkForm = () => {
                 }
               />
             </Loader>
+            <Button
+              type='link'
+              onClick={openDpskModal}
+              children={$t({ defaultMessage: 'Add DPSK Network' })}
+            />
+            <AddDpskModal
+              visible={dpskModalVisible}
+              setVisible={setDpskModalVisible}
+            />
           </Space>
         </Col>
       </Row>

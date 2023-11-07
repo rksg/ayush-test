@@ -86,9 +86,10 @@ interface GuestMore {
 export default function NetworkForm (props:{
   modalMode?: boolean,
   createType?: NetworkTypeEnum,
-  modalCallBack?: ()=>void
+  modalCallBack?: ()=>void,
+  defaultActiveVenues?: string[]
 }) {
-  const { modalMode, createType, modalCallBack } = props
+  const { modalMode, createType, modalCallBack, defaultActiveVenues } = props
   const intl = useIntl()
   const navigate = useNavigate()
   const location = useLocation()
@@ -577,7 +578,7 @@ export default function NetworkForm (props:{
               title={intl.$t({ defaultMessage: 'Venues' })}
               onFinish={handleVenues}
             >
-              <Venues />
+              <Venues defaultActiveVenues={defaultActiveVenues} />
             </StepsFormLegacy.StepForm>
             <StepsFormLegacy.StepForm
               name='summary'

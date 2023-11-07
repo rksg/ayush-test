@@ -1,0 +1,45 @@
+import { Dispatch, SetStateAction } from 'react'
+
+import { useIntl } from 'react-intl'
+
+import { Modal, ModalType, useStepFormContext } from '@acx-ui/components'
+import { NetworkTypeEnum }                      from '@acx-ui/rc/utils'
+
+import { NetworkSegmentationGroupFormData } from '..'
+import NetworkForm                          from '../../../../Networks/wireless/NetworkForm/NetworkForm'
+
+interface AddDpskModalProps {
+  visible: boolean
+  setVisible: Dispatch<SetStateAction<boolean>>
+}
+
+export const AddDpskModal = (props: AddDpskModalProps) => {
+
+  const { visible, setVisible } = props
+  const { $t } = useIntl()
+  const { form } = useStepFormContext<NetworkSegmentationGroupFormData>()
+  const venueId = form.getFieldValue('venueId')
+
+  const closeMoadl = () => {
+    setVisible(false)
+  }
+
+  const content = <NetworkForm
+    createType={NetworkTypeEnum.DPSK}
+    defaultActiveVenues={[venueId]}
+    modalCallBack={closeMoadl}
+    modalMode
+  />
+
+  return (
+    <Modal
+      title={$t({ defaultMessage: 'Create New Network' })}
+      width={1100}
+      visible={visible}
+      type={ModalType.ModalStepsForm}
+      mask={true}
+      children={content}
+    />
+
+  )
+}

@@ -80,7 +80,12 @@ interface schedule {
   [key: string]: string
 }
 
-export function Venues () {
+interface VenuesProps {
+  defaultActiveVenues?: string[]
+}
+
+export function Venues (props: VenuesProps) {
+  const { defaultActiveVenues } = props
   const form = Form.useFormInstance()
   const { cloneMode, data, setData } = useContext(NetworkFormContext)
 
@@ -289,9 +294,13 @@ export function Venues () {
         }
         return <Tooltip
           title={title}
-          placement='bottom'><Switch
+          placement='bottom'>
+          <Switch
             disabled={disabled}
-            checked={Boolean(row.activated?.isActivated)}
+            defaultChecked={
+              Boolean(row.activated?.isActivated) ||
+              defaultActiveVenues?.some(venueId => venueId === row.id)
+            }
             onClick={(checked, event) => {
               event.stopPropagation()
               handleActivateVenue(checked, [row])
