@@ -9,6 +9,7 @@ import { Button, StepsFormLegacy, Tooltip, cssStr }                    from '@ac
 import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
 import { useLazyGetVenueNetworkApGroupQuery, useLazyNetworkListQuery } from '@acx-ui/rc/services'
 import {
+  ssidBackendNameRegExp,
   apNameRegExp,
   NetworkTypeEnum,
   WifiNetworkMessages,
@@ -199,8 +200,7 @@ export function NetworkDetailForm () {
               { max: 32,
                 message: intl.$t({ defaultMessage: 'The SSID must be up to 32 characters' }) },
               { validator: (_, value) => ssidValidator(value) },
-              { validator: (_, value) => hasGraveAccentAndDollarSign(value) },
-              { validator: (_, value) => apNameRegExp(value) }
+              { validator: (_, value) => ssidBackendNameRegExp(value) }
             ]}
             validateFirst
             hasFeedback
