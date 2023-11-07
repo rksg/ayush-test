@@ -369,8 +369,14 @@ export function VideoCallQoeDetails (){
             <div style={{ paddingTop: '4px' }}>{getPill(currentMeeting.mos)}</div>
           ]}
           breadcrumb={[
-            { text: $t({ defaultMessage: 'AI Assurance' }) },
-            { text: $t({ defaultMessage: 'Network Assurance' }) },
+            ...(get('IS_MLISA_SA')
+              ? [
+                { text: $t({ defaultMessage: 'App Experience' }) }
+              ]
+              :[
+                { text: $t({ defaultMessage: 'AI Assurance' }) },
+                { text: $t({ defaultMessage: 'Network Assurance' }) }
+              ]),
             {
               text: $t({ defaultMessage: 'Video Call QoE' }),
               link: '/analytics/videoCallQoe'

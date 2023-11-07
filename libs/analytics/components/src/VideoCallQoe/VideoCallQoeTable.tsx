@@ -31,12 +31,24 @@ export function VideoCallQoeTable () {
   const queryResults = useVideoCallQoeTestsQuery({})
   const allCallQoeTests = queryResults.data?.getAllCallQoeTests
   const meetingList: Meeting[] = []
-  allCallQoeTests?.forEach((qoeTest)=> {
+
+  allCallQoeTests?.forEach((qoeTest) => {
     const { name, meetings } = qoeTest
+
     meetings.forEach(meeting => {
-      meetingList.push( { ...meeting, name } )
+      // As part of mugration, some calls were marked as invalid
+      // Which was still getting showed with mos. We are resetting here
+      // to fix sorting issues on QoE column
+      const meetingCopy = {
+        ...meeting
+      }
+      if (meeting.status === MeetingType.INVALID.toUpperCase() && meeting.mos > 0) {
+        meetingCopy.mos = -1
+      }
+      meetingList.push({ ...meetingCopy, name })
     })
   })
+
   const [ deleteCallQoeTest ] = useDeleteCallQoeTestMutation()
 
   const statusMapping = {

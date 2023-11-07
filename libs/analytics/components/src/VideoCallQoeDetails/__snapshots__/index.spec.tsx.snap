@@ -10124,19 +10124,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
               <span
                 class="ant-breadcrumb-link"
               >
-                AI Assurance
-              </span>
-              <span
-                class="ant-breadcrumb-separator"
-              >
-                /
-              </span>
-            </li>
-            <li>
-              <span
-                class="ant-breadcrumb-link"
-              >
-                Network Assurance
+                App Experience
               </span>
               <span
                 class="ant-breadcrumb-separator"
