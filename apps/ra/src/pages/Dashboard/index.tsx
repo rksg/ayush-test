@@ -82,7 +82,7 @@ type DashboardViewProps = {
 const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
   const height = useMonitorHeight(536)
   const userProfile = getUserProfile()
-  const enableAppInsights = !useIsSplitOn(Features.APP_INSIGHTS)
+  const enableAppInsights = useIsSplitOn(Features.APP_INSIGHTS)
   const hasRecommendation =
     userProfile.selectedTenant.permissions[
       PERMISSION_MANAGE_CONFIG_RECOMMENDATION
@@ -151,9 +151,13 @@ const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
           maxSlideChar={290}
         />
       </div>
-      <div style={{ gridArea: 'd2' }}>
-        <ChatWithMelissa />
-      </div>
+      { enableAppInsights
+        ? <div style={{ gridArea: 'a3' }}>
+          <SLA pathFilters={pathFilters} />
+        </div>
+        : <div style={{ gridArea: 'd2' }}>
+          <ChatWithMelissa />
+        </div> }
     </UI.AdminGrid>
   )
 }
