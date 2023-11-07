@@ -492,7 +492,9 @@ export type MeshUplinkAp = {
 
 export type AFCInfo = {
   powerMode?: AFCPowerMode,
-  afcStatus?: AFCStatus
+  afcStatus?: AFCStatus,
+  minPowerDbm?: number,
+  maxPowerDbm?: number
 }
 
 export enum AFCPowerMode {

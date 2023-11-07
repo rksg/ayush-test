@@ -30,7 +30,8 @@ export interface ApSingleRadioSettingsPorps {
   onResetDefaultValue?: Function,
   testId?: string,
   isUseVenueSettings?: boolean,
-  supportDfsChannels?: any
+  supportDfsChannels?: any,
+  isAFCEnabled? : boolean
 }
 
 // eslint-disable-max-len
@@ -39,7 +40,7 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
 
   const { isEnabled, enabledFieldName, useVenueSettingsFieldName, radioTypeName, onEnableChanged } = props
   const { radioType, supportChannels, bandwidthOptions,
-    handleChanged, supportDfsChannels, isUseVenueSettings } = props
+    handleChanged, supportDfsChannels, isUseVenueSettings, isAFCEnabled } = props
 
   const handleEnableChanged = (checked: boolean) => {
     onEnableChanged(checked)
@@ -138,6 +139,7 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
             handleChanged={handleChanged}
             isUseVenueSettings={isUseVenueSettings}
             LPIButtonText={setLPIToggleText()}
+            isAFCEnabled={isAFCEnabled}
           />
         )
         }
