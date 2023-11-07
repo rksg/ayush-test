@@ -1,7 +1,7 @@
 import { Space } from 'antd'
 import styled    from 'styled-components/macro'
 
-import { CheckMarkCircleSolid } from '@acx-ui/icons'
+import { CheckMarkCircleSolid, NoData } from '@acx-ui/icons'
 
 import { Button } from '../Button'
 
@@ -25,18 +25,24 @@ export const NoAILicenseWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  height: 100%;
   align-items: end;
-  width: 100%;
+  width: 85%;
   position: absolute;
   left: 50%;
-  top: 35%;
+  top: 50%;
   transform: translate(-50%, -50%);
 `
 export const TextWrapper = styled(Space)`
   text-align: center;
   justify-content: center;
   width: 100%;
+`
+export const NoLicenseTextWrapper = styled(Space)`
+  text-align: center;
+  justify-content: center;
+  width: 100%;
+  color: var(--acx-neutrals-50);
+  padding-bottom: 20px;
 `
 export const NoDataTextWrapper = styled(TextWrapper)`
   font-family: var(--acx-neutral-brand-font);
@@ -54,5 +60,6 @@ export const LargeGreenTickIcon = styled(CheckMarkCircleSolid)`
   width: 48px;
 `
 export const LicenseButton = styled(Button)`
-  width: 90%;
+  width: 100%;
 `
+export const NoLicensesIcon = styled(NoData)``

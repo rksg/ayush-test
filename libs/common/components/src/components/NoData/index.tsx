@@ -52,9 +52,12 @@ export function NoRecommendationData ({ text, noData = false }: NoDataWrapperPro
 
 export function NoAiOpsLicense ({ text }: NoDataWrapperProps) {
   const { $t } = useIntl()
+  const noLicenseText = $t({ defaultMessage: 'No license' })
   return (
     <UI.NoAILicenseWrapper>
-      <UI.NoDataTextWrapper>{text}</UI.NoDataTextWrapper>
+      <UI.TextWrapper style={{ paddingTop: '50px' }}><UI.NoLicensesIcon /></UI.TextWrapper>
+      <UI.NoLicenseTextWrapper>{noLicenseText}</UI.NoLicenseTextWrapper>
+      <UI.NoDataTextWrapper style={{ paddingBottom: '100px' }}>{text}</UI.NoDataTextWrapper>
       <UI.LicenseButton type='default'>
         {$t({ defaultMessage: 'Update my licenses' })}
       </UI.LicenseButton>
