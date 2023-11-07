@@ -52,7 +52,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       width: 130,
       sorter: { compare: sortProp('apName', defaultSort) },
       render: (_, row : AP) => (
-        <TenantLink to={`/devices/wifi/${row.macAddress}/details/overview`}>
+        <TenantLink to={`/devices/wifi/${row.macAddress}/details/ai`}>
           {row.apName}</TenantLink>
       )
     },
@@ -173,7 +173,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       dataIndex: 'switchName',
       key: 'switchName',
       render: (_, row : Switch) => (
-        <TenantLink to={`/devices/switch/${row.switchMac}/serial/details/overview`}>
+        <TenantLink to={`/devices/switch/${row.switchMac}/serial/details/incidents`}>
           {row.switchName}</TenantLink>
       ),
       sorter: { compare: sortProp('switchName', defaultSort) }
