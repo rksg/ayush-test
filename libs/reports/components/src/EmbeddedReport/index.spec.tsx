@@ -202,17 +202,20 @@ describe('EmbeddedDashboard', () => {
 })
 
 describe('getSupersetRlsClause',() => {
-  it('should return RLS clause based network filters and report type',()=>{
+  it('should return RLS clause based network filters and report type',() => {
     const rlsClauseWirelessReport = getSupersetRlsClause(ReportType.WIRELESS,
       paths as NetworkPath[], radioBands as RadioBand[])
     const rlsClauseWiredReport = getSupersetRlsClause(ReportType.WIRED,
       paths as NetworkPath[], radioBands as RadioBand[])
     const rlsClauseApplicationReport = getSupersetRlsClause(ReportType.APPLICATION,
       paths as NetworkPath[], radioBands as RadioBand[])
+    const rlsClauseOverviewReport = getSupersetRlsClause(ReportType.OVERVIEW,
+        paths as NetworkPath[], radioBands as RadioBand[])
 
     expect(rlsClauseWirelessReport).toMatchSnapshot('rlsClauseWirelessReport')
     expect(rlsClauseWiredReport).toMatchSnapshot('rlsClauseWiredReport')
     expect(rlsClauseApplicationReport).toMatchSnapshot('rlsClauseApplicationReport')
+    expect(rlsClauseOverviewReport).toMatchSnapshot('rlsClauseOverviewReport')
   })
 })
 
@@ -226,5 +229,10 @@ describe('getRLSClauseForSA', () => {
     const rlsClause = getRLSClauseForSA(
       switchNetworkPath as NetworkPath, systems.networkNodes, ReportType.WIRED)
     expect(rlsClause).toMatchSnapshot('rlsClauseSwitchForSA')
+  })
+  it('should return empty RLS clause for Overview', () => {
+    const rlsClause = getRLSClauseForSA(
+      switchNetworkPath as NetworkPath, systems.networkNodes, ReportType.OVERVIEW)
+    expect(rlsClause).toMatchSnapshot('rlsClauseOverviewForSA')
   })
 })
