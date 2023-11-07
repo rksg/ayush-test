@@ -1045,6 +1045,7 @@ export function RadioSettings () {
               bandwidthOptions={bandwidth6GOptions}
               handleChanged={handleChange}
               isUseVenueSettings={isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, RadioType.Normal6GHz, isEnablePerApRadioCustomizationFlag)}
+              isAFCEnabled={getApAvailableChannels?.data?.afcEnabled}
             />
           </div>
           {isSupportDual5GAp && (
