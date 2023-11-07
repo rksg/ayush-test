@@ -1,9 +1,11 @@
 import { IntlShape } from 'react-intl'
+import { useIntl }   from 'react-intl'
 
 import { getIntl } from '@acx-ui/utils'
 
 import { ApDeviceStatusEnum, DeviceConnectionStatus } from '../constants'
 import { QosPriorityEnum }                            from '../constants'
+import { AFCInfo, AFCPowerMode, AFCStatus }           from '../types'
 
 export enum APView {
   AP_LIST,
@@ -114,4 +116,47 @@ export function transformQosPriorityType (type: QosPriorityEnum) {
   }
 
   return transform
+}
+
+export const AFCMaxPowerRender = (afcInfo: AFCInfo | undefined) => {
+  return afcInfo?.maxPowerDbm ? `${afcInfo?.maxPowerDbm} dBm` : '--'
+}
+
+export const AFCPowerStateRender = (afcInfo: AFCInfo | undefined, reasonMessage: boolean) => {
+
+  const { $t } = useIntl()
+
+  const powerMode = afcInfo?.powerMode
+
+  const displayList = []
+
+  if(!powerMode) {
+    return '--'
+  }
+
+  if (powerMode === AFCPowerMode.STANDARD_POWER){
+    displayList.push($t({ defaultMessage: 'Standard power' }))
+  }
+
+  else if (powerMode === AFCPowerMode.LOW_POWER) {
+    displayList.push($t({ defaultMessage: 'Low power' }))
+    if(reasonMessage === true) {
+
+      switch(afcInfo?.afcStatus) {
+        case AFCStatus.WAIT_FOR_LOCATION:
+          displayList.push($t({ defaultMessage: '[Geo Location not set]' }))
+          break
+        case AFCStatus.REJECTED:
+          displayList.push($t({ defaultMessage: '[No channels available]' }))
+          break
+        case AFCStatus.WAIT_FOR_RESPONSE:
+          displayList.push($t({ defaultMessage: '[Pending response from the AFC server]' }))
+          break
+        case AFCStatus.AFC_NOT_REQUIRED:
+          displayList.push($t({ defaultMessage: '[User set]' }))
+          break
+      }
+    }
+  }
+  return (displayList.length === 0) ? '--' : displayList.join(' ')
 }
