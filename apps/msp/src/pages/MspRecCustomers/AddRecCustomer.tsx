@@ -212,12 +212,12 @@ export function AddRecCustomer () {
       return '--'
     return <>
       <Form.Item
-        label={intl.$t({ defaultMessage: 'Name' })}
+        label={intl.$t({ defaultMessage: 'Property Name' })}
       >
         <Paragraph>{mspRecCustomer[0].account_name}</Paragraph>
       </Form.Item>
       <Form.Item style={{ marginTop: '-22px' }}
-        label={intl.$t({ defaultMessage: 'Email' })}
+        label={intl.$t({ defaultMessage: 'Address' })}
       >
         <Paragraph>{mspRecCustomer[0].email_id}</Paragraph>
       </Form.Item>
@@ -249,7 +249,7 @@ export function AddRecCustomer () {
   const MspAdminsForm = () => {
     return <>
       <UI.FieldLabelAdmins width='275px' style={{ marginTop: '15px' }}>
-        <label>{intl.$t({ defaultMessage: 'REC Customer' })}</label>
+        <label>{intl.$t({ defaultMessage: 'RUCKUS End Customer' })}</label>
         <Form.Item children={<div>{displayRecCustomer()}</div>} />
         {!isEditMode && <Form.Item
           children={<UI.FieldTextLink onClick={() => setDrawerRecVisible(true)}>
@@ -307,11 +307,11 @@ export function AddRecCustomer () {
   return (
     <>
       <PageHeader
-        title={intl.$t({ defaultMessage: 'Add REC Customer Account' })}
+        title={intl.$t({ defaultMessage: 'Add RUCKUS End Customer Account' })}
         breadcrumb={[
           { text: intl.$t({ defaultMessage: 'My Customers' }) },
           {
-            text: intl.$t({ defaultMessage: 'MSP REC Customers' }),
+            text: intl.$t({ defaultMessage: 'RUCKUS End Customers' }),
             link: '/dashboard/mspRecCustomers', tenantType: 'v'
           }
         ]}

@@ -70,7 +70,7 @@ describe('SelectRecCustomerDrawer', () => {
         route: { params, path: '/:tenantId/dashboard/mspRecCustomers/create' }
       })
 
-    const input = await screen.findByPlaceholderText('Search Name')
+    const input = await screen.findByPlaceholderText('Search Property Name')
 
     fireEvent.change(input, { target: { value: 'l' } })
     expect(await screen.findByText('Aloft Lexington')).toBeVisible()

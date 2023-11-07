@@ -545,7 +545,7 @@ export function MspRecCustomers () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'MSP REC Customers' })}
+        title={$t({ defaultMessage: 'RUCKUS End Customers' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'My Customers' }) }]}
         extra={isAdmin ?
           [
@@ -555,7 +555,7 @@ export function MspRecCustomers () {
             <MspTenantLink to='/dashboard/mspreccustomers/create'>
               <Button
                 hidden={userProfile?.support || !onBoard}
-                type='primary'>{$t({ defaultMessage: 'Add REC Customer' })}</Button>
+                type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
             </MspTenantLink>
           ]
           : [

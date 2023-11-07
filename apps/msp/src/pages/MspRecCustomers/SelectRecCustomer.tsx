@@ -50,9 +50,16 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
     // setVisible(false)
   }
 
+  const transformAddress = (data: MspRecCustomer) => {
+    const address =
+    `${data.billing_street}, ${data.billing_city}, ${data.billing_state}, 
+    ${data.billing_postal_code}, ${data.billing_country}`
+    return address
+  }
+
   const columns: TableProps<MspRecCustomer>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Name' }),
+      title: $t({ defaultMessage: 'Property Name' }),
       dataIndex: 'account_name',
       key: 'account_name',
       sorter: true,
@@ -60,10 +67,13 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
       defaultSortOrder: 'ascend'
     },
     {
-      title: $t({ defaultMessage: 'Billing Address' }),
+      title: $t({ defaultMessage: 'Address' }),
       dataIndex: 'billing_street',
       key: 'billing_street',
-      sorter: true
+      sorter: true,
+      render: function (_, row) {
+        return transformAddress(row)
+      }
     }
   ]
 
@@ -72,6 +82,7 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
       <Loader states={[queryResults
       ]}>
         <Table
+          settingsId='manage-ruckus-end-customer-table'
           columns={columns}
           dataSource={queryResults?.data?.content}
           rowKey='account_name'
@@ -103,12 +114,13 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
 
   return (
     <Drawer
-      title={$t({ defaultMessage: 'Manage Customer' })}
+      title={$t({ defaultMessage: 'Manage RUCKUS End Customer' })}
+      subTitle={$t({ defaultMessage: 'Properties for' })}
       visible={visible}
       onClose={onClose}
       footer={footer}
       destroyOnClose={resetField}
-      width={700}
+      width={750}
     >
       {content}
     </Drawer>

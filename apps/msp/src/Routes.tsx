@@ -3,7 +3,6 @@ import { ManageCustomer, ManageIntegrator, PortalSettings } from '@acx-ui/msp/co
 import { rootRoutes, Route, TenantNavigate }                from '@acx-ui/react-router-dom'
 import { Provider }                                         from '@acx-ui/store'
 
-// import { Dashboard }        from './pages/Dashboard'
 import { DeviceInventory }  from './pages/DeviceInventory'
 import { Integrators }      from './pages/Integrators'
 import Layout               from './pages/Layout'
@@ -22,7 +21,6 @@ export default function MspRoutes () {
       <Route
         path='dashboard'
         element={<TenantNavigate replace to='/dashboard/mspCustomers' tenantType='v'/>}
-        // element={<Dashboard />}
       />
       <Route path='dashboard/mspCustomers/*' element={<CustomersRoutes />} />
       <Route path='dashboard/mspRecCustomers/*' element={<CustomersRoutes />} />
