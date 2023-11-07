@@ -188,9 +188,11 @@ export const getRLSClauseForSA = (
       }
     } else {
       if (type === 'system') {
-        const systemId = system?.find(s => s.deviceName === name)?.deviceId
-        if (systemId) {
-          sqlConditionsByType[type].push(`"${type}" = '${systemId}'`)
+        const systemIds = system?.filter(s => s.deviceName === name)
+        if (systemIds) {
+          systemIds.forEach(({ deviceId }) => {
+            sqlConditionsByType[type].push(`"${type}" = '${deviceId}'`)
+          })
         }
       } else {
         sqlConditionsByType[type].push(`"${type}" = '${name}'`)
