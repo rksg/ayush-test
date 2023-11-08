@@ -461,7 +461,8 @@ export interface VenueDefaultRegulatoryChannels {
   },
   '6GChannels': {
     [key: string]: string[]
-  }
+  },
+  'afcEnabled': boolean
 }
 
 export interface VenueDefaultRegulatoryChannelsForm {

@@ -62,7 +62,7 @@ export function RadioSettingsForm (props:{
   const enableDownloadLimitFieldName = [...radioDataKey, 'enableMulticastDownlinkRateLimiting']
   const uploadLimitFieldName = [...radioDataKey, 'multicastUplinkRateLimiting']
   const downloadLimitFieldName = [...radioDataKey, 'multicastDownlinkRateLimiting']
-  const lowPowerIndoorModeEnabledFieldName = [...radioDataKey, 'lowPowerIndoorModeEnabled']
+  const enableAfcFieldName = [...radioDataKey, 'enableAfc']
 
   const channelSelectionOpts = (context === 'venue') ?
     channelSelectionMethodsOptions :
@@ -76,13 +76,13 @@ export function RadioSettingsForm (props:{
     enableUploadLimit,
     enableDownloadLimit,
     channelBandwidth,
-    lowPowerIndoorModeEnabled
+    enableAfc
   ] = [
     useWatch<boolean>(enableMulticastRateLimitingFieldName),
     useWatch<boolean>(enableUploadLimitFieldName),
     useWatch<boolean>(enableDownloadLimitFieldName),
     useWatch<string>(channelBandwidthFieldName),
-    useWatch<boolean>(lowPowerIndoorModeEnabledFieldName)
+    useWatch<boolean>(enableAfcFieldName)
   ]
 
   useEffect(() => {
@@ -91,10 +91,10 @@ export function RadioSettingsForm (props:{
   }, [] )
 
   useEffect(()=> {
-    if(LPIButtonText?.LPIModeState !== lowPowerIndoorModeEnabled) {
-      LPIButtonText?.LPIModeOnChange(lowPowerIndoorModeEnabled)
+    if(LPIButtonText?.LPIModeState !== enableAfc) {
+      LPIButtonText?.LPIModeOnChange(enableAfc)
     }
-  }, [lowPowerIndoorModeEnabled])
+  }, [enableAfc])
 
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -134,19 +134,18 @@ export function RadioSettingsForm (props:{
 
           </Tooltip>
           <Form.Item
-            name={lowPowerIndoorModeEnabledFieldName}
-            initialValue={false}>
+            name={enableAfcFieldName}
+            initialValue={true}>
             {isUseVenueSettings ?
               LPIButtonText?.buttonText :
               <Radio.Group
                 disabled={!isAFCEnabled || isUseVenueSettings}
                 onChange={() => {
-                  onChangedByCustom('lowPowerIndoorModeEnabled')
-                  LPIButtonText?.LPIModeOnChange()
+                  onChangedByCustom('enableAfc')
                 }}
               >
                 <Space direction='vertical'>
-                  <Radio value={false}>
+                  <Radio value={true}>
                     {context === 'venue' ?
                       <p style={{ fontSize: '12px', margin: '0px' }}>
                         {$t({ defaultMessage: 'Standard power' })}
@@ -155,7 +154,7 @@ export function RadioSettingsForm (props:{
                       LPIButtonText?.buttonText
                     }
                   </Radio>
-                  <Radio value={true}>
+                  <Radio value={false}>
                     <p style={{ fontSize: '12px', margin: '0px' }}>
                       {$t({ defaultMessage: 'Low power' })}
                     </p>
