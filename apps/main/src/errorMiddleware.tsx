@@ -163,9 +163,7 @@ export const getErrorContent = (action: ErrorAction) => {
     case 'FETCH_ERROR' as unknown as number: // no connection
       errorMsg = errorMessage.CHECK_YOUR_CONNECTION
       type = 'info'
-      if (window.location.hostname !== 'int.ruckus.cloud') {
-        callback = () => window.location.reload()
-      }
+      callback = () => window.location.reload()
       break
     case 422:
       const countryInvalid // TODO: check error format
@@ -251,7 +249,7 @@ export const errorMiddleware: Middleware = () => (next) => (action: ErrorAction)
     if (!shouldIgnoreErrorModal(action)) {
       showErrorModal(details)
     }
-    if (needLogout && !isDevModeOn && window.location.hostname !== 'int.ruckus.cloud') {
+    if (needLogout && !isDevModeOn) {
       userLogout()
     }
   }
