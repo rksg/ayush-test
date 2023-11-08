@@ -2,10 +2,11 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { Provider, dataApiSearchURL }                                  from '@acx-ui/store'
+import { Provider, dataApiSearchURL, dataApiURL }                      from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { wifiNetworksFixture, emptyListFixture } from './__tests__/fixtures'
+import { zonesWiseSearchList }                   from './services.spec'
 
 import { NetworkList } from '.'
 
@@ -71,4 +72,17 @@ describe('Network List', () => {
     )
     expect(screen.getByText('DENSITY-WPA2PSK')).toBeVisible()
   })
+})
+describe('Zone wise Network List Table', () => {
+
+  it('should render the ap table correctly for Zone wise APs', async () => {
+    mockGraphqlQuery(dataApiURL, 'Network', {
+      data: zonesWiseSearchList
+    })
+    render(<NetworkList queryParamsForZone={{ searchString: 'test', path: [] }} />,
+      { wrapper: Provider, route: {} })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(screen.getByText('DENSITY-NSS')).toBeVisible()
+  })
+
 })
