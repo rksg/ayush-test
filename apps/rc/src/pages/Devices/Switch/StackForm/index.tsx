@@ -61,7 +61,7 @@ import {
   SwitchRow,
   isSameModelFamily,
   checkVersionAtLeast09010h,
-  checkVersionAtLeast10010b
+  getStackUnitsMinLimitation
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -113,6 +113,16 @@ export const validatorSwitchModel = (serialNumber: string, activeSerialNumber?: 
   return Promise.resolve()
 }
 
+export const validatorUniqueMember = (serialNumber: string, tableData: { id: string }[]) => {
+  const { $t } = getIntl()
+  const memberExistCount = tableData.filter(item => {
+    return serialNumber && item.id === serialNumber
+  }).length
+  return memberExistCount > 1 ? Promise.reject(
+    $t({ defaultMessage: 'Serial number is invalid since it\'s not unique in stack' })
+  ) : Promise.resolve()
+}
+
 export function StackForm () {
   const { $t } = useIntl()
   const { tenantId, switchId, action, venueId, stackList } = useParams()
@@ -162,6 +172,8 @@ export function StackForm () {
     { key: '2', id: '', model: '', disabled: false }
   ]
   const [tableData, setTableData] = useState(isStackSwitches ? [] : defaultArray)
+
+  const activeSerialNumber = formRef.current?.getFieldValue(`serialNumber${activeRow}`)
 
   useEffect(() => {
     if (!isVenuesListLoading) {
@@ -302,6 +314,16 @@ export function StackForm () {
     }
   }, [tableData, activeRow])
 
+
+  useEffect(() => {
+    if (activeSerialNumber) {
+      const switchModel = getSwitchModel(activeSerialNumber) || ''
+      const miniMembers = getStackUnitsMinLimitation(switchModel, currentFW, currentAboveTenFW)
+      setTableData(data => [...data].splice(0, miniMembers))
+    }
+  }, [activeSerialNumber, currentAboveTenFW, currentFW])
+
+
   useEffect(() => {
     setPreviousPath((location as LocationExtended)?.state?.from?.pathname)
   }, [])
@@ -356,7 +378,7 @@ export function StackForm () {
     try {
       const payload = {
         name: values.name || '',
-        id: formRef.current?.getFieldValue(`serialNumber${activeRow}`),
+        id: activeSerialNumber,
         description: values.description,
         venueId: values.venueId,
         stackMembers: tableData.filter((item) => item.id !== '').map((item) => ({ id: item.id })),
@@ -427,15 +449,14 @@ export function StackForm () {
 
   const handleSaveStackSwitches = async (values: SwitchViewModel) => {
     try {
-      const activeSwitch = formRef.current?.getFieldValue(`serialNumber${activeRow}`)
-      const activeSwitchModel = getSwitchModel(activeSwitch ?? '')
+      const activeSwitchModel = getSwitchModel(activeSerialNumber)
       const isIcx7650 = activeSwitchModel?.includes('ICX7650')
       const payload = {
         name: values.name || '',
         venueId: venueId,
-        activeSwitch: activeSwitch,
+        activeSwitch: activeSerialNumber,
         memberSwitch: tableData
-          ?.filter((item) => item.id && item.id !== activeSwitch)
+          ?.filter((item) => item.id && item.id !== activeSerialNumber)
           ?.map((item) => item.id),
         ...(isIcx7650 && { rearModule: values.rearModuleOption ? 'stack-40g' : 'none' })
       }
@@ -456,20 +477,6 @@ export function StackForm () {
     if(row.key === activeRow){
       setActiveRow(tmpTableData[0].key)
     }
-  }
-
-  const validatorUniqueMember = (serialNumber: string) => {
-    const memberExistCount = tableData.filter((item: SwitchTable) => {
-      return item.id === serialNumber
-    }).length
-    return memberExistCount > 1
-      ? Promise.reject(
-        $t({
-          defaultMessage:
-            'Serial number is invalid since it\'s not unique in stack'
-        })
-      )
-      : Promise.resolve()
   }
 
   const radioOnChange = (e: RadioChangeEvent) => {
@@ -520,8 +527,11 @@ export function StackForm () {
               message: $t({ defaultMessage: 'This field is required' })
             },
             { validator: (_, value) => validatorSwitchModel(value,
-              formRef.current?.getFieldValue(`serialNumber${activeRow}`)) },
-            { validator: (_, value) => validatorUniqueMember(value) }
+              activeRow === row.key ? value : activeSerialNumber) },
+            { validator: (_, value) => validatorUniqueMember(value,
+              // replace id here since tableData is not updated yet
+              tableData.map(d => ({ id: (d.key === row.key) ? value : d.id }))
+            ) }
           ]}
           validateFirst
         >{ isStackSwitches
@@ -637,23 +647,16 @@ export function StackForm () {
     }
 
     if(venuesList){
-      const venueFw = venuesList.data.find(venue => venue.id === value)?.switchFirmwareVersion?.id
-      // eslint-disable-next-line max-len
-      const venueAboveTenFw = venuesList.data.find(venue => venue.id === value)?.switchFirmwareVersionAboveTen?.id
+      const venueFw =
+        venuesList.data.find(venue => venue.id === value)?.switchFirmwareVersion?.id || ''
+      const venueAboveTenFw =
+        venuesList.data.find(venue => venue.id === value)?.switchFirmwareVersionAboveTen?.id || ''
 
-      setCurrentFw(venueFw || '')
-      setCurrentAboveTenFw(venueAboveTenFw || '')
+      setCurrentFw(venueFw)
+      setCurrentAboveTenFw(venueAboveTenFw)
 
-      const switchModel =
-        getSwitchModel(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
-      let miniMembers = ((_.isEmpty(switchModel) || switchModel?.includes('ICX7150')) ?
-        (checkVersionAtLeast09010h(venueFw || '') ? 4 : 2) :
-        (checkVersionAtLeast09010h(venueFw || '') ? 8 : 4))
-
-      if (switchModel?.includes('ICX8200')) {
-        miniMembers = checkVersionAtLeast10010b(venueAboveTenFw || '') ? 12 : 4
-      }
-
+      const switchModel = getSwitchModel(activeSerialNumber) || ''
+      const miniMembers = getStackUnitsMinLimitation(switchModel, venueFw, venueAboveTenFw)
       setTableData(tableData.splice(0, miniMembers))
     }
     setApGroupOption(options as DefaultOptionType[])
@@ -699,31 +702,11 @@ export function StackForm () {
   }
 
   const enableAddMember = () => {
-    const switchModel =
-      getSwitchModel(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
+    const switchModel = getSwitchModel(activeSerialNumber) || ''
     if (!enableStackUnitLimitationFlag) {
       return true
     }
-
-
-    if (switchModel?.includes('ICX7150') || switchModel === 'Unknown') {
-      return tableData.length < (checkVersionAtLeast09010h(currentFW) ? 4 : 2)
-    } else if (switchModel?.includes('ICX8200')) {
-      return tableData.length < (checkVersionAtLeast10010b(currentAboveTenFW) ? 12 : 4)
-    } else {
-      return tableData.length < (checkVersionAtLeast09010h(currentFW) ? 8 : 4)
-    }
-  }
-
-  const getStackUnitsMinLimitaion = () => {
-    const switchModel =
-      getSwitchModel(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
-    if (switchModel?.includes('ICX8200')) {
-      return checkVersionAtLeast10010b(currentAboveTenFW) ? 12 : 4
-    }
-    return switchModel?.includes('ICX7150') ?
-      (checkVersionAtLeast09010h(currentFW) ? 4 : 2) :
-      (checkVersionAtLeast09010h(currentFW) ? 8 : 4)
+    return tableData.length < getStackUnitsMinLimitation(switchModel, currentFW, currentAboveTenFW)
   }
 
   return (
@@ -897,10 +880,10 @@ export function StackForm () {
                     </TableContainer>
                   </Col>
                   <SwitchUpgradeNotification
-                    switchModel={
-                      // eslint-disable-next-line max-len
-                      getSwitchModel(formRef.current?.getFieldValue(`serialNumber${activeRow}`))}
-                    stackUnitsMinLimitaion={getStackUnitsMinLimitaion()}
+                    switchModel={getSwitchModel(activeSerialNumber)}
+                    stackUnitsMinLimitaion={getStackUnitsMinLimitation(
+                      getSwitchModel(activeSerialNumber)!, currentFW, currentAboveTenFW
+                    )}
                     isDisplay={visibleNotification}
                     isDisplayHeader={false}
                     type={SWITCH_UPGRADE_NOTIFICATION_TYPE.STACK}
