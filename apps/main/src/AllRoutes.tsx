@@ -27,6 +27,7 @@ import { VenueDetails } from './pages/Venues/VenueDetails'
 import { VenueEdit }    from './pages/Venues/VenueEdit'
 import { VenuesForm }   from './pages/Venues/VenuesForm'
 import { VenuesTable }  from './pages/Venues/VenuesTable'
+import Grid            from './pages/Grid'
 /* eslint-disable @nrwl/nx/enforce-module-boundaries */
 const MspRoutes = React.lazy(() => import('@msp/Routes'))
 const RcRoutes = React.lazy(() => import('@rc/Routes'))
@@ -42,6 +43,7 @@ function AllRoutes () {
         <Route path='*' element={<Layout />}>
           <Route index element={<TenantNavigate replace to='/dashboard' />} />
           <Route path='*' element={<PageNotFound />} />
+          <Route path='grid' element={<Grid />} />
           <Route path='dashboard' element={<Dashboard />} />
           <Route path='userprofile' element={<UserProfile />} />
           <Route path='analytics/*' element={<AnalyticsBase />}>
