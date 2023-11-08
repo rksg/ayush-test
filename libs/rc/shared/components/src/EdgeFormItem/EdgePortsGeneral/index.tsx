@@ -48,6 +48,7 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
   const edgeSN = edgeId ?? params.serialNumber
 
   // FIXME: should be removed when CF is integrated into edge services API.
+  // corePort should be grey-out when CF is enabled on this edge AND corePortMac is configured.
   const isCFEnabled = false
 
   let tabs = [] as TabData[]

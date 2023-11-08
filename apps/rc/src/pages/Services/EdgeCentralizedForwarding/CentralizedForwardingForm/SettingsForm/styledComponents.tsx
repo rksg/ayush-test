@@ -17,3 +17,8 @@ export const LinkButton = styled(Button)`
     color: inherit;
   }
 `
+
+export const Diagram = styled.img`
+  width: 220px;
+  margin-top: 40px;
+`

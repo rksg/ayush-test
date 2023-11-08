@@ -9,7 +9,10 @@ import { SpaceWrapper, TunnelProfileAddModal }                                  
 import { useGetEdgeListQuery, useGetPortConfigQuery, useGetTunnelProfileViewDataListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 import { EdgeCentralizedForwardingSetting, EdgeStatusEnum, isDefaultTunnelProfile }                             from '@acx-ui/rc/utils'
 
+import diagram from '../../../../../assets/images/edge-centralized-forwarding-diagrams/edge-cf-early-access.png'
+
 import { CorePortFormItem } from './CorePortFormItem'
+import * as UI              from './styledComponents'
 
 const tunnelProfileDefaultPayload = {
   fields: ['name', 'id'],
@@ -136,129 +139,137 @@ export const SettingsForm = () => {
   }
 
   return (
-    <SpaceWrapper full direction='vertical' size={30}>
-      <Row>
-        <Col span={24}>
-          <StepsForm.Title>
-            {$t({ defaultMessage: 'Settings' })}
-          </StepsForm.Title>
+    <Row>
+      <Col span={14}>
+        <SpaceWrapper full direction='vertical' size={30}>
           <Row>
-            <Col span={8}>
-              <Form.Item
-                name='name'
-                label={$t({ defaultMessage: 'Service Name' })}
-                rules={[
-                  { required: true },
-                  { min: 2, max: 32 }
-                ]}
-                children={<Input />}
-              />
-            </Col>
-          </Row>
-          <Row>
-            <Col span={8}>
-              <Form.Item
-                name='venueId'
-                label={$t({ defaultMessage: 'Venue' })}
-                rules={[{
-                  required: true,
-                  message: $t({ defaultMessage: 'Please select a Venue' })
-                }]}
-              >
-                <Select
-                  loading={isVenueOptionsLoading}
-                  placeholder={$t({ defaultMessage: 'Select...' })}
-                  options={venueOptions}
-                  disabled={editMode}
-                  onChange={onVenueChange}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row>
-            <Col span={8}>
-              <Form.Item
-                name='edgeId'
-                label={$t({ defaultMessage: 'SmartEdge' })}
-                rules={[{
-                  required: true,
-                  message: $t({ defaultMessage: 'Please select a SmartEdge' })
-                }]}
-              >
-                <Select
-                  loading={isEdgeOptionsLoading}
-                  placeholder={$t({ defaultMessage: 'Select...' })}
-                  options={edgeOptions}
-                  disabled={editMode}
-                  onChange={onEdgeChange}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row>
-            <Col span={8}>
-              <Form.Item
-                noStyle
-                shouldUpdate={(prevValues, currentValues) =>
-                  prevValues.corePortMac !== currentValues.corePortMac
-                }
-              >
-                {({ getFieldValue }) => {
-                  const corePort = getFieldValue('corePortMac')
-                  const corePortName = getFieldValue('corePortName')
-                  const edgeName = getFieldValue('edgeName')
-
-                  return <Form.Item
-                    name='corePortMac'
-                    noStyle
+            <Col span={24}>
+              <StepsForm.Title>
+                {$t({ defaultMessage: 'Settings' })}
+              </StepsForm.Title>
+              <Row>
+                <Col span={13}>
+                  <Form.Item
+                    name='name'
+                    label={$t({ defaultMessage: 'Service Name' })}
+                    rules={[
+                      { required: true },
+                      { min: 2, max: 32 }
+                    ]}
+                    children={<Input />}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col span={13}>
+                  <Form.Item
+                    name='venueId'
+                    label={$t({ defaultMessage: 'Venue' })}
                     rules={[{
-                      required: true
+                      required: true,
+                      message: $t({ defaultMessage: 'Please select a Venue' })
                     }]}
                   >
-                    <CorePortFormItem
-                      data={corePort}
-                      name={corePortName}
-                      edgeId={edgeId}
-                      edgeName={edgeName}
-                      portsData={portsConfig}
+                    <Select
+                      loading={isVenueOptionsLoading}
+                      placeholder={$t({ defaultMessage: 'Select...' })}
+                      options={venueOptions}
+                      disabled={editMode}
+                      onChange={onVenueChange}
                     />
                   </Form.Item>
-                }}
-              </Form.Item>
-            </Col>
-          </Row>
-        </Col>
-      </Row>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={13}>
+                  <Form.Item
+                    name='edgeId'
+                    label={$t({ defaultMessage: 'SmartEdge' })}
+                    rules={[{
+                      required: true,
+                      message: $t({ defaultMessage: 'Please select a SmartEdge' })
+                    }]}
+                  >
+                    <Select
+                      loading={isEdgeOptionsLoading}
+                      placeholder={$t({ defaultMessage: 'Select...' })}
+                      options={edgeOptions}
+                      disabled={editMode}
+                      onChange={onEdgeChange}
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={13}>
+                  <Form.Item
+                    noStyle
+                    shouldUpdate={(prevValues, currentValues) =>
+                      prevValues.corePortMac !== currentValues.corePortMac
+                    }
+                  >
+                    {({ getFieldValue }) => {
+                      const corePort = getFieldValue('corePortMac')
+                      const corePortName = getFieldValue('corePortName')
+                      const edgeName = getFieldValue('edgeName')
 
-      <Row>
-        <Col span={24}>
-          <StepsForm.Title>
-            {$t({ defaultMessage: 'Tunnel Settings' })}
-          </StepsForm.Title>
-          <Row align='middle' gutter={9}>
-            <Col span={8}>
-              <Form.Item
-                name='tunnelProfileId'
-                label={$t({ defaultMessage: 'Tunnel Profile' })}
-                rules={[{
-                  required: true,
-                  message: $t({ defaultMessage: 'Please select a Tunnel Profile' })
-                }]}
-              >
-                <Select
-                  loading={isTunnelOptionsLoading}
-                  placeholder={$t({ defaultMessage: 'Select...' })}
-                  options={tunnelProfileOptions}
-                  onChange={onTunnelChange}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={3}>
-              <TunnelProfileAddModal />
+                      return <Form.Item
+                        name='corePortMac'
+                        noStyle
+                        rules={[{
+                          required: true
+                        }]}
+                      >
+                        <CorePortFormItem
+                          data={corePort}
+                          name={corePortName}
+                          edgeId={edgeId}
+                          edgeName={edgeName}
+                          portsData={portsConfig}
+                        />
+                      </Form.Item>
+                    }}
+                  </Form.Item>
+                </Col>
+              </Row>
             </Col>
           </Row>
-        </Col>
-      </Row>
-    </SpaceWrapper>
+
+          <Row>
+            <Col span={24}>
+              <StepsForm.Title>
+                {$t({ defaultMessage: 'Tunnel Settings' })}
+              </StepsForm.Title>
+              <Row align='middle' gutter={9}>
+                <Col span={13}>
+                  <Form.Item
+                    name='tunnelProfileId'
+                    label={$t({ defaultMessage: 'Tunnel Profile' })}
+                    rules={[{
+                      required: true,
+                      message: $t({ defaultMessage: 'Please select a Tunnel Profile' })
+                    }]}
+                  >
+                    <Select
+                      loading={isTunnelOptionsLoading}
+                      placeholder={$t({ defaultMessage: 'Select...' })}
+                      options={tunnelProfileOptions}
+                      onChange={onTunnelChange}
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={3}>
+                  <TunnelProfileAddModal />
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        </SpaceWrapper>
+      </Col>
+      <Col>
+        <UI.Diagram src={diagram} alt={$t({ defaultMessage: 'Centralized Forwarding' })} />
+      </Col>
+    </Row>
+
   )
 }
