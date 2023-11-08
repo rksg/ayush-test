@@ -16,6 +16,7 @@ import { AccessSupportFormItem }         from './AccessSupportFormItem'
 import { AppTokenFormItem }              from './AppTokenFormItem'
 import { AuthServerFormItem }            from './AuthServerFormItem'
 import { DefaultSystemLanguageFormItem } from './DefaultSystemLanguageFormItem'
+import { EnableR1Beta }                  from './EnableR1Beta'
 import { MapRegionFormItem }             from './MapRegionFormItem'
 import { MFAFormItem }                   from './MFAFormItem'
 import { RecoveryPassphraseFormItem }    from './RecoveryPassphraseFormItem'
@@ -45,6 +46,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
 
   const isPrimeAdminUser = isPrimeAdmin()
   const isI18n = useIsSplitOn(Features.I18N_TOGGLE)
+  const betaButtonToggle = useIsSplitOn(Features.BETA_BUTTON)
   const isSsoAllowed = useIsTierAllowed(Features.SSO)
   const isIdmDecoupling = useIsSplitOn(Features.IDM_DECOUPLING) && isSsoAllowed
   const isApiKeyEnabled = useIsSplitOn(Features.IDM_APPLICATION_KEY_TOGGLE) && isSsoAllowed
@@ -94,6 +96,13 @@ const AccountSettings = (props : AccountSettingsProps) => {
               hasMSPEcLabel={hasMSPEcLabel}
               canMSPDelegation={canMSPDelegation}
             />
+          </>
+        )}
+
+        { (isPrimeAdminUser && betaButtonToggle) && (
+          <>
+            <Divider />
+            <EnableR1Beta />
           </>
         )}
 
