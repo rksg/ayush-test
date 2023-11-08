@@ -205,14 +205,17 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       dataIndex: 'name',
       key: 'name',
       fixed: 'left',
-      render: (_, row : NetworkHierarchy) => (
-        <TenantLink
-          to={resolvePath(`/incidents?analyticsNetworkFilter=${
-            fixedEncodeURIComponent(
-              JSON.stringify({ raw: row.networkPath, path: row.networkPath }))}`)}>
-          {row.name}
-        </TenantLink>
-      ),
+      render: (_, row : NetworkHierarchy) => {
+        const networkPath = row.networkPath.slice(0, -1)
+        const path = row.type !== 'Zone'
+          ? resolvePath(
+            `/incidents?analyticsNetworkFilter=${fixedEncodeURIComponent(
+              JSON.stringify({ raw: row.networkPath, path: row.networkPath })
+            )}`
+          )
+          : resolvePath(`/zones/${networkPath?.[0]?.name}/${networkPath?.[1]?.name}/assurance`)
+        return <TenantLink to={path}>{row.name}</TenantLink>
+      },
       sorter: { compare: sortProp('name', defaultSort) }
     },
     {

@@ -35,7 +35,9 @@ export function APList ({
       start: filters.startDate,
       end: filters.endDate,
       query: '',
-      filter: { networkNodes: queryParamsForZone?.path }
+      filter: { networkNodes: queryParamsForZone?.path },
+      // Set to a limit of 10,000 because that is the maximum number of APs allowed in each Zone
+      limit: 10000
     },
     { skip: !Boolean(queryParamsForZone) }
   )

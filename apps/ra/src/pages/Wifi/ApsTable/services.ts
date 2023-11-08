@@ -10,6 +10,7 @@ export interface RequestPayload {
   end: string
   query: string
   filter: NodesFilter
+  limit: number
 }
 export interface APListResponse {
   network : {
@@ -39,12 +40,10 @@ export const zoneWiseSearchApi = dataApi.injectEndpoints({
             $end: DateTime
             $query: String
             $limit: Int
-            $rootNode: HierarchyNodeInput
-            $metric: String
             $filter: FilterInput
           ) {
-            network(start: $start, end: $end, rootNode: $rootNode, filter: $filter) {
-              search(start: $start, end: $end, query: $query, limit: $limit, metric: $metric) {
+            network(start: $start, end: $end, filter: $filter) {
+              search(start: $start, end: $end, query: $query, limit: $limit) {
                 aps {
                   apName
                   macAddress
