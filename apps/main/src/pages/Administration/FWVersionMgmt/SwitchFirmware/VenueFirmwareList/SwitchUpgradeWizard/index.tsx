@@ -23,8 +23,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { DefaultSwitchVersion, getReleaseFirmware, parseSwitchVersion } from '../../../FirmwareUtils'
-import * as UI                from '../styledComponents'
+import { DefaultSwitchVersion, getReleaseFirmware } from '../../../FirmwareUtils'
+import * as UI                                      from '../styledComponents'
 
 import { ScheduleStep }     from './ScheduleStep'
 import { SelectSwitchStep } from './SelectSwitchStep'
