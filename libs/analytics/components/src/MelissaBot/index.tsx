@@ -2,16 +2,15 @@ import { useEffect, useRef, useState } from 'react'
 
 import { Input, InputRef } from 'antd'
 import { defer, get }      from 'lodash'
-import moment              from 'moment-timezone'
 import { useIntl }         from 'react-intl'
 import { useLocation }     from 'react-router-dom'
 
-import { getUserProfile as getUserProfileRA }        from '@acx-ui/analytics/utils'
 import { Conversation, FulfillmentMessage, Content } from '@acx-ui/components'
 import { useIsSplitOn, Features }                    from '@acx-ui/feature-toggle'
 import { MelissaHeaderIcon, MelissaIcon }            from '@acx-ui/icons'
 
-import { MelissaDrawer, SubTitle, Title } from './styledComponents'
+import { AskMelissaBody, queryAskMelissa, uploadFile } from './services'
+import { MelissaDrawer, SubTitle, Title }              from './styledComponents'
 
 export const BOT_NAME = 'Melissa'
 
@@ -19,31 +18,6 @@ const scrollToBottom=()=>{
   const msgBody=document.querySelector('.ant-drawer-body')
   if(msgBody){
     msgBody.scrollTop = msgBody.scrollHeight
-  }
-}
-
-const MELISSA_URL_ORIGIN=window.location.origin
-const MELISSA_URL_BASE_PATH='/analytics'
-const MELISSA_ROUTE_PATH='/api/ask-mlisa'
-
-// To connect with local chatbot
-// const MELISSA_URL_ORIGIN='http://localhost:31337'
-// const MELISSA_URL_BASE_PATH=''
-// const MELISSA_ROUTE_PATH=''
-
-const uploadUrl = (id:string) => `${MELISSA_URL_ORIGIN}${MELISSA_URL_BASE_PATH}`+
-  `${MELISSA_ROUTE_PATH}/upload/${id}`
-
-interface AskMelissaBody {
-  queryInput: {
-    event?: {
-      languageCode: string
-      name: string
-    }
-    text?: {
-      languageCode: string,
-      text: string
-    }
   }
 }
 
@@ -92,14 +66,7 @@ export function MelissaBot (){
         setFileName(file.name)
         const form = new FormData()
         form.append('file', file)
-        await fetch(uploadUrl(incidentId), {
-          method: 'POST',
-          headers: {
-            'X-Mlisa-Timezone': moment.tz.guess(),
-            'X-Set-Ruckus-Ai': 'true'
-          },
-          body: form
-        }).catch((error)=>{
+        await uploadFile(incidentId,form).catch((error)=>{
           setIsReplying(false)
           // eslint-disable-next-line no-console
           console.error(error)
@@ -134,24 +101,11 @@ export function MelissaBot (){
       }
     })
   }
-  const subTitleText = $t({ defaultMessage: 'infused with ChatGPT' })
+  const subTitleText = $t({ defaultMessage: 'with Gen AI' })
   const askAnything = $t({ defaultMessage: 'Ask Anything' })
   const title = <><Title>{BOT_NAME}</Title><SubTitle>{subTitleText}</SubTitle></>
   const askMelissa = (body:AskMelissaBody) => {
-    const { userId } = getUserProfileRA()
-    const MELISSA_API_ENDPOINT=`${MELISSA_ROUTE_PATH}/v1/integrations/messenger` +
-      `/webhook/melissa-agent/sessions/dfMessenger-${userId}`
-    const MELISSA_API_URL=`${MELISSA_URL_ORIGIN}${MELISSA_URL_BASE_PATH}${MELISSA_API_ENDPOINT}`
-    isMelissaBotEnabled && fetch(MELISSA_API_URL,
-      { method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Mlisa-Timezone': moment.tz.guess(),
-          'X-Set-Ruckus-Ai': 'true'
-        },
-        body: JSON.stringify(body)
-      }).then(async (res)=>{
-      const json=await res.json()
+    isMelissaBotEnabled && queryAskMelissa(body).then(async (json)=>{
       setIsReplying(false)
       setResponseCount(responseCount+1)
       const fulfillmentMessages:FulfillmentMessage[]=get(json,'queryResult.fulfillmentMessages')
@@ -160,7 +114,6 @@ export function MelissaBot (){
         if(createdIncidentId) {
           setIncidentId(createdIncidentId)
         }
-
         messages.push({ type: 'bot', contentList: fulfillmentMessages })
         setMessages(messages)
         setIsInputDisabled(false)
