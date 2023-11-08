@@ -82,6 +82,7 @@ export enum Features {
   WIFI_FR_HOTSPOT20_R1_TOGGLE = 'wifi-fr-hotspot20-r1-toggle',
   WIFI_EDA_OWE_TRANSITION_TOGGLE = 'wifi-eda-owe-transition-toggle',
   AI_RECOMMENDATIONS = 'acx-ui-ai-recommendations-toggle',
+  AI_CRRM = 'acx-ui-ai-crrm-toggle',
   WIFI_DTIM_TOGGLE = 'wifi-dtim-toggle',
   WIFI_AMB_TOGGLE = 'wifi-amb-toggle',
   WIFI_DHCP_OPT_82_TOGGLE = 'wifi-dhcp-opt-82-toggle',
