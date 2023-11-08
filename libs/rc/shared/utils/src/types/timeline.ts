@@ -1,6 +1,49 @@
+import { defineMessage } from 'react-intl'
+
 import { TimelineStatus } from '@acx-ui/types'
 
 export type TimelineTypes = 'activities' | 'events' | 'adminLogs'
+
+export enum EventScheduleFrequency {
+  Weekly = 'Weekly',
+  Monthly = 'Monthly'
+}
+
+export const eventSeverityMapping = {
+  All: defineMessage({ defaultMessage: 'All' }),
+  Critical: defineMessage({ defaultMessage: 'Critical' }),
+  Major: defineMessage({ defaultMessage: 'Major' }),
+  Minor: defineMessage({ defaultMessage: 'Minor' }),
+  Warning: defineMessage({ defaultMessage: 'Warning' }),
+  Info: defineMessage({ defaultMessage: 'Informational' })
+}
+
+export const eventTypeMapping = {
+  ALL: defineMessage({ defaultMessage: 'All' }),
+  AP: defineMessage({ defaultMessage: 'AP' }),
+  SECURITY: defineMessage({ defaultMessage: 'Security' }),
+  CLIENT: defineMessage({ defaultMessage: 'Client' }),
+  SWITCH: defineMessage({ defaultMessage: 'Switch' }),
+  NETWORK: defineMessage({ defaultMessage: 'Network' }),
+  EDGE: defineMessage({ defaultMessage: 'SmartEdge' })
+}
+
+export const eventProductMapping = {
+  ALL: defineMessage({ defaultMessage: 'All' }),
+  GENERAL: defineMessage({ defaultMessage: 'General' }),
+  WIFI: defineMessage({ defaultMessage: 'Wi-Fi' }),
+  SWITCH: defineMessage({ defaultMessage: 'Switch' }),
+  EDGE: defineMessage({ defaultMessage: 'SmartEdge' }),
+  POLICY_ENGINE: defineMessage({ defaultMessage: 'Policy Engine' })
+}
+
+export type WeekDayName = 'MON'
+  | 'TUE'
+  | 'WED'
+  | 'THU'
+  | 'FRI'
+  | 'SAT'
+  | 'SUN'
 
 export interface Activity {
   admin: {
@@ -71,6 +114,30 @@ export interface EventMeta {
   tableKey?: string
   edgeName: string
 }
+
+export type EventExportSchedule = {
+  type: string,
+  enable: boolean,
+  clientTimeZone?: string,
+  sortOrder?: string,
+  sortField?: string,
+  context?: {
+    type?: string,
+    entity_type?: [typeof eventTypeMapping],
+    product?: [typeof eventProductMapping],
+    severity?: [typeof eventSeverityMapping],
+    searchString?: string
+  },
+  reportSchedule?: {
+    type: EventScheduleFrequency | null,
+    dayOfWeek: WeekDayName | null,
+    dayOfMonth: number | null,
+    hour: number | null,
+    minute: number | null
+  },
+  recipients: string[]
+}
+
 
 export type Event = EventBase & EventMeta
 

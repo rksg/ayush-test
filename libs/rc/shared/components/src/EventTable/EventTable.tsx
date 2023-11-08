@@ -20,7 +20,8 @@ import {
   productMapping,
   typeMapping
 } from './mapping'
-import { useExportCsv } from './useExportCsv'
+import { ScheduleExportDrawer } from './ScheduleExportDrawer'
+import { useExportCsv }         from './useExportCsv'
 
 export const defaultColumnState = {
   event_datetime: true,
@@ -53,12 +54,39 @@ export const EventTable = ({
 }: EventTableProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
+  const [exportDrawerVisible, setExportDrawerVisible] = useState(false)
   const [current, setCurrent] = useState<Event>()
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isRogueEventsFilterEnabled = useIsSplitOn(Features.ROGUE_EVENTS_FILTER)
   const { exportCsv, disabled } = useExportCsv<Event>(tableQuery)
 
+  const isExportEventsEnabled = useIsSplitOn(Features.EXPORT_EVENTS_TOGGLE)
   useEffect(() => { setVisible(false) },[tableQuery.data?.data])
+
+  const openEventScheduler = () => {
+    setExportDrawerVisible(true)
+  }
+
+  const tableIconButtonConfig = isExportEventsEnabled ? {
+    icon: <DownloadOutlined />,
+    dropdownMenu: {
+      items: [
+        { key: 'exportNow',
+          label: $t({ defaultMessage: 'Export Now' }),
+          disabled,
+          tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
+          onClick: exportCsv },
+        { key: 'scheduleExport', label: $t({ defaultMessage: 'Schedule Export' }),
+          onClick: openEventScheduler }
+      ]
+    }
+  }
+    : {
+      icon: <DownloadOutlined />,
+      disabled,
+      tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
+      onClick: exportCsv
+    }
 
   const excludeEventType = [
     ...(!isEdgeEnabled ? ['EDGE'] : []),
@@ -181,12 +209,7 @@ export const EventTable = ({
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
-      iconButton={{
-        icon: <DownloadOutlined />,
-        disabled,
-        tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
-        onClick: exportCsv
-      }}
+      iconButton={tableIconButtonConfig}
     />
     {current && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Event Details' })}
@@ -194,5 +217,13 @@ export const EventTable = ({
       onClose={() => setVisible(false)}
       data={getDrawerData(current!)}
     />}
+    {isExportEventsEnabled && exportDrawerVisible
+      && <ScheduleExportDrawer
+        title={defineMessage({ defaultMessage: 'Schedule Event Export' })}
+        visible={exportDrawerVisible}
+        onClose={() => setExportDrawerVisible(false)}
+        onSubmit={() => setExportDrawerVisible(false)}
+      />
+    }
   </Loader>
 }

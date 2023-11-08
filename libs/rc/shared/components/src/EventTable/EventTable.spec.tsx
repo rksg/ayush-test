@@ -1,12 +1,13 @@
 import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { useIsSplitOn }                            from '@acx-ui/feature-toggle'
-import { Event, EventBase, EventMeta, TableQuery } from '@acx-ui/rc/utils'
-import { Provider }                                from '@acx-ui/store'
-import { findTBody, render, screen, within }       from '@acx-ui/test-utils'
-import { RequestPayload }                          from '@acx-ui/types'
+import { useIsSplitOn }                                            from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, Event, EventBase, EventMeta, TableQuery } from '@acx-ui/rc/utils'
+import { Provider }                                                from '@acx-ui/store'
+import { findTBody, mockServer, render, screen, within }           from '@acx-ui/test-utils'
+import { RequestPayload }                                          from '@acx-ui/types'
 
 import { events, eventsMeta } from './__tests__/fixtures'
 
@@ -194,6 +195,7 @@ describe('EventTable', () => {
       { route: { params }, wrapper: Provider }
     )
     await userEvent.click(screen.getByTestId('DownloadOutlined'))
+    await userEvent.click(await screen.findByRole('menuitem', { name: 'Export Now' }))
     expect(mockExportCsv).toBeCalled()
   })
 
@@ -203,5 +205,29 @@ describe('EventTable', () => {
       { route: { params }, wrapper: Provider }
     )
     expect(screen.queryByText('Product')).toBeNull()
+  })
+
+  it('should open/close schedule event export drawer', async () => {
+    const params = {
+      tenantId: '7b8cb9e8e99a4f42884ae9053604a376',
+      gatewayId: 'bbc41563473348d29a36b76e95c50381',
+      activeTab: 'overview'
+    }
+    mockServer.use(
+      rest.get(
+        CommonUrlsInfo.getExportSchedules.url,
+        (req, res, ctx) => res(ctx.json({ enable: false }))
+      )
+    )
+    render(
+      <EventTable tableQuery={tableQuery} />,
+      { route: { params }, wrapper: Provider }
+    )
+    await userEvent.click(screen.getByTestId('DownloadOutlined'))
+    await userEvent.click(await screen.findByRole('menuitem', { name: 'Schedule Export' }))
+    const drawerHeader = await screen.findByText('Schedule Event Export')
+    expect(drawerHeader).toBeInTheDocument()
+    await userEvent.click(await screen.findByRole('button', { name: 'Close' }))
+    expect(drawerHeader).not.toBeInTheDocument()
   })
 })
