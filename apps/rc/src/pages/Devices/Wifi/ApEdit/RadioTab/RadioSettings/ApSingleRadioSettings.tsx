@@ -74,13 +74,13 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
     if(isUseVenueSettings){
       newButtonText = ( <p style={{ fontSize: '12px', margin: '0px' }}>
         {enableAfc ?
-          $t({ defaultMessage: 'Low power' }) :
-          $t({ defaultMessage: 'Standard power' })
+          $t({ defaultMessage: 'Standard power' }):
+          $t({ defaultMessage: 'Low power' })
         }
       </p>)
     }
     else {
-      if (isAPLowPower(afcInfo) && !enableAfc) {
+      if (isAPLowPower(afcInfo) && enableAfc) {
         let defaultButtonText = $t({ defaultMessage: 'Standard power' })
         let defaultStyle = { color: '#910012', fontSize: '12px', margin: '0px' }
         switch(afcInfo?.afcStatus) {

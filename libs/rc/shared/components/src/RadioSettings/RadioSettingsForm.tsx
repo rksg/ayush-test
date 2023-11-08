@@ -135,7 +135,7 @@ export function RadioSettingsForm (props:{
           </Tooltip>
           <Form.Item
             name={enableAfcFieldName}
-            initialValue={false}>
+            initialValue={true}>
             {isUseVenueSettings ?
               LPIButtonText?.buttonText :
               <Radio.Group
@@ -145,7 +145,7 @@ export function RadioSettingsForm (props:{
                 }}
               >
                 <Space direction='vertical'>
-                  <Radio value={false}>
+                  <Radio value={true}>
                     {context === 'venue' ?
                       <p style={{ fontSize: '12px', margin: '0px' }}>
                         {$t({ defaultMessage: 'Standard power' })}
@@ -154,7 +154,7 @@ export function RadioSettingsForm (props:{
                       LPIButtonText?.buttonText
                     }
                   </Radio>
-                  <Radio value={true}>
+                  <Radio value={false}>
                     <p style={{ fontSize: '12px', margin: '0px' }}>
                       {$t({ defaultMessage: 'Low power' })}
                     </p>
