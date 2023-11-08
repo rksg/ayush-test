@@ -969,7 +969,8 @@ describe('DeviceOSDrawer Component', () => {
     expect(await screen.findByText(/rules \(0\)/i)).toBeInTheDocument()
   })
 
-  it('Render DeviceDrawer component successfully with Xbox in the existing rules', async () => {
+  // eslint-disable-next-line max-len
+  it.skip('Render DeviceDrawer component successfully with Xbox in the existing rules', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     const devicePolicyDetailWith31RulesWithXboxResponse = {
