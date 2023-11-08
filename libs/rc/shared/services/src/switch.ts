@@ -926,7 +926,6 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       },
       invalidatesTags: [
-        { type: 'Switch', id: 'DETAIL' },
         { type: 'Switch', id: 'SWITCH' }
       ]
     }),
