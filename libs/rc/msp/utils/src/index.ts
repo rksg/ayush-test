@@ -174,19 +174,18 @@ export const MSPUtils = () => {
     return rec?.name ? rec.name : id
   }
 
-  const transformAdminCount = (data: MspEc, type: AccountType) => {
+  const transformAdminCount = (data: MspEc, type?: string) => {
     return type === AccountType.MSP_INSTALLER
       ? data.mspInstallerAdminCount || 0 : (type === AccountType.MSP_INTEGRATOR
         ? data.mspIntegratorAdminCount || 0 : data.mspAdminCount || 0)
   }
 
-  // const transformAdminCountHeader = (type: AccountType) => {
-  //   return type === AccountType.MSP_INSTALLER
-  //     ? $t({ defaultMessage: 'Installer Admin Count' })
-  //     : (type === AccountType.MSP_INTEGRATOR
-  //       ? $t({ defaultMessage: 'Integrator Admin Count' })
-  //       : $t({ defaultMessage: 'MSP Admin Count' }))
-  // }
+  const transformAdminCountHeader = (type?: string) => {
+    return type === AccountType.MSP_INSTALLER
+      ? 'Installer Admin Count'
+      : (type === AccountType.MSP_INTEGRATOR
+        ? 'Integrator Admin Count' : 'MSP Admin Count')
+  }
 
   return {
     isMspEc,
@@ -205,7 +204,7 @@ export const MSPUtils = () => {
     transformAlarmCount,
     transformMspRecAddress,
     transformTechPartner,
-    transformAdminCount//,
-    // transformAdminCountHeader
+    transformAdminCount,
+    transformAdminCountHeader
   }
 }

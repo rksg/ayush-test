@@ -57,7 +57,7 @@ export function MspRecCustomers () {
   const MAX_ALLOWED_SELECTED_EC = 200
 
   const [ecTenantId, setTenantId] = useState('')
-  const [tenantType, setTenantType] = useState(AccountType.MSP_INTEGRATOR)
+  const [selectedTenantType, setTenantType] = useState(AccountType.MSP_INTEGRATOR)
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
   const [techParnersData, setTechPartnerData] = useState([] as MspEc[])
@@ -75,33 +75,13 @@ export function MspRecCustomers () {
     ? { tenantType: [AccountType.MSP_REC] }
     : { mspAdmins: [userProfile?.adminId], tenantType: [AccountType.MSP_REC] }
 
-  const transformTechPartner = (id: string) => {
-    const rec = techParnersData.find(e => e.id === id)
-    return rec?.name ? rec.name : id
-  }
-
-  const transformAdminCount = (data: MspEc) => {
-    const type = tenantDetailsData.data?.tenantType
-    return type === AccountType.MSP_INSTALLER
-      ? data.mspInstallerAdminCount || 0 : (type === AccountType.MSP_INTEGRATOR
-        ? data.mspIntegratorAdminCount || 0 : data.mspAdminCount || 0)
-  }
-
-  const transformAdminCountHeader = () => {
-    const type = tenantDetailsData.data?.tenantType
-    return type === AccountType.MSP_INSTALLER
-      ? $t({ defaultMessage: 'Installer Admin Count' })
-      : (type === AccountType.MSP_INTEGRATOR
-        ? $t({ defaultMessage: 'Integrator Admin Count' })
-        : $t({ defaultMessage: 'MSP Admin Count' }))
-  }
-
   const tenantDetailsData = useGetTenantDetailsQuery({ params })
+  const tenantType = tenantDetailsData.data?.tenantType
   const isIntegrator =
-    (tenantDetailsData.data?.tenantType === AccountType.MSP_INSTALLER ||
-     tenantDetailsData.data?.tenantType === AccountType.MSP_INTEGRATOR)
+    (tenantType === AccountType.MSP_INSTALLER ||
+     tenantType === AccountType.MSP_INTEGRATOR)
   const parentTenantid = tenantDetailsData.data?.mspEc?.parentMspId
-  if (tenantDetailsData.data?.tenantType === AccountType.VAR &&
+  if (tenantType === AccountType.VAR &&
       userProfile?.support === false) {
     navigate(linkVarPath, { replace: true })
   }
@@ -228,11 +208,12 @@ export function MspRecCustomers () {
       key: 'status',
       sorter: true,
       render: function (_, row) {
-        return mspUtils.getStatus(row)
+        return $t({ defaultMessage: '{status}' }, { status: mspUtils.getStatus(row) })
       }
     },
     {
-      title: transformAdminCountHeader(),
+      title: $t({ defaultMessage: '{adminCountHeader}' }, { adminCountHeader:
+        mspUtils.transformAdminCountHeader(tenantType) }),
       dataIndex: 'mspAdminCount',
       align: 'center',
       key: 'mspAdminCount',
@@ -248,7 +229,8 @@ export function MspRecCustomers () {
       render: function (_, row) {
         return (
           (isPrimeAdmin || isAdmin) && !userProfile?.support
-            ? <Link to=''>{transformAdminCount(row)}</Link> : transformAdminCount(row)
+            ? <Link to=''>{mspUtils.transformAdminCount(row, tenantType)}</Link>
+            : mspUtils.transformAdminCount(row, tenantType)
         )
       }
     },
@@ -266,7 +248,8 @@ export function MspRecCustomers () {
         } : {}
       },
       render: function (_: React.ReactNode, row: MspEc) {
-        const val = row?.integrator ? transformTechPartner(row.integrator) : '--'
+        const val =
+          row?.integrator ? mspUtils.transformTechPartner(row.integrator, techParnersData) : '--'
         return (
           (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible
             ? <Link to=''>{val}</Link> : val
@@ -288,7 +271,8 @@ export function MspRecCustomers () {
         } : {}
       },
       render: function (_: React.ReactNode, row: MspEc) {
-        const val = row?.installer ? transformTechPartner(row.installer) : '--'
+        const val =
+          row?.installer ? mspUtils.transformTechPartner(row.installer, techParnersData) : '--'
         return (
           (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible
             ? <Link to=''>{val}</Link> : val
@@ -568,7 +552,7 @@ export function MspRecCustomers () {
       {drawerIntegratorVisible && <SelectIntegratorDrawer
         visible={drawerIntegratorVisible}
         tenantId={ecTenantId}
-        tenantType={tenantType}
+        tenantType={selectedTenantType}
         setVisible={setDrawerIntegratorVisible}
         setSelected={() => {}}
       />}
