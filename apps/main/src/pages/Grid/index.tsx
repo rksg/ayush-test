@@ -29,9 +29,12 @@ const layout = {
 export default function Grid () {
   const [compactType, setCompactType] = useState('horizontal')
   const [groups, setGroups] = useState([])
+  const [sections, setSections] = useState([])
   useEffect(() => {
     const data = getFromLS()
-    setGroups(data)
+    setSections(data)
+    const group = data.reduce((acc, cur) => acc.groups.concat(cur.groups))
+    setGroups(group)
   }, [])
 
   const changeCompactType = () => {
@@ -45,6 +48,7 @@ export default function Grid () {
   }
 
   const saveToLS = () => {
+    //TODO: transfer to sections
     localStorage.setItem('acx-ui-dashboard', JSON.stringify(groups))
   }
 
@@ -92,6 +96,8 @@ export default function Grid () {
       </button>
 
       <Layout
+        sections={sections}
+        setSections={setSections}
         groups={groups}
         setGroups={setGroups}
         compactType={compactType}

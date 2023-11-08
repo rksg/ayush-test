@@ -3,8 +3,7 @@ import styled from 'styled-components/macro'
 export const Grid = styled.div`
 .rglb_group-item {
   width: 100%;
-  margin-bottom: 10px;
-  margin-top: 50px;
+  margin-bottom: 30px;
   cursor: move;
   position: relative;
   transition: all 0.2s ease-out;

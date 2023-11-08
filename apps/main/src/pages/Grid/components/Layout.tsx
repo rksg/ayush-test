@@ -5,6 +5,8 @@ import _                from 'lodash'
 import { DndProvider }  from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 
+import { Tabs } from '@acx-ui/components'
+
 import utils                                      from '../utils'
 import { layoutCheck }                            from '../utils/collision'
 import { compactLayout, compactLayoutHorizontal } from '../utils/compact'
@@ -13,7 +15,7 @@ import GroupItem from './GroupItem'
 
 export default function Layout (props) {
   const defaultLayout = props.layout
-  const { groups, setGroups } = props
+  const { groups, setGroups, sections, setSections } = props
   const [layout, setLayout] = useState(props.layout)
   const [shadowCard, setShadowCard] = useState({})
   const [resizeWaiter, setResizeWaiter] = useState(false)
@@ -160,24 +162,58 @@ export default function Layout (props) {
     <DndProvider backend={HTML5Backend}>
       <div>
         {
-          groups.map((g, i) => <GroupItem
-            key={g.id}
-            id={g.id}
-            type={g.type}
-            index={i}
-            cards={g.cards}
-            length={groups.length}
-            groups={groups}
-            moveCardInGroupItem={moveCardInGroupItem}
-            onCardDropInGroupItem={onCardDropInGroupItem}
-            layout={layout}
-            defaultLayout={defaultLayout}
-            updateShadowCard={setShadowCard}
-            updateGroupList={setGroups}
-            handleLoad={handleLoad}
-            deleteCard={deleteCard}
-          />
-          )
+          sections.map((s) => <div>
+            <h2>Section {s.id + 1}</h2>
+            {
+              s.hasTab ?
+                <Tabs type='card' stickyTop={false} defaultActiveKey={groups.find(g => g.sectionId == s.id && g.defaultTab)}>
+                  {
+                    groups.map((g, i) => g.sectionId == s.id ?
+                      <Tabs.TabPane tab={g.tabLabel} key={g.tabValue}>
+                        <GroupItem
+                          key={g.id}
+                          id={g.id}
+                          type={g.type}
+                          index={i}
+                          cards={g.cards}
+                          length={groups.length}
+                          groups={groups}
+                          moveCardInGroupItem={moveCardInGroupItem}
+                          onCardDropInGroupItem={onCardDropInGroupItem}
+                          layout={layout}
+                          defaultLayout={defaultLayout}
+                          updateShadowCard={setShadowCard}
+                          updateGroupList={setGroups}
+                          handleLoad={handleLoad}
+                          deleteCard={deleteCard}
+                        />
+                      </Tabs.TabPane> : <></>)
+                  }
+                </Tabs>
+                :
+                <>
+                  {
+                    groups.map((g, i) => g.sectionId == s.id ? <GroupItem
+                      key={g.id}
+                      id={g.id}
+                      type={g.type}
+                      index={i}
+                      cards={g.cards}
+                      length={groups.length}
+                      groups={groups}
+                      moveCardInGroupItem={moveCardInGroupItem}
+                      onCardDropInGroupItem={onCardDropInGroupItem}
+                      layout={layout}
+                      defaultLayout={defaultLayout}
+                      updateShadowCard={setShadowCard}
+                      updateGroupList={setGroups}
+                      handleLoad={handleLoad}
+                      deleteCard={deleteCard}
+                    /> : <></>)
+                  }
+                </>
+            }
+          </div>)
         }
       </div>
     </DndProvider>
