@@ -386,7 +386,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       show: false,
       sorter: false,
       render: (data: React.ReactNode, row: APExtended) => {
-        return AFCPowerStateRender(row.apStatusData?.afcInfo,row.apRadioDeploy, false)
+        return AFCPowerStateRender(row.apStatusData?.afcInfo, row.apRadioDeploy, false)
       }
     },
     { key: 'afcMaxPower',

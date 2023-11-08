@@ -118,13 +118,12 @@ export function transformQosPriorityType (type: QosPriorityEnum) {
   return transform
 }
 
-// eslint-disable-next-line
-export const AFCMaxPowerRender = (afcInfo: AFCInfo | undefined, apRadioDeploy: string | undefined) => {
+export const AFCMaxPowerRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) => {
   return (afcInfo?.maxPowerDbm && apRadioDeploy === '2-5-6') ? `${afcInfo?.maxPowerDbm} dBm` : '--'
 }
 
 // eslint-disable-next-line
-export const AFCPowerStateRender = (afcInfo: AFCInfo | undefined, apRadioDeploy: string | undefined, reasonMessage: boolean) => {
+export const AFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy?: string, reasonMessage?: boolean) => {
 
   const { $t } = useIntl()
 
