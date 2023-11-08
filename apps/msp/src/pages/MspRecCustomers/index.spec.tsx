@@ -249,7 +249,6 @@ describe('MspRecCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
     expect(screen.getByText('RUCKUS End Customers')).toBeVisible()
-    // expect(screen.getByText('Manage My Account')).toBeVisible()
     expect(screen.getByText('Add Customer')).toBeVisible()
 
     // eslint-disable-next-line testing-library/no-node-access
@@ -289,7 +288,6 @@ describe('MspRecCustomers', () => {
       expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
     })
     expect(screen.getByText('Installed Devices')).toBeVisible()
-    // expect(screen.getByText('Device Subscriptions Utilization')).toBeVisible()
 
     expect(screen.queryByText('Wi-Fi Licenses')).toBeNull()
   })
@@ -312,8 +310,6 @@ describe('MspRecCustomers', () => {
     expect(screen.getByText('Wi-Fi License Utilization')).toBeVisible()
     expect(screen.getByText('Switch Licenses')).toBeVisible()
     expect(screen.getByText('SmartEdge Licenses')).toBeVisible()
-    // expect(screen.getByText('Active From')).toBeVisible()
-    // expect(screen.getByText('Service Expires On')).toBeVisible()
     expect(screen.queryByText('Tenant ID')).toBeNull()
 
     expect(screen.queryByText('Installed Devices')).toBeNull()

@@ -263,7 +263,6 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
     expect(screen.getByText('MSP Customers')).toBeVisible()
-    // expect(screen.getByText('Manage My Account')).toBeVisible()
     expect(screen.getByText('Add EC Customer')).toBeVisible()
 
     // eslint-disable-next-line testing-library/no-node-access

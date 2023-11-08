@@ -90,21 +90,21 @@ export const MSPUtils = () => {
       ? (entitlements[0].outOfComplianceDevices || 0) : 0
   }
 
-  const futureOutOfComplianceDays = (futurnDays?: number) => {
-    if (!futurnDays || isNaN(futurnDays)) {
+  const futureOfComplianceDays = (futureOfComplianceDate?: number) => {
+    if (!futureOfComplianceDate || isNaN(futureOfComplianceDate)) {
       return '--'
     }
-    const Epoch = futurnDays - (futurnDays % 1000)
+    const Epoch = futureOfComplianceDate - (futureOfComplianceDate % 1000)
     const expirationDate = formatter(DateFormatEnum.DateFormat)(Epoch)
     const newDate = new Date(expirationDate)
-    const daysLeft = moment(newDate).diff(moment(), 'days', true)
-    return Math.round(daysLeft)
+    const daysLeft = moment(newDate).diff(moment(), 'days')
+    return daysLeft
   }
 
   const transformFutureOutOfComplianceDevices = (entitlements: DelegationEntitlementRecord[]) => {
     return entitlements && entitlements.length > 0
       ? `${(entitlements[0].futureOutOfComplianceDevices || 0)} 
-        / ${futureOutOfComplianceDays(entitlements[0].futureOfComplianceDate)}` : '0 / --'
+        / ${futureOfComplianceDays(entitlements[0].futureOfComplianceDate)}` : '0 / --'
   }
 
   const getStatus = (row: MspEc) => {
