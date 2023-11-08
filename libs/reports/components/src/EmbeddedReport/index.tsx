@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { embedDashboard, EmbeddedDashboard } from '@superset-ui/embedded-sdk'
 import moment                                from 'moment'
 
-import { System, useSystems }                 from '@acx-ui/analytics/services'
+import { SystemMap, useSystems }              from '@acx-ui/analytics/services'
 import { getUserProfile as getUserProfileRA } from '@acx-ui/analytics/utils'
 import { useAnalyticsFilter }                 from '@acx-ui/analytics/utils'
 import { RadioBand, Loader, showActionModal } from '@acx-ui/components'
@@ -151,7 +151,7 @@ export const getSupersetRlsClause = (
 
 export const getRLSClauseForSA = (
   paths: NetworkPath,
-  system: System[] | undefined,
+  systemMap: SystemMap | undefined,
   reportName: ReportType
 ) => {
 
@@ -188,9 +188,9 @@ export const getRLSClauseForSA = (
       }
     } else {
       if (type === 'system') {
-        const systemIds = system?.filter(s => s.deviceName === name)
-        if (systemIds) {
-          systemIds.forEach(({ deviceId }) => {
+        const systems = systemMap?.[name]
+        if (systems) {
+          systems.forEach(({ deviceId }) => {
             sqlConditionsByType[type].push(`"${type}" = '${deviceId}'`)
           })
         }
@@ -298,7 +298,7 @@ export function EmbeddedReport (props: ReportProps) {
     const { networkClause, radioBandClause } = isRA
       ? getRLSClauseForSA(
         path,
-        systems.data?.networkNodes,
+        systems.data,
         reportName
       )
       : getSupersetRlsClause(
