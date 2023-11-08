@@ -281,7 +281,7 @@ export const transformApGroupVlan = (
           <Tooltip title={displayText}>
             <TenantLink to={getPolicyDetailsLink({
               type: PolicyType.VLAN_POOL,
-              oper: PolicyOperation.EDIT,
+              oper: PolicyOperation.DETAIL,
               policyId: vlanPoolId
             })}>
               {displayText}
