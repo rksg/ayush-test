@@ -1,10 +1,9 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
 import {
-  useSwitchDetailHeaderQuery,
   useGetDhcpPoolsQuery,
   useDeleteDhcpServersMutation,
   useUpdateDhcpServerMutation,
@@ -19,15 +18,19 @@ import {
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
+import { SwitchDetailsContext } from '..'
+
 import { AddPoolDrawer } from './AddPoolDrawer'
 
 export function SwitchDhcpPoolTable () {
   const { $t } = useIntl()
   const params = useParams()
-  const { data: switchDetail } = useSwitchDetailHeaderQuery({ params })
   const [ createDhcpServer, { isLoading: isCreating } ] = useCreateDhcpServerMutation()
   const [ updateDhcpServer, { isLoading: isUpdating } ] = useUpdateDhcpServerMutation()
   const [ deleteDhcpServers ] = useDeleteDhcpServersMutation()
+
+  const { switchDetailsContextData } = useContext(SwitchDetailsContext)
+  const { switchDetailHeader: switchDetail } = switchDetailsContextData
 
   const tableQuery = useTableQuery({
     useQuery: useGetDhcpPoolsQuery,

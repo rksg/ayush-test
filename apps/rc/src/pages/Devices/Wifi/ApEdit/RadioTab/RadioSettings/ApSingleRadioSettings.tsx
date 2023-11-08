@@ -46,7 +46,7 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
     onEnableChanged(checked)
   }
 
-  const [lowPowerIndoorModeEnabled, setLowPowerIndoorModeEnabled] = useState(false)
+  const [enableAfc, setEnableAfc] = useState(false)
 
   const {
     apViewContextData
@@ -61,8 +61,8 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
         {$t({ defaultMessage: 'Standard power' })}
       </p>
     ,
-    LPIModeOnChange: setLowPowerIndoorModeEnabled,
-    LPIModeState: lowPowerIndoorModeEnabled,
+    LPIModeOnChange: setEnableAfc,
+    LPIModeState: enableAfc,
     isAPOutdoor: apCapabilities?.isOutdoor
   }
 
@@ -73,14 +73,14 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
 
     if(isUseVenueSettings){
       newButtonText = ( <p style={{ fontSize: '12px', margin: '0px' }}>
-        {lowPowerIndoorModeEnabled ?
-          $t({ defaultMessage: 'Low power' }) :
-          $t({ defaultMessage: 'Standard power' })
+        {enableAfc ?
+          $t({ defaultMessage: 'Standard power' }):
+          $t({ defaultMessage: 'Low power' })
         }
       </p>)
     }
     else {
-      if (isAPLowPower(afcInfo) && !lowPowerIndoorModeEnabled) {
+      if (isAPLowPower(afcInfo) && enableAfc) {
         let defaultButtonText = $t({ defaultMessage: 'Standard power' })
         let defaultStyle = { color: '#910012', fontSize: '12px', margin: '0px' }
         switch(afcInfo?.afcStatus) {

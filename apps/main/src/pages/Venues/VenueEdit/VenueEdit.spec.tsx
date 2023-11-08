@@ -133,7 +133,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         (_, res, ctx) => res(ctx.json({}))
       ),
       rest.post(CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json({ data: [], totalCount: 0 }))
+        (_, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
   })
