@@ -16,7 +16,8 @@ import {
   SwitchFirmwareStatus,
   SwitchFwStatusEnum
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }                         from '@acx-ui/react-router-dom'
+import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
 import { parseSwitchVersion } from '../../../FirmwareUtils'
 import * as UI                from '../styledComponents'
@@ -32,7 +33,9 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
   const params = useParams()
   const switchAction = useSwitchActions()
 
-  const [ getSwitchFirmwareStatusList ] = useLazyGetSwitchFirmwareStatusListQuery()
+  const [ getSwitchFirmwareStatusList ] = useLazyGetSwitchFirmwareStatusListQuery({
+    pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL
+  })
   const [switchFimwareStatusList, setSwitchFirmwareStatusList] =
     useState([] as SwitchFirmwareStatus[])
 

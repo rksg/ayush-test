@@ -122,6 +122,7 @@ export const SelectSwitchStep = (
       selectedData: SwitchFirmware[]
     }
   })
+  const totalSwitchCount = data.reduce((total, venue) => total + venue.switchCount, 0)
 
   const switchColumns: TableProps<SwitchFirmware>['columns'] = [
     {
@@ -249,10 +250,15 @@ export const SelectSwitchStep = (
       rowSelection={{
         type: 'checkbox',
         selectedRowKeys: selectedSwitchRowKeys[record.id],
-        onChange: (selectedKeys, selectedRows) => {
+        onChange: (selectedKeys) => {
           const currentSwitchList = nestedData[record.id]?.initialData
-          const result = { ...nestedData,
-            [record.id]: { initialData: currentSwitchList, selectedData: selectedRows } }
+          const result = {
+            ...nestedData,
+            [record.id]: {
+              initialData: currentSwitchList,
+              selectedData: currentSwitchList.filter(c => selectedKeys.includes(c.switchId))
+            }
+          }
           setNestedData(result as {
             [key: string]: {
               initialData: SwitchFirmware[],
@@ -322,6 +328,7 @@ export const SelectSwitchStep = (
     return false
   }
 
+
   return (
     <>
       <UI.ValidateField
@@ -342,7 +349,7 @@ export const SelectSwitchStep = (
         validateFirst
         children={<> </>}
       />
-      <Input
+      { totalSwitchCount > 0 && <Input
         allowClear
         size='middle'
         placeholder={intl.$t({ defaultMessage: 'Search Switch, Model' })}
@@ -353,7 +360,7 @@ export const SelectSwitchStep = (
           const text = (ev.target as HTMLInputElement).value
           setSearchText(text)
         }}
-      />
+      />}
       {!_.isEmpty(searchText) && <div
         style={{
           minHeight: '50vh',

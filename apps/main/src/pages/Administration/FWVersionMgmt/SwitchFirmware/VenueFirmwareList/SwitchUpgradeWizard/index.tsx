@@ -23,7 +23,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { getReleaseFirmware } from '../../../FirmwareUtils'
+import { DefaultSwitchVersion, getReleaseFirmware, parseSwitchVersion } from '../../../FirmwareUtils'
 import * as UI                from '../styledComponents'
 
 import { ScheduleStep }     from './ScheduleStep'
@@ -290,7 +290,12 @@ function checkCurrentVersions (version: string,
   filterVersions: FirmwareVersion[]): FirmwareVersion[] {
   let inUseVersions = [] as FirmwareVersion[]
   filterVersions.forEach((v: FirmwareVersion) => {
-    if (v.id === version || v.id === rodanVersion) {
+    let filterVersion = v.id
+    if (DefaultSwitchVersion.includes(filterVersion)) {
+      filterVersion = filterVersion.replace(/_[^_]*$/, '')
+    }
+
+    if (filterVersion === version || filterVersion=== rodanVersion) {
       v = { ...v, inUse: true }
     }
     inUseVersions.push(v)

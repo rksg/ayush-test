@@ -209,7 +209,7 @@ export enum SwitchFirmwareStatusType {
 }
 
 export interface SwitchFirmware {
-  switchId?: string;
+  switchId: string;
   id: string;
   switchName: string;
   isStack: boolean;

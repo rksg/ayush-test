@@ -9,8 +9,7 @@ import {
   ColumnType,
   Table,
   TableProps,
-  Loader,
-  Button
+  Loader
 } from '@acx-ui/components'
 import {
   useGetSwitchUpgradePreferencesQuery,
@@ -25,10 +24,10 @@ import {
   FirmwareSwitchVenue,
   FirmwareVersion,
   TableQuery,
-  useTableQuery,
   sortProp,
   defaultSort,
-  SwitchFirmwareStatusType
+  SwitchFirmwareStatusType,
+  usePollingTableQuery
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
@@ -177,7 +176,8 @@ export const VenueFirmwareTable = (
           <UI.TextButton
             size='small'
             ghost={true}
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation()
               setClickedRowData(row)
               setUpdateStatusDrawerVisible(true)
             }}>
@@ -211,7 +211,8 @@ export const VenueFirmwareTable = (
             <UI.TextButton
               size='small'
               ghost={true}
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation()
                 setSwitchScheduleDrawerVisible(true)
                 setClickedRowData(row)
               }}>
@@ -356,7 +357,7 @@ export const VenueFirmwareTable = (
 export function VenueFirmwareList () {
   const venuePayload = useDefaultVenuePayload()
 
-  const tableQuery = useTableQuery<FirmwareSwitchVenue>({
+  const tableQuery = usePollingTableQuery<FirmwareSwitchVenue>({
     useQuery: useGetSwitchVenueVersionListQuery,
     defaultPayload: venuePayload,
     search: {
