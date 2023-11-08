@@ -3,9 +3,9 @@ import { Divider }              from 'antd'
 import { capitalize, includes } from 'lodash'
 import { useIntl }              from 'react-intl'
 
-import { Drawer, Descriptions, PasswordInput }                                   from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
-import { useGetVenueQuery, useGetVenueSettingsQuery, useGetApValidChannelQuery } from '@acx-ui/rc/services'
+import { Drawer, Descriptions, PasswordInput }                                                              from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                           from '@acx-ui/feature-toggle'
+import { useGetVenueQuery, useGetVenueSettingsQuery, useGetApValidChannelQuery, useGetApCapabilitiesQuery } from '@acx-ui/rc/services'
 import {
   ApDetails,
   ApVenueStatusEnum,
@@ -18,7 +18,6 @@ import {
   AFCPowerStateRender } from '@acx-ui/rc/utils'
 import { TenantLink }            from '@acx-ui/react-router-dom'
 import { useUserProfileContext } from '@acx-ui/user'
-
 
 import { ApCellularProperties } from './ApCellularProperties'
 import * as UI                  from './styledComponents'
@@ -33,12 +32,14 @@ interface ApDetailsDrawerProps {
 export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const { $t } = useIntl()
   const { data: userProfile } = useUserProfileContext()
-  const { tenantId, capabilities } = useApContext()
+  const { tenantId } = useApContext()
   const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
   const { visible, setVisible, currentAP, apDetails } = props
   const { APSystem, cellularInfo: currentCellularInfo } = currentAP?.apStatusData || {}
   const ipTypeDisplay = (APSystem?.ipType) ? ` [${capitalize(APSystem?.ipType)}]` : ''
   const { data: apValidChannels } = useGetApValidChannelQuery({ params: { tenantId, serialNumber: currentAP?.serialNumber } })
+  const { data: capabilities } = useGetApCapabilitiesQuery({ params: { tenantId, serialNumber: currentAP?.serialNumber } })
+
   const { data: venueData } = useGetVenueQuery({
     params: { tenantId, venueId: currentAP?.venueId }
   },
