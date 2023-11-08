@@ -425,6 +425,7 @@ export const upgradeSwitchViewList_KittoVenue1 ={
       switchId: 'FEK1224R0AG',
       switchName: 'mock switch',
       isStack: false,
+      isSwitchLevelSchedule: true,
       model: 'ICX7150-C12P',
       availableVersion: {},
       switchNextSchedule: {
@@ -466,6 +467,7 @@ export const upgradeSwitchViewList_KittoVenue1 ={
       venueId: '1444c6702e904fa289f21d49093ba239',
       venueName: 'KittoVenue1',
       switchId: 'c0:c5:20:aa:32:79',
+      isSwitchLevelSchedule: true,
       switchName: 'FEK3224R0AG',
       isStack: false,
       model: 'ICX7150-C12P',

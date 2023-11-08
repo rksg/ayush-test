@@ -39,11 +39,7 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
       payload: { venueIdList: [props.data.id] }
     }, false)).data?.data
     if (switchList) {
-      const venueDate = getNextScheduleTpl(intl, props.data)
-      const filterSwitchList = switchList.filter(row => {
-        const switchSchedule = getSwitchNextScheduleTpl(intl, row)
-        return switchSchedule !== venueDate
-      })
+      const filterSwitchList = switchList.filter(row => row.isSwitchLevelSchedule)
       setSwitchFirmwareStatusList(filterSwitchList as SwitchFirmware[])
     }
   }
@@ -91,7 +87,6 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
     onClose={onClose}
     width={580}
     children={<>
-
       <Row style={{ lineHeight: '24px' }}>
         <Typography.Text>
           <b>  {intl.$t({ defaultMessage: 'Venue:' })}</b> {props.data.name}

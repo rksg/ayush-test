@@ -216,6 +216,7 @@ export interface SwitchFirmware {
   venueId: string;
   venueName: string;
   preDownload: boolean;
+  isSwitchLevelSchedule: boolean;
   currentFirmware: string;
   availableVersion: switchVersion;
   updatedAdvice?: VenueUpdateAdvice;
