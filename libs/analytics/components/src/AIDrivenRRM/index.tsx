@@ -65,33 +65,46 @@ function AIDrivenRRMWidget ({
     { crrmCount, zoneCount, optimizedZoneCount, crrmScenarios }
   )
 
+  const defaultText = $t({ defaultMessage:
+    `This feature is a centralized algorithm that runs in the
+    RUCKUS Analytics cloud and guarantees zero interfering links
+    for the access points (APs) managed by SmartZone controllers,
+    whenever theoretically achievable thus minimizing co-channel
+    interference to the lowest level possible.`
+  })
+
+  const noZoneText = $t({ defaultMessage:
+    `Currently RUCKUS AI cannot provide RRM combinations
+    as zones are not found on your network`
+  })
+
+  const optimalConfigText = $t({ defaultMessage:
+    `Your zone is already running in an optimal configuration
+    and we don't have any RRM to recommend currently.`
+  })
+
+  const noLicenseText = $t({ defaultMessage:
+    `Currently RUCKUS AI cannot optimize your current zone
+    for RRM due to inadequate licenses.`
+  })
+
   const noLicense = false // get from API once task is complete
 
   return <Loader states={[queryResults]}>
     <Card
       title={title}
       onArrowClick={onArrowClick}
-      subTitle={noLicense ? '' : subtitle}
+      subTitle={noLicense || !zoneCount ? '' : subtitle}
     >{noLicense
         ? <NoRRMLicense
-          text={$t({ defaultMessage:
-            `This feature is a centralized algorithm that runs in the
-            RUCKUS Analytics cloud and guarantees zero interfering links
-            for the access points (APs) managed by SmartZone controllers,
-            whenever theoretically achievable thus minimizing co-channel
-            interference to the lowest level possible.`
-          })}
-          subtitle={$t({ defaultMessage:
-            `Currently RUCKUS AI cannot optimize your current zone
-            for RRM due to inadequate licenses.`
-          })}/>
+          text={defaultText}
+          details={noLicenseText}/>
         : noData
           ? <NoRecommendationData
             noData={true}
-            text={$t({ defaultMessage:
-            `Your zone is already running in an optimal configuration
-            and we don't have any RRM to recommend currently.`
-            })}
+            isCrrm={true}
+            details={zoneCount ? '' : defaultText}
+            text={zoneCount ? optimalConfigText : noZoneText}
           />
           : <UI.List
             dataSource={data?.recommendations}

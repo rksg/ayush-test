@@ -62,4 +62,4 @@ export const LargeGreenTickIcon = styled(CheckMarkCircleSolid)`
 export const LicenseButton = styled(Button)`
   width: 100%;
 `
-export const NoLicensesIcon = styled(NoData)``
+export const NoDataIcon = styled(NoData)``
