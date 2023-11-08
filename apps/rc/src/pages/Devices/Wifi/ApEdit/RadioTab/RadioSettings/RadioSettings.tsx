@@ -843,9 +843,7 @@ export function RadioSettings () {
 
       if (!isEnablePerApRadioCustomizationFlag && payload.useVenueSettings) {
         await deleteApRadio({ params: { tenantId, serialNumber } }).unwrap()
-      }
-
-      if (isEnablePerApRadioCustomizationFlag || !payload.useVenueSettings) {
+      } else {
         await updateApRadio({
           params: { tenantId, serialNumber },
           payload: payload
