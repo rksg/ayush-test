@@ -297,16 +297,10 @@ export const isHasRadioDual5G = (isSupportDual5GAp: boolean, isDual5gMode: boole
 export const isHasRadio6G = (isSupportTriBandRadioAp: boolean, isDual5gMode: boolean, lengthOfBandwidth6GOptions: number) => (isSupportTriBandRadioAp && !isDual5gMode) && lengthOfBandwidth6GOptions > 0
 
 function VenueNameDisplay ({ venue }: { venue: VenueExtended }) {
-  return (
-    <FormattedMessage
-      defaultMessage={'(<venuelink></venuelink>)'}
-      values={{
-        venuelink: () => venue?
-          <TenantLink
-            to={`venues/${venue.id}/venue-details/overview`}>{venue?.name}
-          </TenantLink> : ''
-      }}
-    />
+  return (venue ?
+    <TenantLink
+      to={`venues/${venue.id}/venue-details/overview`}>{venue?.name}
+    </TenantLink> : <span></span>
   )
 }
 
@@ -1017,12 +1011,26 @@ export function RadioSettings () {
                 fontSize: '14px',
                 paddingBottom: '20px' }}
               >
-                { isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, currentTab, isEnablePerApRadioCustomizationFlag) ?
-                  <span>
-                    { `Currently ${ getRadioTypeDisplayName(currentTab) } settings as the venue ` }
-                    <VenueNameDisplay venue={venue} />
-                  </span>
-                  :$t({ defaultMessage: 'Custom' }) + ` ${ getRadioTypeDisplayName(currentTab) } ` + $t({ defaultMessage: 'settings' })
+                {
+                  isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, currentTab, isEnablePerApRadioCustomizationFlag) ?
+                    <span>
+                      <FormattedMessage
+                        defaultMessage={'Currently <radioTypeName></radioTypeName> settings as the venue (<venuelink></venuelink>)'}
+                        values={{
+                          radioTypeName: () => getRadioTypeDisplayName(currentTab),
+                          venuelink: () => venue ? <VenueNameDisplay venue={venue} /> : ''
+                        }}
+                      />
+                    </span>
+                    :
+                    <span>
+                      <FormattedMessage
+                        defaultMessage={'Custom <radioTypeName></radioTypeName> settings'}
+                        values={{
+                          radioTypeName: () => getRadioTypeDisplayName(currentTab)
+                        }}
+                      />
+                    </span>
                 }
               </Space>
             </Col>
