@@ -41,7 +41,6 @@ export function usePageHeaderExtra (type: ReportType, showFilter = true) {
         shouldQueryAp={shouldQueryAp}
         showRadioBand={showRadioBand}
         multiple={true}
-        filterMode={mode}
         filterFor={'reports'}
         isRadioBandDisabled={isRadioBandDisabled}
         radioBandDisabledReason={radioBandDisabledReason}

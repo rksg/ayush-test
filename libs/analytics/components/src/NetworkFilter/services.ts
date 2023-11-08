@@ -45,7 +45,7 @@ export const api = dataApi.injectEndpoints({
     venuesHierarchy: build.query<Child[], NetworkHierarchyFilter>({
       query: payload => ({
         document: gql`
-          query Network(
+          query VenueHierarchy(
             $start: DateTime,
             $end: DateTime,
             $querySwitch: Boolean,

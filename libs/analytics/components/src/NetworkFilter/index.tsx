@@ -35,7 +35,6 @@ type ConnectedNetworkFilterProps = {
     withIncidents?: boolean,
     showRadioBand?: boolean,
     multiple?: boolean,
-    filterMode?: FilterMode,
     filterFor?: 'analytics' | 'reports',
     defaultValue?: SingleValueType | SingleValueType[],
     defaultRadioBand?: RadioBand[],
@@ -103,7 +102,7 @@ export const getNetworkFilterData = (
   const venues: { [key: string]: CascaderOption } = {}
   for (const { id, name, aps, switches } of data) {
     const venuePath = [
-      defaultNetworkPath,
+      ...defaultNetworkPath,
       { type: aps?.length ? 'zone' : 'switchGroup', name: replaceVenueNameWithId ? id : name }
     ]
     if (!venues[name]) {
@@ -191,7 +190,6 @@ function ConnectedNetworkFilter (
     shouldQueryAp,
     withIncidents,
     showRadioBand,
-    filterMode='both',
     filterFor='analytics',
     multiple,
     defaultValue,
@@ -230,12 +228,13 @@ function ConnectedNetworkFilter (
   const isReports = filterFor === 'reports'
   let rawVal:string[][] = isReports ? reportsRaw : raw
   // Below condition will avoid empty tags in the filter while switching between AP and Switch reports
-  if(filterMode === 'switch'){
+  if(!shouldQuerySwitch){
     selectedBands=[]
     rawVal=rawVal.filter(value=>{
       return !value[0].includes('zone')
     })
-  }else if(filterMode === 'ap'){
+  }
+  if(!shouldQueryAp){
     rawVal=rawVal.filter(value=>{
       return !value[0].includes('switchGroup')
     })
