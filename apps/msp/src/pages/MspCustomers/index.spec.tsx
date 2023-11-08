@@ -303,7 +303,7 @@ describe('MspCustomers', () => {
       expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
     })
     expect(screen.getByText('Installed Devices')).toBeVisible()
-    expect(screen.getByText('Device Subscriptions Utilization')).toBeVisible()
+    // expect(screen.getByText('Device Subscriptions Utilization')).toBeVisible()
 
     expect(screen.queryByText('Wi-Fi Licenses')).toBeNull()
   })

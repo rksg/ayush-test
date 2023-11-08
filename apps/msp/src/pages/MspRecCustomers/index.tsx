@@ -238,12 +238,6 @@ export function MspRecCustomers () {
       }
     },
     {
-      title: $t({ defaultMessage: 'Address' }),
-      dataIndex: 'streetAddress',
-      key: 'streetAddress',
-      sorter: true
-    },
-    {
       title: transformAdminCountHeader(),
       dataIndex: 'mspAdminCount',
       align: 'center',
@@ -263,14 +257,6 @@ export function MspRecCustomers () {
             ? <Link to=''>{transformAdminCount(row)}</Link> : transformAdminCount(row)
         )
       }
-    },
-    {
-      title: $t({ defaultMessage: 'Customer Admin Count' }),
-      dataIndex: 'mspEcAdminCount',
-      align: 'center',
-      key: 'mspEcAdminCount',
-      sorter: true,
-      show: false
     },
     ...(isIntegrator || userProfile?.support ? [] : [{
       title: $t({ defaultMessage: 'Integrator' }),
@@ -322,25 +308,33 @@ export function MspRecCustomers () {
         key: 'apswLicenseInstalled',
         sorter: true,
         render: function (_: React.ReactNode, row: MspEc) {
-          return mspUtils.transformInstalledDevice(row.entitlements)
+          return <div style={{ textAlign: 'center' }}>
+            {mspUtils.transformInstalledDevice(row.entitlements)}</div>
         }
       },
       {
-        title: $t({ defaultMessage: 'Assigned Device Subscriptions' }),
+        title: <div style={{ textAlign: 'center' }}>
+          <div>{$t({ defaultMessage: 'Assigned Device' })}</div>
+          <div>{$t({ defaultMessage: 'Subscriptions' })}</div></div>,
         dataIndex: 'apswLicense',
         key: 'apswLicense',
         sorter: true,
         render: function (data: React.ReactNode, row: MspEc) {
-          return mspUtils.transformDeviceEntitlement(row.entitlements)
+          return <div style={{ textAlign: 'center' }}>
+            {mspUtils.transformDeviceEntitlement(row.entitlements)}</div>
         }
       },
       {
-        title: $t({ defaultMessage: 'Device Subscriptions Utilization' }),
+        title: <div style={{ textAlign: 'center' }}>
+          <div>{$t({ defaultMessage: 'Device Subscriptions' })}</div>
+          <div>{$t({ defaultMessage: 'Utilization' })}</div></div>,
         dataIndex: 'apswLicensesUtilization',
         key: 'apswLicensesUtilization',
         sorter: true,
         render: function (data: React.ReactNode, row: MspEc) {
-          return mspUtils.transformDeviceUtilization(row.entitlements)
+          return <div style={{ textAlign: 'center' }}>
+            {mspUtils.transformDeviceUtilization(row.entitlements)}</div>
+
         }
       }
     ] : [
@@ -382,21 +376,25 @@ export function MspRecCustomers () {
         }
       }]),
     {
-      title: $t({ defaultMessage: 'Active From' }),
+      title: $t({ defaultMessage: 'No-License Devices' }),
       dataIndex: 'creationDate',
       key: 'creationDate',
       sorter: true,
       render: function (_, row) {
-        return mspUtils.transformCreationDate(row)
+        return <div style={{ textAlign: 'center' }}>
+          {mspUtils.transformoutOfComplianceDevices(row.entitlements)}</div>
       }
     },
     {
-      title: $t({ defaultMessage: 'Service Expires On' }),
+      title: <div style={{ textAlign: 'center' }}>
+        <div>{$t({ defaultMessage: 'License Expiration' })}</div>
+        <div>{$t({ defaultMessage: 'Devices / Days' })}</div></div>,
       dataIndex: 'expirationDate',
       key: 'expirationDate',
       sorter: true,
       render: function (_, row) {
-        return mspUtils.transformExpirationDate(row)
+        return <div style={{ textAlign: 'center' }}>
+          {mspUtils.transformoutFutureOfComplianceDevices(row.entitlements)}</div>
       }
     },
     {

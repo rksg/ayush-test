@@ -35,6 +35,7 @@ export const MSPUtils = () => {
   }
 
   const transformInstalledDevice = (entitlements: DelegationEntitlementRecord[]) => {
+    entitlements = entitlements ?? []
     let installedDevices = 0
     const apswEntitlement = entitlements.filter((en:DelegationEntitlementRecord) =>
       en.entitlementDeviceType === EntitlementNetworkDeviceType.APSW)
@@ -48,6 +49,7 @@ export const MSPUtils = () => {
   }
 
   const transformDeviceEntitlement = (entitlements: DelegationEntitlementRecord[]) => {
+    entitlements = entitlements ?? []
     let assignedDevices = 0
     const apswEntitlement = entitlements.filter((en:DelegationEntitlementRecord) =>
       en.entitlementDeviceType === EntitlementNetworkDeviceType.APSW)
@@ -61,6 +63,7 @@ export const MSPUtils = () => {
   }
 
   const transformDeviceUtilization = (entitlements: DelegationEntitlementRecord[]) => {
+    entitlements = entitlements ?? []
     let consumed = 0
     let quantity = 0
     const apswEntitlement = entitlements.filter((en:DelegationEntitlementRecord) =>
@@ -78,6 +81,15 @@ export const MSPUtils = () => {
     } else {
       return '0%'
     }
+  }
+
+  const transformoutOfComplianceDevices = (entitlements: DelegationEntitlementRecord[]) => {
+    return entitlements ? (entitlements[0].outOfComplianceDevices || 0) : 0
+  }
+
+  const transformoutFutureOfComplianceDevices = (entitlements: DelegationEntitlementRecord[]) => {
+    return entitlements ? `${(entitlements[0].futureOutOfComplianceDevices || 0)} 
+    / ${(entitlements[0].futureOfComplianceDate || '--')}` : '0 / --'
   }
 
   const getStatus = (row: MspEc) => {
@@ -154,6 +166,8 @@ export const MSPUtils = () => {
     transformInstalledDevice,
     transformDeviceEntitlement,
     transformDeviceUtilization,
+    transformoutOfComplianceDevices,
+    transformoutFutureOfComplianceDevices,
     getStatus,
     transformApEntitlement,
     transformUtilization,

@@ -37,6 +37,9 @@ export interface DelegationEntitlementRecord {
   type: string;
   subTypeText?: string;
   percentageUsage?: string;
+  outOfComplianceDevices?: number;
+  futureOutOfComplianceDevices?: number;
+  futureOfComplianceDate?: number;
 }
 
 export interface MspEc {

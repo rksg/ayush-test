@@ -418,25 +418,32 @@ export function MspCustomers () {
           key: 'apswLicenseInstalled',
           sorter: true,
           render: function (_: React.ReactNode, row: MspEc) {
-            return mspUtils.transformInstalledDevice(row.entitlements ?? [])
+            return <div style={{ textAlign: 'center' }}>
+              {mspUtils.transformInstalledDevice(row.entitlements)}</div>
           }
         },
         {
-          title: $t({ defaultMessage: 'Assigned Device Subscriptions' }),
+          title: <div style={{ textAlign: 'center' }}>
+            <div>{$t({ defaultMessage: 'Assigned Device' })}</div>
+            <div>{$t({ defaultMessage: 'Subscriptions' })}</div></div>,
           dataIndex: 'apswLicense',
           key: 'apswLicense',
           sorter: true,
           render: function (data: React.ReactNode, row: MspEc) {
-            return mspUtils.transformDeviceEntitlement(row.entitlements ?? [])
+            return <div style={{ textAlign: 'center' }}>
+              {mspUtils.transformDeviceEntitlement(row.entitlements)}</div>
           }
         },
         {
-          title: $t({ defaultMessage: 'Device Subscriptions Utilization' }),
+          title: <div style={{ textAlign: 'center' }}>
+            <div>{$t({ defaultMessage: 'Device Subscriptions' })}</div>
+            <div>{$t({ defaultMessage: 'Utilization' })}</div></div>,
           dataIndex: 'apswLicensesUtilization',
           key: 'apswLicensesUtilization',
           sorter: true,
-          render: function (data: React.ReactNode, row: MspEc) {
-            return mspUtils.transformDeviceUtilization(row.entitlements ?? [])
+          render: function (_: React.ReactNode, row: MspEc) {
+            return <div style={{ textAlign: 'center' }}>
+              {mspUtils.transformDeviceUtilization(row.entitlements)}</div>
           }
         }
       ] : [
@@ -499,12 +506,13 @@ export function MspCustomers () {
           const nextExpirationDate = transformExpirationDate(row)
           if (nextExpirationDate === '--')
             return nextExpirationDate
+          const expiredOnString = `${$t({ defaultMessage: 'Expired on' })} ${nextExpirationDate}`
           const remainingDays = EntitlementUtil.timeLeftInDays(nextExpirationDate)
           const TimeLeftWrapper = remainingDays < 0
             ? UI.Expired
             : (remainingDays <= 60 ? UI.Warning : Space)
           return <TimeLeftWrapper>
-            {(remainingDays < 0) && $t({ defaultMessage: 'Expired on' })}{nextExpirationDate}
+            {remainingDays < 0 ? expiredOnString : nextExpirationDate}
           </TimeLeftWrapper>
         }
       },
