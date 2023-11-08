@@ -6,8 +6,9 @@ import * as UI from './styledComponents'
 interface NoDataWrapperProps {
   text?: string
   style?: CSSProperties
-  recommendation?: [],
+  recommendation?: []
   noData?: boolean
+  subtitle?: string
 }
 export function NoData ({ text, style }: NoDataWrapperProps) {
   const { $t } = useIntl()
@@ -44,8 +45,16 @@ export function NoActiveContent ({ text }: NoDataWrapperProps) {
 export function NoRecommendationData ({ text, noData = false }: NoDataWrapperProps) {
   return (
     <UI.NoRecommendationDataWrapper style={{ marginTop: noData ? '50px': 0 }}>
-      <UI.TextWrapper><UI.LargeGreenTickIcon /></UI.TextWrapper>
-      <UI.NoDataTextWrapper>{text}</UI.NoDataTextWrapper>
+      <UI.TextWrapper
+        style={{ paddingBottom: '15px' }}
+      >
+        <UI.LargeGreenTickIcon />
+      </UI.TextWrapper>
+      <UI.NoDataTextWrapper
+        style={{ color: 'var(--acx-neutrals-50)' }}
+      >
+        {text}
+      </UI.NoDataTextWrapper>
     </UI.NoRecommendationDataWrapper>
   )
 }
@@ -58,6 +67,29 @@ export function NoAiOpsLicense ({ text }: NoDataWrapperProps) {
       <UI.TextWrapper style={{ paddingTop: '50px' }}><UI.NoLicensesIcon /></UI.TextWrapper>
       <UI.NoLicenseTextWrapper>{noLicenseText}</UI.NoLicenseTextWrapper>
       <UI.NoDataTextWrapper style={{ paddingBottom: '100px' }}>{text}</UI.NoDataTextWrapper>
+      <UI.LicenseButton type='default'>
+        {$t({ defaultMessage: 'Update my licenses' })}
+      </UI.LicenseButton>
+    </UI.NoAILicenseWrapper>
+  )
+}
+
+export function NoRRMLicense ({ text, subtitle }: NoDataWrapperProps) {
+  const { $t } = useIntl()
+  return (
+    <UI.NoAILicenseWrapper>
+      <UI.NoDataTextWrapper
+        style={{
+          paddingBottom: '10px',
+          paddingTop: '20px',
+          color: 'var(--acx-neutrals-50)'
+        }}>
+        {text}
+      </UI.NoDataTextWrapper>
+      <UI.NoDataTextWrapper
+        style={{ paddingBottom: '110px', color: 'var(--acx-neutrals-50)' }}>
+        {subtitle}
+      </UI.NoDataTextWrapper>
       <UI.LicenseButton type='default'>
         {$t({ defaultMessage: 'Update my licenses' })}
       </UI.LicenseButton>

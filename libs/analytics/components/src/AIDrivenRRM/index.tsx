@@ -1,10 +1,10 @@
 import { useIntl } from 'react-intl'
 
-import { isSwitchPath }                             from '@acx-ui/analytics/utils'
-import { Loader, Card, Tooltip, NoData, ColorPill } from '@acx-ui/components'
-import { formatter, intlFormats }                   from '@acx-ui/formatter'
-import { TenantLink, useNavigateToPath }            from '@acx-ui/react-router-dom'
-import type { PathFilter }                          from '@acx-ui/utils'
+import { isSwitchPath }                                                         from '@acx-ui/analytics/utils'
+import { Loader, Card, Tooltip, NoRecommendationData, ColorPill, NoRRMLicense } from '@acx-ui/components'
+import { formatter, intlFormats }                                               from '@acx-ui/formatter'
+import { TenantLink, useNavigateToPath }                                        from '@acx-ui/react-router-dom'
+import type { PathFilter }                                                      from '@acx-ui/utils'
 
 import { CrrmList, CrrmListItem, useCrrmListQuery } from '../Recommendations/services'
 import { OptimizedIcon }                            from '../Recommendations/styledComponents'
@@ -64,43 +64,62 @@ function AIDrivenRRMWidget ({
     },
     { crrmCount, zoneCount, optimizedZoneCount, crrmScenarios }
   )
-  const noCrrmText = $t({ defaultMessage: `RUCKUS AI has confirmed that all zones are currently
-    operating with the optimal RRM configurations and no further recommendation is required.` })
+
+  const noLicense = false // get from API once task is complete
 
   return <Loader states={[queryResults]}>
     <Card
       title={title}
       onArrowClick={onArrowClick}
-      subTitle={noData ? noCrrmText : subtitle}
-    >{noData
-        ? <NoData text={$t({ defaultMessage: 'No recommendations' })} />
-        : <UI.List
-          dataSource={data?.recommendations}
-          renderItem={item => {
-            const recommendation = item as CrrmListItem
-            const {
-              sliceValue,
-              id,
-              crrmOptimizedState,
-              crrmInterferingLinksText,
-              summary
-            } = recommendation
-            return <UI.List.Item key={id}>
-              <TenantLink to={`/recommendations/crrm/${id}`}>
-                <Tooltip
-                  placement='top'
-                  title={summary}
-                >
-                  <UI.List.Item.Meta
-                    avatar={<OptimizedIcon value={crrmOptimizedState!.order} />}
-                    title={sliceValue}
-                    description={crrmInterferingLinksText}
-                  />
-                </Tooltip>
-              </TenantLink>
-            </UI.List.Item>
-          }}
-        />
+      subTitle={noLicense ? '' : subtitle}
+    >{noLicense
+        ? <NoRRMLicense
+          text={$t({ defaultMessage:
+            `This feature is a centralized algorithm that runs in the
+            RUCKUS Analytics cloud and guarantees zero interfering links
+            for the access points (APs) managed by SmartZone controllers,
+            whenever theoretically achievable thus minimizing co-channel
+            interference to the lowest level possible.`
+          })}
+          subtitle={$t({ defaultMessage:
+            `Currently RUCKUS AI cannot optimize your current zone
+            for RRM due to inadequate licenses.`
+          })}/>
+        : noData
+          ? <NoRecommendationData
+            noData={true}
+            text={$t({ defaultMessage:
+            `Your zone is already running in an optimal configuration
+            and we don't have any RRM to recommend currently.`
+            })}
+          />
+          : <UI.List
+            dataSource={data?.recommendations}
+            renderItem={item => {
+              const recommendation = item as CrrmListItem
+              const {
+                sliceValue,
+                id,
+                crrmOptimizedState,
+                crrmInterferingLinksText,
+                summary
+              } = recommendation
+              return <UI.List.Item key={id}>
+                <TenantLink to={`/recommendations/crrm/${id}`}>
+                  <Tooltip
+                    placement='top'
+                    title={summary}
+                  >
+                    <UI.List.Item.Meta
+                      avatar={<OptimizedIcon value={crrmOptimizedState!.order} />}
+                      title={sliceValue}
+                      description={crrmInterferingLinksText}
+                    />
+                  </Tooltip>
+                </TenantLink>
+              </UI.List.Item>
+            }}
+          />
       }
     </Card>
   </Loader>
