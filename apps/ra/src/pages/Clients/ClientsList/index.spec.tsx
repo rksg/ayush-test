@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { Provider, dataApiSearchURL }                                  from '@acx-ui/store'
+import { Provider, dataApiSearchURL, dataApiURL }                      from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { ClientsList } from '.'
@@ -72,7 +72,27 @@ describe('Clients List', () => {
     expect(screen.getByText('18:B4:30:05:1C:BE')).toBeVisible()
     expect(screen.getByText('manufacturer3')).toBeVisible()
   })
-
+  it('should render table with zone filter correctly', async () => {
+    mockGraphqlQuery(dataApiURL, 'Network', {
+      data: {
+        network: clientsList
+      }
+    })
+    const zoneQuery = {
+      path: [[{ type: 'zone' as const, name: 'zone' }]]
+    }
+    render(<ClientsList queryParmsForZone={zoneQuery}/>, {
+      wrapper: Provider,
+      route: {
+        params: { tenantId: 't-id' }
+      }
+    })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    expect(screen.getByText('02AA01AB50120H4M')).toBeVisible()
+    expect(screen.getByText('18b43004d810')).toBeVisible()
+    expect(screen.getByText('18:B4:30:05:1C:BE')).toBeVisible()
+    expect(screen.getByText('manufacturer3')).toBeVisible()
+  })
   it('should show no data on empty list', async () => {
     mockGraphqlQuery(dataApiSearchURL, 'Search', {
       data: emptyClientsList

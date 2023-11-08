@@ -17,6 +17,12 @@ jest.mock('../Wifi/ApsTable', () => {
     APList: () => <div data-testid='zoneWiseApList' />
   }
 })
+jest.mock('../Clients/ClientsList', () => {
+  return {
+    __esModule: true,
+    ClientsList: () => <div data-testid='zoneClientsList' />
+  }
+})
 describe('ZoneDetails', () => {
   it('should render correctly', async () => {
     const params = {
@@ -64,7 +70,7 @@ describe('ZoneDetails', () => {
       }
     })
     expect(await screen.findByText('zoneName')).toBeVisible()
-    expect(await screen.findByText('clients tab')).toBeVisible()
+    expect(await screen.findByTestId('zoneClientsList')).toBeVisible()
   })
   it('should render devices tab correctly', async () => {
     const params = {

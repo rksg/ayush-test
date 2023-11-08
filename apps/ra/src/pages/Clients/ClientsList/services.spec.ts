@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom'
 
-import { store, dataApiSearchURL } from '@acx-ui/store'
-import { mockGraphqlQuery }        from '@acx-ui/test-utils'
+import { store, dataApiSearchURL,dataApiURL } from '@acx-ui/store'
+import { mockGraphqlQuery }                   from '@acx-ui/test-utils'
 
 import {
-  clientListApi
+  clientListApi, networkClientListApi
 } from './services'
 
 export const clientsList = {
@@ -40,7 +40,7 @@ export const clientsList = {
     ]
   }
 }
-describe('Client list API', () => {
+describe('Client list search API', () => {
   beforeEach(() => {
     store.dispatch(clientListApi.util.resetApiState())
   })
@@ -57,6 +57,32 @@ describe('Client list API', () => {
     }
     const { status, data, error } = await store.dispatch(
       clientListApi.endpoints.clientList.initiate(payload))
+
+    expect(error).toBeUndefined()
+    expect(status).toBe('fulfilled')
+    expect(data).toMatchObject(clientsList.search)
+  })
+})
+describe('Client list network API', () => {
+  beforeEach(() => {
+    store.dispatch(networkClientListApi.util.resetApiState())
+  })
+
+  it('search api should return the data', async () => {
+    mockGraphqlQuery(dataApiURL, 'Network', {
+      data: {
+        network: clientsList
+      }
+    })
+    const payload = {
+      start: '2023-04-06T15:26:21+05:30',
+      end: '2023-04-06T15:29:48+05:30',
+      query: '',
+      limit: 100,
+      filter: {}
+    }
+    const { status, data, error } = await store.dispatch(
+      networkClientListApi.endpoints.networkClientList.initiate(payload))
 
     expect(error).toBeUndefined()
     expect(status).toBe('fulfilled')

@@ -3,27 +3,42 @@ import { useState } from 'react'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { defaultSort, sortProp  }                          from '@acx-ui/analytics/utils'
-import { Filter, Loader, Table, TableProps, useDateRange } from '@acx-ui/components'
-import { DateFormatEnum, formatter }                       from '@acx-ui/formatter'
-import { TenantLink }                                      from '@acx-ui/react-router-dom'
-import { encodeParameter, DateFilter, DateRange }          from '@acx-ui/utils'
+import { defaultSort, sortProp  }                                from '@acx-ui/analytics/utils'
+import { Filter, Loader, Table, TableProps, useDateRange }       from '@acx-ui/components'
+import { DateFormatEnum, formatter }                             from '@acx-ui/formatter'
+import { TenantLink }                                            from '@acx-ui/react-router-dom'
+import { encodeParameter, DateFilter, DateRange, useDateFilter } from '@acx-ui/utils'
 
-import { useClientListQuery, Client } from './services'
+import { QueryParamsForZone } from '../../Wifi/ApsTable'
+
+import { useClientListQuery, useNetworkClientListQuery, Client } from './services'
 
 
 const pagination = { pageSize: 10, defaultPageSize: 10 }
 
-export function ClientsList ({ searchVal='' }: { searchVal?: string }) {
+export function ClientsList ({ searchVal='', queryParmsForZone }:
+{ searchVal?: string, queryParmsForZone?: QueryParamsForZone }) {
   const { $t } = useIntl()
+  const isZoneQuery = Boolean(queryParmsForZone)
   const { timeRange } = useDateRange()
+  const { startDate, endDate } = useDateFilter()
   const [searchString, setSearchString] = useState(searchVal)
-  const results = useClientListQuery({
+  const clientsList = useClientListQuery({
     start: timeRange[0].format(),
     end: timeRange[1].format(),
     limit: 100,
     query: searchString
-  })
+  },
+  { skip: isZoneQuery })
+  const networkClientsList = useNetworkClientListQuery({
+    start: startDate,
+    end: endDate,
+    limit: 100,
+    query: '',
+    filter: { networkNodes: queryParmsForZone?.path }
+  },
+  { skip: !isZoneQuery })
+  const results = isZoneQuery ? networkClientsList : clientsList
 
   const onSearch = (
     _: Filter,
