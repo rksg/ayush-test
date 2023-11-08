@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
 
-import { rest } from 'msw'
+import { groupBy } from 'lodash'
+import { rest }    from 'msw'
 
 import { store, rbacApiURL } from '@acx-ui/store'
 import { mockServer }        from '@acx-ui/test-utils'
@@ -18,7 +19,7 @@ describe('RBAC API', () => {
     const { status, data, error } = await store.dispatch(rbacApi.endpoints.systems.initiate({}))
     expect(error).toBeUndefined()
     expect(status).toBe('fulfilled')
-    expect(data).toEqual(mockSystems)
+    expect(data).toEqual(groupBy(mockSystems.networkNodes, 'deviceName'))
   })
   it('update invitation api should work', async () => {
     mockServer.use(

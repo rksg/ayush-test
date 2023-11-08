@@ -93,7 +93,6 @@ function useSANetworkHierarchy () {
   }), [])
   const { form } = useStepFormContext<ServiceGuardFormDto>()
   const systems = useSystems()
-  const systemMap = systems.data && _.groupBy(systems.data.networkNodes, 'deviceName')
   const response = useNetworkHierarchyQuery(
     { ...filter, shouldQueryAp: true, shouldQuerySwitch: false }, {
       skip: !get('IS_MLISA_SA') || !systems.data,
@@ -101,7 +100,7 @@ function useSANetworkHierarchy () {
         ...rest,
         data: { ...defaultNetworkPath[0], children: filterSANetworkHierarchy(
           data?.children ?? [],
-          systemMap!,
+          systems.data!,
           deviceRequirements[
             form.getFieldValue(ClientType.fieldName) as keyof typeof deviceRequirements
           ] as DeviceRequirementsType)
