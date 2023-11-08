@@ -360,7 +360,7 @@ export function MspRecCustomers () {
       sorter: true,
       render: function (_, row) {
         return <div style={{ textAlign: 'center' }}>
-          {mspUtils.transformoutOfComplianceDevices(row.entitlements)}</div>
+          {mspUtils.transformOutOfComplianceDevices(row.entitlements)}</div>
       }
     },
     {
@@ -372,7 +372,7 @@ export function MspRecCustomers () {
       sorter: true,
       render: function (_, row) {
         return <div style={{ textAlign: 'center' }}>
-          {mspUtils.transformoutFutureOfComplianceDevices(row.entitlements)}</div>
+          {mspUtils.transformFutureOutOfComplianceDevices(row.entitlements)}</div>
       }
     },
     {

@@ -85,13 +85,26 @@ export const MSPUtils = () => {
     }
   }
 
-  const transformoutOfComplianceDevices = (entitlements: DelegationEntitlementRecord[]) => {
-    return entitlements ? (entitlements[0].outOfComplianceDevices || 0) : 0
+  const transformOutOfComplianceDevices = (entitlements: DelegationEntitlementRecord[]) => {
+    return entitlements && entitlements.length > 0
+      ? (entitlements[0].outOfComplianceDevices || 0) : 0
   }
 
-  const transformoutFutureOfComplianceDevices = (entitlements: DelegationEntitlementRecord[]) => {
-    return entitlements ? `${(entitlements[0].futureOutOfComplianceDevices || 0)} 
-    / ${(entitlements[0].futureOfComplianceDate || '--')}` : '0 / --'
+  const futureOutOfComplianceDays = (futurnDays?: number) => {
+    if (!futurnDays || isNaN(futurnDays)) {
+      return '--'
+    }
+    const Epoch = futurnDays - (futurnDays % 1000)
+    const expirationDate = formatter(DateFormatEnum.DateFormat)(Epoch)
+    const newDate = new Date(expirationDate)
+    const daysLeft = moment(newDate).diff(moment(), 'days', true)
+    return Math.round(daysLeft)
+  }
+
+  const transformFutureOutOfComplianceDevices = (entitlements: DelegationEntitlementRecord[]) => {
+    return entitlements && entitlements.length > 0
+      ? `${(entitlements[0].futureOutOfComplianceDevices || 0)} 
+        / ${futureOutOfComplianceDays(entitlements[0].futureOfComplianceDate)}` : '0 / --'
   }
 
   const getStatus = (row: MspEc) => {
@@ -193,8 +206,8 @@ export const MSPUtils = () => {
     transformInstalledDevice,
     transformDeviceEntitlement,
     transformDeviceUtilization,
-    transformoutOfComplianceDevices,
-    transformoutFutureOfComplianceDevices,
+    transformOutOfComplianceDevices,
+    transformFutureOutOfComplianceDevices,
     getStatus,
     transformApEntitlement,
     transformUtilization,
