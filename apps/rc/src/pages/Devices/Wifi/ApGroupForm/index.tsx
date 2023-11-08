@@ -172,7 +172,7 @@ export function ApGroupForm () {
       breadcrumb={[
         { text: $t({ defaultMessage: 'Wi-Fi' }) },
         { text: $t({ defaultMessage: 'Access Points' }) },
-        { text: $t({ defaultMessage: 'AP Group List' }) }
+        { text: $t({ defaultMessage: 'AP Group List' }), link: '/devices/wifi/apgroups' }
       ]}
     />
     <StepsFormLegacy

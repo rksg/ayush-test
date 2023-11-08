@@ -1,4 +1,3 @@
-import { CountAndNames } from '..'
 import {
   GuestNetworkTypeEnum,
   NetworkTypeEnum,
@@ -33,7 +32,7 @@ export interface CreateNetworkFormFields {
   macAuthMacFormat?: string;
 }
 
-export interface Network { // TODO: Move all Network type from libs/rc/shared/services/src/type
+export interface Network {
   id: string
   name: string
   description: string
@@ -42,12 +41,24 @@ export interface Network { // TODO: Move all Network type from libs/rc/shared/se
   vlan: number
   aps: number
   clients: number
-  venues: CountAndNames
+  venues: { count: number, names: string[], ids: string[] }
   captiveType?: GuestNetworkTypeEnum
   deepNetwork?: NetworkDetail
   vlanPool?: { name: string }
-  activated: { isActivated: boolean, isDisabled?: boolean, errors?: string[] }
+  activated?: { isActivated: boolean, isDisabled?: boolean, errors?: string[] }
   allApDisabled?: boolean
+  children?: Network[]
+  dsaeOnboardNetwork?: Network
+  securityProtocol?: string
+  isOnBoarded?: boolean
+  isOweMaster?: boolean
+  owePairNetworkId?: string
+}
+
+export interface NetworkExtended extends Network {
+  deepVenue?: NetworkVenue,
+  latitude?: string,
+  longitude?: string
 }
 
 export interface NetworkDetail {
@@ -55,56 +66,57 @@ export interface NetworkDetail {
   tenantId: string
   name: string
   venues: NetworkVenue[]
-  id: string,
+  id: string
   wlan: {
-    wlanSecurity: WlanSecurityEnum,
-    ssid?: string;
-    vlanId?: number;
-    enable?: boolean;
+    wlanSecurity: WlanSecurityEnum
+    ssid?: string
+    vlanId?: number
+    enable?: boolean
     advancedCustomization?:
       OpenWlanAdvancedCustomization |
       AAAWlanAdvancedCustomization |
       DpskWlanAdvancedCustomization |
       PskWlanAdvancedCustomization;
-  },
+  }
+  isOweMaster?: boolean
 }
 
 export type ClientIsolationVenue = Pick<NetworkVenue, 'venueId' | 'clientIsolationAllowlistId'>
 
 export interface NetworkSaveData {
-  id?: string;
-  name?: string;
-  tenantId?: string;
-  description?: string;
-  type?: NetworkTypeEnum;
-  enableAccountingService?: boolean;
-  enableAccountingProxy?: boolean;
-  enableAuthProxy?: boolean;
-  enableSecondaryAuthServer?: boolean;
-  enableSecondaryAcctServer?: boolean;
-  isCloudpathEnabled?: boolean;
-  cloudpathServerId?: string;
-  venues?: NetworkVenue[];
-  redirectUrl?: string;
-  guestPortal?: GuestPortal;
-  portalServiceProfileId?: string;
-  authRadiusId?: string | null;
-  accountingRadiusId?: string;
-  enableDhcp?: boolean;
+  id?: string
+  name?: string
+  tenantId?: string
+  description?: string
+  type?: NetworkTypeEnum
+  enableAccountingService?: boolean
+  enableAccountingProxy?: boolean
+  enableAuthProxy?: boolean
+  enableSecondaryAuthServer?: boolean
+  enableSecondaryAcctServer?: boolean
+  isCloudpathEnabled?: boolean
+  cloudpathServerId?: string
+  venues?: NetworkVenue[]
+  redirectUrl?: string
+  guestPortal?: GuestPortal
+  portalServiceProfileId?: string
+  authRadiusId?: string | null
+  accountingRadiusId?: string
+  enableDhcp?: boolean
   wlan?: {
-    ssid?: string;
-    vlanId?: number;
-    enable?: boolean;
-    bypassCNA?: boolean;
-    bypassCPUsingMacAddressAuthentication?: boolean;
-    passphrase?: string;
-    saePassphrase?: string;
-    managementFrameProtection?: string;
-    macAddressAuthentication?: boolean;
-    macRegistrationListId?: string;
-    macAuthMacFormat?: string;
-    wlanSecurity?: WlanSecurityEnum;
-    wepHexKey?: string;
+    ssid?: string
+    vlanId?: number
+    enable?: boolean
+    bypassCNA?: boolean
+    bypassCPUsingMacAddressAuthentication?: boolean
+    passphrase?: string
+    saePassphrase?: string
+    managementFrameProtection?: string
+    macAddressAuthentication?: boolean
+    macRegistrationListId?: string
+    macAuthMacFormat?: string
+    wlanSecurity?: WlanSecurityEnum
+    wepHexKey?: string
     advancedCustomization?:
       OpenWlanAdvancedCustomization |
       AAAWlanAdvancedCustomization |
@@ -112,13 +124,13 @@ export interface NetworkSaveData {
       PskWlanAdvancedCustomization |
       GuestWlanAdvancedCustomization
   };
-  wlanSecurity?: WlanSecurityEnum;
-  dpskWlanSecurity?: WlanSecurityEnum;
-  authRadius?: Radius;
-  accountingRadius?: Radius;
-  dpskServiceProfileId?: string;
-  isOweMaster?: boolean;
-  owePairNetworkId?: string;
+  wlanSecurity?: WlanSecurityEnum
+  dpskWlanSecurity?: WlanSecurityEnum
+  authRadius?: Radius
+  accountingRadius?: Radius
+  dpskServiceProfileId?: string
+  isOweMaster?: boolean
+  owePairNetworkId?: string
 }
 export interface ExternalProviders{
   providers: Providers[]

@@ -38,7 +38,8 @@ import {
   Network,
   NetworkVenue,
   IsNetworkSupport6g,
-  ApGroupModalState
+  ApGroupModalState,
+  NetworkExtended
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                    from '@acx-ui/user'
@@ -66,12 +67,6 @@ const defaultPayload = {
     'owePairNetworkId',
     'dsaeOnboardNetwork'
   ]
-}
-
-interface NetworkExtended extends Network {
-  deepVenue?: NetworkVenue,
-  latitude?: string,
-  longitude?: string
 }
 
 export interface SchedulingModalState {
@@ -179,7 +174,7 @@ export function VenueNetworksTab () {
   }
 
   const getCurrentVenue = (row: Network) => {
-    if (!row.activated.isActivated) {
+    if (!row.activated?.isActivated) {
       return
     }
     const deepNetworkVenues = row.deepNetwork?.venues || []

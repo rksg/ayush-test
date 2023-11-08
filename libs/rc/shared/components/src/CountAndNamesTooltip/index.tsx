@@ -15,10 +15,18 @@ interface CountAndNamesTooltipProps {
 
 export function CountAndNamesTooltip (props: CountAndNamesTooltipProps) {
   const { $t } = useIntl()
-  const { data, maxShow = 10, placement, linkUrl } = props
+  const { data, maxShow = 10, placement, linkUrl='' } = props
   const { count, names } = data || {}
   const countDisplay = transformDisplayNumber(count)
   const namesLen = (names && names.length) || 0
+
+  const countComponent = (linkUrl: string, countText: number) => (
+    linkUrl === '' ?
+      <span>{ countText }</span> :
+      <TenantLink to={linkUrl}>
+        { countText }
+      </TenantLink>
+  )
 
   if (names && namesLen > 0) {
     const truncateData = names.slice(0, maxShow-1)
@@ -31,17 +39,12 @@ export function CountAndNamesTooltip (props: CountAndNamesTooltipProps) {
     }
     const tootipTitle = truncateData.map(n => <div>{n}</div>)
 
-    return (linkUrl ?
+    return (
       <Tooltip title={tootipTitle} placement={placement || 'bottom'} >
-        <TenantLink to={linkUrl}>
-          { countDisplay }
-        </TenantLink>
-      </Tooltip> :
-      <Tooltip title={tootipTitle} placement={placement || 'bottom'} >
-        { countDisplay }
+        { countComponent(linkUrl!, countDisplay) }
       </Tooltip>
     )
   }
 
-  return <span>{ countDisplay }</span>
+  return countComponent(linkUrl!, countDisplay)
 }

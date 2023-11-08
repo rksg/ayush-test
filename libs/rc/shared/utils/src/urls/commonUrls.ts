@@ -462,6 +462,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/networks',
     newApi: true
   },
+  getApGroupNetworkList: {
+    method: 'post',
+    url: '/apGroups/:apGroupId/networks/query',
+    newApi: true
+  },
   getExternalProviders: {
     method: 'get',
     url: '/networks/wisprProviders',

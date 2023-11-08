@@ -40,6 +40,7 @@ import { AccessPointList, WifiTabsEnum }            from './pages/Devices/Wifi'
 import ApDetails                                    from './pages/Devices/Wifi/ApDetails'
 import { ApEdit }                                   from './pages/Devices/Wifi/ApEdit'
 import { ApForm }                                   from './pages/Devices/Wifi/ApForm'
+import ApGroupDetails                               from './pages/Devices/Wifi/ApGroupDetails'
 import { ApGroupForm }                              from './pages/Devices/Wifi/ApGroupForm'
 import Wired                                        from './pages/Networks/wired'
 import CliTemplateForm                              from './pages/Networks/wired/onDemandCli/CliTemplateForm'
@@ -171,6 +172,7 @@ function DeviceRoutes () {
         path='devices/wifi/:serialNumber/:action/:activeTab/:activeSubTab'
         element={<ApEdit />}
       />
+      <Route path='devices/apgroups/:apGroupId/details/:activeTab' element={<ApGroupDetails />}/>
       <Route path='devices/apgroups/:apGroupId/:action' element={<ApGroupForm />} />
       <Route path='devices/apgroups/:action' element={<ApGroupForm />} />
       <Route

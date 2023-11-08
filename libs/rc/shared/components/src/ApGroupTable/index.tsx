@@ -62,7 +62,7 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
 
 
   const tableData = tableQuery?.data?.data ?? []
-  const linkToEditAp = useTenantLink('/devices/apgroups')
+  const linkToEditApGroup = useTenantLink('/devices/apgroups')
 
 
   const showDeleteApGroups = async (rows: ApGroupViewModel[],
@@ -92,7 +92,7 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
     fixed: 'left',
     searchable: searchable,
     render: (_, row: ApGroupViewModel, __, highlightFn) => (
-      <TenantLink to={`/devices/wifi/apgroup/${row.id}/details/members`}>
+      <TenantLink to={`/devices/apgroups/${row.id}/details/members`}>
         {searchable ? highlightFn(row.name || '--') : row.name}</TenantLink>
     )
   },
@@ -118,7 +118,7 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
     //sorter: true,
     render: (_, row: ApGroupViewModel) => (
       <CountAndNamesTooltip data={row.members}
-        linkUrl={`/devices/wifi/apgroup/${row.id}/details/members`}
+        linkUrl={`/devices/apgroups/${row.id}/details/members`}
       />
     )
   }, {
@@ -129,7 +129,7 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
     //sorter: true,
     render: (_, row: ApGroupViewModel) => (
       <CountAndNamesTooltip data={row.networks}
-        linkUrl={`/devices/wifi/apgroup/${row.id}/details/networks`}
+        linkUrl={`/devices/apgroups/${row.id}/details/networks`}
       />
     )
   }, {
@@ -158,7 +158,7 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
           showTotal={false}
           barColors={[cssStr(deviceStatusColors.empty)]}
         />
-        <TenantLink to={`/devices/wifi/apgroup/${row.id}/details/analytics/incidents/overview`}>
+        <TenantLink to={`/apgroups/${row.id}/details/incidents`}>
           {data ? data: 0}
         </TenantLink>
       </Space>)
@@ -179,7 +179,7 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
     visible: (selectedRows) => selectedRows.length === 1,
     onClick: (selectedRows) => {
       //redirect to edit AP group page url
-      navigate(`${linkToEditAp.pathname}/${selectedRows[0].id}/edit`, { replace: false })
+      navigate(`${linkToEditApGroup.pathname}/${selectedRows[0].id}/edit`, { replace: false })
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),

@@ -75,7 +75,7 @@ export const fetchVenueTimeZone = async (lat: number, lng: number): Promise<ITim
 type VenueSubset = {
   deepVenue?: NetworkVenue,
   id: string,
-  activated: Network['activated']
+  activated?: Network['activated']
   latitude?: string,
   longitude?: string
 }
@@ -94,7 +94,7 @@ export const useScheduleSlotIndexMap = (tableData: VenueSubset[]) => {
     }
 
     tableData.forEach(item => {
-      if ( item.activated.isActivated && item.deepVenue?.scheduler?.type === SchedulerTypeEnum.CUSTOM) {
+      if ( item.activated?.isActivated && item.deepVenue?.scheduler?.type === SchedulerTypeEnum.CUSTOM) {
         updateVenueCurrentSlotIndexMap(item.id, item.latitude, item.longitude)
       }
     })

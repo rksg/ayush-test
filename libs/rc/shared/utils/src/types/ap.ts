@@ -203,6 +203,14 @@ export interface VenueDefaultApGroup {
   aps?: ApDeep[]
 }
 
+export interface ApGroupDetailHeader {
+  title: string
+  headers: {
+    members: number
+    networks: number
+  }
+}
+
 export interface ApDetailHeader {
   title: string,
   headers: {
