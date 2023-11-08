@@ -42,12 +42,6 @@ import { AccountType }                                                          
 
 import { AssignEcMspAdminsDrawer } from '../MspCustomers/AssignEcMspAdminsDrawer'
 
-const getStatus = (row: MspEc) => {
-  const isTrial = row.accountType === 'TRIAL'
-  const value = row.status === 'Active' ? (isTrial ? 'Trial' : row.status) : 'Inactive'
-  return value
-}
-
 export function MspRecCustomers () {
   const { $t } = useIntl()
   const navigate = useNavigate()
@@ -234,7 +228,7 @@ export function MspRecCustomers () {
       key: 'status',
       sorter: true,
       render: function (_, row) {
-        return getStatus(row)
+        return mspUtils.getStatus(row)
       }
     },
     {

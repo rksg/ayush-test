@@ -24,6 +24,7 @@ import {
   useMspCustomerListQuery
 } from '@acx-ui/msp/services'
 import {
+  MSPUtils,
   MspAdministrator,
   MspEc,
   MspEcDelegatedAdmins,
@@ -45,6 +46,7 @@ import * as UI                     from './styledComponents'
 
 export function AddRecCustomer () {
   const intl = useIntl()
+  const mspUtils = MSPUtils()
   const navigate = useNavigate()
   const linkToRecCustomers = useTenantLink('/dashboard/mspreccustomers', 'v')
   //   const { action, status, tenantId, mspEcTenantId } = useParams()
@@ -219,7 +221,7 @@ export function AddRecCustomer () {
       <Form.Item style={{ marginTop: '-22px' }}
         label={intl.$t({ defaultMessage: 'Address' })}
       >
-        <Paragraph>{mspRecCustomer[0].email_id}</Paragraph>
+        <Paragraph>{mspUtils.transformMspRecAddress(mspRecCustomer[0])}</Paragraph>
       </Form.Item>
     </>
   }

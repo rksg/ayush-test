@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 
 import { Space }   from 'antd'
-import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import {
@@ -13,7 +12,6 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                from '@acx-ui/formatter'
 import {
   ManageAdminsDrawer,
   ResendInviteModal,
@@ -32,7 +30,6 @@ import {
   useGetMspEcAlarmListQuery
 } from '@acx-ui/msp/services'
 import {
-  DelegationEntitlementRecord,
   MspEcAlarmList,
   MspEc,
   MSPUtils
@@ -54,68 +51,6 @@ import * as UI from '../Subscriptions/styledComponent'
 
 import { AssignEcMspAdminsDrawer } from './AssignEcMspAdminsDrawer'
 import { ScheduleFirmwareDrawer }  from './ScheduleFirmwareDrawer'
-
-const getStatus = (row: MspEc) => {
-  const isTrial = row.accountType === 'TRIAL'
-  const value = row.status === 'Active' ? (isTrial ? 'Trial' : row.status) : 'Inactive'
-  return value
-}
-
-const transformApEntitlement = (row: MspEc) => {
-  return row.wifiLicenses ? row.wifiLicenses : 0
-}
-
-const transformUtilization = (row: MspEc, deviceType: EntitlementNetworkDeviceType) => {
-  const entitlement = row.entitlements.filter((en:DelegationEntitlementRecord) =>
-    en.entitlementDeviceType === deviceType)
-  if (entitlement.length > 0) {
-    const apEntitlement = entitlement[0]
-    const quantity = parseInt(apEntitlement.quantity, 10)
-    const consumed = parseInt(apEntitlement.consumed, 10)
-    if (quantity > 0) {
-      const value =
-      (Math.round(((consumed / quantity) * 10000)) / 100) + '%'
-      return value
-    } else {
-      return '0%'
-    }
-  }
-  return '0%'
-}
-
-const transformSwitchEntitlement = (row: MspEc) => {
-  return row.switchLicenses ? row.switchLicenses : 0
-}
-
-const transformCreationDate = (row: MspEc) => {
-  const creationDate = row.creationDate
-  if (!creationDate || isNaN(creationDate)) {
-    return ''
-  }
-  const Epoch = creationDate - (creationDate % 1000)
-  const activeDate = formatter(DateFormatEnum.DateFormat)(Epoch)
-  return activeDate
-}
-
-const transformExpirationDate = (row: MspEc) => {
-  let expirationDate = '--'
-  const apswEntitlement = row.entitlements.filter((en:DelegationEntitlementRecord) =>
-    en.entitlementDeviceType === EntitlementNetworkDeviceType.APSW)
-
-  const entitlements = apswEntitlement.length > 0 ? apswEntitlement : row.entitlements
-  let target: DelegationEntitlementRecord
-  entitlements.forEach((entitlement:DelegationEntitlementRecord) => {
-    const consumed = parseInt(entitlement.consumed, 10)
-    const quantity = parseInt(entitlement.quantity, 10)
-    if (consumed > 0 || quantity > 0) {
-      if (!target || moment(entitlement.expirationDate).isBefore(target.expirationDate)) {
-        target = entitlement
-      }
-    }
-    expirationDate = target ? formatter(DateFormatEnum.DateFormat)(target.expirationDate) : '--'
-  })
-  return expirationDate
-}
 
 export function MspCustomers () {
   const { $t } = useIntl()
@@ -321,7 +256,7 @@ export function MspCustomers () {
         key: 'status',
         sorter: true,
         render: function (_, row) {
-          return getStatus(row)
+          return mspUtils.getStatus(row)
         }
       },
       {
@@ -454,7 +389,7 @@ export function MspCustomers () {
           // align: 'center',
           sorter: true,
           render: function (data: React.ReactNode, row: MspEc) {
-            return transformApEntitlement(row)
+            return mspUtils.transformApEntitlement(row)
           }
         },
         {
@@ -464,7 +399,7 @@ export function MspCustomers () {
           key: 'wifiLicensesUtilization',
           sorter: true,
           render: function (data: React.ReactNode, row: MspEc) {
-            return transformUtilization(row, EntitlementNetworkDeviceType.WIFI)
+            return mspUtils.transformUtilization(row, EntitlementNetworkDeviceType.WIFI)
           }
         },
         {
@@ -474,7 +409,7 @@ export function MspCustomers () {
           key: 'switchLicense',
           sorter: true,
           render: function (data: React.ReactNode, row: MspEc) {
-            return transformSwitchEntitlement(row)
+            return mspUtils.transformSwitchEntitlement(row)
           }
         },
         {
@@ -494,7 +429,7 @@ export function MspCustomers () {
         key: 'creationDate',
         sorter: true,
         render: function (_, row) {
-          return transformCreationDate(row)
+          return mspUtils.transformCreationDate(row)
         }
       },
       {
@@ -503,7 +438,7 @@ export function MspCustomers () {
         key: 'expirationDate',
         sorter: true,
         render: function (_, row) {
-          const nextExpirationDate = transformExpirationDate(row)
+          const nextExpirationDate = mspUtils.transformExpirationDate(row)
           if (nextExpirationDate === '--')
             return nextExpirationDate
           const expiredOnString = `${$t({ defaultMessage: 'Expired on' })} ${nextExpirationDate}`

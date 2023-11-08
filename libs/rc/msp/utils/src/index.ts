@@ -2,13 +2,15 @@ import moment from 'moment'
 
 import { DateFormatEnum, formatter }    from '@acx-ui/formatter'
 import { EntitlementNetworkDeviceType } from '@acx-ui/rc/utils'
+import { AccountType }                  from '@acx-ui/utils'
 
 import {
   DelegationEntitlementRecord,
   MspEcAlarmList,
   MspEc,
   MspEcProfile,
-  MspProfile
+  MspProfile,
+  MspRecCustomer
 } from './types'
 
 export * from './types'
@@ -160,6 +162,32 @@ export const MSPUtils = () => {
     return (count || 0)
   }
 
+  const transformMspRecAddress = (data: MspRecCustomer) => {
+    const address =
+    `${data.billing_street}, ${data.billing_city}, ${data.billing_state}, 
+    ${data.billing_postal_code}, ${data.billing_country}`
+    return address
+  }
+
+  const transformTechPartner = (id: string, techParnersData: MspEc[]) => {
+    const rec = techParnersData.find(e => e.id === id)
+    return rec?.name ? rec.name : id
+  }
+
+  const transformAdminCount = (data: MspEc, type: AccountType) => {
+    return type === AccountType.MSP_INSTALLER
+      ? data.mspInstallerAdminCount || 0 : (type === AccountType.MSP_INTEGRATOR
+        ? data.mspIntegratorAdminCount || 0 : data.mspAdminCount || 0)
+  }
+
+  // const transformAdminCountHeader = (type: AccountType) => {
+  //   return type === AccountType.MSP_INSTALLER
+  //     ? $t({ defaultMessage: 'Installer Admin Count' })
+  //     : (type === AccountType.MSP_INTEGRATOR
+  //       ? $t({ defaultMessage: 'Integrator Admin Count' })
+  //       : $t({ defaultMessage: 'MSP Admin Count' }))
+  // }
+
   return {
     isMspEc,
     isOnboardedMsp,
@@ -174,6 +202,10 @@ export const MSPUtils = () => {
     transformSwitchEntitlement,
     transformCreationDate,
     transformExpirationDate,
-    transformAlarmCount
+    transformAlarmCount,
+    transformMspRecAddress,
+    transformTechPartner,
+    transformAdminCount//,
+    // transformAdminCountHeader
   }
 }

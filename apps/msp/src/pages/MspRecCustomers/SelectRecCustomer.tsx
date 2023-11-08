@@ -14,6 +14,7 @@ import {
   useGetAvailableMspRecCustomersQuery
 } from '@acx-ui/msp/services'
 import {
+  MSPUtils,
   MspRecCustomer
 } from '@acx-ui/msp/utils'
 import { useParams } from '@acx-ui/react-router-dom'
@@ -27,6 +28,7 @@ interface SelectRecCustomerDrawerProps {
 
 export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => {
   const { $t } = useIntl()
+  const mspUtils = MSPUtils()
 
   const { visible, setVisible, setSelected } = props
   const [resetField, setResetField] = useState(false)
@@ -50,13 +52,6 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
     // setVisible(false)
   }
 
-  const transformAddress = (data: MspRecCustomer) => {
-    const address =
-    `${data.billing_street}, ${data.billing_city}, ${data.billing_state}, 
-    ${data.billing_postal_code}, ${data.billing_country}`
-    return address
-  }
-
   const columns: TableProps<MspRecCustomer>['columns'] = [
     {
       title: $t({ defaultMessage: 'Property Name' }),
@@ -72,7 +67,7 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
       key: 'billing_street',
       sorter: true,
       render: function (_, row) {
-        return transformAddress(row)
+        return mspUtils.transformMspRecAddress(row)
       }
     }
   ]
@@ -84,7 +79,7 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
         <Table
           settingsId='manage-ruckus-end-customer-table'
           columns={columns}
-          dataSource={queryResults?.data?.content}
+          dataSource={queryResults?.data?.child_accounts}
           rowKey='account_name'
           rowSelection={{
             type: 'radio',
@@ -115,7 +110,8 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
   return (
     <Drawer
       title={$t({ defaultMessage: 'Manage RUCKUS End Customer' })}
-      subTitle={$t({ defaultMessage: 'Properties for' })}
+      subTitle={$t({ defaultMessage: 'Properties for {propertyOowner}' },
+        { propertyOowner: queryResults?.data?.parent_account_name })}
       visible={visible}
       onClose={onClose}
       footer={footer}
