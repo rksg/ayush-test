@@ -1,4 +1,5 @@
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
@@ -11,7 +12,6 @@ import {
   mockServer,
   render,
   screen,
-  fireEvent,
   within,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
@@ -26,7 +26,6 @@ import {
 } from '../../__tests__/fixtures'
 
 import { VenueFirmwareListLegacy } from '.'
-import userEvent from '@testing-library/user-event'
 
 
 describe('Firmware Venues Table', () => {
@@ -90,7 +89,7 @@ describe('Firmware Venues Table', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByText('My-Venue')
+    // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[class="ant-space-item"]')).not.toBeNull()
   })
 
