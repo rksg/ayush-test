@@ -93,7 +93,9 @@ export const UnknownDetails = () => {
       </GridCol>
       <GridCol col={{ span: 14 }}>
         <DetailsHeader>
-          {$t({ defaultMessage: 'Prerequisites Required' })}
+          {status === 'insufficientLicenses'
+            ? $t({ defaultMessage: 'Prerequisites Required' })
+            : $t({ defaultMessage: 'Details' })}
         </DetailsHeader>
         <DetailsWrapper>
           <Card type='solid-bg'>
