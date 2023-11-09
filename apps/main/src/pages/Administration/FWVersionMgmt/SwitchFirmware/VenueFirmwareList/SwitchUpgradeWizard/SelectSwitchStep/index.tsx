@@ -1,4 +1,4 @@
-import { ChangeEvent, Key, useEffect, useState } from 'react'
+import { ChangeEvent, Key, MouseEvent, useEffect, useState } from 'react'
 
 import { Input, Tooltip } from 'antd'
 import _                  from 'lodash'
@@ -9,7 +9,7 @@ import {
   TableProps,
   useStepFormContext
 } from '@acx-ui/components'
-import { SearchOutlined }             from '@acx-ui/icons'
+import { ArrowExpand, ArrowCollapse, SearchOutlined } from '@acx-ui/icons'
 import {
   useLazyGetSwitchFirmwareListQuery
 } from '@acx-ui/rc/services'
@@ -37,15 +37,18 @@ function useColumns () {
       title: intl.$t({ defaultMessage: 'Venue' }),
       key: 'name',
       dataIndex: 'name',
+      width: 170,
       defaultSortOrder: 'ascend'
     }, {
       title: '',
       key: 'Model',
-      dataIndex: 'Model'
+      dataIndex: 'Model',
+      width: 110
     }, {
       title: intl.$t({ defaultMessage: 'Current Firmware' }),
       key: 'version',
       dataIndex: 'version',
+      width: 150,
       render: function (_, row) {
         let versionList = []
         if (row.switchFirmwareVersion?.id) {
@@ -60,6 +63,7 @@ function useColumns () {
       title: intl.$t({ defaultMessage: 'Available Firmware' }),
       key: 'availableVersions',
       dataIndex: 'availableVersions',
+      width: 150,
       render: function (_, row) {
         const availableVersions = row.availableVersions
         if (availableVersions.length === 0) {
@@ -129,6 +133,7 @@ export const SelectSwitchStep = (
       title: intl.$t({ defaultMessage: 'Switch' }),
       key: 'switchName',
       dataIndex: 'switchName',
+      width: 150,
       defaultSortOrder: 'ascend',
       render: function (_, row) {
         const stackLabel = row.isStack ? intl.$t({ defaultMessage: '(Stack)' }) : ''
@@ -137,11 +142,13 @@ export const SelectSwitchStep = (
     }, {
       title: intl.$t({ defaultMessage: 'Model' }),
       key: 'model',
+      width: 112,
       dataIndex: 'model'
     }, {
       title: intl.$t({ defaultMessage: 'Current Firmware' }),
       key: 'currentFirmware',
       dataIndex: 'currentFirmware',
+      width: 153,
       filterMultiple: false,
       render: function (_, row) {
         if (row.currentFirmware) {
@@ -154,6 +161,7 @@ export const SelectSwitchStep = (
       title: intl.$t({ defaultMessage: 'Available Firmware' }),
       key: 'availableVersion',
       dataIndex: 'availableVersion',
+      width: 155,
       render: function (_, row) {
         if (row.availableVersion?.id) {
           return parseSwitchVersion(row.availableVersion.id)
@@ -243,12 +251,14 @@ export const SelectSwitchStep = (
       tableAlertRender={false}
       showHeader={false}
       expandable={{
+        columnWidth: '60px',
         expandedRowRender: () => { return <></> },
         rowExpandable: () => false
       }}
       rowKey='switchId'
       rowSelection={{
         type: 'checkbox',
+        columnWidth: '30px',
         selectedRowKeys: selectedSwitchRowKeys[record.id],
         onChange: (selectedKeys) => {
           const currentSwitchList = nestedData[record.id]?.initialData
@@ -474,7 +484,31 @@ export const SelectSwitchStep = (
             type={'tall'}
             dataSource={data}
             expandable={{
+              columnWidth: '30px',
               onExpand: handleExpand,
+              expandIcon: ({ expanded, onExpand, record }) => {
+                if ((record?.switchCount + record?.aboveTenSwitchCount > 0)) {
+                  return expanded ? (
+                    <ArrowCollapse
+                      style={{ verticalAlign: 'bottom' }}
+                      onClick={
+                        (e) => {
+                          e.stopPropagation()
+                          onExpand(record, e as unknown as React.MouseEvent<HTMLElement>)
+                        }} />
+                  ) : (
+                    <ArrowExpand
+                      style={{ verticalAlign: 'bottom' }}
+                      onClick={
+                        (e) => {
+                          e.stopPropagation()
+                          onExpand(record, e as unknown as React.MouseEvent<HTMLElement>)
+                        }} />
+                  )
+                } else {
+                  return <></>
+                }
+              },
               expandedRowRender: expandedRowRenderFunc,
               rowExpandable: record =>
                 (record?.switchCount + record?.aboveTenSwitchCount > 0) ?? false
@@ -483,6 +517,7 @@ export const SelectSwitchStep = (
             rowKey='id'
             rowSelection={{
               type: 'checkbox',
+              columnWidth: '30px',
               selectedRowKeys: selectedVenueRowKeys,
               getCheckboxProps: (record) => {
                 return {
