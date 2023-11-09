@@ -23,10 +23,16 @@ const scrollToBottom=()=>{
 
 interface MelissaBotState{
   isOpen: boolean
+  responseCount: number
+  showFloatingButton: boolean
+  isReplying: boolean
 }
 
 const initialState:MelissaBotState = {
-  isOpen: false
+  isOpen: false,
+  responseCount: 0,
+  showFloatingButton: false,
+  isReplying: false
 }
 
 
@@ -37,10 +43,6 @@ export function MelissaBot (){
   const inputRef = useRef<InputRef>(null)
   const initCount = useRef(0)
   const [state,setState] = useState(initialState)
-  // const [open, setOpen] = useState(false)
-  const [isReplying, setIsReplying] = useState(false)
-  const [responseCount, setResponseCount] = useState(0)
-  const [showFloatingButton, setShowFloatingButton] = useState(false)
   const [isInputDisabled, setIsInputDisabled] = useState(false)
   const [inputValue, setInputValue] = useState('')
   const [messages,setMessages] = useState<Content[]>([])
@@ -77,7 +79,7 @@ export function MelissaBot (){
         const form = new FormData()
         form.append('file', file)
         await uploadFile(incidentId,form).catch((error)=>{
-          setIsReplying(false)
+          setState({ ...state,isReplying: false })
           // eslint-disable-next-line no-console
           console.error(error)
           const errorMessage: Content = {
@@ -90,8 +92,7 @@ export function MelissaBot (){
           defer(doAfterResponse)
         })
       }
-      setIsReplying(false)
-      setResponseCount(responseCount+1)
+      setState({ ...state,responseCount: state.responseCount+1, isReplying: false })
       const confirmMessage: Content = {
         type: 'bot',
         contentList: [{ text: { text: ['done!'] } }]
@@ -116,8 +117,7 @@ export function MelissaBot (){
   const title = <><Title>{BOT_NAME}</Title><SubTitle>{subTitleText}</SubTitle></>
   const askMelissa = (body:AskMelissaBody) => {
     isMelissaBotEnabled && queryAskMelissa(body).then(async (json)=>{
-      setIsReplying(false)
-      setResponseCount(responseCount+1)
+      setState({ ...state,responseCount: state.responseCount+1, isReplying: false })
       const fulfillmentMessages:FulfillmentMessage[]=get(json,'queryResult.fulfillmentMessages')
       if(fulfillmentMessages) {
         const { incidentId: createdIncidentId } = get(fulfillmentMessages, '[2].data', {})
@@ -136,7 +136,7 @@ export function MelissaBot (){
           throw new Error('Something went wrong.')
       }
     }).catch((error)=>{
-      setIsReplying(false)
+      setState({ ...state,isReplying: false })
       // eslint-disable-next-line no-console
       console.error(error)
       const errorMessage: Content = {
@@ -151,8 +151,7 @@ export function MelissaBot (){
   }
   useEffect(()=> {
     if (fileName) {
-      setIsReplying(false)
-      setResponseCount(responseCount+1)
+      setState({ ...state,responseCount: state.responseCount+1, isReplying: false })
       const uploadingMessage: Content = {
         type: 'bot',
         contentList: [{ text: { text: [`uploading ${fileName}...`] } }]
@@ -173,11 +172,12 @@ export function MelissaBot (){
   },[incidentId])
   useEffect(()=>{
     if(pathname.includes('/dashboard')){
-      setShowFloatingButton(false)
-    }else if(responseCount){
-      setShowFloatingButton(true)
+      // setShowFloatingButton(false)
+      setState({ ...state,showFloatingButton: false })
+    }else if(state.responseCount){
+      setState({ ...state,showFloatingButton: true })
     }
-  },[pathname,responseCount])
+  },[pathname,state.responseCount])
   const eventHandler:EventListener = ()=>{
     showDrawer()
   }
@@ -205,7 +205,7 @@ export function MelissaBot (){
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
-  return (isMelissaBotEnabled ? <>{showFloatingButton && <MelissaIcon
+  return (isMelissaBotEnabled ? <>{state.showFloatingButton && <MelissaIcon
     onClick={showDrawer}
     style={{
       width: '56px',
@@ -237,7 +237,7 @@ export function MelissaBot (){
             contentList: [{ text: { text: [trimedInputValue] } }]
           }
           messages.push(userMessage)
-          setIsReplying(true)
+          setState({ ...state, isReplying: true })
           setIsInputDisabled(true)
           setInputValue('')
           setMessages(messages)
@@ -257,7 +257,7 @@ export function MelissaBot (){
   >
     <Conversation
       content={messages}
-      isReplying={isReplying}
+      isReplying={state.isReplying}
       classList='conversation'
       listCallback={askMelissa}
       style={{ height: 410, width: 416, whiteSpace: 'pre-line' }} />
