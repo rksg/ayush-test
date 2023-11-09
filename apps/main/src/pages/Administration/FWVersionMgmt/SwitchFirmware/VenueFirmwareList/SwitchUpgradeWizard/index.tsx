@@ -127,7 +127,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
           payload: {
             date: moment(form.getFieldValue('selectDateStep')).format('YYYY-MM-DD') || '',
             time: form.getFieldValue('selectTimeStep') || '',
-            preDownload: form.getFieldValue('preDonloadChecked') || false,
+            preDownload: form.getFieldValue('preDownloadChecked') || false,
             venueIds: form.getFieldValue('selectedVenueRowKeys') || [],
             switchIds: _.map(upgradeSwitchList, 'switchId'),
             switchVersion: form.getFieldValue('switchVersion') || '',
@@ -290,12 +290,16 @@ function checkCurrentVersions (version: string,
   filterVersions: FirmwareVersion[]): FirmwareVersion[] {
   let inUseVersions = [] as FirmwareVersion[]
   filterVersions.forEach((v: FirmwareVersion) => {
-    let filterVersion = v.id
-    if (DefaultSwitchVersion.includes(filterVersion)) {
-      filterVersion = filterVersion.replace(/_[^_]*$/, '')
+    const getParseVersion = function (version: string) {
+      if (DefaultSwitchVersion.includes(version)) {
+        return version.replace(/_[^_]*$/, '')
+      }
+      return version
     }
 
-    if (filterVersion === version || filterVersion=== rodanVersion) {
+
+    if (getParseVersion(v.id) === getParseVersion(version) ||
+      getParseVersion(v.id) === getParseVersion(rodanVersion)) {
       v = { ...v, inUse: true }
     }
     inUseVersions.push(v)

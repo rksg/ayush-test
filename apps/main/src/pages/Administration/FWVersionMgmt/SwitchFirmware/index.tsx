@@ -5,7 +5,7 @@ import { VenueFirmwareListLegacy } from './VenueFirmwareListLegacy'
 import VersionBanner               from './VersionBanner'
 
 const SwitchFirmware = () => {
-  const allowUpgradeBySwitch = useIsSplitOn(Features.SWITCH_UPGRADE_BY_SWITCH)
+  const allowUpgradeBySwitch = true//useIsSplitOn(Features.SWITCH_UPGRADE_BY_SWITCH)
   return (
     <>
       <VersionBanner />
