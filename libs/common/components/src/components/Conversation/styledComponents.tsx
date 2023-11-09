@@ -34,6 +34,7 @@ export const Collapse = styled(AntdCollapse)`
     border-bottom: none !important;
     padding: 10px !important;
     font-size: ${cssStr('--acx-headline-4-font-size')} !important;
+    font-weight: ${cssStr('--acx-body-font-weight-bold')} !important;
     display: flex;
     flex-direction: row-reverse;
     justify-content: center;
