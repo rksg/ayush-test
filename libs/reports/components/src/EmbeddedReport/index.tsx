@@ -207,7 +207,9 @@ export const getRLSClauseForSA = (
   for (const type in sqlConditionsByType) {
     if (sqlConditionsByType.hasOwnProperty(type)) {
       const conditions = sqlConditionsByType[type]
-      sqlConditions.push(`${conditions.join(' OR ')}`)
+      let joinedConditions = conditions.join(' OR ')
+      if (conditions.length > 1) joinedConditions = `(${joinedConditions})`
+      sqlConditions.push(joinedConditions)
     }
   }
 
