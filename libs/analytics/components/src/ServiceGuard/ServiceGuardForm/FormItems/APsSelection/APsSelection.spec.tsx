@@ -20,7 +20,7 @@ jest.mock('@acx-ui/config', () => ({
 describe('APsSelection', () => {
   beforeEach(() => {
     store.dispatch(dataApi.util.resetApiState())
-    mockGraphqlQuery(dataApiURL, 'RecentNetworkHierarchy', { data: mockNetworkHierarchy })
+    mockGraphqlQuery(dataApiURL, 'VenueHierarchy', { data: mockNetworkHierarchy })
   })
 
   it('supports select AP from venue', async () => {
@@ -88,7 +88,7 @@ describe('APsSelection', () => {
 
   it('should hide unsupport APs when ClientType.VirtualClient', async () => {
     mockGraphqlQuery(
-      dataApiURL, 'RecentNetworkHierarchy', { data: mockHiddenAPs })
+      dataApiURL, 'VenueHierarchy', { data: mockHiddenAPs })
     renderForm(<APsSelection />, { initialValues: { clientType: ClientType.VirtualClient } })
 
     expect(await screen.findByRole('menu')).toBeInTheDocument()
@@ -102,7 +102,7 @@ describe('APsSelection', () => {
 
   it('should hide unsupport APs when ClientType.VirtualWirelessClient', async () => {
     mockGraphqlQuery(
-      dataApiURL, 'RecentNetworkHierarchy', { data: mockHiddenAPs })
+      dataApiURL, 'VenueHierarchy', { data: mockHiddenAPs })
     renderForm(<APsSelection />,
       { initialValues: { clientType: ClientType.VirtualWirelessClient } })
 
@@ -119,7 +119,7 @@ describe('APsSelection', () => {
 describe('APsSelection.FieldSummary', () => {
   beforeEach(() => store.dispatch(dataApi.util.resetApiState()))
   it('renders selected APs in Venues', async () => {
-    mockGraphqlQuery(dataApiURL, 'RecentNetworkHierarchy', { data: mockNetworkHierarchy })
+    mockGraphqlQuery(dataApiURL, 'VenueHierarchy', { data: mockNetworkHierarchy })
 
     renderForm(<APsSelection.FieldSummary />, {
       initialValues: {

@@ -119,52 +119,36 @@ export const fetchServiceGuardRelatedTests = {
 
 export const mockNetworkHierarchy = {
   network: {
-    hierarchyNode: {
-      name: 'Network',
-      type: 'network',
-      path: defaultNetworkPath,
-      children: [{
-        id: 'id1',
-        type: 'zone',
-        name: 'Venue 1',
-        path: [...defaultNetworkPath, { type: 'zone', name: 'Venue 1' }],
-        aps: [
-          { name: 'AP 1', mac: '00:00:00:00:00:01', model: 'R350', firmware: '6.2.1.103.2538', serial: '431802006001' },
-          { name: 'AP 2', mac: '00:00:00:00:00:02', model: 'R350', firmware: '6.2.1.103.2538', serial: '431802006002' }
-        ]
-      }, {
-        id: 'id2',
-        type: 'zone',
-        name: 'Venue 2',
-        path: [...defaultNetworkPath, { type: 'zone', name: 'Venue 2' }],
-        aps: [
-          { name: 'AP 3', mac: '00:00:00:00:00:03', model: 'R350', firmware: '6.2.1.103.2538', serial: '431802006003' },
-          { name: 'AP 4', mac: '00:00:00:00:00:04', model: 'R350', firmware: '6.2.1.103.2538', serial: '431802006004' },
-          { name: 'AP 5', mac: '00:00:00:00:00:05', model: 'R350', firmware: '6.2.1.103.2538', serial: '431802006005' }
-        ]
-      }]
-    }
+    venueHierarchy: [{
+      id: 'id1',
+      name: 'Venue 1',
+      aps: [
+        { name: 'AP 1', mac: '00:00:00:00:00:01', model: 'R350', firmware: '6.2.1.103.2538', serial: '431802006001' },
+        { name: 'AP 2', mac: '00:00:00:00:00:02', model: 'R350', firmware: '6.2.1.103.2538', serial: '431802006002' }
+      ]
+    }, {
+      id: 'id2',
+      name: 'Venue 2',
+      aps: [
+        { name: 'AP 3', mac: '00:00:00:00:00:03', model: 'R350', firmware: '6.2.1.103.2538', serial: '431802006003' },
+        { name: 'AP 4', mac: '00:00:00:00:00:04', model: 'R350', firmware: '6.2.1.103.2538', serial: '431802006004' },
+        { name: 'AP 5', mac: '00:00:00:00:00:05', model: 'R350', firmware: '6.2.1.103.2538', serial: '431802006005' }
+      ]
+    }]
   }
 }
 
 export const mockHiddenAPs = {
   network: {
-    hierarchyNode: {
-      name: 'Network',
-      type: 'network',
-      path: defaultNetworkPath,
-      children: [{
-        id: 'id1',
-        type: 'zone',
-        name: 'Venue 1',
-        path: [...defaultNetworkPath, { type: 'zone', name: 'Venue 1' }],
-        aps: [
-          { name: 'AP 1', mac: '00:00:00:00:00:01', model: 'R500', firmware: '6.2.1.103.253', serial: '431802006001' },
-          { name: 'AP 2', mac: '00:00:00:00:00:02', model: 'R760', firmware: '6.0.0.0.0', serial: '431802006002' },
-          { name: 'AP 3', mac: '00:00:00:00:00:03', model: 'R350', firmware: '6.2.1.103.253', serial: '431802006003' }
-        ]
-      }]
-    }
+    venueHierarchy: [{
+      id: 'id1',
+      name: 'Venue 1',
+      aps: [
+        { name: 'AP 1', mac: '00:00:00:00:00:01', model: 'R500', firmware: '6.2.1.103.253', serial: '431802006001' },
+        { name: 'AP 2', mac: '00:00:00:00:00:02', model: 'R760', firmware: '6.0.0.0.0', serial: '431802006002' },
+        { name: 'AP 3', mac: '00:00:00:00:00:03', model: 'R350', firmware: '6.2.1.103.253', serial: '431802006003' }
+      ]
+    }]
   }
 }
 
