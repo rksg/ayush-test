@@ -26,13 +26,17 @@ interface MelissaBotState{
   responseCount: number
   showFloatingButton: boolean
   isReplying: boolean
+  isInputDisabled: boolean
+  incidentId: string
 }
 
 const initialState:MelissaBotState = {
   isOpen: false,
   responseCount: 0,
   showFloatingButton: false,
-  isReplying: false
+  isReplying: false,
+  isInputDisabled: false,
+  incidentId: ''
 }
 
 
@@ -43,10 +47,8 @@ export function MelissaBot (){
   const inputRef = useRef<InputRef>(null)
   const initCount = useRef(0)
   const [state,setState] = useState(initialState)
-  const [isInputDisabled, setIsInputDisabled] = useState(false)
   const [inputValue, setInputValue] = useState('')
   const [messages,setMessages] = useState<Content[]>([])
-  const [incidentId, setIncidentId] = useState('')
   const [fileName, setFileName] = useState('')
 
   const showDrawer = () => {
@@ -80,26 +82,26 @@ export function MelissaBot (){
         form.append('file', file)
         await uploadFile(incidentId,form).catch((error)=>{
           setState({ ...state,isReplying: false })
-          // eslint-disable-next-line no-console
-          console.error(error)
           const errorMessage: Content = {
             type: 'bot',
             contentList: [{ text: { text: [error.message] } }]
           }
           messages.push(errorMessage)
           setMessages(messages)
-          setIsInputDisabled(false)
           defer(doAfterResponse)
         })
       }
-      setState({ ...state,responseCount: state.responseCount+1, isReplying: false })
+      setState({ ...state,
+        responseCount: state.responseCount+1,
+        isReplying: false,
+        isInputDisabled: false
+      })
       const confirmMessage: Content = {
         type: 'bot',
         contentList: [{ text: { text: ['done!'] } }]
       }
       messages.push(confirmMessage)
       setMessages(messages)
-      setIsInputDisabled(false)
       defer(doAfterResponse)
       setFileName('')
     })
@@ -117,16 +119,19 @@ export function MelissaBot (){
   const title = <><Title>{BOT_NAME}</Title><SubTitle>{subTitleText}</SubTitle></>
   const askMelissa = (body:AskMelissaBody) => {
     isMelissaBotEnabled && queryAskMelissa(body).then(async (json)=>{
-      setState({ ...state,responseCount: state.responseCount+1, isReplying: false })
+      setState({ ...state,
+        responseCount: state.responseCount+1,
+        isReplying: false,
+        isInputDisabled: false
+      })
       const fulfillmentMessages:FulfillmentMessage[]=get(json,'queryResult.fulfillmentMessages')
       if(fulfillmentMessages) {
         const { incidentId: createdIncidentId } = get(fulfillmentMessages, '[2].data', {})
         if(createdIncidentId) {
-          setIncidentId(createdIncidentId)
+          setState({ ...state,incidentId: createdIncidentId })
         }
         messages.push({ type: 'bot', contentList: fulfillmentMessages })
         setMessages(messages)
-        setIsInputDisabled(false)
         defer(doAfterResponse)
       }else{
         const errorMessage:string=get(json,'error')
@@ -136,40 +141,41 @@ export function MelissaBot (){
           throw new Error('Something went wrong.')
       }
     }).catch((error)=>{
-      setState({ ...state,isReplying: false })
-      // eslint-disable-next-line no-console
-      console.error(error)
+      setState({ ...state,
+        isReplying: false,
+        isInputDisabled: false })
       const errorMessage: Content = {
         type: 'bot',
         contentList: [{ text: { text: [error.message] } }]
       }
       messages.push(errorMessage)
       setMessages(messages)
-      setIsInputDisabled(false)
       defer(doAfterResponse)
     })
   }
   useEffect(()=> {
     if (fileName) {
-      setState({ ...state,responseCount: state.responseCount+1, isReplying: false })
+      setState({ ...state,
+        responseCount: state.responseCount+1,
+        isReplying: false,
+        isInputDisabled: false })
       const uploadingMessage: Content = {
         type: 'bot',
         contentList: [{ text: { text: [`uploading ${fileName}...`] } }]
       }
       messages.push(uploadingMessage)
       setMessages(messages)
-      setIsInputDisabled(false)
       defer(doAfterResponse)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fileName])
   useEffect(()=>{
-    if (incidentId) {
-      addUploader(incidentId,
+    if (state.incidentId) {
+      addUploader(state.incidentId,
         document.querySelector('.ant-drawer-body .conversation')!.lastChild!)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[incidentId])
+  },[state.incidentId])
   useEffect(()=>{
     if(pathname.includes('/dashboard')){
       // setShowFloatingButton(false)
@@ -177,6 +183,7 @@ export function MelissaBot (){
     }else if(state.responseCount){
       setState({ ...state,showFloatingButton: true })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[pathname,state.responseCount])
   const eventHandler:EventListener = ()=>{
     showDrawer()
@@ -186,13 +193,14 @@ export function MelissaBot (){
     return ()=>{
       window.removeEventListener('showMelissaBot',eventHandler)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
   useEffect(()=>{
     /* istanbul ignore else */
     if(initCount.current === 0){
       initCount.current +=1
       setInputValue('')
-      setIsInputDisabled(true)
+      setState({ ...state,isInputDisabled: true })
       askMelissa({
         queryInput: {
           event: {
@@ -224,7 +232,7 @@ export function MelissaBot (){
     footer={<Input ref={inputRef}
       placeholder={askAnything}
       value={inputValue}
-      disabled={isInputDisabled}
+      disabled={state.isInputDisabled}
       style={{ height: '52px' }}
       onChange={(e) => {
         setInputValue(e.target.value)
@@ -237,8 +245,7 @@ export function MelissaBot (){
             contentList: [{ text: { text: [trimedInputValue] } }]
           }
           messages.push(userMessage)
-          setState({ ...state, isReplying: true })
-          setIsInputDisabled(true)
+          setState({ ...state, isReplying: true, isInputDisabled: true })
           setInputValue('')
           setMessages(messages)
           defer(() => {
