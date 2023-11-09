@@ -2,7 +2,10 @@ import userEvent       from '@testing-library/user-event'
 import { Form, Input } from 'antd'
 
 import {
-  getServiceListRoutePath } from '@acx-ui/rc/utils'
+  getServiceRoutePath,
+  ServiceOperation,
+  ServiceType
+} from '@acx-ui/rc/utils'
 import {
   Provider
 } from '@acx-ui/store'
@@ -65,12 +68,10 @@ describe('Edge Centralized Forwarding form', () => {
       }
     })
 
-    // TODO: this should redirect to CF service list when page is ready
-    // const targetPath = getServiceRoutePath({
-    //   type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
-    //   oper: ServiceOperation.LIST
-    // })
-    const targetPath = getServiceListRoutePath()
+    const targetPath = getServiceRoutePath({
+      type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
+      oper: ServiceOperation.LIST
+    })
 
     const form = within(await screen.findByTestId('steps-form'))
     within(await form.findByTestId('steps-form-body'))

@@ -1,7 +1,8 @@
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import userEvent        from '@testing-library/user-event'
+import { FormInstance } from 'antd'
+import { rest }         from 'msw'
 
-import { EdgeCentralizedForwardingUrls, getServiceListRoutePath } from '@acx-ui/rc/utils'
+import { EdgeCentralizedForwardingUrls, EdgeUrlsInfo, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 import {
   Provider
 } from '@acx-ui/store'
@@ -12,6 +13,7 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
+import { mockEdgeList }                   from '../__tests__/fixtures'
 import { CentralizedForwardingFormModel } from '../CentralizedForwardingForm'
 
 import EditEdgeCentralizedForwarding from '.'
@@ -30,27 +32,19 @@ const mockedSubmitDataGen = jest.fn()
 jest.mock('../CentralizedForwardingForm', () => ({
   ...jest.requireActual('../CentralizedForwardingForm'),
   default: (props: {
+    form: FormInstance,
     onFinish: (values: CentralizedForwardingFormModel) => Promise<boolean | void>
   }) => {
     const submitData = mockedSubmitDataGen()
-    return <div data-testid='rc-CentralizedForwardingForm'>
-      <button onClick={() => {
+    return <div
+      data-testid='rc-CentralizedForwardingForm'
+    >
+      <button onClick={(e) => {
+        e.preventDefault()
         props.onFinish(submitData)
       }}>Submit</button>
     </div>
   }
-}))
-jest.mock('../CentralizedForwardingForm/SettingsForm', () => ({
-  ...jest.requireActual('../CentralizedForwardingForm/SettingsForm'),
-  SettingsForm: () => <div data-testid='rc-SettingsForm'></div>
-}))
-jest.mock('../CentralizedForwardingForm/ScopeForm', () => ({
-  ...jest.requireActual('../CentralizedForwardingForm/ScopeForm'),
-  ScopeForm: () => <div data-testid='rc-ScopeForm'></div>
-}))
-jest.mock('../CentralizedForwardingForm/SummaryForm', () => ({
-  ...jest.requireActual('../CentralizedForwardingForm/SummaryForm'),
-  SummaryForm: () => <div data-testid='rc-SummaryForm'></div>
 }))
 
 describe('Edit Edge Centralized Forwarding service', () => {
@@ -59,37 +53,44 @@ describe('Edit Edge Centralized Forwarding service', () => {
     mockedSubmitDataGen.mockReset()
 
     mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (_, res, ctx) => res(ctx.json(mockEdgeList))
+      ),
       rest.get(
         EdgeCentralizedForwardingUrls.getEdgeCentralizedForwarding.url,
         (_, res, ctx) => res(ctx.json({ data: {} }))
       ),
-      rest.post(
+      rest.patch(
         EdgeCentralizedForwardingUrls.updateEdgeCentralizedForwardingPartial.url,
-        (_, res, ctx) => res(ctx.json({ data: {} }))
+        (req, res, ctx) => {
+          mockedEditFn(req.body)
+          return res(ctx.status(202))
+        }
       )
     )
   })
 
-  it('should correctly add service', async () => {
+  it('should correctly edit service', async () => {
     mockedSubmitDataGen.mockReturnValueOnce({
       name: 'testEditCFService'
     })
-    // TODO: this should redirect to CF service list when page is ready
-    // const targetPath = getServiceRoutePath({
-    //   type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
-    //   oper: ServiceOperation.LIST
-    // })
-    const targetPath = getServiceListRoutePath()
 
-    render(<EditEdgeCentralizedForwarding />, {
-      wrapper: Provider,
-      route: { params: { tenantId: 't-id' } }
+    const targetPath = getServiceRoutePath({
+      type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
+      oper: ServiceOperation.LIST
+    })
+
+    render(<Provider>
+      <EditEdgeCentralizedForwarding />
+    </Provider>, {
+      route: { params: { tenantId: 't-id', serviceId: 't-cf-id' } }
     })
 
     expect(await screen.findByTestId('rc-CentralizedForwardingForm')).toBeVisible()
     await click(screen.getByRole('button', { name: 'Submit' }))
     await waitFor(() => {
-      expect(mockedEditFn).toBeCalledWith({ name: 'mockedServiceName' })
+      expect(mockedEditFn).toBeCalledWith({ name: 'testEditCFService' })
     })
     await waitFor(() => {
       expect(mockedNavigate).toBeCalledWith({

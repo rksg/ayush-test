@@ -3,10 +3,19 @@ import { useEffect } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader, PageHeader }                                                                                           from '@acx-ui/components'
-import { useGetEdgeCentralizedForwardingQuery, useGetEdgeListQuery, useUpdateEdgeCentralizedForwardingPartialMutation } from '@acx-ui/rc/services'
-import { getServiceListRoutePath }                                                                                      from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                                                                        from '@acx-ui/react-router-dom'
+import { Loader, PageHeader }                         from '@acx-ui/components'
+import {
+  useGetEdgeCentralizedForwardingQuery,
+  useGetEdgeListQuery,
+  useUpdateEdgeCentralizedForwardingPartialMutation
+} from '@acx-ui/rc/services'
+import {
+  getServiceListRoutePath,
+  getServiceRoutePath,
+  ServiceOperation,
+  ServiceType
+} from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import CentralizedForwardingForm, { CentralizedForwardingFormModel } from '../CentralizedForwardingForm'
 import { ScopeForm }                                                 from '../CentralizedForwardingForm/ScopeForm'
@@ -16,15 +25,15 @@ const EditEdgeCentralizedForwarding = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const params = useParams()
-  // TODO: this should redirect to CF service list when page is ready
-  // const cfListRoute = getServiceRoutePath({
-  //   type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
-  //   oper: ServiceOperation.LIST
-  // })
-  const cfListRoute = getServiceListRoutePath()
+  const cfListRoute = getServiceRoutePath({
+    type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
+    oper: ServiceOperation.LIST
+  })
   const linkToServiceList = useTenantLink(cfListRoute)
   const [updateEdgeCentralizedForwarding] = useUpdateEdgeCentralizedForwardingPartialMutation()
+
   const { data, isLoading } = useGetEdgeCentralizedForwardingQuery({ params })
+
   const [form] = Form.useForm()
 
   const {

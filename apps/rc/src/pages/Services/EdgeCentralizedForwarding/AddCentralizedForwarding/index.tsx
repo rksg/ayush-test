@@ -1,10 +1,10 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { PageHeader }                              from '@acx-ui/components'
-import { useAddEdgeCentralizedForwardingMutation } from '@acx-ui/rc/services'
-import { getServiceListRoutePath }                 from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }              from '@acx-ui/react-router-dom'
+import { PageHeader }                                                                  from '@acx-ui/components'
+import { useAddEdgeCentralizedForwardingMutation }                                     from '@acx-ui/rc/services'
+import { getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                                                  from '@acx-ui/react-router-dom'
 
 import CentralizedForwardingForm, { CentralizedForwardingFormModel } from '../CentralizedForwardingForm'
 import { ScopeForm }                                                 from '../CentralizedForwardingForm/ScopeForm'
@@ -16,12 +16,11 @@ const AddEdgeCentralizedForwarding = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
 
-  // TODO: this should redirect to CF service list when page is ready
-  // const cfListRoute = getServiceRoutePath({
-  //   type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
-  //   oper: ServiceOperation.LIST
-  // })
-  const cfListRoute = getServiceListRoutePath()
+  const cfListRoute = getServiceRoutePath({
+    type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
+    oper: ServiceOperation.LIST
+  })
+
   const linkToServiceList = useTenantLink(cfListRoute)
   const [addEdgeCentralizedForwarding] = useAddEdgeCentralizedForwardingMutation()
   const [form] = Form.useForm()

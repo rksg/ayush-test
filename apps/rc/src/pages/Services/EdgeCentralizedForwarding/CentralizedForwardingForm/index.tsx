@@ -2,9 +2,14 @@ import { ReactNode, useEffect } from 'react'
 
 import { FormInstance } from 'antd'
 
-import { StepsForm }                                                 from '@acx-ui/components'
-import { EdgeCentralizedForwardingSetting, getServiceListRoutePath } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                                from '@acx-ui/react-router-dom'
+import { StepsForm } from '@acx-ui/components'
+import {
+  EdgeCentralizedForwardingSetting,
+  getServiceRoutePath,
+  ServiceOperation,
+  ServiceType
+} from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { ActivatedNetwork } from './ScopeForm'
 
@@ -33,12 +38,10 @@ const CentralizedForwardingForm = (props: CentralizedForwardingFormProps) => {
   const { form, steps, editMode, editData, onFinish } = props
   const navigate = useNavigate()
 
-  // TODO: this should redirect to CF service list when page is ready
-  // const linkToServiceList = useTenantLink(getServiceRoutePath({
-  //   type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
-  //   oper: ServiceOperation.LIST
-  // }))
-  const linkToServiceList = useTenantLink(getServiceListRoutePath())
+  const linkToServiceList = useTenantLink(getServiceRoutePath({
+    type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
+    oper: ServiceOperation.LIST
+  }))
 
   const handleFinish = async (formData: CentralizedForwardingFormModel) => {
     onFinish(formData)
@@ -47,7 +50,6 @@ const CentralizedForwardingForm = (props: CentralizedForwardingFormProps) => {
   useEffect(() => {
     if(form && editData) {
       form.resetFields()
-      // form.setFieldsValue(editData)
     }
   }, [form, editData])
 

@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeCentralizedForwardingUrls, getServiceListRoutePath } from '@acx-ui/rc/utils'
+import { EdgeCentralizedForwardingUrls, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 import {
   Provider
 } from '@acx-ui/store'
@@ -40,18 +40,6 @@ jest.mock('../CentralizedForwardingForm', () => ({
     </div>
   }
 }))
-jest.mock('../CentralizedForwardingForm/SettingsForm', () => ({
-  ...jest.requireActual('../CentralizedForwardingForm/SettingsForm'),
-  SettingsForm: () => <div data-testid='rc-SettingsForm'></div>
-}))
-jest.mock('../CentralizedForwardingForm/ScopeForm', () => ({
-  ...jest.requireActual('../CentralizedForwardingForm/ScopeForm'),
-  ScopeForm: () => <div data-testid='rc-ScopeForm'></div>
-}))
-jest.mock('../CentralizedForwardingForm/SummaryForm', () => ({
-  ...jest.requireActual('../CentralizedForwardingForm/SummaryForm'),
-  SummaryForm: () => <div data-testid='rc-SummaryForm'></div>
-}))
 
 describe('Add Edge Centralized Forwarding service', () => {
   beforeEach(() => {
@@ -61,22 +49,24 @@ describe('Add Edge Centralized Forwarding service', () => {
     mockServer.use(
       rest.post(
         EdgeCentralizedForwardingUrls.addEdgeCentralizedForwarding.url,
-        (_, res, ctx) => res(ctx.json({ data: {} }))
+        (req, res, ctx) => {
+          mockedAddFn(req.body)
+          return res(ctx.status(202))
+        }
       )
     )
   })
 
   it('should correctly add service', async () => {
     mockedSubmitDataGen.mockReturnValueOnce({
-      name: 'testAddCFService'
+      name: 'testAddCFService',
+      activatedNetworks: []
     })
 
-    // TODO: this should redirect to CF service list when page is ready
-    // const targetPath = getServiceRoutePath({
-    //   type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
-    //   oper: ServiceOperation.LIST
-    // })
-    const targetPath = getServiceListRoutePath()
+    const targetPath = getServiceRoutePath({
+      type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
+      oper: ServiceOperation.LIST
+    })
 
     render(<AddEdgeCentralizedForwarding />, {
       wrapper: Provider,
@@ -86,7 +76,10 @@ describe('Add Edge Centralized Forwarding service', () => {
     expect(await screen.findByTestId('rc-CentralizedForwardingForm')).toBeVisible()
     await click(screen.getByRole('button', { name: 'Submit' }))
     await waitFor(() => {
-      expect(mockedAddFn).toBeCalledWith({ name: 'mockedServiceName' })
+      expect(mockedAddFn).toBeCalledWith({
+        name: 'testAddCFService',
+        networkIds: []
+      })
     })
     await waitFor(() => {
       expect(mockedNavigate).toBeCalledWith({

@@ -35,5 +35,10 @@ export const EdgeCentralizedForwardingUrls: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/edgeCentralizedForwardingServices/:serviceId',
     newApi: true
+  },
+  batchDeleteEdgeCentralizedForwarding: {
+    method: 'delete',
+    url: '/edgeCentralizedForwardingServices',
+    newApi: true
   }
 }

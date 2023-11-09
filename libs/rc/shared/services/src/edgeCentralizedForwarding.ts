@@ -141,10 +141,18 @@ export const edgeCentralizedForwardingApi = baseEdgeCentralizedForwardingApi.inj
         extraOptions: { maxRetries: 5 }
       }),
     deleteEdgeCentralizedForwarding: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CFUrls.deleteEdgeCentralizedForwarding, params)
-        return {
-          ...req
+      query: ({ params, payload }) => {
+        if(payload) { //delete multiple rows
+          const req = createHttpRequest(CFUrls.batchDeleteEdgeCentralizedForwarding)
+          return {
+            ...req,
+            body: payload
+          }
+        } else { //delete single row
+          const req = createHttpRequest(CFUrls.deleteEdgeCentralizedForwarding, params)
+          return {
+            ...req
+          }
         }
       },
       invalidatesTags: [{ type: 'EdgeCentralizedForwarding', id: 'LIST' }]

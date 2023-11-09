@@ -36,6 +36,14 @@ describe('Edge Centralized Forwarding Table', () => {
       rest.post(
         EdgeUrlsInfo.getEdgeList.url,
         (_, res, ctx) => res(ctx.json(mockEdgeList))
+      ),
+      rest.delete(
+        EdgeCentralizedForwardingUrls.deleteEdgeCentralizedForwarding.url,
+        (_, res, ctx) => res(ctx.status(202))
+      ),
+      rest.delete(
+        EdgeCentralizedForwardingUrls.batchDeleteEdgeCentralizedForwarding.url,
+        (_, res, ctx) => res(ctx.status(202))
       )
     )
   })
@@ -71,7 +79,7 @@ describe('Edge Centralized Forwarding Table', () => {
       }
     )
     const row = await screen.findByRole('row', { name: /Amy_CF_1/i })
-    await click(within(row).getByRole('radio'))
+    await click(within(row).getByRole('checkbox'))
     await click(screen.getByRole('button', { name: 'Edit' }))
 
     const editPath = getServiceDetailsLink({
@@ -96,7 +104,7 @@ describe('Edge Centralized Forwarding Table', () => {
       }
     )
     const row = await screen.findByRole('row', { name: /Amy_CF_2/i })
-    await click(within(row).getByRole('radio'))
+    await click(within(row).getByRole('checkbox'))
     await click(screen.getByRole('button', { name: 'Delete' }))
     const dialogTitle = await screen.findByText('Delete "Amy_CF_2"?')
     await click(screen.getByRole('button', { name: 'Delete Edge Centralized Forwarding' }))
