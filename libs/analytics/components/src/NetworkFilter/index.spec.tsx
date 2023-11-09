@@ -149,7 +149,7 @@ jest.mock('@acx-ui/reports/utils', () => ({
 describe('Network Filter', () => {
 
   beforeEach(() => {
-
+    mockUseReportsFilter.raw = []
     store.dispatch(api.util.resetApiState())
     store.dispatch(incidentApi.util.resetApiState())
     jest.clearAllMocks()
@@ -270,6 +270,7 @@ describe('Network Filter', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
+    mockUseReportsFilter.raw = [['switchGroup']]
     const { asFragment } = render(<Provider><NetworkFilter
       shouldQueryAp
       shouldQuerySwitch={false}
@@ -290,6 +291,7 @@ describe('Network Filter', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
+    mockUseReportsFilter.raw = [['zone']]
     const { asFragment } = render(<Provider><NetworkFilter
       shouldQueryAp={false}
       shouldQuerySwitch

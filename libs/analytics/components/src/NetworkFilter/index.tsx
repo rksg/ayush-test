@@ -228,13 +228,13 @@ function ConnectedNetworkFilter (
   const isReports = filterFor === 'reports'
   let rawVal:string[][] = isReports ? reportsRaw : raw
   // Below condition will avoid empty tags in the filter while switching between AP and Switch reports
-  if(!shouldQuerySwitch){
+  if(!shouldQueryAp){
     selectedBands=[]
     rawVal=rawVal.filter(value=>{
       return !value[0].includes('zone')
     })
   }
-  if(!shouldQueryAp){
+  if(!shouldQuerySwitch){
     rawVal=rawVal.filter(value=>{
       return !value[0].includes('switchGroup')
     })
