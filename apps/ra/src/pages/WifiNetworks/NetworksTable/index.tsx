@@ -33,8 +33,9 @@ export function NetworkList ({ searchVal = '', queryParamsForZone
     {
       start: filters.startDate,
       end: filters.endDate,
-      query: '',
-      filter: { networkNodes: queryParamsForZone?.path }
+      query: queryParamsForZone?.searchString ?? '',
+      filter: { networkNodes: queryParamsForZone?.path },
+      limit: 1000
     },
     { skip: !Boolean(queryParamsForZone) }
   )

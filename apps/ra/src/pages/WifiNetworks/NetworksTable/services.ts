@@ -9,6 +9,7 @@ export interface RequestPayload {
   end: string
   query: string
   filter: NodesFilter
+  limit: number
 }
 export interface NetworkListReponse {
   wifiNetworks: Network[]
