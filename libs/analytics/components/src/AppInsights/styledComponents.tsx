@@ -7,24 +7,25 @@ import { Button as AntButton } from '@acx-ui/components'
 
 import type { ListItemMetaProps } from 'antd/lib/list'
 
-export const List = styled(AntList)`
-  .ant-list-items {
-    margin-top: -30px;
-    filter: grayscale(1);
-  }
+export const Container = styled.div``
+
+export const Mask = styled.div`
+  backdrop-filter: grayscale(1) blur(2px);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
 `
 
 export const Button = styled(AntButton)`
-  opacity: 1;
+  top: 80px;
   width: 150px;
-  left: 50px;
-  top 100px;
-  z-index: 1;
 `
 
-List.Item = styled(AntList.Item)`
-  filter: blur(2px);
-  &:first-of-type { padding-top: 5px; }
+export const ListItem = styled(AntList.Item)`
   border-bottom-color: var(--acx-neutrals-25) !important;
   padding: 10px 0;
   a {
@@ -65,5 +66,5 @@ const MetaNoRef = styled(AntList.Item.Meta)`
     color: var(--acx-neutrals-50);
   }
 `
-List.Item.Meta = forwardRef<HTMLDivElement,ListItemMetaProps>((props, ref) =>
+ListItem.Meta = forwardRef<HTMLDivElement,ListItemMetaProps>((props, ref) =>
   <div ref={ref}><MetaNoRef {...props} /></div>)
