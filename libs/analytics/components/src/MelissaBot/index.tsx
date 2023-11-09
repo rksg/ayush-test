@@ -114,7 +114,7 @@ export function MelissaBot (){
       }
     })
   }
-  const subTitleText = $t({ defaultMessage: 'with Gen AI' })
+  const subTitleText = $t({ defaultMessage: 'with Generative AI' })
   const askAnything = $t({ defaultMessage: 'Ask Anything' })
   const title = <><Title>{BOT_NAME}</Title><SubTitle>{subTitleText}</SubTitle></>
   const askMelissa = (body:AskMelissaBody) => {
