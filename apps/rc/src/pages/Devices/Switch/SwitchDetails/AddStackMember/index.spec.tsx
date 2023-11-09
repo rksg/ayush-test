@@ -14,7 +14,9 @@ import {
   fireEvent
 } from '@acx-ui/test-utils'
 
-import { editStackDetail } from '../../__tests__/fixtures'
+import { SwitchDetailsContext }     from '../'
+import { editStackDetail }          from '../../__tests__/fixtures'
+import { switchDetailsContextData } from '../__tests__/fixtures'
 
 import AddStackMember from '.'
 
@@ -61,12 +63,17 @@ describe('Add Stack Member Form', () => {
   it('should render correctly', async () => {
     render(
       <Provider>
-        <AddStackMember
-          visible={true}
-          setVisible={jest.fn()}
-          maxMembers={3}
-          venueFirmwareVersion='09010h_rc1'
-        />
+        <SwitchDetailsContext.Provider value={{
+          switchDetailsContextData,
+          setSwitchDetailsContextData: jest.fn()
+        }}>
+          <AddStackMember
+            visible={true}
+            setVisible={jest.fn()}
+            maxMembers={3}
+            venueFirmwareVersion='09010h_rc1'
+          />
+        </SwitchDetailsContext.Provider>
       </Provider>, {
         route: {
           params,
@@ -85,12 +92,17 @@ describe('Add Stack Member Form', () => {
   it('should render add and delete member field correctly', async () => {
     render(
       <Provider>
-        <AddStackMember
-          visible={true}
-          setVisible={jest.fn()}
-          maxMembers={3}
-          venueFirmwareVersion='09010h_rc1'
-        />
+        <SwitchDetailsContext.Provider value={{
+          switchDetailsContextData,
+          setSwitchDetailsContextData: jest.fn()
+        }}>
+          <AddStackMember
+            visible={true}
+            setVisible={jest.fn()}
+            maxMembers={3}
+            venueFirmwareVersion='09010h_rc1'
+          />
+        </SwitchDetailsContext.Provider>
       </Provider>, {
         route: {
           params,
@@ -119,12 +131,17 @@ describe('Add Stack Member Form', () => {
   it('should render not support stacking correctly', async () => {
     render(
       <Provider>
-        <AddStackMember
-          visible={true}
-          setVisible={jest.fn()}
-          maxMembers={3}
-          venueFirmwareVersion='09010h_rc1'
-        />
+        <SwitchDetailsContext.Provider value={{
+          switchDetailsContextData,
+          setSwitchDetailsContextData: jest.fn()
+        }}>
+          <AddStackMember
+            visible={true}
+            setVisible={jest.fn()}
+            maxMembers={3}
+            venueFirmwareVersion='09010h_rc1'
+          />
+        </SwitchDetailsContext.Provider>
       </Provider>, {
         route: {
           params,
@@ -151,12 +168,17 @@ describe('Add Stack Member Form', () => {
   it('should render invalid serial number correctly', async () => {
     render(
       <Provider>
-        <AddStackMember
-          visible={true}
-          setVisible={jest.fn()}
-          maxMembers={3}
-          venueFirmwareVersion='09010h_rc1'
-        />
+        <SwitchDetailsContext.Provider value={{
+          switchDetailsContextData,
+          setSwitchDetailsContextData: jest.fn()
+        }}>
+          <AddStackMember
+            visible={true}
+            setVisible={jest.fn()}
+            maxMembers={3}
+            venueFirmwareVersion='09010h_rc1'
+          />
+        </SwitchDetailsContext.Provider>
       </Provider>, {
         route: {
           params,
@@ -179,12 +201,17 @@ describe('Add Stack Member Form', () => {
   it('should render none unique serial number message correctly', async () => {
     render(
       <Provider>
-        <AddStackMember
-          visible={true}
-          setVisible={jest.fn()}
-          maxMembers={3}
-          venueFirmwareVersion='09010h_rc1'
-        />
+        <SwitchDetailsContext.Provider value={{
+          switchDetailsContextData,
+          setSwitchDetailsContextData: jest.fn()
+        }}>
+          <AddStackMember
+            visible={true}
+            setVisible={jest.fn()}
+            maxMembers={3}
+            venueFirmwareVersion='09010h_rc1'
+          />
+        </SwitchDetailsContext.Provider>
       </Provider>, {
         route: {
           params,

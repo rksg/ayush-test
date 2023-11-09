@@ -1493,6 +1493,79 @@ exports[`VideoCallQoe Table should render table 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
+                              data-row-key="85"
+                            >
+                              <td
+                                class="ant-table-cell ant-table-selection-column"
+                              >
+                                <label
+                                  class="ant-radio-wrapper"
+                                >
+                                  <span
+                                    class="ant-radio"
+                                  >
+                                    <input
+                                      class="ant-radio-input"
+                                      type="radio"
+                                      value=""
+                                    />
+                                    <span
+                                      class="ant-radio-inner"
+                                    />
+                                  </span>
+                                </label>
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-ellipsis"
+                                title="Test call"
+                              >
+                                Test call
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-column-sort ant-table-cell-ellipsis"
+                                style="text-align: center;"
+                                title="04/12/2023 09:56:58"
+                              >
+                                04/12/2023 09:56:58
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-ellipsis"
+                                style="text-align: center;"
+                                title="-"
+                              >
+                                -
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-ellipsis"
+                                style="text-align: center;"
+                                title="2"
+                              >
+                                2
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-ellipsis"
+                                style="text-align: center;"
+                              >
+                                <span
+                                  class="sc-ftvSup cYsZHL"
+                                >
+                                  Invalid
+                                </span>
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-ellipsis"
+                                style="text-align: center;"
+                                title="-"
+                              >
+                                -
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
+                            </tr>
+                            <tr
+                              class="ant-table-row ant-table-row-level-0"
                               data-row-key="57"
                             >
                               <td
