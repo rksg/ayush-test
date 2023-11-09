@@ -162,16 +162,18 @@ export interface VersionHistory {
 export interface switchVersion {
   id: string;
   name: string;
-  version: string;
+  version?: string;
   category: FirmwareCategory;
 }
 
 export interface switchSchedule {
   timeSlot: {
-    startDateTime: string;
-    versionInfo: ScheduleVersionInfo;
+    endDateTime?: string;
+    startDateTime?: string;
+    versionInfo?: ScheduleVersionInfo;
   };
   version?: {
+    id: string;
     name: string;
     category: FirmwareCategory;
   }
@@ -187,14 +189,57 @@ export interface FirmwareSwitchVenue {
   preDownload: boolean;
   switchFirmwareVersionAboveTen: switchVersion;
   switchFirmwareVersion: switchVersion;
-  updatedAdvice: VenueUpdateAdvice;
+  updatedAdvice?: VenueUpdateAdvice;
   availableVersions: switchVersion[];
   nextSchedule: switchSchedule;
-  lastSkippedVersions: SkippedVersion[];
-  versionHistory: VersionHistory[];
+  lastSkippedVersions?: SkippedVersion[];
+  versionHistory?: VersionHistory[];
   lastScheduleUpdateTime: string;
-  switchCount?: number;
-  aboveTenSwitchCount?: number;
+  switchCount: number;
+  aboveTenSwitchCount: number;
+  status: SwitchFirmwareStatusType;
+  scheduleCount: number;
+}
+
+export enum SwitchFirmwareStatusType {
+  NONE = 'NONE',
+  INITIATE = 'INITIATE',
+  SUCCESS = 'SUCCESS',
+  FAILED = 'FAILED'
+}
+
+export interface SwitchFirmware {
+  switchId: string;
+  id: string;
+  switchName: string;
+  isStack: boolean;
+  venueId: string;
+  venueName: string;
+  preDownload: boolean;
+  isSwitchLevelSchedule: boolean;
+  currentFirmware: string;
+  availableVersion: switchVersion;
+  updatedAdvice?: VenueUpdateAdvice;
+  availableVersions: switchVersion[];
+  switchNextSchedule: switchSchedule;
+  venueNextSchedule: switchSchedule;
+}
+
+export enum SwitchFwStatusEnum {
+  FW_UPD_START = 'FW_UPD_START',
+  FW_UPD_VALIDATING_PARAMETERS = 'FW_UPD_VALIDATING_PARAMETERS',
+  FW_UPD_DOWNLOADING = 'FW_UPD_DOWNLOADING',
+  FW_UPD_VALIDATING_IMAGE = 'FW_UPD_VALIDATING_IMAGE',
+  FW_UPD_SYNCING_TO_REMOTE = 'FW_UPD_SYNCING_TO_REMOTE',
+  FW_UPD_WRITING_TO_FLASH = 'FW_UPD_WRITING_TO_FLASH',
+  FW_UPD_COMPLETE = 'FW_UPD_COMPLETE',
+  FW_UPD_FAIL = 'FW_UPD_FAIL'
+}
+export interface SwitchFirmwareStatus {
+  switchId: string;
+  switchName: string;
+  status: SwitchFwStatusEnum;
+  targetFirmware: string;
 }
 
 export interface CurrentVersions {

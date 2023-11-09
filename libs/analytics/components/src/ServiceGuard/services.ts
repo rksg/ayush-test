@@ -7,13 +7,14 @@ import moment            from 'moment-timezone'
 import { ValidatorRule } from 'rc-field-form/lib/interface'
 import { useIntl }       from 'react-intl'
 
-import { showToast, TableProps, useStepFormContext } from '@acx-ui/components'
-import { get }                                       from '@acx-ui/config'
-import { useNetworkListQuery }                       from '@acx-ui/rc/services'
-import { Network, TableResult }                      from '@acx-ui/rc/utils'
-import { useParams }                                 from '@acx-ui/react-router-dom'
-import { serviceGuardApi }                           from '@acx-ui/store'
-import { TABLE_DEFAULT_PAGE_SIZE, noDataDisplay }    from '@acx-ui/utils'
+import { SystemMap, useSystems }                                         from '@acx-ui/analytics/services'
+import { showToast, TableProps, useStepFormContext }                     from '@acx-ui/components'
+import { get }                                                           from '@acx-ui/config'
+import { useNetworkListQuery }                                           from '@acx-ui/rc/services'
+import { Network, TableResult }                                          from '@acx-ui/rc/utils'
+import { useParams }                                                     from '@acx-ui/react-router-dom'
+import { serviceGuardApi }                                               from '@acx-ui/store'
+import { NetworkPath, PathNode, TABLE_DEFAULT_PAGE_SIZE, noDataDisplay } from '@acx-ui/utils'
 
 import { authMethodsByClientType }     from './authMethods'
 import { messageMapping, stages }      from './contents'
@@ -33,7 +34,8 @@ import type {
   MutationResponse,
   ClientType,
   AuthenticationMethod,
-  Wlan
+  Wlan,
+  NetworkPaths
 } from './types'
 
 const fetchServiceGuardSpec = gql`
@@ -550,14 +552,72 @@ const {
   })
 })
 
+export const transformPathToDB = (args: ServiceGuardFormDto, systemMap: SystemMap = {}) => ({
+  ...args,
+  configs: args.configs.map(config => ({
+    ...config,
+    networkPaths: {
+      networkNodes: config.networkPaths!.networkNodes.reduce((agg, path) => {
+        const { system, rest } = _.groupBy(
+          path, n => n.type === 'system' ? 'system' : 'rest'
+        ) as { system: PathNode[], rest: PathNode[] }
+        const mapping = system && systemMap[system[0].name]
+        mapping
+          ? mapping.forEach(sys =>
+            agg.push([ { type: 'system', name: sys.deviceId }, ...rest ] as NetworkPath)
+          )
+          : agg.push(path)
+        return agg
+      }, [] as NetworkPaths)
+    }
+  }))
+})
+
+export const transformPathFromDB = (spec: ServiceGuardSpec, systemMap: SystemMap = {}) => {
+  const mapping = Object.entries(systemMap).reduce((agg, [deviceName, systems]) => {
+    systems.forEach(sys => {
+      agg[sys.deviceId] = deviceName
+    })
+    return agg
+  }, {} as Record<string, string>)
+
+  return {
+    ...spec,
+    configs: spec.configs.map(config => ({
+      ...config,
+      networkPaths: {
+        networkNodes: _.uniqBy(config.networkPaths!.networkNodes.reduce((agg, path) => {
+          const { system, rest } =_.groupBy(path, n => n.type === 'system' ? 'system' : 'rest')
+          const name = system && mapping[(system[0] as PathNode).name]
+          name
+            ? agg.push([{ type: 'system', name }, ...rest] as NetworkPath)
+            : agg.push(path as NetworkPath)
+          return agg
+        }, [] as NetworkPaths), path => JSON.stringify(path))
+      }
+    }))
+  }
+}
+
 export function useServiceGuardSpecMutation () {
+  const systems = useSystems()
   const spec = useServiceGuardSpec()
   const editMode = !spec.isUninitialized
   const create = useCreateServiceGuardSpecMutation()
   const update = useUpdateServiceGuardSpecMutation()
 
   const [submit, response] = editMode ? update : create
-  return { editMode, spec, submit, response }
+
+  return {
+    editMode,
+    spec: {
+      ...spec,
+      ...(spec.data && systems.data && { data: transformPathFromDB(spec.data, systems.data) })
+    },
+    submit: (args: ServiceGuardFormDto) => submit(transformPathToDB(args, systems.data)),
+    response,
+    systems
+  }
 }
 
 export function useRunServiceGuardTestMutation () {
@@ -607,6 +667,7 @@ const { useLazyServiceGuardSpecNamesQuery } = serviceGuardApi.injectEndpoints({
     })
   })
 })
+
 export function useDuplicateNameValidator (editMode = false, initialName?: string) {
   const { $t } = useIntl()
   const [getNames] = useLazyServiceGuardSpecNamesQuery()
