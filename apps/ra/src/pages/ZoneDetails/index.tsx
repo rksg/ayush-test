@@ -40,7 +40,7 @@ export default function ZoneDetails () {
   const Tab =
     tabs({
       queryParams: {
-        searchString: zoneName,
+        searchString: '',
         path: [[
           { type: 'system', name: systemName as string },
           { type: 'zone', name: zoneName as string }
