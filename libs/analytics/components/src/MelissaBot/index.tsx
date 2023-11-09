@@ -21,13 +21,23 @@ const scrollToBottom=()=>{
   }
 }
 
+interface MelissaBotState{
+  isOpen: boolean
+}
+
+const initialState:MelissaBotState = {
+  isOpen: false
+}
+
+
 export function MelissaBot (){
   const { $t } = useIntl()
   const isMelissaBotEnabled = useIsSplitOn(Features.RUCKUS_AI_CHATBOT_TOGGLE)
   const { pathname } = useLocation()
   const inputRef = useRef<InputRef>(null)
   const initCount = useRef(0)
-  const [open, setOpen] = useState(false)
+  const [state,setState] = useState(initialState)
+  // const [open, setOpen] = useState(false)
   const [isReplying, setIsReplying] = useState(false)
   const [responseCount, setResponseCount] = useState(0)
   const [showFloatingButton, setShowFloatingButton] = useState(false)
@@ -38,7 +48,7 @@ export function MelissaBot (){
   const [fileName, setFileName] = useState('')
 
   const showDrawer = () => {
-    setOpen(true)
+    setState({ ...state,isOpen: true })
     defer(()=>{
       if(inputRef.current){
         inputRef.current.focus()
@@ -47,7 +57,7 @@ export function MelissaBot (){
   }
 
   const onClose = () => {
-    setOpen(false)
+    setState({ ...state,isOpen: false })
   }
   const doAfterResponse = ()=>{
     scrollToBottom()
@@ -209,7 +219,7 @@ export function MelissaBot (){
     title={title}
     icon={<MelissaHeaderIcon/>}
     onClose={onClose}
-    visible={open}
+    visible={state.isOpen}
     width={464}
     footer={<Input ref={inputRef}
       placeholder={askAnything}
