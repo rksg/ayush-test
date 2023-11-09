@@ -88,10 +88,14 @@ function dayOfMonthOptions () {
 }
 
 const frequencyListOptions: Array<{ value: string, label: string }> = [
-  ...Object.values(EventScheduleFrequency).map((schedule) => {return {
-    label: schedule,
-    value: schedule
-  }})
+  {
+    label: EventScheduleFrequency.Weekly,
+    value: EventScheduleFrequency.Weekly
+  },
+  {
+    label: EventScheduleFrequency.Monthly,
+    value: EventScheduleFrequency.Monthly
+  }
 ]
 
 export function ScheduleExportForm (props: ScheduleExportFormProps) {
@@ -134,7 +138,11 @@ export function ScheduleExportForm (props: ScheduleExportFormProps) {
           formScheduleExportData.context.product)
         form.setFieldValue([context, 'severity'],
           formScheduleExportData.context.severity)
-        form.setFieldValue('searchString', formScheduleExportData.context.searchString)
+        if (formScheduleExportData.context.searchString?.length) {
+          // it will always be single string in array as per API implementation
+          form.setFieldValue([context, 'searchString'],
+            formScheduleExportData.context.searchString[0])
+        }
       }
       if (formScheduleExportData.recipients && formScheduleExportData.recipients.length){
         form.setFieldValue('recipients', formScheduleExportData.recipients.join(','))

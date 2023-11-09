@@ -189,14 +189,33 @@ describe('EventTable', () => {
     expect(await within(cell).findByTestId('tooltip-content')).toHaveTextContent('Not available')
   })
 
-  it('should download csv on click', async () => {
+  it('should download csv on click with event export toggle FF off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <EventTable tableQuery={tableQuery} />,
+      { route: { params }, wrapper: Provider }
+    )
+    await userEvent.click(screen.getByTestId('DownloadOutlined'))
+    expect(mockExportCsv).toBeCalled()
+  })
+
+  it('should download csv on click with event export toggle FF on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockServer.use(rest.post(
+      CommonUrlsInfo.addExportSchedules.url,
+      (req, res, ctx) => {
+        return res(ctx.json({}))
+      }
+    ))
     render(
       <EventTable tableQuery={tableQuery} />,
       { route: { params }, wrapper: Provider }
     )
     await userEvent.click(screen.getByTestId('DownloadOutlined'))
     await userEvent.click(await screen.findByRole('menuitem', { name: 'Export Now' }))
-    expect(mockExportCsv).toBeCalled()
+    expect(await
+    screen.findByText('The event export is being generated. This is taking some time…'))
+      .toBeInTheDocument()
   })
 
   it('should not render omitColumns',async () => {

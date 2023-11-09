@@ -6,7 +6,8 @@ export type TimelineTypes = 'activities' | 'events' | 'adminLogs'
 
 export enum EventScheduleFrequency {
   Weekly = 'Weekly',
-  Monthly = 'Monthly'
+  Monthly = 'Monthly',
+  Immediate = 'Immediate'
 }
 
 export const eventSeverityMapping = {
@@ -126,14 +127,20 @@ export type EventExportSchedule = {
     entity_type?: [typeof eventTypeMapping],
     product?: [typeof eventProductMapping],
     severity?: [typeof eventSeverityMapping],
-    searchString?: string
+    searchString?: string[] | null // API support string array with only one string.
   },
+  tenantId?: string,
+  period?: {
+    from: string,
+    to: string
+  },
+  isSupport?: boolean,
   reportSchedule?: {
     type: EventScheduleFrequency | null,
-    dayOfWeek: WeekDayName | null,
-    dayOfMonth: number | null,
-    hour: number | null,
-    minute: number | null
+    dayOfWeek?: WeekDayName | null,
+    dayOfMonth?: number | null,
+    hour?: number | null,
+    minute?: number | null
   },
   recipients: string[]
 }

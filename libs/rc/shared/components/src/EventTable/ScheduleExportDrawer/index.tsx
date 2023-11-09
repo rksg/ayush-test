@@ -40,12 +40,18 @@ export const ScheduleExportDrawer = (props: ScheduleExportDrawerProps) => {
           clientTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
           sortOrder: 'DESC',
           sortField: 'event_datetime',
-          context: formData?.context,
+          context: {
+            ...formData?.context,
+            ...(formData?.context?.searchString
+              ? { searchString: [formData?.context?.searchString] }
+              : {})
+          },
+          enable: formData.enable,
           reportSchedule: {
             type: formData?.type,
             hour: formData?.hour,
             minute: formData?.minute,
-            dayOfWeek: formData?.dayOfWeek,
+            dayOfWeek: formData?.day,
             dayOfMonth: formData?.dayOfMonth
           },
           recipients: formData?.recipients?.split(',')
@@ -54,8 +60,8 @@ export const ScheduleExportDrawer = (props: ScheduleExportDrawerProps) => {
           // if already export schedule data available then use update export schedule
           // else it will add new schedule export
           const result = !isEmpty(scheduleExportData)
-            ? await updateExportSchedules({ payload: saveData }).unwrap()
-            : await addExportSchedules({ payload: saveData }).unwrap()
+            ? await updateExportSchedules(saveData).unwrap()
+            : await addExportSchedules(saveData).unwrap()
           onCloseDrawer()
           if (result) {
             showToast({
