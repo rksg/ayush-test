@@ -285,19 +285,19 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
     }
   />
 }
+
 function checkCurrentVersions (version: string,
   rodanVersion: string,
   filterVersions: FirmwareVersion[]): FirmwareVersion[] {
   let inUseVersions = [] as FirmwareVersion[]
-  filterVersions.forEach((v: FirmwareVersion) => {
-    const getParseVersion = function (version: string) {
-      if (DefaultSwitchVersion.includes(version)) {
-        return version.replace(/_[^_]*$/, '')
-      }
-      return version
+  const getParseVersion = function (version: string) {
+    if (DefaultSwitchVersion.includes(version)) {
+      return version.replace(/_[^_]*$/, '')
     }
+    return version
+  }
 
-
+  filterVersions.forEach((v: FirmwareVersion) => {
     if (getParseVersion(v.id) === getParseVersion(version) ||
       getParseVersion(v.id) === getParseVersion(rodanVersion)) {
       v = { ...v, inUse: true }
@@ -306,3 +306,4 @@ function checkCurrentVersions (version: string,
   })
   return inUseVersions
 }
+
