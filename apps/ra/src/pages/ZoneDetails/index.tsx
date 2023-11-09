@@ -1,9 +1,10 @@
 import { omit } from 'lodash'
 
+import { QueryParamsForZone }                       from '@acx-ui/analytics/utils'
 import { useParams }                                from '@acx-ui/react-router-dom'
 import { AnalyticsFilter, PathNode, useDateFilter } from '@acx-ui/utils'
 
-import { APList, QueryParamsForZone } from '../Wifi/ApsTable'
+import { APList } from '../Wifi/ApsTable'
 
 import { ZoneAnalyticsTab } from './ZoneAnalyticsTab'
 import ZonePageHeader       from './ZonePageHeader'

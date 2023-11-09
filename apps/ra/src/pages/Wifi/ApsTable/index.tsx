@@ -2,21 +2,14 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { AP, useApListQuery }                                       from '@acx-ui/analytics/services'
-import { defaultSort, sortProp ,formattedPath, useAnalyticsFilter } from '@acx-ui/analytics/utils'
-import { Table, TableProps, Tooltip, useDateRange, Loader, Filter } from '@acx-ui/components'
-import { TenantLink }                                               from '@acx-ui/react-router-dom'
-import {
-  NodeFilter
-} from '@acx-ui/utils'
+import { AP, useApListQuery }                                                           from '@acx-ui/analytics/services'
+import { defaultSort, sortProp ,formattedPath, useAnalyticsFilter, QueryParamsForZone } from '@acx-ui/analytics/utils'
+import { Table, TableProps, Tooltip, useDateRange, Loader, Filter }                     from '@acx-ui/components'
+import { TenantLink }                                                                   from '@acx-ui/react-router-dom'
+
 
 import { useZoneWiseApListQuery } from './services'
 import {  Ul, Chevron, Li }       from './styledComponents'
-
-export type QueryParamsForZone = {
-  searchString?: string
-  path: NodeFilter[]
-}
 
 export function APList ({
   searchVal = '',
