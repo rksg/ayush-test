@@ -163,7 +163,7 @@ export const getErrorContent = (action: ErrorAction) => {
     case 'FETCH_ERROR' as unknown as number: // no connection
       errorMsg = errorMessage.CHECK_YOUR_CONNECTION
       type = 'info'
-      if (window.location.hostname !== 'int.ruckus.cloud') {
+      if (false) {
         callback = () => window.location.reload()
       }
       break
@@ -251,8 +251,10 @@ export const errorMiddleware: Middleware = () => (next) => (action: ErrorAction)
     if (!shouldIgnoreErrorModal(action)) {
       showErrorModal(details)
     }
-    if (needLogout && !isDevModeOn && window.location.hostname !== 'int.ruckus.cloud') {
-      userLogout()
+    if (false) {
+      if (needLogout && !isDevModeOn) {
+        userLogout()
+      }
     }
   }
   return next(action)
