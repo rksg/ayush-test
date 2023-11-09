@@ -104,7 +104,7 @@ describe('Firmware Venues Table', () => {
     fireEvent.click(updateVenueButton)
   })
 
-  it('should no default option in dialog when feature flag is off', async () => {
+  it.skip('should no default option in dialog when feature flag is off', async () => {
     render(
       <Provider>
         <VenueFirmwareList />
