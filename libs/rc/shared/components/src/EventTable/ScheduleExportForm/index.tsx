@@ -50,7 +50,7 @@ export const FieldLabel = styled.div<{ width: string }>`
   align-items: baseline;
 `
 const atMonthDayHourMinute = defineMessage({
-  defaultMessage: '<d>Day</d> <day></day> <at> of every month, at</at>' +
+  defaultMessage: '<d>Day</d> <dayMonth></dayMonth> <at> of every month, at</at>' +
     ' <hour></hour> <at2>:</at2> <minute></minute>'
 })
 
@@ -231,135 +231,91 @@ export function ScheduleExportForm (props: ScheduleExportFormProps) {
           children={<Select
             options={frequencyListOptions} />
           }
+          extra={
+            frequency === EventScheduleFrequency.Weekly
+              ? <label>{$t({ defaultMessage: 'Report duration will be last 7 days' })}</label>
+              : <label>{$t({ defaultMessage: 'Report duration will be last 30 days' })}</label>
+          }
         />
-
         <Form.Item
           label={$t({ defaultMessage: 'Send reports on' })}
           validateTrigger={['onBlur']}
           children={
             <Row align='middle'>
-              {frequency === EventScheduleFrequency.Weekly
-                &&
-                <FormattedMessage
-                  {...atDayHourMinute}
-                  values={{
-                    day: () => <Col span={10}>
-                      <Form.Item
-                        name={'day'}
-                        noStyle
-                      >
-                        <Select
-                          options={dayOfWeekOptions}
-                        />
-                      </Form.Item>
-                    </Col>,
-                    at: (children) => <AtCol span={2} children={children} />,
-                    hour: () => <Col span={3}>
-                      <Form.Item
-                        name={'hour'}
-                        initialValue={0}
-                        rules={
-                          [{
-                            required: true
-                          }]
-                        }
-                        noStyle
-                      >
-                        <InputNumber
-                          max={24}
-                          min={0}
-                          style={{ width: '40px' }}
-                          size={'middle'}
-                          controls={false}
-                        />
-                      </Form.Item>
-                    </Col>,
-                    at2: (children) => <AtCol span={2} children={children} />,
-                    minute: () => <Col span={5}>
-                      <Form.Item
-                        name={'minute'}
-                        initialValue={0}
-                        rules={
-                          [{
-                            required: true
-                          }]
-                        }
-                        noStyle
-                      >
-                        <InputNumber
-                          max={60}
-                          min={0}
-                          style={{ width: '40px' }}
-                          size={'middle'}
-                          controls={false}
-                        />
-                      </Form.Item>
-                    </Col>
-                  }}
-                />
-              }
-              {
-                frequency === EventScheduleFrequency.Monthly
-                && <FormattedMessage {...atMonthDayHourMinute}
-                  values={{
-                    d: (children) => <AtCol span={3} children={children} />,
-                    day: () => <Col span={4}>
-                      <Form.Item
-                        name={'dayOfMonth'}
-                        rules={[{ required: true,
-                          message: $t({ defaultMessage: 'Please enter month day' }) }]}
-                        noStyle
-                      >
-                        <Select
-                          options={dayOfMonthOptions()}
-                        />
-                      </Form.Item>
-                    </Col>,
-                    at: (children) => <AtCol span={9} children={children} />,
-                    hour: () => <Col span={3}>
-                      <Form.Item
-                        name={'hour'}
-                        initialValue={0}
-                        rules={
-                          [{
-                            required: true
-                          }]
-                        }
-                        noStyle
-                      >
-                        <InputNumber
-                          max={24}
-                          min={0}
-                          style={{ width: '40px' }}
-                          size={'middle'}
-                          controls={false}
-                        />
-                      </Form.Item>
-                    </Col>,
-                    at2: (children) => <AtCol span={1} children={children} />,
-                    minute: () => <Col span={3}>
-                      <Form.Item
-                        name={'minute'}
-                        initialValue={0}
-                        rules={
-                          [{
-                            required: true
-                          }]
-                        }
-                        noStyle
-                      >
-                        <InputNumber
-                          max={60}
-                          min={0}
-                          style={{ width: '40px' }}
-                          size={'middle'}
-                          controls={false}
-                        />
-                      </Form.Item>
-                    </Col>
-                  }}
-                />
-              }
+              <FormattedMessage
+                {...(frequency === EventScheduleFrequency.Weekly)
+                  ? atDayHourMinute : atMonthDayHourMinute}
+                values={{
+                  d: (children) => <AtCol span={2} children={children} />,
+                  day: () => <Col span={10}>
+                    <Form.Item
+                      name={'day'}
+                      noStyle
+                    >
+                      <Select
+                        options={dayOfWeekOptions}
+                      />
+                    </Form.Item>
+                  </Col>,
+                  dayMonth: () => <Col span={5}>
+                    <Form.Item
+                      name={'dayOfMonth'}
+                      rules={[{ required: true,
+                        message: $t({ defaultMessage: 'Please enter month day' }) }]}
+                      noStyle
+                    >
+                      <Select
+                        options={dayOfMonthOptions()}
+                      />
+                    </Form.Item>
+                  </Col>,
+                  at: (children) => <AtCol span={
+                    frequency === EventScheduleFrequency.Weekly ? 2 : 9
+                  }
+                  children={children} />,
+                  hour: () => <Col span={3}>
+                    <Form.Item
+                      name={'hour'}
+                      initialValue={0}
+                      rules={
+                        [{
+                          required: true
+                        }]
+                      }
+                      noStyle
+                    >
+                      <InputNumber
+                        max={24}
+                        min={0}
+                        style={{ width: '40px' }}
+                        size={'middle'}
+                        controls={false}
+                      />
+                    </Form.Item>
+                  </Col>,
+                  at2: (children) => <AtCol span={2} children={children} />,
+                  minute: () => <Col span={frequency === EventScheduleFrequency.Weekly ? 5 : 3}>
+                    <Form.Item
+                      name={'minute'}
+                      initialValue={0}
+                      rules={
+                        [{
+                          required: true
+                        }]
+                      }
+                      noStyle
+                    >
+                      <InputNumber
+                        max={60}
+                        min={0}
+                        style={{ width: '40px' }}
+                        size={'middle'}
+                        controls={false}
+                      />
+                    </Form.Item>
+                  </Col>
+                }}
+              />
             </Row>
           }
         />
