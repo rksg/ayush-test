@@ -85,17 +85,19 @@ function useOptions () {
 
 function filterAPwithDeviceRequirements (data: HierarchyNodeChild[], clientType: ClientTypeEnum ) {
   const { requiredAPFirmware, excludedTargetAPs } = deviceRequirements[clientType]
-  return data.map(({ aps, ...rest }) => ({
-    ...rest,
-    aps: aps?.filter(ap => ap.serial)
-      .filter(ap => {
-        if (excludedTargetAPs.find(a =>
-          _.get(a, 'model') === ap.model &&
-            !meetVersionRequirements(_.get(a, 'requiredAPFirmware'), ap.firmware)
-        )) return false
-        return meetVersionRequirements(requiredAPFirmware, ap.firmware)
-      })
-  }))
+  return data.reduce((venues, { aps, ...rest }) => {
+    const validAPs = aps!.filter(ap => {
+      /* istanbul ignore next */
+      if (ap.firmware === 'Unknown') return false // if (!ap.serial) return false TODO update new api to support this and uncomment
+      if (excludedTargetAPs.find(a =>
+        _.get(a, 'model') === ap.model &&
+          !meetVersionRequirements(_.get(a, 'requiredAPFirmware'), ap.firmware)
+      )) return false
+      return meetVersionRequirements(requiredAPFirmware, ap.firmware)
+    })
+    validAPs.length && venues.push({ ...rest, aps: validAPs })
+    return venues
+  }, [] as HierarchyNodeChild[])
 }
 
 export function APsSelection () {
@@ -200,8 +202,7 @@ APsSelection.FieldSummary = function APsSelectionFieldSummary () {
     path: NetworkNodes,
     hierarchies: HierarchyNodeChild[]
   ) {
-    const matched = hierarchies.find(({ id }) => path.some(({ name }) => name === id))
-
+    const matched = hierarchies.find(({ name }) => path.some(p => name === p.name)) // TODO should be using ID as renaming venues breaks edit
     return {
       name: hierarchyName(path),
       count: matched!.aps!.length
