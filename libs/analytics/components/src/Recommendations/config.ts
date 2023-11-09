@@ -17,9 +17,12 @@ export type ConfigurationValue =
   boolean |
   null
 
-export const crrmStates: Record<'optimized' | 'nonOptimized', IconValue> = {
+export const crrmStates: Record<string, IconValue> = {
   optimized: { order: 0, label: defineMessage({ defaultMessage: 'Optimized' }) },
-  nonOptimized: { order: 1, label: defineMessage({ defaultMessage: 'Non-Optimized' }) }
+  nonOptimized: { order: 1, label: defineMessage({ defaultMessage: 'Non-Optimized' }) },
+  verified: { order: 0, label: defineMessage({ defaultMessage: 'Verified' }) },
+  insufficientLicenses: { order: 2, label: defineMessage({ defaultMessage: 'Insufficient Licenses' }) },
+  verificationError: { order: 2, label: defineMessage({ defaultMessage: 'Verification Error' }) }
 }
 
 export const priorities: Record<'low' | 'medium' | 'high', IconValue> = {
@@ -64,7 +67,10 @@ const categories = {
   'Security': defineMessage({ defaultMessage: 'Security' }),
   'Infrastructure': defineMessage({ defaultMessage: 'Infrastructure' }),
   'AP Performance': defineMessage({ defaultMessage: 'AP Performance' }),
-  'AI-Driven Cloud RRM': defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' })
+  'AI-Driven Cloud RRM': defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
+  'Insufficient Licenses': defineMessage({ defaultMessage: 'Insufficient Licenses' }),
+  'Verified': defineMessage({ defaultMessage: 'Verified' }),
+  'Verification Error': defineMessage({ defaultMessage: 'Verification Error' })
 }
 
 const bandbalancingEnable: RecommendationConfig = {
@@ -135,6 +141,18 @@ export const states = {
   deleted: {
     text: defineMessage({ defaultMessage: 'Deleted' }),
     tooltip: defineMessage({ defaultMessage: 'Deleted' })
+  },
+  insufficientLicenses: {
+    text: defineMessage({ defaultMessage: 'Insufficient Licenses' }),
+    tooltip: defineMessage({ defaultMessage: 'Insufficient Licenses' })
+  },
+  verified: {
+    text: defineMessage({ defaultMessage: 'Verified' }),
+    tooltip: defineMessage({ defaultMessage: 'Verified' })
+  },
+  verificationError: {
+    text: defineMessage({ defaultMessage: 'Verification Error' }),
+    tooltip: defineMessage({ defaultMessage: 'Verification Error' })
   }
 }
 
@@ -454,6 +472,21 @@ export const codes = {
       format: formatter('countFormat'),
       deltaSign: '-'
     }]
+  },
+  'insufficientLicenses': {
+    category: categories['Insufficient Licenses'],
+    summary: defineMessage({ defaultMessage: 'Insufficient Licenses' }),
+    priority: priorities.low
+  },
+  'verified': {
+    category: categories['Verified'],
+    summary: defineMessage({ defaultMessage: 'Verified' }),
+    priority: priorities.low
+  },
+  'verificationError': {
+    category: categories['Verification Error'],
+    summary: defineMessage({ defaultMessage: 'Verification Error' }),
+    priority: priorities.low
   }
 } as unknown as Record<string, RecommendationConfig & CodeInfo>
 

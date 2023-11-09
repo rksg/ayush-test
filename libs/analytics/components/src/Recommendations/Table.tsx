@@ -1,7 +1,8 @@
 import { useMemo, useState, useEffect } from 'react'
 
-import { Checkbox }               from 'antd'
-import { useIntl, defineMessage } from 'react-intl'
+import { Checkbox }                        from 'antd'
+import { useIntl, defineMessage }          from 'react-intl'
+import { createSearchParams, useNavigate } from 'react-router-dom'
 
 import {
   isSwitchPath,
@@ -9,28 +10,55 @@ import {
   dateSort,
   sortProp
 } from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Tooltip } from '@acx-ui/components'
-import { get }                         from '@acx-ui/config'
-import { DateFormatEnum, formatter }   from '@acx-ui/formatter'
-import { TenantLink, useParams }       from '@acx-ui/react-router-dom'
-import { noDataDisplay, PathFilter }   from '@acx-ui/utils'
+import { Button, Loader, TableProps, Tooltip }  from '@acx-ui/components'
+import { get }                                  from '@acx-ui/config'
+import { DateFormatEnum, formatter }            from '@acx-ui/formatter'
+import { TenantLink, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { noDataDisplay, PathFilter }            from '@acx-ui/utils'
 
-import { RecommendationActions }  from './RecommendationActions'
+import { RecommendationActions } from './RecommendationActions'
 import {
   useRecommendationListQuery,
   RecommendationListItem,
-  useMuteRecommendationMutation
+  useMuteRecommendationMutation,
+  unknownStates
 } from './services'
 import * as UI from './styledComponents'
 
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
-
 
 const DateLink = ({ value }: { value: RecommendationListItem }) => {
   const { activeTab } = useParams()
   return <TenantLink to={`analytics/recommendations/${activeTab}/${value.id}`}>
     {formatter(DateFormatEnum.DateTimeFormat)(value.updatedAt)}
   </TenantLink>
+}
+
+const UnknownLink = ({ value }: { value: RecommendationListItem }) => {
+  const { updatedAt, statusEnum, metadata, sliceValue } = value
+  const auditMetadata = metadata as { audit?: [
+    { failure: string }
+  ] }
+  const checkMesh = auditMetadata?.audit?.some(
+    data => data.failure.hasOwnProperty('mesh'))!
+  const checkGlobalZone = auditMetadata?.audit?.some(
+    data => data.failure.hasOwnProperty('global-zone-checker'))!
+  const testing = checkMesh === true ? 'mesh'
+    : checkGlobalZone === true ? 'global-zone-checker' : 'null'
+  const navigate = useNavigate()
+  const basePath = useTenantLink('analytics/recommendations/crrm/unknown')
+  const pathname = basePath.pathname
+  const paramString = createSearchParams({
+    status: statusEnum,
+    date: updatedAt,
+    sliceValue: sliceValue,
+    extra: testing
+  }).toString()
+
+  return <Button
+    type='link'
+    onClick={() => {navigate(`${pathname}?${paramString}`)}}
+  >{'--'}</Button>
 }
 
 const disableMuteStatus: Array<RecommendationListItem['statusEnum']> = [
@@ -125,7 +153,12 @@ export function RecommendationTable (
       dataIndex: 'updatedAt',
       key: 'updatedAt',
       render: (_, value) => {
-        return <DateLink value={value}/>
+        const checkUnknown = unknownStates.includes(value.statusEnum)
+        if (checkUnknown) {
+          return <UnknownLink value={value} />
+        } else {
+          return <DateLink value={value}/>
+        }
       },
       sorter: { compare: sortProp('updatedAt', dateSort) },
       fixed: 'left'

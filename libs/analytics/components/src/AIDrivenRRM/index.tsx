@@ -6,6 +6,7 @@ import { formatter, intlFormats }                                               
 import { TenantLink, useNavigateToPath }                                        from '@acx-ui/react-router-dom'
 import type { PathFilter }                                                      from '@acx-ui/utils'
 
+import { states }                                   from '../Recommendations/config'
 import { CrrmList, CrrmListItem, useCrrmListQuery } from '../Recommendations/services'
 import { OptimizedIcon }                            from '../Recommendations/styledComponents'
 
@@ -115,9 +116,11 @@ function AIDrivenRRMWidget ({
                 id,
                 crrmOptimizedState,
                 crrmInterferingLinksText,
-                summary
+                summary,
+                status
               } = recommendation
-              return <UI.List.Item key={id}>
+              // need to fix tenantlink to unknown details page
+              return <UI.List.Item key={`${id}${sliceValue}`}>
                 <TenantLink to={`/recommendations/crrm/${id}`}>
                   <Tooltip
                     placement='top'
@@ -126,7 +129,9 @@ function AIDrivenRRMWidget ({
                     <UI.List.Item.Meta
                       avatar={<OptimizedIcon value={crrmOptimizedState!.order} />}
                       title={sliceValue}
-                      description={crrmInterferingLinksText}
+                      description={id === 'unknown'
+                        ? $t(states[status].text)
+                        : crrmInterferingLinksText}
                     />
                   </Tooltip>
                 </TenantLink>

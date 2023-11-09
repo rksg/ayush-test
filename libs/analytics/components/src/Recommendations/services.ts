@@ -165,11 +165,14 @@ const getStatusTooltip = (code: string, state: StateType, metadata: Metadata) =>
 }
 
 const optimizedStates = ['applied', 'applyscheduleinprogress', 'applyscheduled']
+const otherStates = [ 'insufficientLicenses', 'verificationError', 'verified' ]
 
 export const getCrrmOptimizedState = (state: StateType) => {
   return optimizedStates.includes(state)
     ? crrmStates.optimized
-    : crrmStates.nonOptimized
+    : otherStates.includes(state)
+      ? crrmStates[state]
+      : crrmStates.nonOptimized
 }
 
 export function extractBeforeAfter (value: CrrmListItem['kpis']) {
@@ -349,7 +352,7 @@ export const api = recommendationApi.injectEndpoints({
             status: $t(states[statusEnum].text),
             statusTooltip: getStatusTooltip(code, statusEnum, { ...metadata, updatedAt }),
             statusEnum,
-            ...(code.includes('crrm') && {
+            ...((code.includes('crrm') || code === 'unknown') && {
               crrmOptimizedState: getCrrmOptimizedState(statusEnum)
             })
           }

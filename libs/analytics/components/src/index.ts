@@ -54,7 +54,8 @@ export { TopEdgesByTraffic } from './TopEdgesByTraffic'
 export { TopEdgesByResources } from './TopEdgesByResources'
 export {
   RecommendationDetails,
-  CrrmDetails
+  CrrmDetails,
+  UnknownDetails
 } from './Recommendations/RecommendationDetails'
 export { ReportTile } from './ReportTiles'
 export { ServiceGuardDetails } from './ServiceGuard/ServiceGuardDetails'
