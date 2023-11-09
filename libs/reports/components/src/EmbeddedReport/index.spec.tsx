@@ -17,7 +17,7 @@ import {
   radioBands,
   apNetworkPath,
   switchNetworkPath,
-  systems } from './__tests__/fixtures'
+  systemMap } from './__tests__/fixtures'
 
 import {
   EmbeddedReport,
@@ -222,17 +222,32 @@ describe('getSupersetRlsClause',() => {
 describe('getRLSClauseForSA', () => {
   it('should return RLS clause based on report type - AP', () => {
     const rlsClause = getRLSClauseForSA(
-      apNetworkPath as NetworkPath, systems.networkNodes, ReportType.WIRELESS)
+      apNetworkPath as NetworkPath, systemMap, ReportType.WIRELESS)
     expect(rlsClause).toMatchSnapshot('rlsClauseAPForSA')
   })
   it('should return RLS clause based on report type - SWITCH', () => {
     const rlsClause = getRLSClauseForSA(
-      switchNetworkPath as NetworkPath, systems.networkNodes, ReportType.WIRED)
+      switchNetworkPath as NetworkPath, systemMap, ReportType.WIRED)
     expect(rlsClause).toMatchSnapshot('rlsClauseSwitchForSA')
   })
   it('should return empty RLS clause for Overview', () => {
     const rlsClause = getRLSClauseForSA(
-      switchNetworkPath as NetworkPath, systems.networkNodes, ReportType.OVERVIEW)
+      switchNetworkPath as NetworkPath, systemMap, ReportType.OVERVIEW)
+    expect(rlsClause).toMatchSnapshot('rlsClauseOverviewForSA')
+  })
+  it('should handle systems with same name', () => {
+    const sameNameSystemMap = {
+      ...systemMap,
+      'ICXM-Scale': [
+        systemMap['ICXM-Scale'][0],
+        {
+          ...systemMap['ICXM-Scale'][0],
+          deviceId: '00000000-0000-0000-0000-000000000000'
+        }
+      ]
+    }
+    const rlsClause = getRLSClauseForSA(
+      apNetworkPath as NetworkPath, sameNameSystemMap, ReportType.WIRELESS)
     expect(rlsClause).toMatchSnapshot('rlsClauseOverviewForSA')
   })
 })
