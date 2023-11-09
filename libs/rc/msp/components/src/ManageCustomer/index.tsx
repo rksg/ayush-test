@@ -635,13 +635,27 @@ export function ManageCustomer () {
   }
 
   const displayIntegrator = () => {
-    const value = !mspIntegrator || mspIntegrator.length === 0 ? '--' : mspIntegrator[0].name
-    return value
+    if (!mspIntegrator || mspIntegrator.length === 0)
+      return '--'
+    return <>
+      {mspIntegrator.map(integrator =>
+        <UI.AdminList key={integrator.id}>
+          {integrator.name}
+        </UI.AdminList>
+      )}
+    </>
   }
 
   const displayInstaller = () => {
-    const value = !mspInstaller || mspInstaller.length === 0 ? '--' : mspInstaller[0].name
-    return value
+    if (!mspInstaller || mspInstaller.length === 0)
+      return '--'
+    return <>
+      {mspInstaller.map(installer =>
+        <UI.AdminList key={installer.id}>
+          {installer.name}
+        </UI.AdminList>
+      )}
+    </>
   }
 
   const displayCustomerAdmins = () => {

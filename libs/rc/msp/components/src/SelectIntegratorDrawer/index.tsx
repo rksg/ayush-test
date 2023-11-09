@@ -26,6 +26,13 @@ import {
   AccountType
 } from '@acx-ui/utils'
 
+interface SelIntegrator {
+  delegation_id: string,
+  delegation_type: string,
+  number_of_days: string,
+  mspec_id: string
+}
+
 interface IntegratorDrawerProps {
   visible: boolean
   tenantId?: string
@@ -120,29 +127,19 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
     const selectedRows = form.getFieldsValue(['integrator'])
     if (tenantId && tenantType) {
       if (selectedRows?.integrator.length > 0) {
-        const integrtorId = selectedRows.integrator[0].id
-
-        let integratorList = [
-          {
-            delegation_id: integrtorId,
+        let integratorList = [] as SelIntegrator[]
+        selectedRows.integrator.map((integrator: { id: string }) =>
+          integratorList.push({
+            delegation_id: integrator.id,
             delegation_type: tenantType,
             number_of_days: '',
-            mspec_list: [tenantId]
-          }
-        ]
+            mspec_id: tenantId
+          })
+        )
         let payload = {
           AssignMspEcListRequestV2: integratorList,
           isManageAllEcs: assignedEcAdmin
         }
-
-        // let newEcList = ecData?.mspec_list ? ecData.mspec_list : []
-        // newEcList = newEcList.concat([tenantId])
-        // const numOfDays =
-        //   ecData?.expiry_date ? moment(ecData?.expiry_date).diff(moment(Date()), 'days') : ''
-
-        // payload.number_of_days = numOfDays as string
-        // payload.mspec_list = newEcList as string[]
-
         assignMspCustomerToMutipleIntegrator({ payload })
           .then(() => {
             setVisible(false)
