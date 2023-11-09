@@ -1,7 +1,7 @@
 import { ChangeEvent, Key, useEffect, useState } from 'react'
 
 import { Input, Tooltip } from 'antd'
-import _                  from 'lodash'
+import _, { isObject }                  from 'lodash'
 import { useIntl }        from 'react-intl'
 
 import {
@@ -339,7 +339,11 @@ export const SelectSwitchStep = (
             validator: ( ) => {
               const selectedSwitches = form.getFieldValue('selectedSwitchRowKeys')
               const selectedVenues = form.getFieldValue('selectedVenueRowKeys')
-              if(_.isEmpty(selectedVenues) && _.isEmpty(selectedSwitches)){
+
+              const keys = Object.keys(selectedSwitches)
+              const selectedSwitchesAreEmpty = keys.every(key => selectedSwitches[key].length === 0)
+
+              if(_.isEmpty(selectedVenues) && selectedSwitchesAreEmpty){
                 return Promise.reject(intl.$t({ defaultMessage: 'Please select at least 1 item' }))
               }
               return Promise.resolve()
