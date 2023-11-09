@@ -1,15 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react'
 
-interface LinkCoordinate {
-  source: {
-    x: number;
-    y: number;
-  };
-  target: {
-    x: number;
-    y: number;
-  };
-}
+import { ConnectionStatus } from '@acx-ui/rc/utils'
 
 export interface Link {
   source: {
@@ -26,57 +18,106 @@ export interface Link {
 }
 
 interface LinksProps {
-  links: Link[];
-  linksCoordinate: { [key: string]: LinkCoordinate };
+  links: any[];
+  linksInfo: any;
 }
 
 // eslint-disable-next-line max-len
-const linkCustom = ({ source, target }: Link, linksCoordinate: { [key: string]: LinkCoordinate }, radius: number) => {
-  const linkCoor = linksCoordinate[`${source.data.id}_${target.data.id}`]
-  const sourceX = linkCoor.source.x
-  const sourceY = linkCoor.source.y
-  const targetX = linkCoor.target.x
-  const targetY = linkCoor.target.y
-  const breakX = sourceX + 25
-  if (sourceY === targetY) {
-    return `M${sourceY} ${sourceX}  L${targetY} ${targetX - 100}`
-  } else {
-    const isClockwise = targetY < sourceY
-    const path = `M${sourceY} ${sourceX}
-      L${sourceY} ${breakX - radius}
-      a${radius},${radius} 0 0 ${isClockwise ? 1 : 0} ${isClockwise ? -radius : radius},${radius}
-      L${isClockwise ? targetY + radius : targetY - radius} ${breakX}
-      a${radius},${radius} 0 0 ${isClockwise ? 0 : 1} ${isClockwise ? -radius : radius},${radius}
-      L${targetY} ${targetX - 100} `
-    return path
-  }
-}
 
 export const Links: React.FC<LinksProps> = (props) => {
-  const { links, linksCoordinate } = props
+  const { links, linksInfo } = props
+
+  const linkColor: { [key in ConnectionStatus]: string } = {
+    [ConnectionStatus.Good]: 'd3-tree-good-links',
+    [ConnectionStatus.Degraded]: 'd3-tree-degraded-links',
+    [ConnectionStatus.Unknown]: 'd3-tree-unknown-links'
+  }
+
+  const markerColor: { [key in ConnectionStatus]: string } = {
+    [ConnectionStatus.Good]: 'goodMarker',
+    [ConnectionStatus.Degraded]: 'degradedMarker',
+    [ConnectionStatus.Unknown]: 'unknownMarker'
+  }
+
+  const linkCustom = ({ source, target }: any,
+    linksInfo: { [key: string]: any }) => {
+    const linkInfo = linksInfo[`${source.data.id}_${target.data.id}`]
+    const sourceX = linkInfo.source.x
+    const sourceY = linkInfo.source.y
+    const targetX = linkInfo.target.x
+    const targetY = linkInfo.target.y
+
+    const ratio = Math.abs(targetY/22.5)
+    if (sourceY === targetY) {
+      const distance = sourceY < 0 ? - 18 * ratio : 18 * ratio
+      return `M${(sourceY + distance)} ${sourceX}  L${(targetY + distance)} ${targetX - 100}`
+    } else {
+      const isClockwise = targetY < sourceY
+      const path = `M0, 0 C0, 10 ${isClockwise ? -40 * ratio: 40 * ratio}
+      , 10 ${isClockwise ? -40 * ratio: 40 * ratio}, 50
+      `
+      return path
+      //M100,0 C100,100 400,100 400,250
+    }
+  }
 
   return (
-    <g className='d3-tree-links'>
+    <g>
       <marker
-        id='m1'
+        id='goodMarker'
         viewBox='0 0 10 10'
         refX='5'
         refY='5'
         markerWidth='3'
-        markerHeight='3'>
+        markerHeight='3'
+        className='goodMarker'>
         <circle cx='5' cy='5' r='5' />
       </marker>
-      {links.map((link, i) => (
-        <g key={i}
-          transform={`translate(0, -${40 + 65 * link.source.depth})`}>
-          <path
-          //eslint-disable-next-line max-len
-            d={linkCustom(link, linksCoordinate, 5)}
-            markerStart={link.source.depth === 0 ? 'url(#m1)' : ''}
-            markerEnd='url(#m1)'
-          />
-        </g>
-      ))}
+
+      <marker
+        id='degradedMarker'
+        viewBox='0 0 10 10'
+        refX='5'
+        refY='5'
+        markerWidth='3'
+        markerHeight='3'
+        className='degradedMarker'>
+        <circle cx='5' cy='5' r='5' />
+      </marker>
+
+      <marker
+        id='unknownMarker'
+        viewBox='0 0 10 10'
+        refX='5'
+        refY='5'
+        markerWidth='3'
+        markerHeight='3'
+        className='unknownMarker'>
+        <circle cx='5' cy='5' r='5' />
+      </marker>
+      {links.map((link, i) => {
+        const linkInfo = linksInfo[`${link.source.data.id}_${link.target.data.id}`]
+
+        const linkClass = linkInfo.connectionStatus !== undefined ?
+          linkColor[linkInfo.connectionStatus as ConnectionStatus] :
+          linkColor[ConnectionStatus.Good]
+
+        const markerClass = linkInfo.connectionStatus !== undefined ?
+          markerColor[linkInfo.connectionStatus as ConnectionStatus] :
+          markerColor[ConnectionStatus.Good]
+
+        return (
+          <g key={i}
+            transform={`translate(0, -${40 + 65 * link.source.depth})`}
+            className={linkClass}>
+            <path
+              d={linkCustom(link, linksInfo)}
+              markerStart={link.source.depth === 0 ? `url(#${markerClass})` : ''}
+              markerEnd={`url(#${markerClass})`}
+            />
+          </g>
+        )
+      })}
     </g>
   )
 }

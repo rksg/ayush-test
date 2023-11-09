@@ -1,7 +1,7 @@
 import React, { useState, useEffect, MouseEvent } from 'react'
 
-import { TopologyCollapse, TopologyExpand } from '@acx-ui/icons'
-import { Node }                             from '@acx-ui/rc/utils'
+import { MinusCircleOutlined, PlusCircleOutlined } from '@acx-ui/icons'
+import { Node }                                    from '@acx-ui/rc/utils'
 
 interface NodeData extends Node {
   children?: NodeData[]
@@ -39,7 +39,10 @@ const Nodes: React.FC<NodeProps> = (props) => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function coordinateTransform (node: any) {
-    return `translate(${nodesCoordinate[node.data.id].y},
+    const isClockwiseCoor = node.y > 0 ?
+      18 * Math.abs(node.y / 22.5) : -18 * Math.abs(node.y / 22.5)
+    return `translate(${node.data.id === 'Cloud' ? nodesCoordinate[node.data.id].y :
+      nodesCoordinate[node.data.id].y + isClockwiseCoor},
       ${nodesCoordinate[node.data.id].x - 65 * node.ancestors().length})`
   }
 
@@ -91,8 +94,15 @@ const Nodes: React.FC<NodeProps> = (props) => {
                 <g onClick={(e) => {
                   e.preventDefault()
                   expColEvent(node.data.id)
-                }}>
-                  <TopologyExpand width={10} height={10} x={-5} y={22} />
+                }}
+                >
+                  <MinusCircleOutlined
+                    width={10}
+                    height={10}
+                    x={-5}
+                    y={22}
+                    style={{ fill: 'white' }}
+                  />
                 </g>
               )}
               {node.data._children?.length > 0 && (
@@ -100,7 +110,14 @@ const Nodes: React.FC<NodeProps> = (props) => {
                   e.preventDefault()
                   expColEvent(node.data.id)
                 }}>
-                  <TopologyCollapse width={10} height={10} x={-5} y={22} id={node.data.id} />
+                  <PlusCircleOutlined
+                    width={10}
+                    height={10}
+                    x={-5}
+                    y={22}
+                    id={node.data.id}
+                    style={{ fill: 'white' }}
+                  />
                 </g>
               )}
             </g>

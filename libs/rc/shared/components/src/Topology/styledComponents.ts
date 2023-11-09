@@ -118,9 +118,23 @@ height: 100%;
   height: 100%;
 }
 
-.d3-tree-links {
+.d3-tree-good-links {
   fill: none;
   stroke: var(--acx-semantics-green-50);
+  stroke-opacity: 1;
+  stroke-width: 1;
+}
+
+.d3-tree-degraded-links {
+  fill: none;
+  stroke: var(--acx-semantics-yellow-40);
+  stroke-opacity: 1;
+  stroke-width: 1;
+}
+
+.d3-tree-unknown-links {
+  fill: none;
+  stroke: var(--acx-neutrals-50);
   stroke-opacity: 1;
   stroke-width: 1;
 }
@@ -150,11 +164,16 @@ height: 100%;
   fill: #aaa;
 }
 
-marker {
+.goodMarker {
   fill: var(--acx-semantics-green-50);
 }
 
-svg {
-  color: var(--acx-semantics-green-50);
+.degradedMarker {
+  fill: var(--acx-semantics-yellow-40);
 }
+
+.unknownMarker {
+  fill: var(--acx-neutrals-50);
+}
+
 `

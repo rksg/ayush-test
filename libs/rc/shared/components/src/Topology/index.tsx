@@ -677,6 +677,7 @@ export function TopologyGraph (props:{ venueId?: string,
               key={Math.random()}
               ref={graphRef}
               data={treeData}
+              edges={topologyData.edges}
               nodeRender={(node: { parent: any, data: any }) => {
                 return (
                   // eslint-disable-next-line react/jsx-no-useless-fragment
