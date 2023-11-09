@@ -65,19 +65,20 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     const typeCastCapabilities = capabilities as unknown as Capabilities ?? {}
     const currentApModel = typeCastCapabilities.apModels?.find((apModel) => apModel.model === currentAP.model)
     const enableAFC = apValidChannels?.afcEnabled
+    const apRadioDeploy = currentAP?.apRadioDeploy
 
-    if ([AFC_Featureflag, currentApModel?.supportTriRadio, enableAFC].every(Boolean)) {
+    if ([AFC_Featureflag, currentApModel?.supportTriRadio, enableAFC, (apRadioDeploy === '2-5-6')].every(Boolean)) {
       displayContent = (<>
         <Descriptions.Item
           label={$t({ defaultMessage: 'AFC Power State' })}
           children={
-            AFCPowerStateRender(currentAP?.apStatusData?.afcInfo, true)
+            AFCPowerStateRender(currentAP?.apStatusData?.afcInfo, apRadioDeploy, true)
           }
         />
         <Descriptions.Item
           label={$t({ defaultMessage: 'AFC Max Power' })}
           children={
-            AFCMaxPowerRender(currentAP?.apStatusData?.afcInfo)
+            AFCMaxPowerRender(currentAP?.apStatusData?.afcInfo, apRadioDeploy)
           }
         />
       </>)

@@ -510,11 +510,6 @@ export enum AFCStatus {
   PASSED = 'PASSED'
 }
 
-export interface LowPowerAPQuantity {
-  lowPowerAPCount: number,
-  allAPCount: number
-}
-
 export interface ApStatus {
   APRadio?: Array<RadioProperties>,
   cellularInfo?: CelluarInfo,
