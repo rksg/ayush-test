@@ -60,7 +60,7 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
   const maxInvitationReached = Boolean(data?.length) && !shouldInvite3rdPartyEnabled
 
   const handleClickInviteDelegation = () => {
-    setShowDialog(true)
+    is3PartyVarEnabled ? setShowDrawer(true) : setShowDialog(true)
   }
 
   const delegationRevokeInvitation= (rowData: Delegation) => {
@@ -183,7 +183,20 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
         }
         return false
       },
-      onClick: (rows) => {handleClickRevokeInvitation(rows[0])}
+      onClick: (rows) => {
+        showActionModal({
+          type: 'confirm',
+          title: $t({ defaultMessage: 'Revoke Access' }),
+          content:
+            $t({ defaultMessage: 'Are you sure you want to revoke access of partner {name}?' },
+              { name: rows[0].delegatedToName }),
+          okText: $t({ defaultMessage: 'Yes, revoke access' }),
+          cancelText: $t({ defaultMessage: 'No, keep access grant' }),
+          onOk: () => {
+            delegationRevokeInvitation(rows[0])
+          }
+        })
+      }
     },
     {
       label: $t({ defaultMessage: 'Cancel invitation' }),
@@ -194,7 +207,20 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
         }
         return false
       },
-      onClick: (rows) => {handleClickRevokeInvitation(rows[0])}
+      onClick: (rows) => {
+        showActionModal({
+          type: 'confirm',
+          title: $t({ defaultMessage: 'Cancel invitation?' }),
+          content:
+          // eslint-disable-next-line max-len
+            $t({ defaultMessage: 'Are you sure you want to cancel the invitation of 3rd party administrator {name}?' }, { name: rows[0].delegatedToName }),
+          okText: $t({ defaultMessage: 'Cancel Invitation' }),
+          cancelText: $t({ defaultMessage: 'Keep invitation' }),
+          onOk: () => {
+            delegationRevokeInvitation(rows[0])
+          }
+        })
+      }
     }
   ]
 
@@ -241,12 +267,12 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
 
       {is3PartyVarEnabled
         ? <DelegationInviteDrawer
-          visible={showDialog}
-          setVisible={setShowDialog}
-        />
-        : <DelegationInviteDialog
           visible={showDrawer}
           setVisible={setShowDrawer}
+        />
+        : <DelegationInviteDialog
+          visible={showDialog}
+          setVisible={setShowDialog}
         />}
     </Loader>
   )
