@@ -3,13 +3,12 @@ import { useState } from 'react'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { defaultSort, sortProp  }                                from '@acx-ui/analytics/utils'
+import { defaultSort, sortProp, QueryParamsForZone  }            from '@acx-ui/analytics/utils'
 import { Filter, Loader, Table, TableProps, useDateRange }       from '@acx-ui/components'
 import { DateFormatEnum, formatter }                             from '@acx-ui/formatter'
 import { TenantLink }                                            from '@acx-ui/react-router-dom'
 import { encodeParameter, DateFilter, DateRange, useDateFilter } from '@acx-ui/utils'
 
-import { QueryParamsForZone } from '../../Wifi/ApsTable'
 
 import { useClientListQuery, useNetworkClientListQuery, Client } from './services'
 
