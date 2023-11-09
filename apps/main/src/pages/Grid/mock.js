@@ -1,11 +1,11 @@
 export default [
   {
-    id: 0,
+    id: 'a1',
     type: 'section',
     hasTab: false,
     groups: [{
       id: 0,
-      sectionId: 0,
+      sectionId: 'a1',
       type: 'group',
       cards: [
         {
@@ -57,13 +57,13 @@ export default [
     }]
   },
   {
-    id: 1,
+    id: 'a2',
     type: 'section',
     hasTab: true,
     groups: [
       {
         id: 1,
-        sectionId: 1,
+        sectionId: 'a2',
         type: 'group',
         tabLabel: 'Wi-Fi',
         tabValue: 'ap',
@@ -83,7 +83,7 @@ export default [
       },
       {
         id: 2,
-        sectionId: 1,
+        sectionId: 'a2',
         type: 'group',
         tabLabel: 'Switch',
         tabValue: 'switch',

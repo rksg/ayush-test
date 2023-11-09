@@ -163,7 +163,7 @@ export default function Layout (props) {
       <div>
         {
           sections.map((s) => <div>
-            <h2>Section {s.id + 1}</h2>
+            <h2>Section {s.id}</h2>
             {
               s.hasTab ?
                 <Tabs type='card' stickyTop={false} defaultActiveKey={groups.find(g => g.sectionId == s.id && g.defaultTab)}>

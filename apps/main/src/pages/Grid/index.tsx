@@ -27,7 +27,7 @@ const layout = {
 // ]
 
 export default function Grid () {
-  const [compactType, setCompactType] = useState('horizontal')
+  const [compactType, setCompactType] = useState('vertical')
   const [groups, setGroups] = useState([])
   const [sections, setSections] = useState([])
   useEffect(() => {
@@ -44,12 +44,15 @@ export default function Grid () {
   const getFromLS = () => {
     let ls = localStorage.getItem('acx-ui-dashboard') ?
       JSON.parse(localStorage.getItem('acx-ui-dashboard')) : mockData
-    return mockData //ls
+    return ls //mockData
   }
 
   const saveToLS = () => {
-    //TODO: transfer to sections
-    localStorage.setItem('acx-ui-dashboard', JSON.stringify(groups))
+    const tmp = _.cloneDeep(sections)
+    tmp.forEach(s => {
+      s.groups = groups.filter(g => g.sectionId === s.id)
+    })
+    localStorage.setItem('acx-ui-dashboard', JSON.stringify(tmp))
   }
 
   const addCard = () => {
