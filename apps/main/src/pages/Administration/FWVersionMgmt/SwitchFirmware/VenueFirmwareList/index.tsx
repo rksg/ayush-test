@@ -131,7 +131,7 @@ export const VenueFirmwareTable = (
         if (row.switchFirmwareVersionAboveTen?.id) {
           versionList.push(parseSwitchVersion(row.switchFirmwareVersionAboveTen.id))
         }
-        return versionList.length > 0 ? versionList.join(', ') : '--'
+        return versionList.length > 0 ? versionList.join(', ') : noDataDisplay
       }
     },
     {
@@ -141,7 +141,7 @@ export const VenueFirmwareTable = (
       render: function (_, row) {
         const availableVersions = row.availableVersions
         if (!Array.isArray(availableVersions) || availableVersions.length === 0) {
-          return '--'
+          return noDataDisplay
         } else {
           return availableVersions.map(version => parseSwitchVersion(version.id)).join(',')
         }
@@ -154,7 +154,7 @@ export const VenueFirmwareTable = (
       render: function (__, row) {
 
         const switchFirmwareStatusTextMapping: { [key in SwitchFirmwareStatusType]: string } = {
-          [SwitchFirmwareStatusType.NONE]: '--',
+          [SwitchFirmwareStatusType.NONE]: noDataDisplay,
           [SwitchFirmwareStatusType.INITIATE]:
             $t({ defaultMessage: 'Firmware update initiated.' }),
           [SwitchFirmwareStatusType.SUCCESS]:
@@ -165,7 +165,7 @@ export const VenueFirmwareTable = (
 
         if (_.isEmpty(row.status) || row.status === SwitchFirmwareStatusType.NONE
           || _.isEmpty(switchFirmwareStatusTextMapping[row.status])) {
-          return '--'
+          return noDataDisplay
         }
 
         return <div>
