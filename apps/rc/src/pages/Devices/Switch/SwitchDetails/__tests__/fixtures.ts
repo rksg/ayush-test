@@ -134,3 +134,26 @@ export const jwtToken = {
   id_token: 'id_token',
   type: 'JWT'
 }
+
+export const switchDetailsContextData = {
+  switchName: '',
+  currentSwitchOperational: true,
+  switchDetailHeader: {
+    cliApplied: false,
+    configReady: true,
+    name: 'test',
+    isStack: false,
+    switchMac: '58:fb:96:0e:bc:f8',
+    switchName: 'ICX7150-C12 Router',
+    serialNumber: 'FEK3230S0C5',
+    deviceStatus: SwitchStatusEnum.OPERATIONAL,
+    id: 'id',
+    venueId: 'venue-id',
+    stackMembers: [],
+    syncedSwitchConfig: true,
+    switchType: SWITCH_TYPE.ROUTER
+  },
+  switchData: {
+    stackMembers: []
+  }
+}
