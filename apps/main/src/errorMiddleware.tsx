@@ -163,9 +163,7 @@ export const getErrorContent = (action: ErrorAction) => {
     case 'FETCH_ERROR' as unknown as number: // no connection
       errorMsg = errorMessage.CHECK_YOUR_CONNECTION
       type = 'info'
-      if (false) {
-        callback = () => window.location.reload()
-      }
+      callback = () => window.location.reload()
       break
     case 422:
       const countryInvalid // TODO: check error format
@@ -251,10 +249,8 @@ export const errorMiddleware: Middleware = () => (next) => (action: ErrorAction)
     if (!shouldIgnoreErrorModal(action)) {
       showErrorModal(details)
     }
-    if (false) {
-      if (needLogout && !isDevModeOn) {
-        userLogout()
-      }
+    if (needLogout && !isDevModeOn) {
+      userLogout()
     }
   }
   return next(action)
