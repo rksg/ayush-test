@@ -217,8 +217,7 @@ export function RadioSettings () {
     let filters = { model: triBandApModelNames, venueId: [venueId] }
 
     const payload = {
-      fields: ['name', 'model', 'venueId', 'id','apStatusData.afcInfo.powerMode',
-        'apStatusData.afcInfo.afcStatus','apRadioDeploy'],
+      fields: ['name', 'model', 'venueId', 'id','apStatusData.afcInfo','apRadioDeploy'],
       pageSize: 10000,
       sortField: 'name',
       sortOrder: 'ASC',
