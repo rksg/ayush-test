@@ -1,10 +1,11 @@
 import { omit } from 'lodash'
 
+import { QueryParamsForZone }                       from '@acx-ui/analytics/utils'
 import { useParams }                                from '@acx-ui/react-router-dom'
 import { AnalyticsFilter, PathNode, useDateFilter } from '@acx-ui/utils'
 
-import { APList, QueryParamsForZone } from '../Wifi/ApsTable'
-import { NetworkList }                from '../WifiNetworks/NetworksTable'
+import { APList }      from '../Wifi/ApsTable'
+import { NetworkList } from '../WifiNetworks/NetworksTable'
 
 import { ZoneAnalyticsTab } from './ZoneAnalyticsTab'
 import ZonePageHeader       from './ZonePageHeader'
@@ -40,7 +41,7 @@ export default function ZoneDetails () {
   const Tab =
     tabs({
       queryParams: {
-        searchString: zoneName,
+        searchString: '',
         path: [[
           { type: 'system', name: systemName as string },
           { type: 'zone', name: zoneName as string }
