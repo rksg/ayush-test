@@ -1,7 +1,7 @@
 import { ChangeEvent, Key, useEffect, useState } from 'react'
 
 import { Input, Tooltip } from 'antd'
-import _, { isObject }                  from 'lodash'
+import _                  from 'lodash'
 import { useIntl }        from 'react-intl'
 
 import {
