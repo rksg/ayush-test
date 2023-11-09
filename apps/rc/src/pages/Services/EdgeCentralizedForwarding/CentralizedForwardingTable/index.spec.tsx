@@ -1,11 +1,11 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeUrlsInfo, ServiceOperation, ServiceType, getServiceDetailsLink, CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                                           from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved, within }                      from '@acx-ui/test-utils'
+import { EdgeUrlsInfo, ServiceOperation, ServiceType, getServiceDetailsLink, CommonUrlsInfo, EdgeCentralizedForwardingUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                          from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved, within }                                                     from '@acx-ui/test-utils'
 
-import { mockEdgeList } from '../__tests__/fixtures'
+import { mockEdgeList, mockedEdgeCFDataList } from '../__tests__/fixtures'
 
 import EdgeCentralizedForwardingTable from '.'
 
@@ -25,6 +25,10 @@ describe('Edge Centralized Forwarding Table', () => {
     }
 
     mockServer.use(
+      rest.post(
+        EdgeCentralizedForwardingUrls.getEdgeCentralizedForwardingViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: mockedEdgeCFDataList }))
+      ),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json({ data: [] }))

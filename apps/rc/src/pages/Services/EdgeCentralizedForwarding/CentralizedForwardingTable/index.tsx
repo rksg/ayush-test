@@ -8,12 +8,15 @@ import {
   Table,
   TableProps,
   Tooltip,
-  showActionModal
+  showActionModal,
+  Loader
 } from '@acx-ui/components'
-import { EdgeServiceStatusLight } from '@acx-ui/rc/components'
+import { EdgeServiceStatusLight }                    from '@acx-ui/rc/components'
 import {
   useVenuesListQuery,
-  useGetEdgeListQuery
+  useGetEdgeListQuery,
+  useDeleteEdgeCentralizedForwardingMutation,
+  useGetEdgeCentralizedForwardingViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
   ServiceOperation,
@@ -25,7 +28,7 @@ import {
   PolicyType,
   PolicyOperation,
   getPolicyDetailsLink,
-  EdgeAlarmSummary
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import {
   Path,
@@ -34,47 +37,6 @@ import {
   useTenantLink
 } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
-
-const mockedEdgeCFDataList = [{
-  id: 'mocked-cf-1',
-  name: 'Amy_CF_1',
-  tenantId: '0f18d1cf714b4bcf94bef4654f1ab29c',
-  venueId: 'a307d7077410456f8f1a4fc41d861567',
-  venueName: 'Sting-Venue-1',
-  edgeId: '96B968BD2C76ED11EEA8E4B2E81F537A94',
-  edgeName: 'sting-vSE-b490',
-  tunnelProfileId: 'aa3ecf6f283448d5bb8c0ce86790b843',
-  tunnelProfileName: 'amyTunnel',
-  networkIds: ['8e22159cfe264ac18d591ea492fbc05a'],
-  networkInfos: [{
-    networkId: '8e22159cfe264ac18d591ea492fbc05a',
-    networkName: 'amyNetwork'
-  }],
-  corePortMac: 'c2:58:00:ae:63:f2',
-  edgeAlarmSummary: {
-    edgeId: 'mocked-edge-1',
-    severitySummary: {
-      critical: 1
-    },
-    totalCount: 1
-  },
-  serviceVersion: '1.0.0.100'
-}, {
-  id: 'mocked-cf-2',
-  name: 'Amy_CF_2',
-  tenantId: '0f18d1cf714b4bcf94bef4654f1ab29c',
-  venueId: 'a8def420bd6c4f3e8b28114d6c78f237',
-  venueName: 'Sting-Venue-3',
-  edgeId: '96BD19BB3B5CE111EE80500E35957BEDC3',
-  edgeName: 'sting-vSE-b466',
-  tunnelProfileId: 'aa3ecf6f283448d5bb8c0ce86790b843',
-  tunnelProfileName: 'amyTunnel',
-  networkIds: [],
-  networkInfos: [],
-  corePortMac: 'a2:51:0f:bc:89:c5',
-  edgeAlarmSummary: {} as EdgeAlarmSummary,
-  serviceVersion: '1.0.0.100'
-}]
 
 const venueOptionsDefaultPayload = {
   fields: ['name', 'id'],
@@ -95,7 +57,19 @@ const EdgeCentralizedForwardingTable = () => {
   const navigate = useNavigate()
   const basePath: Path = useTenantLink('')
 
-  // TODO: waiting for API ready
+  const tableQuery = useTableQuery({
+    useQuery: useGetEdgeCentralizedForwardingViewDataListQuery,
+    defaultPayload: {},
+    sorter: {
+      sortField: 'name',
+      sortOrder: 'ASC'
+    },
+    search: {
+      searchTargetFields: ['name']
+    }
+  })
+
+  const [deleteEdgeCF, { isLoading: isDeleting }] = useDeleteEdgeCentralizedForwardingMutation()
 
   const { venueOptions } = useVenuesListQuery(
     { payload: venueOptionsDefaultPayload },
@@ -268,11 +242,16 @@ const EdgeCentralizedForwardingTable = () => {
           customContent: {
             action: 'DELETE',
             entityName: $t({ defaultMessage: 'Edge Centralized Forwarding' }),
-            entityValue: rows[0].name
+            entityValue: rows.length === 1 ? rows[0].name : undefined,
+            numOfEntities: rows.length
           },
           onOk: () => {
-            // TODO: waiting for API ready
-            clearSelection()
+            rows.length === 1
+              ? deleteEdgeCF({ params: { serviceId: rows[0].id } })
+                .then(clearSelection)
+              : deleteEdgeCF({
+                payload: rows.map((item) => item.id)
+              }).then(clearSelection)
           }
         })
       }
@@ -284,9 +263,7 @@ const EdgeCentralizedForwardingTable = () => {
       <PageHeader
         title={$t(
           { defaultMessage: 'Edge Centralized Forwarding ({count})' },
-          // TODO: waiting for API ready
-          { count: mockedEdgeCFDataList.length }
-          // { count: tableQuery.data?.totalCount }
+          { count: tableQuery.data?.totalCount }
         )}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
@@ -308,19 +285,10 @@ const EdgeCentralizedForwardingTable = () => {
           </TenantLink>
         ])}
       />
-      <Table
-        settingsId='services-centralized-forwarding-table'
-        rowKey='id'
-        columns={columns}
-        rowSelection={hasAccess() && { type: 'radio' }}
-        rowActions={filterByAccess(rowActions)}
-        dataSource={mockedEdgeCFDataList}
-      />
-      {/* // TODO: waiting for API ready
       <Loader
         states={[
           tableQuery,
-          { isLoading: false, isFetching: isDeletingCF }
+          { isLoading: false, isFetching: isDeleting }
         ]}
       >
         <Table
@@ -336,7 +304,6 @@ const EdgeCentralizedForwardingTable = () => {
           enableApiFilter
         />
       </Loader>
-      */}
     </>
   )
 }
