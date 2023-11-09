@@ -70,7 +70,7 @@ const AccessControlSettingForm = (props: AccessControlSettingFormProps) => {
   }, [form, data, editMode])
 
   useEffect(() => {
-    if (form && embeddedMode) {
+    if (embeddedObject && embeddedMode) {
       form.setFieldValue('enableLayer2', Boolean(embeddedObject?.l2AclPolicyId))
       form.setFieldValue('l2AclPolicyId', embeddedObject?.l2AclPolicyId)
       form.setFieldValue('enableLayer3', Boolean(embeddedObject?.l3AclPolicyId))
@@ -88,12 +88,13 @@ const AccessControlSettingForm = (props: AccessControlSettingFormProps) => {
       form.setFieldValue(['rateLimiting', 'enableUploadLimit'],
         embeddedObject?.uplinkLimit && embeddedObject?.uplinkLimit > 0
       )
+      // eslint-disable-next-line max-len
       form.setFieldValue(['rateLimiting', 'downlinkLimit'], embeddedObject?.downlinkLimit ?? 0)
       form.setFieldValue(['rateLimiting', 'enableDownloadLimit'],
         embeddedObject?.downlinkLimit && embeddedObject?.downlinkLimit > 0
       )
     }
-  }, [form, embeddedMode, embeddedObject])
+  }, [embeddedObject])
 
   return (
     <GridRow>
