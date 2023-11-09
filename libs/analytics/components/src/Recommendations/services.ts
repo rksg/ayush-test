@@ -1,5 +1,5 @@
 import { gql }           from 'graphql-request'
-import _                 from 'lodash'
+import _, { uniqueId }   from 'lodash'
 import moment            from 'moment'
 import { defineMessage } from 'react-intl'
 
@@ -33,6 +33,8 @@ export type CrrmListItem = {
   crrmOptimizedState?: IconValue
   crrmInterferingLinksText?: React.ReactNode
   summary?: string
+  updatedAt: string
+  metadata: {}
 } & Partial<RecommendationKpi>
 
 export type CrrmList = {
@@ -165,12 +167,12 @@ const getStatusTooltip = (code: string, state: StateType, metadata: Metadata) =>
 }
 
 const optimizedStates = ['applied', 'applyscheduleinprogress', 'applyscheduled']
-const otherStates = [ 'insufficientLicenses', 'verificationError', 'verified' ]
+export const unknownStates = [ 'insufficientLicenses', 'verificationError', 'verified' ]
 
 export const getCrrmOptimizedState = (state: StateType) => {
   return optimizedStates.includes(state)
     ? crrmStates.optimized
-    : otherStates.includes(state)
+    : unknownStates.includes(state)
       ? crrmStates[state]
       : crrmStates.nonOptimized
 }
@@ -239,7 +241,7 @@ export const api = recommendationApi.injectEndpoints({
           )
           crrmScenarios(start: $startDate, end: $endDate, path: $path)
           recommendations(start: $startDate, end: $endDate, path: $path, n: $n, crrm: true) {
-            id code status sliceValue ${kpiHelper('c-crrm-channel24g-auto')}
+            id code status sliceValue updatedAt metadata ${kpiHelper('c-crrm-channel24g-auto')}
           }
         }
         `,
@@ -256,15 +258,19 @@ export const api = recommendationApi.injectEndpoints({
           optimizedZoneCount: response.optimizedZoneCount,
           crrmScenarios: response.crrmScenarios,
           recommendations: response.recommendations.map(recommendation => {
-            const { code, status, kpi_number_of_interfering_links } = recommendation
+            const { id, code, status, kpi_number_of_interfering_links } = recommendation
+            const newId = id === 'unknown' ? uniqueId() : id
             return {
               ...recommendation,
+              id: newId,
               crrmOptimizedState: getCrrmOptimizedState(status),
               crrmInterferingLinksText: getCrrmInterferingLinksText(
                 status,
                 kpi_number_of_interfering_links!
               ),
-              summary: $t(codes[code as keyof typeof codes].summary)
+              summary: $t(codes[code === 'unknown'
+                ? status
+                : code as keyof typeof codes].summary)
             } as unknown as CrrmListItem
           })
         }
@@ -340,15 +346,21 @@ export const api = recommendationApi.injectEndpoints({
       transformResponse: (response: Response<Recommendation>) => {
         const { $t } = getIntl()
         return response.recommendations.map(recommendation => {
-          const { path, sliceValue, sliceType, code, status, metadata, updatedAt } = recommendation
+          const {
+            id, path, sliceValue, sliceType, code, status, metadata, updatedAt
+          } = recommendation
+          const newId = id === 'unknown' ? uniqueId() : id
           const statusEnum = status as StateType
           return {
             ...recommendation,
+            id: newId,
             scope: formattedPath(path, sliceValue),
             type: nodeTypes(sliceType as NodeType),
-            priority: codes[code as keyof typeof codes].priority,
-            category: $t(codes[code as keyof typeof codes].category),
-            summary: $t(codes[code as keyof typeof codes].summary),
+            priority: codes[code === 'unknown' ? statusEnum : code as keyof typeof codes].priority,
+            category:
+              $t(codes[code === 'unknown' ? statusEnum : code as keyof typeof codes].category),
+            summary:
+              $t(codes[code === 'unknown' ? statusEnum : code as keyof typeof codes].summary),
             status: $t(states[statusEnum].text),
             statusTooltip: getStatusTooltip(code, statusEnum, { ...metadata, updatedAt }),
             statusEnum,

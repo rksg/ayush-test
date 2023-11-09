@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 import { isSwitchPath }                                                         from '@acx-ui/analytics/utils'
 import { Loader, Card, Tooltip, NoRecommendationData, ColorPill, NoRRMLicense } from '@acx-ui/components'
 import { formatter, intlFormats }                                               from '@acx-ui/formatter'
-import { TenantLink, useNavigateToPath }                                        from '@acx-ui/react-router-dom'
+import { TenantLink, createSearchParams, useNavigateToPath }                    from '@acx-ui/react-router-dom'
 import type { PathFilter }                                                      from '@acx-ui/utils'
 
 import { states }                                   from '../Recommendations/config'
@@ -47,6 +47,9 @@ function AIDrivenRRMWidget ({
     />
   }
 
+  const filteredRecommendations = data?.recommendations.slice(0, 5)
+  const noLicense = filteredRecommendations?.every(i => i.status === 'insufficientLicenses')
+
   const subtitle = $t(
     {
       defaultMessage: `There
@@ -89,8 +92,6 @@ function AIDrivenRRMWidget ({
     for RRM due to inadequate licenses.`
   })
 
-  const noLicense = false // get from API once task is complete
-
   return <Loader states={[queryResults]}>
     <Card
       title={title}
@@ -108,28 +109,48 @@ function AIDrivenRRMWidget ({
             text={zoneCount ? optimalConfigText : noZoneText}
           />
           : <UI.List
-            dataSource={data?.recommendations}
+            dataSource={filteredRecommendations}
             renderItem={item => {
               const recommendation = item as CrrmListItem
               const {
                 sliceValue,
                 id,
+                code,
                 crrmOptimizedState,
                 crrmInterferingLinksText,
                 summary,
-                status
+                status,
+                updatedAt,
+                metadata
               } = recommendation
-              // need to fix tenantlink to unknown details page
+              const auditMetadata = metadata as { audit?: [
+                { failure: string }
+              ] }
+              const checkMesh = auditMetadata?.audit?.some(
+                data => data.failure.hasOwnProperty('mesh'))!
+              const checkGlobalZone = auditMetadata?.audit?.some(
+                data => data.failure.hasOwnProperty('global-zone-checker'))!
+              const testing = checkMesh === true ? 'mesh'
+                : checkGlobalZone === true ? 'global-zone-checker' : 'null'
+              const paramString = createSearchParams({
+                status: status,
+                date: updatedAt,
+                sliceValue: sliceValue,
+                extra: testing
+              }).toString()
+
+              const unknownPath = `unknown?${paramString}`
+
               return <UI.List.Item key={`${id}${sliceValue}`}>
-                <TenantLink to={`/recommendations/crrm/${id}`}>
+                <TenantLink to={`/recommendations/crrm/${code === 'unknown' ? unknownPath : id}`}>
                   <Tooltip
                     placement='top'
-                    title={summary}
+                    title={code === 'unknown' ? '' : summary}
                   >
                     <UI.List.Item.Meta
                       avatar={<OptimizedIcon value={crrmOptimizedState!.order} />}
                       title={sliceValue}
-                      description={id === 'unknown'
+                      description={code === 'unknown'
                         ? $t(states[status].text)
                         : crrmInterferingLinksText}
                     />

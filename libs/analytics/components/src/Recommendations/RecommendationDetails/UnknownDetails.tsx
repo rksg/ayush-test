@@ -8,7 +8,7 @@ import { useLocation }                        from '@acx-ui/react-router-dom'
 
 import { DescriptionSection } from '../../DescriptionSection'
 import { FixedAutoSizer }     from '../../DescriptionSection/styledComponents'
-import { crrmStates, states } from '../config'
+import { crrmStates }         from '../config'
 import { OptimizedIcon }      from '../styledComponents'
 
 import { CrrmValuesText, DetailsHeader, DetailsWrapper } from './styledComponents'
@@ -24,7 +24,6 @@ export const UnknownDetails = () => {
   const sliceValue = params.get('sliceValue')
   const extra = params.get('extra')
   const link = 'analytics/recommendations/crrm'
-  const statusText = $t(states[status as keyof typeof states].text)
   const isZone = get('IS_MLISA_SA')
   const fields = [
     {
@@ -48,7 +47,6 @@ export const UnknownDetails = () => {
     insufficientLicenses: defineMessage({ defaultMessage:
       `RUCKUS AI will not be able to generate an RRM recommendation due to
       {Value} {sliceValue} license compliance being incomplete.
-      Your {Value} License compliance is at XX% (YY AP licenses/ZZ APs)
       Ensure you have sufficient license subscriptions and have assigned licenses
       for all your APs to your {value} to meet the 100% {value} license compliance.
       This is a prerequisite to enable RUCKUS AI to optimize your network RRM configuration.`
@@ -78,7 +76,7 @@ export const UnknownDetails = () => {
 
   return <>
     <PageHeader
-      title={statusText}
+      title={sliceValue}
       breadcrumb={[
         { text: $t({ defaultMessage: 'AI Assurance' }) },
         { text: $t({ defaultMessage: 'AI Analytics' }) },

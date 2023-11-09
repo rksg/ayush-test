@@ -201,9 +201,10 @@ export function RecommendationTable (
       width: 90,
       dataIndex: 'status',
       key: 'status',
-      render: (_, value ) => {
-        return <Tooltip placement='top' title={value.statusTooltip}>
-          <UI.Status $statusEnum={value.statusEnum}>{value.status}</UI.Status>
+      render: (_, value: RecommendationListItem ) => {
+        const { code, statusEnum, status, statusTooltip } = value
+        return <Tooltip placement='top' title={code === 'unknown' ? '' : statusTooltip}>
+          <UI.Status $statusEnum={statusEnum}>{status}</UI.Status>
         </Tooltip>
       },
       sorter: { compare: sortProp('status', defaultSort) },
