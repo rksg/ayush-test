@@ -12,7 +12,6 @@ import { SwitchCliSession, SwitchStatus, useSwitchActions }                     
 import {
   useGetJwtTokenQuery,
   useLazyGetSwitchListQuery,
-  useSwitchDetailHeaderQuery,
   useLazyGetSwitchVenueVersionListQuery
 }                         from '@acx-ui/rc/services'
 import {
@@ -52,7 +51,7 @@ function SwitchPageHeader () {
   const {
     switchDetailsContextData
   } = useContext(SwitchDetailsContext)
-  const { switchDetailHeader, currentSwitchOperational } = switchDetailsContextData
+  const { switchData, switchDetailHeader, currentSwitchOperational } = switchDetailsContextData
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -71,9 +70,6 @@ function SwitchPageHeader () {
   const [venueFW, setVenueFW] = useState('')
   const [venueAboveTenFw, setVenueAboveTenFw] = useState('')
   const [maxMembers, setMaxMembers] = useState(12)
-
-  const { data: switchDetail } =
-    useSwitchDetailHeaderQuery({ params: { tenantId, switchId } })
 
   const isOperational = switchDetailHeader?.deviceStatus === SwitchStatusEnum.OPERATIONAL ||
     switchDetailHeader?.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
@@ -180,15 +176,16 @@ function SwitchPageHeader () {
   }, [switchDetailHeader])
 
   useEffect(() => {
-    if(switchDetail?.stackMembers){
-      const switchModel = switchDetail?.model || ''
-      const currentFW = switchDetail?.firmwareVersion || venueFW || ''
-      const currentAboveTenFW = switchDetail?.firmwareVersion || venueAboveTenFw || ''
+    if(switchDetailHeader?.stackMembers){
+      const switchModel = switchDetailHeader?.model || ''
+      const syncedStackMemberCount = switchData?.stackMembers?.length || 0
+      const currentFW = switchDetailHeader?.firmwareVersion || venueFW || ''
+      const currentAboveTenFW = switchDetailHeader?.firmwareVersion || venueAboveTenFw || ''
       const maxUnits = getStackUnitsMinLimitation(switchModel, currentFW, currentAboveTenFW)
 
-      setMaxMembers(maxUnits - switchDetail?.stackMembers.length)
+      setMaxMembers(maxUnits - syncedStackMemberCount)
     }
-  }, [switchDetail, venueFW, venueAboveTenFw])
+  }, [switchDetailHeader, switchData, venueFW, venueAboveTenFw])
 
   useEffect(() => {
     if (switchDetailHeader?.switchMac) {

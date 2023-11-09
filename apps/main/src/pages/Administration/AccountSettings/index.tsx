@@ -47,7 +47,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const isI18n = useIsSplitOn(Features.I18N_TOGGLE)
   const isSsoAllowed = useIsTierAllowed(Features.SSO)
   const isIdmDecoupling = useIsSplitOn(Features.IDM_DECOUPLING) && isSsoAllowed
-  const isApiKeyEnabled = useIsSplitOn(Features.IDM_APPLICATION_KEY_TOGGLE) && isSsoAllowed
+  const isApiKeyEnabled = useIsSplitOn(Features.IDM_APPLICATION_KEY_TOGGLE)
 
   const showRksSupport = isMspEc === false
   const isFirstLoading = recoveryPassphraseData.isLoading
@@ -55,13 +55,11 @@ const AccountSettings = (props : AccountSettingsProps) => {
 
   const showSsoSupport = isPrimeAdminUser && isIdmDecoupling && !isDogfood
     && canMSPDelegation && !isMspEc
-  const showApiKeySupport = isPrimeAdminUser && isApiKeyEnabled && !isDogfood
-    && canMSPDelegation && !isMspEc
+  const showApiKeySupport = isPrimeAdminUser && isApiKeyEnabled && canMSPDelegation && !isMspEc
 
 
   const authenticationData =
-    useGetTenantAuthenticationsQuery({ params },
-      { skip: !isIdmDecoupling || !isPrimeAdminUser || isDogfood })
+    useGetTenantAuthenticationsQuery({ params }, { skip: !isPrimeAdminUser })
   const isFetching = recoveryPassphraseData.isFetching
 
   return (

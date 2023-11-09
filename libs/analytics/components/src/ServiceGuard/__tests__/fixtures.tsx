@@ -516,22 +516,31 @@ export const mockApHierarchy = {
           children: [{ name: 'zone 2', type: 'zone',
             children: [{ name: 'group 2', type: 'apGroup',
               children: [
-                { name: 'ap 1', type: 'ap', mac: '00:00:00:00:00:01' },
-                { name: 'ap 2', type: 'ap', mac: '00:00:00:00:00:02' }
+                { name: 'ap 1', type: 'ap', mac: '00:00:00:00:00:01', model: 'R350', firmware: '6.2.1.103.253' },
+                { name: 'ap 2', type: 'ap', mac: '00:00:00:00:00:02', model: 'R350', firmware: '6.2.1.103.253' },
+                { name: 'ap 3', type: 'ap', mac: '00:00:00:00:00:03', model: 'R500', firmware: '6.2.1.103.253' },
+                { name: 'ap 4', type: 'ap', mac: '00:00:00:00:00:04', model: 'R760', firmware: '6.0.0.0.0' },
+                { name: 'ap 5', type: 'ap', mac: '00:00:00:00:00:05', model: 'R350', firmware: '6.2.1.103.253' },
+                { name: 'ap 6', type: 'ap', mac: 'Unknown', model: 'Unknown', firmware: 'Unknown' }
               ] },
             { name: 'group 4', type: 'apGroup' }
             ]
           }]
         }]
-    }]
-  }
+    },
+    { name: 'system 2', type: 'system', children: [] },
+    { name: 'system 3', type: 'system', children: [{ name: 'zone 1', type: 'zone' }] },
+    { name: 'system 4', type: 'system', children: [] },
+    { name: 'system 5', type: 'system', children: [{ name: 'zone 1', type: 'zone' }] }
+    ] }
 }
 
 export const mockSystems = {
-  networkNodes: [{
-    deviceId: 'some device id',
-    deviceName: 'system 1',
-    onboarded: true,
-    controllerVersion: 'some version'
-  }]
+  networkNodes: [
+    { deviceId: '00000000-0000-0000-0000-000000000001', deviceName: 'system 1', onboarded: true, controllerVersion: '6.0' },
+    { deviceId: '00000000-0000-0000-0000-000000000002', deviceName: 'system 2', onboarded: true, controllerVersion: '6.0' },
+    { deviceId: '00000000-0000-0000-0000-000000000003', deviceName: 'system 3', onboarded: false, controllerVersion: '6.0' },
+    { deviceId: '00000000-0000-0000-0000-000000000004', deviceName: 'system 4', onboarded: false, controllerVersion: '6.0' },
+    { deviceId: '00000000-0000-0000-0000-000000000005', deviceName: 'system 5', onboarded: true, controllerVersion: '4.0' }
+  ]
 }
