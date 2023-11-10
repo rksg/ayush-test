@@ -151,7 +151,8 @@ export const switchDetailsContextData = {
     venueId: 'venue-id',
     stackMembers: [],
     syncedSwitchConfig: true,
-    switchType: SWITCH_TYPE.ROUTER
+    switchType: SWITCH_TYPE.ROUTER,
+    activeSerial: 'FEK3230S0C5'
   },
   switchData: {
     stackMembers: []
