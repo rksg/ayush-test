@@ -3,7 +3,8 @@ import { EdgeAlarmSummary } from '../edge'
 export interface EdgeCentralizedForwardingSetting {
   id: string;
   name: string;
-  venueId: string;
+  venueId?: string; // UI used
+  venueName?: string; // UI used
   edgeId: string;
   corePortMac: string;
   networkIds: string[];

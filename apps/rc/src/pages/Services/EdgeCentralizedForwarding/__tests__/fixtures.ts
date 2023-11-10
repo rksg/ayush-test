@@ -198,6 +198,7 @@ export const mockedCFService = {
   id: 'mocked_cf_id',
   name: 'mockedCFData',
   venueId: 'f28540166b95406cae64b46bd12b742f',
+  venueName: 'airport',
   edgeId: '9618C4AC2B1FC511EE8B2B000C2943FE7F',
   corePortMac: 'p2',
   networkIds: ['32e06116667b4749855ffbb991d8ac4b'],

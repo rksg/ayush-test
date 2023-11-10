@@ -29,13 +29,12 @@ interface CentralizedForwardingFormStep {
 interface CentralizedForwardingFormProps {
   form: FormInstance,
   steps: CentralizedForwardingFormStep[]
-  editMode?: boolean
   editData?: EdgeCentralizedForwardingSetting
   onFinish: (values: CentralizedForwardingFormModel) => Promise<boolean | void>
 }
 
 const CentralizedForwardingForm = (props: CentralizedForwardingFormProps) => {
-  const { form, steps, editMode, editData, onFinish } = props
+  const { form, steps, editData, onFinish } = props
   const navigate = useNavigate()
 
   const linkToServiceList = useTenantLink(getServiceRoutePath({
@@ -50,6 +49,8 @@ const CentralizedForwardingForm = (props: CentralizedForwardingFormProps) => {
   useEffect(() => {
     if(form && editData) {
       form.resetFields()
+      form.setFieldValue('activatedNetworks', editData.networkIds
+        .map(id => ({ id })))
     }
   }, [form, editData])
 
@@ -57,7 +58,7 @@ const CentralizedForwardingForm = (props: CentralizedForwardingFormProps) => {
     form={form}
     onCancel={() => navigate(linkToServiceList)}
     onFinish={handleFinish}
-    editMode={editMode}
+    editMode={Boolean(editData)}
     initialValues={editData}
   >
     {
@@ -75,4 +76,3 @@ const CentralizedForwardingForm = (props: CentralizedForwardingFormProps) => {
 }
 
 export default CentralizedForwardingForm
-

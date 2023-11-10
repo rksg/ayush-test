@@ -53,12 +53,13 @@ describe('Scope Form', () => {
 
     render(
       <Provider>
-        <StepsForm form={stepFormRef.current}>
+        <StepsForm form={stepFormRef.current} editMode={true}>
           <ScopeForm />
         </StepsForm>
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
     expect(await screen.findByText('Scope')).toBeVisible()
+    await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
     const title = await screen.findByText(/Activate networks for the centralized forwarding service on the venue/i)
     expect(title.textContent).toBe('Activate networks for the centralized forwarding service on the venue (airport):')
     const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
@@ -66,11 +67,47 @@ describe('Scope Form', () => {
     expect(stepFormRef.current.getFieldValue('activatedNetworks')).toStrictEqual([])
   })
 
+  it('should correctly render in edit mode', async () => {
+    const { result: stepFormRef } = renderHook(useMockedFormHook)
+    const mockedNetworkIds = ['network_1', 'network_2']
+    act(() => {
+      stepFormRef.current
+        .setFieldValue('activatedNetworks', mockedNetworkIds.map(id => ({ id })))
+    })
+
+    render(
+      <Provider>
+        <StepsForm
+          form={stepFormRef.current}
+          editMode={true}
+          initialValues={{
+            networkIds: mockedNetworkIds
+          }}
+        >
+          <ScopeForm />
+        </StepsForm>
+      </Provider>, { route: { params: { tenantId: 't-id' } } })
+
+    expect(await screen.findByText('Scope')).toBeVisible()
+    await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
+    const title = await screen.findByText(/Activate networks for the centralized forwarding service on the venue/i)
+    expect(title.textContent).toBe('Activate networks for the centralized forwarding service on the venue (airport):')
+    const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
+    expect(rows.length).toBe(3)
+    await waitFor(() =>
+      expect(stepFormRef.current.getFieldValue('activatedNetworks')).toStrictEqual([
+        { id: 'network_1' },
+        { id: 'network_2' }
+      ]))
+
+    const switchBtn = within(await screen.findByRole('row', { name: /MockedNetwork 1/i })).getByRole('switch')
+    const switchBtn2 = within(await screen.findByRole('row', { name: /MockedNetwork 2/i })).getByRole('switch')
+    expect(switchBtn).toBeChecked()
+    expect(switchBtn2).toBeChecked()
+  })
+
   it('should correctly activate by switcher', async () => {
     const { result: stepFormRef } = renderHook(useMockedFormHook)
-    act(() => {
-      stepFormRef.current.setFieldValue('activatedNetworks', undefined)
-    })
     jest.spyOn(stepFormRef.current, 'setFieldValue').mockImplementation(mockedSetFieldValue)
 
     render(
@@ -125,7 +162,7 @@ describe('Scope Form', () => {
     ])
   })
 
-  it('activatedNetworks will be default into [] when networkId is not touched', async () => {
+  it('activatedNetworks will be default into [] when networkId is not touched in create mode', async () => {
     const { result: stepFormRef } = renderHook(useMockedFormHook)
     jest.spyOn(stepFormRef.current, 'setFieldValue').mockImplementation(mockedSetFieldValue)
 
@@ -146,6 +183,43 @@ describe('Scope Form', () => {
   })
   it('activatedNetworks will be default into [] when networkId is not changed in edit mode', async () => {
     const { result: stepFormRef } = renderHook(useMockedFormHook)
+    jest.spyOn(stepFormRef.current, 'setFieldValue').mockImplementation(mockedSetFieldValue)
+
+    render(
+      <Provider>
+        <StepsForm
+          form={stepFormRef.current}
+          editMode={true}
+          initialValues={{
+            networkId: []
+          }}
+        >
+          <ScopeForm />
+        </StepsForm>
+      </Provider>, { route: { params: { tenantId: 't-id' } } })
+
+    expect(await screen.findByText('Scope')).toBeVisible()
+    await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
+    const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
+    expect(rows.length).toBe(3)
+    await click(await screen.findByRole('button', { name: /Apply/i }))
+    const actualVal = stepFormRef.current.getFieldValue('activatedNetworks')
+    expect(actualVal).toStrictEqual([])
+
+    // should append the checked network into activatedNetworks
+    const switchBtn = within(await screen.findByRole('row', { name: /MockedNetwork 2/i })).getByRole('switch')
+    expect(switchBtn).not.toBeChecked()
+    await click(switchBtn)
+    expect(mockedSetFieldValue).toBeCalledWith('activatedNetworks', [
+      { name: 'MockedNetwork 2', id: 'network_2' }
+    ])
+  })
+
+  it('activatedNetworks should only ids when parent Form correctly handled in edit mode', async () => {
+    const { result: stepFormRef } = renderHook(useMockedFormHook)
+    act(() => {
+      stepFormRef.current.setFieldValue('activatedNetworks', [])
+    })
     jest.spyOn(stepFormRef.current, 'setFieldValue').mockImplementation(mockedSetFieldValue)
 
     render(

@@ -45,7 +45,6 @@ const AddEdgeCentralizedForwarding = () => {
     try {
       const payload = {
         name: formData.name,
-        venueId: formData.venueId,
         edgeId: formData.edgeId,
         corePortMac: formData.corePortMac,
         networkIds: formData.activatedNetworks.map(network => network.id),

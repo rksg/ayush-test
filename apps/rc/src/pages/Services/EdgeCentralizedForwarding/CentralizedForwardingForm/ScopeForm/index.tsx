@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 
 import { Col, Form, Row, Switch, Typography } from 'antd'
 import _                                      from 'lodash'
@@ -20,7 +20,7 @@ const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
   const { data: activated, venueId } = props
   const params = useParams()
   const { $t } = useIntl()
-  const { form, editMode } = useStepFormContext<EdgeCentralizedForwardingSetting>()
+  const { form } = useStepFormContext<EdgeCentralizedForwardingSetting>()
 
   const { networkList } = useVenueNetworkActivationsDataListQuery({
     params: { ...params },
@@ -68,8 +68,6 @@ const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
 
         updateActivatedNetworks(newSelected)
       }}
-      checkedChildren={$t({ defaultMessage: 'ON' })}
-      unCheckedChildren={$t({ defaultMessage: 'OFF' })}
     />
   }, [$t, form, activated])
 
@@ -103,18 +101,18 @@ const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
     }
   ]), [$t, ActivateSwitch])
 
-  useEffect(() => {
-    if (networkList && editMode) {
-      const networkIds = form.getFieldValue('networkIds')
-      if (networkIds) {
-        const activatedNetworks = networkIds?.map((id: string) => ({
-          id: id,
-          name: networkList.filter(i => i.id === id)[0]?.name
-        }))
-        updateActivatedNetworks(activatedNetworks)
-      }
-    }
-  }, [networkList, editMode])
+  // useEffect(() => {
+  //   if (networkList && editMode) {
+  //     const networkIds = form.getFieldValue('networkIds')
+  //     if (networkIds) {
+  //       const activatedNetworks = networkIds?.map((id: string) => ({
+  //         id: id,
+  //         name: networkList.filter(i => i.id === id)[0]?.name
+  //       }))
+  //       updateActivatedNetworks(activatedNetworks)
+  //     }
+  //   }
+  // }, [networkList, editMode])
 
   return (
     <Table

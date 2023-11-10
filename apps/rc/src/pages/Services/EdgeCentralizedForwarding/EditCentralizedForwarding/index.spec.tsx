@@ -14,8 +14,7 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
-import { mockEdgeList }                   from '../__tests__/fixtures'
-import { CentralizedForwardingFormModel } from '../CentralizedForwardingForm'
+import { mockEdgeList } from '../__tests__/fixtures'
 
 import EditEdgeCentralizedForwarding from '.'
 
@@ -30,9 +29,10 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useNavigate: () => mockedNavigate
 }))
 jest.mock('../CentralizedForwardingForm', () => ({
+  __esModule: true,
   ...jest.requireActual('../CentralizedForwardingForm'),
   default: (props: {
-    onFinish: (values: CentralizedForwardingFormModel) => Promise<boolean | void>
+    onFinish: (values: unknown) => Promise<boolean | void>
   }) => {
     const submitData = mockedSubmitDataGen()
     return <div
@@ -53,7 +53,6 @@ describe('Edit Edge Centralized Forwarding service', () => {
     mockedEditFn.mockReset()
     mockedSubmitDataGen.mockReset()
     mockedSetFieldFn.mockReset()
-
     const edgeList = {
       ...mockEdgeList,
       total: 1,
@@ -105,10 +104,6 @@ describe('Edit Edge Centralized Forwarding service', () => {
     })
 
     expect(await screen.findByTestId('rc-CentralizedForwardingForm')).toBeVisible()
-    await waitFor(() => {
-      expect(mockedSetFieldFn).toBeCalledWith('venueId', 'venue_00001')
-    })
-    expect(mockedSetFieldFn).toBeCalledWith('venueName', 'Venue01')
     await click(screen.getByRole('button', { name: 'Submit' }))
     await waitFor(() => {
       expect(mockedEditFn).toBeCalledWith({
@@ -124,38 +119,6 @@ describe('Edit Edge Centralized Forwarding service', () => {
         pathname: '/t-id/t/'+targetPath,
         search: ''
       }, { replace: true })
-    })
-  })
-
-  it('network is allowed to be empty', async () => {
-    mockedSubmitDataGen.mockReturnValue({
-      name: 'testEditCFService2',
-      networkIds: [],
-      activatedNetworks: [],
-      tunnelProfileId: 't-tunnelProfile2-id'
-    })
-
-    render(<Provider>
-      <EditEdgeCentralizedForwarding />
-    </Provider>, {
-      route: {
-        params: { tenantId: 't-id', serviceId: 't-cf-id' },
-        path: '/:tenantId/services/edgeCentralizedForwarding/:serviceId/edit'
-      }
-    })
-
-    expect(await screen.findByTestId('rc-CentralizedForwardingForm')).toBeVisible()
-    await click(screen.getByRole('button', { name: 'Submit' }))
-    await waitFor(() => {
-      expect(mockedEditFn).toBeCalledWith({
-        name: 'testEditCFService2',
-        networkIds: [],
-        tunnelProfileId: 't-tunnelProfile2-id'
-      })
-    })
-    expect(mockedEditFn).toBeCalledTimes(1)
-    await waitFor(() => {
-      expect(mockedNavigate).toBeCalled()
     })
   })
 })

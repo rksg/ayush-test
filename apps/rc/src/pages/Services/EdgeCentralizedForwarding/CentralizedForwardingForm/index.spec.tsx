@@ -137,11 +137,11 @@ describe('Edge Centralized Forwarding form', () => {
     })
 
     it('should correctly edit profile', async () => {
+      const formRef = result.current[0]
       render(<CentralizedForwardingForm
-        form={result.current[0]}
+        form={formRef}
         steps={editSteps}
         onFinish={mockedFinishFn}
-        editMode={true}
         editData={mockedCFService}
       />, {
         wrapper: Provider,
@@ -155,7 +155,10 @@ describe('Edge Centralized Forwarding form', () => {
       await click(actions.getByRole('button', { name: 'Apply' }))
 
       await waitFor(() => {
-        expect(mockedFinishFn).toBeCalledWith(mockedCFService)
+        expect(mockedFinishFn).toBeCalledWith({
+          ...mockedCFService,
+          activatedNetworks: mockedCFService.networkIds.map(id => ({ id }))
+        })
       })
     })
   })

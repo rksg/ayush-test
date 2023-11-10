@@ -28,6 +28,7 @@ const mockedAddFn = jest.fn()
 const mockedSubmitDataGen = jest.fn()
 
 jest.mock('../CentralizedForwardingForm', () => ({
+  __esModule: true,
   ...jest.requireActual('../CentralizedForwardingForm'),
   default: (props: {
     onFinish: (values: CentralizedForwardingFormModel) => Promise<boolean | void>
@@ -60,7 +61,6 @@ describe('Add Edge Centralized Forwarding service', () => {
   it('should correctly add service', async () => {
     mockedSubmitDataGen.mockReturnValueOnce({
       name: 'testAddCFService',
-      venueId: 'venue_00001',
       edgeId: '0000000001',
       corePortMac: 't-coreport-mac',
       tunnelProfileId: 't-tunnelProfile-id',
@@ -89,7 +89,6 @@ describe('Add Edge Centralized Forwarding service', () => {
     await waitFor(() => {
       expect(mockedAddFn).toBeCalledWith({
         name: 'testAddCFService',
-        venueId: 'venue_00001',
         edgeId: '0000000001',
         corePortMac: 't-coreport-mac',
         tunnelProfileId: 't-tunnelProfile-id',
@@ -107,7 +106,6 @@ describe('Add Edge Centralized Forwarding service', () => {
   it('network is allowed to be empty', async () => {
     mockedSubmitDataGen.mockReturnValue({
       name: 'testAddCFService2',
-      venueId: 'venue_00002',
       edgeId: '0000000002',
       corePortMac: 't-coreport2-mac',
       tunnelProfileId: 't-tunnelProfile2-id',
@@ -128,7 +126,6 @@ describe('Add Edge Centralized Forwarding service', () => {
     await waitFor(() => {
       expect(mockedAddFn).toBeCalledWith({
         name: 'testAddCFService2',
-        venueId: 'venue_00002',
         edgeId: '0000000002',
         corePortMac: 't-coreport2-mac',
         tunnelProfileId: 't-tunnelProfile2-id',

@@ -75,6 +75,7 @@ export const edgeCentralizedForwardingApi = baseEdgeCentralizedForwardingApi.inj
 
         const edgeInfo = edgeQuery.data as TableResult<EdgeStatus>
         cfConfig.venueId = edgeInfo.data[0].venueId
+        cfConfig.venueName = edgeInfo.data[0].venueName
 
         return cfQuery.data
           ? { data: cfConfig }

@@ -1,12 +1,9 @@
-import { useEffect } from 'react'
-
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Loader, PageHeader }                         from '@acx-ui/components'
 import {
   useGetEdgeCentralizedForwardingQuery,
-  useGetEdgeListQuery,
   useUpdateEdgeCentralizedForwardingPartialMutation
 } from '@acx-ui/rc/services'
 import {
@@ -34,25 +31,6 @@ const EditEdgeCentralizedForwarding = () => {
   const { data, isLoading } = useGetEdgeCentralizedForwardingQuery({ params })
   const [form] = Form.useForm()
 
-  const {
-    data: edgeInfo,
-    isLoading: isEdgeInfoLoading
-  } = useGetEdgeListQuery({
-    params,
-    payload: {
-      fields: [
-        'name',
-        'serialNumber',
-        'venueId',
-        'venueName'
-      ],
-      filters: {
-        serialNumber: [data?.edgeId]
-      } }
-  }, {
-    skip: !data
-  })
-
   const steps = [
     {
       title: $t({ defaultMessage: 'Settings' }),
@@ -68,10 +46,7 @@ const EditEdgeCentralizedForwarding = () => {
     try {
       const payload = {
         name: formData.name,
-        // once user touch networks, we should use activatedNetworks
-        networkIds: formData.activatedNetworks && formData.activatedNetworks.length > 0
-          ? formData.activatedNetworks.map(network => network.id)
-          : formData.networkIds,
+        networkIds: formData.activatedNetworks.map(network => network.id),
         tunnelProfileId: formData.tunnelProfileId
       }
 
@@ -83,13 +58,6 @@ const EditEdgeCentralizedForwarding = () => {
     }
   }
 
-  useEffect(() => {
-    if (edgeInfo) {
-      form.setFieldValue('venueId', edgeInfo.data[0].venueId)
-      form.setFieldValue('venueName', edgeInfo.data[0].venueName)
-    }
-  }, [edgeInfo])
-
   return (
     <>
       <PageHeader
@@ -100,12 +68,11 @@ const EditEdgeCentralizedForwarding = () => {
           { text: $t({ defaultMessage: 'Centralized Forwarding' }), link: cfListRoute }
         ]}
       />
-      <Loader states={[{ isLoading: isLoading || isEdgeInfoLoading }]}>
+      <Loader states={[{ isLoading }]}>
         <CentralizedForwardingForm
           form={form}
           steps={steps}
           onFinish={handleFinish}
-          editMode
           editData={data}
         />
       </Loader>

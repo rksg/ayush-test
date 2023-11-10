@@ -111,7 +111,6 @@ export const SettingsForm = () => {
 
   // prepare venue info
   useEffect(() => {
-    console.log(venueId, venueOptions)
     form.setFieldValue('venueName', venueOptions?.filter(i => i.value === venueId)[0]?.label)
   }, [venueId, venueOptions])
 
