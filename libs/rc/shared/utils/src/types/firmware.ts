@@ -214,6 +214,7 @@ export interface SwitchFirmware {
   switchName: string;
   isStack: boolean;
   venueId: string;
+  model: string;
   venueName: string;
   preDownload: boolean;
   isSwitchLevelSchedule: boolean;
