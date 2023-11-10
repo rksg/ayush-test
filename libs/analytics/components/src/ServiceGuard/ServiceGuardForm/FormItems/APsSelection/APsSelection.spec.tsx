@@ -166,7 +166,7 @@ describe('RA', () => {
 
       expect(await screen.findByTestId('form-values'))
         .toHaveTextContent(JSON.stringify([
-          { type: 'system', name: '00000000-0000-0000-0000-000000000001' },
+          { type: 'system', name: 'system 1' },
           { type: 'zone', name: 'zone 1' }
         ]))
     })
@@ -186,7 +186,7 @@ describe('RA', () => {
 
       expect(await screen.findByTestId('form-values'))
         .toHaveTextContent(JSON.stringify([
-          { type: 'system', name: '00000000-0000-0000-0000-000000000001' },
+          { type: 'system', name: 'system 1' },
           { type: 'apMac', list: ['00:00:00:00:00:01'] }
         ]))
     })
@@ -204,7 +204,7 @@ describe('RA', () => {
 
       expect(await screen.findByTestId('form-values'))
         .toHaveTextContent(JSON.stringify([
-          { type: 'system', name: '00000000-0000-0000-0000-000000000001' },
+          { type: 'system', name: 'system 1' },
           { type: 'apMac', list: ['00:00:00:00:00:01'] }
         ]))
     })
@@ -267,12 +267,12 @@ describe('RA', () => {
           configs: [{
             networkPaths: {
               networkNodes: [
-                [ { name: '00000000-0000-0000-0000-000000000001', type: 'system' }],
-                [ { name: '00000000-0000-0000-0000-000000000001', type: 'system' },
+                [ { name: 'system 1', type: 'system' }],
+                [ { name: 'system 1', type: 'system' },
                   { name: 'domain', type: 'domain' },
                   { name: 'zone 2', type: 'zone' },
                   { name: 'group 4', type: 'apGroup' }],
-                [ { name: '00000000-0000-0000-0000-000000000001', type: 'system' },
+                [ { name: 'system 1', type: 'system' },
                   { type: 'apMac', list: ['00:00:00:00:00:01'] }]
               ]
             }
