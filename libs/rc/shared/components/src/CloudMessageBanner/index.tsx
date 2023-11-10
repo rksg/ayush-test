@@ -121,46 +121,37 @@ export function CloudMessageBanner () {
     if (layout.showMessageBanner === undefined && (upgradeMessageTitle || plmMessageExists)) {
       layout.setShowMessageBanner(true)
     }
+    if (layout.showMessageBanner === true && !(upgradeMessageTitle || plmMessageExists)) {
+      layout.setShowMessageBanner(false)
+    }
   }, [layout, plmMessageExists, upgradeMessageTitle])
 
-  const MessageBanner = () => {
-    if (!layout.showMessageBanner) return null
-    if (plmMessageExists) {
-      return <Alert message={data?.description}
-        type='info'
-        showIcon
-        closable
-        onClose={()=>{
-          layout.setShowMessageBanner(false)
-        }}/>
-    } else {
-      const showVScheduleInfo = () => {
-        if (newWifiScheduleExists) {
-          navigate(`${linkToAdministration.pathname}/fwVersionMgmt/apFirmware`)
-        } else if (newSwitchScheduleExists) {
-          navigate(`${linkToAdministration.pathname}/fwVersionMgmt/switchFirmware`)
-        } else if(newEdgeScheduleExists) {
-          navigate(`${linkToAdministration.pathname}/fwVersionMgmt/edgeFirmware`)
-        }
-      }
-      if (upgradeMessageTitle) {
-        return <Alert
-          message={<Space>{upgradeMessageTitle}
-            <Button type='link'
-              size='small'
-              onClick={showVScheduleInfo}>
-              { $t({ defaultMessage: 'More details' }) }
-            </Button>
-          </Space>}
-          type='info'
-          showIcon
-        />
-      }
+  const showVScheduleInfo = () => {
+    if (newWifiScheduleExists) {
+      navigate(`${linkToAdministration.pathname}/fwVersionMgmt/apFirmware`)
+    } else if (newSwitchScheduleExists) {
+      navigate(`${linkToAdministration.pathname}/fwVersionMgmt/switchFirmware`)
+    } else if(newEdgeScheduleExists) {
+      navigate(`${linkToAdministration.pathname}/fwVersionMgmt/edgeFirmware`)
     }
-    return null
   }
 
-  return <MessageBanner />
+  // eslint-disable-next-line react/jsx-no-useless-fragment
+  return layout.showMessageBanner && (upgradeMessageTitle || plmMessageExists) ? <Alert
+    message={plmMessageExists ? data?.description :
+      upgradeMessageTitle ? <Space>{upgradeMessageTitle}
+        <Button type='link'
+          size='small'
+          onClick={showVScheduleInfo}>
+          { $t({ defaultMessage: 'More details' }) }
+        </Button>
+      </Space> : ''}
+    type='info'
+    showIcon
+    closable={!!plmMessageExists}
+    onClose={()=>{
+      layout.setShowMessageBanner(false)
+    }}/> : null
 }
 
 const isThereNewSchedule = (
