@@ -206,8 +206,9 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       key: 'name',
       fixed: 'left',
       render: (_, row : NetworkHierarchy) => {
-        const networkPath = row.networkPath.slice(0, -1)
-        const path = row.type !== 'Zone'
+        const networkPath = row.networkPath.slice(1)
+        const path = row.type.toLowerCase() !== 'zone'
+
           ? resolvePath(
             `/incidents?analyticsNetworkFilter=${fixedEncodeURIComponent(
               JSON.stringify({ raw: row.networkPath, path: row.networkPath })
