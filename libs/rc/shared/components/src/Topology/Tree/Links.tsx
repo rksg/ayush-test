@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react'
 
+import * as d3 from 'd3'
+
 import { ConnectionStatus } from '@acx-ui/rc/utils'
 
 export interface Link {
@@ -47,17 +49,21 @@ export const Links: React.FC<LinksProps> = (props) => {
     const targetX = linkInfo.target.x
     const targetY = linkInfo.target.y
 
-    const ratio = Math.abs(targetY/22.5)
     if (sourceY === targetY) {
-      const distance = sourceY < 0 ? - 18 * ratio : 18 * ratio
-      return `M${(sourceY + distance)} ${sourceX}  L${(targetY + distance)} ${targetX - 100}`
+      return `M${sourceY} ${sourceX}  L${targetY} ${targetX - 100}`
     } else {
+      const path = d3.path()
+      path.moveTo(sourceY, sourceX)
       const isClockwise = targetY < sourceY
-      const path = `M0, 0 C0, 10 ${isClockwise ? -40 * ratio: 40 * ratio}
-      , 10 ${isClockwise ? -40 * ratio: 40 * ratio}, 50
-      `
-      return path
-      //M100,0 C100,100 400,100 400,250
+      path.bezierCurveTo(
+        sourceY,
+        sourceX + 25,
+        isClockwise ? targetY - 5 : targetY + 5,
+        targetX - 140,
+        targetY,
+        targetX-100
+      )
+      return path.toString()
     }
   }
 

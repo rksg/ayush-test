@@ -39,10 +39,7 @@ const Nodes: React.FC<NodeProps> = (props) => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function coordinateTransform (node: any) {
-    const isClockwiseCoor = node.y > 0 ?
-      18 * Math.abs(node.y / 22.5) : -18 * Math.abs(node.y / 22.5)
-    return `translate(${node.data.id === 'Cloud' ? nodesCoordinate[node.data.id].y :
-      nodesCoordinate[node.data.id].y + isClockwiseCoor},
+    return `translate(${nodesCoordinate[node.data.id].y},
       ${nodesCoordinate[node.data.id].x - 65 * node.ancestors().length})`
   }
 

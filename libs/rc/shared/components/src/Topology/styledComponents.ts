@@ -122,7 +122,7 @@ height: 100%;
   fill: none;
   stroke: var(--acx-semantics-green-50);
   stroke-opacity: 1;
-  stroke-width: 1;
+  stroke-width: 0.5;
 }
 
 .d3-tree-degraded-links {
