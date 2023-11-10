@@ -12,7 +12,8 @@ import {
   SANetworkFilter,
   AIDrivenRRM,
   AIOperations,
-  ChatWithMelissa
+  ChatWithMelissa,
+  AppInsights
 } from '@acx-ui/analytics/components'
 import {
   PERMISSION_MANAGE_CONFIG_RECOMMENDATION,
@@ -25,6 +26,7 @@ import {
   cssNumber,
   useLayoutContext
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
 import { AnalyticsFilter, DateFilter, DateRange, getDateRangeFilter, PathFilter } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
@@ -80,6 +82,7 @@ type DashboardViewProps = {
 const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
   const height = useMonitorHeight(536)
   const userProfile = getUserProfile()
+  const enableAppInsights = useIsSplitOn(Features.APP_INSIGHTS)
   const hasRecommendation =
     userProfile.selectedTenant.permissions[
       PERMISSION_MANAGE_CONFIG_RECOMMENDATION
@@ -118,12 +121,16 @@ const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
       <div style={{ gridArea: 'a1' }}>
         <ReportTile pathFilters={pathFilters} />
       </div>
-      <div style={{ gridArea: 'a2' }}>
-        <NetworkHistory hideLegend historicalIcon={false} filters={filters} />
-      </div>
-      <div style={{ gridArea: 'a3' }}>
-        <SLA pathFilters={pathFilters} />
-      </div>
+      { enableAppInsights
+        ? [<div style={{ gridArea: 'a2-start/ a2-start/ a3-end / a3-end' }}><AppInsights /></div>]
+        : [
+          <div style={{ gridArea: 'a2' }}>
+            <NetworkHistory hideLegend historicalIcon={false} filters={filters} />
+          </div>,
+          <div style={{ gridArea: 'a3' }}>
+            <SLA pathFilters={pathFilters} />
+          </div>]
+      }
       <div style={{ gridArea: 'b1' }}>
         <IncidentsCountBySeverities filters={filters} />
       </div>
@@ -144,9 +151,13 @@ const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
           maxSlideChar={290}
         />
       </div>
-      <div style={{ gridArea: 'd2' }}>
-        <ChatWithMelissa />
-      </div>
+      { enableAppInsights
+        ? <div style={{ gridArea: 'd2' }}>
+          <SLA pathFilters={pathFilters} />
+        </div>
+        : <div style={{ gridArea: 'd2' }}>
+          <ChatWithMelissa />
+        </div> }
     </UI.AdminGrid>
   )
 }

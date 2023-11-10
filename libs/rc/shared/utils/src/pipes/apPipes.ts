@@ -118,11 +118,12 @@ export function transformQosPriorityType (type: QosPriorityEnum) {
   return transform
 }
 
-export const AFCMaxPowerRender = (afcInfo: AFCInfo | undefined) => {
-  return afcInfo?.maxPowerDbm ? `${afcInfo?.maxPowerDbm} dBm` : '--'
+export const AFCMaxPowerRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) => {
+  return (afcInfo?.maxPowerDbm && apRadioDeploy === '2-5-6') ? `${afcInfo?.maxPowerDbm} dBm` : '--'
 }
 
-export const AFCPowerStateRender = (afcInfo: AFCInfo | undefined, reasonMessage: boolean) => {
+// eslint-disable-next-line
+export const AFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy?: string, reasonMessage?: boolean) => {
 
   const { $t } = useIntl()
 
@@ -130,7 +131,7 @@ export const AFCPowerStateRender = (afcInfo: AFCInfo | undefined, reasonMessage:
 
   const displayList = []
 
-  if(!powerMode) {
+  if(!powerMode || apRadioDeploy !== '2-5-6') {
     return '--'
   }
 
