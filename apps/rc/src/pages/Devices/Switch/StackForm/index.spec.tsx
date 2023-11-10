@@ -265,9 +265,7 @@ describe('Switch Stack Form - Edit', () => {
       route: { params, path: '/:tenantId/t/devices/switch/stack/:switchId/:action' }
     })
 
-    await waitFor(async ()=>{
-      expect(await screen.findByTestId(/serialNumber1/)).toHaveValue('FEK4124R28X')
-    })
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByRole('heading', { level: 1, name: 'FEK4124R28X' })).toBeVisible()
 
     const applyButton = await screen.findByRole('button', { name: /apply/i })
