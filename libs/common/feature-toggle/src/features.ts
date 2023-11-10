@@ -104,6 +104,7 @@ export enum Features {
   WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE = 'wifi-trunk-port-untagged-vlan-toggle',
   RUCKUS_WAN_GATEWAY_UI_SHOW = 'ruckus-wan-gateway-ui-show',
   MSP_AGGREGATE_NOTIFICATION_TOGGLE = 'aggregate-notification-toggle',
+  SWITCH_UPGRADE_BY_SWITCH='switch-consumer-upgrade-by-switch-toggle',
   SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE = 'acx-ui-support-to-msp-dashboard-toggle',
   INCIDENTS_EMAIL_NOTIFICATION_TOGGLE = 'acx-ui-incidents-notification-toggle',
   RECOMMENDATION_EMAIL_NOTIFICIATION_TOGGLE = 'acx-ui-recommendation-notification-toggle',
@@ -112,12 +113,14 @@ export enum Features {
   AP_AFC_TOGGLE = 'ap-afc-toggle',
   MSP_UPGRADE_MULTI_EC_FIRMWARE = 'mspservice-multi-ec-to-upgrade-ap-firmware',
   VENUE_AP_MANAGEMENT_VLAN_TOGGLE = 'wifi-venue-ap-mgmt-vlan-toggle',
+  APP_INSIGHTS = 'acx-ui-app-insights-toggle',
   HOST_APPROVAL_EMAIL_LIST_TOGGLE = 'guest-host-approval-email-list-toggle',
   IDM_APPLICATION_KEY_TOGGLE = 'ptenant-application-key-toggle',
   WIFI_EDA_PER_AP_RADIO_CUSTOMIZATION_TOGGLE = 'wifi-eda-per-ap-radio-customization-toggle',
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
   SSO = 'ADMN-SSO',
-  EXPORT_EVENTS_TOGGLE = 'acx-ui-scheduled-events-export-toggle'
+  EXPORT_EVENTS_TOGGLE = 'acx-ui-scheduled-events-export-toggle',
+  RUCKUS_AI_CHATBOT_TOGGLE = 'ruckus-ai-chatbot-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
