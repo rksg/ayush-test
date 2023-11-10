@@ -25,7 +25,8 @@ import {
   switchLatest
 } from '../../__tests__/fixtures'
 
-import { VenueFirmwareList } from '.'
+import { VenueFirmwareListLegacy } from '.'
+
 
 describe('Firmware Venues Table', () => {
   let params: { tenantId: string }
@@ -82,7 +83,7 @@ describe('Firmware Venues Table', () => {
   it('should render table', async () => {
     const { asFragment } = render(
       <Provider>
-        <VenueFirmwareList />
+        <VenueFirmwareListLegacy />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
       })
@@ -95,7 +96,7 @@ describe('Firmware Venues Table', () => {
   it('should change schedule selected row', async () => {
     render(
       <Provider>
-        <VenueFirmwareList />
+        <VenueFirmwareListLegacy />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
       })
@@ -117,7 +118,7 @@ describe('Firmware Venues Table', () => {
   it('should not render the next schedule version of the selected row in dialog when feature flag is off', async () => {
     render(
       <Provider>
-        <VenueFirmwareList />
+        <VenueFirmwareListLegacy />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
       })
@@ -147,7 +148,7 @@ describe('Firmware Venues Table', () => {
 
     render(
       <Provider>
-        <VenueFirmwareList />
+        <VenueFirmwareListLegacy />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
       })
@@ -182,7 +183,7 @@ describe('Firmware Venues Table', () => {
 
     render(
       <Provider>
-        <VenueFirmwareList />
+        <VenueFirmwareListLegacy />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
       })
