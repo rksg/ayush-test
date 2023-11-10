@@ -69,7 +69,7 @@ const EditEdgeCentralizedForwarding = () => {
       const payload = {
         name: formData.name,
         // once user touch networks, we should use activatedNetworks
-        networkIds: formData.activatedNetworks.length > 0
+        networkIds: formData.activatedNetworks && formData.activatedNetworks.length > 0
           ? formData.activatedNetworks.map(network => network.id)
           : formData.networkIds,
         tunnelProfileId: formData.tunnelProfileId

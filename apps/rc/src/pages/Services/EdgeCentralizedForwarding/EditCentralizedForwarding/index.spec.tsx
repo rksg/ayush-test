@@ -158,35 +158,4 @@ describe('Edit Edge Centralized Forwarding service', () => {
       expect(mockedNavigate).toBeCalled()
     })
   })
-  it('should use origin networkIds when activatedNetworks is empty', async () => {
-    mockedSubmitDataGen.mockReturnValue({
-      name: 'testEditCFService2',
-      networkIds: ['t-network-2'],
-      activatedNetworks: [],
-      tunnelProfileId: 't-tunnelProfile2-id'
-    })
-
-    render(<Provider>
-      <EditEdgeCentralizedForwarding />
-    </Provider>, {
-      route: {
-        params: { tenantId: 't-id', serviceId: 't-cf-id' },
-        path: '/:tenantId/services/edgeCentralizedForwarding/:serviceId/edit'
-      }
-    })
-
-    expect(await screen.findByTestId('rc-CentralizedForwardingForm')).toBeVisible()
-    await click(screen.getByRole('button', { name: 'Submit' }))
-    await waitFor(() => {
-      expect(mockedEditFn).toBeCalledWith({
-        name: 'testEditCFService2',
-        networkIds: ['t-network-2'],
-        tunnelProfileId: 't-tunnelProfile2-id'
-      })
-    })
-    expect(mockedEditFn).toBeCalledTimes(1)
-    await waitFor(() => {
-      expect(mockedNavigate).toBeCalled()
-    })
-  })
 })

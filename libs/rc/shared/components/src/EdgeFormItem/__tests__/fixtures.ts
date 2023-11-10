@@ -1,4 +1,4 @@
-import { EdgeIpModeEnum, EdgePortTypeEnum } from '@acx-ui/rc/utils'
+import { EdgeCentralizedForwardingViewData, EdgeIpModeEnum, EdgePortTypeEnum } from '@acx-ui/rc/utils'
 
 export const mockEdgePortConfig = {
   ports: [
@@ -111,3 +111,15 @@ export const mockEdgePortConfigWithStatusIp = {
     }
   ]
 }
+
+export const mockedEdgeCFDataList = [{
+  id: 'mocked-cf-1',
+  edgeId: '96B968BD2C76ED11EEA8E4B2E81F537A94',
+  corePortMac: '00:0c:29:b6:ad:04'
+}] as EdgeCentralizedForwardingViewData[]
+
+export const mockedCorePortLostEdgeCFDataList = [{
+  id: 'mocked-cf-2',
+  edgeId: '96BD19BB3B5CE111EE80500E35957BEDC3',
+  corePortMac: ''
+}] as EdgeCentralizedForwardingViewData[]

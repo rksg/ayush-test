@@ -7,10 +7,11 @@ import _                       from 'lodash'
 import { ValidateErrorEntity } from 'rc-field-form/es/interface'
 import { useIntl }             from 'react-intl'
 
-import { Loader, NoData, showActionModal, StepsForm, Tabs }     from '@acx-ui/components'
-import { useUpdatePortConfigMutation }                          from '@acx-ui/rc/services'
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgePortWithStatus } from '@acx-ui/rc/utils'
-import { useParams }                                            from '@acx-ui/react-router-dom'
+import { Loader, NoData, showActionModal, StepsForm, Tabs }                              from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                        from '@acx-ui/feature-toggle'
+import { useGetEdgeCentralizedForwardingViewDataListQuery, useUpdatePortConfigMutation } from '@acx-ui/rc/services'
+import { EdgeIpModeEnum, EdgePortTypeEnum, EdgePortWithStatus }                          from '@acx-ui/rc/utils'
+import { useParams }                                                                     from '@acx-ui/react-router-dom'
 
 import { PortConfigForm } from './PortConfigForm'
 
@@ -41,15 +42,29 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
   const { data, onValuesChange, onFinish, onCancel, buttonLabel, edgeId } = props
   const { $t } = useIntl()
   const params = useParams()
+  const isCentralizeForwardingReady = useIsSplitOn(Features.EDGES_CENTRALIZED_FORWARDING_TOGGLE)
   const [form] = Form.useForm(props.form)
   const [currentTab, setCurrentTab] = useState<string>('port_0')
   const [updatePortConfig, { isLoading: isPortConfigUpdating }] = useUpdatePortConfigMutation()
   const dataRef = useRef<EdgePortWithStatus[] | undefined>(undefined)
   const edgeSN = edgeId ?? params.serialNumber
 
-  // FIXME: should be removed when CF is integrated into edge services API.
-  // corePort should be grey-out when CF is enabled on this edge AND corePortMac is configured.
-  const isCFEnabled = false
+  const getEdgeCFPayload = {
+    filters: { edgeId: [edgeSN] },
+    fields: ['id', 'edgeId', 'corePortMac']
+  }
+  const { edgeCFData, isLoading: isCFLoading }
+    = useGetEdgeCentralizedForwardingViewDataListQuery(
+      { payload: getEdgeCFPayload },
+      {
+        skip: !isCentralizeForwardingReady,
+        selectFromResult: ({ data, isLoading }) => ({
+          edgeCFData: data?.data?.[0],
+          isLoading
+        })
+      }
+    )
+  const isCFEnabled = !!edgeCFData
 
   let tabs = [] as TabData[]
   let formData = {} as EdgePortConfigFormType
@@ -110,12 +125,14 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
 
   const handlePortTypeChange = (changedPortName: string, changedValue: StoreValue,
     index: number) => {
-    showActionModal({
-      type: 'info',
-      content: $t({ defaultMessage: `
+    if (isCentralizeForwardingReady) {
+      showActionModal({
+        type: 'info',
+        content: $t({ defaultMessage: `
       Please make sure that you are choosing the correct port type. 
       Wrong port type change may impact the network connection.` })
-    })
+      })
+    }
 
     if (changedValue === EdgePortTypeEnum.LAN) {
       form.setFieldValue([changedPortName, 0, 'ipMode'], EdgeIpModeEnum.STATIC)
@@ -163,7 +180,7 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
   return (
     data.length > 0 ?
       <Loader states={[{
-        isLoading: false,
+        isLoading: isCFLoading,
         isFetching: isPortConfigUpdating
       }]}>
         <StepsForm

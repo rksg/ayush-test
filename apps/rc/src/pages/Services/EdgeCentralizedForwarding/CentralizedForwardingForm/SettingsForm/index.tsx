@@ -36,7 +36,7 @@ export const SettingsForm = () => {
     params,
     payload: {
       fields: ['name', 'id', 'edges'],
-      ...(editMode && { filters: { venueId: [venueId] } })
+      ...(editMode && { filters: { id: [venueId] } })
     } }, {
     selectFromResult: ({ data, isLoading }) => {
       return {
@@ -111,6 +111,7 @@ export const SettingsForm = () => {
 
   // prepare venue info
   useEffect(() => {
+    console.log(venueId, venueOptions)
     form.setFieldValue('venueName', venueOptions?.filter(i => i.value === venueId)[0]?.label)
   }, [venueId, venueOptions])
 
