@@ -58,7 +58,6 @@ export async function initialize () {
         }
       }
     })
-  // config.value?.GOOGLE_MAPS_KEY = config.value?['GOOGLE_MAP']
 
 }
 
