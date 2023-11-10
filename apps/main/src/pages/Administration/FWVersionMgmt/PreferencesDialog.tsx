@@ -185,13 +185,12 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
           />
           : null}
       </Modal>
-      <ChangeSlotDialog
-        visible={modelVisible}
+      {modelVisible && <ChangeSlotDialog
         onCancel={handleModalCancel}
         onSubmit={handleModalSubmit}
         days={valueDays}
         times={valueTimes}
-      />
+      />}
     </>
   )
 }
