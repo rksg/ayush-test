@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { Form, Radio, RadioChangeEvent, Space, Typography } from 'antd'
 import { useForm }                                          from 'antd/lib/form/Form'
@@ -44,16 +44,21 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
   const [modelVisible, setModelVisible] = useState(false)
   const [disableSave, setDisableSave] = useState(true)
   const [checked, setChecked] = useState(false)
+  const isDayTimeInitializedRef = useRef(false)
 
 
   useEffect(() => {
-    if (data && data.days) {
+    if (isDayTimeInitializedRef.current || !data) return
+
+    if (data.days) {
       setValueDays([...data.days])
     }
-    if (data && data.times) {
+    if (data.times) {
       setValueTimes([...data.times])
     }
-  }, [data])
+
+    isDayTimeInitializedRef.current = true
+  }, [isDayTimeInitializedRef, data])
 
   useEffect(() => {
     if (preDownload) {
@@ -184,8 +189,8 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
         visible={modelVisible}
         onCancel={handleModalCancel}
         onSubmit={handleModalSubmit}
-        days={data.days as string[]}
-        times={data.times as string[]}
+        days={valueDays}
+        times={valueTimes}
       />
     </>
   )

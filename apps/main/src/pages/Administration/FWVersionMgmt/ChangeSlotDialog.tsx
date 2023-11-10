@@ -64,7 +64,7 @@ export function ChangeSlotDialog (props: ChangeSlotDialogProps) {
         setDisableSave(false)
       }
     },
-    placeholder: 'Select Item...'
+    placeholder: $t({ defaultMessage: 'Select Item...' })
     // maxTagCount: 1
   }
 
