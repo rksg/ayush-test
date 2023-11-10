@@ -253,5 +253,104 @@ export const incidentInformation: Record<IncidentCode, IncidentInformation> = {
       defaultMessage: 'Sub-optimal WAN throughput - speed mismatch between AP and peer device: {scope}.'
     }),
     incidentType: 'network'
+  },
+  'p-airtime-b-24g-high': {
+    category: defineMessage({ defaultMessage: 'Performance' }),
+    subCategory: defineMessage({ defaultMessage: 'Airtime' }),
+    shortDescription: defineMessage({
+      defaultMessage: 'Airtime Utilization is unusually high in 2.4 GHz in Zone: {scope}'
+    }),
+    longDescription: defineMessage({
+      defaultMessage: 'Airtime Utilization is unusually high in 2.4 GHz in Zone: {scope}.'
+    }),
+    incidentType: 'network'
+  },
+  'p-airtime-b-5g-high': {
+    category: defineMessage({ defaultMessage: 'Performance' }),
+    subCategory: defineMessage({ defaultMessage: 'Airtime' }),
+    shortDescription: defineMessage({
+      defaultMessage: 'Airtime Utilization is unusually high in 5 GHz in Zone: {scope}'
+    }),
+    longDescription: defineMessage({
+      defaultMessage: 'Airtime Utilization is unusually high in 5 GHz in Zone: {scope}.'
+    }),
+    incidentType: 'network'
+  },
+  'p-airtime-b-6(5)g-high': {
+    category: defineMessage({ defaultMessage: 'Performance' }),
+    subCategory: defineMessage({ defaultMessage: 'Airtime' }),
+    shortDescription: defineMessage({
+      defaultMessage: 'Airtime Utilization is unusually high in 6 GHz in Zone: {scope}'
+    }),
+    longDescription: defineMessage({
+      defaultMessage: 'Airtime Utilization is unusually high in 6 GHz in Zone: {scope}.'
+    }),
+    incidentType: 'network'
+  },
+  'p-airtime-rx-24g-high': {
+    category: defineMessage({ defaultMessage: 'Performance' }),
+    subCategory: defineMessage({ defaultMessage: 'Airtime' }),
+    shortDescription: defineMessage({
+      defaultMessage: 'Airtime Utilization is unusually high in 2.4 GHz in Zone: {scope}'
+    }),
+    longDescription: defineMessage({
+      defaultMessage: 'Airtime Utilization is unusually high in 2.4 GHz in Zone: {scope}.'
+    }),
+    incidentType: 'network'
+  },
+  'p-airtime-rx-5g-high': {
+    category: defineMessage({ defaultMessage: 'Performance' }),
+    subCategory: defineMessage({ defaultMessage: 'Airtime' }),
+    shortDescription: defineMessage({
+      defaultMessage: 'Airtime Utilization is unusually high in 5 GHz in Zone: {scope}'
+    }),
+    longDescription: defineMessage({
+      defaultMessage: 'Airtime Utilization is unusually high in 5 GHz in Zone: {scope}.'
+    }),
+    incidentType: 'network'
+  },
+  'p-airtime-rx-6(5)g-high': {
+    category: defineMessage({ defaultMessage: 'Performance' }),
+    subCategory: defineMessage({ defaultMessage: 'Airtime' }),
+    shortDescription: defineMessage({
+      defaultMessage: 'Airtime Utilization is unusually high in 6 GHz in Zone: {scope}'
+    }),
+    longDescription: defineMessage({
+      defaultMessage: 'Airtime Utilization is unusually high in 6 GHz in Zone: {scope}.'
+    }),
+    incidentType: 'network'
+  },
+  'p-airtime-tx-24g-high': {
+    category: defineMessage({ defaultMessage: 'Performance' }),
+    subCategory: defineMessage({ defaultMessage: 'Airtime' }),
+    shortDescription: defineMessage({
+      defaultMessage: 'Airtime Utilization is unusually high in 2.4 GHz in Zone: {scope}'
+    }),
+    longDescription: defineMessage({
+      defaultMessage: 'Airtime Utilization is unusually high in 2.4 GHz in Zone: {scope}.'
+    }),
+    incidentType: 'network'
+  },
+  'p-airtime-tx-5g-high': {
+    category: defineMessage({ defaultMessage: 'Performance' }),
+    subCategory: defineMessage({ defaultMessage: 'Airtime' }),
+    shortDescription: defineMessage({
+      defaultMessage: 'Airtime Utilization is unusually high in 5 GHz in Zone: {scope}'
+    }),
+    longDescription: defineMessage({
+      defaultMessage: 'Airtime Utilization is unusually high in 5 GHz in Zone: {scope}.'
+    }),
+    incidentType: 'network'
+  },
+  'p-airtime-tx-6(5)g-high': {
+    category: defineMessage({ defaultMessage: 'Performance' }),
+    subCategory: defineMessage({ defaultMessage: 'Airtime' }),
+    shortDescription: defineMessage({
+      defaultMessage: 'Airtime Utilization is unusually high in 6 GHz in Zone: {scope}'
+    }),
+    longDescription: defineMessage({
+      defaultMessage: 'Airtime Utilization is unusually high in 6 GHz in Zone: {scope}.'
+    }),
+    incidentType: 'network'
   }
 }
