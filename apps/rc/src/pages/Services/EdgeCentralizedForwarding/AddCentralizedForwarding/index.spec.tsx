@@ -60,7 +60,14 @@ describe('Add Edge Centralized Forwarding service', () => {
   it('should correctly add service', async () => {
     mockedSubmitDataGen.mockReturnValueOnce({
       name: 'testAddCFService',
-      activatedNetworks: []
+      venueId: 'venue_00001',
+      edgeId: '0000000001',
+      corePortMac: 't-coreport-mac',
+      tunnelProfileId: 't-tunnelProfile-id',
+      activatedNetworks: [{
+        id: 'network_1',
+        name: 'Network1'
+      }]
     })
 
     const targetPath = getServiceRoutePath({
@@ -68,9 +75,13 @@ describe('Add Edge Centralized Forwarding service', () => {
       oper: ServiceOperation.LIST
     })
 
-    render(<AddEdgeCentralizedForwarding />, {
-      wrapper: Provider,
-      route: { params: { tenantId: 't-id' } }
+    render(<Provider>
+      <AddEdgeCentralizedForwarding />
+    </Provider>, {
+      route: {
+        params: { tenantId: 't-id' },
+        path: '/:tenantId/services/edgeCentralizedForwarding/create'
+      }
     })
 
     expect(await screen.findByTestId('rc-CentralizedForwardingForm')).toBeVisible()
@@ -78,7 +89,11 @@ describe('Add Edge Centralized Forwarding service', () => {
     await waitFor(() => {
       expect(mockedAddFn).toBeCalledWith({
         name: 'testAddCFService',
-        networkIds: []
+        venueId: 'venue_00001',
+        edgeId: '0000000001',
+        corePortMac: 't-coreport-mac',
+        tunnelProfileId: 't-tunnelProfile-id',
+        networkIds: ['network_1']
       })
     })
     await waitFor(() => {
@@ -87,6 +102,42 @@ describe('Add Edge Centralized Forwarding service', () => {
         pathname: '/t-id/t/'+targetPath,
         search: ''
       }, { replace: true })
+    })
+  })
+  it('network is allowed to be empty', async () => {
+    mockedSubmitDataGen.mockReturnValue({
+      name: 'testAddCFService2',
+      venueId: 'venue_00002',
+      edgeId: '0000000002',
+      corePortMac: 't-coreport2-mac',
+      tunnelProfileId: 't-tunnelProfile2-id',
+      activatedNetworks: []
+    })
+
+    render(<Provider>
+      <AddEdgeCentralizedForwarding />
+    </Provider>, {
+      route: {
+        params: { tenantId: 't-id' },
+        path: '/:tenantId/services/edgeCentralizedForwarding/create'
+      }
+    })
+
+    expect(await screen.findByTestId('rc-CentralizedForwardingForm')).toBeVisible()
+    await click(screen.getByRole('button', { name: 'Submit' }))
+    await waitFor(() => {
+      expect(mockedAddFn).toBeCalledWith({
+        name: 'testAddCFService2',
+        venueId: 'venue_00002',
+        edgeId: '0000000002',
+        corePortMac: 't-coreport2-mac',
+        tunnelProfileId: 't-tunnelProfile2-id',
+        networkIds: []
+      })
+    })
+    expect(mockedAddFn).toBeCalledTimes(1)
+    await waitFor(() => {
+      expect(mockedNavigate).toBeCalled()
     })
   })
 })

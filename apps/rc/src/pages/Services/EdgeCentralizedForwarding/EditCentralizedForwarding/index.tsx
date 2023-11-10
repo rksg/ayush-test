@@ -31,9 +31,7 @@ const EditEdgeCentralizedForwarding = () => {
   })
   const linkToServiceList = useTenantLink(cfListRoute)
   const [updateEdgeCentralizedForwarding] = useUpdateEdgeCentralizedForwardingPartialMutation()
-
   const { data, isLoading } = useGetEdgeCentralizedForwardingQuery({ params })
-
   const [form] = Form.useForm()
 
   const {
@@ -70,7 +68,8 @@ const EditEdgeCentralizedForwarding = () => {
     try {
       const payload = {
         name: formData.name,
-        networkIds: formData.activatedNetworks
+        // once user touch networks, we should use activatedNetworks
+        networkIds: formData.activatedNetworks.length > 0
           ? formData.activatedNetworks.map(network => network.id)
           : formData.networkIds,
         tunnelProfileId: formData.tunnelProfileId

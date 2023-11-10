@@ -1,4 +1,4 @@
-import { EdgeIpModeEnum, EdgePortTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { EdgeAlarmSummary, EdgeCentralizedForwardingViewData, EdgeIpModeEnum, EdgePortTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 export const mockedVenueList = {
   fields: ['name', 'id'],
@@ -36,7 +36,7 @@ export const mockedVenueList = {
 
 export const mockEdgeList = {
   fields: [
-    'name','serialNumber','venueId','corePort'
+    'name','serialNumber','venueId','venueName'
   ],
   totalCount: 5,
   page: 1,
@@ -45,31 +45,31 @@ export const mockEdgeList = {
       name: 'Smart Edge 1',
       serialNumber: '0000000001',
       venueId: 'venue_00001',
-      corePort: 'port_1'
+      venueName: 'Venue01'
     },
     {
       name: 'Smart Edge 2',
       serialNumber: '0000000002',
       venueId: 'venue_00002',
-      corePort: 'port_2'
+      venueName: 'Venue02'
     },
     {
       name: 'Smart Edge 3',
       serialNumber: '0000000003',
       venueId: 'venue_00003',
-      corePort: ''
+      venueName: 'Venue03'
     },
     {
       name: 'Smart Edge 4',
       serialNumber: '0000000004',
       venueId: 'venue_00004',
-      corePort: ''
+      venueName: 'Venue04'
     },
     {
       name: 'Smart Edge 5',
       serialNumber: '0000000005',
       venueId: 'venue_00005',
-      corePort: 'port_1'
+      venueName: 'Venue05'
     }
   ]
 }
@@ -243,4 +243,4 @@ export const mockedEdgeCFDataList = [{
   corePortMac: 'a2:51:0f:bc:89:c5',
   edgeAlarmSummary: {} as EdgeAlarmSummary,
   serviceVersion: '1.0.0.100'
-}]
+}] as EdgeCentralizedForwardingViewData[]

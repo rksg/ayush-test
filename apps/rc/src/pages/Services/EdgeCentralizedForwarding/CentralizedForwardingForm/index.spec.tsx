@@ -11,6 +11,7 @@ import {
 } from '@acx-ui/store'
 import {
   render,
+  renderHook,
   screen,
   waitFor,
   within
@@ -50,6 +51,7 @@ const addSteps = [{
 }]
 
 const mockedFinishFn = jest.fn()
+const { result } = renderHook(() => Form.useForm())
 
 describe('Edge Centralized Forwarding form', () => {
   beforeEach(() => {
@@ -58,6 +60,7 @@ describe('Edge Centralized Forwarding form', () => {
 
   it('should navigate to service list when click cancel', async () => {
     render(<CentralizedForwardingForm
+      form={result.current[0]}
       steps={addSteps}
       onFinish={mockedFinishFn}
     />, {
@@ -89,6 +92,7 @@ describe('Edge Centralized Forwarding form', () => {
   describe('Add', () => {
     it('should submit with correct data', async () => {
       render(<CentralizedForwardingForm
+        form={result.current[0]}
         steps={addSteps}
         onFinish={mockedFinishFn}
       />, {
@@ -134,6 +138,7 @@ describe('Edge Centralized Forwarding form', () => {
 
     it('should correctly edit profile', async () => {
       render(<CentralizedForwardingForm
+        form={result.current[0]}
         steps={editSteps}
         onFinish={mockedFinishFn}
         editMode={true}

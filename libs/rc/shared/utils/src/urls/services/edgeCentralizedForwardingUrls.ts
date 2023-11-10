@@ -27,7 +27,7 @@ export const EdgeCentralizedForwardingUrls: { [key: string]: ApiInfo } = {
     newApi: true
   },
   updateEdgeCentralizedForwardingPartial: {
-    method: 'PTACH',
+    method: 'PATCH',
     url: '/edgeCentralizedForwardingServices/:serviceId',
     newApi: true
   },
