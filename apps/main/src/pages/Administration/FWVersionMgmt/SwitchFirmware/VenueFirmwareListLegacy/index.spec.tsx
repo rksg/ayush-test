@@ -1,4 +1,6 @@
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { Modal } from 'antd'
+import { rest }  from 'msw'
 
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
@@ -11,7 +13,6 @@ import {
   mockServer,
   render,
   screen,
-  fireEvent,
   within,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
@@ -31,6 +32,7 @@ import { VenueFirmwareListLegacy } from '.'
 describe('Firmware Venues Table', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
+    Modal.destroyAll()
     mockServer.use(
       rest.post(
         FirmwareUrlsInfo.getSwitchVenueVersionList.url,
@@ -78,6 +80,7 @@ describe('Firmware Venues Table', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await screen.findByText('My-Venue')
+    // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[class="ant-space-item"]')).not.toBeNull()
   })
 
@@ -92,16 +95,16 @@ describe('Firmware Venues Table', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const row = await screen.findByRole('row', { name: /My-Venue/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
+    await userEvent.click(within(row).getByRole('checkbox'))
 
     const row2 = await screen.findByRole('row', { name: /v2/i })
-    fireEvent.click(within(row2).getByRole('checkbox'))
+    await userEvent.click(within(row2).getByRole('checkbox'))
 
     const updateButton = screen.getByRole('button', { name: /Update Now/i })
-    fireEvent.click(updateButton)
+    await userEvent.click(updateButton)
 
     const updateVenueButton = await screen.findByText('Run Update')
-    fireEvent.click(updateVenueButton)
+    await userEvent.click(updateVenueButton)
   })
 
   it('should no default option in dialog when feature flag is off', async () => {
@@ -115,10 +118,10 @@ describe('Firmware Venues Table', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const row2 = await screen.findByRole('row', { name: /v2/i })
-    fireEvent.click(within(row2).getByRole('checkbox'))
+    await userEvent.click(within(row2).getByRole('checkbox'))
 
     const updateButton = screen.getByRole('button', { name: /Update Now/i })
-    fireEvent.click(updateButton)
+    await userEvent.click(updateButton)
 
     expect(screen.getByRole('heading', {
       name: /Choose which version to update the venue to:/i
@@ -142,10 +145,10 @@ describe('Firmware Venues Table', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const row2 = await screen.findByRole('row', { name: /v2/i })
-    fireEvent.click(within(row2).getByRole('checkbox'))
+    await userEvent.click(within(row2).getByRole('checkbox'))
 
     const updateButton = screen.getByRole('button', { name: /Update Now/i })
-    fireEvent.click(updateButton)
+    await userEvent.click(updateButton)
 
     expect(screen.getByRole('heading', {
       name: /firmware available for icx 7150\/7550\/7650\/7850 series \(2 switches\)/i
