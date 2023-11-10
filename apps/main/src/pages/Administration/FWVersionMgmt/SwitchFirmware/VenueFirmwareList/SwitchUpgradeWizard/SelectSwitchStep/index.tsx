@@ -7,6 +7,7 @@ import { useIntl }        from 'react-intl'
 import {
   Table,
   TableProps,
+  cssStr,
   useStepFormContext
 } from '@acx-ui/components'
 import { SearchOutlined }             from '@acx-ui/icons'
@@ -37,9 +38,12 @@ function useColumns () {
       title: intl.$t({ defaultMessage: 'Venue' }),
       key: 'name',
       dataIndex: 'name',
-      defaultSortOrder: 'ascend'
+      defaultSortOrder: 'ascend',
+      render: function (value) {
+        return <div style={{ fontWeight: cssStr('--acx-subtitle-4-font-weight') }} > {value}</div >
+      }
     }, {
-      title: '',
+      title: intl.$t({ defaultMessage: 'Model' }),
       key: 'Model',
       dataIndex: 'Model'
     }, {
