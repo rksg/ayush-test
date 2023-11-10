@@ -321,5 +321,7 @@ export { ReactComponent as APMeshRoleMesh } from './icons/APMeshRoleMesh.svg'
 export { ReactComponent as APMeshRoleRoot } from './icons/APMeshRoleRoot.svg'
 export { ReactComponent as Blocked } from './icons/Blocked.svg'
 export { ReactComponent as Reload } from './icons/Reload.svg'
+export { ReactComponent as MelissaHeaderIcon } from './icons/MelissaHeaderIcon.svg'
+export { ReactComponent as MelissaIcon } from './icons/MelissaIcon.svg'
 
 export * from './styledComponents'

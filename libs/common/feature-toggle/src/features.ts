@@ -117,7 +117,8 @@ export enum Features {
   IDM_APPLICATION_KEY_TOGGLE = 'ptenant-application-key-toggle',
   WIFI_EDA_PER_AP_RADIO_CUSTOMIZATION_TOGGLE = 'wifi-eda-per-ap-radio-customization-toggle',
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
-  SSO = 'ADMN-SSO'
+  SSO = 'ADMN-SSO',
+  RUCKUS_AI_CHATBOT_TOGGLE = 'ruckus-ai-chatbot-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
