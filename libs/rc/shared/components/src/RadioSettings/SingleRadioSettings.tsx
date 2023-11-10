@@ -8,7 +8,6 @@ import { useIntl }                from 'react-intl'
 
 import { Button, cssStr }                                         from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
-import { LowPowerAPQuantity }                                     from '@acx-ui/rc/utils'
 
 
 import { RadioSettingsChannels }       from '../RadioSettingsChannels'
@@ -19,7 +18,6 @@ import {
 } from '../RadioSettingsChannels/320Mhz/RadioSettingsChannelsManual320Mhz'
 
 import { ChannelBarControlPopover } from './ChannelBarControlPopover'
-import { LowPowerBannerAndModal }   from './LowPowerBannerAndModal'
 import {
   ApRadioTypeDataKeyMap,
   ApRadioTypeEnum, ChannelBars,
@@ -66,7 +64,6 @@ export function SingleRadioSettings (props:{
   testId?: string,
   isUseVenueSettings?: boolean,
   supportDfsChannels?: any,
-  lowPowerAPs?: LowPowerAPQuantity,
   isAFCEnabled? : boolean,
   LPIButtonText?: LPIButtonText
 }) {
@@ -79,7 +76,6 @@ export function SingleRadioSettings (props:{
     context = 'venue',
     isUseVenueSettings = false,
     testId,
-    lowPowerAPs,
     isAFCEnabled
   } = props
 
@@ -389,12 +385,6 @@ export function SingleRadioSettings (props:{
       {
         isSupportRadio &&
       <>
-        {
-          (lowPowerAPs && lowPowerAPs?.lowPowerAPCount > 0 && context === 'venue') &&
-            <LowPowerBannerAndModal
-              parent={'venue'}
-              lowPowerAPs={lowPowerAPs} />
-        }
         <Row style={{ marginTop: '10px' }} gutter={20} data-testid={testId}>
           <Col span={8}>
             <RadioSettingsForm

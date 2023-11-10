@@ -80,6 +80,10 @@ describe('Account Settings', () => {
       rest.get(
         MspUrlsInfo.getMspEcProfile.url,
         (req, res, ctx) => res(ctx.json(fakeMspEcProfile))
+      ),
+      rest.get(
+        AdministrationUrlsInfo.getTenantAuthentications.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
   })
