@@ -25,9 +25,21 @@ export const getActivityDescription = (
       : undefined
   )
 
-  return <FormatMessage
-    id='activities-description-template'
-    defaultMessage={template}
-    values={{ ...values, b: (chunks) => <b>{chunks}</b> }}
-  />
+  if (values.hasOwnProperty('downloadLink')) {
+    const tmp = `${template} <download></download>`
+    return <FormatMessage
+      id='activities-description-template'
+      defaultMessage={tmp}
+      values={{
+        ...values,
+        download: () => <a href={values['downloadLink']}>Download</a>,
+        b: (chunks) => <b>{chunks}</b>
+      }} />
+  } else {
+    return <FormatMessage
+      id='activities-description-template'
+      defaultMessage={template}
+      values={{ ...values, b: (chunks) => <b>{chunks}</b> }}
+    />
+  }
 }

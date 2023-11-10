@@ -204,6 +204,21 @@ export const showTxToast = (tx: Transaction) => {
       }
     }
   }
+
+  if (tx.descriptionData?.length) {
+    tx.descriptionData.map(txData => {
+      if (txData.name === 'downloadLink') {
+        config = {
+          ...config,
+          link: {
+            onClick: () =>
+              routeToPage(txData.value as string, msg.data?.queryParams as QueryParams),
+            text: 'Download'
+          }
+        }
+      }
+    })
+  }
   showToast(config)
 }
 
