@@ -3,7 +3,7 @@
 exports[`Layout should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 fEhISd"
+    class="styledComponents__Wrapper-sc-iwostn-0 cliNEx"
     style="--acx-has-cloudmessagebanner: 0; --acx-pageheader-height: 0px;"
   >
     <div
@@ -88,8 +88,8 @@ exports[`Layout should render correctly 1`] = `
                       </span>
                       AI Assurance
                     </span>
-                    <i
-                      class="ant-menu-submenu-arrow"
+                    <svg
+                      data-testid="ArrowChevronRight"
                     />
                   </div>
                 </li>
@@ -143,8 +143,8 @@ exports[`Layout should render correctly 1`] = `
                       </span>
                       Clients
                     </span>
-                    <i
-                      class="ant-menu-submenu-arrow"
+                    <svg
+                      data-testid="ArrowChevronRight"
                     />
                   </div>
                 </li>
@@ -173,8 +173,8 @@ exports[`Layout should render correctly 1`] = `
                       </span>
                       Wi-Fi
                     </span>
-                    <i
-                      class="ant-menu-submenu-arrow"
+                    <svg
+                      data-testid="ArrowChevronRight"
                     />
                   </div>
                 </li>
@@ -203,8 +203,8 @@ exports[`Layout should render correctly 1`] = `
                       </span>
                       Wired
                     </span>
-                    <i
-                      class="ant-menu-submenu-arrow"
+                    <svg
+                      data-testid="ArrowChevronRight"
                     />
                   </div>
                 </li>
@@ -233,8 +233,8 @@ exports[`Layout should render correctly 1`] = `
                       </span>
                       Network Control
                     </span>
-                    <i
-                      class="ant-menu-submenu-arrow"
+                    <svg
+                      data-testid="ArrowChevronRight"
                     />
                   </div>
                 </li>
@@ -263,8 +263,8 @@ exports[`Layout should render correctly 1`] = `
                       </span>
                       Business Insights
                     </span>
-                    <i
-                      class="ant-menu-submenu-arrow"
+                    <svg
+                      data-testid="ArrowChevronRight"
                     />
                   </div>
                 </li>
@@ -293,8 +293,8 @@ exports[`Layout should render correctly 1`] = `
                       </span>
                       Administration
                     </span>
-                    <i
-                      class="ant-menu-submenu-arrow"
+                    <svg
+                      data-testid="ArrowChevronRight"
                     />
                   </div>
                 </li>
@@ -408,7 +408,7 @@ exports[`Layout should render correctly 1`] = `
 exports[`Layout should render correctly when adminItem = true 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 fEhISd"
+    class="styledComponents__Wrapper-sc-iwostn-0 cliNEx"
     style="--acx-has-cloudmessagebanner: 0; --acx-pageheader-height: 0px;"
   >
     <div
@@ -568,7 +568,7 @@ exports[`Layout should render correctly when adminItem = true 1`] = `
 exports[`Layout should render correctly when openNewTab = true 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 fEhISd"
+    class="styledComponents__Wrapper-sc-iwostn-0 cliNEx"
     style="--acx-has-cloudmessagebanner: 0; --acx-pageheader-height: 0px;"
   >
     <div
@@ -728,7 +728,7 @@ exports[`Layout should render correctly when openNewTab = true 1`] = `
 exports[`Layout should render with custom tenant type correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 fEhISd"
+    class="styledComponents__Wrapper-sc-iwostn-0 cliNEx"
     style="--acx-has-cloudmessagebanner: 0; --acx-pageheader-height: 0px;"
   >
     <div
@@ -788,8 +788,8 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
                       </span>
                       My Customers
                     </span>
-                    <i
-                      class="ant-menu-submenu-arrow"
+                    <svg
+                      data-testid="ArrowChevronRight"
                     />
                   </div>
                 </li>

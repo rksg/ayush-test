@@ -1,14 +1,18 @@
-import _ from 'lodash'
+import _        from 'lodash'
+import { rest } from 'msw'
 
+import { get } from '@acx-ui/config'
 import {
   serviceGuardApi as api,
   serviceGuardApiURL as apiUrl,
   Provider,
+  rbacApi,
+  rbacApiURL,
   store
 } from '@acx-ui/store'
-import { act, mockGraphqlMutation, mockGraphqlQuery, renderHook, waitFor, screen } from '@acx-ui/test-utils'
+import { act, mockGraphqlMutation, mockGraphqlQuery, renderHook, waitFor, screen, mockServer } from '@acx-ui/test-utils'
 
-import * as fixtures          from './__tests__/fixtures'
+import * as fixtures  from './__tests__/fixtures'
 import {
   specToDto,
   useServiceGuardSpec,
@@ -20,7 +24,9 @@ import {
   useDeleteServiceGuardTestMutation,
   useRunServiceGuardTestMutation,
   useCloneServiceGuardTestMutation,
-  useMutationResponseEffect
+  useMutationResponseEffect,
+  transformPathFromDB,
+  transformPathToDB
 } from './services'
 import {
   TestResultByAP,
@@ -40,12 +46,25 @@ import {
 
 import type { TableCurrentDataSource } from 'antd/lib/table/interface'
 
+jest.mock('@acx-ui/config', () => ({
+  ...jest.requireActual('@acx-ui/config'),
+  get: jest.fn()
+}))
+
 const networkNodes = [[
   { type: 'zone', name: 'VENUE' },
   { type: 'apMac', list: ['00:00:00:00:00:00'] }
 ]] as NetworkPaths
 
-beforeEach(() => store.dispatch(api.util.resetApiState()))
+const raNetworkNodes = [[
+  { type: 'system', name: 'system 1' },
+  { type: 'apMac', list: ['00:00:00:00:00:00'] }
+]] as NetworkPaths
+
+beforeEach(() => {
+  store.dispatch(api.util.resetApiState())
+  store.dispatch(rbacApi.util.resetApiState())
+})
 
 describe('useServiceGuardSpec', () => {
   it('load spec data if specId in URL', async () => {
@@ -274,6 +293,108 @@ describe('useServiceGuardSpecMutation', () => {
     await waitFor(() => expect(result.current.response.isSuccess).toBe(true))
 
     expect(result.current.response.data).toEqual(expected)
+  })
+  describe('RA', () => {
+    beforeEach(() => {
+      jest.mocked(get).mockReturnValue('true')
+      mockServer.use(
+        rest.get(`${rbacApiURL}/systems`, (_req, res, ctx) => res(ctx.json(fixtures.mockSystems))))
+    })
+    it('handles create mutation', async () => {
+      const dto: ServiceGuardFormDto = {
+        isDnsServerCustom: true,
+        configs: [{
+          dnsServer: '10.10.10.10',
+          tracerouteAddress: '10.10.10.10',
+          pingAddress: '10.10.10.10',
+          wlanName: 'WLAN Name',
+          radio: Band.Band6,
+          authenticationMethod: AuthenticationMethod.WPA3_PERSONAL,
+          wlanPassword: '12345',
+          wlanUsername: 'user',
+          networkPaths: { networkNodes: raNetworkNodes }
+        }],
+        schedule: {
+          type: 'service_guard',
+          timezone: 'Asia/Tokyo',
+          frequency: null,
+          day: null,
+          hour: null
+        },
+        typeWithSchedule: TestType.OnDemand,
+        type: TestType.OnDemand,
+        clientType: ClientType.VirtualWirelessClient,
+        name: 'Test Name'
+      }
+      const { result } = renderHook(
+        useServiceGuardSpecMutation,
+        { wrapper: Provider }
+      )
+
+      await waitFor(() => expect(result.current.systems.isSuccess).toBe(true))
+
+      const expected = { spec: { id: 'spec-id' }, userErrors: null }
+      mockGraphqlMutation(apiUrl, 'CreateServiceGuardSpec', {
+        data: { createServiceGuardSpec: expected }
+      })
+
+      expect(result.current.editMode).toBe(false)
+
+      act(() => { result.current.submit(dto) })
+      await waitFor(() => expect(result.current.response.isSuccess).toBe(true))
+
+      expect(result.current.response.data).toEqual(expected)
+    })
+    it('handles update mutation', async () => {
+      const dto: ServiceGuardFormDto = {
+        id: 'spec-id',
+        isDnsServerCustom: true,
+        configs: [{
+          dnsServer: '10.10.10.10',
+          tracerouteAddress: '10.10.10.10',
+          pingAddress: '10.10.10.10',
+          wlanName: 'WLAN Name',
+          radio: Band.Band6,
+          authenticationMethod: AuthenticationMethod.WPA3_PERSONAL,
+          wlanPassword: '12345',
+          wlanUsername: 'user',
+          networkPaths: { networkNodes: raNetworkNodes }
+        }],
+        schedule: {
+          type: 'service_guard',
+          timezone: 'Asia/Tokyo',
+          frequency: null,
+          day: null,
+          hour: null
+        },
+        typeWithSchedule: TestType.OnDemand,
+        type: TestType.OnDemand,
+        clientType: ClientType.VirtualWirelessClient,
+        name: 'Test Name'
+      }
+
+      mockGraphqlQuery(apiUrl, 'FetchServiceGuardSpec', { data: fixtures.fetchServiceGuardSpecRA })
+
+      const { result } = renderHook(useServiceGuardSpecMutation, {
+        wrapper: Provider,
+        route: { params: { specId: 'spec-id' } }
+      })
+
+      await waitFor(() => expect(result.current.systems.isSuccess).toBe(true))
+      await waitFor(() => expect(result.current.spec.isSuccess).toBe(true))
+
+      const expected = { spec: { id: 'spec-id' }, userErrors: null }
+      mockGraphqlMutation(apiUrl, 'UpdateServiceGuardSpec', {
+        data: { updateServiceGuardSpec: expected }
+      })
+
+      expect(result.current.editMode).toBe(true)
+
+      act(() => { result.current.submit(dto) })
+      await waitFor(() => expect(result.current.response.isSuccess).toBe(true))
+
+      expect(result.current.response.data).toEqual(expected)
+    })
   })
 })
 
@@ -618,6 +739,7 @@ describe('specToDto', () => {
     expect(specToDto()).toBe(undefined)
   })
 })
+
 describe('useServiceGuardTestResults', () => {
   it('load spec data if specId in URL', async () => {
     const config = {
@@ -680,5 +802,80 @@ describe('useMutationResponseEffect', () => {
     } as MutationResponse<{ userErrors?: MutationUserError[] }>
     renderHook(() => useMutationResponseEffect(response), { wrapper: Provider })
     expect(await screen.findByText('There are no APs to run the test')).toBeVisible()
+  })
+})
+
+describe('transformPathFromDB', () => {
+  const systemMap = {
+    'system 1': [
+      { deviceId: '00000000-0000-0000-0000-000000000001',
+        deviceName: 'system 1', onboarded: true, controllerVersion: '6.0' },
+      { deviceId: '00000000-0000-0000-0000-000000000011',
+        deviceName: 'system 1', onboarded: true, controllerVersion: '6.0' }
+    ],
+    'system 2': [
+      { deviceId: '00000000-0000-0000-0000-000000000002',
+        deviceName: 'system 2', onboarded: true, controllerVersion: '6.0' }
+    ]
+  }
+  const spec = {
+    configs: [{
+      networkPaths: {
+        networkNodes: [[
+          { type: 'system', name: '00000000-0000-0000-0000-000000000001' },
+          { type: 'apMac', list: ['00:00:00:00:00:00'] }
+        ],[
+          { type: 'system', name: '00000000-0000-0000-0000-000000000011' },
+          { type: 'apMac', list: ['00:00:00:00:00:00'] }
+        ]]
+      }
+    }]
+  } as unknown as ServiceGuardSpec
+  it('should covert path properly', () => {
+    expect(transformPathFromDB(spec, systemMap).configs[0].networkPaths.networkNodes).toEqual(
+      [[
+        { type: 'system', name: 'system 1' },
+        { type: 'apMac', list: ['00:00:00:00:00:00'] }
+      ]])
+  })
+  it('should not covert path when system is not available', () => {
+    expect(transformPathFromDB(spec)).toEqual(spec)
+  })
+})
+describe('transformPathToDB', () => {
+  const systemMap = {
+    'system 1': [
+      { deviceId: '00000000-0000-0000-0000-000000000001',
+        deviceName: 'system 1', onboarded: true, controllerVersion: '6.0' },
+      { deviceId: '00000000-0000-0000-0000-000000000011',
+        deviceName: 'system 1', onboarded: true, controllerVersion: '6.0' }
+    ],
+    'system 2': [
+      { deviceId: '00000000-0000-0000-0000-000000000002',
+        deviceName: 'system 2', onboarded: true, controllerVersion: '6.0' }
+    ]
+  }
+  const form = {
+    configs: [{
+      networkPaths: {
+        networkNodes: [[
+          { type: 'system', name: 'system 1' },
+          { type: 'apMac', list: ['00:00:00:00:00:00'] }
+        ]]
+      }
+    }]
+  } as unknown as ServiceGuardFormDto
+  it('should covert path properly', () => {
+    expect(transformPathToDB(form, systemMap).configs[0].networkPaths.networkNodes)
+      .toEqual([[
+        { type: 'system', name: '00000000-0000-0000-0000-000000000001' },
+        { type: 'apMac', list: ['00:00:00:00:00:00'] }
+      ],[
+        { type: 'system', name: '00000000-0000-0000-0000-000000000011' },
+        { type: 'apMac', list: ['00:00:00:00:00:00'] }
+      ]])
+  })
+  it('should not covert path when system is not available', () => {
+    expect(transformPathToDB(form)).toEqual(form)
   })
 })

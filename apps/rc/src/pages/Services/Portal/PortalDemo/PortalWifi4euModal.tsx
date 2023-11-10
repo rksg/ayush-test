@@ -34,7 +34,7 @@ export default function PortalWifi4euModal (props:{
         setNewWifi4eu(wifi4eu)
         form.setFieldValue('wifi4eu_uuid', wifi4eu)
         setVisible(true)}}
-      title='settingicon'
+      data-testid='settingicon'
       />
       <Modal
         title={$t({ defaultMessage: 'WiFi4EU Snippet Settings' })}
