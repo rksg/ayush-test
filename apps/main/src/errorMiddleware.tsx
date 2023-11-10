@@ -49,7 +49,7 @@ const ignoreEndpointList = [
 ]
 
 const isIntDevMode =
-  window.location.hostname.includes('int.') &&
+  window.location.hostname.includes('int.ruckus.cloud') &&
   window.location.search.includes('devMode=true')
 
 export const errorMessage = {
