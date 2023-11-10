@@ -18,7 +18,6 @@ export function usePageHeaderExtra (type: ReportType, showFilter = true) {
 
   const shouldQuerySwitch = ['switch','both'].includes(mode)
   const shouldQueryAp = ['ap','both'].includes(mode)
-  const showRadioBand = ['ap','both'].includes(mode)
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
 
   const component = [
@@ -33,13 +32,13 @@ export function usePageHeaderExtra (type: ReportType, showFilter = true) {
   showFilter && component.unshift(
     get('IS_MLISA_SA')
       ? <SANetworkFilter
-        shouldQueryAp={showRadioBand}
+        shouldQueryAp={shouldQueryAp}
         shouldQuerySwitch={shouldQuerySwitch}/>
       : <NetworkFilter
         key={getShowWithoutRbacCheckKey('reports-network-filter')}
         shouldQuerySwitch={shouldQuerySwitch}
         shouldQueryAp={shouldQueryAp}
-        showRadioBand={showRadioBand}
+        showRadioBand={shouldQueryAp}
         multiple={true}
         filterFor={'reports'}
         isRadioBandDisabled={isRadioBandDisabled}
