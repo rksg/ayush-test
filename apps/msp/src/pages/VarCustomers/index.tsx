@@ -246,7 +246,7 @@ export function VarCustomers () {
         key: 'apswLicenseInstalled',
         sorter: true,
         render: function (data: React.ReactNode, row: VarCustomer) {
-          return mspUtils.transformInstalledDevice(row.entitlements ?? [])
+          return mspUtils.transformInstalledDevice(row.entitlements)
         }
       },
       {
@@ -255,7 +255,7 @@ export function VarCustomers () {
         key: 'apswLicense',
         sorter: true,
         render: function (data: React.ReactNode, row: VarCustomer) {
-          return mspUtils.transformDeviceEntitlement(row.entitlements ?? [])
+          return mspUtils.transformDeviceEntitlement(row.entitlements)
         }
       },
       {
@@ -264,7 +264,7 @@ export function VarCustomers () {
         key: 'apswLicensesUtilization',
         sorter: true,
         render: function (data: React.ReactNode, row: VarCustomer) {
-          return mspUtils.transformDeviceUtilization(row.entitlements ?? [])
+          return mspUtils.transformDeviceUtilization(row.entitlements)
         }
       }
     ] : [

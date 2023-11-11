@@ -319,7 +319,7 @@ export function AddRecCustomer () {
         ]}
       />
       <StepsForm
-        onFinish={handleAddCustomer}
+        onFinish={isEditMode ? async () => {} : handleAddCustomer}
         onCancel={() => navigate(linkToRecCustomers)}
         buttonLabel={{ submit: isEditMode ?
           intl.$t({ defaultMessage: 'Save' }):
