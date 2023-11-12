@@ -192,6 +192,10 @@ describe('AP Form - Add', () => {
         (_req, res, ctx) => res(ctx.json({ global: {
           mapRegion: 'TW'
         } }))
+      ),
+      rest.get(
+        WifiUrlsInfo.getVenueApManagementVlan.url,
+        (_req, res, ctx) => res(ctx.json({ vlanOverrideEnabled: false, vlanId: 1 }))
       )
     )
   })

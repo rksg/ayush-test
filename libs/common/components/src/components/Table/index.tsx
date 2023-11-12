@@ -83,6 +83,7 @@ export interface TableProps <RecordType>
     searchableWidth?: number,
     stickyHeaders?: boolean,
     stickyPagination?: boolean,
+    enableResizableColumn?: boolean,
     onDisplayRowChange?: (displayRows: RecordType[]) => void,
     getAllPagesData?: () => RecordType[]
   }
@@ -144,7 +145,7 @@ function useSelectedRowKeys <RecordType> (
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Table <RecordType extends Record<string, any>> ({
   type = 'tall', columnState, enableApiFilter, iconButton, onFilterChange, settingsId,
-  onDisplayRowChange, stickyHeaders, stickyPagination, ...props
+  enableResizableColumn = true, onDisplayRowChange, stickyHeaders, stickyPagination, ...props
 }: TableProps<RecordType>) {
   const { dataSource, filterableWidth, searchableWidth, style } = props
   const wrapperRef = useRef<HTMLDivElement>(null)
@@ -430,7 +431,7 @@ function Table <RecordType extends Record<string, any>> ({
 
   const components = _.merge({},
     props.components || {},
-    type === 'tall' ? { header: { cell: ResizableColumn } } : {}
+    type === 'tall' && enableResizableColumn ? { header: { cell: ResizableColumn } } : {}
   ) as TableProps<RecordType>['components']
 
   const onRow: TableProps<RecordType>['onRow'] = function (record) {
@@ -454,7 +455,7 @@ function Table <RecordType extends Record<string, any>> ({
         onHeaderCell: (column: TableColumn<RecordType, 'text'>) => ({
           onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width }),
           width: colWidth[column.key],
-          definedWidth: col.width
+          ...(enableResizableColumn ? { definedWidth: col.width } : {})
         })
       })
       : col
