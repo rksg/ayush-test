@@ -38,8 +38,8 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { RolesEnum }   from '@acx-ui/types'
-import { AccountType } from '@acx-ui/utils'
+import { RolesEnum }                  from '@acx-ui/types'
+import { AccountType, noDataDisplay } from '@acx-ui/utils'
 
 import { SelectRecCustomerDrawer } from './SelectRecCustomer'
 import * as UI                     from './styledComponents'
@@ -211,7 +211,7 @@ export function AddRecCustomer () {
 
   const displayRecCustomer = () => {
     if (!mspRecCustomer || mspRecCustomer.length === 0)
-      return '--'
+      return noDataDisplay
     return <>
       <Form.Item
         label={intl.$t({ defaultMessage: 'Property Name' })}
@@ -228,7 +228,7 @@ export function AddRecCustomer () {
 
   const displayMspAdmins = () => {
     if (!mspAdmins || mspAdmins.length === 0)
-      return '--'
+      return noDataDisplay
     return <>
       {mspAdmins.map(admin =>
         <UI.AdminList key={admin.id}>
@@ -239,12 +239,13 @@ export function AddRecCustomer () {
   }
 
   const displayIntegrator = () => {
-    const value = !mspIntegrator || mspIntegrator.length === 0 ? '--' : mspIntegrator[0].name
+    const value =
+      !mspIntegrator || mspIntegrator.length === 0 ? noDataDisplay : mspIntegrator[0].name
     return value
   }
 
   const displayInstaller = () => {
-    const value = !mspInstaller || mspInstaller.length === 0 ? '--' : mspInstaller[0].name
+    const value = !mspInstaller || mspInstaller.length === 0 ? noDataDisplay : mspInstaller[0].name
     return value
   }
 
