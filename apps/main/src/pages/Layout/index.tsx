@@ -49,7 +49,9 @@ function Layout () {
 
   const companyName = userProfile?.companyName
   const tenantType = tenantDetails?.tenantType
-  const showHomeButton =
+  const nonVarDelegation =
+    useIsSplitOn(Features.ANY_3RDPARTY_INVITE_TOGGLE) && tenantType === AccountType.REC
+  const showHomeButton = nonVarDelegation ||
     isDelegationMode() || userProfile?.var || tenantType === AccountType.MSP_NON_VAR ||
     tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
   const isBackToRC = (PverName.ACX === getJwtTokenPayload().pver ||
