@@ -64,7 +64,10 @@ const categories = {
   'Security': defineMessage({ defaultMessage: 'Security' }),
   'Infrastructure': defineMessage({ defaultMessage: 'Infrastructure' }),
   'AP Performance': defineMessage({ defaultMessage: 'AP Performance' }),
-  'AI-Driven Cloud RRM': defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' })
+  'AI-Driven Cloud RRM': defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
+  'Insufficient Licenses': defineMessage({ defaultMessage: 'Insufficient Licenses' }),
+  'Verification Error': defineMessage({ defaultMessage: 'Verification Error' }),
+  'Verified': defineMessage({ defaultMessage: 'Verified' })
 }
 
 const bandbalancingEnable: RecommendationConfig = {
@@ -135,6 +138,18 @@ export const states = {
   deleted: {
     text: defineMessage({ defaultMessage: 'Deleted' }),
     tooltip: defineMessage({ defaultMessage: 'Deleted' })
+  },
+  insufficientLicenses: {
+    text: defineMessage({ defaultMessage: 'Insufficient Licenses' }),
+    tooltip: defineMessage({ defaultMessage: 'Insufficient Licenses' })
+  },
+  verificationError: {
+    text: defineMessage({ defaultMessage: 'Verification Error' }),
+    tooltip: defineMessage({ defaultMessage: 'Verification Error' })
+  },
+  verified: {
+    text: defineMessage({ defaultMessage: 'Verified' }),
+    tooltip: defineMessage({ defaultMessage: 'Verified' })
   }
 }
 
@@ -454,6 +469,21 @@ export const codes = {
       format: formatter('countFormat'),
       deltaSign: '-'
     }]
+  },
+  'insufficientLicenses': {
+    category: categories['Insufficient Licenses'],
+    summary: defineMessage({ defaultMessage: 'Insufficient Licenses' }),
+    priority: priorities.low
+  },
+  'verificationError': {
+    category: categories['Verification Error'],
+    summary: defineMessage({ defaultMessage: 'Verification Error' }),
+    priority: priorities.low
+  },
+  'verified': {
+    category: categories['Verified'],
+    summary: defineMessage({ defaultMessage: 'Verified' }),
+    priority: priorities.low
   }
 } as unknown as Record<string, RecommendationConfig & CodeInfo>
 

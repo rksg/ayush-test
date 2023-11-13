@@ -292,12 +292,18 @@ export const api = recommendationApi.injectEndpoints({
         return {
           aiOpsCount: response.aiOpsCount,
           recommendations: response.recommendations.map(recommendation => {
-            const { code } = recommendation
+            const { code, status } = recommendation
             return {
               ...recommendation,
-              priority: codes[code as keyof typeof codes].priority,
-              category: $t(codes[code as keyof typeof codes].category),
-              summary: $t(codes[code as keyof typeof codes].summary)
+              priority: codes[code === 'unknown'
+                ? status as keyof typeof codes
+                : code as keyof typeof codes].priority,
+              category: $t(codes[code === 'unknown'
+                ? status as keyof typeof codes
+                : code as keyof typeof codes].category),
+              summary: $t(codes[code === 'unknown'
+                ? status as keyof typeof codes
+                : code as keyof typeof codes].summary)
             } as unknown as AiOpsListItem
           })
         }

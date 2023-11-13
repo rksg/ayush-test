@@ -58,20 +58,20 @@ function AIOperationsWidget ({
 
   return <Loader states={[queryResults]}>
     <Card title={title} onArrowClick={onArrowClick} subTitle={subtitle}>{
-      noLicense ? <NoAiOpsLicense
-        text={$t({ defaultMessage:
+      noData
+        ? <NoRecommendationData
+          noData={true}
+          text={$t({ defaultMessage:
+          `Your network is already running in an optimal configuration
+          and we dont have any AI Operations to recommend recently.`
+          })}
+        /> :
+        noLicense ? <NoAiOpsLicense
+          text={$t({ defaultMessage:
           `RUCKUS AI cannot analyse your zone due to inadequate licenses.
           Please ensure you have licenses fully applied for the zone for 
           AI Operations optimizations.`
-        })}/> :
-        noData
-          ? <NoRecommendationData
-            noData={true}
-            text={$t({ defaultMessage:
-            `Your network is already running in an optimal configuration
-            and we dont have any AI Operations to recommend recently.`
-            })}
-          />
+          })}/>
           : <>
             {!checkNew ? <NoRecommendationData
               text={$t({ defaultMessage:
