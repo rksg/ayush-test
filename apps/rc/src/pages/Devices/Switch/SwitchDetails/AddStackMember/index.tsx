@@ -27,8 +27,8 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { SwitchDetailsContext }     from '..'
-import { validatorSwitchModel }     from '../../StackForm'
+import { SwitchDetailsContext }                        from '..'
+import { validatorSwitchModel, validatorUniqueMember } from '../../StackForm'
 import {
   getTsbBlockedSwitch,
   showTsbBlockedSwitchErrorDialog
@@ -141,8 +141,11 @@ function AddMemberForm (props: DefaultVlanFormProps) {
               required: true,
               message: $t({ defaultMessage: 'This field is required' })
             },
-            { validator: (_, value) => validatorSwitchModel(value, [...tableData, ...(switchData?.stackMembers || [])]) },
-            { validator: (_, value) => validatorUniqueMember(value) }
+            { validator: (_, value) => validatorSwitchModel(value, switchDetail?.activeSerial) },
+            { validator: (_, value) => validatorUniqueMember(value, [
+              ...tableData.map(d => ({ id: (d.key === row.key) ? value : d.id })),
+              ...(switchData?.stackMembers || [])
+            ]) }
           ]}
           validateFirst
         ><Input
@@ -185,21 +188,6 @@ function AddMemberForm (props: DefaultVlanFormProps) {
       )
     }
   ]
-
-  const validatorUniqueMember = (serialNumber: string) => {
-    const member = switchData?.stackMembers || []
-    const memberExistCount = member.concat(tableData).filter((item) => {
-      return item.id === serialNumber
-    }).length
-    return memberExistCount > 1
-      ? Promise.reject(
-        $t({
-          defaultMessage:
-            'Serial number is invalid since it\'s not unique in stack'
-        })
-      )
-      : Promise.resolve()
-  }
 
   const handleDelete = (index: number, row: SwitchTable) => {
     setTableData(tableData.filter((item) => item.key !== row.key))
