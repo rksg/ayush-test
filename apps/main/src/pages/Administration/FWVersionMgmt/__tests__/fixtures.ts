@@ -89,7 +89,7 @@ export const venue = [
         currentEolVersion: '6.1.0.10.433',
         latestEolVersion: '6.1.0.10.453',
         apCount: 1,
-        apModels: ['R300', 'R500', 'R550']
+        apModels: ['R300', 'R550']
       },
       {
         name: 'eol-ap-2022-12',
@@ -414,3 +414,5 @@ export const availableABFList = [
     id: '6.1.0.10.413'
   }
 ]
+
+export const mockedFirmwareVersionIdList = availableABFList.filter(abf => abf.abf === 'active').map(abf => abf.id)
