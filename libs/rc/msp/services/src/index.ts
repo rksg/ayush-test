@@ -824,7 +824,7 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
-    })    
+    })
   })
 })
 export const {

@@ -126,26 +126,24 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
   const handleSaveMultiIntegrator = async () => {
     const selectedRows = form.getFieldsValue(['integrator'])
     if (tenantId && tenantType) {
-      if (selectedRows?.integrator.length > 0) {
-        let integratorList = [] as SelIntegrator[]
-        selectedRows.integrator.map((integrator: { id: string }) =>
-          integratorList.push({
-            delegation_id: integrator.id,
-            delegation_type: tenantType,
-            number_of_days: '',
-            mspec_id: tenantId
-          })
-        )
-        let payload = {
-          AssignMspEcListRequestV2: integratorList,
-          isManageAllEcs: assignedEcAdmin
-        }
-        assignMspCustomerToMutipleIntegrator({ payload })
-          .then(() => {
-            setVisible(false)
-            resetFields()
-          })
+      let integratorList = [] as SelIntegrator[]
+      selectedRows.integrator.map((integrator: { id: string }) =>
+        integratorList.push({
+          delegation_id: integrator.id,
+          delegation_type: tenantType,
+          number_of_days: '',
+          mspec_id: tenantId
+        })
+      )
+      let payload = {
+        AssignMspEcListRequestV2: integratorList,
+        isManageAllEcs: assignedEcAdmin
       }
+      assignMspCustomerToMutipleIntegrator({ payload })
+        .then(() => {
+          setVisible(false)
+          resetFields()
+        })
     } else {
       setSelected(tenantType as string, selectedRows.integrator)
     }
