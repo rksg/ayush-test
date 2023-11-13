@@ -214,7 +214,7 @@ describe('RecommendationTabContent', () => {
     })
 
     const before = await screen.findAllByRole('radio', { hidden: false, checked: false })
-    expect(before).toHaveLength(1)
+    expect(before).toHaveLength(3)
 
     const settingsButton = await screen.findByTestId('SettingsOutlined')
     expect(settingsButton).toBeDefined()
@@ -225,7 +225,7 @@ describe('RecommendationTabContent', () => {
     await userEvent.click(showMutedRecommendations)
 
     const afterShowMuted = await screen.findAllByRole('radio', { hidden: false, checked: false })
-    expect(afterShowMuted).toHaveLength(2)
+    expect(afterShowMuted).toHaveLength(4)
 
     // check the action says unmute:
     await userEvent.click(afterShowMuted[0])
@@ -237,7 +237,7 @@ describe('RecommendationTabContent', () => {
     await userEvent.click(resetButton)
 
     const afterReset = await screen.findAllByRole('radio', { hidden: false, checked: false })
-    expect(afterReset).toHaveLength(1)
+    expect(afterReset).toHaveLength(3)
   })
 
   it('should mute recommendation correctly', async () => {

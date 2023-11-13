@@ -34,7 +34,7 @@ const DateLink = ({ value }: { value: RecommendationListItem }) => {
   </TenantLink>
 }
 
-const UnknownLink = ({ value }: { value: RecommendationListItem }) => {
+export const UnknownLink = ({ value }: { value: RecommendationListItem }) => {
   const { updatedAt, statusEnum, metadata, sliceValue } = value
   const auditMetadata = metadata as { audit?: [
     { failure: string }

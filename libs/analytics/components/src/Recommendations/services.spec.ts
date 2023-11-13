@@ -238,6 +238,52 @@ describe('Recommendation services', () => {
         status: 'New',
         statusTooltip: 'Schedule a day and time to apply this recommendation.',
         statusEnum: 'new'
+      },
+      {
+        ...recommendationListResult.recommendations[4],
+        scope: `vsz34 (SZ Cluster)
+> 01-US-CA-D1-Test-Home (Domain)
+> 01-Alethea-WiCheck Test (Venue)`,
+        type: 'Venue',
+        priority: priorities.low,
+        category: 'Insufficient Licenses',
+        summary: 'Insufficient Licenses',
+        status: 'Insufficient Licenses',
+        statusTooltip: 'Insufficient Licenses',
+        statusEnum: 'insufficientLicenses',
+        crrmOptimizedState: {
+          label: {
+            id: 'AHVpdH',
+            defaultMessage: [{
+              type: 0,
+              value: 'Insufficient Licenses'
+            }]
+          },
+          order: 2
+        }
+      },
+      {
+        ...recommendationListResult.recommendations[5],
+        scope: `vsz34 (SZ Cluster)
+> 22-US-CA-D22-Aaron-Home (Domain)
+> 22-US-CA-Z22-Aaron-Home (Venue)`,
+        type: 'Venue',
+        priority: priorities.low,
+        category: 'Verification Error',
+        summary: 'Verification Error',
+        status: 'Verification Error',
+        statusTooltip: 'Verification Error',
+        statusEnum: 'verificationError',
+        crrmOptimizedState: {
+          label: {
+            id: 'hypdNX',
+            defaultMessage: [{
+              type: 0,
+              value: 'Verification Error'
+            }]
+          },
+          order: 2
+        }
       }
     ]
     expect(error).toBe(undefined)

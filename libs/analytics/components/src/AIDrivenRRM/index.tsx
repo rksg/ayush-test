@@ -97,17 +97,17 @@ function AIDrivenRRMWidget ({
       title={title}
       onArrowClick={onArrowClick}
       subTitle={noLicense || !zoneCount ? '' : subtitle}
-    >{noLicense
-        ? <NoRRMLicense
-          text={defaultText}
-          details={noLicenseText}/>
-        : noData
-          ? <NoRecommendationData
-            noData={true}
-            isCrrm={true}
-            details={zoneCount ? '' : defaultText}
-            text={zoneCount ? optimalConfigText : noZoneText}
-          />
+    >{noData
+        ? <NoRecommendationData
+          noData={true}
+          isCrrm={true}
+          details={zoneCount ? '' : defaultText}
+          text={zoneCount ? optimalConfigText : noZoneText}
+        />
+        : noLicense
+          ? <NoRRMLicense
+            text={defaultText}
+            details={noLicenseText}/>
           : <UI.List
             dataSource={filteredRecommendations}
             renderItem={item => {
@@ -126,17 +126,17 @@ function AIDrivenRRMWidget ({
               const auditMetadata = metadata as { audit?: [
                 { failure: string }
               ] }
-              const checkMesh = auditMetadata?.audit?.some(
+              const getMesh = auditMetadata?.audit?.some(
                 data => data.failure.hasOwnProperty('mesh'))!
-              const checkGlobalZone = auditMetadata?.audit?.some(
+              const getGlobalZone = auditMetadata?.audit?.some(
                 data => data.failure.hasOwnProperty('global-zone-checker'))!
-              const testing = checkMesh === true ? 'mesh'
-                : checkGlobalZone === true ? 'global-zone-checker' : 'null'
+              const checkValues = getMesh === true ? 'mesh'
+                : getGlobalZone === true ? 'global-zone-checker' : 'null'
               const paramString = createSearchParams({
                 status: status,
                 date: updatedAt,
                 sliceValue: sliceValue,
-                extra: testing
+                extra: checkValues
               }).toString()
 
               const unknownPath = `unknown?${paramString}`

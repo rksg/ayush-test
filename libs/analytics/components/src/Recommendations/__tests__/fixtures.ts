@@ -44,6 +44,182 @@ export const crrmListResult = {
   ]
 }
 
+export const crrmUnknownListResult = {
+  crrmCount: 3,
+  zoneCount: 3,
+  optimizedZoneCount: 1,
+  crrmScenarios: 13888,
+  recommendations: [
+    {
+      id: '1',
+      code: 'c-crrm-channel5g-auto',
+      status: 'applied' as StateType,
+      sliceValue: 'zone-1',
+      kpi_number_of_interfering_links: {
+        current: 0,
+        previous: 3,
+        projected: null
+      }
+    },
+    {
+      id: '2',
+      code: 'c-crrm-channel24g-auto',
+      status: 'reverted' as StateType,
+      sliceValue: 'zone-2',
+      kpi_number_of_interfering_links: {
+        current: 5,
+        previous: 5,
+        projected: null
+      }
+    },
+    {
+      id: 'unknown',
+      code: 'unknown',
+      status: 'verificationError' as StateType,
+      sliceValue: 'Deeps Place',
+      kpi_number_of_interfering_links: {
+        current: null,
+        previous: null,
+        projected: null
+      },
+      metadata: {
+        audit: [{
+          code: 'global',
+          stage: 'filter',
+          failure: {
+            mesh: false
+          }
+        }]
+      }
+    },
+    {
+      id: 'unknown',
+      code: 'unknown',
+      status: 'insufficientLicenses' as StateType,
+      sliceValue: 'zone-3',
+      kpi_number_of_interfering_links: {
+        current: null,
+        previous: null,
+        projected: null
+      },
+      metadata: {
+        audit: [{
+          code: 'global',
+          stage: 'filter',
+          failure: {
+            'not-fully-licensed': false
+          }
+        }]
+      }
+    },
+    {
+      id: 'unknown',
+      code: 'unknown',
+      status: 'verificationError' as StateType,
+      sliceValue: 'zone-4',
+      kpi_number_of_interfering_links: {
+        current: null,
+        previous: null,
+        projected: null
+      },
+      metadata: {
+        audit: [
+          {
+            code: 'c-crrm-channel24g-auto',
+            stage: 'trigger',
+            failure: {
+              'global-zone-checker': false
+            }
+          },
+          {
+            code: 'c-crrm-channel5g-auto',
+            stage: 'trigger',
+            failure: {
+              'global-zone-checker': false
+            }
+          },
+          {
+            code: 'c-crrm-channel6g-auto',
+            stage: 'trigger',
+            failure: {
+              'global-zone-checker': false
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
+
+export const crrmNoLicenseListResult = {
+  crrmCount: 3,
+  zoneCount: 3,
+  optimizedZoneCount: 1,
+  crrmScenarios: 13888,
+  recommendations: [
+    {
+      id: 'unknown',
+      code: 'unknown',
+      status: 'insufficientLicenses' as StateType,
+      sliceValue: 'zone-1',
+      kpi_number_of_interfering_links: {
+        current: null,
+        previous: null,
+        projected: null
+      },
+      metadata: {
+        audit: [{
+          code: 'global',
+          stage: 'filter',
+          failure: {
+            'not-fully-licensed': false
+          }
+        }]
+      }
+    },
+    {
+      id: 'unknown',
+      code: 'unknown',
+      status: 'insufficientLicenses' as StateType,
+      sliceValue: 'zone-2',
+      kpi_number_of_interfering_links: {
+        current: null,
+        previous: null,
+        projected: null
+      },
+      metadata: {
+        audit: [{
+          code: 'global',
+          stage: 'filter',
+          failure: {
+            'not-fully-licensed': false
+          }
+        }]
+      }
+    },
+    {
+      id: 'unknown',
+      code: 'unknown',
+      status: 'insufficientLicenses' as StateType,
+      sliceValue: 'zone-3',
+      kpi_number_of_interfering_links: {
+        current: null,
+        previous: null,
+        projected: null
+      },
+      metadata: {
+        audit: [{
+          code: 'global',
+          stage: 'filter',
+          failure: {
+            'not-fully-licensed': false
+          }
+        }]
+      }
+    }
+  ]
+}
+
 export const aiOpsListResult = {
   aiOpsCount: 2,
   recommendations: [
@@ -180,6 +356,76 @@ export const recommendationListResult = {
         {
           type: 'zone',
           name: 'Deeps Place'
+        }
+      ] as NetworkPath
+    },
+    {
+      id: '4',
+      code: 'unknown',
+      status: 'insufficientLicenses',
+      createdAt: '2023-11-09T07:05:14.900Z',
+      updatedAt: '2023-11-12T06:05:21.004Z',
+      sliceType: 'zone',
+      sliceValue: '01-Alethea-WiCheck Test',
+      metadata: {
+        audit: [{
+          code: 'global',
+          stage: 'filter',
+          failure: {
+            'not-fully-licensed': false
+          }
+        }]
+      },
+      isMuted: false,
+      mutedBy: '',
+      mutedAt: null,
+      path: [
+        {
+          type: 'system',
+          name: 'vsz34'
+        },
+        {
+          type: 'domain',
+          name: '01-US-CA-D1-Test-Home'
+        },
+        {
+          type: 'zone',
+          name: '01-Alethea-WiCheck Test'
+        }
+      ] as NetworkPath
+    },
+    {
+      id: '5',
+      code: 'unknown',
+      status: 'verificationError',
+      createdAt: '2023-11-09T07:05:14.900Z',
+      updatedAt: '2023-11-12T06:05:21.004Z',
+      sliceType: 'zone',
+      sliceValue: '22-US-CA-Z22-Aaron-Home',
+      metadata: {
+        audit: [{
+          code: 'global',
+          stage: 'filter',
+          failure: {
+            mesh: false
+          }
+        }]
+      },
+      isMuted: false,
+      mutedBy: '',
+      mutedAt: null,
+      path: [
+        {
+          type: 'system',
+          name: 'vsz34'
+        },
+        {
+          type: 'domain',
+          name: '22-US-CA-D22-Aaron-Home'
+        },
+        {
+          type: 'zone',
+          name: '22-US-CA-Z22-Aaron-Home'
         }
       ] as NetworkPath
     }
