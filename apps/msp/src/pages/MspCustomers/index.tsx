@@ -105,7 +105,7 @@ export function MspCustomers () {
       ((isPrimeAdmin || isAdmin) && !drawerIntegratorVisible) || isSupportToMspDashboardAllowed
   const hideTechPartner = (isIntegrator || userProfile?.support) && !isSupportToMspDashboardAllowed
 
-  if (tenantType === AccountType.VAR &&
+  if ((tenantType === AccountType.VAR || tenantType === AccountType.REC) &&
       (userProfile?.support === false || isSupportToMspDashboardAllowed)) {
     navigate(linkVarPath, { replace: true })
   }

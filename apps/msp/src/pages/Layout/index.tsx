@@ -79,12 +79,13 @@ function Layout () {
 
   useEffect(() => {
     if (data && userProfile) {
-      if (!isSupportToMspDashboardAllowed && (userProfile?.support || userProfile?.dogfood)) {
+      const isRecDelegation = nonVarDelegation && data.tenantType === AccountType.REC
+      if (!isSupportToMspDashboardAllowed &&
+         (userProfile?.support || userProfile?.dogfood || isRecDelegation)) {
         setTenantType('SUPPORT')
       } else {
         setTenantType(data.tenantType)
       }
-      const isRecDelegation = nonVarDelegation && data.tenantType === AccountType.REC
       setDogfood((userProfile?.dogfood && !userProfile?.support) || isRecDelegation)
     }
     if (mspEntitlement?.length && mspEntitlement?.length > 0) {
