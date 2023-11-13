@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { embedDashboard, EmbeddedDashboard } from '@superset-ui/embedded-sdk'
 import moment                                from 'moment'
 
-import { System, useSystems }                 from '@acx-ui/analytics/services'
+import { SystemMap, useSystems }              from '@acx-ui/analytics/services'
 import { getUserProfile as getUserProfileRA } from '@acx-ui/analytics/utils'
 import { useAnalyticsFilter }                 from '@acx-ui/analytics/utils'
 import { RadioBand, Loader, showActionModal } from '@acx-ui/components'
@@ -23,7 +23,8 @@ import {
   bandDisabledReports,
   ReportType,
   reportTypeDataStudioMapping,
-  reportModeMapping
+  reportModeMapping,
+  networkFilterDisabledReports
 } from '../mapping/reportsMapping'
 
 interface ReportProps {
@@ -41,11 +42,13 @@ const getReportType = (reportName: ReportType) => {
   const isApReport = ['ap', 'both'].includes(mode)
   const isSwitchReport = ['switch', 'both'].includes(mode)
   const isRadioBandDisabled = bandDisabledReports.includes(reportName)
+  const isNetworkFilterDisabled = networkFilterDisabledReports.includes(reportName)
 
   return {
     isApReport,
     isSwitchReport,
-    isRadioBandDisabled
+    isRadioBandDisabled,
+    isNetworkFilterDisabled
   }
 }
 
@@ -64,11 +67,18 @@ export const getSupersetRlsClause = (
   paths?: NetworkPath[],
   radioBands?: RadioBand[]
 ) => {
-  const { isApReport, isSwitchReport, isRadioBandDisabled } = getReportType(reportName)
+  const { isApReport,
+    isSwitchReport,
+    isRadioBandDisabled,
+    isNetworkFilterDisabled } = getReportType(reportName)
   const clause = {
     radioBandClause: '',
     networkClause: ''
   }
+
+  // If networkFilter is not shown, do not read it from URL
+  // Reports like Overview and WLAN does not support network filter
+  if (isNetworkFilterDisabled) return clause
 
   if (radioBands?.length && isApReport && !isRadioBandDisabled) {
     const radioBandClause = ` "band" in (${radioBands
@@ -141,13 +151,18 @@ export const getSupersetRlsClause = (
 
 export const getRLSClauseForSA = (
   paths: NetworkPath,
-  system: System[] | undefined,
+  systemMap: SystemMap | undefined,
   reportName: ReportType
 ) => {
 
-  const { isApReport, isSwitchReport } = getReportType(reportName)
-  const switchReportKeys = ['system', 'domain', 'switchGroup', 'switchSubGroup', 'switch']
-  const apReportKeys = ['system', 'domain', 'zone', 'apGroup', 'AP']
+  const { isApReport, isSwitchReport, isNetworkFilterDisabled } = getReportType(reportName)
+
+  // If networkFilter is not shown, do not read it from URL
+  // Reports like Overview and WLAN does not support network filter
+  if (isNetworkFilterDisabled) return {
+    radioBandClause: '',
+    networkClause: ''
+  }
 
   // Initialize an empty object to group conditions by type
   const sqlConditionsByType: Record<string, string[]> = {}
@@ -173,15 +188,14 @@ export const getRLSClauseForSA = (
       }
     } else {
       if (type === 'system') {
-        const systemId = system?.find(s => s.deviceName === name)?.deviceId
-        if (systemId) {
-          sqlConditionsByType[type].push(`"${type}" = '${systemId}'`)
+        const systems = systemMap?.[name]
+        if (systems) {
+          systems.forEach(({ deviceId }) => {
+            sqlConditionsByType[type].push(`"${type}" = '${deviceId}'`)
+          })
         }
       } else {
-        if ((isApReport && apReportKeys.includes(type)) ||
-          (isSwitchReport && switchReportKeys.includes(type))) {
-          sqlConditionsByType[type].push(`"${type}" = '${name}'`)
-        }
+        sqlConditionsByType[type].push(`"${type}" = '${name}'`)
       }
     }
   })
@@ -193,7 +207,9 @@ export const getRLSClauseForSA = (
   for (const type in sqlConditionsByType) {
     if (sqlConditionsByType.hasOwnProperty(type)) {
       const conditions = sqlConditionsByType[type]
-      sqlConditions.push(`${conditions.join(' OR ')}`)
+      let joinedConditions = conditions.join(' OR ')
+      if (conditions.length > 1) joinedConditions = `(${joinedConditions})`
+      sqlConditions.push(joinedConditions)
     }
   }
 
@@ -284,7 +300,7 @@ export function EmbeddedReport (props: ReportProps) {
     const { networkClause, radioBandClause } = isRA
       ? getRLSClauseForSA(
         path,
-        systems.data?.networkNodes,
+        systems.data,
         reportName
       )
       : getSupersetRlsClause(

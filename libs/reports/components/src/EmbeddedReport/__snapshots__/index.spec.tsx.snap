@@ -1,5 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`getRLSClauseForSA should handle systems with same name: rlsClauseOverviewForSA 1`] = `
+Object {
+  "networkClause": "(\\"system\\" = 'd6c06b5f-ece3-4435-94a2-aa401da0faf1' OR \\"system\\" = '00000000-0000-0000-0000-000000000000') AND \\"domains\\" = 'SQA Sunnyvale' AND \\"zoneName\\" = 'Sky High Properties' AND \\"apGroupName\\" = '2Chambers-Roam' AND \\"apMac\\" IN ('1C:3A:60:31:8D:A0')",
+  "radioBandClause": null,
+}
+`;
+
 exports[`getRLSClauseForSA should return RLS clause based on report type - AP: rlsClauseAPForSA 1`] = `
 Object {
   "networkClause": "\\"system\\" = 'd6c06b5f-ece3-4435-94a2-aa401da0faf1' AND \\"domains\\" = 'SQA Sunnyvale' AND \\"zoneName\\" = 'Sky High Properties' AND \\"apGroupName\\" = '2Chambers-Roam' AND \\"apMac\\" IN ('1C:3A:60:31:8D:A0')",
@@ -14,9 +21,23 @@ Object {
 }
 `;
 
+exports[`getRLSClauseForSA should return empty RLS clause for Overview: rlsClauseOverviewForSA 1`] = `
+Object {
+  "networkClause": "",
+  "radioBandClause": "",
+}
+`;
+
 exports[`getSupersetRlsClause should return RLS clause based network filters and report type: rlsClauseApplicationReport 1`] = `
 Object {
   "networkClause": " (\\"zoneName\\" in ('Sindhuja-Venue') OR \\"apMac\\" in ('00:0C:29:1E:9F:E4', '38:FF:36:13:DB:D0'))",
+  "radioBandClause": "",
+}
+`;
+
+exports[`getSupersetRlsClause should return RLS clause based network filters and report type: rlsClauseOverviewReport 1`] = `
+Object {
+  "networkClause": "",
   "radioBandClause": "",
 }
 `;
