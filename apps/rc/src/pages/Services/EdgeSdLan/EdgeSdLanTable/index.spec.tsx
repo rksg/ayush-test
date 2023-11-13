@@ -66,7 +66,7 @@ describe('SD-LAN Table', () => {
     // eslint-disable-next-line max-len
     await screen.findByRole('row', { name: 'Amy_sdLan_2 Sting-Venue-3 sting-vSE-b466 amyTunnel 0 Good' })
 
-    const networkNumStr = await screen.findByTestId('network-names-mocked-cf-1')
+    const networkNumStr = await screen.findByTestId('network-names-mocked-sd-lan-1')
     await hover(networkNumStr)
     await screen.findByText('amyNetwork')
   })
@@ -86,7 +86,7 @@ describe('SD-LAN Table', () => {
     const editPath = getServiceDetailsLink({
       type: ServiceType.EDGE_SD_LAN,
       oper: ServiceOperation.EDIT,
-      serviceId: 'mocked-cf-1'
+      serviceId: 'mocked-sd-lan-1'
     })
 
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
@@ -155,7 +155,7 @@ describe('SD-LAN Table', () => {
     // eslint-disable-next-line max-len
     await screen.findByRole('row', { name: 'Amy_sdLan_1 Sting-Venue-1 sting-vSE-b490 amyTunnel 1 Poor' })
 
-    const networkNumStr = await screen.findByTestId('network-names-mocked-cf-1')
+    const networkNumStr = await screen.findByTestId('network-names-mocked-sd-lan-1')
     await hover(networkNumStr)
     expect(await screen.findByRole('tooltip'))
       .toHaveTextContent('')
