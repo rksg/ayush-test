@@ -1,9 +1,19 @@
+import React from 'react'
+
 import moment        from 'moment'
 import { IntlShape } from 'react-intl'
 
-import { FirmwareVersion, SwitchFirmware, firmwareTypeTrans } from '@acx-ui/rc/utils'
+import {
+  FirmwareVersion,
+  SwitchFirmware,
+  firmwareTypeTrans
+} from '@acx-ui/rc/utils'
 
-import { SCHEDULE_END_TIME_FORMAT, SCHEDULE_START_TIME_FORMAT, parseSwitchVersion } from '../../FirmwareUtils'
+import {
+  SCHEDULE_END_TIME_FORMAT,
+  SCHEDULE_START_TIME_FORMAT,
+  parseSwitchVersion
+} from '../../FirmwareUtils'
 
 export const enableSwitchScheduleTooltip = (s: SwitchFirmware) => {
   return s.switchNextSchedule
@@ -54,4 +64,23 @@ export const getSwitchVersionLabel = (intl: IntlShape, version: FirmwareVersion)
     displayVersion = `${displayVersion} - ${intl.$t({ defaultMessage: 'The selected switches are already running this version' })}`
   }
   return displayVersion
+}
+
+
+export const getHightlightSearch = function (value: string, keyword: string) {
+  const parts = value.split(keyword)
+  const elements = parts.map((part, index) => {
+    if (index === parts.length - 1) {
+      return <React.Fragment key={index}>{part}</React.Fragment>
+    } else {
+      return (
+        <React.Fragment key={index}>
+          {part}
+          <b>{keyword}</b>
+        </React.Fragment>
+      )
+    }
+  })
+
+  return <span>{elements}</span>
 }
