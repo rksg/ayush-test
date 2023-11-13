@@ -26,7 +26,8 @@ import {
   NewMspEntitlementSummary,
   MspAggregations,
   MspEcAlarmList,
-  RecommendFirmwareUpgrade
+  RecommendFirmwareUpgrade,
+  AvailableMspRecCustomers
 } from '@acx-ui/msp/utils'
 import {
   TableResult,
@@ -795,6 +796,25 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       }
     }),
+    getAvailableMspRecCustomers: build.query<AvailableMspRecCustomers, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.getAvailableMspRecCustomers, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    addRecCustomer: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.addMspRecCustomer, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
     assignMspEcToMultiIntegrators: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(MspUrlsInfo.assignMspEcToMultiIntegrators, params)
@@ -804,7 +824,7 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
-    })
+    })    
   })
 })
 export const {
@@ -868,6 +888,8 @@ export const {
   useGetMspEcAlarmListQuery,
   useGetRecommandFirmwareUpgradeQuery,
   useMspEcFirmwareUpgradeSchedulesMutation,
+  useGetAvailableMspRecCustomersQuery,
+  useAddRecCustomerMutation,
   useAssignMspEcToMultiIntegratorsMutation,
   useAssignMspEcToIntegrator_v1Mutation
 } = mspApi

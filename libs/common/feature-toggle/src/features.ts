@@ -120,6 +120,7 @@ export enum Features {
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
   SSO = 'ADMN-SSO',
   RUCKUS_AI_CHATBOT_TOGGLE = 'ruckus-ai-chatbot-toggle',
+  MSP_HSP_SUPPORT = 'mspservice-mspec-adminoptional',
   TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs'
 }
 
