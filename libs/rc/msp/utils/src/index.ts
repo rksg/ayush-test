@@ -132,8 +132,6 @@ export const MSPUtils = () => {
         const value =
         (Math.round(((consumed / quantity) * 10000)) / 100) + '%'
         return value
-      } else {
-        return '0%'
       }
     }
     return '0%'
