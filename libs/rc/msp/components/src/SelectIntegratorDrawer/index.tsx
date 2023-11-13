@@ -136,7 +136,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
         })
       )
       let payload = {
-        AssignMspEcListRequestV2: integratorList,
+        AssignDelegatedRequest: integratorList,
         isManageAllEcs: assignedEcAdmin
       }
       assignMspCustomerToMutipleIntegrator({ payload })
