@@ -42,7 +42,8 @@ import {
 import {
   APExtended,
   VenueRadioCustomization,
-  ChannelBandwidth6GEnum
+  ChannelBandwidth6GEnum,
+  AFCProps
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -124,6 +125,7 @@ export function RadioSettings () {
 
   const [triBandApModels, setTriBandApModels] = useState<string[]>([])
   const [hasTriBandAps, setHasTriBandAps] = useState(false)
+  const [afcProps, setAfcProps] = useState({} as AFCProps)
 
   const { data: venueCaps } = useGetVenueApCapabilitiesQuery({ params: { tenantId, venueId } })
 
@@ -231,6 +233,11 @@ export function RadioSettings () {
         if (data) {
           const findAp = data.filter((ap: APExtended) => ap.venueId === venueId)
           setHasTriBandAps((findAp.length > 0))
+          setAfcProps({
+            isAFCEnabled: supportChannelsData?.afcEnabled,
+            LPIButtonText: undefined,
+            afcInfo: undefined
+          })
         }
       })
     }
@@ -702,7 +709,7 @@ export function RadioSettings () {
               bandwidthOptions={bandwidth6GOptions}
               handleChanged={handleChange}
               onResetDefaultValue={handleResetDefaultSettings}
-              isAFCEnabled={supportChannelsData?.afcEnabled} />
+              afcProps={afcProps} />
           </div>
           }
           { isTriBandRadio && isDual5gMode &&

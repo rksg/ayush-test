@@ -8,7 +8,7 @@ import { useIntl }                from 'react-intl'
 
 import { Button, cssStr }                                         from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
-
+import { AFCProps }                                               from '@acx-ui/rc/utils'
 
 import { RadioSettingsChannels }       from '../RadioSettingsChannels'
 import { findIsolatedGroupByChannel }  from '../RadioSettingsChannels/320Mhz/ChannelComponentStates'
@@ -24,8 +24,7 @@ import {
   RadioChannel,
   SelectItemOption,
   split5GChannels,
-  VenueRadioTypeDataKeyMap,
-  LPIButtonText
+  VenueRadioTypeDataKeyMap
 } from './RadioSettingsContents'
 import { RadioSettingsForm } from './RadioSettingsForm'
 
@@ -64,8 +63,7 @@ export function SingleRadioSettings (props:{
   testId?: string,
   isUseVenueSettings?: boolean,
   supportDfsChannels?: any,
-  isAFCEnabled? : boolean,
-  LPIButtonText?: LPIButtonText
+  afcProps?: AFCProps
 }) {
 
   const { $t } = useIntl()
@@ -76,7 +74,7 @@ export function SingleRadioSettings (props:{
     context = 'venue',
     isUseVenueSettings = false,
     testId,
-    isAFCEnabled
+    afcProps
   } = props
 
   const {
@@ -395,8 +393,8 @@ export function SingleRadioSettings (props:{
               context={context}
               isUseVenueSettings={isUseVenueSettings}
               onGUIChanged={handleSettingGUIChanged}
-              isAFCEnabled={isAFCEnabled}
-              LPIButtonText={props.LPIButtonText}
+              isAFCEnabled={afcProps?.isAFCEnabled}
+              LPIButtonText={afcProps?.LPIButtonText}
             />
           </Col>
           { context === 'venue' && !inherit5G && !disable &&
