@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 
 import { EdgeUrlsInfo, ServiceOperation, ServiceType, getServiceDetailsLink, CommonUrlsInfo, EdgeSdLanUrls } from '@acx-ui/rc/utils'
 import { Provider }                                                                                          from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved, within }                                     from '@acx-ui/test-utils'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within }                            from '@acx-ui/test-utils'
 
 import { mockEdgeList, mockedSdLanDataList } from '../__tests__/fixtures'
 
@@ -163,11 +163,16 @@ describe('SD-LAN Table', () => {
   it('should display service health Unknown if alarm summary is undefined', async () => {
     const cfListNoAlarm = _.cloneDeep(mockedSdLanDataList)
     delete cfListNoAlarm[0].edgeAlarmSummary
+    cfListNoAlarm[0].name = 'sdLan_unknown_health'
+    const mockedSdLanDataListReq = jest.fn()
 
     mockServer.use(
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-        (_, res, ctx) => res(ctx.json({ data: cfListNoAlarm }))
+        (_, res, ctx) => {
+          mockedSdLanDataListReq()
+          return res(ctx.json({ data: cfListNoAlarm }))
+        }
       ))
 
     render(
@@ -178,9 +183,12 @@ describe('SD-LAN Table', () => {
       }
     )
 
+    await waitFor(() => {
+      expect(mockedSdLanDataListReq).toBeCalled()
+    })
     await screen.findByRole('columnheader', { name: 'SmartEdge' })
-    await screen.findAllByRole('row', { name: /Amy_sdLan_/i })
+    // await screen.findByRole('row', { name: /sdLan_unknown_health/i })
     // eslint-disable-next-line max-len
-    await screen.findByRole('row', { name: 'Amy_sdLan_1 Sting-Venue-1 sting-vSE-b490 amyTunnel 1 Unknown' })
+    await screen.findByRole('row', { name: 'sdLan_unknown_health Sting-Venue-1 sting-vSE-b490 amyTunnel 1 Unknown' })
   })
 })
