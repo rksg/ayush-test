@@ -1,119 +1,41 @@
-import { useMemo } from 'react'
+import { Col, Form, Row, Typography } from 'antd'
+import _                              from 'lodash'
+import { useIntl }                    from 'react-intl'
 
-import { Col, Form, Row, Switch, Typography } from 'antd'
-import _                                      from 'lodash'
-import { useIntl }                            from 'react-intl'
+import { StepsForm, useStepFormContext }                                from '@acx-ui/components'
+import { ActivatedNetworksTableProps, EdgeSdLanActivatedNetworksTable } from '@acx-ui/rc/components'
+import { EdgeSdLanSetting, NetworkSaveData }                            from '@acx-ui/rc/utils'
 
-import { StepsForm, Table, TableProps, useStepFormContext } from '@acx-ui/components'
-import { useVenueNetworkActivationsDataListQuery }          from '@acx-ui/rc/services'
-import { EdgeSdLanSetting, NetworkSaveData, networkTypes }  from '@acx-ui/rc/utils'
-import { useParams }                                        from '@acx-ui/react-router-dom'
-
-export type ActivatedNetwork = Pick<NetworkSaveData, 'id' | 'name'>
-
-interface ActivatedNetworksTableProps {
-  venueId: string,
-  data?: ActivatedNetwork[],
+export type EdgeSdLanActivatedNetwork = Pick<NetworkSaveData, 'id' | 'name'>
+type NetworksTableProps = Omit<ActivatedNetworksTableProps, 'activated'> & {
+  data?: EdgeSdLanActivatedNetwork[]
 }
 
-const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
-  const { data: activated, venueId } = props
-  const params = useParams()
-  const { $t } = useIntl()
-  const { form } = useStepFormContext<EdgeSdLanSetting>()
-
-  const { networkList } = useVenueNetworkActivationsDataListQuery({
-    params: { ...params },
-    payload: {
-      pageSize: 10000,
-      sortField: 'name',
-      sortOrder: 'ASC',
-      venueId: venueId,
-      fields: [
-        'id',
-        'name',
-        'type'
-      ]
-    }
-  }, {
-    skip: !Boolean(venueId),
-    selectFromResult: ({ data, isLoading }) => {
-      return {
-        networkList: data,
-        isLoading
-      }
-    }
-  })
-
-  const updateActivatedNetworks = (selected: ActivatedNetwork[]) => {
-    form.setFieldValue('activatedNetworks', selected)
-  }
-
-  const ActivateSwitch = useMemo(() => ({ row }:{ row: NetworkSaveData }) => {
-    const isActivated = _.findIndex(activated, { id: row.id })
-
-    return <Switch
-      aria-label={`activate-btn-${row.id}`}
-      checked={isActivated !== -1}
-      onChange={(checked: boolean) => {
-        let newSelected
-        if (checked) {
-          newSelected = _.unionBy(activated,
-            [_.pick(row, ['id', 'name'])], 'id')
-        } else {
-          newSelected = [...activated!]
-          _.remove(newSelected,
-            _.pick(row, ['id', 'name']))
-        }
-
-        updateActivatedNetworks(newSelected)
-      }}
-    />
-  }, [$t, form, activated])
-
-  const columns: TableProps<NetworkSaveData>['columns'] = useMemo(() => ([
-    {
-      title: $t({ defaultMessage: 'Active Network' }),
-      tooltip: $t({ defaultMessage:
-        'A list of the networks that have been activated on this venue.' }),
-      key: 'name',
-      dataIndex: 'name',
-      defaultSortOrder: 'ascend',
-      fixed: 'left'
-    },
-    {
-      title: $t({ defaultMessage: 'Network Type' }),
-      key: 'type',
-      dataIndex: 'type',
-      render: (_, row) => {
-        return $t(networkTypes[row.type!])
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Activate on Venue' }),
-      key: 'action',
-      dataIndex: 'action',
-      align: 'center',
-      width: 80,
-      render: (_, row) => {
-        return <ActivateSwitch row={row}/>
-      }
-    }
-  ]), [$t, ActivateSwitch])
-
-  return (
-    <Table
-      rowKey='id'
-      columns={columns}
-      dataSource={networkList}
-    />
-  )}
-
+const NetworksTable = (props: NetworksTableProps) => {
+  const { data, ...others } = props
+  return <EdgeSdLanActivatedNetworksTable
+    {...others}
+    activated={data?.map(i => i.id!) ?? []}
+  />
+}
 export const ScopeForm = () => {
   const { $t } = useIntl()
-  const { form } = useStepFormContext<EdgeSdLanSetting>()
+  const { form, editMode } = useStepFormContext<EdgeSdLanSetting>()
   const venueId = form.getFieldValue('venueId')
   const venueName = form.getFieldValue('venueName')
+
+  const handleActivateChange = (data: NetworkSaveData, checked: boolean) => {
+    const activatedNetworks = form.getFieldValue('activatedNetworks') as EdgeSdLanActivatedNetwork[]
+    let newSelected
+    if (checked) {
+      newSelected = _.unionBy(activatedNetworks,
+        [_.pick(data, ['id', 'name'])], 'id')
+    } else {
+      newSelected = [...activatedNetworks!]
+      _.remove(newSelected, item => item.id === data.id)
+    }
+    form.setFieldValue('activatedNetworks', newSelected)
+  }
 
   return (
     <>
@@ -143,7 +65,11 @@ export const ScopeForm = () => {
             noStyle
             initialValue={[]}
           >
-            <ActivatedNetworksTable venueId={venueId} />
+            <NetworksTable
+              venueId={venueId}
+              allowActivate={!editMode}
+              onActivateChange={handleActivateChange}
+            />
           </Form.Item>
         </Col>
       </Row>

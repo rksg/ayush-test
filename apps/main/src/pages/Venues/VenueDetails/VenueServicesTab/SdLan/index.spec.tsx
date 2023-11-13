@@ -1,0 +1,147 @@
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
+
+import * as RcComponents                                  from '@acx-ui/rc/components'
+import { CommonUrlsInfo, EdgeSdLanUrls, NetworkSaveData } from '@acx-ui/rc/utils'
+import { Provider }                                       from '@acx-ui/store'
+import {
+  mockServer,
+  render,
+  screen,
+  waitFor,
+  within
+} from '@acx-ui/test-utils'
+
+import { mockNetworkSaveData, mockDeepNetworkList, mockedEdgeSdLan } from './__tests__/fixtures'
+
+import EdgeSdLan from './'
+
+// jest.mock('@acx-ui/rc/components', () => ({
+//   ...jest.requireActual('@acx-ui/rc/components'),
+//   ActivateNetworkSwitchButton: ActivateNetworkSwitchButton
+// }))
+
+const mockedEditFn = jest.fn()
+const mockedGetNetworkDeepList = jest.fn()
+
+describe('Venue Edge SD-LAN Service', () => {
+  let params: { tenantId: string, venueId: string }
+
+  beforeEach(() => {
+    params = {
+      tenantId: 't-tenant',
+      venueId: 't-venue'
+    }
+
+    mockedEditFn.mockReset()
+    mockedGetNetworkDeepList.mockReset()
+
+    mockServer.use(
+      rest.patch(
+        EdgeSdLanUrls.updateEdgeSdLanPartial.url,
+        (req, res, ctx) => {
+          mockedEditFn(req.body)
+          return res(ctx.status(202))
+        }
+      ),
+      rest.post(
+        CommonUrlsInfo.networkActivations.url,
+        (_, res, ctx) => res(ctx.json(mockNetworkSaveData))
+      ),
+      rest.post(
+        CommonUrlsInfo.getNetworkDeepList.url,
+        (_, res, ctx) => {
+          mockedGetNetworkDeepList()
+          return res(ctx.json(mockDeepNetworkList))
+        }
+      )
+    )
+  })
+
+  it('should render correctly', async () => {
+    render(
+      <Provider>
+        <EdgeSdLan data={mockedEdgeSdLan} />
+      </Provider>, {
+        route: { params }
+      })
+
+    await waitFor(() => {
+      expect(mockedGetNetworkDeepList).toBeCalled()
+    })
+    // display config data
+    expect(await screen.findByRole('link', { name: 'mocked_SD-LAN_1' })).toBeVisible()
+    expect(await screen.findByRole('link', { name: 'mocked-Venue-1' })).toBeVisible()
+    expect(await screen.findByRole('link', { name: 'mocked-vSE-b490' })).toBeVisible()
+    expect(await screen.findByRole('link', { name: 'mockedTunnel' })).toBeVisible()
+
+    const networks = screen.queryAllByRole('row', { name: /MockedNetwork/i })
+    expect(networks.length).toBe(3)
+    const network1 = screen.getByRole('row', { name: /MockedNetwork 1/i })
+    expect(within(network1).getByRole('switch')).toBeChecked()
+    const network2 = screen.getByRole('row', { name: /MockedNetwork 2/i })
+    expect(within(network2).getByRole('switch')).not.toBeChecked()
+    expect(within(network2).getByRole('switch')).toBeDisabled()
+  })
+
+  it('should correctly deactivate network', async () => {
+    render(
+      <Provider>
+        <EdgeSdLan data={mockedEdgeSdLan} />
+      </Provider>, {
+        route: { params }
+      })
+
+    await waitFor(() => {
+      expect(mockedGetNetworkDeepList).toBeCalled()
+    })
+
+    const networks = screen.queryAllByRole('row', { name: /MockedNetwork/i })
+    expect(networks.length).toBe(3)
+    const network1 = screen.getByRole('row', { name: /MockedNetwork 1/i })
+    const switchBtn = within(network1).getByRole('switch')
+    expect(switchBtn).toBeChecked()
+    await userEvent.click(switchBtn)
+    await waitFor(() => {
+      expect(mockedEditFn).toBeCalledWith({
+        networkIds: ['network_3']
+      })
+    })
+  })
+  it('should ignore activate network', async () => {
+    jest.spyOn(RcComponents, 'ActivateNetworkSwitchButton').mockImplementation(
+      // eslint-disable-next-line max-len
+      (props: {
+        row: NetworkSaveData,
+        activated: string[],
+        allowActivate?: boolean,
+        onChange?: (data: NetworkSaveData, checked: boolean, activated: string[]) => void }) => {
+        return <input
+          type='checkbox'
+          checked={false}
+          data-testid='ActivateNetworkSwitchButton'
+          onChange={() => {
+            props.onChange?.({}, true, [])
+          }} />
+      })
+
+    render(
+      <Provider>
+        <EdgeSdLan data={mockedEdgeSdLan} />
+      </Provider>, {
+        route: { params }
+      })
+
+    await waitFor(() => {
+      expect(mockedGetNetworkDeepList).toBeCalled()
+    })
+
+    const networks = screen.queryAllByRole('row', { name: /MockedNetwork/i })
+    expect(networks.length).toBe(3)
+    const network2 = screen.getByRole('row', { name: /MockedNetwork 2/i })
+    const switchBtn = within(network2).getByTestId('ActivateNetworkSwitchButton')
+    expect(switchBtn).not.toBeChecked()
+    await userEvent.click(switchBtn)
+    expect(mockedEditFn).not.toBeCalled()
+  })
+})

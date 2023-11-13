@@ -11,14 +11,14 @@ import {
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { ActivatedNetwork } from './ScopeForm'
+import { EdgeSdLanActivatedNetwork } from './ScopeForm'
 
 export interface EdgeSdLanFormModel extends EdgeSdLanSetting {
   venueName?: string;
   edgeName?: string;
   tunnelProfileName?: string;
   corePortName?: string;
-  activatedNetworks: ActivatedNetwork[];
+  activatedNetworks: EdgeSdLanActivatedNetwork[];
 }
 
 interface EdgeSdLanFormStep {

@@ -245,3 +245,15 @@ export const mockedSdLanDataList = [{
   edgeAlarmSummary: {} as EdgeAlarmSummary,
   serviceVersion: '1.0.0.100'
 }] as EdgeSdLanViewData[]
+
+export const mockedNetworkViewData = {
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: '8e22159cfe264ac18d591ea492fbc05a',
+      name: 'amyNetwork',
+      nwSubType: 'dpsk'
+    }
+  ]
+}

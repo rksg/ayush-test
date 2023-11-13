@@ -102,6 +102,7 @@ import EditFirewall                         from './pages/Services/EdgeFirewall/
 import FirewallDetail                       from './pages/Services/EdgeFirewall/FirewallDetail'
 import FirewallTable                        from './pages/Services/EdgeFirewall/FirewallTable'
 import AddEdgeSdLan                         from './pages/Services/EdgeSdLan/AddEdgeSdLan'
+import EdgeSdLanDetail                      from './pages/Services/EdgeSdLan/EdgeSdLanDetail'
 import EdgeSdLanTable                       from './pages/Services/EdgeSdLan/EdgeSdLanTable'
 import EditEdgeSdLan                        from './pages/Services/EdgeSdLan/EditEdgeSdLan'
 import MdnsProxyDetail                      from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
@@ -282,6 +283,11 @@ const edgeSdLanRoutes = () => {
       path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
         oper: ServiceOperation.EDIT })}
       element={<EditEdgeSdLan />}
+    />
+    <Route
+      path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
+        oper: ServiceOperation.DETAIL })}
+      element={<EdgeSdLanDetail />}
     />
   </>
 }

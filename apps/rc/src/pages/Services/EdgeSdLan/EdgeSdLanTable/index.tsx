@@ -204,7 +204,7 @@ const EdgeSdLanTable = () => {
     //   key: 'serviceVersion',
     //   dataIndex: 'serviceVersion',
     //   render: (__, row) => {
-    //     return row.serviceVersion ?? '--'
+    //     return row.serviceVersion ?? noDataDisplay
     //   }
     // },
     // {

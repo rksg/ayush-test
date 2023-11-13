@@ -287,9 +287,14 @@ jest.mock('./pages/Policies/ConnectionMetering/ConnectionMeteringPageForm', () =
 jest.mock('./pages/Services/EdgeSdLan/AddEdgeSdLan', () => () => {
   return <div data-testid='AddEdgeSdLan' />
 })
-
 jest.mock('./pages/Services/EdgeSdLan/EditEdgeSdLan', () => () => {
   return <div data-testid='EditEdgeSdLan' />
+})
+jest.mock('./pages/Services/EdgeSdLan/EdgeSdLanTable', () => () => {
+  return <div data-testid='EdgeSdLanTable' />
+})
+jest.mock('./pages/Services/EdgeSdLan/EdgeSdLanDetail', () => () => {
+  return <div data-testid='EdgeSdLanDetail' />
 })
 
 describe('RcRoutes: Devices', () => {
@@ -639,6 +644,26 @@ describe('RcRoutes: Services', () => {
       }
     })
     expect(screen.getByTestId('EditEdgeSdLan')).toBeVisible()
+  })
+  test('should navigate to Edge SD-LAN list page', async () => {
+    const path = getServiceDetailsLink({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.LIST, serviceId: 'SERVICE_ID' })
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/t/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('EdgeSdLanTable')).toBeVisible()
+  })
+  test('should navigate to Edge SD-LAN detail page', async () => {
+    const path = getServiceDetailsLink({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/t/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('EdgeSdLanDetail')).toBeVisible()
   })
 })
 
