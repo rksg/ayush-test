@@ -16,7 +16,7 @@ import { EdgePortConfigFormType } from '.'
 interface ConfigFormProps {
   formListKey: number
   index: number
-  isCFEnabled: boolean
+  isEdgeSdLanEnabled: boolean
 }
 
 export async function lanPortsubnetValidator (
@@ -54,9 +54,9 @@ const getEnabledCorePort = (form: FormInstance) => {
 const { useWatch, useFormInstance } = Form
 
 export const PortConfigForm = (props: ConfigFormProps) => {
-  const { index, formListKey, isCFEnabled } = props
+  const { index, formListKey, isEdgeSdLanEnabled } = props
   const { $t } = useIntl()
-  const isCentralizeForwardingReady = useIsSplitOn(Features.EDGES_CENTRALIZED_FORWARDING_TOGGLE)
+  const isCentralizeForwardingReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
   const form = useFormInstance<EdgePortConfigFormType>()
 
   const getFieldPath = useCallback((fieldName: string) =>
@@ -71,11 +71,11 @@ export const PortConfigForm = (props: ConfigFormProps) => {
   const mac = useWatch(getFieldFullPath('mac'), form)
 
   const enabledCorePort = getEnabledCorePort(form)
-  // if CF enable corePort should be grey-out when both
-  //     - CF is enabled on this edge
+  // if SD-LAN enable corePort should be grey-out when both
+  //     - SD-LAN is enabled on this edge
   //     - corePort is exist.
   // else only allowed 1 core port enabled
-  const isCorePortDisabled = isCFEnabled
+  const isCorePortDisabled = isEdgeSdLanEnabled
     ? !!enabledCorePort
     : (!!enabledCorePort && enabledCorePort !== mac)
 

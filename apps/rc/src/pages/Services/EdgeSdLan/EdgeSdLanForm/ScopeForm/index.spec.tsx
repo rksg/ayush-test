@@ -60,8 +60,8 @@ describe('Scope Form', () => {
 
     expect(await screen.findByText('Scope')).toBeVisible()
     await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
-    const title = await screen.findByText(/Activate networks for the centralized forwarding service on the venue/i)
-    expect(title.textContent).toBe('Activate networks for the centralized forwarding service on the venue (airport):')
+    const title = await screen.findByText(/Activate networks for the SD-LAN service on the venue/i)
+    expect(title.textContent).toBe('Activate networks for the SD-LAN service on the venue (airport):')
     const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
     expect(rows.length).toBe(3)
     expect(stepFormRef.current.getFieldValue('activatedNetworks')).toStrictEqual([])
@@ -90,8 +90,8 @@ describe('Scope Form', () => {
 
     expect(await screen.findByText('Scope')).toBeVisible()
     await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
-    const title = await screen.findByText(/Activate networks for the centralized forwarding service on the venue/i)
-    expect(title.textContent).toBe('Activate networks for the centralized forwarding service on the venue (airport):')
+    const title = await screen.findByText(/Activate networks for the SD-LAN service on the venue/i)
+    expect(title.textContent).toBe('Activate networks for the SD-LAN service on the venue (airport):')
     const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
     expect(rows.length).toBe(3)
     await waitFor(() =>

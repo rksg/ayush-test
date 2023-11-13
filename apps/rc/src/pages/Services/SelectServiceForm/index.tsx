@@ -29,7 +29,7 @@ export default function SelectServiceForm () {
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
-  const centralizeForwardingEnabled = useIsSplitOn(Features.EDGES_CENTRALIZED_FORWARDING_TOGGLE)
+  const centralizeForwardingEnabled = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
 
   const navigateToCreateService = async function (data: { serviceType: ServiceType }) {
     const serviceCreatePath = getServiceRoutePath({
@@ -60,7 +60,7 @@ export default function SelectServiceForm () {
           disabled: !isEdgeEnabled || !isEdgeReady
         },
         {
-          type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
+          type: ServiceType.EDGE_SD_LAN,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
           disabled: !isEdgeEnabled || !isEdgeReady || !centralizeForwardingEnabled
         }

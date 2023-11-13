@@ -103,7 +103,7 @@ export const CorePortFormItem = (props: {
           ? null
           : <><Typography.Text>
             {$t({
-              defaultMessage: `To use centralized forwarding on the venue,
+              defaultMessage: `To use SD-LAN on the venue,
          you must go to {editPortLink} and select a port as the Core port`
             },
             { editPortLink:

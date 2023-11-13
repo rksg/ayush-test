@@ -4,10 +4,10 @@ import { Col, Form, Row, Switch, Typography } from 'antd'
 import _                                      from 'lodash'
 import { useIntl }                            from 'react-intl'
 
-import { StepsForm, Table, TableProps, useStepFormContext }                from '@acx-ui/components'
-import { useVenueNetworkActivationsDataListQuery }                         from '@acx-ui/rc/services'
-import { EdgeCentralizedForwardingSetting, NetworkSaveData, networkTypes } from '@acx-ui/rc/utils'
-import { useParams }                                                       from '@acx-ui/react-router-dom'
+import { StepsForm, Table, TableProps, useStepFormContext } from '@acx-ui/components'
+import { useVenueNetworkActivationsDataListQuery }          from '@acx-ui/rc/services'
+import { EdgeSdLanSetting, NetworkSaveData, networkTypes }  from '@acx-ui/rc/utils'
+import { useParams }                                        from '@acx-ui/react-router-dom'
 
 export type ActivatedNetwork = Pick<NetworkSaveData, 'id' | 'name'>
 
@@ -20,7 +20,7 @@ const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
   const { data: activated, venueId } = props
   const params = useParams()
   const { $t } = useIntl()
-  const { form } = useStepFormContext<EdgeCentralizedForwardingSetting>()
+  const { form } = useStepFormContext<EdgeSdLanSetting>()
 
   const { networkList } = useVenueNetworkActivationsDataListQuery({
     params: { ...params },
@@ -101,19 +101,6 @@ const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
     }
   ]), [$t, ActivateSwitch])
 
-  // useEffect(() => {
-  //   if (networkList && editMode) {
-  //     const networkIds = form.getFieldValue('networkIds')
-  //     if (networkIds) {
-  //       const activatedNetworks = networkIds?.map((id: string) => ({
-  //         id: id,
-  //         name: networkList.filter(i => i.id === id)[0]?.name
-  //       }))
-  //       updateActivatedNetworks(activatedNetworks)
-  //     }
-  //   }
-  // }, [networkList, editMode])
-
   return (
     <Table
       rowKey='id'
@@ -124,7 +111,7 @@ const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
 
 export const ScopeForm = () => {
   const { $t } = useIntl()
-  const { form } = useStepFormContext<EdgeCentralizedForwardingSetting>()
+  const { form } = useStepFormContext<EdgeSdLanSetting>()
   const venueId = form.getFieldValue('venueId')
   const venueName = form.getFieldValue('venueName')
 
@@ -141,7 +128,7 @@ export const ScopeForm = () => {
             {$t({
               defaultMessage:
                 // eslint-disable-next-line max-len
-                'Activate networks for the centralized forwarding service on the venue ({venueName}):'
+                'Activate networks for the SD-LAN service on the venue ({venueName}):'
             }, {
               venueName: <Typography.Text strong>{venueName}</Typography.Text>
             })}

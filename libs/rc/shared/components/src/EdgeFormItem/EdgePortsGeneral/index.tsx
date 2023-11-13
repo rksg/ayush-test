@@ -7,11 +7,11 @@ import _                       from 'lodash'
 import { ValidateErrorEntity } from 'rc-field-form/es/interface'
 import { useIntl }             from 'react-intl'
 
-import { Loader, NoData, showActionModal, StepsForm, Tabs }                              from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                        from '@acx-ui/feature-toggle'
-import { useGetEdgeCentralizedForwardingViewDataListQuery, useUpdatePortConfigMutation } from '@acx-ui/rc/services'
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgePortWithStatus }                          from '@acx-ui/rc/utils'
-import { useParams }                                                                     from '@acx-ui/react-router-dom'
+import { Loader, NoData, showActionModal, StepsForm, Tabs }              from '@acx-ui/components'
+import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
+import { useGetEdgeSdLanViewDataListQuery, useUpdatePortConfigMutation } from '@acx-ui/rc/services'
+import { EdgeIpModeEnum, EdgePortTypeEnum, EdgePortWithStatus }          from '@acx-ui/rc/utils'
+import { useParams }                                                     from '@acx-ui/react-router-dom'
 
 import { PortConfigForm } from './PortConfigForm'
 
@@ -42,29 +42,29 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
   const { data, onValuesChange, onFinish, onCancel, buttonLabel, edgeId } = props
   const { $t } = useIntl()
   const params = useParams()
-  const isCentralizeForwardingReady = useIsSplitOn(Features.EDGES_CENTRALIZED_FORWARDING_TOGGLE)
+  const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
   const [form] = Form.useForm(props.form)
   const [currentTab, setCurrentTab] = useState<string>('port_0')
   const [updatePortConfig, { isLoading: isPortConfigUpdating }] = useUpdatePortConfigMutation()
   const dataRef = useRef<EdgePortWithStatus[] | undefined>(undefined)
   const edgeSN = edgeId ?? params.serialNumber
 
-  const getEdgeCFPayload = {
+  const getEdgeSdLanPayload = {
     filters: { edgeId: [edgeSN] },
     fields: ['id', 'edgeId', 'corePortMac']
   }
-  const { edgeCFData, isLoading: isCFLoading }
-    = useGetEdgeCentralizedForwardingViewDataListQuery(
-      { payload: getEdgeCFPayload },
+  const { edgeSdLanData, isLoading: isEdgeSdLanLoading }
+    = useGetEdgeSdLanViewDataListQuery(
+      { payload: getEdgeSdLanPayload },
       {
-        skip: !isCentralizeForwardingReady,
+        skip: !isEdgeSdLanReady,
         selectFromResult: ({ data, isLoading }) => ({
-          edgeCFData: data?.data?.[0],
+          edgeSdLanData: data?.data?.[0],
           isLoading
         })
       }
     )
-  const isCFEnabled = !!edgeCFData
+  const isEdgeSdLanEnabled = !!edgeSdLanData
 
   let tabs = [] as TabData[]
   let formData = {} as EdgePortConfigFormType
@@ -78,7 +78,7 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
             formListKey={key}
             key={`port_${index}_${key}`}
             index={index}
-            isCFEnabled={isCFEnabled}
+            isEdgeSdLanEnabled={isEdgeSdLanEnabled}
           />
         )}
       </Form.List>
@@ -125,7 +125,7 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
 
   const handlePortTypeChange = (changedPortName: string, changedValue: StoreValue,
     index: number) => {
-    if (isCentralizeForwardingReady) {
+    if (isEdgeSdLanReady) {
       showActionModal({
         type: 'info',
         content: $t({ defaultMessage: `
@@ -180,7 +180,7 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
   return (
     data.length > 0 ?
       <Loader states={[{
-        isLoading: isCFLoading,
+        isLoading: isEdgeSdLanLoading,
         isFetching: isPortConfigUpdating
       }]}>
         <StepsForm

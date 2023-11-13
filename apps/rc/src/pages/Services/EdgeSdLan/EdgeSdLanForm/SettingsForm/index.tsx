@@ -7,9 +7,9 @@ import { useParams }                     from 'react-router-dom'
 import { StepsForm, useStepFormContext }                                                                        from '@acx-ui/components'
 import { SpaceWrapper, TunnelProfileAddModal }                                                                  from '@acx-ui/rc/components'
 import { useGetEdgeListQuery, useGetPortConfigQuery, useGetTunnelProfileViewDataListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
-import { EdgeCentralizedForwardingSetting, EdgeStatusEnum, isDefaultTunnelProfile }                             from '@acx-ui/rc/utils'
+import { EdgeSdLanSetting, EdgeStatusEnum, isDefaultTunnelProfile }                                             from '@acx-ui/rc/utils'
 
-import diagram from '../../../../../assets/images/edge-centralized-forwarding-diagrams/edge-cf-early-access.png'
+import diagram from '../../../../../assets/images/edge-sd-lan-diagrams/edge-sd-lan-early-access.png'
 
 import { CorePortFormItem } from './CorePortFormItem'
 import * as UI              from './styledComponents'
@@ -24,7 +24,7 @@ const tunnelProfileDefaultPayload = {
 export const SettingsForm = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const { form, editMode } = useStepFormContext<EdgeCentralizedForwardingSetting>()
+  const { form, editMode } = useStepFormContext<EdgeSdLanSetting>()
 
   const venueId = Form.useWatch('venueId', form)
   const edgeId = Form.useWatch('edgeId', form)
@@ -267,7 +267,7 @@ export const SettingsForm = () => {
         </SpaceWrapper>
       </Col>
       <Col>
-        <UI.Diagram src={diagram} alt={$t({ defaultMessage: 'Centralized Forwarding' })} />
+        <UI.Diagram src={diagram} alt={$t({ defaultMessage: 'SD-LAN' })} />
       </Col>
     </Row>
 

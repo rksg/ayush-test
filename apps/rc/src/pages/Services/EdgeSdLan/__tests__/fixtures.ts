@@ -1,4 +1,4 @@
-import { EdgeAlarmSummary, EdgeCentralizedForwardingViewData, EdgeIpModeEnum, EdgePortTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { EdgeAlarmSummary, EdgeSdLanViewData, EdgeIpModeEnum, EdgePortTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 export const mockedVenueList = {
   fields: ['name', 'id'],
@@ -194,9 +194,9 @@ export const mockDeepNetworkList = {
   ]
 }
 
-export const mockedCFService = {
-  id: 'mocked_cf_id',
-  name: 'mockedCFData',
+export const mockedSdLanService = {
+  id: 'mocked_sdLan_id',
+  name: 'mockedSdLanData',
   venueId: 'f28540166b95406cae64b46bd12b742f',
   venueName: 'airport',
   edgeId: '9618C4AC2B1FC511EE8B2B000C2943FE7F',
@@ -205,9 +205,9 @@ export const mockedCFService = {
   tunnelProfileId: 'f93802759efc49628c572df8af0718b8'
 }
 
-export const mockedEdgeCFDataList = [{
-  id: 'mocked-cf-1',
-  name: 'Amy_CF_1',
+export const mockedSdLanDataList = [{
+  id: 'mocked-sd-lan-1',
+  name: 'Amy_sdLan_1',
   tenantId: '0f18d1cf714b4bcf94bef4654f1ab29c',
   venueId: 'a307d7077410456f8f1a4fc41d861567',
   venueName: 'Sting-Venue-1',
@@ -230,8 +230,8 @@ export const mockedEdgeCFDataList = [{
   },
   serviceVersion: '1.0.0.100'
 }, {
-  id: 'mocked-cf-2',
-  name: 'Amy_CF_2',
+  id: 'mocked-sd-lan-2',
+  name: 'Amy_sdLan_2',
   tenantId: '0f18d1cf714b4bcf94bef4654f1ab29c',
   venueId: 'a8def420bd6c4f3e8b28114d6c78f237',
   venueName: 'Sting-Venue-3',
@@ -244,4 +244,4 @@ export const mockedEdgeCFDataList = [{
   corePortMac: 'a2:51:0f:bc:89:c5',
   edgeAlarmSummary: {} as EdgeAlarmSummary,
   serviceVersion: '1.0.0.100'
-}] as EdgeCentralizedForwardingViewData[]
+}] as EdgeSdLanViewData[]

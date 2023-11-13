@@ -1,10 +1,10 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader, PageHeader }                         from '@acx-ui/components'
+import { Loader, PageHeader }         from '@acx-ui/components'
 import {
-  useGetEdgeCentralizedForwardingQuery,
-  useUpdateEdgeCentralizedForwardingPartialMutation
+  useGetEdgeSdLanQuery,
+  useUpdateEdgeSdLanPartialMutation
 } from '@acx-ui/rc/services'
 import {
   getServiceListRoutePath,
@@ -14,21 +14,21 @@ import {
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import CentralizedForwardingForm, { CentralizedForwardingFormModel } from '../CentralizedForwardingForm'
-import { ScopeForm }                                                 from '../CentralizedForwardingForm/ScopeForm'
-import { SettingsForm }                                              from '../CentralizedForwardingForm/SettingsForm'
+import EdgeSdLanForm, { EdgeSdLanFormModel } from '../EdgeSdLanForm'
+import { ScopeForm }                         from '../EdgeSdLanForm/ScopeForm'
+import { SettingsForm }                      from '../EdgeSdLanForm/SettingsForm'
 
-const EditEdgeCentralizedForwarding = () => {
+const EditEdgeSdLan = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const params = useParams()
   const cfListRoute = getServiceRoutePath({
-    type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
+    type: ServiceType.EDGE_SD_LAN,
     oper: ServiceOperation.LIST
   })
   const linkToServiceList = useTenantLink(cfListRoute)
-  const [updateEdgeCentralizedForwarding] = useUpdateEdgeCentralizedForwardingPartialMutation()
-  const { data, isLoading } = useGetEdgeCentralizedForwardingQuery({ params })
+  const [updateEdgeSdLan] = useUpdateEdgeSdLanPartialMutation()
+  const { data, isLoading } = useGetEdgeSdLanQuery({ params })
   const [form] = Form.useForm()
 
   const steps = [
@@ -42,7 +42,7 @@ const EditEdgeCentralizedForwarding = () => {
     }
   ]
 
-  const handleFinish = async (formData: CentralizedForwardingFormModel) => {
+  const handleFinish = async (formData: EdgeSdLanFormModel) => {
     try {
       const payload = {
         name: formData.name,
@@ -50,7 +50,7 @@ const EditEdgeCentralizedForwarding = () => {
         tunnelProfileId: formData.tunnelProfileId
       }
 
-      await updateEdgeCentralizedForwarding({ params, payload }).unwrap()
+      await updateEdgeSdLan({ params, payload }).unwrap()
       navigate(linkToServiceList, { replace: true })
     } catch(err) {
       // eslint-disable-next-line no-console
@@ -61,15 +61,15 @@ const EditEdgeCentralizedForwarding = () => {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Edit Centralized Forwarding' })}
+        title={$t({ defaultMessage: 'Edit SD-LAN' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          { text: $t({ defaultMessage: 'Centralized Forwarding' }), link: cfListRoute }
+          { text: $t({ defaultMessage: 'SD-LAN' }), link: cfListRoute }
         ]}
       />
       <Loader states={[{ isLoading }]}>
-        <CentralizedForwardingForm
+        <EdgeSdLanForm
           form={form}
           steps={steps}
           onFinish={handleFinish}
@@ -80,4 +80,4 @@ const EditEdgeCentralizedForwarding = () => {
   )
 }
 
-export default EditEdgeCentralizedForwarding
+export default EditEdgeSdLan

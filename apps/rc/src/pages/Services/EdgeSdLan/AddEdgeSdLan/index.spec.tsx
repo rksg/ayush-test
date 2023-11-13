@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeCentralizedForwardingUrls, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { EdgeSdLanUrls, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 import {
   Provider
 } from '@acx-ui/store'
@@ -12,9 +12,9 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
-import { CentralizedForwardingFormModel } from '../CentralizedForwardingForm'
+import { EdgeSdLanFormModel } from '../EdgeSdLanForm'
 
-import AddEdgeCentralizedForwarding from '.'
+import AddEdgeSdLan from '.'
 
 const { click } = userEvent
 
@@ -27,14 +27,14 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 const mockedAddFn = jest.fn()
 const mockedSubmitDataGen = jest.fn()
 
-jest.mock('../CentralizedForwardingForm', () => ({
+jest.mock('../EdgeSdLanForm', () => ({
   __esModule: true,
-  ...jest.requireActual('../CentralizedForwardingForm'),
+  ...jest.requireActual('../EdgeSdLanForm'),
   default: (props: {
-    onFinish: (values: CentralizedForwardingFormModel) => Promise<boolean | void>
+    onFinish: (values: EdgeSdLanFormModel) => Promise<boolean | void>
   }) => {
     const submitData = mockedSubmitDataGen()
-    return <div data-testid='rc-CentralizedForwardingForm'>
+    return <div data-testid='rc-EdgeSdLanForm'>
       <button onClick={() => {
         props.onFinish(submitData)
       }}>Submit</button>
@@ -42,14 +42,14 @@ jest.mock('../CentralizedForwardingForm', () => ({
   }
 }))
 
-describe('Add Edge Centralized Forwarding service', () => {
+describe('Add SD-LAN service', () => {
   beforeEach(() => {
     mockedAddFn.mockReset()
     mockedSubmitDataGen.mockReset()
 
     mockServer.use(
       rest.post(
-        EdgeCentralizedForwardingUrls.addEdgeCentralizedForwarding.url,
+        EdgeSdLanUrls.addEdgeSdLan.url,
         (req, res, ctx) => {
           mockedAddFn(req.body)
           return res(ctx.status(202))
@@ -60,7 +60,7 @@ describe('Add Edge Centralized Forwarding service', () => {
 
   it('should correctly add service', async () => {
     mockedSubmitDataGen.mockReturnValueOnce({
-      name: 'testAddCFService',
+      name: 'testAddSdLanService',
       edgeId: '0000000001',
       corePortMac: 't-coreport-mac',
       tunnelProfileId: 't-tunnelProfile-id',
@@ -71,24 +71,24 @@ describe('Add Edge Centralized Forwarding service', () => {
     })
 
     const targetPath = getServiceRoutePath({
-      type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
+      type: ServiceType.EDGE_SD_LAN,
       oper: ServiceOperation.LIST
     })
 
     render(<Provider>
-      <AddEdgeCentralizedForwarding />
+      <AddEdgeSdLan />
     </Provider>, {
       route: {
         params: { tenantId: 't-id' },
-        path: '/:tenantId/services/edgeCentralizedForwarding/create'
+        path: '/:tenantId/services/edgeEdgeSdLan/create'
       }
     })
 
-    expect(await screen.findByTestId('rc-CentralizedForwardingForm')).toBeVisible()
+    expect(await screen.findByTestId('rc-EdgeSdLanForm')).toBeVisible()
     await click(screen.getByRole('button', { name: 'Submit' }))
     await waitFor(() => {
       expect(mockedAddFn).toBeCalledWith({
-        name: 'testAddCFService',
+        name: 'testAddSdLanService',
         edgeId: '0000000001',
         corePortMac: 't-coreport-mac',
         tunnelProfileId: 't-tunnelProfile-id',
@@ -105,7 +105,7 @@ describe('Add Edge Centralized Forwarding service', () => {
   })
   it('network is allowed to be empty', async () => {
     mockedSubmitDataGen.mockReturnValue({
-      name: 'testAddCFService2',
+      name: 'testAddSdLanService2',
       edgeId: '0000000002',
       corePortMac: 't-coreport2-mac',
       tunnelProfileId: 't-tunnelProfile2-id',
@@ -113,19 +113,19 @@ describe('Add Edge Centralized Forwarding service', () => {
     })
 
     render(<Provider>
-      <AddEdgeCentralizedForwarding />
+      <AddEdgeSdLan />
     </Provider>, {
       route: {
         params: { tenantId: 't-id' },
-        path: '/:tenantId/services/edgeCentralizedForwarding/create'
+        path: '/:tenantId/services/edgeEdgeSdLan/create'
       }
     })
 
-    expect(await screen.findByTestId('rc-CentralizedForwardingForm')).toBeVisible()
+    expect(await screen.findByTestId('rc-EdgeSdLanForm')).toBeVisible()
     await click(screen.getByRole('button', { name: 'Submit' }))
     await waitFor(() => {
       expect(mockedAddFn).toBeCalledWith({
-        name: 'testAddCFService2',
+        name: 'testAddSdLanService2',
         edgeId: '0000000002',
         corePortMac: 't-coreport2-mac',
         tunnelProfileId: 't-tunnelProfile2-id',

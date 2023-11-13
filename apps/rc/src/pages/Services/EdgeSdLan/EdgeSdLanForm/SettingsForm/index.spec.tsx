@@ -21,7 +21,7 @@ import {
 
 import { mockEdgeList, mockedTunnelProfileViewData, mockedVenueList, mockEdgePortConfig } from '../../__tests__/fixtures'
 
-import { SettingsForm } from './'
+import { SettingsForm } from '.'
 
 jest.mock('antd', () => {
   const components = jest.requireActual('antd')

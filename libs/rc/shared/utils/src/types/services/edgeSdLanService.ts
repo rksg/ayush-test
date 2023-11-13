@@ -1,6 +1,6 @@
 import { EdgeAlarmSummary } from '../edge'
 
-export interface EdgeCentralizedForwardingSetting {
+export interface EdgeSdLanSetting {
   id: string;
   name: string;
   venueId?: string; // UI used
@@ -11,7 +11,7 @@ export interface EdgeCentralizedForwardingSetting {
   tunnelProfileId: string;
 }
 
-export interface EdgeCentralizedForwardingViewData {
+export interface EdgeSdLanViewData {
   id?: string
   tenantId?: string
   name?: string

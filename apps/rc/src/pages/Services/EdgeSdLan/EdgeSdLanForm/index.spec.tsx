@@ -17,9 +17,9 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { mockedCFService } from '../__tests__/fixtures'
+import { mockedSdLanService } from '../__tests__/fixtures'
 
-import CentralizedForwardingForm from './'
+import EdgeSdLanForm from '.'
 
 const { click } = userEvent
 
@@ -53,13 +53,13 @@ const addSteps = [{
 const mockedFinishFn = jest.fn()
 const { result } = renderHook(() => Form.useForm())
 
-describe('Edge Centralized Forwarding form', () => {
+describe('SD-LAN form', () => {
   beforeEach(() => {
     mockedFinishFn.mockClear()
   })
 
   it('should navigate to service list when click cancel', async () => {
-    render(<CentralizedForwardingForm
+    render(<EdgeSdLanForm
       form={result.current[0]}
       steps={addSteps}
       onFinish={mockedFinishFn}
@@ -72,7 +72,7 @@ describe('Edge Centralized Forwarding form', () => {
     })
 
     const targetPath = getServiceRoutePath({
-      type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
+      type: ServiceType.EDGE_SD_LAN,
       oper: ServiceOperation.LIST
     })
 
@@ -91,7 +91,7 @@ describe('Edge Centralized Forwarding form', () => {
 
   describe('Add', () => {
     it('should submit with correct data', async () => {
-      render(<CentralizedForwardingForm
+      render(<EdgeSdLanForm
         form={result.current[0]}
         steps={addSteps}
         onFinish={mockedFinishFn}
@@ -138,11 +138,11 @@ describe('Edge Centralized Forwarding form', () => {
 
     it('should correctly edit profile', async () => {
       const formRef = result.current[0]
-      render(<CentralizedForwardingForm
+      render(<EdgeSdLanForm
         form={formRef}
         steps={editSteps}
         onFinish={mockedFinishFn}
-        editData={mockedCFService}
+        editData={mockedSdLanService}
       />, {
         wrapper: Provider,
         route: { params: { tenantId: 't-id', serviceId: 'mock-id' } }
@@ -156,8 +156,8 @@ describe('Edge Centralized Forwarding form', () => {
 
       await waitFor(() => {
         expect(mockedFinishFn).toBeCalledWith({
-          ...mockedCFService,
-          activatedNetworks: mockedCFService.networkIds.map(id => ({ id }))
+          ...mockedSdLanService,
+          activatedNetworks: mockedSdLanService.networkIds.map(id => ({ id }))
         })
       })
     })

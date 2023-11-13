@@ -2,27 +2,27 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { PageHeader }                                                                  from '@acx-ui/components'
-import { useAddEdgeCentralizedForwardingMutation }                                     from '@acx-ui/rc/services'
+import { useAddEdgeSdLanMutation }                                                     from '@acx-ui/rc/services'
 import { getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                                                  from '@acx-ui/react-router-dom'
 
-import CentralizedForwardingForm, { CentralizedForwardingFormModel } from '../CentralizedForwardingForm'
-import { ScopeForm }                                                 from '../CentralizedForwardingForm/ScopeForm'
-import { SettingsForm }                                              from '../CentralizedForwardingForm/SettingsForm'
-import { SummaryForm }                                               from '../CentralizedForwardingForm/SummaryForm'
+import EdgeSdLanForm, { EdgeSdLanFormModel } from '../EdgeSdLanForm'
+import { ScopeForm }                         from '../EdgeSdLanForm/ScopeForm'
+import { SettingsForm }                      from '../EdgeSdLanForm/SettingsForm'
+import { SummaryForm }                       from '../EdgeSdLanForm/SummaryForm'
 
 
-const AddEdgeCentralizedForwarding = () => {
+const AddEdgeSdLan = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
 
   const cfListRoute = getServiceRoutePath({
-    type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
+    type: ServiceType.EDGE_SD_LAN,
     oper: ServiceOperation.LIST
   })
 
   const linkToServiceList = useTenantLink(cfListRoute)
-  const [addEdgeCentralizedForwarding] = useAddEdgeCentralizedForwardingMutation()
+  const [addEdgeSdLan] = useAddEdgeSdLanMutation()
   const [form] = Form.useForm()
 
   const steps = [
@@ -41,7 +41,7 @@ const AddEdgeCentralizedForwarding = () => {
   ]
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleFinish = async (formData: CentralizedForwardingFormModel) => {
+  const handleFinish = async (formData: EdgeSdLanFormModel) => {
     try {
       const payload = {
         name: formData.name,
@@ -50,7 +50,7 @@ const AddEdgeCentralizedForwarding = () => {
         networkIds: formData.activatedNetworks.map(network => network.id),
         tunnelProfileId: formData.tunnelProfileId
       }
-      await addEdgeCentralizedForwarding({ payload }).unwrap()
+      await addEdgeSdLan({ payload }).unwrap()
       navigate(linkToServiceList, { replace: true })
     } catch(err) {
       // eslint-disable-next-line no-console
@@ -61,14 +61,14 @@ const AddEdgeCentralizedForwarding = () => {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Add Centralized Forwarding' })}
+        title={$t({ defaultMessage: 'Add SD-LAN' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          { text: $t({ defaultMessage: 'Centralized Forwarding' }), link: cfListRoute }
+          { text: $t({ defaultMessage: 'SD-LAN' }), link: cfListRoute }
         ]}
       />
-      <CentralizedForwardingForm
+      <EdgeSdLanForm
         form={form}
         steps={steps}
         onFinish={handleFinish}
@@ -77,4 +77,4 @@ const AddEdgeCentralizedForwarding = () => {
   )
 }
 
-export default AddEdgeCentralizedForwarding
+export default AddEdgeSdLan

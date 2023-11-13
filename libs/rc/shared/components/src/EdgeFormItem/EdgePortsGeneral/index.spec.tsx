@@ -2,9 +2,9 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                from '@acx-ui/feature-toggle'
-import { EdgeCentralizedForwardingUrls, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                    from '@acx-ui/store'
+import { useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { EdgeSdLanUrls, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                    from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -13,7 +13,7 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { mockedCorePortLostEdgeCFDataList, mockedEdgeCFDataList, mockEdgePortConfigWithStatusIp } from '../__tests__/fixtures'
+import { mockedCorePortLostEdgeSdLanDataList, mockedEdgeSdLanDataList, mockEdgePortConfigWithStatusIp } from '../__tests__/fixtures'
 
 import { EdgePortsGeneral } from './'
 
@@ -31,7 +31,7 @@ jest.mock('@acx-ui/utils', () => {
 describe('EditEdge ports - ports general', () => {
   let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
   const mockedUpdateReq = jest.fn()
-  const mockedGetCFReq = jest.fn()
+  const mockedGetSdLanReq = jest.fn()
 
   beforeEach(() => {
     params = {
@@ -41,9 +41,9 @@ describe('EditEdge ports - ports general', () => {
       activeSubTab: 'ports-general'
     }
     mockedUpdateReq.mockClear()
-    mockedGetCFReq.mockClear()
+    mockedGetSdLanReq.mockClear()
 
-    // CF flag is off
+    // SD-LAN flag is off
     jest.mocked(useIsSplitOn).mockReturnValue(false)
 
     mockServer.use(
@@ -55,9 +55,9 @@ describe('EditEdge ports - ports general', () => {
         }
       ),
       rest.post(
-        EdgeCentralizedForwardingUrls.getEdgeCentralizedForwardingViewDataList.url,
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
         (_, res, ctx) => {
-          mockedGetCFReq()
+          mockedGetSdLanReq()
           return res(ctx.status(202))
         }
       )
@@ -85,7 +85,7 @@ describe('EditEdge ports - ports general', () => {
     const gatewayInput = await screen.findByRole('textbox', { name: 'Gateway' })
     await userEvent.clear(gatewayInput)
     await userEvent.type(gatewayInput, '1.1.1.1')
-    expect(mockedGetCFReq).not.toBeCalled()
+    expect(mockedGetSdLanReq).not.toBeCalled()
     await user.click(await screen.findByRole('button', { name: 'Apply Ports General' }))
 
     const expectedResult = _.cloneDeep(mockEdgePortConfigWithStatusIp)
@@ -389,9 +389,9 @@ describe('EditEdge ports - ports general api fail', () => {
   })
 })
 
-describe('EditEdge ports - CF ready', () => {
+describe('EditEdge ports - SD-LAN ready', () => {
   let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
-  const mockedGetCFReq = jest.fn()
+  const mockedGetSdLanReq = jest.fn()
   const mockedUpdateReq = jest.fn()
 
   beforeEach(() => {
@@ -413,9 +413,9 @@ describe('EditEdge ports - CF ready', () => {
         }
       ),
       rest.post(
-        EdgeCentralizedForwardingUrls.getEdgeCentralizedForwardingViewDataList.url,
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
         (_, res, ctx) => {
-          mockedGetCFReq()
+          mockedGetSdLanReq()
           return res(ctx.status(202))
         }
       )
@@ -434,7 +434,7 @@ describe('EditEdge ports - CF ready', () => {
         }
       })
     await waitFor(() => {
-      expect(mockedGetCFReq).toBeCalled()
+      expect(mockedGetSdLanReq).toBeCalled()
     })
     await user.click(await screen.findByRole('combobox', { name: 'Port Type' }))
     await user.click(await screen.findByText('LAN'))
@@ -456,7 +456,7 @@ describe('EditEdge ports - CF ready', () => {
       })
 
     await waitFor(() => {
-      expect(mockedGetCFReq).toBeCalled()
+      expect(mockedGetSdLanReq).toBeCalled()
     })
     const corePortInput = await screen.findByRole('checkbox',
       { name: /Use this port as Core Port/ })
@@ -482,7 +482,7 @@ describe('EditEdge ports - CF ready', () => {
       })
 
     await waitFor(() => {
-      expect(mockedGetCFReq).toBeCalled()
+      expect(mockedGetSdLanReq).toBeCalled()
     })
     const corePortInput = await screen.findByRole('checkbox',
       { name: /Use this port as Core Port/ })
@@ -500,13 +500,13 @@ describe('EditEdge ports - CF ready', () => {
       { name: /Use NAT Service/ })
     expect(port5nat).not.toBeChecked()
   })
-  it('should grey-out all core port checkbox when CF is running and wll set', async () => {
+  it('should grey-out all core port checkbox when SD-LAN is running and wll set', async () => {
     mockServer.use(
       rest.post(
-        EdgeCentralizedForwardingUrls.getEdgeCentralizedForwardingViewDataList.url,
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
         (_, res, ctx) => {
-          mockedGetCFReq()
-          return res(ctx.json({ data: mockedEdgeCFDataList }))
+          mockedGetSdLanReq()
+          return res(ctx.json({ data: mockedEdgeSdLanDataList }))
         }
       )
     )
@@ -522,7 +522,7 @@ describe('EditEdge ports - CF ready', () => {
       })
 
     await waitFor(() => {
-      expect(mockedGetCFReq).toBeCalled()
+      expect(mockedGetSdLanReq).toBeCalled()
     })
     const corePortInput = await screen.findByRole('checkbox',
       { name: /Use this port as Core Port/ })
@@ -537,15 +537,16 @@ describe('EditEdge ports - CF ready', () => {
     expect(port2CorePort).not.toBeChecked()
     expect(port2CorePort).toBeDisabled()
   })
-  it('should allow user config another core port when core port is missing from CF', async () => {
+  // eslint-disable-next-line max-len
+  it('should allow user config another core port when core port is missing from SD-LAN', async () => {
     const emptyCorePortConfig = _.cloneDeep(mockEdgePortConfigWithStatusIp)
     emptyCorePortConfig.ports.splice(0, 1)
     mockServer.use(
       rest.post(
-        EdgeCentralizedForwardingUrls.getEdgeCentralizedForwardingViewDataList.url,
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
         (_, res, ctx) => {
-          mockedGetCFReq()
-          return res(ctx.json({ data: mockedCorePortLostEdgeCFDataList }))
+          mockedGetSdLanReq()
+          return res(ctx.json({ data: mockedCorePortLostEdgeSdLanDataList }))
         }
       )
     )
@@ -560,7 +561,7 @@ describe('EditEdge ports - CF ready', () => {
       })
 
     await waitFor(() => {
-      expect(mockedGetCFReq).toBeCalled()
+      expect(mockedGetSdLanReq).toBeCalled()
     })
     const corePortInput = await screen.findByRole('checkbox',
       { name: /Use this port as Core Port/ })

@@ -7,15 +7,15 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { CentralizedForwardingFormModel } from '..'
+import { EdgeSdLanFormModel } from '..'
 
-import { SummaryForm } from './'
+import { SummaryForm } from '.'
 
 describe('Summary form', () => {
   it('should correctly display', async () => {
     const mockedData = {
       id: '',
-      name: 'testCFData',
+      name: 'testSdLanData',
       venueId: 'venue_00002',
       venueName: 'airport',
       edgeId: '0000000002',
@@ -29,7 +29,7 @@ describe('Summary form', () => {
         name: 'MockedNetwork 1',
         id: 'network_1'
       }]
-    } as CentralizedForwardingFormModel
+    } as EdgeSdLanFormModel
 
     const { result: stepFormRef } = renderHook(() => {
       const [ form ] = Form.useForm()
@@ -40,7 +40,7 @@ describe('Summary form', () => {
     render(<StepsForm form={stepFormRef.current}>
       <SummaryForm />
     </StepsForm>)
-    await screen.findByRole('cell', { name: /testCFData/i })
+    await screen.findByRole('cell', { name: /testSdLanData/i })
     await screen.findByRole('cell', { name: /airport/i })
     await screen.findByRole('cell', { name: /Smart Edge 2/i })
     await screen.findByRole('cell', { name: /tunnelProfile2/i })
@@ -50,7 +50,7 @@ describe('Summary form', () => {
   it('should correctly display when activatedNetworks not defined.', async () => {
     const mockedData_noNetworks = {
       id: '',
-      name: 'testCFData2',
+      name: 'testSdLanData2',
       venueId: 'venue_00002',
       venueName: 'airport',
       edgeId: '0000000002',
@@ -72,7 +72,7 @@ describe('Summary form', () => {
     render(<StepsForm form={stepFormRef.current}>
       <SummaryForm />
     </StepsForm>)
-    await screen.findByRole('cell', { name: /testCFData2/i })
+    await screen.findByRole('cell', { name: /testSdLanData2/i })
     await screen.findByRole('cell', { name: /airport/i })
     await screen.findByRole('cell', { name: /Smart Edge 2/i })
     await screen.findByRole('cell', { name: /tunnelProfile1/i })

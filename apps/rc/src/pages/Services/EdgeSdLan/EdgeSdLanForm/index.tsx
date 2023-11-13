@@ -4,7 +4,7 @@ import { FormInstance } from 'antd'
 
 import { StepsForm } from '@acx-ui/components'
 import {
-  EdgeCentralizedForwardingSetting,
+  EdgeSdLanSetting,
   getServiceRoutePath,
   ServiceOperation,
   ServiceType
@@ -13,7 +13,7 @@ import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { ActivatedNetwork } from './ScopeForm'
 
-export interface CentralizedForwardingFormModel extends EdgeCentralizedForwardingSetting {
+export interface EdgeSdLanFormModel extends EdgeSdLanSetting {
   venueName?: string;
   edgeName?: string;
   tunnelProfileName?: string;
@@ -21,28 +21,28 @@ export interface CentralizedForwardingFormModel extends EdgeCentralizedForwardin
   activatedNetworks: ActivatedNetwork[];
 }
 
-interface CentralizedForwardingFormStep {
+interface EdgeSdLanFormStep {
   title: string
   content: ReactNode
 }
 
-interface CentralizedForwardingFormProps {
+interface EdgeSdLanFormProps {
   form: FormInstance,
-  steps: CentralizedForwardingFormStep[]
-  editData?: EdgeCentralizedForwardingSetting
-  onFinish: (values: CentralizedForwardingFormModel) => Promise<boolean | void>
+  steps: EdgeSdLanFormStep[]
+  editData?: EdgeSdLanSetting
+  onFinish: (values: EdgeSdLanFormModel) => Promise<boolean | void>
 }
 
-const CentralizedForwardingForm = (props: CentralizedForwardingFormProps) => {
+const EdgeSdLanForm = (props: EdgeSdLanFormProps) => {
   const { form, steps, editData, onFinish } = props
   const navigate = useNavigate()
 
   const linkToServiceList = useTenantLink(getServiceRoutePath({
-    type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
+    type: ServiceType.EDGE_SD_LAN,
     oper: ServiceOperation.LIST
   }))
 
-  const handleFinish = async (formData: CentralizedForwardingFormModel) => {
+  const handleFinish = async (formData: EdgeSdLanFormModel) => {
     onFinish(formData)
   }
 
@@ -75,4 +75,4 @@ const CentralizedForwardingForm = (props: CentralizedForwardingFormProps) => {
   )
 }
 
-export default CentralizedForwardingForm
+export default EdgeSdLanForm

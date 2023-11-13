@@ -14,7 +14,7 @@ import {
   useWebAuthTemplateListQuery,
   useGetResidentPortalListQuery,
   useGetEdgeFirewallViewDataListQuery,
-  useGetEdgeCentralizedForwardingViewDataListQuery
+  useGetEdgeSdLanViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
   getSelectServiceRoutePath,
@@ -36,7 +36,7 @@ export default function MyServices () {
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
-  const isEdgeCFReady = useIsSplitOn(Features.EDGES_CENTRALIZED_FORWARDING_TOGGLE)
+  const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
   const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
   const services = [
@@ -71,14 +71,14 @@ export default function MyServices () {
       disabled: !isEdgeEnabled || !isEdgeReady
     },
     {
-      type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
+      type: ServiceType.EDGE_SD_LAN,
       categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
-      tableQuery: useGetEdgeCentralizedForwardingViewDataListQuery({
+      tableQuery: useGetEdgeSdLanViewDataListQuery({
         params, payload: { ...defaultPayload }
       },{
-        skip: !isEdgeEnabled || !isEdgeReady || !isEdgeCFReady
+        skip: !isEdgeEnabled || !isEdgeReady || !isEdgeSdLanReady
       }),
-      disabled: !isEdgeEnabled || !isEdgeReady || !isEdgeCFReady
+      disabled: !isEdgeEnabled || !isEdgeReady || !isEdgeSdLanReady
     },
     {
       type: ServiceType.EDGE_FIREWALL,

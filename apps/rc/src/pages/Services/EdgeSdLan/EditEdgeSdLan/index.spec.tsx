@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { EdgeCentralizedForwardingUrls, EdgeUrlsInfo, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { EdgeSdLanUrls, EdgeUrlsInfo, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 import {
   Provider
 } from '@acx-ui/store'
@@ -16,7 +16,7 @@ import {
 
 import { mockEdgeList } from '../__tests__/fixtures'
 
-import EditEdgeCentralizedForwarding from '.'
+import EditEdgeSdLan from '.'
 
 const { click } = userEvent
 
@@ -28,15 +28,15 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedNavigate
 }))
-jest.mock('../CentralizedForwardingForm', () => ({
+jest.mock('../EdgeSdLanForm', () => ({
   __esModule: true,
-  ...jest.requireActual('../CentralizedForwardingForm'),
+  ...jest.requireActual('../EdgeSdLanForm'),
   default: (props: {
     onFinish: (values: unknown) => Promise<boolean | void>
   }) => {
     const submitData = mockedSubmitDataGen()
     return <div
-      data-testid='rc-CentralizedForwardingForm'
+      data-testid='rc-EdgeSdLanForm'
     >
       <button onClick={() => {
         props.onFinish(submitData)
@@ -48,7 +48,7 @@ jest.mock('../CentralizedForwardingForm', () => ({
 const { result } = renderHook(() => Form.useForm())
 jest.spyOn(Form, 'useForm').mockImplementation(() => result.current)
 result.current[0].setFieldValue = mockedSetFieldFn
-describe('Edit Edge Centralized Forwarding service', () => {
+describe('Edit SD-LAN service', () => {
   beforeEach(() => {
     mockedEditFn.mockReset()
     mockedSubmitDataGen.mockReset()
@@ -65,11 +65,11 @@ describe('Edit Edge Centralized Forwarding service', () => {
         (_, res, ctx) => res(ctx.json(edgeList))
       ),
       rest.get(
-        EdgeCentralizedForwardingUrls.getEdgeCentralizedForwarding.url,
+        EdgeSdLanUrls.getEdgeSdLan.url,
         (_, res, ctx) => res(ctx.json({ data: {} }))
       ),
       rest.patch(
-        EdgeCentralizedForwardingUrls.updateEdgeCentralizedForwardingPartial.url,
+        EdgeSdLanUrls.updateEdgeSdLanPartial.url,
         (req, res, ctx) => {
           mockedEditFn(req.body)
           return res(ctx.status(202))
@@ -80,7 +80,7 @@ describe('Edit Edge Centralized Forwarding service', () => {
 
   it('should correctly edit service', async () => {
     mockedSubmitDataGen.mockReturnValue({
-      name: 'testEditCFService',
+      name: 'testEditSdLanService',
       networkIds: ['network_1'],
       activatedNetworks: [{
         id: 'network_1',
@@ -90,24 +90,24 @@ describe('Edit Edge Centralized Forwarding service', () => {
     })
 
     const targetPath = getServiceRoutePath({
-      type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
+      type: ServiceType.EDGE_SD_LAN,
       oper: ServiceOperation.LIST
     })
 
     render(<Provider>
-      <EditEdgeCentralizedForwarding />
+      <EditEdgeSdLan />
     </Provider>, {
       route: {
         params: { tenantId: 't-id', serviceId: 't-cf-id' },
-        path: '/:tenantId/services/edgeCentralizedForwarding/:serviceId/edit'
+        path: '/:tenantId/services/edgeEdgeSdLan/:serviceId/edit'
       }
     })
 
-    expect(await screen.findByTestId('rc-CentralizedForwardingForm')).toBeVisible()
+    expect(await screen.findByTestId('rc-EdgeSdLanForm')).toBeVisible()
     await click(screen.getByRole('button', { name: 'Submit' }))
     await waitFor(() => {
       expect(mockedEditFn).toBeCalledWith({
-        name: 'testEditCFService',
+        name: 'testEditSdLanService',
         networkIds: ['network_1'],
         tunnelProfileId: 't-tunnelProfile-id'
       })

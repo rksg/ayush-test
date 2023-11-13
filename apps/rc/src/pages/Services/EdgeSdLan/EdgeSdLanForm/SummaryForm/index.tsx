@@ -6,14 +6,14 @@ import { useIntl }         from 'react-intl'
 import { Descriptions, StepsForm, useStepFormContext, Subtitle } from '@acx-ui/components'
 import { SpaceWrapper }                                          from '@acx-ui/rc/components'
 
-import { CentralizedForwardingFormModel } from '..'
+import { EdgeSdLanFormModel } from '..'
 
 import { StyledAntdDescriptions } from './styledComponents'
 
 
 export const SummaryForm = () => {
   const { $t } = useIntl()
-  const { form } = useStepFormContext<CentralizedForwardingFormModel>()
+  const { form } = useStepFormContext<EdgeSdLanFormModel>()
   const formValues = form.getFieldsValue(true)
 
   const activatedNetworks = formValues.activatedNetworks ?? []

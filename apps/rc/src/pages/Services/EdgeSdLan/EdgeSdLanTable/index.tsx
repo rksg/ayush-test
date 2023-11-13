@@ -11,12 +11,12 @@ import {
   showActionModal,
   Loader
 } from '@acx-ui/components'
-import { EdgeServiceStatusLight }                    from '@acx-ui/rc/components'
+import { EdgeServiceStatusLight }    from '@acx-ui/rc/components'
 import {
   useVenuesListQuery,
   useGetEdgeListQuery,
-  useDeleteEdgeCentralizedForwardingMutation,
-  useGetEdgeCentralizedForwardingViewDataListQuery
+  useDeleteEdgeSdLanMutation,
+  useGetEdgeSdLanViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
   ServiceOperation,
@@ -24,7 +24,7 @@ import {
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
-  EdgeCentralizedForwardingViewData,
+  EdgeSdLanViewData,
   PolicyType,
   PolicyOperation,
   getPolicyDetailsLink,
@@ -52,13 +52,13 @@ const edgeOptionsDefaultPayload = {
   sortOrder: 'ASC'
 }
 
-const EdgeCentralizedForwardingTable = () => {
+const EdgeSdLanTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath: Path = useTenantLink('')
 
   const tableQuery = useTableQuery({
-    useQuery: useGetEdgeCentralizedForwardingViewDataListQuery,
+    useQuery: useGetEdgeSdLanViewDataListQuery,
     defaultPayload: {},
     sorter: {
       sortField: 'name',
@@ -69,7 +69,7 @@ const EdgeCentralizedForwardingTable = () => {
     }
   })
 
-  const [deleteEdgeCF, { isLoading: isDeleting }] = useDeleteEdgeCentralizedForwardingMutation()
+  const [deleteSdLan, { isLoading: isDeleting }] = useDeleteEdgeSdLanMutation()
 
   const { venueOptions } = useVenuesListQuery(
     { payload: venueOptionsDefaultPayload },
@@ -99,7 +99,7 @@ const EdgeCentralizedForwardingTable = () => {
     }
   )
 
-  const columns: TableProps<EdgeCentralizedForwardingViewData>['columns'] = [
+  const columns: TableProps<EdgeSdLanViewData>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
       key: 'name',
@@ -111,7 +111,7 @@ const EdgeCentralizedForwardingTable = () => {
         return (
           <TenantLink
             to={getServiceDetailsLink({
-              type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
+              type: ServiceType.EDGE_SD_LAN,
               oper: ServiceOperation.DETAIL,
               serviceId: row.id!
             })}
@@ -218,7 +218,7 @@ const EdgeCentralizedForwardingTable = () => {
     // }
   ]
 
-  const rowActions: TableProps<EdgeCentralizedForwardingViewData>['rowActions'] = [
+  const rowActions: TableProps<EdgeSdLanViewData>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -227,7 +227,7 @@ const EdgeCentralizedForwardingTable = () => {
           pathname:
             `${basePath.pathname}/` +
             getServiceDetailsLink({
-              type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
+              type: ServiceType.EDGE_SD_LAN,
               oper: ServiceOperation.EDIT,
               serviceId: selectedRows[0].id!
             })
@@ -241,15 +241,15 @@ const EdgeCentralizedForwardingTable = () => {
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Edge Centralized Forwarding' }),
+            entityName: $t({ defaultMessage: 'SD-LAN' }),
             entityValue: rows.length === 1 ? rows[0].name : undefined,
             numOfEntities: rows.length
           },
           onOk: () => {
             rows.length === 1
-              ? deleteEdgeCF({ params: { serviceId: rows[0].id } })
+              ? deleteSdLan({ params: { serviceId: rows[0].id } })
                 .then(clearSelection)
-              : deleteEdgeCF({
+              : deleteSdLan({
                 payload: rows.map((item) => item.id)
               }).then(clearSelection)
           }
@@ -262,7 +262,7 @@ const EdgeCentralizedForwardingTable = () => {
     <>
       <PageHeader
         title={$t(
-          { defaultMessage: 'Edge Centralized Forwarding ({count})' },
+          { defaultMessage: 'SD-LAN ({count})' },
           { count: tableQuery.data?.totalCount }
         )}
         breadcrumb={[
@@ -275,12 +275,12 @@ const EdgeCentralizedForwardingTable = () => {
         extra={filterByAccess([
           <TenantLink
             to={getServiceRoutePath({
-              type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
+              type: ServiceType.EDGE_SD_LAN,
               oper: ServiceOperation.CREATE
             })}
           >
             <Button type='primary'>
-              {$t({ defaultMessage: 'Add Edge Centralized Forwarding Service' })}
+              {$t({ defaultMessage: 'Add SD-LAN Service' })}
             </Button>
           </TenantLink>
         ])}
@@ -292,7 +292,7 @@ const EdgeCentralizedForwardingTable = () => {
         ]}
       >
         <Table
-          settingsId='services-centralized-forwarding-table'
+          settingsId='services-edge-sd-lan-table'
           rowKey='id'
           columns={columns}
           rowSelection={hasAccess() && { type: 'checkbox' }}
@@ -308,4 +308,4 @@ const EdgeCentralizedForwardingTable = () => {
   )
 }
 
-export default EdgeCentralizedForwardingTable
+export default EdgeSdLanTable
