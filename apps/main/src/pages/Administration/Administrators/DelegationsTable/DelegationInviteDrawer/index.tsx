@@ -38,13 +38,14 @@ const DelegationInviteDrawer = (props: DelegationInviteDrawerProps) =>{
         params,
         payload: { username: email }
       }, true).unwrap()
-
+      handleCancel()
       sendInvitation(email)
     } catch(error) {
       const respData = error as CommonErrorsResult<CatchErrorDetails>
       const errors = respData.data.errors
 
       // find VAR delegation failed
+      handleCancel()
       handleInvitaionFailed(errors)
     }
   }

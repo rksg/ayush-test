@@ -71,7 +71,7 @@ describe('Add administrator drawer component', () => {
     // expect(mockedCloseDrawer).toBeCalledWith(false)
   })
 
-  xit('should correctly display MSP EC admin not found error message', async () => {
+  it('should correctly display MSP EC admin not found error message', async () => {
     mockServer.use(
       rest.get(
         AdministrationUrlsInfo.findVAR.url,
@@ -105,7 +105,7 @@ describe('Add administrator drawer component', () => {
     })
   })
 
-  xit('should correctly display MSP EC admin not found by TNT-10306 error message', async () => {
+  it('should correctly display MSP EC admin not found by TNT-10306 error message', async () => {
     mockServer.use(
       rest.get(
         AdministrationUrlsInfo.findVAR.url,
@@ -175,8 +175,8 @@ describe('Add administrator drawer component', () => {
 
   it('should correctly display MSP EC admin invited error message', async () => {
     mockServer.use(
-      rest.post(
-        AdministrationUrlsInfo.inviteVAR.url,
+      rest.get(
+        AdministrationUrlsInfo.findVAR.url,
         (req, res, ctx) => {
           return res(ctx.status(500), ctx.json({
             errors: [{
@@ -207,8 +207,8 @@ describe('Add administrator drawer component', () => {
     // })
 
     // await userEvent.click(await screen.findByRole('button', { name: 'Send Invitation' }))
-    // await waitFor(async () => {
-    //   expect(await screen.findByText('You cannot invite support user as a VAR')).toBeVisible()
-    // })
+    await waitFor(async () => {
+      expect(await screen.findByText('You cannot invite support user as a VAR')).toBeVisible()
+    })
   })
 })
