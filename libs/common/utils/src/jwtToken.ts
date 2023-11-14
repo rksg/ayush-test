@@ -25,6 +25,7 @@ export enum AccountType {
   MSP = 'MSP',
   VAR = 'VAR',
   MSP_EC = 'MSP_EC',
+  MSP_REC = 'MSP_REC',
   MSP_NON_VAR = 'MSP_NON_VAR',
   MSP_INTEGRATOR = 'MSP_INTEGRATOR',
   MSP_INSTALLER = 'MSP_INSTALLER'
