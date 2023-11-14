@@ -30,12 +30,6 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-jest.mock('@acx-ui/icons', ()=> {
-  const icons = jest.requireActual('@acx-ui/icons')
-  const keys = Object.keys(icons).map(key => [key, () => <div data-testid={key} />])
-  return Object.fromEntries(keys)
-})
-
 window.focus = jest.fn()
 document.elementFromPoint = jest.fn()
 document.createRange = () => {

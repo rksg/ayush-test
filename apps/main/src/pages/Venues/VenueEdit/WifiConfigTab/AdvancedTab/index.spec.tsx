@@ -201,16 +201,8 @@ describe('AdvancedTab', () => {
       </VenueEditContext.Provider>
     </Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
-    await waitFor(() => screen.findByText('Use AP’s settings'))
-    await waitFor(() => screen.findByText('VLAN ID'))
-    const useApSettings = await screen.findByTestId('venue-mgmt-vlan-use-ap-settings')
-    const changeMgmtVlan = await screen.findByTestId('venue-mgmt-vlan-ap-toggle')
+    await waitFor(() => screen.findByText('Management VLAN'))
 
-    expect(useApSettings).toBeInTheDocument()
-    expect(changeMgmtVlan).toBeInTheDocument()
-
-    userEvent.click(useApSettings)
-    userEvent.click(changeMgmtVlan)
     const inputField = await screen.findByTestId('venue-ap-mgmt-vlan')
     fireEvent.change(inputField, { target: { value: '17' } })
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))

@@ -26,19 +26,22 @@ interface Tab {
 const useTabs = () : Tab[] => {
   const { $t } = useIntl()
   const recommendationsEnabled = useIsSplitOn(Features.AI_RECOMMENDATIONS)
+  const crrmEnabled = useIsSplitOn(Features.AI_CRRM)
   const incidentsTab = {
     key: AIAnalyticsTabEnum.INCIDENTS,
     title: $t({ defaultMessage: 'Incidents' }),
     component: <IncidentTabContent/>,
     headerExtra: useHeaderExtra({ shouldQuerySwitch: true, withIncidents: true })
   }
-  const recommendationTab = [
+  const crrmTab = [
     {
       key: AIAnalyticsTabEnum.CRRM,
       title: $t({ defaultMessage: 'AI-Driven RRM' }),
       component: <RecommendationTabContent />,
       headerExtra: useHeaderExtra({ shouldQuerySwitch: true, datepicker: 'dropdown' })
-    },
+    }
+  ]
+  const recommendationTab = [
     {
       key: AIAnalyticsTabEnum.AIOPS,
       title: $t({ defaultMessage: 'AI Operations' }),
@@ -48,6 +51,7 @@ const useTabs = () : Tab[] => {
   ]
   return [
     incidentsTab,
+    ...(get('IS_MLISA_SA') || crrmEnabled ? crrmTab : []),
     ...(get('IS_MLISA_SA') || recommendationsEnabled ? recommendationTab : [])
   ]
 }

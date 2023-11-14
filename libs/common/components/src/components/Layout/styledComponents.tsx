@@ -21,6 +21,7 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
   --acx-header-company-name-min-width: 130px;
   --acx-header-company-name-right-space: 6px;
   --acx-sidebar-left-space: 10px;
+  --acx-sidebar-right-space: 28px;
   --acx-cloudmessagebanner-height: 58px;
   .ant-pro-basicLayout {
     .ant-layout {
@@ -55,9 +56,6 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
                   object-fit: contain;
                 }
               }
-            }
-            .ant-menu-submenu-arrow {
-              display: none;
             }
           }
           &:before, &::after {
@@ -103,10 +101,23 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
             font-size: var(--acx-headline-4-font-size);
             font-weight: var(--acx-headline-4-font-weight);
             padding-left: var(--acx-sidebar-left-space) !important;
-            padding-right: 0;
+            padding-right: var(--acx-sidebar-right-space);
             margin: 0;
             cursor: default;
             &:active { background: unset; }
+            .ant-menu-title-content + svg {
+              position: absolute;
+              top: 50%;
+              bottom: 50%;
+              margin: auto;
+              right: 12px;
+              width: 16px;
+              transition: transform 0.3s;
+              path {
+                stroke: var(--acx-neutrals-60);
+                stroke-width: 2;
+              }
+            }
           }
           &-open {
             background-color: var(--acx-neutrals-70);
@@ -116,6 +127,14 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
             background-color: var(--acx-neutrals-70);
             .ant-menu-submenu-title {
               font-weight: var(--acx-headline-4-font-weight-bold);
+            }
+          }
+          &-open,
+          &.menu-active {
+            .ant-menu-submenu-title .ant-menu-title-content + svg {
+              path {
+                stroke: var(--acx-primary-white);
+              }
             }
           }
           &.menu-admin-item { margin-top: auto; }
@@ -271,7 +290,12 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
         .ant-menu-submenu-title {
           color: transparent;
         }
-        .ant-menu-title-content { padding-left: 8px; }
+        .ant-menu-title-content {
+          padding-left: 8px;
+          & + svg {
+            display: none;
+          }
+        }
         .ant-menu-item {
           .ant-menu-title-content {
             color: transparent;
