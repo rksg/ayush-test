@@ -10,11 +10,9 @@ import { Features, useIsSplitOn }                                      from '@ac
 import { useLazyGetVenueNetworkApGroupQuery, useLazyNetworkListQuery } from '@acx-ui/rc/services'
 import {
   ssidBackendNameRegExp,
-  apNameRegExp,
   NetworkTypeEnum,
   WifiNetworkMessages,
   checkObjectNotExists,
-  hasGraveAccentAndDollarSign,
   NetworkVenue } from '@acx-ui/rc/utils'
 import { useParams }          from '@acx-ui/react-router-dom'
 import { validationMessages } from '@acx-ui/utils'
