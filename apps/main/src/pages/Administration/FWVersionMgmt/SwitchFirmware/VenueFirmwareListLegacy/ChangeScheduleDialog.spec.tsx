@@ -1,4 +1,5 @@
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
@@ -11,7 +12,6 @@ import {
   mockServer,
   render,
   screen,
-  fireEvent,
   within,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
@@ -89,7 +89,7 @@ describe('Firmware Venues Table', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByText('My-Venue')
+    // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[class="ant-space-item"]')).not.toBeNull()
   })
 
@@ -104,14 +104,14 @@ describe('Firmware Venues Table', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const row = await screen.findByRole('row', { name: /My-Venue/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
+    await userEvent.click(within(row).getByRole('checkbox'))
 
     const changeButton = screen.getByRole('button', { name: /Change Update Schedule/i })
-    fireEvent.click(changeButton)
+    await userEvent.click(changeButton)
 
     await screen.findByText('Selected time will apply to each venue according to own time-zone')
     const changeVenueButton = await screen.findByText('Save')
-    fireEvent.click(changeVenueButton)
+    await userEvent.click(changeVenueButton)
   })
 
   // eslint-disable-next-line max-len
@@ -126,10 +126,10 @@ describe('Firmware Venues Table', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const row2 = await screen.findByRole('row', { name: /v2/i })
-    fireEvent.click(within(row2).getByRole('checkbox'))
+    await userEvent.click(within(row2).getByRole('checkbox'))
 
     const changeButton = screen.getByRole('button', { name: /Change Update Schedule/i })
-    fireEvent.click(changeButton)
+    await userEvent.click(changeButton)
 
     expect(screen.getByRole('heading', {
       name: /Choose which version to update the venue to:/i
@@ -156,10 +156,10 @@ describe('Firmware Venues Table', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const row2 = await screen.findByRole('row', { name: /v2/i })
-    fireEvent.click(within(row2).getByRole('checkbox'))
+    await userEvent.click(within(row2).getByRole('checkbox'))
 
     const changeButton = screen.getByRole('button', { name: /Change Update Schedule/i })
-    fireEvent.click(changeButton)
+    await userEvent.click(changeButton)
 
     const notCheckedOptions = await screen.findAllByRole('radio', { hidden: false, checked: false })
     // eslint-disable-next-line max-len
@@ -191,13 +191,13 @@ describe('Firmware Venues Table', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const row = await screen.findByRole('row', { name: /My-Venue/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
+    await userEvent.click(within(row).getByRole('checkbox'))
 
     const row2 = await screen.findByRole('row', { name: /v2/i })
-    fireEvent.click(within(row2).getByRole('checkbox'))
+    await userEvent.click(within(row2).getByRole('checkbox'))
 
     const changeButton = screen.getByRole('button', { name: /Change Update Schedule/i })
-    fireEvent.click(changeButton)
+    await userEvent.click(changeButton)
 
     expect(screen.getByRole('heading', {
       name: /firmware available for icx 7150\/7550\/7650\/7850 series \(3 switches\)/i
