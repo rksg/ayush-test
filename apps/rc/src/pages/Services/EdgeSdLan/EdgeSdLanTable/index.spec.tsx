@@ -11,6 +11,7 @@ import { mockEdgeList, mockedSdLanDataList } from '../__tests__/fixtures'
 import EdgeSdLanTable from '.'
 
 const mockedUsedNavigate = jest.fn()
+const mockedGetEdgeList = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
@@ -25,6 +26,9 @@ describe('SD-LAN Table', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
 
+    mockedUsedNavigate.mockReset()
+    mockedGetEdgeList.mockReset()
+
     mockServer.use(
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
@@ -36,7 +40,10 @@ describe('SD-LAN Table', () => {
       ),
       rest.post(
         EdgeUrlsInfo.getEdgeList.url,
-        (_, res, ctx) => res(ctx.json(mockEdgeList))
+        (_, res, ctx) => {
+          mockedGetEdgeList()
+          return res(ctx.json(mockEdgeList))
+        }
       ),
       rest.delete(
         EdgeSdLanUrls.deleteEdgeSdLan.url,
@@ -184,10 +191,14 @@ describe('SD-LAN Table', () => {
     )
 
     await waitFor(() => {
+      expect(mockedGetEdgeList).toBeCalled()
+    })
+    await waitFor(() => {
       expect(mockedSdLanDataListReq).toBeCalled()
     })
+
     await screen.findByRole('columnheader', { name: 'SmartEdge' })
-    // await screen.findByRole('row', { name: /sdLan_unknown_health/i })
+    await screen.findByText(/sdLan_unknown_health/i)
     // eslint-disable-next-line max-len
     await screen.findByRole('row', { name: 'sdLan_unknown_health Sting-Venue-1 sting-vSE-b490 amyTunnel 1 Unknown' })
   })
