@@ -1,8 +1,8 @@
 import { useMemo, useState, useEffect } from 'react'
 
-import { Checkbox }                        from 'antd'
-import { useIntl, defineMessage }          from 'react-intl'
-import { createSearchParams, useNavigate } from 'react-router-dom'
+import { Checkbox }               from 'antd'
+import { useIntl, defineMessage } from 'react-intl'
+import { createSearchParams }     from 'react-router-dom'
 
 import {
   isSwitchPath,
@@ -10,11 +10,11 @@ import {
   dateSort,
   sortProp
 } from '@acx-ui/analytics/utils'
-import { Button, Loader, TableProps, Tooltip }  from '@acx-ui/components'
-import { get }                                  from '@acx-ui/config'
-import { DateFormatEnum, formatter }            from '@acx-ui/formatter'
-import { TenantLink, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { noDataDisplay, PathFilter }            from '@acx-ui/utils'
+import { Loader, TableProps, Tooltip } from '@acx-ui/components'
+import { get }                         from '@acx-ui/config'
+import { DateFormatEnum, formatter }   from '@acx-ui/formatter'
+import { TenantLink, useParams }       from '@acx-ui/react-router-dom'
+import { noDataDisplay, PathFilter }   from '@acx-ui/utils'
 
 import { RecommendationActions } from './RecommendationActions'
 import {
@@ -45,9 +45,6 @@ export const UnknownLink = ({ value }: { value: RecommendationListItem }) => {
     data => data.failure.hasOwnProperty('global-zone-checker'))!
   const testing = checkMesh === true ? 'mesh'
     : checkGlobalZone === true ? 'global-zone-checker' : 'null'
-  const navigate = useNavigate()
-  const basePath = useTenantLink('analytics/recommendations/crrm/unknown')
-  const pathname = basePath.pathname
   const paramString = createSearchParams({
     status: statusEnum,
     date: updatedAt,
@@ -55,10 +52,9 @@ export const UnknownLink = ({ value }: { value: RecommendationListItem }) => {
     extra: testing
   }).toString()
 
-  return <Button
-    type='link'
-    onClick={() => {navigate(`${pathname}?${paramString}`)}}
-  >{'--'}</Button>
+  return <TenantLink to={`analytics/recommendations/crrm/unknown?${paramString}`}>
+    {formatter(DateFormatEnum.DateTimeFormat)(value.updatedAt)}
+  </TenantLink>
 }
 
 const disableMuteStatus: Array<RecommendationListItem['statusEnum']> = [
