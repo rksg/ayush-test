@@ -8,7 +8,8 @@ import { MSPUtils }                                                        from 
 import { useGetRecoveryPassphraseQuery, useGetTenantAuthenticationsQuery } from '@acx-ui/rc/services'
 import {
   useUserProfileContext,
-  useGetMfaTenantDetailsQuery
+  useGetMfaTenantDetailsQuery,
+  useGetBetaStatusQuery
 } from '@acx-ui/user'
 import { isDelegationMode, useTenantId } from '@acx-ui/utils'
 
@@ -37,6 +38,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const recoveryPassphraseData = useGetRecoveryPassphraseQuery({ params })
   const mfaTenantDetailsData = useGetMfaTenantDetailsQuery({ params })
   const mspEcProfileData = useGetMspEcProfileQuery({ params })
+  const betaStatusData = useGetBetaStatusQuery({ params })
 
   const canMSPDelegation = isDelegationMode() === false
   const hasMSPEcLabel = mspUtils.isMspEc(mspEcProfileData.data)
@@ -100,7 +102,10 @@ const AccountSettings = (props : AccountSettingsProps) => {
         { (isPrimeAdminUser && betaButtonToggle) && (
           <>
             <Divider />
-            <EnableR1Beta />
+            <EnableR1Beta
+              betaStatusData={betaStatusData.data}
+              isPrimeAdminUser={isPrimeAdminUser}
+            />
           </>
         )}
 

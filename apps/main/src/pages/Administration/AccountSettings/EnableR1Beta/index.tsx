@@ -5,9 +5,9 @@ import { useIntl }                                       from 'react-intl'
 import { useParams }                                     from 'react-router-dom'
 
 
-import { Loader, showActionModal }                            from '@acx-ui/components'
-import { SpaceWrapper }                                       from '@acx-ui/rc/components'
-import { useGetBetaStatusQuery, useToggleBetaStatusMutation } from '@acx-ui/user'
+import { Loader, showActionModal }                                        from '@acx-ui/components'
+import { SpaceWrapper }                                                   from '@acx-ui/rc/components'
+import { BetaStatus, useGetBetaStatusQuery, useToggleBetaStatusMutation } from '@acx-ui/user'
 
 import { MessageMapping } from '../MessageMapping'
 
@@ -19,6 +19,8 @@ import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 /* eslint-disable-next-line */
 export interface EnableR1BetaProps {
   className?: string;
+  betaStatusData?: BetaStatus;
+  isPrimeAdminUser: boolean;
 }
 
 export function EnableR1Beta (props: EnableR1BetaProps) {
