@@ -341,6 +341,7 @@ export function SingleRadioSettings (props:{
                 channelList={channelList}
                 disabled={inherit5G || disable || isUseVenueSettings}
                 handleChanged={handleChanged}
+                afcProps={afcProps}
               />
             </Col>
           </Row>
@@ -355,6 +356,7 @@ export function SingleRadioSettings (props:{
               channelList={channelList}
               disabled={inherit5G || disable || isUseVenueSettings}
               handleChanged={handleChanged}
+              afcProps={afcProps}
             />
           </Col>
         </Row>
@@ -371,6 +373,7 @@ export function SingleRadioSettings (props:{
               channelBars={channelBars}
               disabled={inherit5G || disable || isUseVenueSettings}
               handleChanged={handleChanged}
+              afcProps={afcProps}
             />
           </Col>
         </Row>
@@ -482,6 +485,7 @@ export function SingleRadioSettings (props:{
                 channelBars={indoorChannelBars}
                 disabled={inherit5G || disable}
                 handleChanged={handleChanged}
+                afcProps={afcProps}
               />
             </Col>
           </Row>
@@ -511,6 +515,7 @@ export function SingleRadioSettings (props:{
                 channelBars={outdoorChannelBars}
                 disabled={inherit5G || disable}
                 handleChanged={handleChanged}
+                afcProps={afcProps}
               />
             </Col>
           </Row>
@@ -540,6 +545,7 @@ export function SingleRadioSettings (props:{
                 channelBars={indoorChannelBars}
                 disabled={inherit5G || disable}
                 handleChanged={handleChanged}
+                afcProps={afcProps}
               />
             </Col>
           </Row>

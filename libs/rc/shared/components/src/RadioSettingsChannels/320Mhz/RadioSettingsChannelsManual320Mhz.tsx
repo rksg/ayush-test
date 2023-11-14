@@ -5,7 +5,8 @@ import { Radio }          from 'antd'
 import _                  from 'lodash'
 import { useIntl }        from 'react-intl'
 
-import { Tooltip } from '@acx-ui/components'
+import { Tooltip }  from '@acx-ui/components'
+import { AFCProps } from '@acx-ui/rc/utils'
 
 import { RadioChannel }  from '../../RadioSettings/RadioSettingsContents'
 import { CheckboxGroup } from '../styledComponents'
@@ -39,7 +40,8 @@ export function RadioSettingsChannelsManual320Mhz (props: {
   channelList: RadioChannel[],
   disabled?: boolean
   handleChanged?: () => void,
-  channelMethod?: string
+  channelMethod?: string,
+  afcProps?: AFCProps
 }) {
 
   const { $t } = useIntl()
@@ -48,7 +50,7 @@ export function RadioSettingsChannelsManual320Mhz (props: {
   const [checkedChannel, setCheckedChannel] = useState([] as CheckboxValueType[])
   const [manualGroupChannelState, setManualGroupChannelState] = useState(ChannelGroup_320MHz_Manual)
 
-  let { disabled = false, handleChanged } = props
+  let { disabled = false, handleChanged, afcProps } = props
 
   const handleClickGroupChannels = (event: RadioChangeEvent) => {
     const selected320MhzGroup = event.target.value
@@ -79,6 +81,17 @@ export function RadioSettingsChannelsManual320Mhz (props: {
     if(handleChanged) {
       handleChanged()
     }
+  }
+
+  const displayTooltipText = (value: string, isChecked: boolean) : string => {
+    let message = isChecked
+      ? $t({ defaultMessage: 'Disable this channel' })
+      : $t({ defaultMessage: 'Enable this channel' })
+    const afcAvailableChannel = _.uniq(afcProps?.afcInfo?.availableChannels).sort((a, b) => a-b)
+    if(afcAvailableChannel.includes(Number(value))) {
+      message = $t({ defaultMessage: 'Allowed by AFC' }) + '\n' + message
+    }
+    return message
   }
 
   useEffect(()=> {
@@ -131,12 +144,7 @@ export function RadioSettingsChannelsManual320Mhz (props: {
                 label:
                 <Tooltip
                   key={value}
-                  title={disabled
-                    ? ''
-                    : (checkedChannel.includes(value)
-                      ? $t({ defaultMessage: 'Disable this channel' })
-                      : $t({ defaultMessage: 'Enable this channel' }))
-                  }
+                  title={disabled ? '' : displayTooltipText(value, checkedChannel.includes(value))}
                 >
                   {value}
                 </Tooltip>,
@@ -161,12 +169,7 @@ export function RadioSettingsChannelsManual320Mhz (props: {
                 label:
                 <Tooltip
                   key={value}
-                  title={disabled
-                    ? ''
-                    : (checkedChannel.includes(value)
-                      ? $t({ defaultMessage: 'Disable this channel' })
-                      : $t({ defaultMessage: 'Enable this channel' }))
-                  }
+                  title={disabled ? '' : displayTooltipText(value, checkedChannel.includes(value))}
                 >
                   {value}
                 </Tooltip>,
