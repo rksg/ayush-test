@@ -108,6 +108,7 @@ export function RecommendationTable (
   const queryResults =
     useRecommendationListQuery({ ...pathFilters, crrm: showCrrm }, { skip: switchPath })
   const data = switchPath ? [] : queryResults?.data?.filter((row) => (showMuted || !row.isMuted))
+  const noCrrmData = data?.filter(recommendation => recommendation.code !== 'unknown')
 
   useEffect(() => {
     setSelectedRowData([])
@@ -223,7 +224,7 @@ export function RecommendationTable (
       <UI.RecommendationTableWrapper
         settingsId={`recommendation-table-${showCrrm}`}
         type='tall'
-        dataSource={data}
+        dataSource={showCrrm ? data : noCrrmData}
         columns={columns}
         rowActions={rowActions}
         rowSelection={{
