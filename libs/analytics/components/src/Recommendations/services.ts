@@ -1,5 +1,5 @@
 import { gql }           from 'graphql-request'
-import _                 from 'lodash'
+import _, { uniqueId }   from 'lodash'
 import moment            from 'moment'
 import { defineMessage } from 'react-intl'
 
@@ -292,9 +292,10 @@ export const api = recommendationApi.injectEndpoints({
         return {
           aiOpsCount: response.aiOpsCount,
           recommendations: response.recommendations.map(recommendation => {
-            const { code, status } = recommendation
+            const { code, status, id } = recommendation
             return {
               ...recommendation,
+              id: code === 'unknown' ? uniqueId() : id,
               priority: codes[code === 'unknown'
                 ? status as keyof typeof codes
                 : code as keyof typeof codes].priority,
