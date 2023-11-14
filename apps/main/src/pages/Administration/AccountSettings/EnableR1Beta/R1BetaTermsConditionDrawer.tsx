@@ -1,20 +1,17 @@
 import { useState } from 'react'
+import { useParams }     from 'react-router-dom'
 
-// import { Form }                       from 'antd'
+import { useGetBetaStatusQuery, useToggleBetaStatusMutation }                  from '@acx-ui/user'
 import { useIntl } from 'react-intl'
 
 import { Button, Drawer } from '@acx-ui/components'
 
 import * as UI from './styledComponents'
-/* eslint-disable-next-line */
 export interface R1BetaTermsConditionDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   onClose: () => void
   onSubmit: () => void
-  editMode?: boolean
-  editR1BetaEnable?: string
-  // setSelected: (selected: []) => void
   width?: number
 }
 
@@ -22,23 +19,25 @@ export function R1BetaTermsConditionDrawer (
   props: R1BetaTermsConditionDrawerProps
 ) {
   const { $t } = useIntl()
-  // const [form] = Form.useForm()
+  const params = useParams()
+  const { data: betaStatus } = useGetBetaStatusQuery({ params })
   const { visible, setVisible } = props
   const [resetField, setResetField] = useState(false)
-  const onSave = async () => {
-    // console.log(`visible:::: ${visible}`)
-    // try {
-    //   const valid = await form.validateFields()
-    //   if (valid) {
-    //     // console.log('inside onSave()')
-    //     // console.log(data)
-    //     form.submit()
-    //   }
-    //   // await onFinish(form.getFieldsValue())
-    // } catch (e) {
-    //   return Promise.resolve()
-    // }
+  const enableBetaR1Support = useState(betaStatus?.enabled)
+  const [toggleBetaStatus, { isLoading: isUpdating }] = useToggleBetaStatusMutation()
+  const isChecked = true
 
+  const onSave = async () => {
+    try {
+      await toggleBetaStatus({
+        params: {
+          enable: isChecked + ''
+        }
+      }).unwrap()
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+    onClose()
   }
 
   const onClose = () => {

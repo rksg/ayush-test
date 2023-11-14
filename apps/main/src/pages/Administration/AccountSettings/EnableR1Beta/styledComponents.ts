@@ -19,9 +19,7 @@ export const Wrapper = styled.div`
 export const Spacer = styled.div`
   height: var(--acx-descriptions-space);
 `
-
 export const DrawerContentWrapper = styled.div`
-  // padding-top: var(--acx-content-vertical-space);
   padding: var(--acx-content-vertical-space);
   font-size: var(--acx-body-3-font-size);
   line-height: var(--acx-body-3-line-height);
@@ -30,14 +28,12 @@ export const DrawerContentWrapper = styled.div`
   flex-direction: column;
   align-items: flex-start;
   flex-wrap: nowrap;
-  marding: 10px;
+  margin-top: 0;
   border: 1px solid #cccccc;
 `
-
 export const Checkbox = styled(AntCheckbox)`
   padding-right: 5px;
 `
-
 export const FooterMsg = styled.div`
   color: var(--acx-neutrals-60);
   padding-bottom: var(--acx-content-vertical-space);
@@ -51,11 +47,41 @@ export const List = styled(AntList)`
   .ant-list-item {
     border-bottom: 0px;
   }
+
+  > span > div {
+    display: inline-block;
+    float: left;
+  }
 `
+
+export const Meta = styled(List.Item.Meta)`
+  float: left;
+  display: inline-block;
+`
+
+export const ListWrapper = styled.div`
+  padding: 0px 5px;
+  .ant-list-item {
+    display: inline-block !important;
+    }
+
+ > div.ant-list-item-meta {
+  float: left;
+ }
+
+  .ant-list-split .ant-list-item {
+    border: none;
+  }
+
+  .ant-list-sm .ant-list-item {
+    padding: 8px 16px;
+    display: inline-block ;
+  }
+`
+
 
 export const SectionTitle = styled.div`
   font-weight: var(--acx-subtitle-6-font-weight-bold);
-  margin-top: var(--acx-descriptions-space);
 `
 
 export const FooterWrapper = styled.div`

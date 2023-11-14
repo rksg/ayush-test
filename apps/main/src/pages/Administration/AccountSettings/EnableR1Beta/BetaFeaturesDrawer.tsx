@@ -1,19 +1,14 @@
-// import { useState } from 'react'
-
-// import { Form }                       from 'antd'
-import { useIntl } from 'react-intl'
-
+import { List, Typography }                       from 'antd'
+import { useIntl, MessageDescriptor } from 'react-intl'
+import { ArrowChevronRight } from '@acx-ui/icons'
 import { Button, Drawer } from '@acx-ui/components'
+import * as UI from './styledComponents'
 
 /* eslint-disable-next-line */
 export interface BetaFeaturesDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   onClose: () => void
-  // onSubmit: () => void
-  // editMode?: boolean
-  // editR1BetaEnable?: string
-  // // setSelected: (selected: []) => void
   width?: number
 }
 
@@ -22,16 +17,19 @@ export function BetaFeaturesDrawer (
 ) {
   const { $t } = useIntl()
   const { visible, setVisible } = props
-  // const onSave = async () => {
-  // console.log(`visible:::: ${visible}`)
-  // }
 
   const onClose = () => {
     setVisible(false)
   }
 
   // eslint-disable-next-line max-len
-  const termsCondition = $t({ defaultMessage: 'Ruckus Wireless, Inc. (“RUCKUS”) is providing you ' })
+  const sectionTitle = $t({ defaultMessage: 'Current RUCKUS One beta features: ' })
+  const betaList = [
+    {key: 'AP-CCD', desc: $t({ defaultMessage: 'AP CCD beta feature' }), status: true},
+    {key: 'AP-70', desc: $t({ defaultMessage: 'AP 70 beta faeture' }), status: true},
+    {key: 'AP-NEIGHBORS', desc: $t({ defaultMessage: 'AP NEIGHBORS beta feature' }), status: true},
+    {key: 'PLCY-EDGE', desc: $t({ defaultMessage: 'PLCY EDGE beta feature' }), status: false}
+  ]
 
   const footer =<div>
     <Button type='primary'
@@ -47,7 +45,34 @@ export function BetaFeaturesDrawer (
     visible={visible}
     onClose={onClose}
     width={props.width}
-    children={<div><p>{termsCondition}</p></div>}
+    children={
+      <UI.DrawerContentWrapper>
+      <UI.SectionTitle>{sectionTitle}</UI.SectionTitle>
+        <List
+          split={false}
+          size='small'
+          dataSource={betaList}
+          renderItem={(item) => (
+            <List.Item id={item.key}>
+              // TODO : fix alignment of caret w text in same line
+              {/*{item.status &&*/}
+              {/*  <List.Item.Meta*/}
+              {/*    avatar={<ArrowChevronRight />}*/}
+              {/*  />*/}
+              {/*}*/}
+              <Typography.Text className='description greyText'>
+                {item.status &&
+                  <List.Item.Meta
+                    avatar={<ArrowChevronRight />}
+                  />
+                }
+                {item.status && item.desc}
+              </Typography.Text>
+            </List.Item>
+          )}
+        />
+      </UI.DrawerContentWrapper>
+    }
     footer={footer}
   />
 }

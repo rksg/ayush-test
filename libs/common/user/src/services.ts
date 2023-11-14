@@ -297,10 +297,10 @@ export const {
     }),
     getBetaStatus: build.query<BetaStatus, RequestPayload>({
       query: ({ params }) => createHttpRequest(UserUrlsInfo.getBetaStatus, params),
-      transformResponse: (betaStatus: { 'Start Date': string, enabled: string }) =>
-        ({ startDate: betaStatus['Start Date'], enabled: betaStatus.enabled })
+      transformResponse: (betaStatus: { startDate: string, enabled: string }) =>
+        ({ startDate: betaStatus?.startDate, enabled: betaStatus?.enabled })
     }),
-    toggleBetaStatus: build.mutation<BetaStatus, RequestPayload>({
+    toggleBetaStatus: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => createHttpRequest(UserUrlsInfo.toggleBetaStatus, params)
     })
   })

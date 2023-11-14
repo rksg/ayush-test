@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import {useEffect, useState } from 'react'
 
 import { Col, Form, Row, Typography, Checkbox, Tooltip } from 'antd'
 import { useIntl }                                       from 'react-intl'
-// import { useParams }                                     from 'react-router-dom'
+import { useParams }     from 'react-router-dom'
+import { useGetBetaStatusQuery, useToggleBetaStatusMutation }                  from '@acx-ui/user'
 
-import { Loader }       from '@acx-ui/components'
+import { Loader, showActionModal }       from '@acx-ui/components'
 import { SpaceWrapper } from '@acx-ui/rc/components'
 
 import { MessageMapping } from '../MessageMapping'
@@ -21,38 +22,66 @@ export interface EnableR1BetaProps {
 
 export function EnableR1Beta (props: EnableR1BetaProps) {
   const { $t } = useIntl()
-  // const params = useParams()
+  const params = useParams()
+  const [form] = Form.useForm()
+  const { data: betaStatus } = useGetBetaStatusQuery({ params })
   const { className } = props
-  const isUpdating = false
-  const isDisabled = isUpdating
   const [showBetaTermsConditionDrawer, setBetaTermsConditionDrawer] = useState(false)
   const [showShowBetaFeaturesDrawer, setShowBetaFeaturesDrawer] = useState(false)
-  const [isChecked, setIsChecked] = useState(false)
+  const enableBetaR1Support = Boolean(betaStatus?.enabled)
+  const [toggleBetaStatus, { isLoading: isUpdating }] = useToggleBetaStatusMutation()
+  const isDisabled = isUpdating
+  const betaToggle = Form.useWatch('betaToggle', form)
 
+  let isChecked: boolean
   const openR1BetaTermsConditionDrawer = () => {
     setBetaTermsConditionDrawer(true)
   }
 
   const handleEnableR1BetaChange = async (e: CheckboxChangeEvent) => {
-    // console.log('isChecked::::111', isChecked, e.target.checked)
+    isChecked = e.target.checked
 
-    setIsChecked(e.target.checked)
-    openR1BetaTermsConditionDrawer()
-    // console.log('isChecked::::', isChecked, e.target.checked)
-
-    // const triggerAction = isChecked ? enableBetaR1Support : disableBetaR1Support
-    //
-    // try {
-    //   await triggerAction({ params }).unwrap()
-    // } catch (error) {
-    //   console.log(error) // eslint-disable-line no-console
-    // }
+    if (!isChecked) {
+      showActionModal({
+        type: 'confirm',
+        width: 450,
+        title: $t({ defaultMessage: 'Disable Beta Features?' }),
+        content:
+          // eslint-disable-next-line max-len
+          $t({ defaultMessage: 'Please note that if you decide to disable beta features, your current configurations will be retained. However, you won\'t be able to modify them until you re-enable beta features' }),
+        okText: $t({ defaultMessage: 'Disable Beta Features' }),
+        cancelText: $t({ defaultMessage: 'Keep Beta Features'}),
+        onOk: async () => {
+          console.log('Disable button clicked')
+          try {
+           await toggleBetaStatus({
+              params: {
+                enable: isChecked + ''
+              }
+            }).unwrap()
+          } catch (error) {
+            console.log(error) // eslint-disable-line no-console
+          }
+        }
+      })
+    } else openR1BetaTermsConditionDrawer()
   }
 
   const openBetaFeaturesDrawer = () => {
-    // console.log('opened beta features')
     setShowBetaFeaturesDrawer(true)
   }
+  let isBetaEnabled = betaStatus?.enabled === 'true'?? false
+  useEffect(() => {
+    if (betaStatus) {
+      isBetaEnabled = Boolean(betaStatus?.enabled)?? false
+    }
+
+    form.setFieldsValue({
+      ...betaStatus,
+      betaToggle: isBetaEnabled
+    })
+
+  }, [betaStatus, isBetaEnabled])
 
   return <Loader>
     <Row gutter={24} className={className}>
@@ -66,9 +95,9 @@ export function EnableR1Beta (props: EnableR1BetaProps) {
             >
               <Checkbox
                 onChange={handleEnableR1BetaChange}
-                checked={isChecked}
-                value={isChecked}
-                // disabled={isDisabled}
+                checked={isBetaEnabled}
+                value={isBetaEnabled}
+                disabled={isDisabled}
               >
                 {$t({ defaultMessage: 'Enable R1 Beta features' })}
               </Checkbox>
@@ -103,8 +132,6 @@ export function EnableR1Beta (props: EnableR1BetaProps) {
         onClose={() => setShowBetaFeaturesDrawer(false)}
       />
     }
-
-
   </Loader>
 }
 
