@@ -40,7 +40,7 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
     )
   })
 
-  it('should correctly render default only can do deactivate', async () => {
+  it('should correctly render', async () => {
     render(
       <Provider>
         <EdgeSdLanActivatedNetworksTable
@@ -53,7 +53,7 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
     const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
     expect(rows.length).toBe(3)
     rows.forEach(row => {
-      expect(within(row).getByRole('switch')).toBeDisabled()
+      expect(within(row).getByRole('switch')).not.toBeChecked()
     })
   })
   it('should correctly deactivate by switch', async () => {
@@ -88,7 +88,6 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
         <EdgeSdLanActivatedNetworksTable
           venueId='mocked-venue'
           onActivateChange={mockedOnChangeFn}
-          allowActivate={true}
         />
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 

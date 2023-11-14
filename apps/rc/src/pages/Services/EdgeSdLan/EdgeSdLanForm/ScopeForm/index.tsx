@@ -20,7 +20,7 @@ const NetworksTable = (props: NetworksTableProps) => {
 }
 export const ScopeForm = () => {
   const { $t } = useIntl()
-  const { form, editMode } = useStepFormContext<EdgeSdLanSetting>()
+  const { form } = useStepFormContext<EdgeSdLanSetting>()
   const venueId = form.getFieldValue('venueId')
   const venueName = form.getFieldValue('venueName')
 
@@ -67,7 +67,6 @@ export const ScopeForm = () => {
           >
             <NetworksTable
               venueId={venueId}
-              allowActivate={!editMode}
               onActivateChange={handleActivateChange}
             />
           </Form.Item>

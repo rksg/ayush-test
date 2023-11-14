@@ -15,7 +15,6 @@ export interface ActivatedNetworksTableProps {
   venueId: string,
   columns?: TableProps<NetworkSaveData>['columns'],
   activated?: string[],
-  allowActivate?: boolean,
   onActivateChange?: (
     data: NetworkSaveData,
     checked: boolean,
@@ -27,7 +26,6 @@ export const EdgeSdLanActivatedNetworksTable = (props: ActivatedNetworksTablePro
     venueId,
     columns,
     activated,
-    allowActivate,
     onActivateChange
   } = props
   const params = useParams()
@@ -81,11 +79,10 @@ export const EdgeSdLanActivatedNetworksTable = (props: ActivatedNetworksTablePro
       return <ActivateNetworkSwitchButton
         row={row}
         activated={activated ?? []}
-        allowActivate={allowActivate}
         onChange={onActivateChange}
       />
     }
-  }]), [$t, activated, allowActivate])
+  }]), [$t, activated])
 
   return (
     <Table
