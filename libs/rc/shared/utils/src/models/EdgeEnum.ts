@@ -57,3 +57,18 @@ export enum EdgeServiceStatusEnum {
   POOR = 'POOR',
   UNKNOWN = 'UNKNOWN'
 }
+
+export enum EdgeLagTypeEnum {
+  STATIC = 'STATIC',
+  LACP = 'LACP'
+}
+
+export enum EdgeLagModeEnum {
+  ACTIVE = 'ACTIVE',
+  PASSIVE = 'PASSIVE'
+}
+
+export enum EdgeLagTimeoutEnum {
+  SHORT = 'SHORT',
+  LONG = 'LONG'
+}

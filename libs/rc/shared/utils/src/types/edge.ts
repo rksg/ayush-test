@@ -1,7 +1,7 @@
 import type { TimeStamp } from '@acx-ui/types'
 
-import { FirmwareCategory, SkippedVersion }                                              from '..'
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, EdgeStatusSeverityEnum } from '../models/EdgeEnum'
+import { FirmwareCategory, SkippedVersion }                                                                                   from '..'
+import { EdgeIpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, EdgeStatusSeverityEnum } from '../models/EdgeEnum'
 
 export const PRODUCT_CODE_VIRTUAL_EDGE = '96'
 
@@ -282,4 +282,36 @@ export interface EdgeAlarmSummary {
 export enum EdgeTroubleshootingType {
   PING = 'PING',
   TRACE_ROUTE = 'TRACE_ROUTE'
+}
+
+export interface EdgeLagMemberStatus {
+  portId: string
+  name: string
+  lacpState: string
+  lacpTimeout: EdgeLagTimeoutEnum
+  lacpRxCount: number
+  lacpTxCount: number
+  systemId: string
+  key: string
+  peerSystemId: string
+  peerKey: string
+}
+
+export interface EdgeLagStatus {
+  lagId: string
+  tenantId: string
+  serialNumber: string
+  name: string
+  description: string
+  status: string
+  adminStatus: string
+  portType: EdgePortTypeEnum
+  lagType: EdgeLagTypeEnum
+  lagMembers: EdgeLagMemberStatus[]
+  ipMode: EdgeIpModeEnum
+  mac: string
+  vlan: string
+  ip: string
+  subnet: string
+  isCorePort: string
 }
