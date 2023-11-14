@@ -440,8 +440,8 @@ export function apNameRegExp (value: string) {
 
 export function ssidBackendNameRegExp (value: string) {
   const { $t } = getIntl()
-  const re2 = new RegExp(/(?=^((?!(`|\$\())([\u0020-\u007E\u00A0-\uFFFF])){2,32}$)^(\S([\u0020-\u007E\u00A0-\uFFFF])*\S)$/)
-  if (value!=='' && !re2.test(value)) {
+  const re = new RegExp(/(?=^((?!(`|\$\())([\u0020-\u007E\u00A0-\uFFFF])){2,32}$)^(\S([\u0020-\u007E\u00A0-\uFFFF])*\S)$/)
+  if (value!=='' && !re.test(value)) {
     return Promise.reject($t(validationMessages.invalid))
   }
   return Promise.resolve()
