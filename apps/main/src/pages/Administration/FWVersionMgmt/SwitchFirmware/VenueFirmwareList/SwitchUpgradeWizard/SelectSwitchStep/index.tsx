@@ -7,6 +7,7 @@ import { useIntl }        from 'react-intl'
 import {
   Table,
   TableProps,
+  cssStr,
   useStepFormContext
 } from '@acx-ui/components'
 import { SearchOutlined }             from '@acx-ui/icons'
@@ -26,8 +27,12 @@ import {
   getSwitchNextScheduleTplTooltip,
   parseSwitchVersion
 } from '../../../../FirmwareUtils'
-import * as UI                                            from '../../styledComponents'
-import { getSwitchNextScheduleTpl, getSwitchScheduleTpl } from '../../switch.upgrade.util'
+import * as UI           from '../../styledComponents'
+import {
+  getHightlightSearch,
+  getSwitchNextScheduleTpl,
+  getSwitchScheduleTpl
+} from '../../switch.upgrade.util'
 
 function useColumns () {
   const intl = useIntl()
@@ -37,9 +42,12 @@ function useColumns () {
       title: intl.$t({ defaultMessage: 'Venue' }),
       key: 'name',
       dataIndex: 'name',
-      defaultSortOrder: 'ascend'
+      defaultSortOrder: 'ascend',
+      render: function (value) {
+        return <div style={{ fontWeight: cssStr('--acx-subtitle-4-font-weight') }} > {value}</div >
+      }
     }, {
-      title: '',
+      title: intl.$t({ defaultMessage: 'Model' }),
       key: 'Model',
       dataIndex: 'Model'
     }, {
@@ -132,12 +140,15 @@ export const SelectSwitchStep = (
       defaultSortOrder: 'ascend',
       render: function (_, row) {
         const stackLabel = row.isStack ? intl.$t({ defaultMessage: '(Stack)' }) : ''
-        return `${row.switchName} ${stackLabel}`
+        return getHightlightSearch(`${row.switchName} ${stackLabel}`, searchText)
       }
     }, {
       title: intl.$t({ defaultMessage: 'Model' }),
       key: 'model',
-      dataIndex: 'model'
+      dataIndex: 'model',
+      render: function (_, row) {
+        return getHightlightSearch(row.model, searchText)
+      }
     }, {
       title: intl.$t({ defaultMessage: 'Current Firmware' }),
       key: 'currentFirmware',
