@@ -188,7 +188,7 @@ export function ApManagementVlanForm () {
                       <InputNumber
                         min={1}
                         onChange={onApMgmtVlanChange}
-                        style={{ width: '180px' }} />
+                        style={{ width: '86px' }} />
                     }
                   />
                   <Row>
@@ -200,7 +200,7 @@ export function ApManagementVlanForm () {
                         padding: '0px 50px 10px 0px',
                         color: cssStr('--acx-neutrals-60')
                       }}>
-                      <Space align='start' style={{ paddingTop: '10px' }}>
+                      <Space align='start'>
                         <InformationSolid />
                         {$t({ defaultMessage:
                                   `To avoid the isolation of the APs, it is essential to
