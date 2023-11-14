@@ -1,5 +1,5 @@
 import { gql }           from 'graphql-request'
-import _, { uniqueId }   from 'lodash'
+import _                 from 'lodash'
 import moment            from 'moment'
 import { defineMessage } from 'react-intl'
 
@@ -52,6 +52,7 @@ export type AiOpsListItem = {
   category?: string
   summary?: string
   status: string
+  metadata: {}
 }
 
 export type AiOpsList = {
@@ -281,7 +282,7 @@ export const api = recommendationApi.injectEndpoints({
             start: $startDate, end: $endDate, path: $path, crrm: false
           )
           recommendations(start: $startDate, end: $endDate, path: $path, n: $n, crrm: false) {
-            id code updatedAt sliceValue status
+            id code updatedAt sliceValue status metadata
           }
         }
         `,
@@ -289,22 +290,18 @@ export const api = recommendationApi.injectEndpoints({
       }),
       transformResponse: (response: AiOpsList) => {
         const { $t } = getIntl()
+        const filteredRecommendation = response.recommendations.filter(recommendation => {
+          return recommendation.code !== 'unknown'
+        })
         return {
           aiOpsCount: response.aiOpsCount,
-          recommendations: response.recommendations.map(recommendation => {
-            const { code, status, id } = recommendation
+          recommendations: filteredRecommendation.map(recommendation => {
+            const { code } = recommendation
             return {
               ...recommendation,
-              id: code === 'unknown' ? uniqueId() : id,
-              priority: codes[code === 'unknown'
-                ? status as keyof typeof codes
-                : code as keyof typeof codes].priority,
-              category: $t(codes[code === 'unknown'
-                ? status as keyof typeof codes
-                : code as keyof typeof codes].category),
-              summary: $t(codes[code === 'unknown'
-                ? status as keyof typeof codes
-                : code as keyof typeof codes].summary)
+              priority: codes[code as keyof typeof codes].priority,
+              category: $t(codes[code as keyof typeof codes].category),
+              summary: $t(codes[code as keyof typeof codes].summary)
             } as unknown as AiOpsListItem
           })
         }
