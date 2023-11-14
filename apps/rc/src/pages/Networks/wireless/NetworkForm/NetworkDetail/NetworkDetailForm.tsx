@@ -156,8 +156,7 @@ export function NetworkDetailForm () {
             { min: 2 },
             { max: 32 },
             { validator: (_, value) => nameValidator(value) },
-            { validator: (_, value) => hasGraveAccentAndDollarSign(value) },
-            { validator: (_, value) => apNameRegExp(value) }
+            { validator: (_, value) => ssidBackendNameRegExp(value) }
           ]}
           validateFirst
           hasFeedback
