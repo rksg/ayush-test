@@ -97,13 +97,14 @@ import EdgeDhcpTable                        from './pages/Services/DHCP/Edge/DHC
 import EditDhcp                             from './pages/Services/DHCP/Edge/EditDHCP'
 import DpskDetails                          from './pages/Services/Dpsk/DpskDetail/DpskDetails'
 import DpskTable                            from './pages/Services/Dpsk/DpskTable/DpskTable'
-import AddEdgeCentralizedForwarding         from './pages/Services/EdgeCentralizedForwarding/AddCentralizedForwarding'
-import EdgeCentralizedForwardingTable       from './pages/Services/EdgeCentralizedForwarding/CentralizedForwardingTable'
-import EditEdgeCentralizedForwarding        from './pages/Services/EdgeCentralizedForwarding/EditCentralizedForwarding'
 import AddFirewall                          from './pages/Services/EdgeFirewall/AddFirewall'
 import EditFirewall                         from './pages/Services/EdgeFirewall/EditFirewall'
 import FirewallDetail                       from './pages/Services/EdgeFirewall/FirewallDetail'
 import FirewallTable                        from './pages/Services/EdgeFirewall/FirewallTable'
+import AddEdgeSdLan                         from './pages/Services/EdgeSdLan/AddEdgeSdLan'
+import EdgeSdLanDetail                      from './pages/Services/EdgeSdLan/EdgeSdLanDetail'
+import EdgeSdLanTable                       from './pages/Services/EdgeSdLan/EdgeSdLanTable'
+import EditEdgeSdLan                        from './pages/Services/EdgeSdLan/EditEdgeSdLan'
 import MdnsProxyDetail                      from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm                        from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import MdnsProxyTable                       from './pages/Services/MdnsProxy/MdnsProxyTable/MdnsProxyTable'
@@ -265,29 +266,34 @@ function NetworkRoutes () {
   )
 }
 
-const centralizeForwardingRoutes = () => {
+const edgeSdLanRoutes = () => {
   return <>
     <Route path='*' element={<PageNotFound />} />
     <Route
-      path={getServiceRoutePath({ type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
+      path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
         oper: ServiceOperation.LIST })}
-      element={<EdgeCentralizedForwardingTable />}
+      element={<EdgeSdLanTable />}
     />
     <Route
-      path={getServiceRoutePath({ type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
+      path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
         oper: ServiceOperation.CREATE })}
-      element={<AddEdgeCentralizedForwarding />}
+      element={<AddEdgeSdLan />}
     />
     <Route
-      path={getServiceRoutePath({ type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
+      path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
         oper: ServiceOperation.EDIT })}
-      element={<EditEdgeCentralizedForwarding />}
+      element={<EditEdgeSdLan />}
+    />
+    <Route
+      path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
+        oper: ServiceOperation.DETAIL })}
+      element={<EdgeSdLanDetail />}
     />
   </>
 }
 
 function ServiceRoutes () {
-  const isCentralizeForwardingEnabled = useIsSplitOn(Features.EDGES_CENTRALIZED_FORWARDING_TOGGLE)
+  const isEdgeSdLanEnabled = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -482,7 +488,7 @@ function ServiceRoutes () {
         element={<EditFirewall />}
       />
 
-      {isCentralizeForwardingEnabled && centralizeForwardingRoutes()}
+      {isEdgeSdLanEnabled && edgeSdLanRoutes()}
     </Route>
   )
 }
