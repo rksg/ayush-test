@@ -69,8 +69,8 @@ const categories = {
   'AP Performance': defineMessage({ defaultMessage: 'AP Performance' }),
   'AI-Driven Cloud RRM': defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
   'Insufficient Licenses': defineMessage({ defaultMessage: 'Insufficient Licenses' }),
-  'Verified': defineMessage({ defaultMessage: 'Verified' }),
-  'Verification Error': defineMessage({ defaultMessage: 'Verification Error' })
+  'Verification Error': defineMessage({ defaultMessage: 'Verification Error' }),
+  'Verified': defineMessage({ defaultMessage: 'Verified' })
 }
 
 const bandbalancingEnable: RecommendationConfig = {
@@ -146,13 +146,13 @@ export const states = {
     text: defineMessage({ defaultMessage: 'Insufficient Licenses' }),
     tooltip: defineMessage({ defaultMessage: 'Insufficient Licenses' })
   },
-  verified: {
-    text: defineMessage({ defaultMessage: 'Verified' }),
-    tooltip: defineMessage({ defaultMessage: 'Verified' })
-  },
   verificationError: {
     text: defineMessage({ defaultMessage: 'Verification Error' }),
     tooltip: defineMessage({ defaultMessage: 'Verification Error' })
+  },
+  verified: {
+    text: defineMessage({ defaultMessage: 'Verified' }),
+    tooltip: defineMessage({ defaultMessage: 'Verified' })
   }
 }
 
@@ -478,14 +478,14 @@ export const codes = {
     summary: defineMessage({ defaultMessage: 'Insufficient Licenses' }),
     priority: priorities.low
   },
-  'verified': {
-    category: categories['Verified'],
-    summary: defineMessage({ defaultMessage: 'Verified' }),
-    priority: priorities.low
-  },
   'verificationError': {
     category: categories['Verification Error'],
     summary: defineMessage({ defaultMessage: 'Verification Error' }),
+    priority: priorities.low
+  },
+  'verified': {
+    category: categories['Verified'],
+    summary: defineMessage({ defaultMessage: 'Verified' }),
     priority: priorities.low
   }
 } as unknown as Record<string, RecommendationConfig & CodeInfo>

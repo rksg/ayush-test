@@ -47,8 +47,9 @@ function AIOperationsWidget ({
   const subtitle = $t({
     defaultMessage: 'Say goodbye to manual guesswork and hello to intelligent recommendations.' })
 
-  const checkNew = queryResults.data?.recommendations.filter(i => i.status === 'new').length
-  const noLicense = false // get from API once task is complete
+  const filteredRecommendations = data?.recommendations.slice(0, 5)
+  const noLicense = filteredRecommendations?.every(i => i.status === 'insufficientLicenses')
+  const checkNew = filteredRecommendations?.filter(i => i.status === 'new').length
 
   const iconList = {
     applied: <GreenTickIcon />,
@@ -58,20 +59,20 @@ function AIOperationsWidget ({
 
   return <Loader states={[queryResults]}>
     <Card title={title} onArrowClick={onArrowClick} subTitle={subtitle}>{
-      noLicense ? <NoAiOpsLicense
-        text={$t({ defaultMessage:
+      noData
+        ? <NoRecommendationData
+          noData={true}
+          text={$t({ defaultMessage:
+          `Your network is already running in an optimal configuration
+          and we dont have any AI Operations to recommend recently.`
+          })}
+        /> :
+        noLicense ? <NoAiOpsLicense
+          text={$t({ defaultMessage:
           `RUCKUS AI cannot analyse your zone due to inadequate licenses.
           Please ensure you have licenses fully applied for the zone for 
           AI Operations optimizations.`
-        })}/> :
-        noData
-          ? <NoRecommendationData
-            noData={true}
-            text={$t({ defaultMessage:
-            `Your network is already running in an optimal configuration
-            and we dont have any AI Operations to recommend recently.`
-            })}
-          />
+          })}/>
           : <>
             {!checkNew ? <NoRecommendationData
               text={$t({ defaultMessage:
@@ -81,7 +82,9 @@ function AIOperationsWidget ({
             /> : []}
             <UI.List
               style={{ marginTop: !checkNew ? 120 : 0 }}
-              dataSource={!checkNew ? data?.recommendations.slice(0, 3) : data?.recommendations}
+              dataSource={!checkNew
+                ? filteredRecommendations?.slice(0, 3)
+                : filteredRecommendations}
               renderItem={item => {
                 const recommendation = item as AiOpsListItem
                 const {
