@@ -66,6 +66,4 @@ describe('OpenNetwork form', () => {
     await userEvent.click(await screen.findByLabelText(/MAC Registration list/i))
     expect(screen.queryByText(/mac address format/i)).not.toBeInTheDocument()
   })
-
-  //TODO: add other unit tests
 })
