@@ -129,7 +129,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
 
   const defaultPayload = {
     searchString: '',
-    filters: { tenantType: ['MSP_EC'] },
+    filters: { tenantType: [AccountType.MSP_EC, AccountType.MSP_REC] },
     fields: [
       'id',
       'name',

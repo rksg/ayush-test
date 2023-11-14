@@ -8,7 +8,7 @@ import { Provider }                                               from '@acx-ui/
 import { mockServer, render, screen, fireEvent, within, waitFor } from '@acx-ui/test-utils'
 import { AccountType }                                            from '@acx-ui/utils'
 
-import { MspCustomers } from '.'
+import { MspRecCustomers } from '.'
 
 const list = {
   totalCount: 3,
@@ -136,23 +136,6 @@ const list = {
     }
   ]
 }
-const alarmList = {
-  mspEcAlarmCountList: [
-    {
-      tenantId: '701fe9df5f6b4c17928a29851c07cc04',
-      alarmCount: 0
-    },
-    {
-      tenantId: '701fe9df5f6b4c17928a29851c07cc05',
-      alarmCount: 0
-    },
-    {
-      tenantId: '701fe9df5f6b4c17928a29851c07cc06',
-      alarmCount: 0
-    }
-  ]
-}
-
 const userProfile = {
   adminId: '9b85c591260542c188f6a12c62bb3912',
   companyName: 'msp.eleu1658',
@@ -192,7 +175,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-describe('MspCustomers', () => {
+describe('MspRecCustomers', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
     services.useGetMspLabelQuery = jest.fn().mockImplementation(() => {
@@ -207,13 +190,20 @@ describe('MspCustomers', () => {
     rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
       return { data: undefined }
     })
+    services.useDelegateToMspEcPath = jest.fn().mockImplementation(() => {
+      const delegateToMspEcPath = jest.fn()
+      return { delegateToMspEcPath }
+    })
+    services.useCheckDelegateAdmin = jest.fn().mockImplementation(() => {
+      const checkDelegateAdmin = jest.fn()
+      return { checkDelegateAdmin }
+    })
     jest.spyOn(services, 'useMspCustomerListQuery')
     jest.spyOn(services, 'useSupportMspCustomerListQuery')
     jest.spyOn(services, 'useIntegratorCustomerListQuery')
     jest.spyOn(services, 'useDeleteMspEcMutation')
     jest.spyOn(services, 'useDeactivateMspEcMutation')
     jest.spyOn(services, 'useReactivateMspEcMutation')
-    jest.spyOn(services, 'useGetMspEcAlarmListQuery')
     mockServer.use(
       rest.post(
         MspUrlsInfo.getMspCustomersList.url,
@@ -238,10 +228,6 @@ describe('MspCustomers', () => {
       rest.post(
         MspUrlsInfo.getIntegratorCustomersList.url,
         (req, res, ctx) => res(ctx.json({ ...list }))
-      ),
-      rest.post(
-        MspUrlsInfo.getMspEcAlarmList.url,
-        (req, res, ctx) => res(ctx.json(alarmList))
       )
     )
     params = {
@@ -258,12 +244,12 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
-    expect(screen.getByText('MSP Customers')).toBeVisible()
-    expect(screen.getByText('Add EC Customer')).toBeVisible()
+    expect(screen.getByText('RUCKUS End Customers')).toBeVisible()
+    expect(screen.getByText('Add Customer')).toBeVisible()
 
     // eslint-disable-next-line testing-library/no-node-access
     const tbody = (await screen.findByRole('table')).querySelector('tbody')!
@@ -281,7 +267,7 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
@@ -293,7 +279,7 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
@@ -302,7 +288,6 @@ describe('MspCustomers', () => {
       expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
     })
     expect(screen.getByText('Installed Devices')).toBeVisible()
-    // expect(screen.getByText('Device Subscriptions Utilization')).toBeVisible()
 
     expect(screen.queryByText('Wi-Fi Licenses')).toBeNull()
   })
@@ -313,7 +298,7 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
@@ -325,147 +310,10 @@ describe('MspCustomers', () => {
     expect(screen.getByText('Wi-Fi License Utilization')).toBeVisible()
     expect(screen.getByText('Switch Licenses')).toBeVisible()
     expect(screen.getByText('SmartEdge Licenses')).toBeVisible()
-    expect(screen.getByText('Active From')).toBeVisible()
-    expect(screen.getByText('Service Expires On')).toBeVisible()
     expect(screen.queryByText('Tenant ID')).toBeNull()
 
     expect(screen.queryByText('Installed Devices')).toBeNull()
     expect(screen.queryByText('Device Subscriptions Utilization')).toBeNull()
-  })
-  it('should edit for selected trial account row', async () => {
-    user.useUserProfileContext = jest.fn().mockImplementation(() => {
-      return { data: userProfile }
-    })
-    render(
-      <Provider>
-        <MspCustomers />
-      </Provider>, {
-        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
-      })
-
-    const row = await screen.findByRole('row', { name: /ec 222/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
-
-    const editButton = screen.getByRole('button', { name: 'Edit' })
-    fireEvent.click(editButton)
-
-    expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      // eslint-disable-next-line max-len
-      pathname: `/${params.tenantId}/v/dashboard/mspcustomers/edit/Trial/${list.data.at(1)?.id}`,
-      hash: '',
-      search: ''
-    })
-  })
-  it('should edit for selected paid account row', async () => {
-    user.useUserProfileContext = jest.fn().mockImplementation(() => {
-      return { data: userProfile }
-    })
-    render(
-      <Provider>
-        <MspCustomers />
-      </Provider>, {
-        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
-      })
-
-    const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
-
-    const editButton = screen.getByRole('button', { name: 'Edit' })
-    fireEvent.click(editButton)
-
-    expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      // eslint-disable-next-line max-len
-      pathname: `/${params.tenantId}/v/dashboard/mspcustomers/edit/Paid/${list.data.at(0)?.id}`,
-      hash: '',
-      search: ''
-    })
-  })
-  it('should resend invite for selected row', async () => {
-    user.useUserProfileContext = jest.fn().mockImplementation(() => {
-      return { data: userProfile }
-    })
-    render(
-      <Provider>
-        <MspCustomers />
-      </Provider>, {
-        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
-      })
-
-    const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
-
-    const resendInviteButton = screen.getByRole('button', { name: 'Resend Invitation Email' })
-    fireEvent.click(resendInviteButton)
-
-    expect(screen.getByRole('dialog')).toBeVisible()
-  })
-  it('should deactivate selected row', async () => {
-    user.useUserProfileContext = jest.fn().mockImplementation(() => {
-      return { data: userProfile }
-    })
-    render(
-      <Provider>
-        <MspCustomers />
-      </Provider>, {
-        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
-      })
-
-    const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
-
-    fireEvent.click(screen.getByRole('button', { name: 'Deactivate' }))
-
-    const dialog = await screen.findByRole('dialog')
-    expect(dialog).toBeVisible()
-    const deactivateButton = within(dialog).getByRole('button', { name: 'Deactivate' })
-    fireEvent.click(deactivateButton)
-
-    const value: [Function, Object] = [
-      expect.any(Function),
-      expect.objectContaining({
-        data: { requestId: '123' },
-        status: 'fulfilled'
-      })
-    ]
-
-    await waitFor(() =>
-      expect(services.useDeactivateMspEcMutation).toHaveLastReturnedWith(value))
-    await waitFor(() =>
-      expect(screen.queryByRole('dialog')).toBeNull())
-  })
-  it('should reactivate selected row', async () => {
-    user.useUserProfileContext = jest.fn().mockImplementation(() => {
-      return { data: userProfile }
-    })
-    render(
-      <Provider>
-        <MspCustomers />
-      </Provider>, {
-        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
-      })
-    const row = await screen.findByRole('row', { name: /ec 333/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
-
-    fireEvent.click(screen.getByRole('button', { name: 'Reactivate' }))
-
-    const dialog = await screen.findByRole('dialog')
-    expect(dialog).toBeVisible()
-    expect(screen.getByText('Reactivate Customer "ec 333"?')).toBeVisible()
-    const reactivateButton = within(dialog).getByRole('button', { name: 'Reactivate' })
-    fireEvent.click(reactivateButton)
-
-    const value: [Function, Object] = [
-      expect.any(Function),
-      expect.objectContaining({
-        data: { requestId: '123' },
-        status: 'fulfilled'
-      })
-    ]
-
-    await waitFor(() =>
-      expect(services.useReactivateMspEcMutation).toHaveLastReturnedWith(value))
-    await waitFor(() =>
-      expect(screen.queryByRole('dialog')).toBeNull())
   })
   it('should delete selected row', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
@@ -473,7 +321,7 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
@@ -505,13 +353,59 @@ describe('MspCustomers', () => {
     await waitFor(() =>
       expect(screen.queryByRole('dialog')).toBeNull())
   })
+  it('should edit selected non-trial row', async () => {
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    render(
+      <Provider>
+        <MspRecCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+
+    const row = await screen.findByRole('row', { name: /ec 111/i })
+    fireEvent.click(within(row).getByRole('checkbox'))
+
+    const editButton = screen.getByRole('button', { name: 'Edit' })
+    fireEvent.click(editButton)
+
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/${params.tenantId}/v/dashboard/mspRecCustomers/edit/Paid/${list.data[0].id}`,
+      hash: '',
+      search: ''
+    })
+  })
+  it('should edit selected trial row', async () => {
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    render(
+      <Provider>
+        <MspRecCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+
+    const trialRow = await screen.findByRole('row', { name: /ec 222/i })
+    fireEvent.click(within(trialRow).getByRole('checkbox'))
+
+    fireEvent.click(screen.getByRole('button', { name: 'Edit' }))
+
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/${params.tenantId}/v/dashboard/mspRecCustomers/edit/Trial/${list.data[1].id}`,
+      hash: '',
+      search: ''
+    })
+
+  })
   it('should open drawer for multi-selected rows', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
@@ -540,12 +434,12 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
-    expect(screen.getByText('Add EC Customer')).not.toBeVisible()
+    expect(screen.getByText('Add Customer')).not.toBeVisible()
 
     // eslint-disable-next-line testing-library/no-node-access
     const tbody = (await screen.findByRole('table')).querySelector('tbody')!
@@ -557,7 +451,41 @@ describe('MspCustomers', () => {
       expect(within(rows[index]).getByText(item.name)).toBeVisible()
     })
   })
-  it('should render table for installer', async () => {
+  it('should work correctly for customer name clicked for non-support user', async () => {
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    render(
+      <Provider>
+        <MspRecCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+
+    const row = await screen.findByRole('row', { name: /ec 111/i })
+    fireEvent.click(within(row).getAllByRole('link')[0])
+
+    expect(services.useCheckDelegateAdmin).toHaveBeenCalled()
+  })
+  it('should work correctly for customer name clicked for support user', async () => {
+    const supportUserProfile = { ...userProfile }
+    supportUserProfile.support = true
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: supportUserProfile }
+    })
+    render(
+      <Provider>
+        <MspRecCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+
+    const row = await screen.findByRole('row', { name: /ec 111/i })
+    fireEvent.click(within(row).getByRole('link'))
+
+    expect(services.useDelegateToMspEcPath).toHaveBeenCalled()
+  })
+  it('should render table for integrator', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
@@ -570,44 +498,7 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
-      </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/mspCustomers' }
-      })
-
-    // eslint-disable-next-line testing-library/no-node-access
-    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
-    expect(tbody).toBeVisible()
-
-    const rows = within(tbody).getAllByRole('row')
-    expect(rows).toHaveLength(list.data.length)
-    list.data.forEach((item, index) => {
-      expect(within(rows[index]).getByText(item.name)).toBeVisible()
-    })
-
-    expect(screen.queryByText('Integrator')).toBeNull()
-
-    // Assert MSP Admin Count link works
-    const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('link', { name: '0' }))
-
-    expect(screen.getByRole('dialog')).toBeVisible()
-    expect(screen.getByText('Manage MSP Administrators')).toBeVisible()
-  })
-  it('should render table for integrator', async () => {
-    user.useUserProfileContext = jest.fn().mockImplementation(() => {
-      return { data: userProfile }
-    })
-    const tenantDetails = { tenantType: AccountType.MSP_INTEGRATOR }
-    rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
-      return { data: tenantDetails }
-    })
-    user.hasRoles = jest.fn().mockImplementation(() => {
-      return true
-    })
-    render(
-      <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/dashboard/mspCustomers' }
       })
@@ -640,7 +531,7 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/dashboard/mspCustomers' }
       })
@@ -667,7 +558,7 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
@@ -687,7 +578,7 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
@@ -706,7 +597,7 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
@@ -725,7 +616,7 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
@@ -747,7 +638,7 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
