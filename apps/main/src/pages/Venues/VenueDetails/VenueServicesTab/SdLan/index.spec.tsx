@@ -16,11 +16,6 @@ import { mockNetworkSaveData, mockDeepNetworkList, mockedEdgeSdLan } from './__t
 
 import EdgeSdLan from './'
 
-// jest.mock('@acx-ui/rc/components', () => ({
-//   ...jest.requireActual('@acx-ui/rc/components'),
-//   ActivateNetworkSwitchButton: ActivateNetworkSwitchButton
-// }))
-
 const mockedEditFn = jest.fn()
 const mockedGetNetworkDeepList = jest.fn()
 
@@ -81,7 +76,7 @@ describe('Venue Edge SD-LAN Service', () => {
     expect(within(network1).getByRole('switch')).toBeChecked()
     const network2 = screen.getByRole('row', { name: /MockedNetwork 2/i })
     expect(within(network2).getByRole('switch')).not.toBeChecked()
-    expect(within(network2).getByRole('switch')).toBeDisabled()
+    expect(within(network2).getByRole('switch')).not.toBeDisabled()
   })
 
   it('should correctly deactivate network', async () => {
@@ -108,20 +103,18 @@ describe('Venue Edge SD-LAN Service', () => {
       })
     })
   })
-  it('should ignore activate network', async () => {
+  it('should be able to activate network', async () => {
     jest.spyOn(RcComponents, 'ActivateNetworkSwitchButton').mockImplementation(
-      // eslint-disable-next-line max-len
       (props: {
         row: NetworkSaveData,
         activated: string[],
-        allowActivate?: boolean,
         onChange?: (data: NetworkSaveData, checked: boolean, activated: string[]) => void }) => {
         return <input
           type='checkbox'
           checked={false}
           data-testid='ActivateNetworkSwitchButton'
           onChange={() => {
-            props.onChange?.({}, true, [])
+            props.onChange?.({ id: 'network_2' } as NetworkSaveData, true, [])
           }} />
       })
 
@@ -142,6 +135,10 @@ describe('Venue Edge SD-LAN Service', () => {
     const switchBtn = within(network2).getByTestId('ActivateNetworkSwitchButton')
     expect(switchBtn).not.toBeChecked()
     await userEvent.click(switchBtn)
-    expect(mockedEditFn).not.toBeCalled()
+    await waitFor(() => {
+      expect(mockedEditFn).toBeCalledWith({
+        networkIds: ['network_1', 'network_3', 'network_2']
+      })
+    })
   })
 })

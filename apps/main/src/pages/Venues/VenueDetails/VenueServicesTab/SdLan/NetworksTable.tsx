@@ -25,15 +25,19 @@ export const NetworkTable = (props: EdgeSdLanServiceProps) => {
 
   const handleActivateChange = async (data: NetworkSaveData, checked: boolean) => {
     try {
-      if (checked === false) {
-        const newNetworkIds = [...activatedNetworkIds]
+      let newNetworkIds
+      if (checked) {
+        newNetworkIds = _.union(activatedNetworkIds, [data.id])
+      } else {
+        newNetworkIds = [...activatedNetworkIds]
         _.remove(newNetworkIds, (i) => i === data.id)
-        const payload = {
-          networkIds: newNetworkIds
-        }
-
-        await updateEdgeSdLan({ params: { serviceId }, payload }).unwrap()
       }
+
+      const payload = {
+        networkIds: newNetworkIds
+      }
+
+      await updateEdgeSdLan({ params: { serviceId }, payload }).unwrap()
     } catch(err) {
       // eslint-disable-next-line no-console
       console.log(err)
