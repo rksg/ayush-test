@@ -1,10 +1,9 @@
 import { useState } from 'react'
-import { useParams }     from 'react-router-dom'
 
-import { useGetBetaStatusQuery, useToggleBetaStatusMutation }                  from '@acx-ui/user'
 import { useIntl } from 'react-intl'
 
-import { Button, Drawer } from '@acx-ui/components'
+import { Button, Drawer }              from '@acx-ui/components'
+import { useToggleBetaStatusMutation } from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 export interface R1BetaTermsConditionDrawerProps {
@@ -19,19 +18,15 @@ export function R1BetaTermsConditionDrawer (
   props: R1BetaTermsConditionDrawerProps
 ) {
   const { $t } = useIntl()
-  const params = useParams()
-  const { data: betaStatus } = useGetBetaStatusQuery({ params })
   const { visible, setVisible } = props
   const [resetField, setResetField] = useState(false)
-  const enableBetaR1Support = useState(betaStatus?.enabled)
-  const [toggleBetaStatus, { isLoading: isUpdating }] = useToggleBetaStatusMutation()
-  const isChecked = true
+  const [toggleBetaStatus ] = useToggleBetaStatusMutation()
 
   const onSave = async () => {
     try {
       await toggleBetaStatus({
         params: {
-          enable: isChecked + ''
+          enable: true + ''
         }
       }).unwrap()
     } catch (error) {

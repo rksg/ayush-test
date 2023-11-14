@@ -1,12 +1,13 @@
-import {useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Col, Form, Row, Typography, Checkbox, Tooltip } from 'antd'
 import { useIntl }                                       from 'react-intl'
-import { useParams }     from 'react-router-dom'
-import { useGetBetaStatusQuery, useToggleBetaStatusMutation }                  from '@acx-ui/user'
+import { useParams }                                     from 'react-router-dom'
 
-import { Loader, showActionModal }       from '@acx-ui/components'
-import { SpaceWrapper } from '@acx-ui/rc/components'
+
+import { Loader, showActionModal }                            from '@acx-ui/components'
+import { SpaceWrapper }                                       from '@acx-ui/rc/components'
+import { useGetBetaStatusQuery, useToggleBetaStatusMutation } from '@acx-ui/user'
 
 import { MessageMapping } from '../MessageMapping'
 
@@ -28,18 +29,16 @@ export function EnableR1Beta (props: EnableR1BetaProps) {
   const { className } = props
   const [showBetaTermsConditionDrawer, setBetaTermsConditionDrawer] = useState(false)
   const [showShowBetaFeaturesDrawer, setShowBetaFeaturesDrawer] = useState(false)
-  const enableBetaR1Support = Boolean(betaStatus?.enabled)
   const [toggleBetaStatus, { isLoading: isUpdating }] = useToggleBetaStatusMutation()
   const isDisabled = isUpdating
-  const betaToggle = Form.useWatch('betaToggle', form)
+  // const betaToggle = Form.useWatch('betaToggle', form)
 
-  let isChecked: boolean
   const openR1BetaTermsConditionDrawer = () => {
     setBetaTermsConditionDrawer(true)
   }
 
   const handleEnableR1BetaChange = async (e: CheckboxChangeEvent) => {
-    isChecked = e.target.checked
+    const isChecked = e.target.checked
 
     if (!isChecked) {
       showActionModal({
@@ -50,11 +49,10 @@ export function EnableR1Beta (props: EnableR1BetaProps) {
           // eslint-disable-next-line max-len
           $t({ defaultMessage: 'Please note that if you decide to disable beta features, your current configurations will be retained. However, you won\'t be able to modify them until you re-enable beta features' }),
         okText: $t({ defaultMessage: 'Disable Beta Features' }),
-        cancelText: $t({ defaultMessage: 'Keep Beta Features'}),
+        cancelText: $t({ defaultMessage: 'Keep Beta Features' }),
         onOk: async () => {
-          console.log('Disable button clicked')
           try {
-           await toggleBetaStatus({
+            await toggleBetaStatus({
               params: {
                 enable: isChecked + ''
               }
