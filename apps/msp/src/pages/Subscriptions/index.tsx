@@ -60,6 +60,7 @@ export function Subscriptions () {
   const [isAssignedActive, setActiveTab] = useState(false)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const isMspSelfAssignmentEnabled = useIsSplitOn(Features.MSP_SELF_ASSIGNMENT)
+  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
 
   const { tenantId } = useParams()
   const subscriptionDeviceTypeList = getEntitlementDeviceTypes()
@@ -350,9 +351,9 @@ export function Subscriptions () {
               hidden={!isAssignedActive || !isMspSelfAssignmentEnabled}
               type='primary'>{$t({ defaultMessage: 'Assign MSP Subscriptions' })}</Button>
           </MspTenantLink>,
-          <TenantLink to='/dashboard'>
+          !isHspSupportEnabled ? <TenantLink to='/dashboard'>
             <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
-          </TenantLink>
+          </TenantLink> : null
         ]}
       />
       {isMspSelfAssignmentEnabled && <Tabs

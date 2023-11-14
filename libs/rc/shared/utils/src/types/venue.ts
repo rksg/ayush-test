@@ -461,7 +461,8 @@ export interface VenueDefaultRegulatoryChannels {
   },
   '6GChannels': {
     [key: string]: string[]
-  }
+  },
+  'afcEnabled': boolean
 }
 
 export interface VenueDefaultRegulatoryChannelsForm {
@@ -723,9 +724,10 @@ export interface VenueBssColoring {
 	bssColoringEnabled: boolean
 }
 
-export type ApManagementVlan = {
-	vlanOverrideEnabled: boolean,
+export interface ApManagementVlan {
+	vlanOverrideEnabled: boolean
 	vlanId: number
+	useVenueSettings: boolean
 }
 
 export interface Node {

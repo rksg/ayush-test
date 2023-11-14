@@ -9,6 +9,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   useDeviceInventoryListQuery,
   useExportDeviceInventoryMutation
@@ -86,6 +87,7 @@ export function DeviceInventory () {
   const intl = useIntl()
   const { $t } = intl
   const { tenantId } = useParams()
+  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
 
   const [ downloadCsv ] = useExportDeviceInventoryMutation()
   const tenantDetailsData = useGetTenantDetailsQuery({ params: { tenantId } })
@@ -286,7 +288,7 @@ export function DeviceInventory () {
       <PageHeader
         title={$t({ defaultMessage: 'Device Inventory ({count})' },
           { count: list?.totalCount || 0 })}
-        extra={
+        extra={!isHspSupportEnabled &&
           <TenantLink to='/dashboard'>
             <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
           </TenantLink>

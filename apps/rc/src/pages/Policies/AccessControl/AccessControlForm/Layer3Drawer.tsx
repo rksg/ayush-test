@@ -251,7 +251,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   }
 
   useEffect(() => {
-    setSkipFetch(!isOnlyViewMode && (l3AclPolicyId === '' || l3AclPolicyId === undefined))
+    setSkipFetch(!isOnlyViewMode && !l3AclPolicyId)
   }, [isOnlyViewMode, l3AclPolicyId])
 
   useEffect(() => {
