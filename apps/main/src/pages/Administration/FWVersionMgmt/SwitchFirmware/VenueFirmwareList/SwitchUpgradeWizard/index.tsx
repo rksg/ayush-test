@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { Form }    from 'antd'
 import _           from 'lodash'
@@ -7,7 +7,7 @@ import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
 import {
-  Modal, ModalType, StepsForm, showActionModal, useStepFormContext
+  Modal, ModalType, StepsForm, showActionModal
 } from '@acx-ui/components'
 import { WarningCircleOutlined }          from '@acx-ui/icons'
 import {
