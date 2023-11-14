@@ -64,7 +64,7 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
         })
       }
     )
-  const isEdgeSdLanEnabled = !!edgeSdLanData
+  const isEdgeSdLanRun = !!edgeSdLanData
 
   let tabs = [] as TabData[]
   let formData = {} as EdgePortConfigFormType
@@ -78,7 +78,7 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
             formListKey={key}
             key={`port_${index}_${key}`}
             index={index}
-            isEdgeSdLanEnabled={isEdgeSdLanEnabled}
+            isEdgeSdLanRun={isEdgeSdLanRun}
           />
         )}
       </Form.List>

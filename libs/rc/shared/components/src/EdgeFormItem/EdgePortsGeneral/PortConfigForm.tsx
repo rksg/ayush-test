@@ -16,7 +16,7 @@ import { EdgePortConfigFormType } from '.'
 interface ConfigFormProps {
   formListKey: number
   index: number
-  isEdgeSdLanEnabled: boolean
+  isEdgeSdLanRun: boolean
 }
 
 export async function lanPortsubnetValidator (
@@ -38,7 +38,7 @@ export async function lanPortsubnetValidator (
   return Promise.resolve()
 }
 
-const getEnabledCorePort = (form: FormInstance) => {
+const getEnabledCorePortMac = (form: FormInstance) => {
   const portsData = form.getFieldsValue() as EdgePortConfigFormType
 
   let corePort
@@ -54,9 +54,9 @@ const getEnabledCorePort = (form: FormInstance) => {
 const { useWatch, useFormInstance } = Form
 
 export const PortConfigForm = (props: ConfigFormProps) => {
-  const { index, formListKey, isEdgeSdLanEnabled } = props
+  const { index, formListKey, isEdgeSdLanRun } = props
   const { $t } = useIntl()
-  const isCentralizeForwardingReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
   const form = useFormInstance<EdgePortConfigFormType>()
 
   const getFieldPath = useCallback((fieldName: string) =>
@@ -70,14 +70,14 @@ export const PortConfigForm = (props: ConfigFormProps) => {
   const statusIp = useWatch(getFieldFullPath('statusIp'), form)
   const mac = useWatch(getFieldFullPath('mac'), form)
 
-  const enabledCorePort = getEnabledCorePort(form)
+  const enabledCorePortMac = getEnabledCorePortMac(form)
   // if SD-LAN enable corePort should be grey-out when both
   //     - SD-LAN is enabled on this edge
   //     - corePort is exist.
   // else only allowed 1 core port enabled
-  const isCorePortDisabled = isEdgeSdLanEnabled
-    ? !!enabledCorePort
-    : (!!enabledCorePort && enabledCorePort !== mac)
+  const isCorePortDisabled = isEdgeSdLanRun
+    ? !!enabledCorePortMac
+    : (!!enabledCorePortMac && enabledCorePortMac !== mac)
 
   useLayoutEffect(() => {
     form.validateFields()
@@ -214,7 +214,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
           }
           <StepsFormLegacy.FieldLabel width='120px'>
             {$t({ defaultMessage: 'Use NAT Service' })}
-            {isCentralizeForwardingReady
+            {isEdgeSdLanReady
               ? <Form.Item
                 noStyle
                 shouldUpdate={(prev, cur) => {
@@ -286,7 +286,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
               const _ipMode = getFieldValue(getFieldFullPath('ipMode'))
               return (_portType === EdgePortTypeEnum.LAN || _portType === EdgePortTypeEnum.WAN) ? (
                 <>
-                  {isCentralizeForwardingReady &&
+                  {isEdgeSdLanReady &&
                     <Form.Item
                       name={getFieldPath('corePortEnabled')}
                       valuePropName='checked'
