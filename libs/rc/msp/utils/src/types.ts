@@ -37,6 +37,9 @@ export interface DelegationEntitlementRecord {
   type: string;
   subTypeText?: string;
   percentageUsage?: string;
+  outOfComplianceDevices?: number;
+  futureOutOfComplianceDevices?: number;
+  futureOfComplianceDate?: number;
 }
 
 export interface MspEc {
@@ -406,4 +409,34 @@ export interface UpgradeFirmwareVer {
   name: string,
   defaultApFirmware: string,
   branches: string[]
+}
+
+export interface MspRecData {
+  account_id?: string;
+  delegations?: MspIntegratorDelegated[];
+  admin_delegations?: MspEcDelegatedAdmins[];
+}
+
+export interface AvailableMspRecCustomers {
+  parent_account_name: string,
+  parent_account_id?: string,
+  child_accounts?: MspRecCustomer[]
+  totalPages?: number,
+  totalElements: number,
+  number: number,
+  content: MspRecCustomer[]
+}
+
+export interface MspRecCustomer {
+  account_name: string,
+  account_id?: string,
+  billing_street?: string,
+  billing_city?: string,
+  billing_state?: string,
+  billing_postal_code?: string,
+  billing_country?: string,
+  kumo?: boolean,
+  flexera_llm_account_id?: string,
+  acx_trial_in_progress?: boolean,
+  email_id?: string
 }

@@ -119,7 +119,8 @@ export enum Features {
   WIFI_EDA_PER_AP_RADIO_CUSTOMIZATION_TOGGLE = 'wifi-eda-per-ap-radio-customization-toggle',
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
   SSO = 'ADMN-SSO',
-  RUCKUS_AI_CHATBOT_TOGGLE = 'ruckus-ai-chatbot-toggle'
+  RUCKUS_AI_CHATBOT_TOGGLE = 'ruckus-ai-chatbot-toggle',
+  MSP_HSP_SUPPORT = 'mspservice-mspec-adminoptional'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
