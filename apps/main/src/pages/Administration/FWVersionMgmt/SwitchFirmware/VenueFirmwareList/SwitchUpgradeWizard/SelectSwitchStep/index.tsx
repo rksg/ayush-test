@@ -106,13 +106,14 @@ export const useDefaultVenuePayload = (): RequestPayload => {
 
 type SelectSwitchStepProps = {
   data: FirmwareSwitchVenue[],
-  wizardtype?: SwitchFirmwareWizardType
+  wizardtype?: SwitchFirmwareWizardType,
+  setShowSubTitle: (visible: boolean) => void
 }
 
 export const SelectSwitchStep = (
-  { data }: SelectSwitchStepProps) => {
+  { data, setShowSubTitle }: SelectSwitchStepProps) => {
 
-  const { form } = useStepFormContext()
+  const { form, current } = useStepFormContext()
   const columns = useColumns()
   const intl = useIntl()
   const { tenantId } = useParams()
@@ -133,6 +134,10 @@ export const SelectSwitchStep = (
   })
   const [isLoading, setIsLoading] = useState(false)
   const totalSwitchCount = data.reduce((total, venue) => total + venue.switchCount, 0)
+
+  useEffect(()=>{
+    setShowSubTitle(true)
+  }, [current])
 
   const switchColumns: TableProps<SwitchFirmware>['columns'] = [
     {
