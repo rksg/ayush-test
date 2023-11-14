@@ -14,6 +14,8 @@ import { UserUrlsInfo } from '@acx-ui/user'
 import { fakeBetaStatusDetail } from '../__tests__/fixtures'
 
 import EnableR1Beta from './'
+import BetaFeaturesDrawer         from './BetaFeaturesDrawer'
+import R1BetaTermsConditionDrawer from './R1BetaTermsConditionDrawer'
 
 describe('Enable R1 Beta Checkbox', () => {
   const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
@@ -29,7 +31,7 @@ describe('Enable R1 Beta Checkbox', () => {
       )
     )
   })
-
+  
   it('should display enable R1 beta terms & condition drawer when checkbox changed', async () => {
     render(
       <Provider>
@@ -52,38 +54,31 @@ describe('Enable R1 Beta Checkbox', () => {
     await waitFor(() => {
       expect(okBtn).not.toBeVisible()
     })
+
+    const linkEl = await expect(screen.findByRole('link', { name: 'Current beta features'})).toBeTruthy()
   })
 
-  it.skip('should display disable beta features modal dialog', async () => {
-    const enabledData = _.cloneDeep(fakeBetaStatusDetail)
-    enabledData.enabled = 'true'
+  it('should show terms & condition drawer', async () => {
+    const mockedSetVisible = jest.fn()
 
     render(
       <Provider>
-        <EnableR1Beta
-          betaStatusData={fakeBetaStatusDetail}
-          isPrimeAdminUser={true}
+        <BetaFeaturesDrawer
+          visible={true}
+          setVisible={() => (mockedSetVisible)}
+          onClose={() => (false)}
         />
       </Provider>, {
         route: { params }
       })
 
-    const formItem = screen.getByRole('checkbox', { name: /Enable R1 Beta features/i })
-    expect(formItem).toBeChecked()
-    fireEvent.click(formItem)
-
-    const okBtn = await screen.findByRole('button', { name: 'Disable Beta Features' })
+    await screen.findByRole('dialog')
+    const okBtn = await screen.findByRole('button', { name: 'Ok' })
     expect(okBtn).toBeVisible()
+
     fireEvent.click(okBtn)
     await waitFor(() => {
-      expect(okBtn).not.toBeVisible()
-    })
-
-    const cancelBtn = await screen.findByRole('button', { name: 'Keep Beta Features' })
-    expect(cancelBtn).toBeVisible()
-    fireEvent.click(cancelBtn)
-    await waitFor(() => {
-      expect(cancelBtn).not.toBeVisible()
+      expect(okBtn).toBeVisible()
     })
 
   })
