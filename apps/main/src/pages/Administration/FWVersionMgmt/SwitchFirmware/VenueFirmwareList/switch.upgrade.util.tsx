@@ -1,13 +1,17 @@
 import React from 'react'
 
+import _             from 'lodash'
 import moment        from 'moment'
 import { IntlShape } from 'react-intl'
 
 import {
+  FirmwareSwitchVenue,
   FirmwareVersion,
+  SortResult,
   SwitchFirmware,
   firmwareTypeTrans
 } from '@acx-ui/rc/utils'
+import { noDataDisplay } from '@acx-ui/utils'
 
 import {
   SCHEDULE_END_TIME_FORMAT,
@@ -83,4 +87,53 @@ export const getHightlightSearch = function (value: string, keyword: string) {
   })
 
   return <span>{elements}</span>
+}
+
+export const getSwitchFirmwareList = function (row: FirmwareSwitchVenue) {
+  let versionList = []
+  if (row.switchFirmwareVersion?.id) {
+    versionList.push(parseSwitchVersion(row.switchFirmwareVersion.id))
+  }
+  if (row.switchFirmwareVersionAboveTen?.id) {
+    versionList.push(parseSwitchVersion(row.switchFirmwareVersionAboveTen.id))
+  }
+  return versionList
+}
+
+export const getSwitchVenueAvailableVersions = function (row: FirmwareSwitchVenue) {
+  const { availableVersions } = row
+  if (!Array.isArray(availableVersions) || availableVersions.length === 0) {
+    return noDataDisplay
+  }
+
+  const availableVersionList = availableVersions.map(version =>
+    parseSwitchVersion(version.id))
+  const switchFirmwareList = getSwitchFirmwareList(row)
+
+  const filteredArray = availableVersionList.filter(value =>
+    !switchFirmwareList.includes(value))
+
+  return filteredArray.length > 0 ? filteredArray.join(',') : noDataDisplay
+}
+
+export function sortAvailableVersionProp (
+  sortFn: (a: string, b: string) => SortResult
+) {
+  return (a: FirmwareSwitchVenue,
+    b: FirmwareSwitchVenue) => {
+    const valueA = getSwitchVenueAvailableVersions(a)
+    const valueB = getSwitchVenueAvailableVersions(b)
+    return sortFn(valueA, valueB)
+  }
+}
+
+export function sortProp<RecordType, PropType = unknown> (
+  prop: string,
+  sortFn: (a: PropType, b: PropType) => SortResult
+) {
+  return (a: RecordType, b: RecordType) => {
+    const valueA = _.get(a, prop)
+    const valueB = _.get(b, prop)
+    return sortFn(valueA, valueB)
+  }
 }

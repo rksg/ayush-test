@@ -29,11 +29,13 @@ import {
   getSwitchNextScheduleTplTooltip,
   parseSwitchVersion
 } from '../../../../FirmwareUtils'
-import * as UI           from '../../styledComponents'
+import * as UI                      from '../../styledComponents'
 import {
   getHightlightSearch,
+  getSwitchFirmwareList,
   getSwitchNextScheduleTpl,
-  getSwitchScheduleTpl
+  getSwitchScheduleTpl,
+  getSwitchVenueAvailableVersions
 } from '../../switch.upgrade.util'
 
 function useColumns () {
@@ -60,13 +62,7 @@ function useColumns () {
       dataIndex: 'version',
       width: 150,
       render: function (_, row) {
-        let versionList = []
-        if (row.switchFirmwareVersion?.id) {
-          versionList.push(parseSwitchVersion(row.switchFirmwareVersion.id))
-        }
-        if (row.switchFirmwareVersionAboveTen?.id) {
-          versionList.push(parseSwitchVersion(row.switchFirmwareVersionAboveTen.id))
-        }
+        let versionList = getSwitchFirmwareList(row)
         return versionList.length > 0 ? versionList.join(', ') : noDataDisplay
       }
     }, {
@@ -75,12 +71,7 @@ function useColumns () {
       dataIndex: 'availableVersions',
       width: 150,
       render: function (_, row) {
-        const availableVersions = row.availableVersions
-        if (availableVersions.length === 0) {
-          return noDataDisplay
-        } else {
-          return availableVersions.map(version => parseSwitchVersion(version.id)).join(',')
-        }
+        return getSwitchVenueAvailableVersions(row)
       }
     }, {
       title: intl.$t({ defaultMessage: 'Scheduling' }),
@@ -171,11 +162,7 @@ export const SelectSwitchStep = (
       width: 150,
       filterMultiple: false,
       render: function (_, row) {
-        if (row.currentFirmware) {
-          return parseSwitchVersion(row.currentFirmware)
-        } else {
-          return noDataDisplay
-        }
+        return row.currentFirmware ? parseSwitchVersion(row.currentFirmware) : noDataDisplay
       }
     }, {
       title: intl.$t({ defaultMessage: 'Available Firmware' }),
@@ -183,11 +170,11 @@ export const SelectSwitchStep = (
       dataIndex: 'availableVersion',
       width: 150,
       render: function (_, row) {
-        if (row.availableVersion?.id) {
-          return parseSwitchVersion(row.availableVersion.id)
-        } else {
-          return noDataDisplay
-        }
+        const currentVersion = row.currentFirmware ?
+          parseSwitchVersion(row.currentFirmware) : noDataDisplay
+        const availableVersion = row.availableVersion?.id ?
+          parseSwitchVersion(row.availableVersion.id) : noDataDisplay
+        return currentVersion === availableVersion ? noDataDisplay : availableVersion
       }
     }, {
       title: intl.$t({ defaultMessage: 'Scheduling' }),

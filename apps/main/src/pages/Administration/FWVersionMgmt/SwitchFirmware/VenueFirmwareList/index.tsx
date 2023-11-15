@@ -25,8 +25,8 @@ import {
   TableQuery,
   sortProp,
   defaultSort,
-  SwitchFirmwareStatusType,
-  usePollingTableQuery
+  usePollingTableQuery,
+  SwitchFirmwareStatusType
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
@@ -40,10 +40,11 @@ import {
 } from '../../FirmwareUtils'
 import { PreferencesDialog } from '../../PreferencesDialog'
 
-import * as UI                                           from './styledComponents'
-import { SwitchScheduleDrawer }                          from './SwitchScheduleDrawer'
-import { SwitchFirmwareWizardType, SwitchUpgradeWizard } from './SwitchUpgradeWizard'
-import { VenueStatusDrawer }                             from './VenueStatusDrawer'
+import * as UI                                                                              from './styledComponents'
+import { getSwitchFirmwareList, getSwitchVenueAvailableVersions, sortAvailableVersionProp } from './switch.upgrade.util'
+import { SwitchScheduleDrawer }                                                             from './SwitchScheduleDrawer'
+import { SwitchFirmwareWizardType, SwitchUpgradeWizard }                                    from './SwitchUpgradeWizard'
+import { VenueStatusDrawer }                                                                from './VenueStatusDrawer'
 
 export const useDefaultVenuePayload = (): RequestPayload => {
   return {
@@ -97,17 +98,6 @@ export const VenueFirmwareTable = (
     setModelVisible(false)
   }
 
-  const getSwitchFirmwareList = function (row: FirmwareSwitchVenue) {
-    let versionList = []
-    if (row.switchFirmwareVersion?.id) {
-      versionList.push(parseSwitchVersion(row.switchFirmwareVersion.id))
-    }
-    if (row.switchFirmwareVersionAboveTen?.id) {
-      versionList.push(parseSwitchVersion(row.switchFirmwareVersionAboveTen.id))
-    }
-    return versionList
-  }
-
   const handleModalSubmit = async (payload: UpgradePreferences) => {
     try {
       await updateUpgradePreferences({ params, payload }).unwrap()
@@ -141,23 +131,11 @@ export const VenueFirmwareTable = (
     },
     {
       title: $t({ defaultMessage: 'Available Firmware' }),
-      sorter: { compare: sortProp('availableVersions.id', defaultSort) },
+      sorter: { compare: sortAvailableVersionProp(defaultSort) },
       key: 'availableVersions',
       dataIndex: 'availableVersions',
       render: function (__, row) {
-        const { availableVersions } = row
-        if (!Array.isArray(availableVersions) || availableVersions.length === 0) {
-          return noDataDisplay
-        }
-
-        const availableVersionList = availableVersions.map(version =>
-          parseSwitchVersion(version.id))
-        const switchFirmwareList = getSwitchFirmwareList(row)
-
-        const filteredArray = availableVersionList.filter(value =>
-          !switchFirmwareList.includes(value))
-
-        return filteredArray.length > 0 ? filteredArray.join(',') : noDataDisplay
+        return getSwitchVenueAvailableVersions(row)
       }
     },
     {
