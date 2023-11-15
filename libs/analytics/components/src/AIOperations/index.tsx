@@ -1,16 +1,17 @@
 import { useIntl } from 'react-intl'
 
-import { isSwitchPath }                                                           from '@acx-ui/analytics/utils'
-import { Loader, Card, Tooltip, NoRecommendationData, ColorPill, NoAiOpsLicense } from '@acx-ui/components'
-import { DateFormatEnum, formatter, intlFormats }                                 from '@acx-ui/formatter'
-import { TenantLink, useNavigateToPath }                                          from '@acx-ui/react-router-dom'
-import type { PathFilter }                                                        from '@acx-ui/utils'
+import { isSwitchPath }                           from '@acx-ui/analytics/utils'
+import { Loader, Card, Tooltip, ColorPill }       from '@acx-ui/components'
+import { DateFormatEnum, formatter, intlFormats } from '@acx-ui/formatter'
+import { TenantLink, useNavigateToPath }          from '@acx-ui/react-router-dom'
+import type { PathFilter }                        from '@acx-ui/utils'
 
 import * as UI                                         from '../AIDrivenRRM/styledComponents'
 import { states }                                      from '../Recommendations/config'
 import { AiOpsList, useAiOpsListQuery, AiOpsListItem } from '../Recommendations/services'
 import { PriorityIcon }                                from '../Recommendations/styledComponents'
 
+import { NoAiOpsLicense, NoRecommendationData }           from './extra'
 import { GreenTickIcon, OrangeRevertIcon, RedCancelIcon } from './styledComponents'
 
 export { AIOperationsWidget as AIOperations }
