@@ -1,6 +1,5 @@
 import {
-  Checkbox as AntCheckbox,
-  List as AntList
+  Checkbox as AntCheckbox
 } from 'antd'
 import styled from 'styled-components/macro'
 

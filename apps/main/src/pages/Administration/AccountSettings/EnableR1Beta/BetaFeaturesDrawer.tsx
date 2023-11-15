@@ -1,7 +1,7 @@
-import { List, Typography } from 'antd'
-import { useIntl }          from 'react-intl'
+import { List }    from 'antd'
+import { useIntl } from 'react-intl'
 
-import { Button, Drawer }    from '@acx-ui/components'
+import { Button, Drawer } from '@acx-ui/components'
 import { CaretRightList } from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
@@ -57,12 +57,12 @@ export function BetaFeaturesDrawer (
           dataSource={betaList}
           renderItem={(item) =>
             <List.Item id={item.key}>
-                {item.status &&
+              {item.status &&
                   <List.Item.Meta
                     avatar={<CaretRightList />}
                     title={item.desc}
                   />
-                }
+              }
             </List.Item>
           }
         />
