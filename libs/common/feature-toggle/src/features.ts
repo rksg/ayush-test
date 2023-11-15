@@ -122,7 +122,8 @@ export enum Features {
   SSO = 'ADMN-SSO',
   EDGE_LAG = 'acx-ui-edges-lag-toggle',
   RUCKUS_AI_CHATBOT_TOGGLE = 'ruckus-ai-chatbot-toggle',
-  MSP_HSP_SUPPORT = 'mspservice-hsp-01'
+  MSP_HSP_SUPPORT = 'mspservice-hsp-01',
+  TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
