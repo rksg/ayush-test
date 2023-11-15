@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from 'react'
 
 import { Tooltip, Typography } from 'antd'
@@ -231,16 +230,6 @@ export const VenueFirmwareTable = (
     }
   ]
 
-  const hasAvailableSwitchFirmware = function (selectedRows: FirmwareSwitchVenue[]) {
-    let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
-    selectedRows.forEach((row: FirmwareSwitchVenue) => {
-      const version = row.switchFirmwareVersion?.id
-      const rodanVersion = row.switchFirmwareVersionAboveTen?.id
-      removeCurrentVersionsAnd10010IfNeeded(version, rodanVersion, filterVersions)
-    })
-    return filterVersions?.length > 0
-  }
-
   const rowActions: TableProps<FirmwareSwitchVenue>['rowActions'] = [{
     label: $t({ defaultMessage: 'Update Now' }),
     visible: (selectedRows) => {
@@ -256,9 +245,6 @@ export const VenueFirmwareTable = (
         _.remove(filterVersions, (v: FirmwareVersion) => v.id === version)
         return filterVersions.length > 0
       })
-    },
-    disabled: (selectedRows) => {
-      return !hasAvailableSwitchFirmware(selectedRows)
     },
     onClick: (selectedRows) => {
       setSelectedVenueList(selectedRows)
@@ -391,12 +377,4 @@ export function VenueFirmwareList () {
       }}
     />
   )
-}
-
-const removeCurrentVersionsAnd10010IfNeeded = (version: string,
-  rodanVersion: string,
-  filterVersions: FirmwareVersion[]) => {
-  _.remove(filterVersions, (v: FirmwareVersion) => {
-    return v.id === version || v.id === rodanVersion
-  })
 }

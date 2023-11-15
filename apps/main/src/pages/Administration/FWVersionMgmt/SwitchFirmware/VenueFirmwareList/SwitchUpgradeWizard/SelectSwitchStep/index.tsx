@@ -1,4 +1,4 @@
-import { ChangeEvent, Key, MouseEvent, useEffect, useState } from 'react'
+import { ChangeEvent, Key, useEffect, useState } from 'react'
 
 import { Input, Tooltip } from 'antd'
 import _                  from 'lodash'
@@ -21,6 +21,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
+import { noDataDisplay }  from '@acx-ui/utils'
 
 import { SwitchFirmwareWizardType } from '..'
 import {
@@ -54,7 +55,7 @@ function useColumns () {
     }, {
       title: intl.$t({ defaultMessage: 'Current Firmware' }),
       key: 'version',
-      dataIndex: 'version'
+      dataIndex: 'version',
       render: function (_, row) {
         let versionList = []
         if (row.switchFirmwareVersion?.id) {
@@ -63,7 +64,7 @@ function useColumns () {
         if (row.switchFirmwareVersionAboveTen?.id) {
           versionList.push(parseSwitchVersion(row.switchFirmwareVersionAboveTen.id))
         }
-        return versionList.length > 0 ? versionList.join(', ') : '--'
+        return versionList.length > 0 ? versionList.join(', ') : noDataDisplay
       }
     }, {
       title: intl.$t({ defaultMessage: 'Available Firmware' }),
@@ -72,7 +73,7 @@ function useColumns () {
       render: function (_, row) {
         const availableVersions = row.availableVersions
         if (availableVersions.length === 0) {
-          return '--'
+          return noDataDisplay
         } else {
           return availableVersions.map(version => parseSwitchVersion(version.id)).join(',')
         }
@@ -144,7 +145,6 @@ export const SelectSwitchStep = (
       title: intl.$t({ defaultMessage: 'Switch' }),
       key: 'switchName',
       dataIndex: 'switchName',
-      width: 150,
       defaultSortOrder: 'ascend',
       render: function (_, row) {
         const stackLabel = row.isStack ? intl.$t({ defaultMessage: '(Stack)' }) : ''
@@ -161,25 +161,23 @@ export const SelectSwitchStep = (
       title: intl.$t({ defaultMessage: 'Current Firmware' }),
       key: 'currentFirmware',
       dataIndex: 'currentFirmware',
-      width: 153,
       filterMultiple: false,
       render: function (_, row) {
         if (row.currentFirmware) {
           return parseSwitchVersion(row.currentFirmware)
         } else {
-          return '--'
+          return noDataDisplay
         }
       }
     }, {
       title: intl.$t({ defaultMessage: 'Available Firmware' }),
       key: 'availableVersion',
       dataIndex: 'availableVersion',
-      width: 155,
       render: function (_, row) {
         if (row.availableVersion?.id) {
           return parseSwitchVersion(row.availableVersion.id)
         } else {
-          return '--'
+          return noDataDisplay
         }
       }
     }, {
@@ -266,14 +264,14 @@ export const SelectSwitchStep = (
       tableAlertRender={false}
       showHeader={false}
       expandable={{
-        columnWidth: '60px',
+        // columnWidth: '60px',
         expandedRowRender: () => { return <></> },
         rowExpandable: () => false
       }}
       rowKey='switchId'
       rowSelection={{
         type: 'checkbox',
-        columnWidth: '30px',
+        // columnWidth: '30px',
         selectedRowKeys: selectedSwitchRowKeys[record.id],
         onChange: (selectedKeys) => {
           const currentSwitchList = nestedData[record.id]?.initialData
@@ -493,65 +491,66 @@ export const SelectSwitchStep = (
 
       {
         _.isEmpty(searchText) && <Loader states={[{ isFetching: isLoading, isLoading: false }]}>
-          <Table
-            columns={columns}
-            enableResizableColumn={false}
-            type={'tall'}
-            dataSource={data}
-            expandable={{
-              columnWidth: '30px',
-              onExpand: handleExpand,
-              expandIcon: ({ expanded, onExpand, record }) => {
-                if ((record?.switchCount + record?.aboveTenSwitchCount > 0)) {
-                  return expanded ? (
-                    <ArrowCollapse
-                      style={{ verticalAlign: 'bottom' }}
-                      onClick={
-                        (e) => {
-                          e.stopPropagation()
-                          onExpand(record, e as unknown as React.MouseEvent<HTMLElement>)
-                        }} />
-                  ) : (
-                    <ArrowExpand
-                      style={{ verticalAlign: 'bottom' }}
-                      onClick={
-                        (e) => {
-                          e.stopPropagation()
-                          onExpand(record, e as unknown as React.MouseEvent<HTMLElement>)
-                        }} />
-                  )
-                } else {
-                  return <></>
-                }
-              },
-              expandedRowRender: expandedRowRenderFunc,
-              rowExpandable: record =>
-                (record?.switchCount + record?.aboveTenSwitchCount > 0) ?? false
-            }}
-            enableApiFilter={true}
-            rowKey='id'
-            rowSelection={{
-              type: 'checkbox',
-              columnWidth: '30px',
-              selectedRowKeys: selectedVenueRowKeys,
-              getCheckboxProps: (record) => {
-                return {
-                  indeterminate: isIndeterminate(record),
-                  name: record.name
-                }
-              },
-              onChange: (selectedKeys) => {
-                const addedVenue = _.difference(selectedKeys, selectedVenueRowKeys)
-                const deletedVenue = _.difference(selectedVenueRowKeys, selectedKeys)
-                if (addedVenue.length > 0) {
-                  let newNestedData = nestedData
-                  let newSelectedSwitchRowKeys = selectedSwitchRowKeys
+          <UI.ExpanderTableWrapper>
+            <Table
+              columns={columns}
+              enableResizableColumn={false}
+              type={'tall'}
+              dataSource={data}
+              expandable={{
+                // columnWidth: '30px',
+                onExpand: handleExpand,
+                expandIcon: ({ expanded, onExpand, record }) => {
+                  if ((record?.switchCount + record?.aboveTenSwitchCount > 0)) {
+                    return expanded ? (
+                      <ArrowCollapse
+                        style={{ verticalAlign: 'bottom' }}
+                        onClick={
+                          (e) => {
+                            e.stopPropagation()
+                            onExpand(record, e as unknown as React.MouseEvent<HTMLElement>)
+                          }} />
+                    ) : (
+                      <ArrowExpand
+                        style={{ verticalAlign: 'bottom' }}
+                        onClick={
+                          (e) => {
+                            e.stopPropagation()
+                            onExpand(record, e as unknown as React.MouseEvent<HTMLElement>)
+                          }} />
+                    )
+                  } else {
+                    return <></>
+                  }
+                },
+                expandedRowRender: expandedRowRenderFunc,
+                rowExpandable: record =>
+                  (record?.switchCount + record?.aboveTenSwitchCount > 0) ?? false
+              }}
+              enableApiFilter={true}
+              rowKey='id'
+              rowSelection={{
+                type: 'checkbox',
+                // columnWidth: '30px',
+                selectedRowKeys: selectedVenueRowKeys,
+                getCheckboxProps: (record) => {
+                  return {
+                    indeterminate: isIndeterminate(record),
+                    name: record.name
+                  }
+                },
+                onChange: (selectedKeys) => {
+                  const addedVenue = _.difference(selectedKeys, selectedVenueRowKeys)
+                  const deletedVenue = _.difference(selectedVenueRowKeys, selectedKeys)
+                  if (addedVenue.length > 0) {
+                    let newNestedData = nestedData
+                    let newSelectedSwitchRowKeys = selectedSwitchRowKeys
 
-                  addedVenue.forEach(async (venue) => {
+                    addedVenue.forEach(async (venue) => {
 
-                    let initialData = nestedData[venue]?.initialData ?? []
-                    const row = data.filter(v => v.id === venue)
-                    if (_.isEmpty(initialData) &&
+                      let initialData = nestedData[venue]?.initialData ?? []
+                      const row = data.filter(v => v.id === venue)
+                      if (_.isEmpty(initialData) &&
                       (row[0]?.switchCount > 0 || row[0]?.aboveTenSwitchCount > 0)) {
                         const switchListPayload = {
                           venueIdList: [venue]
