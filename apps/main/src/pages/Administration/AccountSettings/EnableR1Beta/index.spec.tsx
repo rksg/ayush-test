@@ -1,4 +1,3 @@
-import _        from 'lodash'
 import { rest } from 'msw'
 
 import { Provider  } from '@acx-ui/store'
@@ -13,9 +12,9 @@ import { UserUrlsInfo } from '@acx-ui/user'
 
 import { fakeBetaStatusDetail } from '../__tests__/fixtures'
 
+import BetaFeaturesDrawer from './BetaFeaturesDrawer'
+
 import EnableR1Beta from './'
-import BetaFeaturesDrawer         from './BetaFeaturesDrawer'
-import R1BetaTermsConditionDrawer from './R1BetaTermsConditionDrawer'
 
 describe('Enable R1 Beta Checkbox', () => {
   const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
@@ -31,7 +30,7 @@ describe('Enable R1 Beta Checkbox', () => {
       )
     )
   })
-  
+
   it('should display enable R1 beta terms & condition drawer when checkbox changed', async () => {
     render(
       <Provider>
@@ -47,18 +46,24 @@ describe('Enable R1 Beta Checkbox', () => {
     expect(formItem).not.toBeChecked()
     fireEvent.click(formItem)
 
-    const okBtn = await screen.findByRole('button', { name: 'Enable Beta' })
-    expect(okBtn).toBeVisible()
+    const enableBtn = await screen.findByRole('button', { name: 'Enable Beta' })
+    expect(enableBtn).toBeVisible()
 
-    fireEvent.click(okBtn)
+    fireEvent.click(enableBtn)
     await waitFor(() => {
-      expect(okBtn).not.toBeVisible()
+      expect(enableBtn).not.toBeVisible()
     })
 
-    const linkEl = await expect(screen.findByRole('link', { name: 'Current beta features'})).toBeTruthy()
+    const currentBeta = await screen.findByRole('link', { name: 'Current beta features' })
+    fireEvent.click(currentBeta)
+
+    const okBtn = await screen.findByRole('button', { name: 'Ok' })
+    expect(okBtn).toBeVisible()
+
+    await screen.findByText('R1 Beta Features')
   })
 
-  it('should show terms & condition drawer', async () => {
+  it('should show terms and condition drawer', async () => {
     const mockedSetVisible = jest.fn()
 
     render(

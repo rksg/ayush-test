@@ -103,7 +103,7 @@ export function EnableR1Beta (props: EnableR1BetaProps) {
               </Checkbox>
             </Tooltip>
 
-            <Typography.Link onClick={openBetaFeaturesDrawer}>
+            <Typography.Link role='link' onClick={openBetaFeaturesDrawer}>
               {$t({ defaultMessage: 'Current beta features' })}
             </Typography.Link>
           </SpaceWrapper>
