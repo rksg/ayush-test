@@ -168,8 +168,9 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
 
     //select all
     const selectAll = screen.getByRole('row', {
-      name: /venue current firmware available firmware scheduling/i
+      name: /venue model current firmware available firmware scheduling/i
     })
+
     await userEvent.click(within(selectAll).getByRole('checkbox'))
     expect(within(selectAll).getByRole('checkbox')).toBeChecked()
 

@@ -52,7 +52,8 @@ import {
   ApClientAdmissionControl,
   AFCInfo,
   AFCPowerMode,
-  AFCStatus
+  AFCStatus,
+  ApManagementVlan
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -860,6 +861,34 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'ClientAdmissionControl' }]
+    }),
+    getApManagementVlan: build.query<ApManagementVlan, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApManagementVlan, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'ApManagementVlan' }]
+    }),
+    updateApManagementVlan: build.mutation<ApManagementVlan, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateApManagementVlan, params)
+        return{
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'ApManagementVlan' }]
+    }),
+    deleteApManagementVlan: build.mutation<ApManagementVlan, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.deleteApManagementVlan, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'ApManagementVlan' }]
     })
   })
 })
@@ -943,7 +972,11 @@ export const {
   useRunCcdMutation,
   useGetApClientAdmissionControlQuery,
   useUpdateApClientAdmissionControlMutation,
-  useDeleteApClientAdmissionControlMutation
+  useDeleteApClientAdmissionControlMutation,
+  useGetApManagementVlanQuery,
+  useLazyGetApManagementVlanQuery,
+  useUpdateApManagementVlanMutation,
+  useDeleteApManagementVlanMutation
 } = apApi
 
 

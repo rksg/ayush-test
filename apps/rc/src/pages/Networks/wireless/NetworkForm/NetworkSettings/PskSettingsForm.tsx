@@ -326,9 +326,9 @@ function SettingsForm () {
         {macAddressAuthentication && <>
           <Form.Item
             name={['wlan', 'isMacRegistrationList']}
-            initialValue={macRegistrationListId}
+            initialValue={!!macRegistrationListId}
           >
-            <Radio.Group disabled={editMode} defaultValue={!!macRegistrationListId}>
+            <Radio.Group disabled={editMode}>
               <Space direction='vertical'>
                 <Radio value={true}
                   disabled={

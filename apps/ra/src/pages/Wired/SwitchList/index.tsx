@@ -19,7 +19,7 @@ export function SwitchList ({ searchVal = '' }: { searchVal?: string }) {
     end: timeRange[1].format(),
     limit: 100,
     query: searchString,
-    metric: 'traffic'
+    metric: 'totalTraffic'
   })
 
   const updateSearchString = (_: Filter, search: { searchString?: string }) => {
