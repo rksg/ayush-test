@@ -1,8 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider  }    from '@acx-ui/store'
+import { useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { EdgeLagStatus, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider  }                   from '@acx-ui/store'
 import {
   render,
   screen,
@@ -12,7 +13,8 @@ import {
 
 import {
   mockEdgeSubInterfacesStatus,
-  edgePortsSetting
+  edgePortsSetting,
+  mockEdgeLagList
 } from '../../../__tests__/fixtures'
 
 import { EdgeSubInterfacesTab } from '.'
@@ -28,6 +30,7 @@ describe('Edge overview sub-interfaces tab', () => {
   { tenantId: 'tenant-id', serialNumber: 'edge-serialnum' }
 
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.getEdgeSubInterfacesStatusList.url,
@@ -46,13 +49,14 @@ describe('Edge overview sub-interfaces tab', () => {
         <EdgeSubInterfacesTab
           isLoading={false}
           ports={edgePortsSetting}
+          lags={mockEdgeLagList.data as EdgeLagStatus[]}
         />
       </Provider>, {
         route: { params }
       })
 
     const portTabs = await screen.findAllByRole('tab')
-    expect(portTabs.length).toBe(2)
+    expect(portTabs.length).toBe(4)
     const portsRow = await screen.findAllByRole('row')
     expect(screen.getByRole('row', {
       name: 'LAN Up 192.168.5.3 Static IP 255.255.255.128 4'
@@ -67,13 +71,14 @@ describe('Edge overview sub-interfaces tab', () => {
         <EdgeSubInterfacesTab
           isLoading={false}
           ports={edgePortsSetting}
+          lags={mockEdgeLagList.data as EdgeLagStatus[]}
         />
       </Provider>, {
         route: { params }
       })
 
     const portTabs = await screen.findAllByRole('tab')
-    expect(portTabs.length).toBe(2)
+    expect(portTabs.length).toBe(4)
 
     const port2Tab = await screen.findByRole('tab', { name: 'Port 2' })
     await userEvent.click(port2Tab)
@@ -98,6 +103,7 @@ describe('Edge overview sub-interfaces tab', () => {
         <EdgeSubInterfacesTab
           isLoading={false}
           ports={[]}
+          lags={[]}
         />
       </Provider>, {
         route: { params }
