@@ -2,10 +2,10 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, Tabs }                                                                             from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                                 from '@acx-ui/feature-toggle'
-import { useGetDhcpByEdgeIdQuery, useGetEdgeListQuery, useGetNetworkSegmentationViewDataListQuery } from '@acx-ui/rc/services'
-import { EdgeStatus, PolicyType, ServiceType }                                                      from '@acx-ui/rc/utils'
+import { Loader, Tabs }                                                                                                               from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                                                                                   from '@acx-ui/feature-toggle'
+import { useGetDhcpByEdgeIdQuery, useGetEdgeListQuery, useGetEdgeSdLanViewDataListQuery, useGetNetworkSegmentationViewDataListQuery } from '@acx-ui/rc/services'
+import { EdgeStatus, PolicyType, ServiceType }                                                                                        from '@acx-ui/rc/utils'
 
 
 import ClientIsolationAllowList from './ClientIsolationAllowList'
@@ -14,12 +14,14 @@ import EdgeDhcpTab              from './DHCPInstance/Edge'
 import EdgeFirewall             from './Firewall'
 import MdnsProxyInstances       from './MdnsProxyInstances'
 import { NetworkSegmentation }  from './NetworkSegmentation'
+import EdgeSdLan                from './SdLan'
 import { VenueRogueAps }        from './VenueRogueAps'
 
 export function VenueServicesTab () {
   const { venueId } = useParams()
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
   const { $t } = useIntl()
 
   // get edge by venueId, use 'firewallId' in edge data
@@ -65,6 +67,15 @@ export function VenueServicesTab () {
       }
     }
   })
+
+  const { edgeSdLanData } = useGetEdgeSdLanViewDataListQuery(
+    { payload: {
+      filters: { id: [venueId] }
+    } }, {
+      skip: !isEdgeEnabled || !isEdgeSdLanReady,
+      selectFromResult: ({ data }) => ({
+        edgeSdLanData: data?.data?.[0] })
+    })
 
   const isAppliedFirewall = !_.isEmpty(edgeData?.firewallId)
 
@@ -121,6 +132,15 @@ export function VenueServicesTab () {
             key={ServiceType.EDGE_FIREWALL}
           >
             <EdgeFirewall edgeData={edgeData as EdgeStatus}/>
+          </Tabs.TabPane>
+        }
+        {
+          edgeSdLanData && isEdgeEnabled && isEdgeReady && isEdgeSdLanReady &&
+          <Tabs.TabPane
+            tab={$t({ defaultMessage: 'SD-LAN' })}
+            key={ServiceType.EDGE_SD_LAN}
+          >
+            <EdgeSdLan data={edgeSdLanData} />
           </Tabs.TabPane>
         }
       </Tabs>

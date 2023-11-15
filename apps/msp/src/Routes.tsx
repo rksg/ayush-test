@@ -7,6 +7,8 @@ import { DeviceInventory }  from './pages/DeviceInventory'
 import { Integrators }      from './pages/Integrators'
 import Layout               from './pages/Layout'
 import { MspCustomers }     from './pages/MspCustomers'
+import { MspRecCustomers }  from './pages/MspRecCustomers'
+import { AddRecCustomer }   from './pages/MspRecCustomers/AddRecCustomer'
 import { Subscriptions }    from './pages/Subscriptions'
 import { AssignMspLicense } from './pages/Subscriptions/AssignMspLicense'
 import { VarCustomers }     from './pages/VarCustomers'
@@ -21,6 +23,7 @@ export default function MspRoutes () {
         element={<TenantNavigate replace to='/dashboard/mspCustomers' tenantType='v'/>}
       />
       <Route path='dashboard/mspCustomers/*' element={<CustomersRoutes />} />
+      <Route path='dashboard/mspRecCustomers/*' element={<CustomersRoutes />} />
       <Route path='dashboard/varCustomers' element={<VarCustomers />} />
       <Route path='integrators/*' element={<CustomersRoutes />} />
       <Route path='deviceinventory' element={<DeviceInventory />} />
@@ -43,6 +46,11 @@ function CustomersRoutes () {
         <Route index element={<MspCustomers />} />
         <Route path='create' element={<ManageCustomer />} />
         <Route path=':action/:status/:mspEcTenantId' element={<ManageCustomer />} />
+      </Route>
+      <Route path=':tenantId/v/dashboard/mspRecCustomers'>
+        <Route index element={<MspRecCustomers />} />
+        <Route path='create' element={<AddRecCustomer />} />
+        <Route path=':action/:status/:mspEcTenantId' element={<AddRecCustomer />} />
       </Route>
       <Route path=':tenantId/v/integrators'>
         <Route index element={<Integrators />} />

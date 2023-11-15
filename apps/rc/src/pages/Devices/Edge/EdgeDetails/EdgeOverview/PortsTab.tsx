@@ -3,12 +3,19 @@ import { useIntl } from 'react-intl'
 
 import { Button, GridRow, Loader }               from '@acx-ui/components'
 import { EdgePortsTable }                        from '@acx-ui/rc/components'
-import { EdgePortStatus }                        from '@acx-ui/rc/utils'
+import { EdgeLagStatus, EdgePortStatus }         from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { hasAccess }                             from '@acx-ui/user'
 
-export const PortsTab = ({ data, isLoading }:
-  { data: EdgePortStatus[], isLoading: boolean }) => {
+interface PortsTabProps {
+  portData: EdgePortStatus[]
+  lagData: EdgeLagStatus[]
+  isLoading: boolean
+  handleClickLagName?: () => void
+}
+
+export const PortsTab = (props: PortsTabProps) => {
+  const { portData, lagData, isLoading, handleClickLagName } = props
   const { $t } = useIntl()
   const { serialNumber } = useParams()
   const navigate = useNavigate()
@@ -34,7 +41,11 @@ export const PortsTab = ({ data, isLoading }:
 
     <Col span={24}>
       <Loader states={[{ isLoading }]}>
-        <EdgePortsTable data={data} />
+        <EdgePortsTable
+          portData={portData}
+          lagData={lagData}
+          handleClickLagName={handleClickLagName}
+        />
       </Loader>
     </Col>
   </GridRow>

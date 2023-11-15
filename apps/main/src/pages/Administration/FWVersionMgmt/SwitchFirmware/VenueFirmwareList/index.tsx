@@ -136,6 +136,7 @@ export const VenueFirmwareTable = (
     },
     {
       title: $t({ defaultMessage: 'Available Firmware' }),
+      sorter: { compare: sortProp('availableVersions.id', defaultSort) },
       key: 'availableVersions',
       dataIndex: 'availableVersions',
       render: function (_, row) {
@@ -151,6 +152,7 @@ export const VenueFirmwareTable = (
       title: $t({ defaultMessage: 'Status' }),
       key: 'status',
       dataIndex: 'status',
+      sorter: { compare: sortProp('status', defaultSort) },
       render: function (__, row) {
 
         const switchFirmwareStatusTextMapping: { [key in SwitchFirmwareStatusType]: string } = {
@@ -306,13 +308,13 @@ export const VenueFirmwareTable = (
   }]
 
   return (
-    <Loader states={[
-      { isLoading: tableQuery.isLoading && _.isEmpty(tableQuery.data?.data) }
+    <Loader states={[tableQuery,
+      { isLoading: false }
     ]}>
       <Table
         columns={columns}
         dataSource={tableQuery.data?.data}
-        // pagination={tableQuery.pagination}
+        pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
@@ -332,15 +334,15 @@ export const VenueFirmwareTable = (
         setVisible={setUpdateNowWizardVisible}
         onSubmit={() => { }} />
 
-
-      <PreferencesDialog
+      {modelVisible && <PreferencesDialog
         visible={modelVisible}
         data={preferences}
         onCancel={handleModalCancel}
         onSubmit={handleModalSubmit}
         isSwitch={true}
         preDownload={preDownload?.preDownload}
-      />
+      />}
+
       <VenueStatusDrawer
         visible={updateStatusDrawerVisible}
         setVisible={setUpdateStatusDrawerVisible}
