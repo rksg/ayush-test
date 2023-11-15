@@ -140,6 +140,7 @@ export const ExpanderTableWrapper = styled.div`
 
   /* Switch Table Styles */
   .switchTable {
+    margin: -12px 0px -12px -6px !important;
     .ant-table-tbody {
       background-color: var(--acx-primary-white);
     }
