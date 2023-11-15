@@ -502,6 +502,7 @@ export const SelectSwitchStep = (
                     return expanded ? (
                       <ArrowCollapse
                         style={{ verticalAlign: 'bottom' }}
+                        data-testid='arrow-collapse'
                         onClick={
                           (e) => {
                             e.stopPropagation()
@@ -510,6 +511,7 @@ export const SelectSwitchStep = (
                     ) : (
                       <ArrowExpand
                         style={{ verticalAlign: 'bottom' }}
+                        data-testid='arrow-expand'
                         onClick={
                           (e) => {
                             e.stopPropagation()
