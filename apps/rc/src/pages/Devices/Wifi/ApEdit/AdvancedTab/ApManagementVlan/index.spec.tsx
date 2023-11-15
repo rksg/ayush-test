@@ -21,13 +21,13 @@ const params = {
 
 const mockVenueApManagementVlan = {
   vlanId: 1,
-  vlanOverrideEnabled: false
+  vlanOverrideEnabled: true
 }
 
 const mockApManagementVlan = {
   vlanId: 1,
   useVenueSettings: true,
-  vlanOverrideEnabled: false
+  vlanOverrideEnabled: true
 }
 
 const resetApLedSpy = jest.fn()

@@ -144,10 +144,11 @@ export const searchApi = dataApiSearch.injectEndpoints({
         query Search(
           $start: DateTime,
           $end: DateTime,
+          $query: String,
           $metric: String,
           $limit: Int
         ) {
-          search(start: $start, end: $end, metric: $metric, limit: $limit) {
+          search(start: $start, end: $end, query: $query, metric: $metric, limit: $limit) {
             aps {
               apName,
               macAddress,

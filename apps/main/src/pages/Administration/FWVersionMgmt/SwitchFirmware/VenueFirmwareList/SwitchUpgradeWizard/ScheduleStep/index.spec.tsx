@@ -46,6 +46,7 @@ describe('ScheduleStep', () => {
       <Provider>
         <Form>
           <ScheduleStep
+            setShowSubTitle={jest.fn()}
             visible={true}
             availableVersions={availableVersions_hasInUse}
             nonIcx8200Count={2}
@@ -73,6 +74,7 @@ describe('ScheduleStep', () => {
       <Provider>
         <Form>
           <ScheduleStep
+            setShowSubTitle={jest.fn()}
             visible={true}
             availableVersions={availableVersions_hasInUse}
             nonIcx8200Count={2}
@@ -134,6 +136,7 @@ describe('ScheduleStep', () => {
       <Provider>
         <Form>
           <ScheduleStep
+            setShowSubTitle={jest.fn()}
             visible={true}
             availableVersions={availableVersions}
             nonIcx8200Count={1}
