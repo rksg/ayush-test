@@ -1,16 +1,17 @@
 import { useIntl } from 'react-intl'
 
-import { isSwitchPath }                                                         from '@acx-ui/analytics/utils'
-import { Loader, Card, Tooltip, NoRecommendationData, ColorPill, NoRRMLicense } from '@acx-ui/components'
-import { formatter, intlFormats }                                               from '@acx-ui/formatter'
-import { TenantLink, createSearchParams, useNavigateToPath }                    from '@acx-ui/react-router-dom'
-import type { PathFilter }                                                      from '@acx-ui/utils'
+import { isSwitchPath }                                      from '@acx-ui/analytics/utils'
+import { Loader, Card, Tooltip, ColorPill }                  from '@acx-ui/components'
+import { formatter, intlFormats }                            from '@acx-ui/formatter'
+import { TenantLink, createSearchParams, useNavigateToPath } from '@acx-ui/react-router-dom'
+import type { PathFilter }                                   from '@acx-ui/utils'
 
 import { states }                                   from '../Recommendations/config'
 import { CrrmList, CrrmListItem, useCrrmListQuery } from '../Recommendations/services'
 import { OptimizedIcon }                            from '../Recommendations/styledComponents'
 
-import * as UI from './styledComponents'
+import { NoRRMLicense, NoRecommendationData } from './extra'
+import * as UI                                from './styledComponents'
 
 const { countFormat } = intlFormats
 
@@ -93,8 +94,6 @@ function AIDrivenRRMWidget ({
       subTitle={noLicense || !zoneCount ? '' : subtitle}
     >{zoneCount === 0
         ? <NoRecommendationData
-          noData={true}
-          isCrrm={true}
           details={defaultText}
           text={noZoneText}
         />
