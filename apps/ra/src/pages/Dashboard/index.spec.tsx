@@ -108,7 +108,7 @@ describe('Dashboard', () => {
     expect(screen.queryByTestId('AIOperations')).toBeNull()
   })
 
-  it('renders correc component when appInsight FF is on', async () => {
+  it('renders correct component when appInsight FF is on', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     const mockUseUserProfileContext = getUserProfile as jest.Mock
     mockUseUserProfileContext.mockReturnValue(defaultMockUserProfile)

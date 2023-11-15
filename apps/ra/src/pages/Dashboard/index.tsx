@@ -116,53 +116,21 @@ const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
     )
   }
 
-  if(enableAppInsights) {
-    return (
-      <UI.AppInsightGrid style={{ height }}>
-        <div style={{ gridArea: 'a1' }}>
-          <ReportTile pathFilters={pathFilters} />
-        </div>
-        <div style={{ gridArea: 'a2' }}>
-          <AppInsights />
-        </div>
-        <div style={{ gridArea: 'b1' }}>
-          <IncidentsCountBySeverities filters={filters} />
-        </div>
-        <div style={{ gridArea: 'b2' }}>
-          <AIDrivenRRM
-            pathFilters={getFiltersForRecommendationWidgets(pathFilters)}
-          />
-        </div>
-        <div style={{ gridArea: 'c2' }}>
-          <AIOperations
-            pathFilters={getFiltersForRecommendationWidgets(pathFilters)}
-          />
-        </div>
-        <div style={{ gridArea: 'd1' }}>
-          <DidYouKnow
-            filters={pathFilters}
-            maxFactPerSlide={3}
-            maxSlideChar={290}
-          />
-        </div>
-        <div style={{ gridArea: 'd2' }}>
-          <SLA pathFilters={pathFilters} />
-        </div>
-      </UI.AppInsightGrid>
-    )
-  }
-
   return (
     <UI.AdminGrid style={{ height }}>
       <div style={{ gridArea: 'a1' }}>
         <ReportTile pathFilters={pathFilters} />
       </div>
-      <div style={{ gridArea: 'a2' }}>
-        <NetworkHistory hideLegend historicalIcon={false} filters={filters} />
-      </div>
-      <div style={{ gridArea: 'a3' }}>
-        <SLA pathFilters={pathFilters} />
-      </div>
+      { enableAppInsights
+        ? [<div style={{ gridArea: 'a2-start/ a2-start/ a3-end / a3-end' }}><AppInsights /></div>]
+        : [
+          <div style={{ gridArea: 'a2' }}>
+            <NetworkHistory hideLegend historicalIcon={false} filters={filters} />
+          </div>,
+          <div style={{ gridArea: 'a3' }}>
+            <SLA pathFilters={pathFilters} />
+          </div>]
+      }
       <div style={{ gridArea: 'b1' }}>
         <IncidentsCountBySeverities filters={filters} />
       </div>
@@ -183,9 +151,13 @@ const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
           maxSlideChar={290}
         />
       </div>
-      <div style={{ gridArea: 'd2' }}>
-        <ChatWithMelissa />
-      </div>
+      { enableAppInsights
+        ? <div style={{ gridArea: 'd2' }}>
+          <SLA pathFilters={pathFilters} />
+        </div>
+        : <div style={{ gridArea: 'd2' }}>
+          <ChatWithMelissa />
+        </div> }
     </UI.AdminGrid>
   )
 }

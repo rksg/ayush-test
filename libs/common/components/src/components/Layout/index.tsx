@@ -12,7 +12,8 @@ import {
 } from 'rc-menu/lib/interface'
 import { useIntl } from 'react-intl'
 
-import { get as getEnv } from '@acx-ui/config'
+import { get as getEnv }     from '@acx-ui/config'
+import { ArrowChevronRight } from '@acx-ui/icons'
 import {
   TenantType,
   useLocation,
@@ -166,6 +167,7 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
       items={props.menuConfig.map(item => getMenuItem(item, ''))}
       onOpenChange={keys => setOpenKeys(keys.slice(-1))}
       getPopupContainer={trigger => trigger.parentNode as HTMLElement}
+      expandIcon={() => <ArrowChevronRight />}
     />
   </>
 }

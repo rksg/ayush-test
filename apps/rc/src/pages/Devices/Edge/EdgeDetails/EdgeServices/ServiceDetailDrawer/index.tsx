@@ -22,7 +22,7 @@ const drawerWidthMap = {
   [EdgeServiceTypeEnum.DHCP]: 500,
   [EdgeServiceTypeEnum.FIREWALL]: '60%',
   [EdgeServiceTypeEnum.NETWORK_SEGMENTATION]: '50%',
-  [EdgeServiceTypeEnum.CENTRALIZED_FORWARDING]: 500
+  [EdgeServiceTypeEnum.SD_LAN]: 500
 }
 
 export const ServiceDetailDrawer = (props: ServiceDetailDrawerProps) => {

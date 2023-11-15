@@ -34,6 +34,11 @@ jest.mock('./useIsSplitOn', () => ({
   useIsSplitOn: jest.fn().mockReturnValue(false)
 }))
 
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user'),
+  useUserProfileContext: jest.fn(() => ({ data: { dogfood: 'false' } }))
+}))
+
 describe('Test useIsTierAllowed function', () => {
   beforeEach(async () => {
     user.useGetBetaStatusQuery = jest.fn().mockImplementation(() => {
