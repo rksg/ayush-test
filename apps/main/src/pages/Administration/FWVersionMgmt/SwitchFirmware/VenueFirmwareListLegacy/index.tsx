@@ -378,10 +378,7 @@ export const VenueFirmwareTable = (
 
 
   return (
-    <Loader states={[
-      tableQuery,
-      { isLoading: false }
-    ]}>
+    <Loader states={[tableQuery]}>
       <Table
         columns={columns}
         dataSource={tableQuery.data?.data}
