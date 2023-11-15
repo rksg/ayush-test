@@ -9,8 +9,8 @@ import { EdgeSubInterface, EdgeUrlsInfo }     from '@acx-ui/rc/utils'
 import { Provider }                           from '@acx-ui/store'
 import { mockServer, render, screen, within } from '@acx-ui/test-utils'
 
-import { EdgeEditContext }                           from '../..'
-import { mockEdgePortConfig, mockEdgeSubInterfaces } from '../../../../__tests__/fixtures'
+import { EdgeEditContext }                                                  from '../..'
+import { mockEdgeLagStatusList, mockEdgePortConfig, mockEdgeSubInterfaces } from '../../../../__tests__/fixtures'
 
 import SubInterface from '.'
 
@@ -67,6 +67,14 @@ describe('EditEdge ports - sub-interface', () => {
       rest.delete(
         EdgeUrlsInfo.deleteSubInterfaces.url,
         (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.get(
+        EdgeUrlsInfo.getLagSubInterfaces.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeSubInterfaces))
+      ),
+      rest.delete(
+        EdgeUrlsInfo.deleteLagSubInterfaces.url,
+        (req, res, ctx) => res(ctx.status(202))
       )
     )
   })
@@ -77,7 +85,7 @@ describe('EditEdge ports - sub-interface', () => {
         <EdgeEditContext.Provider
           value={defaultContextData}
         >
-          <SubInterface data={[]} />
+          <SubInterface portData={[]} />
         </EdgeEditContext.Provider>
       </Provider>, {
         route: {
@@ -88,13 +96,16 @@ describe('EditEdge ports - sub-interface', () => {
     expect(await screen.findByText('No data to display')).toBeVisible()
   })
 
-  it('should create SubInterface successfully', async () => {
+  it('should render SubInterface successfully', async () => {
     render(
       <Provider>
         <EdgeEditContext.Provider
           value={defaultContextData}
         >
-          <SubInterface data={mockEdgePortConfig.ports} />
+          <SubInterface
+            portData={mockEdgePortConfig.ports}
+            lagData={mockEdgeLagStatusList.data}
+          />
         </EdgeEditContext.Provider>
       </Provider>, {
         route: {
@@ -112,7 +123,10 @@ describe('EditEdge ports - sub-interface', () => {
         <EdgeEditContext.Provider
           value={defaultContextData}
         >
-          <SubInterface data={mockEdgePortConfig.ports} />
+          <SubInterface
+            portData={mockEdgePortConfig.ports}
+            lagData={mockEdgeLagStatusList.data}
+          />
         </EdgeEditContext.Provider>
       </Provider>, {
         route: {
@@ -136,7 +150,10 @@ describe('EditEdge ports - sub-interface', () => {
         <EdgeEditContext.Provider
           value={defaultContextData}
         >
-          <SubInterface data={mockEdgePortConfig.ports} />
+          <SubInterface
+            portData={mockEdgePortConfig.ports}
+            lagData={mockEdgeLagStatusList.data}
+          />
         </EdgeEditContext.Provider>
       </Provider>, {
         route: {
@@ -169,7 +186,10 @@ describe('EditEdge ports - sub-interface', () => {
                         <EdgeEditContext.Provider
                           value={defaultContextData}
                         >
-                          <SubInterface data={mockEdgePortConfig.ports} />
+                          <SubInterface
+                            portData={mockEdgePortConfig.ports}
+                            lagData={mockEdgeLagStatusList.data}
+                          />
                         </EdgeEditContext.Provider>
                         {children}
                       </div>
@@ -209,7 +229,10 @@ describe('EditEdge ports - sub-interface', () => {
         <EdgeEditContext.Provider
           value={defaultContextData}
         >
-          <SubInterface data={mockEdgePortConfig.ports} />
+          <SubInterface
+            portData={mockEdgePortConfig.ports}
+            lagData={mockEdgeLagStatusList.data}
+          />
         </EdgeEditContext.Provider>
       </Provider>, {
         route: {
@@ -240,7 +263,10 @@ describe('EditEdge ports - sub-interface', () => {
         <EdgeEditContext.Provider
           value={defaultContextData}
         >
-          <SubInterface data={mockEdgePortConfig.ports} />
+          <SubInterface
+            portData={mockEdgePortConfig.ports}
+            lagData={mockEdgeLagStatusList.data}
+          />
         </EdgeEditContext.Provider>
       </Provider>, {
         route: {
@@ -252,37 +278,97 @@ describe('EditEdge ports - sub-interface', () => {
     const btn = screen.queryByRole('button', { name: 'Import from file' })
     expect(btn).toBeNull()
   })
+
+  it('should render LAG SubInterface successfully', async () => {
+    render(
+      <Provider>
+        <EdgeEditContext.Provider
+          value={defaultContextData}
+        >
+          <SubInterface
+            portData={mockEdgePortConfig.ports}
+            lagData={mockEdgeLagStatusList.data}
+          />
+        </EdgeEditContext.Provider>
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        }
+      })
+    const lagTab = await screen.findByRole('tab', { name: 'LAG 11' })
+    await userEvent.click(lagTab)
+    expect((await screen.findAllByRole('row')).length).toBe(11)
+  })
+
+  it('Delete a LAG sub-interface', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <EdgeEditContext.Provider
+          value={defaultContextData}
+        >
+          <SubInterface
+            portData={mockEdgePortConfig.ports}
+            lagData={mockEdgeLagStatusList.data}
+          />
+        </EdgeEditContext.Provider>
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        }
+      })
+    const lagTab = await screen.findByRole('tab', { name: 'LAG 11' })
+    await userEvent.click(lagTab)
+    const rows = await screen.findAllByRole('row')
+    await user.click(within(rows[1]).getByRole('radio'))
+    await user.click(await screen.findByRole('button', { name: 'Delete' }))
+    await screen.findByText('Delete "2"?')
+    const confirmDialog = await screen.findByRole('dialog')
+    await user.click(screen.getByRole('button', { name: 'Delete Sub-Interface' }))
+    await waitFor(() => expect(confirmDialog).not.toBeVisible())
+  })
+
+  it('should be able to import LAG sub-interface by CSV', async () => {
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.importLagSubInterfacesCSV.url,
+        (req, res, ctx) => res(ctx.status(201), ctx.json({}))
+      )
+    )
+
+    render(
+      <Provider>
+        <EdgeEditContext.Provider
+          value={defaultContextData}
+        >
+          <SubInterface
+            portData={mockEdgePortConfig.ports}
+            lagData={mockEdgeLagStatusList.data}
+          />
+        </EdgeEditContext.Provider>
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        }
+      })
+
+    const lagTab = await screen.findByRole('tab', { name: 'LAG 11' })
+    await userEvent.click(lagTab)
+
+    await userEvent.click(await screen.findByRole('button', { name: /Import from file/i }))
+
+    const dialog = await screen.findByRole('dialog')
+    const csvFile = new File([''], 'sub-interfaces_import_template.csv', { type: 'text/csv' })
+
+    // eslint-disable-next-line testing-library/no-node-access
+    await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
+
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'Import' }))
+
+    const validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating)
+  })
 })
-
-// describe('EditEdge static routes api fail', () => {
-//   let params: { tenantId: string, serialNumber: string }
-//   beforeEach(() => {
-//     params = {
-//       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-//       serialNumber: '000000000000'
-//     }
-
-//     mockServer.use(
-//       rest.get(
-//         EdgeUrlsInfo.getStaticRoutes.url,
-//         (req, res, ctx) => res(ctx.json(mockStaticRoutes))
-//       ),
-//       rest.patch(
-//         EdgeUrlsInfo.updateStaticRoutes.url,
-//         (req, res, ctx) => res(ctx.status(500))
-//       )
-//     )
-//   })
-
-//   it('apply api fail handle', async () => {
-//     const user = userEvent.setup()
-//     render(
-//       <Provider>
-//         <StaticRoutes />
-//       </Provider>, {
-//         route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/routes' }
-//       })
-//     await user.click(await screen.findByRole('button', { name: 'Apply Static Routes' }))
-//     expect(await screen.findByText('An error occurred')).toBeVisible()
-//   })
-// })

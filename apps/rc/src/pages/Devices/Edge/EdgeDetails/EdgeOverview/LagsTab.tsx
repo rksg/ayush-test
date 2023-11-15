@@ -190,7 +190,7 @@ const expandedRowRender = (memberStatus: EdgeLagMemberStatus[]) => {
 const convertToLagsTableDataType = (data: EdgeLagStatus[]):
 LagsTableDataType[] => {
   return data.map(item => ({
-    key: item.lagId,
-    ...item
+    ...item,
+    key: item.lagId.toString()
   }))
 }

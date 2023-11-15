@@ -830,7 +830,7 @@ export const mockedTunnelProfileData = {
   ageTimeMinutes: 20
 }
 
-export const mockEdgeLagList = {
+export const mockEdgeLagStatusList = {
   totalCount: 2,
   page: 1,
   data: [
@@ -886,4 +886,55 @@ export const mockEdgeLagList = {
       ipMode: EdgeIpModeEnum.STATIC
     }
   ]
+}
+
+export const mockedEdgeLagList = {
+  content: [
+    {
+      id: 1,
+      description: 'string',
+      lagType: 'LACP',
+      lacpMode: 'ACTIVE',
+      lacpTimeout: 'SHORT',
+      lagMembers: [
+        {
+          portMac: '00:0c:29:b6:ad:04',
+          portEnabled: true
+        },
+        {
+          portMac: '00:00:00:00:00:00',
+          portEnabled: true
+        }
+      ],
+      portType: 'WAN',
+      ipMode: 'DHCP',
+      ip: '',
+      subnet: '',
+      gateway: '',
+      corePortEnabled: true,
+      natEnabled: true,
+      lagEnabled: true
+    },
+    {
+      id: 2,
+      description: 'string',
+      lagType: 'LACP',
+      lacpMode: 'ACTIVE',
+      lacpTimeout: 'SHORT',
+      lagMembers: [],
+      portType: 'LAN',
+      ipMode: 'STATIC',
+      ip: '1.1.1.1',
+      subnet: '255.255.255.0',
+      gateway: '1.0.0.0',
+      corePortEnabled: false,
+      natEnabled: true,
+      lagEnabled: true
+    }
+  ],
+  paging: {
+    page: 1,
+    pageSize: 10,
+    totalCount: 2
+  }
 }
