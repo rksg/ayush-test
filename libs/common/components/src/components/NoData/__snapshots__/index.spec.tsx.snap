@@ -152,11 +152,7 @@ exports[`NoAiOpsLicense should render correctly with the prop 1`] = `
     <button
       class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kBDiup styledComponents__LicenseButton-sc-m7jeli-8 kthOJg"
       type="button"
-    >
-      <span>
-        Update my licenses
-      </span>
-    </button>
+    />
   </div>
 </DocumentFragment>
 `;

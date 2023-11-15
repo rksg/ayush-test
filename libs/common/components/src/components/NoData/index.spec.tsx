@@ -1,3 +1,5 @@
+import { BrowserRouter } from 'react-router-dom'
+
 import { render } from '@acx-ui/test-utils'
 
 import { NoActiveContent, NoActiveData, NoAiOpsLicense, NoData, NoRecommendationData } from '.'
@@ -45,8 +47,10 @@ describe('NoRecommendationData', () => {
 
 describe('NoAiOpsLicense', () => {
   it('should render correctly with the prop', () => {
-    // eslint-disable-next-line max-len
-    const { asFragment } = render(<NoAiOpsLicense text='RUCKUS AI cannot analyse your zone due to inadequate licenses. Please ensure you have licenses fully applied for the zone for AI Operations optimizations.'/>)
+    const { asFragment } = render(<BrowserRouter>
+      {/* eslint-disable-next-line max-len */}
+      <NoAiOpsLicense text='RUCKUS AI cannot analyse your zone due to inadequate licenses. Please ensure you have licenses fully applied for the zone for AI Operations optimizations.'/>
+    </BrowserRouter>)
     expect(asFragment()).toMatchSnapshot()
   })
 })
