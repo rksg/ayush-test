@@ -74,7 +74,7 @@ describe('AssignEcDrawer', () => {
       })
 
     expect(await screen.findByRole('dialog')).toBeVisible()
-    expect(screen.getByText('Manage Customers Assigned')).toBeVisible()
+    expect(screen.getByText('Manage Assigned Customers')).toBeVisible()
     expect(screen.getByRole('button', { name: 'Save' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
 

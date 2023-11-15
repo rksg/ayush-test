@@ -45,7 +45,7 @@ import {
 import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                              from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, hasRoles, hasAccess }             from '@acx-ui/user'
-import { AccountType, isDelegationMode }                                          from '@acx-ui/utils'
+import { AccountType, isDelegationMode, noDataDisplay }                           from '@acx-ui/utils'
 
 import * as UI from '../Subscriptions/styledComponent'
 
@@ -286,7 +286,7 @@ export function MspCustomers () {
         }
       }]),
       ...(hideTechPartner ? [] : [{
-        title: $t({ defaultMessage: 'Integrator' }),
+        title: $t({ defaultMessage: 'Integrator Count' }),
         dataIndex: 'integrator',
         key: 'integrator',
         onCell: (data: MspEc) => {
@@ -299,16 +299,18 @@ export function MspCustomers () {
           } : {}
         },
         render: function (_: React.ReactNode, row: MspEc) {
-          const val =
-            row?.integrator ? mspUtils.transformTechPartner(row.integrator, techParnersData) : '--'
+          const val = row.integratorCount !== undefined
+            ? mspUtils.transformTechPartnerCount(row.integratorCount)
+            : row?.integrator ? mspUtils.transformTechPartner(row.integrator, techParnersData)
+              : noDataDisplay
           return (
             allowSelectTechPartner
-              ? <Link to=''>{val}</Link> : val
+              ? <Link to=''><div style={{ textAlign: 'center' }}>{val}</div></Link> : val
           )
         }
       }]),
       ...(hideTechPartner ? [] : [{
-        title: $t({ defaultMessage: 'Installer' }),
+        title: $t({ defaultMessage: 'Installer Count' }),
         dataIndex: 'installer',
         key: 'installer',
         onCell: (data: MspEc) => {
@@ -322,11 +324,13 @@ export function MspCustomers () {
           } : {}
         },
         render: function (_: React.ReactNode, row: MspEc) {
-          const val =
-            row?.installer ? mspUtils.transformTechPartner(row.installer, techParnersData) : '--'
+          const val = row.installerCount !== undefined
+            ? mspUtils.transformTechPartnerCount(row.installerCount)
+            : row?.installer ? mspUtils.transformTechPartner(row.installer, techParnersData)
+              : noDataDisplay
           return (
             allowSelectTechPartner
-              ? <Link to=''>{val}</Link> : val
+              ? <Link to=''><div style={{ textAlign: 'center' }}>{val}</div></Link> : val
           )
         }
       }]),
@@ -423,7 +427,7 @@ export function MspCustomers () {
         sorter: true,
         render: function (_, row) {
           const nextExpirationDate = mspUtils.transformExpirationDate(row)
-          if (nextExpirationDate === '--')
+          if (nextExpirationDate === noDataDisplay)
             return nextExpirationDate
           const expiredOnString = `${$t({ defaultMessage: 'Expired on' })} ${nextExpirationDate}`
           const remainingDays = EntitlementUtil.timeLeftInDays(nextExpirationDate)

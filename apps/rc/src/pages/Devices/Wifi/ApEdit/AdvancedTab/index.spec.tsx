@@ -61,7 +61,9 @@ describe('AP advanced Tab', () => {
       updateApLed: mockUpdateApLed,
       discardApLedChanges: jest.fn(),
       updateBssColoring: jest.fn(),
-      discardBssColoringChanges: jest.fn()
+      discardBssColoringChanges: jest.fn(),
+      updateApManagementVlan: jest.fn(),
+      discardApManagementVlan: jest.fn()
     }
 
     render(
