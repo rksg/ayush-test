@@ -1,7 +1,8 @@
 import _                      from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
 
-import { getIntl } from '@acx-ui/utils'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { getIntl }                from '@acx-ui/utils'
 
 import {
   ApDeviceStatusEnum,
@@ -164,15 +165,16 @@ export const AFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy?: string, r
   return (displayList.length === 0) ? '--' : displayList.join(' ')
 }
 
-// eslint-disable-next-line
+/* eslint-disable max-len */
 export const ChannelButtonTextRender = (channels: number[], isChecked: boolean, afcProps?: AFCProps): string => {
   const { $t } = useIntl()
+  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
   let message = isChecked
     ? $t({ defaultMessage: 'Disable this channel' })
     : $t({ defaultMessage: 'Enable this channel' })
   const afcAvailableChannel = _.uniq(afcProps?.afcInfo?.availableChannels).sort((a, b) => a-b)
   const convergence = _.intersection(channels, afcAvailableChannel)
-  if(convergence.length > 0 && afcProps?.afcInfo?.afcStatus === AFCStatus.PASSED) {
+  if(convergence.length > 0 && afcProps?.afcInfo?.afcStatus === AFCStatus.PASSED && AFC_Featureflag) {
     message = $t({ defaultMessage: 'Allowed by AFC' }) + '\n' + message
   }
   return message
