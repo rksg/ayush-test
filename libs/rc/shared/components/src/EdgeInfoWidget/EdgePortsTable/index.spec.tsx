@@ -1,12 +1,16 @@
+import { EdgeLagStatus }  from '@acx-ui/rc/utils'
 import { render, screen } from '@acx-ui/test-utils'
 
-import { edgePortsSetting } from '../__tests__/fixtures'
+import { edgePortsSetting, mockEdgeLagList } from '../__tests__/fixtures'
 
 import { EdgePortsTable } from '.'
 
 describe('Edge Ports Table', () => {
   it('should correctly render', async () => {
-    render(<EdgePortsTable data={edgePortsSetting} />)
+    render(<EdgePortsTable
+      portData={edgePortsSetting}
+      lagData={mockEdgeLagList.data as EdgeLagStatus[]}
+    />)
 
     const portsRow = (await screen.findAllByRole('row'))
       .filter(row => row.className.includes('ant-table-row'))

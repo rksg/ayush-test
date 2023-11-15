@@ -198,5 +198,10 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/edges/:serialNumber/ports/:mac/subInterfaces',
     newApi: true
+  },
+  getEdgeLagStatusList: {
+    method: 'post',
+    url: '/edges/:serialNumber/linkAggregationGroups/query',
+    newApi: true
   }
 }
