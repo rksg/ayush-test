@@ -24,7 +24,8 @@ import {
   RadioChannel,
   SelectItemOption,
   split5GChannels,
-  VenueRadioTypeDataKeyMap
+  VenueRadioTypeDataKeyMap,
+  LPIButtonText
 } from './RadioSettingsContents'
 import { RadioSettingsForm } from './RadioSettingsForm'
 
@@ -63,6 +64,7 @@ export function SingleRadioSettings (props:{
   testId?: string,
   isUseVenueSettings?: boolean,
   supportDfsChannels?: any,
+  LPIButtonText?: LPIButtonText,
   afcProps?: AFCProps
 }) {
 
@@ -74,6 +76,7 @@ export function SingleRadioSettings (props:{
     context = 'venue',
     isUseVenueSettings = false,
     testId,
+    LPIButtonText,
     afcProps
   } = props
 
@@ -397,7 +400,7 @@ export function SingleRadioSettings (props:{
               isUseVenueSettings={isUseVenueSettings}
               onGUIChanged={handleSettingGUIChanged}
               isAFCEnabled={afcProps?.isAFCEnabled}
-              LPIButtonText={afcProps?.LPIButtonText}
+              LPIButtonText={LPIButtonText}
             />
           </Col>
           { context === 'venue' && !inherit5G && !disable &&

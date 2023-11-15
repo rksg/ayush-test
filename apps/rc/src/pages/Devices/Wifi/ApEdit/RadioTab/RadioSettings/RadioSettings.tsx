@@ -350,9 +350,7 @@ export function RadioSettings () {
   const [isEnableUpper5g, setIsEnableUpper5g] = useState(true)
   const [apModelType, setApModelType] = useState('indoor')
   const [venue, setVenue] = useState({} as VenueExtended)
-  const [enableAfc, setEnableAfc] = useState(false)
   const [afcProps, setAfcProps] = useState({} as AFCProps)
-
 
   const [isSupportTriBandRadioAp, setIsSupportTriBandRadioAp] = useState(false)
   const [isSupportDual5GAp, setIsSupportDual5GAp] = useState(false)
@@ -414,55 +412,6 @@ export function RadioSettings () {
     return (isSupportDual5GAp &&
            bandwidthLower5GOptions.length > 0 &&
            bandwidthUpper5GOptions.length > 0)
-  }
-
-  const defaultButtonTextSetting: LPIButtonText = {
-    buttonText:
-      <p style={{ fontSize: '12px', margin: '0px' }}>
-        {$t({ defaultMessage: 'Standard power' })}
-      </p>
-    ,
-    LPIModeOnChange: setEnableAfc,
-    LPIModeState: enableAfc,
-    isAPOutdoor: apCapabilities?.isOutdoor
-  }
-
-  function setLPIToggleText () {
-    let newButtonTextSetting = _.clone(defaultButtonTextSetting)
-    const afcInfo = apViewContextData?.apStatusData?.afcInfo || undefined
-    let newButtonText : JSX.Element = (<p style={{ fontSize: '12px', margin: '0px' }}> {$t({ defaultMessage: 'Standard power' })} </p>)
-
-    if(isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, RadioType.Normal6GHz, isEnablePerApRadioCustomizationFlag)){
-      newButtonText = ( <p style={{ fontSize: '12px', margin: '0px' }}>
-        {enableAfc ?
-          $t({ defaultMessage: 'Standard power' }):
-          $t({ defaultMessage: 'Low power' })
-        }
-      </p>)
-    }
-    else {
-      if (isAPLowPower(afcInfo) && enableAfc) {
-        let defaultButtonText = $t({ defaultMessage: 'Standard power' })
-        let defaultStyle = { color: '#910012', fontSize: '12px', margin: '0px' }
-        switch(afcInfo?.afcStatus) {
-          case AFCStatus.WAIT_FOR_LOCATION:
-            defaultButtonText = $t({ defaultMessage: 'Standard power [Geo Location not set]' })
-            break
-          case AFCStatus.WAIT_FOR_RESPONSE:
-            defaultButtonText = $t({ defaultMessage: 'Standard power [Pending response from the AFC server]' })
-            break
-          case AFCStatus.REJECTED:
-            defaultButtonText = $t({ defaultMessage: 'Standard power [No channels available]' })
-            break
-          default:
-            defaultStyle = { color: '#000000', fontSize: '12px', margin: '0px' }
-        }
-        newButtonText = (<p style={defaultStyle}> {defaultButtonText} </p>)
-      }
-    }
-
-    _.set(newButtonTextSetting, 'buttonText', newButtonText)
-    return newButtonTextSetting
   }
 
   useEffect(() => {
@@ -531,7 +480,6 @@ export function RadioSettings () {
         setApDataLoaded(true)
         setAfcProps({
           isAFCEnabled: availableChannels.afcEnabled,
-          LPIButtonText: setLPIToggleText(),
           afcInfo: apViewContextData.apStatusData?.afcInfo
         } as AFCProps)
       }

@@ -235,7 +235,6 @@ export function RadioSettings () {
           setHasTriBandAps((findAp.length > 0))
           setAfcProps({
             isAFCEnabled: supportChannelsData?.afcEnabled,
-            LPIButtonText: undefined,
             afcInfo: undefined
           })
         }
