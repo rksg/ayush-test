@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 
-import { Space, Form }                           from 'antd'
-import _, { intersection, findIndex, map, uniq } from 'lodash'
-import { useIntl }                               from 'react-intl'
+import { Space, Form }                        from 'antd'
+import { intersection, findIndex, map, uniq } from 'lodash'
+import { useIntl }                            from 'react-intl'
 
-import { Tooltip }  from '@acx-ui/components'
-import { AFCProps } from '@acx-ui/rc/utils'
+import { Tooltip }                 from '@acx-ui/components'
+import { AFCProps }                from '@acx-ui/rc/utils'
+import { ChannelButtonTextRender } from '@acx-ui/rc/utils'
 
 import { BarButton5G, BarButtonDFS, CheckboxGroup } from './styledComponents'
 
@@ -184,7 +185,12 @@ export function RadioSettingsChannels (props: {
             options={channelGroupList?.map((group: channelGroupOption) => ({
               label: <Tooltip
                 key={group?.channels?.[0].value}
-                title={disabled ? '' : displayTooltipText(group.channels, group.selected)
+                title={disabled ?
+                  '' :
+                  ChannelButtonTextRender(group.channels.map(
+                    (radioChannel) => {
+                      return Number(radioChannel.value)
+                    }), group.selected, afcProps)
                 }
                 className='channels'
               >{
@@ -246,21 +252,6 @@ export function RadioSettingsChannels (props: {
       channelValueList, upper5GChannels, upper5G, 'Upper5GChannels')
 
     return { dfsBarPosition, lower5GBarPosition, upper5GBarPosition }
-  }
-
-  // eslint-disable-next-line max-len
-  function displayTooltipText (channels: RadioChannel[], isGroupSelect: boolean) : string {
-    let message = isGroupSelect
-      ? $t({ defaultMessage: 'Disable this channel' })
-      : $t({ defaultMessage: 'Enable this channel' })
-    const radioChannels = channels.map((channel) => {
-      return Number(channel.value)
-    })
-    const afcAvailableChannel = _.uniq(afcProps?.afcInfo?.availableChannels).sort((a, b) => a-b)
-    if(_.intersection(radioChannels, afcAvailableChannel).length > 0){
-      message = $t({ defaultMessage: 'Allowed by AFC' }) + '\n' + message
-    }
-    return message
   }
 
   function getChannelGroupList (channelGroupListArray: RadioChannel[][]) {

@@ -5,8 +5,9 @@ import _                            from 'lodash'
 import { useIntl }                  from 'react-intl'
 
 
-import { Tooltip }  from '@acx-ui/components'
-import { AFCProps } from '@acx-ui/rc/utils'
+import { Tooltip }                 from '@acx-ui/components'
+import { AFCProps, AFCStatus }     from '@acx-ui/rc/utils'
+import { ChannelButtonTextRender } from '@acx-ui/rc/utils'
 
 import { RadioChannel }                        from '../../RadioSettings/RadioSettingsContents'
 import { BarButton6G, CheckboxGroupFor320Mhz } from '../styledComponents'
@@ -186,15 +187,9 @@ export function RadioSettingsChannels320Mhz (props: {
     availability: boolean
   }) {
 
-    const { $t } = useIntl()
     const { channelGroupNumber, availability } = props
-    let message = availability ? $t({ defaultMessage: 'Disable this channel' }) : $t({ defaultMessage: 'Enable this channel' })
-
     const channels = complexGroupChannelState.ChannelGroup_160MHz[channelGroupNumber].channels
-    const convergence = _.intersection(channels.map(Number), afcProps?.afcInfo?.availableChannels)
-    if(convergence.length > 0) {
-      message = $t({ defaultMessage: 'Allowed by AFC' }) + '\n' + message
-    }
+    let message = ChannelButtonTextRender(channels.map(Number), availability, afcProps)
 
     /* eslint-disable max-len */
     return (

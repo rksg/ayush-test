@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react'
 import { Col, Row, Form } from 'antd'
 import { Radio }          from 'antd'
 import _                  from 'lodash'
-import { useIntl }        from 'react-intl'
 
-import { Tooltip }  from '@acx-ui/components'
-import { AFCProps } from '@acx-ui/rc/utils'
+import { Tooltip }                 from '@acx-ui/components'
+import { AFCProps }                from '@acx-ui/rc/utils'
+import { ChannelButtonTextRender } from '@acx-ui/rc/utils'
 
 import { RadioChannel }  from '../../RadioSettings/RadioSettingsContents'
 import { CheckboxGroup } from '../styledComponents'
@@ -44,7 +44,6 @@ export function RadioSettingsChannelsManual320Mhz (props: {
   afcProps?: AFCProps
 }) {
 
-  const { $t } = useIntl()
   const form = Form.useFormInstance()
   const [checkedGroup, setCheckGroup] = useState('320MHz-1')
   const [checkedChannel, setCheckedChannel] = useState([] as CheckboxValueType[])
@@ -81,17 +80,6 @@ export function RadioSettingsChannelsManual320Mhz (props: {
     if(handleChanged) {
       handleChanged()
     }
-  }
-
-  const displayTooltipText = (value: string, isChecked: boolean) : string => {
-    let message = isChecked
-      ? $t({ defaultMessage: 'Disable this channel' })
-      : $t({ defaultMessage: 'Enable this channel' })
-    const afcAvailableChannel = _.uniq(afcProps?.afcInfo?.availableChannels).sort((a, b) => a-b)
-    if(afcAvailableChannel.includes(Number(value))) {
-      message = $t({ defaultMessage: 'Allowed by AFC' }) + '\n' + message
-    }
-    return message
   }
 
   useEffect(()=> {
@@ -144,7 +132,8 @@ export function RadioSettingsChannelsManual320Mhz (props: {
                 label:
                 <Tooltip
                   key={value}
-                  title={disabled ? '' : displayTooltipText(value, checkedChannel.includes(value))}
+                  // eslint-disable-next-line
+                  title={disabled ? '' : ChannelButtonTextRender(Array.of(Number(value)), checkedChannel.includes(value), afcProps)}
                 >
                   {value}
                 </Tooltip>,
@@ -169,7 +158,8 @@ export function RadioSettingsChannelsManual320Mhz (props: {
                 label:
                 <Tooltip
                   key={value}
-                  title={disabled ? '' : displayTooltipText(value, checkedChannel.includes(value))}
+                  // eslint-disable-next-line
+                  title={disabled ? '' : ChannelButtonTextRender(Array.of(Number(value)), checkedChannel.includes(value), afcProps)}
                 >
                   {value}
                 </Tooltip>,
