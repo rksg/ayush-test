@@ -96,6 +96,18 @@ export const VenueFirmwareTable = (
   const handleModalCancel = () => {
     setModelVisible(false)
   }
+
+  const getSwitchFirmwareList = function (row: FirmwareSwitchVenue) {
+    let versionList = []
+    if (row.switchFirmwareVersion?.id) {
+      versionList.push(parseSwitchVersion(row.switchFirmwareVersion.id))
+    }
+    if (row.switchFirmwareVersionAboveTen?.id) {
+      versionList.push(parseSwitchVersion(row.switchFirmwareVersionAboveTen.id))
+    }
+    return versionList
+  }
+
   const handleModalSubmit = async (payload: UpgradePreferences) => {
     try {
       await updateUpgradePreferences({ params, payload }).unwrap()
@@ -123,13 +135,7 @@ export const VenueFirmwareTable = (
       filterable: filterables ? filterables['version'] : false,
       filterMultiple: false,
       render: function (_, row) {
-        let versionList = []
-        if (row.switchFirmwareVersion?.id) {
-          versionList.push(parseSwitchVersion(row.switchFirmwareVersion.id))
-        }
-        if (row.switchFirmwareVersionAboveTen?.id) {
-          versionList.push(parseSwitchVersion(row.switchFirmwareVersionAboveTen.id))
-        }
+        let versionList = getSwitchFirmwareList(row)
         return versionList.length > 0 ? versionList.join(', ') : noDataDisplay
       }
     },
@@ -138,13 +144,20 @@ export const VenueFirmwareTable = (
       sorter: { compare: sortProp('availableVersions.id', defaultSort) },
       key: 'availableVersions',
       dataIndex: 'availableVersions',
-      render: function (_, row) {
-        const availableVersions = row.availableVersions
+      render: function (__, row) {
+        const { availableVersions } = row
         if (!Array.isArray(availableVersions) || availableVersions.length === 0) {
           return noDataDisplay
-        } else {
-          return availableVersions.map(version => parseSwitchVersion(version.id)).join(',')
         }
+
+        const availableVersionList = availableVersions.map(version =>
+          parseSwitchVersion(version.id))
+        const switchFirmwareList = getSwitchFirmwareList(row)
+
+        const filteredArray = availableVersionList.filter(value =>
+          !switchFirmwareList.includes(value))
+
+        return filteredArray.length > 0 ? filteredArray.join(',') : noDataDisplay
       }
     },
     {

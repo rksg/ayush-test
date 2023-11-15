@@ -44,6 +44,7 @@ function useColumns () {
       title: intl.$t({ defaultMessage: 'Venue' }),
       key: 'name',
       dataIndex: 'name',
+      width: 150,
       defaultSortOrder: 'ascend',
       render: function (value) {
         return <div style={{ fontWeight: cssStr('--acx-subtitle-4-font-weight') }} > {value}</div >
@@ -51,11 +52,13 @@ function useColumns () {
     }, {
       title: intl.$t({ defaultMessage: 'Model' }),
       key: 'Model',
+      width: 100,
       dataIndex: 'Model'
     }, {
       title: intl.$t({ defaultMessage: 'Current Firmware' }),
       key: 'version',
       dataIndex: 'version',
+      width: 150,
       render: function (_, row) {
         let versionList = []
         if (row.switchFirmwareVersion?.id) {
@@ -70,6 +73,7 @@ function useColumns () {
       title: intl.$t({ defaultMessage: 'Available Firmware' }),
       key: 'availableVersions',
       dataIndex: 'availableVersions',
+      width: 150,
       render: function (_, row) {
         const availableVersions = row.availableVersions
         if (availableVersions.length === 0) {
@@ -82,6 +86,7 @@ function useColumns () {
       title: intl.$t({ defaultMessage: 'Scheduling' }),
       key: 'nextSchedule',
       dataIndex: 'nextSchedule',
+      width: 200,
       render: function (_, row) {
         return <Tooltip
           title={getSwitchNextScheduleTplTooltip(row) ||
@@ -145,6 +150,7 @@ export const SelectSwitchStep = (
       title: intl.$t({ defaultMessage: 'Switch' }),
       key: 'switchName',
       dataIndex: 'switchName',
+      width: 150,
       defaultSortOrder: 'ascend',
       render: function (_, row) {
         const stackLabel = row.isStack ? intl.$t({ defaultMessage: '(Stack)' }) : ''
@@ -154,6 +160,7 @@ export const SelectSwitchStep = (
       title: intl.$t({ defaultMessage: 'Model' }),
       key: 'model',
       dataIndex: 'model',
+      width: 100,
       render: function (_, row) {
         return getHightlightSearch(row.model, searchText)
       }
@@ -161,6 +168,7 @@ export const SelectSwitchStep = (
       title: intl.$t({ defaultMessage: 'Current Firmware' }),
       key: 'currentFirmware',
       dataIndex: 'currentFirmware',
+      width: 150,
       filterMultiple: false,
       render: function (_, row) {
         if (row.currentFirmware) {
@@ -173,6 +181,7 @@ export const SelectSwitchStep = (
       title: intl.$t({ defaultMessage: 'Available Firmware' }),
       key: 'availableVersion',
       dataIndex: 'availableVersion',
+      width: 150,
       render: function (_, row) {
         if (row.availableVersion?.id) {
           return parseSwitchVersion(row.availableVersion.id)
@@ -183,7 +192,8 @@ export const SelectSwitchStep = (
     }, {
       title: intl.$t({ defaultMessage: 'Scheduling' }),
       key: 'switchNextSchedule',
-      dataIndex: 'model',
+      dataIndex: 'switchNextSchedule',
+      width: 200,
       render: function (_, row) {
         return <Tooltip
           title={getSwitchScheduleTpl(row) ||
