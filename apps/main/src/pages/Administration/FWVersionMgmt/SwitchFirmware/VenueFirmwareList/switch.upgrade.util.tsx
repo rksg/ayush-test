@@ -126,14 +126,3 @@ export function sortAvailableVersionProp (
     return sortFn(valueA, valueB)
   }
 }
-
-export function sortProp<RecordType, PropType = unknown> (
-  prop: string,
-  sortFn: (a: PropType, b: PropType) => SortResult
-) {
-  return (a: RecordType, b: RecordType) => {
-    const valueA = _.get(a, prop)
-    const valueB = _.get(b, prop)
-    return sortFn(valueA, valueB)
-  }
-}
