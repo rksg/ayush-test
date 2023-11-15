@@ -18,7 +18,8 @@ const Administrators = () => {
   const mspEcProfileData = useGetMspEcProfileQuery({ params })
 
   const isVAR = userProfileData?.var && !userProfileData?.support
-  const isNonVarMsp = (tenantDetailsData.data?.tenantType === TenantType.MSP_NON_VAR)
+  const tenantType = tenantDetailsData.data?.tenantType
+  const isNonVarMsp = (tenantType === TenantType.MSP_NON_VAR)
   let isMspEc = mspUtils.isMspEc(mspEcProfileData.data)
   let currentUserMail = userProfileData?.email
 
@@ -41,6 +42,7 @@ const Administrators = () => {
         currentUserMail={currentUserMail}
         isPrimeAdminUser={isPrimeAdminUser}
         isMspEc={isMspEc}
+        tenantType={tenantType}
       />
       {isDelegationReady &&
         <DelegationsTable

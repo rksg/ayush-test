@@ -122,7 +122,7 @@ export enum ServiceType {
   NETWORK_SEGMENTATION = 'Personal Identity Network',
   WEBAUTH_SWITCH = 'Web Auth',
   RESIDENT_PORTAL = 'Resident Portal',
-  EDGE_CENTRALIZED_FORWARDING = 'Centralized Forwarding'
+  EDGE_SD_LAN = 'SD-LAN'
 }
 
 export enum ServiceStatus {

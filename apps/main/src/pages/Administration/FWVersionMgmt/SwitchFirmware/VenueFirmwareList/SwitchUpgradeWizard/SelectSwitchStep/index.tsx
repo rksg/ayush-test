@@ -5,8 +5,10 @@ import _                  from 'lodash'
 import { useIntl }        from 'react-intl'
 
 import {
+  Loader,
   Table,
   TableProps,
+  cssStr,
   useStepFormContext
 } from '@acx-ui/components'
 import { SearchOutlined }             from '@acx-ui/icons'
@@ -26,8 +28,12 @@ import {
   getSwitchNextScheduleTplTooltip,
   parseSwitchVersion
 } from '../../../../FirmwareUtils'
-import * as UI                                            from '../../styledComponents'
-import { getSwitchNextScheduleTpl, getSwitchScheduleTpl } from '../../switch.upgrade.util'
+import * as UI           from '../../styledComponents'
+import {
+  getHightlightSearch,
+  getSwitchNextScheduleTpl,
+  getSwitchScheduleTpl
+} from '../../switch.upgrade.util'
 
 function useColumns () {
   const intl = useIntl()
@@ -37,9 +43,12 @@ function useColumns () {
       title: intl.$t({ defaultMessage: 'Venue' }),
       key: 'name',
       dataIndex: 'name',
-      defaultSortOrder: 'ascend'
+      defaultSortOrder: 'ascend',
+      render: function (value) {
+        return <div style={{ fontWeight: cssStr('--acx-subtitle-4-font-weight') }} > {value}</div >
+      }
     }, {
-      title: '',
+      title: intl.$t({ defaultMessage: 'Model' }),
       key: 'Model',
       dataIndex: 'Model'
     }, {
@@ -97,13 +106,14 @@ export const useDefaultVenuePayload = (): RequestPayload => {
 
 type SelectSwitchStepProps = {
   data: FirmwareSwitchVenue[],
-  wizardtype?: SwitchFirmwareWizardType
+  wizardtype?: SwitchFirmwareWizardType,
+  setShowSubTitle: (visible: boolean) => void
 }
 
 export const SelectSwitchStep = (
-  { data }: SelectSwitchStepProps) => {
+  { data, setShowSubTitle }: SelectSwitchStepProps) => {
 
-  const { form } = useStepFormContext()
+  const { form, current } = useStepFormContext()
   const columns = useColumns()
   const intl = useIntl()
   const { tenantId } = useParams()
@@ -122,7 +132,12 @@ export const SelectSwitchStep = (
       selectedData: SwitchFirmware[]
     }
   })
+  const [isLoading, setIsLoading] = useState(false)
   const totalSwitchCount = data.reduce((total, venue) => total + venue.switchCount, 0)
+
+  useEffect(()=>{
+    setShowSubTitle(true)
+  }, [current])
 
   const switchColumns: TableProps<SwitchFirmware>['columns'] = [
     {
@@ -132,12 +147,15 @@ export const SelectSwitchStep = (
       defaultSortOrder: 'ascend',
       render: function (_, row) {
         const stackLabel = row.isStack ? intl.$t({ defaultMessage: '(Stack)' }) : ''
-        return `${row.switchName} ${stackLabel}`
+        return getHightlightSearch(`${row.switchName} ${stackLabel}`, searchText)
       }
     }, {
       title: intl.$t({ defaultMessage: 'Model' }),
       key: 'model',
-      dataIndex: 'model'
+      dataIndex: 'model',
+      render: function (_, row) {
+        return getHightlightSearch(row.model, searchText)
+      }
     }, {
       title: intl.$t({ defaultMessage: 'Current Firmware' }),
       key: 'currentFirmware',
@@ -183,6 +201,7 @@ export const SelectSwitchStep = (
     if (_.isEmpty(nestedData[record.id]?.initialData) ||
       (record.switchCount + record.aboveTenSwitchCount)
       !== nestedData[record.id]?.initialData.length) {
+      setIsLoading(true)
       const switchListPayload = {
         venueIdList: [record.id]
       }
@@ -207,6 +226,7 @@ export const SelectSwitchStep = (
           selectedData: SwitchFirmware[]
         }
       })
+      setIsLoading(false)
 
       if (hasSelectedVenue && Array.isArray(switchList)) {
         setSelectedSwitchRowKeys({
@@ -467,86 +487,89 @@ export const SelectSwitchStep = (
         /></div>}
 
       {
-        _.isEmpty(searchText) && <UI.ExpanderTableWrapper>
-          <Table
-            columns={columns}
-            enableResizableColumn={false}
-            type={'tall'}
-            dataSource={data}
-            expandable={{
-              onExpand: handleExpand,
-              expandedRowRender: expandedRowRenderFunc,
-              rowExpandable: record =>
-                (record?.switchCount + record?.aboveTenSwitchCount > 0) ?? false
-            }}
-            enableApiFilter={true}
-            rowKey='id'
-            rowSelection={{
-              type: 'checkbox',
-              selectedRowKeys: selectedVenueRowKeys,
-              getCheckboxProps: (record) => {
-                return {
-                  indeterminate: isIndeterminate(record),
-                  name: record.name
-                }
-              },
-              onChange: (selectedKeys) => {
-                const addedVenue = _.difference(selectedKeys, selectedVenueRowKeys)
-                const deletedVenue = _.difference(selectedVenueRowKeys, selectedKeys)
-                if (addedVenue.length > 0) {
-                  let newNestedData = nestedData
-                  let newSelectedSwitchRowKeys = selectedSwitchRowKeys
+        _.isEmpty(searchText) && <Loader states={[{ isFetching: isLoading, isLoading: false }]}>
+          <UI.ExpanderTableWrapper>
+            <Table
+              columns={columns}
+              enableResizableColumn={false}
+              type={'tall'}
+              dataSource={data}
+              expandable={{
+                onExpand: handleExpand,
+                expandedRowRender: expandedRowRenderFunc,
+                rowExpandable: record =>
+                  (record?.switchCount + record?.aboveTenSwitchCount > 0) ?? false
+              }}
+              enableApiFilter={true}
+              rowKey='id'
+              rowSelection={{
+                type: 'checkbox',
+                selectedRowKeys: selectedVenueRowKeys,
+                getCheckboxProps: (record) => {
+                  return {
+                    indeterminate: isIndeterminate(record),
+                    name: record.name
+                  }
+                },
+                onChange: (selectedKeys) => {
+                  const addedVenue = _.difference(selectedKeys, selectedVenueRowKeys)
+                  const deletedVenue = _.difference(selectedVenueRowKeys, selectedKeys)
+                  if (addedVenue.length > 0) {
+                    let newNestedData = nestedData
+                    let newSelectedSwitchRowKeys = selectedSwitchRowKeys
 
-                  addedVenue.forEach(async (venue) => {
+                    addedVenue.forEach(async (venue) => {
 
-                    let initialData = nestedData[venue]?.initialData ?? []
-                    const row = data.filter(v => v.id === venue)
-                    if (_.isEmpty(initialData) &&
+                      let initialData = nestedData[venue]?.initialData ?? []
+                      const row = data.filter(v => v.id === venue)
+                      if (_.isEmpty(initialData) &&
                       (row[0]?.switchCount > 0 || row[0]?.aboveTenSwitchCount > 0)) {
-                      const switchListPayload = {
-                        venueIdList: [venue]
+                        const switchListPayload = {
+                          venueIdList: [venue]
+                        }
+                        const switchList = (await getSwitchList({
+                          params: { tenantId: tenantId }, payload: switchListPayload
+                        }, false)).data?.data
+                        if (switchList) {
+                          initialData = switchList
+                        }
                       }
-                      const switchList = (await getSwitchList({
-                        params: { tenantId: tenantId }, payload: switchListPayload
-                      }, false)).data?.data
-                      if (switchList) {
-                        initialData = switchList
+
+                      const selectedAllSwitchList = initialData
+                      const selectedAllSwitchIds =
+                        selectedAllSwitchList.map(s => s.switchId) as Key[]
+                      newNestedData[venue] = {
+                        initialData: selectedAllSwitchList,
+                        selectedData: selectedAllSwitchList
                       }
-                    }
 
-                    const selectedAllSwitchList = initialData
-                    const selectedAllSwitchIds = selectedAllSwitchList.map(s => s.switchId) as Key[]
-                    newNestedData[venue] = {
-                      initialData: selectedAllSwitchList,
-                      selectedData: selectedAllSwitchList
-                    }
+                      newSelectedSwitchRowKeys[venue] = selectedAllSwitchIds
+                    })
 
-                    newSelectedSwitchRowKeys[venue] = selectedAllSwitchIds
-                  })
+                    setNestedData(newNestedData)
+                    setSelectedSwitchRowKeys(newSelectedSwitchRowKeys)
 
-                  setNestedData(newNestedData)
-                  setSelectedSwitchRowKeys(newSelectedSwitchRowKeys)
+                  } else if (deletedVenue.length > 0) {
+                    let newNestedData = nestedData
+                    let newSelectedSwitchRowKeys = selectedSwitchRowKeys
 
-                } else if (deletedVenue.length > 0) {
-                  let newNestedData = nestedData
-                  let newSelectedSwitchRowKeys = selectedSwitchRowKeys
+                    deletedVenue.forEach((venue) => {
+                      newNestedData[venue] = {
+                        initialData: nestedData[venue]?.initialData || [],
+                        selectedData: []
+                      }
+                      newSelectedSwitchRowKeys[venue] = []
+                    })
+                    setNestedData(newNestedData)
+                    setSelectedSwitchRowKeys(newSelectedSwitchRowKeys)
+                  }
 
-                  deletedVenue.forEach((venue) => {
-                    newNestedData[venue] = {
-                      initialData: nestedData[venue]?.initialData || [],
-                      selectedData: []
-                    }
-                    newSelectedSwitchRowKeys[venue] = []
-                  })
-                  setNestedData(newNestedData)
-                  setSelectedSwitchRowKeys(newSelectedSwitchRowKeys)
+                  setSelectedVenueRowKeys(selectedKeys)
+                  form.validateFields()
                 }
-
-                setSelectedVenueRowKeys(selectedKeys)
-                form.validateFields()
-              }
-            }}
-          /></UI.ExpanderTableWrapper>}
+              }}
+            /></UI.ExpanderTableWrapper>
+        </Loader>}
     </>
   )
 }
