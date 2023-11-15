@@ -1711,6 +1711,27 @@ export const mockUpdatedMacRegistrationPoolList = {
   empty: false
 }
 
+export const mockPolicySetList = {
+  paging: {
+    totalCount: 2,
+    page: 1,
+    pageSize: 2,
+    pageCount: 1
+  },
+  content: [
+    {
+      id: '50f5cec9-850d-483d-8272-6ee5657f53da',
+      name: 'testPolicySet',
+      description: 'for test'
+    },
+    {
+      id: '6ef51aa0-55da-4dea-9936-c6b7c7b11164',
+      name: 'testPolicySet1',
+      description: 'for test'
+    }
+  ]
+}
+
 export const mockAAAPolicyResponse = [{
   id: '1',
   name: 'test1',

@@ -6,6 +6,7 @@ import {
   EdgeAllPortTrafficData,
   EdgeDnsServers,
   EdgeGeneralSetting,
+  EdgeLagStatus,
   EdgePasswordDetail,
   EdgePortConfig,
   EdgePortStatus,
@@ -440,6 +441,15 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getEdgeLagsStatusList: build.query<TableResult<EdgeLagStatus>, RequestPayload>({
+      query: ({ payload, params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgeLagStatusList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -493,5 +503,6 @@ export const {
   useGetEdgesTopResourcesQuery,
   useDeleteEdgeServicesMutation,
   useGetEdgePasswordDetailQuery,
-  useImportSubInterfacesCSVMutation
+  useImportSubInterfacesCSVMutation,
+  useGetEdgeLagsStatusListQuery
 } = edgeApi
