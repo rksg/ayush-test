@@ -1,0 +1,84 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NoAiOpsLicense should render correctly with the prop 1`] = `
+<DocumentFragment>
+  <div
+    class="sc-iqcoie brkYsc"
+  >
+    <div>
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-center sc-crXcEl iPnIOC"
+        style="padding-top: 50px;"
+      >
+        <div
+          class="ant-space-item"
+        >
+          <svg
+            class="sc-fnykZs"
+            data-testid="NoData"
+          />
+        </div>
+      </div>
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-center sc-evZas evYqpX"
+      >
+        <div
+          class="ant-space-item"
+        >
+          No license
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-space ant-space-horizontal ant-space-align-center sc-crXcEl sc-breuTD iPnIOC hMHVgZ"
+      style="padding-bottom: 100px;"
+    >
+      <div
+        class="ant-space-item"
+      >
+        RUCKUS AI cannot analyse your zone due to inadequate licenses. Please ensure you have licenses fully applied for the zone for AI Operations optimizations.
+      </div>
+    </div>
+    <button
+      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kBDiup sc-hAZoDl iUvYKm"
+      type="button"
+    >
+      <span>
+        Update my licenses
+      </span>
+    </button>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NoRecommendationData should render correctly with the prop 1`] = `
+<DocumentFragment>
+  <div
+    class="sc-kDDrLX iKHfcM"
+    style="margin-top: 0px;"
+  >
+    <div
+      class="ant-space ant-space-horizontal ant-space-align-center sc-crXcEl iPnIOC"
+      style="padding-bottom: 15px;"
+    >
+      <div
+        class="ant-space-item"
+      >
+        <svg
+          class="sc-ksZaOG dUlGeZ"
+          data-testid="CheckMarkCircleSolid"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-space ant-space-horizontal ant-space-align-center sc-crXcEl sc-breuTD iPnIOC hMHVgZ"
+    >
+      <div
+        class="ant-space-item"
+      >
+        Your network is already running in an optimal configuration and we dont have any AI Operations to recommend recently.
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
