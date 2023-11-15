@@ -945,18 +945,18 @@ export function RadioSettings () {
         <StepsFormLegacy.StepForm data-testid='radio-settings' initialValues={initData}>
           { isSupportDual5GAp && <div style={{ marginTop: '1em' }}>
             <Row gutter={0}>
-              <Col span={6}>
+              <Col span={5}>
                 <span>{$t({ defaultMessage: 'How to handle tri-band radio?' })}</span>
-                { stateOfUseVenueEnabled && <VenueNameDisplay venue={venue} /> }
-                <span style={{ marginLeft: '5px' }}>
-                  <Form.Item
-                    name={['apRadioParamsDual5G', 'useVenueEnable']}
-                    hidden
-                  />
-                  <Button type='link' onClick={handleOnUseVenueEnabledChange}>
-                    { stateOfUseVenueEnabled ? $t({ defaultMessage: 'Change' }) : $t({ defaultMessage: 'Same as Venue' }) }
-                  </Button>
-                </span>
+              </Col>
+              { stateOfUseVenueEnabled && <Col span={2}><VenueNameDisplay venue={venue} /></Col> }
+              <Col span={3}>
+                <Form.Item
+                  name={['apRadioParamsDual5G', 'useVenueEnable']}
+                  hidden
+                />
+                <Button type='link' onClick={handleOnUseVenueEnabledChange}>
+                  { stateOfUseVenueEnabled ? $t({ defaultMessage: 'Change' }) : $t({ defaultMessage: 'Same as Venue' }) }
+                </Button>
               </Col>
               <Col span={2}>
                 <Tooltip.Question
