@@ -39,7 +39,7 @@ describe('reportsApi', () => {
         (req, res, ctx) => res(ctx.json(guestTokenReponse))
       ),
       rest.post(
-        ReportUrlsInfo.authenticate.url,
+        ReportUrlsInfo.authenticate.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(AuthenticateResponse))
       )
     )

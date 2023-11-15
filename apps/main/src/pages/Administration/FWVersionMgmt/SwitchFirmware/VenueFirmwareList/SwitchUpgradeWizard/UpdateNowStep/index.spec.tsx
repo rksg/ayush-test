@@ -41,6 +41,7 @@ describe('UpdateNowStep', () => {
       <Provider>
         <Form>
           <UpdateNowStep
+            setShowSubTitle={jest.fn()}
             visible={true}
             availableVersions={availableVersions_hasInUse}
             nonIcx8200Count={2}
@@ -62,6 +63,7 @@ describe('UpdateNowStep', () => {
       <Provider>
         <Form>
           <UpdateNowStep
+            setShowSubTitle={jest.fn()}
             visible={true}
             availableVersions={availableVersions_hasInUse}
             nonIcx8200Count={2}
@@ -109,6 +111,7 @@ describe('UpdateNowStep', () => {
       <Provider>
         <Form>
           <UpdateNowStep
+            setShowSubTitle={jest.fn()}
             visible={true}
             availableVersions={availableVersions}
             nonIcx8200Count={1}

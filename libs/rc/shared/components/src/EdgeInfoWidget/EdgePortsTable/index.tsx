@@ -1,13 +1,26 @@
 import { useIntl } from 'react-intl'
 
-import { Table,TableProps }                      from '@acx-ui/components'
-import { formatter }                             from '@acx-ui/formatter'
-import { defaultSort, EdgePortStatus, sortProp } from '@acx-ui/rc/utils'
+import { Button, Table,TableProps }                             from '@acx-ui/components'
+import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
+import { formatter }                                            from '@acx-ui/formatter'
+import { defaultSort, EdgeLagStatus, EdgePortStatus, sortProp } from '@acx-ui/rc/utils'
 
-export const EdgePortsTable = ({ data }: { data: EdgePortStatus[] }) => {
+interface EdgePortsTableProps {
+  portData: EdgePortStatus[]
+  lagData: EdgeLagStatus[]
+  handleClickLagName?: () => void
+}
+
+interface EdgePortsTableDataType extends EdgePortStatus {
+  lagName?: string
+}
+
+export const EdgePortsTable = (props: EdgePortsTableProps) => {
+  const { portData, lagData, handleClickLagName } = props
   const { $t } = useIntl()
+  const isEdgeLagEnabled = useIsSplitOn(Features.EDGE_LAG)
 
-  const columns: TableProps<EdgePortStatus>['columns'] = [
+  const columns: TableProps<EdgePortsTableDataType>['columns'] = [
     {
       title: $t({ defaultMessage: 'Port Name' }),
       key: 'sortIdx',
@@ -73,7 +86,21 @@ export const EdgePortsTable = ({ data }: { data: EdgePortStatus[] }) => {
       render: (_, row) => {
         return formatter('networkSpeedFormat')(row.speedKbps)
       }
-    }
+    },
+    ...(isEdgeLagEnabled ? [{
+      title: $t({ defaultMessage: 'LAG Name' }),
+      key: 'lagName',
+      dataIndex: 'lagName',
+      sorter: { compare: sortProp('lagName', defaultSort) },
+      render: (_: React.ReactNode, row: EdgePortsTableDataType) => {
+        return <Button
+          size='small'
+          type='link'
+          onClick={handleClickLagName}
+          children={row.lagName}
+        />
+      }
+    }] : [])
   ]
 
   return (
@@ -81,7 +108,21 @@ export const EdgePortsTable = ({ data }: { data: EdgePortStatus[] }) => {
       settingsId='edge-ports-table'
       rowKey='portId'
       columns={columns}
-      dataSource={data}
+      dataSource={aggregatePortData(portData, lagData)}
     />
   )
+}
+
+const aggregatePortData = (portData: EdgePortStatus[],
+  lagData: EdgeLagStatus[]): EdgePortsTableDataType[] => {
+  return portData.map(portItem => {
+    const targetLagData = lagData.find(
+      lagItem => lagItem.lagMembers?.some(
+        lagMemberItem => lagMemberItem.portId === portItem.portId
+      ))
+    return {
+      ...portItem,
+      lagName: targetLagData?.name
+    }
+  })
 }
