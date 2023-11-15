@@ -974,6 +974,7 @@ export const {
   useUpdateApClientAdmissionControlMutation,
   useDeleteApClientAdmissionControlMutation,
   useGetApManagementVlanQuery,
+  useLazyGetApManagementVlanQuery,
   useUpdateApManagementVlanMutation,
   useDeleteApManagementVlanMutation
 } = apApi

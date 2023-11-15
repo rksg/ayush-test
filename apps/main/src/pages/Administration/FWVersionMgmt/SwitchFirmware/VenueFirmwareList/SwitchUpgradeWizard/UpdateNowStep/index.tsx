@@ -22,15 +22,16 @@ export interface UpdateNowStepProps {
   availableVersions?: FirmwareVersion[]
   nonIcx8200Count: number
   icx8200Count: number
-  hasVenue: boolean
+  hasVenue: boolean,
+  setShowSubTitle: (visible: boolean) => void
 }
 
 export function UpdateNowStep (props: UpdateNowStepProps) {
   const { $t } = useIntl()
   const intl = useIntl()
-  const { form } = useStepFormContext()
+  const { form, current } = useStepFormContext()
   const { availableVersions,hasVenue,
-    nonIcx8200Count, icx8200Count } = props
+    nonIcx8200Count, icx8200Count, setShowSubTitle } = props
   const [selectedVersion, setSelectedVersion] = useState<string>('')
   const [selectedAboveTenVersion, setSelectedAboveTenVersion] = useState<string>('')
   const [disableSave, setDisableSave] = useState(true)
@@ -41,6 +42,10 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
     availableVersions?.filter((v: FirmwareVersion) => v.id.startsWith('100'))
   const firmware90AvailableVersions =
     availableVersions?.filter((v: FirmwareVersion) => !v.id.startsWith('100'))
+
+  useEffect(()=>{
+    setShowSubTitle(false)
+  }, [current])
 
   useEffect(() => {
     setDisableSave(!selectionChanged && !selectionAboveTenChanged)
