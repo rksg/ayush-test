@@ -2,7 +2,7 @@ import { List, Typography } from 'antd'
 import { useIntl }          from 'react-intl'
 
 import { Button, Drawer }    from '@acx-ui/components'
-import { ArrowChevronRight } from '@acx-ui/icons'
+import { CaretRightList } from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
 
@@ -27,11 +27,11 @@ export function BetaFeaturesDrawer (
   // eslint-disable-next-line max-len
   const sectionTitle = $t({ defaultMessage: 'Current RUCKUS One beta features: ' })
   const betaList = [
-    { key: 'AP-CCD', desc: $t({ defaultMessage: 'AP CCD beta feature' }), status: true },
-    { key: 'AP-70', desc: $t({ defaultMessage: 'AP 70 beta faeture' }), status: true },
-    { key: 'AP-NEIGHBORS', desc: $t({ defaultMessage: 'AP NEIGHBORS beta feature' }),
+    { key: 'AP-CCD', desc: $t({ defaultMessage: 'AP-CCD beta feature' }), status: true },
+    { key: 'AP-70', desc: $t({ defaultMessage: 'AP-70 beta faeture' }), status: true },
+    { key: 'AP-NEIGHBORS', desc: $t({ defaultMessage: 'AP-NEIGHBORS beta feature' }),
       status: true },
-    { key: 'PLCY-EDGE', desc: $t({ defaultMessage: 'PLCY EDGE beta feature' }), status: false }
+    { key: 'PLCY-EDGE', desc: $t({ defaultMessage: 'PLCY-EDGE beta feature' }), status: false }
   ]
 
   const footer =<div>
@@ -49,32 +49,24 @@ export function BetaFeaturesDrawer (
     onClose={onClose}
     width={props.width}
     children={
-      <UI.DrawerContentWrapper>
+      <UI.ListWrapper>
         <UI.SectionTitle>{sectionTitle}</UI.SectionTitle>
         <List
           split={false}
           size='small'
           dataSource={betaList}
-          renderItem={(item) => (
+          renderItem={(item) =>
             <List.Item id={item.key}>
-              // TODO : fix alignment of caret w text in same line
-              {/*{item.status &&*/}
-              {/*  <List.Item.Meta*/}
-              {/*    avatar={<ArrowChevronRight />}*/}
-              {/*  />*/}
-              {/*}*/}
-              <Typography.Text className='description greyText'>
                 {item.status &&
                   <List.Item.Meta
-                    avatar={<ArrowChevronRight />}
+                    avatar={<CaretRightList />}
+                    title={item.desc}
                   />
                 }
-                {item.status && item.desc}
-              </Typography.Text>
             </List.Item>
-          )}
+          }
         />
-      </UI.DrawerContentWrapper>
+      </UI.ListWrapper>
     }
     footer={footer}
   />

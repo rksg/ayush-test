@@ -38,47 +38,71 @@ export const FooterMsg = styled.div`
   color: var(--acx-neutrals-60);
   padding-bottom: var(--acx-content-vertical-space);
 `
-
-export const List = styled(AntList)`
-  .ant-list-split .ant-list-item {
-    border-bottom: 0px;
-  }
-
-  .ant-list-item {
-    border-bottom: 0px;
-  }
-
-  > span > div {
-    display: inline-block;
-    float: left;
-  }
-`
-
-export const Meta = styled(List.Item.Meta)`
-  float: left;
+export const List = styled.li`
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-headline-4-font-weight);
+  font-style: normal;
+  font-size: var(--acx--body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
   display: inline-block;
+  width: 100%;
 `
 
 export const ListWrapper = styled.div`
-  padding: 0px 5px;
-  .ant-list-item {
-    display: inline-block !important;
-    }
+padding: var(--acx-content-vertical-space);
+  font-size: var(--acx-body-3-font-size);
+  line-height: var(--acx-body-3-line-height);
 
- > div.ant-list-item-meta {
-  float: left;
- }
-
-  .ant-list-split .ant-list-item {
-    border: none;
+ .ant-list-item-meta-avatar {
+    margin-top: 0px;
+    margin-right: 9px;
+    margin-left: -11px;
   }
 
-  .ant-list-sm .ant-list-item {
-    padding: 8px 16px;
-    display: inline-block ;
+  .ant-list-split .ant-list-header {
+    border-bottom: 0px;
+  }
+
+  .ant-list {
+    padding-bottom: 14px;
+  }
+
+  .ant-list-header {
+    font-family: var(--acx-neutral-brand-font);
+    font-weight: var(--acx-headline-5-font-weight-bold);
+    font-size: var(--acx-subtitle-4-font-size);
+    line-height: 19px;
+    padding-left: 15px;
+    padding-top: 14px;
+    padding-bottom: 15px;
+  }
+
+  .ant-list-item {
+    margin-top: 10px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    border-bottom: 0px;
+    height: auto;
+    & .ant-list-item-meta {
+      margin-bottom: 0px;
+    }
+  }
+
+  .ant-list-item-meta-title {
+    margin-bottom: 0px;
+    width: 100%;
+    > a {
+      color: var(--acx-accents-blue-50);
+      line-height: var(--acx-headline-4-line-height);
+      font-weight: var(--acx-headline-4-font-weight);
+      font-size: var(--acx-headline-5-font-size);
+  }
+
+  }
+  .ant-list-item-meta > h4 {
+    width: 100%
   }
 `
-
 
 export const SectionTitle = styled.div`
   font-weight: var(--acx-subtitle-6-font-weight-bold);
