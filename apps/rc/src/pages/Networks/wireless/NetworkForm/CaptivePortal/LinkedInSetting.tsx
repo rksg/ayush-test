@@ -31,6 +31,7 @@ export default function LinkedInSetting (props:{
   const formParent = Form.useFormInstance()
   const [visible, setVisible]=useState(false)
   const [checkHiddenNote, setCheckHiddenNote]=useState(false)
+  const [visibleNote, setVisibleNote]=useState(true)
   const [appIDValue, setAppIDValue]=useState('')
   const [appSecretValue, setAppSecretValue]=useState('')
   const isEnabledLinkedInOIDC = useIsSplitOn(Features.LINKEDIN_OIDC_TOGGLE)
@@ -79,7 +80,7 @@ export default function LinkedInSetting (props:{
         'linkedin','config','appSecret'],
       data.guestPortal?.socialIdentities?.linkedin?.config?.appSecret)
       if (editMode) {
-        setCheckHiddenNote(getLinkedInNoteHiddenIds().indexOf(data.id) > -1)
+        setVisibleNote(getLinkedInNoteHiddenIds().indexOf(data.id) > -1)
       }
     }
   }, [data])
@@ -151,6 +152,7 @@ export default function LinkedInSetting (props:{
           form.setFieldValue(['guestPortal','socialIdentities',
             'linkedin','config','appSecret'], appSecretValue)
           setVisible(false)
+          setCheckHiddenNote(false)
         }}
         onOk={()=>{
           clickCloseNote()
@@ -159,13 +161,15 @@ export default function LinkedInSetting (props:{
         maskClosable={false}
       >
         {getContent}
-        {editMode && isEnabledLinkedInOIDC && !checkHiddenNote &&
+        {editMode && isEnabledLinkedInOIDC && !visibleNote &&
           <UI.AlertNote message={<>
             <span style={{ fontWeight: 'bold' }}>{linkedInNote}:</span>
             <div>{linkedInInfo}</div>
             <br/>
-            <div> <Checkbox onChange={()=>{ setCheckHiddenNote(!checkHiddenNote) }} />&nbsp;&nbsp;
-              {$t({ defaultMessage: 'Don’t show this again' })}</div>
+            <div> <Checkbox checked={checkHiddenNote}
+              onChange={()=>{ setCheckHiddenNote(!checkHiddenNote) }} />
+              &nbsp;&nbsp;{$t({ defaultMessage: 'Don’t show this again' })}
+            </div>
           </>}
           type='info'
           closable

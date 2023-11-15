@@ -253,7 +253,7 @@ export function SelfSignInForm () {
                   {$t({ defaultMessage: 'LinkedIn' })}
                 </UI.Checkbox>
                 {linkedin && <LinkedInSetting redirectURL={redirectURL}/>}
-                {editMode && isEnabledLinkedInOIDC &&
+                {editMode && linkedin && isEnabledLinkedInOIDC &&
                   <Tooltip title={
                     <FormattedMessage
                       defaultMessage={
