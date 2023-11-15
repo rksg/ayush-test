@@ -17,7 +17,7 @@ export enum ModalType {
 interface ModalProps extends AntModalProps {
   type?: ModalType,
   title: string
-  subTitle?: string
+  subTitle?: string | React.ReactNode
 }
 
 function HasStepsFormContainer (props: React.HTMLAttributes<HTMLDivElement>) {
@@ -74,7 +74,7 @@ export function Modal ({
   )
 }
 
-const TitleWithSubtitle = (title: string, subTitle: string) => {
+const TitleWithSubtitle = (title: string, subTitle: string | React.ReactNode) => {
   return (
     <>
       {title}
