@@ -46,7 +46,9 @@ export function CloudMessageBanner () {
   const [getCloudScheduleVersion] = useLazyGetCloudScheduleVersionQuery()
   const [getSwitchVenueVersionList] = useLazyGetSwitchVenueVersionListQuery()
   const [getVenueEdgeFirmwareList] = useLazyGetVenueEdgeFirmwareListQuery()
-  const plmMessageExists = !!(data && data.description)
+
+  const hidePlmMessage = !!sessionStorage.getItem('hidePlmMessage')
+  const plmMessageExists = !!(data && data.description) && !hidePlmMessage
 
   useEffect(() => {
     if (cloudVersion && userSettings) {
@@ -111,20 +113,20 @@ export function CloudMessageBanner () {
       newWifiScheduleExists ||
       newSwitchScheduleExists ||
       newEdgeScheduleExists
-    ) && !plmMessageExists
+    )
     setUpgradeMessageTitle(showUpgradeSchedule
       ? $t({ defaultMessage: 'An upgrade schedule for the new firmware version is available.' })
       : '')
-  }, [$t, newWifiScheduleExists, newSwitchScheduleExists, newEdgeScheduleExists, plmMessageExists])
 
-  useEffect(() => {
-    if (layout.showMessageBanner === undefined && (upgradeMessageTitle || plmMessageExists)) {
+    if (plmMessageExists) {
       layout.setShowMessageBanner(true)
-    }
-    if (layout.showMessageBanner === true && !(upgradeMessageTitle || plmMessageExists)) {
+    } else if (showUpgradeSchedule) {
+      layout.setShowMessageBanner(true)
+    } else {
       layout.setShowMessageBanner(false)
     }
-  }, [layout, plmMessageExists, upgradeMessageTitle])
+  // eslint-disable-next-line max-len
+  }, [$t, newWifiScheduleExists, newSwitchScheduleExists, newEdgeScheduleExists, layout, plmMessageExists])
 
   const showVScheduleInfo = () => {
     if (newWifiScheduleExists) {
@@ -136,8 +138,13 @@ export function CloudMessageBanner () {
     }
   }
 
-  // eslint-disable-next-line react/jsx-no-useless-fragment
-  return layout.showMessageBanner && (upgradeMessageTitle || plmMessageExists) ? <Alert
+  return layout.showMessageBanner ? <Alert type='info'
+    showIcon
+    closable={!!plmMessageExists}
+    onClose={()=>{
+      layout.setShowMessageBanner(false)
+      sessionStorage.setItem('hidePlmMessage', 'true')
+    }}
     message={plmMessageExists ? data?.description :
       upgradeMessageTitle ? <Space>{upgradeMessageTitle}
         <Button type='link'
@@ -146,12 +153,7 @@ export function CloudMessageBanner () {
           { $t({ defaultMessage: 'More details' }) }
         </Button>
       </Space> : ''}
-    type='info'
-    showIcon
-    closable={!!plmMessageExists}
-    onClose={()=>{
-      layout.setShowMessageBanner(false)
-    }}/> : null
+  /> : null
 }
 
 const isThereNewSchedule = (
