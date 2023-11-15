@@ -37,7 +37,7 @@ export const UnknownDetails = () => {
     },
     {
       label: $t({ defaultMessage: 'Date' }),
-      children: formatter(DateFormatEnum.DateTimeFormat)(moment(date))
+      children: formatter(DateFormatEnum.DateTimeFormat)(moment(date, moment.ISO_8601))
     }
   ]
   const value = isZone ? 'zone' : 'venue'
