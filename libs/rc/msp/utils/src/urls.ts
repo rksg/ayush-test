@@ -209,6 +209,11 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/mspservice/tenant/assign/:mspIntegratorId',
     newApi: true
   },
+  assignMspEcToMultiIntegrators: {
+    method: 'PATCH',
+    url: '/mspCustomers/delegations',
+    newApi: true
+  },
   getAssignedMspEcToIntegrator: {
     method: 'get',
     url: '/mspIntegrators/:mspIntegratorId?delegationType=:mspIntegratorType',
