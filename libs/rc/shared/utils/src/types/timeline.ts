@@ -75,6 +75,7 @@ export interface Activity {
   tenantId: string
   useCase: string
   linkData?: { name: string, value:string }[]
+  linkTemplate?: string
 }
 
 export interface EventBase {
