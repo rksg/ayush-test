@@ -1,6 +1,8 @@
 import { useIntl }       from 'react-intl'
 import { CSSProperties } from 'styled-components'
 
+import { useNavigate } from '@acx-ui/react-router-dom'
+
 import * as UI from './styledComponents'
 
 interface NoDataWrapperProps {
@@ -53,13 +55,17 @@ export function NoRecommendationData ({ text, noData = false }: NoDataWrapperPro
 export function NoAiOpsLicense ({ text }: NoDataWrapperProps) {
   const { $t } = useIntl()
   const noLicenseText = $t({ defaultMessage: 'No license' })
+  const navigate = useNavigate()
   return (
     <UI.NoAILicenseWrapper>
       <UI.TextWrapper style={{ paddingTop: '50px' }}><UI.NoLicensesIcon /></UI.TextWrapper>
       <UI.NoLicenseTextWrapper>{noLicenseText}</UI.NoLicenseTextWrapper>
       <UI.NoDataTextWrapper style={{ paddingBottom: '100px' }}>{text}</UI.NoDataTextWrapper>
-      <UI.LicenseButton type='default'>
-        {$t({ defaultMessage: 'Update my licenses' })}
+      <UI.LicenseButton
+        type='default'
+        onClick={() => {
+          navigate('/analytics/admin/license')
+        }}>
       </UI.LicenseButton>
     </UI.NoAILicenseWrapper>
   )
