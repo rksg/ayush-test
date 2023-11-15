@@ -21,10 +21,9 @@ import {
   DownloadOutlined
 } from '@acx-ui/icons'
 import {
-  useApListQuery, useImportApOldMutation, useImportApMutation, useLazyImportResultQuery,isAPLowPower
+  useApListQuery, useImportApOldMutation, useImportApMutation, useLazyImportResultQuery
 } from '@acx-ui/rc/services'
 import {
-  AFCStatus,
   ApDeviceStatusEnum,
   APExtended,
   ApExtraParams,
@@ -36,7 +35,9 @@ import {
   transformDisplayText,
   TableQuery,
   usePollingTableQuery,
-  APExtendedGrouped
+  APExtendedGrouped,
+  AFCMaxPowerRender,
+  AFCPowerStateRender
 } from '@acx-ui/rc/utils'
 import { getFilters, CommonResult, ImportErrorRes, FILTER }  from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
@@ -64,7 +65,8 @@ export const defaultApPayload = {
     'venueId', 'apStatusData.APRadio.radioId', 'apStatusData.APRadio.channel',
     'poePort', 'apStatusData.lanPortStatus.phyLink', 'apStatusData.lanPortStatus.port',
     'fwVersion', 'apStatusData.afcInfo.powerMode', 'apStatusData.afcInfo.afcStatus','apRadioDeploy',
-    'apStatusData.APSystem.secureBootEnabled', 'apStatusData.APSystem.managementVlan'
+    'apStatusData.APSystem.secureBootEnabled', 'apStatusData.APSystem.managementVlan',
+    'apStatusData.afcInfo.maxPowerDbm'
   ]
 }
 
@@ -187,40 +189,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       filterable: filterables ? statusFilterOptions : false,
       groupable: enableGroups ?
         filterables && getGroupableConfig()?.deviceStatusGroupableOptions : undefined,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      render: (status: any, row : APExtended) => {
-        /* eslint-disable max-len */
-        if ((AFC_Featureflag &&
-            ApDeviceStatusEnum.OPERATIONAL === status.props.children &&
-            isAPLowPower(row.apStatusData?.afcInfo))
-        ){
-
-          const afcInfo = row.apStatusData?.afcInfo
-
-          let warningMessages = $t({ defaultMessage: 'Degraded - AP in low power mode' })
-
-          if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
-            warningMessages = warningMessages + '\n' + $t({ defaultMessage: '(Geo Location not set)' })
-          }
-          if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
-            warningMessages = warningMessages + '\n' + $t({ defaultMessage: '(FCC DB replies that there is no channel available)' })
-          }
-          if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
-            warningMessages = warningMessages + '\n' + $t({ defaultMessage: '(Wait for AFC server response)' })
-          }
-
-          return (
-            <span>
-              <Badge color={handleStatusColor(DeviceConnectionStatus.CONNECTED)}
-                text={warningMessages}
-              />
-            </span>
-          )
-        } else {
-          return <APStatus status={status.props.children} />
-        }
-        /* eslint-enable max-len */
-      }
+      render: (_, { deviceStatus }) => <APStatus status={deviceStatus as ApDeviceStatusEnum} />
     }, {
       key: 'model',
       title: $t({ defaultMessage: 'Model' }),
@@ -409,7 +378,27 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
 
           return (mgmtVlanId ? mgmtVlanId : null)
         }
-      }] : [])
+      }] : []),
+    ...(AFC_Featureflag ? [{
+      key: 'afcPowerMode',
+      title: $t({ defaultMessage: 'AFC Power State' }),
+      dataIndex: ['apStatusData','afcInfo','powerMode'],
+      show: false,
+      sorter: false,
+      render: (data: React.ReactNode, row: APExtended) => {
+        return AFCPowerStateRender(row.apStatusData?.afcInfo, row.apRadioDeploy, false)
+      }
+    },
+    { key: 'afcMaxPower',
+      title: $t({ defaultMessage: 'AFC Max Power' }),
+      dataIndex: ['apStatusData','afcInfo','maxPowerDbm'],
+      show: false,
+      sorter: false,
+      render: (data: React.ReactNode, row: APExtended) => {
+        return AFCMaxPowerRender(row.apStatusData?.afcInfo, row.apRadioDeploy)
+      }
+    }
+    ]: [])
     ]
 
     return columns

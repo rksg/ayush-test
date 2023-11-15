@@ -27,7 +27,7 @@ function QoS ({ wlanData }: { wlanData: NetworkSaveData | null }) {
         {$t({ defaultMessage: 'QoS' })}
       </UI.Subtitle>
       { qosMirroringFlag && enableAP70 && <QoSMirroring wlanData={wlanData} /> }
-      { qosMapSetFlag && enableAP70 && <QosMapSetForm /> }
+      { qosMapSetFlag && <QosMapSetForm /> }
     </>
   )
 }

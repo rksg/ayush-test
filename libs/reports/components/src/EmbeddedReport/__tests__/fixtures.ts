@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 export const apNetworkPath = [
   {
     name: 'Network',
@@ -50,7 +52,7 @@ export const switchNetworkPath = [
   }
 ]
 
-export const systems = {
+const systems = {
   networkNodes: [{
     deviceId: 'e68b9f11-2266-40a5-8dc0-efd89f59bd0f',
     deviceName: 'AISH-vSZ',
@@ -64,6 +66,7 @@ export const systems = {
   }],
   switchNodes: []
 }
+export const systemMap = _.groupBy(systems.networkNodes, 'deviceName')
 
 export const radioBands = ['6','2.4']
 

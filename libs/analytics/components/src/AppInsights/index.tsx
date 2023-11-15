@@ -1,4 +1,6 @@
+import { List }    from 'antd'
 import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { Loader, Card }                               from '@acx-ui/components'
 import { GoogleMeets, Teams, Webex, Workplace, Zoom } from '@acx-ui/icons'
@@ -63,25 +65,30 @@ export function AppInsights () {
 
   return <Loader>
     <Card title={title} subTitle={subtitle}>
-      <UI.Button type='primary'>
-        {$t({ defaultMessage: 'Get started now!' })}
-      </UI.Button>
-      <UI.List
-        dataSource={Insights}
-        renderItem={item => {
-          const insight = item as InsightType
-          const { name, metric, id, icon, latency } = insight
-          return <UI.List.Item key={id} actions={[latency]}>
-            <TenantLink to={''} style={{ pointerEvents: 'none' }}> {/* currently disable click events */}
-              <UI.List.Item.Meta
-                avatar={icon}
-                title={name}
-                description={metric}
-              />
-            </TenantLink>
-          </UI.List.Item>
-        }}
-      />
+      <AutoSizer>
+        {(size) => <UI.Container style={size}>
+          <List<InsightType>
+            dataSource={Insights}
+            renderItem={insight => {
+              const { name, metric, id, icon, latency } = insight
+              return <UI.ListItem key={id} actions={[latency]}>
+                <TenantLink to={''} style={{ pointerEvents: 'none' }}> {/* currently disable click events */}
+                  <UI.ListItem.Meta
+                    avatar={icon}
+                    title={name}
+                    description={metric}
+                  />
+                </TenantLink>
+              </UI.ListItem>
+            }}
+          />
+          <UI.Mask style={size}>
+            <UI.Button type='primary'>
+              {$t({ defaultMessage: 'Get started now!' })}
+            </UI.Button>
+          </UI.Mask>
+        </UI.Container>}
+      </AutoSizer>
     </Card>
   </Loader>
 }
