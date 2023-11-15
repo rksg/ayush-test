@@ -260,6 +260,136 @@ export const aiOpsNonNewListResult = {
   ]
 }
 
+export const insufficientLicenses = {
+  id: '5',
+  code: 'unknown',
+  status: 'insufficientLicenses',
+  createdAt: '2023-11-09T07:05:14.900Z',
+  updatedAt: '2023-11-12T06:05:21.004Z',
+  sliceType: 'zone',
+  sliceValue: '01-Alethea-WiCheck Test',
+  metadata: {
+    audit: [{
+      code: 'global',
+      stage: 'filter',
+      failure: {
+        'not-fully-licensed': false
+      }
+    }]
+  },
+  isMuted: false,
+  mutedBy: '',
+  mutedAt: null,
+  path: [
+    {
+      type: 'system',
+      name: 'vsz34'
+    },
+    {
+      type: 'domain',
+      name: '01-US-CA-D1-Test-Home'
+    },
+    {
+      type: 'zone',
+      name: '01-Alethea-WiCheck Test'
+    }
+  ] as NetworkPath
+}
+
+export const verificationError = {
+  id: '6',
+  code: 'unknown',
+  status: 'verificationError',
+  createdAt: '2023-11-09T07:05:14.900Z',
+  updatedAt: '2023-11-13T06:05:21.004Z',
+  sliceType: 'zone',
+  sliceValue: '22-US-CA-Z22-Aaron-Home',
+  metadata: {
+    audit: [{
+      code: 'global',
+      stage: 'filter',
+      failure: {
+        mesh: false
+      }
+    }]
+  },
+  isMuted: false,
+  mutedBy: '',
+  mutedAt: null,
+  path: [
+    {
+      type: 'system',
+      name: 'vsz34'
+    },
+    {
+      type: 'domain',
+      name: '22-US-CA-D22-Aaron-Home'
+    },
+    {
+      type: 'zone',
+      name: '22-US-CA-Z22-Aaron-Home'
+    }
+  ] as NetworkPath
+}
+
+export const verified = {
+  id: '7',
+  code: 'unknown',
+  status: 'verified',
+  createdAt: '2023-11-09T07:05:14.900Z',
+  updatedAt: '2023-11-14T06:05:21.004Z',
+  sliceType: 'zone',
+  sliceValue: '01-US-CA-D1-Ruckus-HQ-QA-interop',
+  metadata: {
+    audit: [
+      {
+        code: 'c-crrm-channel24g-auto',
+        stage: 'kpi',
+        failure: {
+          'cloud-rrm-ccir': {
+            'above-medium-ccir-24g': false
+          }
+        }
+      },
+      {
+        code: 'c-crrm-channel5g-auto',
+        stage: 'kpi',
+        failure: {
+          'cloud-rrm-ccir': {
+            'above-medium-ccir-5g': false
+          }
+        }
+      },
+      {
+        code: 'c-crrm-channel6g-auto',
+        stage: 'kpi',
+        failure: {
+          'cloud-rrm-ccir': {
+            'above-medium-ccir-6g': false
+          }
+        }
+      }
+    ]
+  },
+  isMuted: false,
+  mutedBy: '',
+  mutedAt: null,
+  path: [
+    {
+      type: 'system',
+      name: 'vsz34'
+    },
+    {
+      type: 'domain',
+      name: '01-US-CA-D1-Test-Home'
+    },
+    {
+      type: 'zone',
+      name: '01-US-CA-D1-Ruckus-HQ-QA-interop'
+    }
+  ] as NetworkPath
+}
+
 export const recommendationListResult = {
   recommendations: [
     {
@@ -280,7 +410,7 @@ export const recommendationListResult = {
       ] as NetworkPath
     },
     {
-      id: '1',
+      id: '2',
       code: 'c-crrm-channel5g-auto',
       status: 'revertscheduled',
       createdAt: '2023-06-13T07:05:08.638Z',
@@ -307,7 +437,7 @@ export const recommendationListResult = {
       ] as NetworkPath
     },
     {
-      id: '2',
+      id: '3',
       code: 'c-txpower-same',
       status: 'revertfailed',
       createdAt: '2023-06-13T07:05:08.638Z',
@@ -333,7 +463,7 @@ export const recommendationListResult = {
       ] as NetworkPath
     },
     {
-      id: '3',
+      id: '4',
       code: 'c-bandbalancing-enable',
       status: 'new',
       createdAt: '2023-06-12T07:05:14.900Z',
@@ -359,75 +489,8 @@ export const recommendationListResult = {
         }
       ] as NetworkPath
     },
-    {
-      id: '4',
-      code: 'unknown',
-      status: 'insufficientLicenses',
-      createdAt: '2023-11-09T07:05:14.900Z',
-      updatedAt: '2023-11-12T06:05:21.004Z',
-      sliceType: 'zone',
-      sliceValue: '01-Alethea-WiCheck Test',
-      metadata: {
-        audit: [{
-          code: 'global',
-          stage: 'filter',
-          failure: {
-            'not-fully-licensed': false
-          }
-        }]
-      },
-      isMuted: false,
-      mutedBy: '',
-      mutedAt: null,
-      path: [
-        {
-          type: 'system',
-          name: 'vsz34'
-        },
-        {
-          type: 'domain',
-          name: '01-US-CA-D1-Test-Home'
-        },
-        {
-          type: 'zone',
-          name: '01-Alethea-WiCheck Test'
-        }
-      ] as NetworkPath
-    },
-    {
-      id: '5',
-      code: 'unknown',
-      status: 'verificationError',
-      createdAt: '2023-11-09T07:05:14.900Z',
-      updatedAt: '2023-11-12T06:05:21.004Z',
-      sliceType: 'zone',
-      sliceValue: '22-US-CA-Z22-Aaron-Home',
-      metadata: {
-        audit: [{
-          code: 'global',
-          stage: 'filter',
-          failure: {
-            mesh: false
-          }
-        }]
-      },
-      isMuted: false,
-      mutedBy: '',
-      mutedAt: null,
-      path: [
-        {
-          type: 'system',
-          name: 'vsz34'
-        },
-        {
-          type: 'domain',
-          name: '22-US-CA-D22-Aaron-Home'
-        },
-        {
-          type: 'zone',
-          name: '22-US-CA-Z22-Aaron-Home'
-        }
-      ] as NetworkPath
-    }
+    insufficientLicenses,
+    verificationError,
+    verified
   ]
 }

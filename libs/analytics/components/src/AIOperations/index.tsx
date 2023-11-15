@@ -82,7 +82,7 @@ function AIOperationsWidget ({
               })}
             /> : []}
             <UI.List
-              style={{ marginTop: !checkNew ? 120 : 0 }}
+              style={{ marginTop: !checkNew ? 150 : 0 }}
               dataSource={!checkNew
                 ? filteredRecommendations?.slice(0, 3)
                 : filteredRecommendations}

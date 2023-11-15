@@ -34,7 +34,6 @@ function AIDrivenRRMWidget ({
       recommendations: []
     } as CrrmList
     : queryResults?.data
-  const noData = data?.recommendations?.length === 0
   const crrmCount = data?.crrmCount
   const zoneCount = data?.zoneCount
   const optimizedZoneCount = data?.optimizedZoneCount
@@ -82,11 +81,6 @@ function AIDrivenRRMWidget ({
     as zones are not found on your network`
   })
 
-  const optimalConfigText = $t({ defaultMessage:
-    `Your zone is already running in an optimal configuration
-    and we don't have any RRM to recommend currently.`
-  })
-
   const noLicenseText = $t({ defaultMessage:
     `Currently RUCKUS AI cannot optimize your current zone
     for RRM due to inadequate licenses.`
@@ -97,12 +91,12 @@ function AIDrivenRRMWidget ({
       title={title}
       onArrowClick={onArrowClick}
       subTitle={noLicense || !zoneCount ? '' : subtitle}
-    >{noData
+    >{zoneCount === 0
         ? <NoRecommendationData
           noData={true}
           isCrrm={true}
-          details={zoneCount ? '' : defaultText}
-          text={zoneCount ? optimalConfigText : noZoneText}
+          details={defaultText}
+          text={noZoneText}
         />
         : noLicense
           ? <NoRRMLicense

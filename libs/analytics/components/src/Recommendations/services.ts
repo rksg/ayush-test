@@ -1,5 +1,5 @@
 import { gql }           from 'graphql-request'
-import _                 from 'lodash'
+import _, { uniqueId }   from 'lodash'
 import moment            from 'moment'
 import { defineMessage } from 'react-intl'
 

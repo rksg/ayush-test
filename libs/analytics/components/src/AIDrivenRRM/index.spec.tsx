@@ -112,25 +112,6 @@ describe('AIDrivenRRM dashboard', () => {
     )).toBeVisible()
   })
 
-  it('handles no data with zoneCount', async () => {
-    mockGraphqlQuery(recommendationUrl, 'CrrmList', {
-      data: {
-        crrmCount: 0,
-        zoneCount: 2,
-        optimizedZoneCount: 0,
-        crrmScenarios: 0,
-        recommendations: []
-      }
-    })
-    render(<AIDrivenRRM pathFilters={pathFilters} />, {
-      route: true,
-      wrapper: Provider
-    })
-
-    // eslint-disable-next-line max-len
-    expect(await screen.findByText('Your zone is already running in an optimal configuration and we don\'t have any RRM to recommend currently.')).toBeVisible()
-  })
-
   it('handles no licenses', async () => {
     mockGraphqlQuery(recommendationUrl, 'CrrmList', {
       data: crrmNoLicenseListResult

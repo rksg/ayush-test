@@ -16,12 +16,11 @@ import { DateFormatEnum, formatter }   from '@acx-ui/formatter'
 import { TenantLink, useParams }       from '@acx-ui/react-router-dom'
 import { noDataDisplay, PathFilter }   from '@acx-ui/utils'
 
-import { RecommendationActions } from './RecommendationActions'
+import { RecommendationActions }  from './RecommendationActions'
 import {
   useRecommendationListQuery,
   RecommendationListItem,
-  useMuteRecommendationMutation,
-  unknownStates
+  useMuteRecommendationMutation
 } from './services'
 import * as UI from './styledComponents'
 
@@ -150,8 +149,7 @@ export function RecommendationTable (
       dataIndex: 'updatedAt',
       key: 'updatedAt',
       render: (_, value) => {
-        const checkUnknown = unknownStates.includes(value.statusEnum)
-        if (checkUnknown) {
+        if (value.code === 'unknown') {
           return <UnknownLink value={value} />
         } else {
           return <DateLink value={value}/>

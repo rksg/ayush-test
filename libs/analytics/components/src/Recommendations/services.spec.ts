@@ -284,6 +284,29 @@ describe('Recommendation services', () => {
           },
           order: 2
         }
+      },
+      {
+        ...recommendationListResult.recommendations[6],
+        scope: `vsz34 (SZ Cluster)
+> 01-US-CA-D1-Test-Home (Domain)
+> 01-US-CA-D1-Ruckus-HQ-QA-interop (Venue)`,
+        type: 'Venue',
+        priority: priorities.low,
+        category: 'Verified',
+        summary: 'Verified',
+        status: 'Verified',
+        statusTooltip: 'Verified',
+        statusEnum: 'verified',
+        crrmOptimizedState: {
+          label: {
+            id: 'Z8971h',
+            defaultMessage: [{
+              type: 0,
+              value: 'Verified'
+            }]
+          },
+          order: 0
+        }
       }
     ]
     expect(error).toBe(undefined)
