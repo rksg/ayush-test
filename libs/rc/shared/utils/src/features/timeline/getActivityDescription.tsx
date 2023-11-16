@@ -8,7 +8,9 @@ import { replaceStrings } from './replaceStrings'
 
 export const getActivityDescription = (
   descriptionTemplate: Activity['descriptionTemplate'],
-  descriptionData: Activity['descriptionData']
+  descriptionData: Activity['descriptionData'],
+  linkData?: Activity['linkData'],
+  linkTemplate?: Activity['linkTemplate']
 ) => {
   descriptionTemplate = descriptionTemplate
     // escape ' by replacing with ''
@@ -24,10 +26,27 @@ export const getActivityDescription = (
       ? `<b>{${camelCase(String(key))}}</b>`
       : undefined
   )
+  const linkValues = Object.fromEntries((linkData||[]).map(({
+    name, value
+  }) => [name, value] ))
 
-  return <FormatMessage
-    id='activities-description-template'
-    defaultMessage={template}
-    values={{ ...values, b: (chunks) => <b>{chunks}</b> }}
-  />
+  if (linkValues.hasOwnProperty('linkAlias')) {
+    const tmp = `${template} <download></download>`
+    return <FormatMessage
+      id='activities-description-template'
+      defaultMessage={tmp}
+      values={{
+        ...values,
+        download: () => <a href={linkTemplate}>
+          { values['linkAlias'] }
+        </a>,
+        b: (chunks) => <b>{chunks}</b>
+      }} />
+  } else {
+    return <FormatMessage
+      id='activities-description-template'
+      defaultMessage={template}
+      values={{ ...values, b: (chunks) => <b>{chunks}</b> }}
+    />
+  }
 }

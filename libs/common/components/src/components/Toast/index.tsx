@@ -15,7 +15,6 @@ const durationMap:{ [index:string]: number } = {
 }
 
 const defaultLinkText:{ [index:string]: string } = {
-  info: 'Details',
   success: 'View',
   error: 'Technical Details'
 }
