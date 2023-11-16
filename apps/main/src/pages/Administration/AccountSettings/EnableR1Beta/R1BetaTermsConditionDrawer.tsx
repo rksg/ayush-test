@@ -53,12 +53,12 @@ export function R1BetaTermsConditionDrawer (
   // eslint-disable-next-line max-len
   const footerMsg = $t({ defaultMessage: 'By clicking “Enable Beta”, you agree to the RUCKUS One Beta Terms & Conditions' })
 
-  // useEffect(() => {
-  //   const betaStatusCb = betaStatus?.enabled === 'true'?? false
-  //   console.log('betaStatusCb', betaStatusCb)
-  //   form.setFieldValue('betaStatusCbox', betaStatusCb)
-  //
-  // }, [betaStatus?.enabled])
+  useEffect(() => {
+    const betaStatusCb = betaStatus?.enabled === 'true'?? false
+    // console.log('betaStatusCb', betaStatusCb)
+    form.setFieldValue('betaStatusCbox', betaStatusCb)
+
+  }, [betaStatus?.enabled])
 
   return <Drawer
     destroyOnClose={resetField}
