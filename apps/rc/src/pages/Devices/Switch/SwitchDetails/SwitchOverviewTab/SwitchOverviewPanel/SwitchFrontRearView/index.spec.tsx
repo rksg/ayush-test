@@ -31,6 +31,17 @@ export const panelContext = {
   setBreakoutPorts: () => {}
 }
 
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useLazySwitchPortlistQuery: () => [
+    jest.fn().mockResolvedValue({
+      // eslint-disable-next-line max-len
+      data: require('apps/rc/src/pages/Devices/Switch/SwitchDetails/SwitchOverviewTab/SwitchOverviewPanel/__tests__/fixtures').standaloneFront
+    }),
+    { requestId: 'test' }
+  ]
+}))
+
 describe('SwitchFrontRearView', () => {
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
