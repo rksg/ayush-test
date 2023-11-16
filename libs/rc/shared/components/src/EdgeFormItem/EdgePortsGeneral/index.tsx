@@ -125,7 +125,7 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
 
   const handlePortTypeChange = (changedPortName: string, changedValue: StoreValue,
     index: number) => {
-    if (isEdgeSdLanReady) {
+    if (isEdgeSdLanReady && isEdgeSdLanRun) {
       showActionModal({
         type: 'info',
         content: $t({ defaultMessage: `

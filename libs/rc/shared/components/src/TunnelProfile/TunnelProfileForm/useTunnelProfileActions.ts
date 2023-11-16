@@ -11,10 +11,13 @@ export const useTunnelProfileActions = () => {
   const requestPreProcess = (data: TunnelProfileFormType) => {
     const result = cloneDeep(data)
     if (data.ageTimeUnit === 'week') {
-      result.ageTimeMinutes = data.ageTimeMinutes* 7 * 24 * 60
+      result.ageTimeMinutes = data.ageTimeMinutes * 7 * 24 * 60
     } else if (data.ageTimeUnit === 'days') {
       result.ageTimeMinutes = data.ageTimeMinutes * 24 * 60
     }
+
+    // remove UI used data
+    delete result.disableTunnelType
     return result
   }
 

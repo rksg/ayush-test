@@ -1,16 +1,22 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
+import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Button, Loader, Modal, ModalType, showToast, StepsForm } from '@acx-ui/components'
+import { Features }                                               from '@acx-ui/feature-toggle'
+import { ServiceType, TunnelTypeEnum }                            from '@acx-ui/rc/utils'
 
+import { useIsEdgeFeatureReady }                    from '../../useEdgeActions'
 import { TunnelProfileForm, TunnelProfileFormType } from '../TunnelProfileForm'
 import { useTunnelProfileActions }                  from '../TunnelProfileForm/useTunnelProfileActions'
 
-export const TunnelProfileAddModal = () => {
-
+export const TunnelProfileAddModal = (props: { fromServiceType?: ServiceType }) => {
+  const { fromServiceType } = props
   const { $t } = useIntl()
-  const [visible, setVisible]=useState(false)
+  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
+  const [ form ] = Form.useForm()
+  const [visible, setVisible] = useState(false)
   const { createTunnelProfile, isTunnelProfileCreating } = useTunnelProfileActions()
 
   const handleCreateTunnelProfile = async (data: TunnelProfileFormType) => {
@@ -27,6 +33,7 @@ export const TunnelProfileAddModal = () => {
 
   const content = <Loader states={[{ isLoading: false, isFetching: isTunnelProfileCreating }]}>
     <StepsForm
+      form={form}
       onFinish={handleCreateTunnelProfile}
       onCancel={() => setVisible(false)}
       buttonLabel={{ submit: $t({ defaultMessage: 'Add' }) }}
@@ -36,6 +43,21 @@ export const TunnelProfileAddModal = () => {
       </StepsForm.StepForm>
     </StepsForm>
   </Loader>
+
+  useEffect(() => {
+    if (isEdgeSdLanReady) {
+      let tunnelType
+      if (fromServiceType === ServiceType.NETWORK_SEGMENTATION) {
+        tunnelType = TunnelTypeEnum.VXLAN
+      } else if (fromServiceType === ServiceType.EDGE_SD_LAN) {
+        tunnelType = TunnelTypeEnum.VLAN_VXLAN
+      } else {
+      }
+
+      form.setFieldValue('type', tunnelType)
+      if (tunnelType) form.setFieldValue('disableTunnelType', true)
+    }
+  }, [fromServiceType, isEdgeSdLanReady])
 
   return (
     <>

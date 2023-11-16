@@ -1,4 +1,4 @@
-import { MtuTypeEnum } from '../../models'
+import { MtuTypeEnum, TunnelTypeEnum } from '../../models'
 
 export interface TunnelProfile {
   id: string
@@ -8,6 +8,7 @@ export interface TunnelProfile {
   mtuSize: number
   forceFragmentation: boolean
   ageTimeMinutes: number
+  type: TunnelTypeEnum
 }
 
 export interface TunnelProfileViewData {

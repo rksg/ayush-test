@@ -11,6 +11,7 @@ import { useParams }                               from 'react-router-dom'
 import { Loader, StepsForm, useStepFormContext }                                                                                     from '@acx-ui/components'
 import { TunnelProfileAddModal }                                                                                                     from '@acx-ui/rc/components'
 import { useGetNetworkSegmentationViewDataListQuery, useGetTunnelProfileViewDataListQuery, useVenueNetworkActivationsDataListQuery } from '@acx-ui/rc/services'
+import { ServiceType }                                                                                                               from '@acx-ui/rc/utils'
 
 import { NetworkSegmentationGroupFormData } from '..'
 
@@ -131,7 +132,7 @@ export const WirelessNetworkForm = () => {
             }
           />
         </Col>
-        <TunnelProfileAddModal />
+        <TunnelProfileAddModal fromServiceType={ServiceType.NETWORK_SEGMENTATION} />
       </Row>
       <Row gutter={20}>
         <Col>
