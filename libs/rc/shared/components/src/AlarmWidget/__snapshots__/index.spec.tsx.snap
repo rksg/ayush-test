@@ -54,19 +54,19 @@ exports[`Alarm widget should render "No active alarms" when no alarms exist 1`] 
               class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
             >
               <div
-                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 eWWtzz"
+                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 iRdLpd"
               >
                 <div
                   class="ant-space-item"
                 >
                   <svg
-                    class="styledComponents__GreenTickIcon-sc-m7jeli-6 dutgAg"
+                    class="styledComponents__GreenTickIcon-sc-m7jeli-3 bRCYfh"
                     data-testid="CheckMarkCircleSolid"
                   />
                 </div>
               </div>
               <div
-                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 styledComponents__NoDataTextWrapper-sc-m7jeli-5 eWWtzz iUuDTI"
+                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
               >
                 <div
                   class="ant-space-item"
@@ -166,19 +166,19 @@ exports[`Alarm widget v2 should render "No active alarms" when no alarms exist 1
               class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
             >
               <div
-                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 eWWtzz"
+                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 iRdLpd"
               >
                 <div
                   class="ant-space-item"
                 >
                   <svg
-                    class="styledComponents__GreenTickIcon-sc-m7jeli-6 dutgAg"
+                    class="styledComponents__GreenTickIcon-sc-m7jeli-3 bRCYfh"
                     data-testid="CheckMarkCircleSolid"
                   />
                 </div>
               </div>
               <div
-                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-3 styledComponents__NoDataTextWrapper-sc-m7jeli-5 eWWtzz iUuDTI"
+                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
               >
                 <div
                   class="ant-space-item"
