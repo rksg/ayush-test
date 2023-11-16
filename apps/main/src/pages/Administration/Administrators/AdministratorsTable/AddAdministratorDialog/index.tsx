@@ -167,11 +167,11 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
         onFinish={handleSubmit}
       >
         <Space direction='vertical' style={{ width: '100%' }} >
-          <AuthenticationSelector
+          {isSsoConfigured && <AuthenticationSelector
             ssoConfigured={isSsoConfigured}
             setSelected={setSelectedAuth}
-          />
-          {selectedAuth === AuthTypeRadioButtonEnum.sso &&
+          />}
+          {selectedAuth === AuthTypeRadioButtonEnum.sso && isSsoConfigured &&
           <div>
             <Form.Item
               name='firstName'
