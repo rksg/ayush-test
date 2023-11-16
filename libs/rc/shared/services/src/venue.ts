@@ -1377,5 +1377,6 @@ export const {
   useLazyGetVenueClientAdmissionControlQuery,
   useUpdateVenueClientAdmissionControlMutation,
   useGetVenueApManagementVlanQuery,
+  useLazyGetVenueApManagementVlanQuery,
   useUpdateVenueApManagementVlanMutation
 } = venueApi

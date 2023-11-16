@@ -13,6 +13,17 @@ import { panelContext }                from './index.spec'
 
 import { SwitchPanelContext } from '.'
 
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useLazySwitchPortlistQuery: () => [
+    jest.fn().mockResolvedValue({
+      // eslint-disable-next-line max-len
+      data: require('apps/rc/src/pages/Devices/Switch/SwitchDetails/SwitchOverviewTab/SwitchOverviewPanel/__tests__/fixtures').standaloneFront
+    }),
+    { requestId: 'test' }
+  ]
+}))
+
 describe('FrontViewBreakoutPort', () => {
   const params = {
     tenantId: 'tenantId',
