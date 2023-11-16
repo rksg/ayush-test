@@ -289,10 +289,9 @@ export enum EdgeTroubleshootingType {
 export interface EdgeLagMemberStatus {
   portId: string
   name: string
-  lacpState: string
-  lacpTimeout: EdgeLagTimeoutEnum
-  lacpRxCount: number
-  lacpTxCount: number
+  state: string
+  rxCount: number
+  txCount: number
   systemId: string
   key: string
   peerSystemId: string
@@ -309,6 +308,7 @@ export interface EdgeLagStatus {
   adminStatus: string
   portType: EdgePortTypeEnum
   lagType: EdgeLagTypeEnum
+  lacpTimeout: EdgeLagTimeoutEnum
   lagMembers: EdgeLagMemberStatus[]
   ipMode: EdgeIpModeEnum
   mac: string
