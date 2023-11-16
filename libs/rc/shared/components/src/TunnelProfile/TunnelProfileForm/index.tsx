@@ -11,13 +11,14 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsFormLegacy } from '@acx-ui/components'
-import { Features }        from '@acx-ui/feature-toggle'
+import { StepsFormLegacy }  from '@acx-ui/components'
+import { Features }         from '@acx-ui/feature-toggle'
 import {
   AgeTimeUnit,
   MtuTypeEnum,
   TunnelProfile,
-  getTunnelTypeOptions
+  getTunnelTypeOptions,
+  servicePolicyNameRegExp
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -83,7 +84,8 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
           rules={[
             { required: true },
             { min: 2 },
-            { max: 32 }
+            { max: 32 },
+            { validator: (_, value) => servicePolicyNameRegExp(value) }
           ]}
           children={<Input disabled={isDefaultTunnelProfile}/>}
           validateFirst
