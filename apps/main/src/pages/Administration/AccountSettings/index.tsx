@@ -56,6 +56,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const showRksSupport = isMspEc === false
   const isFirstLoading = recoveryPassphraseData.isLoading
     || mfaTenantDetailsData.isLoading || mspEcProfileData.isLoading
+    || betaStatusData.isLoading
 
   const showSsoSupport = isPrimeAdminUser && isIdmDecoupling && !isDogfood
     && canMSPDelegation && !isMspEc

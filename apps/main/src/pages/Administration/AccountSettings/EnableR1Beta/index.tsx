@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { Col, Form, Row, Typography, Checkbox, Tooltip } from 'antd'
+import { useWatch }                                      from 'antd/lib/form/Form'
 import { useIntl }                                       from 'react-intl'
 import { useParams }                                     from 'react-router-dom'
 
@@ -28,12 +29,12 @@ export function EnableR1Beta (props: EnableR1BetaProps) {
   const params = useParams()
   const [form] = Form.useForm()
   const { data: betaStatus } = useGetBetaStatusQuery({ params })
-  const { className } = props
+  const { className, betaStatusData } = props
   const [showBetaTermsConditionDrawer, setBetaTermsConditionDrawer] = useState(false)
   const [showShowBetaFeaturesDrawer, setShowBetaFeaturesDrawer] = useState(false)
   const [toggleBetaStatus, { isLoading: isUpdating }] = useToggleBetaStatusMutation()
   const isDisabled = isUpdating
-  // const betaToggle = Form.useWatch('betaToggle', form)
+  const betaStatusCb = useWatch('betaStatusCbox')
 
   const openR1BetaTermsConditionDrawer = () => {
     setBetaTermsConditionDrawer(true)
@@ -70,18 +71,24 @@ export function EnableR1Beta (props: EnableR1BetaProps) {
   const openBetaFeaturesDrawer = () => {
     setShowBetaFeaturesDrawer(true)
   }
-  let isBetaEnabled = betaStatus?.enabled === 'true'?? false
+  let isBetaEnabled = betaStatusData?.enabled === 'true'?? false
+
+  // useEffect(() => {
+  //   if (!isUpdating) {
+  //     // const betaStatusCb = betaStatus?.enabled !== 'true'?? false
+  //     isBetaEnabled = betaStatus?.enabled === 'true'?? false
+  //     // console.log('betaStatusCb', betaStatusCb)
+  //     console.log('isBetaEnabled', isBetaEnabled)
+  //     form.setFieldValue('betaStatusCbox', isBetaEnabled)
+  //   }
+  // }, [betaStatus, isBetaEnabled, isUpdating])
+
   useEffect(() => {
-    if (betaStatus) {
-      isBetaEnabled = Boolean(betaStatus?.enabled)?? false
+    if (isBetaEnabled) {
+      setBetaTermsConditionDrawer(false)
     }
+  }, [isBetaEnabled])
 
-    form.setFieldsValue({
-      ...betaStatus,
-      betaToggle: isBetaEnabled
-    })
-
-  }, [betaStatus, isBetaEnabled])
 
   return <Loader>
     <Row gutter={24} className={className}>
@@ -95,6 +102,7 @@ export function EnableR1Beta (props: EnableR1BetaProps) {
             >
               <Checkbox
                 onChange={handleEnableR1BetaChange}
+                name={'betaStatusCbox'}
                 checked={isBetaEnabled}
                 value={isBetaEnabled}
                 disabled={isDisabled}

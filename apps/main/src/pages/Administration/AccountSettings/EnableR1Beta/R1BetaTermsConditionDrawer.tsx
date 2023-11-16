@@ -1,11 +1,15 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
+import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, Drawer }              from '@acx-ui/components'
-import { useToggleBetaStatusMutation } from '@acx-ui/user'
+import { Button, Drawer }                                     from '@acx-ui/components'
+import { useParams }                                          from '@acx-ui/react-router-dom'
+import { useToggleBetaStatusMutation, useGetBetaStatusQuery } from '@acx-ui/user'
 
 import * as UI from './styledComponents'
+
+
 export interface R1BetaTermsConditionDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
@@ -18,6 +22,9 @@ export function R1BetaTermsConditionDrawer (
   props: R1BetaTermsConditionDrawerProps
 ) {
   const { $t } = useIntl()
+  const [form] = Form.useForm()
+  const params = useParams()
+  const { data: betaStatus } = useGetBetaStatusQuery({ params })
   const { visible, setVisible } = props
   const [resetField, setResetField] = useState(false)
   const [toggleBetaStatus ] = useToggleBetaStatusMutation()
@@ -45,6 +52,13 @@ export function R1BetaTermsConditionDrawer (
 
   // eslint-disable-next-line max-len
   const footerMsg = $t({ defaultMessage: 'By clicking “Enable Beta”, you agree to the RUCKUS One Beta Terms & Conditions' })
+
+  // useEffect(() => {
+  //   const betaStatusCb = betaStatus?.enabled === 'true'?? false
+  //   console.log('betaStatusCb', betaStatusCb)
+  //   form.setFieldValue('betaStatusCbox', betaStatusCb)
+  //
+  // }, [betaStatus?.enabled])
 
   return <Drawer
     destroyOnClose={resetField}
