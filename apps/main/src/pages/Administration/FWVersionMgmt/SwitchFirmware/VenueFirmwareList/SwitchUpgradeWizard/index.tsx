@@ -97,9 +97,9 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
   }
 
   const wizardWidth = {
-    [SwitchFirmwareWizardType.update]: '1140px',
-    [SwitchFirmwareWizardType.schedule]: '1140px',
-    [SwitchFirmwareWizardType.skip]: '968px'
+    [SwitchFirmwareWizardType.update]: '1180px',
+    [SwitchFirmwareWizardType.schedule]: '1180px',
+    [SwitchFirmwareWizardType.skip]: '1120px'
   }
 
   const [skipSwitchUpgradeSchedules] = useSkipSwitchUpgradeSchedulesMutation()
