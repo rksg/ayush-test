@@ -298,10 +298,12 @@ export const {
     getBetaStatus: build.query<BetaStatus, RequestPayload>({
       query: ({ params }) => createHttpRequest(UserUrlsInfo.getBetaStatus, params),
       transformResponse: (betaStatus: { startDate: string, enabled: string }) =>
-        ({ startDate: betaStatus?.startDate, enabled: betaStatus?.enabled })
+        ({ startDate: betaStatus?.startDate, enabled: betaStatus?.enabled }),
+      providesTags: [{ type: 'Beta', id: 'DETAIL' }]
     }),
     toggleBetaStatus: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => createHttpRequest(UserUrlsInfo.toggleBetaStatus, params)
+      query: ({ params }) => createHttpRequest(UserUrlsInfo.toggleBetaStatus, params),
+      invalidatesTags: [{ type: 'Beta', id: 'DETAIL' }]
     })
   })
 })
