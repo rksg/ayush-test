@@ -41,7 +41,6 @@ const MacRegistrationListComponent = (props: MacRegistrationListComponentProps) 
 
   return <Form.Item
     label={intl.$t({ defaultMessage: 'Select MAC Registration List' })}
-    name={[...inputName, 'macRegistrationList']}
   >
     <GridRow>
       <GridCol col={{ span: 12 }}>

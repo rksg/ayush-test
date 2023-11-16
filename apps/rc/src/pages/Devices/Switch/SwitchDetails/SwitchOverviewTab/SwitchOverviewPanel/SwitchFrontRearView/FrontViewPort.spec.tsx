@@ -19,6 +19,13 @@ jest.mock('@acx-ui/rc/services', () => ({
       { lagId: 2, name: 'Lag 2' }
     ]
   })
+  ],
+  useLazySwitchPortlistQuery: () => [
+    jest.fn().mockResolvedValue({
+      // eslint-disable-next-line max-len
+      data: require('apps/rc/src/pages/Devices/Switch/SwitchDetails/SwitchOverviewTab/SwitchOverviewPanel/__tests__/fixtures').standaloneFront
+    }),
+    { requestId: 'test' }
   ]
 }))
 

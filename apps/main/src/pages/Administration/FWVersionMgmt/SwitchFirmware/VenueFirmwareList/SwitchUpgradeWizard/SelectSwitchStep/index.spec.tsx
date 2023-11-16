@@ -168,8 +168,9 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
 
     //select all
     const selectAll = screen.getByRole('row', {
-      name: /venue current firmware available firmware scheduling/i
+      name: /venue model current firmware available firmware scheduling/i
     })
+
     await userEvent.click(within(selectAll).getByRole('checkbox'))
     expect(within(selectAll).getByRole('checkbox')).toBeChecked()
 
@@ -197,12 +198,9 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
 
     // Clicks Expand button
     const venue = await screen.findByRole('row', { name: /Karen-Venue1/i })
-    await userEvent.click(within(venue).getByRole('button', {
-      name: /expand row/i }))
+    await userEvent.click(within(venue).getByTestId('arrow-expand'))
 
-    expect(await screen.findByRole('button', {
-      name: /collapse row/i
-    })).toBeInTheDocument()
+    expect(await screen.findByTestId('arrow-collapse')).toBeInTheDocument()
   })
 
   it('render SwitchUpgradeWizard - search switch', async () => {
