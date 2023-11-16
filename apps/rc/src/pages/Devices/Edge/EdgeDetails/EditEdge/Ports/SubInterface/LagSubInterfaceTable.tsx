@@ -47,16 +47,16 @@ export const LagSubInterfaceTable = (props: LagSubInterfaceTableProps) => {
     await updateSubInterface(requestPayload).unwrap()
   }
 
-  const handleDelete = (serialNumber: string, mac: string, id: string) => {
+  const handleDelete = (data: EdgeSubInterface) => {
     return deleteSubInterfaces({
       params: {
         serialNumber,
         lagId: lagId.toString(),
-        subInterfaceId: id }
+        subInterfaceId: data?.id }
     })
   }
 
-  const handleUpload = async (serialNumber: string, formData: FormData) => {
+  const handleUpload = async (formData: FormData) => {
     await uploadCSV({
       params: { serialNumber , lagId: lagId.toString() },
       payload: formData

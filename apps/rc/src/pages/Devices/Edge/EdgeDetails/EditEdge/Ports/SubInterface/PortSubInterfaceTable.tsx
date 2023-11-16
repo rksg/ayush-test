@@ -40,16 +40,16 @@ export const PortSubInterfaceTable = (props: PortSubInterfaceTableProps) => {
     await updateSubInterface(requestPayload).unwrap()
   }
 
-  const handleDelete = (serialNumber: string, mac: string, id: string) => {
+  const handleDelete = (data: EdgeSubInterface) => {
     return deleteSubInterfaces({
       params: {
         serialNumber,
         mac,
-        subInterfaceId: id }
+        subInterfaceId: data?.id }
     })
   }
 
-  const handleUpload = async (serialNumber: string, formData: FormData) => {
+  const handleUpload = async (formData: FormData) => {
     await uploadCSV({
       params: { serialNumber , mac },
       payload: formData

@@ -17,15 +17,14 @@ import * as UI from '../styledComponents'
 import SubInterfaceDrawer from './SubInterfaceDrawer'
 
 interface SubInterfaceTableProps {
-  serialNumber: string
   currentTab: string
   ip: string
   mac: string
   tableQuery: TableQuery<EdgeSubInterface, RequestPayload<unknown>, unknown>
   handleAdd: (data: EdgeSubInterface) => Promise<unknown>
   handleUpdate: (data: EdgeSubInterface) => Promise<unknown>
-  handleDelete: (serialNumber: string, mac: string, id: string) => Promise<unknown>
-  handleUpload: (serialNumber: string, formData: FormData) => Promise<unknown>
+  handleDelete: (data: EdgeSubInterface) => Promise<unknown>
+  handleUpload: (formData: FormData) => Promise<unknown>
   uploadResult: unknown
 }
 
@@ -41,7 +40,7 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   const params = useParams()
   const isEdgeSubInterfaceCSVEnabled = useIsSplitOn(Features.EDGES_SUB_INTERFACE_CSV_TOGGLE)
   const {
-    serialNumber, currentTab, ip, mac, tableQuery, handleAdd,
+    currentTab, ip, mac, tableQuery, handleAdd,
     handleUpdate, handleDelete, handleUpload, uploadResult
   } = props
 
@@ -127,11 +126,7 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
             numOfEntities: selectedRows.length
           },
           onOk: () => {
-            handleDelete(
-              serialNumber,
-              mac,
-              selectedRows[0].id
-            ).then(clearSelection)
+            handleDelete(selectedRows[0]).then(clearSelection)
           }
         })
       }
@@ -156,7 +151,7 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
 
   const importSubInterfaces = async (formData: FormData) => {
     try {
-      await handleUpload(serialNumber, formData)
+      await handleUpload(formData)
       setImportModalvisible(false)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
