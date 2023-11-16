@@ -4,7 +4,6 @@ import { Col, Form, Row, Typography, Checkbox, Tooltip } from 'antd'
 import { useIntl }                                       from 'react-intl'
 import { useParams }                                     from 'react-router-dom'
 
-
 import { Loader, showActionModal }                                        from '@acx-ui/components'
 import { SpaceWrapper }                                                   from '@acx-ui/rc/components'
 import { BetaStatus, useGetBetaStatusQuery, useToggleBetaStatusMutation } from '@acx-ui/user'
@@ -40,15 +39,14 @@ export function EnableR1Beta (props: EnableR1BetaProps) {
 
   const handleEnableR1BetaChange = async (e: CheckboxChangeEvent) => {
     const isChecked = e.target.checked
+    const modalMsg = $t(MessageMapping.enable_r1_beta_disable_description)
 
     if (!isChecked) {
       showActionModal({
         type: 'confirm',
         width: 450,
         title: $t({ defaultMessage: 'Disable Beta Features?' }),
-        content:
-          // eslint-disable-next-line max-len
-          $t({ defaultMessage: 'Please note that if you decide to disable beta features, your current configurations will be retained. However, you won\'t be able to modify them until you re-enable beta features' }),
+        content: modalMsg,
         okText: $t({ defaultMessage: 'Disable Beta Features' }),
         cancelText: $t({ defaultMessage: 'Keep Beta Features' }),
         onOk: async () => {
@@ -88,7 +86,6 @@ export function EnableR1Beta (props: EnableR1BetaProps) {
             >
               <Checkbox
                 onChange={handleEnableR1BetaChange}
-                name={'betaStatusCbox'}
                 checked={checked}
                 disabled={isDisabled}
               >

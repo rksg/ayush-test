@@ -5,6 +5,8 @@ import { useIntl } from 'react-intl'
 import { Button, Drawer }              from '@acx-ui/components'
 import { useToggleBetaStatusMutation } from '@acx-ui/user'
 
+import { MessageMapping } from '../MessageMapping'
+
 import * as UI from './styledComponents'
 
 export interface R1BetaTermsConditionDrawerProps {
@@ -41,21 +43,17 @@ export function R1BetaTermsConditionDrawer (
     setVisible(false)
   }
 
-  // eslint-disable-next-line max-len
-  const termsCondition = $t({ defaultMessage: 'Ruckus Wireless, Inc. (“RUCKUS”) is providing you with access to certain product features and capabilities that are not yet commercially available and that are still being evaluated for general release. As such, these features and capabilities are provided “AS IS” and RUCKUS expressly disclaims all warranties, whether express, implied, statutory or otherwise, including without limitation any conditions or warranties of merchantability, performance, fitness for a particular purpose or use, and non infringement. The foregoing disclaimers shall apply to the fullest extent permitted by law. RUCKUS disclaims any and all liability in connection with your access to and use of beta features and capabilities. RUCKUS may modify, discontinue, or terminate your access to these features and capabilities at anytime at its sole discretion.' })
-
-  // eslint-disable-next-line max-len
-  const footerMsg = $t({ defaultMessage: 'By clicking “Enable Beta”, you agree to the RUCKUS One Beta Terms & Conditions' })
-
   return <Drawer
     destroyOnClose={resetField}
     title={$t({ defaultMessage: 'RUCKUS One Beta Terms & Conditions' })}
     visible={visible}
     onClose={onClose}
     width={'430px'}
-    children={<UI.DrawerContentWrapper>{termsCondition}</UI.DrawerContentWrapper>}
+    children={<UI.DrawerContentWrapper>
+      {$t(MessageMapping.enable_r1_beta_terms_condition_drawer_msg)}</UI.DrawerContentWrapper>}
     footer={<UI.FooterWrapper>
-      <UI.FooterMsg>{footerMsg}</UI.FooterMsg>
+      <UI.FooterMsg>
+        {$t(MessageMapping.enable_r1_beta_terms_condition_drawer_footer_msg)}</UI.FooterMsg>
       <UI.ButtonFooterWrapper>
         <Button
           type='primary'

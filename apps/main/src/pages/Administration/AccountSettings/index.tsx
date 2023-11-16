@@ -29,6 +29,7 @@ interface AccountSettingsProps {
 const AccountSettings = (props : AccountSettingsProps) => {
   const { className } = props
   const params = { tenantId: useTenantId() }
+  const betaButtonToggle = useIsSplitOn(Features.BETA_BUTTON)
   const {
     data: userProfileData,
     isPrimeAdmin
@@ -38,7 +39,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const recoveryPassphraseData = useGetRecoveryPassphraseQuery({ params })
   const mfaTenantDetailsData = useGetMfaTenantDetailsQuery({ params })
   const mspEcProfileData = useGetMspEcProfileQuery({ params })
-  const betaStatusData = useGetBetaStatusQuery({ params })
+  const betaStatusData = useGetBetaStatusQuery({ params }, { skip: !betaButtonToggle })
 
   const canMSPDelegation = isDelegationMode() === false
   const hasMSPEcLabel = mspUtils.isMspEc(mspEcProfileData.data)
@@ -48,7 +49,6 @@ const AccountSettings = (props : AccountSettingsProps) => {
 
   const isPrimeAdminUser = isPrimeAdmin()
   const isI18n = useIsSplitOn(Features.I18N_TOGGLE)
-  const betaButtonToggle = useIsSplitOn(Features.BETA_BUTTON)
   const isSsoAllowed = useIsTierAllowed(Features.SSO)
   const isIdmDecoupling = useIsSplitOn(Features.IDM_DECOUPLING) && isSsoAllowed
   const isApiKeyEnabled = useIsSplitOn(Features.IDM_APPLICATION_KEY_TOGGLE)
