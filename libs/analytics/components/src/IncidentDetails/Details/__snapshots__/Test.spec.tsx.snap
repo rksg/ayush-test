@@ -115,7 +115,7 @@ exports[`Test Details should render AirtimeB correctly 1`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          Airtime Utilization is unusually high in 2.4 GHz in Zone: Venue: 19-US-CA-D19-Andre-Home
+          Airtime Utilization is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
         </span>
       </div>
     </div>
@@ -687,7 +687,7 @@ exports[`Test Details should render AirtimeB correctly 2`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          Airtime Utilization is unusually high in 2.4 GHz in Zone: Venue: 19-US-CA-D19-Andre-Home
+          Airtime Utilization is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
         </span>
       </div>
     </div>
@@ -1259,7 +1259,7 @@ exports[`Test Details should render AirtimeB correctly 3`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          Airtime Utilization is unusually high in 2.4 GHz in Zone: Venue: 19-US-CA-D19-Andre-Home
+          Airtime Utilization is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
         </span>
       </div>
     </div>
@@ -1831,7 +1831,7 @@ exports[`Test Details should render AirtimeRx correctly 1`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          Airtime Utilization is unusually high in 2.4 GHz in Zone: Venue: 19-US-CA-D19-Andre-Home
+          Airtime Utilization is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
         </span>
       </div>
     </div>
@@ -2403,7 +2403,7 @@ exports[`Test Details should render AirtimeRx correctly 2`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          Airtime Utilization is unusually high in 2.4 GHz in Zone: Venue: 19-US-CA-D19-Andre-Home
+          Airtime Utilization is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
         </span>
       </div>
     </div>
@@ -2975,7 +2975,7 @@ exports[`Test Details should render AirtimeRx correctly 3`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          Airtime Utilization is unusually high in 2.4 GHz in Zone: Venue: 19-US-CA-D19-Andre-Home
+          Airtime Utilization is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
         </span>
       </div>
     </div>
@@ -3547,7 +3547,7 @@ exports[`Test Details should render AirtimeTx correctly 1`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          Airtime Utilization is unusually high in 2.4 GHz in Zone: Venue: 19-US-CA-D19-Andre-Home
+          Airtime Utilization is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
         </span>
       </div>
     </div>
@@ -4109,7 +4109,7 @@ exports[`Test Details should render AirtimeTx correctly 2`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          Airtime Utilization is unusually high in 2.4 GHz in Zone: Venue: 19-US-CA-D19-Andre-Home
+          Airtime Utilization is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
         </span>
       </div>
     </div>
@@ -4671,7 +4671,7 @@ exports[`Test Details should render AirtimeTx correctly 3`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          Airtime Utilization is unusually high in 2.4 GHz in Zone: Venue: 19-US-CA-D19-Andre-Home
+          Airtime Utilization is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
         </span>
       </div>
     </div>

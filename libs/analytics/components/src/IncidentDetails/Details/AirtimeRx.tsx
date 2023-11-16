@@ -1,7 +1,5 @@
-
-import moment         from 'moment'
-import { unitOfTime } from 'moment-timezone'
-import { useIntl }    from 'react-intl'
+import moment, { unitOfTime } from 'moment-timezone'
+import { useIntl }            from 'react-intl'
 
 import { calculateSeverity, Incident, shortDescription } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol }    from '@acx-ui/components'
