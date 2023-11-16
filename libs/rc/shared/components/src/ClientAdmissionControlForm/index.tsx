@@ -118,9 +118,9 @@ export function ClientAdmissionControlForm (props: {
           />
           <br/>
           <Form.Item
-            label={$t({ defaultMessage: 'Max client load: (%)' })}
+            label={$t({ defaultMessage: 'Max Radio load: (%)' })}
             name={maxRadioLoadFieldName}
-            data-testid={'client-admission-control-max-client-load-'+type}
+            data-testid={'client-admission-control-max-radio-load-'+type}
             children={
               (readOnly)?
                 <span
