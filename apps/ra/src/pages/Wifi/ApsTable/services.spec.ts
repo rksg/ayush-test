@@ -89,6 +89,7 @@ describe('Zones wise search API', () => {
       start: '2023-04-06T15:26:21+05:30',
       end: '2023-04-06T15:29:48+05:30',
       query: 'sometext',
+      limit: 10000,
       filter: { networkNodes: [[{ type: 'zone', name: 'test' } as FilterNameNode]] }
     }
     const { status, data, error } = await store.dispatch(
