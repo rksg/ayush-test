@@ -43,7 +43,7 @@ export const UnknownLink = ({ value }: { value: RecommendationListItem }) => {
   const checkGlobalZone = auditMetadata?.audit?.some(
     data => data.failure.hasOwnProperty('global-zone-checker'))!
   const testing = checkMesh === true ? 'mesh'
-    : checkGlobalZone === true ? 'global-zone-checker' : 'null'
+    : checkGlobalZone === true ? 'global_zone_checker' : 'null'
   const paramString = createSearchParams({
     status: statusEnum,
     date: updatedAt,
@@ -119,14 +119,14 @@ export function RecommendationTable (
         ? $t({ defaultMessage: 'Zone RRM Health' })
         : $t({ defaultMessage: 'Venue RRM Health' }),
       width: 120,
-      dataIndex: 'optimizedState',
-      key: 'optimizedState',
-      render: (_, { crrmOptimizedState }) => {
-        return <UI.OptimizedIcon
-          value={crrmOptimizedState!.order}
-          text={$t(crrmOptimizedState!.label)}
-        />
-      },
+      dataIndex: 'crrmOptimizedState',
+      key: 'crrmOptimizedState',
+      filterKey: 'crrmOptimizedState.text',
+      render: (_, { crrmOptimizedState }) => <UI.OptimizedIcon
+        value={crrmOptimizedState!.order}
+        text={$t(crrmOptimizedState!.label)}
+      />
+      ,
       sorter: { compare: crrmStateSort },
       fixed: 'left',
       filterable: true
@@ -135,6 +135,7 @@ export function RecommendationTable (
       width: 90,
       dataIndex: ['priority', 'order'],
       key: 'priorityOrder',
+      filterKey: 'priority.text',
       render: (_, value) => <UI.PriorityIcon
         value={value.priority.order}
         text={$t(value.priority.label)}

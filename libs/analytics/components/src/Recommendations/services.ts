@@ -363,7 +363,11 @@ export const api = recommendationApi.injectEndpoints({
             id: newId,
             scope: formattedPath(path, sliceValue),
             type: nodeTypes(sliceType as NodeType),
-            priority: codes[code === 'unknown' ? statusEnum : code as keyof typeof codes].priority,
+            priority: {
+              ...codes[code === 'unknown' ? statusEnum : code as keyof typeof codes].priority,
+              text: $t(codes[code === 'unknown'
+                ? statusEnum : code as keyof typeof codes].priority.label)
+            },
             category:
               $t(codes[code === 'unknown' ? statusEnum : code as keyof typeof codes].category),
             summary:
@@ -372,7 +376,10 @@ export const api = recommendationApi.injectEndpoints({
             statusTooltip: getStatusTooltip(code, statusEnum, { ...metadata, updatedAt }),
             statusEnum,
             ...((code.includes('crrm') || code === 'unknown') && {
-              crrmOptimizedState: getCrrmOptimizedState(statusEnum)
+              crrmOptimizedState: {
+                ...getCrrmOptimizedState(statusEnum),
+                text: $t(getCrrmOptimizedState(statusEnum).label)
+              }
             })
           }
         })
