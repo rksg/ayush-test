@@ -185,6 +185,10 @@ export const MSPUtils = () => {
     return rec?.name ? rec.name : id
   }
 
+  const transformTechPartnerCount = (count?: number) => {
+    return count ?? 0
+  }
+
   const transformAdminCount = (data: MspEc, type?: string) => {
     return type === AccountType.MSP_INSTALLER
       ? data.mspInstallerAdminCount || 0 : (type === AccountType.MSP_INTEGRATOR
@@ -215,6 +219,7 @@ export const MSPUtils = () => {
     transformAlarmCount,
     transformMspRecAddress,
     transformTechPartner,
+    transformTechPartnerCount,
     transformAdminCount,
     transformAdminCountHeader
   }

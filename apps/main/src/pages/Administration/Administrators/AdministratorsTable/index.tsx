@@ -21,7 +21,7 @@ import {
   useDeleteAdminMutation,
   useDeleteAdminsMutation
 } from '@acx-ui/rc/services'
-import { Administrator, sortProp, defaultSort }                 from '@acx-ui/rc/utils'
+import { Administrator, sortProp, defaultSort, TenantType }     from '@acx-ui/rc/utils'
 import { RolesEnum }                                            from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, roleStringMap } from '@acx-ui/user'
 import { AccountType }                                          from '@acx-ui/utils'
@@ -57,9 +57,13 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
   const allowDeleteAdminFF = useIsSplitOn(Features.MSPEC_ALLOW_DELETE_ADMIN)
   const isSsoAllowed = useIsTierAllowed(Features.SSO)
   const idmDecouplngFF = useIsSplitOn(Features.IDM_DECOUPLING) && isSsoAllowed
+  const techPartnerAssignEcsEanbled = useIsSplitOn(Features.TECH_PARTNER_ASSIGN_ECS)
+  const isTechPartner =
+     tenantType === TenantType.MSP_INSTALLER || tenantType === TenantType.MSP_INTEGRATOR
 
   const { data: mspProfile } = useGetMspProfileQuery({ params })
-  const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
+  const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile) ||
+     (techPartnerAssignEcsEanbled && isTechPartner)
 
   const { data: adminList, isLoading, isFetching } = useGetAdminListQuery({ params })
 
