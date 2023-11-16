@@ -1,10 +1,11 @@
 import { Col }                    from 'antd'
 import { ExpandableConfig }       from 'antd/lib/table/interface'
+import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { Button, GridRow, Loader, NestedTableExpandableDefaultConfig, Table, TableProps } from '@acx-ui/components'
-import { EdgeIpModeEnum, EdgeLagMemberStatus, EdgeLagStatus }                             from '@acx-ui/rc/utils'
+import { EdgeIpModeEnum, EdgeLagMemberStatus, EdgeLagStatus, EdgeLagTimeoutEnum }         from '@acx-ui/rc/utils'
 import { useTenantLink }                                                                  from '@acx-ui/react-router-dom'
 import { hasAccess }                                                                      from '@acx-ui/user'
 import { getIntl }                                                                        from '@acx-ui/utils'
@@ -16,6 +17,11 @@ interface LagsTabProps {
 
 interface LagsTableDataType extends EdgeLagStatus {
   key: string
+  lagMembers: LagMemberTableType[]
+}
+
+interface LagMemberTableType extends EdgeLagMemberStatus {
+  lacpTimeout: EdgeLagTimeoutEnum
 }
 
 export const LagsTab = (props: LagsTabProps) => {
@@ -129,11 +135,11 @@ export const LagsTab = (props: LagsTabProps) => {
   )
 }
 
-const expandedRowRender = (memberStatus: EdgeLagMemberStatus[]) => {
+const expandedRowRender = (memberStatus: LagMemberTableType[]) => {
 
   const { $t } = getIntl()
 
-  const columns: TableProps<EdgeLagMemberStatus>['columns'] = [
+  const columns: TableProps<LagMemberTableType>['columns'] = [
     {
       title: $t({ defaultMessage: 'Port Name' }),
       key: 'name',
@@ -141,8 +147,8 @@ const expandedRowRender = (memberStatus: EdgeLagMemberStatus[]) => {
     },
     {
       title: $t({ defaultMessage: 'LACP State' }),
-      key: 'lacpState',
-      dataIndex: 'lacpState'
+      key: 'state',
+      dataIndex: 'state'
     },
     {
       title: $t({ defaultMessage: 'System ID' }),
@@ -158,7 +164,10 @@ const expandedRowRender = (memberStatus: EdgeLagMemberStatus[]) => {
     {
       title: $t({ defaultMessage: 'Timeout' }),
       key: 'lacpTimeout',
-      dataIndex: 'lacpTimeout'
+      dataIndex: 'lacpTimeout',
+      render: (data, row) => {
+        return `${row.lacpTimeout} (${_.capitalize(row.lacpTimeout)})`
+      }
     },
     {
       title: $t({ defaultMessage: 'Peer System ID' }),
@@ -173,14 +182,14 @@ const expandedRowRender = (memberStatus: EdgeLagMemberStatus[]) => {
     },
     {
       title: $t({ defaultMessage: 'LACP Rx Count' }),
-      key: 'lacpRxCount',
-      dataIndex: 'lacpRxCount',
+      key: 'rxCount',
+      dataIndex: 'rxCount',
       align: 'center'
     },
     {
       title: $t({ defaultMessage: 'LACP Tx Count' }),
-      key: 'lacpTxCount',
-      dataIndex: 'lacpTxCount',
+      key: 'txCount',
+      dataIndex: 'txCount',
       align: 'center'
     }
   ]
@@ -190,7 +199,11 @@ const expandedRowRender = (memberStatus: EdgeLagMemberStatus[]) => {
 const convertToLagsTableDataType = (data: EdgeLagStatus[]):
 LagsTableDataType[] => {
   return data.map(item => ({
-    key: item.lagId,
-    ...item
+    ...item,
+    key: item.lagId.toString(),
+    lagMembers: item.lagMembers.map(member => ({
+      ...member,
+      lacpTimeout: item.lacpTimeout
+    }))
   }))
 }
