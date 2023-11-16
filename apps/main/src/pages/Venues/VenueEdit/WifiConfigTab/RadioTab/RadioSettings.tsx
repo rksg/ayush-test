@@ -200,6 +200,11 @@ export function RadioSettings () {
       setBandwidth6GOptions(getSupportBandwidth(wifi7_320Bandwidth, supportCh6g))
       setBandwidthLower5GOptions(getSupport5GBandwidth(channelBandwidth5GOptions, supportChLower5g))
       setBandwidthUpper5GOptions(getSupport5GBandwidth(channelBandwidth5GOptions, supportChUpper5g))
+      setAfcProps({
+        featureFlag: AFC_Featureflag,
+        isAFCEnabled: supportChannelsData?.afcEnabled,
+        afcInfo: undefined
+      })
     }
 
   }, [supportChannelsData])
@@ -233,11 +238,6 @@ export function RadioSettings () {
         if (data) {
           const findAp = data.filter((ap: APExtended) => ap.venueId === venueId)
           setHasTriBandAps((findAp.length > 0))
-          setAfcProps({
-            featureFlag: AFC_Featureflag,
-            isAFCEnabled: supportChannelsData?.afcEnabled,
-            afcInfo: undefined
-          })
         }
       })
     }
