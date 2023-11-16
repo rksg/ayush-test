@@ -1,6 +1,5 @@
 import React from 'react'
 
-import _             from 'lodash'
 import moment        from 'moment'
 import { IntlShape } from 'react-intl'
 
