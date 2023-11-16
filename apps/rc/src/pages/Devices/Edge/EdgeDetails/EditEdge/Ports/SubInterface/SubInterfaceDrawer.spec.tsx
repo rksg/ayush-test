@@ -25,6 +25,8 @@ jest.mock('@acx-ui/utils', () => {
 
 const mockedPortsConfig = mockEdgePortConfig.ports[0]
 const mockedData = mockEdgeSubInterfaces.content[0] as EdgeSubInterface
+const mockedHandleAddFn = jest.fn()
+const mockedHandleUpdateFn = jest.fn()
 
 describe('EditEdge ports - sub-interface', () => {
   let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
@@ -59,6 +61,8 @@ describe('EditEdge ports - sub-interface', () => {
           visible={true}
           setVisible={mockedSetVisible}
           data={undefined}
+          handleAdd={mockedHandleAddFn}
+          handleUpdate={mockedHandleUpdateFn}
         />
       </Provider>, {
         route: {
@@ -80,6 +84,8 @@ describe('EditEdge ports - sub-interface', () => {
           visible={true}
           setVisible={mockedSetVisible}
           data={undefined}
+          handleAdd={mockedHandleAddFn}
+          handleUpdate={mockedHandleUpdateFn}
         />
       </Provider>, {
         route: {
@@ -107,6 +113,8 @@ describe('EditEdge ports - sub-interface', () => {
           visible={true}
           setVisible={mockedSetVisible}
           data={mockedData}
+          handleAdd={mockedHandleAddFn}
+          handleUpdate={mockedHandleUpdateFn}
         />
       </Provider>, {
         route: {
@@ -131,6 +139,8 @@ describe('EditEdge ports - sub-interface', () => {
         visible={result.current.visible}
         setVisible={result.current.setVisible}
         data={undefined}
+        handleAdd={mockedHandleAddFn}
+        handleUpdate={mockedHandleUpdateFn}
       />
 
     </Provider>)
