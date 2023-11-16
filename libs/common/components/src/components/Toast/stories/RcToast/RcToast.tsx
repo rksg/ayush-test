@@ -22,6 +22,7 @@ export function RcToast () {
     RC Toast:
       <button onClick={()=>{infoToast(count, setCount)}}>Info</button>
       <button onClick={successToast}>Success</button>
+      <button onClick={downloadToast}>Success with download link</button>
       <button onClick={errorToast}>Error</button>
     </>
   )
@@ -70,6 +71,12 @@ const infoToast = (count: number, setCount: Function) => {
       }
     }, 1000)
   })
+}
+
+const downloadToast = () => {
+  const mockData = JSON.parse(JSON.stringify(mockdata))
+  mockData.linkData.push({ name: 'linkAlias', value: 'Download' })
+  showTxToast(mockData)
 }
 
 const successToast = () => {

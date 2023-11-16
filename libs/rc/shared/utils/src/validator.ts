@@ -438,6 +438,15 @@ export function apNameRegExp (value: string) {
   return Promise.resolve()
 }
 
+export function ssidBackendNameRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/(?=^((?!(`|\$\())([\u0020-\u007E\u00A0-\uFFFF])){2,32}$)^(\S([\u0020-\u007E\u00A0-\uFFFF])*\S)$/)
+  if (value!=='' && !re.test(value)) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+  return Promise.resolve()
+}
+
 export function gpsRegExp (lat: string, lng: string) {
   const { $t } = getIntl()
   const latitudeRe = new RegExp('^$|^(-?(?:90(?:\\.0{1,6})?|(?:[1-8]?\\d(?:\\.\\d{1,6})?)))$')

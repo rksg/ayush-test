@@ -10,8 +10,9 @@ import { useTenantLink }          from '@acx-ui/react-router-dom'
 
 import { ApDataContext, ApEditContext } from '..'
 
-import { ApLed }       from './ApLed'
-import { BssColoring } from './BssColoring'
+import { ApLed }                from './ApLed'
+import { ApManagementVlanForm } from './ApManagementVlan'
+import { BssColoring }          from './BssColoring'
 
 
 export interface ApAdvancedContext {
@@ -20,6 +21,9 @@ export interface ApAdvancedContext {
 
   updateBssColoring?: (data?: unknown) => void | Promise<void>
   discardBssColoringChanges?: (data?: unknown) => void | Promise<void>
+
+  updateApManagementVlan?: (data?: unknown) => void | Promise<void>
+  discardApManagementVlan?: (data?: unknown) => void | Promise<void>
 }
 
 export function AdvancedTab () {
@@ -41,10 +45,11 @@ export function AdvancedTab () {
   const supportLed = useIsSplitOn(Features.WIFI_FR_6029_FG3_2_TOGGLE)
   const supportBssColor = useIsSplitOn(Features.WIFI_AP_BSS_COLORING_TOGGLE)
     && apCapabilities?.support11AX
-
+  const supportApMgmtVlan = useIsSplitOn(Features.AP_MANAGEMENT_VLAN_AP_LEVEL_TOGGLE)
 
   const apLedTitle = $t({ defaultMessage: 'Access Point LEDs' })
   const bssColoringTitle = $t({ defaultMessage: 'BSS Coloring' })
+  const apMgmtVlanTitle = $t({ defaultMessage: 'Access Point Management VLAN' })
 
   const anchorItems = [
     ...(supportLed? [{
@@ -71,6 +76,19 @@ export function AdvancedTab () {
         </>
       )
 
+    }] : []),
+    ...(supportApMgmtVlan? [{
+      title: apMgmtVlanTitle,
+      key: 'apMgmtVlan',
+      content: (
+        <>
+          <StepsFormLegacy.SectionTitle id='ap-mgmt-vlan'>
+            { apMgmtVlanTitle }
+          </StepsFormLegacy.SectionTitle>
+          <ApManagementVlanForm />
+        </>
+      )
+
     }] : [])
   ]
 
@@ -87,7 +105,8 @@ export function AdvancedTab () {
       delete newData.discardApLedChanges
       delete newData.updateBssColoring
       delete newData.discardBssColoringChanges
-
+      delete newData.updateApManagementVlan
+      delete newData.discardApManagementVlan
       setEditAdvancedContextData(newData)
     }
   }
@@ -97,6 +116,7 @@ export function AdvancedTab () {
     try {
       await editAdvancedContextData.updateApLed?.()
       await editAdvancedContextData.updateBssColoring?.()
+      await editAdvancedContextData.updateApManagementVlan?.()
 
       resetEditContextData()
 
@@ -115,7 +135,7 @@ export function AdvancedTab () {
     try {
       await editAdvancedContextData.discardApLedChanges?.()
       await editAdvancedContextData.discardBssColoringChanges?.()
-
+      await editAdvancedContextData.discardApManagementVlan?.()
 
       resetEditContextData()
 
