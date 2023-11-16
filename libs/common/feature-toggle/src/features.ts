@@ -123,7 +123,10 @@ export enum Features {
   EXPORT_EVENTS_TOGGLE = 'acx-ui-scheduled-events-export-toggle',
   RUCKUS_AI_CHATBOT_TOGGLE = 'ruckus-ai-chatbot-toggle',
   EDGE_LAG = 'acx-ui-edges-lag-toggle',
-  MSP_HSP_SUPPORT = 'mspservice-hsp-01'
+  MSP_HSP_SUPPORT = 'mspservice-hsp-01',
+  RUCKUS_AI_ZONES_LIST = 'ruckus-ai-zones-toggle',
+  LINKEDIN_OIDC_TOGGLE = 'guest-linkedin-openid-connect-toggle',
+  TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
