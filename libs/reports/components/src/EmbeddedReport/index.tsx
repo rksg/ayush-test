@@ -23,7 +23,7 @@ import {
   bandDisabledReports,
   ReportType,
   reportTypeDataStudioMapping,
-  reportModeMapping,
+  reportTypeMapping,
   networkFilterDisabledReports
 } from '../mapping/reportsMapping'
 
@@ -38,7 +38,7 @@ export function convertDateTimeToSqlFormat (dateTime: string): string {
 }
 
 const getReportType = (reportName: ReportType) => {
-  const mode = reportModeMapping[reportName]
+  const mode = reportTypeMapping[reportName]
   const isApReport = ['ap', 'both'].includes(mode)
   const isSwitchReport = ['switch', 'both'].includes(mode)
   const isRadioBandDisabled = bandDisabledReports.includes(reportName)
