@@ -44,7 +44,7 @@ function ZonesList () {
       dataIndex: 'network',
       key: 'network',
       searchable: true,
-      sorter: { compare: sortProp('systemName', defaultSort) },
+      sorter: { compare: sortProp('network', defaultSort) },
       width: 250,
       render: (_, row, __, highlightFn) => {
         const networkPath = [
