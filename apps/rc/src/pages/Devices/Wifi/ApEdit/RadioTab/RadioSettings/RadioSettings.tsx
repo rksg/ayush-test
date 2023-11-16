@@ -2,9 +2,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useContext, useEffect, useRef, useState } from 'react'
 
-import { Col, Form, Radio, RadioChangeEvent, Row, Space }               from 'antd'
-import _, { cloneDeep, dropRight, includes, isEmpty, isUndefined, set } from 'lodash'
-import { FormattedMessage, useIntl }                                    from 'react-intl'
+import { Col, Form, Radio, RadioChangeEvent, Row, Space }            from 'antd'
+import { cloneDeep, dropRight, includes, isEmpty, isUndefined, set } from 'lodash'
+import { FormattedMessage, useIntl }                                 from 'react-intl'
 
 import { AnchorContext, Button, Loader, showActionModal, StepsFormLegacy, StepsFormLegacyInstance, Tabs, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures }                                                  from '@acx-ui/feature-toggle'
@@ -14,8 +14,7 @@ import {
   channelBandwidth5GOptions,
   channelBandwidth6GOptions,
   findIsolatedGroupByChannel,
-  SelectItemOption,
-  LPIButtonText
+  SelectItemOption
 } from '@acx-ui/rc/components'
 import {
   useDeleteApRadioCustomizationMutation,
@@ -23,8 +22,7 @@ import {
   useGetApValidChannelQuery,
   useLazyGetVenueQuery,
   useLazyGetVenueRadioCustomizationQuery,
-  useUpdateApRadioCustomizationMutation,
-  isAPLowPower
+  useUpdateApRadioCustomizationMutation
 } from '@acx-ui/rc/services'
 import {
   ApRadioCustomization,
@@ -32,7 +30,6 @@ import {
   ChannelBandwidth6GEnum,
   VenueExtended,
   VenueRadioCustomization,
-  AFCStatus,
   AFCProps
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
