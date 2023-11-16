@@ -13,7 +13,9 @@ import {
   onActivityMessageReceived,
   LatestEdgeFirmwareVersion,
   EdgeVenueFirmware,
-  EdgeFirmwareVersion
+  EdgeFirmwareVersion,
+  SwitchFirmwareStatus,
+  SwitchFirmware
 } from '@acx-ui/rc/utils'
 import { baseFirmwareApi }   from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -250,6 +252,36 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
+    getSwitchFirmwareStatusList: build.query<TableResult<SwitchFirmwareStatus>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getSwitchFirmwareStatusList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }],
+      transformResponse (result: { upgradeStatusDetailsViewList: SwitchFirmwareStatus[] }) {
+        return {
+          data: result.upgradeStatusDetailsViewList
+        } as unknown as TableResult<SwitchFirmwareStatus>
+      }
+    }),
+    getSwitchFirmwareList: build.query<TableResult<SwitchFirmware>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getSwitchFirmwareList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }],
+      transformResponse (result: { upgradeSwitchViewList: FirmwareSwitchVenue[] }) {
+        return {
+          data: result.upgradeSwitchViewList
+        } as unknown as TableResult<SwitchFirmware>
+      }
+    }),
     getSwitchFirmwarePredownload: build.query<PreDownload, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(FirmwareUrlsInfo.getSwitchFirmwarePredownload, params)
@@ -392,5 +424,9 @@ export const {
   useUpdateEdgeUpgradePreferencesMutation,
   useSkipEdgeUpgradeSchedulesMutation,
   useUpdateEdgeVenueSchedulesMutation,
-  useLazyGetVenueEdgeFirmwareListQuery
+  useLazyGetVenueEdgeFirmwareListQuery,
+  useGetSwitchFirmwareListQuery,
+  useLazyGetSwitchFirmwareListQuery,
+  useGetSwitchFirmwareStatusListQuery,
+  useLazyGetSwitchFirmwareStatusListQuery
 } = firmwareApi

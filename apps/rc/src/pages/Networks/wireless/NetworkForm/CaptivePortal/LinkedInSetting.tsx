@@ -1,9 +1,10 @@
 import { useState, useEffect, useContext } from 'react'
 
-import { Form, Input, Tooltip } from 'antd'
-import { useIntl }              from 'react-intl'
+import { Form, Input, Tooltip, Checkbox } from 'antd'
+import { useIntl }                        from 'react-intl'
 
 import { Button, Modal, PasswordInput } from '@acx-ui/components'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { GuestPortal }                  from '@acx-ui/rc/utils'
 
 import appPhoto           from '../../../../../assets/images/network-wizard-diagrams/linkedin-sample-customised.png'
@@ -15,6 +16,8 @@ import SocialAuthURL from './SocialAuthURL'
 type DataType = {
   guestPortal: GuestPortal
 }
+
+const ACX_UI_LINKEDIN_NOTE_HIDDEN_KEY = 'ACX-linkedIn-note-hidden'
 export default function LinkedInSetting (props:{
   redirectURL: string
 }) {
@@ -27,8 +30,38 @@ export default function LinkedInSetting (props:{
   const [form] = Form.useForm<DataType>()
   const formParent = Form.useFormInstance()
   const [visible, setVisible]=useState(false)
+  const [checkHiddenNote, setCheckHiddenNote]=useState(false)
+  const [visibleNote, setVisibleNote]=useState(true)
   const [appIDValue, setAppIDValue]=useState('')
   const [appSecretValue, setAppSecretValue]=useState('')
+  const isEnabledLinkedInOIDC = useIsSplitOn(Features.LINKEDIN_OIDC_TOGGLE)
+  const linkedInNote = $t({
+    defaultMessage:
+      'Please note'
+  })
+  const linkedInInfo = $t({
+    defaultMessage:
+      '“Sign In with LinkedIn” has been deprecated as of August 1, 2023. ' +
+      'Please switch to “Sign In with LinkedIn using OpenID Connect”' +
+      ' to ensure that your service is not interrupted.'
+  })
+
+  const getLinkedInNoteHiddenIds = () => {
+    let storedIds = localStorage.getItem(ACX_UI_LINKEDIN_NOTE_HIDDEN_KEY)
+    let networdIds = []
+    if (storedIds) {
+      networdIds = JSON.parse(storedIds)
+    }
+    return networdIds
+  }
+
+  const clickCloseNote = () => {
+    let networdIds = getLinkedInNoteHiddenIds()
+    if (networdIds.indexOf(data?.id) === -1) {
+      networdIds.push(data?.id)
+    }
+    localStorage.setItem(ACX_UI_LINKEDIN_NOTE_HIDDEN_KEY, JSON.stringify(networdIds))
+  }
   useEffect(()=>{
     if((editMode || cloneMode) && data){
       form.setFieldValue(['guestPortal','socialIdentities',
@@ -46,6 +79,9 @@ export default function LinkedInSetting (props:{
       formParent.setFieldValue(['guestPortal','socialIdentities',
         'linkedin','config','appSecret'],
       data.guestPortal?.socialIdentities?.linkedin?.config?.appSecret)
+      if (editMode) {
+        setVisibleNote(getLinkedInNoteHiddenIds().indexOf(data.id) > -1)
+      }
     }
   }, [data])
   const getContent = <Form<DataType> layout='vertical'
@@ -116,13 +152,30 @@ export default function LinkedInSetting (props:{
           form.setFieldValue(['guestPortal','socialIdentities',
             'linkedin','config','appSecret'], appSecretValue)
           setVisible(false)
+          setCheckHiddenNote(false)
         }}
         onOk={()=>{
+          clickCloseNote()
           form.submit()
         }}
         maskClosable={false}
       >
         {getContent}
+        {editMode && isEnabledLinkedInOIDC && !visibleNote &&
+          <UI.AlertNote message={<>
+            <span style={{ fontWeight: 'bold' }}>{linkedInNote}:</span>
+            <div>{linkedInInfo}</div>
+            <br/>
+            <div> <Checkbox checked={checkHiddenNote}
+              onChange={()=>{ setCheckHiddenNote(!checkHiddenNote) }} />
+              &nbsp;&nbsp;{$t({ defaultMessage: 'Don’t show this again' })}
+            </div>
+          </>}
+          type='info'
+          closable
+          closeText='Dismiss'
+          onClose={clickCloseNote} />
+        }
       </Modal>
     </>
   )
