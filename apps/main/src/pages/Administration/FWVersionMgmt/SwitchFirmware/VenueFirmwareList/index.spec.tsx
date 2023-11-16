@@ -1,6 +1,6 @@
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   FirmwareUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -11,9 +11,7 @@ import {
   mockServer,
   render,
   screen,
-  fireEvent,
-  within,
-  waitForElementToBeRemoved
+  within
 } from '@acx-ui/test-utils'
 
 
@@ -22,13 +20,27 @@ import {
   preference,
   switchRelease,
   switchCurrentVersions,
-  switchLatest
-} from '../../__tests__/fixtures'
+  switchLatest,
+  switchVenueWithEmptyFirmware
+} from './__test__/fixtures'
 
 import { VenueFirmwareList } from '.'
 
+jest.mock('./SwitchUpgradeWizard', () => ({
+  ...jest.requireActual('./SwitchUpgradeWizard'),
+  SwitchUpgradeWizard: () => {
+    return <div data-testid='test-SwitchUpgradeWizard' />
+  }
+}))
 
-describe('Firmware Venues Table', () => {
+jest.mock('./VenueStatusDrawer', () => ({
+  ...jest.requireActual('./VenueStatusDrawer'),
+  VenueStatusDrawer: () => {
+    return <div data-testid='test-VenueStatusDrawer' />
+  }
+}))
+
+describe('SwitchFirmware - VenueFirmwareList', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
     mockServer.use(
@@ -69,103 +81,89 @@ describe('Firmware Venues Table', () => {
   })
 
   it('should render table', async () => {
-    const { asFragment } = render(
-      <Provider>
-        <VenueFirmwareList />
-      </Provider>, {
-        route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
-      })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByText('My-Venue')
-    expect(asFragment().querySelector('div[class="ant-space-item"]')).not.toBeNull()
-  })
-
-  it.skip('should update selected rows', async () => {
     render(
       <Provider>
         <VenueFirmwareList />
       </Provider>, {
-        route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText('My-Venue')).toBeInTheDocument()
+  })
+
+  it('should render table with empty firmware', async () => {
+
+    mockServer.use(
+      rest.post(
+        FirmwareUrlsInfo.getSwitchVenueVersionList.url,
+        (req, res, ctx) => res(ctx.json(switchVenueWithEmptyFirmware))
+      )
+    )
+
+    render(
+      <Provider>
+        <VenueFirmwareList />
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
+      })
+
+    expect(await screen.findByText('My-Venue')).toBeInTheDocument()
+  })
+
+  it('clicks update now', async () => {
+    render(
+      <Provider>
+        <VenueFirmwareList />
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
+      })
 
     const row = await screen.findByRole('row', { name: /My-Venue/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
-
-    const row2 = await screen.findByRole('row', { name: /v2/i })
-    fireEvent.click(within(row2).getByRole('checkbox'))
-
-    const updateButton = screen.getByRole('button', { name: /Update Now/i })
-    fireEvent.click(updateButton)
-
-    const updateVenueButton = await screen.findByText('Run Update')
-    fireEvent.click(updateVenueButton)
+    await userEvent.click(within(row).getByRole('checkbox'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Update Now' }))
+    expect(await screen.findByTestId('test-SwitchUpgradeWizard')).toBeInTheDocument()
   })
 
-  it('should no default option in dialog when feature flag is off', async () => {
+  it('clicks change update schedule', async () => {
     render(
       <Provider>
         <VenueFirmwareList />
       </Provider>, {
-        route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-    const row2 = await screen.findByRole('row', { name: /v2/i })
-    fireEvent.click(within(row2).getByRole('checkbox'))
-
-    const updateButton = screen.getByRole('button', { name: /Update Now/i })
-    fireEvent.click(updateButton)
-
-    expect(screen.getByRole('heading', {
-      name: /Choose which version to update the venue to:/i
-    })).toBeVisible()
-
-    const notCheckedOptions = await screen.findAllByRole('radio', { hidden: false, checked: false })
-    expect(notCheckedOptions).toHaveLength(7)
-    expect(screen.getByRole('button', { name: /Run Update/i })).toBeDisabled()
+    const row = await screen.findByRole('row', { name: /My-Venue/i })
+    await userEvent.click(within(row).getByRole('checkbox'))
+    await userEvent.click(await screen.findByRole('button', { name: /Change Update Schedule/i }))
+    expect(await screen.findByTestId('test-SwitchUpgradeWizard')).toBeInTheDocument()
   })
 
-  it('should selected default options in dialog when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-
+  it('clicks skip', async () => {
     render(
       <Provider>
         <VenueFirmwareList />
       </Provider>, {
-        route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-    const row2 = await screen.findByRole('row', { name: /v2/i })
-    fireEvent.click(within(row2).getByRole('checkbox'))
-
-    const updateButton = screen.getByRole('button', { name: /Update Now/i })
-    fireEvent.click(updateButton)
-
-    expect(screen.getByRole('heading', {
-      name: /firmware available for icx 7150\/7550\/7650\/7850 series \(2 switches\)/i
-    })).toBeVisible()
-    expect(screen.getByRole('heading', {
-      name: /firmware available for icx 8200 series \(3 switches\)/i
-    })).toBeVisible()
-
-    const notCheckedOptions = await screen.findAllByRole('radio', { hidden: false, checked: false })
-    expect(notCheckedOptions).toHaveLength(7)
-
-    const checkedOptions = await screen.findAllByRole('radio', { hidden: false, checked: true })
-    expect(checkedOptions).toHaveLength(2)
-
-    // eslint-disable-next-line max-len
-    const notUpdateOptions = await screen.findAllByRole('radio', { name: 'Do not update firmware on these switches' })
-    expect(notUpdateOptions).toHaveLength(2)
-    expect(notUpdateOptions[0]).toBeChecked()
-    expect(notUpdateOptions[1]).toBeChecked()
-
-    expect(screen.getByRole('button', { name: /Run Update/i })).toBeDisabled()
+    const kittoVenue2 = await screen.findByRole('row', { name: /KittoVenue2/i })
+    await userEvent.click(within(kittoVenue2).getByRole('checkbox'))
+    expect(screen.getByRole('button', { name: 'Update Now' })).toBeEnabled()
+    await userEvent.click(screen.getByRole('button', { name: 'Update Now' }))
+    expect(await screen.findByTestId('test-SwitchUpgradeWizard')).toBeInTheDocument()
   })
+
+  it('clicks status - check status', async () => {
+    render(
+      <Provider>
+        <VenueFirmwareList />
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
+      })
+    const checkStatusButton = await screen.findByRole('button', { name: 'Check Status' })
+    expect(checkStatusButton).toBeInTheDocument()
+    await userEvent.click(checkStatusButton)
+    expect(await screen.findByTestId('test-VenueStatusDrawer')).toBeInTheDocument()
+  })
+
 })

@@ -19,7 +19,7 @@ export function SwitchList ({ searchVal = '' }: { searchVal?: string }) {
     end: timeRange[1].format(),
     limit: 100,
     query: searchString,
-    metric: 'traffic'
+    metric: 'totalTraffic'
   })
 
   const updateSearchString = (_: Filter, search: { searchString?: string }) => {
@@ -35,7 +35,7 @@ export function SwitchList ({ searchVal = '' }: { searchVal?: string }) {
       searchable: true,
       sorter: { compare: sortProp('switchName', defaultSort) },
       render: (_, row : Switch, __, highlightFn) => (
-        <TenantLink to={`/devices/switch/${row.switchMac}/serial/details/overview`}>
+        <TenantLink to={`/devices/switch/${row.switchMac}/serial/details/incidents`}>
           {highlightFn(row.switchName)}</TenantLink>
       )
     },

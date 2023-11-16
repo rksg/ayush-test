@@ -57,6 +57,23 @@ export interface StateOfIsUseVenueSettings {
 
 const defaultIsUseVenueSettings = true
 
+export const getRadioTypeDisplayName = (radioType: RadioType) => {
+  switch (radioType) {
+    case RadioType.Normal24GHz:
+      return '2.4 GHz'
+    case RadioType.Normal5GHz:
+      return '5 GHz'
+    case RadioType.Normal6GHz:
+      return '6 GHz'
+    case RadioType.Lower5GHz:
+      return 'Lower 5 GHz'
+    case RadioType.Upper5GHz:
+      return 'Upper 5 GHz'
+    default:
+      return ''
+  }
+}
+
 export const isCurrentTabUseVenueSettings = (state: StateOfIsUseVenueSettings, radioType: RadioType, isEnablePerApRadioCustomizationFlag: boolean): boolean => {
   if(!isEnablePerApRadioCustomizationFlag) {
     return !isUndefined(state.isUseVenueSettings) ? state.isUseVenueSettings : defaultIsUseVenueSettings
@@ -279,6 +296,13 @@ export const isHasRadio5G = (isSupportTriBandRadioAp: boolean, isDual5gMode: boo
 export const isHasRadioDual5G = (isSupportDual5GAp: boolean, isDual5gMode: boolean) => isSupportDual5GAp && isDual5gMode
 export const isHasRadio6G = (isSupportTriBandRadioAp: boolean, isDual5gMode: boolean, lengthOfBandwidth6GOptions: number) => (isSupportTriBandRadioAp && !isDual5gMode) && lengthOfBandwidth6GOptions > 0
 
+function VenueNameDisplay ({ venue }: { venue: VenueExtended }) {
+  return (venue ?
+    <TenantLink
+      to={`venues/${venue.id}/venue-details/overview`}>{venue?.name}
+    </TenantLink> : <span></span>
+  )
+}
 
 export function RadioSettings () {
   const { $t } = useIntl()
@@ -346,6 +370,7 @@ export function RadioSettings () {
   const [formInitializing, setFormInitializing] = useState(true)
   const [apDataLoaded, setApDataLoaded] = useState(false)
 
+  const [stateOfUseVenueEnabled, setStateOfUseVenueEnabled] = useState<boolean | undefined>()
 
   const { data: apRadioSavedData } =
     useGetApRadioCustomizationQuery({ params: { tenantId, serialNumber } })
@@ -517,7 +542,7 @@ export function RadioSettings () {
     }
 
     setData()
-
+    setStateOfUseVenueEnabled(venueRef?.current?.apRadioParamsDual5G?.useVenueEnabled)
   }, [isSupportDual5GAp, venue, apModelType, getVenueCustomization, tenantId])
 
   const updateFormData = (data: ApRadioCustomization) => {
@@ -599,6 +624,14 @@ export function RadioSettings () {
     }
 
   }, [initData, isSupportDual5GAp, bandwidthLower5GOptions, bandwidthUpper5GOptions])
+
+  useEffect(() => {
+    const venueOfUseVenueEnabled = venueRef?.current?.apRadioParamsDual5G?.useVenueEnabled
+    const currentOfUseVenueEnabled = formRef?.current?.getFieldValue(['apRadioParamsDual5G', 'enabled'])
+    const useVenueEnabled = !isUndefined(venueOfUseVenueEnabled) && !isUndefined(currentOfUseVenueEnabled) ?
+      venueOfUseVenueEnabled === currentOfUseVenueEnabled : false
+    formRef?.current?.setFieldValue(['apRadioParamsDual5G', 'useVenueEnabled'], useVenueEnabled)
+  }, [stateOfUseVenueEnabled, isDual5gMode])
 
   const [currentTab, setCurrentTab] = useState(RadioType.Normal24GHz)
 
@@ -737,9 +770,9 @@ export function RadioSettings () {
         ...editContextData,
         isDirty: false
       })
-      await deleteApRadio({ params: { tenantId, serialNumber } }).unwrap()
 
-      const payload = { ...applyState(stateOfIsUseVenueSettings, form.getFieldsValue()) }
+      const payload = { ...form.getFieldsValue() }
+
       const {
         enable24G,
         enable50G,
@@ -808,10 +841,14 @@ export function RadioSettings () {
         delete payload.apRadioParamsDual5G
       }
 
-      await updateApRadio({
-        params: { tenantId, serialNumber },
-        payload: payload
-      }).unwrap()
+      if (!isEnablePerApRadioCustomizationFlag && payload.useVenueSettings) {
+        await deleteApRadio({ params: { tenantId, serialNumber } }).unwrap()
+      } else {
+        await updateApRadio({
+          params: { tenantId, serialNumber },
+          payload: payload
+        }).unwrap()
+      }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -821,7 +858,18 @@ export function RadioSettings () {
     const isDual5gEnabled = e.target.value
     setIsDual5gMode(isDual5gEnabled)
     formRef.current?.setFieldValue(['radioParamsDual5G', 'enabled'], isDual5gEnabled)
+    formRef.current?.setFieldValue(['apRadioParamsDual5G', 'enabled'], isDual5gEnabled)
     onTabChange('Normal24GHz')
+  }
+
+  const handleOnUseVenueEnabledChange = () => {
+    setStateOfUseVenueEnabled(prevState => !prevState)
+
+    const enableDual5GOfVenue = venueRef?.current?.apRadioParamsDual5G?.enabled
+    if (!isUndefined(enableDual5GOfVenue)) {
+      setIsDual5gMode(enableDual5GOfVenue)
+      formRef.current?.setFieldValue(['apRadioParamsDual5G', 'enabled'], enableDual5GOfVenue)
+    }
   }
 
   const handleStateOfIsUseVenueSettingsChange = () => {
@@ -846,7 +894,7 @@ export function RadioSettings () {
     const useSettings = isUseVenue ? venueRef.current : cachedDataRef.current
     const updatedSettings = useSettings ? applySettings(currentSettings, useSettings, currentTab, isEnablePerApRadioCustomizationFlag) : undefined
     if (updatedSettings) {
-      updateFormData(updatedSettings)
+      updateFormData(applyState(updatedState, updatedSettings))
     }
     // 4. set IsDual5gMode
     setIsDual5gMode((isSupportDual5G() && updatedSettings?.apRadioParamsDual5G?.enabled) || false)
@@ -895,6 +943,43 @@ export function RadioSettings () {
         onFormChange={handleChange}
       >
         <StepsFormLegacy.StepForm data-testid='radio-settings' initialValues={initData}>
+          { isSupportDual5GAp && <div style={{ marginTop: '1em' }}>
+            <Row gutter={0}>
+              <Col span={6}>
+                <span>{$t({ defaultMessage: 'How to handle tri-band radio?' })}</span>
+                { stateOfUseVenueEnabled && <VenueNameDisplay venue={venue} /> }
+                <span style={{ marginLeft: '5px' }}>
+                  <Form.Item
+                    name={['apRadioParamsDual5G', 'useVenueEnable']}
+                    hidden
+                  />
+                  <Button type='link' onClick={handleOnUseVenueEnabledChange}>
+                    { stateOfUseVenueEnabled ? $t({ defaultMessage: 'Change' }) : $t({ defaultMessage: 'Same as Venue' }) }
+                  </Button>
+                </span>
+              </Col>
+              <Col span={2}>
+                <Tooltip.Question
+                  title={$t({ defaultMessage: 'This applies only to AP models that support tri-band, such as the R760' })}
+                  placement='bottom'
+                />
+              </Col>
+            </Row>
+            <Form.Item
+              name={['apRadioParamsDual5G', 'enabled']}
+            >
+              <Radio.Group
+                disabled={(isEnablePerApRadioCustomizationFlag ? stateOfUseVenueEnabled : stateOfIsUseVenueSettings.isUseVenueSettings)}
+                style={{ display: 'flex', flexDirection: 'column' }}
+                onChange={handleTriBandTypeRadioChange}
+                options={[
+                  { label: $t({ defaultMessage: 'Split 5GHz into lower and upper bands' }), value: true },
+                  { label: $t({ defaultMessage: 'Use 5 and 6 GHz bands' }), value: false }
+                ]}
+              />
+            </Form.Item>
+          </div>
+          }
           <Tabs onChange={onTabChange}
             activeKey={currentTab}
             type='third'>
@@ -924,19 +1009,26 @@ export function RadioSettings () {
                 fontSize: '14px',
                 paddingBottom: '20px' }}
               >
-                { isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, currentTab, isEnablePerApRadioCustomizationFlag) ?
-                  <FormattedMessage
-                    defaultMessage={`
-                    Currently using radio settings of the venue (<venuelink></venuelink>)
-                   `}
-                    values={{
-                      venuelink: () => venue?
-                        <TenantLink
-                          to={`venues/${venue.id}/venue-details/overview`}>{venue?.name}
-                        </TenantLink> : ''
-                    }}
-                  />
-                  :$t({ defaultMessage: 'Custom radio settings' })
+                {
+                  isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, currentTab, isEnablePerApRadioCustomizationFlag) ?
+                    <span>
+                      <FormattedMessage
+                        defaultMessage={'Currently <radioTypeName></radioTypeName> settings as the venue (<venuelink></venuelink>)'}
+                        values={{
+                          radioTypeName: () => getRadioTypeDisplayName(currentTab),
+                          venuelink: () => venue ? <VenueNameDisplay venue={venue} /> : ''
+                        }}
+                      />
+                    </span>
+                    :
+                    <span>
+                      <FormattedMessage
+                        defaultMessage={'Custom <radioTypeName></radioTypeName> settings'}
+                        values={{
+                          radioTypeName: () => getRadioTypeDisplayName(currentTab)
+                        }}
+                      />
+                    </span>
                 }
               </Space>
             </Col>
@@ -948,38 +1040,15 @@ export function RadioSettings () {
               </Button>
             </Col>
           </Row>
-          {isSupportDual5GAp && <div style={{ marginTop: '1em' }}>
-            <Row gutter={0}>
-              <Col span={6}>
-                <span>{$t({ defaultMessage: 'How to handle tri-band radio?' })}</span>
-              </Col>
-              <Col span={2}>
-                <Tooltip.Question
-                  title={$t({ defaultMessage: 'This applies only to AP models that support tri-band, such as the R760' })}
-                  placement='bottom'
-                />
-              </Col>
-            </Row>
-            <Form.Item
-              name={['apRadioParamsDual5G', 'enabled']}
-            >
-              <Radio.Group
-                onChange={handleTriBandTypeRadioChange}
-                disabled={isEnablePerApRadioCustomizationFlag ? false : stateOfIsUseVenueSettings.isUseVenueSettings}>
-                <Radio value={true}>
-                  {$t({ defaultMessage: 'Split 5GHz into lower and upper bands' })}
-                </Radio>
-                <Radio value={false}>
-                  {$t({ defaultMessage: 'Use 5 and 6 GHz bands' })}
-                </Radio>
-              </Radio.Group>
-            </Form.Item>
-          </div>
-          }
+          <Form.Item
+            name={['useVenueSettings']}
+            hidden
+          />
           <div style={{ display: currentTab === RadioType.Normal24GHz ? 'block' : 'none' }}>
             <ApSingleRadioSettings
               isEnabled={isEnable24g}
-              radioTypeName='2.4 GHz'
+              radioTypeName={getRadioTypeDisplayName(RadioType.Normal24GHz)}
+              useVenueSettingsFieldName={['apRadioParams24G', 'useVenueSettings']}
               enabledFieldName={['enable24G']}
               onEnableChanged={(checked: boolean) => handleEnableChanged(checked, 'enable24G')}
               radioType={ApRadioTypeEnum.Radio24G}
@@ -992,7 +1061,8 @@ export function RadioSettings () {
           <div style={{ display: currentTab === RadioType.Normal5GHz ? 'block' : 'none' }}>
             <ApSingleRadioSettings
               isEnabled={isEnable5g}
-              radioTypeName='5 GHz'
+              radioTypeName={getRadioTypeDisplayName(RadioType.Normal5GHz)}
+              useVenueSettingsFieldName={['apRadioParams50G', 'useVenueSettings']}
               enabledFieldName={['enable50G']}
               onEnableChanged={(checked: boolean) => handleEnableChanged(checked, 'enable5G')}
               radioType={ApRadioTypeEnum.Radio5G}
@@ -1006,7 +1076,8 @@ export function RadioSettings () {
           <div style={{ display: currentTab === RadioType.Normal6GHz ? 'block' : 'none' }}>
             <ApSingleRadioSettings
               isEnabled={isEnable6g}
-              radioTypeName='6 GHz'
+              radioTypeName={getRadioTypeDisplayName(RadioType.Normal6GHz)}
+              useVenueSettingsFieldName={['apRadioParams6G', 'useVenueSettings']}
               enabledFieldName={['enable6G']}
               onEnableChanged={(checked: boolean) => handleEnableChanged(checked, 'enable6G')}
               radioType={ApRadioTypeEnum.Radio6G}
@@ -1014,6 +1085,7 @@ export function RadioSettings () {
               bandwidthOptions={bandwidth6GOptions}
               handleChanged={handleChange}
               isUseVenueSettings={isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, RadioType.Normal6GHz, isEnablePerApRadioCustomizationFlag)}
+              isAFCEnabled={getApAvailableChannels?.data?.afcEnabled}
             />
           </div>
           {isSupportDual5GAp && (
@@ -1021,7 +1093,8 @@ export function RadioSettings () {
               <div style={{ display: currentTab === RadioType.Lower5GHz ? 'block' : 'none' }}>
                 <ApSingleRadioSettings
                   isEnabled={isEnableLower5g}
-                  radioTypeName='Lower 5 GHz'
+                  radioTypeName={getRadioTypeDisplayName(RadioType.Lower5GHz)}
+                  useVenueSettingsFieldName={['apRadioParamsDual5G', 'radioParamsLower5G', 'useVenueSettings']}
                   enabledFieldName={['apRadioParamsDual5G', 'lower5gEnabled']}
                   onEnableChanged={(checked: boolean) => handleEnableChanged(checked, 'enableLower5G')}
                   radioType={ApRadioTypeEnum.RadioLower5G}
@@ -1035,7 +1108,8 @@ export function RadioSettings () {
               <div style={{ display: currentTab === RadioType.Upper5GHz ? 'block' : 'none' }}>
                 <ApSingleRadioSettings
                   isEnabled={isEnableUpper5g}
-                  radioTypeName='Upper 5 GHz'
+                  radioTypeName={getRadioTypeDisplayName(RadioType.Upper5GHz)}
+                  useVenueSettingsFieldName={['apRadioParamsDual5G', 'radioParamsUpper5G', 'useVenueSettings']}
                   enabledFieldName={['apRadioParamsDual5G', 'upper5gEnabled']}
                   onEnableChanged={(checked: boolean) => handleEnableChanged(checked, 'enableUpper5G')}
                   radioType={ApRadioTypeEnum.RadioUpper5G}

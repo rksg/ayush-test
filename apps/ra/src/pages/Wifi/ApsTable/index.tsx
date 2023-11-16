@@ -2,10 +2,10 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { AP, useApListQuery }                                       from '@acx-ui/analytics/services'
-import { defaultSort, sortProp ,formattedPath }                     from '@acx-ui/analytics/utils'
-import { Table, TableProps, Tooltip, useDateRange, Loader, Filter } from '@acx-ui/components'
-import { TenantLink }                                               from '@acx-ui/react-router-dom'
+import { AP, useApListQuery }                                      from '@acx-ui/analytics/services'
+import { defaultSort, sortProp ,formattedPath }                    from '@acx-ui/analytics/utils'
+import { Table, TableProps, Tooltip,useDateRange, Loader, Filter } from '@acx-ui/components'
+import { TenantLink }                                              from '@acx-ui/react-router-dom'
 
 import {  Ul, Chevron, Li } from './styledComponents'
 export  function APList ({ searchVal = '' }: { searchVal?: string }) {
@@ -36,7 +36,7 @@ export  function APList ({ searchVal = '' }: { searchVal?: string }) {
       searchable: true,
       sorter: { compare: sortProp('apName', defaultSort) },
       render: (_, row : AP, __, highlightFn) => (
-        <TenantLink to={`/devices/wifi/${row.macAddress}/details/overview`}>
+        <TenantLink to={`/devices/wifi/${row.macAddress}/details/ai`}>
           {highlightFn(row.apName)}</TenantLink>
       )
     },

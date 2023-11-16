@@ -111,6 +111,7 @@ export function renderSearch <RecordType> (
     placeholder={placeHolderText}
     title={placeHolderText}
     style={{ width }}
+    maxLength={64}
     value={searchValue}
     allowClear
   />
