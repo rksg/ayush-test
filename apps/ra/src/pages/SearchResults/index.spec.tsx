@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
-
 import userEvent from '@testing-library/user-event'
 
+import { useIsSplitOn }                                                from '@acx-ui/feature-toggle'
 import { Provider, dataApiSearchURL }                                  from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -10,7 +10,6 @@ import { searchFixture, emptySearchFixture } from './__fixtures__/searchMocks'
 import SearchResults from '.'
 
 const params = { searchVal: 'test%3F' }
-
 describe.only('Search Results', () => {
   it('should decode search string correctly', async () => {
     mockGraphqlQuery(dataApiSearchURL, 'Search', {
@@ -70,5 +69,37 @@ describe.only('Search Results', () => {
     await userEvent.click(menuSelected)
     await userEvent.click(screen.getByRole('menuitem', { name: 'Last 30 Days' }))
     expect(menuSelected).toHaveTextContent('Last 30 Days')
+  })
+  it('should handle isZonesPageEnabled feature flag correctly when true', async () => {
+    mockGraphqlQuery(dataApiSearchURL, 'Search', {
+      data: searchFixture
+    })
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<SearchResults />, {
+      wrapper: Provider,
+      route: {
+        params: { ...params, searchVal: encodeURIComponent('some text') }
+      }
+    })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const link = screen.getByText('CDC_BB_TEST')
+    const href = link.getAttribute('href')
+    expect(href).toBe('/undefined/t/zones/Public-vSZ-2/CDC_BB_TEST/assurance')
+  })
+  it('should handle isZonesPageEnabled feature flag correctly when false', async () => {
+    mockGraphqlQuery(dataApiSearchURL, 'Search', {
+      data: searchFixture
+    })
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(<SearchResults />, {
+      wrapper: Provider,
+      route: {
+        params: { ...params, searchVal: encodeURIComponent('some text') }
+      }
+    })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const link = screen.getByText('CDC_BB_TEST')
+    const href = link.getAttribute('href')
+    expect((href as string).includes('incidents?analyticsNetworkFilter')).toBeTruthy()
   })
 })
