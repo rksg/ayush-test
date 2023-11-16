@@ -91,7 +91,7 @@ export function RadioSettings () {
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
-
+  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
 
   const {
     editContextData,
@@ -234,6 +234,7 @@ export function RadioSettings () {
           const findAp = data.filter((ap: APExtended) => ap.venueId === venueId)
           setHasTriBandAps((findAp.length > 0))
           setAfcProps({
+            featureFlag: AFC_Featureflag,
             isAFCEnabled: supportChannelsData?.afcEnabled,
             afcInfo: undefined
           })

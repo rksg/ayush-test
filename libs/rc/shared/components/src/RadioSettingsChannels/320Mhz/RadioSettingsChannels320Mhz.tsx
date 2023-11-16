@@ -2,11 +2,10 @@ import { useEffect, useState } from 'react'
 
 import { Col, Row, Form, Checkbox } from 'antd'
 import _                            from 'lodash'
-import { useIntl }                  from 'react-intl'
 
 
 import { Tooltip }                 from '@acx-ui/components'
-import { AFCProps, AFCStatus }     from '@acx-ui/rc/utils'
+import { AFCProps }                from '@acx-ui/rc/utils'
 import { ChannelButtonTextRender } from '@acx-ui/rc/utils'
 
 import { RadioChannel }                        from '../../RadioSettings/RadioSettingsContents'

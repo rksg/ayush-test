@@ -491,6 +491,7 @@ export type MeshUplinkAp = {
 }
 
 export interface AFCProps {
+  featureFlag?: boolean,
   isAFCEnabled? : boolean,
   afcInfo?: AFCInfo
 }

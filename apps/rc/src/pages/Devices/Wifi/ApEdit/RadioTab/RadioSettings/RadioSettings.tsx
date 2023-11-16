@@ -316,7 +316,7 @@ export function RadioSettings () {
     apViewContextData
   } = useContext(ApEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
-
+  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
   const wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
   const isEnablePerApRadioCustomizationFlag = useIsSplitOn(Features.WIFI_EDA_PER_AP_RADIO_CUSTOMIZATION_TOGGLE)
@@ -476,6 +476,7 @@ export function RadioSettings () {
         setVenue(apVenue)
         setApDataLoaded(true)
         setAfcProps({
+          featureFlag: AFC_Featureflag,
           isAFCEnabled: availableChannels.afcEnabled,
           afcInfo: apViewContextData.apStatusData?.afcInfo
         } as AFCProps)
