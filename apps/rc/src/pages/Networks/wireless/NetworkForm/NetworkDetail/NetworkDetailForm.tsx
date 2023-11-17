@@ -9,11 +9,10 @@ import { Button, StepsFormLegacy, Tooltip, cssStr }                    from '@ac
 import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
 import { useLazyGetVenueNetworkApGroupQuery, useLazyNetworkListQuery } from '@acx-ui/rc/services'
 import {
-  apNameRegExp,
+  ssidBackendNameRegExp,
   NetworkTypeEnum,
   WifiNetworkMessages,
   checkObjectNotExists,
-  hasGraveAccentAndDollarSign,
   NetworkVenue } from '@acx-ui/rc/utils'
 import { useParams }          from '@acx-ui/react-router-dom'
 import { validationMessages } from '@acx-ui/utils'
@@ -155,8 +154,7 @@ export function NetworkDetailForm () {
             { min: 2 },
             { max: 32 },
             { validator: (_, value) => nameValidator(value) },
-            { validator: (_, value) => hasGraveAccentAndDollarSign(value) },
-            { validator: (_, value) => apNameRegExp(value) }
+            { validator: (_, value) => ssidBackendNameRegExp(value) }
           ]}
           validateFirst
           hasFeedback
@@ -199,8 +197,7 @@ export function NetworkDetailForm () {
               { max: 32,
                 message: intl.$t({ defaultMessage: 'The SSID must be up to 32 characters' }) },
               { validator: (_, value) => ssidValidator(value) },
-              { validator: (_, value) => hasGraveAccentAndDollarSign(value) },
-              { validator: (_, value) => apNameRegExp(value) }
+              { validator: (_, value) => ssidBackendNameRegExp(value) }
             ]}
             validateFirst
             hasFeedback

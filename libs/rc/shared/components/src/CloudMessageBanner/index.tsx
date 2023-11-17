@@ -118,8 +118,15 @@ export function CloudMessageBanner () {
   }, [$t, newWifiScheduleExists, newSwitchScheduleExists, newEdgeScheduleExists, plmMessageExists])
 
   useEffect(() => {
-    if (layout.showMessageBanner === undefined && (upgradeMessageTitle || plmMessageExists)) {
-      layout.setShowMessageBanner(true)
+    if (layout.showMessageBanner === true) {
+      if(!upgradeMessageTitle && !plmMessageExists) {
+        layout.setShowMessageBanner(false)
+      }
+    } else {
+      if (upgradeMessageTitle ||
+        (layout.showMessageBanner === undefined && plmMessageExists)) {
+        layout.setShowMessageBanner(true)
+      }
     }
   }, [layout, plmMessageExists, upgradeMessageTitle])
 

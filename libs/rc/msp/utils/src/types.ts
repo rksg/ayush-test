@@ -57,6 +57,8 @@ export interface MspEc {
   mspIntegratorAdminCount?: number;
   integrator?: string,
   installer?: string,
+  integratorCount?: number,
+  installerCount?: number,
   expirationDate: string;
   wifiLicenses: string;
   switchLicenses: string;

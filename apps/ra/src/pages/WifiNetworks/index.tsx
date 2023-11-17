@@ -38,7 +38,7 @@ const useTabs = () : WifiNetworksTab[] => {
       reportName={ReportType.WLAN}
       hideHeader={false}
     />,
-    headerExtra: usePageHeaderExtra(ReportType.WLAN, false)
+    headerExtra: usePageHeaderExtra(ReportType.WLAN)
   }
   const applicationReportTab = {
     key: NetworkTabsEnum.APPLICATIONS_REPORT,
