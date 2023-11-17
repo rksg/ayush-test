@@ -71,6 +71,7 @@ export enum Features {
   WIFI_EDA_NEIGHBORS_TOGGLE = 'wifi-eda-neighbors-toggle',
   ASSIGN_MULTI_EC_TO_MSP_ADMINS = 'mspservice-assign-multi-ec-to-multi-msp-admin',
   BETA_FLAG = 'acx-ui-beta-flag-toggle',
+  BETA_BUTTON = 'acx-ui-beta-button-toggle',
   WIFI_EDA_OWE_TOGGLE = 'wifi-eda-owe-toggle',
   WIFI_EDA_WIFI7_MLO_TOGGLE = 'wifi-eda-wifi7-mlo-toggle',
   WIFI_EDA_WIFI6_AND_WIFI7_FLAG_TOGGLE = 'wifi-eda-wifi6-and-wifi7-flag-toggle',
@@ -120,11 +121,12 @@ export enum Features {
   WIFI_EDA_PER_AP_RADIO_CUSTOMIZATION_TOGGLE = 'wifi-eda-per-ap-radio-customization-toggle',
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
   SSO = 'ADMN-SSO',
+  EXPORT_EVENTS_TOGGLE = 'acx-ui-scheduled-events-export-toggle',
+  RUCKUS_AI_CHATBOT_TOGGLE = 'ruckus-ai-chatbot-toggle',
+  EDGE_LAG = 'acx-ui-edges-lag-toggle',
+  MSP_HSP_SUPPORT = 'mspservice-hsp-01',
   RUCKUS_AI_ZONES_LIST = 'ruckus-ai-zones-toggle',
   LINKEDIN_OIDC_TOGGLE = 'guest-linkedin-openid-connect-toggle',
-  EDGE_LAG = 'acx-ui-edges-lag-toggle',
-  RUCKUS_AI_CHATBOT_TOGGLE = 'ruckus-ai-chatbot-toggle',
-  MSP_HSP_SUPPORT = 'mspservice-hsp-01',
   TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs'
 }
 
