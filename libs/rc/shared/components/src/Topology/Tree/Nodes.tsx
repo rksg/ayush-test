@@ -3,7 +3,7 @@ import React, { useState, useEffect, MouseEvent } from 'react'
 import { MinusCircleOutlined, PlusCircleOutlined } from '@acx-ui/icons'
 import { Node }                                    from '@acx-ui/rc/utils'
 
-import { getDeviceColor } from '../utils'
+import { getDeviceColor, truncateLabel } from '../utils'
 
 interface NodeData extends Node {
   children?: NodeData[]
@@ -55,6 +55,7 @@ const Nodes: React.FC<NodeProps> = (props) => {
   const handleMouseLeave = () => {
     clearTimeout(delayHandler)
   }
+
   return (
     <g className='d3-tree-nodes'>
       {
@@ -92,7 +93,7 @@ const Nodes: React.FC<NodeProps> = (props) => {
                     dx={-node.data.name.length - node.data.name.length / 2}
                     dy='18'
                   >
-                    {node.data.name}
+                    {truncateLabel(node.data.name as string, 15)}
                   </text>
                 </g>
               </g>
