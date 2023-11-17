@@ -521,7 +521,8 @@ export function TopologyGraph (props:{ venueId?: string,
       setShowLinkTooltip(true)
       setShowDeviceTooltip(false) // close device detail tooltip if already opened.
       setTooltipEdge(selectedEdge)
-      setTooltipPosition({ x: d.offsetX, y: d.offsetY })
+      setTooltipPosition({ x: d?.nativeEvent.layerX + 30
+        , y: d?.nativeEvent.layerY })
     }
   }, 100)
 
