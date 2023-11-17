@@ -38,7 +38,7 @@ export function APList ({
       query: searchString,
       filter: {}
     }
-  const results = useApListQuery({ ...requestPayload })
+  const results = useApListQuery(requestPayload)
   const updateSearchString = (_: Filter, search: { searchString?: string }) => {
     setSearchString(search.searchString!)
   }
