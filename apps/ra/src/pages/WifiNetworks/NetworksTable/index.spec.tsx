@@ -2,11 +2,10 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { Provider, dataApiSearchURL, dataApiURL }                      from '@acx-ui/store'
+import { Provider, dataApiURL }                                        from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { wifiNetworksFixture, emptyListFixture } from './__tests__/fixtures'
-import { zonesWiseSearchList }                   from './services.spec'
 
 import { NetworkList } from '.'
 
@@ -21,7 +20,7 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 
 describe('Network List', () => {
   it('should render table correctly', async () => {
-    mockGraphqlQuery(dataApiSearchURL, 'Search', {
+    mockGraphqlQuery(dataApiURL, 'Network', {
       data: wifiNetworksFixture
     })
     render(<NetworkList />, {
@@ -37,7 +36,7 @@ describe('Network List', () => {
   })
 
   it('should show no data on empty list', async () => {
-    mockGraphqlQuery(dataApiSearchURL, 'Search', {
+    mockGraphqlQuery(dataApiURL, 'Network', {
       data: emptyListFixture
     })
     const { container } = render(<NetworkList />, {
@@ -52,7 +51,7 @@ describe('Network List', () => {
   })
 
   it('should search for the specified text', async () => {
-    mockGraphqlQuery(dataApiSearchURL, 'Search', {
+    mockGraphqlQuery(dataApiURL, 'Network', {
       data: wifiNetworksFixture
     })
     render(<NetworkList />, {
@@ -77,12 +76,12 @@ describe('Zone wise Network List Table', () => {
 
   it('should render the ap table correctly for Zone wise APs', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', {
-      data: zonesWiseSearchList
+      data: wifiNetworksFixture
     })
-    render(<NetworkList queryParamsForZone={{ searchString: 'test', path: [] }} />,
+    render(<NetworkList queryParamsForZone={{ path: [] }} />,
       { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(screen.getByText('DENSITY-NSS')).toBeVisible()
+    expect(screen.getByText('DENSITY-WPA2PSK')).toBeVisible()
   })
 
 })

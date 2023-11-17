@@ -12,50 +12,45 @@ import {
   NodeFilter
 } from '@acx-ui/utils'
 
-import { useZoneWiseNetworkListQuery } from './services'
-
 export type QueryParamsForZone = {
   searchString?: string
   path: NodeFilter[]
 }
 
-export function NetworkList ({ searchVal = '', queryParamsForZone
-}: { searchVal?: string, queryParamsForZone? : QueryParamsForZone
+export function NetworkList ({
+  searchVal = '',
+  queryParamsForZone
+}: {
+  searchVal?: string,
+  queryParamsForZone? : QueryParamsForZone
 }) {
   const { $t } = useIntl()
-
   const { timeRange } = useDateRange()
   const pagination = { pageSize: 10, defaultPageSize: 10 }
   const [searchString, setSearchString] = useState(searchVal)
   const { filters } = useAnalyticsFilter()
 
-  const zoneWiseNetworkListResults = useZoneWiseNetworkListQuery(
-    {
+  const requestPayload = Boolean(queryParamsForZone)
+    ? {
       start: filters.startDate,
       end: filters.endDate,
       query: queryParamsForZone?.searchString ?? '',
       filter: { networkNodes: queryParamsForZone?.path },
       limit: 1000
-    },
-    { skip: !Boolean(queryParamsForZone) }
-  )
-
-  const NetworkListresults = useNetworkListQuery(
-    {
+    }
+    : {
       start: timeRange[0].format(),
       end: timeRange[1].format(),
       limit: 100,
       metric: 'traffic',
       query: searchString
-    },
-    { skip: Boolean(queryParamsForZone) }
-  )
-  const results = Boolean(queryParamsForZone) ? zoneWiseNetworkListResults : NetworkListresults
+    }
+
+  const results = useNetworkListQuery(requestPayload)
 
   const updateSearchString = (_: Filter, search: { searchString?: string }) => {
     setSearchString(search.searchString!)
   }
-
   const networkTableColumnHeaders: TableProps<Network>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
