@@ -88,7 +88,6 @@ jest.mock('@acx-ui/analytics/components', () => ({
   HealthPage: () => <div data-testid='healthPage' />,
   IncidentDetails: () => <div data-testid='incidentDetails' />,
   IncidentListPage: () => <div data-testid='incidentListPage' />,
-  IncidentListPageLegacy: () => <div data-testid='incidentListPageLegacy' />,
   VideoCallQoe: () => <div data-testid='VideoCallQoePage' />,
   useVideoCallQoe: () => ({
     component: <div data-testid='VideoCallQoePage' />

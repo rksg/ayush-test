@@ -14,8 +14,10 @@ import {
   formattedPath,
   impactedArea,
   shortDescription,
+  longDescription,
   incidentScope,
-  getThreshold
+  getThreshold,
+  normalizeNodeType
 } from './incidents'
 
 import type { Incident } from './types/incidents'
@@ -60,7 +62,7 @@ describe('shortDescription', () => {
         { type: 'network', name: 'Network' },
         { type: 'zone', name: 'Venue 1' }
       ],
-      sliceType: 'zoneName',
+      sliceType: normalizeNodeType('zoneName'),
       sliceValue: 'Venue 1'
     })
     expect(shortDescription(incident)).toEqual('EAP failures are unusually high in Venue: Venue 1')
@@ -75,11 +77,33 @@ describe('shortDescription', () => {
         { type: 'network', name: 'Network' },
         { type: 'zone', name: 'Venue 1' }
       ],
-      sliceType: 'zoneName',
+      sliceType: normalizeNodeType('zoneName'),
       sliceValue: 'Venue 1'
     })
     expect(shortDescription(incident))
       .toEqual('Time to connect is greater than 2 seconds in Venue: Venue 1')
+  })
+})
+
+describe('longDescription', () => {
+  const incident = fakeIncident({
+    id: '1',
+    code: 'eap-failure',
+    startTime: '2022-08-12T00:00:00.000Z',
+    endTime: '2022-08-12T01:00:00.000Z',
+    path: [
+      { type: 'network', name: 'Network' },
+      { type: 'zone', name: 'Venue 1' }
+    ]
+  })
+  it('should return correct value', () => {
+    expect(longDescription({ ...incident, clientCount: 10, impactedClientCount: 5 }))
+      // eslint-disable-next-line max-len
+      .toEqual('EAP failures are high in Venue: Venue 1 impacting connectivity for 50% of clients.')
+  })
+  it('should return correct value when no impacted client', () => {
+    expect(longDescription({ ...incident, clientCount: null, impactedApCount: null }))
+      .toEqual('EAP failures are unusually high in Venue: Venue 1')
   })
 })
 
