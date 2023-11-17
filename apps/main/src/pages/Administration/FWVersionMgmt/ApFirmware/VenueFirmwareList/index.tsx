@@ -10,7 +10,7 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useGetUpgradePreferencesQuery,
   useUpdateUpgradePreferencesMutation,
@@ -42,7 +42,7 @@ import {
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { RequestPayload }            from '@acx-ui/types'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
-import { noDataDisplay }             from '@acx-ui/utils'
+import { getIntl, noDataDisplay }    from '@acx-ui/utils'
 
 import {
   compareVersions,
@@ -63,11 +63,9 @@ import { useApEolFirmware }        from './useApEolFirmware'
 
 
 function useColumns (
-  searchable?: boolean,
   filterables?: { [key: string]: ColumnType['filterable'] }
 ) {
   const intl = useIntl()
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const transform = firmwareTypeTrans(intl.$t)
 
   const columns: TableProps<FirmwareVenue>['columns'] = [
@@ -77,7 +75,7 @@ function useColumns (
       dataIndex: 'name',
       sorter: { compare: sortProp('name', defaultSort) },
       defaultSortOrder: 'ascend',
-      searchable: searchable,
+      searchable: true,
       render: function (_, row) {
         return row.name
       }
@@ -151,8 +149,7 @@ function useColumns (
     }
   ]
 
-  return columns.filter(({ key }) =>
-    (key !== 'edges' || (key === 'edges' && isEdgeEnabled)))
+  return columns
 }
 
 function sortCurrentApFirmware (a: FirmwareVenue, b: FirmwareVenue) {
@@ -176,12 +173,10 @@ function getDisplayEolFirmwareText (venue: FirmwareVenue): string {
 
 type VenueTableProps = {
   tableQuery: TableQuery<FirmwareVenue, RequestPayload<unknown>, unknown>,
-  searchable?: boolean
   filterables?: { [key: string]: ColumnType['filterable'] }
 }
 
-export const VenueFirmwareTable = (
-  { tableQuery, searchable, filterables }: VenueTableProps) => {
+const VenueFirmwareTable = ({ tableQuery, filterables }: VenueTableProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const { availableVersions } = useGetAvailableABFListQuery({ params }, {
@@ -196,7 +191,7 @@ export const VenueFirmwareTable = (
   const [skipVenueUpgradeSchedules] = useSkipVenueUpgradeSchedulesMutation()
   const [updateVenueSchedules] = useUpdateVenueSchedulesMutation()
   const [updateNow] = useUpdateNowMutation()
-  const [modelVisible, setModelVisible] = useState(false)
+  const [preferencesModelVisible, setPreferencesModelVisible] = useState(false)
   const [updateModelVisible, setUpdateModelVisible] = useState(false)
   const [changeScheduleModelVisible, setChangeScheduleModelVisible] = useState(false)
   const [revertModelVisible, setRevertModelVisible] = useState(false)
@@ -212,15 +207,12 @@ export const VenueFirmwareTable = (
   const preferenceDays = preferencesData?.days?.map((day) => {
     return day.charAt(0).toUpperCase() + day.slice(1).toLowerCase()
   })
-  let preferences = {
-    ...preferencesData,
-    days: preferenceDays
-  }
+  const preferences = { ...preferencesData, days: preferenceDays }
 
-  const handleModalCancel = () => {
-    setModelVisible(false)
+  const handlePreferencesModalCancel = () => {
+    setPreferencesModelVisible(false)
   }
-  const handleModalSubmit = async (payload: UpgradePreferences) => {
+  const handlePreferencesModalSubmit = async (payload: UpgradePreferences) => {
     try {
       await updateUpgradePreferences({ params, payload }).unwrap()
     } catch (error) {
@@ -264,31 +256,23 @@ export const VenueFirmwareTable = (
       return []
     }
 
-    let filterVersions: FirmwareVersion[]
+    let selectedMaxVersion: string | undefined
+    let isSameVersion = true
 
-    if (selectedRows.length === 1) {
-      const version = getApVersion(selectedRows[0])
-      // eslint-disable-next-line max-len
-      filterVersions = availableVersions.filter((availVersion: FirmwareVersion) => compareVersions(availVersion.id, version) > 0)
-    } else {
-      let selectedMaxVersion: string | undefined
-      let isSameVersion = true
+    selectedRows.forEach((row: FirmwareVenue) => {
+      const version = getApVersion(row)
+      if (selectedMaxVersion && compareVersions(version, selectedMaxVersion) !== 0) {
+        isSameVersion = false
+      }
+      if (!selectedMaxVersion || compareVersions(version, selectedMaxVersion) > 0) {
+        selectedMaxVersion = version
+      }
+    })
 
-      selectedRows.forEach((row: FirmwareVenue) => {
-        const version = getApVersion(row)
-        if (selectedMaxVersion && compareVersions(version, selectedMaxVersion) !== 0) {
-          isSameVersion = false
-        }
-        if (!selectedMaxVersion || compareVersions(version, selectedMaxVersion) > 0) {
-          selectedMaxVersion = version
-        }
-      })
-
-      filterVersions = availableVersions.filter((availVersion: FirmwareVersion) => {
-        const result = compareVersions(availVersion.id, selectedMaxVersion)
-        return result > 0 || (result === 0 && !isSameVersion)
-      })
-    }
+    const filterVersions = availableVersions.filter((availVersion: FirmwareVersion) => {
+      const result = compareVersions(availVersion.id, selectedMaxVersion)
+      return result > 0 || (result === 0 && !isSameVersion)
+    })
 
     return filterVersions
   }
@@ -402,7 +386,7 @@ export const VenueFirmwareTable = (
       { isLoading: false }
     ]}>
       <Table
-        columns={useColumns(searchable, filterables)}
+        columns={useColumns(filterables)}
         dataSource={tableQuery.data?.data}
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
@@ -412,7 +396,7 @@ export const VenueFirmwareTable = (
         rowSelection={hasAccess() && { type: 'checkbox', selectedRowKeys }}
         actions={filterByAccess([{
           label: $t({ defaultMessage: 'Preferences' }),
-          onClick: () => setModelVisible(true)
+          onClick: () => setPreferencesModelVisible(true)
         }])}
       />
       {updateModelVisible && <UpdateNowDialogSwitcher
@@ -433,17 +417,18 @@ export const VenueFirmwareTable = (
         onCancel={handleRevertModalCancel}
         onSubmit={handleUpdateModalSubmit}
       />}
-      {modelVisible && <PreferencesDialog
+      {preferencesModelVisible && <PreferencesDialog
         visible={true}
         data={preferences}
-        onCancel={handleModalCancel}
-        onSubmit={handleModalSubmit}
+        onCancel={handlePreferencesModalCancel}
+        onSubmit={handlePreferencesModalSubmit}
       />}
     </Loader>
   )
 }
 
 export function VenueFirmwareList () {
+  const { $t } = getIntl()
   const tableQuery = useTableQuery<FirmwareVenue>({
     useQuery: useGetVenueVersionListQuery,
     defaultPayload: {}
@@ -452,17 +437,18 @@ export function VenueFirmwareList () {
   const { versionFilterOptions } = useGetFirmwareVersionIdListQuery({ params: useParams() }, {
     selectFromResult ({ data }) {
       return {
-        // eslint-disable-next-line max-len
-        versionFilterOptions: data?.map(v=>({ key: v, value: v })) || true
+        versionFilterOptions: data?.map(v => ({ key: v, value: v })) || true
       }
     }
   })
 
-  const typeFilterOptions = [{ key: 'Release', value: 'Release' }, { key: 'Beta', value: 'Beta' }]
+  const typeFilterOptions = [
+    { key: 'Release', value: $t({ defaultMessage: 'Release' }) },
+    { key: 'Beta', value: $t({ defaultMessage: 'Beta' }) }
+  ]
 
   return (
     <VenueFirmwareTable tableQuery={tableQuery}
-      searchable={true}
       filterables={{
         version: versionFilterOptions,
         type: typeFilterOptions
@@ -487,15 +473,16 @@ interface UpdateNowDialogSwitcherProps {
 
 function UpdateNowDialogSwitcher (props: UpdateNowDialogSwitcherProps) {
   const isEolApPhase2Enabled = useIsSplitOn(Features.EOL_AP_2022_12_PHASE_2_TOGGLE)
-  const { getAvailableEolApFirmwares } = useApEolFirmware()
-  const eolApFirmwares = getAvailableEolApFirmwares(props.data)
+  const { getAvailableEolApFirmwareGroups } = useApEolFirmware()
+  // eslint-disable-next-line max-len
+  const eolApFirmwareGroups = getAvailableEolApFirmwareGroups(props.data).filter(eolGroup => eolGroup.isUpgradable)
 
-  const eolApFirmware = eolApFirmwares.length > 0
+  const eolApFirmware = eolApFirmwareGroups.length > 0
     ? {
       eol: true,
-      eolName: eolApFirmwares[0].name,
-      latestEolVersion: eolApFirmwares[0].latestEolVersion,
-      eolModels: eolApFirmwares[0].apModels
+      eolName: eolApFirmwareGroups[0].name,
+      latestEolVersion: eolApFirmwareGroups[0].latestEolVersion,
+      eolModels: eolApFirmwareGroups[0].apModels
     }
     : {}
 

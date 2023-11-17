@@ -47,7 +47,18 @@ const config: { value?: EnvironmentConfig } = {}
 export async function initialize () {
   const baseUrl = trimEnd(document.baseURI, '/')
   const envConfigUrl = `${baseUrl}/env.json`
-  config.value = await fetch(envConfigUrl).then(res => res.json())
+  config.value = await fetch(envConfigUrl).then(res => res.json()).then(
+    value => {
+      return {
+        ...value,
+        ...{
+          GOOGLE_MAPS_KEY: value.GOOGLE_MAPS,
+          SPLIT_IO_KEY: value.SPLIT_IO,
+          PENDO_API_KEY: value.PENDO_API
+        }
+      }
+    })
+
 }
 
 export function get (key: keyof EnvironmentConfig): string {
