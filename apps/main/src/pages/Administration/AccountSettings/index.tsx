@@ -8,7 +8,8 @@ import { MSPUtils }                                                        from 
 import { useGetRecoveryPassphraseQuery, useGetTenantAuthenticationsQuery } from '@acx-ui/rc/services'
 import {
   useUserProfileContext,
-  useGetMfaTenantDetailsQuery
+  useGetMfaTenantDetailsQuery,
+  useGetBetaStatusQuery
 } from '@acx-ui/user'
 import { isDelegationMode, useTenantId } from '@acx-ui/utils'
 
@@ -16,6 +17,7 @@ import { AccessSupportFormItem }         from './AccessSupportFormItem'
 import { AppTokenFormItem }              from './AppTokenFormItem'
 import { AuthServerFormItem }            from './AuthServerFormItem'
 import { DefaultSystemLanguageFormItem } from './DefaultSystemLanguageFormItem'
+import { EnableR1Beta }                  from './EnableR1Beta'
 import { MapRegionFormItem }             from './MapRegionFormItem'
 import { MFAFormItem }                   from './MFAFormItem'
 import { RecoveryPassphraseFormItem }    from './RecoveryPassphraseFormItem'
@@ -27,6 +29,7 @@ interface AccountSettingsProps {
 const AccountSettings = (props : AccountSettingsProps) => {
   const { className } = props
   const params = { tenantId: useTenantId() }
+  const betaButtonToggle = useIsSplitOn(Features.BETA_BUTTON)
   const {
     data: userProfileData,
     isPrimeAdmin
@@ -36,6 +39,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const recoveryPassphraseData = useGetRecoveryPassphraseQuery({ params })
   const mfaTenantDetailsData = useGetMfaTenantDetailsQuery({ params })
   const mspEcProfileData = useGetMspEcProfileQuery({ params })
+  const betaStatusData = useGetBetaStatusQuery({ params }, { skip: !betaButtonToggle })
 
   const canMSPDelegation = isDelegationMode() === false
   const hasMSPEcLabel = mspUtils.isMspEc(mspEcProfileData.data)
@@ -52,6 +56,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const showRksSupport = isMspEc === false
   const isFirstLoading = recoveryPassphraseData.isLoading
     || mfaTenantDetailsData.isLoading || mspEcProfileData.isLoading
+    || betaStatusData.isLoading
 
   const showSsoSupport = isPrimeAdminUser && isIdmDecoupling && !isDogfood
     && canMSPDelegation && !isMspEc
@@ -91,6 +96,16 @@ const AccountSettings = (props : AccountSettingsProps) => {
             <AccessSupportFormItem
               hasMSPEcLabel={hasMSPEcLabel}
               canMSPDelegation={canMSPDelegation}
+            />
+          </>
+        )}
+
+        { (isPrimeAdminUser && betaButtonToggle) && (
+          <>
+            <Divider />
+            <EnableR1Beta
+              betaStatusData={betaStatusData.data}
+              isPrimeAdminUser={isPrimeAdminUser}
             />
           </>
         )}
