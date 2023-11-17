@@ -15,7 +15,7 @@ import {
   Incident,
   IncidentFilter,
   getRootCauseAndRecommendations,
-  shortDescription,
+  longDescription,
   formattedPath
 } from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Drawer, Tooltip, Button } from '@acx-ui/components'
@@ -89,7 +89,7 @@ const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incid
   const wlanInfo = (dominant && dominant.ssid)
     ? $t(defineMessage({ defaultMessage: 'Most impacted WLAN: {ssid}' }), { ssid: dominant.ssid })
     : ''
-  const desc = shortDescription(props.selectedIncidentToShowDescription)
+  const desc = longDescription(props.selectedIncidentToShowDescription)
   return (
     <UI.IncidentDrawerContent>
       <UI.IncidentCause>{desc}</UI.IncidentCause>

@@ -11,10 +11,10 @@ import { CascaderOption, Loader, StepsForm, useStepFormContext }  from '@acx-ui/
 import { get }                                                    from '@acx-ui/config'
 import { FilterListNode, DateRange, PathNode }                    from '@acx-ui/utils'
 
-import { getNetworkFilterData }                                                                            from '../../../../NetworkFilter'
-import { useRecentNetworkFilterQuery, Child as HierarchyNodeChild, useNetworkHierarchyQuery, NetworkNode } from '../../../../NetworkFilter/services'
-import { isAPListNodes, isNetworkNodes, ClientType as ClientTypeEnum }                                     from '../../../types'
-import { ClientType }                                                                                      from '../ClientType'
+import { getNetworkFilterData }                                                                        from '../../../../NetworkFilter'
+import { useVenuesHierarchyQuery, Child as HierarchyNodeChild, useNetworkHierarchyQuery, NetworkNode } from '../../../../NetworkFilter/services'
+import { isAPListNodes, isNetworkNodes, ClientType as ClientTypeEnum }                                 from '../../../types'
+import { ClientType }                                                                                  from '../ClientType'
 
 import { APsSelectionInput }                          from './APsSelectionInput'
 import { DeviceRequirementsType, deviceRequirements } from './deviceRequirements'
@@ -116,15 +116,16 @@ function useSANetworkHierarchy () {
 
 function useR1NetworkHierarchy () {
   const filter = useMemo(() => ({
+    shouldQueryAp: true,
     startDate: moment().subtract(1, 'day').format(),
     endDate: moment().format(),
     range: DateRange.last24Hours
   }), [])
   const { form } = useStepFormContext<ServiceGuardFormDto>()
-  const response = useRecentNetworkFilterQuery(filter, { skip: !!get('IS_MLISA_SA') })
+  const response = useVenuesHierarchyQuery(filter, { skip: !!get('IS_MLISA_SA') })
   return { ...response, options: getNetworkFilterData(
     filterAPwithDeviceRequirements(response.data ?? [], form.getFieldValue(ClientType.fieldName)),
-    {}, 'ap', false
+    {}, false
   ) }
 }
 
@@ -136,17 +137,19 @@ function useOptions () {
 
 function filterAPwithDeviceRequirements (data: HierarchyNodeChild[], clientType: ClientTypeEnum ) {
   const { requiredAPFirmware, excludedTargetAPs } = deviceRequirements[clientType]
-  return data.map(({ aps, ...rest }) => ({
-    ...rest,
-    aps: aps?.filter(ap => ap.serial)
-      .filter(ap => {
-        if (excludedTargetAPs.find(a =>
-          _.get(a, 'model') === ap.model &&
-            !meetVersionRequirements(_.get(a, 'requiredAPFirmware'), ap.firmware)
-        )) return false
-        return meetVersionRequirements(requiredAPFirmware, ap.firmware)
-      })
-  }))
+  return data.reduce((venues, { aps, ...rest }) => {
+    const validAPs = aps!.filter(ap => {
+      /* istanbul ignore next */
+      if (ap.firmware === 'Unknown') return false // if (!ap.serial) return false TODO update new api to support this and uncomment
+      if (excludedTargetAPs.find(a =>
+        _.get(a, 'model') === ap.model &&
+          !meetVersionRequirements(_.get(a, 'requiredAPFirmware'), ap.firmware)
+      )) return false
+      return meetVersionRequirements(requiredAPFirmware, ap.firmware)
+    })
+    validAPs.length && venues.push({ ...rest, aps: validAPs })
+    return venues
+  }, [] as HierarchyNodeChild[])
 }
 
 export function APsSelection () {
@@ -247,9 +250,7 @@ APsSelection.FieldSummary = function APsSelectionFieldSummary () {
     path: NetworkNodes,
     hierarchies: HierarchyNodeChild[]
   ) {
-    const matched = hierarchies
-      .find(item => item.path.slice(1).some((node, i) => _.isEqual(path[i], node)))
-
+    const matched = hierarchies.find(({ name }) => path.some(p => name === p.name)) // TODO should be using ID as renaming venues breaks edit
     return {
       name: hierarchyName(path),
       count: matched!.aps!.length
