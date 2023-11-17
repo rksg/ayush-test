@@ -85,6 +85,24 @@ export const EdgeOverview = () => {
     sortOrder: 'ASC'
   }
 
+  const edgeLagStatusPayload = {
+    fields: [
+      'lagId',
+      'name',
+      'description',
+      'lagType',
+      'status',
+      'adminStatus',
+      'lagMembers',
+      'portType',
+      'mac',
+      'ip',
+      'ipMode'
+    ],
+    sortField: 'name',
+    sortOrder: 'ASC'
+  }
+
   const {
     data: portStatusList = [],
     isLoading: isPortListLoading
@@ -98,7 +116,7 @@ export const EdgeOverview = () => {
     isLagListLoading
   } = useGetEdgeLagsStatusListQuery({
     params: { serialNumber },
-    payload: {}
+    payload: edgeLagStatusPayload
   }, {
     skip: !isEdgeLagEnabled,
     selectFromResult ({ data, isLoading }) {
