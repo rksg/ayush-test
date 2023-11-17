@@ -120,6 +120,7 @@ export const Links: React.FC<LinksProps> = (props) => {
               d={linkCustom(link, linksInfo)}
               markerStart={link.source.depth === 0 ? `url(#${markerClass})` : ''}
               markerEnd={`url(#${markerClass})`}
+              stroke-dasharray={link.target.data.type.includes('Mesh')?'1':'0'}
             />
           </g>
         )

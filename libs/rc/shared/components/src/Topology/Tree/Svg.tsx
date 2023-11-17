@@ -19,6 +19,8 @@ const Svg: any = (props: any) => {
   const [treeData, setTreeData] = useState<any>(transformData(data)) // Replace 'any' with the actual data type
   const [nodesCoordinate, setNodesCoordinate] = useState<any>({})
   const [linksInfo, setLinksInfo] = useState<any>({})
+  const [translate, setTranslate] = useState<number[]>([0, 0])
+  const [scale, setScale] = useState<number>(1)
 
   useEffect(() => {
     const svg = select(refSvg.current)
@@ -38,7 +40,7 @@ const Svg: any = (props: any) => {
     }
   }, [width, height])
 
-  const { nodes, links, translate, scale } = useMemo(() => {
+  const { nodes, links } = useMemo(() => {
     if (width && height && treeData && edges) {
       const treeLayout = tree()
         .size([height, width]) // Swap height and width for vertical layout
@@ -73,16 +75,13 @@ const Svg: any = (props: any) => {
         setNodesCoordinate(nodePositionData)
       }
 
-      const translate = [width / 2, NODE_SIZE[1] / 2] // Adjust translate
-      const scale = height / ((treeData.height + 1) * NODE_SIZE[1]) // Adjust scale
-
-      return { nodes, links, translate, scale }
+      setTranslate([width / 2, NODE_SIZE[1] / 2])
+      // setScale(scale)
+      return { nodes, links }
     } else {
       return {
         nodes: [],
-        links: [],
-        translate: [0, 0],
-        scale: 1
+        links: []
       }
     }
   }, [treeData, edges, width, height])

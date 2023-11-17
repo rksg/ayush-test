@@ -111,69 +111,119 @@ height: 100%;
 .d3-tree-container {
   width: 100%;
   height: 100%;
-}
 
-.d3-tree-container svg {
-  width: 100%;
-  height: 100%;
-}
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .d3-tree-main{
+    .tree-node{
+      .node-text {
+        stroke-width: 0.05
+      }
+      .undefined-circle {
+        fill: none;
+      }
+      .Operational-circle {
+        fill: none;
+      }
+      .Degraded-circle {
+        fill: none;
+      }
+      .Unknown-circle {
+        fill: none;
+      }
+    }
 
-.d3-tree-good-links {
-  fill: none;
-  stroke: var(--acx-semantics-green-50);
-  stroke-opacity: 1;
-  stroke-width: 0.5;
-}
+    .tree-node:hover{
+      .Operational-icon {  
+        filter: drop-shadow(0 0 8px var(--acx-semantics-green-50));
+      }
+      .undefined-circle {
+        fill: var(--acx-accents-blue-50);
+        opacity: 0.2;
+      }
+      .Operational-circle {
+        fill: var(--acx-semantics-green-50);
+        opacity: 0.2;
+      }
+      .Degraded-circle {
+        fill: var(--acx-semantics-yellow-40);
+        opacity: 0.2;
+      }
+      .Unknown-circle {
+        fill: var(--acx-neutrals-50);
+        opacity: 0.2;
+      }
+      .node-text {
+        stroke-width: 0.25;
+      }
+    }
 
-.d3-tree-degraded-links {
-  fill: none;
-  stroke: var(--acx-semantics-yellow-40);
-  stroke-opacity: 1;
-  stroke-width: 1;
-}
+    .d3-tree-good-links {
+      cursor: pointer;
+      fill: none;
+      stroke: var(--acx-semantics-green-50);
+      stroke-width: 0.5;
+    }
 
-.d3-tree-unknown-links {
-  fill: none;
-  stroke: var(--acx-neutrals-50);
-  stroke-opacity: 1;
-  stroke-width: 1;
-}
+    .d3-tree-good-links:hover {
+      filter: drop-shadow(0 0 1px var(--acx-semantics-green-50));
+    }
 
-.text-call-name {
-  font-size: 6px;
-  fill: black;
-  stroke: black;
-  stroke-width: 0.25;
-}
+    .d3-tree-degraded-links {
+      fill: none;
+      stroke: var(--acx-semantics-yellow-40);
+      stroke-opacity: 1;
+      stroke-width: 1;
+    }
 
-.rect-test {
-  transform: rotateZ(90);
-  stroke: var(--acx-semantics-green-50);
-  stroke-opacity: 1;
-}
+    .d3-tree-degraded-links:hover {
+      filter: drop-shadow(0 0 1px var(--acx-semantics-yellow-40));
+    }
 
-.rect-text {
-  font-size: 8px;
-  stroke-width: 0;
-  fill: white;
-}
+    .d3-tree-unknown-links {
+      fill: none;
+      stroke: var(--acx-neutrals-50);
+      stroke-opacity: 1;
+      stroke-width: 1;
+    }
 
-.text-time-stamp {
-  font-size: 6px;
-  stroke-width: 0;
-  fill: #aaa;
-}
+    .d3-tree-unknown-links:hover {
+      filter: drop-shadow(0 0 1px var(--acx-neutrals-50));
+    }
 
-.goodMarker {
-  fill: var(--acx-semantics-green-50);
-}
+    .rect-test {
+      transform: rotateZ(90);
+      stroke: var(--acx-semantics-green-50);
+      stroke-opacity: 1;
+    }
 
-.degradedMarker {
-  fill: var(--acx-semantics-yellow-40);
-}
+    .rect-text {
+      font-size: 8px;
+      stroke-width: 0;
+      fill: white;
+    }
 
-.unknownMarker {
-  fill: var(--acx-neutrals-50);
-}
+    .text-time-stamp {
+      font-size: 6px;
+      stroke-width: 0;
+      fill: #aaa;
+    }
 
+    .goodMarker {
+      fill: var(--acx-semantics-green-50);
+    }
+
+    .degradedMarker {
+      fill: var(--acx-semantics-yellow-40);
+    }
+
+    .unknownMarker {
+      fill: var(--acx-neutrals-50);
+    }
+
+  }
+}
 `

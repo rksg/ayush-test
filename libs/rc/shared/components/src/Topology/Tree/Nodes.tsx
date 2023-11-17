@@ -3,6 +3,8 @@ import React, { useState, useEffect, MouseEvent } from 'react'
 import { MinusCircleOutlined, PlusCircleOutlined } from '@acx-ui/icons'
 import { Node }                                    from '@acx-ui/rc/utils'
 
+import { getDeviceColor } from '../utils'
+
 interface NodeData extends Node {
   children?: NodeData[]
   _children?: NodeData[]
@@ -19,6 +21,7 @@ interface NodeProps {
 
 const Nodes: React.FC<NodeProps> = (props) => {
   const [color, setColor] = useState<{ [id: string]: string }>({})
+  let delayHandler: NodeJS.Timeout
   const { nodes, nodeRender, expColEvent, onClick, nodesCoordinate } = props
 
   useEffect(() => {
@@ -42,7 +45,16 @@ const Nodes: React.FC<NodeProps> = (props) => {
     return `translate(${nodesCoordinate[node.data.id].y},
       ${nodesCoordinate[node.data.id].x - 65 * node.ancestors().length})`
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleMouseEnter = (node: any , event: any) => {
+    delayHandler = setTimeout(() => {
+      onClick(node, event)
+    }, 1000)
+  }
 
+  const handleMouseLeave = () => {
+    clearTimeout(delayHandler)
+  }
   return (
     <g className='d3-tree-nodes'>
       {
@@ -55,7 +67,6 @@ const Nodes: React.FC<NodeProps> = (props) => {
               .filter((ancestor: any) => ancestor.ancestors().length === 2)[0].data
               .id
             : ''
-
           return (
             <g
               key={node.data.id}
@@ -67,18 +78,16 @@ const Nodes: React.FC<NodeProps> = (props) => {
               id={node.data.id}
               className={'tree-node'}
             >
-              <g onClick={(e) => {
-                onClick(node, e)
-              }}>
-                <g>{nodeRender(node, i)}</g>
+              <g onMouseEnter={(e) => handleMouseEnter(node, e)} onMouseLeave={handleMouseLeave}>
+                <circle cx='0' cy='0' r='15' className={`${node.data.status}-circle`} />
+                <g className={`${node.data.status}-icon`}>{nodeRender(node, i)}</g>
                 <g>
                   <text
-                    className='text-call-name'
+                    className='node-text'
                     style={{
                       fontSize: '6px',
-                      fill: 'black',
-                      stroke: 'black',
-                      strokeWidth: 0.25
+                      stroke: node.data.status ? getDeviceColor(node.data.status) : 'black',
+                      fill: node.data.status ? getDeviceColor(node.data.status) : 'black'
                     }}
                     dx={-node.data.name.length - node.data.name.length / 2}
                     dy='18'
