@@ -378,13 +378,11 @@ export const VenueFirmwareTable = (
 
 
   return (
-    <Loader states={[
-      { isLoading: tableQuery.isLoading && _.isEmpty(tableQuery.data?.data) }
-    ]}>
+    <Loader states={[tableQuery]}>
       <Table
         columns={columns}
         dataSource={tableQuery.data?.data}
-        // pagination={tableQuery.pagination}
+        pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}

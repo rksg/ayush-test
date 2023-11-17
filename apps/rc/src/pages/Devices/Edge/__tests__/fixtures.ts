@@ -1,4 +1,4 @@
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgePortStatus, EdgeServiceTypeEnum, ACLDirection, AccessAction, ProtocolType, AddressType, LeaseTimeUnit } from '@acx-ui/rc/utils'
+import { EdgeIpModeEnum, EdgePortTypeEnum, EdgePortStatus, EdgeServiceTypeEnum, ACLDirection, AccessAction, ProtocolType, AddressType, LeaseTimeUnit, EdgeLagTypeEnum, EdgeLagTimeoutEnum } from '@acx-ui/rc/utils'
 
 export const mockVenueData = {
   fields: ['name', 'id'],
@@ -828,4 +828,113 @@ export const mockedTunnelProfileData = {
   mtuSize: 1450,
   forceFragmentation: true,
   ageTimeMinutes: 20
+}
+
+export const mockEdgeLagStatusList = {
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      lagId: '11',
+      name: 'LAG 1',
+      description: '',
+      lagType: EdgeLagTypeEnum.LACP,
+      status: 'Up',
+      adminStatus: 'Enabled',
+      lagMembers: [
+        {
+          portId: '774d0d62-265a-421a-9a85-cdcfbefeb065',
+          name: 'Port 1',
+          lacpState: 'Up',
+          systemId: '00:aa:bb:cc:dd:ee',
+          key: '100',
+          lacpTimeout: EdgeLagTimeoutEnum.SHORT,
+          peerSystemId: '00:aa:bb:cc:dd:aa',
+          peerKey: '200',
+          lacpRxCount: 10,
+          lacpTxCount: 10
+        },
+        {
+          portId: 'c2037758-f234-4477-b9dd-913f974f6516',
+          name: 'Port 2',
+          lacpState: 'Up',
+          systemId: '00:aa:bb:cc:11:22',
+          key: '100',
+          lacpTimeout: EdgeLagTimeoutEnum.SHORT,
+          peerSystemId: '00:aa:bb:cc:33:44',
+          peerKey: '200',
+          lacpRxCount: 10,
+          lacpTxCount: 10
+        }
+      ],
+      portType: EdgePortTypeEnum.WAN,
+      mac: 'AA:BB:CC:DD:EE:FF',
+      ip: '1.1.1.1',
+      ipMode: EdgeIpModeEnum.DHCP
+    },
+    {
+      lagId: '12',
+      name: 'LAG 2',
+      description: '',
+      lagType: EdgeLagTypeEnum.LACP,
+      status: 'Down',
+      adminStatus: 'Enabled',
+      lagMembers: [],
+      portType: EdgePortTypeEnum.LAN,
+      mac: 'A1:BB:2D:DD:EE:FF',
+      ip: '123.1.2.1',
+      ipMode: EdgeIpModeEnum.STATIC
+    }
+  ]
+}
+
+export const mockedEdgeLagList = {
+  content: [
+    {
+      id: 1,
+      description: 'string',
+      lagType: 'LACP',
+      lacpMode: 'ACTIVE',
+      lacpTimeout: 'SHORT',
+      lagMembers: [
+        {
+          portMac: '00:0c:29:b6:ad:04',
+          portEnabled: true
+        },
+        {
+          portMac: '00:00:00:00:00:00',
+          portEnabled: true
+        }
+      ],
+      portType: 'WAN',
+      ipMode: 'DHCP',
+      ip: '',
+      subnet: '',
+      gateway: '',
+      corePortEnabled: true,
+      natEnabled: true,
+      lagEnabled: true
+    },
+    {
+      id: 2,
+      description: 'string',
+      lagType: 'LACP',
+      lacpMode: 'ACTIVE',
+      lacpTimeout: 'SHORT',
+      lagMembers: [],
+      portType: 'LAN',
+      ipMode: 'STATIC',
+      ip: '1.1.1.1',
+      subnet: '255.255.255.0',
+      gateway: '1.0.0.0',
+      corePortEnabled: false,
+      natEnabled: true,
+      lagEnabled: true
+    }
+  ],
+  paging: {
+    page: 1,
+    pageSize: 10,
+    totalCount: 2
+  }
 }

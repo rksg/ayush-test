@@ -724,9 +724,10 @@ export interface VenueBssColoring {
 	bssColoringEnabled: boolean
 }
 
-export type ApManagementVlan = {
-	vlanOverrideEnabled: boolean,
+export interface ApManagementVlan {
+	vlanOverrideEnabled: boolean
 	vlanId: number
+	useVenueSettings: boolean
 }
 
 export interface Node {

@@ -9,6 +9,7 @@ import { useIntl } from 'react-intl'
 import {
   Modal, ModalType, StepsForm, showActionModal
 } from '@acx-ui/components'
+import { WarningCircleOutlined }          from '@acx-ui/icons'
 import {
   useGetSwitchAvailableFirmwareListQuery,
   useGetSwitchLatestFirmwareListQuery,
@@ -53,6 +54,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
   const [updateVenueSchedules] = useUpdateSwitchVenueSchedulesMutation()
 
   const [upgradeVersions, setUpgradeVersions] = useState<FirmwareVersion[]>([])
+  const [showSubTitle, setShowSubTitle] = useState<boolean>(true)
   const filterVersions = function (availableVersions: FirmwareVersion[]) {
 
     return availableVersions?.map((version) => {
@@ -95,9 +97,9 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
   }
 
   const wizardWidth = {
-    [SwitchFirmwareWizardType.update]: '1140px',
-    [SwitchFirmwareWizardType.schedule]: '1140px',
-    [SwitchFirmwareWizardType.skip]: '968px'
+    [SwitchFirmwareWizardType.update]: '1180px',
+    [SwitchFirmwareWizardType.schedule]: '1180px',
+    [SwitchFirmwareWizardType.skip]: '1120px'
   }
 
   const [skipSwitchUpgradeSchedules] = useSkipSwitchUpgradeSchedulesMutation()
@@ -225,6 +227,21 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
     return { currentUpgradeSwitchList, currentUpgradeVenueList }
   }
 
+  const getSubTitle = function () {
+    if (!showSubTitle) {return <></>}else {
+      return <div><WarningCircleOutlined
+        style={{
+          marginBottom: '-5px',
+          width: '18px',
+          height: '18px',
+          marginRight: '3px'
+        }} />
+      { // eslint-disable-next-line max-len
+        $t({ defaultMessage: 'The following list will only display the connected switch under the venue.' })}
+      </div>
+    }
+  }
+
   return <Modal
     title={wizardTitle[wizardType]}
     type={ModalType.ModalStepsForm}
@@ -232,6 +249,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
     destroyOnClose={true}
     mask={true}
     width={wizardWidth[wizardType]}
+    subTitle={getSubTitle()}
     children={
       <UI.SwitchFirmwareStepsForm
         wizardtype={wizardType}
@@ -251,6 +269,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
           onFinish={async () => { saveSwitchStep() }}
         >
           <SelectSwitchStep
+            setShowSubTitle={setShowSubTitle}
             data={props.data as FirmwareSwitchVenue[]}
             wizardtype={wizardType} />
         </StepsForm.StepForm>
@@ -263,12 +282,14 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
             {
               wizardType === SwitchFirmwareWizardType.update ?
                 <UpdateNowStep
+                  setShowSubTitle={setShowSubTitle}
                   visible={true}
                   hasVenue={hasVenue}
                   availableVersions={filterVersions(upgradeVersions)}
                   nonIcx8200Count={nonIcx8200Count}
                   icx8200Count={icx8200Count}
                 /> : <ScheduleStep
+                  setShowSubTitle={setShowSubTitle}
                   visible={true}
                   hasVenue={hasVenue}
                   data={props.data}

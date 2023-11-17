@@ -149,29 +149,31 @@ jest.mock('@acx-ui/reports/utils', () => ({
 describe('Network Filter', () => {
 
   beforeEach(() => {
-
+    mockUseReportsFilter.raw = []
     store.dispatch(api.util.resetApiState())
     store.dispatch(incidentApi.util.resetApiState())
     jest.clearAllMocks()
   })
   it('should render loader', () => {
-    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
-      data: { network: { hierarchyNode: networkFilterResult } }
+    mockGraphqlQuery(dataApiURL, 'VenueHierarchy', {
+      data: { network: { venueHierarchy: networkFilterResult } }
     })
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
-    render(<Provider><NetworkFilter shouldQuerySwitch/></Provider>)
+    render(<Provider><NetworkFilter shouldQueryAp shouldQuerySwitch/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
   it('should render network filter', async () => {
-    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
-      data: { network: { hierarchyNode: { children: null } } }
+    mockGraphqlQuery(dataApiURL, 'VenueHierarchy', {
+      data: { network: { venueHierarchy: [] } }
     })
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
-    const { asFragment } = render(<Provider><NetworkFilter shouldQuerySwitch/></Provider>)
+    const { asFragment } = render(<Provider>
+      <NetworkFilter shouldQueryAp shouldQuerySwitch/>
+    </Provider>)
     await screen.findByText('Entire Organization')
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('span[class="ant-select-arrow"]')).not.toBeNull()
@@ -179,13 +181,13 @@ describe('Network Filter', () => {
     expect(asFragment().querySelector('svg')).toBeDefined()
   })
   it('should select network node', async () => {
-    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
-      data: { network: { hierarchyNode: networkFilterResult } }
+    mockGraphqlQuery(dataApiURL, 'VenueHierarchy', {
+      data: { network: { venueHierarchy: networkFilterResult } }
     })
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
-    render(<Provider><NetworkFilter shouldQuerySwitch/></Provider>)
+    render(<Provider><NetworkFilter shouldQueryAp shouldQuerySwitch/></Provider>)
     await screen.findByText('Entire Organization')
     await userEvent.click(screen.getByRole('combobox'))
     fireEvent.click(screen.getByText('venue1'))
@@ -200,13 +202,14 @@ describe('Network Filter', () => {
     await userEvent.click(screen.getByRole('combobox'))
   })
   it('should select network node and bands', async () => {
-    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
-      data: { network: { hierarchyNode: networkFilterResult } }
+    mockGraphqlQuery(dataApiURL, 'VenueHierarchy', {
+      data: { network: { venueHierarchy: networkFilterResult } }
     })
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
     const { asFragment } = render(<Provider><NetworkFilter
+      shouldQueryAp
       shouldQuerySwitch
       showRadioBand={true}
       filterFor='reports'
@@ -253,7 +256,7 @@ describe('Network Filter', () => {
         }]
       ], ['6', '2.4'], [
         // eslint-disable-next-line max-len
-        ['[{"type":"network","name":"Network"},{"type":"switchGroup","name":"id5"}]', 'switchesid5'],
+        ['[{"type":"network","name":"Network"},{"type":"zone","name":"id5"}]', 'switchesid5'],
         ['[{"type":"network","name":"Network"},{"type":"switchGroup","name":"id4"}]'],
         ['[{"type":"network","name":"Network"},{"type":"zone","name":"id1"}]']
       ]
@@ -261,17 +264,18 @@ describe('Network Filter', () => {
   })
 
   it('should list only venues having APs', async () => {
-    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
-      data: { network: { hierarchyNode: networkFilterResult } }
+    mockGraphqlQuery(dataApiURL, 'VenueHierarchy', {
+      data: { network: { venueHierarchy: networkFilterResult.filter(({ aps }) => aps.length) } }
     })
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
+    mockUseReportsFilter.raw = [['switchGroup']]
     const { asFragment } = render(<Provider><NetworkFilter
-      shouldQuerySwitch
+      shouldQueryAp
+      shouldQuerySwitch={false}
       showRadioBand={true}
       filterFor='reports'
-      filterMode={'ap'}
     /></Provider>)
     await screen.findByText('Entire Organization')
     await userEvent.click(screen.getByRole('combobox'))
@@ -279,17 +283,19 @@ describe('Network Filter', () => {
   })
 
   it('should list only venues having Switches', async () => {
-    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
-      data: { network: { hierarchyNode: networkFilterResult } }
+    mockGraphqlQuery(dataApiURL, 'VenueHierarchy', {
+      data: { network: {
+        venueHierarchy: networkFilterResult.filter(({ switches }) => switches.length)
+      } }
     })
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
+    mockUseReportsFilter.raw = [['zone']]
     const { asFragment } = render(<Provider><NetworkFilter
+      shouldQueryAp={false}
       shouldQuerySwitch
-      showRadioBand={true}
       filterFor='reports'
-      filterMode={'switch'}
     /></Provider>)
     await screen.findByText('Entire Organization')
     await userEvent.click(screen.getByRole('combobox'))
@@ -297,13 +303,14 @@ describe('Network Filter', () => {
   })
 
   it('should select network node and bands with onApplyFn', async () => {
-    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
-      data: { network: { hierarchyNode: networkFilterResult } }
+    mockGraphqlQuery(dataApiURL, 'VenueHierarchy', {
+      data: { network: { venueHierarchy: networkFilterResult } }
     })
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
     const { asFragment } = render(<Provider><NetworkFilter
+      shouldQueryAp
       shouldQuerySwitch
       filterFor='reports'
       showRadioBand={true}
@@ -324,13 +331,13 @@ describe('Network Filter', () => {
     expect(select).toBeCalledTimes(0)
   })
   it('should search node', async () => {
-    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
-      data: { network: { hierarchyNode: networkFilterResult } }
+    mockGraphqlQuery(dataApiURL, 'VenueHierarchy', {
+      data: { network: { venueHierarchy: networkFilterResult } }
     })
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
-    render(<Provider><NetworkFilter shouldQuerySwitch/></Provider>)
+    render(<Provider><NetworkFilter shouldQueryAp shouldQuerySwitch/></Provider>)
     await screen.findByText('Entire Organization')
     await userEvent.type(screen.getByRole('combobox'), 'swg')
     const results = await screen.findAllByRole('menuitemcheckbox')
@@ -356,13 +363,15 @@ describe('Network Filter', () => {
   })
 
   it('should search node for reports', async () => {
-    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
-      data: { network: { hierarchyNode: networkFilterResult } }
+    mockGraphqlQuery(dataApiURL, 'VenueHierarchy', {
+      data: { network: { venueHierarchy: networkFilterResult } }
     })
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
-    render(<Provider><NetworkFilter filterFor='reports' shouldQuerySwitch/></Provider>)
+    render(<Provider>
+      <NetworkFilter shouldQueryAp filterFor='reports' shouldQuerySwitch/>
+    </Provider>)
     await screen.findByText('Entire Organization')
     await userEvent.type(screen.getByRole('combobox'), 'swg')
     const results = await screen.findAllByRole('menuitemcheckbox')
@@ -386,15 +395,15 @@ describe('Network Filter with incident severity', () => {
     jest.clearAllMocks()
   })
   it('should render network filter with severity', async () => {
-    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
-      data: { network: { hierarchyNode: networkFilterResult } }
+    mockGraphqlQuery(dataApiURL, 'VenueHierarchy', {
+      data: { network: { venueHierarchy: networkFilterResult } }
     })
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
     const { asFragment } = render(
       <Provider>
-        <NetworkFilter shouldQuerySwitch withIncidents/>
+        <NetworkFilter shouldQueryAp shouldQuerySwitch withIncidents/>
       </Provider>
     )
     await screen.findByText('Entire Organization')
@@ -403,74 +412,16 @@ describe('Network Filter with incident severity', () => {
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('svg')).toBeDefined()
   })
-  it('should not show any severity circle when hierarchyNode is empty', async () => {
-    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
-      data: { network: { hierarchyNode: [] } }
+  it('should not show any severity circle when venueHierarchy is empty', async () => {
+    mockGraphqlQuery(dataApiURL, 'VenueHierarchy', {
+      data: { network: { venueHierarchy: [] } }
     })
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
     const { asFragment } = render(
       <Provider>
-        <NetworkFilter shouldQuerySwitch withIncidents/>
-      </Provider>
-    )
-    await screen.findByText('Entire Organization')
-    // eslint-disable-next-line testing-library/no-node-access
-    await userEvent.click(screen.getByRole('combobox'))
-    // eslint-disable-next-line testing-library/no-node-access
-    expect(asFragment()).toMatchSnapshot()
-  })
-  it('should show only venue severities', async () => {
-    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
-      data: {
-        network: {
-          hierarchyNode: {
-            type: 'zone',
-            name: 'venue1',
-            path: [...defaultNetworkPath, { type: 'zone', name: 'venue1' }],
-            aps: [],
-            switches: []
-          },
-          ...networkFilterResult
-        }
-      }
-    })
-    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
-      data: { network: { hierarchyNode: { incidents: [mockIncidents[2]] } } }
-    })
-    const { asFragment } = render(
-      <Provider>
-        <NetworkFilter shouldQuerySwitch withIncidents/>
-      </Provider>
-    )
-    await screen.findByText('Entire Organization')
-    // eslint-disable-next-line testing-library/no-node-access
-    await userEvent.click(screen.getByRole('combobox'))
-    // eslint-disable-next-line testing-library/no-node-access
-    expect(asFragment()).toMatchSnapshot()
-  })
-  it('should show severity only once on each node', async () => {
-    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
-      data: {
-        network: {
-          hierarchyNode: {
-            type: 'zone',
-            name: 'venue1',
-            path: [...defaultNetworkPath, { type: 'zone', name: 'venue1' }],
-            aps: [],
-            switches: []
-          },
-          ...networkFilterResult
-        }
-      }
-    })
-    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
-      data: { network: { hierarchyNode: { incidents: [mockIncidents[2]] } } }
-    })
-    const { asFragment } = render(
-      <Provider>
-        <NetworkFilter shouldQuerySwitch withIncidents/>
+        <NetworkFilter shouldQueryAp shouldQuerySwitch withIncidents/>
       </Provider>
     )
     await screen.findByText('Entire Organization')
@@ -487,10 +438,6 @@ describe('getNetworkFilterData', () => {
       id: '473f0528888b4e09872b1560711d9dbd',
       type: 'zone',
       name: 'Some Name',
-      path: [
-        { type: 'network', name: 'Network' },
-        { type: 'zone', name: 'Some Name' }
-      ],
       aps: [
         { name: 'AP Name', mac: '00:00:00:00:00:00' }
       ],
@@ -498,7 +445,7 @@ describe('getNetworkFilterData', () => {
         { name: 'Switch Name', mac: '11:11:11:11:11:11' }
       ]
     }]
-    const [firstItem] = getNetworkFilterData(data, {}, 'both', false)
+    const [firstItem] = getNetworkFilterData(data, {}, false)
 
     /* eslint-disable testing-library/no-node-access */
     const [apItem, switchItem] = firstItem.children!

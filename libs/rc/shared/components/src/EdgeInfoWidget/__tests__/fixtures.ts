@@ -1,4 +1,4 @@
-import { Alarm, ApVenueStatusEnum, EdgeDnsServers, EdgePasswordDetail, EdgePortStatus, EdgePortTypeEnum, EdgeStatus, EdgeStatusEnum } from '@acx-ui/rc/utils'
+import { Alarm, ApVenueStatusEnum, EdgeDnsServers, EdgeIpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePasswordDetail, EdgePortStatus, EdgePortTypeEnum, EdgeStatus, EdgeStatusEnum } from '@acx-ui/rc/utils'
 
 export const tenantID = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 export const currentEdge:EdgeStatus = {
@@ -120,4 +120,62 @@ export const alarmListMeta = {
 export const passwordDetail:EdgePasswordDetail = {
   loginPassword: 'admin!234',
   enablePassword: 'admin!234'
+}
+
+export const mockEdgeLagList = {
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      lagId: '11',
+      name: 'LAG 1',
+      description: '',
+      lagType: EdgeLagTypeEnum.LACP,
+      status: 'Up',
+      adminStatus: 'Enabled',
+      lagMembers: [
+        {
+          portId: '1',
+          name: 'Port 1',
+          lacpState: 'Up',
+          systemId: '00:aa:bb:cc:dd:ee',
+          key: '100',
+          lacpTimeout: EdgeLagTimeoutEnum.SHORT,
+          peerSystemId: '00:aa:bb:cc:dd:aa',
+          peerKey: '200',
+          lacpRxCount: 10,
+          lacpTxCount: 10
+        },
+        {
+          portId: '2',
+          name: 'Port 2',
+          lacpState: 'Up',
+          systemId: '00:aa:bb:cc:11:22',
+          key: '100',
+          lacpTimeout: EdgeLagTimeoutEnum.SHORT,
+          peerSystemId: '00:aa:bb:cc:33:44',
+          peerKey: '200',
+          lacpRxCount: 10,
+          lacpTxCount: 10
+        }
+      ],
+      portType: EdgePortTypeEnum.WAN,
+      mac: 'AA:BB:CC:DD:EE:FF',
+      ip: '1.1.1.1',
+      ipMode: EdgeIpModeEnum.DHCP
+    },
+    {
+      lagId: '12',
+      name: 'LAG 2',
+      description: '',
+      lagType: EdgeLagTypeEnum.LACP,
+      status: 'Down',
+      adminStatus: 'Enabled',
+      lagMembers: [],
+      portType: EdgePortTypeEnum.LAN,
+      mac: 'A1:BB:2D:DD:EE:FF',
+      ip: '123.1.2.1',
+      ipMode: EdgeIpModeEnum.STATIC
+    }
+  ]
 }

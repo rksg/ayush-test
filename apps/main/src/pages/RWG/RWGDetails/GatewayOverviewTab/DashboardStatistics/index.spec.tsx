@@ -74,6 +74,10 @@ describe('RWG Dashboard statistics', () => {
       rest.get(
         CommonUrlsInfo.getGatewayDashboard.url,
         (req, res, ctx) => res(ctx.json(dashboard))
+      ),
+      rest.get(
+        CommonUrlsInfo.getGatewayDetails.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
 
