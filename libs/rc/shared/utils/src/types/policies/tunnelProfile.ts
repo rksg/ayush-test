@@ -21,4 +21,5 @@ export interface TunnelProfileViewData {
   ageTimeMinutes: number
   personalIdentityNetworkIds: string[]
   networkIds: string[]
+  type: TunnelTypeEnum
 }

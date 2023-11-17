@@ -45,7 +45,7 @@ export const TunnelProfileAddModal = (props: { fromServiceType?: ServiceType }) 
   </Loader>
 
   useEffect(() => {
-    if (isEdgeSdLanReady) {
+    if (visible && fromServiceType && isEdgeSdLanReady) {
       let tunnelType
       if (fromServiceType === ServiceType.NETWORK_SEGMENTATION) {
         tunnelType = TunnelTypeEnum.VXLAN
@@ -57,7 +57,7 @@ export const TunnelProfileAddModal = (props: { fromServiceType?: ServiceType }) 
       form.setFieldValue('type', tunnelType)
       if (tunnelType) form.setFieldValue('disableTunnelType', true)
     }
-  }, [fromServiceType, isEdgeSdLanReady])
+  }, [visible, fromServiceType, isEdgeSdLanReady])
 
   return (
     <>

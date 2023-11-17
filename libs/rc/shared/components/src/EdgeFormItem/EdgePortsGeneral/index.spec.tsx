@@ -422,28 +422,6 @@ describe('EditEdge ports - SD-LAN ready', () => {
     )
   })
 
-  it('display reminder when port type changed', async () => {
-    const user = userEvent.setup()
-    render(
-      <Provider>
-        <EdgePortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
-        }
-      })
-    await waitFor(() => {
-      expect(mockedGetSdLanReq).toBeCalled()
-    })
-    await user.click(await screen.findByRole('combobox', { name: 'Port Type' }))
-    await user.click(await screen.findByText('LAN'))
-    const dialog = await screen.findByRole('dialog')
-    await within(dialog).findByText(/Please make sure that you are choosing the correct port type/i)
-    await screen.findByRole('textbox', { name: 'IP Address' })
-    screen.getByRole('textbox', { name: 'Subnet Mask' })
-  })
-
   it('should correctly display core port info', async () => {
     render(
       <Provider>
@@ -500,6 +478,7 @@ describe('EditEdge ports - SD-LAN ready', () => {
       { name: /Use NAT Service/ })
     expect(port5nat).not.toBeChecked()
   })
+
   it('should grey-out all core port checkbox when SD-LAN is running and wll set', async () => {
     mockServer.use(
       rest.post(
@@ -537,6 +516,38 @@ describe('EditEdge ports - SD-LAN ready', () => {
     expect(port2CorePort).not.toBeChecked()
     expect(port2CorePort).toBeDisabled()
   })
+
+  it('display reminder when port type changed when SD-LAN is running', async () => {
+    mockServer.use(
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => {
+          mockedGetSdLanReq()
+          return res(ctx.json({ data: mockedEdgeSdLanDataList }))
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <EdgePortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        }
+      })
+    await waitFor(() => {
+      expect(mockedGetSdLanReq).toBeCalled()
+    })
+    await userEvent.click(await screen.findByRole('combobox', { name: 'Port Type' }))
+    await userEvent.click(await screen.findByText('LAN'))
+    const dialog = await screen.findByRole('dialog')
+    await within(dialog).findByText(/Please make sure that you are choosing the correct port type/i)
+    await screen.findByRole('textbox', { name: 'IP Address' })
+    screen.getByRole('textbox', { name: 'Subnet Mask' })
+  })
+
   // eslint-disable-next-line max-len
   it('should allow user config another core port when core port is missing from SD-LAN', async () => {
     const emptyCorePortConfig = _.cloneDeep(mockEdgePortConfigWithStatusIp)

@@ -1,10 +1,10 @@
 import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
-import { Button, Card, Loader, PageHeader, SummaryCard }                      from '@acx-ui/components'
-import { Features }                                                           from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                              from '@acx-ui/rc/components'
-import { useGetTunnelProfileByIdQuery, useGetTunnelProfileViewDataListQuery } from '@acx-ui/rc/services'
+import { Button, Card, Loader, PageHeader, SummaryCard } from '@acx-ui/components'
+import { Features }                                      from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                         from '@acx-ui/rc/components'
+import { useGetTunnelProfileViewDataListQuery }          from '@acx-ui/rc/services'
 import {
   MtuTypeEnum,
   PolicyOperation,
@@ -45,12 +45,6 @@ const TunnelProfileDetail = () => {
     }
   )
 
-  // TODO: should be removed when `type` data is ready from viewmodel
-  const { data: profileData } = useGetTunnelProfileByIdQuery(
-    { params: { id: params.policyId } },
-    { skip: !isEdgeSdLanReady }
-  )
-
   const isDefaultTunnelProfile = tunnelProfileData.id === params.tenantId
 
   const tunnelInfo = [
@@ -84,7 +78,7 @@ const TunnelProfileDetail = () => {
     ...(isEdgeSdLanReady ? [{
       title: $t({ defaultMessage: 'Tunnel Type' }),
       content: () => {
-        return getTunnelTypeString($t, profileData?.type!)
+        return getTunnelTypeString($t, tunnelProfileData.type)
       }
     }] : [])
   ]
