@@ -40,7 +40,7 @@ export const EdgeSubInterfacesTab = (props: EdgeSubInterfacesTabProps) => {
       ...normalPorts,
       ...lags.map(item => ({
         title: item.name,
-        id: item.lagId,
+        id: item.lagId.toString(),
         mac: item.mac
       }))
     ]

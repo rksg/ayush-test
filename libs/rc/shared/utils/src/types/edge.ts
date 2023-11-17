@@ -1,7 +1,7 @@
 import type { TimeStamp } from '@acx-ui/types'
 
-import { FirmwareCategory, SkippedVersion }                                                                                   from '..'
-import { EdgeIpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, EdgeStatusSeverityEnum } from '../models/EdgeEnum'
+import { FirmwareCategory, SkippedVersion }                                                                                                        from '..'
+import { EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, EdgeStatusSeverityEnum } from '../models/EdgeEnum'
 
 export const PRODUCT_CODE_VIRTUAL_EDGE = '96'
 
@@ -85,6 +85,7 @@ export interface EdgePort {
 
 export interface EdgePortWithStatus extends EdgePort {
   statusIp: string
+  isLagPort?: boolean
 }
 
 export interface EdgePortConfig {
@@ -288,10 +289,9 @@ export enum EdgeTroubleshootingType {
 export interface EdgeLagMemberStatus {
   portId: string
   name: string
-  lacpState: string
-  lacpTimeout: EdgeLagTimeoutEnum
-  lacpRxCount: number
-  lacpTxCount: number
+  state: string
+  rxCount: number
+  txCount: number
   systemId: string
   key: string
   peerSystemId: string
@@ -299,7 +299,7 @@ export interface EdgeLagMemberStatus {
 }
 
 export interface EdgeLagStatus {
-  lagId: string
+  lagId: number
   tenantId: string
   serialNumber: string
   name: string
@@ -308,6 +308,7 @@ export interface EdgeLagStatus {
   adminStatus: string
   portType: EdgePortTypeEnum
   lagType: EdgeLagTypeEnum
+  lacpTimeout: EdgeLagTimeoutEnum
   lagMembers: EdgeLagMemberStatus[]
   ipMode: EdgeIpModeEnum
   mac: string
@@ -315,4 +316,24 @@ export interface EdgeLagStatus {
   ip: string
   subnet: string
   isCorePort: string
+}
+
+export interface EdgeLag {
+    id: number,
+    description: string
+    lagType: EdgeLagTypeEnum
+    lacpMode: EdgeLagLacpModeEnum
+    lacpTimeout: EdgeLagTimeoutEnum
+    lagMembers: {
+        portMac: string
+        portEnabled: boolean
+    }[]
+    portType: EdgePortTypeEnum
+    ipMode: EdgeIpModeEnum
+    ip: string
+    subnet: string
+    gateway: string
+    corePortEnabled: boolean
+    natEnabled: boolean
+    lagEnabled: boolean
 }
