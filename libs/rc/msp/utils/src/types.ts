@@ -176,6 +176,7 @@ export interface MspEntitlementSummary {
   expirationDate: string;
   remainingDays: number;
   remainingLicenses: number;
+  trial: boolean;
 }
 
 export interface NewMspEntitlementSummary {
