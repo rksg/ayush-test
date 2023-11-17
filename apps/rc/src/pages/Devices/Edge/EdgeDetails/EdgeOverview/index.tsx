@@ -99,7 +99,7 @@ export const EdgeOverview = () => {
       'ip',
       'ipMode'
     ],
-    sortField: 'name',
+    sortField: 'lagId',
     sortOrder: 'ASC'
   }
 
