@@ -84,7 +84,7 @@ describe.only('Search Results', () => {
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const link = screen.getByText('CDC_BB_TEST')
     const href = link.getAttribute('href')
-    expect(href).toBe('/undefined/t/zones/Public-vSZ-2/CDC_BB_TEST/assurance')
+    expect(href).toBe('/ai/zones/Public-vSZ-2/CDC_BB_TEST/assurance')
   })
   it('should handle isZonesPageEnabled feature flag correctly when false', async () => {
     mockGraphqlQuery(dataApiSearchURL, 'Search', {

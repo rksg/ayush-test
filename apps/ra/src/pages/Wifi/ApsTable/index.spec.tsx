@@ -1,4 +1,4 @@
-import { Provider, dataApiSearchURL, dataApiURL } from '@acx-ui/store'
+import { Provider, dataApiURL } from '@acx-ui/store'
 import {
   mockGraphqlQuery,
   render,
@@ -6,12 +6,10 @@ import {
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-import { zonesWiseSearchList } from './services.spec'
 
 import { APList } from '.'
-
-describe('AP List Table', () => {
-  const apList = {
+const apList = {
+  network: {
     search: {
       aps: [
         {
@@ -115,9 +113,11 @@ describe('AP List Table', () => {
       ]
     }
   }
+}
 
+describe('AP List Table', () => {
   it('should render the ap table correctly', async () => {
-    mockGraphqlQuery(dataApiSearchURL, 'Search', {
+    mockGraphqlQuery(dataApiURL, 'Network', {
       data: apList
     })
 
@@ -132,12 +132,12 @@ describe('Zone wise AP List Table', () => {
 
   it('should render the ap table correctly for Zone wise APs', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', {
-      data: zonesWiseSearchList
+      data: apList
     })
-    render(<APList queryParamsForZone={{ searchString: 'test', path: [] }} />,
+    render(<APList queryParamsForZone={{ path: [] }} />,
       { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(screen.getByText('C8:A6:08:15:43:B0')).toBeVisible()
+    expect(screen.getByText('90:3A:72:24:D0:40')).toBeVisible()
   })
 
 })
