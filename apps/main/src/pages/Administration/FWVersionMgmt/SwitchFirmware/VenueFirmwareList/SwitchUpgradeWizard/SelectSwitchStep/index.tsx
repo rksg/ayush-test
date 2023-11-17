@@ -5,12 +5,13 @@ import _                  from 'lodash'
 import { useIntl }        from 'react-intl'
 
 import {
+  Loader,
   Table,
   TableProps,
   cssStr,
   useStepFormContext
 } from '@acx-ui/components'
-import { SearchOutlined }             from '@acx-ui/icons'
+import { ArrowExpand, ArrowCollapse, SearchOutlined } from '@acx-ui/icons'
 import {
   useLazyGetSwitchFirmwareListQuery
 } from '@acx-ui/rc/services'
@@ -20,6 +21,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
+import { noDataDisplay }  from '@acx-ui/utils'
 
 import { SwitchFirmwareWizardType } from '..'
 import {
@@ -27,11 +29,13 @@ import {
   getSwitchNextScheduleTplTooltip,
   parseSwitchVersion
 } from '../../../../FirmwareUtils'
-import * as UI           from '../../styledComponents'
+import * as UI                      from '../../styledComponents'
 import {
   getHightlightSearch,
+  getSwitchFirmwareList,
   getSwitchNextScheduleTpl,
-  getSwitchScheduleTpl
+  getSwitchScheduleTpl,
+  getSwitchVenueAvailableVersions
 } from '../../switch.upgrade.util'
 
 function useColumns () {
@@ -42,6 +46,7 @@ function useColumns () {
       title: intl.$t({ defaultMessage: 'Venue' }),
       key: 'name',
       dataIndex: 'name',
+      width: 150,
       defaultSortOrder: 'ascend',
       render: function (value) {
         return <div style={{ fontWeight: cssStr('--acx-subtitle-4-font-weight') }} > {value}</div >
@@ -49,37 +54,30 @@ function useColumns () {
     }, {
       title: intl.$t({ defaultMessage: 'Model' }),
       key: 'Model',
+      width: 100,
       dataIndex: 'Model'
     }, {
       title: intl.$t({ defaultMessage: 'Current Firmware' }),
       key: 'version',
       dataIndex: 'version',
+      width: 150,
       render: function (_, row) {
-        let versionList = []
-        if (row.switchFirmwareVersion?.id) {
-          versionList.push(parseSwitchVersion(row.switchFirmwareVersion.id))
-        }
-        if (row.switchFirmwareVersionAboveTen?.id) {
-          versionList.push(parseSwitchVersion(row.switchFirmwareVersionAboveTen.id))
-        }
-        return versionList.length > 0 ? versionList.join(', ') : '--'
+        let versionList = getSwitchFirmwareList(row)
+        return versionList.length > 0 ? versionList.join(', ') : noDataDisplay
       }
     }, {
       title: intl.$t({ defaultMessage: 'Available Firmware' }),
       key: 'availableVersions',
       dataIndex: 'availableVersions',
+      width: 150,
       render: function (_, row) {
-        const availableVersions = row.availableVersions
-        if (availableVersions.length === 0) {
-          return '--'
-        } else {
-          return availableVersions.map(version => parseSwitchVersion(version.id)).join(',')
-        }
+        return getSwitchVenueAvailableVersions(row)
       }
     }, {
       title: intl.$t({ defaultMessage: 'Scheduling' }),
       key: 'nextSchedule',
       dataIndex: 'nextSchedule',
+      width: 200,
       render: function (_, row) {
         return <Tooltip
           title={getSwitchNextScheduleTplTooltip(row) ||
@@ -105,13 +103,14 @@ export const useDefaultVenuePayload = (): RequestPayload => {
 
 type SelectSwitchStepProps = {
   data: FirmwareSwitchVenue[],
-  wizardtype?: SwitchFirmwareWizardType
+  wizardtype?: SwitchFirmwareWizardType,
+  setShowSubTitle: (visible: boolean) => void
 }
 
 export const SelectSwitchStep = (
-  { data }: SelectSwitchStepProps) => {
+  { data, setShowSubTitle }: SelectSwitchStepProps) => {
 
-  const { form } = useStepFormContext()
+  const { form, current } = useStepFormContext()
   const columns = useColumns()
   const intl = useIntl()
   const { tenantId } = useParams()
@@ -130,13 +129,19 @@ export const SelectSwitchStep = (
       selectedData: SwitchFirmware[]
     }
   })
+  const [isLoading, setIsLoading] = useState(false)
   const totalSwitchCount = data.reduce((total, venue) => total + venue.switchCount, 0)
+
+  useEffect(()=>{
+    setShowSubTitle(true)
+  }, [current])
 
   const switchColumns: TableProps<SwitchFirmware>['columns'] = [
     {
       title: intl.$t({ defaultMessage: 'Switch' }),
       key: 'switchName',
       dataIndex: 'switchName',
+      width: 150,
       defaultSortOrder: 'ascend',
       render: function (_, row) {
         const stackLabel = row.isStack ? intl.$t({ defaultMessage: '(Stack)' }) : ''
@@ -146,6 +151,7 @@ export const SelectSwitchStep = (
       title: intl.$t({ defaultMessage: 'Model' }),
       key: 'model',
       dataIndex: 'model',
+      width: 100,
       render: function (_, row) {
         return getHightlightSearch(row.model, searchText)
       }
@@ -153,29 +159,28 @@ export const SelectSwitchStep = (
       title: intl.$t({ defaultMessage: 'Current Firmware' }),
       key: 'currentFirmware',
       dataIndex: 'currentFirmware',
+      width: 150,
       filterMultiple: false,
       render: function (_, row) {
-        if (row.currentFirmware) {
-          return parseSwitchVersion(row.currentFirmware)
-        } else {
-          return '--'
-        }
+        return row.currentFirmware ? parseSwitchVersion(row.currentFirmware) : noDataDisplay
       }
     }, {
       title: intl.$t({ defaultMessage: 'Available Firmware' }),
       key: 'availableVersion',
       dataIndex: 'availableVersion',
+      width: 150,
       render: function (_, row) {
-        if (row.availableVersion?.id) {
-          return parseSwitchVersion(row.availableVersion.id)
-        } else {
-          return '--'
-        }
+        const currentVersion = row.currentFirmware ?
+          parseSwitchVersion(row.currentFirmware) : noDataDisplay
+        const availableVersion = row.availableVersion?.id ?
+          parseSwitchVersion(row.availableVersion.id) : noDataDisplay
+        return currentVersion === availableVersion ? noDataDisplay : availableVersion
       }
     }, {
       title: intl.$t({ defaultMessage: 'Scheduling' }),
       key: 'switchNextSchedule',
-      dataIndex: 'model',
+      dataIndex: 'switchNextSchedule',
+      width: 200,
       render: function (_, row) {
         return <Tooltip
           title={getSwitchScheduleTpl(row) ||
@@ -194,6 +199,7 @@ export const SelectSwitchStep = (
     if (_.isEmpty(nestedData[record.id]?.initialData) ||
       (record.switchCount + record.aboveTenSwitchCount)
       !== nestedData[record.id]?.initialData.length) {
+      setIsLoading(true)
       const switchListPayload = {
         venueIdList: [record.id]
       }
@@ -218,6 +224,7 @@ export const SelectSwitchStep = (
           selectedData: SwitchFirmware[]
         }
       })
+      setIsLoading(false)
 
       if (hasSelectedVenue && Array.isArray(switchList)) {
         setSelectedSwitchRowKeys({
@@ -254,12 +261,14 @@ export const SelectSwitchStep = (
       tableAlertRender={false}
       showHeader={false}
       expandable={{
+        // columnWidth: '60px',
         expandedRowRender: () => { return <></> },
         rowExpandable: () => false
       }}
       rowKey='switchId'
       rowSelection={{
         type: 'checkbox',
+        // columnWidth: '30px',
         selectedRowKeys: selectedSwitchRowKeys[record.id],
         onChange: (selectedKeys) => {
           const currentSwitchList = nestedData[record.id]?.initialData
@@ -478,86 +487,116 @@ export const SelectSwitchStep = (
         /></div>}
 
       {
-        _.isEmpty(searchText) && <UI.ExpanderTableWrapper>
-          <Table
-            columns={columns}
-            enableResizableColumn={false}
-            type={'tall'}
-            dataSource={data}
-            expandable={{
-              onExpand: handleExpand,
-              expandedRowRender: expandedRowRenderFunc,
-              rowExpandable: record =>
-                (record?.switchCount + record?.aboveTenSwitchCount > 0) ?? false
-            }}
-            enableApiFilter={true}
-            rowKey='id'
-            rowSelection={{
-              type: 'checkbox',
-              selectedRowKeys: selectedVenueRowKeys,
-              getCheckboxProps: (record) => {
-                return {
-                  indeterminate: isIndeterminate(record),
-                  name: record.name
-                }
-              },
-              onChange: (selectedKeys) => {
-                const addedVenue = _.difference(selectedKeys, selectedVenueRowKeys)
-                const deletedVenue = _.difference(selectedVenueRowKeys, selectedKeys)
-                if (addedVenue.length > 0) {
-                  let newNestedData = nestedData
-                  let newSelectedSwitchRowKeys = selectedSwitchRowKeys
+        _.isEmpty(searchText) && <Loader states={[{ isFetching: isLoading, isLoading: false }]}>
+          <UI.ExpanderTableWrapper>
+            <Table
+              columns={columns}
+              enableResizableColumn={false}
+              type={'tall'}
+              dataSource={data}
+              expandable={{
+                // columnWidth: '30px',
+                onExpand: handleExpand,
+                expandIcon: ({ expanded, onExpand, record }) => {
+                  if ((record?.switchCount + record?.aboveTenSwitchCount > 0)) {
+                    return expanded ? (
+                      <ArrowCollapse
+                        style={{ verticalAlign: 'bottom' }}
+                        data-testid='arrow-collapse'
+                        onClick={
+                          (e) => {
+                            e.stopPropagation()
+                            onExpand(record, e as unknown as React.MouseEvent<HTMLElement>)
+                          }} />
+                    ) : (
+                      <ArrowExpand
+                        style={{ verticalAlign: 'bottom' }}
+                        data-testid='arrow-expand'
+                        onClick={
+                          (e) => {
+                            e.stopPropagation()
+                            onExpand(record, e as unknown as React.MouseEvent<HTMLElement>)
+                          }} />
+                    )
+                  } else {
+                    return <></>
+                  }
+                },
+                expandedRowRender: expandedRowRenderFunc,
+                rowExpandable: record =>
+                  (record?.switchCount + record?.aboveTenSwitchCount > 0) ?? false
+              }}
+              enableApiFilter={true}
+              rowKey='id'
+              rowSelection={{
+                type: 'checkbox',
+                // columnWidth: '30px',
+                selectedRowKeys: selectedVenueRowKeys,
+                getCheckboxProps: (record) => {
+                  return {
+                    indeterminate: isIndeterminate(record),
+                    name: record.name
+                  }
+                },
+                onChange: (selectedKeys) => {
+                  const addedVenue = _.difference(selectedKeys, selectedVenueRowKeys)
+                  const deletedVenue = _.difference(selectedVenueRowKeys, selectedKeys)
+                  if (addedVenue.length > 0) {
+                    let newNestedData = nestedData
+                    let newSelectedSwitchRowKeys = selectedSwitchRowKeys
 
-                  addedVenue.forEach(async (venue) => {
+                    addedVenue.forEach(async (venue) => {
 
-                    let initialData = nestedData[venue]?.initialData ?? []
-                    const row = data.filter(v => v.id === venue)
-                    if (_.isEmpty(initialData) &&
+                      let initialData = nestedData[venue]?.initialData ?? []
+                      const row = data.filter(v => v.id === venue)
+                      if (_.isEmpty(initialData) &&
                       (row[0]?.switchCount > 0 || row[0]?.aboveTenSwitchCount > 0)) {
-                      const switchListPayload = {
-                        venueIdList: [venue]
+                        const switchListPayload = {
+                          venueIdList: [venue]
+                        }
+                        const switchList = (await getSwitchList({
+                          params: { tenantId: tenantId }, payload: switchListPayload
+                        }, false)).data?.data
+                        if (switchList) {
+                          initialData = switchList
+                        }
                       }
-                      const switchList = (await getSwitchList({
-                        params: { tenantId: tenantId }, payload: switchListPayload
-                      }, false)).data?.data
-                      if (switchList) {
-                        initialData = switchList
+
+                      const selectedAllSwitchList = initialData
+                      const selectedAllSwitchIds =
+                        selectedAllSwitchList.map(s => s.switchId) as Key[]
+                      newNestedData[venue] = {
+                        initialData: selectedAllSwitchList,
+                        selectedData: selectedAllSwitchList
                       }
-                    }
 
-                    const selectedAllSwitchList = initialData
-                    const selectedAllSwitchIds = selectedAllSwitchList.map(s => s.switchId) as Key[]
-                    newNestedData[venue] = {
-                      initialData: selectedAllSwitchList,
-                      selectedData: selectedAllSwitchList
-                    }
+                      newSelectedSwitchRowKeys[venue] = selectedAllSwitchIds
+                    })
 
-                    newSelectedSwitchRowKeys[venue] = selectedAllSwitchIds
-                  })
+                    setNestedData(newNestedData)
+                    setSelectedSwitchRowKeys(newSelectedSwitchRowKeys)
 
-                  setNestedData(newNestedData)
-                  setSelectedSwitchRowKeys(newSelectedSwitchRowKeys)
+                  } else if (deletedVenue.length > 0) {
+                    let newNestedData = nestedData
+                    let newSelectedSwitchRowKeys = selectedSwitchRowKeys
 
-                } else if (deletedVenue.length > 0) {
-                  let newNestedData = nestedData
-                  let newSelectedSwitchRowKeys = selectedSwitchRowKeys
+                    deletedVenue.forEach((venue) => {
+                      newNestedData[venue] = {
+                        initialData: nestedData[venue]?.initialData || [],
+                        selectedData: []
+                      }
+                      newSelectedSwitchRowKeys[venue] = []
+                    })
+                    setNestedData(newNestedData)
+                    setSelectedSwitchRowKeys(newSelectedSwitchRowKeys)
+                  }
 
-                  deletedVenue.forEach((venue) => {
-                    newNestedData[venue] = {
-                      initialData: nestedData[venue]?.initialData || [],
-                      selectedData: []
-                    }
-                    newSelectedSwitchRowKeys[venue] = []
-                  })
-                  setNestedData(newNestedData)
-                  setSelectedSwitchRowKeys(newSelectedSwitchRowKeys)
+                  setSelectedVenueRowKeys(selectedKeys)
+                  form.validateFields()
                 }
-
-                setSelectedVenueRowKeys(selectedKeys)
-                form.validateFields()
-              }
-            }}
-          /></UI.ExpanderTableWrapper>}
+              }}
+            /></UI.ExpanderTableWrapper>
+        </Loader>}
     </>
   )
 }
