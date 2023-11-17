@@ -63,7 +63,7 @@ export enum EdgeLagTypeEnum {
   LACP = 'LACP'
 }
 
-export enum EdgeLagModeEnum {
+export enum EdgeLagLacpModeEnum {
   ACTIVE = 'ACTIVE',
   PASSIVE = 'PASSIVE'
 }
