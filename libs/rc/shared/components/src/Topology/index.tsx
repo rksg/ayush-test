@@ -514,7 +514,7 @@ export function TopologyGraph (props:{ venueId?: string,
       const targetNode = topologyData.nodes.filter(item => item.id === edge.target.data.id)[0]
       const selectedEdge = topologyData.edges.filter(
         item => item.from === edge.source.data.id && item.to === edge.target.data.id)[0]
-      if (edge.from === 'cloud_id')
+      if (edge.source.data.id === 'Cloud')
         return
       setTooltipSourceNode(sourceNode)
       setTooltipTargetNode(targetNode)
