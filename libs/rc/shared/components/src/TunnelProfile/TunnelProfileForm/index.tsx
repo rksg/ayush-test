@@ -48,7 +48,7 @@ async function validateAgeTimeValue (value: number, ageTimeUnit: string) {
 
 export interface TunnelProfileFormType extends TunnelProfile {
   ageTimeUnit? : string
-  disableTunnelType?: boolean
+  disabledFields?: string[]
 }
 
 interface TunnelProfileFormProps {
@@ -61,7 +61,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const ageTimeUnit = useWatch<AgeTimeUnit>('ageTimeUnit')
   const mtuType = useWatch('mtuType')
-  const disableTunnelType = form.getFieldValue('disableTunnelType')
+  const disabledFields = form.getFieldValue('disabledFields')
   const { $t } = useIntl()
   const tunnelTypeOptions = getTunnelTypeOptions($t)
 
@@ -87,7 +87,8 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
             { max: 32 },
             { validator: (_, value) => servicePolicyNameRegExp(value) }
           ]}
-          children={<Input disabled={isDefaultTunnelProfile}/>}
+          children={<Input
+            disabled={isDefaultTunnelProfile || !!disabledFields?.includes('name')}/>}
           validateFirst
         />
       </Col>
@@ -110,7 +111,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
           }
           initialValue={MtuTypeEnum.AUTO}
           children={
-            <Radio.Group disabled={isDefaultTunnelProfile}>
+            <Radio.Group disabled={isDefaultTunnelProfile || !!disabledFields?.includes('mtuType')}>
               <Space direction='vertical'>
                 <Radio value={MtuTypeEnum.AUTO}>
                   {$t({ defaultMessage: 'Auto' })}
@@ -136,7 +137,8 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
                               max: 1450
                             }
                           ]}
-                          children={<InputNumber />}
+                          children={<InputNumber
+                            disabled={!!disabledFields?.includes('mtuSize')} />}
                           validateFirst
                           noStyle
                         />
@@ -156,7 +158,9 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
           <Form.Item
             name='forceFragmentation'
             valuePropName='checked'
-            children={<Switch disabled={isDefaultTunnelProfile}/>}
+            children={<Switch
+              // eslint-disable-next-line max-len
+              disabled={isDefaultTunnelProfile || !!disabledFields?.includes('forceFragmentation')} />}
           />
         </StepsFormLegacy.FieldLabel>
       </Col>
@@ -172,18 +176,20 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
                 { required: true },
                 { validator: (_, value) => validateAgeTimeValue(value, ageTimeUnit) }
               ]}
-              children={<InputNumber disabled={isDefaultTunnelProfile}/>}
+              children={<InputNumber
+                disabled={isDefaultTunnelProfile || !!disabledFields?.includes('ageTimeMinutes')} />
+              }
               validateFirst
               noStyle
               hasFeedback
             />
             <Form.Item
               name='ageTimeUnit'
-              initialValue={'minutes'}
+              initialValue={AgeTimeUnit.MINUTES}
               children={
                 <Select
                   options={ageTimeOptions}
-                  disabled={isDefaultTunnelProfile}
+                  disabled={isDefaultTunnelProfile || !!disabledFields?.includes('ageTimeUnit')}
                   onChange={handelAgeTimeUnitChange}
                 />
               }
@@ -200,7 +206,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
             tooltip={$t(MessageMapping.tunnel_type_help_msg)}
           >
             <Select
-              disabled={disableTunnelType}
+              disabled={isDefaultTunnelProfile || !!disabledFields?.includes('type')}
               options={tunnelTypeOptions}
             />
           </Form.Item>

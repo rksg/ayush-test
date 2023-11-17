@@ -109,6 +109,35 @@ describe('TunnelProfileForm', () => {
       .toBeVisible()
   })
 
+  it('should correctly lock fields', async () => {
+    const { result: formRef } = renderHook(() => {
+      const [form] = Form.useForm()
+      form.setFieldValue('disabledFields', [
+        'name',
+        'mtuType',
+        'mtuSize',
+        'forceFragmentation',
+        'ageTimeMinutes',
+        'ageTimeUnit',
+        'type'
+      ])
+      return form
+    })
+
+    render(
+      <Form form={formRef.current}>
+        <TunnelProfileForm />
+      </Form>
+    )
+
+    expect(await screen.findByRole('textbox', { name: 'Profile Name' })).toBeDisabled()
+    expect(screen.getByRole('radio', { name: 'Auto' })).toBeDisabled()
+    expect(screen.getByRole('radio', { name: 'Manual' })).toBeDisabled()
+    expect(screen.getByRole('switch', { name: 'Force Fragmentation' })).toBeDisabled()
+    expect(screen.getByRole('spinbutton')).toBeDisabled()
+    expect(screen.getByRole('combobox')).toBeDisabled()
+  })
+
   describe('when SD-LAN is ready', () => {
     beforeEach(() => {
       jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
@@ -138,7 +167,7 @@ describe('TunnelProfileForm', () => {
     it('should lock tunnel type when the disableTunnelType is true', async () => {
       const { result: formRef } = renderHook(() => {
         const [form] = Form.useForm()
-        form.setFieldValue('disableTunnelType', true)
+        form.setFieldValue('disabledFields', ['type'])
         return form
       })
 

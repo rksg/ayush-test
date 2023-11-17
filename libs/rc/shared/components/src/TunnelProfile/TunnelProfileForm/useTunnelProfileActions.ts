@@ -1,6 +1,7 @@
 import { cloneDeep } from 'lodash'
 
 import { useCreateTunnelProfileMutation, useUpdateTunnelProfileMutation } from '@acx-ui/rc/services'
+import { AgeTimeUnit }                                                    from '@acx-ui/rc/utils'
 
 import { TunnelProfileFormType } from '.'
 
@@ -10,14 +11,14 @@ export const useTunnelProfileActions = () => {
 
   const requestPreProcess = (data: TunnelProfileFormType) => {
     const result = cloneDeep(data)
-    if (data.ageTimeUnit === 'week') {
+    if (data.ageTimeUnit === AgeTimeUnit.WEEK) {
       result.ageTimeMinutes = data.ageTimeMinutes * 7 * 24 * 60
-    } else if (data.ageTimeUnit === 'days') {
+    } else if (data.ageTimeUnit === AgeTimeUnit.DAYS) {
       result.ageTimeMinutes = data.ageTimeMinutes * 24 * 60
     }
 
     // remove UI used data
-    delete result.disableTunnelType
+    delete result.disabledFields
     return result
   }
 

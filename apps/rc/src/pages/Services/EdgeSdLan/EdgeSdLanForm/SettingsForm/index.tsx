@@ -5,9 +5,9 @@ import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
 import { StepsForm, useStepFormContext }                                                                        from '@acx-ui/components'
-import { SpaceWrapper, TunnelProfileAddModal }                                                                  from '@acx-ui/rc/components'
+import { SpaceWrapper, TunnelProfileAddModal, TunnelProfileFormType }                                           from '@acx-ui/rc/components'
 import { useGetEdgeListQuery, useGetPortConfigQuery, useGetTunnelProfileViewDataListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
-import { EdgeSdLanSetting, EdgeStatusEnum, isDefaultTunnelProfile, servicePolicyNameRegExp, ServiceType }       from '@acx-ui/rc/utils'
+import { EdgeSdLanSetting, EdgeStatusEnum, isDefaultTunnelProfile, servicePolicyNameRegExp, TunnelTypeEnum }    from '@acx-ui/rc/utils'
 
 import diagram from '../../../../../assets/images/edge-sd-lan-diagrams/edge-sd-lan-early-access.png'
 
@@ -265,7 +265,11 @@ export const SettingsForm = () => {
                   </Form.Item>
                 </Col>
                 <Col span={3}>
-                  <TunnelProfileAddModal fromServiceType={ServiceType.EDGE_SD_LAN}/>
+                  <TunnelProfileAddModal
+                    defaultValues={{
+                      type: TunnelTypeEnum.VLAN_VXLAN,
+                      disabledFields: ['type'] } as TunnelProfileFormType
+                    } />
                 </Col>
               </Row>
             </Col>
