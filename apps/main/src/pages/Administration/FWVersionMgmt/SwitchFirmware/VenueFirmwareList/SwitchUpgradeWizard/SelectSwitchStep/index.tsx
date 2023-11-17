@@ -38,6 +38,14 @@ import {
   getSwitchVenueAvailableVersions
 } from '../../switch.upgrade.util'
 
+const getTooltipText = function (value: string, customDisplayValue?: string | React.ReactNode) {
+  return <Tooltip
+    title={value}
+    placement='bottom'>
+    <UI.WithTooltip>{customDisplayValue || value}</UI.WithTooltip>
+  </Tooltip>
+}
+
 function useColumns () {
   const intl = useIntl()
 
@@ -49,11 +57,9 @@ function useColumns () {
       width: 150,
       defaultSortOrder: 'ascend',
       render: function (_, row) {
-        return <Tooltip
-          title={row.name}
-          placement='bottom'>
+        const customDisplayValue =
           <div style={{ fontWeight: cssStr('--acx-subtitle-4-font-weight') }} > {row.name}</div >
-        </Tooltip>
+        return getTooltipText(row.name, customDisplayValue)
 
       }
     }, {
@@ -69,9 +75,7 @@ function useColumns () {
       render: function (_, row) {
         let versionList = getSwitchFirmwareList(row)
         const version = versionList.length > 0 ? versionList.join(', ') : noDataDisplay
-        return <Tooltip
-          title={version}
-          placement='bottom'>{version}</Tooltip>
+        return getTooltipText(version)
       }
     }, {
       title: intl.$t({ defaultMessage: 'Available Firmware' }),
@@ -80,9 +84,7 @@ function useColumns () {
       width: 150,
       render: function (_, row) {
         const version = getSwitchVenueAvailableVersions(row)
-        return <Tooltip
-          title={version}
-          placement='bottom'>{version}</Tooltip>
+        return getTooltipText(version)
       }
     }, {
       title: intl.$t({ defaultMessage: 'Scheduling' }),
@@ -90,12 +92,10 @@ function useColumns () {
       dataIndex: 'nextSchedule',
       width: 200,
       render: function (_, row) {
-        return <Tooltip
-          title={getSwitchNextScheduleTplTooltip(row) ||
-            intl.$t({ defaultMessage: 'Not scheduled' })}
-          placement='bottom'>
-          <UI.WithTooltip>{getNextScheduleTpl(intl, row)}</UI.WithTooltip>
-        </Tooltip>
+        const tooltip = getSwitchNextScheduleTplTooltip(row) ||
+          intl.$t({ defaultMessage: 'Not scheduled' })
+        const customDisplayValue = getNextScheduleTpl(intl, row)
+        return getTooltipText(tooltip, customDisplayValue)
       }
     }
   ]
@@ -156,11 +156,8 @@ export const SelectSwitchStep = (
       defaultSortOrder: 'ascend',
       render: function (_, row) {
         const stackLabel = row.isStack ? intl.$t({ defaultMessage: '(Stack)' }) : ''
-        return <Tooltip
-          title={`${row.switchName} ${stackLabel}`}
-          placement='bottom'>
-          {getHightlightSearch(`${row.switchName} ${stackLabel}`, searchText)}
-        </Tooltip>
+        return getTooltipText(`${row.switchName} ${stackLabel}`,
+          getHightlightSearch(`${row.switchName} ${stackLabel}`, searchText))
       }
     }, {
       title: intl.$t({ defaultMessage: 'Model' }),
@@ -179,9 +176,7 @@ export const SelectSwitchStep = (
       render: function (_, row) {
         const version = row.currentFirmware ?
           parseSwitchVersion(row.currentFirmware) : noDataDisplay
-        return <Tooltip
-          title={version}
-          placement='bottom'>{version}</Tooltip>
+        return getTooltipText(version)
       }
     }, {
       title: intl.$t({ defaultMessage: 'Available Firmware' }),
@@ -195,9 +190,7 @@ export const SelectSwitchStep = (
           parseSwitchVersion(row.availableVersion.id) : noDataDisplay
         const version = currentVersion === availableVersion ? noDataDisplay : availableVersion
 
-        return <Tooltip
-          title={version}
-          placement='bottom'>{version}</Tooltip>
+        return getTooltipText(version)
       }
     }, {
       title: intl.$t({ defaultMessage: 'Scheduling' }),
@@ -205,12 +198,10 @@ export const SelectSwitchStep = (
       dataIndex: 'switchNextSchedule',
       width: 200,
       render: function (_, row) {
-        return <Tooltip
-          title={getSwitchScheduleTpl(row) ||
-            intl.$t({ defaultMessage: 'Not scheduled' })}
-          placement='bottom'>
-          <UI.WithTooltip>{getSwitchNextScheduleTpl(intl, row)}</UI.WithTooltip>
-        </Tooltip>
+        const tooltip = getSwitchScheduleTpl(row) ||
+          intl.$t({ defaultMessage: 'Not scheduled' })
+        const customDisplayValue = getSwitchNextScheduleTpl(intl, row)
+        return getTooltipText(tooltip, customDisplayValue)
       }
     }
   ]
