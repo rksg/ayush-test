@@ -14,7 +14,7 @@ import {
 import {
   mockEdgeSubInterfacesStatus,
   edgePortsSetting,
-  mockEdgeLagList
+  mockEdgeLagStatusList
 } from '../../../__tests__/fixtures'
 
 import { EdgeSubInterfacesTab } from '.'
@@ -49,7 +49,7 @@ describe('Edge overview sub-interfaces tab', () => {
         <EdgeSubInterfacesTab
           isLoading={false}
           ports={edgePortsSetting}
-          lags={mockEdgeLagList.data as EdgeLagStatus[]}
+          lags={mockEdgeLagStatusList.data as EdgeLagStatus[]}
         />
       </Provider>, {
         route: { params }
@@ -71,7 +71,7 @@ describe('Edge overview sub-interfaces tab', () => {
         <EdgeSubInterfacesTab
           isLoading={false}
           ports={edgePortsSetting}
-          lags={mockEdgeLagList.data as EdgeLagStatus[]}
+          lags={mockEdgeLagStatusList.data as EdgeLagStatus[]}
         />
       </Provider>, {
         route: { params }
