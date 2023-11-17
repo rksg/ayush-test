@@ -19,7 +19,8 @@ import {
   StatusTrail,
   IconValue,
   StateType,
-  crrmStates
+  crrmStates,
+  CRRMStates
 } from './config'
 import { kpiHelper, RecommendationKpi } from './RecommendationDetails/services'
 
@@ -174,7 +175,7 @@ export const getCrrmOptimizedState = (state: StateType) => {
   return optimizedStates.includes(state)
     ? crrmStates.optimized
     : unknownStates.includes(state)
-      ? crrmStates[state]
+      ? crrmStates[state as CRRMStates]
       : crrmStates.nonOptimized
 }
 
@@ -261,6 +262,9 @@ export const api = recommendationApi.injectEndpoints({
           recommendations: response.recommendations.map(recommendation => {
             const { id, code, status, kpi_number_of_interfering_links } = recommendation
             const newId = id === 'unknown' ? uniqueId() : id
+            const getCode = code === 'unknown'
+              ? status as keyof typeof codes
+              : code as keyof typeof codes
             return {
               ...recommendation,
               id: newId,
@@ -269,9 +273,7 @@ export const api = recommendationApi.injectEndpoints({
                 status,
                 kpi_number_of_interfering_links!
               ),
-              summary: $t(codes[code === 'unknown'
-                ? status
-                : code as keyof typeof codes].summary)
+              summary: $t(codes[getCode].summary)
             } as unknown as CrrmListItem
           })
         }
@@ -355,20 +357,20 @@ export const api = recommendationApi.injectEndpoints({
           } = recommendation
           const newId = id === 'unknown' ? uniqueId() : id
           const statusEnum = status as StateType
+          const getCode = code === 'unknown'
+            ? status as keyof typeof codes
+            : code as keyof typeof codes
           return {
             ...recommendation,
             id: newId,
             scope: formattedPath(path, sliceValue),
             type: nodeTypes(sliceType as NodeType),
             priority: {
-              ...codes[code === 'unknown' ? statusEnum : code as keyof typeof codes].priority,
-              text: $t(codes[code === 'unknown'
-                ? statusEnum : code as keyof typeof codes].priority.label)
+              ...codes[getCode].priority,
+              text: $t(codes[getCode].priority.label)
             },
-            category:
-              $t(codes[code === 'unknown' ? statusEnum : code as keyof typeof codes].category),
-            summary:
-              $t(codes[code === 'unknown' ? statusEnum : code as keyof typeof codes].summary),
+            category: $t(codes[getCode].category),
+            summary: $t(codes[getCode].summary),
             status: $t(states[statusEnum].text),
             statusTooltip: getStatusTooltip(code, statusEnum, { ...metadata, updatedAt }),
             statusEnum,

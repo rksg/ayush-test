@@ -14,12 +14,12 @@ export function NoRecommendationData ({
 }: NoDataWrapperProps) {
   return (
     <UI.NoRecommendationDataWrapper style={{ marginTop: noData ? '50px': 0 }}>
-      <UI.TextWrapper style={{ paddingBottom: '15px' }}>
+      <UI.NoRecommendationTopWrapper>
         <UI.LargeGreenTickIcon />
-      </UI.TextWrapper>
-      <UI.NoDataTextWrapper>
+      </UI.NoRecommendationTopWrapper>
+      <UI.NoRecommendationBottomWrapper>
         {text}
-      </UI.NoDataTextWrapper>
+      </UI.NoRecommendationBottomWrapper>
     </UI.NoRecommendationDataWrapper>
   )
 }
@@ -31,12 +31,10 @@ export function NoAiOpsLicense ({ text }: NoDataWrapperProps) {
   return (
     <UI.NoAILicenseWrapper>
       <div>
-        <UI.TextWrapper style={{ paddingTop: '50px' }}><UI.NoDataIcon /></UI.TextWrapper>
+        <UI.NoLicenseTopWrapper><UI.NoDataIcon /></UI.NoLicenseTopWrapper>
         <UI.NoLicenseTextWrapper>{noLicenseText}</UI.NoLicenseTextWrapper>
       </div>
-      <UI.NoDataTextWrapper
-        style={{ paddingBottom: '100px' }}
-      >{text}</UI.NoDataTextWrapper>
+      <UI.NoLicenseBottomWrapper>{text}</UI.NoLicenseBottomWrapper>
       <UI.LicenseButton
         type='default'
         onClick={() => {

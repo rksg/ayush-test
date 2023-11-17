@@ -149,13 +149,8 @@ export function RecommendationTable (
       width: 130,
       dataIndex: 'updatedAt',
       key: 'updatedAt',
-      render: (_, value) => {
-        if (value.code === 'unknown') {
-          return <UnknownLink value={value} />
-        } else {
-          return <DateLink value={value}/>
-        }
-      },
+      render: (_, value) => (value.code === 'unknown')
+        ? <UnknownLink value={value} /> : <DateLink value={value}/>,
       sorter: { compare: sortProp('updatedAt', dateSort) },
       fixed: 'left'
     },

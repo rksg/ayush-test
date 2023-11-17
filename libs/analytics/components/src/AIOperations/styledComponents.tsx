@@ -10,14 +10,12 @@ export const GreenTickIcon = styled(CheckMarkCircleOutline)`
   margin-right: 5px;
   color: var(--acx-semantics-green-50);
 `
-
 export const RedCancelIcon = styled(CancelCircleOutlined)`
   height: 12px;
   width: 12px;
   margin-right: 5px;
   color: var(--acx-semantics-red-50);
 `
-
 export const OrangeRevertIcon = styled(Reload)`
   height: 12px;
   width: 12px;
@@ -25,6 +23,11 @@ export const OrangeRevertIcon = styled(Reload)`
   color: var(--acx-accents-orange-50);
 `
 
+export const TextWrapper = styled(Space)`
+  text-align: center;
+  justify-content: center;
+  width: 100%;
+`
 export const NoRecommendationDataWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -46,10 +49,32 @@ export const NoAILicenseWrapper = styled.div`
   top: 50%;
   transform: translate(-50%, -50%);
 `
-export const TextWrapper = styled(Space)`
+export const NoRecommendationTopWrapper = styled(Space)`
   text-align: center;
   justify-content: center;
   width: 100%;
+  padding-bottom: 15px;
+`
+export const NoRecommendationBottomWrapper = styled(TextWrapper)`
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-body-4-font-weight);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  color: 'var(--acx-neutrals-50)';
+`
+export const NoLicenseTopWrapper = styled(Space)`
+  text-align: center;
+  justify-content: center;
+  width: 100%;
+  padding-top: 50px;
+`
+export const NoLicenseBottomWrapper = styled(TextWrapper)`
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-body-4-font-weight);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  color: 'var(--acx-neutrals-50)';
+  padding-bottom: 100px;
 `
 export const NoLicenseTextWrapper = styled(Space)`
   text-align: center;
@@ -57,13 +82,6 @@ export const NoLicenseTextWrapper = styled(Space)`
   width: 100%;
   color: var(--acx-neutrals-50);
   padding-bottom: 20px;
-`
-export const NoDataTextWrapper = styled(TextWrapper)`
-  font-family: var(--acx-neutral-brand-font);
-  font-weight: var(--acx-body-4-font-weight);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
-  color: 'var(--acx-neutrals-50)';
 `
 export const LargeGreenTickIcon = styled(CheckMarkCircleSolid)`
   height: 48px;
