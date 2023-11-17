@@ -165,7 +165,7 @@ height: 100%;
       cursor: pointer;
       fill: none;
       stroke: var(--acx-semantics-green-50);
-      stroke-width: 0.5;
+      stroke-width: 0.7;
     }
 
     .d3-tree-good-links:hover {
@@ -176,7 +176,7 @@ height: 100%;
       fill: none;
       stroke: var(--acx-semantics-yellow-40);
       stroke-opacity: 1;
-      stroke-width: 1;
+      stroke-width: 0.7;
     }
 
     .d3-tree-degraded-links:hover {
@@ -187,7 +187,7 @@ height: 100%;
       fill: none;
       stroke: var(--acx-neutrals-50);
       stroke-opacity: 1;
-      stroke-width: 1;
+      stroke-width: 0.7;
     }
 
     .d3-tree-unknown-links:hover {

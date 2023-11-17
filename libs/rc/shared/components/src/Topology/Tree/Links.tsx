@@ -22,12 +22,14 @@ export interface Link {
 interface LinksProps {
   links: any[];
   linksInfo: any;
+  onClick: (node: Link, event: MouseEvent) => void;
 }
 
 // eslint-disable-next-line max-len
 
 export const Links: React.FC<LinksProps> = (props) => {
-  const { links, linksInfo } = props
+  const { links, linksInfo, onClick } = props
+  let delayHandler: NodeJS.Timeout
 
   const linkColor: { [key in ConnectionStatus]: string } = {
     [ConnectionStatus.Good]: 'd3-tree-good-links',
@@ -65,6 +67,16 @@ export const Links: React.FC<LinksProps> = (props) => {
       )
       return path.toString()
     }
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleMouseEnter = (link: any , event: any) => {
+    delayHandler = setTimeout(() => {
+      onClick(link, event)
+    }, 1000)
+  }
+
+  const handleMouseLeave = () => {
+    clearTimeout(delayHandler)
   }
 
   return (
@@ -115,7 +127,10 @@ export const Links: React.FC<LinksProps> = (props) => {
         return (
           <g key={i}
             transform={`translate(0, -${40 + 65 * link.source.depth})`}
-            className={linkClass}>
+            className={linkClass}
+            onMouseEnter={(e) => handleMouseEnter(link, e)}
+            onMouseLeave={handleMouseLeave}
+          >
             <path
               d={linkCustom(link, linksInfo)}
               markerStart={link.source.depth === 0 ? `url(#${markerClass})` : ''}

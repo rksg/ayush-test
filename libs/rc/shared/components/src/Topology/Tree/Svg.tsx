@@ -13,7 +13,7 @@ const NODE_SIZE: [number, number] = [45, 150]
 const SCALE_RANGE: [number, number] = [0.1, 5]
 
 const Svg: any = (props: any) => {
-  const { width, height, data, edges, nodeRender, onNodeClick } = props
+  const { width, height, data, edges, nodeRender, onNodeClick, onLinkClick } = props
   const refSvg = useRef<any>(null)
   const refMain = useRef<any>(null)
   const [treeData, setTreeData] = useState<any>(transformData(data)) // Replace 'any' with the actual data type
@@ -76,7 +76,7 @@ const Svg: any = (props: any) => {
       }
 
       setTranslate([width / 2, NODE_SIZE[1] / 2])
-      // setScale(scale)
+      setScale(scale)
       return { nodes, links }
     } else {
       return {
@@ -118,7 +118,7 @@ const Svg: any = (props: any) => {
     <svg ref={refSvg} style={{ width, height }}>
       <g className='d3-tree-main' ref={refMain}>
         <g transform={`translate(${translate}) scale(${scale})`}>
-          {nodes && <Links links={links as any} linksInfo={linksInfo} />}
+          {nodes && <Links links={links as any} linksInfo={linksInfo} onClick={onLinkClick} />}
           {links && (
             <Nodes
               nodes={nodes}

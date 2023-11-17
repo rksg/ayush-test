@@ -507,6 +507,24 @@ export function TopologyGraph (props:{ venueId?: string,
       , y: d?.nativeEvent.layerY })
   }, 100)
 
+
+  const debouncedHandleMouseEnterLink = debounce(function (edge, d){
+    if(topologyData?.edges){
+      const sourceNode = topologyData.nodes.filter(item => item.id === edge.source.data.id)[0]
+      const targetNode = topologyData.nodes.filter(item => item.id === edge.target.data.id)[0]
+      const selectedEdge = topologyData.edges.filter(
+        item => item.from === edge.source.data.id && item.to === edge.target.data.id)[0]
+      if (edge.from === 'cloud_id')
+        return
+      setTooltipSourceNode(sourceNode)
+      setTooltipTargetNode(targetNode)
+      setShowLinkTooltip(true)
+      setShowDeviceTooltip(false) // close device detail tooltip if already opened.
+      setTooltipEdge(selectedEdge)
+      setTooltipPosition({ x: d.offsetX, y: d.offsetY })
+    }
+  }, 100)
+
   function onNodeClick () {
     const svg = d3.select(graphRef.current)
     const allnodes = svg.selectAll('g.node')
@@ -691,6 +709,7 @@ export function TopologyGraph (props:{ venueId?: string,
                 )
               }}
               onNodeClick={debouncedHandleMouseEnter}
+              onLinkClick={debouncedHandleMouseEnterLink}
             />
           </UI.Topology>
         </>
