@@ -11,7 +11,9 @@ import {
 import { useLazyGetSwitchFirmwareListQuery } from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenue,
-  SwitchFirmware
+  SwitchFirmware,
+  defaultSort,
+  sortProp
 } from '@acx-ui/rc/utils'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
@@ -63,16 +65,22 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
       title: intl.$t({ defaultMessage: 'Switch' }),
       dataIndex: 'switchName',
       defaultSortOrder: 'ascend',
-      sorter: true,
+      sorter: { compare: sortProp('switchName', defaultSort) },
       fixed: 'left'
     }, {
       key: 'Scheduled for',
       title: intl.$t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
-      sorter: true,
+      sorter: false,
       render: function (_, row) {
         return (!enableSwitchScheduleTooltip(row)
-          ? getSwitchNextScheduleTpl(intl, row)
+          ? <Tooltip
+            title={intl.$t({ defaultMessage: 'Firmware update not applicable' })}
+            placement='bottom'>
+            <UI.WithTooltip>
+              {intl.$t({ defaultMessage: 'Firmware update not applicable' })}
+            </UI.WithTooltip>
+          </Tooltip>
           : <Tooltip title={
             <UI.ScheduleTooltipText>
               {getSwitchScheduleTpl(row)}

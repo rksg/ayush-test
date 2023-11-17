@@ -648,6 +648,8 @@ export function MspCustomers () {
 
   const IntegratorTable = () => {
     const [selEcTenantIds, setSelEcTenantIds] = useState([] as string[])
+    const [mspEcTenantList, setMspEcTenantList] = useState([] as string[])
+    const [mspEcAlarmList, setEcAlarmData] = useState({} as MspEcAlarmList)
     const [drawerScheduleFirmwareVisible, setDrawerScheduleFirmwareVisible] = useState(false)
 
     const tableQuery = useTableQuery({
@@ -657,6 +659,20 @@ export function MspCustomers () {
         searchTargetFields: integratorPayload.searchTargetFields as string[]
       }
     })
+
+    const alarmList = useGetMspEcAlarmListQuery(
+      { params, payload: { mspEcTenants: mspEcTenantList } },
+      { skip: !isSupportEcAlarmCount || mspEcTenantList.length === 0 })
+
+    useEffect(() => {
+      if (tableQuery?.data?.data) {
+        const ecList = tableQuery?.data.data.map(item => item.id)
+        setMspEcTenantList(ecList)
+      }
+      if (alarmList?.data) {
+        setEcAlarmData(alarmList?.data)
+      }
+    }, [tableQuery?.data?.data, alarmList?.data])
 
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
@@ -674,7 +690,7 @@ export function MspCustomers () {
         }
       }]
 
-    const columns = useColumns()
+    const columns = useColumns(mspEcAlarmList)
 
     return (
       <Loader states={[
