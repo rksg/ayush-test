@@ -63,7 +63,7 @@ export const LagsTab = (props: LagsTabProps) => {
       key: 'lagMembers',
       dataIndex: 'lagMembers',
       render: (_, row) => {
-        return row.lagMembers?.length
+        return row.lagMembers?.length ?? 0
       },
       align: 'center'
     },
@@ -135,7 +135,7 @@ export const LagsTab = (props: LagsTabProps) => {
   )
 }
 
-const expandedRowRender = (memberStatus: LagMemberTableType[]) => {
+const expandedRowRender = (memberStatus: LagMemberTableType[] = []) => {
 
   const { $t } = getIntl()
 
@@ -201,7 +201,7 @@ LagsTableDataType[] => {
   return data.map(item => ({
     ...item,
     key: item.lagId.toString(),
-    lagMembers: item.lagMembers.map(member => ({
+    lagMembers: item.lagMembers?.map(member => ({
       ...member,
       lacpTimeout: item.lacpTimeout
     }))
