@@ -35,7 +35,7 @@ function AIOperationsWidget ({
       recommendations: []
     } as AiOpsList
     : queryResults?.data
-  const noData = data?.recommendations?.length === 0
+  const noData = data?.recommendations.filter(i => i.code !== 'unknown').length === 0
   const aiOpsCount = data?.aiOpsCount
   const title = {
     title: $t({ defaultMessage: 'AI Operations' }),
@@ -60,20 +60,19 @@ function AIOperationsWidget ({
 
   return <Loader states={[queryResults]}>
     <Card title={title} onArrowClick={onArrowClick} subTitle={subtitle}>{
-      noData
-        ? <NoRecommendationData
-          noData={true}
-          text={$t({ defaultMessage:
-          `Your network is already running in an optimal configuration
-          and we dont have any AI Operations to recommend recently.`
-          })}
-        /> :
-        noLicense ? <NoAiOpsLicense
-          text={$t({ defaultMessage:
+      noLicense ? <NoAiOpsLicense
+        text={$t({ defaultMessage:
           `RUCKUS AI cannot analyse your zone due to inadequate licenses.
           Please ensure you have licenses fully applied for the zone for 
           AI Operations optimizations.`
-          })}/>
+        })}/>
+        : noData
+          ? <NoRecommendationData
+            noData={true}
+            text={$t({ defaultMessage:
+              `Your network is already running in an optimal configuration
+              and we dont have any AI Operations to recommend recently.`
+            })} />
           : <>
             {!checkNew ? <NoRecommendationData
               text={$t({ defaultMessage:
