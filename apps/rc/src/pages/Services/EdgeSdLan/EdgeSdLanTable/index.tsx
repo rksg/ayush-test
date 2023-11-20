@@ -195,7 +195,7 @@ const EdgeSdLanTable = () => {
       render: (__, row) =>
         <Row justify='center'>
           <EdgeServiceStatusLight
-            data={row.edgeAlarmSummary ? [row.edgeAlarmSummary] : undefined}
+            data={row.edgeAlarmSummary ? [row.edgeAlarmSummary] : []}
           />
         </Row>
     }

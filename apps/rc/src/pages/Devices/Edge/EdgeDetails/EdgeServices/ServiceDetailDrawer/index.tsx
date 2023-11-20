@@ -11,6 +11,7 @@ import { getEdgeServiceTypeString } from '../utils'
 import { DhcpDetails }                from './DhcpDetails'
 import { FirewallDetails }            from './FirewallDetails'
 import { NetworkSegmentationDetails } from './NetworkSegmentationDetails'
+import { SdLanDetails }               from './SdLanDetails'
 
 interface ServiceDetailDrawerProps {
   visible: boolean
@@ -90,6 +91,12 @@ const getServiceDetailUrl = (serviceType: EdgeServiceTypeEnum, servieId: string)
         oper: ServiceOperation.DETAIL,
         serviceId: servieId
       })
+    case EdgeServiceTypeEnum.SD_LAN:
+      return getServiceDetailsLink({
+        type: ServiceType.EDGE_SD_LAN,
+        oper: ServiceOperation.DETAIL,
+        serviceId: servieId
+      })
     default:
       return ''
   }
@@ -103,6 +110,8 @@ const getContentByType = (serviceData: EdgeService) => {
       return <FirewallDetails serviceData={serviceData} />
     case EdgeServiceTypeEnum.NETWORK_SEGMENTATION:
       return <NetworkSegmentationDetails serviceData={serviceData} />
+    case EdgeServiceTypeEnum.SD_LAN:
+      return <SdLanDetails serviceData={serviceData} />
     default:
       return
   }

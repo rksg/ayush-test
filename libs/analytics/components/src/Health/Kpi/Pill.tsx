@@ -68,7 +68,7 @@ type PillQueryProps = {
   apCount?: number
 }
 
-export const usePillQuery = ({ kpi, filters, timeWindow, threshold, apCount }: PillQueryProps) => {
+export const usePillQuery = ({ kpi, filters, timeWindow, threshold }: PillQueryProps) => {
   const { histogram } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const histogramQuery = healthApi.useKpiHistogramQuery({ ...filters, ...timeWindow, kpi }, {
     skip: !Boolean(histogram),
@@ -77,7 +77,7 @@ export const usePillQuery = ({ kpi, filters, timeWindow, threshold, apCount }: P
       data: data ? tranformHistResponse({ ...data!, kpi, threshold }) : { success: 0, total: 0 }
     })
   })
-  const timeseriesQuery = healthApi.useKpiTimeseriesQuery({ ...filters, kpi, apCount }, {
+  const timeseriesQuery = healthApi.useKpiTimeseriesQuery({ ...filters, kpi }, {
     skip: Boolean(histogram),
     selectFromResult: ({ data, ...rest }) => ({
       ...rest,
