@@ -1,13 +1,15 @@
-import { useContext, useEffect } from 'react'
+import { ReactNode, useContext, useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Tabs }                                          from '@acx-ui/components'
-import { useGetEdgePortsStatusListQuery, useGetPortConfigQuery } from '@acx-ui/rc/services'
-import { useNavigate, useParams, useTenantLink }                 from '@acx-ui/react-router-dom'
+import { Loader, Tabs }                                                                         from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                               from '@acx-ui/feature-toggle'
+import { useGetEdgeLagsStatusListQuery, useGetEdgePortsStatusListQuery, useGetPortConfigQuery } from '@acx-ui/rc/services'
+import { useNavigate, useParams, useTenantLink }                                                from '@acx-ui/react-router-dom'
 
 import { EdgeEditContext } from '..'
 
+import Lag          from './Lag'
 import PortsGeneral from './PortsGeneral'
 import SubInterface from './SubInterface'
 
@@ -15,6 +17,7 @@ const Ports = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const { activeSubTab, serialNumber, tenantId } = useParams()
+  const isEdgeLagEnabled = useIsSplitOn(Features.EDGE_LAG)
   const basePath = useTenantLink(`/devices/edge/${serialNumber}/edit/ports`)
   const { data: portDataResponse, isLoading: isPortDataLoading } = useGetPortConfigQuery({
     params: { serialNumber: serialNumber }
@@ -43,10 +46,20 @@ const Ports = () => {
     params: { serialNumber: serialNumber, tenantId: tenantId }, payload: portStatusPayload
   })
 
+  const { data: lagData, isLoading: isLagLoading } = useGetEdgeLagsStatusListQuery({
+    params: { serialNumber },
+    payload: {}
+  }, {
+    skip: !isEdgeLagEnabled
+  })
+
   const statusIpMap = Object.fromEntries((portStatusData || [])
     .map(status => [status.portId, status.ip]))
   const portDataWithStatusIp = portData.map((item) => {
-    return { ...item, statusIp: statusIpMap[item.id] }
+    const isLagPort = lagData?.data?.some(lag =>
+      lag.lagMembers?.some(lagMember =>
+        lagMember.portId === item.id)) ?? false
+    return { ...item, statusIp: statusIpMap[item.id], isLagPort }
   })
 
   const tabs = {
@@ -54,9 +67,25 @@ const Ports = () => {
       title: $t({ defaultMessage: 'Ports General' }),
       content: <PortsGeneral data={portDataWithStatusIp} />
     },
+    ...(
+      isEdgeLagEnabled ?
+        {
+          lag: {
+            title: $t({ defaultMessage: 'LAG' }),
+            content: <Lag
+              lagStatusList={lagData?.data || []}
+              isLoading={isLagLoading}
+              portList={portData}
+            />
+          }
+        } : {} as { title: string, content: ReactNode }
+    ),
     'sub-interface': {
       title: $t({ defaultMessage: 'Sub-Interface' }),
-      content: <SubInterface data={portDataWithStatusIp} />
+      content: <SubInterface
+        portData={portDataWithStatusIp}
+        lagData={lagData?.data || []}
+      />
     }
   }
 
@@ -82,7 +111,7 @@ const Ports = () => {
             key={key}
           >
             <Loader states={[{
-              isLoading: (isPortDataLoading || isPortStatusLoading),
+              isLoading: (isPortDataLoading || isPortStatusLoading || isLagLoading),
               isFetching: false }]}>
               {tabs[key as keyof typeof tabs].content}
             </Loader>

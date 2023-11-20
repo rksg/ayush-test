@@ -655,8 +655,8 @@ describe('MspCustomers', () => {
       expect(within(rows[index]).getByText(item.name)).toBeVisible()
     })
 
-    expect(screen.getByText('Integrator')).toBeVisible()
-    expect(screen.getByText('Installer')).toBeVisible()
+    expect(screen.getByText('Integrator Count')).toBeVisible()
+    expect(screen.getByText('Installer Count')).toBeVisible()
   })
   it('should open dialog when msp admin count link clicked', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {

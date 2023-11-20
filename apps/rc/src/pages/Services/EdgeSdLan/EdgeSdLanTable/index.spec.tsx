@@ -167,10 +167,10 @@ describe('SD-LAN Table', () => {
     expect(await screen.findByRole('tooltip'))
       .toHaveTextContent('')
   })
-  it('should display service health Unknown if alarm summary is undefined', async () => {
+  it('should display service health Good if alarm summary is undefined', async () => {
     const cfListNoAlarm = _.cloneDeep(mockedSdLanDataList)
     delete cfListNoAlarm[0].edgeAlarmSummary
-    cfListNoAlarm[0].name = 'sdLan_unknown_health'
+    cfListNoAlarm[0].name = 'sdLan_good_health'
     const mockedSdLanDataListReq = jest.fn()
 
     mockServer.use(
@@ -198,8 +198,8 @@ describe('SD-LAN Table', () => {
     })
 
     await screen.findByRole('columnheader', { name: 'SmartEdge' })
-    await screen.findByText(/sdLan_unknown_health/i)
+    await screen.findByText(/sdLan_good_health/i)
     // eslint-disable-next-line max-len
-    await screen.findByRole('row', { name: 'sdLan_unknown_health Sting-Venue-1 sting-vSE-b490 amyTunnel 1 Unknown' })
+    await screen.findByRole('row', { name: 'sdLan_good_health Sting-Venue-1 sting-vSE-b490 amyTunnel 1 Good' })
   })
 })

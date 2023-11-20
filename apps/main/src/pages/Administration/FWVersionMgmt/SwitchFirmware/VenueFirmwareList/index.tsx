@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from 'react'
 
 import { Tooltip, Typography } from 'antd'
@@ -26,8 +25,8 @@ import {
   TableQuery,
   sortProp,
   defaultSort,
-  SwitchFirmwareStatusType,
-  usePollingTableQuery
+  usePollingTableQuery,
+  SwitchFirmwareStatusType
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
@@ -41,10 +40,11 @@ import {
 } from '../../FirmwareUtils'
 import { PreferencesDialog } from '../../PreferencesDialog'
 
-import * as UI                                           from './styledComponents'
-import { SwitchScheduleDrawer }                          from './SwitchScheduleDrawer'
-import { SwitchFirmwareWizardType, SwitchUpgradeWizard } from './SwitchUpgradeWizard'
-import { VenueStatusDrawer }                             from './VenueStatusDrawer'
+import * as UI                                                                              from './styledComponents'
+import { getSwitchFirmwareList, getSwitchVenueAvailableVersions, sortAvailableVersionProp } from './switch.upgrade.util'
+import { SwitchScheduleDrawer }                                                             from './SwitchScheduleDrawer'
+import { SwitchFirmwareWizardType, SwitchUpgradeWizard }                                    from './SwitchUpgradeWizard'
+import { VenueStatusDrawer }                                                                from './VenueStatusDrawer'
 
 export const useDefaultVenuePayload = (): RequestPayload => {
   return {
@@ -97,6 +97,7 @@ export const VenueFirmwareTable = (
   const handleModalCancel = () => {
     setModelVisible(false)
   }
+
   const handleModalSubmit = async (payload: UpgradePreferences) => {
     try {
       await updateUpgradePreferences({ params, payload }).unwrap()
@@ -124,28 +125,17 @@ export const VenueFirmwareTable = (
       filterable: filterables ? filterables['version'] : false,
       filterMultiple: false,
       render: function (_, row) {
-        let versionList = []
-        if (row.switchFirmwareVersion?.id) {
-          versionList.push(parseSwitchVersion(row.switchFirmwareVersion.id))
-        }
-        if (row.switchFirmwareVersionAboveTen?.id) {
-          versionList.push(parseSwitchVersion(row.switchFirmwareVersionAboveTen.id))
-        }
+        let versionList = getSwitchFirmwareList(row)
         return versionList.length > 0 ? versionList.join(', ') : noDataDisplay
       }
     },
     {
       title: $t({ defaultMessage: 'Available Firmware' }),
-      sorter: { compare: sortProp('availableVersions.id', defaultSort) },
+      sorter: { compare: sortAvailableVersionProp(defaultSort) },
       key: 'availableVersions',
       dataIndex: 'availableVersions',
-      render: function (_, row) {
-        const availableVersions = row.availableVersions
-        if (!Array.isArray(availableVersions) || availableVersions.length === 0) {
-          return noDataDisplay
-        } else {
-          return availableVersions.map(version => parseSwitchVersion(version.id)).join(',')
-        }
+      render: function (__, row) {
+        return getSwitchVenueAvailableVersions(row)
       }
     },
     {
@@ -281,6 +271,9 @@ export const VenueFirmwareTable = (
         _.remove(filterVersions, (v: FirmwareVersion) => v.id === version)
         return filterVersions.length > 0
       })
+    },
+    disabled: (selectedRows) => {
+      return !hasAvailableSwitchFirmware(selectedRows)
     },
     onClick: (selectedRows) => {
       setSelectedVenueList(selectedRows)

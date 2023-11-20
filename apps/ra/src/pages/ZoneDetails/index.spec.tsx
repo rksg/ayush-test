@@ -1,6 +1,7 @@
 import { Provider }                  from '@acx-ui/store'
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
+
 import '@testing-library/react'
 import ZoneDetails from '.'
 
@@ -10,7 +11,18 @@ jest.mock('@acx-ui/analytics/components', () => {
     .map(key => [key, () => <div data-testid={`analytics-${key}`} title={key} />])
   return Object.fromEntries(sets)
 })
-
+jest.mock('../Wifi/ApsTable', () => {
+  return {
+    __esModule: true,
+    APList: () => <div data-testid='zoneWiseApList' />
+  }
+})
+jest.mock('../WifiNetworks/NetworksTable', () => {
+  return {
+    __esModule: true,
+    NetworkList: () => <div data-testid='zoneWiseNetworkList' />
+  }
+})
 describe('ZoneDetails', () => {
   it('should render correctly', async () => {
     const params = {
@@ -74,7 +86,23 @@ describe('ZoneDetails', () => {
       }
     })
     expect(await screen.findByText('zoneName')).toBeVisible()
-    expect(await screen.findByText('devices tab')).toBeVisible()
+    expect(await screen.findByTestId('zoneWiseApList')).toBeVisible()
+  })
+  it('should render networks tab correctly', async () => {
+    const params = {
+      systemName: 'systemName',
+      zoneName: 'zoneName',
+      activeTab: 'networks'
+    }
+    render(<ZoneDetails />, {
+      wrapper: Provider,
+      route: {
+        params,
+        path: '/ai/zones/:systemName/:zoneName/:activeTab'
+      }
+    })
+    expect(await screen.findByText('zoneName')).toBeVisible()
+    expect(await screen.findByTestId('zoneWiseNetworkList')).toBeVisible()
   })
   it('should render navigate tabs correctly', async () => {
     const params = {
@@ -92,7 +120,7 @@ describe('ZoneDetails', () => {
     expect(await screen.findByText('AI Analytics')).toBeVisible()
     const tab = await screen.findByText('Networks')
     fireEvent.click(tab)
-    expect(await screen.findByText('network tab')).toBeVisible()
+    expect(await screen.findByTestId('zoneWiseNetworkList')).toBeVisible()
   })
 })
 

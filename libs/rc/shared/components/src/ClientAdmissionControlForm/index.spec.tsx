@@ -39,7 +39,7 @@ describe('ClientAdmissionControlForm component', () => {
     const enable24gBtn = screen.getByTestId('client-admission-control-enable-'+type)
     expect(enable24gBtn).toBeVisible()
     expect(screen.queryByTestId('client-admission-control-min-client-count-'+type)).toBeVisible()
-    expect(screen.queryByTestId('client-admission-control-max-client-load-'+type)).toBeVisible()
+    expect(screen.queryByTestId('client-admission-control-max-radio-load-'+type)).toBeVisible()
     expect(screen.queryByTestId('client-admission-control-min-client-throughput-'+type))
       .toBeVisible()
   })
