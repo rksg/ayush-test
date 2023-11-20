@@ -234,13 +234,15 @@ export enum SwitchFwStatusEnum {
   FW_UPD_SYNCING_TO_REMOTE = 'FW_UPD_SYNCING_TO_REMOTE',
   FW_UPD_WRITING_TO_FLASH = 'FW_UPD_WRITING_TO_FLASH',
   FW_UPD_COMPLETE = 'FW_UPD_COMPLETE',
-  FW_UPD_FAIL = 'FW_UPD_FAIL'
+  FW_UPD_FAIL = 'FW_UPD_FAIL',
+  FW_UPD_PRE_DOWNLOAD_COMPLETE = 'FW_UPD_PRE_DOWNLOAD_COMPLETE'
 }
 export interface SwitchFirmwareStatus {
   switchId: string;
   switchName: string;
   status: SwitchFwStatusEnum;
   targetFirmware: string;
+  switchStatus: string;
 }
 
 export interface CurrentVersions {

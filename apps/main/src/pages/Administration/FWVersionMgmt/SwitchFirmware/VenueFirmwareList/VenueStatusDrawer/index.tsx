@@ -89,8 +89,14 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
               $t({ defaultMessage: 'Firmware Update - Writing To Flash' }),
             [SwitchFwStatusEnum.FW_UPD_COMPLETE]:
               $t({ defaultMessage: 'Firmware Update - Success' }),
+            [SwitchFwStatusEnum.FW_UPD_PRE_DOWNLOAD_COMPLETE]:
+              $t({ defaultMessage: 'Firmware Update - Pre-download Completed' }),
             [SwitchFwStatusEnum.FW_UPD_FAIL]:
               $t({ defaultMessage: 'Firmware Update - Failed' })
+          }
+
+          if (row.switchStatus === 'OFFLINE') {
+            return $t({ defaultMessage: 'Disconnected from cloud' })
           }
 
           if (row.status === SwitchFwStatusEnum.FW_UPD_FAIL) {
