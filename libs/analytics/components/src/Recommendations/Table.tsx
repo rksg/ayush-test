@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect } from 'react'
 
-import { Checkbox }               from 'antd'
+import { Checkbox, Switch }       from 'antd'
+import { uniqueId }               from 'lodash'
 import { useIntl, defineMessage } from 'react-intl'
 
 import {
@@ -9,17 +10,19 @@ import {
   dateSort,
   sortProp
 } from '@acx-ui/analytics/utils'
+import { getUserProfile }              from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Tooltip } from '@acx-ui/components'
 import { get }                         from '@acx-ui/config'
 import { DateFormatEnum, formatter }   from '@acx-ui/formatter'
 import { TenantLink, useParams }       from '@acx-ui/react-router-dom'
 import { noDataDisplay, PathFilter }   from '@acx-ui/utils'
 
-import { RecommendationActions }  from './RecommendationActions'
+import { RecommendationActions } from './RecommendationActions'
 import {
   useRecommendationListQuery,
   RecommendationListItem,
-  useMuteRecommendationMutation
+  useMuteRecommendationMutation,
+  useSetPreferenceMutation
 } from './services'
 import * as UI from './styledComponents'
 
@@ -51,9 +54,12 @@ export function RecommendationTable (
 ) {
   const intl = useIntl()
   const { $t } = intl
+  const { selectedTenants } = useParams()
+  const { userId } = getUserProfile()
 
   const [showMuted, setShowMuted] = useState<boolean>(false)
 
+  const [setPreference] = useSetPreferenceMutation()
   const [muteRecommendation] = useMuteRecommendationMutation()
   const [selectedRowData, setSelectedRowData] = useState<{
     id: string,
@@ -135,7 +141,11 @@ export function RecommendationTable (
       width: 250,
       dataIndex: 'summary',
       key: 'summary',
-      render: (_, value, __, highlightFn ) => <>{highlightFn(value.summary)}</>,
+      render: (_, value, __, highlightFn ) => {
+        // const fullOptimized = value.metadata.preference.fullOptimization
+        const fullOptimized = false
+        return <div style={{ color: fullOptimized ? '' : 'red' }}>{highlightFn(value.summary)}</div>
+      },
       sorter: { compare: sortProp('summary', defaultSort) },
       searchable: true
     },
@@ -184,7 +194,36 @@ export function RecommendationTable (
       align: 'left',
       className: 'actions-column',
       render: (_, value) => <RecommendationActions recommendation={value} />
-    }
+    },
+    ...(showCrrm ? [{
+      title: $t({ defaultMessage: 'Full Optimization' }),
+      key: uniqueId(),
+      dataIndex: 'id',
+      width: 120,
+      align: 'left',
+      tooltip: '',
+      render: (_, value) => {
+        const { id, status } = value
+        const disabled = status !== 'Applied' ? true : false
+        // check if preference is set? if no preference, set true, if there's preference, read and set it
+        // const checked = value.metadata.preference.fullOptimization
+        return <div>
+          <Switch
+            defaultChecked
+            // checked={checked ? checked : false}
+            disabled={disabled}
+            onChange={() => {
+              const { userId } = getUserProfile()
+              setPreference({ id, updatedAt: Date.now().toString() })
+              console.log('userId', userId)
+              console.log('selectedTenants', selectedTenants)
+              // set preference in recommendation_preference
+              // const preference = { fullOptimization: false/true }
+            }}
+          />
+        </div>
+      }
+    }] : []) as TableProps<RecommendationListItem>['columns']
   // eslint-disable-next-line react-hooks/exhaustive-deps
   ], [showCrrm]) // '$t' 'basePath' 'intl' are not changing
 

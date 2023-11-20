@@ -109,6 +109,19 @@ interface ScheduleResponse {
   }
 }
 
+interface PreferencePayload {
+  id: string
+  updatedAt: string
+}
+
+interface PreferenceResponse {
+  setPreference: {
+    errorCode: string;
+    errorMsg: string;
+    success: boolean;
+  }
+}
+
 type Metadata = {
   error?: {
     message?: string
@@ -425,6 +438,31 @@ export const api = recommendationApi.injectEndpoints({
         { type: 'Monitoring', id: 'RECOMMENDATION_CODE' },
         { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
       ]
+    }),
+    setPreference: build.mutation<PreferenceResponse, PreferencePayload>({ // testing api
+      query: (payload) => ({
+        document: gql`
+          mutation SetPreference(
+            $id: String,
+            $updatedAt: DateTime
+          ) {
+            setPreference(id: $id, updatedAt: $updatedAt) {
+              success
+              errorMsg
+              errorCode
+            }
+          }
+        `,
+        variables: {
+          id: payload.id,
+          updatedAt: payload.updatedAt
+        }
+      }),
+      invalidatesTags: [
+        { type: 'Monitoring', id: 'RECOMMENDATION_LIST' },
+        { type: 'Monitoring', id: 'RECOMMENDATION_CODE' },
+        { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
+      ]
     })
   })
 })
@@ -440,5 +478,6 @@ export const {
   useRecommendationListQuery,
   useMuteRecommendationMutation,
   useScheduleRecommendationMutation,
-  useCancelRecommendationMutation
+  useCancelRecommendationMutation,
+  useSetPreferenceMutation
 } = api
