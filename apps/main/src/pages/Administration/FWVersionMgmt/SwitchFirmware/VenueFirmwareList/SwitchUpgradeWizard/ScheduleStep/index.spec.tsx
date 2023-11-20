@@ -46,6 +46,7 @@ describe('ScheduleStep', () => {
       <Provider>
         <Form>
           <ScheduleStep
+            setShowSubTitle={jest.fn()}
             visible={true}
             availableVersions={availableVersions_hasInUse}
             nonIcx8200Count={2}
@@ -73,6 +74,7 @@ describe('ScheduleStep', () => {
       <Provider>
         <Form>
           <ScheduleStep
+            setShowSubTitle={jest.fn()}
             visible={true}
             availableVersions={availableVersions_hasInUse}
             nonIcx8200Count={2}
@@ -105,7 +107,7 @@ describe('ScheduleStep', () => {
     expect(release09010f).toBeEnabled()
 
     const calendar = screen.getByRole('textbox', {
-      name: /update date:/i
+      name: /update date/i
     })
     userEvent.click(calendar)
     const calendarDate = await screen.findByRole('cell', {
@@ -134,6 +136,7 @@ describe('ScheduleStep', () => {
       <Provider>
         <Form>
           <ScheduleStep
+            setShowSubTitle={jest.fn()}
             visible={true}
             availableVersions={availableVersions}
             nonIcx8200Count={1}

@@ -38,7 +38,7 @@ import {
 import { Link, MspTenantLink, useNavigate, useTenantLink, useParams, TenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                              from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, hasRoles, hasAccess }             from '@acx-ui/user'
-import { AccountType }                                                            from '@acx-ui/utils'
+import { AccountType, noDataDisplay }                                             from '@acx-ui/utils'
 
 import { AssignEcMspAdminsDrawer } from '../MspCustomers/AssignEcMspAdminsDrawer'
 
@@ -235,7 +235,7 @@ export function MspRecCustomers () {
       }
     },
     ...(isIntegrator || userProfile?.support ? [] : [{
-      title: $t({ defaultMessage: 'Integrator' }),
+      title: $t({ defaultMessage: 'Integrator Count' }),
       dataIndex: 'integrator',
       key: 'integrator',
       onCell: (data: MspEc) => {
@@ -248,16 +248,18 @@ export function MspRecCustomers () {
         } : {}
       },
       render: function (_: React.ReactNode, row: MspEc) {
-        const val =
-          row?.integrator ? mspUtils.transformTechPartner(row.integrator, techParnersData) : '--'
+        const val = row.integratorCount !== undefined
+          ? mspUtils.transformTechPartnerCount(row.integratorCount)
+          : row?.integrator ? mspUtils.transformTechPartner(row.integrator, techParnersData)
+            : noDataDisplay
         return (
           (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible
-            ? <Link to=''>{val}</Link> : val
+            ? <Link to=''><div style={{ textAlign: 'center' }}>{val}</div></Link> : val
         )
       }
     }]),
     ...(isIntegrator || userProfile?.support ? [] : [{
-      title: $t({ defaultMessage: 'Installer' }),
+      title: $t({ defaultMessage: 'Installer Count' }),
       dataIndex: 'installer',
       key: 'installer',
       onCell: (data: MspEc) => {
@@ -271,11 +273,13 @@ export function MspRecCustomers () {
         } : {}
       },
       render: function (_: React.ReactNode, row: MspEc) {
-        const val =
-          row?.installer ? mspUtils.transformTechPartner(row.installer, techParnersData) : '--'
+        const val = row.installerCount !== undefined
+          ? mspUtils.transformTechPartnerCount(row.installerCount)
+          : row?.installer ? mspUtils.transformTechPartner(row.installer, techParnersData)
+            : noDataDisplay
         return (
           (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible
-            ? <Link to=''>{val}</Link> : val
+            ? <Link to=''><div style={{ textAlign: 'center' }}>{val}</div></Link> : val
         )
       }
     }]),

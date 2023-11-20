@@ -75,3 +75,8 @@ export const fakePreference = {
     mapRegion: 'TW'
   }
 }
+
+export const fakeBetaStatusDetail = {
+  enabled: 'false',
+  startDate: '2023-11-13 UTC'
+}

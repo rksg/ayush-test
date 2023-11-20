@@ -57,6 +57,8 @@ export interface MspEc {
   mspIntegratorAdminCount?: number;
   integrator?: string,
   installer?: string,
+  integratorCount?: number,
+  installerCount?: number,
   expirationDate: string;
   wifiLicenses: string;
   switchLicenses: string;
@@ -174,6 +176,7 @@ export interface MspEntitlementSummary {
   expirationDate: string;
   remainingDays: number;
   remainingLicenses: number;
+  trial: boolean;
 }
 
 export interface NewMspEntitlementSummary {

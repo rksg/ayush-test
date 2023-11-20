@@ -48,7 +48,7 @@ export enum EdgeServiceTypeEnum {
   DHCP = 'DHCP',
   FIREWALL = 'FIREWALL',
   NETWORK_SEGMENTATION = 'NETWORK_SEGMENTATION',
-  SD_LAN = 'SD_LAN'
+  SD_LAN = 'SDLAN'
 }
 
 export enum EdgeServiceStatusEnum {
@@ -63,7 +63,7 @@ export enum EdgeLagTypeEnum {
   LACP = 'LACP'
 }
 
-export enum EdgeLagModeEnum {
+export enum EdgeLagLacpModeEnum {
   ACTIVE = 'ACTIVE',
   PASSIVE = 'PASSIVE'
 }
