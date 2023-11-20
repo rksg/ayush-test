@@ -350,27 +350,29 @@ export const switchListFixture = {
 }
 
 export const wifiNetworksFixture = {
-  search: {
-    wifiNetworks: [
-      {
-        name: 'Hospt-Guest',
-        apCount: 1,
-        clientCount: 17,
-        zoneCount: 1,
-        traffic: 139809421170,
-        rxBytes: 62119590245,
-        txBytes: 77689830925
-      },
-      {
-        name: 'DENSITY-WPA2PSK',
-        apCount: 25,
-        clientCount: 38,
-        zoneCount: 1,
-        traffic: 129272657263,
-        rxBytes: 882986906,
-        txBytes: 128389670357
-      }
-    ]
+  network: {
+    search: {
+      wifiNetworks: [
+        {
+          name: 'Hospt-Guest',
+          apCount: 1,
+          clientCount: 17,
+          zoneCount: 1,
+          traffic: 139809421170,
+          rxBytes: 62119590245,
+          txBytes: 77689830925
+        },
+        {
+          name: 'DENSITY-WPA2PSK',
+          apCount: 25,
+          clientCount: 38,
+          zoneCount: 1,
+          traffic: 129272657263,
+          rxBytes: 882986906,
+          txBytes: 128389670357
+        }
+      ]
+    }
   }
 }
 
