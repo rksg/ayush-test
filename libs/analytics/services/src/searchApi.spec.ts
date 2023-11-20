@@ -73,7 +73,7 @@ describe('Search API', () => {
   })
 
   it('wifiNetworks api should return the data', async () => {
-    mockGraphqlQuery(dataApiSearchURL, 'Search', {
+    mockGraphqlQuery(dataApiURL, 'Network', {
       data: wifiNetworksFixture
     })
     const payload = {
@@ -84,10 +84,10 @@ describe('Search API', () => {
       limit: 100
     }
     const { status, data, error } = await store.dispatch(
-      searchApi.endpoints.networkList.initiate(payload))
+      networkSearchApi.endpoints.networkList.initiate(payload))
 
     expect(error).toBeUndefined()
     expect(status).toBe('fulfilled')
-    expect(data).toMatchObject(wifiNetworksFixture.search)
+    expect(data).toMatchObject(wifiNetworksFixture.network.search)
   })
 })
