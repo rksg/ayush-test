@@ -7,6 +7,7 @@ import {
   LayoutUI
 } from '@acx-ui/components'
 import { Features, SplitProvider, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { AdminSolid }                            from '@acx-ui/icons'
 import { HomeSolid }                             from '@acx-ui/icons'
 import {
   ActivityButton,
@@ -23,11 +24,11 @@ import {
   useMspEntitlementListQuery,
   useGetTenantDetailQuery
 } from '@acx-ui/msp/services'
-import { CloudMessageBanner }                                           from '@acx-ui/rc/components'
-import { Outlet, useParams, useNavigate, useTenantLink, TenantNavLink } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                    from '@acx-ui/types'
-import { hasRoles, useUserProfileContext }                              from '@acx-ui/user'
-import { PverName, getJwtTokenPayload, isDelegationMode }               from '@acx-ui/utils'
+import { CloudMessageBanner }                                                       from '@acx-ui/rc/components'
+import { Outlet, useParams, useNavigate, useTenantLink, TenantNavLink, TenantLink } from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                from '@acx-ui/types'
+import { hasRoles, useUserProfileContext }                                          from '@acx-ui/user'
+import { PverName, getJwtTokenPayload, isDelegationMode }                           from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 import * as UI           from './styledComponents'
@@ -43,6 +44,7 @@ function Layout () {
   const dpskBasePath = useTenantLink('/users/dpskAdmin')
   const navigate = useNavigate()
   const params = useParams()
+  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
 
   const { data } = useGetTenantDetailQuery({ params: { tenantId } })
   const { data: userProfile } = useUserProfileContext()
@@ -98,6 +100,11 @@ function Layout () {
         </>
       }
       leftHeaderContent={<>
+        {isHspSupportEnabled && <TenantLink to='/dashboard'>
+          <UI.Home>
+            <LayoutUI.Icon children={<AdminSolid />} />
+            {$t({ defaultMessage: 'My Account' })}
+          </UI.Home></TenantLink>}
         { showSupportHomeButton && (isBackToRC ?
           <a href={`/api/ui/v/${getJwtTokenPayload().tenantId}`}>
             <UI.Home>

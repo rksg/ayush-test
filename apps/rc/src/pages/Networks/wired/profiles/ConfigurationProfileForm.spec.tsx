@@ -555,11 +555,14 @@ describe('Wired', () => {
     await screen.findByRole('heading', { level: 3, name: /VLANs/i })
 
     await userEvent.click(await screen.findByRole('button', { name: /Add VLAN/i }))
-    const vIdInput = await screen.findByLabelText('VLAN ID')
+
+    const vlanSettingDrawer = await screen.findByTestId('addVlanDrawer')
+    const vIdInput = await within(vlanSettingDrawer).findByLabelText('VLAN ID')
     fireEvent.change(vIdInput, { target: { value: '2' } })
-    await userEvent.click((await screen.findByTestId('dhcpSnooping')))
-    await userEvent.click((await screen.findByTestId('arpInspection')))
-    await userEvent.click(await screen.findByRole('button', { name: 'Add Model' }))
+    await userEvent.click((await within(vlanSettingDrawer).findByTestId('dhcpSnooping')))
+    await userEvent.click((await within(vlanSettingDrawer).findByTestId('arpInspection')))
+    await userEvent.click(
+      await within(vlanSettingDrawer).findByRole('button', { name: 'Add Model' }))
     const vlansPortModal = await screen.findByTestId('vlanSettingModal')
     const family = await within(vlansPortModal).findByTestId('ICX7150')
     await userEvent.click(family)

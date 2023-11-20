@@ -6,6 +6,7 @@ import { AnalyticsFilter, PathNode, useDateFilter } from '@acx-ui/utils'
 
 import { ClientsList } from '../Clients/ClientsList'
 import { APList }      from '../Wifi/ApsTable'
+import { NetworkList } from '../WifiNetworks/NetworksTable'
 
 import { ZoneAnalyticsTab } from './ZoneAnalyticsTab'
 import ZonePageHeader       from './ZonePageHeader'
@@ -15,7 +16,7 @@ const tabs = (args?: { queryParams: QueryParamsForZone } | undefined) => ({
   assurance: ZoneAnalyticsTab,
   clients: () => <ClientsList queryParmsForZone={args?.queryParams} />,
   devices: () => <APList queryParamsForZone={args?.queryParams} />,
-  networks: () => <div>network tab</div>
+  networks: () => <NetworkList queryParamsForZone={args?.queryParams}/>
 })
 
 export default function ZoneDetails () {

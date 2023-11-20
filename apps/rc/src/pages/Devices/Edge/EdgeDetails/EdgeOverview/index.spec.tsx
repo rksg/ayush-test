@@ -11,7 +11,7 @@ import {
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-import { mockEdgeData as currentEdge, mockEdgePortStatus } from '../../__tests__/fixtures'
+import { mockEdgeData as currentEdge, mockEdgeLagStatusList, mockEdgePortStatus } from '../../__tests__/fixtures'
 
 import { EdgeOverview } from '.'
 
@@ -65,6 +65,14 @@ describe('Edge Detail Overview', () => {
         (_req, res, ctx) => {
           return res(
             ctx.json(mockEdgePortStatus)
+          )
+        }
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeLagStatusList.url,
+        (_req, res, ctx) => {
+          return res(
+            ctx.json(mockEdgeLagStatusList)
           )
         }
       )
@@ -190,5 +198,28 @@ describe('Edge Detail Overview', () => {
     expect(await screen.findByRole('tab', { name: 'Ports' }))
       .toHaveAttribute('aria-selected', 'true')
     expect(screen.queryByRole('tab', { name: 'Monitor' })).toBeNull()
+  })
+
+  it('should show lags tab correctly', async () => {
+    render(
+      <Provider>
+        <EdgeOverview />
+      </Provider>, {
+        route: { params }
+      })
+
+    const lagTab = await screen.findByRole('tab', { name: 'LAGs' })
+    await userEvent.click(lagTab)
+    const configBtn = await screen.findByRole('button', { name: 'Configure LAG Settings' })
+    expect(configBtn).toBeVisible()
+    const portsRow = await screen.findAllByRole('row')
+    expect(portsRow.length).toBe(3)
+    await userEvent.click(configBtn)
+    expect(mockedUsedNavigate)
+      .toBeCalledWith({
+        pathname: '/tenant-id/t/devices/edge/edge-serialnum/edit/ports/lag',
+        hash: '',
+        search: ''
+      })
   })
 })

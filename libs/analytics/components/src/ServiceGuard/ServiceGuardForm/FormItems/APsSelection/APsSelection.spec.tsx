@@ -20,7 +20,7 @@ jest.mock('@acx-ui/config', () => ({
 describe('APsSelection', () => {
   beforeEach(() => {
     store.dispatch(dataApi.util.resetApiState())
-    mockGraphqlQuery(dataApiURL, 'RecentNetworkHierarchy', { data: mockNetworkHierarchy })
+    mockGraphqlQuery(dataApiURL, 'VenueHierarchy', { data: mockNetworkHierarchy })
   })
 
   it('supports select AP from venue', async () => {
@@ -88,7 +88,7 @@ describe('APsSelection', () => {
 
   it('should hide unsupport APs when ClientType.VirtualClient', async () => {
     mockGraphqlQuery(
-      dataApiURL, 'RecentNetworkHierarchy', { data: mockHiddenAPs })
+      dataApiURL, 'VenueHierarchy', { data: mockHiddenAPs })
     renderForm(<APsSelection />, { initialValues: { clientType: ClientType.VirtualClient } })
 
     expect(await screen.findByRole('menu')).toBeInTheDocument()
@@ -102,7 +102,7 @@ describe('APsSelection', () => {
 
   it('should hide unsupport APs when ClientType.VirtualWirelessClient', async () => {
     mockGraphqlQuery(
-      dataApiURL, 'RecentNetworkHierarchy', { data: mockHiddenAPs })
+      dataApiURL, 'VenueHierarchy', { data: mockHiddenAPs })
     renderForm(<APsSelection />,
       { initialValues: { clientType: ClientType.VirtualWirelessClient } })
 
@@ -119,7 +119,7 @@ describe('APsSelection', () => {
 describe('APsSelection.FieldSummary', () => {
   beforeEach(() => store.dispatch(dataApi.util.resetApiState()))
   it('renders selected APs in Venues', async () => {
-    mockGraphqlQuery(dataApiURL, 'RecentNetworkHierarchy', { data: mockNetworkHierarchy })
+    mockGraphqlQuery(dataApiURL, 'VenueHierarchy', { data: mockNetworkHierarchy })
 
     renderForm(<APsSelection.FieldSummary />, {
       initialValues: {
@@ -166,7 +166,7 @@ describe('RA', () => {
 
       expect(await screen.findByTestId('form-values'))
         .toHaveTextContent(JSON.stringify([
-          { type: 'system', name: '00000000-0000-0000-0000-000000000001' },
+          { type: 'system', name: 'system 1' },
           { type: 'zone', name: 'zone 1' }
         ]))
     })
@@ -186,7 +186,7 @@ describe('RA', () => {
 
       expect(await screen.findByTestId('form-values'))
         .toHaveTextContent(JSON.stringify([
-          { type: 'system', name: '00000000-0000-0000-0000-000000000001' },
+          { type: 'system', name: 'system 1' },
           { type: 'apMac', list: ['00:00:00:00:00:01'] }
         ]))
     })
@@ -204,7 +204,7 @@ describe('RA', () => {
 
       expect(await screen.findByTestId('form-values'))
         .toHaveTextContent(JSON.stringify([
-          { type: 'system', name: '00000000-0000-0000-0000-000000000001' },
+          { type: 'system', name: 'system 1' },
           { type: 'apMac', list: ['00:00:00:00:00:01'] }
         ]))
     })
@@ -267,12 +267,12 @@ describe('RA', () => {
           configs: [{
             networkPaths: {
               networkNodes: [
-                [ { name: '00000000-0000-0000-0000-000000000001', type: 'system' }],
-                [ { name: '00000000-0000-0000-0000-000000000001', type: 'system' },
+                [ { name: 'system 1', type: 'system' }],
+                [ { name: 'system 1', type: 'system' },
                   { name: 'domain', type: 'domain' },
                   { name: 'zone 2', type: 'zone' },
                   { name: 'group 4', type: 'apGroup' }],
-                [ { name: '00000000-0000-0000-0000-000000000001', type: 'system' },
+                [ { name: 'system 1', type: 'system' },
                   { type: 'apMac', list: ['00:00:00:00:00:01'] }]
               ]
             }

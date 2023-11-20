@@ -472,8 +472,6 @@ export const kpisForTab = (isMLISA? : string) => {
     },
     connection: {
       kpis: [
-        'connectionSuccess',
-        'timeToConnect',
         'userAuthentication',
         'association',
         'eap',

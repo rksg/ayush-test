@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
 import { rest } from 'msw'
 
-import { Tabs }                                                from '@acx-ui/components'
-import { useIsSplitOn, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
-import { EdgeDhcpUrls, EdgeUrlsInfo, NetworkSegmentationUrls } from '@acx-ui/rc/utils'
-import { Provider }                                            from '@acx-ui/store'
+import { Tabs }                                                               from '@acx-ui/components'
+import { useIsSplitOn, useIsTierAllowed }                                     from '@acx-ui/feature-toggle'
+import { EdgeDhcpUrls, EdgeSdLanUrls, EdgeUrlsInfo, NetworkSegmentationUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                           from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -44,8 +44,10 @@ jest.mock('./NetworkSegmentation', () => ({
 jest.mock('./VenueRogueAps', () => ({
   VenueRogueAps: () => (<div data-testid='VenueRogueAps' />)
 }))
-
-
+jest.mock('./SdLan', () => ({
+  default: () => <div data-testid='EdgeSdLan' />,
+  __esModule: true
+}))
 
 describe('Venue service tab', () => {
   let params: { tenantId: string, venueId: string }
@@ -79,9 +81,11 @@ describe('Venue service tab', () => {
       jest.mocked(useIsSplitOn).mockReturnValue(true)
     })
 
-    describe('when there is no firewall and nsg data', () => {
+    describe('when there is no firewall, nsg and SD-LAN data', () => {
       const mockedGetEdgeListFn = jest.fn()
       const mockedGetNsgListFn = jest.fn()
+      const mockedGetSdLanListFn = jest.fn()
+
       const mockNoData = {
         totalCount: 0,
         data: []
@@ -101,11 +105,18 @@ describe('Venue service tab', () => {
               mockedGetNsgListFn()
               return res(ctx.json(mockNoData))
             }
+          ),
+          rest.post(
+            EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+            (_, res, ctx) => {
+              mockedGetSdLanListFn()
+              return res(ctx.json(mockNoData))
+            }
           )
         )
       })
 
-      it('should not render firewall and nsg tab when there is no edge on venue', async () => {
+      it('should not render firewall, nsg and SD-LAN tab when there is no edge on venue', async () => {
         render(
           <Provider>
             <VenueServicesTab />
@@ -115,6 +126,7 @@ describe('Venue service tab', () => {
 
         await waitFor(() => expect(mockedGetEdgeListFn).toBeCalled())
         await waitFor(() => expect(mockedGetNsgListFn).toBeCalled())
+        await waitFor(() => expect(mockedGetSdLanListFn).toBeCalled())
 
         expect((await screen.findAllByTestId(/rc-tabpane-/)).length).toBe(6)
       })
@@ -124,6 +136,8 @@ describe('Venue service tab', () => {
       const mockedGetEdgeListFn = jest.fn()
       const mockedGetEdgeDhcpFn = jest.fn()
       const mockedGetNsgListFn = jest.fn()
+      const mockedGetSdLanListFn = jest.fn()
+
       const mockNoFWEdgeList = {
         totalCount: 0,
         data: [
@@ -159,6 +173,16 @@ describe('Venue service tab', () => {
               mockedGetEdgeDhcpFn()
               return res(ctx.json({ id: 'testDhcp' }))
             }
+          ),
+          rest.post(
+            EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+            (_, res, ctx) => {
+              mockedGetSdLanListFn()
+              return res(ctx.json({ data: [{
+                id: 'mocked-sd-lan-1',
+                name: 'mocked_sdLan_1'
+              }] }))
+            }
           )
         )
       })
@@ -174,8 +198,9 @@ describe('Venue service tab', () => {
         await waitFor(() => expect(mockedGetEdgeListFn).toBeCalled())
         await waitFor(() => expect(mockedGetNsgListFn).toBeCalled())
         await waitFor(() => expect(mockedGetEdgeDhcpFn).toBeCalled())
+        await waitFor(() => expect(mockedGetSdLanListFn).toBeCalled())
 
-        expect((await screen.findAllByTestId(/rc-tabpane-/)).length).toBe(8)
+        expect((await screen.findAllByTestId(/rc-tabpane-/)).length).toBe(9)
       })
     })
   })
