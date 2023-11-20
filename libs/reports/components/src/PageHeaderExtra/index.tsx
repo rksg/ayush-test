@@ -43,9 +43,9 @@ export function usePageHeaderExtra (type: ReportType, showFilter = true) {
       : <NetworkFilter
         key={getShowWithoutRbacCheckKey('reports-network-filter')}
         shouldQuerySwitch={isSwitchReport}
+        shouldQueryAp={isAPReport}
         showRadioBand={isAPReport}
         multiple={true}
-        filterMode={reportType}
         filterFor={'reports'}
         isRadioBandDisabled={isRadioBandDisabled}
         radioBandDisabledReason={radioBandDisabledReason}

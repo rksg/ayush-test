@@ -232,7 +232,7 @@ export function SwitchConfigHistoryTable (props: {
                 <div className='header'>
                   {$t({ defaultMessage: 'Configuration Applied' })}
                 </div>
-                <CodeMirrorWidget ref={codeMirrorEl} type='single' data={selectedConfigRow} />
+                <CodeMirrorWidget ref={codeMirrorEl} type='single' skipDecode={true} data={selectedConfigRow} />
               </div>
             }
             {

@@ -1,7 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { render, screen } from '@acx-ui/test-utils'
+import { render, renderHook, screen } from '@acx-ui/test-utils'
+
+import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 
 import { TunnelProfileForm } from './index'
 
@@ -24,6 +26,11 @@ jest.mock('antd', () => {
   Select.Option = 'option'
   return { ...components, Select }
 })
+
+jest.mock('../../useEdgeActions', () => ({
+  ...jest.requireActual('../../useEdgeActions'),
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
 
 describe('TunnelProfileForm', () => {
   it('should render TunnelProfileForm successfully', () => {
@@ -100,5 +107,78 @@ describe('TunnelProfileForm', () => {
     // eslint-disable-next-line max-len
     expect(await screen.findByText('Avoid spaces at the beginning/end, and do not use "`" or "$(" characters.'))
       .toBeVisible()
+  })
+
+  it('should correctly lock fields', async () => {
+    const { result: formRef } = renderHook(() => {
+      const [form] = Form.useForm()
+      form.setFieldValue('disabledFields', [
+        'name',
+        'mtuType',
+        'mtuSize',
+        'forceFragmentation',
+        'ageTimeMinutes',
+        'ageTimeUnit',
+        'type'
+      ])
+      return form
+    })
+
+    render(
+      <Form form={formRef.current}>
+        <TunnelProfileForm />
+      </Form>
+    )
+
+    expect(await screen.findByRole('textbox', { name: 'Profile Name' })).toBeDisabled()
+    expect(screen.getByRole('radio', { name: 'Auto' })).toBeDisabled()
+    expect(screen.getByRole('radio', { name: 'Manual' })).toBeDisabled()
+    expect(screen.getByRole('switch', { name: 'Force Fragmentation' })).toBeDisabled()
+    expect(screen.getByRole('spinbutton')).toBeDisabled()
+    expect(screen.getByRole('combobox')).toBeDisabled()
+  })
+
+  describe('when SD-LAN is ready', () => {
+    beforeEach(() => {
+      jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
+    })
+
+    it('should correctly set tunnel type', async () => {
+      const { result: formRef } = renderHook(() => {
+        const [form] = Form.useForm()
+        form.setFieldValue('disableTunnelType', false)
+        return form
+      })
+
+      render(
+        <Form form={formRef.current}>
+          <TunnelProfileForm />
+        </Form>
+      )
+
+      const typeField = await screen.findByRole('combobox', { name: 'Tunnel Type' })
+      expect(typeField).not.toBeDisabled()
+      await userEvent.selectOptions(
+        typeField,
+        await screen.findByRole('option', { name: 'VxLAN' })
+      )
+    })
+
+    it('should lock tunnel type when the disableTunnelType is true', async () => {
+      const { result: formRef } = renderHook(() => {
+        const [form] = Form.useForm()
+        form.setFieldValue('disabledFields', ['type'])
+        return form
+      })
+
+      render(
+        <Form form={formRef.current}>
+          <TunnelProfileForm />
+        </Form>
+      )
+
+      const typeField = await screen.findByRole('combobox', { name: 'Tunnel Type' })
+      expect(typeField).toBeDisabled()
+    })
   })
 })

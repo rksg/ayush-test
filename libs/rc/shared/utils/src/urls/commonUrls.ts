@@ -582,5 +582,20 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/rwgs/:gatewayId/dnsrecords',
     newApi: true
+  },
+  addExportSchedules: {
+    method: 'post',
+    url: '/reports/exportSchedules',
+    newApi: true
+  },
+  updateExportSchedules: {
+    method: 'put',
+    url: '/reports/exportSchedules',
+    newApi: true
+  },
+  getExportSchedules: {
+    method: 'get',
+    url: '/reports/exportSchedules',
+    newApi: true
   }
 }
