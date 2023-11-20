@@ -46,7 +46,6 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
 
   const { visible, tenantId, tenantType, setVisible, setSelected } = props
   const [resetField, setResetField] = useState(false)
-  const [assignedEcAdmin, setAssignedEcAdmin] = useState(false)
   const [original, setOriginal] = useState({} as MspEc)
   const [form] = Form.useForm()
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([])
@@ -135,6 +134,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
           mspec_id: tenantId
         })
       )
+      const assignedEcAdmin = form.getFieldValue(['assignedEcAdmin']) ?? false
       let payload = {
         AssignDelegatedRequest: integratorList,
         isManageAllEcs: assignedEcAdmin
@@ -228,10 +228,10 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
     : $t({ defaultMessage: 'Select customer\'s Installer' })
   const content =
   <Form layout='vertical' form={form} onFinish={onClose}>
-    {techPartnerAssignEcsEnabled && <Form.Item>
+    {techPartnerAssignEcsEnabled && <Form.Item name='assignedEcAdmin'>
       <Checkbox
         onChange={(e)=> {
-          setAssignedEcAdmin(e.target.checked)
+          form.setFieldValue('assignedEcAdmin', e.target.checked)
         }}
       >
         {$t({ defaultMessage:
