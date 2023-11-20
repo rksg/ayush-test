@@ -3,45 +3,26 @@ import moment from 'moment-timezone'
 import { get } from '@acx-ui/config'
 
 export const calculateGranularity = (
-  start: string, end: string, minGranularity?: string, apCount: number = 0
+  start: string, end: string, minGranularity?: string
 ): string => {
   const interval = moment.duration(moment(end).diff(moment(start))).asHours()
-  let gran = getGranularityByAPCount(interval, apCount)
+  let gran = getGranularity(interval)
   if (overlapsRollup(start)) minGranularity = 'PT1H'
   return minGranularity &&
     moment.duration(minGranularity).asSeconds() > moment.duration(gran).asSeconds()
     ? minGranularity
     : gran
 }
-const getGranularityByAPCount = (interval: number, apCount: number) => {
+const getGranularity = (interval: number) => {
   switch (true) {
-    case interval > 24 * 7:
-      switch (true) {
-        case apCount < 10000:
-          return 'PT1H'
-        case apCount < 30000:
-          return 'PT12H'
-        default:
-          return 'PT24H'
-      }
-    case interval > 24 * 3:
-      switch (true) {
-        case apCount < 10000:
-          return 'PT15M'
-        case apCount < 30000:
-          return 'PT6H'
-        default:
-          return 'PT12H'
-      }
-    default:
-      switch (true) {
-        case apCount < 10000:
-          return 'PT180S'
-        case apCount < 30000:
-          return 'PT15M'
-        default:
-          return 'PT1H'
-      }
+    case interval > 24 * 30: // > 1 month
+      return 'PT72H'
+    case interval > 24 * 7: // 8 days to 30 days
+      return 'PT24H'
+    case interval > 24 * 1: // 1 day to 7 days
+      return 'PT1H'
+    default: // less than 1 day
+      return 'PT180S'
   }
 }
 const overlapsRollup = (start: string) => {
