@@ -11,7 +11,7 @@ import {
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-import { mockEdgeData as currentEdge, mockEdgeLagList, mockEdgePortStatus } from '../../__tests__/fixtures'
+import { mockEdgeData as currentEdge, mockEdgeLagStatusList, mockEdgePortStatus } from '../../__tests__/fixtures'
 
 import { EdgeOverview } from '.'
 
@@ -72,7 +72,7 @@ describe('Edge Detail Overview', () => {
         EdgeUrlsInfo.getEdgeLagStatusList.url,
         (_req, res, ctx) => {
           return res(
-            ctx.json(mockEdgeLagList)
+            ctx.json(mockEdgeLagStatusList)
           )
         }
       )

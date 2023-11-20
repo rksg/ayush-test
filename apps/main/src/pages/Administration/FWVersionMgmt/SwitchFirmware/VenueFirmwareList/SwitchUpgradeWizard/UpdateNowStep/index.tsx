@@ -73,6 +73,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
       }}>
       <Form.Item>
         <UI.ValidateField
+          style={{ position: 'fixed', marginTop: '-25px' }}
           name='selectVersionStep'
           rules={[
             {
