@@ -9,8 +9,10 @@ import { useIntl }                                 from 'react-intl'
 import { useParams }                               from 'react-router-dom'
 
 import { Loader, StepsForm, useStepFormContext }                                                                                     from '@acx-ui/components'
-import { TunnelProfileAddModal }                                                                                                     from '@acx-ui/rc/components'
+import { Features }                                                                                                                  from '@acx-ui/feature-toggle'
+import { TunnelProfileAddModal, TunnelProfileFormType, useIsEdgeFeatureReady }                                                       from '@acx-ui/rc/components'
 import { useGetNetworkSegmentationViewDataListQuery, useGetTunnelProfileViewDataListQuery, useVenueNetworkActivationsDataListQuery } from '@acx-ui/rc/services'
+import { TunnelTypeEnum }                                                                                                            from '@acx-ui/rc/utils'
 
 import { NetworkSegmentationGroupFormData } from '..'
 
@@ -27,6 +29,7 @@ export const WirelessNetworkForm = () => {
 
   const { $t } = useIntl()
   const params = useParams()
+  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const { form } = useStepFormContext<NetworkSegmentationGroupFormData>()
   const [unusedNetworkOptions, setUnusedNetworkOptions] =
   useState<{ label: string; value: string; }[]|undefined>(undefined)
@@ -131,7 +134,10 @@ export const WirelessNetworkForm = () => {
             }
           />
         </Col>
-        <TunnelProfileAddModal />
+        <TunnelProfileAddModal defaultValues={isEdgeSdLanReady
+          ? { type: TunnelTypeEnum.VXLAN, disabledFields: ['type'] } as TunnelProfileFormType
+          : undefined
+        } />
       </Row>
       <Row gutter={20}>
         <Col>

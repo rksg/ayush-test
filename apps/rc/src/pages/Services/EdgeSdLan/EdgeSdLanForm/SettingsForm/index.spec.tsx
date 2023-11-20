@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
+import { act }   from 'react-dom/test-utils'
 
 import { StepsForm }  from '@acx-ui/components'
 import {
@@ -57,15 +58,20 @@ jest.mock('./CorePortFormItem', () => ({
 }))
 
 const mockedSetFieldValue = jest.fn()
+const mockedReqVenuesList = jest.fn()
 
 describe('Edge centrailized forwarding form: settings', () => {
   beforeEach(() => {
     mockedSetFieldValue.mockClear()
+    mockedReqVenuesList.mockClear()
 
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
-        (_, res, ctx) => res(ctx.json(mockedVenueList))
+        (req, res, ctx) => {
+          mockedReqVenuesList(req.body)
+          return res(ctx.json(mockedVenueList))
+        }
       ),
       rest.post(
         EdgeUrlsInfo.getEdgeList.url,
@@ -123,10 +129,66 @@ describe('Edge centrailized forwarding form: settings', () => {
     await waitFor(() => {
       expect(mockedSetFieldValue).toBeCalledWith('corePortMac', '00:0c:29:b6:ad:04')
     })
+    expect(mockedSetFieldValue).toBeCalledWith('corePortName', 'Port 1')
 
     await userEvent.selectOptions(
       await within(formBody).findByRole('combobox', { name: 'Tunnel Profile' }),
       'tunnelProfileId2')
     expect(mockedSetFieldValue).toBeCalledWith('tunnelProfileName', 'tunnelProfile2')
+  })
+
+  it('should query specific venue when edit mode', async () => {
+    const expectedVenueId = 'mocked_venue_id'
+
+    const { result: stepFormRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+
+    render(<Provider>
+      <StepsForm form={stepFormRef.current} editMode>
+        <SettingsForm />
+      </StepsForm>
+    </Provider>)
+
+    act(() => {
+      stepFormRef.current.setFieldValue('venueId', expectedVenueId)
+    })
+    jest.spyOn(stepFormRef.current, 'setFieldValue').mockImplementation(mockedSetFieldValue)
+
+    const formBody = await screen.findByTestId('steps-form-body')
+    const icons = await within(formBody)
+      .findAllByTestId('loadingIcon')
+    expect(icons.length).toBe(2)
+    await waitForElementToBeRemoved(icons)
+
+    const venueDropdown = await within(formBody).findByRole('combobox', { name: 'Venue' })
+    expect(venueDropdown).toBeDisabled()
+    expect(mockedReqVenuesList).toBeCalledWith({
+      fields: ['name', 'id', 'edges'],
+      filters: { id: [expectedVenueId] }
+    })
+
+    expect(mockedSetFieldValue).toBeCalledWith('corePortMac', undefined)
+    expect(mockedSetFieldValue).toBeCalledWith('corePortName', undefined)
+  })
+
+  it('Input invalid service name should show error message', async () => {
+    const { result: stepFormRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+
+    render(<Provider>
+      <StepsForm form={stepFormRef.current}>
+        <SettingsForm />
+      </StepsForm>
+    </Provider>)
+
+    const nameField = screen.getByRole('textbox', { name: 'Service Name' })
+    await userEvent.type(nameField, '``')
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('Avoid spaces at the beginning/end, and do not use "`" or "$(" characters.'))
+      .toBeVisible()
   })
 })
