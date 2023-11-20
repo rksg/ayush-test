@@ -47,7 +47,8 @@ function AIOperationsWidget ({
   const subtitle = $t({
     defaultMessage: 'Say goodbye to manual guesswork and hello to intelligent recommendations.' })
 
-  const noLicense = data?.recommendations.filter(i => i.status === 'insufficientLicenses').length
+  const noLicense = data?.recommendations.length !== 0
+    && data?.recommendations.filter(i => i.status === 'insufficientLicenses').length
     === data?.recommendations.length
   const checkNew = data?.recommendations?.filter(i => i.status === 'new').length
   const filteredRecommendations = data?.recommendations.filter(
