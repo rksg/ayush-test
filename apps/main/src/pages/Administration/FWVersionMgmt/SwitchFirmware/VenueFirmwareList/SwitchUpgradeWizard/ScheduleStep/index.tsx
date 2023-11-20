@@ -186,6 +186,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
       <Form.Item>
         <div>
           <UI.ValidateField
+            style={{ position: 'fixed', marginTop: '-25px' }}
             name='selectVersionStep'
             rules={[
               {
@@ -263,7 +264,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
       </UI.TitleActive>}
 
       <Form.Item
-        label={intl.$t({ defaultMessage: 'Update date:' })}
+        label={intl.$t({ defaultMessage: 'Update date' })}
         name='selectDateStep'
         validateFirst
         rules={[
@@ -282,7 +283,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
       {hasSelectedDate &&
         <Form.Item
           name='selectTimeStep'
-          label={intl.$t({ defaultMessage: 'Update time:' })}
+          label={intl.$t({ defaultMessage: 'Update time' })}
           rules={[
             { required: true }
           ]}
