@@ -1,6 +1,7 @@
 import { Provider }                  from '@acx-ui/store'
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
+
 import '@testing-library/react'
 import ZoneDetails from '.'
 
@@ -10,7 +11,12 @@ jest.mock('@acx-ui/analytics/components', () => {
     .map(key => [key, () => <div data-testid={`analytics-${key}`} title={key} />])
   return Object.fromEntries(sets)
 })
-
+jest.mock('../Wifi/ApsTable', () => {
+  return {
+    __esModule: true,
+    APList: () => <div data-testid='zoneWiseApList' />
+  }
+})
 describe('ZoneDetails', () => {
   it('should render correctly', async () => {
     const params = {
@@ -74,7 +80,7 @@ describe('ZoneDetails', () => {
       }
     })
     expect(await screen.findByText('zoneName')).toBeVisible()
-    expect(await screen.findByText('devices tab')).toBeVisible()
+    expect(await screen.findByTestId('zoneWiseApList')).toBeVisible()
   })
   it('should render navigate tabs correctly', async () => {
     const params = {
