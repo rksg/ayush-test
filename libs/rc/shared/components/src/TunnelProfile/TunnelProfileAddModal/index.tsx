@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
+import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Button, Loader, Modal, ModalType, showToast, StepsForm } from '@acx-ui/components'
@@ -7,10 +8,15 @@ import { Button, Loader, Modal, ModalType, showToast, StepsForm } from '@acx-ui/
 import { TunnelProfileForm, TunnelProfileFormType } from '../TunnelProfileForm'
 import { useTunnelProfileActions }                  from '../TunnelProfileForm/useTunnelProfileActions'
 
-export const TunnelProfileAddModal = () => {
+interface TunnelProfileAddModalProps {
+  defaultValues?: TunnelProfileFormType,
+}
 
+export const TunnelProfileAddModal = (props: TunnelProfileAddModalProps) => {
+  const { defaultValues } = props
   const { $t } = useIntl()
-  const [visible, setVisible]=useState(false)
+  const [ form ] = Form.useForm()
+  const [visible, setVisible] = useState(false)
   const { createTunnelProfile, isTunnelProfileCreating } = useTunnelProfileActions()
 
   const handleCreateTunnelProfile = async (data: TunnelProfileFormType) => {
@@ -27,6 +33,7 @@ export const TunnelProfileAddModal = () => {
 
   const content = <Loader states={[{ isLoading: false, isFetching: isTunnelProfileCreating }]}>
     <StepsForm
+      form={form}
       onFinish={handleCreateTunnelProfile}
       onCancel={() => setVisible(false)}
       buttonLabel={{ submit: $t({ defaultMessage: 'Add' }) }}
@@ -36,6 +43,12 @@ export const TunnelProfileAddModal = () => {
       </StepsForm.StepForm>
     </StepsForm>
   </Loader>
+
+  useEffect(() => {
+    if (visible && defaultValues) {
+      form.setFieldsValue(defaultValues)
+    }
+  }, [visible, defaultValues])
 
   return (
     <>
