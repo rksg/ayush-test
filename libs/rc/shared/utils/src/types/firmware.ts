@@ -1,5 +1,7 @@
 import { IntlShape } from 'react-intl'
 
+import { SwitchStatusEnum } from '..'
+
 export interface UpgradePreferences {
   days?: Array<string>,
   times?: Array<string>,
@@ -242,7 +244,7 @@ export interface SwitchFirmwareStatus {
   switchName: string;
   status: SwitchFwStatusEnum;
   targetFirmware: string;
-  switchStatus: string;
+  switchStatus: SwitchStatusEnum;
 }
 
 export interface CurrentVersions {
