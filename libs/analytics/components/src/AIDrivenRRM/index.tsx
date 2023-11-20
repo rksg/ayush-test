@@ -47,7 +47,8 @@ function AIDrivenRRMWidget ({
     />
   }
 
-  const noLicense = data?.recommendations.filter(i => i.status === 'insufficientLicenses').length
+  const noLicense = data?.recommendations.length !== 0
+    && data?.recommendations.filter(i => i.status === 'insufficientLicenses').length
     === data?.recommendations.length
   const filteredRecommendations = data?.recommendations.slice(0, 5)
 
