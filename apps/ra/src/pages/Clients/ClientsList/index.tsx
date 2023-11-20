@@ -3,41 +3,38 @@ import { useState } from 'react'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
+import { useNetworkClientListQuery, Client }                     from '@acx-ui/analytics/services'
 import { defaultSort, sortProp, QueryParamsForZone  }            from '@acx-ui/analytics/utils'
 import { Filter, Loader, Table, TableProps, useDateRange }       from '@acx-ui/components'
 import { DateFormatEnum, formatter }                             from '@acx-ui/formatter'
 import { TenantLink }                                            from '@acx-ui/react-router-dom'
 import { encodeParameter, DateFilter, DateRange, useDateFilter } from '@acx-ui/utils'
 
-
-import { useClientListQuery, useNetworkClientListQuery, Client } from './services'
-
-
 const pagination = { pageSize: 10, defaultPageSize: 10 }
 
 export function ClientsList ({ searchVal='', queryParmsForZone }:
 { searchVal?: string, queryParmsForZone?: QueryParamsForZone }) {
   const { $t } = useIntl()
-  const isZoneQuery = Boolean(queryParmsForZone)
   const { timeRange } = useDateRange()
   const { startDate, endDate } = useDateFilter()
   const [searchString, setSearchString] = useState(searchVal)
-  const clientsList = useClientListQuery({
-    start: timeRange[0].format(),
-    end: timeRange[1].format(),
-    limit: 100,
-    query: searchString
-  },
-  { skip: isZoneQuery })
-  const networkClientsList = useNetworkClientListQuery({
-    start: startDate,
-    end: endDate,
-    limit: 100,
-    query: queryParmsForZone?.searchString ?? '',
-    filter: { networkNodes: queryParmsForZone?.path }
-  },
-  { skip: !isZoneQuery })
-  const results = isZoneQuery ? networkClientsList : clientsList
+  const requestPayload = Boolean(queryParmsForZone)
+    ? {
+      start: startDate,
+      end: endDate,
+      limit: 100,
+      query: queryParmsForZone?.searchString ?? '',
+      filter: { networkNodes: queryParmsForZone?.path }
+    }
+    : {
+      start: timeRange[0].format(),
+      end: timeRange[1].format(),
+      limit: 100,
+      query: searchString,
+      filter: {}
+    }
+
+  const results = useNetworkClientListQuery(requestPayload)
 
   const onSearch = (
     _: Filter,
