@@ -1,8 +1,10 @@
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import {
   EdgeDhcpUrls,
   EdgeFirewallUrls,
+  EdgeSdLanUrls,
   EdgeUrlsInfo,
   NetworkSegmentationUrls,
   PersonaUrls,
@@ -25,7 +27,8 @@ import {
   mockedEdgeServiceList,
   mockedNsgStatsList,
   mockedPersonaGroup,
-  mockedTunnelProfileData
+  mockedTunnelProfileData,
+  mockedSdLanDataList
 } from '../../../__tests__/fixtures'
 
 import { ServiceDetailDrawer } from '.'
@@ -71,6 +74,10 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
       rest.get(
         TunnelProfileUrls.getTunnelProfile.url,
         (req, res, ctx) => res(ctx.json(mockedTunnelProfileData))
+      ),
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataList }))
       )
     )
   })
@@ -91,6 +98,8 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
     expect(await screen.findByText('DHCP-1')).toBeVisible()
     expect(await screen.findByText('Service Type')).toBeVisible()
     expect(await screen.findByText('DHCP')).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: 'Close' }))
+    expect(mockedSetVisible).toBeCalledWith(false)
   })
 
   it('should render DHCP detail successfully', async () => {
@@ -158,5 +167,19 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
     expect(await screen.findByText('Networks')).toBeVisible()
     expect(await screen.findByText('2')).toBeVisible()
     expect(await screen.findByTestId('rc-NsgTableGroup')).toBeVisible()
+  })
+
+  it('should render SD-LAN detail successfully', async () => {
+    render(
+      <Provider>
+        <ServiceDetailDrawer
+          visible={true}
+          setVisible={mockedSetVisible}
+          serviceData={mockedEdgeServiceList.data[3]}
+        />
+      </Provider>, {
+        route: { params }
+      })
+    expect(await screen.findByRole('link', { name: 'Mocked_tunnel' })).toBeVisible()
   })
 })
