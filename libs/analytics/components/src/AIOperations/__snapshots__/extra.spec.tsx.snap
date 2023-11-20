@@ -3,42 +3,24 @@
 exports[`NoAiOpsLicense should render correctly with the prop 1`] = `
 <DocumentFragment>
   <div
-    class="sc-crXcEl cChhmr"
+    class="sc-jqUVSM cMlFTk"
   >
-    <div>
-      <div
-        class="ant-space ant-space-horizontal ant-space-align-center sc-ksZaOG cGGGRP"
-      >
-        <div
-          class="ant-space-item"
-        >
-          <svg
-            class="sc-idiyUo"
-            data-testid="NoData"
-          />
-        </div>
-      </div>
-      <div
-        class="ant-space ant-space-horizontal ant-space-align-center sc-fnykZs hBrBTH"
-      >
-        <div
-          class="ant-space-item"
-        >
-          No license
-        </div>
-      </div>
-    </div>
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center sc-kDDrLX sc-hAZoDl gEaMGs jcjwgg"
+      class="sc-kDDrLX sc-fnykZs dRRsEl dfDCGR"
     >
-      <div
-        class="ant-space-item"
-      >
+      <svg
+        class="sc-hAZoDl kJwqPI"
+        data-testid="NoData"
+      />
+      <p>
+        No license
+      </p>
+      <p>
         RUCKUS AI cannot analyse your zone due to inadequate licenses. Please ensure you have licenses fully applied for the zone for AI Operations optimizations.
-      </div>
+      </p>
     </div>
     <button
-      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kBDiup sc-bjUoiL fbQKcx"
+      class="ant-btn ant-btn-default ant-btn-block styledComponents__Button-sc-zk1lj8-0 kBDiup"
       type="button"
     >
       <span>
@@ -52,30 +34,15 @@ exports[`NoAiOpsLicense should render correctly with the prop 1`] = `
 exports[`NoRecommendationData should render correctly with the prop 1`] = `
 <DocumentFragment>
   <div
-    class="sc-iqcoie jdOpAt"
-    style="margin-top: 0px;"
+    class="sc-kDDrLX sc-fnykZs dRRsEl cRAApK"
   >
-    <div
-      class="ant-space ant-space-horizontal ant-space-align-center sc-evZas fBWbrm"
-    >
-      <div
-        class="ant-space-item"
-      >
-        <svg
-          class="sc-fEOsli piiSc"
-          data-testid="CheckMarkCircleSolid"
-        />
-      </div>
-    </div>
-    <div
-      class="ant-space ant-space-horizontal ant-space-align-center sc-kDDrLX sc-breuTD gEaMGs hMHVgZ"
-    >
-      <div
-        class="ant-space-item"
-      >
-        Your network is already running in an optimal configuration and we dont have any AI Operations to recommend recently.
-      </div>
-    </div>
+    <svg
+      class="sc-ksZaOG chSTLo"
+      data-testid="CheckMarkCircleSolid"
+    />
+    <p>
+      Your network is already running in an optimal configuration and we dont have any AI Operations to recommend recently.
+    </p>
   </div>
 </DocumentFragment>
 `;

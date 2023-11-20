@@ -3,28 +3,20 @@
 exports[`NoRRMLicense should render correctly with the prop 1`] = `
 <DocumentFragment>
   <div
-    class="sc-hAZoDl hwZXTs"
+    class="sc-jqUVSM cMlFTk"
   >
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center sc-kDDrLX sc-iqcoie fvGTph bjPDie"
+      class="sc-kDDrLX dRRsEl"
     >
-      <div
-        class="ant-space-item"
-      >
+      <p>
         This feature is a centralized algorithm that runs in the RUCKUS Analytics cloud and guarantees zero interfering links for the access points (APs) managed by SmartZone controllers, whenever theoretically achievable thus minimizing co-channel interference to the lowest level possible.
-      </div>
-    </div>
-    <div
-      class="ant-space ant-space-horizontal ant-space-align-center sc-kDDrLX sc-crXcEl fvGTph jiYgzj"
-    >
-      <div
-        class="ant-space-item"
-      >
+      </p>
+      <p>
         Currently RUCKUS AI cannot optimize your current zone for RRM due to inadequate licenses.
-      </div>
+      </p>
     </div>
     <button
-      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kBDiup sc-fEOsli fyeKZw"
+      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kBDiup"
       type="button"
     >
       <span>
@@ -38,47 +30,21 @@ exports[`NoRRMLicense should render correctly with the prop 1`] = `
 exports[`NoRecommendationData should render correctly with the prop 1`] = `
 <DocumentFragment>
   <div
-    class="sc-fnykZs cCgCqG"
+    class="sc-kDDrLX dRRsEl"
   >
-    <div
-      class="ant-space ant-space-horizontal ant-space-align-center sc-kDDrLX sc-evZas fvGTph aHbEs"
-    >
-      <div
-        class="ant-space-item"
-      >
-        This feature is a centralized algorithm that runs in the RUCKUS Analytics cloud and guarantees zero interfering links for the access points (APs) managed by SmartZone controllers, whenever theoretically achievable thus minimizing co-channel interference to the lowest level possible.
-      </div>
-    </div>
-    <div
-      class="ant-space ant-space-horizontal ant-space-align-center sc-kDDrLX fvGTph"
-    >
-      <div
-        class="ant-space-item"
-      >
-        <svg
-          class="sc-bjUoiL"
-          data-testid="NoData"
-        />
-      </div>
-    </div>
-    <div
-      class="ant-space ant-space-horizontal ant-space-align-center sc-ksZaOG hxUUWT"
-    >
-      <div
-        class="ant-space-item"
-      >
-        No data
-      </div>
-    </div>
-    <div
-      class="ant-space ant-space-horizontal ant-space-align-center sc-kDDrLX sc-breuTD fvGTph fUTSAG"
-    >
-      <div
-        class="ant-space-item"
-      >
-        Currently RUCKUS AI cannot provide RRM combinations as zones are not found on your network
-      </div>
-    </div>
+    <p>
+      Currently RUCKUS AI cannot provide RRM combinations as zones are not found on your network
+    </p>
+    <svg
+      class="sc-iqcoie bhdzFE"
+      data-testid="NoData"
+    />
+    <p>
+      No data
+    </p>
+    <p>
+      This feature is a centralized algorithm that runs in the RUCKUS Analytics cloud and guarantees zero interfering links for the access points (APs) managed by SmartZone controllers, whenever theoretically achievable thus minimizing co-channel interference to the lowest level possible.
+    </p>
   </div>
 </DocumentFragment>
 `;

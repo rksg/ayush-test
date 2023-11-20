@@ -1,93 +1,53 @@
-import { Space } from 'antd'
-import styled    from 'styled-components'
+import styled, { css } from 'styled-components'
 
-import { Button }                                                                             from '@acx-ui/components'
 import { CheckMarkCircleSolid, CancelCircleOutlined, CheckMarkCircleOutline, Reload, NoData } from '@acx-ui/icons'
 
-export const GreenTickIcon = styled(CheckMarkCircleOutline)`
-  height: 12px;
-  width: 12px;
+import * as UI from '../AIDrivenRRM/styledComponents'
+
+export * from '../AIDrivenRRM/styledComponents'
+
+const iconStyle = css`
+  --size: 12px;
+  height: var(--size);
+  width: var(--size);
   margin-right: 5px;
+`
+
+export const GreenTickIcon = styled(CheckMarkCircleOutline)`
+  ${iconStyle}
   color: var(--acx-semantics-green-50);
 `
 export const RedCancelIcon = styled(CancelCircleOutlined)`
-  height: 12px;
-  width: 12px;
-  margin-right: 5px;
+  ${iconStyle}
   color: var(--acx-semantics-red-50);
 `
 export const OrangeRevertIcon = styled(Reload)`
-  height: 12px;
-  width: 12px;
-  margin-right: 5px;
+  ${iconStyle}
   color: var(--acx-accents-orange-50);
 `
 
-export const TextWrapper = styled(Space)`
-  text-align: center;
-  justify-content: center;
-  width: 100%;
+export const LargeGreenTickIcon = styled(CheckMarkCircleSolid)<{ $noData: boolean }>`
+  --size: 48px;
+  height: var(--size);
+  width: var(--size);
+  display: block;
+  margin-block: 10px 16px;
+  ${p => p.$noData && 'margin-top: 44px;'}
+
+  ${UI.iconAndTextAlignCenter}
 `
-export const NoRecommendationDataWrapper = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  width: 85%;
-  position: absolute;
-  left: 50%;
-  top: 35%;
-  transform: translate(-50%, -50%);
+
+export const NoDataIcon = styled(NoData)`
+  display: block;
+  margin-block: 54px 2px;
+
+  ${UI.iconAndTextAlignCenter}
 `
-export const NoAILicenseWrapper = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: end;
-  width: 85%;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+
+export const ContentWrapper = styled(UI.ContentWrapper)<{ $noData?: boolean }>`
+  ${p => !p.$noData && css`
+    flex: unset;
+    border-bottom: 1px solid var(--acx-neutrals-25);
+    margin-bottom: 5px;
+  `}
 `
-export const NoRecommendationTopWrapper = styled(Space)`
-  text-align: center;
-  justify-content: center;
-  width: 100%;
-  padding-bottom: 15px;
-`
-export const NoRecommendationBottomWrapper = styled(TextWrapper)`
-  font-family: var(--acx-neutral-brand-font);
-  font-weight: var(--acx-body-4-font-weight);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
-  color: 'var(--acx-neutrals-50)';
-`
-export const NoLicenseTopWrapper = styled(Space)`
-  text-align: center;
-  justify-content: center;
-  width: 100%;
-  padding-top: 50px;
-`
-export const NoLicenseBottomWrapper = styled(TextWrapper)`
-  font-family: var(--acx-neutral-brand-font);
-  font-weight: var(--acx-body-4-font-weight);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
-  color: 'var(--acx-neutrals-50)';
-  padding-bottom: 100px;
-`
-export const NoLicenseTextWrapper = styled(Space)`
-  text-align: center;
-  justify-content: center;
-  width: 100%;
-  color: var(--acx-neutrals-50);
-  padding-bottom: 20px;
-`
-export const LargeGreenTickIcon = styled(CheckMarkCircleSolid)`
-  height: 48px;
-  width: 48px;
-`
-export const LicenseButton = styled(Button)`
-  width: 100%;
-`
-export const NoDataIcon = styled(NoData)``

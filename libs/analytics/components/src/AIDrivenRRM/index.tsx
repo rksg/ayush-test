@@ -1,4 +1,6 @@
+import { List }    from 'antd'
 import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { isSwitchPath }                                      from '@acx-ui/analytics/utils'
 import { Loader, Card, Tooltip, ColorPill }                  from '@acx-ui/components'
@@ -25,7 +27,7 @@ function AIDrivenRRMWidget ({
   const { $t } = useIntl()
   const switchPath = isSwitchPath(pathFilters.path)
   const onArrowClick = useNavigateToPath('/analytics/recommendations/crrm')
-  const queryResults = useCrrmListQuery({ ...pathFilters, n: 5 }, { skip: switchPath })
+  const queryResults = useCrrmListQuery({ ...pathFilters, n: 12 }, { skip: switchPath })
   const data = switchPath
     ? {
       crrmCount: 0,
@@ -50,7 +52,6 @@ function AIDrivenRRMWidget ({
   const noLicense = data?.recommendations.length !== 0
     && data?.recommendations.filter(i => i.status === 'insufficientLicenses').length
     === data?.recommendations.length
-  const filteredRecommendations = data?.recommendations.slice(0, 5)
 
   const subtitle = $t(
     {
@@ -95,18 +96,13 @@ function AIDrivenRRMWidget ({
       onArrowClick={onArrowClick}
       subTitle={noLicense || !zoneCount ? '' : subtitle}
     >{zoneCount === 0
-        ? <NoRecommendationData
-          details={defaultText}
-          text={noZoneText}
-        />
+        ? <NoRecommendationData text={defaultText} details={noZoneText} />
         : noLicense
-          ? <NoRRMLicense
-            text={defaultText}
-            details={noLicenseText}/>
-          : <UI.List
-            dataSource={filteredRecommendations}
-            renderItem={item => {
-              const recommendation = item as CrrmListItem
+          ? <NoRRMLicense text={defaultText} details={noLicenseText} />
+          : <AutoSizer>{(style) => <List<CrrmListItem>
+            style={style}
+            dataSource={data?.recommendations.slice(0, style.height / 50 | 0)}
+            renderItem={recommendation => {
               const {
                 sliceValue,
                 id,
@@ -136,13 +132,13 @@ function AIDrivenRRMWidget ({
 
               const unknownPath = `unknown?${paramString}`
 
-              return <UI.List.Item key={`${id}${sliceValue}`}>
+              return <UI.ListItem key={`${id}${sliceValue}`}>
                 <TenantLink to={`/recommendations/crrm/${code === 'unknown' ? unknownPath : id}`}>
                   <Tooltip
                     placement='top'
                     title={code === 'unknown' ? '' : summary}
                   >
-                    <UI.List.Item.Meta
+                    <UI.ListItem.Meta
                       avatar={<OptimizedIcon value={crrmOptimizedState!.order} />}
                       title={sliceValue}
                       description={code === 'unknown'
@@ -151,9 +147,9 @@ function AIDrivenRRMWidget ({
                     />
                   </Tooltip>
                 </TenantLink>
-              </UI.List.Item>
+              </UI.ListItem>
             }}
-          />
+          />}</AutoSizer>
       }
     </Card>
   </Loader>

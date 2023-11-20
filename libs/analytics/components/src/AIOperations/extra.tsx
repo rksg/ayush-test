@@ -1,5 +1,6 @@
 import { useIntl } from 'react-intl'
 
+import { Button }      from '@acx-ui/components'
 import { useNavigate } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
@@ -13,14 +14,10 @@ export function NoRecommendationData ({
   text, noData = false
 }: NoDataWrapperProps) {
   return (
-    <UI.NoRecommendationDataWrapper style={{ marginTop: noData ? '50px': 0 }}>
-      <UI.NoRecommendationTopWrapper>
-        <UI.LargeGreenTickIcon />
-      </UI.NoRecommendationTopWrapper>
-      <UI.NoRecommendationBottomWrapper>
-        {text}
-      </UI.NoRecommendationBottomWrapper>
-    </UI.NoRecommendationDataWrapper>
+    <UI.ContentWrapper $noData={noData}>
+      <UI.LargeGreenTickIcon $noData={noData} />
+      <p>{text}</p>
+    </UI.ContentWrapper>
   )
 }
 
@@ -29,19 +26,18 @@ export function NoAiOpsLicense ({ text }: NoDataWrapperProps) {
   const noLicenseText = $t({ defaultMessage: 'No license' })
   const navigate = useNavigate()
   return (
-    <UI.NoAILicenseWrapper>
-      <div>
-        <UI.NoLicenseTopWrapper><UI.NoDataIcon /></UI.NoLicenseTopWrapper>
-        <UI.NoLicenseTextWrapper>{noLicenseText}</UI.NoLicenseTextWrapper>
-      </div>
-      <UI.NoLicenseBottomWrapper>{text}</UI.NoLicenseBottomWrapper>
-      <UI.LicenseButton
+    <UI.Wrapper>
+      <UI.ContentWrapper $noData>
+        <UI.NoDataIcon />
+        <p>{noLicenseText}</p>
+        <p>{text}</p>
+      </UI.ContentWrapper>
+      <Button
+        block
         type='default'
-        onClick={() => {
-          navigate('/analytics/admin/license')
-        }}>
-        {$t({ defaultMessage: 'Update my licenses' })}
-      </UI.LicenseButton>
-    </UI.NoAILicenseWrapper>
+        onClick={() => navigate('/analytics/admin/license')}
+        children={$t({ defaultMessage: 'Update my licenses' })}
+      />
+    </UI.Wrapper>
   )
 }
