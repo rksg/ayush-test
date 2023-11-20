@@ -10,7 +10,8 @@ export const mockedTunnelProfileViewData = {
       mtuSize: 1450,
       forceFragmentation: true,
       personalIdentityNetworkIds: ['nsg1', 'nsg2'],
-      networkIds: ['network1', 'network2']
+      networkIds: ['network1', 'network2'],
+      type: 'VXLAN'
     },
     {
       id: 'tunnelProfileId2',
@@ -20,7 +21,8 @@ export const mockedTunnelProfileViewData = {
       mtuSize: 0,
       forceFragmentation: false,
       personalIdentityNetworkIds: ['nsg1', 'nsg2'],
-      networkIds: ['network1', 'network2']
+      networkIds: ['network1', 'network2'],
+      type: 'VXLAN'
     },
     {
       id: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
@@ -30,7 +32,8 @@ export const mockedTunnelProfileViewData = {
       mtuSize: 0,
       forceFragmentation: false,
       personalIdentityNetworkIds: ['nsg1', 'nsg2'],
-      networkIds: ['network1', 'network2']
+      networkIds: ['network1', 'network2'],
+      type: 'VXLAN'
     }
   ]
 }
@@ -47,7 +50,8 @@ export const mockedDefaultTunnelProfileViewData = {
       mtuSize: 0,
       forceFragmentation: false,
       personalIdentityNetworkIds: ['nsg1', 'nsg2'],
-      networkIds: ['network1', 'network2']
+      networkIds: ['network1', 'network2'],
+      type: 'VXLAN'
     }
   ]
 }

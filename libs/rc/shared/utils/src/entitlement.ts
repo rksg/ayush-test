@@ -49,6 +49,7 @@ export class EntitlementUtil {
         return $t({ defaultMessage: 'SmartEdge' })
       case EntitlementDeviceType.APSW:
       case EntitlementDeviceType.MSP_APSW:
+      case EntitlementDeviceType.MSP_APSW_TEMP:
         return $t({ defaultMessage: 'Devices' })
       default:
         return ''

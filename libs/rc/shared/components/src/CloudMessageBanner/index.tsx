@@ -46,7 +46,9 @@ export function CloudMessageBanner () {
   const [getCloudScheduleVersion] = useLazyGetCloudScheduleVersionQuery()
   const [getSwitchVenueVersionList] = useLazyGetSwitchVenueVersionListQuery()
   const [getVenueEdgeFirmwareList] = useLazyGetVenueEdgeFirmwareListQuery()
-  const plmMessageExists = !!(data && data.description)
+
+  const hidePlmMessage = !!sessionStorage.getItem('hidePlmMessage')
+  const plmMessageExists = !!(data && data.description) && !hidePlmMessage
 
   useEffect(() => {
     if (cloudVersion && userSettings) {
@@ -111,63 +113,47 @@ export function CloudMessageBanner () {
       newWifiScheduleExists ||
       newSwitchScheduleExists ||
       newEdgeScheduleExists
-    ) && !plmMessageExists
+    )
     setUpgradeMessageTitle(showUpgradeSchedule
       ? $t({ defaultMessage: 'An upgrade schedule for the new firmware version is available.' })
       : '')
-  }, [$t, newWifiScheduleExists, newSwitchScheduleExists, newEdgeScheduleExists, plmMessageExists])
 
-  useEffect(() => {
-    if (layout.showMessageBanner === true) {
-      if(!upgradeMessageTitle && !plmMessageExists) {
-        layout.setShowMessageBanner(false)
-      }
-    } else {
-      if (upgradeMessageTitle ||
-        (layout.showMessageBanner === undefined && plmMessageExists)) {
-        layout.setShowMessageBanner(true)
-      }
-    }
-  }, [layout, plmMessageExists, upgradeMessageTitle])
-
-  const MessageBanner = () => {
-    if (!layout.showMessageBanner) return null
     if (plmMessageExists) {
-      return <Alert message={data?.description}
-        type='info'
-        showIcon
-        closable
-        onClose={()=>{
-          layout.setShowMessageBanner(false)
-        }}/>
+      layout.setShowMessageBanner(true)
+    } else if (showUpgradeSchedule) {
+      layout.setShowMessageBanner(true)
     } else {
-      const showVScheduleInfo = () => {
-        if (newWifiScheduleExists) {
-          navigate(`${linkToAdministration.pathname}/fwVersionMgmt/apFirmware`)
-        } else if (newSwitchScheduleExists) {
-          navigate(`${linkToAdministration.pathname}/fwVersionMgmt/switchFirmware`)
-        } else if(newEdgeScheduleExists) {
-          navigate(`${linkToAdministration.pathname}/fwVersionMgmt/edgeFirmware`)
-        }
-      }
-      if (upgradeMessageTitle) {
-        return <Alert
-          message={<Space>{upgradeMessageTitle}
-            <Button type='link'
-              size='small'
-              onClick={showVScheduleInfo}>
-              { $t({ defaultMessage: 'More details' }) }
-            </Button>
-          </Space>}
-          type='info'
-          showIcon
-        />
-      }
+      layout.setShowMessageBanner(false)
     }
-    return null
+  // eslint-disable-next-line max-len
+  }, [$t, newWifiScheduleExists, newSwitchScheduleExists, newEdgeScheduleExists, layout, plmMessageExists])
+
+  const showVScheduleInfo = () => {
+    if (newWifiScheduleExists) {
+      navigate(`${linkToAdministration.pathname}/fwVersionMgmt/apFirmware`)
+    } else if (newSwitchScheduleExists) {
+      navigate(`${linkToAdministration.pathname}/fwVersionMgmt/switchFirmware`)
+    } else if(newEdgeScheduleExists) {
+      navigate(`${linkToAdministration.pathname}/fwVersionMgmt/edgeFirmware`)
+    }
   }
 
-  return <MessageBanner />
+  return layout.showMessageBanner ? <Alert type='info'
+    showIcon
+    closable={!!plmMessageExists}
+    onClose={()=>{
+      layout.setShowMessageBanner(false)
+      sessionStorage.setItem('hidePlmMessage', 'true')
+    }}
+    message={plmMessageExists ? data?.description :
+      upgradeMessageTitle ? <Space>{upgradeMessageTitle}
+        <Button type='link'
+          size='small'
+          onClick={showVScheduleInfo}>
+          { $t({ defaultMessage: 'More details' }) }
+        </Button>
+      </Space> : ''}
+  /> : null
 }
 
 const isThereNewSchedule = (

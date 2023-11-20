@@ -156,7 +156,10 @@ const ActivityTable = ({
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'description',
       render: function (_, row) {
-        return getActivityDescription(row.descriptionTemplate, row.descriptionData)
+        return getActivityDescription(row.descriptionTemplate,
+          row.descriptionData,
+          row?.linkData,
+          row?.linkTemplate)
       }
     }
   ]
@@ -184,7 +187,10 @@ const ActivityTable = ({
     },
     {
       title: defineMessage({ defaultMessage: 'Description' }),
-      value: getActivityDescription(data.descriptionTemplate, data.descriptionData)
+      value: getActivityDescription(data.descriptionTemplate,
+        data.descriptionData,
+        data?.linkData,
+        data?.linkTemplate)
     }
   ]
 
