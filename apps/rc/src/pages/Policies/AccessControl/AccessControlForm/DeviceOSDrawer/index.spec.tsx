@@ -6,7 +6,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { useIsSplitOn, useIsTierAllowed }     from '@acx-ui/feature-toggle'
 import { AccessControlUrls }                  from '@acx-ui/rc/utils'
 import { Provider }                           from '@acx-ui/store'
 import { mockServer, render, screen, within } from '@acx-ui/test-utils'
@@ -440,6 +440,7 @@ describe('DeviceOSDrawer Component setting II', () => {
 
   it.skip('Render DeviceOSDrawer component successfully with Gaming & PlayStation', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     mockServer.use(rest.get(
       AccessControlUrls.getDevicePolicyList.url,
@@ -820,6 +821,7 @@ describe('DeviceOSDrawer Component', () => {
   // eslint-disable-next-line max-len
   it.skip('Render DeviceDrawer component successfully with max number of rules validation', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     mockServer.use(rest.get(
       AccessControlUrls.getDevicePolicyList.url,
@@ -943,6 +945,7 @@ describe('DeviceOSDrawer Component', () => {
   // eslint-disable-next-line max-len
   it.skip('Render DeviceDrawer component successfully with Xbox in the existing rules', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     const devicePolicyDetailWith31RulesWithXboxResponse = {
       ...devicePolicyDetailWith32RulesResponse,
@@ -1070,6 +1073,7 @@ describe('DeviceOSDrawer Component', () => {
   // eslint-disable-next-line max-len
   it('Render DeviceDrawer component successfully with PlayStation in the existing rules', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     const devicePolicyDetailWith31RulesWithPlayStationResponse = {
       ...devicePolicyDetailWith32RulesResponse,
