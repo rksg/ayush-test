@@ -1,8 +1,8 @@
 import userEvent from '@testing-library/user-event'
 
-import { useIsSplitOn }               from '@acx-ui/feature-toggle'
-import { ReportType }                 from '@acx-ui/reports/components'
-import { Provider, dataApiSearchURL } from '@acx-ui/store'
+import { useIsSplitOn }         from '@acx-ui/feature-toggle'
+import { ReportType }           from '@acx-ui/reports/components'
+import { Provider, dataApiURL } from '@acx-ui/store'
 import {
   mockGraphqlQuery,
   render,
@@ -33,47 +33,50 @@ jest.mock('@acx-ui/reports/components', () => ({
 describe('WiFi Page', () => {
   beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
   it('should render aps table tab', async () => {
-    const apList = { search: {
-      aps: [
-        {
-          apName: 'AL-Guest-R610',
-          macAddress: '90:3A:72:24:D0:40',
-          apModel: 'R610',
-          ipAddress: '192.168.2.105',
-          version: '6.1.2.0.580',
-          apZone: 'Albert-Home-Main',
-          networkPath: [
+    const apList = {
+      network: {
+        search: {
+          aps: [
             {
-              name: 'Network',
-              type: 'network'
-            },
-            {
-              name: 'vsz34',
-              type: 'system'
-            },
-            {
-              name: '04-US-CA-D4-Albert-Home',
-              type: 'domain'
-            },
-            {
-              name: 'Albert-Home-Main',
-              type: 'zone'
-            },
-            {
-              name: 'default',
-              type: 'apGroup'
-            },
-            {
-              name: '90:3A:72:24:D0:40',
-              type: 'AP'
+              apName: 'AL-Guest-R610',
+              macAddress: '90:3A:72:24:D0:40',
+              apModel: 'R610',
+              ipAddress: '192.168.2.105',
+              version: '6.1.2.0.580',
+              apZone: 'Albert-Home-Main',
+              networkPath: [
+                {
+                  name: 'Network',
+                  type: 'network'
+                },
+                {
+                  name: 'vsz34',
+                  type: 'system'
+                },
+                {
+                  name: '04-US-CA-D4-Albert-Home',
+                  type: 'domain'
+                },
+                {
+                  name: 'Albert-Home-Main',
+                  type: 'zone'
+                },
+                {
+                  name: 'default',
+                  type: 'apGroup'
+                },
+                {
+                  name: '90:3A:72:24:D0:40',
+                  type: 'AP'
+                }
+              ]
             }
           ]
         }
-      ]
-    }
+      }
     }
 
-    mockGraphqlQuery(dataApiSearchURL, 'Search', {
+    mockGraphqlQuery(dataApiURL, 'Network', {
       data: apList
     })
     render(<WiFiPage tab={WifiTabsEnum.LIST}/>,

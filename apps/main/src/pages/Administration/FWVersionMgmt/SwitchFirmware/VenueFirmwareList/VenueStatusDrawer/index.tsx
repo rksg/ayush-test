@@ -14,7 +14,9 @@ import { useLazyGetSwitchFirmwareStatusListQuery } from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenue,
   SwitchFirmwareStatus,
-  SwitchFwStatusEnum
+  SwitchFwStatusEnum,
+  defaultSort,
+  sortProp
 } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
@@ -63,13 +65,13 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
       title: $t({ defaultMessage: 'Switch' }),
       dataIndex: 'switchName',
       defaultSortOrder: 'ascend',
-      sorter: true,
+      sorter: { compare: sortProp('switchName', defaultSort) },
       fixed: 'left'
     }, {
       key: 'status',
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
-      sorter: true,
+      sorter: false,
       render: function (_, row) {
         if (Object.values(SwitchFwStatusEnum).includes(row.status)) {
           const fwMappings = {
@@ -121,7 +123,7 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
       key: 'targetFirmware',
       title: $t({ defaultMessage: 'Target Firmware' }),
       dataIndex: 'targetFirmware',
-      sorter: true,
+      sorter: false,
       render: function (_, row) {
         if (row.targetFirmware) {
           return parseSwitchVersion(row.targetFirmware)

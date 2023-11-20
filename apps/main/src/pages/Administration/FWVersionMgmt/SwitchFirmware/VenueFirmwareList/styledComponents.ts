@@ -97,6 +97,11 @@ export const SwitchFirmwareStepsForm = styled(StepsForm)<{ wizardtype: SwitchFir
 export const ExpanderTableWrapper = styled.div`
   min-height: 50vh;
   margin-bottom: 30px;
+  [class*="styledComponents__Header"]{
+    background: transparent;
+    }
+
+  overflow-x: auto;
 
   .ant-table-tbody {
     background-color: var(--acx-neutrals-20);
