@@ -32,14 +32,16 @@ export interface ScheduleStepProps {
   hasVenue: boolean,
   data: FirmwareSwitchVenue[],
   upgradeVenueList: FirmwareSwitchVenue[],
-  upgradeSwitchList: SwitchFirmware[]
+  upgradeSwitchList: SwitchFirmware[],
+  setShowSubTitle: (visible: boolean) => void
 }
 
 export function ScheduleStep (props: ScheduleStepProps) {
   const intl = useIntl()
-  const { form } = useStepFormContext()
+  const { form, current } = useStepFormContext()
   const { availableVersions, nonIcx8200Count, icx8200Count,
-    hasVenue, upgradeVenueList, upgradeSwitchList } = props
+    hasVenue, upgradeVenueList, upgradeSwitchList,
+    setShowSubTitle } = props
   const [selectedVersion, setSelectedVersion] = useState('')
   const [selectedAboveTenVersion, setSelectedAboveTenVersion] = useState<string>('')
   const [hasSelectedDate, setHasSelectedDate] = useState<boolean>(false)
@@ -64,6 +66,10 @@ export function ScheduleStep (props: ScheduleStepProps) {
   const currentSchedule = getCurrentSchedule()
   const currentScheduleVersion = currentSchedule?.version?.name ?? ''
   const currentScheduleVersionAboveTen = currentSchedule?.versionAboveTen?.name ?? ''
+
+  useEffect(()=>{
+    setShowSubTitle(false)
+  }, [current])
 
   useEffect(() => {
     if (currentSchedule?.timeSlot?.startDateTime) {
@@ -180,6 +186,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
       <Form.Item>
         <div>
           <UI.ValidateField
+            style={{ position: 'fixed', marginTop: '-25px' }}
             name='selectVersionStep'
             rules={[
               {
@@ -257,7 +264,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
       </UI.TitleActive>}
 
       <Form.Item
-        label={intl.$t({ defaultMessage: 'Update date:' })}
+        label={intl.$t({ defaultMessage: 'Update date' })}
         name='selectDateStep'
         validateFirst
         rules={[
@@ -276,7 +283,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
       {hasSelectedDate &&
         <Form.Item
           name='selectTimeStep'
-          label={intl.$t({ defaultMessage: 'Update time:' })}
+          label={intl.$t({ defaultMessage: 'Update time' })}
           rules={[
             { required: true }
           ]}

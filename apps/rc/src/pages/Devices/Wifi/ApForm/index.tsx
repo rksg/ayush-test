@@ -30,6 +30,7 @@ import {
   useWifiCapabilitiesQuery,
   useGetVenueVersionListQuery,
   useLazyGetVenueApManagementVlanQuery,
+  useLazyGetApManagementVlanQuery,
   useLazyApViewModelQuery
 } from '@acx-ui/rc/services'
 import {
@@ -84,6 +85,7 @@ export function ApForm () {
   const wifiEdaflag = useIsSplitOn(Features.WIFI_EDA_READY_TOGGLE)
   const wifiEdaGatewayflag = useIsSplitOn(Features.WIFI_EDA_GATEWAY)
   const supportVenueMgmtVlan = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
+  const supportApMgmtVlan = useIsSplitOn(Features.AP_MANAGEMENT_VLAN_AP_LEVEL_TOGGLE)
   const { tenantId, action, serialNumber } = useParams()
   const formRef = useRef<StepsFormLegacyInstance<ApDeep>>()
   const navigate = useNavigate()
@@ -106,6 +108,7 @@ export function ApForm () {
   const [getDhcpAp] = useLazyGetDhcpApQuery()
   const [apGroupList] = useLazyApGroupListQuery()
   const [getTargetVenueMgmtVlan] = useLazyGetVenueApManagementVlanQuery()
+  const [getApMgmtVlan] = useLazyGetApManagementVlanQuery()
   const [getCurrentApMgmtVlan] = useLazyApViewModelQuery()
 
   const isEditMode = action === 'edit'
@@ -375,15 +378,20 @@ export function ApForm () {
     if (supportVenueMgmtVlan) {
       const targetVenueMgmtVlan = (await getTargetVenueMgmtVlan(
         { params: { venueId: value } })).data
-      const currentMgmtVlan = (await getCurrentApMgmtVlan(
-        { params, payload: apViewModelPayload })).data
       if (targetVenueMgmtVlan?.vlanOverrideEnabled === undefined ||
-        targetVenueMgmtVlan?.vlanOverrideEnabled === false) {
+          targetVenueMgmtVlan?.vlanOverrideEnabled === false) {
         setChangeMgmtVlan(false)
-      } else if (currentMgmtVlan?.apStatusData?.APSystem &&
-        currentMgmtVlan?.apStatusData?.APSystem.managementVlan
-         !== targetVenueMgmtVlan?.vlanId) {
-        setChangeMgmtVlan(true)
+      } else if (supportApMgmtVlan) {
+        const apMgmtVlan = (await getApMgmtVlan(
+          { params: { serialNumber } })).data
+        setChangeMgmtVlan(apMgmtVlan?.useVenueSettings === true &&
+          apMgmtVlan?.vlanId !== targetVenueMgmtVlan?.vlanId ? true : false)
+      } else {
+        const currentMgmtVlan = (await getCurrentApMgmtVlan(
+          { params, payload: apViewModelPayload })).data
+        setChangeMgmtVlan(currentMgmtVlan?.apStatusData?.APSystem &&
+          currentMgmtVlan?.apStatusData?.APSystem.managementVlan
+           !== targetVenueMgmtVlan?.vlanId ? true : false)
       }
     }
     setSelectedVenue(selectVenue as unknown as VenueExtended)

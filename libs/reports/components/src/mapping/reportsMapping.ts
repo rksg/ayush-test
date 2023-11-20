@@ -48,7 +48,7 @@ export const reportTypeDataStudioMapping: Record<ReportType, string> = {
   [ReportType.AIRTIME_UTILIZATION]: 'Airtime Utilization Report'
 }
 
-export const reportModeMapping: Record<ReportType, FilterMode> = {
+export const reportTypeMapping: Record<ReportType, FilterMode> = {
   [ReportType.OVERVIEW]: 'none',
   [ReportType.APPLICATION]: 'ap',
   [ReportType.CLIENT]: 'ap',
@@ -70,6 +70,5 @@ export const bandDisabledReports:ReportType[] = [
 ]
 
 export const networkFilterDisabledReports:ReportType[] = [
-  ReportType.OVERVIEW,
-  ReportType.WLAN
+  ReportType.OVERVIEW
 ]

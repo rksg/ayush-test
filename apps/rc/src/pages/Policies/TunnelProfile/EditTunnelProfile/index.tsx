@@ -33,7 +33,8 @@ const EditTunnelProfile = () => {
       mtuType: tunnelProfileData?.mtuType,
       forceFragmentation: tunnelProfileData?.forceFragmentation,
       ageTimeMinutes: result?.value,
-      ageTimeUnit: result?.unit
+      ageTimeUnit: result?.unit,
+      type: tunnelProfileData?.type
     })
   }, [form, tunnelProfileData])
 

@@ -2,16 +2,18 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }     from '@acx-ui/store'
+import { useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { EdgeSdLanUrls, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                    from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen,
-  waitFor
+  waitFor,
+  within
 } from '@acx-ui/test-utils'
 
-import { mockEdgePortConfig, mockEdgePortConfigWithStatusIp } from '../__tests__/fixtures'
+import { mockedCorePortLostEdgeSdLanDataList, mockedEdgeSdLanDataList, mockEdgePortConfigWithStatusIp } from '../__tests__/fixtures'
 
 import { EdgePortsGeneral } from './'
 
@@ -26,10 +28,10 @@ jest.mock('@acx-ui/utils', () => {
   }
 })
 
-
 describe('EditEdge ports - ports general', () => {
   let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
   const mockedUpdateReq = jest.fn()
+  const mockedGetSdLanReq = jest.fn()
 
   beforeEach(() => {
     params = {
@@ -39,16 +41,23 @@ describe('EditEdge ports - ports general', () => {
       activeSubTab: 'ports-general'
     }
     mockedUpdateReq.mockClear()
+    mockedGetSdLanReq.mockClear()
+
+    // SD-LAN flag is off
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
 
     mockServer.use(
-      rest.get(
-        EdgeUrlsInfo.getPortConfig.url,
-        (req, res, ctx) => res(ctx.json(mockEdgePortConfig))
-      ),
       rest.patch(
         EdgeUrlsInfo.updatePortConfig.url,
         (req, res, ctx) => {
           mockedUpdateReq(req.body)
+          return res(ctx.status(202))
+        }
+      ),
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => {
+          mockedGetSdLanReq()
           return res(ctx.status(202))
         }
       )
@@ -66,6 +75,7 @@ describe('EditEdge ports - ports general', () => {
           path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
+
     const ipInput = await screen.findByRole('textbox', { name: 'IP Address' })
     await userEvent.clear(ipInput)
     await userEvent.type(ipInput, '1.1.1.1')
@@ -75,6 +85,7 @@ describe('EditEdge ports - ports general', () => {
     const gatewayInput = await screen.findByRole('textbox', { name: 'Gateway' })
     await userEvent.clear(gatewayInput)
     await userEvent.type(gatewayInput, '1.1.1.1')
+    expect(mockedGetSdLanReq).not.toBeCalled()
     await user.click(await screen.findByRole('button', { name: 'Apply Ports General' }))
 
     const expectedResult = _.cloneDeep(mockEdgePortConfigWithStatusIp)
@@ -139,7 +150,6 @@ describe('EditEdge ports - ports general', () => {
           path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
-
     await user.click(await screen.findByRole('switch', { name: 'Port Enabled' }))
     await user.click(await screen.findByRole('tab', { name: 'Port 2' }))
     const ipInput = await screen.findByRole('textbox', { name: 'IP Address' })
@@ -168,7 +178,6 @@ describe('EditEdge ports - ports general', () => {
     const subnetInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
     await userEvent.clear(subnetInput)
     await userEvent.type(subnetInput, '255.255.192.0')
-
     const ipInput = await screen.findByRole('textbox', { name: 'IP Address' })
 
     // Multicast IP
@@ -228,6 +237,7 @@ describe('EditEdge ports - ports general', () => {
           path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
+
     await user.click(await screen.findByRole('tab', { name: 'Port 5' }))
     const portEnabled = await screen.findByRole('switch', { name: 'Port Enabled' })
     const portTypeSelect = await screen.findByRole('combobox', { name: 'Port Type' })
@@ -247,6 +257,7 @@ describe('EditEdge ports - ports general', () => {
           path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
+
     await user.click(await screen.findByRole('combobox', { name: 'Port Type' }))
     await user.click(await screen.findByText('LAN'))
     await screen.findByRole('textbox', { name: 'IP Address' })
@@ -264,6 +275,7 @@ describe('EditEdge ports - ports general', () => {
           path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
+
     await user.click(await screen.findByRole('tab', { name: 'Port 2' }))
     const portTypeSelect = await screen.findByRole('combobox', { name: 'Port Type' })
     await user.click(portTypeSelect)
@@ -273,6 +285,28 @@ describe('EditEdge ports - ports general', () => {
     await screen.findByRole('textbox', { name: 'IP Address' })
     screen.getByRole('textbox', { name: 'Subnet Mask' })
     screen.getByRole('textbox', { name: 'Gateway' })
+  })
+
+  it('change port type to WAN and undo the change', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <EdgePortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        }
+      })
+
+    const portTypeSelect = await screen.findByRole('combobox', { name: 'Port Type' })
+    await user.click(portTypeSelect)
+    await user.click(await screen.findByText('LAN'))
+    await user.click(portTypeSelect)
+    await user.click((await screen.findAllByText('WAN'))[1])
+    const nat = await screen.findByRole('switch',
+      { name: /Use NAT Service/ })
+    expect(nat).not.toBeChecked()
   })
 
   it('switch port tab', async () => {
@@ -286,6 +320,7 @@ describe('EditEdge ports - ports general', () => {
           path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
+
     await user.click(await screen.findByRole('tab', { name: 'Port 2' }))
     expect(screen.getByRole('textbox', { name: 'Description' })).toHaveValue('local0')
     await user.click(await screen.findByRole('tab', { name: 'Port 3' }))
@@ -306,6 +341,7 @@ describe('EditEdge ports - ports general', () => {
           path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
+
     expect(screen.getByText('No data to display')).toBeVisible()
   })
 })
@@ -320,11 +356,9 @@ describe('EditEdge ports - ports general api fail', () => {
       activeSubTab: 'ports-general'
     }
 
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+
     mockServer.use(
-      rest.get(
-        EdgeUrlsInfo.getPortConfig.url,
-        (req, res, ctx) => res(ctx.json(mockEdgePortConfig))
-      ),
       rest.patch(
         EdgeUrlsInfo.updatePortConfig.url,
         (req, res, ctx) => res(ctx.status(500))
@@ -352,5 +386,203 @@ describe('EditEdge ports - ports general api fail', () => {
     await user.click(await screen.findByRole('button', { name: 'Apply Ports General' }))
     // TODO
     // await screen.findAllByText('Server Error')
+  })
+})
+
+describe('EditEdge ports - SD-LAN ready', () => {
+  let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
+  const mockedGetSdLanReq = jest.fn()
+  const mockedUpdateReq = jest.fn()
+
+  beforeEach(() => {
+    params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      serialNumber: '000000000000',
+      activeTab: 'ports',
+      activeSubTab: 'ports-general'
+    }
+
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    mockServer.use(
+      rest.patch(
+        EdgeUrlsInfo.updatePortConfig.url,
+        (req, res, ctx) => {
+          mockedUpdateReq(req.body)
+          return res(ctx.status(202))
+        }
+      ),
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => {
+          mockedGetSdLanReq()
+          return res(ctx.status(202))
+        }
+      )
+    )
+  })
+
+  it('should correctly display core port info', async () => {
+    render(
+      <Provider>
+        <EdgePortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        }
+      })
+
+    await waitFor(() => {
+      expect(mockedGetSdLanReq).toBeCalled()
+    })
+    const corePortInput = await screen.findByRole('checkbox',
+      { name: /Use this port as Core Port/ })
+    expect(corePortInput).toBeChecked()
+    expect(corePortInput).not.toBeDisabled()
+
+    await userEvent.click(await screen.findByRole('tab', { name: 'Port 2' }))
+    const port2CorePort = await screen.findByRole('checkbox',
+      { name: /Use this port as Core Port/ })
+    expect(port2CorePort).not.toBeChecked()
+    expect(port2CorePort).toBeDisabled()
+  })
+
+  it('should disable NAT when core port is changed into enabled', async () => {
+    render(
+      <Provider>
+        <EdgePortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        }
+      })
+
+    await waitFor(() => {
+      expect(mockedGetSdLanReq).toBeCalled()
+    })
+    const corePortInput = await screen.findByRole('checkbox',
+      { name: /Use this port as Core Port/ })
+
+    // uncheck current core port
+    await userEvent.click(corePortInput)
+
+    await userEvent.click(await screen.findByRole('tab', { name: 'Port 6' }))
+    const port6CorePort = await screen.findByRole('checkbox',
+      { name: /Use this port as Core Port/ })
+    expect(port6CorePort).not.toBeChecked()
+    expect(port6CorePort).not.toBeDisabled()
+    await userEvent.click(port6CorePort)
+    const port5nat = await screen.findByRole('switch',
+      { name: /Use NAT Service/ })
+    expect(port5nat).not.toBeChecked()
+  })
+
+  it('should grey-out all core port checkbox when SD-LAN is running and wll set', async () => {
+    mockServer.use(
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => {
+          mockedGetSdLanReq()
+          return res(ctx.json({ data: mockedEdgeSdLanDataList }))
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <EdgePortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        }
+      })
+
+    await waitFor(() => {
+      expect(mockedGetSdLanReq).toBeCalled()
+    })
+    const corePortInput = await screen.findByRole('checkbox',
+      { name: /Use this port as Core Port/ })
+    expect(corePortInput).toBeChecked()
+    await waitFor(() => {
+      expect(corePortInput).toBeDisabled()
+    })
+
+    await userEvent.click(await screen.findByRole('tab', { name: 'Port 2' }))
+    const port2CorePort = await screen.findByRole('checkbox',
+      { name: /Use this port as Core Port/ })
+    expect(port2CorePort).not.toBeChecked()
+    expect(port2CorePort).toBeDisabled()
+  })
+
+  it('display reminder when port type changed when SD-LAN is running', async () => {
+    mockServer.use(
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => {
+          mockedGetSdLanReq()
+          return res(ctx.json({ data: mockedEdgeSdLanDataList }))
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <EdgePortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        }
+      })
+    await waitFor(() => {
+      expect(mockedGetSdLanReq).toBeCalled()
+    })
+    await userEvent.click(await screen.findByRole('combobox', { name: 'Port Type' }))
+    await userEvent.click(await screen.findByText('LAN'))
+    const dialog = await screen.findByRole('dialog')
+    await within(dialog).findByText(/Please make sure that you are choosing the correct port type/i)
+    await screen.findByRole('textbox', { name: 'IP Address' })
+    screen.getByRole('textbox', { name: 'Subnet Mask' })
+  })
+
+  // eslint-disable-next-line max-len
+  it('should allow user config another core port when core port is missing from SD-LAN', async () => {
+    const emptyCorePortConfig = _.cloneDeep(mockEdgePortConfigWithStatusIp)
+    emptyCorePortConfig.ports.splice(0, 1)
+    mockServer.use(
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => {
+          mockedGetSdLanReq()
+          return res(ctx.json({ data: mockedCorePortLostEdgeSdLanDataList }))
+        }
+      )
+    )
+    render(
+      <Provider>
+        <EdgePortsGeneral data={emptyCorePortConfig.ports} />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        }
+      })
+
+    await waitFor(() => {
+      expect(mockedGetSdLanReq).toBeCalled()
+    })
+    const corePortInput = await screen.findByRole('checkbox',
+      { name: /Use this port as Core Port/ })
+    expect(corePortInput).not.toBeChecked()
+    expect(corePortInput).not.toBeDisabled()
+
+    await userEvent.click(await screen.findByRole('tab', { name: 'Port 2' }))
+    const port2CorePort = await screen.findByRole('checkbox',
+      { name: /Use this port as Core Port/ })
+    expect(port2CorePort).not.toBeChecked()
+    expect(port2CorePort).not.toBeDisabled()
   })
 })

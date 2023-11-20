@@ -152,7 +152,7 @@ export function ApManagementVlanForm () {
     const { vlanId } = form.getFieldsValue()
 
     return {
-      vlanOverrideEnabled: initDataRef.current?.vlanOverrideEnabled,
+      vlanOverrideEnabled: true,
       vlanId,
       useVenueSettings: isUseVenueSettingsRef.current
     }

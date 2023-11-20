@@ -1,4 +1,16 @@
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgePortStatus, EdgeServiceTypeEnum, ACLDirection, AccessAction, ProtocolType, AddressType, LeaseTimeUnit } from '@acx-ui/rc/utils'
+import {
+  EdgeIpModeEnum,
+  EdgePortTypeEnum,
+  EdgePortStatus,
+  EdgeServiceTypeEnum,
+  ACLDirection,
+  AccessAction,
+  ProtocolType,
+  AddressType,
+  LeaseTimeUnit,
+  EdgeLagTypeEnum,
+  EdgeLagTimeoutEnum
+} from '@acx-ui/rc/utils'
 
 export const mockVenueData = {
   fields: ['name', 'id'],
@@ -428,7 +440,7 @@ export const mockEdgeDhcpHostStats = {
 
 export const mockedEdgeServiceList = {
   fields: null,
-  totalCount: 3,
+  totalCount: 4,
   page: 1,
   data: [
     {
@@ -457,6 +469,15 @@ export const mockedEdgeServiceList = {
       status: 'Up',
       currentVersion: '1.1.1',
       targetVersion: '2.2.1'
+    },
+    {
+      edgeId: '96B341ADD6C16C11ED8B8B000C296600F5',
+      serviceName: 'SDLAN-1',
+      serviceId: 'sdlan-1',
+      serviceType: EdgeServiceTypeEnum.SD_LAN,
+      status: 'Up',
+      currentVersion: '1.1.1',
+      targetVersion: ''
     }
   ]
 }
@@ -829,3 +850,138 @@ export const mockedTunnelProfileData = {
   forceFragmentation: true,
   ageTimeMinutes: 20
 }
+
+export const mockEdgeLagStatusList = {
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      lagId: '11',
+      name: 'LAG 1',
+      description: '',
+      lagType: EdgeLagTypeEnum.LACP,
+      status: 'Up',
+      adminStatus: 'Enabled',
+      lagMembers: [
+        {
+          portId: '774d0d62-265a-421a-9a85-cdcfbefeb065',
+          name: 'Port 1',
+          lacpState: 'Up',
+          systemId: '00:aa:bb:cc:dd:ee',
+          key: '100',
+          lacpTimeout: EdgeLagTimeoutEnum.SHORT,
+          peerSystemId: '00:aa:bb:cc:dd:aa',
+          peerKey: '200',
+          lacpRxCount: 10,
+          lacpTxCount: 10
+        },
+        {
+          portId: 'c2037758-f234-4477-b9dd-913f974f6516',
+          name: 'Port 2',
+          lacpState: 'Up',
+          systemId: '00:aa:bb:cc:11:22',
+          key: '100',
+          lacpTimeout: EdgeLagTimeoutEnum.SHORT,
+          peerSystemId: '00:aa:bb:cc:33:44',
+          peerKey: '200',
+          lacpRxCount: 10,
+          lacpTxCount: 10
+        }
+      ],
+      portType: EdgePortTypeEnum.WAN,
+      mac: 'AA:BB:CC:DD:EE:FF',
+      ip: '1.1.1.1',
+      ipMode: EdgeIpModeEnum.DHCP
+    },
+    {
+      lagId: '12',
+      name: 'LAG 2',
+      description: '',
+      lagType: EdgeLagTypeEnum.LACP,
+      status: 'Down',
+      adminStatus: 'Enabled',
+      lagMembers: [],
+      portType: EdgePortTypeEnum.LAN,
+      mac: 'A1:BB:2D:DD:EE:FF',
+      ip: '123.1.2.1',
+      ipMode: EdgeIpModeEnum.STATIC
+    }
+  ]
+}
+
+export const mockedEdgeLagList = {
+  content: [
+    {
+      id: 1,
+      description: 'string',
+      lagType: 'LACP',
+      lacpMode: 'ACTIVE',
+      lacpTimeout: 'SHORT',
+      lagMembers: [
+        {
+          portMac: '00:0c:29:b6:ad:04',
+          portEnabled: true
+        },
+        {
+          portMac: '00:00:00:00:00:00',
+          portEnabled: true
+        }
+      ],
+      portType: 'WAN',
+      ipMode: 'DHCP',
+      ip: '',
+      subnet: '',
+      gateway: '',
+      corePortEnabled: true,
+      natEnabled: true,
+      lagEnabled: true
+    },
+    {
+      id: 2,
+      description: 'string',
+      lagType: 'LACP',
+      lacpMode: 'ACTIVE',
+      lacpTimeout: 'SHORT',
+      lagMembers: [],
+      portType: 'LAN',
+      ipMode: 'STATIC',
+      ip: '1.1.1.1',
+      subnet: '255.255.255.0',
+      gateway: '1.0.0.0',
+      corePortEnabled: false,
+      natEnabled: true,
+      lagEnabled: true
+    }
+  ],
+  paging: {
+    page: 1,
+    pageSize: 10,
+    totalCount: 2
+  }
+}
+
+export const mockedSdLanDataList = [{
+  id: 'mocked-sd-lan-1',
+  name: 'Mocked_SDLAN_1',
+  tenantId: '0f18d1cf714b4bcf94bef4654f1ab29c',
+  venueId: 'a307d7077410456f8f1a4fc41d861567',
+  venueName: 'Mocked-Venue-1',
+  edgeId: '96B968BD2C76ED11EEA8E4B2E81F537A94',
+  edgeName: 'vSE-b490',
+  tunnelProfileId: 'aa3ecf6f283448d5bb8c0ce86790b843',
+  tunnelProfileName: 'Mocked_tunnel',
+  networkIds: ['8e22159cfe264ac18d591ea492fbc05a'],
+  networkInfos: [{
+    networkId: '8e22159cfe264ac18d591ea492fbc05a',
+    networkName: 'Mocked_network'
+  }],
+  corePortMac: 'c2:58:00:ae:63:f2',
+  edgeAlarmSummary: {
+    edgeId: 'mocked-edge-1',
+    severitySummary: {
+      critical: 1
+    },
+    totalCount: 1
+  },
+  serviceVersion: '1.0.0.100'
+}]

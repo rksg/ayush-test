@@ -400,6 +400,10 @@ describe('IncidentTable', () => {
         'RADIUS failures are unusually high in Access Point: r710_!21690 (60:D0:2C:22:6B:90)'
       )
     )
+    expect(await screen.findByText(
+      // eslint-disable-next-line max-len
+      'RADIUS failures are high in Access Point: r710_!21690 (60:D0:2C:22:6B:90) impacting connectivity for 66.67% of clients.')
+    ).toBeVisible()
     expect(await screen.findByText('Root cause:')).toBeVisible()
   })
   it('should close drawer when click on drawer close button', async () => {
