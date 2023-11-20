@@ -3,24 +3,23 @@
 exports[`NoAiOpsLicense should render correctly with the prop 1`] = `
 <DocumentFragment>
   <div
-    class="sc-iqcoie brkYsc"
+    class="sc-crXcEl cChhmr"
   >
     <div>
       <div
-        class="ant-space ant-space-horizontal ant-space-align-center sc-crXcEl iPnIOC"
-        style="padding-top: 50px;"
+        class="ant-space ant-space-horizontal ant-space-align-center sc-ksZaOG cGGGRP"
       >
         <div
           class="ant-space-item"
         >
           <svg
-            class="sc-fnykZs"
+            class="sc-idiyUo"
             data-testid="NoData"
           />
         </div>
       </div>
       <div
-        class="ant-space ant-space-horizontal ant-space-align-center sc-evZas evYqpX"
+        class="ant-space ant-space-horizontal ant-space-align-center sc-fnykZs hBrBTH"
       >
         <div
           class="ant-space-item"
@@ -30,8 +29,7 @@ exports[`NoAiOpsLicense should render correctly with the prop 1`] = `
       </div>
     </div>
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center sc-crXcEl sc-breuTD iPnIOC hMHVgZ"
-      style="padding-bottom: 100px;"
+      class="ant-space ant-space-horizontal ant-space-align-center sc-kDDrLX sc-hAZoDl gEaMGs jcjwgg"
     >
       <div
         class="ant-space-item"
@@ -40,7 +38,7 @@ exports[`NoAiOpsLicense should render correctly with the prop 1`] = `
       </div>
     </div>
     <button
-      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kBDiup sc-hAZoDl iUvYKm"
+      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kBDiup sc-bjUoiL fbQKcx"
       type="button"
     >
       <span>
@@ -54,24 +52,23 @@ exports[`NoAiOpsLicense should render correctly with the prop 1`] = `
 exports[`NoRecommendationData should render correctly with the prop 1`] = `
 <DocumentFragment>
   <div
-    class="sc-kDDrLX iKHfcM"
+    class="sc-iqcoie jdOpAt"
     style="margin-top: 0px;"
   >
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center sc-crXcEl iPnIOC"
-      style="padding-bottom: 15px;"
+      class="ant-space ant-space-horizontal ant-space-align-center sc-evZas fBWbrm"
     >
       <div
         class="ant-space-item"
       >
         <svg
-          class="sc-ksZaOG dUlGeZ"
+          class="sc-fEOsli piiSc"
           data-testid="CheckMarkCircleSolid"
         />
       </div>
     </div>
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center sc-crXcEl sc-breuTD iPnIOC hMHVgZ"
+      class="ant-space ant-space-horizontal ant-space-align-center sc-kDDrLX sc-breuTD gEaMGs hMHVgZ"
     >
       <div
         class="ant-space-item"
