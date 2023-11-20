@@ -6,7 +6,6 @@ import { useIntl }                        from 'react-intl'
 
 import { Modal }     from '@acx-ui/components'
 import {
-  EolApFirmware,
   FirmwareCategory,
   FirmwareVenue,
   FirmwareVersion,
@@ -15,9 +14,9 @@ import {
 
 import { getVersionLabel, isBetaFirmware } from '../../FirmwareUtils'
 
-import * as UI                          from './styledComponents'
-import { firmwareNote1, firmwareNote2 } from './UpdateNowDialog'
-import { useApEolFirmware }             from './useApEolFirmware'
+import * as UI                                  from './styledComponents'
+import { firmwareNote1, firmwareNote2 }         from './UpdateNowDialog'
+import { EolApFirmwareGroup, useApEolFirmware } from './useApEolFirmware'
 
 type UpdateNowRequestWithoutVenues = Exclude<UpdateNowRequest, 'venueIds'>
 
@@ -29,11 +28,14 @@ export interface AdvancedUpdateNowDialogProps {
 }
 
 export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
-  // eslint-disable-next-line max-len
-  const { getAvailableEolApFirmwares, getEolABFOtherVersionsOptions, getDefaultEolVersionLabel } = useApEolFirmware()
+  const {
+    getAvailableEolApFirmwareGroups,
+    getEolABFOtherVersionsOptions,
+    getDefaultEolVersionLabel
+  } = useApEolFirmware()
   const intl = useIntl()
   const { onSubmit, onCancel, data: venuesData = [], availableVersions } = props
-  const eolApFirmwares = getAvailableEolApFirmwares(venuesData)
+  const eolApFirmwareGroups = getAvailableEolApFirmwareGroups(venuesData)
   const eolABFOtherVersion = getEolABFOtherVersionsOptions(venuesData)
   const [disableSave, setDisableSave] = useState(false)
   const [updateNowRequestPayload, setUpdateNowRequestPayload] = useState<
@@ -97,8 +99,8 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
       okButtonProps={{ disabled: disableSave }}
       destroyOnClose={true}
     >
-      { defaultActiveVersion &&
-        <UI.Section>
+      { defaultActiveVersion
+        ? <UI.Section>
           <ABFSelector
             categoryId={'active'}
             abfLabel={intl.$t({ defaultMessage: 'Available firmware' })}
@@ -110,12 +112,18 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
             update={updateSelectedABF}
           />
         </UI.Section>
+        : (uniqueActiveApModels && <UI.Section>
+          <div>{// eslint-disable-next-line max-len
+            intl.$t({ defaultMessage: 'There are one or more devices in selected venues ({apModels}).' }, { apModels: uniqueActiveApModels })}
+          </div>
+          <div>{intl.$t({ defaultMessage: 'No available firmware.' })}</div>
+        </UI.Section>)
       }
-      { eolApFirmwares.length > 0
-        ? eolApFirmwares.map((eol: EolApFirmware) => {
-          return (
-            <UI.Section key={eol.name}>
-              <ABFSelector
+      { eolApFirmwareGroups.length > 0
+        ? eolApFirmwareGroups.map((eol: EolApFirmwareGroup) => {
+          return <UI.Section key={eol.name}>
+            {eol.isUpgradable
+              ? <ABFSelector
                 categoryId={eol.name}
                 abfLabel={intl.$t({ defaultMessage: 'Available firmware for legacy devices' })}
                 defaultVersionId={eol.latestEolVersion}
@@ -124,8 +132,12 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
                 otherVersions={eolABFOtherVersion[eol.name] ? eolABFOtherVersion[eol.name] : []}
                 update={updateSelectedABF}
               />
-            </UI.Section>
-          )
+              : <><div>{// eslint-disable-next-line max-len
+                intl.$t({ defaultMessage: 'There are one or more legacy devices in selected venues ({eolApModels}).' }, { eolApModels: eol.apModels.join(', ') })}
+              </div>
+              <div>{intl.$t({ defaultMessage: 'No available firmware.' })}</div></>
+            }
+          </UI.Section>
         })
         : null
       }

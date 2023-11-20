@@ -1,8 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }               from '@acx-ui/feature-toggle'
 import {
-  FirmwareUrlsInfo
+  FirmwareUrlsInfo, SigPackUrlsInfo
 } from '@acx-ui/rc/utils'
 import {
   Provider
@@ -13,6 +14,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 import { UserProfileContext, UserProfileContextProps } from '@acx-ui/user'
+
 
 import {
   availableVersions, versionLatest,
@@ -68,6 +70,10 @@ describe('Firmware Version Management', () => {
       rest.post(
         FirmwareUrlsInfo.getSwitchVenueVersionList.url,
         (req, res, ctx) => res(ctx.json(switchVenue))
+      ),
+      rest.get(
+        SigPackUrlsInfo.getSigPack.url.replace('?changesIncluded=:changesIncluded', ''),
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
     params = {
@@ -78,6 +84,7 @@ describe('Firmware Version Management', () => {
   })
 
   it('should render correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.get(
         FirmwareUrlsInfo.getLatestFirmwareList.url.replace('?status=latest', ''),

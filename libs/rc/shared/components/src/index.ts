@@ -158,6 +158,10 @@ export { AccessConditionDrawer } from './AdaptivePolicySettingForm/AccessConditi
 export {
   RadiusAttributeGroupSelectDrawer
 } from './AdaptivePolicySettingForm/RadiusAttributeGroupSelectDrawer'
+export {
+  EdgeSdLanActivatedNetworksTable,
+  ActivateNetworkSwitchButton } from './EdgeSdLan/SdLanNetworkTable'
+export type { ActivatedNetworksTableProps } from './EdgeSdLan/SdLanNetworkTable'
 
 export * from './services'
 export * from './EdgeStatisticWidget'

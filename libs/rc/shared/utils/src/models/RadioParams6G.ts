@@ -25,7 +25,7 @@ export class RadioParams6G {
 
   txPower: TxPowerEnum
 
-  lowPowerIndoorModeEnabled: boolean
+  enableAfc: boolean
 
   constructor () {
     this.method = ScanMethodEnum.CHANNELFLY
@@ -44,6 +44,6 @@ export class RadioParams6G {
 
     this.txPower = TxPowerEnum.MAX
 
-    this.lowPowerIndoorModeEnabled = false
+    this.enableAfc = false
   }
 }

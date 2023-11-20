@@ -5,6 +5,8 @@ import { PageHeader, RangePicker } from '@acx-ui/components'
 import { useParams }               from '@acx-ui/react-router-dom'
 import { useDateFilter }           from '@acx-ui/utils'
 
+import ApTabs from './ApTabs'
+
 function ApPageHeader () {
   const { $t } = useIntl()
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
@@ -26,6 +28,7 @@ function ApPageHeader () {
           selectionType={range}
         />
       ]}
+      footer={<ApTabs/>}
     />
   )
 }

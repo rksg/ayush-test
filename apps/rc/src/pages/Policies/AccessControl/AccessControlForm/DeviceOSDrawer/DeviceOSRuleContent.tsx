@@ -3,9 +3,9 @@ import React, { useEffect, useState } from 'react'
 import { Checkbox, Form, FormInstance, FormItemProps, Input, Select, Slider } from 'antd'
 import { useIntl }                                                            from 'react-intl'
 
-import { ContentSwitcher, ContentSwitcherProps }      from '@acx-ui/components'
-import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
-import { AccessStatus, DeviceTypeEnum, OsVendorEnum } from '@acx-ui/rc/utils'
+import { ContentSwitcher, ContentSwitcherProps }                  from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { AccessStatus, DeviceTypeEnum, OsVendorEnum }             from '@acx-ui/rc/utils'
 
 import { deviceTypeLabelMapping, osVenderLabelMapping } from '../../../contentsMap'
 
@@ -85,13 +85,15 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
 
   const isNewOsVendorFeatureEnabled = useIsSplitOn(Features.NEW_OS_VENDOR_IN_DEVICE_POLICY)
 
+  const isAP70Allowed = useIsTierAllowed(TierFeatures.AP_70)
+
   useEffect(() => {
     const tempOsVendor = drawerForm.getFieldValue('tempOsVendor')
     setOsVendorOptionList([
       { value: 'Please select...', label: $t({ defaultMessage: 'Please select...' }) },
       ...getOsVendorOptions(deviceType)
         .filter(option => deviceType !== DeviceTypeEnum.Gaming ||
-          !(isNewOsVendorFeatureEnabled ?
+          !((isNewOsVendorFeatureEnabled && isAP70Allowed) ?
             [OsVendorEnum.Xbox360, OsVendorEnum.PlayStation2, OsVendorEnum.PlayStation3] :
             [OsVendorEnum.PlayStation]).includes(option))
         .map(option => ({
@@ -269,17 +271,17 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
               defaultMessage: 'Please select the OS or Manufacturer option'
             }))
           }
-          if (isNewOsVendorFeatureEnabled && deviceOSRuleList.length >= 29) {
+          if (isNewOsVendorFeatureEnabled && isAP70Allowed && deviceOSRuleList.length >= 30) {
             if (value === OsVendorEnum.PlayStation) {
-              if (deviceOSRuleList.length <= 30 &&
-                deviceOSRuleList.filter((rule) => rule.osVendor === OsVendorEnum.Xbox).length > 0) {
+              // eslint-disable-next-line max-len
+              if (deviceOSRuleList.filter((rule) => rule.osVendor === OsVendorEnum.Xbox).length > 0) {
                 return Promise.reject($t({
-                  defaultMessage: 'Must reserve 3 additional rule slots for PlayStation and Xbox'
+                  defaultMessage: 'Must reserve 2 additional rule slots for PlayStation and Xbox'
                 }))
               }
-              if (deviceOSRuleList.length >= 30) {
+              if (deviceOSRuleList.length === 31) {
                 return Promise.reject($t({
-                  defaultMessage: 'Must reserve 2 additional rule slots for PlayStation'
+                  defaultMessage: 'Must reserve 1 additional rule slot for PlayStation'
                 }))
               }
             }
@@ -287,7 +289,7 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
               // eslint-disable-next-line max-len
               if (deviceOSRuleList.filter((rule) => rule.osVendor === OsVendorEnum.PlayStation).length > 0) {
                 return Promise.reject($t({
-                  defaultMessage: 'Must reserve 3 additional rule slots for PlayStation and Xbox'
+                  defaultMessage: 'Must reserve 2 additional rule slots for PlayStation and Xbox'
                 }))
               }
               if (deviceOSRuleList.length === 31) {

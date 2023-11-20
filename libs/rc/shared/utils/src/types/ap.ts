@@ -507,7 +507,9 @@ export type MeshUplinkAp = {
 
 export type AFCInfo = {
   powerMode?: AFCPowerMode,
-  afcStatus?: AFCStatus
+  afcStatus?: AFCStatus,
+  minPowerDbm?: number,
+  maxPowerDbm?: number
 }
 
 export enum AFCPowerMode {
@@ -521,11 +523,6 @@ export enum AFCStatus {
   WAIT_FOR_RESPONSE = 'WAIT_FOR_RESPONSE',
   REJECTED = 'REJECTED',
   PASSED = 'PASSED'
-}
-
-export interface LowPowerAPQuantity {
-  lowPowerAPCount: number,
-  allAPCount: number
 }
 
 export interface ApStatus {

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 export const searchFixture = {
   search: {
     clients: [
@@ -223,107 +224,109 @@ export const searchFixture = {
 }
 
 export const apListFixture = {
-  search: {
-    aps: [
-      {
-        apName: 'AL-Guest-R610',
-        macAddress: '90:3A:72:24:D0:40',
-        apModel: 'R610',
-        ipAddress: '192.168.2.105',
-        version: '6.1.2.0.580',
-        apZone: 'Albert-Home-Main',
-        networkPath: [
-          {
-            name: 'Network',
-            type: 'network'
-          },
-          {
-            name: 'vsz34',
-            type: 'system'
-          },
-          {
-            name: '04-US-CA-D4-Albert-Home',
-            type: 'domain'
-          },
-          {
-            name: 'Albert-Home-Main',
-            type: 'zone'
-          },
-          {
-            name: 'default',
-            type: 'apGroup'
-          },
-          {
-            name: '90:3A:72:24:D0:40',
-            type: 'AP'
-          }
-        ]
-      },
-      {
-        apName: 'BDC-Test AP Feb',
-        macAddress: '58:FB:96:01:A5:A0',
-        apModel: 'R350',
-        ipAddress: '192.168.1.26',
-        version: 'Unknown',
-        apZone: '45-IN-BDC-D45-AM',
-        networkPath: [
-          {
-            name: 'Network',
-            type: 'network'
-          },
-          {
-            name: 'vsz34',
-            type: 'system'
-          },
-          {
-            name: '45-IN-BDC-D45-AM',
-            type: 'zone'
-          },
-          {
-            name: 'default',
-            type: 'apGroup'
-          },
-          {
-            name: '58:FB:96:01:A5:A0',
-            type: 'AP'
-          }
-        ]
-      },
-      {
-        apName: 'GuestHouse@SD',
-        macAddress: '34:20:E3:2D:11:20',
-        apModel: 'H550',
-        ipAddress: '192.168.1.67',
-        version: '6.1.1.0.1274',
-        apZone: 'TommySD@Home',
-        networkPath: [
-          {
-            name: 'Network',
-            type: 'network'
-          },
-          {
-            name: 'vsz34',
-            type: 'system'
-          },
-          {
-            name: '49-US-CA-TommySD',
-            type: 'domain'
-          },
-          {
-            name: 'TommySD@Home',
-            type: 'zone'
-          },
-          {
-            name: 'default',
-            type: 'apGroup'
-          },
-          {
-            name: '34:20:E3:2D:11:20',
-            type: 'AP'
-          }
-        ]
-      }
-    ]
+  network: {
+    search: {
+      aps: [
+        {
+          apName: 'AL-Guest-R610',
+          macAddress: '90:3A:72:24:D0:40',
+          apModel: 'R610',
+          ipAddress: '192.168.2.105',
+          version: '6.1.2.0.580',
+          apZone: 'Albert-Home-Main',
+          networkPath: [
+            {
+              name: 'Network',
+              type: 'network'
+            },
+            {
+              name: 'vsz34',
+              type: 'system'
+            },
+            {
+              name: '04-US-CA-D4-Albert-Home',
+              type: 'domain'
+            },
+            {
+              name: 'Albert-Home-Main',
+              type: 'zone'
+            },
+            {
+              name: 'default',
+              type: 'apGroup'
+            },
+            {
+              name: '90:3A:72:24:D0:40',
+              type: 'AP'
+            }
+          ]
+        },
+        {
+          apName: 'BDC-Test AP Feb',
+          macAddress: '58:FB:96:01:A5:A0',
+          apModel: 'R350',
+          ipAddress: '192.168.1.26',
+          version: 'Unknown',
+          apZone: '45-IN-BDC-D45-AM',
+          networkPath: [
+            {
+              name: 'Network',
+              type: 'network'
+            },
+            {
+              name: 'vsz34',
+              type: 'system'
+            },
+            {
+              name: '45-IN-BDC-D45-AM',
+              type: 'zone'
+            },
+            {
+              name: 'default',
+              type: 'apGroup'
+            },
+            {
+              name: '58:FB:96:01:A5:A0',
+              type: 'AP'
+            }
+          ]
+        },
+        {
+          apName: 'GuestHouse@SD',
+          macAddress: '34:20:E3:2D:11:20',
+          apModel: 'H550',
+          ipAddress: '192.168.1.67',
+          version: '6.1.1.0.1274',
+          apZone: 'TommySD@Home',
+          networkPath: [
+            {
+              name: 'Network',
+              type: 'network'
+            },
+            {
+              name: 'vsz34',
+              type: 'system'
+            },
+            {
+              name: '49-US-CA-TommySD',
+              type: 'domain'
+            },
+            {
+              name: 'TommySD@Home',
+              type: 'zone'
+            },
+            {
+              name: 'default',
+              type: 'apGroup'
+            },
+            {
+              name: '34:20:E3:2D:11:20',
+              type: 'AP'
+            }
+          ]
+        }
+      ]
+    }
   }
 }
 
@@ -385,3 +388,71 @@ export const emptySearchFixture = {
     ]
   }
 }
+
+export const mockSystems = {
+  networkNodes: [
+    { deviceId: '00000000-0000-0000-0000-000000000001', deviceName: 'system 1', onboarded: true, controllerVersion: '6.0' },
+    { deviceId: '00000000-0000-0000-0000-000000000011', deviceName: 'system 1', onboarded: true, controllerVersion: '6.0' },
+    { deviceId: '00000000-0000-0000-0000-000000000002', deviceName: 'system 2', onboarded: true, controllerVersion: '6.0' },
+    { deviceId: '00000000-0000-0000-0000-000000000003', deviceName: 'system 3', onboarded: false, controllerVersion: '6.0' },
+    { deviceId: '00000000-0000-0000-0000-000000000004', deviceName: 'system 4', onboarded: false, controllerVersion: '6.0' },
+    { deviceId: '00000000-0000-0000-0000-000000000005', deviceName: 'system 5', onboarded: true, controllerVersion: '4.0' }
+  ]
+}
+
+export const apDetailsFixture = {
+  network: {
+    ap: {
+      name: 'AL-Guest-R610',
+      networkPath: [
+        {
+          name: 'Network',
+          type: 'network'
+        },
+        {
+          name: 'vsz34',
+          type: 'system'
+        },
+        {
+          name: '04-US-CA-D4-Albert-Home',
+          type: 'domain'
+        },
+        {
+          name: 'Albert-Home-Main',
+          type: 'zone'
+        },
+        {
+          name: 'default',
+          type: 'apGroup'
+        },
+        {
+          name: '90:3A:72:24:D0:40',
+          type: 'AP'
+        }
+      ]
+    }
+  }
+}
+
+export const switchDetailsFixture = {
+  network: {
+    switch: {
+      name: 'AL-Guest-Switch',
+      networkPath: [
+        {
+          name: 'Network',
+          type: 'network'
+        },
+        {
+          name: 'vsz34',
+          type: 'system'
+        },
+        {
+          name: '90:3A:72:24:D0:40',
+          type: 'switch'
+        }
+      ]
+    }
+  }
+}
+

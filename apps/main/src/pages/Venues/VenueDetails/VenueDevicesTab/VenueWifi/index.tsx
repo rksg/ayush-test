@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { List }      from 'antd'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { List }    from 'antd'
+import { useIntl } from 'react-intl'
+
 
 import { Table, TableProps, Loader, Tooltip, Tabs }                        from '@acx-ui/components'
 import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
@@ -14,8 +14,9 @@ import {
   APMesh,
   APMeshRole
 } from '@acx-ui/rc/utils'
-import { TenantLink }     from '@acx-ui/react-router-dom'
-import { EmbeddedReport } from '@acx-ui/reports/components'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }                            from '@acx-ui/react-router-dom'
+import { EmbeddedReport }                        from '@acx-ui/reports/components'
 import {
   ReportType
 } from '@acx-ui/reports/components'
@@ -193,6 +194,8 @@ function transformData (data: APMesh[]) {
 export function VenueWifi () {
   const { $t } = useIntl()
   const params = useParams()
+  const navigate = useNavigate()
+  const basePath = useTenantLink(`/venues/${params.venueId}/venue-details/devices`)
 
   const isShowApGroupTable = useIsSplitOn(Features.AP_GROUP_TOGGLE)
 
@@ -220,8 +223,20 @@ export function VenueWifi () {
     }
   }, [venueWifiSetting])
 
+  const onCategoryTabChange = (tab: string) => {
+    const { activeSubTab } = params
+    activeSubTab && navigate({
+      ...basePath,
+      pathname: `${basePath.pathname}/${activeSubTab}/${tab}`
+    })
+  }
+
   return (
-    <IconThirdTab>
+    <IconThirdTab
+      activeKey={params?.categoryTab}
+      defaultActiveKey='list'
+      onChange={onCategoryTabChange}
+    >
       <Tabs.TabPane key='list'
         tab={<Tooltip title={$t({ defaultMessage: 'Device List' })}>
           <ListSolid />

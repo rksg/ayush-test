@@ -14,7 +14,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useAddDevicePolicyMutation,
   useDevicePolicyListQuery,
@@ -147,6 +147,8 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
 
   const isNewOsVendorFeatureEnabled = useIsSplitOn(Features.NEW_OS_VENDOR_IN_DEVICE_POLICY)
 
+  const isAP70Allowed = useIsTierAllowed(TierFeatures.AP_70)
+
   const [ createDevicePolicy ] = useAddDevicePolicyMutation()
 
   const [ updateDevicePolicy ] = useUpdateDevicePolicyMutation()
@@ -194,7 +196,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   }
 
   useEffect(() => {
-    setSkipFetch(!isOnlyViewMode && (devicePolicyId === '' || devicePolicyId === undefined))
+    setSkipFetch(!isOnlyViewMode && !devicePolicyId)
   }, [isOnlyViewMode, devicePolicyId])
 
   useEffect(() => {
@@ -389,10 +391,10 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     }
   }
 
-  const maxOSRuleNum = isNewOsVendorFeatureEnabled ?
+  const maxOSRuleNum = (isNewOsVendorFeatureEnabled && isAP70Allowed) ?
     (32 -
       deviceOSRuleList.filter((rule) => rule.osVendor === OsVendorEnum.Xbox).length -
-      deviceOSRuleList.filter((rule) => rule.osVendor === OsVendorEnum.PlayStation).length * 2) : 32
+      deviceOSRuleList.filter((rule) => rule.osVendor === OsVendorEnum.PlayStation).length) : 32
 
   const actions = !isViewMode() ? [{
     label: $t({ defaultMessage: 'Add' }),
