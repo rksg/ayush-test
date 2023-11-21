@@ -14,7 +14,8 @@ import { InformationOutlined }           from '@acx-ui/icons'
 import { TimeStampRange }                from '@acx-ui/types'
 import type { AnalyticsFilter }          from '@acx-ui/utils'
 
-import * as UI from '../styledComponents'
+import GenericError from '../../GenericError'
+import * as UI      from '../styledComponents'
 
 
 export type PillData = { success: number, total: number }
@@ -119,7 +120,7 @@ function HealthPill ({ filters, kpi, timeWindow, threshold }: {
       )
     )
   }
-  return <Loader states={[queryResults]} key={kpi}>
+  return <Loader states={[queryResults]} key={kpi} errorFallback={<GenericError />}>
     <UI.PillTitle>
       <span>{$t(text, productNames)}</span>
       <span>

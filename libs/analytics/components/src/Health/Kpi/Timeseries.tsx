@@ -12,6 +12,8 @@ import type { TimeStamp, TimeStampRange }           from '@acx-ui/types'
 import { noDataDisplay }                            from '@acx-ui/utils'
 import type { AnalyticsFilter }                     from '@acx-ui/utils'
 
+import GenericError from '../../GenericError'
+
 const transformResponse = ({ data, time }: KPITimeseriesResponse) => data
   .map((datum, index) => ([
     time[index],
@@ -56,7 +58,7 @@ function KpiTimeseries ({
     }
   )
   return (
-    <Loader states={[queryResults]}>
+    <Loader states={[queryResults]} errorFallback={<GenericError />}>
       <AutoSizer>
         {({ height, width }) =>
           queryResults.data[0]?.data.length ? (
