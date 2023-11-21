@@ -13,6 +13,6 @@ export function ApAnalyticsTab () {
   return <AnalyticsTabs
     incidentFilter={filter}
     healthFilter={filter}
-    healthPath={`devices/wifi/${apId}/details/analytics/health`}
+    healthPath={`devices/wifi/${apId}/details/ai/health`}
   />
 }
