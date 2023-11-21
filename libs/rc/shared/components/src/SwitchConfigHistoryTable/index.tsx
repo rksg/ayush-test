@@ -150,7 +150,7 @@ export function SwitchConfigHistoryTable (props: {
 
   const handleHighLightLine = (line: number) => {
     if (codeMirrorEl) {
-      if (!Number.isNaN(line)) {
+      if (line && !Number.isNaN(line)) {
         codeMirrorEl.current?.highlightLine(line - 1)
       } else {
         codeMirrorEl.current?.removeHighlightLine()
