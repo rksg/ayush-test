@@ -3,20 +3,19 @@ import { useEffect, useState } from 'react'
 import { embedDashboard, EmbeddedDashboard } from '@superset-ui/embedded-sdk'
 import moment                                from 'moment'
 
-import { SystemMap, useSystems }              from '@acx-ui/analytics/services'
-import { getUserProfile as getUserProfileRA } from '@acx-ui/analytics/utils'
-import { useAnalyticsFilter }                 from '@acx-ui/analytics/utils'
-import { RadioBand, Loader, showActionModal } from '@acx-ui/components'
-import { get }                                from '@acx-ui/config'
-import { useIsSplitOn, Features }             from '@acx-ui/feature-toggle'
-import { useParams }                          from '@acx-ui/react-router-dom'
+import { SystemMap, useSystems }                                  from '@acx-ui/analytics/services'
+import { getUserProfile as getUserProfileRA, useAnalyticsFilter } from '@acx-ui/analytics/utils'
+import type { UserProfile as UserProfileRA }                      from '@acx-ui/analytics/utils'
+import { RadioBand, Loader, showActionModal }                     from '@acx-ui/components'
+import { get }                                                    from '@acx-ui/config'
+import { useIsSplitOn, Features }                                 from '@acx-ui/feature-toggle'
 import {
   useGuestTokenMutation,
   useEmbeddedIdMutation
 } from '@acx-ui/reports/services'
 import { useReportsFilter }                                                   from '@acx-ui/reports/utils'
 import { REPORT_BASE_RELATIVE_URL }                                           from '@acx-ui/store'
-import { getUserProfile as getUserProfileR1 }                                 from '@acx-ui/user'
+import { getUserProfile as getUserProfileR1, UserProfile as UserProfileR1 }   from '@acx-ui/user'
 import { useDateFilter, getJwtToken, NetworkPath, getIntl, useLocaleContext } from '@acx-ui/utils'
 
 import {
@@ -32,6 +31,10 @@ interface ReportProps {
   rlsClause?: string;
   hideHeader?: boolean;
 }
+
+type CommonUserProfile = Pick<UserProfileRA,
+  'firstName' | 'lastName' | 'email' | 'userId' | 'selectedTenant'>
+  & Pick<UserProfileR1, 'externalId' | 'tenantId'>
 
 export function convertDateTimeToSqlFormat (dateTime: string): string {
   return moment.utc(dateTime).format('YYYY-MM-DD HH:mm:ss')
@@ -233,8 +236,6 @@ export function EmbeddedReport (props: ReportProps) {
 
   const isRA = get('IS_MLISA_SA')
   const embedDashboardName = reportTypeDataStudioMapping[reportName]
-
-  const params = useParams()
   const systems = useSystems()
 
   const [ guestToken ] = useGuestTokenMutation()
@@ -245,9 +246,10 @@ export function EmbeddedReport (props: ReportProps) {
 
   const [dashboardEmbeddedId, setDashboardEmbeddedId] = useState('')
 
-  const { firstName, lastName, email } = isRA
-    ? getUserProfileRA()
-    : getUserProfileR1().profile
+  const { firstName, lastName, email, externalId,
+    tenantId, userId, selectedTenant } = isRA
+    ? getUserProfileRA() as unknown as CommonUserProfile
+    : getUserProfileR1().profile as unknown as CommonUserProfile
 
   const defaultLocale = 'en'
   const localeContext = useLocaleContext()
@@ -338,7 +340,13 @@ export function EmbeddedReport (props: ReportProps) {
             '"__time"',
             '<',
             `'${convertDateTimeToSqlFormat(endDate)}'`,
-            ...(params?.tenantId ? ['AND', `'${params?.tenantId}' = '${params?.tenantId}'`] : [])
+            ...(
+              isRA
+                ? ['AND', `'${userId}' = '${userId}'`, 'AND',
+                  `'${selectedTenant.id}' = '${selectedTenant.id}'`] // For SA
+                : ['AND', `'${tenantId}' = '${tenantId}'`,
+                  'AND', `'${externalId}' = '${externalId}'` ] // For R1
+            )
           ].join(' ')
         },
         ...(rlsClause || networkClause || radioBandClause
