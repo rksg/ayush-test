@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 
 import {
-  DatePicker,
   Form,
   InputNumber,
   Select
@@ -10,6 +9,7 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import {
+  DatePicker,
   PageHeader,
   StepsForm,
   Subtitle
@@ -159,8 +159,7 @@ export function AssignMspLicense () {
     try {
       const ecFormData = { ...values }
       const today = EntitlementUtil.getServiceStartDate()
-      const expirationDate = EntitlementUtil.getServiceStartDate(
-        formatter(DateFormatEnum.DateFormat)(ecFormData.serviceExpirationDate))
+      const expirationDate = EntitlementUtil.getServiceStartDate((ecFormData.serviceExpirationDate))
 
       const addAssignment = []
       const updateAssignment = []
@@ -444,7 +443,7 @@ export function AssignMspLicense () {
           ]}
           children={
             <DatePicker
-              format={formatter(DateFormatEnum.DateFormat)}
+              // format={formatter(DateFormatEnum.DateFormat)}
               disabled={!customDate}
               // defaultValue={moment(formatter(DateFormatEnum.DateFormat)(subscriptionEndDate))}
               disabledDate={(current) => {
