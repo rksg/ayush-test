@@ -145,7 +145,7 @@ export function ScheduleExportForm (props: ScheduleExportFormProps) {
         }
       }
       if (formScheduleExportData.recipients && formScheduleExportData.recipients.length){
-        form.setFieldValue('recipients', formScheduleExportData.recipients.join(','))
+        form.setFieldValue('recipients', formScheduleExportData.recipients)
         setSelectedRecipientsList(formScheduleExportData.recipients)
       }
 
@@ -379,5 +379,3 @@ export function ScheduleExportForm (props: ScheduleExportFormProps) {
 
   </Loader>
 }
-
-// ScheduleExportForm.reset = reset
