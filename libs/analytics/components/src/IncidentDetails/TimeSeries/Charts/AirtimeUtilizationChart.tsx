@@ -64,7 +64,7 @@ export const AirtimeUtilizationChart = ({ chartRef, data, incident }: TimeSeries
             chartRef={chartRef}
             style={{ height, width }}
             data={chartResults}
-            dataFormatter={formatter('percentFormatRound')}
+            dataFormatter={formatter('percentFormat')}
             yAxisProps={{ max: 1, min: 0 }}
           />
           : <NoData />
