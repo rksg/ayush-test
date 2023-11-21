@@ -95,6 +95,7 @@ export interface MspEcData {
   delegations?: MspIntegratorDelegated[];
   admin_delegations?: MspEcDelegatedAdmins[];
   number_of_days?: string;
+  isManageAllEcs?: boolean;
 }
 
 export interface VarCustomer {
