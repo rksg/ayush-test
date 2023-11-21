@@ -90,8 +90,9 @@ const Nodes: React.FC<NodeProps> = (props) => {
                       stroke: node.data.status ? getDeviceColor(node.data.status) : 'black',
                       fill: node.data.status ? getDeviceColor(node.data.status) : 'black'
                     }}
-                    dx={-node.data.name.length - node.data.name.length / 2}
-                    dy='18'
+                    dominant-baseline='middle'
+                    text-anchor='middle'
+                    dy='13'
                   >
                     {truncateLabel(node.data.name as string, 15)}
                   </text>

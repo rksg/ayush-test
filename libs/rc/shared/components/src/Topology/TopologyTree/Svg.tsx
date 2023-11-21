@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useEffect, useRef, useMemo } from 'react'
+import React, { useState, useEffect, useRef, useMemo, useContext } from 'react'
 
 import { select, tree, zoom } from 'd3'
 import _                      from 'lodash'
 
 import { transformData } from '../utils'
 
-import { Links } from './Links'
-import Nodes     from './Nodes'
+import { Links }               from './Links'
+import Nodes                   from './Nodes'
+import { TopologyTreeContext } from './TopologyTreeContext'
 
 const NODE_SIZE: [number, number] = [45, 150]
 const SCALE_RANGE: [number, number] = [0.1, 5]
@@ -19,12 +20,12 @@ const Svg: any = (props: any) => {
   const [treeData, setTreeData] = useState<any>(transformData(data)) // Replace 'any' with the actual data type
   const [nodesCoordinate, setNodesCoordinate] = useState<any>({})
   const [linksInfo, setLinksInfo] = useState<any>({})
-  const [translate, setTranslate] = useState<number[]>([0, 0])
-  const [scale, setScale] = useState<number>(1)
+  const { scale } = useContext(TopologyTreeContext)
 
   useEffect(() => {
     const svg = select(refSvg.current)
     const g = select(refMain.current)
+
     if (width && height) {
       svg.call(
         zoom()
@@ -37,10 +38,12 @@ const Svg: any = (props: any) => {
             g.attr('transform', transform)
           })
       )
+        .on('wheel.zoom', null)
+        .on('dblclick.zoom', null)
     }
   }, [width, height])
 
-  const { nodes, links } = useMemo(() => {
+  const { nodes, links, translate } = useMemo(() => {
     if (width && height && treeData && edges) {
       const treeLayout = tree()
         .size([height, width]) // Swap height and width for vertical layout
@@ -74,14 +77,13 @@ const Svg: any = (props: any) => {
       if (!Object.keys(nodesCoordinate).length) {
         setNodesCoordinate(nodePositionData)
       }
-
-      setTranslate([width / 2, NODE_SIZE[1] / 2])
-      setScale(scale)
-      return { nodes, links }
+      const translate = [width/2, NODE_SIZE[1]/2]
+      return { nodes, links, translate }
     } else {
       return {
         nodes: [],
-        links: []
+        links: [],
+        translate: [0, 0]
       }
     }
   }, [treeData, edges, width, height])

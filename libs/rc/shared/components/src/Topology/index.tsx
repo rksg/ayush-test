@@ -44,9 +44,9 @@ import { hasAccess }  from '@acx-ui/user'
 import LinkTooltip                                    from './LinkTooltip'
 import NodeTooltip                                    from './NodeTooltip'
 import * as UI                                        from './styledComponents'
-import Tree                                           from './Tree'
+import TopologyTree                                   from './TopologyTree'
+import { TopologyTreeContext }                        from './TopologyTree/TopologyTreeContext'
 import { getDeviceIcon, getPathColor, truncateLabel } from './utils'
-
 
 type OptionType = {
   value: string;
@@ -89,7 +89,10 @@ export function TopologyGraph (props:{ venueId?: string,
   const [tooltipSourceNode, setTooltipSourceNode] = useState<Node>()
   const [tooltipTargetNode, setTooltipTargetNode] = useState<Node>()
   const [filterNodes, setFilterNodes] = useState<OptionType[]>()
+  const [scale, setScale] = useState<number>(1)
+  let newScale = useRef(1)
   const [tooltipPosition, setTooltipPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 })
+
   useEffect(() => {
     if(topologyData) {
       const schema1Equivalent = parseTopologyData(topologyData)
@@ -234,7 +237,7 @@ export function TopologyGraph (props:{ venueId?: string,
           }
         ) as any
 
-      svg.call(zoom)
+      // svg.call(zoom)
       // disable zoom on scrolling and mouse double click
       // svg.on('wheel.zoom', null)
       // svg.on('dblclick.zoom', null)
@@ -267,18 +270,21 @@ export function TopologyGraph (props:{ venueId?: string,
 
       // default Center the graph and fit to container
 
-      defaultScreenFit(zoom)
+      // defaultScreenFit(zoom)
 
       d3.select('#graph-zoom-in').on('click', function () {
-        zoom.scaleBy(svg.transition().duration(750), 1.2)
+        newScale.current *= 1.2
+        setScale(newScale.current)
       })
 
       d3.select('#graph-zoom-out').on('click', function () {
-        zoom.scaleBy(svg.transition().duration(750), 0.8)
+        newScale.current *= 0.8
+        setScale(newScale.current)
       })
 
       d3.select('#graph-zoom-fit').on('click', function () {
-        defaultScreenFit(zoom)
+        newScale.current = 1.0
+        setScale(newScale.current)
       })
 
       const selectedNode = getSelectedNode(deviceMac as string)
@@ -396,7 +402,7 @@ export function TopologyGraph (props:{ venueId?: string,
       (width/2) - ((graphWidth*zoomScale)/2),
       (height/2) - ((graphHeight*zoomScale)/2)
     ]
-    zoom.transform(svg, d3.zoomIdentity.translate(translate[0], translate[1]).scale(zoomScale))
+    // zoom.transform(svg, d3.zoomIdentity.translate(translate[0], translate[1]).scale(zoomScale))
   }
 
   // original graph scale in case of large scale it will persist device icons
@@ -409,7 +415,7 @@ export function TopologyGraph (props:{ venueId?: string,
     const width = parseInt(svg.style('width').replace(/px/, ''), 10)
     const height = parseInt(svg.style('height').replace(/px/, ''), 10)
     const translate = [(width - graphWidth) / 2, (height - graphHeight) / 2]
-    zoom.transform(svg, d3.zoomIdentity.translate(translate[0], translate[1]))
+    // zoom.transform(svg, d3.zoomIdentity.translate(translate[0], translate[1]))
   }
 
   function defaultScreenFit (zoom: any) {
@@ -588,13 +594,13 @@ export function TopologyGraph (props:{ venueId?: string,
 
       const coordX = ((width-graphWidth) / 2) + (width / 2) - targetX
 
-      if (graphWidth > width) {
-        const translate = [coordX + 100, (height - graphHeight) / 2]
-        zoom.transform(svg.transition().duration(750),
-          d3.zoomIdentity.translate(translate[0], translate[1]))
-      } else {
-        originalGraphScale(svg, zoom)
-      }
+      // if (graphWidth > width) {
+      //   const translate = [coordX + 100, (height - graphHeight) / 2]
+      //   zoom.transform(svg.transition().duration(750),
+      //     d3.zoomIdentity.translate(translate[0], translate[1]))
+      // } else {
+      //   originalGraphScale(svg, zoom)
+      // }
 
     }
   }
@@ -692,26 +698,28 @@ export function TopologyGraph (props:{ venueId?: string,
             </AutoComplete>
           }
           <UI.Topology>
-            <Tree
-              key={Math.random()}
-              ref={graphRef}
-              data={treeData}
-              edges={topologyData.edges}
-              nodeRender={(node: { parent: any, data: any }) => {
-                return (
-                  // eslint-disable-next-line react/jsx-no-useless-fragment
-                  <Fragment>
-                    {node.parent ? (
-                      getDeviceIcon(node.data.type, node.data.status)
-                    ) : (
-                      <TopologyCloud width={24} height={24} x={-12} y={-12} />
-                    )}
-                  </Fragment>
-                )
-              }}
-              onNodeClick={debouncedHandleMouseEnter}
-              onLinkClick={debouncedHandleMouseEnterLink}
-            />
+            <TopologyTreeContext.Provider value={{ scale }}>
+              <TopologyTree
+                key={Math.random()}
+                ref={graphRef}
+                data={treeData}
+                edges={topologyData.edges}
+                nodeRender={(node: { parent: any, data: any }) => {
+                  return (
+                    // eslint-disable-next-line react/jsx-no-useless-fragment
+                    <Fragment>
+                      {node.parent ? (
+                        getDeviceIcon(node.data.type, node.data.status)
+                      ) : (
+                        <TopologyCloud width={24} height={24} x={-12} y={-12} />
+                      )}
+                    </Fragment>
+                  )
+                }}
+                onNodeClick={debouncedHandleMouseEnter}
+                onLinkClick={debouncedHandleMouseEnterLink}
+              />
+            </TopologyTreeContext.Provider>
           </UI.Topology>
         </>
         : <div style={{

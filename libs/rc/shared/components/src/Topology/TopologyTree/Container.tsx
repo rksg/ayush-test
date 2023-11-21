@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { useClientRect } from './hooks/useClientRect'
 import Svg               from './Svg'
 
