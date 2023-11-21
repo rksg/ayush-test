@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NoAiOpsLicense should render correctly with the prop 1`] = `
+<DocumentFragment>
+  <div
+    class="sc-jqUVSM cMlFTk"
+  >
+    <div
+      class="sc-kDDrLX sc-fnykZs dRRsEl dfDCGR"
+    >
+      <svg
+        class="sc-hAZoDl kJwqPI"
+        data-testid="NoData"
+      />
+      <p>
+        No license
+      </p>
+      <p>
+        RUCKUS AI cannot analyse your zone due to inadequate licenses. Please ensure you have licenses fully applied for the zone for AI Operations optimizations.
+      </p>
+    </div>
+    <button
+      class="ant-btn ant-btn-default ant-btn-block styledComponents__Button-sc-zk1lj8-0 kBDiup"
+      type="button"
+    >
+      <span>
+        Update my licenses
+      </span>
+    </button>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NoRecommendationData should render correctly with the prop 1`] = `
+<DocumentFragment>
+  <div
+    class="sc-kDDrLX sc-fnykZs dRRsEl cRAApK"
+  >
+    <svg
+      class="sc-ksZaOG chSTLo"
+      data-testid="CheckMarkCircleSolid"
+    />
+    <p>
+      Your network is already running in an optimal configuration and we dont have any AI Operations to recommend recently.
+    </p>
+  </div>
+</DocumentFragment>
+`;

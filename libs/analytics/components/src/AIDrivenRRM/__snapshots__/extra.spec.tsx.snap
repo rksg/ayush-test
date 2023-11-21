@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NoRRMLicense should render correctly with the prop 1`] = `
+<DocumentFragment>
+  <div
+    class="sc-jqUVSM cMlFTk"
+  >
+    <div
+      class="sc-kDDrLX dRRsEl"
+    >
+      <p>
+        This feature is a centralized algorithm that runs in the RUCKUS Analytics cloud and guarantees zero interfering links for the access points (APs) managed by SmartZone controllers, whenever theoretically achievable thus minimizing co-channel interference to the lowest level possible.
+      </p>
+      <p>
+        Currently RUCKUS AI cannot optimize your current zone for RRM due to inadequate licenses.
+      </p>
+    </div>
+    <button
+      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kBDiup"
+      type="button"
+    >
+      <span>
+        Update my licenses
+      </span>
+    </button>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NoRecommendationData should render correctly with the prop 1`] = `
+<DocumentFragment>
+  <div
+    class="sc-kDDrLX dRRsEl"
+  >
+    <p>
+      Currently RUCKUS AI cannot provide RRM combinations as zones are not found on your network
+    </p>
+    <svg
+      class="sc-iqcoie bhdzFE"
+      data-testid="NoData"
+    />
+    <p>
+      No data
+    </p>
+    <p>
+      This feature is a centralized algorithm that runs in the RUCKUS Analytics cloud and guarantees zero interfering links for the access points (APs) managed by SmartZone controllers, whenever theoretically achievable thus minimizing co-channel interference to the lowest level possible.
+    </p>
+  </div>
+</DocumentFragment>
+`;

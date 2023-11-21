@@ -11,15 +11,26 @@ export type IconValue = { order: number, label: MessageDescriptor }
 
 export type StatusTrail = Array<{ status: Lowercase<StateType>, createdAt?: string }>
 
+export enum CRRMStates {
+  optimized = 'optimized',
+  nonOptimized = 'nonOptimized',
+  verified = 'verified',
+  insufficientLicenses = 'insufficientLicenses',
+  verificationError = 'verificationError'
+}
+
 export type ConfigurationValue =
   string |
   Array<{ channelMode: string, channelWidth: string, radio: string }> |
   boolean |
   null
 
-export const crrmStates: Record<'optimized' | 'nonOptimized', IconValue> = {
+export const crrmStates: Record<CRRMStates, IconValue> = {
   optimized: { order: 0, label: defineMessage({ defaultMessage: 'Optimized' }) },
-  nonOptimized: { order: 1, label: defineMessage({ defaultMessage: 'Non-Optimized' }) }
+  nonOptimized: { order: 1, label: defineMessage({ defaultMessage: 'Non-Optimized' }) },
+  verified: { order: 0, label: defineMessage({ defaultMessage: 'Verified' }) },
+  insufficientLicenses: { order: 2, label: defineMessage({ defaultMessage: 'Insufficient Licenses' }) },
+  verificationError: { order: 2, label: defineMessage({ defaultMessage: 'Verification Error' }) }
 }
 
 export const priorities: Record<'low' | 'medium' | 'high', IconValue> = {

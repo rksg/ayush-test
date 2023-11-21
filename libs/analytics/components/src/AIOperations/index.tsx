@@ -1,17 +1,19 @@
+import { List }    from 'antd'
 import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { isSwitchPath }                                                           from '@acx-ui/analytics/utils'
-import { Loader, Card, Tooltip, NoRecommendationData, ColorPill, NoAiOpsLicense } from '@acx-ui/components'
-import { DateFormatEnum, formatter, intlFormats }                                 from '@acx-ui/formatter'
-import { TenantLink, useNavigateToPath }                                          from '@acx-ui/react-router-dom'
-import type { PathFilter }                                                        from '@acx-ui/utils'
+import { isSwitchPath }                           from '@acx-ui/analytics/utils'
+import { Loader, Card, Tooltip, ColorPill }       from '@acx-ui/components'
+import { DateFormatEnum, formatter, intlFormats } from '@acx-ui/formatter'
+import { TenantLink, useNavigateToPath }          from '@acx-ui/react-router-dom'
+import type { PathFilter }                        from '@acx-ui/utils'
 
-import * as UI                                         from '../AIDrivenRRM/styledComponents'
 import { states }                                      from '../Recommendations/config'
 import { AiOpsList, useAiOpsListQuery, AiOpsListItem } from '../Recommendations/services'
 import { PriorityIcon }                                from '../Recommendations/styledComponents'
 
-import { GreenTickIcon, OrangeRevertIcon, RedCancelIcon } from './styledComponents'
+import { NoAiOpsLicense, NoRecommendationData } from './extra'
+import * as UI                                  from './styledComponents'
 
 export { AIOperationsWidget as AIOperations }
 
@@ -28,7 +30,7 @@ function AIOperationsWidget ({
   const switchPath = isSwitchPath(pathFilters.path)
   const onArrowClick = useNavigateToPath('/analytics/recommendations/aiOps')
   const queryResults =
-    useAiOpsListQuery({ ...pathFilters, n: 5 }, { skip: switchPath })
+    useAiOpsListQuery({ ...pathFilters, n: 20 }, { skip: switchPath })
   const data = switchPath
     ? {
       aiOpsCount: 0,
@@ -50,14 +52,14 @@ function AIOperationsWidget ({
   const noLicense = data?.recommendations.length !== 0
     && data?.recommendations.filter(i => i.status === 'insufficientLicenses').length
     === data?.recommendations.length
-  const checkNew = data?.recommendations?.filter(i => i.status === 'new').length
+  const hasNew = data?.recommendations?.filter(i => i.status === 'new').length
   const filteredRecommendations = data?.recommendations.filter(
-    i => i.code !== 'unknown' ).slice(0, 5)
+    i => i.code !== 'unknown' )
 
   const iconList = {
-    applied: <GreenTickIcon />,
-    reverted: <OrangeRevertIcon />,
-    failed: <RedCancelIcon />
+    applied: <UI.GreenTickIcon />,
+    reverted: <UI.OrangeRevertIcon />,
+    failed: <UI.RedCancelIcon />
   }
 
   return <Loader states={[queryResults]}>
@@ -65,7 +67,7 @@ function AIOperationsWidget ({
       noLicense ? <NoAiOpsLicense
         text={$t({ defaultMessage:
           `RUCKUS AI cannot analyse your zone due to inadequate licenses.
-          Please ensure you have licenses fully applied for the zone for 
+          Please ensure you have licenses fully applied for the zone for
           AI Operations optimizations.`
         })}/>
         : noData
@@ -73,52 +75,52 @@ function AIOperationsWidget ({
             noData={true}
             text={$t({ defaultMessage:
               `Your network is already running in an optimal configuration
-              and we dont have any AI Operations to recommend recently.`
+              and we don’t have any AI Operations to recommend recently.`
             })} />
           : <>
-            {!checkNew ? <NoRecommendationData
+            {!hasNew ? <NoRecommendationData
               text={$t({ defaultMessage:
               `Your network is already running in an optimal configuration
-              and we dont have any AI Operations to recommend recently.`
+              and we don’t have any AI Operations to recommend recently.`
               })}
-            /> : []}
-            <UI.List
-              style={{ marginTop: !checkNew ? 120 : 0 }}
-              dataSource={!checkNew
-                ? filteredRecommendations?.slice(0, 3)
-                : filteredRecommendations}
-              renderItem={item => {
-                const recommendation = item as AiOpsListItem
-                const {
-                  category, priority, updatedAt, id, summary, sliceValue, status
-                } = recommendation
-                const date = formatter(DateFormatEnum.DateFormat)(updatedAt)
-                const statusText = states[status as keyof typeof states].text
-                return <UI.List.Item key={id}>
-                  <TenantLink to={`/recommendations/aiOps/${id}`}>
-                    <Tooltip
-                      placement='top'
-                      title={$t(
-                        { defaultMessage: '{summary} on {sliceValue}' },
-                        { sliceValue, summary }
-                      )}
-                    >
-                      <UI.List.Item.Meta
-                        avatar={!checkNew
-                          ? iconList[status as keyof typeof iconList]
-                          : <PriorityIcon value={priority!.order} />
-                        }
-                        title={category}
-                        description={!checkNew
-                          ? `${$t(statusText)} ${$t({ defaultMessage: 'on {date}' }, { date })}`
-                          : date
-                        }
-                      />
-                    </Tooltip>
-                  </TenantLink>
-                </UI.List.Item>
-              }}
-            />
+            /> : null}
+            <div style={{ flex: 1 }}>
+              <AutoSizer style={{ flex: 1 }}>{(style) => <List<AiOpsListItem>
+                style={style}
+                dataSource={filteredRecommendations?.slice(0, style.height / 50 | 0)}
+                renderItem={recommendation => {
+                  const {
+                    category, priority, updatedAt, id, summary, sliceValue, status
+                  } = recommendation
+                  const date = formatter(DateFormatEnum.DateFormat)(updatedAt)
+                  const statusText = states[status as keyof typeof states].text
+                  return <UI.ListItem key={id}>
+                    <TenantLink to={`/recommendations/aiOps/${id}`}>
+                      <Tooltip
+                        placement='top'
+                        title={$t(
+                          { defaultMessage: '{summary} on {sliceValue}' },
+                          { sliceValue, summary }
+                        )}
+                      >
+                        <UI.ListItem.Meta
+                          avatar={!hasNew
+                            ? iconList[status as keyof typeof iconList]
+                            : <PriorityIcon value={priority!.order} />
+                          }
+                          title={category}
+                          description={!hasNew
+                            ? `${$t(statusText)} ${$t({ defaultMessage: 'on {date}' }, { date })}`
+                            : date
+                          }
+                        />
+                      </Tooltip>
+                    </TenantLink>
+                  </UI.ListItem>
+                }}
+              />
+              }</AutoSizer>
+            </div>
           </>
     }</Card>
   </Loader>

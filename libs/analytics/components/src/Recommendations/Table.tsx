@@ -2,6 +2,7 @@ import { useMemo, useState, useEffect } from 'react'
 
 import { Checkbox }               from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
+import { createSearchParams }     from 'react-router-dom'
 
 import {
   isSwitchPath,
@@ -25,10 +26,32 @@ import * as UI from './styledComponents'
 
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
-
 const DateLink = ({ value }: { value: RecommendationListItem }) => {
   const { activeTab } = useParams()
   return <TenantLink to={`analytics/recommendations/${activeTab}/${value.id}`}>
+    {formatter(DateFormatEnum.DateTimeFormat)(value.updatedAt)}
+  </TenantLink>
+}
+
+export const UnknownLink = ({ value }: { value: RecommendationListItem }) => {
+  const { updatedAt, statusEnum, metadata, sliceValue } = value
+  const auditMetadata = metadata as { audit?: [
+    { failure: string }
+  ] }
+  const checkMesh = auditMetadata?.audit?.some(
+    data => data.failure.hasOwnProperty('mesh'))!
+  const checkGlobalZone = auditMetadata?.audit?.some(
+    data => data.failure.hasOwnProperty('global-zone-checker'))!
+  const testing = checkMesh === true ? 'mesh'
+    : checkGlobalZone === true ? 'global_zone_checker' : 'null'
+  const paramString = createSearchParams({
+    status: statusEnum,
+    date: updatedAt,
+    sliceValue: sliceValue,
+    extra: testing
+  }).toString()
+
+  return <TenantLink to={`analytics/recommendations/crrm/unknown?${paramString}`}>
     {formatter(DateFormatEnum.DateTimeFormat)(value.updatedAt)}
   </TenantLink>
 }
@@ -96,14 +119,14 @@ export function RecommendationTable (
         ? $t({ defaultMessage: 'Zone RRM Health' })
         : $t({ defaultMessage: 'Venue RRM Health' }),
       width: 120,
-      dataIndex: 'optimizedState',
-      key: 'optimizedState',
-      render: (_, { crrmOptimizedState }) => {
-        return <UI.OptimizedIcon
-          value={crrmOptimizedState!.order}
-          text={$t(crrmOptimizedState!.label)}
-        />
-      },
+      dataIndex: 'crrmOptimizedState',
+      key: 'crrmOptimizedState',
+      filterKey: 'crrmOptimizedState.text',
+      render: (_, { crrmOptimizedState }) => <UI.OptimizedIcon
+        value={crrmOptimizedState!.order}
+        text={$t(crrmOptimizedState!.label)}
+      />
+      ,
       sorter: { compare: crrmStateSort },
       fixed: 'left',
       filterable: true
@@ -112,6 +135,7 @@ export function RecommendationTable (
       width: 90,
       dataIndex: ['priority', 'order'],
       key: 'priorityOrder',
+      filterKey: 'priority.text',
       render: (_, value) => <UI.PriorityIcon
         value={value.priority.order}
         text={$t(value.priority.label)}
@@ -125,9 +149,8 @@ export function RecommendationTable (
       width: 130,
       dataIndex: 'updatedAt',
       key: 'updatedAt',
-      render: (_, value) => {
-        return <DateLink value={value}/>
-      },
+      render: (_, value) => (value.code === 'unknown')
+        ? <UnknownLink value={value} /> : <DateLink value={value}/>,
       sorter: { compare: sortProp('updatedAt', dateSort) },
       fixed: 'left'
     },
@@ -169,9 +192,10 @@ export function RecommendationTable (
       width: 90,
       dataIndex: 'status',
       key: 'status',
-      render: (_, value ) => {
-        return <Tooltip placement='top' title={value.statusTooltip}>
-          <UI.Status $statusEnum={value.statusEnum}>{value.status}</UI.Status>
+      render: (_, value: RecommendationListItem ) => {
+        const { code, statusEnum, status, statusTooltip } = value
+        return <Tooltip placement='top' title={code === 'unknown' ? '' : statusTooltip}>
+          <UI.Status $statusEnum={statusEnum}>{status}</UI.Status>
         </Tooltip>
       },
       sorter: { compare: sortProp('status', defaultSort) },
