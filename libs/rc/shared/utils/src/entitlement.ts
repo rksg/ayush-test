@@ -49,6 +49,7 @@ export class EntitlementUtil {
         return $t({ defaultMessage: 'SmartEdge' })
       case EntitlementDeviceType.APSW:
       case EntitlementDeviceType.MSP_APSW:
+      case EntitlementDeviceType.MSP_APSW_TEMP:
         return $t({ defaultMessage: 'Devices' })
       default:
         return ''
@@ -125,12 +126,12 @@ export class EntitlementUtil {
   public static timeLeftInDays (expirationDate: string) {
     const newDate = new Date(expirationDate)
     // expiration date should be end of UTC date
-    newDate.setUTCHours(23)
-    newDate.setUTCMinutes(59)
-    newDate.setUTCSeconds(59)
+    // newDate.setUTCHours(23)
+    // newDate.setUTCMinutes(59)
+    // newDate.setUTCSeconds(59)
 
-    const hoursLeft = moment(newDate).diff(moment(), 'hours')
-    const remainingDays = Math.round(hoursLeft / 24)
+    const hoursLeft = moment(newDate).diff(moment(), 'hours', true)
+    const remainingDays = hoursLeft < 0 ? -1 : Math.round(hoursLeft / 24)
     return remainingDays
   }
 

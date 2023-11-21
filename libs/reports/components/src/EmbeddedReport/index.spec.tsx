@@ -1,17 +1,30 @@
 import { rest } from 'msw'
 
 import { RadioBand }                          from '@acx-ui/components'
+import { showActionModal }                    from '@acx-ui/components'
 import * as config                            from '@acx-ui/config'
 import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import {  ReportUrlsInfo, reportsApi }        from '@acx-ui/reports/services'
 import type { GuestToken, DashboardMetadata } from '@acx-ui/reports/services'
 import { Provider, store }                    from '@acx-ui/store'
-import { render, mockServer }                 from '@acx-ui/test-utils'
-import { NetworkPath }                        from '@acx-ui/utils'
+import { render, mockServer, act }            from '@acx-ui/test-utils'
+import { NetworkPath, useLocaleContext }      from '@acx-ui/utils'
 
 import { ReportType } from '../mapping/reportsMapping'
 
-import { EmbeddedReport, convertDateTimeToSqlFormat, getSupersetRlsClause } from '.'
+import {
+  paths,
+  radioBands,
+  apNetworkPath,
+  switchNetworkPath,
+  systemMap } from './__tests__/fixtures'
+
+import {
+  EmbeddedReport,
+  convertDateTimeToSqlFormat,
+  getSupersetRlsClause,
+  getRLSClauseForSA } from '.'
+
 
 const mockEmbedDashboard = jest.fn()
 jest.mock('@superset-ui/embedded-sdk', () => ({
@@ -21,15 +34,18 @@ jest.mock('@superset-ui/embedded-sdk', () => ({
 jest.mock('@acx-ui/utils', () => ({
   __esModule: true,
   ...jest.requireActual('@acx-ui/utils'),
-  useLocaleContext: () => ({
-    messages: {
-      locale: 'en'
-    }
-  })
+  useLocaleContext: jest.fn()
 }))
+const localeContext = jest.mocked(useLocaleContext)
 
 jest.mock('@acx-ui/config')
 const get = jest.mocked(config.get)
+
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
+  showActionModal: jest.fn()
+}))
+const actionModal = jest.mocked(showActionModal)
 
 const guestTokenReponse = {
   token: 'some token'
@@ -77,11 +93,12 @@ describe('EmbeddedDashboard', () => {
   const params = { tenantId: 'tenant-id' }
   it('should render the dashboard', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    localeContext.mockReturnValue({
+      messages: { locale: null as unknown as string },
+      lang: 'en-US',
+      setLang: () => {}
+    })
 
-    rest.post(
-      ReportUrlsInfo.getEmbeddedDashboardMeta.url,
-      (_, res, ctx) => res(ctx.json(getEmbeddedReponse))
-    )
     render(<Provider>
       <EmbeddedReport
         reportName={ReportType.AP_DETAIL} />
@@ -106,6 +123,11 @@ describe('EmbeddedDashboard', () => {
   })
   it('should render the dashboard rls clause', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
+    localeContext.mockReturnValue({
+      messages: { locale: 'en' },
+      lang: 'en-US',
+      setLang: () => {}
+    })
 
     rest.post(
       ReportUrlsInfo.getEmbeddedDashboardMeta.url,
@@ -117,73 +139,115 @@ describe('EmbeddedDashboard', () => {
         rlsClause='venue filter'/>
     </Provider>, { route: { params } })
   })
-})
 
-describe('getSupersetRlsClause',()=>{
-  const radioBands:RadioBand[]=['6','2.4']
-  const paths:NetworkPath[] = [
-    [{
-      type: 'network',
-      name: 'Network'
-    }, {
-      type: 'switchGroup',
-      name: 'Switch-Venue'
-    }, {
-      type: 'switch',
-      name: 'C0:C5:20:AA:33:2D'
-    }],
-    [{
-      type: 'network',
-      name: 'Network'
-    }, {
-      type: 'switchGroup',
-      name: 'Switch-Venue'
-    }, {
-      type: 'switch',
-      name: 'C0:C5:20:B2:11:59'
-    }],
-    [{
-      type: 'network',
-      name: 'Network'
-    }, {
-      type: 'switchGroup',
-      name: 'Switch-Venue1'
-    }],
-    [{
-      type: 'network',
-      name: 'Network'
-    }, {
-      type: 'zone',
-      name: 'Sindhuja-Venue'
-    }],
-    [{
-      type: 'network',
-      name: 'Network'
-    }, {
-      type: 'zone',
-      name: 'Sonali'
-    }, {
-      type: 'AP',
-      name: '00:0C:29:1E:9F:E4'
-    }],
-    [{
-      type: 'network',
-      name: 'Network'
-    }, {
-      type: 'zone',
-      name: 'Sonali'
-    }, {
-      type: 'AP',
-      name: '38:FF:36:13:DB:D0'
-    }]
-  ]
-  it('should return RLS clause based network filters and report type',()=>{
-    const rlsClauseWirelessReport = getSupersetRlsClause(ReportType.WIRELESS,paths,radioBands)
-    const rlsClauseWiredReport = getSupersetRlsClause(ReportType.WIRED,paths,radioBands)
-    const rlsClauseApplicationReport = getSupersetRlsClause(ReportType.APPLICATION,paths,radioBands)
-    expect(rlsClauseWirelessReport).toMatchSnapshot('rlsClauseWirelessReport')
-    expect(rlsClauseWiredReport).toMatchSnapshot('rlsClauseWiredReport')
-    expect(rlsClauseApplicationReport).toMatchSnapshot('rlsClauseApplicationReport')
+  describe('401 Unauthorized', () => {
+    beforeAll(() => {
+      Object.defineProperty(window, 'location', {
+        writable: true,
+        value: {
+          ...window.location,
+          reload: jest.fn()
+        }
+      })
+    })
+
+    let addEventListenerMock: jest.SpyInstance
+    let removeEventListenerMock: jest.SpyInstance
+
+    beforeEach(() => {
+      addEventListenerMock = jest.spyOn(window, 'addEventListener')
+      removeEventListenerMock = jest.spyOn(window, 'removeEventListener')
+    })
+
+    afterEach(() => {
+      addEventListenerMock.mockRestore()
+      removeEventListenerMock.mockRestore()
+      jest.resetAllMocks()
+    })
+
+    it('should call showExpiredSessionModal when event type is unauthorized', () => {
+      render(<Provider>
+        <EmbeddedReport
+          reportName={ReportType.AP_DETAIL}
+          rlsClause='venue filter'/>
+      </Provider>, { route: { params } })
+
+      act(() => {
+        window.dispatchEvent(new MessageEvent('message', { data: { type: 'unauthorized' } }))
+      })
+      expect(addEventListenerMock).toHaveBeenCalledWith('message', expect.any(Function))
+      expect(actionModal).toHaveBeenCalled()
+
+      actionModal.mock.calls[0][0].onOk!()
+      expect(window.location.reload).toHaveBeenCalled()
+    })
+
+    it('should NOT call showExpiredSessionModal when event type is NOT unauthorized', () => {
+      const { unmount } = render(<Provider>
+        <EmbeddedReport
+          reportName={ReportType.AP_DETAIL}
+          rlsClause='venue filter'/>
+      </Provider>, { route: { params } })
+
+      act(() => {
+        window.dispatchEvent(new MessageEvent('message', { data: { type: 'something' } }))
+      })
+      expect(addEventListenerMock).toHaveBeenCalledWith('message', expect.any(Function))
+      expect(actionModal).not.toHaveBeenCalled()
+
+      unmount()
+      expect(removeEventListenerMock).toHaveBeenCalledWith('message', expect.any(Function))
+    })
   })
 })
 
+describe('getSupersetRlsClause',() => {
+  it('should return RLS clause based network filters and report type',() => {
+    const rlsClauseWirelessReport = getSupersetRlsClause(ReportType.WIRELESS,
+      paths as NetworkPath[], radioBands as RadioBand[])
+    const rlsClauseWiredReport = getSupersetRlsClause(ReportType.WIRED,
+      paths as NetworkPath[], radioBands as RadioBand[])
+    const rlsClauseApplicationReport = getSupersetRlsClause(ReportType.APPLICATION,
+      paths as NetworkPath[], radioBands as RadioBand[])
+    const rlsClauseOverviewReport = getSupersetRlsClause(ReportType.OVERVIEW,
+        paths as NetworkPath[], radioBands as RadioBand[])
+
+    expect(rlsClauseWirelessReport).toMatchSnapshot('rlsClauseWirelessReport')
+    expect(rlsClauseWiredReport).toMatchSnapshot('rlsClauseWiredReport')
+    expect(rlsClauseApplicationReport).toMatchSnapshot('rlsClauseApplicationReport')
+    expect(rlsClauseOverviewReport).toMatchSnapshot('rlsClauseOverviewReport')
+  })
+})
+
+describe('getRLSClauseForSA', () => {
+  it('should return RLS clause based on report type - AP', () => {
+    const rlsClause = getRLSClauseForSA(
+      apNetworkPath as NetworkPath, systemMap, ReportType.WIRELESS)
+    expect(rlsClause).toMatchSnapshot('rlsClauseAPForSA')
+  })
+  it('should return RLS clause based on report type - SWITCH', () => {
+    const rlsClause = getRLSClauseForSA(
+      switchNetworkPath as NetworkPath, systemMap, ReportType.WIRED)
+    expect(rlsClause).toMatchSnapshot('rlsClauseSwitchForSA')
+  })
+  it('should return empty RLS clause for Overview', () => {
+    const rlsClause = getRLSClauseForSA(
+      switchNetworkPath as NetworkPath, systemMap, ReportType.OVERVIEW)
+    expect(rlsClause).toMatchSnapshot('rlsClauseOverviewForSA')
+  })
+  it('should handle systems with same name', () => {
+    const sameNameSystemMap = {
+      ...systemMap,
+      'ICXM-Scale': [
+        systemMap['ICXM-Scale'][0],
+        {
+          ...systemMap['ICXM-Scale'][0],
+          deviceId: '00000000-0000-0000-0000-000000000000'
+        }
+      ]
+    }
+    const rlsClause = getRLSClauseForSA(
+      apNetworkPath as NetworkPath, sameNameSystemMap, ReportType.WIRELESS)
+    expect(rlsClause).toMatchSnapshot('rlsClauseOverviewForSA')
+  })
+})

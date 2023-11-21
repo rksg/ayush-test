@@ -39,7 +39,9 @@ export class ApRadioParams6G {
 
   txPower: TxPowerEnum
 
-  lowPowerIndoorModeEnabled: boolean
+  enableAfc: boolean
+
+  useVenueSettings?: boolean
 
   constructor () {
     this.method = ScanMethodEnum.CHANNELFLY
@@ -58,6 +60,8 @@ export class ApRadioParams6G {
 
     this.channelBandwidth320MhzGroup = Channel320MHzGroupEnum.AUTO
 
-    this.lowPowerIndoorModeEnabled = false
+    this.enableAfc = false
+
+    this.useVenueSettings = true
   }
 }

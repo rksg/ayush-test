@@ -42,7 +42,7 @@ export interface Network { // TODO: Move all Network type from libs/rc/shared/se
   aps: number
   clients: number
   venues: { count: number, names: string[] }
-  captiveType: GuestNetworkTypeEnum
+  captiveType?: GuestNetworkTypeEnum
   deepNetwork?: NetworkDetail
   vlanPool?: { name: string }
   activated: { isActivated: boolean, isDisabled?: boolean, errors?: string[] }
@@ -156,4 +156,11 @@ export interface Regions{
       sharedSecret?: string;
     };
   }
+}
+
+export interface ApGroupModalState { // subset of ApGroupModalWidgetProps
+  visible: boolean,
+  network?: NetworkSaveData | null,
+  networkVenue?: NetworkVenue,
+  venueName?: string
 }

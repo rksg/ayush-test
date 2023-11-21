@@ -5,7 +5,7 @@ import { DateRange }         from '@acx-ui/utils'
 import * as fixtures from './__tests__/fixtures'
 import { api }       from './services'
 
-describe('networkFilter', () => {
+describe('venuesHierarchy', () => {
   const props = {
     startDate: '2022-01-01T00:00:00+08:00',
     endDate: '2022-01-02T00:00:00+08:00',
@@ -20,72 +20,31 @@ describe('networkFilter', () => {
   it('should return correct data', async () => {
     const expectedResult = {
       network: {
-        hierarchyNode: fixtures.networkFilterResult
+        venueHierarchy: fixtures.networkFilterResult
       }
     }
-    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
+    mockGraphqlQuery(dataApiURL, 'VenueHierarchy', {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.networkFilter.initiate(props)
+      api.endpoints.venuesHierarchy.initiate(props)
     )
     expect(status).toBe('fulfilled')
-    expect(data).toStrictEqual(expectedResult.network.hierarchyNode.children)
+    expect(data).toStrictEqual(expectedResult.network.venueHierarchy)
     expect(error).toBe(undefined)
   })
   it('should return error', async () => {
-    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
+    mockGraphqlQuery(dataApiURL, 'VenueHierarchy', {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.networkFilter.initiate(props)
+      api.endpoints.venuesHierarchy.initiate(props)
     )
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)
     expect(error).not.toBe(undefined)
   })
 })
-
-describe('recentNetworkFilter', () => {
-  const props = {
-    startDate: '2022-01-01T00:00:00+08:00',
-    endDate: '2022-01-02T00:00:00+08:00',
-    range: DateRange.last24Hours,
-    filter: {}
-  }
-
-  afterEach(() =>
-    store.dispatch(api.util.resetApiState())
-  )
-  it('should return correct data', async () => {
-    const expectedResult = {
-      network: {
-        hierarchyNode: fixtures.recentNetworkFilterResult
-      }
-    }
-    mockGraphqlQuery(dataApiURL, 'RecentNetworkHierarchy', {
-      data: expectedResult
-    })
-    const { status, data, error } = await store.dispatch(
-      api.endpoints.recentNetworkFilter.initiate(props)
-    )
-    expect(status).toBe('fulfilled')
-    expect(data).toStrictEqual(expectedResult.network.hierarchyNode.children)
-    expect(error).toBe(undefined)
-  })
-  it('should return error', async () => {
-    mockGraphqlQuery(dataApiURL, 'RecentNetworkHierarchy', {
-      error: new Error('something went wrong!')
-    })
-    const { status, data, error } = await store.dispatch(
-      api.endpoints.recentNetworkFilter.initiate(props)
-    )
-    expect(status).toBe('rejected')
-    expect(data).toBe(undefined)
-    expect(error).not.toBe(undefined)
-  })
-})
-
 describe('useNetworkHierarchyQuery', () => {
   const props = {
     startDate: '2023-08-16T00:00:00+08:00',
@@ -125,6 +84,7 @@ describe('useNetworkHierarchyQuery', () => {
     const { status, data, error } = await store.dispatch(
       api.endpoints.networkHierarchy.initiate({
         ...props,
+        shouldQueryAp: true,
         shouldQuerySwitch: false
       })
     )

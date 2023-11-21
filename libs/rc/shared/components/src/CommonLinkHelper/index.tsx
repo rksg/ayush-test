@@ -130,3 +130,16 @@ export function ConnectionMeteringLink (props:{ id?: string, name?: string }) {
     </TenantLink>
   )
 }
+
+export const ResidentPortalLink = (props: { id?: string, name?: string }) => {
+  const { id, name } = props
+  return (
+    <TenantLink to={getServiceDetailsLink({
+      type: ServiceType.RESIDENT_PORTAL,
+      oper: ServiceOperation.DETAIL,
+      serviceId: id!
+    })}>
+      {name ?? id}
+    </TenantLink>
+  )
+}

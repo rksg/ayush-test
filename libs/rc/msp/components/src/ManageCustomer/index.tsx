@@ -367,7 +367,8 @@ export function ManageCustomer () {
   const fieldValidator = async (value: string, remainingDevices: number) => {
     if(parseInt(value, 10) > remainingDevices || parseInt(value, 10) < 0) {
       return Promise.reject(
-        `${intl.$t({ defaultMessage: 'Invalid number' })} `
+        intl.$t({ defaultMessage: 'Number should be between 0 and {value}' },
+          { value: remainingDevices })
       )
     }
     return Promise.resolve()
@@ -573,7 +574,7 @@ export function ManageCustomer () {
 
         if (isDeviceAgnosticEnabled ) {
           if (_.isString(ecFormData.apswLicense) || needUpdateLicense) {
-            const apswAssignId = getAssignmentId(EntitlementDeviceType.MSP_APSW)
+            const apswAssignId = getDeviceAssignmentId(EntitlementDeviceType.MSP_APSW, false)
             const quantityApsw = _.isString(ecFormData.apswLicense)
               ? parseInt(ecFormData.apswLicense, 10) : ecFormData.apswLicense
             const actionApsw = apswAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY
@@ -635,13 +636,27 @@ export function ManageCustomer () {
   }
 
   const displayIntegrator = () => {
-    const value = !mspIntegrator || mspIntegrator.length === 0 ? '--' : mspIntegrator[0].name
-    return value
+    if (!mspIntegrator || mspIntegrator.length === 0)
+      return '--'
+    return <>
+      {mspIntegrator.map(integrator =>
+        <UI.AdminList key={integrator.id}>
+          {integrator.name}
+        </UI.AdminList>
+      )}
+    </>
   }
 
   const displayInstaller = () => {
-    const value = !mspInstaller || mspInstaller.length === 0 ? '--' : mspInstaller[0].name
-    return value
+    if (!mspInstaller || mspInstaller.length === 0)
+      return '--'
+    return <>
+      {mspInstaller.map(installer =>
+        <UI.AdminList key={installer.id}>
+          {installer.name}
+        </UI.AdminList>
+      )}
+    </>
   }
 
   const displayCustomerAdmins = () => {
@@ -699,8 +714,8 @@ export function ManageCustomer () {
     swLic ? setAvailableSwitchLicense(remainingSwitch+swLic)
       : setAvailableSwitchLicense(remainingSwitch)
 
-    const apswLicenses = entitlements.filter(p =>
-      p.remainingDevices > 0 && p.deviceType === EntitlementDeviceType.MSP_APSW)
+    const apswLicenses = entitlements.filter(p => p.remainingDevices > 0 &&
+      p.deviceType === EntitlementDeviceType.MSP_APSW && p.trial === false)
     let remainingApsw = 0
     apswLicenses.forEach( (lic: MspAssignmentSummary) => {
       remainingApsw += lic.remainingDevices
@@ -712,6 +727,12 @@ export function ManageCustomer () {
   const getAssignmentId = (deviceType: string) => {
     const license =
     assignedLicense.filter(en => en.deviceType === deviceType && en.status === 'VALID')
+    return license.length > 0 ? license[0].id : 0
+  }
+
+  const getDeviceAssignmentId = (deviceType: string, trialAssignment: boolean) => {
+    const license = assignedLicense.filter(en => en.deviceType === deviceType
+     && en.trialAssignment === trialAssignment && en.status === 'VALID')
     return license.length > 0 ? license[0].id : 0
   }
 

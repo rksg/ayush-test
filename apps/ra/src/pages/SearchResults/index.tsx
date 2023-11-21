@@ -21,6 +21,7 @@ import {
   useDateRange,
   TimeRangeDropDownProvider
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                       from '@acx-ui/formatter'
 import { TenantLink, resolvePath }                                         from '@acx-ui/react-router-dom'
 import { DateRange, fixedEncodeURIComponent, encodeParameter, DateFilter } from '@acx-ui/utils'
@@ -32,6 +33,7 @@ const pagination = { pageSize: 5, defaultPageSize: 5 }
 
 function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
   const { $t } = useIntl()
+  const isZonesPageEnabled = useIsSplitOn(Features.RUCKUS_AI_ZONES_LIST)
   const { timeRange } = useDateRange()
   const results = useSearchQuery({
     start: timeRange[0].format(),
@@ -52,7 +54,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       width: 130,
       sorter: { compare: sortProp('apName', defaultSort) },
       render: (_, row : AP) => (
-        <TenantLink to={`/devices/wifi/${row.macAddress}/details/overview`}>
+        <TenantLink to={`/devices/wifi/${row.macAddress}/details/ai`}>
           {row.apName}</TenantLink>
       )
     },
@@ -90,7 +92,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       dataIndex: 'networkPath',
       key: 'networkPath',
       render: (_, value ) => {
-        const networkPath = value.networkPath.slice(0, -1)
+        const networkPath = value.networkPath.slice(1, -1)
         return <Tooltip placement='left' title={formattedPath(networkPath, 'Name')}>
           <Ul>
             {networkPath.map(({ name }, index) => [
@@ -173,7 +175,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       dataIndex: 'switchName',
       key: 'switchName',
       render: (_, row : Switch) => (
-        <TenantLink to={`/devices/switch/${row.switchMac}/serial/details/overview`}>
+        <TenantLink to={`/devices/switch/${row.switchMac}/serial/details/incidents`}>
           {row.switchName}</TenantLink>
       ),
       sorter: { compare: sortProp('switchName', defaultSort) }
@@ -205,14 +207,17 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       dataIndex: 'name',
       key: 'name',
       fixed: 'left',
-      render: (_, row : NetworkHierarchy) => (
-        <TenantLink
-          to={resolvePath(`/incidents?analyticsNetworkFilter=${
-            fixedEncodeURIComponent(
-              JSON.stringify({ raw: row.networkPath, path: row.networkPath }))}`)}>
-          {row.name}
-        </TenantLink>
-      ),
+      render: (_, row : NetworkHierarchy) => {
+        const networkPath = row.networkPath.slice(1)
+        const path = row.type.toLowerCase() === 'zone' && isZonesPageEnabled
+          ? resolvePath(`/zones/${networkPath?.[0]?.name}/${networkPath?.[1]?.name}/assurance`)
+          : resolvePath(
+            `/incidents?analyticsNetworkFilter=${fixedEncodeURIComponent(
+              JSON.stringify({ raw: row.networkPath, path: row.networkPath })
+            )}`
+          )
+        return <TenantLink to={path}>{row.name}</TenantLink>
+      },
       sorter: { compare: sortProp('name', defaultSort) }
     },
     {

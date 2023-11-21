@@ -133,7 +133,9 @@ export const getVersionLabel = (intl: IntlShape, version: VersionLabelType, show
   const versionName = version?.name
   const versionType = transform(version?.category)
   const displayDate = version.releaseDate ?? version.onboardDate
-  const versionDate = displayDate ? toUserDate(displayDate) : ''
+  const versionDate = displayDate
+    ? formatter(DateFormatEnum.DateFormat)(displayDate)
+    : ''
 
   // eslint-disable-next-line max-len
   return `${versionName}${showType ? ` (${versionType}) ` : ' '}${versionDate ? '- ' + versionDate : ''}`
@@ -257,11 +259,13 @@ export const getSwitchNextScheduleTplTooltip = (venue: FirmwareSwitchVenue): str
   return ''
 }
 
+export const DefaultSwitchVersion = [
+  '09010f_b19', '09010e_b392', '10010_rc3', '10010a_b36',
+  '09010h_rc1', '09010h_cd1_b3', '10010a_cd3_b11', '09010h_cd2_b4',
+  '10010b_rc88']
+
 export const parseSwitchVersion = (version: string) => {
-  const defaultVersion = [
-    '09010f_b19', '09010e_b392', '10010_rc3', '10010a_b36',
-    '09010h_rc1', '09010h_cd1_b3', '10010a_cd3_b11', '09010h_cd2_b4',
-    '10010b_rc88']
+  const defaultVersion = DefaultSwitchVersion
 
   if (defaultVersion.includes(version)) {
     return convertSwitchVersionFormat(version.replace(/_[^_]*$/, ''))

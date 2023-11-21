@@ -209,6 +209,11 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/mspservice/tenant/assign/:mspIntegratorId',
     newApi: true
   },
+  assignMspEcToMultiIntegrators: {
+    method: 'PATCH',
+    url: '/mspCustomers/delegations',
+    newApi: true
+  },
   getAssignedMspEcToIntegrator: {
     method: 'get',
     url: '/mspIntegrators/:mspIntegratorId?delegationType=:mspIntegratorType',
@@ -315,6 +320,16 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   mspEcFirmwareUpgradeSchedules: {
     method: 'post',
     url: '/mspCustomers/firmwareUpgradeSchedules',
+    newApi: true
+  },
+  getAvailableMspRecCustomers: {
+    method: 'get',
+    url: '/mspCustomers/recs',
+    newApi: true
+  },
+  addMspRecCustomer: {
+    method: 'post',
+    url: '/mspCustomers/mspRecs',
     newApi: true
   }
 }

@@ -54,7 +54,16 @@ export const codeToFailureTypeMap: Record<IncidentCode, string> = {
   'i-switch-vlan-mismatch': 'vlan-mismatch',
   'i-switch-poe-pd': 'poe-pd',
   'i-apinfra-poe-low': 'ap-poe-low',
-  'i-apinfra-wanthroughput-low': 'ap-wanthroughput-low'
+  'i-apinfra-wanthroughput-low': 'ap-wanthroughput-low',
+  'p-airtime-rx-24g-high': 'airtime-rx',
+  'p-airtime-rx-5g-high': 'airtime-rx',
+  'p-airtime-rx-6(5)g-high': 'airtime-rx',
+  'p-airtime-tx-24g-high': 'airtime-tx',
+  'p-airtime-tx-5g-high': 'airtime-tx',
+  'p-airtime-tx-6(5)g-high': 'airtime-tx',
+  'p-airtime-b-24g-high': 'airtime-b',
+  'p-airtime-b-5g-high': 'airtime-b',
+  'p-airtime-b-6(5)g-high': 'airtime-b'
 }
 
 const ttcFailureCodes = ['assoc', 'auth', 'dhcp', 'eap', 'radius']
@@ -927,6 +936,102 @@ export const rootCauseRecommendationMap = {
             <li>Check the peer device capacity for supporting multi gig throughput.</li>
             <li>Check the cable for good Ethernet link negotiation.</li>
           </ol>
+        `
+      })
+    }
+  },
+  'airtime-b': {
+    DEFAULT: {
+      rootCauses: defineMessage({
+        defaultMessage: `
+          <p>Airtime Busy is unusually high and this is typically caused by external sources of interference, such as neighboring WiFi networks, microwave ovens, Bluetooth devices, and other electronic devices operating in the same frequency range, can cause disruptions to your network.</p>
+          <ol>
+            <li>TBD</li>
+          </ol>
+        `
+      }),
+      recommendations: defineMessage({
+        defaultMessage: `
+          <p>TBD</p>
+        `
+      })
+    },
+    VARIOUS_REASONS: {
+      rootCauses: defineMessage({
+        defaultMessage: `
+          <p>Airtime Busy is unusually high and this is typically caused by external sources of interference, such as neighboring WiFi networks, microwave ovens, Bluetooth devices, and other electronic devices operating in the same frequency range, can cause disruptions to your network.</p>
+          <ol>
+            <li>TBD</li>
+          </ol>
+        `
+      }),
+      recommendations: defineMessage({
+        defaultMessage: `
+          <p>TBD</p>
+        `
+      })
+    }
+  },
+  'airtime-rx': {
+    DEFAULT: {
+      rootCauses: defineMessage({
+        defaultMessage: `
+          <p>Airtime Busy is unusually high and this is typically caused by external sources of interference, such as neighboring WiFi networks, microwave ovens, Bluetooth devices, and other electronic devices operating in the same frequency range, can cause disruptions to your network.</p>
+          <ol>
+            <li>TBD</li>
+          </ol>
+        `
+      }),
+      recommendations: defineMessage({
+        defaultMessage: `
+          <p>TBD</p>
+        `
+      })
+    },
+    VARIOUS_REASONS: {
+      rootCauses: defineMessage({
+        defaultMessage: `
+          <p>Airtime Rx is unusually high, and this can be a result from various factors, such as a high density of Wi-Fi devices, channel congestion due to co-channel interference, excessive number of management frames, and sub-optimal configurations.</p>
+          <ol>
+            <li>TBD</li>
+          </ol>
+        `
+      }),
+      recommendations: defineMessage({
+        defaultMessage: `
+          <p>TBD</p>
+        `
+      })
+    }
+  },
+  'airtime-tx': {
+    DEFAULT: {
+      rootCauses: defineMessage({
+        defaultMessage: `
+          <p>Airtime Busy is unusually high and this is typically caused by external sources of interference, such as neighboring WiFi networks, microwave ovens, Bluetooth devices, and other electronic devices operating in the same frequency range, can cause disruptions to your network.</p>
+          <ol>
+            <li>TBD</li>
+          </ol>
+        `
+      }),
+      recommendations: defineMessage({
+        defaultMessage: `
+          <p>TBD</p>
+        `
+      })
+    },
+    VARIOUS_REASONS: {
+      rootCauses: defineMessage({
+        defaultMessage: `
+          <p>Airtime Tx is unusually high, and this can be a result from various factors, such as a high density of Wi-Fi devices, excessive number of management frames, high multicast/broadcast (MC/BC) traffic and sub-optimal configurations.</p>
+          <ol>
+            <li>TBD</li>
+          </ol>
+        `
+      }),
+      recommendations: defineMessage({
+        defaultMessage: `
+          <p>TBD</p>
         `
       })
     }

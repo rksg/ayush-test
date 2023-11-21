@@ -30,12 +30,16 @@ interface CodeMirrorWidgetProps {
     width?: string
   }
   containerId?: string
+  skipDecode?: boolean
 }
 
 CodeMirror.defineMode('cliMode', function () {
   return {
     token: function (stream) {
-      if (stream.match(/^\${[^{}]*}/)) {
+      if (stream.match(/^\s+(password|name)\s+\S+/gi)
+        || stream.match(/(^\s+|^)port-name\s+\S+/gi)) {
+        return 'bypass-validation'
+      } else if (stream.match(/^\${[^{}]*}/)) {
         return 'variable'
       } else if (stream.match(/<([^>]*)>/)) {
         return 'attribute'
@@ -48,7 +52,7 @@ CodeMirror.defineMode('cliMode', function () {
 })
 
 export const CodeMirrorWidget = forwardRef((props: CodeMirrorWidgetProps, ref) => {
-  const { type, data, size, containerId } = props
+  const { type, data, size, containerId, skipDecode } = props
   const [readOnlyCodeMirror, setReadOnlyCodeMirror] = useState(null as unknown as CodeMirror.EditorFromTextArea)
   const codeViewContainerId = containerId ?? 'codeViewContainer'
   const height = size?.height || '450px'
@@ -62,7 +66,7 @@ export const CodeMirrorWidget = forwardRef((props: CodeMirrorWidgetProps, ref) =
 
   const initSingleView = (data: CodeMirrorData) => {
     const target = document.querySelector(`#${codeViewContainerId} > #codeView`) as HTMLTextAreaElement
-    const code = htmlDecode(data.clis)
+    const code = skipDecode ? data.clis : htmlDecode(data.clis)
     const configOptions = data.configOptions
     if (target) {
       target['value'] = code as string

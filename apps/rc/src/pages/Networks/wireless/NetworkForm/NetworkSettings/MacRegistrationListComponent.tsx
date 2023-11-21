@@ -4,11 +4,8 @@ import { Form, Select } from 'antd'
 import { useIntl }      from 'react-intl'
 
 import { Button, GridCol, GridRow, Modal, ModalType } from '@acx-ui/components'
+import { MacRegistrationListForm }                    from '@acx-ui/rc/components'
 import { useMacRegListsQuery }                        from '@acx-ui/rc/services'
-
-import MacRegistrationListForm
-  from '../../../../Policies/MacRegistrationList/MacRegistrationListForm/MacRegistrationListForm'
-
 
 const { Option } = Select
 
@@ -44,7 +41,6 @@ const MacRegistrationListComponent = (props: MacRegistrationListComponentProps) 
 
   return <Form.Item
     label={intl.$t({ defaultMessage: 'Select MAC Registration List' })}
-    name={[...inputName, 'macRegistrationList']}
   >
     <GridRow>
       <GridCol col={{ span: 12 }}>

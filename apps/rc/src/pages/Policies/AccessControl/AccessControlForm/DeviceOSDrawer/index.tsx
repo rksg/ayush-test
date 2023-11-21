@@ -14,15 +14,22 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useAddDevicePolicyMutation,
   useDevicePolicyListQuery,
   useGetDevicePolicyQuery,
   useUpdateDevicePolicyMutation
 } from '@acx-ui/rc/services'
-import { AccessStatus, CommonResult, defaultSort, DeviceRule, sortProp } from '@acx-ui/rc/utils'
-import { useParams }                                                     from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                                     from '@acx-ui/user'
+import {
+  AccessStatus,
+  CommonResult,
+  DeviceRule,
+  OsVendorEnum,
+  defaultSort,
+  sortProp } from '@acx-ui/rc/utils'
+import { useParams }                 from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { PROFILE_MAX_COUNT_DEVICE_POLICY } from '../../constants'
 import { useScrollLock }                   from '../../ScrollLock'
@@ -138,6 +145,10 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     useWatch<string>([...inputName, 'devicePolicyId'])
   ]
 
+  const isNewOsVendorFeatureEnabled = useIsSplitOn(Features.NEW_OS_VENDOR_IN_DEVICE_POLICY)
+
+  const isAP70Allowed = useIsTierAllowed(TierFeatures.AP_70)
+
   const [ createDevicePolicy ] = useAddDevicePolicyMutation()
 
   const [ updateDevicePolicy ] = useUpdateDevicePolicyMutation()
@@ -185,7 +196,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   }
 
   useEffect(() => {
-    setSkipFetch(!isOnlyViewMode && (devicePolicyId === '' || devicePolicyId === undefined))
+    setSkipFetch(!isOnlyViewMode && !devicePolicyId)
   }, [isOnlyViewMode, devicePolicyId])
 
   useEffect(() => {
@@ -380,8 +391,14 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     }
   }
 
+  const maxOSRuleNum = (isNewOsVendorFeatureEnabled && isAP70Allowed) ?
+    (32 -
+      deviceOSRuleList.filter((rule) => rule.osVendor === OsVendorEnum.Xbox).length -
+      deviceOSRuleList.filter((rule) => rule.osVendor === OsVendorEnum.PlayStation).length) : 32
+
   const actions = !isViewMode() ? [{
     label: $t({ defaultMessage: 'Add' }),
+    disabled: deviceOSRuleList.length >= maxOSRuleNum,
     onClick: handleAddAction
   }] : []
 

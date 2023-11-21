@@ -3,8 +3,8 @@ import { useDebugValue, useMemo } from 'react'
 import { useTreatments } from '@splitsoftware/splitio-react'
 import { useParams }     from 'react-router-dom'
 
-import { useGetAccountTierQuery, useGetBetaStatusQuery }                      from '@acx-ui/user'
-import { AccountType, AccountVertical, getJwtTokenPayload, isDelegationMode } from '@acx-ui/utils'
+import { useGetAccountTierQuery, useGetBetaStatusQuery, useUserProfileContext } from '@acx-ui/user'
+import { AccountType, AccountVertical, getJwtTokenPayload, isDelegationMode }   from '@acx-ui/utils'
 
 import { Features }     from './features'
 import { useIsSplitOn } from './useIsSplitOn'
@@ -16,7 +16,7 @@ const defaultConfig: Partial<Record<TierKey, string[]>> = {
   'feature-REC-Education':   ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS', 'ANLT-ESNTLS', 'ANLT-FNDT','ANLT-STUDIO', 'PLCY-ESNTLS', 'API-CLOUD'],
   'feature-MSP-Default':     ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS', 'ANLT-ESNTLS', 'ANLT-FNDT','ANLT-STUDIO', 'PLCY-ESNTLS', 'API-CLOUD', 'PLCY-SGMNT', 'ANLT-ADV'],
   'feature-MSP-Hospitality': ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS', 'ANLT-ESNTLS', 'ANLT-FNDT','ANLT-STUDIO', 'PLCY-ESNTLS', 'API-CLOUD', 'PLCY-SGMNT', 'ANLT-ADV'],
-  'betaList':                ['PLCY-EDGE', 'BETA-CP', 'BETA-CLB', 'BETA-MESH', 'BETA-ZD2R1', 'AP-NEIGHBORS']
+  'betaList':                ['PLCY-EDGE', 'BETA-CP', 'BETA-CLB', 'BETA-ZD2R1', 'AP-NEIGHBORS']
 }
 /* eslint-enable */
 
@@ -34,6 +34,7 @@ export function useFFList (): { featureList?: string[], betaList?: string[],
   const isDelegationTierApi = useIsSplitOn(Features.DELEGATION_TIERING) && isDelegationMode()
   const accTierResponse = useGetAccountTierQuery({ params }, { skip: !isDelegationTierApi })
   const acxAccountTier = accTierResponse?.data?.acx_account_tier?? jwtPayload?.acx_account_tier
+  const { data: userProfile } = useUserProfileContext()
 
   const tenantType = (jwtPayload?.tenantType === AccountType.REC ||
     jwtPayload?.tenantType === AccountType.VAR) ? 'REC' : 'MSP'
@@ -60,7 +61,7 @@ export function useFFList (): { featureList?: string[], betaList?: string[],
   return {
     featureList: userFFConfig[featureKey],
     betaList: betaEnabled? userFFConfig['betaList'] : [],
-    alphaList: userFFConfig['alphaList']
+    alphaList: userProfile?.dogfood ? userFFConfig['alphaList'] : []
   }
 }
 

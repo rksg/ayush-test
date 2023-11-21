@@ -6,12 +6,15 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }               from '@acx-ui/feature-toggle'
-import { AccessControlUrls }          from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { useIsSplitOn, useIsTierAllowed }     from '@acx-ui/feature-toggle'
+import { AccessControlUrls }                  from '@acx-ui/rc/utils'
+import { Provider }                           from '@acx-ui/store'
+import { mockServer, render, screen, within } from '@acx-ui/test-utils'
 
-import { devicePolicyListResponse } from '../../__tests__/fixtures'
+import {
+  devicePolicyDetailResponse,
+  devicePolicyDetailWith32RulesResponse,
+  devicePolicyListResponse } from '../../__tests__/fixtures'
 
 import DeviceOSDrawer from './index'
 
@@ -86,55 +89,9 @@ const queryDeviceUpdate = [
   }
 ]
 
-const deviceDetail = {
-  tenantId: '6de6a5239a1441cfb9c7fde93aa613fe',
-  name: 'device1-another',
-  defaultAccess: 'ALLOW',
-  rules: [
-    {
-      name: 'vlan101',
-      action: 'ALLOW',
-      deviceType: 'Tablet',
-      osVendor: 'Ios'
-    },
-    {
-      name: 'rule_f',
-      action: 'ALLOW',
-      deviceType: 'Smartphone',
-      osVendor: 'Ios',
-      downloadRateLimit: 107.7,
-      uploadRateLimit: 200,
-      vlan: 12
-    }
-  ],
-  id: 'fdd2bc421cb445daac8937dbb2366f5e'
-}
-
-const deviceResponse = {
+const addDevicePolicyResponse = {
   requestId: '508c529a-0bde-49e4-8179-19366f69f31f',
-  response: {
-    tenantId: '6de6a5239a1441cfb9c7fde93aa613fe',
-    name: 'device1-another',
-    defaultAccess: 'ALLOW',
-    rules: [
-      {
-        name: 'vlan101',
-        action: 'ALLOW',
-        deviceType: 'Laptop',
-        osVendor: 'All'
-      },
-      {
-        name: 'rule_f',
-        action: 'ALLOW',
-        deviceType: 'Smartphone',
-        osVendor: 'Ios',
-        downloadRateLimit: 107.7,
-        uploadRateLimit: 200,
-        vlan: 12
-      }
-    ],
-    id: '173f4a0aa7da4711804b065dcec2c6a4'
-  }
+  response: devicePolicyDetailResponse
 }
 
 jest.mock('antd', () => {
@@ -169,21 +126,16 @@ jest.mock('antd', () => {
 })
 
 const selectOptionSet = async (device: string, vendor: string) => {
-  await screen.findByRole('option', { name: 'Select...' })
+  await screen.findByRole('combobox', { name: 'Device Type' })
 
-  await userEvent.selectOptions(
-    screen.getAllByRole('combobox')[1],
-    screen.getByRole('option', { name: device })
-  )
+  await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Device Type' }), device)
 
   expect(screen.queryByRole('option', { name: device })).toBeVisible()
 
   await screen.findByRole('option', { name: vendor })
 
-  await userEvent.selectOptions(
-    screen.getAllByRole('combobox')[2],
-    screen.getByRole('option', { name: vendor })
-  )
+  // eslint-disable-next-line max-len
+  await userEvent.selectOptions(screen.getByRole('combobox', { name: 'OS or Manufacturer' }), vendor)
 
   expect(screen.queryByRole('option', { name: vendor })).toBeVisible()
 }
@@ -203,7 +155,7 @@ describe('DeviceOSDrawer Component setting I', () => {
       rest.post(
         AccessControlUrls.addDevicePolicy.url,
         (_, res, ctx) => {
-          return res(ctx.json(deviceResponse))
+          return res(ctx.json(addDevicePolicyResponse))
         }
       ))
 
@@ -267,7 +219,7 @@ describe('DeviceOSDrawer Component setting I', () => {
       rest.post(
         AccessControlUrls.addDevicePolicy.url,
         (_, res, ctx) => res(
-          ctx.json(deviceResponse)
+          ctx.json(addDevicePolicyResponse)
         )
       ))
 
@@ -314,7 +266,7 @@ describe('DeviceOSDrawer Component setting I', () => {
       rest.post(
         AccessControlUrls.addDevicePolicy.url,
         (_, res, ctx) => res(
-          ctx.json(deviceResponse)
+          ctx.json(addDevicePolicyResponse)
         )
       ))
 
@@ -370,14 +322,14 @@ describe('DeviceOSDrawer Component setting II', () => {
 
   it('Render DeviceOSDrawer component successfully with Gaming & XBOX360', async () => {
     mockServer.use(rest.get(
-      AccessControlUrls.getDevicePolicy.url,
+      AccessControlUrls.getDevicePolicyList.url,
       (_, res, ctx) => res(
         ctx.json(queryDeviceUpdate)
       )
     ), rest.post(
       AccessControlUrls.addDevicePolicy.url,
       (_, res, ctx) => res(
-        ctx.json(deviceResponse)
+        ctx.json(addDevicePolicyResponse)
       )
     ))
 
@@ -422,14 +374,14 @@ describe('DeviceOSDrawer Component setting II', () => {
   it('Render DeviceOSDrawer component successfully without Gaming & PlayStation', async () => {
     mockServer.use(
       rest.get(
-        AccessControlUrls.getDevicePolicy.url,
+        AccessControlUrls.getDevicePolicyList.url,
         (_, res, ctx) => res(
           ctx.json(queryDevice)
         )
       ), rest.post(
         AccessControlUrls.addDevicePolicy.url,
         (_, res, ctx) => res(
-          ctx.json(deviceResponse)
+          ctx.json(addDevicePolicyResponse)
         )
       ))
 
@@ -488,16 +440,17 @@ describe('DeviceOSDrawer Component setting II', () => {
 
   it.skip('Render DeviceOSDrawer component successfully with Gaming & PlayStation', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     mockServer.use(rest.get(
-      AccessControlUrls.getDevicePolicy.url,
+      AccessControlUrls.getDevicePolicyList.url,
       (_, res, ctx) => res(
         ctx.json(queryDevice)
       )
     ), rest.post(
       AccessControlUrls.addDevicePolicy.url,
       (_, res, ctx) => res(
-        ctx.json(deviceResponse)
+        ctx.json(addDevicePolicyResponse)
       )
     ))
 
@@ -547,14 +500,14 @@ describe('DeviceOSDrawer Component setting II', () => {
 
   it('Render DeviceOSDrawer component successfully with Printer & HpPrinter', async () => {
     mockServer.use(rest.get(
-      AccessControlUrls.getDevicePolicy.url,
+      AccessControlUrls.getDevicePolicyList.url,
       (_, res, ctx) => res(
         ctx.json(queryDevice)
       )
     ), rest.post(
       AccessControlUrls.addDevicePolicy.url,
       (_, res, ctx) => res(
-        ctx.json(deviceResponse)
+        ctx.json(addDevicePolicyResponse)
       )
     ))
 
@@ -598,14 +551,14 @@ describe('DeviceOSDrawer Component setting II', () => {
 
   it('Render DeviceOSDrawer component successfully with IotDevice & NextCamera', async () => {
     mockServer.use(rest.get(
-      AccessControlUrls.getDevicePolicy.url,
+      AccessControlUrls.getDevicePolicyList.url,
       (_, res, ctx) => res(
         ctx.json(queryDevice)
       )
     ), rest.post(
       AccessControlUrls.addDevicePolicy.url,
       (_, res, ctx) => res(
-        ctx.json(deviceResponse)
+        ctx.json(addDevicePolicyResponse)
       )
     ))
 
@@ -660,14 +613,14 @@ describe('DeviceOSDrawer Component setting III', () => {
 
   it('Render DeviceOSDrawer component successfully with HomeAvEquipment & SonyPlayer', async () => {
     mockServer.use(rest.get(
-      AccessControlUrls.getDevicePolicy.url,
+      AccessControlUrls.getDevicePolicyList.url,
       (_, res, ctx) => res(
         ctx.json(queryDevice)
       )
     ), rest.post(
       AccessControlUrls.addDevicePolicy.url,
       (_, res, ctx) => res(
-        ctx.json(deviceResponse)
+        ctx.json(addDevicePolicyResponse)
       )
     ))
 
@@ -711,14 +664,14 @@ describe('DeviceOSDrawer Component setting III', () => {
 
   it('Render DeviceOSDrawer component successfully with WdsDevice & TelenetCpe', async () => {
     mockServer.use(rest.get(
-      AccessControlUrls.getDevicePolicy.url,
+      AccessControlUrls.getDevicePolicyList.url,
       (_, res, ctx) => res(
         ctx.json(queryDevice)
       )
     ), rest.post(
       AccessControlUrls.addDevicePolicy.url,
       (_, res, ctx) => res(
-        ctx.json(deviceResponse)
+        ctx.json(addDevicePolicyResponse)
       )
     ))
 
@@ -769,6 +722,7 @@ describe('DeviceOSDrawer Component', () => {
         ctx.json(devicePolicyListResponse)
       )
     ))
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
   })
 
   it('Render DeviceOSDrawer component successfully', async () => {
@@ -776,7 +730,7 @@ describe('DeviceOSDrawer Component', () => {
       rest.post(
         AccessControlUrls.addDevicePolicy.url,
         (_, res, ctx) => res(
-          ctx.json(deviceResponse)
+          ctx.json(addDevicePolicyResponse)
         )
       ))
 
@@ -852,6 +806,398 @@ describe('DeviceOSDrawer Component', () => {
     expect(await screen.findByRole('option', { name: 'device1-another' })).toBeInTheDocument()
   })
 
+  const deleteTheFirstRowOfRules = async () => {
+    await userEvent.click(within(screen.getAllByRole('row')[1]).getByRole('radio'))
+
+    await screen.findByText(/1 selected/i)
+
+    await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
+
+    await screen.findByRole('button', { name: 'Delete Rule' })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Delete Rule' }))
+  }
+
+  // eslint-disable-next-line max-len
+  it.skip('Render DeviceDrawer component successfully with max number of rules validation', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+    mockServer.use(rest.get(
+      AccessControlUrls.getDevicePolicyList.url,
+      (_, res, ctx) => res(
+        ctx.json(queryDevice)
+      )
+    ), rest.get(
+      AccessControlUrls.getDevicePolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(devicePolicyDetailWith32RulesResponse)
+      )
+    ))
+
+    render(
+      <Provider>
+        <Form>
+          <DeviceOSDrawer />
+        </Form>
+      </Provider>, {
+        route: {
+          params: { tenantId: '6de6a5239a1441cfb9c7fde93aa613fe', requestId: 'requestId1' }
+        }
+      }
+    )
+
+    await screen.findByRole('option', { name: 'device2' })
+
+    await userEvent.selectOptions(
+      screen.getByRole('combobox'),
+      screen.getByRole('option', { name: 'device3' })
+    )
+
+    await userEvent.click(screen.getByText(/edit details/i))
+
+    await screen.findByText(/rules \(32\)/i)
+
+    // max = 32 in normal case without PlayStation and Xbox
+    expect(screen.getByRole('button', { name: 'Add' })).toBeDisabled()
+
+    await deleteTheFirstRowOfRules()
+
+    await screen.findByText(/rules \(31\)/i)
+
+    // max = 32 in normal case without PlayStation and Xbox
+    expect(screen.getByRole('button', { name: 'Add' })).not.toBeDisabled()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+
+    await screen.findByText(/add rule/i)
+
+    await userEvent.click(screen.getAllByText('Save')[1])
+
+    await screen.findByText(/please enter rule name/i)
+
+    await userEvent.type(await screen.findByRole('textbox', {
+      name: /rule name/i
+    }), 'rule1')
+
+    await selectOptionSet('Gaming', 'PlayStation')
+
+    await screen.findByRole('option', { name: 'PlayStation' })
+
+    // not able to select PlayStation with 31 existing normal rules
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText(/must reserve 1 additional rule slot for PlayStation/i)).not.toBeNull()
+
+    await selectOptionSet('Gaming', 'Xbox')
+
+    await screen.findByRole('option', { name: 'Xbox' })
+
+    // not able to select Xbox with 31 existing normal rules
+    expect(await screen.findByText(/must reserve 1 additional rule slot for Xbox/i)).not.toBeNull()
+
+    await userEvent.click(screen.getAllByText('Cancel')[1])
+
+    await deleteTheFirstRowOfRules()
+
+    await screen.findByText(/rules \(30\)/i)
+
+    // max = 32 in normal case without PlayStation and Xbox
+    expect(screen.getByRole('button', { name: 'Add' })).not.toBeDisabled()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+
+    await screen.findByText(/add rule/i)
+
+    await userEvent.click(screen.getAllByText('Save')[1])
+
+    await screen.findByText(/please enter rule name/i)
+
+    await userEvent.type(await screen.findByRole('textbox', {
+      name: /rule name/i
+    }), 'rule1')
+
+    await selectOptionSet('Gaming', 'Xbox')
+
+    await screen.findByRole('option', { name: 'Xbox' })
+
+    // able to select Xbox with 30 existing normal rules
+    expect(screen.queryByText(/must reserve 1 additional rule slot for Xbox/i)).toBeNull()
+
+    await selectOptionSet('Gaming', 'PlayStation')
+
+    await screen.findByRole('option', { name: 'PlayStation' })
+
+    // able to select PlayStation with 30 existing normal rules
+    expect(screen.queryByText(/must reserve 1 additional rule slot for PlayStation/i)).toBeNull()
+
+    await userEvent.click(screen.getAllByText('Save')[1])
+
+    await screen.findByText(/rules \(31\)/i)
+
+    // max = 31 for the case of PlayStation in the existing rules
+    expect(screen.getByRole('button', { name: 'Add' })).toBeDisabled()
+
+    await userEvent.click(screen.getAllByText('Cancel')[0])
+
+    expect(await screen.findByText(/rules \(0\)/i)).toBeInTheDocument()
+  })
+
+  // eslint-disable-next-line max-len
+  it.skip('Render DeviceDrawer component successfully with Xbox in the existing rules', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+    const devicePolicyDetailWith31RulesWithXboxResponse = {
+      ...devicePolicyDetailWith32RulesResponse,
+      rules: [
+        ...devicePolicyDetailWith32RulesResponse.rules.slice(0, -2),
+        {
+          name: 'Block Xbox',
+          action: 'BLOCK',
+          deviceType: 'Gaming',
+          osVendor: 'Xbox'
+        }
+      ]
+    }
+
+    mockServer.use(rest.get(
+      AccessControlUrls.getDevicePolicyList.url,
+      (_, res, ctx) => res(
+        ctx.json(queryDevice)
+      )
+    ), rest.get(
+      AccessControlUrls.getDevicePolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(devicePolicyDetailWith31RulesWithXboxResponse)
+      )
+    ))
+
+    render(
+      <Provider>
+        <Form>
+          <DeviceOSDrawer />
+        </Form>
+      </Provider>, {
+        route: {
+          params: { tenantId: '6de6a5239a1441cfb9c7fde93aa613fe', requestId: 'requestId1' }
+        }
+      }
+    )
+
+    await screen.findByRole('option', { name: 'device2' })
+
+    await userEvent.selectOptions(
+      screen.getByRole('combobox'),
+      screen.getByRole('option', { name: 'device3' })
+    )
+
+    await userEvent.click(screen.getByText(/edit details/i))
+
+    await screen.findByText(/rules \(31\)/i)
+
+    // max = 31 for the case of Xbox in the existing rules
+    expect(screen.getByRole('button', { name: 'Add' })).toBeDisabled()
+
+    await deleteTheFirstRowOfRules()
+
+    await screen.findByText(/rules \(30\)/i)
+
+    // max = 31 for the case of Xbox in the existing rules
+    expect(screen.getByRole('button', { name: 'Add' })).not.toBeDisabled()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+
+    await screen.findByText(/add rule/i)
+
+    await userEvent.click(screen.getAllByText('Save')[1])
+
+    await screen.findByText(/please enter rule name/i)
+
+    await userEvent.type(await screen.findByRole('textbox', {
+      name: /rule name/i
+    }), 'rule1')
+
+    await selectOptionSet('Gaming', 'PlayStation')
+
+    await screen.findByRole('option', { name: 'PlayStation' })
+
+    // not able to select PlayStation with 30 existing rules including Xbox
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText(/must reserve 2 additional rule slots for PlayStation and Xbox/i)).not.toBeNull()
+
+    await userEvent.click(screen.getAllByText('Cancel')[1])
+
+    await deleteTheFirstRowOfRules()
+
+    await screen.findByText(/rules \(29\)/i)
+
+    // max = 31 for the case of Xbox in the existing rules
+    expect(screen.getByRole('button', { name: 'Add' })).not.toBeDisabled()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+
+    await screen.findByText(/add rule/i)
+
+    await userEvent.click(screen.getAllByText('Save')[1])
+
+    await screen.findByText(/please enter rule name/i)
+
+    await userEvent.type(await screen.findByRole('textbox', {
+      name: /rule name/i
+    }), 'rule1')
+
+    await selectOptionSet('Gaming', 'PlayStation')
+
+    await screen.findByRole('option', { name: 'PlayStation' })
+
+    // able to select PlayStation with 29 existing rules including Xbox
+
+    // eslint-disable-next-line max-len
+    expect(screen.queryByText(/must reserve 1 additional rule slot for PlayStation/i)).toBeNull()
+
+    // eslint-disable-next-line max-len
+    expect(screen.queryByText(/must reserve 2 additional rule slots for PlayStation and Xbox/i)).toBeNull()
+
+    await userEvent.click(screen.getAllByText('Save')[1])
+
+    await screen.findByText(/rules \(30\)/i)
+
+    // max = 30 for the case of both PlayStation and Xbox in the existing rules
+    expect(screen.getByRole('button', { name: 'Add' })).toBeDisabled()
+
+    await userEvent.click(screen.getAllByText('Cancel')[0])
+
+    expect(await screen.findByText(/rules \(0\)/i)).toBeInTheDocument()
+  })
+
+  // eslint-disable-next-line max-len
+  it('Render DeviceDrawer component successfully with PlayStation in the existing rules', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+    const devicePolicyDetailWith31RulesWithPlayStationResponse = {
+      ...devicePolicyDetailWith32RulesResponse,
+      rules: [
+        ...devicePolicyDetailWith32RulesResponse.rules.slice(0, -2),
+        {
+          name: 'Block PlayStation',
+          action: 'BLOCK',
+          deviceType: 'Gaming',
+          osVendor: 'PlayStation'
+        }
+      ]
+    }
+
+    mockServer.use(rest.get(
+      AccessControlUrls.getDevicePolicyList.url,
+      (_, res, ctx) => res(
+        ctx.json(queryDevice)
+      )
+    ), rest.get(
+      AccessControlUrls.getDevicePolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(devicePolicyDetailWith31RulesWithPlayStationResponse)
+      )
+    ))
+
+    render(
+      <Provider>
+        <Form>
+          <DeviceOSDrawer />
+        </Form>
+      </Provider>, {
+        route: {
+          params: { tenantId: '6de6a5239a1441cfb9c7fde93aa613fe', requestId: 'requestId1' }
+        }
+      }
+    )
+
+    await screen.findByRole('option', { name: 'device2' })
+
+    await userEvent.selectOptions(
+      screen.getByRole('combobox'),
+      screen.getByRole('option', { name: 'device3' })
+    )
+
+    await userEvent.click(screen.getByText(/edit details/i))
+
+    await screen.findByText(/rules \(31\)/i)
+
+    // max = 31 for the case of PlayStation in the existing rules
+    expect(screen.getByRole('button', { name: 'Add' })).toBeDisabled()
+
+    await deleteTheFirstRowOfRules()
+
+    await screen.findByText(/rules \(30\)/i)
+
+    // max = 31 for the case of PlayStation in the existing rules
+    expect(screen.getByRole('button', { name: 'Add' })).not.toBeDisabled()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+
+    await screen.findByText(/add rule/i)
+
+    await userEvent.click(screen.getAllByText('Save')[1])
+
+    await screen.findByText(/please enter rule name/i)
+
+    await userEvent.type(await screen.findByRole('textbox', {
+      name: /rule name/i
+    }), 'rule1')
+
+    await selectOptionSet('Gaming', 'Xbox')
+
+    await screen.findByRole('option', { name: 'Xbox' })
+
+    // not able to select Xbox with 30 existing rules including PlayStation
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText(/must reserve 2 additional rule slots for PlayStation and Xbox/i)).not.toBeNull()
+
+    await userEvent.click(screen.getAllByText('Cancel')[1])
+
+    await deleteTheFirstRowOfRules()
+
+    await screen.findByText(/rules \(29\)/i)
+
+    // max = 31 for the case of PlayStation in the existing rules
+    expect(screen.getByRole('button', { name: 'Add' })).not.toBeDisabled()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+
+    await screen.findByText(/add rule/i)
+
+    await userEvent.click(screen.getAllByText('Save')[1])
+
+    await screen.findByText(/please enter rule name/i)
+
+    await userEvent.type(await screen.findByRole('textbox', {
+      name: /rule name/i
+    }), 'rule1')
+
+    await selectOptionSet('Gaming', 'Xbox')
+
+    await screen.findByRole('option', { name: 'Xbox' })
+
+    // able to select Xbox with 29 existing rules including PlayStation
+
+    // eslint-disable-next-line max-len
+    expect(screen.queryByText(/must reserve 1 additional rule slot for Xbox/i)).toBeNull()
+
+    // eslint-disable-next-line max-len
+    expect(screen.queryByText(/must reserve 2 additional rule slots for PlayStation and Xbox/i)).toBeNull()
+
+    await userEvent.click(screen.getAllByText('Save')[1])
+
+    await screen.findByText(/rules \(30\)/i)
+
+    // max = 30 for the case of both PlayStation and Xbox in the existing rules
+    expect(screen.getByRole('button', { name: 'Add' })).toBeDisabled()
+
+    await userEvent.click(screen.getAllByText('Cancel')[0])
+
+    expect(await screen.findByText(/rules \(0\)/i)).toBeInTheDocument()
+  })
+
   it('Render DeviceDrawer component in viewMode successfully', async () => {
     mockServer.use(rest.get(
       AccessControlUrls.getDevicePolicyList.url,
@@ -861,7 +1207,7 @@ describe('DeviceOSDrawer Component', () => {
     ), rest.get(
       AccessControlUrls.getDevicePolicy.url,
       (_, res, ctx) => res(
-        ctx.json(deviceDetail)
+        ctx.json(devicePolicyDetailResponse)
       )
     ))
 

@@ -3,12 +3,12 @@ import {
 } from 'antd'
 import styled, { css } from 'styled-components/macro'
 
-import { Drawer as UIDrawer } from '@acx-ui/components'
+import { Drawer as UIDrawer, Alert as UIAlert } from '@acx-ui/components'
 import {
   ConfigurationSolid as UIConfigurationSolid,
   SMSToken as UISMSToken, Google as UIGoogle,
   Facebook as UIFacebook, Twitter as UITwitter,
-  LinkedIn as UILinkedIn
+  LinkedIn as UILinkedIn, InformationSolid
 } from '@acx-ui/icons'
 export const Diagram = styled.div`
   width: 358px;
@@ -53,9 +53,10 @@ export const ConfigurationSolid = styled(UIConfigurationSolid)`
   color: var(--acx-primary-black);
 `
 const socialIconStyle=css`
-  width:16px;
-  margin-bottom:-11px;
-  margin-right:3px;
+  width: 16px;
+  height: 16px;
+  margin-bottom: -4px;
+  margin-right: 3px;
   path{
     fill:var(--acx-neutrals-60);
   }
@@ -64,9 +65,10 @@ export const SMSToken = styled(UISMSToken)`
   ${socialIconStyle}
 `
 export const Google = styled(UIGoogle)`
-width:16px;
-margin-bottom:-11px;
-margin-right:3px;
+width: 16px;
+height: 16px;
+margin-bottom: -4px;
+margin-right: 3px;
 path{
   stroke:var(--acx-neutrals-60);
 }
@@ -84,4 +86,53 @@ export const ButtonContainer = styled.div`
   display: flex;
   align-items: center;
   margin-left: 10px;
+`
+
+export const AsteriskFormTitle = styled.span`
+  color: '#808284';
+  fontSize: '12px';
+  &::after {
+      content: "*";
+      margin-right: 0;
+      margin-left: 3px;
+      color: var(--acx-accents-orange-50);
+      font-family: var(--acx-neutral-brand-font);
+      font-size: var(--acx-body-4-font-size);
+      line-height: var(--acx-body-4-line-height);
+      display: inline-block;
+      box-sizing: border-box;
+  }
+`
+export const InfoIcon = styled(InformationSolid)`
+  &:hover{
+    width: 20px !important;
+    height: 20px !important;
+  }
+  width: 20px !important;
+  height: 20px !important;
+  margin-bottom: -6px;
+  margin-left: 6px !important;
+  path {
+    fill: var(--acx-accents-orange-50);
+    stroke: var(--acx-primary-white) !important;
+  }
+`
+export const AlertNote = styled(UIAlert)`
+  .ant-alert-close-icon {
+    float: right;
+    position: absolute;
+    right: 15px;
+    bottom: 10px;
+   }
+  .ant-alert-close-text {
+    color: var(--acx-accents-blue-50);
+  }
+  &.ant-alert-info {
+    background-color: var(--acx-accents-orange-20) !important;
+    border: none !important;
+  }
+`
+
+export const TitleBold = styled.span`
+  font-weight: var(--acx-body-font-weight-bold);
 `

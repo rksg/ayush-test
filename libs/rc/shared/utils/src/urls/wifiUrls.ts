@@ -60,6 +60,11 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/network-venue/:networkVenueId?quickAck=true',
     newApi: true
   },
+  updateNetworkVenues: {
+    method: 'put',
+    url: '/networkActivations/mappings',
+    newApi: true
+  },
   deleteNetworkVenue: {
     method: 'delete',
     url: '/networkActivations/:networkVenueId',
@@ -98,7 +103,7 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getDefaultRadioCustomization: {
     method: 'get',
-    url: '/venues/:venueId/radioSettings',
+    url: '/venues/:venueId/radioSettings?defaultOnly=true',
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/radio/default',
     newApi: true
   },
@@ -583,6 +588,21 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueApManagementVlan: {
     method: 'put',
     url: '/venues/:venueId/aps/managementTrafficVlanSettings',
+    newApi: true
+  },
+  getApManagementVlan: {
+    method: 'get',
+    url: '/venues/aps/:serialNumber/managementTrafficVlanSettings',
+    newApi: true
+  },
+  updateApManagementVlan: {
+    method: 'put',
+    url: '/venues/aps/:serialNumber/managementTrafficVlanSettings',
+    newApi: true
+  },
+  deleteApManagementVlan: {
+    method: 'delete',
+    url: '/venues/aps/:serialNumber/managementTrafficVlanSettings',
     newApi: true
   }
 }

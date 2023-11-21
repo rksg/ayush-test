@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { HelpButton, UserButton }                    from '@acx-ui/analytics/components'
+import { HelpButton, UserButton, MelissaBot }        from '@acx-ui/analytics/components'
 import { getUserProfile, PERMISSION_VIEW_ANALYTICS } from '@acx-ui/analytics/utils'
 import {
   Layout as LayoutComponent,
@@ -36,12 +36,13 @@ function Layout () {
           {hasAnalytics && <GlobalSearchBar />}
         </HeaderContext.Provider>
         <LayoutUI.Divider />
-        { userProfile.tenants.length > 1
+        { userProfile.tenants.length > 1 || userProfile.invitations.length > 0
           ? <AccountsDrawer user={userProfile} />
           : <LayoutUI.CompanyName>{userProfile?.selectedTenant.name}</LayoutUI.CompanyName>
         }
         <HelpButton/>
         <UserButton/>
+        <MelissaBot/>
       </>}
     />
   )

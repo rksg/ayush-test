@@ -2,10 +2,11 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { useAnalyticsFilter, defaultNetworkPath } from '@acx-ui/analytics/utils'
-import { get }                                    from '@acx-ui/config'
-import { BrowserRouter as Router, Link }          from '@acx-ui/react-router-dom'
-import { recommendationUrl, Provider, store }     from '@acx-ui/store'
+import { useAnalyticsFilter, defaultNetworkPath }             from '@acx-ui/analytics/utils'
+import { defaultTimeRangeDropDownContextValue, useDateRange } from '@acx-ui/components'
+import { get }                                                from '@acx-ui/config'
+import { BrowserRouter as Router, Link }                      from '@acx-ui/react-router-dom'
+import { recommendationUrl, Provider, store }                 from '@acx-ui/store'
 import {
   mockGraphqlQuery,
   render,
@@ -22,6 +23,11 @@ import { RecommendationTabContent } from './index'
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
   useAnalyticsFilter: jest.fn()
+}))
+
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
+  useDateRange: jest.fn()
 }))
 
 jest.mock('@acx-ui/config', () => ({
@@ -57,6 +63,8 @@ describe('RecommendationTabContent', () => {
       raw: []
     })
 
+    jest.mocked(useDateRange).mockReturnValue(defaultTimeRangeDropDownContextValue)
+
     jest.mocked(get).mockReturnValue('') // get('IS_MLISA_SA')
 
     jest.mocked(useMuteRecommendationMutation).mockImplementation(() => [
@@ -88,6 +96,7 @@ describe('RecommendationTabContent', () => {
     const text = await screen.findAllByText('Optimized')
     expect(text).toHaveLength(1)
     expect(screen.getByText('Venue')).toBeVisible()
+    expect(useDateRange).toBeCalled()
   })
 
   it('should render crrm table for RA', async () => {
@@ -106,6 +115,7 @@ describe('RecommendationTabContent', () => {
     const text = await screen.findAllByText('Optimized')
     expect(text).toHaveLength(1)
     expect(screen.getByText('Zone')).toBeVisible()
+    expect(useDateRange).toBeCalled()
   })
 
   it('should render aiops table for R1', async () => {
@@ -123,6 +133,7 @@ describe('RecommendationTabContent', () => {
     const text = await screen.findAllByText('Medium')
     expect(text).toHaveLength(1)
     expect(screen.getByText('Venue')).toBeVisible()
+    expect(useDateRange).toBeCalled()
   })
 
   it('should render aiops table for RA', async () => {
@@ -141,6 +152,7 @@ describe('RecommendationTabContent', () => {
     const text = await screen.findAllByText('Medium')
     expect(text).toHaveLength(1)
     expect(screen.getByText('Zone')).toBeVisible()
+    expect(useDateRange).toBeCalled()
   })
 
   it('renders no data for switch path', async () => {

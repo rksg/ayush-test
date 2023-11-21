@@ -150,7 +150,7 @@ export function SwitchConfigHistoryTable (props: {
 
   const handleHighLightLine = (line: number) => {
     if (codeMirrorEl) {
-      if (!Number.isNaN(line)) {
+      if (line && !Number.isNaN(line)) {
         codeMirrorEl.current?.highlightLine(line - 1)
       } else {
         codeMirrorEl.current?.removeHighlightLine()
@@ -232,7 +232,20 @@ export function SwitchConfigHistoryTable (props: {
                 <div className='header'>
                   {$t({ defaultMessage: 'Configuration Applied' })}
                 </div>
-                <CodeMirrorWidget ref={codeMirrorEl} type='single' data={selectedConfigRow} />
+                <CodeMirrorWidget
+                  ref={codeMirrorEl}
+                  type='single'
+                  skipDecode={true}
+                  data={{
+                    ...selectedConfigRow,
+                    configOptions: {
+                      mode: 'text/html',
+                      readOnly: true,
+                      lineNumbers: true,
+                      lineWrapping: true
+                    }
+                  }}
+                />
               </div>
             }
             {

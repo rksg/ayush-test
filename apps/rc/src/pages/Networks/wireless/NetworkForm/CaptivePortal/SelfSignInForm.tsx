@@ -9,10 +9,11 @@ import {
   Space,
   Input
 } from 'antd'
-import { useIntl } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 
 import { GridCol, GridRow, StepsFormLegacy, Tooltip } from '@acx-ui/components'
 import { get }                                        from '@acx-ui/config'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import {
   QuestionMarkCircleOutlined
 } from '@acx-ui/icons'
@@ -75,6 +76,17 @@ export function SelfSignInForm () {
     defaultMessage:
       'Collect email addresses of users who connect to this network'
   })
+  const linkedInNote = $t({
+    defaultMessage:
+      'Please note'
+  })
+  const linkedInInfo = $t({
+    defaultMessage:
+      '“Sign In with LinkedIn” has been deprecated as of August 1, 2023. ' +
+      'Please switch to “Sign In with LinkedIn using OpenID Connect”' +
+      ' to ensure that your service is not interrupted.'
+  })
+  const isEnabledLinkedInOIDC = useIsSplitOn(Features.LINKEDIN_OIDC_TOGGLE)
   const updateAllowSign = (checked: boolean, name: Array<string>) => {
     form.setFieldValue(name, checked)
     if (!checked) {
@@ -225,7 +237,7 @@ export function SelfSignInForm () {
                   ['guestPortal', 'socialIdentities', 'twitter'])}
                 checked={twitter}>
                   <UI.Twitter />
-                  {$t({ defaultMessage: 'Twitter' })}
+                  {$t({ defaultMessage: 'X' })}
                 </UI.Checkbox>
                 {twitter && <TwitterSetting redirectURL={redirectURL}/>}
               </>
@@ -241,6 +253,22 @@ export function SelfSignInForm () {
                   {$t({ defaultMessage: 'LinkedIn' })}
                 </UI.Checkbox>
                 {linkedin && <LinkedInSetting redirectURL={redirectURL}/>}
+                {editMode && linkedin && isEnabledLinkedInOIDC &&
+                  <Tooltip title={
+                    <FormattedMessage
+                      defaultMessage={
+                        '<titleBold></titleBold><br></br>{linkedInInfo}'
+                      }
+                      values={{
+                        linkedInInfo,
+                        titleBold: ()=> <UI.TitleBold>{`${linkedInNote}:`}</UI.TitleBold>,
+                        br: () => <br />
+                      }}
+                    />
+                  }
+                  placement='bottom' >
+                    <UI.InfoIcon/>
+                  </Tooltip>}
               </>
             </Form.Item></>
         </Form.Item>

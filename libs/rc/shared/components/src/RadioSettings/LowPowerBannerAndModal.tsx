@@ -5,9 +5,9 @@ import { useState, useEffect } from 'react'
 import { Col, Row, Modal } from 'antd'
 import { useIntl }         from 'react-intl'
 
-import { Button, cssStr }                         from '@acx-ui/components'
-import { Android, Apple }                         from '@acx-ui/icons'
-import { LowPowerAPQuantity, AFCStatus, AFCInfo } from '@acx-ui/rc/utils'
+import { Button, cssStr }     from '@acx-ui/components'
+import { Android, Apple }     from '@acx-ui/icons'
+import { AFCStatus, AFCInfo } from '@acx-ui/rc/utils'
 
 interface LowerPowerBannerSetting {
   bannerColSpan: number,
@@ -30,11 +30,10 @@ type settings = {
 
 export function LowPowerBannerAndModal (props: {
     parent: string,
-    lowPowerAPs?: LowPowerAPQuantity
     afcInfo?: AFCInfo
 }) {
 
-  const { lowPowerAPs, parent, afcInfo } = props
+  const { parent, afcInfo } = props
 
 
   const { $t } = useIntl()
@@ -66,14 +65,12 @@ export function LowPowerBannerAndModal (props: {
   }
 
   const [displayLowPowerModeModal, setDisplayLowPowerModeModal] = useState(false)
-  const [bannerSettings, setBannerSettings] = useState(lowPowerBannerSettings['venue'])
+  const [bannerSettings, setBannerSettings] = useState(lowPowerBannerSettings['ap'])
   const [bannerText, setBannerText] = useState('')
 
 
   useEffect(()=> {
     setBannerSettings(lowPowerBannerSettings[parent])
-    const VenueWarningMessage = `${lowPowerAPs?.lowPowerAPCount} ${$t({ defaultMessage: 'out of' })} ${lowPowerAPs?.allAPCount} \
-    ${$t({ defaultMessage: 'Access points that support 6 GHz are currently operating in low power mode' })}`
 
     let APWarningMessage = $t({ defaultMessage: 'Degraded - AP in low power mode' })
 
@@ -81,18 +78,13 @@ export function LowPowerBannerAndModal (props: {
       APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '(Geo Location not set)' })
     }
     if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
-      APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '(FCC DB replies that there is no channel available)' })
+      APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '(No channels available)' })
     }
     if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
-      APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '(Wait for AFC server response)' })
+      APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '(Pending response from the AFC server)' })
     }
 
-
-    if(parent === 'venue') {
-      setBannerText(VenueWarningMessage)
-    } else {
-      setBannerText(APWarningMessage)
-    }
+    setBannerText(APWarningMessage)
   }, [])
 
   return (<>

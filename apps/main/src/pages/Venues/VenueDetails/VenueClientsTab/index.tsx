@@ -29,7 +29,7 @@ const venueOptionsDefaultPayload = {
 export function VenueClientsTab () {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const { activeSubTab, venueId } = useParams()
+  const { venueId, activeSubTab, categoryTab } = useParams()
   const basePath = useTenantLink(`/venues/${venueId}/venue-details/clients`)
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const { propertyConfig } = useGetQueriablePropertyConfigsQuery(
@@ -54,6 +54,13 @@ export function VenueClientsTab () {
     })
   }
 
+  const onCategoryTabChange = (tab: string) => {
+    activeSubTab && navigate({
+      ...basePath,
+      pathname: `${basePath.pathname}/${activeSubTab}/${tab}`
+    })
+  }
+
   return (
     <Tabs activeKey={activeSubTab}
       defaultActiveKey='wifi'
@@ -63,7 +70,11 @@ export function VenueClientsTab () {
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Wireless' })}
         key='wifi'>
-        <IconThirdTab>
+        <IconThirdTab
+          activeKey={categoryTab}
+          defaultActiveKey='list'
+          onChange={onCategoryTabChange}
+        >
           <Tabs.TabPane key='list'
             tab={<Tooltip title={$t({ defaultMessage: 'Client List' })}>
               <ListSolid />
