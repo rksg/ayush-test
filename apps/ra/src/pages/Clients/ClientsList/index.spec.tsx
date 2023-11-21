@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { Provider, dataApiSearchURL, dataApiURL }                      from '@acx-ui/store'
+import { Provider, dataApiURL }                                        from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { ClientsList } from '.'
@@ -16,48 +16,52 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useTenantLink: () => mockedTenantPath
 }))
 export const clientsList = {
-  search: {
-    clients: [
-      {
-        hostname: '02AA01AB50120H4M',
-        username: '18b43003e603',
-        mac: '18:B4:30:03:E6:03',
-        osType: 'Nest Learning Thermostat',
-        ipAddress: '10.0.1.42',
-        lastActiveTime: '2023-08-23T05:08:20.000Z',
-        manufacturer: 'manufacturer1'
-      },
-      {
-        hostname: '02AA01AB50120E2Q',
-        username: '18b43004d810',
-        mac: '18:B4:30:04:D8:10',
-        osType: 'Nest Learning Thermostat',
-        ipAddress: '10.0.1.44',
-        lastActiveTime: '2023-08-23T05:07:23.000Z',
-        manufacturer: 'manufacturer2'
-      },
-      {
-        hostname: '02AA01AB50120G7G',
-        username: '18b430051cbe',
-        mac: '18:B4:30:05:1C:BE',
-        osType: 'Nest Learning Thermostat',
-        ipAddress: '10.0.1.69',
-        lastActiveTime: '2023-08-23T05:07:23.000Z',
-        manufacturer: 'manufacturer3'
-      }
-    ]
+  network: {
+    search: {
+      clients: [
+        {
+          hostname: '02AA01AB50120H4M',
+          username: '18b43003e603',
+          mac: '18:B4:30:03:E6:03',
+          osType: 'Nest Learning Thermostat',
+          ipAddress: '10.0.1.42',
+          lastActiveTime: '2023-08-23T05:08:20.000Z',
+          manufacturer: 'manufacturer1'
+        },
+        {
+          hostname: '02AA01AB50120E2Q',
+          username: '18b43004d810',
+          mac: '18:B4:30:04:D8:10',
+          osType: 'Nest Learning Thermostat',
+          ipAddress: '10.0.1.44',
+          lastActiveTime: '2023-08-23T05:07:23.000Z',
+          manufacturer: 'manufacturer2'
+        },
+        {
+          hostname: '02AA01AB50120G7G',
+          username: '18b430051cbe',
+          mac: '18:B4:30:05:1C:BE',
+          osType: 'Nest Learning Thermostat',
+          ipAddress: '10.0.1.69',
+          lastActiveTime: '2023-08-23T05:07:23.000Z',
+          manufacturer: 'manufacturer3'
+        }
+      ]
+    }
   }
 }
 export const emptyClientsList = {
-  search: {
-    clients: []
+  network: {
+    search: {
+      clients: []
+    }
   }
 }
 
 describe('Clients List', () => {
 
   it('should render table correctly', async () => {
-    mockGraphqlQuery(dataApiSearchURL, 'Search', {
+    mockGraphqlQuery(dataApiURL, 'Network', {
       data: clientsList
     })
     render(<ClientsList />, {
@@ -74,9 +78,7 @@ describe('Clients List', () => {
   })
   it('should render table with zone filter correctly', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', {
-      data: {
-        network: clientsList
-      }
+      data: clientsList
     })
     const zoneQuery = {
       path: [[{ type: 'zone' as const, name: 'zone' }]]
@@ -94,7 +96,7 @@ describe('Clients List', () => {
     expect(screen.getByText('manufacturer3')).toBeVisible()
   })
   it('should show no data on empty list', async () => {
-    mockGraphqlQuery(dataApiSearchURL, 'Search', {
+    mockGraphqlQuery(dataApiURL, 'Network', {
       data: emptyClientsList
     })
     const { container } = render(<ClientsList />, {
@@ -108,7 +110,7 @@ describe('Clients List', () => {
     expect(container.querySelectorAll('.ant-table-expanded-row-fixed')).toHaveLength(1)
   })
   it('should trigger onSearch function', async () => {
-    mockGraphqlQuery(dataApiSearchURL, 'Search', {
+    mockGraphqlQuery(dataApiURL, 'Network', {
       data: clientsList
     })
     render(<ClientsList />, {
