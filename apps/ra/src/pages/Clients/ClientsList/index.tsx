@@ -23,7 +23,7 @@ export function ClientsList ({ searchVal='', queryParmsForZone }:
       start: startDate,
       end: endDate,
       limit: 100,
-      query: queryParmsForZone?.searchString ?? '',
+      query: searchString,
       filter: { networkNodes: queryParmsForZone?.path }
     }
     : {
