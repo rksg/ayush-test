@@ -23,9 +23,9 @@ export const findMatchingNode = (
   targetNode: Node,
   path: Node[] = []
 ): Node | null => {
-  if (node.type === targetNode.type && (
+  if (node.type?.toLowerCase() === targetNode.type?.toLowerCase() && (
     node.type === 'ap' || node.type === 'switch'
-      ? node.mac === targetNode.list?.[0]
+      ? node.mac === targetNode.name
       : node.name === targetNode.name
   )) {
     return { ...node, path: [...path, node] }
