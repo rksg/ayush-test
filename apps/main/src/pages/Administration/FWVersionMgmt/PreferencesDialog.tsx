@@ -61,12 +61,6 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
   }, [isDayTimeInitializedRef, data])
 
   useEffect(() => {
-    if (data) {
-      setScheduleMode(data.autoSchedule ? ScheduleMode.Automatically : ScheduleMode.Manually)
-    }
-  }, [data])
-
-  useEffect(() => {
     if (preDownload) {
       setChecked(preDownload)
     }
