@@ -50,6 +50,8 @@ export interface ModalProps extends ModalFuncProps {
 export interface ModalRef {
   destroy: () => void;
   update: (configUpdate: ModalFuncProps) => void;
+  okText?: string;
+  cancelText?: string;
 }
 
 export interface ErrorDetailsProps {
@@ -219,8 +221,9 @@ function CustomButtonsTemplate (props: {
               key={b.key}
               onClick={() => handleClick(b)}
             >
-              {b.text.toLowerCase() === 'ok'? okText
-                : (b.text.toLowerCase() === 'cancel'? cancelText : b.text)}
+              {(b.text === 'undefined' && b.key === 'ok') ? okText
+                : (( b.text === 'undefined' && (b.key === 'cancel'
+                  || b?.closeAfterAction)) ? cancelText : b.text)}
             </Button>
           )
         })
