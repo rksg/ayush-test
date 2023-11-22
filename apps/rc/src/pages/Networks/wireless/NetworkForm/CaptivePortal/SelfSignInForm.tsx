@@ -21,6 +21,7 @@ import {
   domainsNameRegExp, NetworkSaveData,
   GuestNetworkTypeEnum, NetworkTypeEnum
 } from '@acx-ui/rc/utils'
+import { validationMessages } from '@acx-ui/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
@@ -313,11 +314,13 @@ export function SelfSignInForm () {
             name={['guestPortal', 'socialDomains']}
             initialValue={[]}
             rules={[
-              { required: allowedDomainsCheckbox },
+              { required: allowedDomainsCheckbox,
+                message: $t(validationMessages.domains) },
               { validator: (_, value) => domainsNameRegExp(
                 Array.isArray(value) ? value : value.split(','), allowedDomainsCheckbox)
               }]
             }
+            validateFirst
             children={
               <Input
                 style={{ marginTop: '5px' }}
