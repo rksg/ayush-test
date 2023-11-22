@@ -27,9 +27,9 @@ import {
 } from '@acx-ui/utils'
 
 interface SelIntegrator {
-  delegation_id: string,
-  delegation_type: string,
-  number_of_days: string,
+  delegation_id?: string,
+  delegation_type?: string,
+  number_of_days?: string,
   mspec_id: string
 }
 
@@ -134,6 +134,10 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
           mspec_id: tenantId
         })
       )
+      if (integratorList.length === 0) {
+        integratorList.push({ mspec_id: tenantId })
+      }
+
       const assignedEcAdmin = form.getFieldValue(['assignedEcAdmin']) ?? false
       let payload = {
         AssignDelegatedRequest: integratorList,
