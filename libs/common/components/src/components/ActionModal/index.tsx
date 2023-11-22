@@ -219,7 +219,7 @@ function CustomButtonsTemplate (props: {
               key={b.key}
               onClick={() => handleClick(b)}
             >
-              {b.text.toLowerCase() === 'ok'? okText 
+              {b.text.toLowerCase() === 'ok'? okText
                 : (b.text.toLowerCase() === 'cancel'? cancelText : b.text)}
             </Button>
           )
