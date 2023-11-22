@@ -6,6 +6,7 @@ import { act }   from 'react-dom/test-utils'
 import { StepsForm }  from '@acx-ui/components'
 import {
   CommonUrlsInfo,
+  EdgeSdLanUrls,
   EdgeUrlsInfo,
   TunnelProfileUrls
 } from '@acx-ui/rc/utils'
@@ -20,7 +21,7 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { mockEdgeList, mockedTunnelProfileViewData, mockedVenueList, mockEdgePortConfig } from '../../__tests__/fixtures'
+import { mockEdgeList, mockedTunnelProfileViewData, mockedVenueList, mockEdgePortConfig, mockedSdLanDataList } from '../../__tests__/fixtures'
 
 import { SettingsForm } from '.'
 
@@ -67,6 +68,10 @@ describe('Edge centrailized forwarding form: settings', () => {
 
     mockServer.use(
       rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataList }))
+      ),
+      rest.post(
         CommonUrlsInfo.getVenuesList.url,
         (req, res, ctx) => {
           mockedReqVenuesList(req.body)
@@ -102,9 +107,7 @@ describe('Edge centrailized forwarding form: settings', () => {
     </Provider>)
 
     const formBody = await screen.findByTestId('steps-form-body')
-    const icons = await within(formBody)
-      .findAllByTestId('loadingIcon')
-    expect(icons.length).toBe(2)
+    const icons = await within(formBody).findAllByTestId('loadingIcon')
     await waitForElementToBeRemoved(icons)
 
     const venueDropdown = await within(formBody).findByRole('combobox', { name: 'Venue' })
@@ -157,9 +160,7 @@ describe('Edge centrailized forwarding form: settings', () => {
     jest.spyOn(stepFormRef.current, 'setFieldValue').mockImplementation(mockedSetFieldValue)
 
     const formBody = await screen.findByTestId('steps-form-body')
-    const icons = await within(formBody)
-      .findAllByTestId('loadingIcon')
-    expect(icons.length).toBe(2)
+    const icons = await within(formBody).findAllByTestId('loadingIcon')
     await waitForElementToBeRemoved(icons)
 
     const venueDropdown = await within(formBody).findByRole('combobox', { name: 'Venue' })
@@ -190,5 +191,40 @@ describe('Edge centrailized forwarding form: settings', () => {
     // eslint-disable-next-line max-len
     expect(await screen.findByText('Avoid spaces at the beginning/end, and do not use "`" or "$(" characters.'))
       .toBeVisible()
+  })
+
+  it('should filter out edges which is already bound with a SD-LAN service', async () => {
+    const { result: stepFormRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+    const mockedSdLanDuplicateEdge = [{ ...mockedSdLanDataList[0] }]
+    mockedSdLanDuplicateEdge[0].edgeId = mockEdgeList.data[4].serialNumber
+
+    mockServer.use(
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: mockedSdLanDuplicateEdge }))
+      )
+    )
+
+    render(<Provider>
+      <StepsForm form={stepFormRef.current}>
+        <SettingsForm />
+      </StepsForm>
+    </Provider>)
+
+    const formBody = await screen.findByTestId('steps-form-body')
+    await waitForElementToBeRemoved(await within(formBody).findAllByTestId('loadingIcon'))
+    const venueDropdown = await within(formBody).findByRole('combobox', { name: 'Venue' })
+    await userEvent.selectOptions(
+      venueDropdown,
+      'venue_00005')
+
+    const icon = await within(formBody).findByTestId('loadingIcon')
+    await waitForElementToBeRemoved(icon)
+
+    await screen.findByText('SmartEdge')
+    expect(screen.queryByRole('option', { name: 'Smart Edge 5' })).toBeNull()
   })
 })

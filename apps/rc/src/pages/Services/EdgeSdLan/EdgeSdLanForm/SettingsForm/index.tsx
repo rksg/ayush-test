@@ -4,10 +4,10 @@ import { Col, Form, Input, Row, Select } from 'antd'
 import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
-import { StepsForm, useStepFormContext }                                                                                            from '@acx-ui/components'
-import { SpaceWrapper, TunnelProfileAddModal }                                                                                      from '@acx-ui/rc/components'
-import { useGetEdgeListQuery, useGetPortConfigQuery, useGetTunnelProfileViewDataListQuery, useVenuesListQuery }                     from '@acx-ui/rc/services'
-import { EdgeSdLanSetting, EdgeStatusEnum, isDefaultTunnelProfile, servicePolicyNameRegExp, TunnelProfileFormType, TunnelTypeEnum } from '@acx-ui/rc/utils'
+import { StepsForm, useStepFormContext }                                                                                                          from '@acx-ui/components'
+import { SpaceWrapper, TunnelProfileAddModal }                                                                                                    from '@acx-ui/rc/components'
+import { useGetEdgeListQuery, useGetEdgeSdLanViewDataListQuery, useGetPortConfigQuery, useGetTunnelProfileViewDataListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
+import { EdgeSdLanSetting, EdgeStatusEnum, isDefaultTunnelProfile, servicePolicyNameRegExp, TunnelProfileFormType, TunnelTypeEnum }               from '@acx-ui/rc/utils'
 
 import diagram from '../../../../../assets/images/edge-sd-lan-diagrams/edge-sd-lan-early-access.png'
 
@@ -31,6 +31,18 @@ export const SettingsForm = () => {
 
   const venueId = Form.useWatch('venueId', form)
   const edgeId = Form.useWatch('edgeId', form)
+
+  const { sdLanBoundEdges, isSdLanBoundEdgesLoading } = useGetEdgeSdLanViewDataListQuery(
+    { payload: {
+      fields: ['id', 'edgeId']
+    } },
+    {
+      selectFromResult: ({ data, isLoading }) => ({
+        sdLanBoundEdges: data?.data?.map(item => item.edgeId) ?? [],
+        isSdLanBoundEdgesLoading: isLoading
+      })
+    }
+  )
 
   const {
     venueOptions,
@@ -69,14 +81,16 @@ export const SettingsForm = () => {
           .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD)
       } } },
   {
-    skip: !venueId,
+    skip: !venueId || isSdLanBoundEdgesLoading,
     selectFromResult: ({ data, isLoading }) => {
       return {
-        edgeOptions: data?.data.map(item => ({
-          label: item.name,
-          value: item.serialNumber,
-          venueId: item.venueId
-        })),
+        edgeOptions: data?.data
+          .filter(item => sdLanBoundEdges.indexOf(item.serialNumber) === -1)
+          .map(item => ({
+            label: item.name,
+            value: item.serialNumber,
+            venueId: item.venueId
+          })),
         isLoading
       }
     }
@@ -205,7 +219,7 @@ export const SettingsForm = () => {
                     }]}
                   >
                     <Select
-                      loading={isEdgeOptionsLoading}
+                      loading={isEdgeOptionsLoading || isSdLanBoundEdgesLoading}
                       placeholder={$t({ defaultMessage: 'Select...' })}
                       options={edgeOptions}
                       disabled={editMode}
