@@ -163,34 +163,6 @@ export const searchApi = dataApiSearch.injectEndpoints({
       }),
       providesTags: [{ type: 'Monitoring', id: 'SWITCH_LIST' }],
       transformResponse: (response: { search: SwitchListResponse }) => response.search
-    }),
-    networkList: build.query<NetworkListReponse, ListPayload>({
-      query: (payload) => ({
-        document: gql`
-        query Search(
-          $start: DateTime
-          $end: DateTime
-          $query: String
-          $metric: String
-          $limit: Int
-        ) {
-          search(start: $start, end: $end, query: $query, metric: $metric, limit: $limit) {
-            wifiNetworks {
-              name
-              apCount
-              clientCount
-              zoneCount
-              traffic
-              rxBytes
-              txBytes
-            }
-          }
-        }
-        `,
-        variables: payload
-      }),
-      providesTags: [{ type: 'Monitoring', id: 'NETWORK_LIST' }],
-      transformResponse: (response: { search: NetworkListReponse }) => response.search
     })
   })
 })
@@ -230,15 +202,47 @@ export const networkSearchApi = dataApi.injectEndpoints({
       providesTags: [{ type: 'Monitoring', id: 'AP_LIST' }],
       transformResponse: (response: { network: { search: APListResponse } }) =>
         response.network.search
+    }),
+    networkList: build.query<NetworkListReponse, ListPayload>({
+      query: (payload) => ({
+        document: gql`
+        query Network(
+          $start: DateTime
+          $end: DateTime
+          $query: String
+          $limit: Int
+          $filter: FilterInput
+          $metric: String
+        ) {
+          network(start: $start, end: $end, filter: $filter) {
+            search(start: $start, end: $end, query: $query, limit: $limit, metric: $metric) {
+              wifiNetworks {
+                name
+                apCount
+                clientCount
+                zoneCount
+                traffic
+                rxBytes
+                txBytes
+              }
+            }
+          }
+        }
+        `,
+        variables: payload
+      }),
+      providesTags: [{ type: 'Monitoring', id: 'NETWORK_LIST' }],
+      transformResponse: (response: { network: { search: NetworkListReponse } }) =>
+        response.network.search
     })
   })
 })
 
 export const {
   useSearchQuery,
-  useSwitchtListQuery,
-  useNetworkListQuery
+  useSwitchtListQuery
 } = searchApi
 export const {
-  useApListQuery
+  useApListQuery,
+  useNetworkListQuery
 } = networkSearchApi
