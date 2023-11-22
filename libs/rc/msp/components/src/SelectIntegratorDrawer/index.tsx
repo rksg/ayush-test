@@ -38,7 +38,7 @@ interface IntegratorDrawerProps {
   tenantId?: string
   tenantType?: string
   setVisible: (visible: boolean) => void
-  setSelected: (tenantType: string, selected: MspEc[]) => void
+  setSelected: (tenantType: string, selected: MspEc[], assignedEcAdmin?: boolean) => void
 }
 
 export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
@@ -124,6 +124,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
 
   const handleSaveMultiIntegrator = async () => {
     const selectedRows = form.getFieldsValue(['integrator'])
+    const assignedEcAdmin = form.getFieldValue(['assignedEcAdmin']) ?? false
     if (tenantId && tenantType) {
       let integratorList = [] as SelIntegrator[]
       selectedRows.integrator.map((integrator: { id: string }) =>
@@ -138,7 +139,6 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
         integratorList.push({ mspec_id: tenantId })
       }
 
-      const assignedEcAdmin = form.getFieldValue(['assignedEcAdmin']) ?? false
       let payload = {
         AssignDelegatedRequest: integratorList,
         isManageAllEcs: assignedEcAdmin
@@ -149,7 +149,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
           resetFields()
         })
     } else {
-      setSelected(tenantType as string, selectedRows.integrator)
+      setSelected(tenantType as string, selectedRows.integrator, assignedEcAdmin)
     }
     setVisible(false)
   }
