@@ -289,12 +289,12 @@ export function VenueFirmwareList () {
         onCancel={handleUpdateModalCancel}
         onSubmit={handleUpdateModalSubmit}
       />
-      {preferenceModalVisible && <PreferencesDialog
-        visible={true}
+      <PreferencesDialog
+        visible={preferenceModalVisible}
         data={preferenceData}
         onCancel={handlePreferenceModalCancel}
         onSubmit={handlePreferenceModalSubmit}
-      />}
+      />
       <ChangeScheduleDialog
         visible={changeScheduleModal}
         availableVersions={changeScheduleAvailableVersions}
