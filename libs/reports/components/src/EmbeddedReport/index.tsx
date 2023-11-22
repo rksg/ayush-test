@@ -244,7 +244,7 @@ export function EmbeddedReport (props: ReportProps) {
   const { pathFilters: { path } } = useAnalyticsFilter()
   const { filters: { paths, bands } } = useReportsFilter()
 
-  const [dashboardEmbeddedId, setDashboardEmbeddedId] = useState('')
+  const [dashboardEmbeddedId, setDashboardEmbeddedId] = useState<string|null>(null)
 
   const { firstName, lastName, email, externalId,
     tenantId, userId, selectedTenant } = isRA
@@ -311,13 +311,6 @@ export function EmbeddedReport (props: ReportProps) {
         bands as RadioBand[]
       )
 
-    // eslint-disable-next-line no-console
-    console.log(
-      '%c[%s][EmbeddedReport] -> Refreshing guest token for [%s]',
-      'color: cyan',
-      new Date().toLocaleString(),
-      embedDashboardName
-    )
     const guestTokenPayload = {
       user: {
         firstName,
@@ -343,9 +336,9 @@ export function EmbeddedReport (props: ReportProps) {
             ...(
               isRA
                 ? ['AND', `'${userId}' = '${userId}'`, 'AND',
-                  `'${selectedTenant.id}' = '${selectedTenant.id}'`] // For SA
+                  `'${selectedTenant.id}' = '${selectedTenant.id}'`] // For RAI, selectedTenant id to cover supertenant use case
                 : ['AND', `'${tenantId}' = '${tenantId}'`,
-                  'AND', `'${externalId}' = '${externalId}'` ] // For R1
+                  'AND', `'${externalId}' = '${externalId}'` ] // For R1, externalId is userId
             )
           ].join(' ')
         },
@@ -363,6 +356,13 @@ export function EmbeddedReport (props: ReportProps) {
           : [])
       ]
     }
+    // eslint-disable-next-line no-console
+    console.log(
+      '%c[%s][EmbeddedReport] -> Refreshing guest token for [%s]',
+      'color: green',
+      new Date().toLocaleString(),
+      embedDashboardName
+    )
     return await guestToken({ payload: guestTokenPayload }).unwrap()
   }
 
@@ -377,14 +377,14 @@ export function EmbeddedReport (props: ReportProps) {
       id: dashboardEmbeddedId,
       supersetDomain: `${HOST_NAME}${REPORT_BASE_RELATIVE_URL}`,
       mountPoint: document.getElementById(
-        `acx-report-${embedDashboardName}`
+        `acx-report-${dashboardEmbeddedId}`
       )!,
       fetchGuestToken: () => fetchGuestTokenFromBackend(),
       dashboardUiConfig: {
         hideChartControls: true,
         hideTitle: hideHeader ?? true
       },
-      // debug: true
+      // debug: true, // Enable this for debugging
       authToken: jwtToken ? `Bearer ${jwtToken}` : undefined,
       locale // i18n locale from R1
     })
@@ -393,7 +393,7 @@ export function EmbeddedReport (props: ReportProps) {
         const { height } = await embObj.getScrollSize()
         if (height > 0) {
           const iframeElement = document.querySelector(
-            `div[id="acx-report-${embedDashboardName}"] > iframe`
+            `div[id="acx-report-${dashboardEmbeddedId}"] > iframe`
           )
           if (iframeElement) {
             iframeElement.setAttribute(
@@ -406,13 +406,24 @@ export function EmbeddedReport (props: ReportProps) {
     })
     return () => {
       if (timer) clearTimeout(timer)
+      if (embeddedObj) embeddedObj.then((embObj) => {
+        // eslint-disable-next-line no-console
+        console.log(
+          '%c[%s][EmbeddedReport] -> Unmounting dashboard [%s]',
+          'color: yellow',
+          new Date().toLocaleString(),
+          embedDashboardName
+        )
+        embObj.unmount()
+      })
+      setDashboardEmbeddedId(null)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startDate, endDate, paths, bands, path, dashboardEmbeddedId, systems.status, locale])
 
   return (
     <Loader>
-      <div id={`acx-report-${embedDashboardName}`} className='acx-report' />
+      <div id={`acx-report-${dashboardEmbeddedId}`} className='acx-report' />
     </Loader>
   )
 }

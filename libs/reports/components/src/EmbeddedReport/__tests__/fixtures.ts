@@ -52,7 +52,7 @@ export const switchNetworkPath = [
   }
 ]
 
-const systems = {
+export const systems = {
   networkNodes: [{
     deviceId: 'e68b9f11-2266-40a5-8dc0-efd89f59bd0f',
     deviceName: 'AISH-vSZ',
