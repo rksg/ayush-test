@@ -2,8 +2,8 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, Modal, ModalType, showToast, StepsForm } from '@acx-ui/components'
-import { TunnelProfileFormType  }                                 from '@acx-ui/rc/utils'
+import { Button, Loader, Modal, ModalType, showToast, StepsForm }    from '@acx-ui/components'
+import { getTunnelProfileFormDefaultValues, TunnelProfileFormType  } from '@acx-ui/rc/utils'
 
 import { TunnelProfileForm }       from '../TunnelProfileForm'
 import { useTunnelProfileActions } from '../TunnelProfileForm/useTunnelProfileActions'
@@ -29,12 +29,14 @@ export const TunnelProfileAddModal = (props: TunnelProfileAddModalProps) => {
     }
   }
 
+  const formInitValues = getTunnelProfileFormDefaultValues(initialValues)
+
   const content = <Loader states={[{ isLoading: false, isFetching: isTunnelProfileCreating }]}>
     <StepsForm
       onFinish={handleCreateTunnelProfile}
       onCancel={() => setVisible(false)}
       buttonLabel={{ submit: $t({ defaultMessage: 'Add' }) }}
-      initialValues={initialValues}
+      initialValues={formInitValues}
     >
       <StepsForm.StepForm>
         <TunnelProfileForm />

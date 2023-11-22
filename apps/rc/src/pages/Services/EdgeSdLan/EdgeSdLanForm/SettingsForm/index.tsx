@@ -4,10 +4,10 @@ import { Col, Form, Input, Row, Select } from 'antd'
 import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
-import { StepsForm, useStepFormContext }                                                                                                                       from '@acx-ui/components'
-import { SpaceWrapper, TunnelProfileAddModal }                                                                                                                 from '@acx-ui/rc/components'
-import { useGetEdgeListQuery, useGetPortConfigQuery, useGetTunnelProfileViewDataListQuery, useVenuesListQuery }                                                from '@acx-ui/rc/services'
-import { EdgeSdLanSetting, EdgeStatusEnum, getTunnelProfileFormDefaultValues, isDefaultTunnelProfile, servicePolicyNameRegExp, TunnelProfile, TunnelTypeEnum } from '@acx-ui/rc/utils'
+import { StepsForm, useStepFormContext }                                                                                            from '@acx-ui/components'
+import { SpaceWrapper, TunnelProfileAddModal }                                                                                      from '@acx-ui/rc/components'
+import { useGetEdgeListQuery, useGetPortConfigQuery, useGetTunnelProfileViewDataListQuery, useVenuesListQuery }                     from '@acx-ui/rc/services'
+import { EdgeSdLanSetting, EdgeStatusEnum, isDefaultTunnelProfile, servicePolicyNameRegExp, TunnelProfileFormType, TunnelTypeEnum } from '@acx-ui/rc/utils'
 
 import diagram from '../../../../../assets/images/edge-sd-lan-diagrams/edge-sd-lan-early-access.png'
 
@@ -146,9 +146,10 @@ export const SettingsForm = () => {
       tunnelProfileOptions?.filter(i => i.value === val)[0]?.label)
   }
 
-  const formInitValues = getTunnelProfileFormDefaultValues(
-    { type: TunnelTypeEnum.VLAN_VXLAN } as TunnelProfile)
-  formInitValues.disabledFields = ['type']
+  const formInitValues = {
+    type: TunnelTypeEnum.VLAN_VXLAN,
+    disabledFields: ['type']
+  }
 
   return (
     <Row>
@@ -272,7 +273,7 @@ export const SettingsForm = () => {
                   </Form.Item>
                 </Col>
                 <Col span={3}>
-                  <TunnelProfileAddModal initialValues={formInitValues} />
+                  <TunnelProfileAddModal initialValues={formInitValues as TunnelProfileFormType} />
                 </Col>
               </Row>
             </Col>

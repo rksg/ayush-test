@@ -52,7 +52,7 @@ const mockWifiCallingList = [
 
 jest.mock('../../utils', () => ({
   ...jest.requireActual('../../utils'),
-  hasVxLanTunnelProfile: jest.fn().mockReturnValue(false)
+  useNetworkVxLanTunnelProfileInfo: jest.fn().mockReturnValue({ enabldVxLan: false })
 }))
 
 const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }

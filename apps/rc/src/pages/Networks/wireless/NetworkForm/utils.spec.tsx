@@ -1,6 +1,10 @@
-import { DpskWlanAdvancedCustomization, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { rest } from 'msw'
 
-import { hasAccountingRadius, hasAuthRadius, hasVxLanTunnelProfile } from './utils'
+import { DpskWlanAdvancedCustomization, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, TunnelProfileUrls, TunnelTypeEnum } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                 from '@acx-ui/store'
+import { mockServer, renderHook, waitFor }                                                                                          from '@acx-ui/test-utils'
+
+import { hasAccountingRadius, hasAuthRadius, hasVxLanTunnelProfile, useNetworkVxLanTunnelProfileInfo } from './utils'
 
 describe('Network utils test', () => {
   it('Test network types for show the RADIUS Options settings', () => {
@@ -183,5 +187,55 @@ describe('Network utils test', () => {
       type: 'dpsk'
     } as NetworkSaveData
     expect(hasVxLanTunnelProfile(dpskWlanWithoutTunnelProfile)).toBeFalsy()
+  })
+
+
+  describe('useNetworkVxLanTunnelProfileInfo', () => {
+    const mockedTunnelReq = jest.fn()
+    beforeEach(() => {
+      mockServer.use(
+        rest.get(
+          TunnelProfileUrls.getTunnelProfile.url,
+          (_, res, ctx) => {
+            mockedTunnelReq()
+            return res(ctx.json({
+              id: 'mocked_tunnel',
+              name: 'tunnelProfile1',
+              mtuType: 'MANUAL',
+              mtuSize: 1450,
+              forceFragmentation: true,
+              ageTimeMinutes: 20,
+              type: TunnelTypeEnum.VXLAN
+            }))
+          }
+        )
+      )
+    })
+
+    it('should bring out tunnel type',async () => {
+      const { result } = renderHook(() => {
+        return useNetworkVxLanTunnelProfileInfo({
+          wlan: {
+            advancedCustomization: {
+              tunnelProfileId: 'mocked_tunnel'
+            }
+          }
+        } as NetworkSaveData)
+      }, { wrapper: Provider })
+
+      await waitFor(() => expect(mockedTunnelReq).toBeCalled())
+      expect(result.current.enableVxLan).toBe(true)
+      expect(result.current.tunnelType).toBe('VXLAN')
+    })
+
+    it('should handle with null network data',async () => {
+      const { result } = renderHook(() => {
+        return useNetworkVxLanTunnelProfileInfo(null)
+      }, { wrapper: Provider })
+
+      expect(mockedTunnelReq).not.toBeCalled()
+      expect(result.current.enableVxLan).toBe(false)
+      expect(result.current.tunnelType).toBe(undefined)
+    })
   })
 })
