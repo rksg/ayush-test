@@ -185,6 +185,8 @@ function CustomButtonsTemplate (props: {
   modal: ModalRef
 }) {
   const { $t } = getIntl()
+  const okText = $t({ defaultMessage: 'OK' })
+  const cancelText = $t({ defaultMessage: 'Cancel' })
   const destroyModal = () => props.modal.destroy()
   const handleClick = async (b: CustomButtonProps) => {
     try {
@@ -217,7 +219,8 @@ function CustomButtonsTemplate (props: {
               key={b.key}
               onClick={() => handleClick(b)}
             >
-              {b.text}
+              {b.text.toLowerCase() === 'ok'? okText 
+                : (b.text.toLowerCase() === 'cancel'? cancelText : b.text)}
             </Button>
           )
         })
