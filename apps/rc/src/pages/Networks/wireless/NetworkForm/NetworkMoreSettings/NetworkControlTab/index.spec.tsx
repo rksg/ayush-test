@@ -2,14 +2,15 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                                                                                       from '@acx-ui/feature-toggle'
-import { AccessControlUrls, BasicServiceSetPriorityEnum, NetworkSaveData, OpenWlanAdvancedCustomization, TunnelProfileUrls, WifiCallingUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                           from '@acx-ui/store'
-import { mockServer, render, screen, within }                                                                                                 from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                                                                                                       from '@acx-ui/feature-toggle'
+import { AccessControlUrls, BasicServiceSetPriorityEnum, NetworkSaveData, OpenWlanAdvancedCustomization, TunnelProfileUrls, TunnelTypeEnum, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                                           from '@acx-ui/store'
+import { mockServer, render, screen, within }                                                                                                                 from '@acx-ui/test-utils'
 
 import { mockedTunnelProfileViewData }                  from '../../../../../Policies/TunnelProfile/__tests__/fixtures'
 import { devicePolicyListResponse, policyListResponse } from '../../__tests__/fixtures'
 import NetworkFormContext                               from '../../NetworkFormContext'
+import { useNetworkVxLanTunnelProfileInfo }             from '../../utils'
 
 import { NetworkControlTab } from '.'
 
@@ -286,5 +287,27 @@ describe('Network More settings - Network Control Tab', () => {
     expect(screen.getByText(/200 mbps/i)).toBeVisible()
     await userEvent.click(downloadLimitCheckbox)
 
+  })
+
+  it('should display tunnel profile when it use VxLan tunnel', async () => {
+    jest.mocked(useNetworkVxLanTunnelProfileInfo).mockReturnValue({
+      enableVxLan: true,
+      tunnelType: TunnelTypeEnum.VXLAN
+    })
+
+    render(
+      <Provider>
+        <Form>
+          <NetworkControlTab wlanData={mockWlanData} />
+        </Form>
+      </Provider>,
+      { route: { params } })
+
+    const clientIsolationContainer = screen.getByText(/client isolation/i)
+    expect(within(clientIsolationContainer).getByRole('switch')).toBeDisabled()
+    const tunnelProfileDropdown = await screen.findByRole('combobox', { name: 'Tunnel Profile' })
+    expect(tunnelProfileDropdown).toBeDisabled()
+    // eslint-disable-next-line max-len
+    await screen.findByText(/All networks under the same Network Segmentation share the same tunnel profile/i)
   })
 })

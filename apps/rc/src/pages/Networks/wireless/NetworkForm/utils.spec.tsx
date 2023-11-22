@@ -193,6 +193,8 @@ describe('Network utils test', () => {
   describe('useNetworkVxLanTunnelProfileInfo', () => {
     const mockedTunnelReq = jest.fn()
     beforeEach(() => {
+      mockedTunnelReq.mockRestore()
+
       mockServer.use(
         rest.get(
           TunnelProfileUrls.getTunnelProfile.url,
