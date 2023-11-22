@@ -28,7 +28,6 @@ import {
   network,
   user,
   list,
-  timezoneRes,
   params,
   networkVenue_allAps,
   networkVenue_apgroup,
@@ -399,7 +398,7 @@ describe('NetworkVenuesTab', () => {
           mon: '000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
           tue: '000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
           wed: '000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
-          thu: '000000000000000000000000000000000000000111111111111111111111111111111111111111111111111111111111',
+          thu: '111111111111111111111111111111111111111111000000000000000000000000000000000000000000000000000000',
           fri: '000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
           sat: '000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
         }
@@ -422,8 +421,6 @@ describe('NetworkVenuesTab', () => {
       }
     ]
 
-    const requestSpy = jest.fn()
-
     mockServer.use(
       rest.get(
         WifiUrlsInfo.getNetwork.url,
@@ -439,13 +436,6 @@ describe('NetworkVenuesTab', () => {
           networkVenue_allAps,
           { ...networkVenue_apgroup, apGroups: newAPGroups }
         ] }))
-      ),
-      rest.get(
-        'https://maps.googleapis.com/maps/api/timezone/json',
-        (req, res, ctx) => {
-          requestSpy()
-          return res(ctx.json(timezoneRes))
-        }
       )
     )
 
@@ -456,17 +446,14 @@ describe('NetworkVenuesTab', () => {
       route: { params, path: '/:tenantId/t/:networkId' }
     })
 
-    await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(2))
-
     const row1 = await screen.findByRole('row', { name: /network-venue-1/i })
     const row2 = await screen.findByRole('row', { name: /My-Venue/i })
 
-    expect(row1).toHaveTextContent('custom')
     expect(row2).toHaveTextContent('2 AP Groups')
     expect(row2).toHaveTextContent('Per AP Group')
 
-    await waitFor(() => expect(row1).toHaveTextContent('OFF now'))
-    await waitFor(() => expect(row2).toHaveTextContent('ON now'))
+    expect(row1).toHaveTextContent('ON now') // { day: 'Thu', timeIndex: 5 }
+    expect(row2).toHaveTextContent('OFF now')  // { day: 'Wed', timeIndex: 45 }
 
     jest.useRealTimers()
   })
@@ -568,7 +555,6 @@ describe('NetworkVenuesTab', () => {
   })
 
   it('should trigger NetworkSchedulingDialog', async () => {
-    const requestSpy = jest.fn()
     const newVenues = [
       {
         ...network.venues[0],
@@ -593,13 +579,6 @@ describe('NetworkVenuesTab', () => {
       rest.post(
         CommonUrlsInfo.getNetworkDeepList.url,
         (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: newVenues }] }))
-      ),
-      rest.get(
-        'https://maps.googleapis.com/maps/api/timezone/json',
-        (req, res, ctx) => {
-          requestSpy()
-          return res(ctx.json(timezoneRes))
-        }
       )
     )
 

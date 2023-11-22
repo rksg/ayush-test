@@ -1,7 +1,8 @@
 /* eslint-disable max-len */
 import { useEffect, useState } from 'react'
 
-import moment from 'moment-timezone'
+import tz_lookup from '@photostructure/tz-lookup'
+import moment    from 'moment-timezone'
 
 import { get } from '@acx-ui/config'
 
@@ -45,7 +46,17 @@ export const getCurrentTimeSlotIndex = (timeZone?: ITimeZone): ISlotIndex => {
   return { day, timeIndex }
 }
 
-// TODO: use mapbox/timespace instead of Google Maps Time Zone API
+export const getVenueTimeZone = (lat: number, lng: number): ITimeZone => {
+  const timeZoneId = tz_lookup(lat, lng)
+  const timeZoneName = moment.utc().tz(timeZoneId).zoneAbbr()
+  const rawOffset = moment.utc().tz(timeZoneId).utcOffset()*60
+  return {
+    timeZoneId, timeZoneName: `${timeZoneId} ${timeZoneName}`,
+    rawOffset, dstOffset: 0,
+    status: 'OK'
+  }
+}
+
 export const fetchVenueTimeZone = async (lat: number, lng: number): Promise<ITimeZone> => {
   /** Timestamp is shifted to the beginning of the day to involve browser caching.
    *  Without this parameter every request has unique timestamp and considered as unique
@@ -80,25 +91,27 @@ type VenueSubset = {
   longitude?: string
 }
 
-export const useScheduleSlotIndexMap = (tableData: VenueSubset[]) => {
+export const useScheduleSlotIndexMap = (tableData: VenueSubset[], isMapEnabled?: boolean) => {
   const [scheduleSlotIndexMap, setScheduleSlotIndexMap] = useState<Record<string,ISlotIndex>>({})
 
   useEffect(()=>{
     const updateVenueCurrentSlotIndexMap = async (id: string, venueLatitude?: string, venueLongitude?: string) => {
       let timeZone
       if (Number(venueLatitude) && Number(venueLongitude)) {
-        timeZone = await fetchVenueTimeZone(Number(venueLatitude), Number(venueLongitude))
+        timeZone = isMapEnabled ?
+          await fetchVenueTimeZone(Number(venueLatitude), Number(venueLongitude)) :
+          getVenueTimeZone(Number(venueLatitude), Number(venueLongitude))
       }
       const slotIndex = getCurrentTimeSlotIndex(timeZone)
       setScheduleSlotIndexMap(prevSlotIndexMap => ({ ...prevSlotIndexMap, ...{ [id]: slotIndex } }))
     }
 
     tableData.forEach(item => {
-      if ( item.activated.isActivated && item.deepVenue?.scheduler?.type === SchedulerTypeEnum.CUSTOM) {
+      if (item.activated.isActivated && item.deepVenue?.scheduler?.type === SchedulerTypeEnum.CUSTOM) {
         updateVenueCurrentSlotIndexMap(item.id, item.latitude, item.longitude)
       }
     })
-  }, [tableData])
+  }, [isMapEnabled, tableData])
 
   return scheduleSlotIndexMap
 }

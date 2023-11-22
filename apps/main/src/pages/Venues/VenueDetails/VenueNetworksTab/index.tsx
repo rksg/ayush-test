@@ -98,6 +98,7 @@ export function VenueNetworksTab () {
     useQuery: useVenueNetworkListQuery,
     defaultPayload
   })
+  const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
   const [tableData, setTableData] = useState(defaultArray)
@@ -147,7 +148,7 @@ export function VenueNetworksTab () {
     }
   }, [tableQuery.data, venueDetailsQuery.data])
 
-  const scheduleSlotIndexMap = useScheduleSlotIndexMap(tableData)
+  const scheduleSlotIndexMap = useScheduleSlotIndexMap(tableData, isMapEnabled)
   const linkToAddNetwork = useTenantLink('/networks/wireless/add')
 
   const activateNetwork = async (checked: boolean, row: Network) => {
