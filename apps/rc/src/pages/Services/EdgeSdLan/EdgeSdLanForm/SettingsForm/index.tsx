@@ -5,9 +5,9 @@ import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
 import { StepsForm, useStepFormContext }                                                                        from '@acx-ui/components'
-import { SpaceWrapper, TunnelProfileAddModal }                                                                  from '@acx-ui/rc/components'
+import { SpaceWrapper, TunnelProfileAddModal, TunnelProfileFormType }                                           from '@acx-ui/rc/components'
 import { useGetEdgeListQuery, useGetPortConfigQuery, useGetTunnelProfileViewDataListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
-import { EdgeSdLanSetting, EdgeStatusEnum, isDefaultTunnelProfile }                                             from '@acx-ui/rc/utils'
+import { EdgeSdLanSetting, EdgeStatusEnum, isDefaultTunnelProfile, servicePolicyNameRegExp, TunnelTypeEnum }    from '@acx-ui/rc/utils'
 
 import diagram from '../../../../../assets/images/edge-sd-lan-diagrams/edge-sd-lan-early-access.png'
 
@@ -116,12 +116,17 @@ export const SettingsForm = () => {
 
   // prepare corePort info
   useEffect(() => {
-    if (portsConfig) {
     // find corePort
-      const corePort = portsConfig?.find(port => port.corePortEnabled)
-      form.setFieldValue('corePortMac', corePort?.mac)
-      form.setFieldValue('corePortName', corePort?.name)
-    }
+    let corePortMac, corePortName
+    portsConfig?.forEach((port, idx) => {
+      if (port.corePortEnabled) {
+        corePortMac = port.mac
+        corePortName = $t({ defaultMessage: 'Port {index}' }, { index: idx + 1 })
+      }
+    })
+
+    form.setFieldValue('corePortMac', corePortMac)
+    form.setFieldValue('corePortName', corePortName)
   }, [portsConfig])
 
   const onVenueChange = () => {
@@ -154,7 +159,8 @@ export const SettingsForm = () => {
                     label={$t({ defaultMessage: 'Service Name' })}
                     rules={[
                       { required: true },
-                      { min: 2, max: 32 }
+                      { min: 2, max: 32 },
+                      { validator: (_, value) => servicePolicyNameRegExp(value) }
                     ]}
                     children={<Input />}
                   />
@@ -259,7 +265,11 @@ export const SettingsForm = () => {
                   </Form.Item>
                 </Col>
                 <Col span={3}>
-                  <TunnelProfileAddModal />
+                  <TunnelProfileAddModal
+                    defaultValues={{
+                      type: TunnelTypeEnum.VLAN_VXLAN,
+                      disabledFields: ['type'] } as TunnelProfileFormType
+                    } />
                 </Col>
               </Row>
             </Col>

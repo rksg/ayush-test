@@ -54,7 +54,7 @@ export const ScheduleExportDrawer = (props: ScheduleExportDrawerProps) => {
             dayOfWeek: formData?.day,
             dayOfMonth: formData?.dayOfMonth
           },
-          recipients: formData?.recipients?.split(',')
+          recipients: formData?.recipients || []
         }
         try{
           // if already export schedule data available then use update export schedule
