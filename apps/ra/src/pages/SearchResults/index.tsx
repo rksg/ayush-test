@@ -10,7 +10,7 @@ import {
   NetworkHierarchy,
   Switch
 } from '@acx-ui/analytics/services'
-import { defaultSort, sortProp, formattedPath } from '@acx-ui/analytics/utils'
+import { defaultSort, sortProp, formattedPath, getUserProfile } from '@acx-ui/analytics/utils'
 import {
   PageHeader,
   Loader,
@@ -23,7 +23,7 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                       from '@acx-ui/formatter'
-import { TenantLink, resolvePath }                                         from '@acx-ui/react-router-dom'
+import { TenantLink, resolvePath, Navigate, MLISA_BASE_PATH, useSearchParams } from '@acx-ui/react-router-dom'
 import { DateRange, fixedEncodeURIComponent, encodeParameter, DateFilter } from '@acx-ui/utils'
 
 import NoData                                from './NoData'
@@ -31,8 +31,12 @@ import {  Collapse, Panel, Ul, Chevron, Li } from './styledComponents'
 
 const pagination = { pageSize: 5, defaultPageSize: 5 }
 
-function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
+function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
   const { $t } = useIntl()
+  const [search] = useSearchParams()
+  const selectedTenants = search.get('selectedTenants')
+  const { selectedTenant: { role } } = getUserProfile()
+  const isReportOnly = role === 'report-only'
   const isZonesPageEnabled = useIsSplitOn(Features.RUCKUS_AI_ZONES_LIST)
   const { timeRange } = useDateRange()
   const results = useSearchQuery({
@@ -418,7 +422,14 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
           }
         </Collapse>
       </>
-      : <>
+      : isReportOnly
+        ? <Navigate replace to={{
+            ...resolvePath(`${MLISA_BASE_PATH}/reports`),
+            search: selectedTenants
+              ? `?selectedTenants=${selectedTenants}`
+              : undefined
+          }}/>
+        : <>
         <PageHeader title={$t(
           { defaultMessage: 'Hmmmm... we couldn’t find any match for "{searchVal}"' },
           { searchVal }
