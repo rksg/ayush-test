@@ -42,7 +42,8 @@ import {
 import {
   APExtended,
   VenueRadioCustomization,
-  ChannelBandwidth6GEnum
+  ChannelBandwidth6GEnum,
+  AFCProps
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -90,7 +91,7 @@ export function RadioSettings () {
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
-
+  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
 
   const {
     editContextData,
@@ -124,6 +125,7 @@ export function RadioSettings () {
 
   const [triBandApModels, setTriBandApModels] = useState<string[]>([])
   const [hasTriBandAps, setHasTriBandAps] = useState(false)
+  const [afcProps, setAfcProps] = useState({} as AFCProps)
 
   const { data: venueCaps } = useGetVenueApCapabilitiesQuery({ params: { tenantId, venueId } })
 
@@ -198,6 +200,11 @@ export function RadioSettings () {
       setBandwidth6GOptions(getSupportBandwidth(wifi7_320Bandwidth, supportCh6g))
       setBandwidthLower5GOptions(getSupport5GBandwidth(channelBandwidth5GOptions, supportChLower5g))
       setBandwidthUpper5GOptions(getSupport5GBandwidth(channelBandwidth5GOptions, supportChUpper5g))
+      setAfcProps({
+        featureFlag: AFC_Featureflag,
+        isAFCEnabled: supportChannelsData?.afcEnabled,
+        afcInfo: undefined
+      })
     }
 
   }, [supportChannelsData])
@@ -217,8 +224,7 @@ export function RadioSettings () {
     let filters = { model: triBandApModelNames, venueId: [venueId] }
 
     const payload = {
-      fields: ['name', 'model', 'venueId', 'id','apStatusData.afcInfo.powerMode',
-        'apStatusData.afcInfo.afcStatus','apRadioDeploy'],
+      fields: ['name', 'model', 'venueId', 'id','apStatusData.afcInfo','apRadioDeploy'],
       pageSize: 10000,
       sortField: 'name',
       sortOrder: 'ASC',
@@ -703,7 +709,7 @@ export function RadioSettings () {
               bandwidthOptions={bandwidth6GOptions}
               handleChanged={handleChange}
               onResetDefaultValue={handleResetDefaultSettings}
-              isAFCEnabled={supportChannelsData?.afcEnabled} />
+              afcProps={afcProps} />
           </div>
           }
           { isTriBandRadio && isDual5gMode &&
