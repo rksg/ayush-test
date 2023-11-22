@@ -56,11 +56,17 @@ function AIOperationsWidget ({
   const filteredRecommendations = data?.recommendations.filter(
     i => i.code !== 'unknown' )
 
-  const iconList = {
-    applied: <UI.GreenTickIcon />,
-    reverted: <UI.OrangeRevertIcon />,
-    failed: <UI.RedCancelIcon />
-  }
+  const newStates = ['new', 'applyscheduled', 'applyscheduleinprogress', 'beforeapplyinterrupted']
+  // eslint-disable-next-line max-len
+  const appliedStates = ['applied', 'afterapplyinterrupted', 'applywarning', 'revertscheduled', 'revertscheduleinprogress']
+  const revertedStates = ['reverted']
+  const failedStates = ['applyfailed', 'revertfailed']
+  const intervalTypeMapping = [
+    { state: 'new', list: newStates }, // this should not happen
+    { state: 'applied', list: appliedStates, icon: <UI.GreenTickIcon /> },
+    { state: 'reverted', list: revertedStates, icon: <UI.OrangeRevertIcon /> },
+    { state: 'failed', list: failedStates, icon: <UI.RedCancelIcon /> }
+  ]
 
   return <Loader states={[queryResults]}>
     <Card title={title} onArrowClick={onArrowClick} subTitle={subtitle}>{
@@ -105,7 +111,8 @@ function AIOperationsWidget ({
                       >
                         <UI.ListItem.Meta
                           avatar={!hasNew
-                            ? iconList[status as keyof typeof iconList]
+                            ? intervalTypeMapping.filter(states =>
+                              states.list.includes(status))[0].icon
                             : <PriorityIcon value={priority!.order} />
                           }
                           title={category}
