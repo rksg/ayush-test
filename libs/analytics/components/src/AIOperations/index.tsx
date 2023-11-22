@@ -69,67 +69,71 @@ function AIOperationsWidget ({
   ]
 
   return <Loader states={[queryResults]}>
-    <Card title={title} onArrowClick={onArrowClick} subTitle={subtitle}>{
-      noLicense ? <NoAiOpsLicense
-        text={$t({ defaultMessage:
-          `RUCKUS AI cannot analyse your zone due to inadequate licenses.
-          Please ensure you have licenses fully applied for the zone for
-          AI Operations optimizations.`
-        })}/>
-        : noData
-          ? <NoRecommendationData
-            noData={true}
-            text={$t({ defaultMessage:
-              `Your network is already running in an optimal configuration
-              and we don’t have any AI Operations to recommend recently.`
-            })} />
-          : <>
-            {!hasNew ? <NoRecommendationData
+    <Card
+      title={title}
+      onArrowClick={onArrowClick}
+      subTitle={(!noLicense || !noData || hasNew) ? '' : subtitle}
+    >{
+        noLicense ? <NoAiOpsLicense
+          text={$t({ defaultMessage:
+            `RUCKUS AI cannot analyse your zone due to inadequate licenses.
+            Please ensure you have licenses fully applied for the zone for
+            AI Operations optimizations.`
+          })}/>
+          : noData
+            ? <NoRecommendationData
+              noData={true}
               text={$t({ defaultMessage:
-              `Your network is already running in an optimal configuration
-              and we don’t have any AI Operations to recommend recently.`
-              })}
-            /> : null}
-            <div style={{ flex: 1 }}>
-              <AutoSizer style={{ flex: 1 }}>{(style) => <List<AiOpsListItem>
-                style={style}
-                dataSource={filteredRecommendations?.slice(0, style.height / 50 | 0)}
-                renderItem={recommendation => {
-                  const {
-                    category, priority, updatedAt, id, summary, sliceValue, status
-                  } = recommendation
-                  const date = formatter(DateFormatEnum.DateFormat)(updatedAt)
-                  const statusText = states[status as keyof typeof states].text
-                  return <UI.ListItem key={id}>
-                    <TenantLink to={`/recommendations/aiOps/${id}`}>
-                      <Tooltip
-                        placement='top'
-                        title={$t(
-                          { defaultMessage: '{summary} on {sliceValue}' },
-                          { sliceValue, summary }
-                        )}
-                      >
-                        <UI.ListItem.Meta
-                          avatar={!hasNew
-                            ? intervalTypeMapping.filter(states =>
-                              states.list.includes(status))[0].icon
-                            : <PriorityIcon value={priority!.order} />
-                          }
-                          title={category}
-                          description={!hasNew
-                            ? `${$t(statusText)} ${$t({ defaultMessage: 'on {date}' }, { date })}`
-                            : date
-                          }
-                        />
-                      </Tooltip>
-                    </TenantLink>
-                  </UI.ListItem>
-                }}
-              />
-              }</AutoSizer>
-            </div>
-          </>
-    }</Card>
+                `Your network is already running in an optimal configuration
+                and we don’t have any AI Operations to recommend recently.`
+              })} />
+            : <>
+              {!hasNew ? <NoRecommendationData
+                text={$t({ defaultMessage:
+                `Your network is already running in an optimal configuration
+                and we don’t have any AI Operations to recommend recently.`
+                })}
+              /> : null}
+              <div style={{ flex: 1 }}>
+                <AutoSizer style={{ flex: 1 }}>{(style) => <List<AiOpsListItem>
+                  style={style}
+                  dataSource={filteredRecommendations?.slice(0, style.height / 50 | 0)}
+                  renderItem={recommendation => {
+                    const {
+                      category, priority, updatedAt, id, summary, sliceValue, status
+                    } = recommendation
+                    const date = formatter(DateFormatEnum.DateFormat)(updatedAt)
+                    const statusText = states[status as keyof typeof states].text
+                    return <UI.ListItem key={id}>
+                      <TenantLink to={`/recommendations/aiOps/${id}`}>
+                        <Tooltip
+                          placement='top'
+                          title={$t(
+                            { defaultMessage: '{summary} on {sliceValue}' },
+                            { sliceValue, summary }
+                          )}
+                        >
+                          <UI.ListItem.Meta
+                            avatar={!hasNew
+                              ? intervalTypeMapping.filter(states =>
+                                states.list.includes(status))[0].icon
+                              : <PriorityIcon value={priority!.order} />
+                            }
+                            title={category}
+                            description={!hasNew
+                              ? `${$t(statusText)} ${$t({ defaultMessage: 'on {date}' }, { date })}`
+                              : date
+                            }
+                          />
+                        </Tooltip>
+                      </TenantLink>
+                    </UI.ListItem>
+                  }}
+                />
+                }</AutoSizer>
+              </div>
+            </>
+      }</Card>
   </Loader>
 }
 
