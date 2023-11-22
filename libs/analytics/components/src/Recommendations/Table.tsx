@@ -2,6 +2,7 @@ import { useMemo, useState, useEffect } from 'react'
 
 import { Checkbox, Switch }       from 'antd'
 import { uniqueId }               from 'lodash'
+import moment                     from 'moment'
 import { useIntl, defineMessage } from 'react-intl'
 
 import {
@@ -54,8 +55,7 @@ export function RecommendationTable (
 ) {
   const intl = useIntl()
   const { $t } = intl
-  const { selectedTenants } = useParams()
-  const { userId } = getUserProfile()
+  const profile = getUserProfile()
 
   const [showMuted, setShowMuted] = useState<boolean>(false)
 
@@ -141,11 +141,7 @@ export function RecommendationTable (
       width: 250,
       dataIndex: 'summary',
       key: 'summary',
-      render: (_, value, __, highlightFn ) => {
-        // const fullOptimized = value.metadata.preference.fullOptimization
-        const fullOptimized = false
-        return <div style={{ color: fullOptimized ? '' : 'red' }}>{highlightFn(value.summary)}</div>
-      },
+      render: (_, value, __, highlightFn ) => <>{highlightFn(value.summary)}</>,
       sorter: { compare: sortProp('summary', defaultSort) },
       searchable: true
     },
@@ -203,22 +199,20 @@ export function RecommendationTable (
       align: 'left',
       tooltip: '',
       render: (_, value) => {
-        const { id, status } = value
+        const { code, status, path } = value
         const disabled = status !== 'Applied' ? true : false
-        // check if preference is set? if no preference, set true, if there's preference, read and set it
-        // const checked = value.metadata.preference.fullOptimization
+        const preference = { fullOptimization: true }
         return <div>
           <Switch
             defaultChecked
-            // checked={checked ? checked : false}
+            checked={preference.fullOptimization}
             disabled={disabled}
             onChange={() => {
-              const { userId } = getUserProfile()
-              setPreference({ id, updatedAt: Date.now().toString() })
-              console.log('userId', userId)
-              console.log('selectedTenants', selectedTenants)
-              // set preference in recommendation_preference
-              // const preference = { fullOptimization: false/true }
+              const { userId, selectedTenant } = profile
+              const date = moment().utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]')
+              setPreference({
+                code, path, preference, userId, tenantId: selectedTenant.id, date
+              })
             }}
           />
         </div>

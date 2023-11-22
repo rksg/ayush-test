@@ -23,7 +23,6 @@ import {
 } from './config'
 import { kpiHelper, RecommendationKpi } from './RecommendationDetails/services'
 
-
 export type CrrmListItem = {
   id: string
   code: string
@@ -110,15 +109,21 @@ interface ScheduleResponse {
 }
 
 interface PreferencePayload {
-  id: string
-  updatedAt: string
+  code: string
+  path: NetworkPath
+  preference: {
+    fullOptimization: boolean
+  }
+  userId: string
+  tenantId: string
+  date: string
 }
 
 interface PreferenceResponse {
   setPreference: {
-    errorCode: string;
-    errorMsg: string;
-    success: boolean;
+    errorCode: string
+    errorMsg: string
+    success: boolean
   }
 }
 
@@ -443,10 +448,21 @@ export const api = recommendationApi.injectEndpoints({
       query: (payload) => ({
         document: gql`
           mutation SetPreference(
-            $id: String,
-            $updatedAt: DateTime
+            $code: String,
+            $path: [HierarchyNodeInput],
+            $preference: JSON,
+            $userId: String,
+            $tenantId: String,
+            $date: DateTime
           ) {
-            setPreference(id: $id, updatedAt: $updatedAt) {
+            setPreference(
+              code: $code,
+              path: $path,
+              preference: $preference,
+              userId: $userId,
+              tenantId: $tenantId,
+              date: $date
+            ) {
               success
               errorMsg
               errorCode
@@ -454,8 +470,12 @@ export const api = recommendationApi.injectEndpoints({
           }
         `,
         variables: {
-          id: payload.id,
-          updatedAt: payload.updatedAt
+          code: payload.code,
+          path: payload.path,
+          preference: payload.preference,
+          userId: payload.userId,
+          tenantId: payload.tenantId,
+          date: payload.date
         }
       }),
       invalidatesTags: [
