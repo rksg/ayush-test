@@ -85,10 +85,10 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
     const selectedNodePath = breadcrumb.map((node) => {
       const nodeInfo = {
         name: node.name,
-        type: node.type === 'ap' ? 'AP' : node.type
+        type: node.type
       }
       const apOrSwitchInfo = node.type === 'ap' || node.type === 'switch'
-        ? { name: node?.mac }
+        ? { list: [node?.mac] }
         : {}
       return {
         ...nodeInfo,
