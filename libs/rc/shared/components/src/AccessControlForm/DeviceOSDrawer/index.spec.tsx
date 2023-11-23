@@ -14,9 +14,9 @@ import { mockServer, render, screen, within } from '@acx-ui/test-utils'
 import {
   devicePolicyDetailResponse,
   devicePolicyDetailWith32RulesResponse,
-  devicePolicyListResponse } from '../../__tests__/fixtures'
+  devicePolicyListResponse } from '../__tests__/fixtures'
 
-import DeviceOSDrawer from './index'
+import { DeviceOSDrawer } from './index'
 
 const queryDevice = [
   {

@@ -38,11 +38,10 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
-import { layer3ProtocolLabelMapping }      from '../../contentsMap'
-import { PROFILE_MAX_COUNT_LAYER3_POLICY } from '../constants'
-import { useScrollLock }                   from '../ScrollLock'
-
-import { AddModeProps, editModeProps } from './AccessControlForm'
+import { AddModeProps, editModeProps }     from './AccessControlForm'
+import { PROFILE_MAX_COUNT_LAYER3_POLICY } from './constants'
+import { layer3ProtocolLabelMapping }      from './contentsMap'
+import { useScrollLock }                   from './ScrollLock'
 
 const { useWatch } = Form
 const { Option } = Select
@@ -157,7 +156,7 @@ const DEFAULT_LAYER3_RULES = [
   }
 ]
 
-const Layer3Drawer = (props: Layer3DrawerProps) => {
+export const Layer3Drawer = (props: Layer3DrawerProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const {
@@ -1144,5 +1143,3 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     </>
   )
 }
-
-export default Layer3Drawer

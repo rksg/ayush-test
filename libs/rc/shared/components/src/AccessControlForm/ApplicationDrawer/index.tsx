@@ -32,8 +32,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
-import { PROFILE_MAX_COUNT_APPLICATION_POLICY } from '../../constants'
-import { useScrollLock }                        from '../../ScrollLock'
+import { PROFILE_MAX_COUNT_APPLICATION_POLICY } from '../constants'
+import { useScrollLock }                        from '../ScrollLock'
 import { AddModeProps, editModeProps }          from '../AccessControlForm'
 
 import {
@@ -149,7 +149,7 @@ export const GenDetailsContent = (props: { editRow: ApplicationsRule }) => {
   }
 }
 
-const ApplicationDrawer = (props: ApplicationDrawerProps) => {
+export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const {
@@ -719,5 +719,3 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     </>
   )
 }
-
-export default ApplicationDrawer

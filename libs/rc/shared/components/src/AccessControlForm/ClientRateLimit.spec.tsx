@@ -10,7 +10,7 @@ import { SliderSingleProps } from 'antd/lib/slider'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
-import ClientRateLimit from './ClientRateLimit'
+import { ClientRateLimit } from './ClientRateLimit'
 
 jest.mock('antd', () => {
   const antd = jest.requireActual('antd')

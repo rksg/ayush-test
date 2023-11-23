@@ -26,7 +26,7 @@ const Unlimited = () => {
   )
 }
 
-const ClientRateLimit = (props: ClientRateLimitProps) => {
+export const ClientRateLimit = (props: ClientRateLimitProps) => {
   const { $t } = useIntl()
   const { inputName = [] } = props
   const form = Form.useFormInstance()
@@ -142,5 +142,3 @@ const ClientRateLimit = (props: ClientRateLimitProps) => {
     </div>
   )
 }
-
-export default ClientRateLimit

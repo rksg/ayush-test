@@ -14,6 +14,13 @@ import { useIntl }             from 'react-intl'
 
 import { Button, Modal, ModalType, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
 import {
+  AccessControlSettingForm,
+  ApplicationDrawer, convertToPayload,
+  DeviceOSDrawer, genAclPayloadObject,
+  Layer2Drawer,
+  Layer3Drawer
+} from '@acx-ui/rc/components'
+import {
   useDevicePolicyListQuery,
   useL2AclPolicyListQuery,
   useL3AclPolicyListQuery,
@@ -28,17 +35,7 @@ import {
 import { transformDisplayText } from '@acx-ui/rc/utils'
 import { useParams }            from '@acx-ui/react-router-dom'
 
-
-import {
-  convertToPayload,
-  genAclPayloadObject
-} from '../../../../Policies/AccessControl/AccessControlForm/AccessControlForm'
-import AccessControlSettingForm from '../../../../Policies/AccessControl/AccessControlForm/AccessControlSettingForm'
-import ApplicationDrawer        from '../../../../Policies/AccessControl/AccessControlForm/ApplicationDrawer'
-import DeviceOSDrawer           from '../../../../Policies/AccessControl/AccessControlForm/DeviceOSDrawer'
-import Layer2Drawer             from '../../../../Policies/AccessControl/AccessControlForm/Layer2Drawer'
-import Layer3Drawer             from '../../../../Policies/AccessControl/AccessControlForm/Layer3Drawer'
-import NetworkFormContext       from '../NetworkFormContext'
+import NetworkFormContext from '../NetworkFormContext'
 
 import * as UI from './styledComponents'
 

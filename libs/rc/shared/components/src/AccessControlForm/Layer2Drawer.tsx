@@ -32,10 +32,10 @@ import {
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
-import { PROFILE_MAX_COUNT_LAYER2_POLICY } from '../constants'
-import { useScrollLock }                   from '../ScrollLock'
+import { AddModeProps, editModeProps }     from './AccessControlForm'
+import { PROFILE_MAX_COUNT_LAYER2_POLICY } from './constants'
+import { useScrollLock }                   from './ScrollLock'
 
-import { AddModeProps, editModeProps } from './AccessControlForm'
 
 const { useWatch } = Form
 const { Option } = Select
@@ -76,7 +76,7 @@ const AclGridCol = ({ children }: { children: ReactNode }) => {
   )
 }
 
-const Layer2Drawer = (props: Layer2DrawerProps) => {
+export const Layer2Drawer = (props: Layer2DrawerProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const {
@@ -709,5 +709,3 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
     </>
   )
 }
-
-export default Layer2Drawer

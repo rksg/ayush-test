@@ -7,7 +7,7 @@ import { ContentSwitcher, ContentSwitcherProps }                  from '@acx-ui/
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { AccessStatus, DeviceTypeEnum, OsVendorEnum }             from '@acx-ui/rc/utils'
 
-import { deviceTypeLabelMapping, osVenderLabelMapping } from '../../../contentsMap'
+import { deviceTypeLabelMapping, osVenderLabelMapping } from '../contentsMap'
 
 import {
   deviceOsVendorMappingTable,

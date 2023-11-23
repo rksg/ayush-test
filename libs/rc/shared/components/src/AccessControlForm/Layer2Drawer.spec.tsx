@@ -11,7 +11,7 @@ import { AccessControlUrls }          from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import Layer2Drawer from './Layer2Drawer'
+import { Layer2Drawer } from './Layer2Drawer'
 
 const queryLayer2 = [
   {

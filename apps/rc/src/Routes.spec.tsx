@@ -211,10 +211,6 @@ jest.mock('./pages/Policies/AAA/AAADetail', () => () => {
   return <div data-testid='AAAPolicyDetail' />
 })
 
-jest.mock('./pages/Policies/AccessControl/AccessControlForm/AccessControlForm', () => () => {
-  return <div data-testid='AccessControlForm' />
-})
-
 jest.mock('./pages/Policies/AccessControl/AccessControlDetail', () => () => {
   return <div data-testid='AccessControlDetail' />
 })
@@ -229,7 +225,8 @@ jest.mock('@acx-ui/rc/components', () => ({
   RogueAPDetectionTable: () => <div data-testid='RogueAPDetectionTable' />,
   DpskForm: () => <div data-testid='DpskForm' />,
   MacRegistrationListForm: () => <div data-testid='MacRegistrationListForm' />,
-  AdaptivePolicySetForm: () => <div data-testid='AdaptivePolicySetForm' />
+  AdaptivePolicySetForm: () => <div data-testid='AdaptivePolicySetForm' />,
+  AccessControlForm: () => <div data-testid='AccessControlForm' />
 }))
 
 jest.mock('./pages/Policies/AdaptivePolicy/RadiusAttributeGroup/RadiusAttributeGroupForm/RadiusAttributeGroupForm', () => () => {

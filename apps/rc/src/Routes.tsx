@@ -8,7 +8,8 @@ import {
   ResidentPortalForm,
   DpskForm,
   AdaptivePolicySetForm,
-  MacRegistrationListForm
+  MacRegistrationListForm,
+  AccessControlForm
 } from '@acx-ui/rc/components'
 import {
   getPolicyListRoutePath,
@@ -52,7 +53,6 @@ import AAAPolicyDetail                              from './pages/Policies/AAA/A
 import AAAForm                                      from './pages/Policies/AAA/AAAForm/AAAForm'
 import AAATable                                     from './pages/Policies/AAA/AAATable/AAATable'
 import AccessControlDetail                          from './pages/Policies/AccessControl/AccessControlDetail'
-import AccessControlForm                            from './pages/Policies/AccessControl/AccessControlForm/AccessControlForm'
 import AccessControlTable                           from './pages/Policies/AccessControl/AccessControlTable/AccessControlTable'
 import AdaptivePolicyList, { AdaptivePolicyTabKey } from './pages/Policies/AdaptivePolicy'
 import AdaptivePolicyDetail                         from './pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyDetail/AdaptivePolicyDetail'

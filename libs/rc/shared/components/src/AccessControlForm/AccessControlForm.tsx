@@ -21,7 +21,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import AccessControlSettingForm from './AccessControlSettingForm'
+import { AccessControlSettingForm } from './AccessControlSettingForm'
 
 
 type AccessControlFormProps = {
@@ -126,7 +126,7 @@ export const convertToPayload = (
   return payload
 }
 
-const AccessControlForm = (props: AccessControlFormProps) => {
+export const AccessControlForm = (props: AccessControlFormProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
@@ -194,5 +194,3 @@ const AccessControlForm = (props: AccessControlFormProps) => {
     </>
   )
 }
-
-export default AccessControlForm

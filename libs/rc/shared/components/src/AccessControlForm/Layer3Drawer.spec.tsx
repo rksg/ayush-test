@@ -10,9 +10,8 @@ import { AccessControlUrls }          from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { layer3PolicyListResponse } from '../__tests__/fixtures'
-
-import Layer3Drawer from './Layer3Drawer'
+import { layer3PolicyListResponse } from './__tests__/fixtures'
+import { Layer3Drawer }             from './Layer3Drawer'
 
 const queryLayer3 = [
   {

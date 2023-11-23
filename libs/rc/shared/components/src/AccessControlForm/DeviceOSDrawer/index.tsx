@@ -31,9 +31,9 @@ import {
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
-import { PROFILE_MAX_COUNT_DEVICE_POLICY } from '../../constants'
-import { useScrollLock }                   from '../../ScrollLock'
 import { AddModeProps, editModeProps }     from '../AccessControlForm'
+import { PROFILE_MAX_COUNT_DEVICE_POLICY } from '../constants'
+import { useScrollLock }                   from '../ScrollLock'
 
 import DeviceOSRuleContent, { DrawerFormItem } from './DeviceOSRuleContent'
 
@@ -104,7 +104,7 @@ const AclGridCol = ({ children }: { children: ReactNode }) => {
   )
 }
 
-const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
+export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const {
@@ -688,5 +688,3 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     </>
   )
 }
-
-export default DeviceOSDrawer

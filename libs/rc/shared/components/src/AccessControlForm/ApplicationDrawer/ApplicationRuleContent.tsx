@@ -12,7 +12,7 @@ import {
   subnetMaskIpRegExp
 } from '@acx-ui/rc/utils'
 
-import { AppAclLabelMapping, AppRuleLabelMapping } from '../../../contentsMap'
+import { AppAclLabelMapping, AppRuleLabelMapping } from '../contentsMap'
 
 import QosContent from './QosContent'
 

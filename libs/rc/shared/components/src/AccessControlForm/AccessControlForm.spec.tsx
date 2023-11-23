@@ -15,9 +15,8 @@ import {
   layer2Response,
   layer3PolicyListResponse,
   layer3Response, queryApplication
-} from '../__tests__/fixtures'
-
-import AccessControlForm from './AccessControlForm'
+} from './__tests__/fixtures'
+import { AccessControlForm } from './AccessControlForm'
 
 jest.mock('antd', () => {
   const antd = jest.requireActual('antd')

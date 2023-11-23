@@ -19,7 +19,7 @@ type AccessControlSettingFormProps = {
   embeddedObject?: AclEmbeddedObject
 }
 
-const AccessControlSettingForm = (props: AccessControlSettingFormProps) => {
+export const AccessControlSettingForm = (props: AccessControlSettingFormProps) => {
   const { $t } = useIntl()
   const {
     editMode,
@@ -144,5 +144,3 @@ const AccessControlSettingForm = (props: AccessControlSettingFormProps) => {
     </GridRow>
   )
 }
-
-export default AccessControlSettingForm
