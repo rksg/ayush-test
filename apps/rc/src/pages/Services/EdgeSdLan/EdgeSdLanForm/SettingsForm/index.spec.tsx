@@ -56,7 +56,9 @@ jest.mock('antd', () => {
 })
 
 jest.mock('./CorePortFormItem', () => ({
-  CorePortFormItem: () => <div data-testid='rc-CorePortFormItem'></div>
+  CorePortFormItem: (props: { data: string }) => <div data-testid='rc-CorePortFormItem'>
+    {props.data}
+  </div>
 }))
 
 const mockedSetFieldValue = jest.fn()
@@ -94,7 +96,9 @@ describe('Edge centrailized forwarding form: settings', () => {
       ),
       rest.get(
         EdgeUrlsInfo.getPortConfig.url,
-        (_, res, ctx) => res(ctx.json(mockEdgePortConfig))
+        (_, res, ctx) => {
+          return res(ctx.json(mockEdgePortConfig))
+        }
       )
     )
   })
@@ -146,42 +150,10 @@ describe('Edge centrailized forwarding form: settings', () => {
     expect(mockedSetFieldValue).toBeCalledWith('tunnelProfileName', 'tunnelProfile2')
   })
 
-  it('should query specific venue when edit mode', async () => {
+  it('should query specific venue and edge when edit mode', async () => {
     const expectedVenueId = 'mocked_venue_id'
-
-    const { result: stepFormRef } = renderHook(() => {
-      const [ form ] = Form.useForm()
-      return form
-    })
-
-    render(<Provider>
-      <StepsForm form={stepFormRef.current} editMode>
-        <SettingsForm />
-      </StepsForm>
-    </Provider>)
-
-    act(() => {
-      stepFormRef.current.setFieldValue('venueId', expectedVenueId)
-    })
-    jest.spyOn(stepFormRef.current, 'setFieldValue').mockImplementation(mockedSetFieldValue)
-
-    const formBody = await screen.findByTestId('steps-form-body')
-    const icons = await within(formBody).findAllByTestId('loadingIcon')
-    await waitForElementToBeRemoved(icons)
-
-    const venueDropdown = await within(formBody).findByRole('combobox', { name: 'Venue' })
-    expect(venueDropdown).toBeDisabled()
-    expect(mockedReqVenuesList).toBeCalledWith({
-      fields: ['name', 'id', 'edges'],
-      filters: { id: [expectedVenueId] }
-    })
-
-    expect(mockedSetFieldValue).toBeCalledWith('corePortMac', undefined)
-    expect(mockedSetFieldValue).toBeCalledWith('corePortName', undefined)
-  })
-  it('should query specific edge when edit mode', async () => {
-    const expectedVenueId = 'mocked_venue_2'
     const expectedEdgeId = 'mocked_edge'
+
     const { result: stepFormRef } = renderHook(() => {
       const [ form ] = Form.useForm()
       return form
@@ -197,15 +169,19 @@ describe('Edge centrailized forwarding form: settings', () => {
       stepFormRef.current.setFieldValue('venueId', expectedVenueId)
       stepFormRef.current.setFieldValue('edgeId', expectedEdgeId)
     })
+    jest.spyOn(stepFormRef.current, 'setFieldValue').mockImplementation(mockedSetFieldValue)
 
     const formBody = await screen.findByTestId('steps-form-body')
     const icons = await within(formBody).findAllByTestId('loadingIcon')
     await waitForElementToBeRemoved(icons)
-    await within(formBody).findByRole('combobox', { name: 'Venue' })
+
+    const venueDropdown = await within(formBody).findByRole('combobox', { name: 'Venue' })
+    expect(venueDropdown).toBeDisabled()
     expect(mockedReqVenuesList).toBeCalledWith({
       fields: ['name', 'id', 'edges'],
       filters: { id: [expectedVenueId] }
     })
+
     await waitFor(() => {
       expect(mockedReqEdgesList).toBeCalledWith({
         fields: ['name', 'serialNumber', 'venueId'],
@@ -217,6 +193,11 @@ describe('Edge centrailized forwarding form: settings', () => {
         }
       })
     })
+
+    await waitFor(() => {
+      expect(mockedSetFieldValue).toBeCalledWith('corePortName', 'Port 1')
+    })
+    expect(mockedSetFieldValue).toBeCalledWith('corePortMac', '00:0c:29:b6:ad:04')
   })
 
   it('Input invalid service name should show error message', async () => {
@@ -271,6 +252,16 @@ describe('Edge centrailized forwarding form: settings', () => {
     await waitForElementToBeRemoved(icon)
 
     await screen.findByText('SmartEdge')
+    await waitFor(() => {
+      expect(mockedReqEdgesList).toBeCalledWith({
+        fields: ['name', 'serialNumber', 'venueId'],
+        filters: {
+          venueId: [mockedVenueList.data[4].id],
+          deviceStatus: Object.values(EdgeStatusEnum)
+            .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD)
+        }
+      })
+    })
     expect(screen.queryByRole('option', { name: 'Smart Edge 5' })).toBeNull()
   })
 })

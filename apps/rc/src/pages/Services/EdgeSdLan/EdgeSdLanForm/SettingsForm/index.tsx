@@ -104,7 +104,7 @@ export const SettingsForm = () => {
     skip: !edgeId,
     selectFromResult: ({ data }) => {
       return {
-        portsConfig: data?.ports ?? []
+        portsConfig: data?.ports
       }
     }
   })
@@ -134,17 +134,19 @@ export const SettingsForm = () => {
 
   // prepare corePort info
   useEffect(() => {
+    if (portsConfig) {
     // find corePort
-    let corePortMac, corePortName
-    portsConfig?.forEach((port, idx) => {
-      if (port.corePortEnabled) {
-        corePortMac = port.mac
-        corePortName = $t({ defaultMessage: 'Port {index}' }, { index: idx + 1 })
-      }
-    })
+      let corePortMac, corePortName
+      portsConfig?.forEach((port, idx) => {
+        if (port.corePortEnabled) {
+          corePortMac = port.mac
+          corePortName = $t({ defaultMessage: 'Port {index}' }, { index: idx + 1 })
+        }
+      })
 
-    form.setFieldValue('corePortMac', corePortMac)
-    form.setFieldValue('corePortName', corePortName)
+      form.setFieldValue('corePortMac', corePortMac)
+      form.setFieldValue('corePortName', corePortName)
+    }
   }, [portsConfig])
 
   const onVenueChange = () => {
