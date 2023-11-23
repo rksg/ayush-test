@@ -178,19 +178,27 @@ export const getRLSClauseForSA = (
       sqlConditionsByType[type] = []
     }
 
-    if (type === 'AP') {
-      isApReport && sqlConditionsByType[type].push(`"apMac" = '${name}'`)
-    } else if (type === 'switch') {
-      isSwitchReport && sqlConditionsByType[type].push(`"switchId" = '${name}'`)
-    } else if (type === 'system') {
-      const systems = systemMap?.[name]
-      if (systems) {
-        systems.forEach(({ deviceId }) => {
-          sqlConditionsByType[type].push(`"${type}" = '${deviceId}'`)
-        })
-      }
-    } else {
-      sqlConditionsByType[type].push(`"${type}" = '${name}'`)
+    switch (type) {
+      case 'system':
+        const systems = systemMap?.[name]
+        if (systems) {
+          systems.forEach(({ deviceId }) => {
+            sqlConditionsByType[type].push(`"${type}" = '${deviceId}'`)
+          })
+        }
+        break
+      case 'domain':
+        sqlConditionsByType[type].push(`"${type}" like '%${name}%'`)
+        break
+      case 'AP':
+        sqlConditionsByType[type].push(`"apMac" = '${name}'`)
+        break
+      case 'switch':
+        sqlConditionsByType[type].push(`"switchId" = '${name}'`)
+        break
+      default:
+        sqlConditionsByType[type].push(`"${type}" = '${name}'`)
+        break
     }
   })
 

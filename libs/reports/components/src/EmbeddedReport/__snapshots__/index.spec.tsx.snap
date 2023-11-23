@@ -2,14 +2,14 @@
 
 exports[`getRLSClauseForSA should handle systems with same name: rlsClauseOverviewForSA 1`] = `
 Object {
-  "networkClause": "(\\"system\\" = 'd6c06b5f-ece3-4435-94a2-aa401da0faf1' OR \\"system\\" = '00000000-0000-0000-0000-000000000000') AND \\"domains\\" = 'SQA Sunnyvale' AND \\"zoneName\\" = 'Sky High Properties' AND \\"apGroupName\\" = '2Chambers-Roam' AND \\"apMac\\" = '1C:3A:60:31:8D:A0'",
+  "networkClause": "(\\"system\\" = 'd6c06b5f-ece3-4435-94a2-aa401da0faf1' OR \\"system\\" = '00000000-0000-0000-0000-000000000000') AND \\"domains\\" like '%SQA Sunnyvale%' AND \\"zoneName\\" = 'Sky High Properties' AND \\"apGroupName\\" = '2Chambers-Roam' AND \\"apMac\\" = '1C:3A:60:31:8D:A0'",
   "radioBandClause": null,
 }
 `;
 
 exports[`getRLSClauseForSA should return RLS clause based on report type - AP: rlsClauseAPForSA 1`] = `
 Object {
-  "networkClause": "\\"system\\" = 'd6c06b5f-ece3-4435-94a2-aa401da0faf1' AND \\"domains\\" = 'SQA Sunnyvale' AND \\"zoneName\\" = 'Sky High Properties' AND \\"apGroupName\\" = '2Chambers-Roam' AND \\"apMac\\" = '1C:3A:60:31:8D:A0'",
+  "networkClause": "\\"system\\" = 'd6c06b5f-ece3-4435-94a2-aa401da0faf1' AND \\"domains\\" like '%SQA Sunnyvale%' AND \\"zoneName\\" = 'Sky High Properties' AND \\"apGroupName\\" = '2Chambers-Roam' AND \\"apMac\\" = '1C:3A:60:31:8D:A0'",
   "radioBandClause": null,
 }
 `;
