@@ -155,7 +155,7 @@ export const getRLSClauseForSA = (
   reportName: ReportType
 ) => {
 
-  const { isApReport, isSwitchReport, isNetworkFilterDisabled } = getReportType(reportName)
+  const { isNetworkFilterDisabled } = getReportType(reportName)
 
   // If networkFilter is not shown, do not read it from URL
   // Reports like Overview and WLAN does not support network filter
@@ -188,7 +188,7 @@ export const getRLSClauseForSA = (
         }
         break
       case 'domain':
-        sqlConditionsByType[type].push(`"${type}" like '%${name}%'`)
+        sqlConditionsByType[type].push(`"domains" like '%${name}%'`)
         break
       case 'AP':
         sqlConditionsByType[type].push(`"apMac" = '${name}'`)
@@ -220,12 +220,9 @@ export const getRLSClauseForSA = (
     networkClause: sqlConditions.filter(Boolean)
       .join(' AND ')
       .replace(/\bzone\b/g, 'zoneName')
-      .replace(/\bdomain\b/g, 'domains')
       .replace(/\bapGroup\b/g, 'apGroupName')
       .replace(/\bswitchGroup\b/g, 'switchGroupLevelOneName')
-      .replace(/\bswitchSubGroup\b/g, 'switchGroupLevelTwoName')
-      .replace(/\bap\b/g, 'apMac')
-      .replace(/\bswitch\b/g, 'switchId'),
+      .replace(/\bswitchSubGroup\b/g, 'switchGroupLevelTwoName'),
     radioBandClause: null
   }
 }
