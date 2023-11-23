@@ -1,17 +1,23 @@
 import { ConfigProvider, PageNotFound }                     from '@acx-ui/components'
 import { ManageCustomer, ManageIntegrator, PortalSettings } from '@acx-ui/msp/components'
-import { rootRoutes, Route, TenantNavigate }                from '@acx-ui/react-router-dom'
-import { Provider }                                         from '@acx-ui/store'
+import { AAAForm }                                          from '@acx-ui/rc/components'
+import {
+  PolicyOperation,
+  PolicyType,
+  getPolicyRoutePath
+}  from '@acx-ui/rc/utils'
+import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
+import { Provider }                          from '@acx-ui/store'
 
-import { DeviceInventory }  from './pages/DeviceInventory'
-import { Integrators }      from './pages/Integrators'
-import Layout               from './pages/Layout'
-import { MspCustomers }     from './pages/MspCustomers'
-import { MspRecCustomers }  from './pages/MspRecCustomers'
-import { AddRecCustomer }   from './pages/MspRecCustomers/AddRecCustomer'
-import { Subscriptions }    from './pages/Subscriptions'
-import { AssignMspLicense } from './pages/Subscriptions/AssignMspLicense'
-import { VarCustomers }     from './pages/VarCustomers'
+import { DeviceInventory }                         from './pages/DeviceInventory'
+import { Integrators }                             from './pages/Integrators'
+import Layout, { LayoutWithConfigTemplateContext } from './pages/Layout'
+import { MspCustomers }                            from './pages/MspCustomers'
+import { MspRecCustomers }                         from './pages/MspRecCustomers'
+import { AddRecCustomer }                          from './pages/MspRecCustomers/AddRecCustomer'
+import { Subscriptions }                           from './pages/Subscriptions'
+import { AssignMspLicense }                        from './pages/Subscriptions/AssignMspLicense'
+import { VarCustomers }                            from './pages/VarCustomers'
 
 export default function MspRoutes () {
   const routes = rootRoutes(
@@ -29,6 +35,7 @@ export default function MspRoutes () {
       <Route path='deviceinventory' element={<DeviceInventory />} />
       <Route path='msplicenses/*' element={<CustomersRoutes />} />
       <Route path='portalSetting' element={<PortalSettings />} />
+      <Route path='templates/*' element={<TemplatesRoutes />} />
     </Route>
   )
   return (
@@ -60,6 +67,21 @@ function CustomersRoutes () {
       <Route path=':tenantId/v/msplicenses'>
         <Route index element={<Subscriptions />} />
         <Route path='assign' element={<AssignMspLicense />} />
+      </Route>
+    </Route>
+  )
+}
+
+function TemplatesRoutes () {
+  return rootRoutes(
+    <Route>
+      <Route path='*' element={<PageNotFound />} />
+      <Route path=':tenantId/v/templates' element={<LayoutWithConfigTemplateContext />}>
+        <Route index element={<div>Templates Main Page</div>} />
+        <Route
+          path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
+          element={<AAAForm edit={false}/>}
+        />
       </Route>
     </Route>
   )
