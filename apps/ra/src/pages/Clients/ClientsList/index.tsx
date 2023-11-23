@@ -3,27 +3,38 @@ import { useState } from 'react'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { defaultSort, sortProp  }                          from '@acx-ui/analytics/utils'
-import { Filter, Loader, Table, TableProps, useDateRange } from '@acx-ui/components'
-import { DateFormatEnum, formatter }                       from '@acx-ui/formatter'
-import { TenantLink }                                      from '@acx-ui/react-router-dom'
-import { encodeParameter, DateFilter, DateRange }          from '@acx-ui/utils'
-
-import { useClientListQuery, Client } from './services'
-
+import { useNetworkClientListQuery, Client }                     from '@acx-ui/analytics/services'
+import { defaultSort, sortProp, QueryParamsForZone  }            from '@acx-ui/analytics/utils'
+import { Filter, Loader, Table, TableProps, useDateRange }       from '@acx-ui/components'
+import { DateFormatEnum, formatter }                             from '@acx-ui/formatter'
+import { TenantLink }                                            from '@acx-ui/react-router-dom'
+import { encodeParameter, DateFilter, DateRange, useDateFilter } from '@acx-ui/utils'
 
 const pagination = { pageSize: 10, defaultPageSize: 10 }
 
-export function ClientsList ({ searchVal='' }: { searchVal?: string }) {
+export function ClientsList ({ searchVal='', queryParmsForZone }:
+{ searchVal?: string, queryParmsForZone?: QueryParamsForZone }) {
   const { $t } = useIntl()
   const { timeRange } = useDateRange()
+  const { startDate, endDate } = useDateFilter()
   const [searchString, setSearchString] = useState(searchVal)
-  const results = useClientListQuery({
-    start: timeRange[0].format(),
-    end: timeRange[1].format(),
-    limit: 100,
-    query: searchString
-  })
+  const requestPayload = Boolean(queryParmsForZone)
+    ? {
+      start: startDate,
+      end: endDate,
+      limit: 100,
+      query: searchString,
+      filter: { networkNodes: queryParmsForZone?.path }
+    }
+    : {
+      start: timeRange[0].format(),
+      end: timeRange[1].format(),
+      limit: 100,
+      query: searchString,
+      filter: {}
+    }
+
+  const results = useNetworkClientListQuery(requestPayload)
 
   const onSearch = (
     _: Filter,
