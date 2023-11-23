@@ -7,6 +7,7 @@ import { StepsForm }  from '@acx-ui/components'
 import {
   CommonUrlsInfo,
   EdgeSdLanUrls,
+  EdgeStatusEnum,
   EdgeUrlsInfo,
   TunnelProfileUrls
 } from '@acx-ui/rc/utils'
@@ -60,11 +61,13 @@ jest.mock('./CorePortFormItem', () => ({
 
 const mockedSetFieldValue = jest.fn()
 const mockedReqVenuesList = jest.fn()
+const mockedReqEdgesList = jest.fn()
 
 describe('Edge centrailized forwarding form: settings', () => {
   beforeEach(() => {
     mockedSetFieldValue.mockClear()
     mockedReqVenuesList.mockClear()
+    mockedReqEdgesList.mockClear()
 
     mockServer.use(
       rest.post(
@@ -80,7 +83,10 @@ describe('Edge centrailized forwarding form: settings', () => {
       ),
       rest.post(
         EdgeUrlsInfo.getEdgeList.url,
-        (_, res, ctx) => res(ctx.json(mockEdgeList))
+        (req, res, ctx) => {
+          mockedReqEdgesList(req.body)
+          return res(ctx.json(mockEdgeList))
+        }
       ),
       rest.post(
         TunnelProfileUrls.getTunnelProfileViewDataList.url,
@@ -173,6 +179,45 @@ describe('Edge centrailized forwarding form: settings', () => {
     expect(mockedSetFieldValue).toBeCalledWith('corePortMac', undefined)
     expect(mockedSetFieldValue).toBeCalledWith('corePortName', undefined)
   })
+  it('should query specific edge when edit mode', async () => {
+    const expectedVenueId = 'mocked_venue_2'
+    const expectedEdgeId = 'mocked_edge'
+    const { result: stepFormRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+
+    render(<Provider>
+      <StepsForm form={stepFormRef.current} editMode>
+        <SettingsForm />
+      </StepsForm>
+    </Provider>)
+
+    act(() => {
+      stepFormRef.current.setFieldValue('venueId', expectedVenueId)
+      stepFormRef.current.setFieldValue('edgeId', expectedEdgeId)
+    })
+
+    const formBody = await screen.findByTestId('steps-form-body')
+    const icons = await within(formBody).findAllByTestId('loadingIcon')
+    await waitForElementToBeRemoved(icons)
+    await within(formBody).findByRole('combobox', { name: 'Venue' })
+    expect(mockedReqVenuesList).toBeCalledWith({
+      fields: ['name', 'id', 'edges'],
+      filters: { id: [expectedVenueId] }
+    })
+    await waitFor(() => {
+      expect(mockedReqEdgesList).toBeCalledWith({
+        fields: ['name', 'serialNumber', 'venueId'],
+        filters: {
+          venueId: [expectedVenueId],
+          serialNumber: [expectedEdgeId],
+          deviceStatus: Object.values(EdgeStatusEnum)
+            .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD)
+        }
+      })
+    })
+  })
 
   it('Input invalid service name should show error message', async () => {
     const { result: stepFormRef } = renderHook(() => {
@@ -193,7 +238,8 @@ describe('Edge centrailized forwarding form: settings', () => {
       .toBeVisible()
   })
 
-  it('should filter out edges which is already bound with a SD-LAN service', async () => {
+  // eslint-disable-next-line max-len
+  it('should filter out edges which is already bound with a SD-LAN service in create mode', async () => {
     const { result: stepFormRef } = renderHook(() => {
       const [ form ] = Form.useForm()
       return form

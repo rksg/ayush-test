@@ -77,6 +77,7 @@ export const SettingsForm = () => {
       ],
       filters: {
         venueId: [venueId],
+        ...(editMode && { serialNumber: [edgeId] }),
         deviceStatus: Object.values(EdgeStatusEnum)
           .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD)
       } } },
@@ -85,7 +86,7 @@ export const SettingsForm = () => {
     selectFromResult: ({ data, isLoading }) => {
       return {
         edgeOptions: data?.data
-          .filter(item => sdLanBoundEdges.indexOf(item.serialNumber) === -1)
+          .filter(item => editMode ? true : sdLanBoundEdges.indexOf(item.serialNumber) === -1)
           .map(item => ({
             label: item.name,
             value: item.serialNumber,
