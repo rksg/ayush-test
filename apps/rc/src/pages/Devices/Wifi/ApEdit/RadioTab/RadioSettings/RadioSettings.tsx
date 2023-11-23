@@ -337,6 +337,7 @@ export function RadioSettings () {
   const formRef = useRef<StepsFormLegacyInstance<ApRadioCustomization>>()
   const venueRef = useRef<ApRadioCustomization>()
   const cachedDataRef = useRef<ApRadioCustomization>()
+  const operationCache = useRef<boolean>()
   const isUseVenueSettingsRef = useRef(defaultStateOfIsUseVenueSettings)
 
   const [stateOfIsUseVenueSettings, setStateOfIsUseVenueSettings] = useState(defaultStateOfIsUseVenueSettings)
@@ -373,7 +374,7 @@ export function RadioSettings () {
   const [formInitializing, setFormInitializing] = useState(true)
   const [apDataLoaded, setApDataLoaded] = useState(false)
 
-  const [stateOfUseVenueEnabled, setStateOfUseVenueEnabled] = useState<boolean | undefined>()
+  const [stateOfUseVenueEnabled, setStateOfUseVenueEnabled] = useState<boolean>()
 
   const { data: apRadioSavedData } =
     useGetApRadioCustomizationQuery({ params: { tenantId, serialNumber } })
@@ -550,7 +551,6 @@ export function RadioSettings () {
     }
 
     setData()
-    setStateOfUseVenueEnabled(venueRef?.current?.apRadioParamsDual5G?.useVenueEnabled)
   }, [isSupportDual5GAp, venue, apModelType, getVenueCustomization, tenantId])
 
   const updateFormData = (data: ApRadioCustomization) => {
@@ -629,17 +629,11 @@ export function RadioSettings () {
         isEnablePerApRadioCustomizationFlag)
       setStateOfIsUseVenueSettings(state)
       isUseVenueSettingsRef.current = state
+
+      setStateOfUseVenueEnabled(apRadioParamsDual5G?.useVenueEnabled ?? true)
     }
 
   }, [initData, isSupportDual5GAp, bandwidthLower5GOptions, bandwidthUpper5GOptions])
-
-  useEffect(() => {
-    const venueOfUseVenueEnabled = venueRef?.current?.apRadioParamsDual5G?.useVenueEnabled
-    const currentOfUseVenueEnabled = formRef?.current?.getFieldValue(['apRadioParamsDual5G', 'enabled'])
-    const useVenueEnabled = !isUndefined(venueOfUseVenueEnabled) && !isUndefined(currentOfUseVenueEnabled) ?
-      venueOfUseVenueEnabled === currentOfUseVenueEnabled : false
-    formRef?.current?.setFieldValue(['apRadioParamsDual5G', 'useVenueEnabled'], useVenueEnabled)
-  }, [stateOfUseVenueEnabled, isDual5gMode])
 
   const [currentTab, setCurrentTab] = useState(RadioType.Normal24GHz)
 
@@ -865,19 +859,24 @@ export function RadioSettings () {
   const handleTriBandTypeRadioChange = (e: RadioChangeEvent) => {
     const isDual5gEnabled = e.target.value
     setIsDual5gMode(isDual5gEnabled)
-    formRef.current?.setFieldValue(['radioParamsDual5G', 'enabled'], isDual5gEnabled)
     formRef.current?.setFieldValue(['apRadioParamsDual5G', 'enabled'], isDual5gEnabled)
     onTabChange('Normal24GHz')
   }
 
   const handleOnUseVenueEnabledChange = () => {
-    setStateOfUseVenueEnabled(prevState => !prevState)
-
-    const enableDual5GOfVenue = venueRef?.current?.apRadioParamsDual5G?.enabled
-    if (!isUndefined(enableDual5GOfVenue)) {
-      setIsDual5gMode(enableDual5GOfVenue)
-      formRef.current?.setFieldValue(['apRadioParamsDual5G', 'enabled'], enableDual5GOfVenue)
+    const flipState = !stateOfUseVenueEnabled
+    if (flipState) {
+      operationCache.current = formRef.current?.getFieldValue(['apRadioParamsDual5G', 'enabled'])
+      formRef.current?.setFieldValue(['apRadioParamsDual5G', 'enabled'], venueRef?.current?.apRadioParamsDual5G?.enabled)
+      formRef?.current?.setFieldValue(['apRadioParamsDual5G', 'useVenueEnabled'], flipState)
+    } else {
+      if (operationCache.current !== undefined) {
+        formRef.current?.setFieldValue(['apRadioParamsDual5G', 'enabled'], operationCache.current)
+      }
+      formRef?.current?.setFieldValue(['apRadioParamsDual5G', 'useVenueEnabled'], flipState)
     }
+    setStateOfUseVenueEnabled(flipState)
+    handleChange()
   }
 
   const handleStateOfIsUseVenueSettingsChange = () => {
@@ -953,18 +952,18 @@ export function RadioSettings () {
         <StepsFormLegacy.StepForm data-testid='radio-settings' initialValues={initData}>
           { isSupportDual5GAp && <div style={{ marginTop: '1em' }}>
             <Row gutter={0}>
-              <Col span={6}>
+              <Col span={5}>
                 <span>{$t({ defaultMessage: 'How to handle tri-band radio?' })}</span>
-                { stateOfUseVenueEnabled && <VenueNameDisplay venue={venue} /> }
-                <span style={{ marginLeft: '5px' }}>
-                  <Form.Item
-                    name={['apRadioParamsDual5G', 'useVenueEnable']}
-                    hidden
-                  />
-                  <Button type='link' onClick={handleOnUseVenueEnabledChange}>
-                    { stateOfUseVenueEnabled ? $t({ defaultMessage: 'Change' }) : $t({ defaultMessage: 'Same as Venue' }) }
-                  </Button>
-                </span>
+              </Col>
+              { stateOfUseVenueEnabled && <Col span={2}><VenueNameDisplay venue={venue} /></Col> }
+              <Col span={3}>
+                <Form.Item
+                  name={['apRadioParamsDual5G', 'useVenueEnabled']}
+                  hidden
+                />
+                <Button type='link' onClick={handleOnUseVenueEnabledChange}>
+                  { stateOfUseVenueEnabled ? $t({ defaultMessage: 'Change' }) : $t({ defaultMessage: 'Same as Venue' }) }
+                </Button>
               </Col>
               <Col span={2}>
                 <Tooltip.Question
