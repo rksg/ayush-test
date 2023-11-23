@@ -17,7 +17,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import AAASettingForm from './AAASettingForm'
+import { AAASettingForm } from './AAASettingForm'
 
 
 type AAAFormProps = {
@@ -26,7 +26,7 @@ type AAAFormProps = {
   networkView?: boolean,
   backToNetwork?: (value?: AAAPolicyType) => void
 }
-const AAAForm = (props: AAAFormProps) => {
+export const AAAForm = (props: AAAFormProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const tablePath = getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST })
@@ -109,4 +109,3 @@ const AAAForm = (props: AAAFormProps) => {
     </>
   )
 }
-export default AAAForm

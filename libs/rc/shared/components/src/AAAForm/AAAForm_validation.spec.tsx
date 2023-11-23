@@ -9,9 +9,9 @@ import { Provider }                              from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                          from '@acx-ui/user'
 
-import { multipleConflictMessage, radiusErrorMessage } from '../../../Networks/wireless/NetworkForm/contentsMap'
+import { AAAForm }                                     from './AAAForm'
+import { multipleConflictMessage, radiusErrorMessage } from './contentsMap'
 
-import AAAForm from './AAAForm'
 
 const aaaData={
   id: 'policy-id',

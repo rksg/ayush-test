@@ -20,7 +20,7 @@ type AAASettingFormProps = {
   networkView?: boolean
 }
 
-const AAASettingForm = (props: AAASettingFormProps) => {
+export const AAASettingForm = (props: AAASettingFormProps) => {
   const { $t } = useIntl()
   const { edit, saveState } = props
   const params = useParams()
@@ -257,4 +257,3 @@ const AAASettingForm = (props: AAASettingFormProps) => {
     </GridRow>
   )
 }
-export default AAASettingForm

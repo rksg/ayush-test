@@ -3,10 +3,8 @@ import { useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, Modal, ModalType }        from '@acx-ui/components'
+import { AAAForm }                         from '@acx-ui/rc/components'
 import { AAAPolicyType, AAA_LIMIT_NUMBER } from '@acx-ui/rc/utils'
-
-import AAAForm from '../../../../Policies/AAA/AAAForm/AAAForm'
-
 
 export default function AAAPolicyModal (props:{
   type?: string,

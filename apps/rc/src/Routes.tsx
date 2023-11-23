@@ -9,7 +9,8 @@ import {
   DpskForm,
   AdaptivePolicySetForm,
   MacRegistrationListForm,
-  AccessControlForm
+  AccessControlForm,
+  AAAForm
 } from '@acx-ui/rc/components'
 import {
   getPolicyListRoutePath,
@@ -50,7 +51,6 @@ import { NetworksList, NetworkTabsEnum }            from './pages/Networks/wirel
 import NetworkDetails                               from './pages/Networks/wireless/NetworkDetails/NetworkDetails'
 import NetworkForm                                  from './pages/Networks/wireless/NetworkForm/NetworkForm'
 import AAAPolicyDetail                              from './pages/Policies/AAA/AAADetail'
-import AAAForm                                      from './pages/Policies/AAA/AAAForm/AAAForm'
 import AAATable                                     from './pages/Policies/AAA/AAATable/AAATable'
 import AccessControlDetail                          from './pages/Policies/AccessControl/AccessControlDetail'
 import AccessControlTable                           from './pages/Policies/AccessControl/AccessControlTable/AccessControlTable'
