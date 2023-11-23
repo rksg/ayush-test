@@ -19,7 +19,7 @@ import SyslogVenueDetail   from './SyslogVenueDetail'
 
 export const SyslogDetailContext = createContext({} as SyslogDetailContextType)
 
-const SyslogDetailView = () => {
+export const SyslogDetailView = () => {
   const { $t } = useIntl()
   const params = useParams()
   const [filtersId, setFiltersId] = useState([] as string[])
@@ -66,5 +66,3 @@ const SyslogDetailView = () => {
     </SyslogDetailContext.Provider>
   )
 }
-
-export default SyslogDetailView

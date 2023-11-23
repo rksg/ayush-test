@@ -32,7 +32,7 @@ type SyslogFormProps = {
   edit: boolean
 }
 
-const SyslogForm = (props: SyslogFormProps) => {
+export const SyslogForm = (props: SyslogFormProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const tablePath = getPolicyRoutePath(
@@ -174,5 +174,3 @@ const SyslogForm = (props: SyslogFormProps) => {
     </SyslogContext.Provider>
   )
 }
-
-export default SyslogForm

@@ -1,5 +1,5 @@
-import { PageNotFound }                                              from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                  from '@acx-ui/feature-toggle'
+import { PageNotFound }                             from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   RogueAPDetectionDetailView,
   RogueAPDetectionForm,
@@ -12,7 +12,8 @@ import {
   AccessControlForm,
   AAAForm,
   VLANPoolForm,
-  WifiCallingForm, WifiCallingConfigureForm, WifiCallingDetailView
+  WifiCallingForm, WifiCallingConfigureForm, WifiCallingDetailView,
+  SyslogDetailView, SyslogForm
 } from '@acx-ui/rc/components'
 import {
   getPolicyListRoutePath,
@@ -80,8 +81,6 @@ import SelectPolicyForm                     from './pages/Policies/SelectPolicyF
 import SnmpAgentDetail                      from './pages/Policies/SnmpAgent/SnmpAgentDetail/SnmpAgentDetail'
 import SnmpAgentForm                        from './pages/Policies/SnmpAgent/SnmpAgentForm/SnmpAgentForm'
 import SnmpAgentTable                       from './pages/Policies/SnmpAgent/SnmpAgentTable/SnmpAgentTable'
-import SyslogDetailView                     from './pages/Policies/Syslog/SyslogDetail/SyslogDetailView'
-import SyslogForm                           from './pages/Policies/Syslog/SyslogForm/SyslogForm'
 import SyslogTable                          from './pages/Policies/Syslog/SyslogTable/SyslogTable'
 import AddTunnelProfile                     from './pages/Policies/TunnelProfile/AddTunnelProfile'
 import EditTunnelProfile                    from './pages/Policies/TunnelProfile/EditTunnelProfile'

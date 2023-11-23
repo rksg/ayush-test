@@ -10,7 +10,7 @@ import {
   FlowLevelEnum
 } from '@acx-ui/rc/utils'
 
-import { facilityLabelMapping, flowLevelLabelMapping } from '../../contentsMap'
+import { facilityLabelMapping, flowLevelLabelMapping } from '../contentsMap'
 
 import { SyslogDetailContext } from './SyslogDetailView'
 

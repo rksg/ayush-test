@@ -21,7 +21,7 @@ import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import SyslogContext from '../SyslogContext'
 
-import SyslogForm from './SyslogForm'
+import { SyslogForm } from './SyslogForm'
 
 const policyResponse = {
   requestId: '360cf6c7-b2c6-4973-b4c0-a6be63adaac0'

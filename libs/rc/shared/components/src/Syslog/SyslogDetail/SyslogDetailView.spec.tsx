@@ -8,8 +8,8 @@ import { SyslogUrls }                 from '@acx-ui/rc/utils'
 import { Provider, store }            from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import SyslogDetailView  from './SyslogDetailView'
-import SyslogVenueDetail from './SyslogVenueDetail'
+import { SyslogDetailView } from './SyslogDetailView'
+import SyslogVenueDetail    from './SyslogVenueDetail'
 
 const detailContent = {
   venues: [

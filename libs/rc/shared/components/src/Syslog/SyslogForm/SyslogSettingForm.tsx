@@ -23,7 +23,7 @@ import {
   serverIpAddressRegExp, servicePolicyNameRegExp
 } from '@acx-ui/rc/utils'
 
-import { facilityLabelMapping, flowLevelLabelMapping, protocolLabelMapping } from '../../contentsMap'
+import { facilityLabelMapping, flowLevelLabelMapping, protocolLabelMapping } from '../contentsMap'
 import SyslogContext                                                         from '../SyslogContext'
 
 const { Option } = Select
