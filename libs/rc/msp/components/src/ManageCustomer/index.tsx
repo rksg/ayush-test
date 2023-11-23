@@ -479,18 +479,18 @@ export function ManageCustomer () {
         customer.admin_role = ecFormData.admin_role
       }
       const ecDelegations=[] as MspIntegratorDelegated[]
-      if (mspIntegrator.length > 0) {
+      mspIntegrator.forEach((integrator: MspEc) => {
         ecDelegations.push({
           delegation_type: AccountType.MSP_INTEGRATOR,
-          delegation_id: mspIntegrator[0].id
+          delegation_id: integrator.id
         })
-      }
-      if (mspInstaller.length > 0) {
+      })
+      mspInstaller.forEach((installer: MspEc) => {
         ecDelegations.push({
           delegation_type: AccountType.MSP_INSTALLER,
-          delegation_id: mspInstaller[0].id
+          delegation_id: installer.id
         })
-      }
+      })
       if (ecDelegations.length > 0) {
         customer.delegations = ecDelegations
       }
