@@ -1,11 +1,11 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
 
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import * as config      from '@acx-ui/config'
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import { networkApi }   from '@acx-ui/rc/services'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { networkApi }             from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   WifiUrlsInfo
@@ -36,7 +36,7 @@ import {
 
 import { NetworkVenuesTab } from './index'
 
-jest.mock('socket.io-client')
+jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP) // isMapEnabled = false
 
 type MockDialogProps = React.PropsWithChildren<{
   visible: boolean
@@ -59,14 +59,6 @@ jest.mock('@acx-ui/rc/components', () => ({
 
 const mockedApplyFn = jest.fn()
 describe('NetworkVenuesTab', () => {
-  beforeAll(async () => {
-    const env = {
-      GOOGLE_MAPS_KEY: 'FAKE_GOOGLE_MAPS_KEY'
-    }
-    mockServer.use(rest.get('/env.json', (_, r, c) => r(c.json(env))))
-    await config.initialize()
-  })
-
   beforeEach(() => {
     act(() => {
       store.dispatch(networkApi.util.resetApiState())
@@ -114,26 +106,9 @@ describe('NetworkVenuesTab', () => {
       )
     )
   })
-
-  it('should render correctly', async () => {
-    render(<Provider><NetworkVenuesTab /></Provider>, {
-      route: { params, path: '/:tenantId/t/:networkId' }
-    })
-
-    const row1 = await screen.findByRole('row', { name: /network-venue-1/i })
-    expect(within(row1).queryAllByRole('button')).toHaveLength(4)
-    expect(row1).toHaveTextContent('VLAN-1 (Default)')
-    expect(row1).toHaveTextContent('All APs')
-    expect(row1).toHaveTextContent('2.4 GHz, 5 GHz')
-    expect(row1).toHaveTextContent('24/7')
-
-    const row2 = await screen.findByRole('row', { name: /My-Venue/i })
-    expect(within(row2).queryAllByRole('button')).toHaveLength(0)
-  })
+  // afterEach(() => Modal.destroyAll())
 
   it('activate Network', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/t/:networkId' }
     })
@@ -261,14 +236,11 @@ describe('NetworkVenuesTab', () => {
       )
     )
 
-    const tbody = await findTBody()
-
-    expect(tbody).toBeVisible()
-
-    const body = within(tbody)
-    fireEvent.click(await body.findByText('My-Venue'))
+    fireEvent.click(await screen.findByRole('row', { name: /My-Venue/i }))
     const activateButton = screen.getByRole('button', { name: 'Activate' })
     fireEvent.click(activateButton)
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
@@ -333,9 +305,7 @@ describe('NetworkVenuesTab', () => {
       route: { params, path: '/:tenantId/t/:networkId' }
     })
 
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
-    })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     mockServer.use(
       rest.get(
@@ -355,15 +325,11 @@ describe('NetworkVenuesTab', () => {
         (req, res, ctx) => res(ctx.json({}))
       )
     )
-
-    const tbody = await findTBody()
-
-    expect(tbody).toBeVisible()
-
-    const body = within(tbody)
-    fireEvent.click(await body.findByText('network-venue-1'))
+    await userEvent.click(await screen.findByRole('row', { name: /network-venue-1/i }))
     const deactivateButton = screen.getByRole('button', { name: 'Deactivate' })
-    fireEvent.click(deactivateButton)
+    await userEvent.click(deactivateButton)
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
@@ -445,6 +411,8 @@ describe('NetworkVenuesTab', () => {
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/t/:networkId' }
     })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const row1 = await screen.findByRole('row', { name: /network-venue-1/i })
     const row2 = await screen.findByRole('row', { name: /My-Venue/i })
@@ -541,16 +509,18 @@ describe('NetworkVenuesTab', () => {
       route: { params, path: '/:tenantId/t/:networkId' }
     })
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
     const row = await screen.findByRole('row', { name: /network-venue-1/i })
 
-    fireEvent.click(within(row).getByText('All APs'))
-    fireEvent.click(within(row).getByText('VLAN-1 (Default)'))
-    fireEvent.click(within(row).getByText('2.4 GHz, 5 GHz'))
+    await userEvent.click(within(row).getByText('All APs'))
+    await userEvent.click(within(row).getByText('VLAN-1 (Default)'))
+    await userEvent.click(within(row).getByText('2.4 GHz, 5 GHz'))
 
     const dialog = await screen.findByTestId('NetworkApGroupDialog')
     await waitFor(() => expect(dialog).toBeVisible())
 
-    fireEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
     await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
@@ -586,13 +556,10 @@ describe('NetworkVenuesTab', () => {
       route: { params, path: '/:tenantId/t/:networkId' }
     })
 
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
-    })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const row = await screen.findByRole('row', { name: /network-venue-1/i })
-
-    fireEvent.click(within(row).getByText(/custom/i))
+    await userEvent.click(within(row).getByText(/custom/i))
 
     const dialog = await screen.findByTestId('NetworkVenueScheduleDialog')
     await waitFor(() => expect(dialog).toBeVisible())

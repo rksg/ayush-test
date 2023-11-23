@@ -64,8 +64,6 @@ export const fetchVenueTimeZone = async (lat: number, lng: number): Promise<ITim
    *  Dividing by 1000 required since google api accepts seconds (not ms).
    **/
   const timestamp = (new Date()).setHours(0, 0, 0, 0) / 1000
-  // We pass addContentTypeHeader= false in this case since google location API will reject the request
-  // if the content type is set to application/json; charset=utf-8
   const query = [
     'location=' + lat + ',' + lng,
     'timestamp=' + timestamp,
@@ -78,9 +76,9 @@ export const fetchVenueTimeZone = async (lat: number, lng: number): Promise<ITim
     .then(data => {
       return data
     })
-    // .catch(error => {
-    //   return null
-    // })
+    .catch(() => { // fallback to geocoding api if google api fails.
+      return getVenueTimeZone(lat, lng)
+    })
 }
 
 type VenueSubset = {
