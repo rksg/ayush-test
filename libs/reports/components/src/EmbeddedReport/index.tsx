@@ -178,25 +178,19 @@ export const getRLSClauseForSA = (
       sqlConditionsByType[type] = []
     }
 
-    const { list } = item as unknown as { list: string[] }
-    if (list && list.length) {
-      if (isApReport && type.toUpperCase() === 'AP') {
-        sqlConditionsByType[type].push(`"apMac" IN ('${list.join("', '")}')`)
-      }
-      if (isSwitchReport && type === 'switch') {
-        sqlConditionsByType[type].push(`"switchId" IN ('${list.join("', '")}')`)
+    if (type === 'AP') {
+      isApReport && sqlConditionsByType[type].push(`"apMac" = '${name}'`)
+    } else if (type === 'switch') {
+      isSwitchReport && sqlConditionsByType[type].push(`"switchId" = '${name}'`)
+    } else if (type === 'system') {
+      const systems = systemMap?.[name]
+      if (systems) {
+        systems.forEach(({ deviceId }) => {
+          sqlConditionsByType[type].push(`"${type}" = '${deviceId}'`)
+        })
       }
     } else {
-      if (type === 'system') {
-        const systems = systemMap?.[name]
-        if (systems) {
-          systems.forEach(({ deviceId }) => {
-            sqlConditionsByType[type].push(`"${type}" = '${deviceId}'`)
-          })
-        }
-      } else {
-        sqlConditionsByType[type].push(`"${type}" = '${name}'`)
-      }
+      sqlConditionsByType[type].push(`"${type}" = '${name}'`)
     }
   })
 
