@@ -21,7 +21,7 @@ import WifiCallingScopeForm                    from '../WifiCallingScope/WifiCal
 
 import WifiCallingSettingForm from './WifiCallingSettingForm'
 
-const WifiCallingConfigureForm = () => {
+export const WifiCallingConfigureForm = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const tablePath = getServiceRoutePath({
@@ -103,5 +103,3 @@ const WifiCallingConfigureForm = () => {
     </WifiCallingFormContext.Provider>
   )
 }
-
-export default WifiCallingConfigureForm

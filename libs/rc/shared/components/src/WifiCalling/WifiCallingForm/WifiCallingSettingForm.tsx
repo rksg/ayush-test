@@ -9,7 +9,7 @@ import { StepsForm }                                                        from
 import { useGetWifiCallingServiceListQuery, useGetWifiCallingServiceQuery } from '@acx-ui/rc/services'
 import { QosPriorityEnum, WifiCallingActionTypes, servicePolicyNameRegExp } from '@acx-ui/rc/utils'
 
-import { wifiCallingQosPriorityLabelMapping } from '../../contentsMap'
+import { wifiCallingQosPriorityLabelMapping } from '../contentsMap'
 import WifiCallingFormContext                 from '../WifiCallingFormContext'
 
 import EpdgTable from './EpdgTable'

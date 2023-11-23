@@ -1,5 +1,5 @@
-import { PageNotFound }                             from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { PageNotFound }                                              from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                  from '@acx-ui/feature-toggle'
 import {
   RogueAPDetectionDetailView,
   RogueAPDetectionForm,
@@ -11,7 +11,8 @@ import {
   MacRegistrationListForm,
   AccessControlForm,
   AAAForm,
-  VLANPoolForm
+  VLANPoolForm,
+  WifiCallingForm, WifiCallingConfigureForm, WifiCallingDetailView
 } from '@acx-ui/rc/components'
 import {
   getPolicyListRoutePath,
@@ -123,9 +124,6 @@ import ResidentPortalDetail                 from './pages/Services/ResidentPorta
 import ResidentPortalTable                  from './pages/Services/ResidentPortal/ResidentPortalTable/ResidentPortalTable'
 import SelectServiceForm                    from './pages/Services/SelectServiceForm'
 import ServiceCatalog                       from './pages/Services/ServiceCatalog'
-import WifiCallingDetailView                from './pages/Services/WifiCalling/WifiCallingDetail/WifiCallingDetailView'
-import WifiCallingConfigureForm             from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingConfigureForm'
-import WifiCallingForm                      from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingForm'
 import WifiCallingTable                     from './pages/Services/WifiCalling/WifiCallingTable/WifiCallingTable'
 import Timeline                             from './pages/Timeline'
 import PersonaPortal                        from './pages/Users/Persona'

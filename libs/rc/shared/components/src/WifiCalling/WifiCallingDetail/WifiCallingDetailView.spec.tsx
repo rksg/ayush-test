@@ -8,7 +8,7 @@ import { CommonUrlsInfo, WifiCallingDetailContextType, WifiCallingUrls } from '@
 import { Provider, store }                                               from '@acx-ui/store'
 import { mockServer, render, screen }                                    from '@acx-ui/test-utils'
 
-import WifiCallingDetailView, { WifiCallingDetailContext } from './WifiCallingDetailView'
+import { WifiCallingDetailContext, WifiCallingDetailView } from './WifiCallingDetailView'
 
 const wifiCallingDetail = {
   networkIds: [

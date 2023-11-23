@@ -6,7 +6,7 @@ import { useIntl }                    from 'react-intl'
 import { StepsFormLegacy } from '@acx-ui/components'
 import { QosPriorityEnum } from '@acx-ui/rc/utils'
 
-import { wifiCallingQosPriorityLabelMapping } from '../../contentsMap'
+import { wifiCallingQosPriorityLabelMapping } from '../contentsMap'
 import WifiCallingFormContext                 from '../WifiCallingFormContext'
 
 const WifiCallingSummaryForm = () => {

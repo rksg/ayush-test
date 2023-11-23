@@ -26,7 +26,7 @@ import WifiCallingNetworksDetail from './WifiCallingNetworksDetail'
 
 export const WifiCallingDetailContext = createContext({} as WifiCallingDetailContextType)
 
-const WifiCallingDetailView = () => {
+export const WifiCallingDetailView = () => {
   const { $t } = useIntl()
   const params = useParams()
   const [networkIds, setNetworkIds] = useState([] as string[])
@@ -83,5 +83,3 @@ const WifiCallingDetailView = () => {
     </WifiCallingDetailContext.Provider>
   )
 }
-
-export default WifiCallingDetailView

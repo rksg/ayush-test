@@ -6,7 +6,7 @@ import { Loader, SummaryCard }           from '@acx-ui/components'
 import { useGetWifiCallingServiceQuery } from '@acx-ui/rc/services'
 import { QosPriorityEnum }               from '@acx-ui/rc/utils'
 
-import { wifiCallingQosPriorityLabelMapping } from '../../contentsMap'
+import { wifiCallingQosPriorityLabelMapping } from '../contentsMap'
 
 const WifiCallingDetailContent = () => {
   const params = useParams()

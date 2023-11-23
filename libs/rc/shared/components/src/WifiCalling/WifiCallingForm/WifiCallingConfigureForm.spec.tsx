@@ -7,11 +7,10 @@ import { Path, To }                                              from '@acx-ui/r
 import { Provider }                                              from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { mockedTenantId }     from '../../MdnsProxy/MdnsProxyForm/__tests__/fixtures'
 import { mockNetworkResult }  from '../__tests__/fixtures'
 import WifiCallingFormContext from '../WifiCallingFormContext'
 
-import WifiCallingConfigureForm from './WifiCallingConfigureForm'
+import { WifiCallingConfigureForm } from './WifiCallingConfigureForm'
 
 
 const wifiCallingServiceResponse = {
@@ -93,7 +92,7 @@ const initState = {
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
-  pathname: 't/' + mockedTenantId,
+  pathname: 't/6de6a5239a1441cfb9c7fde93aa613fe',
   search: '',
   hash: ''
 }
