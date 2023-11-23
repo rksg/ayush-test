@@ -27,9 +27,9 @@ import {
 } from '@acx-ui/utils'
 
 interface SelIntegrator {
-  delegation_id: string,
-  delegation_type: string,
-  number_of_days: string,
+  delegation_id?: string,
+  delegation_type?: string,
+  number_of_days?: string,
   mspec_id: string
 }
 
@@ -38,7 +38,7 @@ interface IntegratorDrawerProps {
   tenantId?: string
   tenantType?: string
   setVisible: (visible: boolean) => void
-  setSelected: (tenantType: string, selected: MspEc[]) => void
+  setSelected: (tenantType: string, selected: MspEc[], assignedEcAdmin?: boolean) => void
 }
 
 export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
@@ -124,6 +124,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
 
   const handleSaveMultiIntegrator = async () => {
     const selectedRows = form.getFieldsValue(['integrator'])
+    const assignedEcAdmin = form.getFieldValue(['assignedEcAdmin']) ?? false
     if (tenantId && tenantType) {
       let integratorList = [] as SelIntegrator[]
       selectedRows.integrator.map((integrator: { id: string }) =>
@@ -134,7 +135,10 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
           mspec_id: tenantId
         })
       )
-      const assignedEcAdmin = form.getFieldValue(['assignedEcAdmin']) ?? false
+      if (integratorList.length === 0) {
+        integratorList.push({ mspec_id: tenantId })
+      }
+
       let payload = {
         AssignDelegatedRequest: integratorList,
         isManageAllEcs: assignedEcAdmin
@@ -145,7 +149,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
           resetFields()
         })
     } else {
-      setSelected(tenantType as string, selectedRows.integrator)
+      setSelected(tenantType as string, selectedRows.integrator, assignedEcAdmin)
     }
     setVisible(false)
   }
