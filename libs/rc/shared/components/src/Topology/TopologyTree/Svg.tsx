@@ -17,7 +17,7 @@ const Svg: any = (props: any) => {
   const { width, height, data, edges, nodeRender, onNodeClick, onLinkClick } = props
   const refSvg = useRef<any>(null)
   const refMain = useRef<any>(null)
-  const [treeData, setTreeData] = useState<any>(transformData(data)) // Replace 'any' with the actual data type
+  const [treeData, setTreeData] = useState<any>(null) // Replace 'any' with the actual data type
   const [nodesCoordinate, setNodesCoordinate] = useState<any>({})
   const [linksInfo, setLinksInfo] = useState<any>({})
   const { scale } = useContext(TopologyTreeContext)
@@ -41,7 +41,10 @@ const Svg: any = (props: any) => {
         .on('wheel.zoom', null)
         .on('dblclick.zoom', null)
     }
-  }, [width, height])
+    if(data){
+      setTreeData(transformData(data))
+    }
+  }, [width, height, data])
 
   const { nodes, links, translate } = useMemo(() => {
     if (width && height && treeData && edges) {

@@ -30,9 +30,7 @@ onClose: () => void
       top: tooltipPosition.y - 100,
       left: tooltipPosition.x + 15
     }}>
-    <Card
-      type='no-border'
-    >
+    <Card>
       <Card.Title>
         <Space style={{
           display: 'flex',

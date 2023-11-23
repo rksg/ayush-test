@@ -33,12 +33,14 @@ export const Links: React.FC<LinksProps> = (props) => {
 
   const linkColor: { [key in ConnectionStatus]: string } = {
     [ConnectionStatus.Good]: 'd3-tree-good-links',
+    [ConnectionStatus.Disconnected]: 'd3-tree-disconnected-links',
     [ConnectionStatus.Degraded]: 'd3-tree-degraded-links',
     [ConnectionStatus.Unknown]: 'd3-tree-unknown-links'
   }
 
   const markerColor: { [key in ConnectionStatus]: string } = {
     [ConnectionStatus.Good]: 'goodMarker',
+    [ConnectionStatus.Disconnected]: 'disconnectedMarker',
     [ConnectionStatus.Degraded]: 'degradedMarker',
     [ConnectionStatus.Unknown]: 'unknownMarker'
   }
@@ -63,7 +65,7 @@ export const Links: React.FC<LinksProps> = (props) => {
         isClockwise ? targetY - 5 : targetY + 5,
         targetX - 140,
         targetY,
-        targetX-100
+        targetX - 100
       )
       return path.toString()
     }
@@ -127,7 +129,7 @@ export const Links: React.FC<LinksProps> = (props) => {
         return (
           <g key={i}
             transform={`translate(0, -${40 + 65 * link.source.depth})`}
-            className={linkClass}
+            className={`edgePath ${linkClass} ${link.source.data.id}`}
             onMouseEnter={(e) => handleMouseEnter(link, e)}
             onMouseLeave={handleMouseLeave}
           >
@@ -135,7 +137,7 @@ export const Links: React.FC<LinksProps> = (props) => {
               d={linkCustom(link, linksInfo)}
               markerStart={link.source.depth === 0 ? `url(#${markerClass})` : ''}
               markerEnd={`url(#${markerClass})`}
-              stroke-dasharray={linkInfo.connectionType === 'Mesh' ? '1' : '0'}
+              strokeDasharray={linkInfo.connectionType === 'Mesh' ? '1' : '0'}
             />
           </g>
         )

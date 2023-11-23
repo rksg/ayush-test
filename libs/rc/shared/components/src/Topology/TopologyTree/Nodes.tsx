@@ -47,6 +47,9 @@ const Nodes: React.FC<NodeProps> = (props) => {
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleMouseEnter = (node: any , event: any) => {
+    if(node.data.id === 'Cloud'){
+      return
+    }
     delayHandler = setTimeout(() => {
       onClick(node, event)
     }, 1000)
@@ -57,7 +60,7 @@ const Nodes: React.FC<NodeProps> = (props) => {
   }
 
   return (
-    <g className='d3-tree-nodes'>
+    <g className='output d3-tree-nodes'>
       {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         nodes.map((node: any, i: number) => {
@@ -77,7 +80,7 @@ const Nodes: React.FC<NodeProps> = (props) => {
                 cursor: node.data.id !== 'Cloud' ? 'pointer' : 'default'
               }}
               id={node.data.id}
-              className={'tree-node'}
+              className={'node tree-node'}
             >
               <g onMouseEnter={(e) => handleMouseEnter(node, e)} onMouseLeave={handleMouseLeave}>
                 <circle cx='0' cy='0' r='15' className={`${node.data.status}-circle`} />

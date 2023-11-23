@@ -10,7 +10,7 @@ import { renderToString }                                           from 'react-
 import { useIntl }                                                  from 'react-intl'
 import { useParams }                                                from 'react-router-dom'
 
-import { Loader } from '@acx-ui/components'
+import { Loader, Modal, ModalType } from '@acx-ui/components'
 import {
   CloudSolid,
   MagnifyingGlassMinusOutlined,
@@ -23,7 +23,8 @@ import {
   Switch, Unknown,
   AccessPointWifiPort,
   SearchOutlined,
-  TopologyCloud
+  TopologyCloud,
+  ArrowsOut
 } from '@acx-ui/icons'
 import { useGetTopologyQuery } from '@acx-ui/rc/services'
 import {
@@ -55,12 +56,14 @@ type OptionType = {
   children: string;
   item: Node;
 }
-export function TopologyGraph (props:{ venueId?: string,
+export function TopologyGraphComponent (props:{ venueId?: string,
   showTopologyOn: ShowTopologyFloorplanOn,
-  deviceMac?: string }) {
+  deviceMac?: string,
+  modalVisible: boolean,
+  setModalVisible: (visible: boolean) => void }) {
 
   const { $t } = useIntl()
-  const { venueId, showTopologyOn, deviceMac } = props
+  const { venueId, showTopologyOn, deviceMac, modalVisible, setModalVisible } = props
 
   const graphRef = useRef<SVGSVGElement>(null)
   const params = useParams()
@@ -109,168 +112,6 @@ export function TopologyGraph (props:{ venueId?: string,
       setTreeData(
         { data: [{ id: 'Cloud', name: 'Cloud',
           children: schema1Equivalent }] })
-    }
-  }, [topologyData])
-
-  useEffect(() => {
-    if (topologyGraphData && topologyGraphData?.nodes.length) {
-
-      const { edges, nodes } = topologyGraphData as GraphData
-
-      const uiEdges: Link[] = edges.map(
-        (edge, idx) => { return { ...edge, id: 'edge_'+idx } as Link })
-
-      // Add nodes to the graph.
-
-      const uiNodes = nodes.map((node) => {
-        return {
-          id: node?.id,
-          label: node?.name,
-          labelType: 'svg',
-          config: { ...node },
-          expanded: false
-        } as UINode })
-
-
-      // creating filter datasource
-
-      const _formattedNodes = nodes.map(node => ({
-        value: (node.name as string).toString(),
-        key: (node.id as string).toString(),
-        label: <div><Typography.Title style={{ margin: 0 }} level={5} ellipsis={true}>
-          {node.name as string}</Typography.Title>
-        <Typography.Text type='secondary'>{(node.mac as string)}</Typography.Text></div>,
-        children: node.label,
-        item: node
-      })) as OptionType[]
-
-      setFilterNodes(_formattedNodes)
-
-      // adding default cloud node
-      const cloudNode: UINode = {
-        id: 'cloud_id',
-        label: $t({ defaultMessage: 'Cloud' }),
-        config: {
-          type: DeviceTypes.Cloud,
-          category: 'Cloud',
-          name: 'Cloud',
-          id: 'cloud_id',
-          status: DeviceStatus.Operational,
-          states: DeviceStates.Regular,
-          childCount: 0
-        }
-      }
-      uiNodes.push(cloudNode)
-
-      const allTargetNodes: Array<string> = []
-      uiEdges.forEach(edge => {
-        allTargetNodes.push(edge?.to)
-      })
-
-      // getting all root nodes to connect to default cloud node
-      const rootNodes = uiNodes.filter((node) => {
-        if (node.id !== 'cloud_id' && !allTargetNodes.includes(node.id)) {
-          return node
-        }
-        return
-      })
-
-      // if 2 switches are interconnected with 2 edges then it needs to
-      // find if any / both nodes connected to cloud. For this purpose we are using
-      // cloudPort check
-      uiNodes.forEach(node => {
-        if(node.config?.cloudPort)
-          rootNodes.push(node)
-      })
-
-      // if no root node available then remove cloud node
-      if (!rootNodes?.length) {
-        const cloudNodeIndex = uiNodes?.findIndex((node) => node.id === 'cloud_id')
-        if (cloudNodeIndex > -1)
-          uiNodes.splice(cloudNodeIndex,1)
-      }
-
-      rootNodes.forEach(node => {
-        const rootEdge: Link = {
-          source: 'cloud_id',
-          target: node.id,
-          from: 'cloud_id',
-          to: node.id,
-          connectionType: 'Wired',
-          connectionStatus: ConnectionStatus.Good,
-          connectionStates: ConnectionStates.Regular
-        }
-        uiEdges.push(rootEdge)
-      })
-
-      uiNodes.forEach(node => {
-        graph.setNode(node.id, {
-          label: truncateLabel(node?.label as string, 15),
-          width: 64,
-          height: 48,
-          rx: 5,
-          ry: 5,
-          expanded: false })
-      })
-
-      // Add edges to the graph.
-      uiEdges.forEach((edge: Link) => {
-
-        graph.setEdge(edge.from, edge.to, {
-          // curveBumpY, curveMonotoneY, curveStepBefore,
-          curve: d3.curveLinear,
-          // SVGAnimatedAngle: true,
-          // angle: 15,
-          width: 40,
-          style: `fill:transparent;
-          stroke:${getPathColor(edge.connectionStatus as ConnectionStatus)}` }, edge.id)
-      })
-
-      const render = new dagreD3.render()
-
-      select(graphRef.current).selectAll('*').remove()
-      const svg = d3.select(graphRef.current),
-        svgGroup = svg.append('g').append('g') as any,
-        zoom = d3.zoom().on('zoom',
-          function (event: any) {
-            svgGroup.attr('transform', event.transform)
-          }
-        ) as any
-
-      // svg.call(zoom)
-      // disable zoom on scrolling and mouse double click
-      // svg.on('wheel.zoom', null)
-      // svg.on('dblclick.zoom', null)
-
-      svg.attr('data-testid', 'topologyGraph')
-      render(svgGroup, graph)
-
-      select(graphRef.current)
-        .selectAll('g.node rect')
-        .attr('width', 32)
-        .attr('height', 32)
-        .attr('x', -16)
-        .attr('y', -24)
-
-      select(graphRef.current).selectAll('g.node')
-        .data(uiNodes)
-        .attr('data-testid', 'topologyNode')
-        .append('foreignObject')
-        .attr('pointer-events', 'none')
-        .attr('width', 32)
-        .attr('height', 32)
-        .attr('x', -16)
-        .attr('y', -24)
-        .html((node: UINode) => renderToString(<DeviceIcon
-          deviceType={node.config.type as DeviceTypes}
-          deviceStatus={node.config.status as DeviceStatus}/>))
-
-      select(graphRef.current).selectAll('g.node g.label')
-        .attr('transform', 'translate(0,16)')
-
-      // default Center the graph and fit to container
-
-      // defaultScreenFit(zoom)
 
       d3.select('#graph-zoom-in').on('click', function () {
         newScale.current *= 1.2
@@ -287,49 +128,258 @@ export function TopologyGraph (props:{ venueId?: string,
         setScale(newScale.current)
       })
 
-      const selectedNode = getSelectedNode(deviceMac as string)
+      d3.select('#enter-fullscreen').on('click', function () {
+        setModalVisible(true)
+        // const treeContainer = document.querySelector('#treeContainer')
 
-      highlightPath(selectedNode)
+        // // Check if the element exists
+        // if (treeContainer instanceof HTMLElement) {
+        //   // Request full screen
+        //   treeContainer.requestFullscreen()
+        //   // Apply styling
+        //   treeContainer.style.backgroundColor = 'white'
+        //   const svgElement = treeContainer.querySelector('.d3-tree-container svg')
 
-      hoverNode(selectedNode)
+        //   // Check if the SVG element exists and adjust its width and height
+        //   if (svgElement instanceof SVGElement) {
+        //     svgElement.style.width = '100%'
+        //     svgElement.style.height = '100%'
+        //   }
+        // }
+      })
 
-      onNodeClick()
+      const _formattedNodes = nodes.map(node => ({
+        value: (node.name as string).toString(),
+        key: (node.id as string).toString(),
+        label: <div><Typography.Title style={{ margin: 0 }} level={5} ellipsis={true}>
+          {node.name as string}</Typography.Title>
+        <Typography.Text type='secondary'>{(node.mac as string)}</Typography.Text></div>,
+        children: node.label,
+        item: node
+      })) as OptionType[]
 
-      onLinkClick()
-
-      if (showTopologyOn !== ShowTopologyFloorplanOn.VENUE_OVERVIEW) {
-        searchNodeByid(svg, zoom, selectedNode)
-      }
-
-      // setting circle marker
-      d3.selectAll('g.edgePath defs').remove()
-
-
-      d3.selectAll('g.edgePath')
-        .data(uiEdges)
-        .append('marker')
-        .attr('id', (edge) => edge?.connectionStatus + 'marker')
-        .attr('viewBox', '0 -5 10 10')
-        .attr('markerWidth', 3)
-        .attr('markerHeight', 3)
-        .attr('refX', 3)
-        .attr('refY', 0)
-        .attr('orient', 'auto')
-        .append('circle')
-        .attr('cx', 3)
-        .attr('cy', 0)
-        .attr('r', 3)
-        .style('fill', (edge) => {
-          return getPathColor(edge.connectionStatus as ConnectionStatus)})
-
-      d3.selectAll('g.edgePath path')
-        .data(uiEdges)
-        .attr('data-testid', 'topologyEdge')
-        .attr('marker-start', (edge) => `url(#${edge?.connectionStatus}marker)`)
-        .attr('marker-end', (edge) => `url(#${edge?.connectionStatus}marker)`)
+      setFilterNodes(_formattedNodes)
     }
+  }, [topologyData])
 
-  },[graphRef, topologyGraphData])
+  // useEffect(() => {
+  //   if (topologyGraphData && topologyGraphData?.nodes.length) {
+
+  //     const { edges, nodes } = topologyGraphData as GraphData
+
+  //     const uiEdges: Link[] = edges.map(
+  //       (edge, idx) => { return { ...edge, id: 'edge_'+idx } as Link })
+
+  //     // Add nodes to the graph.
+
+  //     const uiNodes = nodes.map((node) => {
+  //       return {
+  //         id: node?.id,
+  //         label: node?.name,
+  //         labelType: 'svg',
+  //         config: { ...node },
+  //         expanded: false
+  //       } as UINode })
+
+
+  //     // creating filter datasource
+
+  //     const _formattedNodes = nodes.map(node => ({
+  //       value: (node.name as string).toString(),
+  //       key: (node.id as string).toString(),
+  //       label: <div><Typography.Title style={{ margin: 0 }} level={5} ellipsis={true}>
+  //         {node.name as string}</Typography.Title>
+  //       <Typography.Text type='secondary'>{(node.mac as string)}</Typography.Text></div>,
+  //       children: node.label,
+  //       item: node
+  //     })) as OptionType[]
+
+  //     setFilterNodes(_formattedNodes)
+
+  //     // adding default cloud node
+  //     const cloudNode: UINode = {
+  //       id: 'cloud_id',
+  //       label: $t({ defaultMessage: 'Cloud' }),
+  //       config: {
+  //         type: DeviceTypes.Cloud,
+  //         category: 'Cloud',
+  //         name: 'Cloud',
+  //         id: 'cloud_id',
+  //         status: DeviceStatus.Operational,
+  //         states: DeviceStates.Regular,
+  //         childCount: 0
+  //       }
+  //     }
+  //     uiNodes.push(cloudNode)
+
+  //     const allTargetNodes: Array<string> = []
+  //     uiEdges.forEach(edge => {
+  //       allTargetNodes.push(edge?.to)
+  //     })
+
+  //     // getting all root nodes to connect to default cloud node
+  //     const rootNodes = uiNodes.filter((node) => {
+  //       if (node.id !== 'cloud_id' && !allTargetNodes.includes(node.id)) {
+  //         return node
+  //       }
+  //       return
+  //     })
+
+  //     // if 2 switches are interconnected with 2 edges then it needs to
+  //     // find if any / both nodes connected to cloud. For this purpose we are using
+  //     // cloudPort check
+  //     uiNodes.forEach(node => {
+  //       if(node.config?.cloudPort)
+  //         rootNodes.push(node)
+  //     })
+
+  //     // if no root node available then remove cloud node
+  //     if (!rootNodes?.length) {
+  //       const cloudNodeIndex = uiNodes?.findIndex((node) => node.id === 'cloud_id')
+  //       if (cloudNodeIndex > -1)
+  //         uiNodes.splice(cloudNodeIndex,1)
+  //     }
+
+  //     rootNodes.forEach(node => {
+  //       const rootEdge: Link = {
+  //         source: 'cloud_id',
+  //         target: node.id,
+  //         from: 'cloud_id',
+  //         to: node.id,
+  //         connectionType: 'Wired',
+  //         connectionStatus: ConnectionStatus.Good,
+  //         connectionStates: ConnectionStates.Regular
+  //       }
+  //       uiEdges.push(rootEdge)
+  //     })
+
+  //     uiNodes.forEach(node => {
+  //       graph.setNode(node.id, {
+  //         label: truncateLabel(node?.label as string, 15),
+  //         width: 64,
+  //         height: 48,
+  //         rx: 5,
+  //         ry: 5,
+  //         expanded: false })
+  //     })
+
+  //     // Add edges to the graph.
+  //     uiEdges.forEach((edge: Link) => {
+
+  //       graph.setEdge(edge.from, edge.to, {
+  //         // curveBumpY, curveMonotoneY, curveStepBefore,
+  //         curve: d3.curveLinear,
+  //         // SVGAnimatedAngle: true,
+  //         // angle: 15,
+  //         width: 40,
+  //         style: `fill:transparent;
+  //         stroke:${getPathColor(edge.connectionStatus as ConnectionStatus)}` }, edge.id)
+  //     })
+
+  //     const render = new dagreD3.render()
+
+  //     select(graphRef.current).selectAll('*').remove()
+  //     const svg = d3.select(graphRef.current),
+  //       svgGroup = svg.append('g').append('g') as any,
+  //       zoom = d3.zoom().on('zoom',
+  //         function (event: any) {
+  //           svgGroup.attr('transform', event.transform)
+  //         }
+  //       ) as any
+
+  //     // svg.call(zoom)
+  //     // disable zoom on scrolling and mouse double click
+  //     // svg.on('wheel.zoom', null)
+  //     // svg.on('dblclick.zoom', null)
+
+  //     svg.attr('data-testid', 'topologyGraph')
+  //     render(svgGroup, graph)
+
+  //     select(graphRef.current)
+  //       .selectAll('g.node rect')
+  //       .attr('width', 32)
+  //       .attr('height', 32)
+  //       .attr('x', -16)
+  //       .attr('y', -24)
+
+  //     select(graphRef.current).selectAll('g.node')
+  //       .data(uiNodes)
+  //       .attr('data-testid', 'topologyNode')
+  //       .append('foreignObject')
+  //       .attr('pointer-events', 'none')
+  //       .attr('width', 32)
+  //       .attr('height', 32)
+  //       .attr('x', -16)
+  //       .attr('y', -24)
+  //       .html((node: UINode) => renderToString(<DeviceIcon
+  //         deviceType={node.config.type as DeviceTypes}
+  //         deviceStatus={node.config.status as DeviceStatus}/>))
+
+  //     select(graphRef.current).selectAll('g.node g.label')
+  //       .attr('transform', 'translate(0,16)')
+
+  //     // default Center the graph and fit to container
+
+  //     // defaultScreenFit(zoom)
+
+  //     d3.select('#graph-zoom-in').on('click', function () {
+  //       newScale.current *= 1.2
+  //       setScale(newScale.current)
+  //     })
+
+  //     d3.select('#graph-zoom-out').on('click', function () {
+  //       newScale.current *= 0.8
+  //       setScale(newScale.current)
+  //     })
+
+  //     d3.select('#graph-zoom-fit').on('click', function () {
+  //       newScale.current = 1.0
+  //       setScale(newScale.current)
+  //     })
+
+  //     const selectedNode = getSelectedNode(deviceMac as string)
+
+  //     highlightPath(selectedNode)
+
+  //     hoverNode(selectedNode)
+
+  //     onNodeClick()
+
+  //     onLinkClick()
+
+  //     if (showTopologyOn !== ShowTopologyFloorplanOn.VENUE_OVERVIEW) {
+  //       searchNodeByid(svg, zoom, selectedNode)
+  //     }
+
+  //     // setting circle marker
+  //     d3.selectAll('g.edgePath defs').remove()
+
+
+  //     d3.selectAll('g.edgePath')
+  //       .data(uiEdges)
+  //       .append('marker')
+  //       .attr('id', (edge) => edge?.connectionStatus + 'marker')
+  //       .attr('viewBox', '0 -5 10 10')
+  //       .attr('markerWidth', 3)
+  //       .attr('markerHeight', 3)
+  //       .attr('refX', 3)
+  //       .attr('refY', 0)
+  //       .attr('orient', 'auto')
+  //       .append('circle')
+  //       .attr('cx', 3)
+  //       .attr('cy', 0)
+  //       .attr('r', 3)
+  //       .style('fill', (edge) => {
+  //         return getPathColor(edge.connectionStatus as ConnectionStatus)})
+
+  //     d3.selectAll('g.edgePath path')
+  //       .data(uiEdges)
+  //       .attr('data-testid', 'topologyEdge')
+  //       .attr('marker-start', (edge) => `url(#${edge?.connectionStatus}marker)`)
+  //       .attr('marker-end', (edge) => `url(#${edge?.connectionStatus}marker)`)
+  //   }
+
+  // },[graphRef, topologyGraphData])
 
   interface NodeData {
     id: string;
@@ -389,48 +439,48 @@ export function TopologyGraph (props:{ venueId?: string,
   }
 
   // fit graph to screen
-  function fitToScreen (svg: d3.Selection<SVGSVGElement | null, unknown, null, undefined>,
-    zoom: any) {
-    const _graph = (d3.select('g.output').node() as SVGGElement)
-    const graphWidth = _graph.getBBox().width
-    const graphHeight = _graph.getBBox().height
-    const width = parseInt(svg.style('width').replace(/px/, ''), 10)
-    const height = parseInt(svg.style('height').replace(/px/, ''), 10)
-    const zoomScale = Math.min(width / graphWidth, height / graphHeight) > 1 ? 1.2
-      : Math.min(width / graphWidth, height / graphHeight)
-    const translate = [
-      (width/2) - ((graphWidth*zoomScale)/2),
-      (height/2) - ((graphHeight*zoomScale)/2)
-    ]
-    // zoom.transform(svg, d3.zoomIdentity.translate(translate[0], translate[1]).scale(zoomScale))
-  }
+  // function fitToScreen (svg: d3.Selection<SVGSVGElement | null, unknown, null, undefined>,
+  //   zoom: any) {
+  //   const _graph = (d3.select('g.output').node() as SVGGElement)
+  //   const graphWidth = _graph.getBBox().width
+  //   const graphHeight = _graph.getBBox().height
+  //   const width = parseInt(svg.style('width').replace(/px/, ''), 10)
+  //   const height = parseInt(svg.style('height').replace(/px/, ''), 10)
+  //   const zoomScale = Math.min(width / graphWidth, height / graphHeight) > 1 ? 1.2
+  //     : Math.min(width / graphWidth, height / graphHeight)
+  //   const translate = [
+  //     (width/2) - ((graphWidth*zoomScale)/2),
+  //     (height/2) - ((graphHeight*zoomScale)/2)
+  //   ]
+  //   // zoom.transform(svg, d3.zoomIdentity.translate(translate[0], translate[1]).scale(zoomScale))
+  // }
 
   // original graph scale in case of large scale it will persist device icons
   // and label size so that user can see. in this case user need to drag / zoom out to fit entire hierarchy.
-  function originalGraphScale (svg: d3.Selection<SVGSVGElement | null, unknown, null, undefined>,
-    zoom: any) {
-    const _graph = (d3.select('g.output').node() as SVGGElement)
-    const graphWidth = _graph.getBBox().width
-    const graphHeight = _graph.getBBox().height
-    const width = parseInt(svg.style('width').replace(/px/, ''), 10)
-    const height = parseInt(svg.style('height').replace(/px/, ''), 10)
-    const translate = [(width - graphWidth) / 2, (height - graphHeight) / 2]
-    // zoom.transform(svg, d3.zoomIdentity.translate(translate[0], translate[1]))
-  }
+  // function originalGraphScale (svg: d3.Selection<SVGSVGElement | null, unknown, null, undefined>,
+  //   zoom: any) {
+  //   const _graph = (d3.select('g.output').node() as SVGGElement)
+  //   const graphWidth = _graph.getBBox().width
+  //   const graphHeight = _graph.getBBox().height
+  //   const width = parseInt(svg.style('width').replace(/px/, ''), 10)
+  //   const height = parseInt(svg.style('height').replace(/px/, ''), 10)
+  //   const translate = [(width - graphWidth) / 2, (height - graphHeight) / 2]
+  //   // zoom.transform(svg, d3.zoomIdentity.translate(translate[0], translate[1]))
+  // }
 
-  function defaultScreenFit (zoom: any) {
-    const svg = d3.select(graphRef.current)
-    const _graph = (d3.select('g.output').node() as SVGGElement)
-    if (_graph) {
-      const graphWidth = _graph.getBBox().width
-      const graphHeight = _graph.getBBox().height
-      const width = parseInt(svg.style('width').replace(/px/, ''), 10)
-      const height = parseInt(svg.style('height').replace(/px/, ''), 10)
-      graphWidth > width || graphHeight > height
-        ? fitToScreen(svg, zoom)
-        : originalGraphScale(svg, zoom)
-    }
-  }
+  // function defaultScreenFit (zoom: any) {
+  //   const svg = d3.select(graphRef.current)
+  //   const _graph = (d3.select('g.output').node() as SVGGElement)
+  //   if (_graph) {
+  //     const graphWidth = _graph.getBBox().width
+  //     const graphHeight = _graph.getBBox().height
+  //     const width = parseInt(svg.style('width').replace(/px/, ''), 10)
+  //     const height = parseInt(svg.style('height').replace(/px/, ''), 10)
+  //     graphWidth > width || graphHeight > height
+  //       ? fitToScreen(svg, zoom)
+  //       : originalGraphScale(svg, zoom)
+  //   }
+  // }
 
   // Highlight path and show tooltip for connection on link mouseover
   function highlightPath (selectedNode: any) {
@@ -463,21 +513,21 @@ export function TopologyGraph (props:{ venueId?: string,
 		 })
   }
 
-  function onLinkClick () {
-    const onmousepath = d3.selectAll('g.edgePath')
+  // function onLinkClick () {
+  //   const onmousepath = d3.selectAll('g.edgePath')
 
-    const allpathes = onmousepath.select('.path')
+  //   const allpathes = onmousepath.select('.path')
 
-    allpathes
-      .on('click',function (d: MouseEvent, edge: any): void {
-        if (edge.from === 'cloud_id')
-          return
-        setShowLinkTooltip(true)
-        setShowDeviceTooltip(false) // close device detail tooltip if already opened.
-        setTooltipEdge(edge)
-        setTooltipPosition({ x: d.offsetX, y: d.offsetY })
-	    })
-  }
+  //   allpathes
+  //     .on('click',function (d: MouseEvent, edge: any): void {
+  //       if (edge.from === 'cloud_id')
+  //         return
+  //       setShowLinkTooltip(true)
+  //       setShowDeviceTooltip(false) // close device detail tooltip if already opened.
+  //       setTooltipEdge(edge)
+  //       setTooltipPosition({ x: d.offsetX, y: d.offsetY })
+  //     })
+  // }
 
   function closeLinkTooltipHandler () {
     setShowLinkTooltip(false)
@@ -532,19 +582,19 @@ export function TopologyGraph (props:{ venueId?: string,
     }
   }, 100)
 
-  function onNodeClick () {
-    const svg = d3.select(graphRef.current)
-    const allnodes = svg.selectAll('g.node')
+  // function onNodeClick () {
+  //   const svg = d3.select(graphRef.current)
+  //   const allnodes = svg.selectAll('g.node')
 
-    allnodes
-      .on('click',function (d: any, node: any){
-        setShowLinkTooltip(false) // close link details tooltip if already opened.
-        if (node.id === 'cloud_id')
-          return
-        // delay 100s to avoid multiple calls
-        debouncedHandleMouseEnter.call(this, node, d)
-      })
-  }
+  //   allnodes
+  //     .on('click',function (d: any, node: any){
+  //       setShowLinkTooltip(false) // close link details tooltip if already opened.
+  //       if (node.id === 'cloud_id')
+  //         return
+  //       // delay 100s to avoid multiple calls
+  //       debouncedHandleMouseEnter.call(this, node, d)
+  //     })
+  // }
 
   function closeTooltipHandler () {
     setShowDeviceTooltip(false)
@@ -607,7 +657,7 @@ export function TopologyGraph (props:{ venueId?: string,
 
   function getSelectedNode (deviceMac: string) {
     const svg = d3.select(graphRef.current)
-    const allnodes = svg.selectAll('g.node')
+    const allnodes = svg.selectAll('.node')
     // this is selected / searched node
     const selectedNode = allnodes.nodes().filter((node: any) =>{
       return ((node.__data__.config.mac)?.toLowerCase() === deviceMac?.toLowerCase())
@@ -646,10 +696,12 @@ export function TopologyGraph (props:{ venueId?: string,
       { isLoading: false, isFetching: isTopologyLoading }
     ]
   }>
-    <div style={{
-      width: '100%',
-      height: 'calc(100% - 80px)'
-    }}>{ topologyData?.nodes.length ?
+    <div
+      id='treeContainer'
+      style={{
+        width: '100%',
+        height: modalVisible? '95%' : 'calc(100% - 100px)'
+      }}>{ topologyData?.nodes.length ?
         <>
           {
             (showTopologyOn === ShowTopologyFloorplanOn.VENUE_OVERVIEW)
@@ -700,7 +752,7 @@ export function TopologyGraph (props:{ venueId?: string,
           <UI.Topology>
             <TopologyTreeContext.Provider value={{ scale }}>
               <TopologyTree
-                key={Math.random()}
+                id={Math.random()}
                 ref={graphRef}
                 data={treeData}
                 edges={topologyData.edges}
@@ -763,7 +815,15 @@ export function TopologyGraph (props:{ venueId?: string,
         tooltipNode={tooltipNode as Node}
         closeTooltip={closeTooltipHandler} />
       }
-
+      {
+        !! topologyData?.nodes.length && !modalVisible && <UI.FullScreenButtonsContainer>
+          <ArrowsOut
+            data-testid='enter-fullscreen'
+            id='enter-fullscreen'
+            width={16}
+            height={16} />
+        </UI.FullScreenButtonsContainer>
+      }
       {
         !! topologyData?.nodes.length && <UI.ImageButtonsContainer>
           <Button
@@ -788,6 +848,43 @@ export function TopologyGraph (props:{ venueId?: string,
       }
     </div>
   </Loader>
+}
+
+export function TopologyGraph (props:{ venueId?: string,
+  showTopologyOn: ShowTopologyFloorplanOn,
+  deviceMac?: string }) {
+  const [modalVisible, setModalVisible] = useState<boolean>(false)
+
+  return (
+    <>
+      {modalVisible &&
+        <UI.TopologyGraphModal
+          visible={true}
+          onCancel={() => setModalVisible(false)}
+          destroyOnClose
+          title={''}
+          width={'90%'}
+          style={{ overflow: 'hidden' }}
+          okButtonProps={{ style: { display: 'none' } }}
+          cancelButtonProps={{ style: { display: 'none' } }}
+        >
+          <div className='TopologyGraphContainer'>
+            <TopologyGraphComponent
+              {...props}
+              modalVisible={modalVisible}
+              setModalVisible={setModalVisible}
+            />
+          </div>
+        </UI.TopologyGraphModal>}
+      {!modalVisible &&
+        <TopologyGraphComponent
+          {...props}
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+        />
+      }
+    </>
+  )
 }
 
 export function DeviceIcon (props: { deviceType: DeviceTypes, deviceStatus: DeviceStatus }) {

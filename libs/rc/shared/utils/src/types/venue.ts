@@ -784,6 +784,7 @@ export interface TopologyData {
 
 export enum ConnectionStatus {
 	Good='Good',
+	Disconnected='Disconnected',
     Degraded='Degraded',
     Unknown='Unknown'
 }
