@@ -221,8 +221,8 @@ function CustomButtonsTemplate (props: {
               key={b.key}
               onClick={() => handleClick(b)}
             >
-              {(b.text === 'undefined' && b.key === 'ok') ? okText
-                : (( b.text === 'undefined' && (b.key === 'cancel'
+              {((b.text === 'undefined' || b.text === undefined) && b.key === 'ok') ? okText
+                : (((b.text === 'undefined' || b.text === undefined) && (b.key === 'cancel'
                   || b?.closeAfterAction)) ? cancelText : b.text)}
             </Button>
           )
