@@ -5,6 +5,7 @@ import _                             from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
+import { parseSwitchVersion }     from '@acx-ui/rc/utils'
 
 import * as UI                     from './styledComponents'
 import { SwitchRequirementsModal } from './switchRequirementsModal'
@@ -25,7 +26,9 @@ export function SwitchUpgradeNotification (props: {
     isDisplay: boolean,
     isDisplayHeader: boolean,
     type: SWITCH_UPGRADE_NOTIFICATION_TYPE,
-    validateModel: string[]
+    validateModel: string[],
+    venueFirmware?: string,
+    venueRodanFirmware?: string
 }) {
   const [modalVisible, setModalVisible] = useState(false)
   const { $t } = useIntl()
@@ -35,29 +38,30 @@ export function SwitchUpgradeNotification (props: {
     type,
     validateModel,
     stackUnitsMinLimitaion,
+    venueFirmware,
+    venueRodanFirmware,
     switchModel } = props
-  const targetVersion = '09.0.10h'
   const upgradeDescription = {
     stack: [{
       // normal
       minFirmwareVersion: '08.0.90d',
-      description: $t({ defaultMessage: 'All members must be running 08.0.90d (UFI) at a minimum (or) they should have ‘Cloud Ready’ mentioned on the label. If not, upgrade their FW to {targetVersion} (UFI image) directly before onboarding.' }, { targetVersion }),
+      description: $t({ defaultMessage: 'All members must be running 08.0.90d (UFI) at a minimum (or) they should have ‘Cloud Ready’ mentioned on the label. If not, upgrade their FW to the venue’s firmware version mentioned above before onboarding.' }),
       warning: $t({ defaultMessage: 'Do not proceed unless all the members meet FW requirements. All members must be running the same FW version.' })
     }, {
       // need upgrade
       minFirmwareVersion: '08.0.92d',
-      description: $t({ defaultMessage: 'If the members are not running FI 08.0.92d (UFI), then they must be upgraded to {targetVersion} (UFI image). This applies even if there is ‘Cloud Ready’ listed on the switch label.' }, { targetVersion }),
+      description: $t({ defaultMessage: 'If the members are not running FI 08.0.92d (UFI), then they must be upgraded to the venue’s firmware version. This applies even if there is ‘Cloud Ready’ listed on the switch label.' }),
       warning: $t({ defaultMessage: 'Do not proceed unless all the switches have the minimum FW version running (or) have been manually upgraded. All members must be running the same FW version.' })
     }],
     switch: [{
       // normal
       minFirmwareVersion: '08.0.90d',
-      description: $t({ defaultMessage: 'Switch must be running 08.0.90d (UFI) at a minimum (or) the switch should have ‘Cloud Ready’ mentioned on the label.  If not, upgrade the switch FW to {targetVersion} (UFI image) directly before onboarding.' }, { targetVersion }),
+      description: $t({ defaultMessage: 'Switch must be running 08.0.90d (UFI) at a minimum (or) the switch should have ‘Cloud Ready’ mentioned on the label. If not, upgrade the switch FW to the venue’s firmware version mentioned above before onboarding.' }),
       warning: $t({ defaultMessage: 'Do not proceed unless this switch meets the firmware requirements.' })
     }, {
       // need upgrade
       minFirmwareVersion: '08.0.92d',
-      description: $t({ defaultMessage: 'If the switch is not running FI 08.0.92d (UFI), then the switch must be upgraded to {targetVersion} (UFI image). This applies even if there is ‘Cloud Ready’ listed on the switch label.' }, { targetVersion }),
+      description: $t({ defaultMessage: 'If the switch is not running FI 08.0.92d (UFI), then the switch must be upgraded to the venue’s firmware version. This applies even if there is ‘Cloud Ready’ listed on the switch label.' }),
       warning: $t({ defaultMessage: 'Do not proceed unless the switch has minimum FW version running or is manually upgraded.' })
     }]
   }
@@ -99,6 +103,10 @@ export function SwitchUpgradeNotification (props: {
     }
   }
 
+  const getVenueFirmware = function (){
+    return (switchModel?.includes('8200') ? venueRodanFirmware : venueFirmware) || ''
+  }
+
   return isDisplay ? <UI.UpgradeNotification >
     <UI.Wrapper>
       {
@@ -112,9 +120,19 @@ export function SwitchUpgradeNotification (props: {
           <StackUnitsMinLimitaionMsg />
         }
 
+        <UI.FirmwareDescription>
+          {$t({ defaultMessage: 'Minimum firmware version: ' })}
+          <UI.MinFwVersion>{content.minFirmwareVersion}</UI.MinFwVersion>
+        </UI.FirmwareDescription>
 
-        {$t({ defaultMessage: 'Minimum firmware version: ' })}
-        <UI.MinFwVersion>{content.minFirmwareVersion}</UI.MinFwVersion><br/>
+        {(getVenueFirmware()) && <UI.FirmwareDescription>
+          {$t({ defaultMessage: 'Venue firmware version for ICX {venueCategory} Series: ' }, {
+            venueCategory: switchModel?.includes('8200') ? '8200' : '7000'
+          })}
+          <UI.MinFwVersion>{parseSwitchVersion(getVenueFirmware())}</UI.MinFwVersion>
+        </UI.FirmwareDescription>}
+
+
         {content.description}<br/>
         <UI.Warning> {content.warning}</UI.Warning>
 

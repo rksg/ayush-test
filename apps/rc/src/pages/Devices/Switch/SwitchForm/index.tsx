@@ -110,7 +110,8 @@ export function SwitchForm () {
   const [disableIpSetting, setDisableIpSetting] = useState(false)
   const dataFetchedRef = useRef(false)
   const [previousPath, setPreviousPath] = useState('')
-  const [currentFW, setCurrentFw] = useState('')
+  const [currentFw, setCurrentFw] = useState('')
+  const [currentRodanFw, setCurrentRodanFw] = useState('')
 
   const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
 
@@ -185,7 +186,10 @@ export function SwitchForm () {
     if (venuesList && venuesList.data) {
       // eslint-disable-next-line max-len
       const venueFw = venuesList.data?.data?.find(venue => venue.id === value)?.switchFirmwareVersion?.id
+      // eslint-disable-next-line max-len
+      const venueRodanFw = venuesList.data?.data?.find(venue => venue.id === value)?.switchFirmwareVersionAboveTen?.id
       setCurrentFw(venueFw || '')
+      setCurrentRodanFw(venueRodanFw || '')
     }
 
     const vlansByVenue = value ?
@@ -214,7 +218,7 @@ export function SwitchForm () {
   }
 
   const handleAddSwitch = async (values: Switch) => {
-    if (!checkVersionAtLeast09010h(currentFW) && isBlockingTsbSwitch) {
+    if (!checkVersionAtLeast09010h(currentFw) && isBlockingTsbSwitch) {
       if (getTsbBlockedSwitch(values.id)?.length > 0) {
         showTsbBlockedSwitchErrorDialog()
         return
@@ -455,6 +459,8 @@ export function SwitchForm () {
                   <SwitchUpgradeNotification
                     isDisplay={!_.isEmpty(switchModel)}
                     isDisplayHeader={true}
+                    venueFirmware={currentFw}
+                    venueRodanFirmware={currentRodanFw}
                     type={switchRole === MEMEBER_TYPE.STANDALONE ?
                       SWITCH_UPGRADE_NOTIFICATION_TYPE.SWITCH :
                       SWITCH_UPGRADE_NOTIFICATION_TYPE.STACK}
