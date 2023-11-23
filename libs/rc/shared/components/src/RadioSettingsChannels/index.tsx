@@ -4,7 +4,9 @@ import { Space, Form }                        from 'antd'
 import { intersection, findIndex, map, uniq } from 'lodash'
 import { useIntl }                            from 'react-intl'
 
-import { Tooltip } from '@acx-ui/components'
+import { Tooltip }                 from '@acx-ui/components'
+import { AFCProps }                from '@acx-ui/rc/utils'
+import { ChannelButtonTextRender } from '@acx-ui/rc/utils'
 
 import { BarButton5G, BarButtonDFS, CheckboxGroup } from './styledComponents'
 
@@ -37,7 +39,8 @@ export function RadioSettingsChannels (props: {
     lower5GChannels: string[],
     upper5GChannels: string[]
   },
-  handleChanged?: () => void
+  handleChanged?: () => void,
+  afcProps?: AFCProps
 }) {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
@@ -46,7 +49,8 @@ export function RadioSettingsChannels (props: {
     disabled: customDisable = false, readonly = false,
     displayBarSettings, channelBars,
     channelList, groupSize,
-    handleChanged
+    handleChanged,
+    afcProps
   } = props || {}
 
   const disabled = customDisable || readonly
@@ -181,11 +185,12 @@ export function RadioSettingsChannels (props: {
             options={channelGroupList?.map((group: channelGroupOption) => ({
               label: <Tooltip
                 key={group?.channels?.[0].value}
-                title={disabled
-                  ? ''
-                  : (group.selected
-                    ? $t({ defaultMessage: 'Disable this channel' })
-                    : $t({ defaultMessage: 'Enable this channel' }))
+                title={disabled ?
+                  '' :
+                  ChannelButtonTextRender(group.channels.map(
+                    (radioChannel) => {
+                      return Number(radioChannel.value)
+                    }), group.selected, afcProps)
                 }
                 className='channels'
               >{

@@ -14,6 +14,7 @@ import {
   QuestionMarkCircleOutlined
 } from '@acx-ui/icons'
 import { NetworkSaveData, GuestNetworkTypeEnum, NetworkTypeEnum, URLProtocolRegExp } from '@acx-ui/rc/utils'
+import { validationMessages }                                                        from '@acx-ui/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
@@ -53,7 +54,7 @@ export function CloudpathForm () {
         <Form.Item
           name={['guestPortal','externalPortalUrl']}
           rules={
-            [{ required: true },
+            [{ required: true, message: $t(validationMessages.validateURL) },
               { validator: (_, value) => URLProtocolRegExp(value) }]
           }
           label={<>
