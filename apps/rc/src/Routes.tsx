@@ -10,7 +10,8 @@ import {
   AdaptivePolicySetForm,
   MacRegistrationListForm,
   AccessControlForm,
-  AAAForm
+  AAAForm,
+  VLANPoolForm
 } from '@acx-ui/rc/components'
 import {
   getPolicyListRoutePath,
@@ -86,7 +87,6 @@ import EditTunnelProfile                    from './pages/Policies/TunnelProfile
 import TunnelProfileDetail                  from './pages/Policies/TunnelProfile/TunnelProfileDetail'
 import TunnelProfileTable                   from './pages/Policies/TunnelProfile/TunnelProfileTable'
 import VLANPoolDetail                       from './pages/Policies/VLANPool/VLANPoolDetail'
-import VLANPoolForm                         from './pages/Policies/VLANPool/VLANPoolForm/VLANPoolForm'
 import VLANPoolTable                        from './pages/Policies/VLANPool/VLANPoolTable/VLANPoolTable'
 import DHCPDetail                           from './pages/Services/DHCP/DHCPDetail'
 import DHCPForm                             from './pages/Services/DHCP/DHCPForm/DHCPForm'

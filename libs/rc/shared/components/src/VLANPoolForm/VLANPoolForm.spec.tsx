@@ -11,7 +11,7 @@ import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                        from '@acx-ui/user'
 
-import VLANPoolForm from './VLANPoolForm'
+import { VLANPoolForm } from './VLANPoolForm'
 
 const successResponse = { requestId: 'request-id' }
 const vlanData: VLANPoolPolicyType = {

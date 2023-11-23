@@ -3,11 +3,10 @@ import { useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, Modal, ModalType }              from '@acx-ui/components'
+import { VLANPoolForm }                          from '@acx-ui/rc/components'
 import { VLANPoolPolicyType, VLAN_LIMIT_NUMBER } from '@acx-ui/rc/utils'
 
-
-import VLANPoolForm from '../../../../Policies/VLANPool/VLANPoolForm/VLANPoolForm'
-import * as UI      from '../styledComponents'
+import * as UI from '../styledComponents'
 
 export default function VLANPoolModal (props:{
   updateInstance: (value:VLANPoolPolicyType) => void,

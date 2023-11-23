@@ -25,7 +25,7 @@ type VLANPoolFormProps = {
   backToNetwork?: (value?: VLANPoolPolicyType) => void
 }
 
-const VLANPoolForm = (props: VLANPoolFormProps) => {
+export const VLANPoolForm = (props: VLANPoolFormProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const tablePath = getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.LIST })
@@ -98,5 +98,3 @@ const VLANPoolForm = (props: VLANPoolFormProps) => {
     </>
   )
 }
-
-export default VLANPoolForm
