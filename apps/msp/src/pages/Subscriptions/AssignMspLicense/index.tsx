@@ -443,8 +443,8 @@ export function AssignMspLicense () {
           ]}
           children={
             <DatePicker
-              disabled={!customDate}
               format={formatter(DateFormatEnum.DateFormat)}
+              disabled={!customDate}
               disabledDate={(current) => {
                 return current && current < moment().endOf('day')
               }}
