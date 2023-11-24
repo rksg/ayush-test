@@ -16,7 +16,6 @@ import { Features }         from '@acx-ui/feature-toggle'
 import {
   AgeTimeUnit,
   MtuTypeEnum,
-  TunnelProfile,
   getTunnelTypeOptions,
   servicePolicyNameRegExp
 } from '@acx-ui/rc/utils'
@@ -46,23 +45,18 @@ async function validateAgeTimeValue (value: number, ageTimeUnit: string) {
   return Promise.resolve()
 }
 
-export interface TunnelProfileFormType extends TunnelProfile {
-  ageTimeUnit? : string
-  disabledFields?: string[]
-}
-
 interface TunnelProfileFormProps {
   isDefaultTunnelProfile?: boolean
 }
 
 export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
   const { isDefaultTunnelProfile = false } = props
+  const { $t } = useIntl()
   const form = Form.useFormInstance()
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const ageTimeUnit = useWatch<AgeTimeUnit>('ageTimeUnit')
   const mtuType = useWatch('mtuType')
   const disabledFields = form.getFieldValue('disabledFields')
-  const { $t } = useIntl()
   const tunnelTypeOptions = getTunnelTypeOptions($t)
 
   const ageTimeOptions = [
@@ -109,7 +103,6 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
               { $t(MessageMapping.mtu_help_msg) }
             </Space>
           }
-          initialValue={MtuTypeEnum.AUTO}
           children={
             <Radio.Group disabled={isDefaultTunnelProfile || !!disabledFields?.includes('mtuType')}>
               <Space direction='vertical'>
@@ -138,7 +131,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
                             }
                           ]}
                           children={<InputNumber
-                            disabled={!!disabledFields?.includes('mtuSize')} />}
+                            disabled={!!disabledFields?.includes('mtuSize')}/>}
                           validateFirst
                           noStyle
                         />
@@ -160,7 +153,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
             valuePropName='checked'
             children={<Switch
               // eslint-disable-next-line max-len
-              disabled={isDefaultTunnelProfile || !!disabledFields?.includes('forceFragmentation')} />}
+              disabled={isDefaultTunnelProfile || !!disabledFields?.includes('forceFragmentation')}/>}
           />
         </StepsFormLegacy.FieldLabel>
       </Col>
@@ -171,21 +164,18 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
           <Space>
             <Form.Item
               name='ageTimeMinutes'
-              initialValue={20}
               rules={[
                 { required: true },
                 { validator: (_, value) => validateAgeTimeValue(value, ageTimeUnit) }
               ]}
               children={<InputNumber
-                disabled={isDefaultTunnelProfile || !!disabledFields?.includes('ageTimeMinutes')} />
-              }
+                disabled={isDefaultTunnelProfile || !!disabledFields?.includes('ageTimeMinutes')}/>}
               validateFirst
               noStyle
               hasFeedback
             />
             <Form.Item
               name='ageTimeUnit'
-              initialValue={AgeTimeUnit.MINUTES}
               children={
                 <Select
                   options={ageTimeOptions}
