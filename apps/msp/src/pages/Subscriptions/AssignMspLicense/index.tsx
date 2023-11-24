@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 
 import {
+  DatePicker,
   Form,
   InputNumber,
   Select
@@ -9,7 +10,6 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import {
-  DatePicker,
   PageHeader,
   StepsForm,
   Subtitle
@@ -444,6 +444,7 @@ export function AssignMspLicense () {
           children={
             <DatePicker
               disabled={!customDate}
+              format={formatter(DateFormatEnum.DateFormat)}
               disabledDate={(current) => {
                 return current && current < moment().endOf('day')
               }}
