@@ -4,10 +4,10 @@ import { Col, Form, Input, Row, Select } from 'antd'
 import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
-import { StepsForm, useStepFormContext }                                                                        from '@acx-ui/components'
-import { SpaceWrapper, TunnelProfileAddModal }                                                                  from '@acx-ui/rc/components'
-import { useGetEdgeListQuery, useGetPortConfigQuery, useGetTunnelProfileViewDataListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
-import { EdgeSdLanSetting, EdgeStatusEnum, isDefaultTunnelProfile }                                             from '@acx-ui/rc/utils'
+import { StepsForm, useStepFormContext }                                                                                                          from '@acx-ui/components'
+import { SpaceWrapper, TunnelProfileAddModal }                                                                                                    from '@acx-ui/rc/components'
+import { useGetEdgeListQuery, useGetEdgeSdLanViewDataListQuery, useGetPortConfigQuery, useGetTunnelProfileViewDataListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
+import { EdgeSdLanSetting, EdgeStatusEnum, isDefaultTunnelProfile, servicePolicyNameRegExp, TunnelProfileFormType, TunnelTypeEnum }               from '@acx-ui/rc/utils'
 
 import diagram from '../../../../../assets/images/edge-sd-lan-diagrams/edge-sd-lan-early-access.png'
 
@@ -16,6 +16,9 @@ import * as UI              from './styledComponents'
 
 const tunnelProfileDefaultPayload = {
   fields: ['name', 'id'],
+  filters: {
+    type: [TunnelTypeEnum.VLAN_VXLAN]
+  },
   pageSize: 10000,
   sortField: 'name',
   sortOrder: 'ASC'
@@ -28,6 +31,18 @@ export const SettingsForm = () => {
 
   const venueId = Form.useWatch('venueId', form)
   const edgeId = Form.useWatch('edgeId', form)
+
+  const { sdLanBoundEdges, isSdLanBoundEdgesLoading } = useGetEdgeSdLanViewDataListQuery(
+    { payload: {
+      fields: ['id', 'edgeId']
+    } },
+    {
+      selectFromResult: ({ data, isLoading }) => ({
+        sdLanBoundEdges: data?.data?.map(item => item.edgeId) ?? [],
+        isSdLanBoundEdgesLoading: isLoading
+      })
+    }
+  )
 
   const {
     venueOptions,
@@ -62,18 +77,21 @@ export const SettingsForm = () => {
       ],
       filters: {
         venueId: [venueId],
+        ...(editMode && { serialNumber: [edgeId] }),
         deviceStatus: Object.values(EdgeStatusEnum)
           .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD)
       } } },
   {
-    skip: !venueId,
+    skip: !venueId || isSdLanBoundEdgesLoading,
     selectFromResult: ({ data, isLoading }) => {
       return {
-        edgeOptions: data?.data.map(item => ({
-          label: item.name,
-          value: item.serialNumber,
-          venueId: item.venueId
-        })),
+        edgeOptions: data?.data
+          .filter(item => editMode ? true : sdLanBoundEdges.indexOf(item.serialNumber) === -1)
+          .map(item => ({
+            label: item.name,
+            value: item.serialNumber,
+            venueId: item.venueId
+          })),
         isLoading
       }
     }
@@ -86,7 +104,7 @@ export const SettingsForm = () => {
     skip: !edgeId,
     selectFromResult: ({ data }) => {
       return {
-        portsConfig: data?.ports ?? []
+        portsConfig: data?.ports
       }
     }
   })
@@ -118,9 +136,16 @@ export const SettingsForm = () => {
   useEffect(() => {
     if (portsConfig) {
     // find corePort
-      const corePort = portsConfig?.find(port => port.corePortEnabled)
-      form.setFieldValue('corePortMac', corePort?.mac)
-      form.setFieldValue('corePortName', corePort?.name)
+      let corePortMac, corePortName
+      portsConfig?.forEach((port, idx) => {
+        if (port.corePortEnabled) {
+          corePortMac = port.mac
+          corePortName = $t({ defaultMessage: 'Port {index}' }, { index: idx + 1 })
+        }
+      })
+
+      form.setFieldValue('corePortMac', corePortMac)
+      form.setFieldValue('corePortName', corePortName)
     }
   }, [portsConfig])
 
@@ -136,6 +161,11 @@ export const SettingsForm = () => {
   const onTunnelChange = (val: string) => {
     form.setFieldValue('tunnelProfileName',
       tunnelProfileOptions?.filter(i => i.value === val)[0]?.label)
+  }
+
+  const formInitValues = {
+    type: TunnelTypeEnum.VLAN_VXLAN,
+    disabledFields: ['type']
   }
 
   return (
@@ -154,7 +184,8 @@ export const SettingsForm = () => {
                     label={$t({ defaultMessage: 'Service Name' })}
                     rules={[
                       { required: true },
-                      { min: 2, max: 32 }
+                      { min: 2, max: 32 },
+                      { validator: (_, value) => servicePolicyNameRegExp(value) }
                     ]}
                     children={<Input />}
                   />
@@ -191,7 +222,7 @@ export const SettingsForm = () => {
                     }]}
                   >
                     <Select
-                      loading={isEdgeOptionsLoading}
+                      loading={isEdgeOptionsLoading || isSdLanBoundEdgesLoading}
                       placeholder={$t({ defaultMessage: 'Select...' })}
                       options={edgeOptions}
                       disabled={editMode}
@@ -259,7 +290,7 @@ export const SettingsForm = () => {
                   </Form.Item>
                 </Col>
                 <Col span={3}>
-                  <TunnelProfileAddModal />
+                  <TunnelProfileAddModal initialValues={formInitValues as TunnelProfileFormType} />
                 </Col>
               </Row>
             </Col>

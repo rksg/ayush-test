@@ -11,6 +11,7 @@ import { useParams }                               from 'react-router-dom'
 import { Loader, StepsForm, useStepFormContext }                                                                                     from '@acx-ui/components'
 import { TunnelProfileAddModal }                                                                                                     from '@acx-ui/rc/components'
 import { useGetNetworkSegmentationViewDataListQuery, useGetTunnelProfileViewDataListQuery, useVenueNetworkActivationsDataListQuery } from '@acx-ui/rc/services'
+import { isDefaultTunnelProfile, TunnelProfileFormType, TunnelTypeEnum }                                                             from '@acx-ui/rc/utils'
 
 import { NetworkSegmentationGroupFormData } from '..'
 
@@ -45,8 +46,10 @@ export const WirelessNetworkForm = () => {
     }
   })
 
-  const hasDefaultProfile = tunnelProfileList?.data.some(item => item.id === params.tenantId )
+  const hasDefaultProfile = tunnelProfileList?.data
+    .some(item => isDefaultTunnelProfile(item, params.tenantId!))
   const tunnelProfileOptions = tunnelProfileList?.data
+    .filter(item => item.type !== TunnelTypeEnum.VLAN_VXLAN)
     .map(item => ({ label: item.name, value: item.id }))
   if (!hasDefaultProfile) {
     tunnelProfileOptions?.unshift({ label: 'Default', value: params.tenantId as string })
@@ -113,6 +116,11 @@ export const WirelessNetworkForm = () => {
       .filter(item => !!item))
   }
 
+  const formInitValues ={
+    type: TunnelTypeEnum.VXLAN,
+    disabledFields: ['type']
+  }
+
   return(
     <>
       <StepsForm.Title>{$t({ defaultMessage: 'Wireless Network Settings' })}</StepsForm.Title>
@@ -131,7 +139,7 @@ export const WirelessNetworkForm = () => {
             }
           />
         </Col>
-        <TunnelProfileAddModal />
+        <TunnelProfileAddModal initialValues={formInitValues as TunnelProfileFormType} />
       </Row>
       <Row gutter={20}>
         <Col>

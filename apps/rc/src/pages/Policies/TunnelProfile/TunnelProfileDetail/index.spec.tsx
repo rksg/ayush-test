@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { useIsEdgeFeatureReady }                                                              from '@acx-ui/rc/components'
 import { CommonUrlsInfo, getPolicyRoutePath, PolicyOperation, PolicyType, TunnelProfileUrls } from '@acx-ui/rc/utils'
 import { Provider }                                                                           from '@acx-ui/store'
 import { mockServer, render, screen }                                                         from '@acx-ui/test-utils'
@@ -8,6 +9,10 @@ import { mockedNetworkViewData, mockedTunnelProfileViewData, mockedDefaultTunnel
 
 import TunnelProfileDetail from '.'
 
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
 describe('TunnelProfileDetail', () => {
   let params: { tenantId: string, policyId: string }
   const detailPath = '/:tenantId/' + getPolicyRoutePath({
@@ -78,5 +83,44 @@ describe('TunnelProfileDetail', () => {
       })
     await screen.findByText('Default')
     expect(screen.queryByRole('button', { name: 'Configure' })).toBeDisabled()
+  })
+
+  describe('when SD-LAN ready', () => {
+    beforeEach(() => {
+      jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
+    })
+
+    it('should display tunnel type', async () => {
+      render(
+        <Provider>
+          <TunnelProfileDetail />
+        </Provider>, {
+          route: { params, path: detailPath }
+        })
+      await screen.findByText('Tunnel Type')
+      await screen.findByText('VxLAN')
+    })
+
+    it('should display VxLAN as default tunnel type', async () => {
+      const mockedDataWithoutType = {
+        ...mockedTunnelProfileViewData
+      }
+      mockedDataWithoutType.data[0].type = ''
+
+      mockServer.use(
+        rest.post(
+          TunnelProfileUrls.getTunnelProfileViewDataList.url,
+          (_, res, ctx) => res(ctx.json(mockedDataWithoutType))
+        ))
+
+      render(
+        <Provider>
+          <TunnelProfileDetail />
+        </Provider>, {
+          route: { params, path: detailPath }
+        })
+      await screen.findByText('Tunnel Type')
+      await screen.findByText('VxLAN')
+    })
   })
 })

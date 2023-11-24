@@ -107,7 +107,7 @@ describe('ScheduleStep', () => {
     expect(release09010f).toBeEnabled()
 
     const calendar = screen.getByRole('textbox', {
-      name: /update date:/i
+      name: /update date/i
     })
     userEvent.click(calendar)
     const calendarDate = await screen.findByRole('cell', {

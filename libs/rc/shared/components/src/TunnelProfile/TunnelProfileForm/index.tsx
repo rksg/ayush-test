@@ -1,11 +1,30 @@
-import { Col, Form, Input, InputNumber, Radio, Row, Select, Space, Switch } from 'antd'
-import { useIntl }                                                          from 'react-intl'
+import {
+  Col,
+  Form,
+  Input,
+  InputNumber,
+  Radio,
+  Row,
+  Select,
+  Space,
+  Switch
+} from 'antd'
+import { useIntl } from 'react-intl'
 
-import { StepsFormLegacy }                                                  from '@acx-ui/components'
-import { AgeTimeUnit, MtuTypeEnum, TunnelProfile, servicePolicyNameRegExp } from '@acx-ui/rc/utils'
-import { getIntl }                                                          from '@acx-ui/utils'
+import { StepsFormLegacy }  from '@acx-ui/components'
+import { Features }         from '@acx-ui/feature-toggle'
+import {
+  AgeTimeUnit,
+  MtuTypeEnum,
+  getTunnelTypeOptions,
+  servicePolicyNameRegExp
+} from '@acx-ui/rc/utils'
+import { getIntl } from '@acx-ui/utils'
 
-import * as UI from './styledComponents'
+import { useIsEdgeFeatureReady } from '../../useEdgeActions'
+
+import { MessageMapping } from './MessageMapping'
+import * as UI            from './styledComponents'
 
 const { useWatch } = Form
 
@@ -26,16 +45,20 @@ async function validateAgeTimeValue (value: number, ageTimeUnit: string) {
   return Promise.resolve()
 }
 
-export interface TunnelProfileFormType extends TunnelProfile {
-  ageTimeUnit? : string
+interface TunnelProfileFormProps {
+  isDefaultTunnelProfile?: boolean
 }
 
-export const TunnelProfileForm = (props: { isDefaultTunnelProfile?: boolean }) => {
+export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
+  const { isDefaultTunnelProfile = false } = props
+  const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const isDefaultTunnelProfile = !!props.isDefaultTunnelProfile
+  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const ageTimeUnit = useWatch<AgeTimeUnit>('ageTimeUnit')
   const mtuType = useWatch('mtuType')
-  const { $t } = useIntl()
+  const disabledFields = form.getFieldValue('disabledFields')
+  const tunnelTypeOptions = getTunnelTypeOptions($t)
+
   const ageTimeOptions = [
     { label: $t({ defaultMessage: 'Minute(s)' }), value: AgeTimeUnit.MINUTES },
     { label: $t({ defaultMessage: 'Day(s)' }), value: AgeTimeUnit.DAYS },
@@ -58,7 +81,8 @@ export const TunnelProfileForm = (props: { isDefaultTunnelProfile?: boolean }) =
             { max: 32 },
             { validator: (_, value) => servicePolicyNameRegExp(value) }
           ]}
-          children={<Input disabled={isDefaultTunnelProfile}/>}
+          children={<Input
+            disabled={isDefaultTunnelProfile || !!disabledFields?.includes('name')}/>}
           validateFirst
         />
       </Col>
@@ -76,15 +100,11 @@ export const TunnelProfileForm = (props: { isDefaultTunnelProfile?: boolean }) =
           extra={
             <Space size={1} style={{ alignItems: 'start', marginTop: 5 }}>
               <UI.InfoIcon />
-              {
-                // eslint-disable-next-line max-len
-                $t({ defaultMessage: 'Please check Ethernet MTU on AP, Tunnel MTU gets applied only if its less than Ethernet MTU' })
-              }
+              { $t(MessageMapping.mtu_help_msg) }
             </Space>
           }
-          initialValue={MtuTypeEnum.AUTO}
           children={
-            <Radio.Group disabled={isDefaultTunnelProfile}>
+            <Radio.Group disabled={isDefaultTunnelProfile || !!disabledFields?.includes('mtuType')}>
               <Space direction='vertical'>
                 <Radio value={MtuTypeEnum.AUTO}>
                   {$t({ defaultMessage: 'Auto' })}
@@ -110,7 +130,8 @@ export const TunnelProfileForm = (props: { isDefaultTunnelProfile?: boolean }) =
                               max: 1450
                             }
                           ]}
-                          children={<InputNumber />}
+                          children={<InputNumber
+                            disabled={!!disabledFields?.includes('mtuSize')}/>}
                           validateFirst
                           noStyle
                         />
@@ -130,7 +151,9 @@ export const TunnelProfileForm = (props: { isDefaultTunnelProfile?: boolean }) =
           <Form.Item
             name='forceFragmentation'
             valuePropName='checked'
-            children={<Switch disabled={isDefaultTunnelProfile}/>}
+            children={<Switch
+              // eslint-disable-next-line max-len
+              disabled={isDefaultTunnelProfile || !!disabledFields?.includes('forceFragmentation')}/>}
           />
         </StepsFormLegacy.FieldLabel>
       </Col>
@@ -141,23 +164,22 @@ export const TunnelProfileForm = (props: { isDefaultTunnelProfile?: boolean }) =
           <Space>
             <Form.Item
               name='ageTimeMinutes'
-              initialValue={20}
               rules={[
                 { required: true },
                 { validator: (_, value) => validateAgeTimeValue(value, ageTimeUnit) }
               ]}
-              children={<InputNumber disabled={isDefaultTunnelProfile}/>}
+              children={<InputNumber
+                disabled={isDefaultTunnelProfile || !!disabledFields?.includes('ageTimeMinutes')}/>}
               validateFirst
               noStyle
               hasFeedback
             />
             <Form.Item
               name='ageTimeUnit'
-              initialValue={'minutes'}
               children={
                 <Select
                   options={ageTimeOptions}
-                  disabled={isDefaultTunnelProfile}
+                  disabled={isDefaultTunnelProfile || !!disabledFields?.includes('ageTimeUnit')}
                   onChange={handelAgeTimeUnitChange}
                 />
               }
@@ -165,8 +187,21 @@ export const TunnelProfileForm = (props: { isDefaultTunnelProfile?: boolean }) =
             />
           </Space>
         </Form.Item>
-
       </Col>
+      { isEdgeSdLanReady &&
+        <Col span={14}>
+          <Form.Item
+            name='type'
+            label={$t({ defaultMessage: 'Tunnel Type' })}
+            tooltip={$t(MessageMapping.tunnel_type_help_msg)}
+          >
+            <Select
+              disabled={isDefaultTunnelProfile || !!disabledFields?.includes('type')}
+              options={tunnelTypeOptions}
+            />
+          </Form.Item>
+        </Col>
+      }
     </Row>
   )
 }
