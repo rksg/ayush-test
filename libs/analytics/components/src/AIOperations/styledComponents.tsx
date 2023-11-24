@@ -13,17 +13,16 @@ const iconStyle = css`
   margin-right: 5px;
 `
 
-export const GreenTickIcon = styled(CheckMarkCircleOutline)`
+export const AppliedIcon = styled(CheckMarkCircleOutline)`
   ${iconStyle}
   color: var(--acx-semantics-green-50);
 `
-export const RedCancelIcon = styled(CancelCircleOutlined)`
+export const FailedIcon = styled(CancelCircleOutlined)`
   ${iconStyle}
   color: var(--acx-semantics-red-50);
 `
-export const OrangeRevertIcon = styled(Reload)`
+export const RevertIcon = styled(Reload)`
   ${iconStyle}
-  color: var(--acx-accents-orange-50);
 `
 
 export const LargeGreenTickIcon = styled(CheckMarkCircleSolid)<{ $noData: boolean }>`

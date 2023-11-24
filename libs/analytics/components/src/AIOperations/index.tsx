@@ -62,10 +62,10 @@ function AIOperationsWidget ({
   const revertedStates = ['reverted']
   const failedStates = ['applyfailed', 'revertfailed']
   const intervalTypeMapping = [
-    { state: 'new', list: newStates }, // this should not happen
-    { state: 'applied', list: appliedStates, icon: <UI.GreenTickIcon /> },
-    { state: 'reverted', list: revertedStates, icon: <UI.OrangeRevertIcon /> },
-    { state: 'failed', list: failedStates, icon: <UI.RedCancelIcon /> }
+    { state: 'new', list: newStates },
+    { state: 'applied', list: appliedStates, icon: <UI.AppliedIcon /> },
+    { state: 'reverted', list: revertedStates, icon: <UI.RevertIcon /> },
+    { state: 'failed', list: failedStates, icon: <UI.FailedIcon /> }
   ]
 
   return <Loader states={[queryResults]}>
