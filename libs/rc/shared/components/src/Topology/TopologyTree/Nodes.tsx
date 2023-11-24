@@ -71,6 +71,8 @@ const Nodes: React.FC<NodeProps> = (props) => {
               .filter((ancestor: any) => ancestor.ancestors().length === 2)[0].data
               .id
             : ''
+          const children = node.data.children?.length > 0 ? `(${node.data.children.length})` :
+            (node.data._children?.length > 0 ? `(${node.data._children.length})` : '')
           return (
             <g
               key={node.data.id}
@@ -97,7 +99,9 @@ const Nodes: React.FC<NodeProps> = (props) => {
                     text-anchor='middle'
                     dy='13'
                   >
-                    {truncateLabel(node.data.name as string, 15)}
+                    {children !== '' && node.data.id !== 'Cloud' ?
+                      node.data.name.substring(0,8)+children+'...'
+                      :truncateLabel(node.data.name, 13)}
                   </text>
                 </g>
               </g>

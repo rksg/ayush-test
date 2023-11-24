@@ -67,6 +67,10 @@ export const ImageButtonsContainer = styled(Space).attrs({
     right: 15px;
     border: 1px solid var(--acx-neutrals-30);
     border-radius: 4px;
+    
+    .ant-space-item {
+      background-color: var(--acx-neutrals-10)
+    }
   `
 
 export const WirelessRadioTableContainer = styled('div')`
