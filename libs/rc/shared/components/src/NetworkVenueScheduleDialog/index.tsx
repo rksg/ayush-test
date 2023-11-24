@@ -25,12 +25,14 @@ import {
   Button,
   Modal
 } from '@acx-ui/components'
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 import {
   NetworkVenue,
-  fetchVenueTimeZone,
   transformTimezoneDifference,
   NetworkVenueScheduler,
-  NetworkSaveData
+  NetworkSaveData,
+  getVenueTimeZone,
+  fetchVenueTimeZone
 } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
@@ -79,6 +81,8 @@ const dayIndex: indexDayType = {
 export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
   const { $t } = useIntl()
 
+  const isMapEnabled = useIsSplitOn(Features.G_MAP)
+
   const [scheduleList, setScheduleList] = useState<schedule[]>([])
   const [checkedList, setCheckedList] = useState<CheckboxValueType[][]>([])
   const [indeterminate, setIndeterminate] = useState<boolean[]>([])
@@ -117,7 +121,6 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
   const arrCheckAll = [...checkAll]
   const arrIndeterminate = [...indeterminate]
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const initialValues = (scheduler: NetworkVenueScheduler) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let map: { [key: string]: any } = scheduler
@@ -157,7 +160,9 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
 
   useEffect(() => {
     const getTimeZone = async (venueLatitude: string, venueLongitude: string) => {
-      const timeZone = await fetchVenueTimeZone(Number(venueLatitude), Number(venueLongitude))
+      const timeZone = isMapEnabled ?
+        await fetchVenueTimeZone(Number(venueLatitude), Number(venueLongitude)) :
+        getVenueTimeZone(Number(venueLatitude), Number(venueLongitude))
       setTimezone(timeZone)
     }
 
@@ -399,9 +404,16 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
               </Col>
             </Row>
             <Card type='inner'
-              title={<><span>{$t({ defaultMessage: 'Mark/ unmark areas to change network availability' })}</span>
-                <Button type='link' onClick={showModal}><UI.TipSpan>See tips</UI.TipSpan></Button></>}
-              extra={<>Venue time zone: <b>{transformTimezoneDifference(timezone.dstOffset+timezone.rawOffset)} ({timezone.timeZoneName})</b></>}
+              title={<>
+                <span>{$t({ defaultMessage: 'Mark/ unmark areas to change network availability' })}</span>
+                <Button type='link' onClick={showModal}>
+                  <UI.TipSpan>{$t({ defaultMessage: 'See tips' })}</UI.TipSpan>
+                </Button></>}
+              extra={<>
+                {$t({ defaultMessage: 'Venue time zone:' })} <b>
+                  {transformTimezoneDifference(timezone.dstOffset+timezone.rawOffset)} ({timezone.timeZoneName})
+                </b>
+              </>}
               style={{ pointerEvents: ( disabled ? 'none' : 'auto' ), opacity: ( disabled ? '0.5' : '1.0' ) }}
             >
               <Spin spinning={loading}>
