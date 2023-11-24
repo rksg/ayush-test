@@ -121,7 +121,6 @@ export type { EdgePortConfigFormType } from './EdgeFormItem/EdgePortsGeneral'
 
 export { TunnelProfileForm } from './TunnelProfile/TunnelProfileForm'
 export { useTunnelProfileActions } from './TunnelProfile/TunnelProfileForm/useTunnelProfileActions'
-export type { TunnelProfileFormType } from './TunnelProfile/TunnelProfileForm'
 export { TunnelProfileAddModal } from './TunnelProfile/TunnelProfileAddModal'
 export { EdgeDhcpPoolTable } from './EdgeDhcpPoolTable'
 export { EdgeDhcpLeaseTable } from './EdgeDhcpLeaseTable'

@@ -246,12 +246,8 @@ const EdgeSdLanTable = () => {
             numOfEntities: rows.length
           },
           onOk: () => {
-            rows.length === 1
-              ? deleteSdLan({ params: { serviceId: rows[0].id } })
-                .then(clearSelection)
-              : deleteSdLan({
-                payload: rows.map((item) => item.id)
-              }).then(clearSelection)
+            Promise.all(rows.map(row => deleteSdLan({ params: { serviceId: row.id } })))
+              .then(clearSelection)
           }
         })
       }
