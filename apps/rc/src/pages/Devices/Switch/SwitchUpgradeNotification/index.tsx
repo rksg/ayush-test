@@ -28,7 +28,7 @@ export function SwitchUpgradeNotification (props: {
     type: SWITCH_UPGRADE_NOTIFICATION_TYPE,
     validateModel: string[],
     venueFirmware?: string,
-    venueRodanFirmware?: string
+    venueAboveTenFirmware?: string
 }) {
   const [modalVisible, setModalVisible] = useState(false)
   const { $t } = useIntl()
@@ -39,7 +39,7 @@ export function SwitchUpgradeNotification (props: {
     validateModel,
     stackUnitsMinLimitaion,
     venueFirmware,
-    venueRodanFirmware,
+    venueAboveTenFirmware,
     switchModel } = props
   const upgradeDescription = {
     stack: [{
@@ -104,7 +104,7 @@ export function SwitchUpgradeNotification (props: {
   }
 
   const getVenueFirmware = function (){
-    return (switchModel?.includes('8200') ? venueRodanFirmware : venueFirmware) || ''
+    return (switchModel?.includes('8200') ? venueAboveTenFirmware : venueFirmware) || ''
   }
 
   return isDisplay ? <UI.UpgradeNotification >

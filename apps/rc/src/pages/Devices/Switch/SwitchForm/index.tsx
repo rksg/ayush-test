@@ -110,8 +110,8 @@ export function SwitchForm () {
   const [disableIpSetting, setDisableIpSetting] = useState(false)
   const dataFetchedRef = useRef(false)
   const [previousPath, setPreviousPath] = useState('')
-  const [currentFw, setCurrentFw] = useState('')
-  const [currentRodanFw, setCurrentRodanFw] = useState('')
+  const [currentFW, setCurrentFW] = useState('')
+  const [currentAboveTenFW, setCurrentAboveTenFW] = useState('')
 
   const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
 
@@ -185,11 +185,11 @@ export function SwitchForm () {
     setVenueId(value)
     if (venuesList && venuesList.data) {
       // eslint-disable-next-line max-len
-      const venueFw = venuesList.data?.data?.find(venue => venue.id === value)?.switchFirmwareVersion?.id
+      const venueFW = venuesList.data?.data?.find(venue => venue.id === value)?.switchFirmwareVersion?.id
       // eslint-disable-next-line max-len
-      const venueRodanFw = venuesList.data?.data?.find(venue => venue.id === value)?.switchFirmwareVersionAboveTen?.id
-      setCurrentFw(venueFw || '')
-      setCurrentRodanFw(venueRodanFw || '')
+      const venueAboveTenFW = venuesList.data?.data?.find(venue => venue.id === value)?.switchFirmwareVersionAboveTen?.id
+      setCurrentFW(venueFW || '')
+      setCurrentAboveTenFW(venueAboveTenFW || '')
     }
 
     const vlansByVenue = value ?
@@ -218,7 +218,7 @@ export function SwitchForm () {
   }
 
   const handleAddSwitch = async (values: Switch) => {
-    if (!checkVersionAtLeast09010h(currentFw) && isBlockingTsbSwitch) {
+    if (!checkVersionAtLeast09010h(currentFW) && isBlockingTsbSwitch) {
       if (getTsbBlockedSwitch(values.id)?.length > 0) {
         showTsbBlockedSwitchErrorDialog()
         return
@@ -459,8 +459,8 @@ export function SwitchForm () {
                   <SwitchUpgradeNotification
                     isDisplay={!_.isEmpty(switchModel)}
                     isDisplayHeader={true}
-                    venueFirmware={currentFw}
-                    venueRodanFirmware={currentRodanFw}
+                    venueFirmware={currentFW}
+                    venueAboveTenFirmware={currentAboveTenFW}
                     type={switchRole === MEMEBER_TYPE.STANDALONE ?
                       SWITCH_UPGRADE_NOTIFICATION_TYPE.SWITCH :
                       SWITCH_UPGRADE_NOTIFICATION_TYPE.STACK}
