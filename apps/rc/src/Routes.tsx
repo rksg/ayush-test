@@ -13,7 +13,7 @@ import {
   AAAForm,
   VLANPoolForm,
   WifiCallingForm, WifiCallingConfigureForm, WifiCallingDetailView,
-  SyslogDetailView, SyslogForm
+  SyslogDetailView, SyslogForm, DHCPForm
 } from '@acx-ui/rc/components'
 import {
   getPolicyListRoutePath,
@@ -89,7 +89,6 @@ import TunnelProfileTable                   from './pages/Policies/TunnelProfile
 import VLANPoolDetail                       from './pages/Policies/VLANPool/VLANPoolDetail'
 import VLANPoolTable                        from './pages/Policies/VLANPool/VLANPoolTable/VLANPoolTable'
 import DHCPDetail                           from './pages/Services/DHCP/DHCPDetail'
-import DHCPForm                             from './pages/Services/DHCP/DHCPForm/DHCPForm'
 import DHCPTable                            from './pages/Services/DHCP/DHCPTable/DHCPTable'
 import AddDHCP                              from './pages/Services/DHCP/Edge/AddDHCP'
 import EdgeDHCPDetail                       from './pages/Services/DHCP/Edge/DHCPDetail'

@@ -21,7 +21,7 @@ interface DHCPFormProps {
   editMode?: boolean
 }
 
-export default function DHCPForm (props: DHCPFormProps) {
+export function DHCPForm (props: DHCPFormProps) {
   const { $t } = useIntl()
 
   const params = useParams()

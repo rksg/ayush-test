@@ -6,10 +6,13 @@ import {
 
 
 //FIXME: replace these picture when UX ready
-import HierarchicalDiagram from '../../../../../assets/images/service-dhcp-diagrams/hierarchicalDHCP.png'
-import MultipleDiagram     from '../../../../../assets/images/service-dhcp-diagrams/multipleAPDHCP.png'
-import SimpleDiagram       from '../../../../../assets/images/service-dhcp-diagrams/simpleDHCP.png'
-import { Diagram }         from '../styledComponents'
+// @ts-ignore
+import HierarchicalDiagram from '../assets/images/service-dhcp-diagrams/hierarchicalDHCP.png'
+// @ts-ignore
+import MultipleDiagram from '../assets/images/service-dhcp-diagrams/multipleAPDHCP.png'
+// @ts-ignore
+import SimpleDiagram from '../assets/images/service-dhcp-diagrams/simpleDHCP.png'
+import { Diagram }   from '../styledComponents'
 
 
 const diagramMapping = {

@@ -18,8 +18,9 @@ import {
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }                               from '@acx-ui/user'
 
-import { DEFAULT_GUEST_DHCP_NAME } from '../DHCPForm/DHCPForm'
-import * as UI                     from '../DHCPForm/styledComponents'
+import * as UI from './styledComponents'
+
+const DEFAULT_GUEST_DHCP_NAME = 'DHCP-Guest'
 
 export default function DHCPTable () {
   const { $t } = useIntl()
