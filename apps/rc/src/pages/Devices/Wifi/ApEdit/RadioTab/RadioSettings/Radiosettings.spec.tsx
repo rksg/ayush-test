@@ -5,6 +5,8 @@ import { rest }  from 'msw'
 import { useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { apApi, venueApi } from '@acx-ui/rc/services'
 import {
+  AFCPowerMode,
+  AFCStatus,
   ApRadioCustomization,
   ApRadioParams24G,
   ApRadioParams50G,
@@ -465,6 +467,14 @@ describe('RadioSettingsTab', ()=> {
               updateChanges: jest.fn(),
               discardChanges: jest.fn()
             },
+            apViewContextData: {
+              apStatusData: {
+                afcInfo: {
+                  afcStatus: AFCStatus.PASSED,
+                  powerMode: AFCPowerMode.STANDARD_POWER
+                }
+              }
+            },
             setEditContextData: jest.fn()
           }}
           >
@@ -564,6 +574,14 @@ describe('RadioSettingsTab', ()=> {
               isDirty: false,
               updateChanges: jest.fn(),
               discardChanges: jest.fn()
+            },
+            apViewContextData: {
+              apStatusData: {
+                afcInfo: {
+                  afcStatus: AFCStatus.PASSED,
+                  powerMode: AFCPowerMode.STANDARD_POWER
+                }
+              }
             },
             setEditContextData: jest.fn()
           }}

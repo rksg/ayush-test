@@ -327,14 +327,14 @@ export const VenueFirmwareTable = (
         setVisible={setUpdateNowWizardVisible}
         onSubmit={() => { }} />
 
-      {modelVisible && <PreferencesDialog
+      <PreferencesDialog
         visible={modelVisible}
         data={preferences}
         onCancel={handleModalCancel}
         onSubmit={handleModalSubmit}
         isSwitch={true}
         preDownload={preDownload?.preDownload}
-      />}
+      />
 
       <VenueStatusDrawer
         visible={updateStatusDrawerVisible}
