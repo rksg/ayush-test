@@ -3,17 +3,15 @@ import { useState } from 'react'
 import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
-import { PageHeader, RangePicker, GridRow, GridCol } from '@acx-ui/components'
-import { DateFilter, DateRange, getDateRangeFilter } from '@acx-ui/utils'
+import { PageHeader, RangePicker, GridRow, GridCol }                      from '@acx-ui/components'
+import { DateFilter, DateRange, getDateRangeFilter, getDatePickerValues } from '@acx-ui/utils'
 
 export function Brand360 () {
   const { $t } = useIntl()
   const [dateFilterState, setDateFilterState] = useState<DateFilter>(
     getDateRangeFilter(DateRange.last8Hours)
   )
-  const { startDate, endDate, range } = dateFilterState.range !== DateRange.custom
-    ? getDateRangeFilter(dateFilterState.range)
-    : dateFilterState
+  const { startDate, endDate, range } = getDatePickerValues(dateFilterState)
   return <>
     <PageHeader
       title={$t({ defaultMessage: 'Brand 360' })}
