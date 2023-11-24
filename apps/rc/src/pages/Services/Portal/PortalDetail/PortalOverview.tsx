@@ -4,17 +4,17 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { SummaryCard }              from '@acx-ui/components'
+import { initialPortalData }        from '@acx-ui/rc/components'
 import { useGetPortalLangMutation } from '@acx-ui/rc/services'
 import { Demo, PortalLanguageEnum } from '@acx-ui/rc/utils'
 import { useParams }                from '@acx-ui/react-router-dom'
 import { loadImageWithJWT }         from '@acx-ui/utils'
 
-import Photo                 from '../../../../assets/images/portal-demo/PortalPhoto.svg'
-import Powered               from '../../../../assets/images/portal-demo/PoweredLogo.svg'
-import Logo                  from '../../../../assets/images/portal-demo/RuckusCloud.svg'
-import { getLanguage }       from '../../commonUtils'
-import { initialPortalData } from '../PortalForm/PortalForm'
-import PortalPreviewModal    from '../PortalPreviewModal'
+import Photo              from '../../../../assets/images/portal-demo/PortalPhoto.svg'
+import Powered            from '../../../../assets/images/portal-demo/PoweredLogo.svg'
+import Logo               from '../../../../assets/images/portal-demo/RuckusCloud.svg'
+import { getLanguage }    from '../../commonUtils'
+import PortalPreviewModal from '../PortalPreviewModal'
 
 export default function PortalOverview (props: { demoValue: Demo }) {
   const { $t } = useIntl()

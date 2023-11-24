@@ -5,11 +5,12 @@ import { useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 import { showActionModal } from '@acx-ui/components'
-import { PortalDemo }      from '@acx-ui/rc/components'
 import { Demo }            from '@acx-ui/rc/utils'
 import { Provider }        from '@acx-ui/store'
 
 import * as UI from './styledComponents'
+
+import { PortalDemo } from './index'
 
 export default function PortalPreviewModal (props:{
   demoValue?: Demo,

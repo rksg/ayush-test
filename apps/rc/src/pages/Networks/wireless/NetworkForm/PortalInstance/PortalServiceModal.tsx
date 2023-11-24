@@ -3,9 +3,8 @@ import { useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, Modal, ModalType }    from '@acx-ui/components'
+import { PortalForm }                  from '@acx-ui/rc/components'
 import { Portal, PORTAL_LIMIT_NUMBER } from '@acx-ui/rc/utils'
-
-import PortalForm from '../../../../Services/Portal/PortalForm/PortalForm'
 
 export default function PortalServiceModal (props:{
   updateInstance: (value:Portal) => void,

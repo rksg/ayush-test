@@ -6,16 +6,15 @@ import { useIntl }      from 'react-intl'
 import { useParams }    from 'react-router-dom'
 
 import { GridCol, GridRow, StepsFormLegacy }                      from '@acx-ui/components'
+import { initialPortalData, PortalDemo }                          from '@acx-ui/rc/components'
 import { useGetPortalLangMutation, useGetPortalProfileListQuery } from '@acx-ui/rc/services'
 import { Demo, Portal, TableResult }                              from '@acx-ui/rc/utils'
 import { loadImageWithJWT }                                       from '@acx-ui/utils'
 
-import Photo                 from '../../../../../assets/images/portal-demo/PortalPhoto.svg'
-import Powered               from '../../../../../assets/images/portal-demo/PoweredLogo.svg'
-import Logo                  from '../../../../../assets/images/portal-demo/RuckusCloud.svg'
-import PortalDemo            from '../../../../Services/Portal/PortalDemo'
-import { initialPortalData } from '../../../../Services/Portal/PortalForm/PortalForm'
-import NetworkFormContext    from '../NetworkFormContext'
+import Photo              from '../../../../../assets/images/portal-demo/PortalPhoto.svg'
+import Powered            from '../../../../../assets/images/portal-demo/PoweredLogo.svg'
+import Logo               from '../../../../../assets/images/portal-demo/RuckusCloud.svg'
+import NetworkFormContext from '../NetworkFormContext'
 
 import PortalServiceModal from './PortalServiceModal'
 
