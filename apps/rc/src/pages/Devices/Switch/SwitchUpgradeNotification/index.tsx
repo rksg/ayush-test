@@ -77,20 +77,20 @@ export function SwitchUpgradeNotification (props: {
 
   const isRodanModel = switchModel?.includes('8200') || (validateModel[0]?.includes('8200') && isDisplayHeader)
 
-  const StackUnitsMinLimitaionMsg = () => <div><FormattedMessage
+  const StackUnitsMinLimitaionMsg = () => <FormattedMessage
     defaultMessage='For the {model} series, a stack may hold up to <b>{minStackes} switches</b>'
     values={{
       model: switchModel?.split('-')[0],
       minStackes: stackUnitsMinLimitaion,
       b: (contents) => <UI.MinFwVersion>{contents}</UI.MinFwVersion>
     }}
-  /></div>
+  />
 
   if (isRodanModel) {
     if ((enableStackUnitLimitationFlag && Number.isInteger(stackUnitsMinLimitaion) && !_.isEmpty(switchModel))) {
       return <UI.Wrapper>
         <UI.Content style={{ padding: '4px 8px 4px' }}>
-          <StackUnitsMinLimitaionMsg />
+          <div><StackUnitsMinLimitaionMsg /></div>
         </UI.Content>
       </UI.Wrapper>
     } else if(isDisplayHeader) {
@@ -117,7 +117,7 @@ export function SwitchUpgradeNotification (props: {
       }
       <UI.Content>
         {enableStackUnitLimitationFlag && Number.isInteger(stackUnitsMinLimitaion) && !_.isEmpty(switchModel) &&
-          <StackUnitsMinLimitaionMsg />
+          <div style={{ paddingBottom: '4px' }}><StackUnitsMinLimitaionMsg /></div>
         }
 
         <UI.FirmwareDescription>
