@@ -175,7 +175,6 @@ export function ManageIntegrator () {
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerAssignedEcVisible, setDrawerAssignedEcVisible] = useState(false)
   const [subscriptionStartDate, setSubscriptionStartDate] = useState<moment.Moment>()
-  const [subscriptionEndDate, setSubscriptionEndDate] = useState<moment.Moment>()
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
 
   const [formData, setFormData] = useState({} as Partial<EcFormData>)
@@ -249,13 +248,11 @@ export function ManageIntegrator () {
       formRef.current?.setFieldValue(['address', 'addressLine'], data?.street_address)
 
       setSubscriptionStartDate(moment(data?.service_effective_date))
-      setSubscriptionEndDate(moment(data?.service_expiration_date))
     }
 
     if (!isEditMode) { // Add mode
       const initialAddress = isMapEnabled ? '' : defaultAddress.addressLine
       formRef.current?.setFieldValue(['address', 'addressLine'], initialAddress)
-      formRef.current?.setFieldValue(['service_expiration_date'], moment().add(30,'days'))
       if (userProfile) {
         const administrator = [] as MspAdministrator[]
         administrator.push ({
@@ -269,7 +266,6 @@ export function ManageIntegrator () {
         setAdministrator(administrator)
       }
       setSubscriptionStartDate(moment())
-      setSubscriptionEndDate(moment().add(30,'days'))
     }
   }, [data, licenseSummary, licenseAssignment, userProfile, ecAdministrators])
 
@@ -701,13 +697,8 @@ export function ManageIntegrator () {
     }
   }
 
-  // function expirationDateOnChange (props: unknown, expirationDate: string) {
-  //   setSubscriptionEndDate(moment(expirationDate))
-  // }
-
   const onSelectChange = (value: string) => {
     if (value === DateSelectionEnum.CUSTOME_DATE) {
-      // setSubscriptionEndDate('')
       setCustomeDate(true)
     } else {
       let expirationDate = moment().add(30,'days')
@@ -830,14 +821,9 @@ export function ManageIntegrator () {
         <Form.Item
           name='service_expiration_date'
           label=''
-          // rules={[
-          //   { required: true,
-          //     message: intl.$t({ defaultMessage: 'Please select expiration date' })
-          //   }
-          // ]}
+          initialValue={moment().add(30,'days')}
           children={
             <DatePicker
-              // format={formatter(DateFormatEnum.DateFormat)}
               allowClear={false}
               disabled={!customDate}
               disabledDate={(current) => {
@@ -847,18 +833,6 @@ export function ManageIntegrator () {
             />
           }
         />
-
-        {/* <DatePicker
-          // format={formatter(DateFormatEnum.DateFormat)}
-          allowClear={false}
-          disabled={!customDate}
-          defaultValue={moment(subscriptionEndDate)}
-          onChange={expirationDateOnChange}
-          disabledDate={(current) => {
-            return current && current < moment().endOf('day')
-          }}
-          style={{ marginLeft: '4px' }}
-        /> */}
       </UI.FieldLabeServiceDate></div>
   }
 

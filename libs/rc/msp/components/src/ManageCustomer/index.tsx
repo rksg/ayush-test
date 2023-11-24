@@ -426,7 +426,8 @@ export function ManageCustomer () {
     try {
       const ecFormData = { ...values }
       const today = EntitlementUtil.getServiceStartDate()
-      const expirationDate = EntitlementUtil.getServiceEndDate(subscriptionEndDate)
+      const expirationDate =
+        EntitlementUtil.getServiceEndDate(ecFormData.service_expiration_date ?? subscriptionEndDate)
       const quantityWifi = _.isString(ecFormData.wifiLicense)
         ? parseInt(ecFormData.wifiLicense, 10) : ecFormData.wifiLicense
       const quantitySwitch = _.isString(ecFormData.switchLicense)
@@ -930,10 +931,6 @@ export function ManageCustomer () {
     </>
   }
 
-  // function expirationDateOnChange (props: unknown, expirationDate: string) {
-  //   setSubscriptionEndDate(moment(expirationDate))
-  // }
-
   const onSelectChange = (value: string) => {
     if (value === DateSelectionEnum.CUSTOME_DATE) {
       setCustomeDate(true)
@@ -1039,7 +1036,6 @@ export function ManageCustomer () {
             ]}
             children={
               <DatePicker
-                // format={formatter(DateFormatEnum.DateFormat)}
                 allowClear={false}
                 disabled={!customDate}
                 disabledDate={(current) => {
@@ -1156,7 +1152,6 @@ export function ManageCustomer () {
             ]}
             children={
               <DatePicker
-                // format={formatter(DateFormatEnum.DateFormat)}
                 allowClear={false}
                 disabled={!customDate}
                 disabledDate={(current) => {
