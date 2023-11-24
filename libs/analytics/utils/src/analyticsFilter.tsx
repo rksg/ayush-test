@@ -86,35 +86,28 @@ export const getFilterPayload = (
 }
 
 export const pathToFilter = (networkPath: NetworkPath): NodesFilter => {
-  const isMLISA = get('IS_MLISA_SA')
   const path = networkPath.filter(({ type }: { type: NodeType }) => type !== 'network')
-  switch (path.length) {
-    case 0:
-      return {}
-    case 1: // at venue level we want to see both its switches and aps
-      if (!isMLISA){
-        const { type, name } = path[0]
-        if (['zone', 'switchGroup'].includes(type)) {
-          return {
-            networkNodes: [[{ type: 'zone', name }]],
-            switchNodes: [[{ type: 'switchGroup', name }]]
-          }
-        }
-      }
+  if(path.length === 0) {
+    return {}
   }
-
-  const filter = path.reduce((filter, { type, name }) => {
-    if (type === 'zone' || type === 'switchGroup')
-      filter.push({ type, name })
-    else if (isMLISA && (type === 'system' || type === 'apGroup')) {
-      filter.push({ type, name })
-    } else if (type === 'AP') {
-      filter.push({ type: 'apMac', list: [name] })
-    } else if (type === 'switch') {
-      filter.push({ type, list: [name] })
+  if(!get('IS_MLISA_SA') && path.length === 1) { // at venue level we want to see both its switches and aps
+    const { type, name } = path[0]
+    if (['zone', 'switchGroup'].includes(type)) {
+      return {
+        networkNodes: [[{ type: 'zone', name }]],
+        switchNodes: [[{ type: 'switchGroup', name }]]
+      }
     }
-    return filter
-  }, [] as NodeFilter)
+  }
+  const filter: NodeFilter = path.map(({ type, name }) => {
+    if (type === 'AP') {
+      return { type: 'apMac', list: [name] }
+    } else if (type === 'switch') {
+      return { type, list: [name] }
+    } else {
+      return { type: type as FilterNameNode['type'], name }
+    }
+  })
   return { // at ap/switch level we want to see only data for that device, so we set the other path to filter everything out
     networkNodes: [filter],
     switchNodes: [filter]

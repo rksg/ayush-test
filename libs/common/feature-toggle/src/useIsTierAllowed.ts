@@ -61,7 +61,7 @@ export function useFFList (): { featureList?: string[], betaList?: string[],
   return {
     featureList: userFFConfig[featureKey],
     betaList: betaEnabled? userFFConfig['betaList'] : [],
-    alphaList: userProfile?.dogfood ? userFFConfig['alphaList'] : []
+    alphaList: (betaEnabled && userProfile?.dogfood) ? userFFConfig['alphaList'] : []
   }
 }
 
