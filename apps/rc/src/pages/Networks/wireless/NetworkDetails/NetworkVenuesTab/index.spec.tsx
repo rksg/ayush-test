@@ -30,8 +30,7 @@ import {
   list,
   params,
   networkVenue_allAps,
-  networkVenue_apgroup,
-  vlanPoolList
+  networkVenue_apgroup
 } from './__tests__/fixtures'
 
 import { NetworkVenuesTab } from './index'
@@ -85,10 +84,6 @@ describe('NetworkVenuesTab', () => {
         UserUrlsInfo.getAllUserSettings.url,
         (req, res, ctx) => res(ctx.json(user))
       ),
-      rest.get(
-        WifiUrlsInfo.getVlanPools.url,
-        (req, res, ctx) => res(ctx.json(vlanPoolList))
-      ),
       rest.post(
         WifiUrlsInfo.addNetworkVenues.url,
         (_, res, ctx) => res(ctx.json({}))
@@ -106,7 +101,6 @@ describe('NetworkVenuesTab', () => {
       )
     )
   })
-  // afterEach(() => Modal.destroyAll())
 
   it('activate Network', async () => {
     render(<Provider><NetworkVenuesTab /></Provider>, {
@@ -333,6 +327,42 @@ describe('NetworkVenuesTab', () => {
 
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
+  })
+})
+
+
+describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
+  beforeEach(() => {
+    act(() => {
+      store.dispatch(networkApi.util.resetApiState())
+    })
+
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getNetworksVenuesList.url,
+        (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.post(
+        CommonUrlsInfo.venueNetworkApGroup.url,
+        (req, res, ctx) => res(ctx.json({ response: [networkVenue_allAps, networkVenue_apgroup] }))
+      ),
+      rest.get(
+        WifiUrlsInfo.getNetwork.url,
+        (req, res, ctx) => res(ctx.json(network))
+      ),
+      rest.post(
+        CommonUrlsInfo.getNetworkDeepList.url,
+        (req, res, ctx) => res(ctx.json({ response: [network] }))
+      ),
+      rest.get(
+        UserUrlsInfo.getAllUserSettings.url,
+        (req, res, ctx) => res(ctx.json(user))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenueCityList.url,
+        (req, res, ctx) => res(ctx.json([]))
+      )
+    )
   })
 
   it('has custom scheduling', async () => {

@@ -76,7 +76,7 @@ export const fetchVenueTimeZone = async (lat: number, lng: number): Promise<ITim
     .then(data => {
       return data
     })
-    .catch(() => { // fallback to geocoding api if google api fails.
+    .catch(() => { // fallback to geocoding library if google api fails.
       return getVenueTimeZone(lat, lng)
     })
 }
