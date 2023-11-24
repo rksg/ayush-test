@@ -68,7 +68,7 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       defaultSortOrder: 'ascend',
       render: (_, row) => {
         return <TenantLink
-          to={`users/wifi/clients/${row.clientMac}/details/overview?hostname=${row.hostname}&clientStatus=connected`}
+          to={`users/wifi/clients/${row.clientMac}/details/overview?clientStatus=connected`}
         >{row.hostname || '--'}</TenantLink>
       }
     },
