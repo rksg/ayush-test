@@ -1,6 +1,8 @@
-import React from 'react'
+import { get } from 'lodash'
+import moment  from 'moment-timezone'
 
-import { Loader } from '@acx-ui/components'
+import { Loader }    from '@acx-ui/components'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { AirtimeB }                from './Details/AirtimeB'
 import { AirtimeRx }               from './Details/AirtimeRx'
@@ -24,8 +26,10 @@ import { SwitchMemoryHigh }        from './Details/SwitchMemoryHigh'
 import { SwitchPoePd }             from './Details/SwitchPoePd'
 import { SwitchVlanMismatch }      from './Details/SwitchVlanMismatch'
 import { Ttc }                     from './Details/Ttc'
-import { useIncident }             from './services'
-
+import {
+  useIncidentCodeQuery,
+  useIncidentDetailsQuery
+} from './services'
 
 export const incidentDetailsMap = {
   'radius-failure': RadiusFailure,
@@ -61,14 +65,38 @@ export const incidentDetailsMap = {
   'p-airtime-tx-6(5)g-high': AirtimeTx
 }
 
+export const incidentImpactedRange: { [key: string]: { [key: string]: number } } = {
+  'p-airtime-b-24g-high': { hours: 24 },
+  'p-airtime-b-5g-high': { hours: 24 },
+  'p-airtime-b-6(5)g-high': { hours: 24 },
+  'p-airtime-rx-24g-high': { hours: 24 },
+  'p-airtime-rx-5g-high': { hours: 24 },
+  'p-airtime-rx-6(5)g-high': { hours: 24 },
+  'p-airtime-tx-24g-high': { hours: 24 },
+  'p-airtime-tx-5g-high': { hours: 24 },
+  'p-airtime-tx-6(5)g-high': { hours: 24 }
+}
+
 export function IncidentDetails () {
-  const queryResults = useIncident()
-  const code = queryResults.data?.code as keyof typeof incidentDetailsMap
+  const params = useParams()
+  const id = get(params, 'incidentId', undefined) as string
+  const codeQuery = useIncidentCodeQuery({ id }, { skip: !Boolean(id) })
+  const code = codeQuery.data?.code
+  const impactedRange = incidentImpactedRange[code!]
+  let impactedStartEnd = null
+  if (impactedRange) {
+    const impactedEnd = codeQuery.data!.endTime
+    const impactedStart = moment(impactedEnd).subtract(impactedRange).format()
+    impactedStartEnd = { impactedStart, impactedEnd }
+  }
+  const detailsQuery = useIncidentDetailsQuery(
+    { id, ...impactedStartEnd },
+    { skip: !Boolean(codeQuery.data?.code) }
+  )
   const IncidentDetails = code ? incidentDetailsMap[code] : null
   return (
-    <Loader states={[queryResults]}>
-      {IncidentDetails && <IncidentDetails {...queryResults.data!} />}
+    <Loader states={[codeQuery, detailsQuery]}>
+      {IncidentDetails && <IncidentDetails {...detailsQuery.data!} />}
     </Loader>
   )
 }
-

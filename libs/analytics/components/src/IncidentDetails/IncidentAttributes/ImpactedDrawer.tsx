@@ -16,7 +16,8 @@ import {
   useImpactedClientsQuery
 } from './services'
 
-export interface ImpactedDrawerProps extends Pick<Incident, 'id'> {
+export interface ImpactedDrawerProps extends
+  Pick<Incident, 'id' | 'impactedStart' | 'impactedEnd'> {
   impactedCount: number
   visible: boolean
   onClose: () => void
@@ -80,7 +81,9 @@ export const ImpactedClientsDrawer: React.FC<ImpactedClientsDrawerProps> = (prop
   const queryResults = useImpactedClientsQuery({
     id: props.id,
     search,
-    n: 100
+    n: 100,
+    impactedStart: props.impactedStart,
+    impactedEnd: props.impactedEnd
   }, { selectFromResult: (states) => ({
     ...states,
     data: states.data && aggregateDataBy<ImpactedClient>('mac')(states.data)
@@ -137,7 +140,9 @@ export const ImpactedAPsDrawer: React.FC<ImpactedDrawerProps> = (props) => {
   const queryResults = useImpactedAPsQuery({
     id: props.id,
     search,
-    n: 100
+    n: 100,
+    impactedStart: props.impactedStart,
+    impactedEnd: props.impactedEnd
   },{ selectFromResult: (states) => ({
     ...states,
     data: states.data && aggregateDataBy<ImpactedAP>('mac')(states.data)

@@ -46,6 +46,8 @@ export interface Incident extends IncidentInformation {
   slaThreshold: number|null
   currentSlaThreshold: number|null
   relatedIncidents?: Incident[]
+  impactedStart?: string
+  impactedEnd?: string
 }
 
 export interface IncidentAttributesProps

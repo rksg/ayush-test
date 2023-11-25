@@ -9,6 +9,8 @@ import { timeSeriesCharts }               from './config'
 import { ChartDataProps, useChartsQuery } from './services'
 
 export const TimeSeries: React.FC<ChartDataProps> = (props) => {
+  props.incident.startTime = props.incident.impactedStart || props.incident.startTime
+  props.incident.endTime = props.incident.impactedEnd|| props.incident.endTime
   const queryResults = useChartsQuery(props)
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
