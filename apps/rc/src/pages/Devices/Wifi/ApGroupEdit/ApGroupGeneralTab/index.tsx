@@ -1,57 +1,49 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Input, Row, Select } from 'antd'
 import { DefaultOptionType }             from 'antd/lib/select'
 import { TransferItem }                  from 'antd/lib/transfer'
 import { useIntl }                       from 'react-intl'
+import { useNavigate, useParams }        from 'react-router-dom'
 
-import {
-  PageHeader,
-  Loader,
-  StepsFormLegacy,
-  StepsFormLegacyInstance,
-  Transfer
-} from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import {
-  useVenuesListQuery,
-  useLazyVenueDefaultApGroupQuery,
-  useAddApGroupMutation,
-  useLazyApGroupsListQuery,
-  useGetApGroupQuery,
-  useUpdateApGroupMutation
-} from '@acx-ui/rc/services'
-import {
-  ApDeep,
-  AddApGroup,
-  checkObjectNotExists,
-  trailingNorLeadingSpaces
-} from '@acx-ui/rc/utils'
-import {
-  useNavigate,
-  useTenantLink,
-  useParams
-} from '@acx-ui/react-router-dom'
+import { Loader, StepsFormLegacy, StepsFormLegacyInstance, Transfer }                                                                                         from '@acx-ui/components'
+import { useAddApGroupMutation, useGetApGroupQuery, useLazyApGroupsListQuery, useLazyVenueDefaultApGroupQuery, useUpdateApGroupMutation, useVenuesListQuery } from '@acx-ui/rc/services'
+import { AddApGroup, ApDeep, checkObjectNotExists, trailingNorLeadingSpaces }                                                                                 from '@acx-ui/rc/utils'
+import { useTenantLink }                                                                                                                                      from '@acx-ui/react-router-dom'
 
-const defaultPayload = {
+import { ApGroupEditContext } from '..'
+
+const defaultVenuePayload = {
   fields: ['name', 'country', 'latitude', 'longitude', 'dhcp', 'id'],
   pageSize: 10000,
   sortField: 'name',
   sortOrder: 'ASC'
 }
 
-export function ApGroupForm () {
-  const isApGroupTableFlag = useIsSplitOn(Features.AP_GROUP_TOGGLE)
+const apGroupsListPayload = {
+  searchString: '',
+  fields: ['name', 'id'],
+  searchTargetFields: ['name'],
+  filters: {},
+  pageSize: 10000
+}
+
+export function ApGroupGeneralTab () {
   const { $t } = useIntl()
   const { tenantId, action, apGroupId } = useParams()
+  const { isEditMode, isApGroupTableFlag } = useContext(ApGroupEditContext)
+
   const navigate = useNavigate()
-  const formRef = useRef<StepsFormLegacyInstance<AddApGroup>>()
   const basePath = useTenantLink('/devices/')
   const navigatePathName = (isApGroupTableFlag)?
-    `${basePath.pathname}/wifi/apgroups` : `${basePath.pathname}/wifi`
-  const venuesList = useVenuesListQuery({ params: { tenantId: tenantId }, payload: defaultPayload })
+    `${basePath.pathname}/wifi/apgroups` :
+    `${basePath.pathname}/wifi`
 
-  const isEditMode = action === 'edit'
+  const formRef = useRef<StepsFormLegacyInstance<AddApGroup>>()
+  const venuesList = useVenuesListQuery({
+    params: { tenantId: tenantId },
+    payload: defaultVenuePayload })
+
 
   const [venueDefaultApGroup] = useLazyVenueDefaultApGroupQuery()
   const [apGroupsList] = useLazyApGroupsListQuery()
@@ -62,14 +54,6 @@ export function ApGroupForm () {
 
   const { data: apGroupData, isLoading: isApGroupDataLoading } =
   useGetApGroupQuery({ params: { tenantId, apGroupId } }, { skip: !isEditMode })
-
-  const apGroupsListPayload = {
-    searchString: '',
-    fields: ['name', 'id'],
-    searchTargetFields: ['name'],
-    filters: {},
-    pageSize: 10000
-  }
 
   useEffect(() => {
     if (!venuesList.isLoading) {
@@ -164,16 +148,7 @@ export function ApGroupForm () {
     }
   }
 
-  return <>
-    <PageHeader
-      title={!isEditMode ? $t({ defaultMessage: 'Add AP Group' }) :
-        $t({ defaultMessage: 'Edit AP Group' })}
-      breadcrumb={[
-        { text: $t({ defaultMessage: 'Wi-Fi' }) },
-        { text: $t({ defaultMessage: 'Access Points' }) },
-        { text: $t({ defaultMessage: 'AP Group List' }), link: '/devices/wifi/apgroups' }
-      ]}
-    />
+  return (
     <StepsFormLegacy
       formRef={formRef}
       onFinish={handleAddApGroup}
@@ -192,7 +167,9 @@ export function ApGroupForm () {
         }]}>
           <Row gutter={20}>
             <Col span={8}>
-              <StepsFormLegacy.Title children={$t({ defaultMessage: 'Group Details' })} />
+              {(!isApGroupTableFlag || !isEditMode) &&
+                <StepsFormLegacy.Title children={$t({ defaultMessage: 'Group Details' })} />
+              }
               <Form.Item
                 name='name'
                 label={$t({ defaultMessage: 'Group Name' })}
@@ -255,5 +232,5 @@ export function ApGroupForm () {
         </Loader>
       </StepsFormLegacy.StepForm>
     </StepsFormLegacy>
-  </>
+  )
 }

@@ -520,6 +520,7 @@ export const {
   useDeleteNetworkVenuesMutation,
   useApNetworkListQuery,
   useApGroupNetworkListQuery,
+  useLazyApGroupNetworkListQuery,
   useVenueNetworkListQuery,
   useDashboardOverviewQuery,
   useDashboardV2OverviewQuery,

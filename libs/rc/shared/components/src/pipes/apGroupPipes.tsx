@@ -289,11 +289,12 @@ export const transformApGroupVlan = (
           </Tooltip>
         )
       } else {
-        const defaultValue = wlan?.vlanId || ''
-        const vlanId = findApGroup?.vlanId
+        const defaultValue = wlan?.vlanId || 1
+        const apGroupvlanId = findApGroup?.vlanId
+        const vlanId = apGroupvlanId || defaultValue
         displayText = $t(vlanContents.vlan, {
-          id: vlanId?.toString() ?? '1',
-          isCustom: vlanId && vlanId !== defaultValue
+          id: vlanId.toString(),
+          isCustom: apGroupvlanId && apGroupvlanId !== defaultValue
         })
       }
     }

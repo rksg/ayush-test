@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -8,7 +8,7 @@ import { useApGroupNetworkListQuery }                                           
 import { Network, NetworkExtended, NetworkType, NetworkTypeEnum, useTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink }                                                            from '@acx-ui/react-router-dom'
 
-const defaultPayload = {
+export const defaultApGroupNetworkPayload = {
   searchString: '',
   fields: [
     'check-all',
@@ -39,24 +39,15 @@ export interface ApGroupNetworksTableProps {
 }
 
 export default function ApGroupNetworksTable (props: ApGroupNetworksTableProps) {
-  const { $t } = useIntl()
-  const params = props
+  const { venueId, apGroupId } = props
 
   const [tableData, setTableData] = useState(defaultArray)
 
   const tableQuery = useTableQuery({
     useQuery: useApGroupNetworkListQuery,
-    apiParams: { venueId: props.venueId || '' },
-    defaultPayload
+    apiParams: { venueId: venueId || '' },
+    defaultPayload: defaultApGroupNetworkPayload
   })
-
-  const getCurrentVenue = (row: Network) => {
-    if (!row.activated?.isActivated) {
-      return
-    }
-    const deepNetworkVenues = row.deepNetwork?.venues || []
-    return deepNetworkVenues.find(v => v.venueId === params.venueId)
-  }
 
   useEffect(()=>{
     if (tableQuery.data) {
@@ -65,7 +56,7 @@ export default function ApGroupNetworksTable (props: ApGroupNetworksTableProps) 
       const _rows: string[]=[]
 
       tableQuery.data.data.forEach(item => {
-        const activatedVenue = getCurrentVenue(item)
+        const activatedVenue = getCurrentVenue(item, venueId!)
         if (item?.children) {
           _rows.push(item.id)
         }
@@ -81,12 +72,42 @@ export default function ApGroupNetworksTable (props: ApGroupNetworksTableProps) 
   }, [tableQuery.data])
 
 
+  const columns = useApGroupNetworkColumns(apGroupId!, venueId!)
+
+  return (
+    <Loader states={[ tableQuery ]}>
+      <Table
+        rowKey='id'
+        settingsId='apgroup-network-table'
+        columns={columns}
+        dataSource={tableData}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+      />
+    </Loader>
+  )
+}
+
+export const getCurrentVenue = (row: Network, venueId: string) => {
+  if (!row.activated?.isActivated) {
+    return
+  }
+  const deepNetworkVenues = row.deepNetwork?.venues || []
+  return deepNetworkVenues.find(v => v.venueId === venueId)
+}
+
+export function useApGroupNetworkColumns (
+  apGroupId: string, venueId: string,
+  isEditable?: boolean ) {
+
+  const { $t } = useIntl()
+
   const columns: TableProps<Network>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'Network Name' }),
       dataIndex: 'name',
-      sorter: true,
+      sorter: !isEditable,
       defaultSortOrder: 'ascend',
       fixed: 'left',
       render: function (_, row) {
@@ -99,31 +120,32 @@ export default function ApGroupNetworksTable (props: ApGroupNetworksTableProps) 
       key: 'description',
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'description',
-      sorter: true
+      sorter: !isEditable
     }, {
       key: 'nwSubType',
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'nwSubType',
-      sorter: true,
+      sorter: !isEditable,
       render: (_, row) => <NetworkType
         networkType={row.nwSubType as NetworkTypeEnum}
         row={row}
       />
-    }, {
+    },
+    ...(isEditable? [] : [{
       key: 'venues',
       title: $t({ defaultMessage: 'Scope' }),
       dataIndex: 'venues',
-      render: function (_, row) {
-        const currentVenue = getCurrentVenue(row)
+      render: function (_: ReactNode, row: Network) {
+        const currentVenue = getCurrentVenue(row, venueId)
         return currentVenue?.isAllApGroups?
           $t({ defaultMessage: 'Venue' }) : $t({ defaultMessage: 'AP Group' })
       }
-    }, {
+    }]), {
       key: 'vlan',
       title: $t({ defaultMessage: 'VLAN' }),
       dataIndex: 'vlan',
       render: function (_, row) {
-        return transformApGroupVlan(getCurrentVenue(row), row.deepNetwork, params.apGroupId)
+        return transformApGroupVlan(getCurrentVenue(row, venueId), row.deepNetwork, apGroupId)
       }
     }, {
       key: 'radios',
@@ -131,31 +153,20 @@ export default function ApGroupNetworksTable (props: ApGroupNetworksTableProps) 
       dataIndex: 'radios',
       width: 140,
       render: function (_, row) {
-        return transformApGroupRadios(getCurrentVenue(row), row.deepNetwork, params.apGroupId)
+        return transformApGroupRadios(getCurrentVenue(row, venueId), row.deepNetwork, apGroupId)
       }
-    }, {
-
+    },
+    ...(isEditable? [] : [{
       key: 'clients',
       title: $t({ defaultMessage: 'Connected Clients' }),
       dataIndex: 'clients',
-      sorter: false, // API does not seem to be working
-      align: 'center',
-      render: (_, row) => {
+      sorter: false,
+      align: 'center' as 'center',
+      render: (_: ReactNode, row: Network) => {
         return row.clients || 0
       }
-    }
+    }])
   ]
 
-
-  return (
-    <Loader states={[ tableQuery ]}>
-      <Table
-        settingsId='apgroup-network-table'
-        columns={columns}
-        dataSource={tableData}
-        pagination={tableQuery.pagination}
-        rowKey='id'
-      />
-    </Loader>
-  )
+  return columns
 }

@@ -32,7 +32,7 @@ export interface CreateNetworkFormFields {
   macAuthMacFormat?: string;
 }
 
-export interface Network {
+export interface BaseNetwork {
   id: string
   name: string
   description: string
@@ -47,8 +47,10 @@ export interface Network {
   vlanPool?: { name: string }
   activated?: { isActivated: boolean, isDisabled?: boolean, errors?: string[] }
   allApDisabled?: boolean
-  children?: Network[]
-  dsaeOnboardNetwork?: Network
+}
+export interface Network extends BaseNetwork{
+  children?: BaseNetwork[]
+  dsaeOnboardNetwork?: BaseNetwork
   securityProtocol?: string
   isOnBoarded?: boolean
   isOweMaster?: boolean

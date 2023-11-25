@@ -4,12 +4,14 @@ import { Space }                  from 'antd'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { ColumnType, Loader, StackedBarChart, Table, TableProps, cssStr, deviceStatusColors, showActionModal, Tooltip } from '@acx-ui/components'
-import { useApGroupsListQuery, useDeleteApGroupsMutation }                                                              from '@acx-ui/rc/services'
-import { ApGroupViewModel, FILTER, TableQuery, getFilters, transformDisplayNumber, usePollingTableQuery }               from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink }                                                                                    from '@acx-ui/react-router-dom'
-import { RequestPayload }                                                                                               from '@acx-ui/types'
-import { filterByAccess }                                                                                               from '@acx-ui/user'
+//import { useLazyIncidentsListBySeverityQuery }                                                                 from '@acx-ui/analytics/components'
+import { ColumnType, Loader, StackedBarChart, Table, TableProps, cssStr, deviceStatusColors, showActionModal } from '@acx-ui/components'
+import { useApGroupsListQuery, useDeleteApGroupsMutation }                                                     from '@acx-ui/rc/services'
+import { ApGroupViewModel, FILTER, TableQuery, getFilters, transformDisplayNumber, usePollingTableQuery }      from '@acx-ui/rc/utils'
+import { TenantLink, useTenantLink }                                                                           from '@acx-ui/react-router-dom'
+import { RequestPayload }                                                                                      from '@acx-ui/types'
+import { filterByAccess }                                                                                      from '@acx-ui/user'
+//import { DateRange, getDateRangeFilter }                                                                       from '@acx-ui/utils'
 
 import { CountAndNamesTooltip } from '..'
 
@@ -19,11 +21,30 @@ import { ApGroupsTabContext } from './context'
 export const defaultApGroupPayload = {
   fields: ['id', 'name', 'venueId', 'venueName', 'members', 'networks', 'clients'],
   searchTargetFields: ['name'],
-  sortField: 'name',
+  sortField: 'venueName',
   sortOrder: 'ASC',
   filters: { isDefault: [false] }
 }
+/*
+const genIncidentsPayload = (apGroupsData: ApGroupViewModel[]) => {
+  const { startDate, endDate } = getDateRangeFilter(DateRange.last24Hours)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const payload: any = {
+    start: startDate,
+    end: endDate
+  }
 
+  apGroupsData.forEach((apg: ApGroupViewModel, index: number) => {
+    const path = [
+      { type: 'network', name: 'network' },
+      { type: 'apGroup', name: apg.id }
+    ]
+    payload[`path${index+1}`] = path
+  })
+
+  return payload
+}
+*/
 
 interface ApGroupTableProps extends Omit<TableProps<ApGroupViewModel>, 'columns'> {
   tableQuery?: TableQuery<ApGroupViewModel, RequestPayload<unknown>, unknown>
@@ -48,22 +69,41 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
     search: {
       searchTargetFields: defaultApGroupPayload.searchTargetFields
     },
+    sorter: {
+      sortField: (params.venueId) ? 'name' : defaultApGroupPayload.sortField,
+      sortOrder: defaultApGroupPayload.sortOrder
+    },
     option: { skip: Boolean(props.tableQuery) },
     enableSelectAllPagesData: ['id', 'name']
   })
 
   const tableQuery = props.tableQuery || apGroupListTableQuery
   const [ deleteApGroups ] = useDeleteApGroupsMutation()
+  //const [ getIncidentsList ] = useLazyIncidentsListBySeverityQuery()
 
 
   useEffect(() => {
-    setApGroupsCount?.(tableQuery.data?.totalCount || 0)
+    //const { totalCount = 0, data: apGroupsData = [] } = tableQuery.data || {}
+    const { totalCount = 0 } = tableQuery.data || {}
+    setApGroupsCount?.(totalCount)
+/*
+    const addIncidentsData = async () => {
+      const incidentsPayload = genIncidentsPayload(apGroupsData)
+      console.log('incidentsPayload: ', incidentsPayload)
+      const { data } = await getIncidentsList(incidentsPayload, true)
+      console.log('currentResult: ', data)
+    }
+
+    if (apGroupsData.length > 0) {
+      addIncidentsData()
+    }
+*/
+
   }, [tableQuery.data])
 
 
   const tableData = tableQuery?.data?.data ?? []
   const linkToEditApGroup = useTenantLink('/devices/apgroups')
-
 
   const showDeleteApGroups = async (rows: ApGroupViewModel[],
     tenantId?: string, callBack?: () => void) => {
@@ -190,13 +230,7 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
 
 
   const basePath = useTenantLink('/devices')
-  const handleTableChange: TableProps<ApGroupViewModel>['onChange'] = (
-    pagination, filters, sorter, extra
-  ) => {
-    const customSorter = Array.isArray(sorter)
-      ? sorter[0] : sorter
-    tableQuery.handleTableChange?.(pagination, filters, customSorter, extra)
-  }
+
   return (
     <Loader states={[tableQuery]}>
       <Table<ApGroupViewModel>
@@ -207,7 +241,7 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
         getAllPagesData={tableQuery.getAllPagesData}
         rowKey='id'
         pagination={tableQuery.pagination}
-        onChange={handleTableChange}
+        onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
         rowActions={filterByAccess(rowActions)}

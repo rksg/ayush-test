@@ -41,7 +41,7 @@ import ApDetails                                    from './pages/Devices/Wifi/A
 import { ApEdit }                                   from './pages/Devices/Wifi/ApEdit'
 import { ApForm }                                   from './pages/Devices/Wifi/ApForm'
 import ApGroupDetails                               from './pages/Devices/Wifi/ApGroupDetails'
-import { ApGroupForm }                              from './pages/Devices/Wifi/ApGroupForm'
+import { ApGroupEdit }                              from './pages/Devices/Wifi/ApGroupEdit'
 import Wired                                        from './pages/Networks/wired'
 import CliTemplateForm                              from './pages/Networks/wired/onDemandCli/CliTemplateForm'
 import CliProfileForm                               from './pages/Networks/wired/profiles/CliProfileForm'
@@ -175,8 +175,9 @@ function DeviceRoutes () {
         element={<ApEdit />}
       />
       <Route path='devices/apgroups/:apGroupId/details/:activeTab' element={<ApGroupDetails />}/>
-      <Route path='devices/apgroups/:apGroupId/:action' element={<ApGroupForm />} />
-      <Route path='devices/apgroups/:action' element={<ApGroupForm />} />
+      <Route path='devices/apgroups/:apGroupId/:action/:activeTab' element={<ApGroupEdit />} />
+      <Route path='devices/apgroups/:apGroupId/:action' element={<ApGroupEdit />} />
+      <Route path='devices/apgroups/:action' element={<ApGroupEdit />} />
       <Route
         path='devices/wifi/:apId/details/:activeTab'
         element={<ApDetails />} />
