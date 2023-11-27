@@ -8,7 +8,9 @@ import { ActivateNetworkSwitchButton, EdgeSdLanActivatedNetworksTable } from '@a
 import { useUpdateEdgeSdLanPartialMutation }                            from '@acx-ui/rc/services'
 import {
   networkTypes,
-  NetworkSaveData
+  NetworkSaveData,
+  sortProp,
+  defaultSort
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -21,7 +23,10 @@ export const NetworkTable = (props: EdgeSdLanServiceProps) => {
   const { $t } = useIntl()
   const { venueId } = useParams()
   const { serviceId, activatedNetworkIds } = props
-  const [updateEdgeSdLan] = useUpdateEdgeSdLanPartialMutation()
+  const [
+    updateEdgeSdLan,
+    { isLoading: isActivateUpdating }
+  ] = useUpdateEdgeSdLanPartialMutation()
 
   const handleActivateChange = async (data: NetworkSaveData, checked: boolean) => {
     try {
@@ -50,6 +55,7 @@ export const NetworkTable = (props: EdgeSdLanServiceProps) => {
     dataIndex: 'name',
     defaultSortOrder: 'ascend',
     fixed: 'left',
+    sorter: { compare: sortProp('name', defaultSort) },
     render: (_, row) => (
       <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>
         {row.name}
@@ -58,6 +64,7 @@ export const NetworkTable = (props: EdgeSdLanServiceProps) => {
     title: $t({ defaultMessage: 'Network Type' }),
     key: 'type',
     dataIndex: 'type',
+    sorter: { compare: sortProp('type', defaultSort) },
     render: (_, row) => {
       return $t(networkTypes[row.type!])
     }
@@ -81,6 +88,7 @@ export const NetworkTable = (props: EdgeSdLanServiceProps) => {
       venueId={venueId!}
       columns={columns}
       activated={activatedNetworkIds}
+      isUpdating={isActivateUpdating}
     />
   )
 }
