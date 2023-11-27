@@ -21,7 +21,6 @@ import type { AnalyticsFilter } from '@acx-ui/utils'
 import { DateRange }            from '@acx-ui/utils'
 
 import {
-  apCaps,
   clientList,
   clientApList,
   clientVenueList,
