@@ -2,9 +2,10 @@ import { waitFor } from '@testing-library/react'
 import userEvent   from '@testing-library/user-event'
 import { rest }    from 'msw'
 
-import { TunnelProfileUrls }          from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { Features, useIsSplitOn, useIsTierAllowed }                  from '@acx-ui/feature-toggle'
+import { EdgeSdLanUrls, NetworkSegmentationUrls, TunnelProfileUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                  from '@acx-ui/store'
+import { mockServer, render, screen }                                from '@acx-ui/test-utils'
 
 import { mockedTunnelProfileData } from '../__tests__/fixtures'
 
@@ -84,6 +85,62 @@ describe('EditTunnelProfile', () => {
       pathname: `/${params.tenantId}/t/policies/tunnelProfile/list`,
       hash: '',
       search: ''
+    })
+  })
+
+
+  describe('when SD-LAN is ready', () => {
+    const mockNsgList = {
+      totalCount: 0,
+      data: []
+    }
+
+    const mockedSdLanDataList = {
+      totalCount: 1,
+      data: [{ id: 'testSDLAN' }]
+    }
+
+    const mockedReqSdLan = jest.fn()
+    const mockedReqNSG = jest.fn()
+    beforeEach(() => {
+      jest.mocked(useIsSplitOn).mockImplementation((flag: string) => {
+        if (flag === Features.EDGES_SD_LAN_TOGGLE || flag === Features.EDGES_TOGGLE) return true
+        return false
+      })
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+      mockServer.use(
+        rest.post(
+          EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+          (_, res, ctx) => {
+            mockedReqSdLan()
+            return res(ctx.json(mockedSdLanDataList))
+          }
+        ),
+        rest.post(
+          NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
+          (_, res, ctx) => {
+            mockedReqNSG()
+            return res(ctx.json(mockNsgList))
+          }
+        )
+      )
+    })
+
+    it('should lock type fields when it is used in NSG/SD-LAN', async () => {
+      render(
+        <Provider>
+          <EditTunnelProfile />
+        </Provider>
+        , { route: { path: editViewPath, params } }
+      )
+
+      await waitFor(() => {
+        expect(mockedReqSdLan).toBeCalled()
+      })
+      expect(mockedReqNSG).toBeCalled()
+      const typeField = await screen.findByRole('combobox', { name: 'Tunnel Type' })
+      expect(typeField).toBeDisabled()
     })
   })
 })

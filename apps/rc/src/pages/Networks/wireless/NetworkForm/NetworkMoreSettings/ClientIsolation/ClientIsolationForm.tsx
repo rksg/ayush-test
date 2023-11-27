@@ -4,10 +4,11 @@ import { Form, Select, Switch } from 'antd'
 import { useIntl }              from 'react-intl'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { TunnelTypeEnum }         from '@acx-ui/rc/utils'
 
-import NetworkFormContext        from '../../NetworkFormContext'
-import { hasVxLanTunnelProfile } from '../../utils'
-import * as UI                   from '../styledComponents'
+import NetworkFormContext                   from '../../NetworkFormContext'
+import { useNetworkVxLanTunnelProfileInfo } from '../../utils'
+import * as UI                              from '../styledComponents'
 
 import ClientIsolationAllowListEditor from './ClientIsolationAllowListEditor'
 
@@ -34,7 +35,7 @@ export default function ClientIsolationForm (props: { labelWidth?: string }) {
   const clientIsolationAllowlistEnabled = useWatch<boolean>(['wlan','advancedCustomization', 'clientIsolationAllowlistEnabled'])
   // eslint-disable-next-line max-len
   const clientIsolationAllowlistEnabledInitValue = data?.venues?.some(v => v.clientIsolationAllowlistId)
-  const enableVxLan = hasVxLanTunnelProfile(data)
+  const { enableVxLan, tunnelType } = useNetworkVxLanTunnelProfileInfo(data)
 
   const onClientIsolationEnabledChanged = (checked: boolean) => {
     if(!checked){
@@ -43,6 +44,7 @@ export default function ClientIsolationForm (props: { labelWidth?: string }) {
     }
   }
 
+  const clientIsolationDisabled = enableVxLan && tunnelType === TunnelTypeEnum.VXLAN
   return (<>
     <UI.FieldLabel width={labelWidth}>
       {$t({ defaultMessage: 'Client Isolation' })}
@@ -52,7 +54,10 @@ export default function ClientIsolationForm (props: { labelWidth?: string }) {
         style={{ marginBottom: '10px' }}
         valuePropName='checked'
         initialValue={false}
-        children={<Switch disabled={enableVxLan} onChange={onClientIsolationEnabledChanged}/>}
+        children={<Switch
+          disabled={clientIsolationDisabled}
+          onChange={onClientIsolationEnabledChanged}/>
+        }
       />
     </UI.FieldLabel>
 

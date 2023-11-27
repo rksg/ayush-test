@@ -101,8 +101,8 @@ describe('SlidingDoor', () => {
     fireEvent.click(await screen.findByText('Ap (Access Point)'))
     fireEvent.click(await screen.findByText('Apply'))
     expect(setNetwork).toBeCalledWith(
-      [{ name: 'network', type: 'network' }, { name: 'ap', type: 'ap', list: ['1'] }],
-      [{ name: 'network', type: 'network' }, { name: 'ap', type: 'ap', list: ['1'] }]
+      [{ name: 'network', type: 'network' }, { name: '1', type: 'AP' }],
+      [{ name: 'network', type: 'network' }, { name: '1', type: 'AP' }]
     )
   })
   it('should call onApply correctly for switch', async () => {
@@ -124,8 +124,8 @@ describe('SlidingDoor', () => {
     fireEvent.click(await screen.findByText('Switch (Switch)'))
     fireEvent.click(await screen.findByText('Apply'))
     expect(setNetwork).toBeCalledWith(
-      [{ name: 'network', type: 'network' }, { name: 'switch', type: 'switch', list: ['2'] }],
-      [{ name: 'network', type: 'network' }, { name: 'switch', type: 'switch', list: ['2'] }]
+      [{ name: 'network', type: 'network' }, { name: '2', type: 'switch' }],
+      [{ name: 'network', type: 'network' }, { name: '2', type: 'switch' }]
     )
   })
   it('should search nodes correctly', async () => {
