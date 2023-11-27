@@ -33,7 +33,7 @@ interface ClientIsolationFormProps {
   editMode?: boolean
 }
 
-export default function ClientIsolationForm (props: ClientIsolationFormProps) {
+export function ClientIsolationForm (props: ClientIsolationFormProps) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   // eslint-disable-next-line max-len

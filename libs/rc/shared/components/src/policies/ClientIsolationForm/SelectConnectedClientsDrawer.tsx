@@ -2,11 +2,12 @@ import { Key, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Drawer }                      from '@acx-ui/components'
-import { SelectConnectedClientsTable } from '@acx-ui/rc/components'
+import { Drawer } from '@acx-ui/components'
 import {
   ClientList
 } from '@acx-ui/rc/utils'
+
+import { SelectConnectedClientsTable } from '../../SelectConnectedClientsTable'
 
 export type SimpleClientRecord = Pick<ClientList, 'clientMac' | 'ipAddress'>
 

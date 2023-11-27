@@ -30,7 +30,7 @@ import{
   mockedPolicyId,
   mockedClientIsolation
 } from './__tests__/fixtures'
-import ClientIsolationForm from './ClientIsolationForm'
+import { ClientIsolationForm } from './ClientIsolationForm'
 
 
 const mockedUseNavigate = jest.fn()
