@@ -194,7 +194,7 @@ export const HealthPieChart = ({
     }))
   const count = showTopResult(
     $t,
-    tabsList.find((tab) => tab.key === chartKey)?.data.length ?? 0,
+    tabsList.find((tab) => tab.key === chartKey)?.data.length as number,
     topCount
   )
   // eslint-disable-next-line react-hooks/exhaustive-deps
