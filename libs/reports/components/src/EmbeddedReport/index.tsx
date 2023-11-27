@@ -415,7 +415,6 @@ export function EmbeddedReport (props: ReportProps) {
         )
         embObj.unmount()
       })
-      setDashboardEmbeddedId(null)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startDate, endDate, paths, bands, path, dashboardEmbeddedId, systems.status, locale])
