@@ -3,14 +3,11 @@ import { useRef, useEffect, useState, Fragment } from 'react'
 
 import { AutoComplete, Button, Col, Empty, Input, Row, Typography } from 'antd'
 import * as d3                                                      from 'd3'
-import { select }                                                   from 'd3-selection'
-import * as dagreD3                                                 from 'dagre-d3'
 import { debounce }                                                 from 'lodash'
-import { renderToString }                                           from 'react-dom/server'
 import { useIntl }                                                  from 'react-intl'
 import { useParams }                                                from 'react-router-dom'
 
-import { Loader, Modal, ModalType } from '@acx-ui/components'
+import { Loader } from '@acx-ui/components'
 import {
   CloudSolid,
   MagnifyingGlassMinusOutlined,
@@ -28,26 +25,20 @@ import {
 } from '@acx-ui/icons'
 import { useGetTopologyQuery } from '@acx-ui/rc/services'
 import {
-  ConnectionStates,
-  ConnectionStatus,
-  DeviceStates,
   DeviceStatus,
   DeviceTypes,
-  GraphData,
   Link,
   Node,
-  ShowTopologyFloorplanOn,
-  UINode
-} from '@acx-ui/rc/utils'
+  ShowTopologyFloorplanOn } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 import { hasAccess }  from '@acx-ui/user'
 
-import LinkTooltip                                    from './LinkTooltip'
-import NodeTooltip                                    from './NodeTooltip'
-import * as UI                                        from './styledComponents'
-import TopologyTree                                   from './TopologyTree'
-import { TopologyTreeContext }                        from './TopologyTree/TopologyTreeContext'
-import { getDeviceIcon, getPathColor, truncateLabel } from './utils'
+import LinkTooltip             from './LinkTooltip'
+import NodeTooltip             from './NodeTooltip'
+import * as UI                 from './styledComponents'
+import TopologyTree            from './TopologyTree'
+import { TopologyTreeContext } from './TopologyTree/TopologyTreeContext'
+import { getDeviceIcon }       from './utils'
 
 type OptionType = {
   value: string;
@@ -63,19 +54,10 @@ export function TopologyGraphComponent (props:{ venueId?: string,
   setModalVisible: (visible: boolean) => void }) {
 
   const { $t } = useIntl()
-  const { venueId, showTopologyOn, deviceMac, modalVisible, setModalVisible } = props
+  const { venueId, showTopologyOn, modalVisible, setModalVisible } = props
 
   const graphRef = useRef<SVGSVGElement>(null)
   const params = useParams()
-
-  const graph = new dagreD3.graphlib.Graph({ multigraph: true })
-    .setGraph({
-      nodesep: 70,
-      ranksep: 50,
-      rankdir: 'LR',
-      marginx: 20,
-      marginy: 20
-    }) as any
 
   const _venueId = params.venueId || venueId
 
@@ -84,7 +66,6 @@ export function TopologyGraphComponent (props:{ venueId?: string,
     venueId: _venueId } })
 
   const [treeData, setTreeData] = useState<any>()
-  const [topologyGraphData, setTopologyGraphData] = useState<GraphData>()
   const [showLinkTooltip, setShowLinkTooltip] = useState<boolean>(false)
   const [showDeviceTooltip, setShowDeviceTooltip] = useState<boolean>(false)
   const [tooltipEdge, setTooltipEdge] = useState<Link>()
@@ -101,14 +82,6 @@ export function TopologyGraphComponent (props:{ venueId?: string,
       const schema1Equivalent = parseTopologyData(topologyData)
       const nodes: Node[] = topologyData?.nodes
 
-      const _data: GraphData = {
-        type: 'graph',
-        categories: [],
-        edges: topologyData?.edges as Link[],
-        nodes: nodes
-      }
-
-      setTopologyGraphData(_data)
       setTreeData(
         { data: [{ id: 'Cloud', name: 'Cloud',
           children: schema1Equivalent }] })
@@ -618,8 +591,6 @@ export function TopologyGraphComponent (props:{ venueId?: string,
     const allpathes = onmousepath.select('.path')
     lowVisibleAll()
 
-    const _graph = (d3.select('g.output').node() as SVGGElement)
-
     if (selectedNode && selectedNode.__data__) {
       const nodeId = selectedNode.__data__.id;
       (selectedNode as SVGGElement).style.opacity = '1' as string;
@@ -635,14 +606,14 @@ export function TopologyGraphComponent (props:{ venueId?: string,
           d3.select(this).style('opacity',1)
         }
       })
-      const targetX = (selectedNode as SVGGElement).getBoundingClientRect().x
+      // const targetX = (selectedNode as SVGGElement).getBoundingClientRect().x
 
-      const graphWidth = _graph.getBBox().width
-      const graphHeight = _graph.getBBox().height
-      const width = parseInt(svg.style('width').replace(/px/, ''), 10)
-      const height = parseInt(svg.style('height').replace(/px/, ''), 10)
+      // const graphWidth = _graph.getBBox().width
+      // const graphHeight = _graph.getBBox().height
+      // const width = parseInt(svg.style('width').replace(/px/, ''), 10)
+      // const height = parseInt(svg.style('height').replace(/px/, ''), 10)
 
-      const coordX = ((width-graphWidth) / 2) + (width / 2) - targetX
+      // const coordX = ((width-graphWidth) / 2) + (width / 2) - targetX
 
       // if (graphWidth > width) {
       //   const translate = [coordX + 100, (height - graphHeight) / 2]
