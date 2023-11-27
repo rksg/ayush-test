@@ -59,6 +59,10 @@ const Nodes: React.FC<NodeProps> = (props) => {
     clearTimeout(delayHandler)
   }
 
+  const handleClick = () => {
+    clearTimeout(delayHandler)
+  }
+
   return (
     <g className='output d3-tree-nodes'>
       {
@@ -84,7 +88,11 @@ const Nodes: React.FC<NodeProps> = (props) => {
               id={node.data.id}
               className={'node tree-node'}
             >
-              <g onMouseEnter={(e) => handleMouseEnter(node, e)} onMouseLeave={handleMouseLeave}>
+              <g
+                onMouseEnter={(e) => handleMouseEnter(node, e)}
+                onMouseLeave={handleMouseLeave}
+                onClick={handleClick}
+              >
                 <circle cx='0' cy='0' r='15' className={`${node.data.status}-circle`} />
                 <g className={`${node.data.status}-icon`}>{nodeRender(node, i)}</g>
                 <g>
