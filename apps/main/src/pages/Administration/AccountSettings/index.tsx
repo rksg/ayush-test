@@ -61,7 +61,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const showSsoSupport = isPrimeAdminUser && isIdmDecoupling && !isDogfood
     && canMSPDelegation && !isMspEc
   const showApiKeySupport = isPrimeAdminUser && isApiKeyEnabled && canMSPDelegation && !isMspEc
-
+  const showBetaButton = isPrimeAdminUser && betaButtonToggle && showRksSupport
 
   const authenticationData =
     useGetTenantAuthenticationsQuery({ params }, { skip: !isPrimeAdminUser })
@@ -100,7 +100,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
           </>
         )}
 
-        { (isPrimeAdminUser && betaButtonToggle) && (
+        { showBetaButton && (
           <>
             <Divider />
             <EnableR1Beta
