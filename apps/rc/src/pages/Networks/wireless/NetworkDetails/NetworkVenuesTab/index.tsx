@@ -117,6 +117,7 @@ export function NetworkVenuesTab () {
   const [systemNetwork, setSystemNetwork] = useState(false)
 
   const params = useParams()
+  const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
 
@@ -170,7 +171,7 @@ export function NetworkVenuesTab () {
     }
   }, [tableQuery.data, networkQuery.data, supportOweTransition])
 
-  const scheduleSlotIndexMap = useScheduleSlotIndexMap(tableData)
+  const scheduleSlotIndexMap = useScheduleSlotIndexMap(tableData, isMapEnabled)
 
   const activateNetwork = async (checked: boolean, row: Venue) => {
     // TODO: Service

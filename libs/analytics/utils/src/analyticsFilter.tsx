@@ -134,5 +134,5 @@ export const isSwitchPath = (path: NetworkPath) => {
 }
 
 export const isApPath = (path: NetworkPath) => {
-  return Boolean(path.find(({ type }) => type === 'apGroup'))
+  return Boolean(path.find(({ type }) => type === 'zone' || type === 'apGroup'))
 }
