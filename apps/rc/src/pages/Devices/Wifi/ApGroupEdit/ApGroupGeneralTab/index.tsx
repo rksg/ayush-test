@@ -3,6 +3,7 @@ import { useContext, useEffect, useRef, useState } from 'react'
 import { Col, Form, Input, Row, Select } from 'antd'
 import { DefaultOptionType }             from 'antd/lib/select'
 import { TransferItem }                  from 'antd/lib/transfer'
+import _                                 from 'lodash'
 import { useIntl }                       from 'react-intl'
 import { useNavigate, useParams }        from 'react-router-dom'
 
@@ -31,7 +32,7 @@ const apGroupsListPayload = {
 export function ApGroupGeneralTab () {
   const { $t } = useIntl()
   const { tenantId, action, apGroupId } = useParams()
-  const { isEditMode, isApGroupTableFlag } = useContext(ApGroupEditContext)
+  const { isEditMode, isApGroupTableFlag, setEditContextData } = useContext(ApGroupEditContext)
 
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
@@ -40,6 +41,7 @@ export function ApGroupGeneralTab () {
     `${basePath.pathname}/wifi`
 
   const formRef = useRef<StepsFormLegacyInstance<AddApGroup>>()
+  const oldFormDataRef = useRef<AddApGroup>()
   const venuesList = useVenuesListQuery({
     params: { tenantId: tenantId },
     payload: defaultVenuePayload })
@@ -73,14 +75,20 @@ export function ApGroupGeneralTab () {
       }
 
       handleVenueChange(apGroupData.venueId, extraMemberList)
-      formRef?.current?.setFieldsValue({
+
+      const formData: AddApGroup = {
         name: apGroupData.name,
         venueId: apGroupData.venueId,
         apSerialNumbers: Array.isArray(apGroupData.aps) ?
           apGroupData.aps.map(i => i.serialNumber) : []
-      })
-    }
+      }
 
+      formRef?.current?.setFieldsValue(formData)
+
+      if (oldFormDataRef) {
+        oldFormDataRef.current = _.cloneDeep(formData)
+      }
+    }
   }, [isEditMode, apGroupData, isApGroupDataLoading])
 
 
@@ -107,22 +115,26 @@ export function ApGroupGeneralTab () {
     }
   }
 
-  const handleAddApGroup = async (values: AddApGroup) => {
-    const venueId = formRef.current?.getFieldValue('venueId')
+  const handleAddApGroup = async () => {
+    const formData = formRef.current?.getFieldsValue() || {} as AddApGroup
+    const { venueId } = formData
+    const payload: AddApGroup = {
+      ...formData
+    }
     try {
-      if (values.apSerialNumbers) {
-        values.apSerialNumbers = values.apSerialNumbers.map(i => { return { serialNumber: i } })
+      if (payload.apSerialNumbers) {
+        payload.apSerialNumbers = payload.apSerialNumbers.map(i => { return { serialNumber: i } })
       }
-      const payload = {
-        ...values
-      }
+
       if (isEditMode) {
         await updateApGroup({ params: { tenantId, apGroupId }, payload }).unwrap()
       } else {
         await addApGroup({ params: { tenantId, venueId }, payload }).unwrap()
       }
 
-      navigate(navigatePathName, { replace: true })
+      if (!isEditMode || !isApGroupTableFlag) {
+        navigate(navigatePathName, { replace: true })
+      }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -148,20 +160,48 @@ export function ApGroupGeneralTab () {
     }
   }
 
+  const handleFormChanged = async () => {
+    if (isEditMode && isApGroupTableFlag) {
+      const curFormData = formRef.current?.getFieldsValue()
+      const oldFormData = oldFormDataRef.current
+
+      if (!_.isEqual(curFormData, oldFormData)) {
+        oldFormDataRef.current = _.cloneDeep(curFormData)
+
+        setEditContextData({
+          tabTitle: $t({ defaultMessage: 'General' }),
+          unsavedTabKey: 'general',
+          isDirty: true,
+          updateChanges: () => handleAddApGroup()
+        })
+      }
+    }
+  }
+
+  const handleDiscardChanges = async () => {
+    setEditContextData({
+      tabTitle: $t({ defaultMessage: 'General' }),
+      unsavedTabKey: 'general',
+      isDirty: false
+    })
+
+    navigate({
+      ...basePath,
+      pathname: navigatePathName
+    })
+  }
+
   return (
     <StepsFormLegacy
       formRef={formRef}
+      onFormChange={handleFormChanged}
       onFinish={handleAddApGroup}
-      onCancel={() => navigate({
-        ...basePath,
-        pathname: navigatePathName
-      })}
+      onCancel={() => handleDiscardChanges()}
       buttonLabel={{
         submit: !isEditMode ? $t({ defaultMessage: 'Add' }) : $t({ defaultMessage: 'Apply' })
       }}
     >
       <StepsFormLegacy.StepForm>
-
         <Loader states={[{
           isLoading: venuesList.isLoading
         }]}>

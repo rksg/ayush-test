@@ -13,12 +13,14 @@ import { ApGroupVlanRadioContext } from '.'
 
 export function ApGroupVlanRadioTable () {
   const { $t } = useIntl()
-  const { apGroupId, venueId, tableData, setDrawerStatus } = useContext(ApGroupVlanRadioContext)
+  const { apGroupId, venueId, tableData,
+    drawerStatus, setDrawerStatus } = useContext(ApGroupVlanRadioContext)
   const columns = useApGroupNetworkColumns(apGroupId, venueId, true)
 
   const rowActions: TableProps<Network>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     visible: (rows) => rows.length === 1,
+    disabled: drawerStatus?.visible,
     onClick: (rows) => {
       setDrawerStatus({
         visible: true,

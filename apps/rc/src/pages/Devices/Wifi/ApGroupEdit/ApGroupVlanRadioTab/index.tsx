@@ -35,7 +35,8 @@ export const ApGroupVlanRadioContext = createContext({} as {
 
 export function ApGroupVlanRadioTab () {
   const { $t } = useIntl()
-  const { isEditMode, isApGroupTableFlag } = useContext(ApGroupEditContext)
+  const { isEditMode, isApGroupTableFlag,
+    editContextData, setEditContextData } = useContext(ApGroupEditContext)
   const { tenantId, apGroupId = '' } = useParams()
 
   const updateDataRef = useRef<NetworkVenue[]>([])
@@ -117,16 +118,34 @@ export function ApGroupVlanRadioTab () {
         return (editData.id === data.id) ? editData : data
       })
     )
+
+    setEditContextData({
+      ...editContextData,
+      tabTitle: $t({ defaultMessage: 'VLAN & Radio' }),
+      unsavedTabKey: 'vlanRadio',
+      isDirty: true,
+      updateChanges: () => handleUpdateAllApGroupVlanRadio()
+    })
+  }
+
+  const handleDiscardChanges = async () => {
+    setEditContextData({
+      tabTitle: editContextData.tabTitle,
+      unsavedTabKey: 'vlanRadio',
+      isDirty: false
+    })
+
+    navigate({
+      ...basePath,
+      pathname: navigatePathName
+    })
   }
 
 
   return (
     <StepsFormLegacy
       onFinish={handleUpdateAllApGroupVlanRadio}
-      onCancel={() => navigate({
-        ...basePath,
-        pathname: navigatePathName
-      })}
+      onCancel={() => handleDiscardChanges()}
       buttonLabel={{
         submit: $t({ defaultMessage: 'Apply' })
       }}

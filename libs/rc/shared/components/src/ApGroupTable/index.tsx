@@ -219,7 +219,8 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
     visible: (selectedRows) => selectedRows.length === 1,
     onClick: (selectedRows) => {
       //redirect to edit AP group page url
-      navigate(`${linkToEditApGroup.pathname}/${selectedRows[0].id}/edit`, { replace: false })
+      const apGroupId = selectedRows[0].id
+      navigate(`${linkToEditApGroup.pathname}/${apGroupId}/edit/general`, { replace: false })
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
