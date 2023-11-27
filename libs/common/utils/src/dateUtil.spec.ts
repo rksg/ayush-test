@@ -42,16 +42,16 @@ describe('dateUtil', () => {
         startDate: '2021-12-31T00:01:00+00:00'
       })
     })
-    it('returns range if custom', () => {
+    it('returns dates if custom', () => {
       const range = DateRange.last24Hours
       expect(getDatePickerValues({
-        range,
+        range: DateRange.custom,
         endDate: '2023-01-01T00:01:00+00:00',
         startDate: '2022-12-31T00:01:00+00:00'
       })).toMatchObject({
-        range,
-        endDate: '2022-01-01T00:01:00+00:00',
-        startDate: '2021-12-31T00:01:00+00:00'
+        range: DateRange.custom,
+        endDate: '2023-01-01T00:01:00+00:00',
+        startDate: '2022-12-31T00:01:00+00:00'
       })
     })
   })
