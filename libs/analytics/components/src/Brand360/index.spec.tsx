@@ -20,7 +20,8 @@ describe('Brand360', () => {
     expect(await screen.findAllByText('incident')).toHaveLength(1)
     expect(await screen.findAllByText('guest experience')).toHaveLength(1)
     expect(await screen.findAllByText('brand ssid compliance')).toHaveLength(1)
-    expect(await screen.findAllByText('sla')).toHaveLength(1)
+    // eslint-disable-next-line max-len
+    expect(await screen.findAllByText('{"sla-p1-incidents-count":"10","sla-guest-experience":"20","sla-brand-ssid-compliance":"30","brand-ssid-compliance-matcher":"/a/"}')).toHaveLength(1)
     expect(await screen.findAllByText('table')).toHaveLength(1)
   })
 })
