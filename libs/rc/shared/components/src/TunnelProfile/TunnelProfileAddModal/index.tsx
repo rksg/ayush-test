@@ -1,21 +1,19 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
-import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, Modal, ModalType, showToast, StepsForm } from '@acx-ui/components'
+import { Button, Loader, Modal, ModalType, showToast, StepsForm }    from '@acx-ui/components'
+import { getTunnelProfileFormDefaultValues, TunnelProfileFormType  } from '@acx-ui/rc/utils'
 
-import { TunnelProfileForm, TunnelProfileFormType } from '../TunnelProfileForm'
-import { useTunnelProfileActions }                  from '../TunnelProfileForm/useTunnelProfileActions'
+import { TunnelProfileForm }       from '../TunnelProfileForm'
+import { useTunnelProfileActions } from '../TunnelProfileForm/useTunnelProfileActions'
 
 interface TunnelProfileAddModalProps {
-  defaultValues?: TunnelProfileFormType,
+  initialValues?: TunnelProfileFormType
 }
-
 export const TunnelProfileAddModal = (props: TunnelProfileAddModalProps) => {
-  const { defaultValues } = props
+  const { initialValues } = props
   const { $t } = useIntl()
-  const [ form ] = Form.useForm()
   const [visible, setVisible] = useState(false)
   const { createTunnelProfile, isTunnelProfileCreating } = useTunnelProfileActions()
 
@@ -31,24 +29,20 @@ export const TunnelProfileAddModal = (props: TunnelProfileAddModalProps) => {
     }
   }
 
+  const formInitValues = getTunnelProfileFormDefaultValues(initialValues)
+
   const content = <Loader states={[{ isLoading: false, isFetching: isTunnelProfileCreating }]}>
     <StepsForm
-      form={form}
       onFinish={handleCreateTunnelProfile}
       onCancel={() => setVisible(false)}
       buttonLabel={{ submit: $t({ defaultMessage: 'Add' }) }}
+      initialValues={formInitValues}
     >
       <StepsForm.StepForm>
         <TunnelProfileForm />
       </StepsForm.StepForm>
     </StepsForm>
   </Loader>
-
-  useEffect(() => {
-    if (visible && defaultValues) {
-      form.setFieldsValue(defaultValues)
-    }
-  }, [visible, defaultValues])
 
   return (
     <>

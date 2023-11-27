@@ -1,9 +1,7 @@
 import { cloneDeep } from 'lodash'
 
 import { useCreateTunnelProfileMutation, useUpdateTunnelProfileMutation } from '@acx-ui/rc/services'
-import { AgeTimeUnit }                                                    from '@acx-ui/rc/utils'
-
-import { TunnelProfileFormType } from '.'
+import { AgeTimeUnit, TunnelProfileFormType }                             from '@acx-ui/rc/utils'
 
 export const useTunnelProfileActions = () => {
   const [create, { isLoading: isTunnelProfileCreating }] = useCreateTunnelProfileMutation()
