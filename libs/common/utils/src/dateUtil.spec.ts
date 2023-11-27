@@ -43,7 +43,6 @@ describe('dateUtil', () => {
       })
     })
     it('returns dates if custom', () => {
-      const range = DateRange.last24Hours
       expect(getDatePickerValues({
         range: DateRange.custom,
         endDate: '2023-01-01T00:01:00+00:00',
