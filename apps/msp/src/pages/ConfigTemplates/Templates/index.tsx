@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import {
@@ -12,9 +14,13 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
+import { ApplyTemplateDrawer } from './ApplyTemplateDrawer'
+
 
 export function ConfigTemplateList () {
   const { $t } = useIntl()
+  const [ applyTemplateDrawerVisible, setApplyTemplateDrawerVisible ] = useState(false)
+  const [ selectedTemplates, setSelectedTemplates ] = useState<string[]>([])
 
   const tableQuery = useTableQuery({
     useQuery: useGetConfigTemplateListQuery,
@@ -24,7 +30,10 @@ export function ConfigTemplateList () {
   const rowActions: TableProps<ConfigTemplate>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Apply Template' }),
-      onClick: () => {}
+      onClick: (rows: ConfigTemplate[]) => {
+        setSelectedTemplates(rows.map(row => row.id!))
+        setApplyTemplateDrawerVisible(true)
+      }
     }
   ]
 
@@ -36,20 +45,27 @@ export function ConfigTemplateList () {
   ]
 
   return (
-    <Loader states={[tableQuery]}>
-      <Table<ConfigTemplate>
-        columns={useColumns()}
-        dataSource={tableQuery.data?.data}
-        pagination={tableQuery.pagination}
-        actions={filterByAccess(actions)}
-        onChange={tableQuery.handleTableChange}
-        rowKey='id'
-        rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && { type: 'checkbox' }}
-        onFilterChange={tableQuery.handleFilterChange}
-        enableApiFilter={true}
-      />
-    </Loader>
+    <>
+      <Loader states={[tableQuery]}>
+        <Table<ConfigTemplate>
+          columns={useColumns()}
+          dataSource={tableQuery.data?.data}
+          pagination={tableQuery.pagination}
+          actions={filterByAccess(actions)}
+          onChange={tableQuery.handleTableChange}
+          rowKey='id'
+          rowActions={filterByAccess(rowActions)}
+          rowSelection={hasAccess() && { type: 'checkbox' }}
+          onFilterChange={tableQuery.handleFilterChange}
+          enableApiFilter={true}
+        />
+      </Loader>
+      {applyTemplateDrawerVisible &&
+      <ApplyTemplateDrawer
+        setVisible={setApplyTemplateDrawerVisible}
+        templateIds={selectedTemplates}
+      />}
+    </>
   )
 }
 

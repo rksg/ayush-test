@@ -333,7 +333,7 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getConfigTemplates: {
-    method: 'get',
+    method: 'post',
     url: '/templates'
   }
 }
