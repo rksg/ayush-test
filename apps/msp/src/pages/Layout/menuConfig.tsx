@@ -34,13 +34,13 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfoo
   tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
 
   const config: LayoutProps['menuConfig'] = [
-    ...((!isBrand360 || isVar || isDogfood) ? [] : [{
+    ...(isBrand360 ? [{
       uri: '/brand360',
       label: $t({ defaultMessage: 'Brand 360' }),
       tenantType: 'v' as TenantType,
       inactiveIcon: SpeedIndicatorOutlined,
       activeIcon: SpeedIndicatorSolid
-    }]),
+    }] : []),
     {
       label: $t({ defaultMessage: 'My Customers' }),
       inactiveIcon: UsersThreeOutlined,
