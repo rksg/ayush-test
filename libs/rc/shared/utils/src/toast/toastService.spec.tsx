@@ -34,6 +34,7 @@ const tx = {
   useCase: 'AddNetworkDeep',
   linkTemplate: '/t/@@tenantId/networks/wireless/@@entityId/network-details/overview',
   linkData: [
+    { name: 'linkAlias', value: 'Download' },
     { name: 'tenantId',value: 'ecc2d7cf9d2342fdb31ae0e24958fcac' },
     { name: 'entityId',value: '65f6a2f6ec5843be9d9b5b3255a26b04' },
     { name: 'serialNumber',value: '65f6a2f6ec5843be9d9b5b3255a26b04'
@@ -75,7 +76,7 @@ describe('Toast Service: showActivityToast', () => {
     })
     /* eslint-disable max-len */
     await screen.findByText('Network "open-network" was added by FisrtName 1094 LastName 1094 (dog1094@email.com)')
-    const link = await screen.findByText('View')
+    const link = await screen.findByText('Download')
     fireEvent.click(link)
   })
 

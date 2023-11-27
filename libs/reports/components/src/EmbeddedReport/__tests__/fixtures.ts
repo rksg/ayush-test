@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 export const apNetworkPath = [
   {
     name: 'Network',
@@ -20,11 +22,8 @@ export const apNetworkPath = [
     type: 'apGroup'
   },
   {
-    name: 'RuckusAP',
-    type: 'ap',
-    list: [
-      '1C:3A:60:31:8D:A0'
-    ]
+    name: '1C:3A:60:31:8D:A0',
+    type: 'AP'
   }
 ]
 
@@ -42,11 +41,8 @@ export const switchNetworkPath = [
     type: 'switchGroup'
   },
   {
-    name: 'ICX7750-48F Router',
-    type: 'switch',
-    list: [
-      '60:9C:9F:1F:5F:00'
-    ]
+    name: '60:9C:9F:1F:5F:00',
+    type: 'switch'
   }
 ]
 
@@ -64,6 +60,7 @@ export const systems = {
   }],
   switchNodes: []
 }
+export const systemMap = _.groupBy(systems.networkNodes, 'deviceName')
 
 export const radioBands = ['6','2.4']
 

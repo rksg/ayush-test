@@ -1007,6 +1007,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req
         }
       },
+      keepUnusedDataFor: 0,
       providesTags: [{ type: 'PropertyConfigs', id: 'ID' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -1376,5 +1377,6 @@ export const {
   useLazyGetVenueClientAdmissionControlQuery,
   useUpdateVenueClientAdmissionControlMutation,
   useGetVenueApManagementVlanQuery,
+  useLazyGetVenueApManagementVlanQuery,
   useUpdateVenueApManagementVlanMutation
 } = venueApi

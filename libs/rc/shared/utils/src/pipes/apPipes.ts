@@ -1,9 +1,13 @@
-import { IntlShape } from 'react-intl'
+import _                      from 'lodash'
+import { IntlShape, useIntl } from 'react-intl'
 
 import { getIntl } from '@acx-ui/utils'
 
-import { ApDeviceStatusEnum, DeviceConnectionStatus } from '../constants'
-import { QosPriorityEnum }                            from '../constants'
+import {
+  ApDeviceStatusEnum,
+  DeviceConnectionStatus,
+  QosPriorityEnum } from '../constants'
+import { AFCInfo, AFCPowerMode, AFCProps, AFCStatus } from '../types'
 
 export enum APView {
   AP_LIST,
@@ -114,4 +118,62 @@ export function transformQosPriorityType (type: QosPriorityEnum) {
   }
 
   return transform
+}
+
+export const AFCMaxPowerRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) => {
+  return (afcInfo?.maxPowerDbm && apRadioDeploy === '2-5-6') ? `${afcInfo?.maxPowerDbm} dBm` : '--'
+}
+
+// eslint-disable-next-line
+export const AFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy?: string, reasonMessage?: boolean) => {
+
+  const { $t } = useIntl()
+
+  const powerMode = afcInfo?.powerMode
+
+  const displayList = []
+
+  if(!powerMode || apRadioDeploy !== '2-5-6') {
+    return '--'
+  }
+
+  if (powerMode === AFCPowerMode.STANDARD_POWER){
+    displayList.push($t({ defaultMessage: 'Standard power' }))
+  }
+
+  else if (powerMode === AFCPowerMode.LOW_POWER) {
+    displayList.push($t({ defaultMessage: 'Low power' }))
+    if(reasonMessage === true) {
+
+      switch(afcInfo?.afcStatus) {
+        case AFCStatus.WAIT_FOR_LOCATION:
+          displayList.push($t({ defaultMessage: '[Geo Location not set]' }))
+          break
+        case AFCStatus.REJECTED:
+          displayList.push($t({ defaultMessage: '[No channels available]' }))
+          break
+        case AFCStatus.WAIT_FOR_RESPONSE:
+          displayList.push($t({ defaultMessage: '[Pending response from the AFC server]' }))
+          break
+        case AFCStatus.AFC_NOT_REQUIRED:
+          displayList.push($t({ defaultMessage: '[User set]' }))
+          break
+      }
+    }
+  }
+  return (displayList.length === 0) ? '--' : displayList.join(' ')
+}
+
+/* eslint-disable max-len */
+export const ChannelButtonTextRender = (channels: number[], isChecked: boolean, afcProps?: AFCProps): string => {
+  const { $t } = useIntl()
+  let message = isChecked
+    ? $t({ defaultMessage: 'Disable this channel' })
+    : $t({ defaultMessage: 'Enable this channel' })
+  const afcAvailableChannel = _.uniq(afcProps?.afcInfo?.availableChannels).sort((a, b) => a-b)
+  const convergence = _.intersection(channels, afcAvailableChannel)
+  if(convergence.length > 0 && afcProps?.afcInfo?.afcStatus === AFCStatus.PASSED && afcProps?.featureFlag) {
+    message = $t({ defaultMessage: 'Allowed by AFC' }) + '\n' + message
+  }
+  return message
 }

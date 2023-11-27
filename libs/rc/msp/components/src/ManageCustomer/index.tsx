@@ -166,6 +166,7 @@ export function ManageCustomer () {
   const optionalAdminFF = useIsSplitOn(Features.MSPEC_OPTIONAL_ADMIN)
   const edgeEnabled = useIsTierAllowed(Features.EDGES)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
+  const techPartnerAssignEcsEnabled = useIsSplitOn(Features.TECH_PARTNER_ASSIGN_ECS)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
@@ -179,6 +180,8 @@ export function ManageCustomer () {
   const [mspAdmins, setAdministrator] = useState([] as MspAdministrator[])
   const [mspIntegrator, setIntegrator] = useState([] as MspEc[])
   const [mspInstaller, setInstaller] = useState([] as MspEc[])
+  const [autoIntegratorAssignEcAdmin, setIntegratorAssignAdmin] = useState(false)
+  const [autoInstallerAssignEcAdmin, setInstallerAssignAdmin] = useState(false)
   const [mspEcAdmins, setMspEcAdmins] = useState([] as MspAdministrator[])
   const [availableWifiLicense, setAvailableWifiLicense] = useState(0)
   const [availableSwitchLicense, setAvailableSwitchLicense] = useState(0)
@@ -367,7 +370,8 @@ export function ManageCustomer () {
   const fieldValidator = async (value: string, remainingDevices: number) => {
     if(parseInt(value, 10) > remainingDevices || parseInt(value, 10) < 0) {
       return Promise.reject(
-        `${intl.$t({ defaultMessage: 'Invalid number' })} `
+        intl.$t({ defaultMessage: 'Number should be between 0 and {value}' },
+          { value: remainingDevices })
       )
     }
     return Promise.resolve()
@@ -478,18 +482,20 @@ export function ManageCustomer () {
         customer.admin_role = ecFormData.admin_role
       }
       const ecDelegations=[] as MspIntegratorDelegated[]
-      if (mspIntegrator.length > 0) {
+      mspIntegrator.forEach((integrator: MspEc) => {
         ecDelegations.push({
           delegation_type: AccountType.MSP_INTEGRATOR,
-          delegation_id: mspIntegrator[0].id
+          delegation_id: integrator.id,
+          isManageAllEcs: techPartnerAssignEcsEnabled ? autoIntegratorAssignEcAdmin : undefined
         })
-      }
-      if (mspInstaller.length > 0) {
+      })
+      mspInstaller.forEach((installer: MspEc) => {
         ecDelegations.push({
           delegation_type: AccountType.MSP_INSTALLER,
-          delegation_id: mspInstaller[0].id
+          delegation_id: installer.id,
+          isManageAllEcs: techPartnerAssignEcsEnabled ? autoInstallerAssignEcAdmin : undefined
         })
-      }
+      })
       if (ecDelegations.length > 0) {
         customer.delegations = ecDelegations
       }
@@ -618,8 +624,16 @@ export function ManageCustomer () {
     setAdministrator(selected)
   }
 
-  const selectedIntegrators = (tenantType: string, selected: MspEc[] ) => {
-    (tenantType === AccountType.MSP_INTEGRATOR) ? setIntegrator(selected) : setInstaller(selected)
+  const selectedIntegrators = (tenantType: string, selected: MspEc[], assignEcAdmin?: boolean ) => {
+    assignEcAdmin = assignEcAdmin ?? false
+    if (tenantType === AccountType.MSP_INTEGRATOR) {
+      setIntegrator(selected)
+      setIntegratorAssignAdmin(assignEcAdmin)
+    }
+    else {
+      setInstaller(selected)
+      setInstallerAssignAdmin(assignEcAdmin)
+    }
   }
 
   const displayMspAdmins = () => {
@@ -635,13 +649,27 @@ export function ManageCustomer () {
   }
 
   const displayIntegrator = () => {
-    const value = !mspIntegrator || mspIntegrator.length === 0 ? '--' : mspIntegrator[0].name
-    return value
+    if (!mspIntegrator || mspIntegrator.length === 0)
+      return '--'
+    return <>
+      {mspIntegrator.map(integrator =>
+        <UI.AdminList key={integrator.id}>
+          {integrator.name}
+        </UI.AdminList>
+      )}
+    </>
   }
 
   const displayInstaller = () => {
-    const value = !mspInstaller || mspInstaller.length === 0 ? '--' : mspInstaller[0].name
-    return value
+    if (!mspInstaller || mspInstaller.length === 0)
+      return '--'
+    return <>
+      {mspInstaller.map(installer =>
+        <UI.AdminList key={installer.id}>
+          {installer.name}
+        </UI.AdminList>
+      )}
+    </>
   }
 
   const displayCustomerAdmins = () => {
@@ -699,8 +727,8 @@ export function ManageCustomer () {
     swLic ? setAvailableSwitchLicense(remainingSwitch+swLic)
       : setAvailableSwitchLicense(remainingSwitch)
 
-    const apswLicenses = entitlements.filter(p =>
-      p.remainingDevices > 0 && p.deviceType === EntitlementDeviceType.MSP_APSW)
+    const apswLicenses = entitlements.filter(p => p.remainingDevices > 0 &&
+      p.deviceType === EntitlementDeviceType.MSP_APSW && p.trial === false)
     let remainingApsw = 0
     apswLicenses.forEach( (lic: MspAssignmentSummary) => {
       remainingApsw += lic.remainingDevices

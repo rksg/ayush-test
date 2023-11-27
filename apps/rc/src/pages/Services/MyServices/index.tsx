@@ -13,7 +13,8 @@ import {
   useGetEnhancedWifiCallingServiceListQuery,
   useWebAuthTemplateListQuery,
   useGetResidentPortalListQuery,
-  useGetEdgeFirewallViewDataListQuery
+  useGetEdgeFirewallViewDataListQuery,
+  useGetEdgeSdLanViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
   getSelectServiceRoutePath,
@@ -35,6 +36,7 @@ export default function MyServices () {
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
   const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
   const services = [
@@ -67,6 +69,16 @@ export default function MyServices () {
         skip: !isEdgeEnabled || !isEdgeReady
       }),
       disabled: !isEdgeEnabled || !isEdgeReady
+    },
+    {
+      type: ServiceType.EDGE_SD_LAN,
+      categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+      tableQuery: useGetEdgeSdLanViewDataListQuery({
+        params, payload: { ...defaultPayload }
+      },{
+        skip: !isEdgeEnabled || !isEdgeReady || !isEdgeSdLanReady
+      }),
+      disabled: !isEdgeEnabled || !isEdgeReady || !isEdgeSdLanReady
     },
     {
       type: ServiceType.EDGE_FIREWALL,

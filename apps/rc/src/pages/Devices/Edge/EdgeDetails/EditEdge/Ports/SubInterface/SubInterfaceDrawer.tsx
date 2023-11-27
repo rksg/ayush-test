@@ -2,10 +2,8 @@ import { useEffect } from 'react'
 
 import { Form, Input, InputNumber, Select } from 'antd'
 import { useIntl }                          from 'react-intl'
-import { useParams }                        from 'react-router-dom'
 
 import { Alert, Drawer }                                                                                   from '@acx-ui/components'
-import { useAddSubInterfacesMutation, useUpdateSubInterfacesMutation }                                     from '@acx-ui/rc/services'
 import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeSubInterface, edgePortIpValidator, generalSubnetMskRegExp } from '@acx-ui/rc/utils'
 import { validationMessages }                                                                              from '@acx-ui/utils'
 
@@ -14,16 +12,15 @@ interface StaticRoutesDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   data?: EdgeSubInterface
+  handleAdd: (data: EdgeSubInterface) => Promise<unknown>
+  handleUpdate: (data: EdgeSubInterface) => Promise<unknown>
 }
 
 const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
 
   const { $t } = useIntl()
-  const { mac, visible, setVisible, data } = props
-  const params = useParams()
+  const { mac, visible, setVisible, data, handleAdd, handleUpdate } = props
   const [formRef] = Form.useForm()
-  const [addSubInterface] = useAddSubInterfacesMutation()
-  const [updateSubInterface] = useUpdateSubInterfacesMutation()
 
   useEffect(() => {
     if(visible) {
@@ -64,19 +61,20 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
     formRef.submit()
   }
 
-  const handleFinish = async (formData: EdgeSubInterface) => {
-    formData.name = data?.name || ''
-    formData.mac = mac
-    formData.enabled = true
-    const requestPayload = {
-      params: { ...params, mac: mac, subInterfaceId: data?.id },
-      payload: formData
+  const handleFinish = async () => {
+    const formData = formRef.getFieldsValue(true)
+    const payload = {
+      ...formData,
+      name: data?.name || '',
+      mac: mac,
+      enabled: true
     }
+
     try {
       if(data) {
-        await updateSubInterface(requestPayload).unwrap()
+        await handleUpdate(payload)
       } else {
-        await addSubInterface(requestPayload).unwrap()
+        await handleAdd(payload)
       }
     } catch (error) {
       // TODO error message not be defined

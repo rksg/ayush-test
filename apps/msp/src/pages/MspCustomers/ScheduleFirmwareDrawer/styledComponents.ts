@@ -18,7 +18,7 @@ export const GreyTextSection = styled.div`
 
 export const ChangeButton = styled(Button)`
   position: absolute;
-  top: 88px;
+  top: 56px;
   left: 290px;
   margin: 8px;
   width: 80px !important;

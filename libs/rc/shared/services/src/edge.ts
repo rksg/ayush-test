@@ -6,6 +6,8 @@ import {
   EdgeAllPortTrafficData,
   EdgeDnsServers,
   EdgeGeneralSetting,
+  EdgeLag,
+  EdgeLagStatus,
   EdgePasswordDetail,
   EdgePortConfig,
   EdgePortStatus,
@@ -440,6 +442,142 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getEdgeLagsStatusList: build.query<TableResult<EdgeLagStatus>, RequestPayload>({
+      query: ({ payload, params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgeLagStatusList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getEdgeLagList: build.query<TableResult<EdgeLag>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const { page, pageSize } = payload as { page: number, pageSize: number }
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgeLagList, params)
+        return {
+          ...req,
+          params: { page, pageSize }
+        }
+      },
+      transformResponse (response: PaginationQueryResult<EdgeLag>) {
+        return {
+          data: response.content,
+          page: response.page,
+          totalCount: response.totalCount
+        }
+      },
+      // async onCacheEntryAdded (requestArgs, api) {
+      //   await onSocketActivityChanged(requestArgs, api, (msg) => {
+      //     const activities = [
+      //     ]
+      //     onActivityMessageReceived(msg, activities, () => {
+      //       api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'LAG' }]))
+      //     })
+      //   })
+      // },
+      providesTags: [{ type: 'Edge', id: 'DETAIL' }, { type: 'Edge', id: 'LAG' }],
+      extraOptions: { maxRetries: 5 }
+    }),
+    addEdgeLag: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.addEdgeLag, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'LAG' }]
+    }),
+    updateEdgeLag: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.updateEdgeLag, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'LAG' }]
+    }),
+    deleteEdgeLag: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.deleteEdgeLag, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'LAG' }]
+    }),
+    getLagSubInterfaces: build.query<TableResult<EdgeSubInterface>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const { page, pageSize } = payload as { page: number, pageSize: number }
+        const req = createHttpRequest(EdgeUrlsInfo.getLagSubInterfaces, params)
+        return {
+          ...req,
+          params: { page, pageSize }
+        }
+      },
+      transformResponse (response: PaginationQueryResult<EdgeSubInterface>) {
+        return {
+          data: response.content,
+          page: response.page,
+          totalCount: response.totalCount
+        }
+      },
+      // async onCacheEntryAdded (requestArgs, api) {
+      //   await onSocketActivityChanged(requestArgs, api, (msg) => {
+      //     const activities = [
+      //       'Update sub-interfaces'
+      //     ]
+      //     onActivityMessageReceived(msg, activities, () => {
+      //       api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'LAG_SUB_INTERFACE' }]))
+      //     })
+      //   })
+      // },
+      providesTags: [{ type: 'Edge', id: 'DETAIL' }, { type: 'Edge', id: 'LAG_SUB_INTERFACE' }],
+      extraOptions: { maxRetries: 5 }
+    }),
+    addLagSubInterfaces: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.addLagSubInterfaces, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'LAG_SUB_INTERFACE' }]
+    }),
+    updateLagSubInterfaces: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.updateLagSubInterfaces, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'LAG_SUB_INTERFACE' }]
+    }),
+    deleteLagSubInterfaces: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.deleteLagSubInterfaces, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'LAG_SUB_INTERFACE' }]
+    }),
+    importLagSubInterfacesCSV: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.importLagSubInterfacesCSV, params, {
+          ...ignoreErrorModal,
+          'Content-Type': undefined
+        })
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -493,5 +631,15 @@ export const {
   useGetEdgesTopResourcesQuery,
   useDeleteEdgeServicesMutation,
   useGetEdgePasswordDetailQuery,
-  useImportSubInterfacesCSVMutation
+  useImportSubInterfacesCSVMutation,
+  useGetEdgeLagsStatusListQuery,
+  useAddEdgeLagMutation,
+  useDeleteEdgeLagMutation,
+  useGetEdgeLagListQuery,
+  useAddLagSubInterfacesMutation,
+  useGetLagSubInterfacesQuery,
+  useDeleteLagSubInterfacesMutation,
+  useUpdateLagSubInterfacesMutation,
+  useUpdateEdgeLagMutation,
+  useImportLagSubInterfacesCSVMutation
 } = edgeApi

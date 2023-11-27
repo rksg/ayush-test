@@ -42,6 +42,7 @@ import {
   WisprSecurityOptionsDescription,
   ManagementFrameProtectionEnum
 } from '@acx-ui/rc/utils'
+import { validationMessages } from '@acx-ui/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
@@ -391,7 +392,7 @@ export function WISPrForm () {
         <Form.Item
           name={['guestPortal','wisprPage','captivePortalUrl']}
           rules={
-            [{ required: true },
+            [{ required: true, message: $t(validationMessages.validateURL) },
               { validator: (_, value) => URLProtocolRegExp(value) }]
           }
           label={<>

@@ -113,7 +113,7 @@ describe('Edge Detail Services Tab', () => {
     expect(await within(row1).findByText('NA')).toBeValid()
   })
 
-  it('should disable remove button and shot tooltip', async () => {
+  it('should disable remove button and show tooltip', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
@@ -132,4 +132,52 @@ describe('Edge Detail Services Tab', () => {
     expect(await screen.findByRole('tooltip'))
       .toHaveTextContent('DHCP cannot be removed')
   })
+
+  it('should disable restart button and show tooltip', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <EdgeServices />
+      </Provider>, {
+        route: { params }
+      })
+
+    const row1 = await screen.findByRole('row', { name: /NSG-1/i })
+    await user.click(within(row1).getByRole('checkbox'))
+
+    const restartBtn = await screen.findByRole('button', { name: 'Restart' })
+    expect(restartBtn).toBeDisabled()
+
+    fireEvent.mouseOver(restartBtn)
+    expect(await screen.findByRole('tooltip'))
+      .toHaveTextContent('Only DHCP can be restarted')
+  })
+
+  it('should enable the restart button when DHCP checked only, but disable when also others checked', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <EdgeServices />
+      </Provider>, {
+        route: { params }
+      })
+
+    const row1 = await screen.findByRole('row', { name: /DHCP-1/i })
+    await user.click(within(row1).getByRole('checkbox'))
+
+    let restartBtn = await screen.findByRole('button', { name: 'Restart' })
+    expect(restartBtn).toBeEnabled()
+
+    const row2 = await screen.findByRole('row', { name: /NSG-1/i })
+    await user.click(within(row2).getByRole('checkbox'))
+
+    restartBtn = await screen.findByRole('button', { name: 'Restart' })
+    expect(restartBtn).toBeDisabled()
+
+    fireEvent.mouseOver(restartBtn)
+    expect(await screen.findByRole('tooltip'))
+      .toHaveTextContent('Only DHCP can be restarted')
+
+  })
+
 })

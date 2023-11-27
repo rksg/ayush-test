@@ -180,6 +180,8 @@ export function ManageIntegrator () {
 
   const [formData, setFormData] = useState({} as Partial<EcFormData>)
   const [selectedEcs, setSelectedEcs] = useState([] as MspEc[])
+  const [autoAssignEcAdmin, setAssignAdmin] = useState(false)
+
   const [unlimitSelected, setUnlimitSelected] = useState(true)
 
   const [addIntegrator] = useAddCustomerMutation()
@@ -311,7 +313,8 @@ export function ManageIntegrator () {
   const fieldValidator = async (value: string, remainingDevices: number) => {
     if(parseInt(value, 10) > remainingDevices || parseInt(value, 10) < 0) {
       return Promise.reject(
-        `${intl.$t({ defaultMessage: 'Invalid number' })} `
+        intl.$t({ defaultMessage: 'Number should be between 0 and {value}' },
+          { value: remainingDevices })
       )
     }
     return Promise.resolve()
@@ -369,7 +372,9 @@ export function ManageIntegrator () {
         admin_lastname: ecFormData.admin_lastname,
         admin_role: ecFormData.admin_role,
         admin_delegations: delegations
-
+      }
+      if (autoAssignEcAdmin) {
+        customer.isManageAllEcs = autoAssignEcAdmin
       }
       if (selectedEcs?.length > 0) {
         const ecs = selectedEcs.map(ec => ec.id)
@@ -504,8 +509,9 @@ export function ManageIntegrator () {
     setAdministrator(selected)
   }
 
-  const selectedAssignEc = (selected: MspEc[]) => {
+  const selectedAssignEc = (selected: MspEc[], assignEcAdmin?: boolean) => {
     setSelectedEcs(selected)
+    setAssignAdmin(assignEcAdmin ?? false)
   }
 
   const displayMspAdmins = ( ) => {
@@ -594,8 +600,8 @@ export function ManageIntegrator () {
     swLic ? setAvailableSwitchLicense(remainingSwitch+swLic)
       : setAvailableSwitchLicense(remainingSwitch)
 
-    const apswLicenses = entitlements.filter(p =>
-      p.remainingDevices > 0 && p.deviceType === EntitlementDeviceType.MSP_APSW)
+    const apswLicenses = entitlements.filter(p => p.remainingDevices > 0 &&
+      p.deviceType === EntitlementDeviceType.MSP_APSW && p.trial === false)
     let remainingApsw = 0
     apswLicenses.forEach( (lic: MspAssignmentSummary) => {
       remainingApsw += lic.remainingDevices

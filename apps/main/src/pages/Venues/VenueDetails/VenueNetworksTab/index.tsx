@@ -98,6 +98,7 @@ export function VenueNetworksTab () {
     useQuery: useVenueNetworkListQuery,
     defaultPayload
   })
+  const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
   const [tableData, setTableData] = useState(defaultArray)
@@ -147,7 +148,7 @@ export function VenueNetworksTab () {
     }
   }, [tableQuery.data, venueDetailsQuery.data])
 
-  const scheduleSlotIndexMap = useScheduleSlotIndexMap(tableData)
+  const scheduleSlotIndexMap = useScheduleSlotIndexMap(tableData, isMapEnabled)
   const linkToAddNetwork = useTenantLink('/networks/wireless/add')
 
   const activateNetwork = async (checked: boolean, row: Network) => {
@@ -257,7 +258,7 @@ export function VenueNetworksTab () {
           disabled = true
         } else if (row?.isOnBoarded) {
           disabled = true
-          title = $t({ defaultMessage: 'This is a Onboarding network for WPA3-DSAE for DPSK, so its activation on this venue is tied to the Service network exclusively.' })
+          title = $t({ defaultMessage: 'This is a Onboarding network for WPA3-DPSK3 for DPSK, so its activation on this venue is tied to the Service network exclusively.' })
         }else if (isSystemCreatedNetwork(row)) {
           disabled = true
           title = $t({ defaultMessage: 'Activating the OWE network also enables the read-only OWE transition network.' })
