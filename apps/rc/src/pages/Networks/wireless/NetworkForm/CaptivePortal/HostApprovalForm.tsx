@@ -23,6 +23,7 @@ import {
   domainsNameRegExp,
   emailsRegExp,
   emailsSameDomainValidation } from '@acx-ui/rc/utils'
+import { validationMessages } from '@acx-ui/utils'
 
 import { captivePasswordExpiration } from '../contentsMap'
 import { NetworkDiagram }            from '../NetworkDiagram/NetworkDiagram'
@@ -112,7 +113,7 @@ export function HostApprovalForm () {
             <Form.Item
               name={['guestPortal','hostGuestConfig', 'hostDomains']}
               rules={[
-                { required: true },
+                { required: true, message: $t(validationMessages.domains) },
                 { validator: (_, value) => domainsNameRegExp(
                   (Array.isArray(value)? value : value.split(',')), true)
                 }]
