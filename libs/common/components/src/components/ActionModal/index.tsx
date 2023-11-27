@@ -50,8 +50,6 @@ export interface ModalProps extends ModalFuncProps {
 export interface ModalRef {
   destroy: () => void;
   update: (configUpdate: ModalFuncProps) => void;
-  okText?: string;
-  cancelText?: string;
 }
 
 export interface ErrorDetailsProps {
@@ -93,6 +91,8 @@ export const showActionModal = (props: ModalProps) => {
 
 const transformProps = (props: ModalProps, modal: ModalRef) => {
   const { $t } = getIntl()
+  const okText:string = $t({ defaultMessage: 'OK' })
+  const cancelText:string = $t({ defaultMessage: 'Cancel' })
   switch (props.customContent?.action) {
     case 'DELETE':
       const {
@@ -150,6 +150,8 @@ const transformProps = (props: ModalProps, modal: ModalRef) => {
       }
       break
   }
+  props.okText = props.okText?? okText
+  props.cancelText = props.cancelText?? cancelText
   return props
 }
 
@@ -187,8 +189,6 @@ function CustomButtonsTemplate (props: {
   modal: ModalRef
 }) {
   const { $t } = getIntl()
-  const okText = $t({ defaultMessage: 'OK' })
-  const cancelText = $t({ defaultMessage: 'Cancel' })
   const destroyModal = () => props.modal.destroy()
   const handleClick = async (b: CustomButtonProps) => {
     try {
@@ -221,9 +221,7 @@ function CustomButtonsTemplate (props: {
               key={b.key}
               onClick={() => handleClick(b)}
             >
-              {((b.text === 'undefined' || b.text === undefined) && b.key === 'ok') ? okText
-                : (((b.text === 'undefined' || b.text === undefined) && (b.key === 'cancel'
-                  || b?.closeAfterAction)) ? cancelText : b.text)}
+              {b.text}
             </Button>
           )
         })
