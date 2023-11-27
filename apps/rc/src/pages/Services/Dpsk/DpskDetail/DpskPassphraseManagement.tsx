@@ -41,7 +41,7 @@ import { RolesEnum }                           from '@acx-ui/types'
 import { filterByAccess, hasAccess, hasRoles } from '@acx-ui/user'
 import { getIntl, validationMessages }         from '@acx-ui/utils'
 
-import NetworkForm from '../../../Networks/wireless/NetworkForm/NetworkForm'
+import NetworkForm from '../../../Networks/wireless/NetworkForm'
 
 import DpskPassphraseDrawer, { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
 import ManageDevicesDrawer                              from './ManageDevicesDrawer'

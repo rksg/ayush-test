@@ -41,7 +41,7 @@ import { RolesEnum, RequestPayload }                          from '@acx-ui/type
 import { filterByAccess, GuestErrorRes, hasAccess, hasRoles } from '@acx-ui/user'
 import { getIntl  }                                           from '@acx-ui/utils'
 
-import NetworkForm                           from '../../../../../Networks/wireless/NetworkForm/NetworkForm'
+import NetworkForm                           from '../../../../../Networks/wireless/NetworkForm'
 import { defaultGuestPayload, GuestsDetail } from '../GuestsDetail'
 import { GenerateNewPasswordModal }          from '../GuestsDetail/generateNewPasswordModal'
 import { useGuestActions }                   from '../GuestsDetail/guestActions'
