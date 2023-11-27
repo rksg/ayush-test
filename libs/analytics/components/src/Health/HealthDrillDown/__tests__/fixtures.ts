@@ -117,6 +117,58 @@ export const mockConnectionFailureResponse = {
           key: 'FONGDSL',
           value: 47
         }
+      ],
+      osManufacturers: [
+        {
+          key: 'Apple, Inc.',
+          value: 1028
+        },
+        {
+          key: 'Tuya Smart Inc.',
+          value: 1010
+        },
+        {
+          key: 'HTC Corporation',
+          value: 869
+        },
+        {
+          key: 'Sony Corporation',
+          value: 731
+        },
+        {
+          key: 'Nokia Corporation',
+          value: 705
+        },
+        {
+          key: 'Hon Hai Precision Ind. Co.,Ltd.',
+          value: 691
+        }
+      ],
+      events: [
+        {
+          key: 'CCD_REASON_PREV_AUTH_NOT_VALID',
+          value: 3243
+        },
+        {
+          key: 'CCD_REASON_TIMEOUT',
+          value: 1306
+        },
+        {
+          key: 'CCD_REASON_DEAUTH_LEAVING',
+          value: 1047
+        },
+        {
+          key: 'CCD_REASON_UNSPECIFIED',
+          value: 652
+        },
+        {
+          key: 'CCD_REASON_IEEE_802_1X_AUTH_FAILED',
+          value: 565
+        },
+        {
+          key: 'CCD_REASON_KICKOUT',
+          value: 450
+        }
       ]
     }
   }
@@ -137,6 +189,20 @@ export const mockTtcResponse = {
           key: 'aaron-dot1x',
           value: 1295.797373358349
         }
+      ],
+      osManufacturers: [
+        {
+          key: 'Apple, Inc.',
+          value: 1028
+        },
+        {
+          key: 'Tuya Smart Inc.',
+          value: 1010
+        },
+        {
+          key: 'HTC Corporation',
+          value: 869
+        }
       ]
     }
   }
@@ -149,6 +215,18 @@ export const mockOnlyWlansResponse = {
         {
           key: 'aaron-dot1x',
           value: 1295.797373358349
+        }
+      ],
+      osManufacturers: [
+        {
+          key: 'Apple, Inc.',
+          value: 1028
+        }
+      ],
+      events: [
+        {
+          key: 'CCD_REASON_PREV_AUTH_NOT_VALID',
+          value: 3243
         }
       ]
     }

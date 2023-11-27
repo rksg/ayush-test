@@ -7,8 +7,8 @@ import { DateRange }                                                            
 import type { AnalyticsFilter }                                                            from '@acx-ui/utils'
 
 import { mockConnectionFailureResponse, mockTtcResponse, mockPathWithAp, mockOnlyWlansResponse } from './__tests__/fixtures'
-import { HealthPieChart, pieNodeMap, tooltipFormatter }                                          from './healthPieChart'
-import { api }                                                                                   from './services'
+import { HealthPieChart, pieNodeMap, tooltipFormatter, transformData }                           from './healthPieChart'
+import { api, ImpactedEntities }                                                                 from './services'
 
 const mockGet = get as jest.Mock
 
@@ -137,10 +137,13 @@ describe('HealthPieChart', () => {
       })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Authentication')).toBeVisible()
-    expect(await screen.findByText('Top 5 Impacted WLANs')).toBeVisible()
-    const venues = await screen.findByText('Venues')
-    fireEvent.click(venues)
     expect(await screen.findByText('5 Impacted Venues')).toBeVisible()
+    fireEvent.click(await screen.findByText('WLANs'))
+    expect(await screen.findByText('Top 5 Impacted WLANs')).toBeVisible()
+    fireEvent.click(await screen.findByText('Manufacturers'))
+    expect(await screen.findByText('Top 5 Impacted Manufacturers')).toBeVisible()
+    fireEvent.click(await screen.findByText('Events'))
+    expect(await screen.findByText('Top 5 Impacted Events')).toBeVisible()
   })
 
   describe('tooltipFormatter', () => {
@@ -174,3 +177,27 @@ describe('HealthPieChart', () => {
   })
 })
 
+
+describe('transformData', () => {
+  it('should transform Data correctly', () => {
+    expect(
+      transformData(mockConnectionFailureResponse as ImpactedEntities)
+        .osManufacturers[0]
+    ).toEqual(
+      {
+        color: '#66B1E8',
+        key: 'Apple, Inc.',
+        name: 'Apple, Inc.',
+        value: 1028
+      }
+    )
+    expect(
+      transformData(mockConnectionFailureResponse as ImpactedEntities).events[0]
+    ).toEqual({
+      color: '#66B1E8',
+      key: 'Previous Auth Invalid',
+      name: 'Previous Auth Invalid',
+      value: 3243
+    })
+  })
+})

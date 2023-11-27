@@ -37,7 +37,7 @@ const attemptTitles = {
   ...readCodesIntoMap('attemptsText')(ccdFailureTypes as MapElement[])
 }
 
-const ccdReasonCodeMap = readCodesIntoMap()(
+export const ccdReasonCodeMap = readCodesIntoMap()(
   (ccdReasonCodes as MapElement[]).concat(
   ccd80211ReasonCodes.filter(({ code }) => !code.startsWith('SG_DHCP')) as MapElement[]))
 
