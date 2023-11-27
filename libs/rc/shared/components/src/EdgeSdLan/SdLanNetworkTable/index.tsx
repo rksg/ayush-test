@@ -1,11 +1,13 @@
 import { useMemo } from 'react'
 
-import { useIntl } from 'react-intl'
+import { AlignType } from 'rc-table/lib/interface'
+import { useIntl }   from 'react-intl'
 
 import { Loader, Table, TableProps }                            from '@acx-ui/components'
 import { useVenueNetworkActivationsDataListQuery }              from '@acx-ui/rc/services'
 import { defaultSort, NetworkSaveData, networkTypes, sortProp } from '@acx-ui/rc/utils'
 import { useParams }                                            from '@acx-ui/react-router-dom'
+import { hasAccess }                                            from '@acx-ui/user'
 
 import { ActivateNetworkSwitchButton } from './ActivateNetworkSwitchButton'
 
@@ -74,20 +76,22 @@ export const EdgeSdLanActivatedNetworksTable = (props: ActivatedNetworksTablePro
     render: (_, row) => {
       return $t(networkTypes[row.type!])
     }
-  }, {
+  },
+  ...(hasAccess() ? [{
     title: $t({ defaultMessage: 'Activate on Venue' }),
     key: 'action',
     dataIndex: 'action',
-    align: 'center',
+    align: 'center' as AlignType,
     width: 80,
-    render: (_, row) => {
+    render: (_: unknown, row: NetworkSaveData) => {
       return <ActivateNetworkSwitchButton
         row={row}
         activated={activated ?? []}
         onChange={onActivateChange}
       />
     }
-  }]), [$t, activated])
+  }] : [])
+  ]), [$t, activated])
 
   return (
     <Loader states={[

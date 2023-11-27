@@ -1,7 +1,9 @@
 import { useMemo } from 'react'
 
-import _           from 'lodash'
-import { useIntl } from 'react-intl'
+import _             from 'lodash'
+import { AlignType } from 'rc-table/lib/interface'
+import { useIntl }   from 'react-intl'
+
 
 import { TableProps }                                                   from '@acx-ui/components'
 import { ActivateNetworkSwitchButton, EdgeSdLanActivatedNetworksTable } from '@acx-ui/rc/components'
@@ -13,6 +15,7 @@ import {
   defaultSort
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { hasAccess }             from '@acx-ui/user'
 
 interface EdgeSdLanServiceProps {
   serviceId: string;
@@ -68,20 +71,22 @@ export const NetworkTable = (props: EdgeSdLanServiceProps) => {
     render: (_, row) => {
       return $t(networkTypes[row.type!])
     }
-  }, {
+  },
+  ...(hasAccess() ? [{
     title: $t({ defaultMessage: 'Active' }),
     key: 'action',
     dataIndex: 'action',
-    align: 'center',
+    align: 'center' as AlignType,
     width: 80,
-    render: (_, row) => {
+    render: (_: unknown, row: NetworkSaveData) => {
       return <ActivateNetworkSwitchButton
         row={row}
         activated={activatedNetworkIds}
         onChange={handleActivateChange}
       />
     }
-  }]), [$t, activatedNetworkIds])
+  }] : [])
+  ]), [$t, activatedNetworkIds])
 
   return (
     <EdgeSdLanActivatedNetworksTable
