@@ -52,11 +52,15 @@ export const UserUrlsInfo = {
   },
   getAllUserSettings: {
     method: 'get',
-    url: '/api/tenant/:tenantId/admin-settings/ui'
+    url: '/admins/admins-settings/ui',
+    oldUrl: '/api/tenant/:tenantId/admin-settings/ui',
+    newApi: true
   },
   saveUserSettings: {
     method: 'put',
-    url: '/api/tenant/:tenantId/admin-settings/ui/:productKey'
+    url: '/admins/admins-settings/ui/:productKey',
+    oldUrl: '/api/tenant/:tenantId/admin-settings/ui/:productKey',
+    newApi: true
   },
   wifiAllowedOperations: {
     method: 'get',

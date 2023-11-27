@@ -158,8 +158,7 @@ const ActivityTable = ({
       render: function (_, row) {
         return getActivityDescription(row.descriptionTemplate,
           row.descriptionData,
-          row?.linkData,
-          row?.linkTemplate)
+          row?.linkData)
       }
     }
   ]
@@ -189,8 +188,7 @@ const ActivityTable = ({
       title: defineMessage({ defaultMessage: 'Description' }),
       value: getActivityDescription(data.descriptionTemplate,
         data.descriptionData,
-        data?.linkData,
-        data?.linkTemplate)
+        data?.linkData)
     }
   ]
 
