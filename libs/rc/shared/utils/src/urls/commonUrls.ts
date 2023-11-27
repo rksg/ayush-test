@@ -426,22 +426,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader',
     newApi: true
   },
-  getClientSessionHistory: {
-    method: 'post',
-    url: '/reports/clients/sessionHistories',
-    oldUrl: '/api/reporting/tenant/:tenantId/report/clientSessionHistory',
-    newApi: true
-  },
   getHistoricalClientList: {
     method: 'post',
     url: '/historicalClients/query',
     oldUrl: '/api/eventalarmapi/:tenantId/event/hist_client_list',
-    newApi: true
-  },
-  getHistoricalStatisticsReportsV2: {
-    method: 'post',
-    url: '/reports/clients/statistics',
-    oldUrl: '/api/reporting/tenant/:tenantId/report/clientStats/v2',
     newApi: true
   },
   getGuestsList: {

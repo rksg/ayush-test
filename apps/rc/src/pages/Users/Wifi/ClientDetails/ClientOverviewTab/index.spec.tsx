@@ -1,4 +1,4 @@
-import { rest } from 'msw'
+import { graphql, rest } from 'msw'
 
 import { apApi, venueApi, networkApi, clientApi } from '@acx-ui/rc/services'
 import {
@@ -10,7 +10,7 @@ import {
   getUrlForTest,
   DpskUrls
 } from '@acx-ui/rc/utils'
-import { Provider, store }    from '@acx-ui/store'
+import { Provider, dataApi, dataApiURL, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -63,8 +63,7 @@ const params = {
 
 describe('ClientOverviewTab', () => {
   beforeEach(() => {
-    // eslint-disable-next-line no-console
-    // console.log('beforeEach')
+    store.dispatch(dataApi.util.resetApiState())
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(clientApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
@@ -83,10 +82,8 @@ describe('ClientOverviewTab', () => {
         (_, res, ctx) => res(ctx.json(clientVenueList[0]))),
       rest.post(CommonUrlsInfo.getHistoricalClientList.url,
         (_, res, ctx) => res(ctx.json(histClientList))),
-      rest.post(CommonUrlsInfo.getHistoricalStatisticsReportsV2.url,
-        (_, res, ctx) => res(ctx.json(clientReportList[0]))),
-      rest.get(WifiUrlsInfo.getApCapabilities.url,
-        (_, res, ctx) => res(ctx.json(apCaps)))
+      graphql.link(dataApiURL).query('ClientStatisics', (_, res, ctx) =>
+        res(ctx.data({ client: clientReportList[0] })))
     )
   })
 
@@ -167,8 +164,6 @@ describe('ClientOverviewTab', () => {
 
 describe('ClientOverviewTab - ClientProperties', () => {
   beforeEach(() => {
-    // eslint-disable-next-line no-console
-    // console.log('beforeEach')
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(clientApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
@@ -182,9 +177,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(clientNetworkList[0]))),
       rest.get(CommonUrlsInfo.getVenue.url,
-        (_, res, ctx) => res(ctx.json(clientVenueList[0]))),
-      rest.get(WifiUrlsInfo.getApCapabilities.url,
-        (_, res, ctx) => res(ctx.json(apCaps)))
+        (_, res, ctx) => res(ctx.json(clientVenueList[0])))
     )
   })
 
@@ -515,16 +508,16 @@ describe('ClientOverviewTab - ClientProperties', () => {
 
       it('should render correctly when search parameters is disappeared', async () => {
         jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('')
+        store.dispatch(dataApi.util.resetApiState())
         mockServer.use(
           rest.get(ClientUrlsInfo.getClientDetails.url,
             (_, res, ctx) => res(ctx.status(404), ctx.json({}))
           ),
-          rest.post(CommonUrlsInfo.getHistoricalStatisticsReportsV2.url,
-            (_, res, ctx) => res(ctx.json(clientReportList[0]))
-          ),
           rest.post(CommonUrlsInfo.getHistoricalClientList.url,
             (_, res, ctx) => res(ctx.json(histClientList))
-          )
+          ),
+          graphql.link(dataApiURL).query('ClientStatisics', (_, res, ctx) =>
+            res(ctx.data({ client: clientReportList[0] })))
         )
 
         render(<Provider><ClientOverviewTab /></Provider>, {

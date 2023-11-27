@@ -5,7 +5,6 @@ import {
   Client,
   ClientList,
   ClientListMeta,
-  ClientStatistic,
   ClientUrlsInfo,
   CommonResult,
   CommonUrlsInfo,
@@ -240,12 +239,6 @@ export const clientApi = baseClientApi.injectEndpoints({
       providesTags: [{ type: 'HistoricalClient', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
-    getHistoricalStatisticsReports: build.query<ClientStatistic, RequestPayload>({
-      query: ({ params, payload }) => ({
-        ...createHttpRequest(CommonUrlsInfo.getHistoricalStatisticsReportsV2, params),
-        body: latestTimeFilter(payload)
-      })
-    }),
     addGuestPass: build.mutation<Guest, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.addGuestPass, params)
@@ -329,7 +322,5 @@ export const {
   useEnableGuestsMutation,
   useDisableGuestsMutation,
   useGenerateGuestPasswordMutation,
-  useGetHistoricalStatisticsReportsQuery,
-  useLazyGetHistoricalStatisticsReportsQuery,
   useImportGuestPassMutation
 } = clientApi
