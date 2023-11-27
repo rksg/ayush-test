@@ -27,7 +27,8 @@ import {
   MspAggregations,
   MspEcAlarmList,
   RecommendFirmwareUpgrade,
-  AvailableMspRecCustomers
+  AvailableMspRecCustomers,
+  ConfigTemplate
 } from '@acx-ui/msp/utils'
 import {
   TableResult,
@@ -824,6 +825,15 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getConfigTemplateList: build.query<TableResult<ConfigTemplate>, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MspUrlsInfo.getConfigTemplates, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'ConfigTemplate', id: 'LIST' }]
     })
   })
 })
@@ -891,5 +901,6 @@ export const {
   useGetAvailableMspRecCustomersQuery,
   useAddRecCustomerMutation,
   useAssignMspEcToMultiIntegratorsMutation,
-  useAssignMspEcToIntegrator_v1Mutation
+  useAssignMspEcToIntegrator_v1Mutation,
+  useGetConfigTemplateListQuery
 } = mspApi

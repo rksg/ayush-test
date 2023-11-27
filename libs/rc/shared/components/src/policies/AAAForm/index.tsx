@@ -10,10 +10,14 @@ import {
 import { useAaaPolicyQuery, useAddAAAPolicyMutation, useUpdateAAAPolicyMutation } from '@acx-ui/rc/services'
 import {
   AAAPolicyType,
+  generateConfigTemplateBreadcrumb,
+  generateConfigTemplatePayload,
+  generatePolicyPageHeaderTitle,
   getPolicyListRoutePath,
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
+  policyTypeLabelMapping,
   useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
@@ -35,7 +39,7 @@ export function AAAForm (props: AAAFormProps) {
   const params = useParams()
   const edit = props.edit && !props.networkView
   const formRef = useRef<StepsFormLegacyInstance<AAAPolicyType>>()
-  const { genTemplatePayload } = useConfigTemplate()
+  const { isTemplate } = useConfigTemplate()
   const { data } = useAaaPolicyQuery({ params }, { skip: !props.edit })
   const [ createAAAPolicy ] = useAddAAAPolicyMutation()
 
@@ -55,7 +59,7 @@ export function AAAForm (props: AAAFormProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
   const addOrUpdateAAA = async (data: AAAPolicyType, edit: boolean) => {
-    const payload = genTemplatePayload(data)
+    const payload = isTemplate ? generateConfigTemplatePayload(data) : data
 
     if (!edit) {
       await createAAAPolicy({ params, payload }).unwrap().then((res)=>{
@@ -77,17 +81,17 @@ export function AAAForm (props: AAAFormProps) {
   return (
     <>
       {!props.networkView && <PageHeader
-        title={edit
-          ? $t({ defaultMessage: 'Edit RADIUS Server' })
-          : $t({ defaultMessage: 'Add RADIUS Server' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          { text: $t({ defaultMessage: 'RADIUS Server' }), link: tablePath }
-        ]}
+        title={generatePolicyPageHeaderTitle(edit, isTemplate, PolicyType.AAA)}
+        breadcrumb={isTemplate
+          ? generateConfigTemplateBreadcrumb()
+          : [
+            { text: $t({ defaultMessage: 'Network Control' }) },
+            {
+              text: $t({ defaultMessage: 'Policies & Profiles' }),
+              link: getPolicyListRoutePath(true)
+            },
+            { text: $t(policyTypeLabelMapping[PolicyType.AAA]), link: tablePath }
+          ]}
       />}
       <StepsFormLegacy<AAAPolicyType>
         formRef={formRef}

@@ -444,3 +444,15 @@ export interface MspRecCustomer {
   acx_trial_in_progress?: boolean,
   email_id?: string
 }
+
+export interface ConfigTemplate {
+  id?: string,
+  name: string,
+  createdBy: string,
+  createdOn: string,
+  appliedTo: number,
+  category: string,
+  type: string,
+  lastModified: string,
+  lastApplied: string
+}

@@ -12,7 +12,9 @@ import {
   IntegratorsOutlined,
   IntegratorsSolid,
   UsersThreeOutlined,
-  UsersThreeSolid
+  UsersThreeSolid,
+  CopyOutlined,
+  CopySolid
 } from '@acx-ui/icons'
 import { TenantType }  from '@acx-ui/react-router-dom'
 import { RolesEnum }   from '@acx-ui/types'
@@ -29,6 +31,7 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfoo
   const isSupport = tenantType === 'SUPPORT'
   const isIntegrator =
   tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
+  const isConfigTemplateEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE)
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -85,7 +88,15 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfoo
         inactiveIcon: ConfigurationOutlined,
         activeIcon: ConfigurationSolid,
         adminItem: true
-      }])
+      }]),
+    ...(isConfigTemplateEnabled
+      ? [{
+        uri: '/configTemplates',
+        label: $t({ defaultMessage: 'Config Templates' }),
+        tenantType: 'v' as TenantType,
+        inactiveIcon: CopyOutlined,
+        activeIcon: CopySolid
+      }] : [])
   ]
   return config
 }

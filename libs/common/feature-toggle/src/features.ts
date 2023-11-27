@@ -127,7 +127,8 @@ export enum Features {
   MSP_HSP_SUPPORT = 'mspservice-hsp-01',
   RUCKUS_AI_ZONES_LIST = 'ruckus-ai-zones-toggle',
   LINKEDIN_OIDC_TOGGLE = 'guest-linkedin-openid-connect-toggle',
-  TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs'
+  TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs',
+  CONFIG_TEMPLATE = 'acx-ui-config-template'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

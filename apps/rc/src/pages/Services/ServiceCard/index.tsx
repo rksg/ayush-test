@@ -4,13 +4,14 @@ import { RadioCard, RadioCardProps } from '@acx-ui/components'
 import {
   getServiceRoutePath,
   ServiceOperation,
-  ServiceType
+  ServiceType,
+  serviceTypeLabelMapping
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                               from '@acx-ui/types'
 import { hasRoles }                                from '@acx-ui/user'
 
-import { serviceTypeDescMapping, serviceTypeLabelMapping } from '../contentsMap'
+import { serviceTypeDescMapping } from '../contentsMap'
 
 export type ServiceCardProps = Pick<RadioCardProps, 'type' | 'categories'> & {
   serviceType: ServiceType

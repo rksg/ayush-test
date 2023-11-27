@@ -1,4 +1,5 @@
 import { ConfigProvider, PageNotFound }                     from '@acx-ui/components'
+import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
 import { ManageCustomer, ManageIntegrator, PortalSettings } from '@acx-ui/msp/components'
 import { AAAForm }                                          from '@acx-ui/rc/components'
 import {
@@ -9,6 +10,7 @@ import {
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
+import { ConfigTemplate }                          from './pages/ConfigTemplates'
 import { DeviceInventory }                         from './pages/DeviceInventory'
 import { Integrators }                             from './pages/Integrators'
 import Layout, { LayoutWithConfigTemplateContext } from './pages/Layout'
@@ -35,7 +37,7 @@ export default function MspRoutes () {
       <Route path='deviceinventory' element={<DeviceInventory />} />
       <Route path='msplicenses/*' element={<CustomersRoutes />} />
       <Route path='portalSetting' element={<PortalSettings />} />
-      <Route path='templates/*' element={<TemplatesRoutes />} />
+      <Route path='configTemplates/*' element={<ConfigTemplatesRoutes />} />
     </Route>
   )
   return (
@@ -72,17 +74,22 @@ function CustomersRoutes () {
   )
 }
 
-function TemplatesRoutes () {
-  return rootRoutes(
+function ConfigTemplatesRoutes () {
+  const isConfigTemplateEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE)
+
+  return isConfigTemplateEnabled ? rootRoutes(
     <Route>
       <Route path='*' element={<PageNotFound />} />
-      <Route path=':tenantId/v/templates' element={<LayoutWithConfigTemplateContext />}>
-        <Route index element={<div>Templates Main Page</div>} />
+      <Route path=':tenantId/v/configTemplates' element={<LayoutWithConfigTemplateContext />}>
+        <Route index
+          element={<TenantNavigate replace to='/configTemplates/templates' tenantType='v'/>}
+        />
+        <Route path={':activeTab'} element={<ConfigTemplate />} />
         <Route
           path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
-          element={<AAAForm edit={false}/>}
+          element={<AAAForm edit={false} />}
         />
       </Route>
     </Route>
-  )
+  ) : null
 }
