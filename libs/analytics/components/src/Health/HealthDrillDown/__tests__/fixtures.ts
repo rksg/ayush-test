@@ -217,12 +217,7 @@ export const mockOnlyWlansResponse = {
           value: 1295.797373358349
         }
       ],
-      osManufacturers: [
-        {
-          key: 'Apple, Inc.',
-          value: 1028
-        }
-      ],
+      osManufacturers: [],
       events: [
         {
           key: 'CCD_REASON_PREV_AUTH_NOT_VALID',

@@ -57,7 +57,10 @@ describe('HealthPieChart', () => {
         node.setAttribute('_echarts_instance_', 'ec_mock')
         node.setAttribute('size-sensor-id', 'sensor-mock')
       })
-    expect(fragment).toMatchSnapshot()
+    expect(await screen.findByText('5 Impacted Venues')).toBeVisible()
+    expect(await screen.findByText('WLANs')).toBeVisible()
+    expect(await screen.findByText('Manufacturers')).toBeVisible()
+    expect(await screen.findByText('Events')).toBeVisible()
   })
 
   it('should render correctly for single ttc failures', async () => {
@@ -85,7 +88,10 @@ describe('HealthPieChart', () => {
         node.setAttribute('_echarts_instance_', 'ec_mock')
         node.setAttribute('size-sensor-id', 'sensor-mock')
       })
-    expect(fragment).toMatchSnapshot()
+    expect(await screen.findByText('1 Impacted Venue')).toBeVisible()
+    expect(await screen.findByText('WLAN')).toBeVisible()
+    expect(await screen.findByText('Manufacturers')).toBeVisible()
+    expect(screen.queryByText('Events')).toBeNull()
   })
 
   it('should render correctly for missing nodes data', async () => {
@@ -114,7 +120,7 @@ describe('HealthPieChart', () => {
         node.setAttribute('_echarts_instance_', 'ec_mock')
         node.setAttribute('size-sensor-id', 'sensor-mock')
       })
-    expect(fragment).toMatchSnapshot()
+    expect(await screen.findByText('aaron-dot1x')).toBeVisible()
   })
 
   it('should handle chart switching', async () => {
