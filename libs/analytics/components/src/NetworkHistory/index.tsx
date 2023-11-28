@@ -27,7 +27,6 @@ interface NetworkHistoryWidgetComponentProps {
   filters: IncidentFilter
   hideIncidents?: boolean
   brush?: { timeWindow: TimeStampRange, setTimeWindow: (range: TimeStampRange) => void }
-  apCount?: number
   historicalIcon?: boolean
 }
 
@@ -42,7 +41,6 @@ export const NetworkHistory = forwardRef<
     filters,
     hideIncidents = false,
     brush,
-    apCount,
     historicalIcon = true
   } = props
   const { $t } = useIntl()
@@ -62,7 +60,7 @@ export const NetworkHistory = forwardRef<
       name: $t({ defaultMessage: 'Impacted Clients' })
     })
   }
-  const queryResults = useNetworkHistoryQuery({ ...filters, hideIncidents, apCount }, {
+  const queryResults = useNetworkHistoryQuery({ ...filters, hideIncidents }, {
     selectFromResult: ({ data, ...rest }) => ({
       data: getSeriesData(data!, seriesMapping),
       ...rest

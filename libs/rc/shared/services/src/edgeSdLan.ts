@@ -36,9 +36,9 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
         async onCacheEntryAdded (requestArgs, api) {
           await onSocketActivityChanged(requestArgs, api, (msg) => {
             onActivityMessageReceived(msg, [
-              'Add SdLan',
-              'Update SdLan',
-              'Delete SdLan'
+              'Add SD-LAN',
+              'Update SD-LAN',
+              'Delete SD-LAN'
             ], () => {
               api.dispatch(serviceApi.util.invalidateTags([
                 { type: 'Service', id: 'LIST' }
@@ -126,9 +126,9 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
         async onCacheEntryAdded (requestArgs, api) {
           await onSocketActivityChanged(requestArgs, api, (msg) => {
             onActivityMessageReceived(msg, [
-              'Add SdLan',
-              'Update SdLan',
-              'Delete SdLan'
+              'Add SD-LAN',
+              'Update SD-LAN',
+              'Delete SD-LAN'
             ], () => {
               api.dispatch(serviceApi.util.invalidateTags([
                 { type: 'Service', id: 'LIST' }
@@ -142,19 +142,13 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
         extraOptions: { maxRetries: 5 }
       }),
     deleteEdgeSdLan: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        if(payload) { //delete multiple rows
-          const req = createHttpRequest(EdgeSdLanUrls.batchDeleteEdgeSdLan)
-          return {
-            ...req,
-            body: payload
-          }
-        } else { //delete single row
-          const req = createHttpRequest(EdgeSdLanUrls.deleteEdgeSdLan, params)
-          return {
-            ...req
-          }
+      query: ({ params }) => {
+        //delete single row
+        const req = createHttpRequest(EdgeSdLanUrls.deleteEdgeSdLan, params)
+        return {
+          ...req
         }
+
       },
       invalidatesTags: [{ type: 'EdgeSdLan', id: 'LIST' }]
     })

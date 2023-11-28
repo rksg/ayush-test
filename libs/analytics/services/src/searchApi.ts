@@ -78,6 +78,19 @@ export interface Switch {
   switchVersion: string
 }
 
+export interface Client {
+  hostname: string
+  username: string
+  mac: string
+  osType: string
+  ipAddress: string
+  lastActiveTime: string
+}
+
+export interface ClientList {
+  clients: Client[]
+}
+
 export const searchApi = dataApiSearch.injectEndpoints({
   endpoints: (build) => ({
     search: build.query<SearchResponse, RequestPayload>({
@@ -234,6 +247,36 @@ export const networkSearchApi = dataApi.injectEndpoints({
       providesTags: [{ type: 'Monitoring', id: 'NETWORK_LIST' }],
       transformResponse: (response: { network: { search: NetworkListReponse } }) =>
         response.network.search
+    }),
+    networkClientList: build.query<ClientList, ListPayload>({
+      query: (payload) => ({
+        document: gql`
+          query Network(
+            $start: DateTime
+            $end: DateTime
+            $query: String
+            $limit: Int
+            $filter: FilterInput
+          ) {
+            network(start: $start, end: $end, filter: $filter) {
+              search(start: $start, end: $end, query: $query, limit: $limit) {
+                clients {
+                  hostname
+                  username
+                  mac
+                  osType
+                  ipAddress
+                  lastActiveTime
+                  manufacturer
+                }
+              }
+            }
+          }
+        `,
+        variables: payload
+      }),
+      providesTags: [{ type: 'Monitoring', id: 'ZONES_CLIENT_LIST' }],
+      transformResponse: (response: { network: { search: ClientList } }) => response.network.search
     })
   })
 })
@@ -244,5 +287,6 @@ export const {
 } = searchApi
 export const {
   useApListQuery,
-  useNetworkListQuery
+  useNetworkListQuery,
+  useNetworkClientListQuery
 } = networkSearchApi
