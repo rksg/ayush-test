@@ -20,7 +20,6 @@ import {
   Switch, Unknown,
   AccessPointWifiPort,
   SearchOutlined,
-  TopologyCloud,
   ArrowsOut
 } from '@acx-ui/icons'
 import { useGetTopologyQuery } from '@acx-ui/rc/services'
@@ -38,7 +37,6 @@ import NodeTooltip             from './NodeTooltip'
 import * as UI                 from './styledComponents'
 import TopologyTree            from './TopologyTree'
 import { TopologyTreeContext } from './TopologyTree/TopologyTreeContext'
-import { getDeviceIcon }       from './utils'
 
 type OptionType = {
   value: string;
@@ -727,18 +725,6 @@ export function TopologyGraphComponent (props:{ venueId?: string,
                 ref={graphRef}
                 data={treeData}
                 edges={topologyData.edges}
-                nodeRender={(node: { parent: any, data: any }) => {
-                  return (
-                    // eslint-disable-next-line react/jsx-no-useless-fragment
-                    <Fragment>
-                      {node.parent ? (
-                        getDeviceIcon(node.data.type, node.data.status)
-                      ) : (
-                        <TopologyCloud width={24} height={24} x={-12} y={-12} />
-                      )}
-                    </Fragment>
-                  )
-                }}
                 onNodeClick={debouncedHandleMouseEnter}
                 onLinkClick={debouncedHandleMouseEnterLink}
               />

@@ -118,12 +118,12 @@ export const Links: React.FC<LinksProps> = (props) => {
       {links.map((link, i) => {
         const linkInfo = linksInfo[`${link.source.data.id}_${link.target.data.id}`]
 
-        const linkClass = linkInfo.connectionStatus !== undefined ?
-          linkColor[linkInfo.connectionStatus as ConnectionStatus] :
+        const linkClass = linkInfo?.connectionStatus ?
+          linkColor[linkInfo?.connectionStatus as ConnectionStatus] :
           linkColor[ConnectionStatus.Good]
 
-        const markerClass = linkInfo.connectionStatus !== undefined ?
-          markerColor[linkInfo.connectionStatus as ConnectionStatus] :
+        const markerClass = linkInfo?.connectionStatus ?
+          markerColor[linkInfo?.connectionStatus as ConnectionStatus] :
           markerColor[ConnectionStatus.Good]
 
         return (
@@ -138,6 +138,11 @@ export const Links: React.FC<LinksProps> = (props) => {
               markerStart={link.source.depth === 0 ? `url(#${markerClass})` : ''}
               markerEnd={`url(#${markerClass})`}
               strokeDasharray={linkInfo.connectionType === 'Mesh' ? '1' : '0'}
+            />
+            <path
+              d={linkCustom(link, linksInfo)}
+              strokeWidth={10}
+              strokeOpacity={0}
             />
           </g>
         )

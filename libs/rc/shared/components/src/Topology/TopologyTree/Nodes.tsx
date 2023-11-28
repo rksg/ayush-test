@@ -1,9 +1,9 @@
 import React, { useState, useEffect, MouseEvent } from 'react'
 
-import { MinusCircleOutlined, PlusCircleOutlined } from '@acx-ui/icons'
-import { Node }                                    from '@acx-ui/rc/utils'
+import { MinusCircleOutlined, PlusCircleOutlined, TopologyCloud } from '@acx-ui/icons'
+import { Node }                                                   from '@acx-ui/rc/utils'
 
-import { getDeviceColor, truncateLabel } from '../utils'
+import { getDeviceIcon, getDeviceColor, truncateLabel } from '../utils'
 
 interface NodeData extends Node {
   children?: NodeData[]
@@ -13,7 +13,6 @@ interface NodeData extends Node {
 interface NodeProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   nodes: any;
-  nodeRender: (node: NodeData, i: number) => JSX.Element;
   expColEvent: (nodeId: string) => void;
   onClick: (node: NodeData, event: MouseEvent) => void;
   nodesCoordinate: { [id: string]: { x: number; y: number } };
@@ -22,7 +21,7 @@ interface NodeProps {
 const Nodes: React.FC<NodeProps> = (props) => {
   const [color, setColor] = useState<{ [id: string]: string }>({})
   let delayHandler: NodeJS.Timeout
-  const { nodes, nodeRender, expColEvent, onClick, nodesCoordinate } = props
+  const { nodes, expColEvent, onClick, nodesCoordinate } = props
 
   useEffect(() => {
     nodes
@@ -67,7 +66,7 @@ const Nodes: React.FC<NodeProps> = (props) => {
     <g className='output d3-tree-nodes'>
       {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        nodes.map((node: any, i: number) => {
+        nodes.map((node: any) => {
           const ancestorName = node.parent
             ? node
               .ancestors()
@@ -94,7 +93,13 @@ const Nodes: React.FC<NodeProps> = (props) => {
                 onClick={handleClick}
               >
                 <circle cx='0' cy='0' r='15' className={`${node.data.status}-circle`} />
-                <g className={`${node.data.status}-icon`}>{nodeRender(node, i)}</g>
+                <g className={`${node.data.status}-icon`}>
+                  {node.parent ? (
+                    getDeviceIcon(node.data.type, node.data.status)
+                  ) : (
+                    <TopologyCloud width={24} height={24} x={-12} y={-12} />
+                  )}
+                </g>
                 <g>
                   <text
                     className='node-text'

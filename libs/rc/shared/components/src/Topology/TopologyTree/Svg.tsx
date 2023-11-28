@@ -14,7 +14,7 @@ const NODE_SIZE: [number, number] = [45, 150]
 const SCALE_RANGE: [number, number] = [0.1, 5]
 
 const Svg: any = (props: any) => {
-  const { width, height, data, edges, nodeRender, onNodeClick, onLinkClick } = props
+  const { width, height, data, edges, onNodeClick, onLinkClick } = props
   const refSvg = useRef<any>(null)
   const refMain = useRef<any>(null)
   const [treeData, setTreeData] = useState<any>(null) // Replace 'any' with the actual data type
@@ -127,7 +127,6 @@ const Svg: any = (props: any) => {
           {links && (
             <Nodes
               nodes={nodes}
-              nodeRender={nodeRender}
               expColEvent={expColEvent}
               onClick={onNodeClick}
               nodesCoordinate={nodesCoordinate}
