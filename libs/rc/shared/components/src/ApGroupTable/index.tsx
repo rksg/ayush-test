@@ -86,7 +86,7 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
     //const { totalCount = 0, data: apGroupsData = [] } = tableQuery.data || {}
     const { totalCount = 0 } = tableQuery.data || {}
     setApGroupsCount?.(totalCount)
-/*
+    /*
     const addIncidentsData = async () => {
       const incidentsPayload = genIncidentsPayload(apGroupsData)
       console.log('incidentsPayload: ', incidentsPayload)
@@ -97,7 +97,7 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
     if (apGroupsData.length > 0) {
       addIncidentsData()
     }
-*/
+   */
 
   }, [tableQuery.data])
 
