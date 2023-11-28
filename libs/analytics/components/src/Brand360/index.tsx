@@ -8,12 +8,12 @@ import type { Settings }                                                  from '
 import { PageHeader, RangePicker, GridRow, GridCol, Loader }              from '@acx-ui/components'
 import { DateFilter, DateRange, getDateRangeFilter, getDatePickerValues } from '@acx-ui/utils'
 
-export type SliceType = 'property' | 'lsp'
+import { useSliceType } from './useSliceType'
 
 export function Brand360 () {
   const settingsQuery = useGetTenantSettingsQuery()
   const { $t } = useIntl()
-  const [sliceType/*, setSliceType*/] = useState<SliceType>('property')
+  const { sliceType, SliceTypeDropdown } = useSliceType()
   const [settings, setSettings] = useState<Partial<Settings>>({})
   const [dateFilterState, setDateFilterState] = useState<DateFilter>(
     getDateRangeFilter(DateRange.last8Hours)
@@ -27,7 +27,7 @@ export function Brand360 () {
       title={$t({ defaultMessage: 'Brand 360' })}
       extra={[
         <>
-          <div>{sliceType}</div>
+          <SliceTypeDropdown />
           <RangePicker
             key='range-picker'
             selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
@@ -43,7 +43,7 @@ export function Brand360 () {
       <GridCol col={{ span: 6 }}>incident</GridCol>
       <GridCol col={{ span: 6 }}>guest experience</GridCol>
       <GridCol col={{ span: 6 }}>brand ssid compliance</GridCol>
-      <GridCol col={{ span: 6 }}>{JSON.stringify(settings)}</GridCol>
+      <GridCol col={{ span: 6 }}>{sliceType} {JSON.stringify(settings)}</GridCol>
     </GridRow>
     table
   </Loader>
