@@ -1,6 +1,5 @@
-import moment        from 'moment-timezone'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import moment      from 'moment-timezone'
+import { useIntl } from 'react-intl'
 
 import {
   useSearchQuery,
@@ -10,7 +9,7 @@ import {
   NetworkHierarchy,
   Switch
 } from '@acx-ui/analytics/services'
-import { defaultSort, sortProp, formattedPath, getUserProfile } from '@acx-ui/analytics/utils'
+import { defaultSort, sortProp, formattedPath, getUserProfile, roleLink, encodeFilterPath } from '@acx-ui/analytics/utils'
 import {
   PageHeader,
   Loader,
@@ -21,10 +20,10 @@ import {
   useDateRange,
   TimeRangeDropDownProvider
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                                       from '@acx-ui/formatter'
-import { TenantLink, resolvePath, Navigate, MLISA_BASE_PATH, useSearchParams } from '@acx-ui/react-router-dom'
-import { DateRange, fixedEncodeURIComponent, encodeParameter, DateFilter } from '@acx-ui/utils'
+import { Features, useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                                  from '@acx-ui/formatter'
+import { useParams, TenantLink, resolvePath, Navigate, MLISA_BASE_PATH, useLocation } from '@acx-ui/react-router-dom'
+import { DateRange, fixedEncodeURIComponent, encodeParameter, DateFilter }            from '@acx-ui/utils'
 
 import NoData                                from './NoData'
 import {  Collapse, Panel, Ul, Chevron, Li } from './styledComponents'
@@ -33,8 +32,7 @@ const pagination = { pageSize: 5, defaultPageSize: 5 }
 
 function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
   const { $t } = useIntl()
-  const [search] = useSearchParams()
-  const selectedTenants = search.get('selectedTenants')
+  const { search } = useLocation()
   const { selectedTenant: { role } } = getUserProfile()
   const isReportOnly = role === 'report-only'
   const isZonesPageEnabled = useIsSplitOn(Features.RUCKUS_AI_ZONES_LIST)
@@ -43,12 +41,12 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
     start: timeRange[0].format(),
     end: timeRange[1].format(),
     limit: 100,
-    query: searchVal!
-
+    query: searchVal!,
+    isReportOnly
   })
   let count = 0
   results.data && Object.entries(results.data).forEach(([, value]) => {
-    count += (value as []).length || 0
+    count += value?.length || 0
   })
   const apTablecolumnHeaders: TableProps<AP>['columns'] = [
     {
@@ -57,10 +55,14 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       key: 'apName',
       width: 130,
       sorter: { compare: sortProp('apName', defaultSort) },
-      render: (_, row : AP) => (
-        <TenantLink to={`/devices/wifi/${row.macAddress}/details/ai`}>
-          {row.apName}</TenantLink>
-      )
+      render: (_, row : AP) => {
+        const reportFilter = encodeFilterPath('analytics', row.networkPath)
+        const link = roleLink({
+          'base': { routePath: `/devices/wifi/${row.macAddress}/details/ai` },
+          'report-only': { routePath: `/reports/aps?${reportFilter}` }
+        }, role)
+        return <TenantLink to={link}>{row.apName}</TenantLink>
+      }
     },
     {
       title: $t({ defaultMessage: 'MAC Address' }),
@@ -96,7 +98,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       dataIndex: 'networkPath',
       key: 'networkPath',
       render: (_, value ) => {
-        const networkPath = value.networkPath.slice(1, -1)
+        const networkPath = value.networkPath.slice(1)
         return <Tooltip placement='left' title={formattedPath(networkPath, 'Name')}>
           <Ul>
             {networkPath.map(({ name }, index) => [
@@ -178,10 +180,10 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       title: $t({ defaultMessage: 'Switch Name' }),
       dataIndex: 'switchName',
       key: 'switchName',
-      render: (_, row : Switch) => (
-        <TenantLink to={`/devices/switch/${row.switchMac}/serial/details/incidents`}>
+      render: (_, row : Switch) => {
+        return <TenantLink to={`/devices/switch/${row.switchMac}/serial/details/incidents`}>
           {row.switchName}</TenantLink>
-      ),
+      },
       sorter: { compare: sortProp('switchName', defaultSort) }
     },
     {
@@ -213,13 +215,10 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       fixed: 'left',
       render: (_, row : NetworkHierarchy) => {
         const networkPath = row.networkPath.slice(1)
+        const filter = encodeFilterPath('analytics', row.networkPath)
         const path = row.type.toLowerCase() === 'zone' && isZonesPageEnabled
           ? resolvePath(`/zones/${networkPath?.[0]?.name}/${networkPath?.[1]?.name}/assurance`)
-          : resolvePath(
-            `/incidents?analyticsNetworkFilter=${fixedEncodeURIComponent(
-              JSON.stringify({ raw: row.networkPath, path: row.networkPath })
-            )}`
-          )
+          : resolvePath(`/incidents?${filter}`)
         return <TenantLink to={path}>{row.name}</TenantLink>
       },
       sorter: { compare: sortProp('name', defaultSort) }
@@ -257,8 +256,8 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       dataIndex: 'networkPath',
       key: 'networkPath',
       render: (_, value ) => {
-        const networkPath = value.networkPath.slice(1, -1)
-        return <Tooltip placement='left' title={formattedPath(networkPath, 'Name')}>
+        const networkPath = value.networkPath.slice(1)
+        return <Tooltip placement='left' title={formattedPath(value.networkPath, 'Name')}>
           <Ul>
             {networkPath.map(({ name }, index) => [
               index !== 0 && <Chevron key={`network-chevron-${index}`}>{'>'}</Chevron>,
@@ -283,7 +282,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
         return <TenantLink
           to={`/networks/wireless/${fixedEncodeURIComponent(name)}/network-details/reports`}
         >
-          {(name)}
+          {name}
         </TenantLink>
       }
     },
@@ -352,7 +351,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
         <Collapse
           defaultActiveKey={Object.keys(results.data!)}
         >
-          { results.data?.aps.length &&
+          { results.data?.aps?.length &&
             <Panel
               key='aps'
               header={`${$t({ defaultMessage: 'APs' })} (${results.data?.aps.length})`}>
@@ -364,7 +363,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
               />
             </Panel>
           }
-          { results.data?.wifiNetworks.length &&
+          { results.data?.wifiNetworks?.length &&
             <Panel
               key='wifiNetworks'
               header={
@@ -380,7 +379,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
               />
             </Panel>
           }
-          { results.data?.clients.length &&
+          { results.data?.clients?.length &&
             <Panel
               key='clients'
               header={`${$t({ defaultMessage: 'Clients' })} (${results.data?.clients.length})`}>
@@ -392,7 +391,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
               />
             </Panel>
           }
-          { results.data?.switches.length &&
+          { results.data?.switches?.length &&
             <Panel
               key='switches'
               header={`${$t({ defaultMessage: 'Switches' })} (${results.data?.switches.length})`}>
@@ -404,7 +403,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
               />
             </Panel>
           }
-          { results.data?.networkHierarchy.length &&
+          { results.data?.networkHierarchy?.length &&
             <Panel
               key='networkHierarchy'
               header={
@@ -423,21 +422,20 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
         </Collapse>
       </>
       : isReportOnly
-        ? <Navigate replace to={{
+        ? <Navigate replace
+          to={{
             ...resolvePath(`${MLISA_BASE_PATH}/reports`),
-            search: selectedTenants
-              ? `?selectedTenants=${selectedTenants}`
-              : undefined
+            search
           }}/>
         : <>
-        <PageHeader title={$t(
-          { defaultMessage: 'Hmmmm... we couldn’t find any match for "{searchVal}"' },
-          { searchVal }
-        )}
-        extra={extra}
-        />
-        <NoData />
-      </>
+          <PageHeader title={$t(
+            { defaultMessage: 'Hmmmm... we couldn’t find any match for "{searchVal}"' },
+            { searchVal }
+          )}
+          extra={extra}
+          />
+          <NoData />
+        </>
     }
   </Loader>
 }

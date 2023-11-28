@@ -1,16 +1,37 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
-import { useIsSplitOn }                                                from '@acx-ui/feature-toggle'
-import { Provider, dataApiSearchURL }                                  from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { getUserProfile }                                                       from '@acx-ui/analytics/utils'
+import { useIsSplitOn }                                                         from '@acx-ui/feature-toggle'
+import { Provider, dataApiSearchURL }                                           from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved, cleanup } from '@acx-ui/test-utils'
 
 import { searchFixture, emptySearchFixture } from './__fixtures__/searchMocks'
 
 import SearchResults from '.'
 
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  getUserProfile: jest.fn(),
+  updateSelectedTenant: jest.fn()
+}))
+const userProfile = getUserProfile as jest.Mock
+
 const params = { searchVal: 'test%3F' }
 describe.only('Search Results', () => {
+  const defaultUserProfile = {
+    accountId: 'aid',
+    tenants: [],
+    invitations: [],
+    selectedTenant: {
+      id: 'aid',
+      role: 'admin'
+    }
+  }
+  beforeEach(() => {
+    userProfile.mockReturnValue(defaultUserProfile)
+    cleanup()
+  })
   it('should decode search string correctly', async () => {
     mockGraphqlQuery(dataApiSearchURL, 'Search', {
       data: searchFixture
@@ -82,7 +103,7 @@ describe.only('Search Results', () => {
       }
     })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    const link = screen.getByText('CDC_BB_TEST')
+    const link = screen.getAllByText('CDC_BB_TEST')[0]
     const href = link.getAttribute('href')
     expect(href).toBe('/ai/zones/Public-vSZ-2/CDC_BB_TEST/assurance')
   })
@@ -98,8 +119,34 @@ describe.only('Search Results', () => {
       }
     })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    const link = screen.getByText('CDC_BB_TEST')
+    const link = screen.getAllByText('CDC_BB_TEST')[0]
     const href = link.getAttribute('href')
     expect((href as string).includes('incidents?analyticsNetworkFilter')).toBeTruthy()
+  })
+  it('should handle results for report-only', async () => {
+    userProfile.mockReturnValue({
+      ...defaultUserProfile,
+      selectedTenant: {
+        ...defaultUserProfile.selectedTenant,
+        role: 'report-only'
+      }
+    })
+    mockGraphqlQuery(dataApiSearchURL, 'Search', {
+      data: {
+        search: {
+          aps: searchFixture.search.aps
+        }
+      }
+    })
+    render(<SearchResults />, {
+      wrapper: Provider,
+      route: {
+        params: { ...params, searchVal: encodeURIComponent('some text') }
+      }
+    })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const link = screen.getByText('AL-Guest-R610')
+    const href = link.getAttribute('href')
+    expect((href as string).includes('reports/aps?analyticsNetworkFilter')).toBeTruthy()
   })
 })
