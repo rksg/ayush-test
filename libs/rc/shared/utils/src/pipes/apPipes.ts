@@ -1,11 +1,13 @@
-import { IntlShape } from 'react-intl'
-import { useIntl }   from 'react-intl'
+import _                      from 'lodash'
+import { IntlShape, useIntl } from 'react-intl'
 
 import { getIntl } from '@acx-ui/utils'
 
-import { ApDeviceStatusEnum, DeviceConnectionStatus } from '../constants'
-import { QosPriorityEnum }                            from '../constants'
-import { AFCInfo, AFCPowerMode, AFCStatus }           from '../types'
+import {
+  ApDeviceStatusEnum,
+  DeviceConnectionStatus,
+  QosPriorityEnum } from '../constants'
+import { AFCInfo, AFCPowerMode, AFCProps, AFCStatus } from '../types'
 
 export enum APView {
   AP_LIST,
@@ -118,11 +120,12 @@ export function transformQosPriorityType (type: QosPriorityEnum) {
   return transform
 }
 
-export const AFCMaxPowerRender = (afcInfo: AFCInfo | undefined) => {
-  return afcInfo?.maxPowerDbm ? `${afcInfo?.maxPowerDbm} dBm` : '--'
+export const AFCMaxPowerRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) => {
+  return (afcInfo?.maxPowerDbm && apRadioDeploy === '2-5-6') ? `${afcInfo?.maxPowerDbm} dBm` : '--'
 }
 
-export const AFCPowerStateRender = (afcInfo: AFCInfo | undefined, reasonMessage: boolean) => {
+// eslint-disable-next-line
+export const AFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy?: string, reasonMessage?: boolean) => {
 
   const { $t } = useIntl()
 
@@ -130,7 +133,7 @@ export const AFCPowerStateRender = (afcInfo: AFCInfo | undefined, reasonMessage:
 
   const displayList = []
 
-  if(!powerMode) {
+  if(!powerMode || apRadioDeploy !== '2-5-6') {
     return '--'
   }
 
@@ -159,4 +162,18 @@ export const AFCPowerStateRender = (afcInfo: AFCInfo | undefined, reasonMessage:
     }
   }
   return (displayList.length === 0) ? '--' : displayList.join(' ')
+}
+
+/* eslint-disable max-len */
+export const ChannelButtonTextRender = (channels: number[], isChecked: boolean, afcProps?: AFCProps): string => {
+  const { $t } = useIntl()
+  let message = isChecked
+    ? $t({ defaultMessage: 'Disable this channel' })
+    : $t({ defaultMessage: 'Enable this channel' })
+  const afcAvailableChannel = _.uniq(afcProps?.afcInfo?.availableChannels).sort((a, b) => a-b)
+  const convergence = _.intersection(channels, afcAvailableChannel)
+  if(convergence.length > 0 && afcProps?.afcInfo?.afcStatus === AFCStatus.PASSED && afcProps?.featureFlag) {
+    message = $t({ defaultMessage: 'Allowed by AFC' }) + '\n' + message
+  }
+  return message
 }

@@ -4,9 +4,9 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 import { act }   from 'react-dom/test-utils'
 
-import { EdgeSubInterface, EdgeUrlsInfo }                    from '@acx-ui/rc/utils'
-import { Provider }                                          from '@acx-ui/store'
-import { fireEvent, mockServer, render, renderHook, screen } from '@acx-ui/test-utils'
+import { EdgeSubInterface, EdgeUrlsInfo }                             from '@acx-ui/rc/utils'
+import { Provider }                                                   from '@acx-ui/store'
+import { fireEvent, mockServer, render, renderHook, screen, waitFor } from '@acx-ui/test-utils'
 
 import { mockEdgePortConfig, mockEdgeSubInterfaces } from '../../../../__tests__/fixtures'
 
@@ -25,6 +25,8 @@ jest.mock('@acx-ui/utils', () => {
 
 const mockedPortsConfig = mockEdgePortConfig.ports[0]
 const mockedData = mockEdgeSubInterfaces.content[0] as EdgeSubInterface
+const mockedHandleAddFn = jest.fn()
+const mockedHandleUpdateFn = jest.fn()
 
 describe('EditEdge ports - sub-interface', () => {
   let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
@@ -59,6 +61,8 @@ describe('EditEdge ports - sub-interface', () => {
           visible={true}
           setVisible={mockedSetVisible}
           data={undefined}
+          handleAdd={mockedHandleAddFn}
+          handleUpdate={mockedHandleUpdateFn}
         />
       </Provider>, {
         route: {
@@ -69,6 +73,16 @@ describe('EditEdge ports - sub-interface', () => {
     const vlanInput = await screen.findByRole('spinbutton', { name: 'VLAN' })
     fireEvent.change(vlanInput, { target: { value: '2' } })
     await user.click(screen.getByRole('button', { name: 'Add' }))
+    await waitFor(() => {
+      expect(mockedHandleAddFn).toBeCalledWith({
+        enabled: true,
+        ipMode: 'DHCP',
+        mac: '00:0c:29:b6:ad:04',
+        name: '',
+        portType: 'LAN',
+        vlan: 2
+      })
+    })
   })
 
   it('Add a STATIC sub-interface', async () => {
@@ -80,6 +94,8 @@ describe('EditEdge ports - sub-interface', () => {
           visible={true}
           setVisible={mockedSetVisible}
           data={undefined}
+          handleAdd={mockedHandleAddFn}
+          handleUpdate={mockedHandleUpdateFn}
         />
       </Provider>, {
         route: {
@@ -96,6 +112,18 @@ describe('EditEdge ports - sub-interface', () => {
     const vlanInput = await screen.findByRole('spinbutton', { name: 'VLAN' })
     fireEvent.change(vlanInput, { target: { value: '2' } })
     await user.click(screen.getByRole('button', { name: 'Add' }))
+    await waitFor(() => {
+      expect(mockedHandleAddFn).toBeCalledWith({
+        enabled: true,
+        ip: '1.1.1.1',
+        ipMode: 'STATIC',
+        mac: '00:0c:29:b6:ad:04',
+        name: '',
+        portType: 'LAN',
+        subnet: '255.255.255.0',
+        vlan: 2
+      })
+    })
   })
 
   it('Edit a sub-interface', async () => {
@@ -107,6 +135,8 @@ describe('EditEdge ports - sub-interface', () => {
           visible={true}
           setVisible={mockedSetVisible}
           data={mockedData}
+          handleAdd={mockedHandleAddFn}
+          handleUpdate={mockedHandleUpdateFn}
         />
       </Provider>, {
         route: {
@@ -117,6 +147,21 @@ describe('EditEdge ports - sub-interface', () => {
     const vlanInput = await screen.findByRole('spinbutton', { name: 'VLAN' })
     fireEvent.change(vlanInput, { target: { value: '999' } })
     await user.click(screen.getByRole('button', { name: 'Apply' }))
+    await waitFor(() => {
+      expect(mockedHandleUpdateFn).toBeCalledWith({
+        enabled: true,
+        gateway: '',
+        id: 'fa663fd2-3057-44d9-ba25-9b45c93069cd',
+        ip: '',
+        ipMode: 'DHCP',
+        mac: '00:0c:29:b6:ad:04',
+        name: 'local0',
+        natEnabled: false,
+        portType: 'LAN',
+        subnet: '',
+        vlan: 999
+      })
+    })
   })
 
   it('reset form when dialog closed', async () => {
@@ -131,6 +176,8 @@ describe('EditEdge ports - sub-interface', () => {
         visible={result.current.visible}
         setVisible={result.current.setVisible}
         data={undefined}
+        handleAdd={mockedHandleAddFn}
+        handleUpdate={mockedHandleUpdateFn}
       />
 
     </Provider>)

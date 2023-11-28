@@ -121,7 +121,6 @@ export type { EdgePortConfigFormType } from './EdgeFormItem/EdgePortsGeneral'
 
 export { TunnelProfileForm } from './TunnelProfile/TunnelProfileForm'
 export { useTunnelProfileActions } from './TunnelProfile/TunnelProfileForm/useTunnelProfileActions'
-export type { TunnelProfileFormType } from './TunnelProfile/TunnelProfileForm'
 export { TunnelProfileAddModal } from './TunnelProfile/TunnelProfileAddModal'
 export { EdgeDhcpPoolTable } from './EdgeDhcpPoolTable'
 export { EdgeDhcpLeaseTable } from './EdgeDhcpLeaseTable'
@@ -142,7 +141,7 @@ export { DistSwitchesTable } from './NetworkSegmentationDetailTableGroup/DistSwi
 export type {
   AccessSwitchTableDataType
 } from './NetworkSegmentationDetailTableGroup/AccessSwitchTable'
-export { useEdgeActions } from './useEdgeActions'
+export { useEdgeActions, useIsEdgeFeatureReady } from './useEdgeActions'
 export { EdgeServiceStatusLight } from './EdgeServiceStatusLight'
 export { PropertyManagementForm } from './PropertyManagementForm'
 export { MacRegistrationListForm } from './MacRegistrationListForm'
@@ -155,6 +154,10 @@ export { AccessConditionDrawer } from './AdaptivePolicySettingForm/AccessConditi
 export {
   RadiusAttributeGroupSelectDrawer
 } from './AdaptivePolicySettingForm/RadiusAttributeGroupSelectDrawer'
+export {
+  EdgeSdLanActivatedNetworksTable,
+  ActivateNetworkSwitchButton } from './EdgeSdLan/SdLanNetworkTable'
+export type { ActivatedNetworksTableProps } from './EdgeSdLan/SdLanNetworkTable'
 
 export * from './services'
 export * from './EdgeStatisticWidget'

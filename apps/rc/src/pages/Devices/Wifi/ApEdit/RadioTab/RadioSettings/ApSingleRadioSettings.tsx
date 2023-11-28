@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useContext } from 'react'
 
-
 import { Form, Switch } from 'antd'
 import { NamePath }     from 'antd/es/form/interface'
 import _                from 'lodash'
@@ -11,6 +10,7 @@ import { useIntl }      from 'react-intl'
 import { ApRadioTypeEnum, SelectItemOption, SingleRadioSettings, LPIButtonText } from '@acx-ui/rc/components'
 import { isAPLowPower }                                                          from '@acx-ui/rc/services'
 import { AFCStatus }                                                             from '@acx-ui/rc/utils'
+import { AFCProps }                                                              from '@acx-ui/rc/utils'
 
 import { ApEditContext, ApDataContext } from '../..'
 import { DisabledDiv, FieldLabel }      from '../../styledComponents'
@@ -31,7 +31,7 @@ export interface ApSingleRadioSettingsPorps {
   testId?: string,
   isUseVenueSettings?: boolean,
   supportDfsChannels?: any,
-  isAFCEnabled? : boolean
+  afcProps? : AFCProps
 }
 
 // eslint-disable-max-len
@@ -40,13 +40,12 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
 
   const { isEnabled, enabledFieldName, useVenueSettingsFieldName, radioTypeName, onEnableChanged } = props
   const { radioType, supportChannels, bandwidthOptions,
-    handleChanged, supportDfsChannels, isUseVenueSettings, isAFCEnabled } = props
+    handleChanged, supportDfsChannels, isUseVenueSettings, afcProps } = props
 
   const handleEnableChanged = (checked: boolean) => {
     onEnableChanged(checked)
   }
-
-  const [lowPowerIndoorModeEnabled, setLowPowerIndoorModeEnabled] = useState(false)
+  const [enableAfc, setEnableAfc] = useState(false)
 
   const {
     apViewContextData
@@ -61,8 +60,8 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
         {$t({ defaultMessage: 'Standard power' })}
       </p>
     ,
-    LPIModeOnChange: setLowPowerIndoorModeEnabled,
-    LPIModeState: lowPowerIndoorModeEnabled,
+    LPIModeOnChange: setEnableAfc,
+    LPIModeState: enableAfc,
     isAPOutdoor: apCapabilities?.isOutdoor
   }
 
@@ -73,14 +72,14 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
 
     if(isUseVenueSettings){
       newButtonText = ( <p style={{ fontSize: '12px', margin: '0px' }}>
-        {lowPowerIndoorModeEnabled ?
-          $t({ defaultMessage: 'Low power' }) :
-          $t({ defaultMessage: 'Standard power' })
+        {enableAfc ?
+          $t({ defaultMessage: 'Standard power' }):
+          $t({ defaultMessage: 'Low power' })
         }
       </p>)
     }
     else {
-      if (isAPLowPower(afcInfo) && !lowPowerIndoorModeEnabled) {
+      if (isAPLowPower(afcInfo) && enableAfc) {
         let defaultButtonText = $t({ defaultMessage: 'Standard power' })
         let defaultStyle = { color: '#910012', fontSize: '12px', margin: '0px' }
         switch(afcInfo?.afcStatus) {
@@ -103,7 +102,6 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
     _.set(newButtonTextSetting, 'buttonText', newButtonText)
     return newButtonTextSetting
   }
-
 
   return (
     (bandwidthOptions.length > 0)?
@@ -139,7 +137,7 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
             handleChanged={handleChanged}
             isUseVenueSettings={isUseVenueSettings}
             LPIButtonText={setLPIToggleText()}
-            isAFCEnabled={isAFCEnabled}
+            afcProps={afcProps}
           />
         )
         }

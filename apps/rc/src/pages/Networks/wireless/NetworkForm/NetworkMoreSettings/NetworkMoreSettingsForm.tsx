@@ -129,7 +129,7 @@ export function MoreSettingsTabs (props: { wlanData: NetworkSaveData | null }) {
       display: defineMessage({ defaultMessage: 'Networking' }),
       style: { width: '38px' }
     },
-    ...(((qosMapSetFlag && enableAP70) || (qosMirroringFlag && enableAP70) || dtimFlag)? [ {
+    ...(((qosMapSetFlag) || (qosMirroringFlag && enableAP70) || dtimFlag)? [ {
       key: 'advanced',
       display: defineMessage({ defaultMessage: 'Advanced' }),
       style: { width: '37px' }

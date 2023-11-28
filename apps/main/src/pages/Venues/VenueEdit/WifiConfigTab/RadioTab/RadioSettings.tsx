@@ -37,15 +37,13 @@ import {
   useUpdateVenueRadioCustomizationMutation,
   useGetVenueTripleBandRadioSettingsQuery,
   useUpdateVenueTripleBandRadioSettingsMutation,
-  useGetVenueApCapabilitiesQuery,
-  isAPLowPower
+  useGetVenueApCapabilitiesQuery
 } from '@acx-ui/rc/services'
 import {
   APExtended,
-  APExtendedGrouped,
   VenueRadioCustomization,
-  LowPowerAPQuantity,
-  ChannelBandwidth6GEnum
+  ChannelBandwidth6GEnum,
+  AFCProps
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -92,9 +90,8 @@ export function RadioSettings () {
   const { $t } = useIntl()
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
-  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
-
+  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
 
   const {
     editContextData,
@@ -122,14 +119,13 @@ export function RadioSettings () {
   const [bandwidth6GOptions, setBandwidth6GOptions] = useState<SelectItemOption[]>([])
   const [bandwidthLower5GOptions, setBandwidthLower5GOptions] = useState<SelectItemOption[]>([])
   const [bandwidthUpper5GOptions, setBandwidthUpper5GOptions] = useState<SelectItemOption[]>([])
-  const [lowPowerAPQuantity, setLowPowerAPQuantity] =
-  useState<LowPowerAPQuantity>({ lowPowerAPCount: 0, allAPCount: 0 })
 
   const [isLower5gInherit, setIsLower5gInherit] = useState(true)
   const [isUpper5gInherit, setIsUpper5gInherit] = useState(true)
 
   const [triBandApModels, setTriBandApModels] = useState<string[]>([])
   const [hasTriBandAps, setHasTriBandAps] = useState(false)
+  const [afcProps, setAfcProps] = useState({} as AFCProps)
 
   const { data: venueCaps } = useGetVenueApCapabilitiesQuery({ params: { tenantId, venueId } })
 
@@ -177,19 +173,6 @@ export function RadioSettings () {
     })
   }
 
-  /* eslint-disable max-len */
-  const displayLowPowerModeBanner = (response: (APExtended | APExtendedGrouped)[]) => {
-    const lowerPowerModeAP = response.filter((ap) => {
-      return AFC_Featureflag && ap.apRadioDeploy === '2-5-6' && isAPLowPower(ap.apStatusData?.afcInfo)
-    })
-
-    setLowPowerAPQuantity({
-      lowPowerAPCount: lowerPowerModeAP.length,
-      allAPCount: response.length
-    })
-  }
-  /* eslint-enable max-len */
-
   const supportedApModelTooltip = (wifi7_320Mhz_FeatureFlag && enableAP70) ?
     // eslint-disable-next-line max-len
     $t({ defaultMessage: 'These settings apply only to AP models that support tri-band, such as R770, R760 and R560' }) :
@@ -217,6 +200,11 @@ export function RadioSettings () {
       setBandwidth6GOptions(getSupportBandwidth(wifi7_320Bandwidth, supportCh6g))
       setBandwidthLower5GOptions(getSupport5GBandwidth(channelBandwidth5GOptions, supportChLower5g))
       setBandwidthUpper5GOptions(getSupport5GBandwidth(channelBandwidth5GOptions, supportChUpper5g))
+      setAfcProps({
+        featureFlag: AFC_Featureflag,
+        isAFCEnabled: supportChannelsData?.afcEnabled,
+        afcInfo: undefined
+      })
     }
 
   }, [supportChannelsData])
@@ -236,8 +224,7 @@ export function RadioSettings () {
     let filters = { model: triBandApModelNames, venueId: [venueId] }
 
     const payload = {
-      fields: ['name', 'model', 'venueId', 'id','apStatusData.afcInfo.powerMode',
-        'apStatusData.afcInfo.afcStatus','apRadioDeploy'],
+      fields: ['name', 'model', 'venueId', 'id','apStatusData.afcInfo','apRadioDeploy'],
       pageSize: 10000,
       sortField: 'name',
       sortOrder: 'ASC',
@@ -251,7 +238,6 @@ export function RadioSettings () {
         if (data) {
           const findAp = data.filter((ap: APExtended) => ap.venueId === venueId)
           setHasTriBandAps((findAp.length > 0))
-          displayLowPowerModeBanner(findAp)
         }
       })
     }
@@ -723,8 +709,7 @@ export function RadioSettings () {
               bandwidthOptions={bandwidth6GOptions}
               handleChanged={handleChange}
               onResetDefaultValue={handleResetDefaultSettings}
-              lowPowerAPs={lowPowerAPQuantity}
-              isAFCEnabled={supportChannelsData?.afcEnabled} />
+              afcProps={afcProps} />
           </div>
           }
           { isTriBandRadio && isDual5gMode &&

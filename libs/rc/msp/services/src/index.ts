@@ -26,7 +26,8 @@ import {
   NewMspEntitlementSummary,
   MspAggregations,
   MspEcAlarmList,
-  RecommendFirmwareUpgrade
+  RecommendFirmwareUpgrade,
+  AvailableMspRecCustomers
 } from '@acx-ui/msp/utils'
 import {
   TableResult,
@@ -487,6 +488,17 @@ export const mspApi = baseMspApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
+    assignMspEcToIntegrator_v1: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.assignMspEcToIntegrator,
+          params, { 'Content-Type': 'application/vnd.ruckus.v1+json' })
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
     deactivateMspEc: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(MspUrlsInfo.deactivateMspEcAccount, params)
@@ -783,6 +795,35 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getAvailableMspRecCustomers: build.query<AvailableMspRecCustomers, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.getAvailableMspRecCustomers, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    addRecCustomer: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.addMspRecCustomer, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    assignMspEcToMultiIntegrators: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.assignMspEcToMultiIntegrators, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     })
   })
 })
@@ -846,5 +887,9 @@ export const {
   useDeleteMspAggregationsMutation,
   useGetMspEcAlarmListQuery,
   useGetRecommandFirmwareUpgradeQuery,
-  useMspEcFirmwareUpgradeSchedulesMutation
+  useMspEcFirmwareUpgradeSchedulesMutation,
+  useGetAvailableMspRecCustomersQuery,
+  useAddRecCustomerMutation,
+  useAssignMspEcToMultiIntegratorsMutation,
+  useAssignMspEcToIntegrator_v1Mutation
 } = mspApi

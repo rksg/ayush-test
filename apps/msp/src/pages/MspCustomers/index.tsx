@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 
 import { Space }   from 'antd'
-import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import {
@@ -13,7 +12,6 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                from '@acx-ui/formatter'
 import {
   ManageAdminsDrawer,
   ResendInviteModal,
@@ -32,7 +30,6 @@ import {
   useGetMspEcAlarmListQuery
 } from '@acx-ui/msp/services'
 import {
-  DelegationEntitlementRecord,
   MspEcAlarmList,
   MspEc,
   MSPUtils
@@ -48,74 +45,12 @@ import {
 import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                              from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, hasRoles, hasAccess }             from '@acx-ui/user'
-import { AccountType, isDelegationMode }                                          from '@acx-ui/utils'
+import { AccountType, isDelegationMode, noDataDisplay }                           from '@acx-ui/utils'
 
 import * as UI from '../Subscriptions/styledComponent'
 
 import { AssignEcMspAdminsDrawer } from './AssignEcMspAdminsDrawer'
 import { ScheduleFirmwareDrawer }  from './ScheduleFirmwareDrawer'
-
-const getStatus = (row: MspEc) => {
-  const isTrial = row.accountType === 'TRIAL'
-  const value = row.status === 'Active' ? (isTrial ? 'Trial' : row.status) : 'Inactive'
-  return value
-}
-
-const transformApEntitlement = (row: MspEc) => {
-  return row.wifiLicenses ? row.wifiLicenses : 0
-}
-
-const transformUtilization = (row: MspEc, deviceType: EntitlementNetworkDeviceType) => {
-  const entitlement = row.entitlements.filter((en:DelegationEntitlementRecord) =>
-    en.entitlementDeviceType === deviceType)
-  if (entitlement.length > 0) {
-    const apEntitlement = entitlement[0]
-    const quantity = parseInt(apEntitlement.quantity, 10)
-    const consumed = parseInt(apEntitlement.consumed, 10)
-    if (quantity > 0) {
-      const value =
-      (Math.round(((consumed / quantity) * 10000)) / 100) + '%'
-      return value
-    } else {
-      return '0%'
-    }
-  }
-  return '0%'
-}
-
-const transformSwitchEntitlement = (row: MspEc) => {
-  return row.switchLicenses ? row.switchLicenses : 0
-}
-
-const transformCreationDate = (row: MspEc) => {
-  const creationDate = row.creationDate
-  if (!creationDate || isNaN(creationDate)) {
-    return ''
-  }
-  const Epoch = creationDate - (creationDate % 1000)
-  const activeDate = formatter(DateFormatEnum.DateFormat)(Epoch)
-  return activeDate
-}
-
-const transformExpirationDate = (row: MspEc) => {
-  let expirationDate = '--'
-  const apswEntitlement = row.entitlements.filter((en:DelegationEntitlementRecord) =>
-    en.entitlementDeviceType === EntitlementNetworkDeviceType.APSW)
-
-  const entitlements = apswEntitlement.length > 0 ? apswEntitlement : row.entitlements
-  let target: DelegationEntitlementRecord
-  entitlements.forEach((entitlement:DelegationEntitlementRecord) => {
-    const consumed = parseInt(entitlement.consumed, 10)
-    const quantity = parseInt(entitlement.quantity, 10)
-    if (consumed > 0 || quantity > 0) {
-      if (!target || moment(entitlement.expirationDate).isBefore(target.expirationDate)) {
-        target = entitlement
-      }
-    }
-    expirationDate = target ? formatter(DateFormatEnum.DateFormat)(target.expirationDate) : '--'
-  })
-  return expirationDate
-}
 
 export function MspCustomers () {
   const { $t } = useIntl()
@@ -128,6 +63,7 @@ export function MspCustomers () {
     useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS) && isPrimeAdmin && !isDelegationMode()
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const MAX_ALLOWED_SELECTED_EC = 200
+  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
   const isUpgradeMultipleEcEnabled =
     useIsSplitOn(Features.MSP_UPGRADE_MULTI_EC_FIRMWARE) && isPrimeAdmin && !isDelegationMode()
   const isSupportToMspDashboardAllowed =
@@ -136,7 +72,7 @@ export function MspCustomers () {
   const isTechPartnerQueryEcsEnabled = useIsSplitOn(Features.TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE)
 
   const [ecTenantId, setTenantId] = useState('')
-  const [tenantType, setTenantType] = useState(AccountType.MSP_INTEGRATOR)
+  const [selectedTenantType, setTenantType] = useState(AccountType.MSP_INTEGRATOR)
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
   const [techParnersData, setTechPartnerData] = useState([] as MspEc[])
@@ -156,31 +92,11 @@ export function MspCustomers () {
     ? { tenantType: [AccountType.MSP_EC] }
     : { mspAdmins: [userProfile?.adminId], tenantType: [AccountType.MSP_EC] }
 
-  const transformTechPartner = (id: string) => {
-    const rec = techParnersData.find(e => e.id === id)
-    return rec?.name ? rec.name : id
-  }
-
-  const transformAdminCount = (data: MspEc) => {
-    const type = tenantDetailsData.data?.tenantType
-    return type === AccountType.MSP_INSTALLER
-      ? data.mspInstallerAdminCount || 0 : (type === AccountType.MSP_INTEGRATOR
-        ? data.mspIntegratorAdminCount || 0 : data.mspAdminCount || 0)
-  }
-
-  const transformAdminCountHeader = () => {
-    const type = tenantDetailsData.data?.tenantType
-    return type === AccountType.MSP_INSTALLER
-      ? $t({ defaultMessage: 'Installer Admin Count' })
-      : (type === AccountType.MSP_INTEGRATOR
-        ? $t({ defaultMessage: 'Integrator Admin Count' })
-        : $t({ defaultMessage: 'MSP Admin Count' }))
-  }
-
   const tenantDetailsData = useGetTenantDetailsQuery({ params })
+  const tenantType = tenantDetailsData.data?.tenantType
   const isIntegrator =
-    (tenantDetailsData.data?.tenantType === AccountType.MSP_INSTALLER ||
-     tenantDetailsData.data?.tenantType === AccountType.MSP_INTEGRATOR)
+    (tenantType === AccountType.MSP_INSTALLER ||
+     tenantType === AccountType.MSP_INTEGRATOR)
   const parentTenantid = tenantDetailsData.data?.mspEc?.parentMspId
 
   const allowManageAdmin =
@@ -189,7 +105,9 @@ export function MspCustomers () {
       ((isPrimeAdmin || isAdmin) && !drawerIntegratorVisible) || isSupportToMspDashboardAllowed
   const hideTechPartner = (isIntegrator || userProfile?.support) && !isSupportToMspDashboardAllowed
 
-  if (tenantDetailsData.data?.tenantType === AccountType.VAR &&
+  const techPartnerAssignEcsEanbled = useIsSplitOn(Features.TECH_PARTNER_ASSIGN_ECS)
+
+  if (tenantType === AccountType.VAR &&
       (userProfile?.support === false || isSupportToMspDashboardAllowed)) {
     navigate(linkVarPath, { replace: true })
   }
@@ -241,7 +159,7 @@ export function MspCustomers () {
     searchString: '',
     filters: {
       mspTenantId: [parentTenantid],
-      tenantType: isTechPartnerQueryEcsEnabled ? [AccountType.MSP_EC]
+      tenantType: (isTechPartnerQueryEcsEnabled || isHspSupportEnabled) ? [AccountType.MSP_EC]
         : [AccountType.MSP_INSTALLER, AccountType.MSP_INTEGRATOR]
     },
     fields: [
@@ -320,7 +238,7 @@ export function MspCustomers () {
         key: 'status',
         sorter: true,
         render: function (_, row) {
-          return getStatus(row)
+          return $t({ defaultMessage: '{status}' }, { status: mspUtils.getStatus(row) })
         }
       },
       {
@@ -330,7 +248,8 @@ export function MspCustomers () {
         sorter: true
       },
       {
-        title: transformAdminCountHeader(),
+        title: $t({ defaultMessage: '{adminCountHeader}' }, { adminCountHeader:
+            mspUtils.transformAdminCountHeader(tenantType) }),
         dataIndex: 'mspAdminCount',
         align: 'center',
         key: 'mspAdminCount',
@@ -346,7 +265,8 @@ export function MspCustomers () {
         render: function (_, row) {
           return (
             allowManageAdmin
-              ? <Link to=''>{transformAdminCount(row)}</Link> : transformAdminCount(row)
+              ? <Link to=''>{mspUtils.transformAdminCount(row, tenantType)}</Link>
+              : mspUtils.transformAdminCount(row, tenantType)
           )
         }
       },
@@ -368,7 +288,9 @@ export function MspCustomers () {
         }
       }]),
       ...(hideTechPartner ? [] : [{
-        title: $t({ defaultMessage: 'Integrator' }),
+        title: techPartnerAssignEcsEanbled
+          ? $t({ defaultMessage: 'Integrator Count' })
+          : $t({ defaultMessage: 'Integrator' }),
         dataIndex: 'integrator',
         key: 'integrator',
         onCell: (data: MspEc) => {
@@ -381,15 +303,20 @@ export function MspCustomers () {
           } : {}
         },
         render: function (_: React.ReactNode, row: MspEc) {
-          const val = row?.integrator ? transformTechPartner(row.integrator) : '--'
+          const val = (techPartnerAssignEcsEanbled && row.integratorCount !== undefined)
+            ? mspUtils.transformTechPartnerCount(row.integratorCount)
+            : row?.integrator ? mspUtils.transformTechPartner(row.integrator, techParnersData)
+              : noDataDisplay
           return (
             allowSelectTechPartner
-              ? <Link to=''>{val}</Link> : val
+              ? <Link to=''><div style={{ textAlign: 'center' }}>{val}</div></Link> : val
           )
         }
       }]),
       ...(hideTechPartner ? [] : [{
-        title: $t({ defaultMessage: 'Installer' }),
+        title: techPartnerAssignEcsEanbled
+          ? $t({ defaultMessage: 'Installer Count' })
+          : $t({ defaultMessage: 'Installer' }),
         dataIndex: 'installer',
         key: 'installer',
         onCell: (data: MspEc) => {
@@ -403,10 +330,13 @@ export function MspCustomers () {
           } : {}
         },
         render: function (_: React.ReactNode, row: MspEc) {
-          const val = row?.installer ? transformTechPartner(row.installer) : '--'
+          const val = (techPartnerAssignEcsEanbled && row.installerCount !== undefined)
+            ? mspUtils.transformTechPartnerCount(row.installerCount)
+            : row?.installer ? mspUtils.transformTechPartner(row.installer, techParnersData)
+              : noDataDisplay
           return (
             allowSelectTechPartner
-              ? <Link to=''>{val}</Link> : val
+              ? <Link to=''><div style={{ textAlign: 'center' }}>{val}</div></Link> : val
           )
         }
       }]),
@@ -417,25 +347,32 @@ export function MspCustomers () {
           key: 'apswLicenseInstalled',
           sorter: true,
           render: function (_: React.ReactNode, row: MspEc) {
-            return mspUtils.transformInstalledDevice(row.entitlements ?? [])
+            return <div style={{ textAlign: 'center' }}>
+              {mspUtils.transformInstalledDevice(row.entitlements)}</div>
           }
         },
         {
-          title: $t({ defaultMessage: 'Assigned Device Subscriptions' }),
+          title: <div style={{ textAlign: 'center' }}>
+            <div>{$t({ defaultMessage: 'Assigned Device' })}</div>
+            <div>{$t({ defaultMessage: 'Subscriptions' })}</div></div>,
           dataIndex: 'apswLicense',
           key: 'apswLicense',
           sorter: true,
           render: function (data: React.ReactNode, row: MspEc) {
-            return mspUtils.transformDeviceEntitlement(row.entitlements ?? [])
+            return <div style={{ textAlign: 'center' }}>
+              {mspUtils.transformDeviceEntitlement(row.entitlements)}</div>
           }
         },
         {
-          title: $t({ defaultMessage: 'Device Subscriptions Utilization' }),
+          title: <div style={{ textAlign: 'center' }}>
+            <div>{$t({ defaultMessage: 'Device Subscriptions' })}</div>
+            <div>{$t({ defaultMessage: 'Utilization' })}</div></div>,
           dataIndex: 'apswLicensesUtilization',
           key: 'apswLicensesUtilization',
           sorter: true,
-          render: function (data: React.ReactNode, row: MspEc) {
-            return mspUtils.transformDeviceUtilization(row.entitlements ?? [])
+          render: function (_: React.ReactNode, row: MspEc) {
+            return <div style={{ textAlign: 'center' }}>
+              {mspUtils.transformDeviceUtilization(row.entitlements)}</div>
           }
         }
       ] : [
@@ -446,7 +383,7 @@ export function MspCustomers () {
           // align: 'center',
           sorter: true,
           render: function (data: React.ReactNode, row: MspEc) {
-            return transformApEntitlement(row)
+            return mspUtils.transformApEntitlement(row)
           }
         },
         {
@@ -456,7 +393,7 @@ export function MspCustomers () {
           key: 'wifiLicensesUtilization',
           sorter: true,
           render: function (data: React.ReactNode, row: MspEc) {
-            return transformUtilization(row, EntitlementNetworkDeviceType.WIFI)
+            return mspUtils.transformUtilization(row, EntitlementNetworkDeviceType.WIFI)
           }
         },
         {
@@ -466,7 +403,7 @@ export function MspCustomers () {
           key: 'switchLicense',
           sorter: true,
           render: function (data: React.ReactNode, row: MspEc) {
-            return transformSwitchEntitlement(row)
+            return mspUtils.transformSwitchEntitlement(row)
           }
         },
         {
@@ -486,7 +423,7 @@ export function MspCustomers () {
         key: 'creationDate',
         sorter: true,
         render: function (_, row) {
-          return transformCreationDate(row)
+          return mspUtils.transformCreationDate(row)
         }
       },
       {
@@ -495,15 +432,16 @@ export function MspCustomers () {
         key: 'expirationDate',
         sorter: true,
         render: function (_, row) {
-          const nextExpirationDate = transformExpirationDate(row)
-          if (nextExpirationDate === '--')
+          const nextExpirationDate = mspUtils.transformExpirationDate(row)
+          if (nextExpirationDate === noDataDisplay)
             return nextExpirationDate
+          const expiredOnString = `${$t({ defaultMessage: 'Expired on' })} ${nextExpirationDate}`
           const remainingDays = EntitlementUtil.timeLeftInDays(nextExpirationDate)
           const TimeLeftWrapper = remainingDays < 0
             ? UI.Expired
             : (remainingDays <= 60 ? UI.Warning : Space)
           return <TimeLeftWrapper>
-            {(remainingDays < 0) && $t({ defaultMessage: 'Expired on' })}{nextExpirationDate}
+            {remainingDays < 0 ? expiredOnString : nextExpirationDate}
           </TimeLeftWrapper>
         }
       },
@@ -716,6 +654,8 @@ export function MspCustomers () {
 
   const IntegratorTable = () => {
     const [selEcTenantIds, setSelEcTenantIds] = useState([] as string[])
+    const [mspEcTenantList, setMspEcTenantList] = useState([] as string[])
+    const [mspEcAlarmList, setEcAlarmData] = useState({} as MspEcAlarmList)
     const [drawerScheduleFirmwareVisible, setDrawerScheduleFirmwareVisible] = useState(false)
 
     const tableQuery = useTableQuery({
@@ -725,6 +665,20 @@ export function MspCustomers () {
         searchTargetFields: integratorPayload.searchTargetFields as string[]
       }
     })
+
+    const alarmList = useGetMspEcAlarmListQuery(
+      { params, payload: { mspEcTenants: mspEcTenantList } },
+      { skip: !isSupportEcAlarmCount || mspEcTenantList.length === 0 })
+
+    useEffect(() => {
+      if (tableQuery?.data?.data) {
+        const ecList = tableQuery?.data.data.map(item => item.id)
+        setMspEcTenantList(ecList)
+      }
+      if (alarmList?.data) {
+        setEcAlarmData(alarmList?.data)
+      }
+    }, [tableQuery?.data?.data, alarmList?.data])
 
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
@@ -742,7 +696,7 @@ export function MspCustomers () {
         }
       }]
 
-    const columns = useColumns()
+    const columns = useColumns(mspEcAlarmList)
 
     return (
       <Loader states={[
@@ -802,18 +756,20 @@ export function MspCustomers () {
         title={$t({ defaultMessage: 'MSP Customers' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'My Customers' }) }]}
         extra={isAdmin ?
-          [<TenantLink to='/dashboard'>
-            <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
-          </TenantLink>,
-          <MspTenantLink to='/dashboard/mspcustomers/create'>
-            <Button
-              hidden={(userProfile?.support && !isSupportToMspDashboardAllowed) || !onBoard}
-              type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
-          </MspTenantLink>
+          [
+            !isHspSupportEnabled ? <TenantLink to='/dashboard'>
+              <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
+            </TenantLink> : null,
+            <MspTenantLink to='/dashboard/mspcustomers/create'>
+              <Button
+                hidden={(userProfile?.support && !isSupportToMspDashboardAllowed) || !onBoard}
+                type='primary'>{$t({ defaultMessage: 'Add EC Customer' })}</Button>
+            </MspTenantLink>
           ]
-          : [<TenantLink to='/dashboard'>
-            <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
-          </TenantLink>
+          : [
+            !isHspSupportEnabled ? <TenantLink to='/dashboard'>
+              <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
+            </TenantLink> : null
           ]}
       />
       {userProfile?.support && !isSupportToMspDashboardAllowed && <SupportEcTable />}
@@ -829,7 +785,7 @@ export function MspCustomers () {
       {drawerIntegratorVisible && <SelectIntegratorDrawer
         visible={drawerIntegratorVisible}
         tenantId={ecTenantId}
-        tenantType={tenantType}
+        tenantType={selectedTenantType}
         setVisible={setDrawerIntegratorVisible}
         setSelected={() => {}}
       />}
