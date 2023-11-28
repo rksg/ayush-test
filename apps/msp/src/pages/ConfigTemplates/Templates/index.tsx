@@ -20,7 +20,7 @@ import { ApplyTemplateDrawer } from './ApplyTemplateDrawer'
 export function ConfigTemplateList () {
   const { $t } = useIntl()
   const [ applyTemplateDrawerVisible, setApplyTemplateDrawerVisible ] = useState(false)
-  const [ selectedTemplates, setSelectedTemplates ] = useState<string[]>([])
+  const [ selectedTemplates, setSelectedTemplates ] = useState<ConfigTemplate[]>([])
 
   const tableQuery = useTableQuery({
     useQuery: useGetConfigTemplateListQuery,
@@ -31,7 +31,7 @@ export function ConfigTemplateList () {
     {
       label: $t({ defaultMessage: 'Apply Template' }),
       onClick: (rows: ConfigTemplate[]) => {
-        setSelectedTemplates(rows.map(row => row.id!))
+        setSelectedTemplates(rows)
         setApplyTemplateDrawerVisible(true)
       }
     }
@@ -63,7 +63,7 @@ export function ConfigTemplateList () {
       {applyTemplateDrawerVisible &&
       <ApplyTemplateDrawer
         setVisible={setApplyTemplateDrawerVisible}
-        templateIds={selectedTemplates}
+        selectedTemplates={selectedTemplates}
       />}
     </>
   )

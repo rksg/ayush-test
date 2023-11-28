@@ -15,6 +15,7 @@ import {
   useMspCustomerListQuery
 } from '@acx-ui/msp/services'
 import {
+  ConfigTemplate,
   MSPUtils,
   MspEc
 } from '@acx-ui/msp/utils'
@@ -25,18 +26,24 @@ import { RolesEnum }                                  from '@acx-ui/types'
 import { hasAccess, hasRoles, useUserProfileContext } from '@acx-ui/user'
 import { AccountType, isDelegationMode }              from '@acx-ui/utils'
 
+import * as UI from './styledComponents'
+
 
 interface ApplyTemplateDrawerProps {
   setVisible: (visible: boolean) => void
-  templateIds: string[]
+  selectedTemplates: ConfigTemplate[]
 }
 
 export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
   const { $t } = useIntl()
-  const { setVisible } = props
+  const { setVisible, selectedTemplates } = props
   const ecFilters = useEcFilters()
   const [ selectedRows, setSelectedRows ] = useState<MspEc[]>([])
+  const [ confirmationDrawerVisible, setConfirmationDrawerVisible ] = useState(false)
   const mspUtils = MSPUtils()
+
+  const ecNames = useMemo(() => selectedRows.map(r => r.name), [selectedRows])
+  const templateNames = useMemo(() => selectedTemplates.map(t => t.name), [selectedTemplates])
 
   const mspPayload = {
     filters: ecFilters,
@@ -61,8 +68,9 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
 
   const onClose = () => {
     setVisible(false)
-    setSelectedRows([])
   }
+
+  const onApply = () => {}
 
   const columns: TableProps<MspEc>['columns'] = [
     {
@@ -111,21 +119,79 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
   const footer =<div>
     <Button
       disabled={selectedRows.length === 0}
-      onClick={() => {}}
+      onClick={() => setConfirmationDrawerVisible(true)}
       type='primary'
     >
       {$t({ defaultMessage: 'Next' })}
     </Button>
-    <Button onClick={() => { setVisible(false) }}>
+    <Button onClick={() => onClose()}>
+      {$t({ defaultMessage: 'Cancel' })}
+    </Button>
+  </div>
+
+  return (
+    <>
+      <Drawer
+        title={$t({ defaultMessage: 'Apply Templates - RUCKUS End Customers' })}
+        visible={true}
+        onClose={onClose}
+        footer={footer}
+        destroyOnClose={true}
+        width={700}
+      >
+        {content}
+      </Drawer>
+      {confirmationDrawerVisible &&
+      <ApplyTemplateConfirmationDrawer
+        ecNames={ecNames}
+        templateNames={templateNames}
+        onBack={() => setConfirmationDrawerVisible(false)}
+        onApply={onApply}
+        onCancel={onClose}
+      />}
+    </>
+  )
+}
+
+interface ApplyTemplateConfirmationDrawerProps {
+  ecNames: string[]
+  templateNames: string[]
+  onBack: () => void
+  onApply: () => void
+  onCancel: () => void
+}
+
+function ApplyTemplateConfirmationDrawer (props: ApplyTemplateConfirmationDrawerProps) {
+  const { ecNames, templateNames, onBack, onApply, onCancel } = props
+  const { $t } = useIntl()
+
+  const content =
+    <Space direction='vertical'>
+      {/* eslint-disable-next-line max-len */}
+      <p>{ $t({ defaultMessage: 'Selected Configuration Templates will apply to the venues listed below. During the process all configurations in these templates overwrite the corresponding configuration in the associated venues.' }) }</p>
+      <p>{ $t({ defaultMessage: 'Are you sure you want to continue?' }) }</p>
+      <UI.EcListContainer>{ ecNames.map(name => <li key={name}>{name}</li>) }</UI.EcListContainer>
+      {/* eslint-disable-next-line max-len */}
+      <UI.TemplateListContainer>{ templateNames.map(name => <li key={name}>- {name}</li>) }</UI.TemplateListContainer>
+    </Space>
+
+  const footer =<div>
+    <Button onClick={onBack}>
+      {$t({ defaultMessage: 'Back' })}
+    </Button>
+    <Button onClick={onApply} type='primary'>
+      {$t({ defaultMessage: 'Apply Templates' })}
+    </Button>
+    <Button onClick={onCancel}>
       {$t({ defaultMessage: 'Cancel' })}
     </Button>
   </div>
 
   return (
     <Drawer
-      title={$t({ defaultMessage: 'Apply Templates - RUCKUS End Customers' })}
+      title={$t({ defaultMessage: 'Apply Templates - Confirmation' })}
       visible={true}
-      onClose={onClose}
+      onClose={onCancel}
       footer={footer}
       destroyOnClose={true}
       width={700}
@@ -134,7 +200,6 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
     </Drawer>
   )
 }
-
 
 function useEcFilters () {
   const { data: userProfile } = useUserProfileContext()
