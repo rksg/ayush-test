@@ -1,5 +1,6 @@
 import { ConfigProvider, PageNotFound }                     from '@acx-ui/components'
 import { ManageCustomer, ManageIntegrator, PortalSettings } from '@acx-ui/msp/components'
+import { NetworkForm, VenuesForm }                          from '@acx-ui/rc/components'
 import { rootRoutes, Route, TenantNavigate }                from '@acx-ui/react-router-dom'
 import { Provider }                                         from '@acx-ui/store'
 
@@ -29,6 +30,8 @@ export default function MspRoutes () {
       <Route path='deviceinventory' element={<DeviceInventory />} />
       <Route path='msplicenses/*' element={<CustomersRoutes />} />
       <Route path='portalSetting' element={<PortalSettings />} />
+      <Route path='networkForm' element={<NetworkForm />} />
+      <Route path='venueForm' element={<VenuesForm />} />
     </Route>
   )
   return (

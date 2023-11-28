@@ -13,6 +13,8 @@ import {
   useDpskNewConfigFlowParams,
   PersonaGroupDrawer
 } from '@acx-ui/rc/components'
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { BasePersonaTable }                     from '@acx-ui/rc/components'
 import {
   useLazyGetVenueQuery,
   useLazyGetDpskQuery,
@@ -24,7 +26,6 @@ import { PersonaGroup }   from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 import { noDataDisplay }  from '@acx-ui/utils'
 
-import { BasePersonaTable } from '../PersonaTable/BasePersonaTable'
 
 function PersonaGroupDetailsPageHeader (props: {
   title?: string,

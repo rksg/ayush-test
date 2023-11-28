@@ -758,6 +758,14 @@ export function MspCustomers () {
               <Button
                 hidden={(userProfile?.support && !isSupportToMspDashboardAllowed) || !onBoard}
                 type='primary'>{$t({ defaultMessage: 'Add EC Customer' })}</Button>
+            </MspTenantLink>,
+            <MspTenantLink to='/networkForm'>
+              <Button
+                type='primary'>{$t({ defaultMessage: 'Add Network' })}</Button>
+            </MspTenantLink>,
+            <MspTenantLink to='/venueForm'>
+              <Button
+                type='primary'>{$t({ defaultMessage: 'Add Venue' })}</Button>
             </MspTenantLink>
           ]
           : [
