@@ -3,6 +3,9 @@ import { useState } from 'react'
 import { Link }          from 'react-router-dom'
 import { CSSProperties } from 'styled-components'
 
+
+import { ChatbotLink } from '@acx-ui/icons'
+
 import { Button } from '../Button'
 
 import * as UI from './styledComponents'
@@ -52,9 +55,9 @@ const Expandable = (props: { text: string, maxChar: number }) => {
   let [expanded, setExpanded] = useState(true)
   if(props.text.length <= props.maxChar) return <UI.Bot>{props.text}</UI.Bot>
   let formattedText = expanded ? props.text.substring(0, props.maxChar) : props.text
-  return <UI.Bot>{formattedText}{expanded ? '... ' : ' '}
+  return <UI.Bot>{formattedText}
     <Button size='small' type='link' onClick={() => {setExpanded(!expanded)}}>
-      {expanded? 'read more' : 'read less'}</Button></UI.Bot>
+      {expanded? 'Read more...' : 'Read less'}</Button></UI.Bot>
 }
 function Conversation ({
   content,
@@ -83,18 +86,20 @@ function Conversation ({
                       </Panel></UI.Collapse>
                   case 'button':
                     if(res.link){
-                      return <UI.Bot><a href={parseLink(res.link)}
+                      return <a href={parseLink(res.link)}
                         target='_blank'
-                        rel='noreferrer'>{res.text}</a></UI.Bot>
+                        rel='noreferrer'><Button type='default'
+                          icon={<ChatbotLink />}
+                          style={{
+                            width: 'max-content',
+                            marginTop: '10px' }}>{res.text}</Button></a>
                     }else if(res.event){
-                      return <UI.Bot>
-                        <Link to={res.event?.parameters?.url || '#'}>{res.text}</Link>
-                      </UI.Bot>
+                      return <Link to={res.event?.parameters?.url || '#'}>{res.text}</Link>
                     }else{
-                      return <UI.Bot><Button type='link'
+                      return <Button type='link'
                         data-testid='button-link'
                         style={{ fontSize: '12px' }}>
-                        {res.text}</Button></UI.Bot>
+                        {res.text}</Button>
                     }
                   case 'divider':
                     return null

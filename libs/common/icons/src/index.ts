@@ -329,5 +329,6 @@ export { ReactComponent as Teams } from './appInsight/Teams.svg'
 export { ReactComponent as Webex } from './appInsight/Webex.svg'
 export { ReactComponent as Workplace } from './appInsight/Workplace.svg'
 export { ReactComponent as Zoom } from './appInsight/Zoom.svg'
+export { ReactComponent as ChatbotLink } from './icons/ChatbotLink.svg'
 
 export * from './styledComponents'

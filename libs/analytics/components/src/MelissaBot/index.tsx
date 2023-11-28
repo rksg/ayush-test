@@ -228,7 +228,7 @@ export function MelissaBot (){
     icon={<MelissaHeaderIcon/>}
     onClose={onClose}
     visible={state.isOpen}
-    width={464}
+    width={390}
     footer={<Input ref={inputRef}
       placeholder={askAnything}
       value={inputValue}
@@ -267,7 +267,7 @@ export function MelissaBot (){
       isReplying={state.isReplying}
       classList='conversation'
       listCallback={askMelissa}
-      style={{ height: 410, width: 416, whiteSpace: 'pre-line' }} />
+      style={{ height: 410, width: 350, whiteSpace: 'pre-line' }} />
   </MelissaDrawer></>
     : <div/>)
 }
