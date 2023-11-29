@@ -48,13 +48,16 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
 
 
   useEffect(() => {
-    if (isDayTimeInitializedRef.current || !data) return
+    if (isDayTimeInitializedRef.current || !visible) return
 
     if (data.days) {
       setValueDays([...data.days])
     }
     if (data.times) {
       setValueTimes([...data.times])
+    }
+    if (data.autoSchedule) {
+      setScheduleMode(data.autoSchedule ? ScheduleMode.Automatically : ScheduleMode.Manually)
     }
 
     isDayTimeInitializedRef.current = true

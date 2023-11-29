@@ -505,11 +505,36 @@ export type MeshUplinkAp = {
   neighbors: MeshApNeighbor[]
 }
 
+export interface AFCProps {
+  featureFlag?: boolean,
+  isAFCEnabled? : boolean,
+  afcInfo?: AFCInfo
+}
+
+export interface LPIButtonText {
+  buttonText: JSX.Element,
+  LPIModeOnChange: Function,
+  LPIModeState: boolean,
+  isAPOutdoor?: boolean
+}
+
 export type AFCInfo = {
-  powerMode?: AFCPowerMode,
   afcStatus?: AFCStatus,
+  availableChannel?: number,
+  availableChannels?: number[],
+  geoLocation?: GeoLocation,
+  powerMode?: AFCPowerMode,
   minPowerDbm?: number,
   maxPowerDbm?: number
+}
+
+export interface GeoLocation {
+  height?: number,
+  lateralUncertainty?: number,
+  latitude?: number,
+  longitude?: number,
+  source?: string,
+  verticalUncertainty?: number
 }
 
 export enum AFCPowerMode {

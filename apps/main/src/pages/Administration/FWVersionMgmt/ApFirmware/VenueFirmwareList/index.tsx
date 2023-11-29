@@ -417,12 +417,12 @@ const VenueFirmwareTable = ({ tableQuery, filterables }: VenueTableProps) => {
         onCancel={handleRevertModalCancel}
         onSubmit={handleUpdateModalSubmit}
       />}
-      {preferencesModelVisible && <PreferencesDialog
-        visible={true}
+      <PreferencesDialog
+        visible={preferencesModelVisible}
         data={preferences}
         onCancel={handlePreferencesModalCancel}
         onSubmit={handlePreferencesModalSubmit}
-      />}
+      />
     </Loader>
   )
 }

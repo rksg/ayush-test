@@ -209,7 +209,9 @@ export function ApForm () {
         setSelectedVenue(selectVenue as unknown as VenueExtended)
         setApGroupOption(options as DefaultOptionType[])
         setApMeshRoleDisabled(
-          !!apDetails?.meshRole && (apDetails?.meshRole !== APMeshRole.DISABLED))
+          !!apDetails?.meshRole
+          && (apDetails?.meshRole !== APMeshRole.DISABLED)
+          && (apDetails?.meshRole !== 'DOWN'))
         setDhcpRoleDisabled(checkDhcpRoleDisabled(dhcpAp as DhcpApInfo))
         setDeviceGps((apDetails?.deviceGps || venueLatLng) as unknown as DeviceGps)
         formRef?.current?.setFieldsValue({ description: '', ...apDetails })

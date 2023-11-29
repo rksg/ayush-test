@@ -50,8 +50,9 @@ import {
   transferVenuesToSave,
   updateClientIsolationAllowlist
 } from './parser'
-import PortalInstance from './PortalInstance'
-import { Venues }     from './Venues/Venues'
+import PortalInstance                       from './PortalInstance'
+import { useNetworkVxLanTunnelProfileInfo } from './utils'
+import { Venues }                           from './Venues/Venues'
 
 
 const settingTitle = defineMessage({
@@ -136,6 +137,7 @@ export default function NetworkForm (props:{
   }
 
   const { data } = useGetNetworkQuery({ params })
+  const networkVxLanTunnelProfileInfo = useNetworkVxLanTunnelProfileInfo(data ?? null)
 
   useEffect(() => {
     if(saveState){
@@ -192,7 +194,8 @@ export default function NetworkForm (props:{
 
       let settingSaveData = tranferSettingsToSave(settingData, editMode)
       if (!editMode) {
-        settingSaveData = transferMoreSettingsToSave(data, settingSaveData)
+        // eslint-disable-next-line max-len
+        settingSaveData = transferMoreSettingsToSave(data, settingSaveData, networkVxLanTunnelProfileInfo)
       }
       updateSaveData(settingSaveData)
     }else {
@@ -210,7 +213,8 @@ export default function NetworkForm (props:{
         }
         let settingCaptiveSaveData = tranferSettingsToSave(settingCaptiveData, editMode)
         if (!editMode) {
-          settingCaptiveSaveData = transferMoreSettingsToSave(data, settingCaptiveSaveData)
+          // eslint-disable-next-line max-len
+          settingCaptiveSaveData = transferMoreSettingsToSave(data, settingCaptiveSaveData, networkVxLanTunnelProfileInfo)
         }
         updateSaveData(settingCaptiveSaveData)
       }
@@ -232,7 +236,8 @@ export default function NetworkForm (props:{
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleMoreSettings = async (data: any) => {
     const dataMore = handleGuestMoreSetting(data)
-    const settingSaveData = transferMoreSettingsToSave(dataMore, saveState)
+    // eslint-disable-next-line max-len
+    const settingSaveData = transferMoreSettingsToSave(dataMore, saveState, networkVxLanTunnelProfileInfo)
     updateSaveData(settingSaveData)
     return true
   }

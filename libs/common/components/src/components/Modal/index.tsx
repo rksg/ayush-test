@@ -24,9 +24,13 @@ function HasStepsFormContainer (props: React.HTMLAttributes<HTMLDivElement>) {
   const ref = useRef<HTMLDivElement>(null)
   const [hasStepsForm, setHasStepsForm] = useState(false)
   useLayoutEffect(() => {
+    const stepsFormElements = ref.current?.querySelectorAll('[data-testid*="steps-form"]') || []
+
     //.ant-pro-steps-form: <StepsFormLegacy />, .ant-steps: <StepsForm />
     setHasStepsForm(Boolean(
-      ref.current?.querySelector('.ant-pro-steps-form') || ref.current?.querySelector('.ant-steps')
+      ref.current?.querySelector('.ant-pro-steps-form') ||
+      ref.current?.querySelector('.ant-steps') ||
+      stepsFormElements.length > 0
     ))
   })
   const className = [props.className, hasStepsForm ? 'has-steps-form' : '']
