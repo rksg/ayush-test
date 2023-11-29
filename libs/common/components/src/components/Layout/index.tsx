@@ -225,6 +225,14 @@ export function Layout ({
     }
   }, [window.innerWidth])
 
+  useEffect(() => {
+    if (!collapsed) {
+      localStorage.setItem('acx-sider-width', '200px')
+    } else {
+      localStorage.setItem('acx-sider-width', '60px')
+    }
+  }, [collapsed])
+
   const Content = location.pathname.includes('dataStudio') ? UI.IframeContent : UI.Content
 
   return <UI.Wrapper showScreen={display || subOptimalDisplay}
