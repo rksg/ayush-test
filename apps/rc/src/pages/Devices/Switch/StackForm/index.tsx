@@ -158,6 +158,8 @@ export function StackForm () {
   const [standaloneSwitches, setStandaloneSwitches] = useState([] as SwitchRow[])
   const [currentFW, setCurrentFw] = useState('')
   const [currentAboveTenFW, setCurrentAboveTenFw] = useState('')
+  const [currentVenueFw, setCurrentVenueFw] = useState('')
+  const [currentVenueAboveTenFw, setCurrentVenueAboveTenFw] = useState('')
 
   const [activeRow, setActiveRow] = useState('1')
   const [rowKey, setRowKey] = useState(2)
@@ -205,6 +207,8 @@ export function StackForm () {
         venue => venue.id === switchData.venueId)?.switchFirmwareVersionAboveTen?.id
       setCurrentFw(switchFw || venueFw || '')
       setCurrentAboveTenFw(switchFw || venueAboveTenFw || '')
+      setCurrentVenueFw(venueFw || '')
+      setCurrentVenueAboveTenFw(venueAboveTenFw || '')
 
       if (!!switchDetail.model?.includes('ICX7650')) {
         formRef?.current?.setFieldValue('rearModule',
@@ -659,6 +663,8 @@ export function StackForm () {
 
       setCurrentFw(venueFw)
       setCurrentAboveTenFw(venueAboveTenFw)
+      setCurrentVenueFw(venueFw)
+      setCurrentVenueAboveTenFw(venueAboveTenFw)
 
       const switchModel = getSwitchModel(activeSerialNumber) || ''
       const miniMembers = getStackUnitsMinLimitation(switchModel, venueFw, venueAboveTenFw)
@@ -889,8 +895,8 @@ export function StackForm () {
                     stackUnitsMinLimitaion={getStackUnitsMinLimitation(
                       getSwitchModel(activeSerialNumber)!, currentFW, currentAboveTenFW
                     )}
-                    venueFirmware={currentFW}
-                    venueAboveTenFirmware={currentAboveTenFW}
+                    venueFirmware={currentVenueFw}
+                    venueAboveTenFirmware={currentVenueAboveTenFw}
                     isDisplay={visibleNotification}
                     isDisplayHeader={false}
                     type={SWITCH_UPGRADE_NOTIFICATION_TYPE.STACK}
