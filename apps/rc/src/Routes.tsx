@@ -105,6 +105,7 @@ import AddEdgeSdLan                         from './pages/Services/EdgeSdLan/Add
 import EdgeSdLanDetail                      from './pages/Services/EdgeSdLan/EdgeSdLanDetail'
 import EdgeSdLanTable                       from './pages/Services/EdgeSdLan/EdgeSdLanTable'
 import EditEdgeSdLan                        from './pages/Services/EdgeSdLan/EditEdgeSdLan'
+import AddEdgeSdLanP2                       from './pages/Services/EdgeSdLanP2/AddEdgeSdLan'
 import MdnsProxyDetail                      from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm                        from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import MdnsProxyTable                       from './pages/Services/MdnsProxy/MdnsProxyTable/MdnsProxyTable'
@@ -289,8 +290,15 @@ const edgeSdLanRoutes = () => {
         oper: ServiceOperation.DETAIL })}
       element={<EdgeSdLanDetail />}
     />
+
+    <Route
+      path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN_P2,
+        oper: ServiceOperation.CREATE })}
+      element={<AddEdgeSdLanP2 />}
+    />
   </>
 }
+
 
 function ServiceRoutes () {
   const isEdgeSdLanEnabled = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
