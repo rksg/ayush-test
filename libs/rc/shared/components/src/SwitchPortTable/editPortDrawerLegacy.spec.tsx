@@ -42,6 +42,7 @@ const params = {
   serialNumber: 'serial-number'
 }
 
+// eslint-disable-next-line max-len
 const editPortVlans = async (inputTagged: string, inputUntagged: string, currentStatus?: string) => {
   fireEvent.click(await screen.findByRole('button', {
     name: currentStatus !== 'port' ? 'Customize' : 'Edit'
