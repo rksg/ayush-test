@@ -9,7 +9,7 @@ import { mockServer, render, screen }                       from '@acx-ui/test-u
 import { mockNetworkResult }  from '../__tests__/fixtures'
 import WifiCallingFormContext from '../WifiCallingFormContext'
 
-import WifiCallingForm from './WifiCallingForm'
+import { WifiCallingForm } from './WifiCallingForm'
 
 
 const wifiCallingServiceResponse = {

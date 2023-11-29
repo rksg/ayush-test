@@ -25,9 +25,13 @@ jest.mock('@acx-ui/analytics/components', () => ({
   TrafficByVolume: () => <div data-testid={'analytics-TrafficByVolume'} title='TrafficByVolume' />,
   VenueHealth: () => <div data-testid={'analytics-VenueHealth'} title='VenueHealth' />
 }))
-jest.mock('@acx-ui/rc/components', () => ({
-  TopologyFloorPlanWidget: () => <div data-testid={'rc-TopologyFloorPlanWidget'} title='TopologyFloorPlanWidget' />,
-  VenueAlarmWidget: () => <div data-testid={'rc-VenueAlarmWidget'} title='VenueAlarmWidget' />,
+jest.mock('../../../TopologyFloorPlanWidget', () => ({
+  TopologyFloorPlanWidget: () => <div data-testid={'rc-TopologyFloorPlanWidget'} title='TopologyFloorPlanWidget' />
+}))
+jest.mock('../../../VenueAlarmWidget', () => ({
+  VenueAlarmWidget: () => <div data-testid={'rc-VenueAlarmWidget'} title='VenueAlarmWidget' />
+}))
+jest.mock('../../../VenueDevicesWidget', () => ({
   VenueDevicesWidget: () => <div data-testid={'rc-VenueDevicesWidget'} title='VenueDevicesWidget' />
 }))
 /* eslint-enable */

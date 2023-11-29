@@ -50,7 +50,7 @@ describe('NetworkDiagram', () => {
       }
     )
     const diagram = screen.getByRole('img') as HTMLImageElement
-    expect(diagram.src).toContain('none.png')
+    expect(diagram.src).toContain('None')
     expect(asFragment()).toMatchSnapshot()
   })
 
@@ -73,7 +73,7 @@ describe('NetworkDiagram', () => {
           }
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('psk.png')
+      expect(diagram.src).toContain('Psk')
       expect(asFragment()).toMatchSnapshot()
     })
 
@@ -95,7 +95,7 @@ describe('NetworkDiagram', () => {
         }
       )
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('aaa.png')
+      expect(diagram.src).toContain('Aaa')
       expect(asFragment()).toMatchSnapshot()
     })
   })
@@ -119,7 +119,7 @@ describe('NetworkDiagram', () => {
           }
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('dpsk.png')
+      expect(diagram.src).toContain('Dpsk')
       expect(asFragment()).toMatchSnapshot()
     })
     it('should render DPSK (Cloud) diagram successfully', async () => {
@@ -139,7 +139,7 @@ describe('NetworkDiagram', () => {
           }
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('dpsk-cloudpath-cloud-deployment.png')
+      expect(diagram.src).toContain('DpskCloudpathCloudDeployment')
       expect(asFragment()).toMatchSnapshot()
     })
     it('should render DPSK (On Premise) diagram successfully', async () => {
@@ -160,7 +160,7 @@ describe('NetworkDiagram', () => {
           }
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('dpsk-cloudpath-on-prem-deployment')
+      expect(diagram.src).toContain('DpskCloudpathOnPremDeployment')
       expect(asFragment()).toMatchSnapshot()
     })
   })
@@ -184,7 +184,7 @@ describe('NetworkDiagram', () => {
           }
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('open.png')
+      expect(diagram.src).toContain('Open')
       expect(asFragment()).toMatchSnapshot()
     })
     it('should render OPEN (Cloud) diagram successfully', async () => {
@@ -206,7 +206,7 @@ describe('NetworkDiagram', () => {
           }
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('open-cloudpath-cloud-deployment.png')
+      expect(diagram.src).toContain('OpenCloudpathCloudDeployment')
       expect(asFragment()).toMatchSnapshot()
     })
     it('should render OPEN (On Premise) diagram successfully', async () => {
@@ -228,7 +228,7 @@ describe('NetworkDiagram', () => {
           }
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('open-cloudpath-on-prem-deployment')
+      expect(diagram.src).toContain('OpenCloudpathOnPremDeployment')
       expect(asFragment()).toMatchSnapshot()
     })
   })
@@ -238,7 +238,7 @@ describe('NetworkDiagram', () => {
     it('should render AAA diagram successfully', async () => {
       const { asFragment } = render(<Provider><NetworkDiagram type={type} /></Provider>)
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('aaa.png')
+      expect(diagram.src).toContain('Aaa')
       expect(asFragment()).toMatchSnapshot()
     })
     it('should render AAA Proxy diagram successfully', async () => {
@@ -258,7 +258,7 @@ describe('NetworkDiagram', () => {
           }
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('aaa-proxy.png')
+      expect(diagram.src).toContain('AaaProxy')
       expect(asFragment()).toMatchSnapshot()
     })
 
@@ -284,7 +284,7 @@ describe('NetworkDiagram', () => {
           }
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('aaa-proxy.png')
+      expect(diagram.src).toContain('AaaProxy')
       expect(asFragment()).toMatchSnapshot()
     })
 
@@ -310,7 +310,7 @@ describe('NetworkDiagram', () => {
           }
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('aaa.png')
+      expect(diagram.src).toContain('Aaa')
       expect(asFragment()).toMatchSnapshot()
     })
 
@@ -333,7 +333,7 @@ describe('NetworkDiagram', () => {
           }
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('aaa-cloudpath-cloud-deployment.png')
+      expect(diagram.src).toContain('AaaCloudpathCloudDeployment')
       expect(asFragment()).toMatchSnapshot()
     })
     it('should render AAA (On Premise) diagram successfully', async () => {
@@ -355,7 +355,7 @@ describe('NetworkDiagram', () => {
           }
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('aaa-cloudpath-on-prem-deployment')
+      expect(diagram.src).toContain('AaaCloudpathOnPremDeployment')
       expect(asFragment()).toMatchSnapshot()
     })
   })
@@ -376,7 +376,7 @@ describe('NetworkDiagram', () => {
         }
       })
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('click-through.png')
+      expect(diagram.src).toContain('ClickThrough')
       expect(asFragment()).toMatchSnapshot()
     })
     it('should render Captive portal (Click Through) diagram successfully', async () => {
@@ -399,7 +399,7 @@ describe('NetworkDiagram', () => {
           }
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('click-through.png')
+      expect(diagram.src).toContain('ClickThrough')
       expect(asFragment()).toMatchSnapshot()
     })
     it('should render Captive portal (Self Sign In) diagram successfully', async () => {
@@ -422,7 +422,7 @@ describe('NetworkDiagram', () => {
           }
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('self-sign-in.png')
+      expect(diagram.src).toContain('SelfSignIn')
       expect(asFragment()).toMatchSnapshot()
     })
     it('should render Captive portal (Host Approval) diagram successfully', async () => {
@@ -443,7 +443,7 @@ describe('NetworkDiagram', () => {
           }
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('host-approval.png')
+      expect(diagram.src).toContain('HostApproval')
       expect(asFragment()).toMatchSnapshot()
     })
     it('should render Captive portal (Guest Pass) diagram successfully', async () => {
@@ -464,7 +464,7 @@ describe('NetworkDiagram', () => {
           }
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('guest-pass.png')
+      expect(diagram.src).toContain('GuestPass')
       expect(asFragment()).toMatchSnapshot()
     })
     it('should render Captive portal (WISPr) diagram successfully', async () => {
@@ -486,7 +486,7 @@ describe('NetworkDiagram', () => {
           }
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('wispr.png')
+      expect(diagram.src).toContain('Wispr')
       expect(asFragment()).toMatchSnapshot()
     })
     it('should render Captive portal (WISPr With Psk) diagram successfully', async () => {
@@ -509,7 +509,7 @@ describe('NetworkDiagram', () => {
           }
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('wispr-psk.png')
+      expect(diagram.src).toContain('WisprPsk')
       expect(asFragment()).toMatchSnapshot()
     })
     it('should render Captive portal (Cloudpath - Cloud) diagram successfully', async () => {
@@ -533,7 +533,7 @@ describe('NetworkDiagram', () => {
           }
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('captive-portal-cloudpath-cloud-deployment.png')
+      expect(diagram.src).toContain('CaptivePortalCloudpathCloudDeployment')
       expect(asFragment()).toMatchSnapshot()
     })
     it('should render Captive portal (Cloudpath - On Premise) diagram successfully', async () => {
@@ -557,7 +557,7 @@ describe('NetworkDiagram', () => {
           }
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('captive-portal-cloudpath-on-prem-deployment.png')
+      expect(diagram.src).toContain('CaptivePortalCloudpathOnPremDeployment')
       expect(asFragment()).toMatchSnapshot()
     })
   })

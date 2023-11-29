@@ -19,7 +19,7 @@ import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import SyslogContext from '../SyslogContext'
 
-import SyslogForm        from './SyslogForm'
+import { SyslogForm }    from './SyslogForm'
 import SyslogSettingForm from './SyslogSettingForm'
 
 

@@ -9,11 +9,11 @@ exports[`NetworkDiagram NetworkDiagram - AAA should render AAA (Cloud) diagram s
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Enterprise AAA (802.1X)"
-          src="aaa-cloudpath-cloud-deployment.png"
+          src="AaaCloudpathCloudDeployment"
         />
       </div>
     </div>
@@ -30,11 +30,11 @@ exports[`NetworkDiagram NetworkDiagram - AAA should render AAA (On Premise) diag
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Enterprise AAA (802.1X)"
-          src="aaa-cloudpath-on-prem-deployment.png"
+          src="AaaCloudpathOnPremDeployment"
         />
       </div>
     </div>
@@ -51,11 +51,11 @@ exports[`NetworkDiagram NetworkDiagram - AAA should render AAA Proxy diagram suc
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Enterprise AAA (802.1X)"
-          src="aaa-proxy.png"
+          src="AaaProxy"
         />
       </div>
     </div>
@@ -72,11 +72,11 @@ exports[`NetworkDiagram NetworkDiagram - AAA should render AAA Proxy diagram whe
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Enterprise AAA (802.1X)"
-          src="aaa-proxy.png"
+          src="AaaProxy"
         />
       </div>
     </div>
@@ -93,10 +93,10 @@ exports[`NetworkDiagram NetworkDiagram - AAA should render AAA diagram successfu
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
-          src="aaa.png"
+          src="Aaa"
         />
       </div>
     </div>
@@ -113,11 +113,11 @@ exports[`NetworkDiagram NetworkDiagram - AAA should render AAA diagram when enab
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Enterprise AAA (802.1X)"
-          src="aaa.png"
+          src="Aaa"
         />
       </div>
     </div>
@@ -134,11 +134,11 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Captive Portal"
-          src="click-through.png"
+          src="ClickThrough"
         />
       </div>
     </div>
@@ -155,11 +155,11 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Captive Portal"
-          src="captive-portal-cloudpath-cloud-deployment.png"
+          src="CaptivePortalCloudpathCloudDeployment"
         />
       </div>
     </div>
@@ -176,11 +176,11 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Captive Portal"
-          src="captive-portal-cloudpath-on-prem-deployment.png"
+          src="CaptivePortalCloudpathOnPremDeployment"
         />
       </div>
     </div>
@@ -197,11 +197,11 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Captive Portal"
-          src="guest-pass.png"
+          src="GuestPass"
         />
       </div>
     </div>
@@ -218,11 +218,11 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Captive Portal"
-          src="host-approval.png"
+          src="HostApproval"
         />
       </div>
     </div>
@@ -239,11 +239,11 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Captive Portal"
-          src="self-sign-in.png"
+          src="SelfSignIn"
         />
       </div>
     </div>
@@ -260,11 +260,11 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Captive Portal"
-          src="wispr-psk.png"
+          src="WisprPsk"
         />
       </div>
     </div>
@@ -281,11 +281,11 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Captive Portal"
-          src="wispr.png"
+          src="Wispr"
         />
       </div>
     </div>
@@ -302,11 +302,11 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Captive Portal"
-          src="click-through.png"
+          src="ClickThrough"
         />
       </div>
     </div>
@@ -323,11 +323,11 @@ exports[`NetworkDiagram NetworkDiagram - DPSK should render DPSK (Cloud) diagram
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Dynamic Pre-Shared Key (DPSK)"
-          src="dpsk-cloudpath-cloud-deployment.png"
+          src="DpskCloudpathCloudDeployment"
         />
       </div>
     </div>
@@ -344,11 +344,11 @@ exports[`NetworkDiagram NetworkDiagram - DPSK should render DPSK (On Premise) di
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Dynamic Pre-Shared Key (DPSK)"
-          src="dpsk-cloudpath-on-prem-deployment.png"
+          src="DpskCloudpathOnPremDeployment"
         />
       </div>
     </div>
@@ -365,11 +365,11 @@ exports[`NetworkDiagram NetworkDiagram - DPSK should render DPSK diagram success
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Dynamic Pre-Shared Key (DPSK)"
-          src="dpsk.png"
+          src="Dpsk"
         />
       </div>
     </div>
@@ -386,11 +386,11 @@ exports[`NetworkDiagram NetworkDiagram - OPEN should render OPEN (Cloud) diagram
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Open Network"
-          src="open-cloudpath-cloud-deployment.png"
+          src="OpenCloudpathCloudDeployment"
         />
       </div>
     </div>
@@ -407,11 +407,11 @@ exports[`NetworkDiagram NetworkDiagram - OPEN should render OPEN (On Premise) di
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Open Network"
-          src="open-cloudpath-on-prem-deployment.png"
+          src="OpenCloudpathOnPremDeployment"
         />
       </div>
     </div>
@@ -428,11 +428,11 @@ exports[`NetworkDiagram NetworkDiagram - OPEN should render OPEN diagram success
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Open Network"
-          src="open.png"
+          src="Open"
         />
       </div>
     </div>
@@ -449,11 +449,11 @@ exports[`NetworkDiagram NetworkDiagram - PSK should render AAA diagram successfu
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Enterprise AAA (802.1X)"
-          src="aaa.png"
+          src="Aaa"
         />
       </div>
     </div>
@@ -470,11 +470,11 @@ exports[`NetworkDiagram NetworkDiagram - PSK should render PSK diagram successfu
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Passphrase (PSK/SAE)"
-          src="psk.png"
+          src="Psk"
         />
       </div>
     </div>
@@ -491,10 +491,10 @@ exports[`NetworkDiagram should render default diagram successfully 1`] = `
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
-          src="none.png"
+          src="None"
         />
       </div>
     </div>

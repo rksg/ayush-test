@@ -317,10 +317,10 @@ exports[`DpskSettingsForm should render DPSK form successfully 1`] = `
             class="ant-col"
           >
             <div
-              class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
+              class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
             >
               <img
-                src="none.png"
+                src="None"
               />
             </div>
           </div>

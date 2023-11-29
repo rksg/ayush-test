@@ -3,8 +3,8 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import { VenueEdge } from '.'
 
-jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
+jest.mock('../../../../EdgesTable', () => ({
+  ...jest.requireActual('../../../../EdgesTable'),
   EdgesTable: () => <div data-testid={'EdgesTable'} />
 }))
 

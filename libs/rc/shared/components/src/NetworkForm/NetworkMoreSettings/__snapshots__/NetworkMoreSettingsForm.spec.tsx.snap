@@ -40,7 +40,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                   tabindex="0"
                 >
                   <div
-                    class="styledComponents__TabLable-sc-ijp2z4-5 jckxcB"
+                    class="styledComponents__TabLable-sc-1jfjsg1-5 iRfHpY"
                     style="width: 10px;"
                   >
                     VLAN
@@ -59,7 +59,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                   tabindex="0"
                 >
                   <div
-                    class="styledComponents__TabLable-sc-ijp2z4-5 jckxcB"
+                    class="styledComponents__TabLable-sc-1jfjsg1-5 iRfHpY"
                     style="width: 71px;"
                   >
                     Network Control
@@ -78,7 +78,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                   tabindex="0"
                 >
                   <div
-                    class="styledComponents__TabLable-sc-ijp2z4-5 jckxcB"
+                    class="styledComponents__TabLable-sc-1jfjsg1-5 iRfHpY"
                     style="width: 11px;"
                   >
                     Radio
@@ -97,7 +97,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                   tabindex="0"
                 >
                   <div
-                    class="styledComponents__TabLable-sc-ijp2z4-5 jckxcB"
+                    class="styledComponents__TabLable-sc-1jfjsg1-5 iRfHpY"
                     style="width: 38px;"
                   >
                     Networking
@@ -193,7 +193,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
         style="display: block;"
       >
         <div
-          class="styledComponents__FieldLabel-sc-ijp2z4-0 bgmlRr"
+          class="styledComponents__FieldLabel-sc-1jfjsg1-0 jRXaya"
           width="230px"
         >
           VLAN Pooling
@@ -347,7 +347,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
           </div>
         </div>
         <div
-          class="styledComponents__FieldLabel-sc-ijp2z4-0 bgmlRr"
+          class="styledComponents__FieldLabel-sc-1jfjsg1-0 jRXaya"
           width="230px"
         >
           Proxy ARP
@@ -392,12 +392,12 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
         style="display: none;"
       >
         <div
-          class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
+          class="styledComponents__FieldLabel-sc-1jfjsg1-0 fIJRPI"
           width="250px"
         >
           DNS Proxy
           <div
-            class="styledComponents__FieldLabel-sc-ijp2z4-0 iXJZpZ"
+            class="styledComponents__FieldLabel-sc-1jfjsg1-0 kDerjU"
             width="30px"
           >
             <div
@@ -458,12 +458,12 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
           </div>
         </div>
         <div
-          class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
+          class="styledComponents__FieldLabel-sc-1jfjsg1-0 fIJRPI"
           width="250px"
         >
           Wi-Fi Calling
           <div
-            class="styledComponents__FieldLabel-sc-ijp2z4-0 iXJZpZ"
+            class="styledComponents__FieldLabel-sc-1jfjsg1-0 kDerjU"
             width="30px"
           >
             <div
@@ -526,7 +526,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
           style="max-width: 600px;"
         >
           <div
-            class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
+            class="styledComponents__FieldLabel-sc-1jfjsg1-0 fIJRPI"
             width="250px"
           >
             Client Isolation
@@ -568,7 +568,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
           </div>
         </div>
         <div
-          class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
+          class="styledComponents__FieldLabel-sc-1jfjsg1-0 fIJRPI"
           width="250px"
         >
           Anti-spoofing
@@ -609,7 +609,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
           </div>
         </div>
         <div
-          class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
+          class="styledComponents__FieldLabel-sc-1jfjsg1-0 fIJRPI"
           width="250px"
         >
           Logging client data to external syslog
@@ -650,12 +650,12 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
           </div>
         </div>
         <h4
-          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-ijp2z4-7 fPbHyn eYxJAw"
+          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-1jfjsg1-7 fPbHyn euZnjV"
         >
           DHCP
         </h4>
         <div
-          class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
+          class="styledComponents__FieldLabel-sc-1jfjsg1-0 fIJRPI"
           width="250px"
         >
           Force DHCP
@@ -702,7 +702,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
             style="display: grid; grid-template-columns: 165px 140px 300px; align-items: baseline; margin: 20px 0px;"
           >
             <h4
-              class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-ijp2z4-7 fPbHyn eYxJAw"
+              class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-1jfjsg1-7 fPbHyn euZnjV"
             >
               Access Control
             </h4>
@@ -724,7 +724,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
             </button>
           </span>
           <div
-            class="styledComponents__FieldLabel-sc-ijp2z4-0 iJhmzR"
+            class="styledComponents__FieldLabel-sc-1jfjsg1-0 dOGJsk"
             width="175px"
           >
             Layer 2
@@ -769,7 +769,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
             </div>
           </div>
           <div
-            class="styledComponents__FieldLabel-sc-ijp2z4-0 iJhmzR"
+            class="styledComponents__FieldLabel-sc-1jfjsg1-0 dOGJsk"
             width="175px"
           >
             Layer 3
@@ -814,7 +814,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
             </div>
           </div>
           <div
-            class="styledComponents__FieldLabel-sc-ijp2z4-0 iJhmzR"
+            class="styledComponents__FieldLabel-sc-1jfjsg1-0 dOGJsk"
             width="175px"
           >
             Device & OS
@@ -859,7 +859,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
             </div>
           </div>
           <div
-            class="styledComponents__FieldLabel-sc-ijp2z4-0 iJhmzR"
+            class="styledComponents__FieldLabel-sc-1jfjsg1-0 dOGJsk"
             width="175px"
           >
             Applications
@@ -904,7 +904,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
             </div>
           </div>
           <div
-            class="styledComponents__FieldLabel-sc-ijp2z4-0 iJhmzR"
+            class="styledComponents__FieldLabel-sc-1jfjsg1-0 dOGJsk"
             width="175px"
           >
             Client Rate Limit
@@ -950,7 +950,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
         style="display: none;"
       >
         <div
-          class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
+          class="styledComponents__FieldLabel-sc-1jfjsg1-0 fIJRPI"
           width="250px"
         >
           Hide SSID
@@ -991,7 +991,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
           </div>
         </div>
         <h4
-          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-ijp2z4-7 fPbHyn eYxJAw"
+          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-1jfjsg1-7 fPbHyn euZnjV"
         >
           Load Control
         </h4>
@@ -1169,7 +1169,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
           </div>
         </div>
         <div
-          class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
+          class="styledComponents__FieldLabel-sc-1jfjsg1-0 fIJRPI"
           width="250px"
         >
           Enable load balancing between all radios
@@ -1210,7 +1210,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
           </div>
         </div>
         <div
-          class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
+          class="styledComponents__FieldLabel-sc-1jfjsg1-0 fIJRPI"
           width="250px"
         >
           Enable load balancing between APs
@@ -1251,7 +1251,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
           </div>
         </div>
         <div
-          class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
+          class="styledComponents__FieldLabel-sc-1jfjsg1-0 fIJRPI"
           width="250px"
         >
           OFDM only (disable 802.11b)
@@ -1293,7 +1293,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
           </div>
         </div>
         <h4
-          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-ijp2z4-7 fPbHyn eYxJAw"
+          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-1jfjsg1-7 fPbHyn euZnjV"
         >
           Data Rate Control (2.4 GHz & 5 GHz)
         </h4>
@@ -1495,7 +1495,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
         style="display: none;"
       >
         <div
-          class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
+          class="styledComponents__FieldLabel-sc-1jfjsg1-0 fIJRPI"
           width="250px"
         >
           Enable 802.11k neighbor reports
@@ -1539,7 +1539,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
           style="display: grid; grid-template-columns: 0px 1fr;"
         >
           <span
-            class="styledComponents__LabelOfInput-sc-ijp2z4-4 kaRqXV"
+            class="styledComponents__LabelOfInput-sc-1jfjsg1-4 loJeSo"
             style="left: 165px;"
           >
             Seconds
@@ -1767,7 +1767,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
           </div>
         </div>
         <div
-          class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
+          class="styledComponents__FieldLabel-sc-1jfjsg1-0 fIJRPI"
           width="250px"
         >
           Airtime Decongestion:
@@ -1808,7 +1808,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
           </div>
         </div>
         <div
-          class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
+          class="styledComponents__FieldLabel-sc-1jfjsg1-0 fIJRPI"
           width="250px"
         >
           Join RSSI Threshold:
@@ -1853,7 +1853,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
           </div>
         </div>
         <div
-          class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
+          class="styledComponents__FieldLabel-sc-1jfjsg1-0 fIJRPI"
           width="250px"
         >
           Transient Client Management:
@@ -1894,7 +1894,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
           </div>
         </div>
         <div
-          class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
+          class="styledComponents__FieldLabel-sc-1jfjsg1-0 fIJRPI"
           width="250px"
         >
           Optimized Connectivity Experience (OCE)

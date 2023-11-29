@@ -11,7 +11,7 @@ import {
 } from '@acx-ui/test-utils'
 import { UserUrlsInfo } from '@acx-ui/user'
 
-import DHCPForm            from './DHCPForm'
+import { DHCPForm }        from './DHCPForm'
 import { successResponse } from './DHCPForm.spec'
 
 

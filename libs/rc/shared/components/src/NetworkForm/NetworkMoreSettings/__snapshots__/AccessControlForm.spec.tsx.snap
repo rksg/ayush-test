@@ -12,7 +12,7 @@ exports[`AccessControlForm should render Access Control form successfully 1`] = 
         style="display: grid; grid-template-columns: 165px 140px 300px; align-items: baseline; margin: 20px 0px;"
       >
         <h4
-          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-ijp2z4-7 fPbHyn eYxJAw"
+          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-1jfjsg1-7 fPbHyn euZnjV"
         >
           Access Control
         </h4>
@@ -34,7 +34,7 @@ exports[`AccessControlForm should render Access Control form successfully 1`] = 
         </button>
       </span>
       <div
-        class="styledComponents__FieldLabel-sc-ijp2z4-0 iJhmzR"
+        class="styledComponents__FieldLabel-sc-1jfjsg1-0 dOGJsk"
         width="175px"
       >
         Layer 2
@@ -79,7 +79,7 @@ exports[`AccessControlForm should render Access Control form successfully 1`] = 
         </div>
       </div>
       <div
-        class="styledComponents__FieldLabel-sc-ijp2z4-0 iJhmzR"
+        class="styledComponents__FieldLabel-sc-1jfjsg1-0 dOGJsk"
         width="175px"
       >
         Layer 3
@@ -124,7 +124,7 @@ exports[`AccessControlForm should render Access Control form successfully 1`] = 
         </div>
       </div>
       <div
-        class="styledComponents__FieldLabel-sc-ijp2z4-0 iJhmzR"
+        class="styledComponents__FieldLabel-sc-1jfjsg1-0 dOGJsk"
         width="175px"
       >
         Device & OS
@@ -169,7 +169,7 @@ exports[`AccessControlForm should render Access Control form successfully 1`] = 
         </div>
       </div>
       <div
-        class="styledComponents__FieldLabel-sc-ijp2z4-0 iJhmzR"
+        class="styledComponents__FieldLabel-sc-1jfjsg1-0 dOGJsk"
         width="175px"
       >
         Applications
@@ -214,7 +214,7 @@ exports[`AccessControlForm should render Access Control form successfully 1`] = 
         </div>
       </div>
       <div
-        class="styledComponents__FieldLabel-sc-ijp2z4-0 iJhmzR"
+        class="styledComponents__FieldLabel-sc-1jfjsg1-0 dOGJsk"
         width="175px"
       >
         Client Rate Limit

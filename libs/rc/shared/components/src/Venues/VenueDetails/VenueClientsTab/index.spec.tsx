@@ -26,14 +26,18 @@ jest.mock('@acx-ui/reports/components', () => ({
   EmbeddedReport: () => <div data-testid={'some-report-id'} id='acx-report' />
 }))
 
-jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  ClientDualTable: () => <div data-testid={'ClientDualTable'} />,
+jest.mock('../../../ClientDualTable', () => ({
+  ...jest.requireActual('../../../ClientDualTable'),
+  ClientDualTable: () => <div data-testid={'ClientDualTable'} />
+}))
+
+jest.mock('../../../SwitchClientsTable', () => ({
+  ...jest.requireActual('../../../SwitchClientsTable'),
   SwitchClientsTable: () => <div data-testid={'SwitchClientsTable'} />
 }))
 
-jest.mock('apps/rc/src/pages/Users/Persona/PersonaTable/BasePersonaTable', () => ({
-  ...jest.requireActual('apps/rc/src/pages/Users/Persona/PersonaTable/BasePersonaTable'),
+jest.mock('../../../users/PersonaTable/BasePersonaTable', () => ({
+  ...jest.requireActual('../../../users/PersonaTable/BasePersonaTable'),
   BasePersonaTable: () => <div data-testid={'personaTable'} />
 }))
 

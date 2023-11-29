@@ -15,9 +15,8 @@ import { mockFirewall, mockedFirewallDataList } from './__tests__/fixtures'
 
 import  EdgeFirewall from './'
 
-jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  EdgeFirewallGroupedStatsTables: () => <div data-testid='rc-EdgeFirewallGroupedStatsTables' />
+jest.mock('../../../../EdgeFirewallTables/GroupedStatsTables', () => ({
+  GroupedStatsTables: () => <div data-testid='rc-EdgeFirewallGroupedStatsTables' />
 }))
 
 const mockedGetFirewallFn = jest.fn()

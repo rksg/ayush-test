@@ -6,9 +6,14 @@ import { CommonUrlsInfo, WifiUrlsInfo }             from '@acx-ui/rc/utils'
 import { Provider }                                 from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen }    from '@acx-ui/test-utils'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { ApTable } from '../../../ApTable'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { EdgesTable }   from '../../../EdgesTable'
 import { venueSetting } from '../../__tests__/fixtures'
 
 import { VenueDevicesTab } from '.'
+
 
 
 const mockedUsedNavigate = jest.fn()
@@ -21,9 +26,10 @@ jest.mock('@acx-ui/reports/components', () => ({
   ...jest.requireActual('@acx-ui/reports/components'),
   EmbeddedReport: () => <div data-testid={'some-report-id'} id='acx-report' />
 }))
-jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  ApTable: () => <div data-testid={'ApTable'} />,
+jest.mock('../../../ApTable', () => ({
+  ApTable: () => <div data-testid={'ApTable'} />
+}))
+jest.mock('../../../EdgesTable', () => ({
   EdgesTable: () => <div data-testid={'EdgesTable'} />
 }))
 

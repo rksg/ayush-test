@@ -6,7 +6,6 @@ import { useIntl } from 'react-intl'
 
 import { Table, TableProps, Loader, Tooltip, Tabs }                        from '@acx-ui/components'
 import { LineChartOutline, ListSolid, MeshSolid }                          from '@acx-ui/icons'
-import { ApTable }                                                         from '../../../../ApTable'
 import { useApGroupsListQuery, useGetVenueSettingsQuery, useMeshApsQuery } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -19,6 +18,8 @@ import { EmbeddedReport }                        from '@acx-ui/reports/component
 import {
   ReportType
 } from '@acx-ui/reports/components'
+
+import { ApTable } from '../../../../ApTable'
 
 import {
   ArrowCornerIcon,

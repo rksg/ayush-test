@@ -17,7 +17,7 @@ import {
   cloudpathResponse,
   networkDeepResponse
 } from '../__tests__/fixtures'
-import NetworkForm from '../NetworkForm'
+import { NetworkForm } from '../NetworkForm'
 
 jest.mock('react-intl', () => {
   const reactIntl = jest.requireActual('react-intl')
@@ -114,7 +114,7 @@ describe('NetworkForm', () => {
       await userEvent.click(toggle[1]) // Accounting Service
     })
 
-    let diagram = screen.getAllByAltText('Enterprise AAA (802.1X)')
+    let diagram: HTMLImageElement[] = screen.getAllByAltText('Enterprise AAA (802.1X)')
     let authBtn = screen.getByRole('button', { name: 'Authentication Service' })
     let accBtn = screen.getByRole('button', { name: 'Accounting Service' })
     expect(authBtn).toBeVisible()

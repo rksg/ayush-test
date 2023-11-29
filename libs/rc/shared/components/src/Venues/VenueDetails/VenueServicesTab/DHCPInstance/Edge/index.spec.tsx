@@ -9,8 +9,10 @@ import { mockedDhcpStatsData, mockedEdgeDhcpData, mockedEdgeList, mockEdgeDhcpHo
 
 import EdgeDhcpTab from '.'
 
-jest.mock('@acx-ui/rc/components', () => ({
-  EdgeDhcpLeaseTable: () => <div data-testid='edge-dhcp-lease-table' />,
+jest.mock('../../../../../EdgeDhcpLeaseTable', () => ({
+  EdgeDhcpLeaseTable: () => <div data-testid='edge-dhcp-lease-table' />
+}))
+jest.mock('../../../../../EdgeDhcpPoolTable', () => ({
   EdgeDhcpPoolTable: () => <div data-testid='edge-dhcp-pool-table' />
 }))
 jest.mock('@acx-ui/components', () => ({

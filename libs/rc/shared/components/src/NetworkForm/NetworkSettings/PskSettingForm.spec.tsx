@@ -19,7 +19,7 @@ import {
   networkDeepResponse,
   mockMacRegistrationPoolList, mockUpdatedMacRegistrationPoolList
 } from '../__tests__/fixtures'
-import NetworkForm from '../NetworkForm'
+import { NetworkForm } from '../NetworkForm'
 
 async function fillInBeforeSettings (networkName: string) {
   const insertInput = await screen.findByLabelText(/Network Name/)

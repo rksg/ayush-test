@@ -12,9 +12,9 @@ import { AccessControlUrls }          from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { avcApp, avcCat, queryApplication } from '../../__tests__/fixtures'
+import { avcApp, avcCat, queryApplication } from '../__tests__/fixtures'
 
-import ApplicationDrawer from './index'
+import { ApplicationDrawer } from './index'
 
 const applicationResponse = {
   requestId: '508c529a-0bde-49e4-8179-19366f69f31f'

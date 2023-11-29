@@ -8,9 +8,12 @@ import { mockedNsgStatsList } from './__tests__/fixtures'
 
 import { NetworkSegmentation } from '.'
 
-jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  NetworkSegmentationServiceInfo: () => <div data-testid='NetworkSegmentationServiceInfo' />,
+jest.mock('../../../../NetworkSegmentationServiceInfo', () => ({
+  ...jest.requireActual('../../../../NetworkSegmentationServiceInfo'),
+  NetworkSegmentationServiceInfo: () => <div data-testid='NetworkSegmentationServiceInfo' />
+}))
+jest.mock('../../../../NetworkSegmentationDetailTableGroup', () => ({
+  ...jest.requireActual('../../../../NetworkSegmentationDetailTableGroup'),
   NetworkSegmentationDetailTableGroup: () =>
     <div data-testid='NetworkSegmentationDetailTableGroup' />
 }))

@@ -15,8 +15,8 @@ import {
 
 import MacRegistrationListComponent from './MacRegistrationListComponent'
 
-jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
+jest.mock('../../MacRegistrationListForm', () => ({
+  ...jest.requireActual('../../MacRegistrationListForm'),
   MacRegistrationListForm: () => <div data-testid='MacRegistrationListForm'>
     MacRegistrationListFormTest
   </div>

@@ -179,7 +179,7 @@ exports[`LoadControlForm should render More settings form successfully 1`] = `
       </div>
     </div>
     <div
-      class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
+      class="styledComponents__FieldLabel-sc-1jfjsg1-0 fIJRPI"
       width="250px"
     >
       Enable load balancing between all radios
@@ -220,7 +220,7 @@ exports[`LoadControlForm should render More settings form successfully 1`] = `
       </div>
     </div>
     <div
-      class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
+      class="styledComponents__FieldLabel-sc-1jfjsg1-0 fIJRPI"
       width="250px"
     >
       Enable load balancing between APs
