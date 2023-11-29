@@ -16,6 +16,7 @@ import {
   useSkipSwitchUpgradeSchedulesMutation,
   useUpdateSwitchVenueSchedulesMutation } from '@acx-ui/rc/services'
 import {
+  DefaultSwitchVersion,
   FirmwareCategory,
   FirmwareSwitchVenue,
   FirmwareVersion,
@@ -24,8 +25,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { DefaultSwitchVersion, getReleaseFirmware } from '../../../FirmwareUtils'
-import * as UI                                      from '../styledComponents'
+import { getReleaseFirmware } from '../../../FirmwareUtils'
+import * as UI                from '../styledComponents'
 
 import { ScheduleStep }     from './ScheduleStep'
 import { SelectSwitchStep } from './SelectSwitchStep'
