@@ -3,10 +3,9 @@ import { Col, FormInstance, Row }   from 'antd'
 import { useIntl }                  from 'react-intl'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import { PageHeader, StepsForm }                       from '@acx-ui/components'
+import { PageHeader, StepsForm }               from '@acx-ui/components'
 import {
-  TunnelProfileForm as TunnelProfileFormBase,
-  TunnelProfileFormType as TunnelProfileFormTypeBase
+  TunnelProfileForm as TunnelProfileFormBase
 } from '@acx-ui/rc/components'
 import {
   CommonResult,
@@ -15,7 +14,8 @@ import {
   PolicyType,
   getPolicyListRoutePath,
   getPolicyRoutePath,
-  redirectPreviousPage
+  redirectPreviousPage,
+  TunnelProfileFormType as TunnelProfileFormTypeBase
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -25,10 +25,11 @@ interface TunnelProfileFormProps {
   onFinish: (values: TunnelProfileFormTypeBase) => Promise<CommonResult>
   form?: FormInstance
   isDefaultTunnel?: boolean
+  initialValues?: TunnelProfileFormTypeBase
 }
 
 export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
-  const { title, submitButtonLabel, onFinish, form, isDefaultTunnel } = props
+  const { title, submitButtonLabel, onFinish, form, isDefaultTunnel, initialValues } = props
   const { $t } = useIntl()
   const navigate = useNavigate()
   const location = useLocation()
@@ -69,6 +70,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
         onFinish={handleFinish}
         onCancel={() => redirectPreviousPage(navigate, previousPath, linkToTableView)}
         buttonLabel={{ submit: submitButtonLabel }}
+        initialValues={initialValues}
       >
         <StepsForm.StepForm>
           <Row gutter={20}>

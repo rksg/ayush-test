@@ -70,8 +70,8 @@ describe('Helper Functions', () => {
           }
         ]
       }
-      const targetNode1 = { name: 'switch', type: 'switch', list: ['2'] }
-      const targetNode2 = { name: 'ap', type: 'ap',list: ['1'] }
+      const targetNode1 = { name: '2', type: 'switch' }
+      const targetNode2 = { name: '1', type: 'ap' }
       const result1 = findMatchingNode(mock, targetNode1)
       expect(result1?.name).toBe('switch')
       expect(result1?.type).toBe('switch')

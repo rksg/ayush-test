@@ -14,7 +14,7 @@ export interface HealthFilter extends AnalyticsFilter {
 }
 
 export const HealthPageContext = createContext(
-  null as unknown as HealthFilter & { apCount?: number }
+  null as unknown as HealthFilter
 )
 
 const isBefore = (a: TimeStamp, b: TimeStamp) => moment(a).isBefore(b)
