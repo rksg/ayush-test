@@ -2,7 +2,6 @@ import { useMemo, useState, useEffect } from 'react'
 
 import { Checkbox, Switch }       from 'antd'
 import { uniqueId }               from 'lodash'
-import moment                     from 'moment'
 import { useIntl, defineMessage } from 'react-intl'
 
 import {
@@ -11,7 +10,6 @@ import {
   dateSort,
   sortProp
 } from '@acx-ui/analytics/utils'
-import { getUserProfile }              from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Tooltip } from '@acx-ui/components'
 import { get }                         from '@acx-ui/config'
 import { DateFormatEnum, formatter }   from '@acx-ui/formatter'
@@ -55,7 +53,6 @@ export function RecommendationTable (
 ) {
   const intl = useIntl()
   const { $t } = intl
-  const profile = getUserProfile()
 
   const [showMuted, setShowMuted] = useState<boolean>(false)
 
@@ -141,7 +138,23 @@ export function RecommendationTable (
       width: 250,
       dataIndex: 'summary',
       key: 'summary',
-      render: (_, value, __, highlightFn ) => <>{highlightFn(value.summary)}</>,
+      render: (_, value, __, highlightFn ) => {
+        const checkPreference = value.preferences ? value.preferences.fullOptimization : true
+        if (checkPreference) {
+          return highlightFn(value.summary)
+        } else {
+          if (value.code.includes('24g')) {
+            return highlightFn($t({
+              defaultMessage: 'Optimal channel plan found for 2.4 GHz radio' }))
+          } else if (value.code.includes('5g')) {
+            return highlightFn($t({
+              defaultMessage: 'Optimal channel plan found for 5 GHz radio' }))
+          } else {
+            return highlightFn($t({
+              defaultMessage: 'Optimal channel plan found for 6 GHz radio' }))
+          }
+        }
+      },
       sorter: { compare: sortProp('summary', defaultSort) },
       searchable: true
     },
@@ -199,20 +212,18 @@ export function RecommendationTable (
       align: 'left',
       tooltip: '',
       render: (_, value) => {
-        const { code, status, path } = value
-        const disabled = status !== 'Applied' ? true : false
-        const preference = { fullOptimization: true }
+        const { code, statusEnum, idPath } = value
+        const appliedStates = ['applyscheduled', 'applyscheduleinprogress', 'applied']
+        const disabled = appliedStates.includes(statusEnum) ? true : false
+        const isOptimized = value.preferences? value.preferences.fullOptimization : true
         return <div>
           <Switch
             defaultChecked
-            checked={preference.fullOptimization}
+            checked={isOptimized}
             disabled={disabled}
             onChange={() => {
-              const { userId, selectedTenant } = profile
-              const date = moment().utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]')
-              setPreference({
-                code, path, preference, userId, tenantId: selectedTenant.id, date
-              })
+              const updatedPreference = { fullOptimization: !isOptimized }
+              setPreference({ code, path: idPath, preferences: updatedPreference })
             }}
           />
         </div>

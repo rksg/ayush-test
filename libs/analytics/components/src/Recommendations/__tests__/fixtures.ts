@@ -79,7 +79,14 @@ export const recommendationListResult = {
       path: [
         { type: 'system', name: 'vsz611' },
         { type: 'zone', name: 'EDU-MeshZone_S12348' }
-      ] as NetworkPath
+      ] as NetworkPath,
+      idPath: [
+        { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c7' },
+        { type: 'zone', name: 'EDU-MeshZone_S12348' }
+      ] as NetworkPath,
+      preferences: {
+        fullOptimization: true
+      }
     },
     {
       id: '1',
@@ -160,6 +167,30 @@ export const recommendationListResult = {
           name: 'Deeps Place'
         }
       ] as NetworkPath
+    },
+    {
+      id: '5',
+      code: 'c-crrm-channel24g-auto',
+      status: 'new',
+      createdAt: '2023-06-13T07:05:08.638Z',
+      updatedAt: '2023-06-16T06:05:02.839Z',
+      sliceType: 'zone',
+      sliceValue: 'zone-1',
+      metadata: {},
+      isMuted: false,
+      mutedAt: null,
+      mutedBy: '',
+      path: [
+        { type: 'system', name: 'vsz612' },
+        { type: 'zone', name: 'EDU-MeshZone_S12348' }
+      ] as NetworkPath,
+      idPath: [
+        { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c8' },
+        { type: 'zone', name: 'EDU-MeshZone_S12348' }
+      ] as NetworkPath,
+      preferences: {
+        fullOptimization: false
+      }
     }
   ]
 }

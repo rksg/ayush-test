@@ -70,6 +70,10 @@ export type Recommendation = {
   mutedBy: string
   mutedAt: string | null
   path: NetworkPath
+  idPath: NetworkPath
+  preferences: {
+    fullOptimization: boolean
+  }
 }
 
 export type RecommendationListItem = Recommendation & {
@@ -111,12 +115,9 @@ interface ScheduleResponse {
 interface PreferencePayload {
   code: string
   path: NetworkPath
-  preference: {
+  preferences: {
     fullOptimization: boolean
   }
-  userId: string
-  tenantId: string
-  date: string
 }
 
 interface PreferenceResponse {
@@ -342,7 +343,12 @@ export const api = recommendationApi.injectEndpoints({
             isMuted
             mutedBy
             mutedAt
+            preferences
             path {
+              type
+              name
+            }
+            idPath {
               type
               name
             }
@@ -444,24 +450,18 @@ export const api = recommendationApi.injectEndpoints({
         { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
       ]
     }),
-    setPreference: build.mutation<PreferenceResponse, PreferencePayload>({ // testing api
+    setPreference: build.mutation<PreferenceResponse, PreferencePayload>({
       query: (payload) => ({
         document: gql`
           mutation SetPreference(
             $code: String,
             $path: [HierarchyNodeInput],
-            $preference: JSON,
-            $userId: String,
-            $tenantId: String,
-            $date: DateTime
+            $preferences: JSON
           ) {
             setPreference(
               code: $code,
               path: $path,
-              preference: $preference,
-              userId: $userId,
-              tenantId: $tenantId,
-              date: $date
+              preferences: $preferences
             ) {
               success
               errorMsg
@@ -472,10 +472,7 @@ export const api = recommendationApi.injectEndpoints({
         variables: {
           code: payload.code,
           path: payload.path,
-          preference: payload.preference,
-          userId: payload.userId,
-          tenantId: payload.tenantId,
-          date: payload.date
+          preferences: payload.preferences
         }
       }),
       invalidatesTags: [
