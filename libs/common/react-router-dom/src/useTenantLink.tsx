@@ -2,7 +2,7 @@ import _        from 'lodash'
 import {
   useParams,
   resolvePath,
-  useLocation,
+  useLocation
 }         from 'react-router-dom'
 
 import { get } from '@acx-ui/config'

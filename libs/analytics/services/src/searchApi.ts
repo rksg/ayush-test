@@ -148,8 +148,7 @@ export const searchApi = dataApiSearch.injectEndpoints({
               rxBytes
               txBytes
             }
-              `
-        }
+              `}
           }
         }
         `,
@@ -282,7 +281,6 @@ export const networkSearchApi = dataApi.injectEndpoints({
         variables: payload
       }),
       providesTags: [{ type: 'Monitoring', id: 'ZONES_CLIENT_LIST' }],
-
       transformResponse: (response: { network: { search: ClientList } }) => response.network.search
     })
   })
