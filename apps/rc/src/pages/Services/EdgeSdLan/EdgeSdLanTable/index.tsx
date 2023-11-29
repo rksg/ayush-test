@@ -126,6 +126,7 @@ const EdgeSdLanTable = () => {
       key: 'venueId',
       dataIndex: 'venueId',
       align: 'center',
+      sorter: true,
       filterable: venueOptions,
       render: (__, row) => {
         return <TenantLink
@@ -140,6 +141,7 @@ const EdgeSdLanTable = () => {
       key: 'edgeId',
       dataIndex: 'edgeId',
       align: 'center',
+      sorter: true,
       filterable: edgeOptions,
       render: (__, row) => {
         return <TenantLink
@@ -154,6 +156,7 @@ const EdgeSdLanTable = () => {
       key: 'tunnelProfileId',
       dataIndex: 'tunnelProfileId',
       align: 'center',
+      sorter: true,
       render: (__, row) => {
         return <TenantLink
           to={getPolicyDetailsLink({
@@ -170,6 +173,7 @@ const EdgeSdLanTable = () => {
       key: 'networkIds',
       dataIndex: 'networkIds',
       align: 'center',
+      sorter: true,
       render: (__, row) => {
         return (row.networkIds && row.networkIds.length)
           ? <Tooltip
