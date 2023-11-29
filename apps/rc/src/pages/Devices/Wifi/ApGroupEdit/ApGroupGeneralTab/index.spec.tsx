@@ -1,6 +1,5 @@
 import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
-import { Modal }      from 'antd'
 import { rest }       from 'msw'
 
 import { apApi, venueApi }              from '@acx-ui/rc/services'
@@ -12,7 +11,8 @@ import {
   screen,
   fireEvent,
   waitFor,
-  waitForElementToBeRemoved
+  waitForElementToBeRemoved,
+  act
 } from '@acx-ui/test-utils'
 
 import { ApGroupEditContext } from '..'
@@ -32,11 +32,11 @@ jest.mock('react-router-dom', () => ({
 }))
 
 
-describe('AP Group General tab - Add', () => {
-  const params = { tenantId: 'tenant-id', action: 'add' }
+describe('AP Group General tab', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
+    mockedUsedNavigate.mockReset()
     initialize()
 
     mockServer.use(
@@ -55,11 +55,18 @@ describe('AP Group General tab - Add', () => {
     )
 
   })
-  afterEach(() => {
-    Modal.destroyAll()
-  })
+
+  const setEditContextDataFn = jest.fn()
   it('should render correctly', async () => {
-    render(<Provider><ApGroupGeneralTab /></Provider>, {
+    const params = { tenantId: 'tenant-id', action: 'add' }
+
+    render(<Provider>
+      <ApGroupEditContext.Provider value={{
+        isEditMode: false, isApGroupTableFlag: false,
+        setEditContextData: setEditContextDataFn }}>
+        <ApGroupGeneralTab />
+      </ApGroupEditContext.Provider>
+    </Provider>, {
       route: { params, path: '/:tenantId/t/devices/apgroups/:action' }
     })
 
@@ -74,11 +81,14 @@ describe('AP Group General tab - Add', () => {
   })
 
   it('add ap group', async () => {
-    render(<ApGroupEditContext.Provider value={{ isEditMode: false, isApGroupTableFlag: false }}>
-      <Provider>
+    const params = { tenantId: 'tenant-id', action: 'add' }
+    render(<Provider>
+      <ApGroupEditContext.Provider value={{
+        isEditMode: false, isApGroupTableFlag: false,
+        setEditContextData: setEditContextDataFn }}>
         <ApGroupGeneralTab />
-      </Provider>
-    </ApGroupEditContext.Provider>, {
+      </ApGroupEditContext.Provider>
+    </Provider>, {
       route: { params, path: '/:tenantId/t/devices/apgroups/:action' }
     })
 
@@ -90,29 +100,38 @@ describe('AP Group General tab - Add', () => {
     await userEvent.click(await screen.getAllByText('My-Venue')[0])
     await waitFor(() => screen.findByText(/for ap group 2/i))
     await userEvent.click(screen.getByText(/for ap group 2/i))
-    await userEvent.click(screen.getByRole('button', {
-      name: /right add/i
-    }))
-    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
-    expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/devices/wifi`,
-      hash: '',
-      search: ''
+    await userEvent.click(screen.getByRole('button', { name: /right add/i }))
+
+    const saveButton = await screen.findByRole('button', { name: 'Add' })
+    expect(saveButton).toBeVisible()
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(async () => { fireEvent.click(saveButton)} )
+    await waitFor(() => {
+      // eslint-disable-next-line max-len
+      expect(mockedUsedNavigate).toHaveBeenCalledWith('/tenant-id/t/devices/wifi', { replace: true })
     })
   })
 
   it('edit ap group', async () => {
     const params = { tenantId: 'tenant-id', apGroupId: 'apgroup-id', action: 'edit' }
-    render(<ApGroupEditContext.Provider value={{ isEditMode: true, isApGroupTableFlag: true }}>
+    render(
       <Provider>
-        <ApGroupGeneralTab />
-      </Provider>
-    </ApGroupEditContext.Provider>, {
-      route: { params, path: '/:tenantId/t/devices/apgroups/:apGroupId/:action' }
-    })
+        <ApGroupEditContext.Provider value={{
+          isEditMode: true, isApGroupTableFlag: true,
+          setEditContextData: setEditContextDataFn }}>
+          <ApGroupGeneralTab />
+        </ApGroupEditContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/devices/apgroups/:apGroupId/:action/general' }
+      })
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    //expect(await screen.findByText('Edit AP Group')).toBeVisible()
     await waitFor(() => screen.findByText(/for ap group 2/i))
-    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+    await userEvent.click(screen.getByText(/for ap group 2/i))
+    await userEvent.click(screen.getByRole('button', { name: /right add/i }))
+    const nameInput = await screen.findByRole('textbox', { name: /Group Name/ })
+    await userEvent.type(nameInput, 'test')
+    const saveButton = await screen.findByRole('button', { name: 'Apply' })
+    await userEvent.click(saveButton)
+    expect(saveButton).toBeVisible()
   })
 })

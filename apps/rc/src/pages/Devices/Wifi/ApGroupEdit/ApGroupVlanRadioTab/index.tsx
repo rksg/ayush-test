@@ -35,8 +35,12 @@ export const ApGroupVlanRadioContext = createContext({} as {
 
 export function ApGroupVlanRadioTab () {
   const { $t } = useIntl()
-  const { isEditMode, isApGroupTableFlag,
-    editContextData, setEditContextData } = useContext(ApGroupEditContext)
+  const {
+    isEditMode,
+    isApGroupTableFlag,
+    setEditContextData
+  } = useContext(ApGroupEditContext)
+
   const { tenantId, apGroupId = '' } = useParams()
 
   const updateDataRef = useRef<NetworkVenue[]>([])
@@ -48,12 +52,11 @@ export function ApGroupVlanRadioTab () {
     `${basePath.pathname}/wifi/apgroups` :
     `${basePath.pathname}/wifi`
 
-  const { data: apGroupData } = useGetApGroupQuery(
+  const { data: apGroupData, isLoading: isApGroupDataLoading } = useGetApGroupQuery(
     { params: { tenantId, apGroupId } },
     { skip: !(isApGroupTableFlag && isEditMode) })
 
   const [getApGroupNetworkList] = useLazyApGroupNetworkListQuery()
-  //const [updateNetworkVenue] = useUpdateNetworkVenueMutation()
   const [updateNetworkVenues] = useUpdateNetworkVenuesMutation()
 
   const { vlanPoolOptions } = useVlanPoolListQuery({ params: useParams() }, {
@@ -69,12 +72,17 @@ export function ApGroupVlanRadioTab () {
   const [drawerStatus, setDrawerStatus] = useState(defaultDrawerStatus)
 
   useEffect(() => {
-    if (apGroupData) {
+    if (apGroupData && !isApGroupDataLoading) {
+      const payload = _.cloneDeep({
+        ...defaultApGroupNetworkPayload,
+        filters: { isAllApGroups: [false] }
+      })
+
       const getInitTableData = async () => {
         const venueId = apGroupData.venueId
         const { data } = await getApGroupNetworkList({
           params: { tenantId, venueId, apGroupId },
-          payload: defaultApGroupNetworkPayload
+          payload
         }, true)
 
         setVenueId(venueId)
@@ -84,20 +92,20 @@ export function ApGroupVlanRadioTab () {
 
       getInitTableData()
     }
-  }, [apGroupData, getApGroupNetworkList])
+  }, [apGroupData, isApGroupDataLoading, getApGroupNetworkList])
 
   const handleUpdateAllApGroupVlanRadio = async () => {
     const updateData = updateDataRef.current
 
     if (updateData.length > 0) {
-      //console.log('updateData', updateData)
       await updateNetworkVenues({ payload: updateData }).unwrap()
-      /*
-      updateData.forEach( d => {
-        updateNetworkVenue({ params: { networkVenueId: d.id }, payload: d }).unwrap()
-      })
-      */
     }
+
+    setEditContextData({
+      tabTitle: $t({ defaultMessage: 'VLAN & Radio' }),
+      unsavedTabKey: 'vlanRadio',
+      isDirty: false
+    })
   }
 
   const handleUpdateApGroupVlanRadio = (editData: Network) => {
@@ -120,7 +128,6 @@ export function ApGroupVlanRadioTab () {
     )
 
     setEditContextData({
-      ...editContextData,
       tabTitle: $t({ defaultMessage: 'VLAN & Radio' }),
       unsavedTabKey: 'vlanRadio',
       isDirty: true,
@@ -130,7 +137,7 @@ export function ApGroupVlanRadioTab () {
 
   const handleDiscardChanges = async () => {
     setEditContextData({
-      tabTitle: editContextData.tabTitle,
+      tabTitle: $t({ defaultMessage: 'VLAN & Radio' }),
       unsavedTabKey: 'vlanRadio',
       isDirty: false
     })

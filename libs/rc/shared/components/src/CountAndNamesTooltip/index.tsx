@@ -37,7 +37,7 @@ export function CountAndNamesTooltip (props: CountAndNamesTooltipProps) {
           { total: namesLen - maxShow })
       )
     }
-    const tootipTitle = truncateData.map(n => <div>{n}</div>)
+    const tootipTitle = truncateData.map(n => <div key={n}>{n}</div>)
 
     return (
       <Tooltip title={tootipTitle} placement={placement || 'bottom'} >

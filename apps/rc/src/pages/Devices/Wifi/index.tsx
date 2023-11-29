@@ -6,7 +6,7 @@ import { useNavigate, useTenantLink }                     from '@acx-ui/react-ro
 import { EmbeddedReport, ReportType, usePageHeaderExtra } from '@acx-ui/reports/components'
 import { filterByAccess }                                 from '@acx-ui/user'
 
-import useApsGroupTable from './ApGroupsTable'
+import useApGroupsTable from './ApGroupsTable'
 import useApsTable      from './ApsTable'
 
 export enum WifiTabsEnum {
@@ -58,7 +58,7 @@ const useTabs = () : WifiTab[] => {
 
   const apGroupTab = {
     key: WifiTabsEnum.AP_GROUP,
-    ...useApsGroupTable()
+    ...useApGroupsTable()
   }
 
   if (showApGroupTable) {

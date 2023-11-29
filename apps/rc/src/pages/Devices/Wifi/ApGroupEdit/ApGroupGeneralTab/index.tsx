@@ -132,6 +132,12 @@ export function ApGroupGeneralTab () {
         await addApGroup({ params: { tenantId, venueId }, payload }).unwrap()
       }
 
+      setEditContextData({
+        tabTitle: $t({ defaultMessage: 'General' }),
+        unsavedTabKey: 'general',
+        isDirty: false
+      })
+
       if (!isEditMode || !isApGroupTableFlag) {
         navigate(navigatePathName, { replace: true })
       }

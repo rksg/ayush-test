@@ -24,7 +24,8 @@ export const defaultApGroupNetworkPayload = {
     'id',
     'isOweMaster',
     'owePairNetworkId',
-    'dsaeOnboardNetwork'
+    'dsaeOnboardNetwork',
+    'isAllApGroups'
   ],
   sortField: 'name',
   sortOrder: 'ASC'
