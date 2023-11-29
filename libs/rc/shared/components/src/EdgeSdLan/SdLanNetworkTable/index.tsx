@@ -1,11 +1,13 @@
 import { useMemo } from 'react'
 
-import { useIntl } from 'react-intl'
+import { AlignType } from 'rc-table/lib/interface'
+import { useIntl }   from 'react-intl'
 
-import { Table, TableProps }                       from '@acx-ui/components'
-import { useVenueNetworkActivationsDataListQuery } from '@acx-ui/rc/services'
-import { NetworkSaveData, networkTypes }           from '@acx-ui/rc/utils'
-import { useParams }                               from '@acx-ui/react-router-dom'
+import { Loader, Table, TableProps }                            from '@acx-ui/components'
+import { useVenueNetworkActivationsDataListQuery }              from '@acx-ui/rc/services'
+import { defaultSort, NetworkSaveData, networkTypes, sortProp } from '@acx-ui/rc/utils'
+import { useParams }                                            from '@acx-ui/react-router-dom'
+import { hasAccess }                                            from '@acx-ui/user'
 
 import { ActivateNetworkSwitchButton } from './ActivateNetworkSwitchButton'
 
@@ -18,7 +20,8 @@ export interface ActivatedNetworksTableProps {
   onActivateChange?: (
     data: NetworkSaveData,
     checked: boolean,
-    activated: string[]) => void
+    activated: string[]) => void,
+  isUpdating?: boolean
 }
 
 export const EdgeSdLanActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
@@ -26,12 +29,13 @@ export const EdgeSdLanActivatedNetworksTable = (props: ActivatedNetworksTablePro
     venueId,
     columns,
     activated,
-    onActivateChange
+    onActivateChange,
+    isUpdating
   } = props
   const params = useParams()
   const { $t } = useIntl()
 
-  const { networkList } = useVenueNetworkActivationsDataListQuery({
+  const { networkList, isLoading, isFetching } = useVenueNetworkActivationsDataListQuery({
     params: { ...params },
     payload: {
       pageSize: 10000,
@@ -46,10 +50,11 @@ export const EdgeSdLanActivatedNetworksTable = (props: ActivatedNetworksTablePro
     }
   }, {
     skip: !Boolean(venueId),
-    selectFromResult: ({ data, isLoading }) => {
+    selectFromResult: ({ data, isLoading, isFetching }) => {
       return {
         networkList: data,
-        isLoading
+        isLoading,
+        isFetching
       }
     }
   })
@@ -61,34 +66,42 @@ export const EdgeSdLanActivatedNetworksTable = (props: ActivatedNetworksTablePro
     key: 'name',
     dataIndex: 'name',
     defaultSortOrder: 'ascend',
-    fixed: 'left'
+    fixed: 'left',
+    sorter: { compare: sortProp('name', defaultSort) }
   }, {
     title: $t({ defaultMessage: 'Network Type' }),
     key: 'type',
     dataIndex: 'type',
+    sorter: { compare: sortProp('type', defaultSort) },
     render: (_, row) => {
       return $t(networkTypes[row.type!])
     }
-  }, {
+  },
+  ...(hasAccess() ? [{
     title: $t({ defaultMessage: 'Activate on Venue' }),
     key: 'action',
     dataIndex: 'action',
-    align: 'center',
+    align: 'center' as AlignType,
     width: 80,
-    render: (_, row) => {
+    render: (_: unknown, row: NetworkSaveData) => {
       return <ActivateNetworkSwitchButton
         row={row}
         activated={activated ?? []}
         onChange={onActivateChange}
       />
     }
-  }]), [$t, activated])
+  }] : [])
+  ]), [$t, activated])
 
   return (
-    <Table
-      rowKey='id'
-      columns={columns ?? defaultColumns}
-      dataSource={networkList}
-    />
+    <Loader states={[
+      { isLoading, isFetching: isFetching || isUpdating }
+    ]}>
+      <Table
+        rowKey='id'
+        columns={columns ?? defaultColumns}
+        dataSource={networkList}
+      />
+    </Loader>
   )
 }

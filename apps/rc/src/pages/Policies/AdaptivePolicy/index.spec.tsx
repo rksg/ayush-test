@@ -6,7 +6,23 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import AdaptivePolicyList, { AdaptivePolicyTabKey } from './index'
 
-describe.skip('AdaptivePolicyList', () =>{
+jest.mock('./AdaptivePolicy/AdaptivePolicyTable', () => ({
+  ...jest.requireActual('./AdaptivePolicy/AdaptivePolicyTable'),
+  __esModule: true,
+  default: () => {
+    return <div data-testid='mocked-AdaptivePolicyTable'></div>
+  }
+}))
+
+jest.mock('./AdaptivePolicyTabs', () => ({
+  ...jest.requireActual('./AdaptivePolicyTabs'),
+  __esModule: true,
+  default: () => {
+    return <div data-testid='mocked-AdaptivePolicyTab'></div>
+  }
+}))
+
+describe('AdaptivePolicyList', () =>{
   const params = { tenantId: '_tenantId_' }
 
   it('should render breadcrumb correctly', async () => {

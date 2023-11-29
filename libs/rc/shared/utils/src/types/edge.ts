@@ -325,7 +325,7 @@ export interface EdgeLag {
     lacpMode: EdgeLagLacpModeEnum
     lacpTimeout: EdgeLagTimeoutEnum
     lagMembers: {
-        portMac: string
+        portId: string
         portEnabled: boolean
     }[]
     portType: EdgePortTypeEnum

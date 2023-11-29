@@ -78,6 +78,7 @@ export const GuestsTable = () => {
   }
   const { setGuestCount } = useContext(GuestTabContext)
 
+
   const queryOptions = {
     defaultPayload: {
       ...defaultGuestPayload,
@@ -127,6 +128,7 @@ export const GuestsTable = () => {
   const [currentGuest, setCurrentGuest] = useState({} as Guest)
   const [guestDetail, setGuestDetail] = useState({} as Guest)
   const [allowedNetworkList, setAllowedNetworkList] = useState<Network[]>([])
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
 
   const [importVisible, setImportVisible] = useState(false)
   const [importCsv, importResult] = useImportGuestPassMutation()
@@ -296,6 +298,10 @@ export const GuestsTable = () => {
     setVisible(false)
   }
 
+  const clearSelection = () => {
+    setSelectedRowKeys([])
+  }
+
   const rowActions: TableProps<Guest>['rowActions'] = isReadOnly ? [
     {
       label: $t({ defaultMessage: 'Download Information' }),
@@ -307,7 +313,7 @@ export const GuestsTable = () => {
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows) => {
-        guestAction.showDeleteGuest(selectedRows, params.tenantId)
+        guestAction.showDeleteGuest(selectedRows, params.tenantId, clearSelection)
       }
     },
     {
@@ -386,6 +392,7 @@ export const GuestsTable = () => {
         rowKey='id'
         rowActions={rowActions}
         rowSelection={{
+          selectedRowKeys,
           type: 'checkbox'
         }}
         actions={filterByAccess([{
