@@ -4,7 +4,7 @@ import { Link }          from 'react-router-dom'
 import { CSSProperties } from 'styled-components'
 
 
-import { ChatbotLink } from '@acx-ui/icons'
+import { UploadDocument } from '@acx-ui/icons'
 
 import { Button } from '../Button'
 
@@ -55,7 +55,8 @@ const Expandable = (props: { text: string, maxChar: number }) => {
   let [expanded, setExpanded] = useState(true)
   if(props.text.length <= props.maxChar) return <UI.Bot>{props.text}</UI.Bot>
   let formattedText = expanded ? props.text.substring(0, props.maxChar) : props.text
-  return <UI.Bot>{formattedText}
+  return <UI.Bot>{formattedText}{expanded ? '... ' : ''}
+    <br/><br/>
     <Button size='small' type='link' onClick={() => {setExpanded(!expanded)}}>
       {expanded? 'Read more...' : 'Read less'}</Button></UI.Bot>
 }
@@ -89,24 +90,35 @@ function Conversation ({
                       return <a href={parseLink(res.link)}
                         target='_blank'
                         rel='noreferrer'><Button type='default'
-                          icon={<ChatbotLink />}
+                          icon={<UI.StyledChatbotLink/>}
                           style={{
+                            fontSize: '12px',
                             width: 'max-content',
-                            marginTop: '10px' }}>{res.text}</Button></a>
+                            marginTop: '10px'
+                          }}>{res.text}</Button></a>
                     }else if(res.event){
-                      return <Link to={res.event?.parameters?.url || '#'}>{res.text}</Link>
+                      return <Link to={res.event?.parameters?.url || '#'}>
+                        <Button type='default'
+                          icon={<UI.StyledChatbotLink/>}
+                          style={{
+                            fontSize: '12px',
+                            width: 'max-content',
+                            marginTop: '10px' }}>{res.text}</Button></Link>
                     }else{
-                      return <Button type='link'
+                      return <Button type='default'
+                        icon={<UploadDocument />}
                         data-testid='button-link'
-                        style={{ fontSize: '12px' }}>
+                        style={{ fontSize: '12px',
+                          width: 'max-content',
+                          marginTop: '10px' }}>
                         {res.text}</Button>
                     }
                   case 'divider':
                     return null
                   case 'list':
-                    return <UI.Bot><Button type='link'
+                    return <Button type='default'
                       data-testid='button-link-list'
-                      style={{ fontSize: '12px' }}
+                      style={{ fontSize: '12px', width: 'max-content', marginTop: '10px' }}
                       onClick={()=>{
                         listCallback({
                           queryInput: {
@@ -115,7 +127,7 @@ function Conversation ({
                         })
                       }}
                     >
-                      {res.title}</Button></UI.Bot>
+                      {res.title}</Button>
                 }
                 return <UI.Bot>{res.type}</UI.Bot>
               })

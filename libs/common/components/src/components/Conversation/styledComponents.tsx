@@ -1,6 +1,8 @@
 import { Collapse as AntdCollapse } from 'antd'
 import styled                       from 'styled-components/macro'
 
+import { ChatbotLink } from '@acx-ui/icons'
+
 import { cssStr }              from '../../theme/helper'
 import { Button as AcxButton } from '../Button'
 
@@ -155,6 +157,14 @@ const ChatTypingWrapper = styled.div`
     background-color: ${cssStr('--acx-semantics-yellow-30')};
   }
 }
+`
+
+export const StyledChatbotLink = styled(ChatbotLink)`
+  width: unset !important;
+  height: unset !important;
+path {
+    stroke: unset !important;
+  }
 `
 
 export const ChatTyping=()=>{
