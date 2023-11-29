@@ -12,6 +12,7 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
+  useApplyConfigTemplateMutation,
   useMspCustomerListQuery
 } from '@acx-ui/msp/services'
 import {
@@ -40,6 +41,7 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
   const ecFilters = useEcFilters()
   const [ selectedRows, setSelectedRows ] = useState<MspEc[]>([])
   const [ confirmationDrawerVisible, setConfirmationDrawerVisible ] = useState(false)
+  const [ applyConfigTemplate ] = useApplyConfigTemplateMutation()
   const mspUtils = MSPUtils()
 
   const ecNames = useMemo(() => selectedRows.map(r => r.name), [selectedRows])
@@ -67,10 +69,20 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
   })
 
   const onClose = () => {
+    setConfirmationDrawerVisible(false)
     setVisible(false)
   }
 
-  const onApply = () => {}
+  const onApply = async () => {
+    const params = { templateId: selectedTemplates[0].id }
+    const payload = { targetTenants: selectedRows.map(ec => ec.id) }
+    try {
+      await applyConfigTemplate({ params, payload }).unwrap()
+      onClose()
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
 
   const columns: TableProps<MspEc>['columns'] = [
     {
@@ -180,7 +192,7 @@ function ApplyTemplateConfirmationDrawer (props: ApplyTemplateConfirmationDrawer
       {$t({ defaultMessage: 'Back' })}
     </Button>
     <Button onClick={onApply} type='primary'>
-      {$t({ defaultMessage: 'Apply Templates' })}
+      {$t({ defaultMessage: 'Apply Template' })}
     </Button>
     <Button onClick={onCancel}>
       {$t({ defaultMessage: 'Cancel' })}

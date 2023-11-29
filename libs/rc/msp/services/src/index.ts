@@ -834,6 +834,16 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'ConfigTemplate', id: 'LIST' }]
+    }),
+    applyConfigTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.applyConfigTemplate, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }]
     })
   })
 })
@@ -902,5 +912,6 @@ export const {
   useAddRecCustomerMutation,
   useAssignMspEcToMultiIntegratorsMutation,
   useAssignMspEcToIntegrator_v1Mutation,
-  useGetConfigTemplateListQuery
+  useGetConfigTemplateListQuery,
+  useApplyConfigTemplateMutation
 } = mspApi

@@ -335,5 +335,9 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   getConfigTemplates: {
     method: 'post',
     url: '/templates'
+  },
+  applyConfigTemplate: {
+    method: 'post',
+    url: '/templates/:templateId/instance'
   }
 }

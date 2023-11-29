@@ -4,7 +4,7 @@ import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
 
-import { ConfigTemplate, ConfigTemplateTabKey } from './index'
+import { ConfigTemplate, ConfigTemplateTabKey } from '.'
 
 
 jest.mock('./Templates', () => ({
