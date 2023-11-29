@@ -247,7 +247,7 @@ describe('Recommendation services', () => {
         type: 'Venue',
         priority: priorities.high,
         category: 'AI-Driven Cloud RRM',
-        summary: 'Optimal Ch/Width and Tx Power found for 2.4 GHz radio',
+        summary: 'Optimal channel plan found for 2.4 GHz radio',
         status: 'New',
         statusTooltip: 'Schedule a day and time to apply this recommendation.',
         statusEnum: 'new',
