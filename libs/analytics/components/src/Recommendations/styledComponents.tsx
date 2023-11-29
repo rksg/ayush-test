@@ -74,3 +74,11 @@ styled((props: TableProps<RecommendationListItem>) => <Table {...props} />)`
     overflow: unset !important;
   }
 `
+
+export const OptimizationHeader = styled.div`
+  display: flex;
+`
+
+export const OptimizationTooltip = styled.div`
+  padding-left: 8px;
+`

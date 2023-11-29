@@ -13,6 +13,7 @@ import {
 import { Loader, TableProps, Tooltip } from '@acx-ui/components'
 import { get }                         from '@acx-ui/config'
 import { DateFormatEnum, formatter }   from '@acx-ui/formatter'
+import { InformationOutlined }         from '@acx-ui/icons'
 import { TenantLink, useParams }       from '@acx-ui/react-router-dom'
 import { noDataDisplay, PathFilter }   from '@acx-ui/utils'
 
@@ -82,6 +83,13 @@ export function RecommendationTable (
         && disableMuteStatus.includes(selectedRecommendation.statusEnum)
     }
   ]
+
+  const optimizationTooltipText = $t({ defaultMessage: `
+    When Full Optimization is enabled, AI-Driven RRM will comprehensively optimize the channel plan,
+    channel bandwidth and Tx power with the objective of minimizing co-channel interference.
+    When it is disabled, only the channel plan will be optimized, using the currently configured
+    Zone channel bandwidth and Tx power.
+  ` })
 
   const switchPath = isSwitchPath(pathFilters.path)
   const queryResults =
@@ -189,7 +197,14 @@ export function RecommendationTable (
       render: (_, value) => <RecommendationActions recommendation={value} />
     },
     ...(showCrrm ? [{
-      title: $t({ defaultMessage: 'Full Optimization' }),
+      title: <UI.OptimizationHeader>
+        {$t({ defaultMessage: 'Full Optimization' })}
+        <UI.OptimizationTooltip>
+          <Tooltip placement='top' title={optimizationTooltipText}>
+            <InformationOutlined />
+          </Tooltip>
+        </UI.OptimizationTooltip>
+      </UI.OptimizationHeader>,
       key: uniqueId(),
       dataIndex: 'id',
       width: 120,
