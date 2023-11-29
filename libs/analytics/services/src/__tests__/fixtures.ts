@@ -350,27 +350,29 @@ export const switchListFixture = {
 }
 
 export const wifiNetworksFixture = {
-  search: {
-    wifiNetworks: [
-      {
-        name: 'Hospt-Guest',
-        apCount: 1,
-        clientCount: 17,
-        zoneCount: 1,
-        traffic: 139809421170,
-        rxBytes: 62119590245,
-        txBytes: 77689830925
-      },
-      {
-        name: 'DENSITY-WPA2PSK',
-        apCount: 25,
-        clientCount: 38,
-        zoneCount: 1,
-        traffic: 129272657263,
-        rxBytes: 882986906,
-        txBytes: 128389670357
-      }
-    ]
+  network: {
+    search: {
+      wifiNetworks: [
+        {
+          name: 'Hospt-Guest',
+          apCount: 1,
+          clientCount: 17,
+          zoneCount: 1,
+          traffic: 139809421170,
+          rxBytes: 62119590245,
+          txBytes: 77689830925
+        },
+        {
+          name: 'DENSITY-WPA2PSK',
+          apCount: 25,
+          clientCount: 38,
+          zoneCount: 1,
+          traffic: 129272657263,
+          rxBytes: 882986906,
+          txBytes: 128389670357
+        }
+      ]
+    }
   }
 }
 
@@ -456,3 +458,37 @@ export const switchDetailsFixture = {
   }
 }
 
+
+export const clientNetworksFixture = {
+  search: {
+    clients: [
+      {
+        hostname: '02AA01AB50120H4M',
+        username: '18b43003e603',
+        mac: '18:B4:30:03:E6:03',
+        osType: 'Nest Learning Thermostat',
+        ipAddress: '10.0.1.42',
+        lastActiveTime: '2023-08-23T05:08:20.000Z',
+        manufacturer: 'manufacturer'
+      },
+      {
+        hostname: '02AA01AB50120E2Q',
+        username: '18b43004d810',
+        mac: '18:B4:30:04:D8:10',
+        osType: 'Nest Learning Thermostat',
+        ipAddress: '10.0.1.44',
+        lastActiveTime: '2023-08-23T05:07:23.000Z',
+        manufacturer: 'manufacturer2'
+      },
+      {
+        hostname: '02AA01AB50120G7G',
+        username: '18b430051cbe',
+        mac: '18:B4:30:05:1C:BE',
+        osType: 'Nest Learning Thermostat',
+        ipAddress: '10.0.1.69',
+        lastActiveTime: '2023-08-23T05:07:23.000Z',
+        manufacturer: 'manufacturer3'
+      }
+    ]
+  }
+}

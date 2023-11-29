@@ -61,15 +61,20 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
     formRef.submit()
   }
 
-  const handleFinish = async (formData: EdgeSubInterface) => {
-    formData.name = data?.name || ''
-    formData.mac = mac
-    formData.enabled = true
+  const handleFinish = async () => {
+    const formData = formRef.getFieldsValue(true)
+    const payload = {
+      ...formData,
+      name: data?.name || '',
+      mac: mac,
+      enabled: true
+    }
+
     try {
       if(data) {
-        await handleUpdate(formData)
+        await handleUpdate(payload)
       } else {
-        await handleAdd(formData)
+        await handleAdd(payload)
       }
     } catch (error) {
       // TODO error message not be defined

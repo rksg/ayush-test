@@ -36,7 +36,7 @@ import * as UI from '../styledComponents'
 interface IntegratorDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
-  setSelected: (selected: MspEc[]) => void
+  setSelected: (selected: MspEc[], assignedEcAdmin?: boolean) => void
   tenantId?: string
   tenantType?: string
 }
@@ -46,7 +46,6 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
 
   const { visible, setVisible, setSelected, tenantId, tenantType } = props
   const [resetField, setResetField] = useState(false)
-  const [assignedEcAdmin, setAssignedEcAdmin] = useState(false)
   const [form] = Form.useForm()
   const techPartnerAssignEcsEnabled = useIsSplitOn(Features.TECH_PARTNER_ASSIGN_ECS)
 
@@ -66,6 +65,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
   const [ assignMspCustomers_v1 ] = useAssignMspEcToIntegrator_v1Mutation()
 
   const handleSave = () => {
+    const assignedEcAdmin = form.getFieldValue(['assignedEcAdmin']) ?? false
     let payload = techPartnerAssignEcsEnabled ? {
       delegation_type: tenantType as string,
       number_of_days: form.getFieldValue(['number_of_days']),
@@ -96,7 +96,9 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
             resetFields()
           })
     } else {
-      setSelected(selectedRows.ecCustomers)
+      techPartnerAssignEcsEnabled
+        ? setSelected(selectedRows.ecCustomers, assignedEcAdmin)
+        : setSelected(selectedRows.ecCustomers)
     }
 
     setVisible(false)
@@ -215,10 +217,10 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
 
   const content =
   <Form layout='vertical' form={form} onFinish={onClose}>
-    {techPartnerAssignEcsEnabled && <Form.Item>
+    {techPartnerAssignEcsEnabled && <Form.Item name='assignedEcAdmin'>
       <Checkbox
         onChange={(e)=> {
-          setAssignedEcAdmin(e.target.checked)
+          form.setFieldValue('assignedEcAdmin', e.target.checked)
         }}
       >
         {$t({ defaultMessage:

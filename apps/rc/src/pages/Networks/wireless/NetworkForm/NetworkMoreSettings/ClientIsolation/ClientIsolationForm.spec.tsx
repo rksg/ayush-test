@@ -3,9 +3,9 @@ import { Form }         from 'antd'
 import { FormInstance } from 'antd/es/form/Form'
 import { rest }         from 'msw'
 
-import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
-import { ClientIsolationUrls, CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                            from '@acx-ui/store'
+import { useIsSplitOn }                                                                       from '@acx-ui/feature-toggle'
+import { ClientIsolationUrls, CommonUrlsInfo, DpskWlanAdvancedCustomization, TunnelTypeEnum } from '@acx-ui/rc/utils'
+import { Provider }                                                                           from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -15,7 +15,8 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import NetworkFormContext from '../../NetworkFormContext'
+import NetworkFormContext                   from '../../NetworkFormContext'
+import { useNetworkVxLanTunnelProfileInfo } from '../../utils'
 
 import {
   mockedVenues,
@@ -24,6 +25,12 @@ import {
   mockedNetworkVenue
 } from './__tests__/fixtures'
 import ClientIsolationForm from './ClientIsolationForm'
+
+
+jest.mock('../../utils', () => ({
+  ...jest.requireActual('../../utils'),
+  useNetworkVxLanTunnelProfileInfo: jest.fn().mockReturnValue({ enableVxLan: false })
+}))
 
 async function enableClientIsolation () {
   const clientIsolationContainer = await screen.findByText(/Client Isolation/)
@@ -130,5 +137,43 @@ describe('ClientIsolationForm', () => {
 
     // Change client isolation policy for the 2nd venue
     await enableClientIsolationAllowlist(1, 2, formRef.current)
+  })
+
+  it('should disable to edit when it use VxLan tunnel profile', async () => {
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+
+    jest.mocked(useNetworkVxLanTunnelProfileInfo).mockReturnValue({
+      enableVxLan: true,
+      tunnelType: TunnelTypeEnum.VXLAN
+    })
+
+    render(
+      <Provider>
+        <NetworkFormContext.Provider value={{
+          editMode: true,
+          cloneMode: false,
+          data: {
+            venues: mockedNetworkVenue,
+            wlan: {
+              advancedCustomization: {
+                tunnelProfileId: 'mockedTunnel'
+              } as DpskWlanAdvancedCustomization
+            }
+          }
+        }}>
+          <Form form={formRef.current}>
+            <ClientIsolationForm />
+          </Form>
+        </NetworkFormContext.Provider>
+      </Provider>, {
+        route: { params }
+      }
+    )
+
+    const clientIsolationContainer = await screen.findByText(/client isolation/i)
+    expect(within(clientIsolationContainer).getByRole('switch')).toBeDisabled()
   })
 })
