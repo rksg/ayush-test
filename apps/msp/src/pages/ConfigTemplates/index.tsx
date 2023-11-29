@@ -6,7 +6,7 @@ import { Path, useNavigate, useParams, useTenantLink } from '@acx-ui/react-route
 import { ConfigTemplateBundleList } from './Bundles'
 import { ConfigTemplateList }       from './Templates'
 
-enum ConfigTemplateTabKey {
+export enum ConfigTemplateTabKey {
   TEMPLATES = 'templates',
   BUNDLES = 'bundles'
 }
