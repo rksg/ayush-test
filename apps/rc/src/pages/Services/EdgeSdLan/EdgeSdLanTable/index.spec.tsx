@@ -12,6 +12,7 @@ import EdgeSdLanTable from '.'
 
 const mockedUsedNavigate = jest.fn()
 const mockedGetEdgeList = jest.fn()
+const mockedDeleteReq = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
@@ -28,6 +29,7 @@ describe('SD-LAN Table', () => {
 
     mockedUsedNavigate.mockReset()
     mockedGetEdgeList.mockReset()
+    mockedDeleteReq.mockReset()
 
     mockServer.use(
       rest.post(
@@ -47,11 +49,10 @@ describe('SD-LAN Table', () => {
       ),
       rest.delete(
         EdgeSdLanUrls.deleteEdgeSdLan.url,
-        (_, res, ctx) => res(ctx.status(202))
-      ),
-      rest.delete(
-        EdgeSdLanUrls.batchDeleteEdgeSdLan.url,
-        (_, res, ctx) => res(ctx.status(202))
+        (_, res, ctx) => {
+          mockedDeleteReq()
+          return res(ctx.status(202))
+        }
       )
     )
   })
@@ -118,6 +119,7 @@ describe('SD-LAN Table', () => {
     await click(screen.getByRole('button', { name: 'Delete SD-LAN' }))
     await waitForElementToBeRemoved(dialogTitle)
     expect(screen.queryByRole('dialog')).toBeNull()
+    expect(mockedDeleteReq).toBeCalledTimes(1)
   })
 
   it('should delete multiple selected rows', async () => {
@@ -137,6 +139,7 @@ describe('SD-LAN Table', () => {
     await click(screen.getByRole('button', { name: 'Delete SD-LAN' }))
     await waitForElementToBeRemoved(dialogTitle)
     expect(screen.queryByRole('dialog')).toBeNull()
+    expect(mockedDeleteReq).toBeCalledTimes(2)
   })
 
   it('should display empty network name when networkInfos is not found', async () => {
@@ -167,10 +170,10 @@ describe('SD-LAN Table', () => {
     expect(await screen.findByRole('tooltip'))
       .toHaveTextContent('')
   })
-  it('should display service health Unknown if alarm summary is undefined', async () => {
+  it('should display service health Good if alarm summary is undefined', async () => {
     const cfListNoAlarm = _.cloneDeep(mockedSdLanDataList)
     delete cfListNoAlarm[0].edgeAlarmSummary
-    cfListNoAlarm[0].name = 'sdLan_unknown_health'
+    cfListNoAlarm[0].name = 'sdLan_good_health'
     const mockedSdLanDataListReq = jest.fn()
 
     mockServer.use(
@@ -198,8 +201,8 @@ describe('SD-LAN Table', () => {
     })
 
     await screen.findByRole('columnheader', { name: 'SmartEdge' })
-    await screen.findByText(/sdLan_unknown_health/i)
+    await screen.findByText(/sdLan_good_health/i)
     // eslint-disable-next-line max-len
-    await screen.findByRole('row', { name: 'sdLan_unknown_health Sting-Venue-1 sting-vSE-b490 amyTunnel 1 Unknown' })
+    await screen.findByRole('row', { name: 'sdLan_good_health Sting-Venue-1 sting-vSE-b490 amyTunnel 1 Good' })
   })
 })

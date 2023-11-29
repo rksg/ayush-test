@@ -82,19 +82,10 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
     setVisible(false)
     setHover(false)
     setInputValue(nodeToInputValue(breadcrumb))
-    const selectedNodePath = breadcrumb.map((node) => {
-      const nodeInfo = {
-        name: node.name,
-        type: node.type
-      }
-      const apOrSwitchInfo = node.type === 'ap' || node.type === 'switch'
-        ? { list: [node?.mac] }
-        : {}
-      return {
-        ...nodeInfo,
-        ...apOrSwitchInfo
-      }
-    })
+    const selectedNodePath = breadcrumb.map(({ type, name, mac }) => ({
+      name: mac || name,
+      type: type === 'ap' ? 'AP' : type
+    }))
     setNetworkPath(selectedNodePath, selectedNodePath)
   }
   const onClose = () => {

@@ -180,6 +180,8 @@ export function ManageIntegrator () {
 
   const [formData, setFormData] = useState({} as Partial<EcFormData>)
   const [selectedEcs, setSelectedEcs] = useState([] as MspEc[])
+  const [autoAssignEcAdmin, setAssignAdmin] = useState(false)
+
   const [unlimitSelected, setUnlimitSelected] = useState(true)
 
   const [addIntegrator] = useAddCustomerMutation()
@@ -370,7 +372,9 @@ export function ManageIntegrator () {
         admin_lastname: ecFormData.admin_lastname,
         admin_role: ecFormData.admin_role,
         admin_delegations: delegations
-
+      }
+      if (autoAssignEcAdmin) {
+        customer.isManageAllEcs = autoAssignEcAdmin
       }
       if (selectedEcs?.length > 0) {
         const ecs = selectedEcs.map(ec => ec.id)
@@ -505,8 +509,9 @@ export function ManageIntegrator () {
     setAdministrator(selected)
   }
 
-  const selectedAssignEc = (selected: MspEc[]) => {
+  const selectedAssignEc = (selected: MspEc[], assignEcAdmin?: boolean) => {
     setSelectedEcs(selected)
+    setAssignAdmin(assignEcAdmin ?? false)
   }
 
   const displayMspAdmins = ( ) => {

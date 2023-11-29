@@ -126,6 +126,7 @@ const EdgeSdLanTable = () => {
       key: 'venueId',
       dataIndex: 'venueId',
       align: 'center',
+      sorter: true,
       filterable: venueOptions,
       render: (__, row) => {
         return <TenantLink
@@ -140,6 +141,7 @@ const EdgeSdLanTable = () => {
       key: 'edgeId',
       dataIndex: 'edgeId',
       align: 'center',
+      sorter: true,
       filterable: edgeOptions,
       render: (__, row) => {
         return <TenantLink
@@ -154,6 +156,7 @@ const EdgeSdLanTable = () => {
       key: 'tunnelProfileId',
       dataIndex: 'tunnelProfileId',
       align: 'center',
+      sorter: true,
       render: (__, row) => {
         return <TenantLink
           to={getPolicyDetailsLink({
@@ -170,6 +173,7 @@ const EdgeSdLanTable = () => {
       key: 'networkIds',
       dataIndex: 'networkIds',
       align: 'center',
+      sorter: true,
       render: (__, row) => {
         return (row.networkIds && row.networkIds.length)
           ? <Tooltip
@@ -195,7 +199,7 @@ const EdgeSdLanTable = () => {
       render: (__, row) =>
         <Row justify='center'>
           <EdgeServiceStatusLight
-            data={row.edgeAlarmSummary ? [row.edgeAlarmSummary] : undefined}
+            data={row.edgeAlarmSummary ? [row.edgeAlarmSummary] : []}
           />
         </Row>
     }
@@ -246,12 +250,8 @@ const EdgeSdLanTable = () => {
             numOfEntities: rows.length
           },
           onOk: () => {
-            rows.length === 1
-              ? deleteSdLan({ params: { serviceId: rows[0].id } })
-                .then(clearSelection)
-              : deleteSdLan({
-                payload: rows.map((item) => item.id)
-              }).then(clearSelection)
+            Promise.all(rows.map(row => deleteSdLan({ params: { serviceId: row.id } })))
+              .then(clearSelection)
           }
         })
       }

@@ -23,11 +23,12 @@ import {
   getServiceDetailsLink,
   ServiceOperation,
   ServiceType,
-  DpskWlanAdvancedCustomization } from '@acx-ui/rc/utils'
+  DpskWlanAdvancedCustomization,
+  TunnelTypeEnum } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
-import NetworkFormContext        from '../NetworkFormContext'
-import { hasVxLanTunnelProfile } from '../utils'
+import NetworkFormContext                   from '../NetworkFormContext'
+import { useNetworkVxLanTunnelProfileInfo } from '../utils'
 
 import ClientIsolationForm         from './ClientIsolation/ClientIsolationForm'
 import { DhcpOption82Form }        from './DhcpOption82Form'
@@ -97,7 +98,7 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
     return Promise.resolve()
   }
 
-  const showTunnelProfile = hasVxLanTunnelProfile(data)
+  const { enableVxLan: showTunnelProfile, tunnelType } = useNetworkVxLanTunnelProfileInfo(data)
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const tunnelProfileDefaultPayload = {
@@ -113,7 +114,12 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
     skip: !isEdgeEnabled || !isEdgeReady,
     selectFromResult: ({ data, isLoading }) => {
       return {
-        tunnelOptions: data?.data.map(item => ({ label: item.name, value: item.id })),
+        tunnelOptions: data?.data
+          .filter(item =>
+            // due to 'type' might be empty(=== TunnelTypeEnum.VXLAN)
+            (tunnelType === TunnelTypeEnum.VLAN_VXLAN && item.type !== TunnelTypeEnum.VXLAN)
+            || (tunnelType === TunnelTypeEnum.VXLAN && item.type !== TunnelTypeEnum.VLAN_VXLAN))
+          .map(item => ({ label: item.name, value: item.id })),
         isLoading
       }
     }
@@ -315,13 +321,13 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
           <Select
             loading={isTunnelLoading}
             options={tunnelOptions}
-            disabled={true}
+            disabled={tunnelType === TunnelTypeEnum.VXLAN}
           />
         }
       />
       }
 
-      { showTunnelProfile &&
+      { showTunnelProfile && tunnelType === TunnelTypeEnum.VXLAN &&
         <Space size={1}>
           <UI.InfoIcon />
           <UI.Description>

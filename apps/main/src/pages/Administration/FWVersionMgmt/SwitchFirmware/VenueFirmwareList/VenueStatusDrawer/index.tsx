@@ -14,13 +14,16 @@ import { useLazyGetSwitchFirmwareStatusListQuery } from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenue,
   SwitchFirmwareStatus,
-  SwitchFwStatusEnum
+  SwitchFwStatusEnum,
+  SwitchStatusEnum,
+  defaultSort,
+  parseSwitchVersion,
+  sortProp
 } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
-import { parseSwitchVersion } from '../../../FirmwareUtils'
-import * as UI                from '../styledComponents'
+import * as UI from '../styledComponents'
 
 export interface VenueStatusDrawerProps {
   visible: boolean,
@@ -63,13 +66,13 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
       title: $t({ defaultMessage: 'Switch' }),
       dataIndex: 'switchName',
       defaultSortOrder: 'ascend',
-      sorter: true,
+      sorter: { compare: sortProp('switchName', defaultSort) },
       fixed: 'left'
     }, {
       key: 'status',
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
-      sorter: true,
+      sorter: false,
       render: function (_, row) {
         if (Object.values(SwitchFwStatusEnum).includes(row.status)) {
           const fwMappings = {
@@ -87,8 +90,16 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
               $t({ defaultMessage: 'Firmware Update - Writing To Flash' }),
             [SwitchFwStatusEnum.FW_UPD_COMPLETE]:
               $t({ defaultMessage: 'Firmware Update - Success' }),
+            [SwitchFwStatusEnum.FW_UPD_PRE_DOWNLOAD_COMPLETE]:
+              $t({ defaultMessage: 'Firmware Update - Pre-download Completed' }),
             [SwitchFwStatusEnum.FW_UPD_FAIL]:
-              $t({ defaultMessage: 'Firmware Update - Failed' })
+              $t({ defaultMessage: 'Firmware Update - Failed' }),
+            [SwitchStatusEnum.DISCONNECTED]:
+              $t({ defaultMessage: 'Disconnected from cloud' })
+          }
+
+          if (row.switchStatus === SwitchStatusEnum.DISCONNECTED) {
+            return fwMappings[row.switchStatus]
           }
 
           if (row.status === SwitchFwStatusEnum.FW_UPD_FAIL) {
@@ -121,7 +132,7 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
       key: 'targetFirmware',
       title: $t({ defaultMessage: 'Target Firmware' }),
       dataIndex: 'targetFirmware',
-      sorter: true,
+      sorter: false,
       render: function (_, row) {
         if (row.targetFirmware) {
           return parseSwitchVersion(row.targetFirmware)

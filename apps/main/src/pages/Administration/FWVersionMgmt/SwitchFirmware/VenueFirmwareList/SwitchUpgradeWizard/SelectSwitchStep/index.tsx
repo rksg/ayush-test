@@ -17,7 +17,8 @@ import {
 } from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenue,
-  SwitchFirmware
+  SwitchFirmware,
+  parseSwitchVersion
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
@@ -26,8 +27,7 @@ import { noDataDisplay }  from '@acx-ui/utils'
 import { SwitchFirmwareWizardType } from '..'
 import {
   getNextScheduleTpl,
-  getSwitchNextScheduleTplTooltip,
-  parseSwitchVersion
+  getSwitchNextScheduleTplTooltip
 } from '../../../../FirmwareUtils'
 import * as UI                      from '../../styledComponents'
 import {
@@ -37,6 +37,14 @@ import {
   getSwitchScheduleTpl,
   getSwitchVenueAvailableVersions
 } from '../../switch.upgrade.util'
+
+const getTooltipText = function (value: string, customDisplayValue?: string | React.ReactNode) {
+  return <Tooltip
+    title={value}
+    placement='bottom'>
+    <UI.WithTooltip>{customDisplayValue || value}</UI.WithTooltip>
+  </Tooltip>
+}
 
 function useColumns () {
   const intl = useIntl()
@@ -48,8 +56,11 @@ function useColumns () {
       dataIndex: 'name',
       width: 150,
       defaultSortOrder: 'ascend',
-      render: function (value) {
-        return <div style={{ fontWeight: cssStr('--acx-subtitle-4-font-weight') }} > {value}</div >
+      render: function (_, row) {
+        const customDisplayValue =
+          <div style={{ fontWeight: cssStr('--acx-subtitle-4-font-weight') }} > {row.name}</div >
+        return getTooltipText(row.name, customDisplayValue)
+
       }
     }, {
       title: intl.$t({ defaultMessage: 'Model' }),
@@ -63,7 +74,8 @@ function useColumns () {
       width: 150,
       render: function (_, row) {
         let versionList = getSwitchFirmwareList(row)
-        return versionList.length > 0 ? versionList.join(', ') : noDataDisplay
+        const version = versionList.length > 0 ? versionList.join(', ') : noDataDisplay
+        return getTooltipText(version)
       }
     }, {
       title: intl.$t({ defaultMessage: 'Available Firmware' }),
@@ -71,7 +83,8 @@ function useColumns () {
       dataIndex: 'availableVersions',
       width: 150,
       render: function (_, row) {
-        return getSwitchVenueAvailableVersions(row)
+        const version = getSwitchVenueAvailableVersions(row)
+        return getTooltipText(version)
       }
     }, {
       title: intl.$t({ defaultMessage: 'Scheduling' }),
@@ -79,12 +92,10 @@ function useColumns () {
       dataIndex: 'nextSchedule',
       width: 200,
       render: function (_, row) {
-        return <Tooltip
-          title={getSwitchNextScheduleTplTooltip(row) ||
-            intl.$t({ defaultMessage: 'Not scheduled' })}
-          placement='bottom'>
-          <UI.WithTooltip>{getNextScheduleTpl(intl, row)}</UI.WithTooltip>
-        </Tooltip>
+        const tooltip = getSwitchNextScheduleTplTooltip(row) ||
+          intl.$t({ defaultMessage: 'Not scheduled' })
+        const customDisplayValue = getNextScheduleTpl(intl, row)
+        return getTooltipText(tooltip, customDisplayValue)
       }
     }
   ]
@@ -145,7 +156,8 @@ export const SelectSwitchStep = (
       defaultSortOrder: 'ascend',
       render: function (_, row) {
         const stackLabel = row.isStack ? intl.$t({ defaultMessage: '(Stack)' }) : ''
-        return getHightlightSearch(`${row.switchName} ${stackLabel}`, searchText)
+        return getTooltipText(`${row.switchName} ${stackLabel}`,
+          getHightlightSearch(`${row.switchName} ${stackLabel}`, searchText))
       }
     }, {
       title: intl.$t({ defaultMessage: 'Model' }),
@@ -162,7 +174,9 @@ export const SelectSwitchStep = (
       width: 150,
       filterMultiple: false,
       render: function (_, row) {
-        return row.currentFirmware ? parseSwitchVersion(row.currentFirmware) : noDataDisplay
+        const version = row.currentFirmware ?
+          parseSwitchVersion(row.currentFirmware) : noDataDisplay
+        return getTooltipText(version)
       }
     }, {
       title: intl.$t({ defaultMessage: 'Available Firmware' }),
@@ -174,7 +188,9 @@ export const SelectSwitchStep = (
           parseSwitchVersion(row.currentFirmware) : noDataDisplay
         const availableVersion = row.availableVersion?.id ?
           parseSwitchVersion(row.availableVersion.id) : noDataDisplay
-        return currentVersion === availableVersion ? noDataDisplay : availableVersion
+        const version = currentVersion === availableVersion ? noDataDisplay : availableVersion
+
+        return getTooltipText(version)
       }
     }, {
       title: intl.$t({ defaultMessage: 'Scheduling' }),
@@ -182,12 +198,10 @@ export const SelectSwitchStep = (
       dataIndex: 'switchNextSchedule',
       width: 200,
       render: function (_, row) {
-        return <Tooltip
-          title={getSwitchScheduleTpl(row) ||
-            intl.$t({ defaultMessage: 'Not scheduled' })}
-          placement='bottom'>
-          <UI.WithTooltip>{getSwitchNextScheduleTpl(intl, row)}</UI.WithTooltip>
-        </Tooltip>
+        const tooltip = getSwitchScheduleTpl(row) ||
+          intl.$t({ defaultMessage: 'Not scheduled' })
+        const customDisplayValue = getSwitchNextScheduleTpl(intl, row)
+        return getTooltipText(tooltip, customDisplayValue)
       }
     }
   ]
@@ -352,7 +366,10 @@ export const SelectSwitchStep = (
   return (
     <>
       <UI.ValidateField
-        style={{ marginBottom: '5px' }}
+        style={totalSwitchCount > 0 ?
+          { position: 'absolute', marginTop: '43px' } :
+          { position: 'absolute', marginTop: '5px' }}
+
         name='selectSwitchStep'
         rules={[
           {
@@ -388,13 +405,14 @@ export const SelectSwitchStep = (
       {!_.isEmpty(searchText) && <div
         style={{
           minHeight: '50vh',
-          marginBottom: '30px'
+          marginBottom: '30px',
+          overflowX: 'auto'
         }}><Table<SwitchFirmware>
           columns={switchColumns}
           className='switchTable'
           data-testid='switch-search-table'
           loading={false}
-          style={{ paddingLeft: '0px !important' }}
+          style={{ paddingLeft: '0px !important', minWidth: '900px' }}
           dataSource={searchSwitchList}
           sticky={false}
           rowKey='switchId'
@@ -491,6 +509,7 @@ export const SelectSwitchStep = (
           <UI.ExpanderTableWrapper>
             <Table
               columns={columns}
+              style={{ minWidth: '900px' }}
               enableResizableColumn={false}
               type={'tall'}
               dataSource={data}

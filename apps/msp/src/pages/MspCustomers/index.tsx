@@ -105,6 +105,8 @@ export function MspCustomers () {
       ((isPrimeAdmin || isAdmin) && !drawerIntegratorVisible) || isSupportToMspDashboardAllowed
   const hideTechPartner = (isIntegrator || userProfile?.support) && !isSupportToMspDashboardAllowed
 
+  const techPartnerAssignEcsEanbled = useIsSplitOn(Features.TECH_PARTNER_ASSIGN_ECS)
+
   if (tenantType === AccountType.VAR &&
       (userProfile?.support === false || isSupportToMspDashboardAllowed)) {
     navigate(linkVarPath, { replace: true })
@@ -286,7 +288,9 @@ export function MspCustomers () {
         }
       }]),
       ...(hideTechPartner ? [] : [{
-        title: $t({ defaultMessage: 'Integrator Count' }),
+        title: techPartnerAssignEcsEanbled
+          ? $t({ defaultMessage: 'Integrator Count' })
+          : $t({ defaultMessage: 'Integrator' }),
         dataIndex: 'integrator',
         key: 'integrator',
         onCell: (data: MspEc) => {
@@ -299,7 +303,7 @@ export function MspCustomers () {
           } : {}
         },
         render: function (_: React.ReactNode, row: MspEc) {
-          const val = row.integratorCount !== undefined
+          const val = (techPartnerAssignEcsEanbled && row.integratorCount !== undefined)
             ? mspUtils.transformTechPartnerCount(row.integratorCount)
             : row?.integrator ? mspUtils.transformTechPartner(row.integrator, techParnersData)
               : noDataDisplay
@@ -310,7 +314,9 @@ export function MspCustomers () {
         }
       }]),
       ...(hideTechPartner ? [] : [{
-        title: $t({ defaultMessage: 'Installer Count' }),
+        title: techPartnerAssignEcsEanbled
+          ? $t({ defaultMessage: 'Installer Count' })
+          : $t({ defaultMessage: 'Installer' }),
         dataIndex: 'installer',
         key: 'installer',
         onCell: (data: MspEc) => {
@@ -324,7 +330,7 @@ export function MspCustomers () {
           } : {}
         },
         render: function (_: React.ReactNode, row: MspEc) {
-          const val = row.installerCount !== undefined
+          const val = (techPartnerAssignEcsEanbled && row.installerCount !== undefined)
             ? mspUtils.transformTechPartnerCount(row.installerCount)
             : row?.installer ? mspUtils.transformTechPartner(row.installer, techParnersData)
               : noDataDisplay
@@ -648,6 +654,8 @@ export function MspCustomers () {
 
   const IntegratorTable = () => {
     const [selEcTenantIds, setSelEcTenantIds] = useState([] as string[])
+    const [mspEcTenantList, setMspEcTenantList] = useState([] as string[])
+    const [mspEcAlarmList, setEcAlarmData] = useState({} as MspEcAlarmList)
     const [drawerScheduleFirmwareVisible, setDrawerScheduleFirmwareVisible] = useState(false)
 
     const tableQuery = useTableQuery({
@@ -657,6 +665,20 @@ export function MspCustomers () {
         searchTargetFields: integratorPayload.searchTargetFields as string[]
       }
     })
+
+    const alarmList = useGetMspEcAlarmListQuery(
+      { params, payload: { mspEcTenants: mspEcTenantList } },
+      { skip: !isSupportEcAlarmCount || mspEcTenantList.length === 0 })
+
+    useEffect(() => {
+      if (tableQuery?.data?.data) {
+        const ecList = tableQuery?.data.data.map(item => item.id)
+        setMspEcTenantList(ecList)
+      }
+      if (alarmList?.data) {
+        setEcAlarmData(alarmList?.data)
+      }
+    }, [tableQuery?.data?.data, alarmList?.data])
 
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
@@ -674,7 +696,7 @@ export function MspCustomers () {
         }
       }]
 
-    const columns = useColumns()
+    const columns = useColumns(mspEcAlarmList)
 
     return (
       <Loader states={[

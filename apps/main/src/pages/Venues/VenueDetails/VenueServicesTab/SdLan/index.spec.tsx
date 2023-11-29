@@ -70,7 +70,7 @@ describe('Venue Edge SD-LAN Service', () => {
     expect(await screen.findByRole('link', { name: 'mocked-vSE-b490' })).toBeVisible()
     expect(await screen.findByRole('link', { name: 'mockedTunnel' })).toBeVisible()
 
-    const networks = screen.queryAllByRole('row', { name: /MockedNetwork/i })
+    const networks = await screen.findAllByRole('row', { name: /MockedNetwork/i })
     expect(networks.length).toBe(3)
     const network1 = screen.getByRole('row', { name: /MockedNetwork 1/i })
     expect(within(network1).getByRole('switch')).toBeChecked()
@@ -91,9 +91,8 @@ describe('Venue Edge SD-LAN Service', () => {
       expect(mockedGetNetworkDeepList).toBeCalled()
     })
 
-    const networks = screen.queryAllByRole('row', { name: /MockedNetwork/i })
-    expect(networks.length).toBe(3)
-    const network1 = screen.getByRole('row', { name: /MockedNetwork 1/i })
+    await screen.findAllByRole('row', { name: /MockedNetwork/i })
+    const network1 = await screen.findByRole('row', { name: /MockedNetwork 1/i })
     const switchBtn = within(network1).getByRole('switch')
     expect(switchBtn).toBeChecked()
     await userEvent.click(switchBtn)
@@ -129,9 +128,8 @@ describe('Venue Edge SD-LAN Service', () => {
       expect(mockedGetNetworkDeepList).toBeCalled()
     })
 
-    const networks = screen.queryAllByRole('row', { name: /MockedNetwork/i })
-    expect(networks.length).toBe(3)
-    const network2 = screen.getByRole('row', { name: /MockedNetwork 2/i })
+    await screen.findAllByRole('row', { name: /MockedNetwork/i })
+    const network2 = await screen.findByRole('row', { name: /MockedNetwork 2/i })
     const switchBtn = within(network2).getByTestId('ActivateNetworkSwitchButton')
     expect(switchBtn).not.toBeChecked()
     await userEvent.click(switchBtn)
