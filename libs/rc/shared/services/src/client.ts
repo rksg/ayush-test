@@ -100,7 +100,8 @@ export const clientApi = baseClientApi.injectEndpoints({
               'DisableGuest',
               'EnableGuest',
               'AddGuest',
-              'DeleteGuest'
+              'DeleteGuest',
+              'DeleteBulk'
             ], () => {
               api.dispatch(clientApi.util.invalidateTags([{ type: 'Guest', id: 'LIST' }]))
             })

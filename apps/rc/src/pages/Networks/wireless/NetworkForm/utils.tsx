@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { AuthRadiusEnum, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, DpskWlanAdvancedCustomization } from '@acx-ui/rc/utils'
+import { useGetTunnelProfileByIdQuery }                                                                                          from '@acx-ui/rc/services'
+import { AuthRadiusEnum, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, DpskWlanAdvancedCustomization, TunnelTypeEnum } from '@acx-ui/rc/utils'
+export interface NetworkVxLanTunnelProfileInfo {
+  enableVxLan: boolean,
+  tunnelType: TunnelTypeEnum | undefined
+}
 
 export const hasAuthRadius = (data: NetworkSaveData | null, wlanData: any) => {
   if (!data) return false
@@ -76,3 +81,24 @@ export const hasVxLanTunnelProfile = (data: NetworkSaveData | null) => {
   }
   return false
 }
+
+export const useNetworkVxLanTunnelProfileInfo =
+  (data: NetworkSaveData | null): NetworkVxLanTunnelProfileInfo => {
+    const wlanAdvaced = (data?.wlan?.advancedCustomization as DpskWlanAdvancedCustomization)
+
+    const { data: tunnelProfileData } = useGetTunnelProfileByIdQuery(
+      { params: { id: wlanAdvaced?.tunnelProfileId! } },
+      { skip: !data || !wlanAdvaced?.tunnelProfileId }
+    )
+
+    let enableVxLan = false
+
+    if (wlanAdvaced?.tunnelProfileId) {
+      enableVxLan = true
+    }
+
+    return {
+      enableVxLan,
+      tunnelType: tunnelProfileData?.type
+    }
+  }
