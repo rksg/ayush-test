@@ -5,7 +5,12 @@ import { CommonUrlsInfo, RogueApUrls }           from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { EditContext, VenueEditContext } from '../index'
+import { EditContext, RadioContext, VenueEditContext } from '../index'
+
+import { AdvanceSettingContext }    from './AdvancedTab'
+import { NetworkingSettingContext } from './NetworkingTab'
+import { SecuritySettingContext }   from './SecurityTab'
+import { ServerSettingContext }     from './ServerTab'
 
 import { WifiConfigTab } from './index'
 
@@ -57,6 +62,23 @@ const policyListContent = [
   }
 ]
 
+const defaultValue = {
+  editContextData: {} as EditContext,
+  setEditContextData: jest.fn(),
+  editNetworkingContextData: {} as NetworkingSettingContext,
+  setEditNetworkingContextData: jest.fn(),
+  editRadioContextData: {} as RadioContext,
+  setEditRadioContextData: jest.fn(),
+  editSecurityContextData: {} as SecuritySettingContext,
+  setEditSecurityContextData: jest.fn(),
+  editServerContextData: {} as ServerSettingContext,
+  setEditServerContextData: jest.fn(),
+  editAdvancedContextData: {} as AdvanceSettingContext,
+  setEditAdvancedContextData: jest.fn(),
+  previousPath: '',
+  setPreviousPath: jest.fn()
+}
+
 describe('WifiConfigTab', () => {
   it('should render correctly', async () => {
     mockServer.use(
@@ -74,6 +96,7 @@ describe('WifiConfigTab', () => {
     render(
       <Provider>
         <VenueEditContext.Provider value={{
+          ...defaultValue,
           editContextData: {} as EditContext,
           setEditContextData: jest.fn(),
           setEditRadioContextData: jest.fn()

@@ -122,6 +122,8 @@ describe('AccessControlForm', () => {
     expect(within(screen.getByText(/layer 3/i)).getByText(/--/)).toBeVisible()
     expect(within(screen.getByText(/applications/i)).getByText(/--/)).toBeVisible()
     expect(within(screen.getByText(/client rate limit/i)).getByText(/--/)).toBeVisible()
+
+    expect(await screen.findByText(/select separate profiles/i)).toBeInTheDocument()
   })
 
   it('render access control profile detail', async () => {
@@ -145,6 +147,8 @@ describe('AccessControlForm', () => {
     expect(within(screen.getByText(/layer 3/i)).getByText(/--/)).toBeVisible()
     expect(within(screen.getByText(/applications/i)).getByText(/--/)).toBeVisible()
     expect(within(screen.getByText(/client rate limit/i)).getByText(/--/)).toBeVisible()
+
+    expect(await screen.findByText(/select separate profiles/i)).toBeInTheDocument()
   })
 
   it('render access control profile detail with existing profile', async () => {

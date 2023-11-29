@@ -102,7 +102,31 @@ describe('VenueDetails', () => {
       ),
       rest.get(
         CommonUrlsInfo.getVenueSettings.url,
-        (_, res, ctx) => res(ctx.json({})))
+        (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        CommonUrlsInfo.getAlarmsList.url,
+        (_, res, ctx) => res(ctx.json({
+          data: [],
+          totalCount: 0
+        }))
+      ),
+      rest.get(
+        CommonUrlsInfo.getVenueFloorplans.url,
+        (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        CommonUrlsInfo.getAlarmsListMeta.url,
+        (req, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(
+        CommonUrlsInfo.getAllDevices.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        CommonUrlsInfo.getVenueRogueAp.url,
+        (req, res, ctx) => res(ctx.json({}))
+      )
     )
   })
 

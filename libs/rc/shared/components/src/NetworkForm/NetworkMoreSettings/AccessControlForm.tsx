@@ -241,7 +241,7 @@ function GetLinkLimitByAccessControlPorfile (props: {
   return <div>{limit}</div>
 }
 
-function SelectAccessProfileProfile (props: { accessControlProfileId: string }) {
+export function SelectAccessProfileProfile (props: { accessControlProfileId: string }) {
   const { $t } = useIntl()
   const { accessControlProfileId } = props
   const form = Form.useFormInstance()
