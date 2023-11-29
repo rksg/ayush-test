@@ -1,4 +1,5 @@
 import { act, fireEvent } from '@testing-library/react'
+import { Form }           from 'antd'
 import { rest }           from 'msw'
 
 import { serviceApi }                             from '@acx-ui/rc/services'
@@ -52,7 +53,9 @@ const initState = {
 
 const wrapper = ({ children }: { children: React.ReactElement }) => {
   return <Provider>
-    {children}
+    <Form>
+      {children}
+    </Form>
   </Provider>
 }
 const setWifiCallingSetting = jest.fn()

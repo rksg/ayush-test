@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { Form } from 'antd'
 import { rest } from 'msw'
 
 import { CommonUrlsInfo }             from '@acx-ui/rc/utils'
@@ -10,7 +11,9 @@ import SyslogScopeForm from './SyslogScopeForm'
 
 const wrapper = ({ children }: { children: React.ReactElement }) => {
   return <Provider>
-    {children}
+    <Form>
+      {children}
+    </Form>
   </Provider>
 }
 const mockVenueData = {

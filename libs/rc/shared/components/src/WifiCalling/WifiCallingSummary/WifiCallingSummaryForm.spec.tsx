@@ -1,5 +1,7 @@
 import '@testing-library/jest-dom'
 
+import { Form } from 'antd'
+
 import { EPDG, QosPriorityEnum, WifiCallingFormContextType } from '@acx-ui/rc/utils'
 import { Provider }                                          from '@acx-ui/store'
 import { render, screen }                                    from '@acx-ui/test-utils'
@@ -57,7 +59,9 @@ const initStateNoIp = {
 
 const wrapper = ({ children }: { children: React.ReactElement }) => {
   return <Provider>
-    {children}
+    <Form>
+      {children}
+    </Form>
   </Provider>
 }
 const setWifiCallingSummary = jest.fn()

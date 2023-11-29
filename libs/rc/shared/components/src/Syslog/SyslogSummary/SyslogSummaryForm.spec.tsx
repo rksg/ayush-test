@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom'
+import { Form } from 'antd'
 
 import { SyslogContextType } from '@acx-ui/rc/utils'
 import { Provider }          from '@acx-ui/store'
@@ -40,7 +41,9 @@ describe('SyslogSummaryForm', () => {
         state: initState,
         dispatch: setSyslogSummary
       }}>
-        <SyslogSummaryForm />
+        <Form>
+          <SyslogSummaryForm />
+        </Form>
       </SyslogContext.Provider>,
       { wrapper }
     )

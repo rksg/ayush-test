@@ -1,5 +1,7 @@
 import '@testing-library/jest-dom'
 
+import { Form } from 'antd'
+
 import { RogueAPDetectionContextType } from '@acx-ui/rc/utils'
 import { Provider }                    from '@acx-ui/store'
 import { render, screen }              from '@acx-ui/test-utils'
@@ -11,7 +13,9 @@ import { RogueAPDetectionSummaryForm } from './RogueAPDetectionSummaryForm'
 
 const wrapper = ({ children }: { children: React.ReactElement }) => {
   return <Provider>
-    {children}
+    <Form>
+      {children}
+    </Form>
   </Provider>
 }
 const setRogueAPDetectionSummary = jest.fn()

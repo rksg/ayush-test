@@ -2,6 +2,7 @@ import React from 'react'
 
 import { userEvent }      from '@storybook/testing-library'
 import { act, fireEvent } from '@testing-library/react'
+import { Form }           from 'antd'
 import { rest }           from 'msw'
 
 import { serviceApi }                           from '@acx-ui/rc/services'
@@ -132,7 +133,9 @@ describe('WifiCallingNetworkTable', () => {
         state: initState,
         dispatch: setWifiCallingNetwork
       }}>
-        <WifiCallingNetworkTable edit={true}/>
+        <Form>
+          <WifiCallingNetworkTable edit={true}/>
+        </Form>
       </WifiCallingFormContext.Provider>,
       {
         wrapper: wrapper,

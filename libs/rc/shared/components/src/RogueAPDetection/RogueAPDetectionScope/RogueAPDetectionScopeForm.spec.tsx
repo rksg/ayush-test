@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { Form } from 'antd'
+
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
@@ -7,7 +9,9 @@ import { RogueAPDetectionScopeForm } from './RogueAPDetectionScopeForm'
 
 const wrapper = ({ children }: { children: React.ReactElement }) => {
   return <Provider>
-    {children}
+    <Form>
+      {children}
+    </Form>
   </Provider>
 }
 
