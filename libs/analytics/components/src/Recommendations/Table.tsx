@@ -138,23 +138,7 @@ export function RecommendationTable (
       width: 250,
       dataIndex: 'summary',
       key: 'summary',
-      render: (_, value, __, highlightFn ) => {
-        const checkPreference = value.preferences ? value.preferences.fullOptimization : true
-        if (checkPreference) {
-          return highlightFn(value.summary)
-        } else {
-          if (value.code.includes('24g')) {
-            return highlightFn($t({
-              defaultMessage: 'Optimal channel plan found for 2.4 GHz radio' }))
-          } else if (value.code.includes('5g')) {
-            return highlightFn($t({
-              defaultMessage: 'Optimal channel plan found for 5 GHz radio' }))
-          } else {
-            return highlightFn($t({
-              defaultMessage: 'Optimal channel plan found for 6 GHz radio' }))
-          }
-        }
-      },
+      render: (_, value, __, highlightFn ) => highlightFn(value.summary),
       sorter: { compare: sortProp('summary', defaultSort) },
       searchable: true
     },
@@ -216,7 +200,12 @@ export function RecommendationTable (
         const appliedStates = ['applyscheduled', 'applyscheduleinprogress', 'applied']
         const disabled = appliedStates.includes(statusEnum) ? true : false
         const isOptimized = value.preferences? value.preferences.fullOptimization : true
-        return <div>
+        const tooltipText = $t({ defaultMessage: `
+          Optimization option cannot be changed while the recommendation is in Applied status.
+          Please revert the recommendation back to the New status before changing
+          the optimization option.
+        ` })
+        return <Tooltip placement='top' title={tooltipText}>
           <Switch
             defaultChecked
             checked={isOptimized}
@@ -226,7 +215,7 @@ export function RecommendationTable (
               setPreference({ code, path: idPath, preferences: updatedPreference })
             }}
           />
-        </div>
+        </Tooltip>
       }
     }] : []) as TableProps<RecommendationListItem>['columns']
   // eslint-disable-next-line react-hooks/exhaustive-deps

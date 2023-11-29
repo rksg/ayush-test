@@ -31,6 +31,7 @@ export const priorities: Record<'low' | 'medium' | 'high', IconValue> = {
 type CodeInfo = {
   category: MessageDescriptor,
   summary: MessageDescriptor,
+  partialOptimizedSummary?: MessageDescriptor,
   priority: IconValue
 }
 
@@ -401,6 +402,7 @@ export const codes = {
   'c-crrm-channel24g-auto': {
     category: categories['AI-Driven Cloud RRM'],
     summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx Power found for 2.4 GHz radio' }),
+    partialOptimizedSummary: defineMessage({ defaultMessage: 'Optimal channel plan found for 2.4 GHz radio' }),
     priority: priorities.high,
     valueFormatter: crrmText,
     valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
@@ -420,6 +422,7 @@ export const codes = {
   'c-crrm-channel5g-auto': {
     category: categories['AI-Driven Cloud RRM'],
     summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx Power found for 5 GHz radio' }),
+    partialOptimizedSummary: defineMessage({ defaultMessage: 'Optimal channel plan found for 5 GHz radio' }),
     priority: priorities.high,
     valueFormatter: crrmText,
     valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
@@ -439,6 +442,7 @@ export const codes = {
   'c-crrm-channel6g-auto': {
     category: categories['AI-Driven Cloud RRM'],
     summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx Power found for 6 GHz radio' }),
+    partialOptimizedSummary: defineMessage({ defaultMessage: 'Optimal channel plan found for 6 GHz radio' }),
     priority: priorities.high,
     valueFormatter: crrmText,
     valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),

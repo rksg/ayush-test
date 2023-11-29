@@ -82,6 +82,7 @@ export type RecommendationListItem = Recommendation & {
   priority: IconValue
   category: string
   summary: string
+  partialOptimizedSummary?: string
   status: string
   statusTooltip: string
   statusEnum: StateType
@@ -360,7 +361,10 @@ export const api = recommendationApi.injectEndpoints({
       transformResponse: (response: Response<Recommendation>) => {
         const { $t } = getIntl()
         return response.recommendations.map(recommendation => {
-          const { path, sliceValue, sliceType, code, status, metadata, updatedAt } = recommendation
+          const {
+            path, sliceValue, sliceType, code, status, metadata, updatedAt, preferences
+          } = recommendation
+          const isFullyOptimized = preferences ? preferences.fullOptimization : true
           const statusEnum = status as StateType
           return {
             ...recommendation,
@@ -368,7 +372,9 @@ export const api = recommendationApi.injectEndpoints({
             type: nodeTypes(sliceType as NodeType),
             priority: codes[code as keyof typeof codes].priority,
             category: $t(codes[code as keyof typeof codes].category),
-            summary: $t(codes[code as keyof typeof codes].summary),
+            summary: isFullyOptimized
+              ? $t(codes[code as keyof typeof codes].summary)
+              : $t(codes[code as keyof typeof codes].partialOptimizedSummary!),
             status: $t(states[statusEnum].text),
             statusTooltip: getStatusTooltip(code, statusEnum, { ...metadata, updatedAt }),
             statusEnum,
