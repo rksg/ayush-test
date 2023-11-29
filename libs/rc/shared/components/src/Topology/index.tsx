@@ -356,6 +356,7 @@ export function TopologyGraphComponent (props:{ venueId?: string,
     id: string;
     name: string;
     type: string;
+    isConnectedCloud: boolean;
     children: NodeData[];
   }
 
@@ -378,8 +379,12 @@ export function TopologyGraphComponent (props:{ venueId?: string,
       const fromNode = nodeMap[edge.from]
       const toNode = nodeMap[edge.to]
 
-      if (fromNode && toNode) {
-        fromNode.children.push(toNode)
+      if((fromNode && toNode)){
+        if(toNode.isConnectedCloud) {
+          toNode.children.push(fromNode)
+        } else {
+          fromNode.children.push(toNode)
+        }
       }
     })
 

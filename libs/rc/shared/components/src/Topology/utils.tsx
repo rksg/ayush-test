@@ -49,6 +49,7 @@ export function getDeviceColor (deviceStatus: DeviceStatus
     case ApDeviceStatusEnum.FIRMWARE_UPDATE_FAILED:
     case ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED:
     case ApDeviceStatusEnum.DISCONNECTED_FROM_CLOUD:
+    case SwitchStatusEnum.DISCONNECTED:
     case DeviceStatus.Disconnected:
       return 'var(--acx-semantics-red-70)'
     case DeviceStatus.Unknown:
@@ -57,7 +58,6 @@ export function getDeviceColor (deviceStatus: DeviceStatus
     case ApDeviceStatusEnum.OFFLINE:
     case SwitchStatusEnum.INITIALIZING:
     case SwitchStatusEnum.NEVER_CONTACTED_CLOUD:
-    case SwitchStatusEnum.DISCONNECTED:
       return 'var(--acx-neutrals-50)'
     default: return 'var(--acx-neutrals-50)'
   }

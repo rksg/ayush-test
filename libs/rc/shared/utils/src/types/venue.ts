@@ -768,6 +768,7 @@ export interface Link {
     poeUsed?: number;
     poeTotal?: number;
     connectedPort?: string;
+    correspondingPort?: string;
 	angle?: number;
 }
 export interface GraphData {

@@ -89,8 +89,14 @@ onClose: () => void
         }
 
         <Descriptions.Item
-          label={$t({ defaultMessage: 'Port' })}
+          label={$t({ defaultMessage: 'From Port' })}
           children={tooltipEdge?.connectedPort || noDataDisplay} />
+
+        {tooltipEdge?.correspondingPort &&
+          <Descriptions.Item
+            label={$t({ defaultMessage: 'To Port' })}
+            children={tooltipEdge?.correspondingPort || noDataDisplay} />
+        }
       </Descriptions>
     </Card>
   </div>

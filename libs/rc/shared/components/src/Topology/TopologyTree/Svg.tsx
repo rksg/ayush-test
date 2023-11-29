@@ -41,7 +41,7 @@ const Svg: any = (props: any) => {
         .on('wheel.zoom', null)
         .on('dblclick.zoom', null)
     }
-    if(data){
+    if (data) {
       setTreeData(transformData(data))
     }
   }, [width, height, data])
