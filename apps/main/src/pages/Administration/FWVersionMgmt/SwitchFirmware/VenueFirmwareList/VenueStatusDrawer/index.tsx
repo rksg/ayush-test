@@ -17,13 +17,13 @@ import {
   SwitchFwStatusEnum,
   SwitchStatusEnum,
   defaultSort,
+  parseSwitchVersion,
   sortProp
 } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
-import { parseSwitchVersion } from '../../../FirmwareUtils'
-import * as UI                from '../styledComponents'
+import * as UI from '../styledComponents'
 
 export interface VenueStatusDrawerProps {
   visible: boolean,

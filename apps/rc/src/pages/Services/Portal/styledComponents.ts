@@ -20,7 +20,7 @@ import { EyeSlashSolid as UIEyeSlashSolid,
   FacebookOutlined as Facebook,
   GoogleSolidPlus,
   LinkedinOutlined as LinkedIn,
-  TwitterOutlined as Twitter,
+  Twitter,
   SMSOutlined,
   EyeOpenSolid
 }   from '@acx-ui/icons'
@@ -359,7 +359,7 @@ export const ViewSectionSocial=styled.div<{ $type: string | null }>`
   ` : props => props.$type === 'microsoft' ? css`
   background-color:var(--acx-neutrals-100);
   `: props => props.$type === 'twitter' ? css`
-  background-color:var(--acx-accents-blue-50);
+  background-color:var(--acx-primary-black);
   `: props => props.$type === 'google' ? css`
   background-color:var(--acx-primary-white);
   color: var(--acx-primary-black);
@@ -379,13 +379,22 @@ export const ViewSectionSocialText=styled.div`
   padding-top:11px;
   padding-left:30px;
 `
-export const ViewSectionSocialIcon=styled.div`
-  padding-left:10px;
+
+const viewSectionSocialIconStyle= css`
  .anticon{
   font-size:28px;
   padding-top:10px;
   padding-left:20px;
  }
+`
+
+export const ViewSectionSocialIcon=styled.div`
+  padding-left:10px;
+  ${viewSectionSocialIconStyle}
+`
+export const ViewSectionSocialTwitterIcon=styled.div`
+  padding-left:5px;
+  ${viewSectionSocialIconStyle}
 `
 const iconsStyle = css`
 margin-bottom:-7px;
@@ -567,7 +576,9 @@ export const FacebookOutlined = styled(Facebook)`
   ${socialIconStyle}
 `
 export const TwitterOutlined = styled(Twitter)`
-${socialIconStyle}
+  width: 32px;
+  height: 32px;
+  margin-top: 5px;
 `
 export const LinkedinOutlined = styled(LinkedIn)`
 ${socialIconStyle}
