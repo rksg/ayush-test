@@ -54,10 +54,6 @@ jest.mock('./pages/Networks/wireless/NetworksTable', () => ({
   })
 }))
 
-jest.mock('./pages/Networks/wireless/NetworkForm/NetworkForm', () => () => {
-  return <div data-testid='NetworkForm' />
-})
-
 jest.mock('./pages/Networks/wireless/NetworkDetails/NetworkDetails', () => () => {
   return <div data-testid='NetworkDetails' />
 })
@@ -203,12 +199,13 @@ jest.mock('@acx-ui/rc/components', () => ({
   MacRegistrationListForm: () => <div data-testid='MacRegistrationListForm' />,
   AdaptivePolicySetForm: () => <div data-testid='AdaptivePolicySetForm' />,
   AccessControlForm: () => <div data-testid='AccessControlForm' />,
-  AAAForm: () => <div data-testid='AAAForm' />,
+  AAAForm: () => <div data-testid='AAAPolicyForm' />,
   WifiCallingConfigureForm: () => <div data-testid='WifiCallingConfigureForm' />,
   WifiCallingForm: () => <div data-testid='WifiCallingForm' />,
   WifiCallingDetailView: () => <div data-testid='WifiCallingDetailView' />,
   DHCPForm: () => <div data-testid='DHCPForm' />,
-  PortalForm: () => <div data-testid='PortalForm' />
+  PortalForm: () => <div data-testid='PortalForm' />,
+  NetworkForm: () => <div data-testid='NetworkForm' />
 }))
 
 jest.mock('./pages/Policies/AdaptivePolicy/RadiusAttributeGroup/RadiusAttributeGroupForm/RadiusAttributeGroupForm', () => () => {
