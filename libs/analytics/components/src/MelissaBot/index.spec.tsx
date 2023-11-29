@@ -90,7 +90,7 @@ describe('MelissaBot', () => {
       await userEvent.type(screen.getByRole('textbox'),'What is cloud RRM?{enter}')
     })
     await screen.findByText('What is cloud RRM?')
-    expect(document.querySelectorAll('.conversation > div')?.length).toBe(11)
+    expect(document.querySelectorAll('.conversation > div')?.length).toBe(7)
     expect(document.querySelector('body')?.innerHTML).toMatchSnapshot()
   })
   it('should handle error message from chatbot',async ()=>{
@@ -112,7 +112,7 @@ describe('MelissaBot', () => {
     })
     await screen.findByText('What is cloud RRM?')
     await screen.findByText('Some Error')
-    expect(document.querySelectorAll('.conversation > div')?.length).toBe(7)
+    expect(document.querySelectorAll('.conversation > div')?.length).toBe(5)
     expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('after:error1')
     global.fetch = jest.fn().mockImplementation(() =>
       Promise.resolve({
@@ -124,7 +124,7 @@ describe('MelissaBot', () => {
     })
     await screen.findByText('What is datastudio?')
     await screen.findByText('Something went wrong.')
-    expect(document.querySelectorAll('.conversation > div')?.length).toBe(9)
+    expect(document.querySelectorAll('.conversation > div')?.length).toBe(7)
     expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('after:error2')
   })
   it('should handle file upload from chatbot',async ()=>{
