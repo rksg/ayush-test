@@ -32,9 +32,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
+import { AddModeProps, editModeProps }          from '../AccessControlForm'
 import { PROFILE_MAX_COUNT_APPLICATION_POLICY } from '../constants'
 import { useScrollLock }                        from '../ScrollLock'
-import { AddModeProps, editModeProps }          from '../AccessControlForm'
 
 import {
   genRuleObject,

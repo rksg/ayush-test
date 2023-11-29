@@ -1,14 +1,7 @@
 
 import { waitFor, within } from '@testing-library/react'
 import userEvent           from '@testing-library/user-event'
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import {
-  mockDpskList,
-  mockMacRegistrationList,
-  mockPersonaGroupList,
-  replacePagination
-} from 'apps/rc/src/pages/Users/Persona/__tests__/fixtures'
-import { rest } from 'msw'
+import { rest }            from 'msw'
 
 import { useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
@@ -24,6 +17,11 @@ import { Provider }                                              from '@acx-ui/s
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {
+  mockDpskList,
+  mockMacRegistrationList,
+  mockPersonaGroupList
+} from '../../__tests__/fixtures'
+import {
   mockedTemplateScope,
   mockEnabledNoNSGPropertyConfig,
   mockPropertyUnitList,
@@ -32,6 +30,9 @@ import {
 import { VenueEditContext } from '../index'
 
 import { PropertyManagementTab } from './index'
+
+const paginationPattern = '?size=:pageSize&page=:page&sort=:sort'
+const replacePagination = (url: string) => url.replace(paginationPattern, '')
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({

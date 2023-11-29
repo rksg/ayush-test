@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps } from '@acx-ui/components'
-import {ApplicationDrawer, defaultNetworkPayload, DeviceOSDrawer, Layer2Drawer} from '@acx-ui/rc/components'
-import { Layer3Drawer }              from '@acx-ui/rc/components'
+import { Loader, Table, TableProps }                                              from '@acx-ui/components'
+import { ApplicationDrawer, defaultNetworkPayload, DeviceOSDrawer, Layer2Drawer } from '@acx-ui/rc/components'
+import { Layer3Drawer }                                                           from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteAccessControlProfilesMutation,

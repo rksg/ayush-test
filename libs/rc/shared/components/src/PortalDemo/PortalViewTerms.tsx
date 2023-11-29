@@ -1,9 +1,9 @@
 import { Demo } from '@acx-ui/rc/utils'
 
 
-import * as UI from './styledComponents'
-
 import PortalButtonContent from './PortalContent/PortalButtonContent'
+import * as UI             from './styledComponents'
+
 export default function PortalViewTerms (props:{
   portalLang: { [key:string]:string },
   isPreview?: boolean,

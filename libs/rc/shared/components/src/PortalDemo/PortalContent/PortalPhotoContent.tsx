@@ -6,9 +6,9 @@ import { Demo } from '@acx-ui/rc/utils'
 
 
 import { PortalDemoDefaultSize, hoverOutline } from '../commonUtils'
-import * as UI                                 from '../styledComponents'
 import PortalImageTools                        from '../PortalImageTools'
 import PortalPopover                           from '../PortalPopover'
+import * as UI                                 from '../styledComponents'
 
 export default function PortalPhotoContent (props: {
   demoValue: Demo,

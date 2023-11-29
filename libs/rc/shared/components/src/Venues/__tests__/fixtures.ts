@@ -20,7 +20,7 @@ import {
   ConnectionMetering,
   BillingCycleType,
   TemplateScope,
-  MessageType
+  MessageType, PassphraseFormatEnum, MacRegistrationPool
 } from '@acx-ui/rc/utils'
 
 export const successResponse = {
@@ -3114,4 +3114,71 @@ export const mockedTemplateScope: TemplateScope = {
   messageType: MessageType.EMAIL,
   nameLocalizationKey: 'unit.assigned.email',
   defaultTemplateId: '746ac7b2-1ec5-412c-9354-e5ac274b7bd9'
+}
+
+export const mockDpskList = {
+  content: [
+    {
+      id: 'dpsk-pool-1',
+      name: 'DPSK Service 1',
+      passphraseLength: 18,
+      passphraseFormat: PassphraseFormatEnum.MOST_SECURED,
+      expirationType: null
+    },
+    {
+      id: '123456789b',
+      name: 'DPSK Service 2',
+      passphraseLength: 22,
+      passphraseFormat: PassphraseFormatEnum.KEYBOARD_FRIENDLY,
+      expirationType: null,
+      expirationDate: '2022-12-07'
+    },
+    {
+      id: '123456789c',
+      name: 'DPSK Service 3',
+      passphraseLength: 24,
+      passphraseFormat: PassphraseFormatEnum.KEYBOARD_FRIENDLY,
+      expirationType: null,
+      expirationOffset: 2
+    }
+  ],
+  totalElements: 3,
+  totalPages: 1,
+  pageable: {
+    pageNumber: 0,
+    pageSize: 10
+  },
+  sort: []
+}
+
+export const mockMacRegistrationList: NewTableResult<MacRegistrationPool> = {
+  pageable: defaultPageable,
+  sort: defaultPageable.sort,
+  totalElements: 1,
+  totalPages: 1,
+  content: [{
+    id: 'mac-id-1',
+    name: 'mac-name-1',
+    autoCleanup: true,
+    enabled: true,
+    expirationEnabled: true,
+    policySetId: 'string',
+    expirationOffset: 1,
+    expirationDate: 'string',
+    defaultAccess: 'string',
+    registrationCount: 0
+  }]
+}
+
+export const mockPersonaGroupList: NewTableResult<PersonaGroup> = {
+  pageable: defaultPageable,
+  sort: defaultPageable.sort,
+  totalElements: 1,
+  totalPages: 1,
+  content: [
+    {
+      id: 'persona-group-id-1',
+      name: 'persona-group-name-1'
+    }
+  ]
 }

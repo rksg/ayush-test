@@ -5,10 +5,9 @@ import { Demo, PortalComponentsEnum } from '@acx-ui/rc/utils'
 
 
 import { portalComponentsValue } from './contentsMap'
+import PortalTermsModal          from './PortalTermsModal'
+import PortalWifi4euModal        from './PortalWifi4euModal'
 import * as UI                   from './styledComponents'
-
-import PortalTermsModal   from './PortalTermsModal'
-import PortalWifi4euModal from './PortalWifi4euModal'
 export default function PortalComponents (props:{
   demoValue:Demo,
   updateViewContent:(value:Demo)=>void,
