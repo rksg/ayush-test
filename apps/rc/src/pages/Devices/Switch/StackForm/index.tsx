@@ -889,6 +889,8 @@ export function StackForm () {
                     stackUnitsMinLimitaion={getStackUnitsMinLimitation(
                       getSwitchModel(activeSerialNumber)!, currentFW, currentAboveTenFW
                     )}
+                    venueFirmware={currentFW}
+                    venueAboveTenFirmware={currentAboveTenFW}
                     isDisplay={visibleNotification}
                     isDisplayHeader={false}
                     type={SWITCH_UPGRADE_NOTIFICATION_TYPE.STACK}
