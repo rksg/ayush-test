@@ -9,7 +9,6 @@ import { defaultSort, sortProp, useTableQuery, VenueRoguePolicyType } from '@acx
 import { TenantLink }                                                 from '@acx-ui/react-router-dom'
 
 const defaultPayload = {
-  url: '/api/viewmodel/tenant/{tenantId}/venue',
   fields: [
     'id',
     'name',
