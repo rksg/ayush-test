@@ -5,7 +5,7 @@ import { baseQuery } from './baseQuery'
 export const baseApApi = createApi({
   baseQuery: baseQuery,
   reducerPath: 'apApi',
-  tagTypes: ['Ap'],
+  tagTypes: ['Ap', 'ApGroup'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({})
 })
