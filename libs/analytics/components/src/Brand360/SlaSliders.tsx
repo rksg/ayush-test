@@ -14,7 +14,11 @@ export const SlaSliders = ({ settings }: { settings: Partial<Settings> }) => {
   const { $t } = useIntl()
   const [updateSlas, result] = useUpdateTenantSettingsMutation()
   const [slas, setSlas] = useState(settings)
-  useEffect(() => setSlas(settings), [settings])
+  const [savedSlas, setSavedSlas] = useState(settings)
+  useEffect(() => {
+    setSlas(settings)
+    setSavedSlas(settings)
+  }, [settings])
   const SlaSlider = ({ name, format }: { name: keyof Settings, format: FormatterType }) => <Slider
     min={0}
     max={100}
@@ -32,10 +36,10 @@ export const SlaSliders = ({ settings }: { settings: Partial<Settings> }) => {
       <SliderLabel>{$t({ defaultMessage: 'SSID Compliance' })}</SliderLabel>
       <SlaSlider name='sla-brand-ssid-compliance' format='percent' />
       <Buttons>
-        <Button onClick={() => updateSlas(slas)} size='small' type='primary'>
+        <Button onClick={() => {setSavedSlas(slas);updateSlas(slas)}} size='small' type='primary'>
           {$t({ defaultMessage: 'Apply' })}
         </Button>
-        <Button onClick={() => setSlas(settings)} size='small'>
+        <Button onClick={() => setSlas(savedSlas)} size='small'>
           {$t({ defaultMessage: 'Reset' })}
         </Button>
       </Buttons>
