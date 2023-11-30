@@ -142,7 +142,9 @@ export function AccessSwitchDrawer (props: {
       }, true).unwrap()
         .then((templateRes) => {
           setTemplate(templateRes)
-          form.setFieldsValue(_.omit(templateRes, ['id', 'name', 'tag']))
+          if (editingWebAuthPageType === 'TEMPLATE') {
+            form.setFieldsValue(_.omit(templateRes, ['id', 'name', 'tag']))
+          }
         })
         .catch(() => { })
     } else {
