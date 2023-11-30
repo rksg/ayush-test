@@ -8,7 +8,6 @@ import {
   useFactsQuery
 } from './services'
 import { useEffect, useState } from 'react'
-import { off } from 'process'
 
 export { DidYouKnowWidget as DidYouKnow }
 
@@ -45,22 +44,27 @@ function DidYouKnowWidget ({
   const [offset, setOffset] = useState(0);
   const [content, setContent] = useState<any>( Array.from({ length: Math.ceil(Object.values(carouselFactsMap).length)}, () => []));
 
-  const { data, isFetching, refetch, isSuccess } = useFactsQuery({...filters, requestedList : carouselFactsMap[offset].facts}, {
+  const { data, isFetching, refetch, isSuccess, isLoading } = useFactsQuery({...filters, requestedList : carouselFactsMap[offset].facts}, {
     selectFromResult: ({ data, ...rest }) => ({
       data: getFactsData(data!, { maxFactPerSlide, maxSlideChar }),
       ...rest
-    })
+    }),
+    skip: !Boolean(content[offset]?.length === 0)
   })
   useEffect(() => {
     if (data && isSuccess && !isFetching) {
-      content[offset] = data[0]
-      setContent(content);
+      const updatedContent = [...content];
+      updatedContent[offset] = data[0];
+      setContent(updatedContent);
     }
   }, [offset, isSuccess,isFetching]);
-
+  useEffect(() => {
+    if (content[offset]?.length === 0) {
+      refetch();
+    }
+  }, [offset, content, refetch]);
   const onChange = (slideNumber: number) => {
     setOffset(slideNumber);
-    refetch();
   };
   const { $t } = intl
   const title = $t({ defaultMessage: 'Did you know?' })
@@ -77,7 +81,7 @@ function DidYouKnowWidget ({
     autoplaySpeed: 10000
   }
   return (
-    <Loader states={[{isLoading: isFetching}]}>
+    <Loader states={[{isLoading: isFetching || isLoading}]}>
       <AutoSizer>
         {({ height, width }) => (
             <Carousel contentList={content.length ? content : [[noData]]}
