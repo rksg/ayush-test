@@ -42,5 +42,6 @@ describe('QosMapSetFrom', () => {
 
     await userEvent.click(await screen.findByRole('switch'))
     expect(await screen.findByTestId('qos-map-set-option-table')).toBeVisible()
+
   })
 })

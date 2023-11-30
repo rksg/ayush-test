@@ -1,6 +1,7 @@
 import { ConfigProvider, PageNotFound }                     from '@acx-ui/components'
+import { VenuesForm }                                       from '@acx-ui/main/components'
 import { ManageCustomer, ManageIntegrator, PortalSettings } from '@acx-ui/msp/components'
-import { NetworkForm, VenuesForm }                          from '@acx-ui/rc/components'
+import { NetworkForm }                                      from '@acx-ui/rc/components'
 import { rootRoutes, Route, TenantNavigate }                from '@acx-ui/react-router-dom'
 import { Provider }                                         from '@acx-ui/store'
 
