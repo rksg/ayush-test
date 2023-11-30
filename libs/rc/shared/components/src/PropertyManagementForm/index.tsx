@@ -375,7 +375,8 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
                   rules={[{ required: true }]}
                   children={
                     <Select
-                      disabled={hasUnits}
+                      disabled={hasUnits
+                        && initialValues.residentPortalType !== ResidentPortalType.NO_PORTAL}
                       options={residentPortalTypeOptions}
                     />
                   }
@@ -389,6 +390,7 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
                       rules={[{ required: true }]}
                       children={
                         hasUnits
+                        && initialValues.residentPortalType === ResidentPortalType.RUCKUS_PORTAL
                           ? <ResidentPortalLink
                             id={residentPortalId}
                             name={residentPortalList?.data

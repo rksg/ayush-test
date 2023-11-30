@@ -13,7 +13,8 @@ import {
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
-  getTunnelTypeString
+  getTunnelTypeString,
+  TunnelTypeEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { filterByAccess }        from '@acx-ui/user'
@@ -78,7 +79,7 @@ const TunnelProfileDetail = () => {
     ...(isEdgeSdLanReady ? [{
       title: $t({ defaultMessage: 'Tunnel Type' }),
       content: () => {
-        return getTunnelTypeString($t, tunnelProfileData.type)
+        return getTunnelTypeString($t, tunnelProfileData.type || TunnelTypeEnum.VXLAN)
       }
     }] : [])
   ]

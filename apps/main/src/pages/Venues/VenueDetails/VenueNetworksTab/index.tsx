@@ -38,7 +38,8 @@ import {
   Network,
   NetworkVenue,
   IsNetworkSupport6g,
-  ApGroupModalState
+  ApGroupModalState,
+  NetworkExtended
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                    from '@acx-ui/user'
@@ -68,12 +69,6 @@ const defaultPayload = {
   ]
 }
 
-interface NetworkExtended extends Network {
-  deepVenue?: NetworkVenue,
-  latitude?: string,
-  longitude?: string
-}
-
 export interface SchedulingModalState {
   visible: boolean,
   networkVenue?: NetworkVenue,
@@ -98,6 +93,7 @@ export function VenueNetworksTab () {
     useQuery: useVenueNetworkListQuery,
     defaultPayload
   })
+  const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
   const [tableData, setTableData] = useState(defaultArray)
@@ -147,7 +143,7 @@ export function VenueNetworksTab () {
     }
   }, [tableQuery.data, venueDetailsQuery.data])
 
-  const scheduleSlotIndexMap = useScheduleSlotIndexMap(tableData)
+  const scheduleSlotIndexMap = useScheduleSlotIndexMap(tableData, isMapEnabled)
   const linkToAddNetwork = useTenantLink('/networks/wireless/add')
 
   const activateNetwork = async (checked: boolean, row: Network) => {
@@ -179,7 +175,7 @@ export function VenueNetworksTab () {
   }
 
   const getCurrentVenue = (row: Network) => {
-    if (!row.activated.isActivated) {
+    if (!row.activated?.isActivated) {
       return
     }
     const deepNetworkVenues = row.deepNetwork?.venues || []
