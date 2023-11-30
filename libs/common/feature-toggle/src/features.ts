@@ -123,6 +123,7 @@ export enum Features {
   SSO = 'ADMN-SSO',
   EXPORT_EVENTS_TOGGLE = 'acx-ui-scheduled-events-export-toggle',
   RUCKUS_AI_CHATBOT_TOGGLE = 'ruckus-ai-chatbot-toggle',
+  RUCKUS_AI_INCIDENT_SUMMARY_TOGGLE = 'ruckus-ai-incident-summary-toggle',
   EDGE_LAG = 'acx-ui-edges-lag-toggle',
   MSP_HSP_SUPPORT = 'mspservice-hsp-01',
   RUCKUS_AI_ZONES_LIST = 'ruckus-ai-zones-toggle',
