@@ -64,24 +64,12 @@ describe('Brand360', () => {
     })
   })
   it('resets SLAs', async () => {
-    const update = new Promise(resolve => mockServer.use(
-      rest.post(`${rbacApiURL}/tenantSettings`, ({ body }, res) => {
-        resolve(body)
-        return res()
-      })
-    ))
-    render(<Provider><Brand360 /></Provider>)
+    const { asFragment } = render(<Provider><Brand360 /></Provider>)
     const sliders = await screen.findAllByRole('slider')
     fireEvent.mouseDown(sliders[0])
     fireEvent.mouseMove(sliders[0], { clientX: 10 })
     fireEvent.mouseUp(sliders[0])
     fireEvent.click(await screen.findByText('Reset'))
-    fireEvent.click(await screen.findByText('Apply'))
-    expect(await update).toEqual({
-      'brand-ssid-compliance-matcher': '^[a-zA-Z0-9]{5}_GUEST$',
-      'sla-brand-ssid-compliance': '3',
-      'sla-guest-experience': '2',
-      'sla-p1-incidents-count': '1'
-    })
+    expect(asFragment()).toMatchSnapshot()
   })
 })

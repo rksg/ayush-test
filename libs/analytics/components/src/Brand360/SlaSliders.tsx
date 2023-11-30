@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { Slider }  from 'antd'
+import { isEqual } from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { useUpdateTenantSettingsMutation } from '@acx-ui/analytics/services'
@@ -27,6 +28,7 @@ export const SlaSliders = ({ settings }: { settings: Partial<Settings> }) => {
     defaultValue={parseInt(slas[name]!, 10)}
     onAfterChange={(value: number) => setSlas({ ...slas, [name]: value.toString() })}
   />
+  const disabled = isEqual(slas, savedSlas)
   return <Loader states={[result]}>
     <Card title={$t({ defaultMessage: 'Service Level Agreements' })}>
       <SliderLabel>{$t({ defaultMessage: 'P1 Incidents' })}</SliderLabel>
@@ -36,10 +38,19 @@ export const SlaSliders = ({ settings }: { settings: Partial<Settings> }) => {
       <SliderLabel>{$t({ defaultMessage: 'SSID Compliance' })}</SliderLabel>
       <SlaSlider name='sla-brand-ssid-compliance' format='percent' />
       <Buttons>
-        <Button onClick={() => {setSavedSlas(slas);updateSlas(slas)}} size='small' type='primary'>
+        <Button
+          size='small'
+          type='primary'
+          disabled={disabled}
+          onClick={() => {setSavedSlas(slas);updateSlas(slas)}}
+        >
           {$t({ defaultMessage: 'Apply' })}
         </Button>
-        <Button onClick={() => setSlas(savedSlas)} size='small'>
+        <Button
+          size='small'
+          disabled={disabled}
+          onClick={() => setSlas(savedSlas)}
+        >
           {$t({ defaultMessage: 'Reset' })}
         </Button>
       </Buttons>
