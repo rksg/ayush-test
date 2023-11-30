@@ -159,8 +159,7 @@ export function AssignMspLicense () {
     try {
       const ecFormData = { ...values }
       const today = EntitlementUtil.getServiceStartDate()
-      const expirationDate = EntitlementUtil.getServiceStartDate(
-        formatter(DateFormatEnum.DateFormat)(ecFormData.serviceExpirationDate))
+      const expirationDate = EntitlementUtil.getServiceStartDate((ecFormData.serviceExpirationDate))
 
       const addAssignment = []
       const updateAssignment = []
@@ -446,7 +445,6 @@ export function AssignMspLicense () {
             <DatePicker
               format={formatter(DateFormatEnum.DateFormat)}
               disabled={!customDate}
-              // defaultValue={moment(formatter(DateFormatEnum.DateFormat)(subscriptionEndDate))}
               disabledDate={(current) => {
                 return current && current < moment().endOf('day')
               }}
