@@ -45,10 +45,10 @@ export const LagDrawer = (props: LagDrawerProps) => {
       formRef.resetFields()
       formRef.setFieldsValue({
         ...data,
-        lagMembers: data?.lagMembers.map(item => item.portMac)
+        lagMembers: data?.lagMembers.map(item => item.portId)
       })
       setEnabledPorts(data?.lagMembers.filter(item => item.portEnabled)
-        .map(item => item.portMac))
+        .map(item => item.portId))
     }
   }, [visible, formRef, data])
 
@@ -119,8 +119,8 @@ export const LagDrawer = (props: LagDrawerProps) => {
       const payload = {
         ...formData,
         lagMembers: formData.lagMembers?.map((item: string) => ({
-          portMac: item,
-          portEnabled: enabledPorts?.includes(item)
+          portId: item,
+          portEnabled: enabledPorts?.includes(item) ?? false
         })) ?? []
       }
       const requestPayload = {
@@ -132,7 +132,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
         await updateEdgeLag(requestPayload).unwrap()
         handleClose()
       } else {
-        const portConfig = portList?.find(item => formData.lagMembers?.includes(item.mac))
+        const portConfig = portList?.find(item => formData.lagMembers?.includes(item.id))
         if(portConfig?.portType === EdgePortTypeEnum.WAN ||
           portConfig?.portType === EdgePortTypeEnum.LAN) {
           showActionModal({
@@ -161,11 +161,11 @@ export const LagDrawer = (props: LagDrawerProps) => {
     }
   }
 
-  const handlePortEnabled = (mac: string, enabled: boolean) => {
+  const handlePortEnabled = (portId: string, enabled: boolean) => {
     if(enabled) {
-      setEnabledPorts([...(enabledPorts ?? []), mac])
+      setEnabledPorts([...(enabledPorts ?? []), portId])
     } else {
-      setEnabledPorts(enabledPorts?.filter(item => item !== mac))
+      setEnabledPorts(enabledPorts?.filter(item => item !== portId))
     }
   }
 
@@ -227,18 +227,18 @@ export const LagDrawer = (props: LagDrawerProps) => {
                 <Space key={`${item.id}_space`} size={30}>
                   <Checkbox
                     key={`${item.id}_checkbox`}
-                    value={item.mac}
+                    value={item.id}
                     children={`Port ${index + 1}`}
                   />
                   {
-                    lagMembers?.some(mac => mac === item.mac) &&
+                    lagMembers?.some(id => id === item.id) &&
                     <StepsForm.FieldLabel width='100px'>
                       <div style={{ margin: 'auto' }}>{$t({ defaultMessage: 'Port Enabled' })}</div>
                       <Form.Item
                         name={`port_${index +1}_enabled`}
                         children={<Switch
-                          checked={enabledPorts?.includes(item.mac)}
-                          onChange={(checked) => handlePortEnabled(item.mac, checked)}
+                          checked={enabledPorts?.includes(item.id)}
+                          onChange={(checked) => handlePortEnabled(item.id, checked)}
                         />}
                         noStyle
                       />
