@@ -22,7 +22,7 @@ export const DrawerContentWrapper = styled.div`
   padding: var(--acx-content-vertical-space);
   font-size: var(--acx-body-3-font-size);
   line-height: var(--acx-body-3-line-height);
-  height: 100%;
+  height: 394px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;

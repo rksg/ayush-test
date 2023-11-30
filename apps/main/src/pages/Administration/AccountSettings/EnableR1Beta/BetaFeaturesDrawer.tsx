@@ -44,7 +44,7 @@ export function BetaFeaturesDrawer (
   </div>
 
   return <Drawer
-    title={$t({ defaultMessage: 'R1 Beta Features' })}
+    title={$t({ defaultMessage: 'RUCKUS One Beta Features' })}
     visible={visible}
     onClose={onClose}
     width={props.width}
