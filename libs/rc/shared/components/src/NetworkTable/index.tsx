@@ -152,10 +152,14 @@ function getCols (intl: ReturnType<typeof useIntl>, oweTransFlag: boolean) {
       dataIndex: 'clients',
       sorter: false, // API does not seem to be working
       align: 'center',
-      render: (_, row) => {
-        return row?.isOnBoarded ?
-          row.clients || noDataDisplay
-          : row.clients
+      render: function (_, row) {
+        return (
+          row?.isOnBoarded
+            ? <span>{row.clients || noDataDisplay}</span>
+            : <TenantLink to={`/networks/wireless/${row.id}/network-details/clients`}>
+              {row.clients}
+            </TenantLink>
+        )
       }
     },
     // { TODO: Wait for Services
