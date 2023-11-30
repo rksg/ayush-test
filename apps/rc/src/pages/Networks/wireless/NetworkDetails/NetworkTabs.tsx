@@ -41,6 +41,16 @@ function NetworkTabs () {
         tab={$t({ defaultMessage: 'Incidents' })}
         key='incidents'
       /> }
+      <Tabs.TabPane
+        tab={
+          $t({ defaultMessage: 'Clients' })
+        }
+        // tab={
+        //   $t({ defaultMessage: 'Clients ({clientsCount})' },
+        //     { clientsCount: baseData?.clients })
+        // }
+        key='clients'
+      />
     </Tabs>
   )
 }

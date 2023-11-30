@@ -128,7 +128,8 @@ export function HistoricalClientsTable
     params.venueId ? { ...defaultFilters, venueId: [params.venueId] } :
       params.serialNumber ? { ...defaultFilters, serialNumber: [params.serialNumber] } :
         params.apId ? { ...defaultFilters, serialNumber: [params.apId] } :
-          defaultFilters
+          params.networkId ? { ...defaultFilters, networkId: [params.networkId] } :
+            defaultFilters
 
   const HistoricalClientsTable = () => {
     const tableQuery = useTableQuery({
