@@ -20,10 +20,10 @@ import {
   useDateRange,
   TimeRangeDropDownProvider
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                                                  from '@acx-ui/formatter'
-import { useParams, TenantLink, resolvePath, Navigate, MLISA_BASE_PATH, useLocation } from '@acx-ui/react-router-dom'
-import { DateRange, fixedEncodeURIComponent, encodeParameter, DateFilter }            from '@acx-ui/utils'
+import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                       from '@acx-ui/formatter'
+import { useParams, TenantLink, resolvePath }                              from '@acx-ui/react-router-dom'
+import { DateRange, fixedEncodeURIComponent, encodeParameter, DateFilter } from '@acx-ui/utils'
 
 import NoData                                from './NoData'
 import {  Collapse, Panel, Ul, Chevron, Li } from './styledComponents'
@@ -32,7 +32,6 @@ const pagination = { pageSize: 5, defaultPageSize: 5 }
 
 function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
   const { $t } = useIntl()
-  const { search } = useLocation()
   const { selectedTenant: { role } } = getUserProfile()
   const isReportOnly = role === 'report-only'
   const isZonesPageEnabled = useIsSplitOn(Features.RUCKUS_AI_ZONES_LIST)
@@ -421,21 +420,15 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
           }
         </Collapse>
       </>
-      : isReportOnly
-        ? <Navigate replace
-          to={{
-            ...resolvePath(`${MLISA_BASE_PATH}/reports`),
-            search
-          }}/>
-        : <>
-          <PageHeader title={$t(
-            { defaultMessage: 'Hmmmm... we couldn’t find any match for "{searchVal}"' },
-            { searchVal }
-          )}
-          extra={extra}
-          />
-          <NoData />
-        </>
+      : <>
+        <PageHeader title={$t(
+          { defaultMessage: 'Hmmmm... we couldn’t find any match for "{searchVal}"' },
+          { searchVal }
+        )}
+        extra={extra}
+        />
+        <NoData />
+      </>
     }
   </Loader>
 }
