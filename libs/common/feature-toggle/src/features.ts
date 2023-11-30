@@ -44,6 +44,7 @@ export enum Features {
   I18N_TOGGLE = 'acx-ui-i18n-toggle',
   I18N_PHASE2_TOGGLE = 'acx-ui-i18n-phase2-toggle',
   I18N_DATA_STUDIO_TOGGLE = 'acx-ui-i18n-data-studio-toggle',
+  I18N_DE_ZH_TOGGLE = 'acx-ui-i18n-de-zh-toggle',
   STICKY_CLIENT_STEERING = 'wifi-eda-sticky-client-steering-toggle',
   WIFI_EDA_NON_PROXY_DPSK_TOGGLE = 'wifi-eda-non-proxy-dpsk-toggle',
   SIGPACK_UPGRADE = 'acx-ui-sigpack-upgrade',

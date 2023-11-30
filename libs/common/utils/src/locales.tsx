@@ -124,11 +124,23 @@ async function loadKoKR (): Promise<Messages> {
   return Object.assign({}, combine, flattenMessages(combine as unknown as NestedMessages))
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function loadZhCN (): Promise<Messages> {
   const [base, proBase, translation] = await Promise.all([
     import('antd/lib/locale/zh_CN').then(result => result.default),
     import('@ant-design/pro-provider/lib/locale/zh_CN').then(result => result.default),
     localePath('zh-CN') as Promise<NestedMessages>
+  ])
+
+  const combine = merge({}, base, proBase, translation)
+  return Object.assign({}, combine, flattenMessages(combine as unknown as NestedMessages))
+}
+
+async function loadZhTW (): Promise<Messages> {
+  const [base, proBase, translation] = await Promise.all([
+    import('antd/lib/locale/zh_TW').then(result => result.default),
+    import('@ant-design/pro-provider/lib/locale/zh_TW').then(result => result.default),
+    localePath('zh_TW') as Promise<NestedMessages>
   ])
 
   const combine = merge({}, base, proBase, translation)
@@ -148,13 +160,14 @@ async function loadPtBR (): Promise<Messages> {
 
 export const localeLoaders = {
   'en-US': loadEnUS,
-  'de-DE': loadDe,
   'ja-JP': loadJp,
-  'es-ES': loadEs,
   'fr-FR': loadFr,
-  'ko-KR': loadKoKR,
   'pt-BR': loadPtBR,
-  'zh-CN': loadZhCN
+  'ko-KR': loadKoKR,
+  'es-ES': loadEs,
+  'de-DE': loadDe,
+  // 'zh-Hans': loadZhCN,
+  'zh-Hant': loadZhTW
 }
 
 const allowedLang = Object.keys(localeLoaders)
@@ -211,4 +224,20 @@ function LocaleProvider (props: LocaleProviderProps) {
   const context = useMemo(() =>
     ({ lang, setLang, messages }), [lang, messages])
   return <LocaleContext.Provider value={context} children={props.children} />
+}
+
+const generateLangLabel = (lang: string, defaultLang?: LangKey): string | undefined => {
+  lang = lang.includes('zh-') ? lang : lang.split('-')[0]
+  const languageNames = new Intl.DisplayNames(
+    [lang, defaultLang || DEFAULT_SYS_LANG], { type: 'language' })
+  return languageNames.of(lang)
+}
+
+export const useSupportedLangs = (isSupportDeZh: boolean, defaultLang?: string) => {
+  return Object.keys(localeLoaders)
+    .filter(val => isSupportDeZh || !(val.includes('de') || val.includes('zh')))
+    .map(val => ({
+      label: generateLangLabel(val, defaultLang as LangKey),
+      value: val
+    }))
 }

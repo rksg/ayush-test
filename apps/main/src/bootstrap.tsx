@@ -32,25 +32,6 @@ import { errorMiddleware } from './errorMiddleware'
 
 import '@acx-ui/theme'
 
-// Needed for Browser language detection
-const supportedLocales: Record<string, LangKey> = {
-  'en-US': 'en-US',
-  'en': 'en-US',
-  'es': 'es-ES',
-  'es-ES': 'es-ES',
-  'de-DE': 'de-DE',
-  'de': 'de-DE',
-  'ja-JP': 'ja-JP',
-  'ja': 'ja-JP',
-  'fr-FR': 'fr-FR',
-  'ko-KR': 'ko-KR',
-  'pt-BR': 'pt-BR'
-}
-export function loadMessages (locales: readonly string[]): LangKey {
-  const locale = locales.find(locale =>
-    supportedLocales[locale as keyof typeof supportedLocales]) || DEFAULT_SYS_LANG
-  return supportedLocales[locale as keyof typeof supportedLocales]
-}
 async function pendoInitalization (): Promise<PendoParameters> {
   const tenantId = getTenantId()
   const userProfileRequest = createHttpRequest(UserUrlsInfo.getUserProfile, { tenantId })
