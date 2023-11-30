@@ -11,7 +11,7 @@ import {
   cssStr,
   useStepFormContext
 } from '@acx-ui/components'
-import { ArrowExpand, ArrowCollapse, SearchOutlined, ChevronRight } from '@acx-ui/icons'
+import { ArrowExpand, SearchOutlined, ChevronRight } from '@acx-ui/icons'
 import {
   useLazyGetSwitchFirmwareListQuery
 } from '@acx-ui/rc/services'
