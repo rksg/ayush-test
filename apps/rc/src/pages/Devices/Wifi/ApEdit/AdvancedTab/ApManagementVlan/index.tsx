@@ -13,8 +13,7 @@ import {
   useDeleteApManagementVlanMutation,
   useLazyGetVenueApManagementVlanQuery
 } from '@acx-ui/rc/services'
-import { ApManagementVlan, VenueExtended } from '@acx-ui/rc/utils'
-import { validationMessages }              from '@acx-ui/utils'
+import { ApManagementVlan, VenueExtended, validateVlanId } from '@acx-ui/rc/utils'
 
 import { ApDataContext, ApEditContext } from '../..'
 import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
@@ -86,7 +85,8 @@ export function ApManagementVlanForm () {
       ...editContextData,
       unsavedTabKey: 'advanced',
       tabTitle: $t({ defaultMessage: 'Advanced' }),
-      isDirty: true
+      isDirty: true,
+      hasError: form.getFieldsError().map(item => item.errors).flat().length > 0
     })
 
     setEditAdvancedContextData && setEditAdvancedContextData({
@@ -185,13 +185,13 @@ export function ApManagementVlanForm () {
                     data-testid={'ap-managment-vlan-vlan-id-input'}
                     name={vlanIdFieldName}
                     style={{ color: 'black' }}
-                    rules={[{
-                      type: 'number',
-                      required: true,
-                      min: 1,
-                      max: 4094,
-                      message: $t(validationMessages.vlanRange)
-                    }]}
+                    rules={[
+                      { required: true },
+                      { validator: (_, value) => {
+                        if (value) return validateVlanId(value)
+                        return Promise.resolve()
+                      } }
+                    ]}
                     children={
                       <InputNumber
                         onChange={onApMgmtVlanChange}
