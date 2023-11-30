@@ -8,7 +8,7 @@ it('initialize and be able to get value of key', async () => {
   const env = {
     GOOGLE_MAPS: 'GOOGLE_MAPS_KEY'
   }
-  mockServer.use(rest.get('/env.json', (_, r, c) => r(c.json(env))))
+  mockServer.use(rest.get('/globalValues.json', (_, r, c) => r(c.json(env))))
 
   expect(() => config.get('GOOGLE_MAPS_KEY')).toThrow('Config not initialized')
 

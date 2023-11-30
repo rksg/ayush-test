@@ -11,10 +11,10 @@ type commonEnvironment = {
 /**
  * Steps to add new env var
  * 1. Define new env var in the `R1Environment` below
- * 2. Update `apps/main/src/env.json`
+ * 2. Update `apps/main/src/globalValues.json`
  * 3. Update `configs/acx-ui/configmaps/base/configmap-acx-ui.yaml`
  * 4. Update `configs/acx-ui/configmaps/base/values-configmap-env-map-acx-ui.yaml`
- * 5. Update `tools/docker/nginx/env.json.template`
+ * 5. Update `tools/docker/nginx/globalValues.json.template`
  */
 type R1Environment = {
   GOOGLE_MAPS_KEY: string
@@ -48,7 +48,7 @@ const config: { value?: EnvironmentConfig } = {}
 export async function initialize () {
   const baseUrl = trimEnd(document.baseURI, '/')
 
-  const envConfigUrl = `${baseUrl}/env.json`
+  const envConfigUrl = `${baseUrl}/globalValues.json`
   config.value = await fetch(
     envConfigUrl,
     { headers: { Authorization: `Bearer ${getJwtToken()}` } })
