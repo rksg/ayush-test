@@ -43,7 +43,9 @@ import { TenantLink }                                                           
 import { filterByAccess, getShowWithoutRbacCheckKey }                                    from '@acx-ui/user'
 import { useDashboardFilter, DateFilter,DateRange, getDateRangeFilter, AnalyticsFilter } from '@acx-ui/utils'
 
-import PreviewMode from './preview'
+import PreviewMode from './PreviewMode'
+import EditMode from './EditMode'
+
 import * as UI     from './styledComponents'
 
 interface DashboardFilterContextProps {
@@ -84,6 +86,15 @@ export default function CustomizedDashboard () {
   const [visible, setVisible] = useState(false)
   const [visible2, setVisible2] = useState(false)
 
+  const displayEditMode = (display: boolean) => {
+    setVisible(display)
+    if(display) {
+      document.body.style.overflow = 'hidden';
+    }else{
+      document.body.style.overflow = 'auto';
+    }
+  }
+
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
       label: $t({ defaultMessage: 'Wi-Fi' }),
@@ -119,7 +130,7 @@ export default function CustomizedDashboard () {
       <DashboardPageHeader />
       <GridRow>
         <GridCol col={{ span: 12 }} style={{ height: '40px' }}>
-          <Button onClick={() => setVisible(true)}>
+          <Button onClick={() => displayEditMode(true)}>
         test edit mode
           </Button>
         </GridCol>
@@ -130,18 +141,9 @@ export default function CustomizedDashboard () {
         </GridCol>
       </GridRow>
 
-      <Modal
-        title={'title'}
-        style={{ top: 0 , left: '200px', margin: 0, padding: 0 }}
-        visible={visible}
-        maskClosable={false}
-        type={ModalType.ModalStepsForm}
-        onCancel={() => setVisible(false)}
-        footer={null}
-        width={'calc(100% - 200px)'}
-      />
-
+      <EditMode visible={visible} setVisible={displayEditMode} />
       <PreviewMode visible={visible2} setVisible={setVisible2} />
+
       <CommonDashboardWidgets />
       <Divider dashed
         style={{

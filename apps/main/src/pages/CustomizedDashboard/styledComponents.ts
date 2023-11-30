@@ -35,6 +35,45 @@ background-color: transparent;
 border-left: ${props => props.$siderWidth} solid rgba(255,255,255, 0.4);
 border-top: 75px solid rgba(255,255,255, 0.4);
 
+.modal-content {
+  background-color: #fefefe;
+  width: 100%;
+  height: calc(100vh - 116px);
+  position: fixed;
+  top: 60px;
+}
+
+.toolbar {
+  position: fixed;
+  width: calc(
+    100%
+    - ${props => props.$siderWidth}
+  );
+  min-width: calc(
+    1280
+    - ${props => props.$siderWidth}
+    - var(--acx-content-horizontal-space) * 2
+  );
+  top: 0;
+  padding: 14px 0;
+  background-color: var(--acx-neutrals-10);
+  height: 60px;
+  .ant-btn-text {
+    &:not([disabled]):hover {
+      background-color: var(--acx-neutrals-20);
+    }
+    &:not([disabled]):active {
+      color: var(--acx-primary-white);
+      background-color: var(--acx-neutrals-70);
+      svg {
+        path {
+          stroke: var(--acx-primary-white);
+        }
+      }
+    }
+  }
+}
+
 .actions {
   position: fixed;
   width: calc(
