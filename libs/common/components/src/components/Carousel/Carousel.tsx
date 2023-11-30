@@ -8,10 +8,11 @@ import * as UI from './styledComponents'
 
 import type { CarouselProps as AntCarouselProps } from 'antd'
 
-export interface CarouselProps extends Pick<AntCarouselProps, 'children'> {
+export interface CarouselProps extends AntCarouselProps {
   title?: string
   subTitle?: string
   contentList: string[][]
+  offset?: number
   classList: string
   style: { height: number, width: number }
 }
@@ -22,11 +23,12 @@ function Carousel ({
   subTitle,
   classList,
   style,
+  offset,
   ...props
 }: CarouselProps) {
   const sliderRef = useRef<CarouselRef>()
   useEffect(()=>{
-    sliderRef.current?.goTo(0)
+    sliderRef.current?.goTo(offset ?? 0)
   },[contentList])
   return (
     <UI.Wrapper style={style}>

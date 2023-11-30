@@ -11,7 +11,7 @@ import { DidYouKnowData } from './facts'
 interface Response <FactsData> {
   network: {
     hierarchyNode: {
-      facts: FactsData
+      facts: FactsData,
     }
   }
 }
@@ -20,19 +20,21 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     facts: build.query<
       DidYouKnowData[],
-      PathFilter | DashboardFilter
+      (PathFilter | DashboardFilter) & { requestedList: string[] }
     >({
       query: (payload) => {
         const useFilter = 'filter' in payload
-        let variables: Partial<PathFilter> | Partial<DashboardFilter>
+
+        let variables: (Partial<PathFilter> | Partial<DashboardFilter>) & { requestedList: string[] }
         if (useFilter) {
           variables = {
             startDate: payload.startDate,
             endDate: payload.endDate,
-            ...getFilterPayload(payload)
+            ...getFilterPayload(payload),
+            requestedList: payload.requestedList
           }
         } else {
-          variables = _.pick(payload, ['path', 'startDate', 'endDate'])
+          variables = _.pick(payload, ['path', 'startDate', 'endDate', 'requestedList'])
         }
         return {
           document: gql`
@@ -41,12 +43,14 @@ export const api = dataApi.injectEndpoints({
             $path: [HierarchyNodeInput]
             $startDate: DateTime,
             $endDate: DateTime
+            $requestedList: [String]
           ) {
             network(start: $startDate, end: $endDate${useFilter ? ', filter: $filter' : ''}) {
               hierarchyNode(path: $path) {
-                facts(n: 9, timeZone: "${moment.tz.guess()}") {
+                facts(n: 9, timeZone: "${moment.tz.guess()}", requestedList: $requestedList) {
                   key values labels
                 }
+                availableFacts( timeZone: "${moment.tz.guess()}")
               }
             }
           }
@@ -54,8 +58,8 @@ export const api = dataApi.injectEndpoints({
           variables
         }
       },
-      transformResponse: (response: Response<DidYouKnowData[]>) =>
-        response.network.hierarchyNode.facts
+      transformResponse: (response: Response< DidYouKnowData[]>) =>
+      response.network.hierarchyNode.facts
     })
   })
 })
