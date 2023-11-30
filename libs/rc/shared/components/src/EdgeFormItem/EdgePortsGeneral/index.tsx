@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useRef, useState } from 'react'
 
 import { Form, FormInstance }  from 'antd'
 import { StoreValue }          from 'antd/lib/form/interface'
-import _, { flatMap, isEqual } from 'lodash'
+import { flatMap, isEqual }    from 'lodash'
 import { ValidateErrorEntity } from 'rc-field-form/es/interface'
 import { useIntl }             from 'react-intl'
 
@@ -120,9 +120,9 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
         handlePortTypeChange(changedPortName, changedField['portType'], index)
       }
 
-      if (!_.isUndefined(changedField['corePortEnabled'])) {
-        handleCorePortChange(changedPortName, changedField['corePortEnabled'], index)
-      }
+      // if (!_.isUndefined(changedField['corePortEnabled'])) {
+      //   handleCorePortChange(changedPortName, changedField['corePortEnabled'], index)
+      // }
 
       let hasError = false
       await form.validateFields().catch((error: ValidateErrorEntity) => {
@@ -153,18 +153,18 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
     }
   }
 
-  const handleCorePortChange = (changedPortName: string, changedValue: StoreValue,
-    index: number) => {
-    let valToSet
-    if (changedValue === true) {
-      valToSet = false
-    } else {
-      const initialNatEnabledValue = data[index]?.natEnabled
-      valToSet = initialNatEnabledValue
-    }
+  // const handleCorePortChange = (changedPortName: string, changedValue: StoreValue,
+  //   index: number) => {
+  //   let valToSet
+  //   if (changedValue === true) {
+  //     valToSet = false
+  //   } else {
+  //     const initialNatEnabledValue = data[index]?.natEnabled
+  //     valToSet = initialNatEnabledValue
+  //   }
 
-    form.setFieldValue([changedPortName, 0, 'natEnabled'], valToSet)
-  }
+  //   form.setFieldValue([changedPortName, 0, 'natEnabled'], valToSet)
+  // }
 
   const handleFinish = async () => {
     const formData = flatMap(form.getFieldsValue(true))
