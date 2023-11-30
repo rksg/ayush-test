@@ -4,30 +4,32 @@ import { PageNotFound }                      from '@acx-ui/components'
 import { useStreamActivityMessagesQuery }    from '@acx-ui/rc/services'
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 
-import Administration   from './pages/Administration'
-import MigrationForm    from './pages/Administration/OnpremMigration/MigrationForm/MigrationForm'
-import MigrationSummary from './pages/Administration/OnpremMigration/MigrationTable/summary'
-import AnalyticsBase    from './pages/Analytics'
-import Dashboard        from './pages/Dashboard'
-import DevicesBase      from './pages/Devices'
-import Grid             from './pages/Grid'
-import Layout           from './pages/Layout'
-import { MFACheck }     from './pages/Layout/MFACheck'
-import NetworksBase     from './pages/Networks'
-import PoliciesBase     from './pages/Policies'
-import ReportsBase      from './pages/Reports'
-import { RWGDetails }   from './pages/RWG/RWGDetails'
-import { RWGForm }      from './pages/RWG/RWGForm'
-import { RWGTable }     from './pages/RWG/RWGTable'
-import SearchResults    from './pages/SearchResults'
-import ServicesBase     from './pages/Services'
-import TimelineBase     from './pages/Timeline'
-import { UserProfile }  from './pages/UserProfile'
-import UsersBase        from './pages/Users'
-import { VenueDetails } from './pages/Venues/VenueDetails'
-import { VenueEdit }    from './pages/Venues/VenueEdit'
-import { VenuesForm }   from './pages/Venues/VenuesForm'
-import { VenuesTable }  from './pages/Venues/VenuesTable'
+import Administration      from './pages/Administration'
+import MigrationForm       from './pages/Administration/OnpremMigration/MigrationForm/MigrationForm'
+import MigrationSummary    from './pages/Administration/OnpremMigration/MigrationTable/summary'
+import AnalyticsBase       from './pages/Analytics'
+import CustomizedDashboard from './pages/CustomizedDashboard'
+import Dashboard           from './pages/Dashboard'
+import DashboardFF         from './pages/DashboardFF'
+import DevicesBase         from './pages/Devices'
+import Grid                from './pages/Grid'
+import Layout              from './pages/Layout'
+import { MFACheck }        from './pages/Layout/MFACheck'
+import NetworksBase        from './pages/Networks'
+import PoliciesBase        from './pages/Policies'
+import ReportsBase         from './pages/Reports'
+import { RWGDetails }      from './pages/RWG/RWGDetails'
+import { RWGForm }         from './pages/RWG/RWGForm'
+import { RWGTable }        from './pages/RWG/RWGTable'
+import SearchResults       from './pages/SearchResults'
+import ServicesBase        from './pages/Services'
+import TimelineBase        from './pages/Timeline'
+import { UserProfile }     from './pages/UserProfile'
+import UsersBase           from './pages/Users'
+import { VenueDetails }    from './pages/Venues/VenueDetails'
+import { VenueEdit }       from './pages/Venues/VenueEdit'
+import { VenuesForm }      from './pages/Venues/VenuesForm'
+import { VenuesTable }     from './pages/Venues/VenuesTable'
 /* eslint-disable @nrwl/nx/enforce-module-boundaries */
 const MspRoutes = React.lazy(() => import('@msp/Routes'))
 const RcRoutes = React.lazy(() => import('@rc/Routes'))
@@ -44,7 +46,9 @@ function AllRoutes () {
           <Route index element={<TenantNavigate replace to='/dashboard' />} />
           <Route path='*' element={<PageNotFound />} />
           <Route path='grid' element={<Grid />} />
-          <Route path='dashboard' element={<Dashboard />} />
+          <Route path='dashboard' element={<DashboardFF />} />
+          <Route path='dashboard1' element={<Dashboard />} />
+          <Route path='dashboard2' element={<CustomizedDashboard />} />
           <Route path='userprofile' element={<UserProfile />} />
           <Route path='analytics/*' element={<AnalyticsBase />}>
             <Route path='*' element={<AnalyticsRoutes />} />

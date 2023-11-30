@@ -29,6 +29,7 @@ import {
   ContentSwitcher,
   ContentSwitcherProps
 } from '@acx-ui/components'
+import { Modal, ModalType }                         from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { VenueFilter }                              from '@acx-ui/main/components'
 import {
@@ -42,7 +43,8 @@ import { TenantLink }                                                           
 import { filterByAccess, getShowWithoutRbacCheckKey }                                    from '@acx-ui/user'
 import { useDashboardFilter, DateFilter,DateRange, getDateRangeFilter, AnalyticsFilter } from '@acx-ui/utils'
 
-import * as UI from './styledComponents'
+import PreviewMode from './preview'
+import * as UI     from './styledComponents'
 
 interface DashboardFilterContextProps {
   dashboardFilters: AnalyticsFilter;
@@ -75,10 +77,12 @@ export const useDashBoardUpdatedFilter = () => {
   const context = useContext(DashboardFilterContext)
   return context
 }
-export default function Dashboard () {
+export default function CustomizedDashboard () {
   const { $t } = useIntl()
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const [visible, setVisible] = useState(false)
+  const [visible2, setVisible2] = useState(false)
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
@@ -113,6 +117,31 @@ export default function Dashboard () {
   return (
     <DashboardFilterProvider>
       <DashboardPageHeader />
+      <GridRow>
+        <GridCol col={{ span: 12 }} style={{ height: '40px' }}>
+          <Button onClick={() => setVisible(true)}>
+        test edit mode
+          </Button>
+        </GridCol>
+        <GridCol col={{ span: 12 }} style={{ height: '40px' }}>
+          <Button onClick={() => setVisible2(true)}>
+        test preview mode
+          </Button>
+        </GridCol>
+      </GridRow>
+
+      <Modal
+        title={'title'}
+        style={{ top: 0 , left: '200px', margin: 0, padding: 0 }}
+        visible={visible}
+        maskClosable={false}
+        type={ModalType.ModalStepsForm}
+        onCancel={() => setVisible(false)}
+        footer={null}
+        width={'calc(100% - 200px)'}
+      />
+
+      <PreviewMode visible={visible2} setVisible={setVisible2} />
       <CommonDashboardWidgets />
       <Divider dashed
         style={{

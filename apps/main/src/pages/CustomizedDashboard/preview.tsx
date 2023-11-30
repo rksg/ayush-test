@@ -5,7 +5,6 @@ import { EditOutlined } from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
 
-
 export default function PreviewMode (props: {
   visible: boolean, setVisible:(visible: boolean) => void
 }) {
