@@ -131,7 +131,7 @@ export function ApEdit () {
   </ApEditContext.Provider>
 }
 
-interface apEditSettingsProps {
+interface ApEditSettingsProps {
   editContextData: ApEditContextType
   editRadioContextData: ApRadioContext
   editNetworkingContextData: ApNetworkingContext
@@ -139,7 +139,7 @@ interface apEditSettingsProps {
   editAdvancedContextData: ApAdvancedContext
 }
 
-const processApEditSettings = (props: apEditSettingsProps) => {
+const processApEditSettings = (props: ApEditSettingsProps) => {
   const { editContextData,
     editRadioContextData,
     editNetworkingContextData,
@@ -174,7 +174,7 @@ const processApEditSettings = (props: apEditSettingsProps) => {
   }
 }
 
-const discardApEditSettings = (props: apEditSettingsProps) => {
+const discardApEditSettings = (props: ApEditSettingsProps) => {
   const { editContextData,
     editRadioContextData,
     editNetworkingContextData,
