@@ -2,8 +2,8 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeStatusEnum, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                     from '@acx-ui/store'
+import { EdgeGeneralFixtures, EdgeStatusEnum, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                          from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -12,10 +12,9 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { mockEdgeList, mockedEdgeServiceList } from '../../__tests__/fixtures'
-
 import { EdgeDetailsPageHeader } from '.'
 
+const { mockEdgeList, mockEdgeServiceList } = EdgeGeneralFixtures
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -60,7 +59,7 @@ describe('Edge Detail Page Header', () => {
       ),
       rest.post(
         EdgeUrlsInfo.getEdgeServiceList.url,
-        (req, res, ctx) => res(ctx.json(mockedEdgeServiceList))
+        (req, res, ctx) => res(ctx.json(mockEdgeServiceList))
       )
     )
   })
@@ -209,7 +208,7 @@ describe('Edge Detail Page Header - action show up logic', () => {
       ),
       rest.post(
         EdgeUrlsInfo.getEdgeServiceList.url,
-        (req, res, ctx) => res(ctx.json(mockedEdgeServiceList))
+        (req, res, ctx) => res(ctx.json(mockEdgeServiceList))
       )
     )
   })

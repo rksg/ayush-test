@@ -1,4 +1,5 @@
 import { EdgeIpModeEnum, EdgePortTypeEnum } from '../../../../models/EdgeEnum'
+import { EdgePortStatus }                   from '../../../../types/edge'
 
 export const mockEdgePortConfig = {
   ports: [
@@ -111,3 +112,45 @@ export const mockEdgePortConfigWithStatusIp = {
     }
   ]
 }
+
+export const mockEdgePortStatus = [
+  {
+    portId: mockEdgePortConfig.ports[0].id,
+    ip: '10.206.78.152'
+  },
+  {
+    portId: mockEdgePortConfig.ports[1].id,
+    ip: ''
+  }
+]
+
+export const edgePortsSetting:EdgePortStatus[] = [{
+  portId: '1',
+  name: 'Port 1',
+  status: 'Up',
+  adminStatus: 'Enabled',
+  type: EdgePortTypeEnum.WAN,
+  mac: 'AA:BB:CC:DD:EE:FF',
+  speedKbps: 12* Math.pow(12, 6),
+  duplex: 'Full',
+  ip: '1.1.1.1',
+  ipMode: 'DHCP',
+  sortIdx: 1,
+  vlan: '',
+  subnet: ''
+},
+{
+  portId: '2',
+  name: 'Port 2',
+  status: 'Down',
+  adminStatus: 'Disabled',
+  type: EdgePortTypeEnum.LAN,
+  mac: 'AA:BB:CC:DD:EE:F1',
+  speedKbps: 10* Math.pow(12, 6),
+  duplex: 'Half',
+  ip: '1.1.1.2',
+  ipMode: 'Static',
+  sortIdx: 2,
+  vlan: '',
+  subnet: ''
+}]
