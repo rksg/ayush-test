@@ -1,5 +1,6 @@
 import { trimEnd } from 'lodash'
 
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { getJwtHeaders } from '@acx-ui/utils'
 
 type commonEnvironment = {
