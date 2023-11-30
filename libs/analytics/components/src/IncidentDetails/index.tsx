@@ -1,5 +1,4 @@
 import { get } from 'lodash'
-import moment  from 'moment-timezone'
 
 import { Loader }    from '@acx-ui/components'
 import { useParams } from '@acx-ui/react-router-dom'
@@ -65,34 +64,15 @@ export const incidentDetailsMap = {
   'p-airtime-tx-6(5)g-high': AirtimeTx
 }
 
-export const incidentImpactedRange: { [key: string]: { [key: string]: number } } = {
-  'p-airtime-b-24g-high': { hours: 24 },
-  'p-airtime-b-5g-high': { hours: 24 },
-  'p-airtime-b-6(5)g-high': { hours: 24 },
-  'p-airtime-rx-24g-high': { hours: 24 },
-  'p-airtime-rx-5g-high': { hours: 24 },
-  'p-airtime-rx-6(5)g-high': { hours: 24 },
-  'p-airtime-tx-24g-high': { hours: 24 },
-  'p-airtime-tx-5g-high': { hours: 24 },
-  'p-airtime-tx-6(5)g-high': { hours: 24 }
-}
-
 export function IncidentDetails () {
   const params = useParams()
   const id = get(params, 'incidentId', undefined) as string
-  const codeQuery = useIncidentCodeQuery({ id }, { skip: !Boolean(id) })
-  const code = codeQuery.data?.code
-  const impactedRange = incidentImpactedRange[code!]
-  let impactedStartEnd = null
-  if (impactedRange) {
-    const impactedEnd = codeQuery.data!.endTime
-    const impactedStart = moment(impactedEnd).subtract(impactedRange).format()
-    impactedStartEnd = { impactedStart, impactedEnd }
-  }
+  const codeQuery = useIncidentCodeQuery({ id })
   const detailsQuery = useIncidentDetailsQuery(
-    { id, ...impactedStartEnd },
-    { skip: !Boolean(codeQuery.data?.code) }
+    codeQuery.data!,
+    { skip: !Boolean(codeQuery.data) }
   )
+  const code = codeQuery.data?.code
   const IncidentDetails = code ? incidentDetailsMap[code] : null
   return (
     <Loader states={[codeQuery, detailsQuery]}>
