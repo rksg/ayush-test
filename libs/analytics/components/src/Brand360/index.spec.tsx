@@ -17,7 +17,6 @@ jest.mock('@acx-ui/analytics/components', () => ({
 
 describe('Brand360', () => {
   beforeEach(() => {
-    // store.dispatch(rbacApi.util.resetApiState())
     mockServer.use(
       rest.get(`${rbacApiURL}/tenantSettings`, (_req, res, ctx) => res(ctx.text(
         // eslint-disable-next-line max-len
