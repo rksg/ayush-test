@@ -50,7 +50,6 @@ export const api = dataApi.injectEndpoints({
                 facts(n: 9, timeZone: "${moment.tz.guess()}", requestedList: $requestedList) {
                   key values labels
                 }
-                availableFacts( timeZone: "${moment.tz.guess()}")
               }
             }
           }
