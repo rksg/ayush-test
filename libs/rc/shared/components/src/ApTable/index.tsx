@@ -245,7 +245,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
     //     </Space>)
     //   }
     // },
-    ...(params.venueId ? [] : [{
+    ...((params.venueId || params.apGroupId) ? [] : [{
       key: 'venueName',
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'venueName',
@@ -257,11 +257,12 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
           {row.venueName}
         </TenantLink>
       )
-    }]), {
+    }]),
+    ...(params.apGroupId ? [] : [{
       key: 'switchName',
       title: $t({ defaultMessage: 'Switch' }),
       dataIndex: 'switchName',
-      render: (_, row : APExtended) => {
+      render: (_: React.ReactNode, row : APExtended) => {
         const { switchId, switchSerialNumber, switchName } = row
         return (
           <TenantLink to={`/devices/switch/${switchId}/${switchSerialNumber}/details/overview`}>
@@ -269,7 +270,8 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
           </TenantLink>
         )
       }
-    }, {
+    }]),
+    {
       key: 'meshRole',
       title: $t({ defaultMessage: 'Mesh Role' }),
       dataIndex: 'meshRole',
@@ -285,7 +287,8 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
           {transformDisplayNumber(row.clients)}
         </TenantLink>
       }
-    }, {
+    },
+    ...(params.apGroupId ? [] : [{
       key: 'deviceGroupName',
       title: $t({ defaultMessage: 'AP Group' }),
       dataIndex: 'deviceGroupName',
@@ -295,7 +298,8 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       groupable: enableGroups
         ? filterables && getGroupableConfig(params, apAction)?.deviceGroupNameGroupableOptions
         : undefined
-    }, {
+    }]),
+    {
       key: 'rf-channels',
       dataIndex: 'rf-channels',
       title: $t({ defaultMessage: 'RF Channels' }),

@@ -3,6 +3,7 @@ import '@testing-library/jest-dom'
 import { groupBy } from 'lodash'
 import { rest }    from 'msw'
 
+import { Settings }          from '@acx-ui/analytics/utils'
 import { store, rbacApiURL } from '@acx-ui/store'
 import { mockServer }        from '@acx-ui/test-utils'
 
@@ -12,14 +13,30 @@ import { rbacApi }     from './rbacApi'
 describe('RBAC API', () => {
   beforeEach(() => {
     store.dispatch(rbacApi.util.resetApiState())
+  })
+  it('returns systems', async () => {
     mockServer.use(
       rest.get(`${rbacApiURL}/systems`, (_req, res, ctx) => res(ctx.json(mockSystems))))
-  })
-  it('should return correct data from rbac api', async () => {
     const { status, data, error } = await store.dispatch(rbacApi.endpoints.systems.initiate({}))
     expect(error).toBeUndefined()
     expect(status).toBe('fulfilled')
     expect(data).toEqual(groupBy(mockSystems.networkNodes, 'deviceName'))
+  })
+  it('gets tenantSettings', async () => {
+    mockServer.use(
+      rest.get(`${rbacApiURL}/tenantSettings`, (_req, res, ctx) => res(ctx.text(
+        '[{"key": "sla-p1-incidents-count", "value": "12"}]'
+      )))
+    )
+    const { data } = await store.dispatch(
+      rbacApi.endpoints.getTenantSettings.initiate()
+    ) as { data: Partial<Settings> }
+    expect(data).toEqual({
+      'brand-ssid-compliance-matcher': '^[a-zA-Z0-9]{5}_GUEST$',
+      'sla-brand-ssid-compliance': '100',
+      'sla-guest-experience': '100',
+      'sla-p1-incidents-count': '12'
+    })
   })
   it('update invitation api should work', async () => {
     mockServer.use(
