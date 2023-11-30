@@ -38,9 +38,9 @@ import {
   MapWidgetV2,
   VenuesDashboardWidgetV2
 } from '@acx-ui/rc/components'
-import { TenantLink }                                                                    from '@acx-ui/react-router-dom'
-import { filterByAccess, getShowWithoutRbacCheckKey }                                    from '@acx-ui/user'
-import { useDashboardFilter, DateFilter,DateRange, getDateRangeFilter, AnalyticsFilter } from '@acx-ui/utils'
+import { TenantLink }                                                                                         from '@acx-ui/react-router-dom'
+import { filterByAccess, getShowWithoutRbacCheckKey }                                                         from '@acx-ui/user'
+import { useDashboardFilter, DateFilter,DateRange, getDateRangeFilter, AnalyticsFilter, getDatePickerValues } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -59,9 +59,7 @@ export const DashboardFilterProvider = ({ children }: { children : React.ReactNo
     getDateRangeFilter(DateRange.last8Hours)
   )
   const { filters } = useDashboardFilter()
-  const { startDate, endDate, range } = dateFilterState.range !== DateRange.custom
-    ? getDateRangeFilter(dateFilterState.range)
-    : dateFilterState
+  const { startDate, endDate, range } = getDatePickerValues(dateFilterState)
   const dashboardFilters = { ...filters, startDate, endDate, range }
 
   return (
