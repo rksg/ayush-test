@@ -126,6 +126,7 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
               ? <ABFSelector
                 categoryId={eol.name}
                 abfLabel={intl.$t({ defaultMessage: 'Available firmware for legacy devices' })}
+                defaultChecked={true}
                 defaultVersionId={eol.latestEolVersion}
                 defaultVersionLabel={getDefaultEolVersionLabel(eol.latestEolVersion)}
                 apModels={eol.apModels?.join(', ')}
