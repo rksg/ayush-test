@@ -1,7 +1,5 @@
 import { trimEnd } from 'lodash'
 
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { getJwtHeaders } from '@acx-ui/utils'
 
 type commonEnvironment = {
   SPLIT_IO_KEY: string
@@ -51,7 +49,9 @@ export async function initialize () {
   const baseUrl = trimEnd(document.baseURI, '/')
 
   const envConfigUrl = `${baseUrl}/env.json`
-  config.value = await fetch(envConfigUrl, { headers: getJwtHeaders() })
+  config.value = await fetch(
+    envConfigUrl,
+    { headers: { Authorization: `Bearer ${getJwtToken()}` } })
     .then(res => res.json()).then(
       value => {
         return {
@@ -70,4 +70,9 @@ export function get (key: keyof EnvironmentConfig): string {
   if (key === 'IS_MLISA_SA') return process.env.NX_IS_MLISA_SA || ''
   if (config.value === undefined) throw new Error('Config not initialized')
   return config.value[key]
+}
+
+
+export function getJwtToken () {
+  return sessionStorage.getItem('jwt') || null
 }
