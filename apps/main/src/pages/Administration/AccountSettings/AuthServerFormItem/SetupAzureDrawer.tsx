@@ -6,6 +6,7 @@ import {
 } from '@ant-design/icons'
 import {
   Form,
+  Input,
   Space,
   Typography,
   Upload,
@@ -15,8 +16,8 @@ import TextArea      from 'antd/lib/input/TextArea'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, DrawerProps }             from '@acx-ui/components'
-import { formatter }                       from '@acx-ui/formatter'
+import { Button, DrawerProps, PasswordInput } from '@acx-ui/components'
+import { formatter }                          from '@acx-ui/formatter'
 import {
   useAddTenantAuthenticationsMutation,
   useGetUploadURLMutation,
@@ -26,12 +27,16 @@ import {
   TenantAuthentications,
   TenantAuthenticationType,
   SamlFileType,
-  UploadUrlResponse
+  UploadUrlResponse,
+  excludeSpaceRegExp,
+  notAllDigitsRegExp,
+  domainNameRegExp
 } from '@acx-ui/rc/utils'
 
 import { reloadAuthTable } from '../AppTokenFormItem'
 
-import * as UI from './styledComponents'
+import AuthTypeSelector,  { AuthTypeEnum } from './authTypeSelector'
+import * as UI                             from './styledComponents'
 
 type AcceptableType = 'xml'
 
@@ -82,6 +87,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
   const [metadata, setMetadata] = useState<string>()
 
   const [uploadFile, setUploadFile] = useState(false)
+  const [selectedAuth, setSelectedAuth] = useState('')
 
   const bytesFormatter = formatter('bytesFormat')
   const [addSso] = useAddTenantAuthenticationsMutation()
@@ -221,25 +227,21 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     }
   }
 
-  return (<UI.ImportFileDrawer {...props}
-    keyboard={false}
-    closable={true}
-    width={550}
-    footer={<div>
-      <Button
-        disabled={!formData}
-        loading={isLoading}
-        onClick={() => okHandler()}
-        type={'primary'}
-      >
-        {$t({ defaultMessage: 'Apply' })}
-      </Button>
-      <Button onClick={() => {
-        setVisible(false)
-      }}>
-        {$t({ defaultMessage: 'Cancel' })}
-      </Button>
-    </div>} >
+  const SamlContent = () => {
+    return <> <Form style={{ marginTop: 10 }} layout='vertical' form={form}>
+      <Form.Item
+        name='allowedDomains'
+        label={$t({ defaultMessage: 'Allowed Domains' })}
+        initialValue={editData?.name || ''}
+        rules={[
+          { type: 'string', required: true },
+          { min: 2, transform: (value) => value.trim() },
+          { max: 64, transform: (value) => value.trim() },
+          { validator: (_, value) => domainNameRegExp(value) }
+        ]}
+        children={<Input />}
+      /></Form>
+
     <label>
       { $t({ defaultMessage: 'IdP Metadata' }) }
     </label>
@@ -292,6 +294,83 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     <Form layout='vertical' form={form} >
       {props.children}
     </Form>
+    </>
+  }
+
+  const GoogleContent = () => {
+    return <Form style={{ marginTop: 10 }} layout='vertical' form={form} >
+      <Form.Item
+        name='allowedDomains'
+        label={$t({ defaultMessage: 'Allowed Domains' })}
+        initialValue={editData?.name || ''}
+        rules={[
+          { required: true },
+          { min: 2 },
+          { max: 64 }
+        ]}
+        children={<Input />}
+      />
+      <Form.Item
+        name='clientId'
+        label={$t({ defaultMessage: 'Client ID' })}
+        rules={[
+          { required: true },
+          { min: 2 },
+          { max: 64 }
+        ]}
+        children={<Input />}
+      />
+      <Form.Item
+        name='secret'
+        label={$t({ defaultMessage: 'Client secret' })}
+        rules={[
+          { required: true },
+          { validator: (_, value) =>
+          {
+            if(value.length !== 32) {
+              return Promise.reject(
+                `${$t({ defaultMessage: 'Secret must be 32 characters long' })} `
+              )
+            }
+            return Promise.resolve()
+          }
+          },
+          { validator: (_, value) => excludeSpaceRegExp(value) },
+          { validator: (_, value) => notAllDigitsRegExp(value),
+            message: $t({ defaultMessage:
+            'Secret must include letters or special characters; numbers alone are not accepted.' })
+          }
+        ]}
+        children={<PasswordInput />}
+      />
+    </Form>
+  }
+
+  return (<UI.ImportFileDrawer {...props}
+    keyboard={false}
+    closable={true}
+    width={550}
+    footer={<div>
+      <Button
+        disabled={!formData}
+        loading={isLoading}
+        onClick={() => okHandler()}
+        type={'primary'}
+      >
+        {$t({ defaultMessage: 'Apply' })}
+      </Button>
+      <Button onClick={() => {
+        setVisible(false)
+      }}>
+        {$t({ defaultMessage: 'Cancel' })}
+      </Button>
+    </div>} >
+    <AuthTypeSelector
+      ssoConfigured={true}
+      setSelected={setSelectedAuth}
+    />
+
+    {selectedAuth === AuthTypeEnum.google ? <GoogleContent /> : <SamlContent />}
 
   </UI.ImportFileDrawer>)
 }
