@@ -339,6 +339,14 @@ function Connection ({ client }: { client: ClientExtended }) {
         </Tooltip>}
         children={client?.bssid || '--'}
       />
+      <Descriptions.Item
+        label={<Tooltip
+          placement='bottom'
+          title={$t({ defaultMessage: 'Network Type' })}
+        >{$t({ defaultMessage: 'Network Type' })}
+        </Tooltip>}
+        children={client?.networkType || '--'}
+      />
     </Descriptions>
   </>
 }

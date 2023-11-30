@@ -38,7 +38,7 @@ const clientPayload = {
     'totalTraffic', 'trafficToClient', 'trafficFromClient', 'receiveSignalStrength', 'rssi',
     'radio.mode', 'cpeMac', 'authmethod', 'status', 'encryptMethod', 'packetsToClient',
     'packetsFromClient', 'packetsDropFrom', 'radio.channel',
-    'cog', 'venueName', 'apName', 'clientVlan', 'networkId', 'switchName', 'healthStatusReason', 'lastUpdateTime']
+    'cog', 'venueName', 'apName', 'clientVlan', 'networkId', 'switchName', 'healthStatusReason', 'lastUpdateTime', 'networkType']
 }
 
 const historicalPayload = {

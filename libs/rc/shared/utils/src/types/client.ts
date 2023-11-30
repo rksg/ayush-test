@@ -40,7 +40,8 @@ export interface ClientList {
   switchSerialNumber?: string
   switchName?: string
   healthClass: string
-  sessStartTimeParssed: boolean
+  sessStartTimeParssed: boolean,
+  networkType: string
 }
 
 export interface ClientListMeta {

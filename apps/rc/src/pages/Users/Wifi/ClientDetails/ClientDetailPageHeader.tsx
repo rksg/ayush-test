@@ -3,8 +3,12 @@ import moment                     from 'moment-timezone'
 import { useIntl }                from 'react-intl'
 
 import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker } from '@acx-ui/components'
-import { useDisconnectClientMutation, useGetClientDetailsQuery }         from '@acx-ui/rc/services'
-import { ClientStatusEnum, ClientUrlsInfo }                              from '@acx-ui/rc/utils'
+import {
+  useDisconnectClientMutation,
+  useRevokeClientMutation,
+  useGetClientDetailsQuery
+}         from '@acx-ui/rc/services'
+import { ClientStatusEnum, ClientUrlsInfo } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useParams,
@@ -37,6 +41,7 @@ function ClientDetailPageHeader () {
     { skip: searchParams.get('clientStatus') === ClientStatusEnum.HISTORICAL }
   )
   const [disconnectClient] = useDisconnectClientMutation()
+  const [revokeClient] = useRevokeClientMutation()
   const navigate = useNavigate()
   const basePath = useTenantLink('/users/wifi/clients')
 
@@ -65,7 +70,25 @@ function ClientDetailPageHeader () {
           navigate({
             ...basePath,
             // eslint-disable-next-line max-len
-            pathname: `${basePath.pathname}/${clientId}/details/overview?clientStatus=historical&period=${period}`
+            pathname: `${basePath.pathname}/${clientId}/details/overview`,
+            search: `hostname=${clentDetails?.clientMac}&clientStatus=historical&period=${period}`
+          })
+        })
+        break
+
+      case 'revoke-client':
+        revokeClient({
+          params: { tenantId },
+          payload: [{
+            clientMac: clientId,
+            serialNumber: clentDetails?.apSerialNumber
+          }]
+        }).then(()=> {
+          navigate({
+            ...basePath,
+            // eslint-disable-next-line max-len
+            pathname: `${basePath.pathname}/${clientId}/details/overview`,
+            search: `hostname=${clentDetails?.clientMac}&clientStatus=connected`
           })
         })
         break
@@ -91,7 +114,12 @@ function ClientDetailPageHeader () {
           disabled: enableNewApi(ClientUrlsInfo.disconnectClient) ?
             !clentDetails?.apSerialNumber : !clentDetails?.apMac,
           key: 'disconnect-client'
-        }]}
+        },
+        {
+          label: $t({ defaultMessage: 'Revoke Network Access' }),
+          key: 'revoke-client'
+        }
+      ]}
     />
   )
 
