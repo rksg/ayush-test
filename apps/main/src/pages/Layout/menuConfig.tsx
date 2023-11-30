@@ -53,6 +53,7 @@ export function useMenuConfig () {
   const recommendationsEnabled = useIsSplitOn(Features.AI_RECOMMENDATIONS)
   const crrmEnabled = useIsSplitOn(Features.AI_CRRM)
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
+  const showApGroupTable = useIsSplitOn(Features.AP_GROUP_TOGGLE)
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -174,12 +175,16 @@ export function useMenuConfig () {
           children: [
             {
               uri: '/devices/wifi',
-              label: $t({ defaultMessage: 'Access Points List' }),
-              isActiveCheck: new RegExp('^/devices/wifi(?!(/reports))')
+              label: $t({ defaultMessage: 'AP List' }),
+              isActiveCheck: new RegExp('^/devices/wifi(?!(/[reports|apgroup]))')
             },
+            ...(showApGroupTable? [{
+              uri: '/devices/wifi/apgroups',
+              label: $t({ defaultMessage: 'AP Group List' })
+            }] : []),
             {
               uri: '/devices/wifi/reports/aps',
-              label: $t({ defaultMessage: 'Access Points Report' })
+              label: $t({ defaultMessage: 'AP Report' })
             },
             {
               uri: '/devices/wifi/reports/airtime',

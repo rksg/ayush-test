@@ -171,8 +171,9 @@ export const ChannelButtonTextRender = (channels: number[], isChecked: boolean, 
     ? $t({ defaultMessage: 'Disable this channel' })
     : $t({ defaultMessage: 'Enable this channel' })
   const afcAvailableChannel = _.uniq(afcProps?.afcInfo?.availableChannels).sort((a, b) => a-b)
-  const convergence = _.intersection(channels, afcAvailableChannel)
-  if(convergence.length > 0 && afcProps?.afcInfo?.afcStatus === AFCStatus.PASSED && afcProps?.featureFlag) {
+  // Only add AFC tooltip when all channels are in AFC available channel
+  const difference = _.without(channels, ...afcAvailableChannel)
+  if(difference.length === 0 && afcProps?.afcInfo?.afcStatus === AFCStatus.PASSED && afcProps?.featureFlag) {
     message = $t({ defaultMessage: 'Allowed by AFC' }) + '\n' + message
   }
   return message

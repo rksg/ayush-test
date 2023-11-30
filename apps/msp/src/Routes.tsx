@@ -1,3 +1,4 @@
+import { Brand360 }                                         from '@acx-ui/analytics/components'
 import { ConfigProvider, PageNotFound }                     from '@acx-ui/components'
 import { ManageCustomer, ManageIntegrator, PortalSettings } from '@acx-ui/msp/components'
 import { rootRoutes, Route, TenantNavigate }                from '@acx-ui/react-router-dom'
@@ -29,6 +30,7 @@ export default function MspRoutes () {
       <Route path='deviceinventory' element={<DeviceInventory />} />
       <Route path='msplicenses/*' element={<CustomersRoutes />} />
       <Route path='portalSetting' element={<PortalSettings />} />
+      <Route path='brand360' element={<Brand360 />} />
     </Route>
   )
   return (
