@@ -131,8 +131,7 @@ export default function ActivityButton () {
                 title={getActivityDescription(
                   activity.descriptionTemplate,
                   activity.descriptionData,
-                  activity?.linkData,
-                  activity?.linkTemplate
+                  activity?.linkData
                 )}
                 avatar={<StatusIcon status={activity.status as Activity['status']}/>}
                 description={
@@ -173,8 +172,7 @@ export default function ActivityButton () {
       value: getActivityDescription(
         data.descriptionTemplate,
         data.descriptionData,
-        data?.linkData,
-        data?.linkTemplate
+        data?.linkData
       )
     }
   ]

@@ -78,7 +78,7 @@ describe('Switch Stack Form - Add', () => {
     store.dispatch(venueApi.util.resetApiState())
     store.dispatch(switchApi.util.resetApiState())
     mockServer.use(
-      rest.get(CommonUrlsInfo.getApGroupList.url,
+      rest.get(CommonUrlsInfo.getApGroupListByVenue.url,
         (_, res, ctx) => res(ctx.json(apGrouplist))),
       rest.post(FirmwareUrlsInfo.getSwitchVenueVersionList.url,
         (_, res, ctx) => res(ctx.json(switchFirmwareVenue))),
@@ -209,7 +209,7 @@ describe('Switch Stack Form - Edit', () => {
     store.dispatch(venueApi.util.resetApiState())
     store.dispatch(switchApi.util.resetApiState())
     mockServer.use(
-      rest.get(CommonUrlsInfo.getApGroupList.url,
+      rest.get(CommonUrlsInfo.getApGroupListByVenue.url,
         (_, res, ctx) => res(ctx.json(apGrouplist))),
       rest.get(SwitchUrlsInfo.getSwitch.url,
         (_, res, ctx) => res(ctx.json(editStackData))),
