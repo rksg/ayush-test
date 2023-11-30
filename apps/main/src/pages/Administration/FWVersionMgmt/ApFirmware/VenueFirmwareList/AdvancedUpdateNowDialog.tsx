@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { Radio, RadioChangeEvent, Space } from 'antd'
 import { DefaultOptionType }              from 'antd/lib/select'
+import _                                  from 'lodash'
 import { useIntl }                        from 'react-intl'
 
 import { Modal }     from '@acx-ui/components'
@@ -45,8 +46,13 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
   // eslint-disable-next-line max-len
   const defaultActiveVersion: FirmwareVersion | undefined = getDefaultActiveVersion(availableVersions)
   const otherActiveVersions: FirmwareVersion[] = filteredOtherActiveVersions(availableVersions)
-  // eslint-disable-next-line max-len
-  const activeApModels = venuesData.filter(venue => venue.apModels).map(venue => venue.apModels).flat()
+  const activeApModels = venuesData
+    .map(venue => {
+      return venue.apModels
+        ? _.difference(venue.apModels, venue.currentVenueUnsupportedApModels ?? []) // filter out the unsupported AP models, ACX-44848
+        : []
+    })
+    .flat()
   const uniqueActiveApModels = [...new Set(activeApModels)].join(', ')
 
   const getUpdateNowRequestPayload = () => {

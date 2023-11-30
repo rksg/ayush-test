@@ -165,6 +165,9 @@ describe('Firmware Venues Table', () => {
     await userEvent.click(screen.getByRole('button', { name: /Update Now/i }))
     const updateNowDialog = await screen.findByRole('dialog')
 
+    // Verify that the active ABF's AP models displayed are accurate
+    expect(await within(updateNowDialog).findByText(/available firmware \(r610\)/i)).toBeVisible()
+
     // Verify that the message displayed is accurate when there is no available firmware update,
     // it's ABF: "eol-ap-2022-12" in "My-Venue" with AP model "R500"
     expect(
@@ -173,6 +176,7 @@ describe('Firmware Venues Table', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: /Update Firmware/ }))
 
+    // Verify that the payload of Update Firmware is accurate
     const targetActiveAbfVersion = availableABFList.filter(item => item.abf === 'active')[0]
     await waitFor(() => {
       expect(updateNowFn).toHaveBeenCalledWith([{

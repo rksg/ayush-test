@@ -131,6 +131,7 @@ export interface FirmwareVenue {
   lastScheduleUpdate: string;
   eolApFirmwares?: EolApFirmware[];
   apModels?: string[];
+  currentVenueUnsupportedApModels? : string[]
 }
 
 export interface FirmwareVenueVersion {

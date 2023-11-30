@@ -36,9 +36,7 @@ export const venue = [
     id: '0842f2133565438d85e1e46103889744',
     name: 'Peter-Venue',
     apCount: 1,
-    apModels: [
-      'R750'
-    ],
+    apModels: ['R750'],
     versions: [
       {
         version: '6.2.1.103.1580',
@@ -51,9 +49,8 @@ export const venue = [
     id: '8ee8acc996734a5dbe43777b72469857',
     name: 'Ben-Venue-US',
     apCount: 1,
-    apModels: [
-      'R610'
-    ],
+    apModels: ['R610', 'R770'],
+    currentVenueUnsupportedApModels: ['R770'],
     versions: [
       {
         version: '6.2.1.103.1580',
