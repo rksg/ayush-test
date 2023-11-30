@@ -188,6 +188,13 @@ describe('Firmware Venues Table', () => {
         ]
       }, {
         // The legacy ABF should also be updated to the latest version by default, ACX-44461
+        firmwareCategoryId: 'eol-ap-2023-03',
+        firmwareVersion: '6.2.3.103.200',
+        venueIds: [
+          '02b81f0e31e34921be5cf47e6dce1f3f',
+          '8ee8acc996734a5dbe43777b72469857'
+        ]
+      }, {
         firmwareCategoryId: 'eol-ap-2021-05',
         firmwareVersion: '6.1.0.10.453',
         venueIds: [
@@ -235,7 +242,12 @@ describe('Firmware Venues Table', () => {
     await userEvent.click(screen.getByRole('button', { name: /Update Now/i }))
 
     const dialog = await screen.findByRole('dialog', { name: 'Update Now' })
+
+    // Verify that the message displayed is accurate when the active ABF has no AP models
     expect(await within(dialog).findByText('No Access Point in selected venue(s)')).toBeVisible()
+
+    // Verify that the ABF can be upgraded when it is greater than the current venue ABF even if its current version equals to the latest version
+    expect(within(dialog).getByRole('radio', { name: /6\.2\.3\.103\.200/i })).toBeVisible()
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Update Now' })).toBeNull())

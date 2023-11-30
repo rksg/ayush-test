@@ -64,7 +64,8 @@ export const venue = [
         currentEolVersion: '6.1.0.10.413',
         latestEolVersion: '6.1.0.10.453',
         apCount: 1,
-        apModels: ['T300']
+        apModels: ['T300'],
+        isAbfGreaterThanVenueCurrentAbf: false
       }
     ],
     lastScheduleUpdate: '2023-02-18T01:07:33.203-08:00'
@@ -86,14 +87,24 @@ export const venue = [
         currentEolVersion: '6.1.0.10.433',
         latestEolVersion: '6.1.0.10.453',
         apCount: 1,
-        apModels: ['R300', 'R550']
+        apModels: ['R300', 'R550'],
+        isAbfGreaterThanVenueCurrentAbf: false
       },
       {
         name: 'eol-ap-2022-12',
         currentEolVersion: '6.2.0.103.533',
         latestEolVersion: '6.2.0.103.533',
         apCount: 1,
-        apModels: ['R500']
+        apModels: ['R500'],
+        isAbfGreaterThanVenueCurrentAbf: false
+      },
+      {
+        name: 'eol-ap-2023-03',
+        currentEolVersion: '6.2.3.103.200',
+        latestEolVersion: '6.2.3.103.200',
+        apCount: 1,
+        apModels: ['R555'],
+        isAbfGreaterThanVenueCurrentAbf: true
       }
     ]
   },
@@ -117,7 +128,8 @@ export const venue = [
         currentEolVersion: '6.2.0.103.513',
         latestEolVersion: '6.2.0.103.533',
         apCount: 1,
-        apModels: ['T300']
+        apModels: ['T300'],
+        isAbfGreaterThanVenueCurrentAbf: true
       }
     ]
   },
@@ -369,6 +381,14 @@ export const availableABFList = [
     onboardDate: '2023-05-01T02:31:12.682+0000',
     name: '7.0.0.103.260',
     id: '7.0.0.103.260'
+  },
+  {
+    abf: 'eol-ap-2023-03',
+    releaseDate: '2023-05-15T19:29:20.563+0000',
+    category: 'RECOMMENDED',
+    onboardDate: '2023-05-15T10:14:59.048+0000',
+    name: '6.2.3.103.200',
+    id: '6.2.3.103.200'
   },
   {
     abf: 'eol-ap-2022-12',
