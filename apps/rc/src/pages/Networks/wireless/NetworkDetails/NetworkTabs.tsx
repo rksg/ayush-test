@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                             from '@acx-ui/components'
+import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
 import { useNetworkDetailHeaderQuery, useNetworkListQuery } from '@acx-ui/rc/services'
 import { Network, usePollingTableQuery }                    from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }            from '@acx-ui/react-router-dom'
@@ -23,6 +24,8 @@ function NetworkTabs () {
     data?.aps.totalApCount ?? 0,
     data?.activeVenueCount ?? 0
   ]
+
+  const listOfClientsPerWlanFlag = useIsSplitOn(Features.LIST_OF_CLIENTS_PER_WLAN)
 
   const networkClientsPayload = {
     searchString: '',
@@ -62,13 +65,17 @@ function NetworkTabs () {
         tab={$t({ defaultMessage: 'Incidents' })}
         key='incidents'
       /> }
-      <Tabs.TabPane
-        tab={
-          $t({ defaultMessage: 'Clients ({clientsCount})' },
-            { clientsCount: getClientsByNetwork() })
-        }
-        key='clients'
-      />
+      {
+        listOfClientsPerWlanFlag ?
+          <Tabs.TabPane
+            tab={
+              $t({ defaultMessage: 'Clients ({clientsCount})' },
+                { clientsCount: getClientsByNetwork() })
+            }
+            key='clients'
+          />
+          : null
+      }
     </Tabs>
   )
 }

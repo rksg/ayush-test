@@ -23,7 +23,7 @@ import { getIntl, noDataDisplay }    from '@acx-ui/utils'
 
 const disabledType: NetworkTypeEnum[] = []
 
-function getCols (intl: ReturnType<typeof useIntl>, oweTransFlag: boolean) {
+function getCols (intl: ReturnType<typeof useIntl>, oweTransFlag: boolean, clientsFlag: boolean) {
   function getSecurityProtocol (securityProtocol: WlanSecurityEnum, oweMaster?: boolean) {
     let _securityProtocol: string = ''
     switch (securityProtocol) {
@@ -153,13 +153,19 @@ function getCols (intl: ReturnType<typeof useIntl>, oweTransFlag: boolean) {
       sorter: false, // API does not seem to be working
       align: 'center',
       render: function (_, row) {
-        return (
-          row?.isOnBoarded
-            ? <span>{row.clients || noDataDisplay}</span>
-            : <TenantLink to={`/networks/wireless/${row.id}/network-details/clients`}>
-              {row.clients}
-            </TenantLink>
-        )
+        if (clientsFlag) {
+          return (
+            row?.isOnBoarded
+              ? <span>{row.clients || noDataDisplay}</span>
+              : <TenantLink to={`/networks/wireless/${row.id}/network-details/clients`}>
+                {row.clients}
+              </TenantLink>
+          )
+        }else{
+          return row?.isOnBoarded ?
+            row.clients || noDataDisplay
+            : row.clients
+        }
       }
     },
     // { TODO: Wait for Services
@@ -283,6 +289,7 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
   const { $t } = intl
   const navigate = useNavigate()
   const linkToEditNetwork = useTenantLink('/networks/wireless/')
+  const listOfClientsPerWlanFlag = useIsSplitOn(Features.LIST_OF_CLIENTS_PER_WLAN)
 
   useEffect(() => {
     if (tableQuery?.data?.data) {
@@ -386,7 +393,7 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
     ]}>
       <Table
         settingsId='network-table'
-        columns={getCols(intl, supportOweTransition)}
+        columns={getCols(intl, supportOweTransition, listOfClientsPerWlanFlag)}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
