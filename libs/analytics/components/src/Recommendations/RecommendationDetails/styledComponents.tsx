@@ -96,6 +96,4 @@ export const BulbOutlinedIcon = styled(BulbOutlined)`
   margin-top: 2px;
 `
 
-export const CrrmValuesText = styled.div`
-  padding-top: 20px;
-`
+export const CrrmValuesText = styled.div``

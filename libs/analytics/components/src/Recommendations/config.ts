@@ -26,11 +26,11 @@ export type ConfigurationValue =
   null
 
 export const crrmStates: Record<CRRMStates, IconValue> = {
-  optimized: { order: 0, label: defineMessage({ defaultMessage: 'Optimized' }) },
-  nonOptimized: { order: 1, label: defineMessage({ defaultMessage: 'Non-Optimized' }) },
-  verified: { order: 0, label: defineMessage({ defaultMessage: 'Verified' }) },
-  insufficientLicenses: { order: 2, label: defineMessage({ defaultMessage: 'Insufficient Licenses' }) },
-  verificationError: { order: 2, label: defineMessage({ defaultMessage: 'Verification Error' }) }
+  [CRRMStates.optimized]: { order: 0, label: defineMessage({ defaultMessage: 'Optimized' }) },
+  [CRRMStates.nonOptimized]: { order: 1, label: defineMessage({ defaultMessage: 'Non-Optimized' }) },
+  [CRRMStates.verified]: { order: 0, label: defineMessage({ defaultMessage: 'Verified' }) },
+  [CRRMStates.insufficientLicenses]: { order: 2, label: defineMessage({ defaultMessage: 'Insufficient Licenses' }) },
+  [CRRMStates.verificationError]: { order: 2, label: defineMessage({ defaultMessage: 'Verification Error' }) }
 }
 
 export const priorities: Record<'low' | 'medium' | 'high', IconValue> = {
@@ -76,9 +76,9 @@ const categories = {
   'Infrastructure': defineMessage({ defaultMessage: 'Infrastructure' }),
   'AP Performance': defineMessage({ defaultMessage: 'AP Performance' }),
   'AI-Driven Cloud RRM': defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
-  'Insufficient Licenses': defineMessage({ defaultMessage: 'Insufficient Licenses' }),
-  'Verification Error': defineMessage({ defaultMessage: 'Verification Error' }),
-  'Verified': defineMessage({ defaultMessage: 'Verified' })
+  'Insufficient Licenses': crrmStates[CRRMStates.insufficientLicenses].label,
+  'Verification Error': crrmStates[CRRMStates.verificationError].label,
+  'Verified': crrmStates[CRRMStates.verified].label
 }
 
 const bandbalancingEnable: RecommendationConfig = {

@@ -99,15 +99,11 @@ export const UnknownDetails = () => {
         </DetailsHeader>
         <DetailsWrapper>
           <Card type='solid-bg'>
-            <GridRow>
-            </GridRow>
             <CrrmValuesText>
               {$t(failureReason, { value, Value, sliceValue })}
             </CrrmValuesText>
           </Card>
         </DetailsWrapper>
-      </GridCol>
-      <GridCol col={{ span: 6 }}>
       </GridCol>
     </GridRow>
   </>
