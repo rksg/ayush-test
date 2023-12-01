@@ -104,6 +104,15 @@ export function ClientsList ({ searchVal='', queryParmsForZone }:
       width: 100
     },
     {
+      title: $t({ defaultMessage: 'User Traffic (Total)' }),
+      dataIndex: 'traffic',
+      key: 'traffic',
+      render: (_, { traffic }) => {
+        return formatter('bytesFormat')(traffic)
+      },
+      sorter: { compare: sortProp('traffic', defaultSort) }
+    },
+    {
       title: $t({ defaultMessage: 'Last Seen Time' }),
       dataIndex: 'lastSeen',
       key: 'lastSeen',
@@ -112,15 +121,6 @@ export function ClientsList ({ searchVal='', queryParmsForZone }:
       },
       sorter: { compare: sortProp('lastSeen', dateSort) },
       width: 120
-    },
-    {
-      title: $t({ defaultMessage: 'User Traffic (Total)' }),
-      dataIndex: 'traffic',
-      key: 'traffic',
-      render: (_, { traffic }) => {
-        return formatter('bytesFormat')(traffic)
-      },
-      sorter: { compare: sortProp('traffic', defaultSort) }
     }
   ]
   return <Loader states={[results]}>
