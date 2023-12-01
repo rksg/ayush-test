@@ -139,7 +139,7 @@ async function loadZhTW (): Promise<Messages> {
   const [base, proBase, translation] = await Promise.all([
     import('antd/lib/locale/zh_TW').then(result => result.default),
     import('@ant-design/pro-provider/lib/locale/zh_TW').then(result => result.default),
-    localePath('zh_TW') as Promise<NestedMessages>
+    localePath('zh-TW') as Promise<NestedMessages>
   ])
 
   const combine = merge({}, base, proBase, translation)
@@ -165,8 +165,8 @@ export const localeLoaders = {
   'ko-KR': loadKoKR,
   'es-ES': loadEs,
   'de-DE': loadDe,
-  'zh-Hans': loadZhCN,
-  'zh-Hant': loadZhTW
+  'zh-CN': loadZhCN,
+  'zh-TW': loadZhTW
 }
 
 const allowedLang = Object.keys(localeLoaders)
@@ -226,7 +226,10 @@ function LocaleProvider (props: LocaleProviderProps) {
 }
 
 const generateLangLabel = (lang: string, defaultLang?: LangKey): string | undefined => {
-  lang = lang.includes('zh-') ? lang : lang.split('-')[0]
+  const zhMap: Record<string, string> = { 'zh-CN': 'zh-Hans', 'zh-TW': 'zh-Hant' }
+  lang = (lang in zhMap) ? zhMap[lang] : lang.split('-')[0]
+  // Prefer to use "English" instead of "American English",
+  // "Traditional Chinese" instead of "Chinese (Taiwan)".
   const languageNames = new Intl.DisplayNames(
     [lang, defaultLang || DEFAULT_SYS_LANG], { type: 'language' })
   return languageNames.of(lang)
@@ -234,7 +237,7 @@ const generateLangLabel = (lang: string, defaultLang?: LangKey): string | undefi
 
 export const useSupportedLangs = (isSupportDeZh: boolean, defaultLang?: string) => {
   return Object.keys(localeLoaders)
-    .filter(val => val !== 'zh-Hans')
+    .filter(val => val !== 'zh-CN')
     .filter(val => isSupportDeZh || !(val.includes('de') || val.includes('zh')))
     .map(val => ({
       label: generateLangLabel(val, defaultLang as LangKey),
