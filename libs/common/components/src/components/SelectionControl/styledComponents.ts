@@ -20,7 +20,7 @@ const buttonStyle = css`
   }
 `
 
-export const Wrapper = styled.div<{ noPadding : boolean }>`
+export const Wrapper = styled.div<{ noPadding? : boolean }>`
   .ant-radio-group {
     border-radius: 20px;
     background-color: var(--acx-neutrals-20);

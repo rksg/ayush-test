@@ -19,7 +19,7 @@ export interface ContentSwitcherProps {
   extra?: React.ReactNode;
   value?: string
   onChange?: (value: string) => void
-  noPadding?: Boolean
+  noPadding?: boolean
 }
 
 const sizeSpaceMap = {
@@ -28,7 +28,7 @@ const sizeSpaceMap = {
 }
 
 export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
-  const { tabDetails, defaultValue, size, align, value, onChange, extra } = props
+  const { tabDetails, defaultValue, size, align, value, onChange, extra, noPadding } = props
 
   const options: SelectionControlOptionProps[] = tabDetails.map(tabDetail=>{
     return {
@@ -49,7 +49,6 @@ export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
     }
     setActiveContent(e.target.value)
   }
-
   return (
     <>
       <div style={{ textAlign: align, padding }}>
@@ -59,7 +58,7 @@ export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
           value={value || activeContent}
           onChange={handleChange}
           extra={extra}
-          noPadding
+          noPadding={noPadding}
         />
       </div>
       {

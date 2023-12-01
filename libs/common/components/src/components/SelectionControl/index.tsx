@@ -20,14 +20,14 @@ export interface SelectionControlProps {
   size?: 'small' | 'large'
   value?: string
   extra?: React.ReactNode;
-  noPadding?: Boolean
+  noPadding?: boolean
 }
 
 export function SelectionControl (
   props: SelectionControlProps
 ) {
   return (
-    <Wrapper noPadding>
+    <Wrapper noPadding={props.noPadding}>
       <Radio.Group
         optionType='button'
         defaultValue={props.defaultValue}
