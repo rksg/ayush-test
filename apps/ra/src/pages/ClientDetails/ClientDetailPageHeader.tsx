@@ -32,7 +32,7 @@ export const ClientDetailPageHeader = () => {
     limit: 1,
     query: clientId as string,
     filter: {}
-  })?.data?.clients?.[0]?.hostname
+  })?.data?.clientsByTraffic?.[0]?.hostname
   return (
     <PageHeader
       title={<Space size={4}>{`${clientId} ${hostname ? `(${hostname})` : ''}`}
