@@ -6,7 +6,7 @@ import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved, fireEvent,
 import { DateRange }                                                                       from '@acx-ui/utils'
 import type { AnalyticsFilter }                                                            from '@acx-ui/utils'
 
-import { mockConnectionFailureResponse, mockTtcResponse, mockPathWithAp, mockOnlyWlansResponse } from './__tests__/fixtures'
+import { mockConnectionFailureResponse, mockTtcResponse, mockPathWithAp, mockOnlyWlansResponse, noDataResponse } from './__tests__/fixtures'
 import { HealthPieChart, pieNodeMap, tooltipFormatter, transformData }                           from './healthPieChart'
 import { api, ImpactedEntities }                                                                 from './services'
 
@@ -122,7 +122,34 @@ describe('HealthPieChart', () => {
       })
     expect(await screen.findByText('aaron-dot1x')).toBeVisible()
   })
-
+  it('should show correctly for nodes with no data', async () => {
+    mockGraphqlQuery(dataApiURL, 'Network', { data: noDataResponse })
+    const apFilters = { ...filters, path: mockPathWithAp }
+    const { asFragment } = render(
+      <Provider>
+        <div style={{ height: 300, width: 300 }}>
+          <HealthPieChart
+            filters={apFilters}
+            queryType='ttc'
+            selectedStage='Authentication'
+            valueFormatter={formatter('countFormat')}
+          />,
+        </div>
+      </Provider>,
+      {
+        route: {
+          params: { tenantId: 'test' }
+        }
+      })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const fragment = asFragment()
+    fragment.querySelectorAll('div[_echarts_instance_]')
+      .forEach((node: Element) => {
+        node.setAttribute('_echarts_instance_', 'ec_mock')
+        node.setAttribute('size-sensor-id', 'sensor-mock')
+      })
+    expect(  await screen.findByText('No data to display')).toBeVisible()
+  })
   it('should handle chart switching', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', { data: mockConnectionFailureResponse })
     render(

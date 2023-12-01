@@ -228,6 +228,15 @@ export const mockOnlyWlansResponse = {
   }
 }
 
+export const noDataResponse = {
+  network: {
+    hierarchyNode: {
+      wlans: [],
+      osManufacturers: [],
+      events: []
+    }
+  }
+}
 export const mockPathWithAp: NetworkPath = [
   {
     type: 'network',

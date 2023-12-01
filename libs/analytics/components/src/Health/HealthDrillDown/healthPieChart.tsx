@@ -185,8 +185,9 @@ export const HealthPieChart = ({
     { key: 'events', data: events },
     { key: 'osManufacturers', data: osManufacturers }
   ]
+
   const tabDetails: ContentSwitcherProps['tabDetails'] = tabsList
-    .filter(({ data }) => data.length > 0)
+    .filter(({ key }) => !(key === 'events' && queryType === 'ttc'))
     .map(({ key, data }) => ({
       label: titleMap[key as TabKeyType],
       value: key,
@@ -225,6 +226,7 @@ export const HealthPieChart = ({
               align='left'
               size='small'
               onChange={key => setChartKey(key as TabKeyType)}
+              noPadding
             />
             : <UI.SinglePieChartWrapper>
               {tabDetails?.[0]?.children}

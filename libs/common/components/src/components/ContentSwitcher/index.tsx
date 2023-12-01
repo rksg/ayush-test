@@ -19,6 +19,7 @@ export interface ContentSwitcherProps {
   extra?: React.ReactNode;
   value?: string
   onChange?: (value: string) => void
+  noPadding?: Boolean
 }
 
 const sizeSpaceMap = {
@@ -58,6 +59,7 @@ export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
           value={value || activeContent}
           onChange={handleChange}
           extra={extra}
+          noPadding
         />
       </div>
       {
