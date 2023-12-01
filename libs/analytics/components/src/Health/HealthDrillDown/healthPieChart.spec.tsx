@@ -149,7 +149,7 @@ describe('HealthPieChart', () => {
     fireEvent.click(await screen.findByText('Manufacturers'))
     expect(await screen.findByText('Top 5 Impacted Manufacturers')).toBeVisible()
     fireEvent.click(await screen.findByText('Events'))
-    expect(await screen.findByText('Top 5 Impacted Events')).toBeVisible()
+    expect(await screen.findByText('Top 5 Events')).toBeVisible()
   })
 
   describe('tooltipFormatter', () => {
