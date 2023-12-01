@@ -29,8 +29,6 @@ export function BetaFeaturesDrawer (
   const betaList = [
     { key: 'AP-CCD', desc: $t({ defaultMessage: 'AP-CCD beta feature' }), status: true },
     { key: 'AP-70', desc: $t({ defaultMessage: 'AP-70 beta feature' }), status: true },
-    { key: 'AP-NEIGHBORS', desc: $t({ defaultMessage: 'AP-NEIGHBORS beta feature' }),
-      status: true },
     { key: 'PLCY-EDGE', desc: $t({ defaultMessage: 'PLCY-EDGE beta feature' }), status: false }
   ]
 
