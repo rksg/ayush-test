@@ -1,8 +1,8 @@
 
 import { useIntl } from 'react-intl'
 
-import { Button }      from '@acx-ui/components'
-import { useNavigate } from '@acx-ui/react-router-dom'
+import { Button }                          from '@acx-ui/components'
+import { useNavigate, createSearchParams } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
@@ -44,4 +44,28 @@ export function NoRRMLicense ({ text, details }: NoDataWrapperProps) {
       </Button>
     </UI.Wrapper>
   )
+}
+
+export const getParamString = (
+  metadata: { audit?: [{ failure: string }] | undefined },
+  status: string,
+  updatedAt: string,
+  sliceValue: string
+) => {
+  const auditMetadata = metadata as { audit?: [
+    { failure: string }
+  ] }
+  const getMesh = auditMetadata?.audit?.some(
+    data => data.failure.hasOwnProperty('mesh'))!
+  const getGlobalZone = auditMetadata?.audit?.some(
+    data => data.failure.hasOwnProperty('global-zone-checker'))!
+  const checkValues = getMesh === true ? 'mesh'
+    : getGlobalZone === true ? 'global-zone-checker' : 'null'
+  const paramString = createSearchParams({
+    status: status,
+    date: updatedAt,
+    sliceValue: sliceValue,
+    extra: checkValues
+  }).toString()
+  return paramString
 }

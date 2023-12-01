@@ -2,7 +2,6 @@ import { useMemo, useState, useEffect } from 'react'
 
 import { Checkbox }               from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
-import { createSearchParams }     from 'react-router-dom'
 
 import {
   isSwitchPath,
@@ -15,6 +14,8 @@ import { get }                         from '@acx-ui/config'
 import { DateFormatEnum, formatter }   from '@acx-ui/formatter'
 import { TenantLink, useParams }       from '@acx-ui/react-router-dom'
 import { noDataDisplay, PathFilter }   from '@acx-ui/utils'
+
+import { getParamString } from '../AIDrivenRRM/extra'
 
 import { RecommendationActions }  from './RecommendationActions'
 import {
@@ -34,23 +35,8 @@ const DateLink = ({ value }: { value: RecommendationListItem }) => {
 }
 
 export const UnknownLink = ({ value }: { value: RecommendationListItem }) => {
-  const { updatedAt, statusEnum, metadata, sliceValue } = value
-  const auditMetadata = metadata as { audit?: [
-    { failure: string }
-  ] }
-  const checkMesh = auditMetadata?.audit?.some(
-    data => data.failure.hasOwnProperty('mesh'))!
-  const checkGlobalZone = auditMetadata?.audit?.some(
-    data => data.failure.hasOwnProperty('global-zone-checker'))!
-  const testing = checkMesh === true ? 'mesh'
-    : checkGlobalZone === true ? 'global_zone_checker' : 'null'
-  const paramString = createSearchParams({
-    status: statusEnum,
-    date: updatedAt,
-    sliceValue: sliceValue,
-    extra: testing
-  }).toString()
-
+  const { metadata, statusEnum, updatedAt, sliceValue } = value
+  const paramString = getParamString(metadata, statusEnum, updatedAt, sliceValue)
   return <TenantLink to={`analytics/recommendations/crrm/unknown?${paramString}`}>
     {formatter(DateFormatEnum.DateTimeFormat)(value.updatedAt)}
   </TenantLink>

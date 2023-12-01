@@ -2,18 +2,18 @@ import { List }    from 'antd'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { isSwitchPath }                                      from '@acx-ui/analytics/utils'
-import { Loader, Card, Tooltip, ColorPill }                  from '@acx-ui/components'
-import { formatter, intlFormats }                            from '@acx-ui/formatter'
-import { TenantLink, createSearchParams, useNavigateToPath } from '@acx-ui/react-router-dom'
-import type { PathFilter }                                   from '@acx-ui/utils'
+import { isSwitchPath }                     from '@acx-ui/analytics/utils'
+import { Loader, Card, Tooltip, ColorPill } from '@acx-ui/components'
+import { formatter, intlFormats }           from '@acx-ui/formatter'
+import { TenantLink, useNavigateToPath }    from '@acx-ui/react-router-dom'
+import type { PathFilter }                  from '@acx-ui/utils'
 
 import { states }                                   from '../Recommendations/config'
 import { CrrmList, CrrmListItem, useCrrmListQuery } from '../Recommendations/services'
 import { OptimizedIcon }                            from '../Recommendations/styledComponents'
 
-import { NoRRMLicense, NoRecommendationData } from './extra'
-import * as UI                                from './styledComponents'
+import { NoRRMLicense, NoRecommendationData, getParamString } from './extra'
+import * as UI                                                from './styledComponents'
 
 const { countFormat } = intlFormats
 
@@ -114,24 +114,8 @@ function AIDrivenRRMWidget ({
                 updatedAt,
                 metadata
               } = recommendation
-              const auditMetadata = metadata as { audit?: [
-                { failure: string }
-              ] }
-              const getMesh = auditMetadata?.audit?.some(
-                data => data.failure.hasOwnProperty('mesh'))!
-              const getGlobalZone = auditMetadata?.audit?.some(
-                data => data.failure.hasOwnProperty('global-zone-checker'))!
-              const checkValues = getMesh === true ? 'mesh'
-                : getGlobalZone === true ? 'global-zone-checker' : 'null'
-              const paramString = createSearchParams({
-                status: status,
-                date: updatedAt,
-                sliceValue: sliceValue,
-                extra: checkValues
-              }).toString()
-
+              const paramString = getParamString(metadata, status, updatedAt, sliceValue)
               const unknownPath = `unknown?${paramString}`
-
               return <UI.ListItem key={`${id}${sliceValue}`}>
                 <TenantLink to={`/recommendations/crrm/${code === 'unknown' ? unknownPath : id}`}>
                   <Tooltip
