@@ -139,11 +139,13 @@ export function SelectVlanModal (props: {
   }
 
   useEffect(() => {
-    const untaggedVlanOptions = getUntaggedVlanOptions(taggedVlans)
-    const taggedVlanOptions = getTaggedVlanOptions(untaggedVlan)
-
     setSelectUntaggedVlan(Number(untaggedVlan))
     setSelectTaggedVlans(taggedVlans)
+  }, [])
+
+  useEffect(() => {
+    const untaggedVlanOptions = getUntaggedVlanOptions(selectTaggedVlans)
+    const taggedVlanOptions = getTaggedVlanOptions(selectUntaggedVlan)
     setTaggedVlanOptions(taggedVlanOptions)
     setDisplayTaggedVlan(taggedVlanOptions)
     setUntaggedVlanOptions(untaggedVlanOptions)
