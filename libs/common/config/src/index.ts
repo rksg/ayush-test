@@ -1,5 +1,4 @@
 import { trimEnd, get as getObj } from 'lodash'
-import { userLogout } from '../../utils/src/user'
 
 type commonEnvironment = {
   SPLIT_IO_KEY: string
@@ -65,7 +64,14 @@ export async function initialize () {
       })
 
   if(getObj(config, 'value.status')){
-    userLogout()
+    const token = sessionStorage.getItem('jwt')?? null
+    sessionStorage.removeItem('jwt')
+
+    Object.keys(localStorage)
+      ?.filter(s => s.includes('SPLITIO'))
+      ?.forEach(s => localStorage.removeItem(s))
+
+    window.location.href = token? `/logout?token=${token}` : '/logout'
   }
 }
 
