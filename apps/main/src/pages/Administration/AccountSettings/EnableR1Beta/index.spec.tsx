@@ -16,7 +16,7 @@ import BetaFeaturesDrawer from './BetaFeaturesDrawer'
 
 import EnableR1Beta from './'
 
-describe('Enable R1 Beta Checkbox', () => {
+describe('Enable RUCKUS One Beta Checkbox', () => {
   const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
   beforeEach(() => {
     mockServer.use(
@@ -42,7 +42,7 @@ describe('Enable R1 Beta Checkbox', () => {
         route: { params }
       })
 
-    const formItem = screen.getByRole('checkbox', { name: /Enable R1 Beta features/i })
+    const formItem = screen.getByRole('checkbox', { name: /Enable RUCKUS One Beta features/i })
     expect(formItem).not.toBeChecked()
     fireEvent.click(formItem)
 
@@ -60,7 +60,7 @@ describe('Enable R1 Beta Checkbox', () => {
     const okBtn = await screen.findByRole('button', { name: 'Ok' })
     expect(okBtn).toBeVisible()
 
-    await screen.findByText('R1 Beta Features')
+    await screen.findByText('RUCKUS One Beta Features')
   })
 
   it('should show terms and condition drawer', async () => {
@@ -99,7 +99,7 @@ describe('Enable R1 Beta Checkbox', () => {
         route: { params }
       })
 
-    const formItem = screen.getByRole('checkbox', { name: /Enable R1 Beta features/i })
+    const formItem = screen.getByRole('checkbox', { name: /Enable RUCKUS One Beta features/i })
     expect(formItem).not.toBeChecked()
     fireEvent.click(formItem)
   })
