@@ -7,8 +7,8 @@ import { DateRange }                                                            
 import type { AnalyticsFilter }                                                            from '@acx-ui/utils'
 
 import { mockConnectionFailureResponse, mockTtcResponse, mockPathWithAp, mockOnlyWlansResponse, noDataResponse } from './__tests__/fixtures'
-import { HealthPieChart, pieNodeMap, tooltipFormatter, transformData }                           from './healthPieChart'
-import { api, ImpactedEntities }                                                                 from './services'
+import { HealthPieChart, pieNodeMap, tooltipFormatter, transformData }                                           from './healthPieChart'
+import { api, ImpactedEntities }                                                                                 from './services'
 
 const mockGet = get as jest.Mock
 
@@ -148,7 +148,7 @@ describe('HealthPieChart', () => {
         node.setAttribute('_echarts_instance_', 'ec_mock')
         node.setAttribute('size-sensor-id', 'sensor-mock')
       })
-    expect(  await screen.findByText('No data to display')).toBeVisible()
+    expect( await screen.findByText('No data to display')).toBeVisible()
   })
   it('should handle chart switching', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', { data: mockConnectionFailureResponse })
