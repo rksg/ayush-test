@@ -27,7 +27,6 @@ export const Wrapper = styled.div<{ noPadding : boolean }>`
     vertical-align: top;
   }
   .ant-radio-button-wrapper {
-    padding: 0px;
     ${props => props.noPadding && `
     padding: 0px;
   `}
