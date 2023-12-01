@@ -42,7 +42,7 @@ function DidYouKnowWidget ({
 }: DidYouKnowWidgetProps) {
   const intl = useIntl()
   const [offset, setOffset] = useState(0);
-  const [content, setContent] = useState<any>( Array.from({ length: Math.ceil(Object.values(carouselFactsMap).length)}, () => []));
+  const [content, setContent] = useState<any>( Array.from({ length: 5 }, () => []));
 
   const { data, isFetching, refetch, isSuccess, isLoading } = useFactsQuery({...filters, requestedList : carouselFactsMap[offset].facts}, {
     selectFromResult: ({ data, ...rest }) => ({
@@ -53,18 +53,18 @@ function DidYouKnowWidget ({
   })
   useEffect(() => {
     if (data && isSuccess && !isFetching) {
-      const updatedContent = [...content];
-      updatedContent[offset] = data[0];
+      const updatedContent = [...content]
+      updatedContent[offset] = data?.[0]
       setContent(updatedContent);
     }
-  }, [offset, isSuccess,isFetching]);
+  }, [offset, isSuccess,isFetching])
   useEffect(() => {
     if (content[offset]?.length === 0) {
       refetch();
     }
-  }, [offset, content, refetch]);
-  const onChange = (slideNumber: number) => {
-    setOffset(slideNumber);
+  }, [offset, content, refetch])
+  const onChange = (_: number,nextSlide: number) => {
+    setOffset(nextSlide)
   };
   const { $t } = intl
   const title = $t({ defaultMessage: 'Did you know?' })
@@ -86,10 +86,10 @@ function DidYouKnowWidget ({
         {({ height, width }) => (
             <Carousel contentList={content.length ? content : [[noData]]}
               title={title}
-              subTitle={!content.length ? subTitle : undefined}
+              subTitle={!content[offset].length ? subTitle : undefined}
               {...props}
               classList={content.length ? 'carousel-card' : 'carousel-card no-data'}
-              afterChange={onChange}
+              beforeChange={onChange}
               offset={offset}
               style={{ height, width }} ></Carousel>
         )}
