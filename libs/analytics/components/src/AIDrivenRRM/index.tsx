@@ -12,8 +12,8 @@ import { states }                                   from '../Recommendations/con
 import { CrrmList, CrrmListItem, useCrrmListQuery } from '../Recommendations/services'
 import { OptimizedIcon }                            from '../Recommendations/styledComponents'
 
-import { NoRRMLicense, NoRecommendationData, getParamString } from './extra'
-import * as UI                                                from './styledComponents'
+import { NoRRMLicense, NoRecommendationData, defaultText, getParamString, noLicenseText, noZoneText } from './extra'
+import * as UI                                                                                        from './styledComponents'
 
 const { countFormat } = intlFormats
 
@@ -49,9 +49,8 @@ function AIDrivenRRMWidget ({
     />
   }
 
-  const noLicense = data?.recommendations.length !== 0
-    && data?.recommendations.filter(i => i.status === 'insufficientLicenses').length
-    === data?.recommendations.length
+  const noLicense = data?.recommendations.every(
+    recommendation => recommendation.status === 'insufficientLicenses')
 
   const subtitle = $t(
     {
@@ -72,33 +71,15 @@ function AIDrivenRRMWidget ({
     { crrmCount, zoneCount, optimizedZoneCount, crrmScenarios }
   )
 
-  const defaultText = $t({ defaultMessage:
-    `This feature is a centralized algorithm that runs in the
-    RUCKUS Analytics cloud and guarantees zero interfering links
-    for the access points (APs) managed by SmartZone controllers,
-    whenever theoretically achievable thus minimizing co-channel
-    interference to the lowest level possible.`
-  })
-
-  const noZoneText = $t({ defaultMessage:
-    `Currently RUCKUS AI cannot provide RRM combinations
-    as zones are not found on your network`
-  })
-
-  const noLicenseText = $t({ defaultMessage:
-    `Currently RUCKUS AI cannot optimize your current zone
-    for RRM due to inadequate licenses.`
-  })
-
   return <Loader states={[queryResults]}>
     <Card
       title={title}
       onArrowClick={onArrowClick}
       subTitle={noLicense || !zoneCount ? '' : subtitle}
     >{zoneCount === 0
-        ? <NoRecommendationData text={defaultText} details={noZoneText} />
+        ? <NoRecommendationData text={defaultText($t)} details={noZoneText($t)} />
         : noLicense
-          ? <NoRRMLicense text={defaultText} details={noLicenseText} />
+          ? <NoRRMLicense text={defaultText($t)} details={noLicenseText($t)} />
           : <AutoSizer>{(style) => <List<CrrmListItem>
             style={style}
             dataSource={data?.recommendations.slice(0, style.height / 50 | 0)}

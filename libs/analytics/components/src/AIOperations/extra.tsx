@@ -1,4 +1,4 @@
-import { useIntl } from 'react-intl'
+import { IntlShape, useIntl } from 'react-intl'
 
 import { Button }      from '@acx-ui/components'
 import { useNavigate } from '@acx-ui/react-router-dom'
@@ -11,17 +11,21 @@ interface NoDataWrapperProps {
 }
 
 export function NoRecommendationData ({
-  text, noData = false
+  noData = false
 }: NoDataWrapperProps) {
+  const { $t } = useIntl()
   return (
     <UI.ContentWrapper $noData={noData}>
       <UI.LargeGreenTickIcon $noData={noData} />
-      <p>{text}</p>
+      <p>{$t({ defaultMessage:
+        `Your network is already running in an optimal configuration
+        and we don’t have any AI Operations to recommend recently.`
+      })}</p>
     </UI.ContentWrapper>
   )
 }
 
-export function NoAiOpsLicense ({ text }: NoDataWrapperProps) {
+export function NoAiOpsLicense () {
   const { $t } = useIntl()
   const noLicenseText = $t({ defaultMessage: 'No license' })
   const navigate = useNavigate()
@@ -30,7 +34,11 @@ export function NoAiOpsLicense ({ text }: NoDataWrapperProps) {
       <UI.ContentWrapper $noData>
         <UI.NoDataIcon />
         <p>{noLicenseText}</p>
-        <p>{text}</p>
+        <p>{$t({ defaultMessage:
+          `RUCKUS AI cannot analyse your zone due to inadequate licenses.
+          Please ensure you have licenses fully applied for the zone for
+          AI Operations optimizations.`
+        })}</p>
       </UI.ContentWrapper>
       <Button
         block
@@ -41,3 +49,6 @@ export function NoAiOpsLicense ({ text }: NoDataWrapperProps) {
     </UI.Wrapper>
   )
 }
+
+export const subtitle = ($t: IntlShape['$t']) => $t({
+  defaultMessage: 'Say goodbye to manual guesswork and hello to intelligent recommendations.' })

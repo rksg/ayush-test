@@ -1,5 +1,5 @@
 
-import { useIntl } from 'react-intl'
+import { IntlShape, useIntl } from 'react-intl'
 
 import { Button }                          from '@acx-ui/components'
 import { useNavigate, createSearchParams } from '@acx-ui/react-router-dom'
@@ -45,6 +45,24 @@ export function NoRRMLicense ({ text, details }: NoDataWrapperProps) {
     </UI.Wrapper>
   )
 }
+
+export const defaultText = ($t: IntlShape['$t']) => $t({ defaultMessage:
+  `This feature is a centralized algorithm that runs in the
+  RUCKUS Analytics cloud and guarantees zero interfering links
+  for the access points (APs) managed by SmartZone controllers,
+  whenever theoretically achievable thus minimizing co-channel
+  interference to the lowest level possible.`
+})
+
+export const noZoneText = ($t: IntlShape['$t']) => $t({ defaultMessage:
+  `Currently RUCKUS AI cannot provide RRM combinations
+  as zones are not found on your network`
+})
+
+export const noLicenseText = ($t: IntlShape['$t']) => $t({ defaultMessage:
+  `Currently RUCKUS AI cannot optimize your current zone
+  for RRM due to inadequate licenses.`
+})
 
 export const getParamString = (
   metadata: { audit?: [{ failure: string }] | undefined },

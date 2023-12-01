@@ -12,8 +12,8 @@ import { states }                                      from '../Recommendations/
 import { AiOpsList, useAiOpsListQuery, AiOpsListItem } from '../Recommendations/services'
 import { PriorityIcon }                                from '../Recommendations/styledComponents'
 
-import { NoAiOpsLicense, NoRecommendationData } from './extra'
-import * as UI                                  from './styledComponents'
+import { NoAiOpsLicense, NoRecommendationData, subtitle } from './extra'
+import * as UI                                            from './styledComponents'
 
 export { AIOperationsWidget as AIOperations }
 
@@ -46,12 +46,9 @@ function AIOperationsWidget ({
       value={$t(countFormat, { value: aiOpsCount })}
     />
   }
-  const subtitle = $t({
-    defaultMessage: 'Say goodbye to manual guesswork and hello to intelligent recommendations.' })
 
-  const noLicense = data?.recommendations.length !== 0
-    && data?.recommendations.filter(i => i.status === 'insufficientLicenses').length
-    === data?.recommendations.length
+  const noLicense = data?.recommendations.every(
+    recommendation => recommendation.status === 'insufficientLicenses')
   const hasNew = data?.recommendations?.filter(i => i.status === 'new').length
   const filteredRecommendations = data?.recommendations.filter(
     i => i.code !== 'unknown' )
@@ -72,28 +69,13 @@ function AIOperationsWidget ({
     <Card
       title={title}
       onArrowClick={onArrowClick}
-      subTitle={(!noLicense || !noData || hasNew) ? '' : subtitle}
+      subTitle={(!noLicense || !noData || hasNew) ? '' : subtitle($t)}
     >{
-        noLicense ? <NoAiOpsLicense
-          text={$t({ defaultMessage:
-            `RUCKUS AI cannot analyse your zone due to inadequate licenses.
-            Please ensure you have licenses fully applied for the zone for
-            AI Operations optimizations.`
-          })}/>
+        noLicense ? <NoAiOpsLicense />
           : noData
-            ? <NoRecommendationData
-              noData={true}
-              text={$t({ defaultMessage:
-                `Your network is already running in an optimal configuration
-                and we don’t have any AI Operations to recommend recently.`
-              })} />
+            ? <NoRecommendationData noData={true} />
             : <>
-              {!hasNew ? <NoRecommendationData
-                text={$t({ defaultMessage:
-                `Your network is already running in an optimal configuration
-                and we don’t have any AI Operations to recommend recently.`
-                })}
-              /> : null}
+              {!hasNew ? <NoRecommendationData /> : null}
               <div style={{ flex: 1 }}>
                 <AutoSizer style={{ flex: 1 }}>{(style) => <List<AiOpsListItem>
                   style={style}
