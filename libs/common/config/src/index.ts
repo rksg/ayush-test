@@ -1,5 +1,5 @@
-import { trimEnd } from 'lodash'
-
+import { trimEnd, get as getObj } from 'lodash'
+import { userLogout } from '../../utils/src/user'
 
 type commonEnvironment = {
   SPLIT_IO_KEY: string
@@ -64,6 +64,9 @@ export async function initialize () {
         }
       })
 
+  if(getObj(config, 'value.status')){
+    userLogout()
+  }
 }
 
 export function get (key: keyof EnvironmentConfig): string {
