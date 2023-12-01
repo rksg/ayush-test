@@ -1,4 +1,4 @@
-import { trimEnd, get as getObj } from 'lodash'
+import { trimEnd } from 'lodash'
 
 type commonEnvironment = {
   SPLIT_IO_KEY: string
@@ -48,30 +48,21 @@ export async function initialize () {
   const baseUrl = trimEnd(document.baseURI, '/')
 
   const envConfigUrl = `${baseUrl}/globalValues.json`
-  config.value = await fetch(
+  const response = await fetch(
     envConfigUrl,
     { headers: { Authorization: `Bearer ${getJwtToken()}` } })
-    .then(res => res.json()).then(
-      value => {
-        return {
-          ...value,
-          ...{
-            GOOGLE_MAPS_KEY: value.GOOGLE_MAPS,
-            SPLIT_IO_KEY: value.SPLIT_IO,
-            PENDO_API_KEY: value.PENDO_API
-          }
-        }
-      })
 
-  if(getObj(config, 'value.error') || getObj(config, 'value.status')){
-    const token = sessionStorage.getItem('jwt')?? null
-    sessionStorage.removeItem('jwt')
+  userAuthFailedLogout(response)
 
-    Object.keys(localStorage)
-      ?.filter(s => s.includes('SPLITIO'))
-      ?.forEach(s => localStorage.removeItem(s))
+  const jsonValue = await response.json()
 
-    window.location.href = token? `/logout?token=${token}` : '/logout'
+  config.value = {
+    ...jsonValue,
+    ...{
+      GOOGLE_MAPS_KEY: jsonValue.GOOGLE_MAPS,
+      SPLIT_IO_KEY: jsonValue.SPLIT_IO,
+      PENDO_API_KEY: jsonValue.PENDO_API
+    }
   }
 }
 
@@ -84,4 +75,18 @@ export function get (key: keyof EnvironmentConfig): string {
 
 export function getJwtToken () {
   return sessionStorage.getItem('jwt') || null
+}
+
+function userAuthFailedLogout (response: Response) {
+  //Trigger a user logout and redirect them back to the login page following authorization fails.
+  if(response.status !== 200){
+    const token = sessionStorage.getItem('jwt')?? null
+    sessionStorage.removeItem('jwt')
+
+    Object.keys(localStorage)
+      ?.filter(s => s.includes('SPLITIO'))
+      ?.forEach(s => localStorage.removeItem(s))
+
+    window.location.href = token? `/logout?token=${token}` : '/logout'
+  }
 }
