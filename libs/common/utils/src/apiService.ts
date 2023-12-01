@@ -109,6 +109,7 @@ export interface Filters {
   switchId?: string[];
   clientId?: string[];
   serialNumber?: string[];
+  deviceGroupId?: string[];
 }
 
 export const getFilters = (params: Params) => {
@@ -119,6 +120,9 @@ export const getFilters = (params: Params) => {
   }
   if (params.venueId) {
     filters.venueId = [params.venueId]
+  }
+  if (params.apGroupId) {
+    filters.deviceGroupId = [params.apGroupId]
   }
 
   return filters

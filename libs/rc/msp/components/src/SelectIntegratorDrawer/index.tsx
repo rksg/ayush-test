@@ -136,7 +136,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
         })
       )
       if (integratorList.length === 0) {
-        integratorList.push({ mspec_id: tenantId })
+        integratorList.push({ mspec_id: tenantId, delegation_type: tenantType })
       }
 
       let payload = {

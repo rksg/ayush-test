@@ -28,6 +28,16 @@ jest.mock('./ApsTable', () => ({
   })
 }))
 
+jest.mock('./ApGroupsTable', () => ({
+  ...jest.requireActual('./ApGroupsTable'),
+  __esModule: true,
+  default: () => ({
+    title: 'ApGroupsTable',
+    headerExtra: [],
+    component: <div data-testid='ApGroupsTable' />
+  })
+}))
+
 jest.mock('@acx-ui/analytics/components', () => ({
   ...jest.requireActual('@acx-ui/analytics/components'),
   NetworkFilter: () => <div data-testid='NetworkFilter' />
@@ -44,6 +54,11 @@ describe('AccessPointList with feature toggle', () => {
     render(<AccessPointList tab={WifiTabsEnum.LIST}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     expect(await screen.findByTestId('ApsTable')).toBeVisible()
+  })
+  it('should render ap groups table tab', async () => {
+    render(<AccessPointList tab={WifiTabsEnum.AP_GROUP}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(await screen.findByTestId('ApGroupsTable')).toBeVisible()
   })
   it('should render ap report tab', async () => {
     render(<AccessPointList tab={WifiTabsEnum.AP_REPORT}/>,
@@ -65,3 +80,4 @@ describe('AccessPointList with feature toggle', () => {
     }))
   })
 })
+
