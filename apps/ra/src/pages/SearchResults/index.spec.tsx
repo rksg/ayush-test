@@ -37,7 +37,7 @@ describe.only('Search Results', () => {
       data: searchFixture
     })
     render(<SearchResults />, { route: { params }, wrapper: Provider })
-    expect(await screen.findByText('Search Results for "test?" (12)')).toBeVisible()
+    expect(await screen.findByText('Search Results for "test?" (13)')).toBeVisible()
   })
 
   it('should render tables correctly', async () => {
@@ -55,7 +55,7 @@ describe.only('Search Results', () => {
     expect(screen.getByText('Clients (3)')).toBeVisible()
     expect(screen.getByText('manufacturer-1')).toBeVisible()
     expect(screen.getByText('Switches (1)')).toBeVisible()
-    expect(screen.getByText('Network Hierarchy (3)')).toBeVisible()
+    expect(screen.getByText('Network Hierarchy (4)')).toBeVisible()
     expect(screen.getByText('Wi-Fi Networks (2)')).toBeVisible()
   })
 
@@ -134,7 +134,8 @@ describe.only('Search Results', () => {
     mockGraphqlQuery(dataApiSearchURL, 'Search', {
       data: {
         search: {
-          aps: searchFixture.search.aps
+          aps: searchFixture.search.aps,
+          networkHierarchy: searchFixture.search.networkHierarchy
         }
       }
     })
@@ -148,5 +149,9 @@ describe.only('Search Results', () => {
     const link = screen.getByText('AL-Guest-R610')
     const href = link.getAttribute('href')
     expect((href as string).includes('reports/aps?analyticsNetworkFilter')).toBeTruthy()
+
+    const switchLink = screen.getAllByText('7450-zone')[0]
+    const switchHref = switchLink.getAttribute('href')
+    expect((switchHref as string).includes('reports/switches?analyticsNetworkFilter')).toBeTruthy()
   })
 })

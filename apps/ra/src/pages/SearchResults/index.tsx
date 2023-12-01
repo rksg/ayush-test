@@ -9,7 +9,7 @@ import {
   NetworkHierarchy,
   Switch
 } from '@acx-ui/analytics/services'
-import { defaultSort, sortProp, formattedPath, getUserProfile, roleLink, encodeFilterPath } from '@acx-ui/analytics/utils'
+import { defaultSort, sortProp, formattedPath, getUserProfile, encodeFilterPath } from '@acx-ui/analytics/utils'
 import {
   PageHeader,
   Loader,
@@ -22,7 +22,7 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                       from '@acx-ui/formatter'
-import { useParams, TenantLink, resolvePath }                              from '@acx-ui/react-router-dom'
+import { useParams, TenantLink }                                           from '@acx-ui/react-router-dom'
 import { DateRange, fixedEncodeURIComponent, encodeParameter, DateFilter } from '@acx-ui/utils'
 
 import NoData                                from './NoData'
@@ -55,11 +55,10 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       width: 130,
       sorter: { compare: sortProp('apName', defaultSort) },
       render: (_, row : AP) => {
-        const reportFilter = encodeFilterPath('analytics', row.networkPath)
-        const link = roleLink({
-          'base': { routePath: `/devices/wifi/${row.macAddress}/details/ai` },
-          'report-only': { routePath: `/reports/aps?${reportFilter}` }
-        }, role)
+        const filter = encodeFilterPath('analytics', row.networkPath)
+        const link = role === 'report-only'
+          ? `/reports/aps?${filter}`
+          : `/devices/wifi/${row.macAddress}/details/ai`
         return <TenantLink to={link}>{row.apName}</TenantLink>
       }
     },
@@ -215,10 +214,16 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       render: (_, row : NetworkHierarchy) => {
         const networkPath = row.networkPath.slice(1)
         const filter = encodeFilterPath('analytics', row.networkPath)
-        const path = row.type.toLowerCase() === 'zone' && isZonesPageEnabled
-          ? resolvePath(`/zones/${networkPath?.[0]?.name}/${networkPath?.[1]?.name}/assurance`)
-          : resolvePath(`/incidents?${filter}`)
-        return <TenantLink to={path}>{row.name}</TenantLink>
+        const defaultPath = row.type.toLowerCase() === 'zone' && isZonesPageEnabled
+          ? `/zones/${networkPath?.[0]?.name}/${networkPath?.[1]?.name}/assurance`
+          : `/incidents?${filter}`
+        const reportOnly = row.type.toLowerCase().includes('switch')
+          ? `/reports/switches?${filter}`
+          : `/reports/wireless?${filter}`
+        const link = role == 'report-only'
+          ? reportOnly
+          : defaultPath
+        return <TenantLink to={link}>{row.name}</TenantLink>
       },
       sorter: { compare: sortProp('name', defaultSort) }
     },

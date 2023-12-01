@@ -112,18 +112,6 @@ export const searchApi = dataApiSearch.injectEndpoints({
               version,
               apZone
               networkPath {name type}
-            }
-            ${payload.isReportOnly
-          ? ''
-          : `
-            ,clients {
-              hostname
-              username
-              mac
-              osType
-              ipAddress
-              lastActiveTime
-              manufacturer
             },
             networkHierarchy {
               name
@@ -132,6 +120,19 @@ export const searchApi = dataApiSearch.injectEndpoints({
               apCount
               networkPath {name type}
               switchCount
+            }
+            ${payload.isReportOnly
+          ? ''
+          : `
+            ,
+          clients {
+              hostname
+              username
+              mac
+              osType
+              ipAddress
+              lastActiveTime
+              manufacturer
             },
             switches {
               switchName
