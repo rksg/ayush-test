@@ -36,23 +36,16 @@ export interface ScheduleStepProps {
 }
 
 export function ScheduleStep (props: ScheduleStepProps) {
-  const intl = useIntl()
-  const { form, current } = useStepFormContext()
   const { availableVersions, nonIcx8200Count, icx8200Count,
     hasVenue, upgradeVenueList, upgradeSwitchList,
     setShowSubTitle } = props
+
+  const intl = useIntl()
+  const { form, current } = useStepFormContext()
   const [selectedVersion, setSelectedVersion] = useState('')
   const [selectedAboveTenVersion, setSelectedAboveTenVersion] = useState<string>('')
   const [hasSelectedDate, setHasSelectedDate] = useState<boolean>(false)
-
-  const getCurrentChecked = function () {
-    if (upgradeVenueList.length + upgradeSwitchList.length === 1) {
-      return upgradeVenueList.length === 1 ?
-        upgradeVenueList[0].preDownload : upgradeSwitchList[0].preDownload
-    } return false
-  }
-
-  const [checked, setChecked] = useState(getCurrentChecked())
+  const [checked, setChecked] = useState(false)
 
   const getCurrentSchedule = function () {
     if (upgradeVenueList.length + upgradeSwitchList.length === 1) {
