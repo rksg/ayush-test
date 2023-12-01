@@ -57,12 +57,14 @@ const list = {
 }
 
 describe('MacRegistrationListTab', () =>{
-  mockServer.use(
-    rest.get(
-      MacRegListUrlsInfo.getMacRegistrations.url.split('?')[0],
-      (req, res, ctx) => res(ctx.json(list))
+  beforeEach(() => {
+    mockServer.use(
+      rest.get(
+        MacRegListUrlsInfo.getMacRegistrations.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(list))
+      )
     )
-  )
+  })
 
   it('should render correctly', async () => {
     // eslint-disable-next-line max-len
