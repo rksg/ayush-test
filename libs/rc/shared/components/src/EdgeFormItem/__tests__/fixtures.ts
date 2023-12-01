@@ -27,7 +27,6 @@ export const mockEdgePortConfig = {
       ipMode: EdgeIpModeEnum.STATIC,
       ip: '2.2.2.2',
       subnet: '255.255.255.0',
-      // gateway: '2.2.2.2',
       gateway: '',
       corePortEnabled: true
     },
@@ -41,7 +40,6 @@ export const mockEdgePortConfig = {
       ipMode: EdgeIpModeEnum.STATIC,
       ip: '3.3.3.3',
       subnet: '255.255.255.0',
-      // gateway: '3.3.3.3',
       gateway: '',
       corePortEnabled: false
     },
@@ -55,7 +53,6 @@ export const mockEdgePortConfig = {
       ipMode: EdgeIpModeEnum.STATIC,
       ip: '4.4.4.4',
       subnet: '255.255.255.0',
-      // gateway: '4.4.4.4',
       gateway: '',
       corePortEnabled: false
     },
