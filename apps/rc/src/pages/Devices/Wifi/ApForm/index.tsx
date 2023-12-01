@@ -23,7 +23,7 @@ import {
   useApListQuery,
   useAddApMutation,
   useGetApOperationalQuery,
-  useLazyApGroupListQuery,
+  useLazyApGroupListByVenueQuery,
   useLazyGetDhcpApQuery,
   useUpdateApMutation,
   useVenuesListQuery,
@@ -106,7 +106,7 @@ export function ApForm () {
   const [addAp] = useAddApMutation()
   const [updateAp, { isLoading: isApDetailsUpdating }] = useUpdateApMutation()
   const [getDhcpAp] = useLazyGetDhcpApQuery()
-  const [apGroupList] = useLazyApGroupListQuery()
+  const [apGroupList] = useLazyApGroupListByVenueQuery()
   const [getTargetVenueMgmtVlan] = useLazyGetVenueApManagementVlanQuery()
   const [getApMgmtVlan] = useLazyGetApManagementVlanQuery()
   const [getCurrentApMgmtVlan] = useLazyApViewModelQuery()
