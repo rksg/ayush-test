@@ -124,7 +124,6 @@ async function loadKoKR (): Promise<Messages> {
   return Object.assign({}, combine, flattenMessages(combine as unknown as NestedMessages))
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function loadZhCN (): Promise<Messages> {
   const [base, proBase, translation] = await Promise.all([
     import('antd/lib/locale/zh_CN').then(result => result.default),
@@ -166,7 +165,7 @@ export const localeLoaders = {
   'ko-KR': loadKoKR,
   'es-ES': loadEs,
   'de-DE': loadDe,
-  // 'zh-Hans': loadZhCN,
+  'zh-Hans': loadZhCN,
   'zh-Hant': loadZhTW
 }
 
@@ -235,6 +234,7 @@ const generateLangLabel = (lang: string, defaultLang?: LangKey): string | undefi
 
 export const useSupportedLangs = (isSupportDeZh: boolean, defaultLang?: string) => {
   return Object.keys(localeLoaders)
+    .filter(val => val !== 'zh-Hans')
     .filter(val => isSupportDeZh || !(val.includes('de') || val.includes('zh')))
     .map(val => ({
       label: generateLangLabel(val, defaultLang as LangKey),
