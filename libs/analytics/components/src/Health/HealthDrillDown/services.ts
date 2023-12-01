@@ -86,15 +86,15 @@ export const pieChartQuery = (
         ? `wlans: topNSSIDbyConnFailure(n: 6, stage: "${stageFilter}") { key value }`
         : `nodes: topNNodebyConnFailure(n: 6, stage: "${stageFilter}") { key value name }
       wlans: topNSSIDbyConnFailure(n: 6, stage: "${stageFilter}") { key value }
-      osManufacturers: topNOSManufacturerTypebyConnFailure(n: 6, stage: "${stageFilter}") { key value }
-      events: topNEventConnFailure(n: 6, stage:"${stageFilter}") { key value }`
+      osManufacturers: topNManufacturersByConnFailure(n: 6, stage: "${stageFilter}") { key value }
+      events: topNEventsByConnFailure(n: 6, stage:"${stageFilter}") { key value }`
     }
     case 'ttc': {
       return apNode
         ? `wlans: topNSSIDbyAvgTTC(n: 6, stage: "${stageFilter}") { key value }`
         : `nodes: topNNodebyAvgTTC(n: 6, stage: "${stageFilter}") { key value name }
         wlans: topNSSIDbyAvgTTC(n: 6, stage: "${stageFilter}") { key value }
-        osManufacturers: topNOSManufacturerTypebyTTC(n: 6, stage: "${stageFilter}") { key value }`
+        osManufacturers: topNManufacturersByTTC(n: 6, stage: "${stageFilter}") { key value }`
     }
     default: {
       return ''

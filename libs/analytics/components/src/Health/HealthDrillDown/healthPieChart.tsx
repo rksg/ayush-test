@@ -205,7 +205,15 @@ export const HealthPieChart = ({
       <UI.HealthPieChartWrapper>
         <UI.PieChartTitle>
           <b>{$t(stageLabels[selectedStage])}</b>{' '}
-          {$t({ defaultMessage: '{count} Impacted {title}' }, { count, title: titleMap[chartKey] })}
+          {chartKey === 'events'
+            ? $t(
+                { defaultMessage: '{count} {title}' },
+                { count, title: titleMap[chartKey] }
+              )
+            : $t(
+                { defaultMessage: '{count} Impacted {title}' },
+                { count, title: titleMap[chartKey] }
+              )}
         </UI.PieChartTitle>
         <div style={{ height: 260, minWidth: 430 }}>
           {(tabDetails.length > 1 )
