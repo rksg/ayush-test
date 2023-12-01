@@ -63,7 +63,7 @@ export async function initialize () {
         }
       })
 
-  if(getObj(config, 'value.status')){
+  if(getObj(config, 'value.error') || getObj(config, 'value.status')){
     const token = sessionStorage.getItem('jwt')?? null
     sessionStorage.removeItem('jwt')
 
