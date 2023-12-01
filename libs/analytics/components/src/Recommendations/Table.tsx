@@ -27,6 +27,12 @@ import * as UI from './styledComponents'
 
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
+type Metadata = { audit?: [{ failure: string }] | undefined }
+
+type RecommendationWithUpdatedMetadata = RecommendationListItem & {
+  metadata: Metadata;
+}
+
 const DateLink = ({ value }: { value: RecommendationListItem }) => {
   const { activeTab } = useParams()
   return <TenantLink to={`analytics/recommendations/${activeTab}/${value.id}`}>
@@ -34,7 +40,7 @@ const DateLink = ({ value }: { value: RecommendationListItem }) => {
   </TenantLink>
 }
 
-export const UnknownLink = ({ value }: { value: RecommendationListItem }) => {
+export const UnknownLink = ({ value }: { value: RecommendationWithUpdatedMetadata }) => {
   const { metadata, statusEnum, updatedAt, sliceValue } = value
   const paramString = getParamString(metadata, statusEnum, updatedAt, sliceValue)
   return <TenantLink to={`analytics/recommendations/crrm/unknown?${paramString}`}>
