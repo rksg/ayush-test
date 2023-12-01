@@ -151,16 +151,7 @@ export function SelectVlanModal (props: {
     setUntaggedVlanOptions(untaggedVlanOptions)
     setDisplayUntaggedVlan(untaggedVlanOptions)
 
-  }, [switchVlans])
-
-  useEffect(() => {
-    const untaggedVlanOptions = getUntaggedVlanOptions(selectTaggedVlans)
-    const taggedVlanOptions = getTaggedVlanOptions(selectUntaggedVlan)
-    setTaggedVlanOptions(taggedVlanOptions)
-    setDisplayTaggedVlan(taggedVlanOptions)
-    setUntaggedVlanOptions(untaggedVlanOptions)
-    setDisplayUntaggedVlan(untaggedVlanOptions)
-  }, [voiceVlanTmp])
+  }, [switchVlans, voiceVlanTmp])
 
   useEffect(() => {
     const isTaggedVlansChanged
