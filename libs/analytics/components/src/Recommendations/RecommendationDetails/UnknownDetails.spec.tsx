@@ -35,7 +35,7 @@ describe('Insufficient Licenses', () => {
     expect(await screen.findByText('RUCKUS AI will not be able to generate an RRM recommendation due to Venue TestInsufficientLicenses license compliance being incomplete. Ensure you have sufficient license subscriptions and have assigned licenses for all your APs to your venue to meet the 100% venue license compliance. This is a prerequisite to enable RUCKUS AI to optimize your network RRM configuration.')).toBeVisible()
   })
 
-  it('renders correctly for verification error', async () => {
+  it('renders correctly for verification error with mesh', async () => {
     jest.mocked(useLocation).mockReturnValue({
       search: `?status=verificationError&date=2023-11-09T06:00:00.000Z
       &sliceValue=TestVerificationError&extra=mesh`,
@@ -53,6 +53,26 @@ describe('Insufficient Licenses', () => {
     expect(await screen.findByText('TestVerificationError')).toBeVisible()
     // eslint-disable-next-line max-len
     expect(await screen.findByText('RUCKUS AI has detected mesh configuration in your zone and this configuration is not supported for RRM recommendations.')).toBeVisible()
+  })
+
+  it('renders correctly for verification error with global_zone_checker', async () => {
+    jest.mocked(useLocation).mockReturnValue({
+      search: `?status=verificationError&date=2023-11-09T06:00:00.000Z
+      &sliceValue=TestVerificationError&extra=global_zone_checker`,
+      state: undefined,
+      key: '',
+      pathname: '',
+      hash: ''
+    })
+
+    render(<BrowserRouter>
+      <UnknownDetails />
+    </BrowserRouter>)
+
+    expect(await screen.findByText('Verification Error')).toBeVisible()
+    expect(await screen.findByText('TestVerificationError')).toBeVisible()
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('RUCKUS AI will not be able to generate RRM recommendations as the controller version is below pre-requisite levels. Please upgrade your controller to v5.2.1 and above.')).toBeVisible()
   })
 
   it('renders correctly for verified', async () => {
