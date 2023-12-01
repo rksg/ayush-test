@@ -14,10 +14,11 @@ import {
   NetworkVenue,
   ClientIsolationVenue,
   ManagementFrameProtectionEnum,
-  GuestNetworkTypeEnum
+  GuestNetworkTypeEnum,
+  TunnelTypeEnum
 } from '@acx-ui/rc/utils'
 
-import { hasVxLanTunnelProfile } from './utils'
+import { NetworkVxLanTunnelProfileInfo } from './utils'
 
 const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => {
   let saveData = {
@@ -251,7 +252,8 @@ export function tranferSettingsToSave (data: NetworkSaveData, editMode: boolean)
   return networkSaveDataParser[data.type as keyof typeof networkSaveDataParser]
 }
 
-export function transferMoreSettingsToSave (data: NetworkSaveData, originalData: NetworkSaveData) {
+export function transferMoreSettingsToSave (data: NetworkSaveData, originalData: NetworkSaveData,
+  tunnelInfo?: NetworkVxLanTunnelProfileInfo) {
   let advancedCustomization = {
     ...originalData?.wlan?.advancedCustomization,
     ...data?.wlan?.advancedCustomization
@@ -359,7 +361,9 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     vlanId = data?.wlan?.vlanId ?? originalData?.wlan?.vlanId
   }
 
-  if (hasVxLanTunnelProfile(data) && data.type === NetworkTypeEnum.DPSK) {
+  if (tunnelInfo?.enableVxLan
+    && tunnelInfo?.tunnelType === TunnelTypeEnum.VXLAN
+    && data.type === NetworkTypeEnum.DPSK) {
     (advancedCustomization as DpskWlanAdvancedCustomization).enableAaaVlanOverride = false
   }
 

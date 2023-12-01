@@ -102,6 +102,8 @@ export function MspRecCustomers () {
     }
   })
 
+  const techPartnerAssignEcsEanbled = useIsSplitOn(Features.TECH_PARTNER_ASSIGN_ECS)
+
   useEffect(() => {
     if (techPartners?.data) {
       setTechPartnerData(techPartners?.data)
@@ -235,7 +237,9 @@ export function MspRecCustomers () {
       }
     },
     ...(isIntegrator || userProfile?.support ? [] : [{
-      title: $t({ defaultMessage: 'Integrator Count' }),
+      title: techPartnerAssignEcsEanbled
+        ? $t({ defaultMessage: 'Integrator Count' })
+        : $t({ defaultMessage: 'Integrator' }),
       dataIndex: 'integrator',
       key: 'integrator',
       onCell: (data: MspEc) => {
@@ -248,7 +252,7 @@ export function MspRecCustomers () {
         } : {}
       },
       render: function (_: React.ReactNode, row: MspEc) {
-        const val = row.integratorCount !== undefined
+        const val = (techPartnerAssignEcsEanbled && row.integratorCount !== undefined)
           ? mspUtils.transformTechPartnerCount(row.integratorCount)
           : row?.integrator ? mspUtils.transformTechPartner(row.integrator, techParnersData)
             : noDataDisplay
@@ -259,7 +263,9 @@ export function MspRecCustomers () {
       }
     }]),
     ...(isIntegrator || userProfile?.support ? [] : [{
-      title: $t({ defaultMessage: 'Installer Count' }),
+      title: techPartnerAssignEcsEanbled
+        ? $t({ defaultMessage: 'Installer Count' })
+        : $t({ defaultMessage: 'Installer' }),
       dataIndex: 'installer',
       key: 'installer',
       onCell: (data: MspEc) => {
@@ -273,7 +279,7 @@ export function MspRecCustomers () {
         } : {}
       },
       render: function (_: React.ReactNode, row: MspEc) {
-        const val = row.installerCount !== undefined
+        const val = (techPartnerAssignEcsEanbled && row.installerCount !== undefined)
           ? mspUtils.transformTechPartnerCount(row.installerCount)
           : row?.installer ? mspUtils.transformTechPartner(row.installer, techParnersData)
             : noDataDisplay

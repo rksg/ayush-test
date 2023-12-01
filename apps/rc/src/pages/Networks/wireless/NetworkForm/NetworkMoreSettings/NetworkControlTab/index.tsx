@@ -15,18 +15,19 @@ import {
   ServiceType,
   WifiCallingSetting,
   WifiCallingSettingContextType,
-  getServiceDetailsLink } from '@acx-ui/rc/utils'
+  getServiceDetailsLink,
+  TunnelTypeEnum } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
-import NetworkFormContext                             from '../../NetworkFormContext'
-import { hasAccountingRadius, hasVxLanTunnelProfile } from '../../utils'
-import { AccessControlForm }                          from '../AccessControlForm'
-import ClientIsolationForm                            from '../ClientIsolation/ClientIsolationForm'
-import { DhcpOption82Form }                           from '../DhcpOption82Form'
-import { DnsProxyModal }                              from '../DnsProxyModal'
-import * as UI                                        from '../styledComponents'
-import { WifiCallingSettingModal }                    from '../WifiCallingSettingModal'
-import WifiCallingSettingTable                        from '../WifiCallingSettingTable'
+import NetworkFormContext                                        from '../../NetworkFormContext'
+import { hasAccountingRadius, useNetworkVxLanTunnelProfileInfo } from '../../utils'
+import { AccessControlForm }                                     from '../AccessControlForm'
+import ClientIsolationForm                                       from '../ClientIsolation/ClientIsolationForm'
+import { DhcpOption82Form }                                      from '../DhcpOption82Form'
+import { DnsProxyModal }                                         from '../DnsProxyModal'
+import * as UI                                                   from '../styledComponents'
+import { WifiCallingSettingModal }                               from '../WifiCallingSettingModal'
+import WifiCallingSettingTable                                   from '../WifiCallingSettingTable'
 
 
 export const DnsProxyContext = createContext({} as DnsProxyContextType)
@@ -93,11 +94,11 @@ export function NetworkControlTab (props: { wlanData: NetworkSaveData | null }) 
     return Promise.resolve()
   }
 
-  const showTunnelProfile = hasVxLanTunnelProfile(data)
+  const { enableVxLan: showTunnelProfile, tunnelType } = useNetworkVxLanTunnelProfileInfo(data)
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const tunnelProfileDefaultPayload = {
-    fields: ['name', 'id'],
+    fields: ['name', 'id', 'type'],
     pageSize: 10000,
     sortField: 'name',
     sortOrder: 'ASC'
@@ -109,7 +110,12 @@ export function NetworkControlTab (props: { wlanData: NetworkSaveData | null }) 
     skip: !isEdgeEnabled || !isEdgeReady,
     selectFromResult: ({ data, isLoading }) => {
       return {
-        tunnelOptions: data?.data.map(item => ({ label: item.name, value: item.id })),
+        tunnelOptions: data?.data
+          .filter(item =>
+          // due to 'type' might be empty(=== TunnelTypeEnum.VXLAN)
+            (tunnelType === TunnelTypeEnum.VLAN_VXLAN && item.type === TunnelTypeEnum.VLAN_VXLAN)
+          || (tunnelType === TunnelTypeEnum.VXLAN && item.type !== TunnelTypeEnum.VLAN_VXLAN))
+          .map(item => ({ label: item.name, value: item.id })),
         isLoading
       }
     }
@@ -303,7 +309,7 @@ export function NetworkControlTab (props: { wlanData: NetworkSaveData | null }) 
 
       <AccessControlForm/>
 
-      { showTunnelProfile &&
+      { showTunnelProfile && tunnelType === TunnelTypeEnum.VXLAN &&
       <Form.Item
         name={['wlan','advancedCustomization','tunnelProfileId']}
         label={$t({ defaultMessage: 'Tunnel Profile' })}
@@ -317,7 +323,7 @@ export function NetworkControlTab (props: { wlanData: NetworkSaveData | null }) 
       />
       }
 
-      { showTunnelProfile &&
+      { showTunnelProfile && tunnelType === TunnelTypeEnum.VXLAN &&
         <Space size={1}>
           <UI.InfoIcon />
           <UI.Description>
