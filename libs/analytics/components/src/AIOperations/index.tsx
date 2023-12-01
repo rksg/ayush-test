@@ -47,9 +47,10 @@ function AIOperationsWidget ({
     />
   }
 
-  const noLicense = data?.recommendations.every(
-    recommendation => recommendation.status === 'insufficientLicenses')
-  const hasNew = data?.recommendations?.filter(i => i.status === 'new').length
+  const noLicense = data?.recommendations.length !== 0 ? data?.recommendations.every(
+    recommendation => recommendation.status === 'insufficientLicenses'
+  ) : false
+  const hasNew = data?.recommendations?.some(i => i.status === 'new')
   const filteredRecommendations = data?.recommendations.filter(
     i => i.code !== 'unknown' )
 
@@ -69,7 +70,7 @@ function AIOperationsWidget ({
     <Card
       title={title}
       onArrowClick={onArrowClick}
-      subTitle={(!noLicense || !noData || hasNew) ? '' : subtitle($t)}
+      subTitle={(noLicense || noData || !hasNew) ? '' : subtitle($t)}
     >{
         noLicense ? <NoAiOpsLicense />
           : noData

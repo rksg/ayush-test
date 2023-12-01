@@ -41,7 +41,7 @@ exports[`NoRecommendationData should render correctly with the prop 1`] = `
       data-testid="CheckMarkCircleSolid"
     />
     <p>
-      Your network is already running in an optimal configuration and we dont have any AI Operations to recommend recently.
+      Your network is already running in an optimal configuration and we don’t have any AI Operations to recommend recently.
     </p>
   </div>
 </DocumentFragment>

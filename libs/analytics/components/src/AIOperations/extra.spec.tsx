@@ -7,9 +7,7 @@ import { NoAiOpsLicense, NoRecommendationData } from './extra'
 describe('NoRecommendationData', () => {
   it('should render correctly with the prop', () => {
     // eslint-disable-next-line max-len
-    const { asFragment } = render(<NoRecommendationData
-      text='Your network is already running in an optimal configuration and we dont
-      have any AI Operations to recommend recently.'/>)
+    const { asFragment } = render(<NoRecommendationData />)
     expect(asFragment()).toMatchSnapshot()
   })
 })
@@ -17,11 +15,7 @@ describe('NoRecommendationData', () => {
 describe('NoAiOpsLicense', () => {
   it('should render correctly with the prop', () => {
     const { asFragment } = render(<BrowserRouter>
-      <NoAiOpsLicense
-        text='RUCKUS AI cannot analyse your zone due to inadequate licenses.
-        Please ensure you have licenses fully applied for the zone for AI Operations
-        optimizations.'
-      />
+      <NoAiOpsLicense />
     </BrowserRouter>)
     expect(asFragment()).toMatchSnapshot()
     const button = screen.getByRole('button', {

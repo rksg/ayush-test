@@ -49,8 +49,9 @@ function AIDrivenRRMWidget ({
     />
   }
 
-  const noLicense = data?.recommendations.every(
-    recommendation => recommendation.status === 'insufficientLicenses')
+  const noLicense = data?.recommendations.length !== 0 ? data?.recommendations.every(
+    recommendation => recommendation.status === 'insufficientLicenses'
+  ) : false
 
   const subtitle = $t(
     {
