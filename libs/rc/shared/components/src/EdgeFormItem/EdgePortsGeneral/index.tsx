@@ -156,14 +156,14 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
   const handleCorePortChange = (changedPortName: string, changedValue: StoreValue,
     index: number) => {
     let valToSet
-    if (changedValue === true) {
-      valToSet = false
+    if (changedValue === false) {
+      valToSet = ''
     } else {
-      const initialNatEnabledValue = data[index]?.natEnabled
-      valToSet = initialNatEnabledValue
+      const initialGWValue = data[index]?.gateway
+      valToSet = initialGWValue
     }
 
-    form.setFieldValue([changedPortName, 0, 'natEnabled'], valToSet)
+    form.setFieldValue([changedPortName, 0, 'gateway'], valToSet)
   }
 
   const handleFinish = async () => {

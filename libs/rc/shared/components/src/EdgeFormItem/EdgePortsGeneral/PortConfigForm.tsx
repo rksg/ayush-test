@@ -1,13 +1,31 @@
 import { useCallback, useLayoutEffect } from 'react'
 
-import { Checkbox, Col, Form, FormInstance, Input, Radio, Row, Select, Space, Switch } from 'antd'
-import TextArea                                                                        from 'antd/lib/input/TextArea'
-import _                                                                               from 'lodash'
-import { useIntl }                                                                     from 'react-intl'
+import {
+  Checkbox,
+  Col,
+  Form,
+  FormInstance,
+  Input,
+  Radio,
+  Row,
+  Select,
+  Space,
+  Switch
+} from 'antd'
+import TextArea    from 'antd/lib/input/TextArea'
+import _           from 'lodash'
+import { useIntl } from 'react-intl'
 
-import { StepsFormLegacy, Tooltip }                                                                                                              from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                                from '@acx-ui/feature-toggle'
-import { EdgeIpModeEnum, EdgePortWithStatus, EdgePortTypeEnum, isSubnetOverlap, serverIpAddressRegExp, subnetMaskIpRegExp, edgePortIpValidator } from '@acx-ui/rc/utils'
+import { StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import {
+  EdgeIpModeEnum,
+  EdgePortWithStatus,
+  EdgePortTypeEnum,
+  isSubnetOverlap,
+  serverIpAddressRegExp,
+  subnetMaskIpRegExp,
+  edgePortIpValidator
+} from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
@@ -51,12 +69,38 @@ const getEnabledCorePortMac = (form: FormInstance) => {
   return corePort
 }
 
+const getLANPortGatewayRenderState = (form: FormInstance, portMac: string): {
+  visible: boolean,
+  disabled: boolean
+} => {
+  const allValues = form.getFieldsValue(true) as EdgePortConfigFormType
+  const lanCorePort = Object.keys(allValues)
+    .filter(portFormIdx => {
+      let portValues = allValues[portFormIdx][0]
+      return portValues.enabled
+        && portValues.corePortEnabled
+        && portValues.portType === EdgePortTypeEnum.LAN
+    })
+
+  const wanPortExist = Object.values(allValues)
+    .filter(port =>
+      port[0].enabled && port[0].portType === EdgePortTypeEnum.WAN
+    ).length > 0
+
+  return {
+    // visible: once a LAN selected as core port its gateway field should display,
+    // other LAN ports gateway field should be hidden
+    visible: lanCorePort.length > 0 && allValues[lanCorePort[0]][0].mac === portMac,
+    // disabled: when WAN port is enabled
+    disabled: wanPortExist
+  }
+}
+
 const { useWatch, useFormInstance } = Form
 
 export const PortConfigForm = (props: ConfigFormProps) => {
   const { index, formListKey, isEdgeSdLanRun } = props
   const { $t } = useIntl()
-  const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
   const form = useFormInstance<EdgePortConfigFormType>()
 
   const getFieldPath = useCallback((fieldName: string) =>
@@ -147,6 +191,32 @@ export const PortConfigForm = (props: ConfigFormProps) => {
             ]}
             children={<Input />}
           />
+          <Form.Item
+            noStyle
+            shouldUpdate={(prev, cur) => {
+              return _.get(prev, getFieldFullPath('corePortEnabled'))
+                !== _.get(cur, getFieldFullPath('corePortEnabled'))
+                || _.get(prev, getFieldFullPath('enabled'))
+                !== _.get(cur, getFieldFullPath('enabled'))
+            }}
+          >
+            {() => {
+              const gwRenderState = getLANPortGatewayRenderState(form, mac)
+
+              return gwRenderState.visible
+                ? <Form.Item
+                  name={getFieldPath('gateway')}
+                  label={$t({ defaultMessage: 'Gateway' })}
+                  validateFirst
+                  rules={[
+                    { required: !gwRenderState.disabled },
+                    { validator: (_, value) => serverIpAddressRegExp(value) }
+                  ]}
+                  children={<Input disabled={gwRenderState.disabled} />}
+                />
+                : null
+            }}
+          </Form.Item>
         </>
       )
     } else if(portType === EdgePortTypeEnum.WAN) {
@@ -214,28 +284,11 @@ export const PortConfigForm = (props: ConfigFormProps) => {
           }
           <StepsFormLegacy.FieldLabel width='120px'>
             {$t({ defaultMessage: 'Use NAT Service' })}
-            {isEdgeSdLanReady
-              ? <Form.Item
-                noStyle
-                shouldUpdate={(prev, cur) => {
-                  return _.get(prev, getFieldFullPath('corePortEnabled'))
-                  !== _.get(cur, getFieldFullPath('corePortEnabled'))
-                }}
-              >
-                { ({ getFieldValue }) => {
-                  const corePortEnabled = getFieldValue(getFieldFullPath('corePortEnabled'))
-                  return <Form.Item
-                    name={getFieldPath('natEnabled')}
-                    valuePropName='checked'
-                    children={<Switch disabled={corePortEnabled}/>}
-                  />
-                }}
-              </Form.Item>
-              : <Form.Item
-                name={getFieldPath('natEnabled')}
-                valuePropName='checked'
-                children={<Switch />}
-              />}
+            <Form.Item
+              name={getFieldPath('natEnabled')}
+              valuePropName='checked'
+              children={<Switch />}
+            />
           </StepsFormLegacy.FieldLabel>
         </>
       )
@@ -286,7 +339,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
               const _ipMode = getFieldValue(getFieldFullPath('ipMode'))
               return (_portType === EdgePortTypeEnum.LAN || _portType === EdgePortTypeEnum.WAN) ? (
                 <>
-                  {isEdgeSdLanReady &&
+                  {_portType === EdgePortTypeEnum.LAN &&
                     <Form.Item
                       name={getFieldPath('corePortEnabled')}
                       valuePropName='checked'

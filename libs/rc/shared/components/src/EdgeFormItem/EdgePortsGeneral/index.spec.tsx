@@ -13,7 +13,7 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { mockedCorePortLostEdgeSdLanDataList, mockedEdgeSdLanDataList, mockEdgePortConfigWithStatusIp } from '../__tests__/fixtures'
+import { mockedCorePortLostEdgeSdLanDataList, mockedEdgeSdLanDataList, mockEdgeOnlyLanPortConfig, mockEdgePortConfigWithStatusIp } from '../__tests__/fixtures'
 
 import { EdgePortsGeneral } from './'
 
@@ -436,19 +436,53 @@ describe('EditEdge ports - SD-LAN ready', () => {
     await waitFor(() => {
       expect(mockedGetSdLanReq).toBeCalled()
     })
-    const corePortInput = await screen.findByRole('checkbox',
-      { name: /Use this port as Core Port/ })
-    expect(corePortInput).toBeChecked()
-    expect(corePortInput).not.toBeDisabled()
+
+    // should be hidden when port type is WAN.
+    await screen.findByText(/00:0c:29:b6:ad:04/i)
+    expect(screen.queryByRole('checkbox', { name: /Use this port as Core Port/ })).toBeNull()
 
     await userEvent.click(await screen.findByRole('tab', { name: 'Port 2' }))
     const port2CorePort = await screen.findByRole('checkbox',
       { name: /Use this port as Core Port/ })
-    expect(port2CorePort).not.toBeChecked()
-    expect(port2CorePort).toBeDisabled()
+    expect(port2CorePort).toBeChecked()
+    expect(port2CorePort).not.toBeDisabled()
+    expect(await screen.findByRole('textbox', { name: 'Gateway' })).toBeDisabled()
   })
 
-  it('should disable NAT when core port is changed into enabled', async () => {
+  it('should recover gateway configure to its origin data', async () => {
+    render(
+      <Provider>
+        <EdgePortsGeneral data={mockEdgeOnlyLanPortConfig.ports} />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        }
+      })
+
+    await screen.findByText(/00:00:00:00:00:00/i)
+    let gw = await screen.findByRole('textbox', { name: 'Gateway' })
+    expect(gw).toHaveValue('2.2.2.2')
+    expect(gw).not.toBeDisabled()
+
+    // unselect port 1
+    const corePortCheckbox = await screen.findByRole('checkbox',
+      { name: /Use this port as Core Port/ })
+    await userEvent.click(corePortCheckbox)
+    expect(screen.queryByRole('textbox', { name: 'Gateway' })).toBeNull()
+
+    // select port 1 as core port again
+    await userEvent.click(corePortCheckbox)
+    expect(corePortCheckbox).toBeChecked()
+    gw = await screen.findByRole('textbox', { name: 'Gateway' })
+    expect(gw).toHaveValue('2.2.2.2')
+    expect(gw).not.toBeDisabled()
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply Ports General' }))
+    await waitFor(() => expect(mockedUpdateReq).toBeCalledWith(mockEdgeOnlyLanPortConfig))
+  })
+
+  it.skip('should disable NAT when core port is changed into enabled', async () => {
     render(
       <Provider>
         <EdgePortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
@@ -479,7 +513,7 @@ describe('EditEdge ports - SD-LAN ready', () => {
     expect(port5nat).not.toBeChecked()
   })
 
-  it('should grey-out all core port checkbox when SD-LAN is running and wll set', async () => {
+  it('should grey-out all LAN core port checkbox when SD-LAN is running and wll set', async () => {
     mockServer.use(
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
@@ -500,21 +534,24 @@ describe('EditEdge ports - SD-LAN ready', () => {
         }
       })
 
-    await waitFor(() => {
-      expect(mockedGetSdLanReq).toBeCalled()
-    })
-    const corePortInput = await screen.findByRole('checkbox',
-      { name: /Use this port as Core Port/ })
-    expect(corePortInput).toBeChecked()
-    await waitFor(() => {
-      expect(corePortInput).toBeDisabled()
-    })
-
     await userEvent.click(await screen.findByRole('tab', { name: 'Port 2' }))
     const port2CorePort = await screen.findByRole('checkbox',
       { name: /Use this port as Core Port/ })
-    expect(port2CorePort).not.toBeChecked()
-    expect(port2CorePort).toBeDisabled()
+    expect(port2CorePort).toBeChecked()
+    await waitFor(() => {
+      expect(port2CorePort).toBeDisabled()
+    })
+    await screen.findByRole('textbox', { name: 'Gateway' })
+
+    await userEvent.click(await screen.findByRole('tab', { name: 'Port 3' }))
+    const port3CorePort = await screen.findByRole('checkbox',
+      { name: /Use this port as Core Port/ })
+    expect(port3CorePort).not.toBeChecked()
+    expect(port3CorePort).toBeDisabled()
+
+    // should render LAN port gateway only when it is core port
+    const port3GW = screen.queryByRole('textbox', { name: 'Gateway' })
+    expect(port3GW).toBeNull()
   })
 
   it('display reminder when port type changed when SD-LAN is running', async () => {
@@ -551,7 +588,7 @@ describe('EditEdge ports - SD-LAN ready', () => {
   // eslint-disable-next-line max-len
   it('should allow user config another core port when core port is missing from SD-LAN', async () => {
     const emptyCorePortConfig = _.cloneDeep(mockEdgePortConfigWithStatusIp)
-    emptyCorePortConfig.ports.splice(0, 1)
+    emptyCorePortConfig.ports.splice(1, 1)
     mockServer.use(
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
@@ -574,15 +611,48 @@ describe('EditEdge ports - SD-LAN ready', () => {
     await waitFor(() => {
       expect(mockedGetSdLanReq).toBeCalled()
     })
-    const corePortInput = await screen.findByRole('checkbox',
-      { name: /Use this port as Core Port/ })
-    expect(corePortInput).not.toBeChecked()
-    expect(corePortInput).not.toBeDisabled()
+
+    // core port should be hidden when port type is WAN.
+    await screen.findByText(/00:0c:29:b6:ad:04/i)
+    expect(screen.queryByRole('checkbox', { name: /Use this port as Core Port/ })).toBeNull()
 
     await userEvent.click(await screen.findByRole('tab', { name: 'Port 2' }))
     const port2CorePort = await screen.findByRole('checkbox',
       { name: /Use this port as Core Port/ })
     expect(port2CorePort).not.toBeChecked()
     expect(port2CorePort).not.toBeDisabled()
+  })
+
+  it('should clear gateway after core port unselected', async () => {
+    render(
+      <Provider>
+        <EdgePortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        }
+      })
+
+    await screen.findByText(/00:0c:29:b6:ad:04/i)
+    // disabled WAN port
+    await userEvent.click(await screen.findByRole('switch', { name: 'Port Enabled' }))
+
+    await userEvent.click(await screen.findByRole('tab', { name: 'Port 2' }))
+    const port2CorePort = await screen.findByRole('checkbox',
+      { name: /Use this port as Core Port/ })
+    const gw = await screen.findByRole('textbox', { name: 'Gateway' })
+    expect(gw).not.toBeDisabled()
+
+    // unselect core port
+    await userEvent.click(port2CorePort)
+    expect(gw).not.toBeVisible()
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply Ports General' }))
+    const expectedResult = _.cloneDeep(mockEdgePortConfigWithStatusIp)
+    expectedResult.ports[0].enabled = false
+    expectedResult.ports[1].corePortEnabled = false
+    expectedResult.ports[1].gateway = ''
+    await waitFor(() => expect(mockedUpdateReq).toBeCalledWith(expectedResult))
   })
 })

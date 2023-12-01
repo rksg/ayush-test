@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 import { EdgeSdLanViewData, EdgeIpModeEnum, EdgePortTypeEnum } from '@acx-ui/rc/utils'
 
 export const mockEdgePortConfig = {
@@ -13,7 +15,7 @@ export const mockEdgePortConfig = {
       ip: '1.1.1.1',
       subnet: '255.255.255.0',
       gateway: '1.1.1.1',
-      corePortEnabled: true
+      corePortEnabled: false
     },
     {
       id: '20b445af-7270-438d-88a3-a5a2219c377b',
@@ -25,8 +27,9 @@ export const mockEdgePortConfig = {
       ipMode: EdgeIpModeEnum.STATIC,
       ip: '2.2.2.2',
       subnet: '255.255.255.0',
-      gateway: '2.2.2.2',
-      corePortEnabled: false
+      // gateway: '2.2.2.2',
+      gateway: '',
+      corePortEnabled: true
     },
     {
       id: 'cdecd42e-81e3-4d60-921c-6b05181a53ae',
@@ -38,7 +41,8 @@ export const mockEdgePortConfig = {
       ipMode: EdgeIpModeEnum.STATIC,
       ip: '3.3.3.3',
       subnet: '255.255.255.0',
-      gateway: '3.3.3.3',
+      // gateway: '3.3.3.3',
+      gateway: '',
       corePortEnabled: false
     },
     {
@@ -51,7 +55,8 @@ export const mockEdgePortConfig = {
       ipMode: EdgeIpModeEnum.STATIC,
       ip: '4.4.4.4',
       subnet: '255.255.255.0',
-      gateway: '4.4.4.4',
+      // gateway: '4.4.4.4',
+      gateway: '',
       corePortEnabled: false
     },
     {
@@ -61,23 +66,10 @@ export const mockEdgePortConfig = {
       enabled: true,
       portType: EdgePortTypeEnum.LAN,
       natEnabled: true,
-      ipMode: EdgeIpModeEnum.DHCP,
+      ipMode: EdgeIpModeEnum.STATIC,
       ip: '5.5.5.5',
       subnet: '255.255.255.0',
-      gateway: '5.5.5.5',
-      corePortEnabled: false
-    },
-    {
-      id: '081a71a7-aaad-4a13-967b-1c82166de110',
-      name: 'port3',
-      mac: '00:0c:29:b6:ad:10',
-      enabled: true,
-      portType: EdgePortTypeEnum.WAN,
-      natEnabled: true,
-      ipMode: EdgeIpModeEnum.STATIC,
-      ip: '10.10.10.10',
-      subnet: '255.255.255.0',
-      gateway: '10.10.10.10',
+      gateway: '',
       corePortEnabled: false
     }
   ]
@@ -104,13 +96,13 @@ export const mockEdgePortConfigWithStatusIp = {
     {
       ...mockEdgePortConfig.ports[4],
       statusIp: '10.206.78.156'
-    },
-    {
-      ...mockEdgePortConfig.ports[5],
-      statusIp: '10.206.78.157'
     }
   ]
 }
+
+export const mockEdgeOnlyLanPortConfig = _.cloneDeep(mockEdgePortConfigWithStatusIp)
+mockEdgeOnlyLanPortConfig.ports.splice(0, 1)
+mockEdgeOnlyLanPortConfig.ports[0].gateway = '2.2.2.2'
 
 export const mockedEdgeSdLanDataList = [{
   id: 'mocked-cf-1',
