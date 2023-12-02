@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { Checkbox, Form, InputNumber, Select, Space, Switch, Tooltip } from 'antd'
 import { useIntl }                                                     from 'react-intl'
 
-import { Features, useIsSplitOn, useIsTierAllowed }                                         from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                                                       from '@acx-ui/icons'
 import { useGetNetworkSegmentationViewDataListQuery, useGetTunnelProfileViewDataListQuery } from '@acx-ui/rc/services'
 import {
@@ -95,7 +95,7 @@ export function NetworkControlTab (props: { wlanData: NetworkSaveData | null }) 
   }
 
   const { enableVxLan: showTunnelProfile, tunnelType } = useNetworkVxLanTunnelProfileInfo(data)
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const tunnelProfileDefaultPayload = {
     fields: ['name', 'id', 'type'],

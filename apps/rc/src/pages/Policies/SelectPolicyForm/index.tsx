@@ -2,7 +2,7 @@ import { Form, Radio } from 'antd'
 import { useIntl }     from 'react-intl'
 
 import { GridCol, GridRow, PageHeader, RadioCard, StepsFormLegacy, RadioCardCategory } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                    from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
 import { useGetApSnmpViewModelQuery, useGetEnhancedIdentityProviderListQuery }         from '@acx-ui/rc/services'
 import {
   PolicyType,
@@ -29,7 +29,7 @@ export default function SelectPolicyForm () {
   const tenantBasePath: Path = useTenantLink('')
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
   const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.EDGES)
   const macRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const ApSnmpPolicyTotalCount = useGetApSnmpViewModelQuery({
     params,
