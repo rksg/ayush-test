@@ -8,6 +8,7 @@ import type { Settings }                                                  from '
 import { PageHeader, RangePicker, GridRow, GridCol, Loader }              from '@acx-ui/components'
 import { DateFilter, DateRange, getDateRangeFilter, getDatePickerValues } from '@acx-ui/utils'
 
+import { BrandTable }   from './Table'
 import { useSliceType } from './useSliceType'
 
 export function Brand360 () {
@@ -45,6 +46,6 @@ export function Brand360 () {
       <GridCol col={{ span: 6 }}>brand ssid compliance</GridCol>
       <GridCol col={{ span: 6 }}>{sliceType} {JSON.stringify(settings)}</GridCol>
     </GridRow>
-    table
+    <BrandTable sliceType={sliceType} slaThreshold={settings}/>
   </Loader>
 }

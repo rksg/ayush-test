@@ -1,0 +1,148 @@
+
+import { useIntl } from 'react-intl'
+
+import { getDefaultSettings }                               from '@acx-ui/analytics/services'
+import { defaultSort, sortProp, Settings  }                 from '@acx-ui/analytics/utils'
+import { Loader, Table, TableProps, useDateRange, Tooltip } from '@acx-ui/components'
+import { formatter }                                        from '@acx-ui/formatter'
+import { useDateFilter }                                    from '@acx-ui/utils'
+
+import { useFetchBrandPropertiesQuery, Property, Common, Lsp } from './services'
+
+const pagination = { pageSize: 10, defaultPageSize: 10 }
+
+export function BrandTable ({ sliceType, slaThreshold }:
+{ sliceType: string, slaThreshold?: Partial<Settings> }) {
+  const { $t } = useIntl()
+  const { timeRange } = useDateRange()
+  const { startDate, endDate, range } = useDateFilter()
+  const requestPayload = {
+    start: timeRange[0].format(),
+    end: timeRange[1].format(),
+    filter: {},
+    startDate,
+    endDate,
+    range,
+    sliceType
+  }
+  const thresholds = slaThreshold || getDefaultSettings()
+  const thresholdP1Incidents = thresholds['sla-p1-incidents-count' as keyof typeof slaThreshold]
+  const thresholdGuestExp = thresholds['sla-guest-experience' as keyof typeof slaThreshold]
+  const thresholdSSID = thresholds['sla-brand-ssid-compliance' as keyof typeof slaThreshold]
+  const results = useFetchBrandPropertiesQuery(requestPayload)
+  const pColor = 'var(--acx-accents-blue-50)'
+  const nColor = 'var(--acx-semantics-red-50)'
+  const commonCols: TableProps<Common>['columns'] = [
+    {
+      title: $t({ defaultMessage: 'P1 Incidents Count' }),
+      dataIndex: 'p1Incidents',
+      key: 'p1Incidents',
+      sorter: { compare: sortProp('p1Incidents', defaultSort) },
+      render: (_, row: Common) =>
+        <span
+          style={{
+            color: row?.p1Incidents < parseInt(thresholdP1Incidents as string, 10)
+              ? pColor : nColor
+          }}
+        >
+          {formatter('countFormat')(row?.p1Incidents)}
+        </span>
+    },
+    {
+      title: $t({ defaultMessage: 'Guest Experience' }),
+      dataIndex: 'guestExp',
+      key: 'guestExp',
+      sorter: { compare: sortProp('guestExp', defaultSort) },
+      render: (_, row: Common) => <Tooltip
+        placement='top'
+        title={$t({
+          // eslint-disable-next-line max-len
+          defaultMessage: 'Average Connection Success: {avgConnSuccess}{nl} Average Time to Connect: {avgTTC}{nl} Average Client Throughput: {avgClientThroughput}'
+        }, {
+          avgConnSuccess: formatter('percentFormat')(row.avgConnSuccess),
+          avgTTC: formatter('percentFormat')(row.avgTTC),
+          avgClientThroughput: formatter('percentFormat')(row.avgClientThroughput),
+          nl: '\n'
+        })}
+      >
+        <span
+          style={{
+            color: row?.guestExp > parseFloat(thresholdGuestExp as string)/100
+              ? pColor : nColor
+          }}
+        >
+          {formatter('percentFormat')(row?.guestExp)}
+        </span>
+      </Tooltip>
+    },
+    {
+      title: $t({ defaultMessage: 'SSID Complaince' }),
+      dataIndex: 'ssidComplaince',
+      key: 'ssidComplaince',
+      sorter: { compare: sortProp('ssidComplaince', defaultSort) },
+      render: (_, row: Common) =>
+        <span
+          style={{
+            color: row?.ssidComplaince > parseFloat(thresholdSSID as string)/100
+              ? pColor : nColor
+          }}
+        >
+          {formatter('percentFormat')(row?.ssidComplaince)}
+        </span>
+    },
+    {
+      title: $t({ defaultMessage: 'Device Total' }),
+      dataIndex: 'deviceCount',
+      key: 'deviceCount',
+      sorter: { compare: sortProp('deviceCount', defaultSort) }
+    }
+  ]
+  const lspCols: TableProps<Pick<Lsp,'lsp' | 'propertyCount'>>['columns'] = [
+    {
+      title: $t({ defaultMessage: 'LSP' }),
+      dataIndex: 'lsp',
+      key: 'lsp',
+      searchable: true,
+      sorter: { compare: sortProp('lsp', defaultSort) },
+      render: (_, row: Pick<Lsp,'lsp' | 'propertyCount'>, __, highlightFn: CallableFunction) =>
+        <span>{highlightFn(row?.lsp)}</span>
+    }, {
+      title: $t({ defaultMessage: 'Property Count' }),
+      dataIndex: 'propertyCount',
+      key: 'propertyCount',
+      searchable: false,
+      sorter: { compare: sortProp('propertyCount', defaultSort) },
+      width: 100
+    }
+  ]
+  const propertyCols: TableProps<Pick<Property, 'property' | 'lsp'>>['columns'] = [{
+    title: $t({ defaultMessage: 'Property' }),
+    dataIndex: 'property',
+    key: 'property',
+    fixed: 'left',
+    searchable: true,
+    sorter: { compare: sortProp('property', defaultSort) },
+    render: (_, row: Pick<Property, 'property' | 'lsp'>, __, highlightFn: CallableFunction) =>
+      <span>{highlightFn(row?.property)}</span>
+  }, {
+    title: $t({ defaultMessage: 'LSP' }),
+    dataIndex: 'lsp',
+    key: 'lsp',
+    searchable: true,
+    sorter: { compare: sortProp('lsp', defaultSort) },
+    render: (_, row: Pick<Property, 'property' | 'lsp'>, __, highlightFn: CallableFunction) =>
+      <span>{highlightFn(row?.lsp)}</span>
+  }
+  ]
+
+  return <Loader states={[results]}>
+    <Table<Property | Lsp>
+      columns={[
+        ...(sliceType === 'lsp' ? lspCols : propertyCols), ...commonCols
+      ] as unknown as TableProps<Property | Lsp>['columns']}
+      dataSource={results.data as Property[] | Lsp[]}
+      pagination={pagination}
+      settingsId='property-list-table'
+    />
+  </Loader>
+}
