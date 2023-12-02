@@ -1,9 +1,9 @@
 import { List }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, Drawer }  from '@acx-ui/components'
-import { BetaListDetails } from '@acx-ui/feature-toggle'
-import { CaretRightList }  from '@acx-ui/icons'
+import { Button, Drawer }              from '@acx-ui/components'
+import { BetaListDetails as betaList } from '@acx-ui/feature-toggle'
+import { CaretRightList }              from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
 
@@ -27,8 +27,6 @@ export function BetaFeaturesDrawer (
 
   // eslint-disable-next-line max-len
   const sectionTitle = $t({ defaultMessage: 'Current RUCKUS One beta features: ' })
-  const betaList = BetaListDetails
-
   const footer =<div>
     <Button type='primary'
       onClick={() => {

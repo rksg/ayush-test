@@ -23,9 +23,9 @@ import {
   StepsFormLegacyInstance,
   Subtitle
 } from '@acx-ui/components'
-import { useIsSplitOn, useIsTierAllowed, Features } from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                from '@acx-ui/formatter'
-import { SearchOutlined }                           from '@acx-ui/icons'
+import { useIsSplitOn, useIsTierAllowed, Features, TierFeatures } from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                              from '@acx-ui/formatter'
+import { SearchOutlined }                                         from '@acx-ui/icons'
 import {
 } from '@acx-ui/msp/services'
 import {
