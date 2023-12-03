@@ -1,5 +1,4 @@
-import { dataApi }              from '@acx-ui/store'
-import type { AnalyticsFilter } from '@acx-ui/utils'
+import { dataApi } from '@acx-ui/store'
 
 import { fetchBrandProperties } from './__tests__/fixtures'
 
@@ -19,16 +18,12 @@ export interface Property extends Common {
 export interface Lsp extends Common {
   propertyCount: number
 }
-type Data = Property[] | Lsp[]
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    fetchBrandProperties: build.query<
-      Data,
-      AnalyticsFilter & { sliceType: string }
-    >({
-      queryFn: (payload) => {
+    fetchBrandProperties: build.query({
+      queryFn: () => {
         return {
-          data: fetchBrandProperties(payload.sliceType) as Property[] | Lsp[]
+          data: fetchBrandProperties() as Property[]
         }
       }
     })

@@ -1,37 +1,28 @@
 
 import { useIntl } from 'react-intl'
 
-import { getDefaultSettings }                               from '@acx-ui/analytics/services'
-import { defaultSort, sortProp, Settings  }                 from '@acx-ui/analytics/utils'
-import { Loader, Table, TableProps, useDateRange, Tooltip } from '@acx-ui/components'
-import { formatter }                                        from '@acx-ui/formatter'
-import { useDateFilter }                                    from '@acx-ui/utils'
+import { getDefaultSettings }               from '@acx-ui/analytics/services'
+import { defaultSort, sortProp, Settings  } from '@acx-ui/analytics/utils'
+import { Table, TableProps, Tooltip }       from '@acx-ui/components'
+import { formatter }                        from '@acx-ui/formatter'
 
-import { useFetchBrandPropertiesQuery, Property, Common, Lsp } from './services'
+import { transformToLspView }    from './__tests__/fixtures'
+import { Property, Common, Lsp } from './services'
 
 const pagination = { pageSize: 10, defaultPageSize: 10 }
 
-export function BrandTable ({ sliceType, slaThreshold }:
-{ sliceType: string, slaThreshold?: Partial<Settings> }) {
+export function BrandTable ({ sliceType, slaThreshold, data }:
+{ sliceType: string, slaThreshold?: Partial<Settings>, data: Property[] }) {
   const { $t } = useIntl()
-  const { timeRange } = useDateRange()
-  const { startDate, endDate, range } = useDateFilter()
-  const requestPayload = {
-    start: timeRange[0].format(),
-    end: timeRange[1].format(),
-    filter: {},
-    startDate,
-    endDate,
-    range,
-    sliceType
-  }
   const thresholds = slaThreshold || getDefaultSettings()
   const thresholdP1Incidents = thresholds['sla-p1-incidents-count' as keyof typeof slaThreshold]
   const thresholdGuestExp = thresholds['sla-guest-experience' as keyof typeof slaThreshold]
   const thresholdSSID = thresholds['sla-brand-ssid-compliance' as keyof typeof slaThreshold]
-  const results = useFetchBrandPropertiesQuery(requestPayload)
   const pColor = 'var(--acx-accents-blue-50)'
   const nColor = 'var(--acx-semantics-red-50)'
+  const tableData = sliceType === 'lsp'
+    ? transformToLspView(data)
+    : data
   const commonCols: TableProps<Common>['columns'] = [
     {
       title: $t({ defaultMessage: 'P1 Incidents Count' }),
@@ -135,14 +126,12 @@ export function BrandTable ({ sliceType, slaThreshold }:
   }
   ]
 
-  return <Loader states={[results]}>
-    <Table<Property | Lsp>
-      columns={[
-        ...(sliceType === 'lsp' ? lspCols : propertyCols), ...commonCols
-      ] as unknown as TableProps<Property | Lsp>['columns']}
-      dataSource={results.data as Property[] | Lsp[]}
-      pagination={pagination}
-      settingsId='property-list-table'
-    />
-  </Loader>
+  return <Table<Property | Lsp>
+    columns={[
+      ...(sliceType === 'lsp' ? lspCols : propertyCols), ...commonCols
+    ] as unknown as TableProps<Property | Lsp>['columns']}
+    dataSource={tableData as Property[] | Lsp[]}
+    pagination={pagination}
+    settingsId='property-list-table'
+  />
 }

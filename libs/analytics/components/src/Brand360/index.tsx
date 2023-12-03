@@ -8,8 +8,9 @@ import type { Settings }                                                  from '
 import { PageHeader, RangePicker, GridRow, GridCol, Loader }              from '@acx-ui/components'
 import { DateFilter, DateRange, getDateRangeFilter, getDatePickerValues } from '@acx-ui/utils'
 
-import { BrandTable }   from './Table'
-import { useSliceType } from './useSliceType'
+import { Property, useFetchBrandPropertiesQuery } from './services'
+import { BrandTable }                             from './Table'
+import { useSliceType }                           from './useSliceType'
 
 export function Brand360 () {
   const settingsQuery = useGetTenantSettingsQuery()
@@ -23,7 +24,8 @@ export function Brand360 () {
   useEffect(() => {
     setSettings(settingsQuery.data!)
   }, [settingsQuery.data])
-  return <Loader states={[settingsQuery]}>
+  const tableResults = useFetchBrandPropertiesQuery({})
+  return <Loader states={[settingsQuery, tableResults]}>
     <PageHeader
       title={$t({ defaultMessage: 'Brand 360' })}
       extra={[
@@ -46,6 +48,10 @@ export function Brand360 () {
       <GridCol col={{ span: 6 }}>brand ssid compliance</GridCol>
       <GridCol col={{ span: 6 }}>{sliceType} {JSON.stringify(settings)}</GridCol>
     </GridRow>
-    <BrandTable sliceType={sliceType} slaThreshold={settings}/>
+    <BrandTable
+      sliceType={sliceType}
+      slaThreshold={settings}
+      data={tableResults.data as Property[]}
+    />
   </Loader>
 }
