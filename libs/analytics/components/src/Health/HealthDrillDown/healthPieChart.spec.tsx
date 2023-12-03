@@ -120,7 +120,9 @@ describe('HealthPieChart', () => {
         node.setAttribute('_echarts_instance_', 'ec_mock')
         node.setAttribute('size-sensor-id', 'sensor-mock')
       })
-    expect(await screen.findByText('aaron-dot1x')).toBeVisible()
+    expect(await screen.findByText('No data to display')).toBeVisible()
+    expect(await screen.findByText('0 Impacted Venues')).toBeVisible()
+
   })
   it('should show correctly for nodes with no data', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', { data: noDataResponse })
