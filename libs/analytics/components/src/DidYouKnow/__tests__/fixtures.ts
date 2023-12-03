@@ -74,7 +74,7 @@ export const expectedResult = {
           ]
         }
       ],
-      availableFacts:  ['topApplicationsByClients', 'airtimeUtilization']
+      availableFacts: ['topApplicationsByClients', 'airtimeUtilization']
     }
   }
 }

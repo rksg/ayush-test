@@ -1,11 +1,12 @@
 import '@testing-library/jest-dom'
 
+import userEvent from '@testing-library/user-event'
+
 import { defaultNetworkPath }               from '@acx-ui/analytics/utils'
 import { dataApiURL, Provider, store }      from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 import type { PathFilter }                  from '@acx-ui/utils'
 import { DateRange }                        from '@acx-ui/utils'
-import userEvent             from '@testing-library/user-event'
 
 import { api } from './services'
 
@@ -62,7 +63,7 @@ describe('DidYouKnowWidget', () => {
       <Provider>
         <DidYouKnow filters={filters}/>
       </Provider>)
-    const regexPattern = /Top 3 applications in terms of users last week were/;
+    const regexPattern = /Top 3 applications in terms of users last week were/
     expect((await screen.findAllByText(regexPattern))?.[0]).toBeVisible()
   })
   it('should handle change in slides', async () => {
@@ -73,10 +74,10 @@ describe('DidYouKnowWidget', () => {
       <Provider>
         <DidYouKnow filters={filters}/>
       </Provider>)
-    const regexPattern = /Top 3 applications in terms of users last week were/;
+    const regexPattern = /Top 3 applications in terms of users last week were/
     expect((await screen.findAllByText(regexPattern))?.[0]).toBeVisible()
-   await userEvent.click(screen.getByText('2'))
-   expect((await screen.findAllByText('Did you know?'))?.[1]).toBeVisible()
+    await userEvent.click(screen.getByText('2'))
+    expect((await screen.findAllByText('Did you know?'))?.[1]).toBeVisible()
   })
   it('should handle error', async () => {
     jest.spyOn(console, 'error').mockImplementation(() => {})
@@ -106,21 +107,21 @@ describe('DidYouKnowWidget', () => {
 })
 describe('getCarouselFactsMap', () => {
   it('should return an empty object when passed an empty array', () => {
-    expect(getCarouselFactsMap([])).toEqual({});
-  });
+    expect(getCarouselFactsMap([])).toEqual({})
+  })
 
   it('should correctly map a single fact', () => {
-    const facts = ['fact1'];
-    const expectedMap = { 1: { facts: ['fact1'] } };
-    expect(getCarouselFactsMap(facts)).toEqual(expectedMap);
-  });
+    const facts = ['fact1']
+    const expectedMap = { 1: { facts: ['fact1'] } }
+    expect(getCarouselFactsMap(facts)).toEqual(expectedMap)
+  })
 
   it('should correctly map multiple facts', () => {
-    const facts = ['fact1', 'fact2', 'fact3'];
+    const facts = ['fact1', 'fact2', 'fact3']
     const expectedMap = {
       1: { facts: ['fact1', 'fact2'] },
       2: { facts: ['fact3'] }
-    };
-    expect(getCarouselFactsMap(facts)).toEqual(expectedMap);
-  });
-});
+    }
+    expect(getCarouselFactsMap(facts)).toEqual(expectedMap)
+  })
+})

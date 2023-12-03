@@ -1,14 +1,17 @@
+import { useCallback, useEffect, useMemo, useState } from 'react'
+
+import { isEqual } from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
+
 import { Loader, Carousel }                 from '@acx-ui/components'
 import type { DashboardFilter, PathFilter } from '@acx-ui/utils'
-import {isEqual} from 'lodash';
 
 import { factsConfig, getFactsData } from './facts'
 import {
   useFactsQuery
 } from './services'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+
 
 export { DidYouKnowWidget as DidYouKnow }
 
@@ -42,9 +45,9 @@ function DidYouKnowWidget ({
           data: getFactsData(data?.facts!, { maxFactPerSlide, maxSlideChar }),
           availableFacts: data?.availableFacts,
           initialLoadedFacts: data?.facts.map((fact) => fact.key),
-          ...rest,
+          ...rest
         }),
-        skip: !Boolean(content[offset]?.length === 0),
+        skip: !Boolean(content[offset]?.length === 0)
       }
     )
   useEffect(() => {
@@ -53,6 +56,7 @@ function DidYouKnowWidget ({
       updatedContent[offset] = data?.[0] ?? []
       setContent(updatedContent)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [offset, isSuccess, isFetching])
   useEffect(() => {
     if (content[offset]?.length === 0) {
@@ -61,13 +65,15 @@ function DidYouKnowWidget ({
   }, [offset, content, refetch])
   useEffect(() => {
     if (initialLoadedFacts && availableFacts) {
-      const newMap = getCarouselFactsMap(availableFacts.filter((item) => !initialLoadedFacts.includes(item as keyof typeof factsConfig)));
-      newMap[0] = { facts: initialLoadedFacts };
+      const newMap = getCarouselFactsMap(availableFacts.filter((item) =>
+        !initialLoadedFacts.includes(item as keyof typeof factsConfig)))
+      newMap[0] = { facts: initialLoadedFacts }
       if (!isEqual(carouselFactsMap, newMap)) {
-        setCarouselFactsMap(newMap);
+        setCarouselFactsMap(newMap)
       }
     }
-  }, [initialLoadedFacts]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialLoadedFacts])
 
   const { $t } = intl
   const title = $t({ defaultMessage: 'Did you know?' })
@@ -82,24 +88,24 @@ function DidYouKnowWidget ({
     slidesToScroll: 1,
     autoplay: false,
     autoplaySpeed: 10000
-  }), []);
+  }), [])
 
   const onChange = useCallback((_: number, nextSlide: number) => {
-    setOffset(nextSlide);
-  }, []);
+    setOffset(nextSlide)
+  }, [])
 
   return (
-    <Loader states={[{isLoading: isFetching || isLoading}]}>
+    <Loader states={[{ isLoading: isFetching || isLoading }]}>
       <AutoSizer>
         {({ height, width }) => (
-            <Carousel contentList={content.length ? content : [[noData]]}
-              title={title}
-              subTitle={!content[offset].length ? subTitle : undefined}
-              {...carouselProps}
-              classList={content.length ? 'carousel-card' : 'carousel-card no-data'}
-              beforeChange={onChange}
-              offset={offset}
-              style={{ height, width }} ></Carousel>
+          <Carousel contentList={content.length ? content : [[noData]]}
+            title={title}
+            subTitle={!content[offset].length ? subTitle : undefined}
+            {...carouselProps}
+            classList={content.length ? 'carousel-card' : 'carousel-card no-data'}
+            beforeChange={onChange}
+            offset={offset}
+            style={{ height, width }} ></Carousel>
         )}
       </AutoSizer>
     </Loader>

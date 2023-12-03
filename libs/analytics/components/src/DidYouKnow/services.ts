@@ -25,24 +25,24 @@ export const api = dataApi.injectEndpoints({
         availableFacts: string[]
       },
       (PathFilter | DashboardFilter) & { requestedList: string[] }
-    >({
-      query: (payload) => {
-        const useFilter = 'filter' in payload
-        let variables: (Partial<PathFilter> | Partial<DashboardFilter>) & {
+        >({
+          query: (payload) => {
+            const useFilter = 'filter' in payload
+            let variables: (Partial<PathFilter> | Partial<DashboardFilter>) & {
           requestedList: string[]
         }
-        if (useFilter) {
-          variables = {
-            startDate: payload.startDate,
-            endDate: payload.endDate,
-            ...getFilterPayload(payload),
-            requestedList: payload.requestedList,
-          }
-        } else {
-          variables = _.pick(payload, ['path', 'startDate', 'endDate', 'requestedList'])
-        }
-        return {
-          document: gql`
+            if (useFilter) {
+              variables = {
+                startDate: payload.startDate,
+                endDate: payload.endDate,
+                ...getFilterPayload(payload),
+                requestedList: payload.requestedList
+              }
+            } else {
+              variables = _.pick(payload, ['path', 'startDate', 'endDate', 'requestedList'])
+            }
+            return {
+              document: gql`
           query Facts(
             ${useFilter ? '$filter: FilterInput' : ''},
             $path: [HierarchyNodeInput]
@@ -60,15 +60,15 @@ export const api = dataApi.injectEndpoints({
             }
           }
           `,
-          variables,
-        }
-      },
-      transformResponse: (response: Response<DidYouKnowData[]>) => ({
-        facts: response.network.hierarchyNode.facts,
-        availableFacts: response.network.hierarchyNode.availableFacts,
-      }),
-    }),
-  }),
+              variables
+            }
+          },
+          transformResponse: (response: Response<DidYouKnowData[]>) => ({
+            facts: response.network.hierarchyNode.facts,
+            availableFacts: response.network.hierarchyNode.availableFacts
+          })
+        })
+  })
 })
 
 export const { useFactsQuery } = api
