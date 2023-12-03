@@ -4,7 +4,7 @@ import { Loader, Carousel }                 from '@acx-ui/components'
 import type { DashboardFilter, PathFilter } from '@acx-ui/utils'
 import {isEqual} from 'lodash';
 
-import { getFactsData } from './facts'
+import { factsConfig, getFactsData } from './facts'
 import {
   useFactsQuery
 } from './services'
@@ -17,10 +17,10 @@ type DidYouKnowWidgetProps = {
   maxFactPerSlide?: number
   maxSlideChar?: number
 }
-const getCarouselFactsMap = (facts: string[]) => {
+export const getCarouselFactsMap = (facts: string[]) => {
   let map: Record<number, { facts: string[] }> = {}
   for (let i = 0; i < facts.length; i += 2) {
-    map[i / 2] = { facts: facts.slice(i, i + 2) }
+    map[i / 2 + 1] = { facts: facts.slice(i, i + 2) }
   }
   return map
 }
@@ -32,9 +32,8 @@ function DidYouKnowWidget ({
 }: DidYouKnowWidgetProps) {
   const intl = useIntl()
   const [offset, setOffset] = useState(0)
-  const [content, setContent] = useState<any>(Array.from({ length: 5 }, () => []))
+  const [content, setContent] = useState<string[][]>(Array.from({ length: 5 }, () => []))
   const [carouselFactsMap, setCarouselFactsMap] = useState<Record<number, { facts: string[] }>>({})
-
   const { data, isFetching, refetch, isSuccess, isLoading, initialLoadedFacts, availableFacts } =
     useFactsQuery(
       { ...filters, requestedList: carouselFactsMap?.[offset]?.facts },
@@ -48,30 +47,27 @@ function DidYouKnowWidget ({
         skip: !Boolean(content[offset]?.length === 0),
       }
     )
-
   useEffect(() => {
     if (data && isSuccess && !isFetching) {
       const updatedContent = [...content]
-      updatedContent[offset] = data?.[0]
+      updatedContent[offset] = data?.[0] ?? []
       setContent(updatedContent)
     }
   }, [offset, isSuccess, isFetching])
-
   useEffect(() => {
     if (content[offset]?.length === 0) {
       refetch()
     }
   }, [offset, content, refetch])
-
   useEffect(() => {
     if (initialLoadedFacts && availableFacts) {
-      const newMap = getCarouselFactsMap(availableFacts);
+      const newMap = getCarouselFactsMap(availableFacts.filter((item) => !initialLoadedFacts.includes(item as keyof typeof factsConfig)));
       newMap[0] = { facts: initialLoadedFacts };
       if (!isEqual(carouselFactsMap, newMap)) {
         setCarouselFactsMap(newMap);
       }
     }
-  }, [initialLoadedFacts, availableFacts, carouselFactsMap]);
+  }, [initialLoadedFacts]);
 
   const { $t } = intl
   const title = $t({ defaultMessage: 'Did you know?' })

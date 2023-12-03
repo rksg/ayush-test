@@ -5,10 +5,11 @@ import { dataApiURL, Provider, store }      from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 import type { PathFilter }                  from '@acx-ui/utils'
 import { DateRange }                        from '@acx-ui/utils'
+import userEvent             from '@testing-library/user-event'
 
 import { api } from './services'
 
-import { DidYouKnow } from './index'
+import { DidYouKnow, getCarouselFactsMap } from './index'
 
 const filters: PathFilter = {
   startDate: '2022-01-01T00:00:00+08:00',
@@ -39,7 +40,7 @@ const sample = [
     ],
     labels: []
   }]
-
+const availableFacts = ['topApplicationsByClients', 'airtimeUtilization']
 describe('DidYouKnowWidget', () => {
 
   beforeEach(() =>
@@ -48,39 +49,78 @@ describe('DidYouKnowWidget', () => {
 
   it('should render loader', () => {
     mockGraphqlQuery(dataApiURL, 'Facts', {
-      data: { network: { hierarchyNode: { facts: sample } } }
+      data: { network: { hierarchyNode: { facts: sample, availableFacts } } }
     })
     render(<Provider> <DidYouKnow filters={filters}/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
-  it('should render chart', async () => {
+  it('should render carousel with intial facts', async () => {
     mockGraphqlQuery(dataApiURL, 'Facts', {
-      data: { network: { hierarchyNode: { facts: sample } } }
+      data: { network: { hierarchyNode: { facts: sample, availableFacts } } }
     })
-    const { asFragment } =render(
+    render(
       <Provider>
         <DidYouKnow filters={filters}/>
       </Provider>)
-    await screen.findByText('Did you know?')
-    // eslint-disable-next-line testing-library/no-node-access
-    expect(asFragment().querySelector('.carousel-card')).not.toBeNull()
+    const regexPattern = /Top 3 applications in terms of users last week were/;
+    expect((await screen.findAllByText(regexPattern))?.[0]).toBeVisible()
   })
-  it('should render error', async () => {
+  it('should handle change in slides', async () => {
+    mockGraphqlQuery(dataApiURL, 'Facts', {
+      data: { network: { hierarchyNode: { facts: sample, availableFacts } } }
+    })
+    render(
+      <Provider>
+        <DidYouKnow filters={filters}/>
+      </Provider>)
+    const regexPattern = /Top 3 applications in terms of users last week were/;
+    expect((await screen.findAllByText(regexPattern))?.[0]).toBeVisible()
+   await userEvent.click(screen.getByText('2'))
+   expect((await screen.findAllByText('Did you know?'))?.[1]).toBeVisible()
+  })
+  it('should handle error', async () => {
     jest.spyOn(console, 'error').mockImplementation(() => {})
     mockGraphqlQuery(dataApiURL, 'Facts', {
       error: new Error('something went wrong!')
     })
     render(<Provider><DidYouKnow filters={filters}/></Provider>)
-    await screen.findByText('Something went wrong.')
+    expect((await screen.findAllByText('No data to report'))?.[0]).toBeVisible()
+    jest.resetAllMocks()
+  })
+  it('should render empty availableFacts', async () => {
+    mockGraphqlQuery(dataApiURL, 'Facts', {
+      data: { network: { hierarchyNode: { facts: [], availableFacts: [] } } }
+    })
+    render( <Provider> <DidYouKnow filters={filters}/> </Provider>)
+    expect((await screen.findAllByText('No data to report'))?.[0]).toBeVisible()
     jest.resetAllMocks()
   })
   it('should render "No data to display" when data is empty', async () => {
-    jest.spyOn(console, 'error').mockImplementation(() => {})
     mockGraphqlQuery(dataApiURL, 'Facts', {
-      data: { network: { hierarchyNode: { facts: [] } } }
+      data: { network: { hierarchyNode: { facts: [], availableFacts } } }
     })
     render( <Provider> <DidYouKnow filters={filters}/> </Provider>)
-    expect(await screen.findByText('No data to report')).toBeVisible()
+    expect((await screen.findAllByText('No data to report'))?.[0]).toBeVisible()
     jest.resetAllMocks()
   })
 })
+describe('getCarouselFactsMap', () => {
+  it('should return an empty object when passed an empty array', () => {
+    expect(getCarouselFactsMap([])).toEqual({});
+  });
+
+  it('should correctly map a single fact', () => {
+    const facts = ['fact1'];
+    const expectedMap = { 1: { facts: ['fact1'] } };
+    expect(getCarouselFactsMap(facts)).toEqual(expectedMap);
+  });
+
+  it('should correctly map multiple facts', () => {
+    const facts = ['fact1', 'fact2', 'fact3'];
+    const expectedMap = {
+      1: { facts: ['fact1', 'fact2'] },
+      2: { facts: ['fact3'] }
+    };
+    expect(getCarouselFactsMap(facts)).toEqual(expectedMap);
+  });
+});
