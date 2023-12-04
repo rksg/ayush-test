@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import moment                        from 'moment-timezone'
 import { useCookies }                from 'react-cookie'
 import { FormattedMessage, useIntl } from 'react-intl'
@@ -7,20 +9,29 @@ import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggl
 
 import { BOT_NAME } from '../MelissaBot'
 
-import graphic from './graphic.png'
-import * as UI from './styledComponents'
+import graphic        from './graphic.png'
+import { getSummary } from './services'
+import * as UI        from './styledComponents'
 
 // eslint-disable-next-line max-len
-const summary = 'Ruckus AI findings reveal that P4 is the most common Severity with a count of 90 occurrences, impacting Scope names and Connection and Service Availability categories the most. Oak Ridge HS has the highest Client Impact at 88.89%, while PD-35 leads in Impacted Clients with 70. To prevent similar incidents from occurring in the future, Ruckus AI suggests the following actionables:'
+// const summary = 'Ruckus AI findings reveal that P4 is the most common Severity with a count of 90 occurrences, impacting Scope names and Connection and Service Availability categories the most. Oak Ridge HS has the highest Client Impact at 88.89%, while PD-35 leads in Impacted Clients with 70. To prevent similar incidents from occurring in the future, Ruckus AI suggests the following actionables:'
 // const summary = ''
 
 export function ChatWithMelissa () {
   const { $t } = useIntl()
+  const [summary,setSummary] = useState('')
   const [cookies,setCookie]=useCookies(['isRecurringUser'])
   const { isRecurringUser } = cookies
   const isMelissaBotEnabled = useIsSplitOn(Features.RUCKUS_AI_CHATBOT_TOGGLE)
   const isIncidentSummaryEnabled = useIsSplitOn(Features.RUCKUS_AI_INCIDENT_SUMMARY_TOGGLE)
-  const showIncidentSummary = isIncidentSummaryEnabled && isRecurringUser && summary
+  const showIncidentSummary = isIncidentSummaryEnabled && isRecurringUser
+  useEffect(()=>{
+    if(showIncidentSummary){
+      getSummary().then((data)=>{
+        setSummary(data.summary)
+      })
+    }
+  },[showIncidentSummary])
   const askAnything = $t({ defaultMessage: 'Ask Anything' })
   const discover = $t({ defaultMessage: 'Discover which ones' })
   const comingSoon = $t({ defaultMessage: 'Coming Soon' })
@@ -40,12 +51,15 @@ export function ChatWithMelissa () {
       ...defaultRichTextFormatValues
     }}
   />
+  // eslint-disable-next-line no-console
+  console.log({ summary })
   return <UI.Wrapper><Card type='solid-bg'>
     <p>
       <img src={graphic} alt='graphic' /><br />
       {showIncidentSummary ? subTitleIncidents : subTitleFirstTime }
     </p>
     {isMelissaBotEnabled && <Button size='small'
+      disabled={showIncidentSummary && !summary}
       onClick={()=>{
         const event = new CustomEvent('showMelissaBot',
           { detail: {
