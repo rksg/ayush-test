@@ -91,6 +91,7 @@ function ConfigTemplatesRoutes () {
           path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
           element={<AAAForm edit={false} />}
         />
+        <Route path={'networks/wireless/add'} element={<div>Network Form</div>} />
       </Route>
     </Route>
   ) : null

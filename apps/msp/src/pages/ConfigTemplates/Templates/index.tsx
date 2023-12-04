@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
-import { useIntl } from 'react-intl'
+import { MenuProps } from 'antd'
+import { useIntl }   from 'react-intl'
 
 import {
   Table,
@@ -10,11 +11,17 @@ import {
 import { useGetConfigTemplateListQuery } from '@acx-ui/msp/services'
 import { ConfigTemplate }                from '@acx-ui/msp/utils'
 import {
+  PolicyOperation,
+  PolicyType,
+  getPolicyRoutePath,
   useTableQuery
 } from '@acx-ui/rc/utils'
+import { TenantLink }                from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { getIntl }                   from '@acx-ui/utils'
 
 import { ApplyTemplateDrawer } from './ApplyTemplateDrawer'
+import * as UI                 from './styledComponents'
 
 
 export function ConfigTemplateList () {
@@ -40,7 +47,7 @@ export function ConfigTemplateList () {
   const actions: TableProps<ConfigTemplate>['actions'] = [
     {
       label: $t({ defaultMessage: 'Add Template' }),
-      onClick: () => {}
+      dropdownMenu: getAddTemplateMenuProps()
     }
   ]
 
@@ -126,4 +133,28 @@ function useColumns () {
   ]
 
   return columns
+}
+
+function getAddTemplateMenuProps (): Omit<MenuProps, 'placement'> {
+  const { $t } = getIntl()
+
+  return {
+    expandIcon: <UI.MenuExpandArrow />,
+    items: [{
+      key: 'add-wifi-network',
+      label: <TenantLink tenantType='v' to='configTemplates/networks/wireless/add'>{
+        $t({ defaultMessage: 'Wi-Fi Network' })}
+      </TenantLink>
+    }, {
+      key: 'add-policy',
+      label: $t({ defaultMessage: 'Policies' }),
+      children: [{
+        key: 'add-aaa',
+        // eslint-disable-next-line max-len
+        label: <TenantLink tenantType='v' to={'configTemplates/' + getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}>
+          {$t({ defaultMessage: 'RADIUS Server' })}
+        </TenantLink>
+      }]
+    }]
+  }
 }

@@ -8,7 +8,7 @@ export function generateConfigTemplateBreadcrumb (): { text: string, link?: stri
   return [
     {
       text: $t({ defaultMessage: 'Configuration Templates' }),
-      link: 'templates',
+      link: 'configTemplates/templates',
       tenantType: 'v'
     }
   ]

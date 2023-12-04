@@ -90,6 +90,14 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfoo
       inactiveIcon: MspSubscriptionOutlined,
       activeIcon: MspSubscriptionSolid
     }]),
+    ...(isConfigTemplateEnabled
+      ? [{
+        uri: '/configTemplates',
+        label: $t({ defaultMessage: 'Config Templates' }),
+        tenantType: 'v' as TenantType,
+        inactiveIcon: CopyOutlined,
+        activeIcon: CopySolid
+      }] : []),
     ...((!isPrimeAdmin || isIntegrator || isSupport || !hasLicense)
       ? [] : [{
         uri: '/portalSetting',
@@ -98,15 +106,7 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfoo
         inactiveIcon: ConfigurationOutlined,
         activeIcon: ConfigurationSolid,
         adminItem: true
-      }]),
-    ...(isConfigTemplateEnabled
-      ? [{
-        uri: '/configTemplates',
-        label: $t({ defaultMessage: 'Config Templates' }),
-        tenantType: 'v' as TenantType,
-        inactiveIcon: CopyOutlined,
-        activeIcon: CopySolid
-      }] : [])
+      }])
   ]
   return config
 }
