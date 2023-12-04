@@ -5,9 +5,9 @@ import TextArea                                                                 
 import _                                                                               from 'lodash'
 import { useIntl }                                                                     from 'react-intl'
 
-import { StepsFormLegacy, Tooltip }                                                                                                              from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                                from '@acx-ui/feature-toggle'
-import { EdgeIpModeEnum, EdgePortWithStatus, EdgePortTypeEnum, isSubnetOverlap, serverIpAddressRegExp, subnetMaskIpRegExp, edgePortIpValidator } from '@acx-ui/rc/utils'
+import { StepsFormLegacy, Tooltip }                                                                                                                                      from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                                                                        from '@acx-ui/feature-toggle'
+import { EdgeIpModeEnum, EdgePortWithStatus, EdgePortTypeEnum, isSubnetOverlap, serverIpAddressRegExp, subnetMaskIpRegExp, edgePortIpValidator, getEdgePortTypeOptions } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
@@ -58,6 +58,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
   const { $t } = useIntl()
   const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
   const form = useFormInstance<EdgePortConfigFormType>()
+  const portTypeOptions = getEdgePortTypeOptions($t)
 
   const getFieldPath = useCallback((fieldName: string) =>
     [formListKey, fieldName],
@@ -69,34 +70,23 @@ export const PortConfigForm = (props: ConfigFormProps) => {
 
   const statusIp = useWatch(getFieldFullPath('statusIp'), form)
   const mac = useWatch(getFieldFullPath('mac'), form)
+  const portType = useWatch(getFieldFullPath('portType'), form)
 
   const enabledCorePortMac = getEnabledCorePortMac(form)
-  // if SD-LAN enable corePort should be grey-out when both
-  //     - SD-LAN is enabled on this edge
-  //     - corePort is exist.
-  // else only allowed 1 core port enabled
+  const isCurrentPortCorePortEnabled = enabledCorePortMac === mac
+  // corePort should be grey-out when one of the following NOT matches
+  // if SD-LAN enable on this edge
+  //     - corePort is exist(physical port might be unplugged by user)
+  // else
+  //     - only allowed 1 core port enabled
+  //     - must be LAN port type
   const isCorePortDisabled = isEdgeSdLanRun
     ? !!enabledCorePortMac
-    : (!!enabledCorePortMac && enabledCorePortMac !== mac)
+    : ((!!enabledCorePortMac && !isCurrentPortCorePortEnabled) || portType !== EdgePortTypeEnum.LAN)
 
   useLayoutEffect(() => {
     form.validateFields()
   }, [mac, form])
-
-  const portTypeOptions = [
-    {
-      label: $t({ defaultMessage: 'Select port type..' }),
-      value: EdgePortTypeEnum.UNCONFIGURED
-    },
-    {
-      label: $t({ defaultMessage: 'WAN' }),
-      value: EdgePortTypeEnum.WAN
-    },
-    {
-      label: $t({ defaultMessage: 'LAN' }),
-      value: EdgePortTypeEnum.LAN
-    }
-  ]
 
   const getCurrentSubnetInfo = () => {
     return {
@@ -269,6 +259,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
             children={
               <Select
                 options={portTypeOptions}
+                disabled={isEdgeSdLanReady ? isCurrentPortCorePortEnabled : false}
               />
             }
           />
