@@ -5,11 +5,11 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 import { Card, DonutChart,
   getDeviceConnectionStatusColorsv2,
   GridCol, GridRow, StackedBarChart }    from '@acx-ui/components'
-import type { DonutChartData }           from '@acx-ui/components'
-import { Features, useIsTierAllowed }    from '@acx-ui/feature-toggle'
-import { ChartData }                     from '@acx-ui/rc/utils'
-import { TenantLink, useNavigateToPath } from '@acx-ui/react-router-dom'
-import { filterByAccess }                from '@acx-ui/user'
+import type { DonutChartData }            from '@acx-ui/components'
+import { TierFeatures, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { ChartData }                      from '@acx-ui/rc/utils'
+import { TenantLink, useNavigateToPath }  from '@acx-ui/react-router-dom'
+import { filterByAccess }                 from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
@@ -24,7 +24,7 @@ export function DevicesWidget (props: {
   const { $t } = useIntl()
   const onArrowClick = useNavigateToPath('/devices/')
 
-  const edgeSupported = useIsTierAllowed(Features.EDGES)
+  const edgeSupported = useIsTierAllowed(TierFeatures.SMART_EDGES)
 
   let numDonut = 2
   if (edgeSupported) {
@@ -67,7 +67,7 @@ export function DevicesWidgetv2 (props: {
 }) {
   const { $t } = useIntl()
   const onArrowClick = useNavigateToPath('/devices/')
-  const edgeSupported = useIsTierAllowed(Features.EDGES)
+  const edgeSupported = useIsTierAllowed(TierFeatures.SMART_EDGES)
 
   const {
     apStackedData,
