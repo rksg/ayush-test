@@ -99,7 +99,7 @@ const config: LayoutProps['menuConfig'] = [
         children: [
           {
             uri: '/devices/wifi',
-            label: 'Access Point List'
+            label: 'AP List'
           } ,
           {
             uri: '/reports/aps',
