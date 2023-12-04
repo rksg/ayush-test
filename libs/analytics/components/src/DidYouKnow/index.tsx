@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { isEqual } from 'lodash'
-import { useIntl } from 'react-intl'
-import AutoSizer   from 'react-virtualized-auto-sizer'
+import { isEqual, isEmpty } from 'lodash'
+import { useIntl }          from 'react-intl'
+import AutoSizer            from 'react-virtualized-auto-sizer'
 
 import { Loader, Carousel }                 from '@acx-ui/components'
 import type { DashboardFilter, PathFilter } from '@acx-ui/utils'
@@ -71,7 +71,7 @@ function DidYouKnowWidget ({
     }
   }, [filters])
   useEffect(() => {
-    if (initialLoadedFacts && availableFacts && offset === 0) {
+    if (initialLoadedFacts && availableFacts && isEmpty(carouselFactsMap)) {
       const newMap = getCarouselFactsMap(availableFacts.filter((item) =>
         !initialLoadedFacts.includes(item as keyof typeof factsConfig)))
       newMap[0] = { facts: initialLoadedFacts }
