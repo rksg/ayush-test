@@ -2,7 +2,6 @@ import { Brand360 }                                         from '@acx-ui/analyt
 import { ConfigProvider, PageNotFound }                     from '@acx-ui/components'
 import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
 import { ManageCustomer, ManageIntegrator, PortalSettings } from '@acx-ui/msp/components'
-import { AAAForm }                                          from '@acx-ui/rc/components'
 import {
   PolicyOperation,
   PolicyType,
@@ -89,7 +88,7 @@ function ConfigTemplatesRoutes () {
         <Route path={':activeTab'} element={<ConfigTemplate />} />
         <Route
           path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
-          element={<AAAForm edit={false} />}
+          element={<div>AAA Form</div>}
         />
         <Route path={'networks/wireless/add'} element={<div>Network Form</div>} />
       </Route>
