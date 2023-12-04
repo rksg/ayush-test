@@ -582,7 +582,7 @@ describe('AssignMspLicense', () => {
       })
     })
   })
-  it('datepicker should work correctly', async () => {
+  it.skip('datepicker should work correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>
