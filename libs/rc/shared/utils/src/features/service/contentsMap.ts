@@ -1,14 +1,8 @@
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import {
-  QosPriorityEnum,
-  ServiceAdminState,
-  ServiceStatus,
-  ServiceType
-} from '@acx-ui/rc/utils'
-
-import { PassphraseFormatEnum } from '../../models/PassphraseFormatEnum'
-import { PolicyDefaultAccess }  from '../../types'
+import { QosPriorityEnum, ServiceAdminState, ServiceStatus, ServiceType } from '../../constants'
+import { PassphraseFormatEnum }                                           from '../../models/PassphraseFormatEnum'
+import { PolicyDefaultAccess }                                            from '../../types'
 
 
 export const passphraseFormatDescription: Record<PassphraseFormatEnum, MessageDescriptor> = {
