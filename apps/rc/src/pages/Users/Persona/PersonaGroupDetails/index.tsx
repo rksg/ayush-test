@@ -62,7 +62,7 @@ function PersonaGroupDetailsPageHeader (props: {
 function PersonaGroupDetails () {
   const { $t } = useIntl()
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const networkSegmentationEnabled = useIsTierAllowed(TierFeatures.EDGES)
+  const networkSegmentationEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const { personaGroupId, tenantId } = useParams()
   const [editVisible, setEditVisible] = useState(false)
   const [venueDisplay, setVenueDisplay] = useState<{ id?: string, name?: string }>()

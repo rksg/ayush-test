@@ -49,7 +49,7 @@ function useColumns (
   nsgMap: Map<string, string>
 ) {
   const { $t } = useIntl()
-  const networkSegmentationEnabled = useIsTierAllowed(TierFeatures.EDGES)
+  const networkSegmentationEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
   const { data: dpskPool } = useGetDpskListQuery({ params: dpskNewConfigFlowParams })

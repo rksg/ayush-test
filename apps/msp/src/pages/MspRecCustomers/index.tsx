@@ -49,7 +49,7 @@ export function MspRecCustomers () {
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
-  const edgeEnabled = useIsTierAllowed(TierFeatures.EDGES)
+  const edgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isAssignMultipleEcEnabled = useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS)
      && isPrimeAdmin
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)

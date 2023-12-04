@@ -137,7 +137,7 @@ export enum TierFeatures { // for Tier (ex: Beta) feature flag
   AP_70 = 'AP-70',
   BETA_CLB = 'BETA-CLB',
   BETA_DPSK3 = 'BETA-DPSK3',
-  EDGES = 'PLCY-EDGE'
+  SMART_EDGES = 'PLCY-EDGE'
 }
 
 interface BetaList {
@@ -154,5 +154,5 @@ export const BetaListDetails:BetaList[] = [
   { key: TierFeatures.AP_70, description: defineMessage({ defaultMessage: 'AP-70 beta feature' }), status: true },
   { key: TierFeatures.BETA_CLB, description: defineMessage({ defaultMessage: 'CLB beta feature' }), status: true },
   { key: TierFeatures.BETA_DPSK3, description: defineMessage({ defaultMessage: 'DPSK3 beta feature' }), status: true },
-  { key: TierFeatures.EDGES, description: defineMessage({ defaultMessage: 'PLCY-EDGE beta feature' }), status: false }
+  { key: TierFeatures.SMART_EDGES, description: defineMessage({ defaultMessage: 'PLCY-EDGE beta feature' }), status: false }
 ]

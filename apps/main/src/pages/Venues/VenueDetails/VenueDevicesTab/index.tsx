@@ -37,7 +37,7 @@ export function VenueDevicesTab () {
         <VenueSwitch />
       </Tabs.TabPane>
 
-      { useIsTierAllowed(TierFeatures.EDGES) && (
+      { useIsTierAllowed(TierFeatures.SMART_EDGES) && (
         <Tabs.TabPane
           tab={$t({ defaultMessage: 'SmartEdge' })}
           key='edge'>

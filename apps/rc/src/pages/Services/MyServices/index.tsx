@@ -34,7 +34,7 @@ export default function MyServices () {
   const params = useParams()
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
   const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()

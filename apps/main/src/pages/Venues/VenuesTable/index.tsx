@@ -31,7 +31,7 @@ function useColumns (
   filterables?: { [key: string]: ColumnType['filterable'] }
 ) {
   const { $t } = useIntl()
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
 
   const columns: TableProps<Venue>['columns'] = [
     {
@@ -188,7 +188,7 @@ function useColumns (
 }
 
 export const useDefaultVenuePayload = (): RequestPayload => {
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
 
   return {
     fields: [

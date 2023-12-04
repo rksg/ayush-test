@@ -95,7 +95,7 @@ export function NetworkControlTab (props: { wlanData: NetworkSaveData | null }) 
   }
 
   const { enableVxLan: showTunnelProfile, tunnelType } = useNetworkVxLanTunnelProfileInfo(data)
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const tunnelProfileDefaultPayload = {
     fields: ['name', 'id', 'type'],

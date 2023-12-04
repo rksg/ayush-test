@@ -49,7 +49,7 @@ function useColumns (
   dpskDeviceCount: Map<string, number>
 ) {
   const { $t } = useIntl()
-  const networkSegmentationEnabled = useIsTierAllowed(TierFeatures.EDGES)
+  const networkSegmentationEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
 
   const personaGroupList = useGetPersonaGroupListQuery({
     payload: {

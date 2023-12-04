@@ -72,7 +72,7 @@ const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
 const SubscriptionTable = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
 
   const queryResults = useGetEntitlementsListQuery({ params })

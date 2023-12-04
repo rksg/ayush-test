@@ -29,7 +29,7 @@ export default function SelectPolicyForm () {
   const tenantBasePath: Path = useTenantLink('')
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
   const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const macRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const ApSnmpPolicyTotalCount = useGetApSnmpViewModelQuery({
     params,

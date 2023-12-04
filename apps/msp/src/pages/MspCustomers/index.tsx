@@ -55,7 +55,7 @@ import { ScheduleFirmwareDrawer }  from './ScheduleFirmwareDrawer'
 export function MspCustomers () {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const edgeEnabled = useIsTierAllowed(TierFeatures.EDGES)
+  const edgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const params = useParams()

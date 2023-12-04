@@ -9,7 +9,7 @@ import { filterByAccess }                 from '@acx-ui/user'
 
 const Edges = () => {
   const { $t } = useIntl()
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
 
   if (!isEdgeEnabled) {
     return <span>{ $t({ defaultMessage: 'SmartEdge is not enabled' }) }</span>

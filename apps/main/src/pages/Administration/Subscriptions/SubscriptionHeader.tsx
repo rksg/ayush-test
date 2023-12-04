@@ -62,7 +62,7 @@ const subscriptionUtilizationTransformer = (
 export const SubscriptionHeader = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isDelegationTierApi = useIsSplitOn(Features.DELEGATION_TIERING) && isDelegationMode()
 
   const request = useGetAccountTierQuery({ params }, { skip: !isDelegationTierApi })

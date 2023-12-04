@@ -19,7 +19,7 @@ import { VenueRogueAps }        from './VenueRogueAps'
 
 export function VenueServicesTab () {
   const { venueId } = useParams()
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
   const { $t } = useIntl()

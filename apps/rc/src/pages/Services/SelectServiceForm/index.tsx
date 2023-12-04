@@ -27,7 +27,7 @@ export default function SelectServiceForm () {
   const myServicesPath: Path = useTenantLink(getServiceListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
 

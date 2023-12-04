@@ -34,7 +34,7 @@ const FWVersionMgmt = () => {
   const params = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/administration/fwVersionMgmt')
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const enableSigPackUpgrade = useIsSplitOn(Features.SIGPACK_UPGRADE)
   const { data: latestReleaseVersions } = useGetLatestFirmwareListQuery({ params })
   const { data: venueVersionList } = useGetVenueVersionListQuery({ params })
