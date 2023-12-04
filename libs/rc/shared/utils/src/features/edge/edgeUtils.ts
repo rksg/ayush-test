@@ -1,9 +1,11 @@
+import { IntlShape } from 'react-intl'
+
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
-import { IpUtilsService }                          from '../../ipUtilsService'
-import { EdgeServiceStatusEnum, EdgeStatusEnum }   from '../../models/EdgeEnum'
-import { EdgeAlarmSummary }                        from '../../types'
-import { networkWifiIpRegExp, subnetMaskIpRegExp } from '../../validator'
+import { IpUtilsService }                                          from '../../ipUtilsService'
+import { EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum } from '../../models/EdgeEnum'
+import { EdgeAlarmSummary }                                        from '../../types'
+import { networkWifiIpRegExp, subnetMaskIpRegExp }                 from '../../validator'
 
 export const getEdgeServiceHealth = (alarmSummary?: EdgeAlarmSummary[]) => {
   if(!alarmSummary) return EdgeServiceStatusEnum.UNKNOWN
@@ -67,3 +69,18 @@ async function isSubnetAvailable (subnetMask: string) {
     return false
   }
 }
+
+export const getEdgePortTypeOptions = ($t: IntlShape['$t']) => ([
+  {
+    label: $t({ defaultMessage: 'Select port type..' }),
+    value: EdgePortTypeEnum.UNCONFIGURED
+  },
+  {
+    label: $t({ defaultMessage: 'WAN' }),
+    value: EdgePortTypeEnum.WAN
+  },
+  {
+    label: $t({ defaultMessage: 'LAN' }),
+    value: EdgePortTypeEnum.LAN
+  }
+])
