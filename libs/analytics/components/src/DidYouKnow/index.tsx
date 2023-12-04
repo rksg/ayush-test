@@ -59,11 +59,11 @@ function DidYouKnowWidget ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [offset, isSuccess, isFetching])
   useEffect(() => {
-    if (content[offset]?.length === 0 && data?.[0]) {
+    if (content[offset]?.length === 0) {
       refetch()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [offset, content, refetch])
+  }, [offset])
   useEffect(() => {
     if (filters) {
       setContent(Array.from({ length: 5 }, () => []))
@@ -71,7 +71,7 @@ function DidYouKnowWidget ({
     }
   }, [filters])
   useEffect(() => {
-    if (initialLoadedFacts && availableFacts) {
+    if (initialLoadedFacts && availableFacts && offset === 0) {
       const newMap = getCarouselFactsMap(availableFacts.filter((item) =>
         !initialLoadedFacts.includes(item as keyof typeof factsConfig)))
       newMap[0] = { facts: initialLoadedFacts }
@@ -106,7 +106,7 @@ function DidYouKnowWidget ({
         {({ height, width }) => (
           <Carousel contentList={content.length ? content : [[noData]]}
             title={title}
-            subTitle={!content[offset].length ? subTitle : undefined}
+            subTitle={!content[offset]?.length ? subTitle : undefined}
             {...carouselProps}
             classList={content.length ? 'carousel-card' : 'carousel-card no-data'}
             beforeChange={onChange}
