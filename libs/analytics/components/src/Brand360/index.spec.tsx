@@ -7,13 +7,11 @@ import { render, screen, mockServer, fireEvent } from '@acx-ui/test-utils'
 
 import { Brand360 } from '.'
 
-/* eslint-disable max-len */
-/*
-jest.mock('@acx-ui/analytics/components', () => ({
-  ConnectedClientsOverTime: () => <div data-testid={'analytics-ConnectedClientsOverTime'} title='ConnectedClientsOverTime' />,
+
+jest.mock('./Table', () => ({
+  BrandTable: () => <div data-testid={'brand360Table'}>table</div>
 }))
-*/
-/* eslint-enable */
+
 
 describe('Brand360', () => {
   beforeEach(() => {
