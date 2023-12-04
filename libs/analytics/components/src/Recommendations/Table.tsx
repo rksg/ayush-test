@@ -142,7 +142,8 @@ export function RecommendationTable (
       dataIndex: 'updatedAt',
       key: 'updatedAt',
       render: (_, value) => (value.code === 'unknown')
-        ? <UnknownLink value={value} /> : <DateLink value={value}/>,
+        ? <UnknownLink value={value as RecommendationWithUpdatedMetadata} />
+        : <DateLink value={value}/>,
       sorter: { compare: sortProp('updatedAt', dateSort) },
       fixed: 'left'
     },
