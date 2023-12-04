@@ -16,6 +16,7 @@ import {
   useDpskNewConfigFlowParams,
   PassphraseViewer
 } from '@acx-ui/rc/components'
+import { PersonaDrawer }          from '@acx-ui/rc/components'
 import {
   useLazyGetDpskQuery,
   useGetPersonaByIdQuery,
@@ -31,7 +32,6 @@ import { ConnectionMetering, PersonaGroup } from '@acx-ui/rc/utils'
 import { filterByAccess }                   from '@acx-ui/user'
 import { noDataDisplay }                    from '@acx-ui/utils'
 
-import { PersonaDrawer }                       from '../PersonaDrawer'
 import { blockedTagStyle, PersonaBlockedIcon } from '../styledComponents'
 
 import { PersonaDevicesTable } from './PersonaDevicesTable'
