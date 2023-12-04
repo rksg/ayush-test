@@ -1,4 +1,4 @@
-import { SwitchViewModel, SwitchStatusEnum, SWITCH_TYPE, DHCP_OPTION_TYPE, SwitchDhcp } from '@acx-ui/rc/utils'
+import { SwitchViewModel, SwitchStatusEnum, SWITCH_TYPE, DHCP_OPTION_TYPE, SwitchDhcp, Switch } from '@acx-ui/rc/utils'
 
 export const switchDetailData: SwitchViewModel = {
   type: 'device',
@@ -29,7 +29,8 @@ export const switchDetailData: SwitchViewModel = {
     { model: 'ICX7150-C12P', id: 'FEK3216Q05B' }
   ],
   uptime: '7 days, 7:36:21.00',
-  formStacking: false
+  formStacking: false,
+  unitId: 1
 }
 
 export const venueData = {
@@ -155,6 +156,9 @@ export const switchDetailsContextData = {
     activeSerial: 'FEK3230S0C5'
   },
   switchData: {
+    id: 'id',
+    venueId: 'venueId',
+    name: 'name',
     stackMembers: []
-  }
+  } as Switch
 }

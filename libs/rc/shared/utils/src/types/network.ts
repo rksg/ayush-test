@@ -133,6 +133,7 @@ export interface NetworkSaveData {
   dpskServiceProfileId?: string
   isOweMaster?: boolean
   owePairNetworkId?: string
+  accessControlProfileEnable?: boolean
 }
 export interface ExternalProviders{
   providers: Providers[]

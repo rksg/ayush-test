@@ -1,3 +1,5 @@
+import { fireEvent } from '@testing-library/react'
+
 import { render, screen } from '@acx-ui/test-utils'
 
 import { SwitchCliSession } from './index'
@@ -25,5 +27,25 @@ describe('SwitchCliSession', () => {
     />)
 
     expect(await screen.findByText(/cli session \- switchname/i)).toBeInTheDocument()
+
+    const dragRef = await screen.findByTestId('switchCliSessionDraggableRef')
+    const wrapper = await screen.findByTestId('switchCliSessionDialogWrapper')
+    const div = await screen.findByTestId('switchCliSessionModalDiv')
+
+    fireEvent.dragStart(dragRef)
+    fireEvent.dragOver(wrapper)
+    fireEvent.dragEnd(wrapper)
+
+    fireEvent.mouseOver(wrapper)
+    fireEvent.mouseOut(wrapper)
+
+    fireEvent.mouseOver(div)
+    fireEvent.mouseOut(div)
+
+    window.innerWidth = 1000
+    window.innerHeight = 500
+    window.dispatchEvent(new Event('resize'))
+
+    fireEvent.click(await screen.findByRole('button', { name: /close/i }))
   })
 })

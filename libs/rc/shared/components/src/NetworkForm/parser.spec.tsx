@@ -120,4 +120,22 @@ describe('NetworkForm parser', () => {
       expect((moreSettingData.wlan?.advancedCustomization as DpskWlanAdvancedCustomization)?.enableAaaVlanOverride).toBe(false)
     })
   })
+
+  describe('transfer AccessControl settings', () => {
+    it('verify the AccessControlSet profile and subprofile settings', () => {
+      const incomingData: NetworkSaveData = {
+        type: NetworkTypeEnum.OPEN,
+        accessControlProfileEnable: true,
+        wlan: {
+          advancedCustomization: {
+            accessControlProfileId: 'testId',
+            devicePolicyId: 'devicePolicyId'
+          }
+        } as unknown as NetworkSaveData
+      }
+
+      // eslint-disable-next-line max-len
+      expect(transferMoreSettingsToSave(incomingData, incomingData)).not.toHaveProperty('devicePolicy')
+    })
+  })
 })

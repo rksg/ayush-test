@@ -3,27 +3,21 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { networkApi }      from '@acx-ui/rc/services'
-import { CommonUrlsInfo }  from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+import { networkApi }     from '@acx-ui/rc/services'
 import {
-  act,
-  findTBody,
-  fireEvent,
-  mockServer,
-  render,
-  screen,
-  waitFor,
-  within
-} from '@acx-ui/test-utils'
+  BasicServiceSetPriorityEnum,
+  CommonUrlsInfo,
+  NetworkTypeEnum,
+  WlanSecurityEnum,
+  PhyTypeConstraintEnum,
+  RfBandUsageEnum,
+  ManagementFrameMinimumPhyRateEnum,
+  BssMinimumPhyRateEnum } from '@acx-ui/rc/utils'
+import { Provider, store }                                                        from '@acx-ui/store'
+import { act, findTBody, fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import {
-  network,
-  list,
-  networkVenue_allAps,
-  networkVenue_apgroup
-} from '../__tests__/fixtures'
-import NetworkFormContext from '../NetworkFormContext'
+import { list, network, networkVenue_allAps, networkVenue_apgroup } from '../__tests__/fixtures'
+import NetworkFormContext                                           from '../NetworkFormContext'
 
 import { Venues } from './Venues'
 
@@ -91,7 +85,102 @@ describe('Create Network: Venues Step', () => {
     render(<Provider>
       <NetworkFormContext.Provider value={{
         editMode: false, cloneMode: false,
-        data: { venues: [networkVenue_allAps, networkVenue_apgroup] }
+        data: {
+          venues: [networkVenue_allAps, networkVenue_apgroup] ,
+          name: 'dpsk',
+          type: NetworkTypeEnum.DPSK,
+          isCloudpathEnabled: false,
+          enableAccountingProxy: false,
+          enableAuthProxy: true,
+          enableAccountingService: false,
+          enableDhcp: true,
+          wlan: {
+            ssid: 'dpsk',
+            wlanSecurity: WlanSecurityEnum.WPA2Personal,
+            enable: true,
+            vlanId: 1,
+            advancedCustomization: {
+              devicePolicyId: undefined,
+              l2AclPolicyId: undefined,
+              l3AclPolicyId: undefined,
+              applicationPolicyId: undefined,
+              accessControlProfileId: undefined,
+              userUplinkRateLimiting: 0,
+              userDownlinkRateLimiting: 0,
+              maxClientsOnWlanPerRadio: 100,
+              enableBandBalancing: true,
+              clientIsolation: false,
+              clientIsolationOptions: {
+                autoVrrp: false
+              },
+              hideSsid: false,
+              forceMobileDeviceDhcp: false,
+              clientLoadBalancingEnable: true,
+              enableAaaVlanOverride: true,
+              directedThreshold: 5,
+              enableNeighborReport: true,
+              radioCustomization: {
+                rfBandUsage: RfBandUsageEnum.BOTH,
+                phyTypeConstraint: PhyTypeConstraintEnum.NONE,
+                managementFrameMinimumPhyRate: ManagementFrameMinimumPhyRateEnum._6,
+                bssMinimumPhyRate: BssMinimumPhyRateEnum._24
+              },
+              enableSyslog: false,
+              clientInactivityTimeout: 120,
+              accessControlEnable: false,
+              respectiveAccessControl: true,
+              vlanPool: null,
+              applicationPolicyEnable: false,
+              l2AclEnable: false,
+              l3AclEnable: false,
+              wifiCallingEnabled: false,
+              wifiCallingIds: [],
+              proxyARP: false,
+              enableAirtimeDecongestion: false,
+              enableJoinRSSIThreshold: false,
+              joinRSSIThreshold: -85,
+              enableTransientClientManagement: false,
+              joinWaitTime: 30,
+              joinExpireTime: 300,
+              joinWaitThreshold: 10,
+              enableOptimizedConnectivityExperience: false,
+              broadcastProbeResponseDelay: 15,
+              rssiAssociationRejectionThreshold: -75,
+              enableAntiSpoofing: false,
+              enableArpRequestRateLimit: true,
+              arpRequestRateLimit: 15,
+              enableDhcpRequestRateLimit: true,
+              dhcpRequestRateLimit: 15,
+              dnsProxyEnabled: false,
+              dnsProxy: {
+                dnsProxyRules: []
+              },
+              bssPriority: BasicServiceSetPriorityEnum.HIGH,
+              dhcpOption82Enabled: false,
+              dhcpOption82SubOption1Enabled: false,
+              dhcpOption82SubOption1Format: null,
+              dhcpOption82SubOption2Enabled: false,
+              dhcpOption82SubOption2Format: null,
+              dhcpOption82SubOption150Enabled: false,
+              dhcpOption82SubOption151Enabled: false,
+              dhcpOption82SubOption151Format: null,
+              dhcpOption82MacFormat: null,
+              enableMulticastUplinkRateLimiting: false,
+              enableMulticastDownlinkRateLimiting: false,
+              enableMulticastUplinkRateLimiting6G: false,
+              enableMulticastDownlinkRateLimiting6G: false,
+              wifi6Enabled: true,
+              wifi7Enabled: true,
+              multiLinkOperationEnabled: false,
+              qosMapSetEnabled: false,
+              qosMapSetOptions: {
+                rules: []
+              }
+            }
+          },
+          dpskWlanSecurity: WlanSecurityEnum.WPA2Personal,
+          dpskServiceProfileId: '709b239aeeff4efcb5a6ef83182bde95'
+        }
       }}>
         <Form>
           <Venues />
@@ -107,6 +196,10 @@ describe('Create Network: Venues Step', () => {
     fireEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
 
     fireEvent.click(within(row).getByText('2.4 GHz, 5 GHz'))
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Apply' }))
+    await waitFor(() => expect(dialog).not.toBeVisible())
+
+    fireEvent.click(within(row).getByText('24/7'))
     fireEvent.click(within(dialog).getByRole('button', { name: 'Apply' }))
     await waitFor(() => expect(dialog).not.toBeVisible())
   })
