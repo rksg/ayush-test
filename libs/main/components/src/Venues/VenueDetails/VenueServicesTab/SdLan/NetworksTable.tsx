@@ -1,7 +1,9 @@
 import { useMemo } from 'react'
 
-import _           from 'lodash'
-import { useIntl } from 'react-intl'
+import _             from 'lodash'
+import { AlignType } from 'rc-table/lib/interface'
+import { useIntl }   from 'react-intl'
+
 
 import { TableProps }                                                   from '@acx-ui/components'
 import { EdgeSdLanActivatedNetworksTable, ActivateNetworkSwitchButton }
@@ -9,9 +11,12 @@ import { EdgeSdLanActivatedNetworksTable, ActivateNetworkSwitchButton }
 import { useUpdateEdgeSdLanPartialMutation } from '@acx-ui/rc/services'
 import {
   networkTypes,
-  NetworkSaveData
+  NetworkSaveData,
+  sortProp,
+  defaultSort
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { hasAccess }             from '@acx-ui/user'
 
 
 interface EdgeSdLanServiceProps {
@@ -23,7 +28,10 @@ export const NetworkTable = (props: EdgeSdLanServiceProps) => {
   const { $t } = useIntl()
   const { venueId } = useParams()
   const { serviceId, activatedNetworkIds } = props
-  const [updateEdgeSdLan] = useUpdateEdgeSdLanPartialMutation()
+  const [
+    updateEdgeSdLan,
+    { isLoading: isActivateUpdating }
+  ] = useUpdateEdgeSdLanPartialMutation()
 
   const handleActivateChange = async (data: NetworkSaveData, checked: boolean) => {
     try {
@@ -52,6 +60,7 @@ export const NetworkTable = (props: EdgeSdLanServiceProps) => {
     dataIndex: 'name',
     defaultSortOrder: 'ascend',
     fixed: 'left',
+    sorter: { compare: sortProp('name', defaultSort) },
     render: (_, row) => (
       <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>
         {row.name}
@@ -60,29 +69,33 @@ export const NetworkTable = (props: EdgeSdLanServiceProps) => {
     title: $t({ defaultMessage: 'Network Type' }),
     key: 'type',
     dataIndex: 'type',
+    sorter: { compare: sortProp('type', defaultSort) },
     render: (_, row) => {
       return $t(networkTypes[row.type!])
     }
-  }, {
+  },
+  ...(hasAccess() ? [{
     title: $t({ defaultMessage: 'Active' }),
     key: 'action',
     dataIndex: 'action',
-    align: 'center',
+    align: 'center' as AlignType,
     width: 80,
-    render: (_, row) => {
+    render: (_: unknown, row: NetworkSaveData) => {
       return <ActivateNetworkSwitchButton
         row={row}
         activated={activatedNetworkIds}
         onChange={handleActivateChange}
       />
     }
-  }]), [$t, activatedNetworkIds])
+  }] : [])
+  ]), [$t, activatedNetworkIds])
 
   return (
     <EdgeSdLanActivatedNetworksTable
       venueId={venueId!}
       columns={columns}
       activated={activatedNetworkIds}
+      isUpdating={isActivateUpdating}
     />
   )
 }

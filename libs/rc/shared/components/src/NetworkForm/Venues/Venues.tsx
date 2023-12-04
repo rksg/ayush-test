@@ -82,6 +82,7 @@ export function Venues () {
 
   const activatedNetworkVenues: NetworkVenue[] = Form.useWatch('venues')
   const params = useParams()
+  const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
 
   const prevIsWPA3securityRef = useRef(false)
@@ -231,7 +232,7 @@ export function Venues () {
     }
   }, [data?.wlan])
 
-  const scheduleSlotIndexMap = useScheduleSlotIndexMap(tableData)
+  const scheduleSlotIndexMap = useScheduleSlotIndexMap(tableData, isMapEnabled)
 
   const columns: TableProps<Venue>['columns'] = [
     {

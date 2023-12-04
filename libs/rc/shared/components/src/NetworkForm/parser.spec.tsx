@@ -1,4 +1,4 @@
-import { ClientIsolationVenue, NetworkSaveData, NetworkTypeEnum, NetworkVenue, RadioEnum } from '@acx-ui/rc/utils'
+import { ClientIsolationVenue, DpskWlanAdvancedCustomization, NetworkSaveData, NetworkTypeEnum, NetworkVenue, RadioEnum, TunnelTypeEnum } from '@acx-ui/rc/utils'
 
 import { updateClientIsolationAllowlist, tranferSettingsToSave, transferMoreSettingsToSave } from './parser'
 
@@ -97,8 +97,27 @@ describe('NetworkForm parser', () => {
       }
 
       expect(tranferSettingsToSave(incomingData, false)).not.toHaveProperty('dpskServiceProfileId')
+      const moreSettingData = transferMoreSettingsToSave(incomingData, incomingData)
+      expect(moreSettingData).not.toHaveProperty('dpskServiceProfileId')
       // eslint-disable-next-line max-len
-      expect(transferMoreSettingsToSave(incomingData, incomingData)).not.toHaveProperty('dpskServiceProfileId')
+      expect(moreSettingData.wlan?.advancedCustomization).not.toHaveProperty('enableAaaVlanOverride')
+
+    })
+
+    it('should set `enableAaaVlanOverride` to false when tunnel type is VxLan', () => {
+      const incomingData: NetworkSaveData = {
+        type: NetworkTypeEnum.DPSK,
+        dpskServiceProfileId: ''
+      }
+      const tunnelInfo = {
+        enableVxLan: true,
+        tunnelType: TunnelTypeEnum.VXLAN
+      }
+
+      const moreSettingData = transferMoreSettingsToSave(incomingData, incomingData, tunnelInfo)
+      expect(moreSettingData.wlan?.advancedCustomization).toHaveProperty('enableAaaVlanOverride')
+      // eslint-disable-next-line max-len
+      expect((moreSettingData.wlan?.advancedCustomization as DpskWlanAdvancedCustomization)?.enableAaaVlanOverride).toBe(false)
     })
   })
 

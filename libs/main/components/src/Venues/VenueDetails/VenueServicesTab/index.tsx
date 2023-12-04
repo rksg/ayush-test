@@ -70,7 +70,7 @@ export function VenueServicesTab () {
 
   const { edgeSdLanData } = useGetEdgeSdLanViewDataListQuery(
     { payload: {
-      filters: { id: [venueId] }
+      filters: { venueId: [venueId] }
     } }, {
       skip: !isEdgeEnabled || !isEdgeSdLanReady,
       selectFromResult: ({ data }) => ({
