@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 
 import { Form } from 'antd'
 
+import { DnsProxyRule }                      from '@acx-ui/rc/utils'
 import { Provider }                          from '@acx-ui/store'
 import { render, screen, fireEvent, within } from '@acx-ui/test-utils'
 
@@ -9,7 +10,7 @@ import { DnsProxyModal }   from './DnsProxyModal'
 import { DnsProxyContext } from './NetworkControlTab'
 
 
-let dnsProxyList = []
+let dnsProxyList = [] as DnsProxyRule[]
 const setDnsProxyList = jest.fn()
 const setEnableDnsProxy = jest.fn()
 const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }

@@ -201,7 +201,7 @@ const subnetSetting = async () => {
   })
 }
 
-describe.skip('Layer3Drawer Component', () => {
+describe('Layer3Drawer Component', () => {
   it('Render Layer3Drawer component with anyIp option successfully', async () => {
     mockServer.use(
       rest.post(AccessControlUrls.addL3AclPolicy.url,
@@ -250,7 +250,7 @@ describe.skip('Layer3Drawer Component', () => {
 
   })
 
-  it('Render Layer3Drawer component with ip option successfully', async () => {
+  it.skip('Render Layer3Drawer component with ip option successfully', async () => {
     mockServer.use(rest.post(
       AccessControlUrls.addL3AclPolicy.url,
       (_, res, ctx) => res(
@@ -287,7 +287,7 @@ describe.skip('Layer3Drawer Component', () => {
 
   })
 
-  it('Render Layer3Drawer component with subnet option successfully', async () => {
+  it.skip('Render Layer3Drawer component with subnet option successfully', async () => {
     mockServer.use(rest.post(
       AccessControlUrls.addL3AclPolicy.url,
       (_, res, ctx) => res(

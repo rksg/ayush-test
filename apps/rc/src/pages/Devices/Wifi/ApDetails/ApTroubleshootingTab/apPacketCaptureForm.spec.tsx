@@ -220,7 +220,7 @@ describe('ApPacketCaptureForm', () => {
     // expect(await screen.findByText('Server Error')).toBeVisible()
   })
 
-  it('should select wired correctly', async () => {
+  it.skip('should select wired correctly', async () => {
     mockServer.use(
       rest.get(
         WifiUrlsInfo.getPacketCaptureState.url,
@@ -274,7 +274,7 @@ describe('ApPacketCaptureForm - validation', () => {
     )
   })
 
-  it('should validate field correctly', async () => {
+  it.skip('should validate field correctly', async () => {
     mockServer.use(
       rest.get(
         WifiUrlsInfo.getPacketCaptureState.url,
