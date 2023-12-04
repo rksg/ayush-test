@@ -87,7 +87,7 @@ describe('ApEdit', () => {
         (_, res, ctx) => res(ctx.json(venuelist))),
       rest.get(WifiUrlsInfo.getApCapabilities.url,
         (_, res, ctx) => res(ctx.json(venueCaps))),
-      rest.get(CommonUrlsInfo.getApGroupList.url,
+      rest.get(CommonUrlsInfo.getApGroupListByVenue.url,
         (_, res, ctx) => res(ctx.json(apGrouplist))),
       rest.post(WifiUrlsInfo.addAp.url,
         (_, res, ctx) => res(ctx.json(successResponse))),
@@ -246,7 +246,7 @@ describe('ApEdit', () => {
           (_, res, ctx) => res(ctx.json({}))),
         rest.post(WifiUrlsInfo.getDhcpAp.url,
           (_, res, ctx) => res(ctx.json({}))),
-        rest.get(CommonUrlsInfo.getApGroupList.url,
+        rest.get(CommonUrlsInfo.getApGroupListByVenue.url,
           (_, res, ctx) => res(ctx.json({})))
       )
       render(<Provider><ApEdit /></Provider>, {

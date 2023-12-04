@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { networkApi }                   from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }              from '@acx-ui/store'
@@ -25,6 +25,8 @@ import {
 } from '../../__tests__/fixtures'
 
 import { VenueNetworksTab } from './index'
+
+jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP) // isMapEnabled = false
 
 type MockDialogProps = React.PropsWithChildren<{
   visible: boolean
@@ -103,8 +105,6 @@ describe('VenueNetworksTab', () => {
   })
 
   it('activate Network', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-
     render(<Provider><VenueNetworksTab /></Provider>, {
       route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
     })
