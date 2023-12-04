@@ -117,6 +117,19 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       }
     },
     {
+      key: 'mldAddr',
+      title: intl.$t({ defaultMessage: 'MLD MAC Address' }),
+      dataIndex: 'mldAddr',
+      sorter: true,
+      disable: true,
+      render: (_, { mldAddr }) => {
+        const mac = mldAddr?.toLowerCase() || undefined
+        return <Tooltip title={mac}>
+          {mac || '--'}
+        </Tooltip>
+      }
+    },
+    {
       key: 'ipAddress',
       title: intl.$t({ defaultMessage: 'IP Address' }),
       dataIndex: 'ipAddress',

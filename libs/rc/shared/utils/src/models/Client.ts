@@ -45,6 +45,7 @@ export class Client {
   isVenueExists?: boolean
   wifiCallingClient?: boolean
   isApExists?: boolean
+  mldAddr?: string
 
   constructor () {
     this.clientMac = ''
