@@ -47,7 +47,7 @@ function DidYouKnowWidget ({
           initialLoadedFacts: data?.facts.map((fact) => fact.key),
           ...rest
         }),
-        skip: !Boolean(content[offset]?.length === 0)
+        skip: !Boolean(content[offset]?.length === 0 )
       }
     )
   useEffect(() => {
@@ -56,13 +56,20 @@ function DidYouKnowWidget ({
       updatedContent[offset] = data?.[0] ?? []
       setContent(updatedContent)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [offset, isSuccess, isFetching])
   useEffect(() => {
-    if (content[offset]?.length === 0) {
+    if (content[offset]?.length === 0 && data?.[0]) {
       refetch()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [offset, content, refetch])
+  useEffect(() => {
+    if (filters) {
+      setContent(Array.from({ length: 5 }, () => []))
+      setOffset(0)
+    }
+  }, [filters])
   useEffect(() => {
     if (initialLoadedFacts && availableFacts) {
       const newMap = getCarouselFactsMap(availableFacts.filter((item) =>
@@ -74,7 +81,6 @@ function DidYouKnowWidget ({
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialLoadedFacts])
-
   const { $t } = intl
   const title = $t({ defaultMessage: 'Did you know?' })
   const subTitle = $t({ defaultMessage: 'No data to report' })
