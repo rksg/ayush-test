@@ -18,4 +18,5 @@ export enum RolesEnum {
 export interface RequestPayload <Payload = unknown> extends Record<string,unknown> {
   params?: Params<string>
   payload?: Payload
+  customHeaders?: Record<string,unknown>
 }

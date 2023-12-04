@@ -36,14 +36,15 @@ describe('ClientDetails', () => {
   const clientsList = {
     network: {
       search: {
-        clients: [
+        clientsByTraffic: [
           {
             hostname: '02AA01AB50120H4M',
             username: '18b43003e603',
             mac: '18:B4:30:03:E6:03',
             osType: 'Nest Learning Thermostat',
             ipAddress: '10.0.1.42',
-            lastActiveTime: '2023-08-23T05:08:20.000Z'
+            lastSeen: '2023-08-23T05:08:20.000Z',
+            traffic: 1
           }
         ]
       }
