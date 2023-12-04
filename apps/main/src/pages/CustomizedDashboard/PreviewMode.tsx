@@ -1,10 +1,10 @@
 import { Space, Divider } from 'antd'
+import { useIntl }        from 'react-intl'
 
 import { Button }       from '@acx-ui/components'
 import { EditOutlined } from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
-import { useIntl } from 'react-intl'
 
 export default function PreviewMode (props: {
   visible: boolean, setVisible:(visible: boolean) => void

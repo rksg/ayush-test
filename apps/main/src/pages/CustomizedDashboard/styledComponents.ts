@@ -71,6 +71,13 @@ border-top: 75px solid rgba(255,255,255, 0.4);
         }
       }
     }
+    &[disabled] {
+      svg {
+        path {
+          stroke: var(--acx-neutrals-50);
+        }
+      }
+    }
   }
 }
 

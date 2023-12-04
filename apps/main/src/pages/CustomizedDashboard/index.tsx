@@ -43,9 +43,8 @@ import { TenantLink }                                                           
 import { filterByAccess, getShowWithoutRbacCheckKey }                                    from '@acx-ui/user'
 import { useDashboardFilter, DateFilter,DateRange, getDateRangeFilter, AnalyticsFilter } from '@acx-ui/utils'
 
+import EditMode    from './EditMode'
 import PreviewMode from './PreviewMode'
-import EditMode from './EditMode'
-
 import * as UI     from './styledComponents'
 
 interface DashboardFilterContextProps {
@@ -89,9 +88,9 @@ export default function CustomizedDashboard () {
   const displayEditMode = (display: boolean) => {
     setVisible(display)
     if(display) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden'
     }else{
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = 'auto'
     }
   }
 
