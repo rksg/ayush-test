@@ -1,4 +1,5 @@
-import { EdgeSdLanViewData, EdgeIpModeEnum, EdgePortTypeEnum } from '@acx-ui/rc/utils'
+import { EdgeIpModeEnum, EdgePortTypeEnum } from '../../../../models/EdgeEnum'
+import { EdgePortStatus }                   from '../../../../types/edge'
 
 export const mockEdgePortConfig = {
   ports: [
@@ -13,7 +14,7 @@ export const mockEdgePortConfig = {
       ip: '1.1.1.1',
       subnet: '255.255.255.0',
       gateway: '1.1.1.1',
-      corePortEnabled: true
+      corePortEnabled: false
     },
     {
       id: '20b445af-7270-438d-88a3-a5a2219c377b',
@@ -26,7 +27,7 @@ export const mockEdgePortConfig = {
       ip: '2.2.2.2',
       subnet: '255.255.255.0',
       gateway: '2.2.2.2',
-      corePortEnabled: false
+      corePortEnabled: true
     },
     {
       id: 'cdecd42e-81e3-4d60-921c-6b05181a53ae',
@@ -61,10 +62,10 @@ export const mockEdgePortConfig = {
       enabled: true,
       portType: EdgePortTypeEnum.LAN,
       natEnabled: true,
-      ipMode: EdgeIpModeEnum.DHCP,
+      ipMode: EdgeIpModeEnum.STATIC,
       ip: '5.5.5.5',
       subnet: '255.255.255.0',
-      gateway: '5.5.5.5',
+      gateway: '',
       corePortEnabled: false
     },
     {
@@ -112,14 +113,44 @@ export const mockEdgePortConfigWithStatusIp = {
   ]
 }
 
-export const mockedEdgeSdLanDataList = [{
-  id: 'mocked-cf-1',
-  edgeId: '96B968BD2C76ED11EEA8E4B2E81F537A94',
-  corePortMac: '00:0c:29:b6:ad:04'
-}] as EdgeSdLanViewData[]
+export const mockEdgePortStatus = [
+  {
+    portId: mockEdgePortConfig.ports[0].id,
+    ip: '10.206.78.152'
+  },
+  {
+    portId: mockEdgePortConfig.ports[1].id,
+    ip: ''
+  }
+]
 
-export const mockedCorePortLostEdgeSdLanDataList = [{
-  id: 'mocked-cf-2',
-  edgeId: '96BD19BB3B5CE111EE80500E35957BEDC3',
-  corePortMac: ''
-}] as EdgeSdLanViewData[]
+export const edgePortsSetting:EdgePortStatus[] = [{
+  portId: '1',
+  name: 'Port 1',
+  status: 'Up',
+  adminStatus: 'Enabled',
+  type: EdgePortTypeEnum.WAN,
+  mac: 'AA:BB:CC:DD:EE:FF',
+  speedKbps: 12* Math.pow(12, 6),
+  duplex: 'Full',
+  ip: '1.1.1.1',
+  ipMode: 'DHCP',
+  sortIdx: 1,
+  vlan: '',
+  subnet: ''
+},
+{
+  portId: '2',
+  name: 'Port 2',
+  status: 'Down',
+  adminStatus: 'Disabled',
+  type: EdgePortTypeEnum.LAN,
+  mac: 'AA:BB:CC:DD:EE:F1',
+  speedKbps: 10* Math.pow(12, 6),
+  duplex: 'Half',
+  ip: '1.1.1.2',
+  ipMode: 'Static',
+  sortIdx: 2,
+  vlan: '',
+  subnet: ''
+}]
