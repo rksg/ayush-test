@@ -24,7 +24,9 @@ export function ChatWithMelissa () {
   useEffect(()=>{
     if(showIncidentSummary){
       getSummary().then((data)=>{
-        setSummary(data.summary)
+        setTimeout(()=>{
+          setSummary(data.summary)
+        },10000)
       })
     }
   },[showIncidentSummary])
@@ -53,6 +55,7 @@ export function ChatWithMelissa () {
       {showIncidentSummary ? subTitleIncidents : subTitleFirstTime }
     </p>
     {isMelissaBotEnabled && <Button size='small'
+      loading={showIncidentSummary && !summary}
       disabled={showIncidentSummary && !summary}
       onClick={()=>{
         const event = new CustomEvent('showMelissaBot',
