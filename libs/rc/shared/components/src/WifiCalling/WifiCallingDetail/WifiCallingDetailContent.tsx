@@ -2,11 +2,9 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, SummaryCard }           from '@acx-ui/components'
-import { useGetWifiCallingServiceQuery } from '@acx-ui/rc/services'
-import { QosPriorityEnum }               from '@acx-ui/rc/utils'
-
-import { wifiCallingQosPriorityLabelMapping } from '../contentsMap'
+import { Loader, SummaryCard }                                 from '@acx-ui/components'
+import { useGetWifiCallingServiceQuery }                       from '@acx-ui/rc/services'
+import { QosPriorityEnum, wifiCallingQosPriorityLabelMapping } from '@acx-ui/rc/utils'
 
 const WifiCallingDetailContent = () => {
   const params = useParams()

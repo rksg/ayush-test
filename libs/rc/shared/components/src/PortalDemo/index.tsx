@@ -20,6 +20,7 @@ import PortalViewContentPreview                     from './PortalViewContentPre
 import * as UI                                      from './styledComponents'
 
 export { PortalPreviewModal }
+export { getLanguage } from './commonUtils'
 
 type PortalDemoProps = {
   networkSocial?: { [key:string]:boolean },
