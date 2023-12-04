@@ -32,6 +32,15 @@ describe('incidentDetailsApi', () => {
       expect(data).toBe(undefined)
       expect(error).not.toBe(undefined)
     })
+    it('handle not found incident', async () => {
+      mockGraphqlQuery(dataApiURL, 'IncidentCode', { data: { incident: null } })
+      const { status, data, error } = await store.dispatch(
+        api.endpoints.incidentCode.initiate({ id: fakeIncident1.id })
+      )
+      expect(status).toBe('fulfilled')
+      expect(data).toStrictEqual(null)
+      expect(error).toBe(undefined)
+    })
   })
   describe('IncidentDetails', () => {
     it('should return correct data', async () => {
