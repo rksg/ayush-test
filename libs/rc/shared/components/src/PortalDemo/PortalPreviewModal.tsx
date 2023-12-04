@@ -10,7 +10,7 @@ import { Provider }        from '@acx-ui/store'
 
 import * as UI from './styledComponents'
 
-import { PortalDemo } from './index'
+import { PortalDemo } from '.'
 
 export default function PortalPreviewModal (props:{
   demoValue?: Demo,

@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal, Tooltip }              from '@acx-ui/components'
-import { SimpleListTooltip }                                                                    from '@acx-ui/rc/components'
+import { DEFAULT_GUEST_DHCP_NAME, SimpleListTooltip }                                           from '@acx-ui/rc/components'
 import { useDeleteDHCPServiceMutation, useGetDHCPProfileListViewModelQuery, useGetVenuesQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -19,8 +19,6 @@ import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui
 import { filterByAccess, hasAccess }                               from '@acx-ui/user'
 
 import * as UI from './styledComponents'
-
-const DEFAULT_GUEST_DHCP_NAME = 'DHCP-Guest'
 
 export default function DHCPTable () {
   const { $t } = useIntl()

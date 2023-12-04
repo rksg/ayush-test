@@ -4,13 +4,14 @@ import { useContext, useState } from 'react'
 
 import { Demo, Portal, PortalViewEnum } from '@acx-ui/rc/utils'
 
+import PortalFormContext from '../PortalForm/PortalFormContext'
+
 import Wifi4eu                                 from './assets/images/portal-demo/WiFi4euBanner.svg'
 import { PortalDemoDefaultSize, hoverOutline } from './commonUtils'
 import PortalPhotoContent                      from './PortalContent/PortalPhotoContent'
 import PortalPoweredByContent                  from './PortalContent/PortalPoweredByContent'
 import PortalSecondaryTextContent              from './PortalContent/PortalSecondaryTextContent'
 import PortalWelcomeContent                    from './PortalContent/PortalWelcomeContent'
-import PortalFormContext                       from './PortalFormContext'
 import PortalImageTools                        from './PortalImageTools'
 import PortalPopover                           from './PortalPopover'
 import PortalViewConfirm                       from './PortalViewConfirm'

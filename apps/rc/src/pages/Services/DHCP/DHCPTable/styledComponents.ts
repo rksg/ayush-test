@@ -1,14 +1,5 @@
-import styled, { createGlobalStyle } from 'styled-components/macro'
+import { createGlobalStyle } from 'styled-components/macro'
 
-export const Diagram = styled.div`
-  width: 358px;
-  margin-top: 40px;
-`
-
-export const RadioDescription = styled.div`
-  color: var(--acx-neutrals-50);
-  margin-top: 4px;
-`
 export const toolTipClassName = 'dhcp-tooltip-popover'
 
 export const ToolTipStyle = createGlobalStyle`

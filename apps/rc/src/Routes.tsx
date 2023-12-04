@@ -13,7 +13,7 @@ import {
   AAAForm,
   VLANPoolForm,
   WifiCallingForm, WifiCallingConfigureForm, WifiCallingDetailView,
-  SyslogDetailView, SyslogForm, DHCPForm, PortalForm
+  SyslogDetailView, SyslogForm, DHCPForm, PortalForm, ClientIsolationForm
 } from '@acx-ui/rc/components'
 import {
   getPolicyListRoutePath,
@@ -69,7 +69,6 @@ import RadiusAttributeGroupForm
   // eslint-disable-next-line max-len
   from './pages/Policies/AdaptivePolicy/RadiusAttributeGroup/RadiusAttributeGroupForm/RadiusAttributeGroupForm'
 import ClientIsolationDetail                from './pages/Policies/ClientIsolation/ClientIsolationDetail/ClientIsolationDetail'
-import ClientIsolationForm                  from './pages/Policies/ClientIsolation/ClientIsolationForm'
 import ClientIsolationTable                 from './pages/Policies/ClientIsolation/ClientIsolationTable/ClientIsolationTable'
 import ConnectionMeteringDetail             from './pages/Policies/ConnectionMetering/ConnectionMeteringDetail'
 import ConnectionMeteringPageForm           from './pages/Policies/ConnectionMetering/ConnectionMeteringPageForm'
