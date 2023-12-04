@@ -8,7 +8,8 @@ import {
   CloudpathDeploymentTypeEnum,
   CloudpathServer,
   GuestNetworkTypeEnum,
-  NetworkTypeEnum
+  NetworkTypeEnum,
+  networkTypes
 } from '@acx-ui/rc/utils'
 
 import AaaCloudpathCloudDiagram       from '../assets/images/network-wizard-diagrams/aaa-cloudpath-cloud-deployment.png'
@@ -33,7 +34,6 @@ import PskDiagram                     from '../assets/images/network-wizard-diag
 import SelfSignInDiagram              from '../assets/images/network-wizard-diagrams/self-sign-in.png'
 import WISPrWithPskDiagram            from '../assets/images/network-wizard-diagrams/wispr-psk.png'
 import WISPrDiagram                   from '../assets/images/network-wizard-diagrams/wispr.png'
-import { networkTypes }               from '../contentsMap'
 import NetworkFormContext             from '../NetworkFormContext'
 import { Diagram }                    from '../styledComponents'
 
