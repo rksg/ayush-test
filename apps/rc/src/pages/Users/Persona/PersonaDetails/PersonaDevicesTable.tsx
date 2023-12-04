@@ -7,8 +7,12 @@ import { useParams } from 'react-router-dom'
 import { Loader, showActionModal, showToast, Subtitle, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
 import { SuccessSolid }                                                             from '@acx-ui/icons'
-import { OSIconContainer, useDpskNewConfigFlowParams }                              from '@acx-ui/rc/components'
-import { PersonaDeviceItem, PersonaDevicesImportDialog }                            from '@acx-ui/rc/components'
+import {
+  OSIconContainer,
+  useDpskNewConfigFlowParams,
+  PersonaDeviceItem,
+  PersonaDevicesImportDialog
+} from '@acx-ui/rc/components'
 import {
   useAddPersonaDevicesMutation,
   useDeletePersonaDevicesMutation,
