@@ -6,7 +6,7 @@ describe('config-template-utils', () => {
     expect(breadcrumb).toEqual([
       {
         text: 'Configuration Templates',
-        link: 'templates',
+        link: 'configTemplates/templates',
         tenantType: 'v'
       }
     ])
