@@ -7,7 +7,7 @@ import { useIntl }                          from 'react-intl'
 import { StepsFormLegacy, Tooltip } from '@acx-ui/components'
 import { ExternalAntenna }          from '@acx-ui/rc/utils'
 
-import { VenueEditContext } from '../../index'
+import { VenueEditContext } from '../..'
 
 const { useWatch } = Form
 

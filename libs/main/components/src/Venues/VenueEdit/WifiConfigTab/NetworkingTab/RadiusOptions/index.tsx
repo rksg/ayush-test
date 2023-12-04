@@ -9,7 +9,7 @@ import { RadiusOptionsForm }                                                  fr
 import { useGetVenueRadiusOptionsQuery, useUpdateVenueRadiusOptionsMutation } from '@acx-ui/rc/services'
 import { VenueRadiusOptions }                                                 from '@acx-ui/rc/utils'
 
-import { VenueEditContext } from '../../../index'
+import { VenueEditContext } from '../../..'
 
 const { useWatch } = Form
 

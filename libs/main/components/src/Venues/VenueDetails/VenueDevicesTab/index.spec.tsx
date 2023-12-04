@@ -8,7 +8,7 @@ import { fireEvent, mockServer, render, screen }    from '@acx-ui/test-utils'
 
 import { venueSetting } from '../../__tests__/fixtures'
 
-import { VenueDevicesTab } from './index'
+import { VenueDevicesTab } from '.'
 
 
 

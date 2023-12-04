@@ -25,7 +25,7 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { VenueEditContext } from '../../../index'
+import { VenueEditContext } from '../../..'
 import * as UI              from '../../styledComponents'
 
 

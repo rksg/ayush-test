@@ -15,7 +15,7 @@ import {
   venueApsList
 } from '../../../../__tests__/fixtures'
 
-import { MeshNetwork } from './index'
+import { MeshNetwork } from '.'
 
 const params = {
   tenantId: '15a04f095a8f4a96acaf17e921e8a6df',

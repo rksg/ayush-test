@@ -21,7 +21,6 @@ import {
   ReportType
 } from '@acx-ui/reports/components'
 
-
 import {
   ArrowCornerIcon,
   ApSingleIcon,

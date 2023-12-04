@@ -6,7 +6,6 @@ import { Button }                            from '@acx-ui/components'
 import { EdgesTable, EdgesTableQueryProps  } from '@acx-ui/rc/components'
 import { useParams, TenantLink }             from '@acx-ui/react-router-dom'
 
-
 const SpaceWrapper = styled(Space)`
   width: 100%;
   margin: 12px 0px;

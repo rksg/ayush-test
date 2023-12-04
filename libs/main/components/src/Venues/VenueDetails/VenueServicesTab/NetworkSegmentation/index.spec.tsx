@@ -6,7 +6,7 @@ import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { mockedNsgStatsList } from './__tests__/fixtures'
 
-import { NetworkSegmentation } from './index'
+import { NetworkSegmentation } from '.'
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),

@@ -22,7 +22,7 @@ import {
   useTenantLink
 } from '@acx-ui/react-router-dom'
 
-import { VenueEditContext } from '../../../index'
+import { VenueEditContext } from '../../..'
 
 export function ApSnmp () {
   const { $t } = useIntl()

@@ -4,7 +4,7 @@ import { SwitchUrlsInfo }                        from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { VenueSwitch } from './index'
+import { VenueSwitch } from '.'
 
 jest.mock('@acx-ui/reports/components', () => ({
   ...jest.requireActual('@acx-ui/reports/components'),

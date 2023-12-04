@@ -19,7 +19,7 @@ import {
 
 import { events, eventsMeta } from './VenueTimelineTab/__tests__/fixtures'
 
-import { VenueDetails } from './index'
+import { VenueDetails } from '.'
 
 const data: Dashboard = {
   summary: {

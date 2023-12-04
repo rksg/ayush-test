@@ -12,8 +12,8 @@ import { mockServer,
   screen,
   waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
+import { VenueEditContext }  from '../..'
 import { mockLoadBalabcing } from '../../../__tests__/fixtures'
-import { VenueEditContext }  from '../../index'
 
 import { LoadBalancing } from './LoadBalancing'
 

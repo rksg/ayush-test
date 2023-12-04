@@ -7,7 +7,6 @@ import { MdnsProxySelector }          from '@acx-ui/rc/components'
 import { useAddMdnsProxyApsMutation } from '@acx-ui/rc/services'
 
 
-
 export interface ChangeMdnsProxyDrawerProps {
   apSerialNumberList: string[];
   visible: boolean;

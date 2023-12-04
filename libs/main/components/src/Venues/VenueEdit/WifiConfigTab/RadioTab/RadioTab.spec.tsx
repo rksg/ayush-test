@@ -8,6 +8,7 @@ import { CommonUrlsInfo, VenueRadioCustomization, WifiUrlsInfo } from '@acx-ui/r
 import { Provider, store }                                       from '@acx-ui/store'
 import { mockServer, screen, render, within, waitFor }           from '@acx-ui/test-utils'
 
+import { EditContext, VenueEditContext } from '../..'
 import {
   venueData,
   venueSetting,
@@ -20,11 +21,9 @@ import {
   mockLoadBalabcing,
   mockVenueClientAdmissionControl
 } from '../../../__tests__/fixtures'
-import { defaultValue }                  from '../../../contentsMap'
-import { EditContext, VenueEditContext } from '../../index'
+import { defaultValue } from '../../../contentsMap'
 
 import { RadioTab } from './RadioTab'
-
 
 const params = { venueId: 'venue-id', tenantId: 'tenant-id' }
 

@@ -15,7 +15,7 @@ import {
 import { VenueMessages, redirectPreviousPage }   from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { VenueEditContext } from '../../index'
+import { VenueEditContext } from '../..'
 
 import RogueApDrawer from './RogueApDrawer'
 

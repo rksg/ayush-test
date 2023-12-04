@@ -33,7 +33,6 @@ type MockDialogProps = React.PropsWithChildren<{
   onOk?: () => void
   onCancel?: () => void
 }>
-
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   NetworkApGroupDialog: ({ onOk = ()=>{}, onCancel = ()=>{}, visible }: MockDialogProps) =>

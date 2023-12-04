@@ -8,12 +8,12 @@ import { SyslogUrls }                                                           
 import { Provider, store }                                                           from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
+import { ServerSettingContext } from '..'
 import {
   venueSyslog,
   syslogServerProfiles
 } from '../../../../__tests__/fixtures'
 import { VenueEditContext, EditContext } from '../../../index'
-import { ServerSettingContext }          from '../index'
 
 
 import { Syslog } from './index'

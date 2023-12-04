@@ -17,7 +17,7 @@ import {
   venuelist
 } from '../__tests__/fixtures'
 
-import { VenuesTable } from './index'
+import { VenuesTable } from '.'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({

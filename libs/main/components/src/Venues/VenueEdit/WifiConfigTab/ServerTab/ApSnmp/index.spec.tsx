@@ -8,13 +8,13 @@ import { ApSnmpUrls }                                                           
 import { Provider, store }                                                           from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
+import { ServerSettingContext }     from '..'
 import {
   resultOfGetVenueApSnmpAgentSettings,
   resultOfUpdateApSnmpAgentSettings,
   resultOfGetApSnmpAgentProfiles
 } from '../../../../__tests__/fixtures'
 import { VenueEditContext, EditContext } from '../../../index'
-import { ServerSettingContext }          from '../index'
 
 import { ApSnmp } from './index'
 

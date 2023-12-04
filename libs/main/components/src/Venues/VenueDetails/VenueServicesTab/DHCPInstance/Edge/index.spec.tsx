@@ -7,7 +7,7 @@ import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { mockedDhcpStatsData, mockedEdgeDhcpData, mockedEdgeList, mockEdgeDhcpHostStats } from './__tests__/fixtures'
 
-import EdgeDhcpTab from './index'
+import EdgeDhcpTab from '.'
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),

@@ -12,11 +12,11 @@ import { mockServer,
   waitFor,
   waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
+import { EditContext, VenueEditContext } from '../../..'
 import { mockDirectedMulticast }         from '../../../../__tests__/fixtures'
 import { defaultValue }                  from '../../../../contentsMap'
-import { EditContext, VenueEditContext } from '../../../index'
 
-import { DirectedMulticast } from './index'
+import { DirectedMulticast } from '.'
 
 const params = {
   tenantId: 'tenant-id',

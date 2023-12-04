@@ -13,7 +13,7 @@ import {
 import { useGetVenueClientAdmissionControlQuery, useUpdateVenueClientAdmissionControlMutation } from '@acx-ui/rc/services'
 import { VenueClientAdmissionControl }                                                          from '@acx-ui/rc/utils'
 
-import { VenueEditContext } from '../../index'
+import { VenueEditContext } from '../..'
 
 
 

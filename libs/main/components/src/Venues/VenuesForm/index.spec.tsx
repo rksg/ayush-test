@@ -20,7 +20,7 @@ import {
   successResponse
 } from '../__tests__/fixtures'
 
-import { VenuesForm, addressParser } from './index'
+import { VenuesForm, addressParser } from '.'
 
 const venueResponse = {
   id: '2c16284692364ab6a01f4c60f5941836',

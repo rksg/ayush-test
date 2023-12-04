@@ -45,7 +45,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { VenueEditContext } from '../../index'
+import { VenueEditContext } from '../..'
 
 
 const displayWidth = '40px'

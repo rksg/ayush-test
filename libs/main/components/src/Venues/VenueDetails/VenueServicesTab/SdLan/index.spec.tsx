@@ -13,7 +13,7 @@ import {
 
 import { mockNetworkSaveData, mockDeepNetworkList, mockedEdgeSdLan } from './__tests__/fixtures'
 
-import EdgeSdLan from './index'
+import EdgeSdLan from '.'
 
 const mockedEditFn = jest.fn()
 const mockedGetNetworkDeepList = jest.fn()

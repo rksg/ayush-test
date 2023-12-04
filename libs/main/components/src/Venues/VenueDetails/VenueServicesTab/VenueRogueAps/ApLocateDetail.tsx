@@ -19,7 +19,6 @@ import {
   RogueOldApResponseType
 } from '@acx-ui/rc/utils'
 
-
 import { handleCategoryColor } from './index'
 
 const ApLocateDetail = (props: { row: RogueOldApResponseType }) => {

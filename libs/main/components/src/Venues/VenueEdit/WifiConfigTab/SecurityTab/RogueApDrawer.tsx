@@ -9,7 +9,6 @@ import { rogueRuleLabelMapping }      from '@acx-ui/rc/components'
 import { useRoguePolicyQuery }        from '@acx-ui/rc/services'
 import { RogueAPRule, RogueRuleType } from '@acx-ui/rc/utils'
 
-
 const RogueApDrawer = (props: {
   visible: boolean,
   setVisible: (visible: boolean) => void,

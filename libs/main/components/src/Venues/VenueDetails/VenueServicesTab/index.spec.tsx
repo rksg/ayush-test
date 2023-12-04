@@ -13,7 +13,7 @@ import {
 } from '@acx-ui/test-utils'
 
 
-import { VenueServicesTab } from './index'
+import { VenueServicesTab } from '.'
 
 jest.spyOn(Tabs, 'TabPane').mockImplementation((props) => {
   return <div data-testid={`rc-tabpane-${props.tab}`}>{props.children}</div>

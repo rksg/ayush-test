@@ -6,9 +6,8 @@ import { useIntl }   from 'react-intl'
 
 
 import { TableProps }                                                   from '@acx-ui/components'
-import { EdgeSdLanActivatedNetworksTable, ActivateNetworkSwitchButton }
-  from '@acx-ui/rc/components'
-import { useUpdateEdgeSdLanPartialMutation } from '@acx-ui/rc/services'
+import { EdgeSdLanActivatedNetworksTable, ActivateNetworkSwitchButton } from '@acx-ui/rc/components'
+import { useUpdateEdgeSdLanPartialMutation }                            from '@acx-ui/rc/services'
 import {
   networkTypes,
   NetworkSaveData,
@@ -17,7 +16,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { hasAccess }             from '@acx-ui/user'
-
 
 interface EdgeSdLanServiceProps {
   serviceId: string;

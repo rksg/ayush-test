@@ -19,7 +19,7 @@ import {
   mockDirectedMulticast
 } from '../../../__tests__/fixtures'
 
-import { NetworkingTab } from './index'
+import { NetworkingTab } from '.'
 
 const params = { venueId: 'venue-id', tenantId: 'tenant-id' }
 const mockedUsedNavigate = jest.fn()

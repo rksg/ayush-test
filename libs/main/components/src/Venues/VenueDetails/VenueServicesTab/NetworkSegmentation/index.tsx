@@ -6,7 +6,6 @@ import { Loader }                                                              f
 import { NetworkSegmentationDetailTableGroup, NetworkSegmentationServiceInfo } from '@acx-ui/rc/components'
 import { useGetNetworkSegmentationViewDataListQuery }                          from '@acx-ui/rc/services'
 
-
 export const NetworkSegmentation = () => {
 
   const { venueId } = useParams()

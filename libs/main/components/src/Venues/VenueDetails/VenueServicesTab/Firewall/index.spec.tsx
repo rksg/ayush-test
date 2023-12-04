@@ -13,7 +13,7 @@ import {
 
 import { mockFirewall, mockedFirewallDataList } from './__tests__/fixtures'
 
-import  EdgeFirewall from './index'
+import  EdgeFirewall from '.'
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),

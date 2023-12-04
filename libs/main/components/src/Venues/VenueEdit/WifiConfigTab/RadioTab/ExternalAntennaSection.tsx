@@ -10,8 +10,8 @@ import { useGetVenueApCapabilitiesQuery, useGetVenueExternalAntennaQuery, useUpd
 import { CapabilitiesApModel, ExternalAntenna }                                                                   from '@acx-ui/rc/utils'
 import { useParams }                                                                                              from '@acx-ui/react-router-dom'
 
+import { VenueEditContext } from '../..'
 import ApModelPlaceholder   from '../../../assets/images/aps/ap-model-placeholder.png'
-import { VenueEditContext } from '../../index'
 
 import { ExternalAntennaForm } from './ExternalAntennaForm'
 

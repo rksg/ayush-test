@@ -7,7 +7,7 @@ import { PasswordInput }                                                        
 import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
 import { NetworkSaveData, Demo, PortalLanguageEnum, GuestNetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
-import { getLanguage }          from '../../services/commonUtils'
+import { getLanguage }          from '../../PortalDemo'
 import { AuthAccServerSummary } from '../CaptivePortal/AuthAccServerSummary'
 import * as UI                  from '../styledComponents'
 

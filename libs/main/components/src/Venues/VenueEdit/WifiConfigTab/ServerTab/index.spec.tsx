@@ -15,8 +15,8 @@ import {
 } from '../../../__tests__/fixtures'
 import { VenueEditContext, EditContext } from '../../index'
 
-import { ServerSettingContext } from './index'
-import { ServerTab }            from './index'
+import { ServerSettingContext } from '.'
+import { ServerTab }            from '.'
 
 let editContextData = {} as EditContext
 const setEditContextData = jest.fn()

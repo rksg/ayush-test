@@ -7,7 +7,7 @@ import { generatePath }                          from '@acx-ui/react-router-dom'
 import { Provider, store  }                      from '@acx-ui/store'
 import { mockServer, fireEvent, render, screen } from '@acx-ui/test-utils'
 
-import { VenueOverviewTab } from './index'
+import { VenueOverviewTab } from '.'
 
 /* eslint-disable max-len */
 jest.mock('@acx-ui/analytics/components', () => ({

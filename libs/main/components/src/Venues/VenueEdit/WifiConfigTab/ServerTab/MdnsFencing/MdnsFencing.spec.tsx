@@ -8,8 +8,8 @@ import { CommonUrlsInfo, getUrlForTest }                         from '@acx-ui/r
 import { Provider, store }                                       from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { EditContext, VenueEditContext } from '../../../index'
-import { ServerSettingContext }          from '../index'
+import { ServerSettingContext }          from '..'
+import { EditContext, VenueEditContext } from '../../..'
 
 import { mockMdnsFencing } from './__tests__/fixtures'
 import { MdnsFencing }     from './MdnsFencing'

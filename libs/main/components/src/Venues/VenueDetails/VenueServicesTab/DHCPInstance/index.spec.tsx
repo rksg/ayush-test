@@ -9,7 +9,7 @@ import { mockServer,
 
 import handlers from './__tests__/fixtures'
 
-import DHCPInstance from './index'
+import DHCPInstance from '.'
 
 
 describe('Venue DHCP Instance', () => {

@@ -15,7 +15,7 @@ import {
 
 import { mockedIsolationUsageByVenue } from './__tests__/fixtures'
 
-import ClientIsolationAllowList from './index'
+import ClientIsolationAllowList from '.'
 
 describe('ClientIsolationAllowList', () => {
   const params = {

@@ -9,6 +9,7 @@ import { CommonUrlsInfo, RogueApUrls } from '@acx-ui/rc/utils'
 import { Provider, store }             from '@acx-ui/store'
 import { mockServer, render, screen }  from '@acx-ui/test-utils'
 
+import { VenueEditContext }         from '../..'
 import {
   venueData,
   venueRogueAp,
@@ -17,10 +18,9 @@ import {
   venueRoguePolicyList,
   rogueApPolicyNotDefaultProfile
 } from '../../../__tests__/fixtures'
-import { VenueEditContext } from '../../index'
 
 
-import { SecurityTab } from './index'
+import { SecurityTab } from '.'
 
 const params = {
   tenantId: '15a04f095a8f4a96acaf17e921e8a6df',

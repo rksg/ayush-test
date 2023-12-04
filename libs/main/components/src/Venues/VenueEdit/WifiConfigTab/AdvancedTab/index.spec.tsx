@@ -8,6 +8,7 @@ import { CommonUrlsInfo, WifiUrlsInfo }                                         
 import { Provider, store }                                                           from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
+import { VenueEditContext, EditContext } from '../..'
 import {
   venueData,
   venueCaps,
@@ -16,10 +17,9 @@ import {
   venueBssColoring,
   venueApManagementVlan
 } from '../../../__tests__/fixtures'
-import { defaultValue }                  from '../../../contentsMap'
-import { VenueEditContext, EditContext } from '../../index'
+import { defaultValue } from '../../../contentsMap'
 
-import { AdvancedTab, AdvanceSettingContext } from './index'
+import { AdvancedTab, AdvanceSettingContext } from '.'
 
 
 const params = { venueId: 'venue-id', tenantId: 'tenant-id' }

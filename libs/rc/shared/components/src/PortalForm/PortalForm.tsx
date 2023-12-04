@@ -13,12 +13,13 @@ import { defaultAlternativeLang, defaultComDisplay, getServiceListRoutePath, get
 import { useNavigate, useParams, useTenantLink }                                                                                          from '@acx-ui/react-router-dom'
 import { loadImageWithJWT }                                                                                                               from '@acx-ui/utils'
 
-import Photo                     from './assets/images/portal-demo/PortalPhoto.svg'
-import Powered                   from './assets/images/portal-demo/PoweredLogo.svg'
-import Logo                      from './assets/images/portal-demo/RuckusCloud.svg'
-import { PortalDemoDefaultSize } from './commonUtils'
-import PortalFormContext         from './PortalFormContext'
-import PortalSettingForm         from './PortalSettingForm'
+import { PortalDemoDefaultSize } from '../PortalDemo/commonUtils'
+
+import Photo             from './assets/images/portal-demo/PortalPhoto.svg'
+import Powered           from './assets/images/portal-demo/PoweredLogo.svg'
+import Logo              from './assets/images/portal-demo/RuckusCloud.svg'
+import PortalFormContext from './PortalFormContext'
+import PortalSettingForm from './PortalSettingForm'
 
 
 export const initialPortalData : Portal ={

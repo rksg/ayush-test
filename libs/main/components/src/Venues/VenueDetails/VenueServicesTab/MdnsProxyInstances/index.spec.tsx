@@ -15,7 +15,7 @@ import {
 
 import { mockedVenueApList, mockedTenantId, mockedVenueId, mockedMdnsProxyList, mockedApList } from './__tests__/fixtures'
 
-import MdnsProxyInstances from './index'
+import MdnsProxyInstances from '.'
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {

@@ -12,7 +12,7 @@ import {
 } from '@acx-ui/rc/services'
 import { MdnsFencingService, VenueMdnsFencingPolicy } from '@acx-ui/rc/utils'
 
-import { VenueEditContext } from '../../../index'
+import { VenueEditContext } from '../../..'
 
 import { MdnsFencingServiceTable } from './MdnsFencingServiceTable'
 import { updateRowIds }            from './utils'
