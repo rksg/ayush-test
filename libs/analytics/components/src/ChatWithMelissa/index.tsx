@@ -13,10 +13,6 @@ import graphic        from './graphic.png'
 import { getSummary } from './services'
 import * as UI        from './styledComponents'
 
-// eslint-disable-next-line max-len
-// const summary = 'Ruckus AI findings reveal that P4 is the most common Severity with a count of 90 occurrences, impacting Scope names and Connection and Service Availability categories the most. Oak Ridge HS has the highest Client Impact at 88.89%, while PD-35 leads in Impacted Clients with 70. To prevent similar incidents from occurring in the future, Ruckus AI suggests the following actionables:'
-// const summary = ''
-
 export function ChatWithMelissa () {
   const { $t } = useIntl()
   const [summary,setSummary] = useState('')
@@ -51,8 +47,6 @@ export function ChatWithMelissa () {
       ...defaultRichTextFormatValues
     }}
   />
-  // eslint-disable-next-line no-console
-  console.log({ summary })
   return <UI.Wrapper><Card type='solid-bg'>
     <p>
       <img src={graphic} alt='graphic' /><br />
