@@ -2,8 +2,9 @@ import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/dist/q
 import { QueryReturnValue }                        from '@rtk-query/graphql-request-base-query/dist/GraphqlBaseQueryTypes'
 import { groupBy }                                 from 'lodash'
 
-import { get }                                from '@acx-ui/config'
-import { rbacApi as baseRbacApi, rbacApiURL } from '@acx-ui/store'
+import { Settings }               from '@acx-ui/analytics/utils'
+import { get }                    from '@acx-ui/config'
+import { rbacApi as baseRbacApi } from '@acx-ui/store'
 
 export type System = {
   deviceId: string
@@ -11,14 +12,24 @@ export type System = {
   onboarded: boolean
   controllerVersion: string
 }
-
 export type SystemMap = Record<string, System[]>
+type SettingRow = {
+  key: string
+  value: string
+}
+
+const getDefaultSettings = (): Partial<Settings> => ({
+  'brand-ssid-compliance-matcher': '^[a-zA-Z0-9]{5}_GUEST$',
+  'sla-p1-incidents-count': '0',
+  'sla-guest-experience': '100',
+  'sla-brand-ssid-compliance': '100'
+})
 
 export const rbacApi = baseRbacApi.injectEndpoints({
   endpoints: (build) => ({
     systems: build.query({
       async queryFn (_params, _queryApi, _extraOptions, fetch) {
-        const result = await fetch(`${rbacApiURL}/systems`)
+        const result = await fetch('/systems')
         return {
           ...result,
           data: result.data && groupBy(
@@ -27,12 +38,24 @@ export const rbacApi = baseRbacApi.injectEndpoints({
       },
       providesTags: [{ type: 'RBAC', id: 'systems' }]
     }),
+    getTenantSettings: build.query<Partial<Settings>, void>({
+      query: () => ({
+        url: '/tenantSettings',
+        method: 'get',
+        credentials: 'include'
+      }),
+      providesTags: [{ type: 'RBAC', id: 'GET_TENANT_SETTINGS' }],
+      transformResponse: (response: SettingRow[]) => response.reduce((settings, { key, value }) => {
+        settings[key as keyof Settings] = value
+        return settings
+      }, getDefaultSettings())
+    }),
     updateInvitation: build.mutation<
        string, { resourceGroupId: string, state: string, userId: string }
     >({
       query: ({ userId, resourceGroupId, state }) => {
         return {
-          url: `${rbacApiURL}/invitations`,
+          url: '/invitations',
           method: 'put',
           credentials: 'include',
           headers: {
@@ -46,7 +69,11 @@ export const rbacApi = baseRbacApi.injectEndpoints({
   })
 })
 
-export const { useSystemsQuery, useUpdateInvitationMutation } = rbacApi
+export const {
+  useSystemsQuery,
+  useGetTenantSettingsQuery,
+  useUpdateInvitationMutation
+} = rbacApi
 
 export function useSystems () {
   return useSystemsQuery({}, { skip: !get('IS_MLISA_SA') })

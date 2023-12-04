@@ -4,9 +4,9 @@ import { useForm } from 'antd/lib/form/Form'
 import { Key }     from 'antd/lib/table/interface'
 import { useIntl } from 'react-intl'
 
-import { Modal, Table, TableProps } from '@acx-ui/components'
-import { useGetAdminListQuery }     from '@acx-ui/rc/services'
-import { useParams }                from '@acx-ui/react-router-dom'
+import { Loader, Modal, Table, TableProps } from '@acx-ui/components'
+import { useGetAdminListQuery }             from '@acx-ui/rc/services'
+import { useParams }                        from '@acx-ui/react-router-dom'
 
 
 export interface EmailRecipientDialogProps {
@@ -85,20 +85,24 @@ export function EmailRecipientDialog (props: EmailRecipientDialogProps) {
       }}
       onCancel={onModalCancel}
     >
-      <Table
-        columns={columns}
-        dataSource={adminList}
-        rowKey='email'
-        rowSelection={{
-          type: 'checkbox',
-          onChange: handleRowSelectChange,
-          getCheckboxProps: (record: EmailRecipientType) => ({
-            name: record.name,
-            email: record.email
-          }),
-          selectedRowKeys: currentEmailList
-        }}
-      />
+      <Loader states={[{
+        isLoading: fetchingAdmins
+      }]}>
+        <Table
+          columns={columns}
+          dataSource={adminList}
+          rowKey='email'
+          rowSelection={{
+            type: 'checkbox',
+            onChange: handleRowSelectChange,
+            getCheckboxProps: (record: EmailRecipientType) => ({
+              name: record.name,
+              email: record.email
+            }),
+            selectedRowKeys: currentEmailList
+          }}
+        />
+      </Loader>
     </Modal>
   )
 }

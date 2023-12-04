@@ -117,6 +117,7 @@ export interface EolApFirmware {
   latestEolVersion: string;
   apCount: string;
   apModels: string[];
+  isAbfGreaterThanVenueCurrentAbf: boolean;
 }
 
 export interface FirmwareVenue {
@@ -131,6 +132,7 @@ export interface FirmwareVenue {
   lastScheduleUpdate: string;
   eolApFirmwares?: EolApFirmware[];
   apModels?: string[];
+  currentVenueUnsupportedApModels? : string[]
 }
 
 export interface FirmwareVenueVersion {

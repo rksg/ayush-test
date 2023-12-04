@@ -119,12 +119,14 @@ export enum Features {
   HOST_APPROVAL_EMAIL_LIST_TOGGLE = 'guest-host-approval-email-list-toggle',
   IDM_APPLICATION_KEY_TOGGLE = 'ptenant-application-key-toggle',
   WIFI_EDA_PER_AP_RADIO_CUSTOMIZATION_TOGGLE = 'wifi-eda-per-ap-radio-customization-toggle',
+  AP_GROUP_TOGGLE = 'wifi-eda-ap-group-table-toggle',
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
   SSO = 'ADMN-SSO',
   EXPORT_EVENTS_TOGGLE = 'acx-ui-scheduled-events-export-toggle',
   RUCKUS_AI_CHATBOT_TOGGLE = 'ruckus-ai-chatbot-toggle',
   EDGE_LAG = 'acx-ui-edges-lag-toggle',
   MSP_HSP_SUPPORT = 'mspservice-hsp-01',
+  MSP_BRAND_360 = 'acx-ui-msp-brand360-toggle',
   RUCKUS_AI_ZONES_LIST = 'ruckus-ai-zones-toggle',
   LINKEDIN_OIDC_TOGGLE = 'guest-linkedin-openid-connect-toggle',
   TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs'
@@ -132,7 +134,5 @@ export enum Features {
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
   BETA_CLB = 'BETA-CLB',
-  BETA_AP_NEIGHBORS = 'AP-NEIGHBORS',
-  AP_CCD = 'AP-CCD',
   AP_70 = 'AP-70'
 }

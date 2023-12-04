@@ -17,7 +17,6 @@ import { VENUE_IN_PROFILE_MAX_COUNT } from '../contentsMap'
 import RogueAPDetectionContext        from '../RogueAPDetectionContext'
 
 const defaultPayload = {
-  url: '/api/viewmodel/tenant/{tenantId}/venue',
   fields: [
     'id',
     'name',

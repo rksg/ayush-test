@@ -1,10 +1,11 @@
 import { IntlShape } from 'react-intl'
 
-import { TunnelTypeEnum }        from '../../models'
-import { TunnelProfileViewData } from '../../types/policies/tunnelProfile'
+import { AgeTimeUnit, MtuTypeEnum, TunnelTypeEnum }                    from '../../models'
+import { TunnelProfile, TunnelProfileViewData, TunnelProfileFormType } from '../../types/policies/tunnelProfile'
 
-export const isDefaultTunnelProfile = (profile: TunnelProfileViewData, tenantId: string) => {
-  return profile.id === tenantId
+export const isDefaultTunnelProfile = (profile: TunnelProfileViewData | TunnelProfile | undefined,
+  tenantId: string) => {
+  return profile ? profile.id === tenantId : false
 }
 
 export const getTunnelTypeString = ($t: IntlShape['$t'], type: TunnelTypeEnum) => {
@@ -26,3 +27,44 @@ export const getTunnelTypeOptions = ($t: IntlShape['$t'])
       value: key as TunnelTypeEnum
     }))
 }
+
+export const ageTimeUnitConversion = (ageTimeMinutes?: number):
+{ value: number, unit: AgeTimeUnit } | undefined => {
+  if(!ageTimeMinutes) return undefined
+
+  if (ageTimeMinutes % 10080 === 0) {
+    return {
+      value: ageTimeMinutes / 10080,
+      unit: AgeTimeUnit.WEEK
+    }
+  } else if (ageTimeMinutes % 1440 === 0) {
+    return {
+      value: ageTimeMinutes / 1440,
+      unit: AgeTimeUnit.DAYS
+    }
+  } else {
+    return {
+      value: ageTimeMinutes,
+      unit: AgeTimeUnit.MINUTES
+    }
+  }
+}
+
+const DEFAULT_AGE_TIME_MIN = 20
+export const tunnelProfileFormDefaultValues = {
+  mtuType: MtuTypeEnum.AUTO,
+  ageTimeMinutes: DEFAULT_AGE_TIME_MIN,
+  ageTimeUnit: AgeTimeUnit.MINUTES
+}
+
+export const getTunnelProfileFormDefaultValues
+  = (profileData?: TunnelProfile): TunnelProfileFormType => {
+    const ageTime = profileData?.ageTimeMinutes || DEFAULT_AGE_TIME_MIN
+    const result = ageTimeUnitConversion(ageTime)
+    return {
+      ...tunnelProfileFormDefaultValues,
+      ...profileData,
+      ageTimeMinutes: result?.value!,
+      ageTimeUnit: result?.unit!
+    } as TunnelProfileFormType
+  }
