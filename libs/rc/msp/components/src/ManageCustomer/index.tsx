@@ -164,7 +164,7 @@ export function ManageCustomer () {
   const intl = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const optionalAdminFF = useIsSplitOn(Features.MSPEC_OPTIONAL_ADMIN)
-  const edgeEnabled = useIsTierAllowed(TierFeatures.EDGES)
+  const edgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const techPartnerAssignEcsEnabled = useIsSplitOn(Features.TECH_PARTNER_ASSIGN_ECS)
 

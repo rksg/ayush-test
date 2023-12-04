@@ -50,7 +50,7 @@ describe('Test useIsTierAllowed function', () => {
   })
   it('should function correctly for beta flag true and REC tenant type', async () => {
     useIsSplitOn.useIsSplitOn = jest.fn().mockReturnValue(true)
-    const enabled = useIsTierAllowed(TierFeatures.EDGES)
+    const enabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
     expect(enabled).toBeFalsy()
   })
   it('should function correctly for beta flag false and VAR tenant type', async () => {
@@ -63,7 +63,7 @@ describe('Test useIsTierAllowed function', () => {
         tenantType: AccountType.VAR
       }
     })
-    const enabled = useIsTierAllowed(TierFeatures.EDGES)
+    const enabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
     expect(enabled).toBeFalsy()
   })
   it('should function correctly for beta flag false and MSP tenant type', async () => {
@@ -78,7 +78,7 @@ describe('Test useIsTierAllowed function', () => {
         isBetaFlag: false
       }
     })
-    const enabled = useIsTierAllowed(TierFeatures.EDGES)
+    const enabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
     expect(enabled).toBeFalsy()
   })
 })

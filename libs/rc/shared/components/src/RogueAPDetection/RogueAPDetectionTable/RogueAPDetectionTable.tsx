@@ -28,7 +28,7 @@ import { SimpleListTooltip } from '../../SimpleListTooltip'
 import { PROFILE_MAX_COUNT } from '../contentsMap'
 
 const useDefaultVenuePayload = (): RequestPayload => {
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
 
   return {
     fields: [

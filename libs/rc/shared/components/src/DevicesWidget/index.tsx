@@ -24,7 +24,7 @@ export function DevicesWidget (props: {
   const { $t } = useIntl()
   const onArrowClick = useNavigateToPath('/devices/')
 
-  const edgeSupported = useIsTierAllowed(TierFeatures.EDGES)
+  const edgeSupported = useIsTierAllowed(TierFeatures.SMART_EDGES)
 
   let numDonut = 2
   if (edgeSupported) {
@@ -67,7 +67,7 @@ export function DevicesWidgetv2 (props: {
 }) {
   const { $t } = useIntl()
   const onArrowClick = useNavigateToPath('/devices/')
-  const edgeSupported = useIsTierAllowed(TierFeatures.EDGES)
+  const edgeSupported = useIsTierAllowed(TierFeatures.SMART_EDGES)
 
   const {
     apStackedData,

@@ -15,7 +15,7 @@ import { getIntl }                    from '@acx-ui/utils'
 import * as UI from './styledComponents'
 
 export const useIsEdgeFeatureReady = (featureFlagKey: Features) => {
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const isEdgeFeatureReady = useIsSplitOn(featureFlagKey)
   return isEdgeEnabled && isEdgeReady && isEdgeFeatureReady

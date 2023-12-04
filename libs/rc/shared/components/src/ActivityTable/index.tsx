@@ -90,7 +90,7 @@ const ActivityTable = ({
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState<Activity>()
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   useEffect(() => { setVisible(false) },[tableQuery.data?.data])
 
   const excludeProduct = [

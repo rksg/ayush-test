@@ -27,7 +27,7 @@ export function CloudMessageBanner () {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isScheduleUpdateReady = useIsSplitOn(Features.EDGES_SCHEDULE_UPGRADE_TOGGLE)
   const layout = useLayoutContext()
 

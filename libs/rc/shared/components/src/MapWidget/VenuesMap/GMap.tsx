@@ -47,7 +47,7 @@ const GMap: React.FC<MapProps> = ({
   const [markerClusterer, setMarkerClusterer] = React.useState<MarkerClusterer>()
   const [venueInfoWindow, setVenueInfoWindow] = React.useState<google.maps.InfoWindow>()
   // whether to display edge on marker tooltip
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
 
   React.useEffect(() => {
     if (ref.current) {
