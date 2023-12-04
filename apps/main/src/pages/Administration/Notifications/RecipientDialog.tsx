@@ -12,8 +12,8 @@ import { FieldData } from 'rc-field-form/lib/interface'
 import { useIntl }   from 'react-intl'
 import styled        from 'styled-components/macro'
 
-import { Modal, showToast }    from '@acx-ui/components'
-import { PhoneInput }          from '@acx-ui/rc/components'
+import { Modal, showToast }     from '@acx-ui/components'
+import { PhoneInput }           from '@acx-ui/rc/components'
 import {
   useAddRecipientMutation,
   useUpdateRecipientMutation

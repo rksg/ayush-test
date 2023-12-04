@@ -21,7 +21,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Drag }                  from '@acx-ui/icons'
+import { Drag }                   from '@acx-ui/icons'
 import {
   useAddL3AclPolicyMutation,
   useGetL3AclPolicyQuery,

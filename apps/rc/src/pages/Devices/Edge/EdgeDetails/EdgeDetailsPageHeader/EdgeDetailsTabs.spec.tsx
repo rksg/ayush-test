@@ -1,12 +1,13 @@
 /* eslint-disable max-len */
 import { rest } from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useIsSplitOn }  from '@acx-ui/feature-toggle'
 import {
   EdgeStatus,
   ApVenueStatusEnum,
   EdgeStatusEnum,
-  EdgeUrlsInfo
+  EdgeUrlsInfo,
+  EdgeGeneralFixtures
 } from '@acx-ui/rc/utils'
 import { Provider  } from '@acx-ui/store'
 import {
@@ -17,10 +18,11 @@ import {
 } from '@acx-ui/test-utils'
 
 
-import { mockedEdgeServiceList } from '../../__tests__/fixtures'
+// import { mockedEdgeServiceList } from '../../__tests__/fixtures'
 
 import  EdgeDetailsTabs from './EdgeDetailsTabs'
 
+const { mockEdgeServiceList } = EdgeGeneralFixtures
 const currentEdge:EdgeStatus = {
   name: 'edge-01',
   serialNumber: 'edge-111000001',
@@ -56,7 +58,7 @@ describe('Edge Details Tabs', () => {
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.getEdgeServiceList.url,
-        (req, res, ctx) => res(ctx.json(mockedEdgeServiceList))
+        (req, res, ctx) => res(ctx.json(mockEdgeServiceList))
       )
     )
   })

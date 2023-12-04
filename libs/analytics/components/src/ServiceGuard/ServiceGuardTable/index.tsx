@@ -17,9 +17,9 @@ import { TenantLink, useTenantLink }                                    from '@a
 import { useUserProfileContext }                                        from '@acx-ui/user'
 import { noDataDisplay }                                                from '@acx-ui/utils'
 
-import { CountContext }  from '..'
-import * as contents     from '../contents'
-import { TestName }      from '../ServiceGuardForm/FormItems'
+import { CountContext }   from '..'
+import * as contents      from '../contents'
+import { TestName }       from '../ServiceGuardForm/FormItems'
 import {
   useMutationResponseEffect,
   useAllServiceGuardSpecsQuery,

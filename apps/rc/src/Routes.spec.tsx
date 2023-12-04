@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useIsSplitOn, useIsTierAllowed }                  from '@acx-ui/feature-toggle'
+import { useIsSplitOn, useIsTierAllowed }                   from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   getSelectServiceRoutePath,

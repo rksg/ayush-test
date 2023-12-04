@@ -3,8 +3,8 @@ import { useEffect } from 'react'
 import { Row, Col, Form } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { Subtitle }             from '@acx-ui/components'
-import { useParams }            from '@acx-ui/react-router-dom'
+import { Subtitle }              from '@acx-ui/components'
+import { useParams }             from '@acx-ui/react-router-dom'
 import {
   MFAMethod,
   useGetMfaAdminDetailsQuery,

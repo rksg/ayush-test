@@ -15,7 +15,7 @@ import { DateFormatEnum, formatter }   from '@acx-ui/formatter'
 import { TenantLink, useParams }       from '@acx-ui/react-router-dom'
 import { noDataDisplay, PathFilter }   from '@acx-ui/utils'
 
-import { RecommendationActions }  from './RecommendationActions'
+import { RecommendationActions }   from './RecommendationActions'
 import {
   useRecommendationListQuery,
   RecommendationListItem,

@@ -2,8 +2,8 @@
 import { useEffect, useState, useMemo } from 'react'
 
 
-import { TrafficByBand, TrafficByUsage }       from '@acx-ui/analytics/components'
-import { GridCol, GridRow }                    from '@acx-ui/components'
+import { TrafficByBand, TrafficByUsage }        from '@acx-ui/analytics/components'
+import { GridCol, GridRow }                     from '@acx-ui/components'
 import {
   useLazyGetApQuery,
   useLazyGetApCapabilitiesQuery,

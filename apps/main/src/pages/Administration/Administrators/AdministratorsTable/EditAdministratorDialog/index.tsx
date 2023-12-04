@@ -9,7 +9,7 @@ import {
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Modal }                from '@acx-ui/components'
+import { Modal }                 from '@acx-ui/components'
 import {
   useGetMspEcAdminQuery,
   useUpdateMspEcAdminMutation

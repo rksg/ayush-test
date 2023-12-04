@@ -15,8 +15,8 @@ import TextArea      from 'antd/lib/input/TextArea'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, DrawerProps }             from '@acx-ui/components'
-import { formatter }                       from '@acx-ui/formatter'
+import { Button, DrawerProps }              from '@acx-ui/components'
+import { formatter }                        from '@acx-ui/formatter'
 import {
   useAddTenantAuthenticationsMutation,
   useGetUploadURLMutation,

@@ -4,7 +4,7 @@ import { userEvent }      from '@storybook/testing-library'
 import { act, fireEvent } from '@testing-library/react'
 import { rest }           from 'msw'
 
-import { serviceApi }                           from '@acx-ui/rc/services'
+import { serviceApi }                            from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   EPDG,

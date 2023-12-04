@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { Form, FormInstance, Input, InputNumber, Select } from 'antd'
 import { FormattedMessage, useIntl }                      from 'react-intl'
 
-import { Drawer, Tooltip }        from '@acx-ui/components'
+import { Drawer, Tooltip }         from '@acx-ui/components'
 import {
   MdnsProxyForwardingRule,
   BridgeServiceEnum,

@@ -3,8 +3,8 @@ import { useState, useEffect } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { useDpskNewConfigFlowParams }   from '@acx-ui/rc/components'
-import { useGetDpskListQuery }          from '@acx-ui/rc/services'
+import { useDpskNewConfigFlowParams }    from '@acx-ui/rc/components'
+import { useGetDpskListQuery }           from '@acx-ui/rc/services'
 import {
   NetworkSaveData,
   transformNetworkEncryption,

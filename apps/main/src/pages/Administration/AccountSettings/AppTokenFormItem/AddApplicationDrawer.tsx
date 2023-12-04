@@ -1,7 +1,7 @@
 import { Divider, Form, Input, Select } from 'antd'
 import { useIntl }                      from 'react-intl'
 
-import { Button, Drawer, PasswordInput }   from '@acx-ui/components'
+import { Button, Drawer, PasswordInput }    from '@acx-ui/components'
 import {
   useAddTenantAuthenticationsMutation,
   useUpdateTenantAuthenticationsMutation

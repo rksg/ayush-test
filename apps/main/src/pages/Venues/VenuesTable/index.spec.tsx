@@ -1,8 +1,8 @@
 import { rest } from 'msw'
 
-import { useIsTierAllowed }   from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider }           from '@acx-ui/store'
+import { useIsTierAllowed }    from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo }      from '@acx-ui/rc/utils'
+import { Provider }            from '@acx-ui/store'
 import {
   mockServer,
   render,

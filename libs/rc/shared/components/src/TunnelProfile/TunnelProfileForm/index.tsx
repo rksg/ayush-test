@@ -11,8 +11,8 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsFormLegacy }  from '@acx-ui/components'
-import { Features }         from '@acx-ui/feature-toggle'
+import { StepsFormLegacy }   from '@acx-ui/components'
+import { Features }          from '@acx-ui/feature-toggle'
 import {
   AgeTimeUnit,
   MtuTypeEnum,

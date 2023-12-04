@@ -24,12 +24,12 @@ import { useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
 import { noDataDisplay }  from '@acx-ui/utils'
 
-import { SwitchFirmwareWizardType } from '..'
+import { SwitchFirmwareWizardType }  from '..'
 import {
   getNextScheduleTpl,
   getSwitchNextScheduleTplTooltip
 } from '../../../../FirmwareUtils'
-import * as UI                      from '../../styledComponents'
+import * as UI                       from '../../styledComponents'
 import {
   getHightlightSearch,
   getSwitchFirmwareList,

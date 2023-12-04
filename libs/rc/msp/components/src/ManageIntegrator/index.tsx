@@ -22,9 +22,9 @@ import {
   StepsFormLegacyInstance,
   Subtitle
 } from '@acx-ui/components'
-import { useIsSplitOn, Features }        from '@acx-ui/feature-toggle'
-import { formatter, DateFormatEnum }     from '@acx-ui/formatter'
-import { SearchOutlined }                from '@acx-ui/icons'
+import { useIsSplitOn, Features }         from '@acx-ui/feature-toggle'
+import { formatter, DateFormatEnum }      from '@acx-ui/formatter'
+import { SearchOutlined }                 from '@acx-ui/icons'
 import {
   useAddCustomerMutation,
   useMspEcAdminListQuery,

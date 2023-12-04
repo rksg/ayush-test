@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { showActionModal }   from '@acx-ui/components'
+import { showActionModal }    from '@acx-ui/components'
 import {
   useDeleteGatewayMutation
 } from '@acx-ui/rc/services'

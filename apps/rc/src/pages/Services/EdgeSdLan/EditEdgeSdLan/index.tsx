@@ -1,7 +1,7 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader, PageHeader }         from '@acx-ui/components'
+import { Loader, PageHeader }          from '@acx-ui/components'
 import {
   useGetEdgeSdLanQuery,
   useUpdateEdgeSdLanPartialMutation

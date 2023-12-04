@@ -11,7 +11,7 @@ import {
   aiOpsListResult,
   recommendationListResult
 } from './__tests__/fixtures'
-import { crrmStates, priorities }     from './config'
+import { crrmStates, priorities }      from './config'
 import {
   api,
   getCrrmOptimizedState,

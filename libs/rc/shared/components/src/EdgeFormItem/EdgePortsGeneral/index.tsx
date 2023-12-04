@@ -2,7 +2,8 @@ import { ReactNode, useEffect, useRef, useState } from 'react'
 
 import { Form, FormInstance }  from 'antd'
 import { StoreValue }          from 'antd/lib/form/interface'
-import _, { flatMap, isEqual } from 'lodash'
+import { flatMap, isEqual }    from 'lodash'
+import _                       from 'lodash'
 import { ValidateErrorEntity } from 'rc-field-form/es/interface'
 import { useIntl }             from 'react-intl'
 

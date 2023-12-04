@@ -1,7 +1,7 @@
 import { defineMessage } from 'react-intl'
 
-import { IncidentCode }        from './constants'
-import { fakeIncident }        from './fakeIncident'
+import { IncidentCode }         from './constants'
+import { fakeIncident }         from './fakeIncident'
 import {
   getRootCauseAndRecommendations,
   codeToFailureTypeMap,

@@ -7,7 +7,7 @@ import {
 import styled from 'styled-components/macro'
 import 'codemirror/addon/hint/show-hint.css'
 
-import { Tabs }          from '@acx-ui/components'
+import { Tabs }           from '@acx-ui/components'
 import {
   MoreVertical,
   Plus,

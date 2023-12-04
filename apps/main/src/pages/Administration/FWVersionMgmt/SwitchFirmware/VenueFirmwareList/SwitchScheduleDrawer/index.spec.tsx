@@ -15,7 +15,7 @@ import {
 } from '@acx-ui/test-utils'
 
 
-import { VenueFirmwareList }          from '..'
+import { VenueFirmwareList }           from '..'
 import {
   switchVenue,
   preference,
