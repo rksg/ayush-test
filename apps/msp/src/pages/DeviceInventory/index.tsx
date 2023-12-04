@@ -9,7 +9,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   useDeviceInventoryListQuery,
   useExportDeviceInventoryMutation

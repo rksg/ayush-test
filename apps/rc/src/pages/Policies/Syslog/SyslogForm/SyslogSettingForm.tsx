@@ -12,8 +12,8 @@ import {
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { StepsForm }                                from '@acx-ui/components'
-import { useGetSyslogPolicyListQuery }              from '@acx-ui/rc/services'
+import { StepsForm }                               from '@acx-ui/components'
+import { useGetSyslogPolicyListQuery }             from '@acx-ui/rc/services'
 import {
   FacilityEnum,
   FlowLevelEnum,

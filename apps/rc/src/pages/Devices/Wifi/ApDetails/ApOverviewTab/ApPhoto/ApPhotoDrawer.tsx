@@ -4,7 +4,7 @@ import { Row, Col, Upload, Slider } from 'antd'
 import Cropper                      from 'react-easy-crop'
 import { useIntl }                  from 'react-intl'
 
-import { Button, Drawer }      from '@acx-ui/components'
+import { Button, Drawer }     from '@acx-ui/components'
 import {
   useGetApPhotoQuery,
   useAddApPhotoMutation,

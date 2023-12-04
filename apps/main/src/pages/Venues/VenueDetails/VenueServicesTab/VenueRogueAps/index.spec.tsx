@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { venueApi }               from '@acx-ui/rc/services'
+import { venueApi }              from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo, WifiUrlsInfo
 } from '@acx-ui/rc/utils'

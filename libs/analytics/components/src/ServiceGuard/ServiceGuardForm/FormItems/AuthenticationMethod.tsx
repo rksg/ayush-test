@@ -15,8 +15,8 @@ import {
   authMethodsByClientType,
   authMethodsByCode
 } from '../../authMethods'
-import * as contents              from '../../contents'
-import { useNetworks }            from '../../services'
+import * as contents             from '../../contents'
+import { useNetworks }           from '../../services'
 import {
   AuthenticationMethod as AuthenticationMethodEnum,
   ServiceGuardFormDto,

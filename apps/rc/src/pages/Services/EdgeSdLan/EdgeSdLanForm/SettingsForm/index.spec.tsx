@@ -3,7 +3,7 @@ import { Form }  from 'antd'
 import { rest }  from 'msw'
 import { act }   from 'react-dom/test-utils'
 
-import { StepsForm }   from '@acx-ui/components'
+import { StepsForm }  from '@acx-ui/components'
 import {
   CommonUrlsInfo,
   EdgeGeneralFixtures,

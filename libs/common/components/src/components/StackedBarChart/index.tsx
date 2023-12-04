@@ -15,7 +15,7 @@ import {
 import { incidentSeverities } from '@acx-ui/analytics/utils'
 import { getIntl }            from '@acx-ui/utils'
 
-import { cssStr }               from '../../theme/helper'
+import { cssStr }              from '../../theme/helper'
 import {
   TooltipFormatterParams,
   tooltipOptions,

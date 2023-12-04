@@ -4,8 +4,8 @@ import { Form, Input } from 'antd'
 import _               from 'lodash'
 import { useIntl }     from 'react-intl'
 
-import { Drawer, showToast }          from '@acx-ui/components'
-import { ExpirationDateSelector }     from '@acx-ui/rc/components'
+import { Drawer, showToast }         from '@acx-ui/components'
+import { ExpirationDateSelector }    from '@acx-ui/rc/components'
 import {
   useAddMacRegistrationMutation, useLazyMacRegistrationsQuery,
   useUpdateMacRegistrationMutation

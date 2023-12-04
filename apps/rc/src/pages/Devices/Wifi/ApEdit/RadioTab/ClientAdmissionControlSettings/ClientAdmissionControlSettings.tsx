@@ -6,7 +6,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 import styled        from 'styled-components/macro'
 
-import { AnchorContext, Loader }     from '@acx-ui/components'
+import { AnchorContext, Loader }    from '@acx-ui/components'
 import {
   ClientAdmissionControlForm,
   ClientAdmissionControlTypeEnum,

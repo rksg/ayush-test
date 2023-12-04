@@ -6,9 +6,9 @@ import { useParams }                            from '@acx-ui/react-router-dom'
 
 import { FixedAutoSizer } from '../../DescriptionSection/styledComponents'
 
-import { Kpis }                    from './Kpis'
-import MuteRecommendation          from './MuteRecommendation'
-import { Overview }                from './Overview'
+import { Kpis }                   from './Kpis'
+import MuteRecommendation         from './MuteRecommendation'
+import { Overview }               from './Overview'
 import {
   useRecommendationCodeQuery,
   useRecommendationDetailsQuery

@@ -10,7 +10,7 @@ import {
   showToast,
   Loader
 } from '@acx-ui/components'
-import { SimpleListTooltip }             from '@acx-ui/rc/components'
+import { SimpleListTooltip }            from '@acx-ui/rc/components'
 import {
   useDeleteConnectionMeteringMutation,
   useSearchConnectionMeteringListQuery,

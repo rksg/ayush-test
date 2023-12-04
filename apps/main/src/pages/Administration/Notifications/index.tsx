@@ -10,9 +10,9 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
-import { useGetMspProfileQuery }            from '@acx-ui/msp/services'
-import { MSPUtils }                         from '@acx-ui/msp/utils'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
+import { useGetMspProfileQuery }           from '@acx-ui/msp/services'
+import { MSPUtils }                        from '@acx-ui/msp/utils'
 import {
   useGetNotificationRecipientsQuery,
   useDeleteNotificationRecipientsMutation,

@@ -36,7 +36,7 @@ import {
   MspPortal,
   MspLogoFile
 } from '@acx-ui/msp/utils'
-import { PhoneInput }        from '@acx-ui/rc/components'
+import { PhoneInput }       from '@acx-ui/rc/components'
 import {
   useExternalProvidersQuery,
   useGetUploadURLMutation

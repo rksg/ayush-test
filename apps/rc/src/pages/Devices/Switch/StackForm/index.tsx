@@ -34,8 +34,8 @@ import {
   Tooltip,
   Alert
 } from '@acx-ui/components'
-import { useIsSplitOn, Features }      from '@acx-ui/feature-toggle'
-import { DeleteOutlinedIcon, Drag }    from '@acx-ui/icons'
+import { useIsSplitOn, Features }     from '@acx-ui/feature-toggle'
+import { DeleteOutlinedIcon, Drag }   from '@acx-ui/icons'
 import {
   useGetSwitchQuery,
   useConvertToStackMutation,

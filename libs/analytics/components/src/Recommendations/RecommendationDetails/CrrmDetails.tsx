@@ -7,11 +7,11 @@ import { useParams }                            from '@acx-ui/react-router-dom'
 
 import { FixedAutoSizer } from '../../DescriptionSection/styledComponents'
 
-import { CrrmValues }              from './CrrmValues'
-import { CrrmValuesExtra }         from './CrrmValuesExtra'
-import { CloudRRMGraph }           from './Graph'
-import MuteRecommendation          from './MuteRecommendation'
-import { Overview }                from './Overview'
+import { CrrmValues }             from './CrrmValues'
+import { CrrmValuesExtra }        from './CrrmValuesExtra'
+import { CloudRRMGraph }          from './Graph'
+import MuteRecommendation         from './MuteRecommendation'
+import { Overview }               from './Overview'
 import {
   useRecommendationCodeQuery,
   useRecommendationDetailsQuery

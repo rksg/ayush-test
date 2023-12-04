@@ -2,9 +2,9 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { get }                    from '@acx-ui/config'
-import { networkApi }             from '@acx-ui/rc/services'
-import { CommonUrlsInfo }         from '@acx-ui/rc/utils'
+import { get }                   from '@acx-ui/config'
+import { networkApi }            from '@acx-ui/rc/services'
+import { CommonUrlsInfo }        from '@acx-ui/rc/utils'
 import {
   serviceGuardApi as api,
   serviceGuardApiURL as apiUrl
