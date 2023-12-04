@@ -5,12 +5,11 @@ import TextArea                          from 'antd/lib/input/TextArea'
 import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
-import { StepsForm }                                                        from '@acx-ui/components'
-import { useGetWifiCallingServiceListQuery, useGetWifiCallingServiceQuery } from '@acx-ui/rc/services'
-import { QosPriorityEnum, WifiCallingActionTypes, servicePolicyNameRegExp } from '@acx-ui/rc/utils'
+import { StepsForm }                                                                                            from '@acx-ui/components'
+import { useGetWifiCallingServiceListQuery, useGetWifiCallingServiceQuery }                                     from '@acx-ui/rc/services'
+import { QosPriorityEnum, WifiCallingActionTypes, servicePolicyNameRegExp, wifiCallingQosPriorityLabelMapping } from '@acx-ui/rc/utils'
 
-import { wifiCallingQosPriorityLabelMapping } from '../contentsMap'
-import WifiCallingFormContext                 from '../WifiCallingFormContext'
+import WifiCallingFormContext from '../WifiCallingFormContext'
 
 import EpdgTable from './EpdgTable'
 

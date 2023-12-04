@@ -13,14 +13,15 @@ import {
   NetworkTypeEnum,
   WifiNetworkMessages,
   checkObjectNotExists,
-  NetworkVenue } from '@acx-ui/rc/utils'
+  NetworkVenue,
+  networkTypes } from '@acx-ui/rc/utils'
 import { useParams }          from '@acx-ui/react-router-dom'
 import { validationMessages } from '@acx-ui/utils'
 
-import { networkTypesDescription, networkTypes } from '../contentsMap'
-import { NetworkDiagram }                        from '../NetworkDiagram/NetworkDiagram'
-import NetworkFormContext                        from '../NetworkFormContext'
-import { RadioDescription }                      from '../styledComponents'
+import { networkTypesDescription } from '../contentsMap'
+import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext          from '../NetworkFormContext'
+import { RadioDescription }        from '../styledComponents'
 
 import type { RadioChangeEvent } from 'antd'
 

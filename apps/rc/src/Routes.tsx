@@ -1,5 +1,5 @@
-import { PageNotFound }                                                     from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                         from '@acx-ui/feature-toggle'
+import { PageNotFound }                             from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   RogueAPDetectionDetailView,
   RogueAPDetectionForm,
@@ -13,7 +13,8 @@ import {
   AAAForm,
   VLANPoolForm,
   WifiCallingForm, WifiCallingConfigureForm, WifiCallingDetailView,
-  SyslogDetailView, SyslogForm, DHCPForm, PortalForm, ClientIsolationForm
+  SyslogDetailView, SyslogForm, DHCPForm, PortalForm, ClientIsolationForm,
+  NetworkForm
 } from '@acx-ui/rc/components'
 import {
   getPolicyListRoutePath,
@@ -53,7 +54,6 @@ import CliProfileForm                               from './pages/Networks/wired
 import { ConfigurationProfileForm }                 from './pages/Networks/wired/profiles/ConfigurationProfileForm'
 import { NetworksList, NetworkTabsEnum }            from './pages/Networks/wireless'
 import NetworkDetails                               from './pages/Networks/wireless/NetworkDetails/NetworkDetails'
-import NetworkForm                                  from './pages/Networks/wireless/NetworkForm'
 import AAAPolicyDetail                              from './pages/Policies/AAA/AAADetail'
 import AAATable                                     from './pages/Policies/AAA/AAATable/AAATable'
 import AccessControlDetail                          from './pages/Policies/AccessControl/AccessControlDetail'

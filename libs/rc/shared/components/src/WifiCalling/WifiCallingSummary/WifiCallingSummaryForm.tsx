@@ -3,11 +3,10 @@ import { useContext } from 'react'
 import { Form, Col, Row, Typography } from 'antd'
 import { useIntl }                    from 'react-intl'
 
-import { StepsFormLegacy } from '@acx-ui/components'
-import { QosPriorityEnum } from '@acx-ui/rc/utils'
+import { StepsFormLegacy }                                     from '@acx-ui/components'
+import { QosPriorityEnum, wifiCallingQosPriorityLabelMapping } from '@acx-ui/rc/utils'
 
-import { wifiCallingQosPriorityLabelMapping } from '../contentsMap'
-import WifiCallingFormContext                 from '../WifiCallingFormContext'
+import WifiCallingFormContext from '../WifiCallingFormContext'
 
 const WifiCallingSummaryForm = () => {
   const { Paragraph } = Typography
