@@ -490,8 +490,7 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     assignMspEcToIntegrator_v1: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.assignMspEcToIntegrator,
-          params, { 'Content-Type': 'application/vnd.ruckus.v1+json' })
+        const req = createHttpRequest(MspUrlsInfo.assignMspEcToIntegrator, params)
         return {
           ...req,
           body: JSON.stringify(payload)
