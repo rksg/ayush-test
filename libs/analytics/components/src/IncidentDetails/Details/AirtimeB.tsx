@@ -1,5 +1,5 @@
-import moment, { unitOfTime } from 'moment-timezone'
-import { useIntl }            from 'react-intl'
+import { unitOfTime } from 'moment-timezone'
+import { useIntl }    from 'react-intl'
 
 import { calculateSeverity, Incident, shortDescription } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol }    from '@acx-ui/components'
@@ -45,11 +45,6 @@ export const AirtimeB = (incident: Incident) => {
     back: { value: 0, unit: 'hours' as unitOfTime.Base }
   }
 
-  const incidentWithQueryTime = {
-    ...incident,
-    startTime: moment(incident.endTime).clone().subtract(24, 'hours').format()
-  }
-
   return (
     <>
       <PageHeader
@@ -67,7 +62,7 @@ export const AirtimeB = (incident: Incident) => {
         <GridCol col={{ span: 4 }}>
           <FixedAutoSizer>
             {({ width }) => (<div style={{ width }}>
-              <IncidentAttributes incident={incidentWithQueryTime} visibleFields={attributeList} />
+              <IncidentAttributes incident={incident} visibleFields={attributeList} />
             </div>)}
           </FixedAutoSizer>
         </GridCol>
@@ -75,11 +70,11 @@ export const AirtimeB = (incident: Incident) => {
           <Insights incident={incident} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '228px' }}>
-          <NetworkImpact incident={incidentWithQueryTime} charts={networkImpactCharts} />
+          <NetworkImpact incident={incident} charts={networkImpactCharts} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '250px' }}>
           <TimeSeries
-            incident={incidentWithQueryTime}
+            incident={incident}
             charts={timeSeriesCharts}
             minGranularity='PT15M'
             buffer={buffer} />

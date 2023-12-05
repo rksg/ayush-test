@@ -4,13 +4,13 @@ import { FormattedMessage as FormatMessage } from 'react-intl'
 
 import { Activity } from '../../types'
 
+import DownloadLink       from './downloadLink'
 import { replaceStrings } from './replaceStrings'
 
 export const getActivityDescription = (
   descriptionTemplate: Activity['descriptionTemplate'],
   descriptionData: Activity['descriptionData'],
-  linkData?: Activity['linkData'],
-  linkTemplate?: Activity['linkTemplate']
+  linkData?: Activity['linkData']
 ) => {
   descriptionTemplate = descriptionTemplate
     // escape ' by replacing with ''
@@ -37,9 +37,9 @@ export const getActivityDescription = (
       defaultMessage={tmp}
       values={{
         ...values,
-        download: () => <a href={linkTemplate}>
-          { values['linkAlias'] }
-        </a>,
+        download: () => <DownloadLink
+          values={linkValues}
+        />,
         b: (chunks) => <b>{chunks}</b>
       }} />
   } else {

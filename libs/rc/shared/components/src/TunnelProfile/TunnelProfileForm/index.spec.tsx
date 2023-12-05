@@ -1,7 +1,8 @@
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { render, renderHook, screen } from '@acx-ui/test-utils'
+import { getTunnelProfileFormDefaultValues } from '@acx-ui/rc/utils'
+import { render, renderHook, screen }        from '@acx-ui/test-utils'
 
 import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 
@@ -33,12 +34,15 @@ jest.mock('../../useEdgeActions', () => ({
 }))
 
 describe('TunnelProfileForm', () => {
+  const defaultValues = getTunnelProfileFormDefaultValues()
+
   it('should render TunnelProfileForm successfully', () => {
     render(
-      <Form>
+      <Form initialValues={defaultValues}>
         <TunnelProfileForm />
       </Form>
     )
+
     expect(screen.getByRole('textbox', { name: 'Profile Name' })).toBeVisible()
     // screen.getByRole('combobox', { name: 'Tags' })
     expect(screen.getByRole('radio', { name: 'Auto' })).toBeVisible()
@@ -51,7 +55,7 @@ describe('TunnelProfileForm', () => {
   it('should show MTU size field when select Manual', async () => {
     const user = userEvent.setup()
     render(
-      <Form>
+      <Form initialValues={defaultValues}>
         <TunnelProfileForm />
       </Form>
     )
@@ -61,7 +65,7 @@ describe('TunnelProfileForm', () => {
 
   it('should show error when ageTime is invalid', async () => {
     render(
-      <Form>
+      <Form initialValues={defaultValues}>
         <TunnelProfileForm />
       </Form>
     )
@@ -80,7 +84,7 @@ describe('TunnelProfileForm', () => {
 
   it('should trigger ageTime validate when change unit', async () => {
     render(
-      <Form>
+      <Form initialValues={defaultValues}>
         <TunnelProfileForm />
       </Form>
     )
@@ -98,7 +102,7 @@ describe('TunnelProfileForm', () => {
 
   it('Input invalid profile name will show error message', async () => {
     render(
-      <Form>
+      <Form initialValues={defaultValues}>
         <TunnelProfileForm />
       </Form>
     )
@@ -125,7 +129,7 @@ describe('TunnelProfileForm', () => {
     })
 
     render(
-      <Form form={formRef.current}>
+      <Form form={formRef.current} initialValues={defaultValues}>
         <TunnelProfileForm />
       </Form>
     )
@@ -146,7 +150,7 @@ describe('TunnelProfileForm', () => {
     it('should correctly set tunnel type', async () => {
       const { result: formRef } = renderHook(() => {
         const [form] = Form.useForm()
-        form.setFieldValue('disableTunnelType', false)
+        form.setFieldValue('disabledFields', undefined)
         return form
       })
 

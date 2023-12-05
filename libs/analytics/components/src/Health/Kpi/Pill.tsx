@@ -1,5 +1,3 @@
-import { useContext } from 'react'
-
 import { sum }     from 'lodash'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
@@ -16,8 +14,8 @@ import { InformationOutlined }           from '@acx-ui/icons'
 import { TimeStampRange }                from '@acx-ui/types'
 import type { AnalyticsFilter }          from '@acx-ui/utils'
 
-import { HealthPageContext } from '../HealthPageContext'
-import * as UI               from '../styledComponents'
+import GenericError from '../../GenericError'
+import * as UI      from '../styledComponents'
 
 
 export type PillData = { success: number, total: number }
@@ -99,10 +97,9 @@ function HealthPill ({ filters, kpi, timeWindow, threshold }: {
 
   const { pill, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const [ startDate, endDate ] = timeWindow as [string, string]
-  const { apCount } = useContext(HealthPageContext)
 
   const { queryResults, percent } = usePillQuery({
-    kpi, filters, timeWindow: { startDate, endDate }, threshold, apCount
+    kpi, filters, timeWindow: { startDate, endDate }, threshold
   })
   const { success, total } = queryResults.data as PillData
 
@@ -123,7 +120,7 @@ function HealthPill ({ filters, kpi, timeWindow, threshold }: {
       )
     )
   }
-  return <Loader states={[queryResults]} key={kpi}>
+  return <Loader states={[queryResults]} key={kpi} errorFallback={<GenericError />}>
     <UI.PillTitle>
       <span>{$t(text, productNames)}</span>
       <span>

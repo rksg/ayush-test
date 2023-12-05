@@ -1,11 +1,13 @@
-import { IntlShape } from 'react-intl'
-import { useIntl }   from 'react-intl'
+import _                      from 'lodash'
+import { IntlShape, useIntl } from 'react-intl'
 
 import { getIntl } from '@acx-ui/utils'
 
-import { ApDeviceStatusEnum, DeviceConnectionStatus } from '../constants'
-import { QosPriorityEnum }                            from '../constants'
-import { AFCInfo, AFCPowerMode, AFCStatus }           from '../types'
+import {
+  ApDeviceStatusEnum,
+  DeviceConnectionStatus,
+  QosPriorityEnum } from '../constants'
+import { AFCInfo, AFCPowerMode, AFCProps, AFCStatus } from '../types'
 
 export enum APView {
   AP_LIST,
@@ -160,4 +162,19 @@ export const AFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy?: string, r
     }
   }
   return (displayList.length === 0) ? '--' : displayList.join(' ')
+}
+
+/* eslint-disable max-len */
+export const ChannelButtonTextRender = (channels: number[], isChecked: boolean, afcProps?: AFCProps): string => {
+  const { $t } = useIntl()
+  let message = isChecked
+    ? $t({ defaultMessage: 'Disable this channel' })
+    : $t({ defaultMessage: 'Enable this channel' })
+  const afcAvailableChannel = _.uniq(afcProps?.afcInfo?.availableChannels).sort((a, b) => a-b)
+  // Only add AFC tooltip when all channels are in AFC available channel
+  const difference = _.without(channels, ...afcAvailableChannel)
+  if(difference.length === 0 && afcProps?.afcInfo?.afcStatus === AFCStatus.PASSED && afcProps?.featureFlag) {
+    message = $t({ defaultMessage: 'Allowed by AFC' }) + '\n' + message
+  }
+  return message
 }

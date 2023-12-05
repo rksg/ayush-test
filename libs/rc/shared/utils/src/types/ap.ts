@@ -7,7 +7,7 @@ import { DhcpApInfo }                                   from '../models/DhcpApIn
 import { ExternalAntenna }                              from '../models/ExternalAntenna'
 import { VenueLanPort }                                 from '../models/VenueLanPort'
 
-import { ApVenueStatusEnum } from '.'
+import { ApVenueStatusEnum, CountAndNames } from '.'
 
 export interface IpSettings {
   ipType?: string,
@@ -175,11 +175,19 @@ export interface ApDetails {
 }
 
 export interface ApGroup {
-  aps?: ApDeep[],
   id: string,
-  isDefault: boolean,
   name: string,
-  venueId: string
+  isDefault: boolean,
+  venueId: string,
+  aps?: ApDeep[]
+}
+
+export interface ApGroupViewModel extends ApGroup {
+  venueName?: string,
+  members?: CountAndNames,
+  networks?: CountAndNames,
+  clients?: number,
+  incidents?: unknown
 }
 
 export interface AddApGroup {
@@ -194,6 +202,14 @@ export interface VenueDefaultApGroup {
   isDefault: boolean,
   venueId: string,
   aps?: ApDeep[]
+}
+
+export interface ApGroupDetailHeader {
+  title: string
+  headers: {
+    members: number
+    networks: number
+  }
 }
 
 export interface ApDetailHeader {
@@ -224,7 +240,7 @@ export interface APMesh {
   apStatusData?: {
     APRadio?: Array<RadioProperties>
   },
-  clients?: { count: number, names: string[] },
+  clients?: CountAndNames,
   deviceGroupId?: string,
   deviceGroupName?: string,
   deviceStatus?: string,
@@ -490,11 +506,36 @@ export type MeshUplinkAp = {
   neighbors: MeshApNeighbor[]
 }
 
+export interface AFCProps {
+  featureFlag?: boolean,
+  isAFCEnabled? : boolean,
+  afcInfo?: AFCInfo
+}
+
+export interface LPIButtonText {
+  buttonText: JSX.Element,
+  LPIModeOnChange: Function,
+  LPIModeState: boolean,
+  isAPOutdoor?: boolean
+}
+
 export type AFCInfo = {
-  powerMode?: AFCPowerMode,
   afcStatus?: AFCStatus,
+  availableChannel?: number,
+  availableChannels?: number[],
+  geoLocation?: GeoLocation,
+  powerMode?: AFCPowerMode,
   minPowerDbm?: number,
   maxPowerDbm?: number
+}
+
+export interface GeoLocation {
+  height?: number,
+  lateralUncertainty?: number,
+  latitude?: number,
+  longitude?: number,
+  source?: string,
+  verticalUncertainty?: number
 }
 
 export enum AFCPowerMode {

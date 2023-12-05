@@ -17,7 +17,6 @@ import { TenantLink }                                                 from '@acx
 import ApLocateDetail from './ApLocateDetail'
 
 const defaultPayload = {
-  url: '/api/viewmodel/tenant/{tenantId}/venue/{venueId}/rogue/ap',
   searchString: '',
   fields: [
     'rogueMac',

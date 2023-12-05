@@ -16,7 +16,7 @@ const defaultConfig: Partial<Record<TierKey, string[]>> = {
   'feature-REC-Education':   ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS', 'ANLT-ESNTLS', 'ANLT-FNDT','ANLT-STUDIO', 'PLCY-ESNTLS', 'API-CLOUD'],
   'feature-MSP-Default':     ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS', 'ANLT-ESNTLS', 'ANLT-FNDT','ANLT-STUDIO', 'PLCY-ESNTLS', 'API-CLOUD', 'PLCY-SGMNT', 'ANLT-ADV'],
   'feature-MSP-Hospitality': ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS', 'ANLT-ESNTLS', 'ANLT-FNDT','ANLT-STUDIO', 'PLCY-ESNTLS', 'API-CLOUD', 'PLCY-SGMNT', 'ANLT-ADV'],
-  'betaList':                ['PLCY-EDGE', 'BETA-CP', 'BETA-CLB', 'BETA-ZD2R1', 'AP-NEIGHBORS']
+  'betaList':                ['PLCY-EDGE', 'BETA-CP', 'BETA-CLB', 'BETA-ZD2R1']
 }
 /* eslint-enable */
 
@@ -61,7 +61,7 @@ export function useFFList (): { featureList?: string[], betaList?: string[],
   return {
     featureList: userFFConfig[featureKey],
     betaList: betaEnabled? userFFConfig['betaList'] : [],
-    alphaList: userProfile?.dogfood ? userFFConfig['alphaList'] : []
+    alphaList: (betaEnabled && userProfile?.dogfood) ? userFFConfig['alphaList'] : []
   }
 }
 
