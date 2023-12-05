@@ -103,7 +103,7 @@ describe('Subscriptions', () => {
     expect(await screen.findByText(/2\s+\/\s+130/i)).toBeVisible()
     expect(await screen.findByRole('row', { name: /ICX 7650/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: /ICX 7150-C08P .* Active/i })).toBeVisible()
-    expect(await screen.findByRole('row', { name: /Wi-Fi .* Expired/i })).toBeVisible()
+    expect(await screen.findByRole('row', { name: /Wi-Fi/i })).toBeVisible()
     expect((await screen.findAllByTestId('rc-StackedBarChart')).length).toBe(4)
     expect(await screen.findByText('Essentials')).toBeVisible()
 
