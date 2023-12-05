@@ -2,8 +2,13 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import {
+  EdgeDHCPFixtures,
   EdgeDhcpUrls,
+  EdgeFirewallFixtures,
   EdgeFirewallUrls,
+  EdgeGeneralFixtures,
+  EdgeNSGFixtures,
+  EdgeSdLanFixtures,
   EdgeSdLanUrls,
   EdgeUrlsInfo,
   NetworkSegmentationUrls,
@@ -19,19 +24,21 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  mockEdgeData as currentEdge,
-  mockDhcpStatsData,
-  mockEdgeList,
-  mockFirewallData,
-  mockedEdgeDhcpDataList,
-  mockedEdgeServiceList,
-  mockedNsgStatsList,
   mockedPersonaGroup,
-  mockedTunnelProfileData,
-  mockedSdLanDataList
+  mockedTunnelProfileData
 } from '../../../__tests__/fixtures'
 
 import { ServiceDetailDrawer } from '.'
+
+const {
+  mockEdgeData: currentEdge,
+  mockEdgeList,
+  mockEdgeServiceList
+} = EdgeGeneralFixtures
+const { mockedEdgeSdLanDataList } = EdgeSdLanFixtures
+const { mockFirewallData } = EdgeFirewallFixtures
+const { mockNsgStatsList } = EdgeNSGFixtures
+const { mockDhcpStatsData, mockEdgeDhcpDataList } = EdgeDHCPFixtures
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
@@ -61,11 +68,11 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
       ),
       rest.post(
         NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
-        (req, res, ctx) => res(ctx.json(mockedNsgStatsList))
+        (req, res, ctx) => res(ctx.json(mockNsgStatsList))
       ),
       rest.get(
         EdgeDhcpUrls.getDhcp.url,
-        (req, res, ctx) => res(ctx.json(mockedEdgeDhcpDataList.content[0]))
+        (req, res, ctx) => res(ctx.json(mockEdgeDhcpDataList.content[0]))
       ),
       rest.get(
         PersonaUrls.getPersonaGroupById.url,
@@ -77,7 +84,7 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
       ),
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-        (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataList }))
+        (_, res, ctx) => res(ctx.json({ data: mockedEdgeSdLanDataList }))
       )
     )
   })
@@ -88,7 +95,7 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
         <ServiceDetailDrawer
           visible={true}
           setVisible={mockedSetVisible}
-          serviceData={mockedEdgeServiceList.data[0]}
+          serviceData={mockEdgeServiceList.data[0]}
         />
       </Provider>, {
         route: { params }
@@ -108,7 +115,7 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
         <ServiceDetailDrawer
           visible={true}
           setVisible={mockedSetVisible}
-          serviceData={mockedEdgeServiceList.data[0]}
+          serviceData={mockEdgeServiceList.data[0]}
         />
       </Provider>, {
         route: { params }
@@ -128,7 +135,7 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
         <ServiceDetailDrawer
           visible={true}
           setVisible={mockedSetVisible}
-          serviceData={mockedEdgeServiceList.data[2]}
+          serviceData={mockEdgeServiceList.data[2]}
         />
       </Provider>, {
         route: { params }
@@ -147,7 +154,7 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
         <ServiceDetailDrawer
           visible={true}
           setVisible={mockedSetVisible}
-          serviceData={mockedEdgeServiceList.data[1]}
+          serviceData={mockEdgeServiceList.data[1]}
         />
       </Provider>, {
         route: { params }
@@ -175,7 +182,7 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
         <ServiceDetailDrawer
           visible={true}
           setVisible={mockedSetVisible}
-          serviceData={mockedEdgeServiceList.data[3]}
+          serviceData={mockEdgeServiceList.data[3]}
         />
       </Provider>, {
         route: { params }

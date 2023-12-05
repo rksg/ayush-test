@@ -6,6 +6,7 @@ import { act }   from 'react-dom/test-utils'
 import { StepsForm }  from '@acx-ui/components'
 import {
   CommonUrlsInfo,
+  EdgeGeneralFixtures,
   EdgeSdLanUrls,
   EdgeStatusEnum,
   EdgeUrlsInfo,
@@ -22,10 +23,11 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { mockEdgeList, mockedTunnelProfileViewData, mockedVenueList, mockEdgePortConfig, mockedSdLanDataList } from '../../__tests__/fixtures'
+import { mockedTunnelProfileViewData, mockedVenueList, mockEdgePortConfig, mockedSdLanDataList } from '../../__tests__/fixtures'
 
 import { SettingsForm } from '.'
 
+const { mockEdgeList } = EdgeGeneralFixtures
 jest.mock('antd', () => {
   const components = jest.requireActual('antd')
   const Select = ({

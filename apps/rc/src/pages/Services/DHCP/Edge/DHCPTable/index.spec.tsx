@@ -3,6 +3,7 @@ import { rest }  from 'msw'
 
 import {
   EdgeDhcpUrls,
+  EdgeGeneralFixtures,
   EdgeUrlsInfo,
   getServiceDetailsLink,
   getServiceRoutePath,
@@ -11,11 +12,11 @@ import {
 import { Provider }                                    from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import { mockEdgeList }      from '../../../../Devices/Edge/__tests__/fixtures'
 import { mockDhcpStatsData } from '../__tests__/fixtures'
 
 import DHCPTable from '.'
 
+const { mockEdgeList } = EdgeGeneralFixtures
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),

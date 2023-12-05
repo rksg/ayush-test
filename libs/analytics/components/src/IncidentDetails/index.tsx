@@ -1,6 +1,7 @@
-import React from 'react'
+import { get } from 'lodash'
 
-import { Loader } from '@acx-ui/components'
+import { Loader }    from '@acx-ui/components'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { AirtimeB }                from './Details/AirtimeB'
 import { AirtimeRx }               from './Details/AirtimeRx'
@@ -24,8 +25,10 @@ import { SwitchMemoryHigh }        from './Details/SwitchMemoryHigh'
 import { SwitchPoePd }             from './Details/SwitchPoePd'
 import { SwitchVlanMismatch }      from './Details/SwitchVlanMismatch'
 import { Ttc }                     from './Details/Ttc'
-import { useIncident }             from './services'
-
+import {
+  useIncidentCodeQuery,
+  useIncidentDetailsQuery
+} from './services'
 
 export const incidentDetailsMap = {
   'radius-failure': RadiusFailure,
@@ -62,13 +65,18 @@ export const incidentDetailsMap = {
 }
 
 export function IncidentDetails () {
-  const queryResults = useIncident()
-  const code = queryResults.data?.code as keyof typeof incidentDetailsMap
+  const params = useParams()
+  const id = get(params, 'incidentId', undefined) as string
+  const codeQuery = useIncidentCodeQuery({ id })
+  const detailsQuery = useIncidentDetailsQuery(
+    codeQuery.data!,
+    { skip: !Boolean(codeQuery.data) }
+  )
+  const code = codeQuery.data?.code
   const IncidentDetails = code ? incidentDetailsMap[code] : null
   return (
-    <Loader states={[queryResults]}>
-      {IncidentDetails && <IncidentDetails {...queryResults.data!} />}
+    <Loader states={[codeQuery, detailsQuery]}>
+      {IncidentDetails && <IncidentDetails {...detailsQuery.data!} />}
     </Loader>
   )
 }
-

@@ -131,6 +131,8 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
       onClose={onClose}
       id={incident.id}
       impactedCount={incident.impactedApCount as number}
+      impactedStart={incident.impactedStart}
+      impactedEnd={incident.impactedEnd}
     /> }
     { visible==='client' && <ImpactedClientsDrawer
       visible={visible==='client'}
@@ -139,6 +141,8 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
       startTime={incident.startTime}
       endTime={incident.endTime}
       impactedCount={incident.impactedClientCount as number}
+      impactedStart={incident.impactedStart}
+      impactedEnd={incident.impactedEnd}
     /> }
   </>
 }
