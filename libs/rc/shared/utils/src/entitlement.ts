@@ -9,6 +9,7 @@ import {
   EntitlementDeviceSubType,
   EntitlementNetworkDeviceType
 } from './types'
+import { getUserProfile } from '@acx-ui/user'
 
 const devicesCountMap = {
   switch: defineMessage({
@@ -124,7 +125,9 @@ export class EntitlementUtil {
   }
 
   public static timeLeftInDays (expirationDate: string) {
-    const newDate = new Date(expirationDate)
+    const dtFormat = getUserProfile().profile.dateFormat
+    const moment_date = moment(expirationDate, dtFormat.toUpperCase()).format()
+    const newDate = new Date(moment_date)
     // expiration date should be end of UTC date
     // newDate.setUTCHours(23)
     // newDate.setUTCMinutes(59)
