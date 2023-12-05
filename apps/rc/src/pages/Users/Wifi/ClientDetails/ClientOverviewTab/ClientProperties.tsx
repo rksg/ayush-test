@@ -345,6 +345,18 @@ function Connection ({ client }: { client: ClientExtended }) {
         </Tooltip>}
         children={client?.bssid || '--'}
       />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Auth Method' })}
+        children={client?.authmethod || '--'}
+      />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Auth Status' })}
+        children={getAuthStatus(client)}
+      />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Encryption' })}
+        children={client?.encryptMethod || '--'}
+      />
     </Descriptions>
   </>
 }
@@ -701,4 +713,20 @@ function getGuestsPayload ({ clientMac }: Client) {
 
 function getClientUsername (client?: Client): string | undefined {
   return client?.userName || client?.username
+}
+
+function getAuthStatus (client?: Client) {
+  const { $t } = getIntl()
+  const statusInt = parseInt((client?.status || ''), 10)
+  if (isNaN(statusInt)) return '--'
+
+  let statusText = '--'
+  if (statusInt === 1) {
+    statusText = $t({ defaultMessage: 'Authorized' })
+  } else if (statusInt === 0) {
+    statusText = $t({ defaultMessage: 'Unauthorized' })
+  } else if (statusInt === -1) {
+    statusText = $t({ defaultMessage: 'N/A' })
+  }
+  return statusText
 }

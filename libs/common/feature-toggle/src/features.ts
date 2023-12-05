@@ -1,3 +1,5 @@
+import { defineMessage, MessageDescriptor } from 'react-intl'
+
 /* eslint-disable max-len */
 export enum Features {
   DATA_PLANE = 'dataPlane',
@@ -10,8 +12,7 @@ export enum Features {
   PLM_FF = 'ACX-PLM-FF',
   POLICIES = 'acx-ui-policies',
   DELETE_SOLO = 'ap-delete-with-solo-image-toggle',
-  EDGES = 'PLCY-EDGE',
-  EDGES_TOGGLE = 'acx-ui-edges-toggle', // temporary. to prevent Edge related API being triggered in prod env
+  EDGES_TOGGLE = 'acx-ui-edges-toggle',
   EDGES_SUB_INTERFACE_CSV_TOGGLE = 'acx-ui-edges-sub-interface-csv-toggle',
   EDGES_DHCP_CSV_TOGGLE = 'acx-ui-edges-dhcp-csv-toggle',
   EDGES_PING_TRACEROUTE_TOGGLE = 'acx-ui-edges-ping-traceroute-toggle',
@@ -100,12 +101,12 @@ export enum Features {
   WIFI_DYNAMIC_VLAN_TOGGLE = 'wifi-dynamic-vlan-toggle',
   DPSK_NEW_CONFIG_FLOW_TOGGLE = 'dpsk-new-auth-flow-toggle',
   SWITCH_STACK_NAME_DISPLAY_TOGGLE = 'switch-stack-name-display-toggle',
-  DPSK_PER_BOUND_PASSPHRASE_ALLOWED_DEVICE_INCREASED_LIMIT='dpsk-per-bound-passphrase-allowed-device-increased-limit',
+  DPSK_PER_BOUND_PASSPHRASE_ALLOWED_DEVICE_INCREASED_LIMIT = 'dpsk-per-bound-passphrase-allowed-device-increased-limit',
   EDGES_SCHEDULE_UPGRADE_TOGGLE = 'acx-ui-edges-schedule-upgrade-toggle',
   WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE = 'wifi-trunk-port-untagged-vlan-toggle',
   RUCKUS_WAN_GATEWAY_UI_SHOW = 'ruckus-wan-gateway-ui-show',
   MSP_AGGREGATE_NOTIFICATION_TOGGLE = 'aggregate-notification-toggle',
-  SWITCH_UPGRADE_BY_SWITCH='switch-consumer-upgrade-by-switch-toggle',
+  SWITCH_UPGRADE_BY_SWITCH = 'switch-consumer-upgrade-by-switch-toggle',
   SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE = 'acx-ui-support-to-msp-dashboard-toggle',
   INCIDENTS_EMAIL_NOTIFICATION_TOGGLE = 'acx-ui-incidents-notification-toggle',
   RECOMMENDATION_EMAIL_NOTIFICIATION_TOGGLE = 'acx-ui-recommendation-notification-toggle',
@@ -126,13 +127,32 @@ export enum Features {
   RUCKUS_AI_CHATBOT_TOGGLE = 'ruckus-ai-chatbot-toggle',
   EDGE_LAG = 'acx-ui-edges-lag-toggle',
   MSP_HSP_SUPPORT = 'mspservice-hsp-01',
+  MSP_BRAND_360 = 'acx-ui-msp-brand360-toggle',
   RUCKUS_AI_ZONES_LIST = 'ruckus-ai-zones-toggle',
   LINKEDIN_OIDC_TOGGLE = 'guest-linkedin-openid-connect-toggle',
   TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
+  AP_70 = 'AP-70',
   BETA_CLB = 'BETA-CLB',
-  BETA_AP_NEIGHBORS = 'AP-NEIGHBORS',
-  AP_70 = 'AP-70'
+  BETA_DPSK3 = 'BETA-DPSK3',
+  SMART_EDGES = 'PLCY-EDGE'
 }
+
+interface BetaList {
+  key: TierFeatures
+  description: MessageDescriptor
+  status: boolean
+}
+
+// This is Mandatory for Beta features list...
+// When every we add a TierFeatures enum value above we need it's related
+// description details and status value - true/false to show/hide
+// from displaying in UI drawer component BetaFeaturesDrawer
+export const BetaListDetails:BetaList[] = [
+  { key: TierFeatures.AP_70, description: defineMessage({ defaultMessage: 'AP-70 beta feature' }), status: true },
+  { key: TierFeatures.BETA_CLB, description: defineMessage({ defaultMessage: 'CLB beta feature' }), status: true },
+  { key: TierFeatures.BETA_DPSK3, description: defineMessage({ defaultMessage: 'DPSK3 beta feature' }), status: true },
+  { key: TierFeatures.SMART_EDGES, description: defineMessage({ defaultMessage: 'PLCY-EDGE beta feature' }), status: false }
+]

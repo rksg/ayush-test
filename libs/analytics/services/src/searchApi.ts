@@ -78,17 +78,18 @@ export interface Switch {
   switchVersion: string
 }
 
-export interface Client {
+export interface ClientByTraffic {
   hostname: string
   username: string
   mac: string
   osType: string
   ipAddress: string
-  lastActiveTime: string
+  lastSeen: string
+  traffic: number
 }
 
 export interface ClientList {
-  clients: Client[]
+  clientsByTraffic: ClientByTraffic[]
 }
 
 export const searchApi = dataApiSearch.injectEndpoints({
@@ -260,14 +261,15 @@ export const networkSearchApi = dataApi.injectEndpoints({
           ) {
             network(start: $start, end: $end, filter: $filter) {
               search(start: $start, end: $end, query: $query, limit: $limit) {
-                clients {
+                clientsByTraffic {
                   hostname
                   username
                   mac
                   osType
                   ipAddress
-                  lastActiveTime
+                  lastSeen
                   manufacturer
+                  traffic
                 }
               }
             }
