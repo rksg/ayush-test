@@ -11,7 +11,7 @@ import { FixedAutoSizer }     from '../../DescriptionSection/styledComponents'
 import { crrmStates }         from '../config'
 import { OptimizedIcon }      from '../styledComponents'
 
-import { CrrmValuesText, DetailsHeader, DetailsWrapper } from './styledComponents'
+import { DetailsHeader, DetailsWrapper } from './styledComponents'
 
 const crrm = defineMessage({ defaultMessage: 'AI-Driven RRM' })
 
@@ -99,9 +99,7 @@ export const UnknownDetails = () => {
         </DetailsHeader>
         <DetailsWrapper>
           <Card type='solid-bg'>
-            <CrrmValuesText>
-              {$t(failureReason, { value, Value, sliceValue })}
-            </CrrmValuesText>
+            {$t(failureReason, { value, Value, sliceValue })}
           </Card>
         </DetailsWrapper>
       </GridCol>

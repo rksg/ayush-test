@@ -77,8 +77,7 @@ export const getParamString = (
     data => data.failure.hasOwnProperty('mesh'))!
   const getGlobalZone = auditMetadata?.audit?.some(
     data => data.failure.hasOwnProperty('global-zone-checker'))!
-  const checkValues = getMesh === true ? 'mesh'
-    : getGlobalZone === true ? 'global-zone-checker' : 'null'
+  const checkValues = getMesh ? 'mesh' : getGlobalZone ? 'global_zone_checker' : 'null'
   const paramString = createSearchParams({
     status: status,
     date: updatedAt,

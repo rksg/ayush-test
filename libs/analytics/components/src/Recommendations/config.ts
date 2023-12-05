@@ -151,16 +151,16 @@ export const states = {
     tooltip: defineMessage({ defaultMessage: 'Deleted' })
   },
   insufficientLicenses: {
-    text: defineMessage({ defaultMessage: 'Insufficient Licenses' }),
-    tooltip: defineMessage({ defaultMessage: 'Insufficient Licenses' })
+    text: crrmStates[CRRMStates.insufficientLicenses].label,
+    tooltip: crrmStates[CRRMStates.insufficientLicenses].label
   },
   verificationError: {
-    text: defineMessage({ defaultMessage: 'Verification Error' }),
-    tooltip: defineMessage({ defaultMessage: 'Verification Error' })
+    text: crrmStates[CRRMStates.verificationError].label,
+    tooltip: crrmStates[CRRMStates.verificationError].label
   },
   verified: {
-    text: defineMessage({ defaultMessage: 'Verified' }),
-    tooltip: defineMessage({ defaultMessage: 'Verified' })
+    text: crrmStates[CRRMStates.verified].label,
+    tooltip: crrmStates[CRRMStates.verified].label
   }
 }
 
@@ -482,18 +482,18 @@ export const codes = {
     }]
   },
   'insufficientLicenses': {
-    category: categories['Insufficient Licenses'],
-    summary: defineMessage({ defaultMessage: 'Insufficient Licenses' }),
+    category: crrmStates[CRRMStates.insufficientLicenses].label,
+    summary: crrmStates[CRRMStates.insufficientLicenses].label,
     priority: priorities.low
   },
   'verificationError': {
-    category: categories['Verification Error'],
-    summary: defineMessage({ defaultMessage: 'Verification Error' }),
+    category: crrmStates[CRRMStates.verificationError].label,
+    summary: crrmStates[CRRMStates.verificationError].label,
     priority: priorities.low
   },
   'verified': {
-    category: categories['Verified'],
-    summary: defineMessage({ defaultMessage: 'Verified' }),
+    category: crrmStates[CRRMStates.verified].label,
+    summary: crrmStates[CRRMStates.verified].label,
     priority: priorities.low
   }
 } as unknown as Record<string, RecommendationConfig & CodeInfo>
