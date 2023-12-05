@@ -8,7 +8,7 @@ import { useLazySearchPersonaListQuery }                                        
 import { checkObjectNotExists, emailRegExp, Persona, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
 import { validationMessages }                                                   from '@acx-ui/utils'
 
-import { PersonaGroupSelect } from '../../PersonaGroupSelect'
+import { PersonaGroupSelect } from '../PersonaGroupSelect'
 
 
 

@@ -37,11 +37,11 @@ import {
   ImportFileDrawerType,
   ImportFileDrawer } from '../../ImportFileDrawer'
 import {
-  PersonaGroupSelect } from '../../PersonaGroupSelect'
-import {
   useDpskNewConfigFlowParams
 } from '../../services/useDpskNewConfigFlowParams'
-import { PersonaDrawer }      from '../PersonaDrawer'
+import { PersonaDrawer } from '../PersonaDrawer'
+import {
+  PersonaGroupSelect } from '../PersonaGroupSelect'
 import { PersonaBlockedIcon } from '../styledComponents'
 
 const IdentitiesContext = createContext({} as {
