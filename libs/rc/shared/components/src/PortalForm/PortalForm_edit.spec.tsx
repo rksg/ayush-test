@@ -8,11 +8,12 @@ import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from
 import { UserUrlsInfo }                                                     from '@acx-ui/user'
 import { loadImageWithJWT }                                                 from '@acx-ui/utils'
 
-import Photo                     from './assets/images/portal-demo/PortalPhoto.svg'
-import Powered                   from './assets/images/portal-demo/PoweredLogo.svg'
-import Logo                      from './assets/images/portal-demo/RuckusCloud.svg'
-import { PortalDemoDefaultSize } from './commonUtils'
-import { PortalForm }            from './PortalForm'
+import { PortalDemoDefaultSize } from '../PortalDemo/commonUtils'
+
+import Photo          from './assets/images/portal-demo/PortalPhoto.svg'
+import Powered        from './assets/images/portal-demo/PoweredLogo.svg'
+import Logo           from './assets/images/portal-demo/RuckusCloud.svg'
+import { PortalForm } from './PortalForm'
 export const portalResponse: Portal = {
   id: '1',
   serviceName: 'test111',
