@@ -4,7 +4,7 @@ import { rest } from 'msw'
 import { useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import { ClientUrlsInfo, CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                     from '@acx-ui/store'
-import { mockServer, render, screen, mockRestApiQuery } from '@acx-ui/test-utils'
+import { mockServer, render, screen }                   from '@acx-ui/test-utils'
 import { RolesEnum }                                    from '@acx-ui/types'
 import { getUserProfile, setUserProfile }               from '@acx-ui/user'
 
