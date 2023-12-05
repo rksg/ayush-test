@@ -224,7 +224,7 @@ function ClientDetails ({ client }: { client: ClientExtended }) {
       { client?.mldAddr &&
         <Descriptions.Item
           label={$t({ defaultMessage: 'MLD MAC Address' })}
-          children={client?.mldAddr || '--'}
+          children={client?.mldAddr}
         />
       }
       <Descriptions.Item
