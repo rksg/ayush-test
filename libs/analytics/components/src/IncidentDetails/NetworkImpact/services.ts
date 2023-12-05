@@ -37,19 +37,29 @@ const transformResponse = ({ incident }: Response, _: {}, payload: RequestPayloa
 export const networkImpactChartsApi = dataApi.injectEndpoints({
   endpoints: (build) => ({
     networkImpactCharts: build.query<ResultType, RequestPayload>({
-      query: (payload) => {
-        const queries = payload.charts.map(({ chart, type, dimension }) => {
+      query: ({ charts, incident }) => {
+        const queries = charts.map(({ chart, type, dimension }) => {
           return gql`${chart}: topN(n: 10, by: "${dimension}", type: "${type}") {
             count data { key value }
           }`
         })
         return {
           document: gql`
-            query NetworkImpactCharts($id: String) {
-              incident(id: $id) { ${queries.join('\n')} }
+            query NetworkImpactCharts(
+              $id: String,
+              $impactedStart: DateTime,
+              $impactedEnd: DateTime
+            ) {
+              incident(id: $id, impactedStart: $impactedStart, impactedEnd: $impactedEnd) {
+                ${queries.join('\n')}
+              }
             }
           `,
-          variables: { id: payload.incident.id }
+          variables: {
+            id: incident.id,
+            impactedStart: incident.impactedStart,
+            impactedEnd: incident.impactedEnd
+          }
         }},
       transformResponse
     })
