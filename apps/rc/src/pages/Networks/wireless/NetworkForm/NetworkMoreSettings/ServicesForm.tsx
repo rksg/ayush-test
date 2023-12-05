@@ -12,7 +12,7 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Features, useIsTierAllowed, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsTierAllowed, useIsSplitOn }                           from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                                                       from '@acx-ui/icons'
 import { useGetTunnelProfileViewDataListQuery, useGetNetworkSegmentationViewDataListQuery } from '@acx-ui/rc/services'
 import {
@@ -99,7 +99,7 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
   }
 
   const { enableVxLan: showTunnelProfile, tunnelType } = useNetworkVxLanTunnelProfileInfo(data)
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const tunnelProfileDefaultPayload = {
     fields: ['name', 'id'],
