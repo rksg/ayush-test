@@ -90,7 +90,7 @@ describe('VenueNetworksTab', () => {
     })
 
     const row = await screen.findByRole('row', { name: /test_1/i })
-    expect(row).toHaveTextContent('Pre-Shared Key (PSK) - WPA2')
+    expect(row).toHaveTextContent('Passphrase (PSK/SAE)')
     expect(row).toHaveTextContent('VLAN-1 (Default)')
   })
 
