@@ -1,8 +1,9 @@
 import { EdgeServiceStatusEnum, EdgeStatusEnum } from '../../models/EdgeEnum'
 
-import { requireAttentionAlarmSummary, poorAlarmSummary }                  from './__tests__/fixtures'
+import { EdgeAlarmFixtures }                                               from './__tests__/fixtures'
 import { allowRebootForStatus, allowResetForStatus, getEdgeServiceHealth } from './edgeUtils'
 
+const { requireAttentionAlarmSummary, poorAlarmSummary } = EdgeAlarmFixtures
 describe('Edge utils', () => {
 
   it('should get good service health', () => {

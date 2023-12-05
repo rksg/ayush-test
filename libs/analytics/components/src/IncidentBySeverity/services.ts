@@ -54,8 +54,51 @@ export const api = dataApi.injectEndpoints({
       transformResponse: (response: Response<IncidentsBySeverityData>) =>
         response.network.hierarchyNode,
       providesTags: [{ type: 'Monitoring', id: 'INCIDENTS_LIST' }]
+    }),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    incidentsListBySeverity: build.query<IncidentsBySeverityData[], any>({
+      query: (payload) => ({
+        document: gql`
+        query IncidentsBySeverityWidget(
+          ${Object.keys(payload.paths).map((key) => `
+          $${key}: [HierarchyNodeInput],`).join('')}
+          $start: DateTime,
+          $end: DateTime,
+          $code: [String]
+        ) {
+          network(start: $start, end: $end) {
+            ${Object.keys(payload.paths).map((key, i) => `
+              incidentCount${i}: hierarchyNode(path: $${key}) {
+                ...fields
+              }
+            `).join('')}
+          }
+        }
+
+        fragment fields on HierarchyNode {
+          ${Object.entries(incidentSeverities)
+          .map(
+            ([name, { gt, lte }]) => `
+              ${name}: incidentCount(filter: {severity: {gt: ${gt}, lte: ${lte}}, code: $code})
+            `
+          )
+          .join('')}
+          }
+        `,
+        variables: {
+          ...payload.variables,
+          code: payload.code ?? incidentCodes
+        }
+      }),
+      transformResponse: (response: Response<IncidentsBySeverityData>) => {
+        return Object.values(response.network)
+      },
+      providesTags: [{ type: 'Monitoring', id: 'INCIDENTS_LIST' }]
     })
   })
 })
 
-export const { useIncidentsBySeverityQuery } = api
+export const {
+  useIncidentsBySeverityQuery,
+  useIncidentsListBySeverityQuery,
+  useLazyIncidentsListBySeverityQuery } = api
