@@ -78,10 +78,6 @@ const networkList = {
   ]
 }
 
-export const clientList = { data: [] }
-
-export const clientMeta = { data: [] }
-
 describe('NetworkDetails', () => {
   beforeEach(() => {
     mockServer.use(
@@ -99,11 +95,11 @@ describe('NetworkDetails', () => {
       ),
       rest.post(
         ClientUrlsInfo.getClientList.url,
-        (req, res, ctx) => res(ctx.json(clientList))
+        (req, res, ctx) => res(ctx.json({ data: [] }))
       ),
       rest.post(
         ClientUrlsInfo.getClientMeta.url,
-        (req, res, ctx) => res(ctx.json(clientMeta))
+        (req, res, ctx) => res(ctx.json({ data: [] }))
       ),
       rest.post(
         CommonUrlsInfo.getApsList.url,
