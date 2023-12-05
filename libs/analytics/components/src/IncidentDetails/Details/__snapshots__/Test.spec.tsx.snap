@@ -566,7 +566,15 @@ exports[`Test Details should render AirtimeB correctly 1`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 dRhDDA"
         style="min-height: 250px;"
-      />
+      >
+        <div
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-AirtimeUtilizationChart"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </DocumentFragment>
@@ -1138,7 +1146,15 @@ exports[`Test Details should render AirtimeB correctly 2`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 dRhDDA"
         style="min-height: 250px;"
-      />
+      >
+        <div
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-AirtimeUtilizationChart"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </DocumentFragment>
@@ -1710,7 +1726,15 @@ exports[`Test Details should render AirtimeB correctly 3`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 dRhDDA"
         style="min-height: 250px;"
-      />
+      >
+        <div
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-AirtimeUtilizationChart"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </DocumentFragment>
@@ -2282,7 +2306,15 @@ exports[`Test Details should render AirtimeRx correctly 1`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 dRhDDA"
         style="min-height: 250px;"
-      />
+      >
+        <div
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-AirtimeUtilizationChart"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </DocumentFragment>
@@ -2854,7 +2886,15 @@ exports[`Test Details should render AirtimeRx correctly 2`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 dRhDDA"
         style="min-height: 250px;"
-      />
+      >
+        <div
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-AirtimeUtilizationChart"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </DocumentFragment>
@@ -3426,7 +3466,15 @@ exports[`Test Details should render AirtimeRx correctly 3`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 dRhDDA"
         style="min-height: 250px;"
-      />
+      >
+        <div
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-AirtimeUtilizationChart"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </DocumentFragment>
@@ -3988,7 +4036,15 @@ exports[`Test Details should render AirtimeTx correctly 1`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 dRhDDA"
         style="min-height: 250px;"
-      />
+      >
+        <div
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-AirtimeUtilizationChart"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </DocumentFragment>
@@ -4550,7 +4606,15 @@ exports[`Test Details should render AirtimeTx correctly 2`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 dRhDDA"
         style="min-height: 250px;"
-      />
+      >
+        <div
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-AirtimeUtilizationChart"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </DocumentFragment>
@@ -5112,7 +5176,15 @@ exports[`Test Details should render AirtimeTx correctly 3`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 dRhDDA"
         style="min-height: 250px;"
-      />
+      >
+        <div
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-AirtimeUtilizationChart"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </DocumentFragment>
