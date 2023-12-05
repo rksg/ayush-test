@@ -40,6 +40,9 @@ const networkDetailHeaderData = {
   activeVenueCount: 1,
   aps: {
     totalApCount: 1
+  },
+  network: {
+    clients: 1
   }
 }
 
@@ -52,30 +55,6 @@ const mockedVenuesResult = {
     id: 'v1',
     name: 'My Venue'
   }]
-}
-
-const networkList = {
-  totalCount: 10,
-  page: 1,
-  data: [
-    {
-      aps: 1,
-      clients: 1,
-      id: '373377b0cb6e46ea8982b1c80aabe1fa',
-      name: 'network-01',
-      nwSubType: 'psk',
-      ssid: '01',
-      venues: { count: 3, names: ['My-Venue'] },
-      count: 3,
-      names: ['My-Venue'],
-      vlan: 1,
-      deepNetwork: {
-        wlan: {
-          wlanSecurity: 'WPA3'
-        }
-      }
-    }
-  ]
 }
 
 describe('NetworkDetails', () => {
@@ -105,7 +84,6 @@ describe('NetworkDetails', () => {
         CommonUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json({ data: [] })))
     )
-    mockRestApiQuery(CommonUrlsInfo.getVMNetworksList.url, 'post', { ...networkList })
   })
 
   it('renders a tab', async () => {
@@ -164,6 +142,6 @@ describe('NetworkDetails', () => {
     })
 
     expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
-      .toEqual('Clients ()')
+      .toEqual('Clients (1)')
   })
 })

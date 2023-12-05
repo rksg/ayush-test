@@ -1,13 +1,13 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo }                                                   from '@acx-ui/rc/utils'
-import { generatePath }                                                     from '@acx-ui/react-router-dom'
-import { Provider }                                                         from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, fireEvent, mockRestApiQuery } from '@acx-ui/test-utils'
-import { RolesEnum }                                                        from '@acx-ui/types'
-import { getUserProfile, setUserProfile }                                   from '@acx-ui/user'
+import { useIsSplitOn }                                   from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo }                                 from '@acx-ui/rc/utils'
+import { generatePath }                                   from '@acx-ui/react-router-dom'
+import { Provider }                                       from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, fireEvent } from '@acx-ui/test-utils'
+import { RolesEnum }                                      from '@acx-ui/types'
+import { getUserProfile, setUserProfile }                 from '@acx-ui/user'
 
 import NetworkTabs from './NetworkTabs'
 
@@ -15,6 +15,9 @@ const networkDetailHeaderData = {
   activeVenueCount: 1,
   aps: {
     totalApCount: 1
+  },
+  network: {
+    clients: 1
   }
 }
 const params = { networkId: 'network-id', tenantId: 'tenant-id' }
@@ -26,37 +29,12 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-const list = {
-  totalCount: 10,
-  page: 1,
-  data: [
-    {
-      aps: 1,
-      clients: 1,
-      id: 'network-id',
-      name: 'network-01',
-      nwSubType: 'psk',
-      ssid: '01',
-      venues: { count: 3, names: ['My-Venue'] },
-      count: 3,
-      names: ['My-Venue'],
-      vlan: 1,
-      deepNetwork: {
-        wlan: {
-          wlanSecurity: 'WPA3'
-        }
-      }
-    }
-  ]
-}
-
 describe('NetworkTabs', () => {
 
   beforeEach(() => {
     mockServer.use(
       rest.get(url, (_, res, ctx) => res(ctx.json(networkDetailHeaderData)))
     )
-    mockRestApiQuery(CommonUrlsInfo.getVMNetworksList.url, 'post', { ...list })
   })
 
   it('should render correctly', async () => {

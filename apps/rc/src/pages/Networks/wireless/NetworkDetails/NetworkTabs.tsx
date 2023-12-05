@@ -1,11 +1,10 @@
 import { useIntl } from 'react-intl'
 
-import { Tabs }                                             from '@acx-ui/components'
-import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
-import { useNetworkDetailHeaderQuery, useNetworkListQuery } from '@acx-ui/rc/services'
-import { Network, usePollingTableQuery }                    from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }            from '@acx-ui/react-router-dom'
-import { hasAccess }                                        from '@acx-ui/user'
+import { Tabs }                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { useNetworkDetailHeaderQuery }           from '@acx-ui/rc/services'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { hasAccess }                             from '@acx-ui/user'
 
 function NetworkTabs () {
   const { $t } = useIntl()
@@ -26,26 +25,6 @@ function NetworkTabs () {
   ]
 
   const listOfClientsPerWlanFlag = useIsSplitOn(Features.LIST_OF_CLIENTS_PER_WLAN)
-
-  const networkClientsPayload = {
-    searchString: '',
-    fields: [
-      'id',
-      'clients'
-    ],
-    page: 1,
-    pageSize: 2048
-  }
-
-  const networkClientsQuery = usePollingTableQuery<Network>({
-    useQuery: useNetworkListQuery,
-    defaultPayload: networkClientsPayload
-  })
-
-  function getClientsByNetwork (){
-    const currentNetworkData = networkClientsQuery?.data?.data.find(item => item.id === networkId)
-    return currentNetworkData?.clients
-  }
 
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
@@ -70,7 +49,7 @@ function NetworkTabs () {
           <Tabs.TabPane
             tab={
               $t({ defaultMessage: 'Clients ({clientsCount})' },
-                { clientsCount: getClientsByNetwork() })
+                { clientsCount: data?.network?.clients })
             }
             key='clients'
           />
