@@ -31,7 +31,7 @@ import {
 
 import * as UI from './styledComponents'
 
-import { EdgePortConfigFormType } from '.'
+import { EdgePortConfigFormType, getInnerPortFormID } from '.'
 
 interface ConfigFormProps {
   formListKey: number
@@ -71,11 +71,10 @@ const getEnabledCorePortMac = (form: FormInstance) => {
   return corePort
 }
 
-const getLANPortGatewayRenderState = (form: FormInstance, portMac: string): {
+const getLANPortGatewayRenderState = (allValues: EdgePortConfigFormType, portMac: string): {
   visible: boolean,
   disabled: boolean
 } => {
-  const allValues = form.getFieldsValue(true) as EdgePortConfigFormType
   const lanCorePort = Object.keys(allValues)
     .filter(portFormIdx => {
       let portValues = allValues[portFormIdx][0]
@@ -112,7 +111,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
   [formListKey])
 
   const getFieldFullPath = useCallback((fieldName: string) =>
-    [`port_${index}`, ...getFieldPath(fieldName)],
+    [getInnerPortFormID(index), ...getFieldPath(fieldName)],
   [index, getFieldPath])
 
   const statusIp = useWatch(getFieldFullPath('statusIp'), form)
@@ -144,7 +143,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
 
   const getSubnetInfoWithoutCurrent = () => {
     return Object.entries<EdgePortWithStatus[]>(form.getFieldsValue(true))
-      .filter(item => item[0] !== `port_${index}`
+      .filter(item => item[0] !== getInnerPortFormID(index)
         && _.get(item[1], getFieldPath('enabled'))
         && !!_.get(item[1], getFieldPath('ip'))
         && !!_.get(item[1], getFieldPath('subnet')))
@@ -187,14 +186,16 @@ export const PortConfigForm = (props: ConfigFormProps) => {
           <Form.Item
             noStyle
             shouldUpdate={(prev, cur) => {
-              return _.get(prev, getFieldFullPath('corePortEnabled'))
-                !== _.get(cur, getFieldFullPath('corePortEnabled'))
-                || _.get(prev, getFieldFullPath('enabled'))
-                !== _.get(cur, getFieldFullPath('enabled'))
+              const prevGWRenderState = getLANPortGatewayRenderState(prev, mac)
+              const curGWRenderState = getLANPortGatewayRenderState(cur, mac)
+              return prevGWRenderState.visible !== curGWRenderState.visible
+              || prevGWRenderState.disabled !== curGWRenderState.disabled
             }}
           >
             {() => {
-              const gwRenderState = getLANPortGatewayRenderState(form, mac)
+              const allValues = form.getFieldsValue(true) as EdgePortConfigFormType
+              const gwRenderState = getLANPortGatewayRenderState(allValues, mac)
+
 
               return gwRenderState.visible
                 ? <Form.Item
