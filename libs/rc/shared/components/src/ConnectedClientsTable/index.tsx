@@ -43,9 +43,9 @@ function GetApFilterOptions (tenantId: string|undefined, venueId: string|undefin
   return apFilterOptions
 }
 
-function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean, columnFilters?: {}) {
+function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
   const { $t } = useIntl()
-  const { tenantId, venueId, apId } = useParams()
+  const { tenantId, venueId, apId, networkId } = useParams()
 
   const clientStatuses = () => [
     { key: null, text: $t({ defaultMessage: 'All Health Levels' }) },
@@ -179,7 +179,7 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean, co
         }
       }
     },
-    ...((columnFilters?.hasOwnProperty('networkId')) ? [] : [{
+    ...(networkId ? [] : [{
       key: 'ssid',
       title: intl.$t({ defaultMessage: 'Network' }),
       dataIndex: 'ssid',
@@ -428,7 +428,7 @@ export const ConnectedClientsTable = (props: {
         </Subtitle>
         <Table<ClientList>
           settingsId='connected-clients-table'
-          columns={GetCols(useIntl(), showAllColumns, defaultClientPayload.filters)}
+          columns={GetCols(useIntl(), showAllColumns)}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}

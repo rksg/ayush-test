@@ -16,7 +16,8 @@ import { TenantLink, useParams }                  from '@acx-ui/react-router-dom
 import { RequestPayload }                         from '@acx-ui/types'
 import { encodeParameter, DateFilter, DateRange } from '@acx-ui/utils'
 
-function getCols (intl: ReturnType<typeof useIntl>, columnFilters?: {}) {
+function GetCols (intl: ReturnType<typeof useIntl>) {
+  const { networkId } = useParams()
   const dateTimeFormatter = formatter(DateFormatEnum.DateTimeFormat)
   const columns: TableProps<Client>['columns'] = [{
     key: 'hostname',
@@ -77,7 +78,7 @@ function getCols (intl: ReturnType<typeof useIntl>, columnFilters?: {}) {
       </TenantLink>
       : row?.apName
   },
-  ...((columnFilters?.hasOwnProperty('networkId')) ? [] : [{
+  ...(networkId ? [] : [{
     key: 'ssid',
     title: intl.$t({ defaultMessage: 'Last SSID' }),
     dataIndex: 'ssid',
@@ -154,7 +155,7 @@ export function HistoricalClientsTable
           </Subtitle>
           <Table
             settingsId='historical-clients-table'
-            columns={getCols(useIntl(), defaultHistoricalClientPayload.filters)}
+            columns={GetCols(useIntl())}
             dataSource={tableQuery.data?.data}
             pagination={tableQuery.pagination}
             onChange={tableQuery.handleTableChange}
@@ -186,7 +187,7 @@ export const GlobalSearchHistoricalClientsTable = (props: {
   return (
     <Table
       settingsId='historical-clients-table'
-      columns={getCols(useIntl())}
+      columns={GetCols(useIntl())}
       dataSource={tableQuery?.data?.data}
       onChange={tableQuery?.handleTableChange}
       rowKey='clientMac'
