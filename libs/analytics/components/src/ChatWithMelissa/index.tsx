@@ -26,7 +26,7 @@ export function ChatWithMelissa () {
       getSummary().then((data)=>{
         setTimeout(()=>{
           setSummary(data.summary)
-        },10000)
+        },5000)
       })
     }
   },[showIncidentSummary])
@@ -55,13 +55,13 @@ export function ChatWithMelissa () {
       {showIncidentSummary ? subTitleIncidents : subTitleFirstTime }
     </p>
     {isMelissaBotEnabled && <Button size='small'
-      loading={showIncidentSummary && !summary}
-      disabled={showIncidentSummary && !summary}
+      loading={showIncidentSummary && summary===''}
+      disabled={showIncidentSummary && summary===''}
       onClick={()=>{
         const event = new CustomEvent('showMelissaBot',
           { detail: {
             isRecurringUser: !! isRecurringUser,
-            summary
+            summary: summary || 'Nothing to summarize.'
           } })
         window.dispatchEvent(event)
         if(isIncidentSummaryEnabled){

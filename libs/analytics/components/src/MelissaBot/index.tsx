@@ -195,7 +195,7 @@ export function MelissaBot (){
       isSummaryLatest.current = true
       messages.push({
         type: 'bot',
-        contentList: [{ text: { text: [summary] } }]
+        contentList: [{ text: { text: [`From Ruckus AI:\n\n${summary}`] } }]
       })
       setMessages(messages)
       defer(doAfterResponse)
