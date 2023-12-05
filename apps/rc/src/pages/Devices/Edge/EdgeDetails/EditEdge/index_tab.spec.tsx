@@ -3,8 +3,8 @@ import { rest }                                     from 'msw'
 import { IntlProvider }                             from 'react-intl'
 import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom'
 
-import { EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }     from '@acx-ui/store'
+import { EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                          from '@acx-ui/store'
 import {
   mockServer,
   renderHook,
@@ -13,11 +13,9 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { mockEdgeList } from '../../__tests__/fixtures'
-
 import { EdgeEditContext, EditEdgeTabs } from './index'
 
-
+const { mockEdgeList } = EdgeGeneralFixtures
 jest.mock('@acx-ui/utils', () => {
   const reactIntl = jest.requireActual('react-intl')
   const intl = reactIntl.createIntl({

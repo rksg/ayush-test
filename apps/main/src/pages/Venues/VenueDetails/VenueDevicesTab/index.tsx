@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                  from '@acx-ui/components'
-import {  useIsTierAllowed, Features }           from '@acx-ui/feature-toggle'
+import {  useIsTierAllowed, TierFeatures }       from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { VenueEdge }   from './VenueEdge'
@@ -37,7 +37,7 @@ export function VenueDevicesTab () {
         <VenueSwitch />
       </Tabs.TabPane>
 
-      { useIsTierAllowed(Features.EDGES) && (
+      { useIsTierAllowed(TierFeatures.SMART_EDGES) && (
         <Tabs.TabPane
           tab={$t({ defaultMessage: 'SmartEdge' })}
           key='edge'>
