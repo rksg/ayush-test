@@ -6,7 +6,7 @@ export interface Common {
   lsp: string
   p1Incidents: number
   guestExp: number
-  ssidComplaince: number
+  ssidCompliance: number
   deviceCount: number
   avgConnSuccess: number,
   avgTTC: number,

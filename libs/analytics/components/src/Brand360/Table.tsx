@@ -67,18 +67,18 @@ export function BrandTable ({ sliceType, slaThreshold, data }:
       </Tooltip>
     },
     {
-      title: $t({ defaultMessage: 'SSID Complaince' }),
-      dataIndex: 'ssidComplaince',
-      key: 'ssidComplaince',
-      sorter: { compare: sortProp('ssidComplaince', defaultSort) },
+      title: $t({ defaultMessage: 'SSID Compliance' }),
+      dataIndex: 'ssidCompliance',
+      key: 'ssidCompliance',
+      sorter: { compare: sortProp('ssidCompliance', defaultSort) },
       render: (_, row: Common) =>
         <span
           style={{
-            color: row?.ssidComplaince > parseFloat(thresholdSSID as string)/100
+            color: row?.ssidCompliance > parseFloat(thresholdSSID as string)/100
               ? pColor : nColor
           }}
         >
-          {formatter('percentFormat')(row?.ssidComplaince)}
+          {formatter('percentFormat')(row?.ssidCompliance)}
         </span>
     },
     {

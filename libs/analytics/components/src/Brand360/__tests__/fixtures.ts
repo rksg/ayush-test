@@ -24,7 +24,7 @@ export const fetchBrandProperties = () => {
       lsp: sample(lsps),
       p1Incidents: sample(nums) || 0,
       guestExp: (avgConnSuccess + avgTTC + avgClientThroughput) / 3,
-      ssidComplaince: sample(pcts) || 0,
+      ssidCompliance: sample(pcts) || 0,
       deviceCount: sample(nums) || 0,
       avgConnSuccess,
       avgTTC,
@@ -40,21 +40,21 @@ export const transformToLspView = (properties: ReturnType<typeof fetchBrandPrope
       ttc,
       clientThroughput,
       p1Incidents,
-      ssidComplaince,
+      ssidCompliance,
       deviceCount
     } = properties.reduce((acc, cur) => ({
       connSuccess: acc.connSuccess + cur.avgConnSuccess,
       ttc: acc.ttc + cur.avgTTC,
       clientThroughput: acc.clientThroughput + cur.avgClientThroughput,
       p1Incidents: acc.p1Incidents + cur.p1Incidents,
-      ssidComplaince: acc.ssidComplaince + cur.ssidComplaince,
+      ssidCompliance: acc.ssidCompliance + cur.ssidCompliance,
       deviceCount: acc.deviceCount + cur.deviceCount
     }), {
       connSuccess: 0,
       ttc: 0,
       clientThroughput: 0,
       p1Incidents: 0,
-      ssidComplaince: 0,
+      ssidCompliance: 0,
       deviceCount: 0
     })
     const avgConnSuccess = connSuccess/properties.length
@@ -67,7 +67,7 @@ export const transformToLspView = (properties: ReturnType<typeof fetchBrandPrope
       avgTTC,
       avgClientThroughput,
       p1Incidents,
-      ssidComplaince: ssidComplaince/properties.length,
+      ssidCompliance: ssidCompliance/properties.length,
       deviceCount,
       guestExp: (avgConnSuccess + avgTTC + avgClientThroughput) / 3
     }
