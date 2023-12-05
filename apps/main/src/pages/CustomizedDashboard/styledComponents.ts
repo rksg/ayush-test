@@ -40,7 +40,7 @@ border-top: 75px solid rgba(255,255,255, 0.4);
   width: 100%;
   height: calc(100vh - 116px);
   position: fixed;
-  top: 60px;
+  top: 108px;
 }
 
 .toolbar {
@@ -58,27 +58,50 @@ border-top: 75px solid rgba(255,255,255, 0.4);
   padding: 14px 0;
   background-color: var(--acx-neutrals-10);
   height: 60px;
-  .ant-btn-text {
-    &:not([disabled]):hover {
-      background-color: var(--acx-neutrals-20);
+}
+
+.ant-btn-text {
+  &:not([disabled]):hover {
+    background-color: var(--acx-neutrals-20);
+  }
+  svg {
+    path {
+      stroke-width: 0;
     }
-    &:not([disabled]):active {
-      color: var(--acx-primary-white);
-      background-color: var(--acx-neutrals-70);
-      svg {
-        path {
-          stroke: var(--acx-primary-white);
-        }
-      }
-    }
-    &[disabled] {
-      svg {
-        path {
-          stroke: var(--acx-neutrals-50);
-        }
+  }
+  &:not([disabled]):active {
+    color: var(--acx-primary-white);
+    background-color: var(--acx-neutrals-70);
+    svg {
+      path {
+        fill: var(--acx-primary-white);
       }
     }
   }
+  &[disabled] {
+    svg {
+      path {
+        fill: var(--acx-neutrals-50);
+      }
+    }
+  }
+}
+
+.sub-toolbar {
+  position: fixed;
+  width: calc(
+    100%
+    - ${props => props.$siderWidth}
+  );
+  min-width: calc(
+    1280
+    - ${props => props.$siderWidth}
+    - var(--acx-content-horizontal-space) * 2
+  );
+  top: 60px;
+  padding: 10px 0;
+  background-color: var(--acx-neutrals-20);
+  height: 48px;
 }
 
 .actions {

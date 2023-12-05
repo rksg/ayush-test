@@ -24,7 +24,7 @@ export default function EditMode (props: {
             <Button type='text' icon={<DataStudioOutlined/>}>
               {$t({ defaultMessage: 'Add Widget' })}
             </Button>
-            <Button type='text' icon={<DashboardOutlined/>} style={{ marginLeft: '16px' }} onClick={()=>{setVisible(false)}}>
+            <Button type='text' icon={<DashboardOutlined/>} style={{ marginLeft: '12px' }} onClick={()=>{setVisible(false)}}>
               {$t({ defaultMessage: 'Sections' })}
             </Button>
           </div>
@@ -35,8 +35,49 @@ export default function EditMode (props: {
             <Button type='text' icon={<Reload />} >
               {$t({ defaultMessage: 'Restore' })}
             </Button>
-            <Button type='text' icon={<EraserOutlined />} disabled style={{ marginLeft: '16px' }} onClick={()=>{setVisible(false)}}>
+            <Button type='text' icon={<EraserOutlined />} disabled style={{ marginLeft: '12px' }} onClick={()=>{setVisible(false)}}>
               {$t({ defaultMessage: 'Clear All' })}
+            </Button>
+          </div>
+        </Space>
+      </div>
+      <div className='sub-toolbar'>
+        <Space
+          split={<Divider type='vertical' style={{ height: '28px' }} />}
+        >
+          <Button type='text' icon={<DataStudioOutlined/>} style={{ marginLeft: '36px' }}>
+            {$t({ defaultMessage: 'Add Section' })}
+          </Button>
+          <div>
+            <Button type='text' icon={<DashboardOutlined/>} onClick={()=>{setVisible(false)}}>
+              {$t({ defaultMessage: 'Remove Section' })}
+            </Button>
+            <Button type='text' icon={<DashboardOutlined/>} style={{ marginLeft: '12px' }} onClick={()=>{setVisible(false)}}>
+              {$t({ defaultMessage: 'Hide Section' })}
+            </Button>
+          </div>
+          <div>
+            <Button type='text' icon={<DashboardOutlined/>} onClick={()=>{setVisible(false)}}>
+              {$t({ defaultMessage: 'Move up' })}
+            </Button>
+            <Button type='text' icon={<DashboardOutlined/>} style={{ marginLeft: '12px' }} onClick={()=>{setVisible(false)}}>
+              {$t({ defaultMessage: 'Move down' })}
+            </Button>
+          </div>
+          <div>
+            <Button type='text' icon={<DashboardOutlined/>} onClick={()=>{setVisible(false)}}>
+              {$t({ defaultMessage: 'Add tab' })}
+            </Button>
+            <Button type='text' icon={<DashboardOutlined/>} style={{ marginLeft: '12px' }} onClick={()=>{setVisible(false)}}>
+              {$t({ defaultMessage: 'Remove tab' })}
+            </Button>
+          </div>
+          <div>
+            <Button type='text' icon={<DashboardOutlined/>} onClick={()=>{setVisible(false)}}>
+              {$t({ defaultMessage: 'Add title' })}
+            </Button>
+            <Button type='text' icon={<DashboardOutlined/>} style={{ marginLeft: '12px' }} onClick={()=>{setVisible(false)}}>
+              {$t({ defaultMessage: 'Add link' })}
             </Button>
           </div>
         </Space>
@@ -53,7 +94,7 @@ export default function EditMode (props: {
             <Button type='primary' onClick={()=>{setVisible(false)}}>
               {$t({ defaultMessage: 'Publish' })}
             </Button>
-            <Button style={{ marginLeft: '16px' }} onClick={()=>{setVisible(false)}}>
+            <Button style={{ marginLeft: '20px' }} onClick={()=>{setVisible(false)}}>
               {$t({ defaultMessage: 'Cancel' })}
             </Button>
           </div>
