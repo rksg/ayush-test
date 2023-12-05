@@ -1,7 +1,8 @@
 import moment, { Moment }           from 'moment-timezone'
 import { defineMessage, IntlShape } from 'react-intl'
 
-import { getIntl } from '@acx-ui/utils'
+import { getUserProfile } from '@acx-ui/user'
+import { getIntl }        from '@acx-ui/utils'
 
 import {
   MspEntitlement,
@@ -9,7 +10,6 @@ import {
   EntitlementDeviceSubType,
   EntitlementNetworkDeviceType
 } from './types'
-import { getUserProfile } from '@acx-ui/user'
 
 const devicesCountMap = {
   switch: defineMessage({
