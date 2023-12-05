@@ -28,8 +28,8 @@ import {
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { getIntl }                    from '@acx-ui/utils'
 
-import { ExpirationDateSelector }     from '../ExpirationDateSelector'
-import { useDpskNewConfigFlowParams } from '../services/useDpskNewConfigFlowParams'
+import { ExpirationDateSelector }     from '../../ExpirationDateSelector'
+import { useDpskNewConfigFlowParams } from '../useDpskNewConfigFlowParams'
 
 import { FieldSpace } from './styledComponents'
 

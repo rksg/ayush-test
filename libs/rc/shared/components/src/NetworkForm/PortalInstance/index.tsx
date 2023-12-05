@@ -10,8 +10,8 @@ import { useGetPortalLangMutation, useGetPortalProfileListQuery } from '@acx-ui/
 import { Demo, Portal, TableResult }                              from '@acx-ui/rc/utils'
 import { loadImageWithJWT }                                       from '@acx-ui/utils'
 
-import { PortalDemo }        from '../../PortalDemo'
-import { initialPortalData } from '../../PortalForm'
+import { PortalDemo }        from '../../services/PortalDemo'
+import { initialPortalData } from '../../services/PortalForm'
 import Photo                 from '../assets/images/portal-demo/PortalPhoto.svg'
 import Powered               from '../assets/images/portal-demo/PoweredLogo.svg'
 import Logo                  from '../assets/images/portal-demo/RuckusCloud.svg'

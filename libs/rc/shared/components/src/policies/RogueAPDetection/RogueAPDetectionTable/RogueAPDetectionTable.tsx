@@ -24,7 +24,7 @@ import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui
 import { RequestPayload }                                          from '@acx-ui/types'
 import { filterByAccess }                                          from '@acx-ui/user'
 
-import { SimpleListTooltip } from '../../SimpleListTooltip'
+import { SimpleListTooltip } from '../../../SimpleListTooltip'
 import { PROFILE_MAX_COUNT } from '../contentsMap'
 
 const useDefaultVenuePayload = (): RequestPayload => {

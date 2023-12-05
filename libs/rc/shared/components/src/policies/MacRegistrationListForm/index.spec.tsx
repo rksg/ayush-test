@@ -13,7 +13,7 @@ import { fireEvent, mockServer, render, renderHook, screen, waitFor, waitForElem
 
 import { mockedCreateFormData } from './__tests__/fixtures'
 
-import { MacRegistrationListForm } from '.'
+import { MacRegistrationListForm } from './index'
 
 const mockedTenantId = 'tenant-id'
 

@@ -34,7 +34,7 @@ import {
   DeviceOSDrawer, genAclPayloadObject,
   Layer2Drawer,
   Layer3Drawer
-} from '../../AccessControlForm'
+} from '../../policies/AccessControlForm'
 import NetworkFormContext from '../NetworkFormContext'
 
 import * as UI from './styledComponents'

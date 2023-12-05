@@ -34,7 +34,7 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { useDpskNewConfigFlowParams } from '../services/useDpskNewConfigFlowParams'
+import { useDpskNewConfigFlowParams } from '../useDpskNewConfigFlowParams'
 
 import DpskSettingsForm                                               from './DpskSettingsForm'
 import { transferFormFieldsToSaveData, transferSaveDataToFormFields } from './parser'

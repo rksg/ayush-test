@@ -21,7 +21,7 @@ import {
   transformAdvancedDpskExpirationText
 } from '@acx-ui/rc/utils'
 
-import { DpskForm }                   from '../../DpskForm/DpskForm'
+import { DpskForm }                   from '../../services/DpskForm/DpskForm'
 import { useDpskNewConfigFlowParams } from '../../services/useDpskNewConfigFlowParams'
 import { NetworkDiagram }             from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext             from '../NetworkFormContext'

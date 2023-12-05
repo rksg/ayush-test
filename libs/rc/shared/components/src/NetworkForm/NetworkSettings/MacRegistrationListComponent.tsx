@@ -6,7 +6,7 @@ import { useIntl }      from 'react-intl'
 import { Button, GridCol, GridRow, Modal, ModalType } from '@acx-ui/components'
 import { useMacRegListsQuery }                        from '@acx-ui/rc/services'
 
-import { MacRegistrationListForm } from '../../MacRegistrationListForm'
+import { MacRegistrationListForm } from '../../policies/MacRegistrationListForm'
 
 const { Option } = Select
 

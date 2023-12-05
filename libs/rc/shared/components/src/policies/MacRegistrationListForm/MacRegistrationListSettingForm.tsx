@@ -12,8 +12,8 @@ import {
 import { checkObjectNotExists, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
 import { useParams }                                      from '@acx-ui/react-router-dom'
 
-import { AdaptivePolicySetForm }  from '../AdaptivePolicySetForm'
-import { ExpirationDateSelector } from '../ExpirationDateSelector'
+import { AdaptivePolicySetForm }  from '../../AdaptivePolicySetForm'
+import { ExpirationDateSelector } from '../../ExpirationDateSelector'
 
 export function MacRegistrationListSettingForm () {
   const { $t } = useIntl()

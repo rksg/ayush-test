@@ -8,9 +8,9 @@ import { Button, Modal, ModalType, Subtitle }                                   
 import { useGetDpskListQuery, useLazySearchPersonaGroupListQuery, useMacRegListsQuery } from '@acx-ui/rc/services'
 import { DpskSaveData, PersonaGroup, checkObjectNotExists, trailingNorLeadingSpaces }   from '@acx-ui/rc/utils'
 
-import { DpskForm }                   from '../DpskForm/DpskForm'
-import { MacRegistrationListForm }    from '../MacRegistrationListForm'
+import { MacRegistrationListForm }    from '../policies/MacRegistrationListForm'
 import { useDpskNewConfigFlowParams } from '../services'
+import { DpskForm }                   from '../services/DpskForm/DpskForm'
 
 export function PersonaGroupForm (props: {
   form: FormInstance,

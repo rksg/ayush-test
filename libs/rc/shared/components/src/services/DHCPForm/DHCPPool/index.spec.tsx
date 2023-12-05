@@ -10,7 +10,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import  DHCPPoolTable from '.'
+import  DHCPPoolTable from './index'
 
 function wrapper ({ children }: { children: React.ReactElement }) {
   return <Form>{children}</Form>

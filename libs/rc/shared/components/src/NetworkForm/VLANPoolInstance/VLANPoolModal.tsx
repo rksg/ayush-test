@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 import { Button, Modal, ModalType }              from '@acx-ui/components'
 import { VLANPoolPolicyType, VLAN_LIMIT_NUMBER } from '@acx-ui/rc/utils'
 
-import { VLANPoolForm } from '../../VLANPoolForm'
+import { VLANPoolForm } from '../../policies/VLANPoolForm'
 import * as UI          from '../styledComponents'
 
 export default function VLANPoolModal (props:{
