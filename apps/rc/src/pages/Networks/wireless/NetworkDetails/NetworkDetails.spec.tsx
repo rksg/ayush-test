@@ -1,11 +1,12 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { CommonUrlsInfo, WifiUrlsInfo }   from '@acx-ui/rc/utils'
-import { Provider }                       from '@acx-ui/store'
-import { mockServer, render, screen }     from '@acx-ui/test-utils'
-import { RolesEnum }                      from '@acx-ui/types'
-import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { useIsSplitOn }                                 from '@acx-ui/feature-toggle'
+import { ClientUrlsInfo, CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                     from '@acx-ui/store'
+import { mockServer, render, screen, mockRestApiQuery } from '@acx-ui/test-utils'
+import { RolesEnum }                                    from '@acx-ui/types'
+import { getUserProfile, setUserProfile }               from '@acx-ui/user'
 
 import NetworkDetails from './NetworkDetails'
 
@@ -53,6 +54,34 @@ const mockedVenuesResult = {
   }]
 }
 
+const networkList = {
+  totalCount: 10,
+  page: 1,
+  data: [
+    {
+      aps: 1,
+      clients: 1,
+      id: '373377b0cb6e46ea8982b1c80aabe1fa',
+      name: 'network-01',
+      nwSubType: 'psk',
+      ssid: '01',
+      venues: { count: 3, names: ['My-Venue'] },
+      count: 3,
+      names: ['My-Venue'],
+      vlan: 1,
+      deepNetwork: {
+        wlan: {
+          wlanSecurity: 'WPA3'
+        }
+      }
+    }
+  ]
+}
+
+export const clientList = { data: [] }
+
+export const clientMeta = { data: [] }
+
 describe('NetworkDetails', () => {
   beforeEach(() => {
     mockServer.use(
@@ -67,8 +96,20 @@ describe('NetworkDetails', () => {
       rest.post(
         CommonUrlsInfo.getVenues.url,
         (req, res, ctx) => res(ctx.json(mockedVenuesResult))
-      )
+      ),
+      rest.post(
+        ClientUrlsInfo.getClientList.url,
+        (req, res, ctx) => res(ctx.json(clientList))
+      ),
+      rest.post(
+        ClientUrlsInfo.getClientMeta.url,
+        (req, res, ctx) => res(ctx.json(clientMeta))
+      ),
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] })))
     )
+    mockRestApiQuery(CommonUrlsInfo.getVMNetworksList.url, 'post', { ...networkList })
   })
 
   it('renders a tab', async () => {
@@ -113,5 +154,20 @@ describe('NetworkDetails', () => {
       route: { params, path: '/:tenantId/:networkId/:activeTab' }
     })
     expect(screen.queryByTestId('rc-NetworkIncidentsTab')).toBeNull()
+  })
+
+  it('renders clients tab', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      networkId: '373377b0cb6e46ea8982b1c80aabe1fa',
+      activeTab: 'clients'
+    }
+    render(<Provider><NetworkDetails /></Provider>, {
+      route: { params, path: '/:tenantId/:networkId/:activeTab' }
+    })
+
+    expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
+      .toEqual('Clients ()')
   })
 })
