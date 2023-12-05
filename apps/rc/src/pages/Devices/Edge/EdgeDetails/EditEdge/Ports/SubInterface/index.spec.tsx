@@ -4,15 +4,18 @@ import { rest }                                                from 'msw'
 import { IntlProvider }                                        from 'react-intl'
 import { MemoryRouter, Route, Routes, useNavigate }            from 'react-router-dom'
 
-import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
-import { EdgeSubInterface, EdgeUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider }                           from '@acx-ui/store'
-import { mockServer, render, screen, within } from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                                                      from '@acx-ui/feature-toggle'
+import { EdgeLagFixtures, EdgePortConfigFixtures, EdgeSubInterface, EdgeSubInterfaceFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                                          from '@acx-ui/store'
+import { mockServer, render, screen, within }                                                                from '@acx-ui/test-utils'
 
-import { EdgeEditContext }                                                  from '../..'
-import { mockEdgeLagStatusList, mockEdgePortConfig, mockEdgeSubInterfaces } from '../../../../__tests__/fixtures'
+import { EdgeEditContext } from '../..'
 
 import SubInterface from '.'
+
+const { mockEdgePortConfig } = EdgePortConfigFixtures
+const { mockEdgeSubInterfaces } = EdgeSubInterfaceFixtures
+const { mockEdgeLagStatusList } = EdgeLagFixtures
 
 jest.mock('@acx-ui/utils', () => {
   const reactIntl = jest.requireActual('react-intl')

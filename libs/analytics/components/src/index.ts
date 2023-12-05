@@ -15,7 +15,11 @@ export * from './HeaderButtons'
 export { IncidentBySeverity } from './IncidentBySeverity'
 export { IncidentsCountBySeverities } from './IncidentsCountBySeverities'
 export { IncidentBySeverityDonutChart } from './IncidentBySeverity/IncidentBySeverityDonutChart'
-export { useIncidentsBySeverityQuery } from './IncidentBySeverity/services'
+export {
+  useIncidentsBySeverityQuery,
+  useIncidentsListBySeverityQuery,
+  useLazyIncidentsListBySeverityQuery
+} from './IncidentBySeverity/services'
 export type { IncidentsBySeverityData } from './IncidentBySeverity/services'
 export * from './Incidents'
 export { IncidentTable } from './IncidentTable'
