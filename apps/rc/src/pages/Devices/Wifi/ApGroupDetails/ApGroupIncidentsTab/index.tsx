@@ -17,5 +17,5 @@ export default function ApGroupIncidentsTab () {
     }
   } as AnalyticsFilter
 
-  return <IncidentTabContent filters={filters} disableGraphs/>
+  return <IncidentTabContent filters={filters} />
 }
