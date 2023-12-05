@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
+import { getUserProfile }                                              from '@acx-ui/analytics/utils'
 import { Provider, dataApiURL }                                        from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -15,6 +16,14 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useNavigate: () => mockedUseNavigate,
   useTenantLink: () => mockedTenantPath
 }))
+
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  getUserProfile: jest.fn(),
+  updateSelectedTenant: jest.fn()
+}))
+const userProfile = getUserProfile as jest.Mock
+
 export const clientsList = {
   network: {
     search: {
@@ -62,6 +71,19 @@ export const emptyClientsList = {
 }
 
 describe('Clients List', () => {
+  const defaultUserProfile = {
+    accountId: 'aid',
+    tenants: [],
+    invitations: [],
+    selectedTenant: {
+      id: 'aid',
+      role: 'admin'
+    }
+  }
+
+  beforeEach(() => {
+    userProfile.mockReturnValue(defaultUserProfile)
+  })
 
   it('should render table correctly', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', {
@@ -135,5 +157,29 @@ describe('Clients List', () => {
       '18b43003e603'
     )
     expect(screen.getByText('02AA01AB50120H4M')).toBeVisible()
+  })
+  it('should correct links for report-only user', async () => {
+    userProfile.mockReturnValue({
+      ...defaultUserProfile,
+      selectedTenant: {
+        ...defaultUserProfile.selectedTenant,
+        role: 'report-only'
+      }
+    })
+    mockGraphqlQuery(dataApiURL, 'Network', {
+      data: clientsList
+    })
+    render(<ClientsList />, {
+      wrapper: Provider,
+      route: {
+        params: { tenantId: 't-id' }
+      }
+    })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const hostname = screen.getByText('02AA01AB50120H4M')
+    expect(hostname).toBeVisible()
+    const href = hostname.getAttribute('href')
+    expect((href as string).includes('/details/reports'))
+      .toBeTruthy()
   })
 })

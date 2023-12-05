@@ -135,7 +135,8 @@ describe.only('Search Results', () => {
       data: {
         search: {
           aps: searchFixture.search.aps,
-          networkHierarchy: searchFixture.search.networkHierarchy
+          networkHierarchy: searchFixture.search.networkHierarchy,
+          clients: searchFixture.search.clients
         }
       }
     })
@@ -146,12 +147,16 @@ describe.only('Search Results', () => {
       }
     })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    const link = screen.getByText('AL-Guest-R610')
-    const href = link.getAttribute('href')
-    expect((href as string).includes('reports/aps?analyticsNetworkFilter')).toBeTruthy()
+    const apLink = screen.getByText('AL-Guest-R610')
+    const apHref = apLink.getAttribute('href')
+    expect((apHref as string).includes('reports/aps?analyticsNetworkFilter')).toBeTruthy()
 
     const switchLink = screen.getAllByText('7450-zone')[0]
     const switchHref = switchLink.getAttribute('href')
     expect((switchHref as string).includes('reports/switches?analyticsNetworkFilter')).toBeTruthy()
+
+    const clientLink = screen.getByText('02AA01AB50120H4M')
+    const clientHref = clientLink.getAttribute('href')
+    expect((clientHref as string).includes('/details/reports')).toBeTruthy()
   })
 })

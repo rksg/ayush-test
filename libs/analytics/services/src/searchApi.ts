@@ -121,12 +121,8 @@ export const searchApi = dataApiSearch.injectEndpoints({
               apCount
               networkPath {name type}
               switchCount
-            }
-            ${payload.isReportOnly
-          ? ''
-          : `
-            ,
-          clients {
+            },
+            clients {
               hostname
               username
               mac
@@ -134,7 +130,11 @@ export const searchApi = dataApiSearch.injectEndpoints({
               ipAddress
               lastActiveTime
               manufacturer
-            },
+            }
+            ${payload.isReportOnly
+          ? ''
+          : `
+            ,
             switches {
               switchName
               switchMac: switchId

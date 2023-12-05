@@ -25,8 +25,8 @@ import { DateFormatEnum, formatter }                                       from 
 import { useParams, TenantLink }                                           from '@acx-ui/react-router-dom'
 import { DateRange, fixedEncodeURIComponent, encodeParameter, DateFilter } from '@acx-ui/utils'
 
-import NoData                                from './NoData'
-import {  Collapse, Panel, Ul, Chevron, Li } from './styledComponents'
+import NoData                               from './NoData'
+import { Collapse, Panel, Ul, Chevron, Li } from './styledComponents'
 
 const pagination = { pageSize: 5, defaultPageSize: 5 }
 
@@ -54,7 +54,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       key: 'apName',
       width: 130,
       sorter: { compare: sortProp('apName', defaultSort) },
-      render: (_, row : AP) => {
+      render: (_, row: AP) => {
         const filter = encodeFilterPath('analytics', row.networkPath)
         const link = role === 'report-only'
           ? `/reports/aps?${filter}`
@@ -95,7 +95,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       width: 450,
       dataIndex: 'networkPath',
       key: 'networkPath',
-      render: (_, value ) => {
+      render: (_, value) => {
         const networkPath = value.networkPath.slice(1)
         return <Tooltip placement='left' title={formattedPath(networkPath, 'Name')}>
           <Ul>
@@ -116,17 +116,17 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       dataIndex: 'hostname',
       key: 'hostname',
       fixed: 'left',
-      render: (_, row : Client) => {
+      render: (_, row: Client) => {
         const { lastActiveTime, mac, hostname } = row
         const period = encodeParameter<DateFilter>({
           startDate: moment(lastActiveTime).subtract(24, 'hours').format(),
           endDate: lastActiveTime,
           range: DateRange.custom
         })
-        return <TenantLink
-          to={`/users/wifi/clients/${mac}/details/troubleshooting?period=${period}`}
-        >{hostname}
-        </TenantLink>
+        const link = isReportOnly
+          ? `/users/wifi/clients/${mac}/details/reports`
+          : `/users/wifi/clients/${mac}/details/troubleshooting?period=${period}`
+        return <TenantLink to={link}>{hostname}</TenantLink>
       },
       sorter: { compare: sortProp('hostname', defaultSort) }
     },
@@ -178,7 +178,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       title: $t({ defaultMessage: 'Switch Name' }),
       dataIndex: 'switchName',
       key: 'switchName',
-      render: (_, row : Switch) => {
+      render: (_, row: Switch) => {
         return <TenantLink to={`/devices/switch/${row.switchMac}/serial/details/incidents`}>
           {row.switchName}</TenantLink>
       },
@@ -211,7 +211,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       dataIndex: 'name',
       key: 'name',
       fixed: 'left',
-      render: (_, row : NetworkHierarchy) => {
+      render: (_, row: NetworkHierarchy) => {
         const networkPath = row.networkPath.slice(1)
         const filter = encodeFilterPath('analytics', row.networkPath)
         const defaultPath = row.type.toLowerCase() === 'zone' && isZonesPageEnabled
@@ -220,7 +220,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
         const reportOnly = row.type.toLowerCase().includes('switch')
           ? `/reports/switches?${filter}`
           : `/reports/wireless?${filter}`
-        const link = role == 'report-only'
+        const link = role === 'report-only'
           ? reportOnly
           : defaultPath
         return <TenantLink to={link}>{row.name}</TenantLink>
@@ -259,7 +259,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       title: $t({ defaultMessage: 'Network' }),
       dataIndex: 'networkPath',
       key: 'networkPath',
-      render: (_, value ) => {
+      render: (_, value) => {
         const networkPath = value.networkPath.slice(1)
         return <Tooltip placement='left' title={formattedPath(value.networkPath, 'Name')}>
           <Ul>
@@ -281,7 +281,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       key: 'name',
       fixed: 'left',
       sorter: { compare: sortProp('name', defaultSort) },
-      render: (_, row : Network) => {
+      render: (_, row: Network) => {
         const { name } = row
         return <TenantLink
           to={`/networks/wireless/${fixedEncodeURIComponent(name)}/network-details/reports`}
@@ -342,7 +342,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
     }
   ]
 
-  const extra = [<TimeRangeDropDown/>]
+  const extra = [<TimeRangeDropDown />]
   return <Loader states={[results]}>
     {count
       ? <>
@@ -355,7 +355,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
         <Collapse
           defaultActiveKey={Object.keys(results.data!)}
         >
-          { results.data?.aps?.length &&
+          {results.data?.aps?.length &&
             <Panel
               key='aps'
               header={`${$t({ defaultMessage: 'APs' })} (${results.data?.aps.length})`}>
@@ -367,7 +367,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
               />
             </Panel>
           }
-          { results.data?.wifiNetworks?.length &&
+          {results.data?.wifiNetworks?.length &&
             <Panel
               key='wifiNetworks'
               header={
@@ -383,7 +383,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
               />
             </Panel>
           }
-          { results.data?.clients?.length &&
+          {results.data?.clients?.length &&
             <Panel
               key='clients'
               header={`${$t({ defaultMessage: 'Clients' })} (${results.data?.clients.length})`}>
@@ -395,7 +395,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
               />
             </Panel>
           }
-          { results.data?.switches?.length &&
+          {results.data?.switches?.length &&
             <Panel
               key='switches'
               header={`${$t({ defaultMessage: 'Switches' })} (${results.data?.switches.length})`}>
@@ -407,7 +407,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
               />
             </Panel>
           }
-          { results.data?.networkHierarchy?.length &&
+          {results.data?.networkHierarchy?.length &&
             <Panel
               key='networkHierarchy'
               header={

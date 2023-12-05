@@ -137,28 +137,27 @@ export function useMenuConfig () {
         }
       ]
       : []),
-    ...(hasViewAnalyticsPermissions
-      ? [{
-        label: $t({ defaultMessage: 'Clients' }),
-        inactiveIcon: AccountCircleOutlined,
-        activeIcon: AccountCircleSolid,
-        children: [
-          {
-            type: 'group' as const,
-            label: $t({ defaultMessage: 'Wireless' }),
-            children: [
-              {
-                uri: '/users/wifi/clients',
-                label: $t({ defaultMessage: 'Wireless Clients List' })
-              },
-              {
-                uri: '/users/wifi/reports',
-                label: $t({ defaultMessage: 'Wireless Clients Report' })
-              }
-            ]
-          }
-        ]
-      }] : []),
+    {
+      label: $t({ defaultMessage: 'Clients' }),
+      inactiveIcon: AccountCircleOutlined,
+      activeIcon: AccountCircleSolid,
+      children: [
+        {
+          type: 'group' as const,
+          label: $t({ defaultMessage: 'Wireless' }),
+          children: [
+            {
+              uri: '/users/wifi/clients',
+              label: $t({ defaultMessage: 'Wireless Clients List' })
+            },
+            {
+              uri: '/users/wifi/reports',
+              label: $t({ defaultMessage: 'Wireless Clients Report' })
+            }
+          ]
+        }
+      ]
+    },
     ...(hasViewAnalyticsPermissions ? [
       {
         label: $t({ defaultMessage: 'Wi-Fi' }),
