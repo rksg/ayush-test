@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { EdgeLagStatus, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider  }                   from '@acx-ui/store'
+import { useIsSplitOn }                                                                                   from '@acx-ui/feature-toggle'
+import { EdgeLagFixtures, EdgeLagStatus, EdgePortConfigFixtures, EdgeSubInterfaceFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider  }                                                                                      from '@acx-ui/store'
 import {
   render,
   screen,
@@ -11,13 +11,15 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
-import {
-  mockEdgeSubInterfacesStatus,
-  edgePortsSetting,
-  mockEdgeLagStatusList
-} from '../../../__tests__/fixtures'
+// import {
+//   edgePortsSetting
+// } from '../../../__tests__/fixtures'
 
 import { EdgeSubInterfacesTab } from '.'
+
+const { edgePortsSetting } = EdgePortConfigFixtures
+const { mockEdgeSubInterfacesStatus } = EdgeSubInterfaceFixtures
+const { mockEdgeLagStatusList } = EdgeLagFixtures
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({

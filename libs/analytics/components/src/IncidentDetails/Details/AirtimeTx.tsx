@@ -1,5 +1,5 @@
-import moment, { unitOfTime } from 'moment-timezone'
-import { useIntl }            from 'react-intl'
+import { unitOfTime } from 'moment-timezone'
+import { useIntl }    from 'react-intl'
 
 import { calculateSeverity, Incident, shortDescription } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol }    from '@acx-ui/components'
@@ -36,11 +36,6 @@ export const AirtimeTx = (incident: Incident) => {
     back: { value: 0, unit: 'hours' as unitOfTime.Base }
   }
 
-  const incidentWithQueryTime = {
-    ...incident,
-    startTime: moment(incident.endTime).clone().subtract(24, 'hours').format()
-  }
-
   return (
     <>
       <PageHeader
@@ -58,7 +53,7 @@ export const AirtimeTx = (incident: Incident) => {
         <GridCol col={{ span: 4 }}>
           <FixedAutoSizer>
             {({ width }) => (<div style={{ width }}>
-              <IncidentAttributes incident={incidentWithQueryTime} visibleFields={attributeList} />
+              <IncidentAttributes incident={incident} visibleFields={attributeList} />
             </div>)}
           </FixedAutoSizer>
         </GridCol>
@@ -66,16 +61,16 @@ export const AirtimeTx = (incident: Incident) => {
           <Insights incident={incident} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '228px' }}>
-          {/* TODO: remove condtional check after adding timeSeriesCharts */}
+          {/* TODO: remove conditional check after adding networkImpactCharts */}
           { networkImpactCharts.length > 0
-            ? <NetworkImpact incident={incidentWithQueryTime} charts={networkImpactCharts} />
+            ? <NetworkImpact incident={incident} charts={networkImpactCharts} />
             : null}
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '250px' }}>
-          {/* TODO: remove condtional check after adding timeSeriesCharts */}
+          {/* TODO: remove conditional check after adding timeSeriesCharts */}
           { timeSeriesCharts.length > 0
             ? <TimeSeries
-              incident={incidentWithQueryTime}
+              incident={incident}
               charts={timeSeriesCharts}
               minGranularity='PT15M'
               buffer={buffer} />
