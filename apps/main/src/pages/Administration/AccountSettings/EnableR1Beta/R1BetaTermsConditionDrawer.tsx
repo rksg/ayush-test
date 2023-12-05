@@ -17,13 +17,6 @@ export interface R1BetaTermsConditionDrawerProps {
   width?: number
 }
 
-export const logout = () => {
-  // redirect to login page
-  const token = sessionStorage.getItem('jwt')?? null
-  sessionStorage.removeItem('jwt')
-  window.location.href = token? `/logout?token=${token}` : '/logout'
-}
-
 export function R1BetaTermsConditionDrawer (
   props: R1BetaTermsConditionDrawerProps
 ) {
