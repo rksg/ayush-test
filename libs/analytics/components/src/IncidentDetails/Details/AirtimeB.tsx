@@ -36,7 +36,9 @@ export const AirtimeB = (incident: Incident) => {
     }
   ]
 
-  const timeSeriesCharts: TimeSeriesChartTypes[] = []
+  const timeSeriesCharts: TimeSeriesChartTypes[] = [
+    TimeSeriesChartTypes.AirtimeUtilizationChart
+  ]
 
   const buffer = {
     front: { value: 0, unit: 'hours' as unitOfTime.Base },
@@ -71,14 +73,11 @@ export const AirtimeB = (incident: Incident) => {
           <NetworkImpact incident={incident} charts={networkImpactCharts} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '250px' }}>
-          {/* TODO: remove conditional check after adding timeSeriesCharts */}
-          { timeSeriesCharts.length > 0
-            ? <TimeSeries
-              incident={incident}
-              charts={timeSeriesCharts}
-              minGranularity='PT15M'
-              buffer={buffer} />
-            : null}
+          <TimeSeries
+            incident={incident}
+            charts={timeSeriesCharts}
+            minGranularity='PT15M'
+            buffer={buffer} />
         </GridCol>
       </GridRow>
     </>
