@@ -42,7 +42,7 @@ export type KpiPayload = AnalyticsFilter & {
   kpi: string;
   threshold?: string;
   granularity?: string;
-} & { apCount?: number }
+}
 
 type ConfigCode = keyof typeof kpiConfig
 

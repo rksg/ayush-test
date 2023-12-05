@@ -100,5 +100,27 @@ describe('TunnelProfileDetail', () => {
       await screen.findByText('Tunnel Type')
       await screen.findByText('VxLAN')
     })
+
+    it('should display VxLAN as default tunnel type', async () => {
+      const mockedDataWithoutType = {
+        ...mockedTunnelProfileViewData
+      }
+      mockedDataWithoutType.data[0].type = ''
+
+      mockServer.use(
+        rest.post(
+          TunnelProfileUrls.getTunnelProfileViewDataList.url,
+          (_, res, ctx) => res(ctx.json(mockedDataWithoutType))
+        ))
+
+      render(
+        <Provider>
+          <TunnelProfileDetail />
+        </Provider>, {
+          route: { params, path: detailPath }
+        })
+      await screen.findByText('Tunnel Type')
+      await screen.findByText('VxLAN')
+    })
   })
 })

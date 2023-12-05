@@ -238,6 +238,7 @@ export interface MspIntegratorDelegated {
   delegation_type: string;
   delegation_id?: string;
   number_of_days?: string;
+  isManageAllEcs?: boolean;
 }
 
 export interface EcInvitation {

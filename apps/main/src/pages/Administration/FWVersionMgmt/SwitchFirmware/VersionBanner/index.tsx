@@ -4,9 +4,10 @@ import { useParams } from 'react-router-dom'
 import {
   useGetSwitchLatestFirmwareListQuery
 } from '@acx-ui/rc/services'
+import { parseSwitchVersion } from '@acx-ui/rc/utils'
 
-import { FirmwareBanner }                         from '../../FirmwareBanner'
-import { getReleaseFirmware, parseSwitchVersion } from '../../FirmwareUtils'
+import { FirmwareBanner }     from '../../FirmwareBanner'
+import { getReleaseFirmware } from '../../FirmwareUtils'
 
 export const VersionBanner = () => {
   const { $t } = useIntl()
@@ -48,3 +49,4 @@ export const VersionBanner = () => {
 }
 
 export default VersionBanner
+

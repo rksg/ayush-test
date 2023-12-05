@@ -3,7 +3,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, Tabs }                                                                                                               from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                                                                   from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                                     from '@acx-ui/feature-toggle'
 import { useGetDhcpByEdgeIdQuery, useGetEdgeListQuery, useGetEdgeSdLanViewDataListQuery, useGetNetworkSegmentationViewDataListQuery } from '@acx-ui/rc/services'
 import { EdgeStatus, PolicyType, ServiceType }                                                                                        from '@acx-ui/rc/utils'
 
@@ -19,7 +19,7 @@ import { VenueRogueAps }        from './VenueRogueAps'
 
 export function VenueServicesTab () {
   const { venueId } = useParams()
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
   const { $t } = useIntl()
@@ -70,7 +70,7 @@ export function VenueServicesTab () {
 
   const { edgeSdLanData } = useGetEdgeSdLanViewDataListQuery(
     { payload: {
-      filters: { id: [venueId] }
+      filters: { venueId: [venueId] }
     } }, {
       skip: !isEdgeEnabled || !isEdgeSdLanReady,
       selectFromResult: ({ data }) => ({

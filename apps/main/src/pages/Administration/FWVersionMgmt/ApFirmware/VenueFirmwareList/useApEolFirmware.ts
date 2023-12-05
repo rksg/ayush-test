@@ -78,9 +78,13 @@ export function useApEolFirmware () {
     const selectedEolApFirmwares = compactEolApFirmwares(selectedRows)
     // eslint-disable-next-line max-len
     const uniqueEolApFirmwares = selectedEolApFirmwares.reduce((acc: EolApFirmwareGroup[], cur: EolApFirmware) => {
-      // if (cur.currentEolVersion === cur.latestEolVersion) return acc //ACX-33594 Ignore the EOL firmware if it is already upgraded to the latest one
-
-      let currentEol = { ...cur, isUpgradable: cur.currentEolVersion !== cur.latestEolVersion }
+      const currentEol = {
+        ...cur,
+        // ACX-33594 Disable the EOL firmware if it is already upgraded to the latest one
+        // ACX-45424 Enable the EOL firmware when the ABF is greater than the current venue ABF, even if the ABF has been marked to the latest version
+        // eslint-disable-next-line max-len
+        isUpgradable: cur.currentEolVersion !== cur.latestEolVersion || cur.isAbfGreaterThanVenueCurrentAbf
+      }
       const foundIndex = acc.findIndex(eol => eol.name === currentEol.name)
       if (foundIndex === -1) {
         acc.push(currentEol)
