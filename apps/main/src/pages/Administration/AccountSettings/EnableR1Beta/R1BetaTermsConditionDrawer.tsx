@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, Drawer, showActionModal }              from '@acx-ui/components'
+import { Button, Drawer }              from '@acx-ui/components'
 import { useToggleBetaStatusMutation } from '@acx-ui/user'
 
 import { MessageMapping } from '../MessageMapping'
@@ -21,7 +21,6 @@ export const logout = () => {
   // redirect to login page
   const token = sessionStorage.getItem('jwt')?? null
   sessionStorage.removeItem('jwt')
-  console.log(sessionStorage.getItem('jwt'))
   window.location.href = token? `/logout?token=${token}` : '/logout'
 }
 
@@ -32,29 +31,19 @@ export function R1BetaTermsConditionDrawer (
   const { visible, setVisible } = props
   const [resetField, setResetField] = useState(false)
   const [toggleBetaStatus ] = useToggleBetaStatusMutation()
-  const ctr = 15
-  const saveModalContent = $t(MessageMapping.enable_r1_beta_confirmation_msg, { br: <br/> , br2: <br/>, c: ctr })
+
   const onSave = async () => {
-    showActionModal({
-      type: 'info',
-      width: 450,
-      title: $t({ defaultMessage: 'Enabling Beta Features' }),
-      content: saveModalContent,
-      okText: $t({ defaultMessage: 'Log Out Now' }),
-      onOk: async () => {
-        try {
-          await toggleBetaStatus({
-            params: {
-              enable: true + ''
-            }
-          }).unwrap()
-        } catch (error) {
-          console.log(error) // eslint-disable-line no-console
+    try {
+      await toggleBetaStatus({
+        params: {
+          enable: true + ''
         }
-      }
-    })
+      }).unwrap()
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
     onClose()
-    logout()
+    window.location.reload()
   }
 
   const onClose = () => {
