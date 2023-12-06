@@ -11,7 +11,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   ManageAdminsDrawer,
   ResendInviteModal,
@@ -55,7 +55,7 @@ import { ScheduleFirmwareDrawer }  from './ScheduleFirmwareDrawer'
 export function MspCustomers () {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const edgeEnabled = useIsTierAllowed(Features.EDGES)
+  const edgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const params = useParams()

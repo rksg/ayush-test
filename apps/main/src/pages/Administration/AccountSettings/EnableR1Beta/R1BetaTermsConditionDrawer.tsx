@@ -36,6 +36,7 @@ export function R1BetaTermsConditionDrawer (
       console.log(error) // eslint-disable-line no-console
     }
     onClose()
+    window.location.reload()
   }
 
   const onClose = () => {
