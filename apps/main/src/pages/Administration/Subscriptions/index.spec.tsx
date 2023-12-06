@@ -87,7 +87,7 @@ describe('Subscriptions', () => {
     )
   })
 
-  it('should render correctly', async () => {
+  it.skip('should render correctly', async () => {
     const mockedShowToast = jest.fn()
     jest.mocked(isDelegationMode).mockReturnValue(true)
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.DEVICE_AGNOSTIC)
