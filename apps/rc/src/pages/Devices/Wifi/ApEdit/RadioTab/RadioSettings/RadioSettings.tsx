@@ -553,6 +553,10 @@ export function RadioSettings () {
     setData()
   }, [isSupportDual5GAp, venue, apModelType, getVenueCustomization, tenantId])
 
+  useEffect(()=> {
+    handleChange()
+  }, [isDual5gMode])
+
   const updateFormData = (data: ApRadioCustomization) => {
     formRef?.current?.setFieldsValue(data)
   }
@@ -788,6 +792,8 @@ export function RadioSettings () {
       const hasRadio5G = isHasRadio5G(isSupportTriBandRadioAp, isDual5gMode, bandwidth5GOptions.length)
       const hasRadioDual5G = isHasRadioDual5G(isSupportDual5GAp, isDual5gMode)
       const hasRadio6G = isHasRadio6G(isSupportTriBandRadioAp, isDual5gMode, bandwidth6GOptions.length)
+
+      console.log(isDual5gMode)
 
       if (!validRadioChannels(payload, hasRadio5G, hasRadioDual5G, hasRadio6G)) {
         return
