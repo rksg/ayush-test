@@ -31,7 +31,7 @@ jest.mock('antd', () => {
 
 const mockedSetVisible = jest.fn()
 
-describe('EditEdge ports - LAG', () => {
+describe('EditEdge ports - LAG Drawer', () => {
   let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
   beforeEach(() => {
     params = {
