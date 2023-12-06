@@ -49,11 +49,13 @@ export function Brand360 () {
       <GridCol col={{ span: 6 }}>
         <SlaSliders initialSlas={data || {}} currentSlas={settings} setCurrentSlas={setSettings} />
       </GridCol>
+      <GridCol col={{ span: 24 }}>
+        <BrandTable
+          sliceType={sliceType}
+          slaThreshold={settings}
+          data={tableResults.data as Response[]}
+        />
+      </GridCol>
     </GridRow>
-    <BrandTable
-      sliceType={sliceType}
-      slaThreshold={settings}
-      data={tableResults.data as Response[]}
-    />
   </Loader>
 }
