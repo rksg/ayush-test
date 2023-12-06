@@ -38,6 +38,17 @@ describe('RBAC API', () => {
       'sla-p1-incidents-count': '12'
     })
   })
+  it('updates tenantSettings', async () => {
+    mockServer.use(
+      rest.post(`${rbacApiURL}/tenantSettings`, (_req, res, ctx) => res(ctx.text('Updated')))
+    )
+    const { data } = await store.dispatch(
+      rbacApi.endpoints.updateTenantSettings.initiate({
+        'sla-p1-incidents-count': '34'
+      })
+    ) as { data: string }
+    expect(data).toEqual('Updated')
+  })
   it('update invitation api should work', async () => {
     mockServer.use(
       rest.put(`${rbacApiURL}/invitations`, (_req, res, ctx) => res(ctx.text('Created')))
