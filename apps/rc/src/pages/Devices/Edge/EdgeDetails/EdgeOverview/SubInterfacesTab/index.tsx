@@ -41,7 +41,7 @@ export const EdgeSubInterfacesTab = (props: EdgeSubInterfacesTabProps) => {
       ...lags.map(item => ({
         title: item.name,
         id: item.lagId.toString(),
-        mac: item.mac
+        mac: item?.mac ?? ''
       }))
     ]
   } else {

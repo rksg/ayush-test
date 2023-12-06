@@ -166,7 +166,7 @@ const expandedRowRender = (memberStatus: LagMemberTableType[] = []) => {
       key: 'lacpTimeout',
       dataIndex: 'lacpTimeout',
       render: (data, row) => {
-        return `${row.lacpTimeout} (${_.capitalize(row.lacpTimeout)})`
+        return row.lacpTimeout && `${row.lacpTimeout} (${_.capitalize(row.lacpTimeout)})`
       }
     },
     {
