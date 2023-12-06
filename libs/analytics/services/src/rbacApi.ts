@@ -50,6 +50,17 @@ export const rbacApi = baseRbacApi.injectEndpoints({
         return settings
       }, getDefaultSettings())
     }),
+    updateTenantSettings: build.mutation<string, Partial<Settings>>({
+      query: body => {
+        return {
+          url: '/tenantSettings',
+          method: 'post',
+          credentials: 'include',
+          body,
+          responseHandler: 'text'
+        }
+      }
+    }),
     updateInvitation: build.mutation<
        string, { resourceGroupId: string, state: string, userId: string }
     >({
@@ -72,6 +83,7 @@ export const rbacApi = baseRbacApi.injectEndpoints({
 export const {
   useSystemsQuery,
   useGetTenantSettingsQuery,
+  useUpdateTenantSettingsMutation,
   useUpdateInvitationMutation
 } = rbacApi
 
