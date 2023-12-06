@@ -1,87 +1,154 @@
+import { useState } from 'react'
+
 import { Space, Divider } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { Button }                                                                                        from '@acx-ui/components'
-import { ClockOutlined, DashboardOutlined, DataStudioOutlined, EraserOutlined, EyeOpenOutlined, Reload } from '@acx-ui/icons'
+import { Button }                                                                                              from '@acx-ui/components'
+import { ClockOutlined, DashboardOutlined, DataStudioOutlined, EraserOutlined, EyeOpenOutlined, Plus, Reload } from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
+
+const enum ToolbarItems {
+  AddWidgets,
+  Sections,
+  Timeline,
+  Restore,
+  Clear
+}
 
 export default function EditMode (props: {
   visible: boolean, setVisible:(visible: boolean) => void
 }) {
   const { $t } = useIntl()
   const { visible, setVisible } = props
+  const [ sectionsSubVisible, setSectionsSubVisible ] = useState(false)
+  const [ restoreSubVisible, setRestoreSubVisible ] = useState(false)
+  const [ dirty, setDirty ] = useState(false)
   const siderWidth = localStorage.getItem('acx-sider-width') || '200px'
+  const onClickToolbar = (item?: ToolbarItems) => {
+    if(!dirty){
+      setDirty(true)
+    }
+    if(item !== ToolbarItems.Sections){
+      setSectionsSubVisible(false)
+    }
+    if(item !== ToolbarItems.Restore){
+      setRestoreSubVisible(false)
+    }
+    switch(item) {
+      case ToolbarItems.Sections:
+        setSectionsSubVisible(true)
+        break
+      case ToolbarItems.Restore:
+        setRestoreSubVisible(true)
+        break
+      default:
+        // setVisible(false)
+    }
+  }
+  const onClose = () => {
+    setDirty(false)
+    setSectionsSubVisible(false)
+    setVisible(false)
+  }
+  const sectionsSubToolbar = () => {
+    return <div className={'sub-toolbar ' + (dirty ? 'animation' : '')}
+      style={{ display: sectionsSubVisible ? 'block':'none' }}
+    >
+      <Space
+        split={<Divider type='vertical' style={{ height: '28px' }} />}
+      >
+        <Button type='text' icon={<Plus/>} style={{ marginLeft: '36px' }}>
+          {$t({ defaultMessage: 'Add Section' })}
+        </Button>
+        <div>
+          <Button type='text' icon={<DashboardOutlined/>}>
+            {$t({ defaultMessage: 'Remove Section' })}
+          </Button>
+          <Button type='text' icon={<DashboardOutlined/>} style={{ marginLeft: '12px' }}>
+            {$t({ defaultMessage: 'Hide Section' })}
+          </Button>
+        </div>
+        <div>
+          <Button type='text' icon={<DashboardOutlined/>}>
+            {$t({ defaultMessage: 'Move up' })}
+          </Button>
+          <Button type='text' icon={<DashboardOutlined/>} style={{ marginLeft: '12px' }}>
+            {$t({ defaultMessage: 'Move down' })}
+          </Button>
+        </div>
+        <div>
+          <Button type='text' icon={<DashboardOutlined/>}>
+            {$t({ defaultMessage: 'Add tab' })}
+          </Button>
+          <Button type='text' icon={<DashboardOutlined/>} style={{ marginLeft: '12px' }}>
+            {$t({ defaultMessage: 'Remove tab' })}
+          </Button>
+        </div>
+        <div>
+          <Button type='text' icon={<DashboardOutlined/>}>
+            {$t({ defaultMessage: 'Add title' })}
+          </Button>
+          <Button type='text' icon={<DashboardOutlined/>} style={{ marginLeft: '12px' }}>
+            {$t({ defaultMessage: 'Add link' })}
+          </Button>
+        </div>
+      </Space>
+    </div>
+  }
+  const restoreSubToolbar = () => {
+    return <div className={'sub-toolbar ' + (dirty ? 'animation' : '')}
+      style={{ display: restoreSubVisible ? 'block':'none' }} >
+      <Space>
+        <Button type='text' style={{ marginLeft: '36px' }}>
+          {$t({ defaultMessage: 'Last Published Version' })}
+        </Button>
+        <Button type='text'>
+          {$t({ defaultMessage: 'RUCKUS default dashboard' })}
+        </Button>
+      </Space>
+    </div>
+  }
 
   return (
-    visible ? <UI.Preview $siderWidth={siderWidth}>
+    <UI.Preview $siderWidth={siderWidth} $subToolbar={sectionsSubVisible || restoreSubVisible}>
       <div className='toolbar'>
         <Space
           style={{ marginLeft: '36px' }}
           split={<Divider type='vertical' style={{ height: '28px' }} />}
         >
           <div>
-            <Button type='text' icon={<DataStudioOutlined/>}>
+            <Button type='text'
+              icon={<DataStudioOutlined/>}
+              onClick={()=>{onClickToolbar(ToolbarItems.AddWidgets)}}>
               {$t({ defaultMessage: 'Add Widget' })}
             </Button>
-            <Button type='text' icon={<DashboardOutlined/>} style={{ marginLeft: '12px' }} onClick={()=>{setVisible(false)}}>
+            <Button type='text'
+              icon={<DashboardOutlined/>}
+              style={{ marginLeft: '12px' }}
+              onClick={()=>{onClickToolbar(ToolbarItems.Sections)}}>
               {$t({ defaultMessage: 'Sections' })}
             </Button>
           </div>
-          <Button type='text' icon={<ClockOutlined />}>
+          <Button type='text' icon={<ClockOutlined />} onClick={()=>{onClickToolbar(ToolbarItems.Timeline)}}>
             {$t({ defaultMessage: 'Timeline Setup' })}
           </Button>
           <div>
-            <Button type='text' icon={<Reload />} >
+            <Button type='text' icon={<Reload />} onClick={()=>{onClickToolbar(ToolbarItems.Restore)}}>
               {$t({ defaultMessage: 'Restore' })}
             </Button>
-            <Button type='text' icon={<EraserOutlined />} disabled style={{ marginLeft: '12px' }} onClick={()=>{setVisible(false)}}>
+            <Button type='text'
+              icon={<EraserOutlined />}
+              disabled
+              style={{ marginLeft: '12px' }}
+              onClick={()=>{onClickToolbar(ToolbarItems.Clear)}}>
               {$t({ defaultMessage: 'Clear All' })}
             </Button>
           </div>
         </Space>
       </div>
-      <div className='sub-toolbar'>
-        <Space
-          split={<Divider type='vertical' style={{ height: '28px' }} />}
-        >
-          <Button type='text' icon={<DataStudioOutlined/>} style={{ marginLeft: '36px' }}>
-            {$t({ defaultMessage: 'Add Section' })}
-          </Button>
-          <div>
-            <Button type='text' icon={<DashboardOutlined/>} onClick={()=>{setVisible(false)}}>
-              {$t({ defaultMessage: 'Remove Section' })}
-            </Button>
-            <Button type='text' icon={<DashboardOutlined/>} style={{ marginLeft: '12px' }} onClick={()=>{setVisible(false)}}>
-              {$t({ defaultMessage: 'Hide Section' })}
-            </Button>
-          </div>
-          <div>
-            <Button type='text' icon={<DashboardOutlined/>} onClick={()=>{setVisible(false)}}>
-              {$t({ defaultMessage: 'Move up' })}
-            </Button>
-            <Button type='text' icon={<DashboardOutlined/>} style={{ marginLeft: '12px' }} onClick={()=>{setVisible(false)}}>
-              {$t({ defaultMessage: 'Move down' })}
-            </Button>
-          </div>
-          <div>
-            <Button type='text' icon={<DashboardOutlined/>} onClick={()=>{setVisible(false)}}>
-              {$t({ defaultMessage: 'Add tab' })}
-            </Button>
-            <Button type='text' icon={<DashboardOutlined/>} style={{ marginLeft: '12px' }} onClick={()=>{setVisible(false)}}>
-              {$t({ defaultMessage: 'Remove tab' })}
-            </Button>
-          </div>
-          <div>
-            <Button type='text' icon={<DashboardOutlined/>} onClick={()=>{setVisible(false)}}>
-              {$t({ defaultMessage: 'Add title' })}
-            </Button>
-            <Button type='text' icon={<DashboardOutlined/>} style={{ marginLeft: '12px' }} onClick={()=>{setVisible(false)}}>
-              {$t({ defaultMessage: 'Add link' })}
-            </Button>
-          </div>
-        </Space>
-      </div>
+      { sectionsSubVisible && sectionsSubToolbar() }
+      { restoreSubVisible && restoreSubToolbar() }
       <div className='modal-content'>
         {/* <p>Some text in the Modal..</p> */}
       </div>
@@ -91,18 +158,18 @@ export default function EditMode (props: {
           split={<Divider type='vertical' style={{ height: '28px' }} />}
         >
           <div>
-            <Button type='primary' onClick={()=>{setVisible(false)}}>
+            <Button type='primary' onClick={()=>{onClose()}}>
               {$t({ defaultMessage: 'Publish' })}
             </Button>
-            <Button style={{ marginLeft: '20px' }} onClick={()=>{setVisible(false)}}>
+            <Button style={{ marginLeft: '20px' }} onClick={()=>{onClose()}}>
               {$t({ defaultMessage: 'Cancel' })}
             </Button>
           </div>
-          <Button icon={<EyeOpenOutlined />} onClick={()=>{setVisible(false)}}>
+          <Button icon={<EyeOpenOutlined />} onClick={()=>{onClose()}}>
             {$t({ defaultMessage: 'Preview' })}
           </Button>
         </Space>
       </div>
-    </UI.Preview> : null
+    </UI.Preview>
   )
 }

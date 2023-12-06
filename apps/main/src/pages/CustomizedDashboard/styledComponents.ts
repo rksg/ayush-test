@@ -22,7 +22,10 @@ export const MenuExpandArrow = styled(ArrowChevronRight)`
   margin: 0.3em;
 `
 
-export const Preview = styled.div.attrs((props: { $siderWidth: string }) => props)`
+export const Preview = styled.div.attrs((props: {
+  $siderWidth: string, $subToolbar:boolean
+}) => props)`
+animation: fadeIn 0.1s linear 0s both;
 position: fixed; /* Stay in place */
 z-index: 101; /* Sit on top */
 padding-top: 100px; /* Location of the box */
@@ -38,9 +41,9 @@ border-top: 75px solid rgba(255,255,255, 0.4);
 .modal-content {
   background-color: #fefefe;
   width: 100%;
-  height: calc(100vh - 116px);
+  height: 100vh;
   position: fixed;
-  top: 108px;
+  top: 60px;
 }
 
 .toolbar {
@@ -58,6 +61,7 @@ border-top: 75px solid rgba(255,255,255, 0.4);
   padding: 14px 0;
   background-color: var(--acx-neutrals-10);
   height: 60px;
+  z-index: 2;
 }
 
 .ant-btn-text {
@@ -87,6 +91,11 @@ border-top: 75px solid rgba(255,255,255, 0.4);
   }
 }
 
+@keyframes subMoveIn {
+  from {top: 0px;}
+  to {top: 60px;}
+}
+
 .sub-toolbar {
   position: fixed;
   width: calc(
@@ -98,10 +107,14 @@ border-top: 75px solid rgba(255,255,255, 0.4);
     - ${props => props.$siderWidth}
     - var(--acx-content-horizontal-space) * 2
   );
-  top: 60px;
-  padding: 10px 0;
+  top: ${props => props.$subToolbar ? '60px' : '0px'} ;
+  padding: 8px 0 10px 0;
   background-color: var(--acx-neutrals-20);
   height: 48px;
+  z-index: 1;
+  &.animation {
+    animation: subMoveIn 0.3s ease both;
+  }
 }
 
 .actions {

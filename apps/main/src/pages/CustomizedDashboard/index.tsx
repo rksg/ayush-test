@@ -140,7 +140,7 @@ export default function CustomizedDashboard () {
         </GridCol>
       </GridRow>
 
-      <EditMode visible={visible} setVisible={displayEditMode} />
+      { visible && <EditMode visible={visible} setVisible={displayEditMode} /> }
       <PreviewMode visible={visible2} setVisible={setVisible2} />
 
       <CommonDashboardWidgets />
