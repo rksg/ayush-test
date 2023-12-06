@@ -389,7 +389,7 @@ describe('ManageIntegrator', () => {
       expect(screen.getByRole('alert')).toBeVisible()
     })
   })
-  it.skip('should save correctly for add', async () => {
+  it('should save correctly for add', async () => {
     render(
       <Provider>
         <ManageIntegrator />
