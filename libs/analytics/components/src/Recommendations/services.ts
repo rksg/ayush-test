@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { gql }           from 'graphql-request'
 import _                 from 'lodash'
 import moment            from 'moment'
@@ -21,7 +23,7 @@ import {
   StateType,
   crrmStates
 } from './config'
-import { kpiHelper, RecommendationKpi } from './RecommendationDetails/services'
+import { BasicRecommendation, kpiHelper, RecommendationKpi } from './RecommendationDetails/services'
 
 
 export type CrrmListItem = {
@@ -41,6 +43,13 @@ export type CrrmList = {
   optimizedZoneCount: number
   crrmScenarios: number
   recommendations: CrrmListItem[]
+}
+
+export type CrrmKpi = {
+  recommendation: {
+    status: StateType
+    kpi_number_of_interfering_links: RecommendationKpi['']
+  }
 }
 
 export type AiOpsListItem = {
@@ -107,6 +116,10 @@ interface ScheduleResponse {
     errorMsg: string;
     success: boolean;
   }
+}
+
+interface CrrmKpiResponse {
+  text: ReactNode
 }
 
 type Metadata = {
@@ -235,7 +248,7 @@ export const api = recommendationApi.injectEndpoints({
           )
           crrmScenarios(start: $startDate, end: $endDate, path: $path)
           recommendations(start: $startDate, end: $endDate, path: $path, n: $n, crrm: true) {
-            id code status sliceValue ${kpiHelper('c-crrm-channel24g-auto')}
+            id code status sliceValue
           }
         }
         `,
@@ -252,14 +265,10 @@ export const api = recommendationApi.injectEndpoints({
           optimizedZoneCount: response.optimizedZoneCount,
           crrmScenarios: response.crrmScenarios,
           recommendations: response.recommendations.map(recommendation => {
-            const { code, status, kpi_number_of_interfering_links } = recommendation
+            const { code, status } = recommendation
             return {
               ...recommendation,
               crrmOptimizedState: getCrrmOptimizedState(status),
-              crrmInterferingLinksText: getCrrmInterferingLinksText(
-                status,
-                kpi_number_of_interfering_links!
-              ),
               summary: $t(codes[code as keyof typeof codes].summary)
             } as unknown as CrrmListItem
           })
@@ -425,6 +434,28 @@ export const api = recommendationApi.injectEndpoints({
         { type: 'Monitoring', id: 'RECOMMENDATION_CODE' },
         { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
       ]
+    }),
+    crrmKpi: build.query<CrrmKpiResponse, BasicRecommendation>({
+      query: ({ id, code }) => ({
+        document: gql`
+          query CrrmKpi($id: String) {
+            recommendation(id: $id) {
+              id status ${kpiHelper(code!)}
+            }
+          }
+        `,
+        variables: { id }
+      }),
+      transformResponse: (response: CrrmKpi) => {
+        const { status, kpi_number_of_interfering_links } = response.recommendation
+        return {
+          text: getCrrmInterferingLinksText(
+            status,
+            kpi_number_of_interfering_links!
+          )
+        }
+      },
+      providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }]
     })
   })
 })
@@ -440,5 +471,6 @@ export const {
   useRecommendationListQuery,
   useMuteRecommendationMutation,
   useScheduleRecommendationMutation,
-  useCancelRecommendationMutation
+  useCancelRecommendationMutation,
+  useCrrmKpiQuery
 } = api
