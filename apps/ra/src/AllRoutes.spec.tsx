@@ -144,6 +144,13 @@ describe('AllRoutes', () => {
     expect(await screen.findByText('Logo.svg')).toBeVisible()
     expect(await screen.findByTestId('CrrmDetails')).toBeVisible()
   })
+  it('should render unknown details correctly', async () => {
+    render(<AllRoutes />, {
+      route: { path: '/ai/recommendations/crrm/unknown/*' },
+      wrapper: Provider })
+    expect(await screen.findByText('Logo.svg')).toBeVisible()
+    expect(await screen.findByTestId('UnknownDetails')).toBeVisible()
+  })
   it('should render aiOps details correctly', async () => {
     render(<AllRoutes />, {
       route: { path: '/ai/recommendations/aiOps/test-recommendation-id' },
