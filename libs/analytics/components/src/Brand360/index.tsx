@@ -55,6 +55,5 @@ export function Brand360 () {
       slaThreshold={settings}
       data={tableResults.data as Response[]}
     />
-    table
   </Loader>
 }
