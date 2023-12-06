@@ -388,7 +388,7 @@ export const defaultClientPayload = {
     'ssid','wifiCallingClient','sessStartTime','clientAnalytics','clientVlan','deviceTypeStr','modelName','totalTraffic',
     'trafficToClient','trafficFromClient','receiveSignalStrength','rssi','radio.mode','cpeMac','authmethod','status',
     'encryptMethod','packetsToClient','packetsFromClient','packetsDropFrom','radio.channel',
-    'cog','venueName','apName','clientVlan','networkId','switchName','healthStatusReason','lastUpdateTime']
+    'cog','venueName','apName','clientVlan','networkId','switchName','healthStatusReason','lastUpdateTime', 'mldAddr']
 }
 
 export const ConnectedClientsTable = (props: {
