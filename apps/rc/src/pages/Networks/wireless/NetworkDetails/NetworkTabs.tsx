@@ -32,28 +32,54 @@ function NetworkTabs () {
         tab={$t({ defaultMessage: 'Overview' })}
         key='overview'
       />
-      <Tabs.TabPane tab={$t({ defaultMessage: 'APs ({apsCount})' }, { apsCount })} key='aps' />
-      <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Venues ({venuesCount})' }, { venuesCount })}
-        key='venues' />
-      {/* isFFOn ? <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount })}
-        key='services' /> : null */}
-      <Tabs.TabPane tab={$t({ defaultMessage: 'Timeline' })} key='timeline' />
-      { hasAccess() && <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Incidents' })}
-        key='incidents'
-      /> }
       {
         listOfClientsPerWlanFlag ?
-          <Tabs.TabPane
-            tab={
-              $t({ defaultMessage: 'Clients ({clientsCount})' },
-                { clientsCount: data?.network?.clients })
+          <>
+            { hasAccess() && <Tabs.TabPane
+              tab={$t({ defaultMessage: 'Incidents' })}
+              key='incidents'
+            />
             }
-            key='clients'
-          />
-          : null
+            <Tabs.TabPane
+              tab={$t({ defaultMessage: 'Venues ({venuesCount})' }, { venuesCount })}
+              key='venues'
+            />
+            <Tabs.TabPane
+              tab={$t({ defaultMessage: 'APs ({apsCount})' }, { apsCount })}
+              key='aps'
+            />
+            <Tabs.TabPane
+              tab={
+                $t({ defaultMessage: 'Clients ({clientsCount})' },
+                  { clientsCount: data?.network?.clients })
+              }
+              key='clients'
+            />
+            <Tabs.TabPane
+              tab={$t({ defaultMessage: 'Timeline' })}
+              key='timeline'
+            />
+          </>
+          :
+          <>
+            <Tabs.TabPane
+              tab={$t({ defaultMessage: 'APs ({apsCount})' }, { apsCount })}
+              key='aps'
+            />
+            <Tabs.TabPane
+              tab={$t({ defaultMessage: 'Venues ({venuesCount})' }, { venuesCount })}
+              key='venues'
+            />
+            <Tabs.TabPane
+              tab={$t({ defaultMessage: 'Timeline' })}
+              key='timeline'
+            />
+            { hasAccess() && <Tabs.TabPane
+              tab={$t({ defaultMessage: 'Incidents' })}
+              key='incidents'
+            />
+            }
+          </>
       }
     </Tabs>
   )
