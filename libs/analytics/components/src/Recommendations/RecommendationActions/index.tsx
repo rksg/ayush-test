@@ -4,7 +4,7 @@ import { Row, Col }               from 'antd'
 import moment, { Moment }         from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { DateTimePicker, Tooltip } from '@acx-ui/components'
+import { DateTimePicker, Tooltip, showToast } from '@acx-ui/components'
 import {
   CalendarOutlined,
   CancelCircleOutlined,
@@ -58,7 +58,14 @@ function ApplyCalendar ({ disabled, type, id, code, metadata }: ActionButtonProp
   const { $t } = useIntl()
   const [scheduleRecommendation] = useScheduleRecommendationMutation()
   const onApply = (date: Moment) => {
-    scheduleRecommendation({ id, scheduledAt: date.toISOString() })
+    if(moment().add(15, 'minutes') < date ){
+      scheduleRecommendation({ id, scheduledAt: date.toISOString() })
+    } else {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'Schedule within 15 minutes is not allowed' })
+      })
+    }
   }
   const scheduledAt = useRef(moment(metadata.scheduledAt))
   const futureDate = useRef(getFutureTime(moment().seconds(0).milliseconds(0)))
@@ -153,9 +160,10 @@ const getAvailableActions = (recommendation: RecommendationListItem) => {
     case 'applyscheduled':
       return [
         { icon: actions.schedule({ ...props, disabled: false, type: 'ApplyScheduled' }) },
-        { icon: actions.cancel({ ...props, disabled: false }) },
+        recommendation?.statusTrail?.filter(trial => trial.status === 'applied').length === 0
+          && { icon: actions.cancel({ ...props, disabled: false }) },
         { icon: actions.schedule({ ...props, disabled: true, type: 'Revert' }) }
-      ]
+      ].filter(Boolean) as { icon: JSX.Element }[]
     case 'applied':
     case 'applywarning':
     case 'revertfailed':

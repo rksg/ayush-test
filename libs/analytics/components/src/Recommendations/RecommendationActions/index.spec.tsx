@@ -1,9 +1,11 @@
-import userEvent from '@testing-library/user-event'
+import userEvent       from '@testing-library/user-event'
+import { MomentInput } from 'moment-timezone'
 
 import { Provider, recommendationUrl }                  from '@acx-ui/store'
 import { mockGraphqlMutation, render, screen, cleanup } from '@acx-ui/test-utils'
 
 import { recommendationListResult } from '../__tests__/fixtures'
+import { RecommendationListItem }   from '../services'
 
 import { RecommendationActions } from '.'
 
@@ -20,7 +22,8 @@ const mockedCrrm = {
   statusEnum: 'new' as 'new',
   mutedBy: '',
   mutedAt: '',
-  path: [] as []
+  path: [] as [],
+  statusTrail: [{ status: 'new' }]
 }
 
 jest.mock('moment-timezone', () => {
@@ -28,7 +31,7 @@ jest.mock('moment-timezone', () => {
   return {
     __esModule: true,
     ...moment,
-    default: date => date === '2023-11-17T11:15:00.000Z'
+    default: (date: MomentInput) => date === '2023-11-17T11:15:00.000Z'
       ? moment(date)
       : moment('07-15-2023 14:15', 'MM-DD-YYYY HH:mm')
   }
@@ -41,19 +44,68 @@ describe('RecommendationActions', () => {
   })
   it('should render active status icons correctly', async () => {
     const testCases = [
-      { statusEnum: 'new' as 'new',
-        icons: ['CheckMarkCircleOutline', 'Reload'] },
-      { statusEnum: 'applyscheduled' as 'applyscheduled', icons: [
-        'CalendarOutlined', 'CancelCircleOutlined', 'Reload'] },
-      { statusEnum: 'applied' as 'applied', icons: [
-        'CheckMarkCircleOutline', 'Reload'] },
-      { statusEnum: 'revertscheduled' as 'revertscheduled', icons: [
-        'CheckMarkCircleOutline', 'CancelCircleOutlined' ,'CalendarOutlined'] },
-      { statusEnum: 'applyfailed' as 'applyfailed',
-        icons: ['CheckMarkCircleOutline', 'Reload'] }
+      {
+        statusEnum: 'new' as 'new',
+        icons: ['CheckMarkCircleOutline', 'Reload'],
+        statusTrail: [ { status: 'new' } ]
+      },
+      {
+        statusEnum: 'applyscheduled' as 'applyscheduled',
+        icons: ['CalendarOutlined', 'CancelCircleOutlined', 'Reload'],
+        statusTrail: [
+          { status: 'new' },
+          { status: 'applyscheduled' }
+        ]
+      },
+      {
+        statusEnum: 'applyscheduled' as 'applyscheduled',
+        icons: ['CalendarOutlined', 'Reload'],
+        statusTrail: [
+          { status: 'new' },
+          { status: 'applyscheduled' },
+          { status: 'applyscheduleinprogress' },
+          { status: 'applied' },
+          { status: 'applyscheduled' },
+          { status: 'applyscheduleinprogress' },
+          { status: 'applied' },
+          { status: 'applyscheduled' }
+        ]
+      },
+      {
+        statusEnum: 'applied' as 'applied',
+        icons: ['CheckMarkCircleOutline', 'Reload'],
+        statusTrail: [
+          { status: 'new' },
+          { status: 'applyscheduled' },
+          { status: 'applyscheduleinprogress' },
+          { status: 'applied' }
+        ]
+      },
+      {
+        statusEnum: 'revertscheduled' as 'revertscheduled',
+        icons: ['CheckMarkCircleOutline', 'CancelCircleOutlined' ,'CalendarOutlined'],
+        statusTrail: [
+          { status: 'new' },
+          { status: 'applyscheduled' },
+          { status: 'applyscheduleinprogress' },
+          { status: 'applied' },
+          { status: 'revertscheduled' }
+        ]
+      },
+      {
+        statusEnum: 'applyfailed' as 'applyfailed',
+        icons: ['CheckMarkCircleOutline', 'Reload'],
+        statusTrail: [
+          { status: 'new' },
+          { status: 'applyscheduled' },
+          { status: 'applyscheduleinprogress' },
+          { status: 'applyfailed' }
+        ]
+      }
     ].map(async ({ statusEnum, icons }) => {
       render(
-        <RecommendationActions recommendation={{ ...mockedCrrm, statusEnum }} />,
+        <RecommendationActions recommendation={
+          { ...mockedCrrm, statusEnum } as unknown as RecommendationListItem} />,
         { wrapper: Provider }
       )
       icons.forEach((icon) => {
@@ -66,7 +118,8 @@ describe('RecommendationActions', () => {
   })
   it('should render muted action correctly', async () => {
     render(
-      <RecommendationActions recommendation={{ ...mockedCrrm, isMuted: true }} />,
+      <RecommendationActions recommendation={
+        { ...mockedCrrm, isMuted: true } as unknown as RecommendationListItem} />,
       { wrapper: Provider }
     )
     expect(screen.getByTestId('CheckMarkCircleOutline')).toBeVisible()
@@ -74,7 +127,8 @@ describe('RecommendationActions', () => {
   })
   it('should render delete status icon correctly', async () => {
     render(
-      <RecommendationActions recommendation={{ ...mockedCrrm, statusEnum: 'deleted' }} />,
+      <RecommendationActions recommendation={
+        { ...mockedCrrm, statusEnum: 'deleted' } as unknown as RecommendationListItem} />,
       { wrapper: Provider }
     )
     expect(screen.queryByTestId('CalendarOutlined')).toBeNull()
@@ -87,7 +141,7 @@ describe('RecommendationActions', () => {
     const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
     mockGraphqlMutation(recommendationUrl, 'ScheduleRecommendation', { data: resp })
     render(
-      <RecommendationActions recommendation={mockedCrrm} />,
+      <RecommendationActions recommendation={mockedCrrm as unknown as RecommendationListItem} />,
       { wrapper: Provider }
     )
     const user = userEvent.setup()
@@ -107,7 +161,7 @@ describe('RecommendationActions', () => {
     const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
     mockGraphqlMutation(recommendationUrl, 'ScheduleRecommendation', { data: resp })
     render(
-      <RecommendationActions recommendation={mockedCrrm} />,
+      <RecommendationActions recommendation={mockedCrrm as unknown as RecommendationListItem} />,
       { wrapper: Provider }
     )
     const user = userEvent.setup()
@@ -128,7 +182,8 @@ describe('RecommendationActions', () => {
       scheduledAt: '2023-11-17T11:15:00.000Z'
     }
     render(
-      <RecommendationActions recommendation={{ ...mockedCrrm, metadata }} />,
+      <RecommendationActions recommendation={
+        { ...mockedCrrm, metadata } as unknown as RecommendationListItem} />,
       { wrapper: Provider }
     )
     const inputs = await screen.findAllByPlaceholderText('Select date')
@@ -138,11 +193,32 @@ describe('RecommendationActions', () => {
     const resp = { cancel: { success: true, errorMsg: '' , errorCode: '' } }
     mockGraphqlMutation(recommendationUrl, 'CancelRecommendation', { data: resp })
     render(
-      <RecommendationActions recommendation={{ ...mockedCrrm, statusEnum: 'applyscheduled' }} />,
+      <RecommendationActions recommendation={
+        { ...mockedCrrm, statusEnum: 'applyscheduled' } as unknown as RecommendationListItem} />,
       { wrapper: Provider }
     )
     const user = userEvent.setup()
     await user.click(screen.getByTestId('CancelCircleOutlined'))
     expect(await screen.findAllByPlaceholderText('Select date')).toHaveLength(2)
+  })
+  it('should show toats if schedule within 15 minutes', async () => {
+    const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
+    mockGraphqlMutation(recommendationUrl, 'ScheduleRecommendation', { data: resp })
+    render(
+      <RecommendationActions recommendation={mockedCrrm as unknown as RecommendationListItem} />,
+      { wrapper: Provider }
+    )
+    const user = userEvent.setup()
+    const inputs = await screen.findAllByPlaceholderText('Select date')
+    expect(inputs[0]).toHaveValue('2023-07-15')
+    await user.click(await screen.findByTestId('CheckMarkCircleOutline'))
+    await user.click(await screen.findByTitle('2023-07-16'))
+    await user.click(await screen.findByRole('time-picker-minutes'))
+    await user.click((await screen.findAllByText('15'))[1])
+    await user.click(await screen.findByRole('time-picker-hours'))
+    await user.click((await screen.findAllByText('14'))[1])
+    await user.click((await screen.findAllByTitle('2023-07-15'))[0])
+    await user.click(await screen.findByText('Apply'))
+    expect(await screen.findByText('Schedule within 15 minutes is not allowed')).toBeVisible()
   })
 })

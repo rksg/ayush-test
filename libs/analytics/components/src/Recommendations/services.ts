@@ -71,6 +71,7 @@ export type Recommendation = {
   mutedBy: string
   mutedAt: string | null
   path: NetworkPath
+  statusTrail: StatusTrail
 }
 
 export type RecommendationListItem = Recommendation & {
@@ -328,6 +329,7 @@ export const api = recommendationApi.injectEndpoints({
               type
               name
             }
+            statusTrail { status }
           }
         }
         `,

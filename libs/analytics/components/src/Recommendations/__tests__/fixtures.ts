@@ -79,7 +79,13 @@ export const recommendationListResult = {
       path: [
         { type: 'system', name: 'vsz611' },
         { type: 'zone', name: 'EDU-MeshZone_S12348' }
-      ] as NetworkPath
+      ] as NetworkPath,
+      statusTrail: [
+        { status: 'new' },
+        { status: 'applyscheduled' },
+        { status: 'applyscheduleinprogress' },
+        { status: 'applied' }
+      ]
     },
     {
       id: '1',
@@ -106,7 +112,14 @@ export const recommendationListResult = {
       path: [
         { type: 'system', name: 'vsz611' },
         { type: 'zone', name: 'EDU-MeshZone_S12348' }
-      ] as NetworkPath
+      ] as NetworkPath,
+      statusTrail: [
+        { status: 'new' },
+        { status: 'applyscheduled' },
+        { status: 'applyscheduleinprogress' },
+        { status: 'applied' },
+        { status: 'revertscheduled' }
+      ]
     },
     {
       id: '2',
@@ -159,7 +172,10 @@ export const recommendationListResult = {
           type: 'zone',
           name: 'Deeps Place'
         }
-      ] as NetworkPath
+      ] as NetworkPath,
+      statusTrail: [
+        { status: 'new' }
+      ]
     }
   ]
 }
