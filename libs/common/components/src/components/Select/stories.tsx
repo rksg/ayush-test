@@ -53,14 +53,14 @@ storiesOf('Select', module)
   })
   .add('Within optional field', () => {
     return <>
-    <p>*need a empty option to reset value</p>
-    <Select
-      {...defaultProps}
-      options={[
-        { label: 'Select...', value: '' },
-        ...defaultOption
-      ]}
-    />
+      <p>*need a empty option to reset value</p>
+      <Select
+        {...defaultProps}
+        options={[
+          { label: 'Select...', value: '' },
+          ...defaultOption
+        ]}
+      />
     </>
   })
   .add('Normal Option Group', () => {
