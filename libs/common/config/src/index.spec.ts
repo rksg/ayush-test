@@ -2,7 +2,7 @@ import { rest } from 'msw'
 
 import { mockServer } from '@acx-ui/test-utils'
 
-it('initialize and be able to get value of key', async () => {
+it('initialize and be able to get value of key for R1', async () => {
   jest.resetModules()
   const config = require('./index')
   const env = {
@@ -12,7 +12,21 @@ it('initialize and be able to get value of key', async () => {
 
   expect(() => config.get('GOOGLE_MAPS_KEY')).toThrow('Config not initialized')
 
-  await config.initialize()
+  await config.initialize('r1')
+  expect(config.get('GOOGLE_MAPS_KEY')).toEqual(env.GOOGLE_MAPS)
+})
+
+it('initialize and be able to get value of key for RAI', async () => {
+  jest.resetModules()
+  const config = require('./index')
+  const env = {
+    GOOGLE_MAPS: 'GOOGLE_MAPS_KEY'
+  }
+  mockServer.use(rest.get('/globalValues.json', (_, r, c) => r(c.json(env))))
+
+  expect(() => config.get('GOOGLE_MAPS_KEY')).toThrow('Config not initialized')
+
+  await config.initialize('ra')
   expect(config.get('GOOGLE_MAPS_KEY')).toEqual(env.GOOGLE_MAPS)
 })
 

@@ -44,14 +44,16 @@ type EnvironmentConfig = commonEnvironment & R1Environment & RAEnvironment
 
 const config: { value?: EnvironmentConfig } = {}
 
-export async function initialize () {
+export async function initialize (deployment: 'r1' | 'ra') {
   const baseUrl = trimEnd(document.baseURI, '/')
-
   const envConfigUrl = `${baseUrl}/globalValues.json`
-  const response = await fetch(
-    envConfigUrl,
-    { headers: { Authorization: `Bearer ${getJwtToken()}` } })
 
+  let requestConfig: RequestInit = {}
+  if (deployment === 'r1') {
+    requestConfig = { headers: { Authorization: `Bearer ${getJwtToken()}` } }
+  }
+
+  const response = await fetch(envConfigUrl, requestConfig)
   userAuthFailedLogout(response)
 
   const jsonValue = await response.json()
