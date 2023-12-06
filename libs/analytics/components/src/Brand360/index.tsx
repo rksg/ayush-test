@@ -8,7 +8,7 @@ import type { Settings }                                                  from '
 import { PageHeader, RangePicker, GridRow, GridCol, Loader }              from '@acx-ui/components'
 import { DateFilter, DateRange, getDateRangeFilter, getDatePickerValues } from '@acx-ui/utils'
 
-import { Property, useFetchBrandPropertiesQuery } from './services'
+import { Response, useFetchBrandPropertiesQuery } from './services'
 import { BrandTable }                             from './Table'
 import { useSliceType }                           from './useSliceType'
 
@@ -51,7 +51,7 @@ export function Brand360 () {
     <BrandTable
       sliceType={sliceType}
       slaThreshold={settings}
-      data={tableResults.data as Property[]}
+      data={tableResults.data as Response[]}
     />
   </Loader>
 }

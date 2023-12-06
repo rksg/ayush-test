@@ -6,13 +6,17 @@ import { defaultSort, sortProp, Settings  } from '@acx-ui/analytics/utils'
 import { Table, TableProps, Tooltip }       from '@acx-ui/components'
 import { formatter }                        from '@acx-ui/formatter'
 
-import { transformToLspView }    from './__tests__/fixtures'
-import { Property, Common, Lsp } from './services'
+import {
+  transformToLspView, transformToPropertyView, Property, Common, Lsp
+} from './helpers'
+import {
+  Response
+} from './services'
 
 const pagination = { pageSize: 10, defaultPageSize: 10 }
 
 export function BrandTable ({ sliceType, slaThreshold, data }:
-{ sliceType: string, slaThreshold?: Partial<Settings>, data: Property[] }) {
+{ sliceType: string, slaThreshold?: Partial<Settings>, data: Response[] }) {
   const { $t } = useIntl()
   const thresholds = slaThreshold || getDefaultSettings()
   const thresholdP1Incidents = thresholds['sla-p1-incidents-count' as keyof typeof slaThreshold]
@@ -22,7 +26,7 @@ export function BrandTable ({ sliceType, slaThreshold, data }:
   const nColor = 'var(--acx-semantics-red-50)'
   const tableData = sliceType === 'lsp'
     ? transformToLspView(data)
-    : data
+    : transformToPropertyView(data)
   const commonCols: TableProps<Common>['columns'] = [
     {
       title: $t({ defaultMessage: 'P1 Incidents Count' }),
