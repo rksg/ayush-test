@@ -67,6 +67,7 @@ export { ReactComponent as CaretRightOutlined } from './icons/CaretRightOutlined
 export { ReactComponent as CaretRightSolid } from './icons/CaretRightSolid.svg'
 export { ReactComponent as CaretUpOutlined } from './icons/CaretUpOutlined.svg'
 export { ReactComponent as CaretUpSolid } from './icons/CaretUpSolid.svg'
+export { ReactComponent as Check } from './icons/Check.svg'
 export { ReactComponent as CheckMark } from './icons/CheckMark.svg'
 export { ReactComponent as CheckMarkCircleOutline } from './icons/CheckMarkCircleOutline.svg'
 export { ReactComponent as CheckMarkCircleSolid } from './icons/CheckMarkCircleSolid.svg'
