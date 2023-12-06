@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                    from '@acx-ui/feature-toggle'
+import { TierFeatures, useIsTierAllowed }                from '@acx-ui/feature-toggle'
 import {
   doProfileDelete,
   useDelRoguePoliciesMutation,
@@ -28,7 +28,7 @@ import { SimpleListTooltip } from '../../SimpleListTooltip'
 import { PROFILE_MAX_COUNT } from '../contentsMap'
 
 const useDefaultVenuePayload = (): RequestPayload => {
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
 
   return {
     fields: [
