@@ -174,7 +174,17 @@ export const LagDrawer = (props: LagDrawerProps) => {
   const getUseableLagOptions = (existedLagList?: EdgeLagStatus[]) => {
     return lagNameOptions.filter(option =>
       !existedLagList?.some(existedLag =>
-        existedLag.lagId === option.value))
+        existedLag.lagId === option.value &&
+        existedLag.lagId !== data?.id)) // keep the edit mode data as a slection
+  }
+
+  const getUseableLagMembers = (portList?: EdgePort[]) => {
+    return portList?.filter(port =>
+      !existedLagList?.some(exsistedLag =>
+        exsistedLag.lagMembers?.some(existedLagMember =>
+          existedLagMember.portId === port.id &&
+          !data?.lagMembers.some(editLagMember =>
+            editLagMember.portId === port.id)))) // keep the edit mode data as a slection
   }
 
   const drawerContent = <Form layout='vertical' form={formRef} onFinish={handleFinish}>
@@ -231,10 +241,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
         {
           <Space direction='vertical'>
             {
-              portList?.filter(port =>
-                !existedLagList?.some(exsistedLag =>
-                  exsistedLag.lagMembers?.some(existedLagMember =>
-                    existedLagMember.portId === port.id))).map((item, index) =>
+              getUseableLagMembers(portList)?.map((item, index) =>
                 (
                   <Space key={`${item.id}_space`} size={30}>
                     <Checkbox
