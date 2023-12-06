@@ -79,7 +79,7 @@ export function getJwtToken () {
   return sessionStorage.getItem('jwt') || null
 }
 
-function userAuthFailedLogout (response: Response) {
+export function userAuthFailedLogout (response: Response) {
   //Trigger a user logout and redirect them back to the login page following authorization fails,
   //clone the code from 'utils/user' since this file unable access 'utils/user'
   if(response.status !== 200){
