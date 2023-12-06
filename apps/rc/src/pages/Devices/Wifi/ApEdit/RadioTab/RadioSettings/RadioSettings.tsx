@@ -876,13 +876,17 @@ export function RadioSettings () {
 
   const handleOnUseVenueEnabledChange = () => {
     const flipState = !stateOfUseVenueEnabled
+    // Enable venue setting
     if (flipState) {
       operationCache.current = formRef.current?.getFieldValue(['apRadioParamsDual5G', 'enabled'])
       formRef.current?.setFieldValue(['apRadioParamsDual5G', 'enabled'], venueRef?.current?.apRadioParamsDual5G?.enabled)
+      setIsDual5gMode(venueRef?.current?.apRadioParamsDual5G?.enabled ?? true)
       formRef?.current?.setFieldValue(['apRadioParamsDual5G', 'useVenueEnabled'], flipState)
+    // Customize
     } else {
       if (operationCache.current !== undefined) {
         formRef.current?.setFieldValue(['apRadioParamsDual5G', 'enabled'], operationCache.current)
+        setIsDual5gMode(operationCache.current)
       }
       formRef?.current?.setFieldValue(['apRadioParamsDual5G', 'useVenueEnabled'], flipState)
     }
