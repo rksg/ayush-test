@@ -1,8 +1,7 @@
 import moment, { Moment }           from 'moment-timezone'
 import { defineMessage, IntlShape } from 'react-intl'
 
-import { getUserProfile } from '@acx-ui/user'
-import { getIntl }        from '@acx-ui/utils'
+import { getIntl } from '@acx-ui/utils'
 
 import {
   MspEntitlement,
@@ -125,9 +124,7 @@ export class EntitlementUtil {
   }
 
   public static timeLeftInDays (expirationDate: string) {
-    const dtFormat = getUserProfile().profile.dateFormat
-    const moment_date = moment(expirationDate, dtFormat.toUpperCase()).format()
-    const newDate = new Date(moment_date)
+    const newDate = new Date(expirationDate)
     // expiration date should be end of UTC date
     // newDate.setUTCHours(23)
     // newDate.setUTCMinutes(59)
