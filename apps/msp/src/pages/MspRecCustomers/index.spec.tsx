@@ -284,9 +284,9 @@ describe('MspRecCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
     expect(await screen.findByText('My Customers')).toBeVisible()
-    // await waitFor(() => {
-    //   expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
-    // })
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
+    })
     expect(screen.getByText('Installed Devices')).toBeVisible()
 
     expect(screen.queryByText('Wi-Fi Licenses')).toBeNull()
