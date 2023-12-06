@@ -793,8 +793,6 @@ export function RadioSettings () {
       const hasRadioDual5G = isHasRadioDual5G(isSupportDual5GAp, isDual5gMode)
       const hasRadio6G = isHasRadio6G(isSupportTriBandRadioAp, isDual5gMode, bandwidth6GOptions.length)
 
-      console.log(isDual5gMode)
-
       if (!validRadioChannels(payload, hasRadio5G, hasRadioDual5G, hasRadio6G)) {
         return
       }
