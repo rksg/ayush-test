@@ -70,8 +70,8 @@ const SubInterface = (props: SubInterfaceProps) => {
                 <LagSubInterfaceTable
                   serialNumber={serialNumber}
                   currentTab={currentTab}
-                  ip={item.ip}
-                  mac={item.mac}
+                  ip={item.ip ?? ''}
+                  mac={item.mac ?? ''}
                   lagId={item.lagId}
                 />
               }
