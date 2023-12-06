@@ -154,7 +154,7 @@ describe('RecommendationActions', () => {
     await user.click((await screen.findAllByRole('time-picker-hours'))[0])
     const checkHour = await screen.findAllByText('00')
     await user.click(checkHour[0])
-    await user.click(await screen.findByText('Apply'))
+    await user.click((await screen.findAllByText('Apply'))[0])
     expect(inputs[0]).toHaveValue('2023-07-15')
   })
   it('should handle non-same day apply mutation correctly', async () => {
@@ -174,7 +174,7 @@ describe('RecommendationActions', () => {
     await user.click((await screen.findAllByRole('time-picker-hours'))[0])
     const checkHour = await screen.findAllByText('00')
     await user.click(checkHour[0])
-    await user.click(await screen.findByText('Apply'))
+    await user.click((await screen.findAllByText('Apply'))[0])
     expect(inputs[0]).toHaveValue('2023-07-16')
   })
   it('shows current schedule', async () => {
@@ -218,7 +218,7 @@ describe('RecommendationActions', () => {
     await user.click(await screen.findByRole('time-picker-hours'))
     await user.click((await screen.findAllByText('14'))[1])
     await user.click((await screen.findAllByTitle('2023-07-15'))[0])
-    await user.click(await screen.findByText('Apply'))
+    await user.click((await screen.findAllByText('Apply'))[0])
     expect(await screen.findByText('Schedule within 15 minutes is not allowed')).toBeVisible()
   })
 })
