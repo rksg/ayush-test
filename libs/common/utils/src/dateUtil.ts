@@ -2,6 +2,8 @@ import { pick }                             from 'lodash'
 import moment                               from 'moment-timezone'
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
+import { DateFilter } from './dateFilter'
+
 export enum DateRange {
   last8Hours = 'Last 8 Hours',
   last24Hours = 'Last 24 Hours',
@@ -38,6 +40,11 @@ export function getDateRangeFilter (
         (date: moment.Moment) => date.format()
       )
   return { startDate, endDate, range }
+}
+export function getDatePickerValues (state: DateFilter) {
+  return state.range !== DateRange.custom
+    ? getDateRangeFilter(state.range)
+    : state
 }
 export function defaultRanges (subRange?: DateRange[]) {
   const defaultRange: Partial<{ [key in DateRange]: moment.Moment[] }> = {

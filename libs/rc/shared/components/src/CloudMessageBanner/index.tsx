@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Alert, Button, useLayoutContext }          from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Alert, Button, useLayoutContext }                        from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useLazyGetSwitchVenueVersionListQuery,
   useLazyGetVenueEdgeFirmwareListQuery
@@ -27,7 +27,7 @@ export function CloudMessageBanner () {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isScheduleUpdateReady = useIsSplitOn(Features.EDGES_SCHEDULE_UPGRADE_TOGGLE)
   const layout = useLayoutContext()
 
