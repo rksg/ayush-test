@@ -1,14 +1,13 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeUrlsInfo }                        from '@acx-ui/rc/utils'
-import { Provider }                            from '@acx-ui/store'
-import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
-
-import { mockEdgePortConfig } from '../../../../__tests__/fixtures'
+import { EdgePortConfigFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                             from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }  from '@acx-ui/test-utils'
 
 import { LagDrawer } from './LagDrawer'
 
+const { mockEdgePortConfig } = EdgePortConfigFixtures
 
 type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void

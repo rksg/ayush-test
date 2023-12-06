@@ -22,9 +22,8 @@ export function Brand360 () {
     getDateRangeFilter(DateRange.last8Hours)
   )
   const { startDate, endDate, range } = getDatePickerValues(dateFilterState)
-  useEffect(() => {
-    settingsQuery.data && setSettings(settingsQuery.data)
-  }, [settingsQuery.data])
+  const { data } = settingsQuery
+  useEffect(() => { data && setSettings(data) }, [data])
   const tableResults = useFetchBrandPropertiesQuery({})
   return <Loader states={[settingsQuery, tableResults]}>
     <PageHeader
@@ -47,7 +46,9 @@ export function Brand360 () {
       <GridCol col={{ span: 6 }}>incident</GridCol>
       <GridCol col={{ span: 6 }}>guest experience</GridCol>
       <GridCol col={{ span: 6 }}>brand ssid compliance</GridCol>
-      <GridCol col={{ span: 6 }}><SlaSliders settings={settings} /></GridCol>
+      <GridCol col={{ span: 6 }}>
+        <SlaSliders initialSlas={data || {}} currentSlas={settings} setCurrentSlas={setSettings} />
+      </GridCol>
     </GridRow>
     <div>{sliceType} {JSON.stringify(settings)}</div>
     <BrandTable

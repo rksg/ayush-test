@@ -2,14 +2,15 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { EdgeUrlsInfo, ServiceOperation, ServiceType, getServiceDetailsLink, CommonUrlsInfo, EdgeSdLanUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                                                          from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within }                            from '@acx-ui/test-utils'
+import { EdgeUrlsInfo, ServiceOperation, ServiceType, getServiceDetailsLink, CommonUrlsInfo, EdgeSdLanUrls, EdgeGeneralFixtures } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                               from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within }                                                 from '@acx-ui/test-utils'
 
-import { mockEdgeList, mockedSdLanDataList } from '../__tests__/fixtures'
+import { mockedSdLanDataList } from '../__tests__/fixtures'
 
 import EdgeSdLanTable from '.'
 
+const { mockEdgeList } = EdgeGeneralFixtures
 const mockedUsedNavigate = jest.fn()
 const mockedGetEdgeList = jest.fn()
 const mockedDeleteReq = jest.fn()

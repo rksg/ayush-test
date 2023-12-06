@@ -1,17 +1,16 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }     from '@acx-ui/store'
+import { EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                          from '@acx-ui/store'
 import {
   mockServer, render,
   screen
 } from '@acx-ui/test-utils'
 
-import { mockEdgeData, mockEdgeList } from '../../__tests__/fixtures'
-
 import EditEdge from './index'
 
+const { mockEdgeData, mockEdgeList } = EdgeGeneralFixtures
 jest.mock('@acx-ui/utils', () => {
   const reactIntl = jest.requireActual('react-intl')
   const intl = reactIntl.createIntl({
