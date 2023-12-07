@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useRef, useEffect, useState, Fragment } from 'react'
+import { useRef, useEffect, useState } from 'react'
 
 import { AutoComplete, Button, Col, Empty, Input, Row, Typography } from 'antd'
 import * as d3                                                      from 'd3'
@@ -102,7 +102,7 @@ export function TopologyGraphComponent (props:{ venueId?: string,
         const treeContainer = document.querySelector('.d3-tree-container')
         if(treeContainer?.clientWidth && treeContainer?.clientHeight ){
           const translateX = treeContainer.clientWidth/2
-          const translateY = treeContainer.clientHeight/2
+          const translateY = treeContainer.clientHeight/3
           setTranslate([translateX, translateY])
         }
       })
@@ -141,7 +141,7 @@ export function TopologyGraphComponent (props:{ venueId?: string,
       const treeContainer = document.querySelector('.d3-tree-container')
       if(treeContainer?.clientWidth && treeContainer?.clientHeight ){
         const translateX = treeContainer.clientWidth/2
-        const translateY = treeContainer.clientHeight/2 - 100
+        const translateY = treeContainer.clientHeight/3
         setTranslate([translateX, translateY])
       }
     }
