@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState, useMemo } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -11,6 +11,7 @@ import { useAddAAAPolicyTemplateMutation }                                      
 import { useAaaPolicyQuery, useAddAAAPolicyMutation, useUpdateAAAPolicyMutation } from '@acx-ui/rc/services'
 import {
   AAAPolicyType,
+  generateConfigTemplateBreadcrumb,
   generatePolicyPageHeaderTitle,
   getPolicyListRoutePath,
   getPolicyRoutePath,
@@ -39,7 +40,9 @@ const AAAForm = (props: AAAFormProps) => {
   const edit = props.edit && !props.networkView
   const formRef = useRef<StepsFormLegacyInstance<AAAPolicyType>>()
   const { data } = useAaaPolicyQuery({ params }, { skip: !props.edit })
+  const { isTemplate } = useConfigTemplate()
   const createAAAPolicy = useAddInstance()
+  const breadcrumb = useBreadcrumb(tablePath)
 
   const [ updateAAAPolicy ] = useUpdateAAAPolicyMutation()
   const [saveState, updateSaveState] = useState<AAAPolicyType>({
@@ -64,7 +67,7 @@ const AAAForm = (props: AAAFormProps) => {
         data.id = res?.response?.id
       })
     }
-    props.networkView? props.backToNetwork?.(data) : navigate(linkToPolicies, { replace: true })
+    props.networkView ? props.backToNetwork?.(data) : navigate(linkToPolicies, { replace: true })
   }
   const handleAAAPolicy = async (data: AAAPolicyType) => {
     try {
@@ -76,16 +79,9 @@ const AAAForm = (props: AAAFormProps) => {
 
   return (
     <>
-      {!props.networkView &&<PageHeader
-        title={generatePolicyPageHeaderTitle(edit, false, PolicyType.AAA)}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          { text: $t(policyTypeLabelMapping[PolicyType.AAA]), link: tablePath }
-        ]}
+      {!props.networkView && <PageHeader
+        title={generatePolicyPageHeaderTitle(edit, isTemplate, PolicyType.AAA)}
+        breadcrumb={breadcrumb}
       />}
       <StepsFormLegacy<AAAPolicyType>
         formRef={formRef}
@@ -113,4 +109,23 @@ function useAddInstance () {
   const [ createAAAPolicyTemplate ] = useAddAAAPolicyTemplateMutation()
 
   return isTemplate ? createAAAPolicyTemplate : createAAAPolicy
+}
+
+function useBreadcrumb (tablePath: string) {
+  const { isTemplate } = useConfigTemplate()
+  const { $t } = useIntl()
+  const breadcrumb = useMemo(() => {
+    return isTemplate
+      ? generateConfigTemplateBreadcrumb()
+      : [
+        { text: $t({ defaultMessage: 'Network Control' }) },
+        {
+          text: $t({ defaultMessage: 'Policies & Profiles' }),
+          link: getPolicyListRoutePath(true)
+        },
+        { text: $t(policyTypeLabelMapping[PolicyType.AAA]), link: tablePath }
+      ]
+  }, [isTemplate])
+
+  return breadcrumb
 }
