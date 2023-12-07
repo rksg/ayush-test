@@ -117,6 +117,19 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       }
     },
     {
+      key: 'mldAddr',
+      title: intl.$t({ defaultMessage: 'MLD MAC Address' }),
+      dataIndex: 'mldAddr',
+      sorter: true,
+      disable: true,
+      render: (_, { mldAddr }) => {
+        const mac = mldAddr?.toLowerCase() || undefined
+        return <Tooltip title={mac}>
+          {mac || '--'}
+        </Tooltip>
+      }
+    },
+    {
       key: 'ipAddress',
       title: intl.$t({ defaultMessage: 'IP Address' }),
       dataIndex: 'ipAddress',
@@ -375,7 +388,7 @@ export const defaultClientPayload = {
     'ssid','wifiCallingClient','sessStartTime','clientAnalytics','clientVlan','deviceTypeStr','modelName','totalTraffic',
     'trafficToClient','trafficFromClient','receiveSignalStrength','rssi','radio.mode','cpeMac','authmethod','status',
     'encryptMethod','packetsToClient','packetsFromClient','packetsDropFrom','radio.channel',
-    'cog','venueName','apName','clientVlan','networkId','switchName','healthStatusReason','lastUpdateTime']
+    'cog','venueName','apName','clientVlan','networkId','switchName','healthStatusReason','lastUpdateTime', 'mldAddr']
 }
 
 export const ConnectedClientsTable = (props: {

@@ -221,6 +221,12 @@ function ClientDetails ({ client }: { client: ClientExtended }) {
         label={$t({ defaultMessage: 'MAC Address' })}
         children={client?.clientMac || '--'}
       />
+      { client?.mldAddr &&
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'MLD MAC Address' })}
+          children={client?.mldAddr}
+        />
+      }
       <Descriptions.Item
         label={$t({ defaultMessage: 'IP Address' })}
         children={client?.ipAddress || client?.clientIP || '--'}
