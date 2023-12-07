@@ -24,7 +24,6 @@ import {
 } from './config'
 import { kpiHelper, RecommendationKpi } from './RecommendationDetails/services'
 
-
 export type CrrmListItem = {
   id: string
   code: string
@@ -195,20 +194,17 @@ export const getCrrmInterferingLinksText = (
   if (status === 'applyfailed') return $t(states.applyfailed.text)
   if (status === 'revertfailed') return $t(states.revertfailed.text)
   const [before, after] = extractBeforeAfter(kpi_number_of_interfering_links)
-  if (kpi_number_of_interfering_links!.previous) return $t({
-    // eslint-disable-next-line max-len
-    defaultMessage: 'From {before} to {after} interfering {after, plural, one {link} other {links}}',
-    description: 'Translation string - From, to, interfering, link, links'
-  }, { before, after })
+
   if (status === 'new') return $t({
     // eslint-disable-next-line max-len
     defaultMessage: '{before} interfering {before, plural, one {link} other {links}} can be optimized to {after}',
     description: 'Translation string - interfering, link, links, can be optimized to'
   }, { before, after })
+
   return $t({
     // eslint-disable-next-line max-len
-    defaultMessage: '{before} interfering {before, plural, one {link} other {links}} will be optimized to {after}',
-    description: 'Translation string - interfering, link, links, will be optimized to'
+    defaultMessage: 'From {before} to {after} interfering {after, plural, one {link} other {links}}',
+    description: 'Translation string - From, to, interfering, link, links'
   }, { before, after })
 }
 

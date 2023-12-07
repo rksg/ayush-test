@@ -33,47 +33,6 @@ export const mockedVenueList = {
   ]
 }
 
-
-export const mockEdgeList = {
-  fields: [
-    'name','serialNumber','venueId','venueName'
-  ],
-  totalCount: 5,
-  page: 1,
-  data: [
-    {
-      name: 'Smart Edge 1',
-      serialNumber: '0000000001',
-      venueId: 'venue_00001',
-      venueName: 'Venue01'
-    },
-    {
-      name: 'Smart Edge 2',
-      serialNumber: '0000000002',
-      venueId: 'venue_00002',
-      venueName: 'Venue02'
-    },
-    {
-      name: 'Smart Edge 3',
-      serialNumber: '0000000003',
-      venueId: 'venue_00003',
-      venueName: 'Venue03'
-    },
-    {
-      name: 'Smart Edge 4',
-      serialNumber: '0000000004',
-      venueId: 'venue_00004',
-      venueName: 'Venue04'
-    },
-    {
-      name: 'Smart Edge 5',
-      serialNumber: '0000000005',
-      venueId: 'venue_00005',
-      venueName: 'Venue05'
-    }
-  ]
-}
-
 export const mockedTunnelProfileViewData = {
   totalCount: 3,
   page: 1,

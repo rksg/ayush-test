@@ -78,12 +78,12 @@ describe('AllRoutes', () => {
 
   it('redirects to return url', async () => {
     const search = new URLSearchParams()
-    search.set('return', '/ai/incidents')
+    search.set('return', '/ai/incidents?selectedTenants=WyJhaWQiXQ==')
     jest.mocked(useSearchParams).mockReturnValue([search, () => {}])
     render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
     expect(Navigate).toHaveBeenCalledWith({
       replace: true,
-      to: { pathname: '/ai/incidents', search: '?selectedTenants=WyJhaWQiXQ==' }
+      to: '/ai/incidents?selectedTenants=WyJhaWQiXQ=='
     }, {})
   })
 
