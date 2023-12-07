@@ -11,9 +11,9 @@ import {
   NetworkSegmentationLink,
   VenueLink,
   useDpskNewConfigFlowParams,
-  PersonaGroupDrawer
+  PersonaGroupDrawer,
+  BasePersonaTable
 } from '@acx-ui/rc/components'
-import { BasePersonaTable }                     from '@acx-ui/rc/components'
 import {
   useLazyGetVenueQuery,
   useLazyGetDpskQuery,

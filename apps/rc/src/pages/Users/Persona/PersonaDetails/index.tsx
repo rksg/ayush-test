@@ -14,9 +14,9 @@ import {
   IdentityGroupLink,
   PropertyUnitLink,
   useDpskNewConfigFlowParams,
-  PassphraseViewer
+  PassphraseViewer,
+  PersonaDrawer
 } from '@acx-ui/rc/components'
-import { PersonaDrawer }          from '@acx-ui/rc/components'
 import {
   useLazyGetDpskQuery,
   useGetPersonaByIdQuery,
