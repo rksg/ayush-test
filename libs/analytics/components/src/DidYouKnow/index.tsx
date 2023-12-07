@@ -92,8 +92,7 @@ function DidYouKnowWidget ({
     infinite: true,
     slidesToShow: 1,
     slidesToScroll: 1,
-    autoplay: false,
-    autoplaySpeed: 10000
+    autoplay: false
   }), [])
 
   const onChange = useCallback((_: number, nextSlide: number) => {
