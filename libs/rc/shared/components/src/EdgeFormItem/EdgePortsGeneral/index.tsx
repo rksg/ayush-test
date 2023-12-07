@@ -3,7 +3,6 @@ import { ReactNode, useEffect, useRef, useState } from 'react'
 import { Form, FormInstance }  from 'antd'
 import { StoreValue }          from 'antd/lib/form/interface'
 import { flatMap, isEqual }    from 'lodash'
-import _                       from 'lodash'
 import { ValidateErrorEntity } from 'rc-field-form/es/interface'
 import { useIntl }             from 'react-intl'
 
@@ -164,15 +163,18 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
       if (item.portType === EdgePortTypeEnum.LAN && item.natEnabled)
         item.natEnabled = false
 
-      if (item.gateway
-        && item.portType === EdgePortTypeEnum.LAN
+      if (item.portType === EdgePortTypeEnum.LAN
         && item.corePortEnabled === false) {
-        // should clear all non core port LAN port's gateway.
-        item.gateway = ''
 
+        // should clear all non core port LAN port's gateway.
+        if (item.gateway)
+          item.gateway = ''
+
+        if (item.ipMode === EdgeIpModeEnum.DHCP) {
         // prevent LAN port from using DHCP
         // when it had been core port before but not a core port now.
-        item.ipMode = EdgeIpModeEnum.STATIC
+          item.ipMode = EdgeIpModeEnum.STATIC
+        }
       }
     })
 
