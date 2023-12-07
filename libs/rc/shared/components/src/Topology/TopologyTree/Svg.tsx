@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect, useRef, useMemo, useContext } from 'react'
 
-import { select, tree, zoom } from 'd3'
+import { drag, select, tree } from 'd3'
 import _                      from 'lodash'
 
 import { transformData } from '../utils'
@@ -11,7 +11,6 @@ import Nodes                   from './Nodes'
 import { TopologyTreeContext } from './TopologyTreeContext'
 
 const NODE_SIZE: [number, number] = [45, 150]
-const SCALE_RANGE: [number, number] = [0.1, 5]
 
 const Svg: any = (props: any) => {
   const { width, height, data, edges, onNodeHover, onNodeClick, onLinkClick } = props
@@ -20,26 +19,20 @@ const Svg: any = (props: any) => {
   const [treeData, setTreeData] = useState<any>(null) // Replace 'any' with the actual data type
   const [nodesCoordinate, setNodesCoordinate] = useState<any>({})
   const [linksInfo, setLinksInfo] = useState<any>({})
-  const { scale, translate } = useContext(TopologyTreeContext)
+  const { scale, translate, setTranslate } =
+    useContext(TopologyTreeContext)
 
   useEffect(() => {
     const svg = select(refSvg.current)
-    const g = select(refMain.current)
 
     if (width && height) {
       svg.call(
-        zoom()
-          .extent([
-            [0, 0],
-            [width, height]
-          ])
-          .scaleExtent(SCALE_RANGE)
-          .on('zoom', ({ transform }) => {
-            g.attr('transform', transform)
+        drag()
+          .on('drag', (event: { x: any; y: any }) => {
+            const { x, y } = event
+            setTranslate([x, y])
           })
       )
-        .on('wheel.zoom', null)
-        .on('dblclick.zoom', null)
     }
     if (data) {
       setTreeData(transformData(data))

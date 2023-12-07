@@ -98,6 +98,13 @@ export function TopologyGraphComponent (props:{ venueId?: string,
       d3.select('#graph-zoom-fit').on('click', function () {
         newScale.current = 1.0
         setScale(newScale.current)
+
+        const treeContainer = document.querySelector('.d3-tree-container')
+        if(treeContainer?.clientWidth && treeContainer?.clientHeight ){
+          const translateX = treeContainer.clientWidth/2
+          const translateY = treeContainer.clientHeight/2
+          setTranslate([translateX, translateY])
+        }
       })
 
       d3.select('#enter-fullscreen').on('click', function () {
@@ -541,16 +548,11 @@ export function TopologyGraphComponent (props:{ venueId?: string,
 
   const debouncedHandleMouseClick = debounce(function (node){
     const treeContainer = document.querySelector('.d3-tree-container')
-    const treeMain = document.querySelector('.d3-tree-main')
 
     if(treeContainer?.clientWidth && treeContainer?.clientHeight ){
       const translateX = treeContainer.clientWidth/2
       const translateY = treeContainer.clientHeight/2 - node.x
       setTranslate([translateX, translateY])
-      const transformVal = treeMain?.getAttribute('transform')?.split(' ')
-      treeMain?.setAttribute('transform',
-        `translate(0, 0) ${transformVal !== undefined ?
-          transformVal[1] : 'scale(1)'}`)
       setScale(3)
     }
   })
@@ -743,7 +745,7 @@ export function TopologyGraphComponent (props:{ venueId?: string,
             </AutoComplete>
           }
           <UI.Topology>
-            <TopologyTreeContext.Provider value={{ scale, translate }}>
+            <TopologyTreeContext.Provider value={{ scale, translate, setTranslate }}>
               <TopologyTree
                 ref={graphRef}
                 data={treeData}
