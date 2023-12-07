@@ -138,6 +138,7 @@ export function QosMapSetForm () {
           <Form.Item
             name={qosMapSetRulesFieldName}
             hidden={true}
+            children={<></>}
           />
         </UI.FieldLabel>
       }

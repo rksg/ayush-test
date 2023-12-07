@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 import React from 'react'
 
 import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 import { useIsSplitOn, useIsTierAllowed }                     from '@acx-ui/feature-toggle'
@@ -163,7 +164,7 @@ describe('NetworkForm', () => {
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
   it('should create PSK network with WPA2 successfully', async () => {
-    render(<Provider><NetworkForm /></Provider>, { route: { params } })
+    render(<Provider><Form><NetworkForm /></Form></Provider>, { route: { params } })
 
     await fillInBeforeSettings('PSK network test')
 
@@ -176,7 +177,7 @@ describe('NetworkForm', () => {
   })
 
   it('should create PSK network with WPA2 and mac auth', async () => {
-    render(<Provider><NetworkForm /></Provider>, { route: { params } })
+    render(<Provider><Form><NetworkForm /></Form></Provider>, { route: { params } })
 
     await fillInBeforeSettings('PSK network test')
 
@@ -197,7 +198,7 @@ describe('NetworkForm', () => {
       (_, res, ctx) => res(ctx.json(mockMacRegistrationPoolList)))
     )
 
-    render(<Provider><NetworkForm /></Provider>, { route: { params } })
+    render(<Provider><Form><NetworkForm /></Form></Provider>, { route: { params } })
 
     await fillInBeforeSettings('PSK network test')
 
@@ -249,7 +250,7 @@ describe('NetworkForm', () => {
 
 
   it('should create PSK network with WP3 and mac auth security protocol', async () => {
-    render(<Provider><NetworkForm /></Provider>, { route: { params } })
+    render(<Provider><Form><NetworkForm /></Form></Provider>, { route: { params } })
 
     await fillInBeforeSettings('PSK network test')
 
@@ -272,7 +273,7 @@ describe('NetworkForm', () => {
   }, 20000)
 
   it('should create PSK network with WEP security protocol', async () => {
-    render(<Provider><NetworkForm /></Provider>, { route: { params } })
+    render(<Provider><Form><NetworkForm /></Form></Provider>, { route: { params } })
 
     await fillInBeforeSettings('PSK network test')
 

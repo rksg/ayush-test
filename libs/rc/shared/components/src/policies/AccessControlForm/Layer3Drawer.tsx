@@ -789,6 +789,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
     <DrawerFormItem
       name='layer3Rule'
       label={$t({ defaultMessage: 'Layer 3 Rules' }) + ` (${layer3RuleList.length})`}
+      children={<></>}
     />
     <DndProvider backend={HTML5Backend} >
       {isOnlyViewMode && !editMode.isEdit ? <Table

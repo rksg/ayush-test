@@ -67,7 +67,7 @@ const userProfile = {
 
 
 jest.mocked(useIsSplitOn).mockReturnValue(true)
-describe.skip('Property Unit Drawer', () => {
+describe('Property Unit Drawer', () => {
   beforeEach(() => {
     closeFn.mockClear()
     mockServer.use(
@@ -118,6 +118,10 @@ describe.skip('Property Unit Drawer', () => {
       rest.patch(
         PersonaUrls.updatePersona.url,
         (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        PropertyUrlsInfo.getPropertyUnitList.url,
+        (_, res, ctx) => res(ctx.json(mockPropertyUnitList))
       )
     )
   })

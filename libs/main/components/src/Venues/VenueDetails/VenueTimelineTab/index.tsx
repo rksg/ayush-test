@@ -42,7 +42,7 @@ const tabs : {
 
 export function VenueTimelineTab () {
   const { $t } = useIntl()
-  const { activeSubTab = tabs[0].key, venueId } = useParams()
+  const { activeSubTab, venueId } = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink(`/venues/${venueId}/venue-details/timeline/`)
 

@@ -252,7 +252,7 @@ export function RadioSettingsChannels320Mhz (props: {
   }
 
   return (<>
-    <Form.Item name={props.formName} hidden/>
+    <Form.Item name={props.formName} hidden children={<></>} />
     <CheckboxGroupFor320Mhz
       style={{ width: '100%' }}
       disabled={disabled}
