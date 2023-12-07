@@ -55,9 +55,7 @@ export default function EditMode (props: {
     return <div className={'sub-toolbar ' + (dirty ? 'animation' : '')}
       style={{ display: sectionsSubVisible ? 'block':'none' }}
     >
-      <Space
-        split={<Divider type='vertical' style={{ height: '28px' }} />}
-      >
+      <Space split={<Divider type='vertical' style={{ height: '28px' }} />}>
         <Button type='text' icon={<Plus/>} style={{ marginLeft: '36px' }}>
           {$t({ defaultMessage: 'Add Section' })}
         </Button>
@@ -102,7 +100,7 @@ export default function EditMode (props: {
   const restoreSubToolbar = () => {
     return <div className={'sub-toolbar ' + (dirty ? 'animation' : '')}
       style={{ display: restoreSubVisible ? 'block':'none' }} >
-      <Space>
+      <Space split={<Divider type='vertical' style={{ height: '28px' }} />}>
         <Button type='text' style={{ marginLeft: '36px' }}>
           {$t({ defaultMessage: 'Last Published Version' })}
         </Button>

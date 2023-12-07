@@ -80,7 +80,7 @@ export const useDashBoardUpdatedFilter = () => {
 }
 export default function CustomizedDashboard () {
   const { $t } = useIntl()
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const [visible, setVisible] = useState(false)
   const [visible2, setVisible2] = useState(false)
@@ -174,7 +174,7 @@ function DashboardPageHeader () {
   const { dashboardFilters, setDateFilterState } = useDashBoardUpdatedFilter()
   const { startDate , endDate, range } = dashboardFilters
   const { $t } = useIntl()
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
 
   const addMenu = <Menu
