@@ -15,14 +15,15 @@ import {
   FirmwareSwitchVenue,
   SwitchFirmwareStatus,
   SwitchFwStatusEnum,
+  SwitchStatusEnum,
   defaultSort,
+  parseSwitchVersion,
   sortProp
 } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
-import { parseSwitchVersion } from '../../../FirmwareUtils'
-import * as UI                from '../styledComponents'
+import * as UI from '../styledComponents'
 
 export interface VenueStatusDrawerProps {
   visible: boolean,
@@ -89,8 +90,16 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
               $t({ defaultMessage: 'Firmware Update - Writing To Flash' }),
             [SwitchFwStatusEnum.FW_UPD_COMPLETE]:
               $t({ defaultMessage: 'Firmware Update - Success' }),
+            [SwitchFwStatusEnum.FW_UPD_PRE_DOWNLOAD_COMPLETE]:
+              $t({ defaultMessage: 'Firmware Update - Pre-download Completed' }),
             [SwitchFwStatusEnum.FW_UPD_FAIL]:
-              $t({ defaultMessage: 'Firmware Update - Failed' })
+              $t({ defaultMessage: 'Firmware Update - Failed' }),
+            [SwitchStatusEnum.DISCONNECTED]:
+              $t({ defaultMessage: 'Disconnected from cloud' })
+          }
+
+          if (row.switchStatus === SwitchStatusEnum.DISCONNECTED) {
+            return fwMappings[row.switchStatus]
           }
 
           if (row.status === SwitchFwStatusEnum.FW_UPD_FAIL) {

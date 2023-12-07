@@ -1,5 +1,7 @@
 import { IntlShape } from 'react-intl'
 
+import { SwitchStatusEnum } from '..'
+
 export interface UpgradePreferences {
   days?: Array<string>,
   times?: Array<string>,
@@ -115,6 +117,7 @@ export interface EolApFirmware {
   latestEolVersion: string;
   apCount: string;
   apModels: string[];
+  isAbfGreaterThanVenueCurrentAbf: boolean;
 }
 
 export interface FirmwareVenue {
@@ -129,6 +132,7 @@ export interface FirmwareVenue {
   lastScheduleUpdate: string;
   eolApFirmwares?: EolApFirmware[];
   apModels?: string[];
+  currentVenueUnsupportedApModels? : string[]
 }
 
 export interface FirmwareVenueVersion {
@@ -234,13 +238,15 @@ export enum SwitchFwStatusEnum {
   FW_UPD_SYNCING_TO_REMOTE = 'FW_UPD_SYNCING_TO_REMOTE',
   FW_UPD_WRITING_TO_FLASH = 'FW_UPD_WRITING_TO_FLASH',
   FW_UPD_COMPLETE = 'FW_UPD_COMPLETE',
-  FW_UPD_FAIL = 'FW_UPD_FAIL'
+  FW_UPD_FAIL = 'FW_UPD_FAIL',
+  FW_UPD_PRE_DOWNLOAD_COMPLETE = 'FW_UPD_PRE_DOWNLOAD_COMPLETE'
 }
 export interface SwitchFirmwareStatus {
   switchId: string;
   switchName: string;
   status: SwitchFwStatusEnum;
   targetFirmware: string;
+  switchStatus: SwitchStatusEnum;
 }
 
 export interface CurrentVersions {

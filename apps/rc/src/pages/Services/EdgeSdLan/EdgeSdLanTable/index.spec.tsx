@@ -2,16 +2,18 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { EdgeUrlsInfo, ServiceOperation, ServiceType, getServiceDetailsLink, CommonUrlsInfo, EdgeSdLanUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                                                          from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within }                            from '@acx-ui/test-utils'
+import { EdgeUrlsInfo, ServiceOperation, ServiceType, getServiceDetailsLink, CommonUrlsInfo, EdgeSdLanUrls, EdgeGeneralFixtures } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                               from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within }                                                 from '@acx-ui/test-utils'
 
-import { mockEdgeList, mockedSdLanDataList } from '../__tests__/fixtures'
+import { mockedSdLanDataList } from '../__tests__/fixtures'
 
 import EdgeSdLanTable from '.'
 
+const { mockEdgeList } = EdgeGeneralFixtures
 const mockedUsedNavigate = jest.fn()
 const mockedGetEdgeList = jest.fn()
+const mockedDeleteReq = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
@@ -28,6 +30,7 @@ describe('SD-LAN Table', () => {
 
     mockedUsedNavigate.mockReset()
     mockedGetEdgeList.mockReset()
+    mockedDeleteReq.mockReset()
 
     mockServer.use(
       rest.post(
@@ -47,11 +50,10 @@ describe('SD-LAN Table', () => {
       ),
       rest.delete(
         EdgeSdLanUrls.deleteEdgeSdLan.url,
-        (_, res, ctx) => res(ctx.status(202))
-      ),
-      rest.delete(
-        EdgeSdLanUrls.batchDeleteEdgeSdLan.url,
-        (_, res, ctx) => res(ctx.status(202))
+        (_, res, ctx) => {
+          mockedDeleteReq()
+          return res(ctx.status(202))
+        }
       )
     )
   })
@@ -118,6 +120,7 @@ describe('SD-LAN Table', () => {
     await click(screen.getByRole('button', { name: 'Delete SD-LAN' }))
     await waitForElementToBeRemoved(dialogTitle)
     expect(screen.queryByRole('dialog')).toBeNull()
+    expect(mockedDeleteReq).toBeCalledTimes(1)
   })
 
   it('should delete multiple selected rows', async () => {
@@ -137,6 +140,7 @@ describe('SD-LAN Table', () => {
     await click(screen.getByRole('button', { name: 'Delete SD-LAN' }))
     await waitForElementToBeRemoved(dialogTitle)
     expect(screen.queryByRole('dialog')).toBeNull()
+    expect(mockedDeleteReq).toBeCalledTimes(2)
   })
 
   it('should display empty network name when networkInfos is not found', async () => {

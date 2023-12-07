@@ -1,18 +1,20 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }     from '@acx-ui/store'
+import { EdgeUrlsInfo }           from '@acx-ui/rc/utils'
+import { EdgePortConfigFixtures } from '@acx-ui/rc/utils'
+import { Provider }               from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
 
-import { EdgeEditContext }                        from '..'
-import { mockEdgePortConfig, mockEdgePortStatus } from '../../../__tests__/fixtures'
+import { EdgeEditContext } from '..'
 
 import Ports from '.'
+
+const { mockEdgePortConfig, mockEdgePortStatus } = EdgePortConfigFixtures
 
 jest.mock('@acx-ui/utils', () => {
   const reactIntl = jest.requireActual('react-intl')

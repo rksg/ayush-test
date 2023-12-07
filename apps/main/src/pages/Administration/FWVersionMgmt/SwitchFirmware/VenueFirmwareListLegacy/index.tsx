@@ -33,7 +33,8 @@ import {
   sortProp,
   defaultSort,
   FirmwareCategory,
-  switchSchedule
+  switchSchedule,
+  parseSwitchVersion
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
@@ -44,7 +45,6 @@ import {
   getReleaseFirmware,
   getSwitchNextScheduleTplTooltip,
   isSwitchNextScheduleTooltipDisabled,
-  parseSwitchVersion,
   toUserDate
 } from '../../FirmwareUtils'
 import { PreferencesDialog } from '../../PreferencesDialog'
@@ -413,14 +413,14 @@ export const VenueFirmwareTable = (
         onCancel={handleChangeScheduleModalCancel}
         onSubmit={handleChangeScheduleModalSubmit}
       />
-      {modelVisible && <PreferencesDialog
+      <PreferencesDialog
         visible={modelVisible}
         data={preferences}
         onCancel={handleModalCancel}
         onSubmit={handleModalSubmit}
         isSwitch={true}
         preDownload={preDownload?.preDownload}
-      />}
+      />
     </Loader>
   )
 }

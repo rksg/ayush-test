@@ -33,9 +33,9 @@ export default function PortalViewSelfSignConnect (props:{
       </UI.ViewSectionSocial>}
       {(!networkSocial || networkSocial.twitterEnabled) &&
       <UI.ViewSectionSocial $type='twitter'>
-        <UI.ViewSectionSocialIcon>
+        <UI.ViewSectionSocialTwitterIcon>
           <UI.TwitterOutlined/>
-        </UI.ViewSectionSocialIcon>
+        </UI.ViewSectionSocialTwitterIcon>
         <UI.ViewSectionSocialText>
           {portalLang.connectWithTwitter}</UI.ViewSectionSocialText>
       </UI.ViewSectionSocial>}

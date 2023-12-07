@@ -23,3 +23,8 @@ export interface TunnelProfileViewData {
   networkIds: string[]
   type: TunnelTypeEnum
 }
+
+export interface TunnelProfileFormType extends TunnelProfile {
+  ageTimeUnit? : string
+  disabledFields?: string[]
+}

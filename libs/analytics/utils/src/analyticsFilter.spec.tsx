@@ -345,8 +345,8 @@ describe('pathToFilter', () => {
     expect(pathToFilter(
       [{ type: 'zone', name: 'z1' }, { type: 'apGroup', name: 'a1' }]
     )).toEqual({
-      networkNodes: [[{ type: 'zone', name: 'z1' }]], // TODO , { type: 'apGroup', name: 'a1' }
-      switchNodes: [[{ type: 'zone', name: 'z1' }]] // TODO , { type: 'apGroup', name: 'a1' }
+      networkNodes: [[{ type: 'zone', name: 'z1' }, { type: 'apGroup', name: 'a1' }]],
+      switchNodes: [[{ type: 'zone', name: 'z1' }, { type: 'apGroup', name: 'a1' }]]
     })
   })
   it('returns correct filter for mlisa app', () => {
