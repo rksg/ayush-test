@@ -72,6 +72,7 @@ export function TopologyGraphComponent (props:{ venueId?: string,
   const [tooltipTargetNode, setTooltipTargetNode] = useState<Node>()
   const [filterNodes, setFilterNodes] = useState<OptionType[]>()
   const [scale, setScale] = useState<number>(1)
+  const [translate, setTranslate] = useState<number[]>([0,0])
   let newScale = useRef(1)
   const [tooltipPosition, setTooltipPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 })
 
@@ -118,7 +119,7 @@ export function TopologyGraphComponent (props:{ venueId?: string,
         //   }
         // }
       })
-
+      console.log(treeData)
       const _formattedNodes = nodes.map(node => ({
         value: (node.name as string).toString(),
         key: (node.id as string).toString(),
@@ -130,6 +131,13 @@ export function TopologyGraphComponent (props:{ venueId?: string,
       })) as OptionType[]
 
       setFilterNodes(_formattedNodes)
+
+      const treeContainer = document.querySelector('.d3-tree-container')
+      if(treeContainer?.clientWidth && treeContainer?.clientHeight ){
+        const translateX = treeContainer.clientWidth/2
+        const translateY = treeContainer.clientHeight/2 - 100
+        setTranslate([translateX, translateY])
+      }
     }
   }, [topologyData])
 
@@ -459,35 +467,35 @@ export function TopologyGraphComponent (props:{ venueId?: string,
   // }
 
   // Highlight path and show tooltip for connection on link mouseover
-  function highlightPath (selectedNode: any) {
-    const svg = d3.select(graphRef.current)
-    const allnodes = svg.selectAll('g.node')
-    const onmousepath = d3.selectAll('g.edgePath')
+  // function highlightPath (selectedNode: any) {
+  //   const svg = d3.select(graphRef.current)
+  //   const allnodes = svg.selectAll('g.node')
+  //   const onmousepath = d3.selectAll('g.edgePath')
 
-    const allpathes = onmousepath.select('.path')
+  //   const allpathes = onmousepath.select('.path')
 
-    allpathes
-      .on('mouseout', function (){
-        highlightNodeOnMouseout(selectedNode)
-		 })
+  //   allpathes
+  //     .on('mouseout', function (){
+  //       highlightNodeOnMouseout(selectedNode)
+  // 	 })
 
-      .on('mouseover',function (d: MouseEvent, edge: any): void {
-        if (edge.from === 'cloud_id')
-          return
-	      lowVisibleAll()
-	     d3.select(this).style('opacity', 1)    // just set the actual edge to opacity 1
-		 allnodes.each(function (d: any){
-          if(edge.from === d.id) {
-            d3.select(this).style('opacity',1)   // make all neighbors visible
-            setTooltipSourceNode(d.config)
-          }
-          if(edge.to === d.id) {
-            d3.select(this).style('opacity',1)
-            setTooltipTargetNode(d.config)
-          }
-        })
-		 })
-  }
+  //     .on('mouseover',function (d: MouseEvent, edge: any): void {
+  //       if (edge.from === 'cloud_id')
+  //         return
+  //       lowVisibleAll()
+  //      d3.select(this).style('opacity', 1)    // just set the actual edge to opacity 1
+  // 	 allnodes.each(function (d: any){
+  //         if(edge.from === d.id) {
+  //           d3.select(this).style('opacity',1)   // make all neighbors visible
+  //           setTooltipSourceNode(d.config)
+  //         }
+  //         if(edge.to === d.id) {
+  //           d3.select(this).style('opacity',1)
+  //           setTooltipTargetNode(d.config)
+  //         }
+  //       })
+  // 	 })
+  // }
 
   // function onLinkClick () {
   //   const onmousepath = d3.selectAll('g.edgePath')
@@ -511,26 +519,36 @@ export function TopologyGraphComponent (props:{ venueId?: string,
 
   // Highlight Node on mouseover
 
-  function hoverNode (selectedNode: any) {
-    const svg = d3.select(graphRef.current)
-    const allnodes = svg.selectAll('g.node')
+  // function hoverNode (selectedNode: any) {
+  //   const svg = d3.select(graphRef.current)
+  //   const allnodes = svg.selectAll('g.node')
 
-    const handleOnMouseLeave = () => {
-      highlightNodeOnMouseout(selectedNode)
+  //   const handleOnMouseLeave = () => {
+  //     highlightNodeOnMouseout(selectedNode)
+  //   }
+
+  //   allnodes
+  //     .on('mouseout',function (){
+  //       handleOnMouseLeave()
+  //     })
+  //     .on('mouseover',function (d: any, node: any){
+  //       if (node.id === 'cloud_id')
+  //         return
+  //       const self = this
+  //       lowVisibleAll()
+  //       d3.select(self).style('opacity', 1)    /*  just set the actual node to opacity 1 */
+  //     })
+  // }
+
+  const debouncedHandleMouseClick = debounce(function (node){
+    const treeContainer = document.querySelector('.d3-tree-container')
+    if(treeContainer?.clientWidth && treeContainer?.clientHeight ){
+      const translateX = treeContainer.clientWidth/2
+      const translateY = treeContainer.clientHeight/2 - node.x
+      setTranslate([translateX, translateY])
+      setScale(3)
     }
-
-    allnodes
-      .on('mouseout',function (){
-        handleOnMouseLeave()
-      })
-      .on('mouseover',function (d: any, node: any){
-        if (node.id === 'cloud_id')
-          return
-        const self = this
-        lowVisibleAll()
-        d3.select(self).style('opacity', 1)    /*  just set the actual node to opacity 1 */
-      })
-  }
+  })
 
   const debouncedHandleMouseEnter = debounce(function (node, d){
     setShowDeviceTooltip(true)
@@ -538,7 +556,6 @@ export function TopologyGraphComponent (props:{ venueId?: string,
     setTooltipPosition({ x: d?.nativeEvent.layerX + 30
       , y: d?.nativeEvent.layerY })
   }, 100)
-
 
   const debouncedHandleMouseEnterLink = debounce(function (edge, d){
     if(topologyData?.edges){
@@ -577,93 +594,93 @@ export function TopologyGraphComponent (props:{ venueId?: string,
     debouncedHandleMouseEnter.cancel()
   }
 
-  function highlightNodeOnMouseout (selectedNode: SVGGElement) {
-    if (selectedNode) {
-      lowVisibleAll();
-      (selectedNode as SVGGElement).style.opacity = '1'
-    } else {
-      highlightAll()
-    }
-  }
+  // function highlightNodeOnMouseout (selectedNode: SVGGElement) {
+  //   if (selectedNode) {
+  //     lowVisibleAll();
+  //     (selectedNode as SVGGElement).style.opacity = '1'
+  //   } else {
+  //     highlightAll()
+  //   }
+  // }
 
-  function searchNodeByid (svg: d3.Selection<SVGSVGElement | null, unknown, null, undefined>,
-    zoom: any,
-    selectedNode: any) {
-    const onmousepath = d3.selectAll('g.edgePath')
+  // function searchNodeByid (svg: d3.Selection<SVGSVGElement | null, unknown, null, undefined>,
+  //   zoom: any,
+  //   selectedNode: any) {
+  //   const onmousepath = d3.selectAll('g.edgePath')
 
-    const allpathes = onmousepath.select('.path')
-    lowVisibleAll()
+  //   const allpathes = onmousepath.select('.path')
+  //   lowVisibleAll()
 
-    if (selectedNode && selectedNode.__data__) {
-      const nodeId = selectedNode.__data__.id;
-      (selectedNode as SVGGElement).style.opacity = '1' as string;
+  //   if (selectedNode && selectedNode.__data__) {
+  //     const nodeId = selectedNode.__data__.id;
+  //     (selectedNode as SVGGElement).style.opacity = '1' as string;
 
-      // make default zoom before navigate to selectedNode
-      (d3.select('#graph-zoom-fit').node() as HTMLButtonElement).click()
+  //     // make default zoom before navigate to selectedNode
+  //     (d3.select('#graph-zoom-fit').node() as HTMLButtonElement).click()
 
-      allpathes.each(function (d: any){
-        if(d.v === nodeId) {
-          d3.select(this).style('opacity',1)
-        }
-        if(d.w === nodeId) {
-          d3.select(this).style('opacity',1)
-        }
-      })
-      // const targetX = (selectedNode as SVGGElement).getBoundingClientRect().x
+  //     allpathes.each(function (d: any){
+  //       if(d.v === nodeId) {
+  //         d3.select(this).style('opacity',1)
+  //       }
+  //       if(d.w === nodeId) {
+  //         d3.select(this).style('opacity',1)
+  //       }
+  //     })
+  //     // const targetX = (selectedNode as SVGGElement).getBoundingClientRect().x
 
-      // const graphWidth = _graph.getBBox().width
-      // const graphHeight = _graph.getBBox().height
-      // const width = parseInt(svg.style('width').replace(/px/, ''), 10)
-      // const height = parseInt(svg.style('height').replace(/px/, ''), 10)
+  //     // const graphWidth = _graph.getBBox().width
+  //     // const graphHeight = _graph.getBBox().height
+  //     // const width = parseInt(svg.style('width').replace(/px/, ''), 10)
+  //     // const height = parseInt(svg.style('height').replace(/px/, ''), 10)
 
-      // const coordX = ((width-graphWidth) / 2) + (width / 2) - targetX
+  //     // const coordX = ((width-graphWidth) / 2) + (width / 2) - targetX
 
-      // if (graphWidth > width) {
-      //   const translate = [coordX + 100, (height - graphHeight) / 2]
-      //   zoom.transform(svg.transition().duration(750),
-      //     d3.zoomIdentity.translate(translate[0], translate[1]))
-      // } else {
-      //   originalGraphScale(svg, zoom)
-      // }
+  //     // if (graphWidth > width) {
+  //     //   const translate = [coordX + 100, (height - graphHeight) / 2]
+  //     //   zoom.transform(svg.transition().duration(750),
+  //     //     d3.zoomIdentity.translate(translate[0], translate[1]))
+  //     // } else {
+  //     //   originalGraphScale(svg, zoom)
+  //     // }
 
-    }
-  }
+  //   }
+  // }
 
-  function getSelectedNode (deviceMac: string) {
-    const svg = d3.select(graphRef.current)
-    const allnodes = svg.selectAll('.node')
-    // this is selected / searched node
-    const selectedNode = allnodes.nodes().filter((node: any) =>{
-      return ((node.__data__.config.mac)?.toLowerCase() === deviceMac?.toLowerCase())
-      && node.__data__.id !== 'cloud_id'
-    })
+  // function getSelectedNode (deviceMac: string) {
+  //   const svg = d3.select(graphRef.current)
+  //   const allnodes = svg.selectAll('.node')
+  //   // this is selected / searched node
+  //   const selectedNode = allnodes.nodes().filter((node: any) =>{
+  //     return ((node.__data__.config.mac)?.toLowerCase() === deviceMac?.toLowerCase())
+  //     && node.__data__.id !== 'cloud_id'
+  //   })
 
-    return selectedNode && selectedNode[0]
-  }
+  //   return selectedNode && selectedNode[0]
+  // }
 
-  function highlightAll () {
-    const svg = d3.select(graphRef.current)
-    const edgelabels = svg.selectAll('.edgeLabel')
-    const allnodes = svg.selectAll('g.node')
-    const onmousepath = d3.selectAll('g.edgePath')
+  // function highlightAll () {
+  //   const svg = d3.select(graphRef.current)
+  //   const edgelabels = svg.selectAll('.edgeLabel')
+  //   const allnodes = svg.selectAll('g.node')
+  //   const onmousepath = d3.selectAll('g.edgePath')
 
-    const allpathes = onmousepath.select('.path')
-    edgelabels.style('opacity', 1)
-    allpathes.style('opacity', 1)/* set all edges to opacity 1 */
-    allnodes.style('opacity', 1)/* set all nodes visibillity */
-  }
+  //   const allpathes = onmousepath.select('.path')
+  //   edgelabels.style('opacity', 1)
+  //   allpathes.style('opacity', 1)/* set all edges to opacity 1 */
+  //   allnodes.style('opacity', 1)/* set all nodes visibillity */
+  // }
 
-  function lowVisibleAll () {
-    const svg = d3.select(graphRef.current)
-    const edgelabels = svg.selectAll('.edgeLabel')
-    const allnodes = svg.selectAll('g.node')
-    const onmousepath = d3.selectAll('g.edgePath')
+  // function lowVisibleAll () {
+  //   const svg = d3.select(graphRef.current)
+  //   const edgelabels = svg.selectAll('.edgeLabel')
+  //   const allnodes = svg.selectAll('g.node')
+  //   const onmousepath = d3.selectAll('g.edgePath')
 
-    const allpathes = onmousepath.select('.path')
-    edgelabels.style('opacity', 0.2)
-    allpathes.style('opacity', 0.2)
-    allnodes.style('opacity', 0.2)
-  }
+  //   const allpathes = onmousepath.select('.path')
+  //   edgelabels.style('opacity', 0.2)
+  //   allpathes.style('opacity', 0.2)
+  //   allnodes.style('opacity', 0.2)
+  // }
 
   return <Loader states={
     [
@@ -695,27 +712,24 @@ export function TopologyGraphComponent (props:{ venueId?: string,
               }
               style={{ width: 280 }}
               onSelect={(value: any, option: OptionType) => {
-                searchNodeByid(d3.select(graphRef.current), d3.zoom(),
-                  getSelectedNode(option.item.mac as string))
-                highlightPath(getSelectedNode(option.item.mac as string))
-                hoverNode(getSelectedNode(option.item.mac as string))
+                document.querySelectorAll('.focusNode').forEach(
+                  item => item.classList.remove('focusNode'))
+                if(option.item.id){
+                  document.getElementById(option.item.id)?.classList.add('focusNode')
+                }
               }}
               allowClear={true}
               onSearch={
                 (inputValue) => {
                   if (inputValue === '') {
-                    highlightPath(undefined)
-                    hoverNode(undefined)
-                    highlightAll()
                     return false
                   }
                   return
                 }
               }
               onClear={() => {
-                highlightPath(undefined)
-                hoverNode(undefined)
-                highlightAll()
+                document.querySelectorAll('.focusNode').forEach(
+                  item => item.classList.remove('focusNode'))
               }}
             >
               <Input
@@ -724,13 +738,13 @@ export function TopologyGraphComponent (props:{ venueId?: string,
             </AutoComplete>
           }
           <UI.Topology>
-            <TopologyTreeContext.Provider value={{ scale }}>
+            <TopologyTreeContext.Provider value={{ scale, translate }}>
               <TopologyTree
-                id={Math.random()}
                 ref={graphRef}
                 data={treeData}
                 edges={topologyData.edges}
-                onNodeClick={debouncedHandleMouseEnter}
+                onNodeHover={debouncedHandleMouseEnter}
+                onNodeClick={debouncedHandleMouseClick}
                 onLinkClick={debouncedHandleMouseEnterLink}
               />
             </TopologyTreeContext.Provider>

@@ -14,13 +14,13 @@ const NODE_SIZE: [number, number] = [45, 150]
 const SCALE_RANGE: [number, number] = [0.1, 5]
 
 const Svg: any = (props: any) => {
-  const { width, height, data, edges, onNodeClick, onLinkClick } = props
+  const { width, height, data, edges, onNodeHover, onNodeClick, onLinkClick } = props
   const refSvg = useRef<any>(null)
   const refMain = useRef<any>(null)
   const [treeData, setTreeData] = useState<any>(null) // Replace 'any' with the actual data type
   const [nodesCoordinate, setNodesCoordinate] = useState<any>({})
   const [linksInfo, setLinksInfo] = useState<any>({})
-  const { scale } = useContext(TopologyTreeContext)
+  const { scale, translate } = useContext(TopologyTreeContext)
 
   useEffect(() => {
     const svg = select(refSvg.current)
@@ -46,7 +46,7 @@ const Svg: any = (props: any) => {
     }
   }, [width, height, data])
 
-  const { nodes, links, translate } = useMemo(() => {
+  const { nodes, links } = useMemo(() => {
     if (width && height && treeData && edges) {
       const treeLayout = tree()
         .size([height, width]) // Swap height and width for vertical layout
@@ -80,13 +80,11 @@ const Svg: any = (props: any) => {
       if (!Object.keys(nodesCoordinate).length) {
         setNodesCoordinate(nodePositionData)
       }
-      const translate = [width/2, NODE_SIZE[1]/2]
-      return { nodes, links, translate }
+      return { nodes, links }
     } else {
       return {
         nodes: [],
-        links: [],
-        translate: [0, 0]
+        links: []
       }
     }
   }, [treeData, edges, width, height])
@@ -128,6 +126,7 @@ const Svg: any = (props: any) => {
             <Nodes
               nodes={nodes}
               expColEvent={expColEvent}
+              onHover={onNodeHover}
               onClick={onNodeClick}
               nodesCoordinate={nodesCoordinate}
             />

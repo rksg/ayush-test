@@ -1,7 +1,7 @@
 import React, { useState, useEffect, MouseEvent } from 'react'
 
-import { MinusCircleOutlined, PlusCircleOutlined, TopologyCloud } from '@acx-ui/icons'
-import { Node }                                                   from '@acx-ui/rc/utils'
+import { MinusCircleOutlined, PlusCircleOutlined, R1Cloud } from '@acx-ui/icons'
+import { Node }                                             from '@acx-ui/rc/utils'
 
 import { getDeviceIcon, getDeviceColor, truncateLabel } from '../utils'
 
@@ -14,6 +14,7 @@ interface NodeProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   nodes: any;
   expColEvent: (nodeId: string) => void;
+  onHover: (node: NodeData, event: MouseEvent) => void;
   onClick: (node: NodeData, event: MouseEvent) => void;
   nodesCoordinate: { [id: string]: { x: number; y: number } };
 }
@@ -21,7 +22,7 @@ interface NodeProps {
 const Nodes: React.FC<NodeProps> = (props) => {
   const [color, setColor] = useState<{ [id: string]: string }>({})
   let delayHandler: NodeJS.Timeout
-  const { nodes, expColEvent, onClick, nodesCoordinate } = props
+  const { nodes, expColEvent, onHover, onClick, nodesCoordinate } = props
 
   useEffect(() => {
     nodes
@@ -50,7 +51,7 @@ const Nodes: React.FC<NodeProps> = (props) => {
       return
     }
     delayHandler = setTimeout(() => {
-      onClick(node, event)
+      onHover(node, event)
     }, 1000)
   }
 
@@ -58,7 +59,9 @@ const Nodes: React.FC<NodeProps> = (props) => {
     clearTimeout(delayHandler)
   }
 
-  const handleClick = () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleClick = (node: any , event: any) => {
+    onClick(node, event)
     clearTimeout(delayHandler)
   }
 
@@ -90,14 +93,14 @@ const Nodes: React.FC<NodeProps> = (props) => {
               <g
                 onMouseEnter={(e) => handleMouseEnter(node, e)}
                 onMouseLeave={handleMouseLeave}
-                onClick={handleClick}
+                onClick={(e) => handleClick(node, e)}
               >
                 <circle cx='0' cy='0' r='15' className={`${node.data.status}-circle`} />
                 <g className={`${node.data.status}-icon`}>
                   {node.parent ? (
                     getDeviceIcon(node.data.type, node.data.status)
                   ) : (
-                    <TopologyCloud width={24} height={24} x={-12} y={-12} />
+                    <R1Cloud width={24} height={24} x={-12} y={-12} />
                   )}
                 </g>
                 <g>

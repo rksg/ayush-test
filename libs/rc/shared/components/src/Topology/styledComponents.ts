@@ -159,9 +159,9 @@ height: 100%;
       }
     }
 
-    .tree-node:hover{
+    .tree-node.focusNode, .tree-node:hover{
       .undefined-circle {
-        fill: var(--acx-accents-blue-50);
+        fill: var(--acx-accents-orange-30);
         opacity: 0.2;
       }
       .Operational-circle {
