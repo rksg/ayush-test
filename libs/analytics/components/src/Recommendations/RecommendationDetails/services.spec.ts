@@ -136,7 +136,7 @@ describe('recommendation services', () => {
       },
       statusTrail: mockedRecommendationCRRM.statusTrail,
       crrmOptimizedState: crrmStates.optimized,
-      crrmInterferingLinksText: '2 interfering links will be optimized to 0'
+      crrmInterferingLinksText: 'From 2 to 0 interfering links'
     } as unknown as EnhancedRecommendation)
   })
 

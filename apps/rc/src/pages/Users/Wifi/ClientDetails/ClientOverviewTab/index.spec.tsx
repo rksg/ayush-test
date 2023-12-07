@@ -195,7 +195,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
         render(<Provider>
           <ClientProperties
             clientStatus='connected'
-            clientDetails={clientList[0]}
+            clientDetails={clientList[0] as Client}
           />
         </Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
@@ -214,7 +214,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
         render(<Provider>
           <ClientProperties
             clientStatus='connected'
-            clientDetails={clientData}
+            clientDetails={clientData as Client}
           />
         </Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
@@ -253,7 +253,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
         render(<Provider>
           <ClientProperties
             clientStatus='connected'
-            clientDetails={clientDetails}
+            clientDetails={clientDetails as unknown as Client}
           />
         </Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
@@ -304,7 +304,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
         render(<Provider>
           <ClientProperties
             clientStatus='connected'
-            clientDetails={clientDetails}
+            clientDetails={clientDetails as unknown as Client}
           />
         </Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
@@ -313,7 +313,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
         expect(await screen.findByText('Operational Data (Current)')).toBeVisible()
         expect(await screen.findByText('Guest Details')).toBeVisible()
         expect(await screen.findByText(GuestClient.data[3].emailAddress)).toBeVisible()
-        expect(await screen.findByText(GuestClient.data[3].mobilePhoneNumber)).toBeVisible()
+        expect(await screen.findByText(GuestClient.data[3].mobilePhoneNumber!)).toBeVisible()
       })
 
       it('should render dpsk client correctly', async () => {
@@ -339,7 +339,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
         render(<Provider>
           <ClientProperties
             clientStatus='connected'
-            clientDetails={clientDetails}
+            clientDetails={clientDetails as unknown as Client}
           />
         </Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
@@ -377,7 +377,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
         render(<Provider>
           <ClientProperties
             clientStatus='historical'
-            clientDetails={clientDetails}
+            clientDetails={clientDetails as unknown as Client}
           />
         </Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
@@ -417,7 +417,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
               disconnectTime: null,
               sessionDuration: null,
               ssid: null
-            }}
+            } as unknown as Client}
           />
         </Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
@@ -468,7 +468,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
             clientDetails={{
               ...clientDetails,
               ssid: null
-            }}
+            } as unknown as Client}
           />
         </Provider>, {
           route: {
@@ -502,7 +502,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
         render(<Provider>
           <ClientProperties
             clientStatus='historical'
-            clientDetails={clientDetails}
+            clientDetails={clientDetails as unknown as Client}
           />
         </Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }

@@ -299,7 +299,7 @@ describe('EditEdge ports - sub-interface', () => {
           path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
-    const lagTab = await screen.findByRole('tab', { name: 'LAG 11' })
+    const lagTab = await screen.findByRole('tab', { name: 'LAG 1' })
     await userEvent.click(lagTab)
     expect((await screen.findAllByRole('row')).length).toBe(11)
   })
@@ -322,7 +322,7 @@ describe('EditEdge ports - sub-interface', () => {
           path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
-    const lagTab = await screen.findByRole('tab', { name: 'LAG 11' })
+    const lagTab = await screen.findByRole('tab', { name: 'LAG 1' })
     await userEvent.click(lagTab)
     const rows = await screen.findAllByRole('row')
     await user.click(within(rows[1]).getByRole('radio'))
@@ -358,7 +358,7 @@ describe('EditEdge ports - sub-interface', () => {
         }
       })
 
-    const lagTab = await screen.findByRole('tab', { name: 'LAG 11' })
+    const lagTab = await screen.findByRole('tab', { name: 'LAG 1' })
     await userEvent.click(lagTab)
 
     await userEvent.click(await screen.findByRole('button', { name: /Import from file/i }))

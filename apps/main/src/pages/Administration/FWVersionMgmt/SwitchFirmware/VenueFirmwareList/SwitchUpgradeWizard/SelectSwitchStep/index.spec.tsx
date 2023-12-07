@@ -198,9 +198,9 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
 
     // Clicks Expand button
     const venue = await screen.findByRole('row', { name: /Karen-Venue1/i })
-    await userEvent.click(within(venue).getByTestId('arrow-expand'))
+    await userEvent.click(within(venue).getByTestId('arrow-right'))
 
-    expect(await screen.findByTestId('arrow-collapse')).toBeInTheDocument()
+    expect(await screen.findByTestId('arrow-expand')).toBeInTheDocument()
   })
 
   it('render SwitchUpgradeWizard - search switch', async () => {
