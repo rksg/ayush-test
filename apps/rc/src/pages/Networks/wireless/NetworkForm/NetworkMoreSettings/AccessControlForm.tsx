@@ -47,28 +47,41 @@ const { Option } = Select
 
 export function AccessControlForm () {
   const { $t } = useIntl()
-  const [enabledProfile, setEnabledProfile] = useState(false)
+  const [enabledProfile, setEnabledProfile] = useState(true)
 
   const { data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
 
   useEffect(() => {
-    if (data?.wlan?.advancedCustomization) {
+    const { advancedCustomization } = data?.wlan || {}
+    if (advancedCustomization) {
+      const {
+        accessControlProfileId,
+        l2AclEnable,
+        l3AclEnable,
+        devicePolicyId,
+        applicationPolicyEnable,
+        userDownlinkRateLimiting = 0,
+        userUplinkRateLimiting = 0
+      } = advancedCustomization
+
+      const enableDeviceOs = !_.isEmpty(devicePolicyId)
+      const enableDownloadLimit = userDownlinkRateLimiting > 0
+      const enableUploadLimit = userUplinkRateLimiting > 0
+      const enableClientRateLimit = enableDownloadLimit || enableUploadLimit
+      const accessControlProfileEnable = !_.isEmpty(accessControlProfileId)
+
       form.setFieldsValue({
-        enableDeviceOs: !_.isEmpty(data.wlan.advancedCustomization.devicePolicyId),
-        enableDownloadLimit: (get(data,
-          'wlan.advancedCustomization.userDownlinkRateLimiting')) > 0,
-        enableUploadLimit: (get(data,
-          'wlan.advancedCustomization.userUplinkRateLimiting')) > 0,
-        enableClientRateLimit: (get(data,
-          'wlan.advancedCustomization.userDownlinkRateLimiting')) > 0 ||
-          (get(data,
-            'wlan.advancedCustomization.userUplinkRateLimiting')) > 0,
-        accessControlProfileEnable: !_.isEmpty(get(data,
-          'wlan.advancedCustomization.accessControlProfileId'))
+        enableDeviceOs,
+        enableDownloadLimit,
+        enableUploadLimit,
+        enableClientRateLimit,
+        accessControlProfileEnable
       })
-      setEnabledProfile(!_.isEmpty(
-        get(data, 'wlan.advancedCustomization.accessControlProfileId')))
+
+      setEnabledProfile(accessControlProfileEnable ||
+        (!l2AclEnable && !l3AclEnable &&
+         !enableDeviceOs && !applicationPolicyEnable && !enableClientRateLimit))
     }
   }, [])
 
