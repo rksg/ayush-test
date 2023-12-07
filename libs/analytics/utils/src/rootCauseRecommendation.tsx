@@ -79,6 +79,86 @@ const extractFailureCode = (
         code => code.startsWith('CCD_REASON') || ttcFailureCodes.includes(code))[0]
 }
 
+type AirtimeBChecks = {
+  isRogueDetectionEnabled: boolean
+  isCRRMRaised: boolean
+}
+
+type AirtimeBArray = AirtimeBChecks[]
+
+const extractAirtimeBCode = (
+  checks: AirtimeBArray
+) => {
+  const combinedCheck = checks.reduce((result, currentObject) => {
+    Object.assign(result, currentObject)
+    return result
+  }, {}) as AirtimeBChecks
+
+  return combinedCheck.isRogueDetectionEnabled === true && combinedCheck.isCRRMRaised === true
+    ? 'BOTH_TRUE'
+    : combinedCheck.isRogueDetectionEnabled === true && combinedCheck.isCRRMRaised === false
+      ? 'ROGUE_ENABLED'
+      : combinedCheck.isRogueDetectionEnabled === false && combinedCheck.isCRRMRaised === true
+        ? 'CRRM_RAISED'
+        : 'BOTH_FALSE'
+}
+
+type AirtimeTxChecks = {
+  isRogueDetectionEnabled: boolean
+  isCRRMRaised: boolean
+}
+
+type AirtimeTxArray = AirtimeTxChecks[]
+
+const extractAirtimeTxCode = (
+  checks: AirtimeTxArray
+) => {
+  return checks.length === 0
+    ? 'DEFAULT'
+    : ''
+}
+
+type AirtimeRxChecks = {
+  isHighDensityWifiDevices: boolean
+  isHighSsidCountPerRadio: boolean
+  isHighPacketErrorCount: boolean
+  isLargeMgmtFrameCount: boolean
+  isHighLegacyWifiDevicesCount: boolean
+}
+
+type AirtimeRxArray = AirtimeRxChecks[]
+
+
+const extractAirtimeRxCode = (
+  checks: AirtimeRxArray
+) => {
+  const combinedCheck = checks.reduce((result, currentObject) => {
+    Object.assign(result, currentObject)
+    return result
+  }, {}) as AirtimeRxChecks
+
+  const clientLoadBalanceOn = 'Click here to enable client load balancing AIOps recommendation.'
+  const clientLoadBalanceOff = 'Increase AP density to distribute the client load.'
+
+  const highSsidCountText = 'There are currently an average of X SSIDs/WLANs being broadcasted per AP. Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less. Enabling Airtime Decongestion would be recommended as well.'
+
+  const highPacketCountText = 'Enable Airtime Decongestion.'
+
+  const largeFrameCount = 'Click here to apply the AI-Driven RRM recommendation.'
+  const channelFlyDisabled = 'Enable ChannelFly for the Zone.'
+  const channelFlyEnabled = 'Review the channel planning, AP density and deployment.'
+
+  const highLegacyCount = 'Click here for a list of legacy Wi-Fi devices. Either remove these legacy devices or upgrade them. If possible, enable OFDM-only mode on WLAN XXX, YYY, etc. '
+
+  const allTrue = Object.values(combinedCheck).every(value => value === true)
+  const allFalse = Object.values(combinedCheck).every(value => value === false)
+
+  return allTrue
+    ? 'ALL_TRUE'
+    : allFalse
+      ? 'ALL_FALSE'
+      : 'DEFAULT'
+}
 
 export const rootCauseRecommendationMap = {
   'assoc': {
@@ -941,7 +1021,7 @@ export const rootCauseRecommendationMap = {
     }
   },
   'airtime-b': {
-    DEFAULT: {
+    BOTH_FALSE: {
       rootCauses: defineMessage({
         defaultMessage: `
           <p>Airtime Busy is unusually high and this is typically caused by external sources of interference, such as neighboring WiFi networks, microwave ovens, Bluetooth devices, and other electronic devices operating in the same frequency range, can cause disruptions to your network.</p>
@@ -952,11 +1032,15 @@ export const rootCauseRecommendationMap = {
       }),
       recommendations: defineMessage({
         defaultMessage: `
-          <p>TBD</p>
+          <p>Identifying the sources of external interference is the key to resolving this issue:</p>
+          <ol>
+            <li>Enable rogue AP detection to search, identify, and physically remove rogue APs from your premises.</li>
+            <li>Identify and mitigate sources of non-WiFi interference, such as microwave ovens, Bluetooth devices, and cordless phones.</li>
+          </ol>
         `
       })
     },
-    VARIOUS_REASONS: {
+    BOTH_TRUE: {
       rootCauses: defineMessage({
         defaultMessage: `
           <p>Airtime Busy is unusually high and this is typically caused by external sources of interference, such as neighboring WiFi networks, microwave ovens, Bluetooth devices, and other electronic devices operating in the same frequency range, can cause disruptions to your network.</p>
@@ -967,7 +1051,51 @@ export const rootCauseRecommendationMap = {
       }),
       recommendations: defineMessage({
         defaultMessage: `
-          <p>TBD</p>
+          <p>Identifying the sources of external interference is the key to resolving this issue:</p>
+          <ol>
+            <li>Click here for a list of rogue APs for removal in your premises.</li>
+            <li>Identify and mitigate sources of non-WiFi interference, such as microwave ovens, Bluetooth devices, and cordless phones.</li>
+            <li>Click here to apply the AI-Driven RRM recommendation.</li>
+          </ol>
+        `
+      })
+    },
+    ROGUE_ENABLED: {
+      rootCauses: defineMessage({
+        defaultMessage: `
+          <p>Airtime Busy is unusually high and this is typically caused by external sources of interference, such as neighboring WiFi networks, microwave ovens, Bluetooth devices, and other electronic devices operating in the same frequency range, can cause disruptions to your network.</p>
+          <ol>
+            <li>TBD</li>
+          </ol>
+        `
+      }),
+      recommendations: defineMessage({
+        defaultMessage: `
+          <p>Identifying the sources of external interference is the key to resolving this issue:</p>
+          <ol>
+            <li>Click here for a list of rogue APs for removal in your premises.</li>
+            <li>Identify and mitigate sources of non-WiFi interference, such as microwave ovens, Bluetooth devices, and cordless phones.</li>
+          </ol>
+        `
+      })
+    },
+    CRRM_RAISED: {
+      rootCauses: defineMessage({
+        defaultMessage: `
+          <p>Airtime Busy is unusually high and this is typically caused by external sources of interference, such as neighboring WiFi networks, microwave ovens, Bluetooth devices, and other electronic devices operating in the same frequency range, can cause disruptions to your network.</p>
+          <ol>
+            <li>TBD</li>
+          </ol>
+        `
+      }),
+      recommendations: defineMessage({
+        defaultMessage: `
+          <p>Identifying the sources of external interference is the key to resolving this issue:</p>
+          <ol>
+            <li>Enable rogue AP detection to search, identify, and physically remove rogue APs from your premises.</li>
+            <li>Identify and mitigate sources of non-WiFi interference, such as microwave ovens, Bluetooth devices, and cordless phones.</li>
+            <li>Click here to apply the AI-Driven RRM recommendation.</li>
+          </ol>
         `
       })
     }
@@ -984,11 +1112,14 @@ export const rootCauseRecommendationMap = {
       }),
       recommendations: defineMessage({
         defaultMessage: `
-          <p>TBD</p>
+          <p>Based on the root cause/s identified, the recommended resolutions are:</p>
+          <ol>
+            <li>Click here to enable client load balancing AIOps recommendation.</li>
+          </ol>
         `
       })
     },
-    VARIOUS_REASONS: {
+    ALL_TRUE: {
       rootCauses: defineMessage({
         defaultMessage: `
           <p>Airtime Rx is unusually high, and this can be a result from various factors, such as a high density of Wi-Fi devices, channel congestion due to co-channel interference, excessive number of management frames, and sub-optimal configurations.</p>
@@ -999,7 +1130,31 @@ export const rootCauseRecommendationMap = {
       }),
       recommendations: defineMessage({
         defaultMessage: `
-          <p>TBD</p>
+          <p>Based on the root cause/s identified, the recommended resolutions are:</p>
+          <ol>
+            <li>Click here to enable client load balancing AIOps recommendation.</li>
+            <li>There are currently an average of X SSIDs/WLANs being broadcasted per AP. Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less. Enabling Airtime Decongestion would be recommended as well.</li>
+            <li>Click here to apply the AI-Driven RRM recommendation.</li>
+            <li>Click here for a list of legacy Wi-Fi devices. Either remove these legacy devices or upgrade them. If possible, enable OFDM-only mode on WLAN XXX, YYY, etc. </li>
+          </ol>
+        `
+      })
+    },
+    ALL_FALSE: {
+      rootCauses: defineMessage({
+        defaultMessage: `
+          <p>Airtime Rx is unusually high, and this can be a result from various factors, such as a high density of Wi-Fi devices, channel congestion due to co-channel interference, excessive number of management frames, and sub-optimal configurations.</p>
+          <ol>
+            <li>TBD</li>
+          </ol>
+        `
+      }),
+      recommendations: defineMessage({
+        defaultMessage: `
+          <p>Based on the root cause/s identified, the recommended resolutions are:</p>
+          <ol>
+            <li>Click here to enable client load balancing AIOps recommendation.</li>
+          </ol>
         `
       })
     }
@@ -1016,7 +1171,9 @@ export const rootCauseRecommendationMap = {
       }),
       recommendations: defineMessage({
         defaultMessage: `
-          <p>TBD</p>
+          <p>Based on the root cause/s identified, the recommended resolutions are:</p>
+          <ol>
+          </ol>
         `
       })
     },
@@ -1031,7 +1188,9 @@ export const rootCauseRecommendationMap = {
       }),
       recommendations: defineMessage({
         defaultMessage: `
-          <p>TBD</p>
+          <p>Based on the root cause/s identified, the recommended resolutions are:</p>
+          <ol>
+          </ol>
         `
       })
     }
@@ -1177,12 +1336,24 @@ const TBD = defineMessage({ defaultMessage: '<p>TBD</p>' })
 const calculating = defineMessage({ defaultMessage: '<p>Calculating...</p>' })
 
 export function getRootCauseAndRecommendations ({ code, metadata }: Incident) {
+  console.log('metadata', metadata)
   const failureType = codeToFailureTypeMap[code]
   if (!metadata.rootCauseChecks) return [{ rootCauses: calculating, recommendations: calculating }]
   const { checks } = metadata.rootCauseChecks
-  const failureCode = extractFailureCode(checks)
-  const result = _.get(rootCauseRecommendationMap, [failureType, failureCode])
-    ?? ccd80211RootCauseRecommendations[failureCode]
+  console.log('failureType', failureType)
+  let failureCode
+  if (failureType === 'airtime-b') {
+    failureCode = extractAirtimeBCode(checks as AirtimeBArray)
+  } else if (failureType === 'airtime-tx') {
+    failureCode = extractAirtimeTxCode(checks as AirtimeTxArray)
+  } else if (failureType === 'airtime-rx') {
+    failureCode = extractAirtimeRxCode(checks as AirtimeRxArray)
+  } else {
+    failureCode = extractFailureCode(checks)
+  }
+  console.log('failureCode', failureCode)
+  const result = _.get(rootCauseRecommendationMap, [failureType, failureCode!])
+    ?? ccd80211RootCauseRecommendations[failureCode!]
     ?? { rootCauses: TBD, recommendations: TBD }
   return [result]
 }
