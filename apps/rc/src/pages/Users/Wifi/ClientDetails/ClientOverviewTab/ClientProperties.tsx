@@ -601,7 +601,7 @@ function GuestDetails ({ guestDetail, clientMac }: {
           client =>
             <TenantLink
               // eslint-disable-next-line max-len
-              to={`/users/wifi/clients/${client.clientMac}/details/overview?hostname=${client.hostname}`}
+              to={`/users/wifi/clients/${client.clientMac}/details/overview`}
               key={client.clientMac}
             >
               {client.clientMac}
