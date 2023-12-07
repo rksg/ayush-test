@@ -78,7 +78,7 @@ describe('Recommendations utils', () => {
         current: 2,
         previous: null,
         projected: 0
-      })).toBe('2 interfering links will be optimized to 0')
+      })).toBe('From 2 to 0 interfering links')
     })
 
     it('returns text when applyscheduled', () => {
@@ -86,7 +86,7 @@ describe('Recommendations utils', () => {
         current: 2,
         previous: null,
         projected: 0
-      })).toBe('2 interfering links will be optimized to 0')
+      })).toBe('From 2 to 0 interfering links')
     })
 
     it('returns text when applyfailed', () => {
