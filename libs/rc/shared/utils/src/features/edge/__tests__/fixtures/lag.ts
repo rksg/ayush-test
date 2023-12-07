@@ -56,55 +56,65 @@ export const mockEdgeLagStatusList = {
   page: 1,
   data: [
     {
-      lagId: '11',
+      tenantId: 'test-tenant-id-1',
+      serialNumber: 'edge-serial-number-1',
+      lagId: 1,
       name: 'LAG 1',
       description: '',
       lagType: EdgeLagTypeEnum.LACP,
+      lacpTimeout: EdgeLagTimeoutEnum.SHORT,
       status: 'Up',
       adminStatus: 'Enabled',
       lagMembers: [
         {
           portId: '774d0d62-265a-421a-9a85-cdcfbefeb065',
           name: 'Port 1',
-          lacpState: 'Up',
+          state: 'Up',
           systemId: '00:aa:bb:cc:dd:ee',
           key: '100',
           lacpTimeout: EdgeLagTimeoutEnum.SHORT,
           peerSystemId: '00:aa:bb:cc:dd:aa',
           peerKey: '200',
-          lacpRxCount: 10,
-          lacpTxCount: 10
+          rxCount: 10,
+          txCount: 10
         },
         {
           portId: 'c2037758-f234-4477-b9dd-913f974f6516',
           name: 'Port 2',
-          lacpState: 'Up',
+          state: 'Up',
           systemId: '00:aa:bb:cc:11:22',
           key: '100',
           lacpTimeout: EdgeLagTimeoutEnum.SHORT,
           peerSystemId: '00:aa:bb:cc:33:44',
           peerKey: '200',
-          lacpRxCount: 10,
-          lacpTxCount: 10
+          rxCount: 10,
+          txCount: 10
         }
       ],
       portType: EdgePortTypeEnum.WAN,
+      vlan: '1',
       mac: 'AA:BB:CC:DD:EE:FF',
-      ip: '1.1.1.1',
-      ipMode: EdgeIpModeEnum.DHCP
+      ipMode: EdgeIpModeEnum.DHCP,
+      isCorePort: 'true'
     },
     {
-      lagId: '12',
+      tenantId: 'test-tenant-id-2',
+      serialNumber: 'edge-serial-number-2',
+      lagId: 2,
       name: 'LAG 2',
       description: '',
       lagType: EdgeLagTypeEnum.LACP,
+      lacpTimeout: EdgeLagTimeoutEnum.SHORT,
       status: 'Down',
       adminStatus: 'Enabled',
       lagMembers: [],
       portType: EdgePortTypeEnum.LAN,
+      vlan: '2',
       mac: 'A1:BB:2D:DD:EE:FF',
       ip: '123.1.2.1',
-      ipMode: EdgeIpModeEnum.STATIC
+      subnet: '255.255.255.0',
+      ipMode: EdgeIpModeEnum.STATIC,
+      isCorePort: 'true'
     }
   ]
 }
