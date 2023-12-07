@@ -175,11 +175,11 @@ describe('pairGraphs', () => {
     expect(paired[0].nodes
       .filter(node => node.showTooltip)
       .map(node => node.name))
-      .toEqual(['name2', 'name3', 'name6', 'name8'])
+      .toEqual(sample.nodes.map(n => n.apName))
     expect(paired[1].nodes
       .filter(node => node.showTooltip)
       .map(node => node.name))
-      .toEqual(['name2', 'name3', 'name6', 'name8'])
+      .toEqual(sampleForPairingTest.nodes.map(n => n.apName))
     expect(paired[1].nodes.map(node => node.value))
       .toEqual([...paired[0].nodes.map(node => node.value), [36]])
   })
