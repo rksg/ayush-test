@@ -118,7 +118,7 @@ describe('ScheduleStep', () => {
     userEvent.click(calendarDate)
     expect(await screen.findByDisplayValue(/2023-11-16/i)).toBeInTheDocument()
 
-    const selectedTime = screen.getByRole('radio', {
+    const selectedTime = await screen.findByRole('radio', {
       name: /12 am - 02 am/i
     })
     userEvent.click(selectedTime)

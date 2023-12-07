@@ -33,7 +33,8 @@ import {
   sortProp,
   defaultSort,
   FirmwareCategory,
-  switchSchedule
+  switchSchedule,
+  parseSwitchVersion
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
@@ -44,7 +45,6 @@ import {
   getReleaseFirmware,
   getSwitchNextScheduleTplTooltip,
   isSwitchNextScheduleTooltipDisabled,
-  parseSwitchVersion,
   toUserDate
 } from '../../FirmwareUtils'
 import { PreferencesDialog } from '../../PreferencesDialog'

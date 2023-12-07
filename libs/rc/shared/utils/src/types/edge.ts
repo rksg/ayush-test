@@ -289,13 +289,13 @@ export enum EdgeTroubleshootingType {
 export interface EdgeLagMemberStatus {
   portId: string
   name: string
-  state: string
-  rxCount: number
-  txCount: number
-  systemId: string
-  key: string
-  peerSystemId: string
-  peerKey: string
+  state?: string
+  rxCount?: number
+  txCount?: number
+  systemId?: string
+  key?: string
+  peerSystemId?: string
+  peerKey?: string
 }
 
 export interface EdgeLagStatus {
@@ -304,17 +304,17 @@ export interface EdgeLagStatus {
   serialNumber: string
   name: string
   description: string
-  status: string
-  adminStatus: string
+  status?: string
+  adminStatus?: string
   portType: EdgePortTypeEnum
   lagType: EdgeLagTypeEnum
   lacpTimeout: EdgeLagTimeoutEnum
   lagMembers: EdgeLagMemberStatus[]
   ipMode: EdgeIpModeEnum
-  mac: string
+  mac?: string
   vlan: string
-  ip: string
-  subnet: string
+  ip?: string
+  subnet?: string
   isCorePort: string
 }
 
@@ -325,14 +325,14 @@ export interface EdgeLag {
     lacpMode: EdgeLagLacpModeEnum
     lacpTimeout: EdgeLagTimeoutEnum
     lagMembers: {
-        portMac: string
+        portId: string
         portEnabled: boolean
     }[]
     portType: EdgePortTypeEnum
     ipMode: EdgeIpModeEnum
-    ip: string
-    subnet: string
-    gateway: string
+    ip?: string
+    subnet?: string
+    gateway?: string
     corePortEnabled: boolean
     natEnabled: boolean
     lagEnabled: boolean

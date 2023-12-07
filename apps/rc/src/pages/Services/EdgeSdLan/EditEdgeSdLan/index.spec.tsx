@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { EdgeSdLanUrls, EdgeUrlsInfo, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { EdgeGeneralFixtures, EdgeSdLanUrls, EdgeUrlsInfo, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 import {
   Provider
 } from '@acx-ui/store'
@@ -14,10 +14,9 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
-import { mockEdgeList } from '../__tests__/fixtures'
-
 import EditEdgeSdLan from '.'
 
+const { mockEdgeList } = EdgeGeneralFixtures
 const { click } = userEvent
 
 const mockedEditFn = jest.fn()

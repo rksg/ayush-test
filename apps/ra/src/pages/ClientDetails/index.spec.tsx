@@ -1,3 +1,4 @@
+import { getUserProfile }       from '@acx-ui/analytics/utils'
 import { Provider, dataApiURL } from '@acx-ui/store'
 import {
   render,
@@ -28,6 +29,13 @@ jest.mock('@acx-ui/reports/components', () => ({
   EmbeddedReport: () => <div data-testid='report'></div>
 }))
 
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  getUserProfile: jest.fn(),
+  updateSelectedTenant: jest.fn()
+}))
+const userProfile = getUserProfile as jest.Mock
+
 describe('ClientDetails', () => {
   const params = {
     clientId: 'mockClientId',
@@ -36,19 +44,32 @@ describe('ClientDetails', () => {
   const clientsList = {
     network: {
       search: {
-        clients: [
+        clientsByTraffic: [
           {
             hostname: '02AA01AB50120H4M',
             username: '18b43003e603',
             mac: '18:B4:30:03:E6:03',
             osType: 'Nest Learning Thermostat',
             ipAddress: '10.0.1.42',
-            lastActiveTime: '2023-08-23T05:08:20.000Z'
+            lastSeen: '2023-08-23T05:08:20.000Z',
+            traffic: 1
           }
         ]
       }
     }
   }
+  const defaultUserProfile = {
+    accountId: 'aid',
+    tenants: [],
+    invitations: [],
+    selectedTenant: {
+      id: 'aid',
+      role: 'admin'
+    }
+  }
+  beforeEach(() => {
+    userProfile.mockReturnValue(defaultUserProfile)
+  })
   it('should render correctly', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', {
       data: clientsList
@@ -123,5 +144,32 @@ describe('ClientDetails', () => {
     expect(await screen.findByRole('tab', { name: 'Troubleshooting', selected: true }))
       .toBeVisible()
     expect(await screen.findByTestId('troubleshooting')).toBeVisible()
+  })
+
+  it('should render for report-only user correctly', async () => {
+    userProfile.mockReturnValue({
+      ...defaultUserProfile,
+      selectedTenant: {
+        ...defaultUserProfile.selectedTenant,
+        role: 'report-only'
+      }
+    })
+    mockGraphqlQuery(dataApiURL, 'Network', {
+      data: clientsList
+    })
+    render(<ClientDetails/>, {
+      wrapper: Provider,
+      route: {
+        params: {
+          ...params,
+          activeTab: 'reports'
+        },
+        path: '/users/wifi/clients/:clientId/details/:activeTab'
+      }
+    })
+    expect(screen.queryByRole('tab', { name: 'Troubleshooting' }))
+      .toBeNull()
+    expect(screen.queryByTestId('troubleshooting')).toBeNull()
+    expect(await screen.findByRole('tab', { name: 'Reports', selected: true })).toBeVisible()
   })
 })
