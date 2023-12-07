@@ -5,6 +5,7 @@ import { useIntl }               from 'react-intl'
 
 
 import { Button, Card, showActionModal, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { CsvSize }                                from '@acx-ui/rc/components'
 import {
   useGetAdminListQuery,
@@ -37,6 +38,7 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
   const [authenticationData, setAuthenticationData] = useState<TenantAuthentications>()
   const navigate = useNavigate()
   const linkToAdministrators = useTenantLink('/administration/administrators')
+  const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
 
   const { data: adminList } = useGetAdminListQuery({ params })
 
@@ -184,6 +186,7 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
       maxSize={CsvSize['5MB']}
       maxEntries={512}
       acceptType={['xml']}
+      isGroupBasedLoginEnabled={isGroupBasedLoginEnabled}
     />}
     {modalVisible && <ViewXmlModal
       visible={modalVisible}

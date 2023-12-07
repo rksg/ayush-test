@@ -53,6 +53,7 @@ interface ImportFileDrawerProps extends DrawerProps {
   isEditMode: boolean
   setEditMode: (editMode: boolean) => void
   editData?: TenantAuthentications
+  isGroupBasedLoginEnabled?: boolean
 }
 
 const fileTypeMap: Record<AcceptableType, string[]>= {
@@ -79,7 +80,8 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
   const params = useParams()
 
   const { maxSize, isLoading, acceptType,
-    formDataName = 'file', setVisible, setEditMode, isEditMode, editData } = props
+    formDataName = 'file', setVisible, setEditMode,
+    isEditMode, editData, isGroupBasedLoginEnabled } = props
 
   const [fileDescription, setFileDescription] = useState<ReactNode>('')
   const [formData, setFormData] = useState<FormData>()
@@ -229,7 +231,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
 
   const SamlContent = () => {
     return <> <Form style={{ marginTop: 10 }} layout='vertical' form={form}>
-      <Form.Item
+      {isGroupBasedLoginEnabled && <Form.Item
         name='allowedDomains'
         label={$t({ defaultMessage: 'Allowed Domains' })}
         initialValue={editData?.name || ''}
@@ -240,7 +242,8 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
           { validator: (_, value) => domainNameRegExp(value) }
         ]}
         children={<Input />}
-      /></Form>
+      />}
+    </Form>
 
     <label>
       { $t({ defaultMessage: 'IdP Metadata' }) }
@@ -365,10 +368,10 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
         {$t({ defaultMessage: 'Cancel' })}
       </Button>
     </div>} >
-    <AuthTypeSelector
+    {isGroupBasedLoginEnabled && <AuthTypeSelector
       ssoConfigured={true}
       setSelected={setSelectedAuth}
-    />
+    />}
 
     {selectedAuth === AuthTypeEnum.google ? <GoogleContent /> : <SamlContent />}
 

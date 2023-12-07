@@ -57,9 +57,8 @@ const AuthTypeSelector = (props: AuthTypeSelectorProps) => {
   return <Form layout='vertical'>
     <Form.Item
       name='authType'
-      label={$t({ defaultMessage: 'Authentication Type' })}
-      initialValue={AuthTypeEnum.google}
-      rules={[{ required: true }]}
+      label={$t({ defaultMessage: 'Auth Type' })}
+      initialValue={AuthTypeEnum.saml}
     >
       <Radio.Group
         style={{ width: '100%' }}

@@ -60,6 +60,7 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
   const techPartnerAssignEcsEanbled = useIsSplitOn(Features.TECH_PARTNER_ASSIGN_ECS)
   const isTechPartner =
      tenantType === TenantType.MSP_INSTALLER || tenantType === TenantType.MSP_INTEGRATOR
+  const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
 
   const { data: mspProfile } = useGetMspProfileQuery({ params })
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile) ||
@@ -246,11 +247,11 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
         isFetching: isFetching || isDeleteAdminUpdating || isDeleteAdminsUpdating
       }
     ]}>
-      <UI.TableTitleWrapper direction='vertical'>
+      {!isGroupBasedLoginEnabled && <UI.TableTitleWrapper direction='vertical'>
         <Subtitle level={4}>
           {$t({ defaultMessage: 'Local Administrators' })}
         </Subtitle>
-      </UI.TableTitleWrapper>
+      </UI.TableTitleWrapper>}
       <Table
         columns={columns}
         dataSource={adminList}

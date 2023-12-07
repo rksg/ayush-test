@@ -1,14 +1,14 @@
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Tabs }                     from '@acx-ui/components'
-import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
-import { useGetMspEcProfileQuery }  from '@acx-ui/msp/services'
-import { MSPUtils }                 from '@acx-ui/msp/utils'
-import { useGetTenantDetailsQuery } from '@acx-ui/rc/services'
-import { TenantType }               from '@acx-ui/rc/utils'
-import { useTenantLink }            from '@acx-ui/react-router-dom'
-import { useUserProfileContext }    from '@acx-ui/user'
+import { Tabs }                                                                   from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
+import { useGetMspEcProfileQuery }                                                from '@acx-ui/msp/services'
+import { MSPUtils }                                                               from '@acx-ui/msp/utils'
+import { useGetAdminListQuery, useGetDelegationsQuery, useGetTenantDetailsQuery } from '@acx-ui/rc/services'
+import { TenantType }                                                             from '@acx-ui/rc/utils'
+import { useTenantLink }                                                          from '@acx-ui/react-router-dom'
+import { useUserProfileContext }                                                  from '@acx-ui/user'
 // import { useTenantId }              from '@acx-ui/utils'
 
 import AdminGroups         from './AdminGroups'
@@ -29,6 +29,14 @@ const Administrators = () => {
 
   const tenantDetailsData = useGetTenantDetailsQuery({ params })
   const mspEcProfileData = useGetMspEcProfileQuery({ params })
+  const adminList = useGetAdminListQuery(
+    { params }, { skip: !isGroupBasedLoginEnabled })
+  const thirdPartyAdminList = useGetDelegationsQuery(
+    { params }, { skip: !isGroupBasedLoginEnabled }
+  )
+
+  const adminCount = adminList?.data?.length! || 0
+  const delegatedAdminCount = thirdPartyAdminList.data?.length! || 0
 
   const isVAR = userProfileData?.var && !userProfileData?.support
   const tenantType = tenantDetailsData.data?.tenantType
@@ -47,7 +55,7 @@ const Administrators = () => {
 
   const tabs = {
     localAdmins: {
-      title: $t({ defaultMessage: 'Local Admins' }),
+      title: $t({ defaultMessage: 'Local Admins ({adminCount})' }, { adminCount }),
       content: <AdministratorsTable
         currentUserMail={currentUserMail}
         isPrimeAdminUser={isPrimeAdminUser}
@@ -57,7 +65,7 @@ const Administrators = () => {
       visible: true
     },
     adminGroups: {
-      title: $t({ defaultMessage: 'Admin Groups' }),
+      title: $t({ defaultMessage: 'Admin Groups ({adminCount})' }, { adminCount }),
       content: <AdminGroups
         currentUserMail={currentUserMail}
         isPrimeAdminUser={isPrimeAdminUser}
@@ -66,7 +74,8 @@ const Administrators = () => {
       visible: true
     },
     delegatedAdmins: {
-      title: $t({ defaultMessage: 'Delegated Admins' }),
+      title: $t({ defaultMessage: 'Delegated Admins ({delegatedAdminCount})' },
+        { delegatedAdminCount }),
       content: <DelegationsTable
         isMspEc={isMspEc}
         userProfileData={userProfileData}/>,
@@ -80,7 +89,6 @@ const Administrators = () => {
       pathname: `${basePath.pathname}/${activeKey}`
     })
   }
-
 
   return (
     isGroupBasedLoginEnabled
