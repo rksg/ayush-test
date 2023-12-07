@@ -538,7 +538,7 @@ describe('EditEdge ports - SD-LAN ready', () => {
     expect(await screen.findByRole('textbox', { name: 'Gateway' })).not.toBeDisabled()
   })
 
-  it('should recover gateway configure to its origin data', async () => {
+  it('should gateway still being to its origin data', async () => {
     render(
       <Provider>
         <EdgePortsGeneral data={mockEdgeOnlyLanPortConfig.ports} />

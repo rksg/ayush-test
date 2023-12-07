@@ -142,23 +142,6 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
     [getInnerPortFormID(index), 0, fieldName]
 
 
-  const handleGatewayDataDependency = () => {
-    const allValues = form.getFieldsValue(true) as EdgePortConfigFormType
-
-    // should clear all non core port LAN port's gateway.
-    const targets = Object.keys(allValues)
-      .filter(portFormIdx => {
-        let portValues = allValues[portFormIdx][0]
-        return portValues.gateway
-            && portValues.portType === EdgePortTypeEnum.LAN
-            && portValues.corePortEnabled === false
-      })
-
-    targets.forEach(portFormIdx => {
-      form.setFieldValue([portFormIdx, 0, 'gateway'], '')
-    })
-  }
-
   const handlePortTypeChange = (_: string, changedValue: StoreValue,
     index: number) => {
     // TODO: need to confirm if we should display this whenever user change port type
@@ -171,7 +154,6 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
     //   })
     // }
 
-    handleGatewayDataDependency()
     if (changedValue === EdgePortTypeEnum.LAN) {
       form.setFieldValue(getFieldFullPath(index, 'ipMode'), EdgeIpModeEnum.STATIC)
     } else if (changedValue === EdgePortTypeEnum.WAN) {
@@ -182,36 +164,24 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handlePortEnabledChange = (_: string, __: StoreValue, ____: number) => {
-    handleGatewayDataDependency()
-  }
-
-  const handleCorePortChange = (_: string, changedValue: StoreValue,
-    index: number) => {
-    let gwValToSet, ipModeValToSet
-    if (changedValue === false) {
-      gwValToSet = ''
-      // prevent LAN port from using DHCP
-      // when it had been core port before but not a core port now.
-      ipModeValToSet = EdgeIpModeEnum.STATIC
-    } else {
-      // restore back to its orgin value
-      gwValToSet = data[index]?.gateway
-      ipModeValToSet = data[index]?.ipMode
-    }
-
-    form.setFieldValue(getFieldFullPath(index, 'ipMode'), ipModeValToSet)
-    form.setFieldValue(getFieldFullPath(index, 'gateway'), gwValToSet)
-  }
-
   const handleFinish = async () => {
     const formData = flatMap(form.getFieldsValue(true)) as EdgePortWithStatus[]
 
-    // LAN port is not allowed to configure NAT enable
     formData.forEach(item => {
+      // LAN port is not allowed to configure NAT enable
       if (item.portType === EdgePortTypeEnum.LAN && item.natEnabled)
         item.natEnabled = false
+
+
+      if (item.gateway
+        && item.portType === EdgePortTypeEnum.LAN
+        && item.corePortEnabled === false) {
+        // should clear all non core port LAN port's gateway.
+        item.gateway = ''
+        // prevent LAN port from using DHCP
+        // when it had been core port before but not a core port now.
+        item.ipMode = EdgeIpModeEnum.STATIC
+      }
     })
 
     try {
