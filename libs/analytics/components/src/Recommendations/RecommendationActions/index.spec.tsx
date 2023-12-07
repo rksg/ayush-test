@@ -28,7 +28,9 @@ jest.mock('moment-timezone', () => {
   return {
     __esModule: true,
     ...moment,
-    default: () => moment('07-15-2023 14:15', 'MM-DD-YYYY HH:mm')
+    default: date => date === '2023-11-17T11:15:00.000Z'
+      ? moment(date)
+      : moment('07-15-2023 14:15', 'MM-DD-YYYY HH:mm')
   }
 })
 
@@ -120,6 +122,17 @@ describe('RecommendationActions', () => {
     await user.click(checkHour[0])
     await user.click(await screen.findByText('Apply'))
     expect(inputs[0]).toHaveValue('2023-07-16')
+  })
+  it('shows current schedule', async () => {
+    const metadata = {
+      scheduledAt: '2023-11-17T11:15:00.000Z'
+    }
+    render(
+      <RecommendationActions recommendation={{ ...mockedCrrm, metadata }} />,
+      { wrapper: Provider }
+    )
+    const inputs = await screen.findAllByPlaceholderText('Select date')
+    expect(inputs[0]).toHaveValue('2023-11-17')
   })
   it('should handle cancel mutation correctly', async () => {
     const resp = { cancel: { success: true, errorMsg: '' , errorCode: '' } }

@@ -65,7 +65,6 @@ export function NetworkingTab () {
       pageSize: 10000,
       sortField: 'name',
       sortOrder: 'ASC',
-      url: '/api/viewmodel/{tenantId}/aps',
       filters
     }
 

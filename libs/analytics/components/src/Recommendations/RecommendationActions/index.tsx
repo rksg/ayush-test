@@ -54,12 +54,13 @@ type ActionButtonProps = RecommendationListItem & {
   type: keyof typeof actionTooltip
 }
 
-function ApplyCalender ({ disabled, type, id, code }: ActionButtonProps) {
+function ApplyCalendar ({ disabled, type, id, code, metadata }: ActionButtonProps) {
   const { $t } = useIntl()
   const [scheduleRecommendation] = useScheduleRecommendationMutation()
   const onApply = (date: Moment) => {
     scheduleRecommendation({ id, scheduledAt: date.toISOString() })
   }
+  const scheduledAt = useRef(moment(metadata.scheduledAt))
   const futureDate = useRef(getFutureTime(moment().seconds(0).milliseconds(0)))
   const footerMsg = code.startsWith('c-crrm') && type === 'Apply'
     ? $t(applyFooterMsg)
@@ -105,7 +106,7 @@ function ApplyCalender ({ disabled, type, id, code }: ActionButtonProps) {
     title={$t(actionTooltip[type].text)}
     icon={<ActionWrapper $disabled={disabled}>{actionTooltip[type].icon}</ActionWrapper>}
     disabled={disabled}
-    initialDate={futureDate}
+    initialDate={metadata.scheduledAt ? scheduledAt : futureDate}
     onApply={onApply}
     applyFooterMsg={footerMsg}
     disabledDateTime={disabledDateTime}
@@ -130,7 +131,7 @@ function CancelCalendar ({ disabled, id }: Omit<ActionButtonProps, 'type'>) {
 }
 
 const actions = {
-  schedule: (props: ActionButtonProps) => <ApplyCalender {...props} />,
+  schedule: (props: ActionButtonProps) => <ApplyCalendar {...props} />,
   cancel: (props: Omit<ActionButtonProps, 'type'>) => <CancelCalendar {...props} />
 }
 

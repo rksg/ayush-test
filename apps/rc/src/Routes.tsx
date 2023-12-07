@@ -40,7 +40,8 @@ import { AccessPointList, WifiTabsEnum }            from './pages/Devices/Wifi'
 import ApDetails                                    from './pages/Devices/Wifi/ApDetails'
 import { ApEdit }                                   from './pages/Devices/Wifi/ApEdit'
 import { ApForm }                                   from './pages/Devices/Wifi/ApForm'
-import { ApGroupForm }                              from './pages/Devices/Wifi/ApGroupForm'
+import ApGroupDetails                               from './pages/Devices/Wifi/ApGroupDetails'
+import { ApGroupEdit }                              from './pages/Devices/Wifi/ApGroupEdit'
 import Wired                                        from './pages/Networks/wired'
 import CliTemplateForm                              from './pages/Networks/wired/onDemandCli/CliTemplateForm'
 import CliProfileForm                               from './pages/Networks/wired/profiles/CliProfileForm'
@@ -159,6 +160,9 @@ function DeviceRoutes () {
       <Route path='devices' element={<TenantNavigate replace to='/devices/wifi' />} />
       <Route path='devices/wifi' element={<AccessPointList tab={WifiTabsEnum.LIST} />} />
       <Route
+        path='devices/wifi/apgroups'
+        element={<AccessPointList tab={WifiTabsEnum.AP_GROUP}/>} />
+      <Route
         path='devices/wifi/reports/aps'
         element={<AccessPointList tab={WifiTabsEnum.AP_REPORT} />} />
       <Route
@@ -170,8 +174,10 @@ function DeviceRoutes () {
         path='devices/wifi/:serialNumber/:action/:activeTab/:activeSubTab'
         element={<ApEdit />}
       />
-      <Route path='devices/apgroups/:apGroupId/:action' element={<ApGroupForm />} />
-      <Route path='devices/apgroups/:action' element={<ApGroupForm />} />
+      <Route path='devices/apgroups/:apGroupId/details/:activeTab' element={<ApGroupDetails />}/>
+      <Route path='devices/apgroups/:apGroupId/:action/:activeTab' element={<ApGroupEdit />} />
+      <Route path='devices/apgroups/:apGroupId/:action' element={<ApGroupEdit />} />
+      <Route path='devices/apgroups/:action' element={<ApGroupEdit />} />
       <Route
         path='devices/wifi/:apId/details/:activeTab'
         element={<ApDetails />} />

@@ -4,20 +4,18 @@ import userEvent              from '@testing-library/user-event'
 import { Form }               from 'antd'
 import { rest }               from 'msw'
 
-import { StepsForm }                    from '@acx-ui/components'
-import { CommonUrlsInfo, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                     from '@acx-ui/store'
+import { StepsForm }                                         from '@acx-ui/components'
+import { CommonUrlsInfo, EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                          from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
 
-import { mockEdgeList } from '../../__tests__/fixtures'
-
 import { ScopeForm } from '.'
 
-
+const { mockEdgeList } = EdgeGeneralFixtures
 const mockedSetFieldValue = jest.fn()
 const { click } = userEvent
 

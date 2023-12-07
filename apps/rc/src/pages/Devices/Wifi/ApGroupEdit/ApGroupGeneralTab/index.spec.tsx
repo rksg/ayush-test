@@ -1,6 +1,5 @@
 import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
-import { Modal }      from 'antd'
 import { rest }       from 'msw'
 
 import { apApi, venueApi }              from '@acx-ui/rc/services'
@@ -12,17 +11,19 @@ import {
   screen,
   fireEvent,
   waitFor,
-  waitForElementToBeRemoved
+  waitForElementToBeRemoved,
+  act
 } from '@acx-ui/test-utils'
 
+import { ApGroupEditContext } from '..'
 import {
   apGroupsList,
   getApGroup,
   venueDefaultApGroup,
   venuelist
-} from '../../__tests__/fixtures'
+} from '../../../__tests__/fixtures'
 
-import { ApGroupForm } from '.'
+import { ApGroupGeneralTab } from '.'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -31,11 +32,11 @@ jest.mock('react-router-dom', () => ({
 }))
 
 
-describe('AP Group Form - Add', () => {
-  const params = { tenantId: 'tenant-id', action: 'add' }
+describe('AP Group General tab', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
+    mockedUsedNavigate.mockReset()
     initialize()
 
     mockServer.use(
@@ -54,16 +55,22 @@ describe('AP Group Form - Add', () => {
     )
 
   })
-  afterEach(() => {
-    Modal.destroyAll()
-  })
+
+  const setEditContextDataFn = jest.fn()
   it('should render correctly', async () => {
-    render(<Provider><ApGroupForm /></Provider>, {
+    const params = { tenantId: 'tenant-id', action: 'add' }
+
+    render(<Provider>
+      <ApGroupEditContext.Provider value={{
+        isEditMode: false, isApGroupTableFlag: false,
+        setEditContextData: setEditContextDataFn }}>
+        <ApGroupGeneralTab />
+      </ApGroupEditContext.Provider>
+    </Provider>, {
       route: { params, path: '/:tenantId/t/devices/apgroups/:action' }
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    expect(await screen.findByText('Add AP Group')).toBeVisible()
     expect(await screen.findByText('Group Member')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
@@ -73,26 +80,19 @@ describe('AP Group Form - Add', () => {
     })
   })
 
-  it('should render breadcrumb correctly', async () => {
-    render(<Provider><ApGroupForm /></Provider>, {
-      route: { params, path: '/:tenantId/t/devices/apgroups/:action' }
-    })
-
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    expect(await screen.findByText('Wi-Fi')).toBeVisible()
-    expect(await screen.findByText('Access Points')).toBeVisible()
-    expect(screen.getByRole('link', {
-      name: /ap list/i
-    })).toBeTruthy()
-  })
-
   it('add ap group', async () => {
-    render(<Provider><ApGroupForm /></Provider>, {
+    const params = { tenantId: 'tenant-id', action: 'add' }
+    render(<Provider>
+      <ApGroupEditContext.Provider value={{
+        isEditMode: false, isApGroupTableFlag: false,
+        setEditContextData: setEditContextDataFn }}>
+        <ApGroupGeneralTab />
+      </ApGroupEditContext.Provider>
+    </Provider>, {
       route: { params, path: '/:tenantId/t/devices/apgroups/:action' }
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    expect(await screen.findByText('Add AP Group')).toBeVisible()
     expect(await screen.findByText('Group Member')).toBeVisible()
 
     fireEvent.change(screen.getByLabelText(/Group Name/), { target: { value: 'ap group' } })
@@ -100,25 +100,38 @@ describe('AP Group Form - Add', () => {
     await userEvent.click(await screen.getAllByText('My-Venue')[0])
     await waitFor(() => screen.findByText(/for ap group 2/i))
     await userEvent.click(screen.getByText(/for ap group 2/i))
-    await userEvent.click(screen.getByRole('button', {
-      name: /right add/i
-    }))
-    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
-    expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/devices/wifi`,
-      hash: '',
-      search: ''
+    await userEvent.click(screen.getByRole('button', { name: /right add/i }))
+
+    const saveButton = await screen.findByRole('button', { name: 'Add' })
+    expect(saveButton).toBeVisible()
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(async () => { fireEvent.click(saveButton)} )
+    await waitFor(() => {
+      // eslint-disable-next-line max-len
+      expect(mockedUsedNavigate).toHaveBeenCalledWith('/tenant-id/t/devices/wifi', { replace: true })
     })
   })
 
   it('edit ap group', async () => {
     const params = { tenantId: 'tenant-id', apGroupId: 'apgroup-id', action: 'edit' }
-    render(<Provider><ApGroupForm /></Provider>, {
-      route: { params, path: '/:tenantId/t/devices/apgroups/:apGroupId/:action' }
-    })
+    render(
+      <Provider>
+        <ApGroupEditContext.Provider value={{
+          isEditMode: true, isApGroupTableFlag: true,
+          setEditContextData: setEditContextDataFn }}>
+          <ApGroupGeneralTab />
+        </ApGroupEditContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/devices/apgroups/:apGroupId/:action/general' }
+      })
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    expect(await screen.findByText('Edit AP Group')).toBeVisible()
     await waitFor(() => screen.findByText(/for ap group 2/i))
-    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+    await userEvent.click(screen.getByText(/for ap group 2/i))
+    await userEvent.click(screen.getByRole('button', { name: /right add/i }))
+    const nameInput = await screen.findByRole('textbox', { name: /Group Name/ })
+    await userEvent.type(nameInput, 'test')
+    const saveButton = await screen.findByRole('button', { name: 'Apply' })
+    await userEvent.click(saveButton)
+    expect(saveButton).toBeVisible()
   })
 })

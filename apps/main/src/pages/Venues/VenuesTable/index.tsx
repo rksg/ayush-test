@@ -10,7 +10,7 @@ import {
   Loader,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { TierFeatures, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useVenuesListQuery,
   useDeleteVenueMutation,
@@ -31,7 +31,7 @@ function useColumns (
   filterables?: { [key: string]: ColumnType['filterable'] }
 ) {
   const { $t } = useIntl()
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
 
   const columns: TableProps<Venue>['columns'] = [
     {
@@ -188,7 +188,7 @@ function useColumns (
 }
 
 export const useDefaultVenuePayload = (): RequestPayload => {
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
 
   return {
     fields: [

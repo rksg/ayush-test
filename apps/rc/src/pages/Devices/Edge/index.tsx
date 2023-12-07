@@ -1,15 +1,15 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader }         from '@acx-ui/components'
-import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { EdgesTable }                 from '@acx-ui/rc/components'
-import { TenantLink }                 from '@acx-ui/react-router-dom'
-import { filterByAccess }             from '@acx-ui/user'
+import { Button, PageHeader }             from '@acx-ui/components'
+import { TierFeatures, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { EdgesTable }                     from '@acx-ui/rc/components'
+import { TenantLink }                     from '@acx-ui/react-router-dom'
+import { filterByAccess }                 from '@acx-ui/user'
 
 
 const Edges = () => {
   const { $t } = useIntl()
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
 
   if (!isEdgeEnabled) {
     return <span>{ $t({ defaultMessage: 'SmartEdge is not enabled' }) }</span>

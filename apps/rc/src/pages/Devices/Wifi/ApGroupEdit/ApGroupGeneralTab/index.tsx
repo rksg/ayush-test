@@ -1,53 +1,51 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Input, Row, Select } from 'antd'
 import { DefaultOptionType }             from 'antd/lib/select'
 import { TransferItem }                  from 'antd/lib/transfer'
+import _                                 from 'lodash'
 import { useIntl }                       from 'react-intl'
+import { useNavigate, useParams }        from 'react-router-dom'
 
-import {
-  PageHeader,
-  Loader,
-  StepsFormLegacy,
-  StepsFormLegacyInstance,
-  Transfer
-} from '@acx-ui/components'
-import {
-  useVenuesListQuery,
-  useLazyVenueDefaultApGroupQuery,
-  useAddApGroupMutation,
-  useLazyApGroupsListQuery,
-  useGetApGroupQuery,
-  useUpdateApGroupMutation
-} from '@acx-ui/rc/services'
-import {
-  ApDeep,
-  AddApGroup,
-  checkObjectNotExists,
-  trailingNorLeadingSpaces
-} from '@acx-ui/rc/utils'
-import {
-  useNavigate,
-  useTenantLink,
-  useParams
-} from '@acx-ui/react-router-dom'
+import { Loader, StepsFormLegacy, StepsFormLegacyInstance, Transfer }                                                                                         from '@acx-ui/components'
+import { useAddApGroupMutation, useGetApGroupQuery, useLazyApGroupsListQuery, useLazyVenueDefaultApGroupQuery, useUpdateApGroupMutation, useVenuesListQuery } from '@acx-ui/rc/services'
+import { AddApGroup, ApDeep, checkObjectNotExists, trailingNorLeadingSpaces }                                                                                 from '@acx-ui/rc/utils'
+import { useTenantLink }                                                                                                                                      from '@acx-ui/react-router-dom'
 
-const defaultPayload = {
+import { ApGroupEditContext } from '..'
+
+const defaultVenuePayload = {
   fields: ['name', 'country', 'latitude', 'longitude', 'dhcp', 'id'],
   pageSize: 10000,
   sortField: 'name',
   sortOrder: 'ASC'
 }
 
-export function ApGroupForm () {
+const apGroupsListPayload = {
+  searchString: '',
+  fields: ['name', 'id'],
+  searchTargetFields: ['name'],
+  filters: {},
+  pageSize: 10000
+}
+
+export function ApGroupGeneralTab () {
   const { $t } = useIntl()
   const { tenantId, action, apGroupId } = useParams()
+  const { isEditMode, isApGroupTableFlag, setEditContextData } = useContext(ApGroupEditContext)
+
   const navigate = useNavigate()
-  const params = useParams()
-  const formRef = useRef<StepsFormLegacyInstance<AddApGroup>>()
   const basePath = useTenantLink('/devices/')
-  const venuesList = useVenuesListQuery({ params: { tenantId: tenantId }, payload: defaultPayload })
-  const isEditMode = action === 'edit'
+  const navigatePathName = (isApGroupTableFlag)?
+    `${basePath.pathname}/wifi/apgroups` :
+    `${basePath.pathname}/wifi`
+
+  const formRef = useRef<StepsFormLegacyInstance<AddApGroup>>()
+  const oldFormDataRef = useRef<AddApGroup>()
+  const venuesList = useVenuesListQuery({
+    params: { tenantId: tenantId },
+    payload: defaultVenuePayload })
+
 
   const [venueDefaultApGroup] = useLazyVenueDefaultApGroupQuery()
   const [apGroupsList] = useLazyApGroupsListQuery()
@@ -58,14 +56,6 @@ export function ApGroupForm () {
 
   const { data: apGroupData, isLoading: isApGroupDataLoading } =
   useGetApGroupQuery({ params: { tenantId, apGroupId } }, { skip: !isEditMode })
-
-  const apGroupsListPayload = {
-    searchString: '',
-    fields: ['name', 'id'],
-    searchTargetFields: ['name'],
-    filters: {},
-    pageSize: 10000
-  }
 
   useEffect(() => {
     if (!venuesList.isLoading) {
@@ -85,14 +75,20 @@ export function ApGroupForm () {
       }
 
       handleVenueChange(apGroupData.venueId, extraMemberList)
-      formRef?.current?.setFieldsValue({
+
+      const formData: AddApGroup = {
         name: apGroupData.name,
         venueId: apGroupData.venueId,
         apSerialNumbers: Array.isArray(apGroupData.aps) ?
           apGroupData.aps.map(i => i.serialNumber) : []
-      })
-    }
+      }
 
+      formRef?.current?.setFieldsValue(formData)
+
+      if (oldFormDataRef) {
+        oldFormDataRef.current = _.cloneDeep(formData)
+      }
+    }
   }, [isEditMode, apGroupData, isApGroupDataLoading])
 
 
@@ -119,22 +115,32 @@ export function ApGroupForm () {
     }
   }
 
-  const handleAddApGroup = async (values: AddApGroup) => {
-    const venueId = formRef.current?.getFieldValue('venueId')
+  const handleAddApGroup = async () => {
+    const formData = formRef.current?.getFieldsValue() || {} as AddApGroup
+    const { venueId } = formData
+    const payload: AddApGroup = {
+      ...formData
+    }
     try {
-      if (values.apSerialNumbers) {
-        values.apSerialNumbers = values.apSerialNumbers.map(i => { return { serialNumber: i } })
+      if (payload.apSerialNumbers) {
+        payload.apSerialNumbers = payload.apSerialNumbers.map(i => { return { serialNumber: i } })
       }
-      const payload = {
-        ...values
-      }
+
       if (isEditMode) {
         await updateApGroup({ params: { tenantId, apGroupId }, payload }).unwrap()
       } else {
         await addApGroup({ params: { tenantId, venueId }, payload }).unwrap()
       }
 
-      navigate(`${basePath.pathname}/wifi`, { replace: true })
+      setEditContextData({
+        tabTitle: $t({ defaultMessage: 'General' }),
+        unsavedTabKey: 'general',
+        isDirty: false
+      })
+
+      if (!isEditMode || !isApGroupTableFlag) {
+        navigate(navigatePathName, { replace: true })
+      }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -150,9 +156,9 @@ export function ApGroupForm () {
         ...apGroupsListPayload,
         searchString: value, filters: { venueId: [venueId] }
       }
-      const list = (await apGroupsList({ params, payload }, true)
+      const list = (await apGroupsList({ params: { tenantId, action, apGroupId }, payload }, true)
         .unwrap()).data
-        .filter(n => n.id !== params.apGroupId)
+        .filter(n => n.id !== apGroupId)
         .map(n => ({ name: n.name }))
       return checkObjectNotExists(list, { name: value }, $t({ defaultMessage: 'Group' }))
     } else {
@@ -160,35 +166,56 @@ export function ApGroupForm () {
     }
   }
 
-  return <>
-    <PageHeader
-      title={!isEditMode ? $t({ defaultMessage: 'Add AP Group' }) :
-        $t({ defaultMessage: 'Edit AP Group' })}
-      breadcrumb={[
-        { text: $t({ defaultMessage: 'Wi-Fi' }) },
-        { text: $t({ defaultMessage: 'Access Points' }) },
-        { text: $t({ defaultMessage: 'AP List' }), link: '/devices/wifi' }
-      ]}
-    />
+  const handleFormChanged = async () => {
+    if (isEditMode && isApGroupTableFlag) {
+      const curFormData = formRef.current?.getFieldsValue()
+      const oldFormData = oldFormDataRef.current
+
+      if (!_.isEqual(curFormData, oldFormData)) {
+        oldFormDataRef.current = _.cloneDeep(curFormData)
+
+        setEditContextData({
+          tabTitle: $t({ defaultMessage: 'General' }),
+          unsavedTabKey: 'general',
+          isDirty: true,
+          updateChanges: () => handleAddApGroup()
+        })
+      }
+    }
+  }
+
+  const handleDiscardChanges = async () => {
+    setEditContextData({
+      tabTitle: $t({ defaultMessage: 'General' }),
+      unsavedTabKey: 'general',
+      isDirty: false
+    })
+
+    navigate({
+      ...basePath,
+      pathname: navigatePathName
+    })
+  }
+
+  return (
     <StepsFormLegacy
       formRef={formRef}
+      onFormChange={handleFormChanged}
       onFinish={handleAddApGroup}
-      onCancel={() => navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/wifi`
-      })}
+      onCancel={() => handleDiscardChanges()}
       buttonLabel={{
         submit: !isEditMode ? $t({ defaultMessage: 'Add' }) : $t({ defaultMessage: 'Apply' })
       }}
     >
       <StepsFormLegacy.StepForm>
-
         <Loader states={[{
           isLoading: venuesList.isLoading
         }]}>
           <Row gutter={20}>
             <Col span={8}>
-              <StepsFormLegacy.Title children={$t({ defaultMessage: 'Group Details' })} />
+              {(!isApGroupTableFlag || !isEditMode) &&
+                <StepsFormLegacy.Title children={$t({ defaultMessage: 'Group Details' })} />
+              }
               <Form.Item
                 name='name'
                 label={$t({ defaultMessage: 'Group Name' })}
@@ -251,5 +278,5 @@ export function ApGroupForm () {
         </Loader>
       </StepsFormLegacy.StepForm>
     </StepsFormLegacy>
-  </>
+  )
 }
