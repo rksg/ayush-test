@@ -119,6 +119,7 @@ describe('SnmpAgentTable', () => {
     row = await screen.findByRole('row', { name: new RegExp(target.name) })
     await userEvent.click(within(row).getByRole('radio'))
     await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+
     /*
     expect(await screen.findByText('Delete a SNMP agent that is currently in use?')).toBeVisible()
 
@@ -135,6 +136,7 @@ describe('SnmpAgentTable', () => {
     await userEvent.click(deleteBtns[1])
     */
 
+    expect(await screen.findByText('Delete a SNMP agent that is currently in use?')).toBeVisible()
   })
 
   it('should navigate to the Edit view', async () => {
@@ -152,5 +154,6 @@ describe('SnmpAgentTable', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /Edit/ }))
 
+    expect(screen.queryByText('Edit')).toBeNull()
   })
 })
