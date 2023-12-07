@@ -122,14 +122,6 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
         handlePortTypeChange(changedPortName, changedField['portType'], index)
       }
 
-      if (!_.isUndefined(changedField['enabled'])) {
-        handlePortEnabledChange(changedPortName, changedField['enabled'], index)
-      }
-
-      if (!_.isUndefined(changedField['corePortEnabled'])) {
-        handleCorePortChange(changedPortName, changedField['corePortEnabled'], index)
-      }
-
       let hasError = false
       await form.validateFields().catch((error: ValidateErrorEntity) => {
         hasError = error.errorFields.length > 0
@@ -172,12 +164,12 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
       if (item.portType === EdgePortTypeEnum.LAN && item.natEnabled)
         item.natEnabled = false
 
-
       if (item.gateway
         && item.portType === EdgePortTypeEnum.LAN
         && item.corePortEnabled === false) {
         // should clear all non core port LAN port's gateway.
         item.gateway = ''
+
         // prevent LAN port from using DHCP
         // when it had been core port before but not a core port now.
         item.ipMode = EdgeIpModeEnum.STATIC
