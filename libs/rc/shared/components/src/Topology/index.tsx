@@ -541,10 +541,16 @@ export function TopologyGraphComponent (props:{ venueId?: string,
 
   const debouncedHandleMouseClick = debounce(function (node){
     const treeContainer = document.querySelector('.d3-tree-container')
+    const treeMain = document.querySelector('.d3-tree-main')
+
     if(treeContainer?.clientWidth && treeContainer?.clientHeight ){
       const translateX = treeContainer.clientWidth/2
       const translateY = treeContainer.clientHeight/2 - node.x
       setTranslate([translateX, translateY])
+      const transformVal = treeMain?.getAttribute('transform')?.split(' ')
+      treeMain?.setAttribute('transform',
+        `translate(0, 0) ${transformVal !== undefined ?
+          transformVal[1] : 'scale(1)'}`)
       setScale(3)
     }
   })
