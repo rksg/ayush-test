@@ -150,7 +150,12 @@ describe('NetworkForm', () => {
       ),
       rest.get(
         WifiUrlsInfo.getVlanPools.url,
-        (req, res, ctx) => res(ctx.json({}))
+        (req, res, ctx) => res(ctx.json([{
+          tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+          name: 'pool1',
+          vlanMembers: ['123'],
+          id: '1c061cf2649344adaf1e79a9d624a451'
+        }]))
       )
     )
   })

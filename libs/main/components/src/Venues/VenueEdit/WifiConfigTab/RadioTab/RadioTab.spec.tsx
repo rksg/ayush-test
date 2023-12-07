@@ -8,7 +8,7 @@ import { CommonUrlsInfo, VenueRadioCustomization, WifiUrlsInfo } from '@acx-ui/r
 import { Provider, store }                                       from '@acx-ui/store'
 import { mockServer, screen, render, within, waitFor }           from '@acx-ui/test-utils'
 
-import { EditContext, VenueEditContext } from '../..'
+import { EditContext, RadioContext, VenueEditContext } from '../..'
 import {
   venueData,
   venueSetting,
@@ -21,7 +21,10 @@ import {
   mockLoadBalabcing,
   mockVenueClientAdmissionControl
 } from '../../../__tests__/fixtures'
-import { defaultValue } from '../../../contentsMap'
+import { AdvanceSettingContext }    from '../AdvancedTab'
+import { NetworkingSettingContext } from '../NetworkingTab'
+import { SecuritySettingContext }   from '../SecurityTab'
+import { ServerSettingContext }     from '../ServerTab'
 
 import { RadioTab } from './RadioTab'
 
@@ -53,7 +56,7 @@ describe('RadioTab', () => {
         WifiUrlsInfo.getVenueTripleBandRadioSettings.url,
         (_, res, ctx) => res(ctx.json({ enabled: true }))),
       rest.get(
-        WifiUrlsInfo.getDefaultRadioCustomization.url,
+        WifiUrlsInfo.getDefaultRadioCustomization.url.split('?')[0],
         (_, res, ctx) => res(ctx.json(defaultRadioCustomizationData))),
       rest.get(
         WifiUrlsInfo.getVenueRadioCustomization.url,
@@ -84,18 +87,38 @@ describe('RadioTab', () => {
         (_, res, ctx) => res(ctx.json({})))
     )
   })
+
+  const venueEditContextDataObject = {
+    editSecurityContextData: {} as SecuritySettingContext,
+    setEditSecurityContextData: jest.fn(),
+
+    editContextData: {} as EditContext,
+    setEditContextData: jest.fn(),
+
+    editNetworkingContextData: {} as NetworkingSettingContext,
+    setEditNetworkingContextData: jest.fn(),
+
+    editServerContextData: {} as ServerSettingContext,
+    setEditServerContextData: jest.fn(),
+
+    editAdvancedContextData: {} as AdvanceSettingContext,
+    setEditAdvancedContextData: jest.fn(),
+
+    editRadioContextData: {} as RadioContext,
+    setEditRadioContextData: jest.fn(),
+
+    previousPath: '',
+    setPreviousPath: jest.fn()
+  }
   it.skip('should render External Antenna: E510 correctly', async () => {
     render(<Provider>
       <VenueEditContext.Provider value={{
-        ...defaultValue,
-        editContextData: {} as EditContext,
-        setEditContextData: jest.fn(),
+        ...venueEditContextDataObject,
         editRadioContextData: {
           apiApModels: externalAntennaApModels,
           apModels: externalAntennaApModels,
           radioData: radioCustomizationData as VenueRadioCustomization
-        },
-        setEditRadioContextData: jest.fn()
+        }
       }}>
         <RadioTab />
       </VenueEditContext.Provider>
@@ -142,15 +165,12 @@ describe('RadioTab', () => {
   it.skip('should render External Antenna: T350SE & T300E correctly', async () => {
     render(<Provider>
       <VenueEditContext.Provider value={{
-        ...defaultValue,
-        editContextData: {} as EditContext,
-        setEditContextData: jest.fn(),
+        ...venueEditContextDataObject,
         editRadioContextData: {
           apiApModels: externalAntennaApModels,
           apModels: externalAntennaApModels,
           radioData: radioCustomizationData as VenueRadioCustomization
-        },
-        setEditRadioContextData: jest.fn()
+        }
       }}>
         <RadioTab />
       </VenueEditContext.Provider>
@@ -180,15 +200,12 @@ describe('RadioTab', () => {
 
     render(<Provider>
       <VenueEditContext.Provider value={{
-        ...defaultValue,
-        editContextData: {} as EditContext,
-        setEditContextData: jest.fn(),
+        ...venueEditContextDataObject,
         editRadioContextData: {
           apiApModels: externalAntennaApModels,
           apModels: externalAntennaApModels,
           radioData: radioCustomizationData as VenueRadioCustomization
-        },
-        setEditRadioContextData: jest.fn()
+        }
       }}>
         <RadioTab />
       </VenueEditContext.Provider>
@@ -228,15 +245,12 @@ describe('RadioTab', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider>
       <VenueEditContext.Provider value={{
-        ...defaultValue,
-        editContextData: {} as EditContext,
-        setEditContextData: jest.fn(),
+        ...venueEditContextDataObject,
         editRadioContextData: {
           apiApModels: externalAntennaApModels,
           apModels: externalAntennaApModels,
           radioData: radioCustomizationData as VenueRadioCustomization
-        },
-        setEditRadioContextData: jest.fn()
+        }
       }}>
         <RadioTab />
       </VenueEditContext.Provider>
@@ -276,15 +290,12 @@ describe('RadioTab', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider>
       <VenueEditContext.Provider value={{
-        ...defaultValue,
-        editContextData: {} as EditContext,
-        setEditContextData: jest.fn(),
+        ...venueEditContextDataObject,
         editRadioContextData: {
           apiApModels: externalAntennaApModels,
           apModels: externalAntennaApModels,
           radioData: radioCustomizationData as VenueRadioCustomization
-        },
-        setEditRadioContextData: jest.fn()
+        }
       }}>
         <RadioTab />
       </VenueEditContext.Provider>
@@ -324,13 +335,10 @@ describe('RadioTab', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider>
       <VenueEditContext.Provider value={{
-        ...defaultValue,
-        editContextData: {} as EditContext,
-        setEditContextData: jest.fn(),
+        ...venueEditContextDataObject,
         editRadioContextData: {
           isLoadBalancingDataChanged: true
-        },
-        setEditRadioContextData: jest.fn()
+        }
       }}>
         <RadioTab />
       </VenueEditContext.Provider>
@@ -348,12 +356,7 @@ describe('RadioTab', () => {
   it('should render Client Admission Control correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider>
-      <VenueEditContext.Provider value={{
-        ...defaultValue,
-        editContextData: {} as EditContext,
-        setEditContextData: jest.fn(),
-        setEditRadioContextData: jest.fn()
-      }}>
+      <VenueEditContext.Provider value={venueEditContextDataObject}>
         <RadioTab />
       </VenueEditContext.Provider>
     </Provider>, { route: { params } })
