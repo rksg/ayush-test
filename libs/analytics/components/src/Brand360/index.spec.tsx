@@ -34,7 +34,7 @@ describe('Brand360', () => {
     expect(await screen.findAllByText('brand ssid compliance')).toHaveLength(1)
     // eslint-disable-next-line max-len
     expect(await screen.findAllByText('property {"brand-ssid-compliance-matcher":"^[a-zA-Z0-9]{5}_GUEST$","sla-p1-incidents-count":"1","sla-guest-experience":"2","sla-brand-ssid-compliance":"3"}')).toHaveLength(1)
-    expect(await screen.findAllByText('table')).toHaveLength(1)
+    expect(await screen.findByTestId('brand360Table')).toBeVisible()
   })
   it('changes sliceType', async () => {
     render(<Provider><Brand360 /></Provider>)
@@ -42,7 +42,7 @@ describe('Brand360', () => {
     fireEvent.click(await screen.findByText('LSP'))
     // eslint-disable-next-line max-len
     expect(await screen.findAllByText('lsp {"brand-ssid-compliance-matcher":"^[a-zA-Z0-9]{5}_GUEST$","sla-p1-incidents-count":"1","sla-guest-experience":"2","sla-brand-ssid-compliance":"3"}')).toHaveLength(1)
-    expect(await screen.findAllByText('table')).toHaveLength(1)
+    expect(await screen.findByTestId('brand360Table')).toBeVisible()
   })
   it('applies SLAs', async () => {
     const update = new Promise(resolve => mockServer.use(

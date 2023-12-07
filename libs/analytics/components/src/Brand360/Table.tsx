@@ -36,7 +36,7 @@ export function BrandTable ({ sliceType, slaThreshold, data }:
       render: (_, row: Common) =>
         <span
           style={{
-            color: row?.p1Incidents < parseInt(thresholdP1Incidents as string, 10)
+            color: row?.p1Incidents <= parseInt(thresholdP1Incidents as string, 10)
               ? pColor : nColor
           }}
         >
@@ -62,7 +62,7 @@ export function BrandTable ({ sliceType, slaThreshold, data }:
       >
         <span
           style={{
-            color: row?.guestExp > parseFloat(thresholdGuestExp as string)/100
+            color: row?.guestExp >= parseFloat(thresholdGuestExp as string)/100
               ? pColor : nColor
           }}
         >
@@ -78,7 +78,7 @@ export function BrandTable ({ sliceType, slaThreshold, data }:
       render: (_, row: Common) =>
         <span
           style={{
-            color: row?.ssidCompliance > parseFloat(thresholdSSID as string)/100
+            color: row?.ssidCompliance >= parseFloat(thresholdSSID as string)/100
               ? pColor : nColor
           }}
         >

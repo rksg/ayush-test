@@ -448,13 +448,21 @@ exports[`Brand360 resets SLAs 1`] = `
           </div>
         </div>
       </div>
+      <div
+        class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            data-testid="brand360Table"
+          >
+            property {"brand-ssid-compliance-matcher":"^[a-zA-Z0-9]{5}_GUEST$","sla-p1-incidents-count":"1","sla-guest-experience":"2","sla-brand-ssid-compliance":"3"}
+          </div>
+        </div>
+      </div>
     </div>
-    <div
-      data-testid="brand360Table"
-    >
-      property {"brand-ssid-compliance-matcher":"^[a-zA-Z0-9]{5}_GUEST$","sla-p1-incidents-count":"1","sla-guest-experience":"2","sla-brand-ssid-compliance":"3"}
-    </div>
-    table
   </div>
 </DocumentFragment>
 `;
