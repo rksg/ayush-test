@@ -515,6 +515,9 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
   }))
 
   const basePath = useTenantLink('/devices')
+  const handleCleanImportError = () => {
+    setImportErrors({} as ImportErrorRes)
+  }
   const handleTableChange: TableProps<APExtended>['onChange'] = (
     pagination, filters, sorter, extra
   ) => {
@@ -581,6 +584,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
         visible={importVisible}
         isLoading={isImportResultLoading}
         importError={{ data: importErrors } as FetchBaseQueryError}
+        cleanImportError={handleCleanImportError}
         importRequest={(formData) => {
           setIsImportResultLoading(true)
           if (wifiEdaFlag) {

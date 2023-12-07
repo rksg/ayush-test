@@ -56,7 +56,8 @@ interface ImportFileDrawerProps extends DrawerProps {
   acceptType: string[]
   type: ImportFileDrawerType
   extraDescription?: string[],
-  validator?: (content: string) => Promise<void>
+  validator?: (content: string) => Promise<void>,
+  cleanImportError?: () => void
 }
 
 export const CsvSize = {
@@ -77,7 +78,7 @@ export function ImportFileDrawer (props: ImportFileDrawerProps) {
   const [form] = Form.useForm()
 
   const { maxSize, maxEntries, isLoading, templateLink,
-    importError, importRequest, readAsText, acceptType,
+    importError, importRequest, readAsText, acceptType, cleanImportError,
     extraDescription, formDataName = 'file', skipCsvTextConvert = false, validator } = props
 
   const [fileDescription, setFileDescription] = useState<ReactNode>('')
@@ -172,6 +173,7 @@ export function ImportFileDrawer (props: ImportFileDrawerProps) {
       setFile(file)
       setFileName(file.name)
       setFormData(newFormData)
+      cleanImportError?.()
       setFileDescription(<UI.FileNameText ellipsis={{ tooltip: file.name }}>
         <FileTextOutlined /> {file.name}
       </UI.FileNameText>)

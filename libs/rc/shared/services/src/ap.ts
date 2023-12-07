@@ -253,7 +253,8 @@ export const apApi = baseApApi.injectEndpoints({
         return {
           ...req
         }
-      }
+      },
+      keepUnusedDataFor: 0
     }),
     getAp: build.query<ApDeep, RequestPayload>({
       query: ({ params, payload }) => {
