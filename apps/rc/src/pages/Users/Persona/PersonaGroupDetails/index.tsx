@@ -13,7 +13,6 @@ import {
   useDpskNewConfigFlowParams,
   PersonaGroupDrawer
 } from '@acx-ui/rc/components'
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { BasePersonaTable }                     from '@acx-ui/rc/components'
 import {
   useLazyGetVenueQuery,

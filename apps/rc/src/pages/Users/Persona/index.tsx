@@ -2,8 +2,7 @@ import { createContext, useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { PageHeader, Tabs } from '@acx-ui/components'
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { PageHeader, Tabs }                                          from '@acx-ui/components'
 import { PersonaTable }                                              from '@acx-ui/rc/components'
 import { useSearchPersonaGroupListQuery, useSearchPersonaListQuery } from '@acx-ui/rc/services'
 import { useTableQuery }                                             from '@acx-ui/rc/utils'
