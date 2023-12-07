@@ -151,8 +151,8 @@ interface BetaList {
 // description details and status value - true/false to show/hide
 // from displaying in UI drawer component BetaFeaturesDrawer
 export const BetaListDetails:BetaList[] = [
-  { key: TierFeatures.AP_70, description: defineMessage({ defaultMessage: 'AP-70 beta feature' }), status: true },
-  { key: TierFeatures.BETA_CLB, description: defineMessage({ defaultMessage: 'CLB beta feature' }), status: true },
-  { key: TierFeatures.BETA_DPSK3, description: defineMessage({ defaultMessage: 'DPSK3 beta feature' }), status: true },
-  { key: TierFeatures.SMART_EDGES, description: defineMessage({ defaultMessage: 'PLCY-EDGE beta feature' }), status: false }
+  { key: TierFeatures.BETA_DPSK3, description: defineMessage({ defaultMessage: 'DPSK3: Dynamic Preshared Keys working with WPA3-DSAE. Users connect their devices to a WPA2/WPA3 network with DPSK and are automatically moved to the WPA3 WLAN, allowing DPSK operation with WiFi 6e or WiFi7. DPSK3 allows the customer to take advantage of the flexibility of DPSK with the security of WPA3.' }), status: true },
+  { key: TierFeatures.AP_70, description: defineMessage({ defaultMessage: 'AP-70' }), status: false },
+  { key: TierFeatures.BETA_CLB, description: defineMessage({ defaultMessage: 'CLB' }), status: false },
+  { key: TierFeatures.SMART_EDGES, description: defineMessage({ defaultMessage: 'PLCY-EDGE' }), status: false }
 ]

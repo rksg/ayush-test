@@ -48,7 +48,7 @@ export const UserUrlsInfo = {
   },
   getCloudScheduleVersion: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/upgrade/schedule-version'
+    url: '/apFirmwares?status=scheduled'
   },
   getAllUserSettings: {
     method: 'get',
