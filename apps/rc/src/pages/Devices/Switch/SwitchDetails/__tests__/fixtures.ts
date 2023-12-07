@@ -162,3 +162,37 @@ export const switchDetailsContextData = {
     stackMembers: []
   } as Switch
 }
+
+export const networkApGroup = {
+  response: [{
+    allApGroupsRadio: 'Both',
+    apGroups: [{
+      apGroupId: '58195e050b8a4770acc320f6233ad8d9',
+      apGroupName: 'joe-test-apg',
+      id: 'f71c3dc400bb46e5a03662d48d0adb2c',
+      isDefault: false,
+      radio: 'Both',
+      radioTypes: ['5-GHz', '2.4-GHz'],
+      validationError: false,
+      validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+      validationErrorReachedMaxConnectedNetworksLimit: false,
+      validationErrorSsidAlreadyActivated: false,
+      vlanPoolId: '545c8f5dd44f45c2b47f19f8db4f53dc',
+      vlanPoolName: 'joe-vlanpool-1'
+    }, {
+      apGroupId: '75f7751cd7d34bf19cc9446f92d82ee5',
+      isDefault: true,
+      radio: 'Both',
+      validationError: false,
+      validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+      validationErrorReachedMaxConnectedNetworksLimit: false,
+      validationErrorSsidAlreadyActivated: false
+    }],
+    dual5gEnabled: false,
+    isAllApGroups: false,
+    networkId: '3c83529e839746ae960fa8fb6d4fd387',
+    tripleBandEnabled: true,
+    venueId: '991eb992ece042a183b6945a2398ddb9'
+  }]
+}
+

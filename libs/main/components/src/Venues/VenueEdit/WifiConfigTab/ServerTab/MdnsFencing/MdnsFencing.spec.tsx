@@ -3,10 +3,10 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { venueApi }                                              from '@acx-ui/rc/services'
-import { CommonUrlsInfo, getUrlForTest }                         from '@acx-ui/rc/utils'
-import { Provider, store }                                       from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { venueApi }                                                         from '@acx-ui/rc/services'
+import { CommonUrlsInfo, getUrlForTest }                                    from '@acx-ui/rc/utils'
+import { Provider, store }                                                  from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { ServerSettingContext }          from '..'
 import { EditContext, VenueEditContext } from '../../..'
@@ -20,6 +20,26 @@ const params = {
   activeTab: 'wifi',
   activeSubTab: 'servers'
 }
+
+type MockSelectProps = React.PropsWithChildren<{
+  onChange?: (value: string) => void
+  options?: Array<{ label: string, value: unknown }>
+  loading?: boolean
+}>
+
+jest.mock('antd', () => {
+  const components = jest.requireActual('antd')
+  const Select = ({ loading, children, onChange, options, ...props }: MockSelectProps) => (
+    <select {...props} onChange={(e) => onChange?.(e.target.value)} value=''>
+      {children ? <><option value={undefined}></option>{children}</> : null}
+      {options?.map((option, index) => (
+        <option key={`option-${index}`} value={option.value as string}>{option.label}</option>
+      ))}
+    </select>
+  )
+  Select.Option = 'option'
+  return { ...components, Select }
+})
 
 describe('Venue mDNS Fencing', () => {
   let editContextData = {} as EditContext
@@ -94,8 +114,10 @@ describe('Venue mDNS Fencing', () => {
     )
 
     // MdnsFencingDrawer
-    await userEvent.click(await screen.findByRole('combobox', { name: 'Service' }))
-    await userEvent.click(await screen.findByTitle('Airport Management'))
+    await userEvent.selectOptions(
+      await screen.findByRole('combobox', { name: 'Service' }),
+      await screen.findByRole('option', { name: 'Airport Management' })
+    )
 
     await userEvent.click(await screen.findByRole('switch', { name: 'Wireless Connection' }))
 
@@ -128,12 +150,24 @@ describe('Venue mDNS Fencing', () => {
     )
 
     // MdnsFencingDrawer
-    await userEvent.click(await screen.findByRole('combobox', { name: 'Service' }))
-    await userEvent.click(await screen.findByTitle('Airport Management'))
+    await userEvent.selectOptions(
+      await screen.findByRole('combobox', { name: 'Service' }),
+      await screen.findByRole('option', { name: 'Airport Management' })
+    )
 
     await userEvent.click(await screen.findByRole('switch', { name: 'Wireless Connection' }))
     await userEvent.click(await screen.findByRole('switch', { name: 'Wired Connection' }))
     await userEvent.click(await screen.findByRole('switch', { name: 'Custom Mapping' }))
+
+    await userEvent.selectOptions(
+      await screen.findByRole('combobox', { name: 'Service' }),
+      await screen.findByRole('option', { name: 'Other' })
+    )
+
+    expect(await screen.findByText(/custom service name/i)).toBeVisible()
+
+    const customServiceName = await screen.findByRole('textbox', { name: /custom service name/i })
+    fireEvent.change(customServiceName, { target: { value: 'csn' } })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
   })
@@ -164,8 +198,10 @@ describe('Venue mDNS Fencing', () => {
     )
 
     // MdnsFencingDrawer
-    await userEvent.click(await screen.findByRole('combobox', { name: 'Service' }))
-    await userEvent.click(await screen.findByTitle('Airport Management'))
+    await userEvent.selectOptions(
+      await screen.findByRole('combobox', { name: 'Service' }),
+      await screen.findByRole('option', { name: 'Airport Management' })
+    )
 
     await userEvent.click(await screen.findByRole('switch', { name: 'Wired Connection' }))
 
@@ -201,8 +237,10 @@ describe('Venue mDNS Fencing', () => {
     )
 
     // MdnsFencingDrawer
-    await userEvent.click(await screen.findByRole('combobox', { name: 'Service' }))
-    await userEvent.click(await screen.findByTitle('Airport Management'))
+    await userEvent.selectOptions(
+      await screen.findByRole('combobox', { name: 'Service' }),
+      await screen.findByRole('option', { name: 'Airport Management' })
+    )
 
     await userEvent.click(await screen.findByRole('switch', { name: 'Custom Mapping' }))
 
