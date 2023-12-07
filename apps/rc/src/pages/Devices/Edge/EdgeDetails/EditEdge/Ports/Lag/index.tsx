@@ -32,7 +32,7 @@ const Lag = (props: LagProps) => {
   const { lagData = [], isLagLoading } = useGetEdgeLagListQuery({
     params: { serialNumber },
     payload: {
-      pag: 1,
+      page: 1,
       pageSize: 10
     }
   },{
