@@ -119,7 +119,6 @@ export function TopologyGraphComponent (props:{ venueId?: string,
         //   }
         // }
       })
-      console.log(treeData)
       const _formattedNodes = nodes.map(node => ({
         value: (node.name as string).toString(),
         key: (node.id as string).toString(),
