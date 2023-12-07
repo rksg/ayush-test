@@ -3,8 +3,8 @@ import { useState } from 'react'
 import { Space, Divider } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { Button }                                                                                              from '@acx-ui/components'
-import { ClockOutlined, DashboardOutlined, DataStudioOutlined, EraserOutlined, EyeOpenOutlined, Plus, Reload } from '@acx-ui/icons'
+import { Button }                                                                                                                                                                from '@acx-ui/components'
+import { ArrowDown, ArrowUp, ClockOutlined, DashboardOutlined, DataStudioOutlined, DeleteOutlined, EraserOutlined, EyeOpenOutlined, EyeSlashOutlined, Link, Plus, Reload, Text } from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
 
@@ -62,34 +62,37 @@ export default function EditMode (props: {
           {$t({ defaultMessage: 'Add Section' })}
         </Button>
         <div>
-          <Button type='text' icon={<DashboardOutlined/>}>
+          <Button type='text' icon={<DeleteOutlined/>}>
             {$t({ defaultMessage: 'Remove Section' })}
           </Button>
-          <Button type='text' icon={<DashboardOutlined/>} style={{ marginLeft: '12px' }}>
+          <Button type='text' icon={<EyeSlashOutlined/>} style={{ marginLeft: '12px' }}>
             {$t({ defaultMessage: 'Hide Section' })}
+          </Button>
+          <Button type='text' icon={<EyeOpenOutlined/>} style={{ marginLeft: '12px' }}>
+            {$t({ defaultMessage: 'Show Section' })}
           </Button>
         </div>
         <div>
-          <Button type='text' icon={<DashboardOutlined/>}>
+          <Button type='text' icon={<ArrowUp/>}>
             {$t({ defaultMessage: 'Move up' })}
           </Button>
-          <Button type='text' icon={<DashboardOutlined/>} style={{ marginLeft: '12px' }}>
+          <Button type='text' icon={<ArrowDown/>} style={{ marginLeft: '12px' }}>
             {$t({ defaultMessage: 'Move down' })}
           </Button>
         </div>
         <div>
-          <Button type='text' icon={<DashboardOutlined/>}>
+          <Button type='text' icon={<Plus/>}>
             {$t({ defaultMessage: 'Add tab' })}
           </Button>
-          <Button type='text' icon={<DashboardOutlined/>} style={{ marginLeft: '12px' }}>
+          <Button disabled type='text' icon={<DeleteOutlined/>} style={{ marginLeft: '12px' }}>
             {$t({ defaultMessage: 'Remove tab' })}
           </Button>
         </div>
         <div>
-          <Button type='text' icon={<DashboardOutlined/>}>
+          <Button type='text' icon={<Text/>}>
             {$t({ defaultMessage: 'Add title' })}
           </Button>
-          <Button type='text' icon={<DashboardOutlined/>} style={{ marginLeft: '12px' }}>
+          <Button type='text' icon={<Link/>} style={{ marginLeft: '12px' }}>
             {$t({ defaultMessage: 'Add link' })}
           </Button>
         </div>
@@ -139,7 +142,6 @@ export default function EditMode (props: {
             </Button>
             <Button type='text'
               icon={<EraserOutlined />}
-              disabled
               style={{ marginLeft: '12px' }}
               onClick={()=>{onClickToolbar(ToolbarItems.Clear)}}>
               {$t({ defaultMessage: 'Clear All' })}

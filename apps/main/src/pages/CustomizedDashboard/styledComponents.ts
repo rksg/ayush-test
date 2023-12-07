@@ -68,24 +68,19 @@ border-top: 75px solid rgba(255,255,255, 0.4);
   &:not([disabled]):hover {
     background-color: var(--acx-neutrals-20);
   }
-  svg {
-    path {
-      stroke-width: 0;
-    }
-  }
   &:not([disabled]):active {
     color: var(--acx-primary-white);
     background-color: var(--acx-neutrals-70);
     svg {
       path {
-        fill: var(--acx-primary-white);
+        stroke: var(--acx-primary-white);
       }
     }
   }
   &[disabled] {
     svg {
       path {
-        fill: var(--acx-neutrals-50);
+        stroke: var(--acx-neutrals-50);
       }
     }
   }
