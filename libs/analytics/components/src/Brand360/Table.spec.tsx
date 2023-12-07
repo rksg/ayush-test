@@ -13,12 +13,11 @@ describe('Brand 360 Table', () => {
       property: 'p',
       lsp: 'l',
       p1Incidents: 10,
-      guestExp: .1,
-      ssidComplaince: .1,
+      ssidCompliance: [10,100] as [number, number],
       deviceCount: 2,
-      avgConnSuccess: .1,
-      avgTTC: .1,
-      avgClientThroughput: .1
+      avgConnSuccess: [10,100] as [number, number],
+      avgTTC: [1,10] as [number, number],
+      avgClientThroughput: [1,10] as [number, number]
     }]
     render(<BrandTable sliceType='property' data={data}/>, {
       wrapper: Provider,
@@ -39,12 +38,11 @@ describe('Brand 360 Table', () => {
       property: 'p',
       lsp: 'l',
       p1Incidents: 10,
-      guestExp: .5,
-      ssidComplaince: .5,
+      ssidCompliance: [50,100] as [number, number],
       deviceCount: 2,
-      avgConnSuccess: .5,
-      avgTTC: .5,
-      avgClientThroughput: .5
+      avgConnSuccess: [50,100] as [number, number],
+      avgTTC: [5,10] as [number, number],
+      avgClientThroughput: [5,10] as [number, number]
     }]
     render(<BrandTable sliceType='lsp' slaThreshold={slaThreshold} data={data} />, {
       wrapper: Provider,

@@ -6,13 +6,17 @@ import { defaultSort, sortProp, Settings  } from '@acx-ui/analytics/utils'
 import { Table, TableProps, Tooltip }       from '@acx-ui/components'
 import { formatter }                        from '@acx-ui/formatter'
 
-import { transformToLspView }    from './__tests__/fixtures'
-import { Property, Common, Lsp } from './services'
+import {
+  transformToLspView, transformToPropertyView, Property, Common, Lsp
+} from './helpers'
+import {
+  Response
+} from './services'
 
 const pagination = { pageSize: 10, defaultPageSize: 10 }
 
 export function BrandTable ({ sliceType, slaThreshold, data }:
-{ sliceType: string, slaThreshold?: Partial<Settings>, data: Property[] }) {
+{ sliceType: string, slaThreshold?: Partial<Settings>, data: Response[] }) {
   const { $t } = useIntl()
   const thresholds = slaThreshold || getDefaultSettings()
   const thresholdP1Incidents = thresholds['sla-p1-incidents-count' as keyof typeof slaThreshold]
@@ -22,7 +26,7 @@ export function BrandTable ({ sliceType, slaThreshold, data }:
   const nColor = 'var(--acx-semantics-red-50)'
   const tableData = sliceType === 'lsp'
     ? transformToLspView(data)
-    : data
+    : transformToPropertyView(data)
   const commonCols: TableProps<Common>['columns'] = [
     {
       title: $t({ defaultMessage: 'P1 Incidents Count' }),
@@ -32,7 +36,7 @@ export function BrandTable ({ sliceType, slaThreshold, data }:
       render: (_, row: Common) =>
         <span
           style={{
-            color: row?.p1Incidents < parseInt(thresholdP1Incidents as string, 10)
+            color: row?.p1Incidents <= parseInt(thresholdP1Incidents as string, 10)
               ? pColor : nColor
           }}
         >
@@ -58,7 +62,7 @@ export function BrandTable ({ sliceType, slaThreshold, data }:
       >
         <span
           style={{
-            color: row?.guestExp > parseFloat(thresholdGuestExp as string)/100
+            color: row?.guestExp >= parseFloat(thresholdGuestExp as string)/100
               ? pColor : nColor
           }}
         >
@@ -67,18 +71,18 @@ export function BrandTable ({ sliceType, slaThreshold, data }:
       </Tooltip>
     },
     {
-      title: $t({ defaultMessage: 'SSID Complaince' }),
-      dataIndex: 'ssidComplaince',
-      key: 'ssidComplaince',
-      sorter: { compare: sortProp('ssidComplaince', defaultSort) },
+      title: $t({ defaultMessage: 'SSID Compliance' }),
+      dataIndex: 'ssidCompliance',
+      key: 'ssidCompliance',
+      sorter: { compare: sortProp('ssidCompliance', defaultSort) },
       render: (_, row: Common) =>
         <span
           style={{
-            color: row?.ssidComplaince > parseFloat(thresholdSSID as string)/100
+            color: row?.ssidCompliance >= parseFloat(thresholdSSID as string)/100
               ? pColor : nColor
           }}
         >
-          {formatter('percentFormat')(row?.ssidComplaince)}
+          {formatter('percentFormat')(row?.ssidCompliance)}
         </span>
     },
     {

@@ -30,6 +30,16 @@ jest.mock('./pages/Devices/Wifi/ApsTable', () => ({
   })
 }))
 
+jest.mock('./pages/Devices/Wifi/ApGroupsTable', () => ({
+  ...jest.requireActual('./pages/Devices/Wifi/ApGroupsTable'),
+  __esModule: true,
+  default: () => ({
+    title: 'ApGroupsTable',
+    headerExtra: [],
+    component: <div data-testid='ApGroupsTable' />
+  })
+}))
+
 jest.mock('./pages/Devices/Wifi/ApDetails', () => () => {
   return <div data-testid='ApDetails' />
 })
