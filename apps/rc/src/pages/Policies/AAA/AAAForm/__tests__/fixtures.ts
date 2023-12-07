@@ -1,0 +1,74 @@
+export const aaaData = {
+  id: 'policy-id',
+  name: 'test2',
+  type: 'AUTHENTICATION',
+  primary: {
+    ip: '2.3.3.4',
+    port: 101,
+    sharedSecret: 'xxxxxxxx'
+  },
+  secondary: {
+    ip: '2.3.3.4',
+    port: 101,
+    sharedSecret: 'xxxxxxxx'
+  },
+  tags: ['xxdd']
+}
+export const successResponse = { requestId: 'request-id', id: '2', name: 'test2' }
+export const aaaList = [
+  {
+    name: 'test1',
+    type: 'AUTHENTICATION',
+    primary: {
+      ip: '1.1.1.2',
+      port: 1812,
+      sharedSecret: '111211121112'
+    },
+    id: '1'
+  },
+  {
+    name: 'policy-id',
+    type: 'AUTHENTICATION',
+    primary: {
+      ip: '2.3.3.4',
+      port: 101,
+      sharedSecret: 'xxxxxxxx'
+    },
+    secondary: {
+      ip: '2.3.3.4',
+      port: 101,
+      sharedSecret: 'xxxxxxxx'
+    },
+    id: '2'
+  },
+  {
+    name: 'aaa2',
+    type: 'AUTHENTICATION',
+    primary: {
+      ip: '1.1.1.1',
+      port: 1812,
+      sharedSecret: '11111111'
+    },
+    id: '9f1ce5aecc834f0f95d3df1e97f85f19'
+  },
+  {
+    name: 'aaa-temp',
+    type: 'AUTHENTICATION',
+    primary: {
+      ip: '2.2.2.2',
+      port: 1812,
+      sharedSecret: 'asdfasdf'
+    },
+    id: '3e9e139d6ef3459c95ab547acb1672b5'
+  },
+  {
+    name: 'aaa-temp1',
+    type: 'AUTHENTICATION',
+    primary: {
+      ip: '1.1.1.19',
+      port: 1805,
+      sharedSecret: '34tgweg453g45g34g'
+    },
+    id: '343ddabf261546258bc46c049e0641e5'
+  }
+]

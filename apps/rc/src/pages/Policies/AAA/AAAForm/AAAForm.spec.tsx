@@ -2,92 +2,29 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { AaaUrls }                                       from '@acx-ui/rc/utils'
-import { Provider }                                      from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, within } from '@acx-ui/test-utils'
-import { UserUrlsInfo }                                  from '@acx-ui/user'
+import { MspUrlsInfo }                                            from '@acx-ui/msp/utils'
+import { AaaUrls, ConfigTemplateContext }                         from '@acx-ui/rc/utils'
+import { Provider }                                               from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
+import { UserUrlsInfo }                                           from '@acx-ui/user'
 
-import AAAForm from './AAAForm'
+import { aaaData, successResponse, aaaList } from './__tests__/fixtures'
+import AAAForm                               from './AAAForm'
 
-const aaaData={
-  id: 'policy-id',
-  name: 'test2',
-  type: 'AUTHENTICATION',
-  primary: {
-    ip: '2.3.3.4',
-    port: 101,
-    sharedSecret: 'xxxxxxxx'
-  },
-  secondary: {
-    ip: '2.3.3.4',
-    port: 101,
-    sharedSecret: 'xxxxxxxx'
-  },
-  tags: ['xxdd']
+const mockedUsedNavigate = jest.fn()
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
+
+const params = {
+  networkId: 'UNKNOWN-NETWORK-ID',
+  tenantId: 'tenant-id',
+  type: 'wifi',
+  policyId: 'policy-id'
 }
-const successResponse = { requestId: 'request-id', id: '2', name: 'test2' }
-const aaaList=[
-  {
-    name: 'test1',
-    type: 'AUTHENTICATION',
-    primary: {
-      ip: '1.1.1.2',
-      port: 1812,
-      sharedSecret: '111211121112'
-    },
-    id: '1'
-  },
-  {
-    name: 'policy-id',
-    type: 'AUTHENTICATION',
-    primary: {
-      ip: '2.3.3.4',
-      port: 101,
-      sharedSecret: 'xxxxxxxx'
-    },
-    secondary: {
-      ip: '2.3.3.4',
-      port: 101,
-      sharedSecret: 'xxxxxxxx'
-    },
-    id: '2'
-  },
-  {
-    name: 'aaa2',
-    type: 'AUTHENTICATION',
-    primary: {
-      ip: '1.1.1.1',
-      port: 1812,
-      sharedSecret: '11111111'
-    },
-    id: '9f1ce5aecc834f0f95d3df1e97f85f19'
-  },
-  {
-    name: 'aaa-temp',
-    type: 'AUTHENTICATION',
-    primary: {
-      ip: '2.2.2.2',
-      port: 1812,
-      sharedSecret: 'asdfasdf'
-    },
-    id: '3e9e139d6ef3459c95ab547acb1672b5'
-  },
-  {
-    name: 'aaa-temp1',
-    type: 'AUTHENTICATION',
-    primary: {
-      ip: '1.1.1.19',
-      port: 1805,
-      sharedSecret: '34tgweg453g45g34g'
-    },
-    id: '343ddabf261546258bc46c049e0641e5'
-  }
-]
-const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', type: 'wifi',
-  policyId: 'policy-id' }
 describe('AAAForm', () => {
-
-  beforeEach(()=>{
+  beforeEach(() => {
     mockServer.use(
       rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))
@@ -183,6 +120,34 @@ describe('AAAForm', () => {
     await userEvent.type(secondarySecret, longSecret)
     const secondaryAlert = await within(secondaryFieldset).findByRole('alert')
     expect(secondaryAlert).toHaveTextContent('255 characters')
+  })
+
+  it('should create AAA template successfully', async () => {
+    const addTemplateFn = jest.fn()
+    mockServer.use(
+      rest.post(
+        MspUrlsInfo.addAAAPolicyTemplate.url,
+        (_, res, ctx) => {
+          addTemplateFn()
+          return res(ctx.json(successResponse))
+        }
+      )
+    )
+    render(
+      <Provider>
+        <ConfigTemplateContext.Provider value={{ isTemplate: true }}>
+          <AAAForm edit={false} />
+        </ConfigTemplateContext.Provider>
+      </Provider>, { route: { params } }
+    )
+
+    await userEvent.type(await screen.findByLabelText(/Profile Name/), 'AAA template')
+    await userEvent.type(await screen.findByLabelText(/IP Address/), '2.3.3.4')
+    await userEvent.type(await screen.findByLabelText(/Shared Secret/), 'test1234')
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+
+    await waitFor(() => expect(addTemplateFn).toHaveBeenCalled())
+    await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalled())
   })
 })
 
