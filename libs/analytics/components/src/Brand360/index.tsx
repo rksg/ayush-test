@@ -8,6 +8,7 @@ import type { Settings }                                                  from '
 import { PageHeader, RangePicker, GridRow, GridCol, Loader }              from '@acx-ui/components'
 import { DateFilter, DateRange, getDateRangeFilter, getDatePickerValues } from '@acx-ui/utils'
 
+import { SlaSliders }   from './SlaSliders'
 import { useSliceType } from './useSliceType'
 
 export function Brand360 () {
@@ -19,9 +20,8 @@ export function Brand360 () {
     getDateRangeFilter(DateRange.last8Hours)
   )
   const { startDate, endDate, range } = getDatePickerValues(dateFilterState)
-  useEffect(() => {
-    setSettings(settingsQuery.data!)
-  }, [settingsQuery.data])
+  const { data } = settingsQuery
+  useEffect(() => { data && setSettings(data) }, [data])
   return <Loader states={[settingsQuery]}>
     <PageHeader
       title={$t({ defaultMessage: 'Brand 360' })}
@@ -43,8 +43,11 @@ export function Brand360 () {
       <GridCol col={{ span: 6 }}>incident</GridCol>
       <GridCol col={{ span: 6 }}>guest experience</GridCol>
       <GridCol col={{ span: 6 }}>brand ssid compliance</GridCol>
-      <GridCol col={{ span: 6 }}>{sliceType} {JSON.stringify(settings)}</GridCol>
+      <GridCol col={{ span: 6 }}>
+        <SlaSliders initialSlas={data || {}} currentSlas={settings} setCurrentSlas={setSettings} />
+      </GridCol>
     </GridRow>
+    <div>{sliceType} {JSON.stringify(settings)}</div>
     table
   </Loader>
 }
