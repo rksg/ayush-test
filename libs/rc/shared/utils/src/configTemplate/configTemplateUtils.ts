@@ -13,7 +13,3 @@ export function generateConfigTemplateBreadcrumb (): { text: string, link?: stri
     }
   ]
 }
-
-export function generateConfigTemplatePayload (payload: object) {
-  return { ...payload, isTemplate: true }
-}

@@ -7,6 +7,7 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
+import { useAddAAAPolicyTemplateMutation }                                        from '@acx-ui/msp/services'
 import { useAaaPolicyQuery, useAddAAAPolicyMutation, useUpdateAAAPolicyMutation } from '@acx-ui/rc/services'
 import {
   AAAPolicyType,
@@ -15,7 +16,8 @@ import {
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
-  policyTypeLabelMapping
+  policyTypeLabelMapping,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -37,7 +39,7 @@ const AAAForm = (props: AAAFormProps) => {
   const edit = props.edit && !props.networkView
   const formRef = useRef<StepsFormLegacyInstance<AAAPolicyType>>()
   const { data } = useAaaPolicyQuery({ params }, { skip: !props.edit })
-  const [ createAAAPolicy ] = useAddAAAPolicyMutation()
+  const createAAAPolicy = useAddInstance()
 
   const [ updateAAAPolicy ] = useUpdateAAAPolicyMutation()
   const [saveState, updateSaveState] = useState<AAAPolicyType>({
@@ -55,18 +57,12 @@ const AAAForm = (props: AAAFormProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
   const addOrUpdateAAA = async (data: AAAPolicyType, edit: boolean) =>{
-    if (!edit) {
-      await createAAAPolicy({
-        params,
-        payload: data
-      }).unwrap().then((res)=>{
+    if (edit) {
+      await updateAAAPolicy({ params, payload: data }).unwrap()
+    } else {
+      await createAAAPolicy({ params, payload: data }).unwrap().then((res)=>{
         data.id = res?.response?.id
       })
-    } else {
-      await updateAAAPolicy({
-        params,
-        payload: data
-      }).unwrap()
     }
     props.networkView? props.backToNetwork?.(data) : navigate(linkToPolicies, { replace: true })
   }
@@ -110,3 +106,11 @@ const AAAForm = (props: AAAFormProps) => {
   )
 }
 export default AAAForm
+
+function useAddInstance () {
+  const { isTemplate } = useConfigTemplate()
+  const [ createAAAPolicy ] = useAddAAAPolicyMutation()
+  const [ createAAAPolicyTemplate ] = useAddAAAPolicyTemplateMutation()
+
+  return isTemplate ? createAAAPolicyTemplate : createAAAPolicy
+}

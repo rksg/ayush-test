@@ -63,7 +63,9 @@ import {
   AccessCondition,
   PrioritizedPolicy,
   Assignment,
-  NewAPITableResult, transferNewResToTableResult, transferToNewTablePaginationParams
+  NewAPITableResult, transferNewResToTableResult,
+  transferToNewTablePaginationParams,
+  CommonResultWithEntityResponse
 } from '@acx-ui/rc/utils'
 import { basePolicyApi }     from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -699,7 +701,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    addAAAPolicy: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
+    addAAAPolicy: build.mutation<CommonResultWithEntityResponse<AAAPolicyType>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(AaaUrls.addAAAPolicy, params)
         return {

@@ -42,6 +42,11 @@ export interface CommonResult {
   response?:{}
 }
 
+export interface CommonResultWithEntityResponse<EntityType> {
+  requestId: string
+  response: EntityType
+}
+
 export interface CommonErrorsResult<T> {
   data: {
     errors: T[];

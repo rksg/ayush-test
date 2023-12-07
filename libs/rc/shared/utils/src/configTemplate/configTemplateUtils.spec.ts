@@ -1,4 +1,4 @@
-import { generateConfigTemplateBreadcrumb, generateConfigTemplatePayload } from './configTemplateUtils'
+import { generateConfigTemplateBreadcrumb } from './configTemplateUtils'
 
 describe('config-template-utils', () => {
   it('should generate correct breadcrumb for config template', () => {
@@ -10,12 +10,5 @@ describe('config-template-utils', () => {
         tenantType: 'v'
       }
     ])
-  })
-
-  it('should generate correct payload for config template', () => {
-    const payload = { key: 'value' }
-    const configTemplatePayload = generateConfigTemplatePayload(payload)
-
-    expect(configTemplatePayload).toEqual({ ...payload, isTemplate: true })
   })
 })

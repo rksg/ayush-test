@@ -37,12 +37,14 @@ import {
   onActivityMessageReceived,
   EntitlementBanner,
   MspEntitlement,
-  downloadFile
+  downloadFile,
+  AAAPolicyType,
+  CommonResultWithEntityResponse
 } from '@acx-ui/rc/utils'
-import { baseMspApi }                  from '@acx-ui/store'
-import { RequestPayload }              from '@acx-ui/types'
-import { UserUrlsInfo, UserProfile }   from '@acx-ui/user'
-import { createHttpRequest, PverName } from '@acx-ui/utils'
+import { baseMspApi }                           from '@acx-ui/store'
+import { RequestPayload }                       from '@acx-ui/types'
+import { UserUrlsInfo, UserProfile }            from '@acx-ui/user'
+import { ApiInfo, createHttpRequest, PverName } from '@acx-ui/utils'
 
 export function useCheckDelegateAdmin () {
   const { $t } = useIntl()
@@ -836,13 +838,12 @@ export const mspApi = baseMspApi.injectEndpoints({
       providesTags: [{ type: 'ConfigTemplate', id: 'LIST' }]
     }),
     applyConfigTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.applyConfigTemplate, params)
-        return {
-          ...req,
-          body: payload
-        }
-      },
+      query: commonQueryFn(MspUrlsInfo.applyConfigTemplate),
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }]
+    }),
+    // eslint-disable-next-line max-len
+    addAAAPolicyTemplate: build.mutation<CommonResultWithEntityResponse<AAAPolicyType>, RequestPayload>({
+      query: commonQueryFn(MspUrlsInfo.addAAAPolicyTemplate),
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }]
     })
   })
@@ -913,5 +914,16 @@ export const {
   useAssignMspEcToMultiIntegratorsMutation,
   useAssignMspEcToIntegrator_v1Mutation,
   useGetConfigTemplateListQuery,
-  useApplyConfigTemplateMutation
+  useApplyConfigTemplateMutation,
+  useAddAAAPolicyTemplateMutation
 } = mspApi
+
+function commonQueryFn (apiInfo: ApiInfo) {
+  return ({ params, payload }: RequestPayload) => {
+    const req = createHttpRequest(apiInfo, params)
+    return {
+      ...req,
+      body: payload
+    }
+  }
+}
