@@ -6,7 +6,7 @@ import { defineMessage, useIntl }                                    from 'react
 import { useParams }                                                 from 'react-router-dom'
 
 import { AnchorContext, Loader, Tooltip }                                     from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }             from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                                         from '@acx-ui/icons'
 import { useGetVenueLoadBalancingQuery, useUpdateVenueLoadBalancingMutation } from '@acx-ui/rc/services'
 import { LoadBalancingMethodEnum, SteeringModeEnum }                          from '@acx-ui/rc/utils'
@@ -43,10 +43,9 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
   const [updateVenueLoadBalancing, { isLoading: isUpdatingVenueLoadBalancing }] =
     useUpdateVenueLoadBalancingMutation()
 
-  const betaStickyFlag = useIsTierAllowed(TierFeatures.BETA_CLB)
   const stickyClientFlag = useIsSplitOn(Features.STICKY_CLIENT_STEERING)
   const clientAdmissionControlFlag = useIsSplitOn(Features.WIFI_FR_6029_FG6_1_TOGGLE)
-  const supportStickyClient = betaStickyFlag && stickyClientFlag
+  const supportStickyClient = stickyClientFlag
 
   const loadBalancingMethods = [
     {
