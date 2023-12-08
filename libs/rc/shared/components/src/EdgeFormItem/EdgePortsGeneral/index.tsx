@@ -176,6 +176,12 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
           item.ipMode = EdgeIpModeEnum.STATIC
         }
       }
+
+      if (item.portType === EdgePortTypeEnum.LAN
+        && item.corePortEnabled === true && item.ipMode === EdgeIpModeEnum.DHCP) {
+        // should clear gateway when using DHCP.
+        item.gateway = ''
+      }
     })
 
     try {
