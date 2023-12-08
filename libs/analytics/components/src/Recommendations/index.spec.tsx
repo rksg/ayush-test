@@ -8,7 +8,6 @@ import { get }                                                from '@acx-ui/conf
 import { BrowserRouter as Router, Link }                      from '@acx-ui/react-router-dom'
 import { recommendationUrl, Provider, store }                 from '@acx-ui/store'
 import {
-  fireEvent,
   mockGraphqlQuery,
   render,
   screen,
@@ -99,7 +98,7 @@ describe('RecommendationTabContent', () => {
       name: /non\-optimized 06\/16\/2023 06:05 optimal channel plan found for 2\.4 ghz radio zone\-1 new/i
     })
     const optimizedSwitch = within(row).getByRole('switch')
-    fireEvent.click(optimizedSwitch)
+    userEvent.click(optimizedSwitch)
     const text = await screen.findAllByText('Optimized')
     expect(text).toHaveLength(1)
     expect(screen.getByText('Venue')).toBeVisible()

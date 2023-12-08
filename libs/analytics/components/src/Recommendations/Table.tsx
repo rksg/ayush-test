@@ -1,7 +1,6 @@
 import { useMemo, useState, useEffect } from 'react'
 
 import { Checkbox, Switch }       from 'antd'
-import { uniqueId }               from 'lodash'
 import { useIntl, defineMessage } from 'react-intl'
 
 import {
@@ -205,14 +204,16 @@ export function RecommendationTable (
           </Tooltip>
         </UI.OptimizationTooltip>
       </UI.OptimizationHeader>,
-      key: uniqueId(),
-      dataIndex: 'id',
+      // key: (_, value: RecommendationListItem) => value.id,
+      key: 'preferences',
+      dataIndex: 'preferences',
       width: 120,
-      align: 'left',
+      fixed: 'right',
       tooltip: '',
       render: (_, value) => {
         const { code, statusEnum, idPath } = value
-        const appliedStates = ['applyscheduled', 'applyscheduleinprogress', 'applied']
+        // eslint-disable-next-line max-len
+        const appliedStates = ['applyscheduled', 'applyscheduleinprogress', 'applied', 'revertscheduled', 'revertscheduleinprogress', 'revertfailed', 'applywarning']
         const disabled = appliedStates.includes(statusEnum) ? true : false
         const isOptimized = value.preferences? value.preferences.fullOptimization : true
         const tooltipText = $t({ defaultMessage: `
