@@ -29,8 +29,8 @@ const Svg: any = (props: any) => {
       svg.call(
         drag()
           .on('drag', (event: { x: any; y: any }) => {
-            const { x, y } = event
-            setTranslate([x, y])
+            const { offsetX, offsetY } = _.get(event, 'sourceEvent')
+            setTranslate([offsetX, offsetY])
           })
       )
     }
