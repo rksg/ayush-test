@@ -45,7 +45,7 @@ function GetApFilterOptions (tenantId: string|undefined, venueId: string|undefin
 
 function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
   const { $t } = useIntl()
-  const { tenantId, venueId, apId } = useParams()
+  const { tenantId, venueId, apId, networkId } = useParams()
 
   const clientStatuses = () => [
     { key: null, text: $t({ defaultMessage: 'All Health Levels' }) },
@@ -192,12 +192,12 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
         }
       }
     },
-    {
+    ...(networkId ? [] : [{
       key: 'ssid',
       title: intl.$t({ defaultMessage: 'Network' }),
       dataIndex: 'ssid',
       sorter: true,
-      render: (_, row) => {
+      render: (_: React.ReactNode, row: ClientList) => {
         if (!row.healthCheckStatus) {
           return row.ssid
         } else {
@@ -206,7 +206,7 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
           )
         }
       }
-    },
+    }]),
     {
       key: 'sessStartTime',
       title: intl.$t({ defaultMessage: 'Time Connected' }),
@@ -403,7 +403,8 @@ export const ConnectedClientsTable = (props: {
 
   defaultClientPayload.filters = params.venueId ? { venueId: [params.venueId] } :
     params.serialNumber ? { serialNumber: [params.serialNumber] } :
-      params.apId ? { serialNumber: [params.apId] } : {}
+      params.apId ? { serialNumber: [params.apId] } :
+        params.networkId ? { networkId: [params.networkId] } : {}
 
 
   const inlineTableQuery = usePollingTableQuery({
