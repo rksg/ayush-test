@@ -5,6 +5,7 @@ import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Subtitle, Tooltip, Table, TableProps, Loader  }                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                         from '@acx-ui/feature-toggle'
 import { useGetClientListQuery, useVenuesListQuery, useApListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
 import { ClientList, getDeviceTypeIcon, getOsTypeIcon, TableQuery, usePollingTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                                                          from '@acx-ui/react-router-dom'
@@ -60,6 +61,7 @@ function GetNetworkFilterOptions (tenantId: string|undefined) {
 function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
   const { $t } = useIntl()
   const { tenantId, venueId, apId, networkId } = useParams()
+  const listOfClientsPerWlanFlag = useIsSplitOn(Features.LIST_OF_CLIENTS_PER_WLAN)
 
   const clientStatuses = () => [
     { key: null, text: $t({ defaultMessage: 'All Health Levels' }) },
@@ -212,7 +214,7 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       dataIndex: 'ssid',
       sorter: true,
       filterKey: 'ssid',
-      filterable: networkId ? false : GetNetworkFilterOptions(tenantId),
+      filterable: networkId ? false : listOfClientsPerWlanFlag ? GetNetworkFilterOptions(tenantId) : false,
       render: (_: React.ReactNode, row: ClientList) => {
         if (!row.healthCheckStatus) {
           return row.ssid
