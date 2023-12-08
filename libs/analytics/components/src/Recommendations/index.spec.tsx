@@ -94,11 +94,10 @@ describe('RecommendationTabContent', () => {
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     const row = screen.getByRole('row', {
-      // eslint-disable-next-line max-len
-      name: /non-optimized 06\/16\/2023 06:05 optimal ch\/width and tx power found for 5 ghz radio zone-1 revert scheduled/i
+      name: /optimal channel plan found for 2\.4 ghz radio/i
     })
-    const optimizedSwitch = within(row).getByRole('switch')
-    userEvent.click(optimizedSwitch)
+    const nonOptimizedSwitch = within(row).getByRole('switch')
+    userEvent.click(nonOptimizedSwitch)
     const text = await screen.findAllByText('Optimized')
     expect(text).toHaveLength(1)
     expect(screen.getByText('Venue')).toBeVisible()
