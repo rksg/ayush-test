@@ -86,7 +86,7 @@ export function BrandTable ({ sliceType, slaThreshold, data }:
         </span>
     },
     {
-      title: $t({ defaultMessage: 'Device Total' }),
+      title: $t({ defaultMessage: 'Devices Total' }),
       dataIndex: 'deviceCount',
       key: 'deviceCount',
       sorter: { compare: sortProp('deviceCount', defaultSort) }
