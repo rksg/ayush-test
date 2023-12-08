@@ -18,7 +18,7 @@ type SettingRow = {
   value: string
 }
 
-const getDefaultSettings = (): Partial<Settings> => ({
+export const getDefaultSettings = (): Partial<Settings> => ({
   'brand-ssid-compliance-matcher': '^[a-zA-Z0-9]{5}_GUEST$',
   'sla-p1-incidents-count': '0',
   'sla-guest-experience': '100',
