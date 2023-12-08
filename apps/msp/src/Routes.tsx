@@ -3,6 +3,7 @@ import { ConfigProvider, PageNotFound }                     from '@acx-ui/compon
 import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
 import { ManageCustomer, ManageIntegrator, PortalSettings } from '@acx-ui/msp/components'
 import {
+  CONFIG_TEMPLATE_LIST_PATH,
   PolicyOperation,
   PolicyType,
   getPolicyRoutePath
@@ -83,7 +84,7 @@ function ConfigTemplatesRoutes () {
       <Route path='*' element={<PageNotFound />} />
       <Route path=':tenantId/v/configTemplates' element={<LayoutWithConfigTemplateContext />}>
         <Route index
-          element={<TenantNavigate replace to='/configTemplates/templates' tenantType='v'/>}
+          element={<TenantNavigate replace to={CONFIG_TEMPLATE_LIST_PATH} tenantType='v'/>}
         />
         <Route path={':activeTab'} element={<ConfigTemplate />} />
         <Route

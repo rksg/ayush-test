@@ -72,3 +72,54 @@ export const aaaList = [
     id: '343ddabf261546258bc46c049e0641e5'
   }
 ]
+
+export const validateErrorResponse = [{
+  code: '',
+  message: 'Occured Some Error',
+  object: 'radiusProfiles.xxxxxxx'
+}, {
+  code: 'WIFI-10200',
+  message: 'Authentication Profile Mismatch [Shared Secret on Primary has changed]',
+  object: 'radiusProfiles.authRadius',
+  value: {
+    primary: {
+      ip: '1.1.1.1',
+      port: 10,
+      sharedSecret: '99999'
+    },
+    id: '007d6854e6294e97882b432185c1abd9'
+  }
+}, {
+  code: 'WIFI-10200',
+  message: 'Accounting Profile Mismatch [Shared Secret on Primary has changed]',
+  object: 'radiusProfiles.accountingRadius',
+  value: {
+    primary: {
+      ip: '1.1.1.1',
+      port: 20,
+      sharedSecret: '88888'
+    },
+    id: '3e90174d344749b1a1e36a1fd802510c' }
+}, {
+  code: 'WIFI-10200',
+  message: 'multiple conflict xxxxx Authentication Profile Mismatch xxxxxx',
+  object: 'radiusProfiles.accountingRadius',
+  value: {
+    primary: {
+      ip: '1.1.1.1',
+      port: 10,
+      sharedSecret: '99999'
+    },
+    id: '007d6854e6294e97882b432185c1abd9' }
+}, {
+  code: 'WIFI-10200',
+  message: 'Authentication Profile Mismatch xxxxxx multiple conflict xxxxxx',
+  object: 'radiusProfiles.authRadius',
+  value: {
+    primary: {
+      ip: '1.1.1.1',
+      port: 20,
+      sharedSecret: '88888'
+    },
+    id: '007d6854e6294e97882b432185c1abd9' }
+}]

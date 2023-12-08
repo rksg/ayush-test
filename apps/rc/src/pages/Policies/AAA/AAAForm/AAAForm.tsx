@@ -11,6 +11,7 @@ import { useAddAAAPolicyTemplateMutation }                                      
 import { useAaaPolicyQuery, useAddAAAPolicyMutation, useUpdateAAAPolicyMutation } from '@acx-ui/rc/services'
 import {
   AAAPolicyType,
+  CONFIG_TEMPLATE_LIST_PATH,
   generateConfigTemplateBreadcrumb,
   generatePolicyPageHeaderTitle,
   getPolicyListRoutePath,
@@ -34,23 +35,22 @@ type AAAFormProps = {
 const AAAForm = (props: AAAFormProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const tablePath = getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST })
-  const linkToPolicies = useTenantLink(tablePath)
+  const linkToInstanceList = useInstanceListPath()
   const params = useParams()
-  const edit = props.edit && !props.networkView
+  const { type, edit, networkView, backToNetwork } = props
+  const isEdit = edit && !networkView
   const formRef = useRef<StepsFormLegacyInstance<AAAPolicyType>>()
-  const { data } = useAaaPolicyQuery({ params }, { skip: !props.edit })
+  const { data } = useAaaPolicyQuery({ params }, { skip: !isEdit })
   const { isTemplate } = useConfigTemplate()
   const createAAAPolicy = useAddInstance()
-  const breadcrumb = useBreadcrumb(tablePath)
+  const breadcrumb = useBreadcrumb()
 
   const [ updateAAAPolicy ] = useUpdateAAAPolicyMutation()
-  const [saveState, updateSaveState] = useState<AAAPolicyType>({
-    name: ''
-  })
+  const [saveState, updateSaveState] = useState<AAAPolicyType>({ name: '' })
   const updateSaveData = (saveData: Partial<AAAPolicyType>) => {
     updateSaveState({ ...saveState, ...saveData })
   }
+
   useEffect(() => {
     if (data) {
       formRef?.current?.resetFields()
@@ -59,43 +59,44 @@ const AAAForm = (props: AAAFormProps) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
-  const addOrUpdateAAA = async (data: AAAPolicyType, edit: boolean) =>{
-    if (edit) {
-      await updateAAAPolicy({ params, payload: data }).unwrap()
-    } else {
-      await createAAAPolicy({ params, payload: data }).unwrap().then((res)=>{
-        data.id = res?.response?.id
-      })
-    }
-    props.networkView ? props.backToNetwork?.(data) : navigate(linkToPolicies, { replace: true })
-  }
+
   const handleAAAPolicy = async (data: AAAPolicyType) => {
+    const requestPayload = { params, payload: data }
     try {
-      await addOrUpdateAAA(data, edit)
+      if (isEdit) {
+        await updateAAAPolicy(requestPayload).unwrap()
+      } else {
+        await createAAAPolicy(requestPayload).unwrap().then(res => data.id = res?.response?.id)
+      }
+      networkView ? backToNetwork?.(data) : navigate(linkToInstanceList, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
   }
 
+  const onCancel = () => {
+    networkView ? backToNetwork?.() : navigate(linkToInstanceList)
+  }
+
   return (
     <>
-      {!props.networkView && <PageHeader
-        title={generatePolicyPageHeaderTitle(edit, isTemplate, PolicyType.AAA)}
+      {!networkView && <PageHeader
+        title={generatePolicyPageHeaderTitle(isEdit, isTemplate, PolicyType.AAA)}
         breadcrumb={breadcrumb}
       />}
       <StepsFormLegacy<AAAPolicyType>
         formRef={formRef}
-        onCancel={() => props.networkView? props.backToNetwork?.():navigate(linkToPolicies)}
-        onFinish={async (data) => {return handleAAAPolicy(data)}}
+        onCancel={onCancel}
+        onFinish={handleAAAPolicy}
       >
         <StepsFormLegacy.StepForm
           name='settings'
           title={$t({ defaultMessage: 'Settings' })}
         >
-          <AAASettingForm edit={edit}
+          <AAASettingForm edit={isEdit}
             saveState={saveState}
-            type={props.type}
-            networkView={props.networkView}/>
+            type={type}
+            networkView={networkView}/>
         </StepsFormLegacy.StepForm>
       </StepsFormLegacy>
     </>
@@ -111,8 +112,9 @@ function useAddInstance () {
   return isTemplate ? createAAAPolicyTemplate : createAAAPolicy
 }
 
-function useBreadcrumb (tablePath: string) {
+function useBreadcrumb () {
   const { isTemplate } = useConfigTemplate()
+  const tablePath = getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST })
   const { $t } = useIntl()
   const breadcrumb = useMemo(() => {
     return isTemplate
@@ -128,4 +130,12 @@ function useBreadcrumb (tablePath: string) {
   }, [isTemplate])
 
   return breadcrumb
+}
+
+function useInstanceListPath () {
+  const { isTemplate } = useConfigTemplate()
+  const aaaTablePath = getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST })
+
+  // eslint-disable-next-line max-len
+  return useTenantLink(isTemplate ? CONFIG_TEMPLATE_LIST_PATH : aaaTablePath, isTemplate ? 'v' : 't')
 }

@@ -1,7 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { PageHeader, Tabs }                            from '@acx-ui/components'
-import { Path, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { PageHeader, Tabs }                                            from '@acx-ui/components'
+import { CONFIG_TEMPLATE_BUNDLE_LIST_PATH, CONFIG_TEMPLATE_LIST_PATH } from '@acx-ui/rc/utils'
+import { Path, useNavigate, useParams, useTenantLink }                 from '@acx-ui/react-router-dom'
 
 import { ConfigTemplateBundleList } from './Bundles'
 import { ConfigTemplateList }       from './Templates'
@@ -23,8 +24,8 @@ export function ConfigTemplate () {
   const Tab = tabs[activeTab as keyof typeof tabs]
 
   const tabsPathMapping: Record<ConfigTemplateTabKey, Path> = {
-    [ConfigTemplateTabKey.TEMPLATES]: useTenantLink('configTemplates/templates', 'v'),
-    [ConfigTemplateTabKey.BUNDLES]: useTenantLink('configTemplates/bundles', 'v')
+    [ConfigTemplateTabKey.TEMPLATES]: useTenantLink(CONFIG_TEMPLATE_LIST_PATH, 'v'),
+    [ConfigTemplateTabKey.BUNDLES]: useTenantLink(CONFIG_TEMPLATE_BUNDLE_LIST_PATH, 'v')
   }
 
   const onTabChange = (tab: string) => {

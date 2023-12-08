@@ -1,4 +1,4 @@
-import { generateConfigTemplateBreadcrumb } from './configTemplateUtils'
+import { CONFIG_TEMPLATE_LIST_PATH, generateConfigTemplateBreadcrumb } from './configTemplateUtils'
 
 describe('config-template-utils', () => {
   it('should generate correct breadcrumb for config template', () => {
@@ -6,7 +6,7 @@ describe('config-template-utils', () => {
     expect(breadcrumb).toEqual([
       {
         text: 'Configuration Templates',
-        link: 'configTemplates/templates',
+        link: CONFIG_TEMPLATE_LIST_PATH,
         tenantType: 'v'
       }
     ])

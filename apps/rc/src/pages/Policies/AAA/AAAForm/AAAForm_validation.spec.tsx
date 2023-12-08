@@ -11,25 +11,9 @@ import { UserUrlsInfo }                          from '@acx-ui/user'
 
 import { multipleConflictMessage, radiusErrorMessage } from '../../../Networks/wireless/NetworkForm/contentsMap'
 
-import AAAForm from './AAAForm'
+import { aaaData, successResponse, validateErrorResponse } from './__tests__/fixtures'
+import AAAForm                                             from './AAAForm'
 
-const aaaData={
-  id: 'policy-id',
-  name: 'test2',
-  type: 'AUTHENTICATION',
-  primary: {
-    ip: '2.3.3.4',
-    port: 101,
-    sharedSecret: 'xxxxxxxx'
-  },
-  secondary: {
-    ip: '2.3.3.4',
-    port: 101,
-    sharedSecret: 'xxxxxxxx'
-  },
-  tags: ['xxdd']
-}
-const successResponse = { requestId: 'request-id', id: '2', name: 'test2' }
 const aaaList=[{
   id: '1',
   name: 'test1'
@@ -37,56 +21,7 @@ const aaaList=[{
   id: 'policy-id',
   name: 'test2'
 }]
-const validateErrorResponse = [{
-  code: '',
-  message: 'Occured Some Error',
-  object: 'radiusProfiles.xxxxxxx'
-}, {
-  code: 'WIFI-10200',
-  message: 'Authentication Profile Mismatch [Shared Secret on Primary has changed]',
-  object: 'radiusProfiles.authRadius',
-  value: {
-    primary: {
-      ip: '1.1.1.1',
-      port: 10,
-      sharedSecret: '99999'
-    },
-    id: '007d6854e6294e97882b432185c1abd9'
-  }
-}, {
-  code: 'WIFI-10200',
-  message: 'Accounting Profile Mismatch [Shared Secret on Primary has changed]',
-  object: 'radiusProfiles.accountingRadius',
-  value: {
-    primary: {
-      ip: '1.1.1.1',
-      port: 20,
-      sharedSecret: '88888'
-    },
-    id: '3e90174d344749b1a1e36a1fd802510c' }
-}, {
-  code: 'WIFI-10200',
-  message: 'multiple conflict xxxxx Authentication Profile Mismatch xxxxxx',
-  object: 'radiusProfiles.accountingRadius',
-  value: {
-    primary: {
-      ip: '1.1.1.1',
-      port: 10,
-      sharedSecret: '99999'
-    },
-    id: '007d6854e6294e97882b432185c1abd9' }
-}, {
-  code: 'WIFI-10200',
-  message: 'Authentication Profile Mismatch xxxxxx multiple conflict xxxxxx',
-  object: 'radiusProfiles.authRadius',
-  value: {
-    primary: {
-      ip: '1.1.1.1',
-      port: 20,
-      sharedSecret: '88888'
-    },
-    id: '007d6854e6294e97882b432185c1abd9' }
-}]
+
 jest.mock('react-intl', () => {
   const reactIntl = jest.requireActual('react-intl')
   const intl = reactIntl.createIntl({
