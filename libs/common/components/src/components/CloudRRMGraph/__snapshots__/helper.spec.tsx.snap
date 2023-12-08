@@ -1510,6 +1510,7 @@ Array [
         ],
         "id": "00:00:00:00:00:00",
         "name": "name0",
+        "showTooltip": true,
         "symbolSize": 36,
         "txPower": Array [
           "_MIN",
@@ -1541,6 +1542,7 @@ Array [
         ],
         "id": "00:00:00:00:00:01",
         "name": "name1",
+        "showTooltip": true,
         "symbolSize": 24,
         "txPower": Array [
           "_FULL",
@@ -1590,6 +1592,7 @@ Array [
         ],
         "id": "00:00:00:00:00:02",
         "name": "name2",
+        "showTooltip": true,
         "symbolSize": 48,
         "txPower": Array [
           "_9DB",
@@ -1632,6 +1635,7 @@ Array [
         ],
         "id": "00:00:00:00:00:03",
         "name": "name3",
+        "showTooltip": true,
         "symbolSize": 60,
         "txPower": Array [
           "_FULL",
@@ -1687,6 +1691,7 @@ Array [
         ],
         "id": "00:00:00:00:00:04",
         "name": "name4",
+        "showTooltip": true,
         "symbolSize": 60,
         "txPower": Array [
           "_4DB",
@@ -1738,6 +1743,7 @@ Array [
         ],
         "id": "00:00:00:00:00:05",
         "name": "name5",
+        "showTooltip": true,
         "symbolSize": 48,
         "txPower": Array [
           "_6DB",
@@ -1795,6 +1801,7 @@ Array [
         ],
         "id": "00:00:00:00:00:06",
         "name": "name6",
+        "showTooltip": true,
         "symbolSize": 60,
         "txPower": Array [
           "_8DB",
@@ -1833,6 +1840,7 @@ Array [
         ],
         "id": "00:00:00:00:00:07",
         "name": "name7",
+        "showTooltip": true,
         "symbolSize": 48,
         "txPower": Array [
           "_10DB",
@@ -1866,6 +1874,7 @@ Array [
         ],
         "id": "00:00:00:00:00:08",
         "name": "name8",
+        "showTooltip": true,
         "symbolSize": 24,
         "txPower": Array [
           "_MIN",
@@ -1900,6 +1909,7 @@ Array [
         ],
         "id": "00:00:00:00:00:09",
         "name": "name9",
+        "showTooltip": true,
         "symbolSize": 36,
         "txPower": Array [
           "_FULL",
@@ -1986,6 +1996,7 @@ Array [
         ],
         "id": "00:00:00:00:00:00",
         "name": "name0",
+        "showTooltip": true,
         "symbolSize": 36,
         "txPower": Array [
           "_MIN",
@@ -2017,6 +2028,7 @@ Array [
         ],
         "id": "00:00:00:00:00:01",
         "name": "name1",
+        "showTooltip": true,
         "symbolSize": 24,
         "txPower": Array [
           "_FULL",
@@ -2165,6 +2177,7 @@ Array [
         ],
         "id": "00:00:00:00:00:04",
         "name": "name4",
+        "showTooltip": true,
         "symbolSize": 60,
         "txPower": Array [
           "_4DB",
@@ -2216,6 +2229,7 @@ Array [
         ],
         "id": "00:00:00:00:00:05",
         "name": "name5",
+        "showTooltip": true,
         "symbolSize": 48,
         "txPower": Array [
           "_6DB",
@@ -2378,6 +2392,7 @@ Array [
         ],
         "id": "00:00:00:00:00:09",
         "name": "name9",
+        "showTooltip": true,
         "symbolSize": 36,
         "txPower": Array [
           "_FULL",
@@ -2459,6 +2474,7 @@ Array [
         ],
         "id": "00:00:00:00:00:00",
         "name": "name0",
+        "showTooltip": true,
         "symbolSize": 36,
         "txPower": Array [
           "_MIN",
@@ -2490,6 +2506,7 @@ Array [
         ],
         "id": "00:00:00:00:00:01",
         "name": "name1",
+        "showTooltip": true,
         "symbolSize": 24,
         "txPower": Array [
           "_FULL",
@@ -2638,6 +2655,7 @@ Array [
         ],
         "id": "00:00:00:00:00:04",
         "name": "name4",
+        "showTooltip": true,
         "symbolSize": 60,
         "txPower": Array [
           "_4DB",
@@ -2689,6 +2707,7 @@ Array [
         ],
         "id": "00:00:00:00:00:05",
         "name": "name5",
+        "showTooltip": true,
         "symbolSize": 48,
         "txPower": Array [
           "_6DB",
@@ -2854,6 +2873,7 @@ Array [
         ],
         "id": "00:00:00:00:00:09",
         "name": "name9",
+        "showTooltip": true,
         "symbolSize": 36,
         "txPower": Array [
           "_FULL",

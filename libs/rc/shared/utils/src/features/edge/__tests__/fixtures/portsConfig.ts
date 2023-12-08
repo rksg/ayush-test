@@ -122,7 +122,7 @@ export const mockEdgePortStatus = [
 ]
 
 export const edgePortsSetting:EdgePortStatus[] = [{
-  portId: '1',
+  portId: '68a3028a-93ed-11ee-b9d1-0242ac120001',
   name: 'Port 1',
   status: 'Up',
   adminStatus: 'Enabled',
@@ -137,7 +137,7 @@ export const edgePortsSetting:EdgePortStatus[] = [{
   subnet: ''
 },
 {
-  portId: '2',
+  portId: '68a3028a-93ed-11ee-b9d1-0242ac120002',
   name: 'Port 2',
   status: 'Down',
   adminStatus: 'Disabled',

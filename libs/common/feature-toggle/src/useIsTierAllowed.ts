@@ -24,13 +24,10 @@ export function useFFList (): { featureList?: string[], betaList?: string[],
   alphaList?: string[] } {
   const params = useParams()
   const jwtPayload = getJwtTokenPayload()
-  // only if it's delgation flow and FF true then call -
-  // getBetaStatus value
-  const isBetaFFlag = useIsSplitOn(Features.BETA_FLAG) && isDelegationMode()
-  const { data } = useGetBetaStatusQuery({ params }, { skip: !isBetaFFlag })
-  const betaEnabled = isBetaFFlag? ((data?.enabled === 'true')? true : false)
-    : jwtPayload?.isBetaFlag
+  const { data } = useGetBetaStatusQuery({ params })
+  const betaEnabled = (data?.enabled === 'true')? true : false
 
+  // only if it's delgation flow and FF true then call -
   const isDelegationTierApi = useIsSplitOn(Features.DELEGATION_TIERING) && isDelegationMode()
   const accTierResponse = useGetAccountTierQuery({ params }, { skip: !isDelegationTierApi })
   const acxAccountTier = accTierResponse?.data?.acx_account_tier?? jwtPayload?.acx_account_tier
