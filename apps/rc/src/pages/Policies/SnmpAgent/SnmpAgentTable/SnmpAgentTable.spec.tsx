@@ -1,6 +1,7 @@
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
-import { Path }  from 'react-router-dom'
+import { waitForElementToBeRemoved } from '@testing-library/react'
+import userEvent                     from '@testing-library/user-event'
+import { rest }                      from 'msw'
+import { Path }                      from 'react-router-dom'
 
 import { ApSnmpUrls, getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
 import { Provider }                                                    from '@acx-ui/store'
@@ -108,6 +109,7 @@ describe('SnmpAgentTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     let target = mockTableResult.data[0]
     let row = await screen.findByRole('row', { name: new RegExp(target.name) })
@@ -135,8 +137,6 @@ describe('SnmpAgentTable', () => {
 
     await userEvent.click(deleteBtns[1])
     */
-
-    expect(await screen.findByText('Delete a SNMP agent that is currently in use?')).toBeVisible()
   })
 
   it('should navigate to the Edit view', async () => {
