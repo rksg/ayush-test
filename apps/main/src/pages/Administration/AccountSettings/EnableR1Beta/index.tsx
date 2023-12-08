@@ -59,6 +59,7 @@ export function EnableR1Beta (props: EnableR1BetaProps) {
           } catch (error) {
             console.log(error) // eslint-disable-line no-console
           }
+          window.location.reload()
         }
       })
     } else openR1BetaTermsConditionDrawer()

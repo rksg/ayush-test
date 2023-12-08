@@ -7,6 +7,7 @@ import { useParams }                          from 'react-router-dom'
 import { Loader, StepsFormLegacy, cssStr, showActionModal }                         from '@acx-ui/components'
 import { InformationSolid }                                                         from '@acx-ui/icons'
 import { useGetVenueApManagementVlanQuery, useUpdateVenueApManagementVlanMutation } from '@acx-ui/rc/services'
+import { validateVlanId }                                                           from '@acx-ui/rc/utils'
 
 import { VenueEditContext } from '../../../index'
 
@@ -110,13 +111,20 @@ export function ApManagementVlan () {
                 <Form.Item
                   noStyle
                   name='vlanId'
-                  children={<InputNumber
-                    data-testid='venue-ap-mgmt-vlan'
-                    onChange={onFormDataChanged}
-                    min={1}
-                    max={4094}
-                    style={{ width: '86px' }}
-                  />}
+                  rules={[
+                    { required: true },
+                    { validator: (_, value) => {
+                      if (value) return validateVlanId(value)
+                      return Promise.resolve()
+                    } }
+                  ]}
+                  children={
+                    <InputNumber
+                      data-testid='venue-ap-mgmt-vlan'
+                      onChange={onFormDataChanged}
+                      style={{ width: '86px' }}
+                    />
+                  }
                 />
               </Form.Item>
               <Space align='start'>

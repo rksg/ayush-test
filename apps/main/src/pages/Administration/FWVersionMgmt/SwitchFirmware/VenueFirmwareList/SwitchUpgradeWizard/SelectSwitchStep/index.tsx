@@ -11,7 +11,7 @@ import {
   cssStr,
   useStepFormContext
 } from '@acx-ui/components'
-import { ArrowExpand, ArrowCollapse, SearchOutlined } from '@acx-ui/icons'
+import { ArrowExpand, SearchOutlined, ChevronRight } from '@acx-ui/icons'
 import {
   useLazyGetSwitchFirmwareListQuery
 } from '@acx-ui/rc/services'
@@ -519,18 +519,18 @@ export const SelectSwitchStep = (
                 expandIcon: ({ expanded, onExpand, record }) => {
                   if ((record?.switchCount + record?.aboveTenSwitchCount > 0)) {
                     return expanded ? (
-                      <ArrowCollapse
+                      <ArrowExpand
                         style={{ verticalAlign: 'bottom' }}
-                        data-testid='arrow-collapse'
+                        data-testid='arrow-expand'
                         onClick={
                           (e) => {
                             e.stopPropagation()
                             onExpand(record, e as unknown as React.MouseEvent<HTMLElement>)
                           }} />
                     ) : (
-                      <ArrowExpand
-                        style={{ verticalAlign: 'bottom' }}
-                        data-testid='arrow-expand'
+                      <ChevronRight
+                        style={{ verticalAlign: 'bottom', height: '16px' }}
+                        data-testid='arrow-right'
                         onClick={
                           (e) => {
                             e.stopPropagation()
