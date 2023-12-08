@@ -57,7 +57,6 @@ export interface EdgeStatus extends EdgeResourceUtilization {
   firewallId?: string
   firewallName?: string
   upTime?: number
-  // corePort?: string
 }
 export interface EdgeDetails {
   serialNumber: string
