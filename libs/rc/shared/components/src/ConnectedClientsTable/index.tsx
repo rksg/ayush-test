@@ -68,7 +68,7 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       defaultSortOrder: 'ascend',
       render: (_, row) => {
         return <TenantLink
-          to={`users/wifi/clients/${row.clientMac}/details/overview?hostname=${row.hostname}&clientStatus=connected`}
+          to={`users/wifi/clients/${row.clientMac}/details/overview?clientStatus=connected`}
         >{row.hostname || '--'}</TenantLink>
       }
     },
@@ -111,6 +111,19 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       disable: true,
       render: (_, { clientMac }) => {
         const mac = clientMac?.toLowerCase() || undefined
+        return <Tooltip title={mac}>
+          {mac || '--'}
+        </Tooltip>
+      }
+    },
+    {
+      key: 'mldAddr',
+      title: intl.$t({ defaultMessage: 'MLD MAC Address' }),
+      dataIndex: 'mldAddr',
+      sorter: true,
+      disable: true,
+      render: (_, { mldAddr }) => {
+        const mac = mldAddr?.toLowerCase() || undefined
         return <Tooltip title={mac}>
           {mac || '--'}
         </Tooltip>
@@ -375,7 +388,7 @@ export const defaultClientPayload = {
     'ssid','wifiCallingClient','sessStartTime','clientAnalytics','clientVlan','deviceTypeStr','modelName','totalTraffic',
     'trafficToClient','trafficFromClient','receiveSignalStrength','rssi','radio.mode','cpeMac','authmethod','status',
     'encryptMethod','packetsToClient','packetsFromClient','packetsDropFrom','radio.channel',
-    'cog','venueName','apName','clientVlan','networkId','switchName','healthStatusReason','lastUpdateTime']
+    'cog','venueName','apName','clientVlan','networkId','switchName','healthStatusReason','lastUpdateTime', 'mldAddr']
 }
 
 export const ConnectedClientsTable = (props: {

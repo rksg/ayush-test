@@ -34,7 +34,7 @@ function GetCols (intl: ReturnType<typeof useIntl>) {
       })
       /* eslint-disable max-len */
       return <TenantLink
-        to={`/users/wifi/clients/${clientMac}/details/overview?hostname=${hostname}&clientStatus=historical&period=${period}`}
+        to={`/users/wifi/clients/${clientMac}/details/overview?clientStatus=historical&period=${period}`}
       >
         {hostname ? hostname : '--'}
       </TenantLink>
