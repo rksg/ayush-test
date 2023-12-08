@@ -13,8 +13,8 @@ describe('NoRecommendationData', () => {
         for the access points (APs) managed by SmartZone controllers,
         whenever theoretically achievable thus minimizing co-channel
         interference to the lowest level possible.'
-      text='Currently RUCKUS AI cannot provide RRM combinations
-        as zones are not found on your network'
+      text='Currently RUCKUS AI cannot provide RRM optimizations
+        as zones are not found on your network.'
     />)
     expect(asFragment()).toMatchSnapshot()
   })
@@ -30,7 +30,7 @@ describe('NoRRMLicense', () => {
           for the access points (APs) managed by SmartZone controllers,
           whenever theoretically achievable thus minimizing co-channel
           interference to the lowest level possible.'
-        details='Currently RUCKUS AI cannot optimize your current zone
+        details='Currently RUCKUS AI cannot optimize your zone(s)
           for RRM due to inadequate licenses.'
       />
     </BrowserRouter>)

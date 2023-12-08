@@ -40,7 +40,7 @@ export function NoRRMLicense ({ text, details }: NoDataWrapperProps) {
         onClick={() => {
           navigate('/analytics/admin/license')
         }}>
-        {$t({ defaultMessage: 'Update my licenses' })}
+        {$t({ defaultMessage: 'Update My Licenses' })}
       </Button>
     </UI.Wrapper>
   )
@@ -48,20 +48,21 @@ export function NoRRMLicense ({ text, details }: NoDataWrapperProps) {
 
 export const defaultText = ($t: IntlShape['$t']) => $t({ defaultMessage:
   `This feature is a centralized algorithm that runs in the
-  RUCKUS Analytics cloud and guarantees zero interfering links
+  RUCKUS AI cloud and guarantees zero interfering links
   for the access points (APs) managed by SmartZone controllers,
   whenever theoretically achievable thus minimizing co-channel
   interference to the lowest level possible.`
 })
 
 export const noZoneText = ($t: IntlShape['$t']) => $t({ defaultMessage:
-  `Currently RUCKUS AI cannot provide RRM combinations
-  as zones are not found on your network`
+  `Currently RUCKUS AI cannot provide RRM optimizations
+  as zones are not found on your network.`
 })
 
 export const noLicenseText = ($t: IntlShape['$t']) => $t({ defaultMessage:
-  `Currently RUCKUS AI cannot optimize your current zone
-  for RRM due to inadequate licenses.`
+  `Currently RUCKUS AI cannot optimize your zone(s) for RRM due to inadequate licenses.
+  Please ensure you have licenses fully applied for zone(s) for RUCKUS AI to
+  optimize the RRM configuration.`
 })
 
 export const getParamString = (

@@ -19,7 +19,7 @@ export function NoRecommendationData ({
       <UI.LargeGreenTickIcon $noData={noData} />
       <p>{$t({ defaultMessage:
         `Your network is already running in an optimal configuration
-        and we don’t have any AI Operations to recommend recently.`
+        and we don’t have any AI Operations to recommend currently.`
       })}</p>
     </UI.ContentWrapper>
   )
@@ -35,8 +35,8 @@ export function NoAiOpsLicense () {
         <UI.NoDataIcon />
         <p>{noLicenseText}</p>
         <p>{$t({ defaultMessage:
-          `RUCKUS AI cannot analyse your zone due to inadequate licenses.
-          Please ensure you have licenses fully applied for the zone for
+          `RUCKUS AI cannot analyze your zone(s) due to inadequate licenses.
+          Please ensure you have licenses fully applied for zone(s) for
           AI Operations optimizations.`
         })}</p>
       </UI.ContentWrapper>
@@ -44,7 +44,7 @@ export function NoAiOpsLicense () {
         block
         type='default'
         onClick={() => navigate('/analytics/admin/license')}
-        children={$t({ defaultMessage: 'Update my licenses' })}
+        children={$t({ defaultMessage: 'Update My Licenses' })}
       />
     </UI.Wrapper>
   )

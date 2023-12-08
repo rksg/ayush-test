@@ -87,7 +87,7 @@ describe('AIDrivenRRM dashboard', () => {
 
     expect(await screen.findByText('No data')).toBeVisible()
     expect(await screen.findByText(
-      'Currently RUCKUS AI cannot provide RRM combinations as zones are not found on your network'
+      'Currently RUCKUS AI cannot provide RRM optimizations as zones are not found on your network.'
     )).toBeVisible()
   })
 
@@ -108,7 +108,7 @@ describe('AIDrivenRRM dashboard', () => {
 
     expect(await screen.findByText('No data')).toBeVisible()
     expect(await screen.findByText(
-      'Currently RUCKUS AI cannot provide RRM combinations as zones are not found on your network'
+      'Currently RUCKUS AI cannot provide RRM optimizations as zones are not found on your network.'
     )).toBeVisible()
   })
 
@@ -123,6 +123,6 @@ describe('AIDrivenRRM dashboard', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     // eslint-disable-next-line max-len
-    expect(await screen.findByText('Update my licenses')).toBeVisible()
+    expect(await screen.findByText('Update My Licenses')).toBeVisible()
   })
 })

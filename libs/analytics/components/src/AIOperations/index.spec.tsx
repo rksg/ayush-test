@@ -73,7 +73,7 @@ describe('AIOperations dashboard', () => {
       wrapper: Provider
     })
     // eslint-disable-next-line max-len
-    expect(await screen.findByText('Your network is already running in an optimal configuration and we don’t have any AI Operations to recommend recently.')).toBeVisible()
+    expect(await screen.findByText('Your network is already running in an optimal configuration and we don’t have any AI Operations to recommend currently.')).toBeVisible()
   })
 
   it('handles no data', async () => {
@@ -88,6 +88,6 @@ describe('AIOperations dashboard', () => {
       wrapper: Provider
     })
     // eslint-disable-next-line max-len
-    expect(await screen.findByText('Your network is already running in an optimal configuration and we don’t have any AI Operations to recommend recently.')).toBeVisible()
+    expect(await screen.findByText('Your network is already running in an optimal configuration and we don’t have any AI Operations to recommend currently.')).toBeVisible()
   })
 })

@@ -12,7 +12,7 @@ exports[`NoRRMLicense should render correctly with the prop 1`] = `
         This feature is a centralized algorithm that runs in the RUCKUS Analytics cloud and guarantees zero interfering links for the access points (APs) managed by SmartZone controllers, whenever theoretically achievable thus minimizing co-channel interference to the lowest level possible.
       </p>
       <p>
-        Currently RUCKUS AI cannot optimize your current zone for RRM due to inadequate licenses.
+        Currently RUCKUS AI cannot optimize your zone(s) for RRM due to inadequate licenses.
       </p>
     </div>
     <button
@@ -20,7 +20,7 @@ exports[`NoRRMLicense should render correctly with the prop 1`] = `
       type="button"
     >
       <span>
-        Update my licenses
+        Update My Licenses
       </span>
     </button>
   </div>
@@ -33,7 +33,7 @@ exports[`NoRecommendationData should render correctly with the prop 1`] = `
     class="sc-kDDrLX dRRsEl"
   >
     <p>
-      Currently RUCKUS AI cannot provide RRM combinations as zones are not found on your network
+      Currently RUCKUS AI cannot provide RRM optimizations as zones are not found on your network.
     </p>
     <svg
       class="sc-iqcoie bhdzFE"

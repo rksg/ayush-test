@@ -16,7 +16,7 @@ exports[`NoAiOpsLicense should render correctly with the prop 1`] = `
         No license
       </p>
       <p>
-        RUCKUS AI cannot analyse your zone due to inadequate licenses. Please ensure you have licenses fully applied for the zone for AI Operations optimizations.
+        RUCKUS AI cannot analyze your zone(s) due to inadequate licenses. Please ensure you have licenses fully applied for zone(s) for AI Operations optimizations.
       </p>
     </div>
     <button
@@ -24,7 +24,7 @@ exports[`NoAiOpsLicense should render correctly with the prop 1`] = `
       type="button"
     >
       <span>
-        Update my licenses
+        Update My Licenses
       </span>
     </button>
   </div>
@@ -41,7 +41,7 @@ exports[`NoRecommendationData should render correctly with the prop 1`] = `
       data-testid="CheckMarkCircleSolid"
     />
     <p>
-      Your network is already running in an optimal configuration and we don’t have any AI Operations to recommend recently.
+      Your network is already running in an optimal configuration and we don’t have any AI Operations to recommend currently.
     </p>
   </div>
 </DocumentFragment>
