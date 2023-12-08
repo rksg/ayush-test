@@ -7,10 +7,12 @@ const { DefaultFallback: Spinner } = SuspenseBoundary
 
 const CrrmKpi: React.FC<{ id: string }> = ({ id }) => {
   const codeQuery = useRecommendationCodeQuery({ id }, { skip: !Boolean(id) })
+  const code = codeQuery.data?.code || ''
   const detailsQuery = useCrrmKpiQuery(
-    codeQuery.data!,
+    { id, code },
     { skip: !Boolean(codeQuery.data?.code) }
   )
+
   return <Loader
     states={[codeQuery, detailsQuery]}
     style={{ height: 14 }}

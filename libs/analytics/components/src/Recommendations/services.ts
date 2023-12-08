@@ -23,7 +23,7 @@ import {
   StateType,
   crrmStates
 } from './config'
-import { BasicRecommendation, kpiHelper, RecommendationKpi } from './RecommendationDetails/services'
+import { kpiHelper, RecommendationKpi } from './RecommendationDetails/services'
 
 
 export type CrrmListItem = {
@@ -116,10 +116,6 @@ interface ScheduleResponse {
     errorMsg: string;
     success: boolean;
   }
-}
-
-interface CrrmKpiResponse {
-  text: ReactNode
 }
 
 type Metadata = {
@@ -435,7 +431,8 @@ export const api = recommendationApi.injectEndpoints({
         { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
       ]
     }),
-    crrmKpi: build.query<CrrmKpiResponse, BasicRecommendation>({
+    crrmKpi: build.query<
+    { text: ReactNode }, { id: CrrmListItem['id'], code: CrrmListItem['code'] }>({
       query: ({ id, code }) => ({
         document: gql`
           query CrrmKpi($id: String) {
