@@ -36,6 +36,7 @@ export type RecommendationDetails = {
   path: NetworkPath;
   statusTrail: StatusTrail;
   updatedAt: string;
+  dataEndTime: string;
   preferences?: {
     fullOptimization: boolean;
   }
@@ -145,7 +146,7 @@ export const api = recommendationApi.injectEndpoints({
             recommendation(id: $id) {
               id code status appliedTime isMuted
               originalValue currentValue recommendedValue metadata
-              sliceType sliceValue updatedAt preferences
+              sliceType sliceValue updatedAt dataEndTime preferences
               path { type name }
               statusTrail { status createdAt }
               ${kpiHelper(code!)}

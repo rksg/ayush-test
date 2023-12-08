@@ -17,8 +17,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
-import { getNextScheduleTpl } from '../../../FirmwareUtils'
-import * as UI                from '../../../styledComponents'
+import { getNextScheduleTpl, getSwitchNextScheduleTplTooltip } from '../../../FirmwareUtils'
+import * as UI                                                 from '../../../styledComponents'
 import {
   enableSwitchScheduleTooltip,
   getSwitchNextScheduleTpl,
@@ -68,9 +68,33 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
       sorter: { compare: sortProp('switchName', defaultSort) },
       fixed: 'left'
     }, {
-      key: 'Scheduled for',
-      title: intl.$t({ defaultMessage: 'Status' }),
-      dataIndex: 'status',
+      key: 'scheduledFor',
+      title: intl.$t({ defaultMessage: 'Scheduled for' }),
+      dataIndex: 'scheduledFor',
+      width: 160,
+      sorter: false,
+      render: function (_, row) {
+        return (!enableSwitchScheduleTooltip(row)
+          ? <Tooltip
+            title={intl.$t({ defaultMessage: 'Firmware update not applicable' })}
+            placement='bottom'>
+            <UI.WithTooltip>
+              {intl.$t({ defaultMessage: 'Firmware update not applicable' })}
+            </UI.WithTooltip>
+          </Tooltip>
+          : <Tooltip title={
+            <UI.ScheduleTooltipText>
+              {getSwitchNextScheduleTpl(intl, row)}
+            </UI.ScheduleTooltipText>}
+          placement='bottom'>
+            <UI.WithTooltip>{getSwitchNextScheduleTpl(intl, row)}</UI.WithTooltip>
+          </Tooltip>
+        )
+      }
+    }, {
+      key: 'targetFirmware',
+      title: intl.$t({ defaultMessage: 'Target Firmware' }),
+      dataIndex: 'targetFirmware',
       sorter: false,
       render: function (_, row) {
         return (!enableSwitchScheduleTooltip(row)
@@ -86,7 +110,7 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
               {getSwitchScheduleTpl(row)}
             </UI.ScheduleTooltipText>}
           placement='bottom'>
-            <UI.WithTooltip>{getSwitchNextScheduleTpl(intl, row)}</UI.WithTooltip>
+            <UI.WithTooltip>{getSwitchScheduleTpl(row)}</UI.WithTooltip>
           </Tooltip>
         )
       }
@@ -107,6 +131,13 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
         <Typography.Text>
           <b>  {intl.$t({ defaultMessage: 'Scheduled for:' })}</b> {
             getNextScheduleTpl(intl, props.data)}
+        </Typography.Text>
+      </Row>
+      <Row style={{ lineHeight: '24px' }}>
+        <Typography.Text>
+          <b>{intl.$t({ defaultMessage: 'Target Firmware:' })}</b> {
+            getSwitchNextScheduleTplTooltip(props.data) ||
+            intl.$t({ defaultMessage: 'Not been set up yet' })}
         </Typography.Text>
       </Row>
 
