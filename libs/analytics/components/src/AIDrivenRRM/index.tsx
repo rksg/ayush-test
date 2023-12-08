@@ -9,8 +9,8 @@ import type { PathFilter }                          from '@acx-ui/utils'
 import { CrrmList, CrrmListItem, useCrrmListQuery } from '../Recommendations/services'
 import { OptimizedIcon }                            from '../Recommendations/styledComponents'
 
-import { CrrmKpi } from './kpi'
-import * as UI     from './styledComponents'
+import CrrmKpi from './kpi'
+import * as UI from './styledComponents'
 
 const { countFormat } = intlFormats
 
@@ -94,7 +94,7 @@ function AIDrivenRRMWidget ({
                   <UI.List.Item.Meta
                     avatar={<OptimizedIcon value={crrmOptimizedState!.order} />}
                     title={sliceValue}
-                    description={CrrmKpi(id)}
+                    description={<CrrmKpi id={id}/>}
                   />
                 </Tooltip>
               </TenantLink>
