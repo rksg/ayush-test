@@ -154,6 +154,11 @@ describe('HealthPieChart', () => {
         { type: 'zone', name: 'Zone' }
       ]))
       expect(zone.defaultMessage?.[0].options.one.value[0].value).toEqual('AP Group')
+      const apGroup = pieNodeMap(pathToFilter([
+        { type: 'zone', name: 'Zone' },
+        { type: 'apGroup', name: 'AP Group' }
+      ]))
+      expect(apGroup.defaultMessage?.[0].options.one.value[0].value).toEqual('AP')
       const ap = pieNodeMap(pathToFilter([
         { type: 'zone', name: 'Zone' },
         { type: 'AP', name: 'AP' }

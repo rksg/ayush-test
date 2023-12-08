@@ -35,14 +35,18 @@ type PieChartData = {
   name: string
   color: string
 }
-
-function getTopPieChartData (nodeData: Omit<PieChartData, 'color' | 'name'>[])
+type NodeData = {
+  key: string
+  value: number
+  name?: string | null
+}
+function getTopPieChartData (nodeData: NodeData[])
 : PieChartData[] {
   const colors = qualitativeColorSet()
   return nodeData
     .map((val, index) => ({
       ...val,
-      name: val.key,
+      name: val.name ? `${val.name} (${val.key})` : val.key,
       color: colors[index]
     }))
 }
@@ -70,6 +74,11 @@ export function pieNodeMap (filter: NodesFilter): MessageDescriptor {
       return defineMessage({ defaultMessage: `{ count, plural,
         one {AP Group}
         other {AP Groups}
+      }` })
+    case 'apGroup':
+      return defineMessage({ defaultMessage: `{ count, plural,
+        one {AP}
+        other {APs}
       }` })
     case 'AP':
       return defineMessage({ defaultMessage: `{ count, plural,
