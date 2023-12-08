@@ -79,7 +79,8 @@ export const SettingsForm = () => {
         venueId: [venueId],
         ...(editMode && { serialNumber: [edgeId] }),
         deviceStatus: Object.values(EdgeStatusEnum)
-          .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD)
+          .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD),
+        lanPortOnly: ['TRUE']
       } } },
   {
     skip: !venueId || isSdLanBoundEdgesLoading,
