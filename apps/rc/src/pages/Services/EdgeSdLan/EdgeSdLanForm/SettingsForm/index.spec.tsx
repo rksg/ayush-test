@@ -6,6 +6,7 @@ import { act }   from 'react-dom/test-utils'
 import { StepsForm }  from '@acx-ui/components'
 import {
   CommonUrlsInfo,
+  EdgeGeneralFixtures,
   EdgeSdLanUrls,
   EdgeStatusEnum,
   EdgeUrlsInfo,
@@ -22,10 +23,11 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { mockEdgeList, mockedTunnelProfileViewData, mockedVenueList, mockEdgePortConfig, mockedSdLanDataList } from '../../__tests__/fixtures'
+import { mockedTunnelProfileViewData, mockedVenueList, mockEdgePortConfig, mockedSdLanDataList } from '../../__tests__/fixtures'
 
 import { SettingsForm } from '.'
 
+const { mockEdgeList } = EdgeGeneralFixtures
 jest.mock('antd', () => {
   const components = jest.requireActual('antd')
   const Select = ({
@@ -189,7 +191,8 @@ describe('Edge centrailized forwarding form: settings', () => {
           venueId: [expectedVenueId],
           serialNumber: [expectedEdgeId],
           deviceStatus: Object.values(EdgeStatusEnum)
-            .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD)
+            .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD),
+          lanPortOnly: ['TRUE']
         }
       })
     })
@@ -258,7 +261,8 @@ describe('Edge centrailized forwarding form: settings', () => {
         filters: {
           venueId: [mockedVenueList.data[4].id],
           deviceStatus: Object.values(EdgeStatusEnum)
-            .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD)
+            .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD),
+          lanPortOnly: ['TRUE']
         }
       })
     })

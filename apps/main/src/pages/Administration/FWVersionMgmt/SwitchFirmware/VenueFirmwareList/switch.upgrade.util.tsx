@@ -8,14 +8,14 @@ import {
   FirmwareVersion,
   SortResult,
   SwitchFirmware,
-  firmwareTypeTrans
+  firmwareTypeTrans,
+  parseSwitchVersion
 } from '@acx-ui/rc/utils'
 import { noDataDisplay } from '@acx-ui/utils'
 
 import {
   SCHEDULE_END_TIME_FORMAT,
-  SCHEDULE_START_TIME_FORMAT,
-  parseSwitchVersion
+  SCHEDULE_START_TIME_FORMAT
 } from '../../FirmwareUtils'
 
 export const enableSwitchScheduleTooltip = (s: SwitchFirmware) => {

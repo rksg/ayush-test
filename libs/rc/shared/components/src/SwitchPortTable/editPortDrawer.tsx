@@ -203,7 +203,7 @@ export function EditPortDrawer ({
   const [getAclUnion] = useLazyGetAclUnionQuery()
   const [savePortsSetting, { isLoading: isPortsSettingUpdating }] = useSavePortsSettingMutation()
 
-  const { data: switchDetail }
+  const { data: switchDetail, isLoading: isSwitchDetailLoading }
     = useSwitchDetailHeaderQuery({ params: { tenantId, switchId, serialNumber } })
 
   const { data: switchesDefaultVlan }
@@ -309,13 +309,13 @@ export function EditPortDrawer ({
       setLoading(false)
     }
 
-    if (switchesDefaultVlan && switchDetail) {
+    if (switchesDefaultVlan && !isSwitchDetailLoading) {
       resetFields()
       setData()
     }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedPorts, switchDetail, switchesDefaultVlan, visible])
+  }, [selectedPorts, isSwitchDetailLoading, switchesDefaultVlan, visible])
 
   const getSinglePortValue = async (portSpeed: string[], defaultVlan: string,
     vlansByVenue: Vlan[]) => {

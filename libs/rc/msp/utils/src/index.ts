@@ -162,7 +162,7 @@ export const MSPUtils = () => {
           target = entitlement
         }
       }
-      expirationDate = target ? formatter(DateFormatEnum.DateFormat)(target.expirationDate) : '--'
+      expirationDate = target ? target.expirationDate : '--'
     })
     return expirationDate
   }

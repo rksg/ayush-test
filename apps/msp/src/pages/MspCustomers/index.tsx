@@ -11,7 +11,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                              from '@acx-ui/formatter'
 import {
   ManageAdminsDrawer,
   ResendInviteModal,
@@ -55,7 +56,7 @@ import { ScheduleFirmwareDrawer }  from './ScheduleFirmwareDrawer'
 export function MspCustomers () {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const edgeEnabled = useIsTierAllowed(Features.EDGES)
+  const edgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const params = useParams()
@@ -435,13 +436,14 @@ export function MspCustomers () {
           const nextExpirationDate = mspUtils.transformExpirationDate(row)
           if (nextExpirationDate === noDataDisplay)
             return nextExpirationDate
-          const expiredOnString = `${$t({ defaultMessage: 'Expired on' })} ${nextExpirationDate}`
+          const formattedDate = formatter(DateFormatEnum.DateFormat)(nextExpirationDate)
+          const expiredOnString = `${$t({ defaultMessage: 'Expired on' })} ${formattedDate}`
           const remainingDays = EntitlementUtil.timeLeftInDays(nextExpirationDate)
           const TimeLeftWrapper = remainingDays < 0
             ? UI.Expired
             : (remainingDays <= 60 ? UI.Warning : Space)
           return <TimeLeftWrapper>
-            {remainingDays < 0 ? expiredOnString : nextExpirationDate}
+            {remainingDays < 0 ? expiredOnString : formattedDate}
           </TimeLeftWrapper>
         }
       },

@@ -4,11 +4,12 @@ import {
   Schedule,
   SkippedVersion,
   VenueUpdateAdvice,
-  VersionHistory
+  VersionHistory,
+  parseSwitchVersion
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
-import { compareVersions, compareSwitchVersion, getApVersion, getVersionLabel, parseSwitchVersion } from './FirmwareUtils'
+import { compareVersions, compareSwitchVersion, getApVersion, getVersionLabel } from './FirmwareUtils'
 
 
 describe('FirmwareUtils parser', () => {

@@ -206,6 +206,48 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       providesTags: [{ type: 'Network', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
+    apGroupNetworkList: build.query<TableResult<Network>, RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const apGroupNetworkListInfo = {
+          ...createHttpRequest(CommonUrlsInfo.getApGroupNetworkList, arg.params),
+          body: arg.payload
+        }
+        const apGroupNetworkListQuery = await fetchWithBQ(apGroupNetworkListInfo)
+        const networkList = apGroupNetworkListQuery.data as TableResult<Network>
+
+        let venueNetworkApGroupList = {} as { response: NetworkVenue[] }
+        let networkDeepListList = {} as { response: NetworkDetail[] }
+
+        if (networkList && networkList.data.length > 0) {
+          const venueNetworkApGroupInfo = {
+            ...createHttpRequest(CommonUrlsInfo.venueNetworkApGroup, arg.params),
+            body: networkList.data.map(item => ({
+              networkId: item.id,
+              ssids: [item.ssid],
+              venueId: arg.params?.venueId
+            }))
+          }
+          const venueNetworkApGroupQuery = await fetchWithBQ(venueNetworkApGroupInfo)
+          venueNetworkApGroupList = venueNetworkApGroupQuery.data as { response: NetworkVenue[] }
+
+          const networkDeepListInfo = {
+            ...createHttpRequest(CommonUrlsInfo.getNetworkDeepList, arg.params),
+            body: networkList.data.map(item => item.id)
+          }
+          const networkDeepListQuery = await fetchWithBQ(networkDeepListInfo)
+          networkDeepListList = networkDeepListQuery.data as { response: NetworkDetail[] }
+        }
+
+        const aggregatedList = aggregatedVenueNetworksData(
+          networkList, venueNetworkApGroupList, networkDeepListList)
+
+        return apGroupNetworkListQuery.data
+          ? { data: aggregatedList }
+          : { error: apGroupNetworkListQuery.error as FetchBaseQueryError }
+      },
+      providesTags: [{ type: 'Network', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
+    }),
     networkVenueList: build.query<TableResult<Venue>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const networkVenuesListInfo = {
@@ -477,6 +519,8 @@ export const {
   useDeleteNetworkVenueMutation,
   useDeleteNetworkVenuesMutation,
   useApNetworkListQuery,
+  useApGroupNetworkListQuery,
+  useLazyApGroupNetworkListQuery,
   useVenueNetworkListQuery,
   useDashboardOverviewQuery,
   useDashboardV2OverviewQuery,

@@ -108,7 +108,7 @@ export function VlanTab (props: { wlanData: NetworkSaveData | null }) {
             {
               $t({
                 defaultMessage: `Not able to modify when the network
-                    enables network segmentation service`
+                    enables personal identify network`
               })
             }
           </UI.Description>
