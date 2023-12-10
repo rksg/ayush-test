@@ -79,6 +79,7 @@ export function WISPrAuthAccServer (props : {
     if (!authRadius) return
 
     form.setFieldValue(['guestPortal','wisprPage','authRadius'], authRadius)
+    form.setFieldValue(['guestPortal','wisprPage','authRadiusId'], authRadius.id)
 
     if (authRadius.id !== data?.authRadiusId) {
       setData && setData({
@@ -93,6 +94,7 @@ export function WISPrAuthAccServer (props : {
     if(!accountingRadius) return
 
     form.setFieldValue(['guestPortal','wisprPage','accountingRadius'], accountingRadius)
+    form.setFieldValue(['guestPortal','wisprPage','accountingRadiusId'], accountingRadius.id)
 
     if (accountingRadius !== data?.accountingRadiusId) {
       setData && setData({
