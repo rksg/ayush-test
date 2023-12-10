@@ -50,19 +50,21 @@ export function WISPrAuthAccServer (props : {
     useWatch('accountingRadius')
   ]
 
-  const onChange = (value: boolean, fieldName: string) => {
-    if(!value){
+  const onAccountingServiceChange = (enabled: boolean) => {
+    if(!enabled){
       form.setFieldValue(['guestPortal','wisprPage','accountingRadius'], undefined)
       form.setFieldValue(['guestPortal','wisprPage','accountingRadiusId'], undefined)
     }
     setData && setData({
-      ...(!value?
-        _.omit(data,
-          [
-            'guestPortal.wisprPage.accountingRadius',
-            'guestPortal.wisprPage.accountingRadiusId'
-          ]):data),
-      [fieldName]: value })
+      ...(enabled
+        ? data
+        // eslint-disable-next-line max-len
+        : _.omit(data, [
+          'guestPortal.wisprPage.accountingRadius', 'guestPortal.wisprPage.accountingRadiusId',
+          'accountingRadius', 'accountingRadiusId'
+        ])),
+      enableAccountingService: enabled
+    })
   }
 
   useEffect(()=>{
@@ -72,14 +74,32 @@ export function WISPrAuthAccServer (props : {
         .map(m => ({ label: m.name, value: m.id })))
     }
   },[aaaListQuery])
+
   useEffect(()=>{
-    if(authRadius){
-      form.setFieldValue(['guestPortal','wisprPage','authRadius'], authRadius)
+    if (!authRadius) return
+
+    form.setFieldValue(['guestPortal','wisprPage','authRadius'], authRadius)
+
+    if (authRadius.id !== data?.authRadiusId) {
+      setData && setData({
+        ...data,
+        authRadius,
+        authRadiusId: authRadius.id
+      })
     }
   },[authRadius])
+
   useEffect(()=>{
-    if(accountingRadius){
-      form.setFieldValue(['guestPortal','wisprPage','accountingRadius'], accountingRadius)
+    if(!accountingRadius) return
+
+    form.setFieldValue(['guestPortal','wisprPage','accountingRadius'], accountingRadius)
+
+    if (accountingRadius !== data?.accountingRadiusId) {
+      setData && setData({
+        ...data,
+        accountingRadius,
+        accountingRadiusId: accountingRadius.id
+      })
     }
   },[accountingRadius])
 
@@ -238,8 +258,7 @@ export function WISPrAuthAccServer (props : {
       <div>
         <Subtitle level={3}>{$t({ defaultMessage: 'Accounting Service' })}</Subtitle>
         <Form.Item name='enableAccountingService' valuePropName='checked'>
-          <Switch onChange={
-            (checked)=>onChange(checked, 'enableAccountingService')}/>
+          <Switch onChange={checked => onAccountingServiceChange(checked)}/>
         </Form.Item>
         {enableAccountingService &&
           <AAAInstance serverLabel={$t({ defaultMessage: 'Accounting Server' })}
