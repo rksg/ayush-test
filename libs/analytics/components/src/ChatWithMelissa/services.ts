@@ -1,20 +1,32 @@
-// const GPT_URL_ORIGIN=window.location.origin
-// const GPT_URL_BASE_PATH='/analytics'
-// const GPT_ROUTE_PATH='/api/rsa-mlisa-gpt'
+import moment from 'moment'
+
+const GPT_URL_ORIGIN=window.location.origin
+const GPT_URL_BASE_PATH='/analytics'
+const GPT_ROUTE_PATH='/api/mlisa-gpt'
 
 // To connect with local GPT repo
-const GPT_URL_ORIGIN='http://localhost:8000'
-const GPT_URL_BASE_PATH=''
-const GPT_ROUTE_PATH=''
-
-
-
+// const GPT_URL_ORIGIN='http://localhost:8000'
+// const GPT_URL_BASE_PATH=''
+// const GPT_ROUTE_PATH=''
 
 export const getSummary = async ()=>{
+  const dateTimeFormat = 'YYYY-MM-DDT00:00:00Z'
+  const startDate = moment().subtract(1, 'day').format(dateTimeFormat)
+  const endDate = moment().format(dateTimeFormat)
+  // eslint-disable-next-line no-console
+  console.log({
+    startDate,
+    endDate
+  })
   const apiEndpoint ='/ruckus_analytics/summary'
   const gptBaseUrl = `${GPT_URL_ORIGIN}${GPT_URL_BASE_PATH}${GPT_ROUTE_PATH}`
   const summaryApiUrl = `${gptBaseUrl}${apiEndpoint}`
-  const body={}
+  const body={
+    data: {
+      startDate,
+      endDate
+    }
+  }
   const response= await fetch(summaryApiUrl,{
     method: 'POST',
     headers: {
@@ -22,6 +34,25 @@ export const getSummary = async ()=>{
     },
     body: JSON.stringify(body)
   })
+  const json = await response.json()
+  return json
+}
+
+export const getGptResponse = async ()=>{
+  const apiEndpoint ='/'
+  const gptBaseUrl = `${GPT_URL_ORIGIN}${GPT_URL_BASE_PATH}${GPT_ROUTE_PATH}`
+  const gptApiUrl = `${gptBaseUrl}${apiEndpoint}`
+  // const body={
+  //   query: 'what is datastudio?'
+  // }
+  // const options={
+  //   method: 'POST',
+  //   headers: {
+  //     'Content-Type': 'application/json'
+  //   },
+  //   body: JSON.stringify(body)
+  // }
+  const response= await fetch(gptApiUrl)
   const json = await response.json()
   return json
 }

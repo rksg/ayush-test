@@ -6,30 +6,42 @@ import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Button, Card, defaultRichTextFormatValues } from '@acx-ui/components'
 import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
+import { PathFilter }                                from '@acx-ui/utils'
 
 import { BOT_NAME } from '../MelissaBot'
 
-import graphic        from './graphic.png'
-import { getSummary } from './services'
-import * as UI        from './styledComponents'
+import graphic                        from './graphic.png'
+import { getGptResponse, getSummary } from './services'
+import * as UI                        from './styledComponents'
 
-export function ChatWithMelissa () {
+export function ChatWithMelissa (props: { pathFilters: PathFilter }) {
   const { $t } = useIntl()
-  const [summary,setSummary] = useState('')
+  const { startDate, endDate } = props.pathFilters
+  const [summary,setSummary] = useState<string|null>('')
   const [cookies,setCookie]=useCookies(['isRecurringUser'])
   const { isRecurringUser } = cookies
   const isMelissaBotEnabled = useIsSplitOn(Features.RUCKUS_AI_CHATBOT_TOGGLE)
   const isIncidentSummaryEnabled = useIsSplitOn(Features.RUCKUS_AI_INCIDENT_SUMMARY_TOGGLE)
   const showIncidentSummary = isIncidentSummaryEnabled && isRecurringUser
   useEffect(()=>{
+    getGptResponse().then(data=>{
+      // eslint-disable-next-line no-console
+      console.log(data)
+    }).catch((error:Error)=>{
+      // eslint-disable-next-line no-console
+      console.error(error)
+    })
     if(showIncidentSummary){
+      setSummary('')
       getSummary().then((data)=>{
-        setTimeout(()=>{
-          setSummary(data.summary)
-        },5000)
+        setSummary(data.summary)
+      }).catch((error:Error)=>{
+        // eslint-disable-next-line no-console
+        console.error(error)
+        setSummary(error.message)
       })
     }
-  },[showIncidentSummary])
+  },[startDate, endDate, showIncidentSummary])
   const askAnything = $t({ defaultMessage: 'Ask Anything' })
   const discover = $t({ defaultMessage: 'Discover which ones' })
   const comingSoon = $t({ defaultMessage: 'Coming Soon' })
