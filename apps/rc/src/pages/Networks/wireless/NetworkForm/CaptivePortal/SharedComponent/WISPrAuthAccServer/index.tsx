@@ -96,7 +96,7 @@ export function WISPrAuthAccServer (props : {
     form.setFieldValue(['guestPortal','wisprPage','accountingRadius'], accountingRadius)
     form.setFieldValue(['guestPortal','wisprPage','accountingRadiusId'], accountingRadius.id)
 
-    if (accountingRadius !== data?.accountingRadiusId) {
+    if (accountingRadius.id !== data?.accountingRadiusId) {
       setData && setData({
         ...data,
         accountingRadius,
