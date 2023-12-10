@@ -1,7 +1,7 @@
 import { useIntl, defineMessage } from 'react-intl'
 
-import { Button, NoDataIconOnly }          from '@acx-ui/components'
-import { useNavigate, createSearchParams } from '@acx-ui/react-router-dom'
+import { Button, NoDataIconOnly } from '@acx-ui/components'
+import { createSearchParams }     from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
@@ -29,7 +29,6 @@ export function NoZones () {
 
 export function NoRRMLicense () {
   const { $t } = useIntl()
-  const navigate = useNavigate()
   return (
     <UI.LicenseWrapper>
       <UI.ContentWrapper>
@@ -43,7 +42,7 @@ export function NoRRMLicense () {
       <Button
         size='small'
         block
-        onClick={() => navigate('/analytics/admin/license')}
+        onClick={() => window.open('/analytics/admin/license', '_blank')}
         children={$t({ defaultMessage: 'Update My Licenses' })}
       />
     </UI.LicenseWrapper>

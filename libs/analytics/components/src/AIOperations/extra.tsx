@@ -1,7 +1,6 @@
 import { defineMessage, IntlShape, useIntl } from 'react-intl'
 
 import { Button, NoActiveData, NoActiveContent, NoDataIcon } from '@acx-ui/components'
-import { useNavigate }                                       from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
@@ -33,7 +32,6 @@ export function OptimalConfigurationWithData () {
 
 export function NoAiOpsLicense () {
   const { $t } = useIntl()
-  const navigate = useNavigate()
   return (
     <UI.LicenseWrapper>
       <NoDataIcon
@@ -46,7 +44,7 @@ export function NoAiOpsLicense () {
       <Button
         size='small'
         block
-        onClick={() => navigate('/analytics/admin/license')}
+        onClick={() => window.open('/analytics/admin/license', '_blank')}
         children={$t({ defaultMessage: 'Update My Licenses' })}
       />
     </UI.LicenseWrapper>
