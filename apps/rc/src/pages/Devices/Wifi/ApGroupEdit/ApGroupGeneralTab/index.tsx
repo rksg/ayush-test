@@ -58,8 +58,8 @@ export function ApGroupGeneralTab () {
   const { data: apGroupData, isLoading: isApGroupDataLoading } =
   useGetApGroupQuery({ params: { tenantId, apGroupId } }, { skip: !isEditMode })
 
-  const locationState = location.state as { venueId?: string, history?: string}
-  console.log(location)
+  const locationState = location.state as { venueId?: string, history?: string }
+
   const venueIdFromNavigate = locationState?.venueId
   const historyUrl = locationState?.history
 
