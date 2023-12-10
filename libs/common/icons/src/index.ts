@@ -190,7 +190,6 @@ export { ReactComponent as MspSubscriptionOutlined } from './icons/MspSubscripti
 export { ReactComponent as MspSubscriptionSolid } from './icons/MspSubscriptionSolid.svg'
 export { ReactComponent as NetworksOutlined } from './icons/NetworksOutlined.svg'
 export { ReactComponent as NetworksSolid } from './icons/NetworksSolid.svg'
-export { ReactComponent as NoData } from './icons/NoData.svg'
 export { ReactComponent as NotificationOutlined } from './icons/NotificationOutlined.svg'
 export { ReactComponent as NotificationSolid } from './icons/NotificationSolid.svg'
 export { ReactComponent as Pending } from './icons/Pending.svg'

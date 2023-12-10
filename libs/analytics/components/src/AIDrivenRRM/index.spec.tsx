@@ -85,7 +85,7 @@ describe('AIDrivenRRM dashboard', () => {
       wrapper: Provider
     })
 
-    expect(await screen.findByText('No data')).toBeVisible()
+    expect(await screen.findByText('No Data')).toBeVisible()
     expect(await screen.findByText(
       'Currently RUCKUS AI cannot provide RRM optimizations as zones are not found on your network.'
     )).toBeVisible()
@@ -106,7 +106,7 @@ describe('AIDrivenRRM dashboard', () => {
       wrapper: Provider
     })
 
-    expect(await screen.findByText('No data')).toBeVisible()
+    expect(await screen.findByText('No Data')).toBeVisible()
     expect(await screen.findByText(
       'Currently RUCKUS AI cannot provide RRM optimizations as zones are not found on your network.'
     )).toBeVisible()

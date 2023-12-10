@@ -1,8 +1,6 @@
 import styled, { css } from 'styled-components'
 
-import { CheckMarkCircleSolid, CancelCircleOutlined, CheckMarkCircleOutline, Reload, NoData } from '@acx-ui/icons'
-
-import * as UI from '../AIDrivenRRM/styledComponents'
+import { CancelCircleOutlined, CheckMarkCircleOutline, Reload } from '@acx-ui/icons'
 
 export * from '../AIDrivenRRM/styledComponents'
 
@@ -25,28 +23,14 @@ export const RevertIcon = styled(Reload)`
   ${iconStyle}
 `
 
-export const LargeGreenTickIcon = styled(CheckMarkCircleSolid)<{ $noData: boolean }>`
-  --size: 48px;
-  height: var(--size);
-  width: var(--size);
-  display: block;
-  margin-block: 10px 16px;
-  ${p => p.$noData && 'margin-top: 44px;'}
-
-  ${UI.iconAndTextAlignCenter}
+export const OptimalConfigurationWrapper = styled.div`
+  padding: 46px 0;
+  border-bottom: 1px solid var(--acx-neutrals-25);
+  margin-bottom: 5px;
 `
-
-export const NoDataIcon = styled(NoData)`
-  display: block;
-  margin-block: 54px 2px;
-
-  ${UI.iconAndTextAlignCenter}
-`
-
-export const ContentWrapper = styled(UI.ContentWrapper)<{ $noData?: boolean }>`
-  ${p => !p.$noData && css`
-    flex: unset;
-    border-bottom: 1px solid var(--acx-neutrals-25);
-    margin-bottom: 5px;
-  `}
+export const LicenseWrapper = styled.div`
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 3px;
 `

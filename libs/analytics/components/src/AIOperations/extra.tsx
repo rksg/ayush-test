@@ -1,52 +1,55 @@
-import { IntlShape, useIntl } from 'react-intl'
+import { defineMessage, IntlShape, useIntl } from 'react-intl'
 
-import { Button }      from '@acx-ui/components'
-import { useNavigate } from '@acx-ui/react-router-dom'
+import { Button, NoActiveData, NoActiveContent, NoDataIcon } from '@acx-ui/components'
+import { useNavigate }                                       from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
-interface NoDataWrapperProps {
-  text?: string
-  noData?: boolean
-}
+const optimalConfigurationText = defineMessage({ defaultMessage:
+  `Your network is already running in an optimal configuration
+  and we don’t have any AI Operations to recommend currently.` })
 
-export function NoRecommendationData ({
-  noData = false
-}: NoDataWrapperProps) {
+export function OptimalConfiguration () {
   const { $t } = useIntl()
   return (
-    <UI.ContentWrapper $noData={noData}>
-      <UI.LargeGreenTickIcon $noData={noData} />
-      <p>{$t({ defaultMessage:
-        `Your network is already running in an optimal configuration
-        and we don’t have any AI Operations to recommend currently.`
-      })}</p>
-    </UI.ContentWrapper>
+    <NoActiveData
+      tickSize='large'
+      text={$t(optimalConfigurationText)}
+    />
+  )
+}
+
+export function OptimalConfigurationWithData () {
+  const { $t } = useIntl()
+  return (
+    <UI.OptimalConfigurationWrapper>
+      <NoActiveContent
+        tickSize='large'
+        text={$t(optimalConfigurationText)}
+      />
+    </UI.OptimalConfigurationWrapper>
   )
 }
 
 export function NoAiOpsLicense () {
   const { $t } = useIntl()
-  const noLicenseText = $t({ defaultMessage: 'No license' })
   const navigate = useNavigate()
   return (
-    <UI.Wrapper>
-      <UI.ContentWrapper $noData>
-        <UI.NoDataIcon />
-        <p>{noLicenseText}</p>
-        <p>{$t({ defaultMessage:
+    <UI.LicenseWrapper>
+      <NoDataIcon
+        text={$t({ defaultMessage:
           `RUCKUS AI cannot analyze your zone(s) due to inadequate licenses.
           Please ensure you have licenses fully applied for zone(s) for
           AI Operations optimizations.`
-        })}</p>
-      </UI.ContentWrapper>
+        })}
+      />
       <Button
+        size='small'
         block
-        type='default'
         onClick={() => navigate('/analytics/admin/license')}
         children={$t({ defaultMessage: 'Update My Licenses' })}
       />
-    </UI.Wrapper>
+    </UI.LicenseWrapper>
   )
 }
 

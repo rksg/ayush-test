@@ -1,52 +1,11 @@
+import { useIntl, defineMessage } from 'react-intl'
 
-import { IntlShape, useIntl } from 'react-intl'
-
-import { Button }                          from '@acx-ui/components'
+import { Button, NoDataIconOnly }          from '@acx-ui/components'
 import { useNavigate, createSearchParams } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
-interface NoDataWrapperProps {
-  text: string
-  details: string
-}
-
-export function NoRecommendationData ({
-  text, details
-}: NoDataWrapperProps) {
-  const { $t } = useIntl()
-  const noDataText = $t({ defaultMessage: 'No data' })
-  return (
-    <UI.ContentWrapper>
-      <p>{text}</p>
-      <UI.NoDataIcon />
-      <p>{noDataText}</p>
-      <p>{details}</p>
-    </UI.ContentWrapper>
-  )
-}
-
-export function NoRRMLicense ({ text, details }: NoDataWrapperProps) {
-  const { $t } = useIntl()
-  const navigate = useNavigate()
-  return (
-    <UI.Wrapper>
-      <UI.ContentWrapper>
-        <p>{text}</p>
-        <p>{details}</p>
-      </UI.ContentWrapper>
-      <Button
-        type='default'
-        onClick={() => {
-          navigate('/analytics/admin/license')
-        }}>
-        {$t({ defaultMessage: 'Update My Licenses' })}
-      </Button>
-    </UI.Wrapper>
-  )
-}
-
-export const defaultText = ($t: IntlShape['$t']) => $t({ defaultMessage:
+export const featureText = defineMessage({ defaultMessage:
   `This feature is a centralized algorithm that runs in the
   RUCKUS AI cloud and guarantees zero interfering links
   for the access points (APs) managed by SmartZone controllers,
@@ -54,16 +13,42 @@ export const defaultText = ($t: IntlShape['$t']) => $t({ defaultMessage:
   interference to the lowest level possible.`
 })
 
-export const noZoneText = ($t: IntlShape['$t']) => $t({ defaultMessage:
-  `Currently RUCKUS AI cannot provide RRM optimizations
-  as zones are not found on your network.`
-})
+export function NoZones () {
+  const { $t } = useIntl()
+  return (
+    <UI.ContentWrapper>
+      <p>{$t(featureText)}</p>
+      <NoDataIconOnly />
+      <p>{$t({ defaultMessage:
+        `Currently RUCKUS AI cannot provide RRM optimizations
+        as zones are not found on your network.`
+      })}</p>
+    </UI.ContentWrapper>
+  )
+}
 
-export const noLicenseText = ($t: IntlShape['$t']) => $t({ defaultMessage:
-  `Currently RUCKUS AI cannot optimize your zone(s) for RRM due to inadequate licenses.
-  Please ensure you have licenses fully applied for zone(s) for RUCKUS AI to
-  optimize the RRM configuration.`
-})
+export function NoRRMLicense () {
+  const { $t } = useIntl()
+  const navigate = useNavigate()
+  return (
+    <UI.LicenseWrapper>
+      <UI.ContentWrapper>
+        <p>{$t(featureText)}</p>
+        <p>{$t({ defaultMessage:
+          `Currently RUCKUS AI cannot optimize your zone(s) for RRM due to inadequate licenses.
+          Please ensure you have licenses fully applied for zone(s) for RUCKUS AI to
+          optimize the RRM configuration.`
+        })}</p>
+      </UI.ContentWrapper>
+      <Button
+        size='small'
+        block
+        onClick={() => navigate('/analytics/admin/license')}
+        children={$t({ defaultMessage: 'Update My Licenses' })}
+      />
+    </UI.LicenseWrapper>
+  )
+}
 
 export const getParamString = (
   metadata: { audit?: [{ failure: string }] | undefined },

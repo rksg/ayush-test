@@ -2,12 +2,18 @@ import { BrowserRouter } from 'react-router-dom'
 
 import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
-import { NoAiOpsLicense, NoRecommendationData } from './extra'
+import { OptimalConfiguration, OptimalConfigurationWithData, NoAiOpsLicense } from './extra'
 
-describe('NoRecommendationData', () => {
+describe('OptimalConfiguration', () => {
   it('should render correctly with the prop', () => {
-    // eslint-disable-next-line max-len
-    const { asFragment } = render(<NoRecommendationData />)
+    const { asFragment } = render(<OptimalConfiguration />)
+    expect(asFragment()).toMatchSnapshot()
+  })
+})
+
+describe('OptimalConfigurationWithData', () => {
+  it('should render correctly with the prop', () => {
+    const { asFragment } = render(<OptimalConfigurationWithData />)
     expect(asFragment()).toMatchSnapshot()
   })
 })

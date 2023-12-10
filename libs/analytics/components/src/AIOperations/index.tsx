@@ -12,8 +12,13 @@ import { states }                                      from '../Recommendations/
 import { AiOpsList, useAiOpsListQuery, AiOpsListItem } from '../Recommendations/services'
 import { PriorityIcon }                                from '../Recommendations/styledComponents'
 
-import { NoAiOpsLicense, NoRecommendationData, subtitle } from './extra'
-import * as UI                                            from './styledComponents'
+import {
+  NoAiOpsLicense,
+  OptimalConfiguration,
+  OptimalConfigurationWithData,
+  subtitle
+} from './extra'
+import * as UI from './styledComponents'
 
 export { AIOperationsWidget as AIOperations }
 
@@ -37,7 +42,8 @@ function AIOperationsWidget ({
       recommendations: []
     } as AiOpsList
     : queryResults?.data
-  const noData = data?.recommendations.filter(i => i.code !== 'unknown').length === 0
+  const filteredRecommendations = data?.recommendations.filter(i => i.code !== 'unknown')
+  const noData = filteredRecommendations?.length === 0
   const aiOpsCount = data?.aiOpsCount
   const title = {
     title: $t({ defaultMessage: 'AI Operations' }),
@@ -51,8 +57,6 @@ function AIOperationsWidget ({
     recommendation => recommendation.status === 'insufficientLicenses'
   ) : false
   const hasNew = data?.recommendations?.some(i => i.status === 'new')
-  const filteredRecommendations = data?.recommendations.filter(
-    i => i.code !== 'unknown' )
 
   const newStates = ['new', 'applyscheduled', 'applyscheduleinprogress', 'beforeapplyinterrupted']
   // eslint-disable-next-line max-len
@@ -74,9 +78,9 @@ function AIOperationsWidget ({
     >{
         noLicense ? <NoAiOpsLicense />
           : noData
-            ? <NoRecommendationData noData={true} />
+            ? <OptimalConfiguration />
             : <>
-              {!hasNew ? <NoRecommendationData /> : null}
+              {!hasNew ? <OptimalConfigurationWithData /> : null}
               <div style={{ flex: 1 }}>
                 <AutoSizer style={{ flex: 1 }}>{(style) => <List<AiOpsListItem>
                   style={style}

@@ -12,8 +12,12 @@ import { states }                                   from '../Recommendations/con
 import { CrrmList, CrrmListItem, useCrrmListQuery } from '../Recommendations/services'
 import { OptimizedIcon }                            from '../Recommendations/styledComponents'
 
-import { NoRRMLicense, NoRecommendationData, defaultText, getParamString, noLicenseText, noZoneText } from './extra'
-import * as UI                                                                                        from './styledComponents'
+import {
+  NoRRMLicense,
+  NoZones,
+  getParamString
+} from './extra'
+import * as UI from './styledComponents'
 
 const { countFormat } = intlFormats
 
@@ -78,9 +82,9 @@ function AIDrivenRRMWidget ({
       onArrowClick={onArrowClick}
       subTitle={noLicense || !zoneCount ? '' : subtitle}
     >{zoneCount === 0
-        ? <NoRecommendationData text={defaultText($t)} details={noZoneText($t)} />
+        ? <NoZones />
         : noLicense
-          ? <NoRRMLicense text={defaultText($t)} details={noLicenseText($t)} />
+          ? <NoRRMLicense />
           : <AutoSizer>{(style) => <List<CrrmListItem>
             style={style}
             dataSource={data?.recommendations.slice(0, style.height / 50 | 0)}
