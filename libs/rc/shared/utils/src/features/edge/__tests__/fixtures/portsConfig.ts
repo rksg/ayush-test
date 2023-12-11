@@ -102,9 +102,18 @@ export const mockEdgePortConfigWithStatusIp = {
     }
   ]
 }
+
+
+// eslint-disable-next-line max-len
+export const mockEdgePortConfigWithStatusIpWithoutCorePort = _.cloneDeep(mockEdgePortConfigWithStatusIp)
+mockEdgePortConfigWithStatusIpWithoutCorePort.ports[1].corePortEnabled = false
+
 export const mockEdgeOnlyLanPortConfig = _.cloneDeep(mockEdgePortConfigWithStatusIp)
 mockEdgeOnlyLanPortConfig.ports.splice(0, 1)
 mockEdgeOnlyLanPortConfig.ports[0].gateway = '2.2.2.2'
+
+export const mockEdgeOnlyLanPortConfigWithoutCorePort = _.cloneDeep(mockEdgeOnlyLanPortConfig)
+mockEdgeOnlyLanPortConfigWithoutCorePort.ports[0].corePortEnabled = false
 
 export const mockEdgePortStatus = [
   {

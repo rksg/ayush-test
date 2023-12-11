@@ -25,8 +25,6 @@ export function BetaFeaturesDrawer (
     setVisible(false)
   }
 
-  // eslint-disable-next-line max-len
-  const sectionTitle = $t({ defaultMessage: 'Current RUCKUS One beta features: ' })
   const footer =<div>
     <Button type='primary'
       onClick={() => {
@@ -43,7 +41,6 @@ export function BetaFeaturesDrawer (
     width={props.width}
     children={
       <UI.ListWrapper>
-        <UI.SectionTitle>{sectionTitle}</UI.SectionTitle>
         <List
           split={false}
           size='small'
