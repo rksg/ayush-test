@@ -621,12 +621,7 @@ export function ManageCustomer () {
   }
 
   const selectedIntegrators = (tenantType: string, selected: MspEc[] ) => {
-    if (tenantType === AccountType.MSP_INTEGRATOR) {
-      setIntegrator(selected)
-    }
-    else {
-      setInstaller(selected)
-    }
+    (tenantType === AccountType.MSP_INTEGRATOR) ? setIntegrator(selected) : setInstaller(selected)
   }
 
   const displayMspAdmins = () => {
