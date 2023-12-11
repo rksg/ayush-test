@@ -46,7 +46,7 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
       sorter: true,
       render: (_, { ipMode }) => {
         return ipMode === 'DHCP' ? $t({ defaultMessage: 'DHCP' })
-          : (ipMode === ('Static' || 'STATIC') ? $t({ defaultMessage: 'Static IP' }) : '')
+          : (ipMode === 'Static' || ipMode === 'STATIC9' ? $t({ defaultMessage: 'Static IP' }) : '')
       }
     },
     {
