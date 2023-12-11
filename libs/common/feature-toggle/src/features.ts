@@ -130,12 +130,12 @@ export enum Features {
   MSP_BRAND_360 = 'acx-ui-msp-brand360-toggle',
   RUCKUS_AI_ZONES_LIST = 'ruckus-ai-zones-toggle',
   LINKEDIN_OIDC_TOGGLE = 'guest-linkedin-openid-connect-toggle',
-  TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs'
+  TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs',
+  LIST_OF_CLIENTS_PER_WLAN = 'acx-ui-list-of-clients-per-wlan-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
   AP_70 = 'AP-70',
-  BETA_CLB = 'BETA-CLB',
   BETA_DPSK3 = 'BETA-DPSK3',
   SMART_EDGES = 'PLCY-EDGE'
 }
@@ -152,7 +152,6 @@ interface BetaList {
 // from displaying in UI drawer component BetaFeaturesDrawer
 export const BetaListDetails:BetaList[] = [
   { key: TierFeatures.BETA_DPSK3, description: defineMessage({ defaultMessage: 'DPSK3: Dynamic Preshared Keys working with WPA3-DSAE. Users connect their devices to a WPA2/WPA3 network with DPSK and are automatically moved to the WPA3 WLAN, allowing DPSK operation with WiFi 6e or WiFi7. DPSK3 allows the customer to take advantage of the flexibility of DPSK with the security of WPA3.' }), status: true },
-  { key: TierFeatures.AP_70, description: defineMessage({ defaultMessage: 'AP-70' }), status: false },
-  { key: TierFeatures.BETA_CLB, description: defineMessage({ defaultMessage: 'CLB' }), status: false },
+  { key: TierFeatures.AP_70, description: defineMessage({ defaultMessage: 'AP-70: Wi-Fi 7 - Wi-Fi 7 UI configuration available for early adopters and customers provided with advance units of the R770. Contact your reseller for more information on availability of the new R770!' }), status: true },
   { key: TierFeatures.SMART_EDGES, description: defineMessage({ defaultMessage: 'PLCY-EDGE' }), status: false }
 ]

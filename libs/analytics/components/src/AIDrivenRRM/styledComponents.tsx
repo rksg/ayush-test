@@ -5,9 +5,7 @@ import styled              from 'styled-components'
 
 import type { ListItemMetaProps } from 'antd/lib/list'
 
-export const List = styled(AntList)``
-
-List.Item = styled(AntList.Item)`
+export const ListItem = styled(AntList.Item)`
   &:first-of-type { padding-top: 5px; }
   border-bottom-color: var(--acx-neutrals-25) !important;
   padding: 10px 0;
@@ -40,5 +38,27 @@ const MetaNoRef = styled(AntList.Item.Meta)`
     color: var(--acx-neutrals-50);
   }
 `
-List.Item.Meta = forwardRef<HTMLDivElement,ListItemMetaProps>((props, ref) =>
+ListItem.Meta = forwardRef<HTMLDivElement,ListItemMetaProps>((props, ref) =>
   <div ref={ref}><MetaNoRef {...props} /></div>)
+
+export const LicenseWrapper = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 3px;
+`
+
+export const ContentWrapper = styled.div`
+  flex: 1;
+  p {
+    font-family: var(--acx-neutral-brand-font);
+    font-weight: var(--acx-body-4-font-weight);
+    font-size: var(--acx-body-4-font-size);
+    line-height: var(--acx-body-4-line-height);
+    color: var(--acx-primary-black);
+    margin-bottom: 20px;
+  }
+  .ant-empty-normal {
+    margin-bottom: 17px;
+  }
+`
