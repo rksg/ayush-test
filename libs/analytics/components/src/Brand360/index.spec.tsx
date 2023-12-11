@@ -2,18 +2,20 @@ import '@testing-library/jest-dom'
 
 import { rest } from 'msw'
 
+import type { Settings }                         from '@acx-ui/analytics/utils'
 import { Provider, rbacApiURL }                  from '@acx-ui/store'
 import { render, screen, mockServer, fireEvent } from '@acx-ui/test-utils'
 
 import { Brand360 } from '.'
 
-/* eslint-disable max-len */
-/*
-jest.mock('@acx-ui/analytics/components', () => ({
-  ConnectedClientsOverTime: () => <div data-testid={'analytics-ConnectedClientsOverTime'} title='ConnectedClientsOverTime' />,
+
+jest.mock('./Table', () => ({
+  BrandTable: ({ sliceType, slaThreshold }: { sliceType: string, slaThreshold: Settings }) =>
+    <div data-testid={'brand360Table'}>
+      {sliceType} {JSON.stringify(slaThreshold)}
+    </div>
 }))
-*/
-/* eslint-enable */
+
 
 describe('Brand360', () => {
   beforeEach(() => {
@@ -32,7 +34,7 @@ describe('Brand360', () => {
     expect(await screen.findAllByText('brand ssid compliance')).toHaveLength(1)
     // eslint-disable-next-line max-len
     expect(await screen.findAllByText('property {"brand-ssid-compliance-matcher":"^[a-zA-Z0-9]{5}_GUEST$","sla-p1-incidents-count":"1","sla-guest-experience":"2","sla-brand-ssid-compliance":"3"}')).toHaveLength(1)
-    expect(await screen.findAllByText('table')).toHaveLength(1)
+    expect(await screen.findByTestId('brand360Table')).toBeVisible()
   })
   it('changes sliceType', async () => {
     render(<Provider><Brand360 /></Provider>)
@@ -40,7 +42,7 @@ describe('Brand360', () => {
     fireEvent.click(await screen.findByText('LSP'))
     // eslint-disable-next-line max-len
     expect(await screen.findAllByText('lsp {"brand-ssid-compliance-matcher":"^[a-zA-Z0-9]{5}_GUEST$","sla-p1-incidents-count":"1","sla-guest-experience":"2","sla-brand-ssid-compliance":"3"}')).toHaveLength(1)
-    expect(await screen.findAllByText('table')).toHaveLength(1)
+    expect(await screen.findByTestId('brand360Table')).toBeVisible()
   })
   it('applies SLAs', async () => {
     const update = new Promise(resolve => mockServer.use(

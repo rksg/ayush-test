@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { gql }           from 'graphql-request'
-import _                 from 'lodash'
+import _, { uniqueId }   from 'lodash'
 import moment            from 'moment'
 import { defineMessage } from 'react-intl'
 
@@ -21,10 +21,10 @@ import {
   StatusTrail,
   IconValue,
   StateType,
-  crrmStates
+  crrmStates,
+  CRRMStates
 } from './config'
 import { kpiHelper, RecommendationKpi } from './RecommendationDetails/services'
-
 
 export type CrrmListItem = {
   id: string
@@ -35,6 +35,8 @@ export type CrrmListItem = {
   crrmOptimizedState?: IconValue
   crrmInterferingLinksText?: React.ReactNode
   summary?: string
+  updatedAt: string
+  metadata: {}
 } & Partial<RecommendationKpi>
 
 export type CrrmList = {
@@ -60,6 +62,8 @@ export type AiOpsListItem = {
   priority?: IconValue
   category?: string
   summary?: string
+  status: string
+  metadata: {}
 }
 
 export type AiOpsList = {
@@ -173,11 +177,14 @@ const getStatusTooltip = (code: string, state: StateType, metadata: Metadata) =>
 }
 
 const optimizedStates = ['applied', 'applyscheduleinprogress', 'applyscheduled']
+export const unknownStates = [ 'insufficientLicenses', 'verificationError', 'verified' ]
 
 export const getCrrmOptimizedState = (state: StateType) => {
   return optimizedStates.includes(state)
     ? crrmStates.optimized
-    : crrmStates.nonOptimized
+    : unknownStates.includes(state)
+      ? crrmStates[state as CRRMStates]
+      : crrmStates.nonOptimized
 }
 
 export function extractBeforeAfter (value: CrrmListItem['kpis']) {
@@ -196,20 +203,17 @@ export const getCrrmInterferingLinksText = (
   if (status === 'applyfailed') return $t(states.applyfailed.text)
   if (status === 'revertfailed') return $t(states.revertfailed.text)
   const [before, after] = extractBeforeAfter(kpi_number_of_interfering_links)
-  if (kpi_number_of_interfering_links!.previous) return $t({
-    // eslint-disable-next-line max-len
-    defaultMessage: 'From {before} to {after} interfering {after, plural, one {link} other {links}}',
-    description: 'Translation string - From, to, interfering, link, links'
-  }, { before, after })
+
   if (status === 'new') return $t({
     // eslint-disable-next-line max-len
     defaultMessage: '{before} interfering {before, plural, one {link} other {links}} can be optimized to {after}',
     description: 'Translation string - interfering, link, links, can be optimized to'
   }, { before, after })
+
   return $t({
     // eslint-disable-next-line max-len
-    defaultMessage: '{before} interfering {before, plural, one {link} other {links}} will be optimized to {after}',
-    description: 'Translation string - interfering, link, links, will be optimized to'
+    defaultMessage: 'From {before} to {after} interfering {after, plural, one {link} other {links}}',
+    description: 'Translation string - From, to, interfering, link, links'
   }, { before, after })
 }
 
@@ -244,7 +248,7 @@ export const api = recommendationApi.injectEndpoints({
           )
           crrmScenarios(start: $startDate, end: $endDate, path: $path)
           recommendations(start: $startDate, end: $endDate, path: $path, n: $n, crrm: true) {
-            id code status sliceValue
+            id code status sliceValue updatedAt metadata
           }
         }
         `,
@@ -261,11 +265,16 @@ export const api = recommendationApi.injectEndpoints({
           optimizedZoneCount: response.optimizedZoneCount,
           crrmScenarios: response.crrmScenarios,
           recommendations: response.recommendations.map(recommendation => {
-            const { code, status } = recommendation
+            const { id, code, status } = recommendation
+            const newId = id === 'unknown' ? uniqueId() : id
+            const getCode = code === 'unknown'
+              ? status as keyof typeof codes
+              : code as keyof typeof codes
             return {
               ...recommendation,
+              id: newId,
               crrmOptimizedState: getCrrmOptimizedState(status),
-              summary: $t(codes[code as keyof typeof codes].summary)
+              summary: $t(codes[getCode].summary)
             } as unknown as CrrmListItem
           })
         }
@@ -285,7 +294,7 @@ export const api = recommendationApi.injectEndpoints({
             start: $startDate, end: $endDate, path: $path, crrm: false
           )
           recommendations(start: $startDate, end: $endDate, path: $path, n: $n, crrm: false) {
-            id code updatedAt sliceValue
+            id code updatedAt sliceValue status metadata
           }
         }
         `,
@@ -296,12 +305,15 @@ export const api = recommendationApi.injectEndpoints({
         return {
           aiOpsCount: response.aiOpsCount,
           recommendations: response.recommendations.map(recommendation => {
-            const { code } = recommendation
+            const { code, status } = recommendation
+            const getCode = code === 'unknown'
+              ? status as keyof typeof codes
+              : code as keyof typeof codes
             return {
               ...recommendation,
-              priority: codes[code as keyof typeof codes].priority,
-              category: $t(codes[code as keyof typeof codes].category),
-              summary: $t(codes[code as keyof typeof codes].summary)
+              priority: codes[getCode].priority,
+              category: $t(codes[getCode].category),
+              summary: $t(codes[getCode].summary)
             } as unknown as AiOpsListItem
           })
         }
@@ -341,20 +353,33 @@ export const api = recommendationApi.injectEndpoints({
       transformResponse: (response: Response<Recommendation>) => {
         const { $t } = getIntl()
         return response.recommendations.map(recommendation => {
-          const { path, sliceValue, sliceType, code, status, metadata, updatedAt } = recommendation
+          const {
+            id, path, sliceValue, sliceType, code, status, metadata, updatedAt
+          } = recommendation
+          const newId = id === 'unknown' ? uniqueId() : id
           const statusEnum = status as StateType
+          const getCode = code === 'unknown'
+            ? status as keyof typeof codes
+            : code as keyof typeof codes
           return {
             ...recommendation,
+            id: newId,
             scope: formattedPath(path, sliceValue),
             type: nodeTypes(sliceType as NodeType),
-            priority: codes[code as keyof typeof codes].priority,
-            category: $t(codes[code as keyof typeof codes].category),
-            summary: $t(codes[code as keyof typeof codes].summary),
+            priority: {
+              ...codes[getCode].priority,
+              text: $t(codes[getCode].priority.label)
+            },
+            category: $t(codes[getCode].category),
+            summary: $t(codes[getCode].summary),
             status: $t(states[statusEnum].text),
             statusTooltip: getStatusTooltip(code, statusEnum, { ...metadata, updatedAt }),
             statusEnum,
-            ...(code.includes('crrm') && {
-              crrmOptimizedState: getCrrmOptimizedState(statusEnum)
+            ...((code.includes('crrm') || code === 'unknown') && {
+              crrmOptimizedState: {
+                ...getCrrmOptimizedState(statusEnum),
+                text: $t(getCrrmOptimizedState(statusEnum).label)
+              }
             })
           }
         })

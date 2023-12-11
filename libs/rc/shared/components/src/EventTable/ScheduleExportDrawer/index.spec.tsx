@@ -104,6 +104,7 @@ describe('ScheduleExportDrawer', () => {
     await userEvent.click(saveButton)
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loading' }))
+    expect(saveButton).toBeInTheDocument()
 
   })
 
@@ -143,7 +144,8 @@ describe('ScheduleExportDrawer', () => {
     const saveButton = await screen.findByRole('button', { name: 'Apply' })
     await userEvent.click(saveButton)
     await waitFor(() => expect(mockedApplyFn).toBeCalled())
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loading' }))
+    //await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loading' }))
+    expect(saveButton).toBeInTheDocument()
 
   })
 

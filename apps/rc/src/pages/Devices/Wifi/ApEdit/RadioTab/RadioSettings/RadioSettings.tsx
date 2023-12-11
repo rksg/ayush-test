@@ -766,7 +766,6 @@ export function RadioSettings () {
         }
       }
     }
-
     try {
       setEditContextData({
         ...editContextData,
@@ -784,23 +783,27 @@ export function RadioSettings () {
         apRadioParams6G,
         apRadioParamsDual5G
       } = payload
-
-      const hasRadio5G = isHasRadio5G(isSupportTriBandRadioAp, isDual5gMode, bandwidth5GOptions.length)
-      const hasRadioDual5G = isHasRadioDual5G(isSupportDual5GAp, isDual5gMode)
-      const hasRadio6G = isHasRadio6G(isSupportTriBandRadioAp, isDual5gMode, bandwidth6GOptions.length)
+      const fieldDual5GEnable = formRef.current?.getFieldValue(['apRadioParamsDual5G', 'enabled'])
+      const hasRadio5G = isHasRadio5G(isSupportTriBandRadioAp, fieldDual5GEnable, bandwidth5GOptions.length)
+      const hasRadioDual5G = isHasRadioDual5G(isSupportDual5GAp, fieldDual5GEnable)
+      const hasRadio6G = isHasRadio6G(isSupportTriBandRadioAp, fieldDual5GEnable, bandwidth6GOptions.length)
 
       if (!validRadioChannels(payload, hasRadio5G, hasRadioDual5G, hasRadio6G)) {
         return
       }
 
+      // UseVenueSettings will possibly be true in init data
+      // To avoid this, change the payload with origin payload's useVenueSettings
       if (!enable24G && !apRadioParams24G.useVenueSettings) {
         set(payload, ['apRadioParams24G'], initData.apRadioParams24G)
+        set(payload, ['apRadioParams24G', 'useVenueSettings'], apRadioParams24G.useVenueSettings)
       }
       updateRadioParams(payload.apRadioParams24G, support24GChannels)
 
       if (hasRadio5G) {
         if (!enable50G && !apRadioParams50G?.useVenueSettings) {
           set(payload, ['apRadioParams50G'], initData.apRadioParams50G)
+          set(payload, ['apRadioParams50G', 'useVenueSettings'], apRadioParams50G.useVenueSettings)
         }
         updateRadioParams(payload.apRadioParams50G, support5GChannels)
       } else {
@@ -810,6 +813,7 @@ export function RadioSettings () {
       if (hasRadio6G) {
         if (!enable6G && !apRadioParams6G?.useVenueSettings) {
           set(payload, ['apRadioParams6G'], initData.apRadioParams6G)
+          set(payload, ['apRadioParams6G', 'useVenueSettings'], apRadioParams6G.useVenueSettings)
         }
         updateRadioParams(payload.apRadioParams6G, support6GChannels)
       } else {
@@ -821,9 +825,11 @@ export function RadioSettings () {
 
         if (!radioDual5G.lower5gEnabled && !apRadioParamsDual5G?.radioParamsLower5G?.useVenueSettings) {
           set(payload, ['apRadioParamsDual5G', 'radioParamsLower5G'], initData?.apRadioParamsDual5G?.radioParamsLower5G)
+          set(payload, ['apRadioParamsDual5G', 'radioParamsLower5G', 'useVenueSettings'], apRadioParamsDual5G?.radioParamsLower5G?.useVenueSettings)
         }
         if (!radioDual5G.upper5gEnabled && !apRadioParamsDual5G?.radioParamsUpper5G?.useVenueSettings) {
           set(payload, ['apRadioParamsDual5G', 'radioParamsUpper5G'], initData?.apRadioParamsDual5G?.radioParamsUpper5G)
+          set(payload, ['apRadioParamsDual5G', 'radioParamsUpper5G', 'useVenueSettings'], apRadioParamsDual5G?.radioParamsUpper5G?.useVenueSettings)
         }
         updateRadioParams(radioDual5G.radioParamsLower5G, supportLower5GChannels)
         updateRadioParams(radioDual5G.radioParamsUpper5G, supportUpper5GChannels)
@@ -865,13 +871,17 @@ export function RadioSettings () {
 
   const handleOnUseVenueEnabledChange = () => {
     const flipState = !stateOfUseVenueEnabled
+    // Enable venue setting
     if (flipState) {
       operationCache.current = formRef.current?.getFieldValue(['apRadioParamsDual5G', 'enabled'])
       formRef.current?.setFieldValue(['apRadioParamsDual5G', 'enabled'], venueRef?.current?.apRadioParamsDual5G?.enabled)
+      setIsDual5gMode(venueRef?.current?.apRadioParamsDual5G?.enabled ?? true)
       formRef?.current?.setFieldValue(['apRadioParamsDual5G', 'useVenueEnabled'], flipState)
+    // Customize
     } else {
       if (operationCache.current !== undefined) {
         formRef.current?.setFieldValue(['apRadioParamsDual5G', 'enabled'], operationCache.current)
+        setIsDual5gMode(operationCache.current)
       }
       formRef?.current?.setFieldValue(['apRadioParamsDual5G', 'useVenueEnabled'], flipState)
     }

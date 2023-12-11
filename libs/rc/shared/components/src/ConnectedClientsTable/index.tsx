@@ -5,6 +5,7 @@ import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Subtitle, Tooltip, Table, TableProps, Loader  }                                  from '@acx-ui/components'
+import { useIsSplitOn, Features }                                                         from '@acx-ui/feature-toggle'
 import { useGetClientListQuery, useVenuesListQuery, useApListQuery }                      from '@acx-ui/rc/services'
 import { ClientList, getDeviceTypeIcon, getOsTypeIcon, TableQuery, usePollingTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                                                          from '@acx-ui/react-router-dom'
@@ -45,7 +46,8 @@ function GetApFilterOptions (tenantId: string|undefined, venueId: string|undefin
 
 function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
   const { $t } = useIntl()
-  const { tenantId, venueId, apId } = useParams()
+  const wifi7MLOToggle = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_TOGGLE)
+  const { tenantId, venueId, apId, networkId } = useParams()
 
   const clientStatuses = () => [
     { key: null, text: $t({ defaultMessage: 'All Health Levels' }) },
@@ -68,7 +70,7 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       defaultSortOrder: 'ascend',
       render: (_, row) => {
         return <TenantLink
-          to={`users/wifi/clients/${row.clientMac}/details/overview?hostname=${row.hostname}&clientStatus=connected`}
+          to={`users/wifi/clients/${row.clientMac}/details/overview?clientStatus=connected`}
         >{row.hostname || '--'}</TenantLink>
       }
     },
@@ -116,6 +118,20 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
         </Tooltip>
       }
     },
+    ...(wifi7MLOToggle ? [{
+      key: 'mldAddr',
+      title: intl.$t({ defaultMessage: 'MLD MAC Address' }),
+      dataIndex: 'mldAddr',
+      sorter: true,
+      disable: false,
+      show: false,
+      render: (_: React.ReactNode, row: ClientList) => {
+        const mac = row.mldAddr?.toLowerCase() || undefined
+        return <Tooltip title={mac}>
+          {mac || '--'}
+        </Tooltip>
+      }
+    }] : []),
     {
       key: 'ipAddress',
       title: intl.$t({ defaultMessage: 'IP Address' }),
@@ -179,12 +195,12 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
         }
       }
     },
-    {
+    ...(networkId ? [] : [{
       key: 'ssid',
       title: intl.$t({ defaultMessage: 'Network' }),
       dataIndex: 'ssid',
       sorter: true,
-      render: (_, row) => {
+      render: (_: React.ReactNode, row: ClientList) => {
         if (!row.healthCheckStatus) {
           return row.ssid
         } else {
@@ -193,7 +209,7 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
           )
         }
       }
-    },
+    }]),
     {
       key: 'sessStartTime',
       title: intl.$t({ defaultMessage: 'Time Connected' }),
@@ -375,7 +391,7 @@ export const defaultClientPayload = {
     'ssid','wifiCallingClient','sessStartTime','clientAnalytics','clientVlan','deviceTypeStr','modelName','totalTraffic',
     'trafficToClient','trafficFromClient','receiveSignalStrength','rssi','radio.mode','cpeMac','authmethod','status',
     'encryptMethod','packetsToClient','packetsFromClient','packetsDropFrom','radio.channel',
-    'cog','venueName','apName','clientVlan','networkId','switchName','healthStatusReason','lastUpdateTime']
+    'cog','venueName','apName','clientVlan','networkId','switchName','healthStatusReason','lastUpdateTime', 'mldAddr']
 }
 
 export const ConnectedClientsTable = (props: {
@@ -390,7 +406,8 @@ export const ConnectedClientsTable = (props: {
 
   defaultClientPayload.filters = params.venueId ? { venueId: [params.venueId] } :
     params.serialNumber ? { serialNumber: [params.serialNumber] } :
-      params.apId ? { serialNumber: [params.apId] } : {}
+      params.apId ? { serialNumber: [params.apId] } :
+        params.networkId ? { networkId: [params.networkId] } : {}
 
 
   const inlineTableQuery = usePollingTableQuery({

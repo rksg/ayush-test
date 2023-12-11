@@ -97,9 +97,18 @@ export const mockEdgePortConfigWithStatusIp = {
     }
   ]
 }
+
+
+// eslint-disable-next-line max-len
+export const mockEdgePortConfigWithStatusIpWithoutCorePort = _.cloneDeep(mockEdgePortConfigWithStatusIp)
+mockEdgePortConfigWithStatusIpWithoutCorePort.ports[1].corePortEnabled = false
+
 export const mockEdgeOnlyLanPortConfig = _.cloneDeep(mockEdgePortConfigWithStatusIp)
 mockEdgeOnlyLanPortConfig.ports.splice(0, 1)
 mockEdgeOnlyLanPortConfig.ports[0].gateway = '2.2.2.2'
+
+export const mockEdgeOnlyLanPortConfigWithoutCorePort = _.cloneDeep(mockEdgeOnlyLanPortConfig)
+mockEdgeOnlyLanPortConfigWithoutCorePort.ports[0].corePortEnabled = false
 
 export const mockEdgePortStatus = [
   {
@@ -113,7 +122,7 @@ export const mockEdgePortStatus = [
 ]
 
 export const edgePortsSetting:EdgePortStatus[] = [{
-  portId: '1',
+  portId: '68a3028a-93ed-11ee-b9d1-0242ac120001',
   name: 'Port 1',
   status: 'Up',
   adminStatus: 'Enabled',
@@ -128,7 +137,7 @@ export const edgePortsSetting:EdgePortStatus[] = [{
   subnet: ''
 },
 {
-  portId: '2',
+  portId: '68a3028a-93ed-11ee-b9d1-0242ac120002',
   name: 'Port 2',
   status: 'Down',
   adminStatus: 'Disabled',
