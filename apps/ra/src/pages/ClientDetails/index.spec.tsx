@@ -1,3 +1,4 @@
+import { getUserProfile }       from '@acx-ui/analytics/utils'
 import { Provider, dataApiURL } from '@acx-ui/store'
 import {
   render,
@@ -28,6 +29,13 @@ jest.mock('@acx-ui/reports/components', () => ({
   EmbeddedReport: () => <div data-testid='report'></div>
 }))
 
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  getUserProfile: jest.fn(),
+  updateSelectedTenant: jest.fn()
+}))
+const userProfile = getUserProfile as jest.Mock
+
 describe('ClientDetails', () => {
   const params = {
     clientId: 'mockClientId',
@@ -50,6 +58,18 @@ describe('ClientDetails', () => {
       }
     }
   }
+  const defaultUserProfile = {
+    accountId: 'aid',
+    tenants: [],
+    invitations: [],
+    selectedTenant: {
+      id: 'aid',
+      role: 'admin'
+    }
+  }
+  beforeEach(() => {
+    userProfile.mockReturnValue(defaultUserProfile)
+  })
   it('should render correctly', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', {
       data: clientsList
@@ -124,5 +144,32 @@ describe('ClientDetails', () => {
     expect(await screen.findByRole('tab', { name: 'Troubleshooting', selected: true }))
       .toBeVisible()
     expect(await screen.findByTestId('troubleshooting')).toBeVisible()
+  })
+
+  it('should render for report-only user correctly', async () => {
+    userProfile.mockReturnValue({
+      ...defaultUserProfile,
+      selectedTenant: {
+        ...defaultUserProfile.selectedTenant,
+        role: 'report-only'
+      }
+    })
+    mockGraphqlQuery(dataApiURL, 'Network', {
+      data: clientsList
+    })
+    render(<ClientDetails/>, {
+      wrapper: Provider,
+      route: {
+        params: {
+          ...params,
+          activeTab: 'reports'
+        },
+        path: '/users/wifi/clients/:clientId/details/:activeTab'
+      }
+    })
+    expect(screen.queryByRole('tab', { name: 'Troubleshooting' }))
+      .toBeNull()
+    expect(screen.queryByTestId('troubleshooting')).toBeNull()
+    expect(await screen.findByRole('tab', { name: 'Reports', selected: true })).toBeVisible()
   })
 })

@@ -4,6 +4,7 @@ import { useParams } from '@acx-ui/react-router-dom'
 import { hasAccess } from '@acx-ui/user'
 
 import { NetworkApsTab }       from './NetworkApsTab'
+import { NetworkClientsTab }   from './NetworkClientsTab'
 import { NetworkIncidentsTab } from './NetworkIncidentsTab'
 import { NetworkOverviewTab }  from './NetworkOverviewTab'
 import NetworkPageHeader       from './NetworkPageHeader'
@@ -16,7 +17,8 @@ const tabs = {
   venues: NetworkVenuesTab,
   services: NetworkServicesTab,
   timeline: NetworkTimelineTab,
-  incidents: () => hasAccess() ? <NetworkIncidentsTab/> : null
+  incidents: () => hasAccess() ? <NetworkIncidentsTab/> : null,
+  clients: NetworkClientsTab
 }
 
 export default function NetworkDetails () {

@@ -3,12 +3,12 @@ import { useState } from 'react'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { useNetworkClientListQuery, ClientByTraffic }            from '@acx-ui/analytics/services'
-import { defaultSort, sortProp, QueryParamsForZone, dateSort  }  from '@acx-ui/analytics/utils'
-import { Filter, Loader, Table, TableProps, useDateRange }       from '@acx-ui/components'
-import { DateFormatEnum, formatter }                             from '@acx-ui/formatter'
-import { TenantLink }                                            from '@acx-ui/react-router-dom'
-import { encodeParameter, DateFilter, DateRange, useDateFilter } from '@acx-ui/utils'
+import { useNetworkClientListQuery, ClientByTraffic }                           from '@acx-ui/analytics/services'
+import { defaultSort, sortProp, QueryParamsForZone, dateSort, getUserProfile  } from '@acx-ui/analytics/utils'
+import { Filter, Loader, Table, TableProps, useDateRange }                      from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                            from '@acx-ui/formatter'
+import { TenantLink }                                                           from '@acx-ui/react-router-dom'
+import { encodeParameter, DateFilter, DateRange, useDateFilter }                from '@acx-ui/utils'
 
 const pagination = { pageSize: 10, defaultPageSize: 10 }
 
@@ -43,6 +43,9 @@ export function ClientsList ({ searchVal='', queryParmsForZone }:
     setSearchString(search.searchString!)
   }
 
+  const { selectedTenant: { role } } = getUserProfile()
+  const isReportOnly = role === 'report-only'
+
   const clientTablecolumnHeaders: TableProps<ClientByTraffic>['columns'] = [
     {
       title: $t({ defaultMessage: 'Hostname' }),
@@ -58,9 +61,10 @@ export function ClientsList ({ searchVal='', queryParmsForZone }:
           endDate: moment(lastSeen).format(),
           range: DateRange.custom
         })
-        return <TenantLink
-          to={`/users/wifi/clients/${mac}/details/troubleshooting?period=${period}`}
-        >
+        const link = isReportOnly
+          ? `/users/wifi/clients/${mac}/details/reports`
+          : `/users/wifi/clients/${mac}/details/troubleshooting?period=${period}`
+        return <TenantLink to={link}>
           {highlightFn(hostname)}
         </TenantLink>
       }

@@ -293,6 +293,7 @@ export interface NetworkDetailHeader {
   network: {
     name: string
     id: string
+    clients: number
   }
 }
 
