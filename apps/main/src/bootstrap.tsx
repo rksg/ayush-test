@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Root }          from 'react-dom/client'
 import { addMiddleware } from 'redux-dynamic-middlewares'
@@ -8,15 +8,16 @@ import {
   Loader,
   SuspenseBoundary
 } from '@acx-ui/components'
-import { useGetPreferencesQuery }       from '@acx-ui/rc/services'
-import { BrowserRouter }                from '@acx-ui/react-router-dom'
-import { Provider }                     from '@acx-ui/store'
+import { useGetPreferencesQuery } from '@acx-ui/rc/services'
+import { BrowserRouter }          from '@acx-ui/react-router-dom'
+import { Provider }               from '@acx-ui/store'
 import {
   UserProfileProvider,
   useUserProfileContext,
   UserUrlsInfo,
   useGetUserProfileQuery,
-  UserProfile as UserProfileInterface
+  // UserProfile as UserProfileInterface,
+  useUpdateUserProfileMutation
 } from '@acx-ui/user'
 import {
   renderPendo,
@@ -28,9 +29,9 @@ import {
 } from '@acx-ui/utils'
 import type { PendoParameters } from '@acx-ui/utils'
 
-import AllRoutes           from './AllRoutes'
-import { useBrowserLang }  from './BrowserDialog/BrowserDialog'
-import { errorMiddleware } from './errorMiddleware'
+import AllRoutes                                                                   from './AllRoutes'
+import { showBrowserLangDialog, detectBrowserLang, isNonProdEnv, PartialUserData } from './BrowserDialog/BrowserDialog'
+import { errorMiddleware }                                                         from './errorMiddleware'
 
 import '@acx-ui/theme'
 
@@ -68,16 +69,63 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   const { data: userProfile } = result
   const request = useGetPreferencesQuery({ tenantId: getTenantId() })
   const defaultLang = (request.data?.global?.defaultLanguage || DEFAULT_SYS_LANG) as LangKey
-  const userPreflang = useBrowserLang(userProfile as UserProfileInterface) // browser detection + user profile lang
-  // console.log(userPreflang)
-  const lang = userPreflang.lang?? defaultLang
+  const tenantId = getTenantId()
+
+  const [language, setLanguage] = useState(userProfile?.preferredLanguage?? defaultLang)
+  const [langLoading, setLangLoading] = useState(true)
+  const [ updateUserProfile ] = useUpdateUserProfileMutation()
+
+  useEffect(() => {
+    if (userProfile) {
+      const lang = userProfile?.preferredLanguage
+      const browserLang = detectBrowserLang()
+      const isBrowserDialog = Boolean(localStorage.getItem('isBrowserDialog'))
+      const openDialog = browserLang !== DEFAULT_SYS_LANG && browserLang !== lang
+      if (openDialog && isNonProdEnv && !isBrowserDialog) {
+        const userPreflang = showBrowserLangDialog()
+        userPreflang.then((dialogResult) => {
+          // update settings user selected 'yes' language change
+          if (dialogResult.lang !== '') {
+            setLanguage(dialogResult.lang)
+            const data:PartialUserData = {
+              detailLevel: userProfile?.detailLevel,
+              dateFormat: userProfile?.dateFormat,
+              preferredLanguage: dialogResult.lang
+            }
+            try {
+              updateUserProfile({
+                payload: data,
+                params: { tenantId }
+              }).unwrap()
+              setLangLoading(false)
+            } catch (error) {
+              console.log(error) // eslint-disable-line no-console
+            } finally {
+              setLangLoading(false)
+            }
+          }
+        }).catch(() => {
+          // user selected 'no' language change
+          setLanguage(userProfile?.preferredLanguage?? defaultLang)
+          setLangLoading(false)
+        })
+      } else {
+        setLanguage(userProfile?.preferredLanguage?? defaultLang)
+        setLangLoading(false)
+      }
+    }
+  }, [ userProfile, defaultLang, tenantId, updateUserProfile ])
+
+  const lang = language
 
   return <Loader
-    fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
-    states={[{ isLoading: result.isLoading || result.isFetching
+    fallback={<SuspenseBoundary.DefaultFallback absoluteCenter/>}
+    states={[{
+      isLoading: result.isLoading || result.isFetching
         || request.isLoading || request.isFetching
-        || userPreflang.isLoading }]}
-    children={<ConfigProvider {...props} lang={lang} />}
+        || langLoading
+    }]}
+    children={<ConfigProvider {...props} lang={lang as unknown as LangKey}/>}
   />
 }
 
@@ -88,8 +136,8 @@ function DataGuardLoader (props: React.PropsWithChildren) {
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
     states={[{ isLoading:
-      !Boolean(locale.messages) ||
-      !Boolean(userProfile.allowedOperations.length)
+        !Boolean(locale.messages) ||
+        !Boolean(userProfile.allowedOperations.length)
     }]}
     children={props.children}
   />
