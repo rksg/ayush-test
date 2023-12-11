@@ -225,9 +225,8 @@ describe('Network utils test', () => {
         } as NetworkSaveData)
       }, { wrapper: Provider })
 
-      await waitFor(() => expect(mockedTunnelReq).toBeCalled())
+      await waitFor(() => expect(result.current.tunnelType).toBe('VXLAN'))
       expect(result.current.enableVxLan).toBe(true)
-      expect(result.current.tunnelType).toBe('VXLAN')
     })
 
     it('should handle with null network data',async () => {
