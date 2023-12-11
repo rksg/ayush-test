@@ -80,11 +80,6 @@ export function pieNodeMap (filter: NodesFilter): MessageDescriptor {
         one {AP}
         other {APs}
       }` })
-    case 'AP':
-      return defineMessage({ defaultMessage: `{ count, plural,
-        one {AP}
-        other {APs}
-      }` })
     default:
       return !isMLISA ?
         defineMessage({ defaultMessage: `{ count, plural,
