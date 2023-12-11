@@ -22,10 +22,8 @@ export const getSummary = async ()=>{
   const gptBaseUrl = `${GPT_URL_ORIGIN}${GPT_URL_BASE_PATH}${GPT_ROUTE_PATH}`
   const summaryApiUrl = `${gptBaseUrl}${apiEndpoint}`
   const body={
-    data: {
-      startDate,
-      endDate
-    }
+    startDate,
+    endDate
   }
   const response= await fetch(summaryApiUrl,{
     method: 'POST',

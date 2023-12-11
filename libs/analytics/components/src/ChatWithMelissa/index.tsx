@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react'
 
-import moment                        from 'moment-timezone'
-import { useCookies }                from 'react-cookie'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Button, Card, defaultRichTextFormatValues } from '@acx-ui/components'
@@ -18,11 +16,10 @@ export function ChatWithMelissa (props: { pathFilters: PathFilter }) {
   const { $t } = useIntl()
   const { startDate, endDate } = props.pathFilters
   const [summary,setSummary] = useState<string|null>('')
-  const [cookies,setCookie]=useCookies(['isRecurringUser'])
-  const { isRecurringUser } = cookies
+  const [isRecurringUser,setIsRecurringUser] = useState(localStorage.getItem('isRecurringUser'))
   const isMelissaBotEnabled = useIsSplitOn(Features.RUCKUS_AI_CHATBOT_TOGGLE)
   const isIncidentSummaryEnabled = useIsSplitOn(Features.RUCKUS_AI_INCIDENT_SUMMARY_TOGGLE)
-  const showIncidentSummary = isIncidentSummaryEnabled && isRecurringUser
+  const showIncidentSummary = isIncidentSummaryEnabled && isRecurringUser === 'true'
   useEffect(()=>{
     getGptResponse().then(data=>{
       // eslint-disable-next-line no-console
@@ -78,9 +75,8 @@ export function ChatWithMelissa (props: { pathFilters: PathFilter }) {
         window.dispatchEvent(event)
         if(isIncidentSummaryEnabled){
           setTimeout(()=>{
-            setCookie('isRecurringUser',true,{
-              expires: moment().add(1, 'M').toDate()
-            })
+            setIsRecurringUser('true')
+            localStorage.setItem('isRecurringUser', 'true')
           },2000)
         }
       }}>{showIncidentSummary ? discover : askAnything}</Button>}
