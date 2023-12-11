@@ -4,30 +4,21 @@ import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Button, Card, defaultRichTextFormatValues } from '@acx-ui/components'
 import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
-import { PathFilter }                                from '@acx-ui/utils'
 
 import { BOT_NAME } from '../MelissaBot'
 
-import graphic                        from './graphic.png'
-import { getGptResponse, getSummary } from './services'
-import * as UI                        from './styledComponents'
+import graphic        from './graphic.png'
+import { getSummary } from './services'
+import * as UI        from './styledComponents'
 
-export function ChatWithMelissa (props: { pathFilters: PathFilter }) {
+export function ChatWithMelissa () {
   const { $t } = useIntl()
-  const { startDate, endDate } = props.pathFilters
   const [summary,setSummary] = useState<string|null>('')
   const [isRecurringUser,setIsRecurringUser] = useState(localStorage.getItem('isRecurringUser'))
   const isMelissaBotEnabled = useIsSplitOn(Features.RUCKUS_AI_CHATBOT_TOGGLE)
   const isIncidentSummaryEnabled = useIsSplitOn(Features.RUCKUS_AI_INCIDENT_SUMMARY_TOGGLE)
   const showIncidentSummary = isIncidentSummaryEnabled && isRecurringUser === 'true'
   useEffect(()=>{
-    getGptResponse().then(data=>{
-      // eslint-disable-next-line no-console
-      console.log(data)
-    }).catch((error:Error)=>{
-      // eslint-disable-next-line no-console
-      console.error(error)
-    })
     if(showIncidentSummary){
       setSummary('')
       getSummary().then((data)=>{
@@ -38,7 +29,7 @@ export function ChatWithMelissa (props: { pathFilters: PathFilter }) {
         setSummary(error.message)
       })
     }
-  },[startDate, endDate, showIncidentSummary])
+  },[showIncidentSummary])
   const askAnything = $t({ defaultMessage: 'Ask Anything' })
   const discover = $t({ defaultMessage: 'Discover which ones' })
   const comingSoon = $t({ defaultMessage: 'Coming Soon' })
@@ -58,6 +49,12 @@ export function ChatWithMelissa (props: { pathFilters: PathFilter }) {
       ...defaultRichTextFormatValues
     }}
   />
+  // eslint-disable-next-line no-console
+  console.log({
+    showIncidentSummary,
+    summary,
+    isIncidentSummaryEnabled
+  })
   return <UI.Wrapper><Card type='solid-bg'>
     <p>
       <img src={graphic} alt='graphic' /><br />
@@ -74,10 +71,8 @@ export function ChatWithMelissa (props: { pathFilters: PathFilter }) {
           } })
         window.dispatchEvent(event)
         if(isIncidentSummaryEnabled){
-          setTimeout(()=>{
-            setIsRecurringUser('true')
-            localStorage.setItem('isRecurringUser', 'true')
-          },2000)
+          setIsRecurringUser('true')
+          localStorage.setItem('isRecurringUser', 'true')
         }
       }}>{showIncidentSummary ? discover : askAnything}</Button>}
     {!isMelissaBotEnabled && <Button size='small' disabled>{comingSoon}</Button>}

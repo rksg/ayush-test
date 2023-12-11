@@ -110,7 +110,7 @@ const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
           />
         </div>
         <div style={{ gridArea: 'd2' }}>
-          <ChatWithMelissa pathFilters={pathFilters}/>
+          <ChatWithMelissa/>
         </div>
       </UI.NetworkAdminGrid>
     )
@@ -156,7 +156,7 @@ const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
           <SLA pathFilters={pathFilters} />
         </div>
         : <div style={{ gridArea: 'd2' }}>
-          <ChatWithMelissa pathFilters={pathFilters}/>
+          <ChatWithMelissa/>
         </div> }
     </UI.AdminGrid>
   )
