@@ -5,6 +5,7 @@ import {
   NetworkAssurance,
   NetworkAssuranceTabEnum,
   CrrmDetails,
+  UnknownDetails,
   VideoCallQoe,
   VideoCallQoeForm,
   VideoCallQoeDetails,
@@ -67,6 +68,7 @@ function AllRoutes () {
         <Route path=':activeTab' element={<Recommendations/>} />
         <Route path='aiOps/:id' element={<RecommendationDetails />} />
         <Route path='crrm/:id' element={<CrrmDetails />} />
+        <Route path='crrm/unknown/*' element={<UnknownDetails />} />
       </Route>
       <Route path='incidents'>
         <Route index={true} element={<Incidents />} />
