@@ -1,20 +1,17 @@
 import { Loader, SuspenseBoundary } from '@acx-ui/components'
 
-import { useRecommendationCodeQuery } from '../Recommendations/RecommendationDetails/services'
-import { useCrrmKpiQuery }            from '../Recommendations/services'
+import { useCrrmKpiQuery } from '../Recommendations/services'
 
 const { DefaultFallback: Spinner } = SuspenseBoundary
 
-const CrrmKpi: React.FC<{ id: string }> = ({ id }) => {
-  const codeQuery = useRecommendationCodeQuery({ id }, { skip: !Boolean(id) })
-  const code = codeQuery.data?.code || ''
+const CrrmKpi: React.FC<{ id: string, code: string }> = ({ id, code }) => {
   const detailsQuery = useCrrmKpiQuery(
     { id, code },
-    { skip: !Boolean(codeQuery.data?.code) }
+    { skip: !Boolean(code) }
   )
 
   return <Loader
-    states={[codeQuery, detailsQuery]}
+    states={[detailsQuery]}
     style={{ height: 14 }}
     fallback={<Spinner size='small' />}
   >

@@ -83,7 +83,8 @@ function AIDrivenRRMWidget ({
               sliceValue,
               id,
               crrmOptimizedState,
-              summary
+              summary,
+              code
             } = recommendation
             return <UI.List.Item key={id}>
               <TenantLink to={`/recommendations/crrm/${id}`}>
@@ -94,7 +95,7 @@ function AIDrivenRRMWidget ({
                   <UI.List.Item.Meta
                     avatar={<OptimizedIcon value={crrmOptimizedState!.order} />}
                     title={sliceValue}
-                    description={<CrrmKpi id={id}/>}
+                    description={<CrrmKpi id={id} code={code}/>}
                   />
                 </Tooltip>
               </TenantLink>
