@@ -50,12 +50,7 @@ const useBreadcrumbState = (initialBreadcrumb: Node[], cb: CallableFunction) => 
 export const SlidingDoor = (props: SlidingDoorProps) => {
   const { $t } = useIntl()
   const { data: rootNode, setNetworkPath, defaultSelectedNode: selectedNode } = props
-  const defaultPath = [{ name: 'Network', type: 'network' }]
-  const availableNode = findMatchingNode(
-    rootNode,
-    selectedNode?.[selectedNode.length - 1],
-    selectedNode
-  )
+  const availableNode = findMatchingNode(rootNode, selectedNode)
   const initialBreadcrumb = availableNode?.path || [rootNode]
   const [isAnimationSlideIn, setIsAnimationSlideIn] = useState(true)
   const { breadcrumb, onBreadcrumbClick, addNodeToBreadcrumb, setBreadcrumbPath } =
@@ -93,7 +88,7 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
     setVisible(false)
     setSearchText('')
     setInputValue('')
-    setNetworkPath(defaultPath, defaultPath)
+    setNetworkPath(defaultNetworkPath, defaultNetworkPath)
     setBreadcrumbPath([rootNode])
   }
 
