@@ -31,6 +31,32 @@ const adminList = [{
       destination: 'efg.cheng@email.com',
       active: true,
       status: 'OK'
+    },
+    {
+      type: 'SMS',
+      id: 'bed16f134e28411ba6df5de8a3204df9',
+      createdDate: '2023-08-16T19:12:05.984+00:00',
+      updatedDate: '2023-08-16T19:12:05.984+00:00',
+      destination: 'efg2.cheng@email.com',
+      active: true,
+      status: 'OK'
+    }
+  ]
+},
+{
+  id: '01b35c76411544999550f038304f18f5',
+  createdDate: '2023-08-16T19:12:05.983+00:00',
+  updatedDate: '2023-08-16T19:12:05.987+00:00',
+  description: 'primeAdmin1',
+  endpoints: [
+    {
+      type: 'EMAIL',
+      id: 'bed16f134e28411ba6df5de8a3204df8',
+      createdDate: '2023-08-16T19:12:05.984+00:00',
+      updatedDate: '2023-08-16T19:12:05.984+00:00',
+      destination: 'efg1.cheng@email.com',
+      active: true,
+      status: 'OK'
     }
   ]
 }

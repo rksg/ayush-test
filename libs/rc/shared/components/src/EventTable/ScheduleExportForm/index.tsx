@@ -307,10 +307,13 @@ export function ScheduleExportForm (props: ScheduleExportFormProps) {
                     noStyle
                   >
                     <InputNumber
-                      max={24}
+                      max={23}
                       min={0}
                       style={{ width: '40px' }}
                       size={'middle'}
+                      formatter={(value) => (value && value.toString().length < 2)
+                        ? '0' + value : '' + value}
+                      parser={(value) => parseInt(value as string, 10) as 0 | 23}
                       controls={false}
                     />
                   </Form.Item>
@@ -331,10 +334,13 @@ export function ScheduleExportForm (props: ScheduleExportFormProps) {
                     noStyle
                   >
                     <InputNumber
-                      max={60}
+                      max={59}
                       min={0}
                       style={{ width: '40px' }}
                       size={'middle'}
+                      formatter={(value) => (value && value.toString().length < 2)
+                        ? '0' + value : '' + value}
+                      parser={(value) => parseInt(value as string, 10) as 0 | 59}
                       controls={false}
                     />
                   </Form.Item>
