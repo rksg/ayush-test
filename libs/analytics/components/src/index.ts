@@ -3,6 +3,7 @@ export { AnalyticsTabs } from './AnalyticsTabs'
 export { AIDrivenRRM } from './AIDrivenRRM'
 export { AIOperations } from './AIOperations'
 export { AppInsights } from './AppInsights'
+export { Brand360 } from './Brand360'
 export { ChatWithMelissa } from './ChatWithMelissa'
 export { ClientHealth } from './ClientTroubleshooting/ClientHealth'
 export { ClientTroubleshooting } from './ClientTroubleshooting'
@@ -14,7 +15,11 @@ export * from './HeaderButtons'
 export { IncidentBySeverity } from './IncidentBySeverity'
 export { IncidentsCountBySeverities } from './IncidentsCountBySeverities'
 export { IncidentBySeverityDonutChart } from './IncidentBySeverity/IncidentBySeverityDonutChart'
-export { useIncidentsBySeverityQuery } from './IncidentBySeverity/services'
+export {
+  useIncidentsBySeverityQuery,
+  useIncidentsListBySeverityQuery,
+  useLazyIncidentsListBySeverityQuery
+} from './IncidentBySeverity/services'
 export type { IncidentsBySeverityData } from './IncidentBySeverity/services'
 export * from './Incidents'
 export { IncidentTable } from './IncidentTable'
@@ -54,7 +59,8 @@ export { TopEdgesByTraffic } from './TopEdgesByTraffic'
 export { TopEdgesByResources } from './TopEdgesByResources'
 export {
   RecommendationDetails,
-  CrrmDetails
+  CrrmDetails,
+  UnknownDetails
 } from './Recommendations/RecommendationDetails'
 export { ReportTile } from './ReportTiles'
 export { ServiceGuardDetails } from './ServiceGuard/ServiceGuardDetails'

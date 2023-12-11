@@ -11,7 +11,7 @@ describe('constants', () => {
     })
     it('returns values for RA', () => {
       mockGet.mockReturnValue('true')
-      expect(require('.').productNames).toEqual({ smartZone: 'Smart Zone' })
+      expect(require('.').productNames).toEqual({ smartZone: 'SmartZone' })
     })
   })
 })

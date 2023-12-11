@@ -4,15 +4,18 @@ import { rest }                                                from 'msw'
 import { IntlProvider }                                        from 'react-intl'
 import { MemoryRouter, Route, Routes, useNavigate }            from 'react-router-dom'
 
-import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
-import { EdgeSubInterface, EdgeUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider }                           from '@acx-ui/store'
-import { mockServer, render, screen, within } from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                                                      from '@acx-ui/feature-toggle'
+import { EdgeLagFixtures, EdgePortConfigFixtures, EdgeSubInterface, EdgeSubInterfaceFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                                          from '@acx-ui/store'
+import { mockServer, render, screen, within }                                                                from '@acx-ui/test-utils'
 
-import { EdgeEditContext }                                                  from '../..'
-import { mockEdgeLagStatusList, mockEdgePortConfig, mockEdgeSubInterfaces } from '../../../../__tests__/fixtures'
+import { EdgeEditContext } from '../..'
 
 import SubInterface from '.'
+
+const { mockEdgePortConfig } = EdgePortConfigFixtures
+const { mockEdgeSubInterfaces } = EdgeSubInterfaceFixtures
+const { mockEdgeLagStatusList } = EdgeLagFixtures
 
 jest.mock('@acx-ui/utils', () => {
   const reactIntl = jest.requireActual('react-intl')
@@ -296,7 +299,7 @@ describe('EditEdge ports - sub-interface', () => {
           path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
-    const lagTab = await screen.findByRole('tab', { name: 'LAG 11' })
+    const lagTab = await screen.findByRole('tab', { name: 'LAG 1' })
     await userEvent.click(lagTab)
     expect((await screen.findAllByRole('row')).length).toBe(11)
   })
@@ -319,7 +322,7 @@ describe('EditEdge ports - sub-interface', () => {
           path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
-    const lagTab = await screen.findByRole('tab', { name: 'LAG 11' })
+    const lagTab = await screen.findByRole('tab', { name: 'LAG 1' })
     await userEvent.click(lagTab)
     const rows = await screen.findAllByRole('row')
     await user.click(within(rows[1]).getByRole('radio'))
@@ -355,7 +358,7 @@ describe('EditEdge ports - sub-interface', () => {
         }
       })
 
-    const lagTab = await screen.findByRole('tab', { name: 'LAG 11' })
+    const lagTab = await screen.findByRole('tab', { name: 'LAG 1' })
     await userEvent.click(lagTab)
 
     await userEvent.click(await screen.findByRole('button', { name: /Import from file/i }))
