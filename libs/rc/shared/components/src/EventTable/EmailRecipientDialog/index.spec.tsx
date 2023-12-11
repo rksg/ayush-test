@@ -15,12 +15,21 @@ import { EmailRecipientDialog } from '.'
 
 
 const adminList = [{
-  id: '0587cbeb13404f3b9943d21f9e1d1e9e',
-  email: 'efg.cheng@email.com',
-  name: 'primeAdmin',
-  role: 'PRIME_ADMIN',
-  delegateToAllECs: true,
-  detailLevel: 'debug'
+  id: '01b35c76411544999550f038304f18f8',
+  createdDate: '2023-08-16T19:12:05.983+00:00',
+  updatedDate: '2023-08-16T19:12:05.987+00:00',
+  description: 'primeAdmin',
+  endpoints: [
+    {
+      type: 'EMAIL',
+      id: 'bed16f134e28411ba6df5de8a3204df7',
+      createdDate: '2023-08-16T19:12:05.984+00:00',
+      updatedDate: '2023-08-16T19:12:05.984+00:00',
+      destination: 'efg.cheng@email.com',
+      active: true,
+      status: 'OK'
+    }
+  ]
 }
 ]
 
@@ -30,7 +39,7 @@ describe('Email recipents dialog', () => {
   beforeEach(() => {
     mockServer.use(
       rest.get(
-        AdministrationUrlsInfo.getAdministrators.url,
+        AdministrationUrlsInfo.getNotificationRecipients.url,
         (req, res, ctx) => {
           return res(ctx.json(adminList))
         }
