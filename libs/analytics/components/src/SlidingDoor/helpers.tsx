@@ -1,5 +1,5 @@
-import { defaultNetworkPath, nodeTypes } from '@acx-ui/analytics/utils'
-import { getIntl, NodeType }             from '@acx-ui/utils'
+import { nodeTypes }         from '@acx-ui/analytics/utils'
+import { getIntl, NodeType } from '@acx-ui/utils'
 
 import { Node } from '.'
 
@@ -20,22 +20,28 @@ export const searchTree = (node: Node, searchText: string, path: Node[] = []): N
 }
 export const findMatchingNode = (
   node: Node,
+  targetNode: Node,
   targetPath: Node[],
-  currentPath: Node[] = defaultNetworkPath
+  currentPath: Node[] = []
 ): Node | null => {
-  if (targetPath.length > 1 && Array.isArray(node.children)) {
-    const { type, name } = targetPath[currentPath.length]
+
+  const isTargetTypeMatch = node.type?.toLowerCase() === targetNode.type?.toLowerCase()
+  const isTargetNameMatch = (node.type === 'ap' || node.type === 'switch') ?
+    (node.mac === targetNode.name) : (node.name === targetNode.name)
+  const isPathMatch = currentPath.length === (targetPath.length -1) &&
+                      currentPath.every((n, i) => n.name === targetPath[i].name)
+  if (isTargetTypeMatch && isTargetNameMatch && isPathMatch) {
+    return { ...node, path: [...currentPath, node] }
+  }
+  if (Array.isArray(node.children)) {
     for (const child of node.children) {
-      if (
-        child.type?.toLowerCase() === type?.toLowerCase() &&
-        (child.type === 'ap' || child.type === 'switch' ? child.mac : child.name) === name
-      ) {
-        return currentPath.length === targetPath.length - 1
-          ? { ...child, path: [...currentPath, child] }
-          : findMatchingNode(child, targetPath, [...currentPath, child])
+      const result = findMatchingNode(child, targetNode, targetPath, [...currentPath, node])
+      if (result) {
+        return result
       }
     }
   }
+
   return null
 }
 export const customCapitalize = (node: Node) => {
