@@ -59,7 +59,22 @@ describe('MelissaBot', () => {
       render(<MelissaBot/>,{ route: { ...route, params: { page: 'dashboard' } }, container })
     })
     expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('before:event')
-    act(() => { window.dispatchEvent(new Event('showMelissaBot')) })
+    act(() => { window.dispatchEvent(new CustomEvent('showMelissaBot',{ detail: {
+      isRecurringUser: false,
+      summary: ''
+    } })) })
+    expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('after:event')
+  })
+  it('should not render floating button for dashboard page and'+
+  ' open chatbot on trigger event with summary',async ()=>{
+    await act(async ()=>{
+      render(<MelissaBot/>,{ route: { ...route, params: { page: 'dashboard' } }, container })
+    })
+    expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('before:event')
+    act(() => { window.dispatchEvent(new CustomEvent('showMelissaBot',{ detail: {
+      isRecurringUser: true,
+      summary: 'summary'
+    } })) })
     expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('after:event')
   })
   it('should open the chat window by clicking floating button and then close',async ()=>{
