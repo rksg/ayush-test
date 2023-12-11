@@ -82,7 +82,6 @@ export type RecommendationListItem = Recommendation & {
   priority: IconValue
   category: string
   summary: string
-  partialOptimizedSummary?: string
   status: string
   statusTooltip: string
   statusEnum: StateType
