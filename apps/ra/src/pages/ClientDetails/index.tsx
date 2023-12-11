@@ -21,6 +21,7 @@ const tabs = {
 const ClientDetails = () => {
   const { activeTab } = useParams()
   const Tab = tabs[activeTab as keyof typeof tabs]
+
   return <>
     <ClientDetailPageHeader />
     { Tab && <Tab />}

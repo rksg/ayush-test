@@ -1,15 +1,14 @@
 import { rest } from 'msw'
 
-import { EdgeFirewallUrls, EdgeUrlsInfo }      from '@acx-ui/rc/utils'
-import { Provider }                            from '@acx-ui/store'
-import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { EdgeFirewallUrls, EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                            from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }                 from '@acx-ui/test-utils'
 
-import { mockEdgeList }           from '../../../Devices/Edge/__tests__/fixtures'
 import { mockedFirewallDataList } from '../__tests__/fixtures'
 
 import FirewallDetail from '.'
 
-
+const { mockEdgeList } = EdgeGeneralFixtures
 const mockedUsedNavigate = jest.fn()
 const mockedEdgeListReq = jest.fn()
 jest.mock('react-router-dom', () => ({

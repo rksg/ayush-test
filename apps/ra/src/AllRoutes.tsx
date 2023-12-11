@@ -5,6 +5,7 @@ import {
   NetworkAssurance,
   NetworkAssuranceTabEnum,
   CrrmDetails,
+  UnknownDetails,
   VideoCallQoe,
   VideoCallQoeForm,
   VideoCallQoeDetails,
@@ -39,20 +40,22 @@ const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
 function Init () {
   const [ search ] = useSearchParams()
   updateSelectedTenant()
-  const { selectedTenant } = getUserProfile()
-  const { id, permissions } = selectedTenant
   const previousURL = search.get('return')!
-  const selectedTenants = search.get('selectedTenants') || window.btoa(JSON.stringify([id]))
-  return <Navigate
-    replace
-    to={{
-      search: `?selectedTenants=${selectedTenants}`,
-      pathname: previousURL
-        ? decodeURIComponent(previousURL)
-        : permissions[PERMISSION_VIEW_ANALYTICS]
+  if (previousURL) {
+    return <Navigate replace to={decodeURIComponent(previousURL)} />
+  } else {
+    const { selectedTenant: { id, permissions } } = getUserProfile()
+    const selectedTenants = search.get('selectedTenants') || window.btoa(JSON.stringify([id]))
+    return <Navigate
+      replace
+      to={{
+        search: `?selectedTenants=${selectedTenants}`,
+        pathname: permissions[PERMISSION_VIEW_ANALYTICS]
           ? `${MLISA_BASE_PATH}/dashboard`
           : `${MLISA_BASE_PATH}/reports`
-    }} />
+      }}
+    />
+  }
 }
 
 function AllRoutes () {
@@ -65,6 +68,7 @@ function AllRoutes () {
         <Route path=':activeTab' element={<Recommendations/>} />
         <Route path='aiOps/:id' element={<RecommendationDetails />} />
         <Route path='crrm/:id' element={<CrrmDetails />} />
+        <Route path='crrm/unknown/*' element={<UnknownDetails />} />
       </Route>
       <Route path='incidents'>
         <Route index={true} element={<Incidents />} />

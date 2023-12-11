@@ -135,6 +135,9 @@ describe('ClientDetails', () => {
       hash: '',
       search: ''
     })
+    expect(await screen.findByText('(')).toBeVisible()
+    expect(await screen.findByText('LP-XXXXX')).toBeVisible()
+    expect(await screen.findByText(')')).toBeVisible()
   })
 
   it('should render breadcrumb correctly', async () => {

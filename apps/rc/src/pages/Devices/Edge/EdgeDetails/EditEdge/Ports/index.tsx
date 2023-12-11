@@ -48,7 +48,10 @@ const Ports = () => {
 
   const { data: lagData, isLoading: isLagLoading } = useGetEdgeLagsStatusListQuery({
     params: { serialNumber },
-    payload: {}
+    payload: {
+      sortField: 'lagId',
+      sortOrder: 'ASC'
+    }
   }, {
     skip: !isEdgeLagEnabled
   })

@@ -219,63 +219,63 @@ describe('Test', () => {
         component: AirtimeB,
         fakeIncident: fakeIncidentAirtimeB,
         hasNetworkImpact: true,
-        hasTimeSeries: false,
+        hasTimeSeries: true,
         charts: []
       },
       {
         component: AirtimeB,
         fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-b-5g-high' as IncidentCode },
         hasNetworkImpact: true,
-        hasTimeSeries: false,
+        hasTimeSeries: true,
         charts: []
       },
       {
         component: AirtimeB,
         fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-b-6(5)g-high' as IncidentCode },
         hasNetworkImpact: true,
-        hasTimeSeries: false,
+        hasTimeSeries: true,
         charts: []
       },
       {
         component: AirtimeRx,
         fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-rx-24g-high' as IncidentCode },
         hasNetworkImpact: true,
-        hasTimeSeries: false,
+        hasTimeSeries: true,
         charts: []
       },
       {
         component: AirtimeRx,
         fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-rx-5g-high' as IncidentCode },
         hasNetworkImpact: true,
-        hasTimeSeries: false,
+        hasTimeSeries: true,
         charts: []
       },
       {
         component: AirtimeRx,
         fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-rx-6(5)g-high' as IncidentCode },
         hasNetworkImpact: true,
-        hasTimeSeries: false,
+        hasTimeSeries: true,
         charts: []
       },
       {
         component: AirtimeTx,
         fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-tx-24g-high' as IncidentCode },
         hasNetworkImpact: false,
-        hasTimeSeries: false,
+        hasTimeSeries: true,
         charts: []
       },
       {
         component: AirtimeTx,
         fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-tx-5g-high' as IncidentCode },
         hasNetworkImpact: false,
-        hasTimeSeries: false,
+        hasTimeSeries: true,
         charts: []
       },
       {
         component: AirtimeTx,
         fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-tx-6(5)g-high' as IncidentCode },
         hasNetworkImpact: false,
-        hasTimeSeries: false,
+        hasTimeSeries: true,
         charts: []
       }
     ].forEach((test) => {

@@ -101,7 +101,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/viewmodel/:tenantId/aps/grouped'
   },
-  getApGroupList: {
+  getApGroupListByVenue: {
     method: 'get',
     url: '/venues/:venueId/apGroups',
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/ap-group',
@@ -448,6 +448,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/aps/:serialNumber/networks/query',
     oldUrl: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/networks',
+    newApi: true
+  },
+  getApGroupNetworkList: {
+    method: 'post',
+    url: '/apGroups/:apGroupId/networks/query',
     newApi: true
   },
   getExternalProviders: {
