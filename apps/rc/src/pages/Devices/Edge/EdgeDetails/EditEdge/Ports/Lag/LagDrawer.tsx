@@ -12,7 +12,6 @@ import {
   EdgeIpModeEnum,
   EdgeLag,
   EdgeLagLacpModeEnum,
-  EdgeLagStatus,
   EdgeLagTimeoutEnum,
   EdgeLagTypeEnum,
   EdgePort,
@@ -27,13 +26,13 @@ interface LagDrawerProps {
   setVisible: (visible: boolean) => void
   data?: EdgeLag
   portList?: EdgePort[]
-  existedLagList?: EdgeLagStatus[]
+  existedLagList?: EdgeLag[]
 }
 
 export const LagDrawer = (props: LagDrawerProps) => {
 
   const { visible, setVisible, data, portList, existedLagList } = props
-  const isEditMode = Boolean(data?.id)
+  const isEditMode = data?.id !== undefined
   const { serialNumber } = useParams()
   const { $t } = useIntl()
   const [formRef] = Form.useForm()
@@ -173,11 +172,11 @@ export const LagDrawer = (props: LagDrawerProps) => {
     }
   }
 
-  const getUseableLagOptions = (existedLagList?: EdgeLagStatus[]) => {
+  const getUseableLagOptions = (existedLagList?: EdgeLag[]) => {
     return lagNameOptions.filter(option =>
       !existedLagList?.some(existedLag =>
-        existedLag.lagId === option.value &&
-        existedLag.lagId !== data?.id)) // keep the edit mode data as a selection
+        existedLag.id === option.value &&
+        existedLag.id !== data?.id)) // keep the edit mode data as a selection
   }
 
   const getUseableLagMembers = (portList?: EdgePort[]) => {
