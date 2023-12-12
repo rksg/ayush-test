@@ -52,10 +52,10 @@ describe('networkImpactChartsApi', () => {
         { key: 'manufacturer1', value: 1 }, { key: 'manufacturer2', value: 1 }
       ] },
       airtimeBusy: { data: [
-        { key: 'airtimBusy', name: 'airtimBusy', value: 0.5 },
-        { key: 'airtimRx', name: 'airtimRx', value: 0.3 },
-        { key: 'airtimTx', name: 'airtimTx', value: 0.1 },
-        { key: 'airtimIdle', name: 'airtimIdle', value: 0.1 }
+        { key: 'airtimBusy', value: 0.5 },
+        { key: 'airtimRx', value: 0.3 },
+        { key: 'airtimTx', value: 0.1 },
+        { key: 'airtimIdle', value: 0.1 }
       ] },
       airtimeBusyPeak: 0.65
     } }
