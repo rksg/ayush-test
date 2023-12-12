@@ -222,7 +222,6 @@ export function RecommendationTable (
           </Tooltip>
         </UI.OptimizationTooltip>
       </UI.OptimizationHeader>,
-      // key: (_, value: RecommendationListItem) => value.id,
       key: 'preferences',
       dataIndex: 'preferences',
       width: 120,

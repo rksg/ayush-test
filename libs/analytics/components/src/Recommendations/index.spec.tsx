@@ -16,8 +16,8 @@ import {
 } from '@acx-ui/test-utils'
 import { setUpIntl, DateRange, NetworkPath } from '@acx-ui/utils'
 
-import { recommendationListResult }           from './__tests__/fixtures'
-import { api, useMuteRecommendationMutation } from './services'
+import { recommendationListResult }                                     from './__tests__/fixtures'
+import { api, useMuteRecommendationMutation, useSetPreferenceMutation } from './services'
 
 import { RecommendationTabContent } from './index'
 
@@ -36,9 +36,11 @@ jest.mock('@acx-ui/config', () => ({
 }))
 
 const mockedMuteRecommendation = jest.fn()
+const mockedSetPreference = jest.fn()
 jest.mock('./services', () => ({
   ...jest.requireActual('./services'),
-  useMuteRecommendationMutation: jest.fn()
+  useMuteRecommendationMutation: jest.fn(),
+  useSetPreferenceMutation: jest.fn()
 }))
 
 describe('RecommendationTabContent', () => {
@@ -72,6 +74,11 @@ describe('RecommendationTabContent', () => {
       mockedMuteRecommendation,
       { reset: jest.fn() }
     ])
+
+    jest.mocked(useSetPreferenceMutation).mockImplementation(() => [
+      mockedSetPreference,
+      { reset: jest.fn() }
+    ])
   })
 
   it('should render loader', () => {
@@ -82,7 +89,7 @@ describe('RecommendationTabContent', () => {
     expect(screen.getAllByRole('img', { name: 'loader' })).toBeTruthy()
   })
 
-  it.only('should render crrm table for R1', async () => {
+  it('should render crrm table for R1', async () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: { recommendations: recommendationListResult.recommendations
         .filter(r => r.code.includes('crrm') || r.code.includes('unknown')) }
@@ -91,9 +98,13 @@ describe('RecommendationTabContent', () => {
       route: { params: { activeTab: 'crrm' } },
       wrapper: Provider
     })
+    mockedSetPreference.mockImplementation(() => ({
+      unwrap: () => Promise.resolve({
+        setPreference: { success: true, errorCode: '', errorMsg: '' }
+      })
+    }))
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    await screen.logTestingPlaygroundURL()
     const row = screen.getByRole('row', {
       // eslint-disable-next-line max-len
       name: /non-optimized 06\/16\/2023 06:05 optimal channel plan found for 2\.4 ghz radio zone-1 new/i
