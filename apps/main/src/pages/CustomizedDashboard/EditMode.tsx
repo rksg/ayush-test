@@ -7,6 +7,7 @@ import { Button }                                                               
 import { ArrowDown, ArrowUp, ClockOutlined, DashboardOutlined, DataStudioOutlined, DeleteOutlined, EraserOutlined, EyeOpenOutlined, EyeSlashOutlined, Link, Plus, Reload, Text } from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
+import Grid from '../Grid'
 
 const enum ToolbarItems {
   AddWidgets,
@@ -150,7 +151,7 @@ export default function EditMode (props: {
       { sectionsSubVisible && sectionsSubToolbar() }
       { restoreSubVisible && restoreSubToolbar() }
       <div className='modal-content'>
-        {/* <p>Some text in the Modal..</p> */}
+        <Grid />
       </div>
       <div className='actions'>
         <Space

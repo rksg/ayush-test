@@ -77,5 +77,7 @@ export const Grid = styled.div`
   text-align: center;
   line-height: 30px;
 }
-
+.section {
+  background-color: var(--acx-accents-blue-10);
+}
 `

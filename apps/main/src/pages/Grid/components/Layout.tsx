@@ -162,7 +162,7 @@ export default function Layout (props) {
     <DndProvider backend={HTML5Backend}>
       <div>
         {
-          sections.map((s) => <div>
+          sections.map((s) => <div className='section'>
             <h2>Section {s.id}</h2>
             {
               s.hasTab ?

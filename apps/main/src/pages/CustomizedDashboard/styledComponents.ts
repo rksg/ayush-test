@@ -40,10 +40,13 @@ border-top: 75px solid rgba(255,255,255, 0.4);
 
 .modal-content {
   background-color: #fefefe;
-  width: 100%;
-  height: 100vh;
+  width: calc(100% - ${props => props.$siderWidth});
+  height: calc(100vh - 116px);
   position: fixed;
   top: 60px;
+  padding: 40px;
+  padding-top: ${props => props.$subToolbar ? '88px' : '40px'} ;
+  overflow: auto;
 }
 
 .toolbar {
@@ -108,7 +111,7 @@ border-top: 75px solid rgba(255,255,255, 0.4);
   height: 48px;
   z-index: 1;
   &.animation {
-    animation: subMoveIn 0.3s ease both;
+    animation: subMoveIn 0.1s ease both;
   }
 }
 

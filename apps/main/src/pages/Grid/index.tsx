@@ -78,14 +78,13 @@ export default function Grid () {
 
   return (
     <UI.Grid>
-      <h1>Swap between Grids - react-dnd</h1>
       {/* <button
         style={{ height: '30px', margin: '10px' }}
         onClick={changeCompactType}
       >
         Change Compaction Type: <b>{compactType}</b>
       </button> */}
-      <button
+      {/* <button
         style={{ height: '30px', margin: '10px' }}
         onClick={saveToLS}
       >
@@ -96,7 +95,7 @@ export default function Grid () {
         onClick={addCard}
       >
         Add a card to group 1
-      </button>
+      </button> */}
 
       <Layout
         sections={sections}

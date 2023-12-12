@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useEffect } from 'react'
-
 import { useDrop } from 'react-dnd'
+import { cssStr } from '@acx-ui/components'
 
 import utils from '../utils'
 
@@ -73,7 +73,7 @@ export default function GroupItem (props) {
       <div
         className='group-item-container'
         style={{
-          background: isOver ? 'rgb(204, 204, 204)' : 'rgba(79,86,98,.1)'
+          background: isOver ? cssStr('--acx-accents-blue-30') : cssStr('--acx-accents-blue-10')
         }}
       >
         <section
