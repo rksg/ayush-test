@@ -66,6 +66,7 @@ describe('SD-LAN Table', () => {
         route: { params, path: '/:tenantId/services/sdLan/list' }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     await screen.findByRole('columnheader', { name: 'SmartEdge' })
     const row = await screen.findAllByRole('row', { name: /Amy_sdLan_/i })
@@ -88,6 +89,7 @@ describe('SD-LAN Table', () => {
         route: { params, path: '/:tenantId/services/edgeSdLan/list' }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const row = await screen.findByRole('row', { name: /Amy_sdLan_1/i })
     await click(within(row).getByRole('checkbox'))
     await click(screen.getByRole('button', { name: 'Edit' }))
@@ -113,6 +115,7 @@ describe('SD-LAN Table', () => {
         route: { params, path: '/:tenantId/services/edgeSdLan/list' }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const row = await screen.findByRole('row', { name: /Amy_sdLan_2/i })
     await click(within(row).getByRole('checkbox'))
     await click(screen.getByRole('button', { name: 'Delete' }))
@@ -131,6 +134,7 @@ describe('SD-LAN Table', () => {
         route: { params, path: '/:tenantId/services/edgeSdLan/list' }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await click(within(await screen.findByRole('row', { name: /Amy_sdLan_1/i }))
       .getByRole('checkbox'))
     await click(within(await screen.findByRole('row', { name: /Amy_sdLan_2/i }))
@@ -160,6 +164,7 @@ describe('SD-LAN Table', () => {
         route: { params, path: '/:tenantId/services/edgeSdLan/list' }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     await screen.findByRole('columnheader', { name: 'SmartEdge' })
     await screen.findAllByRole('row', { name: /Amy_sdLan_/i })
@@ -193,6 +198,7 @@ describe('SD-LAN Table', () => {
         route: { params, path: '/:tenantId/services/edgeSdLan/list' }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     await waitFor(() => {
       expect(mockedGetEdgeList).toBeCalled()
