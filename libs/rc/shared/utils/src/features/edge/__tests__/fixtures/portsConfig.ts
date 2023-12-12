@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 import { EdgeIpModeEnum, EdgePortTypeEnum } from '../../../../models/EdgeEnum'
 import { EdgePortStatus }                   from '../../../../types/edge'
 
@@ -26,7 +28,7 @@ export const mockEdgePortConfig = {
       ipMode: EdgeIpModeEnum.STATIC,
       ip: '2.2.2.2',
       subnet: '255.255.255.0',
-      gateway: '2.2.2.2',
+      gateway: '',
       corePortEnabled: true
     },
     {
@@ -39,7 +41,7 @@ export const mockEdgePortConfig = {
       ipMode: EdgeIpModeEnum.STATIC,
       ip: '3.3.3.3',
       subnet: '255.255.255.0',
-      gateway: '3.3.3.3',
+      gateway: '',
       corePortEnabled: false
     },
     {
@@ -52,7 +54,7 @@ export const mockEdgePortConfig = {
       ipMode: EdgeIpModeEnum.STATIC,
       ip: '4.4.4.4',
       subnet: '255.255.255.0',
-      gateway: '4.4.4.4',
+      gateway: '',
       corePortEnabled: false
     },
     {
@@ -66,19 +68,6 @@ export const mockEdgePortConfig = {
       ip: '5.5.5.5',
       subnet: '255.255.255.0',
       gateway: '',
-      corePortEnabled: false
-    },
-    {
-      id: '081a71a7-aaad-4a13-967b-1c82166de110',
-      name: 'port3',
-      mac: '00:0c:29:b6:ad:10',
-      enabled: true,
-      portType: EdgePortTypeEnum.WAN,
-      natEnabled: true,
-      ipMode: EdgeIpModeEnum.STATIC,
-      ip: '10.10.10.10',
-      subnet: '255.255.255.0',
-      gateway: '10.10.10.10',
       corePortEnabled: false
     }
   ]
@@ -105,13 +94,21 @@ export const mockEdgePortConfigWithStatusIp = {
     {
       ...mockEdgePortConfig.ports[4],
       statusIp: '10.206.78.156'
-    },
-    {
-      ...mockEdgePortConfig.ports[5],
-      statusIp: '10.206.78.157'
     }
   ]
 }
+
+
+// eslint-disable-next-line max-len
+export const mockEdgePortConfigWithStatusIpWithoutCorePort = _.cloneDeep(mockEdgePortConfigWithStatusIp)
+mockEdgePortConfigWithStatusIpWithoutCorePort.ports[1].corePortEnabled = false
+
+export const mockEdgeOnlyLanPortConfig = _.cloneDeep(mockEdgePortConfigWithStatusIp)
+mockEdgeOnlyLanPortConfig.ports.splice(0, 1)
+mockEdgeOnlyLanPortConfig.ports[0].gateway = '2.2.2.2'
+
+export const mockEdgeOnlyLanPortConfigWithoutCorePort = _.cloneDeep(mockEdgeOnlyLanPortConfig)
+mockEdgeOnlyLanPortConfigWithoutCorePort.ports[0].corePortEnabled = false
 
 export const mockEdgePortStatus = [
   {
@@ -125,7 +122,7 @@ export const mockEdgePortStatus = [
 ]
 
 export const edgePortsSetting:EdgePortStatus[] = [{
-  portId: '1',
+  portId: '68a3028a-93ed-11ee-b9d1-0242ac120001',
   name: 'Port 1',
   status: 'Up',
   adminStatus: 'Enabled',
@@ -140,7 +137,7 @@ export const edgePortsSetting:EdgePortStatus[] = [{
   subnet: ''
 },
 {
-  portId: '2',
+  portId: '68a3028a-93ed-11ee-b9d1-0242ac120002',
   name: 'Port 2',
   status: 'Down',
   adminStatus: 'Disabled',

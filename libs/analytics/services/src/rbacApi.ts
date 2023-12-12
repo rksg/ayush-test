@@ -18,7 +18,7 @@ type SettingRow = {
   value: string
 }
 
-const getDefaultSettings = (): Partial<Settings> => ({
+export const getDefaultSettings = (): Partial<Settings> => ({
   'brand-ssid-compliance-matcher': '^[a-zA-Z0-9]{5}_GUEST$',
   'sla-p1-incidents-count': '0',
   'sla-guest-experience': '100',
@@ -50,6 +50,17 @@ export const rbacApi = baseRbacApi.injectEndpoints({
         return settings
       }, getDefaultSettings())
     }),
+    updateTenantSettings: build.mutation<string, Partial<Settings>>({
+      query: body => {
+        return {
+          url: '/tenantSettings',
+          method: 'post',
+          credentials: 'include',
+          body,
+          responseHandler: 'text'
+        }
+      }
+    }),
     updateInvitation: build.mutation<
        string, { resourceGroupId: string, state: string, userId: string }
     >({
@@ -72,6 +83,7 @@ export const rbacApi = baseRbacApi.injectEndpoints({
 export const {
   useSystemsQuery,
   useGetTenantSettingsQuery,
+  useUpdateTenantSettingsMutation,
   useUpdateInvitationMutation
 } = rbacApi
 

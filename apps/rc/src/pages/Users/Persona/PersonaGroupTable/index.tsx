@@ -4,7 +4,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                        from '@acx-ui/feature-toggle'
+import { TierFeatures, useIsTierAllowed }                    from '@acx-ui/feature-toggle'
 import { DownloadOutlined }                                  from '@acx-ui/icons'
 import {
   DpskPoolLink,
@@ -49,7 +49,7 @@ function useColumns (
   nsgMap: Map<string, string>
 ) {
   const { $t } = useIntl()
-  const networkSegmentationEnabled = useIsTierAllowed(Features.EDGES)
+  const networkSegmentationEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
   const { data: dpskPool } = useGetDpskListQuery({ params: dpskNewConfigFlowParams })
