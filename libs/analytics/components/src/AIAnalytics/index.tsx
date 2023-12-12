@@ -54,13 +54,12 @@ const useTabs = () : Tab[] => {
 
   const getRecommendationTabs = () => {
     let recommendationTabs = [] as Tab[]
-    if (get('IS_MLISA_SA') &&
-      userProfile.selectedTenant.permissions?.[PERMISSION_MANAGE_CONFIG_RECOMMENDATION]
-    ) { // RAI
-      recommendationTabs = [crrmTab, aiOpsTab] as unknown as Tab[]
+    if (get('IS_MLISA_SA')) { // RAI
+      userProfile.selectedTenant.permissions?.[PERMISSION_MANAGE_CONFIG_RECOMMENDATION] &&
+      recommendationTabs.push(crrmTab as Tab, aiOpsTab as Tab)
     } else { // R1
-      crrmEnabled && recommendationTabs.push(crrmTab as unknown as Tab)
-      recommendationsEnabled && recommendationTabs.push(aiOpsTab as unknown as Tab)
+      crrmEnabled && recommendationTabs.push(crrmTab as Tab)
+      recommendationsEnabled && recommendationTabs.push(aiOpsTab as Tab)
     }
     return recommendationTabs
   }
