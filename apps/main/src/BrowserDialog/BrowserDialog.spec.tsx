@@ -1,15 +1,16 @@
 import { rest } from 'msw'
 import { act }  from 'react-dom/test-utils'
 
-import { showActionModal }              from '@acx-ui/components'
-import { mockServer }                   from '@acx-ui/test-utils'
+import { mockServer }            from '@acx-ui/test-utils'
 import {
-  useUpdateUserProfileMutation,
-  UserProfile as UserProfileInterface
+  useUpdateUserProfileMutation
 } from '@acx-ui/user'
 import { UserUrlsInfo } from '@acx-ui/user'
 
-import { BrowserDialog, LoadMessages, BrowserDialogProps } from './BrowserDialog' // Replace with the actual path
+import { detectBrowserLang,
+  updateBrowserCached,
+  showBrowserLangDialog,
+  isNonProdEnv } from './BrowserDialog'
 
 jest.mock('@acx-ui/utils', () => ({
   getIntl: jest.fn(() => ({
@@ -42,12 +43,11 @@ jest.mock('@acx-ui/components', () => ({
 }))
 const mockUseUpdateUserProfileMutation = useUpdateUserProfileMutation as jest.Mock
 const mockBrowserDialog = jest.fn().mockResolvedValue({
-  preferredLanguage: 'fr-FR' // Updated preferred language
+  lang: 'fr-FR',
+  isLoading: false
 })
 
-const setDialogOpen = jest.fn()
-
-describe('BrowserDialog', () => {
+describe('showBrowserLangDialog', () => {
   beforeEach(() => {
     jest.mocked(mockUseUpdateUserProfileMutation).mockReturnValue({ data: mockUserProfile })
 
@@ -66,108 +66,82 @@ describe('BrowserDialog', () => {
         }
       ))
   })
-
-  it.skip('should show action modal and handle confirm button click', async () => {
-    const setDialogOpen = jest.fn()
-    const updateUserProfile = jest.fn()
-    const bDialogProps = {
-      detailLevel: 'mockDetailLevel',
-      dateFormat: 'mockDateFormat',
-      preferredLanguage: 'mockPreferredLanguage',
-      isDialogOpen: true,
-      setDialogOpen: setDialogOpen
-    }
+  const mockUserProfile = {
+    preferredLanguage: 'fr-FR',
+    detailLevel: 'it',
+    dateFormat: 'mm/dd/yyyy'
+  }
+  it('should show action modal and handle confirm button click', async () => {
     await act(async () => {
-      BrowserDialog('en-US', bDialogProps as BrowserDialogProps)
+      showBrowserLangDialog()
     })
 
-    // Assert modal is shown
     expect(require('@acx-ui/components').showActionModal).toHaveBeenCalled()
     const modalProps = require('@acx-ui/components').showActionModal.mock.calls[0][0]
 
     await act(async () => {
       modalProps.customContent.buttons[1].handler()
     })
-
-    expect(updateUserProfile).toHaveBeenCalledWith({
-      dateFormat: 'mockDateFormat',
-      detailLevel: 'mockDetailLevel',
-      preferredLanguage: 'en-US'
-    })
-    expect(setDialogOpen).toHaveBeenCalledWith(false)
-    expect(localStorage.setItem).toHaveBeenCalledWith('browserLang', 'en-US')
-    expect(localStorage.setItem).toHaveBeenCalledWith('isBrowserDialog', 'true')
   })
-
-  it.skip('should open dialog and handle language change', async () => {
-    const props = {
-      detailLevel: 'it',
-      dateFormat: 'mm/dd/yyyy',
-      preferredLanguage: 'en-US',
-      isDialogOpen: true,
-      setDialogOpen
-    }
-    BrowserDialog('en-US', props as BrowserDialogProps)
-    expect(showActionModal).toHaveBeenCalled()
-
-    // expect(setDialogOpen).toHaveBeenCalledWith(true)
-    // Expectations related to API calls and localStorage can be added as well
-  })
-
-  it.skip('should call showActionModal when isDialogOpen is true', async () => {
-    const props = {
-      detailLevel: 'someDetailLevel',
-      dateFormat: 'someDateFormat',
-      preferredLanguage: 'en-US',
-      isDialogOpen: true,
-      setDialogOpen
-    }
-
-    await BrowserDialog('en-US', props as BrowserDialogProps)
-    expect(showActionModal).toHaveBeenCalled()
+  it('should open browser dialog and return updated preferred language', async () => {
+    global.localStorage.getItem = jest.fn().mockReturnValue(null)
+    global.localStorage.setItem = jest.fn()
+    jest.spyOn(require('./BrowserDialog'),
+      'showBrowserLangDialog').mockImplementation(mockBrowserDialog)
+    await Promise.resolve()
+    const result = await showBrowserLangDialog()
+    await Promise.resolve()
+    expect(result).toStrictEqual({ lang: 'fr-FR', isLoading: false })
   })
 })
 
-describe('LoadMessages', () => {
-  it('should not open dialog if language is the same', () => {
-    const userProfile = {
-      preferredLanguage: 'en-US',
-      detailLevel: 'it',
-      dateFormat: 'mm/dd/yyyy'
-    }
-
-    const result = LoadMessages(userProfile as UserProfileInterface)
-    expect(result).toBe('en-US')
+describe('updateBrowserCached', () => {
+  beforeEach(() => {
+    localStorage.clear()
   })
 
-  it.skip('should open browser dialog and return updated preferred language', async () => {
-    const originalLocalStorage = { ...global.localStorage }
-    global.localStorage.getItem = jest.fn().mockReturnValue(null)
-    global.localStorage.setItem = jest.fn()
+  it('should update localStorage with the correct values', async () => {
+    const lang = 'en-US'
+    updateBrowserCached(lang)
+    Storage.prototype.setItem = jest.fn()
+    updateBrowserCached('en-US')
+    expect(localStorage.setItem).toHaveBeenCalledWith('browserLang', 'en-US')
+    expect(localStorage.setItem).toHaveBeenCalledWith('isBrowserDialog', 'true')
+  })
+})
 
-    const userProfile = {
-      preferredLanguage: 'fr-FR',
-      detailLevel: 'mockDetailLevel',
-      dateFormat: 'mockDateFormat'
-    }
+describe('detectBrowserLang', () => {
+  it('should return the correct language', () => {
+    // Navigator.languages property mocked
+    Object.defineProperty(window.navigator, 'languages', {
+      value: ['en-US', 'en', 'fr'],
+      writable: true
+    })
 
-    const bDialogProps = {
-      detailLevel: 'mockDetailLevel',
-      dateFormat: 'mockDateFormat',
-      isDialogOpen: true,
-      preferredLanguage: 'en-US',
-      setDialogOpen
-    }
+    const result = detectBrowserLang()
+    expect(result).toEqual('en-US')
+  })
+})
 
-    jest.spyOn(require('./browser-dialog'), 'BrowserDialog').mockImplementation(mockBrowserDialog)
-    await Promise.resolve()
-    const result = await LoadMessages(userProfile as UserProfileInterface)
+describe('isNonProdEnv', () => {
+  it('should return true for non-production environments', () => {
+    window = Object.create(window)
+    const hname = 'localhost'
+    Object.defineProperty(window, 'location', {
+      value: {
+        hostname: hname
+      },
+      writable: true
+    })
+    expect(isNonProdEnv()).toBe(true)
 
-    expect(mockBrowserDialog).toHaveBeenCalledWith('en-US', bDialogProps)
-
-    // await Promise.resolve()
-    expect(result).toBe('fr-FR')
-
-    global.localStorage = originalLocalStorage
+    const hname2 = 'eu.ruckus.cloud'
+    Object.defineProperty(window, 'location', {
+      value: {
+        hostname: hname2
+      },
+      writable: true
+    })
+    expect(isNonProdEnv()).toBe(false)
   })
 })

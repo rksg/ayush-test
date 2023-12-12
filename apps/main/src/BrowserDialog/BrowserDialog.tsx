@@ -14,14 +14,16 @@ export interface PartialUserData {
   preferredLanguage: string
 }
 
-export const isNonProdEnv = (
-  window.location.hostname === 'localhost' ||
-  window.location.hostname === 'dev.ruckus.cloud' ||
-  window.location.hostname === 'qa.ruckus.cloud' ||
-  window.location.hostname === 'scale.ruckus.cloud' ||
-  window.location.hostname === 'int.ruckus.cloud' )
+export const isNonProdEnv = () => {
+  return window.location.hostname === 'localhost' ||
+    window.location.hostname === 'dev.ruckus.cloud' ||
+    window.location.hostname === 'qa.ruckus.cloud' ||
+    window.location.hostname === 'scale.ruckus.cloud' ||
+    window.location.hostname === 'int.ruckus.cloud'
+}
 
-const updateBrowserCached = (lang: LangKey) => {
+
+export const updateBrowserCached = (lang: LangKey) => {
   localStorage.setItem('browserLang', lang)
   localStorage.setItem('isBrowserDialog', 'true')
 }
