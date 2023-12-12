@@ -88,7 +88,7 @@ describe('EditEdge ports - LAG Drawer', () => {
       })
     const selector = await screen.findAllByRole('combobox')
     await userEvent.selectOptions(selector[0], '2')
-    await userEvent.click(screen.getByRole('checkbox', { name: 'Port 1' }))
+    await userEvent.click(screen.getByRole('checkbox', { name: 'Port1' }))
     await userEvent.click(screen.getByRole('switch', { name: 'Port Enabled' }))
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
     await userEvent.click(await screen.findByRole('button', { name: 'Replace with LAG settings' }))
