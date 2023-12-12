@@ -228,8 +228,8 @@ export function MulticastForm (props: { wlanData: NetworkSaveData | null }) {
                     <>
                       <Checkbox data-testid='enableMulticastUpLimit6G'
                         children={$t({ defaultMessage: 'Upload Limit' })}
-                        disabled={isNotWPA3(wlanData)} />
-                      {isNotWPA3(wlanData) &&
+                        disabled={isNotWPA3orOWE(wlanData)} />
+                      {isNotWPA3orOWE(wlanData) &&
                        <Tooltip.Question
                          title={$t({ defaultMessage: '6GHz only works when this network is using WPA3 or OWE encryption.' })}
                          placement='right'
@@ -250,8 +250,8 @@ export function MulticastForm (props: { wlanData: NetworkSaveData | null }) {
                     <>
                       <Checkbox data-testid='enableMulticastDownLimit6G'
                         children={$t({ defaultMessage: 'Download Limit' })}
-                        disabled={isNotWPA3(wlanData)} />
-                      {isNotWPA3(wlanData) &&
+                        disabled={isNotWPA3orOWE(wlanData)} />
+                      {isNotWPA3orOWE(wlanData) &&
                       <Tooltip.Question
                         title={$t({ defaultMessage: '6GHz only works when this network is using WPA3 or OWE encryption.' })}
                         placement='right'
@@ -269,8 +269,9 @@ export function MulticastForm (props: { wlanData: NetworkSaveData | null }) {
   )
 }
 
-function isNotWPA3 (wlanData: NetworkSaveData | null) : boolean {
-  return !(wlanData?.wlan?.wlanSecurity === WlanSecurityEnum.WPA3)
+function isNotWPA3orOWE (wlanData: NetworkSaveData | null) : boolean {
+  return !((wlanData?.wlan?.wlanSecurity === WlanSecurityEnum.WPA3) ||
+    (wlanData?.wlan?.wlanSecurity === WlanSecurityEnum.OWE))
 }
 
 enum BssMinRateEnum {
