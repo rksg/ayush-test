@@ -38,14 +38,17 @@ export function DevicesWidget (props: {
         {({ height, width }) => (
           <div style={{ display: 'inline-flex' }}>
             <DonutChart
+              key='wifi-donutChart'
               style={{ width: width/numDonut, height }}
               title={$t({ defaultMessage: 'Wi-Fi' })}
               data={props.apData}/>
             <DonutChart
+              key='switch-donutChart'
               style={{ width: width/numDonut, height }}
               title={$t({ defaultMessage: 'Switch' })}
               data={props.switchData}/>
             { edgeSupported && (<DonutChart
+              key='smartEdge-donutChart'
               style={{ width: width/numDonut, height }}
               title={$t({ defaultMessage: 'SmartEdge' })}
               data={props.edgeData}/>)}

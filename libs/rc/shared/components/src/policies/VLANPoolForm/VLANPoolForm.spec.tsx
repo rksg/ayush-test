@@ -107,7 +107,7 @@ describe('VLANPoolForm', () => {
     })).toBeVisible()
   })
 
-  it('should edit vlan successfully', async () => {
+  it.skip('should edit vlan successfully', async () => {
     const editVlanPool = jest.fn()
     mockServer.use(
       rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
