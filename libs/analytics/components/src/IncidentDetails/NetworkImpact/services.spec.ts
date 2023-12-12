@@ -1,28 +1,37 @@
 import { dataApiURL, store } from '@acx-ui/store'
 import { mockGraphqlQuery }  from '@acx-ui/test-utils'
 
-import { NetworkImpactChartTypes  }                from './config'
-import { networkImpactChartsApi, RequestPayload  } from './services'
+import { NetworkImpactChartTypes, NetworkImpactQueryTypes  } from './config'
+import { networkImpactChartsApi, RequestPayload  }           from './services'
 
 describe('networkImpactChartsApi', () => {
   const payload = {
     incident: { id: 'id', metadata: { dominant: { } } },
     charts: [{
       chart: NetworkImpactChartTypes.WLAN,
+      query: NetworkImpactQueryTypes.TopN,
       type: 'client',
       dimension: 'ssids'
     }, {
       chart: NetworkImpactChartTypes.Radio,
+      query: NetworkImpactQueryTypes.TopN,
       type: 'client',
       dimension: 'radios'
     }, {
       chart: NetworkImpactChartTypes.Reason,
+      query: NetworkImpactQueryTypes.TopN,
       type: 'client',
       dimension: 'reasonCodes'
     }, {
       chart: NetworkImpactChartTypes.ClientManufacturer,
+      query: NetworkImpactQueryTypes.TopN,
       type: 'client',
       dimension: 'manufacturer'
+    }, {
+      chart: NetworkImpactChartTypes.AirtimeBusy,
+      query: NetworkImpactQueryTypes.Distribution,
+      type: 'airtime',
+      dimension: 'airtimeBusy'
     }]
   } as RequestPayload
   afterEach(() =>
@@ -41,7 +50,14 @@ describe('networkImpactChartsApi', () => {
       ] },
       clientManufacturer: { count: 2, data: [
         { key: 'manufacturer1', value: 1 }, { key: 'manufacturer2', value: 1 }
-      ] }
+      ] },
+      airtimeBusy: { data: [
+        { key: 'airtimBusy', name: 'airtimBusy', value: 0.5 },
+        { key: 'airtimRx', name: 'airtimRx', value: 0.3 },
+        { key: 'airtimTx', name: 'airtimTx', value: 0.1 },
+        { key: 'airtimIdle', name: 'airtimIdle', value: 0.1 }
+      ] },
+      airtimeBusyPeak: 0.65
     } }
     mockGraphqlQuery(dataApiURL, 'NetworkImpactCharts', {
       data: expectedResult
