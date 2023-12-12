@@ -8,9 +8,9 @@ import { Alert, Button, useLayoutContext }                        from '@acx-ui/
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useLazyGetSwitchVenueVersionListQuery,
-  useLazyGetVenueEdgeFirmwareListQuery
+  useLazyGetVenueEdgeFirmwareListQuery,
+  useLazyGetScheduledFirmwareQuery
 } from '@acx-ui/rc/services'
-import { useLazyGetScheduledFirmwareQuery }      from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                             from '@acx-ui/types'
 import {
