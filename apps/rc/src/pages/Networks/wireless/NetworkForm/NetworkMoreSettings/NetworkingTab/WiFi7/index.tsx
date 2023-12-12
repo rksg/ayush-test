@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
-
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 
 import { Form, Space, Switch } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox/Checkbox'
@@ -12,8 +11,8 @@ import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }               
 import { InformationSolid }                                                                                      from '@acx-ui/icons'
 import { NetworkSaveData, WlanSecurityEnum, MultiLinkOperationOptions, IsNetworkSupport6g, IsSecuritySupport6g } from '@acx-ui/rc/utils'
 
-
-import * as UI from '../../../NetworkMoreSettings/styledComponents'
+import NetworkFormContext from '../../../NetworkFormContext'
+import * as UI            from '../../../NetworkMoreSettings/styledComponents'
 
 interface Option {
   index: number
@@ -283,15 +282,20 @@ function WiFi7 ({ wlanData } : { wlanData : NetworkSaveData | null }) {
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
   const form = Form.useFormInstance()
 
+  const { editMode } = useContext(NetworkFormContext)
+
+
   const initWifi7Enabled = get(wlanData, ['wlan', 'advancedCustomization', 'wifi7Enabled'], true)
   const initMloEnabled = getInitMloEnabled(wlanData, initWifi7Enabled)
-
+  const [MLOSwitchDisable, setMLOSwitchDisable] = useState(false)
   const [
     wifi7Enabled,
-    mloEnabled
+    mloEnabled,
+    wlanSecurity
   ] = [
     useWatch<boolean>(['wlan', 'advancedCustomization', 'wifi7Enabled']),
-    useWatch<boolean>(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'])
+    useWatch<boolean>(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled']),
+    useWatch<WlanSecurityEnum>(['dpskWlanSecurity'])
   ]
 
   useEffect(() => {
@@ -304,6 +308,23 @@ function WiFi7 ({ wlanData } : { wlanData : NetworkSaveData | null }) {
     }
   }, [wifi7Enabled])
 
+  useEffect(() => {
+    if (editMode) {
+      if (wlanData?.wlan?.wlanSecurity === WlanSecurityEnum.WPA23Mixed) {
+        form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
+        setMLOSwitchDisable(true)
+      } else {
+        setMLOSwitchDisable(false)
+      }
+    } else {
+      if (wlanSecurity === WlanSecurityEnum.WPA23Mixed) {
+        form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
+        setMLOSwitchDisable(true)
+      } else {
+        setMLOSwitchDisable(false)
+      }
+    }
+  }, [wlanSecurity])
 
   return (
     <>
@@ -372,7 +393,7 @@ function WiFi7 ({ wlanData } : { wlanData : NetworkSaveData | null }) {
                   valuePropName='checked'
                   style={{ marginBottom: '15px', width: '300px' }}
                   initialValue={initMloEnabled}
-                  children={<Switch disabled={!wifi7Enabled} />}
+                  children={<Switch disabled={!wifi7Enabled || MLOSwitchDisable} />}
                 />
               </UI.FieldLabel>
       }

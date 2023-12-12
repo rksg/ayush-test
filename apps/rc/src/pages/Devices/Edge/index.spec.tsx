@@ -1,18 +1,17 @@
 import { rest } from 'msw'
 
-import { useIsTierAllowed }             from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                     from '@acx-ui/store'
+import { useIsTierAllowed }                                  from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                          from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
 
-import { mockEdgeList } from './__tests__/fixtures'
-
 import EdgeList from './index'
 
+const { mockEdgeList } = EdgeGeneralFixtures
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),

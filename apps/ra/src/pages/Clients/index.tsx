@@ -23,7 +23,7 @@ const useTabs = () : Tab[] => {
   const { $t } = useIntl()
   const clientsTab = {
     key: AIClientsTabEnum.CLIENTS,
-    title: $t({ defaultMessage: 'Clients List' }),
+    title: $t({ defaultMessage: 'Clients List (Top 100 by traffic)' }),
     component: <ClientsList/>,
     headerExtra: [<TimeRangeDropDown/>]
   }

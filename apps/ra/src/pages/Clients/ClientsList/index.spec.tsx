@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
+import { getUserProfile }                                              from '@acx-ui/analytics/utils'
 import { Provider, dataApiURL }                                        from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -15,18 +16,27 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useNavigate: () => mockedUseNavigate,
   useTenantLink: () => mockedTenantPath
 }))
+
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  getUserProfile: jest.fn(),
+  updateSelectedTenant: jest.fn()
+}))
+const userProfile = getUserProfile as jest.Mock
+
 export const clientsList = {
   network: {
     search: {
-      clients: [
+      clientsByTraffic: [
         {
           hostname: '02AA01AB50120H4M',
           username: '18b43003e603',
           mac: '18:B4:30:03:E6:03',
           osType: 'Nest Learning Thermostat',
           ipAddress: '10.0.1.42',
-          lastActiveTime: '2023-08-23T05:08:20.000Z',
-          manufacturer: 'manufacturer1'
+          lastSeen: '2023-08-23T05:08:20.000Z',
+          manufacturer: 'manufacturer1',
+          traffic: 1
         },
         {
           hostname: '02AA01AB50120E2Q',
@@ -34,8 +44,9 @@ export const clientsList = {
           mac: '18:B4:30:04:D8:10',
           osType: 'Nest Learning Thermostat',
           ipAddress: '10.0.1.44',
-          lastActiveTime: '2023-08-23T05:07:23.000Z',
-          manufacturer: 'manufacturer2'
+          lastSeen: '2023-08-23T05:07:23.000Z',
+          manufacturer: 'manufacturer2',
+          traffic: 1
         },
         {
           hostname: '02AA01AB50120G7G',
@@ -43,8 +54,9 @@ export const clientsList = {
           mac: '18:B4:30:05:1C:BE',
           osType: 'Nest Learning Thermostat',
           ipAddress: '10.0.1.69',
-          lastActiveTime: '2023-08-23T05:07:23.000Z',
-          manufacturer: 'manufacturer3'
+          lastSeen: '2023-08-23T05:07:23.000Z',
+          manufacturer: 'manufacturer3',
+          traffic: 1
         }
       ]
     }
@@ -53,12 +65,25 @@ export const clientsList = {
 export const emptyClientsList = {
   network: {
     search: {
-      clients: []
+      clientsByTraffic: []
     }
   }
 }
 
 describe('Clients List', () => {
+  const defaultUserProfile = {
+    accountId: 'aid',
+    tenants: [],
+    invitations: [],
+    selectedTenant: {
+      id: 'aid',
+      role: 'admin'
+    }
+  }
+
+  beforeEach(() => {
+    userProfile.mockReturnValue(defaultUserProfile)
+  })
 
   it('should render table correctly', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', {
@@ -132,5 +157,29 @@ describe('Clients List', () => {
       '18b43003e603'
     )
     expect(screen.getByText('02AA01AB50120H4M')).toBeVisible()
+  })
+  it('should correct links for report-only user', async () => {
+    userProfile.mockReturnValue({
+      ...defaultUserProfile,
+      selectedTenant: {
+        ...defaultUserProfile.selectedTenant,
+        role: 'report-only'
+      }
+    })
+    mockGraphqlQuery(dataApiURL, 'Network', {
+      data: clientsList
+    })
+    render(<ClientsList />, {
+      wrapper: Provider,
+      route: {
+        params: { tenantId: 't-id' }
+      }
+    })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const hostname = screen.getByText('02AA01AB50120H4M')
+    expect(hostname).toBeVisible()
+    const href = hostname.getAttribute('href')
+    expect((href as string).includes('/details/reports'))
+      .toBeTruthy()
   })
 })

@@ -19,8 +19,6 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { mockedTenantId } from '../../../../Services/MdnsProxy/MdnsProxyForm/__tests__/fixtures'
-
 import {
   attributeGroup,
   attributeGroupReturnByQuery,
@@ -29,6 +27,8 @@ import {
   vendorList
 } from './__tests__/fixtures'
 import RadiusAttributeGroupForm from './RadiusAttributeGroupForm'
+
+export const mockedTenantId = '6de6a5239a1441cfb9c7fde93aa613fe'
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
@@ -121,6 +121,9 @@ describe('RadiusAttributeGroupForm', () => {
 
     const validating = await screen.findByRole('img', { name: 'loading' })
     await waitForElementToBeRemoved(validating)
+    await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
+
+    await screen.findByText('Group testGroup was added')
   })
 
   it('should render breadcrumb correctly', async () => {
@@ -198,6 +201,8 @@ describe('RadiusAttributeGroupForm', () => {
 
     const validating = await screen.findByRole('img', { name: 'loading' })
     await waitForElementToBeRemoved(validating)
+
+    await screen.findByText('Group ' + attributeGroup.name + ' was updated')
   })
 
   it('should navigate to the Select service page when clicking Cancel button', async () => {
