@@ -60,6 +60,7 @@ function GetNetworkFilterOptions (tenantId: string|undefined) {
 
 function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
   const { $t } = useIntl()
+  const wifi7MLOToggle = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_TOGGLE)
   const { tenantId, venueId, apId, networkId } = useParams()
   const listOfClientsPerWlanFlag = useIsSplitOn(Features.LIST_OF_CLIENTS_PER_WLAN)
 
@@ -132,19 +133,20 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
         </Tooltip>
       }
     },
-    {
+    ...(wifi7MLOToggle ? [{
       key: 'mldAddr',
       title: intl.$t({ defaultMessage: 'MLD MAC Address' }),
       dataIndex: 'mldAddr',
       sorter: true,
-      disable: true,
-      render: (_, { mldAddr }) => {
-        const mac = mldAddr?.toLowerCase() || undefined
+      disable: false,
+      show: false,
+      render: (_: React.ReactNode, row: ClientList) => {
+        const mac = row.mldAddr?.toLowerCase() || undefined
         return <Tooltip title={mac}>
           {mac || '--'}
         </Tooltip>
       }
-    },
+    }] : []),
     {
       key: 'ipAddress',
       title: intl.$t({ defaultMessage: 'IP Address' }),
