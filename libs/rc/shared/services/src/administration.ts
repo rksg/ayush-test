@@ -586,7 +586,21 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Administration', id: 'AUTHENTICATION_LIST' }]
+      providesTags: [{ type: 'Administration', id: 'ADMINGROUP_LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'addGroup',
+            'patchGroup',
+            'deleteGroup'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'Administration', id: 'ADMINGROUP_LIST' }
+            ]))
+          })
+        })
+      }
+
     }),
     deleteAdminGroups: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {

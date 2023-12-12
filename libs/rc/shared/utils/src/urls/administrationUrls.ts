@@ -214,12 +214,12 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   // }
   getAdminGroups: {
     method: 'get',
-    url: '/groups',
+    url: '/groups/',
     newApi: true
   },
   addAdminGroups: {
     method: 'post',
-    url: '/groups',
+    url: '/groups/',
     newApi: true
   },
   updateAdminGroups: {

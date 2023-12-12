@@ -12,8 +12,8 @@ import {
 } from '@acx-ui/components'
 import {
   useGetAdminGroupsQuery,
-  useDeleteAdminMutation,
-  useDeleteAdminsMutation
+  useDeleteAdminsMutation,
+  useDeleteAdminGroupsMutation
 } from '@acx-ui/rc/services'
 import { AdminGroup, sortProp, defaultSort }                    from '@acx-ui/rc/utils'
 import { filterByAccess, useUserProfileContext, roleStringMap } from '@acx-ui/user'
@@ -39,7 +39,7 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
 
   const { data: adminList, isLoading, isFetching } = useGetAdminGroupsQuery({ params })
 
-  const [deleteAdmin, { isLoading: isDeleteAdminUpdating }] = useDeleteAdminMutation()
+  const [deleteAdminGroup, { isLoading: isDeleteAdminUpdating }] = useDeleteAdminGroupsMutation()
   const [deleteAdmins, { isLoading: isDeleteAdminsUpdating }] = useDeleteAdminsMutation()
 
   const handleOpenDialog = () => {
@@ -68,9 +68,9 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
     },
     {
       title: $t({ defaultMessage: 'Processing Priority' }),
-      key: 'priority',
-      dataIndex: 'priority',
-      sorter: { compare: sortProp('priority', defaultSort) }
+      key: 'processingPriority',
+      dataIndex: 'processingPriority',
+      sorter: { compare: sortProp('processingPriority', defaultSort) }
     },
     // {
     //   title: $t({ defaultMessage: 'Logged Members' }),
@@ -120,14 +120,14 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
           customContent: {
             action: 'DELETE',
             entityName: $t({ defaultMessage: 'Group' }),
-            // entityValue: rows.length === 1
-            //   ? rows[0].fullName !== ' ' ? rows[0].fullName : rows[0].email
-            //   : undefined,
+            entityValue: rows.length === 1
+              ? rows[0].name !== ' ' ? rows[0].name : rows[0].groupId
+              : undefined,
             numOfEntities: rows.length
           },
           onOk: () => {
             rows.length === 1 ?
-              deleteAdmin({ params: { ...params, adminId: rows[0].groupId } })
+              deleteAdminGroup({ params: { ...params, groupId: rows[0].id } })
                 .then(clearSelection) :
               deleteAdmins({ params, payload: rows.map(item => item.groupId) })
                 .then(clearSelection)

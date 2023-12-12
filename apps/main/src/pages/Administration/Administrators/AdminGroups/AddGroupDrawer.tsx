@@ -10,7 +10,6 @@ import {
 //   excludeSpaceRegExp,
 //   notAllDigitsRegExp,
   getRoles,
-  // Administrator,
   AdminGroup
 } from '@acx-ui/rc/utils'
 
@@ -28,7 +27,7 @@ export const AddGroupDrawer = (props: AddGroupDrawerProps) => {
   const [form] = Form.useForm()
 
   const [addAdminGroup] = useAddAdminGroupsMutation()
-  const [updateApiToken] = useUpdateAdminGroupsMutation()
+  const [updateAdminGroup] = useUpdateAdminGroupsMutation()
 
   const onClose = () => {
     setVisible(false)
@@ -44,18 +43,28 @@ export const AddGroupDrawer = (props: AddGroupDrawerProps) => {
       const adminGroupData: AdminGroup = {
         name: name,
         groupId: groupId,
+        contactPerson: {
+          name: 'john chang',
+          email: 'johnChangt@mail.com'
+        },
+        processingPriority: 3,
         role: role
       }
 
-      const apiTokenEditData: AdminGroup = {
+      const adminGroupEditData: AdminGroup = {
         name: form.getFieldValue('name'),
         groupId: groupId,
+        contactPerson: {
+          name: 'john chang',
+          email: 'johnChangt@mail.com'
+        },
+        processingPriority: 3,
         role: role
       }
 
       if(isEditMode) {
-        await updateApiToken({ params: { groupId: editData?.groupId },
-          payload: apiTokenEditData }).unwrap()
+        await updateAdminGroup({ params: { groupId: editData?.id },
+          payload: adminGroupEditData }).unwrap()
       } else {
         await addAdminGroup({ payload: adminGroupData }).unwrap()
       }
@@ -71,34 +80,29 @@ export const AddGroupDrawer = (props: AddGroupDrawerProps) => {
   }))
 
   const formContent = <Form layout='vertical'form={form} >
-    {isEditMode ?
-      <Form.Item label={$t({ defaultMessage: 'Group Name' })}>
-        {`${editData?.name}`}
-      </Form.Item> :
-      <Form.Item
-        name='name'
-        label={$t({ defaultMessage: 'Group Name' })}
-        rules={[
-          { required: true },
-          { min: 2 },
-          { max: 64 }
-        ]}
-        children={<Input />}
-      />}
-    {isEditMode ?
-      <Form.Item label={$t({ defaultMessage: 'Group Id' })}>
-        {`${editData?.groupId}`}
-      </Form.Item> :
-      <Form.Item
-        name='groupId'
-        label={$t({ defaultMessage: 'Group ID' })}
-        rules={[
-          { required: true },
-          { min: 2 },
-          { max: 64 }
-        ]}
-        children={<Input />}
-      />}
+    <Form.Item
+      name='name'
+      label={$t({ defaultMessage: 'Group Name' })}
+      initialValue={isEditMode ? editData?.name : ''}
+      rules={[
+        { required: true },
+        { min: 2 },
+        { max: 64 }
+      ]}
+      children={<Input />}
+    />
+    <Form.Item
+      name='groupId'
+      label={$t({ defaultMessage: 'Group ID' })}
+      initialValue={isEditMode ? editData?.groupId : ''}
+      rules={[
+        { required: true },
+        { min: 2 },
+        { max: 64 }
+      ]}
+      children={<Input />}
+    />
+
     <Form.Item
       name='role'
       style={{ marginTop: '13px' }}
@@ -106,10 +110,6 @@ export const AddGroupDrawer = (props: AddGroupDrawerProps) => {
       initialValue={editData?.role || ''}
       rules={[
         { required: true }
-        // { required: true,
-        //   message: $t({ defaultMessage:
-        //     'Please select the scope (role) to apply to this application' })
-        // }
       ]}
     >
       <Select

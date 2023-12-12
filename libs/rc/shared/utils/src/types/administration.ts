@@ -250,6 +250,7 @@ export interface NewEntitlementSummary {
 export type EntitlementDeviceTypes = Array<{ label: string, value: EntitlementDeviceType }>
 
 export interface AdminGroup {
+  id?: string,
   name: string,
   groupId: string,
   contactPerson?: {
@@ -257,6 +258,6 @@ export interface AdminGroup {
       email: string
   },
   role: RolesEnum,
-  priority?: number
+  processingPriority?: number
 }
 
