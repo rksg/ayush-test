@@ -97,6 +97,7 @@ export function DevicesWidgetv2 (props: {
                 { apTotalCount > 0
                   ? <Space>
                     <StackedBarChart
+                      key='key-stackedBarChart'
                       animation={false}
                       style={{
                         height: height/2 - 30,
@@ -129,6 +130,7 @@ export function DevicesWidgetv2 (props: {
                 { switchTotalCount > 0
                   ? <Space>
                     <StackedBarChart
+                      key='switch-stackedBarChart'
                       animation={false}
                       style={{
                         height: height/2 - 30,
@@ -162,6 +164,7 @@ export function DevicesWidgetv2 (props: {
                   { edgeTotalCount > 0
                     ? <Space>
                       <StackedBarChart
+                        key='edge-stackedBarChart'
                         animation={false}
                         style={{
                           height: height/2 - 30,
