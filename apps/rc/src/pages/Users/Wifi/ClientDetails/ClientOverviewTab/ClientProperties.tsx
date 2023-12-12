@@ -221,6 +221,12 @@ function ClientDetails ({ client }: { client: ClientExtended }) {
         label={$t({ defaultMessage: 'MAC Address' })}
         children={client?.clientMac || '--'}
       />
+      { client?.mldAddr &&
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'MLD MAC Address' })}
+          children={client?.mldAddr}
+        />
+      }
       <Descriptions.Item
         label={$t({ defaultMessage: 'IP Address' })}
         children={client?.ipAddress || client?.clientIP || '--'}
@@ -595,7 +601,7 @@ function GuestDetails ({ guestDetail, clientMac }: {
           client =>
             <TenantLink
               // eslint-disable-next-line max-len
-              to={`/users/wifi/clients/${client.clientMac}/details/overview?hostname=${client.hostname}`}
+              to={`/users/wifi/clients/${client.clientMac}/details/overview`}
               key={client.clientMac}
             >
               {client.clientMac}
