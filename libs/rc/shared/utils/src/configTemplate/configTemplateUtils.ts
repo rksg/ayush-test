@@ -19,7 +19,8 @@ export function generateConfigTemplateBreadcrumb (): { text: string, link?: stri
   ]
 }
 
-export function hasConfigTemplateAccess (featureFlagEnabled:boolean, accountType: string): boolean {
+// eslint-disable-next-line max-len
+export function hasConfigTemplateAccess (featureFlagEnabled: boolean, accountType: string): boolean {
   return featureFlagEnabled
     && hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
     && (accountType === AccountType.MSP || accountType === AccountType.MSP_NON_VAR)
