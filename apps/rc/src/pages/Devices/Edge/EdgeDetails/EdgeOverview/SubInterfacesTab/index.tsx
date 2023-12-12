@@ -8,6 +8,7 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { hasAccess }                             from '@acx-ui/user'
 
 import { EdgeSubInterfacesTable } from './EdgeSubInterfacesTable'
+import { LagSubInterfaceTable }   from './LagSubInterfaceTable'
 
 interface EdgeSubInterfacesTabProps {
   ports: EdgePortStatus[]
@@ -24,7 +25,7 @@ export const EdgeSubInterfacesTab = (props: EdgeSubInterfacesTabProps) => {
   const navigate = useNavigate()
   const basePath = useTenantLink(`/devices/edge/${serialNumber}`)
 
-  let tabs: { title: string, id: string, mac: string }[]
+  let tabs: { title: string, id: string, mac: string, lagId?: number }[]
 
   if(isEdgeLagEnabled) {
     const normalPorts = ports.filter(port =>
@@ -41,7 +42,8 @@ export const EdgeSubInterfacesTab = (props: EdgeSubInterfacesTabProps) => {
       ...lags.map(item => ({
         title: item.name,
         id: item.lagId.toString(),
-        mac: item?.mac ?? ''
+        mac: item?.mac ?? '',
+        lagId: item.lagId
       }))
     ]
   } else {
@@ -82,7 +84,11 @@ export const EdgeSubInterfacesTab = (props: EdgeSubInterfacesTabProps) => {
                 tab={item.title}
                 key={item.id}
               >
-                <EdgeSubInterfacesTable serialNumber={serialNumber} portMac={item.mac} />
+                {
+                  item.lagId === undefined ?
+                    <EdgeSubInterfacesTable serialNumber={serialNumber} portMac={item.mac} /> :
+                    <LagSubInterfaceTable serialNumber={serialNumber} lagId={item.lagId} />
+                }
               </Tabs.TabPane>
             })}
           </Tabs>
