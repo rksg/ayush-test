@@ -37,7 +37,7 @@ Object.assign(navigator, {
   }
 })
 
-describe.skip('SwitchMacAddressForm', () => {
+describe('SwitchMacAddressForm', () => {
 
   beforeEach(() => {
 
