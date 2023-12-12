@@ -545,16 +545,16 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           totalCount: response.totalCount
         }
       },
-      // async onCacheEntryAdded (requestArgs, api) {
-      //   await onSocketActivityChanged(requestArgs, api, (msg) => {
-      //     const activities = [
-      //       'Update sub-interfaces'
-      //     ]
-      //     onActivityMessageReceived(msg, activities, () => {
-      //       api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'LAG_SUB_INTERFACE' }]))
-      //     })
-      //   })
-      // },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Update LAG sub-interface'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'LAG_SUB_INTERFACE' }]))
+          })
+        })
+      },
       providesTags: [{ type: 'Edge', id: 'DETAIL' }, { type: 'Edge', id: 'LAG_SUB_INTERFACE' }],
       extraOptions: { maxRetries: 5 }
     }),
@@ -598,6 +598,27 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getEdgeLagSubInterfacesStatusList: build.query<TableResult<EdgeLagStatus>, RequestPayload>({
+      query: ({ payload, params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getLagSubInterfacesStatus, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Update LAG sub-interface'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'LAG_SUB_INTERFACE' }]))
+          })
+        })
+      },
+      providesTags: [{ type: 'Edge', id: 'DETAIL' }, { type: 'Edge', id: 'LAG_SUB_INTERFACE' }],
+      extraOptions: { maxRetries: 5 }
     })
   })
 })
@@ -661,5 +682,6 @@ export const {
   useDeleteLagSubInterfacesMutation,
   useUpdateLagSubInterfacesMutation,
   useUpdateEdgeLagMutation,
-  useImportLagSubInterfacesCSVMutation
+  useImportLagSubInterfacesCSVMutation,
+  useGetEdgeLagSubInterfacesStatusListQuery
 } = edgeApi
