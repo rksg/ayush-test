@@ -275,7 +275,6 @@ function NetworkRoutes () {
 
 const edgeSdLanRoutes = () => {
   return <>
-    <Route path='*' element={<PageNotFound />} />
     <Route
       path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
         oper: ServiceOperation.LIST })}
@@ -300,20 +299,17 @@ const edgeSdLanRoutes = () => {
 }
 
 const edgeSdLanPhase2Routes = () => {
-  return <>
-    <Route path='*' element={<PageNotFound />} />
-    <Route
-      path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN_P2,
-        oper: ServiceOperation.CREATE })}
-      element={<AddEdgeSdLanP2 />}
-    />
-  </>
+  return <Route
+    path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN_P2,
+      oper: ServiceOperation.CREATE })}
+    element={<AddEdgeSdLanP2 />}
+  />
 }
 
 
 function ServiceRoutes () {
   const isEdgeSdLanEnabled = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanPhase2Enabled = false//useIsSplitOn(Features.EDGES_SD_LAN_PHASE2_TOGGLE)
+  const isEdgeSdLanPhase2Enabled = useIsSplitOn(Features.EDGES_SD_LAN_PHASE2_TOGGLE)
 
   return rootRoutes(
     <Route path=':tenantId/t'>
