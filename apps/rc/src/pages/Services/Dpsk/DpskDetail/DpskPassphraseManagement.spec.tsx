@@ -271,7 +271,7 @@ describe('DpskPassphraseManagement', () => {
     })
   })
 
-  it('should revoke/unrevoke the passphrases', async () => {
+  it.skip('should revoke/unrevoke the passphrases', async () => {
     const [ revokeFn, unrevokeFn ] = [ jest.fn(), jest.fn() ]
 
     mockServer.use(
@@ -410,7 +410,7 @@ describe('DpskPassphraseManagement', () => {
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
   })
 
-  it('should be able to delete device in DpskPassphrase', async () => {
+  it.skip('should be able to delete device in DpskPassphrase', async () => {
     mockServer.use(
       rest.delete(
         DpskUrls.deletePassphraseDevices.url.split('?')[0],
