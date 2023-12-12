@@ -270,8 +270,8 @@ export function MulticastForm (props: { wlanData: NetworkSaveData | null }) {
 }
 
 function isNotWPA3orOWE (wlanData: NetworkSaveData | null) : boolean {
-  return !((wlanData?.wlan?.wlanSecurity === WlanSecurityEnum.WPA3) ||
-    (wlanData?.wlan?.wlanSecurity === WlanSecurityEnum.OWE))
+  const wlanSecurity = wlanData?.wlan?.wlanSecurity
+  return (wlanSecurity !== WlanSecurityEnum.WPA3) && (wlanSecurity !== WlanSecurityEnum.OWE)
 }
 
 enum BssMinRateEnum {
