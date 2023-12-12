@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { useIntl }       from 'react-intl'
 import { Link }          from 'react-router-dom'
 import { CSSProperties } from 'styled-components'
 
@@ -28,7 +29,7 @@ export interface FulfillmentMessage {
     }[][]
   } }
 
-export type Content = { type: 'bot' | 'user',
+export type Content = { type: 'bot' | 'user', isRuckusAi?:boolean,
 contentList:FulfillmentMessage[] }
 
 export interface ConversationProps {
@@ -51,14 +52,20 @@ function parseLink (link: string): string {
   return link.replace('<origin>',MELISSA_URL_ORIGIN)
 }
 
-const Expandable = (props: { text: string, maxChar: number }) => {
-  let [expanded, setExpanded] = useState(true)
-  if(props.text.length <= props.maxChar) return <UI.Bot>{props.text}</UI.Bot>
+const Expandable = (props: { text: string, maxChar: number, isRuckusAi?:boolean }) => {
+  const { $t } = useIntl()
+  const [expanded, setExpanded] = useState(true)
+  const RUCKUS_AI_TEXT = $t({ defaultMessage: 'Ruckus AI' })
+  const readMoreText = $t({ defaultMessage: 'Read more...' })
+  const readLessText = $t({ defaultMessage: 'Read less' })
+  const RUCKUS_AI_HEADER = props.isRuckusAi ? <>
+    <strong><u>{RUCKUS_AI_TEXT}</u></strong><br/><br/></> : null
+  if(props.text.length <= props.maxChar) return <UI.Bot>{RUCKUS_AI_HEADER}{props.text}</UI.Bot>
   let formattedText = expanded ? props.text.substring(0, props.maxChar) : props.text
-  return <UI.Bot>{formattedText}{expanded ? '... ' : ''}
+  return <UI.Bot>{RUCKUS_AI_HEADER}{formattedText}{expanded ? '... ' : ''}
     <br/><br/>
     <Button size='small' type='link' onClick={() => {setExpanded(!expanded)}}>
-      {expanded? 'Read more...' : 'Read less'}</Button></UI.Bot>
+      {expanded? readMoreText : readLessText}</Button></UI.Bot>
 }
 function Conversation ({
   content,
@@ -75,7 +82,7 @@ function Conversation ({
           list.type === 'bot' ? (
             <>{content.text?.text.map((msg) =>{
               const text = msg.startsWith('\n') ? msg.substring(1).trim() : msg.trim()
-              return <Expandable text={text} maxChar={maxChar} />
+              return <Expandable text={text} maxChar={maxChar} isRuckusAi={list.isRuckusAi}/>
             })
             }{content.payload?.richContent.map((data) =>(
               data.map((res) => {
