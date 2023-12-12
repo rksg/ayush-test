@@ -13,7 +13,8 @@ export const colors = [
 
 export const optimizedColors = [
   '--acx-semantics-green-60',
-  '--acx-semantics-red-60'
+  '--acx-semantics-red-60',
+  '--acx-neutrals-50'
 ]
 
 export const Status = styled.span<{ $statusEnum?: string }>`

@@ -11,15 +11,26 @@ export type IconValue = { order: number, label: MessageDescriptor }
 
 export type StatusTrail = Array<{ status: Lowercase<StateType>, createdAt?: string }>
 
+export enum CRRMStates {
+  optimized = 'optimized',
+  nonOptimized = 'nonOptimized',
+  verified = 'verified',
+  insufficientLicenses = 'insufficientLicenses',
+  verificationError = 'verificationError'
+}
+
 export type ConfigurationValue =
   string |
   Array<{ channelMode: string, channelWidth: string, radio: string }> |
   boolean |
   null
 
-export const crrmStates: Record<'optimized' | 'nonOptimized', IconValue> = {
-  optimized: { order: 0, label: defineMessage({ defaultMessage: 'Optimized' }) },
-  nonOptimized: { order: 1, label: defineMessage({ defaultMessage: 'Non-Optimized' }) }
+export const crrmStates: Record<CRRMStates, IconValue> = {
+  [CRRMStates.optimized]: { order: 0, label: defineMessage({ defaultMessage: 'Optimized' }) },
+  [CRRMStates.nonOptimized]: { order: 1, label: defineMessage({ defaultMessage: 'Non-Optimized' }) },
+  [CRRMStates.verified]: { order: 0, label: defineMessage({ defaultMessage: 'Verified' }) },
+  [CRRMStates.insufficientLicenses]: { order: 2, label: defineMessage({ defaultMessage: 'Insufficient Licenses' }) },
+  [CRRMStates.verificationError]: { order: 2, label: defineMessage({ defaultMessage: 'Verification Error' }) }
 }
 
 export const priorities: Record<'low' | 'medium' | 'high', IconValue> = {
@@ -68,7 +79,10 @@ const categories = {
   'Security': defineMessage({ defaultMessage: 'Security' }),
   'Infrastructure': defineMessage({ defaultMessage: 'Infrastructure' }),
   'AP Performance': defineMessage({ defaultMessage: 'AP Performance' }),
-  'AI-Driven Cloud RRM': defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' })
+  'AI-Driven Cloud RRM': defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
+  'Insufficient Licenses': crrmStates[CRRMStates.insufficientLicenses].label,
+  'Verification Error': crrmStates[CRRMStates.verificationError].label,
+  'Verified': crrmStates[CRRMStates.verified].label
 }
 
 const bandbalancingEnable: RecommendationConfig = {
@@ -139,6 +153,18 @@ export const states = {
   deleted: {
     text: defineMessage({ defaultMessage: 'Deleted' }),
     tooltip: defineMessage({ defaultMessage: 'Deleted' })
+  },
+  insufficientLicenses: {
+    text: crrmStates[CRRMStates.insufficientLicenses].label,
+    tooltip: crrmStates[CRRMStates.insufficientLicenses].label
+  },
+  verificationError: {
+    text: crrmStates[CRRMStates.verificationError].label,
+    tooltip: crrmStates[CRRMStates.verificationError].label
+  },
+  verified: {
+    text: crrmStates[CRRMStates.verified].label,
+    tooltip: crrmStates[CRRMStates.verified].label
   }
 }
 
@@ -476,6 +502,21 @@ export const codes = {
       format: formatter('countFormat'),
       deltaSign: '-'
     }]
+  },
+  'insufficientLicenses': {
+    category: crrmStates[CRRMStates.insufficientLicenses].label,
+    summary: crrmStates[CRRMStates.insufficientLicenses].label,
+    priority: priorities.low
+  },
+  'verificationError': {
+    category: crrmStates[CRRMStates.verificationError].label,
+    summary: crrmStates[CRRMStates.verificationError].label,
+    priority: priorities.low
+  },
+  'verified': {
+    category: crrmStates[CRRMStates.verified].label,
+    summary: crrmStates[CRRMStates.verified].label,
+    priority: priorities.low
   }
 } as unknown as Record<string, RecommendationConfig & CodeInfo>
 

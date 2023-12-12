@@ -16,6 +16,8 @@ import { InformationOutlined }         from '@acx-ui/icons'
 import { TenantLink, useParams }       from '@acx-ui/react-router-dom'
 import { noDataDisplay, PathFilter }   from '@acx-ui/utils'
 
+import { getParamString } from '../AIDrivenRRM/extra'
+
 import { RecommendationActions } from './RecommendationActions'
 import {
   useRecommendationListQuery,
@@ -27,10 +29,23 @@ import * as UI from './styledComponents'
 
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
+type Metadata = { audit?: [{ failure: string }] | undefined }
+
+type RecommendationWithUpdatedMetadata = RecommendationListItem & {
+  metadata: Metadata;
+}
 
 const DateLink = ({ value }: { value: RecommendationListItem }) => {
   const { activeTab } = useParams()
   return <TenantLink to={`analytics/recommendations/${activeTab}/${value.id}`}>
+    {formatter(DateFormatEnum.DateTimeFormat)(value.updatedAt)}
+  </TenantLink>
+}
+
+export const UnknownLink = ({ value }: { value: RecommendationWithUpdatedMetadata }) => {
+  const { metadata, statusEnum, updatedAt, sliceValue } = value
+  const paramString = getParamString(metadata, statusEnum, updatedAt, sliceValue)
+  return <TenantLink to={`analytics/recommendations/crrm/unknown?${paramString}`}>
     {formatter(DateFormatEnum.DateTimeFormat)(value.updatedAt)}
   </TenantLink>
 }
@@ -94,6 +109,7 @@ export function RecommendationTable (
   const queryResults =
     useRecommendationListQuery({ ...pathFilters, crrm: showCrrm }, { skip: switchPath })
   const data = switchPath ? [] : queryResults?.data?.filter((row) => (showMuted || !row.isMuted))
+  const noCrrmData = data?.filter(recommendation => recommendation.code !== 'unknown')
 
   useEffect(() => {
     setSelectedRowData([])
@@ -105,14 +121,14 @@ export function RecommendationTable (
         ? $t({ defaultMessage: 'Zone RRM Health' })
         : $t({ defaultMessage: 'Venue RRM Health' }),
       width: 120,
-      dataIndex: 'optimizedState',
-      key: 'optimizedState',
-      render: (_, { crrmOptimizedState }) => {
-        return <UI.OptimizedIcon
-          value={crrmOptimizedState!.order}
-          text={$t(crrmOptimizedState!.label)}
-        />
-      },
+      dataIndex: 'crrmOptimizedState',
+      key: 'crrmOptimizedState',
+      filterKey: 'crrmOptimizedState.text',
+      render: (_, { crrmOptimizedState }) => <UI.OptimizedIcon
+        value={crrmOptimizedState!.order}
+        text={$t(crrmOptimizedState!.label)}
+      />
+      ,
       sorter: { compare: crrmStateSort },
       fixed: 'left',
       filterable: true
@@ -121,6 +137,7 @@ export function RecommendationTable (
       width: 90,
       dataIndex: ['priority', 'order'],
       key: 'priorityOrder',
+      filterKey: 'priority.text',
       render: (_, value) => <UI.PriorityIcon
         value={value.priority.order}
         text={$t(value.priority.label)}
@@ -134,9 +151,9 @@ export function RecommendationTable (
       width: 130,
       dataIndex: 'updatedAt',
       key: 'updatedAt',
-      render: (_, value) => {
-        return <DateLink value={value}/>
-      },
+      render: (_, value) => (value.code === 'unknown')
+        ? <UnknownLink value={value as RecommendationWithUpdatedMetadata} />
+        : <DateLink value={value}/>,
       sorter: { compare: sortProp('updatedAt', dateSort) },
       fixed: 'left'
     },
@@ -178,9 +195,10 @@ export function RecommendationTable (
       width: 90,
       dataIndex: 'status',
       key: 'status',
-      render: (_, value ) => {
-        return <Tooltip placement='top' title={value.statusTooltip}>
-          <UI.Status $statusEnum={value.statusEnum}>{value.status}</UI.Status>
+      render: (_, value: RecommendationListItem ) => {
+        const { code, statusEnum, status, statusTooltip } = value
+        return <Tooltip placement='top' title={code === 'unknown' ? '' : statusTooltip}>
+          <UI.Status $statusEnum={statusEnum}>{status}</UI.Status>
         </Tooltip>
       },
       sorter: { compare: sortProp('status', defaultSort) },
@@ -242,7 +260,7 @@ export function RecommendationTable (
       <UI.RecommendationTableWrapper
         settingsId={`recommendation-table-${showCrrm}`}
         type='tall'
-        dataSource={data}
+        dataSource={showCrrm ? data : noCrrmData}
         columns={columns}
         rowActions={rowActions}
         rowSelection={{
