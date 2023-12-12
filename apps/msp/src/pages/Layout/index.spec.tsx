@@ -138,6 +138,11 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+const mockedHasConfigTemplateAccess = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  hasConfigTemplateAccess: () => mockedHasConfigTemplateAccess
+}))
 
 describe('Layout', () => {
   let params: { tenantId: string }
@@ -204,7 +209,7 @@ describe('Layout', () => {
         (req, res, ctx) => res(ctx.json({}))
       ),
       rest.get(
-        UserUrlsInfo.getCloudScheduleVersion.url,
+        UserUrlsInfo.getCloudScheduleVersion.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({}))
       )
     )
@@ -320,4 +325,14 @@ describe('Layout', () => {
     expect(screen.getByRole('menuitem', { name: 'Settings' })).toBeVisible()
   })
 
+  it('should render config template layout for MSP-Non-Var users', async () => {
+    mockedHasConfigTemplateAccess.mockReturnValue(true)
+
+    render(
+      <Provider>
+        <Layout />
+      </Provider>, { route: { params } })
+
+    expect(await screen.findByRole('menuitem', { name: 'Config Templates' })).toBeVisible()
+  })
 })

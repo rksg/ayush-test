@@ -81,7 +81,6 @@ function ConfigTemplatesRoutes () {
 
   return isConfigTemplateEnabled ? rootRoutes(
     <Route>
-      <Route path='*' element={<PageNotFound />} />
       <Route path=':tenantId/v/configTemplates' element={<LayoutWithConfigTemplateContext />}>
         <Route index
           element={<TenantNavigate replace to={CONFIG_TEMPLATE_LIST_PATH} tenantType='v'/>}

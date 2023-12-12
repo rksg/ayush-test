@@ -18,10 +18,11 @@ import {
   SpeedIndicatorSolid,
   SpeedIndicatorOutlined
 } from '@acx-ui/icons'
-import { TenantType }  from '@acx-ui/react-router-dom'
-import { RolesEnum }   from '@acx-ui/types'
-import { hasRoles }    from '@acx-ui/user'
-import { AccountType } from '@acx-ui/utils'
+import { hasConfigTemplateAccess } from '@acx-ui/rc/utils'
+import { TenantType }              from '@acx-ui/react-router-dom'
+import { RolesEnum }               from '@acx-ui/types'
+import { hasRoles }                from '@acx-ui/user'
+import { AccountType }             from '@acx-ui/utils'
 
 export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfood?: boolean) {
   const { $t } = useIntl()
@@ -34,7 +35,8 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfoo
   const isSupport = tenantType === 'SUPPORT'
   const isIntegrator =
   tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
-  const isConfigTemplateEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE)
+  // eslint-disable-next-line max-len
+  const isConfigTemplateEnabled = hasConfigTemplateAccess(useIsSplitOn(Features.CONFIG_TEMPLATE), tenantType)
 
   const config: LayoutProps['menuConfig'] = [
     ...(isBrand360 ? [{

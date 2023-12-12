@@ -1,5 +1,7 @@
-import { TenantType } from '@acx-ui/react-router-dom'
-import { getIntl }    from '@acx-ui/utils'
+import { TenantType }           from '@acx-ui/react-router-dom'
+import { RolesEnum }            from '@acx-ui/types'
+import { hasRoles }             from '@acx-ui/user'
+import { AccountType, getIntl } from '@acx-ui/utils'
 
 export const CONFIG_TEMPLATE_LIST_PATH = 'configTemplates/templates'
 export const CONFIG_TEMPLATE_BUNDLE_LIST_PATH = 'configTemplates/bundles'
@@ -15,4 +17,10 @@ export function generateConfigTemplateBreadcrumb (): { text: string, link?: stri
       tenantType: 'v'
     }
   ]
+}
+
+export function hasConfigTemplateAccess (featureFlagEnabled:boolean, accountType: string): boolean {
+  return featureFlagEnabled
+    && hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+    && (accountType === AccountType.MSP || accountType === AccountType.MSP_NON_VAR)
 }
