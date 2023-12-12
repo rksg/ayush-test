@@ -32,10 +32,11 @@ import {
   useScheduleSlotIndexMap,
   aggregateApGroupPayload,
   Network,
-  NetworkVenue,
   IsNetworkSupport6g,
   ApGroupModalState,
-  NetworkExtended
+  NetworkExtended,
+  SchedulerTypeEnum,
+  SchedulingModalState
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                    from '@acx-ui/user'
@@ -64,17 +65,6 @@ const defaultPayload = {
     'owePairNetworkId',
     'dsaeOnboardNetwork'
   ]
-}
-
-export interface SchedulingModalState {
-  visible: boolean,
-  networkVenue?: NetworkVenue,
-  network?: { name: string } | null,
-  venue?: {
-    latitude: string,
-    longitude: string,
-    name: string
-  }
 }
 
 const defaultArray: NetworkExtended[] = []
@@ -337,21 +327,29 @@ export function VenueNetworksTab () {
 
   const handleScheduleFormFinish = (name: string, info: FormFinishInfo) => {
     let data = _.cloneDeep(scheduleModalState.networkVenue)
-    // const schdule = info.values.map
 
-    let tmpScheduleList: schedule = { type: info.values?.scheduler.type }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let map: { [key: string]: any } = info.values?.scheduler
-    for (let key in map) {
-      if(key === 'type'){
-        continue
-      }
-      if (map.hasOwnProperty(key) && map['type'] === 'CUSTOM') {
+    const scheduler = info.values?.scheduler
+    const { type, ...weekdaysData } = scheduler || {}
+
+    let tmpScheduleList: schedule = { type }
+
+    if (type === SchedulerTypeEnum.ALWAYS_OFF) {
+      activateNetwork(false, scheduleModalState.network!)
+      setScheduleModalState({
+        visible: false
+      })
+      return
+    }
+
+    if (type === SchedulerTypeEnum.CUSTOM) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let map: { [key: string]: any } = weekdaysData
+      for (let key in map) {
         let scheduleList: string[] = []
         for(let i = 0; i < 96; i++){
           scheduleList.push('0')
         }
-        map[key].map((item: string) => {
+        map[key].forEach((item: string) => {
           const value = parseInt(item.split('_')[1], 10)
           scheduleList[value] = '1'
         })

@@ -35,7 +35,7 @@ const {
   mockEdgeList,
   mockEdgeServiceList
 } = EdgeGeneralFixtures
-const { mockedEdgeSdLanDataList } = EdgeSdLanFixtures
+const { mockedSdLanDataList } = EdgeSdLanFixtures
 const { mockFirewallData } = EdgeFirewallFixtures
 const { mockNsgStatsList } = EdgeNSGFixtures
 const { mockDhcpStatsData, mockEdgeDhcpDataList } = EdgeDHCPFixtures
@@ -84,7 +84,7 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
       ),
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-        (_, res, ctx) => res(ctx.json({ data: mockedEdgeSdLanDataList }))
+        (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataList }))
       )
     )
   })
@@ -187,6 +187,6 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
       </Provider>, {
         route: { params }
       })
-    expect(await screen.findByRole('link', { name: 'Mocked_tunnel' })).toBeVisible()
+    expect(await screen.findByRole('link', { name: 'Mocked_tunnel-1' })).toBeVisible()
   })
 })

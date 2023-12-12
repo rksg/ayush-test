@@ -1,3 +1,4 @@
+import { Venue, VenueDetail } from '..'
 import {
   GuestNetworkTypeEnum,
   NetworkTypeEnum,
@@ -179,4 +180,11 @@ export interface ApGroupModalState { // subset of ApGroupModalWidgetProps
   network?: NetworkSaveData | null,
   networkVenue?: NetworkVenue,
   venueName?: string
+}
+
+export type SchedulingModalState = {
+  visible: boolean,
+  networkVenue?: NetworkVenue,
+  venue?: Venue | VenueDetail
+  network?: Network
 }
