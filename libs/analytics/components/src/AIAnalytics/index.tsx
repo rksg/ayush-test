@@ -1,5 +1,9 @@
 import { useIntl } from 'react-intl'
 
+import {
+  getUserProfile,
+  PERMISSION_MANAGE_CONFIG_RECOMMENDATION
+} from '@acx-ui/analytics/utils'
 import { PageHeader, Tabs, TimeRangeDropDownProvider } from '@acx-ui/components'
 import { get }                                         from '@acx-ui/config'
 import { useIsSplitOn, Features }                      from '@acx-ui/feature-toggle'
@@ -27,32 +31,44 @@ const useTabs = () : Tab[] => {
   const { $t } = useIntl()
   const recommendationsEnabled = useIsSplitOn(Features.AI_RECOMMENDATIONS)
   const crrmEnabled = useIsSplitOn(Features.AI_CRRM)
+  const userProfile = getUserProfile()
   const incidentsTab = {
     key: AIAnalyticsTabEnum.INCIDENTS,
     title: $t({ defaultMessage: 'Incidents' }),
     component: <IncidentTabContent/>,
     headerExtra: useHeaderExtra({ shouldQuerySwitch: true, withIncidents: true })
   }
-  const crrmTab = [
-    {
-      key: AIAnalyticsTabEnum.CRRM,
-      title: $t({ defaultMessage: 'AI-Driven RRM' }),
-      component: <RecommendationTabContent />,
-      headerExtra: useHeaderExtra({ shouldQuerySwitch: true, datepicker: 'dropdown' })
+  const crrmTab = {
+    key: AIAnalyticsTabEnum.CRRM,
+    title: $t({ defaultMessage: 'AI-Driven RRM' }),
+    component: <RecommendationTabContent />,
+    headerExtra: useHeaderExtra({ shouldQuerySwitch: true, datepicker: 'dropdown' })
+  }
+
+  const aiOpsTab = {
+    key: AIAnalyticsTabEnum.AIOPS,
+    title: $t({ defaultMessage: 'AI Operations' }),
+    component: <RecommendationTabContent />,
+    headerExtra: useHeaderExtra({ shouldQuerySwitch: true, datepicker: 'dropdown' })
+  }
+
+  const getRecommendationTabs = () => {
+    let recommendationTabs = [] as Tab[]
+    if (get('IS_MLISA_SA') &&
+      userProfile.selectedTenant.permissions?.[PERMISSION_MANAGE_CONFIG_RECOMMENDATION]
+    ) { // RAI
+      recommendationTabs = [crrmTab, aiOpsTab] as unknown as Tab[]
+    } else { // R1
+      crrmEnabled && recommendationTabs.push(crrmTab as unknown as Tab)
+      recommendationsEnabled && recommendationTabs.push(aiOpsTab as unknown as Tab)
     }
-  ]
-  const recommendationTab = [
-    {
-      key: AIAnalyticsTabEnum.AIOPS,
-      title: $t({ defaultMessage: 'AI Operations' }),
-      component: <RecommendationTabContent />,
-      headerExtra: useHeaderExtra({ shouldQuerySwitch: true, datepicker: 'dropdown' })
-    }
-  ]
+    return recommendationTabs
+  }
+
+
   return [
     incidentsTab,
-    ...(get('IS_MLISA_SA') || crrmEnabled ? crrmTab : []),
-    ...(get('IS_MLISA_SA') || recommendationsEnabled ? recommendationTab : [])
+    ...getRecommendationTabs()
   ]
 }
 
