@@ -350,11 +350,3 @@ export function VenueFirmwareList () {
     />
   )
 }
-
-const removeCurrentVersionsAnd10010IfNeeded = (version: string,
-  rodanVersion: string,
-  filterVersions: FirmwareVersion[]) => {
-  _.remove(filterVersions, (v: FirmwareVersion) => {
-    return v.id === version || v.id === rodanVersion
-  })
-}
