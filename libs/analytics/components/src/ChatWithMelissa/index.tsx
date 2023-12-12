@@ -33,6 +33,7 @@ export function ChatWithMelissa () {
   const askAnything = $t({ defaultMessage: 'Ask Anything' })
   const discover = $t({ defaultMessage: 'Discover which ones' })
   const comingSoon = $t({ defaultMessage: 'Coming Soon' })
+  const noSummaryText = $t({ defaultMessage: 'No incidents indentified for last day.' })
   const subTitleFirstTime = <FormattedMessage
     defaultMessage='Chat with <b>{botName}</b><br></br>
     and unlock the <b>power of AI</b>'
@@ -49,12 +50,6 @@ export function ChatWithMelissa () {
       ...defaultRichTextFormatValues
     }}
   />
-  // eslint-disable-next-line no-console
-  console.log({
-    showIncidentSummary,
-    summary,
-    isIncidentSummaryEnabled
-  })
   return <UI.Wrapper><Card type='solid-bg'>
     <p>
       <img src={graphic} alt='graphic' /><br />
@@ -67,7 +62,7 @@ export function ChatWithMelissa () {
         const event = new CustomEvent('showMelissaBot',
           { detail: {
             isRecurringUser: !! isRecurringUser,
-            summary: summary || 'Nothing to summarize.'
+            summary: summary || noSummaryText
           } })
         window.dispatchEvent(event)
         if(isIncidentSummaryEnabled){
