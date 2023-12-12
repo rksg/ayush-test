@@ -323,13 +323,19 @@ describe('Recommendation services', () => {
         scope: `vsz612 (SZ Cluster)
 > EDU-MeshZone_S12348 (Venue)`,
         type: 'Venue',
-        priority: priorities.high,
+        priority: {
+          ...priorities.high,
+          text: 'High'
+        },
         category: 'AI-Driven Cloud RRM',
         summary: 'Optimal channel plan found for 2.4 GHz radio',
         status: 'New',
         statusTooltip: 'Schedule a day and time to apply this recommendation.',
         statusEnum: 'new',
-        crrmOptimizedState: crrmStates.nonOptimized
+        crrmOptimizedState: {
+          ...crrmStates.nonOptimized,
+          text: 'Non-Optimized'
+        }
       }
     ]
     expect(error).toBe(undefined)

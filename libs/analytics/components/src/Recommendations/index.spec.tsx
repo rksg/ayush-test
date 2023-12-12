@@ -82,7 +82,7 @@ describe('RecommendationTabContent', () => {
     expect(screen.getAllByRole('img', { name: 'loader' })).toBeTruthy()
   })
 
-  it('should render crrm table for R1', async () => {
+  it.only('should render crrm table for R1', async () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: { recommendations: recommendationListResult.recommendations
         .filter(r => r.code.includes('crrm') || r.code.includes('unknown')) }
@@ -93,8 +93,10 @@ describe('RecommendationTabContent', () => {
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    await screen.logTestingPlaygroundURL()
     const row = screen.getByRole('row', {
-      name: /optimal channel plan found for 2\.4 ghz radio/i
+      // eslint-disable-next-line max-len
+      name: /non-optimized 06\/16\/2023 06:05 optimal channel plan found for 2\.4 ghz radio zone-1 new/i
     })
     const nonOptimizedSwitch = within(row).getByRole('switch')
     userEvent.click(nonOptimizedSwitch)
