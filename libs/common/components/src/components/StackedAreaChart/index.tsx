@@ -51,6 +51,7 @@ export interface StackedAreaChartProps
     seriesFormatters?: Record<string, ChartFormatterFn>
     tooltipTotalTitle?: string
     disableLegend?: boolean
+    disableAxis?: boolean
     chartRef?: RefCallback<ReactECharts>
     zoom?: TimeStampRange
     onDataZoom?: (range: TimeStampRange) => void
@@ -86,6 +87,7 @@ export function StackedAreaChart <
   seriesFormatters,
   tooltipTotalTitle,
   disableLegend,
+  disableAxis,
   ...props
 }: StackedAreaChartProps<TChartData>) {
   const eChartsRef = useRef<ReactECharts>(null)
@@ -130,7 +132,8 @@ export function StackedAreaChart <
       axisLabel: {
         ...axisLabelOptions(),
         formatter: dateAxisFormatter()
-      }
+      },
+      show: !disableAxis
     },
     yAxis: {
       ...yAxisOptions(),
@@ -141,7 +144,8 @@ export function StackedAreaChart <
         formatter: function (value: number) {
           return dataFormatter(value)
         }
-      }
+      },
+      show: !disableAxis
     },
     series: initialData.map(datum => ({
       name: datum[legendProp] as unknown as string,

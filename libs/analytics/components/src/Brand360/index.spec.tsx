@@ -17,6 +17,27 @@ jest.mock('./Table', () => ({
 }))
 
 
+jest.mock('./SlaTile', () => ({
+  SlaTile: ({
+    chartKey,
+    sliceType,
+    ssidRegex,
+    start,
+    end
+  }
+  :{
+    chartKey: string,
+    sliceType: string,
+    ssidRegex: string,
+    start: string,
+    end: string
+  }) =>
+    <div data-testid={'brand360Tile'}>
+      {JSON.stringify({ chartKey, sliceType, ssidRegex, start, end })}
+    </div>
+}))
+
+
 describe('Brand360', () => {
   beforeEach(() => {
     mockServer.use(
@@ -25,13 +46,16 @@ describe('Brand360', () => {
         '[{"key": "sla-p1-incidents-count", "value": "1"},{"key": "sla-guest-experience", "value": "2"},{"key": "sla-brand-ssid-compliance", "value": "3"}]'
       )))
     )
+    jest.useFakeTimers()
+    jest.setSystemTime(new Date(Date.parse('2023-12-12T00:00:00+00:00')))
   })
+  afterEach(() => jest.useRealTimers())
   it('renders widgets', async () => {
     render(<Provider><Brand360 /></Provider>)
     expect(await screen.findAllByDisplayValue('Last 8 Hours')).toHaveLength(2)
-    expect(await screen.findAllByText('incident')).toHaveLength(1)
-    expect(await screen.findAllByText('guest experience')).toHaveLength(1)
-    expect(await screen.findAllByText('brand ssid compliance')).toHaveLength(1)
+    const tiles = await screen.findAllByTestId('brand360Tile')
+    expect(tiles).toHaveLength(3)
+    tiles.forEach(tile => expect(tile).toBeVisible())
     // eslint-disable-next-line max-len
     expect(await screen.findAllByText('property {"brand-ssid-compliance-matcher":"^[a-zA-Z0-9]{5}_GUEST$","sla-p1-incidents-count":"1","sla-guest-experience":"2","sla-brand-ssid-compliance":"3"}')).toHaveLength(1)
     expect(await screen.findByTestId('brand360Table')).toBeVisible()
@@ -43,6 +67,12 @@ describe('Brand360', () => {
     // eslint-disable-next-line max-len
     expect(await screen.findAllByText('lsp {"brand-ssid-compliance-matcher":"^[a-zA-Z0-9]{5}_GUEST$","sla-p1-incidents-count":"1","sla-guest-experience":"2","sla-brand-ssid-compliance":"3"}')).toHaveLength(1)
     expect(await screen.findByTestId('brand360Table')).toBeVisible()
+    const tiles = await screen.findAllByTestId('brand360Tile')
+    const tile = tiles[0]
+    expect(tile.textContent?.includes('lsp')).toBeTruthy()
+    expect(tile.textContent?.includes('start')).toBeTruthy()
+    expect(tile.textContent?.includes('end')).toBeTruthy()
+    expect(tile.textContent?.includes('^[a-zA-Z0-9]{5}_GUEST$')).toBeTruthy()
   })
   it('applies SLAs', async () => {
     const update = new Promise(resolve => mockServer.use(

@@ -11,3 +11,48 @@ export const Buttons = styled.div`
   gap: var(--acx-modal-footer-small-button-space);
   padding: var(--acx-modal-footer-small-padding);
 `
+
+export const Spacer = styled.div`
+  padding-top: 10px;
+`
+
+export const IconWrapper = styled.span`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  height: 100%;
+`
+
+export const ListWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  cursor: pointer;
+  white-space: nowrap;
+`
+
+export const HighlightedIcon = styled.div<{ $highlight?: true }>`
+  ${props => props.$highlight
+    ? 'color: var(--acx-neutrals-60);'
+    : 'color: var(--acx-neutrals-40);'}
+`
+
+export const ValueWrapper = styled.div`
+  font-family: var(--acx-neutral-brand-font);
+  font-size: var(--acx-headline-1-font-size);
+  font-weight: var(--acx-body-font-weight-bold);
+  color: var(--acx-neutrals-50);
+  display: flex;
+  justify-content: center;
+`
+
+export const ChangeWrapper = styled.span<{ $isNegative: boolean }>`
+  font-size: var(--acx-headline-4-font-size);
+  ${props => props.$isNegative
+    ? 'color: var(--acx-semantics-red-40)'
+    : 'color: var(--acx-semantics-green-40)'}
+`
+
+export const ChartWrapper = styled.div`
+  height: 200px;
+`

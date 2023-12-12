@@ -10,8 +10,11 @@ import { DateFilter, DateRange, getDateRangeFilter, getDatePickerValues } from '
 
 import { Response, useFetchBrandPropertiesQuery } from './services'
 import { SlaSliders }                             from './SlaSliders'
+import { SlaTile }                                from './SlaTile'
 import { BrandTable }                             from './Table'
 import { useSliceType }                           from './useSliceType'
+
+export type ChartKey = 'incident' | 'experience' | 'compliance'
 
 export function Brand360 () {
   const settingsQuery = useGetTenantSettingsQuery()
@@ -19,12 +22,14 @@ export function Brand360 () {
   const { sliceType, SliceTypeDropdown } = useSliceType()
   const [settings, setSettings] = useState<Partial<Settings>>({})
   const [dateFilterState, setDateFilterState] = useState<DateFilter>(
+
     getDateRangeFilter(DateRange.last8Hours)
   )
   const { data } = settingsQuery
   useEffect(() => { data && setSettings(data) }, [data])
   const { startDate, endDate, range } = getDatePickerValues(dateFilterState)
   const tableResults = useFetchBrandPropertiesQuery({})
+  const chartMap: ChartKey[] = ['incident', 'experience', 'compliance']
   return <Loader states={[settingsQuery, tableResults]}>
     <PageHeader
       title={$t({ defaultMessage: 'Brand 360' })}
@@ -43,9 +48,17 @@ export function Brand360 () {
       ]}
     />
     <GridRow>
-      <GridCol col={{ span: 6 }}>incident</GridCol>
-      <GridCol col={{ span: 6 }}>guest experience</GridCol>
-      <GridCol col={{ span: 6 }}>brand ssid compliance</GridCol>
+      {chartMap.map((val) => <GridCol col={{ span: 6 }}>
+        <SlaTile
+          key={val}
+          chartKey={val}
+          sliceType={sliceType}
+          tableQuery={tableResults}
+          start={startDate}
+          end={endDate}
+          ssidRegex={settings['brand-ssid-compliance-matcher']!}
+        />
+      </GridCol>)}
       <GridCol col={{ span: 6 }}>
         <SlaSliders initialSlas={data || {}} currentSlas={settings} setCurrentSlas={setSettings} />
       </GridCol>
