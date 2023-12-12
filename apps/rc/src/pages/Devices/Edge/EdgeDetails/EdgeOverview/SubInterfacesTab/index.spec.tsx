@@ -8,7 +8,8 @@ import {
   mockServer,
   render,
   screen,
-  waitFor
+  waitFor,
+  waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
 import { EdgeSubInterfacesTab } from '.'
@@ -134,8 +135,9 @@ describe('Edge overview sub-interfaces tab', () => {
     expect(portTabs.length).toBe(4)
     const lag1Tab = await screen.findByRole('tab', { name: 'LAG 1' })
     await userEvent.click(lag1Tab)
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByRole('row', {
-      name: /LAN Up 1.1.1.1 Static IP 255.255.255.128 4/
+      name: 'LAN Up 1.1.1.1 Static IP 255.255.255.128 4'
     })).toBeVisible()
   })
 })
