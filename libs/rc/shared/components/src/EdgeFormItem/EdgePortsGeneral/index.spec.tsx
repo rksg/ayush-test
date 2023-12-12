@@ -667,7 +667,7 @@ describe('EditEdge ports - SD-LAN ready', () => {
     await waitFor(() => expect(port2CorePort).toBeChecked())
   })
 
-  it('port type shoud be grey-out when core port enabled', async () => {
+  it('port type shoud be correctly grey-out when core port enabled', async () => {
     render(
       <Provider>
         <EdgePortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
@@ -679,6 +679,23 @@ describe('EditEdge ports - SD-LAN ready', () => {
       })
     await userEvent.click(await screen.findByRole('tab', { name: 'Port 2' }))
     expect(await screen.findByRole('combobox', { name: 'Port Type' })).toBeDisabled()
+  })
+
+  it('port type shoud NOT be grey-out when port is unconfigured', async () => {
+    const mockEdgePortConfigPartialUnconfig = _.cloneDeep(mockEdgePortConfigWithStatusIp)
+    mockEdgePortConfigPartialUnconfig.ports[4].portType = EdgePortTypeEnum.UNCONFIGURED
+
+    render(
+      <Provider>
+        <EdgePortsGeneral data={mockEdgePortConfigPartialUnconfig.ports} />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        }
+      })
+    await userEvent.click(await screen.findByRole('tab', { name: 'Port 5' }))
+    expect(await screen.findByRole('combobox', { name: 'Port Type' })).not.toBeDisabled()
   })
 
   it('should clear gateway after core port unselected', async () => {

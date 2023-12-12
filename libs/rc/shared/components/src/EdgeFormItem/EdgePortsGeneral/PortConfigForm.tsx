@@ -57,8 +57,8 @@ export const PortConfigForm = (props: ConfigFormProps) => {
   const statusIp = useWatch(getFieldFullPath('statusIp'), form)
   const mac = useWatch(getFieldFullPath('mac'), form)
   const portType = useWatch(getFieldFullPath('portType'), form)
-  useWatch(getFieldFullPath('corePortEnabled'), form)
   const portEnabled = useWatch(getFieldFullPath('enabled'), form)
+  useWatch(getFieldFullPath('corePortEnabled'), form)
 
   const corePortMac = getEnabledCorePortMac(form)
   const hasCorePortEnabled = !!corePortMac
@@ -238,13 +238,20 @@ export const PortConfigForm = (props: ConfigFormProps) => {
           <Form.Item
             name={getFieldPath('portType')}
             label={$t({ defaultMessage: 'Port Type' })}
-            children={
-              <Select
-                options={portTypeOptions}
-                disabled={hasCorePortEnabled}
-              />
-            }
-          />
+          >
+            <Select>
+              {portTypeOptions.map((item) => {
+                return <Select.Option
+                  value={item.value}
+                  disabled={hasCorePortEnabled
+                  && item.value === EdgePortTypeEnum.WAN}
+                >
+                  {item.label}
+                </Select.Option>
+              })
+              }
+            </Select>
+          </Form.Item>
           <Form.Item
             noStyle
             shouldUpdate={(prev, cur) => {
