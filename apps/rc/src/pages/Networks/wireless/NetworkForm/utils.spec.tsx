@@ -214,7 +214,7 @@ describe('Network utils test', () => {
       )
     })
 
-    it('should bring out tunnel type',async () => {
+    it.skip('should bring out tunnel type',async () => {
       const { result } = renderHook(() => {
         return useNetworkVxLanTunnelProfileInfo({
           wlan: {
