@@ -193,8 +193,7 @@ describe('Edge centrailized forwarding form: settings', () => {
           venueId: [expectedVenueId],
           serialNumber: [expectedEdgeId],
           deviceStatus: Object.values(EdgeStatusEnum)
-            .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD),
-          lanPortOnly: ['TRUE']
+            .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD)
         }
       })
     })
@@ -263,8 +262,7 @@ describe('Edge centrailized forwarding form: settings', () => {
         filters: {
           venueId: [mockedVenueList.data[4].id],
           deviceStatus: Object.values(EdgeStatusEnum)
-            .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD),
-          lanPortOnly: ['TRUE']
+            .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD)
         }
       })
     })
