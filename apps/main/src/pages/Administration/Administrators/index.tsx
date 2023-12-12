@@ -1,15 +1,14 @@
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Tabs }                                                                   from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
-import { useGetMspEcProfileQuery }                                                from '@acx-ui/msp/services'
-import { MSPUtils }                                                               from '@acx-ui/msp/utils'
-import { useGetAdminListQuery, useGetDelegationsQuery, useGetTenantDetailsQuery } from '@acx-ui/rc/services'
-import { TenantType }                                                             from '@acx-ui/rc/utils'
-import { useTenantLink }                                                          from '@acx-ui/react-router-dom'
-import { useUserProfileContext }                                                  from '@acx-ui/user'
-// import { useTenantId }              from '@acx-ui/utils'
+import { Tabs }                                                                                           from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                         from '@acx-ui/feature-toggle'
+import { useGetMspEcProfileQuery }                                                                        from '@acx-ui/msp/services'
+import { MSPUtils }                                                                                       from '@acx-ui/msp/utils'
+import { useGetAdminGroupsQuery, useGetAdminListQuery, useGetDelegationsQuery, useGetTenantDetailsQuery } from '@acx-ui/rc/services'
+import { TenantType }                                                                                     from '@acx-ui/rc/utils'
+import { useTenantLink }                                                                                  from '@acx-ui/react-router-dom'
+import { useUserProfileContext }                                                                          from '@acx-ui/user'
 
 import AdminGroups         from './AdminGroups'
 import AdministratorsTable from './AdministratorsTable'
@@ -18,7 +17,6 @@ import * as UI             from './styledComponents'
 
 const Administrators = () => {
   const { $t } = useIntl()
-  // const params = { tenantId: useTenantId() }
   const params = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/administration/administrators')
@@ -31,11 +29,14 @@ const Administrators = () => {
   const mspEcProfileData = useGetMspEcProfileQuery({ params })
   const adminList = useGetAdminListQuery(
     { params }, { skip: !isGroupBasedLoginEnabled })
+  const adminGroupList = useGetAdminGroupsQuery(
+    { params }, { skip: !isGroupBasedLoginEnabled })
   const thirdPartyAdminList = useGetDelegationsQuery(
     { params }, { skip: !isGroupBasedLoginEnabled }
   )
 
   const adminCount = adminList?.data?.length! || 0
+  const adminGroupCount = adminGroupList?.data?.length! || 0
   const delegatedAdminCount = thirdPartyAdminList.data?.length! || 0
 
   const isVAR = userProfileData?.var && !userProfileData?.support
@@ -65,7 +66,7 @@ const Administrators = () => {
       visible: true
     },
     adminGroups: {
-      title: $t({ defaultMessage: 'Admin Groups ({adminCount})' }, { adminCount }),
+      title: $t({ defaultMessage: 'Admin Groups ({adminGroupCount})' }, { adminGroupCount }),
       content: <AdminGroups
         currentUserMail={currentUserMail}
         isPrimeAdminUser={isPrimeAdminUser}

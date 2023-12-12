@@ -1,25 +1,23 @@
 import { Form, Input, Select } from 'antd'
 import { useIntl }             from 'react-intl'
 
-import { Drawer }                          from '@acx-ui/components'
+import { Drawer }                from '@acx-ui/components'
 import {
-  useAddTenantAuthenticationsMutation,
-  useUpdateTenantAuthenticationsMutation
+  useAddAdminGroupsMutation,
+  useUpdateAdminGroupsMutation
 } from '@acx-ui/rc/services'
 import {
 //   excludeSpaceRegExp,
 //   notAllDigitsRegExp,
-  TenantAuthentications,
-  TenantAuthenticationType,
-  ApplicationAuthenticationStatus,
   getRoles,
-  Administrator
+  // Administrator,
+  AdminGroup
 } from '@acx-ui/rc/utils'
 
 interface AddGroupDrawerProps {
   visible: boolean
   isEditMode: boolean
-  editData?: Administrator
+  editData?: AdminGroup
   setVisible: (visible: boolean) => void
 }
 
@@ -29,8 +27,8 @@ export const AddGroupDrawer = (props: AddGroupDrawerProps) => {
   const { visible, setVisible, isEditMode, editData } = props
   const [form] = Form.useForm()
 
-  const [addApiToken] = useAddTenantAuthenticationsMutation()
-  const [updateApiToken] = useUpdateTenantAuthenticationsMutation()
+  const [addAdminGroup] = useAddAdminGroupsMutation()
+  const [updateApiToken] = useUpdateAdminGroupsMutation()
 
   const onClose = () => {
     setVisible(false)
@@ -39,32 +37,27 @@ export const AddGroupDrawer = (props: AddGroupDrawerProps) => {
 
   const onSubmit = async () => {
     const name = form.getFieldValue('name')
-    const clientId = form.getFieldValue('groupId')
-    const scopes = form.getFieldValue('role')
+    const groupId = form.getFieldValue('groupId')
+    const role = form.getFieldValue('role')
     try {
       await form.validateFields()
-      const apiTokenData: TenantAuthentications = {
+      const adminGroupData: AdminGroup = {
         name: name,
-        clientIDStatus: ApplicationAuthenticationStatus.ACTIVE,
-        clientID: clientId,
-        authenticationType: TenantAuthenticationType.oauth2_client,
-        scopes: scopes
+        groupId: groupId,
+        role: role
       }
 
-      const apiTokenEditData: TenantAuthentications = {
+      const apiTokenEditData: AdminGroup = {
         name: form.getFieldValue('name'),
-        authenticationType: TenantAuthenticationType.oauth2_client,
-        clientSecret: form.getFieldValue('secret'),
-        scopes: scopes
+        groupId: groupId,
+        role: role
       }
 
       if(isEditMode) {
-        await updateApiToken({ params: { authenticationId: editData?.id },
+        await updateApiToken({ params: { groupId: editData?.groupId },
           payload: apiTokenEditData }).unwrap()
-        // reloadAuthTable(2)
       } else {
-        await addApiToken({ payload: apiTokenData }).unwrap()
-        // reloadAuthTable(1)
+        await addAdminGroup({ payload: adminGroupData }).unwrap()
       }
       onClose()
     } catch (error) {
@@ -94,7 +87,7 @@ export const AddGroupDrawer = (props: AddGroupDrawerProps) => {
       />}
     {isEditMode ?
       <Form.Item label={$t({ defaultMessage: 'Group Id' })}>
-        {`${editData?.email}`}
+        {`${editData?.groupId}`}
       </Form.Item> :
       <Form.Item
         name='groupId'

@@ -202,6 +202,7 @@ export interface TenantAuthentications {
   tenant?: string;
   url?: string;
   scopes?: string;
+  domains?: string;
 }
 
 export interface Entitlement {
@@ -247,3 +248,15 @@ export interface NewEntitlementSummary {
 }
 
 export type EntitlementDeviceTypes = Array<{ label: string, value: EntitlementDeviceType }>
+
+export interface AdminGroup {
+  name: string,
+  groupId: string,
+  contactPerson?: {
+      name: string,
+      email: string
+  },
+  role: RolesEnum,
+  priority?: number
+}
+

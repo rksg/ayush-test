@@ -23,7 +23,8 @@ import {
   EntitlementSummary,
   Entitlement,
   NewEntitlementSummary,
-  TenantAuthentications
+  TenantAuthentications,
+  AdminGroup
 } from '@acx-ui/rc/utils'
 import { baseAdministrationApi }                        from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -576,7 +577,45 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getAdminGroups: build.query<AdminGroup[], RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getAdminGroups, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Administration', id: 'AUTHENTICATION_LIST' }]
+    }),
+    deleteAdminGroups: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.deleteAdminGroups, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    addAdminGroups: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.addAdminGroups, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    updateAdminGroups: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.updateAdminGroups, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
+
   })
 })
 
@@ -631,5 +670,9 @@ export const {
   useGetTenantAuthenticationsQuery,
   useDeleteTenantAuthenticationsMutation,
   useAddTenantAuthenticationsMutation,
-  useUpdateTenantAuthenticationsMutation
+  useUpdateTenantAuthenticationsMutation,
+  useGetAdminGroupsQuery,
+  useDeleteAdminGroupsMutation,
+  useAddAdminGroupsMutation,
+  useUpdateAdminGroupsMutation
 } = administrationApi
