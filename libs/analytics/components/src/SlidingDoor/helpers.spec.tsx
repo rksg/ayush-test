@@ -17,6 +17,16 @@ const rootNode: Node = {
       name: 'Child2',
       type: 'Device',
       mac: 'mac'
+    },
+    {
+      id: '4',
+      name: 'Child3',
+      type: 'Device',
+      children: [{
+        id: '5',
+        name: 'Child1',
+        type: 'Device'
+      }]
     }
   ]
 }
@@ -26,7 +36,7 @@ describe('Helper Functions', () => {
     it('should return an array containing the nodes that match the search text', () => {
       const results = searchTree(rootNode, 'child')
       const macResults = searchTree(rootNode, 'mac')
-      expect(results.length).toBe(2)
+      expect(results.length).toBe(4)
       expect(macResults.length).toBe(1)
     })
 
@@ -42,6 +52,7 @@ describe('Helper Functions', () => {
       const result = findMatchingNode(rootNode, targetNode[1], targetNode)
       expect(result?.name).toBe('Child1')
       expect(result?.type).toBe('Device')
+      expect(result?.id).toBe('2')
     })
 
     it('should return null if no matching node is found', () => {
