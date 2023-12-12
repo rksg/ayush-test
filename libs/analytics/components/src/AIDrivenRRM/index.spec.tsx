@@ -79,7 +79,7 @@ describe('AIDrivenRRM dashboard', () => {
     ])
     expect(await screen.findByText('Reverted')).toBeVisible()
   })
-  it('renders recommendation with thirs crrmkpi', async () => {
+  it('renders recommendation with third crrmkpi', async () => {
     mockGraphqlQuery(recommendationUrl, 'CrrmList', {
       data: crrmListResult
     })
@@ -107,6 +107,11 @@ describe('AIDrivenRRM dashboard', () => {
     mockGraphqlQuery(recommendationUrl, 'CrrmList', {
       data: crrmUnknownListResult
     })
+    mockGraphqlQuery(recommendationUrl, 'CrrmKpi', {
+      data: {
+        recommendation: crrmUnknownListResult.recommendations[0]
+      }
+    })
     render(<AIDrivenRRM pathFilters={pathFilters} />, {
       route: true,
       wrapper: Provider
@@ -119,11 +124,31 @@ describe('AIDrivenRRM dashboard', () => {
     expect(await screen.findByText('zone-1')).toBeVisible()
     expect(await screen.findByText('From 3 to 0 interfering links')).toBeVisible()
     expect(await screen.findByText('zone-2')).toBeVisible()
-    expect(await screen.findByText('Reverted')).toBeVisible()
     expect(await screen.findByText('Deeps Place')).toBeVisible()
     expect(await screen.findByText('zone-3')).toBeVisible()
     expect(await screen.findByText('Insufficient Licenses')).toBeVisible()
     expect(await screen.findByText('zone-4')).toBeVisible()
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('There are 3 recommendations for 3 zones covering 13.9K possible RRM combinations. Currently, 1 zone is optimized.')).toBeVisible()
+  })
+  it('renders unknown recommendations with second crrmKpi', async () => {
+    mockGraphqlQuery(recommendationUrl, 'CrrmList', {
+      data: crrmUnknownListResult
+    })
+    mockGraphqlQuery(recommendationUrl, 'CrrmKpi', {
+      data: {
+        recommendation: crrmUnknownListResult.recommendations[1]
+      }
+    })
+    render(<AIDrivenRRM pathFilters={pathFilters} />, {
+      route: true,
+      wrapper: Provider
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    expect(await screen.findByText('Reverted')).toBeVisible()
+    expect(await screen.findByText('Insufficient Licenses')).toBeVisible()
     // eslint-disable-next-line max-len
     expect(await screen.findByText('There are 3 recommendations for 3 zones covering 13.9K possible RRM combinations. Currently, 1 zone is optimized.')).toBeVisible()
   })

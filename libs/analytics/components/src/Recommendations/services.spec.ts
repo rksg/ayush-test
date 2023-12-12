@@ -386,6 +386,6 @@ describe('Recommendation services', () => {
     )
     expect(status).toBe('fulfilled')
     expect(error).toBeUndefined()
-    expect(data).toEqual({ text: '2 interfering links will be optimized to 0' })
+    expect(data).toEqual({ text: 'From 2 to 0 interfering links' })
   })
 })
