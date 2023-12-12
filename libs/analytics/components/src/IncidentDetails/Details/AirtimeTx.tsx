@@ -31,7 +31,7 @@ export const AirtimeTx = (incident: Incident) => {
   const networkImpactCharts: NetworkImpactProps['charts'] = [
     {
       chart: NetworkImpactChartTypes.AirtimeTx,
-      query: NetworkImpactQueryTypes.TopN,
+      query: NetworkImpactQueryTypes.Distribution,
       type: 'airtime',
       dimension: 'airtimeTx'
     }

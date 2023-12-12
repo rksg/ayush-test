@@ -45,7 +45,7 @@ export const networkImpactChartsApi = dataApi.injectEndpoints({
             case NetworkImpactQueryTypes.Distribution:
               return [
                 gql`${chart}: getDistribution(by: "${type}") { data { key value } }`,
-                gql`${dimension}Peak: getPeak(by: "${dimension}")`
+                gql`${dimension}Peak: getPeak(by: "${dimension}", type: "${type}")`
               ]
             case  NetworkImpactQueryTypes.TopN:
             default:
