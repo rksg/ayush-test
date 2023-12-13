@@ -29,7 +29,7 @@ const {
   mockEdgeOnlyLanPortConfig,
   mockEdgePortConfigWithStatusIpWithoutCorePort
 } = EdgePortConfigFixtures
-const { mockedCorePortLostEdgeSdLanDataList, mockedEdgeSdLanDataList } = EdgeSdLanFixtures
+const { mockedCorePortLostEdgeSdLanDataList, mockedSdLanDataList } = EdgeSdLanFixtures
 
 describe('EditEdge ports - ports general and SD-LAN off', () => {
   let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
@@ -580,7 +580,7 @@ describe('EditEdge ports - SD-LAN ready', () => {
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
         (_, res, ctx) => {
           mockedGetSdLanReq()
-          return res(ctx.json({ data: mockedEdgeSdLanDataList }))
+          return res(ctx.json({ data: mockedSdLanDataList }))
         }
       )
     )
