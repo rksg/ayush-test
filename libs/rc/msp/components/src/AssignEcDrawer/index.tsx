@@ -1,7 +1,6 @@
 import { Key, useState } from 'react'
 
 import {
-  Checkbox,
   Form,
   Input
   // Radio,
@@ -36,7 +35,7 @@ import * as UI from '../styledComponents'
 interface IntegratorDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
-  setSelected: (selected: MspEc[], assignedEcAdmin?: boolean) => void
+  setSelected: (selected: MspEc[]) => void
   tenantId?: string
   tenantType?: string
 }
@@ -65,13 +64,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
   const [ assignMspCustomers_v1 ] = useAssignMspEcToIntegrator_v1Mutation()
 
   const handleSave = () => {
-    const assignedEcAdmin = form.getFieldValue(['assignedEcAdmin']) ?? false
-    let payload = techPartnerAssignEcsEnabled ? {
-      delegation_type: tenantType as string,
-      number_of_days: form.getFieldValue(['number_of_days']),
-      mspec_list: [] as string[],
-      isManageAllEcs: assignedEcAdmin
-    } : {
+    let payload = {
       delegation_type: tenantType as string,
       number_of_days: form.getFieldValue(['number_of_days']),
       mspec_list: [] as string[]
@@ -96,9 +89,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
             resetFields()
           })
     } else {
-      techPartnerAssignEcsEnabled
-        ? setSelected(selectedRows.ecCustomers, assignedEcAdmin)
-        : setSelected(selectedRows.ecCustomers)
+      setSelected(selectedRows.ecCustomers)
     }
 
     setVisible(false)
@@ -217,17 +208,6 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
 
   const content =
   <Form layout='vertical' form={form} onFinish={onClose}>
-    {techPartnerAssignEcsEnabled && <Form.Item name='assignedEcAdmin'>
-      <Checkbox
-        onChange={(e)=> {
-          form.setFieldValue('assignedEcAdmin', e.target.checked)
-        }}
-      >
-        {$t({ defaultMessage:
-          'Automatically assign selected Customers to Tech Partner Administrators.' })}
-      </Checkbox>
-    </Form.Item>}
-
     {tenantId && <div>
       <Subtitle level={4}>{$t({ defaultMessage: 'Access Periods' })}</Subtitle>
       {tenantType === AccountType.MSP_INTEGRATOR && <label>Not Limited</label>}
