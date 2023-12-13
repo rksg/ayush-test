@@ -129,7 +129,7 @@ export function MelissaBot (){
       })
       const fulfillmentMessages:FulfillmentMessage[]=get(json,'queryResult.fulfillmentMessages')
       if(fulfillmentMessages) {
-        const { incidentId: createdIncidentId } = get(fulfillmentMessages, '[2].data', {})
+        const { incidentId: createdIncidentId } = get(fulfillmentMessages, '[3].data', {})
         if(createdIncidentId) {
           setState({ ...state,incidentId: createdIncidentId })
         }
