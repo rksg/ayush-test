@@ -76,17 +76,36 @@ describe('process.env', () => {
     expect(window.location.href).toEqual('https://url/')
   })
 
-  it('should logout correctly', async () => {
+  it('should logout without token correctly', async () => {
     jest.resetModules()
+    sessionStorage.removeItem('jwt')
+    await Promise.resolve()
     const requestConfig = { headers: { Authorization: `Bearer ${getJwtToken()}` } }
     mockServer.use(
       rest.get('https://url/globalValues.json', (_, res, ctx) => {
         return res(ctx.status(401)) // Return a 401 response
       })
     )
-    const response = await fetch('/globalValues.json', requestConfig)
+
+    const response = await fetch('https://url/globalValues.json', requestConfig)
     userAuthFailedLogout(response)
     expect(window.location.href).toEqual('/logout')
+  })
+
+  it('should logout with token correctly', async () => {
+    jest.resetModules()
+    sessionStorage.setItem('jwt', 'token')
+    await Promise.resolve()
+    const requestConfig = { headers: { Authorization: `Bearer ${getJwtToken()}` } }
+    mockServer.use(
+      rest.get('https://url/globalValues.json', (_, res, ctx) => {
+        return res(ctx.status(401)) // Return a 401 response
+      })
+    )
+
+    const response = await fetch('https://url/globalValues.json', requestConfig)
+    userAuthFailedLogout(response)
+    expect(window.location.href).toEqual('/logout?token=token')
   })
 })
 
