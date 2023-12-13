@@ -248,5 +248,10 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/edges/:serialNumber/linkAggregationGroups/:lagId/subInterfaces',
     newApi: true
+  },
+  getLagSubInterfacesStatus: {
+    method: 'post',
+    url: '/edges/:serialNumber/linkAggregationGroups/query?isSubInterface=true',
+    newApi: true
   }
 }
