@@ -1,11 +1,11 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 
-import { Col, Form, Input, Row, Select } from 'antd'
-import { DefaultOptionType }             from 'antd/lib/select'
-import { TransferItem }                  from 'antd/lib/transfer'
-import _                                 from 'lodash'
-import { useIntl }                       from 'react-intl'
-import { useNavigate, useParams }        from 'react-router-dom'
+import { Col, Form, Input, Row, Select }       from 'antd'
+import { DefaultOptionType }                   from 'antd/lib/select'
+import { TransferItem }                        from 'antd/lib/transfer'
+import _                                       from 'lodash'
+import { useIntl }                             from 'react-intl'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { Loader, StepsFormLegacy, StepsFormLegacyInstance, Transfer }                                                                                         from '@acx-ui/components'
 import { useAddApGroupMutation, useGetApGroupQuery, useLazyApGroupsListQuery, useLazyVenueDefaultApGroupQuery, useUpdateApGroupMutation, useVenuesListQuery } from '@acx-ui/rc/services'
@@ -35,6 +35,7 @@ export function ApGroupGeneralTab () {
   const { isEditMode, isApGroupTableFlag, setEditContextData } = useContext(ApGroupEditContext)
 
   const navigate = useNavigate()
+  const location = useLocation()
   const basePath = useTenantLink('/devices/')
   const navigatePathName = (isApGroupTableFlag)?
     `${basePath.pathname}/wifi/apgroups` :
@@ -57,6 +58,11 @@ export function ApGroupGeneralTab () {
   const { data: apGroupData, isLoading: isApGroupDataLoading } =
   useGetApGroupQuery({ params: { tenantId, apGroupId } }, { skip: !isEditMode })
 
+  const locationState = location.state as { venueId?: string, history?: string }
+
+  const venueIdFromNavigate = locationState?.venueId
+  const historyUrl = locationState?.history
+
   useEffect(() => {
     if (!venuesList.isLoading) {
       setVenueOption(venuesList?.data?.data?.map(item => ({
@@ -66,28 +72,35 @@ export function ApGroupGeneralTab () {
   }, [venuesList])
 
   useEffect(() => {
-    if (isEditMode && !isApGroupDataLoading && apGroupData) {
-      let extraMemberList: { name: string; key: string }[] | undefined = []
-      if (Array.isArray(apGroupData.aps)) {
-        extraMemberList = apGroupData.aps.map((item: ApDeep) => ({
-          name: item.name.toString(), key: item.serialNumber
-        }))
+    if (isEditMode) {
+      if (!isApGroupDataLoading && apGroupData) {
+        let extraMemberList: { name: string; key: string }[] | undefined = []
+        if (Array.isArray(apGroupData.aps)) {
+          extraMemberList = apGroupData.aps.map((item: ApDeep) => ({
+            name: item.name.toString(), key: item.serialNumber
+          }))
+        }
+
+        handleVenueChange(apGroupData.venueId, extraMemberList)
+
+        const formData: AddApGroup = {
+          name: apGroupData.name,
+          venueId: apGroupData.venueId,
+          apSerialNumbers: Array.isArray(apGroupData.aps) ?
+            apGroupData.aps.map(i => i.serialNumber) : []
+        }
+
+        formRef?.current?.setFieldsValue(formData)
+
+        if (oldFormDataRef) {
+          oldFormDataRef.current = _.cloneDeep(formData)
+        }
       }
+    } else if (venueIdFromNavigate) {
+      formRef?.current?.setFieldValue('venueId', venueIdFromNavigate)
+      handleVenueChange(venueIdFromNavigate)
 
-      handleVenueChange(apGroupData.venueId, extraMemberList)
 
-      const formData: AddApGroup = {
-        name: apGroupData.name,
-        venueId: apGroupData.venueId,
-        apSerialNumbers: Array.isArray(apGroupData.aps) ?
-          apGroupData.aps.map(i => i.serialNumber) : []
-      }
-
-      formRef?.current?.setFieldsValue(formData)
-
-      if (oldFormDataRef) {
-        oldFormDataRef.current = _.cloneDeep(formData)
-      }
     }
   }, [isEditMode, apGroupData, isApGroupDataLoading])
 
@@ -193,7 +206,7 @@ export function ApGroupGeneralTab () {
 
     navigate({
       ...basePath,
-      pathname: navigatePathName
+      pathname: (historyUrl)? historyUrl : navigatePathName
     })
   }
 
@@ -241,7 +254,7 @@ export function ApGroupGeneralTab () {
                   message: $t({ defaultMessage: 'Please select venue' })
                 }]}
                 children={<Select
-                  disabled={isEditMode}
+                  disabled={isEditMode || !!venueIdFromNavigate}
                   options={venueOption}
                   onChange={async (value) => await handleVenueChange(value)}
                 />}

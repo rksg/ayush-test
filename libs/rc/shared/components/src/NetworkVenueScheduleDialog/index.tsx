@@ -23,7 +23,8 @@ import { FormattedMessage, useIntl } from 'react-intl'
 
 import {
   Button,
-  Modal
+  Modal,
+  showActionModal
 } from '@acx-ui/components'
 import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 import {
@@ -32,7 +33,8 @@ import {
   NetworkVenueScheduler,
   NetworkSaveData,
   getVenueTimeZone,
-  fetchVenueTimeZone
+  fetchVenueTimeZone,
+  SchedulerTypeEnum
 } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
@@ -126,7 +128,7 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
     let map: { [key: string]: any } = scheduler
     for (let key in map) {
       if(key === 'type'){
-        if(map[key] === 'ALWAYS_ON'){
+        if(map[key] === SchedulerTypeEnum.ALWAYS_ON){
           for (let daykey in dayIndex) {
             form.setFieldValue(['scheduler', daykey], Array.from({ length: 96 }, (_, i) => `${daykey}_${i}` ))
             arrCheckAll[dayIndex[daykey]] = true
@@ -178,19 +180,14 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
       _genTimeTicks()
     }
 
-    if(networkVenue?.scheduler){
-      if(networkVenue?.scheduler.type === 'CUSTOM'){
-        setDisabled(false)
-      }else{
-        setDisabled(true)
-      }
+    const scheduler = networkVenue?.scheduler
+    if (scheduler) {
+      const type = scheduler.type
+      setDisabled(type !== SchedulerTypeEnum.CUSTOM)
+      form.setFieldValue(['scheduler', 'type'], type)
 
-      form.setFieldValue(['scheduler', 'type'], networkVenue?.scheduler.type)
-
-      initialValues(networkVenue?.scheduler)
-    }
-
-    if(networkVenue?.scheduler === undefined){
+      initialValues(scheduler)
+    } else { //networkVenue?.scheduler === undefined)
       setDisabled(true)
       for (let daykey in dayIndex) {
         form.setFieldValue(['scheduler', daykey], Array.from({ length: 96 }, (_, i) => `${daykey}_${i}` ))
@@ -202,9 +199,65 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
 
   const [loading, setLoading] = useState(false)
 
+  const showAlwaysOnConfirmDialog = () => {
+    const title = $t({ defaultMessage: 'Network Scheduling' })
+    const message = $t({ defaultMessage: 'All time slots are marked as available - network will be configured with 24/7 availability' })
+
+    showActionModal({
+      type: 'confirm',
+      title: title,
+      content: message,
+      onOk: () => {
+        form.setFieldValue('scheduler', { type: SchedulerTypeEnum.ALWAYS_ON })
+        form.submit()
+      },
+      onCancel: () => {
+        setLoading(false)
+      }
+    })
+  }
+  const showAlwaysOffConfirmDialog = () => {
+    const title = $t({ defaultMessage: 'Network Scheduling' })
+    const message = $t({ defaultMessage: 'Network is configured to be unavailable at all times. Do you want to continue?' })
+
+    showActionModal({
+      type: 'confirm',
+      title: title,
+      content: message,
+      onOk: () => {
+        form.setFieldValue('scheduler', { type: SchedulerTypeEnum.ALWAYS_OFF })
+        form.submit()
+      },
+      onCancel: () => (
+        setLoading(false)
+      )
+    })
+  }
+
+  const checkScheduleData = (weekDaysSlots: string[]) => {
+    const selectAllDays = weekDaysSlots.filter( v => v.length === 96)
+    const unSelectAllDays = weekDaysSlots.filter( v => v.length === 0)
+
+    if (selectAllDays.length === 7) {
+      showAlwaysOnConfirmDialog()
+    } else if (unSelectAllDays.length === 7) {
+      showAlwaysOffConfirmDialog()
+    } else {
+      form.submit()
+    }
+  }
+
   const onOk = () => {
     setLoading(true)
-    form.submit()
+    const { scheduler } = form.getFieldsValue()
+    const { type, ...weekDays } = scheduler || {}
+
+    if (type === SchedulerTypeEnum.ALWAYS_ON) {
+      form.submit()
+    } else if (type === SchedulerTypeEnum.CUSTOM) {
+      const weekDaysSlots: string[] = Object.values(weekDays)
+      checkScheduleData(weekDaysSlots)
+    }
   }
   const convertToTimeFromSlotIndex = (index: number): string => {
     let hour = Math.floor(index / 4)
@@ -266,7 +319,7 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
   }
 
   const onTypeChange = (e: RadioChangeEvent) => {
-    if(e.target.value === 'ALWAYS_ON'){
+    if(e.target.value === SchedulerTypeEnum.ALWAYS_ON){
       setDisabled(true)
       for (let daykey in dayIndex) {
         form.setFieldValue(['scheduler', daykey], Array.from({ length: 96 }, (_, i) => `${daykey}_${i}` ))
