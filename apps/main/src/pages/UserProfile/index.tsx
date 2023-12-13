@@ -97,11 +97,11 @@ export function UserProfile () {
                 initialValue={userProfile?.dateFormat}
                 children={
                   <Select>
-                    <Option value={'mm/dd/yyyy'}>
+                    <Option value={'MM/DD/YYYY'}>
                       {$t({ defaultMessage: 'MM/DD/YYYY' })}</Option>
-                    <Option value={'dd/mm/yyyy'}>
+                    <Option value={'DD/MM/YYYY'}>
                       {$t({ defaultMessage: 'DD/MM/YYYY' })}</Option>
-                    <Option value={'yyyy/mm/dd'}>
+                    <Option value={'YYYY/MM/DD'}>
                       {$t({ defaultMessage: 'YYYY/MM/DD' })}</Option>
                   </Select>
                 }
