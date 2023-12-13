@@ -57,7 +57,6 @@ export interface EdgeStatus extends EdgeResourceUtilization {
   firewallId?: string
   firewallName?: string
   upTime?: number
-  // corePort?: string
 }
 export interface EdgeDetails {
   serialNumber: string
@@ -81,6 +80,7 @@ export interface EdgePort {
   gateway: string
   natEnabled: boolean
   corePortEnabled: boolean
+  interfaceName?: string
 }
 
 export interface EdgePortWithStatus extends EdgePort {
@@ -121,10 +121,11 @@ export interface EdgePortStatus {
   speedKbps: number
   duplex: string
   ip: string,
-  ipMode: string,
+  ipMode: string
   sortIdx: number
   vlan: string
   subnet: string
+  interfaceName?: string
 }
 
 export interface EdgeStatusSeverityStatistic {

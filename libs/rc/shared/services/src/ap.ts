@@ -887,7 +887,18 @@ export const apApi = baseApApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Ap', id: 'ApManagementVlan' }]
+      providesTags: [{ type: 'Ap', id: 'ApManagementVlan' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateApManagementVlanSettings',
+            'ResetApManagementVlanSettings'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'ApManagementVlan' }]))
+          })
+        })
+      }
     }),
     updateApManagementVlan: build.mutation<ApManagementVlan, RequestPayload>({
       query: ({ params, payload }) => {

@@ -139,8 +139,7 @@ function filterAPwithDeviceRequirements (data: HierarchyNodeChild[], clientType:
   const { requiredAPFirmware, excludedTargetAPs } = deviceRequirements[clientType]
   return data.reduce((venues, { aps, ...rest }) => {
     const validAPs = aps!.filter(ap => {
-      /* istanbul ignore next */
-      if (ap.firmware === 'Unknown') return false // if (!ap.serial) return false TODO update new api to support this and uncomment
+      if (!ap.serial) return false
       if (excludedTargetAPs.find(a =>
         _.get(a, 'model') === ap.model &&
           !meetVersionRequirements(_.get(a, 'requiredAPFirmware'), ap.firmware)
