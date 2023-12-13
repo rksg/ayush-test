@@ -97,7 +97,7 @@ export function DevicesWidgetv2 (props: {
                 { apTotalCount > 0
                   ? <Space>
                     <StackedBarChart
-                      key='key-stackedBarChart'
+                      key='ap-stackedBarChart'
                       animation={false}
                       style={{
                         height: height/2 - 30,
@@ -108,11 +108,11 @@ export function DevicesWidgetv2 (props: {
                       showTotal={false}
                       total={apTotalCount}
                       barColors={getDeviceConnectionStatusColorsv2()} />
-                    <TenantLink to={'/devices/wifi'}>
+                    <TenantLink key='ap-tenantLink' to={'/devices/wifi'}>
                       {apTotalCount}
                     </TenantLink>
                   </Space>
-                  : <UI.LinkContainer style={{ height: height/2 - 30 }}>
+                  : <UI.LinkContainer key='ap-linkContainer' style={{ height: height/2 - 30 }}>
                     {filterByAccess([<TenantLink to={'/devices/wifi/add'}>
                       {$t({ defaultMessage: 'Add Access Point' })}
                     </TenantLink>])}
@@ -141,11 +141,13 @@ export function DevicesWidgetv2 (props: {
                       showTotal={false}
                       total={switchTotalCount}
                       barColors={getDeviceConnectionStatusColorsv2()} />
-                    <TenantLink to={'/devices/switch'}>
+                    <TenantLink key='switch-tenantLink' to={'/devices/switch'}>
                       {switchTotalCount}
                     </TenantLink>
                   </Space>
-                  : <UI.LinkContainer style={{ height: (height/2) - 30 }}>
+                  : <UI.LinkContainer
+                    key='switch-linkContainer'
+                    style={{ height: (height/2) - 30 }}>
                     {filterByAccess([<TenantLink to={'/devices/switch/add'}>
                       {$t({ defaultMessage: 'Add Switch' })}
                     </TenantLink>])}
@@ -175,12 +177,15 @@ export function DevicesWidgetv2 (props: {
                         showTotal={false}
                         total={edgeTotalCount}
                         barColors={getDeviceConnectionStatusColorsv2()} />
-                      <TenantLink to={'/devices/edge'}>
+                      <TenantLink key='edge-tenantLink' to={'/devices/edge'}>
                         {edgeTotalCount}
                       </TenantLink>
                     </Space>
-                    : <UI.LinkContainer style={{ height: (height/2) - 30 }}>
-                      {filterByAccess([<TenantLink to={'/devices/edge/add'}>
+                    : <UI.LinkContainer
+                      key='edge-linkContainer'
+                      style={{ height: (height/2) - 30 }}>
+                      {filterByAccess([<TenantLink
+                        to={'/devices/edge/add'}>
                         {$t({ defaultMessage: 'Add SmartEdge' })}
                       </TenantLink>])}
                     </UI.LinkContainer>
