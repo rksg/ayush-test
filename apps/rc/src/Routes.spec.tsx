@@ -307,6 +307,10 @@ jest.mock('./pages/Services/EdgeSdLan/EdgeSdLanDetail', () => () => {
   return <div data-testid='EdgeSdLanDetail' />
 })
 
+jest.mock('./pages/Services/EdgeSdLanP2/AddEdgeSdLan', () => () => {
+  return <div data-testid='AddEdgeSdLanP2' />
+})
+
 describe('RcRoutes: Devices', () => {
   beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
   test('should redirect devices to devices/wifi', async () => {
@@ -635,45 +639,58 @@ describe('RcRoutes: Services', () => {
     expect(screen.getByTestId('EditEdgeFirewall')).toBeVisible()
   })
 
-  test('should navigate to create Edge SD-LAN page', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.CREATE }),
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('AddEdgeSdLan')).toBeVisible()
-  })
+  describe('RcRoutes: Services > Edge SD-LAN service', () => {
+    beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
 
-  test('should navigate to edit Edge SD-LAN page', async () => {
-    const path = getServiceDetailsLink({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + path,
-        wrapRoutes: false
-      }
+    test('should navigate to create Edge SD-LAN page', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.CREATE }),
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('AddEdgeSdLan')).toBeVisible()
     })
-    expect(screen.getByTestId('EditEdgeSdLan')).toBeVisible()
-  })
-  test('should navigate to Edge SD-LAN list page', async () => {
-    const path = getServiceDetailsLink({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.LIST, serviceId: 'SERVICE_ID' })
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + path,
-        wrapRoutes: false
-      }
+
+    test('should navigate to edit Edge SD-LAN page', async () => {
+      const path = getServiceDetailsLink({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + path,
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('EditEdgeSdLan')).toBeVisible()
     })
-    expect(screen.getByTestId('EdgeSdLanTable')).toBeVisible()
-  })
-  test('should navigate to Edge SD-LAN detail page', async () => {
-    const path = getServiceDetailsLink({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + path,
-        wrapRoutes: false
-      }
+    test('should navigate to Edge SD-LAN list page', async () => {
+      const path = getServiceDetailsLink({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.LIST, serviceId: 'SERVICE_ID' })
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + path,
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('EdgeSdLanTable')).toBeVisible()
     })
-    expect(screen.getByTestId('EdgeSdLanDetail')).toBeVisible()
+    test('should navigate to Edge SD-LAN detail page', async () => {
+      const path = getServiceDetailsLink({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + path,
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('EdgeSdLanDetail')).toBeVisible()
+    })
+    test('should navigate to create Edge SD-LAN Phase2 page', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN_P2, oper: ServiceOperation.CREATE }),
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('AddEdgeSdLanP2')).toBeVisible()
+    })
   })
 })
 
