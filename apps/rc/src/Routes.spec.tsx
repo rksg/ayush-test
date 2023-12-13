@@ -64,10 +64,6 @@ jest.mock('./pages/Networks/wireless/NetworksTable', () => ({
   })
 }))
 
-jest.mock('./pages/Networks/wireless/NetworkForm/NetworkForm', () => () => {
-  return <div data-testid='NetworkForm' />
-})
-
 jest.mock('./pages/Networks/wireless/NetworkDetails/NetworkDetails', () => () => {
   return <div data-testid='NetworkDetails' />
 })
@@ -100,32 +96,12 @@ jest.mock('./pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail', () => ()
   return <div data-testid='MdnsProxyDetail' />
 })
 
-jest.mock('./pages/Services/WifiCalling/WifiCallingForm/WifiCallingForm', () => () => {
-  return <div data-testid='WifiCallingForm' />
-})
-
-jest.mock('./pages/Services/WifiCalling/WifiCallingForm/WifiCallingConfigureForm', () => () => {
-  return <div data-testid='WifiCallingConfigureForm' />
-})
-
-jest.mock('./pages/Services/WifiCalling/WifiCallingDetail/WifiCallingDetailView', () => () => {
-  return <div data-testid='WifiCallingDetailView' />
-})
-
 jest.mock('./pages/Services/WifiCalling/WifiCallingTable/WifiCallingTable', () => () => {
   return <div data-testid='WifiCallingTable' />
 })
 
 jest.mock('./pages/Services/DHCP/Edge/AddDHCP', () => () => {
   return <div data-testid='AddDHCP' />
-})
-
-jest.mock('./pages/Services/DHCP/DHCPForm/DHCPForm', () => () => {
-  return <div data-testid='DHCPForm' />
-})
-
-jest.mock('./pages/Services/Portal/PortalForm/PortalForm', () => () => {
-  return <div data-testid='PortalForm' />
 })
 
 jest.mock('./pages/Services/DHCP/DHCPDetail', () => () => {
@@ -213,16 +189,8 @@ jest.mock('./pages/Users/Persona/PersonaGroupDetails', () => () => {
   return <div data-testid='PersonaGroupDetails' />
 })
 
-jest.mock('./pages/Policies/AAA/AAAForm/AAAForm', () => () => {
-  return <div data-testid='AAAPolicyForm' />
-})
-
 jest.mock('./pages/Policies/AAA/AAADetail', () => () => {
   return <div data-testid='AAAPolicyDetail' />
-})
-
-jest.mock('./pages/Policies/AccessControl/AccessControlForm/AccessControlForm', () => () => {
-  return <div data-testid='AccessControlForm' />
 })
 
 jest.mock('./pages/Policies/AccessControl/AccessControlDetail', () => () => {
@@ -239,7 +207,15 @@ jest.mock('@acx-ui/rc/components', () => ({
   RogueAPDetectionTable: () => <div data-testid='RogueAPDetectionTable' />,
   DpskForm: () => <div data-testid='DpskForm' />,
   MacRegistrationListForm: () => <div data-testid='MacRegistrationListForm' />,
-  AdaptivePolicySetForm: () => <div data-testid='AdaptivePolicySetForm' />
+  AdaptivePolicySetForm: () => <div data-testid='AdaptivePolicySetForm' />,
+  AccessControlForm: () => <div data-testid='AccessControlForm' />,
+  AAAForm: () => <div data-testid='AAAPolicyForm' />,
+  WifiCallingConfigureForm: () => <div data-testid='WifiCallingConfigureForm' />,
+  WifiCallingForm: () => <div data-testid='WifiCallingForm' />,
+  WifiCallingDetailView: () => <div data-testid='WifiCallingDetailView' />,
+  DHCPForm: () => <div data-testid='DHCPForm' />,
+  PortalForm: () => <div data-testid='PortalForm' />,
+  NetworkForm: () => <div data-testid='NetworkForm' />
 }))
 
 jest.mock('./pages/Policies/AdaptivePolicy/RadiusAttributeGroup/RadiusAttributeGroupForm/RadiusAttributeGroupForm', () => () => {
