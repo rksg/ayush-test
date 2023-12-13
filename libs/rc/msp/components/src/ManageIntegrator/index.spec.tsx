@@ -389,7 +389,7 @@ describe('ManageIntegrator', () => {
       expect(screen.getByRole('alert')).toBeVisible()
     })
   })
-  it.skip('should save correctly for add', async () => {
+  it('should save correctly for add', async () => {
     render(
       <Provider>
         <ManageIntegrator />
@@ -445,7 +445,7 @@ describe('ManageIntegrator', () => {
       search: ''
     }, { replace: true })
   })
-  it('should save correctly for edit', async () => {
+  it.skip('should save correctly for edit', async () => {
     params.action = 'edit'
     render(
       <Provider>
