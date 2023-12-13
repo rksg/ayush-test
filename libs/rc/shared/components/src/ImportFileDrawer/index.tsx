@@ -56,8 +56,7 @@ interface ImportFileDrawerProps extends DrawerProps {
   acceptType: string[]
   type: ImportFileDrawerType
   extraDescription?: string[],
-  validator?: (content: string) => Promise<void>,
-  cleanImportError?: () => void
+  validator?: (content: string) => Promise<void>
 }
 
 export const CsvSize = {
