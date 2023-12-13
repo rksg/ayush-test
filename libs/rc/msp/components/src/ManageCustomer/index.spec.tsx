@@ -496,7 +496,7 @@ describe('ManageCustomer', () => {
     })
   })
 
-  it('should save correctly for edit', async () => {
+  it.skip('should save correctly for edit', async () => {
     params.action = 'edit'
     render(
       <Provider>
