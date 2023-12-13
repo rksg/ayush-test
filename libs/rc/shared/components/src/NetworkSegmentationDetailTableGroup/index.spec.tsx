@@ -22,7 +22,7 @@ jest.mock('./AccessSwitchTable', () => ({
   AccessSwitchTable: () => <div data-testid='AccessSwitchTable' />
 }))
 
-describe.skip('NetworkSegmentationDetailTableGroup', () => {
+describe('NetworkSegmentationDetailTableGroup', () => {
 
   beforeEach(() => {
     mockServer.use(
@@ -64,5 +64,9 @@ describe.skip('NetworkSegmentationDetailTableGroup', () => {
     await screen.findByTestId('AccessSwitchTable')
     await user.click(await screen.findByRole('tab', { name: /Assigned Segments/i }))
     await screen.findByTestId('AssignedSegmentsTable')
+
+    expect(screen.getByRole('tab', {
+      name: /aps \(2\)/i
+    })).toBeVisible()
   })
 })
