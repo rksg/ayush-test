@@ -18,3 +18,13 @@ data:
         initialDelaySeconds: 120
         periodSeconds: 5
         health: /health
+      hpa:
+        enabled: True
+        minReplicas: 2
+        maxReplicas: 3
+        cpu:
+          enabled: True
+          targetAverageUtilization: 80
+        memory:
+          enabled: False
+          targetAverageUtilization: 0
