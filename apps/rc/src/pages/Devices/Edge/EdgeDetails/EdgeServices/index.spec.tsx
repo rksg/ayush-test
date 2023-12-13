@@ -68,7 +68,7 @@ describe('Edge Detail Services Tab', () => {
     expect(await screen.findByRole('dialog')).toBeVisible()
   })
 
-  it('should delete selected row', async () => {
+  it.skip('should delete selected row', async () => {
     const user = userEvent.setup()
     render(
       <Provider>

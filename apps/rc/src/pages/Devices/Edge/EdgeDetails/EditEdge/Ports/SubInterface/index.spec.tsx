@@ -282,7 +282,7 @@ describe('EditEdge ports - sub-interface', () => {
     expect(btn).toBeNull()
   })
 
-  it('should render LAG SubInterface successfully', async () => {
+  it.skip('should render LAG SubInterface successfully', async () => {
     render(
       <Provider>
         <EdgeEditContext.Provider

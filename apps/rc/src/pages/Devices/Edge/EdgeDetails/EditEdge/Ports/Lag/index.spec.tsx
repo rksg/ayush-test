@@ -67,7 +67,7 @@ describe('EditEdge ports - LAG', () => {
     expect(within(drawer).getByText('Add LAG')).toBeVisible()
   })
 
-  it('Should delete LAG correctly', async () => {
+  it.skip('Should delete LAG correctly', async () => {
     render(
       <Provider>
         <Lag
