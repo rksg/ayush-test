@@ -28,6 +28,7 @@ export function EdgePortsByTrafficWidget () {
   const queryResults: DonutChartData[] = []
   data?.traffic.forEach((traffic, index) => {
     queryResults.push({
+      // TODO: use port interfaceName for display
       name: `Port ${index + 1}`,
       value: traffic,
       color: colors[index]

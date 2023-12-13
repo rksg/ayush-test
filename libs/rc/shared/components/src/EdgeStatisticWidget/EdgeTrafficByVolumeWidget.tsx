@@ -45,6 +45,7 @@ const transformTimeSeriesChartData = (data: EdgeAllPortTrafficData): TimeSeriesC
   return data.timeSeries.ports.map((traffic, index) => {
     return {
       key: `Port ${index + 1}`,
+      // TODO: use port interfaceName for display
       name: `Port ${index + 1}`,
       data: _.zip(data.timeSeries.time, traffic.total) as [TimeStamp, number | null][]
     }

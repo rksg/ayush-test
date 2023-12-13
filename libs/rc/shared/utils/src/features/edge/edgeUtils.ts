@@ -1,10 +1,11 @@
+import _             from 'lodash'
 import { IntlShape } from 'react-intl'
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
 import { IpUtilsService }                                          from '../../ipUtilsService'
 import { EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum } from '../../models/EdgeEnum'
-import { EdgeAlarmSummary }                                        from '../../types'
+import { EdgeAlarmSummary, EdgePort, EdgePortStatus }              from '../../types'
 import { networkWifiIpRegExp, subnetMaskIpRegExp }                 from '../../validator'
 
 export const getEdgeServiceHealth = (alarmSummary?: EdgeAlarmSummary[]) => {
@@ -84,3 +85,7 @@ export const getEdgePortTypeOptions = ($t: IntlShape['$t']) => ([
     value: EdgePortTypeEnum.LAN
   }
 ])
+
+export const getEdgePortDisplayName = (port: EdgePort | EdgePortStatus | undefined) => {
+  return _.capitalize(port?.interfaceName)
+}

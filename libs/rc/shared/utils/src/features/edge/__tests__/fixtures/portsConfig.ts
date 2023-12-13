@@ -139,7 +139,8 @@ export const edgePortsSetting:EdgePortStatus[] = [{
   ipMode: 'DHCP',
   sortIdx: 1,
   vlan: '',
-  subnet: ''
+  subnet: '',
+  interfaceName: 'port1'
 },
 {
   portId: '68a3028a-93ed-11ee-b9d1-0242ac120002',
@@ -154,5 +155,6 @@ export const edgePortsSetting:EdgePortStatus[] = [{
   ipMode: 'Static',
   sortIdx: 2,
   vlan: '',
-  subnet: ''
+  subnet: '',
+  interfaceName: 'port2'
 }]

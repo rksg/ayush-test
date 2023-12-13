@@ -142,7 +142,7 @@ describe('Edge centrailized forwarding form: settings', () => {
     await waitFor(() => {
       expect(mockedSetFieldValue).toBeCalledWith('corePortMac', '00:0c:29:b6:ad:04')
     })
-    expect(mockedSetFieldValue).toBeCalledWith('corePortName', 'Port 1')
+    expect(mockedSetFieldValue).toBeCalledWith('corePortName', 'Port1')
 
     await userEvent.selectOptions(
       await within(formBody).findByRole('combobox', { name: 'Tunnel Profile' }),
@@ -195,7 +195,7 @@ describe('Edge centrailized forwarding form: settings', () => {
     })
 
     await waitFor(() => {
-      expect(mockedSetFieldValue).toBeCalledWith('corePortName', 'Port 1')
+      expect(mockedSetFieldValue).toBeCalledWith('corePortName', 'Port1')
     })
     expect(mockedSetFieldValue).toBeCalledWith('corePortMac', '00:0c:29:b6:ad:04')
   })

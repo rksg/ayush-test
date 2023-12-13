@@ -3,6 +3,7 @@ import { ReactNode, useEffect, useRef, useState } from 'react'
 import { Form, FormInstance }  from 'antd'
 import { StoreValue }          from 'antd/lib/form/interface'
 import { flatMap, isEqual }    from 'lodash'
+import _                       from 'lodash'
 import { ValidateErrorEntity } from 'rc-field-form/es/interface'
 import { useIntl }             from 'react-intl'
 
@@ -73,7 +74,7 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
   data.forEach((item, index) => {
     const innerPortFormID = getInnerPortFormID(index)
     tabs.push({
-      label: $t({ defaultMessage: 'Port {index}' }, { index: index + 1 }),
+      label: _.capitalize(item.interfaceName) || '',
       value: innerPortFormID,
       content: <Form.List name={innerPortFormID}>
         {(fields) => fields.map(

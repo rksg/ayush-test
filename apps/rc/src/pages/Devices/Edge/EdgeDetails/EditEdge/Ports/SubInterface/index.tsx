@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { NoData, Tabs, Tooltip }             from '@acx-ui/components'
-import { EdgeLagStatus, EdgePortWithStatus } from '@acx-ui/rc/utils'
+import { NoData, Tabs, Tooltip }                                     from '@acx-ui/components'
+import { EdgeLagStatus, EdgePortWithStatus, getEdgePortDisplayName } from '@acx-ui/rc/utils'
 
 
 import { LagSubInterfaceTable }  from './LagSubInterfaceTable'
@@ -41,12 +41,12 @@ const SubInterface = (props: SubInterfaceProps) => {
           portData.map((item, index) =>
             <Tabs.TabPane
               tab={
-                item.isLagPort ?
-                  <Tooltip title={$t({ defaultMessage: `This port is a LAG member 
+                item.isLagPort
+                  ? <Tooltip title={$t({ defaultMessage: `This port is a LAG member 
                     and is not available for adding sub-interfaces.` })}>
-                    {$t({ defaultMessage: 'Port {index}' }, { index: index + 1 })}
-                  </Tooltip> :
-                  $t({ defaultMessage: 'Port {index}' }, { index: index + 1 })
+                    {getEdgePortDisplayName(item)}
+                  </Tooltip>
+                  : getEdgePortDisplayName(item)
               }
               key={'port_' + (index + 1)}
               children={

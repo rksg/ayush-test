@@ -1,9 +1,9 @@
 import { useIntl } from 'react-intl'
 
-import { Button, Table,TableProps }                             from '@acx-ui/components'
-import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
-import { formatter }                                            from '@acx-ui/formatter'
-import { defaultSort, EdgeLagStatus, EdgePortStatus, sortProp } from '@acx-ui/rc/utils'
+import { Button, Table,TableProps }                                                     from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
+import { formatter }                                                                    from '@acx-ui/formatter'
+import { defaultSort, EdgeLagStatus, EdgePortStatus, getEdgePortDisplayName, sortProp } from '@acx-ui/rc/utils'
 
 interface EdgePortsTableProps {
   portData: EdgePortStatus[]
@@ -23,12 +23,12 @@ export const EdgePortsTable = (props: EdgePortsTableProps) => {
   const columns: TableProps<EdgePortsTableDataType>['columns'] = [
     {
       title: $t({ defaultMessage: 'Port Name' }),
-      key: 'sortIdx',
-      dataIndex: 'sortIdx',
+      key: 'interfaceName',
+      dataIndex: 'interfaceName',
       defaultSortOrder: 'ascend',
-      sorter: { compare: sortProp('sortIdx', defaultSort) },
-      render: (_, { sortIdx }) => {
-        return 'port' + sortIdx
+      sorter: { compare: sortProp('interfaceName', defaultSort) },
+      render: (_, row) => {
+        return getEdgePortDisplayName(row)
       }
     },
     {
