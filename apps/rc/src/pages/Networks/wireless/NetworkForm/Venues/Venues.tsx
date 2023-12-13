@@ -32,7 +32,8 @@ import {
   SchedulingModalState,
   RadioTypeEnum,
   IsNetworkSupport6g,
-  ApGroupModalState
+  ApGroupModalState,
+  SchedulerTypeEnum
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
@@ -391,16 +392,24 @@ export function Venues () {
 
   const handleScheduleFormFinish = (name: string, info: FormFinishInfo) => {
     let scheduleData = _.cloneDeep(scheduleModalState.networkVenue)
-    // const schdule = info.values.map
 
-    let tmpScheduleList: schedule = { type: info.values?.scheduler.type }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let map: { [key: string]: any } = info.values?.scheduler
-    for (let key in map) {
-      if(key === 'type'){
-        continue
-      }
-      if (map.hasOwnProperty(key) && map['type'] === 'CUSTOM') {
+    const scheduler = info.values?.scheduler
+    const { type, ...weekdaysData } = scheduler || {}
+
+    let tmpScheduleList: schedule = { type }
+
+    if ( type === SchedulerTypeEnum.ALWAYS_OFF) {
+      handleActivateVenue(false, [scheduleModalState.venue! as Venue])
+      setScheduleModalState({
+        visible: false
+      })
+      return
+    }
+
+    if (type === SchedulerTypeEnum.CUSTOM) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let map: { [key: string]: any } = weekdaysData
+      for (let key in map) {
         let scheduleList: string[] = []
         for(let i = 0; i < 96; i++){
           scheduleList.push('0')
