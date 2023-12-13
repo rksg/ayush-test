@@ -11,6 +11,7 @@ import {
 import { useGetConfigTemplateListQuery } from '@acx-ui/msp/services'
 import { ConfigTemplate }                from '@acx-ui/msp/utils'
 import {
+  CONFIG_TEMPLATE_PATH_PREFIX,
   PolicyOperation,
   PolicyType,
   getPolicyRoutePath,
@@ -143,7 +144,8 @@ function getAddTemplateMenuProps (): Omit<MenuProps, 'placement'> {
     expandIcon: <UI.MenuExpandArrow />,
     items: [{
       key: 'add-wifi-network',
-      label: <TenantLink tenantType='v' to='configTemplates/networks/wireless/add'>{
+      // eslint-disable-next-line max-len
+      label: <TenantLink tenantType='v' to={`${CONFIG_TEMPLATE_PATH_PREFIX}/networks/wireless/add`}>{
         $t({ defaultMessage: 'Wi-Fi Network' })}
       </TenantLink>
     }, {
@@ -152,7 +154,7 @@ function getAddTemplateMenuProps (): Omit<MenuProps, 'placement'> {
       children: [{
         key: 'add-aaa',
         // eslint-disable-next-line max-len
-        label: <TenantLink tenantType='v' to={'configTemplates/' + getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}>
+        label: <TenantLink tenantType='v' to={CONFIG_TEMPLATE_PATH_PREFIX + '/' + getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}>
           {$t(policyTypeLabelMapping[PolicyType.AAA])}
         </TenantLink>
       }]

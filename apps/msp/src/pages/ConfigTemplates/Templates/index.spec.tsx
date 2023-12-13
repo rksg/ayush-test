@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { MspUrlsInfo }                                 from '@acx-ui/msp/utils'
+import { CONFIG_TEMPLATE_PATH_PREFIX }                 from '@acx-ui/rc/utils'
 import { Provider }                                    from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
@@ -11,7 +12,7 @@ import { mockedConfigTemplateList, mockedMSPCustomerList } from '../__tests__/fi
 import { ConfigTemplateList } from '.'
 
 describe('ConfigTemplateList component', () => {
-  const path = '/:tenantId/v/configTemplates/:activeTab'
+  const path = `/:tenantId/v/${CONFIG_TEMPLATE_PATH_PREFIX}/:activeTab`
   const params = { tenantId: '__TENANT_ID', activeTab: ConfigTemplateTabKey.TEMPLATES }
 
   beforeEach(() => {

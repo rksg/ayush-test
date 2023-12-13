@@ -2,8 +2,10 @@ import { Brand360 }                                         from '@acx-ui/analyt
 import { ConfigProvider, PageNotFound }                     from '@acx-ui/components'
 import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
 import { ManageCustomer, ManageIntegrator, PortalSettings } from '@acx-ui/msp/components'
+import { AAAForm, NetworkForm }                             from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
+  CONFIG_TEMPLATE_PATH_PREFIX,
   PolicyOperation,
   PolicyType,
   getPolicyRoutePath
@@ -22,6 +24,7 @@ import { Subscriptions }                           from './pages/Subscriptions'
 import { AssignMspLicense }                        from './pages/Subscriptions/AssignMspLicense'
 import { VarCustomers }                            from './pages/VarCustomers'
 
+
 export default function MspRoutes () {
   const routes = rootRoutes(
     <Route path=':tenantId/v' element={<Layout />}>
@@ -39,7 +42,7 @@ export default function MspRoutes () {
       <Route path='msplicenses/*' element={<CustomersRoutes />} />
       <Route path='portalSetting' element={<PortalSettings />} />
       <Route path='brand360' element={<Brand360 />} />
-      <Route path='configTemplates/*' element={<ConfigTemplatesRoutes />} />
+      <Route path={CONFIG_TEMPLATE_PATH_PREFIX + '/*'} element={<ConfigTemplatesRoutes />} />
     </Route>
   )
   return (
@@ -81,16 +84,23 @@ function ConfigTemplatesRoutes () {
 
   return isConfigTemplateEnabled ? rootRoutes(
     <Route>
-      <Route path=':tenantId/v/configTemplates' element={<LayoutWithConfigTemplateContext />}>
+      <Route path={':tenantId/v/' + CONFIG_TEMPLATE_PATH_PREFIX}
+        element={<LayoutWithConfigTemplateContext />}
+      >
         <Route index
           element={<TenantNavigate replace to={CONFIG_TEMPLATE_LIST_PATH} tenantType='v'/>}
         />
-        <Route path={':activeTab'} element={<ConfigTemplate />} />
+        <Route path=':activeTab' element={<ConfigTemplate />} />
         <Route
           path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
-          element={<div>AAA Form</div>}
+          element={<AAAForm edit={false} />}
         />
-        <Route path={'networks/wireless/add'} element={<div>Network Form</div>} />
+        <Route
+          path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.EDIT })}
+          element={<AAAForm edit={true} />}
+        />
+        <Route path='networks/wireless/add' element={<NetworkForm />} />
+        <Route path='networks/wireless/:networkId/:action' element={<NetworkForm />} />
       </Route>
     </Route>
   ) : null

@@ -9,6 +9,18 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/templates/:templateId/instance'
   },
+  addNetworkTemplate: {
+    method: 'post',
+    url: '/templates/networks'
+  },
+  updateNetworkTemplate: {
+    method: 'put',
+    url: '/templates/networks/:networkId'
+  },
+  getNetworkTemplate: {
+    method: 'get',
+    url: '/templates/networks/:networkId'
+  },
   addAAAPolicyTemplate: {
     method: 'post',
     url: '/templates/radiusServerProfiles'

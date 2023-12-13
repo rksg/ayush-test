@@ -9,7 +9,8 @@ import {
   onSocketActivityChanged,
   onActivityMessageReceived,
   AAAPolicyType,
-  CommonResultWithEntityResponse
+  CommonResultWithEntityResponse,
+  NetworkSaveData
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi }      from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
@@ -44,6 +45,18 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       query: commonQueryFn(ConfigTemplateUrlsInfo.applyConfigTemplate),
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }]
     }),
+    addNetworkTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(ConfigTemplateUrlsInfo.addNetworkTemplate),
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }]
+    }),
+    updateNetworkTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(ConfigTemplateUrlsInfo.updateNetworkTemplate),
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }]
+    }),
+    getNetworkTemplate: build.query<NetworkSaveData, RequestPayload>({
+      query: commonQueryFn(ConfigTemplateUrlsInfo.getNetworkTemplate, false),
+      providesTags: [{ type: 'ConfigTemplate', id: 'DETAIL' }]
+    }),
     // eslint-disable-next-line max-len
     addAAAPolicyTemplate: build.mutation<CommonResultWithEntityResponse<AAAPolicyType>, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.addAAAPolicyTemplate),
@@ -62,6 +75,9 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
 export const {
   useGetConfigTemplateListQuery,
   useApplyConfigTemplateMutation,
+  useAddNetworkTemplateMutation,
+  useUpdateNetworkTemplateMutation,
+  useGetNetworkTemplateQuery,
   useAddAAAPolicyTemplateMutation,
   useGetAAAPolicyTemplateQuery,
   useUpdateAAAPolicyTemplateMutation

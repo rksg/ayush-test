@@ -6,6 +6,11 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import { PageHeader, StepsForm, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
 import {
+  useAddNetworkTemplateMutation,
+  useGetNetworkTemplateQuery,
+  useUpdateNetworkTemplateMutation
+} from '@acx-ui/msp/services'
+import {
   useAddNetworkMutation,
   useAddNetworkVenuesMutation,
   useDeleteNetworkVenuesMutation,
@@ -101,8 +106,8 @@ export function NetworkForm (props:{
   const editMode = params.action === 'edit'
   const cloneMode = params.action === 'clone'
 
-  const [addNetwork] = useAddNetworkMutation()
-  const [updateNetwork] = useUpdateNetworkMutation()
+  const addNetworkInstance = useAddInstance()
+  const updateNetworkInstance = useUpdateInstance()
   const [addNetworkVenues] = useAddNetworkVenuesMutation()
   const [updateNetworkVenues] = useUpdateNetworkVenuesMutation()
   const [deleteNetworkVenues] = useDeleteNetworkVenuesMutation()
@@ -139,7 +144,7 @@ export function NetworkForm (props:{
     updateSaveState({ ...saveState, ...newSavedata })
   }
 
-  const { data } = useGetNetworkQuery({ params })
+  const { data } = useGetInstance(editMode)
   const networkVxLanTunnelProfileInfo = useNetworkVxLanTunnelProfileInfo(data ?? null)
 
   // Config Template related states
@@ -429,7 +434,7 @@ export function NetworkForm (props:{
             'pskProtocol',
             'isOweMaster',
             'owePairNetworkId']))
-      const result = await addNetwork({ params, payload }).unwrap()
+      const result = await addNetworkInstance({ params, payload }).unwrap()
       if (result && result.response && payload.venues) {
         // @ts-ignore
         const network: Network = result.response
@@ -501,7 +506,7 @@ export function NetworkForm (props:{
     try {
       processData(formData)
       const payload = updateClientIsolationAllowlist(saveContextRef.current as NetworkSaveData)
-      await updateNetwork({ params, payload }).unwrap()
+      await updateNetworkInstance({ params, payload }).unwrap()
       if (payload.id && (payload.venues || data?.venues)) {
         await handleNetworkVenues(payload.id, payload.venues, data?.venues)
       }
@@ -736,4 +741,30 @@ function useBreadcrumb () {
   }, [isTemplate])
 
   return breadcrumb
+}
+
+function useAddInstance () {
+  const { isTemplate } = useConfigTemplate()
+  const [ addNetwork ] = useAddNetworkMutation()
+  const [ addNetworkTemplate ] = useAddNetworkTemplateMutation()
+
+  return isTemplate ? addNetworkTemplate : addNetwork
+}
+
+function useUpdateInstance () {
+  const { isTemplate } = useConfigTemplate()
+  const [ updateNetwork ] = useUpdateNetworkMutation()
+  const [ updateNetworkTemplate ] = useUpdateNetworkTemplateMutation()
+
+  return isTemplate ? updateNetworkTemplate : updateNetwork
+}
+
+function useGetInstance (isEdit: boolean) {
+  const { isTemplate } = useConfigTemplate()
+  const params = useParams()
+  const networkResult = useGetNetworkQuery({ params }, { skip: isTemplate })
+  // eslint-disable-next-line max-len
+  const networkTemplateResult = useGetNetworkTemplateQuery({ params }, { skip: !isEdit || !isTemplate })
+
+  return isTemplate ? networkTemplateResult : networkResult
 }

@@ -1,7 +1,8 @@
 import userEvent from '@testing-library/user-event'
 
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { CONFIG_TEMPLATE_PATH_PREFIX } from '@acx-ui/rc/utils'
+import { Provider }                    from '@acx-ui/store'
+import { render, screen }              from '@acx-ui/test-utils'
 
 
 import { ConfigTemplate, ConfigTemplateTabKey } from '.'
@@ -18,7 +19,7 @@ jest.mock('./Bundles', () => ({
 }))
 
 describe('ConfigTemplate', () => {
-  const path = '/:tenantId/v/configTemplates/:activeTab'
+  const path = `/:tenantId/v/${CONFIG_TEMPLATE_PATH_PREFIX}/:activeTab`
 
   it('should render ConfigTemplate with Templates tab', async () => {
     render(
