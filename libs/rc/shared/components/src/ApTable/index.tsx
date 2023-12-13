@@ -472,7 +472,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
   const [ importCsv ] = useImportApMutation()
   const [ importQuery ] = useLazyImportResultQuery()
   const [ importResult, setImportResult ] = useState<ImportErrorRes>({} as ImportErrorRes)
-  const [ importErrors, setImportErrors ] = useState<ImportErrorRes>({} as ImportErrorRes)
+  const [ importErrors, setImportErrors ] = useState<FetchBaseQueryError>({} as FetchBaseQueryError)
   const apGpsFlag = useIsSplitOn(Features.AP_GPS)
   const wifiEdaFlag = useIsSplitOn(Features.WIFI_EDA_READY_TOGGLE)
   const importTemplateLink = apGpsFlag ?
@@ -505,7 +505,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
     if (importResult?.fileErrorsCount === 0) {
       setImportVisible(false)
     } else {
-      setImportErrors(importResult)
+      setImportErrors({ data: importResult } as FetchBaseQueryError)
     }
   },[importResult])
 
@@ -516,9 +516,6 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
   }))
 
   const basePath = useTenantLink('/devices')
-  const handleCleanImportError = () => {
-    setImportErrors({} as ImportErrorRes)
-  }
   const handleTableChange: TableProps<APExtended>['onChange'] = (
     pagination, filters, sorter, extra
   ) => {
@@ -587,8 +584,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
         templateLink={importTemplateLink}
         visible={importVisible}
         isLoading={isImportResultLoading}
-        importError={{ data: importErrors } as FetchBaseQueryError}
-        cleanImportError={handleCleanImportError}
+        importError={importErrors}
         importRequest={(formData) => {
           setIsImportResultLoading(true)
           if (wifiEdaFlag) {

@@ -78,7 +78,7 @@ export function ImportFileDrawer (props: ImportFileDrawerProps) {
   const [form] = Form.useForm()
 
   const { maxSize, maxEntries, isLoading, templateLink,
-    importError, importRequest, readAsText, acceptType, cleanImportError,
+    importError, importRequest, readAsText, acceptType,
     extraDescription, formDataName = 'file', skipCsvTextConvert = false, validator } = props
 
   const [fileDescription, setFileDescription] = useState<ReactNode>('')
@@ -173,7 +173,6 @@ export function ImportFileDrawer (props: ImportFileDrawerProps) {
       setFile(file)
       setFileName(file.name)
       setFormData(newFormData)
-      cleanImportError?.()
       setFileDescription(<UI.FileNameText ellipsis={{ tooltip: file.name }}>
         <FileTextOutlined /> {file.name}
       </UI.FileNameText>)

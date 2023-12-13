@@ -104,7 +104,6 @@ describe('Import CSV Drawer', () => {
   describe('errors from props', () => {
 
     it('show errors', async () => {
-      const mockedCleanImportError = jest.fn()
       const errorRes = {
         downloadUrl: 'https://aaa.cc/tenant/d1ec841a4ff74436b23bca6477f6a631/002.csv',
         txId: 'e958a36f-9048-4c80-bd7a-f834c7b9dc13',
@@ -127,19 +126,12 @@ describe('Import CSV Drawer', () => {
           status: 422,
           data: errorRes
         }}
-        cleanImportError={mockedCleanImportError}
       />)
       const dialog = await screen.findByRole('dialog')
 
       fireEvent.click(await within(dialog).findByRole('link', { name: 'See errors' }))
 
       expect(dialog).toHaveTextContent('3 errors found.')
-
-      const csvFile = new File([''], 'mocked_import_template.csv', { type: 'text/csv' })
-      // eslint-disable-next-line testing-library/no-node-access
-      await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
-
-      expect(mockedCleanImportError).toBeCalledTimes(1)
     })
 
     it('should correctly render request failed message', async () => {
