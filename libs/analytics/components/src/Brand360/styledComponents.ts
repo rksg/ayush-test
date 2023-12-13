@@ -13,7 +13,8 @@ export const Buttons = styled.div`
 `
 
 export const Spacer = styled.div`
-  padding-top: 10px;
+  padding-top: 5px;
+  height: 5px;
 `
 
 export const IconWrapper = styled.span`
@@ -31,7 +32,7 @@ export const ListWrapper = styled.div`
   white-space: nowrap;
 `
 
-export const HighlightedIcon = styled.div<{ $highlight?: true }>`
+export const HighlightedIcon = styled.div<{ $highlight?: boolean }>`
   ${props => props.$highlight
     ? 'color: var(--acx-neutrals-60);'
     : 'color: var(--acx-neutrals-40);'}
@@ -44,15 +45,19 @@ export const ValueWrapper = styled.div`
   color: var(--acx-neutrals-50);
   display: flex;
   justify-content: center;
+  padding-top: 10px;
 `
 
 export const ChangeWrapper = styled.span<{ $isNegative: boolean }>`
+  padding-left: 10px;
   font-size: var(--acx-headline-4-font-size);
   ${props => props.$isNegative
     ? 'color: var(--acx-semantics-red-40)'
     : 'color: var(--acx-semantics-green-40)'}
 `
 
-export const ChartWrapper = styled.div`
-  height: 200px;
+export const SubtitleWrapper = styled.div`
+  font-family: var(--acx-neutral-brand-font);
+  color: var(--acx-neutrals-50);
+  text-align: center;
 `

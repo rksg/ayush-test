@@ -56,7 +56,7 @@ describe('SlaTile', () => {
       </div>
     }
     render(<Test />, { wrapper: Provider })
-    expect(await screen.findByText('P1 Incidents')).toBeVisible()
+    expect(await screen.findByText('Distressed LSPs')).toBeVisible()
     expect(await screen.findByText('Guest Experience')).toBeVisible()
     expect(await screen.findByText('Brand SSID Compliance')).toBeVisible()
     const graphs = await screen.findAllByTestId('slaChart')
@@ -80,7 +80,7 @@ describe('SlaTile', () => {
       </div>
     }
     render(<Test />, { wrapper: Provider })
-    expect(await screen.findByText('P1 Incidents')).toBeVisible()
+    expect(await screen.findByText('Distressed Properties')).toBeVisible()
     expect(await screen.findByText('Guest Experience')).toBeVisible()
     expect(await screen.findByText('Brand SSID Compliance')).toBeVisible()
     const graphs = await screen.findAllByTestId('slaChart')
@@ -104,7 +104,7 @@ describe('SlaTile', () => {
       </div>
     }
     render(<Test />, { wrapper: Provider })
-    expect(await screen.findByText('P1 Incidents')).toBeVisible()
+    expect(await screen.findByText('Distressed LSPs')).toBeVisible()
     expect(await screen.findByText('Guest Experience')).toBeVisible()
     expect(await screen.findByText('Brand SSID Compliance')).toBeVisible()
     const graphs = await screen.findAllByTestId('slaChart')
@@ -130,7 +130,7 @@ describe('SlaTile', () => {
       </div>
     }
     render(<Test />, { wrapper: Provider })
-    expect(await screen.findByText('P1 Incidents')).toBeVisible()
+    expect(await screen.findByText('Distressed Properties')).toBeVisible()
     expect(await screen.findByText('Guest Experience')).toBeVisible()
     expect(await screen.findByText('Brand SSID Compliance')).toBeVisible()
     const graphs = await screen.findAllByTestId('slaChart')
@@ -148,8 +148,10 @@ describe('SlaTile', () => {
       sliceType: 'property' as const
     }
     render(<SlaTile {...props}/>, { wrapper: Provider })
+    expect(await screen.findByText('# of Properties with P1 Incident'))
+      .toBeVisible()
     const switchIcon = await screen.findByTestId('DownArrow')
     fireEvent.click(switchIcon)
-    expect(screen.queryByTestId('DownArrow')).toBeNull()
+    expect(switchIcon).toBeVisible()
   })
 })

@@ -1,6 +1,6 @@
-import { mapValues, take } from 'lodash'
-import { useIntl }         from 'react-intl'
-import AutoSizer           from 'react-virtualized-auto-sizer'
+import { keyBy, mapValues, take } from 'lodash'
+import { useIntl }                from 'react-intl'
+import AutoSizer                  from 'react-virtualized-auto-sizer'
 
 import { getSeriesData }                                         from '@acx-ui/analytics/utils'
 import { Loader, NoData, qualitativeColorSet, StackedAreaChart } from '@acx-ui/components'
@@ -63,10 +63,18 @@ export function SlaChart ({ mock, ...payload }: SlaChartProps) {
       {(size) => timeseriesQuery.data.length
         ? <StackedAreaChart
           data={timeseriesQuery.data}
-          dataFormatter={formatter}
           style={{ ...size }}
           disableLegend
           disableAxis
+          disableGrid
+          totalMean
+          seriesFormatters={{
+            ...mapValues(keyBy(seriesMapping, 'key'), () => formatter),
+            total: formatter
+          }}
+          tooltipTotalTitle={payload.chartKey === 'experience'
+            ? $t({ defaultMessage: 'Total Guest Experience' })
+            : undefined}
           stackColors={take(qualitativeColorSet(), seriesMapping.length)}
         />
         : <NoData/>}

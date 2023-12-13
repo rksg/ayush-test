@@ -52,6 +52,8 @@ export interface StackedAreaChartProps
     tooltipTotalTitle?: string
     disableLegend?: boolean
     disableAxis?: boolean
+    disableGrid?: boolean
+    totalMean?: boolean
     chartRef?: RefCallback<ReactECharts>
     zoom?: TimeStampRange
     onDataZoom?: (range: TimeStampRange) => void
@@ -59,7 +61,8 @@ export interface StackedAreaChartProps
 
 export function getSeriesTotal <DataType extends TimeSeriesChartData> (
   series: DataType[],
-  tooltipTotalTitle: string
+  tooltipTotalTitle: string,
+  mean?: boolean
 ) {
   return {
     key: 'total',
@@ -70,7 +73,7 @@ export function getSeriesTotal <DataType extends TimeSeriesChartData> (
         const value = datum.data[index][1]
         return typeof value === 'number' ? value : 0
       })
-      return [ point[0], total ]
+      return [ point[0], mean ? total / series.length : total ]
     })
   } as DataType
 }
@@ -88,6 +91,8 @@ export function StackedAreaChart <
   tooltipTotalTitle,
   disableLegend,
   disableAxis,
+  disableGrid,
+  totalMean,
   ...props
 }: StackedAreaChartProps<TChartData>) {
   const eChartsRef = useRef<ReactECharts>(null)
@@ -102,14 +107,22 @@ export function StackedAreaChart <
 
   const data = useMemo(() => {
     return tooltipTotalTitle && !isEmpty(initialData)
-      ? initialData.concat(getSeriesTotal<TChartData>(initialData, tooltipTotalTitle))
+      ? initialData.concat(getSeriesTotal<TChartData>(initialData, tooltipTotalTitle, totalMean))
       : initialData
   }, [tooltipTotalTitle, initialData])
 
   const option: EChartsOption = {
     animation: false,
     color: props.stackColors || qualitativeColorSet(),
-    grid: { ...gridOptions({ disableLegend, rightGridOffset: 5 }) },
+    grid: {
+      ...gridOptions({ disableLegend, rightGridOffset: 5 }),
+      ...(disableGrid
+        ? {
+          left: 0,
+          right: 0
+        }
+        : {})
+    },
     ...(disableLegend ? {} : {
       legend: {
         ...legendOptions(),
