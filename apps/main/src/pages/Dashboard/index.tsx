@@ -29,8 +29,8 @@ import {
   ContentSwitcher,
   ContentSwitcherProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { VenueFilter }                              from '@acx-ui/main/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { VenueFilter }                                            from '@acx-ui/main/components'
 import {
   AlarmWidgetV2,
   ClientsWidgetV2,
@@ -75,7 +75,7 @@ export const useDashBoardUpdatedFilter = () => {
 }
 export default function Dashboard () {
   const { $t } = useIntl()
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
@@ -142,7 +142,7 @@ function DashboardPageHeader () {
   const { dashboardFilters, setDateFilterState } = useDashBoardUpdatedFilter()
   const { startDate , endDate, range } = dashboardFilters
   const { $t } = useIntl()
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
 
   const addMenu = <Menu

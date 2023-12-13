@@ -3,9 +3,9 @@ import '@testing-library/jest-dom'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { switchApi }       from '@acx-ui/rc/services'
-import { SwitchUrlsInfo }  from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+import { switchApi }                           from '@acx-ui/rc/services'
+import { SwitchPortViewModel, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                     from '@acx-ui/store'
 import {
   act,
   fireEvent,
@@ -42,7 +42,8 @@ const params = {
   serialNumber: 'serial-number'
 }
 
-const editPortVlans = async (inputTagged, inputUntagged, currentStatus?) => {
+// eslint-disable-next-line max-len
+const editPortVlans = async (inputTagged: string, inputUntagged: string, currentStatus?: string) => {
   fireEvent.click(await screen.findByRole('button', {
     name: currentStatus !== 'port' ? 'Customize' : 'Edit'
   }))
@@ -134,7 +135,7 @@ describe('EditPortDrawer', () => {
           isCloudPort={false}
           isMultipleEdit={selectedPorts?.slice(0, 1)?.length > 1}
           isVenueLevel={false}
-          selectedPorts={selectedPorts?.slice(0, 1)}
+          selectedPorts={selectedPorts?.slice(0, 1) as SwitchPortViewModel[]}
         />
       </Provider>, {
         route: {

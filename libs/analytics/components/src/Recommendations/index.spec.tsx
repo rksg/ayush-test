@@ -84,7 +84,7 @@ describe('RecommendationTabContent', () => {
   it('should render crrm table for R1', async () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: { recommendations: recommendationListResult.recommendations
-        .filter(r => r.code.includes('crrm')) }
+        .filter(r => r.code.includes('crrm') || r.code.includes('unknown')) }
     })
     render(<RecommendationTabContent/>, {
       route: { params: { activeTab: 'crrm' } },
@@ -102,7 +102,7 @@ describe('RecommendationTabContent', () => {
   it('should render crrm table for RA', async () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: { recommendations: recommendationListResult.recommendations
-        .filter(r => r.code.includes('crrm')) }
+        .filter(r => r.code.includes('crrm') || r.code.includes('unknown')) }
     })
     jest.mocked(get).mockReturnValue('true')
     render(<RecommendationTabContent/>, {

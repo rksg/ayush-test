@@ -7,6 +7,7 @@ import {
   DefaultOptionType
 } from 'antd/lib/select'
 import { FilterValue } from 'antd/lib/table/interface'
+import _               from 'lodash'
 import moment          from 'moment'
 import { IntlShape }   from 'react-intl'
 
@@ -66,9 +67,9 @@ export function getFilteredData <RecordType> (
 ): RecordType[] | undefined {
   const isRowMatching = (row: RecordType): Boolean => {
     for (const column of activeFilters) {
-      const key = column.dataIndex as keyof RecordType
+      const key = (column.filterKey || column.dataIndex) as keyof RecordType
       const filteredValue = filterValues[key as keyof Filter]!
-      if (!filteredValue.includes(row[key] as unknown as string)) {
+      if (!filteredValue.includes(_.get(row, key) as unknown as string)) {
         return false
       }
     }
@@ -162,10 +163,10 @@ export function renderFilter <RecordType> (
         const { children } = hasChildrenColumn(datum) ? datum : { children: undefined }
         if (children) {
           for (const child of children) {
-            addToFilter(data, child[key] as unknown as string)
+            addToFilter(data, _.get(child, key) as unknown as string)
           }
         }
-        addToFilter(data, datum[key] as unknown as string)
+        addToFilter(data, _.get(datum, key) as unknown as string)
         return data
       }, []).sort().map(v => ({ key: v, value: v, label: v }))
       : []

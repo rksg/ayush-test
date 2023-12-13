@@ -5,7 +5,7 @@ import { useIntl }                          from 'react-intl'
 import { useParams }                        from 'react-router-dom'
 
 import { Button, cssStr, Loader, PageHeader, showActionModal, Subtitle } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }        from '@acx-ui/feature-toggle'
 import {
   ConnectionMeteringLink,
   DpskPoolLink,
@@ -14,7 +14,8 @@ import {
   IdentityGroupLink,
   PropertyUnitLink,
   useDpskNewConfigFlowParams,
-  PassphraseViewer
+  PassphraseViewer,
+  PersonaDrawer
 } from '@acx-ui/rc/components'
 import {
   useLazyGetDpskQuery,
@@ -31,7 +32,6 @@ import { ConnectionMetering, PersonaGroup } from '@acx-ui/rc/utils'
 import { filterByAccess }                   from '@acx-ui/user'
 import { noDataDisplay }                    from '@acx-ui/utils'
 
-import { PersonaDrawer }                       from '../PersonaDrawer'
 import { blockedTagStyle, PersonaBlockedIcon } from '../styledComponents'
 
 import { PersonaDevicesTable } from './PersonaDevicesTable'
@@ -40,7 +40,7 @@ import { PersonaDevicesTable } from './PersonaDevicesTable'
 function PersonaDetails () {
   const { $t } = useIntl()
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const networkSegmentationEnabled = useIsTierAllowed(Features.EDGES)
+  const networkSegmentationEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const { tenantId, personaGroupId, personaId } = useParams()
   const [personaGroupData, setPersonaGroupData] = useState<PersonaGroup>()
   const [connectionMetering, setConnectionMetering] = useState<ConnectionMetering>()
