@@ -274,9 +274,6 @@ export function ScheduleExportForm (props: ScheduleExportFormProps) {
                   </Form.Item>
                 </Col>,
                 dayMonth: () => <Col
-                  style={{
-                    padding: '2px'
-                  }}
                   span={
                     frequency === EventScheduleFrequency.Weekly ? 5 : 6
                   }>

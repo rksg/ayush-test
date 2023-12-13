@@ -106,6 +106,7 @@ import AddEdgeSdLan                         from './pages/Services/EdgeSdLan/Add
 import EdgeSdLanDetail                      from './pages/Services/EdgeSdLan/EdgeSdLanDetail'
 import EdgeSdLanTable                       from './pages/Services/EdgeSdLan/EdgeSdLanTable'
 import EditEdgeSdLan                        from './pages/Services/EdgeSdLan/EditEdgeSdLan'
+import AddEdgeSdLanP2                       from './pages/Services/EdgeSdLanP2/AddEdgeSdLan'
 import MdnsProxyDetail                      from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm                        from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import MdnsProxyTable                       from './pages/Services/MdnsProxy/MdnsProxyTable/MdnsProxyTable'
@@ -274,7 +275,6 @@ function NetworkRoutes () {
 
 const edgeSdLanRoutes = () => {
   return <>
-    <Route path='*' element={<PageNotFound />} />
     <Route
       path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
         oper: ServiceOperation.LIST })}
@@ -298,8 +298,18 @@ const edgeSdLanRoutes = () => {
   </>
 }
 
+const edgeSdLanPhase2Routes = () => {
+  return <Route
+    path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN_P2,
+      oper: ServiceOperation.CREATE })}
+    element={<AddEdgeSdLanP2 />}
+  />
+}
+
+
 function ServiceRoutes () {
   const isEdgeSdLanEnabled = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanPhase2Enabled = useIsSplitOn(Features.EDGES_SD_LAN_PHASE2_TOGGLE)
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -495,6 +505,7 @@ function ServiceRoutes () {
       />
 
       {isEdgeSdLanEnabled && edgeSdLanRoutes()}
+      {isEdgeSdLanPhase2Enabled && edgeSdLanPhase2Routes()}
     </Route>
   )
 }
