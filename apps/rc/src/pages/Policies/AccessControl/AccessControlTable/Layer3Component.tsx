@@ -4,8 +4,8 @@ import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, Table, TableProps } from '@acx-ui/components'
-import { defaultNetworkPayload }     from '@acx-ui/rc/components'
+import { Loader, Table, TableProps }                         from '@acx-ui/components'
+import { AddModeProps, defaultNetworkPayload, Layer3Drawer } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDelL3AclPoliciesMutation,
@@ -20,8 +20,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
-import { AddModeProps }                    from '../AccessControlForm/AccessControlForm'
-import Layer3Drawer                        from '../AccessControlForm/Layer3Drawer'
 import { PROFILE_MAX_COUNT_LAYER3_POLICY } from '../constants'
 
 

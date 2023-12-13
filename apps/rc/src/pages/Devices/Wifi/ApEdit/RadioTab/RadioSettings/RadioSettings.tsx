@@ -1057,6 +1057,7 @@ export function RadioSettings () {
                   <Form.Item
                     name={['apRadioParamsDual5G', 'useVenueEnabled']}
                     hidden
+                    children={<></>}
                   />
                   <Button type='link' onClick={handleOnUseVenueEnabledChange}>
                     { stateOfUseVenueEnabled ? $t({ defaultMessage: 'Change' }) : $t({ defaultMessage: 'Same as Venue' }) }
@@ -1111,6 +1112,7 @@ export function RadioSettings () {
           <Form.Item
             name={['useVenueSettings']}
             hidden
+            children={<></>}
           />
           <div style={{ display: currentTab === RadioType.Normal24GHz ? 'block' : 'none' }}>
             <ApSingleRadioSettings

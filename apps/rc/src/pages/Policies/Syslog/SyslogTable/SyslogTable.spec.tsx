@@ -14,7 +14,7 @@ import { Provider } from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen,
+  screen, waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
 
@@ -84,6 +84,7 @@ describe('SyslogTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const targetName = mockTableResult.data[0].name
     expect(await screen.findByRole('button', { name: /Add Syslog Server/i })).toBeVisible()
@@ -98,6 +99,8 @@ describe('SyslogTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'Policies & Profiles'
@@ -115,6 +118,7 @@ describe('SyslogTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const target = mockTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
