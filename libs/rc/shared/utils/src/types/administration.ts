@@ -258,6 +258,17 @@ export interface AdminGroup {
       email: string
   },
   role: RolesEnum,
+  customRole?: CustomRole,
   processingPriority?: number
+}
+
+export interface CustomRole {
+  id?: string,
+  name: RolesEnum,
+  description: string,
+  roleType: string,
+  frameworkRO: boolean,
+  createdDate: string,
+  updatedDate: string
 }
 

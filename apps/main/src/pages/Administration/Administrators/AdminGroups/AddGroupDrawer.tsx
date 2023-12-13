@@ -7,8 +7,6 @@ import {
   useUpdateAdminGroupsMutation
 } from '@acx-ui/rc/services'
 import {
-//   excludeSpaceRegExp,
-//   notAllDigitsRegExp,
   getRoles,
   AdminGroup
 } from '@acx-ui/rc/utils'
@@ -43,22 +41,12 @@ export const AddGroupDrawer = (props: AddGroupDrawerProps) => {
       const adminGroupData: AdminGroup = {
         name: name,
         groupId: groupId,
-        contactPerson: {
-          name: 'john chang',
-          email: 'johnChangt@mail.com'
-        },
-        processingPriority: 3,
         role: role
       }
 
       const adminGroupEditData: AdminGroup = {
         name: form.getFieldValue('name'),
         groupId: groupId,
-        contactPerson: {
-          name: 'john chang',
-          email: 'johnChangt@mail.com'
-        },
-        processingPriority: 3,
         role: role
       }
 
@@ -80,34 +68,39 @@ export const AddGroupDrawer = (props: AddGroupDrawerProps) => {
   }))
 
   const formContent = <Form layout='vertical'form={form} >
-    <Form.Item
-      name='name'
-      label={$t({ defaultMessage: 'Group Name' })}
-      initialValue={isEditMode ? editData?.name : ''}
-      rules={[
-        { required: true },
-        { min: 2 },
-        { max: 64 }
-      ]}
-      children={<Input />}
-    />
-    <Form.Item
-      name='groupId'
-      label={$t({ defaultMessage: 'Group ID' })}
-      initialValue={isEditMode ? editData?.groupId : ''}
-      rules={[
-        { required: true },
-        { min: 2 },
-        { max: 64 }
-      ]}
-      children={<Input />}
-    />
-
+    {isEditMode ?
+      <Form.Item label={$t({ defaultMessage: 'Group Name' })}>
+        {`${editData?.name}`}
+      </Form.Item> :
+      <Form.Item
+        name='name'
+        label={$t({ defaultMessage: 'Group Name' })}
+        rules={[
+          { required: true },
+          { min: 2 },
+          { max: 64 }
+        ]}
+        children={<Input />}
+      />}
+    {isEditMode ?
+      <Form.Item label={$t({ defaultMessage: 'Group Id' })}>
+        {`${editData?.groupId}`}
+      </Form.Item> :
+      <Form.Item
+        name='groupId'
+        label={$t({ defaultMessage: 'Group ID' })}
+        rules={[
+          { required: true },
+          { min: 2 },
+          { max: 64 }
+        ]}
+        children={<Input />}
+      />}
     <Form.Item
       name='role'
       style={{ marginTop: '13px' }}
       label={$t({ defaultMessage: 'Role' })}
-      initialValue={editData?.role || ''}
+      initialValue={isEditMode ? editData?.customRole?.name || '' : ''}
       rules={[
         { required: true }
       ]}

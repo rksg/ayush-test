@@ -68,7 +68,6 @@ const Administrators = () => {
     adminGroups: {
       title: $t({ defaultMessage: 'Admin Groups ({adminGroupCount})' }, { adminGroupCount }),
       content: <AdminGroups
-        currentUserMail={currentUserMail}
         isPrimeAdminUser={isPrimeAdminUser}
         tenantType={tenantType}
       />,

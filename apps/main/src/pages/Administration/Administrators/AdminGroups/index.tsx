@@ -23,7 +23,6 @@ import { AddGroupDrawer } from './AddGroupDrawer'
 
 
 interface AdminGroupsTableProps {
-  currentUserMail: string | undefined;
   isPrimeAdminUser: boolean;
   tenantType?: string;
 }
@@ -84,7 +83,7 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
       dataIndex: 'role',
       sorter: { compare: sortProp('role', defaultSort) },
       render: function (_, row) {
-        return roleStringMap[row.role] ? $t(roleStringMap[row.role]) : ''
+        return row.customRole?.name ? $t(roleStringMap[row.customRole.name]) : ''
       }
     }
   ]

@@ -20,10 +20,6 @@ const adminGroupData =
   id: '1',
   name: 'test123',
   groupId: '123',
-  contactPerson: {
-    name: 'test',
-    email: 'test@mail.com'
-  },
   processingPriority: 3,
   role: RolesEnum.PRIME_ADMIN
 }
