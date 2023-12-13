@@ -16,7 +16,6 @@ import {
   useUserProfileContext,
   UserUrlsInfo,
   useGetUserProfileQuery,
-  // UserProfile as UserProfileInterface,
   useUpdateUserProfileMutation
 } from '@acx-ui/user'
 import {
@@ -84,7 +83,7 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
       if (openDialog && isNonProdEnv() && !isBrowserDialog) {
         const userPreflang = showBrowserLangDialog()
         userPreflang.then((dialogResult) => {
-          // update settings user selected 'yes' language change
+          // update user profile - 'yes' language change
           if (dialogResult.lang !== '') {
             setLanguage(dialogResult.lang)
             const data:PartialUserData = {
