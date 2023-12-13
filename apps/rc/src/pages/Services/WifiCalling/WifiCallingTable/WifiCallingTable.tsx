@@ -20,12 +20,11 @@ import {
   Network,
   AclOptionType,
   WifiCallingSetting,
-  QosPriorityEnum
+  QosPriorityEnum,
+  wifiCallingQosPriorityLabelMapping
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }                               from '@acx-ui/user'
-
-import { wifiCallingQosPriorityLabelMapping } from '../../contentsMap'
 
 const defaultPayload = {
   searchString: '',

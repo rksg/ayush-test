@@ -161,7 +161,8 @@ export const mockHiddenAPs = {
       aps: [
         { name: 'AP 1', mac: '00:00:00:00:00:01', model: 'R500', firmware: '6.2.1.103.253', serial: '431802006001' },
         { name: 'AP 2', mac: '00:00:00:00:00:02', model: 'R760', firmware: '6.0.0.0.0', serial: '431802006002' },
-        { name: 'AP 3', mac: '00:00:00:00:00:03', model: 'R350', firmware: '6.2.1.103.253', serial: '431802006003' }
+        { name: 'AP 3', mac: '00:00:00:00:00:03', model: 'R350', firmware: '6.2.1.103.253', serial: '431802006003' },
+        { name: 'AP 3', mac: '00:00:00:00:00:03', model: 'R350', firmware: '6.2.1.103.253', serial: null }
       ]
     }]
   }

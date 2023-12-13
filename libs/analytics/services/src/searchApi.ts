@@ -8,7 +8,8 @@ export interface RequestPayload {
   start: string
   end: string
   query: string
-  limit: number
+  limit: number,
+  isReportOnly?: boolean
 }
 
 export interface ListPayload extends RequestPayload {
@@ -104,23 +105,6 @@ export const searchApi = dataApiSearch.injectEndpoints({
           $limit: Int
         ) {
           search(start: $start, end: $end, query: $query, limit: $limit) {
-            clients {
-              hostname
-              username
-              mac
-              osType
-              ipAddress
-              lastActiveTime
-              manufacturer
-            },
-            networkHierarchy {
-              name
-              root
-              type
-              apCount
-              networkPath {name type}
-              switchCount
-            },
             aps {
               apName,
               macAddress,
@@ -130,6 +114,27 @@ export const searchApi = dataApiSearch.injectEndpoints({
               apZone
               networkPath {name type}
             },
+            networkHierarchy {
+              name
+              root
+              type
+              apCount
+              networkPath {name type}
+              switchCount
+            },
+            clients {
+              hostname
+              username
+              mac
+              osType
+              ipAddress
+              lastActiveTime
+              manufacturer
+            }
+            ${payload.isReportOnly
+          ? ''
+          : `
+            ,
             switches {
               switchName
               switchMac: switchId
@@ -145,6 +150,7 @@ export const searchApi = dataApiSearch.injectEndpoints({
               rxBytes
               txBytes
             }
+              `}
           }
         }
         `,
