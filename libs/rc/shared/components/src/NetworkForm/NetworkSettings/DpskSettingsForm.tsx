@@ -11,7 +11,7 @@ import { DefaultOptionType } from 'antd/lib/select'
 import { useIntl }           from 'react-intl'
 
 import { Button, Modal, ModalType, StepsFormLegacy } from '@acx-ui/components'
-import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn }      from '@acx-ui/feature-toggle'
 import { useGetDpskListQuery }                       from '@acx-ui/rc/services'
 import {
   WlanSecurityEnum,
@@ -93,6 +93,7 @@ function SettingsForm () {
 
   const disableAAA = !useIsSplitOn(Features.POLICIES)
   const isWpaDsae3Toggle = useIsSplitOn(Features.WIFI_EDA_WPA3_DSAE_TOGGLE)
+  const isBetaDPSK3FeatureEnabled = useIsSplitOn(TierFeatures.BETA_DPSK3)
 
   // eslint-disable-next-line max-len
   const securityDescription = <> { $t({ defaultMessage: 'WPA2/WPA3 mixed mode supports the high-end WPA3 which is the highest level of Wi-Fi security available and WPA2 which is still common and provides good security. The WPA2/WPA3 mixed mode only will apply to the ‘supported’ AP models. This Network will not be applied to the Non-Supported AP models.' }) } </>
@@ -114,7 +115,8 @@ function SettingsForm () {
             <Option value={WlanSecurityEnum.WPAPersonal}>
               { $t({ defaultMessage: 'WPA' }) }</Option>
             {
-              isWpaDsae3Toggle && <Option value={WlanSecurityEnum.WPA23Mixed}>
+              isBetaDPSK3FeatureEnabled
+              && isWpaDsae3Toggle && <Option value={WlanSecurityEnum.WPA23Mixed}>
                 { $t({ defaultMessage: 'WPA2/WPA3 mixed mode' }) }</Option>
             }
           </Select>
