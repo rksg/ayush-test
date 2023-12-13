@@ -37,7 +37,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
   const [formRef] = Form.useForm()
   const [enabledPorts, setEnabledPorts] = useState<string[]>()
   const ipMode = Form.useWatch('ipMode', formRef)
-  const subnet = Form.useWatch('ipsubnet', formRef)
+  const subnet = Form.useWatch('subnet', formRef)
   const lagMembers = Form.useWatch('lagMembers', formRef) as string[]
   const [addEdgeLag] = useAddEdgeLagMutation()
   const [updateEdgeLag] = useUpdateEdgeLagMutation()
