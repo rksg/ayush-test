@@ -221,15 +221,35 @@ export const VenueFirmwareTable = (
     }
   ]
 
-  const hasAvailableSwitchFirmware = function () {
+  const hasAvailableSwitchFirmware = function (selectedRows: FirmwareSwitchVenue[]) {
     let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
+    selectedRows.forEach((row: FirmwareSwitchVenue) => {
+      const version = row.switchFirmwareVersion?.id
+      const rodanVersion = row.switchFirmwareVersionAboveTen?.id
+      removeCurrentVersionsAnd10010IfNeeded(version, rodanVersion, filterVersions)
+    })
     return filterVersions?.length > 0
   }
 
   const rowActions: TableProps<FirmwareSwitchVenue>['rowActions'] = [{
     label: $t({ defaultMessage: 'Update Now' }),
-    visible: hasAvailableSwitchFirmware(),
-    disabled: !hasAvailableSwitchFirmware(),
+    visible: (selectedRows) => {
+      let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
+      if (!filterVersions || filterVersions.length === 0) {
+        return false
+      }
+      return selectedRows.every((row: FirmwareSwitchVenue) => {
+        const version = row.switchFirmwareVersion?.id
+        if (!version) {
+          return (row.availableVersions && row.availableVersions.length > 0)
+        }
+        _.remove(filterVersions, (v: FirmwareVersion) => v.id === version)
+        return filterVersions.length > 0
+      })
+    },
+    disabled: (selectedRows) => {
+      return !hasAvailableSwitchFirmware(selectedRows)
+    },
     onClick: (selectedRows) => {
       setSelectedVenueList(selectedRows)
       setWizardType(SwitchFirmwareWizardType.update)
@@ -238,8 +258,23 @@ export const VenueFirmwareTable = (
   },
   {
     label: $t({ defaultMessage: 'Change Update Schedule' }),
-    visible: hasAvailableSwitchFirmware(),
-    disabled: !hasAvailableSwitchFirmware(),
+    visible: (selectedRows) => {
+      let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
+      if (!filterVersions || filterVersions.length === 0) {
+        return false
+      }
+      return selectedRows.every((row: FirmwareSwitchVenue) => {
+        const version = row.switchFirmwareVersion?.id
+        if (!version) {
+          return (row.availableVersions && row.availableVersions.length > 0)
+        }
+        _.remove(filterVersions, (v: FirmwareVersion) => v.id === version)
+        return filterVersions.length > 0
+      })
+    },
+    disabled: (selectedRows) => {
+      return !hasAvailableSwitchFirmware(selectedRows)
+    },
     onClick: (selectedRows) => {
       setSelectedVenueList(selectedRows)
       setWizardType(SwitchFirmwareWizardType.schedule)
