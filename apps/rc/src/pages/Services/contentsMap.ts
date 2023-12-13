@@ -14,6 +14,8 @@ export const serviceTypeLabelMapping: Record<ServiceType, MessageDescriptor> = {
   [ServiceType.EDGE_FIREWALL]: defineMessage({ defaultMessage: 'Firewall' }),
   [ServiceType.EDGE_SD_LAN]: defineMessage({
     defaultMessage: 'SD-LAN' }),
+  [ServiceType.EDGE_SD_LAN_P2]: defineMessage({
+    defaultMessage: 'SD-LAN P2' }),
   [ServiceType.WIFI_CALLING]: defineMessage({ defaultMessage: 'Wi-Fi Calling' }),
   [ServiceType.MDNS_PROXY]: defineMessage({ defaultMessage: 'mDNS Proxy' }),
   [ServiceType.DPSK]: defineMessage({ defaultMessage: 'DPSK' }),
@@ -33,6 +35,8 @@ export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
   [ServiceType.EDGE_FIREWALL]: defineMessage({ defaultMessage: 'Provides DDoS and ACL to protect your devices' }),
   [ServiceType.EDGE_SD_LAN]: defineMessage({
     defaultMessage: 'SD-LAN' }),
+  [ServiceType.EDGE_SD_LAN_P2]: defineMessage({
+    defaultMessage: 'SD-LAN P2' }),
   // eslint-disable-next-line max-len
   [ServiceType.WIFI_CALLING]: defineMessage({ defaultMessage: 'Identify clients using Wi-Fi calling and provide enhanced QoS' }),
   // eslint-disable-next-line max-len
