@@ -58,7 +58,7 @@ function ApplyCalendar ({ disabled, type, id, code, metadata }: ActionButtonProp
   const { $t } = useIntl()
   const [scheduleRecommendation] = useScheduleRecommendationMutation()
   const onApply = (date: Moment) => {
-    if(moment().add(15, 'minutes') < date ){
+    if(getFutureTime(moment().seconds(0).milliseconds(0)) <= date){
       scheduleRecommendation({ id, scheduledAt: date.toISOString() })
     } else {
       showToast({
@@ -160,7 +160,7 @@ const getAvailableActions = (recommendation: RecommendationListItem) => {
     case 'applyscheduled':
       return [
         { icon: actions.schedule({ ...props, disabled: false, type: 'ApplyScheduled' }) },
-        recommendation?.statusTrail?.filter(trial => trial.status === 'applied').length === 0
+        recommendation?.statusTrail?.filter(trail => trail.status === 'applied').length === 0
           && { icon: actions.cancel({ ...props, disabled: false }) },
         { icon: actions.schedule({ ...props, disabled: true, type: 'Revert' }) }
       ].filter(Boolean) as { icon: JSX.Element }[]
