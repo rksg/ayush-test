@@ -52,6 +52,8 @@ describe('Firewall Table', () => {
         route: { params, path: '/:tenantId/services/firewall/list' }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
     const row = await screen.findAllByRole('row', { name: /TestFirewall/i })
     expect(row.length).toBe(3)
     // eslint-disable-next-line max-len
@@ -77,6 +79,7 @@ describe('Firewall Table', () => {
         route: { params, path: '/:tenantId/services/firewall/list' }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const row = await screen.findByRole('row', { name: /TestFirewall1/i })
     await user.click(within(row).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Edit' }))
@@ -102,6 +105,7 @@ describe('Firewall Table', () => {
         route: { params, path: '/:tenantId/services/firewall/list' }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'My Services'
@@ -117,6 +121,7 @@ describe('Firewall Table', () => {
         route: { params, path: '/:tenantId/services/firewall/list' }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const row = await screen.findAllByRole('row', { name: /TestFirewall/i })
     await user.click(within(row[0]).getByRole('checkbox'))
     await user.click(within(row[1]).getByRole('checkbox'))
@@ -132,6 +137,8 @@ describe('Firewall Table', () => {
         route: { params, path: '/:tenantId/services/firewall/list' }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
     const row = await screen.findByRole('row', { name: /TestFirewall2/i })
     await user.click(within(row).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Delete' }))
@@ -150,6 +157,7 @@ describe('Firewall Table', () => {
         route: { params, path: '/:tenantId/services/firewall/list' }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const row1 = await screen.findByRole('row', { name: /TestFirewall2/i })
     const row2 = await screen.findByRole('row', { name: /TestFirewall3/i })
     await user.click(within(row1).getByRole('checkbox'))
@@ -170,7 +178,7 @@ describe('Firewall Table', () => {
         route: { params, path: '/:tenantId/services/firewall/list' }
       }
     )
-
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const row1 = await screen.findByRole('row', { name: /TestFirewall1/i })
     const row2 = await screen.findByRole('row', { name: /TestFirewall2/i })
     await user.click(within(row1).getByRole('checkbox'))

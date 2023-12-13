@@ -109,6 +109,7 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
         <Form.Item
           name={useVenueSettingsFieldName}
           hidden
+          children={<></>}
         />
         <FieldLabel width='180px'>
           {$t({ defaultMessage: 'Enable {radioTypeName} band:' }, { radioTypeName: radioTypeName })}

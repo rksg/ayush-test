@@ -1,7 +1,11 @@
 import { useState } from 'react'
 
+import { useIntl }       from 'react-intl'
 import { Link }          from 'react-router-dom'
 import { CSSProperties } from 'styled-components'
+
+
+import { UploadDocument } from '@acx-ui/icons'
 
 import { Button } from '../Button'
 
@@ -25,7 +29,7 @@ export interface FulfillmentMessage {
     }[][]
   } }
 
-export type Content = { type: 'bot' | 'user',
+export type Content = { type: 'bot' | 'user', isRuckusAi?:boolean,
 contentList:FulfillmentMessage[] }
 
 export interface ConversationProps {
@@ -48,13 +52,20 @@ function parseLink (link: string): string {
   return link.replace('<origin>',MELISSA_URL_ORIGIN)
 }
 
-const Expandable = (props: { text: string, maxChar: number }) => {
-  let [expanded, setExpanded] = useState(true)
-  if(props.text.length <= props.maxChar) return <UI.Bot>{props.text}</UI.Bot>
+const Expandable = (props: { text: string, maxChar: number, isRuckusAi?:boolean }) => {
+  const { $t } = useIntl()
+  const [expanded, setExpanded] = useState(true)
+  const RUCKUS_AI_TEXT = $t({ defaultMessage: 'Ruckus AI' })
+  const readMoreText = $t({ defaultMessage: 'Read more...' })
+  const readLessText = $t({ defaultMessage: 'Read less' })
+  const RUCKUS_AI_HEADER = props.isRuckusAi ? <>
+    <strong><u>{RUCKUS_AI_TEXT}</u></strong><br/><br/></> : null
+  if(props.text.length <= props.maxChar) return <UI.Bot>{RUCKUS_AI_HEADER}{props.text}</UI.Bot>
   let formattedText = expanded ? props.text.substring(0, props.maxChar) : props.text
-  return <UI.Bot>{formattedText}{expanded ? '... ' : ' '}
+  return <UI.Bot>{RUCKUS_AI_HEADER}{formattedText}{expanded ? '... ' : ''}
+    <br/><br/>
     <Button size='small' type='link' onClick={() => {setExpanded(!expanded)}}>
-      {expanded? 'read more' : 'read less'}</Button></UI.Bot>
+      {expanded? readMoreText : readLessText}</Button></UI.Bot>
 }
 function Conversation ({
   content,
@@ -71,7 +82,7 @@ function Conversation ({
           list.type === 'bot' ? (
             <>{content.text?.text.map((msg) =>{
               const text = msg.startsWith('\n') ? msg.substring(1).trim() : msg.trim()
-              return <Expandable text={text} maxChar={maxChar} />
+              return <Expandable text={text} maxChar={maxChar} isRuckusAi={list.isRuckusAi}/>
             })
             }{content.payload?.richContent.map((data) =>(
               data.map((res) => {
@@ -83,25 +94,38 @@ function Conversation ({
                       </Panel></UI.Collapse>
                   case 'button':
                     if(res.link){
-                      return <UI.Bot><a href={parseLink(res.link)}
+                      return <a href={parseLink(res.link)}
                         target='_blank'
-                        rel='noreferrer'>{res.text}</a></UI.Bot>
+                        rel='noreferrer'><Button type='default'
+                          icon={<UI.StyledChatbotLink/>}
+                          style={{
+                            fontSize: '12px',
+                            width: 'max-content',
+                            marginTop: '10px'
+                          }}>{res.text}</Button></a>
                     }else if(res.event){
-                      return <UI.Bot>
-                        <Link to={res.event?.parameters?.url || '#'}>{res.text}</Link>
-                      </UI.Bot>
+                      return <Link to={res.event?.parameters?.url || '#'}>
+                        <Button type='default'
+                          icon={<UI.StyledChatbotLink/>}
+                          style={{
+                            fontSize: '12px',
+                            width: 'max-content',
+                            marginTop: '10px' }}>{res.text}</Button></Link>
                     }else{
-                      return <UI.Bot><Button type='link'
+                      return <Button type='default'
+                        icon={<UploadDocument />}
                         data-testid='button-link'
-                        style={{ fontSize: '12px' }}>
-                        {res.text}</Button></UI.Bot>
+                        style={{ fontSize: '12px',
+                          width: 'max-content',
+                          marginTop: '10px' }}>
+                        {res.text}</Button>
                     }
                   case 'divider':
                     return null
                   case 'list':
-                    return <UI.Bot><Button type='link'
+                    return <Button type='default'
                       data-testid='button-link-list'
-                      style={{ fontSize: '12px' }}
+                      style={{ fontSize: '12px', width: 'max-content', marginTop: '10px' }}
                       onClick={()=>{
                         listCallback({
                           queryInput: {
@@ -110,7 +134,7 @@ function Conversation ({
                         })
                       }}
                     >
-                      {res.title}</Button></UI.Bot>
+                      {res.title}</Button>
                 }
                 return <UI.Bot>{res.type}</UI.Bot>
               })

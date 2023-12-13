@@ -46,6 +46,26 @@ export const mockedNsgSwitchInfoData: {
     name: 'FEK3224R09N---AS---3',
     familyId: 'ICX7150',
     firmwareVersion: 'SPR09010f_b32.bin'
+  }, {
+    id: 'c0:c5:20:aa:35:11',
+    vlanId: 112,
+    webAuthPageType: 'USER_DEFINED',
+    templateId: '723250a97f3a4c3780e70c83c5b095ab',
+    webAuthPasswordLabel: 'password-user-defined',
+    webAuthCustomTitle: 'title-user-defined',
+    webAuthCustomTop: 'top-user-defined',
+    webAuthCustomLoginButton: 'login-user-defined',
+    webAuthCustomBottom: 'bottom-user-defined',
+    uplinkInfo: {
+      uplinkType: 'PORT',
+      uplinkId: '1/1/1'
+    },
+    distributionSwitchId: 'c8:03:f5:3a:95:c6',
+    dispatchMessage: '[SUCCESS]',
+    model: 'ICX7150-C12P',
+    name: 'FEK3224R09N---AS---1',
+    familyId: 'ICX7150',
+    firmwareVersion: 'SPR09010f_b32.bin'
   }]
 }
 
