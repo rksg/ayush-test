@@ -130,7 +130,7 @@ export function transformNetworkEncryption (type: WlanSecurityEnum | undefined) 
 
 export const networkTypes: Record<NetworkTypeEnum, MessageDescriptor> = {
   [NetworkTypeEnum.OPEN]: defineMessage({ defaultMessage: 'Open Network' }),
-  [NetworkTypeEnum.PSK]: defineMessage({ defaultMessage: 'Pre-Shared Key (PSK)' }),
+  [NetworkTypeEnum.PSK]: defineMessage({ defaultMessage: 'Passphrase (PSK/SAE)' }),
   [NetworkTypeEnum.DPSK]: defineMessage({ defaultMessage: 'Dynamic Pre-Shared Key (DPSK)' }),
   [NetworkTypeEnum.AAA]: defineMessage({ defaultMessage: 'Enterprise AAA (802.1X)' }),
   [NetworkTypeEnum.CAPTIVEPORTAL]: defineMessage({ defaultMessage: 'Captive Portal' })
