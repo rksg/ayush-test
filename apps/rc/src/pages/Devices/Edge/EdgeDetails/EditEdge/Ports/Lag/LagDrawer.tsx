@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { Checkbox, Form, Input, Radio, Select, Space, Switch } from 'antd'
 import TextArea                                                from 'antd/lib/input/TextArea'
+import _                                                       from 'lodash'
 import { useIntl }                                             from 'react-intl'
 import { useParams }                                           from 'react-router-dom'
 
@@ -11,7 +12,6 @@ import {
   EdgeIpModeEnum,
   EdgeLag,
   EdgeLagLacpModeEnum,
-  EdgeLagStatus,
   EdgeLagTimeoutEnum,
   EdgeLagTypeEnum,
   EdgePort,
@@ -26,12 +26,13 @@ interface LagDrawerProps {
   setVisible: (visible: boolean) => void
   data?: EdgeLag
   portList?: EdgePort[]
-  existedLagList?: EdgeLagStatus[]
+  existedLagList?: EdgeLag[]
 }
 
 export const LagDrawer = (props: LagDrawerProps) => {
 
   const { visible, setVisible, data, portList, existedLagList } = props
+  const isEditMode = data?.id !== undefined
   const { serialNumber } = useParams()
   const { $t } = useIntl()
   const [formRef] = Form.useForm()
@@ -171,11 +172,11 @@ export const LagDrawer = (props: LagDrawerProps) => {
     }
   }
 
-  const getUseableLagOptions = (existedLagList?: EdgeLagStatus[]) => {
+  const getUseableLagOptions = (existedLagList?: EdgeLag[]) => {
     return lagNameOptions.filter(option =>
       !existedLagList?.some(existedLag =>
-        existedLag.lagId === option.value &&
-        existedLag.lagId !== data?.id)) // keep the edit mode data as a slection
+        existedLag.id === option.value &&
+        existedLag.id !== data?.id)) // keep the edit mode data as a selection
   }
 
   const getUseableLagMembers = (portList?: EdgePort[]) => {
@@ -184,7 +185,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
         exsistedLag.lagMembers?.some(existedLagMember =>
           existedLagMember.portId === port.id &&
           !data?.lagMembers.some(editLagMember =>
-            editLagMember.portId === port.id)))) // keep the edit mode data as a slection
+            editLagMember.portId === port.id)))) // keep the edit mode data as a selection
   }
 
   const drawerContent = <Form layout='vertical' form={formRef} onFinish={handleFinish}>
@@ -199,7 +200,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
             required: true,
             message: $t({ defaultMessage: 'Please enter LAG Name' })
           }]}
-          children={<Select options={getUseableLagOptions(existedLagList)} />}
+          children={<Select options={getUseableLagOptions(existedLagList)} disabled={isEditMode} />}
           noStyle
           hasFeedback
         />
@@ -241,13 +242,13 @@ export const LagDrawer = (props: LagDrawerProps) => {
         {
           <Space direction='vertical'>
             {
-              getUseableLagMembers(portList)?.map((item, index) =>
+              getUseableLagMembers(portList)?.map((item) =>
                 (
                   <Space key={`${item.id}_space`} size={30}>
                     <Checkbox
                       key={`${item.id}_checkbox`}
                       value={item.id}
-                      children={`Port ${index + 1}`}
+                      children={_.capitalize(item.interfaceName)}
                     />
                     {
                       lagMembers?.some(id => id === item.id) &&

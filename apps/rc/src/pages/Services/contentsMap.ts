@@ -7,6 +7,24 @@ import {
   ServiceType
 } from '@acx-ui/rc/utils'
 
+export const serviceTypeLabelMapping: Record<ServiceType, MessageDescriptor> = {
+  [ServiceType.PORTAL]: defineMessage({ defaultMessage: 'Portal' }),
+  [ServiceType.DHCP]: defineMessage({ defaultMessage: 'DHCP for Wi-Fi' }),
+  [ServiceType.EDGE_DHCP]: defineMessage({ defaultMessage: 'DHCP for SmartEdge' }),
+  [ServiceType.EDGE_FIREWALL]: defineMessage({ defaultMessage: 'Firewall' }),
+  [ServiceType.EDGE_SD_LAN]: defineMessage({
+    defaultMessage: 'SD-LAN' }),
+  [ServiceType.EDGE_SD_LAN_P2]: defineMessage({
+    defaultMessage: 'SD-LAN P2' }),
+  [ServiceType.WIFI_CALLING]: defineMessage({ defaultMessage: 'Wi-Fi Calling' }),
+  [ServiceType.MDNS_PROXY]: defineMessage({ defaultMessage: 'mDNS Proxy' }),
+  [ServiceType.DPSK]: defineMessage({ defaultMessage: 'DPSK' }),
+  [ServiceType.NETWORK_SEGMENTATION]: defineMessage(
+    { defaultMessage: 'Personal Identity Network' }),
+  [ServiceType.WEBAUTH_SWITCH]: defineMessage(
+    { defaultMessage: 'Personal Identity Network Auth Page for Switch' }),
+  [ServiceType.RESIDENT_PORTAL]: defineMessage({ defaultMessage: 'Resident Portal' })
+}
 export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
   // eslint-disable-next-line max-len
   [ServiceType.PORTAL]: defineMessage({ defaultMessage: 'Create a web authentication guest portal for end user connectivity' }),
@@ -17,6 +35,8 @@ export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
   [ServiceType.EDGE_FIREWALL]: defineMessage({ defaultMessage: 'Provides DDoS and ACL to protect your devices' }),
   [ServiceType.EDGE_SD_LAN]: defineMessage({
     defaultMessage: 'SD-LAN' }),
+  [ServiceType.EDGE_SD_LAN_P2]: defineMessage({
+    defaultMessage: 'SD-LAN P2' }),
   // eslint-disable-next-line max-len
   [ServiceType.WIFI_CALLING]: defineMessage({ defaultMessage: 'Identify clients using Wi-Fi calling and provide enhanced QoS' }),
   // eslint-disable-next-line max-len
