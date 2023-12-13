@@ -242,14 +242,13 @@ export const PortConfigForm = (props: ConfigFormProps) => {
             <Select>
               {portTypeOptions.map((item) => {
                 return <Select.Option
+                  key={item.value}
                   value={item.value}
-                  disabled={hasCorePortEnabled
-                  && item.value === EdgePortTypeEnum.WAN}
+                  disabled={hasCorePortEnabled && item.value === EdgePortTypeEnum.WAN}
                 >
                   {item.label}
                 </Select.Option>
-              })
-              }
+              })}
             </Select>
           </Form.Item>
           <Form.Item
