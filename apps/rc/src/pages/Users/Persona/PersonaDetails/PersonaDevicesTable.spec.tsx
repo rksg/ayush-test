@@ -17,7 +17,8 @@ type MockModalProps = React.PropsWithChildren<{
   onCancel: () => void
 }>
 
-jest.mock('../PersonaForm/PersonaDevicesImportDialog', () => ({
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
   PersonaDevicesImportDialog: ({ onSubmit, onCancel, visible }: MockModalProps) =>
     visible && <div data-testid='PersonaDevicesImportDialog' >
       <button onClick={(e) => {
