@@ -23,8 +23,8 @@ export const serviceTypeLabelMapping: Record<ServiceType, MessageDescriptor> = {
   [ServiceType.DHCP]: defineMessage({ defaultMessage: 'DHCP for Wi-Fi' }),
   [ServiceType.EDGE_DHCP]: defineMessage({ defaultMessage: 'DHCP for SmartEdge' }),
   [ServiceType.EDGE_FIREWALL]: defineMessage({ defaultMessage: 'Firewall' }),
-  [ServiceType.EDGE_SD_LAN]: defineMessage({
-    defaultMessage: 'SD-LAN' }),
+  [ServiceType.EDGE_SD_LAN]: defineMessage({ defaultMessage: 'SD-LAN' }),
+  [ServiceType.EDGE_SD_LAN_P2]: defineMessage({ defaultMessage: 'SD-LAN P2' }),
   [ServiceType.WIFI_CALLING]: defineMessage({ defaultMessage: 'Wi-Fi Calling' }),
   [ServiceType.MDNS_PROXY]: defineMessage({ defaultMessage: 'mDNS Proxy' }),
   [ServiceType.DPSK]: defineMessage({ defaultMessage: 'DPSK' }),

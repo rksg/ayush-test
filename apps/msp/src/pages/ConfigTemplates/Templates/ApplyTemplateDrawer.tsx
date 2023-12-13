@@ -110,25 +110,24 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
     }
   ]
 
-  const content =
-    <Space direction='vertical'>
-      <p>{ $t({ defaultMessage: 'Apply selected templates to the customers below' }) }</p>
-      <Loader states={[tableQuery]}>
-        <Table<MspEc>
-          columns={columns}
-          dataSource={tableQuery.data?.data}
-          rowKey='id'
-          rowSelection={hasAccess() && {
-            type: 'checkbox',
-            onChange (selectedRowKeys, selRows) {
-              setSelectedRows(selRows)
-            }
-          }}
-        />
-      </Loader>
-    </Space>
+  const content = <Space direction='vertical'>
+    <p>{ $t({ defaultMessage: 'Apply selected templates to the customers below' }) }</p>
+    <Loader states={[tableQuery]}>
+      <Table<MspEc>
+        columns={columns}
+        dataSource={tableQuery.data?.data}
+        rowKey='id'
+        rowSelection={hasAccess() && {
+          type: 'checkbox',
+          onChange (selectedRowKeys, selRows) {
+            setSelectedRows(selRows)
+          }
+        }}
+      />
+    </Loader>
+  </Space>
 
-  const footer =<div>
+  const footer = <div>
     <Button
       disabled={selectedRows.length === 0}
       onClick={() => setConfirmationDrawerVisible(true)}

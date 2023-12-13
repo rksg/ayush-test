@@ -14,6 +14,7 @@ import {
   PolicyOperation,
   PolicyType,
   getPolicyRoutePath,
+  policyTypeLabelMapping,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink }                from '@acx-ui/react-router-dom'
@@ -152,7 +153,7 @@ function getAddTemplateMenuProps (): Omit<MenuProps, 'placement'> {
         key: 'add-aaa',
         // eslint-disable-next-line max-len
         label: <TenantLink tenantType='v' to={'configTemplates/' + getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}>
-          {$t({ defaultMessage: 'RADIUS Server' })}
+          {$t(policyTypeLabelMapping[PolicyType.AAA])}
         </TenantLink>
       }]
     }]
