@@ -3,7 +3,8 @@ import { useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal }                     from '@acx-ui/components'
-import { SimpleListTooltip }                                                                  from '@acx-ui/rc/components'
+import { PortalPreviewModal, SimpleListTooltip, getLanguage }                                 from '@acx-ui/rc/components'
+import { initialPortalData }                                                                  from '@acx-ui/rc/components'
 import { useDeletePortalMutation, useGetEnhancedPortalProfileListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
 import { useGetPortalLangMutation }                                                           from '@acx-ui/rc/services'
 import {
@@ -22,12 +23,9 @@ import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui
 import { filterByAccess, hasAccess }                               from '@acx-ui/user'
 import { loadImageWithJWT }                                        from '@acx-ui/utils'
 
-import Photo                 from '../../../../assets/images/portal-demo/PortalPhoto.svg'
-import Powered               from '../../../../assets/images/portal-demo/PoweredLogo.svg'
-import Logo                  from '../../../../assets/images/portal-demo/RuckusCloud.svg'
-import { getLanguage }       from '../../commonUtils'
-import { initialPortalData } from '../PortalForm/PortalForm'
-import PortalPreviewModal    from '../PortalPreviewModal'
+import Photo   from '../../../../assets/images/portal-demo/PortalPhoto.svg'
+import Powered from '../../../../assets/images/portal-demo/PoweredLogo.svg'
+import Logo    from '../../../../assets/images/portal-demo/RuckusCloud.svg'
 
 export default function PortalTable () {
   const intl = useIntl()

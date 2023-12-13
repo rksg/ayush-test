@@ -434,8 +434,9 @@ export interface SwitchPortViewModel extends GridDataRow {
   unitState: SwitchStatusEnum; // stack unit status (Online/Offline)
   SwitchPortStackingPortField: boolean;
   mediaType?: string;
-  portnumber?: string
-  usedInUplink?: boolean
+  portnumber?: string;
+  usedInUplink?: boolean;
+  id?: string;
 }
 
 export interface SwitchPortStatus extends SwitchPortViewModel {
