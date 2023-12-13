@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { Form }                   from 'antd'
 import _                          from 'lodash'
@@ -16,6 +16,7 @@ import {
 import {
   AuthRadiusEnum,
   Demo,
+  generateConfigTemplateBreadcrumb,
   GuestNetworkTypeEnum,
   GuestPortal,
   LocationExtended,
@@ -24,9 +25,11 @@ import {
   NetworkTypeEnum,
   NetworkVenue,
   redirectPreviousPage,
+  useConfigTemplate,
   WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { getIntl }                                            from '@acx-ui/utils'
 
 import { CloudpathForm }           from './CaptivePortal/CloudpathForm'
 import { GuestPassForm }           from './CaptivePortal/GuestPassForm'
@@ -138,6 +141,10 @@ export function NetworkForm (props:{
 
   const { data } = useGetNetworkQuery({ params })
   const networkVxLanTunnelProfileInfo = useNetworkVxLanTunnelProfileInfo(data ?? null)
+
+  // Config Template related states
+  const { isTemplate } = useConfigTemplate()
+  const breadcrumb = useBreadcrumb()
 
   useEffect(() => {
     if(saveState){
@@ -508,14 +515,8 @@ export function NetworkForm (props:{
   return (
     <>
       {!modalMode && <PageHeader
-        title={editMode
-          ? intl.$t({ defaultMessage: 'Edit Network' })
-          : intl.$t({ defaultMessage: 'Create New Network' })}
-        breadcrumb={[
-          { text: intl.$t({ defaultMessage: 'Wi-Fi' }) },
-          { text: intl.$t({ defaultMessage: 'Wi-Fi Networks' }) },
-          { text: intl.$t({ defaultMessage: 'Network List' }), link: '/networks' }
-        ]}
+        title={generatePageHeaderTitle(editMode, isTemplate)}
+        breadcrumb={breadcrumb}
       />}
       {(!editMode || cloneMode) &&
         <NetworkFormContext.Provider value={{
@@ -710,4 +711,29 @@ function pickOneCaptivePortalForm (saveState: NetworkSaveData) {
       console.error(`Unknown Network Type: ${saveState?.guestPortal?.guestNetworkType}`)
       return <OnboardingForm />
   }
+}
+
+function generatePageHeaderTitle (isEdit: boolean, isTemplate: boolean): string {
+  const { $t } = getIntl()
+
+  return $t({ defaultMessage: '{action} Network {templateText}' }, {
+    action: isEdit ? $t({ defaultMessage: 'Edit' }) : $t({ defaultMessage: 'Create New' }),
+    templateText: isTemplate ? $t({ defaultMessage: 'Template' }) : ''
+  })
+}
+
+function useBreadcrumb () {
+  const { isTemplate } = useConfigTemplate()
+  const { $t } = useIntl()
+  const breadcrumb = useMemo(() => {
+    return isTemplate
+      ? generateConfigTemplateBreadcrumb()
+      : [
+        { text: $t({ defaultMessage: 'Wi-Fi' }) },
+        { text: $t({ defaultMessage: 'Wi-Fi Networks' }) },
+        { text: $t({ defaultMessage: 'Network List' }), link: '/networks' }
+      ]
+  }, [isTemplate])
+
+  return breadcrumb
 }
