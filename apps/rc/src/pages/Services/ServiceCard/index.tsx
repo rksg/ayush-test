@@ -5,6 +5,7 @@ import {
   getServiceRoutePath,
   ServiceOperation,
   ServiceType,
+  serviceTypeDescMapping,
   serviceTypeLabelMapping
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'

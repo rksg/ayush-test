@@ -60,7 +60,8 @@ jest.mock('@rc/Routes', () => () => {
     </>
   )
 },{ virtual: true })
-jest.mock('./pages/Venues/VenuesTable', () => ({
+jest.mock('./pages/Venues', () => ({
+  ...jest.requireActual('./pages/Venues'),
   VenuesTable: () => {
     return <div data-testid='venues' />
   }
