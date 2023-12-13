@@ -64,10 +64,6 @@ jest.mock('./pages/Networks/wireless/NetworksTable', () => ({
   })
 }))
 
-jest.mock('./pages/Networks/wireless/NetworkForm/NetworkForm', () => () => {
-  return <div data-testid='NetworkForm' />
-})
-
 jest.mock('./pages/Networks/wireless/NetworkDetails/NetworkDetails', () => () => {
   return <div data-testid='NetworkDetails' />
 })
@@ -100,32 +96,12 @@ jest.mock('./pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail', () => ()
   return <div data-testid='MdnsProxyDetail' />
 })
 
-jest.mock('./pages/Services/WifiCalling/WifiCallingForm/WifiCallingForm', () => () => {
-  return <div data-testid='WifiCallingForm' />
-})
-
-jest.mock('./pages/Services/WifiCalling/WifiCallingForm/WifiCallingConfigureForm', () => () => {
-  return <div data-testid='WifiCallingConfigureForm' />
-})
-
-jest.mock('./pages/Services/WifiCalling/WifiCallingDetail/WifiCallingDetailView', () => () => {
-  return <div data-testid='WifiCallingDetailView' />
-})
-
 jest.mock('./pages/Services/WifiCalling/WifiCallingTable/WifiCallingTable', () => () => {
   return <div data-testid='WifiCallingTable' />
 })
 
 jest.mock('./pages/Services/DHCP/Edge/AddDHCP', () => () => {
   return <div data-testid='AddDHCP' />
-})
-
-jest.mock('./pages/Services/DHCP/DHCPForm/DHCPForm', () => () => {
-  return <div data-testid='DHCPForm' />
-})
-
-jest.mock('./pages/Services/Portal/PortalForm/PortalForm', () => () => {
-  return <div data-testid='PortalForm' />
 })
 
 jest.mock('./pages/Services/DHCP/DHCPDetail', () => () => {
@@ -213,16 +189,8 @@ jest.mock('./pages/Users/Persona/PersonaGroupDetails', () => () => {
   return <div data-testid='PersonaGroupDetails' />
 })
 
-jest.mock('./pages/Policies/AAA/AAAForm/AAAForm', () => () => {
-  return <div data-testid='AAAPolicyForm' />
-})
-
 jest.mock('./pages/Policies/AAA/AAADetail', () => () => {
   return <div data-testid='AAAPolicyDetail' />
-})
-
-jest.mock('./pages/Policies/AccessControl/AccessControlForm/AccessControlForm', () => () => {
-  return <div data-testid='AccessControlForm' />
 })
 
 jest.mock('./pages/Policies/AccessControl/AccessControlDetail', () => () => {
@@ -239,7 +207,15 @@ jest.mock('@acx-ui/rc/components', () => ({
   RogueAPDetectionTable: () => <div data-testid='RogueAPDetectionTable' />,
   DpskForm: () => <div data-testid='DpskForm' />,
   MacRegistrationListForm: () => <div data-testid='MacRegistrationListForm' />,
-  AdaptivePolicySetForm: () => <div data-testid='AdaptivePolicySetForm' />
+  AdaptivePolicySetForm: () => <div data-testid='AdaptivePolicySetForm' />,
+  AccessControlForm: () => <div data-testid='AccessControlForm' />,
+  AAAForm: () => <div data-testid='AAAPolicyForm' />,
+  WifiCallingConfigureForm: () => <div data-testid='WifiCallingConfigureForm' />,
+  WifiCallingForm: () => <div data-testid='WifiCallingForm' />,
+  WifiCallingDetailView: () => <div data-testid='WifiCallingDetailView' />,
+  DHCPForm: () => <div data-testid='DHCPForm' />,
+  PortalForm: () => <div data-testid='PortalForm' />,
+  NetworkForm: () => <div data-testid='NetworkForm' />
 }))
 
 jest.mock('./pages/Policies/AdaptivePolicy/RadiusAttributeGroup/RadiusAttributeGroupForm/RadiusAttributeGroupForm', () => () => {
@@ -305,6 +281,10 @@ jest.mock('./pages/Services/EdgeSdLan/EdgeSdLanTable', () => () => {
 })
 jest.mock('./pages/Services/EdgeSdLan/EdgeSdLanDetail', () => () => {
   return <div data-testid='EdgeSdLanDetail' />
+})
+
+jest.mock('./pages/Services/EdgeSdLanP2/AddEdgeSdLan', () => () => {
+  return <div data-testid='AddEdgeSdLanP2' />
 })
 
 describe('RcRoutes: Devices', () => {
@@ -635,45 +615,58 @@ describe('RcRoutes: Services', () => {
     expect(screen.getByTestId('EditEdgeFirewall')).toBeVisible()
   })
 
-  test('should navigate to create Edge SD-LAN page', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.CREATE }),
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('AddEdgeSdLan')).toBeVisible()
-  })
+  describe('RcRoutes: Services > Edge SD-LAN service', () => {
+    beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
 
-  test('should navigate to edit Edge SD-LAN page', async () => {
-    const path = getServiceDetailsLink({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + path,
-        wrapRoutes: false
-      }
+    test('should navigate to create Edge SD-LAN page', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.CREATE }),
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('AddEdgeSdLan')).toBeVisible()
     })
-    expect(screen.getByTestId('EditEdgeSdLan')).toBeVisible()
-  })
-  test('should navigate to Edge SD-LAN list page', async () => {
-    const path = getServiceDetailsLink({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.LIST, serviceId: 'SERVICE_ID' })
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + path,
-        wrapRoutes: false
-      }
+
+    test('should navigate to edit Edge SD-LAN page', async () => {
+      const path = getServiceDetailsLink({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + path,
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('EditEdgeSdLan')).toBeVisible()
     })
-    expect(screen.getByTestId('EdgeSdLanTable')).toBeVisible()
-  })
-  test('should navigate to Edge SD-LAN detail page', async () => {
-    const path = getServiceDetailsLink({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + path,
-        wrapRoutes: false
-      }
+    test('should navigate to Edge SD-LAN list page', async () => {
+      const path = getServiceDetailsLink({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.LIST, serviceId: 'SERVICE_ID' })
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + path,
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('EdgeSdLanTable')).toBeVisible()
     })
-    expect(screen.getByTestId('EdgeSdLanDetail')).toBeVisible()
+    test('should navigate to Edge SD-LAN detail page', async () => {
+      const path = getServiceDetailsLink({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + path,
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('EdgeSdLanDetail')).toBeVisible()
+    })
+    test('should navigate to create Edge SD-LAN Phase2 page', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN_P2, oper: ServiceOperation.CREATE }),
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('AddEdgeSdLanP2')).toBeVisible()
+    })
   })
 })
 
