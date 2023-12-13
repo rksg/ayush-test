@@ -7,10 +7,15 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { useAddAAAPolicyTemplateMutation }                                        from '@acx-ui/msp/services'
+import {
+  useAddAAAPolicyTemplateMutation,
+  useGetAAAPolicyTemplateQuery,
+  useUpdateAAAPolicyTemplateMutation
+} from '@acx-ui/msp/services'
 import { useAaaPolicyQuery, useAddAAAPolicyMutation, useUpdateAAAPolicyMutation } from '@acx-ui/rc/services'
 import {
   AAAPolicyType,
+  generateButtonLabel,
   generatePolicyPageHeaderTitle,
   PolicyOperation,
   PolicyType,
@@ -37,18 +42,18 @@ const AAAForm = (props: AAAFormProps) => {
   const { type, edit, networkView, backToNetwork } = props
   const isEdit = edit && !networkView
   const formRef = useRef<StepsFormLegacyInstance<AAAPolicyType>>()
-  const { data } = useAaaPolicyQuery({ params }, { skip: !isEdit })
   const { isTemplate } = useConfigTemplate()
   const breadcrumb = usePolicyBreadcrumb(PolicyType.AAA, PolicyOperation.LIST)
-  const createAAAPolicy = useAddInstance()
-  const [ updateAAAPolicy ] = useUpdateAAAPolicyMutation()
-  const [saveState, updateSaveState] = useState<AAAPolicyType>({ name: '' })
+  const { data } = useGetInstance(isEdit)
+  const createInstance = useAddInstance()
+  const updateInstance = useUpdateInstance()
+  const [saveState, setSaveState] = useState<AAAPolicyType>({ name: '' })
 
   useEffect(() => {
     if (data) {
       formRef?.current?.resetFields()
       formRef?.current?.setFieldsValue(data)
-      updateSaveState({ ...saveState, ...data })
+      setSaveState({ ...saveState, ...data })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
@@ -57,9 +62,9 @@ const AAAForm = (props: AAAFormProps) => {
     const requestPayload = { params, payload: data }
     try {
       if (isEdit) {
-        await updateAAAPolicy(requestPayload).unwrap()
+        await updateInstance(requestPayload).unwrap()
       } else {
-        await createAAAPolicy(requestPayload).unwrap().then(res => data.id = res?.response?.id)
+        await createInstance(requestPayload).unwrap().then(res => data.id = res?.response?.id)
       }
       networkView ? backToNetwork?.(data) : navigate(linkToInstanceList, { replace: true })
     } catch (error) {
@@ -81,6 +86,7 @@ const AAAForm = (props: AAAFormProps) => {
         formRef={formRef}
         onCancel={onCancel}
         onFinish={handleAAAPolicy}
+        buttonLabel={generateButtonLabel(isEdit)}
       >
         <StepsFormLegacy.StepForm
           name='settings'
@@ -103,4 +109,22 @@ function useAddInstance () {
   const [ createAAAPolicyTemplate ] = useAddAAAPolicyTemplateMutation()
 
   return isTemplate ? createAAAPolicyTemplate : createAAAPolicy
+}
+
+function useGetInstance (isEdit: boolean) {
+  const { isTemplate } = useConfigTemplate()
+  const params = useParams()
+  const aaaPolicyResult = useAaaPolicyQuery({ params }, { skip: !isEdit || isTemplate })
+  // eslint-disable-next-line max-len
+  const aaaPolicyTemplateResult = useGetAAAPolicyTemplateQuery({ params }, { skip: !isEdit || !isTemplate })
+
+  return isTemplate ? aaaPolicyTemplateResult : aaaPolicyResult
+}
+
+function useUpdateInstance () {
+  const { isTemplate } = useConfigTemplate()
+  const [ updateAAAPolicy ] = useUpdateAAAPolicyMutation()
+  const [ updateAAAPolicyTemplate ] = useUpdateAAAPolicyTemplateMutation()
+
+  return isTemplate ? updateAAAPolicyTemplate : updateAAAPolicy
 }

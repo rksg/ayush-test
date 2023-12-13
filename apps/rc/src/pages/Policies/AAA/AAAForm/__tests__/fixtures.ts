@@ -4,12 +4,12 @@ export const aaaData = {
   type: 'AUTHENTICATION',
   primary: {
     ip: '2.3.3.4',
-    port: 101,
+    port: 1087,
     sharedSecret: 'xxxxxxxx'
   },
   secondary: {
     ip: '2.3.3.4',
-    port: 101,
+    port: 1088,
     sharedSecret: 'xxxxxxxx'
   },
   tags: ['xxdd']

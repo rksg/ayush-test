@@ -2,10 +2,10 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 
 import { baseQuery } from './baseQuery'
 
-export const baseMspApi = createApi({
+export const baseConfigTemplateApi = createApi({
   baseQuery: baseQuery,
-  reducerPath: 'mspApi',
-  tagTypes: ['Msp'],
+  reducerPath: 'configTemplateApi',
+  tagTypes: ['ConfigTemplate'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })

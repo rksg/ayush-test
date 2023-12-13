@@ -331,17 +331,5 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/mspCustomers/mspRecs',
     newApi: true
-  },
-  getConfigTemplates: {
-    method: 'post',
-    url: '/templates'
-  },
-  applyConfigTemplate: {
-    method: 'post',
-    url: '/templates/:templateId/instance'
-  },
-  addAAAPolicyTemplate: {
-    method: 'post',
-    url: '/templates/radiusServerProfiles'
   }
 }

@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { MspUrlsInfo }                                            from '@acx-ui/msp/utils'
+import { ConfigTemplateUrlsInfo }                                 from '@acx-ui/msp/utils'
 import { AaaUrls, ConfigTemplateContext }                         from '@acx-ui/rc/utils'
 import { Provider }                                               from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
@@ -31,22 +31,27 @@ describe('AAAForm', () => {
       ),
       rest.get(
         AaaUrls.getAAAPolicy.url,
-        (_, res, ctx) => {return res(ctx.json(aaaData))}
+        (_, res, ctx) => res(ctx.json(aaaData))
       ),
       rest.post(
         AaaUrls.addAAAPolicy.url,
-        (_, res, ctx) => {return res(ctx.json(successResponse))}
+        (_, res, ctx) => res(ctx.json(successResponse))
       ),
       rest.put(
         AaaUrls.updateAAAPolicy.url,
-        (_, res, ctx) => {return res(ctx.json(successResponse))}
+        (_, res, ctx) => res(ctx.json(successResponse))
       ),
       rest.get(
         AaaUrls.getAAAPolicyList.url,
-        (_, res, ctx) => {return res(ctx.json(aaaList))}
+        (_, res, ctx) => res(ctx.json(aaaList))
       )
     )
   })
+
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
   it('should create AAA successfully', async () => {
     render(<Provider><AAAForm edit={false} networkView={true}/></Provider>, {
       route: { params }
@@ -126,7 +131,7 @@ describe('AAAForm', () => {
     const addTemplateFn = jest.fn()
     mockServer.use(
       rest.post(
-        MspUrlsInfo.addAAAPolicyTemplate.url,
+        ConfigTemplateUrlsInfo.addAAAPolicyTemplate.url,
         (_, res, ctx) => {
           addTemplateFn()
           return res(ctx.json(successResponse))
@@ -149,6 +154,37 @@ describe('AAAForm', () => {
     await waitFor(() => expect(addTemplateFn).toHaveBeenCalled())
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalled())
   })
+
+  it('should update AAA template successfully', async () => {
+    const updateTemplateFn = jest.fn()
+
+    mockServer.use(
+      rest.put(
+        ConfigTemplateUrlsInfo.updateAAAPolicyTemplate.url,
+        (_, res, ctx) => {
+          updateTemplateFn()
+          return res(ctx.json(successResponse))
+        }
+      ),
+      rest.get(
+        ConfigTemplateUrlsInfo.getAAAPolicyTemplate.url,
+        (_, res, ctx) => res(ctx.json(aaaData))
+      )
+    )
+    render(
+      <Provider>
+        <ConfigTemplateContext.Provider value={{ isTemplate: true }}>
+          <AAAForm edit={true} />
+        </ConfigTemplateContext.Provider>
+      </Provider>, { route: { params } }
+    )
+
+    expect(await screen.findByDisplayValue(aaaData.name)).toBeVisible()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+
+    await waitFor(() => expect(updateTemplateFn).toHaveBeenCalled())
+  })
 })
 
 async function editAAA (){
@@ -165,7 +201,7 @@ async function editAAA (){
   await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[1],
     'test1234')
   await fillInProfileName('test1')
-  await userEvent.click(await screen.findByText('Add'))
+  await userEvent.click(await screen.findByText('Apply'))
   await userEvent.type(port2, '1812')
   await fillInProfileName('test2 update')
   // FIXME: Do not use "setTimeout"
