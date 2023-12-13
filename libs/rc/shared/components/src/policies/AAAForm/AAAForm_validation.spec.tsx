@@ -12,7 +12,7 @@ import { UserUrlsInfo }                          from '@acx-ui/user'
 import { multipleConflictMessage, radiusErrorMessage } from '../../NetworkForm/contentsMap'
 
 import { aaaData, successResponse, validateErrorResponse } from './__tests__/fixtures'
-import { AAAForm } from './AAAForm'
+import { AAAForm }                                         from './AAAForm'
 
 const aaaList=[{
   id: '1',
