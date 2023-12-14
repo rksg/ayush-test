@@ -569,6 +569,15 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         }
       }
     }),
+    patchTenantAuthentications: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.patchTenantAuthentications, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     updateTenantAuthentications: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(AdministrationUrlsInfo.updateTenantAuthentications, params)
@@ -684,6 +693,7 @@ export const {
   useGetTenantAuthenticationsQuery,
   useDeleteTenantAuthenticationsMutation,
   useAddTenantAuthenticationsMutation,
+  usePatchTenantAuthenticationsMutation,
   useUpdateTenantAuthenticationsMutation,
   useGetAdminGroupsQuery,
   useDeleteAdminGroupsMutation,

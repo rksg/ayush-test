@@ -21,7 +21,8 @@ import { formatter }                          from '@acx-ui/formatter'
 import {
   useAddTenantAuthenticationsMutation,
   useGetUploadURLMutation,
-  useUpdateTenantAuthenticationsMutation
+  useUpdateTenantAuthenticationsMutation,
+  usePatchTenantAuthenticationsMutation
 } from '@acx-ui/rc/services'
 import {
   TenantAuthentications,
@@ -54,6 +55,7 @@ interface ImportFileDrawerProps extends DrawerProps {
   setEditMode: (editMode: boolean) => void
   editData?: TenantAuthentications
   isGroupBasedLoginEnabled?: boolean
+  isGoogleWorkspaceEnabled?: boolean
 }
 
 const fileTypeMap: Record<AcceptableType, string[]>= {
@@ -81,7 +83,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
 
   const { maxSize, isLoading, acceptType,
     formDataName = 'file', setVisible, setEditMode,
-    isEditMode, editData, isGroupBasedLoginEnabled } = props
+    isEditMode, editData, isGroupBasedLoginEnabled, isGoogleWorkspaceEnabled } = props
 
   const [fileDescription, setFileDescription] = useState<ReactNode>('')
   const [formData, setFormData] = useState<FormData>()
@@ -94,6 +96,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
   const bytesFormatter = formatter('bytesFormat')
   const [addSso] = useAddTenantAuthenticationsMutation()
   const [updateSso] = useUpdateTenantAuthenticationsMutation()
+  const [patchSso] = usePatchTenantAuthenticationsMutation()
   const [getUploadURL] = useGetUploadURLMutation()
 
   useEffect(()=>{
@@ -201,6 +204,10 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
         }
       }
 
+      const allowedDomains = isGroupBasedLoginEnabled
+        ? {
+          domains: 'commscope.com, ruckuswirelss.com, arris.com'
+        } : undefined
       if(isEditMode) {
         const ssoEditData: TenantAuthentications = {
           name: metadataFile.name,
@@ -210,6 +217,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
         }
         await updateSso({ params: { authenticationId: editData?.id },
           payload: ssoEditData }).unwrap()
+        await patchSso({ params, payload: allowedDomains }).unwrap()
         reloadAuthTable(2)
       } else {
         const ssoData: TenantAuthentications = {
@@ -219,6 +227,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
           samlFileURL: fileType === SamlFileType.file ? fileURL?.data.fileId : directUrlPath
         }
         await addSso({ payload: ssoData }).unwrap()
+        await patchSso({ params, payload: allowedDomains }).unwrap()
         reloadAuthTable(2)
       }
       setVisible(false)
@@ -234,14 +243,17 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
       {isGroupBasedLoginEnabled && <Form.Item
         name='allowedDomains'
         label={$t({ defaultMessage: 'Allowed Domains' })}
-        initialValue={editData?.name || ''}
         rules={[
           { type: 'string', required: true },
           { min: 2, transform: (value) => value.trim() },
           { max: 64, transform: (value) => value.trim() },
           { validator: (_, value) => domainNameRegExp(value) }
         ]}
-        children={<Input />}
+        children={
+          <Input
+            placeholder={$t({ defaultMessage: 'Enter domains separated by comma' })}
+          />
+        }
       />}
     </Form>
 
@@ -368,7 +380,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
         {$t({ defaultMessage: 'Cancel' })}
       </Button>
     </div>} >
-    {isGroupBasedLoginEnabled && <AuthTypeSelector
+    {isGroupBasedLoginEnabled && isGoogleWorkspaceEnabled && <AuthTypeSelector
       ssoConfigured={true}
       setSelected={setSelectedAuth}
     />}

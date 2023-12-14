@@ -39,6 +39,7 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
   const navigate = useNavigate()
   const linkToAdministrators = useTenantLink('/administration/administrators')
   const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
+  const isGoogleWorkspaceEnabled = useIsSplitOn(Features.GOOGLE_WORKSPACE_SSO_TOGGLE)
 
   const { data: adminList } = useGetAdminListQuery({ params })
 
@@ -187,6 +188,7 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
       maxEntries={512}
       acceptType={['xml']}
       isGroupBasedLoginEnabled={isGroupBasedLoginEnabled}
+      isGoogleWorkspaceEnabled={isGoogleWorkspaceEnabled}
     />}
     {modalVisible && <ViewXmlModal
       visible={modalVisible}

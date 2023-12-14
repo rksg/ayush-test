@@ -130,7 +130,8 @@ export enum Features {
   RUCKUS_AI_ZONES_LIST = 'ruckus-ai-zones-toggle',
   LINKEDIN_OIDC_TOGGLE = 'guest-linkedin-openid-connect-toggle',
   TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs',
-  GROUP_BASED_LOGIN_TOGGLE = 'group-based-login-toggle'
+  GROUP_BASED_LOGIN_TOGGLE = 'group-based-login-toggle',
+  GOOGLE_WORKSPACE_SSO_TOGGLE = 'google-workspace-sso-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

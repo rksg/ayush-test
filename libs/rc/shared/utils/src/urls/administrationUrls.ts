@@ -198,6 +198,11 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/tenants/authentications',
     newApi: true
   },
+  patchTenantAuthentications: {
+    method: 'PATCH',
+    url: '/tenants/authentications',
+    newApi: true
+  },
   updateTenantAuthentications: {
     method: 'put',
     url: '/tenants/authentications/:authenticationId',
