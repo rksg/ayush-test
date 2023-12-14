@@ -10,9 +10,9 @@ import {
 import { DefaultOptionType } from 'antd/lib/select'
 import { useIntl }           from 'react-intl'
 
-import { Button, Modal, ModalType, StepsFormLegacy } from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }      from '@acx-ui/feature-toggle'
-import { useGetDpskListQuery }                       from '@acx-ui/rc/services'
+import { Button, Modal, ModalType, StepsFormLegacy }              from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useGetDpskListQuery }                                    from '@acx-ui/rc/services'
 import {
   WlanSecurityEnum,
   DpskSaveData,
