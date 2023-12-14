@@ -10,12 +10,19 @@ import {
   getRoles,
   AdminGroup
 } from '@acx-ui/rc/utils'
+import { RolesEnum } from '@acx-ui/types'
 
 interface AddGroupDrawerProps {
   visible: boolean
   isEditMode: boolean
   editData?: AdminGroup
   setVisible: (visible: boolean) => void
+}
+
+export interface AdminGroupData {
+  name?: string,
+  groupId?: string,
+  role: RolesEnum
 }
 
 export const AddGroupDrawer = (props: AddGroupDrawerProps) => {
@@ -38,13 +45,13 @@ export const AddGroupDrawer = (props: AddGroupDrawerProps) => {
     const role = form.getFieldValue('role')
     try {
       await form.validateFields()
-      const adminGroupData: AdminGroup = {
+      const adminGroupData: AdminGroupData = {
         name: name,
         groupId: groupId,
         role: role
       }
 
-      const adminGroupEditData: AdminGroup = {
+      const adminGroupEditData: AdminGroupData = {
         // name: form.getFieldValue('name'),
         // groupId: groupId,
         role: role

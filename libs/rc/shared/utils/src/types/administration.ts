@@ -253,22 +253,18 @@ export interface AdminGroup {
   id?: string,
   name?: string,
   groupId?: string,
-  contactPerson?: {
-      name: string,
-      email: string
-  },
-  role: CustomRole['name'],
+  role?: RolesEnum,
   customRole?: CustomRole,
   processingPriority?: number
 }
 
 export interface CustomRole {
   id?: string,
-  name: RolesEnum,
-  description: string,
-  roleType: string,
-  frameworkRO: boolean,
-  createdDate: string,
-  updatedDate: string
+  name?: RolesEnum,
+  description?: string,
+  roleType?: string,
+  frameworkRO?: boolean,
+  createdDate?: string,
+  updatedDate?: string
 }
 

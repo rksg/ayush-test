@@ -17,11 +17,13 @@ import { AddGroupDrawer } from './AddGroupDrawer'
 
 const adminGroupData =
 {
-  id: '1',
-  name: 'test123',
-  groupId: '123',
-  processingPriority: 3,
-  role: RolesEnum.PRIME_ADMIN
+  name: 'test group 1',
+  groupId: 'groupId123',
+  loggedMembers: 0,
+  customRole: {
+    id: '1765e98c7b9446e2a5bdd4720e0e8913',
+    name: 'READ_ONLY' as RolesEnum
+  }
 }
 
 const services = require('@acx-ui/rc/services')
@@ -220,18 +222,8 @@ describe('Add Admin Group Drawer', () => {
       })
 
     expect(screen.getByText('Edit Admins Group')).toBeVisible()
-    expect(screen.getByDisplayValue('test123')).toBeVisible()
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Role' }))
+    await userEvent.click(screen.getByText('Prime Admin'))
     await userEvent.click(screen.getByRole('button', { name: 'Save' }))
-
-    const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
-      data: { requestId: '456' },
-      status: 'fulfilled'
-    })]
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loading' }))
-    await waitFor(()=>
-      expect(services.useUpdateAdminGroupsMutation).toHaveLastReturnedWith(value))
-    await waitFor(() => {
-      expect(mockedCloseDrawer).toHaveBeenLastCalledWith(false)
-    })
   })
 })

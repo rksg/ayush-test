@@ -70,7 +70,6 @@ export const fakedAdminGroupLsit = [
       id: '1765e98c7b9446e2a5bdd4720e0e8911',
       createdDate: '2023-12-01T00:13:58.122+00:00',
       updatedDate: '2023-12-01T00:13:58.122+00:00',
-      name: 'ADMIN',
       description: 'Admin Role',
       roleType: 'PRE_DEFINED',
       policyBased: false,
@@ -78,32 +77,6 @@ export const fakedAdminGroupLsit = [
     }
   }
 ]
-
-// jest.mock('./AddAdministratorDialog', () => ({
-//   ...jest.requireActual('./AddAdministratorDialog'),
-//   __esModule: true,
-//   default: ({ visible, setVisible }: { visible: boolean, setVisible: (open:boolean) => void }) => {
-//     return visible ?
-//       <div data-testid='mocked-AddAdministratorDialog'>
-//         Add New Administrator
-//         <button onClick={() => setVisible}>Cancel</button>
-//       </div>
-//       : ''
-//   }
-// }))
-
-// jest.mock('./EditAdministratorDialog', () => ({
-//   ...jest.requireActual('./EditAdministratorDialog'),
-//   __esModule: true,
-//   default: ({ visible, setVisible }: { visible: boolean, setVisible: (open:boolean) => void }) => {
-//     return visible ?
-//       <div data-testid='mocked-EditAdministratorDialog'>
-//         Edit Administrator
-//         <button onClick={() => setVisible}>Cancel</button>
-//       </div>
-//       : ''
-//   }
-// }))
 
 const isPrimeAdmin : () => boolean = jest.fn().mockReturnValue(true)
 const userProfileContextValues = {
@@ -173,9 +146,24 @@ describe('Admin Groups Table', () => {
     await userEvent.click(within(row).getByRole('checkbox'))
     await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
     expect(await screen.findByText('Edit Admins Group')).toBeInTheDocument()
-    // const cancelBtn = within(screen.getByTestId('mocked-EditAdministratorDialog'))
-    //   .getByRole('button', { name: 'Cancel' })
-    // fireEvent.click(cancelBtn)
+  })
+  it('should render correctly for non prime admin', async () => {
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <AdminGroups
+            isPrimeAdminUser={false}
+          />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    await waitFor(() => {
+      expect(mockReqAdminsData).toBeCalled()
+    })
   })
 
   it('should hide edit button when multiple selected', async () => {
@@ -185,7 +173,7 @@ describe('Admin Groups Table', () => {
           value={userProfileContextValues}
         >
           <AdminGroups
-            isPrimeAdminUser={false}
+            isPrimeAdminUser={true}
           />
         </UserProfileContext.Provider>
       </Provider>, {
