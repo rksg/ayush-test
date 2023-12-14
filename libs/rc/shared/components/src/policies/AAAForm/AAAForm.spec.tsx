@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { ConfigTemplateUrlsInfo }                                 from '@acx-ui/msp/utils'
-import { AaaUrls, ConfigTemplateContext }                         from '@acx-ui/rc/utils'
+import { AaaUrls }                                                from '@acx-ui/rc/utils'
 import { Provider }                                               from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                                           from '@acx-ui/user'
@@ -15,6 +15,12 @@ const mockedUsedNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
+}))
+
+const mockedUseConfigTemplate = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useConfigTemplate: () => mockedUseConfigTemplate()
 }))
 
 const params = {
@@ -48,8 +54,13 @@ describe('AAAForm', () => {
     )
   })
 
+  beforeEach(() => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+  })
+
   afterEach(() => {
     jest.clearAllMocks()
+    mockedUseConfigTemplate.mockRestore()
   })
 
   it('should create AAA successfully', async () => {
@@ -128,7 +139,9 @@ describe('AAAForm', () => {
   })
 
   it('should create AAA template successfully', async () => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
     const addTemplateFn = jest.fn()
+
     mockServer.use(
       rest.post(
         ConfigTemplateUrlsInfo.addAAAPolicyTemplate.url,
@@ -140,9 +153,7 @@ describe('AAAForm', () => {
     )
     render(
       <Provider>
-        <ConfigTemplateContext.Provider value={{ isTemplate: true }}>
-          <AAAForm edit={false} />
-        </ConfigTemplateContext.Provider>
+        <AAAForm edit={false} />
       </Provider>, { route: { params } }
     )
 
@@ -156,6 +167,7 @@ describe('AAAForm', () => {
   })
 
   it('should update AAA template successfully', async () => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
     const updateTemplateFn = jest.fn()
 
     mockServer.use(
@@ -173,9 +185,7 @@ describe('AAAForm', () => {
     )
     render(
       <Provider>
-        <ConfigTemplateContext.Provider value={{ isTemplate: true }}>
-          <AAAForm edit={true} />
-        </ConfigTemplateContext.Provider>
+        <AAAForm edit={true} />
       </Provider>, { route: { params } }
     )
 

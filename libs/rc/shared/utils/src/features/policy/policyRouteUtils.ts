@@ -91,7 +91,6 @@ function hasTab ({ type, oper }: PolicyRoutePathProps): boolean {
   return false
 }
 
-// eslint-disable-next-line max-len
 export function getAdaptivePolicyDetailRoutePath (oper: PolicyOperation): string {
   const paths = ['policies']
   paths.push(typePathMapping[PolicyType.ADAPTIVE_POLICY])
