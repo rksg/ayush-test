@@ -34,9 +34,9 @@ export function useFFList (): { featureList?: string[], betaList?: string[],
   const { data: userProfile } = useUserProfileContext()
 
   const tenantType = (jwtPayload?.tenantType === AccountType.REC ||
-    jwtPayload?.tenantType === AccountType.VAR)? AccountType.REC 
-    : AccountType.MSP 
-  
+    jwtPayload?.tenantType === AccountType.VAR)? AccountType.REC
+    : AccountType.MSP
+
   // Only 3 verticals Default, Education & Hospitality will be supported in split.io
   // rest all types will be derived as 'Default' vertical type
   // Use case scenarios ----
@@ -56,9 +56,9 @@ export function useFFList (): { featureList?: string[], betaList?: string[],
   jwtPayload.acx_account_vertical = AccountVertical.HOSPITALITY
   const accountVerticalRec = (isDefaultList() && tenantType !== AccountType.REC )?
     AccountVertical.DEFAULT : jwtPayload?.acx_account_vertical
-  const accountVerticalMsp =  ((isDefaultList() || jwtPayload?.acx_account_vertical
+  const accountVerticalMsp = ((isDefaultList() || jwtPayload?.acx_account_vertical
     === AccountVertical.HOSPITALITY) && tenantType === AccountType.MSP) ?
-      AccountVertical.DEFAULT : jwtPayload?.acx_account_vertical
+    AccountVertical.DEFAULT : jwtPayload?.acx_account_vertical
   const accountVertical = tenantType === AccountType.REC? accountVerticalRec : accountVerticalMsp
 
   useDebugValue(`JWT tenantType: ${jwtPayload?.tenantType}, Tenant type: ${tenantType}`)
