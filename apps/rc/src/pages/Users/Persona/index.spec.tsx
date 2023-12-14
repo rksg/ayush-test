@@ -49,10 +49,6 @@ describe('Persona Portal', () => {
         NewPersonaBaseUrl,
         (req, res, ctx) => res(ctx.json(mockPersonaGroupList))
       ),
-      rest.get(
-        PersonaUrls.getPersonaList.url,
-        (req, res, ctx) => res(ctx.json([]))
-      ),
       rest.post(
         PersonaUrls.searchPersonaList.url.split('?')[0],
         (req, res, ctx) => res(ctx.json([]))
