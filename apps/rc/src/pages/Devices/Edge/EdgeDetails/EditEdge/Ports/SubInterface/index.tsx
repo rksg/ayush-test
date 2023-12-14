@@ -38,7 +38,7 @@ const SubInterface = (props: SubInterfaceProps) => {
     portData.length > 0 ?
       <Tabs type='third' activeKey={currentTab} onChange={handleTabChange}>
         {
-          portData.map((item, index) =>
+          portData.map((item) =>
             <Tabs.TabPane
               tab={
                 item.isLagPort
@@ -48,7 +48,7 @@ const SubInterface = (props: SubInterfaceProps) => {
                   </Tooltip>
                   : getEdgePortDisplayName(item)
               }
-              key={'port_' + (index + 1)}
+              key={'port_' + item.interfaceName}
               children={
                 <PortSubInterfaceTable
                   serialNumber={serialNumber}

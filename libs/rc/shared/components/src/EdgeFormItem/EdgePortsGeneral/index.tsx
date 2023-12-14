@@ -3,15 +3,14 @@ import { ReactNode, useEffect, useRef, useState } from 'react'
 import { Form, FormInstance }  from 'antd'
 import { StoreValue }          from 'antd/lib/form/interface'
 import { flatMap, isEqual }    from 'lodash'
-import _                       from 'lodash'
 import { ValidateErrorEntity } from 'rc-field-form/es/interface'
 import { useIntl }             from 'react-intl'
 
-import { Loader, NoData, StepsForm, Tabs, Tooltip }                                                 from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                   from '@acx-ui/feature-toggle'
-import { useGetEdgeSdLanViewDataListQuery, useUpdatePortConfigMutation }                            from '@acx-ui/rc/services'
-import { convertEdgePortsConfigToApiPayload, EdgeIpModeEnum, EdgePortTypeEnum, EdgePortWithStatus } from '@acx-ui/rc/utils'
-import { useParams }                                                                                from '@acx-ui/react-router-dom'
+import { Loader, NoData, StepsForm, Tabs, Tooltip }                                                                         from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                           from '@acx-ui/feature-toggle'
+import { useGetEdgeSdLanViewDataListQuery, useUpdatePortConfigMutation }                                                    from '@acx-ui/rc/services'
+import { convertEdgePortsConfigToApiPayload, EdgeIpModeEnum, EdgePortTypeEnum, EdgePortWithStatus, getEdgePortDisplayName } from '@acx-ui/rc/utils'
+import { useParams }                                                                                                        from '@acx-ui/react-router-dom'
 
 import { PortConfigForm }     from './PortConfigForm'
 import { getInnerPortFormID } from './utils'
@@ -74,7 +73,7 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
   data.forEach((item, index) => {
     const innerPortFormID = getInnerPortFormID(index)
     tabs.push({
-      label: _.capitalize(item.interfaceName) || '',
+      label: getEdgePortDisplayName(item),
       value: innerPortFormID,
       content: <Form.List name={innerPortFormID}>
         {(fields) => fields.map(
