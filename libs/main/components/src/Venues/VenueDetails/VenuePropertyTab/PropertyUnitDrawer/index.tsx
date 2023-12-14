@@ -426,7 +426,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
       setEnableGuestUnit(propertyConfigsQuery.data?.unitConfig?.guestAllowed ?? false)
 
       getPersonaGroupById({ params: { groupId } })
-        .then(result => setWithNsg(!!result.data?.nsgId))
+        .then(result => setWithNsg(!!result.data?.personalIdentityNetworkId))
     }
   }, [propertyConfigsQuery.data, propertyConfigsQuery.isLoading ])
 
