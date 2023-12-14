@@ -33,7 +33,7 @@ export const getEnabledCorePortMac = (form: FormInstance) => {
   let portConfig
   for(let portId in portsData) {
     portConfig = portsData[portId][0]
-    if (portConfig.corePortEnabled)
+    if (portConfig.corePortEnabled && portConfig.enabled)
       corePort = portConfig.mac
   }
   return corePort
