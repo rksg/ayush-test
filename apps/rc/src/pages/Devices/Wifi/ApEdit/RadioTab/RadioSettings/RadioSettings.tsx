@@ -773,7 +773,7 @@ export function RadioSettings () {
       })
 
       const payload = { ...form.getFieldsValue() }
-
+      const clonedPayload = cloneDeep(payload)
       const {
         enable24G,
         enable50G,
@@ -796,14 +796,14 @@ export function RadioSettings () {
       // To avoid this, change the payload with origin payload's useVenueSettings
       if (!enable24G && !apRadioParams24G.useVenueSettings) {
         set(payload, ['apRadioParams24G'], initData.apRadioParams24G)
-        set(payload, ['apRadioParams24G', 'useVenueSettings'], apRadioParams24G.useVenueSettings)
+        set(payload, ['apRadioParams24G', 'useVenueSettings'], clonedPayload.apRadioParams24G.useVenueSettings)
       }
       updateRadioParams(payload.apRadioParams24G, support24GChannels)
 
       if (hasRadio5G) {
         if (!enable50G && !apRadioParams50G?.useVenueSettings) {
           set(payload, ['apRadioParams50G'], initData.apRadioParams50G)
-          set(payload, ['apRadioParams50G', 'useVenueSettings'], apRadioParams50G.useVenueSettings)
+          set(payload, ['apRadioParams50G', 'useVenueSettings'], clonedPayload.apRadioParams50G.useVenueSettings)
         }
         updateRadioParams(payload.apRadioParams50G, support5GChannels)
       } else {
@@ -813,7 +813,7 @@ export function RadioSettings () {
       if (hasRadio6G) {
         if (!enable6G && !apRadioParams6G?.useVenueSettings) {
           set(payload, ['apRadioParams6G'], initData.apRadioParams6G)
-          set(payload, ['apRadioParams6G', 'useVenueSettings'], apRadioParams6G.useVenueSettings)
+          set(payload, ['apRadioParams6G', 'useVenueSettings'], clonedPayload.apRadioParams6G.useVenueSettings)
         }
         updateRadioParams(payload.apRadioParams6G, support6GChannels)
       } else {
@@ -825,11 +825,11 @@ export function RadioSettings () {
 
         if (!radioDual5G.lower5gEnabled && !apRadioParamsDual5G?.radioParamsLower5G?.useVenueSettings) {
           set(payload, ['apRadioParamsDual5G', 'radioParamsLower5G'], initData?.apRadioParamsDual5G?.radioParamsLower5G)
-          set(payload, ['apRadioParamsDual5G', 'radioParamsLower5G', 'useVenueSettings'], apRadioParamsDual5G?.radioParamsLower5G?.useVenueSettings)
+          set(payload, ['apRadioParamsDual5G', 'radioParamsLower5G', 'useVenueSettings'], clonedPayload.apRadioParamsDual5G?.radioParamsLower5G?.useVenueSettings)
         }
         if (!radioDual5G.upper5gEnabled && !apRadioParamsDual5G?.radioParamsUpper5G?.useVenueSettings) {
           set(payload, ['apRadioParamsDual5G', 'radioParamsUpper5G'], initData?.apRadioParamsDual5G?.radioParamsUpper5G)
-          set(payload, ['apRadioParamsDual5G', 'radioParamsUpper5G', 'useVenueSettings'], apRadioParamsDual5G?.radioParamsUpper5G?.useVenueSettings)
+          set(payload, ['apRadioParamsDual5G', 'radioParamsUpper5G', 'useVenueSettings'], clonedPayload.apRadioParamsDual5G?.radioParamsUpper5G?.useVenueSettings)
         }
         updateRadioParams(radioDual5G.radioParamsLower5G, supportLower5GChannels)
         updateRadioParams(radioDual5G.radioParamsUpper5G, supportUpper5GChannels)
