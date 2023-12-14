@@ -9,7 +9,8 @@ import {
   mockServer,
   render,
   screen,
-  waitFor } from '@acx-ui/test-utils'
+  waitFor
+} from '@acx-ui/test-utils'
 
 import { EdgePortsGeneral } from './'
 
@@ -22,6 +23,21 @@ jest.mock('@acx-ui/utils', () => {
     ...jest.requireActual('@acx-ui/utils'),
     getIntl: () => intl
   }
+})
+
+jest.mock('antd', () => {
+  const components = jest.requireActual('antd')
+  const Select = ({ children, onChange, ...props }: React.PropsWithChildren<{
+    onChange?: (value: string) => void,
+  }>) => {
+    return (
+      <select onChange={(e) => onChange?.(e.target.value)} value='' {...props}>
+        {children ? children : null}
+      </select>
+    )
+  }
+  Select.Option = 'option'
+  return { ...components, Select }
 })
 
 const {
@@ -247,8 +263,8 @@ describe('EditEdge ports - ports general and SD-LAN off', () => {
       await user.click(await screen.findByRole('tab', { name: 'Port 5' }))
       const portEnabled = await screen.findByRole('switch', { name: 'Port Enabled' })
       const portTypeSelect = await screen.findByRole('combobox', { name: 'Port Type' })
-      await user.click(portTypeSelect)
-      await user.click(await screen.findByText('Select port type..'))
+      await userEvent.selectOptions(portTypeSelect,
+        await screen.findByRole('option', { name: 'Select port type..' }))
       expect(portEnabled).not.toBeVisible()
     })
 
@@ -264,8 +280,8 @@ describe('EditEdge ports - ports general and SD-LAN off', () => {
           }
         })
 
-      await user.click(await screen.findByRole('combobox', { name: 'Port Type' }))
-      await user.click(await screen.findByText('LAN'))
+      await user.selectOptions(await screen.findByRole('combobox', { name: 'Port Type' }),
+        await screen.findByRole('option', { name: 'LAN' }))
       await screen.findByRole('textbox', { name: 'IP Address' })
       screen.getByRole('textbox', { name: 'Subnet Mask' })
     })
@@ -284,8 +300,8 @@ describe('EditEdge ports - ports general and SD-LAN off', () => {
 
       await user.click(await screen.findByRole('tab', { name: 'Port 2' }))
       const portTypeSelect = await screen.findByRole('combobox', { name: 'Port Type' })
-      await user.click(portTypeSelect)
-      await user.click((await screen.findAllByText('WAN'))[2])
+      await user.selectOptions(portTypeSelect,
+        await screen.findByRole('option', { name: 'WAN' }))
       const ipModeRadio = await screen.findByRole('radio', { name: 'Static/Manual' })
       await user.click(ipModeRadio)
       await screen.findByRole('textbox', { name: 'IP Address' })
@@ -293,7 +309,7 @@ describe('EditEdge ports - ports general and SD-LAN off', () => {
       screen.getByRole('textbox', { name: 'Gateway' })
     })
 
-    it('change port type to WAN and undo the change', async () => {
+    it('change port type to LAN and undo the change', async () => {
       const user = userEvent.setup()
       render(
         <Provider>
@@ -306,10 +322,10 @@ describe('EditEdge ports - ports general and SD-LAN off', () => {
         })
 
       const portTypeSelect = await screen.findByRole('combobox', { name: 'Port Type' })
-      await user.click(portTypeSelect)
-      await user.click(await screen.findByText('LAN'))
-      await user.click(portTypeSelect)
-      await user.click((await screen.findAllByText('WAN'))[1])
+      await user.selectOptions(portTypeSelect,
+        await screen.findByRole('option', { name: 'LAN' }))
+      await user.selectOptions(portTypeSelect,
+        await screen.findByRole('option', { name: 'WAN' }))
       expect(await screen.findByRole('switch',
         { name: /Use NAT Service/ })).not.toBeChecked()
     })
@@ -418,8 +434,8 @@ describe('EditEdge ports - ports general and SD-LAN off', () => {
       await screen.findByText(/00:0c:29:b6:ad:04/i)
       const gw = screen.queryByRole('textbox', { name: 'Gateway' })
       // change WAN into LAN
-      await userEvent.click(await screen.findByRole('combobox', { name: 'Port Type' }))
-      await userEvent.click(await screen.findByText('LAN'))
+      await userEvent.selectOptions(await screen.findByRole('combobox', { name: 'Port Type' }),
+        await screen.findByRole('option', { name: 'LAN' }))
       await waitFor(() => expect(gw).not.toBeVisible())
 
       await userEvent.click(await screen.findByRole('button', { name: 'Apply Ports General' }))
@@ -433,7 +449,7 @@ describe('EditEdge ports - ports general and SD-LAN off', () => {
 
   describe('EditEdge ports - ports general api fail', () => {
     const consoleLogFn = jest.fn()
-    jest.spyOn(console, 'log').mockImplementation(consoleLogFn)
+    jest.spyOn(console, 'log').mockImplementationOnce(consoleLogFn)
 
     beforeEach(() => {
       params = {
@@ -667,7 +683,7 @@ describe('EditEdge ports - SD-LAN ready', () => {
     await waitFor(() => expect(port2CorePort).toBeChecked())
   })
 
-  it('port type shoud be grey-out when core port enabled', async () => {
+  it('port type WAN option shoud be correctly grey-out when core port enabled', async () => {
     render(
       <Provider>
         <EdgePortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
@@ -678,7 +694,25 @@ describe('EditEdge ports - SD-LAN ready', () => {
         }
       })
     await userEvent.click(await screen.findByRole('tab', { name: 'Port 2' }))
-    expect(await screen.findByRole('combobox', { name: 'Port Type' })).toBeDisabled()
+    expect(await screen.findByRole('combobox', { name: 'Port Type' })).not.toBeDisabled()
+    expect(await screen.findByRole('option', { name: 'WAN' })).toBeDisabled()
+  })
+
+  it('port type shoud NOT be grey-out when port is unconfigured', async () => {
+    const mockEdgePortConfigPartialUnconfig = _.cloneDeep(mockEdgePortConfigWithStatusIp)
+    mockEdgePortConfigPartialUnconfig.ports[4].portType = EdgePortTypeEnum.UNCONFIGURED
+
+    render(
+      <Provider>
+        <EdgePortsGeneral data={mockEdgePortConfigPartialUnconfig.ports} />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        }
+      })
+    await userEvent.click(await screen.findByRole('tab', { name: 'Port 5' }))
+    expect(await screen.findByRole('combobox', { name: 'Port Type' })).not.toBeDisabled()
   })
 
   it('should clear gateway after core port unselected', async () => {
