@@ -142,6 +142,14 @@ describe('ApplicationRuleContent Component', () => {
       screen.getByRole('option', { name: 'Web' })
     )
 
+    await screen.findAllByRole('option', { name: 'All' })
+
+    await userEvent.selectOptions(
+      screen.getAllByRole('combobox')[1],
+      screen.getAllByRole('option', { name: 'All' })[0]
+    )
+
+
     await screen.findByRole('option', { name: 'BBC' })
 
     await userEvent.selectOptions(
@@ -173,7 +181,6 @@ describe('ApplicationRuleContent Component', () => {
     await screen.findByText('app1rule1')
 
     expect(screen.getByText('app1rule1')).toBeVisible()
-
   })
 
   it('Render ApplicationDrawer component successfully for qos content', async () => {
