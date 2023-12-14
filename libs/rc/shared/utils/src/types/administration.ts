@@ -251,13 +251,13 @@ export type EntitlementDeviceTypes = Array<{ label: string, value: EntitlementDe
 
 export interface AdminGroup {
   id?: string,
-  name: string,
-  groupId: string,
+  name?: string,
+  groupId?: string,
   contactPerson?: {
       name: string,
       email: string
   },
-  role: RolesEnum,
+  role: CustomRole['name'],
   customRole?: CustomRole,
   processingPriority?: number
 }

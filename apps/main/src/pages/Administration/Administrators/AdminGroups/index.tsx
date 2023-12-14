@@ -12,7 +12,6 @@ import {
 } from '@acx-ui/components'
 import {
   useGetAdminGroupsQuery,
-  useDeleteAdminsMutation,
   useDeleteAdminGroupsMutation
 } from '@acx-ui/rc/services'
 import { AdminGroup, sortProp, defaultSort }                    from '@acx-ui/rc/utils'
@@ -39,7 +38,6 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
   const { data: adminList, isLoading, isFetching } = useGetAdminGroupsQuery({ params })
 
   const [deleteAdminGroup, { isLoading: isDeleteAdminUpdating }] = useDeleteAdminGroupsMutation()
-  const [deleteAdmins, { isLoading: isDeleteAdminsUpdating }] = useDeleteAdminsMutation()
 
   const handleOpenDialog = () => {
     setShowDialog(true)
@@ -119,17 +117,21 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
           customContent: {
             action: 'DELETE',
             entityName: $t({ defaultMessage: 'Group' }),
-            entityValue: rows.length === 1
-              ? rows[0].name !== ' ' ? rows[0].name : rows[0].groupId
-              : undefined,
-            numOfEntities: rows.length
+            entityValue: rows[0].name
+            // entityValue: rows.length === 1
+            //   ? rows[0].name !== ' ' ? rows[0].name : rows[0].groupId
+            //   : undefined,
+            // numOfEntities: rows.length
           },
           onOk: () => {
-            rows.length === 1 ?
-              deleteAdminGroup({ params: { ...params, groupId: rows[0].id } })
-                .then(clearSelection) :
-              deleteAdmins({ params, payload: rows.map(item => item.groupId) })
-                .then(clearSelection)
+            deleteAdminGroup({ params: { ...params, groupId: rows[0].id } })
+              .then(clearSelection)
+
+            // rows.length === 1 ?
+            //   deleteAdminGroup({ params: { ...params, groupId: rows[0].id } })
+            //     .then(clearSelection) :
+            //   deleteAdmins({ params, payload: rows.map(item => item.groupId) })
+            //     .then(clearSelection)
           }
         })
       }
@@ -147,7 +149,7 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
   return (
     <Loader states={[
       { isLoading: isLoading || !userProfileData,
-        isFetching: isFetching || isDeleteAdminUpdating || isDeleteAdminsUpdating
+        isFetching: isFetching || isDeleteAdminUpdating
       }
     ]}>
       <Table
