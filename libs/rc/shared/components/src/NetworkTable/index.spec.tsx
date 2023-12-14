@@ -1,3 +1,4 @@
+import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 
 import { networkApi, useNetworkListQuery }                                   from '@acx-ui/rc/services'
@@ -296,7 +297,7 @@ describe('NetworkTable', () => {
     const vlans = await screen.findAllByText(/VLAN-1/i)
     expect(vlans).toHaveLength(8)
     fireEvent.click(vlans[0])
-    fireEvent.click(await screen.findByText(/Delete/i))
+    await userEvent.click(await screen.findByText(/Delete/i))
 
     const deleteMsgs = await screen.findAllByText(/Are you sure you want to delete/i)
     expect(deleteMsgs.length).toBeGreaterThan(0)

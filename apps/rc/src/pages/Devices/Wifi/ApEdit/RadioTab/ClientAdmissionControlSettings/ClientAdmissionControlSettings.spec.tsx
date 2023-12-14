@@ -86,7 +86,7 @@ describe('Ap Client Admission Control', () => {
       </Provider>, {
         route: { params }
       })
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByTestId('client-admission-control-enable-read-only-24g'))
       .toHaveTextContent('Off')
     expect(await screen.findByTestId('client-admission-control-enable-read-only-50g'))
@@ -124,7 +124,7 @@ describe('Ap Client Admission Control', () => {
       </Provider>, {
         route: { params }
       })
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByTestId('client-admission-control-enable-24g')).toBeVisible()
     expect(await screen.findByTestId('client-admission-control-enable-50g')).toBeVisible()
     expect(screen.queryByTestId('client-admission-control-min-client-count-24g'))
