@@ -53,7 +53,8 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
   const defaultPath = [{ name: 'Network', type: 'network' }]
   const availableNode = findMatchingNode(
     rootNode,
-    selectedNode?.[selectedNode.length - 1]
+    selectedNode?.[selectedNode.length - 1],
+    selectedNode
   )
   const initialBreadcrumb = availableNode?.path || [rootNode]
   const [isAnimationSlideIn, setIsAnimationSlideIn] = useState(true)
