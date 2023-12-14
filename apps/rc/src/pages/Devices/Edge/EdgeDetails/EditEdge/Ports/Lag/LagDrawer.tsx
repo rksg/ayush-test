@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { Checkbox, Form, Input, Radio, Select, Space, Switch } from 'antd'
 import TextArea                                                from 'antd/lib/input/TextArea'
+import _                                                       from 'lodash'
 import { useIntl }                                             from 'react-intl'
 import { useParams }                                           from 'react-router-dom'
 
@@ -25,17 +26,19 @@ interface LagDrawerProps {
   setVisible: (visible: boolean) => void
   data?: EdgeLag
   portList?: EdgePort[]
+  existedLagList?: EdgeLag[]
 }
 
 export const LagDrawer = (props: LagDrawerProps) => {
 
-  const { visible, setVisible, data, portList } = props
+  const { visible, setVisible, data, portList, existedLagList } = props
+  const isEditMode = data?.id !== undefined
   const { serialNumber } = useParams()
   const { $t } = useIntl()
   const [formRef] = Form.useForm()
   const [enabledPorts, setEnabledPorts] = useState<string[]>()
   const ipMode = Form.useWatch('ipMode', formRef)
-  const subnet = Form.useWatch('ipsubnet', formRef)
+  const subnet = Form.useWatch('subnet', formRef)
   const lagMembers = Form.useWatch('lagMembers', formRef) as string[]
   const [addEdgeLag] = useAddEdgeLagMutation()
   const [updateEdgeLag] = useUpdateEdgeLagMutation()
@@ -169,6 +172,22 @@ export const LagDrawer = (props: LagDrawerProps) => {
     }
   }
 
+  const getUseableLagOptions = (existedLagList?: EdgeLag[]) => {
+    return lagNameOptions.filter(option =>
+      !existedLagList?.some(existedLag =>
+        existedLag.id === option.value &&
+        existedLag.id !== data?.id)) // keep the edit mode data as a selection
+  }
+
+  const getUseableLagMembers = (portList?: EdgePort[]) => {
+    return portList?.filter(port =>
+      !existedLagList?.some(exsistedLag =>
+        exsistedLag.lagMembers?.some(existedLagMember =>
+          existedLagMember.portId === port.id &&
+          !data?.lagMembers.some(editLagMember =>
+            editLagMember.portId === port.id)))) // keep the edit mode data as a selection
+  }
+
   const drawerContent = <Form layout='vertical' form={formRef} onFinish={handleFinish}>
     <Form.Item
       label={$t({ defaultMessage: 'LAG Name' })}
@@ -181,7 +200,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
             required: true,
             message: $t({ defaultMessage: 'Please enter LAG Name' })
           }]}
-          children={<Select options={lagNameOptions} />}
+          children={<Select options={getUseableLagOptions(existedLagList)} disabled={isEditMode} />}
           noStyle
           hasFeedback
         />
@@ -223,19 +242,19 @@ export const LagDrawer = (props: LagDrawerProps) => {
         {
           <Space direction='vertical'>
             {
-              portList?.map((item, index) => (
-                <Space key={`${item.id}_space`} size={30}>
-                  <Checkbox
-                    key={`${item.id}_checkbox`}
-                    value={item.id}
-                    children={`Port ${index + 1}`}
-                  />
-                  {
-                    lagMembers?.some(id => id === item.id) &&
+              getUseableLagMembers(portList)?.map((item) =>
+                (
+                  <Space key={`${item.id}_space`} size={30}>
+                    <Checkbox
+                      key={`${item.id}_checkbox`}
+                      value={item.id}
+                      children={_.capitalize(item.interfaceName)}
+                    />
+                    {
+                      lagMembers?.some(id => id === item.id) &&
                     <StepsForm.FieldLabel width='100px'>
                       <div style={{ margin: 'auto' }}>{$t({ defaultMessage: 'Port Enabled' })}</div>
                       <Form.Item
-                        name={`port_${index +1}_enabled`}
                         children={<Switch
                           checked={enabledPorts?.includes(item.id)}
                           onChange={(checked) => handlePortEnabled(item.id, checked)}
@@ -243,9 +262,9 @@ export const LagDrawer = (props: LagDrawerProps) => {
                         noStyle
                       />
                     </StepsForm.FieldLabel>
-                  }
-                </Space>
-              ))
+                    }
+                  </Space>
+                ))
             }
           </Space>
         }

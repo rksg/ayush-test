@@ -2,24 +2,14 @@ import { Menu, MenuProps, Space } from 'antd'
 import moment                     from 'moment-timezone'
 import { useIntl }                from 'react-intl'
 
-import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker } from '@acx-ui/components'
-import {
-  useDisconnectClientMutation,
-  useRevokeClientMutation,
-  useGetClientDetailsQuery
-}         from '@acx-ui/rc/services'
-import { ClientStatusEnum, ClientUrlsInfo } from '@acx-ui/rc/utils'
-import {
-  useNavigate,
-  useParams,
-  useSearchParams,
-  useTenantLink
-} from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                      from '@acx-ui/user'
-import { DateFilter, DateRange, enableNewApi, encodeParameter, useDateFilter } from '@acx-ui/utils'
+import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker }                          from '@acx-ui/components'
+import { useDisconnectClientMutation, useGetClientOrHistoryDetailQuery, useRevokeClientMutation } from '@acx-ui/rc/services'
+import { Client, ClientStatusEnum, ClientUrlsInfo }                                               from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useSearchParams, useTenantLink }                                 from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                                         from '@acx-ui/user'
+import { DateFilter, DateRange, enableNewApi, encodeParameter, useDateFilter }                    from '@acx-ui/utils'
 
 import ClientDetailTabs from './ClientDetailTabs'
-
 function DatePicker () {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
 
@@ -31,15 +21,18 @@ function DatePicker () {
   />
 }
 
-
 function ClientDetailPageHeader () {
   const { $t } = useIntl()
   const { tenantId, clientId } = useParams()
   const [searchParams] = useSearchParams()
-  const { data: clentDetails } = useGetClientDetailsQuery(
-    { params: { tenantId, clientId } },
-    { skip: searchParams.get('clientStatus') === ClientStatusEnum.HISTORICAL }
-  )
+  const { data: result } = useGetClientOrHistoryDetailQuery(
+    { params: {
+      tenantId,
+      clientId,
+      status: searchParams.get('clientStatus') || ClientStatusEnum.CONNECTED
+    } })
+  const clentDetails = (result?.isHistorical ?
+    { hostname: result?.data?.hostname } : result?.data) as Client
   const [disconnectClient] = useDisconnectClientMutation()
   const [revokeClient] = useRevokeClientMutation()
   const navigate = useNavigate()
@@ -127,10 +120,10 @@ function ClientDetailPageHeader () {
     <PageHeader
       title={<Space size={4}>{clientId}
         {
-          searchParams.get('hostname') &&
-          searchParams.get('hostname') !== clientId &&
+          clentDetails?.hostname &&
+          clentDetails?.hostname !== clientId &&
           <Space style={{ fontSize: '14px', marginLeft: '8px' }} size={0}>
-            ({searchParams.get('hostname')})
+            ({clentDetails?.hostname})
           </Space>
         }
       </Space>}

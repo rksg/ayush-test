@@ -59,6 +59,7 @@ export function EnableR1Beta (props: EnableR1BetaProps) {
           } catch (error) {
             console.log(error) // eslint-disable-line no-console
           }
+          window.location.reload()
         }
       })
     } else openR1BetaTermsConditionDrawer()
@@ -89,7 +90,7 @@ export function EnableR1Beta (props: EnableR1BetaProps) {
                 checked={checked}
                 disabled={isDisabled}
               >
-                {$t({ defaultMessage: 'Enable R1 Beta features' })}
+                {$t({ defaultMessage: 'Enable RUCKUS One Beta features' })}
               </Checkbox>
             </Tooltip>
 

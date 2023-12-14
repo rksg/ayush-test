@@ -2,14 +2,14 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { EdgeUrlsInfo, ServiceOperation, ServiceType, getServiceDetailsLink, CommonUrlsInfo, EdgeSdLanUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                                                          from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within }                            from '@acx-ui/test-utils'
-
-import { mockEdgeList, mockedSdLanDataList } from '../__tests__/fixtures'
+import { EdgeUrlsInfo, ServiceOperation, ServiceType, getServiceDetailsLink, CommonUrlsInfo, EdgeSdLanUrls, EdgeGeneralFixtures, EdgeSdLanFixtures } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                                  from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved, within }                                                                             from '@acx-ui/test-utils'
 
 import EdgeSdLanTable from '.'
 
+const { mockedSdLanDataList } = EdgeSdLanFixtures
+const { mockEdgeList } = EdgeGeneralFixtures
 const mockedUsedNavigate = jest.fn()
 const mockedGetEdgeList = jest.fn()
 const mockedDeleteReq = jest.fn()
@@ -66,17 +66,18 @@ describe('SD-LAN Table', () => {
       }
     )
 
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     await screen.findByRole('columnheader', { name: 'SmartEdge' })
-    const row = await screen.findAllByRole('row', { name: /Amy_sdLan_/i })
+    const row = await screen.findAllByRole('row', { name: /Mocked_SDLAN_/i })
     expect(row.length).toBe(2)
     // eslint-disable-next-line max-len
-    await screen.findByRole('row', { name: 'Amy_sdLan_1 Sting-Venue-1 sting-vSE-b490 amyTunnel 1 Poor' })
+    await screen.findByRole('row', { name: 'Mocked_SDLAN_1 Mocked-Venue-1 vSE-b490 Mocked_tunnel-1 1 Poor' })
     // eslint-disable-next-line max-len
-    await screen.findByRole('row', { name: 'Amy_sdLan_2 Sting-Venue-3 sting-vSE-b466 amyTunnel 0 Good' })
+    await screen.findByRole('row', { name: 'Mocked_SDLAN_2 Mocked-Venue-2 vSE-b466 Mocked_tunnel-1 0 Good' })
 
     const networkNumStr = await screen.findByTestId('network-names-mocked-sd-lan-1')
     await hover(networkNumStr)
-    await screen.findByText('amyNetwork')
+    await screen.findByText('Mocked_network')
   })
 
   it('should go edit page', async () => {
@@ -87,7 +88,9 @@ describe('SD-LAN Table', () => {
         route: { params, path: '/:tenantId/services/edgeSdLan/list' }
       }
     )
-    const row = await screen.findByRole('row', { name: /Amy_sdLan_1/i })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    const row = await screen.findByRole('row', { name: /Mocked_SDLAN_1/i })
     await click(within(row).getByRole('checkbox'))
     await click(screen.getByRole('button', { name: 'Edit' }))
 
@@ -112,10 +115,12 @@ describe('SD-LAN Table', () => {
         route: { params, path: '/:tenantId/services/edgeSdLan/list' }
       }
     )
-    const row = await screen.findByRole('row', { name: /Amy_sdLan_2/i })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    const row = await screen.findByRole('row', { name: /Mocked_SDLAN_2/i })
     await click(within(row).getByRole('checkbox'))
     await click(screen.getByRole('button', { name: 'Delete' }))
-    const dialogTitle = await screen.findByText('Delete "Amy_sdLan_2"?')
+    const dialogTitle = await screen.findByText('Delete "Mocked_SDLAN_2"?')
     await click(screen.getByRole('button', { name: 'Delete SD-LAN' }))
     await waitForElementToBeRemoved(dialogTitle)
     expect(screen.queryByRole('dialog')).toBeNull()
@@ -130,9 +135,11 @@ describe('SD-LAN Table', () => {
         route: { params, path: '/:tenantId/services/edgeSdLan/list' }
       }
     )
-    await click(within(await screen.findByRole('row', { name: /Amy_sdLan_1/i }))
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    await click(within(await screen.findByRole('row', { name: /Mocked_SDLAN_1/i }))
       .getByRole('checkbox'))
-    await click(within(await screen.findByRole('row', { name: /Amy_sdLan_2/i }))
+    await click(within(await screen.findByRole('row', { name: /Mocked_SDLAN_2/i }))
       .getByRole('checkbox'))
     await click(screen.getByRole('button', { name: 'Delete' }))
     const dialogTitle = await screen.findByText('Delete "2 SD-LAN"?')
@@ -160,10 +167,11 @@ describe('SD-LAN Table', () => {
       }
     )
 
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     await screen.findByRole('columnheader', { name: 'SmartEdge' })
-    await screen.findAllByRole('row', { name: /Amy_sdLan_/i })
+    await screen.findAllByRole('row', { name: /Mocked_SDLAN_/i })
     // eslint-disable-next-line max-len
-    await screen.findByRole('row', { name: 'Amy_sdLan_1 Sting-Venue-1 sting-vSE-b490 amyTunnel 1 Poor' })
+    await screen.findByRole('row', { name: 'Mocked_SDLAN_1 Mocked-Venue-1 vSE-b490 Mocked_tunnel-1 1 Poor' })
 
     const networkNumStr = await screen.findByTestId('network-names-mocked-sd-lan-1')
     await hover(networkNumStr)
@@ -193,16 +201,10 @@ describe('SD-LAN Table', () => {
       }
     )
 
-    await waitFor(() => {
-      expect(mockedGetEdgeList).toBeCalled()
-    })
-    await waitFor(() => {
-      expect(mockedSdLanDataListReq).toBeCalled()
-    })
-
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     await screen.findByRole('columnheader', { name: 'SmartEdge' })
     await screen.findByText(/sdLan_good_health/i)
     // eslint-disable-next-line max-len
-    await screen.findByRole('row', { name: 'sdLan_good_health Sting-Venue-1 sting-vSE-b490 amyTunnel 1 Good' })
+    await screen.findByRole('row', { name: 'sdLan_good_health Mocked-Venue-1 vSE-b490 Mocked_tunnel-1 1 Good' })
   })
 })

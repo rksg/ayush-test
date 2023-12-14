@@ -179,14 +179,15 @@ export interface ApGroup {
   name: string,
   isDefault: boolean,
   venueId: string,
-  aps?: ApDeep[],
+  aps?: ApDeep[]
 }
 
 export interface ApGroupViewModel extends ApGroup {
   venueName?: string,
   members?: CountAndNames,
   networks?: CountAndNames,
-  clients?: number
+  clients?: number,
+  incidents?: unknown
 }
 
 export interface AddApGroup {

@@ -1,13 +1,14 @@
 import { useState } from 'react'
 
+import { Col, Row }  from 'antd'
 import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, Table, TableProps, showActionModal }       from '@acx-ui/components'
-import { useDeleteEdgeLagMutation, useGetEdgeLagListQuery } from '@acx-ui/rc/services'
-import { EdgeIpModeEnum, EdgeLag, EdgeLagStatus, EdgePort } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }                        from '@acx-ui/user'
+import { Loader, Table, TableProps, Tooltip, showActionModal }                     from '@acx-ui/components'
+import { useDeleteEdgeLagMutation, useGetEdgeLagListQuery }                        from '@acx-ui/rc/services'
+import { EdgeIpModeEnum, EdgeLag, EdgeLagStatus, EdgePort, defaultSort, sortProp } from '@acx-ui/rc/utils'
+import { filterByAccess, hasAccess }                                               from '@acx-ui/user'
 
 import { LagDrawer } from './LagDrawer'
 
@@ -31,17 +32,17 @@ const Lag = (props: LagProps) => {
   const { lagData = [], isLagLoading } = useGetEdgeLagListQuery({
     params: { serialNumber },
     payload: {
-      pag: 1,
+      page: 1,
       pageSize: 10
     }
   },{
-    selectFromResult ({ data, isLoading }) {
+    selectFromResult ({ data, isLoading, isFetching }) {
       return {
         lagData: data?.data?.map(item => ({
           ...item,
           adminStatus: lagStatusList.find(status => status.lagId === item.id)?.adminStatus ?? ''
         })),
-        isLagLoading: isLoading
+        isLagLoading: isLoading || isFetching
       }
     }
   })
@@ -54,12 +55,15 @@ const Lag = (props: LagProps) => {
       dataIndex: 'id',
       render: (data, row) => {
         return `LAG ${row.id}`
-      }
+      },
+      defaultSortOrder: 'ascend',
+      sorter: { compare: sortProp('id', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Description' }),
       key: 'description',
-      dataIndex: 'description'
+      dataIndex: 'description',
+      sorter: { compare: sortProp('description', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'LAG Type' }),
@@ -67,21 +71,29 @@ const Lag = (props: LagProps) => {
       dataIndex: 'lagType',
       render: (data, row) => {
         return `${row.lagType} (${_.capitalize(row.lacpMode)})`
-      }
+      },
+      sorter: { compare: sortProp('lagType', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'LAG Members' }),
       key: 'lagMembers',
       dataIndex: 'lagMembers',
       render: (data, row) => {
-        return row.lagMembers?.length
+        const lagMemberSize = row.lagMembers?.length ?? 0
+        return lagMemberSize > 0 ?
+          <Tooltip
+            title={getToolTipContent(row.lagMembers)}
+            children={lagMemberSize}
+          /> :
+          0
       },
       align: 'center'
     },
     {
       title: $t({ defaultMessage: 'Port Type' }),
       key: 'portType',
-      dataIndex: 'portType'
+      dataIndex: 'portType',
+      sorter: { compare: sortProp('portType', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'IP Type' }),
@@ -96,24 +108,50 @@ const Lag = (props: LagProps) => {
           default:
             return ''
         }
-      }
+      },
+      sorter: { compare: sortProp('ipMode', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'IP Address' }),
       key: 'ip',
-      dataIndex: 'ip'
+      dataIndex: 'ip',
+      sorter: { compare: sortProp('ip', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Subnet Mask' }),
       key: 'subnet',
-      dataIndex: 'subnet'
+      dataIndex: 'subnet',
+      sorter: { compare: sortProp('subnet', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Admin Status' }),
       key: 'adminStatus',
-      dataIndex: 'adminStatus'
+      dataIndex: 'adminStatus',
+      sorter: { compare: sortProp('adminStatus', defaultSort) }
     }
   ]
+
+  const getToolTipContent = (
+    lagMembers: {
+      portId: string,
+      portEnabled: boolean
+    }[]
+  ) => {
+    return lagMembers?.map(
+      lagmember =>
+        <Row>
+          <Col>
+            {
+              `${_.capitalize(portList?.find(port =>
+                port.id === lagmember.portId)?.interfaceName ?? '')} (${lagmember.portEnabled ?
+                $t({ defaultMessage: 'Enabled' }) :
+                $t({ defaultMessage: 'Disabled' })})`
+            }
+          </Col>
+        </Row>
+
+    )
+  }
 
   const openDrawer = (data?: EdgeLagTableType) => {
     setCurrentEditData(data)
@@ -125,7 +163,8 @@ const Lag = (props: LagProps) => {
       label: $t({ defaultMessage: 'Add LAG' }),
       onClick: () => {
         openDrawer()
-      }
+      },
+      disabled: lagData.length >= 4
     }
   ]
 
@@ -176,6 +215,7 @@ const Lag = (props: LagProps) => {
         setVisible={setLagDrawerVisible}
         data={currentEditData}
         portList={portList}
+        existedLagList={lagData}
       />
     </Loader>
   )

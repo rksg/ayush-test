@@ -1,23 +1,17 @@
 /* eslint-disable max-len */
 import { useState, useEffect } from 'react'
 
-
 import { Space }                                     from 'antd'
 import _                                             from 'lodash'
 import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
 
-import {
-  Subtitle,
-  Tooltip,
-  Table,
-  TableProps,
-  Loader,
-  showActionModal
-} from '@acx-ui/components'
+import { Subtitle, Tooltip, Table, TableProps, Loader, showActionModal  } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import {
   useGetClientListQuery,
   useVenuesListQuery,
   useApListQuery,
+  useNetworkListQuery,
   useDisconnectClientMutation,
   useRevokeClientMutation
 } from '@acx-ui/rc/services'
@@ -73,6 +67,20 @@ function GetApFilterOptions (tenantId: string|undefined, venueId: string|undefin
   return apFilterOptions
 }
 
+function GetNetworkFilterOptions (tenantId: string|undefined) {
+  const { networkFilterOptions } = useNetworkListQuery({ params: { tenantId }, payload: {
+    fields: ['name', 'ssid'],
+    pageSize: 10000,
+    sortField: 'name',
+    sortOrder: 'ASC'
+  } }, {
+    selectFromResult: ({ data }) => ({
+      networkFilterOptions: data?.data?.map(v=>({ key: v.ssid, value: v.name })) || true
+    })
+  })
+  return networkFilterOptions
+}
+
 export const defaultClientPayload = {
   searchString: '',
   searchTargetFields: ['clientMac','ipAddress','Username','hostname','ssid','clientVlan','osType'],
@@ -82,7 +90,7 @@ export const defaultClientPayload = {
     'ssid','wifiCallingClient','sessStartTime','clientAnalytics','clientVlan','deviceTypeStr','modelName','totalTraffic',
     'trafficToClient','trafficFromClient','receiveSignalStrength','rssi','radio.mode','cpeMac','authmethod','status',
     'encryptMethod','packetsToClient','packetsFromClient','packetsDropFrom','radio.channel',
-    'cog','venueName','apName','clientVlan','networkId','switchName','healthStatusReason','lastUpdateTime', 'networkType']
+    'cog','venueName','apName','clientVlan','networkId','switchName','healthStatusReason','lastUpdateTime', 'networkType', 'mldAddr']
 }
 
 export const ConnectedClientsTable = (props: {
@@ -108,7 +116,8 @@ export const ConnectedClientsTable = (props: {
   const [ sendRevoke ] = useRevokeClientMutation()
   defaultClientPayload.filters = params.venueId ? { venueId: [params.venueId] } :
     params.serialNumber ? { serialNumber: [params.serialNumber] } :
-      params.apId ? { serialNumber: [params.apId] } : {}
+      params.apId ? { serialNumber: [params.apId] } :
+        params.networkId ? { networkId: [params.networkId] } : {}
 
 
   const inlineTableQuery = usePollingTableQuery({
@@ -138,7 +147,9 @@ export const ConnectedClientsTable = (props: {
 
   function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
     const { $t } = useIntl()
-    const { tenantId, venueId, apId } = useParams()
+    const wifi7MLOToggle = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_TOGGLE)
+    const { tenantId, venueId, apId, networkId } = useParams()
+    const listOfClientsPerWlanFlag = useIsSplitOn(Features.LIST_OF_CLIENTS_PER_WLAN)
 
     const clientStatuses = () => [
       { key: null, text: $t({ defaultMessage: 'All Health Levels' }) },
@@ -209,6 +220,20 @@ export const ConnectedClientsTable = (props: {
           </Tooltip>
         }
       },
+      ...(wifi7MLOToggle ? [{
+        key: 'mldAddr',
+        title: intl.$t({ defaultMessage: 'MLD MAC Address' }),
+        dataIndex: 'mldAddr',
+        sorter: true,
+        disable: false,
+        show: false,
+        render: (_: React.ReactNode, row: ClientList) => {
+          const mac = row.mldAddr?.toLowerCase() || undefined
+          return <Tooltip title={mac}>
+            {mac || '--'}
+          </Tooltip>
+        }
+      }] : []),
       {
         key: 'ipAddress',
         title: intl.$t({ defaultMessage: 'IP Address' }),
@@ -272,12 +297,14 @@ export const ConnectedClientsTable = (props: {
           }
         }
       },
-      {
+      ...(networkId ? [] : [{
         key: 'ssid',
         title: intl.$t({ defaultMessage: 'Network' }),
         dataIndex: 'ssid',
         sorter: true,
-        render: (_, row) => {
+        filterKey: 'ssid',
+        filterable: networkId ? false : listOfClientsPerWlanFlag ? GetNetworkFilterOptions(tenantId) : false,
+        render: (_: React.ReactNode, row: ClientList) => {
           if (!row.healthCheckStatus) {
             return row.ssid
           } else {
@@ -286,6 +313,16 @@ export const ConnectedClientsTable = (props: {
             )
           }
         }
+      }]),
+      {
+        key: 'networkType',
+        title: intl.$t({ defaultMessage: 'Network Type' }),
+        dataIndex: ['networkType'],
+        sorter: true,
+        render: (_, { networkType }) => networkType || '--',
+        filterable: _.uniqWith(tableQuery.data?.data.map((result)=> {
+          return { key: result.networkType, value: result.networkType }
+        }), _.isEqual)
       },
       {
         key: 'networkType',
