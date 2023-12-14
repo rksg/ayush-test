@@ -8,7 +8,8 @@ import {
   CONFIG_TEMPLATE_PATH_PREFIX,
   PolicyOperation,
   PolicyType,
-  getPolicyRoutePath
+  getNetworkConfigTemplateRoute,
+  getPolicyConfigTemplateRoute
 }  from '@acx-ui/rc/utils'
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
@@ -83,8 +84,8 @@ function ConfigTemplatesRoutes () {
   const isConfigTemplateEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE)
 
   return isConfigTemplateEnabled ? rootRoutes(
-    <Route>
-      <Route path={':tenantId/v/' + CONFIG_TEMPLATE_PATH_PREFIX}
+    <Route path=':tenantId/v/'>
+      <Route path={CONFIG_TEMPLATE_PATH_PREFIX}
         element={<LayoutWithConfigTemplateContext />}
       >
         <Route index
@@ -92,15 +93,22 @@ function ConfigTemplatesRoutes () {
         />
         <Route path=':activeTab' element={<ConfigTemplate />} />
         <Route
-          path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
+          // eslint-disable-next-line max-len
+          path={getPolicyConfigTemplateRoute({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
           element={<AAAForm edit={false} />}
         />
         <Route
-          path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.EDIT })}
+          path={getPolicyConfigTemplateRoute({ type: PolicyType.AAA, oper: PolicyOperation.EDIT })}
           element={<AAAForm edit={true} />}
         />
-        <Route path='networks/wireless/add' element={<NetworkForm />} />
-        <Route path='networks/wireless/:networkId/:action' element={<NetworkForm />} />
+        <Route
+          path={getNetworkConfigTemplateRoute('networks/wireless/add')}
+          element={<NetworkForm />}
+        />
+        <Route
+          path={getNetworkConfigTemplateRoute('networks/wireless/:networkId/:action')}
+          element={<NetworkForm />}
+        />
       </Route>
     </Route>
   ) : null

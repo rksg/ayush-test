@@ -8,17 +8,15 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { useGetConfigTemplateListQuery } from '@acx-ui/msp/services'
-import { ConfigTemplate }                from '@acx-ui/msp/utils'
+import { NetworkConfigTemplateLink, PolicyConfigTemplateLink } from '@acx-ui/msp/components'
+import { useGetConfigTemplateListQuery }                       from '@acx-ui/msp/services'
+import { ConfigTemplate }                                      from '@acx-ui/msp/utils'
 import {
-  CONFIG_TEMPLATE_PATH_PREFIX,
   PolicyOperation,
   PolicyType,
-  getPolicyRoutePath,
   policyTypeLabelMapping,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink }                from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 import { getIntl }                   from '@acx-ui/utils'
 
@@ -144,19 +142,18 @@ function getAddTemplateMenuProps (): Omit<MenuProps, 'placement'> {
     expandIcon: <UI.MenuExpandArrow />,
     items: [{
       key: 'add-wifi-network',
-      // eslint-disable-next-line max-len
-      label: <TenantLink tenantType='v' to={`${CONFIG_TEMPLATE_PATH_PREFIX}/networks/wireless/add`}>{
-        $t({ defaultMessage: 'Wi-Fi Network' })}
-      </TenantLink>
+      label: <NetworkConfigTemplateLink path='networks/wireless/add'>
+        {$t({ defaultMessage: 'Wi-Fi Network' })}
+      </NetworkConfigTemplateLink>
     }, {
       key: 'add-policy',
       label: $t({ defaultMessage: 'Policies' }),
       children: [{
         key: 'add-aaa',
         // eslint-disable-next-line max-len
-        label: <TenantLink tenantType='v' to={CONFIG_TEMPLATE_PATH_PREFIX + '/' + getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}>
+        label: <PolicyConfigTemplateLink policyType={PolicyType.AAA} policyOperation={PolicyOperation.CREATE}>
           {$t(policyTypeLabelMapping[PolicyType.AAA])}
-        </TenantLink>
+        </PolicyConfigTemplateLink>
       }]
     }]
   }

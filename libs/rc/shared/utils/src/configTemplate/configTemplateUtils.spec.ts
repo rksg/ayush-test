@@ -1,4 +1,5 @@
-import { CONFIG_TEMPLATE_LIST_PATH, generateConfigTemplateBreadcrumb, hasConfigTemplateAccess } from './configTemplateUtils'
+import { CONFIG_TEMPLATE_LIST_PATH }                                 from './configTemplateRouteUtils'
+import { generateConfigTemplateBreadcrumb, hasConfigTemplateAccess } from './configTemplateUtils'
 
 describe('config-template-utils', () => {
   it('should generate correct breadcrumb for config template', () => {

@@ -3,9 +3,7 @@ import { RolesEnum }            from '@acx-ui/types'
 import { hasRoles }             from '@acx-ui/user'
 import { AccountType, getIntl } from '@acx-ui/utils'
 
-export const CONFIG_TEMPLATE_PATH_PREFIX = 'configTemplates'
-export const CONFIG_TEMPLATE_LIST_PATH = `${CONFIG_TEMPLATE_PATH_PREFIX}/templates`
-export const CONFIG_TEMPLATE_BUNDLE_LIST_PATH = `${CONFIG_TEMPLATE_PATH_PREFIX}/bundles`
+import { CONFIG_TEMPLATE_LIST_PATH } from './configTemplateRouteUtils'
 
 // eslint-disable-next-line max-len
 export function generateConfigTemplateBreadcrumb (): { text: string, link?: string, tenantType?: TenantType }[] {
