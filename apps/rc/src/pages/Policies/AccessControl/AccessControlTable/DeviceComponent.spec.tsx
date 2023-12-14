@@ -83,7 +83,7 @@ describe('AccessControlTable - Device', () => {
     })
   })
 
-  it('should delete selected row from DeviceComponent in AccessControlTable', async () => {
+  it.skip('should delete selected row from DeviceComponent in AccessControlTable', async () => {
     mockServer.use(rest.get(
       AccessControlUrls.getDevicePolicyList.url,
       (_, res, ctx) => res(

@@ -7,7 +7,12 @@ import { useParams } from 'react-router-dom'
 import { Loader, showActionModal, showToast, Subtitle, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
 import { SuccessSolid }                                                             from '@acx-ui/icons'
-import { OSIconContainer, useDpskNewConfigFlowParams }                              from '@acx-ui/rc/components'
+import {
+  OSIconContainer,
+  useDpskNewConfigFlowParams,
+  PersonaDeviceItem,
+  PersonaDevicesImportDialog
+} from '@acx-ui/rc/components'
 import {
   useAddPersonaDevicesMutation,
   useDeletePersonaDevicesMutation,
@@ -28,8 +33,6 @@ import {
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 import { noDataDisplay }             from '@acx-ui/utils'
 
-import { PersonaDeviceItem }          from '../PersonaForm/PersonaDevicesForm'
-import { PersonaDevicesImportDialog } from '../PersonaForm/PersonaDevicesImportDialog'
 
 const defaultPayload = {
   searchString: '',

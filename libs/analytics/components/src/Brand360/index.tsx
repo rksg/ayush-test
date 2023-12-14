@@ -8,8 +8,10 @@ import type { Settings }                                                  from '
 import { PageHeader, RangePicker, GridRow, GridCol, Loader }              from '@acx-ui/components'
 import { DateFilter, DateRange, getDateRangeFilter, getDatePickerValues } from '@acx-ui/utils'
 
-import { SlaSliders }   from './SlaSliders'
-import { useSliceType } from './useSliceType'
+import { Response, useFetchBrandPropertiesQuery } from './services'
+import { SlaSliders }                             from './SlaSliders'
+import { BrandTable }                             from './Table'
+import { useSliceType }                           from './useSliceType'
 
 export function Brand360 () {
   const settingsQuery = useGetTenantSettingsQuery()
@@ -19,10 +21,11 @@ export function Brand360 () {
   const [dateFilterState, setDateFilterState] = useState<DateFilter>(
     getDateRangeFilter(DateRange.last8Hours)
   )
-  const { startDate, endDate, range } = getDatePickerValues(dateFilterState)
   const { data } = settingsQuery
   useEffect(() => { data && setSettings(data) }, [data])
-  return <Loader states={[settingsQuery]}>
+  const { startDate, endDate, range } = getDatePickerValues(dateFilterState)
+  const tableResults = useFetchBrandPropertiesQuery({})
+  return <Loader states={[settingsQuery, tableResults]}>
     <PageHeader
       title={$t({ defaultMessage: 'Brand 360' })}
       extra={[
@@ -46,8 +49,13 @@ export function Brand360 () {
       <GridCol col={{ span: 6 }}>
         <SlaSliders initialSlas={data || {}} currentSlas={settings} setCurrentSlas={setSettings} />
       </GridCol>
+      <GridCol col={{ span: 24 }}>
+        <BrandTable
+          sliceType={sliceType}
+          slaThreshold={settings}
+          data={tableResults.data as Response[]}
+        />
+      </GridCol>
     </GridRow>
-    <div>{sliceType} {JSON.stringify(settings)}</div>
-    table
   </Loader>
 }

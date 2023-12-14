@@ -144,7 +144,7 @@ const SubscriptionTable = () => {
         sorter: { compare: sortProp('assignedLicense', defaultSort) },
         render: function (data: React.ReactNode, row: Entitlement) {
           return row.assignedLicense
-            ? $t({ defaultMessage: 'Assigned' }) : $t({ defaultMessage: 'Purchased' })
+            ? $t({ defaultMessage: 'Assigned' }) : $t({ defaultMessage: 'Paid' })
         }
       }] : []),
     {
