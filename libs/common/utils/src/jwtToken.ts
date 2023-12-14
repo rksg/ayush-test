@@ -11,7 +11,7 @@ export enum AccountTier {
 export enum AccountVertical {
   DEFAULT = 'Default',
   HOSPITALITY = 'Hospitality',
-  EDU = 'Education',
+  EDU = 'Education'
 }
 
 export enum AccountRegion {

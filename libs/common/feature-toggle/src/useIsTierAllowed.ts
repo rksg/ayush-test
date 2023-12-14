@@ -35,10 +35,16 @@ export function useFFList (): { featureList?: string[], betaList?: string[],
 
   const tenantType = (jwtPayload?.tenantType === AccountType.REC ||
     jwtPayload?.tenantType === AccountType.VAR) ? 'REC' : 'MSP'
+  // Only 3 verticals as mentioned in AccountVertical will be supported in split.io
+  // rest all types will be derived as 'Default' vertical type 
+  const accountVertical = (jwtPayload?.acx_account_vertical === AccountVertical.DEFAULT ||
+    jwtPayload?.acx_account_vertical === AccountVertical.EDU ||
+    jwtPayload?.acx_account_vertical === AccountVertical.HOSPITALITY)? jwtPayload?.acx_account_vertical
+    : AccountVertical.DEFAULT
   useDebugValue(`JWT tenantType: ${jwtPayload?.tenantType}, Tenant type: ${tenantType}`)
   const treatment = useTreatments([Features.PLM_FF], {
     tier: acxAccountTier,
-    vertical: jwtPayload?.acx_account_vertical,
+    vertical: accountVertical,
     tenantType: tenantType,
     tenantId: jwtPayload?.tenantId,
     isBetaFlag: betaEnabled
@@ -52,7 +58,7 @@ export function useFFList (): { featureList?: string[], betaList?: string[],
   const featureKey = [
     'feature',
     tenantType,
-    jwtPayload?.acx_account_vertical
+    accountVertical
   ].join('-') as keyof typeof defaultConfig
 
   return {
