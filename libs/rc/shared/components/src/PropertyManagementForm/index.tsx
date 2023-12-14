@@ -26,9 +26,9 @@ import {
 } from '@acx-ui/rc/utils'
 
 import { IdentityGroupLink, ResidentPortalLink } from '../CommonLinkHelper'
-import { PersonaGroupDrawer }                    from '../PersonaGroupDrawer'
-import { PersonaGroupSelect }                    from '../PersonaGroupSelect'
 import { TemplateSelector }                      from '../TemplateSelector'
+import { PersonaGroupDrawer }                    from '../users/PersonaGroupDrawer'
+import { PersonaGroupSelect }                    from '../users/PersonaGroupSelect'
 
 import { AddResidentPortalModal }            from './AddResidentPortalModal'
 import { showDeletePropertyManagementModal } from './DeletePropertyManagementModal'

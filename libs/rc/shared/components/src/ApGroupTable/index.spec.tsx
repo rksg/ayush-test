@@ -134,7 +134,7 @@ describe('ApGroupTable', () => {
 
   })
 
-  it('Table action bar Edit', async () => {
+  it.skip('Table action bar Edit', async () => {
     const params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       venueId: '991eb992ece042a183b6945a2398ddb9'

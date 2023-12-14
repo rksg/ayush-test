@@ -59,7 +59,22 @@ describe('MelissaBot', () => {
       render(<MelissaBot/>,{ route: { ...route, params: { page: 'dashboard' } }, container })
     })
     expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('before:event')
-    act(() => { window.dispatchEvent(new Event('showMelissaBot')) })
+    act(() => { window.dispatchEvent(new CustomEvent('showMelissaBot',{ detail: {
+      isRecurringUser: false,
+      summary: ''
+    } })) })
+    expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('after:event')
+  })
+  it('should not render floating button for dashboard page and'+
+  ' open chatbot on trigger event with summary',async ()=>{
+    await act(async ()=>{
+      render(<MelissaBot/>,{ route: { ...route, params: { page: 'dashboard' } }, container })
+    })
+    expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('before:event')
+    act(() => { window.dispatchEvent(new CustomEvent('showMelissaBot',{ detail: {
+      isRecurringUser: true,
+      summary: 'summary'
+    } })) })
     expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('after:event')
   })
   it('should open the chat window by clicking floating button and then close',async ()=>{
@@ -90,7 +105,7 @@ describe('MelissaBot', () => {
       await userEvent.type(screen.getByRole('textbox'),'What is cloud RRM?{enter}')
     })
     await screen.findByText('What is cloud RRM?')
-    expect(document.querySelectorAll('.conversation > div')?.length).toBe(11)
+    expect(document.querySelectorAll('.conversation > div')?.length).toBe(7)
     expect(document.querySelector('body')?.innerHTML).toMatchSnapshot()
   })
   it('should handle error message from chatbot',async ()=>{
@@ -112,7 +127,7 @@ describe('MelissaBot', () => {
     })
     await screen.findByText('What is cloud RRM?')
     await screen.findByText('Some Error')
-    expect(document.querySelectorAll('.conversation > div')?.length).toBe(7)
+    expect(document.querySelectorAll('.conversation > div')?.length).toBe(5)
     expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('after:error1')
     global.fetch = jest.fn().mockImplementation(() =>
       Promise.resolve({
@@ -124,7 +139,7 @@ describe('MelissaBot', () => {
     })
     await screen.findByText('What is datastudio?')
     await screen.findByText('Something went wrong.')
-    expect(document.querySelectorAll('.conversation > div')?.length).toBe(9)
+    expect(document.querySelectorAll('.conversation > div')?.length).toBe(7)
     expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('after:error2')
   })
   it('should handle file upload from chatbot',async ()=>{
