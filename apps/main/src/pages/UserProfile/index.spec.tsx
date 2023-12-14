@@ -20,7 +20,7 @@ const userProfile = {
   fullName: 'First Last',
   role: RolesEnum.ADMINISTRATOR,
   email: 'dog12@email.com',
-  dateFormat: 'YYYY/MM/DD',
+  dateFormat: 'yyyy/mm/dd',
   detailLevel: 'su',
   preferredLanguage: 'en-US'
 } as UserProfileInterface
