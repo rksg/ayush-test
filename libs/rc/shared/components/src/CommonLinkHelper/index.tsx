@@ -85,19 +85,19 @@ export function MacRegistrationPoolLink (props: {
 }
 
 export function NetworkSegmentationLink (props: {
-  nsgId?: string,
+  id?: string,
   name?: string,
   showNoData?: boolean
 }) {
-  const { nsgId, name, showNoData } = props
+  const { id, name, showNoData } = props
   return (
-    nsgId
+    id
       ? <TenantLink to={getServiceDetailsLink({
-        serviceId: nsgId,
+        serviceId: id,
         oper: ServiceOperation.DETAIL,
         type: ServiceType.NETWORK_SEGMENTATION
       })}>
-        {name ?? nsgId}
+        {name ?? id}
       </TenantLink>
       : <>{showNoData && noDataDisplay}</>
   )

@@ -2906,7 +2906,7 @@ export const mockPersonaGroupWithNSG: PersonaGroup = {
   id: 'persona-group-id-1',
   name: 'Class A',
   description: '',
-  nsgId: 'nsg-id-1',
+  personalIdentityNetworkId: 'nsg-id-1',
   macRegistrationPoolId: 'mac-id-1',
   dpskPoolId: 'dpsk-pool-2',
   propertyId: 'propertyId-100'

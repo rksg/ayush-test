@@ -190,7 +190,7 @@ const PersonaInfo = ({
           children={
             <UI.FieldTitle>
               {
-                personaGroupData?.personas?.length || 0
+                personaGroupData?.identities?.length || 0
               }
             </UI.FieldTitle>
           }
