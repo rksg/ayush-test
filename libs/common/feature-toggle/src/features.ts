@@ -16,7 +16,8 @@ export enum Features {
   EDGES_SUB_INTERFACE_CSV_TOGGLE = 'acx-ui-edges-sub-interface-csv-toggle',
   EDGES_DHCP_CSV_TOGGLE = 'acx-ui-edges-dhcp-csv-toggle',
   EDGES_PING_TRACEROUTE_TOGGLE = 'acx-ui-edges-ping-traceroute-toggle',
-  EDGES_SD_LAN_TOGGLE = 'acx-ui-edges-centralized-forwarding-toggle',
+  EDGES_SD_LAN_TOGGLE = 'acx-ui-edges-centralized-forwarding-toggle', // centralized-forwarding is renamed into SD-LAN
+  EDGES_SD_LAN_PHASE2_TOGGLE = 'acx-ui-edges-sdlan-phase2-toggle',
   NETWORK_SEGMENTATION = 'acx-ui-network-segmentation-toggle',
   NETWORK_SEGMENTATION_SWITCH = 'switch-consumer-nsg-toggle',
   VIDEO_CALL_QOE = 'acx-ui-video-call-qoe-toggle',
@@ -125,6 +126,7 @@ export enum Features {
   SSO = 'ADMN-SSO',
   EXPORT_EVENTS_TOGGLE = 'acx-ui-scheduled-events-export-toggle',
   RUCKUS_AI_CHATBOT_TOGGLE = 'ruckus-ai-chatbot-toggle',
+  RUCKUS_AI_INCIDENT_SUMMARY_TOGGLE = 'ruckus-ai-incident-summary-toggle',
   EDGE_LAG = 'acx-ui-edges-lag-toggle',
   MSP_HSP_SUPPORT = 'mspservice-hsp-01',
   MSP_BRAND_360 = 'acx-ui-msp-brand360-toggle',
