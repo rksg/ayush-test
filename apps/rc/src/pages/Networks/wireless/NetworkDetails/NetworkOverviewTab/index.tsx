@@ -18,11 +18,10 @@ import {
   Loader,
   HistoricalCard
 } from '@acx-ui/components'
-import { NetworkTypeEnum }                    from '@acx-ui/rc/utils'
+import { NetworkTypeEnum, networkTypes }      from '@acx-ui/rc/utils'
 import { useDateFilter, generateVenueFilter } from '@acx-ui/utils'
 import type { AnalyticsFilter }               from '@acx-ui/utils'
 
-import { networkTypes }                     from '../../NetworkForm/contentsMap'
 import { extractSSIDFilter, useGetNetwork } from '../services'
 
 export function NetworkOverviewTab ({ selectedVenues }: { selectedVenues?: string[] }) {
