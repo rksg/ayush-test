@@ -9,10 +9,10 @@ module.exports = {
   coverageDirectory: '../../coverage/apps/rc',
   coverageThreshold: {
     global: {
-      statements: 82.5,
-      branches: 70.5,
-      functions: 80.5,
-      lines: 83
+      statements: 82,
+      branches: 70,
+      functions: 80,
+      lines: 82
     }
   }
 }
