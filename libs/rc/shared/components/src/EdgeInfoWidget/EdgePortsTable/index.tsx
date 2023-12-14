@@ -1,9 +1,9 @@
 import { useIntl } from 'react-intl'
 
-import { Button, Table,TableProps }                                                     from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
-import { formatter }                                                                    from '@acx-ui/formatter'
-import { defaultSort, EdgeLagStatus, EdgePortStatus, getEdgePortDisplayName, sortProp } from '@acx-ui/rc/utils'
+import { Button, Table,TableProps }                                                                              from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                from '@acx-ui/feature-toggle'
+import { formatter }                                                                                             from '@acx-ui/formatter'
+import { defaultSort, EdgeLagStatus, EdgePortStatus, getEdgePortDisplayName, getEdgePortIpModeString, sortProp } from '@acx-ui/rc/utils'
 
 interface EdgePortsTableProps {
   portData: EdgePortStatus[]
@@ -74,8 +74,8 @@ export const EdgePortsTable = (props: EdgePortsTableProps) => {
       dataIndex: 'ipMode',
       sorter: { compare: sortProp('ipMode', defaultSort) },
       render: (_, { ipMode }) => {
-        return ipMode === 'DHCP' ? $t({ defaultMessage: 'DHCP' })
-          : (ipMode === 'Static' ? $t({ defaultMessage: 'Static IP' }) : '')
+        const ipModeUpperCase = ipMode.toUpperCase()
+        return getEdgePortIpModeString($t, ipModeUpperCase)
       }
     },
     {
