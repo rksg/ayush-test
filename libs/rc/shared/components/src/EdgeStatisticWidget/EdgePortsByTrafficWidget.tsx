@@ -26,11 +26,10 @@ export function EdgePortsByTrafficWidget () {
   })
   const colors = qualitativeColorSet()
   const queryResults: DonutChartData[] = []
-  data?.traffic.forEach((traffic, index) => {
+  data?.portTraffic.forEach((pTraffic, index) => {
     queryResults.push({
-      // TODO: use port interfaceName for display
-      name: `Port ${index + 1}`,
-      value: traffic,
+      name: _.capitalize(pTraffic.portName),
+      value: pTraffic.traffic,
       color: colors[index]
     })
   })
