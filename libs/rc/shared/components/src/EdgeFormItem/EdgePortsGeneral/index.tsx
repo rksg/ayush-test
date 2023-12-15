@@ -70,8 +70,8 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
   let unLagPort = ''
   let tabs = [] as TabData[]
   let formData = {} as EdgePortConfigFormType
-  data.forEach((item, index) => {
-    const innerPortFormID = getInnerPortFormID(index)
+  data.forEach((item) => {
+    const innerPortFormID = getInnerPortFormID(item.id)
     tabs.push({
       label: getEdgePortDisplayName(item),
       value: innerPortFormID,
@@ -80,7 +80,7 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
           ({ key }) => <PortConfigForm
             formListKey={key}
             key={`${innerPortFormID}_${key}`}
-            index={index}
+            id={item.id}
             isEdgeSdLanRun={isEdgeSdLanRun}
           />
         )}
@@ -116,9 +116,9 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
     const changedField = Object.values(changedValues)?.[0]?.[0]
     if(changedField) {
       const changedPortName = Object.keys(changedValues)?.[0]
-      const index = Number(changedPortName.toString().split('_')[1])
+      const id = changedPortName.toString().split('_')[1]
       if (changedField['portType']) {
-        handlePortTypeChange(changedPortName, changedField['portType'], index)
+        handlePortTypeChange(changedPortName, changedField['portType'], id)
       }
 
       let hasError = false
@@ -129,12 +129,12 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
     }
   }
 
-  const getFieldFullPath = (index: number, fieldName: string) =>
-    [getInnerPortFormID(index), 0, fieldName]
+  const getFieldFullPath = (id: string, fieldName: string) =>
+    [getInnerPortFormID(id), 0, fieldName]
 
 
   const handlePortTypeChange = (_: string, changedValue: StoreValue,
-    index: number) => {
+    id: string) => {
     // TODO: need to confirm if we should display this whenever user change port type
     // if (isEdgeSdLanReady && isEdgeSdLanRun) {
     //   showActionModal({
@@ -146,11 +146,11 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
     // }
 
     if (changedValue === EdgePortTypeEnum.LAN) {
-      form.setFieldValue(getFieldFullPath(index, 'ipMode'), EdgeIpModeEnum.STATIC)
+      form.setFieldValue(getFieldFullPath(id, 'ipMode'), EdgeIpModeEnum.STATIC)
     } else if (changedValue === EdgePortTypeEnum.WAN) {
-      const initialPortType = data[index]?.portType
+      const initialPortType = data.find(port => port.id === id)?.portType
       if (initialPortType !== EdgePortTypeEnum.WAN) {
-        form.setFieldValue(getFieldFullPath(index, 'natEnabled'), true)
+        form.setFieldValue(getFieldFullPath(id, 'natEnabled'), true)
       }
     }
   }

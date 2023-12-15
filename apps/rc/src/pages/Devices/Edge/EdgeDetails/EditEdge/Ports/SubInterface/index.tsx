@@ -29,7 +29,7 @@ const SubInterface = (props: SubInterfaceProps) => {
     const unLagPortIdx = portData?.findIndex(item => !item.isLagPort)
     setCurrentTab(
       unLagPortIdx > -1 ?
-        `port_${unLagPortIdx + 1}` :
+        `port_${portData[unLagPortIdx].id}` :
         `lag_${lagData?.[0].lagId}`
     )
   }, [portData])
@@ -48,7 +48,7 @@ const SubInterface = (props: SubInterfaceProps) => {
                   </Tooltip>
                   : getEdgePortDisplayName(item)
               }
-              key={'port_' + item.interfaceName}
+              key={'port_' + item.id}
               children={
                 <PortSubInterfaceTable
                   serialNumber={serialNumber}

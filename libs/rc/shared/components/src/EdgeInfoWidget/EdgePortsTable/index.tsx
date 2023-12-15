@@ -23,8 +23,8 @@ export const EdgePortsTable = (props: EdgePortsTableProps) => {
   const columns: TableProps<EdgePortsTableDataType>['columns'] = [
     {
       title: $t({ defaultMessage: 'Port Name' }),
-      key: 'interfaceName',
-      dataIndex: 'interfaceName',
+      key: 'id',
+      dataIndex: 'id',
       defaultSortOrder: 'ascend',
       sorter: { compare: sortProp('interfaceName', defaultSort) },
       render: (_, row) => {
