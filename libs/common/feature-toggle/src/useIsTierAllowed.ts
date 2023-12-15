@@ -12,11 +12,11 @@ type TierKey = `feature-${AccountType}-${AccountVertical}` | 'betaList' | 'alpha
 
 /* eslint-disable max-len, key-spacing */
 const defaultConfig: Partial<Record<TierKey, string[]>> = {
-  "feature-REC-Default"     : ["ADMN-ESNTLS", "CNFG-ESNTLS", "NTFY-ESNTLS", "ANLT-ESNTLS", "ANLT-FNDT", "PLCY-ESNTLS", "API-CLOUD", "BETA-CP","ADMN-SSO","AP-CCD","AP-NEIGHBORS", "BETA-CLB", "BETA-MESH","BETA-ZD2R1" ],
-  "feature-REC-Education"   : ["ADMN-ESNTLS", "CNFG-ESNTLS", "NTFY-ESNTLS", "ANLT-ESNTLS", "ANLT-FNDT", "PLCY-ESNTLS", "API-CLOUD", "BETA-CP","ADMN-SSO", "BETA-CLB"],
-  "feature-MSP-Default"     : ["ADMN-ESNTLS", "CNFG-ESNTLS", "NTFY-ESNTLS", "ANLT-ESNTLS", "ANLT-FNDT", "ANLT-ADV", "ANLT-STUDIO", "PLCY-ESNTLS", "PLCY-SGMNT", "API-CLOUD", "BETA-CP","ADMN-SSO","AP-CCD","AP-NEIGHBORS", "BETA-CLB", "BETA-MESH","BETA-ZD2R1"],
-  "feature-MSP-Hospitality" : ["ADMN-ESNTLS", "CNFG-ESNTLS", "NTFY-ESNTLS", "ANLT-ESNTLS", "ANLT-FNDT", "ANLT-ADV", "ANLT-STUDIO", "PLCY-ESNTLS", "PLCY-SGMNT", "API-CLOUD", "BETA-CP","ADMN-SSO", "BETA-CLB"],
-  "betaList"                : ["PLCY-EDGE","AP-70","BETA-DPSK3"]
+  'feature-REC-Default'     : ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS', 'ANLT-ESNTLS', 'ANLT-FNDT', 'PLCY-ESNTLS', 'API-CLOUD', 'BETA-CP','ADMN-SSO','AP-CCD','AP-NEIGHBORS', 'BETA-CLB', 'BETA-MESH','BETA-ZD2R1' ],
+  'feature-REC-Education'   : ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS', 'ANLT-ESNTLS', 'ANLT-FNDT', 'PLCY-ESNTLS', 'API-CLOUD', 'BETA-CP','ADMN-SSO', 'BETA-CLB'],
+  'feature-MSP-Default'     : ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS', 'ANLT-ESNTLS', 'ANLT-FNDT', 'ANLT-ADV', 'ANLT-STUDIO', 'PLCY-ESNTLS', 'PLCY-SGMNT', 'API-CLOUD', 'BETA-CP','ADMN-SSO','AP-CCD','AP-NEIGHBORS', 'BETA-CLB', 'BETA-MESH','BETA-ZD2R1'],
+  'feature-MSP-Hospitality' : ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS', 'ANLT-ESNTLS', 'ANLT-FNDT', 'ANLT-ADV', 'ANLT-STUDIO', 'PLCY-ESNTLS', 'PLCY-SGMNT', 'API-CLOUD', 'BETA-CP','ADMN-SSO', 'BETA-CLB'],
+  'betaList'                : ['PLCY-EDGE','AP-70','BETA-DPSK3']
 }
 /* eslint-enable */
 
