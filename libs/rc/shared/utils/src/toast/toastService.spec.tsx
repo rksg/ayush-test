@@ -1,6 +1,6 @@
 import { message } from 'antd'
 
-import { act, fireEvent, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { act, fireEvent, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { CountdownNode, onActivityMessageReceived, showTxToast, showActivityToast, TxStatus } from './toastService'
 
@@ -96,4 +96,35 @@ describe('Toast Service: showActivityToast', () => {
     await screen.findByText(/The following information was reported for the error you encountered/)
   })
 
+  it('test skip toast', async () => {
+    const failedTx = {
+      ...tx,
+      status: TxStatus.FAIL,
+      useCase: 'ImportApsCsv',
+      descriptionTemplate: 'APs were not imported',
+      steps: [{
+        endDatetime: '2023-12-14 05:06:16 +0000',
+        id: 'PostProcessedImportAps',
+        message: 'Post Processed Import APs',
+        progressType: 'REQUEST',
+        startDatetime: '2023-12-14 05:06:15 +0000',
+        status: TxStatus.SUCCESS
+      },
+      {
+        endDatetime: '2023-12-14 05:06:16 +0000',
+        id: 'ImportAps',
+        message: 'Import APs',
+        progressType: 'REQUEST',
+        startDatetime: '2023-12-14 05:06:15 +0000',
+        status: TxStatus.FAIL
+      }
+      ] }
+    act(() => {
+      onActivityMessageReceived(failedTx, ['ImportApsCsv'], ()=>{ showActivityToast(failedTx) })
+    })
+
+    await waitFor(()=>{
+      expect(screen.queryByText('APs were not imported')).toBeNull()
+    })
+  })
 })

@@ -64,18 +64,18 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
       style={{ width: '100%' }}
       data-testid='selectQosPriorityId'
       onChange={(options) => handleQosPriority(options.toString() as QosPriorityEnum)}>
-      <option value='WIFICALLING_PRI_VOICE'>
+      <Select.Option value='WIFICALLING_PRI_VOICE'>
         {$t(wifiCallingQosPriorityLabelMapping[QosPriorityEnum.WIFICALLING_PRI_VOICE])}
-      </option>
-      <option value='WIFICALLING_PRI_VIDEO'>
+      </Select.Option>
+      <Select.Option value='WIFICALLING_PRI_VIDEO'>
         {$t(wifiCallingQosPriorityLabelMapping[QosPriorityEnum.WIFICALLING_PRI_VIDEO])}
-      </option>
-      <option value='WIFICALLING_PRI_BE'>
+      </Select.Option>
+      <Select.Option value='WIFICALLING_PRI_BE'>
         {$t(wifiCallingQosPriorityLabelMapping[QosPriorityEnum.WIFICALLING_PRI_BE])}
-      </option>
-      <option value='WIFICALLING_PRI_BG'>
+      </Select.Option>
+      <Select.Option value='WIFICALLING_PRI_BG'>
         {$t(wifiCallingQosPriorityLabelMapping[QosPriorityEnum.WIFICALLING_PRI_BG])}
-      </option>
+      </Select.Option>
     </Select>
   )
 
