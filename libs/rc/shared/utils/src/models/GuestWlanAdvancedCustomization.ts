@@ -283,7 +283,7 @@ export class GuestWlanAdvancedCustomization {
 
     this.wifi7Enabled = true
 
-    this.multiLinkOperationEnabled = false
+    this.multiLinkOperationEnabled = true
 
     this.qosMapSetEnabled = false
 

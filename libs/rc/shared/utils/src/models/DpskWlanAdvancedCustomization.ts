@@ -277,7 +277,7 @@ export class DpskWlanAdvancedCustomization {
 
     this.wifi7Enabled = true
 
-    this.multiLinkOperationEnabled = false
+    this.multiLinkOperationEnabled = true
 
     this.qosMapSetEnabled = false
 
