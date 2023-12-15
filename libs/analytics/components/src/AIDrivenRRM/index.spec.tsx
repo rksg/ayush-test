@@ -28,9 +28,6 @@ describe('AIDrivenRRM dashboard', () => {
     mockGraphqlQuery(recommendationUrl, 'CrrmList', {
       data: crrmListResult
     })
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 100))
-    })
 
     mockGraphqlQuery(recommendationUrl, 'CrrmKpi', {
       data: {
@@ -43,9 +40,6 @@ describe('AIDrivenRRM dashboard', () => {
       wrapper: Provider
     })
 
-    await Promise.all([
-      waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    ])
     expect(await screen.findByText('AI-Driven RRM')).toBeVisible()
     expect(await screen.findByText('3')).toBeVisible()
     expect(await screen.findByText('zone-1')).toBeVisible()
