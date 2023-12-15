@@ -39,7 +39,7 @@ export function useFFList (): { featureList?: string[], betaList?: string[],
 
   // Only 3 verticals Default, Education & Hospitality will be supported in split.io
   // rest all types will be derived as 'Default' vertical type
-  // Use case scenarios ----
+  // Use case scenarios:
   // AccountType AccountVertical                                     SPLIT PLM FF Key
   // ----------- ---------------                                     ----------------
   // REC         Unknown,Default,Non Profit,Government               feature-REC-Default
@@ -47,19 +47,15 @@ export function useFFList (): { featureList?: string[], betaList?: string[],
   // REC         Hospitality                                         feature-REC-Hospitality
   // MSP         Unknown, Default,Non Profit,Governemnt,Education    feature-MSP-Default
   // MSP         Hospitality                                         feature-MSP-Hospitality
-  //
-  const isDefaultList = () => {
-    return jwtPayload?.acx_account_vertical === AccountVertical.DEFAULT ||
-    jwtPayload?.acx_account_vertical === AccountVertical.GOVERNMENT ||
-    jwtPayload?.acx_account_vertical === AccountVertical.UNKNOWN ||
-    jwtPayload?.acx_account_vertical === AccountVertical.NONPROFIT
-  }
-  const accountVerticalRec = (isDefaultList() && tenantType !== AccountType.REC )?
-    AccountVertical.DEFAULT : jwtPayload?.acx_account_vertical
-  const accountVerticalMsp = ((isDefaultList() || jwtPayload?.acx_account_vertical
-    === AccountVertical.EDU) && tenantType === AccountType.MSP) ?
-    AccountVertical.DEFAULT : jwtPayload?.acx_account_vertical
-  const accountVertical = tenantType === AccountType.REC? accountVerticalRec : accountVerticalMsp
+
+  const recDefaultVerticals = [AccountVertical.DEFAULT, AccountVertical.GOVERNMENT,
+    AccountVertical.UNKNOWN, AccountVertical.NONPROFIT]
+  const mspDefaultVerticals = [...recDefaultVerticals, AccountVertical.EDU]
+  const defaultVerticals = tenantType === AccountType.REC ? recDefaultVerticals
+    : mspDefaultVerticals
+  const accountVertical = defaultVerticals.includes(
+    jwtPayload?.acx_account_vertical as AccountVertical)
+    ? AccountVertical.DEFAULT : jwtPayload?.acx_account_vertical
 
   useDebugValue(`JWT tenantType: ${jwtPayload?.tenantType}, Tenant type: ${tenantType}`)
   const treatment = useTreatments([Features.PLM_FF], {
