@@ -61,3 +61,7 @@ export const SubtitleWrapper = styled.div`
   color: var(--acx-neutrals-50);
   text-align: center;
 `
+
+export const ChartWrapper = styled.div`
+  flex: 1;
+`

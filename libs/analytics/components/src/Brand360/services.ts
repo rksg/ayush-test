@@ -6,10 +6,6 @@ import { dataApi }       from '@acx-ui/store'
 
 import { fetchBrandProperties } from './__tests__/fixtures'
 
-import { ChartKey } from '.'
-
-
-
 export interface Response {
   lsp: string
   p1Incidents: number
@@ -21,31 +17,19 @@ export interface Response {
   property: string
 }
 export interface BrandTimeseriesPayload {
-  chartKey: ChartKey
   start: string,
   end: string,
   ssidRegex: string,
+  granularity?: 'all'
 }
 export interface FranchisorTimeseries {
   time: string[],
-  incidentCount?: number[],
-  timeToConnectSLA?: number[],
-  clientThroughputSLA?: number[],
-  connectionSuccessSLA?: number[],
-  ssidComplianceSLA?: number[],
-  errors?: Array<{ sla: string, error: string }>
-}
-
-const getSlaFields = (chartKey: ChartKey) => {
-  switch (chartKey) {
-    case 'incident': return 'incidentCount'
-    case 'compliance': return 'ssidComplianceSLA'
-    case 'experience': return `
-      timeToConnectSLA
-      clientThroughputSLA
-      connectionSuccessSLA
-    `
-  }
+  incidentCount: number[],
+  timeToConnectSLA: number[],
+  clientThroughputSLA: number[],
+  connectionSuccessSLA: number[],
+  ssidComplianceSLA: number[],
+  errors: Array<{ sla: string, error: string }>
 }
 
 const calculateSlaGranularity = (start: string, end: string) => {
@@ -69,7 +53,7 @@ export const api = dataApi.injectEndpoints({
       }
     }),
     fetchBrandTimeseries: build.query({
-      query: ({ chartKey, ...payload }: BrandTimeseriesPayload) => ({
+      query: ({ granularity, ...payload }: BrandTimeseriesPayload) => ({
         document: gql`
         query FranchisorTimeseries(
           $start: DateTime,
@@ -86,23 +70,19 @@ export const api = dataApi.injectEndpoints({
             severity: $severity,
             code: $code) {
               time
-              ${getSlaFields(chartKey)}
-              errors {
-                sla
-                error
-              }
+              incidentCount
+              timeToConnectSLA
+              clientThroughputSLA
+              connectionSuccessSLA
+              ssidComplianceSLA
             }
           }
         `,
         variables: {
           ...payload,
-          granularity: calculateSlaGranularity(payload.start, payload.end),
-          ...(chartKey === 'incident'
-            ? {
-              severity: { gt: 0.9, lte: 1 },
-              code: incidentCodes
-            }
-            : {})
+          granularity: granularity || calculateSlaGranularity(payload.start, payload.end),
+          severity: { gt: 0.9, lte: 1 },
+          code: incidentCodes
         }
       }),
       transformResponse: (res: { franchisorTimeseries: FranchisorTimeseries }) => res

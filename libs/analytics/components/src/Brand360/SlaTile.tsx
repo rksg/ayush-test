@@ -1,51 +1,87 @@
 import { useState } from 'react'
 
-import { meanBy, sortBy, sumBy, groupBy, reduce, toPairs } from 'lodash'
-import { defineMessage, useIntl }                          from 'react-intl'
+import {
+  meanBy,
+  mean,
+  sortBy,
+  sumBy,
+  groupBy,
+  reduce,
+  toPairs
+} from 'lodash'
+import { useIntl } from 'react-intl'
 
-import { Card, Loader }       from '@acx-ui/components'
-import { formatter }          from '@acx-ui/formatter'
+import { Card }               from '@acx-ui/components'
 import { UpArrow, DownArrow } from '@acx-ui/icons'
 
 import { SlaChart }                                                   from './Chart'
 import { Lsp, Property, transformToLspView, transformToPropertyView } from './helpers'
-import { useFetchBrandPropertiesQuery, Response }                     from './services'
+import { ChartKey, slaKpiConfig }                                     from './helpers'
 import * as UI                                                        from './styledComponents'
 
-import type { ChartKey }  from '.'
-import type { SliceType } from './useSliceType'
+import type { Response,  FranchisorTimeseries } from './services'
+import type { SliceType }                       from './useSliceType'
 
 
 interface SlaTileProps {
   chartKey: ChartKey
-  tableQuery: ReturnType<typeof useFetchBrandPropertiesQuery>
+  tableData: Response[]
+  chartData: FranchisorTimeseries | undefined
+  prevData: FranchisorTimeseries | undefined
+  currData: FranchisorTimeseries | undefined
   sliceType: SliceType
-  start: string
-  end: string
-  ssidRegex: string
 }
 
-export const slaKpiConfig = {
-  incident: {
-    getTitle: (sliceType: SliceType) => sliceType === 'lsp'
-      ? defineMessage({ defaultMessage: 'Distressed LSPs' })
-      : defineMessage({ defaultMessage: 'Distressed Properties' }),
-    dataKey: 'p1Incidents',
-    avg: false,
-    formatter: formatter('countFormat')
-  },
-  experience: {
-    getTitle: () => defineMessage({ defaultMessage: 'Guest Experience' }),
-    dataKey: 'guestExp',
-    avg: true,
-    formatter: formatter('percentFormat')
-  },
-  compliance: {
-    getTitle: () => defineMessage({ defaultMessage: 'Brand SSID Compliance' }),
-    dataKey: 'ssidCompliance',
-    avg: true,
-    formatter: formatter('percentFormat')
+export const getChartDataKey = (chartKey: ChartKey): string[] => {
+  switch (chartKey) {
+    case 'incident': return ['incidentCount']
+    case 'experience': return ['timeToConnectSLA', 'clientThroughputSLA', 'connectionSuccessSLA']
+    case 'compliance': return ['ssidComplianceSLA']
   }
+}
+
+
+const Subtitle = ({ sliceType }: { sliceType: SliceType }) => {
+  const { $t } = useIntl()
+  return <UI.SubtitleWrapper>{sliceType === 'lsp'
+    ? $t({ defaultMessage: '# of LSPs with P1 Incident' })
+    : $t({ defaultMessage: '# of Properties with P1 Incident' })}
+  </UI.SubtitleWrapper>
+}
+
+const ChangeIcon = ({ chartKey, prevData, currData }
+: {
+  chartKey: ChartKey,
+  prevData?: FranchisorTimeseries,
+  currData?: FranchisorTimeseries,
+}) => {
+  if (!prevData || !currData) return null
+  const keys = getChartDataKey(chartKey)
+  const prevValues = keys
+    .map(k => prevData[k as keyof typeof prevData])
+    .flat()
+  const prev = mean(prevValues)
+  const currValues = keys
+    .map(k => currData[k as keyof typeof currData])
+    .flat()
+  const curr = mean(currValues)
+  const change = curr - prev
+  if (change === 0) return null
+  const { formatter, direction } = slaKpiConfig[chartKey]
+  const isNegative = (direction === 'low') === (change > 0)
+  const arrow = change > 0 ? <UpArrow /> : <DownArrow />
+  return <UI.ChangeWrapper $isNegative={isNegative}>
+    {arrow}{formatter(Math.abs(change))}
+  </UI.ChangeWrapper>
+}
+
+const useOverallData = (chartKey: ChartKey, currData: FranchisorTimeseries | undefined) => {
+  if (!currData) return null
+  const keys = getChartDataKey(chartKey)
+  const currValues = keys
+    .map(k => currData[k as keyof typeof currData])
+    .flat()
+  return mean(currValues)
 }
 
 const groupBySliceType = (type: SliceType, data?: Response[]) => {
@@ -69,13 +105,6 @@ const getListData = (
     return result
   }, {} as Record<string, number>)
   return sortBy(toPairs(res), val => val[1])
-}
-
-const getOverallData = (listData: Array<[string, number]>, chartKey: ChartKey) => {
-  if (!listData.length) return 0
-  const { avg } = slaKpiConfig[chartKey]
-  const total = sumBy(listData, (val) => val[1])
-  return avg ? total / listData.length : total
 }
 
 const SwitcherIcon = ({ order, size }: { order: boolean, size: number }) => {
@@ -106,48 +135,32 @@ const TopElementsSwitcher = ({ data, chartKey }:
   </UI.ListWrapper>
 }
 
-const ChangeIcon = ({ chartKey, formatter }
-: { chartKey: ChartKey, formatter: CallableFunction }) => {
-  const changeValue = chartKey === 'incident'
-    ? Math.random() * 10
-    : Math.random()
-  const isNegative = changeValue < 0.5
-  return <UI.ChangeWrapper $isNegative={isNegative}>
-    {isNegative
-      ? <><DownArrow />{formatter(changeValue)}</>
-      : <><UpArrow />{formatter(changeValue)}</>}
-  </UI.ChangeWrapper>
-}
-
-const Subtitle = ({ sliceType }: { sliceType: SliceType }) => {
-  const { $t } = useIntl()
-  return <UI.SubtitleWrapper>{sliceType === 'lsp'
-    ? $t({ defaultMessage: '# of LSPs with P1 Incident' })
-    : $t({ defaultMessage: '# of Properties with P1 Incident' })}
-  </UI.SubtitleWrapper>
-}
-
-export function SlaTile ({ chartKey, tableQuery, sliceType, ...payload }: SlaTileProps) {
+export function SlaTile ({
+  chartKey,
+  tableData,
+  chartData,
+  prevData,
+  currData,
+  sliceType
+}: SlaTileProps) {
   const { $t } = useIntl()
   const { getTitle, formatter } = slaKpiConfig[chartKey]
-  const { data } = (tableQuery as unknown as { data?: Response[] })
-  const groupedData = groupBySliceType(sliceType, data)
+  const groupedData = groupBySliceType(sliceType, tableData)
   const listData = getListData(groupedData, chartKey)
-  const overallData = getOverallData(listData, chartKey)
-  return <Loader states={[
-    tableQuery as unknown as { isFetching: boolean, isLoading: boolean }
-  ]}>
-    <Card title={$t(getTitle(sliceType))}>
-      <UI.Spacer />
-      {chartKey === 'incident' && <Subtitle sliceType={sliceType} />}
-      <UI.ValueWrapper>
-        {formatter(overallData)}
-        <ChangeIcon chartKey={chartKey} formatter={formatter} />
-      </UI.ValueWrapper>
-      <UI.Spacer />
-      <SlaChart {...payload} chartKey={chartKey} />
-      <UI.Spacer />
-      <TopElementsSwitcher data={listData} chartKey={chartKey} />
-    </Card>
-  </Loader>
+  const overallData = useOverallData(chartKey, currData)
+  return <Card title={$t(getTitle(sliceType))}>
+    <UI.Spacer />
+    {chartKey === 'incident' && <Subtitle sliceType={sliceType} />}
+    <UI.ValueWrapper>
+      {formatter(overallData)}
+      <ChangeIcon
+        chartKey={chartKey}
+        prevData={prevData}
+        currData={currData} />
+    </UI.ValueWrapper>
+    <UI.Spacer />
+    <SlaChart chartData={chartData} chartKey={chartKey} />
+    <UI.Spacer />
+    <TopElementsSwitcher data={listData} chartKey={chartKey} />
+  </Card>
 }
