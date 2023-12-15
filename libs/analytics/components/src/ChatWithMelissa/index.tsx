@@ -4,6 +4,7 @@ import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Button, Card, defaultRichTextFormatValues } from '@acx-ui/components'
 import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
+import { useLocation }                               from '@acx-ui/react-router-dom'
 
 import { BOT_NAME } from '../MelissaBot'
 
@@ -13,6 +14,7 @@ import * as UI        from './styledComponents'
 
 export function ChatWithMelissa () {
   const { $t } = useIntl()
+  const { search } = useLocation()
   const [summary,setSummary] = useState<string|null>('')
   const [isRecurringUser,setIsRecurringUser] = useState(localStorage.getItem('isRecurringUser'))
   const isMelissaBotEnabled = useIsSplitOn(Features.RUCKUS_AI_CHATBOT_TOGGLE)
@@ -29,7 +31,7 @@ export function ChatWithMelissa () {
         setSummary(error.message)
       })
     }
-  },[showIncidentSummary])
+  },[showIncidentSummary,search])
   const askAnything = $t({ defaultMessage: 'Ask Anything' })
   const discover = $t({ defaultMessage: 'Discover which ones' })
   const comingSoon = $t({ defaultMessage: 'Coming Soon' })
