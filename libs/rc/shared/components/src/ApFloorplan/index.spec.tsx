@@ -165,6 +165,12 @@ describe('AP floorplan', () => {
       rest.post(
         CommonUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json(apListData))
+      ),
+      rest.get(
+        CommonUrlsInfo.getApMeshTopology.url,
+        (req, res, ctx) => {
+          return res(ctx.json({}))
+        }
       )
     )
   })

@@ -58,7 +58,7 @@ const stopPacketCapture = {
   requestId: '2055eee9-0f42-426e-961f-9de4f8f6e435'
 }
 
-describe.skip('ApPacketCaptureForm', () => {
+describe('ApPacketCaptureForm', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
@@ -220,7 +220,7 @@ describe.skip('ApPacketCaptureForm', () => {
     // expect(await screen.findByText('Server Error')).toBeVisible()
   })
 
-  it('should select wired correctly', async () => {
+  it.skip('should select wired correctly', async () => {
     mockServer.use(
       rest.get(
         WifiUrlsInfo.getPacketCaptureState.url,

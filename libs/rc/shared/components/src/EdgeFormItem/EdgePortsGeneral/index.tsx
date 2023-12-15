@@ -6,11 +6,11 @@ import { flatMap, isEqual }    from 'lodash'
 import { ValidateErrorEntity } from 'rc-field-form/es/interface'
 import { useIntl }             from 'react-intl'
 
-import { Loader, NoData, StepsForm, Tabs, Tooltip }                      from '@acx-ui/components'
-import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
-import { useGetEdgeSdLanViewDataListQuery, useUpdatePortConfigMutation } from '@acx-ui/rc/services'
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgePortWithStatus }          from '@acx-ui/rc/utils'
-import { useParams }                                                     from '@acx-ui/react-router-dom'
+import { Loader, NoData, StepsForm, Tabs, Tooltip }                                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                   from '@acx-ui/feature-toggle'
+import { useGetEdgeSdLanViewDataListQuery, useUpdatePortConfigMutation }                            from '@acx-ui/rc/services'
+import { convertEdgePortsConfigToApiPayload, EdgeIpModeEnum, EdgePortTypeEnum, EdgePortWithStatus } from '@acx-ui/rc/utils'
+import { useParams }                                                                                from '@acx-ui/react-router-dom'
 
 import { PortConfigForm }     from './PortConfigForm'
 import { getInnerPortFormID } from './utils'
@@ -157,31 +157,8 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
 
   const handleFinish = async () => {
     const formData = flatMap(form.getFieldsValue(true)) as EdgePortWithStatus[]
-
-    formData.forEach(item => {
-      // LAN port is not allowed to configure NAT enable
-      if (item.portType === EdgePortTypeEnum.LAN && item.natEnabled)
-        item.natEnabled = false
-
-      if (item.portType === EdgePortTypeEnum.LAN
-        && item.corePortEnabled === false) {
-
-        // should clear all non core port LAN port's gateway.
-        if (item.gateway)
-          item.gateway = ''
-
-        if (item.ipMode === EdgeIpModeEnum.DHCP) {
-        // prevent LAN port from using DHCP
-        // when it had been core port before but not a core port now.
-          item.ipMode = EdgeIpModeEnum.STATIC
-        }
-      }
-
-      if (item.portType === EdgePortTypeEnum.LAN
-        && item.corePortEnabled === true && item.ipMode === EdgeIpModeEnum.DHCP) {
-        // should clear gateway when using DHCP.
-        item.gateway = ''
-      }
+    formData.forEach((item, idx) => {
+      formData[idx] = convertEdgePortsConfigToApiPayload(item) as EdgePortWithStatus
     })
 
     try {
