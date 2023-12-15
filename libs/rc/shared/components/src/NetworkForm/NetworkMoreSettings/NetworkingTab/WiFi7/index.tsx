@@ -309,7 +309,11 @@ function WiFi7 ({ wlanData } : { wlanData : NetworkSaveData | null }) {
   }, [wifi7Enabled])
 
   useEffect(() => {
-    if (editMode) {
+    if (editMode && wlanData) {
+
+      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'],
+        wlanData.wlan?.advancedCustomization?.multiLinkOperationEnabled)
+
       if (wlanData?.wlan?.wlanSecurity === WlanSecurityEnum.WPA23Mixed) {
         form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
         setMLOSwitchDisable(true)
