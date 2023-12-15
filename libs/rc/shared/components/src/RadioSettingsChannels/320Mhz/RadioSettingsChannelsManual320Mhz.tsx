@@ -170,8 +170,8 @@ export function RadioSettingsChannelsManual320Mhz (props: {
         </Col>
       </Row>}
     </Radio.Group>
-    <Form.Item name={props.channelBandwidth320MhzGroupFieldName} hidden/>
-    <Form.Item name={props.formName} hidden/>
+    <Form.Item name={props.channelBandwidth320MhzGroupFieldName} hidden children={<></>}/>
+    <Form.Item name={props.formName} hidden children={<></>}/>
   </>
   )
 }

@@ -79,7 +79,7 @@ export const mockPersonaGroup: PersonaGroup = {
   description: '',
   macRegistrationPoolId: 'mac-id-1',
   dpskPoolId: 'dpsk-pool-2',
-  nsgId: 'nsgId-700',
+  personalIdentityNetworkId: 'nsgId-700',
   propertyId: 'propertyId-100'
 }
 
@@ -142,7 +142,7 @@ export const mockPersonaGroupTableResult: NewTableResult<PersonaGroup> = {
     description: '',
     macRegistrationPoolId: 'mac-id-1',
     dpskPoolId: 'dpsk-pool-2',
-    nsgId: 'nsgId-700',
+    personalIdentityNetworkId: 'nsgId-700',
     propertyId: 'propertyId-100'
   },
   {
@@ -151,7 +151,7 @@ export const mockPersonaGroupTableResult: NewTableResult<PersonaGroup> = {
     description: '',
     macRegistrationPoolId: 'mac-id-1',
     dpskPoolId: 'dpsk-pool-1',
-    nsgId: 'nsgId-300',
+    personalIdentityNetworkId: 'nsgId-300',
     propertyId: 'propertyId-400'
   },
   {

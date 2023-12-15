@@ -23,11 +23,13 @@ export interface EdgeSdLanViewData {
   corePortMac: string
   venueName?: string
   edgeName?: string
-  tunnelProfileName?: string,
+  tunnelProfileName?: string
   networkInfos?: {
     networkId: string
     networkName: string
     }[]
   serviceVersion?: string
   edgeAlarmSummary?: EdgeAlarmSummary
+  vlanNum?: number
+  vxlanTunnelNum?: number
 }

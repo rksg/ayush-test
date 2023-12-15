@@ -32,7 +32,7 @@ const Lag = (props: LagProps) => {
   const { lagData = [], isLagLoading } = useGetEdgeLagListQuery({
     params: { serialNumber },
     payload: {
-      pag: 1,
+      page: 1,
       pageSize: 10
     }
   },{
@@ -137,13 +137,13 @@ const Lag = (props: LagProps) => {
       portEnabled: boolean
     }[]
   ) => {
-    const portIds = portList?.map(port => port.id)
     return lagMembers?.map(
       lagmember =>
         <Row>
           <Col>
             {
-              `Port ${(portIds?.indexOf(lagmember.portId) ?? 0) + 1} (${lagmember.portEnabled ?
+              `${_.capitalize(portList?.find(port =>
+                port.id === lagmember.portId)?.interfaceName ?? '')} (${lagmember.portEnabled ?
                 $t({ defaultMessage: 'Enabled' }) :
                 $t({ defaultMessage: 'Disabled' })})`
             }
@@ -215,7 +215,7 @@ const Lag = (props: LagProps) => {
         setVisible={setLagDrawerVisible}
         data={currentEditData}
         portList={portList}
-        existedLagList={lagStatusList}
+        existedLagList={lagData}
       />
     </Loader>
   )

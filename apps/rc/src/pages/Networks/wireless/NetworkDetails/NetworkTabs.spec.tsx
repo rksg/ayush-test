@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
+import { useIsSplitOn }                                   from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo }                                 from '@acx-ui/rc/utils'
 import { generatePath }                                   from '@acx-ui/react-router-dom'
 import { Provider }                                       from '@acx-ui/store'
@@ -14,6 +15,9 @@ const networkDetailHeaderData = {
   activeVenueCount: 1,
   aps: {
     totalApCount: 1
+  },
+  network: {
+    clients: 1
   }
 }
 const params = { networkId: 'network-id', tenantId: 'tenant-id' }
@@ -34,14 +38,17 @@ describe('NetworkTabs', () => {
   })
 
   it('should render correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider><NetworkTabs /></Provider>, { route: { params } })
     await screen.findByText('Overview')
     await screen.findByText('APs (0)')
     await screen.findByText('Venues (0)')
     await screen.findByText('Timeline')
     await screen.findByText('Incidents')
+    await screen.findByText('Clients ()')
     await waitFor(() => screen.findByText('APs (1)'))
     await waitFor(() => screen.findByText('Venues (1)'))
+    await waitFor(() => screen.findByText('Clients (1)'))
   })
 
   it('should handle tab changes', async () => {
