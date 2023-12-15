@@ -145,7 +145,7 @@ export function SlaTile ({ chartKey, tableQuery, sliceType, ...payload }: SlaTil
         <ChangeIcon chartKey={chartKey} formatter={formatter} />
       </UI.ValueWrapper>
       <UI.Spacer />
-      <SlaChart {...payload} chartKey={chartKey} mock />
+      <SlaChart {...payload} chartKey={chartKey} />
       <UI.Spacer />
       <TopElementsSwitcher data={listData} chartKey={chartKey} />
     </Card>

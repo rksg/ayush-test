@@ -18,17 +18,10 @@ interface SlaChartProps {
   mock?: boolean
 }
 
-const transformTimeseries = (data?: FranchisorTimeseries, mock?: boolean) => {
+const removeErrors = (data?: FranchisorTimeseries) => {
   if (!data) return {}
   const { errors, ...values } = data
   if (errors?.length) return {}
-  if (mock) {
-    const { time, ...series } = values
-    return {
-      time,
-      ...mapValues(series, () => time.map(() => Math.random()))
-    }
-  }
   return values
 }
 
@@ -54,7 +47,7 @@ export function SlaChart ({ mock, ...payload }: SlaChartProps) {
   const seriesMapping = getSeriesMapping(payload.chartKey, $t)
   const timeseriesQuery = useFetchBrandTimeseriesQuery(payload, {
     selectFromResult: ({ data, ...rest }) => ({
-      data: getSeriesData(transformTimeseries(data!, mock), seriesMapping),
+      data: getSeriesData(removeErrors(data), seriesMapping),
       ...rest
     })
   })
