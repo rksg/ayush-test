@@ -36,7 +36,7 @@ export function EmailRecipientDialog (props: EmailRecipientDialogProps) {
 
   useEffect(() => {
 
-    if (notificationRecipientsList?.length && currentEmailList && currentEmailList.length){
+    if (notificationRecipientsList?.length){
       let _emailRecipientsList: EmailRecipientType[] = []
       notificationRecipientsList?.map(recipient => {
         const recipientDetails = recipient.endpoints
@@ -49,10 +49,12 @@ export function EmailRecipientDialog (props: EmailRecipientDialogProps) {
           })
         _emailRecipientsList.push(...recipientDetails)
       })
-      const existingEmails =
-        _emailRecipientsList.filter(admin => currentEmailList.includes(admin.email) )
       setEmailRecipientsList(_emailRecipientsList)
-      setSelectedRecipientsList(existingEmails)
+      if (currentEmailList && currentEmailList.length) {
+        const existingEmails =
+        _emailRecipientsList.filter(admin => currentEmailList.includes(admin.email))
+        setSelectedRecipientsList(existingEmails)
+      }
     }
 
   }, [currentEmailList, notificationRecipientsList])
@@ -107,15 +109,16 @@ export function EmailRecipientDialog (props: EmailRecipientDialogProps) {
         <Table
           columns={columns}
           dataSource={emailRecipientsList}
-          rowKey='email'
+          rowKey='id'
           rowSelection={{
-            type: 'checkbox',
             onChange: handleRowSelectChange,
+            type: 'checkbox',
             getCheckboxProps: (record: EmailRecipientType) => ({
+              id: record.id,
               name: record.name,
               email: record.email
             }),
-            selectedRowKeys: currentEmailList
+            selectedRowKeys: selectedRecipientsList.map(record => record.id)
           }}
         />
       </Loader>
