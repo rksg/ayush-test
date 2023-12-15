@@ -44,7 +44,7 @@ const initialState:MelissaBotState = {
 export function MelissaBot (){
   const { $t } = useIntl()
   const isMelissaBotEnabled = useIsSplitOn(Features.RUCKUS_AI_CHATBOT_TOGGLE)
-  const { pathname } = useLocation()
+  const { pathname, search } = useLocation()
   const inputRef = useRef<InputRef>(null)
   const isSummaryLatest = useRef(false)
   const initCount = useRef(0)
@@ -129,7 +129,7 @@ export function MelissaBot (){
       })
       const fulfillmentMessages:FulfillmentMessage[]=get(json,'queryResult.fulfillmentMessages')
       if(fulfillmentMessages) {
-        const { incidentId: createdIncidentId } = get(fulfillmentMessages, '[2].data', {})
+        const { incidentId: createdIncidentId } = get(fulfillmentMessages, '[3].data', {})
         if(createdIncidentId) {
           setState({ ...state,incidentId: createdIncidentId })
         }
@@ -181,13 +181,16 @@ export function MelissaBot (){
   },[state.incidentId])
   useEffect(()=>{
     if(pathname.includes('/dashboard')){
-      // setShowFloatingButton(false)
       setState({ ...state,showFloatingButton: false })
     }else if(state.responseCount){
       setState({ ...state,showFloatingButton: true })
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[pathname,state.responseCount])
+  useEffect(()=>{
+    isSummaryLatest.current = false
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[search])
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function eventHandler (e:CustomEvent<{ isRecurringUser:boolean, summary: string }>){
     const { isRecurringUser, summary } = e.detail
