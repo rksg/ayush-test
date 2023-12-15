@@ -105,7 +105,7 @@ export function WifiCallingSettingModal () {
         okText={$t({ defaultMessage: 'Save' })}
         onCancel={handleCancel}
         onOk={handleOk}
-        width={850}
+        width={500}
       >
         {transferComponent}
       </Modal>
