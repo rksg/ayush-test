@@ -1,7 +1,6 @@
 import { defaultNetworkPath }                 from '@acx-ui/analytics/utils'
 import { recommendationUrl, Provider, store } from '@acx-ui/store'
 import {
-  act,
   mockGraphqlQuery,
   render,
   screen,
@@ -54,9 +53,6 @@ describe('AIDrivenRRM dashboard', () => {
     mockGraphqlQuery(recommendationUrl, 'CrrmList', {
       data: crrmListResult
     })
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 100))
-    })
     mockGraphqlQuery(recommendationUrl, 'CrrmKpi', {
       data: {
         recommendation: crrmListResult.recommendations[1]
@@ -67,18 +63,11 @@ describe('AIDrivenRRM dashboard', () => {
       route: true,
       wrapper: Provider
     })
-
-    await Promise.all([
-      waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    ])
     expect(await screen.findByText('Reverted')).toBeVisible()
   })
   it('renders recommendation with third crrmkpi', async () => {
     mockGraphqlQuery(recommendationUrl, 'CrrmList', {
       data: crrmListResult
-    })
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 100))
     })
     mockGraphqlQuery(recommendationUrl, 'CrrmKpi', {
       data: {
@@ -90,10 +79,6 @@ describe('AIDrivenRRM dashboard', () => {
       route: true,
       wrapper: Provider
     })
-
-    await Promise.all([
-      waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    ])
     expect(await screen.findByText('2 interfering links can be optimized to 0')).toBeVisible()
   })
 
@@ -138,9 +123,6 @@ describe('AIDrivenRRM dashboard', () => {
       route: true,
       wrapper: Provider
     })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
     expect(await screen.findByText('Reverted')).toBeVisible()
     expect(await screen.findByText('Insufficient Licenses')).toBeVisible()
     // eslint-disable-next-line max-len
