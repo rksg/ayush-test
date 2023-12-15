@@ -85,8 +85,9 @@ export function EmailRecipientDialog (props: EmailRecipientDialogProps) {
     onSubmit(emailRecipients)
   }
 
-  const handleRowSelectChange = (selectedRowKeys: Key[], selectedRows: EmailRecipientType[]) => {
-    setSelectedRecipientsList(selectedRows)
+  const handleRowSelectChange = (selectedRowKeys: Key[]) => {
+    const _selectedRows = emailRecipientsList.filter(record => selectedRowKeys.includes(record.id))
+    setSelectedRecipientsList(_selectedRows)
   }
 
   return (
@@ -118,7 +119,7 @@ export function EmailRecipientDialog (props: EmailRecipientDialogProps) {
               name: record.name,
               email: record.email
             }),
-            selectedRowKeys: selectedRecipientsList.map(record => record.id)
+            defaultSelectedRowKeys: selectedRecipientsList.map(record => record.id)
           }}
         />
       </Loader>
