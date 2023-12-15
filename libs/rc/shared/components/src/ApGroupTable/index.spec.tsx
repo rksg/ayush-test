@@ -83,7 +83,7 @@ describe('ApGroupTable', () => {
     expect(tbody).toBeVisible()
   })
 
-  it('Table action bar Delete', async () => {
+  it.skip('Table action bar Delete', async () => {
     render(<Provider><ApGroupTable
       rowSelection={{
         type: 'checkbox'

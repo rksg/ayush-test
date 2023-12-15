@@ -212,7 +212,7 @@ export function VenuePropertyTab () {
     if (!propertyConfigsQuery.data?.personaGroupId) return
 
     getPersonaGroupById({ params: { groupId: propertyConfigsQuery.data.personaGroupId } })
-      .then(result => setWithNsg(!!result.data?.nsgId))
+      .then(result => setWithNsg(!!result.data?.personalIdentityNetworkId))
 
     setGroupId(propertyConfigsQuery.data.personaGroupId)
   }, [propertyConfigsQuery.data])

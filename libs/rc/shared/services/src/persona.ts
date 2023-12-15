@@ -145,19 +145,6 @@ export const personaApi = basePersonaApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Persona' }]
     }),
-    getPersonaList: build.query<TableResult<Persona>, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(PersonaUrls.getPersonaList, params)
-        return {
-          ...req,
-          params
-        }
-      },
-      transformResponse (result: NewTableResult<Persona>) {
-        return transferToTableResult<Persona>(result)
-      },
-      providesTags: [{ type: 'Persona', id: 'LIST' }]
-    }),
     getPersonaById: build.query<Persona, RequestPayload<{ groupId: string, id: string }>>({
       query: ({ params }) => {
         const req = createHttpRequest(PersonaUrls.getPersonaById, params)
@@ -239,8 +226,8 @@ export const personaApi = basePersonaApi.injectEndpoints({
       invalidatesTags: [{ type: 'Persona' }]
     }),
     deletePersonas: build.mutation({
-      query: ({ payload }) => {
-        const req = createHttpRequest(PersonaUrls.deletePersonas)
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PersonaUrls.deletePersonas, params)
         return {
           ...req,
           body: payload

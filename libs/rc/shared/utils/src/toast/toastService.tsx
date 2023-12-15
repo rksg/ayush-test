@@ -212,8 +212,9 @@ export const showTxToast = (tx: Transaction) => {
       }
     }
   }
-
-  showToast(config)
+  if (!skipToast(tx)) {
+    showToast(config)
+  }
 }
 
 const getToastMessage = (tx: Transaction): string => {
@@ -266,4 +267,15 @@ const getTabViewParams = (tx:Transaction) => {
     _.template(rcToastTemplates[method].tabView)(tx)
 
   return (_.isEmpty(tabId))? null : { tabView: tabId }
+}
+
+const skipToast = (tx: Transaction): boolean => {
+  if (tx.useCase === 'ImportApsCsv' && tx.status === 'FAIL' &&
+  ((tx.steps?.find((step) => {
+    return step.id === 'PostProcessedImportAps'
+  })?.status !== 'IN_PROGRESS'))) {
+    return true
+  } else {
+    return false
+  }
 }
