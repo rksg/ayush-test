@@ -108,7 +108,7 @@ describe('AIDrivenRRM dashboard', () => {
     })
 
     // eslint-disable-next-line max-len
-    expect(await screen.findByText('Your network is already running in an optimal configuration and we don’t have any AI Driven RRM to recommend currently.')).toBeVisible()
+    expect(await screen.findByText('Your network is already running in an optimal configuration and we don’t have any AI-Driven RRM to recommend currently.')).toBeVisible()
   })
 
   it('handles no zones', async () => {

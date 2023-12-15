@@ -7,7 +7,7 @@ import * as UI from './styledComponents'
 
 export const noDataText = defineMessage({ defaultMessage:
   `Your network is already running in an optimal configuration
-  and we don’t have any AI Driven RRM to recommend currently.` })
+  and we don’t have any AI-Driven RRM to recommend currently.` })
 
 export const featureText = defineMessage({ defaultMessage:
   `This feature is a centralized algorithm that runs in the
