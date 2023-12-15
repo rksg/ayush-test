@@ -15,6 +15,7 @@ import {
   mockServer,
   render,
   screen,
+  waitFor,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 import type { AnalyticsFilter } from '@acx-ui/utils'
@@ -59,9 +60,11 @@ const params = {
   tenantId: 'tenant-id',
   clientId: 'client-id'
 }
+const mockReqEventMeta = jest.fn()
 
 describe('ClientOverviewTab', () => {
   beforeEach(() => {
+    mockReqEventMeta.mockClear()
     store.dispatch(dataApi.util.resetApiState())
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(clientApi.util.resetApiState())
@@ -70,7 +73,10 @@ describe('ClientOverviewTab', () => {
 
     mockServer.use(
       rest.post(CommonUrlsInfo.getEventListMeta.url,
-        (_, res, ctx) => res(ctx.json(eventMetaList))),
+        (_, res, ctx) => {
+          mockReqEventMeta()
+          return res(ctx.json(eventMetaList))
+        }),
       rest.get(ClientUrlsInfo.getClientDetails.url,
         (_, res, ctx) => res(ctx.json(clientList[0]))),
       rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
@@ -96,13 +102,18 @@ describe('ClientOverviewTab', () => {
     })
 
     it('should render historical client info correctly', async () => {
-      jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
+      jest.spyOn(URLSearchParams.prototype, 'get').mockImplementation(key =>
+        key === 'clientStatus' ? 'historical' : null
+      )
       render(<Provider><ClientOverviewTab /></Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
       })
       await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+      await waitFor(() => expect(mockReqEventMeta).toBeCalledTimes(1))
+
       expect(await screen.findByText('Current Status')).toBeVisible()
       expect(await screen.findByText('Disconnected')).toBeVisible()
+      expect(await screen.findByText('30 m 3 s')).toBeVisible()
     })
 
     it.skip('should render correctly when search parameters is disappeared', async () => {
