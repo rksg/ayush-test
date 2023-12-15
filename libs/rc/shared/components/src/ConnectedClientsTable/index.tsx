@@ -46,13 +46,13 @@ function GetApFilterOptions (tenantId: string|undefined, venueId: string|undefin
 
 function GetNetworkFilterOptions (tenantId: string|undefined) {
   const { networkFilterOptions } = useNetworkListQuery({ params: { tenantId }, payload: {
-    fields: ['name', 'id'],
+    fields: ['name', 'ssid'],
     pageSize: 10000,
     sortField: 'name',
     sortOrder: 'ASC'
   } }, {
     selectFromResult: ({ data }) => ({
-      networkFilterOptions: data?.data?.map(v=>({ key: v.id, value: v.name })) || true
+      networkFilterOptions: data?.data?.map(v=>({ key: v.ssid, value: v.name })) || true
     })
   })
   return networkFilterOptions
