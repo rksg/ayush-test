@@ -57,6 +57,7 @@ export function Brand360 () {
           start={startDate}
           end={endDate}
           ssidRegex={settings['brand-ssid-compliance-matcher']!}
+          settings={settings as Settings}
         />
       </GridCol>)}
       <GridCol col={{ span: 6 }}>

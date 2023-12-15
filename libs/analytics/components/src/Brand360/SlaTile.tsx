@@ -3,18 +3,19 @@ import { useState } from 'react'
 import { meanBy, sortBy, sumBy, groupBy, reduce, toPairs } from 'lodash'
 import { defineMessage, useIntl }                          from 'react-intl'
 
+import type { Settings }      from '@acx-ui/analytics/utils'
 import { Card, Loader }       from '@acx-ui/components'
 import { formatter }          from '@acx-ui/formatter'
 import { UpArrow, DownArrow } from '@acx-ui/icons'
 
 import { SlaChart }                                                   from './Chart'
+import { ComplianceSetting }                                          from './ComplianceSetting'
 import { Lsp, Property, transformToLspView, transformToPropertyView } from './helpers'
 import { useFetchBrandPropertiesQuery, Response }                     from './services'
 import * as UI                                                        from './styledComponents'
 
 import type { ChartKey }  from '.'
 import type { SliceType } from './useSliceType'
-
 
 interface SlaTileProps {
   chartKey: ChartKey
@@ -23,6 +24,7 @@ interface SlaTileProps {
   start: string
   end: string
   ssidRegex: string
+  settings: Settings
 }
 
 export const slaKpiConfig = {
@@ -127,7 +129,7 @@ const Subtitle = ({ sliceType }: { sliceType: SliceType }) => {
   </UI.SubtitleWrapper>
 }
 
-export function SlaTile ({ chartKey, tableQuery, sliceType, ...payload }: SlaTileProps) {
+export function SlaTile ({ chartKey, tableQuery, sliceType, settings, ...payload }: SlaTileProps) {
   const { $t } = useIntl()
   const { getTitle, formatter } = slaKpiConfig[chartKey]
   const { data } = (tableQuery as unknown as { data?: Response[] })
@@ -137,7 +139,13 @@ export function SlaTile ({ chartKey, tableQuery, sliceType, ...payload }: SlaTil
   return <Loader states={[
     tableQuery as unknown as { isFetching: boolean, isLoading: boolean }
   ]}>
-    <Card title={$t(getTitle(sliceType))}>
+    <Card title={chartKey === 'compliance'
+      ? {
+        title: $t(getTitle(sliceType)),
+        icon: <ComplianceSetting settings={settings} />
+      }
+      : $t(getTitle(sliceType))}
+    >
       <UI.Spacer />
       {chartKey === 'incident' && <Subtitle sliceType={sliceType} />}
       <UI.ValueWrapper>
