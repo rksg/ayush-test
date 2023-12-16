@@ -1,3 +1,4 @@
+import { Settings } from '@acx-ui/analytics/utils'
 import { Provider } from '@acx-ui/store'
 import {
   render,
@@ -36,7 +37,13 @@ describe('SlaTile', () => {
   const baseProps = {
     ssidRegex: 'DENSITY',
     start: '2023-12-11T00:00:00+00:00',
-    end: '2023-12-12T00:00:00+00:00'
+    end: '2023-12-12T00:00:00+00:00',
+    settings: {
+      'brand-ssid-compliance-matcher': '^[a-zA-Z0-9]{5}_GUEST$',
+      'sla-p1-incidents-count': '0',
+      'sla-guest-experience': '100',
+      'sla-brand-ssid-compliance': '100'
+    } as Settings
   }
 
   it('should render correctly by lsp', async () => {
@@ -150,8 +157,8 @@ describe('SlaTile', () => {
     render(<SlaTile {...props}/>, { wrapper: Provider })
     expect(await screen.findByText('# of Properties with P1 Incident'))
       .toBeVisible()
-    const switchIcon = await screen.findByTestId('DownArrow')
-    fireEvent.click(switchIcon)
-    expect(switchIcon).toBeVisible()
+    const switchIcon = await screen.findAllByTestId('DownArrow')
+    fireEvent.click(switchIcon[0])
+    expect(switchIcon[0]).toBeVisible()
   })
 })
