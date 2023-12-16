@@ -108,3 +108,48 @@ export const mockBrandTimeseries = {
     }
   }
 }
+
+
+export const prevTimeseries = {
+      time: [
+        '2023-12-11T22:00:00.000Z',
+      ],
+      p1Incidents: [
+        10,
+      ],
+      ssidComplianceSLA: [
+        0.5,
+      ],
+      timeToConnectSLA: [
+        0.5,
+      ],
+      clientThroughputSLA: [
+        0.5,
+      ],
+      connectionSuccessSLA: [
+        0.5,
+      ],
+      errors: []
+    }
+
+export const currTimeseries = {
+      time: [
+        '2023-12-11T22:00:00.000Z',
+      ],
+      p1Incidents: [
+        20,
+      ],
+      ssidComplianceSLA: [
+        0.4,
+      ],
+      timeToConnectSLA: [
+        0.4,
+      ],
+      clientThroughputSLA: [
+        0.4,
+      ],
+      connectionSuccessSLA: [
+        0.8,
+      ],
+      errors: []
+    }

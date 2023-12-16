@@ -6,38 +6,6 @@ exports[`Brand360 resets SLAs 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__FallbackWrapper-sc-1352uh8-1 kymHqF"
-    >
-      <span
-        aria-label="loader"
-        class="SuspenseBoundary__SpinWrapper-sc-l6mvnr-0"
-        role="img"
-      >
-        <div
-          aria-busy="true"
-          aria-live="polite"
-          class="ant-spin ant-spin-lg ant-spin-spinning"
-        >
-          <span
-            class="ant-spin-dot ant-spin-dot-spin"
-          >
-            <i
-              class="ant-spin-dot-item"
-            />
-            <i
-              class="ant-spin-dot-item"
-            />
-            <i
-              class="ant-spin-dot-item"
-            />
-            <i
-              class="ant-spin-dot-item"
-            />
-          </span>
-        </div>
-      </span>
-    </div>
-    <div
       class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
     >
       <div
@@ -183,9 +151,13 @@ exports[`Brand360 resets SLAs 1`] = `
           class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
           <div
-            data-testid="brand360Tile"
+            class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
           >
-            {"chartKey":"incident","sliceType":"property","ssidRegex":"^[a-zA-Z0-9]{5}_GUEST$","start":"2023-12-11T16:01:00+00:00","end":"2023-12-12T00:01:00+00:00"}
+            <div
+              data-testid="brand360Tile"
+            >
+              {"chartKey":"incident","sliceType":"property","chartData":{"time":["2023-12-11T22:00:00.000Z"],"p1Incidents":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"prevData":{"time":["2023-12-11T22:00:00.000Z"],"p1Incidents":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"currData":{"time":["2023-12-11T22:00:00.000Z"],"p1Incidents":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]}}
+            </div>
           </div>
         </div>
       </div>
@@ -197,9 +169,13 @@ exports[`Brand360 resets SLAs 1`] = `
           class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
           <div
-            data-testid="brand360Tile"
+            class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
           >
-            {"chartKey":"experience","sliceType":"property","ssidRegex":"^[a-zA-Z0-9]{5}_GUEST$","start":"2023-12-11T16:01:00+00:00","end":"2023-12-12T00:01:00+00:00"}
+            <div
+              data-testid="brand360Tile"
+            >
+              {"chartKey":"experience","sliceType":"property","chartData":{"time":["2023-12-11T22:00:00.000Z"],"p1Incidents":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"prevData":{"time":["2023-12-11T22:00:00.000Z"],"p1Incidents":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"currData":{"time":["2023-12-11T22:00:00.000Z"],"p1Incidents":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]}}
+            </div>
           </div>
         </div>
       </div>
@@ -211,9 +187,13 @@ exports[`Brand360 resets SLAs 1`] = `
           class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
           <div
-            data-testid="brand360Tile"
+            class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
           >
-            {"chartKey":"compliance","sliceType":"property","ssidRegex":"^[a-zA-Z0-9]{5}_GUEST$","start":"2023-12-11T16:01:00+00:00","end":"2023-12-12T00:01:00+00:00"}
+            <div
+              data-testid="brand360Tile"
+            >
+              {"chartKey":"compliance","sliceType":"property","chartData":{"time":["2023-12-11T22:00:00.000Z"],"p1Incidents":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"prevData":{"time":["2023-12-11T22:00:00.000Z"],"p1Incidents":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"currData":{"time":["2023-12-11T22:00:00.000Z"],"p1Incidents":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]}}
+            </div>
           </div>
         </div>
       </div>

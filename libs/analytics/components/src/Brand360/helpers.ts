@@ -101,34 +101,34 @@ export const transformToPropertyView = (data: Response[]): Property[] =>
   })
 
 export function computePastRange (
-  date: string, endDate: string, dateRange: DateRange
+  startDate: string, dateRange: DateRange, endDate?: string
 ): [string, string] {
   switch (dateRange) {
     case DateRange.last8Hours: return [
-      moment(date).subtract(8, 'hours').format(),
-      date
+      moment(startDate).subtract(8, 'hours').format(),
+      startDate
     ]
     case DateRange.last24Hours: return [
-      moment(date).subtract(24, 'hours').format(),
-      date
+      moment(startDate).subtract(24, 'hours').format(),
+      startDate
     ]
     case DateRange.last7Days: return [
-      moment(date).subtract(7, 'days').format(),
-      date
+      moment(startDate).subtract(7, 'days').format(),
+      startDate
     ]
     case DateRange.last30Days: return [
-      moment(date).subtract(30, 'days').format(),
-      date
+      moment(startDate).subtract(30, 'days').format(),
+      startDate
     ]
     case DateRange.custom: {
-      const hours = moment.duration(moment(endDate).diff(date)).asHours()
+      const hours = moment.duration(moment(endDate).diff(startDate)).asHours()
       return [
-        moment(date).subtract(hours, 'hours').format(),
-        date
+        moment(startDate).subtract(hours, 'hours').format(),
+        startDate
       ]}
     case DateRange.allTime: return [
-      moment(date).subtract(3, 'months').format(),
-      date
+      moment(startDate).subtract(3, 'months').format(),
+      startDate
     ]
   }
 }

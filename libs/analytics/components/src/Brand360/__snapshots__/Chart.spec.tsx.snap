@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`chart should render charts correctly without randomizer 1`] = `
+exports[`chart should render charts correctly 1`] = `
 <DocumentFragment>
   <div>
     <div
-      class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+      class="styledComponents__ChartWrapper-sc-i3rlsn-9 hwMPoe"
     >
       <div
         style="overflow: visible; height: 0px; width: 0px;"
@@ -71,7 +71,7 @@ exports[`chart should render charts correctly without randomizer 1`] = `
                   <path
                     d=""
                     fill="none"
-                    stroke="#3E98C5"
+                    stroke="#666"
                     transform="translate(1267 5)"
                   />
                   <path
@@ -122,7 +122,7 @@ exports[`chart should render charts correctly without randomizer 1`] = `
       </div>
     </div>
     <div
-      class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+      class="styledComponents__ChartWrapper-sc-i3rlsn-9 hwMPoe"
     >
       <div
         style="overflow: visible; height: 0px; width: 0px;"
@@ -189,7 +189,7 @@ exports[`chart should render charts correctly without randomizer 1`] = `
                   <path
                     d=""
                     fill="none"
-                    stroke="#3E98C5"
+                    stroke="#666"
                     transform="translate(1267 5)"
                   />
                   <path
@@ -240,7 +240,7 @@ exports[`chart should render charts correctly without randomizer 1`] = `
       </div>
     </div>
     <div
-      class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+      class="styledComponents__ChartWrapper-sc-i3rlsn-9 hwMPoe"
     >
       <div
         style="overflow: visible; height: 0px; width: 0px;"

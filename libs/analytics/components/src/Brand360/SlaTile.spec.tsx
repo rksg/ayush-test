@@ -6,25 +6,18 @@ import {
 } from '@acx-ui/test-utils'
 
 import '@testing-library/jest-dom'
-import { fetchBrandProperties }         from './__tests__/fixtures'
-import { useFetchBrandPropertiesQuery } from './services'
+import {
+  fetchBrandProperties,
+  mockBrandTimeseries,
+  prevTimeseries,
+  currTimeseries
+}         from './__tests__/fixtures'
 import { SlaTile }                      from './SlaTile'
+import type { FranchisorTimeseries, Response } from './services'
 
 jest.mock('./Chart', () => ({
   SlaChart: () => <div data-testid='slaChart'>SlaChart</div>
 }))
-
-const mockBrandProperties = fetchBrandProperties()
-jest.mock('./services', () => ({
-  ...jest.requireActual('./services'),
-  useFetchBrandPropertiesQuery: () => ({
-    data: mockBrandProperties,
-    isLoading: false,
-    isFetching: false
-  })
-}))
-
-const mockProperties = useFetchBrandPropertiesQuery as jest.Mock
 
 describe('SlaTile', () => {
   const chartKeys = [
@@ -33,19 +26,20 @@ describe('SlaTile', () => {
     'experience' as const
   ]
 
+  const { data: { franchisorTimeseries } } = mockBrandTimeseries
+
   const baseProps = {
-    ssidRegex: 'DENSITY',
-    start: '2023-12-11T00:00:00+00:00',
-    end: '2023-12-12T00:00:00+00:00'
+    tableData: fetchBrandProperties() as unknown as Response[],
+    chartData: franchisorTimeseries as unknown as FranchisorTimeseries,
+    prevData: prevTimeseries as unknown as FranchisorTimeseries,
+    currData: currTimeseries as unknown as FranchisorTimeseries
   }
 
   it('should render correctly by lsp', async () => {
     const tiles = chartKeys.map(chartKey => {
-      const tableQuery = mockProperties()
       const props = {
         chartKey,
         ...baseProps,
-        tableQuery,
         sliceType: 'lsp' as const
       }
       return () => <SlaTile {...props} />
@@ -65,11 +59,9 @@ describe('SlaTile', () => {
 
   it('should render correctly by property', async () => {
     const tiles = chartKeys.map(chartKey => {
-      const tableQuery = mockProperties()
       const props = {
         chartKey,
         ...baseProps,
-        tableQuery,
         sliceType: 'property' as const
       }
       return () => <SlaTile {...props} />
@@ -89,11 +81,9 @@ describe('SlaTile', () => {
 
   it('should render empty data by lsp', async () => {
     const tiles = chartKeys.map(chartKey => {
-      const tableQuery = mockProperties()
       const props = {
         chartKey,
         ...baseProps,
-        tableQuery: { ...tableQuery, data: [] },
         sliceType: 'lsp' as const
       }
       return () => <SlaTile {...props} />
@@ -115,11 +105,9 @@ describe('SlaTile', () => {
 
   it('should render empty data by property', async () => {
     const tiles = chartKeys.map(chartKey => {
-      const tableQuery = mockProperties()
       const props = {
         chartKey,
         ...baseProps,
-        tableQuery: { ...tableQuery, data: [] },
         sliceType: 'property' as const
       }
       return () => <SlaTile {...props} />
@@ -140,11 +128,9 @@ describe('SlaTile', () => {
   })
 
   it('should handle top sorting', async () => {
-    const tableQuery = mockProperties()
     const props = {
       chartKey: 'incident' as const,
       ...baseProps,
-      tableQuery,
       sliceType: 'property' as const
     }
     render(<SlaTile {...props}/>, { wrapper: Provider })
