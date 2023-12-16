@@ -12,7 +12,8 @@ import {
   prevTimeseries,
   currTimeseries
 }         from './__tests__/fixtures'
-import { SlaTile }                      from './SlaTile'
+import { SlaTile } from './SlaTile'
+
 import type { FranchisorTimeseries, Response } from './services'
 
 jest.mock('./Chart', () => ({
@@ -55,6 +56,7 @@ describe('SlaTile', () => {
     expect(await screen.findByText('Brand SSID Compliance')).toBeVisible()
     const graphs = await screen.findAllByTestId('slaChart')
     expect(graphs).toHaveLength(3)
+    expect(await screen.findByText('20')).toBeVisible()
   })
 
   it('should render correctly by property', async () => {
@@ -83,7 +85,10 @@ describe('SlaTile', () => {
     const tiles = chartKeys.map(chartKey => {
       const props = {
         chartKey,
-        ...baseProps,
+        tableData: undefined as unknown as Response[],
+        chartData: undefined,
+        currData: undefined,
+        prevData: undefined,
         sliceType: 'lsp' as const
       }
       return () => <SlaTile {...props} />
@@ -99,15 +104,18 @@ describe('SlaTile', () => {
     expect(await screen.findByText('Brand SSID Compliance')).toBeVisible()
     const graphs = await screen.findAllByTestId('slaChart')
     expect(graphs).toHaveLength(3)
-    const zeroes = await screen.findAllByText('0')
-    expect(zeroes).toHaveLength(1)
+    const zeroes = await screen.findAllByText('--')
+    expect(zeroes).toHaveLength(3)
   })
 
   it('should render empty data by property', async () => {
     const tiles = chartKeys.map(chartKey => {
       const props = {
         chartKey,
-        ...baseProps,
+        tableData: undefined as unknown as Response[],
+        chartData: undefined,
+        currData: undefined,
+        prevData: undefined,
         sliceType: 'property' as const
       }
       return () => <SlaTile {...props} />
@@ -123,11 +131,11 @@ describe('SlaTile', () => {
     expect(await screen.findByText('Brand SSID Compliance')).toBeVisible()
     const graphs = await screen.findAllByTestId('slaChart')
     expect(graphs).toHaveLength(3)
-    const zeroes = await screen.findAllByText('0')
-    expect(zeroes).toHaveLength(1)
+    const zeroes = await screen.findAllByText('--')
+    expect(zeroes).toHaveLength(3)
   })
 
-  it('should handle top sorting', async () => {
+  it('should handle list sorting', async () => {
     const props = {
       chartKey: 'incident' as const,
       ...baseProps,
@@ -136,8 +144,15 @@ describe('SlaTile', () => {
     render(<SlaTile {...props}/>, { wrapper: Provider })
     expect(await screen.findByText('# of Properties with P1 Incident'))
       .toBeVisible()
-    const switchIcon = await screen.findByTestId('DownArrow')
-    fireEvent.click(switchIcon)
-    expect(switchIcon).toBeVisible()
+    const downIcon = await screen.findByTestId('DownArrow')
+    const prevItems = await screen.findAllByRole('listitem')
+    expect(prevItems).toHaveLength(3)
+    fireEvent.click(downIcon)
+    const currItems = await screen.findAllByRole('listitem')
+    expect(currItems).toHaveLength(3)
+    expect(prevItems[0].isEqualNode(currItems[0])).toBeFalsy()
+    fireEvent.click(downIcon)
+    const recentItems = await screen.findAllByRole('listitem')
+    expect(recentItems[0].isEqualNode(prevItems[0])).toBeTruthy()
   })
 })

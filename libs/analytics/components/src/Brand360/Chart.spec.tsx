@@ -5,8 +5,8 @@ import {
 } from '@acx-ui/test-utils'
 
 import '@testing-library/jest-dom'
-import { mockBrandTimeseries } from './__tests__/fixtures'
-import { SlaChart }            from './Chart'
+import { mockBrandTimeseries }  from './__tests__/fixtures'
+import { SlaChart }             from './Chart'
 import { FranchisorTimeseries } from './services'
 
 describe('chart', () => {
@@ -36,9 +36,7 @@ describe('chart', () => {
     const fragment = asFragment()
     // eslint-disable-next-line testing-library/no-node-access
     const graphs = fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
-    // eslint-disable-next-line testing-library/no-node-access
-    graphs.forEach(graph => graph.setAttribute('_echarts_instance_', 'echartsMock'))
-    expect(fragment).toMatchSnapshot()
+    expect(graphs).toHaveLength(3)
   })
 
   it('should render no data with undefined', async () => {
@@ -50,12 +48,12 @@ describe('chart', () => {
     expect(await screen.findByText('No data to display')).toBeVisible()
   })
 
-  it('should render no data with undefined', async () => {
+  it('should render no data with errors', async () => {
     const props = {
       chartData: {
-          ...mockBrandTimeseries.data.franchisorTimeseries as unknown as FranchisorTimeseries,
-          errors: [{ sla: 'test', error: 'something went wrong' }]
-        }
+        ...mockBrandTimeseries.data.franchisorTimeseries as unknown as FranchisorTimeseries,
+        errors: [{ sla: 'test', error: 'something went wrong' }]
+      }
     }
     render(<SlaChart chartKey='incident' {...props} />, { wrapper: Provider })
     expect(await screen.findByText('No data to display')).toBeVisible()

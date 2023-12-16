@@ -2,13 +2,14 @@ import '@testing-library/jest-dom'
 
 import { rest } from 'msw'
 
-import type { Settings }                         from '@acx-ui/analytics/utils'
-import { dataApiURL, Provider, rbacApiURL }                  from '@acx-ui/store'
+import type { Settings }                                                                      from '@acx-ui/analytics/utils'
+import { dataApiURL, Provider, rbacApiURL }                                                   from '@acx-ui/store'
 import { render, screen, mockServer, fireEvent, mockGraphqlQuery, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { Brand360 } from '.'
 import { mockBrandTimeseries, prevTimeseries, currTimeseries } from './__tests__/fixtures'
-import { FranchisorTimeseries } from './services'
+import { FranchisorTimeseries }                                from './services'
+
+import { Brand360 } from '.'
 
 
 jest.mock('./Table', () => ({
@@ -20,8 +21,8 @@ jest.mock('./Table', () => ({
 
 const wrapData = (value: unknown) => ({
   data: {
-      franchisorTimeseries: value as FranchisorTimeseries
-    }
+    franchisorTimeseries: value as FranchisorTimeseries
+  }
 })
 
 jest.mock('./SlaTile', () => ({

@@ -1,5 +1,6 @@
-import { DateRange } from "@acx-ui/utils"
-import { computePastRange } from "./helpers"
+import { DateRange } from '@acx-ui/utils'
+
+import { computePastRange } from './helpers'
 
 
 describe('helpers', () => {

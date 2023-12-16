@@ -9,18 +9,18 @@ import {
   reduce,
   toPairs
 } from 'lodash'
-import { useIntl }                          from 'react-intl'
+import { useIntl } from 'react-intl'
 
-import { Card }       from '@acx-ui/components'
+import { Card }               from '@acx-ui/components'
 import { UpArrow, DownArrow } from '@acx-ui/icons'
 
 import { SlaChart }                                                   from './Chart'
 import { Lsp, Property, transformToLspView, transformToPropertyView } from './helpers'
+import { ChartKey, slaKpiConfig }                                     from './helpers'
 import * as UI                                                        from './styledComponents'
 
-import { ChartKey, slaKpiConfig }  from './helpers'
-import type { SliceType } from './useSliceType'
-import type { Response,  FranchisorTimeseries }                     from './services'
+import type { Response,  FranchisorTimeseries } from './services'
+import type { SliceType }                       from './useSliceType'
 
 
 interface SlaTileProps {
@@ -106,8 +106,7 @@ const getListData = (
   return sortBy(toPairs(res), val => val[1])
 }
 
-const SwitcherIcon = ({ order, size }: { order: boolean, size: number }) => {
-  if (size <= 3) return null
+const SwitcherIcon = ({ order }: { order: boolean }) => {
   return <UI.IconWrapper>
     <UI.HighlightedIcon $highlight={order}>
       <UpArrow/>
@@ -130,7 +129,7 @@ const TopElementsSwitcher = ({ data, chartKey }:
     <div>
       {slice.map(([key, val, ind]) => <li key={key}>{ind}. {key} ({formatter(val)})</li>)}
     </div>
-    <SwitcherIcon order={isAsc} size={data.length} />
+    <SwitcherIcon order={isAsc} />
   </UI.ListWrapper>
 }
 
@@ -148,18 +147,18 @@ export function SlaTile ({
   const listData = getListData(groupedData, chartKey)
   const overallData = useOverallData(chartKey, currData)
   return <Card title={$t(getTitle(sliceType))}>
-      <UI.Spacer />
-      {chartKey === 'incident' && <Subtitle sliceType={sliceType} />}
-      <UI.ValueWrapper>
-        {formatter(overallData)}
-        <ChangeIcon
-          chartKey={chartKey}
-          prevData={prevData}
-          currData={currData} />
-      </UI.ValueWrapper>
-      <UI.Spacer />
-      <SlaChart chartData={chartData} chartKey={chartKey} />
-      <UI.Spacer />
-      <TopElementsSwitcher data={listData} chartKey={chartKey} />
-    </Card>
+    <UI.Spacer />
+    {chartKey === 'incident' && <Subtitle sliceType={sliceType} />}
+    <UI.ValueWrapper>
+      {formatter(overallData)}
+      <ChangeIcon
+        chartKey={chartKey}
+        prevData={prevData}
+        currData={currData} />
+    </UI.ValueWrapper>
+    <UI.Spacer />
+    <SlaChart chartData={chartData} chartKey={chartKey} />
+    <UI.Spacer />
+    <TopElementsSwitcher data={listData} chartKey={chartKey} />
+  </Card>
 }
