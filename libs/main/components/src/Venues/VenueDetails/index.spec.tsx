@@ -39,6 +39,12 @@ jest.mock('@acx-ui/analytics/components', () => {
   return Object.fromEntries(sets)
 })
 
+jest.mock('@acx-ui/rc/components', () => {
+  const sets = Object.keys(jest.requireActual('@acx-ui/rc/components'))
+    .map(key => [key, () => <div data-testid={`rc-${key}`} title={key} />])
+  return Object.fromEntries(sets)
+})
+
 jest.mock('./VenueAnalyticsTab', () => ({
   VenueAnalyticsTab: () => <div data-testid={'rc-VenueAnalyticsTab'} title='VenueAnalyticsTab' />
 }))

@@ -42,7 +42,7 @@ interface AddAdministratorDataModel {
   delegateToAllECs?: boolean;
   delegatedECs?: string[];
   authenticationId?: string;
-  firstName?: string;
+  name?: string;
   lastName?: string;
 }
 
@@ -121,7 +121,7 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
       if (formValues.authType === AuthTypeRadioButtonEnum.sso && authenticationData?.id) {
         payload.authenticationId = authenticationData.id
         payload.lastName = formValues.lastName ?? ''
-        payload.firstName = formValues.firstName ?? ''
+        payload.name = formValues.firstName ?? ''
       }
 
       await addAdmin({ params, payload }).unwrap()

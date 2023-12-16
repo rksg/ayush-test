@@ -44,9 +44,7 @@ export const ScheduleExportDrawer = (props: ScheduleExportDrawerProps) => {
           sortField: 'event_datetime',
           context: {
             ...formData?.context,
-            ...(formData?.context?.searchString
-              ? { searchString: [formData?.context?.searchString] }
-              : {}),
+            searchString: [formData?.context?.searchString],
             event_entity_type_all: Object.entries(eventTypeMapping).map(([key]) => key)
           },
           enable: !!formData.enable,
