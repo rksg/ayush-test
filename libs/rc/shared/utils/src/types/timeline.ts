@@ -108,14 +108,16 @@ export interface EventMeta {
   isClientExists?: boolean
   isNetworkExists?: boolean
   isSwitchExists: boolean
-  isVenueExists: boolean
+  isVenueExists: boolean,
+  isUnitExists: boolean,
   networkId?: string
   networkName?: string
   switchMac?: string
   switchName: string
   venueName: string
   tableKey?: string
-  edgeName: string
+  edgeName: string,
+  unitName: string
 }
 
 export type EventExportSchedule = {
