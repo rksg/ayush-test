@@ -3,9 +3,9 @@ import { ReactNode, useEffect, useState } from 'react'
 import { useIntl, FormattedMessage } from 'react-intl'
 import { useNavigate, useParams }    from 'react-router-dom'
 
-import { showActionModal, Loader, TableProps, Table  }      from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn }             from '@acx-ui/feature-toggle'
-import { useDeleteNetworkMutation, useLazyVenuesListQuery } from '@acx-ui/rc/services'
+import { showActionModal, Loader, TableProps, Table  }            from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useDeleteNetworkMutation, useLazyVenuesListQuery }       from '@acx-ui/rc/services'
 import {
   NetworkTypeEnum,
   Network,
@@ -282,7 +282,7 @@ interface NetworkTableProps {
 export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
   const isServicesEnabled = useIsSplitOn(Features.SERVICES)
   const isWpaDsae3Toggle = useIsSplitOn(Features.WIFI_EDA_WPA3_DSAE_TOGGLE)
-  const isBetaDPSK3FeatureEnabled = useIsSplitOn(TierFeatures.BETA_DPSK3)
+  const isBetaDPSK3FeatureEnabled = useIsTierAllowed(TierFeatures.BETA_DPSK3)
   const [expandOnBoaroardingNetworks, setExpandOnBoaroardingNetworks] = useState<boolean>(false)
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([])
   const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)

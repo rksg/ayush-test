@@ -83,7 +83,7 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
       text: defineMessage({ defaultMessage: 'Strict' }),
       description: defineMessage({
       // eslint-disable-next-line max-len
-        defaultMessage: 'Uses the proactive functionaity and forcefully rebalances clients via 802.11v BTM'
+        defaultMessage: 'Uses the proactive functionality and forcefully rebalances clients via 802.11v BTM'
       })
     }
   ]
