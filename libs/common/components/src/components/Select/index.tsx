@@ -45,8 +45,8 @@ export function Select (props: SelectProps) {
   return <AntSelect
     placeholder={$t({ defaultMessage: 'Select...' })}
     {...selectProps}
+    {...(props?.mode === 'multiple' && { menuItemSelectedIcon: <Check /> })}
     dropdownClassName={extraClassName}
-    menuItemSelectedIcon={<Check />}
   />
 }
 
