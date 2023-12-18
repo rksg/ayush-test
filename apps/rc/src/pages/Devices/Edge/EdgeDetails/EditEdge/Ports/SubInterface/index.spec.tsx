@@ -301,6 +301,7 @@ describe('EditEdge ports - sub-interface', () => {
       })
     const lagTab = await screen.findByRole('tab', { name: 'LAG 1' })
     await userEvent.click(lagTab)
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect((await screen.findAllByRole('row')).length).toBe(11)
   })
 
