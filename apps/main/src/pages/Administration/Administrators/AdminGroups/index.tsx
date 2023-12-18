@@ -24,7 +24,6 @@ import { AccountType }                                          from '@acx-ui/ut
 
 import { AddGroupDrawer } from './AddGroupDrawer'
 
-
 interface AdminGroupsTableProps {
   isPrimeAdminUser: boolean;
   tenantType?: string;
@@ -161,7 +160,7 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
 
   const onSwap = async (sourceGroupId: string, targetGroupId: string) => {
     try {
-      const adminGroupEditData: AdminSwapGroupData = {
+      const adminGroupEditData: AdminGroup = {
         swap: true,
         sourceGroupId: sourceGroupId,
         name: 'test group 25',
