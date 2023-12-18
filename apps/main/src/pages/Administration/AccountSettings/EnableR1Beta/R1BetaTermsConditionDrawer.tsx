@@ -2,8 +2,9 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, Drawer }              from '@acx-ui/components'
-import { useToggleBetaStatusMutation } from '@acx-ui/user'
+import { Button, Drawer, showActionModal } from '@acx-ui/components'
+import { useToggleBetaStatusMutation }     from '@acx-ui/user'
+import { userLogout }                      from '@acx-ui/utils'
 
 import { MessageMapping } from '../MessageMapping'
 
@@ -26,17 +27,25 @@ export function R1BetaTermsConditionDrawer (
   const [toggleBetaStatus ] = useToggleBetaStatusMutation()
 
   const onSave = async () => {
-    try {
-      await toggleBetaStatus({
-        params: {
-          enable: true + ''
+    showActionModal({
+      type: 'info',
+      width: 450,
+      title: $t({ defaultMessage: 'Enabling Beta Features' }),
+      content: $t(MessageMapping.enable_r1_beta_logout_dialog_msg),
+      okText: $t({ defaultMessage: 'Log Out Now' }),
+      onOk: async () => {
+        try {
+          await toggleBetaStatus({
+            params: {
+              enable: true + ''
+            }
+          }).unwrap()
+        } catch (error) {
+          console.log(error) // eslint-disable-line no-console
         }
-      }).unwrap()
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-    }
-    onClose()
-    window.location.reload()
+        userLogout()
+      }
+    })
   }
 
   const onClose = () => {
