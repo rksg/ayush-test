@@ -59,7 +59,7 @@ describe('Test schedule.utils', () => {
         'https://maps.googleapis.com/maps/api/timezone/json',
         (req, res, ctx) => res(ctx.json(timezoneRes))
       ),
-      rest.get('/env.json', (_, r, c) => r(c.json({
+      rest.get('/globalValues.json', (_, r, c) => r(c.json({
         GOOGLE_MAPS_KEY: 'FAKE_GOOGLE_MAPS_KEY'
       })))
     )
