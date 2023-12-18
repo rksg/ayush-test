@@ -1,10 +1,10 @@
 import { storiesOf } from '@storybook/react'
 
-import { Basic }             from './Basic'
-import { WithDefaultGroup }  from './WithDefaultGroup'
-import { WithinOptionField } from './WithinOptionField'
-import { WithOptGroup }      from './WithOptGroup'
-import { WithOptionGroup }   from './WithOptionGroup'
+import { Basic }               from './Basic'
+import { WithDefaultGroup }    from './WithDefaultGroup'
+import { WithinOptionalField } from './WithinOptionalField'
+import { WithOptGroup }        from './WithOptGroup'
+import { WithOptionGroup }     from './WithOptionGroup'
 
 export const defaultProps = {
   style: { minWidth: 200 },
@@ -49,7 +49,7 @@ export const normalGroupOption = [{
 
 storiesOf('Select', module)
   .add('Basic', Basic)
-  .add('Within Option Field', WithinOptionField)
+  .add('Within Optional Field', WithinOptionalField)
   .add('With Option Group', WithOptionGroup)
   .add('With Option Group (OptGroup)', WithOptGroup)
   .add('With Default Group', WithDefaultGroup)

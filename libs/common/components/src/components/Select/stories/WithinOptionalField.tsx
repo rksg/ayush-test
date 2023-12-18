@@ -2,7 +2,7 @@ import { Select } from '..'
 
 import { defaultProps, defaultOption } from './stories'
 
-export function WithinOptionField () {
+export function WithinOptionalField () {
   return <>
     <p>*need a empty option to reset value</p>
     <Select
