@@ -11,6 +11,7 @@ import {
 } from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Tooltip } from '@acx-ui/components'
 import { get }                         from '@acx-ui/config'
+import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }   from '@acx-ui/formatter'
 import { InformationOutlined }         from '@acx-ui/icons'
 import { TenantLink, useParams }       from '@acx-ui/react-router-dom'
@@ -115,6 +116,9 @@ export function RecommendationTable (
     setSelectedRowData([])
   }, [queryResults.data])
 
+  const isRACrrmPartialEnabled = useIsSplitOn(Features.RUCKUS_AI_CRRM_PARTIAL) && get('IS_MLISA_SA')
+  const isR1CrrmPartialEnabled = useIsSplitOn(Features.CRRM_PARTIAL) && !get('IS_MLISA_SA')
+
   const columns: TableProps<RecommendationListItem>['columns'] = useMemo(() => [
     ...(showCrrm ? [{
       title: get('IS_MLISA_SA')
@@ -213,7 +217,7 @@ export function RecommendationTable (
       className: 'actions-column',
       render: (_, value) => <RecommendationActions recommendation={value} />
     },
-    ...(showCrrm ? [{
+    ...(showCrrm && (isRACrrmPartialEnabled || isR1CrrmPartialEnabled) ? [{
       title: <UI.OptimizationHeader>
         {$t({ defaultMessage: 'Full Optimization' })}
         <UI.OptimizationTooltip>
@@ -224,7 +228,7 @@ export function RecommendationTable (
       </UI.OptimizationHeader>,
       key: 'preferences',
       dataIndex: 'preferences',
-      width: 120,
+      width: 140,
       fixed: 'right',
       tooltip: '',
       render: (_, value) => {

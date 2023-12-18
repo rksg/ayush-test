@@ -5,6 +5,7 @@ import userEvent from '@testing-library/user-event'
 import { useAnalyticsFilter, defaultNetworkPath }             from '@acx-ui/analytics/utils'
 import { defaultTimeRangeDropDownContextValue, useDateRange } from '@acx-ui/components'
 import { get }                                                from '@acx-ui/config'
+import { useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { BrowserRouter as Router, Link }                      from '@acx-ui/react-router-dom'
 import { recommendationUrl, Provider, store }                 from '@acx-ui/store'
 import {
@@ -79,6 +80,8 @@ describe('RecommendationTabContent', () => {
       mockedSetPreference,
       { reset: jest.fn() }
     ])
+
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
 
   it('should render loader', () => {
