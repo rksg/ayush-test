@@ -45,7 +45,7 @@ export const AAAForm = (props: AAAFormProps) => {
   const { isTemplate } = useConfigTemplate()
   const breadcrumb = usePolicyBreadcrumb(PolicyType.AAA, PolicyOperation.LIST)
   const { data } = useGetInstance(isEdit)
-  const [ createInstance ] = useAddAAAPolicyMutation()
+  const createInstance = useAddInstance()
   const updateInstance = useUpdateInstance()
   const [saveState, setSaveState] = useState<AAAPolicyType>({ name: '' })
 

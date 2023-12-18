@@ -8,9 +8,9 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { NetworkConfigTemplateLink, PolicyConfigTemplateLink } from '@acx-ui/msp/components'
-import { useGetConfigTemplateListQuery }                       from '@acx-ui/msp/services'
-import { ConfigTemplate }                                      from '@acx-ui/msp/utils'
+import { ConfigTemplateLink, PolicyConfigTemplateLink } from '@acx-ui/msp/components'
+import { useGetConfigTemplateListQuery }                from '@acx-ui/msp/services'
+import { ConfigTemplate }                               from '@acx-ui/msp/utils'
 import {
   PolicyOperation,
   PolicyType,
@@ -142,16 +142,15 @@ function getAddTemplateMenuProps (): Omit<MenuProps, 'placement'> {
     expandIcon: <UI.MenuExpandArrow />,
     items: [{
       key: 'add-wifi-network',
-      label: <NetworkConfigTemplateLink path='networks/wireless/add'>
+      label: <ConfigTemplateLink path='networks/wireless/add'>
         {$t({ defaultMessage: 'Wi-Fi Network' })}
-      </NetworkConfigTemplateLink>
+      </ConfigTemplateLink>
     }, {
       key: 'add-policy',
       label: $t({ defaultMessage: 'Policies' }),
       children: [{
         key: 'add-aaa',
-        // eslint-disable-next-line max-len
-        label: <PolicyConfigTemplateLink policyType={PolicyType.AAA} policyOperation={PolicyOperation.CREATE}>
+        label: <PolicyConfigTemplateLink type={PolicyType.AAA} oper={PolicyOperation.CREATE}>
           {$t(policyTypeLabelMapping[PolicyType.AAA])}
         </PolicyConfigTemplateLink>
       }]

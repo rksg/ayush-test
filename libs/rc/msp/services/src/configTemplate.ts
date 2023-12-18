@@ -10,7 +10,8 @@ import {
   onActivityMessageReceived,
   AAAPolicyType,
   CommonResultWithEntityResponse,
-  NetworkSaveData
+  NetworkSaveData,
+  AAAViewModalType
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi }      from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
@@ -47,28 +48,32 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     addNetworkTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.addNetworkTemplate),
-      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }]
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'NetworkTemplate', id: '' }]
     }),
     updateNetworkTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.updateNetworkTemplate),
-      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }]
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'NetworkTemplate', id: '' }]
     }),
     getNetworkTemplate: build.query<NetworkSaveData, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.getNetworkTemplate, false),
-      providesTags: [{ type: 'ConfigTemplate', id: 'DETAIL' }]
+      providesTags: [{ type: 'NetworkTemplate', id: 'DETAIL' }]
     }),
     // eslint-disable-next-line max-len
     addAAAPolicyTemplate: build.mutation<CommonResultWithEntityResponse<AAAPolicyType>, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.addAAAPolicyTemplate),
-      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }]
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'AAATemplate', id: 'LIST' }]
     }),
     getAAAPolicyTemplate: build.query<AAAPolicyType, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.getAAAPolicyTemplate, false),
-      providesTags: [{ type: 'ConfigTemplate', id: 'DETAIL' }]
+      providesTags: [{ type: 'AAATemplate', id: 'DETAIL' }]
     }),
     updateAAAPolicyTemplate: build.mutation<AAAPolicyType, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.updateAAAPolicyTemplate),
-      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }]
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'AAATemplate', id: 'LIST' }]
+    }),
+    getAAAPolicyTemplateList: build.query<TableResult<AAAViewModalType>, RequestPayload>({
+      query: commonQueryFn(ConfigTemplateUrlsInfo.getAAAPolicyTemplateList, false),
+      providesTags: [{ type: 'AAATemplate', id: 'LIST' }]
     })
   })
 })
@@ -80,10 +85,11 @@ export const {
   useGetNetworkTemplateQuery,
   useAddAAAPolicyTemplateMutation,
   useGetAAAPolicyTemplateQuery,
-  useUpdateAAAPolicyTemplateMutation
+  useUpdateAAAPolicyTemplateMutation,
+  useGetAAAPolicyTemplateListQuery
 } = configTemplateApi
 
-function commonQueryFn (apiInfo: ApiInfo, withPayload= true) {
+function commonQueryFn (apiInfo: ApiInfo, withPayload = true) {
   return ({ params, payload }: RequestPayload) => {
     const req = createHttpRequest(apiInfo, params)
     return {

@@ -70,8 +70,6 @@ import {
 import { basePolicyApi }     from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
 import { createHttpRequest } from '@acx-ui/utils'
-import { createConfigTemplateHttpRequestOrFallback } from './utils'
-
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -704,17 +702,13 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     addAAAPolicy: build.mutation<CommonResultWithEntityResponse<AAAPolicyType>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createConfigTemplateHttpRequestOrFallback(AaaUrls.addAAAPolicy, params)
+        const req = createHttpRequest(AaaUrls.addAAAPolicy, params)
         return {
           ...req,
           body: payload
         }
       },
-      // invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
-      invalidatesTags: (result, error, queryArg) => {
-        console.log(result, error, queryArg)
-        return [{ type: 'AAA', id: 'LIST' }]
-      }
+      invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
     deleteAAAPolicyList: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -757,11 +751,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      // providesTags: [{ type: 'AAA', id: 'LIST' }],
-      providesTags: (result, error, queryArg) => {
-        console.log(result, error, queryArg)
-        return [{ type: 'AAA', id: 'LIST' }]
-      },
+      providesTags: [{ type: 'AAA', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [

@@ -5,7 +5,7 @@ import { baseQuery } from './baseQuery'
 export const baseConfigTemplateApi = createApi({
   baseQuery: baseQuery,
   reducerPath: 'configTemplateApi',
-  tagTypes: ['ConfigTemplate'],
+  tagTypes: ['ConfigTemplate', 'AAATemplate', 'NetworkTemplate'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })

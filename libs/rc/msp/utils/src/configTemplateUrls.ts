@@ -32,5 +32,9 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateAAAPolicyTemplate: {
     method: 'put',
     url: '/templates/radiusServerProfiles/:policyId'
+  },
+  getAAAPolicyTemplateList: {
+    method: 'post',
+    url: '/templates/enhancedRadiusServerProfiles/query'
   }
 }
