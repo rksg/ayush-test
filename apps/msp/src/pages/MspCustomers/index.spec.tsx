@@ -263,7 +263,7 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
     expect(screen.getByText('MSP Customers')).toBeVisible()
-    expect(screen.getByText('Add EC Customer')).toBeVisible()
+    expect(screen.getByText('Add Customer')).toBeVisible()
 
     // eslint-disable-next-line testing-library/no-node-access
     const tbody = (await screen.findByRole('table')).querySelector('tbody')!
@@ -545,7 +545,7 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
-    expect(screen.getByText('Add EC Customer')).not.toBeVisible()
+    expect(screen.getByText('Add Customer')).not.toBeVisible()
 
     // eslint-disable-next-line testing-library/no-node-access
     const tbody = (await screen.findByRole('table')).querySelector('tbody')!
