@@ -16,6 +16,7 @@ import {
   NoAiOpsLicense,
   OptimalConfiguration,
   OptimalConfigurationWithData,
+  optimalConfigurationText,
   subtitle
 } from './extra'
 import * as UI from './styledComponents'
@@ -78,7 +79,7 @@ function AIOperationsWidget ({
     >{
         noLicense ? <NoAiOpsLicense />
           : noData
-            ? <OptimalConfiguration />
+            ? <OptimalConfiguration text={optimalConfigurationText}/>
             : <>
               {!hasNew ? <OptimalConfigurationWithData /> : null}
               <div style={{ flex: 1 }}>
