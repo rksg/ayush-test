@@ -11,16 +11,8 @@ import { UserUrlsInfo }                          from '@acx-ui/user'
 
 import { multipleConflictMessage, radiusErrorMessage } from '../../NetworkForm/contentsMap'
 
-import { aaaData, successResponse, validateErrorResponse } from './__tests__/fixtures'
-import { AAAForm }                                         from './AAAForm'
-
-const aaaList=[{
-  id: '1',
-  name: 'test1'
-},{
-  id: 'policy-id',
-  name: 'test2'
-}]
+import { aaaData, aaaList, successResponse, validateErrorResponse } from './__tests__/fixtures'
+import { AAAForm }                                                  from './AAAForm'
 
 jest.mock('react-intl', () => {
   const reactIntl = jest.requireActual('react-intl')
@@ -56,9 +48,9 @@ describe.skip('AAAForm', () => {
         AaaUrls.updateAAAPolicy.url,
         (_, res, ctx) => {return res(ctx.json(successResponse))}
       ),
-      rest.get(
-        AaaUrls.getAAAPolicyList.url,
-        (_, res, ctx) => {return res(ctx.json(aaaList))}
+      rest.post(
+        AaaUrls.getAAAPolicyViewModelList.url,
+        (_, res, ctx) => res(ctx.json(aaaList))
       )
     )
   })

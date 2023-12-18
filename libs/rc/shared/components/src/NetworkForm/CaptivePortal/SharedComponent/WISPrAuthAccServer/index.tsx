@@ -7,14 +7,15 @@ import {
   Select,
   Radio
 } from 'antd'
+import { DefaultOptionType }         from 'antd/lib/select'
 import _                             from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { useParams }                 from 'react-router-dom'
 
-import { Subtitle, Tooltip, PasswordInput }                from '@acx-ui/components'
-import { get }                                             from '@acx-ui/config'
-import { useGetAAAPolicyListQuery }                        from '@acx-ui/rc/services'
-import { AaaServerOrderEnum, AAATempType, AuthRadiusEnum } from '@acx-ui/rc/utils'
+import { Subtitle, Tooltip, PasswordInput }                         from '@acx-ui/components'
+import { get }                                                      from '@acx-ui/config'
+import { useGetAAAPolicyViewModelListQuery, useLazyAaaPolicyQuery } from '@acx-ui/rc/services'
+import { AaaServerOrderEnum, AuthRadiusEnum }                       from '@acx-ui/rc/utils'
 
 import AAAInstance        from '../../../AAAInstance'
 import AAAPolicyModal     from '../../../AAAInstance/AAAPolicyModal'
@@ -33,10 +34,10 @@ export function WISPrAuthAccServer (props : {
   const { useWatch } = Form
   const form = Form.useFormInstance()
   const { data, setData } = useContext(NetworkFormContext)
-  const { data: aaaListQuery } = useGetAAAPolicyListQuery({ params })
-  const aaaServices = aaaListQuery?.data?.map(m => ({ label: m.name, value: m.id })) ?? []
-  const [aaaList, setAaaList]= useState(aaaServices)
-  const [aaaData, setAaaData]= useState([] as AAATempType[])
+  const { data: aaaListQuery } = useGetAAAPolicyViewModelListQuery({ params, payload: {} })
+  const [ getAaaPolicy ] = useLazyAaaPolicyQuery()
+  const [aaaList, setAaaList]= useState([] as DefaultOptionType[])
+  const selectedAuthProfileId = Form.useWatch('authRadiusId')
   const radiusValue = Form.useWatch('authRadius')
   const context = useContext(WISPrAuthAccContext)
 
@@ -68,9 +69,8 @@ export function WISPrAuthAccServer (props : {
   }
 
   useEffect(()=>{
-    if(aaaListQuery?.data){
-      setAaaData([...aaaListQuery.data])
-      setAaaList(((aaaListQuery.data?.filter(d => d.type === 'AUTHENTICATION')))
+    if(aaaListQuery?.data) {
+      setAaaList(aaaListQuery.data?.filter(d => d.type === 'AUTHENTICATION')
         .map(m => ({ label: m.name, value: m.id })))
     }
   },[aaaListQuery])
@@ -104,6 +104,16 @@ export function WISPrAuthAccServer (props : {
       })
     }
   },[accountingRadius])
+
+  useEffect(() => {
+    if (selectedAuthProfileId) {
+      getAaaPolicy({ params: { ...params, policyId: selectedAuthProfileId } })
+        .unwrap()
+        .then((data) => form.setFieldValue('authRadius', data))
+    } else {
+      form.setFieldValue('authRadius', undefined)
+    }
+  }, [selectedAuthProfileId])
 
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
@@ -144,9 +154,6 @@ export function WISPrAuthAccServer (props : {
                           style={{ width: 210 }}
                           disabled={context.state.isDisabled.Auth}
                           data-testid='radius_server_selection'
-                          onChange={(value)=>{
-                          // eslint-disable-next-line max-len
-                            form.setFieldValue('authRadius' ,aaaData?.filter(d => d.id === value)[0])}}
                           options={[
                             { label: $t({ defaultMessage: 'Select server' }), value: '' },
                             ...aaaList
@@ -156,15 +163,11 @@ export function WISPrAuthAccServer (props : {
                     <Tooltip>
                       <AAAPolicyModal
                         updateInstance={(data)=>{
-                          aaaList.push({
-                            label: data.name, value: data.id })
-                          setAaaList([...aaaList])
-                          aaaData.push({ ...data })
-                          setAaaData([...aaaData])
+                          setAaaList([...aaaList, { label: data.name, value: data.id }])
                           form.setFieldValue('authRadiusId', data.id)
                           form.setFieldValue('authRadius', data)
                         }}
-                        aaaCount={aaaData.length}
+                        aaaCount={aaaList.length}
                         type={'AUTHENTICATION'}
                         disabled={context.state.isDisabled.Auth}
                       />

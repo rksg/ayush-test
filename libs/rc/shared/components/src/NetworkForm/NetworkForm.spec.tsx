@@ -104,8 +104,6 @@ describe('NetworkForm', () => {
       rest.post(PortalUrlsInfo.savePortal.url,
         (_, res, ctx) => res(ctx.json({ response: {
           requestId: 'request-id', id: 'test', serviceName: 'test' } }))),
-      rest.get(AaaUrls.getAAAPolicyList.url,
-        (_, res, ctx) => res(ctx.json([{ id: '1', name: 'test1' }]))),
       rest.get(PortalUrlsInfo.getPortalLang.url,
         (_, res, ctx) => {
           return res(ctx.json({ acceptTermsLink: 'terms & conditions',

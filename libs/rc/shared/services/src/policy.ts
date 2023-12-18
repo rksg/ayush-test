@@ -27,7 +27,6 @@ import {
   transferToTableResult,
   AAAPolicyType,
   AaaUrls,
-  AAATempType,
   AAAViewModalType,
   l3AclPolicyInfoType,
   l2AclPolicyInfoType,
@@ -719,29 +718,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
-    }),
-    getAAAPolicyList: build.query<TableResult<AAATempType>, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(AaaUrls.getAAAPolicyList, params)
-        return {
-          ...req
-        }
-      },
-      providesTags: [{ type: 'AAA', id: 'LIST' }],
-      transformResponse (result: AAATempType[]) {
-        return { data: result, totalCount: result.length, page: 0 }
-      },
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, [
-            'AddRadius',
-            'UpdateRadius',
-            'DeleteRadiuses'
-          ], () => {
-            api.dispatch(policyApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
-          })
-        })
-      }
     }),
     getAAAPolicyViewModelList: build.query<TableResult<AAAViewModalType>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -2069,10 +2045,9 @@ export const {
   useLazyMacRegistrationsQuery,
   useAddAAAPolicyMutation,
   useDeleteAAAPolicyListMutation,
-  useGetAAAPolicyListQuery,
-  useLazyGetAAAPolicyListQuery,
   useUpdateAAAPolicyMutation,
   useAaaPolicyQuery,
+  useLazyAaaPolicyQuery,
   useAaaNetworkInstancesQuery,
   useGetAAAProfileDetailQuery,
   useAddVLANPoolPolicyMutation,

@@ -8,7 +8,8 @@ import { CommonUrlsInfo,  AaaUrls }   from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import NetworkFormContext from '../../../NetworkFormContext'
+import { mockAAAPolicyListResponse } from '../../../__tests__/fixtures'
+import NetworkFormContext            from '../../../NetworkFormContext'
 
 import { statesCollection, WISPrAuthAccContext } from './WISPrAuthAccServerReducer'
 
@@ -18,19 +19,8 @@ describe('WISPRAuthACCServer Unit tests', () => {
   beforeEach(async () => {
     const mockPolicyResponse = { id: '2', name: 'test2' }
     mockServer.use(
-      rest.get(
-        AaaUrls.getAAAPolicyList.url,
-        (req, res, ctx) => res(ctx.json([{
-          id: '1',
-          name: 'test1',
-          type: 'AUTHENTICATION',
-          primary: {
-            ip: '1.1.1.2',
-            port: 1812,
-            sharedSecret: '111211121112'
-          }
-        }]))
-      ),
+      rest.post(AaaUrls.getAAAPolicyViewModelList.url,
+        (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse))),
       rest.post(CommonUrlsInfo.validateRadius.url, (_, res, ctx) =>
         res(ctx.json({}))
       ),

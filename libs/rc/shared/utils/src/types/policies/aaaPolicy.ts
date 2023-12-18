@@ -15,13 +15,6 @@ export interface AAATacacsServer{
   sharedSecret: string,
   purpose: AAAPurposeEnum
 }
-export interface AAATempType {
-  id?: string,
-  name: string,
-  type?: 'ACCOUNTING' | 'AUTHENTICATION',
-  primary?: RadiusServer,
-  secondary?: RadiusServer
-}
 export interface AAAViewModalType {
   id?: string,
   name: string,
