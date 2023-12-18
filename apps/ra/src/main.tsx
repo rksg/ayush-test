@@ -13,7 +13,7 @@ export async function initialize () {
     import('@acx-ui/components'),
     import('@acx-ui/config')
   ])
-  await config.initialize()
+  await config.initialize('ra')
 
   const isMaintenanceModeOn = config.get('ENABLED_FEATURES')?.split('|')
     .includes('maintenance_mode')

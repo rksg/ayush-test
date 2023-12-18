@@ -3,12 +3,12 @@ import { useState } from 'react'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { useNetworkClientListQuery, Client }                     from '@acx-ui/analytics/services'
-import { defaultSort, sortProp, QueryParamsForZone  }            from '@acx-ui/analytics/utils'
-import { Filter, Loader, Table, TableProps, useDateRange }       from '@acx-ui/components'
-import { DateFormatEnum, formatter }                             from '@acx-ui/formatter'
-import { TenantLink }                                            from '@acx-ui/react-router-dom'
-import { encodeParameter, DateFilter, DateRange, useDateFilter } from '@acx-ui/utils'
+import { useNetworkClientListQuery, ClientByTraffic }                           from '@acx-ui/analytics/services'
+import { defaultSort, sortProp, QueryParamsForZone, dateSort, getUserProfile  } from '@acx-ui/analytics/utils'
+import { Filter, Loader, Table, TableProps, useDateRange }                      from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                            from '@acx-ui/formatter'
+import { TenantLink }                                                           from '@acx-ui/react-router-dom'
+import { encodeParameter, DateFilter, DateRange, useDateFilter }                from '@acx-ui/utils'
 
 const pagination = { pageSize: 10, defaultPageSize: 10 }
 
@@ -43,7 +43,10 @@ export function ClientsList ({ searchVal='', queryParmsForZone }:
     setSearchString(search.searchString!)
   }
 
-  const clientTablecolumnHeaders: TableProps<Client>['columns'] = [
+  const { selectedTenant: { role } } = getUserProfile()
+  const isReportOnly = role === 'report-only'
+
+  const clientTablecolumnHeaders: TableProps<ClientByTraffic>['columns'] = [
     {
       title: $t({ defaultMessage: 'Hostname' }),
       dataIndex: 'hostname',
@@ -51,16 +54,17 @@ export function ClientsList ({ searchVal='', queryParmsForZone }:
       fixed: 'left',
       searchable: true,
       sorter: { compare: sortProp('hostname', defaultSort) },
-      render: (_, row : Client, __, highlightFn) => {
-        const { lastActiveTime, mac, hostname } = row
+      render: (_, row : ClientByTraffic, __, highlightFn) => {
+        const { lastSeen, mac, hostname } = row
         const period = encodeParameter<DateFilter>({
-          startDate: moment(lastActiveTime).subtract(24, 'hours').format(),
-          endDate: lastActiveTime,
+          startDate: moment(lastSeen).subtract(24, 'hours').format(),
+          endDate: moment(lastSeen).format(),
           range: DateRange.custom
         })
-        return <TenantLink
-          to={`/users/wifi/clients/${mac}/details/troubleshooting?period=${period}`}
-        >
+        const link = isReportOnly
+          ? `/users/wifi/clients/${mac}/details/reports`
+          : `/users/wifi/clients/${mac}/details/troubleshooting?period=${period}`
+        return <TenantLink to={link}>
           {highlightFn(hostname)}
         </TenantLink>
       }
@@ -77,14 +81,16 @@ export function ClientsList ({ searchVal='', queryParmsForZone }:
       dataIndex: 'mac',
       searchable: true,
       key: 'mac',
-      sorter: { compare: sortProp('mac', defaultSort) }
+      sorter: { compare: sortProp('mac', defaultSort) },
+      width: 100
     },
     {
       title: $t({ defaultMessage: 'IP Address' }),
       dataIndex: 'ipAddress',
       key: 'ipAddress',
       searchable: true,
-      sorter: { compare: sortProp('ipAddress', defaultSort) }
+      sorter: { compare: sortProp('ipAddress', defaultSort) },
+      width: 80
     },
     {
       title: $t({ defaultMessage: 'Manufacturer' }),
@@ -98,22 +104,33 @@ export function ClientsList ({ searchVal='', queryParmsForZone }:
       dataIndex: 'osType',
       key: 'osType',
       searchable: true,
-      sorter: { compare: sortProp('osType', defaultSort) }
+      sorter: { compare: sortProp('osType', defaultSort) },
+      width: 100
     },
     {
-      title: $t({ defaultMessage: 'Last Connection' }),
-      dataIndex: 'lastActiveTime',
-      key: 'lastActiveTime',
-      render: (_, { lastActiveTime }) => {
-        return formatter(DateFormatEnum.DateTimeFormat)(lastActiveTime)
+      title: $t({ defaultMessage: 'User Traffic (Total)' }),
+      dataIndex: 'traffic',
+      key: 'traffic',
+      render: (_, { traffic }) => {
+        return formatter('bytesFormat')(traffic)
       },
-      sorter: { compare: sortProp('lastActiveTime', defaultSort) }
+      sorter: { compare: sortProp('traffic', defaultSort) }
+    },
+    {
+      title: $t({ defaultMessage: 'Last Seen Time' }),
+      dataIndex: 'lastSeen',
+      key: 'lastSeen',
+      render: (_, { lastSeen }) => {
+        return formatter(DateFormatEnum.DateTimeFormat)(lastSeen)
+      },
+      sorter: { compare: sortProp('lastSeen', dateSort) },
+      width: 120
     }
   ]
   return <Loader states={[results]}>
-    <Table<Client>
+    <Table<ClientByTraffic>
       columns={clientTablecolumnHeaders}
-      dataSource={results.data?.clients as unknown as Client[]}
+      dataSource={results.data?.clientsByTraffic as unknown as ClientByTraffic[]}
       pagination={pagination}
       settingsId='clients-list-table'
       onFilterChange={onSearch}

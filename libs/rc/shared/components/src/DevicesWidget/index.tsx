@@ -5,11 +5,11 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 import { Card, DonutChart,
   getDeviceConnectionStatusColorsv2,
   GridCol, GridRow, StackedBarChart }    from '@acx-ui/components'
-import type { DonutChartData }           from '@acx-ui/components'
-import { Features, useIsTierAllowed }    from '@acx-ui/feature-toggle'
-import { ChartData }                     from '@acx-ui/rc/utils'
-import { TenantLink, useNavigateToPath } from '@acx-ui/react-router-dom'
-import { filterByAccess }                from '@acx-ui/user'
+import type { DonutChartData }            from '@acx-ui/components'
+import { TierFeatures, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { ChartData }                      from '@acx-ui/rc/utils'
+import { TenantLink, useNavigateToPath }  from '@acx-ui/react-router-dom'
+import { filterByAccess }                 from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
@@ -24,7 +24,7 @@ export function DevicesWidget (props: {
   const { $t } = useIntl()
   const onArrowClick = useNavigateToPath('/devices/')
 
-  const edgeSupported = useIsTierAllowed(Features.EDGES)
+  const edgeSupported = useIsTierAllowed(TierFeatures.SMART_EDGES)
 
   let numDonut = 2
   if (edgeSupported) {
@@ -38,14 +38,17 @@ export function DevicesWidget (props: {
         {({ height, width }) => (
           <div style={{ display: 'inline-flex' }}>
             <DonutChart
+              key='wifi-donutChart'
               style={{ width: width/numDonut, height }}
               title={$t({ defaultMessage: 'Wi-Fi' })}
               data={props.apData}/>
             <DonutChart
+              key='switch-donutChart'
               style={{ width: width/numDonut, height }}
               title={$t({ defaultMessage: 'Switch' })}
               data={props.switchData}/>
             { edgeSupported && (<DonutChart
+              key='smartEdge-donutChart'
               style={{ width: width/numDonut, height }}
               title={$t({ defaultMessage: 'SmartEdge' })}
               data={props.edgeData}/>)}
@@ -67,7 +70,7 @@ export function DevicesWidgetv2 (props: {
 }) {
   const { $t } = useIntl()
   const onArrowClick = useNavigateToPath('/devices/')
-  const edgeSupported = useIsTierAllowed(Features.EDGES)
+  const edgeSupported = useIsTierAllowed(TierFeatures.SMART_EDGES)
 
   const {
     apStackedData,
@@ -94,6 +97,7 @@ export function DevicesWidgetv2 (props: {
                 { apTotalCount > 0
                   ? <Space>
                     <StackedBarChart
+                      key='ap-stackedBarChart'
                       animation={false}
                       style={{
                         height: height/2 - 30,
@@ -104,11 +108,11 @@ export function DevicesWidgetv2 (props: {
                       showTotal={false}
                       total={apTotalCount}
                       barColors={getDeviceConnectionStatusColorsv2()} />
-                    <TenantLink to={'/devices/wifi'}>
+                    <TenantLink key='ap-tenantLink' to={'/devices/wifi'}>
                       {apTotalCount}
                     </TenantLink>
                   </Space>
-                  : <UI.LinkContainer style={{ height: height/2 - 30 }}>
+                  : <UI.LinkContainer key='ap-linkContainer' style={{ height: height/2 - 30 }}>
                     {filterByAccess([<TenantLink to={'/devices/wifi/add'}>
                       {$t({ defaultMessage: 'Add Access Point' })}
                     </TenantLink>])}
@@ -126,6 +130,7 @@ export function DevicesWidgetv2 (props: {
                 { switchTotalCount > 0
                   ? <Space>
                     <StackedBarChart
+                      key='switch-stackedBarChart'
                       animation={false}
                       style={{
                         height: height/2 - 30,
@@ -136,11 +141,13 @@ export function DevicesWidgetv2 (props: {
                       showTotal={false}
                       total={switchTotalCount}
                       barColors={getDeviceConnectionStatusColorsv2()} />
-                    <TenantLink to={'/devices/switch'}>
+                    <TenantLink key='switch-tenantLink' to={'/devices/switch'}>
                       {switchTotalCount}
                     </TenantLink>
                   </Space>
-                  : <UI.LinkContainer style={{ height: (height/2) - 30 }}>
+                  : <UI.LinkContainer
+                    key='switch-linkContainer'
+                    style={{ height: (height/2) - 30 }}>
                     {filterByAccess([<TenantLink to={'/devices/switch/add'}>
                       {$t({ defaultMessage: 'Add Switch' })}
                     </TenantLink>])}
@@ -159,6 +166,7 @@ export function DevicesWidgetv2 (props: {
                   { edgeTotalCount > 0
                     ? <Space>
                       <StackedBarChart
+                        key='edge-stackedBarChart'
                         animation={false}
                         style={{
                           height: height/2 - 30,
@@ -169,12 +177,15 @@ export function DevicesWidgetv2 (props: {
                         showTotal={false}
                         total={edgeTotalCount}
                         barColors={getDeviceConnectionStatusColorsv2()} />
-                      <TenantLink to={'/devices/edge'}>
+                      <TenantLink key='edge-tenantLink' to={'/devices/edge'}>
                         {edgeTotalCount}
                       </TenantLink>
                     </Space>
-                    : <UI.LinkContainer style={{ height: (height/2) - 30 }}>
-                      {filterByAccess([<TenantLink to={'/devices/edge/add'}>
+                    : <UI.LinkContainer
+                      key='edge-linkContainer'
+                      style={{ height: (height/2) - 30 }}>
+                      {filterByAccess([<TenantLink
+                        to={'/devices/edge/add'}>
                         {$t({ defaultMessage: 'Add SmartEdge' })}
                       </TenantLink>])}
                     </UI.LinkContainer>

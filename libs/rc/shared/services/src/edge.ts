@@ -277,7 +277,8 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       transformResponse (result: TableResult<EdgePortStatus>) {
         return result?.data
-      }
+      },
+      providesTags: [{ type: 'Edge', id: 'PORT' }]
     }),
     getEdgeSubInterfacesStatusList: build.query<TableResult<EdgePortStatus>, RequestPayload>({
       query: ({ payload }) => {
@@ -450,7 +451,22 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Add LAG',
+            'Update LAG',
+            'Delete LAG'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'LAG' }]))
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'PORT' }]))
+          })
+        })
+      },
+      providesTags: [{ type: 'Edge', id: 'DETAIL' }, { type: 'Edge', id: 'LAG' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getEdgeLagList: build.query<TableResult<EdgeLag>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -468,15 +484,19 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           totalCount: response.totalCount
         }
       },
-      // async onCacheEntryAdded (requestArgs, api) {
-      //   await onSocketActivityChanged(requestArgs, api, (msg) => {
-      //     const activities = [
-      //     ]
-      //     onActivityMessageReceived(msg, activities, () => {
-      //       api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'LAG' }]))
-      //     })
-      //   })
-      // },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Add LAG',
+            'Update LAG',
+            'Delete LAG'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'LAG' }]))
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'PORT' }]))
+          })
+        })
+      },
       providesTags: [{ type: 'Edge', id: 'DETAIL' }, { type: 'Edge', id: 'LAG' }],
       extraOptions: { maxRetries: 5 }
     }),
@@ -525,16 +545,16 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           totalCount: response.totalCount
         }
       },
-      // async onCacheEntryAdded (requestArgs, api) {
-      //   await onSocketActivityChanged(requestArgs, api, (msg) => {
-      //     const activities = [
-      //       'Update sub-interfaces'
-      //     ]
-      //     onActivityMessageReceived(msg, activities, () => {
-      //       api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'LAG_SUB_INTERFACE' }]))
-      //     })
-      //   })
-      // },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Update LAG sub-interface'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'LAG_SUB_INTERFACE' }]))
+          })
+        })
+      },
       providesTags: [{ type: 'Edge', id: 'DETAIL' }, { type: 'Edge', id: 'LAG_SUB_INTERFACE' }],
       extraOptions: { maxRetries: 5 }
     }),
@@ -578,6 +598,27 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getEdgeLagSubInterfacesStatusList: build.query<TableResult<EdgeLagStatus>, RequestPayload>({
+      query: ({ payload, params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getLagSubInterfacesStatus, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Update LAG sub-interface'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'LAG_SUB_INTERFACE' }]))
+          })
+        })
+      },
+      providesTags: [{ type: 'Edge', id: 'DETAIL' }, { type: 'Edge', id: 'LAG_SUB_INTERFACE' }],
+      extraOptions: { maxRetries: 5 }
     })
   })
 })
@@ -641,5 +682,6 @@ export const {
   useDeleteLagSubInterfacesMutation,
   useUpdateLagSubInterfacesMutation,
   useUpdateEdgeLagMutation,
-  useImportLagSubInterfacesCSVMutation
+  useImportLagSubInterfacesCSVMutation,
+  useGetEdgeLagSubInterfacesStatusListQuery
 } = edgeApi

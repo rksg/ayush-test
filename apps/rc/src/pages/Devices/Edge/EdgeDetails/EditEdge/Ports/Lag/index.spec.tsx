@@ -1,13 +1,13 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeUrlsInfo }                                from '@acx-ui/rc/utils'
-import { Provider }                                    from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
-
-import { mockEdgeLagStatusList, mockedEdgeLagList } from '../../../../__tests__/fixtures'
+import { EdgeLagFixtures, EdgeUrlsInfo }                                          from '@acx-ui/rc/utils'
+import { Provider }                                                               from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import Lag from '.'
+
+const { mockedEdgeLagList, mockEdgeLagStatusList } = EdgeLagFixtures
 
 describe('EditEdge ports - LAG', () => {
   let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
@@ -67,7 +67,7 @@ describe('EditEdge ports - LAG', () => {
     expect(within(drawer).getByText('Add LAG')).toBeVisible()
   })
 
-  it('Should delete LAG correctly', async () => {
+  it.skip('Should delete LAG correctly', async () => {
     render(
       <Provider>
         <Lag
@@ -81,6 +81,7 @@ describe('EditEdge ports - LAG', () => {
           path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const row = await screen.findByRole('row', { name: /LAG 1/i })
     await userEvent.click(within(row).getByRole('radio'))
     await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))

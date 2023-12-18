@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { NoData, Tabs, Tooltip }             from '@acx-ui/components'
-import { EdgeLagStatus, EdgePortWithStatus } from '@acx-ui/rc/utils'
+import { NoData, Tabs, Tooltip }                                     from '@acx-ui/components'
+import { EdgeLagStatus, EdgePortWithStatus, getEdgePortDisplayName } from '@acx-ui/rc/utils'
 
 
 import { LagSubInterfaceTable }  from './LagSubInterfaceTable'
@@ -29,7 +29,7 @@ const SubInterface = (props: SubInterfaceProps) => {
     const unLagPortIdx = portData?.findIndex(item => !item.isLagPort)
     setCurrentTab(
       unLagPortIdx > -1 ?
-        `port_${unLagPortIdx + 1}` :
+        `port_${portData[unLagPortIdx].id}` :
         `lag_${lagData?.[0].lagId}`
     )
   }, [portData])
@@ -38,17 +38,17 @@ const SubInterface = (props: SubInterfaceProps) => {
     portData.length > 0 ?
       <Tabs type='third' activeKey={currentTab} onChange={handleTabChange}>
         {
-          portData.map((item, index) =>
+          portData.map((item) =>
             <Tabs.TabPane
               tab={
-                item.isLagPort ?
-                  <Tooltip title={$t({ defaultMessage: `This port is a LAG member 
+                item.isLagPort
+                  ? <Tooltip title={$t({ defaultMessage: `This port is a LAG member 
                     and is not available for adding sub-interfaces.` })}>
-                    {$t({ defaultMessage: 'Port {index}' }, { index: index + 1 })}
-                  </Tooltip> :
-                  $t({ defaultMessage: 'Port {index}' }, { index: index + 1 })
+                    {getEdgePortDisplayName(item)}
+                  </Tooltip>
+                  : getEdgePortDisplayName(item)
               }
-              key={'port_' + (index + 1)}
+              key={'port_' + item.id}
               children={
                 <PortSubInterfaceTable
                   serialNumber={serialNumber}
@@ -70,8 +70,8 @@ const SubInterface = (props: SubInterfaceProps) => {
                 <LagSubInterfaceTable
                   serialNumber={serialNumber}
                   currentTab={currentTab}
-                  ip={item.ip}
-                  mac={item.mac}
+                  ip={item.ip ?? ''}
+                  mac={item.mac ?? ''}
                   lagId={item.lagId}
                 />
               }

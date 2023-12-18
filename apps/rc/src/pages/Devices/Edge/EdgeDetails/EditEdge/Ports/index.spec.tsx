@@ -1,18 +1,20 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }     from '@acx-ui/store'
+import { EdgeUrlsInfo, getEdgePortDisplayName } from '@acx-ui/rc/utils'
+import { EdgePortConfigFixtures }               from '@acx-ui/rc/utils'
+import { Provider }                             from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
 
-import { EdgeEditContext }                        from '..'
-import { mockEdgePortConfig, mockEdgePortStatus } from '../../../__tests__/fixtures'
+import { EdgeEditContext } from '..'
 
 import Ports from '.'
+
+const { mockEdgePortConfig, mockEdgePortStatus } = EdgePortConfigFixtures
 
 jest.mock('@acx-ui/utils', () => {
   const reactIntl = jest.requireActual('react-intl')
@@ -129,7 +131,8 @@ describe('EditEdge ports', () => {
       })
 
     for (let i = 0; i < mockEdgePortConfig.ports.length; ++i) {
-      await user.click(await screen.findByRole('tab', { name: 'Port ' + (i + 1) }))
+      await user.click(await screen.findByRole('tab',
+        { name: getEdgePortDisplayName(mockEdgePortConfig.ports[i]) }))
       const expectedIp = mockEdgePortStatus[i]?.ip || 'N/A'
       await screen.findByText(
         'IP Address: ' + expectedIp + ' | ' +

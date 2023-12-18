@@ -1,14 +1,13 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeUrlsInfo }                        from '@acx-ui/rc/utils'
-import { Provider }                            from '@acx-ui/store'
-import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
-
-import { mockEdgePortConfig } from '../../../../__tests__/fixtures'
+import { EdgePortConfigFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                             from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }  from '@acx-ui/test-utils'
 
 import { LagDrawer } from './LagDrawer'
 
+const { mockEdgePortConfig } = EdgePortConfigFixtures
 
 type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void
@@ -32,7 +31,7 @@ jest.mock('antd', () => {
 
 const mockedSetVisible = jest.fn()
 
-describe('EditEdge ports - LAG', () => {
+describe('EditEdge ports - LAG Drawer', () => {
   let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
   beforeEach(() => {
     params = {
@@ -89,7 +88,7 @@ describe('EditEdge ports - LAG', () => {
       })
     const selector = await screen.findAllByRole('combobox')
     await userEvent.selectOptions(selector[0], '2')
-    await userEvent.click(screen.getByRole('checkbox', { name: 'Port 1' }))
+    await userEvent.click(screen.getByRole('checkbox', { name: 'Port1' }))
     await userEvent.click(screen.getByRole('switch', { name: 'Port Enabled' }))
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
     await userEvent.click(await screen.findByRole('button', { name: 'Replace with LAG settings' }))

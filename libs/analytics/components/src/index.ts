@@ -15,7 +15,11 @@ export * from './HeaderButtons'
 export { IncidentBySeverity } from './IncidentBySeverity'
 export { IncidentsCountBySeverities } from './IncidentsCountBySeverities'
 export { IncidentBySeverityDonutChart } from './IncidentBySeverity/IncidentBySeverityDonutChart'
-export { useIncidentsBySeverityQuery } from './IncidentBySeverity/services'
+export {
+  useIncidentsBySeverityQuery,
+  useIncidentsListBySeverityQuery,
+  useLazyIncidentsListBySeverityQuery
+} from './IncidentBySeverity/services'
 export type { IncidentsBySeverityData } from './IncidentBySeverity/services'
 export * from './Incidents'
 export { IncidentTable } from './IncidentTable'
@@ -55,7 +59,8 @@ export { TopEdgesByTraffic } from './TopEdgesByTraffic'
 export { TopEdgesByResources } from './TopEdgesByResources'
 export {
   RecommendationDetails,
-  CrrmDetails
+  CrrmDetails,
+  UnknownDetails
 } from './Recommendations/RecommendationDetails'
 export { ReportTile } from './ReportTiles'
 export { ServiceGuardDetails } from './ServiceGuard/ServiceGuardDetails'

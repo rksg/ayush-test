@@ -39,11 +39,11 @@ import {
   AFCMaxPowerRender,
   AFCPowerStateRender
 } from '@acx-ui/rc/utils'
-import { getFilters, CommonResult, ImportErrorRes, FILTER }  from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload }                                    from '@acx-ui/types'
-import { filterByAccess }                                    from '@acx-ui/user'
-import { exportMessageMapping }                              from '@acx-ui/utils'
+import { getFilters, CommonResult, ImportErrorRes, FILTER }               from '@acx-ui/rc/utils'
+import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { RequestPayload }                                                 from '@acx-ui/types'
+import { filterByAccess }                                                 from '@acx-ui/user'
+import { exportMessageMapping }                                           from '@acx-ui/utils'
 
 import { seriesMappingAP }                                 from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
@@ -122,6 +122,7 @@ interface ApTableProps
 export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefType>) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
+  const location = useLocation()
   const params = useParams()
   const filters = getFilters(params) as FILTER
   const { searchable, filterables, enableGroups=true } = props
@@ -471,7 +472,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
   const [ importCsv ] = useImportApMutation()
   const [ importQuery ] = useLazyImportResultQuery()
   const [ importResult, setImportResult ] = useState<ImportErrorRes>({} as ImportErrorRes)
-  const [ importErrors, setImportErrors ] = useState<ImportErrorRes>({} as ImportErrorRes)
+  const [ importErrors, setImportErrors ] = useState<FetchBaseQueryError>({} as FetchBaseQueryError)
   const apGpsFlag = useIsSplitOn(Features.AP_GPS)
   const wifiEdaFlag = useIsSplitOn(Features.WIFI_EDA_READY_TOGGLE)
   const importTemplateLink = apGpsFlag ?
@@ -504,7 +505,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
     if (importResult?.fileErrorsCount === 0) {
       setImportVisible(false)
     } else {
-      setImportErrors(importResult)
+      setImportErrors({ data: importResult } as FetchBaseQueryError)
     }
   },[importResult])
 
@@ -553,7 +554,10 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
             navigate({
               ...basePath,
               pathname: `${basePath.pathname}/apgroups/add`
-            })
+            }, { state: {
+              venueId: params.venueId,
+              history: location.pathname
+            } })
           }
         }, {
           label: $t({ defaultMessage: 'Import APs' }),
@@ -580,7 +584,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
         templateLink={importTemplateLink}
         visible={importVisible}
         isLoading={isImportResultLoading}
-        importError={{ data: importErrors } as FetchBaseQueryError}
+        importError={importErrors}
         importRequest={(formData) => {
           setIsImportResultLoading(true)
           if (wifiEdaFlag) {
