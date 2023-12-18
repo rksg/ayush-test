@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps }                         from '@acx-ui/components'
-import { EdgeLagStatus, EdgePortStatus, TableQuery } from '@acx-ui/rc/utils'
-import { RequestPayload }                            from '@acx-ui/types'
+import { Table, TableProps }                                                  from '@acx-ui/components'
+import { EdgeLagStatus, EdgePortStatus, getEdgePortIpModeString, TableQuery } from '@acx-ui/rc/utils'
+import { RequestPayload }                                                     from '@acx-ui/types'
 
 interface SubInterfaceTableProps {
   tableQuery: TableQuery<EdgePortStatus | EdgeLagStatus, RequestPayload<unknown>, unknown>
@@ -45,8 +45,8 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
       dataIndex: 'ipMode',
       sorter: true,
       render: (_, { ipMode }) => {
-        return ipMode === 'DHCP' ? $t({ defaultMessage: 'DHCP' })
-          : (ipMode === 'Static' || ipMode === 'STATIC' ? $t({ defaultMessage: 'Static IP' }) : '')
+        const ipModeUpperCase = ipMode.toUpperCase()
+        return getEdgePortIpModeString($t, ipModeUpperCase)
       }
     },
     {

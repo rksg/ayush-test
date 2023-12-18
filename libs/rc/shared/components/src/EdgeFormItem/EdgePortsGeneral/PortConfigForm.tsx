@@ -33,14 +33,14 @@ import { EdgePortConfigFormType } from '.'
 
 interface ConfigFormProps {
   formListKey: number
-  index: number
+  id: string
   isEdgeSdLanRun: boolean
 }
 
 const { useWatch, useFormInstance } = Form
 
 export const PortConfigForm = (props: ConfigFormProps) => {
-  const { index, formListKey, isEdgeSdLanRun } = props
+  const { id, formListKey, isEdgeSdLanRun } = props
   const { $t } = useIntl()
   const form = useFormInstance<EdgePortConfigFormType>()
   const portTypeOptions = getEdgePortTypeOptions($t)
@@ -51,8 +51,8 @@ export const PortConfigForm = (props: ConfigFormProps) => {
   [formListKey])
 
   const getFieldFullPath = useCallback((fieldName: string) =>
-    [getInnerPortFormID(index), ...getFieldPath(fieldName)],
-  [index, getFieldPath])
+    [getInnerPortFormID(id), ...getFieldPath(fieldName)],
+  [id, getFieldPath])
 
   const statusIp = useWatch(getFieldFullPath('statusIp'), form)
   const mac = useWatch(getFieldFullPath('mac'), form)
@@ -91,7 +91,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
 
   const getSubnetInfoWithoutCurrent = () => {
     return Object.entries<EdgePortWithStatus[]>(form.getFieldsValue(true))
-      .filter(item => item[0] !== getInnerPortFormID(index)
+      .filter(item => item[0] !== getInnerPortFormID(id)
         && _.get(item[1], getFieldPath('enabled'))
         && !!_.get(item[1], getFieldPath('ip'))
         && !!_.get(item[1], getFieldPath('subnet')))

@@ -72,7 +72,7 @@ describe('Edge overview sub-interfaces tab', () => {
     expect(portsRow.filter(elem => elem.classList.contains('ant-table-row')).length).toBe(2)
   })
 
-  it.skip('should correctly change tab', async () => {
+  it('should correctly change tab', async () => {
     render(
       <Provider>
         <EdgeSubInterfacesTab
@@ -87,7 +87,7 @@ describe('Edge overview sub-interfaces tab', () => {
     const portTabs = await screen.findAllByRole('tab')
     expect(portTabs.length).toBe(4)
 
-    const port2Tab = await screen.findByRole('tab', { name: 'Port 2' })
+    const port2Tab = await screen.findByRole('tab', { name: 'Port2' })
     await userEvent.click(port2Tab)
     await waitFor(() => {
       expect(port2Tab).toHaveAttribute('aria-selected', 'true')

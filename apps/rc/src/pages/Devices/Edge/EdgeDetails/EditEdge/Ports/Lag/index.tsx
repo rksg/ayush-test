@@ -5,10 +5,10 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, Table, TableProps, Tooltip, showActionModal }                     from '@acx-ui/components'
-import { useDeleteEdgeLagMutation, useGetEdgeLagListQuery }                        from '@acx-ui/rc/services'
-import { EdgeIpModeEnum, EdgeLag, EdgeLagStatus, EdgePort, defaultSort, sortProp } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }                                               from '@acx-ui/user'
+import { Loader, Table, TableProps, Tooltip, showActionModal }                                                      from '@acx-ui/components'
+import { useDeleteEdgeLagMutation, useGetEdgeLagListQuery }                                                         from '@acx-ui/rc/services'
+import { EdgeLag, EdgeLagStatus, EdgePort, defaultSort, sortProp, getEdgePortDisplayName, getEdgePortIpModeString } from '@acx-ui/rc/utils'
+import { filterByAccess, hasAccess }                                                                                from '@acx-ui/user'
 
 import { LagDrawer } from './LagDrawer'
 
@@ -99,16 +99,7 @@ const Lag = (props: LagProps) => {
       title: $t({ defaultMessage: 'IP Type' }),
       key: 'ipMode',
       dataIndex: 'ipMode',
-      render: (data, { ipMode }) => {
-        switch(ipMode) {
-          case EdgeIpModeEnum.DHCP:
-            return $t({ defaultMessage: 'DHCP' })
-          case EdgeIpModeEnum.STATIC:
-            return $t({ defaultMessage: 'Static IP' })
-          default:
-            return ''
-        }
-      },
+      render: (_data, { ipMode }) => getEdgePortIpModeString($t, ipMode),
       sorter: { compare: sortProp('ipMode', defaultSort) }
     },
     {
@@ -142,8 +133,8 @@ const Lag = (props: LagProps) => {
         <Row>
           <Col>
             {
-              `${_.capitalize(portList?.find(port =>
-                port.id === lagmember.portId)?.interfaceName ?? '')} (${lagmember.portEnabled ?
+              `${getEdgePortDisplayName((portList?.find(port =>
+                port.id === lagmember.portId)))} (${lagmember.portEnabled ?
                 $t({ defaultMessage: 'Enabled' }) :
                 $t({ defaultMessage: 'Disabled' })})`
             }
