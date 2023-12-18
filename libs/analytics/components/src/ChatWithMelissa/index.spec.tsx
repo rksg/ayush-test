@@ -5,6 +5,11 @@ import { act, fireEvent, render, screen } from '@acx-ui/test-utils'
 import { ChatWithMelissa } from '.'
 
 describe('ChatWithMelissa', () => {
+  const route = {
+    path: '/:page',
+    params: { page: 'dashboard' },
+    wrapRoutes: false
+  }
   beforeEach(()=>{
     jest.spyOn(localStorage, 'setItem').mockImplementation(() => {})
     global.fetch = jest.fn().mockImplementation(() =>
@@ -19,7 +24,7 @@ describe('ChatWithMelissa', () => {
   it('renders properly when chatbot enabled', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     await act(async ()=>{
-      render(<ChatWithMelissa />)
+      render(<ChatWithMelissa />, { route })
     })
     expect(screen.getByText('Ask Anything')).toBeVisible()
   })
@@ -27,7 +32,7 @@ describe('ChatWithMelissa', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     jest.spyOn(localStorage, 'getItem').mockReturnValue('true')
     await act(async ()=>{
-      render(<ChatWithMelissa />)
+      render(<ChatWithMelissa />, { route })
     })
     fireEvent.click(await screen.findByRole('button'))
     expect(screen.getByText('Discover which ones')).toBeVisible()
@@ -35,7 +40,7 @@ describe('ChatWithMelissa', () => {
   it('should show coming soon when chatbot enabled', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     await act(async ()=>{
-      render(<ChatWithMelissa />)
+      render(<ChatWithMelissa />, { route })
     })
     fireEvent.click(await screen.findByRole('button'))
     expect(screen.getByText('Coming Soon')).toBeVisible()
@@ -50,7 +55,7 @@ describe('ChatWithMelissa', () => {
       return true
     })
     await act(async ()=>{
-      render(<ChatWithMelissa />)
+      render(<ChatWithMelissa />, { route })
     })
     expect(screen.getByText('Ask Anything')).toBeVisible()
     fireEvent.click(await screen.findByRole('button'))
@@ -63,7 +68,7 @@ describe('ChatWithMelissa', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     jest.spyOn(localStorage, 'getItem').mockReturnValue('true')
     await act(async ()=>{
-      render(<ChatWithMelissa />)
+      render(<ChatWithMelissa />, { route })
     })
     fireEvent.click(await screen.findByRole('button'))
     expect(screen.getByText('Discover which ones')).toBeVisible()
