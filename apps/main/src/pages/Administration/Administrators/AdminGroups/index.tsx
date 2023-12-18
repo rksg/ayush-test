@@ -1,5 +1,4 @@
 import { useRef, useState } from 'react'
-import React                from 'react'
 
 import { DndProvider, useDrag, useDrop } from 'react-dnd'
 import { HTML5Backend }                  from 'react-dnd-html5-backend'
@@ -15,9 +14,11 @@ import {
 import { Drag }                  from '@acx-ui/icons'
 import {
   useGetAdminGroupsQuery,
-  useDeleteAdminGroupsMutation
+  useDeleteAdminGroupsMutation,
+  useUpdateAdminGroupsMutation
 } from '@acx-ui/rc/services'
 import { AdminGroup, sortProp, defaultSort }                    from '@acx-ui/rc/utils'
+import { RolesEnum }                                            from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, roleStringMap } from '@acx-ui/user'
 import { AccountType }                                          from '@acx-ui/utils'
 
@@ -30,7 +31,15 @@ interface AdminGroupsTableProps {
 }
 
 type DragItemProps = {
-  processingPriority: number
+  id: string
+}
+
+export interface AdminSwapGroupData {
+  name?: string,
+  groupId?: string,
+  swap: boolean,
+  sourceGroupId: string,
+  role: RolesEnum
 }
 
 const AdminGroups = (props: AdminGroupsTableProps) => {
@@ -45,6 +54,7 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
   const { data: adminList, isLoading, isFetching } = useGetAdminGroupsQuery({ params })
 
   const [deleteAdminGroup, { isLoading: isDeleteAdminUpdating }] = useDeleteAdminGroupsMutation()
+  const [updateAdminGroup] = useUpdateAdminGroupsMutation()
 
   const handleOpenDialog = () => {
     setShowDialog(true)
@@ -76,12 +86,6 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
       dataIndex: 'processingPriority',
       sorter: { compare: sortProp('processingPriority', defaultSort) }
     },
-    // {
-    //   title: $t({ defaultMessage: 'Logged Members' }),
-    //   key: 'loggedMembers',
-    //   dataIndex: 'loggedMembers',
-    //   sorter: { compare: sortProp('email', defaultSort) }
-    // },
     {
       title: $t({ defaultMessage: 'Role' }),
       key: 'role',
@@ -155,6 +159,23 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
     }
   ]
 
+  const onSwap = async (sourceGroupId: string, targetGroupId: string) => {
+    try {
+      const adminGroupEditData: AdminSwapGroupData = {
+        swap: true,
+        sourceGroupId: sourceGroupId,
+        name: 'test group 25',
+        groupId: 'groupId25',
+        role: RolesEnum.ADMINISTRATOR
+      }
+
+      await updateAdminGroup({ params: { groupId: targetGroupId },
+        payload: adminGroupEditData }).unwrap()
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
+
   const tableActions = []
   if (isPrimeAdminUser && tenantType !== AccountType.MSP_REC) {
     tableActions.push({
@@ -171,7 +192,7 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
     const [, drag] = useDrag(() => ({
       type: 'DraggableRow',
       item: {
-        processingPriority: props['data-row-key']
+        id: props['data-row-key']
       },
       collect: monitor => ({
         isDragging: monitor.isDragging()
@@ -182,15 +203,10 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
       accept: 'DraggableRow',
       drop: (item: DragItemProps) => {
         // @ts-ignore
-        const hoverIdx = Number(ref.current.getAttribute('data-row-key'))
-        const idx = item.processingPriority ?? -1
+        const hoverIdx = String(ref.current.getAttribute('data-row-key'))
+        const idx = item.id ?? -1
         if (idx && idx !== hoverIdx) {
-          // dispatch({
-          //   type: RogueAPDetectionActionTypes.DRAG_AND_DROP,
-          //   payload: {
-          //     oldIndex: idx - 1, newIndex: hoverIdx - 1
-          //   }
-          // })
+          onSwap(idx, hoverIdx)
         }
       },
       collect: (monitor) => ({
@@ -226,7 +242,7 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
         <Table
           columns={columns}
           dataSource={adminList}
-          rowKey='processingPriority'
+          rowKey='id'
           rowActions={isPrimeAdminUser
             ? filterByAccess(rowActions)
             : undefined}

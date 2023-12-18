@@ -52,8 +52,8 @@ export const AddGroupDrawer = (props: AddGroupDrawerProps) => {
       }
 
       const adminGroupEditData: AdminGroupData = {
-        // name: form.getFieldValue('name'),
-        // groupId: groupId,
+        name: editData?.name,
+        groupId: editData?.groupId,
         role: role
       }
 
