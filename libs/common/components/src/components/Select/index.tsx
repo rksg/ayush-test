@@ -1,12 +1,14 @@
 import { Select as AntSelect } from 'antd'
+import { useIntl }             from 'react-intl'
 
 import { Check } from '@acx-ui/icons'
 
-import type { SelectProps as AntSelectProps } from 'antd'
+import type { SelectProps } from 'antd'
 
-export function Select (props: AntSelectProps) {
+export function Select (props: SelectProps) {
   const { options = [], children = [], ...restProps } = props
-  const isSelectOptGroup = Array.isArray(children) && children?.some(c => c.type.isSelectOptGroup)
+  const { $t } = useIntl()
+  const isSelectOptGroup = Array.isArray(children) && children?.some(c => c?.type?.isSelectOptGroup)
   const isGroupOption = options?.some(opt =>
     opt.hasOwnProperty('label') && !opt.hasOwnProperty('value') && Array.isArray(opt?.options)
   )
@@ -20,7 +22,7 @@ export function Select (props: AntSelectProps) {
   const getGroupOptions = () => {
     return isSelectOptGroup
       ? children?.map(({ props }) => ({
-        label: <span>{props.label}</span>,
+        label: <span>{props?.label}</span>,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         options: props?.children?.map(({ props }: any) => ({
           label: props?.children,
@@ -28,7 +30,7 @@ export function Select (props: AntSelectProps) {
         }))
       }))
       : options?.map(opt => ({
-        label: <span>{opt.label}</span>,
+        label: <span>{opt?.label}</span>,
         ...(opt.options ? { options: opt.options } : null),
         ...(opt.value ? { value: opt.value } : null)
       }))
@@ -41,6 +43,7 @@ export function Select (props: AntSelectProps) {
   } : props
 
   return <AntSelect
+    placeholder={$t({ defaultMessage: 'Select...' })}
     {...selectProps}
     dropdownClassName={extraClassName}
     menuItemSelectedIcon={<Check />}

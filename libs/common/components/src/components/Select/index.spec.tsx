@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom'
-import { render } from '@testing-library/react'
+import { render }       from '@testing-library/react'
+import { IntlProvider } from 'react-intl'
 
 import { Select } from '.'
 
@@ -47,7 +48,7 @@ const normalGroupOption = [{
 describe('Select', () => {
   it('should render correctly', () => {
     const { asFragment } = render(
-      <>
+      <IntlProvider locale='en'>
         <Select
           {...defaultProps}
           options={defaultOption}
@@ -84,7 +85,7 @@ describe('Select', () => {
               />)}
           />
         </Select>
-      </>)
+      </IntlProvider>)
     expect(asFragment()).toMatchSnapshot()
   })
 })
