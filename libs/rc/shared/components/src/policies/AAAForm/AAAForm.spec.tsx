@@ -8,8 +8,8 @@ import { Provider }                                               from '@acx-ui/
 import { fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                                           from '@acx-ui/user'
 
-import { aaaData, successResponse, aaaList } from './__tests__/fixtures'
-import { AAAForm }                           from './AAAForm'
+import { aaaData, successResponse, aaaList, aaaTemplateList } from './__tests__/fixtures'
+import { AAAForm }                                            from './AAAForm'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -47,9 +47,13 @@ describe('AAAForm', () => {
         AaaUrls.updateAAAPolicy.url,
         (_, res, ctx) => res(ctx.json(successResponse))
       ),
-      rest.get(
-        AaaUrls.getAAAPolicyList.url,
+      rest.post(
+        AaaUrls.getAAAPolicyViewModelList.url,
         (_, res, ctx) => res(ctx.json(aaaList))
+      ),
+      rest.post(
+        ConfigTemplateUrlsInfo.getAAAPolicyTemplateList.url,
+        (_, res, ctx) => res(ctx.json(aaaTemplateList))
       )
     )
   })
@@ -191,7 +195,7 @@ describe('AAAForm', () => {
 
     expect(await screen.findByDisplayValue(aaaData.name)).toBeVisible()
 
-    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
 
     await waitFor(() => expect(updateTemplateFn).toHaveBeenCalled())
   })
@@ -211,7 +215,7 @@ async function editAAA (){
   await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[1],
     'test1234')
   await fillInProfileName('test1')
-  await userEvent.click(await screen.findByText('Apply'))
+  await userEvent.click(await screen.findByText('Finish'))
   await userEvent.type(port2, '1812')
   await fillInProfileName('test2 update')
   // FIXME: Do not use "setTimeout"

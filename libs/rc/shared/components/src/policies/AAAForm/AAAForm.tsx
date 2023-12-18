@@ -15,7 +15,6 @@ import {
 import { useAaaPolicyQuery, useAddAAAPolicyMutation, useUpdateAAAPolicyMutation } from '@acx-ui/rc/services'
 import {
   AAAPolicyType,
-  generateButtonLabel,
   generatePolicyPageHeaderTitle,
   PolicyOperation,
   PolicyType,
@@ -86,7 +85,7 @@ export const AAAForm = (props: AAAFormProps) => {
         formRef={formRef}
         onCancel={onCancel}
         onFinish={handleAAAPolicy}
-        buttonLabel={generateButtonLabel(isEdit)}
+        editMode={isEdit}
       >
         <StepsFormLegacy.StepForm
           name='settings'
