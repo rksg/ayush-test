@@ -218,7 +218,7 @@ exports[`Test Details should render AirtimeB correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
                               --
                             </span>
@@ -803,7 +803,7 @@ exports[`Test Details should render AirtimeB correctly 2`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
                               --
                             </span>
@@ -1388,7 +1388,7 @@ exports[`Test Details should render AirtimeB correctly 3`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
                               --
                             </span>
@@ -1973,7 +1973,7 @@ exports[`Test Details should render AirtimeRx correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
                               --
                             </span>
@@ -2558,7 +2558,7 @@ exports[`Test Details should render AirtimeRx correctly 2`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
                               --
                             </span>
@@ -3143,7 +3143,7 @@ exports[`Test Details should render AirtimeRx correctly 3`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
                               --
                             </span>
@@ -3728,7 +3728,7 @@ exports[`Test Details should render AirtimeTx correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
                               --
                             </span>
@@ -4308,7 +4308,7 @@ exports[`Test Details should render AirtimeTx correctly 2`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
                               --
                             </span>
@@ -4888,7 +4888,7 @@ exports[`Test Details should render AirtimeTx correctly 3`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
                               --
                             </span>
