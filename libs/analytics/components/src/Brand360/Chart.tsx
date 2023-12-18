@@ -1,38 +1,20 @@
 import { keyBy, mapValues, take } from 'lodash'
-import { useIntl }                from 'react-intl'
+import { IntlShape, useIntl }     from 'react-intl'
 import AutoSizer                  from 'react-virtualized-auto-sizer'
 
-import { getSeriesData }                                         from '@acx-ui/analytics/utils'
-import { Loader, NoData, qualitativeColorSet, StackedAreaChart } from '@acx-ui/components'
+import { getSeriesData }                                 from '@acx-ui/analytics/utils'
+import { NoData, qualitativeColorSet, StackedAreaChart } from '@acx-ui/components'
 
-import { FranchisorTimeseries, useFetchBrandTimeseriesQuery } from './services'
-import { slaKpiConfig }                                       from './SlaTile'
-
-import { ChartKey } from '.'
+import { ChartKey, slaKpiConfig } from './helpers'
+import { FranchisorTimeseries }   from './services'
+import { ChartWrapper }           from './styledComponents'
 
 interface SlaChartProps {
   chartKey: ChartKey
-  start: string
-  end: string
-  ssidRegex: string
-  mock?: boolean
+  chartData: FranchisorTimeseries | undefined
 }
 
-const transformTimeseries = (data?: FranchisorTimeseries, mock?: boolean) => {
-  if (!data) return {}
-  const { errors, ...values } = data
-  if (errors?.length) return {}
-  if (mock) {
-    const { time, ...series } = values
-    return {
-      time,
-      ...mapValues(series, () => time.map(() => Math.random()))
-    }
-  }
-  return values
-}
-
-const getSeriesMapping = (chartKey: ChartKey, $t: ReturnType<typeof useIntl>['$t']) => {
+export const getSeriesMapping = (chartKey: ChartKey, $t: IntlShape['$t']) => {
   switch (chartKey) {
     case 'incident': return [
       { key: 'incidentCount', name: $t({ defaultMessage: 'Incidents' }) }
@@ -48,36 +30,38 @@ const getSeriesMapping = (chartKey: ChartKey, $t: ReturnType<typeof useIntl>['$t
   }
 }
 
-export function SlaChart ({ mock, ...payload }: SlaChartProps) {
+export const removeErrors = (data: FranchisorTimeseries | undefined) => {
+  if (!data) return {}
+  const { errors, ...values } = data
+  if (errors?.length) return {}
+  return values
+}
+
+export function SlaChart ({ chartKey, chartData }: SlaChartProps) {
   const { $t } = useIntl()
-  const { formatter } = slaKpiConfig[payload.chartKey]
-  const seriesMapping = getSeriesMapping(payload.chartKey, $t)
-  const timeseriesQuery = useFetchBrandTimeseriesQuery(payload, {
-    selectFromResult: ({ data, ...rest }) => ({
-      data: getSeriesData(transformTimeseries(data!, mock), seriesMapping),
-      ...rest
-    })
-  })
-  return <Loader states={[timeseriesQuery]}>
+  const { formatter } = slaKpiConfig[chartKey]
+  const seriesMapping = getSeriesMapping(chartKey, $t)
+  const data = getSeriesData(removeErrors(chartData!), seriesMapping)
+  return <ChartWrapper>
     <AutoSizer>
-      {(size) => timeseriesQuery.data.length
+      {({ height, width }) => data.length
         ? <StackedAreaChart
-          data={timeseriesQuery.data}
-          style={{ ...size }}
+          data={data}
+          style={{ width, height }}
           disableLegend
           disableAxis
           disableGrid
           totalMean
+          stackColors={take(qualitativeColorSet(), seriesMapping.length)}
           seriesFormatters={{
             ...mapValues(keyBy(seriesMapping, 'key'), () => formatter),
             total: formatter
           }}
-          tooltipTotalTitle={payload.chartKey === 'experience'
+          tooltipTotalTitle={chartKey === 'experience'
             ? $t({ defaultMessage: 'Total Guest Experience' })
             : undefined}
-          stackColors={take(qualitativeColorSet(), seriesMapping.length)}
         />
         : <NoData/>}
     </AutoSizer>
-  </Loader>
+  </ChartWrapper>
 }

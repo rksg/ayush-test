@@ -1,6 +1,14 @@
 import { groupBy, mean } from 'lodash'
+import moment            from 'moment-timezone'
+import { defineMessage } from 'react-intl'
 
-import { Response } from './services'
+import { formatter } from '@acx-ui/formatter'
+import { DateRange } from '@acx-ui/utils'
+
+import type { Response }  from './services'
+import type { SliceType } from './useSliceType'
+
+export type ChartKey = 'incident' | 'experience' | 'compliance'
 
 type SLARecord = [ number, number ]
 export interface Common {
@@ -91,3 +99,62 @@ export const transformToPropertyView = (data: Response[]): Property[] =>
       guestExp: calGuestExp(avgConnSuccess, avgClientThroughput, avgTTC)
     } as Property
   })
+
+export function computePastRange (
+  startDate: string, dateRange: DateRange, endDate?: string
+): [string, string] {
+  switch (dateRange) {
+    case DateRange.last8Hours: return [
+      moment(startDate).subtract(8, 'hours').format(),
+      startDate
+    ]
+    case DateRange.last24Hours: return [
+      moment(startDate).subtract(24, 'hours').format(),
+      startDate
+    ]
+    case DateRange.last7Days: return [
+      moment(startDate).subtract(7, 'days').format(),
+      startDate
+    ]
+    case DateRange.last30Days: return [
+      moment(startDate).subtract(30, 'days').format(),
+      startDate
+    ]
+    case DateRange.custom: {
+      const hours = moment.duration(moment(endDate).diff(startDate)).asHours()
+      return [
+        moment(startDate).subtract(hours, 'hours').format(),
+        startDate
+      ]}
+    case DateRange.allTime: return [
+      moment(startDate).subtract(3, 'months').format(),
+      startDate
+    ]
+  }
+}
+
+export const slaKpiConfig = {
+  incident: {
+    getTitle: (sliceType: SliceType) => sliceType === 'lsp'
+      ? defineMessage({ defaultMessage: 'Distressed LSPs' })
+      : defineMessage({ defaultMessage: 'Distressed Properties' }),
+    dataKey: 'p1Incidents',
+    avg: false,
+    formatter: formatter('countFormat'),
+    direction: 'low'
+  },
+  experience: {
+    getTitle: () => defineMessage({ defaultMessage: 'Guest Experience' }),
+    dataKey: 'guestExp',
+    avg: true,
+    formatter: formatter('percentFormat'),
+    direction: 'high'
+  },
+  compliance: {
+    getTitle: () => defineMessage({ defaultMessage: 'Brand SSID Compliance' }),
+    dataKey: 'ssidCompliance',
+    avg: true,
+    formatter: formatter('percentFormat'),
+    direction: 'high'
+  }
+}

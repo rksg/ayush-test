@@ -1,14 +1,13 @@
-import { dataApiURL, Provider } from '@acx-ui/store'
+import { Provider } from '@acx-ui/store'
 import {
-  mockGraphqlQuery,
   render,
-  screen,
-  waitForElementToBeRemoved
+  screen
 } from '@acx-ui/test-utils'
 
 import '@testing-library/jest-dom'
-import { mockBrandTimeseries } from './__tests__/fixtures'
-import { SlaChart }            from './Chart'
+import { mockBrandTimeseries }  from './__tests__/fixtures'
+import { SlaChart }             from './Chart'
+import { FranchisorTimeseries } from './services'
 
 describe('chart', () => {
   const chartKeys = [
@@ -18,16 +17,15 @@ describe('chart', () => {
   ]
 
   const baseProps = {
-    ssidRegex: 'DENSITY',
-    start: '2023-12-11T00:00:00+00:00',
-    end: '2023-12-12T00:00:00+00:00'
+    chartData: mockBrandTimeseries
+      .data
+      .franchisorTimeseries as unknown as FranchisorTimeseries
   }
 
-  it('should render charts correctly without randomizer', async () => {
+  it('should render charts correctly', async () => {
     const charts = chartKeys.map(chartKey => {
-      mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', mockBrandTimeseries)
       const props = { chartKey, ...baseProps }
-      return () => <SlaChart {...props} mock={false} />
+      return () => <SlaChart {...props} />
     })
     const Test = () => {
       return <div>
@@ -35,44 +33,29 @@ describe('chart', () => {
       </div>
     }
     const { asFragment } = render(<Test />, { wrapper: Provider })
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const fragment = asFragment()
     // eslint-disable-next-line testing-library/no-node-access
     const graphs = fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
-    // eslint-disable-next-line testing-library/no-node-access
-    graphs.forEach(graph => graph.setAttribute('_echarts_instance_', 'echartsMock'))
-    expect(fragment).toMatchSnapshot()
-  })
-
-  it('should render charts correctly with randomizer', async () => {
-    const charts = chartKeys.map(chartKey => {
-      mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', mockBrandTimeseries)
-      const props = { chartKey, ...baseProps }
-      return () => <SlaChart {...props} mock />
-    })
-    const Test = () => {
-      return <div>
-        {charts.map((Chart, i) => <Chart key={i} />)}
-      </div>
-    }
-    const { asFragment } = render(<Test />, { wrapper: Provider })
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    // eslint-disable-next-line testing-library/no-node-access
-    const graphs = asFragment().querySelectorAll('div[_echarts_instance_^="ec_"]')
     expect(graphs).toHaveLength(3)
   })
 
-  it('should render charts correctly with errors', async () => {
-    mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', {
-      data: {
-        franchisorTimeseries: {
-          ...mockBrandTimeseries.data.franchisorTimeseries,
-          errors: [{ sla: 'p1Incident', error: 'something went wrong' }]
-        }
+  it('should render no data with undefined', async () => {
+    const props = {
+      chartKeys: 'incident',
+      chartData: undefined
+    }
+    render(<SlaChart chartKey='incident' {...props} />, { wrapper: Provider })
+    expect(await screen.findByText('No data to display')).toBeVisible()
+  })
+
+  it('should render no data with errors', async () => {
+    const props = {
+      chartData: {
+        ...mockBrandTimeseries.data.franchisorTimeseries as unknown as FranchisorTimeseries,
+        errors: [{ sla: 'test', error: 'something went wrong' }]
       }
-    })
-    render(<SlaChart chartKey='incident' {...baseProps} />, { wrapper: Provider })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    }
+    render(<SlaChart chartKey='incident' {...props} />, { wrapper: Provider })
     expect(await screen.findByText('No data to display')).toBeVisible()
   })
 })

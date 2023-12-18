@@ -53,10 +53,11 @@ export const HighlightedIcon = styled.div<{ $highlight?: boolean }>`
 `
 
 export const ValueWrapper = styled.div`
-  font-family: var(--acx-neutral-brand-font);
-  font-size: var(--acx-headline-1-font-size);
-  font-weight: var(--acx-body-font-weight-bold);
-  color: var(--acx-neutrals-50);
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-2-font-size);
+  line-height: var(--acx-headline-2-line-height);
+  font-weight: var(--acx-headline-4-font-weight-bold);
+  color: var(--acx-primary-black);
   display: flex;
   justify-content: center;
   padding-top: 10px;
@@ -74,4 +75,8 @@ export const SubtitleWrapper = styled.div`
   font-family: var(--acx-neutral-brand-font);
   color: var(--acx-neutrals-50);
   text-align: center;
+`
+
+export const ChartWrapper = styled.div`
+  flex: 1;
 `

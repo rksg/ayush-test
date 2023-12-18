@@ -2,9 +2,12 @@ import '@testing-library/jest-dom'
 
 import { rest } from 'msw'
 
-import type { Settings }                         from '@acx-ui/analytics/utils'
-import { Provider, rbacApiURL }                  from '@acx-ui/store'
-import { render, screen, mockServer, fireEvent } from '@acx-ui/test-utils'
+import type { Settings }                                                                      from '@acx-ui/analytics/utils'
+import { dataApiURL, Provider, rbacApiURL }                                                   from '@acx-ui/store'
+import { render, screen, mockServer, fireEvent, mockGraphqlQuery, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+
+import { mockBrandTimeseries, prevTimeseries, currTimeseries } from './__tests__/fixtures'
+import { FranchisorTimeseries }                                from './services'
 
 import { Brand360 } from '.'
 
@@ -16,26 +19,31 @@ jest.mock('./Table', () => ({
     </div>
 }))
 
+const wrapData = (value: unknown) => ({
+  data: {
+    franchisorTimeseries: value as FranchisorTimeseries
+  }
+})
 
 jest.mock('./SlaTile', () => ({
   SlaTile: ({
     chartKey,
     sliceType,
-    ssidRegex,
-    start,
-    end,
+    chartData,
+    prevData,
+    currData,
     settings
   }
   :{
     chartKey: string,
     sliceType: string,
-    ssidRegex: string,
-    start: string,
-    end: string,
+    chartData: string,
+    prevData: string,
+    currData: string,
     settings: Settings
   }) =>
     <div data-testid={'brand360Tile'}>
-      {JSON.stringify({ chartKey, sliceType, ssidRegex, start, end, settings })}
+      {JSON.stringify({ chartKey, sliceType, chartData, prevData, currData, settings })}
     </div>
 }))
 
@@ -53,7 +61,11 @@ describe('Brand360', () => {
   })
   afterEach(() => jest.useRealTimers())
   it('renders widgets', async () => {
+    mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', mockBrandTimeseries)
+    mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', wrapData(prevTimeseries))
+    mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', wrapData(currTimeseries))
     render(<Provider><Brand360 /></Provider>)
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findAllByDisplayValue('Last 8 Hours')).toHaveLength(2)
     const tiles = await screen.findAllByTestId('brand360Tile')
     expect(tiles).toHaveLength(3)
@@ -63,7 +75,11 @@ describe('Brand360', () => {
     expect(await screen.findByTestId('brand360Table')).toBeVisible()
   })
   it('changes sliceType', async () => {
+    mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', mockBrandTimeseries)
+    mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', wrapData(prevTimeseries))
+    mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', wrapData(currTimeseries))
     render(<Provider><Brand360 /></Provider>)
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     fireEvent.click(await screen.findByTestId('CaretDownSolid'))
     fireEvent.click(await screen.findByText('LSP'))
     // eslint-disable-next-line max-len
@@ -72,9 +88,6 @@ describe('Brand360', () => {
     const tiles = await screen.findAllByTestId('brand360Tile')
     const tile = tiles[0]
     expect(tile.textContent?.includes('lsp')).toBeTruthy()
-    expect(tile.textContent?.includes('start')).toBeTruthy()
-    expect(tile.textContent?.includes('end')).toBeTruthy()
-    expect(tile.textContent?.includes('^[a-zA-Z0-9]{5}_GUEST$')).toBeTruthy()
   })
   it('applies SLAs', async () => {
     const update = new Promise(resolve => mockServer.use(
@@ -83,7 +96,11 @@ describe('Brand360', () => {
         return res()
       })
     ))
+    mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', mockBrandTimeseries)
+    mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', wrapData(prevTimeseries))
+    mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', wrapData(currTimeseries))
     render(<Provider><Brand360 /></Provider>)
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const sliders = await screen.findAllByRole('slider')
     fireEvent.mouseDown(sliders[0])
     fireEvent.mouseMove(sliders[0], { clientX: 10 })
@@ -97,7 +114,11 @@ describe('Brand360', () => {
     })
   })
   it('resets SLAs', async () => {
+    mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', mockBrandTimeseries)
+    mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', wrapData(prevTimeseries))
+    mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', wrapData(currTimeseries))
     const { asFragment } = render(<Provider><Brand360 /></Provider>)
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const sliders = await screen.findAllByRole('slider')
     fireEvent.mouseDown(sliders[0])
     fireEvent.mouseMove(sliders[0], { clientX: 10 })

@@ -49,7 +49,7 @@ export const mockBrandTimeseries = {
         '2023-12-12T05:00:00.000Z',
         '2023-12-12T06:00:00.000Z'
       ],
-      p1Incidents: [
+      incidentCount: [
         0,
         0,
         0,
@@ -107,4 +107,49 @@ export const mockBrandTimeseries = {
       errors: []
     }
   }
+}
+
+
+export const prevTimeseries = {
+  time: [
+    '2023-12-11T22:00:00.000Z'
+  ],
+  incidentCount: [
+    20
+  ],
+  ssidComplianceSLA: [
+    0.5
+  ],
+  timeToConnectSLA: [
+    0.5
+  ],
+  clientThroughputSLA: [
+    0.5
+  ],
+  connectionSuccessSLA: [
+    0.5
+  ],
+  errors: []
+}
+
+export const currTimeseries = {
+  time: [
+    '2023-12-11T22:00:00.000Z'
+  ],
+  incidentCount: [
+    20
+  ],
+  ssidComplianceSLA: [
+    0.4
+  ],
+  timeToConnectSLA: [
+    0.4
+  ],
+  clientThroughputSLA: [
+    0.4
+  ],
+  connectionSuccessSLA: [
+    0.8
+  ],
+  errors: []
 }

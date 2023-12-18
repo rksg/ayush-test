@@ -239,14 +239,29 @@ export function AddRecCustomer () {
   }
 
   const displayIntegrator = () => {
-    const value =
-      !mspIntegrator || mspIntegrator.length === 0 ? noDataDisplay : mspIntegrator[0].name
-    return value
+    if (!mspIntegrator || mspIntegrator.length === 0)
+      return noDataDisplay
+    return <>
+      {mspIntegrator.map(integrator =>
+        <UI.AdminList key={integrator.id}>
+          {integrator.name}
+        </UI.AdminList>
+      )}
+    </>
+
   }
 
   const displayInstaller = () => {
-    const value = !mspInstaller || mspInstaller.length === 0 ? noDataDisplay : mspInstaller[0].name
-    return value
+    if (!mspInstaller || mspInstaller.length === 0)
+      return noDataDisplay
+    return <>
+      {mspInstaller.map(installer =>
+        <UI.AdminList key={installer.id}>
+          {installer.name}
+        </UI.AdminList>
+      )}
+    </>
+
   }
 
   const MspAdminsForm = () => {

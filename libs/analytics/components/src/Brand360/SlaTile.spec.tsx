@@ -7,25 +7,19 @@ import {
 } from '@acx-ui/test-utils'
 
 import '@testing-library/jest-dom'
-import { fetchBrandProperties }         from './__tests__/fixtures'
-import { useFetchBrandPropertiesQuery } from './services'
-import { SlaTile }                      from './SlaTile'
+import {
+  fetchBrandProperties,
+  mockBrandTimeseries,
+  prevTimeseries,
+  currTimeseries
+}         from './__tests__/fixtures'
+import { SlaTile } from './SlaTile'
+
+import type { FranchisorTimeseries, Response } from './services'
 
 jest.mock('./Chart', () => ({
   SlaChart: () => <div data-testid='slaChart'>SlaChart</div>
 }))
-
-const mockBrandProperties = fetchBrandProperties()
-jest.mock('./services', () => ({
-  ...jest.requireActual('./services'),
-  useFetchBrandPropertiesQuery: () => ({
-    data: mockBrandProperties,
-    isLoading: false,
-    isFetching: false
-  })
-}))
-
-const mockProperties = useFetchBrandPropertiesQuery as jest.Mock
 
 describe('SlaTile', () => {
   const chartKeys = [
@@ -34,10 +28,13 @@ describe('SlaTile', () => {
     'experience' as const
   ]
 
+  const { data: { franchisorTimeseries } } = mockBrandTimeseries
+
   const baseProps = {
-    ssidRegex: 'DENSITY',
-    start: '2023-12-11T00:00:00+00:00',
-    end: '2023-12-12T00:00:00+00:00',
+    tableData: fetchBrandProperties() as unknown as Response[],
+    chartData: franchisorTimeseries as unknown as FranchisorTimeseries,
+    prevData: prevTimeseries as unknown as FranchisorTimeseries,
+    currData: currTimeseries as unknown as FranchisorTimeseries,
     settings: {
       'brand-ssid-compliance-matcher': '^[a-zA-Z0-9]{5}_GUEST$',
       'sla-p1-incidents-count': '0',
@@ -48,11 +45,9 @@ describe('SlaTile', () => {
 
   it('should render correctly by lsp', async () => {
     const tiles = chartKeys.map(chartKey => {
-      const tableQuery = mockProperties()
       const props = {
         chartKey,
         ...baseProps,
-        tableQuery,
         sliceType: 'lsp' as const
       }
       return () => <SlaTile {...props} />
@@ -68,15 +63,14 @@ describe('SlaTile', () => {
     expect(await screen.findByText('Brand SSID Compliance')).toBeVisible()
     const graphs = await screen.findAllByTestId('slaChart')
     expect(graphs).toHaveLength(3)
+    expect(await screen.findByText('20')).toBeVisible()
   })
 
   it('should render correctly by property', async () => {
     const tiles = chartKeys.map(chartKey => {
-      const tableQuery = mockProperties()
       const props = {
         chartKey,
         ...baseProps,
-        tableQuery,
         sliceType: 'property' as const
       }
       return () => <SlaTile {...props} />
@@ -96,12 +90,19 @@ describe('SlaTile', () => {
 
   it('should render empty data by lsp', async () => {
     const tiles = chartKeys.map(chartKey => {
-      const tableQuery = mockProperties()
       const props = {
         chartKey,
-        ...baseProps,
-        tableQuery: { ...tableQuery, data: [] },
-        sliceType: 'lsp' as const
+        tableData: undefined as unknown as Response[],
+        chartData: undefined,
+        currData: undefined,
+        prevData: undefined,
+        sliceType: 'lsp' as const,
+        settings: {
+          'brand-ssid-compliance-matcher': '^[a-zA-Z0-9]{5}_GUEST$',
+          'sla-p1-incidents-count': '0',
+          'sla-guest-experience': '100',
+          'sla-brand-ssid-compliance': '100'
+        } as Settings
       }
       return () => <SlaTile {...props} />
     })
@@ -116,18 +117,25 @@ describe('SlaTile', () => {
     expect(await screen.findByText('Brand SSID Compliance')).toBeVisible()
     const graphs = await screen.findAllByTestId('slaChart')
     expect(graphs).toHaveLength(3)
-    const zeroes = await screen.findAllByText('0')
-    expect(zeroes).toHaveLength(1)
+    const zeroes = await screen.findAllByText('--')
+    expect(zeroes).toHaveLength(3)
   })
 
   it('should render empty data by property', async () => {
     const tiles = chartKeys.map(chartKey => {
-      const tableQuery = mockProperties()
       const props = {
         chartKey,
-        ...baseProps,
-        tableQuery: { ...tableQuery, data: [] },
-        sliceType: 'property' as const
+        tableData: undefined as unknown as Response[],
+        chartData: undefined,
+        currData: undefined,
+        prevData: undefined,
+        sliceType: 'property' as const,
+        settings: {
+          'brand-ssid-compliance-matcher': '^[a-zA-Z0-9]{5}_GUEST$',
+          'sla-p1-incidents-count': '0',
+          'sla-guest-experience': '100',
+          'sla-brand-ssid-compliance': '100'
+        } as Settings
       }
       return () => <SlaTile {...props} />
     })
@@ -142,23 +150,28 @@ describe('SlaTile', () => {
     expect(await screen.findByText('Brand SSID Compliance')).toBeVisible()
     const graphs = await screen.findAllByTestId('slaChart')
     expect(graphs).toHaveLength(3)
-    const zeroes = await screen.findAllByText('0')
-    expect(zeroes).toHaveLength(1)
+    const zeroes = await screen.findAllByText('--')
+    expect(zeroes).toHaveLength(3)
   })
 
-  it('should handle top sorting', async () => {
-    const tableQuery = mockProperties()
+  it('should handle list sorting', async () => {
     const props = {
       chartKey: 'incident' as const,
       ...baseProps,
-      tableQuery,
       sliceType: 'property' as const
     }
     render(<SlaTile {...props}/>, { wrapper: Provider })
     expect(await screen.findByText('# of Properties with P1 Incident'))
       .toBeVisible()
-    const switchIcon = await screen.findAllByTestId('DownArrow')
-    fireEvent.click(switchIcon[0])
-    expect(switchIcon[0]).toBeVisible()
+    const downIcon = await screen.findByTestId('DownArrow')
+    const prevItems = await screen.findAllByRole('listitem')
+    expect(prevItems).toHaveLength(3)
+    fireEvent.click(downIcon)
+    const currItems = await screen.findAllByRole('listitem')
+    expect(currItems).toHaveLength(3)
+    expect(prevItems[0].isEqualNode(currItems[0])).toBeFalsy()
+    fireEvent.click(downIcon)
+    const recentItems = await screen.findAllByRole('listitem')
+    expect(recentItems[0].isEqualNode(prevItems[0])).toBeTruthy()
   })
 })
