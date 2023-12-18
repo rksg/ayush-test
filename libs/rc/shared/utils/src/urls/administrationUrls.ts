@@ -200,7 +200,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   },
   patchTenantAuthentications: {
     method: 'PATCH',
-    url: '/tenants/authentications',
+    url: '/tenants/authentications/:authenticationId',
     newApi: true
   },
   updateTenantAuthentications: {

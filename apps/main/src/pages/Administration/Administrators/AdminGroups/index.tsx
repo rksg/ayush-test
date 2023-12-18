@@ -1,8 +1,10 @@
-import { useState } from 'react'
-import React        from 'react'
+import { useRef, useState } from 'react'
+import React                from 'react'
 
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { DndProvider, useDrag, useDrop } from 'react-dnd'
+import { HTML5Backend }                  from 'react-dnd-html5-backend'
+import { useIntl }                       from 'react-intl'
+import { useParams }                     from 'react-router-dom'
 
 import {
   Loader,
@@ -10,6 +12,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Drag }                  from '@acx-ui/icons'
 import {
   useGetAdminGroupsQuery,
   useDeleteAdminGroupsMutation
@@ -24,6 +27,10 @@ import { AddGroupDrawer } from './AddGroupDrawer'
 interface AdminGroupsTableProps {
   isPrimeAdminUser: boolean;
   tenantType?: string;
+}
+
+type DragItemProps = {
+  processingPriority: number
 }
 
 const AdminGroups = (props: AdminGroupsTableProps) => {
@@ -82,6 +89,16 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
       sorter: { compare: sortProp('role', defaultSort) },
       render: function (_, row) {
         return row.customRole?.name ? $t(roleStringMap[row.customRole.name]) : ''
+      }
+    },
+    {
+      dataIndex: 'sort',
+      key: 'sort',
+      width: 60,
+      render: (_, row) => {
+        return <div data-testid={`${row.name}_Icon`} style={{ textAlign: 'center' }}>
+          <Drag style={{ cursor: 'grab', color: '#6e6e6e' }} />
+        </div>
       }
     }
   ]
@@ -146,25 +163,85 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
     })
   }
 
+  // @ts-ignore
+  const DraggableRow = (props) => {
+    const ref = useRef(null)
+    const { className, onClick, ...restProps } = props
+
+    const [, drag] = useDrag(() => ({
+      type: 'DraggableRow',
+      item: {
+        processingPriority: props['data-row-key']
+      },
+      collect: monitor => ({
+        isDragging: monitor.isDragging()
+      })
+    }))
+
+    const [{ isOver }, drop] = useDrop({
+      accept: 'DraggableRow',
+      drop: (item: DragItemProps) => {
+        // @ts-ignore
+        const hoverIdx = Number(ref.current.getAttribute('data-row-key'))
+        const idx = item.processingPriority ?? -1
+        if (idx && idx !== hoverIdx) {
+          // dispatch({
+          //   type: RogueAPDetectionActionTypes.DRAG_AND_DROP,
+          //   payload: {
+          //     oldIndex: idx - 1, newIndex: hoverIdx - 1
+          //   }
+          // })
+        }
+      },
+      collect: (monitor) => ({
+        isOver: monitor.isOver()
+      })
+    })
+
+    drag(drop(ref))
+
+    return (
+      <tr
+        ref={ref}
+        className={className}
+        onClick={onClick}
+        {...restProps}
+        style={isOver ? {
+          backgroundColor: 'var(--acx-accents-blue-10)',
+          borderColor: 'var(--acx-accents-blue-10)'
+        } : {}}
+      >
+        {props.children}
+      </tr>
+    )
+  }
+
   return (
     <Loader states={[
       { isLoading: isLoading || !userProfileData,
         isFetching: isFetching || isDeleteAdminUpdating
       }
     ]}>
-      <Table
-        columns={columns}
-        dataSource={adminList}
-        rowKey='id'
-        rowActions={isPrimeAdminUser
-          ? filterByAccess(rowActions)
-          : undefined}
-        rowSelection={isPrimeAdminUser ? {
-          type: 'checkbox'//,
+      <DndProvider backend={HTML5Backend} >
+        <Table
+          columns={columns}
+          dataSource={adminList}
+          rowKey='processingPriority'
+          rowActions={isPrimeAdminUser
+            ? filterByAccess(rowActions)
+            : undefined}
+          rowSelection={isPrimeAdminUser ? {
+            type: 'checkbox'//,
           // onSelect: handleRowSelectChange
-        } : undefined}
-        actions={filterByAccess(tableActions)}
-      />
+          } : undefined}
+          actions={filterByAccess(tableActions)}
+          components={{
+            body: {
+              row: DraggableRow
+            }
+          }}
+        />
+      </DndProvider>
 
       { editMode ?
         <AddGroupDrawer
