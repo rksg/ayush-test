@@ -176,6 +176,10 @@ const contentData:Content[] =
   [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
     { type: 'bot', contentList: fulfillmentMessages }
   ]
+const contentDataFromRuckusAi:Content[] =
+  [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
+    { type: 'bot', isRuckusAi: true, contentList: fulfillmentMessages }
+  ]
 const contentLink:Content[] =
   [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
     { type: 'bot', contentList: fulfillmentMessagesWithLink }
@@ -202,6 +206,15 @@ describe('Conversation component', () => {
     />)
     expect(screen.getByText('List zones with higher co-channel interference in 2.4 GHz band')
     ).toBeVisible()
+  })
+  it('should render Conversation component with text form RuckusAI', () => {
+    render(<Conversation content={contentDataFromRuckusAi}
+      classList='conversation'
+      isReplying={false}
+      listCallback={jest.fn()}
+      style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}
+    />)
+    expect(screen.getAllByText('Ruckus AI').length).toBe(2)
   })
   it('should render Conversation component with link', () => {
     render(<BrowserRouter><Conversation content={contentLink}
