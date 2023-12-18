@@ -801,20 +801,12 @@ export function RadioSettings () {
       updateRadioParams(payload.apRadioParams24G, support24GChannels)
 
       if (hasRadio5G) {
-        if (!enable50G && !apRadioParams50G?.useVenueSettings) {
-          set(payload, ['apRadioParams50G'], initData.apRadioParams50G)
-          set(payload, ['apRadioParams50G', 'useVenueSettings'], clonedPayload.apRadioParams50G.useVenueSettings)
-        }
         updateRadioParams(payload.apRadioParams50G, support5GChannels)
       } else {
         delete payload.apRadioParams50G
       }
 
       if (hasRadio6G) {
-        if (!enable6G && !apRadioParams6G?.useVenueSettings) {
-          set(payload, ['apRadioParams6G'], initData.apRadioParams6G)
-          set(payload, ['apRadioParams6G', 'useVenueSettings'], clonedPayload.apRadioParams6G.useVenueSettings)
-        }
         updateRadioParams(payload.apRadioParams6G, support6GChannels)
       } else {
         delete payload.apRadioParams6G
@@ -822,18 +814,8 @@ export function RadioSettings () {
 
       if (hasRadioDual5G) {
         const radioDual5G = apRadioParamsDual5G || new ApRadioParamsDual5G()
-
-        if (!radioDual5G.lower5gEnabled && !apRadioParamsDual5G?.radioParamsLower5G?.useVenueSettings) {
-          set(payload, ['apRadioParamsDual5G', 'radioParamsLower5G'], initData?.apRadioParamsDual5G?.radioParamsLower5G)
-          set(payload, ['apRadioParamsDual5G', 'radioParamsLower5G', 'useVenueSettings'], clonedPayload.apRadioParamsDual5G?.radioParamsLower5G?.useVenueSettings)
-        }
-        if (!radioDual5G.upper5gEnabled && !apRadioParamsDual5G?.radioParamsUpper5G?.useVenueSettings) {
-          set(payload, ['apRadioParamsDual5G', 'radioParamsUpper5G'], initData?.apRadioParamsDual5G?.radioParamsUpper5G)
-          set(payload, ['apRadioParamsDual5G', 'radioParamsUpper5G', 'useVenueSettings'], clonedPayload.apRadioParamsDual5G?.radioParamsUpper5G?.useVenueSettings)
-        }
         updateRadioParams(radioDual5G.radioParamsLower5G, supportLower5GChannels)
         updateRadioParams(radioDual5G.radioParamsUpper5G, supportUpper5GChannels)
-
         payload.apRadioParamsDual5G = radioDual5G
       }
       else if (isSupportDual5GAp) {
