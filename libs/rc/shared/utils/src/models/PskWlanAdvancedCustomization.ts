@@ -277,7 +277,7 @@ export class PskWlanAdvancedCustomization {
 
     this.wifi7Enabled = true
 
-    this.multiLinkOperationEnabled = true
+    this.multiLinkOperationEnabled = false
 
     this.qosMapSetEnabled = false
 
