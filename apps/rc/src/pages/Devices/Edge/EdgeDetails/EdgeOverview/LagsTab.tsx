@@ -4,11 +4,11 @@ import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Button, GridRow, Loader, NestedTableExpandableDefaultConfig, Table, TableProps } from '@acx-ui/components'
-import { EdgeIpModeEnum, EdgeLagMemberStatus, EdgeLagStatus, EdgeLagTimeoutEnum }         from '@acx-ui/rc/utils'
-import { useTenantLink }                                                                  from '@acx-ui/react-router-dom'
-import { hasAccess }                                                                      from '@acx-ui/user'
-import { getIntl }                                                                        from '@acx-ui/utils'
+import { Button, GridRow, Loader, NestedTableExpandableDefaultConfig, Table, TableProps }  from '@acx-ui/components'
+import { EdgeLagMemberStatus, EdgeLagStatus, EdgeLagTimeoutEnum, getEdgePortIpModeString } from '@acx-ui/rc/utils'
+import { useTenantLink }                                                                   from '@acx-ui/react-router-dom'
+import { hasAccess }                                                                       from '@acx-ui/user'
+import { getIntl }                                                                         from '@acx-ui/utils'
 
 interface LagsTabProps {
   data: EdgeLagStatus[]
@@ -86,16 +86,7 @@ export const LagsTab = (props: LagsTabProps) => {
       title: $t({ defaultMessage: 'IP Type' }),
       key: 'ipMode',
       dataIndex: 'ipMode',
-      render: (_, { ipMode }) => {
-        switch(ipMode) {
-          case EdgeIpModeEnum.DHCP:
-            return $t({ defaultMessage: 'DHCP' })
-          case EdgeIpModeEnum.STATIC:
-            return $t({ defaultMessage: 'Static IP' })
-          default:
-            return ''
-        }
-      }
+      render: (_data, { ipMode }) => getEdgePortIpModeString($t, ipMode)
     }
   ]
 
@@ -143,7 +134,8 @@ const expandedRowRender = (memberStatus: LagMemberTableType[] = []) => {
     {
       title: $t({ defaultMessage: 'Port Name' }),
       key: 'name',
-      dataIndex: 'name'
+      dataIndex: 'name',
+      render: (_data, row) => _.capitalize(row.name)
     },
     {
       title: $t({ defaultMessage: 'LACP State' }),
@@ -165,7 +157,7 @@ const expandedRowRender = (memberStatus: LagMemberTableType[] = []) => {
       title: $t({ defaultMessage: 'Timeout' }),
       key: 'lacpTimeout',
       dataIndex: 'lacpTimeout',
-      render: (data, row) => {
+      render: (_data, row) => {
         return row.lacpTimeout && `${row.lacpTimeout} (${_.capitalize(row.lacpTimeout)})`
       }
     },

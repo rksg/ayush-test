@@ -10,7 +10,17 @@ export const EdgeSubInterfacesTable = ({ serialNumber, portMac }:
 
   const defaultPayload = {
     fields: [
-      'sortIdx', 'mac', 'name', 'type', 'status', 'ip', 'subnet', 'vlan', 'serialNumber', 'ipMode'
+      'sortIdx',
+      'mac',
+      'name',
+      'type',
+      'status',
+      'ip',
+      'subnet',
+      'vlan',
+      'serialNumber',
+      'ipMode',
+      'interfaceName'
     ],
     filters: { serialNumber: [serialNumber], mac: [portMac] },
     sortField: 'sortIdx',
@@ -26,7 +36,6 @@ export const EdgeSubInterfacesTable = ({ serialNumber, portMac }:
       sortOrder: 'ASC'
     }
   })
-
 
   return (
     <Loader states={[tableQuery]}>
