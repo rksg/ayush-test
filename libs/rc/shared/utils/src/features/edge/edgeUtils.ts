@@ -5,7 +5,7 @@ import { getIntl, validationMessages } from '@acx-ui/utils'
 
 import { IpUtilsService }                                                          from '../../ipUtilsService'
 import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum } from '../../models/EdgeEnum'
-import { EdgeAlarmSummary, EdgeLag, EdgePortWithStatus }                           from '../../types'
+import { EdgeAlarmSummary, EdgeLag, EdgePort, EdgePortStatus, EdgePortWithStatus } from '../../types'
 import { networkWifiIpRegExp, subnetMaskIpRegExp }                                 from '../../validator'
 
 export const getEdgeServiceHealth = (alarmSummary?: EdgeAlarmSummary[]) => {
@@ -86,6 +86,17 @@ export const getEdgePortTypeOptions = ($t: IntlShape['$t']) => ([
   }
 ])
 
+export const getEdgePortIpModeString = ($t: IntlShape['$t'], type: EdgeIpModeEnum | string) => {
+  switch (type) {
+    case EdgeIpModeEnum.DHCP:
+      return $t({ defaultMessage: 'DHCP' })
+    case EdgeIpModeEnum.STATIC:
+      return $t({ defaultMessage: 'Static IP' })
+    default:
+      return ''
+  }
+}
+
 export const convertEdgePortsConfigToApiPayload = (formData: EdgePortWithStatus | EdgeLag) => {
   const payload = _.cloneDeep(formData)
 
@@ -118,4 +129,8 @@ export const convertEdgePortsConfigToApiPayload = (formData: EdgePortWithStatus 
   }
 
   return payload
+}
+
+export const getEdgePortDisplayName = (port: EdgePort | EdgePortStatus | undefined) => {
+  return _.capitalize(port?.interfaceName)
 }

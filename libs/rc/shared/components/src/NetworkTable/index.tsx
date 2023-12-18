@@ -284,6 +284,7 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
   const isWpaDsae3Toggle = useIsSplitOn(Features.WIFI_EDA_WPA3_DSAE_TOGGLE)
   const isBetaDPSK3FeatureEnabled = useIsTierAllowed(TierFeatures.BETA_DPSK3)
   const [expandOnBoaroardingNetworks, setExpandOnBoaroardingNetworks] = useState<boolean>(false)
+  const [showOnboardNetworkToggle, setShowOnboardNetworkToggle] = useState<boolean>(false)
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([])
   const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
   const intl = useIntl()
@@ -298,7 +299,7 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
 
       tableQuery?.data?.data.map((record: Network) => {
         if (record?.children) _rows.push(record.id)})
-
+      setShowOnboardNetworkToggle(!!_rows.length)
       if (expandOnBoaroardingNetworks) {
         setExpandedRowKeys(_rows)
       } else {
@@ -411,7 +412,7 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
         rowActions={filterByAccess(rowActions)}
         rowSelection={selectable ? { type: 'radio',
           ...rowSelection(supportOweTransition) } : undefined}
-        actions={isBetaDPSK3FeatureEnabled && isWpaDsae3Toggle ? [{
+        actions={isBetaDPSK3FeatureEnabled && isWpaDsae3Toggle && showOnboardNetworkToggle ? [{
           key: 'toggleOnboardNetworks',
           label: expandOnBoaroardingNetworks
             ? $t({ defaultMessage: 'Hide Onboard Networks' })
