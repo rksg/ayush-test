@@ -305,6 +305,7 @@ export function UserConnectionForm () {
           hidden
           name={['guestPortal','lockoutPeriodEnabled']}
           initialValue={false}
+          children={<></>}
         />
         <Form.Item label={<>
           {$t({ defaultMessage: 'After that time, don\'t allow to reconnect for' })}
