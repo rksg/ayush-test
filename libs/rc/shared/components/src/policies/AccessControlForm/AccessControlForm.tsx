@@ -181,6 +181,7 @@ export const AccessControlForm = (props: AccessControlFormProps) => {
       />
       <StepsFormLegacy<AccessControlProfile>
         formRef={formRef}
+        editMode={editMode}
         onCancel={() => navigate(linkToPolicies, { replace: true })}
         onFinish={() => handleAccessControlPolicy(editMode)}
       >
