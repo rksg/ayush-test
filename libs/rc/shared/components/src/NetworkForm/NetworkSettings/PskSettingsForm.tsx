@@ -45,7 +45,10 @@ const { Option } = Select
 
 const { useWatch } = Form
 
-export function PskSettingsForm () {
+export function PskSettingsForm (props: {
+  MLOButtonDisable?: boolean,
+  setMLOButtonDisable: Function
+}) {
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   useEffect(()=>{
@@ -77,7 +80,7 @@ export function PskSettingsForm () {
   return (<>
     <Row gutter={20}>
       <Col span={10}>
-        <SettingsForm />
+        <SettingsForm setMLOButtonDisable={props.setMLOButtonDisable} />
       </Col>
       <Col span={14} style={{ height: '100%' }}>
         <NetworkDiagram />
@@ -85,13 +88,17 @@ export function PskSettingsForm () {
     </Row>
     {!(editMode) && <Row>
       <Col span={24}>
-        <NetworkMoreSettingsForm wlanData={data} />
+        <NetworkMoreSettingsForm
+          MLOButtonDisable={props.MLOButtonDisable}
+          wlanData={data} />
       </Col>
     </Row>}
   </>)
 }
 
-function SettingsForm () {
+function SettingsForm (props: {
+  setMLOButtonDisable: Function
+}) {
   const { editMode, data, setData } = useContext(NetworkFormContext)
   const intl = useIntl()
   const form = Form.useFormInstance()
@@ -182,6 +189,13 @@ function SettingsForm () {
         }
       }
     })
+
+    if(value === WlanSecurityEnum.WPA23Mixed){
+      props.setMLOButtonDisable(true)
+      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
+    } else {
+      props.setMLOButtonDisable(false)
+    }
   }
   const onMacAuthChange = (checked: boolean) => {
     setData && setData({
@@ -204,6 +218,10 @@ function SettingsForm () {
           macRegistrationListId: data.wlan?.macRegistrationListId
         }
       })
+      if (editMode && data && data?.wlan?.wlanSecurity === WlanSecurityEnum.WPA23Mixed) {
+        props.setMLOButtonDisable(true)
+        form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
+      }
     }
   },[data])
 

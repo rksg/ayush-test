@@ -17,7 +17,10 @@ import WiFi7 from './WiFi7'
 
 const { useWatch } = Form
 
-export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
+export function NetworkingTab (props: {
+  wlanData: NetworkSaveData | null,
+  MLOButtonDisable?: boolean
+}) {
   const { $t } = useIntl()
   const { data } = useContext(NetworkFormContext)
   const { wlanData } = props
@@ -58,7 +61,7 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
     useWatch<boolean>(['wlan', 'advancedCustomization',
       'enableOptimizedConnectivityExperience'])
   ]
-
+  console.log(`Network Tab Render: ${props.MLOButtonDisable}`)
   useEffect(() => {
     if(enableAirtimeDecongestion === true) {
       form.setFieldValue(['wlan', 'advancedCustomization', 'enableJoinRSSIThreshold'], false)
@@ -445,7 +448,8 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
         />
       </>}
 
-      { wifi6AndWifi7Flag && enableAP70 && <WiFi7 wlanData={wlanData} /> }
+      { wifi6AndWifi7Flag && enableAP70 &&
+      <WiFi7 wlanData={wlanData} MLOButtonDisable={props.MLOButtonDisable}/> }
 
       {showRadiusOptions &&
       <>

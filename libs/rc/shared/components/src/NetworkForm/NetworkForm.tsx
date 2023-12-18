@@ -28,21 +28,21 @@ import {
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { CloudpathForm }           from './CaptivePortal/CloudpathForm'
-import { GuestPassForm }           from './CaptivePortal/GuestPassForm'
-import { HostApprovalForm }        from './CaptivePortal/HostApprovalForm'
-import { OnboardingForm }          from './CaptivePortal/OnboardingForm'
-import { PortalTypeForm }          from './CaptivePortal/PortalTypeForm'
-import { SelfSignInForm }          from './CaptivePortal/SelfSignInForm'
-import { WISPrForm }               from './CaptivePortal/WISPrForm'
-import { NetworkDetailForm }       from './NetworkDetail/NetworkDetailForm'
-import NetworkFormContext          from './NetworkFormContext'
-import { NetworkMoreSettingsForm } from './NetworkMoreSettings/NetworkMoreSettingsForm'
-import { AaaSettingsForm }         from './NetworkSettings/AaaSettingsForm'
-import { DpskSettingsForm }        from './NetworkSettings/DpskSettingsForm'
-import { OpenSettingsForm }        from './NetworkSettings/OpenSettingsForm'
-import { PskSettingsForm }         from './NetworkSettings/PskSettingsForm'
-import { SummaryForm }             from './NetworkSummary/SummaryForm'
+import { CloudpathForm }            from './CaptivePortal/CloudpathForm'
+import { GuestPassForm }            from './CaptivePortal/GuestPassForm'
+import { HostApprovalForm }         from './CaptivePortal/HostApprovalForm'
+import { OnboardingForm }           from './CaptivePortal/OnboardingForm'
+import { PortalTypeForm }           from './CaptivePortal/PortalTypeForm'
+import { SelfSignInForm }           from './CaptivePortal/SelfSignInForm'
+import { WISPrForm }                from './CaptivePortal/WISPrForm'
+import { NetworkDetailForm }        from './NetworkDetail/NetworkDetailForm'
+import NetworkFormContext           from './NetworkFormContext'
+import { NetworkMoreSettingsForm }  from './NetworkMoreSettings/NetworkMoreSettingsForm'
+import { AaaSettingsForm }          from './NetworkSettings/AaaSettingsForm'
+import { DpskSettingsForm }         from './NetworkSettings/DpskSettingsForm'
+import { OpenSettingsForm }         from './NetworkSettings/OpenSettingsForm'
+import { PskSettingsForm }          from './NetworkSettings/PskSettingsForm'
+import { SummaryForm }              from './NetworkSummary/SummaryForm'
 import {
   tranferSettingsToSave,
   transferDetailToSave,
@@ -117,6 +117,10 @@ export function NetworkForm (props:{
 
   const [portalDemo, setPortalDemo]=useState<Demo>()
   const [previousPath, setPreviousPath] = useState('')
+  const [MLOButtonDisable, setMLOButtonDisable] = useState(false)
+
+  console.log(`NetworkForm MLOButtonDisable: ${MLOButtonDisable}`)
+
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
     if(!editMode&&!saveState.enableAccountingService){
       delete saveState.accountingRadius
@@ -550,12 +554,18 @@ export function NetworkForm (props:{
             >
               {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
               {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm/>}
-              {(saveState.type || createType) === NetworkTypeEnum.DPSK && <DpskSettingsForm />}
+              {(saveState.type || createType) === NetworkTypeEnum.DPSK &&
+              <DpskSettingsForm
+                MLOButtonDisable={MLOButtonDisable}
+                setMLOButtonDisable={setMLOButtonDisable} />}
               {
                 (saveState.type || createType) === NetworkTypeEnum.CAPTIVEPORTAL &&
                   <PortalTypeForm/>
               }
-              {saveState.type === NetworkTypeEnum.PSK && <PskSettingsForm />}
+              {saveState.type === NetworkTypeEnum.PSK &&
+              <PskSettingsForm
+                MLOButtonDisable={MLOButtonDisable}
+                setMLOButtonDisable={setMLOButtonDisable} />}
 
             </StepsFormLegacy.StepForm>
             { saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
@@ -626,10 +636,12 @@ export function NetworkForm (props:{
             >
               {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
               {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm/>}
-              {(saveState.type || createType) === NetworkTypeEnum.DPSK && <DpskSettingsForm />}
+              {(saveState.type || createType) === NetworkTypeEnum.DPSK &&
+              <DpskSettingsForm setMLOButtonDisable={setMLOButtonDisable} />}
               {(saveState.type || createType) === NetworkTypeEnum.CAPTIVEPORTAL &&
                 <PortalTypeForm/>}
-              {saveState.type === NetworkTypeEnum.PSK && <PskSettingsForm />}
+              {saveState.type === NetworkTypeEnum.PSK &&
+              <PskSettingsForm setMLOButtonDisable={setMLOButtonDisable}/>}
 
             </StepsForm.StepForm>
             { saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
@@ -649,7 +661,8 @@ export function NetworkForm (props:{
                 title={intl.$t({ defaultMessage: 'More Settings' })}
                 onFinish={handleMoreSettings}>
 
-                <NetworkMoreSettingsForm wlanData={saveState} />
+                <NetworkMoreSettingsForm wlanData={saveState}
+                  MLOButtonDisable={MLOButtonDisable}/>
 
               </StepsForm.StepForm>}
             { isPortalWebRender(saveState) &&<StepsForm.StepForm
