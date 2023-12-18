@@ -27,11 +27,11 @@ const DefaultSystemLanguageFormItem = () => {
     if (!langCode) return
     const payload = {
       global: {
-        // pTenant service processes userProfile.preferredLanguage 
+        // pTenant service processes userProfile.preferredLanguage
         // by reference admin setting data - preferredLanguage which is not defaultLanguage
-        // Hence needed both these two attributes 
+        // Hence needed both these two attributes
         defaultLanguage: langCode,
-        preferredLanguage: langCode 
+        preferredLanguage: langCode
       }
     }
     updatePreferences({ newData: payload, onSuccess: () => {
