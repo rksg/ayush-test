@@ -783,6 +783,7 @@ export function MspCustomers () {
         setVisible={setDrawerAdminVisible}
         setSelected={() => {}}
         tenantId={ecTenantId}
+        tenantType={tenantType}
       />}
       {drawerIntegratorVisible && <SelectIntegratorDrawer
         visible={drawerIntegratorVisible}
