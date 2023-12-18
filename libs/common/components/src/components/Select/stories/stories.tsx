@@ -12,9 +12,9 @@ export const defaultProps = {
 }
 
 export const defaultOption = [
-  { label: 'loption 1', value: 1 },
-  { label: 'loption 2', value: 2 },
-  { label: 'loption 3', value: 3 }
+  { label: 'option 1', value: 1 },
+  { label: 'option 2', value: 2 },
+  { label: 'option 3', value: 3 }
 ]
 
 export const defaultGroupOption = [{
