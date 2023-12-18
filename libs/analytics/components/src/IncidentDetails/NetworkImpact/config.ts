@@ -108,8 +108,8 @@ export const transformAirtimeCast= (key: string) => {
   const { $t } = getIntl()
   const map = {
     txUnicastFrames: $t({ defaultMessage: 'Unicast Frames' }),
-    txBoardcastFrames: $t({ defaultMessage: 'Boardcast Frames' }),
-    txMulticaseFrames: $t({ defaultMessage: 'Multicast Frames' })
+    txBroadcastFrames: $t({ defaultMessage: 'Broadcast Frames' }),
+    txMulticastFrames: $t({ defaultMessage: 'Multicast Frames' })
   }
   return _.get(map, key, '')
 }
