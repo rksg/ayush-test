@@ -1,11 +1,11 @@
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { Button, Loader, NoData, Tabs }          from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { EdgeLagStatus, EdgePortStatus }         from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { hasAccess }                             from '@acx-ui/user'
+import { Button, Loader, NoData, Tabs }                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
+import { EdgeLagStatus, EdgePortStatus, getEdgePortDisplayName } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                 from '@acx-ui/react-router-dom'
+import { hasAccess }                                             from '@acx-ui/user'
 
 import { EdgeSubInterfacesTable } from './EdgeSubInterfacesTable'
 import { LagSubInterfaceTable }   from './LagSubInterfaceTable'
@@ -33,7 +33,7 @@ export const EdgeSubInterfacesTab = (props: EdgeSubInterfacesTabProps) => {
         lag.lagMembers?.some(lagMember =>
           lagMember.portId === port.portId)))
       .map(item => ({
-        title: $t({ defaultMessage: 'Port {idx}' }, { idx: item.sortIdx }),
+        title: getEdgePortDisplayName(item),
         id: item.portId,
         mac: item.mac
       }))
@@ -48,7 +48,7 @@ export const EdgeSubInterfacesTab = (props: EdgeSubInterfacesTabProps) => {
     ]
   } else {
     tabs = ports.map(item => ({
-      title: $t({ defaultMessage: 'Port {idx}' }, { idx: item.sortIdx }),
+      title: getEdgePortDisplayName(item),
       id: item.portId,
       mac: item.mac
     }))

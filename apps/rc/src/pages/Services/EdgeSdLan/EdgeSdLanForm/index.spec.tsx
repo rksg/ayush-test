@@ -4,7 +4,8 @@ import { Form, Input } from 'antd'
 import {
   getServiceRoutePath,
   ServiceOperation,
-  ServiceType
+  ServiceType,
+  EdgeSdLanFixtures
 } from '@acx-ui/rc/utils'
 import {
   Provider
@@ -17,9 +18,9 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { mockedSdLanService } from '../__tests__/fixtures'
-
 import EdgeSdLanForm from '.'
+
+const { mockedSdLanService } = EdgeSdLanFixtures
 
 const { click } = userEvent
 
