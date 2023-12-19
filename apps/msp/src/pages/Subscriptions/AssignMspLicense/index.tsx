@@ -174,7 +174,7 @@ export function AssignMspLicense () {
     const status = error.status
     if (status === 409) {
       // eslint-disable-next-line max-len
-      message = error.data.errorMessage ?? intl.$t({ defaultMessage: 'operation failed' })
+      message = error.data.errorMessage ?? intl.$t({ defaultMessage: 'Operation failed' })
     } else {
       const status = error.status
       title = intl.$t({ defaultMessage: 'Server Error' })
