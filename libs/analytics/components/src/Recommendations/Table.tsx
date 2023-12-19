@@ -218,30 +218,25 @@ export function RecommendationTable (
       render: (_, value) => <RecommendationActions recommendation={value} />
     },
     ...(showCrrm && (isRACrrmPartialEnabled || isR1CrrmPartialEnabled) ? [{
-      title: <UI.OptimizationHeader>
-        {$t({ defaultMessage: 'Full Optimization' })}
-        <UI.OptimizationTooltip>
-          <Tooltip placement='top' title={optimizationTooltipText}>
-            <InformationOutlined />
-          </Tooltip>
-        </UI.OptimizationTooltip>
-      </UI.OptimizationHeader>,
+      title: $t({ defaultMessage: 'Full Optimization' }),
       key: 'preferences',
       dataIndex: 'preferences',
       width: 140,
       fixed: 'right',
-      tooltip: '',
+      tooltip: optimizationTooltipText,
       render: (_, value) => {
         const { code, statusEnum, idPath } = value
         // eslint-disable-next-line max-len
         const appliedStates = ['applyscheduled', 'applyscheduleinprogress', 'applied', 'revertscheduled', 'revertscheduleinprogress', 'revertfailed', 'applywarning']
         const disabled = appliedStates.includes(statusEnum) ? true : false
         const isOptimized = value.preferences? value.preferences.fullOptimization : true
-        const tooltipText = $t({ defaultMessage: `
-          Optimization option cannot be changed while the recommendation is in Applied status.
-          Please revert the recommendation back to the New status before changing
-          the optimization option.
-        ` })
+        const tooltipText = disabled
+          ? $t({ defaultMessage: `
+            Optimization option cannot be changed while the recommendation is in Applied status.
+            Please revert the recommendation back to the New status before changing
+            the optimization option.
+          ` })
+          : ''
         return <Tooltip placement='top' title={tooltipText}>
           <Switch
             defaultChecked
