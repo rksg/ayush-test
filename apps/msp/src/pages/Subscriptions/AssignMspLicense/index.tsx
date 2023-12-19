@@ -169,14 +169,11 @@ export function AssignMspLicense () {
   }
 
   const handleSubmitFailed = (error: ErrorsResult<ErrorDetails>) => {
-    let title
-    let message
-
     const status = error.status
     if (status === 409) {
-      title = intl.$t({ defaultMessage: 'Assign Subscription Failed' })
+      const title = intl.$t({ defaultMessage: 'Assign Subscription Failed' })
       // eslint-disable-next-line max-len
-      message = error.data.errorMessage ?? intl.$t({ defaultMessage: 'operation failed' })
+      const message = error.data.errorMessage ?? intl.$t({ defaultMessage: 'operation failed' })
 
       showActionModal({
         type: 'error',
@@ -184,7 +181,6 @@ export function AssignMspLicense () {
         content: message
       })
     }
-
   }
 
   const handleAssignLicense = async (values: SubscriptionAssignmentForm) => {
