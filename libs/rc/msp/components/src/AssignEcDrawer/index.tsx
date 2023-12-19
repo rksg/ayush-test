@@ -209,7 +209,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
   const content =
   <Form layout='vertical' form={form} onFinish={onClose}>
     {tenantId && <div>
-      <Subtitle level={4}>{$t({ defaultMessage: 'Access Periods' })}</Subtitle>
+      <Subtitle level={4}>{$t({ defaultMessage: 'Access Period' })}</Subtitle>
       {tenantType === AccountType.MSP_INTEGRATOR && <label>Not Limited</label>}
       {tenantType === AccountType.MSP_INSTALLER && <UI.FieldLabelAccessPeriod width='275px'>
         <label>{$t({ defaultMessage: 'Limited To' })}</label>
