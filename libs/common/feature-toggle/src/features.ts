@@ -120,6 +120,7 @@ export enum Features {
   APP_INSIGHTS = 'acx-ui-app-insights-toggle',
   HOST_APPROVAL_EMAIL_LIST_TOGGLE = 'guest-host-approval-email-list-toggle',
   IDM_APPLICATION_KEY_TOGGLE = 'ptenant-application-key-toggle',
+  WIFI_SWITCHABLE_RF_TOGGLE = 'wifi-switchable-rf-toggle',
   WIFI_EDA_PER_AP_RADIO_CUSTOMIZATION_TOGGLE = 'wifi-eda-per-ap-radio-customization-toggle',
   AP_GROUP_TOGGLE = 'wifi-eda-ap-group-table-toggle',
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
