@@ -19,7 +19,7 @@ interface AddGroupDrawerProps {
   setVisible: (visible: boolean) => void
 }
 
-export interface AdminGroupData {
+interface AdminGroupData {
   name?: string,
   groupId?: string,
   role: RolesEnum
@@ -33,6 +33,8 @@ export const AddGroupDrawer = (props: AddGroupDrawerProps) => {
 
   const [addAdminGroup] = useAddAdminGroupsMutation()
   const [updateAdminGroup] = useUpdateAdminGroupsMutation()
+
+  form.setFieldValue('role', isEditMode ? editData?.customRole?.name : '')
 
   const onClose = () => {
     setVisible(false)
@@ -52,8 +54,6 @@ export const AddGroupDrawer = (props: AddGroupDrawerProps) => {
       }
 
       const adminGroupEditData: AdminGroupData = {
-        name: editData?.name,
-        groupId: editData?.groupId,
         role: role
       }
 
@@ -107,7 +107,6 @@ export const AddGroupDrawer = (props: AddGroupDrawerProps) => {
       name='role'
       style={{ marginTop: '13px' }}
       label={$t({ defaultMessage: 'Role' })}
-      initialValue={isEditMode ? editData?.customRole?.name || '' : ''}
       rules={[
         { required: true }
       ]}

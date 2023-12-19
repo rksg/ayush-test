@@ -601,7 +601,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'addGroup',
             'patchGroup',
-            'deleteGroup'
+            'deleteGroups'
           ], () => {
             api.dispatch(administrationApi.util.invalidateTags([
               { type: 'Administration', id: 'ADMINGROUP_LIST' }

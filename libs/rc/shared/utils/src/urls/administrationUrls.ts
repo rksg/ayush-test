@@ -234,7 +234,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deleteAdminGroups: {
     method: 'delete',
-    url: '/groups/:groupId',
+    url: '/groups',
     newApi: true
   }
 }

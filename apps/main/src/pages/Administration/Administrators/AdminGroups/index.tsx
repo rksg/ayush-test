@@ -65,13 +65,12 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
     handleOpenDialog()
   }
 
-
   const columns:TableProps<AdminGroup>['columns'] = [
     {
       title: $t({ defaultMessage: 'Group Name' }),
       key: 'name',
       dataIndex: 'name',
-      sorter: { compare: sortProp('fullName', defaultSort) }
+      sorter: { compare: sortProp('name', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Group ID' }),
@@ -137,21 +136,14 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
           customContent: {
             action: 'DELETE',
             entityName: $t({ defaultMessage: 'Group' }),
-            entityValue: rows[0].name
-            // entityValue: rows.length === 1
-            //   ? rows[0].name !== ' ' ? rows[0].name : rows[0].groupId
-            //   : undefined,
-            // numOfEntities: rows.length
+            entityValue: rows.length === 1
+              ? rows[0].name !== ' ' ? rows[0].name : rows[0].groupId
+              : undefined,
+            numOfEntities: rows.length
           },
           onOk: () => {
-            deleteAdminGroup({ params: { ...params, groupId: rows[0].id } })
+            deleteAdminGroup({ params, payload: rows.map(item => item.id) })
               .then(clearSelection)
-
-            // rows.length === 1 ?
-            //   deleteAdminGroup({ params: { ...params, groupId: rows[0].id } })
-            //     .then(clearSelection) :
-            //   deleteAdmins({ params, payload: rows.map(item => item.groupId) })
-            //     .then(clearSelection)
           }
         })
       }
@@ -160,13 +152,9 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
 
   const onSwap = async (targetGroupId: string, sourceGroupId: string) => {
     try {
-      const target = adminList?.find(x => x.id === targetGroupId)
       const adminGroupEditData: AdminGroup = {
-        swap: true,
-        sourceGroupId: sourceGroupId,
-        name: target?.name,
-        groupId: target?.groupId,
-        role: RolesEnum.ADMINISTRATOR
+        swapPriority: true,
+        sourceGroupId: sourceGroupId
       }
 
       await updateAdminGroup({ params: { groupId: targetGroupId },

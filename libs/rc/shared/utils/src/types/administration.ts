@@ -256,7 +256,7 @@ export interface AdminGroup {
   role?: RolesEnum,
   customRole?: CustomRole,
   processingPriority?: number,
-  swap?: boolean,
+  swapPriority?: boolean,
   sourceGroupId?: string
 }
 
