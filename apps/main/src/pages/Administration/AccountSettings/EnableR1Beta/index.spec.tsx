@@ -49,7 +49,7 @@ describe('Enable RUCKUS One Beta Checkbox', () => {
     expect(enableBtn).toBeVisible()
 
     fireEvent.click(enableBtn)
-    expect(enableBtn).toBeVisible()
+    expect(enableBtn).not.toBeVisible()
 
     const currentBeta = await screen.findByRole('link', { name: 'Current beta features' })
     fireEvent.click(currentBeta)

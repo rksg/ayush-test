@@ -27,6 +27,7 @@ export function R1BetaTermsConditionDrawer (
   const [toggleBetaStatus ] = useToggleBetaStatusMutation()
 
   const onSave = async () => {
+    onClose()
     showActionModal({
       type: 'info',
       width: 450,
