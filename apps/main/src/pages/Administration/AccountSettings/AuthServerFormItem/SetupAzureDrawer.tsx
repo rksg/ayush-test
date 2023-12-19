@@ -16,20 +16,19 @@ import TextArea      from 'antd/lib/input/TextArea'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, DrawerProps }            from '@acx-ui/components'
-import { formatter }                      from '@acx-ui/formatter'
+import { Button, DrawerProps }             from '@acx-ui/components'
+import { formatter }                       from '@acx-ui/formatter'
 import {
   useAddTenantAuthenticationsMutation,
   useGetUploadURLMutation,
-  useUpdateTenantAuthenticationsMutation,
-  usePatchTenantAuthenticationsMutation
+  useUpdateTenantAuthenticationsMutation
 } from '@acx-ui/rc/services'
 import {
   TenantAuthentications,
   TenantAuthenticationType,
   SamlFileType,
-  UploadUrlResponse,
-  domainNameRegExp
+  UploadUrlResponse//,
+  // domainNameRegExp
 } from '@acx-ui/rc/utils'
 
 import { reloadAuthTable } from '../AppTokenFormItem'
@@ -91,7 +90,6 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
   const bytesFormatter = formatter('bytesFormat')
   const [addSso] = useAddTenantAuthenticationsMutation()
   const [updateSso] = useUpdateTenantAuthenticationsMutation()
-  const [patchSso] = usePatchTenantAuthenticationsMutation()
   const [getUploadURL] = useGetUploadURLMutation()
 
   useEffect(()=>{
@@ -109,6 +107,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
       setFileDescription(<Typography.Text><FileTextOutlined /> {editData?.name} </Typography.Text>)
       // TODO: setMetadata() to contents of file only if we want to see file contents in metadata in editmode
       // fetchMetaData()
+      form.setFieldValue('domains', editData?.domains?.toString())
     }
   }, [form, props.visible])
 
@@ -199,30 +198,28 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
         }
       }
 
-      const allowedDomains = isGroupBasedLoginEnabled
-        ? {
-          domains: 'commscope.com, ruckuswirelss.com, arris.com'
-        } : undefined
+      const allowedDomains =
+        isGroupBasedLoginEnabled ? form.getFieldValue('domains').split(',') : undefined
       if(isEditMode) {
         const ssoEditData: TenantAuthentications = {
           name: metadataFile.name,
           authenticationType: TenantAuthenticationType.saml,
           samlFileType: fileType,
-          samlFileURL: fileType === SamlFileType.file ? fileURL?.data.fileId : directUrlPath
+          samlFileURL: fileType === SamlFileType.file ? fileURL?.data.fileId : directUrlPath,
+          domains: allowedDomains
         }
         await updateSso({ params: { authenticationId: editData?.id },
           payload: ssoEditData }).unwrap()
-        await patchSso({ params, payload: allowedDomains }).unwrap()
         reloadAuthTable(2)
       } else {
         const ssoData: TenantAuthentications = {
           name: metadataFile.name,
           authenticationType: TenantAuthenticationType.saml,
           samlFileType: fileType,
-          samlFileURL: fileType === SamlFileType.file ? fileURL?.data.fileId : directUrlPath
+          samlFileURL: fileType === SamlFileType.file ? fileURL?.data.fileId : directUrlPath,
+          domains: allowedDomains
         }
         await addSso({ payload: ssoData }).unwrap()
-        await patchSso({ params, payload: allowedDomains }).unwrap()
         reloadAuthTable(2)
       }
       setVisible(false)
@@ -233,16 +230,32 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     }
   }
 
+  const domainsValidator = async (value: string) => {
+    // eslint-disable-next-line max-len
+    const re = new RegExp(/(^((22[0-3]|2[0-1][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9]?)\.)((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){2}((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))$)|(^(\b((?=[A-Za-z0-9-]{1,63}\.)(xn--)?[A-Za-z0-9]+(-[A-Za-z0-9]+)*\.)+[A-Za-z]{2,63}\b)$)/)
+    const domains = value.split(',')
+    let invalid = false
+    domains.forEach((domain) => {
+      if (!re.test(domain.trim())) {
+        invalid = true
+      }
+    })
+    return invalid ? Promise.reject(
+      `${$t({ defaultMessage: 'Please enter domains separated by comma' })} `
+    ) : Promise.resolve()
+  }
+
   const SamlContent = () => {
     return <> <Form style={{ marginTop: 10 }} layout='vertical' form={form}>
       {isGroupBasedLoginEnabled && <Form.Item
-        name='allowedDomains'
+        name='domains'
         label={$t({ defaultMessage: 'Allowed Domains' })}
         rules={[
           { type: 'string', required: true },
           { min: 2, transform: (value) => value.trim() },
           { max: 64, transform: (value) => value.trim() },
-          { validator: (_, value) => domainNameRegExp(value) }
+          { validator: (_, value) => domainsValidator(value) }
+
         ]}
         children={
           <Input

@@ -202,7 +202,7 @@ export interface TenantAuthentications {
   tenant?: string;
   url?: string;
   scopes?: string;
-  domains?: string;
+  domains?: string[];
 }
 
 export interface Entitlement {
