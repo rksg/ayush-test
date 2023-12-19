@@ -226,7 +226,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
         }
       </UI.IpAndMac>
       <Row gutter={20}>
-        <Col span={5}>
+        <Col span={6}>
           <Form.Item
             name={getFieldPath('name')}
             label={$t({ defaultMessage: 'Description' })}

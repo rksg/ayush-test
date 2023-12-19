@@ -1,9 +1,8 @@
 import { useState } from 'react'
 
-import { Col, Row }  from 'antd'
-import _             from 'lodash'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { Col, Row } from 'antd'
+import _            from 'lodash'
+import { useIntl }  from 'react-intl'
 
 import { Loader, Table, TableProps, Tooltip, showActionModal }                                                      from '@acx-ui/components'
 import { useDeleteEdgeLagMutation, useGetEdgeLagListQuery }                                                         from '@acx-ui/rc/services'
@@ -13,6 +12,7 @@ import { filterByAccess, hasAccess }                                            
 import { LagDrawer } from './LagDrawer'
 
 interface LagProps {
+  serialNumber: string
   lagStatusList: EdgeLagStatus[]
   isLoading: boolean
   portList?: EdgePort[]
@@ -24,8 +24,7 @@ interface EdgeLagTableType extends EdgeLag {
 
 const Lag = (props: LagProps) => {
 
-  const { lagStatusList, isLoading, portList } = props
-  const { serialNumber } = useParams()
+  const { serialNumber, lagStatusList, isLoading, portList } = props
   const { $t } = useIntl()
   const [lagDrawerVisible, setLagDrawerVisible] = useState(false)
   const [currentEditData, setCurrentEditData] = useState<EdgeLag>()
@@ -202,6 +201,7 @@ const Lag = (props: LagProps) => {
         rowKey='id'
       />
       <LagDrawer
+        serialNumber={serialNumber}
         visible={lagDrawerVisible}
         setVisible={setLagDrawerVisible}
         data={currentEditData}

@@ -128,6 +128,11 @@ export interface EdgePortStatus {
   interfaceName?: string
 }
 
+export interface EdgeAllPortsStatus {
+  ports: EdgePortWithStatus[],
+  lags: EdgeLagStatus[]
+}
+
 export interface EdgeStatusSeverityStatistic {
   summary: {
     [key in EdgeStatusSeverityEnum]?: number

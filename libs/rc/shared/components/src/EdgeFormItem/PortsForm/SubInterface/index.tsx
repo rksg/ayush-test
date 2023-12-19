@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { useIntl } from 'react-intl'
 
 import { NoData, Tabs, Tooltip }                                     from '@acx-ui/components'
 import { EdgeLagStatus, EdgePortWithStatus, getEdgePortDisplayName } from '@acx-ui/rc/utils'
@@ -11,13 +10,13 @@ import { LagSubInterfaceTable }  from './LagSubInterfaceTable'
 import { PortSubInterfaceTable } from './PortSubInterfaceTable'
 
 interface SubInterfaceProps {
+  serialNumber: string
   portData: EdgePortWithStatus[]
   lagData?: EdgeLagStatus[]
 }
 
 const SubInterface = (props: SubInterfaceProps) => {
-  const { portData, lagData } = props
-  const { serialNumber = '' } = useParams()
+  const { serialNumber, portData, lagData } = props
   const { $t } = useIntl()
   const [currentTab, setCurrentTab] = useState('')
 

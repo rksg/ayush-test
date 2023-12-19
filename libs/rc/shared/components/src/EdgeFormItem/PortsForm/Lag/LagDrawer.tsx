@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { Checkbox, Form, Input, Radio, Select, Space, Switch } from 'antd'
 import TextArea                                                from 'antd/lib/input/TextArea'
 import { useIntl }                                             from 'react-intl'
-import { useParams }                                           from 'react-router-dom'
 
 import { Drawer, StepsForm, showActionModal }              from '@acx-ui/components'
 import { useAddEdgeLagMutation, useUpdateEdgeLagMutation } from '@acx-ui/rc/services'
@@ -22,6 +21,7 @@ import {
 } from '@acx-ui/rc/utils'
 
 interface LagDrawerProps {
+  serialNumber: string
   visible: boolean
   setVisible: (visible: boolean) => void
   data?: EdgeLag
@@ -31,9 +31,8 @@ interface LagDrawerProps {
 
 export const LagDrawer = (props: LagDrawerProps) => {
 
-  const { visible, setVisible, data, portList, existedLagList } = props
+  const { serialNumber, visible, setVisible, data, portList, existedLagList } = props
   const isEditMode = data?.id !== undefined
-  const { serialNumber } = useParams()
   const { $t } = useIntl()
   const [formRef] = Form.useForm()
   const [enabledPorts, setEnabledPorts] = useState<string[]>()

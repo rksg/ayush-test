@@ -12,6 +12,8 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
+import { EdgePortTabEnum } from '../PortsForm'
+
 import { EdgePortsGeneral } from './'
 
 jest.mock('@acx-ui/utils', () => {
@@ -63,7 +65,7 @@ describe('EditEdge ports - ports general and SD-LAN off', () => {
         tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
         serialNumber: '000000000000',
         activeTab: 'ports',
-        activeSubTab: 'ports-general'
+        activeSubTab: EdgePortTabEnum.PORTS_GENERAL
       }
       mockedUpdateReq.mockClear()
       mockedGetSdLanReq.mockClear()
@@ -456,7 +458,7 @@ describe('EditEdge ports - ports general and SD-LAN off', () => {
         tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
         serialNumber: '000000000000',
         activeTab: 'ports',
-        activeSubTab: 'ports-general'
+        activeSubTab: EdgePortTabEnum.PORTS_GENERAL
       }
 
       mockServer.use(
@@ -503,7 +505,7 @@ describe('EditEdge ports - SD-LAN ready', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       serialNumber: '000000000000',
       activeTab: 'ports',
-      activeSubTab: 'ports-general'
+      activeSubTab: EdgePortTabEnum.PORTS_GENERAL
     }
 
     jest.mocked(useIsSplitOn).mockReturnValue(true)

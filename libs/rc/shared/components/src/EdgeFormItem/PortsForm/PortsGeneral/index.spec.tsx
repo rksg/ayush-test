@@ -14,7 +14,8 @@ import {
   screen,
   waitFor } from '@acx-ui/test-utils'
 
-import { EdgeEditContext } from '../..'
+import { EdgePortTabEnum }                from '..'
+import { EditContext as EdgeEditContext } from '../../EdgeEditContext'
 
 import PortsGeneral from './'
 
@@ -52,8 +53,8 @@ const MockedPortsForm = (props: MockedPortsFormType) => {
   </Form>
 }
 
-jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
+jest.mock('../../EdgePortsGeneral', () => ({
+  ...jest.requireActual('../../EdgePortsGeneral'),
   EdgePortsGeneral: (props: MockedPortsFormType) => {
     return <MockedPortsForm {...props}/>
   }
@@ -69,7 +70,7 @@ jest.mock('react-router-dom', () => ({
 
 const defaultContextData = {
   activeSubTab: {
-    key: 'ports-general',
+    key: EdgePortTabEnum.PORTS_GENERAL,
     title: 'Ports General'
   },
   formControl: {
@@ -90,7 +91,7 @@ describe('EditEdge ports - ports general', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       serialNumber: '000000000000',
       activeTab: 'ports',
-      activeSubTab: 'ports-general'
+      activeSubTab: EdgePortTabEnum.PORTS_GENERAL
     }
 
     mockedContextSetActiveSubTab.mockClear()

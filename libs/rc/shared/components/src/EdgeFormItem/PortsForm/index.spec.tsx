@@ -1,18 +1,17 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeUrlsInfo, getEdgePortDisplayName } from '@acx-ui/rc/utils'
-import { EdgePortConfigFixtures }               from '@acx-ui/rc/utils'
-import { Provider }                             from '@acx-ui/store'
+import { EdgeUrlsInfo, getEdgePortDisplayName, EdgePortConfigFixtures } from '@acx-ui/rc/utils'
+import { Provider }                                                     from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
 
-import { EdgeEditContext } from '..'
+import { EditContext } from '../EdgeEditContext'
 
-import Ports from '.'
+import { EdgePortsForm, EdgePortTabEnum } from '.'
 
 const { mockEdgePortConfig, mockEdgePortStatus } = EdgePortConfigFixtures
 
@@ -40,7 +39,7 @@ jest.mock('./SubInterface', () => ({
 
 const defaultContextData = {
   activeSubTab: {
-    key: 'ports-general',
+    key: EdgePortTabEnum.PORTS_GENERAL,
     title: 'Ports General'
   },
   formControl: {
@@ -74,14 +73,14 @@ describe('EditEdge ports', () => {
   })
 
   it('should active ports general successfully', async () => {
-    params.activeSubTab = 'ports-general'
+    params.activeSubTab = EdgePortTabEnum.PORTS_GENERAL
     render(
       <Provider>
-        <EdgeEditContext.Provider
+        <EditContext.Provider
           value={defaultContextData}
         >
-          <Ports />
-        </EdgeEditContext.Provider>
+          <EdgePortsForm />
+        </EditContext.Provider>
       </Provider>, {
         route: {
           params,
@@ -97,11 +96,11 @@ describe('EditEdge ports', () => {
     params.activeSubTab = 'sub-interface'
     render(
       <Provider>
-        <EdgeEditContext.Provider
+        <EditContext.Provider
           value={defaultContextData}
         >
-          <Ports />
-        </EdgeEditContext.Provider>
+          <EdgePortsForm />
+        </EditContext.Provider>
       </Provider>, {
         route: {
           params,
@@ -115,14 +114,14 @@ describe('EditEdge ports', () => {
 
   it ('IP status on each port tab should be displayed correctly', async () => {
     const user = userEvent.setup()
-    params.activeSubTab = 'ports-general'
+    params.activeSubTab = EdgePortTabEnum.PORTS_GENERAL
     render(
       <Provider>
-        <EdgeEditContext.Provider
+        <EditContext.Provider
           value={defaultContextData}
         >
-          <Ports />
-        </EdgeEditContext.Provider>
+          <EdgePortsForm />
+        </EditContext.Provider>
       </Provider>, {
         route: {
           params,
@@ -142,15 +141,15 @@ describe('EditEdge ports', () => {
   })
 
   it('switch tab', async () => {
-    params.activeSubTab = 'ports-general'
+    params.activeSubTab = EdgePortTabEnum.PORTS_GENERAL
     const user = userEvent.setup()
     render(
       <Provider>
-        <EdgeEditContext.Provider
+        <EditContext.Provider
           value={defaultContextData}
         >
-          <Ports />
-        </EdgeEditContext.Provider>
+          <EdgePortsForm />
+        </EditContext.Provider>
       </Provider>, {
         route: {
           params,

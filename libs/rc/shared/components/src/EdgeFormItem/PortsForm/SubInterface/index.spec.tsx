@@ -9,7 +9,8 @@ import { EdgeLagFixtures, EdgePortConfigFixtures, EdgeSubInterface, EdgeSubInter
 import { Provider }                                                                                          from '@acx-ui/store'
 import { mockServer, render, screen, within }                                                                from '@acx-ui/test-utils'
 
-import { EdgeEditContext } from '../..'
+import { EdgePortTabEnum }                from '..'
+import { EditContext as EdgeEditContext } from '../../EdgeEditContext'
 
 import SubInterface from '.'
 
@@ -211,7 +212,7 @@ describe('EditEdge ports - sub-interface', () => {
     expect(within(addFormDialog).queryByText('visible')).toBeValid()
     act(() => {
       // eslint-disable-next-line max-len
-      result.current(`/${params.tenantId}/t/devices/edge/${params.serialNumber}/edit/${params.activeTab}/ports-general`)
+      result.current(`/${params.tenantId}/t/devices/edge/${params.serialNumber}/edit/${params.activeTab}/${EdgePortTabEnum.PORTS_GENERAL}`)
     })
 
     await waitFor(async () => {
