@@ -5,6 +5,7 @@ import moment                   from 'moment-timezone'
 import { useIntl }              from 'react-intl'
 
 import { Card, Loader, Subtitle, Tooltip, Descriptions }            from '@acx-ui/components'
+import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                from '@acx-ui/formatter'
 import { PassphraseViewer, WifiSignal, useDpskNewConfigFlowParams } from '@acx-ui/rc/components'
 import {
@@ -255,6 +256,7 @@ function ClientDetails ({ client }: { client: ClientExtended }) {
 }
 
 function Connection ({ client }: { client: ClientExtended }) {
+  const wifiEDAClientRevokeToggle = useIsSplitOn(Features.WIFI_EDA_CLIENT_REVOKE_TOGGLE)
   const { $t } = getIntl()
   const showVni = !!client.vni
 
@@ -345,14 +347,14 @@ function Connection ({ client }: { client: ClientExtended }) {
         </Tooltip>}
         children={client?.bssid || '--'}
       />
-      <Descriptions.Item
+      { wifiEDAClientRevokeToggle && <Descriptions.Item
         label={<Tooltip
           placement='bottom'
           title={$t({ defaultMessage: 'Network Type' })}
         >{$t({ defaultMessage: 'Network Type' })}
         </Tooltip>}
         children={client?.networkType || '--'}
-      />
+      /> }
       <Descriptions.Item
         label={$t({ defaultMessage: 'Auth Method' })}
         children={client?.authmethod || '--'}
