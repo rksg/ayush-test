@@ -419,12 +419,7 @@ const wrapper = ({ children }: { children: React.ReactElement }) => {
 
 describe('RogueVenueTable', () => {
   beforeEach(() => {
-    act(() => {
-      store.dispatch(venueApi.util.resetApiState())
-    })
-  })
-
-  it('should render VenueRogueAps successfully', async () => {
+    store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getOldVenueRogueAp.url,
@@ -434,9 +429,20 @@ describe('RogueVenueTable', () => {
         CommonUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json(apsList))
       ),
-      rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
-        (_, res, ctx) => res(ctx.json(apDetail)))
+      rest.get(
+        WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
+        (_, res, ctx) => res(ctx.json(apDetail))),
+      rest.get(
+        CommonUrlsInfo.getRogueApLocation.url.split('?')[0],
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.get(
+        CommonUrlsInfo.getFloorplan.url,
+        (_, res, ctx) => res(ctx.json({}))
+      )
     )
+  })
+
+  it('should render VenueRogueAps successfully', async () => {
     render(
       <VenueRogueAps />
       , {
