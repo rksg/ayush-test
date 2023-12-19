@@ -80,3 +80,7 @@ export const SubtitleWrapper = styled.div`
 export const ChartWrapper = styled.div`
   flex: 1;
 `
+
+export const SliderWrapper = styled.div`
+  height: 300px;
+`
