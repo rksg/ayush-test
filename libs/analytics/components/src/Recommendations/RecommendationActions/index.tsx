@@ -186,6 +186,6 @@ export const RecommendationActions = (props: { recommendation: RecommendationLis
   const { recommendation } = props
   const actionButtons = getAvailableActions(recommendation)
   return <UI.Actions>
-    {actionButtons.map((config) => config.icon)}
+    {actionButtons.map((config, i) => <span key={i}>{config.icon}</span>)}
   </UI.Actions>
 }

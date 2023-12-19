@@ -105,18 +105,22 @@ export function RecommendationTable (
     Zone channel bandwidth and Tx power.
   ` })
 
+  const isCrrmPartialEnabled = [
+    useIsSplitOn(Features.RUCKUS_AI_CRRM_PARTIAL),
+    useIsSplitOn(Features.CRRM_PARTIAL)
+  ].some(Boolean)
+
   const switchPath = isSwitchPath(pathFilters.path)
-  const queryResults =
-    useRecommendationListQuery({ ...pathFilters, crrm: showCrrm }, { skip: switchPath })
+  const queryResults = useRecommendationListQuery(
+    { ...pathFilters, crrm: showCrrm, isCrrmPartialEnabled },
+    { skip: switchPath }
+  )
   const data = switchPath ? [] : queryResults?.data?.filter((row) => (showMuted || !row.isMuted))
   const noCrrmData = data?.filter(recommendation => recommendation.code !== 'unknown')
 
   useEffect(() => {
     setSelectedRowData([])
   }, [queryResults.data])
-
-  const isRACrrmPartialEnabled = useIsSplitOn(Features.RUCKUS_AI_CRRM_PARTIAL) && get('IS_MLISA_SA')
-  const isR1CrrmPartialEnabled = useIsSplitOn(Features.CRRM_PARTIAL) && !get('IS_MLISA_SA')
 
   const columns: TableProps<RecommendationListItem>['columns'] = useMemo(() => [
     ...(showCrrm ? [{
@@ -215,7 +219,7 @@ export function RecommendationTable (
       className: 'actions-column',
       render: (_, value) => <RecommendationActions recommendation={value} />
     },
-    ...(showCrrm && (isRACrrmPartialEnabled || isR1CrrmPartialEnabled) ? [{
+    ...(showCrrm && isCrrmPartialEnabled ? [{
       title: $t({ defaultMessage: 'Full Optimization' }),
       key: 'preferences',
       dataIndex: 'preferences',

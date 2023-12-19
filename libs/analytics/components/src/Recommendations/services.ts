@@ -76,7 +76,7 @@ export type Recommendation = {
   mutedAt: string | null
   path: NetworkPath
   idPath: NetworkPath
-  preferences: {
+  preferences?: {
     fullOptimization: boolean
   }
 }
@@ -337,7 +337,7 @@ export const api = recommendationApi.injectEndpoints({
     }),
     recommendationList: build.query<
       RecommendationListItem[],
-      PathFilter & { crrm?: boolean }
+      PathFilter & { crrm?: boolean, isCrrmPartialEnabled: boolean }
     >({
       query: (payload) => ({
         document: gql`
@@ -356,7 +356,7 @@ export const api = recommendationApi.injectEndpoints({
             isMuted
             mutedBy
             mutedAt
-            preferences
+            ${payload.isCrrmPartialEnabled ? 'preferences' : ''}
             path {
               type
               name
