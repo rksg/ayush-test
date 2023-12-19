@@ -4,6 +4,7 @@ import moment                     from 'moment-timezone'
 import { useIntl }                from 'react-intl'
 
 import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker }                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
 import { useDisconnectClientMutation, useGetClientOrHistoryDetailQuery, useRevokeClientMutation } from '@acx-ui/rc/services'
 import { Client, ClientStatusEnum, ClientUrlsInfo }                                               from '@acx-ui/rc/utils'
 import { networkTypes }                                                                           from '@acx-ui/rc/utils'
@@ -39,6 +40,7 @@ function ClientDetailPageHeader () {
   const [revokeClient] = useRevokeClientMutation()
   const navigate = useNavigate()
   const basePath = useTenantLink('/users/wifi/clients')
+  const wifiEDAClientRevokeToggle = useIsSplitOn(Features.WIFI_EDA_CLIENT_REVOKE_TOGGLE)
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     switch (e.key) {
@@ -123,7 +125,8 @@ function ClientDetailPageHeader () {
             !clentDetails?.apSerialNumber : !clentDetails?.apMac,
           key: 'disconnect-client'
         },
-        ...((!result?.isHistorical && isNetworkTypeEqualsCaptivePortal()) ? [{
+        // eslint-disable-next-line max-len
+        ...((wifiEDAClientRevokeToggle && !result?.isHistorical && isNetworkTypeEqualsCaptivePortal()) ? [{
           label: $t({ defaultMessage: 'Revoke Network Access' }),
           key: 'revoke-client'
         }] : [])
