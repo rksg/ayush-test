@@ -3,8 +3,9 @@ import { Modal, ModalProps } from 'antd'
 import { rest }              from 'msw'
 
 import { useIsSplitOn }                                from '@acx-ui/feature-toggle'
+import { firmwareApi }                                 from '@acx-ui/rc/services'
 import { FirmwareUrlsInfo }                            from '@acx-ui/rc/utils'
-import { Provider }                                    from '@acx-ui/store'
+import { Provider, store }                             from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { availableVersions, preferenceData, venueFirmwareList } from '../__tests__/fixtures'
@@ -39,6 +40,7 @@ jest.mocked(useIsSplitOn).mockReturnValue(true)
 describe('Edge venue firmware list', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
+    store.dispatch(firmwareApi.util.resetApiState())
     mockServer.use(
       rest.get(
         FirmwareUrlsInfo.getVenueEdgeFirmwareList.url,
