@@ -412,6 +412,21 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/aps/:serialNumber/ledSettings',
     newApi: true
   },
+  getApBandModeSettings: {
+    method: 'get',
+    url: '/venues/aps/:serialNumber/bandModeSettings',
+    newApi: true
+  },
+  updateApBandModeSettings: {
+    method: 'put',
+    url: '/venues/aps/:serialNumber/bandModeSettings',
+    newApi: true
+  },
+  resetApBandModeSettings: {
+    method: 'delete',
+    url: '/venues/aps/:serialNumber/bandModeSettings',
+    newApi: true
+  },
   getApBssColoring: {
     method: 'get',
     url: '/venues/aps/:serialNumber/bssColoringSettings',
