@@ -21,11 +21,6 @@ jest.mock('@acx-ui/rc/services', () => ({
   useGetPreferencesQuery: () => ({ data: {} }),
   useGetTenantDetailsQuery: () => ({ data: {} })
 }))
-jest.mock('@acx-ui/msp/services', () => ({
-  ...jest.requireActual('@acx-ui/msp/services'),
-  useStreamActivityMessagesQuery: jest.fn(),
-  useInviteCustomerListQuery: () => ({ data: {} })
-}))
 jest.mock('@acx-ui/main/components', () => ({
   ...jest.requireActual('@acx-ui/main/components'),
   LicenseBanner: () => <div data-testid='license-banner' />,
