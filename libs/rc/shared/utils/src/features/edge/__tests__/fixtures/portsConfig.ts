@@ -128,22 +128,23 @@ export const mockEdgePortStatus = [
 
 export const edgePortsSetting:EdgePortStatus[] = [{
   portId: '68a3028a-93ed-11ee-b9d1-0242ac120001',
-  name: 'Port 1',
+  name: 'description1',
   status: 'Up',
   adminStatus: 'Enabled',
   type: EdgePortTypeEnum.WAN,
   mac: 'AA:BB:CC:DD:EE:FF',
   speedKbps: 12* Math.pow(12, 6),
   duplex: 'Full',
-  ip: '1.1.1.1',
+  ip: '1.1.1.1/24',
   ipMode: 'DHCP',
   sortIdx: 1,
   vlan: '',
-  subnet: ''
+  subnet: '',
+  interfaceName: 'port1'
 },
 {
   portId: '68a3028a-93ed-11ee-b9d1-0242ac120002',
-  name: 'Port 2',
+  name: 'description2',
   status: 'Down',
   adminStatus: 'Disabled',
   type: EdgePortTypeEnum.LAN,
@@ -154,5 +155,6 @@ export const edgePortsSetting:EdgePortStatus[] = [{
   ipMode: 'Static',
   sortIdx: 2,
   vlan: '',
-  subnet: ''
+  subnet: '',
+  interfaceName: 'port2'
 }]

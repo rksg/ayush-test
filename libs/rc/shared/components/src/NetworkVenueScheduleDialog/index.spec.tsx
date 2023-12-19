@@ -45,7 +45,7 @@ describe('NetworkVenueTabScheduleDialog', () => {
           return res(ctx.status(200), ctx.json(timezoneResult))
         }
       ),
-      rest.get('/env.json', (_, r, c) => r(c.json(env)))
+      rest.get('/globalValues.json', (_, r, c) => r(c.json(env)))
     )
     await config.initialize()
   })
