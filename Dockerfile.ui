@@ -107,7 +107,7 @@ RUN rm -rf ./*
 COPY tools/docker/nginx/conf.d/* /etc/nginx/conf.d/
 COPY tools/docker/nginx/nginx.conf \
   tools/docker/nginx/start-nginx.sh \
-  tools/docker/nginx/env.json.template \
+  tools/docker/nginx/globalValues.json.template \
   /etc/nginx/
 
 COPY --from=build /app/dist/apps ./

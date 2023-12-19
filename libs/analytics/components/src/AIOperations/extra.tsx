@@ -1,19 +1,23 @@
-import { defineMessage, IntlShape, useIntl } from 'react-intl'
+import { defineMessage, IntlShape, MessageDescriptor, useIntl } from 'react-intl'
 
 import { Button, NoActiveData, NoActiveContent, NoDataIcon } from '@acx-ui/components'
 
 import * as UI from './styledComponents'
 
-const optimalConfigurationText = defineMessage({ defaultMessage:
+interface TextProps {
+  text: MessageDescriptor
+}
+
+export const optimalConfigurationText = defineMessage({ defaultMessage:
   `Your network is already running in an optimal configuration
   and we don’t have any AI Operations to recommend currently.` })
 
-export function OptimalConfiguration () {
+export function OptimalConfiguration ({ text }: TextProps) {
   const { $t } = useIntl()
   return (
     <NoActiveData
       tickSize='large'
-      text={$t(optimalConfigurationText)}
+      text={$t(text)}
     />
   )
 }

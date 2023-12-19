@@ -1,15 +1,15 @@
-import { EdgeLagStatus }  from '@acx-ui/rc/utils'
-import { render, screen } from '@acx-ui/test-utils'
-
-import { edgePortsSetting, mockEdgeLagList } from '../__tests__/fixtures'
+import { EdgeLagFixtures, EdgeLagStatus, EdgePortConfigFixtures } from '@acx-ui/rc/utils'
+import { render, screen }                                         from '@acx-ui/test-utils'
 
 import { EdgePortsTable } from '.'
 
+const { edgePortsSetting } = EdgePortConfigFixtures
+const { mockEdgeLagStatusList } = EdgeLagFixtures
 describe('Edge Ports Table', () => {
   it('should correctly render', async () => {
     render(<EdgePortsTable
       portData={edgePortsSetting}
-      lagData={mockEdgeLagList.data as EdgeLagStatus[]}
+      lagData={mockEdgeLagStatusList.data as EdgeLagStatus[]}
     />)
 
     const portsRow = (await screen.findAllByRole('row'))
@@ -17,11 +17,11 @@ describe('Edge Ports Table', () => {
 
     expect(portsRow.length).toBe(2)
     expect(screen.getByRole('row', {
-      name: 'port1 description1 Up Enabled WAN AA:BB:CC:DD:EE:FF 1.1.1.1/24 DHCP 35.8 Gbps'
+      name: 'Port1 description1 Up Enabled WAN AA:BB:CC:DD:EE:FF 1.1.1.1/24 DHCP 35.8 Gbps'
     })).toBeValid()
 
     expect(screen.getByRole('row',{
-      name: 'port2 description2 Down Disabled LAN AA:BB:CC:DD:EE:FF 1.1.1.2/24 Static IP 29.9 Gbps'
+      name: 'Port2 description2 Down Disabled LAN AA:BB:CC:DD:EE:F1 1.1.1.2 Static IP 29.9 Gbps'
     })).toBeValid()
   })
 })
