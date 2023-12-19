@@ -119,8 +119,6 @@ export function NetworkForm (props:{
   const [previousPath, setPreviousPath] = useState('')
   const [MLOButtonDisable, setMLOButtonDisable] = useState(false)
 
-  console.log(`NetworkForm MLOButtonDisable: ${MLOButtonDisable}`)
-
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
     if(!editMode&&!saveState.enableAccountingService){
       delete saveState.accountingRadius
