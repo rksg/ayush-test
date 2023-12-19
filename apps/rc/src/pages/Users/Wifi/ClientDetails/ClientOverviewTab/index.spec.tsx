@@ -1,5 +1,6 @@
 import { graphql, rest } from 'msw'
 
+import { useIsSplitOn  }                          from '@acx-ui/feature-toggle'
 import { apApi, venueApi, networkApi, clientApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
@@ -206,6 +207,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
 
         expect(await screen.findByText('Client Details')).toBeVisible()
         expect(await screen.findByText('Operational Data (Current)')).toBeVisible()
+        expect(await screen.findByText('Network Type')).toBeVisible()
         expect(screen.queryByText('VNI')).toBeNull()
       })
 
@@ -350,6 +352,20 @@ describe('ClientOverviewTab - ClientProperties', () => {
 
         expect(await screen.findByText(dpskPassphraseClient.username)).toBeVisible()
         expect(await screen.findByRole('link', { name: dpskPassphraseClient.clientMac[0] })).toBeVisible()
+      })
+
+      it('should render network type', async () => {
+        jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+        render(<Provider>
+          <ClientProperties
+            clientStatus='connected'
+            clientDetails={clientList[0] as Client}
+          />
+        </Provider>, {
+          route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
+        })
+        expect(await screen.findByText('Captive Portal')).toBeVisible()
       })
     })
 
