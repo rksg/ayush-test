@@ -1775,6 +1775,26 @@ export const mockAAAPolicyListResponse = {
   ]
 }
 
+export const mockAAAPolicyTemplateListResponse = {
+  page: 1,
+  totalCount: 2,
+  data: [
+    {
+      name: 'AAA-Template1',
+      type: 'AUTHENTICATION',
+      primary: '11.11.11.1:1812',
+      id: '1'
+    },
+    {
+      name: 'AAA-Template2',
+      type: 'ACCOUNTING',
+      primary: '12.12.12.1:1011',
+      secondary: '12.12.12.2:1187',
+      id: '2'
+    }
+  ]
+}
+
 export const mockAAAPolicyNewCreateResponse = {
   id: '3',
   name: 'test 3',

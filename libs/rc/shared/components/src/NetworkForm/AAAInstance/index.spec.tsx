@@ -3,18 +3,30 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
+import { ConfigTemplateUrlsInfo }  from '@acx-ui/msp/utils'
 import { AaaUrls, CommonUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen
+  screen,
+  waitFor
 } from '@acx-ui/test-utils'
 
-import { mockAAAPolicyListResponse, mockAAAPolicyNewCreateResponse } from '../__tests__/fixtures'
-import NetworkFormContext                                            from '../NetworkFormContext'
+import {
+  mockAAAPolicyListResponse,
+  mockAAAPolicyNewCreateResponse,
+  mockAAAPolicyTemplateListResponse
+} from '../__tests__/fixtures'
+import NetworkFormContext from '../NetworkFormContext'
 
 import AAAInstance from '.'
+
+const mockedUseConfigTemplate = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useConfigTemplate: () => mockedUseConfigTemplate()
+}))
 
 describe('AAA Instance Page', () => {
   beforeEach(async () => {
@@ -36,9 +48,22 @@ describe('AAA Instance Page', () => {
           requestId: 'request-id',
           response: mockAAAPolicyNewCreateResponse
         }))
+      ),
+      rest.post(
+        ConfigTemplateUrlsInfo.getAAAPolicyTemplateList.url,
+        (_, res, ctx) => res(ctx.json(mockAAAPolicyTemplateListResponse))
       )
     )
   })
+
+  beforeEach(() => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+  })
+
+  afterEach(() => {
+    mockedUseConfigTemplate.mockRestore()
+  })
+
   it('should render instance page', async () => {
     render(<Provider><NetworkFormContext.Provider value={{
       editMode: false, cloneMode: false, data: { guestPortal:
@@ -70,5 +95,28 @@ describe('AAA Instance Page', () => {
     expect((await screen.findByText(
       mockAAAPolicyNewCreateResponse.primary.ip + ':' + mockAAAPolicyNewCreateResponse.primary.port
     ))).toBeVisible()
+  })
+
+  it('should render template page', async () => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+
+    render(<Provider>
+      <NetworkFormContext.Provider value={{
+        editMode: false,
+        cloneMode: false,
+        data: { guestPortal: { enableSmsLogin: true, socialIdentities: {} } }
+      }}>
+        <Form><AAAInstance serverLabel='Authentication Server' type='authRadius'/></Form>
+      </NetworkFormContext.Provider>
+    </Provider>,
+    {
+      route: { params: { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' } }
+    })
+
+    await userEvent.click((await screen.findByRole('combobox')))
+
+    await waitFor(() => {
+      expect(screen.getByText(mockAAAPolicyTemplateListResponse.data[0].name)).toBeInTheDocument()
+    })
   })
 })

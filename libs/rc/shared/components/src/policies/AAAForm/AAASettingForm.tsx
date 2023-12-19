@@ -32,6 +32,7 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
 
   const nameValidator = async (value: string) => {
     const policyList = aaaPolicyList?.data!
+
     return checkObjectNotExists(policyList.filter(
       policy => edit ? policy.id !== saveState.id : true
     ).map(policy => ({ name: policy.name })), { name: value } ,

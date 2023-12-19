@@ -12,15 +12,16 @@ import _                             from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { useParams }                 from 'react-router-dom'
 
-import { Subtitle, Tooltip, PasswordInput }                         from '@acx-ui/components'
-import { get }                                                      from '@acx-ui/config'
-import { useGetAAAPolicyViewModelListQuery, useLazyAaaPolicyQuery } from '@acx-ui/rc/services'
-import { AaaServerOrderEnum, AuthRadiusEnum }                       from '@acx-ui/rc/utils'
+import { Subtitle, Tooltip, PasswordInput }   from '@acx-ui/components'
+import { get }                                from '@acx-ui/config'
+import { useLazyAaaPolicyQuery }              from '@acx-ui/rc/services'
+import { AaaServerOrderEnum, AuthRadiusEnum } from '@acx-ui/rc/utils'
 
-import AAAInstance        from '../../../AAAInstance'
-import AAAPolicyModal     from '../../../AAAInstance/AAAPolicyModal'
-import * as contents      from '../../../contentsMap'
-import NetworkFormContext from '../../../NetworkFormContext'
+import AAAInstance                     from '../../../AAAInstance'
+import AAAPolicyModal                  from '../../../AAAInstance/AAAPolicyModal'
+import { useGetAAAPolicyInstanceList } from '../../../AAAInstance/useGetAAAPolicyInstanceList'
+import * as contents                   from '../../../contentsMap'
+import NetworkFormContext              from '../../../NetworkFormContext'
 
 import { Description }         from './styledComponents'
 import { WISPrAuthAccContext } from './WISPrAuthAccServerReducer'
@@ -34,7 +35,8 @@ export function WISPrAuthAccServer (props : {
   const { useWatch } = Form
   const form = Form.useFormInstance()
   const { data, setData } = useContext(NetworkFormContext)
-  const { data: aaaListQuery } = useGetAAAPolicyViewModelListQuery({ params, payload: {} })
+  // eslint-disable-next-line max-len
+  const { data: aaaAuthListQuery } = useGetAAAPolicyInstanceList({ filters: { type: ['AUTHENTICATION'] } })
   const [ getAaaPolicy ] = useLazyAaaPolicyQuery()
   const [aaaList, setAaaList]= useState([] as DefaultOptionType[])
   const selectedAuthProfileId = Form.useWatch('authRadiusId')
@@ -59,7 +61,6 @@ export function WISPrAuthAccServer (props : {
     setData && setData({
       ...(enabled
         ? data
-        // eslint-disable-next-line max-len
         : _.omit(data, [
           'guestPortal.wisprPage.accountingRadius', 'guestPortal.wisprPage.accountingRadiusId',
           'accountingRadius', 'accountingRadiusId'
@@ -69,11 +70,10 @@ export function WISPrAuthAccServer (props : {
   }
 
   useEffect(()=>{
-    if(aaaListQuery?.data) {
-      setAaaList(aaaListQuery.data?.filter(d => d.type === 'AUTHENTICATION')
-        .map(m => ({ label: m.name, value: m.id })))
+    if(aaaAuthListQuery?.data) {
+      setAaaList(aaaAuthListQuery.data.map(m => ({ label: m.name, value: m.id })))
     }
-  },[aaaListQuery])
+  },[aaaAuthListQuery])
 
   useEffect(()=>{
     if (!authRadius) return
@@ -131,50 +131,48 @@ export function WISPrAuthAccServer (props : {
                 onChange={() => {props.onClickAuth()}}>
                 {$t({ defaultMessage: 'Authenticate Connections' })}
               </Radio>
-              <Space>
-                <Form.Item label={$t({ defaultMessage: 'Authentication Server' })}>
-                  <Space>
-                    <Form.Item
-                      name={'authRadiusId'}
-                      noStyle
-                      label={$t({ defaultMessage: 'Authentication Server' })}
-                      rules={[
-                        {
-                          validator: (_, value) => {
-                            if (context.state.isDisabled.Auth || value !== '') {
-                              return Promise.resolve()
-                            }
-                            return Promise.reject()
+              <Form.Item label={$t({ defaultMessage: 'Authentication Server' })}>
+                <Space>
+                  <Form.Item
+                    name={'authRadiusId'}
+                    noStyle
+                    label={$t({ defaultMessage: 'Authentication Server' })}
+                    rules={[
+                      {
+                        validator: (_, value) => {
+                          if (context.state.isDisabled.Auth || value !== '') {
+                            return Promise.resolve()
                           }
+                          return Promise.reject()
                         }
-                      ]}
-                      initialValue={''}
-                      children={
-                        <Select
-                          style={{ width: 210 }}
-                          disabled={context.state.isDisabled.Auth}
-                          data-testid='radius_server_selection'
-                          options={[
-                            { label: $t({ defaultMessage: 'Select server' }), value: '' },
-                            ...aaaList
-                          ]}
-                        />}
-                    />
-                    <Tooltip>
-                      <AAAPolicyModal
-                        updateInstance={(data)=>{
-                          setAaaList([...aaaList, { label: data.name, value: data.id }])
-                          form.setFieldValue('authRadiusId', data.id)
-                          form.setFieldValue('authRadius', data)
-                        }}
-                        aaaCount={aaaList.length}
-                        type={'AUTHENTICATION'}
+                      }
+                    ]}
+                    initialValue={''}
+                    children={
+                      <Select
+                        style={{ width: 210 }}
                         disabled={context.state.isDisabled.Auth}
-                      />
-                    </Tooltip>
-                  </Space>
-                </Form.Item>
-              </Space>
+                        data-testid='radius_server_selection'
+                        options={[
+                          { label: $t({ defaultMessage: 'Select server' }), value: '' },
+                          ...aaaList
+                        ]}
+                      />}
+                  />
+                  <Tooltip>
+                    <AAAPolicyModal
+                      updateInstance={(data) => {
+                        setAaaList([...aaaList, { label: data.name, value: data.id }])
+                        form.setFieldValue('authRadiusId', data.id)
+                        form.setFieldValue('authRadius', data)
+                      }}
+                      aaaCount={aaaList.length}
+                      type={'AUTHENTICATION'}
+                      disabled={context.state.isDisabled.Auth}
+                    />
+                  </Tooltip>
+                </Space>
+              </Form.Item>
               <Radio
                 data-testid='always_accept'
                 value={AuthRadiusEnum.ALWAYS_ACCEPT}
