@@ -158,13 +158,14 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
     }
   ]
 
-  const onSwap = async (sourceGroupId: string, targetGroupId: string) => {
+  const onSwap = async (targetGroupId: string, sourceGroupId: string) => {
     try {
+      const target = adminList?.find(x => x.id === targetGroupId)
       const adminGroupEditData: AdminGroup = {
         swap: true,
         sourceGroupId: sourceGroupId,
-        name: 'test group 25',
-        groupId: 'groupId25',
+        name: target?.name,
+        groupId: target?.groupId,
         role: RolesEnum.ADMINISTRATOR
       }
 
