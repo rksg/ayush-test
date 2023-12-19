@@ -13,7 +13,6 @@ import { Loader, TableProps, Tooltip } from '@acx-ui/components'
 import { get }                         from '@acx-ui/config'
 import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }   from '@acx-ui/formatter'
-import { InformationOutlined }         from '@acx-ui/icons'
 import { TenantLink, useParams }       from '@acx-ui/react-router-dom'
 import { noDataDisplay, PathFilter }   from '@acx-ui/utils'
 
