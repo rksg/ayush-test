@@ -371,7 +371,7 @@ describe('ManageIntegrator', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
     await waitFor(() => {
-      expect(screen.getByRole('heading', { name: 'Access Periods' })).toBeVisible()
+      expect(screen.getByRole('heading', { name: 'Access Period' })).toBeVisible()
     })
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
     await waitFor(() => {
@@ -411,7 +411,7 @@ describe('ManageIntegrator', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
     await waitFor(() => {
-      expect(screen.getByRole('heading', { name: 'Access Periods' })).toBeVisible()
+      expect(screen.getByRole('heading', { name: 'Access Period' })).toBeVisible()
     })
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
     await waitFor(() => {
