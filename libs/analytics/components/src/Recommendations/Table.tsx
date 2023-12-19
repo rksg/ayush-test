@@ -123,7 +123,7 @@ export function RecommendationTable (
       title: get('IS_MLISA_SA')
         ? $t({ defaultMessage: 'Zone RRM Health' })
         : $t({ defaultMessage: 'Venue RRM Health' }),
-      width: 120,
+      width: 140,
       dataIndex: 'crrmOptimizedState',
       key: 'crrmOptimizedState',
       filterKey: 'crrmOptimizedState.text',
@@ -160,6 +160,14 @@ export function RecommendationTable (
       sorter: { compare: sortProp('updatedAt', dateSort) },
       fixed: 'left'
     },
+    ...(showCrrm ? [] : [{
+      title: $t({ defaultMessage: 'Category' }),
+      width: 130,
+      dataIndex: 'category',
+      key: 'category',
+      sorter: { compare: sortProp('category', defaultSort) },
+      filterable: true
+    }]) as TableProps<RecommendationListItem>['columns'],
     {
       title: $t({ defaultMessage: 'Summary' }),
       width: 250,
@@ -169,20 +177,11 @@ export function RecommendationTable (
       sorter: { compare: sortProp('summary', defaultSort) },
       searchable: true
     },
-    ...(showCrrm ? [] : [{
-      title: $t({ defaultMessage: 'Category' }),
-      width: 130,
-      dataIndex: 'category',
-      key: 'category',
-      sorter: { compare: sortProp('category', defaultSort) },
-      fixed: 'left',
-      filterable: true
-    }]) as TableProps<RecommendationListItem>['columns'],
     {
       title: get('IS_MLISA_SA')
         ? $t({ defaultMessage: 'Zone' })
         : $t({ defaultMessage: 'Venue' }),
-      width: 150,
+      width: 200,
       dataIndex: 'sliceValue',
       key: 'sliceValue',
       render: (_, value, __, highlightFn ) => {
@@ -211,8 +210,8 @@ export function RecommendationTable (
       title: $t({ defaultMessage: 'Actions' }),
       key: 'id',
       dataIndex: 'id',
-      width: 80,
-      align: 'left',
+      width: 100,
+      fixed: 'right',
       className: 'actions-column',
       render: (_, value) => <RecommendationActions recommendation={value} />
     },
@@ -220,7 +219,7 @@ export function RecommendationTable (
       title: $t({ defaultMessage: 'Full Optimization' }),
       key: 'preferences',
       dataIndex: 'preferences',
-      width: 140,
+      width: 180,
       fixed: 'right',
       tooltip: optimizationTooltipText,
       render: (_, value) => {
@@ -255,7 +254,7 @@ export function RecommendationTable (
   return (
     <Loader states={[queryResults]}>
       <UI.RecommendationTableWrapper
-        settingsId={`recommendation-table-${showCrrm}`}
+        settingsId={`recommendations-${showCrrm ? 'crrm' : 'aiops'}-table`}
         type='tall'
         dataSource={showCrrm ? data : noCrrmData}
         columns={columns}

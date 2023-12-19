@@ -1,6 +1,5 @@
 import { useCallback, useMemo, useRef } from 'react'
 
-import { Row, Col }               from 'antd'
 import moment, { Moment }         from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
@@ -18,7 +17,7 @@ import {
   useScheduleRecommendationMutation
 } from '../services'
 
-import { ActionWrapper, RevertIcon } from './styledComponents'
+import * as UI from './styledComponents'
 
 
 // eslint-disable-next-line max-len
@@ -31,7 +30,7 @@ const actionTooltip = {
   },
   Revert: {
     text: defineMessage({ defaultMessage: 'Revert' }),
-    icon: <RevertIcon />
+    icon: <UI.RevertIcon />
   },
   ApplyScheduled: {
     text: defineMessage({ defaultMessage: 'Edit schedule' }),
@@ -104,7 +103,7 @@ function ApplyCalendar ({ disabled, type, id, code, metadata }: ActionButtonProp
   return <DateTimePicker
     key={`apply-${id}`}
     title={$t(actionTooltip[type].text)}
-    icon={<ActionWrapper $disabled={disabled}>{actionTooltip[type].icon}</ActionWrapper>}
+    icon={<UI.IconWrapper $disabled={disabled}>{actionTooltip[type].icon}</UI.IconWrapper>}
     disabled={disabled}
     initialDate={metadata.scheduledAt ? scheduledAt : futureDate}
     onApply={onApply}
@@ -116,7 +115,7 @@ function ApplyCalendar ({ disabled, type, id, code, metadata }: ActionButtonProp
 function CancelCalendar ({ disabled, id }: Omit<ActionButtonProps, 'type'>) {
   const { $t } = useIntl()
   const [cancelRecommendation] = useCancelRecommendationMutation()
-  return <ActionWrapper key={`cancel-${id}`} $disabled={disabled}>
+  return <UI.IconWrapper key={`cancel-${id}`} $disabled={disabled}>
     { disabled
       ? <CancelCircleSolid />
       : <Tooltip
@@ -127,7 +126,7 @@ function CancelCalendar ({ disabled, id }: Omit<ActionButtonProps, 'type'>) {
         <CancelCircleOutlined
           onClick={async () => { await cancelRecommendation({ id }).unwrap() }} />
       </Tooltip>}
-  </ActionWrapper>
+  </UI.IconWrapper>
 }
 
 const actions = {
@@ -186,13 +185,7 @@ const getAvailableActions = (recommendation: RecommendationListItem) => {
 export const RecommendationActions = (props: { recommendation: RecommendationListItem }) => {
   const { recommendation } = props
   const actionButtons = getAvailableActions(recommendation)
-  return <Row gutter={[0, 0]} align='middle' justify='start'>
-    {actionButtons.map((config, ind) => <Col
-      key={ind}
-      span={8}
-      push={ind === 1 && actionButtons.length > 2 ? 1 : undefined}
-    >
-      {config.icon}
-    </Col>)}
-  </Row>
+  return <UI.Actions>
+    {actionButtons.map((config) => config.icon)}
+  </UI.Actions>
 }

@@ -3,6 +3,8 @@ import styled                from 'styled-components'
 
 import { Table, TableProps } from '@acx-ui/components'
 
+import { mutedStyles } from '../IncidentTable/styledComponents'
+
 import { RecommendationListItem } from './services'
 
 export const colors = [
@@ -35,45 +37,7 @@ export const OptimizedIcon = styled(AntBadge)
 
 export const RecommendationTableWrapper =
 styled((props: TableProps<RecommendationListItem>) => <Table {...props} />)`
-  --recommendation-table-muted-row-font-color: var(--acx-neutrals-40);
-  --recommendation-table-muted-row-background-color: var(--acx-neutrals-20);
-
-  .table-row-muted {
-    color: var(--recommendation-table-muted-row-font-color);
-    background-color: var(--recommendation-table-muted-row-background-color);
-  }
-
-  && tbody > tr.table-row-muted:hover > td {
-    background: var(--recommendation-table-muted-row-background-color);
-  }
-
-  .ant-table-row-selected.table-row-muted {
-    background-color: var(--recommendation-table-muted-row-background-color);
-  }
-
-  .table-row-muted .ant-table-cell {
-    background-color: var(--recommendation-table-muted-row-background-color);
-  }
-
-  .ant-table-row.table-row-muted:hover {
-    background-color: var(--recommendation-table-muted-row-background-color);
-  }
-
-  .table-row-muted .ant-table-cell-row-hover {
-    background-color: var(--recommendation-table-muted-row-background-color);
-  }
-
-  .ant-radio-inner {
-    background-color: var(--acx-primary-white);
-  }
-
-  .ant-table-body {
-    overflow: unset !important;
-  }
-
-  .ant-table-cell-ellipsis.actions-column {
-    overflow: unset !important;
-  }
+  ${mutedStyles}
 `
 
 export const OptimizationHeader = styled.div`
