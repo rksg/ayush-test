@@ -1,12 +1,10 @@
-import { getIntl } from '@acx-ui/utils'
+import { generatePageHeaderTitle } from './pagesUtils'
 
-// eslint-disable-next-line max-len
-export function generatePageHeaderTitle (isEdit: boolean, isTemplate: boolean, instanceLabel: string): string {
-  const { $t } = getIntl()
-
-  return $t({ defaultMessage: '{action} {instanceLabel} {templateText}' }, {
-    action: isEdit ? $t({ defaultMessage: 'Edit' }) : $t({ defaultMessage: 'Add' }),
-    instanceLabel,
-    templateText: isTemplate ? $t({ defaultMessage: 'Template' }) : ''
+describe('pagesUtils', () => {
+  it('should generate PageHeader Title', () => {
+    expect(generatePageHeaderTitle(true, true, 'title')).toBe('Edit title Template')
+    expect(generatePageHeaderTitle(false, true, 'title')).toBe('Add title Template')
+    expect(generatePageHeaderTitle(true, false, 'title')).toBe('Edit title ')
+    expect(generatePageHeaderTitle(false, false, 'title')).toBe('Add title ')
   })
-}
+})
