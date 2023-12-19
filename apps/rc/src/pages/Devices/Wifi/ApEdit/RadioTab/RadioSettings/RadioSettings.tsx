@@ -773,14 +773,7 @@ export function RadioSettings () {
       })
 
       const payload = { ...form.getFieldsValue() }
-      const clonedPayload = cloneDeep(payload)
       const {
-        enable24G,
-        enable50G,
-        enable6G,
-        apRadioParams24G,
-        apRadioParams50G,
-        apRadioParams6G,
         apRadioParamsDual5G
       } = payload
       const fieldDual5GEnable = formRef.current?.getFieldValue(['apRadioParamsDual5G', 'enabled'])
@@ -792,12 +785,6 @@ export function RadioSettings () {
         return
       }
 
-      // UseVenueSettings will possibly be true in init data
-      // To avoid this, change the payload with origin payload's useVenueSettings
-      if (!enable24G && !apRadioParams24G.useVenueSettings) {
-        set(payload, ['apRadioParams24G'], initData.apRadioParams24G)
-        set(payload, ['apRadioParams24G', 'useVenueSettings'], clonedPayload.apRadioParams24G.useVenueSettings)
-      }
       updateRadioParams(payload.apRadioParams24G, support24GChannels)
 
       if (hasRadio5G) {
