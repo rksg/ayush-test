@@ -101,6 +101,7 @@ export const ConnectedClientsTable = (props: {
 }) => {
   const { $t } = useIntl()
   const params = useParams()
+  const wifiEDAClientRevokeToggle = useIsSplitOn(Features.WIFI_EDA_CLIENT_REVOKE_TOGGLE)
   const { showAllColumns, searchString, setConnectedClientCount } = props
   const [ tableSelected, setTableSelected] = useState({
     selectedRowKeys: [] as React.Key[],
@@ -314,26 +315,16 @@ export const ConnectedClientsTable = (props: {
           }
         }
       }]),
-      {
+      ...(wifiEDAClientRevokeToggle ?[{
         key: 'networkType',
         title: intl.$t({ defaultMessage: 'Network Type' }),
         dataIndex: ['networkType'],
         sorter: true,
-        render: (_, { networkType }) => networkType || '--',
+        render: (_: React.ReactNode, row: ClientList) => row.networkType || '--',
         filterable: _.uniqWith(tableQuery.data?.data.map((result)=> {
           return { key: result.networkType, value: result.networkType }
         }), _.isEqual)
-      },
-      {
-        key: 'networkType',
-        title: intl.$t({ defaultMessage: 'Network Type' }),
-        dataIndex: ['networkType'],
-        sorter: true,
-        render: (_, { networkType }) => networkType || '--',
-        filterable: _.uniqWith(tableQuery.data?.data.map((result)=> {
-          return { key: result.networkType, value: result.networkType }
-        }), _.isEqual)
-      },
+      }] : []),
       {
         key: 'sessStartTime',
         title: intl.$t({ defaultMessage: 'Time Connected' }),
@@ -517,7 +508,7 @@ export const ConnectedClientsTable = (props: {
         actionButton: {
           revoke: {
             disable: isNoGuestNetworkExist,
-            showModal: (!isNoGuestNetworkExist && isOtherNetworkExist)
+            showModal: isOtherNetworkExist
           }
         }
       })
@@ -583,8 +574,8 @@ export const ConnectedClientsTable = (props: {
           {$t({ defaultMessage: 'Connected Clients' })}
         </Subtitle>
         <Table<ClientList>
-          rowSelection={rowSelection}
-          rowActions={rowActions}
+          rowSelection={(wifiEDAClientRevokeToggle ? rowSelection : undefined)}
+          rowActions={(wifiEDAClientRevokeToggle ? rowActions : undefined)}
           settingsId='connected-clients-table'
           columns={GetCols(useIntl(), showAllColumns)}
           dataSource={tableQuery.data?.data}
