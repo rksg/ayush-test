@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { MspUrlsInfo }                                 from '@acx-ui/msp/utils'
+import { ConfigTemplateUrlsInfo, MspUrlsInfo }         from '@acx-ui/msp/utils'
 import { CONFIG_TEMPLATE_PATH_PREFIX }                 from '@acx-ui/rc/utils'
 import { Provider }                                    from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
@@ -18,7 +18,7 @@ describe('ConfigTemplateList component', () => {
   beforeEach(() => {
     mockServer.use(
       rest.post(
-        MspUrlsInfo.getConfigTemplates.url,
+        ConfigTemplateUrlsInfo.getConfigTemplates.url,
         (req, res, ctx) => res(ctx.json({ ...mockedConfigTemplateList }))
       ),
       rest.post(
@@ -45,7 +45,7 @@ describe('ConfigTemplateList component', () => {
 
     mockServer.use(
       rest.post(
-        MspUrlsInfo.applyConfigTemplate.url,
+        ConfigTemplateUrlsInfo.applyConfigTemplate.url,
         (req, res, ctx) => {
           applyFn()
           return res(ctx.json({ ...mockedMSPCustomerList }))
