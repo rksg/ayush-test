@@ -6,8 +6,8 @@ import { IncidentCode }               from './constants'
 import { Incident, IncidentMetadata } from './types/incidents'
 
 interface RootCauseAndRecommendation {
-  rootCauses: MessageDescriptor
-  recommendations: MessageDescriptor
+  rootCauses: MessageDescriptor | Function
+  recommendations: MessageDescriptor | Function
 }
 
 const commonRecommendations = defineMessage({
@@ -82,82 +82,205 @@ const extractFailureCode = (
 type AirtimeBChecks = {
   isRogueDetectionEnabled: boolean
   isCRRMRaised: boolean
-}
-
-type AirtimeBArray = AirtimeBChecks[]
-
-const extractAirtimeBCode = (
-  checks: AirtimeBArray
-) => {
-  const combinedCheck = checks.reduce((result, currentObject) => {
-    Object.assign(result, currentObject)
-    return result
-  }, {}) as AirtimeBChecks
-
-  return combinedCheck.isRogueDetectionEnabled === true && combinedCheck.isCRRMRaised === true
-    ? 'BOTH_TRUE'
-    : combinedCheck.isRogueDetectionEnabled === true && combinedCheck.isCRRMRaised === false
-      ? 'ROGUE_ENABLED'
-      : combinedCheck.isRogueDetectionEnabled === false && combinedCheck.isCRRMRaised === true
-        ? 'CRRM_RAISED'
-        : 'BOTH_FALSE'
-}
-
-type AirtimeTxChecks = {
-  isRogueDetectionEnabled: boolean
-  isCRRMRaised: boolean
-}
-
-type AirtimeTxArray = AirtimeTxChecks[]
-
-const extractAirtimeTxCode = (
-  checks: AirtimeTxArray
-) => {
-  return checks.length === 0
-    ? 'DEFAULT'
-    : ''
-}
+}[]
 
 type AirtimeRxChecks = {
   isHighDensityWifiDevices: boolean
+  isClbRecommendationRaised: boolean
   isHighSsidCountPerRadio: boolean
-  isHighPacketErrorCount: boolean
+  isChannelFlyEnabled: boolean
   isLargeMgmtFrameCount: boolean
   isHighLegacyWifiDevicesCount: boolean
+  isCRRMRaised: boolean
+}[]
+
+type AirtimeTxChecks = {
+  isHighDensityWifiDevices: boolean
+  isClbRecommendationRaised: boolean
+  isHighSSIDCountPerRadio: boolean
+  isLargeMgmtFrameCount: boolean
+  isHighPacketErrorCount: boolean
+  isHighMCBCTraffic: boolean
+  isHighLegacyWifiDevicesCount: boolean
+}[]
+
+export type AirtimeBArray = AirtimeBChecks[]
+export type AirtimeRxArray = AirtimeRxChecks[]
+export type AirtimeTxArray = AirtimeTxChecks[]
+
+const getBRootCauses = () => {
+  return {
+    rootCauseText: defineMessage({ defaultMessage: '<p>Airtime Busy is unusually high and this is typically caused by external sources of interference, such as neighboring WiFi networks, microwave ovens, Bluetooth devices, and other electronic devices operating in the same frequency range, can cause disruptions to your network.</p>' }),
+    rootCauseValues: {}
+  }
+}
+const getBRecommendations = (checks: AirtimeBArray) => {
+  const checkTrue = checks.filter(item => Object.values(item)[0]).map(item => Object.keys(item)[0])
+  const rogueAPEnabled = '<li>Enable rogue AP detection to search, identify, and physically remove rogue APs from your premises. </li>'
+  const rogueAPDisabled = '<li>Click here for a list of rogue APs for removal in your premises.</li>'
+  const nonWifiInterference = '<li>Identify and mitigate sources of non-WiFi interference, such as microwave ovens, Bluetooth devices, and cordless phones.</li>'
+  const crrmRaised = '<li>Enable rogue AP detection to search, identify, and physically remove rogue APs from your premises. </li>'
+
+  const text1 = checkTrue.includes('isRogueDetectionEnabled') ? rogueAPEnabled : rogueAPDisabled
+  const text2 = checkTrue.includes('isCRRMRaised') ? crrmRaised : ''
+  const stringlist = text1 + nonWifiInterference + text2
+
+  return {
+    recommendationsText: defineMessage({ defaultMessage: `<p>Identifying the sources of external interference is the key to resolving this issue:</p>
+      <ol>
+        {params}
+      </ol>`
+    }),
+    recommendationsValues: {
+      params: stringlist
+    }
+  }
 }
 
-type AirtimeRxArray = AirtimeRxChecks[]
+const getRxRootCauses = (checks: AirtimeRxArray) => {
+  const checkTrue = checks.filter(item => Object.values(item)[0]).map(item => Object.keys(item)[0]) // change values.filter to checks.filter
+  const doubleCheck = ['isHighSsidCountPerRadio', 'isLargeMgmtFrameCount']
+  const allFalse = checkTrue.length === 0
 
+  const highDensityWifi = '<li>High density of Wi-Fi devices in the network.</li>'
+  const excessiveFrameAndSsid = '<li>Excessive number of management frames due to too many SSIDs being broadcasted in the network.</li>'
+  const excessiveFrame = '<li>Excessive number of management frames.</li>'
+  const highCoChannel = `<li>High co-channel interference.</li>
+    <ul>
+      <li>Check the number of interfering links in the zone?</li>
+    </ul>
+  `
+  const highLegacy = `<li>High number of legacy Wi-Fi devices.
+    <ul>
+      <li>Definition of legacy devices - 11b, 11a, and a combination of 11a and 11b.
+      </li>
+    </ul>
+  `
+  const allFalseText = highDensityWifi + excessiveFrame + highCoChannel + highLegacy
+  const text1 = checkTrue.includes('isHighDensityWifiDevices') ? highDensityWifi : ''
+  const text2 = doubleCheck.every(str => checkTrue.includes(str)) ? excessiveFrameAndSsid : ''
+  const text3 = text2 === '' ? checkTrue.includes('isLargeMgmtFrameCount') ? excessiveFrame : '' : ''
+  const text4 = checkTrue.includes('high') ? highCoChannel : ''
+  const text5 = checkTrue.includes('isHighLegacyWifiDevicesCount') ? highLegacy : ''
+  const stringlist = allFalse ? allFalseText : (text1 + text2 + text3 + text4 + text5)
 
-const extractAirtimeRxCode = (
-  checks: AirtimeRxArray
-) => {
-  const combinedCheck = checks.reduce((result, currentObject) => {
-    Object.assign(result, currentObject)
-    return result
-  }, {}) as AirtimeRxChecks
+  return {
+    rootCauseText: defineMessage({ defaultMessage: `<p>Airtime Rx is unusually high, and this can be a result from various factors, such as a high density of Wi-Fi devices, channel congestion due to co-channel interference, excessive number of management frames, and sub-optimal configurations.</p>
+        <p>The most likely root { count, plural, one {cause} other {causes} } { count, plural, one {is} other {are} }:</p>
+        <ol>
+          {params}
+        </ol>
+      `
+    }),
+    rootCauseValues: {
+      params: stringlist,
+      count: checkTrue.length
+    }
+  }
+}
+const getRxRecommendations = (checks: AirtimeRxArray) => {
+  const checkTrue = checks.filter(item => Object.values(item)[0]).map(item => Object.keys(item)[0])
+  const clientLoadBalanceOn = '<li>Click here to enable client load balancing AIOps recommendation.</li>'
+  const clientLoadBalanceOff = '<li>Increase AP density to distribute the client load.</li>'
+  const highSsidCountText = '<li>There are currently an average of X SSIDs/WLANs being broadcasted per AP. Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less. Enabling Airtime Decongestion would be recommended as well.</li>'
+  const enableAirtimeDecongestion = '<li>Enable Airtime Decongestion.</li>'
+  const crrmRaised = '<li>Click here to apply the AI-Driven RRM recommendation.</li>'
+  const channelFlyDisabled = '<li>Enable ChannelFly for the Zone.</li>'
+  const channelFlyEnabled = '<li>Review the channel planning, AP density and deployment.</li>'
+  const highLegacyCount = '<li>Click here for a list of legacy Wi-Fi devices. Either remove these legacy devices or upgrade them. If possible, enable OFDM-only mode on WLAN XXX, YYY, etc.</li>'
+  const doubleCheck = ['isHighSsidCountPerRadio', 'isLargeMgmtFrameCount']
 
-  const clientLoadBalanceOn = 'Click here to enable client load balancing AIOps recommendation.'
-  const clientLoadBalanceOff = 'Increase AP density to distribute the client load.'
+  const text1 = checkTrue.includes('isClbRecommendationRaised') ? clientLoadBalanceOn : clientLoadBalanceOff
+  const text2 = doubleCheck.every(str => checkTrue.includes(str)) ? highSsidCountText : enableAirtimeDecongestion
+  const text3 = checkTrue.includes('isCRRMRaised') ? crrmRaised : ''
+  const text4 = crrmRaised ? checkTrue.includes('isChannelFlyEnabled') ? channelFlyEnabled : channelFlyDisabled : ''
+  const text5 = checkTrue.includes('isHighLegacyWifiDevicesCount') ? highLegacyCount : ''
+  const stringlist = text1 + text2 + text3 + text4 + text5
 
-  const highSsidCountText = 'There are currently an average of X SSIDs/WLANs being broadcasted per AP. Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less. Enabling Airtime Decongestion would be recommended as well.'
+  return {
+    recommendationsText: defineMessage({ defaultMessage: `<p>Based on the root { count, plural, one {cause} other {causes} } identified, the recommended resolutions are:</p>
+      <ol>
+        {params}
+      </ol>`
+    }),
+    recommendationsValues: {
+      params: stringlist,
+      count: checkTrue.length
+    }
+  }
+}
 
-  const highPacketCountText = 'Enable Airtime Decongestion.'
+const getTxRootCauses = (checks: AirtimeTxArray) => {
+  const checkTrue = checks.filter(item => Object.values(item)[0]).map(item => Object.keys(item)[0]) // change values.filter to checks.filter
+  const doubleCheck = ['isHighSsidCountPerRadio', 'isLargeMgmtFrameCount']
+  const allFalse = checkTrue.length === 0
 
-  const largeFrameCount = 'Click here to apply the AI-Driven RRM recommendation.'
-  const channelFlyDisabled = 'Enable ChannelFly for the Zone.'
-  const channelFlyEnabled = 'Review the channel planning, AP density and deployment.'
+  const highDensityWifi = '<li>High density of Wi-Fi devices in the network.</li>'
+  const excessiveFrameAndSsid = '<li>Excessive number of management frames due to too many SSIDs being broadcasted in the network.</li>'
+  const excessiveFrame = '<li>Excessive number of management frames.</li>'
+  const highPacket = '<li>High number of packet errors leading to unnecessary retransmissions.</li>'
+  const highMCBC = '<li>High multicast/broadcast (MC/BC) traffic on XXX, YYY, ZZZ WLANs.</li>'
+  const highLegacy = `<li>High number of legacy Wi-Fi devices.
+    <ul>
+      <li>Definition of legacy devices - 11b, 11a, and a combination of 11a and 11b.
+      </li>
+    </ul>
+  `
+  const allFalseText = highDensityWifi + excessiveFrame + highPacket + highMCBC + highLegacy
+  const text1 = checkTrue.includes('isHighDensityWifiDevices') ? highDensityWifi : ''
+  const text2 = doubleCheck.every(str => checkTrue.includes(str)) ? excessiveFrameAndSsid : ''
+  const text3 = text2 === '' ? checkTrue.includes('isLargeMgmtFrameCount') ? excessiveFrame : '' : ''
+  const text4 = checkTrue.includes('isHighPacketErrorCount') ? highPacket : ''
+  const text5 = checkTrue.includes('isHighMCBCTraffic') ? highMCBC : ''
+  const text6 = checkTrue.includes('isHighLegacyWifiDevicesCount') ? highLegacy : ''
+  const stringlist = allFalse ? allFalseText : (text1 + text2 + text3 + text4 + text5 + text6)
 
-  const highLegacyCount = 'Click here for a list of legacy Wi-Fi devices. Either remove these legacy devices or upgrade them. If possible, enable OFDM-only mode on WLAN XXX, YYY, etc. '
+  return {
+    rootCauseText: defineMessage({ defaultMessage: `<p>Airtime Tx is unusually high, and this can be a result from various factors, such as a high density of Wi-Fi devices, excessive number of management frames, high multicast/broadcast (MC/BC) traffic and sub-optimal configurations.</p>
+        <p>The most likely root { count, plural, one {cause} other {causes} } { count, plural, one {is} other {are} }:</p>
+        <ol>
+          {params}
+        </ol>
+      `
+    }),
+    rootCauseValues: {
+      params: stringlist,
+      count: checkTrue.length
+    }
+  }
+}
+const getTxRecommendations = (checks: AirtimeTxArray) => {
+  const checkTrue = checks.filter(item => Object.values(item)[0]).map(item => Object.keys(item)[0]) // change values.filter to checks.filter
+  const clientLoadBalanceOn = '<li>Click here to enable client load balancing AIOps recommendation.</li>'
+  const clientLoadBalanceOff = '<li>Increase AP density to distribute the client load.</li>'
+  const highSsidCountText = '<li>There are currently an average of X SSIDs/WLANs being broadcasted per AP. Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less. Enabling Airtime Decongestion would be recommended as well.</li>'
+  const enableAirtimeDecongestion = '<li>Enable Airtime Decongestion.</li>'
+  const nonWifiInterference = '<li>. Identify and mitigate sources of non-WiFi interference, such as microwave ovens, Bluetooth devices, and cordless phones.</li>'
+  const crrmRaised = '<li>Click here to apply the AI-Driven RRM recommendation.</li>'
+  const channelFlyDisabled = '<li>Enable ChannelFly for the Zone.</li>'
+  const channelFlyEnabled = '<li>Review the channel planning, AP density and deployment.</li>'
+  const highLegacyCount = '<li>Click here for a list of legacy Wi-Fi devices. Either remove these legacy devices or upgrade them. If possible, enable OFDM-only mode on WLAN XXX, YYY, etc.</li>'
+  const doubleCheck = ['isHighSsidCountPerRadio', 'isLargeMgmtFrameCount']
 
-  const allTrue = Object.values(combinedCheck).every(value => value === true)
-  const allFalse = Object.values(combinedCheck).every(value => value === false)
+  const text1 = checkTrue.includes('isClbRecommendationRaised') ? clientLoadBalanceOn : clientLoadBalanceOff
+  const text2 = doubleCheck.every(str => checkTrue.includes(str)) ? highSsidCountText : enableAirtimeDecongestion
+  const text3 = checkTrue.includes('nonWifiInterference') ? nonWifiInterference : ''
+  const text4 = checkTrue.includes('isCRRMRaised') ? crrmRaised : ''
+  const text5 = crrmRaised ? checkTrue.includes('isChannelFlyEnabled') ? channelFlyEnabled : channelFlyDisabled : ''
+  const text6 = checkTrue.includes('isHighLegacyWifiDevicesCount') ? highLegacyCount : ''
+  const stringlist = text1 + text2 + text3 + text4 + text5 + text6
 
-  return allTrue
-    ? 'ALL_TRUE'
-    : allFalse
-      ? 'ALL_FALSE'
-      : 'DEFAULT'
+  return {
+    recommendationsText: defineMessage({ defaultMessage: `<p>Based on the root {count, plural, one {cause} other {causes}} identified, the recommended resolutions are:</p>
+      <ol>
+        {params}
+      </ol>`
+    }),
+    recommendationsValues: {
+      params: stringlist,
+      count: checkTrue.length
+    }
+  }
 }
 
 export const rootCauseRecommendationMap = {
@@ -1021,178 +1144,21 @@ export const rootCauseRecommendationMap = {
     }
   },
   'airtime-b': {
-    BOTH_FALSE: {
-      rootCauses: defineMessage({
-        defaultMessage: `
-          <p>Airtime Busy is unusually high and this is typically caused by external sources of interference, such as neighboring WiFi networks, microwave ovens, Bluetooth devices, and other electronic devices operating in the same frequency range, can cause disruptions to your network.</p>
-          <ol>
-            <li>TBD</li>
-          </ol>
-        `
-      }),
-      recommendations: defineMessage({
-        defaultMessage: `
-          <p>Identifying the sources of external interference is the key to resolving this issue:</p>
-          <ol>
-            <li>Enable rogue AP detection to search, identify, and physically remove rogue APs from your premises.</li>
-            <li>Identify and mitigate sources of non-WiFi interference, such as microwave ovens, Bluetooth devices, and cordless phones.</li>
-          </ol>
-        `
-      })
-    },
-    BOTH_TRUE: {
-      rootCauses: defineMessage({
-        defaultMessage: `
-          <p>Airtime Busy is unusually high and this is typically caused by external sources of interference, such as neighboring WiFi networks, microwave ovens, Bluetooth devices, and other electronic devices operating in the same frequency range, can cause disruptions to your network.</p>
-          <ol>
-            <li>TBD</li>
-          </ol>
-        `
-      }),
-      recommendations: defineMessage({
-        defaultMessage: `
-          <p>Identifying the sources of external interference is the key to resolving this issue:</p>
-          <ol>
-            <li>Click here for a list of rogue APs for removal in your premises.</li>
-            <li>Identify and mitigate sources of non-WiFi interference, such as microwave ovens, Bluetooth devices, and cordless phones.</li>
-            <li>Click here to apply the AI-Driven RRM recommendation.</li>
-          </ol>
-        `
-      })
-    },
-    ROGUE_ENABLED: {
-      rootCauses: defineMessage({
-        defaultMessage: `
-          <p>Airtime Busy is unusually high and this is typically caused by external sources of interference, such as neighboring WiFi networks, microwave ovens, Bluetooth devices, and other electronic devices operating in the same frequency range, can cause disruptions to your network.</p>
-          <ol>
-            <li>TBD</li>
-          </ol>
-        `
-      }),
-      recommendations: defineMessage({
-        defaultMessage: `
-          <p>Identifying the sources of external interference is the key to resolving this issue:</p>
-          <ol>
-            <li>Click here for a list of rogue APs for removal in your premises.</li>
-            <li>Identify and mitigate sources of non-WiFi interference, such as microwave ovens, Bluetooth devices, and cordless phones.</li>
-          </ol>
-        `
-      })
-    },
-    CRRM_RAISED: {
-      rootCauses: defineMessage({
-        defaultMessage: `
-          <p>Airtime Busy is unusually high and this is typically caused by external sources of interference, such as neighboring WiFi networks, microwave ovens, Bluetooth devices, and other electronic devices operating in the same frequency range, can cause disruptions to your network.</p>
-          <ol>
-            <li>TBD</li>
-          </ol>
-        `
-      }),
-      recommendations: defineMessage({
-        defaultMessage: `
-          <p>Identifying the sources of external interference is the key to resolving this issue:</p>
-          <ol>
-            <li>Enable rogue AP detection to search, identify, and physically remove rogue APs from your premises.</li>
-            <li>Identify and mitigate sources of non-WiFi interference, such as microwave ovens, Bluetooth devices, and cordless phones.</li>
-            <li>Click here to apply the AI-Driven RRM recommendation.</li>
-          </ol>
-        `
-      })
+    DEFAULT: {
+      rootCauses: getBRootCauses,
+      recommendations: getBRecommendations
     }
   },
   'airtime-rx': {
     DEFAULT: {
-      rootCauses: defineMessage({
-        defaultMessage: `
-          <p>Airtime Busy is unusually high and this is typically caused by external sources of interference, such as neighboring WiFi networks, microwave ovens, Bluetooth devices, and other electronic devices operating in the same frequency range, can cause disruptions to your network.</p>
-          <ol>
-            <li>TBD</li>
-          </ol>
-        `
-      }),
-      recommendations: defineMessage({
-        defaultMessage: `
-          <p>Based on the root cause/s identified, the recommended resolutions are:</p>
-          <ol>
-            <li>Click here to enable client load balancing AIOps recommendation.</li>
-          </ol>
-        `
-      })
-    },
-    ALL_TRUE: {
-      rootCauses: defineMessage({
-        defaultMessage: `
-          <p>Airtime Rx is unusually high, and this can be a result from various factors, such as a high density of Wi-Fi devices, channel congestion due to co-channel interference, excessive number of management frames, and sub-optimal configurations.</p>
-          <ol>
-            <li>TBD</li>
-          </ol>
-        `
-      }),
-      recommendations: defineMessage({
-        defaultMessage: `
-          <p>Based on the root cause/s identified, the recommended resolutions are:</p>
-          <ol>
-            <li>Click here to enable client load balancing AIOps recommendation.</li>
-            <li>There are currently an average of X SSIDs/WLANs being broadcasted per AP. Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less. Enabling Airtime Decongestion would be recommended as well.</li>
-            <li>Click here to apply the AI-Driven RRM recommendation.</li>
-            <li>Click here for a list of legacy Wi-Fi devices. Either remove these legacy devices or upgrade them. If possible, enable OFDM-only mode on WLAN XXX, YYY, etc. </li>
-          </ol>
-        `
-      })
-    },
-    ALL_FALSE: {
-      rootCauses: defineMessage({
-        defaultMessage: `
-          <p>Airtime Rx is unusually high, and this can be a result from various factors, such as a high density of Wi-Fi devices, channel congestion due to co-channel interference, excessive number of management frames, and sub-optimal configurations.</p>
-          <ol>
-            <li>TBD</li>
-          </ol>
-        `
-      }),
-      recommendations: defineMessage({
-        defaultMessage: `
-          <p>Based on the root cause/s identified, the recommended resolutions are:</p>
-          <ol>
-            <li>Click here to enable client load balancing AIOps recommendation.</li>
-          </ol>
-        `
-      })
+      rootCauses: getRxRootCauses,
+      recommendations: getRxRecommendations
     }
   },
   'airtime-tx': {
     DEFAULT: {
-      rootCauses: defineMessage({
-        defaultMessage: `
-          <p>Airtime Busy is unusually high and this is typically caused by external sources of interference, such as neighboring WiFi networks, microwave ovens, Bluetooth devices, and other electronic devices operating in the same frequency range, can cause disruptions to your network.</p>
-          <ol>
-            <li>TBD</li>
-          </ol>
-        `
-      }),
-      recommendations: defineMessage({
-        defaultMessage: `
-          <p>Based on the root cause/s identified, the recommended resolutions are:</p>
-          <ol>
-          </ol>
-        `
-      })
-    },
-    VARIOUS_REASONS: {
-      rootCauses: defineMessage({
-        defaultMessage: `
-          <p>Airtime Tx is unusually high, and this can be a result from various factors, such as a high density of Wi-Fi devices, excessive number of management frames, high multicast/broadcast (MC/BC) traffic and sub-optimal configurations.</p>
-          <ol>
-            <li>TBD</li>
-          </ol>
-        `
-      }),
-      recommendations: defineMessage({
-        defaultMessage: `
-          <p>Based on the root cause/s identified, the recommended resolutions are:</p>
-          <ol>
-          </ol>
-        `
-      })
+      rootCauses: getTxRootCauses,
+      recommendations: getTxRecommendations
     }
   }
 } as Readonly<Record<string, Record<string, RootCauseAndRecommendation>>>
@@ -1336,24 +1302,17 @@ const TBD = defineMessage({ defaultMessage: '<p>TBD</p>' })
 const calculating = defineMessage({ defaultMessage: '<p>Calculating...</p>' })
 
 export function getRootCauseAndRecommendations ({ code, metadata }: Incident) {
-  console.log('metadata', metadata)
   const failureType = codeToFailureTypeMap[code]
   if (!metadata.rootCauseChecks) return [{ rootCauses: calculating, recommendations: calculating }]
   const { checks } = metadata.rootCauseChecks
-  console.log('failureType', failureType)
-  let failureCode
-  if (failureType === 'airtime-b') {
-    failureCode = extractAirtimeBCode(checks as AirtimeBArray)
-  } else if (failureType === 'airtime-tx') {
-    failureCode = extractAirtimeTxCode(checks as AirtimeTxArray)
-  } else if (failureType === 'airtime-rx') {
-    failureCode = extractAirtimeRxCode(checks as AirtimeRxArray)
-  } else {
-    failureCode = extractFailureCode(checks)
-  }
-  console.log('failureCode', failureCode)
-  const result = _.get(rootCauseRecommendationMap, [failureType, failureCode!])
-    ?? ccd80211RootCauseRecommendations[failureCode!]
-    ?? { rootCauses: TBD, recommendations: TBD }
+  const failureCode = failureType.includes('airtime') ? 'DEFAULT' : extractFailureCode(checks)
+  const results = _.get(rootCauseRecommendationMap, [failureType, failureCode as string])
+  const { rootCauses, recommendations } = results
+  const moddedRootCause = typeof rootCauses === 'function' ? rootCauses(checks) : { rootCauseText: rootCauses, rootCauseValues: {} }
+  const moddedRecommendations = typeof recommendations === 'function' ? recommendations(checks) : { recommendationsText: recommendations, recommendationsValues: {} }
+  const ccdResult = ccd80211RootCauseRecommendations[failureCode as string]
+  const result = { rootCauses: moddedRootCause, recommendations: moddedRecommendations }
+    ?? { rootCauses: { rootCauseText: ccdResult.rootCauses }, recommendations: { recommendationsText: ccdResult.recommendations } }
+    ?? { rootCauses: { rootCauseText: TBD }, recommendations: { recommendationsText: TBD } }
   return [result]
 }

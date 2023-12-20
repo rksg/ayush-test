@@ -78,12 +78,14 @@ const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incid
   const { $t } = useIntl()
   const { metadata, id } = props.selectedIncidentToShowDescription
   const [{ rootCauses }] = getRootCauseAndRecommendations(props.selectedIncidentToShowDescription)
+  const { rootCauseText, rootCauseValues } = rootCauses
   const gotoIncident = useNavigateToPath(`/analytics/incidents/${id}`)
   const values = {
     ...productNames,
     p: (text: string) => <UI.DrawerPara>{text}</UI.DrawerPara>,
     ol: (text: string) => <UI.DrawerOrderList>{text}</UI.DrawerOrderList>,
-    li: (text: string) => <UI.DrawerList>{text}</UI.DrawerList>
+    li: (text: string) => <UI.DrawerList>{text}</UI.DrawerList>,
+    ul: (text: string) => <UI.DrawerUnorderedList>{text}</UI.DrawerUnorderedList>
   }
   const { dominant } = metadata
   const wlanInfo = (dominant && dominant.ssid)
@@ -100,7 +102,7 @@ const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incid
         {$t(defineMessage({ defaultMessage: 'Root cause' }))}{':'}
       </UI.IncidentRootCauses>
       <div>
-        <FormattedMessage {...rootCauses} values={values} />
+        <FormattedMessage {...rootCauseText} values={{ ...values, ...rootCauseValues }} />
         <Button type='link' onClick={gotoIncident} size='small'>
           {$t({ defaultMessage: 'More Details' })}
         </Button>

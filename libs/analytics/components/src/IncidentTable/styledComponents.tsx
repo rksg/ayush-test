@@ -77,6 +77,9 @@ export const DrawerList = styled.li`
 export const DrawerOrderList = styled.ol`
   padding-inline-start: 30px;
 `
+export const DrawerUnorderedList = styled.ul`
+  padding-inline-start: 30px;
+`
 
 export const IncidentTableWrapper =
 styled((props: TableProps<IncidentTableRow>) => <Table {...props} />)`
