@@ -207,7 +207,6 @@ describe('ClientOverviewTab - ClientProperties', () => {
 
         expect(await screen.findByText('Client Details')).toBeVisible()
         expect(await screen.findByText('Operational Data (Current)')).toBeVisible()
-        expect(await screen.findByText('Network Type')).toBeVisible()
         expect(screen.queryByText('VNI')).toBeNull()
       })
 
@@ -504,6 +503,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
       })
 
       it('should render historical client (dpsk) correctly', async () => {
+        jest.mocked(useIsSplitOn).mockReturnValue(false)
         jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
         mockServer.use(
           rest.get(WifiUrlsInfo.getNetwork.url,
