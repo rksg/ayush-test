@@ -1,5 +1,3 @@
-import { ReactNode } from 'react'
-
 import { gql }           from 'graphql-request'
 import _, { uniqueId }   from 'lodash'
 import moment            from 'moment'
@@ -208,13 +206,13 @@ export const getCrrmInterferingLinksText = (
     // eslint-disable-next-line max-len
     defaultMessage: '{before} interfering {before, plural, one {link} other {links}} can be optimized to {after}',
     description: 'Translation string - interfering, link, links, can be optimized to'
-  }, { before, after })
+  }, { before, after }) as string
 
   return $t({
     // eslint-disable-next-line max-len
     defaultMessage: 'From {before} to {after} interfering {after, plural, one {link} other {links}}',
     description: 'Translation string - From, to, interfering, link, links'
-  }, { before, after })
+  }, { before, after }) as string
 }
 
 export const api = recommendationApi.injectEndpoints({
@@ -456,8 +454,7 @@ export const api = recommendationApi.injectEndpoints({
         { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
       ]
     }),
-    crrmKpi: build.query<
-    { text: ReactNode }, { id: CrrmListItem['id'], code: CrrmListItem['code'] }>({
+    crrmKpi: build.query<{ text: string }, Pick<CrrmListItem, 'id' | 'code'>>({
       query: ({ id, code }) => ({
         document: gql`
           query CrrmKpi($id: String) {
