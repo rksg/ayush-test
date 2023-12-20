@@ -1,16 +1,16 @@
-import { LiteralElement }         from '@formatjs/icu-messageformat-parser'
 import { Menu, MenuProps, Space } from 'antd'
 import moment                     from 'moment-timezone'
 import { useIntl }                from 'react-intl'
 
 import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker }                          from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
+import { isEqualCaptivePortalPlainText }                                                          from '@acx-ui/rc/components'
 import { useDisconnectClientMutation, useGetClientOrHistoryDetailQuery, useRevokeClientMutation } from '@acx-ui/rc/services'
 import { Client, ClientStatusEnum, ClientUrlsInfo }                                               from '@acx-ui/rc/utils'
-import { networkTypes }                                                                           from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useSearchParams, useTenantLink }                                 from '@acx-ui/react-router-dom'
 import { filterByAccess }                                                                         from '@acx-ui/user'
 import { DateFilter, DateRange, enableNewApi, encodeParameter, useDateFilter }                    from '@acx-ui/utils'
+
 
 import ClientDetailTabs from './ClientDetailTabs'
 function DatePicker () {
@@ -94,19 +94,6 @@ function ClientDetailPageHeader () {
     }
   }
 
-  function isNetworkTypeEqualsCaptivePortal () : boolean {
-    let networkTypePlainText = 'Captive Portal'
-    if (networkTypes.guest.defaultMessage) {
-      const message = networkTypes.guest.defaultMessage[0] as unknown as LiteralElement
-      networkTypePlainText = message.value
-    }
-
-    if(result?.data.networkType === networkTypePlainText) {
-      return true
-    }
-    return false
-  }
-
   const menu = (
     <Menu
       onClick={handleMenuClick}
@@ -126,7 +113,7 @@ function ClientDetailPageHeader () {
           key: 'disconnect-client'
         },
         // eslint-disable-next-line max-len
-        ...((wifiEDAClientRevokeToggle && !result?.isHistorical && isNetworkTypeEqualsCaptivePortal()) ? [{
+        ...((wifiEDAClientRevokeToggle && !result?.isHistorical && isEqualCaptivePortalPlainText(result?.data.networkType)) ? [{
           label: $t({ defaultMessage: 'Revoke Network Access' }),
           key: 'revoke-client'
         }] : [])
