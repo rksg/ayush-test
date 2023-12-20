@@ -9,7 +9,8 @@ import {
   getAPRebootReason,
   transformAirtimeMetricKey,
   transformAirtimeFrame,
-  transformAirtimeCast
+  transformAirtimeCast,
+  transformAirtimeClientsByAP
 } from './config'
 
 describe('getDataWithPercentage', () => {
@@ -138,4 +139,10 @@ it('transformAirtimeCast should return correct key', () => {
   expect(transformAirtimeCast('txUnicastFrames')).toBe('Unicast Frames')
   expect(transformAirtimeCast('txBroadcastFrames')).toBe('Broadcast Frames')
   expect(transformAirtimeCast('txMulticaseFrames')).toBe('Multicast Frames')
+})
+
+it('transformAirtimeClientsByAP should return correct key', () => {
+  expect(transformAirtimeClientsByAP('small')).toBe('Less than 30 clients')
+  expect(transformAirtimeClientsByAP('medium')).toBe('31 to 50 clients')
+  expect(transformAirtimeClientsByAP('large')).toBe('More than 50 clients')
 })

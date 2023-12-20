@@ -17,6 +17,7 @@ export type NetworkImpactType = 'ap'
 | 'airtimeMetric'
 | 'airtimeFrame'
 | 'airtimeCast'
+| 'airtimeClientsByAP'
 
 export enum NetworkImpactChartTypes {
   APFwVersionByAP = 'apFwVersionByAP',
@@ -36,7 +37,8 @@ export enum NetworkImpactChartTypes {
   AirtimeTx = 'airtimeTx',
   AirtimeRx = 'airtimeRx',
   AirtimeMgmtFrame = 'airtimeMgmtFrame',
-  AirtimeCast = 'airtimeCast'
+  AirtimeCast = 'airtimeCast',
+  AirtimeClientsByAP = 'airtimeClientsByAP'
 }
 
 export enum NetworkImpactQueryTypes {
@@ -60,6 +62,7 @@ export interface NetworkImpactChart {
   title: MessageDescriptor
   tooltipFormat: MessageDescriptor
   dataFomatter?: (value: unknown, tz?: string | undefined) => string
+  valueFormatter?: (value: unknown, tz?: string | undefined) => string
   dominanceFn?: (data: NetworkImpactChartData['data'], incident: Incident) => {
     key: string
     value: number
@@ -104,12 +107,22 @@ export const transformAirtimeFrame = (key: string) => {
   return _.get(map, key, '')
 }
 
-export const transformAirtimeCast= (key: string) => {
+export const transformAirtimeCast = (key: string) => {
   const { $t } = getIntl()
   const map = {
     txUnicastFrames: $t({ defaultMessage: 'Unicast Frames' }),
     txBroadcastFrames: $t({ defaultMessage: 'Broadcast Frames' }),
     txMulticastFrames: $t({ defaultMessage: 'Multicast Frames' })
+  }
+  return _.get(map, key, '')
+}
+
+export const transformAirtimeClientsByAP = (key: string) => {
+  const { $t } = getIntl()
+  const map = {
+    small: $t({ defaultMessage: 'Less than 30 clients' }),
+    medium: $t({ defaultMessage: '31 to 50 clients' }),
+    large: $t({ defaultMessage: 'More than 50 clients' })
   }
   return _.get(map, key, '')
 }
@@ -379,5 +392,12 @@ export const networkImpactChartConfigs: Readonly<Record<
     tooltipFormat: tooltipFormats.distribution,
     transformKeyFn: transformAirtimeCast,
     summary: defineMessage({ defaultMessage: 'Peak percentage of MC & BC frames was {count}' })
+  },
+  [NetworkImpactChartTypes.AirtimeClientsByAP]: {
+    title: defineMessage({ defaultMessage: 'Average no. of clients per AP' }),
+    tooltipFormat: tooltipFormats.aps,
+    valueFormatter: formatter('countFormat'),
+    transformKeyFn: transformAirtimeClientsByAP,
+    summary: defineMessage({ defaultMessage: 'Peak number of clients per AP was {count}' })
   }
 }
