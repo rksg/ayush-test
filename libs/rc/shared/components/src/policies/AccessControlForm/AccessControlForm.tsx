@@ -183,6 +183,9 @@ export const AccessControlForm = (props: AccessControlFormProps) => {
         formRef={formRef}
         onCancel={() => navigate(linkToPolicies, { replace: true })}
         onFinish={() => handleAccessControlPolicy(editMode)}
+        buttonLabel={{
+          submit: (editMode)? $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' })
+        }}
       >
         <StepsFormLegacy.StepForm<AccessControlProfile>
           name='settings'
