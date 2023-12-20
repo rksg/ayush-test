@@ -24,8 +24,12 @@ export function useFFList (): { featureList?: string[], betaList?: string[],
   alphaList?: string[] } {
   const params = useParams()
   const jwtPayload = getJwtTokenPayload()
-  const { data } = useGetBetaStatusQuery({ params })
-  const betaEnabled = (data?.enabled === 'true')? true : false
+  // only if it's delgation flow and FF true then call -
+  // getBetaStatus value
+  const isBetaFFlag = useIsSplitOn(Features.BETA_FLAG) && isDelegationMode()
+  const { data } = useGetBetaStatusQuery({ params }, { skip: !isBetaFFlag })
+  const betaEnabled = isBetaFFlag? ((data?.enabled === 'true')? true : false)
+    : jwtPayload?.isBetaFlag
 
   // only if it's delgation flow and FF true then call -
   const isDelegationTierApi = useIsSplitOn(Features.DELEGATION_TIERING) && isDelegationMode()
@@ -91,8 +95,9 @@ export function useIsTierAllowed (featureId: string): boolean {
     alphaList = []
   } = useFFList()
   const enabled =
-  featureList?.includes(featureId) || betaList.includes(featureId) || alphaList.includes(featureId)
-  // eslint-disable-next-line max-len
-  useDebugValue(`PLM CONFIG: featureList: ${featureList}, betaList: ${betaList}, alphaList: ${alphaList}, ${featureId}: ${enabled}`)
+    featureList?.includes(featureId) || betaList.includes(featureId)
+    || alphaList.includes(featureId)
+  useDebugValue(`PLM CONFIG: featureList: ${featureList}, betaList: ${betaList}, 
+  alphaList: ${alphaList}, ${featureId}: ${enabled}`)
   return enabled
 }
