@@ -59,16 +59,9 @@ describe('Add administrator drawer component', () => {
       expect(mockedFindVARFn).toHaveBeenCalledWith('username=c123%40email.com')
     })
 
-    // await waitFor(async () => {
-    //   expect(await screen.findByText(/The following 3rd party administrator was found/i)).toBeVisible()
-    // })
-
-    // const inviteBtn = await screen.findByRole('button', { name: 'Send Invitation' })
-    // fireEvent.click(inviteBtn)
-    // await waitFor(() => {
-    //   expect(inviteBtn).not.toBeVisible()
-    // })
-    // expect(mockedCloseDrawer).toBeCalledWith(false)
+    await waitFor(() => {
+      expect(mockedInviteVARFn).toHaveBeenCalledWith({ username: 'c123@email.com' })
+    })
   })
 
   it('should correctly display MSP EC admin not found error message', async () => {
@@ -100,6 +93,9 @@ describe('Add administrator drawer component', () => {
     await userEvent.type(emailInput, 'c123@gamil.com')
 
     fireEvent.click(await screen.findByRole('button', { name: 'Add Administrator' }))
+    await waitFor(() => {
+      expect(mockedFindVARFn).toHaveBeenCalledWith('username=c123%40email.com')
+    })
     await waitFor(async () => {
       expect(await screen.findByText('The specified email address is not linked to any 3rd party administrator. Try using a different email address.')).toBeVisible()
     })
@@ -202,11 +198,6 @@ describe('Add administrator drawer component', () => {
     await userEvent.type(emailInput, 'c123@gamil.com')
 
     await userEvent.click(await screen.findByRole('button', { name: 'Add Administrator' }))
-    // await waitFor(async () => {
-    //   expect(await screen.findByText(/The following 3rd party administrator was found/i)).toBeVisible()
-    // })
-
-    // await userEvent.click(await screen.findByRole('button', { name: 'Send Invitation' }))
     await waitFor(async () => {
       expect(await screen.findByText('You cannot invite support user as a VAR')).toBeVisible()
     })

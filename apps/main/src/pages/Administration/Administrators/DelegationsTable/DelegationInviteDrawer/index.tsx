@@ -146,6 +146,7 @@ const DelegationInviteDrawer = (props: DelegationInviteDrawerProps) =>{
           label={$t({ defaultMessage: 'Email' })}
           name='email'
           rules={[
+            { required: true },
             { validator: (_, value) => emailRegExp(value) }
           ]}
         >
