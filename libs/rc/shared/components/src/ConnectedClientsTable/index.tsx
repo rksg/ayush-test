@@ -15,13 +15,13 @@ import {
   useDisconnectClientMutation,
   useRevokeClientMutation
 } from '@acx-ui/rc/services'
-import { networkTypes }  from '@acx-ui/rc/utils'
 import {
   ClientList,
   getDeviceTypeIcon,
   getOsTypeIcon,
   TableQuery,
-  usePollingTableQuery
+  usePollingTableQuery,
+  networkTypes
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { RequestPayload }        from '@acx-ui/types'
@@ -165,7 +165,7 @@ export const ConnectedClientsTable = (props: {
         defaultSortOrder: 'ascend',
         render: (_, row) => {
           return <TenantLink
-            to={`users/wifi/clients/${row.clientMac}/details/overview?hostname=${row.hostname}&clientStatus=connected`}
+            to={`users/wifi/clients/${row.clientMac}/details/overview?clientStatus=connected`}
           >{row.hostname || '--'}</TenantLink>
         }
       },

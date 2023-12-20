@@ -77,7 +77,7 @@ describe('Connected Clients Table', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    await screen.findAllByText('Network Type')
+    expect((await screen.findAllByText('Network Type')).length).toBeGreaterThan(1)
   })
 
 })
