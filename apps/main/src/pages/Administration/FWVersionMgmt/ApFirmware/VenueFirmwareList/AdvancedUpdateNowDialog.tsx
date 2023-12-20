@@ -5,7 +5,8 @@ import { DefaultOptionType }              from 'antd/lib/select'
 import _                                  from 'lodash'
 import { useIntl }                        from 'react-intl'
 
-import { Modal }     from '@acx-ui/components'
+import { Modal, Tooltip }   from '@acx-ui/components'
+import { InformationSolid } from '@acx-ui/icons'
 import {
   FirmwareCategory,
   FirmwareVenue,
@@ -16,6 +17,7 @@ import {
 import { getVersionLabel, isBetaFirmware } from '../../FirmwareUtils'
 
 import * as UI                                  from './styledComponents'
+import { SupportedAPModelsList }                from './SupportedAPModelsList'
 import { firmwareNote1, firmwareNote2 }         from './UpdateNowDialog'
 import { EolApFirmwareGroup, useApEolFirmware } from './useApEolFirmware'
 
@@ -231,14 +233,21 @@ function ABFSelector (props: ABFSelectorProps) {
   }, [selectedVersion])
 
   return (<>
-    <UI.TitleActive>
-      {abfLabel}&nbsp;
-      ({ apModels
-        ? apModels
-        // eslint-disable-next-line max-len
-        : <span className='empty'>{$t({ defaultMessage: 'No Access Point in selected venue(s)' })}</span>
-      })
-    </UI.TitleActive>
+    <UI.LabelWithHint>
+      <UI.TitleActive>
+        {abfLabel}&nbsp;
+        ({ apModels
+          ? apModels
+          // eslint-disable-next-line max-len
+          : <span className='empty'>{$t({ defaultMessage: 'No Access Point in selected venue(s)' })}</span>
+        })
+      </UI.TitleActive>
+      <Tooltip
+        overlayInnerStyle={{ minWidth: '500px' }}
+        children={<InformationSolid />}
+        title={<SupportedAPModelsList />}
+      />
+    </UI.LabelWithHint>
     <UI.ValueContainer>
       <Radio.Group
         onChange={onSelectedVersionChange}
