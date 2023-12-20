@@ -1,9 +1,9 @@
 /* eslint-disable max-len */
 import { useState, useEffect } from 'react'
 
-import { Space }                                     from 'antd'
-import _                                             from 'lodash'
-import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
+import { Space }   from 'antd'
+import _           from 'lodash'
+import { useIntl } from 'react-intl'
 
 import { Subtitle, Tooltip, Table, TableProps, Loader, showActionModal  } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
@@ -15,13 +15,13 @@ import {
   useDisconnectClientMutation,
   useRevokeClientMutation
 } from '@acx-ui/rc/services'
+import { networkTypes }  from '@acx-ui/rc/utils'
 import {
   ClientList,
   getDeviceTypeIcon,
   getOsTypeIcon,
   TableQuery,
-  usePollingTableQuery,
-  NetworkTypeEnum
+  usePollingTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { RequestPayload }        from '@acx-ui/types'
@@ -29,14 +29,6 @@ import { RequestPayload }        from '@acx-ui/types'
 import { ClientHealthIcon } from '../ClientHealthIcon'
 
 import * as UI from './styledComponents'
-
-export const networkTypes: Record<NetworkTypeEnum, MessageDescriptor> = {
-  [NetworkTypeEnum.OPEN]: defineMessage({ defaultMessage: 'Open Network' }),
-  [NetworkTypeEnum.PSK]: defineMessage({ defaultMessage: 'Passphrase (PSK/SAE)' }),
-  [NetworkTypeEnum.DPSK]: defineMessage({ defaultMessage: 'Dynamic Pre-Shared Key (DPSK)' }),
-  [NetworkTypeEnum.AAA]: defineMessage({ defaultMessage: 'Enterprise AAA (802.1X)' }),
-  [NetworkTypeEnum.CAPTIVEPORTAL]: defineMessage({ defaultMessage: 'Captive Portal' })
-}
 
 function GetVenueFilterOptions (tenantId: string|undefined) {
   const { venueFilterOptions } = useVenuesListQuery({ params: { tenantId }, payload: {
