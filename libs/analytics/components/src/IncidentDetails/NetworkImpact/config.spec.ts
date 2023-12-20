@@ -137,5 +137,5 @@ it('transformAirtimeFrame should return correct key', () => {
 it('transformAirtimeCast should return correct key', () => {
   expect(transformAirtimeCast('txUnicastFrames')).toBe('Unicast Frames')
   expect(transformAirtimeCast('txBroadcastFrames')).toBe('Broadcast Frames')
-  expect(transformAirtimeCast('txMulticaseFrames')).toBe('Multicast Frames')
+  expect(transformAirtimeCast('txMulticastFrames')).toBe('Multicast Frames')
 })
