@@ -132,13 +132,20 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
           }
         />
 
-        {hasSsoConfigured && <Col style={{ width: '190px', paddingLeft: 0 }}>
+        {hasSsoConfigured && <Col style={{ width: '296px', paddingLeft: 0 }}>
           <Card type='solid-bg' >
+            {isGroupBasedLoginEnabled && <div>
+              <Form.Item
+                colon={false}
+                label={$t({ defaultMessage: 'Allowed Domains' })} />
+              <h3 style={{ marginTop: '-15px' }}>
+                {authenticationData?.domains?.toString()}</h3>
+            </div>}
             <Form.Item
               colon={false}
               label={$t({ defaultMessage: 'IdP Metadata' })}
             />
-            <div style={{ marginTop: '-10px' }}><Button type='link'
+            <div style={{ marginTop: '-15px' }}><Button type='link'
               key='viewxml'
               onClick={async () => {
                 const isDirectUrl = authenticationData?.samlFileType === SamlFileType.direct_url

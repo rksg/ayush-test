@@ -6,6 +6,7 @@ import {
 } from '@ant-design/icons'
 import {
   Form,
+  FormInstance,
   Input,
   Space,
   Typography,
@@ -245,6 +246,30 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     ) : Promise.resolve()
   }
 
+  const ApplyButton = ({ form }: { form: FormInstance }) => {
+    const [submittable, setSubmittable] = useState(false)
+
+    const values = Form.useWatch([], form)
+
+    useEffect(() => {
+      form.validateFields().then(
+        () => setSubmittable(true),
+        () => setSubmittable(false)
+      )
+    }, [values])
+
+    return (
+      <Button
+        disabled={!formData && !submittable}
+        loading={isLoading}
+        onClick={() => okHandler()}
+        type={'primary'}
+      >
+        {$t({ defaultMessage: 'Apply' })}
+      </Button>
+    )
+  }
+
   const SamlContent = () => {
     return <> <Form style={{ marginTop: 10 }} layout='vertical' form={form}>
       {isGroupBasedLoginEnabled && <Form.Item
@@ -325,14 +350,15 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     closable={true}
     width={550}
     footer={<div>
-      <Button
-        disabled={!formData}
-        loading={isLoading}
-        onClick={() => okHandler()}
-        type={'primary'}
-      >
-        {$t({ defaultMessage: 'Apply' })}
-      </Button>
+      {isGroupBasedLoginEnabled ? <ApplyButton form={form}></ApplyButton>
+        : <Button
+          disabled={!formData}
+          loading={isLoading}
+          onClick={() => okHandler()}
+          type={'primary'}
+        >
+          {$t({ defaultMessage: 'Apply' })}
+        </Button>}
       <Button onClick={() => {
         setVisible(false)
       }}>
