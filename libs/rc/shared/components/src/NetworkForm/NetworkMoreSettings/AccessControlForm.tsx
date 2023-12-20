@@ -19,8 +19,8 @@ import {
   useL2AclPolicyListQuery,
   useL3AclPolicyListQuery,
   useApplicationPolicyListQuery,
-  useAccessControlProfileListQuery,
-  useAddAccessControlProfileMutation
+  useAddAccessControlProfileMutation,
+  useGetAccessControlProfileListQuery
 } from '@acx-ui/rc/services'
 import {
   AccessControlFormFields,
@@ -52,6 +52,7 @@ type ModalStatus = {
 type AcProfileModalProps = {
   modalStatus: ModalStatus,
   setModalStatus: (value: ModalStatus) => void
+  updateSelectedACProfile?: (id: string) => void
 }
 
 const emptyEmbeddedObject: AclEmbeddedObject = {
@@ -108,6 +109,14 @@ export function AccessControlForm () {
     }
   }, [])
 
+  const updateSelectedACProfile = (id: string) => {
+    if (!!id) {
+      setEnabledProfile(true)
+      form.setFieldValue('accessControlProfileEnable', true)
+      form.setFieldValue(['wlan', 'advancedCustomization', 'accessControlProfileId'], id)
+    }
+  }
+
   return (
     <div style={{ marginBottom: '30px' }}>
       <span style={{
@@ -129,15 +138,16 @@ export function AccessControlForm () {
           }
         </Button>
       </span>
-      <AddAcProfileModal
-        modalStatus={modalStatus}
-        setModalStatus={setModalStatus} />
       {enabledProfile ?
         // eslint-disable-next-line max-len
         <SelectAccessProfileProfile
           accessControlProfileId={get(data, 'wlan.advancedCustomization.accessControlProfileId')}
           setModalStatus={setModalStatus}
         /> : <AccessControlConfigForm />}
+      <AddAcProfileModal
+        modalStatus={modalStatus}
+        setModalStatus={setModalStatus}
+        updateSelectedACProfile={updateSelectedACProfile} />
     </div>)
 }
 
@@ -146,7 +156,7 @@ function AddAcProfileModal (props: AcProfileModalProps) {
   const { $t } = useIntl()
   const params = useParams()
 
-  const { modalStatus, setModalStatus } = props
+  const { modalStatus, setModalStatus, updateSelectedACProfile } = props
   const { visible=false, embeddedObject } = modalStatus
 
   const [ createAclProfile ] = useAddAccessControlProfileMutation()
@@ -173,10 +183,15 @@ function AddAcProfileModal (props: AcProfileModalProps) {
             const aclPayloadObject = genAclPayloadObject(
                 formRef.current?.getFieldsValue() as AccessControlFormFields
             )
-            await createAclProfile({
+            const responseData = await createAclProfile({
               params: params,
               payload: convertToPayload(false, aclPayloadObject, params.policyId)
             }).unwrap()
+
+            const profileId = responseData?.response?.id
+            if (profileId) {
+              updateSelectedACProfile?.(profileId)
+            }
 
             setModalStatus({
               visible: false
@@ -372,7 +387,7 @@ export function SelectAccessProfileProfile (props: {
 
   //Access control list
   const { accessControlProfileSelectOptions, accessControlList }
-    = useAccessControlProfileListQuery({
+    = useGetAccessControlProfileListQuery({
       params: useParams()
     }, {
       selectFromResult ({ data }) {
@@ -386,8 +401,9 @@ export function SelectAccessProfileProfile (props: {
 
   useEffect(() => {
     if (data && accessControlList) {
-      if (!_.isEmpty(get(data, 'wlan.advancedCustomization.accessControlProfileId'))) {
-        onAccessPolicyChange(get(data, 'wlan.advancedCustomization.accessControlProfileId'))
+      const wlanACProfileId = get(data, 'wlan.advancedCustomization.accessControlProfileId')
+      if (!_.isEmpty(wlanACProfileId)) {
+        onAccessPolicyChange(wlanACProfileId)
       }
       if (accessControlProfileId) {
         onAccessPolicyChange(accessControlProfileId)

@@ -136,17 +136,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
-    accessControlProfileList: build.query<AccessControlProfile[], RequestPayload>({
-      query: ({ params }) => {
-        const accessControlProfileListReq = createHttpRequest(
-          AccessControlUrls.getAccessControlProfileList,
-          params
-        )
-        return {
-          ...accessControlProfileListReq
-        }
-      }
-    }),
     deleteWifiCallingService: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiCallingUrls.deleteWifiCalling, params)
@@ -963,7 +952,6 @@ export const {
   useGetDHCPProfileQuery,
   useSaveOrUpdateDHCPMutation,
   useDeleteDHCPServiceMutation,
-  useAccessControlProfileListQuery,
   useGetDHCPProfileListQuery,
   useLazyGetDHCPProfileListQuery,
   useGetMdnsProxyQuery,
