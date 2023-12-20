@@ -55,8 +55,7 @@ import {
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
-  ApplicationPolicy,
-  AccessControlProfile
+  ApplicationPolicy
 } from '@acx-ui/rc/utils'
 import { baseServiceApi }             from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
