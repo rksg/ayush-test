@@ -1,11 +1,12 @@
+import _             from 'lodash'
 import { IntlShape } from 'react-intl'
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
-import { IpUtilsService }                                          from '../../ipUtilsService'
-import { EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum } from '../../models/EdgeEnum'
-import { EdgeAlarmSummary }                                        from '../../types'
-import { networkWifiIpRegExp, subnetMaskIpRegExp }                 from '../../validator'
+import { IpUtilsService }                                                          from '../../ipUtilsService'
+import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum } from '../../models/EdgeEnum'
+import { EdgeAlarmSummary, EdgeLag, EdgePort, EdgePortStatus, EdgePortWithStatus } from '../../types'
+import { networkWifiIpRegExp, subnetMaskIpRegExp }                                 from '../../validator'
 
 export const getEdgeServiceHealth = (alarmSummary?: EdgeAlarmSummary[]) => {
   if(!alarmSummary) return EdgeServiceStatusEnum.UNKNOWN
@@ -84,3 +85,52 @@ export const getEdgePortTypeOptions = ($t: IntlShape['$t']) => ([
     value: EdgePortTypeEnum.LAN
   }
 ])
+
+export const getEdgePortIpModeString = ($t: IntlShape['$t'], type: EdgeIpModeEnum | string) => {
+  switch (type) {
+    case EdgeIpModeEnum.DHCP:
+      return $t({ defaultMessage: 'DHCP' })
+    case EdgeIpModeEnum.STATIC:
+      return $t({ defaultMessage: 'Static IP' })
+    default:
+      return ''
+  }
+}
+
+export const convertEdgePortsConfigToApiPayload = (formData: EdgePortWithStatus | EdgeLag) => {
+  const payload = _.cloneDeep(formData)
+
+  if (payload.portType === EdgePortTypeEnum.LAN) {
+
+    // LAN port is not allowed to configure NAT enable
+    if (payload.natEnabled) {
+      payload.natEnabled = false
+    }
+
+    // should clear gateway when core port using DHCP.
+    if (payload.corePortEnabled === true && payload.ipMode === EdgeIpModeEnum.DHCP) {
+      payload.gateway = ''
+    }
+
+    // normal(non-corePort) LAN port
+    if (payload.corePortEnabled === false) {
+
+      // should clear all non core port LAN port's gateway.
+      if (payload.gateway) {
+        payload.gateway = ''
+      }
+
+      // prevent LAN port from using DHCP
+      // when it had been core port before but not a core port now.
+      if (payload.ipMode === EdgeIpModeEnum.DHCP) {
+        payload.ipMode = EdgeIpModeEnum.STATIC
+      }
+    }
+  }
+
+  return payload
+}
+
+export const getEdgePortDisplayName = (port: EdgePort | EdgePortStatus | undefined) => {
+  return _.capitalize(port?.interfaceName)
+}

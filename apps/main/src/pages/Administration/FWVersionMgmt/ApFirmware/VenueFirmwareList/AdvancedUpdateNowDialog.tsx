@@ -43,6 +43,11 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
     { [key: string]: UpdateNowRequestWithoutVenues | null }
   >()
 
+  const EOL_ABF_LABEL = {
+    'ABF2-3R': intl.$t({ defaultMessage: 'Available firmware for Wi-Fi 6, 6E and 11ac wave2 AP' }),
+    'eol-ap-2022-12': intl.$t({ defaultMessage: 'Available firmware for 11ac AP' })
+  } as { [key: string]: string }
+
   // eslint-disable-next-line max-len
   const defaultActiveVersion: FirmwareVersion | undefined = getDefaultActiveVersion(availableVersions)
   const otherActiveVersions: FirmwareVersion[] = filteredOtherActiveVersions(availableVersions)
@@ -109,7 +114,7 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
         ? <UI.Section>
           <ABFSelector
             categoryId={'active'}
-            abfLabel={intl.$t({ defaultMessage: 'Available firmware' })}
+            abfLabel={intl.$t({ defaultMessage: 'Available firmware for Wi-Fi 7 AP' })}
             defaultChecked={true}
             defaultVersionId={defaultActiveVersion.id}
             defaultVersionLabel={getVersionLabel(intl, defaultActiveVersion)}
@@ -131,7 +136,7 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
             {eol.isUpgradable
               ? <ABFSelector
                 categoryId={eol.name}
-                abfLabel={intl.$t({ defaultMessage: 'Available firmware for legacy devices' })}
+                abfLabel={EOL_ABF_LABEL[eol.name]}
                 defaultChecked={true}
                 defaultVersionId={eol.latestEolVersion}
                 defaultVersionLabel={getDefaultEolVersionLabel(eol.latestEolVersion)}

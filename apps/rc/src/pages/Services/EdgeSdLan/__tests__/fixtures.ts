@@ -1,4 +1,4 @@
-import { EdgeIpModeEnum, EdgePortTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 export const mockedVenueList = {
   fields: ['name', 'id'],
@@ -52,87 +52,6 @@ export const mockedTunnelProfileViewData = {
   ]
 }
 
-export const mockEdgePortConfig = {
-  ports: [
-    {
-      id: '6ab895d4-cb8a-4664-b3f9-c4d6e0c8b8c1',
-      name: 'port0',
-      mac: '00:0c:29:b6:ad:04',
-      enabled: true,
-      portType: EdgePortTypeEnum.WAN,
-      natEnabled: false,
-      ipMode: EdgeIpModeEnum.STATIC,
-      ip: '1.1.1.1',
-      subnet: '255.255.255.0',
-      gateway: '1.1.1.1',
-      corePortEnabled: true
-    },
-    {
-      id: '20b445af-7270-438d-88a3-a5a2219c377b',
-      name: 'local0',
-      mac: '00:00:00:00:00:00',
-      enabled: true,
-      portType: EdgePortTypeEnum.LAN,
-      natEnabled: false,
-      ipMode: EdgeIpModeEnum.STATIC,
-      ip: '2.2.2.2',
-      subnet: '255.255.255.0',
-      gateway: '2.2.2.2',
-      corePortEnabled: false
-    },
-    {
-      id: 'cdecd42e-81e3-4d60-921c-6b05181a53ae',
-      name: 'port1',
-      mac: '00:0c:29:b6:ad:0e',
-      enabled: true,
-      portType: EdgePortTypeEnum.LAN,
-      natEnabled: false,
-      ipMode: EdgeIpModeEnum.STATIC,
-      ip: '3.3.3.3',
-      subnet: '255.255.255.0',
-      gateway: '3.3.3.3',
-      corePortEnabled: false
-    },
-    {
-      id: '6fcbcfc2-c207-4e45-b392-1f529cd1d6d4',
-      name: 'tap0',
-      mac: '02:fe:05:1f:95:85',
-      enabled: true,
-      portType: EdgePortTypeEnum.LAN,
-      natEnabled: false,
-      ipMode: EdgeIpModeEnum.STATIC,
-      ip: '4.4.4.4',
-      subnet: '255.255.255.0',
-      gateway: '4.4.4.4',
-      corePortEnabled: false
-    },
-    {
-      id: '081a71a7-aaad-4a13-967b-1c82166de11a',
-      name: 'port2',
-      mac: '00:0c:29:b6:ad:18',
-      enabled: true,
-      portType: EdgePortTypeEnum.LAN,
-      natEnabled: true,
-      ipMode: EdgeIpModeEnum.DHCP,
-      ip: '5.5.5.5',
-      subnet: '255.255.255.0',
-      gateway: '5.5.5.5',
-      corePortEnabled: false
-    }
-  ]
-}
-
-export const mockEdgePortStatus = [
-  {
-    portId: mockEdgePortConfig.ports[0].id,
-    ip: '10.206.78.152'
-  },
-  {
-    portId: mockEdgePortConfig.ports[1].id,
-    ip: ''
-  }
-]
-
 export const mockNetworkSaveData = {
   fields: ['venueId', 'networkId'],
   totalCount: 3,
@@ -151,17 +70,6 @@ export const mockDeepNetworkList = {
     { name: 'MockedNetwork 2', id: 'network_2', type: NetworkTypeEnum.PSK },
     { name: 'MockedNetwork 3', id: 'network_3', type: NetworkTypeEnum.OPEN }
   ]
-}
-
-export const mockedSdLanService = {
-  id: 'mocked_sdLan_id',
-  name: 'mockedSdLanData',
-  venueId: 'f28540166b95406cae64b46bd12b742f',
-  venueName: 'airport',
-  edgeId: '9618C4AC2B1FC511EE8B2B000C2943FE7F',
-  corePortMac: 'p2',
-  networkIds: ['32e06116667b4749855ffbb991d8ac4b'],
-  tunnelProfileId: 'f93802759efc49628c572df8af0718b8'
 }
 
 export const mockedNetworkViewData = {
