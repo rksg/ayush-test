@@ -19,7 +19,7 @@ const Ports = () => {
   }
 
   return <EdgePortsForm
-    serialNumber={serialNumber ?? ''}
+    serialNumber={serialNumber!}
     onTabChange={onTabChange}
     onCancel={onCancel}
     activeSubTab={activeSubTab}
