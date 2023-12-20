@@ -68,7 +68,7 @@ function ClientDetailPageHeader () {
             ...basePath,
             // eslint-disable-next-line max-len
             pathname: `${basePath.pathname}/${clientId}/details/overview`,
-            search: `hostname=${clentDetails?.clientMac}&clientStatus=historical&period=${period}`
+            search: `clientStatus=historical&period=${period}`
           })
         })
         break
@@ -85,7 +85,7 @@ function ClientDetailPageHeader () {
             ...basePath,
             // eslint-disable-next-line max-len
             pathname: `${basePath.pathname}/${clientId}/details/overview`,
-            search: `hostname=${clentDetails?.clientMac}&clientStatus=connected`
+            search: 'clientStatus=connected'
           })
         })
         break
