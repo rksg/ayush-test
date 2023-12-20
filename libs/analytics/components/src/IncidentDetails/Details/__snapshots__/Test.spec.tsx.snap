@@ -552,6 +552,16 @@ exports[`Test Details should render AirtimeB correctly 1`] = `
           data-testid="networkImpact"
         >
           <div
+            data-dimension="rogueChannel"
+            data-testid="network-impact-rogueAPByChannel"
+            data-type="rogueAp"
+          />
+          <div
+            data-dimension="phyErr"
+            data-testid="network-impact-rxPhyErrByAP"
+            data-type="apAirtime"
+          />
+          <div
             data-dimension="apModels"
             data-testid="network-impact-apModelByAP"
             data-type="apInfra"
@@ -1132,6 +1142,16 @@ exports[`Test Details should render AirtimeB correctly 2`] = `
           data-testid="networkImpact"
         >
           <div
+            data-dimension="rogueChannel"
+            data-testid="network-impact-rogueAPByChannel"
+            data-type="rogueAp"
+          />
+          <div
+            data-dimension="phyErr"
+            data-testid="network-impact-rxPhyErrByAP"
+            data-type="apAirtime"
+          />
+          <div
             data-dimension="apModels"
             data-testid="network-impact-apModelByAP"
             data-type="apInfra"
@@ -1711,6 +1731,16 @@ exports[`Test Details should render AirtimeB correctly 3`] = `
         <div
           data-testid="networkImpact"
         >
+          <div
+            data-dimension="rogueChannel"
+            data-testid="network-impact-rogueAPByChannel"
+            data-type="rogueAp"
+          />
+          <div
+            data-dimension="phyErr"
+            data-testid="network-impact-rxPhyErrByAP"
+            data-type="apAirtime"
+          />
           <div
             data-dimension="apModels"
             data-testid="network-impact-apModelByAP"

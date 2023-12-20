@@ -27,8 +27,21 @@ export const AirtimeB = (incident: Incident) => {
     Attributes.EventStartTime,
     Attributes.EventEndTime
   ]
+  const rogueEnabled = incident.metadata.rootCauseChecks?.checks
+    .some(check => check.isRogueDetectionEnabled)
 
   const networkImpactCharts: NetworkImpactProps['charts'] = [
+    {
+      chart: NetworkImpactChartTypes.RogueAPByChannel,
+      type: 'rogueAp',
+      dimension: 'rogueChannel',
+      disabled: !rogueEnabled
+    },
+    {
+      chart: NetworkImpactChartTypes.RxPhyErrByAP,
+      type: 'apAirtime',
+      dimension: 'phyErr'
+    },
     {
       chart: NetworkImpactChartTypes.APModelByAP,
       type: 'apInfra',

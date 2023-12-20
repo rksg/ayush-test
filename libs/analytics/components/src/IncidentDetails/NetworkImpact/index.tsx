@@ -28,17 +28,18 @@ export const transformSummary = (
   incident: Incident
 ) => {
   const intl = getIntl()
-  const { count, data } = metric
+  const { count, total, data } = metric
   const dominance = (config.dominanceFn || getDominanceByThreshold())(data, incident)
   if (dominance) {
     return intl.$t(config.summary.dominance, {
+      value: dominance.value,
       percentage: formatter('percentFormatRound')(dominance.percentage),
       dominant: config.transformKeyFn
         ? config.transformKeyFn(dominance.key, intl)
         : dominance.key
     })
   } else {
-    return intl.$t(config.summary.broad, { count })
+    return intl.$t(config.summary.broad, { count, total })
   }
 }
 
@@ -63,17 +64,24 @@ export const NetworkImpact: React.FC<NetworkImpactProps> = ({ charts, incident }
   return <Loader states={[queryResults]}>
     <Card title={$t({ defaultMessage: 'Network Impact' })} type='no-border'>
       <Row>
-        {charts.map(({ chart })=>{
-          const config = networkImpactChartConfigs[chart]
-          const chartData = queryResults.data?.[chart]!
-          return <Col key={chart} span={6} style={{ height: 200 }}>
+        {charts.map((chart) => {
+          const config = networkImpactChartConfigs[chart.chart]
+          const chartData = queryResults.data?.[chart.chart]!
+          return <Col key={chart.chart} span={6} style={{ height: 200 }}>
             <AutoSizer>
               {({ height, width }) => (
                 <DonutChart
                   showLegend={false}
                   style={{ width, height }}
                   title={$t(config.title)}
-                  subTitle={transformSummary(config, chartData, incident)}
+                  value={chart.disabled && config.disabled
+                    ? $t(config.disabled.value)
+                    : Number.isFinite(chartData?.total)
+                      ? formatter('countFormat')(chartData?.total)
+                      : undefined}
+                  subTitle={chart.disabled && config.disabled
+                    ? $t(config.disabled.summary)
+                    : transformSummary(config, chartData, incident)}
                   tooltipFormat={config.tooltipFormat}
                   dataFormatter={formatter('countFormat')}
                   data={transformData(config, chartData)}
