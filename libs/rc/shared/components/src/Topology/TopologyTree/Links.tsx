@@ -106,6 +106,17 @@ export const Links: React.FC<LinksProps> = (props) => {
       </marker>
 
       <marker
+        id='disconnectedMarker'
+        viewBox='0 0 10 10'
+        refX='5'
+        refY='5'
+        markerWidth='3'
+        markerHeight='3'
+        className='disconnectedMarker'>
+        <circle cx='5' cy='5' r='5' />
+      </marker>
+
+      <marker
         id='unknownMarker'
         viewBox='0 0 10 10'
         refX='5'
@@ -117,14 +128,17 @@ export const Links: React.FC<LinksProps> = (props) => {
       </marker>
       {links.map((link, i) => {
         const linkInfo = linksInfo[`${link.source.data.id}_${link.target.data.id}`]
-
         const linkClass = linkInfo?.connectionStatus ?
           linkColor[linkInfo?.connectionStatus as ConnectionStatus] :
-          linkColor[ConnectionStatus.Good]
+          (Object.values(ConnectionStatus).includes(link.target.data.status) ?
+            linkColor[link.target.data.status as ConnectionStatus] :
+            linkColor[ConnectionStatus.Good])
 
         const markerClass = linkInfo?.connectionStatus ?
           markerColor[linkInfo?.connectionStatus as ConnectionStatus] :
-          markerColor[ConnectionStatus.Good]
+          (Object.values(ConnectionStatus).includes(link.target.data.status) ?
+            markerColor[link.target.data.status as ConnectionStatus] :
+            markerColor[ConnectionStatus.Good])
 
         return (
           <g key={i}

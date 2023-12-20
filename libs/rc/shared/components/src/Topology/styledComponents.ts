@@ -270,7 +270,6 @@ height: 100%;
     .degradedMarker {
       fill: var(--acx-semantics-yellow-40);
     }
-    }
 
     .disconnectedMarker {
       fill: var(--acx-semantics-red-70);
