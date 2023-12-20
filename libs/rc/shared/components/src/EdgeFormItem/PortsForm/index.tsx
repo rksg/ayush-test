@@ -49,15 +49,18 @@ export const EdgePortsForm = (props: EdgePortsFormProps) => {
   const { isDirty } = formControl
 
   useEffect(() => {
-    setActiveSubTabInContext({
-      key: activeSubTab as string,
-      title: tabs[activeSubTab as keyof typeof tabs].title
-    })
+    if (activeSubTab) {
+      setActiveSubTabInContext({
+        key: activeSubTab as string,
+        title: tabs[activeSubTab as keyof typeof tabs].title
+      })
+    }
   }, [activeSubTab])
 
   const {
     data: portsWithStatusData,
-    isLoading: isPortStatusLoading
+    isLoading: isPortStatusLoading,
+    isFetching: isPortStatusFetching
   } = useGetEdgePortListWithStatusQuery({
     params: { serialNumber, tenantId },
     payload: {
@@ -66,7 +69,11 @@ export const EdgePortsForm = (props: EdgePortsFormProps) => {
     }
   })
 
-  const { data: lagData, isLoading: isLagLoading } = useGetEdgeLagsStatusListQuery({
+  const {
+    data: lagData,
+    isLoading: isLagLoading,
+    isFetching: isLagFetching
+  } = useGetEdgeLagsStatusListQuery({
     params: { serialNumber },
     payload: {
       sortField: 'lagId',
@@ -115,9 +122,14 @@ export const EdgePortsForm = (props: EdgePortsFormProps) => {
     _.unset(tabs, tabID)
   })
 
+  const handleTabChange = (tabID: string) => {
+    onTabChange(tabID)
+  }
+
   return (
     <Tabs
-      onChange={onTabChange}
+      destroyInactiveTabPane={true}
+      onChange={handleTabChange}
       defaultActiveKey={Object.keys(tabs)[0]}
       activeKey={activeSubTab}
       type={tabsType ?? 'card'}
@@ -130,8 +142,8 @@ export const EdgePortsForm = (props: EdgePortsFormProps) => {
             key={key}
           >
             <Loader states={[{
-              isLoading: (isPortStatusLoading || isLagLoading),
-              isFetching: false }]}
+              isLoading: isPortStatusLoading || isLagLoading,
+              isFetching: isPortStatusFetching || isLagFetching }]}
             >
               {tabs[key as keyof typeof tabs].content}
             </Loader>

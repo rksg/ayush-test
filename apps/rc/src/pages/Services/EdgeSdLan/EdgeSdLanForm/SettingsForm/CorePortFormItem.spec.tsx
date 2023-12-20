@@ -16,6 +16,10 @@ import { CorePortFormItem } from './CorePortFormItem'
 
 const { mockEdgePortConfig, mockEdgePortStatus } = EdgePortConfigFixtures
 
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  useTenantId: () => 'mocked_tenant_id'
+}))
 jest.mock('./styledComponents', () => {
   const UIComps = jest.requireActual('./styledComponents')
   return {
@@ -39,6 +43,10 @@ describe('Edge centrailized forwarding form: CorePortFormItem', () => {
       rest.post(
         EdgeUrlsInfo.getEdgePortStatusList.url,
         (_, res, ctx) => res(ctx.json({ data: mockEdgePortStatus }))
+      ),
+      rest.get(
+        EdgeUrlsInfo.getPortConfig.url,
+        (req, res, ctx) => res(ctx.json(mockEdgePortConfig))
       )
     )
   })
@@ -83,7 +91,6 @@ describe('Edge centrailized forwarding form: CorePortFormItem', () => {
     await waitFor(async () => expect(await screen.findByRole('dialog')).toBeVisible())
     const dialog = screen.getByRole('dialog')
     expect(within(dialog).queryByText('Smart Edge 3')).toBeValid()
-    await within(dialog).findByTestId('rc-EdgePortsGeneral')
     await click(await within(dialog).findByRole('button', { name: 'Cancel' }))
     await waitFor(() => expect(dialog).not.toBeVisible())
   })

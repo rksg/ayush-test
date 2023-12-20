@@ -20,9 +20,7 @@ interface PortsGeneralProps {
 const PortsGeneral = (props: PortsGeneralProps) => {
   const { serialNumber, data, onCancel } = props
   const { $t } = useIntl()
-  // const navigate = useNavigate()
   const [form] = Form.useForm<EdgePortConfigFormType>()
-  // const linkToEdgeList = useTenantLink('/devices/edge')
   const editEdgeContext = useContext(EditContext)
   const [updatePortConfig] = useUpdatePortConfigMutation()
 
@@ -64,7 +62,6 @@ const PortsGeneral = (props: PortsGeneralProps) => {
   }
 
   const handleCancel = async () => {
-    // navigate(linkToEdgeList)
     onCancel()
   }
 

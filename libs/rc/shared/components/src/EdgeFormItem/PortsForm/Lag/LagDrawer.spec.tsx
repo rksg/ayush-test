@@ -32,14 +32,9 @@ jest.mock('antd', () => {
 const mockedSetVisible = jest.fn()
 
 describe('EditEdge ports - LAG Drawer', () => {
-  let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
+  const mockedEdgeID = 'mocked_edge_id'
+
   beforeEach(() => {
-    params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      serialNumber: '000000000000',
-      activeTab: 'ports',
-      activeSubTab: 'sub-interface'
-    }
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.addEdgeLag.url,
@@ -56,16 +51,13 @@ describe('EditEdge ports - LAG Drawer', () => {
     render(
       <Provider>
         <LagDrawer
+          serialNumber={mockedEdgeID}
           visible={true}
           setVisible={mockedSetVisible}
           portList={mockEdgePortConfig.ports}
         />
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
-        }
-      })
+      </Provider>)
+
     const selector = await screen.findAllByRole('combobox')
     await userEvent.selectOptions(selector[0], '2')
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
@@ -76,16 +68,13 @@ describe('EditEdge ports - LAG Drawer', () => {
     render(
       <Provider>
         <LagDrawer
+          serialNumber={mockedEdgeID}
           visible={true}
           setVisible={mockedSetVisible}
           portList={mockEdgePortConfig.ports}
         />
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
-        }
-      })
+      </Provider>)
+
     const selector = await screen.findAllByRole('combobox')
     await userEvent.selectOptions(selector[0], '2')
     await userEvent.click(screen.getByRole('checkbox', { name: 'Port1' }))

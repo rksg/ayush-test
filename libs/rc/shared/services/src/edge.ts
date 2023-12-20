@@ -473,7 +473,6 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
     }),
     getEdgePortListWithStatus: build.query<EdgePortWithStatus[], RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
-
         const portsReq = createHttpRequest(
           EdgeUrlsInfo.getPortConfig, arg.params)
         const portQuery = await fetchWithBQ(portsReq)
@@ -486,6 +485,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           ...portsStatusReq,
           body: arg.payload
         })
+
         const portsStatusTableResult = portStatusQuery.data as TableResult<EdgePortStatus>
         const statusIpMap = Object.fromEntries((portsStatusTableResult.data || [])
           .map(status => [status.portId, status.ip]))

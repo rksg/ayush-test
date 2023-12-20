@@ -5,7 +5,6 @@ import { useIntl } from 'react-intl'
 import { NoData, Tabs, Tooltip }                                     from '@acx-ui/components'
 import { EdgeLagStatus, EdgePortWithStatus, getEdgePortDisplayName } from '@acx-ui/rc/utils'
 
-
 import { LagSubInterfaceTable }  from './LagSubInterfaceTable'
 import { PortSubInterfaceTable } from './PortSubInterfaceTable'
 
@@ -35,7 +34,11 @@ const SubInterface = (props: SubInterfaceProps) => {
 
   return (
     portData.length > 0 ?
-      <Tabs type='third' activeKey={currentTab} onChange={handleTabChange}>
+      <Tabs
+        type='third'
+        activeKey={currentTab}
+        onChange={handleTabChange}
+      >
         {
           portData.map((item) =>
             <Tabs.TabPane

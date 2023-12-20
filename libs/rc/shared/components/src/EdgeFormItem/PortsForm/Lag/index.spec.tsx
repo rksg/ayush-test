@@ -10,14 +10,9 @@ import Lag from '.'
 const { mockedEdgeLagList, mockEdgeLagStatusList } = EdgeLagFixtures
 
 describe('EditEdge ports - LAG', () => {
-  let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
+  const mockedEdgeID = 'mocked_edge_id'
+
   beforeEach(() => {
-    params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      serialNumber: '000000000000',
-      activeTab: 'ports',
-      activeSubTab: 'sub-interface'
-    }
     mockServer.use(
       rest.get(
         EdgeUrlsInfo.getEdgeLagList.url,
@@ -34,16 +29,12 @@ describe('EditEdge ports - LAG', () => {
     render(
       <Provider>
         <Lag
+          serialNumber={mockedEdgeID}
           lagStatusList={mockEdgeLagStatusList.data}
           isLoading={false}
           portList={[]}
         />
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
-        }
-      })
+      </Provider>)
     const rows = await screen.findAllByRole('row')
     expect(rows.length).toBe(2)
   })
@@ -52,35 +43,29 @@ describe('EditEdge ports - LAG', () => {
     render(
       <Provider>
         <Lag
+          serialNumber={mockedEdgeID}
           lagStatusList={mockEdgeLagStatusList.data}
           isLoading={false}
           portList={[]}
         />
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
-        }
-      })
+      </Provider>)
+
     await userEvent.click(screen.getByRole('button', { name: 'Add LAG' }))
     const drawer = await screen.findByRole('dialog')
     expect(within(drawer).getByText('Add LAG')).toBeVisible()
   })
 
-  it.skip('Should delete LAG correctly', async () => {
+  it('Should delete LAG correctly', async () => {
     render(
       <Provider>
         <Lag
+          serialNumber={mockedEdgeID}
           lagStatusList={mockEdgeLagStatusList.data}
           isLoading={false}
           portList={[]}
         />
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
-        }
-      })
+      </Provider>)
+
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const row = await screen.findByRole('row', { name: /LAG 1/i })
     await userEvent.click(within(row).getByRole('radio'))

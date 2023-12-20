@@ -2,9 +2,9 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                                                             from '@acx-ui/feature-toggle'
-import { EdgeIpModeEnum, EdgePortConfigFixtures, EdgePortTypeEnum, EdgeSdLanFixtures, EdgeSdLanUrls, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                 from '@acx-ui/store'
+import { useIsSplitOn }                                                                                                                     from '@acx-ui/feature-toggle'
+import { EdgeIpModeEnum, EdgePortConfigFixtures, EdgePortTypeEnum, EdgeSdLanFixtures, EdgeSdLanUrls, EdgeUrlsInfo, getEdgePortDisplayName } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                         from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -45,7 +45,8 @@ jest.mock('antd', () => {
 const {
   mockEdgePortConfigWithStatusIp,
   mockEdgeOnlyLanPortConfig,
-  mockEdgePortConfigWithStatusIpWithoutCorePort
+  mockEdgePortConfigWithStatusIpWithoutCorePort,
+  mockEdgePortConfig
 } = EdgePortConfigFixtures
 const { mockedCorePortLostEdgeSdLanDataList, mockedSdLanDataList } = EdgeSdLanFixtures
 
@@ -87,6 +88,29 @@ describe('EditEdge ports - ports general and SD-LAN off', () => {
         )
       )
     })
+
+    it ('IP status on each port tab should be displayed correctly', async () => {
+      render(
+        <Provider>
+          <EdgePortsGeneral data={mockEdgePortConfigWithStatusIpWithoutCorePort.ports} />
+        </Provider>, {
+          route: {
+            params,
+            path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          }
+        })
+
+      for (let i = 0; i < mockEdgePortConfig.ports.length; ++i) {
+        await userEvent.click(await screen.findByRole('tab',
+          { name: getEdgePortDisplayName(mockEdgePortConfig.ports[i]) }))
+        const expectedIp = mockEdgePortConfigWithStatusIpWithoutCorePort.ports[i]?.statusIp || 'N/A'
+        await screen.findByText(
+          'IP Address: ' + expectedIp + ' | ' +
+            'MAC Address: ' + mockEdgePortConfig.ports[i].mac)
+
+      }
+    })
+
     it('should update successfully', async () => {
       const user = userEvent.setup()
       render(

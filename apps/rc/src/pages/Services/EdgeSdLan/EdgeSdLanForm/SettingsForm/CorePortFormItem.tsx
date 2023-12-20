@@ -17,7 +17,6 @@ const PortsFormEditContextProvider = (props: {
   const { edgeId, setVisible } = props
   const [activeSubTab, setActiveSubTab] = useState({
     key: EdgePortTabEnum.PORTS_GENERAL as string,
-    // TODO:
     title: ''
   })
   const [formControl, setFormControl] = useState({} as EdgeEditContext.EditEdgeFormControlType)
@@ -39,17 +38,11 @@ const PortsFormEditContextProvider = (props: {
       return
     }
 
-    // TODO:
     setActiveSubTab({ key: tab, title: '' })
   }
 
   const blockTabChange = (retryFn: () => void) => {
     if (formControl?.isDirty) {
-    // // do not trigger modal twice
-    // setFormControl({
-    //   ...formControl,
-    //   isDirty: false
-    // })
       EdgeEditContext.showUnsavedModal(
       { activeSubTab, formControl } as EdgeEditContext.EditEdgeContextType,
       {
