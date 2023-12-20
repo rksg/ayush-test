@@ -2,8 +2,8 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { apApi, venueApi } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { apApi, venueApi }        from '@acx-ui/rc/services'
 import {
   AFCPowerMode,
   AFCStatus,
@@ -566,6 +566,7 @@ describe('RadioSettingsTab', ()=> {
     })
 
     it('should render correctly when tri-band type is dual5G mode', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_SWITCHABLE_RF_TOGGLE)
       render(
         <Provider>
           <ApEditContext.Provider value={{
