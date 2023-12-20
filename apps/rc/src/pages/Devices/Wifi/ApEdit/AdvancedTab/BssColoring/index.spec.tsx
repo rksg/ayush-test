@@ -57,7 +57,7 @@ describe('AP BSS Coloring', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
-    await waitFor(() => screen.findByText('Enable BSS Coloring'))
+    await screen.findByText('Enable BSS Coloring')
 
     expect(await screen.findByRole('button', { name: /Customize/ })).toBeVisible()
     expect(await screen.findByTestId('ApBssColoring-text')).toBeVisible()

@@ -1,5 +1,6 @@
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import { waitForElementToBeRemoved } from '@testing-library/react'
+import userEvent                     from '@testing-library/user-event'
+import { rest }                      from 'msw'
 
 import {
   EdgeDhcpUrls,
@@ -65,6 +66,7 @@ describe('EdgeDhcpTable', () => {
       </Provider>, {
         route: { params, path: tablePath }
       })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const row = await screen.findAllByRole('row', { name: /TestDHCP-/i })
     expect(row.length).toBe(4)
   })
@@ -76,6 +78,7 @@ describe('EdgeDhcpTable', () => {
       </Provider>, {
         route: { params, path: tablePath }
       })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'My Services'
@@ -89,6 +92,7 @@ describe('EdgeDhcpTable', () => {
       </Provider>, {
         route: { params, path: tablePath }
       })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const edgeDhcpServiceDetailLink = await screen.findByRole('link',
       { name: 'TestDHCP-1' }) as HTMLAnchorElement
     expect(edgeDhcpServiceDetailLink.href)
@@ -107,6 +111,7 @@ describe('EdgeDhcpTable', () => {
       </Provider>, {
         route: { params, path: tablePath }
       })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const row = await screen.findByRole('row', { name: /TestDHCP-1/i })
     await user.click(within(row).getByRole('radio'))
     await user.click(screen.getByRole('button', { name: 'Edit' }))
@@ -143,6 +148,7 @@ describe('EdgeDhcpTable', () => {
       </Provider>, {
         route: { params, path: tablePath }
       })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const row = await screen.findByRole('row', { name: /TestDHCP-1/i })
     await user.click(within(row).getByRole('radio'))
     await user.click(screen.getByRole('button', { name: 'Delete' }))
@@ -179,6 +185,7 @@ describe('EdgeDhcpTable', () => {
       </Provider>, {
         route: { params, path: tablePath }
       })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const row = await screen.findByRole('row', { name: /DHCP-1/i })
     await user.click(within(row).getByRole('radio'))
     await user.click(screen.getByRole('button', { name: 'Update Now' }))
@@ -216,6 +223,7 @@ describe('EdgeDhcpTable', () => {
       </Provider>, {
         route: { params, path: tablePath }
       })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const row = await screen.findByRole('row', { name: /TestDHCP-1/i })
     expect(await within(row).findByText('Yes')).toBeValid()
     const row1 = await screen.findByRole('row', { name: /TestDHCP-2/i })

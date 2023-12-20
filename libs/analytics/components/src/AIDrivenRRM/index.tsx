@@ -8,6 +8,7 @@ import { formatter, intlFormats }           from '@acx-ui/formatter'
 import { TenantLink, useNavigateToPath }    from '@acx-ui/react-router-dom'
 import type { PathFilter }                  from '@acx-ui/utils'
 
+import { OptimalConfiguration }                     from '../AIOperations/extra'
 import { states }                                   from '../Recommendations/config'
 import { CrrmList, CrrmListItem, useCrrmListQuery } from '../Recommendations/services'
 import { OptimizedIcon }                            from '../Recommendations/styledComponents'
@@ -15,7 +16,8 @@ import { OptimizedIcon }                            from '../Recommendations/sty
 import {
   NoRRMLicense,
   NoZones,
-  getParamString
+  getParamString,
+  noDataText
 } from './extra'
 import CrrmKpi from './kpi'
 import * as UI from './styledComponents'
@@ -42,6 +44,7 @@ function AIDrivenRRMWidget ({
       recommendations: []
     } as CrrmList
     : queryResults?.data
+  const noData = queryResults.data?.recommendations.length === 0
   const crrmCount = data?.crrmCount
   const zoneCount = data?.zoneCount
   const optimizedZoneCount = data?.optimizedZoneCount
@@ -81,45 +84,46 @@ function AIDrivenRRMWidget ({
     <Card
       title={title}
       onArrowClick={onArrowClick}
-      subTitle={noLicense || !zoneCount ? '' : subtitle}
-    >{zoneCount === 0
-        ? <NoZones />
-        : noLicense
-          ? <NoRRMLicense />
-          : <AutoSizer>{(style) => <List<CrrmListItem>
-            style={style}
-            dataSource={data?.recommendations.slice(0, style.height / 50 | 0)}
-            renderItem={recommendation => {
-              const {
-                sliceValue,
-                id,
-                code,
-                crrmOptimizedState,
-                summary,
-                status,
-                updatedAt,
-                metadata
-              } = recommendation
-              const paramString = getParamString(metadata, status, updatedAt, sliceValue)
-              const unknownPath = `unknown?${paramString}`
-              return <UI.ListItem key={`${id}${sliceValue}`}>
-                <TenantLink to={`/recommendations/crrm/${code === 'unknown' ? unknownPath : id}`}>
-                  <Tooltip
-                    placement='top'
-                    title={code === 'unknown' ? '' : summary}
-                  >
-                    <UI.ListItem.Meta
-                      avatar={<OptimizedIcon value={crrmOptimizedState!.order} />}
-                      title={sliceValue}
-                      description={code === 'unknown'
-                        ? $t(states[status].text)
-                        : <CrrmKpi id={id} code={code}/>}
-                    />
-                  </Tooltip>
-                </TenantLink>
-              </UI.ListItem>
-            }}
-          />}</AutoSizer>
+      subTitle={noLicense || !zoneCount || noData ? '' : subtitle}
+    >{noData ? <OptimalConfiguration text={noDataText}/>
+        : zoneCount === 0
+          ? <NoZones />
+          : noLicense
+            ? <NoRRMLicense />
+            : <AutoSizer>{(style) => <List<CrrmListItem>
+              style={style}
+              dataSource={data?.recommendations.slice(0, style.height / 50 | 0)}
+              renderItem={recommendation => {
+                const {
+                  sliceValue,
+                  id,
+                  code,
+                  crrmOptimizedState,
+                  summary,
+                  status,
+                  updatedAt,
+                  metadata
+                } = recommendation
+                const paramString = getParamString(metadata, status, updatedAt, sliceValue)
+                const unknownPath = `unknown?${paramString}`
+                return <UI.ListItem key={`${id}${sliceValue}`}>
+                  <TenantLink to={`/recommendations/crrm/${code === 'unknown' ? unknownPath : id}`}>
+                    <Tooltip
+                      placement='top'
+                      title={code === 'unknown' ? '' : summary}
+                    >
+                      <UI.ListItem.Meta
+                        avatar={<OptimizedIcon value={crrmOptimizedState!.order} />}
+                        title={sliceValue}
+                        description={code === 'unknown'
+                          ? $t(states[status].text)
+                          : <CrrmKpi id={id} code={code}/>}
+                      />
+                    </Tooltip>
+                  </TenantLink>
+                </UI.ListItem>
+              }}
+            />}</AutoSizer>
       }
     </Card>
   </Loader>

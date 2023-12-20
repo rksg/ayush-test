@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 
 import { Checkbox, Form, Input, Radio, Select, Space, Switch } from 'antd'
 import TextArea                                                from 'antd/lib/input/TextArea'
-import _                                                       from 'lodash'
 import { useIntl }                                             from 'react-intl'
 import { useParams }                                           from 'react-router-dom'
 
@@ -18,7 +17,8 @@ import {
   EdgePortTypeEnum,
   edgePortIpValidator,
   serverIpAddressRegExp,
-  subnetMaskIpRegExp
+  subnetMaskIpRegExp,
+  getEdgePortDisplayName
 } from '@acx-ui/rc/utils'
 
 interface LagDrawerProps {
@@ -38,7 +38,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
   const [formRef] = Form.useForm()
   const [enabledPorts, setEnabledPorts] = useState<string[]>()
   const ipMode = Form.useWatch('ipMode', formRef)
-  const subnet = Form.useWatch('ipsubnet', formRef)
+  const subnet = Form.useWatch('subnet', formRef)
   const lagMembers = Form.useWatch('lagMembers', formRef) as string[]
   const [addEdgeLag] = useAddEdgeLagMutation()
   const [updateEdgeLag] = useUpdateEdgeLagMutation()
@@ -248,7 +248,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
                     <Checkbox
                       key={`${item.id}_checkbox`}
                       value={item.id}
-                      children={_.capitalize(item.interfaceName)}
+                      children={getEdgePortDisplayName(item)}
                     />
                     {
                       lagMembers?.some(id => id === item.id) &&

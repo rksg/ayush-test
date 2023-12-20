@@ -51,3 +51,14 @@ export const mockedCorePortLostEdgeSdLanDataList = [{
   edgeId: '96BD19BB3B5CE111EE80500E35957BEDC3',
   corePortMac: ''
 }] as EdgeSdLanViewData[]
+
+export const mockedSdLanService = {
+  id: 'mocked_sdLan_id',
+  name: 'mockedSdLanData',
+  venueId: 'f28540166b95406cae64b46bd12b742f',
+  venueName: 'airport',
+  edgeId: '9618C4AC2B1FC511EE8B2B000C2943FE7F',
+  corePortMac: 'p2',
+  networkIds: ['32e06116667b4749855ffbb991d8ac4b'],
+  tunnelProfileId: 'f93802759efc49628c572df8af0718b8'
+}
