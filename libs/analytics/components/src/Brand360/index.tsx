@@ -82,7 +82,7 @@ export function Brand360 () {
       ]}
     />
     <GridRow>
-      {chartMap.map((val) => <GridCol col={{ span: 6 }}>
+      {chartMap.map((val) => <GridCol col={{ span: 6 }} key={val}>
         <Loader
           states={[chartResults, prevResults, currResults]}>
           <SlaTile
