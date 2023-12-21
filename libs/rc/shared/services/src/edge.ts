@@ -508,7 +508,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           })
         })
       },
-      providesTags: [{ type: 'Edge', id: 'DETAIL' }],
+      providesTags: [{ type: 'Edge', id: 'DETAIL' }, { type: 'Edge', id: 'PORT' }],
       extraOptions: { maxRetries: 5 }
     }),
     getEdgeLagList: build.query<TableResult<EdgeLag>, RequestPayload>({

@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
-import { Checkbox, Form, Input, Radio, Select, Space, Switch } from 'antd'
-import TextArea                                                from 'antd/lib/input/TextArea'
-import { useIntl }                                             from 'react-intl'
+import { Checkbox, Form, Select, Space, Switch } from 'antd'
+import TextArea                                  from 'antd/lib/input/TextArea'
+import { useIntl }                               from 'react-intl'
 
-import { Drawer, StepsForm, showActionModal }              from '@acx-ui/components'
-import { useAddEdgeLagMutation, useUpdateEdgeLagMutation } from '@acx-ui/rc/services'
+import { Drawer, StepsForm, showActionModal }                                                from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
+import { useAddEdgeLagMutation, useGetEdgeSdLanViewDataListQuery, useUpdateEdgeLagMutation } from '@acx-ui/rc/services'
 import {
   EdgeIpModeEnum,
   EdgeLag,
@@ -14,11 +15,13 @@ import {
   EdgeLagTypeEnum,
   EdgePort,
   EdgePortTypeEnum,
-  edgePortIpValidator,
-  serverIpAddressRegExp,
-  subnetMaskIpRegExp,
-  getEdgePortDisplayName
+  getEdgePortDisplayName,
+  convertEdgePortsConfigToApiPayload,
+  getEdgePortTypeOptions
 } from '@acx-ui/rc/utils'
+
+import { EdgePortCommonForm }   from '../../PortCommonForm'
+import { EdgePortsDataContext } from '../PortDataProvider'
 
 interface LagDrawerProps {
   serialNumber: string
@@ -29,23 +32,59 @@ interface LagDrawerProps {
   existedLagList?: EdgeLag[]
 }
 
+const defaultFormValues = {
+  lagType: EdgeLagTypeEnum.LACP,
+  lacpMode: EdgeLagLacpModeEnum.ACTIVE,
+  lacpTimeout: EdgeLagTimeoutEnum.SHORT,
+  portType: EdgePortTypeEnum.WAN,
+  corePortEnabled: false,
+  ipMode: EdgeIpModeEnum.DHCP,
+  natEnabled: false,
+  lagEnabled: false
+} as Partial<EdgeLag>
+
 export const LagDrawer = (props: LagDrawerProps) => {
 
   const { serialNumber, visible, setVisible, data, portList, existedLagList } = props
   const isEditMode = data?.id !== undefined
   const { $t } = useIntl()
+  const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
+  const portTypeOptions = getEdgePortTypeOptions($t)
+    .filter(item => item.value !== EdgePortTypeEnum.UNCONFIGURED)
   const [formRef] = Form.useForm()
   const [enabledPorts, setEnabledPorts] = useState<string[]>()
-  const ipMode = Form.useWatch('ipMode', formRef)
-  const subnet = Form.useWatch('subnet', formRef)
+  // const ipMode = Form.useWatch('ipMode', formRef)
+  // const subnet = Form.useWatch('subnet', formRef)
   const lagMembers = Form.useWatch('lagMembers', formRef) as string[]
   const [addEdgeLag] = useAddEdgeLagMutation()
   const [updateEdgeLag] = useUpdateEdgeLagMutation()
+  const portsData = useContext(EdgePortsDataContext)
+  const portData = portsData.portData
+  const lagData = portsData.lagData
+
+  const getEdgeSdLanPayload = {
+    filters: { edgeId: [serialNumber] },
+    fields: ['id', 'edgeId', 'corePortMac']
+  }
+  const { edgeSdLanData }
+    = useGetEdgeSdLanViewDataListQuery(
+      { payload: getEdgeSdLanPayload },
+      {
+        skip: !isEdgeSdLanReady,
+        selectFromResult: ({ data, isLoading }) => ({
+          edgeSdLanData: data?.data?.[0],
+          isLoading
+        })
+      }
+    )
+
+  const isEdgeSdLanRun = !!edgeSdLanData
 
   useEffect(() => {
     if(visible) {
       formRef.resetFields()
       formRef.setFieldsValue({
+        ...defaultFormValues,
         ...data,
         lagMembers: data?.lagMembers.map(item => item.portId)
       })
@@ -90,17 +129,6 @@ export const LagDrawer = (props: LagDrawerProps) => {
     }
   ]
 
-  const portTypeOptions = [
-    {
-      label: $t({ defaultMessage: 'WAN' }),
-      value: EdgePortTypeEnum.WAN
-    },
-    {
-      label: $t({ defaultMessage: 'LAN' }),
-      value: EdgePortTypeEnum.LAN
-    }
-  ]
-
   const getTitle = () => {
     return $t({ defaultMessage: '{operation} LAG' },
       { operation: data ? $t({ defaultMessage: 'Edit' }) :
@@ -118,22 +146,27 @@ export const LagDrawer = (props: LagDrawerProps) => {
   const handleFinish = async () => {
     try {
       const formData = formRef.getFieldsValue(true)
+      // exclude id first, then add it when need
+      const { id, ...otherFormData } = formData
       const payload = {
-        ...formData,
+        ...convertEdgePortsConfigToApiPayload(otherFormData),
         lagMembers: formData.lagMembers?.map((item: string) => ({
           portId: item,
           portEnabled: enabledPorts?.includes(item) ?? false
         })) ?? []
       }
+
       const requestPayload = {
-        params: { serialNumber, lagId: formData.id.toString() },
+        params: { serialNumber, lagId: id.toString() },
         payload: payload
       }
+
       if(data) {
-        delete requestPayload.payload.id
         await updateEdgeLag(requestPayload).unwrap()
         handleClose()
       } else {
+        requestPayload.payload.id = id
+
         const portConfig = portList?.find(item => formData.lagMembers?.includes(item.id))
         if(portConfig?.portType === EdgePortTypeEnum.WAN ||
           portConfig?.portType === EdgePortTypeEnum.LAN) {
@@ -163,6 +196,18 @@ export const LagDrawer = (props: LagDrawerProps) => {
     }
   }
 
+  const handleFormChange = async (changedValues: Partial<EdgeLag>) => {
+    if (changedValues.portType) {
+      handlePortTypeChange(changedValues['portType'])
+    }
+  }
+
+  const handlePortTypeChange = (changedValue: EdgePortTypeEnum | undefined) => {
+    if (changedValue === EdgePortTypeEnum.LAN) {
+      formRef.setFieldValue('ipMode', EdgeIpModeEnum.STATIC)
+    }
+  }
+
   const handlePortEnabled = (portId: string, enabled: boolean) => {
     if(enabled) {
       setEnabledPorts([...(enabledPorts ?? []), portId])
@@ -187,7 +232,12 @@ export const LagDrawer = (props: LagDrawerProps) => {
             editLagMember.portId === port.id)))) // keep the edit mode data as a selection
   }
 
-  const drawerContent = <Form layout='vertical' form={formRef} onFinish={handleFinish}>
+  const drawerContent = <Form
+    layout='vertical'
+    form={formRef}
+    onFinish={handleFinish}
+    onValuesChange={handleFormChange}
+  >
     <Form.Item
       label={$t({ defaultMessage: 'LAG Name' })}
     >
@@ -215,21 +265,21 @@ export const LagDrawer = (props: LagDrawerProps) => {
     />
     <Form.Item
       name='lagType'
-      initialValue={EdgeLagTypeEnum.LACP}
+      // initialValue={EdgeLagTypeEnum.LACP}
       label={$t({ defaultMessage: 'LAG Type' })}
       rules={[{ required: true }]}
       children={<Select options={lagTypeOptions} disabled />}
     />
     <Form.Item
       name='lacpMode'
-      initialValue={EdgeLagLacpModeEnum.ACTIVE}
+      // initialValue={EdgeLagLacpModeEnum.ACTIVE}
       label={$t({ defaultMessage: 'Mode' })}
       rules={[{ required: true }]}
       children={<Select options={modeOptions} />}
     />
     <Form.Item
       name='lacpTimeout'
-      initialValue={EdgeLagTimeoutEnum.SHORT}
+      // initialValue={EdgeLagTimeoutEnum.SHORT}
       label={$t({ defaultMessage: 'Timeout' })}
       rules={[{ required: true }]}
       children={<Select options={timeoutOptions} />}
@@ -269,6 +319,27 @@ export const LagDrawer = (props: LagDrawerProps) => {
         }
       </Checkbox.Group>}
     />
+
+    <EdgePortCommonForm
+      formRef={formRef}
+      portsData={portData as EdgePort[]}
+      lagData={lagData}
+      isEdgeSdLanRun={isEdgeSdLanRun}
+      isListForm={false}
+      formFieldsProps={{
+        portType: {
+          options: portTypeOptions
+        },
+        corePortEnabled: {
+          title: $t({ defaultMessage: 'Use this LAG as Core LAG' })
+        },
+        enabled: {
+          name: 'lagEnabled',
+          title: $t({ defaultMessage: 'LAG Enabled' })
+        }
+      }}
+    />
+    {/*
     <Form.Item
       name='portType'
       initialValue={EdgePortTypeEnum.WAN}
@@ -360,6 +431,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
         children={<Switch />}
       />
     </StepsForm.FieldLabel>
+    */}
   </Form>
 
   const footer = (

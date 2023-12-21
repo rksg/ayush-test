@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom'
 import { Button, PageHeader, Tabs }                                                              from '@acx-ui/components'
 import { EdgeEditContext, EdgePortTabEnum }                                                      from '@acx-ui/rc/components'
 import { useEdgeBySerialNumberQuery, useGetEdgeQuery }                                           from '@acx-ui/rc/services'
-import { EdgeStatusEnum }                                                                        from '@acx-ui/rc/utils'
+import { isEdgeConfigurable }                                                                    from '@acx-ui/rc/utils'
 import { UNSAFE_NavigationContext as NavigationContext, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                                                        from '@acx-ui/user'
 
@@ -31,9 +31,7 @@ const useTabs = () => {
       title: $t({ defaultMessage: 'General Settings' }),
       content: <GeneralSettings />
     },
-    ...(
-      currentEdge?.deviceStatus &&
-      currentEdge?.deviceStatus !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD &&
+    ...(isEdgeConfigurable(currentEdge) &&
       {
         ports: {
           title: $t({ defaultMessage: 'Ports' }),

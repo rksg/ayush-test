@@ -10,18 +10,21 @@ import { EdgePortWithStatus }          from '@acx-ui/rc/utils'
 import { EdgePortTabEnum }                          from '..'
 import { EditContext }                              from '../../EdgeEditContext'
 import { EdgePortConfigFormType, EdgePortsGeneral } from '../../EdgePortsGeneral'
+import { EdgePortsDataContext }                     from '../PortDataProvider'
 
 interface PortsGeneralProps {
   serialNumber: string
-  data: EdgePortWithStatus[]
+  // data: EdgePortWithStatus[]
   onCancel: () => void
 }
 
 const PortsGeneral = (props: PortsGeneralProps) => {
-  const { serialNumber, data, onCancel } = props
+  const { serialNumber, /*data,*/ onCancel } = props
   const { $t } = useIntl()
   const [form] = Form.useForm<EdgePortConfigFormType>()
   const editEdgeContext = useContext(EditContext)
+  const portsData = useContext(EdgePortsDataContext)
+  const data = portsData.portData as EdgePortWithStatus[]
   const [updatePortConfig] = useUpdatePortConfigMutation()
 
   const handleFormChange = (_: FormInstance<EdgePortConfigFormType>, hasError: boolean) => {

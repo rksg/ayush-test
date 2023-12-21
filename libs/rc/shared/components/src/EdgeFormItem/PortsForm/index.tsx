@@ -3,22 +3,21 @@ import { ReactNode, useContext, useEffect } from 'react'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Loader, Tabs, TabsType }                                           from '@acx-ui/components'
-import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
-import { useGetEdgeLagsStatusListQuery, useGetEdgePortListWithStatusQuery } from '@acx-ui/rc/services'
-import { appendIsLagPortOnPortConfig }                                      from '@acx-ui/rc/utils'
-import { useTenantId }                                                      from '@acx-ui/utils'
+import { Tabs, TabsType }                from '@acx-ui/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { useGetEdgeLagsStatusListQuery } from '@acx-ui/rc/services'
 
 import { EditContext } from '../EdgeEditContext'
 
-import Lag          from './Lag'
-import PortsGeneral from './PortsGeneral'
-import SubInterface from './SubInterface'
+import Lag                              from './Lag'
+import { EdgePortsDataContextProvider } from './PortDataProvider'
+import PortsGeneral                     from './PortsGeneral'
+import SubInterface                     from './SubInterface'
 
 export enum EdgePortTabEnum {
   PORTS_GENERAL = 'ports-general',
   LAG = 'lag',
-  SUB_INTERFACE = 'sub-interface'
+SUB_INTERFACE = 'sub-interface'
 }
 export interface EdgePortsFormProps {
   serialNumber: string
@@ -39,7 +38,6 @@ export const EdgePortsForm = (props: EdgePortsFormProps) => {
     tabsType
   } = props
   const { $t } = useIntl()
-  const tenantId = useTenantId()
   const isEdgeLagEnabled = useIsSplitOn(Features.EDGE_LAG)
   const {
     activeSubTab: activeSubTabInContext,
@@ -57,17 +55,17 @@ export const EdgePortsForm = (props: EdgePortsFormProps) => {
     }
   }, [activeSubTab])
 
-  const {
-    data: portsWithStatusData,
-    isLoading: isPortStatusLoading,
-    isFetching: isPortStatusFetching
-  } = useGetEdgePortListWithStatusQuery({
-    params: { serialNumber, tenantId },
-    payload: {
-      fields: ['port_id','ip'],
-      filters: { serialNumber: [serialNumber] }
-    }
-  })
+  // const {
+  //   data: portsWithStatusData,
+  //   isLoading: isPortStatusLoading,
+  //   isFetching: isPortStatusFetching
+  // } = useGetEdgePortListWithStatusQuery({
+  //   params: { serialNumber, tenantId },
+  //   payload: {
+  //     fields: ['port_id','ip'],
+  //     filters: { serialNumber: [serialNumber] }
+  //   }
+  // })
 
   const {
     data: lagData,
@@ -83,14 +81,14 @@ export const EdgePortsForm = (props: EdgePortsFormProps) => {
     skip: !isEdgeLagEnabled
   })
 
-  const portDataWitIsLag = appendIsLagPortOnPortConfig(portsWithStatusData, lagData?.data)
+  // const portDataWitIsLag = appendIsLagPortOnPortConfig(portsWithStatusData, lagData?.data)
 
   const tabs = {
     [EdgePortTabEnum.PORTS_GENERAL]: {
       title: $t({ defaultMessage: 'Ports General' }),
       content: <PortsGeneral
         serialNumber={serialNumber}
-        data={portDataWitIsLag ?? []}
+        // data={portDataWitIsLag ?? []}
         onCancel={onCancel}
       />
     },
@@ -102,8 +100,8 @@ export const EdgePortsForm = (props: EdgePortsFormProps) => {
             content: <Lag
               serialNumber={serialNumber}
               lagStatusList={lagData?.data || []}
-              isLoading={isLagLoading}
-              portList={portDataWitIsLag}
+              isLoading={isLagLoading || isLagFetching}
+              // portList={portDataWitIsLag}
             />
           }
         } : {} as { title: string, content: ReactNode }
@@ -112,7 +110,7 @@ export const EdgePortsForm = (props: EdgePortsFormProps) => {
       title: $t({ defaultMessage: 'Sub-Interface' }),
       content: <SubInterface
         serialNumber={serialNumber}
-        portData={portDataWitIsLag ?? []}
+        // portData={portDataWitIsLag ?? []}
         lagData={lagData?.data || []}
       />
     }
@@ -127,27 +125,24 @@ export const EdgePortsForm = (props: EdgePortsFormProps) => {
   }
 
   return (
-    <Tabs
-      destroyInactiveTabPane={true}
-      onChange={handleTabChange}
-      defaultActiveKey={Object.keys(tabs)[0]}
-      activeKey={activeSubTab}
-      type={tabsType ?? 'card'}
-    >
-      {Object.keys(tabs)
-        .map((key) =>
-          <Tabs.TabPane
-            tab={`${tabs[key as keyof typeof tabs].title}
+    <EdgePortsDataContextProvider serialNumber={serialNumber}>
+      <Tabs
+        destroyInactiveTabPane={true}
+        onChange={handleTabChange}
+        defaultActiveKey={Object.keys(tabs)[0]}
+        activeKey={activeSubTab}
+        type={tabsType ?? 'card'}
+      >
+        {Object.keys(tabs)
+          .map((key) =>
+            <Tabs.TabPane
+              tab={`${tabs[key as keyof typeof tabs].title}
               ${(activeSubTabInContext.key === key && isDirty) ? '*' : ''}`}
-            key={key}
-          >
-            <Loader states={[{
-              isLoading: isPortStatusLoading || isLagLoading,
-              isFetching: isPortStatusFetching || isLagFetching }]}
+              key={key}
             >
               {tabs[key as keyof typeof tabs].content}
-            </Loader>
-          </Tabs.TabPane>)}
-    </Tabs>
+            </Tabs.TabPane>)}
+      </Tabs>
+    </EdgePortsDataContextProvider>
   )
 }
