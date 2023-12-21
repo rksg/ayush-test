@@ -604,7 +604,7 @@ describe('EditEdge ports - SD-LAN ready', () => {
 
     // select port 1 as core port again
     await userEvent.click(corePortCheckbox)
-    expect(corePortCheckbox).toBeChecked()
+    await waitFor(() => expect(corePortCheckbox).toBeChecked())
     gw = await screen.findByRole('textbox', { name: 'Gateway' })
     expect(gw).toHaveValue('2.2.2.2')
     expect(gw).not.toBeDisabled()
@@ -764,7 +764,8 @@ describe('EditEdge ports - SD-LAN ready', () => {
 
     // unselect core port
     await userEvent.click(port2CorePort)
-    expect(gw).not.toBeVisible()
+    expect(port2CorePort).not.toBeChecked()
+    await waitFor(() => expect(gw).not.toBeVisible())
 
     await userEvent.click(await screen.findByRole('button', { name: 'Apply Ports General' }))
     const expectedResult = _.cloneDeep(mockEdgePortConfigWithStatusIp)

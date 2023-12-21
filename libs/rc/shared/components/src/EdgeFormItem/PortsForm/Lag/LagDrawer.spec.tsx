@@ -1,13 +1,16 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgePortConfigFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                             from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }  from '@acx-ui/test-utils'
+import { EdgeLag, EdgeLagFixtures, EdgePortConfigFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                       from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }                            from '@acx-ui/test-utils'
+
+import { EdgePortsDataContext } from '../PortDataProvider'
 
 import { LagDrawer } from './LagDrawer'
 
 const { mockEdgePortConfig } = EdgePortConfigFixtures
+const { mockedEdgeLagList } = EdgeLagFixtures
 
 type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void
@@ -28,6 +31,13 @@ jest.mock('antd', () => {
   Select.Option = 'option'
   return { ...components, Select }
 })
+
+const defaultPortsContextdata = {
+  portData: [],
+  lagData: mockedEdgeLagList.content as EdgeLag[],
+  isLoading: false,
+  isFetching: false
+}
 
 const mockedSetVisible = jest.fn()
 
@@ -50,12 +60,14 @@ describe('EditEdge ports - LAG Drawer', () => {
   it('Should add LAG correctly', async () => {
     render(
       <Provider>
-        <LagDrawer
-          serialNumber={mockedEdgeID}
-          visible={true}
-          setVisible={mockedSetVisible}
-          portList={mockEdgePortConfig.ports}
-        />
+        <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+          <LagDrawer
+            serialNumber={mockedEdgeID}
+            visible={true}
+            setVisible={mockedSetVisible}
+            portList={mockEdgePortConfig.ports}
+          />
+        </EdgePortsDataContext.Provider>
       </Provider>)
 
     const selector = await screen.findAllByRole('combobox')
@@ -67,12 +79,14 @@ describe('EditEdge ports - LAG Drawer', () => {
   it('Should pop up warning modal when select inused port', async () => {
     render(
       <Provider>
-        <LagDrawer
-          serialNumber={mockedEdgeID}
-          visible={true}
-          setVisible={mockedSetVisible}
-          portList={mockEdgePortConfig.ports}
-        />
+        <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+          <LagDrawer
+            serialNumber={mockedEdgeID}
+            visible={true}
+            setVisible={mockedSetVisible}
+            portList={mockEdgePortConfig.ports}
+          />
+        </EdgePortsDataContext.Provider>
       </Provider>)
 
     const selector = await screen.findAllByRole('combobox')

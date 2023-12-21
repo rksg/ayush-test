@@ -31,7 +31,6 @@ export const PortConfigForm = (props: ConfigFormProps) => {
   const { id, formListKey, isEdgeSdLanRun, lagData } = props
   const { $t } = useIntl()
   const form = useFormInstance<EdgePortConfigFormType>()
-  const allValues = form.getFieldsValue(true) as EdgePortConfigFormType
 
   const getFieldPath = useCallback((fieldName: string) =>
     [formListKey, fieldName],
@@ -69,15 +68,26 @@ export const PortConfigForm = (props: ConfigFormProps) => {
             ]}
             children={<TextArea />}
           />
+          <Form.Item
+            noStyle
+            shouldUpdate={(prev, cur) => {
+              return _.get(prev, getFieldFullPath('corePortEnabled'))
+                !== _.get(cur, getFieldFullPath('corePortEnabled'))
+            }}
+          >
+            {() => {
+              const allValues = form.getFieldsValue(true) as EdgePortConfigFormType
 
-          <EdgePortCommonForm
-            formRef={form}
-            portsData={_.flatten(Object.values(allValues))}
-            lagData={lagData}
-            isEdgeSdLanRun={isEdgeSdLanRun}
-            formListItemKey={formListKey}
-            formListID={id}
-          />
+              return <EdgePortCommonForm
+                formRef={form}
+                portsData={_.flatten(Object.values(allValues))}
+                lagData={lagData}
+                isEdgeSdLanRun={isEdgeSdLanRun}
+                formListItemKey={formListKey}
+                formListID={id}
+              />
+            }}
+          </Form.Item>
         </Col>
       </Row>
     </>

@@ -26,6 +26,7 @@ const useTabs = () => {
       fields: ['deviceStatus'],
       filters: { serialNumber: [serialNumber] } }
   })
+
   return {
     'general-settings': {
       title: $t({ defaultMessage: 'General Settings' }),

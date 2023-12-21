@@ -11,6 +11,7 @@ import { mockServer, render, screen, within }                                   
 
 import { EdgePortTabEnum }                from '..'
 import { EditContext as EdgeEditContext } from '../../EdgeEditContext'
+import { EdgePortsDataContext }           from '../PortDataProvider'
 
 import SubInterface from '.'
 
@@ -50,12 +51,23 @@ const defaultContextData = {
   setActiveSubTab: jest.fn(),
   setFormControl: jest.fn()
 }
+const defaultEmptyPortsContextdata = {
+  portData: [],
+  lagData: [],
+  isLoading: false,
+  isFetching: false
+}
+
+const defaultPortsContextdata = {
+  ...defaultEmptyPortsContextdata,
+  portData: mockEdgePortConfig.ports as EdgePortWithStatus[]
+}
 
 describe('EditEdge ports - sub-interface', () => {
   const mockedEdgeID = 'mocked_edge_id'
   const defaultProps = {
     serialNumber: mockedEdgeID,
-    portData: mockEdgePortConfig.ports as EdgePortWithStatus[],
+    // portData: mockEdgePortConfig.ports as EdgePortWithStatus[],
     lagData: mockEdgeLagStatusList.data
   }
 
@@ -88,10 +100,11 @@ describe('EditEdge ports - sub-interface', () => {
         <EdgeEditContext.Provider
           value={defaultContextData}
         >
-          <SubInterface
-            serialNumber={mockedEdgeID}
-            portData={[]}
-          />
+          <EdgePortsDataContext.Provider value={defaultEmptyPortsContextdata}>
+            <SubInterface
+              serialNumber={mockedEdgeID}
+            />
+          </EdgePortsDataContext.Provider>
         </EdgeEditContext.Provider>
       </Provider>)
 
@@ -104,9 +117,11 @@ describe('EditEdge ports - sub-interface', () => {
         <EdgeEditContext.Provider
           value={defaultContextData}
         >
-          <SubInterface
-            {...defaultProps}
-          />
+          <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+            <SubInterface
+              {...defaultProps}
+            />
+          </EdgePortsDataContext.Provider>
         </EdgeEditContext.Provider>
       </Provider>)
 
@@ -120,9 +135,11 @@ describe('EditEdge ports - sub-interface', () => {
         <EdgeEditContext.Provider
           value={defaultContextData}
         >
-          <SubInterface
-            {...defaultProps}
-          />
+          <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+            <SubInterface
+              {...defaultProps}
+            />
+          </EdgePortsDataContext.Provider>
         </EdgeEditContext.Provider>
       </Provider>)
 
@@ -142,9 +159,11 @@ describe('EditEdge ports - sub-interface', () => {
         <EdgeEditContext.Provider
           value={defaultContextData}
         >
-          <SubInterface
-            {...defaultProps}
-          />
+          <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+            <SubInterface
+              {...defaultProps}
+            />
+          </EdgePortsDataContext.Provider>
         </EdgeEditContext.Provider>
       </Provider>)
 
@@ -178,9 +197,11 @@ describe('EditEdge ports - sub-interface', () => {
                         <EdgeEditContext.Provider
                           value={defaultContextData}
                         >
-                          <SubInterface
-                            {...defaultProps}
-                          />
+                          <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+                            <SubInterface
+                              {...defaultProps}
+                            />
+                          </EdgePortsDataContext.Provider>
                         </EdgeEditContext.Provider>
                         {children}
                       </div>
@@ -220,9 +241,11 @@ describe('EditEdge ports - sub-interface', () => {
         <EdgeEditContext.Provider
           value={defaultContextData}
         >
-          <SubInterface
-            {...defaultProps}
-          />
+          <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+            <SubInterface
+              {...defaultProps}
+            />
+          </EdgePortsDataContext.Provider>
         </EdgeEditContext.Provider>
       </Provider>)
 
@@ -248,9 +271,11 @@ describe('EditEdge ports - sub-interface', () => {
         <EdgeEditContext.Provider
           value={defaultContextData}
         >
-          <SubInterface
-            {...defaultProps}
-          />
+          <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+            <SubInterface
+              {...defaultProps}
+            />
+          </EdgePortsDataContext.Provider>
         </EdgeEditContext.Provider>
       </Provider>)
 
@@ -264,9 +289,11 @@ describe('EditEdge ports - sub-interface', () => {
         <EdgeEditContext.Provider
           value={defaultContextData}
         >
-          <SubInterface
-            {...defaultProps}
-          />
+          <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+            <SubInterface
+              {...defaultProps}
+            />
+          </EdgePortsDataContext.Provider>
         </EdgeEditContext.Provider>
       </Provider>)
     const lagTab = await screen.findByRole('tab', { name: 'LAG 1' })
@@ -282,9 +309,11 @@ describe('EditEdge ports - sub-interface', () => {
         <EdgeEditContext.Provider
           value={defaultContextData}
         >
-          <SubInterface
-            {...defaultProps}
-          />
+          <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+            <SubInterface
+              {...defaultProps}
+            />
+          </EdgePortsDataContext.Provider>
         </EdgeEditContext.Provider>
       </Provider>)
     const lagTab = await screen.findByRole('tab', { name: 'LAG 1' })
@@ -311,9 +340,11 @@ describe('EditEdge ports - sub-interface', () => {
         <EdgeEditContext.Provider
           value={defaultContextData}
         >
-          <SubInterface
-            {...defaultProps}
-          />
+          <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+            <SubInterface
+              {...defaultProps}
+            />
+          </EdgePortsDataContext.Provider>
         </EdgeEditContext.Provider>
       </Provider>)
 

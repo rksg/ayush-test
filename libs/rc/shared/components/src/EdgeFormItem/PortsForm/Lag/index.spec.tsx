@@ -1,13 +1,22 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeLagFixtures, EdgeUrlsInfo }                                          from '@acx-ui/rc/utils'
-import { Provider }                                                               from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { EdgeLag, EdgeLagFixtures, EdgeUrlsInfo }      from '@acx-ui/rc/utils'
+import { Provider }                                    from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
+
+import { EdgePortsDataContext } from '../PortDataProvider'
 
 import Lag from '.'
 
 const { mockedEdgeLagList, mockEdgeLagStatusList } = EdgeLagFixtures
+
+const defaultPortsContextdata = {
+  portData: [],
+  lagData: mockedEdgeLagList.content as EdgeLag[],
+  isLoading: false,
+  isFetching: false
+}
 
 describe('EditEdge ports - LAG', () => {
   const mockedEdgeID = 'mocked_edge_id'
@@ -28,26 +37,28 @@ describe('EditEdge ports - LAG', () => {
   it('Should render LAG tab correctly', async () => {
     render(
       <Provider>
-        <Lag
-          serialNumber={mockedEdgeID}
-          lagStatusList={mockEdgeLagStatusList.data}
-          isLoading={false}
-          portList={[]}
-        />
+        <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+          <Lag
+            serialNumber={mockedEdgeID}
+            lagStatusList={mockEdgeLagStatusList.data}
+            isLoading={false}
+          />
+        </EdgePortsDataContext.Provider>
       </Provider>)
-    const rows = await screen.findAllByRole('row')
+    const rows = await screen.findAllByRole('row', { name: /LAG \d/i })
     expect(rows.length).toBe(2)
   })
 
   it('Should open add LAG drawer correctly', async () => {
     render(
       <Provider>
-        <Lag
-          serialNumber={mockedEdgeID}
-          lagStatusList={mockEdgeLagStatusList.data}
-          isLoading={false}
-          portList={[]}
-        />
+        <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+          <Lag
+            serialNumber={mockedEdgeID}
+            lagStatusList={mockEdgeLagStatusList.data}
+            isLoading={false}
+          />
+        </EdgePortsDataContext.Provider>
       </Provider>)
 
     await userEvent.click(screen.getByRole('button', { name: 'Add LAG' }))
@@ -58,15 +69,15 @@ describe('EditEdge ports - LAG', () => {
   it('Should delete LAG correctly', async () => {
     render(
       <Provider>
-        <Lag
-          serialNumber={mockedEdgeID}
-          lagStatusList={mockEdgeLagStatusList.data}
-          isLoading={false}
-          portList={[]}
-        />
+        <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+          <Lag
+            serialNumber={mockedEdgeID}
+            lagStatusList={mockEdgeLagStatusList.data}
+            isLoading={false}
+          />
+        </EdgePortsDataContext.Provider>
       </Provider>)
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const row = await screen.findByRole('row', { name: /LAG 1/i })
     await userEvent.click(within(row).getByRole('radio'))
     await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))

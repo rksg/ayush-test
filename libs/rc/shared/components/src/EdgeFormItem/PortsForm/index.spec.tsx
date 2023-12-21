@@ -109,10 +109,10 @@ describe('EditEdge ports', () => {
         </EditContext.Provider>
       </Provider>)
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await screen.findByRole('tab', {
       name: 'Sub-Interface', selected: true
     })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByTestId('rc-edge-subInterface')).toBeVisible()
   })
 

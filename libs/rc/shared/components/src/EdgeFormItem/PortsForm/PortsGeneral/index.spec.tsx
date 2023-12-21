@@ -4,8 +4,8 @@ import userEvent              from '@testing-library/user-event'
 import { Form, FormInstance } from 'antd'
 import { rest }               from 'msw'
 
-import { EdgePortConfigFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                             from '@acx-ui/store'
+import { EdgeLag, EdgeLagFixtures, EdgePortConfigFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                       from '@acx-ui/store'
 import {
   act,
   mockServer,
@@ -16,10 +16,13 @@ import {
 
 import { EdgePortTabEnum }                from '..'
 import { EditContext as EdgeEditContext } from '../../EdgeEditContext'
+import { EdgePortsDataContext }           from '../PortDataProvider'
 
 import PortsGeneral from './'
 
 const { mockEdgePortConfig, mockEdgePortConfigWithStatusIp } = EdgePortConfigFixtures
+const { mockedEdgeLagList } = EdgeLagFixtures
+
 jest.mock('@acx-ui/utils', () => {
   const reactIntl = jest.requireActual('react-intl')
   const intl = reactIntl.createIntl({
@@ -76,6 +79,12 @@ const defaultContextData = {
   setActiveSubTab: mockedContextSetActiveSubTab,
   setFormControl: mockedSetFormControl
 }
+const defaultPortsContextdata = {
+  portData: mockEdgePortConfigWithStatusIp.ports,
+  lagData: mockedEdgeLagList.content as EdgeLag[],
+  isLoading: false,
+  isFetching: false
+}
 
 describe('EditEdge ports - ports general', () => {
   const mockedUpdateReq = jest.fn()
@@ -126,11 +135,12 @@ describe('EditEdge ports - ports general', () => {
         <EdgeEditContext.Provider
           value={contextData}
         >
-          <PortsGeneral
-            serialNumber={mockedEdgeID}
-            data={mockEdgePortConfigWithStatusIp.ports}
-            onCancel={mockedCancelFn}
-          />
+          <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+            <PortsGeneral
+              serialNumber={mockedEdgeID}
+              onCancel={mockedCancelFn}
+            />
+          </EdgePortsDataContext.Provider>
         </EdgeEditContext.Provider>
       </Provider>)
 
@@ -152,11 +162,12 @@ describe('EditEdge ports - ports general', () => {
         <EdgeEditContext.Provider
           value={defaultContextData}
         >
-          <PortsGeneral
-            serialNumber={mockedEdgeID}
-            data={mockEdgePortConfigWithStatusIp.ports}
-            onCancel={mockedCancelFn}
-          />
+          <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+            <PortsGeneral
+              serialNumber={mockedEdgeID}
+              onCancel={mockedCancelFn}
+            />
+          </EdgePortsDataContext.Provider>
         </EdgeEditContext.Provider>
       </Provider>)
 
@@ -171,11 +182,12 @@ describe('EditEdge ports - ports general', () => {
         <EdgeEditContext.Provider
           value={defaultContextData}
         >
-          <PortsGeneral
-            serialNumber={mockedEdgeID}
-            data={mockEdgePortConfigWithStatusIp.ports}
-            onCancel={mockedCancelFn}
-          />
+          <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+            <PortsGeneral
+              serialNumber={mockedEdgeID}
+              onCancel={mockedCancelFn}
+            />
+          </EdgePortsDataContext.Provider>
         </EdgeEditContext.Provider>
       </Provider>)
 
