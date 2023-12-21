@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import { Form }     from 'antd'
-import {  useIntl } from 'react-intl'
+import { Form }    from 'antd'
+import { useIntl } from 'react-intl'
 
 import { useUpdateTenantSettingsMutation } from '@acx-ui/analytics/services'
 import { Settings }                        from '@acx-ui/analytics/utils'
@@ -10,30 +10,29 @@ import { Drawer, Button, Tooltip, Loader } from '@acx-ui/components'
 import { ComplianceSetting as UI } from './styledComponents'
 
 export const isRegExp = (input: string) => {
-  const checker = () => {
-    try {
-      // eslint-disable-next-line no-new
-      new RegExp(input)
-      return true
-    } catch (e) {
-      return false
-    }
+  try {
+    // eslint-disable-next-line no-new
+    new RegExp(input)
+    return true
+  } catch (e) {
+    return false
   }
-  return checker()
 }
 
 export function ComplianceSetting ({ settings }: { settings: Settings }) {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const ssidRegex = settings['brand-ssid-compliance-matcher']
-  const [ssidPattern, setSSIDPattern] = useState<string>(ssidRegex)
+  const [ssidPattern, setSSIDPattern] = useState(ssidRegex)
   const [updateSlas, result] = useUpdateTenantSettingsMutation()
   const saveSSIDRegex = () => {
-    const payload = { ...settings, 'brand-ssid-compliance-matcher': ssidPattern }
-    updateSlas(payload)
+    updateSlas({
+      ...settings,
+      'brand-ssid-compliance-matcher': ssidPattern
+    })
   }
   return <UI.Wrapper>
-    <UI.Icon data-testid='ssidSettings' onClick={()=>setVisible(!visible)} />
+    <UI.Icon data-testid='ssidSettings' onClick={() => setVisible(!visible)} />
     <Drawer
       width={500}
       title={$t({ defaultMessage: 'Compliance Rules' })}
