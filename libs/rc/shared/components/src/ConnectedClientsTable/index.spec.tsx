@@ -47,6 +47,7 @@ describe('Connected Clients Table', () => {
   })
 
   it('should render table: all columns', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(
       <Provider>
         <ConnectedClientsTable
@@ -61,22 +62,6 @@ describe('Connected Clients Table', () => {
 
     await screen.findByText('MBP')
     await screen.findByText('iphone')
-  })
-
-  it('should render table: network type columns', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    render(
-      <Provider>
-        <ConnectedClientsTable
-          showAllColumns={true}
-          setConnectedClientCount={jest.fn()}
-          searchString={''}/>
-      </Provider>, {
-        route: { params, path: '/:tenantId/users/aps/clients' }
-      })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
     expect((await screen.findAllByText('Network Type')).length).toBeGreaterThan(1)
   })
 
