@@ -54,13 +54,41 @@ describe('ComplianceSetting Drawer', () => {
   })
   it('should not save if invalid ssid regex', async () => {
     const settings = {
-      'brand-ssid-compliance-matcher': ''
+      'brand-ssid-compliance-matcher': 'test'
     }
     render(<ComplianceSetting settings={settings as Settings} />, { wrapper: Provider, route })
     await userEvent.click(await screen.findByTestId('ssidSettings'))
     expect(await screen.findByText('Choose a pattern to validate Brand SSID compliance'))
       .toBeVisible()
     fireEvent.change(await screen.findByTestId('ssidRegex'), { target: { value: 'abc(' } })
+    await userEvent.click(await screen.findByText('Save'))
+    expect(await screen.findByText('Input is not a valid Java Regular Expression!'))
+      .toBeVisible()
+    expect(mockedUpdateTenantSettingsMutation).not.toHaveBeenCalled()
+  })
+  it('should not save if empty ssid regex', async () => {
+    const settings = {
+      'brand-ssid-compliance-matcher': 'test'
+    }
+    render(<ComplianceSetting settings={settings as Settings} />, { wrapper: Provider, route })
+    await userEvent.click(await screen.findByTestId('ssidSettings'))
+    expect(await screen.findByText('Choose a pattern to validate Brand SSID compliance'))
+      .toBeVisible()
+    fireEvent.change(await screen.findByTestId('ssidRegex'), { target: { value: '' } })
+    expect(await screen.findByText('SSID Regular Expression is required!'))
+      .toBeVisible()
+    await userEvent.click(await screen.findByText('Save'))
+    expect(mockedUpdateTenantSettingsMutation).not.toHaveBeenCalled()
+  })
+  it('should not save if same ssid regex', async () => {
+    const settings = {
+      'brand-ssid-compliance-matcher': 'test'
+    }
+    render(<ComplianceSetting settings={settings as Settings} />, { wrapper: Provider, route })
+    await userEvent.click(await screen.findByTestId('ssidSettings'))
+    expect(await screen.findByText('Choose a pattern to validate Brand SSID compliance'))
+      .toBeVisible()
+    fireEvent.change(await screen.findByTestId('ssidRegex'), { target: { value: 'test' } })
     await userEvent.click(await screen.findByText('Save'))
     expect(mockedUpdateTenantSettingsMutation).not.toHaveBeenCalled()
   })

@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
-import { Form }    from 'antd'
-import { useIntl } from 'react-intl'
+import { Form, Input } from 'antd'
+import { useIntl }     from 'react-intl'
 
 import { useUpdateTenantSettingsMutation } from '@acx-ui/analytics/services'
 import { Settings }                        from '@acx-ui/analytics/utils'
@@ -19,18 +19,29 @@ export const isRegExp = (input: string) => {
   }
 }
 
+const ssidField = 'ssidPattern'
+
 export function ComplianceSetting ({ settings }: { settings: Settings }) {
   const { $t } = useIntl()
-  const [visible, setVisible] = useState(false)
   const ssidRegex = settings['brand-ssid-compliance-matcher']
-  const [ssidPattern, setSSIDPattern] = useState(ssidRegex)
+  const [visible, setVisible] = useState(false)
+  const [form] = Form.useForm()
+  const ssidValue = Form.useWatch(ssidField, form)
+  const isDisabled = ssidValue === ''
+    || ssidValue === ssidRegex
+    || !isRegExp(ssidValue)
   const [updateSlas, result] = useUpdateTenantSettingsMutation()
   const saveSSIDRegex = () => {
     updateSlas({
       ...settings,
-      'brand-ssid-compliance-matcher': ssidPattern
+      'brand-ssid-compliance-matcher': ssidValue
     })
   }
+
+  useEffect(() => {
+    form && form.setFieldValue(ssidField, ssidRegex)
+  }, [ssidRegex, form])
+
   return <UI.Wrapper>
     <UI.Icon data-testid='ssidSettings' onClick={() => setVisible(!visible)} />
     <Drawer
@@ -38,10 +49,11 @@ export function ComplianceSetting ({ settings }: { settings: Settings }) {
       title={$t({ defaultMessage: 'Compliance Rules' })}
       visible={visible}
       onClose={() => setVisible(false)}
+      destroyOnClose
       footer={<>
         <Button
           type='primary'
-          disabled={!isRegExp(ssidPattern)}
+          disabled={isDisabled}
           onClick={() => saveSSIDRegex()}>
           {$t({ defaultMessage: 'Save' })}
         </Button>
@@ -49,26 +61,32 @@ export function ComplianceSetting ({ settings }: { settings: Settings }) {
           {$t({ defaultMessage: 'Cancel' })}
         </Button></>}
     > <Loader states={[result]}>
-        <Form layout='vertical'>
+        <Form
+          initialValues={{ [ssidField]: ssidValue || ssidRegex }}
+          layout='vertical'
+          form={form}>
           <Form.Item
-            name='ssidPattern'
+            name={ssidField}
             label={<>
               {$t({ defaultMessage: 'Choose a pattern to validate Brand SSID compliance' })}
               <Tooltip.Question
                 title={$t(
-                  { defaultMessage: 'Regular expression should be compatible with java standards' }
-                )}
-                placement='top'
-              />
+                  { defaultMessage:
+                      'Regular expression should be compatible with Java standards' })}
+                placement='top' />
             </>}
-            children={<textarea
-              data-testid='ssidRegex'
-              style={{ width: '100%', outline: 'none' }}
-              rows={5}
-              defaultValue={ssidPattern || ssidRegex}
-              value={ssidPattern}
-              onChange={({ target: { value } }) => setSSIDPattern(value)}
-            />}
+            rules={[{
+              required: true,
+              message: $t({ defaultMessage: 'SSID Regular Expression is required!' })
+            },
+            {
+              validator (_, value) {
+                const check = isRegExp(value)
+                return check ? Promise.resolve() : Promise.reject()
+              },
+              message: $t({ defaultMessage: 'Input is not a valid Java Regular Expression!' })
+            }]}
+            children={<Input.TextArea data-testid='ssidRegex' />}
           />
         </Form>
       </Loader>
