@@ -19,6 +19,7 @@ import {
   getParamString,
   noDataText
 } from './extra'
+import CrrmKpi from './kpi'
 import * as UI from './styledComponents'
 
 const { countFormat } = intlFormats
@@ -98,7 +99,6 @@ function AIDrivenRRMWidget ({
                   id,
                   code,
                   crrmOptimizedState,
-                  crrmInterferingLinksText,
                   summary,
                   status,
                   updatedAt,
@@ -117,7 +117,7 @@ function AIDrivenRRMWidget ({
                         title={sliceValue}
                         description={code === 'unknown'
                           ? $t(states[status].text)
-                          : crrmInterferingLinksText}
+                          : <CrrmKpi id={id} code={code}/>}
                       />
                     </Tooltip>
                   </TenantLink>
