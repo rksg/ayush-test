@@ -33,14 +33,14 @@ import { EdgePortConfigFormType } from '.'
 
 interface ConfigFormProps {
   formListKey: number
-  index: number
+  id: string
   isEdgeSdLanRun: boolean
 }
 
 const { useWatch, useFormInstance } = Form
 
 export const PortConfigForm = (props: ConfigFormProps) => {
-  const { index, formListKey, isEdgeSdLanRun } = props
+  const { id, formListKey, isEdgeSdLanRun } = props
   const { $t } = useIntl()
   const form = useFormInstance<EdgePortConfigFormType>()
   const portTypeOptions = getEdgePortTypeOptions($t)
@@ -51,14 +51,14 @@ export const PortConfigForm = (props: ConfigFormProps) => {
   [formListKey])
 
   const getFieldFullPath = useCallback((fieldName: string) =>
-    [getInnerPortFormID(index), ...getFieldPath(fieldName)],
-  [index, getFieldPath])
+    [getInnerPortFormID(id), ...getFieldPath(fieldName)],
+  [id, getFieldPath])
 
   const statusIp = useWatch(getFieldFullPath('statusIp'), form)
   const mac = useWatch(getFieldFullPath('mac'), form)
   const portType = useWatch(getFieldFullPath('portType'), form)
-  useWatch(getFieldFullPath('corePortEnabled'), form)
   const portEnabled = useWatch(getFieldFullPath('enabled'), form)
+  useWatch(getFieldFullPath('corePortEnabled'), form)
 
   const corePortMac = getEnabledCorePortMac(form)
   const hasCorePortEnabled = !!corePortMac
@@ -91,7 +91,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
 
   const getSubnetInfoWithoutCurrent = () => {
     return Object.entries<EdgePortWithStatus[]>(form.getFieldsValue(true))
-      .filter(item => item[0] !== getInnerPortFormID(index)
+      .filter(item => item[0] !== getInnerPortFormID(id)
         && _.get(item[1], getFieldPath('enabled'))
         && !!_.get(item[1], getFieldPath('ip'))
         && !!_.get(item[1], getFieldPath('subnet')))
@@ -238,13 +238,19 @@ export const PortConfigForm = (props: ConfigFormProps) => {
           <Form.Item
             name={getFieldPath('portType')}
             label={$t({ defaultMessage: 'Port Type' })}
-            children={
-              <Select
-                options={portTypeOptions}
-                disabled={hasCorePortEnabled}
-              />
-            }
-          />
+          >
+            <Select>
+              {portTypeOptions.map((item) => {
+                return <Select.Option
+                  key={item.value}
+                  value={item.value}
+                  disabled={hasCorePortEnabled && item.value === EdgePortTypeEnum.WAN}
+                >
+                  {item.label}
+                </Select.Option>
+              })}
+            </Select>
+          </Form.Item>
           <Form.Item
             noStyle
             shouldUpdate={(prev, cur) => {

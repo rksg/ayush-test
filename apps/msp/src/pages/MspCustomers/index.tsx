@@ -765,7 +765,7 @@ export function MspCustomers () {
             <MspTenantLink to='/dashboard/mspcustomers/create'>
               <Button
                 hidden={(userProfile?.support && !isSupportToMspDashboardAllowed) || !onBoard}
-                type='primary'>{$t({ defaultMessage: 'Add EC Customer' })}</Button>
+                type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
             </MspTenantLink>
           ]
           : [
@@ -783,6 +783,7 @@ export function MspCustomers () {
         setVisible={setDrawerAdminVisible}
         setSelected={() => {}}
         tenantId={ecTenantId}
+        tenantType={tenantType}
       />}
       {drawerIntegratorVisible && <SelectIntegratorDrawer
         visible={drawerIntegratorVisible}

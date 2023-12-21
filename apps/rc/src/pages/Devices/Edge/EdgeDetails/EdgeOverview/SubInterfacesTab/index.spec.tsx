@@ -8,17 +8,14 @@ import {
   mockServer,
   render,
   screen,
-  waitFor
+  waitFor,
+  waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
-
-// import {
-//   edgePortsSetting
-// } from '../../../__tests__/fixtures'
 
 import { EdgeSubInterfacesTab } from '.'
 
 const { edgePortsSetting } = EdgePortConfigFixtures
-const { mockEdgeSubInterfacesStatus } = EdgeSubInterfaceFixtures
+const { mockEdgeSubInterfacesStatus, mockEdgeLagSubInterfacesStatus } = EdgeSubInterfaceFixtures
 const { mockEdgeLagStatusList } = EdgeLagFixtures
 
 const mockedUsedNavigate = jest.fn()
@@ -39,6 +36,14 @@ describe('Edge overview sub-interfaces tab', () => {
         (_req, res, ctx) => {
           return res(
             ctx.json(mockEdgeSubInterfacesStatus)
+          )
+        }
+      ),
+      rest.post(
+        EdgeUrlsInfo.getLagSubInterfacesStatus.url.split('?')[0],
+        (_req, res, ctx) => {
+          return res(
+            ctx.json(mockEdgeLagSubInterfacesStatus)
           )
         }
       )
@@ -82,7 +87,7 @@ describe('Edge overview sub-interfaces tab', () => {
     const portTabs = await screen.findAllByRole('tab')
     expect(portTabs.length).toBe(4)
 
-    const port2Tab = await screen.findByRole('tab', { name: 'Port 2' })
+    const port2Tab = await screen.findByRole('tab', { name: 'Port2' })
     await userEvent.click(port2Tab)
     await waitFor(() => {
       expect(port2Tab).toHaveAttribute('aria-selected', 'true')
@@ -112,5 +117,27 @@ describe('Edge overview sub-interfaces tab', () => {
       })
 
     await screen.findByText('No data to display')
+  })
+
+  it('should correctly render LAG tab', async () => {
+    render(
+      <Provider>
+        <EdgeSubInterfacesTab
+          isLoading={false}
+          ports={edgePortsSetting}
+          lags={mockEdgeLagStatusList.data}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    const portTabs = await screen.findAllByRole('tab')
+    expect(portTabs.length).toBe(4)
+    const lag1Tab = await screen.findByRole('tab', { name: 'LAG 1' })
+    await userEvent.click(lag1Tab)
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByRole('row', {
+      name: 'LAN Up 1.1.1.1 Static IP 255.255.255.128 4'
+    })).toBeVisible()
   })
 })

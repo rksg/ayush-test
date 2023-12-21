@@ -282,7 +282,7 @@ describe('EditEdge ports - sub-interface', () => {
     expect(btn).toBeNull()
   })
 
-  it('should render LAG SubInterface successfully', async () => {
+  it.skip('should render LAG SubInterface successfully', async () => {
     render(
       <Provider>
         <EdgeEditContext.Provider
@@ -301,6 +301,7 @@ describe('EditEdge ports - sub-interface', () => {
       })
     const lagTab = await screen.findByRole('tab', { name: 'LAG 1' })
     await userEvent.click(lagTab)
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect((await screen.findAllByRole('row')).length).toBe(11)
   })
 

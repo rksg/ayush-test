@@ -1,9 +1,9 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { Space }                  from 'antd'
-import _                          from 'lodash'
-import { useIntl }                from 'react-intl'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Space }                               from 'antd'
+import _                                       from 'lodash'
+import { useIntl }                             from 'react-intl'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { IncidentsBySeverityData, useLazyIncidentsListBySeverityQuery }                                        from '@acx-ui/analytics/components'
 import { ColumnType, Loader, StackedBarChart, Table, TableProps, cssStr, deviceStatusColors, showActionModal } from '@acx-ui/components'
@@ -62,6 +62,7 @@ const defaultTableData: ApGroupViewModel[] = []
 export const ApGroupTable = (props : ApGroupTableProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
+  const location = useLocation()
   const params = useParams()
   const filters = getFilters(params) as FILTER
   const { searchable, filterables } = props
@@ -230,7 +231,7 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
     }
   }, {
     key: 'clients',
-    title: $t({ defaultMessage: 'Connected Clients' }),
+    title: $t({ defaultMessage: 'Clients' }),
     dataIndex: 'clients',
     align: 'center',
     sorter: true,
@@ -277,7 +278,10 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
             navigate({
               ...basePath,
               pathname: `${basePath.pathname}/apgroups/add`
-            })
+            }, { state: {
+              venueId: params.venueId,
+              history: location.pathname
+            } })
           }
         }]) : []}
         searchableWidth={260}

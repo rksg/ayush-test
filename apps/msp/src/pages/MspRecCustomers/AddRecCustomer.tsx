@@ -39,6 +39,7 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 import { RolesEnum }                  from '@acx-ui/types'
+import { useUserProfileContext }      from '@acx-ui/user'
 import { AccountType, noDataDisplay } from '@acx-ui/utils'
 
 import { SelectRecCustomerDrawer } from './SelectRecCustomer'
@@ -66,6 +67,7 @@ export function AddRecCustomer () {
   const { Paragraph } = Typography
   const isEditMode = action === 'edit'
 
+  const { data: userProfileData } = useUserProfileContext()
   const { data: Administrators } =
       useMspAdminListQuery({ params: useParams() }, { skip: !isEditMode })
   const { data: delegatedAdmins } =
@@ -136,6 +138,19 @@ export function AddRecCustomer () {
     }
     if (isEditMode) {
       setEcSupport((ecSupport && ecSupport?.length > 0) || false)
+    } else {
+      if (userProfileData) {
+        const administrator = [] as MspAdministrator[]
+        administrator.push ({
+          id: userProfileData.adminId,
+          lastName: userProfileData.lastName,
+          name: userProfileData.firstName,
+          email: userProfileData.email,
+          role: userProfileData.role as RolesEnum,
+          detailLevel: userProfileData.detailLevel
+        })
+        setAdministrator(administrator)
+      }
     }
   }, [delegatedAdmins, Administrators])
 
@@ -239,14 +254,29 @@ export function AddRecCustomer () {
   }
 
   const displayIntegrator = () => {
-    const value =
-      !mspIntegrator || mspIntegrator.length === 0 ? noDataDisplay : mspIntegrator[0].name
-    return value
+    if (!mspIntegrator || mspIntegrator.length === 0)
+      return noDataDisplay
+    return <>
+      {mspIntegrator.map(integrator =>
+        <UI.AdminList key={integrator.id}>
+          {integrator.name}
+        </UI.AdminList>
+      )}
+    </>
+
   }
 
   const displayInstaller = () => {
-    const value = !mspInstaller || mspInstaller.length === 0 ? noDataDisplay : mspInstaller[0].name
-    return value
+    if (!mspInstaller || mspInstaller.length === 0)
+      return noDataDisplay
+    return <>
+      {mspInstaller.map(installer =>
+        <UI.AdminList key={installer.id}>
+          {installer.name}
+        </UI.AdminList>
+      )}
+    </>
+
   }
 
   const MspAdminsForm = () => {

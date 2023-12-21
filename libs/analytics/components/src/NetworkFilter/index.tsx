@@ -204,7 +204,7 @@ function ConnectedNetworkFilter (
     raw: reportsRaw, filters: reportsFilter } = useReportsFilter()
   let { bands: selectedBands } = reportsFilter
   const incidentsList = useIncidentsListQuery(
-    { ...filters, includeMuted: false },
+    { ...filters, includeMuted: false, filter: {} },
     {
       skip: !Boolean(withIncidents),
       selectFromResult: ({ data }) => ({

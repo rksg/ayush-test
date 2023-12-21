@@ -43,6 +43,10 @@ describe('ClientDualTable', () => {
       rest.post(
         CommonUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVMNetworksList.url,
+        (req, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
   })

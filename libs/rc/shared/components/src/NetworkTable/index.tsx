@@ -3,9 +3,9 @@ import { ReactNode, useEffect, useState } from 'react'
 import { useIntl, FormattedMessage } from 'react-intl'
 import { useNavigate, useParams }    from 'react-router-dom'
 
-import { showActionModal, Loader, TableProps, Table  }      from '@acx-ui/components'
-import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
-import { useDeleteNetworkMutation, useLazyVenuesListQuery } from '@acx-ui/rc/services'
+import { showActionModal, Loader, TableProps, Table  }            from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useDeleteNetworkMutation, useLazyVenuesListQuery }       from '@acx-ui/rc/services'
 import {
   NetworkTypeEnum,
   Network,
@@ -282,7 +282,9 @@ interface NetworkTableProps {
 export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
   const isServicesEnabled = useIsSplitOn(Features.SERVICES)
   const isWpaDsae3Toggle = useIsSplitOn(Features.WIFI_EDA_WPA3_DSAE_TOGGLE)
+  const isBetaDPSK3FeatureEnabled = useIsTierAllowed(TierFeatures.BETA_DPSK3)
   const [expandOnBoaroardingNetworks, setExpandOnBoaroardingNetworks] = useState<boolean>(false)
+  const [showOnboardNetworkToggle, setShowOnboardNetworkToggle] = useState<boolean>(false)
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([])
   const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
   const intl = useIntl()
@@ -297,7 +299,7 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
 
       tableQuery?.data?.data.map((record: Network) => {
         if (record?.children) _rows.push(record.id)})
-
+      setShowOnboardNetworkToggle(!!_rows.length)
       if (expandOnBoaroardingNetworks) {
         setExpandedRowKeys(_rows)
       } else {
@@ -329,14 +331,16 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
       onClick: (selectedRows) => {
         navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/edit`, { replace: false })
       },
-      disabled: (selectedRows) => !isWpaDsae3Toggle && (!!selectedRows[0]?.dsaeOnboardNetwork)
+      disabled: (selectedRows) => (isBetaDPSK3FeatureEnabled
+        && !isWpaDsae3Toggle) && (!!selectedRows[0]?.dsaeOnboardNetwork)
     },
     {
       label: $t({ defaultMessage: 'Clone' }),
       onClick: (selectedRows) => {
         navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/clone`, { replace: false })
       },
-      disabled: (selectedRows) => !isWpaDsae3Toggle && (!!selectedRows[0]?.dsaeOnboardNetwork)
+      disabled: (selectedRows) => (isBetaDPSK3FeatureEnabled
+        && !isWpaDsae3Toggle) && (!!selectedRows[0]?.dsaeOnboardNetwork)
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
@@ -373,7 +377,8 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
             .then(clearSelection)
         })
       },
-      disabled: (selectedRows) => !isWpaDsae3Toggle && (!!selectedRows[0]?.dsaeOnboardNetwork)
+      disabled: (selectedRows) => (isBetaDPSK3FeatureEnabled
+        && !isWpaDsae3Toggle) && (!!selectedRows[0]?.dsaeOnboardNetwork)
     }
   ]
 
@@ -407,7 +412,7 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
         rowActions={filterByAccess(rowActions)}
         rowSelection={selectable ? { type: 'radio',
           ...rowSelection(supportOweTransition) } : undefined}
-        actions={isWpaDsae3Toggle ? [{
+        actions={isBetaDPSK3FeatureEnabled && isWpaDsae3Toggle && showOnboardNetworkToggle ? [{
           key: 'toggleOnboardNetworks',
           label: expandOnBoaroardingNetworks
             ? $t({ defaultMessage: 'Hide Onboard Networks' })

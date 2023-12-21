@@ -97,7 +97,8 @@ export const EdgeOverview = () => {
       'portType',
       'mac',
       'ip',
-      'ipMode'
+      'ipMode',
+      'lacpTimeout'
     ],
     sortField: 'lagId',
     sortOrder: 'ASC'

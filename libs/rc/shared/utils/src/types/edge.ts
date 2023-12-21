@@ -80,6 +80,7 @@ export interface EdgePort {
   gateway: string
   natEnabled: boolean
   corePortEnabled: boolean
+  interfaceName?: string
 }
 
 export interface EdgePortWithStatus extends EdgePort {
@@ -120,10 +121,11 @@ export interface EdgePortStatus {
   speedKbps: number
   duplex: string
   ip: string,
-  ipMode: string,
+  ipMode: string
   sortIdx: number
   vlan: string
   subnet: string
+  interfaceName?: string
 }
 
 export interface EdgeStatusSeverityStatistic {
@@ -184,6 +186,10 @@ export interface EdgeTotalUpDownTime {
 
 export interface EdgeTopTraffic {
   traffic: number[]       // bytes
+  portTraffic: {
+    portName: string,
+    traffic: number       // bytes
+  }[]
 }
 
 export type EdgeResourceTimeSeries = {
@@ -200,6 +206,7 @@ export type EdgeResourceUtilizationData = {
 }
 
 export interface EdgePortTrafficTimeSeries {
+  portName: string,
   tx: number[],
   rx: number[],
   total: number[]
