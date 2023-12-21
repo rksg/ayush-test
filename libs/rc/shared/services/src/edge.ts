@@ -491,7 +491,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           .map(status => [status.portId, status.ip]))
 
         const portDataWithStatusIp = ports.ports.map((item) => {
-          return { ...item, statusIp: statusIpMap[item.id] }
+          return { ...item, statusIp: statusIpMap[item.id ?? ''] }
         })
 
         return portQuery.data

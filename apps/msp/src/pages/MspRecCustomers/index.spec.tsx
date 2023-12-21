@@ -520,7 +520,7 @@ describe('MspRecCustomers', () => {
     fireEvent.click(within(row).getByRole('link', { name: '0' }))
 
     expect(screen.getByRole('dialog')).toBeVisible()
-    expect(screen.getByText('Manage MSP Administrators')).toBeVisible()
+    expect(screen.getByText('Manage Tech Partner Administrators')).toBeVisible()
   })
   it('should render table for mspec', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {

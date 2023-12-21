@@ -75,4 +75,7 @@ export * from './MultiLinkOperationOptions'
 export * from './ApRadioParams24G'
 export * from './ApRadioParams50G'
 export * from './ApRadioParams6G'
-
+export * from './VenueDhcpServiceSetting'
+export * from './DenialOfServiceProtection'
+export * from './BandBalancing'
+export * from './BandModeEnum'

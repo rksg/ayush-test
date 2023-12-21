@@ -1,11 +1,12 @@
 
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 
 import {
   Checkbox,
   Form,
   Select,
   Slider,
+  Space,
   Switch
 } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
@@ -18,12 +19,13 @@ import {
   useL2AclPolicyListQuery,
   useL3AclPolicyListQuery,
   useApplicationPolicyListQuery,
-  useAccessControlProfileListQuery,
-  useAddAccessControlProfileMutation
+  useAddAccessControlProfileMutation,
+  useGetAccessControlProfileListQuery
 } from '@acx-ui/rc/services'
 import {
   AccessControlFormFields,
-  AccessControlProfile
+  AccessControlProfile,
+  AclEmbeddedObject
 } from '@acx-ui/rc/utils'
 import { transformDisplayText } from '@acx-ui/rc/utils'
 import { useParams }            from '@acx-ui/react-router-dom'
@@ -42,32 +44,78 @@ import * as UI from './styledComponents'
 const { useWatch } = Form
 const { Option } = Select
 
+type ModalStatus = {
+  visible: boolean,
+  embeddedObject?: AclEmbeddedObject
+}
+
+type AcProfileModalProps = {
+  modalStatus: ModalStatus,
+  setModalStatus: (value: ModalStatus) => void
+  updateSelectedACProfile?: (id: string) => void
+}
+
+const emptyEmbeddedObject: AclEmbeddedObject = {
+  l2AclPolicyId: undefined,
+  l3AclPolicyId: undefined,
+  devicePolicyId: undefined,
+  applicationPolicyId: undefined,
+  uplinkLimit: undefined,
+  downlinkLimit: undefined
+}
+
 export function AccessControlForm () {
   const { $t } = useIntl()
-  const [enabledProfile, setEnabledProfile] = useState(false)
+  const [enabledProfile, setEnabledProfile] = useState(true)
 
   const { data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
 
+  const [modalStatus, setModalStatus] = useState<ModalStatus>({
+    visible: false,
+    embeddedObject: emptyEmbeddedObject
+  })
+
   useEffect(() => {
-    if (data?.wlan?.advancedCustomization) {
+    const { advancedCustomization } = data?.wlan || {}
+    if (advancedCustomization) {
+      const {
+        accessControlProfileId,
+        l2AclEnable,
+        l3AclEnable,
+        devicePolicyId,
+        applicationPolicyEnable,
+        userDownlinkRateLimiting = 0,
+        userUplinkRateLimiting = 0
+      } = advancedCustomization
+
+      const enableDeviceOs = !_.isEmpty(devicePolicyId)
+      const enableDownloadLimit = userDownlinkRateLimiting > 0
+      const enableUploadLimit = userUplinkRateLimiting > 0
+      const enableClientRateLimit = enableDownloadLimit || enableUploadLimit
+      const accessControlProfileEnable = !_.isEmpty(accessControlProfileId)
+
       form.setFieldsValue({
-        enableDeviceOs: !_.isEmpty(data.wlan.advancedCustomization.devicePolicyId),
-        enableDownloadLimit: (get(data,
-          'wlan.advancedCustomization.userDownlinkRateLimiting')) > 0,
-        enableUploadLimit: (get(data,
-          'wlan.advancedCustomization.userUplinkRateLimiting')) > 0,
-        enableClientRateLimit: (get(data,
-          'wlan.advancedCustomization.userDownlinkRateLimiting')) > 0 ||
-          (get(data,
-            'wlan.advancedCustomization.userUplinkRateLimiting')) > 0,
-        accessControlProfileEnable: !_.isEmpty(get(data,
-          'wlan.advancedCustomization.accessControlProfileId'))
+        enableDeviceOs,
+        enableDownloadLimit,
+        enableUploadLimit,
+        enableClientRateLimit,
+        accessControlProfileEnable
       })
-      setEnabledProfile(!_.isEmpty(
-        get(data, 'wlan.advancedCustomization.accessControlProfileId')))
+
+      setEnabledProfile(accessControlProfileEnable ||
+        (!l2AclEnable && !l3AclEnable &&
+         !enableDeviceOs && !applicationPolicyEnable && !enableClientRateLimit))
     }
   }, [])
+
+  const updateSelectedACProfile = (id: string) => {
+    if (!!id) {
+      setEnabledProfile(true)
+      form.setFieldValue('accessControlProfileEnable', true)
+      form.setFieldValue(['wlan', 'advancedCustomization', 'accessControlProfileId'], id)
+    }
+  }
 
   return (
     <div style={{ marginBottom: '30px' }}>
@@ -81,38 +129,100 @@ export function AccessControlForm () {
           {$t({ defaultMessage: 'Access Control' })}
         </UI.Subtitle>
 
-        {!enabledProfile && <SaveAsAcProfileButton />}
-
-        <Button
-          type='link'
-          onClick={() => {
-            setEnabledProfile(!enabledProfile)
-          }}
-        >
+        {!enabledProfile && <SaveAsAcProfileButton
+          modalStatus={modalStatus}
+          setModalStatus={setModalStatus} />}
+        <Button type='link' onClick={() => setEnabledProfile(!enabledProfile)}>
           {enabledProfile ? $t({ defaultMessage: 'Select separate profiles' })
             : $t({ defaultMessage: 'Select Access Control profile' })
           }
         </Button>
       </span>
-
-
       {enabledProfile ?
         // eslint-disable-next-line max-len
-        <SelectAccessProfileProfile accessControlProfileId={get(data, 'wlan.advancedCustomization.accessControlProfileId')}/> :
-        <AccessControlConfigForm />}
+        <SelectAccessProfileProfile
+          accessControlProfileId={get(data, 'wlan.advancedCustomization.accessControlProfileId')}
+          setModalStatus={setModalStatus}
+        /> : <AccessControlConfigForm />}
+      <AddAcProfileModal
+        modalStatus={modalStatus}
+        setModalStatus={setModalStatus}
+        updateSelectedACProfile={updateSelectedACProfile} />
     </div>)
 }
 
-function SaveAsAcProfileButton () {
+
+function AddAcProfileModal (props: AcProfileModalProps) {
   const { $t } = useIntl()
   const params = useParams()
-  const { useWatch } = Form
-  const [visible, setVisible] = useState(false)
-  const [embeddedObject, setEmbeddedObject] = useState({})
+
+  const { modalStatus, setModalStatus, updateSelectedACProfile } = props
+  const { visible=false, embeddedObject } = modalStatus
 
   const [ createAclProfile ] = useAddAccessControlProfileMutation()
 
   const formRef = useRef<StepsFormLegacyInstance<AccessControlFormFields>>()
+
+  return (
+    <Modal
+      title={$t({ defaultMessage: 'Add Access Control Policy' })}
+      visible={visible}
+      type={ModalType.ModalStepsForm}
+      width={650}
+    >
+      <StepsFormLegacy<AccessControlFormFields>
+        formRef={formRef}
+        onCancel={() => {
+          formRef.current?.resetFields()
+          setModalStatus({
+            visible: false
+          })
+        }}
+        onFinish={async () => {
+          try {
+            const aclPayloadObject = genAclPayloadObject(
+                formRef.current?.getFieldsValue() as AccessControlFormFields
+            )
+            const responseData = await createAclProfile({
+              params: params,
+              payload: convertToPayload(false, aclPayloadObject, params.policyId)
+            }).unwrap()
+
+            const profileId = responseData?.response?.id
+            if (profileId) {
+              updateSelectedACProfile?.(profileId)
+            }
+
+            setModalStatus({
+              visible: false
+            })
+            formRef.current?.resetFields()
+          } catch (error) {
+            console.log(error) // eslint-disable-line no-console
+          }
+        }}
+      >
+        <StepsFormLegacy.StepForm<AccessControlProfile>
+          name='settings'
+          title={$t({ defaultMessage: 'Settings' })}
+        >
+          <AccessControlSettingForm
+            editMode={false}
+            embeddedMode={true}
+            embeddedObject={embeddedObject}
+          />
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
+    </Modal>
+  )
+}
+
+function SaveAsAcProfileButton (props: AcProfileModalProps) {
+  const { $t } = useIntl()
+  const { useWatch } = Form
+
+  const [embeddedObject, setEmbeddedObject] = useState({})
+  const { setModalStatus } = props
 
   const [
     l2AclPolicyId,
@@ -152,57 +262,20 @@ function SaveAsAcProfileButton () {
     l3AclEnable, l3AclPolicyId,
     enableDeviceOs, devicePolicyId,
     applicationPolicyEnable, applicationPolicyId,
-    uplinkLimit, downlinkLimit, visible
+    uplinkLimit, downlinkLimit//, modalStatus.visible
   ])
 
-  return (
-    <>
-      <Button
-        type='link'
-        onClick={() => setVisible(true)}
-      >
-        {$t({ defaultMessage: 'Save as AC Profile' })}
-      </Button>
-      <Modal
-        title={$t({ defaultMessage: 'Add Access Control Policy' })}
-        visible={visible}
-        type={ModalType.ModalStepsForm}
-      >
-        <StepsFormLegacy<AccessControlFormFields>
-          formRef={formRef}
-          onCancel={() => {
-            formRef.current?.resetFields()
-            setVisible(false)
-          }}
-          onFinish={async () => {
-            try {
-              const aclPayloadObject = genAclPayloadObject(
-                formRef.current?.getFieldsValue() as AccessControlFormFields
-              )
-              await createAclProfile({
-                params: params,
-                payload: convertToPayload(false, aclPayloadObject, params.policyId)
-              }).unwrap()
+  const handleOnClick = () => {
+    setModalStatus({
+      visible: true,
+      embeddedObject
+    })
+  }
 
-              setVisible(false)
-            } catch (error) {
-              console.log(error) // eslint-disable-line no-console
-            }
-          }}
-        >
-          <StepsFormLegacy.StepForm<AccessControlProfile>
-            name='settings'
-            title={$t({ defaultMessage: 'Settings' })}
-          >
-            <AccessControlSettingForm
-              editMode={false}
-              embeddedMode={true}
-              embeddedObject={embeddedObject}
-            />
-          </StepsFormLegacy.StepForm>
-        </StepsFormLegacy>
-      </Modal>
-    </>
+  return (
+    <Button type='link' onClick={handleOnClick}>
+      {$t({ defaultMessage: 'Save as AC Profile' })}
+    </Button>
   )
 }
 
@@ -241,9 +314,12 @@ function GetLinkLimitByAccessControlPorfile (props: {
   return <div>{limit}</div>
 }
 
-export function SelectAccessProfileProfile (props: { accessControlProfileId: string }) {
+export function SelectAccessProfileProfile (props: {
+  accessControlProfileId: string,
+  setModalStatus: (data: ModalStatus) => void
+}) {
   const { $t } = useIntl()
-  const { accessControlProfileId } = props
+  const { accessControlProfileId, setModalStatus } = props
   const form = Form.useFormInstance()
   const { data } = useContext(NetworkFormContext)
 
@@ -311,7 +387,7 @@ export function SelectAccessProfileProfile (props: { accessControlProfileId: str
 
   //Access control list
   const { accessControlProfileSelectOptions, accessControlList }
-    = useAccessControlProfileListQuery({
+    = useGetAccessControlProfileListQuery({
       params: useParams()
     }, {
       selectFromResult ({ data }) {
@@ -325,8 +401,9 @@ export function SelectAccessProfileProfile (props: { accessControlProfileId: str
 
   useEffect(() => {
     if (data && accessControlList) {
-      if (!_.isEmpty(get(data, 'wlan.advancedCustomization.accessControlProfileId'))) {
-        onAccessPolicyChange(get(data, 'wlan.advancedCustomization.accessControlProfileId'))
+      const wlanACProfileId = get(data, 'wlan.advancedCustomization.accessControlProfileId')
+      if (!_.isEmpty(wlanACProfileId)) {
+        onAccessPolicyChange(wlanACProfileId)
       }
       if (accessControlProfileId) {
         onAccessPolicyChange(accessControlProfileId)
@@ -365,6 +442,13 @@ export function SelectAccessProfileProfile (props: { accessControlProfileId: str
     }
   }, [enableAccessControlProfile, accessControlProfileId])
 
+  const handleOnAddClick = () => {
+    setModalStatus({
+      visible: true,
+      embeddedObject: emptyEmbeddedObject
+    })
+  }
+
   return (<>
     <UI.FieldLabel width={labelWidth}>
       {$t({ defaultMessage: 'Access Control' })}
@@ -377,28 +461,34 @@ export function SelectAccessProfileProfile (props: { accessControlProfileId: str
       />
     </UI.FieldLabel>
 
-    {enableAccessControlProfile && <Form.Item
-      label={$t({ defaultMessage: 'Access Control Policy' })}
-      name={['wlan','advancedCustomization','accessControlProfileId']}
-      rules={[
-        { validator: async () => {
-          if (!form.getFieldValue(['wlan','advancedCustomization','accessControlProfileId'])) {
-            return Promise.reject($t({
+    {enableAccessControlProfile && <Space>
+      <Form.Item
+        label={$t({ defaultMessage: 'Access Control Policy' })}
+        name={['wlan','advancedCustomization','accessControlProfileId']}
+        rules={[
+          { validator: async () => {
+            if (!form.getFieldValue(['wlan','advancedCustomization','accessControlProfileId'])) {
+              return Promise.reject($t({
               // eslint-disable-next-line max-len
-              defaultMessage: 'If you enable the access control, access control policy could not be empty'
-            }))
-          }
+                defaultMessage: 'If you enable the access control, access control policy could not be empty'
+              }))
+            }
 
-          return Promise.resolve()
-        } }
-      ]}
-    >
-      <Select placeholder={$t({ defaultMessage: 'Select profile...' })}
-        style={{ width: '180px' }}
-        onChange={onAccessPolicyChange}
-        children={accessControlProfileSelectOptions} />
+            return Promise.resolve()
+          } }
+        ]}
+      >
+        <Select placeholder={$t({ defaultMessage: 'Select profile...' })}
+          style={{ width: '180px' }}
+          onChange={onAccessPolicyChange}
+          children={accessControlProfileSelectOptions} />
+      </Form.Item>
 
-    </Form.Item>}
+      <Button type='link'
+        onClick={handleOnAddClick}
+        children={$t({ defaultMessage: 'Add' })}
+        style={{ paddingTop: '10px' }} />
+    </Space>}
 
     <UI.FieldLabel width={labelWidth} style={{ fontWeight: 700 }}>
       <span>{$t({ defaultMessage: 'Access Policy' })}</span>

@@ -40,10 +40,13 @@ export const LagSubInterfaceTable = (props: LagSubInterfaceTableProps) => {
   }
 
   const handleUpdate = async (data: EdgeSubInterface) => {
+    const { id, ...payloadData } = data
+
     const requestPayload = {
-      params: { serialNumber, lagId: lagId.toString(), subInterfaceId: data?.id },
-      payload: data
+      params: { serialNumber, lagId: lagId.toString(), subInterfaceId: id },
+      payload: payloadData
     }
+
     await updateSubInterface(requestPayload).unwrap()
   }
 

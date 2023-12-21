@@ -159,7 +159,7 @@ export function useApGroupNetworkColumns (
     },
     ...(isEditable? [] : [{
       key: 'clients',
-      title: $t({ defaultMessage: 'Connected Clients' }),
+      title: $t({ defaultMessage: 'Clients' }),
       dataIndex: 'clients',
       sorter: false,
       align: 'center' as 'center',
