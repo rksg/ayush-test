@@ -44,6 +44,7 @@ export const LagSubInterfaceTable = (props: LagSubInterfaceTableProps) => {
       params: { serialNumber, lagId: lagId.toString(), subInterfaceId: data?.id },
       payload: data
     }
+    delete requestPayload.payload.id
     await updateSubInterface(requestPayload).unwrap()
   }
 
