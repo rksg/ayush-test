@@ -189,7 +189,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
   // use policyName to find corresponding id before API return profile id
   useEffect(() => {
     if (requestId && queryPolicyName) {
-      layer2SelectOptions.map(option => {
+      layer2SelectOptions.forEach(option => {
         if (option.props.children === queryPolicyName) {
           if (!onlyAddMode.enable) {
             form.setFieldValue([...inputName, 'l2AclPolicyId'], option.key)
@@ -580,8 +580,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
         onClick={() => {
           setDrawerVisible(true)
           setQueryPolicyId(onlyViewMode.id)
-        }
-        }>
+        }}>
         {onlyViewMode.viewText}
       </Button>
     }
@@ -598,6 +597,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
             <Select
               style={{ width: '150px' }}
               placeholder={$t({ defaultMessage: 'Select profile...' })}
+              disabled={visible}
               onChange={(value) => {
                 setQueryPolicyId(value)
               }}
@@ -608,7 +608,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
       </GridCol>
       <AclGridCol>
         <Button type='link'
-          disabled={!l2AclPolicyId}
+          disabled={visible || !l2AclPolicyId}
           onClick={() => {
             if (l2AclPolicyId) {
               setDrawerVisible(true)
@@ -622,7 +622,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
       </AclGridCol>
       <AclGridCol>
         <Button type='link'
-          disabled={layer2List.length >= PROFILE_MAX_COUNT_LAYER2_POLICY}
+          disabled={visible || layer2List.length >= PROFILE_MAX_COUNT_LAYER2_POLICY}
           onClick={() => {
             setDrawerVisible(true)
             setQueryPolicyId('')
@@ -661,7 +661,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
             }}
           />
         }
-        width={'530px'}
+        width={'730px'}
       />
       <Drawer
         title={$t({ defaultMessage: 'Add MAC Address' })}
@@ -704,7 +704,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
             }}
           />
         }
-        width={'500px'}
+        width={'600px'}
       />
     </>
   )

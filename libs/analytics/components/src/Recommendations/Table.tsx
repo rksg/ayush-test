@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from 'react'
 
-import { Checkbox }               from 'antd'
+import { Checkbox, Switch }       from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 
 import {
@@ -11,17 +11,19 @@ import {
 } from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Tooltip } from '@acx-ui/components'
 import { get }                         from '@acx-ui/config'
+import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }   from '@acx-ui/formatter'
 import { TenantLink, useParams }       from '@acx-ui/react-router-dom'
 import { noDataDisplay, PathFilter }   from '@acx-ui/utils'
 
 import { getParamString } from '../AIDrivenRRM/extra'
 
-import { RecommendationActions }  from './RecommendationActions'
+import { RecommendationActions } from './RecommendationActions'
 import {
   useRecommendationListQuery,
   RecommendationListItem,
-  useMuteRecommendationMutation
+  useMuteRecommendationMutation,
+  useSetPreferenceMutation
 } from './services'
 import * as UI from './styledComponents'
 
@@ -69,6 +71,7 @@ export function RecommendationTable (
 
   const [showMuted, setShowMuted] = useState<boolean>(false)
 
+  const [setPreference] = useSetPreferenceMutation()
   const [muteRecommendation] = useMuteRecommendationMutation()
   const [selectedRowData, setSelectedRowData] = useState<{
     id: string,
@@ -95,9 +98,23 @@ export function RecommendationTable (
     }
   ]
 
+  const optimizationTooltipText = $t({ defaultMessage: `
+    When Full Optimization is enabled, AI-Driven RRM will comprehensively optimize the channel plan,
+    channel bandwidth and Tx power with the objective of minimizing co-channel interference.
+    When it is disabled, only the channel plan will be optimized, using the currently configured
+    Zone channel bandwidth and Tx power.
+  ` })
+
+  const isCrrmPartialEnabled = [
+    useIsSplitOn(Features.RUCKUS_AI_CRRM_PARTIAL),
+    useIsSplitOn(Features.CRRM_PARTIAL)
+  ].some(Boolean)
+
   const switchPath = isSwitchPath(pathFilters.path)
-  const queryResults =
-    useRecommendationListQuery({ ...pathFilters, crrm: showCrrm }, { skip: switchPath })
+  const queryResults = useRecommendationListQuery(
+    { ...pathFilters, crrm: showCrrm, isCrrmPartialEnabled },
+    { skip: switchPath }
+  )
   const data = switchPath ? [] : queryResults?.data?.filter((row) => (showMuted || !row.isMuted))
   const noCrrmData = data?.filter(recommendation => recommendation.code !== 'unknown')
 
@@ -110,7 +127,7 @@ export function RecommendationTable (
       title: get('IS_MLISA_SA')
         ? $t({ defaultMessage: 'Zone RRM Health' })
         : $t({ defaultMessage: 'Venue RRM Health' }),
-      width: 120,
+      width: 140,
       dataIndex: 'crrmOptimizedState',
       key: 'crrmOptimizedState',
       filterKey: 'crrmOptimizedState.text',
@@ -147,29 +164,28 @@ export function RecommendationTable (
       sorter: { compare: sortProp('updatedAt', dateSort) },
       fixed: 'left'
     },
-    {
-      title: $t({ defaultMessage: 'Summary' }),
-      width: 250,
-      dataIndex: 'summary',
-      key: 'summary',
-      render: (_, value, __, highlightFn ) => <>{highlightFn(value.summary)}</>,
-      sorter: { compare: sortProp('summary', defaultSort) },
-      searchable: true
-    },
     ...(showCrrm ? [] : [{
       title: $t({ defaultMessage: 'Category' }),
       width: 130,
       dataIndex: 'category',
       key: 'category',
       sorter: { compare: sortProp('category', defaultSort) },
-      fixed: 'left',
       filterable: true
     }]) as TableProps<RecommendationListItem>['columns'],
+    {
+      title: $t({ defaultMessage: 'Summary' }),
+      width: 250,
+      dataIndex: 'summary',
+      key: 'summary',
+      render: (_, value, __, highlightFn ) => highlightFn(value.summary),
+      sorter: { compare: sortProp('summary', defaultSort) },
+      searchable: true
+    },
     {
       title: get('IS_MLISA_SA')
         ? $t({ defaultMessage: 'Zone' })
         : $t({ defaultMessage: 'Venue' }),
-      width: 150,
+      width: 200,
       dataIndex: 'sliceValue',
       key: 'sliceValue',
       render: (_, value, __, highlightFn ) => {
@@ -198,18 +214,51 @@ export function RecommendationTable (
       title: $t({ defaultMessage: 'Actions' }),
       key: 'id',
       dataIndex: 'id',
-      width: 80,
-      align: 'left',
+      width: 100,
+      fixed: 'right',
       className: 'actions-column',
       render: (_, value) => <RecommendationActions recommendation={value} />
-    }
+    },
+    ...(showCrrm && isCrrmPartialEnabled ? [{
+      title: $t({ defaultMessage: 'Full Optimization' }),
+      key: 'preferences',
+      dataIndex: 'preferences',
+      width: 180,
+      fixed: 'right',
+      tooltip: optimizationTooltipText,
+      render: (_, value) => {
+        const { code, statusEnum, idPath } = value
+        // eslint-disable-next-line max-len
+        const appliedStates = ['applyscheduled', 'applyscheduleinprogress', 'applied', 'revertscheduled', 'revertscheduleinprogress', 'revertfailed', 'applywarning']
+        const disabled = appliedStates.includes(statusEnum) ? true : false
+        const isOptimized = value.preferences? value.preferences.fullOptimization : true
+        const tooltipText = disabled
+          ? $t({ defaultMessage: `
+            Optimization option cannot be changed while the recommendation is in Applied status.
+            Please revert the recommendation back to the New status before changing
+            the optimization option.
+          ` })
+          : ''
+        return <Tooltip placement='top' title={tooltipText}>
+          <Switch
+            defaultChecked
+            checked={isOptimized}
+            disabled={disabled}
+            onChange={() => {
+              const updatedPreference = { fullOptimization: !isOptimized }
+              setPreference({ code, path: idPath, preferences: updatedPreference })
+            }}
+          />
+        </Tooltip>
+      }
+    }] : []) as TableProps<RecommendationListItem>['columns']
   // eslint-disable-next-line react-hooks/exhaustive-deps
   ], [showCrrm]) // '$t' 'basePath' 'intl' are not changing
 
   return (
     <Loader states={[queryResults]}>
       <UI.RecommendationTableWrapper
-        settingsId={`recommendation-table-${showCrrm}`}
+        settingsId={`recommendations-${showCrrm ? 'crrm' : 'aiops'}-table`}
         type='tall'
         dataSource={showCrrm ? data : noCrrmData}
         columns={columns}

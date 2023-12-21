@@ -104,28 +104,14 @@ export function RadioTab () {
       <UI.Subtitle>{$t({ defaultMessage: 'Load Control' })}</UI.Subtitle>
       <LoadControlForm labelWidth={labelWidth} />
 
-
-      <UI.FieldLabel width={labelWidth}>
-        {$t({ defaultMessage: 'OFDM only (disable 802.11b)' })}
-        <Form.Item
-          name={['enableOfdmOnly']}
-          style={{ marginBottom: '10px' }}
-          valuePropName='checked'
-          initialValue={true}
-          children={<Switch data-testid='enableOfdmOnly' onChange={onOfdmChange}></Switch>}
-        />
-      </UI.FieldLabel>
-
       <UI.Subtitle>
         {$t({ defaultMessage: 'Data Rate Control (2.4 GHz & 5 GHz)' })}
       </UI.Subtitle>
-
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'auto 1fr',
         columnGap: '20px'
       }}>
-
         <Form.Item
           name='bssMinimumPhyRate'
           label={$t({ defaultMessage: 'BSS Min Rate:' })}
@@ -201,6 +187,17 @@ export function RadioTab () {
             </Select>
           } />
       </div>
+
+      <UI.FieldLabel width={labelWidth}>
+        {$t({ defaultMessage: 'OFDM only (disable 802.11b)' })}
+        <Form.Item
+          name={['enableOfdmOnly']}
+          style={{ marginBottom: '10px' }}
+          valuePropName='checked'
+          initialValue={true}
+          children={<Switch data-testid='enableOfdmOnly' onChange={onOfdmChange}></Switch>}
+        />
+      </UI.FieldLabel>
     </>
   )
 }

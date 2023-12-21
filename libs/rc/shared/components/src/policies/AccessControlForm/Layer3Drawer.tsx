@@ -346,7 +346,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
       dataIndex: 'sort',
       key: 'sort',
       fixed: 'right',
-      width: 60,
+      width: 45,
       render: (_, row) => {
         return <div data-testid={`${row.priority}_Icon`} style={{ textAlign: 'center' }}>
           <Drag style={{ cursor: 'grab', color: '#6e6e6e' }} />
@@ -742,89 +742,6 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
     )
   }
 
-  const content = <Form layout='horizontal' form={contentForm}>
-    <DrawerFormItem
-      name={'policyName'}
-      label={$t({ defaultMessage: 'Policy Name:' })}
-      rules={[
-        { required: true },
-        { min: 2 },
-        { max: 32 },
-        { validator: (_, value) => {
-          if (layer3List && layer3List
-            .filter(layer3 => editMode ? (layer3PolicyInfo?.name !== layer3) : true)
-            .findIndex(layer3 => layer3 === value) !== -1) {
-            return Promise.reject($t({
-              defaultMessage: 'A policy with that name already exists'
-            }))
-          }
-          return Promise.resolve()}
-        }
-      ]}
-      children={<Input disabled={isViewMode()}/>}
-    />
-    <DrawerFormItem
-      name='description'
-      label={$t({ defaultMessage: 'Description' })}
-      rules={[
-        { max: 255 }
-      ]}
-      children={<TextArea disabled={isViewMode()} />}
-    />
-    <DrawerFormItem
-      name='layer3DefaultAccess'
-      label={<div style={{ textAlign: 'left' }}>
-        <div>{$t({ defaultMessage: 'Default Access' })}</div>
-        <span style={{ fontSize: '10px' }}>
-          {$t({ defaultMessage: 'Applies if no rule is matched' })}
-        </span>
-      </div>}
-      children={<ContentSwitcher
-        defaultValue={layer3PolicyInfo && (isViewMode() || editMode.isEdit || localEditMode.isEdit)
-          ? layer3PolicyInfo.defaultAccess
-          : AccessStatus.ALLOW}
-        tabDetails={defaultTabDetails}
-        size='large' />}
-    />
-    <DrawerFormItem
-      name='layer3Rule'
-      label={$t({ defaultMessage: 'Layer 3 Rules' }) + ` (${layer3RuleList.length})`}
-      children={<></>}
-    />
-    <DndProvider backend={HTML5Backend} >
-      {isOnlyViewMode && !editMode.isEdit ? <Table
-        columns={basicColumns}
-        dataSource={layer3RuleList as Layer3Rule[]}
-      /> : <Table
-        columns={basicColumns}
-        dataSource={layer3RuleList as Layer3Rule[]}
-        rowKey='priority'
-        actions={filterByAccess(actions)}
-        rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && { type: 'radio' }}
-        components={{
-          body: {
-            row: DraggableRow
-          }
-        }}
-      />}
-    </DndProvider>
-  </Form>
-
-  const portRangeValidator = (value: string) => {
-    const validationList: string[] = value.split('-')
-    if (value.includes('-')) {
-      if (validationList[1] === '' || Number(validationList[0]) >= Number(validationList[1])) {
-        return Promise.reject($t({
-          defaultMessage: 'Please enter another valid number between {number} and 65535'
-        }, {
-          number: Number(validationList[0]) + 1
-        }))
-      }
-    }
-    return Promise.all(validationList.map(value => portRegExp(value)))
-  }
-
   const ruleContent = <Form layout='horizontal' form={drawerForm}>
     <DrawerFormItem
       name='description'
@@ -1016,6 +933,120 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
     </Fieldset>
   </Form>
 
+  const content = <>
+    <Form layout='horizontal' form={contentForm}>
+      <DrawerFormItem
+        name={'policyName'}
+        label={$t({ defaultMessage: 'Policy Name:' })}
+        rules={[
+          { required: true },
+          { min: 2 },
+          { max: 32 },
+          { validator: (_, value) => {
+            if (layer3List && layer3List
+              .filter(layer3 => editMode ? (layer3PolicyInfo?.name !== layer3) : true)
+              .findIndex(layer3 => layer3 === value) !== -1) {
+              return Promise.reject($t({
+                defaultMessage: 'A policy with that name already exists'
+              }))
+            }
+            return Promise.resolve()}
+          }
+        ]}
+        children={<Input disabled={isViewMode()}/>}
+      />
+      <DrawerFormItem
+        name='description'
+        label={$t({ defaultMessage: 'Description' })}
+        rules={[
+          { max: 255 }
+        ]}
+        children={<TextArea disabled={isViewMode()} />}
+      />
+      <DrawerFormItem
+        name='layer3DefaultAccess'
+        label={<div style={{ textAlign: 'left' }}>
+          <div>{$t({ defaultMessage: 'Default Access' })}</div>
+          <span style={{ fontSize: '10px' }}>
+            {$t({ defaultMessage: 'Applies if no rule is matched' })}
+          </span>
+        </div>}
+        children={<ContentSwitcher
+          defaultValue={(layer3PolicyInfo &&
+            (isViewMode() || editMode.isEdit || localEditMode.isEdit))
+            ? layer3PolicyInfo.defaultAccess
+            : AccessStatus.ALLOW}
+          tabDetails={defaultTabDetails}
+          size='large' />}
+      />
+      <DrawerFormItem
+        name='layer3Rule'
+        label={$t({ defaultMessage: 'Layer 3 Rules' }) + ` (${layer3RuleList.length})`}
+        children={<></>}
+      />
+      <DndProvider backend={HTML5Backend} >
+        {isOnlyViewMode && !editMode.isEdit ? <Table
+          columns={basicColumns}
+          dataSource={layer3RuleList as Layer3Rule[]}
+        /> : <Table
+          columns={basicColumns}
+          dataSource={layer3RuleList as Layer3Rule[]}
+          rowKey='priority'
+          actions={filterByAccess(actions)}
+          rowActions={filterByAccess(rowActions)}
+          rowSelection={hasAccess() && { type: 'radio' }}
+          components={{
+            body: {
+              row: DraggableRow
+            }
+          }}
+        />}
+      </DndProvider>
+    </Form>
+    <Drawer
+      title={ruleDrawerEditMode
+        ? $t({ defaultMessage: 'Edit Layer 3 Rule' })
+        : $t({ defaultMessage: 'Add Layer 3 Rule' })
+      }
+      visible={ruleDrawerVisible}
+      destroyOnClose={true}
+      onClose={handleRuleDrawerClose}
+      children={ruleContent}
+      footer={
+        <Drawer.FormFooter
+          showAddAnother={false}
+          onCancel={handleRuleDrawerClose}
+          onSave={async () => {
+            try {
+              await drawerForm.validateFields()
+
+              handleLayer3Rule()
+              drawerForm.resetFields()
+              handleRuleDrawerClose()
+            } catch (error) {
+              if (error instanceof Error) throw error
+            }
+          }}
+        />
+      }
+      width={'800px'}
+    />
+  </>
+
+  const portRangeValidator = (value: string) => {
+    const validationList: string[] = value.split('-')
+    if (value.includes('-')) {
+      if (validationList[1] === '' || Number(validationList[0]) >= Number(validationList[1])) {
+        return Promise.reject($t({
+          defaultMessage: 'Please enter another valid number between {number} and 65535'
+        }, {
+          number: Number(validationList[0]) + 1
+        }))
+      }
+    }
+    return Promise.all(validationList.map(value => portRegExp(value)))
+  }
+
   const modelContent = () => {
     if (onlyAddMode.enable) {
       return null
@@ -1046,6 +1077,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
             <Select
               style={{ width: '150px' }}
               placeholder={$t({ defaultMessage: 'Select profile...' })}
+              disabled={visible}
               onChange={(value) => {
                 setQueryPolicyId(value)
               }}
@@ -1056,7 +1088,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
       </GridCol>
       <AclGridCol>
         <Button type='link'
-          disabled={!l3AclPolicyId}
+          disabled={visible || !l3AclPolicyId}
           onClick={() => {
             if (l3AclPolicyId) {
               setDrawerVisible(true)
@@ -1070,7 +1102,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
       </AclGridCol>
       <AclGridCol>
         <Button type='link'
-          disabled={layer3List.length >= PROFILE_MAX_COUNT_LAYER3_POLICY}
+          disabled={visible || layer3List.length >= PROFILE_MAX_COUNT_LAYER3_POLICY}
           onClick={() => {
             setDrawerVisible(true)
             setQueryPolicyId('')
@@ -1087,11 +1119,10 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
       <Drawer
         title={$t({ defaultMessage: 'Layer 3 Settings' })}
         visible={visible}
-        zIndex={10}
-        onClose={() => handleLayer3DrawerClose()
-        }
+        onClose={() => handleLayer3DrawerClose()}
         destroyOnClose={true}
         children={content}
+        push={false}
         footer={
           <Drawer.FormFooter
             showAddAnother={false}
@@ -1110,36 +1141,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
             }}
           />
         }
-        width={'830px'}
-      />
-      <Drawer
-        title={ruleDrawerEditMode
-          ? $t({ defaultMessage: 'Edit Layer 3 Rule' })
-          : $t({ defaultMessage: 'Add Layer 3 Rule' })
-        }
-        visible={ruleDrawerVisible}
-        zIndex={100}
-        destroyOnClose={true}
-        onClose={handleRuleDrawerClose}
-        children={ruleContent}
-        footer={
-          <Drawer.FormFooter
-            showAddAnother={false}
-            onCancel={handleRuleDrawerClose}
-            onSave={async () => {
-              try {
-                await drawerForm.validateFields()
-
-                handleLayer3Rule()
-                drawerForm.resetFields()
-                handleRuleDrawerClose()
-              } catch (error) {
-                if (error instanceof Error) throw error
-              }
-            }}
-          />
-        }
-        width={'800px'}
+        width={'870px'}
       />
     </>
   )
