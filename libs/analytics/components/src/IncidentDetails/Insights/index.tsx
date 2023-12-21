@@ -17,7 +17,7 @@ import * as UI from './styledComponents'
 
 export const Insights = ({ incident }: { incident: Incident }) => {
   const { $t } = useIntl()
-  const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident) //
+  const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
   const { rootCauseText, rootCauseValues } = rootCauses
   const { recommendationsText, recommendationsValues } = recommendations
   const values = {

@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import _                                    from 'lodash'
 import { defineMessage, MessageDescriptor } from 'react-intl'
+import { FormattedMessage }                 from 'react-intl'
 
 import { IncidentCode }               from './constants'
 import { Incident, IncidentMetadata } from './types/incidents'
@@ -87,7 +88,7 @@ type AirtimeBChecks = {
 type AirtimeRxChecks = {
   isHighDensityWifiDevices: boolean
   isClbRecommendationRaised: boolean
-  isHighSsidCountPerRadio: boolean
+  isHighSSIDCountPerRadio: boolean
   isChannelFlyEnabled: boolean
   isLargeMgmtFrameCount: boolean
   isHighLegacyWifiDevicesCount: boolean
@@ -108,22 +109,29 @@ export type AirtimeBArray = AirtimeBChecks[]
 export type AirtimeRxArray = AirtimeRxChecks[]
 export type AirtimeTxArray = AirtimeTxChecks[]
 
-const getBRootCauses = () => {
+const htmlValues = {
+  p: (text: string) => <p>{text}</p>,
+  ol: (text: string) => <ol>{text}</ol>,
+  li: (text: string) => <li>{text}</li>,
+  ul: (text: string) => <ul>{text}</ul>
+}
+
+export const getBRootCauses = () => {
   return {
     rootCauseText: defineMessage({ defaultMessage: '<p>Airtime Busy is unusually high and this is typically caused by external sources of interference, such as neighboring WiFi networks, microwave ovens, Bluetooth devices, and other electronic devices operating in the same frequency range, can cause disruptions to your network.</p>' }),
     rootCauseValues: {}
   }
 }
-const getBRecommendations = (checks: AirtimeBArray) => {
+export const getBRecommendations = (checks: AirtimeBArray) => {
   const checkTrue = checks.filter(item => Object.values(item)[0]).map(item => Object.keys(item)[0])
-  const rogueAPEnabled = '<li>Enable rogue AP detection to search, identify, and physically remove rogue APs from your premises. </li>'
-  const rogueAPDisabled = '<li>Click here for a list of rogue APs for removal in your premises.</li>'
-  const nonWifiInterference = '<li>Identify and mitigate sources of non-WiFi interference, such as microwave ovens, Bluetooth devices, and cordless phones.</li>'
-  const crrmRaised = '<li>Enable rogue AP detection to search, identify, and physically remove rogue APs from your premises. </li>'
+  const rogueAPEnabled = <FormattedMessage defaultMessage={'<li>Enable rogue AP detection to search, identify, and physically remove rogue APs from your premises. </li>'} values={htmlValues}/>
+  const rogueAPDisabled = <FormattedMessage defaultMessage={'<li>Click here for a list of rogue APs for removal in your premises.</li>'} values={htmlValues}/>
+  const nonWifiInterference = <FormattedMessage defaultMessage={'<li>Identify and mitigate sources of non-WiFi interference, such as microwave ovens, Bluetooth devices, and cordless phones.</li>'} values={htmlValues}/>
+  const crrmRaised = <FormattedMessage defaultMessage={'<li>Enable rogue AP detection to search, identify, and physically remove rogue APs from your premises. </li>'} values={htmlValues}/>
 
   const text1 = checkTrue.includes('isRogueDetectionEnabled') ? rogueAPEnabled : rogueAPDisabled
   const text2 = checkTrue.includes('isCRRMRaised') ? crrmRaised : ''
-  const stringlist = text1 + nonWifiInterference + text2
+  const stringlist = [text1, nonWifiInterference, text2]
 
   return {
     recommendationsText: defineMessage({ defaultMessage: `<p>Identifying the sources of external interference is the key to resolving this issue:</p>
@@ -137,32 +145,24 @@ const getBRecommendations = (checks: AirtimeBArray) => {
   }
 }
 
-const getRxRootCauses = (checks: AirtimeRxArray) => {
-  const checkTrue = checks.filter(item => Object.values(item)[0]).map(item => Object.keys(item)[0]) // change values.filter to checks.filter
-  const doubleCheck = ['isHighSsidCountPerRadio', 'isLargeMgmtFrameCount']
+export const getRxRootCauses = (checks: AirtimeRxArray) => {
+  const checkTrue = checks.filter(item => Object.values(item)[0]).map(item => Object.keys(item)[0])
+  const valueCheck = ['isHighSSIDCountPerRadio', 'isLargeMgmtFrameCount']
   const allFalse = checkTrue.length === 0
 
-  const highDensityWifi = '<li>High density of Wi-Fi devices in the network.</li>'
-  const excessiveFrameAndSsid = '<li>Excessive number of management frames due to too many SSIDs being broadcasted in the network.</li>'
-  const excessiveFrame = '<li>Excessive number of management frames.</li>'
-  const highCoChannel = `<li>High co-channel interference.</li>
-    <ul>
-      <li>Check the number of interfering links in the zone?</li>
-    </ul>
-  `
-  const highLegacy = `<li>High number of legacy Wi-Fi devices.
-    <ul>
-      <li>Definition of legacy devices - 11b, 11a, and a combination of 11a and 11b.
-      </li>
-    </ul>
-  `
-  const allFalseText = highDensityWifi + excessiveFrame + highCoChannel + highLegacy
+  const highDensityWifi = <FormattedMessage defaultMessage={'<li>High density of Wi-Fi devices in the network.</li>'} values={htmlValues}/>
+  const excessiveFrameAndSsid = <FormattedMessage defaultMessage={'<li>Excessive number of management frames due to too many SSIDs being broadcasted in the network.</li>'} values={htmlValues}/>
+  const excessiveFrame = <FormattedMessage defaultMessage={'<li>Excessive number of management frames.</li>'} values={htmlValues}/>
+  const highCoChannel = <FormattedMessage defaultMessage={'<li>High co-channel interference.</li><ul><li>Check the number of interfering links in the zone?</li></ul>'} values={htmlValues} />
+  const highLegacy = <FormattedMessage defaultMessage={'<li>High number of legacy Wi-Fi devices.</li><ul><li>Definition of legacy devices - 11b, 11a, and a combination of 11a and 11b.</li></ul>'} values={htmlValues}/>
+  const allFalseText = [highDensityWifi, excessiveFrame, highCoChannel, highLegacy]
   const text1 = checkTrue.includes('isHighDensityWifiDevices') ? highDensityWifi : ''
-  const text2 = doubleCheck.every(str => checkTrue.includes(str)) ? excessiveFrameAndSsid : ''
+  const text2 = valueCheck.every(str => checkTrue.includes(str)) ? excessiveFrameAndSsid : ''
   const text3 = text2 === '' ? checkTrue.includes('isLargeMgmtFrameCount') ? excessiveFrame : '' : ''
-  const text4 = checkTrue.includes('high') ? highCoChannel : ''
+  const text4 = checkTrue.includes('isChannelFlyEnabled') ? highCoChannel : ''
   const text5 = checkTrue.includes('isHighLegacyWifiDevicesCount') ? highLegacy : ''
-  const stringlist = allFalse ? allFalseText : (text1 + text2 + text3 + text4 + text5)
+  const stringlist = allFalse ? allFalseText : [text1, text2, text3, text4, text5]
+
 
   return {
     rootCauseText: defineMessage({ defaultMessage: `<p>Airtime Rx is unusually high, and this can be a result from various factors, such as a high density of Wi-Fi devices, channel congestion due to co-channel interference, excessive number of management frames, and sub-optimal configurations.</p>
@@ -178,27 +178,31 @@ const getRxRootCauses = (checks: AirtimeRxArray) => {
     }
   }
 }
-const getRxRecommendations = (checks: AirtimeRxArray) => {
+export const getRxRecommendations = (checks: AirtimeRxArray) => {
   const checkTrue = checks.filter(item => Object.values(item)[0]).map(item => Object.keys(item)[0])
-  const clientLoadBalanceOn = '<li>Click here to enable client load balancing AIOps recommendation.</li>'
-  const clientLoadBalanceOff = '<li>Increase AP density to distribute the client load.</li>'
-  const highSsidCountText = '<li>There are currently an average of X SSIDs/WLANs being broadcasted per AP. Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less. Enabling Airtime Decongestion would be recommended as well.</li>'
-  const enableAirtimeDecongestion = '<li>Enable Airtime Decongestion.</li>'
-  const crrmRaised = '<li>Click here to apply the AI-Driven RRM recommendation.</li>'
-  const channelFlyDisabled = '<li>Enable ChannelFly for the Zone.</li>'
-  const channelFlyEnabled = '<li>Review the channel planning, AP density and deployment.</li>'
-  const highLegacyCount = '<li>Click here for a list of legacy Wi-Fi devices. Either remove these legacy devices or upgrade them. If possible, enable OFDM-only mode on WLAN XXX, YYY, etc.</li>'
-  const doubleCheck = ['isHighSsidCountPerRadio', 'isLargeMgmtFrameCount']
+  const valueCheck = ['isHighSSIDCountPerRadio', 'isLargeMgmtFrameCount']
+  const allFalse = checkTrue.length === 0
 
+  const clientLoadBalanceOn = <FormattedMessage defaultMessage={'<li>Click here to enable client load balancing AIOps recommendation.</li>'} values={htmlValues}/>
+  const clientLoadBalanceOff = <FormattedMessage defaultMessage={'<li>Increase AP density to distribute the client load.</li>'} values={htmlValues}/>
+  const highSSIDCountText = <FormattedMessage defaultMessage={'<li>Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less. Enabling Airtime Decongestion would be recommended as well.</li>'} values={htmlValues}/>
+  const enableAirtimeDecongestion = <FormattedMessage defaultMessage={'<li>Enable Airtime Decongestion.</li>'} values={htmlValues}/>
+  const crrmRaised = <FormattedMessage defaultMessage={'<p>Cpck here to apply the AI-Driven RRM recommendation.</p>'} values={htmlValues}/>
+  const channelFlyDisabled = <FormattedMessage defaultMessage={'<p>Enable ChannelFly for the Zone.</p>'} values={htmlValues}/>
+  const channelFlyEnabled = <FormattedMessage defaultMessage={'<p>Review the channel planning, AP density and deployment.</p>'} values={htmlValues}/>
+  const highLegacyCount = <FormattedMessage defaultMessage={'<li>Click here for a list of legacy Wi-Fi devices. Either remove these legacy devices or upgrade them.</li>'} values={htmlValues}/>
+
+  const allFalseText = [clientLoadBalanceOff, enableAirtimeDecongestion, channelFlyDisabled]
   const text1 = checkTrue.includes('isClbRecommendationRaised') ? clientLoadBalanceOn : clientLoadBalanceOff
-  const text2 = doubleCheck.every(str => checkTrue.includes(str)) ? highSsidCountText : enableAirtimeDecongestion
+  const text2 = valueCheck.every(str => checkTrue.includes(str)) ? highSSIDCountText : enableAirtimeDecongestion
   const text3 = checkTrue.includes('isCRRMRaised') ? crrmRaised : ''
   const text4 = crrmRaised ? checkTrue.includes('isChannelFlyEnabled') ? channelFlyEnabled : channelFlyDisabled : ''
+  const combinedText = `<li>${text3}${text4}</li>`
   const text5 = checkTrue.includes('isHighLegacyWifiDevicesCount') ? highLegacyCount : ''
-  const stringlist = text1 + text2 + text3 + text4 + text5
+  const stringlist = allFalse ? allFalseText : [text1, text2, combinedText, text5]
 
   return {
-    recommendationsText: defineMessage({ defaultMessage: `<p>Based on the root { count, plural, one {cause} other {causes} } identified, the recommended resolutions are:</p>
+    recommendationsText: defineMessage({ defaultMessage: `<p>Based on the root {count, plural, one {cause} other {causes}} identified, the recommended resolutions {count, plural, one {is} other {are}}:</p>
       <ol>
         {params}
       </ol>`
@@ -210,30 +214,26 @@ const getRxRecommendations = (checks: AirtimeRxArray) => {
   }
 }
 
-const getTxRootCauses = (checks: AirtimeTxArray) => {
-  const checkTrue = checks.filter(item => Object.values(item)[0]).map(item => Object.keys(item)[0]) // change values.filter to checks.filter
-  const doubleCheck = ['isHighSsidCountPerRadio', 'isLargeMgmtFrameCount']
+export const getTxRootCauses = (checks: AirtimeTxArray) => {
+  const checkTrue = checks.filter(item => Object.values(item)[0]).map(item => Object.keys(item)[0])
+  const valueCheck = ['isHighSSIDCountPerRadio', 'isLargeMgmtFrameCount']
   const allFalse = checkTrue.length === 0
 
-  const highDensityWifi = '<li>High density of Wi-Fi devices in the network.</li>'
-  const excessiveFrameAndSsid = '<li>Excessive number of management frames due to too many SSIDs being broadcasted in the network.</li>'
-  const excessiveFrame = '<li>Excessive number of management frames.</li>'
-  const highPacket = '<li>High number of packet errors leading to unnecessary retransmissions.</li>'
-  const highMCBC = '<li>High multicast/broadcast (MC/BC) traffic on XXX, YYY, ZZZ WLANs.</li>'
-  const highLegacy = `<li>High number of legacy Wi-Fi devices.
-    <ul>
-      <li>Definition of legacy devices - 11b, 11a, and a combination of 11a and 11b.
-      </li>
-    </ul>
-  `
-  const allFalseText = highDensityWifi + excessiveFrame + highPacket + highMCBC + highLegacy
+  const highDensityWifi = <FormattedMessage defaultMessage={'<li>High density of Wi-Fi devices in the network.</li>'} values={htmlValues}/>
+  const excessiveFrameAndSsid = <FormattedMessage defaultMessage={'<li>Excessive number of management frames due to too many SSIDs being broadcasted in the network.</li>'} values={htmlValues}/>
+  const excessiveFrame = <FormattedMessage defaultMessage={'<li>Excessive number of management frames.</li>'} values={htmlValues}/>
+  const highPacket = <FormattedMessage defaultMessage={'<li>High number of packet errors leading to unnecessary retransmissions.</li>'} values={htmlValues}/>
+  const highMCBC = <FormattedMessage defaultMessage={'<li>High multicast/broadcast (MC/BC) traffic on XXX, YYY, ZZZ WLANs.</li>'} values={htmlValues}/>
+  const highLegacy = <FormattedMessage defaultMessage={'<li>High number of legacy Wi-Fi devices.</li><ul><li>Definition of legacy devices - 11b, 11a, and a combination of 11a and 11b.</li></ul>'} values={htmlValues}/>
+
+  const allFalseText = [highDensityWifi, excessiveFrame, highPacket, highMCBC, highLegacy]
   const text1 = checkTrue.includes('isHighDensityWifiDevices') ? highDensityWifi : ''
-  const text2 = doubleCheck.every(str => checkTrue.includes(str)) ? excessiveFrameAndSsid : ''
+  const text2 = valueCheck.every(str => checkTrue.includes(str)) ? excessiveFrameAndSsid : ''
   const text3 = text2 === '' ? checkTrue.includes('isLargeMgmtFrameCount') ? excessiveFrame : '' : ''
   const text4 = checkTrue.includes('isHighPacketErrorCount') ? highPacket : ''
   const text5 = checkTrue.includes('isHighMCBCTraffic') ? highMCBC : ''
   const text6 = checkTrue.includes('isHighLegacyWifiDevicesCount') ? highLegacy : ''
-  const stringlist = allFalse ? allFalseText : (text1 + text2 + text3 + text4 + text5 + text6)
+  const stringlist = allFalse ? allFalseText : [text1, text2, text3, text4, text5, text6]
 
   return {
     rootCauseText: defineMessage({ defaultMessage: `<p>Airtime Tx is unusually high, and this can be a result from various factors, such as a high density of Wi-Fi devices, excessive number of management frames, high multicast/broadcast (MC/BC) traffic and sub-optimal configurations.</p>
@@ -249,29 +249,29 @@ const getTxRootCauses = (checks: AirtimeTxArray) => {
     }
   }
 }
-const getTxRecommendations = (checks: AirtimeTxArray) => {
-  const checkTrue = checks.filter(item => Object.values(item)[0]).map(item => Object.keys(item)[0]) // change values.filter to checks.filter
-  const clientLoadBalanceOn = '<li>Click here to enable client load balancing AIOps recommendation.</li>'
-  const clientLoadBalanceOff = '<li>Increase AP density to distribute the client load.</li>'
-  const highSsidCountText = '<li>There are currently an average of X SSIDs/WLANs being broadcasted per AP. Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less. Enabling Airtime Decongestion would be recommended as well.</li>'
-  const enableAirtimeDecongestion = '<li>Enable Airtime Decongestion.</li>'
-  const nonWifiInterference = '<li>. Identify and mitigate sources of non-WiFi interference, such as microwave ovens, Bluetooth devices, and cordless phones.</li>'
-  const crrmRaised = '<li>Click here to apply the AI-Driven RRM recommendation.</li>'
-  const channelFlyDisabled = '<li>Enable ChannelFly for the Zone.</li>'
-  const channelFlyEnabled = '<li>Review the channel planning, AP density and deployment.</li>'
-  const highLegacyCount = '<li>Click here for a list of legacy Wi-Fi devices. Either remove these legacy devices or upgrade them. If possible, enable OFDM-only mode on WLAN XXX, YYY, etc.</li>'
-  const doubleCheck = ['isHighSsidCountPerRadio', 'isLargeMgmtFrameCount']
+export const getTxRecommendations = (checks: AirtimeTxArray) => {
+  const checkTrue = checks.filter(item => Object.values(item)[0]).map(item => Object.keys(item)[0])
+  const valueCheck = ['isHighSSIDCountPerRadio', 'isLargeMgmtFrameCount']
+  const allFalse = checkTrue.length === 0
 
+  const clientLoadBalanceOn = <FormattedMessage defaultMessage={'<li>Click here to enable client load balancing AIOps recommendation.</li>'} values={htmlValues}/>
+  const clientLoadBalanceOff = <FormattedMessage defaultMessage={'<li>Increase AP density to distribute the client load.</li>'} values={htmlValues}/>
+  const highSSIDCountText = <FormattedMessage defaultMessage={'<li>Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less. Enabling Airtime Decongestion would be recommended as well.</li>'} values={htmlValues}/>
+  const enableAirtimeDecongestion = <FormattedMessage defaultMessage={'<li>Enable Airtime Decongestion.</li>'} values={htmlValues}/>
+  const nonWifiInterference = <FormattedMessage defaultMessage={'<li>Identify and mitigate sources of non-WiFi interference, such as microwave ovens, Bluetooth devices, and cordless phones.</li>'} values={htmlValues}/>
+  const highMCBC = <FormattedMessage defaultMessage={'<li>Enable MC/BC rate limit on WLAN XXX (whichever WLAN that is not enabled) or on the switch.</li>'} values={htmlValues}/>
+  const highLegacyCount = <FormattedMessage defaultMessage={'<li>Click here for a list of legacy Wi-Fi devices. Either remove these legacy devices or upgrade them.</li>'} values={htmlValues}/>
+
+  const allFalseText = [clientLoadBalanceOff, enableAirtimeDecongestion]
   const text1 = checkTrue.includes('isClbRecommendationRaised') ? clientLoadBalanceOn : clientLoadBalanceOff
-  const text2 = doubleCheck.every(str => checkTrue.includes(str)) ? highSsidCountText : enableAirtimeDecongestion
-  const text3 = checkTrue.includes('nonWifiInterference') ? nonWifiInterference : ''
-  const text4 = checkTrue.includes('isCRRMRaised') ? crrmRaised : ''
-  const text5 = crrmRaised ? checkTrue.includes('isChannelFlyEnabled') ? channelFlyEnabled : channelFlyDisabled : ''
-  const text6 = checkTrue.includes('isHighLegacyWifiDevicesCount') ? highLegacyCount : ''
-  const stringlist = text1 + text2 + text3 + text4 + text5 + text6
+  const text2 = valueCheck.every(str => checkTrue.includes(str)) ? highSSIDCountText : enableAirtimeDecongestion
+  const text3 = checkTrue.includes('isHighPacketErrorCount') ? nonWifiInterference : ''
+  const text4 = checkTrue.includes('isHighMCBCTraffic') ? highMCBC : ''
+  const text5 = checkTrue.includes('isHighLegacyWifiDevicesCount') ? highLegacyCount : ''
+  const stringlist = allFalse ? allFalseText : [text1, text2, text3, text4, text5]
 
   return {
-    recommendationsText: defineMessage({ defaultMessage: `<p>Based on the root {count, plural, one {cause} other {causes}} identified, the recommended resolutions are:</p>
+    recommendationsText: defineMessage({ defaultMessage: `<p>Based on the root {count, plural, one {cause} other {causes}} identified, the recommended resolutions {count, plural, one {is} other {are}}:</p>
       <ol>
         {params}
       </ol>`
@@ -1305,14 +1305,16 @@ export function getRootCauseAndRecommendations ({ code, metadata }: Incident) {
   const failureType = codeToFailureTypeMap[code]
   if (!metadata.rootCauseChecks) return [{ rootCauses: calculating, recommendations: calculating }]
   const { checks } = metadata.rootCauseChecks
-  const failureCode = failureType.includes('airtime') ? 'DEFAULT' : extractFailureCode(checks)
+  const failureCode = failureType?.includes('airtime') ? 'DEFAULT' : extractFailureCode(checks)
   const results = _.get(rootCauseRecommendationMap, [failureType, failureCode as string])
+  const ccdResult = ccd80211RootCauseRecommendations[failureCode as string]
+  if (results === undefined && ccdResult === undefined) {
+    return [{ rootCauses: { rootCauseText: TBD }, recommendations: { recommendationsText: TBD } }]
+  } else if (results === undefined) {
+    return [{ rootCauses: { rootCauseText: ccdResult.rootCauses }, recommendations: { recommendationsText: ccdResult.recommendations } }]
+  }
   const { rootCauses, recommendations } = results
   const moddedRootCause = typeof rootCauses === 'function' ? rootCauses(checks) : { rootCauseText: rootCauses, rootCauseValues: {} }
   const moddedRecommendations = typeof recommendations === 'function' ? recommendations(checks) : { recommendationsText: recommendations, recommendationsValues: {} }
-  const ccdResult = ccd80211RootCauseRecommendations[failureCode as string]
-  const result = { rootCauses: moddedRootCause, recommendations: moddedRecommendations }
-    ?? { rootCauses: { rootCauseText: ccdResult.rootCauses }, recommendations: { recommendationsText: ccdResult.recommendations } }
-    ?? { rootCauses: { rootCauseText: TBD }, recommendations: { recommendationsText: TBD } }
-  return [result]
+  return [{ rootCauses: moddedRootCause, recommendations: moddedRecommendations }]
 }
