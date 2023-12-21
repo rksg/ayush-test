@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeLagFixtures, EdgeUrlsInfo }               from '@acx-ui/rc/utils'
-import { Provider }                                    from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
+import { EdgeLagFixtures, EdgeUrlsInfo }                                          from '@acx-ui/rc/utils'
+import { Provider }                                                               from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import Lag from '.'
 
@@ -81,6 +81,7 @@ describe('EditEdge ports - LAG', () => {
           path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const row = await screen.findByRole('row', { name: /LAG 1/i })
     await userEvent.click(within(row).getByRole('radio'))
     await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))

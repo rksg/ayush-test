@@ -5,7 +5,8 @@ import { DefaultOptionType }              from 'antd/lib/select'
 import _                                  from 'lodash'
 import { useIntl }                        from 'react-intl'
 
-import { Modal }     from '@acx-ui/components'
+import { Modal, Tooltip }   from '@acx-ui/components'
+import { InformationSolid } from '@acx-ui/icons'
 import {
   FirmwareCategory,
   FirmwareVenue,
@@ -16,6 +17,7 @@ import {
 import { getVersionLabel, isBetaFirmware } from '../../FirmwareUtils'
 
 import * as UI                                  from './styledComponents'
+import { SupportedAPModelsList }                from './SupportedAPModelsList'
 import { firmwareNote1, firmwareNote2 }         from './UpdateNowDialog'
 import { EolApFirmwareGroup, useApEolFirmware } from './useApEolFirmware'
 
@@ -42,6 +44,11 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
   const [updateNowRequestPayload, setUpdateNowRequestPayload] = useState<
     { [key: string]: UpdateNowRequestWithoutVenues | null }
   >()
+
+  const EOL_ABF_LABEL = {
+    'ABF2-3R': intl.$t({ defaultMessage: 'Available firmware for Wi-Fi 6, 6E and 11ac wave2 AP' }),
+    'eol-ap-2022-12': intl.$t({ defaultMessage: 'Available firmware for 11ac AP' })
+  } as { [key: string]: string }
 
   // eslint-disable-next-line max-len
   const defaultActiveVersion: FirmwareVersion | undefined = getDefaultActiveVersion(availableVersions)
@@ -109,7 +116,7 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
         ? <UI.Section>
           <ABFSelector
             categoryId={'active'}
-            abfLabel={intl.$t({ defaultMessage: 'Available firmware' })}
+            abfLabel={intl.$t({ defaultMessage: 'Available firmware for Wi-Fi 7 AP' })}
             defaultChecked={true}
             defaultVersionId={defaultActiveVersion.id}
             defaultVersionLabel={getVersionLabel(intl, defaultActiveVersion)}
@@ -131,7 +138,7 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
             {eol.isUpgradable
               ? <ABFSelector
                 categoryId={eol.name}
-                abfLabel={intl.$t({ defaultMessage: 'Available firmware for legacy devices' })}
+                abfLabel={EOL_ABF_LABEL[eol.name]}
                 defaultChecked={true}
                 defaultVersionId={eol.latestEolVersion}
                 defaultVersionLabel={getDefaultEolVersionLabel(eol.latestEolVersion)}
@@ -226,14 +233,21 @@ function ABFSelector (props: ABFSelectorProps) {
   }, [selectedVersion])
 
   return (<>
-    <UI.TitleActive>
-      {abfLabel}&nbsp;
-      ({ apModels
-        ? apModels
-        // eslint-disable-next-line max-len
-        : <span className='empty'>{$t({ defaultMessage: 'No Access Point in selected venue(s)' })}</span>
-      })
-    </UI.TitleActive>
+    <UI.LabelWithHint>
+      <UI.TitleActive>
+        {abfLabel}&nbsp;
+        ({ apModels
+          ? apModels
+          // eslint-disable-next-line max-len
+          : <span className='empty'>{$t({ defaultMessage: 'No Access Point in selected venue(s)' })}</span>
+        })
+      </UI.TitleActive>
+      <Tooltip
+        overlayInnerStyle={{ minWidth: '500px' }}
+        children={<InformationSolid />}
+        title={<SupportedAPModelsList />}
+      />
+    </UI.LabelWithHint>
     <UI.ValueContainer>
       <Radio.Group
         onChange={onSelectedVersionChange}

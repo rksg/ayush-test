@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsForm }    from '@acx-ui/components'
-import { EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }     from '@acx-ui/store'
+import { StepsForm }                            from '@acx-ui/components'
+import { EdgeUrlsInfo, EdgePortConfigFixtures } from '@acx-ui/rc/utils'
+import { Provider }                             from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -12,9 +12,9 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { mockEdgePortConfig, mockEdgePortStatus } from '../../__tests__/fixtures'
-
 import { CorePortFormItem } from './CorePortFormItem'
+
+const { mockEdgePortConfig, mockEdgePortStatus } = EdgePortConfigFixtures
 
 jest.mock('./styledComponents', () => {
   const UIComps = jest.requireActual('./styledComponents')

@@ -7,7 +7,7 @@ import { rest }  from 'msw'
 
 import { AccessControlUrls, CommonUrlsInfo, NetworkSaveData, PskWlanAdvancedCustomization, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                                                       from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, within }                                                  from '@acx-ui/test-utils'
+import { mockServer, render, screen, within }                                                             from '@acx-ui/test-utils'
 
 import {
   accessControlListResponse,
@@ -30,9 +30,7 @@ describe('AccessControlForm', () => {
         rulesCount: 1,
         networksCount: 0
       }],
-      fields: [
-        'name',
-        'id'],
+      fields: [ 'name', 'id'],
       totalCount: 1,
       totalPages: 1,
       page: 1
@@ -84,6 +82,9 @@ describe('AccessControlForm', () => {
         route: { params }
       })
 
+    const selectBtn = screen.getByRole('button', { name: /Select separate profiles/i })
+    await userEvent.click(selectBtn)
+
     const view = screen.getByText(/client rate limit/i)
     await userEvent.click(await within(view).findByRole('switch'))
     expect(screen.getByText(/upload limit/i)).toBeVisible()
@@ -101,31 +102,6 @@ describe('AccessControlForm', () => {
 
   })
 
-  it('after click select seperate profiles', async () => {
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
-
-    render(
-      <Provider>
-        <Form>
-          <AccessControlForm />
-        </Form>
-      </Provider>, {
-        route: { params }
-      })
-
-    const selectBtn = screen.getByText(/select access control profile/i)
-    fireEvent.click(selectBtn)
-
-    expect(screen.getByText(/select separate profiles/i)).toBeVisible()
-    expect(within(screen.getByText(/device & os/i)).getByText(/--/)).toBeVisible()
-    expect(within(screen.getByText(/layer 2/i)).getByText(/--/)).toBeVisible()
-    expect(within(screen.getByText(/layer 3/i)).getByText(/--/)).toBeVisible()
-    expect(within(screen.getByText(/applications/i)).getByText(/--/)).toBeVisible()
-    expect(within(screen.getByText(/client rate limit/i)).getByText(/--/)).toBeVisible()
-
-    expect(await screen.findByText(/select separate profiles/i)).toBeInTheDocument()
-  })
-
   it('render access control profile detail', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
@@ -137,9 +113,6 @@ describe('AccessControlForm', () => {
       </Provider>, {
         route: { params }
       })
-
-    const selectBtn = screen.getByText(/select access control profile/i)
-    fireEvent.click(selectBtn)
 
     expect(screen.getByText(/select separate profiles/i)).toBeVisible()
     expect(within(screen.getByText(/device & os/i)).getByText(/--/)).toBeVisible()

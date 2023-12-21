@@ -133,7 +133,7 @@ describe('Common Link Helper', () => {
   it('should render NetworkSegmentationLink correctly', async () => {
     render(
       <NetworkSegmentationLink
-        nsgId={'nsg-id'}
+        id={'nsg-id'}
         name={'nsg-name'}
       />,
       { route: { params } }

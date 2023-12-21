@@ -102,6 +102,9 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
         editMode={editMode}
         onCancel={handleCancel}
         onFinish={async (data) => { return handleSaveApSnmpAgentPolicy(data) }}
+        buttonLabel={{
+          submit: (editMode)? $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' })
+        }}
       >
         <UI.OverwriteStepsForm
           name='settings'

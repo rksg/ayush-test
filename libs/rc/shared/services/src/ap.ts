@@ -23,6 +23,7 @@ import {
   WifiApSetting,
   ApLanPort,
   ApLedSettings,
+  ApBandModeSettings,
   ApBssColoringSettings,
   APPhoto,
   ApViewModel,
@@ -253,7 +254,8 @@ export const apApi = baseApApi.injectEndpoints({
         return {
           ...req
         }
-      }
+      },
+      keepUnusedDataFor: 0
     }),
     getAp: build.query<ApDeep, RequestPayload>({
       query: ({ params, payload }) => {
@@ -594,6 +596,21 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'Led' }]
+    }),
+    getApBandModeSettings: build.query<ApBandModeSettings, RequestPayload<void>>({
+      query: ({ params }) => createHttpRequest(WifiUrlsInfo.getApBandModeSettings, params),
+      providesTags: [{ type: 'Ap', id: 'BandMode' }]
+    }),
+    updateApBandModeSettings: build.mutation<CommonResult, RequestPayload<ApBandModeSettings>>({
+      query: ({ params, payload }) => ({
+        ...createHttpRequest(WifiUrlsInfo.updateApBandModeSettings, params),
+        body: payload
+      }),
+      invalidatesTags: [{ type: 'Ap', id: 'BandMode' }]
+    }),
+    resetApBandModeSettings: build.mutation<CommonResult, RequestPayload<void>>({
+      query: ({ params }) => createHttpRequest(WifiUrlsInfo.resetApBandModeSettings, params),
+      invalidatesTags: [{ type: 'Ap', id: 'BandMode' }]
     }),
     getApBssColoring: build.query<ApBssColoringSettings, RequestPayload>({
       query: ({ params, payload }) => {
@@ -969,6 +986,9 @@ export const {
   useGetApLedQuery,
   useUpdateApLedMutation,
   useResetApLedMutation,
+  useGetApBandModeSettingsQuery,
+  useUpdateApBandModeSettingsMutation,
+  useResetApBandModeSettingsMutation,
   useGetApBssColoringQuery,
   useUpdateApBssColoringMutation,
   useGetApCapabilitiesQuery,
