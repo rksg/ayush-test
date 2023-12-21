@@ -109,7 +109,8 @@ const PortsGeneralModal = (props: {
       width='70%'
       visible={visible}
       onCancel={handleClose}
-      footer={undefined}
+      // eslint-disable-next-line react/jsx-no-useless-fragment
+      footer={<></>}
       type={ModalType.ModalStepsForm}
       mask={true}
       destroyOnClose={true}
@@ -128,6 +129,7 @@ export const CorePortFormItem = (props: {
     edgeId: string | undefined,
     edgeName: string,
     portsData: EdgePort[] | undefined,
+    isLagCorePort: boolean
   }) => {
   const { $t } = useIntl()
   const {
@@ -135,7 +137,8 @@ export const CorePortFormItem = (props: {
     name: corePortName,
     edgeId,
     edgeName,
-    portsData
+    portsData,
+    isLagCorePort
   } = props
   const [modalVisible, setModalVisible] = useState<boolean>(false)
 
@@ -145,17 +148,22 @@ export const CorePortFormItem = (props: {
 
   return <Space direction='vertical'>
     <Typography.Text style={{ color: cssStr('--acx-neutrals-90') }}>
-      {$t({ defaultMessage: 'Core Port: {corePort}' },
-        { corePort: corePortName && edgeId ? corePortName : 'N/A' })}
+      {$t({ defaultMessage: '{type}: {corePort}' },
+        {
+          type: isLagCorePort
+            ? $t({ defaultMessage: 'Core LAG' })
+            : $t({ defaultMessage: 'Core Port' }),
+          corePort: (corePortName && edgeId) ? corePortName : 'N/A'
+        })}
     </Typography.Text>
     <UI.AlertText>
       {
-        corePortMac || edgeId === undefined
+        corePortMac !== undefined || edgeId === undefined
           ? null
           : <><Typography.Text>
             {$t({
               defaultMessage: `To use SD-LAN on the venue,
-         you must go to {editPortLink} and select a port as the Core port`
+         you must go to {editPortLink} and select a port as the Core Port/LAG`
             },
             { editPortLink:
               <UI.LinkButton type='link' onClick={handleClick}>

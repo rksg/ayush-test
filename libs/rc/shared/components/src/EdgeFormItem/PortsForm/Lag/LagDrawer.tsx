@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 
 import { Checkbox, Form, Select, Space, Switch } from 'antd'
 import TextArea                                  from 'antd/lib/input/TextArea'
+import _                                         from 'lodash'
 import { useIntl }                               from 'react-intl'
 
 import { Drawer, StepsForm, showActionModal }                                                from '@acx-ui/components'
@@ -53,14 +54,20 @@ export const LagDrawer = (props: LagDrawerProps) => {
     .filter(item => item.value !== EdgePortTypeEnum.UNCONFIGURED)
   const [formRef] = Form.useForm()
   const [enabledPorts, setEnabledPorts] = useState<string[]>()
-  // const ipMode = Form.useWatch('ipMode', formRef)
   // const subnet = Form.useWatch('subnet', formRef)
   const lagMembers = Form.useWatch('lagMembers', formRef) as string[]
+  Form.useWatch('ipMode', formRef)
+  Form.useWatch('portType', formRef)
+
   const [addEdgeLag] = useAddEdgeLagMutation()
   const [updateEdgeLag] = useUpdateEdgeLagMutation()
   const portsData = useContext(EdgePortsDataContext)
   const portData = portsData.portData
+  const allValues = formRef.getFieldsValue(true) as EdgeLag
   const lagData = portsData.lagData
+    ? [allValues]
+    : _.values(
+      _.merge(_.keyBy(portsData.lagData, 'id'), _.keyBy([allValues], 'id')))
 
   const getEdgeSdLanPayload = {
     filters: { edgeId: [serialNumber] },
