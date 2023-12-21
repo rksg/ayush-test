@@ -4,6 +4,7 @@ import moment, { Moment }         from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { DateTimePicker, Tooltip, showToast } from '@acx-ui/components'
+import { DateFormatEnum, formatter }          from '@acx-ui/formatter'
 import {
   CalendarOutlined,
   CancelCircleOutlined,
@@ -57,12 +58,15 @@ function ApplyCalendar ({ disabled, type, id, code, metadata }: ActionButtonProp
   const { $t } = useIntl()
   const [scheduleRecommendation] = useScheduleRecommendationMutation()
   const onApply = (date: Moment) => {
-    if(getFutureTime(moment().seconds(0).milliseconds(0)) <= date){
+    const futureTime = getFutureTime(moment().seconds(0).milliseconds(0))
+    if (futureTime <= date){
       scheduleRecommendation({ id, scheduledAt: date.toISOString() })
     } else {
       showToast({
         type: 'error',
-        content: $t({ defaultMessage: 'Schedule within 15 minutes is not allowed' })
+        content: $t({ defaultMessage: 'Scheduled time has to be after {futureTime}' }, {
+          futureTime: formatter(DateFormatEnum.DateTimeFormat)(futureTime)
+        })
       })
     }
   }

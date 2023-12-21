@@ -201,7 +201,7 @@ describe('RecommendationActions', () => {
     await user.click(screen.getByTestId('CancelCircleOutlined'))
     expect(await screen.findAllByPlaceholderText('Select date')).toHaveLength(2)
   })
-  it('should show toats if schedule within 15 minutes', async () => {
+  it('should show toast if scheduled time is before buffer', async () => {
     const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
     mockGraphqlMutation(recommendationUrl, 'ScheduleRecommendation', { data: resp })
     render(
@@ -219,6 +219,6 @@ describe('RecommendationActions', () => {
     await user.click((await screen.findAllByText('14'))[1])
     await user.click((await screen.findAllByTitle('2023-07-15'))[0])
     await user.click((await screen.findAllByText('Apply'))[0])
-    expect(await screen.findByText('Schedule within 15 minutes is not allowed')).toBeVisible()
+    expect(await screen.findByText('Scheduled time has to be after 07/15/2023 14:15')).toBeVisible()
   })
 })
