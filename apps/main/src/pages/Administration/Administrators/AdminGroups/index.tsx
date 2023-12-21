@@ -90,7 +90,7 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
       dataIndex: 'role',
       sorter: { compare: sortProp('role', defaultSort) },
       render: function (_, row) {
-        return row.customRole?.name ? $t(roleStringMap[row.customRole.name]) : ''
+        return row.role ? $t(roleStringMap[row.role]) : ''
       }
     },
     {

@@ -28,6 +28,7 @@ export const fakedAdminGroupLsit = [
     groupId: 'IT_Admins@corporate.com',
     processingPriority: 8,
     loggedMembers: 0,
+    role: 'PRIME_ADMIN',
     customRole: {
       id: '1765e98c7b9446e2a5bdd4720e0e8912',
       createdDate: '2023-12-01T00:13:58.122+00:00',
@@ -47,6 +48,7 @@ export const fakedAdminGroupLsit = [
     groupId: 'groupId123',
     processingPriority: 7,
     loggedMembers: 0,
+    role: 'READ_ONLY',
     customRole: {
       id: '1765e98c7b9446e2a5bdd4720e0e8913',
       createdDate: '2023-12-01T00:13:58.122+00:00',

@@ -34,8 +34,6 @@ export const AddGroupDrawer = (props: AddGroupDrawerProps) => {
   const [addAdminGroup] = useAddAdminGroupsMutation()
   const [updateAdminGroup] = useUpdateAdminGroupsMutation()
 
-  form.setFieldValue('role', isEditMode ? editData?.customRole?.name : '')
-
   const onClose = () => {
     setVisible(false)
     form.resetFields()
@@ -54,6 +52,7 @@ export const AddGroupDrawer = (props: AddGroupDrawerProps) => {
       }
 
       const adminGroupEditData: AdminGroupData = {
+        groupId: editData?.groupId,
         role: role
       }
 
@@ -90,7 +89,7 @@ export const AddGroupDrawer = (props: AddGroupDrawerProps) => {
         children={<Input />}
       />}
     {isEditMode ?
-      <Form.Item label={$t({ defaultMessage: 'Group Id' })}>
+      <Form.Item label={$t({ defaultMessage: 'Group ID' })}>
         {`${editData?.groupId}`}
       </Form.Item> :
       <Form.Item
@@ -107,6 +106,7 @@ export const AddGroupDrawer = (props: AddGroupDrawerProps) => {
       name='role'
       style={{ marginTop: '13px' }}
       label={$t({ defaultMessage: 'Role' })}
+      initialValue={editData?.role || ''}
       rules={[
         { required: true }
       ]}
