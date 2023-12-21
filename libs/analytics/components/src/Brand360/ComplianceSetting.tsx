@@ -62,7 +62,7 @@ export function ComplianceSetting ({ settings }: { settings: Settings }) {
               />
             </>}
             children={<textarea
-              data-testId='ssidRegex'
+              data-testid='ssidRegex'
               style={{ width: '100%', outline: 'none' }}
               rows={5}
               defaultValue={ssidPattern || ssidRegex}
