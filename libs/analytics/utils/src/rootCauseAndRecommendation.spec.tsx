@@ -358,7 +358,7 @@ describe('getRootCauseAndRecommendations', () => {
         { isChannelFlyEnabled: false },
         { isLargeMgmtFrameCount: true },
         { isHighLegacyWifiDevicesCount: false },
-        { isCRRMRaised: false }
+        { isCRRMRaised: true }
       ] as unknown as AirtimeRxArray
       const incident = fakeIncident({
         ...airtimeRxIncident,
@@ -372,7 +372,7 @@ describe('getRootCauseAndRecommendations', () => {
               { isChannelFlyEnabled: false },
               { isLargeMgmtFrameCount: true },
               { isHighLegacyWifiDevicesCount: false },
-              { isCRRMRaised: false }
+              { isCRRMRaised: true }
             ]
           }
         }
