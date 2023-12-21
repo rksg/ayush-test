@@ -39,7 +39,9 @@ export * from './googleMaps'
 export * from './applicationPolicy'
 export interface CommonResult {
   requestId: string
-  response?:{}
+  response?: {
+    id?: string
+  }
 }
 
 export interface CommonErrorsResult<T> {

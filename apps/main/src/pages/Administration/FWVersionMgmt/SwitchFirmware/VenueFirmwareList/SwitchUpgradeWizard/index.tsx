@@ -149,14 +149,28 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
         currentUpgradeVenueList: FirmwareSwitchVenue[]
       } = saveSwitchStep()
       form.validateFields()
+
+      const venueIds = form.getFieldValue('selectedVenueRowKeys') || []
+      const switchIds = _.map(upgradeList.currentUpgradeSwitchList, 'switchId')
+
+      const selectedItemMap = {
+        'true,true': $t({ defaultMessage: 'items' }),
+        'true,false': $t({ defaultMessage: 'venues' }),
+        'false,true': $t({ defaultMessage: 'switches' }),
+        'false,false': $t({ defaultMessage: 'items' })
+      }
+
+      const selectedItem = selectedItemMap[`${venueIds.length > 0},${switchIds.length > 0}`]
+
       showActionModal({
         type: 'confirm',
         width: 460,
         title: $t({ defaultMessage: 'Skip This Update?' }),
         content: $t({
           defaultMessage:
-            'Please confirm that you wish to exclude the selected venues from this scheduled update'
-        }),
+            // eslint-disable-next-line max-len
+            'Please confirm that you wish to exclude the selected {selectedItem} from this scheduled update'
+        }, { selectedItem }),
         okText: $t({ defaultMessage: 'Skip' }),
         cancelText: $t({ defaultMessage: 'Cancel' }),
         async onOk () {
@@ -164,8 +178,8 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
             await skipSwitchUpgradeSchedules({
               params: { ...params },
               payload: {
-                venueIds: form.getFieldValue('selectedVenueRowKeys') || [],
-                switchIds: _.map(upgradeList.currentUpgradeSwitchList, 'switchId')
+                venueIds,
+                switchIds
               }
             })
             form.resetFields()
