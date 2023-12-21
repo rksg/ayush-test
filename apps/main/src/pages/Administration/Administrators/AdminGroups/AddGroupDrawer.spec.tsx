@@ -17,6 +17,7 @@ import { AddGroupDrawer } from './AddGroupDrawer'
 
 const adminGroupData =
 {
+  id: '123',
   name: 'test group 1',
   groupId: 'groupId123',
   loggedMembers: 0,
@@ -209,7 +210,7 @@ describe('Add Admin Group Drawer', () => {
       expect(mockedCloseDrawer).toHaveBeenLastCalledWith(false)
     })
   })
-  xit('should save edited group correctly', async () => {
+  it('should save edited group correctly', async () => {
     const mockedCloseDrawer = jest.fn()
     render(
       <Provider>
@@ -226,5 +227,17 @@ describe('Add Admin Group Drawer', () => {
     fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Role' }))
     await userEvent.click(screen.getByText('Prime Admin'))
     await userEvent.click(screen.getByRole('button', { name: 'Save' }))
+
+    const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
+      data: { requestId: '456' },
+      status: 'fulfilled'
+    })]
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loading' }))
+    await waitFor(()=>
+      expect(services.useUpdateAdminGroupsMutation).toHaveLastReturnedWith(value))
+    await waitFor(() => {
+      expect(mockedCloseDrawer).toHaveBeenLastCalledWith(false)
+    })
+
   })
 })
