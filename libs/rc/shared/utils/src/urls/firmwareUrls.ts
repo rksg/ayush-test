@@ -201,5 +201,11 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/edgeFirmwares/releases',
     oldUrl: '/venues/edgeFirmwares/releases',
     newApi: true
+  },
+  getScheduledFirmware: {
+    method: 'get',
+    url: '/apFirmwares?status=scheduled',
+    oldUrl: '/api/tenant/:tenantId/wifi/upgrade/schedule-version',
+    newApi: true
   }
 }
