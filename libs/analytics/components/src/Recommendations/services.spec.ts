@@ -4,21 +4,22 @@ import '@testing-library/jest-dom'
 import { defaultNetworkPath }                                              from '@acx-ui/analytics/utils'
 import { recommendationUrl, store, Provider }                              from '@acx-ui/store'
 import { mockGraphqlQuery, mockGraphqlMutation, act, renderHook, waitFor } from '@acx-ui/test-utils'
-import { PathFilter, DateRange }                                           from '@acx-ui/utils'
+import { PathFilter, DateRange, NetworkPath }                              from '@acx-ui/utils'
 
 import {
   crrmListResult,
   aiOpsListResult,
   recommendationListResult
 } from './__tests__/fixtures'
-import { crrmStates, priorities }     from './config'
+import { crrmStates, priorities } from './config'
 import {
   api,
   getCrrmOptimizedState,
   getCrrmInterferingLinksText,
   useCancelRecommendationMutation,
   useMuteRecommendationMutation,
-  useScheduleRecommendationMutation
+  useScheduleRecommendationMutation,
+  useSetPreferenceMutation
 } from './services'
 
 describe('Recommendations utils', () => {
@@ -316,6 +317,25 @@ describe('Recommendation services', () => {
           ...crrmStates.verified,
           text: 'Verified'
         }
+      },
+      {
+        ...recommendationListResult.recommendations[7],
+        scope: `vsz612 (SZ Cluster)
+> EDU-MeshZone_S12348 (Venue)`,
+        type: 'Venue',
+        priority: {
+          ...priorities.high,
+          text: 'High'
+        },
+        category: 'AI-Driven Cloud RRM',
+        summary: 'Optimal channel plan found for 2.4 GHz radio',
+        status: 'New',
+        statusTooltip: 'Schedule a day and time to apply this recommendation.',
+        statusEnum: 'new',
+        crrmOptimizedState: {
+          ...crrmStates.nonOptimized,
+          text: 'Non-Optimized'
+        }
       }
     ]
     expect(error).toBe(undefined)
@@ -365,6 +385,27 @@ describe('Recommendation services', () => {
     )
     act(() => {
       result.current[0]({ id: 'test' })
+    })
+    await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
+    expect(result.current[1].data)
+      .toEqual(resp)
+  })
+
+  it('should setPreferences correctly', async () => {
+    const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
+    mockGraphqlMutation(recommendationUrl, 'SetPreference', { data: resp })
+
+    const idPath = [
+      { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c8' },
+      { type: 'domain', name: '27-US-CA-D27-Peat-home' },
+      { type: 'zone', name: '27-US-CA-Z27-Peat-home' }
+    ] as NetworkPath
+    const { result } = renderHook(
+      () => useSetPreferenceMutation(),
+      { wrapper: Provider }
+    )
+    act(() => {
+      result.current[0]({ code: 'test', path: idPath, preferences: { fullOptimization: false } })
     })
     await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
     expect(result.current[1].data)

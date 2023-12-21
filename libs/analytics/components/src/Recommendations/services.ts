@@ -75,6 +75,10 @@ export type Recommendation = {
   mutedBy: string
   mutedAt: string | null
   path: NetworkPath
+  idPath: NetworkPath
+  preferences?: {
+    fullOptimization: boolean
+  }
 }
 
 export type RecommendationListItem = Recommendation & {
@@ -110,6 +114,22 @@ interface ScheduleResponse {
     errorCode: string;
     errorMsg: string;
     success: boolean;
+  }
+}
+
+interface PreferencePayload {
+  code: string
+  path: NetworkPath
+  preferences: {
+    fullOptimization: boolean
+  }
+}
+
+interface PreferenceResponse {
+  setPreference: {
+    errorCode: string
+    errorMsg: string
+    success: boolean
   }
 }
 
@@ -317,7 +337,7 @@ export const api = recommendationApi.injectEndpoints({
     }),
     recommendationList: build.query<
       RecommendationListItem[],
-      PathFilter & { crrm?: boolean }
+      PathFilter & { crrm?: boolean, isCrrmPartialEnabled: boolean }
     >({
       query: (payload) => ({
         document: gql`
@@ -336,7 +356,12 @@ export const api = recommendationApi.injectEndpoints({
             isMuted
             mutedBy
             mutedAt
+            ${payload.isCrrmPartialEnabled ? 'preferences' : ''}
             path {
+              type
+              name
+            }
+            idPath {
               type
               name
             }
@@ -349,8 +374,9 @@ export const api = recommendationApi.injectEndpoints({
         const { $t } = getIntl()
         return response.recommendations.map(recommendation => {
           const {
-            id, path, sliceValue, sliceType, code, status, metadata, updatedAt
+            id, path, sliceValue, sliceType, code, status, metadata, updatedAt, preferences
           } = recommendation
+          const isFullyOptimized = preferences ? preferences.fullOptimization : true
           const newId = id === 'unknown' ? uniqueId() : id
           const statusEnum = status as StateType
           const getCode = code === 'unknown'
@@ -366,7 +392,9 @@ export const api = recommendationApi.injectEndpoints({
               text: $t(codes[getCode].priority.label)
             },
             category: $t(codes[getCode].category),
-            summary: $t(codes[getCode].summary),
+            summary: isFullyOptimized
+              ? $t(codes[getCode].summary)
+              : $t(codes[getCode].partialOptimizedSummary!),
             status: $t(states[statusEnum].text),
             statusTooltip: getStatusTooltip(code, statusEnum, { ...metadata, updatedAt }),
             statusEnum,
@@ -450,6 +478,37 @@ export const api = recommendationApi.injectEndpoints({
         { type: 'Monitoring', id: 'RECOMMENDATION_CODE' },
         { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
       ]
+    }),
+    setPreference: build.mutation<PreferenceResponse, PreferencePayload>({
+      query: (payload) => ({
+        document: gql`
+          mutation SetPreference(
+            $code: String,
+            $path: [HierarchyNodeInput],
+            $preferences: JSON
+          ) {
+            setPreference(
+              code: $code,
+              path: $path,
+              preferences: $preferences
+            ) {
+              success
+              errorMsg
+              errorCode
+            }
+          }
+        `,
+        variables: {
+          code: payload.code,
+          path: payload.path,
+          preferences: payload.preferences
+        }
+      }),
+      invalidatesTags: [
+        { type: 'Monitoring', id: 'RECOMMENDATION_LIST' },
+        { type: 'Monitoring', id: 'RECOMMENDATION_CODE' },
+        { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
+      ]
     })
   })
 })
@@ -465,5 +524,6 @@ export const {
   useRecommendationListQuery,
   useMuteRecommendationMutation,
   useScheduleRecommendationMutation,
-  useCancelRecommendationMutation
+  useCancelRecommendationMutation,
+  useSetPreferenceMutation
 } = api
