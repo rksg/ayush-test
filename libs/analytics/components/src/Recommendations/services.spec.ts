@@ -4,21 +4,23 @@ import '@testing-library/jest-dom'
 import { defaultNetworkPath }                                              from '@acx-ui/analytics/utils'
 import { recommendationUrl, store, Provider }                              from '@acx-ui/store'
 import { mockGraphqlQuery, mockGraphqlMutation, act, renderHook, waitFor } from '@acx-ui/test-utils'
-import { PathFilter, DateRange }                                           from '@acx-ui/utils'
+import { PathFilter, DateRange, NetworkPath }                              from '@acx-ui/utils'
 
 import {
   crrmListResult,
   aiOpsListResult,
   recommendationListResult
 } from './__tests__/fixtures'
-import { crrmStates, priorities }     from './config'
+import { crrmStates, priorities }   from './config'
+import { mockedRecommendationCRRM } from './RecommendationDetails/__tests__/fixtures'
 import {
   api,
   getCrrmOptimizedState,
   getCrrmInterferingLinksText,
   useCancelRecommendationMutation,
   useMuteRecommendationMutation,
-  useScheduleRecommendationMutation
+  useScheduleRecommendationMutation,
+  useSetPreferenceMutation
 } from './services'
 
 describe('Recommendations utils', () => {
@@ -121,19 +123,16 @@ describe('Recommendation services', () => {
     const expectedResult = [
       {
         ...crrmListResult.recommendations[0],
-        crrmInterferingLinksText: 'From 3 to 0 interfering links',
         crrmOptimizedState: crrmStates.optimized,
         summary: 'Optimal Ch/Width and Tx Power found for 5 GHz radio'
       },
       {
         ...crrmListResult.recommendations[1],
-        crrmInterferingLinksText: 'Reverted',
         crrmOptimizedState: crrmStates.nonOptimized,
         summary: 'Optimal Ch/Width and Tx Power found for 2.4 GHz radio'
       },
       {
         ...crrmListResult.recommendations[2],
-        crrmInterferingLinksText: '2 interfering links can be optimized to 0',
         crrmOptimizedState: crrmStates.nonOptimized,
         summary: 'Optimal Ch/Width and Tx Power found for 6 GHz radio'
       }
@@ -316,6 +315,25 @@ describe('Recommendation services', () => {
           ...crrmStates.verified,
           text: 'Verified'
         }
+      },
+      {
+        ...recommendationListResult.recommendations[7],
+        scope: `vsz612 (SZ Cluster)
+> EDU-MeshZone_S12348 (Venue)`,
+        type: 'Venue',
+        priority: {
+          ...priorities.high,
+          text: 'High'
+        },
+        category: 'AI-Driven Cloud RRM',
+        summary: 'Optimal channel plan found for 2.4 GHz radio',
+        status: 'New',
+        statusTooltip: 'Schedule a day and time to apply this recommendation.',
+        statusEnum: 'new',
+        crrmOptimizedState: {
+          ...crrmStates.nonOptimized,
+          text: 'Non-Optimized'
+        }
       }
     ]
     expect(error).toBe(undefined)
@@ -365,6 +383,47 @@ describe('Recommendation services', () => {
     )
     act(() => {
       result.current[0]({ id: 'test' })
+    })
+    await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
+    expect(result.current[1].data)
+      .toEqual(resp)
+  })
+
+  it('should return crrmKpi', async () => {
+    const recommendationPayload = {
+      id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6'
+    }
+    mockGraphqlQuery(recommendationUrl, 'CrrmKpi', {
+      data: {
+        recommendation: mockedRecommendationCRRM
+      }
+    })
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.crrmKpi.initiate({
+        ...recommendationPayload,
+        code: 'c-crrm-channel24g-auto'
+      })
+    )
+    expect(status).toBe('fulfilled')
+    expect(error).toBeUndefined()
+    expect(data).toEqual({ text: 'From 2 to 0 interfering links' })
+  })
+
+  it('should setPreferences correctly', async () => {
+    const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
+    mockGraphqlMutation(recommendationUrl, 'SetPreference', { data: resp })
+
+    const idPath = [
+      { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c8' },
+      { type: 'domain', name: '27-US-CA-D27-Peat-home' },
+      { type: 'zone', name: '27-US-CA-Z27-Peat-home' }
+    ] as NetworkPath
+    const { result } = renderHook(
+      () => useSetPreferenceMutation(),
+      { wrapper: Provider }
+    )
+    act(() => {
+      result.current[0]({ code: 'test', path: idPath, preferences: { fullOptimization: false } })
     })
     await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
     expect(result.current[1].data)
