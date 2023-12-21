@@ -63,11 +63,6 @@ export const LagDrawer = (props: LagDrawerProps) => {
   const [updateEdgeLag] = useUpdateEdgeLagMutation()
   const portsData = useContext(EdgePortsDataContext)
   const portData = portsData.portData
-  const allValues = formRef.getFieldsValue(true) as EdgeLag
-  const lagData = portsData.lagData
-    ? [allValues]
-    : _.values(
-      _.merge(_.keyBy(portsData.lagData, 'id'), _.keyBy([allValues], 'id')))
 
   const getEdgeSdLanPayload = {
     filters: { edgeId: [serialNumber] },
@@ -327,25 +322,49 @@ export const LagDrawer = (props: LagDrawerProps) => {
       </Checkbox.Group>}
     />
 
-    <EdgePortCommonForm
-      formRef={formRef}
-      portsData={portData as EdgePort[]}
-      lagData={lagData}
-      isEdgeSdLanRun={isEdgeSdLanRun}
-      isListForm={false}
-      formFieldsProps={{
-        portType: {
-          options: portTypeOptions
-        },
-        corePortEnabled: {
-          title: $t({ defaultMessage: 'Use this LAG as Core LAG' })
-        },
-        enabled: {
-          name: 'lagEnabled',
-          title: $t({ defaultMessage: 'LAG Enabled' })
-        }
+    <Form.Item
+      noStyle
+      shouldUpdate={(prev, cur) => {
+        return _.get(prev, 'corePortEnabled') !== _.get(cur, 'corePortEnabled')
+        || _.get(prev, 'portType') !== _.get(cur, 'portType')
+        || _.get(prev, 'lagEnabled') !== _.get(cur, 'lagEnabled')
       }}
-    />
+    >
+      {({ getFieldsValue }) => {
+        const allValues = getFieldsValue(true) as EdgeLag
+        let lagData
+        if (portsData.lagData) {
+          lagData = _.cloneDeep(portsData.lagData)
+          const targetIdx = lagData.findIndex(item => item.id === allValues.id)
+          if (targetIdx !== -1) {
+            lagData[targetIdx] = allValues
+          }
+        } else {
+          lagData = [allValues]
+        }
+
+        return <EdgePortCommonForm
+          formRef={formRef}
+          portsData={portData as EdgePort[]}
+          lagData={lagData}
+          isEdgeSdLanRun={isEdgeSdLanRun}
+          isListForm={false}
+          formFieldsProps={{
+            portType: {
+              options: portTypeOptions
+            },
+            corePortEnabled: {
+              title: $t({ defaultMessage: 'Use this LAG as Core LAG' })
+            },
+            enabled: {
+              name: 'lagEnabled',
+              title: $t({ defaultMessage: 'LAG Enabled' })
+            }
+          }}
+        />
+      }}
+    </Form.Item>
+
     {/*
     <Form.Item
       name='portType'

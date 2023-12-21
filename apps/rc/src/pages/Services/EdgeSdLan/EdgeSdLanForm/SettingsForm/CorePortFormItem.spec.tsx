@@ -76,6 +76,7 @@ describe('Edge centrailized forwarding form: CorePortFormItem', () => {
             edgeId='0000000002'
             edgeName='Smart Edge 2'
             portsData={mockEdgePortConfig.ports}
+            isLagCorePort={false}
           />
         </StepsForm.StepForm>
       </StepsForm>
@@ -95,6 +96,7 @@ describe('Edge centrailized forwarding form: CorePortFormItem', () => {
             edgeId='0000000003'
             edgeName='Smart Edge 3'
             portsData={mockEdgePortConfig.ports}
+            isLagCorePort={false}
           />
         </StepsForm.StepForm>
       </StepsForm>
@@ -120,6 +122,7 @@ describe('Edge centrailized forwarding form: CorePortFormItem', () => {
             edgeId={undefined}
             edgeName=''
             portsData={mockEdgePortConfig.ports}
+            isLagCorePort={false}
           />
         </StepsForm.StepForm>
       </StepsForm>
@@ -143,6 +146,7 @@ describe('Edge centrailized forwarding form: CorePortFormItem', () => {
             edgeId='0000000003'
             edgeName='Smart Edge 3'
             portsData={mockEdgePortConfig.ports}
+            isLagCorePort={false}
           />
         </StepsForm.StepForm>
       </StepsForm>
@@ -174,6 +178,7 @@ describe('Edge centrailized forwarding form: CorePortFormItem', () => {
             edgeId='0000000003'
             edgeName='Smart Edge 3'
             portsData={mockEdgePortConfig.ports}
+            isLagCorePort={false}
           />
         </StepsForm.StepForm>
       </StepsForm>

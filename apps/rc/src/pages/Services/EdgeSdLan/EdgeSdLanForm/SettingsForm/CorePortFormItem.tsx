@@ -124,7 +124,8 @@ const PortsGeneralModal = (props: {
 }
 
 export const CorePortFormItem = (props: {
-    data: string,
+    // core port might be number when it is LAG, or interfaceName for physical port case
+    data: string | number,
     name: string,
     edgeId: string | undefined,
     edgeName: string,
@@ -158,7 +159,7 @@ export const CorePortFormItem = (props: {
     </Typography.Text>
     <UI.AlertText>
       {
-        corePortMac !== undefined || edgeId === undefined
+        (corePortMac !== undefined && corePortMac !== '') || edgeId === undefined
           ? null
           : <><Typography.Text>
             {$t({
