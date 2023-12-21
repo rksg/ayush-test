@@ -5,7 +5,8 @@ import { useIntl }          from 'react-intl'
 import {
   productNames,
   getRootCauseAndRecommendations,
-  Incident
+  Incident,
+  htmlValues
 } from '@acx-ui/analytics/utils'
 import {
   Card,
@@ -22,10 +23,7 @@ export const Insights = ({ incident }: { incident: Incident }) => {
   const { recommendationsText, recommendationsValues } = recommendations
   const values = {
     ...productNames,
-    p: (text: string) => <p>{text}</p>,
-    ol: (text: string) => <ol>{text}</ol>,
-    li: (text: string) => <li>{text}</li>,
-    ul: (text: string) => <ul>{text}</ul>
+    ...htmlValues
   }
   return (
     <Card type='solid-bg'>

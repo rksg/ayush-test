@@ -6,15 +6,15 @@ import {
   getRootCauseAndRecommendations,
   codeToFailureTypeMap,
   rootCauseRecommendationMap,
-  getBRootCauses,
-  getBRecommendations,
+  getAirtimeBusyRootCauses,
+  getAirtimeBusyRecommendations,
   AirtimeBArray,
-  getRxRootCauses,
-  getRxRecommendations,
+  getAirtimeRXRootCauses,
+  getAirtimeRXRecommendations,
   AirtimeRxArray,
   AirtimeTxArray,
-  getTxRootCauses,
-  getTxRecommendations,
+  getAirtimeTXRootCauses,
+  getAirtimeTXRecommendations,
   ccd80211RootCauseRecommendations,
   htmlValues
 } from './rootCauseRecommendation'
@@ -249,8 +249,8 @@ describe('getRootCauseAndRecommendations', () => {
         }
       })
       const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
-      const airtimeBRCA = getBRootCauses()
-      const airtimeBRecommendations = getBRecommendations(checks)
+      const airtimeBRCA = getAirtimeBusyRootCauses()
+      const airtimeBRecommendations = getAirtimeBusyRecommendations(checks)
       expect(rootCauses.rootCauseText).toEqual(airtimeBRCA.rootCauseText)
       expect(recommendations.recommendationsText).toEqual(
         airtimeBRecommendations.recommendationsText)
@@ -273,8 +273,8 @@ describe('getRootCauseAndRecommendations', () => {
         }
       })
       const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
-      const airtimeBRCA = getBRootCauses()
-      const airtimeBRecommendations = getBRecommendations(checks)
+      const airtimeBRCA = getAirtimeBusyRootCauses()
+      const airtimeBRecommendations = getAirtimeBusyRecommendations(checks)
       expect(rootCauses.rootCauseText).toEqual(airtimeBRCA.rootCauseText)
       expect(recommendations.recommendationsText).toEqual(
         airtimeBRecommendations.recommendationsText)
@@ -310,8 +310,8 @@ describe('getRootCauseAndRecommendations', () => {
         }
       })
       const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
-      const airtimeRxRCA = getRxRootCauses(checks)
-      const airtimeRxRecommendations = getRxRecommendations(checks)
+      const airtimeRxRCA = getAirtimeRXRootCauses(checks)
+      const airtimeRxRecommendations = getAirtimeRXRecommendations(checks)
       expect(rootCauses.rootCauseText).toEqual(airtimeRxRCA.rootCauseText)
       expect(recommendations.recommendationsText).toEqual(
         airtimeRxRecommendations.recommendationsText)
@@ -344,8 +344,8 @@ describe('getRootCauseAndRecommendations', () => {
         }
       })
       const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
-      const airtimeRxRCA = getRxRootCauses(checks)
-      const airtimeRxRecommendations = getRxRecommendations(checks)
+      const airtimeRxRCA = getAirtimeRXRootCauses(checks)
+      const airtimeRxRecommendations = getAirtimeRXRecommendations(checks)
       expect(rootCauses.rootCauseText).toEqual(airtimeRxRCA.rootCauseText)
       expect(recommendations.recommendationsText).toEqual(
         airtimeRxRecommendations.recommendationsText)
@@ -378,8 +378,8 @@ describe('getRootCauseAndRecommendations', () => {
         }
       })
       const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
-      const airtimeRxRCA = getRxRootCauses(checks)
-      const airtimeRxRecommendations = getRxRecommendations(checks)
+      const airtimeRxRCA = getAirtimeRXRootCauses(checks)
+      const airtimeRxRecommendations = getAirtimeRXRecommendations(checks)
       expect(rootCauses.rootCauseText).toEqual(airtimeRxRCA.rootCauseText)
       expect(recommendations.recommendationsText).toEqual(
         airtimeRxRecommendations.recommendationsText)
@@ -415,8 +415,8 @@ describe('getRootCauseAndRecommendations', () => {
         }
       })
       const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
-      const airtimeTxRCA = getTxRootCauses(checks)
-      const airtimeTxRecommendations = getTxRecommendations(checks)
+      const airtimeTxRCA = getAirtimeTXRootCauses(checks)
+      const airtimeTxRecommendations = getAirtimeTXRecommendations(checks)
       expect(rootCauses.rootCauseText).toEqual(airtimeTxRCA.rootCauseText)
       expect(recommendations.recommendationsText).toEqual(
         airtimeTxRecommendations.recommendationsText)
@@ -449,8 +449,8 @@ describe('getRootCauseAndRecommendations', () => {
         }
       })
       const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
-      const airtimeTxRCA = getTxRootCauses(checks)
-      const airtimeTxRecommendations = getTxRecommendations(checks)
+      const airtimeTxRCA = getAirtimeTXRootCauses(checks)
+      const airtimeTxRecommendations = getAirtimeTXRecommendations(checks)
       expect(rootCauses.rootCauseText).toEqual(airtimeTxRCA.rootCauseText)
       expect(recommendations.recommendationsText).toEqual(
         airtimeTxRecommendations.recommendationsText)
@@ -483,8 +483,8 @@ describe('getRootCauseAndRecommendations', () => {
         }
       })
       const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
-      const airtimeTxRCA = getTxRootCauses(checks)
-      const airtimeTxRecommendations = getTxRecommendations(checks)
+      const airtimeTxRCA = getAirtimeTXRootCauses(checks)
+      const airtimeTxRecommendations = getAirtimeTXRecommendations(checks)
       expect(rootCauses.rootCauseText).toEqual(airtimeTxRCA.rootCauseText)
       expect(recommendations.recommendationsText).toEqual(
         airtimeTxRecommendations.recommendationsText)
