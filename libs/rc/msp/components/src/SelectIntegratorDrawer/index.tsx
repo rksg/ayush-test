@@ -1,8 +1,8 @@
 import { Key, useEffect, useState } from 'react'
 
-import { Checkbox, Form } from 'antd'
-import moment             from 'moment-timezone'
-import { useIntl }        from 'react-intl'
+import { Form }    from 'antd'
+import moment      from 'moment-timezone'
+import { useIntl } from 'react-intl'
 
 import {
   Drawer,
@@ -38,7 +38,7 @@ interface IntegratorDrawerProps {
   tenantId?: string
   tenantType?: string
   setVisible: (visible: boolean) => void
-  setSelected: (tenantType: string, selected: MspEc[], assignedEcAdmin?: boolean) => void
+  setSelected: (tenantType: string, selected: MspEc[]) => void
 }
 
 export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
@@ -124,7 +124,6 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
 
   const handleSaveMultiIntegrator = async () => {
     const selectedRows = form.getFieldsValue(['integrator'])
-    const assignedEcAdmin = form.getFieldValue(['assignedEcAdmin']) ?? false
     if (tenantId && tenantType) {
       let integratorList = [] as SelIntegrator[]
       selectedRows.integrator.map((integrator: { id: string }) =>
@@ -140,8 +139,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
       }
 
       let payload = {
-        AssignDelegatedRequest: integratorList,
-        isManageAllEcs: assignedEcAdmin
+        AssignDelegatedRequest: integratorList
       }
       assignMspCustomerToMutipleIntegrator({ payload })
         .then(() => {
@@ -149,7 +147,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
           resetFields()
         })
     } else {
-      setSelected(tenantType as string, selectedRows.integrator, assignedEcAdmin)
+      setSelected(tenantType as string, selectedRows.integrator)
     }
     setVisible(false)
   }
@@ -232,16 +230,6 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
     : $t({ defaultMessage: 'Select customer\'s Installer' })
   const content =
   <Form layout='vertical' form={form} onFinish={onClose}>
-    {techPartnerAssignEcsEnabled && <Form.Item name='assignedEcAdmin'>
-      <Checkbox
-        onChange={(e)=> {
-          form.setFieldValue('assignedEcAdmin', e.target.checked)
-        }}
-      >
-        {$t({ defaultMessage:
-          'Automatically assign Customers to Tech Partner Administrators.' })}
-      </Checkbox>
-    </Form.Item>}
     <Subtitle level={4}>{selectedCustomer}</Subtitle>
     <IntegratorTable />
   </Form>

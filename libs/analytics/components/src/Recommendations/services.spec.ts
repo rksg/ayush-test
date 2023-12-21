@@ -4,21 +4,22 @@ import '@testing-library/jest-dom'
 import { defaultNetworkPath }                                              from '@acx-ui/analytics/utils'
 import { recommendationUrl, store, Provider }                              from '@acx-ui/store'
 import { mockGraphqlQuery, mockGraphqlMutation, act, renderHook, waitFor } from '@acx-ui/test-utils'
-import { PathFilter, DateRange }                                           from '@acx-ui/utils'
+import { PathFilter, DateRange, NetworkPath }                              from '@acx-ui/utils'
 
 import {
   crrmListResult,
   aiOpsListResult,
   recommendationListResult
 } from './__tests__/fixtures'
-import { crrmStates, priorities }     from './config'
+import { crrmStates, priorities } from './config'
 import {
   api,
   getCrrmOptimizedState,
   getCrrmInterferingLinksText,
   useCancelRecommendationMutation,
   useMuteRecommendationMutation,
-  useScheduleRecommendationMutation
+  useScheduleRecommendationMutation,
+  useSetPreferenceMutation
 } from './services'
 
 describe('Recommendations utils', () => {
@@ -78,7 +79,7 @@ describe('Recommendations utils', () => {
         current: 2,
         previous: null,
         projected: 0
-      })).toBe('2 interfering links will be optimized to 0')
+      })).toBe('From 2 to 0 interfering links')
     })
 
     it('returns text when applyscheduled', () => {
@@ -86,7 +87,7 @@ describe('Recommendations utils', () => {
         current: 2,
         previous: null,
         projected: 0
-      })).toBe('2 interfering links will be optimized to 0')
+      })).toBe('From 2 to 0 interfering links')
     })
 
     it('returns text when applyfailed', () => {
@@ -193,33 +194,48 @@ describe('Recommendation services', () => {
         scope: `vsz611 (SZ Cluster)
 > EDU-MeshZone_S12348 (Venue)`,
         type: 'Venue',
-        priority: priorities.high,
+        priority: {
+          ...priorities.high,
+          text: 'High'
+        },
         category: 'AI-Driven Cloud RRM',
         summary: 'Optimal Ch/Width and Tx Power found for 5 GHz radio',
         status: 'Applied',
         statusTooltip: 'Recommendation has been successfully applied on 06/16/2023 06:05.',
         statusEnum: 'applied',
-        crrmOptimizedState: crrmStates.optimized
+        crrmOptimizedState: {
+          ...crrmStates.optimized,
+          text: 'Optimized'
+        }
       },
       {
         ...recommendationListResult.recommendations[1],
         scope: `vsz611 (SZ Cluster)
 > EDU-MeshZone_S12348 (Venue)`,
         type: 'Venue',
-        priority: priorities.high,
+        priority: {
+          ...priorities.high,
+          text: 'High'
+        },
         category: 'AI-Driven Cloud RRM',
         summary: 'Optimal Ch/Width and Tx Power found for 5 GHz radio',
         status: 'Revert Scheduled',
         statusTooltip: 'A reversion to undo the configuration change has been scheduled for 06/17/2023 00:00. Note that the actual reversion of configuration will happen asynchronously within 1 hour of the scheduled time.',
         statusEnum: 'revertscheduled',
-        crrmOptimizedState: crrmStates.nonOptimized
+        crrmOptimizedState: {
+          ...crrmStates.nonOptimized,
+          text: 'Non-Optimized'
+        }
       },
       {
         ...recommendationListResult.recommendations[2],
         scope: `vsz6 (SZ Cluster)
 > EDU (Venue)`,
         type: 'Venue',
-        priority: priorities.medium,
+        priority: {
+          ...priorities.medium,
+          text: 'Medium'
+        },
         category: 'Wi-Fi Client Experience',
         summary: 'Tx Power setting for 2.4 GHz and 5 GHz/6 GHz radio',
         status: 'Revert Failed',
@@ -232,12 +248,94 @@ describe('Recommendation services', () => {
 > 27-US-CA-D27-Peat-home (Domain)
 > Deeps Place (Venue)`,
         type: 'Venue',
-        priority: priorities.low,
+        priority: {
+          ...priorities.low,
+          text: 'Low'
+        },
         category: 'Wi-Fi Client Experience',
         summary: 'Enable band balancing',
         status: 'New',
         statusTooltip: 'Schedule a day and time to apply this recommendation.',
         statusEnum: 'new'
+      },
+      {
+        ...recommendationListResult.recommendations[4],
+        scope: `vsz34 (SZ Cluster)
+> 01-US-CA-D1-Test-Home (Domain)
+> 01-Alethea-WiCheck Test (Venue)`,
+        type: 'Venue',
+        priority: {
+          ...priorities.low,
+          text: 'Low'
+        },
+        category: 'Insufficient Licenses',
+        summary: 'Insufficient Licenses',
+        status: 'Insufficient Licenses',
+        statusTooltip: 'Insufficient Licenses',
+        statusEnum: 'insufficientLicenses',
+        crrmOptimizedState: {
+          ...crrmStates.insufficientLicenses,
+          text: 'Insufficient Licenses'
+        }
+      },
+      {
+        ...recommendationListResult.recommendations[5],
+        scope: `vsz34 (SZ Cluster)
+> 22-US-CA-D22-Aaron-Home (Domain)
+> 22-US-CA-Z22-Aaron-Home (Venue)`,
+        type: 'Venue',
+        priority: {
+          ...priorities.low,
+          text: 'Low'
+        },
+        category: 'Verification Error',
+        summary: 'Verification Error',
+        status: 'Verification Error',
+        statusTooltip: 'Verification Error',
+        statusEnum: 'verificationError',
+        crrmOptimizedState: {
+          ...crrmStates.verificationError,
+          text: 'Verification Error'
+        }
+      },
+      {
+        ...recommendationListResult.recommendations[6],
+        scope: `vsz34 (SZ Cluster)
+> 01-US-CA-D1-Test-Home (Domain)
+> 01-US-CA-D1-Ruckus-HQ-QA-interop (Venue)`,
+        type: 'Venue',
+        priority: {
+          ...priorities.low,
+          text: 'Low'
+        },
+        category: 'Verified',
+        summary: 'Verified',
+        status: 'Verified',
+        statusTooltip: 'Verified',
+        statusEnum: 'verified',
+        crrmOptimizedState: {
+          ...crrmStates.verified,
+          text: 'Verified'
+        }
+      },
+      {
+        ...recommendationListResult.recommendations[7],
+        scope: `vsz612 (SZ Cluster)
+> EDU-MeshZone_S12348 (Venue)`,
+        type: 'Venue',
+        priority: {
+          ...priorities.high,
+          text: 'High'
+        },
+        category: 'AI-Driven Cloud RRM',
+        summary: 'Optimal channel plan found for 2.4 GHz radio',
+        status: 'New',
+        statusTooltip: 'Schedule a day and time to apply this recommendation.',
+        statusEnum: 'new',
+        crrmOptimizedState: {
+          ...crrmStates.nonOptimized,
+          text: 'Non-Optimized'
+        }
       }
     ]
     expect(error).toBe(undefined)
@@ -287,6 +385,27 @@ describe('Recommendation services', () => {
     )
     act(() => {
       result.current[0]({ id: 'test' })
+    })
+    await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
+    expect(result.current[1].data)
+      .toEqual(resp)
+  })
+
+  it('should setPreferences correctly', async () => {
+    const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
+    mockGraphqlMutation(recommendationUrl, 'SetPreference', { data: resp })
+
+    const idPath = [
+      { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c8' },
+      { type: 'domain', name: '27-US-CA-D27-Peat-home' },
+      { type: 'zone', name: '27-US-CA-Z27-Peat-home' }
+    ] as NetworkPath
+    const { result } = renderHook(
+      () => useSetPreferenceMutation(),
+      { wrapper: Provider }
+    )
+    act(() => {
+      result.current[0]({ code: 'test', path: idPath, preferences: { fullOptimization: false } })
     })
     await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
     expect(result.current[1].data)

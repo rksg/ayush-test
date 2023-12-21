@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { useEffect, useRef, useState } from 'react'
 
 import { Input, InputRef } from 'antd'
@@ -43,8 +44,9 @@ const initialState:MelissaBotState = {
 export function MelissaBot (){
   const { $t } = useIntl()
   const isMelissaBotEnabled = useIsSplitOn(Features.RUCKUS_AI_CHATBOT_TOGGLE)
-  const { pathname } = useLocation()
+  const { pathname, search } = useLocation()
   const inputRef = useRef<InputRef>(null)
+  const isSummaryLatest = useRef(false)
   const initCount = useRef(0)
   const [state,setState] = useState(initialState)
   const [inputValue, setInputValue] = useState('')
@@ -119,6 +121,7 @@ export function MelissaBot (){
   const title = <><Title>{BOT_NAME}</Title><SubTitle>{subTitleText}</SubTitle></>
   const askMelissa = (body:AskMelissaBody) => {
     isMelissaBotEnabled && queryAskMelissa(body).then(async (json)=>{
+      isSummaryLatest.current = false
       setState({ ...state,
         responseCount: state.responseCount+1,
         isReplying: false,
@@ -126,7 +129,7 @@ export function MelissaBot (){
       })
       const fulfillmentMessages:FulfillmentMessage[]=get(json,'queryResult.fulfillmentMessages')
       if(fulfillmentMessages) {
-        const { incidentId: createdIncidentId } = get(fulfillmentMessages, '[2].data', {})
+        const { incidentId: createdIncidentId } = get(fulfillmentMessages, '[3].data', {})
         if(createdIncidentId) {
           setState({ ...state,incidentId: createdIncidentId })
         }
@@ -178,20 +181,35 @@ export function MelissaBot (){
   },[state.incidentId])
   useEffect(()=>{
     if(pathname.includes('/dashboard')){
-      // setShowFloatingButton(false)
       setState({ ...state,showFloatingButton: false })
     }else if(state.responseCount){
       setState({ ...state,showFloatingButton: true })
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[pathname,state.responseCount])
-  const eventHandler:EventListener = ()=>{
+  useEffect(()=>{
+    isSummaryLatest.current = false
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[search])
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function eventHandler (e:CustomEvent<{ isRecurringUser:boolean, summary: string }>){
+    const { isRecurringUser, summary } = e.detail
+    if(isRecurringUser && isSummaryLatest.current === false && summary){
+      isSummaryLatest.current = true
+      messages.push({
+        type: 'bot',
+        isRuckusAi: true,
+        contentList: [{ text: { text: [summary] } }]
+      })
+      setMessages(messages)
+      defer(doAfterResponse)
+    }
     showDrawer()
   }
   useEffect(()=>{
-    window.addEventListener('showMelissaBot',eventHandler)
+    window.addEventListener('showMelissaBot',eventHandler as EventListener)
     return ()=>{
-      window.removeEventListener('showMelissaBot',eventHandler)
+      window.removeEventListener('showMelissaBot',eventHandler as EventListener)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
@@ -228,7 +246,7 @@ export function MelissaBot (){
     icon={<MelissaHeaderIcon/>}
     onClose={onClose}
     visible={state.isOpen}
-    width={464}
+    width={390}
     footer={<Input ref={inputRef}
       placeholder={askAnything}
       value={inputValue}
@@ -267,7 +285,7 @@ export function MelissaBot (){
       isReplying={state.isReplying}
       classList='conversation'
       listCallback={askMelissa}
-      style={{ height: 410, width: 416, whiteSpace: 'pre-line' }} />
+      style={{ height: 410, width: 350, whiteSpace: 'pre-line' }} />
   </MelissaDrawer></>
     : <div/>)
 }

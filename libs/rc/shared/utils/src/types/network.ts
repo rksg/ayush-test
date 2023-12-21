@@ -1,3 +1,4 @@
+import { Venue, VenueDetail } from '..'
 import {
   GuestNetworkTypeEnum,
   NetworkTypeEnum,
@@ -133,6 +134,7 @@ export interface NetworkSaveData {
   dpskServiceProfileId?: string
   isOweMaster?: boolean
   owePairNetworkId?: string
+  accessControlProfileEnable?: boolean
 }
 export interface ExternalProviders{
   providers: Providers[]
@@ -178,4 +180,11 @@ export interface ApGroupModalState { // subset of ApGroupModalWidgetProps
   network?: NetworkSaveData | null,
   networkVenue?: NetworkVenue,
   venueName?: string
+}
+
+export type SchedulingModalState = {
+  visible: boolean,
+  networkVenue?: NetworkVenue,
+  venue?: Venue | VenueDetail
+  network?: Network
 }

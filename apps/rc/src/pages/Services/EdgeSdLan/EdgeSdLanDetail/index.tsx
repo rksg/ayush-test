@@ -98,14 +98,32 @@ const EdgeSdLanDetail = () => {
         <Space direction='vertical' size={30}>
           <SummaryCard data={sdLanInfo} />
           <Card>
-            <UI.InstancesMargin>
-              <Typography.Title level={2}>
+            <UI.InstancesContainer>
+              <UI.InstancesTitle level={2}>
                 {$t(
                   { defaultMessage: 'Instances ({count})' },
                   { count: edgeSdLanData.networkIds?.length || 0 }
                 )}
-              </Typography.Title>
-            </UI.InstancesMargin>
+              </UI.InstancesTitle>
+
+              <Space size={10}>
+                <Typography.Text>
+                  {$t(
+                    { defaultMessage: 'Total Tunnels: {totalTunnels}' },
+                    { totalTunnels: edgeSdLanData.vxlanTunnelNum || 0 }
+                  )}
+                </Typography.Text>
+                <Typography.Text>
+                  |
+                </Typography.Text>
+                <Typography.Text>
+                  {$t(
+                    { defaultMessage: 'Total VLANs: {totalVlans}' },
+                    { totalVlans: edgeSdLanData.vlanNum || 0 }
+                  )}
+                </Typography.Text>
+              </Space>
+            </UI.InstancesContainer>
             <NetworkTable networkIds={edgeSdLanData.networkIds || []} />
           </Card>
         </Space>

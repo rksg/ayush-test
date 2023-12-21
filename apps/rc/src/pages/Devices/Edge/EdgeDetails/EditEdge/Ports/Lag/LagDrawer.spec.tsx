@@ -31,7 +31,7 @@ jest.mock('antd', () => {
 
 const mockedSetVisible = jest.fn()
 
-describe('EditEdge ports - LAG', () => {
+describe('EditEdge ports - LAG Drawer', () => {
   let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
   beforeEach(() => {
     params = {
@@ -88,7 +88,7 @@ describe('EditEdge ports - LAG', () => {
       })
     const selector = await screen.findAllByRole('combobox')
     await userEvent.selectOptions(selector[0], '2')
-    await userEvent.click(screen.getByRole('checkbox', { name: 'Port 1' }))
+    await userEvent.click(screen.getByRole('checkbox', { name: 'Port1' }))
     await userEvent.click(screen.getByRole('switch', { name: 'Port Enabled' }))
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
     await userEvent.click(await screen.findByRole('button', { name: 'Replace with LAG settings' }))
