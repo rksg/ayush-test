@@ -58,7 +58,7 @@ export function SlaChart ({ chartKey, chartData }: SlaChartProps) {
             total: formatter
           }}
           tooltipTotalTitle={chartKey === 'experience'
-            ? $t({ defaultMessage: 'Total Guest Experience' })
+            ? $t({ defaultMessage: 'Guest Experience' })
             : undefined}
         />
         : <NoData/>}
