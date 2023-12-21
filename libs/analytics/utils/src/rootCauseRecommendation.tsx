@@ -109,7 +109,7 @@ export type AirtimeBArray = AirtimeBChecks[]
 export type AirtimeRxArray = AirtimeRxChecks[]
 export type AirtimeTxArray = AirtimeTxChecks[]
 
-const htmlValues = {
+export const htmlValues = {
   p: (text: string) => <p>{text}</p>,
   ol: (text: string) => <ol>{text}</ol>,
   li: (text: string) => <li>{text}</li>,
@@ -187,7 +187,7 @@ export const getRxRecommendations = (checks: AirtimeRxArray) => {
   const clientLoadBalanceOff = <FormattedMessage defaultMessage={'<li>Increase AP density to distribute the client load.</li>'} values={htmlValues}/>
   const highSSIDCountText = <FormattedMessage defaultMessage={'<li>Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less. Enabling Airtime Decongestion would be recommended as well.</li>'} values={htmlValues}/>
   const enableAirtimeDecongestion = <FormattedMessage defaultMessage={'<li>Enable Airtime Decongestion.</li>'} values={htmlValues}/>
-  const crrmRaised = <FormattedMessage defaultMessage={'<p>Cpck here to apply the AI-Driven RRM recommendation.</p>'} values={htmlValues}/>
+  const crrmRaised = <FormattedMessage defaultMessage={'<p>Click here to apply the AI-Driven RRM recommendation.</p>'} values={htmlValues}/>
   const channelFlyDisabled = <FormattedMessage defaultMessage={'<p>Enable ChannelFly for the Zone.</p>'} values={htmlValues}/>
   const channelFlyEnabled = <FormattedMessage defaultMessage={'<p>Review the channel planning, AP density and deployment.</p>'} values={htmlValues}/>
   const highLegacyCount = <FormattedMessage defaultMessage={'<li>Click here for a list of legacy Wi-Fi devices. Either remove these legacy devices or upgrade them.</li>'} values={htmlValues}/>
@@ -196,7 +196,7 @@ export const getRxRecommendations = (checks: AirtimeRxArray) => {
   const text1 = checkTrue.includes('isClbRecommendationRaised') ? clientLoadBalanceOn : clientLoadBalanceOff
   const text2 = valueCheck.every(str => checkTrue.includes(str)) ? highSSIDCountText : enableAirtimeDecongestion
   const text3 = checkTrue.includes('isCRRMRaised') ? crrmRaised : ''
-  const text4 = crrmRaised ? checkTrue.includes('isChannelFlyEnabled') ? channelFlyEnabled : channelFlyDisabled : ''
+  const text4 = checkTrue.includes('isChannelFlyEnabled') ? channelFlyEnabled : channelFlyDisabled
   const combinedText = `<li>${text3}${text4}</li>`
   const text5 = checkTrue.includes('isHighLegacyWifiDevicesCount') ? highLegacyCount : ''
   const stringlist = allFalse ? allFalseText : [text1, text2, combinedText, text5]
