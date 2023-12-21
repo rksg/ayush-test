@@ -54,7 +54,6 @@ export const LagDrawer = (props: LagDrawerProps) => {
     .filter(item => item.value !== EdgePortTypeEnum.UNCONFIGURED)
   const [formRef] = Form.useForm()
   const [enabledPorts, setEnabledPorts] = useState<string[]>()
-  // const subnet = Form.useWatch('subnet', formRef)
   const lagMembers = Form.useWatch('lagMembers', formRef) as string[]
   Form.useWatch('ipMode', formRef)
   Form.useWatch('portType', formRef)
@@ -267,21 +266,18 @@ export const LagDrawer = (props: LagDrawerProps) => {
     />
     <Form.Item
       name='lagType'
-      // initialValue={EdgeLagTypeEnum.LACP}
       label={$t({ defaultMessage: 'LAG Type' })}
       rules={[{ required: true }]}
       children={<Select options={lagTypeOptions} disabled />}
     />
     <Form.Item
       name='lacpMode'
-      // initialValue={EdgeLagLacpModeEnum.ACTIVE}
       label={$t({ defaultMessage: 'Mode' })}
       rules={[{ required: true }]}
       children={<Select options={modeOptions} />}
     />
     <Form.Item
       name='lacpTimeout'
-      // initialValue={EdgeLagTimeoutEnum.SHORT}
       label={$t({ defaultMessage: 'Timeout' })}
       rules={[{ required: true }]}
       children={<Select options={timeoutOptions} />}
@@ -364,100 +360,6 @@ export const LagDrawer = (props: LagDrawerProps) => {
         />
       }}
     </Form.Item>
-
-    {/*
-    <Form.Item
-      name='portType'
-      initialValue={EdgePortTypeEnum.WAN}
-      label={$t({ defaultMessage: 'Port Type' })}
-      children={<Select options={portTypeOptions} />}
-    />
-    <Form.Item
-      initialValue={false}
-      name='corePortEnabled'
-      valuePropName='checked'
-      children={<Checkbox children={
-        $t({ defaultMessage: 'Use this LAG as Core LAG' })
-      } />}
-    />
-    <StepsForm.Title children={$t({ defaultMessage: 'IP Settings' })} />
-    <Form.Item
-      name='ipMode'
-      initialValue={EdgeIpModeEnum.DHCP}
-      label={$t({ defaultMessage: 'IP Assignment' })}
-      validateFirst
-      rules={[{
-        required: true
-      }]}
-      children={
-        <Radio.Group>
-          <Space direction='vertical'>
-            <Radio value={EdgeIpModeEnum.DHCP}>
-              {$t({ defaultMessage: 'DHCP' })}
-            </Radio>
-            <Radio value={EdgeIpModeEnum.STATIC}>
-              {$t({ defaultMessage: 'Static/Manual' })}
-            </Radio>
-          </Space>
-        </Radio.Group>
-      }
-    />
-    {
-      ipMode === EdgeIpModeEnum.STATIC &&
-        <>
-          <Form.Item
-            name='ip'
-            label={$t({ defaultMessage: 'IP Address' })}
-            rules={[
-              { required: true },
-              { validator: (_, value) =>
-                edgePortIpValidator(value, subnet)
-              }
-            ]}
-            children={<Input />}
-            validateFirst
-          />
-          <Form.Item
-            name={'subnet'}
-            label={$t({ defaultMessage: 'Subnet Mask' })}
-            validateFirst
-            rules={[
-              { required: true },
-              { validator: (_, value) => subnetMaskIpRegExp(value) }
-            ]}
-            children={<Input />}
-          />
-          <Form.Item
-            name={'gateway'}
-            label={$t({ defaultMessage: 'Gateway' })}
-            rules={[
-              { required: true },
-              { validator: (_, value) => serverIpAddressRegExp(value) }
-            ]}
-            children={<Input />}
-            validateFirst
-          />
-        </>
-    }
-    <StepsForm.FieldLabel width='120px'>
-      {$t({ defaultMessage: 'Enable NAT' })}
-      <Form.Item
-        initialValue={false}
-        name='natEnabled'
-        valuePropName='checked'
-        children={<Switch />}
-      />
-    </StepsForm.FieldLabel>
-    <StepsForm.FieldLabel width='120px'>
-      {$t({ defaultMessage: 'LAG Enabled' })}
-      <Form.Item
-        initialValue={false}
-        name='lagEnabled'
-        valuePropName='checked'
-        children={<Switch />}
-      />
-    </StepsForm.FieldLabel>
-    */}
   </Form>
 
   const footer = (

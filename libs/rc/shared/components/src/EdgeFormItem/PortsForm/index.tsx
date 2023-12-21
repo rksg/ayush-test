@@ -55,18 +55,6 @@ export const EdgePortsForm = (props: EdgePortsFormProps) => {
     }
   }, [activeSubTab])
 
-  // const {
-  //   data: portsWithStatusData,
-  //   isLoading: isPortStatusLoading,
-  //   isFetching: isPortStatusFetching
-  // } = useGetEdgePortListWithStatusQuery({
-  //   params: { serialNumber, tenantId },
-  //   payload: {
-  //     fields: ['port_id','ip'],
-  //     filters: { serialNumber: [serialNumber] }
-  //   }
-  // })
-
   const {
     data: lagData,
     isLoading: isLagLoading,
@@ -81,14 +69,11 @@ export const EdgePortsForm = (props: EdgePortsFormProps) => {
     skip: !isEdgeLagEnabled
   })
 
-  // const portDataWitIsLag = appendIsLagPortOnPortConfig(portsWithStatusData, lagData?.data)
-
   const tabs = {
     [EdgePortTabEnum.PORTS_GENERAL]: {
       title: $t({ defaultMessage: 'Ports General' }),
       content: <PortsGeneral
         serialNumber={serialNumber}
-        // data={portDataWitIsLag ?? []}
         onCancel={onCancel}
       />
     },
@@ -101,7 +86,6 @@ export const EdgePortsForm = (props: EdgePortsFormProps) => {
               serialNumber={serialNumber}
               lagStatusList={lagData?.data || []}
               isLoading={isLagLoading || isLagFetching}
-              // portList={portDataWitIsLag}
             />
           }
         } : {} as { title: string, content: ReactNode }
@@ -110,7 +94,6 @@ export const EdgePortsForm = (props: EdgePortsFormProps) => {
       title: $t({ defaultMessage: 'Sub-Interface' }),
       content: <SubInterface
         serialNumber={serialNumber}
-        // portData={portDataWitIsLag ?? []}
         lagData={lagData?.data || []}
       />
     }

@@ -12,7 +12,6 @@ import { PortSubInterfaceTable } from './PortSubInterfaceTable'
 
 interface SubInterfaceProps {
   serialNumber: string
-  // portData: EdgePortWithStatus[]
   lagData?: EdgeLagStatus[]
 }
 
@@ -21,7 +20,6 @@ const SubInterface = (props: SubInterfaceProps) => {
   const { $t } = useIntl()
   const [currentTab, setCurrentTab] = useState('')
   const portsData = useContext(EdgePortsDataContext)
-  // const { lagData } = portsData
   const portData = portsData.portData as EdgePortWithStatus[]
 
   const handleTabChange = (activeKey: string) => {

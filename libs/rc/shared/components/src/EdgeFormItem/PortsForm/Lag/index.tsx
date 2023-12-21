@@ -17,7 +17,6 @@ interface LagProps {
   serialNumber: string
   lagStatusList: EdgeLagStatus[]
   isLoading: boolean
-  // portList?: EdgePort[]
 }
 
 interface EdgeLagTableType extends EdgeLag {
@@ -38,23 +37,6 @@ const Lag = (props: LagProps) => {
     adminStatus: lagStatusList.find(status => status.lagId === item.id)?.adminStatus ?? ''
   }))
 
-  // const { lagData = [], isLagLoading } = useGetEdgeLagListQuery({
-  //   params: { serialNumber },
-  //   payload: {
-  //     page: 1,
-  //     pageSize: 10
-  //   }
-  // },{
-  //   selectFromResult ({ data, isLoading, isFetching }) {
-  //     return {
-  //       lagData: data?.data?.map(item => ({
-  //         ...item,
-  //         adminStatus: lagStatusList.find(status => status.lagId === item.id)?.adminStatus ?? ''
-  //       })),
-  //       isLagLoading: isLoading || isFetching
-  //     }
-  //   }
-  // })
   const [deleteEdgeLag] = useDeleteEdgeLagMutation()
 
   const columns: TableProps<EdgeLagTableType>['columns'] = [
@@ -62,7 +44,7 @@ const Lag = (props: LagProps) => {
       title: $t({ defaultMessage: 'LAG Name' }),
       key: 'id',
       dataIndex: 'id',
-      render: (data, row) => {
+      render: (_data, row) => {
         return `LAG ${row.id}`
       },
       defaultSortOrder: 'ascend',
@@ -78,7 +60,7 @@ const Lag = (props: LagProps) => {
       title: $t({ defaultMessage: 'LAG Type' }),
       key: 'lagType',
       dataIndex: 'lagType',
-      render: (data, row) => {
+      render: (_data, row) => {
         return `${row.lagType} (${_.capitalize(row.lacpMode)})`
       },
       sorter: { compare: sortProp('lagType', defaultSort) }
@@ -87,7 +69,7 @@ const Lag = (props: LagProps) => {
       title: $t({ defaultMessage: 'LAG Members' }),
       key: 'lagMembers',
       dataIndex: 'lagMembers',
-      render: (data, row) => {
+      render: (_data, row) => {
         const lagMemberSize = row.lagMembers?.length ?? 0
         return lagMemberSize > 0 ?
           <Tooltip

@@ -14,7 +14,6 @@ import { EdgePortsDataContext }                     from '../PortDataProvider'
 
 interface PortsGeneralProps {
   serialNumber: string
-  // data: EdgePortWithStatus[]
   onCancel: () => void
 }
 
