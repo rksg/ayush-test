@@ -17,7 +17,8 @@ import {
   RadiusValidate,
   WifiUrlsInfo,
   ExternalProviders,
-  enableNewApi
+  enableNewApi,
+  transformNetworkListResponse
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }    from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -37,17 +38,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           body: payload
         }
       },
-      transformResponse (result: TableResult<Network>) {
-        result.data = result.data.map(item => ({
-          ...item,
-          activated: item.activated ?? { isActivated: false },
-          ...(item?.dsaeOnboardNetwork &&
-            { children: [{ ...item?.dsaeOnboardNetwork,
-              isOnBoarded: true,
-              id: item?.name + 'onboard' } as Network] })
-        })) as Network[]
-        return result
-      },
+      transformResponse: transformNetworkListResponse,
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'Network', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {

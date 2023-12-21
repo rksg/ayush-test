@@ -11,15 +11,19 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   },
   addNetworkTemplate: {
     method: 'post',
-    url: '/templates/networks'
+    url: '/templates/wifiNetworks'
   },
   updateNetworkTemplate: {
     method: 'put',
-    url: '/templates/networks/:networkId'
+    url: '/templates/wifiNetworks/:networkId'
   },
   getNetworkTemplate: {
     method: 'get',
-    url: '/templates/networks/:networkId'
+    url: '/templates/wifiNetworks/:networkId'
+  },
+  getNetworkTemplateList: {
+    method: 'post',
+    url: '/templates/wifiNetworks/query'
   },
   addAAAPolicyTemplate: {
     method: 'post',

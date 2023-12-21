@@ -11,7 +11,9 @@ import {
   AAAPolicyType,
   CommonResultWithEntityResponse,
   NetworkSaveData,
-  AAAViewModalType
+  AAAViewModalType,
+  transformNetworkListResponse,
+  Network
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi }      from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
@@ -40,7 +42,8 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
             api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'ConfigTemplate', id: 'LIST' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     applyConfigTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.applyConfigTemplate),
@@ -58,6 +61,26 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       query: commonQueryFn(ConfigTemplateUrlsInfo.getNetworkTemplate, false),
       providesTags: [{ type: 'NetworkTemplate', id: 'DETAIL' }]
     }),
+    getNetworkTemplateList: build.query<TableResult<Network>, RequestPayload>({
+      query: commonQueryFn(ConfigTemplateUrlsInfo.getNetworkTemplateList, true),
+      providesTags: [{ type: 'NetworkTemplate', id: 'LIST' }],
+      transformResponse: transformNetworkListResponse,
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          // XXX: These are mocked activity messages
+          const activities = [
+            'CreateNetworkConfigTemplate',
+            'DeleteNetworkConfigTemplate',
+            'UpdateNetworkConfigTemplate'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            // eslint-disable-next-line max-len
+            api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'NetworkTemplate', id: 'LIST' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
     // eslint-disable-next-line max-len
     addAAAPolicyTemplate: build.mutation<CommonResultWithEntityResponse<AAAPolicyType>, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.addAAAPolicyTemplate),
@@ -73,7 +96,22 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     getAAAPolicyTemplateList: build.query<TableResult<AAAViewModalType>, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.getAAAPolicyTemplateList, false),
-      providesTags: [{ type: 'AAATemplate', id: 'LIST' }]
+      providesTags: [{ type: 'AAATemplate', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          // XXX: These are mocked activity messages
+          const activities = [
+            'CreateAAAConfigTemplate',
+            'DeleteAAAConfigTemplate',
+            'UpdateAAAConfigTemplate'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            // eslint-disable-next-line max-len
+            api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'AAATemplate', id: 'LIST' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
     })
   })
 })
@@ -83,6 +121,7 @@ export const {
   useAddNetworkTemplateMutation,
   useUpdateNetworkTemplateMutation,
   useGetNetworkTemplateQuery,
+  useLazyGetNetworkTemplateListQuery,
   useAddAAAPolicyTemplateMutation,
   useGetAAAPolicyTemplateQuery,
   useUpdateAAAPolicyTemplateMutation,

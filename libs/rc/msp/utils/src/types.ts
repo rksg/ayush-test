@@ -446,6 +446,13 @@ export interface MspRecCustomer {
   email_id?: string
 }
 
+export enum ConfigTemplateType {
+  VENUE,
+  NETWORK,
+  RADIUS,
+  DPSK
+}
+
 export interface ConfigTemplate {
   id?: string,
   name: string,
@@ -453,7 +460,7 @@ export interface ConfigTemplate {
   createdOn: string,
   appliedTo: number,
   category: string,
-  type: string,
+  type: ConfigTemplateType,
   lastModified: string,
   lastApplied: string
 }
