@@ -31,7 +31,6 @@ export type CrrmListItem = {
   sliceValue: string
   statusTrail: StatusTrail
   crrmOptimizedState?: IconValue
-  crrmInterferingLinksText?: React.ReactNode
   summary?: string
   updatedAt: string
   metadata: {}
@@ -43,6 +42,13 @@ export type CrrmList = {
   optimizedZoneCount: number
   crrmScenarios: number
   recommendations: CrrmListItem[]
+}
+
+export type CrrmKpi = {
+  recommendation: {
+    status: StateType
+    kpi_number_of_interfering_links: RecommendationKpi['']
+  }
 }
 
 export type AiOpsListItem = {
@@ -75,6 +81,11 @@ export type Recommendation = {
   mutedBy: string
   mutedAt: string | null
   path: NetworkPath
+  idPath: NetworkPath
+  preferences?: {
+    fullOptimization: boolean
+  }
+  statusTrail: StatusTrail
 }
 
 export type RecommendationListItem = Recommendation & {
@@ -110,6 +121,22 @@ interface ScheduleResponse {
     errorCode: string;
     errorMsg: string;
     success: boolean;
+  }
+}
+
+interface PreferencePayload {
+  code: string
+  path: NetworkPath
+  preferences: {
+    fullOptimization: boolean
+  }
+}
+
+interface PreferenceResponse {
+  setPreference: {
+    errorCode: string
+    errorMsg: string
+    success: boolean
   }
 }
 
@@ -199,13 +226,13 @@ export const getCrrmInterferingLinksText = (
     // eslint-disable-next-line max-len
     defaultMessage: '{before} interfering {before, plural, one {link} other {links}} can be optimized to {after}',
     description: 'Translation string - interfering, link, links, can be optimized to'
-  }, { before, after })
+  }, { before, after }) as string
 
   return $t({
     // eslint-disable-next-line max-len
     defaultMessage: 'From {before} to {after} interfering {after, plural, one {link} other {links}}',
     description: 'Translation string - From, to, interfering, link, links'
-  }, { before, after })
+  }, { before, after }) as string
 }
 
 export const api = recommendationApi.injectEndpoints({
@@ -239,7 +266,7 @@ export const api = recommendationApi.injectEndpoints({
           )
           crrmScenarios(start: $startDate, end: $endDate, path: $path)
           recommendations(start: $startDate, end: $endDate, path: $path, n: $n, crrm: true) {
-            id code status sliceValue updatedAt metadata ${kpiHelper('c-crrm-channel24g-auto')}
+            id code status sliceValue updatedAt metadata
           }
         }
         `,
@@ -256,7 +283,7 @@ export const api = recommendationApi.injectEndpoints({
           optimizedZoneCount: response.optimizedZoneCount,
           crrmScenarios: response.crrmScenarios,
           recommendations: response.recommendations.map(recommendation => {
-            const { id, code, status, kpi_number_of_interfering_links } = recommendation
+            const { id, code, status } = recommendation
             const newId = id === 'unknown' ? uniqueId() : id
             const getCode = code === 'unknown'
               ? status as keyof typeof codes
@@ -265,10 +292,6 @@ export const api = recommendationApi.injectEndpoints({
               ...recommendation,
               id: newId,
               crrmOptimizedState: getCrrmOptimizedState(status),
-              crrmInterferingLinksText: getCrrmInterferingLinksText(
-                status,
-                kpi_number_of_interfering_links!
-              ),
               summary: $t(codes[getCode].summary)
             } as unknown as CrrmListItem
           })
@@ -317,7 +340,7 @@ export const api = recommendationApi.injectEndpoints({
     }),
     recommendationList: build.query<
       RecommendationListItem[],
-      PathFilter & { crrm?: boolean }
+      PathFilter & { crrm?: boolean, isCrrmPartialEnabled: boolean }
     >({
       query: (payload) => ({
         document: gql`
@@ -336,10 +359,16 @@ export const api = recommendationApi.injectEndpoints({
             isMuted
             mutedBy
             mutedAt
+            ${payload.isCrrmPartialEnabled ? 'preferences' : ''}
             path {
               type
               name
             }
+            idPath {
+              type
+              name
+            }
+            statusTrail { status }
           }
         }
         `,
@@ -349,8 +378,9 @@ export const api = recommendationApi.injectEndpoints({
         const { $t } = getIntl()
         return response.recommendations.map(recommendation => {
           const {
-            id, path, sliceValue, sliceType, code, status, metadata, updatedAt
+            id, path, sliceValue, sliceType, code, status, metadata, updatedAt, preferences
           } = recommendation
+          const isFullyOptimized = preferences ? preferences.fullOptimization : true
           const newId = id === 'unknown' ? uniqueId() : id
           const statusEnum = status as StateType
           const getCode = code === 'unknown'
@@ -366,7 +396,9 @@ export const api = recommendationApi.injectEndpoints({
               text: $t(codes[getCode].priority.label)
             },
             category: $t(codes[getCode].category),
-            summary: $t(codes[getCode].summary),
+            summary: isFullyOptimized
+              ? $t(codes[getCode].summary)
+              : $t(codes[getCode].partialOptimizedSummary!),
             status: $t(states[statusEnum].text),
             statusTooltip: getStatusTooltip(code, statusEnum, { ...metadata, updatedAt }),
             statusEnum,
@@ -450,6 +482,59 @@ export const api = recommendationApi.injectEndpoints({
         { type: 'Monitoring', id: 'RECOMMENDATION_CODE' },
         { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
       ]
+    }),
+    crrmKpi: build.query<{ text: string }, Pick<CrrmListItem, 'id' | 'code'>>({
+      query: ({ id, code }) => ({
+        document: gql`
+          query CrrmKpi($id: String) {
+            recommendation(id: $id) {
+              id status ${kpiHelper(code!)}
+            }
+          }
+        `,
+        variables: { id }
+      }),
+      transformResponse: (response: CrrmKpi) => {
+        const { status, kpi_number_of_interfering_links } = response.recommendation
+        return {
+          text: getCrrmInterferingLinksText(
+            status,
+            kpi_number_of_interfering_links!
+          )
+        }
+      },
+      providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }]
+    }),
+    setPreference: build.mutation<PreferenceResponse, PreferencePayload>({
+      query: (payload) => ({
+        document: gql`
+          mutation SetPreference(
+            $code: String,
+            $path: [HierarchyNodeInput],
+            $preferences: JSON
+          ) {
+            setPreference(
+              code: $code,
+              path: $path,
+              preferences: $preferences
+            ) {
+              success
+              errorMsg
+              errorCode
+            }
+          }
+        `,
+        variables: {
+          code: payload.code,
+          path: payload.path,
+          preferences: payload.preferences
+        }
+      }),
+      invalidatesTags: [
+        { type: 'Monitoring', id: 'RECOMMENDATION_LIST' },
+        { type: 'Monitoring', id: 'RECOMMENDATION_CODE' },
+        { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
+      ]
     })
   })
 })
@@ -465,5 +550,7 @@ export const {
   useRecommendationListQuery,
   useMuteRecommendationMutation,
   useScheduleRecommendationMutation,
-  useCancelRecommendationMutation
+  useCancelRecommendationMutation,
+  useCrrmKpiQuery,
+  useSetPreferenceMutation
 } = api
