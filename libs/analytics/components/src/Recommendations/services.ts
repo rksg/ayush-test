@@ -31,7 +31,6 @@ export type CrrmListItem = {
   sliceValue: string
   statusTrail: StatusTrail
   crrmOptimizedState?: IconValue
-  crrmInterferingLinksText?: React.ReactNode
   summary?: string
   updatedAt: string
   metadata: {}
@@ -43,6 +42,13 @@ export type CrrmList = {
   optimizedZoneCount: number
   crrmScenarios: number
   recommendations: CrrmListItem[]
+}
+
+export type CrrmKpi = {
+  recommendation: {
+    status: StateType
+    kpi_number_of_interfering_links: RecommendationKpi['']
+  }
 }
 
 export type AiOpsListItem = {
@@ -220,13 +226,13 @@ export const getCrrmInterferingLinksText = (
     // eslint-disable-next-line max-len
     defaultMessage: '{before} interfering {before, plural, one {link} other {links}} can be optimized to {after}',
     description: 'Translation string - interfering, link, links, can be optimized to'
-  }, { before, after })
+  }, { before, after }) as string
 
   return $t({
     // eslint-disable-next-line max-len
     defaultMessage: 'From {before} to {after} interfering {after, plural, one {link} other {links}}',
     description: 'Translation string - From, to, interfering, link, links'
-  }, { before, after })
+  }, { before, after }) as string
 }
 
 export const api = recommendationApi.injectEndpoints({
@@ -260,7 +266,7 @@ export const api = recommendationApi.injectEndpoints({
           )
           crrmScenarios(start: $startDate, end: $endDate, path: $path)
           recommendations(start: $startDate, end: $endDate, path: $path, n: $n, crrm: true) {
-            id code status sliceValue updatedAt metadata ${kpiHelper('c-crrm-channel24g-auto')}
+            id code status sliceValue updatedAt metadata
           }
         }
         `,
@@ -277,7 +283,7 @@ export const api = recommendationApi.injectEndpoints({
           optimizedZoneCount: response.optimizedZoneCount,
           crrmScenarios: response.crrmScenarios,
           recommendations: response.recommendations.map(recommendation => {
-            const { id, code, status, kpi_number_of_interfering_links } = recommendation
+            const { id, code, status } = recommendation
             const newId = id === 'unknown' ? uniqueId() : id
             const getCode = code === 'unknown'
               ? status as keyof typeof codes
@@ -286,10 +292,6 @@ export const api = recommendationApi.injectEndpoints({
               ...recommendation,
               id: newId,
               crrmOptimizedState: getCrrmOptimizedState(status),
-              crrmInterferingLinksText: getCrrmInterferingLinksText(
-                status,
-                kpi_number_of_interfering_links!
-              ),
               summary: $t(codes[getCode].summary)
             } as unknown as CrrmListItem
           })
@@ -481,6 +483,28 @@ export const api = recommendationApi.injectEndpoints({
         { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
       ]
     }),
+    crrmKpi: build.query<{ text: string }, Pick<CrrmListItem, 'id' | 'code'>>({
+      query: ({ id, code }) => ({
+        document: gql`
+          query CrrmKpi($id: String) {
+            recommendation(id: $id) {
+              id status ${kpiHelper(code!)}
+            }
+          }
+        `,
+        variables: { id }
+      }),
+      transformResponse: (response: CrrmKpi) => {
+        const { status, kpi_number_of_interfering_links } = response.recommendation
+        return {
+          text: getCrrmInterferingLinksText(
+            status,
+            kpi_number_of_interfering_links!
+          )
+        }
+      },
+      providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }]
+    }),
     setPreference: build.mutation<PreferenceResponse, PreferencePayload>({
       query: (payload) => ({
         document: gql`
@@ -527,5 +551,6 @@ export const {
   useMuteRecommendationMutation,
   useScheduleRecommendationMutation,
   useCancelRecommendationMutation,
+  useCrrmKpiQuery,
   useSetPreferenceMutation
 } = api

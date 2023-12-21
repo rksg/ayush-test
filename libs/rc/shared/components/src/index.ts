@@ -17,7 +17,11 @@ export { ClientDualTable } from './ClientDualTable'
 export { ClientHealthIcon } from './ClientHealthIcon'
 export { ClientsWidget, ClientsWidgetV2 } from './ClientsWidget'
 export { CodeMirrorWidget } from './CodeMirrorWidget'
-export { ConnectedClientsTable, defaultClientPayload } from './ConnectedClientsTable'
+export {
+  ConnectedClientsTable,
+  defaultClientPayload,
+  isEqualCaptivePortalPlainText
+} from './ConnectedClientsTable'
 export { DevicesDashboardWidget, DevicesDashboardWidgetV2 } from './DevicesDashboardWidget'
 export { DevicesWidget, seriesMappingAP } from './DevicesWidget'
 export { EdgeSettingForm } from './EdgeSettingForm'

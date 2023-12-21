@@ -11,7 +11,8 @@ import {
   aiOpsListResult,
   recommendationListResult
 } from './__tests__/fixtures'
-import { crrmStates, priorities } from './config'
+import { crrmStates, priorities }   from './config'
+import { mockedRecommendationCRRM } from './RecommendationDetails/__tests__/fixtures'
 import {
   api,
   getCrrmOptimizedState,
@@ -122,19 +123,16 @@ describe('Recommendation services', () => {
     const expectedResult = [
       {
         ...crrmListResult.recommendations[0],
-        crrmInterferingLinksText: 'From 3 to 0 interfering links',
         crrmOptimizedState: crrmStates.optimized,
         summary: 'Optimal Ch/Width and Tx Power found for 5 GHz radio'
       },
       {
         ...crrmListResult.recommendations[1],
-        crrmInterferingLinksText: 'Reverted',
         crrmOptimizedState: crrmStates.nonOptimized,
         summary: 'Optimal Ch/Width and Tx Power found for 2.4 GHz radio'
       },
       {
         ...crrmListResult.recommendations[2],
-        crrmInterferingLinksText: '2 interfering links can be optimized to 0',
         crrmOptimizedState: crrmStates.nonOptimized,
         summary: 'Optimal Ch/Width and Tx Power found for 6 GHz radio'
       }
@@ -389,6 +387,26 @@ describe('Recommendation services', () => {
     await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
     expect(result.current[1].data)
       .toEqual(resp)
+  })
+
+  it('should return crrmKpi', async () => {
+    const recommendationPayload = {
+      id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6'
+    }
+    mockGraphqlQuery(recommendationUrl, 'CrrmKpi', {
+      data: {
+        recommendation: mockedRecommendationCRRM
+      }
+    })
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.crrmKpi.initiate({
+        ...recommendationPayload,
+        code: 'c-crrm-channel24g-auto'
+      })
+    )
+    expect(status).toBe('fulfilled')
+    expect(error).toBeUndefined()
+    expect(data).toEqual({ text: 'From 2 to 0 interfering links' })
   })
 
   it('should setPreferences correctly', async () => {
