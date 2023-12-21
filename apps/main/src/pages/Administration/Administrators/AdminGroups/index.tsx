@@ -246,19 +246,12 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
           }}
         />
       </DndProvider>
-
-      { editMode ?
-        <AddGroupDrawer
-          visible={showDialog}
-          setVisible={setShowDialog}
-          isEditMode={editMode}
-          editData={editData}
-        /> :
-        <AddGroupDrawer
-          visible={showDialog}
-          setVisible={setShowDialog}
-          isEditMode={editMode}
-        />}
+      <AddGroupDrawer
+        visible={showDialog}
+        setVisible={setShowDialog}
+        isEditMode={editMode}
+        editData={editMode ? editData : undefined}
+      />
     </Loader>
   )
 }
