@@ -141,6 +141,7 @@ window.crypto = {
 
 window.open = jest.fn()
 window.scrollTo = jest.fn()
+console.info = jest.fn()
 console.log = jest.fn()
 
 jest.mock('libs/common/components/src/theme/helper', () => ({
