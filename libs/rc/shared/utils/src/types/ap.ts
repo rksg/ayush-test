@@ -1,11 +1,16 @@
-import { APMeshRole, ApDeviceStatusEnum }               from '../constants'
-import { ApPosition, CapabilitiesApModel, PoeModeEnum } from '../models'
-import { ApDeep }                                       from '../models/ApDeep'
-import { ApPacketCaptureStateEnum }                     from '../models/ApPacketCaptureEnum'
-import { DeviceGps }                                    from '../models/DeviceGps'
-import { DhcpApInfo }                                   from '../models/DhcpApInfo'
-import { ExternalAntenna }                              from '../models/ExternalAntenna'
-import { VenueLanPort }                                 from '../models/VenueLanPort'
+import { APMeshRole, ApDeviceStatusEnum } from '../constants'
+import {
+  ApDeep,
+  ApPacketCaptureStateEnum,
+  ApPosition,
+  BandModeEnum,
+  CapabilitiesApModel,
+  DeviceGps,
+  DhcpApInfo,
+  ExternalAntenna,
+  PoeModeEnum,
+  VenueLanPort
+} from '../models'
 
 import { ApVenueStatusEnum, CountAndNames } from '.'
 
@@ -326,7 +331,10 @@ export interface ApModel {
   externalAntenna?: ExternalAntenna,
   supportMesh?: boolean,
   version?: string,
-  support11AX?: boolean
+  support11AX?: boolean,
+  supportBandCombination?: boolean,
+  bandCombinationCapabilities?: BandModeEnum[],
+  defaultBandCombination?: BandModeEnum
 }
 
 export interface PingAp {
@@ -364,6 +372,11 @@ export interface ApLanPort {
 
 export interface ApLedSettings {
   ledEnabled: boolean,
+  useVenueSettings: boolean
+}
+
+export interface ApBandModeSettings {
+  bandMode: BandModeEnum,
   useVenueSettings: boolean
 }
 

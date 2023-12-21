@@ -231,7 +231,7 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
     }
   }, {
     key: 'clients',
-    title: $t({ defaultMessage: 'Connected Clients' }),
+    title: $t({ defaultMessage: 'Clients' }),
     dataIndex: 'clients',
     align: 'center',
     sorter: true,

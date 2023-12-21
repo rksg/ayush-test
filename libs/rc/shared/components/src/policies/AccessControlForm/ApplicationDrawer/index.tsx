@@ -535,55 +535,91 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     return Promise.resolve()
   }
 
-  const content = <Form layout='horizontal' form={contentForm}>
-    <DrawerFormItem
-      name={'policyName'}
-      label={$t({ defaultMessage: 'Policy Name:' })}
-      rules={[
-        { required: true },
-        { min: 2 },
-        { max: 32 },
-        { validator: (_, value) => {
-          if (appList && appList
-            .filter(app => editMode ? (appPolicyInfo?.name !== app) : true)
-            .findIndex(app => app === value) !== -1) {
-            return Promise.reject($t({
-              defaultMessage: 'A policy with that name already exists'
-            }))
+  const content = <>
+    <Form layout='horizontal' form={contentForm}>
+      <DrawerFormItem
+        name={'policyName'}
+        label={$t({ defaultMessage: 'Policy Name:' })}
+        rules={[
+          { required: true },
+          { min: 2 },
+          { max: 32 },
+          { validator: (_, value) => {
+            if (appList && appList
+              .filter(app => editMode ? (appPolicyInfo?.name !== app) : true)
+              .findIndex(app => app === value) !== -1) {
+              return Promise.reject($t({
+                defaultMessage: 'A policy with that name already exists'
+              }))
+            }
+            return Promise.resolve()}
           }
-          return Promise.resolve()}
-        }
-      ]}
-      children={<Input disabled={isViewMode()}/>}
+        ]}
+        children={<Input disabled={isViewMode()}/>}
+      />
+      <DrawerFormItem
+        name='description'
+        label={$t({ defaultMessage: 'Description' })}
+        rules={[
+          { max: 255 }
+        ]}
+        children={<TextArea disabled={isViewMode()} />}
+      />
+      <DrawerFormItem
+        name='applicationsRule'
+        label={$t({ defaultMessage: 'Rules ({count})' }, { count: applicationsRuleList.length })}
+        rules={[
+          { validator: () => ruleValidator() }
+        ]}
+        children={<></>}
+      />
+      {isOnlyViewMode && !editMode.isEdit ? <Table
+        columns={basicColumns}
+        dataSource={applicationsRuleList as ApplicationsRule[]}
+      /> : <Table
+        columns={basicColumns}
+        dataSource={applicationsRuleList as ApplicationsRule[]}
+        rowKey='ruleName'
+        actions={filterByAccess(actions)}
+        rowActions={filterByAccess(rowActions)}
+        rowSelection={hasAccess() && { type: 'radio' }}
+      />}
+    </Form>
+    <Drawer
+      title={ruleDrawerEditMode
+        ? $t({ defaultMessage: 'Edit Application Rule' })
+        : $t({ defaultMessage: 'Add Application Rule' })
+      }
+      visible={ruleDrawerVisible}
+      destroyOnClose={true}
+      onClose={handleRuleDrawerClose}
+      children={<ApplicationRuleContent
+        avcSelectOptions={avcSelectOptions}
+        applicationsRuleList={applicationsRuleList}
+        applicationsRule={applicationsRule}
+        editMode={ruleDrawerEditMode}
+        drawerForm={drawerForm}
+      />}
+      footer={
+        <Drawer.FormFooter
+          showAddAnother={false}
+          onCancel={handleRuleDrawerClose}
+          onSave={async () => {
+            try {
+              await drawerForm.validateFields()
+
+              handleAddApplicationsRule()
+              drawerForm.resetFields()
+              handleRuleDrawerClose()
+            } catch (error) {
+              if (error instanceof Error) throw error
+            }
+          }}
+        />
+      }
+      width={'800px'}
     />
-    <DrawerFormItem
-      name='description'
-      label={$t({ defaultMessage: 'Description' })}
-      rules={[
-        { max: 255 }
-      ]}
-      children={<TextArea disabled={isViewMode()} />}
-    />
-    <DrawerFormItem
-      name='applicationsRule'
-      label={$t({ defaultMessage: 'Rules ({count})' }, { count: applicationsRuleList.length })}
-      rules={[
-        { validator: () => ruleValidator() }
-      ]}
-      children={<></>}
-    />
-    {isOnlyViewMode && !editMode.isEdit ? <Table
-      columns={basicColumns}
-      dataSource={applicationsRuleList as ApplicationsRule[]}
-    /> : <Table
-      columns={basicColumns}
-      dataSource={applicationsRuleList as ApplicationsRule[]}
-      rowKey='ruleName'
-      actions={filterByAccess(actions)}
-      rowActions={filterByAccess(rowActions)}
-      rowSelection={hasAccess() && { type: 'radio' }}
-    />}
-  </Form>
+  </>
 
   const modelContent = () => {
     if (onlyAddMode.enable) {
@@ -615,6 +651,7 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
             <Select
               style={{ width: '150px' }}
               placeholder={$t({ defaultMessage: 'Select profile...' })}
+              disabled={visible}
               onChange={(value) => {
                 setQueryPolicyId(value)
               }}
@@ -625,7 +662,7 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       </GridCol>
       <AclGridCol>
         <Button type='link'
-          disabled={!applicationPolicyId}
+          disabled={visible || !applicationPolicyId}
           onClick={() => {
             if (applicationPolicyId) {
               setDrawerVisible(true)
@@ -639,7 +676,7 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       </AclGridCol>
       <AclGridCol>
         <Button type='link'
-          disabled={appList.length >= PROFILE_MAX_COUNT_APPLICATION_POLICY}
+          disabled={visible || appList.length >= PROFILE_MAX_COUNT_APPLICATION_POLICY}
           onClick={() => {
             setDrawerVisible(true)
             setQueryPolicyId('')
@@ -656,11 +693,10 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       <Drawer
         title={$t({ defaultMessage: 'Application Access Settings' })}
         visible={visible}
-        zIndex={10}
-        onClose={() => handleApplicationsDrawerClose()
-        }
+        onClose={() => handleApplicationsDrawerClose()}
         destroyOnClose={true}
         children={content}
+        push={false}
         footer={
           <Drawer.FormFooter
             showAddAnother={false}
@@ -680,41 +716,6 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
           />
         }
         width={'830px'}
-      />
-      <Drawer
-        title={ruleDrawerEditMode
-          ? $t({ defaultMessage: 'Edit Application Rule' })
-          : $t({ defaultMessage: 'Add Application Rule' })
-        }
-        visible={ruleDrawerVisible}
-        zIndex={100}
-        destroyOnClose={true}
-        onClose={handleRuleDrawerClose}
-        children={<ApplicationRuleContent
-          avcSelectOptions={avcSelectOptions}
-          applicationsRuleList={applicationsRuleList}
-          applicationsRule={applicationsRule}
-          editMode={ruleDrawerEditMode}
-          drawerForm={drawerForm}
-        />}
-        footer={
-          <Drawer.FormFooter
-            showAddAnother={false}
-            onCancel={handleRuleDrawerClose}
-            onSave={async () => {
-              try {
-                await drawerForm.validateFields()
-
-                handleAddApplicationsRule()
-                drawerForm.resetFields()
-                handleRuleDrawerClose()
-              } catch (error) {
-                if (error instanceof Error) throw error
-              }
-            }}
-          />
-        }
-        width={'800px'}
       />
     </>
   )

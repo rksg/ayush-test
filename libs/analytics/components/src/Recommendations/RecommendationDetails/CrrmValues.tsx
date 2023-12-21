@@ -16,10 +16,11 @@ import { getRecommendationsText, getValues } from './Values'
 export const CrrmValues = ({ details }: { details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
   const {
-    appliedOnce, status, original, current, recommended
+    appliedOnce, status, original, current, recommended, preferences
   } = getValues(details)
   const applied = appliedOnce && status !== 'reverted'
-  const recommendationText = getRecommendationsText(details)
+  const isFullyOptimized = preferences ? preferences.fullOptimization : true
+  const recommendationText = getRecommendationsText(details, isFullyOptimized)
 
   const fields = [
     {
@@ -32,7 +33,9 @@ export const CrrmValues = ({ details }: { details: EnhancedRecommendation }) => 
       label: applied
         ? $t({ defaultMessage: 'Current Configuration' })
         : $t({ defaultMessage: 'Recommended Configuration' }),
-      value: applied ? current : recommended
+      value: isFullyOptimized
+        ? (applied ? current : recommended)
+        : $t({ defaultMessage: 'AI-Driven RRM for channel plan' })
     }
   ]
 
