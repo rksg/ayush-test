@@ -217,7 +217,7 @@ describe('RecommendationActions', () => {
     await user.click((await screen.findAllByText('15'))[1])
     await user.click(await screen.findByRole('time-picker-hours'))
     await user.click((await screen.findAllByText('14'))[1])
-    await user.click((await screen.findAllByTitle('2023-07-15'))[0])
+    await user.click((await screen.findAllByTitle('2023-07-15'))[1])
     await user.click((await screen.findAllByText('Apply'))[0])
     expect(await screen.findByText('Scheduled time cannot be before 07/15/2023 14:15'))
       .toBeVisible()
