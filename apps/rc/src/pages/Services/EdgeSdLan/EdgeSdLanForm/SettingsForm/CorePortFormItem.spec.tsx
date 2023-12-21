@@ -1,9 +1,11 @@
+
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsForm }                            from '@acx-ui/components'
-import { EdgeUrlsInfo, EdgePortConfigFixtures } from '@acx-ui/rc/utils'
-import { Provider }                             from '@acx-ui/store'
+import { StepsForm }                                                                               from '@acx-ui/components'
+import { useIsSplitOn }                                                                            from '@acx-ui/feature-toggle'
+import { EdgeUrlsInfo, EdgePortConfigFixtures, EdgeLagFixtures, EdgeSdLanUrls, EdgeSdLanFixtures } from '@acx-ui/rc/utils'
+import { Provider }                                                                                from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -15,6 +17,8 @@ import {
 import { CorePortFormItem } from './CorePortFormItem'
 
 const { mockEdgePortConfig, mockEdgePortStatus } = EdgePortConfigFixtures
+const { mockedEdgeLagList, mockEdgeLagStatusList } = EdgeLagFixtures
+const { mockedSdLanDataList } = EdgeSdLanFixtures
 
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
@@ -30,11 +34,6 @@ jest.mock('./styledComponents', () => {
       </div> }
 })
 
-jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  EdgePortsGeneral: () => <div data-testid='rc-EdgePortsGeneral'></div>
-}))
-
 const { click } = userEvent
 
 describe('Edge centrailized forwarding form: CorePortFormItem', () => {
@@ -47,6 +46,22 @@ describe('Edge centrailized forwarding form: CorePortFormItem', () => {
       rest.get(
         EdgeUrlsInfo.getPortConfig.url,
         (req, res, ctx) => res(ctx.json(mockEdgePortConfig))
+      ),
+      rest.patch(
+        EdgeUrlsInfo.updatePortConfig.url,
+        (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.get(
+        EdgeUrlsInfo.getEdgeLagList.url,
+        (req, res, ctx) => res(ctx.json(mockedEdgeLagList))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeLagStatusList.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeLagStatusList))
+      ),
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataList }))
       )
     )
   })
@@ -114,5 +129,67 @@ describe('Edge centrailized forwarding form: CorePortFormItem', () => {
     await within(formBody).findByText('Core Port: N/A')
     // eslint-disable-next-line testing-library/no-node-access
     expect((await within(formBody).findByTestId('rc-AlertText')).children[0].innerHTML).toBe('')
+  })
+
+  it('Unsaved changes modal pop up wihtout error - discard', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(<Provider>
+      <StepsForm>
+        <StepsForm.StepForm>
+          <CorePortFormItem
+            data=''
+            name=''
+            edgeId='0000000003'
+            edgeName='Smart Edge 3'
+            portsData={mockEdgePortConfig.ports}
+          />
+        </StepsForm.StepForm>
+      </StepsForm>
+    </Provider>)
+
+    const formBody = await screen.findByTestId('steps-form-body')
+    await within(formBody).findByText('Core Port: N/A')
+    await click(await within(formBody).findByText('SmartEdge\'s Port configuration'))
+    await waitFor(async () => expect(await screen.findByRole('dialog')).toBeVisible())
+    const dialog = screen.getByRole('dialog')
+    expect(within(dialog).queryByText('Smart Edge 3')).toBeValid()
+    await screen.findByRole('tab', { name: 'Ports General' })
+    await userEvent.type(await screen.findByRole('textbox', { name: 'IP Address' }), '2')
+    await userEvent.click(await screen.findByRole('tab', { name: 'LAG' }))
+    const msg = await screen.findByText('You Have Unsaved Changes')
+    await userEvent.click(await screen.findByRole('button', { name: 'Discard Changes' }))
+    await waitFor(() => expect(msg).not.toBeVisible())
+  })
+
+  it('Unsaved changes modal pop up wihtout error - save', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(<Provider>
+      <StepsForm>
+        <StepsForm.StepForm>
+          <CorePortFormItem
+            data=''
+            name=''
+            edgeId='0000000003'
+            edgeName='Smart Edge 3'
+            portsData={mockEdgePortConfig.ports}
+          />
+        </StepsForm.StepForm>
+      </StepsForm>
+    </Provider>)
+
+    const formBody = await screen.findByTestId('steps-form-body')
+    await within(formBody).findByText('Core Port: N/A')
+    await click(await within(formBody).findByText('SmartEdge\'s Port configuration'))
+    await waitFor(async () => expect(await screen.findByRole('dialog')).toBeVisible())
+    const dialog = screen.getByRole('dialog')
+    expect(within(dialog).queryByText('Smart Edge 3')).toBeValid()
+    await screen.findByRole('tab', { name: 'Ports General' })
+    await userEvent.type(await screen.findByRole('textbox', { name: 'IP Address' }), '2')
+    await userEvent.click(await screen.findByRole('tab', { name: 'LAG' }))
+    const msg = await screen.findByText('You Have Unsaved Changes')
+    await userEvent.click(await screen.findByRole('button', { name: 'Save Changes' }))
+    await waitFor(() => expect(msg).not.toBeVisible())
   })
 })

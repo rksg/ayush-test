@@ -124,6 +124,7 @@ export { EdgePortsGeneral } from './EdgeFormItem/EdgePortsGeneral'
 export type { EdgePortConfigFormType } from './EdgeFormItem/EdgePortsGeneral'
 export { EdgeEditContext }
 export { EdgePortsForm, EdgePortTabEnum } from './EdgeFormItem/PortsForm'
+export type { EdgePortsFormProps } from './EdgeFormItem/PortsForm'
 
 export { TunnelProfileForm } from './TunnelProfile/TunnelProfileForm'
 export { useTunnelProfileActions } from './TunnelProfile/TunnelProfileForm/useTunnelProfileActions'
