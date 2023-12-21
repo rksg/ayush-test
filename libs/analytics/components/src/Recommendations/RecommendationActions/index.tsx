@@ -64,7 +64,7 @@ function ApplyCalendar ({ disabled, type, id, code, metadata }: ActionButtonProp
     } else {
       showToast({
         type: 'error',
-        content: $t({ defaultMessage: 'Scheduled time has to be after {futureTime}' }, {
+        content: $t({ defaultMessage: 'Scheduled time cannot be before {futureTime}' }, {
           futureTime: formatter(DateFormatEnum.DateTimeFormat)(futureTime)
         })
       })
