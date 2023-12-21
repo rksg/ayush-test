@@ -31,7 +31,6 @@ export type CrrmListItem = {
   sliceValue: string
   statusTrail: StatusTrail
   crrmOptimizedState?: IconValue
-  crrmInterferingLinksText?: React.ReactNode
   summary?: string
   updatedAt: string
   metadata: {}
