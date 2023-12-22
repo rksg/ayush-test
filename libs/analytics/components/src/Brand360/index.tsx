@@ -46,10 +46,7 @@ export function Brand360 () {
     data: chartData,
     ...chartResults
   } = useFetchBrandTimeseriesQuery(chartPayload)
-  const [pastStart, pastEnd] = computePastRange(
-    startDate,
-    endDate
-  )
+  const [pastStart, pastEnd] = computePastRange(startDate, endDate)
   const {
     data: prevData,
     ...prevResults
