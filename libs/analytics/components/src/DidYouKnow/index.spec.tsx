@@ -2,11 +2,11 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { defaultNetworkPath }               from '@acx-ui/analytics/utils'
-import { dataApiURL, Provider, store }      from '@acx-ui/store'
-import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
-import type { PathFilter }                  from '@acx-ui/utils'
-import { DateRange }                        from '@acx-ui/utils'
+import { defaultNetworkPath }                                from '@acx-ui/analytics/utils'
+import { dataApiURL, Provider, store }                       from '@acx-ui/store'
+import { render, screen, mockGraphqlQuery, mockServer, act } from '@acx-ui/test-utils'
+import type { PathFilter }                                   from '@acx-ui/utils'
+import { DateRange }                                         from '@acx-ui/utils'
 
 import { api } from './services'
 
@@ -40,13 +40,40 @@ const sample = [
       -0.026368198420163663
     ],
     labels: []
-  }]
-const availableFacts = ['topApplicationsByClients', 'airtimeUtilization']
+  }
+]
+const sample2 = [
+  {
+    key: 'busiestSsidByClients',
+    values: [
+      0.7853403141361257
+    ],
+    labels: [
+      'DENSITY'
+    ]
+  },
+  {
+    key: 'busiestSsidByTraffic',
+    values: [
+      0.7156916786073376
+    ],
+    labels: [
+      'DENSITY'
+    ]
+  }
+]
+const availableFacts = [
+  'topApplicationsByClients',
+  'airtimeUtilization',
+  'busiestSsidByClients',
+  'busiestSsidByTraffic'
+]
 describe('DidYouKnowWidget', () => {
 
-  beforeEach(() =>
+  beforeEach(() => {
     store.dispatch(api.util.resetApiState())
-  )
+    jest.resetAllMocks()
+  })
 
   it('should render loader', () => {
     mockGraphqlQuery(dataApiURL, 'Facts', {
@@ -66,6 +93,17 @@ describe('DidYouKnowWidget', () => {
     const regexPattern = /Top 3 applications in terms of users last week were/
     expect((await screen.findAllByText(regexPattern))?.[0]).toBeVisible()
   })
+  it('should render empty filters', async () => {
+    mockGraphqlQuery(dataApiURL, 'Facts', {
+      data: { network: { hierarchyNode: { facts: [], availableFacts: [] } } }
+    })
+    render(
+      <Provider>
+        <DidYouKnow filters={null}/>
+      </Provider>)
+    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
+    expect((await screen.findAllByText('No data to report'))?.[0]).toBeVisible()
+  })
   it('should handle change in slides', async () => {
     mockGraphqlQuery(dataApiURL, 'Facts', {
       data: { network: { hierarchyNode: { facts: sample, availableFacts } } }
@@ -76,8 +114,17 @@ describe('DidYouKnowWidget', () => {
       </Provider>)
     const regexPattern = /Top 3 applications in terms of users last week were/
     expect((await screen.findAllByText(regexPattern))?.[0]).toBeVisible()
-    await userEvent.click(screen.getByText('2'))
-    expect((await screen.findAllByText('Did you know?'))?.[1]).toBeVisible()
+    store.dispatch(api.util.resetApiState())
+    jest.resetAllMocks()
+    mockServer.resetHandlers()
+    mockGraphqlQuery(dataApiURL, 'Facts', {
+      data: { network: { hierarchyNode: { facts: sample2, availableFacts } } }
+    })
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(async () => {
+      await userEvent.click(screen.getByText('4'))
+    })
+    expect((await screen.findAllByText(/Busiest WLAN in terms of users last/))?.[1]).toBeVisible()
   })
   it('should handle error', async () => {
     jest.spyOn(console, 'error').mockImplementation(() => {})
@@ -86,7 +133,6 @@ describe('DidYouKnowWidget', () => {
     })
     render(<Provider><DidYouKnow filters={filters}/></Provider>)
     expect((await screen.findAllByText('No data to report'))?.[0]).toBeVisible()
-    jest.resetAllMocks()
   })
   it('should render empty availableFacts', async () => {
     mockGraphqlQuery(dataApiURL, 'Facts', {
@@ -94,7 +140,6 @@ describe('DidYouKnowWidget', () => {
     })
     render( <Provider> <DidYouKnow filters={filters}/> </Provider>)
     expect((await screen.findAllByText('No data to report'))?.[0]).toBeVisible()
-    jest.resetAllMocks()
   })
   it('should render "No data to display" when data is empty', async () => {
     mockGraphqlQuery(dataApiURL, 'Facts', {
@@ -102,7 +147,6 @@ describe('DidYouKnowWidget', () => {
     })
     render( <Provider> <DidYouKnow filters={filters}/> </Provider>)
     expect((await screen.findAllByText('No data to report'))?.[0]).toBeVisible()
-    jest.resetAllMocks()
   })
 })
 describe('getCarouselFactsMap', () => {
