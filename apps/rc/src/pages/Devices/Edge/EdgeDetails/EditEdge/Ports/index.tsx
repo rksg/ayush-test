@@ -62,7 +62,7 @@ const Ports = () => {
     const isLagPort = lagData?.data?.some(lag =>
       lag.lagMembers?.some(lagMember =>
         lagMember.portId === item.id)) ?? false
-    return { ...item, statusIp: statusIpMap[item.id], isLagPort }
+    return { ...item, statusIp: statusIpMap[item.id ?? ''], isLagPort }
   })
 
   const tabs = {
