@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
 import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import {act, render, renderHook, screen } from '@acx-ui/test-utils'
 import { RolesEnum }      from '@acx-ui/types'
 import {
   UserProfile as UserProfileInterface,
@@ -27,7 +27,8 @@ const userProfile = {
 
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
+  useNavigate: () => mockedUsedNavigate,
+  useLocation: () => ({ state: { from: '/test' } })
 }))
 
 jest.mock('@acx-ui/msp/components', () => ({
@@ -41,6 +42,15 @@ jest.mock('./PreferredLanguageFormItem', () => ({
 }))
 
 describe('UserProfile', () => {
+  beforeAll(() => {
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: {
+        ...window.location,
+        reload: jest.fn()
+      }
+    })
+  })
   it('should render correctly', async () => {
     setUserProfile({ profile: userProfile, allowedOperations: [] })
 
