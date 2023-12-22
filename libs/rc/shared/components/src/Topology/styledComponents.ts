@@ -3,10 +3,12 @@ import { createElement } from 'react'
 import { Divider, Space } from 'antd'
 import styled             from 'styled-components'
 
-import { Button, Modal } from '@acx-ui/components'
-import { DeviceStatus }  from '@acx-ui/rc/utils'
+import { Button, Modal }          from '@acx-ui/components'
+import { TagsOutline, TagsSolid } from '@acx-ui/icons'
+import { DeviceStatus }           from '@acx-ui/rc/utils'
 
 import { getDeviceColor } from './utils'
+
 
 export const Graph = styled('svg')`
 .node rect {
@@ -290,5 +292,24 @@ export const TopologyGraphModal = styled(Modal)`
   }
   .ant-modal-footer{
     display: none;
+  }
+`
+
+export const TagsOutlineIcon = styled(TagsOutline)`
+  width: 12px;
+  height: 14px;
+  vertical-align: middle;
+  path {
+    fill: var(--acx-primary-black);
+  }
+`
+
+export const TagsSolidIcon = styled(TagsSolid)`
+  width: 12px;
+  height: 14px;
+  vertical-align: middle;
+  margin-top: 5px;
+  path {
+    fill: var(--acx-primary-black);
   }
 `

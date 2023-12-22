@@ -1,11 +1,12 @@
 import { Button, Space, Typography } from 'antd'
 import { useIntl }                   from 'react-intl'
 
-import { Card, Descriptions }              from '@acx-ui/components'
-import { BiDirectionalArrow, CloseSymbol } from '@acx-ui/icons'
-import { Link, Node }                      from '@acx-ui/rc/utils'
-import { noDataDisplay }                   from '@acx-ui/utils'
+import { Card, Descriptions, GridCol, GridRow } from '@acx-ui/components'
+import { BiDirectionalArrow, CloseSymbol }      from '@acx-ui/icons'
+import { Link, Node }                           from '@acx-ui/rc/utils'
+import { noDataDisplay }                        from '@acx-ui/utils'
 
+import * as UI from './styledComponents'
 
 export default function LinkTooltip (props: { tooltipPosition: {
     x: number,
@@ -19,6 +20,48 @@ onClose: () => void
 
   const { tooltipPosition, tooltipSourceNode, tooltipTargetNode, tooltipEdge, onClose } = props
   const { $t } = useIntl()
+
+  function VlansTrunked (props: {
+    title: string
+    tagged?: string
+    untagged?: string
+  }) {
+    const { title, tagged, untagged } = props
+
+    function vlansParser (vlans: string){
+      const numbers = vlans.split(' ').map(Number).sort((a, b) => a - b)
+      let ranges = []
+
+      for (let i = 0; i < numbers.length; i++) {
+        let start = numbers[i]
+        while (numbers[i + 1] - numbers[i] === 1) {
+          i++
+        }
+        let end = numbers[i]
+        ranges.push(start === end ? `${start}` : `${start}-${end}`)
+      }
+
+      return ranges.join(', ')
+    }
+
+    const untaggedVlanText = <Space size={4}>
+      <UI.TagsOutlineIcon />{ (untagged && vlansParser(untagged)) || '--' }
+    </Space>
+
+    const taggedVlanText = <Space size={4}>
+      <UI.TagsSolidIcon />{ (tagged && vlansParser(tagged)) || '--' }
+    </Space>
+
+    return <GridRow $divider>
+      <GridCol col={{ span: 8 }}>
+        {title}
+      </GridCol>
+      <GridCol col={{ span: 16 }}>
+        <div>{untaggedVlanText}</div>
+        <div>{taggedVlanText}</div>
+      </GridCol>
+    </GridRow>
+  }
 
   return <div
     data-testid='edgeTooltip'
@@ -75,6 +118,30 @@ onClose: () => void
           label={$t({ defaultMessage: 'Link Speed' })}
           children={tooltipEdge?.linkSpeed || noDataDisplay} />
 
+        {(tooltipEdge?.connectedPortTaggedVlan || tooltipEdge?.connectedPortUntaggedVlan ||
+        tooltipEdge?.correspondingPortTaggedVlan || tooltipEdge?.correspondingPortUntaggedVlan) &&
+        <>
+          <Descriptions.Item
+            label={$t({ defaultMessage: 'VLANs trunked' })}
+            children={null}
+          />
+          <Descriptions.Item
+            children={
+              <Card type='solid-bg'>
+                <VlansTrunked
+                  title={tooltipEdge?.fromName || ''}
+                  untagged={tooltipEdge?.correspondingPortUntaggedVlan}
+                  tagged={tooltipEdge?.correspondingPortTaggedVlan}
+                />
+                <VlansTrunked
+                  title={tooltipEdge?.toName || ''}
+                  untagged={tooltipEdge?.connectedPortUntaggedVlan}
+                  tagged={tooltipEdge?.connectedPortTaggedVlan}
+                />
+              </Card>}
+          />
+        </>
+        }
         {
           /* TODO: does we get PoE usage if poe disabled?
           How to calculate and set unit for PoE? */

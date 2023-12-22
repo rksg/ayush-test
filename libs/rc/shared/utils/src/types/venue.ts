@@ -759,7 +759,9 @@ export interface Link {
     source: string;
     target: string;
 	from: string;
+	fromName?: string;
     to: string;
+	toName?: string;
     connectionType?: string;
     connectionStatus?: ConnectionStatus; // this needs to be enum
     connectionStates?: ConnectionStates; // this needs to be enum
@@ -770,6 +772,10 @@ export interface Link {
     connectedPort?: string;
     correspondingPort?: string;
 	angle?: number;
+	connectedPortTaggedVlan?: string;
+	connectedPortUntaggedVlan?: string;
+	correspondingPortTaggedVlan?: string;
+	correspondingPortUntaggedVlan?: string;
 }
 export interface GraphData {
     type: string;
