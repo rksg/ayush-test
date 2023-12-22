@@ -17,8 +17,8 @@ import TextArea      from 'antd/lib/input/TextArea'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, DrawerProps }             from '@acx-ui/components'
-import { formatter }                       from '@acx-ui/formatter'
+import { Button, DrawerProps, PasswordInput } from '@acx-ui/components'
+import { formatter }                          from '@acx-ui/formatter'
 import {
   useAddTenantAuthenticationsMutation,
   useGetUploadURLMutation,
@@ -28,13 +28,15 @@ import {
   TenantAuthentications,
   TenantAuthenticationType,
   SamlFileType,
-  UploadUrlResponse//,
-  // domainNameRegExp
+  UploadUrlResponse,
+  excludeSpaceRegExp,
+  notAllDigitsRegExp
 } from '@acx-ui/rc/utils'
 
 import { reloadAuthTable } from '../AppTokenFormItem'
 
-import * as UI from './styledComponents'
+import AuthTypeSelector,  { AuthTypeEnum } from './authTypeSelector'
+import * as UI                             from './styledComponents'
 
 type AcceptableType = 'xml'
 
@@ -52,6 +54,7 @@ interface ImportFileDrawerProps extends DrawerProps {
   setEditMode: (editMode: boolean) => void
   editData?: TenantAuthentications
   isGroupBasedLoginEnabled?: boolean
+  isGoogleWorkspaceEnabled?: boolean
 }
 
 const fileTypeMap: Record<AcceptableType, string[]>= {
@@ -79,7 +82,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
 
   const { maxSize, isLoading, acceptType,
     formDataName = 'file', setVisible, setEditMode,
-    isEditMode, editData, isGroupBasedLoginEnabled } = props
+    isEditMode, editData, isGroupBasedLoginEnabled, isGoogleWorkspaceEnabled } = props
 
   const [fileDescription, setFileDescription] = useState<ReactNode>('')
   const [formData, setFormData] = useState<FormData>()
@@ -87,6 +90,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
   const [metadata, setMetadata] = useState<string>()
 
   const [uploadFile, setUploadFile] = useState(false)
+  const [selectedAuth, setSelectedAuth] = useState('')
 
   const bytesFormatter = formatter('bytesFormat')
   const [addSso] = useAddTenantAuthenticationsMutation()
@@ -345,6 +349,55 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     </>
   }
 
+  const GoogleContent = () => {
+    return <Form style={{ marginTop: 10 }} layout='vertical' form={form} >
+      <Form.Item
+        name='allowedDomains'
+        label={$t({ defaultMessage: 'Allowed Domains' })}
+        initialValue={editData?.name || ''}
+        rules={[
+          { required: true },
+          { min: 2 },
+          { max: 64 }
+        ]}
+        children={<Input />}
+      />
+      <Form.Item
+        name='clientId'
+        label={$t({ defaultMessage: 'Client ID' })}
+        rules={[
+          { required: true },
+          { min: 2 },
+          { max: 64 }
+        ]}
+        children={<Input />}
+      />
+      <Form.Item
+        name='secret'
+        label={$t({ defaultMessage: 'Client secret' })}
+        rules={[
+          { required: true },
+          { validator: (_, value) =>
+          {
+            if(value.length !== 32) {
+              return Promise.reject(
+                `${$t({ defaultMessage: 'Secret must be 32 characters long' })} `
+              )
+            }
+            return Promise.resolve()
+          }
+          },
+          { validator: (_, value) => excludeSpaceRegExp(value) },
+          { validator: (_, value) => notAllDigitsRegExp(value),
+            message: $t({ defaultMessage:
+            'Secret must include letters or special characters; numbers alone are not accepted.' })
+          }
+        ]}
+        children={<PasswordInput />}
+      />
+    </Form>
+  }
+
   return (<UI.ImportFileDrawer {...props}
     keyboard={false}
     closable={true}
@@ -366,7 +419,12 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
       </Button>
     </div>} >
 
-    <SamlContent />
+    {isGroupBasedLoginEnabled && isGoogleWorkspaceEnabled && <AuthTypeSelector
+      ssoConfigured={true}
+      setSelected={setSelectedAuth}
+    />}
+
+    {selectedAuth === AuthTypeEnum.google ? <GoogleContent /> : <SamlContent />}
 
   </UI.ImportFileDrawer>)
 }
