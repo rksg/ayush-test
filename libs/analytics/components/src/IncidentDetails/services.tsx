@@ -58,8 +58,8 @@ export const api = dataApi.injectEndpoints({
       query: (variables) => ({
         variables: _.pick(variables, ['id', 'impactedStart', 'impactedEnd']),
         document: gql`
-          query IncidentDetails ($id: String) {
-            incident(id: $id) {
+          query IncidentDetails ($id: String, $impactedStart: DateTime, $impactedEnd: DateTime) {
+            incident(id: $id, impactedStart: $impactedStart, impactedEnd: $impactedEnd) {
               severity
               startTime
               endTime

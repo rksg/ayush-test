@@ -103,7 +103,7 @@ const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
         <div style={{ gridArea: 'd1' }}>
           <DidYouKnow
             filters={pathFilters}
-            maxFactPerSlide={3}
+            maxFactPerSlide={2}
             maxSlideChar={290}
           />
         </div>

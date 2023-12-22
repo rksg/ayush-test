@@ -84,6 +84,21 @@ export const clientApi = baseClientApi.injectEndpoints({
         }
       }
     }),
+    revokeClient: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ClientUrlsInfo.disconnectClient, params)
+        if (enableNewApi(ClientUrlsInfo.disconnectClient)) {
+          payload = {
+            action: 'revoke',
+            clients: payload
+          }
+        }
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     getGuestsList: build.query<TableResult<Guest>, RequestPayload>({
       query: ({ params, payload }) => {
         const body = latestTimeFilter(payload)
@@ -349,6 +364,7 @@ export const aggregatedClientListData = (clientList: TableResult<ClientList>,
 export const {
   useGetGuestsListQuery,
   useDisconnectClientMutation,
+  useRevokeClientMutation,
   useLazyGetGuestsListQuery,
   useAddGuestPassMutation,
   useLazyGetGuestNetworkListQuery,
