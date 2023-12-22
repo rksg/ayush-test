@@ -494,67 +494,101 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     return Promise.resolve()
   }
 
-  const content = <Form layout='horizontal' form={contentForm}>
-    <DrawerFormItem
-      name={'policyName'}
-      label={$t({ defaultMessage: 'Policy Name:' })}
-      rules={[
-        { required: true },
-        { min: 2 },
-        { max: 32 },
-        { validator: (_, value) => {
-          if (deviceList && deviceList
-            .filter(device => editMode ? (devicePolicyInfo?.name !== device) : true)
-            .findIndex(device => device === value) !== -1) {
-            return Promise.reject($t({
-              defaultMessage: 'A policy with that name already exists'
-            }))
+  const content = <>
+    <Form layout='horizontal' form={contentForm}>
+      <DrawerFormItem
+        name={'policyName'}
+        label={$t({ defaultMessage: 'Policy Name:' })}
+        rules={[
+          { required: true },
+          { min: 2 },
+          { max: 32 },
+          { validator: (_, value) => {
+            if (deviceList && deviceList
+              .filter(device => editMode ? (devicePolicyInfo?.name !== device) : true)
+              .findIndex(device => device === value) !== -1) {
+              return Promise.reject($t({
+                defaultMessage: 'A policy with that name already exists'
+              }))
+            }
+            return Promise.resolve()}
           }
-          return Promise.resolve()}
-        }
-      ]}
-      children={<Input disabled={isViewMode()}/>}
+        ]}
+        children={<Input disabled={isViewMode()}/>}
+      />
+      <DrawerFormItem
+        name='description'
+        label={$t({ defaultMessage: 'Description' })}
+        rules={[
+          { max: 255 }
+        ]}
+        children={<TextArea disabled={isViewMode()} />}
+      />
+      <DrawerFormItem
+        name='deviceDefaultAccess'
+        label={<div style={{ textAlign: 'left' }}>
+          <div>{$t({ defaultMessage: 'Default Access' })}</div>
+          <span style={{ fontSize: '10px' }}>
+            {$t({ defaultMessage: 'Applies if no rule is matched' })}
+          </span>
+        </div>}
+        children={<ContentSwitcher tabDetails={defaultTabDetails} size='large' />}
+      />
+      <Form.Item
+        name='deviceOSRule'
+        label={$t({ defaultMessage: 'Rules ({number})' }, {
+          number: deviceOSRuleList.length
+        })}
+        rules={[
+          { validator: () => ruleValidator() }
+        ]}
+        children={<></>}
+      />
+      {isOnlyViewMode && !editMode.isEdit ? <Table
+        columns={basicColumns}
+        dataSource={deviceOSRuleList as DeviceOSRule[]}
+      /> : <Table
+        columns={basicColumns}
+        dataSource={deviceOSRuleList as DeviceOSRule[]}
+        rowKey='ruleName'
+        actions={filterByAccess(actions)}
+        rowActions={filterByAccess(rowActions)}
+        rowSelection={hasAccess() && { type: 'radio' }}
+      />}
+    </Form>
+    <Drawer
+      title={ruleDrawerEditMode
+        ? $t({ defaultMessage: 'Edit Rule' })
+        : $t({ defaultMessage: 'Add Rule' })
+      }
+      visible={deviceOSDrawerVisible}
+      destroyOnClose={true}
+      onClose={handleRuleDrawerClose}
+      children={<DeviceOSRuleContent
+        drawerForm={drawerForm}
+        deviceOSRuleList={deviceOSRuleList}
+        ruleDrawerEditMode={ruleDrawerEditMode}
+      />}
+      footer={
+        <Drawer.FormFooter
+          showAddAnother={false}
+          onCancel={handleRuleDrawerClose}
+          onSave={async () => {
+            try {
+              await drawerForm.validateFields()
+
+              handleDeviceOSRule()
+              drawerForm.resetFields()
+              handleRuleDrawerClose()
+            } catch (error) {
+              if (error instanceof Error) throw error
+            }
+          }}
+        />
+      }
+      width={'800px'}
     />
-    <DrawerFormItem
-      name='description'
-      label={$t({ defaultMessage: 'Description' })}
-      rules={[
-        { max: 255 }
-      ]}
-      children={<TextArea disabled={isViewMode()} />}
-    />
-    <DrawerFormItem
-      name='deviceDefaultAccess'
-      label={<div style={{ textAlign: 'left' }}>
-        <div>{$t({ defaultMessage: 'Default Access' })}</div>
-        <span style={{ fontSize: '10px' }}>
-          {$t({ defaultMessage: 'Applies if no rule is matched' })}
-        </span>
-      </div>}
-      children={<ContentSwitcher tabDetails={defaultTabDetails} size='large' />}
-    />
-    <Form.Item
-      name='deviceOSRule'
-      label={$t({ defaultMessage: 'Rules ({number})' }, {
-        number: deviceOSRuleList.length
-      })}
-      rules={[
-        { validator: () => ruleValidator() }
-      ]}
-      children={<></>}
-    />
-    {isOnlyViewMode && !editMode.isEdit ? <Table
-      columns={basicColumns}
-      dataSource={deviceOSRuleList as DeviceOSRule[]}
-    /> : <Table
-      columns={basicColumns}
-      dataSource={deviceOSRuleList as DeviceOSRule[]}
-      rowKey='ruleName'
-      actions={filterByAccess(actions)}
-      rowActions={filterByAccess(rowActions)}
-      rowSelection={hasAccess() && { type: 'radio' }}
-    />}
-  </Form>
+  </>
 
   const modelContent = () => {
     if (onlyAddMode.enable) {
@@ -586,6 +620,7 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
             <Select
               style={{ width: '150px' }}
               placeholder={$t({ defaultMessage: 'Select profile...' })}
+              disabled={visible}
               onChange={(value) => {
                 setQueryPolicyId(value)
               }}
@@ -596,7 +631,7 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       </GridCol>
       <AclGridCol>
         <Button type='link'
-          disabled={!devicePolicyId}
+          disabled={visible || !devicePolicyId}
           onClick={() => {
             if (devicePolicyId) {
               setDrawerVisible(true)
@@ -610,7 +645,7 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       </AclGridCol>
       <AclGridCol>
         <Button type='link'
-          disabled={deviceList.length >= PROFILE_MAX_COUNT_DEVICE_POLICY}
+          disabled={visible || deviceList.length >= PROFILE_MAX_COUNT_DEVICE_POLICY}
           onClick={() => {
             setDrawerVisible(true)
             setQueryPolicyId('')
@@ -628,10 +663,9 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       <Drawer
         title={$t({ defaultMessage: 'Device & OS Access Settings' })}
         visible={visible}
-        zIndex={10}
-        onClose={() => handleDeviceOSDrawerClose()
-        }
+        onClose={() => handleDeviceOSDrawerClose()}
         children={content}
+        push={false}
         footer={
           <Drawer.FormFooter
             showAddAnother={false}
@@ -651,39 +685,6 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
           />
         }
         width={'830px'}
-      />
-      <Drawer
-        title={ruleDrawerEditMode
-          ? $t({ defaultMessage: 'Edit Rule' })
-          : $t({ defaultMessage: 'Add Rule' })
-        }
-        visible={deviceOSDrawerVisible}
-        zIndex={100}
-        destroyOnClose={true}
-        onClose={handleRuleDrawerClose}
-        children={<DeviceOSRuleContent
-          drawerForm={drawerForm}
-          deviceOSRuleList={deviceOSRuleList}
-          ruleDrawerEditMode={ruleDrawerEditMode}
-        />}
-        footer={
-          <Drawer.FormFooter
-            showAddAnother={false}
-            onCancel={handleRuleDrawerClose}
-            onSave={async () => {
-              try {
-                await drawerForm.validateFields()
-
-                handleDeviceOSRule()
-                drawerForm.resetFields()
-                handleRuleDrawerClose()
-              } catch (error) {
-                if (error instanceof Error) throw error
-              }
-            }}
-          />
-        }
-        width={'800px'}
       />
     </>
   )
