@@ -101,36 +101,12 @@ export const transformToPropertyView = (data: Response[]): Property[] =>
   })
 
 export function computePastRange (
-  startDate: string, dateRange: DateRange, endDate?: string
+  startDate: string,  endDate: string
 ): [string, string] {
-  switch (dateRange) {
-    case DateRange.last8Hours: return [
-      moment(startDate).subtract(8, 'hours').format(),
-      startDate
-    ]
-    case DateRange.last24Hours: return [
-      moment(startDate).subtract(24, 'hours').format(),
-      startDate
-    ]
-    case DateRange.last7Days: return [
-      moment(startDate).subtract(7, 'days').format(),
-      startDate
-    ]
-    case DateRange.last30Days: return [
-      moment(startDate).subtract(30, 'days').format(),
-      startDate
-    ]
-    case DateRange.custom: {
-      const hours = moment.duration(moment(endDate).diff(startDate)).asHours()
-      return [
-        moment(startDate).subtract(hours, 'hours').format(),
-        startDate
-      ]}
-    case DateRange.allTime: return [
-      moment(startDate).subtract(3, 'months').format(),
-      startDate
-    ]
-  }
+  return [
+    moment(startDate).subtract(moment(endDate).diff(startDate)).format(),
+    startDate
+  ]
 }
 
 export const slaKpiConfig = {

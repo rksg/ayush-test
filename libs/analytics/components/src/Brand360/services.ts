@@ -1,7 +1,6 @@
 import { gql } from 'graphql-request'
-import moment  from 'moment-timezone'
 
-import { incidentCodes } from '@acx-ui/analytics/utils'
+import { calculateGranularity, incidentCodes } from '@acx-ui/analytics/utils'
 import { dataApi }       from '@acx-ui/store'
 
 import { fetchBrandProperties } from './__tests__/fixtures'
@@ -30,17 +29,6 @@ export interface FranchisorTimeseries {
   connectionSuccessSLA: number[],
   ssidComplianceSLA: number[],
   errors: Array<{ sla: string, error: string }>
-}
-
-const calculateSlaGranularity = (start: string, end: string) => {
-  const interval = moment.duration(moment(end).diff(moment(start))).asHours()
-  switch (true) {
-    case interval >= (24 * 30):
-      return 'P1D'
-    case interval >= (24 * 7):
-      return 'PT6H'
-    default: return 'PT1H'
-  }
 }
 
 export const api = dataApi.injectEndpoints({
@@ -80,7 +68,7 @@ export const api = dataApi.injectEndpoints({
         `,
         variables: {
           ...payload,
-          granularity: granularity || calculateSlaGranularity(payload.start, payload.end),
+          granularity: granularity || calculateGranularity(payload.start, payload.end),
           severity: { gt: 0.9, lte: 1 },
           code: incidentCodes
         }

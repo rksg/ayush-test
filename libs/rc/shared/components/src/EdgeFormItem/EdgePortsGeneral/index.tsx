@@ -71,7 +71,7 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
   let tabs = [] as TabData[]
   let formData = {} as EdgePortConfigFormType
   data.forEach((item) => {
-    const innerPortFormID = getInnerPortFormID(item.id)
+    const innerPortFormID = getInnerPortFormID(item.id ?? '')
     tabs.push({
       label: getEdgePortDisplayName(item),
       value: innerPortFormID,
@@ -80,7 +80,7 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
           ({ key }) => <PortConfigForm
             formListKey={key}
             key={`${innerPortFormID}_${key}`}
-            id={item.id}
+            id={item.id ?? ''}
             isEdgeSdLanRun={isEdgeSdLanRun}
           />
         )}

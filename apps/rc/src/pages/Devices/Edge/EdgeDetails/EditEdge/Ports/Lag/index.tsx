@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Key, useEffect, useState } from 'react'
 
 import { Col, Row }  from 'antd'
 import _             from 'lodash'
@@ -25,10 +25,11 @@ interface EdgeLagTableType extends EdgeLag {
 const Lag = (props: LagProps) => {
 
   const { lagStatusList, isLoading, portList } = props
-  const { serialNumber } = useParams()
+  const { serialNumber, activeSubTab } = useParams()
   const { $t } = useIntl()
   const [lagDrawerVisible, setLagDrawerVisible] = useState(false)
   const [currentEditData, setCurrentEditData] = useState<EdgeLag>()
+  const [selectedRows, setSelectedRows] = useState<Key[]>([])
   const { lagData = [], isLagLoading } = useGetEdgeLagListQuery({
     params: { serialNumber },
     payload: {
@@ -47,6 +48,13 @@ const Lag = (props: LagProps) => {
     }
   })
   const [deleteEdgeLag] = useDeleteEdgeLagMutation()
+
+  useEffect(() => {
+    if(activeSubTab !== 'lag') {
+      setLagDrawerVisible(false)
+      setSelectedRows([])
+    }
+  }, [activeSubTab])
 
   const columns: TableProps<EdgeLagTableType>['columns'] = [
     {
@@ -197,7 +205,11 @@ const Lag = (props: LagProps) => {
         columns={columns}
         rowActions={filterByAccess(rowActions)}
         rowSelection={hasAccess() && {
-          type: 'radio'
+          type: 'radio',
+          selectedRowKeys: selectedRows,
+          onChange: (key: Key[]) => {
+            setSelectedRows(key)
+          }
         }}
         rowKey='id'
       />

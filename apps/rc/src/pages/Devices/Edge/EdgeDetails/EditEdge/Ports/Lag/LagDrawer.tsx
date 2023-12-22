@@ -256,8 +256,8 @@ export const LagDrawer = (props: LagDrawerProps) => {
                       <div style={{ margin: 'auto' }}>{$t({ defaultMessage: 'Port Enabled' })}</div>
                       <Form.Item
                         children={<Switch
-                          checked={enabledPorts?.includes(item.id)}
-                          onChange={(checked) => handlePortEnabled(item.id, checked)}
+                          checked={enabledPorts?.includes(item.id ?? '')}
+                          onChange={(checked) => handlePortEnabled(item.id ?? '', checked)}
                         />}
                         noStyle
                       />
