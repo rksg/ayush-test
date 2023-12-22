@@ -52,7 +52,6 @@ export const AddGroupDrawer = (props: AddGroupDrawerProps) => {
       }
 
       const adminGroupEditData: AdminGroupData = {
-        groupId: editData?.groupId,
         role: role
       }
 
