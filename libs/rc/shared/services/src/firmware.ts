@@ -19,6 +19,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { baseFirmwareApi }   from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
+import { CloudVersion }      from '@acx-ui/user'
 import { createHttpRequest } from '@acx-ui/utils'
 
 export const firmwareApi = baseFirmwareApi.injectEndpoints({
@@ -389,6 +390,9 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'EdgeFirmware', id: 'LIST' }]
+    }),
+    getScheduledFirmware: build.query<CloudVersion, RequestPayload>({
+      query: ({ params }) => createHttpRequest(FirmwareUrlsInfo.getScheduledFirmware, params)
     })
   })
 })
@@ -428,5 +432,7 @@ export const {
   useGetSwitchFirmwareListQuery,
   useLazyGetSwitchFirmwareListQuery,
   useGetSwitchFirmwareStatusListQuery,
-  useLazyGetSwitchFirmwareStatusListQuery
+  useLazyGetSwitchFirmwareStatusListQuery,
+  useGetScheduledFirmwareQuery,
+  useLazyGetScheduledFirmwareQuery
 } = firmwareApi

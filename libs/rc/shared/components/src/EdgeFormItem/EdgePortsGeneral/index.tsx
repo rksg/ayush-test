@@ -1,18 +1,21 @@
-import { ReactNode, useEffect, useRef, useState } from 'react'
+import { ReactNode, useContext, useEffect, useRef, useState } from 'react'
 
 import { Form, FormInstance }  from 'antd'
 import { StoreValue }          from 'antd/lib/form/interface'
-import _, { flatMap, isEqual } from 'lodash'
+import { flatMap, isEqual }    from 'lodash'
 import { ValidateErrorEntity } from 'rc-field-form/es/interface'
 import { useIntl }             from 'react-intl'
 
-import { Loader, NoData, showActionModal, StepsForm, Tabs, Tooltip }     from '@acx-ui/components'
-import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
-import { useGetEdgeSdLanViewDataListQuery, useUpdatePortConfigMutation } from '@acx-ui/rc/services'
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgePortWithStatus }          from '@acx-ui/rc/utils'
-import { useParams }                                                     from '@acx-ui/react-router-dom'
+import { Loader, NoData, StepsForm, Tabs, Tooltip }                                                                         from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                           from '@acx-ui/feature-toggle'
+import { useGetEdgeSdLanViewDataListQuery, useUpdatePortConfigMutation }                                                    from '@acx-ui/rc/services'
+import { convertEdgePortsConfigToApiPayload, EdgeIpModeEnum, EdgePortTypeEnum, EdgePortWithStatus, getEdgePortDisplayName } from '@acx-ui/rc/utils'
+import { useParams }                                                                                                        from '@acx-ui/react-router-dom'
 
-import { PortConfigForm } from './PortConfigForm'
+import { EdgePortsDataContext } from '../PortsForm/PortDataProvider'
+
+import { PortConfigForm }     from './PortConfigForm'
+import { getInnerPortFormID } from './utils'
 
 export interface EdgePortConfigFormType {
   [portId: string]: EdgePortWithStatus[]
@@ -45,6 +48,8 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
   const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
   const [form] = Form.useForm(props.form)
   const [currentTab, setCurrentTab] = useState<string>('')
+  const portsData = useContext(EdgePortsDataContext)
+  const lagData = portsData.lagData
   const [updatePortConfig, { isLoading: isPortConfigUpdating }] = useUpdatePortConfigMutation()
   const dataRef = useRef<EdgePortWithStatus[] | undefined>(undefined)
   const edgeSN = edgeId ?? params.serialNumber
@@ -69,26 +74,28 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
   let unLagPort = ''
   let tabs = [] as TabData[]
   let formData = {} as EdgePortConfigFormType
-  data.forEach((item, index) => {
+  data.forEach((item) => {
+    const innerPortFormID = getInnerPortFormID(item.id)
     tabs.push({
-      label: $t({ defaultMessage: 'Port {index}' }, { index: index + 1 }),
-      value: `port_${index}`,
-      content: <Form.List name={`port_${index}`}>
+      label: getEdgePortDisplayName(item),
+      value: innerPortFormID,
+      content: <Form.List name={innerPortFormID}>
         {(fields) => fields.map(
           ({ key }) => <PortConfigForm
             formListKey={key}
-            key={`port_${index}_${key}`}
-            index={index}
+            key={`${innerPortFormID}_${key}`}
+            id={item.id}
             isEdgeSdLanRun={isEdgeSdLanRun}
+            lagData={lagData}
           />
         )}
       </Form.List>,
       isLagPort: item.isLagPort
     })
     if(!unLagPort && !item.isLagPort) {
-      unLagPort = `port_${index}`
+      unLagPort = innerPortFormID
     }
-    formData[`port_${index}`] = [item]
+    formData[innerPortFormID] = [item]
   })
 
   useEffect(() => {
@@ -114,14 +121,9 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
     const changedField = Object.values(changedValues)?.[0]?.[0]
     if(changedField) {
       const changedPortName = Object.keys(changedValues)?.[0]
-      const index = Number(changedPortName.toString().split('_')[1])
-
+      const id = changedPortName.toString().split('_')[1]
       if (changedField['portType']) {
-        handlePortTypeChange(changedPortName, changedField['portType'], index)
-      }
-
-      if (!_.isUndefined(changedField['corePortEnabled'])) {
-        handleCorePortChange(changedPortName, changedField['corePortEnabled'], index)
+        handlePortTypeChange(changedPortName, changedField['portType'], id)
       }
 
       let hasError = false
@@ -132,42 +134,37 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
     }
   }
 
-  const handlePortTypeChange = (changedPortName: string, changedValue: StoreValue,
-    index: number) => {
-    if (isEdgeSdLanReady && isEdgeSdLanRun) {
-      showActionModal({
-        type: 'info',
-        content: $t({ defaultMessage: `
-      Please make sure that you are choosing the correct port type. 
-      Wrong port type change may impact the network connection.` })
-      })
-    }
+  const getFieldFullPath = (id: string, fieldName: string) =>
+    [getInnerPortFormID(id), 0, fieldName]
+
+
+  const handlePortTypeChange = (_: string, changedValue: StoreValue,
+    id: string) => {
+    // TODO: need to confirm if we should display this whenever user change port type
+    // if (isEdgeSdLanReady && isEdgeSdLanRun) {
+    //   showActionModal({
+    //     type: 'info',
+    //     content: $t({ defaultMessage: `
+    //   Please make sure that you are choosing the correct port type.
+    //   Wrong port type change may impact the network connection.` })
+    //   })
+    // }
 
     if (changedValue === EdgePortTypeEnum.LAN) {
-      form.setFieldValue([changedPortName, 0, 'ipMode'], EdgeIpModeEnum.STATIC)
+      form.setFieldValue(getFieldFullPath(id, 'ipMode'), EdgeIpModeEnum.STATIC)
     } else if (changedValue === EdgePortTypeEnum.WAN) {
-      const initialPortType = data[index]?.portType
+      const initialPortType = data.find(port => port.id === id)?.portType
       if (initialPortType !== EdgePortTypeEnum.WAN) {
-        form.setFieldValue([changedPortName, 0, 'natEnabled'], true)
+        form.setFieldValue(getFieldFullPath(id, 'natEnabled'), true)
       }
     }
   }
 
-  const handleCorePortChange = (changedPortName: string, changedValue: StoreValue,
-    index: number) => {
-    let valToSet
-    if (changedValue === true) {
-      valToSet = false
-    } else {
-      const initialNatEnabledValue = data[index]?.natEnabled
-      valToSet = initialNatEnabledValue
-    }
-
-    form.setFieldValue([changedPortName, 0, 'natEnabled'], valToSet)
-  }
-
   const handleFinish = async () => {
-    const formData = flatMap(form.getFieldsValue(true))
+    const formData = flatMap(form.getFieldsValue(true)) as EdgePortWithStatus[]
+    formData.forEach((item, idx) => {
+      formData[idx] = convertEdgePortsConfigToApiPayload(item) as EdgePortWithStatus
+    })
 
     try {
       await updatePortConfig({

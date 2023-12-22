@@ -39,13 +39,18 @@ type PieChartData = {
 }
 
 type TabKeyType = 'wlans'|'nodes'|'events' | 'osManufacturers'
-function getTopPieChartData (nodeData: Omit<PieChartData, 'color' | 'name'>[])
+type NodeData = {
+  key: string
+  value: number
+  name?: string | null
+}
+function getTopPieChartData (nodeData: NodeData[])
 : PieChartData[] {
   const colors = qualitativeColorSet()
   return nodeData
     .map((val, index) => ({
       ...val,
-      name: val.key,
+      name: val.name ? `${val.name} (${val.key})` : val.key,
       color: colors[index]
     }))
 }
@@ -88,7 +93,7 @@ export function pieNodeMap (filter: NodesFilter): MessageDescriptor {
         one {AP Group}
         other {AP Groups}
       }` })
-    case 'AP':
+    case 'apGroup':
       return defineMessage({ defaultMessage: `{ count, plural,
         one {AP}
         other {APs}

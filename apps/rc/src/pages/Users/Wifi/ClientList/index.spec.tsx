@@ -1,15 +1,21 @@
 import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import { ReportType }   from '@acx-ui/reports/components'
-import { Provider }     from '@acx-ui/store'
+import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { ClientUrlsInfo, CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { ReportType }                     from '@acx-ui/reports/components'
+import { Provider }                       from '@acx-ui/store'
 import {
+  mockServer,
   render,
   screen,
   waitFor
 } from '@acx-ui/test-utils'
 
+import { GuestClient } from '../__tests__/fixtures'
+
 import { WifiClientList, WirelessTabsEnum } from '.'
+
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -71,5 +77,31 @@ describe.skip('WifiClientList without feature toggle', () => {
     render(<WifiClientList tab={WirelessTabsEnum.GUESTS}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     expect(await screen.findByTestId('GuestsTab')).toBeVisible()
+  })
+})
+
+describe('WifiClientList render', () => {
+  beforeEach(() => {
+    mockServer.use(
+      rest.post(
+        ClientUrlsInfo.getClientList.url,
+        (_, res, ctx) => res(ctx.json({ data: [], page: 1, totalCount: 0 }))
+      ),
+      rest.post(
+        ClientUrlsInfo.getClientMeta.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(CommonUrlsInfo.getGuestsList.url, (req, res, ctx) =>
+        res(ctx.json(GuestClient))
+      )
+    )
+  })
+  it('render clientList', async () => {
+    render(<WifiClientList tab={WirelessTabsEnum.CLIENTS}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+
+    expect(await screen.findByRole('tab', {
+      name: /clients list \(0\)/i
+    })).toBeVisible()
   })
 })

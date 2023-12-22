@@ -1,17 +1,18 @@
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
-import { Space }                  from 'antd'
-import { useIntl }                from 'react-intl'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Space }                               from 'antd'
+import _                                       from 'lodash'
+import { useIntl }                             from 'react-intl'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
-//import { useLazyIncidentsListBySeverityQuery }                                                                 from '@acx-ui/analytics/components'
+import { IncidentsBySeverityData, useLazyIncidentsListBySeverityQuery }                                        from '@acx-ui/analytics/components'
 import { ColumnType, Loader, StackedBarChart, Table, TableProps, cssStr, deviceStatusColors, showActionModal } from '@acx-ui/components'
 import { useApGroupsListQuery, useDeleteApGroupsMutation }                                                     from '@acx-ui/rc/services'
 import { ApGroupViewModel, FILTER, TableQuery, getFilters, transformDisplayNumber, usePollingTableQuery }      from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink }                                                                           from '@acx-ui/react-router-dom'
 import { RequestPayload }                                                                                      from '@acx-ui/types'
 import { filterByAccess }                                                                                      from '@acx-ui/user'
-//import { DateRange, getDateRangeFilter }                                                                       from '@acx-ui/utils'
+import { DateRange, getDateRangeFilter }                                                                       from '@acx-ui/utils'
 
 import { CountAndNamesTooltip } from '..'
 
@@ -25,26 +26,29 @@ export const defaultApGroupPayload = {
   sortOrder: 'ASC',
   filters: { isDefault: [false] }
 }
-/*
+
 const genIncidentsPayload = (apGroupsData: ApGroupViewModel[]) => {
   const { startDate, endDate } = getDateRangeFilter(DateRange.last24Hours)
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const payload: any = {
+  const paths: any = {}
+  apGroupsData.forEach((apg: ApGroupViewModel, index: number) => {
+    const path = [
+      { type: 'network', name: 'Network' },
+      { type: 'apGroup', name: apg.id }
+    ]
+    paths[`path${index}`] = path
+  })
+
+  const variables = {
+    ...paths,
     start: startDate,
     end: endDate
   }
 
-  apGroupsData.forEach((apg: ApGroupViewModel, index: number) => {
-    const path = [
-      { type: 'network', name: 'network' },
-      { type: 'apGroup', name: apg.id }
-    ]
-    payload[`path${index+1}`] = path
-  })
-
-  return payload
+  return { paths, variables }
 }
-*/
+
 
 interface ApGroupTableProps extends Omit<TableProps<ApGroupViewModel>, 'columns'> {
   tableQuery?: TableQuery<ApGroupViewModel, RequestPayload<unknown>, unknown>
@@ -53,9 +57,12 @@ interface ApGroupTableProps extends Omit<TableProps<ApGroupViewModel>, 'columns'
   filterables?: { [key: string]: ColumnType['filterable'] }
 }
 
+const defaultTableData: ApGroupViewModel[] = []
+
 export const ApGroupTable = (props : ApGroupTableProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
+  const location = useLocation()
   const params = useParams()
   const filters = getFilters(params) as FILTER
   const { searchable, filterables } = props
@@ -79,30 +86,37 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
 
   const tableQuery = props.tableQuery || apGroupListTableQuery
   const [ deleteApGroups ] = useDeleteApGroupsMutation()
-  //const [ getIncidentsList ] = useLazyIncidentsListBySeverityQuery()
+  const [ getIncidentsList ] = useLazyIncidentsListBySeverityQuery()
+
+  const [tableData, setTableData] = useState(defaultTableData)
 
 
   useEffect(() => {
-    //const { totalCount = 0, data: apGroupsData = [] } = tableQuery.data || {}
-    const { totalCount = 0 } = tableQuery.data || {}
+    const { totalCount = 0, data: apGroupsData = [] } = tableQuery.data || {}
     setApGroupsCount?.(totalCount)
-    /*
+
     const addIncidentsData = async () => {
       const incidentsPayload = genIncidentsPayload(apGroupsData)
-      console.log('incidentsPayload: ', incidentsPayload)
-      const { data } = await getIncidentsList(incidentsPayload, true)
-      console.log('currentResult: ', data)
+      const { data: incidentsData } = await getIncidentsList(incidentsPayload, true)
+
+      const newTableData = _.cloneDeep(apGroupsData)
+
+      newTableData.forEach((item, index) => {
+        item.incidents = incidentsData?.[index]
+      })
+
+      setTableData(newTableData)
     }
 
     if (apGroupsData.length > 0) {
       addIncidentsData()
+    } else {
+      setTableData([])
     }
-   */
 
   }, [tableQuery.data])
 
 
-  const tableData = tableQuery?.data?.data ?? []
   const linkToEditApGroup = useTenantLink('/devices/apgroups')
 
   const showDeleteApGroups = async (rows: ApGroupViewModel[],
@@ -182,30 +196,42 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
     align: 'center',
     sorter: false,
     render: (data, row: ApGroupViewModel) => {
-      //TODO: Shows breakdown by severity - with a counter for each severity
+      const incidents = row?.incidents as IncidentsBySeverityData
+      const { P1=0, P2=0, P3=0, P4=0 } = incidents || {}
+      let total = P1 + P2 + P3 + P4
+      let series = (total > 0) ? [
+        { name: 'P1',
+          value: (P1 / total)*100 },
+        { name: 'P2',
+          value: (P2 / total)*100 },
+        { name: 'P3',
+          value: (P3 / total)*100 },
+        { name: 'P4',
+          value: (P4 / total)*100 }
+      ] : [{
+        name: '',
+        value: 1
+      }]
+
       return (<Space direction='horizontal'>
         <StackedBarChart
           style={{ height: 10, width: 40 }}
           data={[{
-            category: 'emptyStatus',
-            series: [{
-              name: '',
-              value: 1
-            }]
+            category: 'incidents',
+            series: series
           }]}
           showTooltip={false}
           showLabels={false}
-          showTotal={false}
           barColors={[cssStr(deviceStatusColors.empty)]}
         />
-        <TenantLink to={`/apgroups/${row.id}/details/incidents`}>
-          {data ? data: 0}
+        <TenantLink to={`/devices/apgroups/${row.id}/details/incidents`}>
+          {total}
         </TenantLink>
       </Space>)
     }
   }, {
     key: 'clients',
-    title: $t({ defaultMessage: 'Connected Clients' }),
+    title: $t({ defaultMessage: 'Clients' }),
     dataIndex: 'clients',
     align: 'center',
     sorter: true,
@@ -252,7 +278,10 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
             navigate({
               ...basePath,
               pathname: `${basePath.pathname}/apgroups/add`
-            })
+            }, { state: {
+              venueId: params.venueId,
+              history: location.pathname
+            } })
           }
         }]) : []}
         searchableWidth={260}

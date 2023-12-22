@@ -6,6 +6,9 @@ import { act }   from 'react-dom/test-utils'
 import { StepsForm }  from '@acx-ui/components'
 import {
   CommonUrlsInfo,
+  EdgeGeneralFixtures,
+  EdgeSdLanFixtures,
+  EdgePortConfigFixtures,
   EdgeSdLanUrls,
   EdgeStatusEnum,
   EdgeUrlsInfo,
@@ -22,10 +25,13 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { mockEdgeList, mockedTunnelProfileViewData, mockedVenueList, mockEdgePortConfig, mockedSdLanDataList } from '../../__tests__/fixtures'
+import { mockedTunnelProfileViewData, mockedVenueList } from '../../__tests__/fixtures'
 
 import { SettingsForm } from '.'
 
+const { mockedSdLanDataList } = EdgeSdLanFixtures
+const { mockEdgeList } = EdgeGeneralFixtures
+const { mockEdgePortConfig } = EdgePortConfigFixtures
 jest.mock('antd', () => {
   const components = jest.requireActual('antd')
   const Select = ({
@@ -140,9 +146,9 @@ describe('Edge centrailized forwarding form: settings', () => {
     expect(within(formBody).queryByTestId('rc-CorePortFormItem')).toBeValid()
 
     await waitFor(() => {
-      expect(mockedSetFieldValue).toBeCalledWith('corePortMac', '00:0c:29:b6:ad:04')
+      expect(mockedSetFieldValue).toBeCalledWith('corePortMac', '00:00:00:00:00:00')
     })
-    expect(mockedSetFieldValue).toBeCalledWith('corePortName', 'Port 1')
+    expect(mockedSetFieldValue).toBeCalledWith('corePortName', 'Port2')
 
     await userEvent.selectOptions(
       await within(formBody).findByRole('combobox', { name: 'Tunnel Profile' }),
@@ -195,9 +201,9 @@ describe('Edge centrailized forwarding form: settings', () => {
     })
 
     await waitFor(() => {
-      expect(mockedSetFieldValue).toBeCalledWith('corePortName', 'Port 1')
+      expect(mockedSetFieldValue).toBeCalledWith('corePortName', 'Port2')
     })
-    expect(mockedSetFieldValue).toBeCalledWith('corePortMac', '00:0c:29:b6:ad:04')
+    expect(mockedSetFieldValue).toBeCalledWith('corePortMac', '00:00:00:00:00:00')
   })
 
   it('Input invalid service name should show error message', async () => {

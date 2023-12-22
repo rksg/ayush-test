@@ -1,18 +1,19 @@
 import { rest } from 'msw'
 
-import { useIsTierAllowed }             from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                     from '@acx-ui/store'
+import { useIsTierAllowed }                                                from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, EdgeGeneralFixtures, EdgeUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                        from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
 
-import { mockEdgeList } from './__tests__/fixtures'
+import { r650Cap } from '../__tests__/fixtures'
 
 import EdgeList from './index'
 
+const { mockEdgeList } = EdgeGeneralFixtures
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -35,6 +36,9 @@ describe('EdgeList', () => {
       rest.post(
         CommonUrlsInfo.getVenues.url,
         (req, res, ctx) => res(ctx.json([]))
+      ),
+      rest.get(WifiUrlsInfo.getApCapabilities.url,
+        (req, res, ctx) => res(ctx.json(r650Cap))
       )
     )
   })

@@ -1,19 +1,22 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }       from '@acx-ui/feature-toggle'
-import { EdgeUrlsInfo }       from '@acx-ui/rc/utils'
-import { Provider  }          from '@acx-ui/store'
+import { useIsSplitOn }                                                               from '@acx-ui/feature-toggle'
+import { EdgeGeneralFixtures, EdgeLagFixtures, EdgePortConfigFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider  }                                                                  from '@acx-ui/store'
 import {
   render,
   screen,
   mockServer,
-  waitForElementToBeRemoved
+  waitForElementToBeRemoved,
+  within
 } from '@acx-ui/test-utils'
 
-import { mockEdgeData as currentEdge, mockEdgeLagStatusList, mockEdgePortStatus } from '../../__tests__/fixtures'
-
 import { EdgeOverview } from '.'
+
+const { mockEdgeData: currentEdge } = EdgeGeneralFixtures
+const { mockEdgePortStatus } = EdgePortConfigFixtures
+const { mockEdgeLagStatusList } = EdgeLagFixtures
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -214,6 +217,9 @@ describe('Edge Detail Overview', () => {
     expect(configBtn).toBeVisible()
     const portsRow = await screen.findAllByRole('row')
     expect(portsRow.length).toBe(3)
+    const row = await screen.findByRole('row', { name: /LAG 1 LACP/i })
+    const expandBtn = await within(row).findByTestId('PlusSquareOutlined')
+    await userEvent.click(expandBtn)
     await userEvent.click(configBtn)
     expect(mockedUsedNavigate)
       .toBeCalledWith({

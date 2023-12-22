@@ -4,11 +4,12 @@ import { useEffect, useState } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Alert, Button, useLayoutContext }          from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Alert, Button, useLayoutContext }                        from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useLazyGetSwitchVenueVersionListQuery,
-  useLazyGetVenueEdgeFirmwareListQuery
+  useLazyGetVenueEdgeFirmwareListQuery,
+  useLazyGetScheduledFirmwareQuery
 } from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                             from '@acx-ui/types'
@@ -18,7 +19,6 @@ import {
   useGetPlmMessageBannerQuery,
   useGetAllUserSettingsQuery,
   useGetCloudVersionQuery,
-  useLazyGetCloudScheduleVersionQuery,
   UserSettingsUIModel,
   hasRoles
 } from '@acx-ui/user'
@@ -27,7 +27,7 @@ export function CloudMessageBanner () {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isScheduleUpdateReady = useIsSplitOn(Features.EDGES_SCHEDULE_UPGRADE_TOGGLE)
   const layout = useLayoutContext()
 
@@ -43,7 +43,7 @@ export function CloudMessageBanner () {
   const { data } = useGetPlmMessageBannerQuery({ params })
   const { data: userSettings } = useGetAllUserSettingsQuery({ params })
   const { data: cloudVersion } = useGetCloudVersionQuery({ params })
-  const [getCloudScheduleVersion] = useLazyGetCloudScheduleVersionQuery()
+  const [getCloudScheduleVersion] = useLazyGetScheduledFirmwareQuery()
   const [getSwitchVenueVersionList] = useLazyGetSwitchVenueVersionListQuery()
   const [getVenueEdgeFirmwareList] = useLazyGetVenueEdgeFirmwareListQuery()
 

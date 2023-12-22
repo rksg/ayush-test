@@ -192,11 +192,11 @@ describe('HealthPieChart', () => {
         { type: 'zone', name: 'Zone' }
       ]))
       expect(zone.defaultMessage?.[0].options.one.value[0].value).toEqual('AP Group')
-      const ap = pieNodeMap(pathToFilter([
+      const apGroup = pieNodeMap(pathToFilter([
         { type: 'zone', name: 'Zone' },
-        { type: 'AP', name: 'AP' }
+        { type: 'apGroup', name: 'AP Group' }
       ]))
-      expect(ap.defaultMessage?.[0].options.one.value[0].value).toEqual('AP')
+      expect(apGroup.defaultMessage?.[0].options.one.value[0].value).toEqual('AP')
     })
 
     it('should return correct title for ACX', () => {

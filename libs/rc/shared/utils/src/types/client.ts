@@ -41,6 +41,8 @@ export interface ClientList {
   switchName?: string
   healthClass: string
   sessStartTimeParssed: boolean
+  networkType: string
+  mldAddr: string
 }
 
 export interface ClientListMeta {
