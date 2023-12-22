@@ -3,12 +3,90 @@ import { useState } from 'react'
 import { Typography, Space } from 'antd'
 import { useIntl }           from 'react-intl'
 
-import { cssStr, Loader, Modal, ModalType, Tabs } from '@acx-ui/components'
-import { EdgePortsGeneral }                       from '@acx-ui/rc/components'
-import { useGetEdgePortsStatusListQuery }         from '@acx-ui/rc/services'
-import { EdgePort }                               from '@acx-ui/rc/utils'
+import { cssStr, Modal, ModalType }                        from '@acx-ui/components'
+import { EdgeEditContext, EdgePortsForm, EdgePortTabEnum } from '@acx-ui/rc/components'
+import { EdgePort }                                        from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
+
+const PortsFormEditContextProvider = (props: {
+  edgeId: string,
+  portsData: EdgePort[],
+  setVisible: (visible: boolean) => void;
+}) => {
+  const { edgeId, setVisible } = props
+  const [activeSubTab, setActiveSubTab] = useState({
+    key: EdgePortTabEnum.PORTS_GENERAL as string,
+    title: ''
+  })
+  const [formControl, setFormControl] = useState({} as EdgeEditContext.EditEdgeFormControlType)
+
+  const handleClose = () => {
+    setFormControl({
+      ...formControl,
+      isDirty: false
+    })
+    formControl?.discardFn?.()
+    setVisible(false)
+  }
+
+  const handleTabChange = (tab: string) => {
+    if (formControl.isDirty) {
+      blockTabChange(() => {
+        setActiveSubTab({ key: tab, title: '' })
+      })
+      return
+    }
+
+    setActiveSubTab({ key: tab, title: '' })
+  }
+
+  const blockTabChange = (retryFn: () => void) => {
+    if (formControl?.isDirty) {
+      EdgeEditContext.showUnsavedModal(
+      { activeSubTab, formControl } as EdgeEditContext.EditEdgeContextType,
+      {
+        cancel: () => {
+          setFormControl({
+            ...formControl,
+            isDirty: true
+          })
+        },
+        discard: () => {
+          setFormControl({
+            ...formControl,
+            isDirty: false
+          })
+          formControl?.discardFn?.()
+          retryFn()
+        },
+        save: () => {
+          formControl?.applyFn?.()
+          retryFn()
+        }
+      }
+      )
+    }
+  }
+
+  return (
+    <EdgeEditContext.EditContext.Provider value={{
+      activeSubTab,
+      setActiveSubTab,
+      formControl,
+      setFormControl
+    }}>
+      <EdgePortsForm
+        serialNumber={edgeId}
+        onTabChange={handleTabChange}
+        onCancel={handleClose}
+        activeSubTab={activeSubTab.key}
+        filterTabs={[EdgePortTabEnum.SUB_INTERFACE]}
+        tabsType='line'
+      />
+    </EdgeEditContext.EditContext.Provider>
+  )
+}
 
 const PortsGeneralModal = (props: {
     className?: string,
@@ -18,23 +96,7 @@ const PortsGeneralModal = (props: {
     visible: boolean,
     setVisible: (visible: boolean) => void;
   }) => {
-  const { $t } = useIntl()
-  const { className, edgeId, edgeName, portsData, visible, setVisible } = props
-
-  const portStatusPayload = {
-    fields: ['port_id','ip'],
-    filters: { serialNumber: [edgeId] }
-  }
-  const { data: portStatusData, isLoading: isPortStatusLoading } = useGetEdgePortsStatusListQuery({
-    params: { serialNumber: edgeId }, payload: portStatusPayload
-  })
-
-  const statusIpMap = Object.fromEntries((portStatusData || [])
-    .map(status => [status.portId, status.ip]))
-
-  const portsDataWithStatusIp = portsData.map((item) => {
-    return { ...item, statusIp: statusIpMap[item.id ?? ''] }
-  })
+  const { className, edgeName, visible, setVisible, ...others } = props
 
   const handleClose = () => {
     setVisible(false)
@@ -47,36 +109,28 @@ const PortsGeneralModal = (props: {
       width='70%'
       visible={visible}
       onCancel={handleClose}
-      footer={undefined}
+      // eslint-disable-next-line react/jsx-no-useless-fragment
+      footer={<></>}
       type={ModalType.ModalStepsForm}
       mask={true}
       destroyOnClose={true}
     >
-      <Tabs activeKey='ports-general'>
-        <Tabs.TabPane tab={$t({ defaultMessage: 'Ports General' })} key='ports-general'>
-          <Loader states={[{
-            isLoading: isPortStatusLoading
-          }]}>
-            <EdgePortsGeneral
-              data={portsDataWithStatusIp}
-              edgeId={edgeId}
-              onFinish={handleClose}
-              onCancel={handleClose}
-              buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
-            />
-          </Loader>
-        </Tabs.TabPane>
-      </Tabs>
+      <PortsFormEditContextProvider
+        {...others}
+        setVisible={setVisible}
+      />
     </Modal>
   )
 }
 
 export const CorePortFormItem = (props: {
-    data: string,
+    // core port might be number when it is LAG, or interfaceName for physical port case
+    data: string | number,
     name: string,
     edgeId: string | undefined,
     edgeName: string,
     portsData: EdgePort[] | undefined,
+    isLagCorePort: boolean
   }) => {
   const { $t } = useIntl()
   const {
@@ -84,7 +138,8 @@ export const CorePortFormItem = (props: {
     name: corePortName,
     edgeId,
     edgeName,
-    portsData
+    portsData,
+    isLagCorePort
   } = props
   const [modalVisible, setModalVisible] = useState<boolean>(false)
 
@@ -94,17 +149,22 @@ export const CorePortFormItem = (props: {
 
   return <Space direction='vertical'>
     <Typography.Text style={{ color: cssStr('--acx-neutrals-90') }}>
-      {$t({ defaultMessage: 'Core Port: {corePort}' },
-        { corePort: corePortName && edgeId ? corePortName : 'N/A' })}
+      {$t({ defaultMessage: '{type}: {corePort}' },
+        {
+          type: isLagCorePort
+            ? $t({ defaultMessage: 'Core LAG' })
+            : $t({ defaultMessage: 'Core Port' }),
+          corePort: (corePortName && edgeId) ? corePortName : 'N/A'
+        })}
     </Typography.Text>
     <UI.AlertText>
       {
-        corePortMac || edgeId === undefined
+        (corePortMac !== undefined && corePortMac !== '') || edgeId === undefined
           ? null
           : <><Typography.Text>
             {$t({
               defaultMessage: `To use SD-LAN on the venue,
-         you must go to {editPortLink} and select a port as the Core port`
+         you must go to {editPortLink} and select a port as the Core Port/LAG`
             },
             { editPortLink:
               <UI.LinkButton type='link' onClick={handleClick}>

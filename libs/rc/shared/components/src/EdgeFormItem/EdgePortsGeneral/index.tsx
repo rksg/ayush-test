@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useRef, useState } from 'react'
+import { ReactNode, useContext, useEffect, useRef, useState } from 'react'
 
 import { Form, FormInstance }  from 'antd'
 import { StoreValue }          from 'antd/lib/form/interface'
@@ -11,6 +11,8 @@ import { Features, useIsSplitOn }                                               
 import { useGetEdgeSdLanViewDataListQuery, useUpdatePortConfigMutation }                                                    from '@acx-ui/rc/services'
 import { convertEdgePortsConfigToApiPayload, EdgeIpModeEnum, EdgePortTypeEnum, EdgePortWithStatus, getEdgePortDisplayName } from '@acx-ui/rc/utils'
 import { useParams }                                                                                                        from '@acx-ui/react-router-dom'
+
+import { EdgePortsDataContext } from '../PortsForm/PortDataProvider'
 
 import { PortConfigForm }     from './PortConfigForm'
 import { getInnerPortFormID } from './utils'
@@ -46,6 +48,8 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
   const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
   const [form] = Form.useForm(props.form)
   const [currentTab, setCurrentTab] = useState<string>('')
+  const portsData = useContext(EdgePortsDataContext)
+  const lagData = portsData.lagData
   const [updatePortConfig, { isLoading: isPortConfigUpdating }] = useUpdatePortConfigMutation()
   const dataRef = useRef<EdgePortWithStatus[] | undefined>(undefined)
   const edgeSN = edgeId ?? params.serialNumber
@@ -71,7 +75,7 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
   let tabs = [] as TabData[]
   let formData = {} as EdgePortConfigFormType
   data.forEach((item) => {
-    const innerPortFormID = getInnerPortFormID(item.id ?? '')
+    const innerPortFormID = getInnerPortFormID(item.id)
     tabs.push({
       label: getEdgePortDisplayName(item),
       value: innerPortFormID,
@@ -80,8 +84,9 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
           ({ key }) => <PortConfigForm
             formListKey={key}
             key={`${innerPortFormID}_${key}`}
-            id={item.id ?? ''}
+            id={item.id}
             isEdgeSdLanRun={isEdgeSdLanRun}
+            lagData={lagData}
           />
         )}
       </Form.List>,
