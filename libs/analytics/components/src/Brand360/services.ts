@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
 import { calculateGranularity, incidentCodes } from '@acx-ui/analytics/utils'
-import { dataApi }       from '@acx-ui/store'
+import { dataApi }                             from '@acx-ui/store'
 
 import { fetchBrandProperties } from './__tests__/fixtures'
 

@@ -3,7 +3,6 @@ import moment            from 'moment-timezone'
 import { defineMessage } from 'react-intl'
 
 import { formatter } from '@acx-ui/formatter'
-import { DateRange } from '@acx-ui/utils'
 
 import type { Response }  from './services'
 import type { SliceType } from './useSliceType'
@@ -101,7 +100,7 @@ export const transformToPropertyView = (data: Response[]): Property[] =>
   })
 
 export function computePastRange (
-  startDate: string,  endDate: string
+  startDate: string, endDate: string
 ): [string, string] {
   return [
     moment(startDate).subtract(moment(endDate).diff(startDate)).format(),
