@@ -70,7 +70,7 @@ export const mockConnectionFailureResponse = {
         {
           key: '01-Alethea-WiCheck Test',
           value: 379,
-          name: null
+          name: 'some name'
         },
         { key: 'AlphaNet_5_1',
           value: 350,
