@@ -57,6 +57,7 @@ describe('Edge overview sub-interfaces tab', () => {
           isLoading={false}
           ports={edgePortsSetting}
           lags={mockEdgeLagStatusList.data}
+          isConfigurable={true}
         />
       </Provider>, {
         route: { params }
@@ -79,6 +80,7 @@ describe('Edge overview sub-interfaces tab', () => {
           isLoading={false}
           ports={edgePortsSetting}
           lags={mockEdgeLagStatusList.data}
+          isConfigurable={true}
         />
       </Provider>, {
         route: { params }
@@ -111,6 +113,7 @@ describe('Edge overview sub-interfaces tab', () => {
           isLoading={false}
           ports={[]}
           lags={[]}
+          isConfigurable={true}
         />
       </Provider>, {
         route: { params }
@@ -126,6 +129,7 @@ describe('Edge overview sub-interfaces tab', () => {
           isLoading={false}
           ports={edgePortsSetting}
           lags={mockEdgeLagStatusList.data}
+          isConfigurable={true}
         />
       </Provider>, {
         route: { params }
