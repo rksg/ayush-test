@@ -11,6 +11,7 @@ import { EdgeSubInterfacesTable } from './EdgeSubInterfacesTable'
 import { LagSubInterfaceTable }   from './LagSubInterfaceTable'
 
 interface EdgeSubInterfacesTabProps {
+  isConfigurable: boolean
   ports: EdgePortStatus[]
   lags: EdgeLagStatus[]
   isLoading: boolean
@@ -18,7 +19,7 @@ interface EdgeSubInterfacesTabProps {
 
 export const EdgeSubInterfacesTab = (props: EdgeSubInterfacesTabProps) => {
 
-  const { ports, lags, isLoading } = props
+  const { ports, lags, isLoading, isConfigurable } = props
   const { $t } = useIntl()
   const { serialNumber } = useParams()
   const isEdgeLagEnabled = useIsSplitOn(Features.EDGE_LAG)
@@ -64,7 +65,7 @@ export const EdgeSubInterfacesTab = (props: EdgeSubInterfacesTabProps) => {
   }
 
   return <Row justify='end'>
-    {hasAccess() &&
+    {hasAccess() && isConfigurable &&
       <Button
         size='small'
         type='link'

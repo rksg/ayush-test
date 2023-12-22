@@ -166,7 +166,8 @@ describe('Firmware Venues Table', () => {
     const updateNowDialog = await screen.findByRole('dialog')
 
     // Verify that the active ABF's AP models displayed are accurate
-    expect(await within(updateNowDialog).findByText(/available firmware \(r610\)/i)).toBeVisible()
+    expect(await within(updateNowDialog)
+      .findByText(/available firmware for Wi-Fi 7 AP \(r610\)/i)).toBeVisible()
 
     // Verify that the message displayed is accurate when there is no available firmware update,
     // it's ABF: "eol-ap-2022-12" in "My-Venue" with AP model "R500"

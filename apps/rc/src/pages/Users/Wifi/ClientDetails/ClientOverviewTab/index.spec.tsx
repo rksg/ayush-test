@@ -1,5 +1,6 @@
 import { graphql, rest } from 'msw'
 
+import { useIsSplitOn  }                          from '@acx-ui/feature-toggle'
 import { apApi, venueApi, networkApi, clientApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
@@ -351,6 +352,20 @@ describe('ClientOverviewTab - ClientProperties', () => {
         expect(await screen.findByText(dpskPassphraseClient.username)).toBeVisible()
         expect(await screen.findByRole('link', { name: dpskPassphraseClient.clientMac[0] })).toBeVisible()
       })
+
+      it('should render network type', async () => {
+        jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+        render(<Provider>
+          <ClientProperties
+            clientStatus='connected'
+            clientDetails={clientList[0] as Client}
+          />
+        </Provider>, {
+          route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
+        })
+        expect(await screen.findByText('Captive Portal')).toBeVisible()
+      })
     })
 
     describe('Historical Client', () => {
@@ -488,6 +503,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
       })
 
       it('should render historical client (dpsk) correctly', async () => {
+        jest.mocked(useIsSplitOn).mockReturnValue(false)
         jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
         mockServer.use(
           rest.get(WifiUrlsInfo.getNetwork.url,
