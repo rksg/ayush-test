@@ -46,9 +46,11 @@ export const networkImpactChartsApi = dataApi.injectEndpoints({
         return {
           document: gql`
             query NetworkImpactCharts(
-              $id: String
+              $id: String,
+              $impactedStart: DateTime,
+              $impactedEnd: DateTime
             ) {
-              incident(id: $id) {
+              incident(id: $id, impactedStart: $impactedStart, impactedEnd: $impactedEnd) {
                 ${queries.join('\n')}
               }
             }
