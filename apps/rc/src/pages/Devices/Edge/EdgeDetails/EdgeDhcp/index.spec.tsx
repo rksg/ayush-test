@@ -77,6 +77,8 @@ describe('Edge DHCP no initial data', () => {
       })
     await user.click(screen.getByRole('switch'))
     await screen.findByText('Manage DHCP for SmartEdge Service')
+
+    expect(await screen.findByText('DHCP Service')).toBeVisible()
   })
 })
 

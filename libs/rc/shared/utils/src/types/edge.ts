@@ -57,7 +57,6 @@ export interface EdgeStatus extends EdgeResourceUtilization {
   firewallId?: string
   firewallName?: string
   upTime?: number
-  // corePort?: string
 }
 export interface EdgeDetails {
   serialNumber: string
@@ -81,6 +80,7 @@ export interface EdgePort {
   gateway: string
   natEnabled: boolean
   corePortEnabled: boolean
+  interfaceName?: string
 }
 
 export interface EdgePortWithStatus extends EdgePort {
@@ -121,10 +121,11 @@ export interface EdgePortStatus {
   speedKbps: number
   duplex: string
   ip: string,
-  ipMode: string,
+  ipMode: string
   sortIdx: number
   vlan: string
   subnet: string
+  interfaceName?: string
 }
 
 export interface EdgeStatusSeverityStatistic {
@@ -185,6 +186,10 @@ export interface EdgeTotalUpDownTime {
 
 export interface EdgeTopTraffic {
   traffic: number[]       // bytes
+  portTraffic: {
+    portName: string,
+    traffic: number       // bytes
+  }[]
 }
 
 export type EdgeResourceTimeSeries = {
@@ -201,6 +206,7 @@ export type EdgeResourceUtilizationData = {
 }
 
 export interface EdgePortTrafficTimeSeries {
+  portName: string,
   tx: number[],
   rx: number[],
   total: number[]
@@ -289,13 +295,13 @@ export enum EdgeTroubleshootingType {
 export interface EdgeLagMemberStatus {
   portId: string
   name: string
-  state: string
-  rxCount: number
-  txCount: number
-  systemId: string
-  key: string
-  peerSystemId: string
-  peerKey: string
+  state?: string
+  rxCount?: number
+  txCount?: number
+  systemId?: string
+  key?: string
+  peerSystemId?: string
+  peerKey?: string
 }
 
 export interface EdgeLagStatus {
@@ -304,17 +310,17 @@ export interface EdgeLagStatus {
   serialNumber: string
   name: string
   description: string
-  status: string
-  adminStatus: string
+  status?: string
+  adminStatus?: string
   portType: EdgePortTypeEnum
   lagType: EdgeLagTypeEnum
   lacpTimeout: EdgeLagTimeoutEnum
   lagMembers: EdgeLagMemberStatus[]
   ipMode: EdgeIpModeEnum
-  mac: string
+  mac?: string
   vlan: string
-  ip: string
-  subnet: string
+  ip?: string
+  subnet?: string
   isCorePort: string
 }
 
@@ -330,9 +336,9 @@ export interface EdgeLag {
     }[]
     portType: EdgePortTypeEnum
     ipMode: EdgeIpModeEnum
-    ip: string
-    subnet: string
-    gateway: string
+    ip?: string
+    subnet?: string
+    gateway?: string
     corePortEnabled: boolean
     natEnabled: boolean
     lagEnabled: boolean

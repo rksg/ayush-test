@@ -14,7 +14,8 @@ import {
   IdentityGroupLink,
   PropertyUnitLink,
   useDpskNewConfigFlowParams,
-  PassphraseViewer
+  PassphraseViewer,
+  PersonaDrawer
 } from '@acx-ui/rc/components'
 import {
   useLazyGetDpskQuery,
@@ -31,7 +32,6 @@ import { ConnectionMetering, PersonaGroup } from '@acx-ui/rc/utils'
 import { filterByAccess }                   from '@acx-ui/user'
 import { noDataDisplay }                    from '@acx-ui/utils'
 
-import { PersonaDrawer }                       from '../PersonaDrawer'
 import { blockedTagStyle, PersonaBlockedIcon } from '../styledComponents'
 
 import { PersonaDevicesTable } from './PersonaDevicesTable'
@@ -107,11 +107,11 @@ function PersonaDetails () {
         .finally(() => setDpskPoolData({ id: personaGroupData.dpskPoolId, name }))
     }
 
-    if (personaGroupData.nsgId && networkSegmentationEnabled) {
+    if (personaGroupData.personalIdentityNetworkId && networkSegmentationEnabled) {
       let name: string | undefined
-      getNsgById({ params: { tenantId, serviceId: personaGroupData.nsgId } })
+      getNsgById({ params: { tenantId, serviceId: personaGroupData.personalIdentityNetworkId } })
         .then(result => name = result.data?.name)
-        .finally(() => setNsgData({ id: personaGroupData.nsgId, name }))
+        .finally(() => setNsgData({ id: personaGroupData.personalIdentityNetworkId, name }))
     }
 
     if (propertyEnabled && personaGroupData.propertyId && personaDetailsQuery?.data?.identityId) {
@@ -128,7 +128,7 @@ function PersonaDetails () {
   useEffect(() => {
     if (!personaGroupData || !personaDetailsQuery.data) return
     const { primary = true, revoked } = personaDetailsQuery.data
-    const hasNSG = !!personaGroupData?.nsgId
+    const hasNSG = !!personaGroupData?.personalIdentityNetworkId
 
     setVniRetryable(hasNSG && primary && !revoked)
   }, [personaGroupData, personaDetailsQuery])
@@ -207,11 +207,11 @@ function PersonaDetails () {
     },
     { label: $t({ defaultMessage: 'Personal Identity Network' }),
       value:
-      personaGroupData?.nsgId
+      personaGroupData?.personalIdentityNetworkId
         && <NetworkSegmentationLink
           showNoData={true}
           name={nsgData?.name}
-          nsgId={personaGroupData?.nsgId}
+          id={personaGroupData?.personalIdentityNetworkId}
         />
     },
     // TODO: API Integration - Fetch AP(get AP by port.macAddress?)
@@ -252,7 +252,7 @@ function PersonaDetails () {
             </Subtitle>
           </Col>
           <Col span={12}>
-            {(networkSegmentationEnabled && personaGroupData?.nsgId) &&
+            {(networkSegmentationEnabled && personaGroupData?.personalIdentityNetworkId) &&
               <Subtitle level={4}>
                 {$t({ defaultMessage: 'Personal Identity Network' })}
               </Subtitle>
@@ -274,7 +274,7 @@ function PersonaDetails () {
               )}
             </Loader>
           </Col>
-          {(networkSegmentationEnabled && personaGroupData?.nsgId) &&
+          {(networkSegmentationEnabled && personaGroupData?.personalIdentityNetworkId) &&
             <Col span={12}>
               {netSeg.map(item =>
                 <Row key={item.label} align={'middle'}>

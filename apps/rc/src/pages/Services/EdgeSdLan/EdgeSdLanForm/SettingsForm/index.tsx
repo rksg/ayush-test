@@ -4,10 +4,11 @@ import { Col, Form, Input, Row, Select } from 'antd'
 import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
-import { StepsForm, useStepFormContext }                                                                                                          from '@acx-ui/components'
-import { SpaceWrapper, TunnelProfileAddModal }                                                                                                    from '@acx-ui/rc/components'
-import { useGetEdgeListQuery, useGetEdgeSdLanViewDataListQuery, useGetPortConfigQuery, useGetTunnelProfileViewDataListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
-import { EdgeSdLanSetting, EdgeStatusEnum, isDefaultTunnelProfile, servicePolicyNameRegExp, TunnelProfileFormType, TunnelTypeEnum }               from '@acx-ui/rc/utils'
+import { StepsForm, useStepFormContext }                                                                                                                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                                                                         from '@acx-ui/feature-toggle'
+import { SpaceWrapper, TunnelProfileAddModal }                                                                                                                            from '@acx-ui/rc/components'
+import { useGetEdgeLagListQuery, useGetEdgeListQuery, useGetEdgeSdLanViewDataListQuery, useGetPortConfigQuery, useGetTunnelProfileViewDataListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
+import { EdgeSdLanSetting, EdgeStatusEnum, getEdgePortDisplayName, isDefaultTunnelProfile, servicePolicyNameRegExp, TunnelProfileFormType, TunnelTypeEnum }               from '@acx-ui/rc/utils'
 
 import diagram from '../../../../../assets/images/edge-sd-lan-diagrams/edge-sd-lan-early-access.png'
 
@@ -27,6 +28,7 @@ const tunnelProfileDefaultPayload = {
 export const SettingsForm = () => {
   const { $t } = useIntl()
   const params = useParams()
+  const isEdgeLagEnabled = useIsSplitOn(Features.EDGE_LAG)
   const { form, editMode } = useStepFormContext<EdgeSdLanSetting>()
 
   const venueId = Form.useWatch('venueId', form)
@@ -109,6 +111,21 @@ export const SettingsForm = () => {
     }
   })
 
+  const { lagsConfig } = useGetEdgeLagListQuery({
+    params: { serialNumber: edgeId },
+    payload: {
+      page: 1,
+      pageSize: 10
+    }
+  },{
+    skip: !isEdgeLagEnabled || !edgeId,
+    selectFromResult ({ data }) {
+      return {
+        lagsConfig: data?.data
+      }
+    }
+  })
+
   const {
     tunnelProfileOptions,
     isTunnelOptionsLoading
@@ -137,17 +154,24 @@ export const SettingsForm = () => {
     if (portsConfig) {
     // find corePort
       let corePortMac, corePortName
-      portsConfig?.forEach((port, idx) => {
-        if (port.corePortEnabled) {
+      portsConfig?.forEach((port) => {
+        if (port.corePortEnabled && port.enabled) {
           corePortMac = port.mac
-          corePortName = $t({ defaultMessage: 'Port {index}' }, { index: idx + 1 })
+          corePortName = getEdgePortDisplayName(port)
+        }
+      })
+      lagsConfig?.forEach((lag) => {
+        if (lag.corePortEnabled && lag.lagEnabled) {
+          corePortMac = lag.id
+          corePortName = `LAG ${lag.id}`
+          form.setFieldValue('isLagCorePort', true)
         }
       })
 
       form.setFieldValue('corePortMac', corePortMac)
       form.setFieldValue('corePortName', corePortName)
     }
-  }, [portsConfig])
+  }, [portsConfig, lagsConfig])
 
   const onVenueChange = () => {
     form.setFieldValue('edgeId', undefined)
@@ -242,6 +266,7 @@ export const SettingsForm = () => {
                     {({ getFieldValue }) => {
                       const corePort = getFieldValue('corePortMac')
                       const corePortName = getFieldValue('corePortName')
+                      const isLagCorePort = getFieldValue('isLagCorePort')
                       const edgeName = getFieldValue('edgeName')
 
                       return <Form.Item
@@ -254,6 +279,7 @@ export const SettingsForm = () => {
                         <CorePortFormItem
                           data={corePort}
                           name={corePortName}
+                          isLagCorePort={isLagCorePort}
                           edgeId={edgeId}
                           edgeName={edgeName}
                           portsData={portsConfig}

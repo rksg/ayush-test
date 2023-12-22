@@ -737,7 +737,7 @@ export function ManageIntegrator () {
 
     const content =
     <>
-      <Subtitle level={4}>{intl.$t({ defaultMessage: 'Access Periods' })}</Subtitle>
+      <Subtitle level={4}>{intl.$t({ defaultMessage: 'Access Period' })}</Subtitle>
       <Form.Item
         name='type'
         initialValue={true}

@@ -12,6 +12,7 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                              from '@acx-ui/formatter'
 import {
   ManageAdminsDrawer,
   ResendInviteModal,
@@ -435,13 +436,14 @@ export function MspCustomers () {
           const nextExpirationDate = mspUtils.transformExpirationDate(row)
           if (nextExpirationDate === noDataDisplay)
             return nextExpirationDate
-          const expiredOnString = `${$t({ defaultMessage: 'Expired on' })} ${nextExpirationDate}`
+          const formattedDate = formatter(DateFormatEnum.DateFormat)(nextExpirationDate)
+          const expiredOnString = `${$t({ defaultMessage: 'Expired on' })} ${formattedDate}`
           const remainingDays = EntitlementUtil.timeLeftInDays(nextExpirationDate)
           const TimeLeftWrapper = remainingDays < 0
             ? UI.Expired
             : (remainingDays <= 60 ? UI.Warning : Space)
           return <TimeLeftWrapper>
-            {remainingDays < 0 ? expiredOnString : nextExpirationDate}
+            {remainingDays < 0 ? expiredOnString : formattedDate}
           </TimeLeftWrapper>
         }
       },
@@ -763,7 +765,7 @@ export function MspCustomers () {
             <MspTenantLink to='/dashboard/mspcustomers/create'>
               <Button
                 hidden={(userProfile?.support && !isSupportToMspDashboardAllowed) || !onBoard}
-                type='primary'>{$t({ defaultMessage: 'Add EC Customer' })}</Button>
+                type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
             </MspTenantLink>
           ]
           : [
@@ -781,6 +783,7 @@ export function MspCustomers () {
         setVisible={setDrawerAdminVisible}
         setSelected={() => {}}
         tenantId={ecTenantId}
+        tenantType={tenantType}
       />}
       {drawerIntegratorVisible && <SelectIntegratorDrawer
         visible={drawerIntegratorVisible}

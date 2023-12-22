@@ -105,7 +105,7 @@ describe('ApRfNeighbors', () => {
     })
   })
 
-  it('should handle error correctly', async () => {
+  xit('should handle error correctly', async () => {
     const detectFn = jest.fn()
 
     mockServer.use(

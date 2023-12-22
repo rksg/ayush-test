@@ -165,3 +165,31 @@ export const mockEdgeSubInterfacesStatus = {
       vlan: '3'
     }]
 }
+
+export const mockEdgeLagSubInterfacesStatus = {
+  fields: ['status','portType','subnet','ip','ipMode','vlan'],
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      serialNumber: 'edge-serialnum',
+      name: '',
+      status: 'Up',
+      portType: 'LAN',
+      mac: 'AA:BB:CC:DD:EE:FF',
+      ip: '1.1.1.1/25',
+      ipMode: 'Static',
+      subnet: '255.255.255.128',
+      vlan: '4'
+    },{
+      serialNumber: 'edge-serialnum',
+      name: '',
+      status: 'Up',
+      portType: 'LAN',
+      mac: 'AA:BB:CC:DD:EE:FF',
+      ip: '',
+      ipMode: 'DHCP',
+      subnet: '',
+      vlan: '3'
+    }]
+}
