@@ -7,8 +7,13 @@ import { CommonUrlsInfo,  AaaUrls }            from '@acx-ui/rc/utils'
 import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
-import { mockAAAPolicyListResponse, mockAAAPolicyNewCreateResponse, mockAAAPolicyTemplateListResponse } from '../../../__tests__/fixtures'
-import NetworkFormContext                                                                               from '../../../NetworkFormContext'
+import {
+  mockAAAPolicyListResponse,
+  mockAAAPolicyNewCreateResponse,
+  mockAAAPolicyTemplateListResponse,
+  mockAAAPolicyTemplateResponse
+} from '../../../__tests__/fixtures'
+import NetworkFormContext from '../../../NetworkFormContext'
 
 import { statesCollection, WISPrAuthAccContext } from './WISPrAuthAccServerReducer'
 
@@ -44,6 +49,10 @@ describe('WISPRAuthACCServer', () => {
       rest.post(
         ConfigTemplateUrlsInfo.getAAAPolicyTemplateList.url,
         (_, res, ctx) => res(ctx.json(mockAAAPolicyTemplateListResponse))
+      ),
+      rest.get(
+        ConfigTemplateUrlsInfo.getAAAPolicyTemplate.url,
+        (_, res, ctx) => res(ctx.json(mockAAAPolicyTemplateResponse))
       )
     )
   })

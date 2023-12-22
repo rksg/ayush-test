@@ -16,7 +16,8 @@ import {
 import {
   mockAAAPolicyListResponse,
   mockAAAPolicyNewCreateResponse,
-  mockAAAPolicyTemplateListResponse
+  mockAAAPolicyTemplateListResponse,
+  mockAAAPolicyTemplateResponse
 } from '../__tests__/fixtures'
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -52,6 +53,10 @@ describe('AAA Instance Page', () => {
       rest.post(
         ConfigTemplateUrlsInfo.getAAAPolicyTemplateList.url,
         (_, res, ctx) => res(ctx.json(mockAAAPolicyTemplateListResponse))
+      ),
+      rest.get(
+        ConfigTemplateUrlsInfo.getAAAPolicyTemplate.url,
+        (_, res, ctx) => res(ctx.json(mockAAAPolicyTemplateResponse))
       )
     )
   })

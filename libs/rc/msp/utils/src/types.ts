@@ -447,10 +447,8 @@ export interface MspRecCustomer {
 }
 
 export enum ConfigTemplateType {
-  VENUE,
-  NETWORK,
-  RADIUS,
-  DPSK
+  NETWORK = 'NETWORK',
+  RADIUS = 'RADIUS'
 }
 
 export interface ConfigTemplate {

@@ -18,9 +18,9 @@ export interface AAATacacsServer{
 export interface AAAViewModalType {
   id?: string,
   name: string,
-  primary?: string, // Primary server IP:Port
+  primary: string, // Primary server IP:Port
   secondary?: string, // Secondary server IP:Port
-  type?: 'ACCOUNTING' | 'AUTHENTICATION',
+  type: 'ACCOUNTING' | 'AUTHENTICATION',
   networkIds?: string[]
 }
 export enum AAAPurposeEnum{

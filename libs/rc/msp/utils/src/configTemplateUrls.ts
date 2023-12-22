@@ -7,7 +7,8 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   },
   applyConfigTemplate: {
     method: 'post',
-    url: '/templates/:templateId/instance'
+    url: '/templates/:templateId/instances'
+    // url: '/templates/:templateId/tenant/:tenantId'
   },
   addNetworkTemplate: {
     method: 'post',
@@ -40,5 +41,6 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getAAAPolicyTemplateList: {
     method: 'post',
     url: '/templates/enhancedRadiusServerProfiles/query'
+    // url: /templates/radiusServerProfiles/query
   }
 }

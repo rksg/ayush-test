@@ -7,14 +7,13 @@ import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
 
 import { Tooltip, PasswordInput } from '@acx-ui/components'
-import { useLazyAaaPolicyQuery }  from '@acx-ui/rc/services'
 import { AaaServerOrderEnum }     from '@acx-ui/rc/utils'
 
-import * as contents      from '../contentsMap'
-import NetworkFormContext from '../NetworkFormContext'
+import { useLazyGetAAAPolicyInstance, useGetAAAPolicyInstanceList } from '../../policies/AAAForm/aaaPolicyQuerySwitcher'
+import * as contents                                                from '../contentsMap'
+import NetworkFormContext                                           from '../NetworkFormContext'
 
-import AAAPolicyModal                  from './AAAPolicyModal'
-import { useGetAAAPolicyInstanceList } from './useGetAAAPolicyInstanceList'
+import AAAPolicyModal from './AAAPolicyModal'
 const radiusType: { [key:string]:string }={
   authRadius: 'AUTHENTICATION',
   accountingRadius: 'ACCOUNTING'
@@ -26,9 +25,10 @@ const AAAInstance = (props:{ serverLabel: string, type: 'authRadius' | 'accounti
   const radiusValue = Form.useWatch(props.type)
   const radiusIdName = props.type + 'Id'
   const selectedAaaProfileId = Form.useWatch(radiusIdName)
-  // eslint-disable-next-line max-len
-  const { data: aaaListQuery } = useGetAAAPolicyInstanceList({ filters: { type: [radiusType[props.type]] } })
-  const [ getAaaPolicy ] = useLazyAaaPolicyQuery()
+  const { data: aaaListQuery } = useGetAAAPolicyInstanceList({
+    customPayload: { filters: { type: [radiusType[props.type]] } }
+  })
+  const [ getAaaPolicy ] = useLazyGetAAAPolicyInstance()
   const [aaaList, setAaaList]= useState([] as DefaultOptionType[])
   const { data, setData } = useContext(NetworkFormContext)
 
@@ -55,6 +55,8 @@ const AAAInstance = (props:{ serverLabel: string, type: 'authRadius' | 'accounti
       getAaaPolicy({ params: { ...params, policyId: selectedAaaProfileId } })
         .unwrap()
         .then((data) => form.setFieldValue(props.type, data))
+        // eslint-disable-next-line no-console
+        .catch(console.log)
     } else {
       form.setFieldValue(props.type, undefined)
     }

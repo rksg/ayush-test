@@ -4,16 +4,13 @@ import { Form, Input, InputNumber, Radio, Space } from 'antd'
 import { useIntl }                                from 'react-intl'
 
 import { Button, Fieldset, GridCol, GridRow, StepsFormLegacy, PasswordInput } from '@acx-ui/components'
-import { useGetAAAPolicyTemplateListQuery }                                   from '@acx-ui/msp/services'
-import { useGetAAAPolicyViewModelListQuery }                                  from '@acx-ui/rc/services'
 import {
   AAAPolicyType, checkObjectNotExists, servicePolicyNameRegExp,
-  networkWifiIpRegExp, networkWifiSecretRegExp, useConfigTemplate,
-  AAAViewModalType, policyTypeLabelMapping, PolicyType
+  networkWifiIpRegExp, networkWifiSecretRegExp,
+  policyTypeLabelMapping, PolicyType
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
 
-
+import { useGetAAAPolicyInstanceList } from './aaaPolicyQuerySwitcher'
 
 type AAASettingFormProps = {
   edit: boolean,
@@ -25,13 +22,18 @@ type AAASettingFormProps = {
 export const AAASettingForm = (props: AAASettingFormProps) => {
   const { $t } = useIntl()
   const { edit, saveState } = props
-  const { aaaPolicyList, aaaPolicyIpList } = useGetInstanceList()
+  const { data: instanceListResult } = useGetAAAPolicyInstanceList({
+    queryOptions: {
+      refetchOnMountOrArgChange: 30,
+      pollingInterval: 30000
+    }
+  })
   const form = Form.useFormInstance()
   const { useWatch } = Form
   const [enableSecondaryServer, type ] = [useWatch('enableSecondaryServer'), useWatch('type')]
 
   const nameValidator = async (value: string) => {
-    const policyList = aaaPolicyList?.data!
+    const policyList = instanceListResult?.data!
 
     return checkObjectNotExists(policyList.filter(
       policy => edit ? policy.id !== saveState.id : true
@@ -58,10 +60,9 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
         : `${saveState.secondary?.ip}:${saveState.secondary?.port}`
     }
 
-    if (aaaPolicyIpList
-      .filter(policy => edit ? policy !== stateValue : true)
-      .includes(value)
-    ) {
+    const existingPrimaryIpList = (instanceListResult?.data ?? []).map(policy => policy.primary)
+    // eslint-disable-next-line max-len
+    if (existingPrimaryIpList.filter(primaryIp => edit ? primaryIp !== stateValue : true).includes(value) ) {
       return Promise.reject($t({
         // eslint-disable-next-line max-len
         defaultMessage: 'IP address and Port combinations must be unique, there is an existing combination in the list.'
@@ -248,33 +249,4 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
       </GridCol>
     </GridRow>
   )
-}
-
-function useGetInstanceList () {
-  const { isTemplate } = useConfigTemplate()
-  const params = useParams()
-  const requestPayload = { params, payload: {} }
-  const aaaPolicyListResult = useGetAAAPolicyViewModelListQuery(requestPayload, {
-    ...getAAAPolicyListQueryOptions(),
-    skip: isTemplate
-  })
-  const aaaPolicyTemplateListResult = useGetAAAPolicyTemplateListQuery(requestPayload, {
-    ...getAAAPolicyListQueryOptions(),
-    skip: !isTemplate
-  })
-
-  return isTemplate ? aaaPolicyTemplateListResult : aaaPolicyListResult
-}
-
-function getAAAPolicyListQueryOptions () {
-  return {
-    refetchOnMountOrArgChange: 30,
-    pollingInterval: 30000,
-    selectFromResult: function ({ data }: { data?: { data: AAAViewModalType[] } }) {
-      return {
-        aaaPolicyList: data,
-        aaaPolicyIpList: data && data.data.length > 0 ? data.data.map(policy => policy.primary) : []
-      }
-    }
-  }
 }
