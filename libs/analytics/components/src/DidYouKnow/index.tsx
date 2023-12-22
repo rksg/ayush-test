@@ -84,9 +84,6 @@ function DidYouKnowWidget ({
   const { $t } = intl
   const title = $t({ defaultMessage: 'Did you know?' })
   const subTitle = $t({ defaultMessage: 'No data to report' })
-  const noData = $t({ defaultMessage:
-    'When your network becomes active, we will have valuable insights for you here' })
-
   const carouselProps = useMemo(() => ({
     dots: { className: 'carousel-dots' },
     infinite: true,
@@ -103,11 +100,11 @@ function DidYouKnowWidget ({
     <Loader states={[{ isLoading: isFetching || isLoading }]}>
       <AutoSizer>
         {({ height, width }) => (
-          <Carousel contentList={content.length ? content : [[noData]]}
+          <Carousel contentList={content}
             title={title}
             subTitle={!content[offset]?.length ? subTitle : undefined}
             {...carouselProps}
-            classList={content.length ? 'carousel-card' : 'carousel-card no-data'}
+            classList={'carousel-card'}
             beforeChange={onChange}
             offset={offset}
             style={{ height, width }} ></Carousel>
