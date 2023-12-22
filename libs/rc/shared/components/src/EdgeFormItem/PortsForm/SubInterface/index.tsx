@@ -1,42 +1,47 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { useIntl } from 'react-intl'
 
 import { NoData, Tabs, Tooltip }                                     from '@acx-ui/components'
 import { EdgeLagStatus, EdgePortWithStatus, getEdgePortDisplayName } from '@acx-ui/rc/utils'
 
+import { EdgePortsDataContext } from '../PortDataProvider'
 
 import { LagSubInterfaceTable }  from './LagSubInterfaceTable'
 import { PortSubInterfaceTable } from './PortSubInterfaceTable'
 
 interface SubInterfaceProps {
-  portData: EdgePortWithStatus[]
+  serialNumber: string
   lagData?: EdgeLagStatus[]
 }
 
 const SubInterface = (props: SubInterfaceProps) => {
-  const { portData, lagData } = props
-  const { serialNumber = '' } = useParams()
+  const { serialNumber/*, portData*/, lagData } = props
   const { $t } = useIntl()
   const [currentTab, setCurrentTab] = useState('')
+  const portsData = useContext(EdgePortsDataContext)
+  const portData = portsData.portData as EdgePortWithStatus[]
 
   const handleTabChange = (activeKey: string) => {
     setCurrentTab(activeKey)
   }
 
   useEffect(() => {
-    const unLagPortIdx = portData?.findIndex(item => !item.isLagPort)
+    const unLagPortIdx = portData.findIndex(item => !item.isLagPort)
     setCurrentTab(
       unLagPortIdx > -1 ?
         `port_${portData[unLagPortIdx].id}` :
         `lag_${lagData?.[0].lagId}`
     )
-  }, [portData])
+  }, [portData, lagData])
 
   return (
     portData.length > 0 ?
-      <Tabs type='third' activeKey={currentTab} onChange={handleTabChange}>
+      <Tabs
+        type='third'
+        activeKey={currentTab}
+        onChange={handleTabChange}
+      >
         {
           portData.map((item) =>
             <Tabs.TabPane

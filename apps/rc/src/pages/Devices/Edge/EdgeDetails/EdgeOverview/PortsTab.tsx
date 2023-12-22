@@ -8,6 +8,7 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { hasAccess }                             from '@acx-ui/user'
 
 interface PortsTabProps {
+  isConfigurable: boolean
   portData: EdgePortStatus[]
   lagData: EdgeLagStatus[]
   isLoading: boolean
@@ -15,7 +16,7 @@ interface PortsTabProps {
 }
 
 export const PortsTab = (props: PortsTabProps) => {
-  const { portData, lagData, isLoading, handleClickLagName } = props
+  const { portData, lagData, isLoading, handleClickLagName, isConfigurable } = props
   const { $t } = useIntl()
   const { serialNumber } = useParams()
   const navigate = useNavigate()
@@ -29,7 +30,7 @@ export const PortsTab = (props: PortsTabProps) => {
   }
 
   return <GridRow justify='end'>
-    {hasAccess() &&
+    {hasAccess() && isConfigurable &&
       <Button
         size='small'
         type='link'
