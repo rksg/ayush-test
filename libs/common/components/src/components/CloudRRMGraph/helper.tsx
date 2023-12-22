@@ -58,7 +58,7 @@ export const tooltipFormatter = (params: TooltipFormatterProps) => {
               b: (contents) => <b>{contents}</b>
             }}
           />
-          {variables.map(vars => <li><FormattedMessage
+          {variables.map((vars, index) => <li key={`channel-${index}`}><FormattedMessage
             key={`${vars.radio}-${vars.bandwidth}`}
             defaultMessage='Channel number (radio {radio}): <b>{channel}</b>'
             values={{
@@ -66,7 +66,7 @@ export const tooltipFormatter = (params: TooltipFormatterProps) => {
               b: (contents) => <b>{contents}</b>
             }}
           /></li>)}
-          {variables.map(vars => <li><FormattedMessage
+          {variables.map((vars, index) => <li key={`bandwidth-${index}`}><FormattedMessage
             key={`${vars.radio}-${vars.bandwidth}`}
             defaultMessage='Bandwidth (radio {radio}): <b>{bandwidth}</b>'
             values={{
@@ -74,14 +74,16 @@ export const tooltipFormatter = (params: TooltipFormatterProps) => {
               b: (contents) => <b>{contents}</b>
             }}
           /></li>)}
-          {showTxPower && variables.map(vars => <li><FormattedMessage
-            key={`${vars.radio}-${vars.txPower}`}
-            defaultMessage='Tx Power (radio {radio}): <b>{txPower}</b>'
-            values={{
-              ..._.pick(vars, ['radio', 'txPower']),
-              b: (contents) => <b>{contents}</b>
-            }}
-          /></li>)}
+          {showTxPower && variables.map((vars, index) => <li key={`txpower-${index}`}>
+            <FormattedMessage
+              key={`${vars.radio}-${vars.txPower}`}
+              defaultMessage='Tx Power (radio {radio}): <b>{txPower}</b>'
+              values={{
+                ..._.pick(vars, ['radio', 'txPower']),
+                b: (contents) => <b>{contents}</b>
+              }}
+            />
+          </li>)}
         </ul>
       </TooltipWrapper>
     </RawIntlProvider>
@@ -276,19 +278,13 @@ export function pairGraphs (graphs: Type.ProcessedCloudRRMGraph[]) : Type.Proces
     secondaryGraph: Type.ProcessedCloudRRMNode[] = []
 
   allNodeIds.forEach(id => {
-    let primaryNode = graphs[0].nodes.find(node => node.id === id)
-    let secondaryNode = graphs[1].nodes.find(node => node.id === id)
+    const primaryNode = graphs[0].nodes.find(node => node.id === id)
+    const secondaryNode = graphs[1].nodes.find(node => node.id === id)
 
-    if (primaryNode && secondaryNode &&
-      !(primaryNode.category === Type.CategoryState.Normal &&
-        secondaryNode.category === Type.CategoryState.Normal)) {
-      primaryNode = { ...primaryNode, showTooltip: true }
-      secondaryNode = { ...secondaryNode, showTooltip: true }
-    }
-
-    primaryNode && primaryGraph.push(primaryNode)
+    primaryNode && primaryGraph.push({ ...primaryNode, showTooltip: true })
     secondaryNode && secondaryGraph.push({
       ...secondaryNode,
+      showTooltip: true,
       value: primaryNode?.value || secondaryNode?.value
     })
   })

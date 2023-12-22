@@ -1,23 +1,34 @@
-import { useIntl } from 'react-intl'
+import { Loader }                                       from '@acx-ui/components'
+import { useGetEdgeSubInterfacesStatusListQuery }       from '@acx-ui/rc/services'
+import { EdgeLagStatus, EdgePortStatus, useTableQuery } from '@acx-ui/rc/utils'
+import { RequestPayload }                               from '@acx-ui/types'
 
-import { Loader, Table,TableProps }               from '@acx-ui/components'
-import { useGetEdgeSubInterfacesStatusListQuery } from '@acx-ui/rc/services'
-import { EdgePortStatus, useTableQuery }          from '@acx-ui/rc/utils'
+import { SubInterfaceTable } from './SubInterfaceTable'
 
 export const EdgeSubInterfacesTable = ({ serialNumber, portMac }:
    { serialNumber: string, portMac: string }) => {
-  const { $t } = useIntl()
 
   const defaultPayload = {
     fields: [
-      'sortIdx', 'mac', 'name', 'type', 'status', 'ip', 'subnet', 'vlan', 'serialNumber', 'ipMode'
+      'sortIdx',
+      'mac',
+      'name',
+      'type',
+      'status',
+      'ip',
+      'subnet',
+      'vlan',
+      'serialNumber',
+      'ipMode',
+      'interfaceName'
     ],
     filters: { serialNumber: [serialNumber], mac: [portMac] },
     sortField: 'sortIdx',
     sortOrder: 'ASC'
   }
 
-  const tableQuery = useTableQuery({
+  // eslint-disable-next-line max-len
+  const tableQuery = useTableQuery<EdgePortStatus | EdgeLagStatus, RequestPayload<unknown>, unknown>({
     useQuery: useGetEdgeSubInterfacesStatusListQuery,
     defaultPayload: defaultPayload,
     sorter: {
@@ -26,63 +37,9 @@ export const EdgeSubInterfacesTable = ({ serialNumber, portMac }:
     }
   })
 
-  const columns: TableProps<EdgePortStatus>['columns'] = [
-    {
-      title: $t({ defaultMessage: 'Port Type' }),
-      key: 'type',
-      dataIndex: 'type',
-      sorter: true
-    },
-    {
-      title: $t({ defaultMessage: 'Status' }),
-      key: 'status',
-      dataIndex: 'status',
-      sorter: true
-    },
-    {
-      title: $t({ defaultMessage: 'IP Address' }),
-      key: 'ip',
-      dataIndex: 'ip',
-      sorter: true,
-      render: (_, row) => {
-        // remove the subnet mask in ip if exists
-        return row.ip.replace(/\/\d*/, '')
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'IP Type' }),
-      key: 'ipMode',
-      dataIndex: 'ipMode',
-      sorter: true,
-      render: (_, { ipMode }) => {
-        return ipMode === 'DHCP' ? $t({ defaultMessage: 'DHCP' })
-          : (ipMode === 'Static' ? $t({ defaultMessage: 'Static IP' }) : '')
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Subnet Mask' }),
-      key: 'subnet',
-      dataIndex: 'subnet',
-      sorter: true
-    },
-    {
-      title: $t({ defaultMessage: 'VLAN' }),
-      key: 'vlan',
-      dataIndex: 'vlan',
-      sorter: true
-    }
-  ]
-
   return (
     <Loader states={[tableQuery]}>
-      <Table
-        settingsId='edge-sub-interfaces-table'
-        rowKey={(row: EdgePortStatus) => `${row.mac}-${row.vlan}`}
-        columns={columns}
-        dataSource={tableQuery.data?.data}
-        pagination={tableQuery.pagination}
-        onChange={tableQuery.handleTableChange}
-      />
+      <SubInterfaceTable tableQuery={tableQuery} />
     </Loader>
   )
 }

@@ -38,10 +38,10 @@ import {
   MspEntitlement,
   downloadFile
 } from '@acx-ui/rc/utils'
-import { baseMspApi }                  from '@acx-ui/store'
-import { RequestPayload }              from '@acx-ui/types'
-import { UserUrlsInfo, UserProfile }   from '@acx-ui/user'
-import { createHttpRequest, PverName } from '@acx-ui/utils'
+import { baseMspApi }                                    from '@acx-ui/store'
+import { RequestPayload }                                from '@acx-ui/types'
+import { UserUrlsInfo, UserProfile }                     from '@acx-ui/user'
+import { createHttpRequest, ignoreErrorModal, PverName } from '@acx-ui/utils'
 
 export function useCheckDelegateAdmin () {
   const { $t } = useIntl()
@@ -490,8 +490,7 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     assignMspEcToIntegrator_v1: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.assignMspEcToIntegrator,
-          params, { 'Content-Type': 'application/vnd.ruckus.v1+json' })
+        const req = createHttpRequest(MspUrlsInfo.assignMspEcToIntegrator, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -720,7 +719,9 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     updateMspAssignment: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.updateMspAssignment, params)
+        const req = createHttpRequest(MspUrlsInfo.updateMspAssignment, params, {
+          ...ignoreErrorModal
+        })
         return {
           ...req,
           body: payload
@@ -730,7 +731,9 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     deleteMspAssignment: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.deleteMspAssignment, params)
+        const req = createHttpRequest(MspUrlsInfo.deleteMspAssignment, params, {
+          ...ignoreErrorModal
+        })
         return {
           ...req,
           body: payload

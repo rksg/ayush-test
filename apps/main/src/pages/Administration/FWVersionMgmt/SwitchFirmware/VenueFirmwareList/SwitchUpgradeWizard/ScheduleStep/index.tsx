@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { DatePicker, Form, Radio, RadioChangeEvent, Space } from 'antd'
 import dayjs                                                from 'dayjs'
 import _                                                    from 'lodash'
-import moment                                               from 'moment-timezone'
 import { useIntl }                                          from 'react-intl'
 
 import { Subtitle, useStepFormContext } from '@acx-ui/components'
@@ -37,15 +36,15 @@ export interface ScheduleStepProps {
 }
 
 export function ScheduleStep (props: ScheduleStepProps) {
-  const intl = useIntl()
-  const { form, current } = useStepFormContext()
   const { availableVersions, nonIcx8200Count, icx8200Count,
     hasVenue, upgradeVenueList, upgradeSwitchList,
     setShowSubTitle } = props
+
+  const intl = useIntl()
+  const { form, current } = useStepFormContext()
   const [selectedVersion, setSelectedVersion] = useState('')
   const [selectedAboveTenVersion, setSelectedAboveTenVersion] = useState<string>('')
   const [hasSelectedDate, setHasSelectedDate] = useState<boolean>(false)
-
   const getCurrentChecked = function () {
     if (upgradeVenueList.length + upgradeSwitchList.length === 1) {
       return upgradeVenueList.length === 1 ?
@@ -67,19 +66,12 @@ export function ScheduleStep (props: ScheduleStepProps) {
   const currentScheduleVersion = currentSchedule?.version?.name ?? ''
   const currentScheduleVersionAboveTen = currentSchedule?.versionAboveTen?.name ?? ''
 
+
   useEffect(()=>{
     setShowSubTitle(false)
   }, [current])
 
   useEffect(() => {
-    if (currentSchedule?.timeSlot?.startDateTime) {
-      getCurrentScheduleDateAndTime(currentSchedule?.timeSlot?.startDateTime)
-    } else {
-      form.setFieldValue('selectDateStep', '')
-      form.setFieldValue('selectTimeStep', '')
-      setHasSelectedDate(false)
-    }
-
     if ((hasVenue || nonIcx8200Count > 0)) {
       setSelectedVersion(currentScheduleVersion || '')
       form.setFieldValue('switchVersion', currentScheduleVersion)
@@ -112,33 +104,6 @@ export function ScheduleStep (props: ScheduleStepProps) {
       }
     }
     return firmwareAvailableVersions
-  }
-
-  const getCurrentScheduleDateAndTime = (startTime: string) => {
-    const dateAndTime = startTime.split('T')
-
-    if (dateAndTime?.length === 2) {
-      setHasSelectedDate(true)
-      form.setFieldValue('selectDateStep', moment(dateAndTime[0]))
-
-      const timeZoneKeyWords = ['-', '+', 'Z']
-      for (let value of timeZoneKeyWords) {
-        let startAndEndTime = dateAndTime[1].split(value)
-        if (startAndEndTime.length === 2) {
-          const startTime = startAndEndTime[0].split(':')
-          const endTime = startTime[0] === '22' ? '00' : +startTime[0] + 2
-          let scheduleStartTime: string
-          if (endTime !== '00' && endTime < 10) {
-            scheduleStartTime = startTime[0] + ':00-0' + endTime + ':00'
-          } else {
-            scheduleStartTime = startTime[0] + ':00-' + endTime + ':00'
-          }
-
-          form.setFieldValue('selectTimeStep', scheduleStartTime)
-          break
-        }
-      }
-    }
   }
 
   const handleChange = (value: RadioChangeEvent) => {

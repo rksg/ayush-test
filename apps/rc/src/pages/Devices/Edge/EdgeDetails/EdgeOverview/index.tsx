@@ -12,7 +12,7 @@ import {
   useGetEdgeLagsStatusListQuery,
   useGetEdgePortsStatusListQuery
 } from '@acx-ui/rc/services'
-import { EdgePortStatus } from '@acx-ui/rc/utils'
+import { EdgePortStatus, isEdgeConfigurable } from '@acx-ui/rc/utils'
 
 import { LagsTab }              from './LagsTab'
 import { MonitorTab }           from './MonitorTab'
@@ -64,6 +64,8 @@ export const EdgeOverview = () => {
     payload: edgeStatusPayload
   })
 
+  const isConfigurable = isEdgeConfigurable(currentEdge)
+
   const edgePortStatusPayload = {
     fields: [
       'port_id',
@@ -97,7 +99,8 @@ export const EdgeOverview = () => {
       'portType',
       'mac',
       'ip',
-      'ipMode'
+      'ipMode',
+      'lacpTimeout'
     ],
     sortField: 'lagId',
     sortOrder: 'ASC'
@@ -153,6 +156,7 @@ export const EdgeOverview = () => {
     label: $t({ defaultMessage: 'Ports' }),
     value: 'ports',
     children: <PortsTab
+      isConfigurable={isConfigurable}
       portData={portStatusList}
       lagData={lagStatusList}
       isLoading={isPortListLoading || isLagListLoading}
@@ -162,12 +166,17 @@ export const EdgeOverview = () => {
   ...(isEdgeLagEnabled ? [{
     label: $t({ defaultMessage: 'LAGs' }),
     value: 'lags',
-    children: <LagsTab data={lagStatusList} isLoading={isLagListLoading} />
+    children: <LagsTab
+      isConfigurable={isConfigurable}
+      data={lagStatusList}
+      isLoading={isLagListLoading}
+    />
   }] : []),
   {
     label: $t({ defaultMessage: 'Sub-Interfaces' }),
     value: 'subInterfaces',
     children: <EdgeSubInterfacesTab
+      isConfigurable={isConfigurable}
       isLoading={isPortListLoading || isLagListLoading}
       ports={portStatusList as EdgePortStatus[]}
       lags={lagStatusList}

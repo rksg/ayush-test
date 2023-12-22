@@ -88,6 +88,14 @@ export const uploadRes = [
   },
   false,
   {
+    text: {
+      text: [
+        // eslint-disable-next-line max-len
+        'If you have log files or screen shots to attach to your support case, click the link below to upload'
+      ]
+    }
+  },
+  {
     data: {
       incidentId: '029e0f12-7718-11ee-92ac-d618d1b3d6d9'
     }
@@ -99,7 +107,7 @@ export const uploadRes = [
           {
             type: 'button',
             // eslint-disable-next-line max-len
-            text: 'If you have log files or screen shots to attach to your support case, click to upload',
+            text: 'Click here to upload',
             link: '',
             icon: {
               type: 'chevron_right',

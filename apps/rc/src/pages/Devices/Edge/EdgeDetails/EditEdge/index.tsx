@@ -1,14 +1,14 @@
-import { Dispatch, SetStateAction, createContext, useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, CustomButtonProps, PageHeader, Tabs, showActionModal }                          from '@acx-ui/components'
+import { Button, PageHeader, Tabs }                                                              from '@acx-ui/components'
+import { EdgeEditContext, EdgePortTabEnum }                                                      from '@acx-ui/rc/components'
 import { useEdgeBySerialNumberQuery, useGetEdgeQuery }                                           from '@acx-ui/rc/services'
-import { EdgeStatusEnum }                                                                        from '@acx-ui/rc/utils'
+import { isEdgeConfigurable }                                                                    from '@acx-ui/rc/utils'
 import { UNSAFE_NavigationContext as NavigationContext, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                                                        from '@acx-ui/user'
-import { getIntl }                                                                               from '@acx-ui/utils'
 
 import DnsServer       from './DnsServer'
 import GeneralSettings from './GeneralSettings'
@@ -26,14 +26,13 @@ const useTabs = () => {
       fields: ['deviceStatus'],
       filters: { serialNumber: [serialNumber] } }
   })
+
   return {
     'general-settings': {
       title: $t({ defaultMessage: 'General Settings' }),
       content: <GeneralSettings />
     },
-    ...(
-      currentEdge?.deviceStatus &&
-      currentEdge?.deviceStatus !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD &&
+    ...(isEdgeConfigurable(currentEdge) &&
       {
         ports: {
           title: $t({ defaultMessage: 'Ports' }),
@@ -60,7 +59,7 @@ export const EditEdgeTabs = () => {
   const { navigator } = useContext(NavigationContext)
   const blockNavigator = navigator as History
   const unblockRef = useRef<Function>()
-  const editEdgeContext = useContext(EdgeEditContext)
+  const editEdgeContext = useContext(EdgeEditContext.EditContext)
   const { formControl } = editEdgeContext
   const tabs = useTabs()
 
@@ -73,7 +72,7 @@ export const EditEdgeTabs = () => {
           ...editEdgeContext.formControl,
           isDirty: false
         })
-        showUnsavedModal(
+        EdgeEditContext.showUnsavedModal(
           editEdgeContext,
           {
             cancel: () => {
@@ -103,7 +102,7 @@ export const EditEdgeTabs = () => {
   }, [editEdgeContext])
 
   const onTabChange = (activeKey: string) => {
-    if(activeKey === 'ports') activeKey = activeKey + '/ports-general'
+    if(activeKey === 'ports') activeKey = `${activeKey}/${EdgePortTabEnum.PORTS_GENERAL}`
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${activeKey}`
@@ -124,11 +123,11 @@ const EditEdge = () => {
   const { serialNumber, activeTab } = useParams()
   const { data: edgeInfoData } = useGetEdgeQuery({ params: { serialNumber: serialNumber } })
   const [activeSubTab, setActiveSubTab] = useState({ key: '', title: '' })
-  const [formControl, setFormControl] = useState({} as EditEdgeFormControlType)
+  const [formControl, setFormControl] = useState({} as EdgeEditContext.EditEdgeFormControlType)
   const tabs = useTabs()
 
   return (
-    <EdgeEditContext.Provider value={{
+    <EdgeEditContext.EditContext.Provider value={{
       activeSubTab,
       setActiveSubTab,
       formControl,
@@ -151,82 +150,8 @@ const EditEdge = () => {
       />
 
       {tabs[activeTab as keyof typeof tabs]?.content}
-    </EdgeEditContext.Provider>
+    </EdgeEditContext.EditContext.Provider>
   )
 }
 
 export default EditEdge
-
-interface EditEdgeContextType {
-  activeSubTab: { key: string, title: string }
-  setActiveSubTab: Dispatch<SetStateAction<{ key: string, title: string }>>
-  formControl: EditEdgeFormControlType
-  setFormControl: Dispatch<SetStateAction<EditEdgeFormControlType>>
-}
-
-interface EditEdgeFormControlType {
-  isDirty: boolean
-  hasError: boolean
-  discardFn?: Function,
-  applyFn?: Function
-}
-
-export const EdgeEditContext = createContext({} as EditEdgeContextType)
-
-export function showUnsavedModal (
-  edgeEditContext: EditEdgeContextType,
-  callback?: {
-    cancel?: () => void,
-    discard?: () => void,
-    save?: () => void,
-    default?: () => void
-  }
-) {
-  const { activeSubTab, formControl } = edgeEditContext
-  const { hasError } = formControl
-  const { $t } = getIntl()
-  const title = activeSubTab.title || ''
-  const btns = [{
-    text: $t({ defaultMessage: 'Cancel' }),
-    key: 'close',
-    closeAfterAction: true,
-    handler: async () => {
-      callback?.cancel?.()
-      callback?.default?.()
-    }
-  }, {
-    text: $t({ defaultMessage: 'Discard Changes' }),
-    key: 'discard',
-    closeAfterAction: true,
-    handler: async () => {
-      callback?.discard?.()
-      callback?.default?.()
-    }
-  }, {
-    text: $t({ defaultMessage: 'Save Changes' }),
-    type: 'primary',
-    key: 'save',
-    closeAfterAction: true,
-    handler: async () => {
-      callback?.save?.()
-      callback?.default?.()
-    }
-  }]
-
-  showActionModal({
-    type: 'confirm',
-    width: 450,
-    title: hasError
-      ? $t({ defaultMessage: 'You Have Invalid Changes' })
-      : $t({ defaultMessage: 'You Have Unsaved Changes' }),
-    content: hasError
-      ? $t({ defaultMessage: 'Do you want to discard your changes in "{title}"?' }, { title })
-      : $t({
-        defaultMessage: 'Do you want to save your changes in "{title}", or discard all changes?'
-      }, { title }),
-    customContent: {
-      action: 'CUSTOM_BUTTONS',
-      buttons: (hasError ? btns.slice(0, 2) : btns) as CustomButtonProps[]
-    }
-  })
-}

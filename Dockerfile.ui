@@ -86,7 +86,8 @@ RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_
         node ./node_modules/.bin/nx run rc-components:test --coverage --maxWorkers=30%  --noStackTrace --bail && \
         node ./node_modules/.bin/nx run main:test --coverage --maxWorkers=30%  --noStackTrace --bail && \
         node ./node_modules/.bin/nx run analytics-components:test --coverage --maxWorkers=30%  --noStackTrace --bail && \
-        node ./node_modules/.bin/nx run-many --target=test --all --exclude=rc,rc-components,main,analytics-components --coverage --maxWorkers=30%  --noStackTrace --bail; \
+        node ./node_modules/.bin/nx run-many --target=test --projects=msp,msp-components,main-components --coverage --maxWorkers=30%  --noStackTrace --bail && \
+        node ./node_modules/.bin/nx run-many --target=test --all --exclude=rc,rc-components,main,analytics-components,msp,msp-components,main-components --coverage --maxWorkers=30%  --noStackTrace --bail; \
     fi
 RUN mkdir -p /app/coverage
 
@@ -106,7 +107,7 @@ RUN rm -rf ./*
 COPY tools/docker/nginx/conf.d/* /etc/nginx/conf.d/
 COPY tools/docker/nginx/nginx.conf \
   tools/docker/nginx/start-nginx.sh \
-  tools/docker/nginx/env.json.template \
+  tools/docker/nginx/globalValues.json.template \
   /etc/nginx/
 
 COPY --from=build /app/dist/apps ./
