@@ -69,10 +69,21 @@ export const codeToFailureTypeMap: Record<IncidentCode, string> = {
 
 const ttcFailureCodes = ['assoc', 'auth', 'dhcp', 'eap', 'radius']
 
+// const extractFailureCode = (
+//   checks: Exclude<IncidentMetadata['rootCauseChecks'], undefined>['checks']
+// ) => {
+//   return checks.length === 0
+//     ? 'DEFAULT'
+//     : checks.length > 1
+//       ? 'VARIOUS_REASONS'
+//       : Object.keys(checks[0]).filter(
+//         code => code.startsWith('CCD_REASON') || ttcFailureCodes.includes(code))[0]
+// }
 const extractFailureCode = (
+  failureType: string,
   checks: Exclude<IncidentMetadata['rootCauseChecks'], undefined>['checks']
 ) => {
-  return checks.length === 0
+  return ((failureType && failureType.includes('airtime')) || checks.length === 0)
     ? 'DEFAULT'
     : checks.length > 1
       ? 'VARIOUS_REASONS'
@@ -1297,9 +1308,9 @@ export function getRootCauseAndRecommendations ({ code, metadata }: Incident) {
   const failureType = codeToFailureTypeMap[code]
   if (!metadata.rootCauseChecks) return [{ rootCauses: { rootCauseText: calculating }, recommendations: { recommendationsText: calculating } }]
   const { checks } = metadata.rootCauseChecks
-  const failureCode = failureType?.includes('airtime') ? 'DEFAULT' : extractFailureCode(checks)
-  const results = _.get(rootCauseRecommendationMap, [failureType, failureCode as string])
-  const ccdResult = ccd80211RootCauseRecommendations[failureCode as string]
+  const failureCode = extractFailureCode(failureType, checks)
+  const results = _.get(rootCauseRecommendationMap, [failureType, failureCode])
+  const ccdResult = ccd80211RootCauseRecommendations[failureCode]
   if (results === undefined && ccdResult === undefined) {
     return [{ rootCauses: { rootCauseText: TBD }, recommendations: { recommendationsText: TBD } }]
   } else if (results === undefined) {
