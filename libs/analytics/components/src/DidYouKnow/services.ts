@@ -11,7 +11,8 @@ import { DidYouKnowData } from './facts'
 interface Response <FactsData> {
   network: {
     hierarchyNode: {
-      facts: FactsData
+      facts: FactsData,
+      availableFacts: string[]
     }
   }
 }
@@ -19,44 +20,54 @@ interface Response <FactsData> {
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     facts: build.query<
-      DidYouKnowData[],
-      PathFilter | DashboardFilter
-    >({
-      query: (payload) => {
-        const useFilter = 'filter' in payload
-        let variables: Partial<PathFilter> | Partial<DashboardFilter>
-        if (useFilter) {
-          variables = {
-            startDate: payload.startDate,
-            endDate: payload.endDate,
-            ...getFilterPayload(payload)
-          }
-        } else {
-          variables = _.pick(payload, ['path', 'startDate', 'endDate'])
+      {
+        facts: DidYouKnowData[]
+        availableFacts: string[]
+      },
+      (PathFilter | DashboardFilter) & { requestedList: string[] }
+        >({
+          query: (payload) => {
+            const useFilter = 'filter' in payload
+            let variables: (Partial<PathFilter> | Partial<DashboardFilter>) & {
+          requestedList: string[]
         }
-        return {
-          document: gql`
+            if (useFilter) {
+              variables = {
+                startDate: payload.startDate,
+                endDate: payload.endDate,
+                ...getFilterPayload(payload),
+                requestedList: payload.requestedList
+              }
+            } else {
+              variables = _.pick(payload, ['path', 'startDate', 'endDate', 'requestedList'])
+            }
+            return {
+              document: gql`
           query Facts(
             ${useFilter ? '$filter: FilterInput' : ''},
             $path: [HierarchyNodeInput]
             $startDate: DateTime,
             $endDate: DateTime
+            $requestedList: [String]
           ) {
             network(start: $startDate, end: $endDate${useFilter ? ', filter: $filter' : ''}) {
               hierarchyNode(path: $path) {
-                facts(n: 9, timeZone: "${moment.tz.guess()}") {
+                facts(n: 2, timeZone: "${moment.tz.guess()}", requestedList: $requestedList) {
                   key values labels
                 }
+                availableFacts(timeZone: "${moment.tz.guess()}")
               }
             }
           }
           `,
-          variables
-        }
-      },
-      transformResponse: (response: Response<DidYouKnowData[]>) =>
-        response.network.hierarchyNode.facts
-    })
+              variables
+            }
+          },
+          transformResponse: (response: Response<DidYouKnowData[]>) => ({
+            facts: response.network.hierarchyNode.facts,
+            availableFacts: response.network.hierarchyNode.availableFacts
+          })
+        })
   })
 })
 
