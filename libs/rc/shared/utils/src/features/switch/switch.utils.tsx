@@ -697,3 +697,26 @@ export const getAdminPassword = (
       : $t({ defaultMessage: 'Custom' })
     )
 }
+
+export const vlanPortsParser = (vlans: string) => {
+  const numbers = vlans.split(' ').map(Number).sort((a, b) => a - b)
+  let ranges = []
+
+  for (let i = 0; i < numbers.length; i++) {
+    let start = numbers[i]
+    while (numbers[i + 1] - numbers[i] === 1) {
+      i++
+    }
+    let end = numbers[i]
+    ranges.push(start === end ? `${start}` : `${start}-${end}`)
+  }
+
+  const maxRangesToShow = 20
+  if (ranges.length > maxRangesToShow) {
+    const remainingCount = ranges.length - maxRangesToShow
+    ranges = ranges.slice(0, maxRangesToShow)
+    return `${ranges.join(', ')}, and ${remainingCount} more...`
+  }
+
+  return ranges.join(', ')
+}

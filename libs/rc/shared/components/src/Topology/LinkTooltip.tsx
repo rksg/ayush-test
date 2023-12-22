@@ -3,7 +3,7 @@ import { useIntl }                   from 'react-intl'
 
 import { Card, Descriptions, GridCol, GridRow } from '@acx-ui/components'
 import { BiDirectionalArrow, CloseSymbol }      from '@acx-ui/icons'
-import { Link, Node }                           from '@acx-ui/rc/utils'
+import { Link, Node, vlanPortsParser }          from '@acx-ui/rc/utils'
 import { noDataDisplay }                        from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
@@ -28,28 +28,12 @@ onClose: () => void
   }) {
     const { title, tagged, untagged } = props
 
-    function vlansParser (vlans: string){
-      const numbers = vlans.split(' ').map(Number).sort((a, b) => a - b)
-      let ranges = []
-
-      for (let i = 0; i < numbers.length; i++) {
-        let start = numbers[i]
-        while (numbers[i + 1] - numbers[i] === 1) {
-          i++
-        }
-        let end = numbers[i]
-        ranges.push(start === end ? `${start}` : `${start}-${end}`)
-      }
-
-      return ranges.join(', ')
-    }
-
     const untaggedVlanText = <Space size={4}>
-      <UI.TagsOutlineIcon />{ (untagged && vlansParser(untagged)) || '--' }
+      <UI.TagsOutlineIcon />{ (untagged && vlanPortsParser(untagged)) || '--' }
     </Space>
 
     const taggedVlanText = <Space size={4}>
-      <UI.TagsSolidIcon />{ (tagged && vlansParser(tagged)) || '--' }
+      <UI.TagsSolidIcon />{ (tagged && vlanPortsParser(tagged)) || '--' }
     </Space>
 
     return <GridRow $divider>
