@@ -74,9 +74,7 @@ export const transformData = (
         name: mapCodeToReason(event.name, getIntl())
       }))
       : []
-    const osManufacturersData = osManufacturers
-      ? getTopPieChartData(osManufacturers)
-      : []
+    const osManufacturersData = getTopPieChartData(osManufacturers)
 
     return { nodes, wlans, events, osManufacturers: osManufacturersData }
   }
@@ -185,7 +183,7 @@ export const HealthPieChart = ({
     osManufacturers: $t(pieIntlMap('osManufacturers'), { count: osManufacturers.length })
   }
   const tabsList = [
-    { key: 'nodes', data: nodes },
+    ...(nodes.length > 0 ? [{ key: 'nodes', data: nodes }] : []),
     { key: 'wlans', data: wlans },
     { key: 'events', data: events },
     { key: 'osManufacturers', data: osManufacturers }

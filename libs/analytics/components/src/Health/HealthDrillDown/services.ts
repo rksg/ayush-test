@@ -67,7 +67,7 @@ export type ImpactedEntities = {
     hierarchyNode: {
       nodes?: Array<{ key: string, value: number, name: string | null }>,
       wlans: Array<{ key: string, value: number }>
-      osManufacturers?: Array<{ key: string, value: number }>,
+      osManufacturers: Array<{ key: string, value: number }>,
       events?: Array<{ key: string, value: number }>
     }
   }
@@ -82,17 +82,19 @@ export const pieChartQuery = (
   const apNode = find(path, { type: 'AP' })
   switch (type) {
     case 'connectionFailure': {
-      return apNode
-        ? `wlans: topNSSIDbyConnFailure(n: 6, stage: "${stageFilter}") { key value }`
-        : `nodes: topNNodebyConnFailure(n: 6, stage: "${stageFilter}") { key value name }
+      return (apNode
+        ? ''
+        : `nodes: topNNodebyConnFailure(n: 6, stage: "${stageFilter}") { key value name }`
+      ) + `
       wlans: topNSSIDbyConnFailure(n: 6, stage: "${stageFilter}") { key value }
       osManufacturers: topNManufacturersByConnFailure(n: 6, stage: "${stageFilter}") { key value }
       events: topNEventsByConnFailure(n: 6, stage:"${stageFilter}") { key value }`
     }
     case 'ttc': {
-      return apNode
-        ? `wlans: topNSSIDbyAvgTTC(n: 6, stage: "${stageFilter}") { key value }`
-        : `nodes: topNNodebyAvgTTC(n: 6, stage: "${stageFilter}") { key value name }
+      return (apNode
+        ? ''
+        : `nodes: topNNodebyAvgTTC(n: 6, stage: "${stageFilter}") { key value name }`
+      ) + `
         wlans: topNSSIDbyAvgTTC(n: 6, stage: "${stageFilter}") { key value }
         osManufacturers: topNManufacturersByTTC(n: 6, stage: "${stageFilter}") { key value }`
     }
