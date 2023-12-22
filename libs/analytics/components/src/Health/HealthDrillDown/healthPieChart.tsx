@@ -220,21 +220,16 @@ export const HealthPieChart = ({
             )}
         </UI.PieChartTitle>
         <div style={{ height: 260, minWidth: 430 }}>
-          {(tabDetails.length > 1 )
-            ? <ContentSwitcher
-              key={selectedStage}
-              value={chartKey}
-              defaultValue={'wlans'}
-              tabDetails={tabDetails}
-              align='left'
-              size='small'
-              onChange={key => setChartKey(key as TabKeyType)}
-              noPadding
-            />
-            : <UI.SinglePieChartWrapper>
-              {tabDetails?.[0]?.children}
-            </UI.SinglePieChartWrapper>
-          }
+          <ContentSwitcher
+            key={selectedStage}
+            value={chartKey}
+            defaultValue={'wlans'}
+            tabDetails={tabDetails}
+            align='left'
+            size='small'
+            onChange={key => setChartKey(key as TabKeyType)}
+            noPadding
+          />
         </div>
       </UI.HealthPieChartWrapper>
     </Loader>
