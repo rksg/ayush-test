@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
 import { Provider }       from '@acx-ui/store'
-import {act, render, renderHook, screen } from '@acx-ui/test-utils'
+import { render, screen } from '@acx-ui/test-utils'
 import { RolesEnum }      from '@acx-ui/types'
 import {
   UserProfile as UserProfileInterface,
