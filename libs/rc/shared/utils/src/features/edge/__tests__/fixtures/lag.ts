@@ -10,11 +10,11 @@ export const mockedEdgeLagList = {
       lacpTimeout: 'SHORT',
       lagMembers: [
         {
-          portMac: '00:0c:29:b6:ad:04',
+          portId: '00:0c:29:b6:ad:04',
           portEnabled: true
         },
         {
-          portMac: '00:00:00:00:00:00',
+          portId: '00:00:00:00:00:00',
           portEnabled: true
         }
       ],
