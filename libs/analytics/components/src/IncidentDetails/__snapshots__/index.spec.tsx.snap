@@ -1327,7 +1327,7 @@ exports[`incident details should render incident details correctly when there is
                           Root Cause Analysis
                         </div>
                         <p>
-                          The connection was not completed because the client has left, or is leaving, the network.
+                          Airtime Busy is unusually high and this is typically caused by external sources of interference, such as neighboring WiFi networks, microwave ovens, Bluetooth devices, and other electronic devices operating in the same frequency range, can cause disruptions to your network.
                         </p>
                       </div>
                     </div>
@@ -1344,8 +1344,19 @@ exports[`incident details should render incident details correctly when there is
                           Recommended Action
                         </div>
                         <p>
-                          This problem should be a transient issue in a network if many clients leave at the same time; but, it is usually associated with disconnect events, and should not impact connection attempts. If it does, this may be a data issue that can be reported to RUCKUS Support if it persists in your network.
+                          Identifying the sources of external interference is the key to resolving this issue:
                         </p>
+                         
+                        <ol>
+                           
+                          <li>
+                            Click here for a list of rogue APs for removal in your premises.
+                          </li>
+                          <li>
+                            Identify and mitigate sources of non-WiFi interference, such as microwave ovens, Bluetooth devices, and cordless phones.
+                          </li>
+                           
+                        </ol>
                       </div>
                     </div>
                   </div>

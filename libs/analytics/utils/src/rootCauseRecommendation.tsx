@@ -251,7 +251,7 @@ export const getAirtimeTXRecommendations = (checks: AirtimeTxArray) => {
   const highSSIDCountText = <FormattedMessage defaultMessage={'<li>Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less. Enabling Airtime Decongestion would be recommended as well.</li>'} values={htmlValues}/>
   const enableAirtimeDecongestion = <FormattedMessage defaultMessage={'<li>Enable Airtime Decongestion.</li>'} values={htmlValues}/>
   const nonWifiInterference = <FormattedMessage defaultMessage={'<li>Identify and mitigate sources of non-WiFi interference, such as microwave ovens, Bluetooth devices, and cordless phones.</li>'} values={htmlValues}/>
-  const highMCBC = <FormattedMessage defaultMessage={'<li>Enable MC/BC rate limit on WLAN XXX (whichever WLAN that is not enabled) or on the switch.</li>'} values={htmlValues}/>
+  const highMCBC = <FormattedMessage defaultMessage={'<li>Enable MC/BC rate limit on WLAN (whichever WLAN that is not enabled) or on the switch.</li>'} values={htmlValues}/>
   const highLegacyCount = <FormattedMessage defaultMessage={'<li>Click here for a list of legacy Wi-Fi devices. Either remove these legacy devices or upgrade them.</li>'} values={htmlValues}/>
 
   const allFalseText = [clientLoadBalanceOff, enableAirtimeDecongestion]
@@ -263,7 +263,7 @@ export const getAirtimeTXRecommendations = (checks: AirtimeTxArray) => {
   const stringlist = allFalse ? allFalseText : [text1, text2, text3, text4, text5]
 
   return {
-    recommendationsText: defineMessage({ defaultMessage: `<p>Based on the root {count, plural, one {cause} other {causes}} identified, the recommended resolutions {count, plural, one {is} other {are}}:</p>
+    recommendationsText: defineMessage({ defaultMessage: `<p>Based on the root {count, plural, one {cause} other {causes}} identified, the recommended {count, plural, one {resolution} other {resolutions}} {count, plural, one {is} other {are}}:</p>
       <ol>
         {params}
       </ol>`
@@ -1295,7 +1295,7 @@ const calculating = defineMessage({ defaultMessage: '<p>Calculating...</p>' })
 
 export function getRootCauseAndRecommendations ({ code, metadata }: Incident) {
   const failureType = codeToFailureTypeMap[code]
-  if (!metadata.rootCauseChecks) return [{ rootCauses: calculating, recommendations: calculating }]
+  if (!metadata.rootCauseChecks) return [{ rootCauses: { rootCauseText: calculating }, recommendations: { recommendationsText: calculating } }]
   const { checks } = metadata.rootCauseChecks
   const failureCode = failureType?.includes('airtime') ? 'DEFAULT' : extractFailureCode(checks)
   const results = _.get(rootCauseRecommendationMap, [failureType, failureCode as string])
