@@ -138,6 +138,8 @@ export enum Features {
   LIST_OF_CLIENTS_PER_WLAN = 'acx-ui-list-of-clients-per-wlan-toggle',
   RUCKUS_AI_CRRM_PARTIAL = 'ruckus-ai-recommendations-crrm-partial-toggle',
   CRRM_PARTIAL = 'acx-ui-recommendations-crrm-partial-toggle',
+  GROUP_BASED_LOGIN_TOGGLE = 'group-based-login-toggle',
+  GOOGLE_WORKSPACE_SSO_TOGGLE = 'google-workspace-sso-toggle',
   ANY_3RDPARTY_INVITE_TOGGLE = 'ptenant-any-3rdparty-invite-toggle'
 }
 

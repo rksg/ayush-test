@@ -1,21 +1,22 @@
-import { Key, useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
 
-import { Col, Row }  from 'antd'
-import _             from 'lodash'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { Col, Row } from 'antd'
+import _            from 'lodash'
+import { useIntl }  from 'react-intl'
 
-import { Loader, Table, TableProps, Tooltip, showActionModal }                                                      from '@acx-ui/components'
-import { useDeleteEdgeLagMutation, useGetEdgeLagListQuery }                                                         from '@acx-ui/rc/services'
-import { EdgeLag, EdgeLagStatus, EdgePort, defaultSort, sortProp, getEdgePortDisplayName, getEdgePortIpModeString } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }                                                                                from '@acx-ui/user'
+import { Loader, Table, TableProps, Tooltip, showActionModal }                                            from '@acx-ui/components'
+import { useDeleteEdgeLagMutation }                                                                       from '@acx-ui/rc/services'
+import { EdgeLag, EdgeLagStatus, defaultSort, sortProp, getEdgePortDisplayName, getEdgePortIpModeString } from '@acx-ui/rc/utils'
+import { filterByAccess, hasAccess }                                                                      from '@acx-ui/user'
+
+import { EdgePortsDataContext } from '../PortDataProvider'
 
 import { LagDrawer } from './LagDrawer'
 
 interface LagProps {
+  serialNumber: string
   lagStatusList: EdgeLagStatus[]
   isLoading: boolean
-  portList?: EdgePort[]
 }
 
 interface EdgeLagTableType extends EdgeLag {
@@ -24,44 +25,26 @@ interface EdgeLagTableType extends EdgeLag {
 
 const Lag = (props: LagProps) => {
 
-  const { lagStatusList, isLoading, portList } = props
-  const { serialNumber, activeSubTab } = useParams()
+  const { serialNumber, lagStatusList, isLoading /*portList*/ } = props
   const { $t } = useIntl()
   const [lagDrawerVisible, setLagDrawerVisible] = useState(false)
   const [currentEditData, setCurrentEditData] = useState<EdgeLag>()
-  const [selectedRows, setSelectedRows] = useState<Key[]>([])
-  const { lagData = [], isLagLoading } = useGetEdgeLagListQuery({
-    params: { serialNumber },
-    payload: {
-      page: 1,
-      pageSize: 10
-    }
-  },{
-    selectFromResult ({ data, isLoading, isFetching }) {
-      return {
-        lagData: data?.data?.map(item => ({
-          ...item,
-          adminStatus: lagStatusList.find(status => status.lagId === item.id)?.adminStatus ?? ''
-        })),
-        isLagLoading: isLoading || isFetching
-      }
-    }
-  })
-  const [deleteEdgeLag] = useDeleteEdgeLagMutation()
+  const portsData = useContext(EdgePortsDataContext)
+  const portList = portsData.portData
+  const lagList = portsData.lagData
+  const lagData = lagList?.map(item => ({
+    ...item,
+    adminStatus: lagStatusList.find(status => status.lagId === item.id)?.adminStatus ?? ''
+  }))
 
-  useEffect(() => {
-    if(activeSubTab !== 'lag') {
-      setLagDrawerVisible(false)
-      setSelectedRows([])
-    }
-  }, [activeSubTab])
+  const [deleteEdgeLag] = useDeleteEdgeLagMutation()
 
   const columns: TableProps<EdgeLagTableType>['columns'] = [
     {
       title: $t({ defaultMessage: 'LAG Name' }),
       key: 'id',
       dataIndex: 'id',
-      render: (data, row) => {
+      render: (_data, row) => {
         return `LAG ${row.id}`
       },
       defaultSortOrder: 'ascend',
@@ -77,7 +60,7 @@ const Lag = (props: LagProps) => {
       title: $t({ defaultMessage: 'LAG Type' }),
       key: 'lagType',
       dataIndex: 'lagType',
-      render: (data, row) => {
+      render: (_data, row) => {
         return `${row.lagType} (${_.capitalize(row.lacpMode)})`
       },
       sorter: { compare: sortProp('lagType', defaultSort) }
@@ -86,7 +69,7 @@ const Lag = (props: LagProps) => {
       title: $t({ defaultMessage: 'LAG Members' }),
       key: 'lagMembers',
       dataIndex: 'lagMembers',
-      render: (data, row) => {
+      render: (_data, row) => {
         const lagMemberSize = row.lagMembers?.length ?? 0
         return lagMemberSize > 0 ?
           <Tooltip
@@ -163,7 +146,7 @@ const Lag = (props: LagProps) => {
       onClick: () => {
         openDrawer()
       },
-      disabled: lagData.length >= 4
+      disabled: (lagData?.length ?? 0) >= 4
     }
   ]
 
@@ -198,22 +181,19 @@ const Lag = (props: LagProps) => {
   ]
 
   return (
-    <Loader states={[{ isLoading: false, isFetching: isLoading || isLagLoading }]}>
+    <Loader states={[{ isLoading: false, isFetching: isLoading }]}>
       <Table<EdgeLagTableType>
         actions={filterByAccess(actionButtons)}
         dataSource={lagData}
         columns={columns}
         rowActions={filterByAccess(rowActions)}
         rowSelection={hasAccess() && {
-          type: 'radio',
-          selectedRowKeys: selectedRows,
-          onChange: (key: Key[]) => {
-            setSelectedRows(key)
-          }
+          type: 'radio'
         }}
         rowKey='id'
       />
       <LagDrawer
+        serialNumber={serialNumber}
         visible={lagDrawerVisible}
         setVisible={setLagDrawerVisible}
         data={currentEditData}
