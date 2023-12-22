@@ -17,7 +17,7 @@ export const PortSubInterfaceTable = (props: PortSubInterfaceTableProps) => {
   const tableQuery = useTableQuery<EdgeSubInterface>({
     useQuery: useGetSubInterfacesQuery,
     defaultPayload: {},
-    apiParams: { mac }
+    apiParams: { serialNumber, mac }
   })
   const [addSubInterface] = useAddSubInterfacesMutation()
   const [updateSubInterface] = useUpdateSubInterfacesMutation()

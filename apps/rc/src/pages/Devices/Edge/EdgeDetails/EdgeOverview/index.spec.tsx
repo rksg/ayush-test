@@ -8,7 +8,8 @@ import {
   render,
   screen,
   mockServer,
-  waitForElementToBeRemoved
+  waitForElementToBeRemoved,
+  within
 } from '@acx-ui/test-utils'
 
 import { EdgeOverview } from '.'
@@ -216,6 +217,9 @@ describe('Edge Detail Overview', () => {
     expect(configBtn).toBeVisible()
     const portsRow = await screen.findAllByRole('row')
     expect(portsRow.length).toBe(3)
+    const row = await screen.findByRole('row', { name: /LAG 1 LACP/i })
+    const expandBtn = await within(row).findByTestId('PlusSquareOutlined')
+    await userEvent.click(expandBtn)
     await userEvent.click(configBtn)
     expect(mockedUsedNavigate)
       .toBeCalledWith({
