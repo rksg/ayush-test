@@ -4,10 +4,10 @@ import { Col, Form, Input, Row, Select } from 'antd'
 import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
-import { StepsForm, useStepFormContext }                                                                                                          from '@acx-ui/components'
-import { SpaceWrapper, TunnelProfileAddModal }                                                                                                    from '@acx-ui/rc/components'
-import { useGetEdgeListQuery, useGetEdgeSdLanViewDataListQuery, useGetPortConfigQuery, useGetTunnelProfileViewDataListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
-import { EdgeSdLanSetting, EdgeStatusEnum, isDefaultTunnelProfile, servicePolicyNameRegExp, TunnelProfileFormType, TunnelTypeEnum }               from '@acx-ui/rc/utils'
+import { StepsForm, useStepFormContext }                                                                                                                    from '@acx-ui/components'
+import { SpaceWrapper, TunnelProfileAddModal }                                                                                                              from '@acx-ui/rc/components'
+import { useGetEdgeListQuery, useGetEdgeSdLanViewDataListQuery, useGetPortConfigQuery, useGetTunnelProfileViewDataListQuery, useVenuesListQuery }           from '@acx-ui/rc/services'
+import { EdgeSdLanSetting, EdgeStatusEnum, getEdgePortDisplayName, isDefaultTunnelProfile, servicePolicyNameRegExp, TunnelProfileFormType, TunnelTypeEnum } from '@acx-ui/rc/utils'
 
 import diagram from '../../../../../assets/images/edge-sd-lan-diagrams/edge-sd-lan-early-access.png'
 
@@ -137,10 +137,10 @@ export const SettingsForm = () => {
     if (portsConfig) {
     // find corePort
       let corePortMac, corePortName
-      portsConfig?.forEach((port, idx) => {
+      portsConfig?.forEach((port) => {
         if (port.corePortEnabled) {
           corePortMac = port.mac
-          corePortName = $t({ defaultMessage: 'Port {index}' }, { index: idx + 1 })
+          corePortName = getEdgePortDisplayName(port)
         }
       })
 

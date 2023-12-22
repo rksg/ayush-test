@@ -3,10 +3,10 @@ import { IntlShape } from 'react-intl'
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
-import { IpUtilsService }                                                          from '../../ipUtilsService'
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum } from '../../models/EdgeEnum'
-import { EdgeAlarmSummary, EdgeLag, EdgePortWithStatus }                           from '../../types'
-import { networkWifiIpRegExp, subnetMaskIpRegExp }                                 from '../../validator'
+import { IpUtilsService }                                                                                     from '../../ipUtilsService'
+import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum }                            from '../../models/EdgeEnum'
+import { EdgeAlarmSummary, EdgeLag, EdgeLagStatus, EdgePort, EdgePortStatus, EdgePortWithStatus, EdgeStatus } from '../../types'
+import { networkWifiIpRegExp, subnetMaskIpRegExp }                                                            from '../../validator'
 
 export const getEdgeServiceHealth = (alarmSummary?: EdgeAlarmSummary[]) => {
   if(!alarmSummary) return EdgeServiceStatusEnum.UNKNOWN
@@ -86,6 +86,17 @@ export const getEdgePortTypeOptions = ($t: IntlShape['$t']) => ([
   }
 ])
 
+export const getEdgePortIpModeString = ($t: IntlShape['$t'], type: EdgeIpModeEnum | string) => {
+  switch (type) {
+    case EdgeIpModeEnum.DHCP:
+      return $t({ defaultMessage: 'DHCP' })
+    case EdgeIpModeEnum.STATIC:
+      return $t({ defaultMessage: 'Static IP' })
+    default:
+      return ''
+  }
+}
+
 export const convertEdgePortsConfigToApiPayload = (formData: EdgePortWithStatus | EdgeLag) => {
   const payload = _.cloneDeep(formData)
 
@@ -118,4 +129,29 @@ export const convertEdgePortsConfigToApiPayload = (formData: EdgePortWithStatus 
   }
 
   return payload
+}
+
+export const getEdgePortDisplayName = (port: EdgePort | EdgePortStatus | undefined) => {
+  return _.capitalize(port?.interfaceName)
+}
+
+export const isEdgeLag = (port: EdgePortStatus | EdgePort | EdgeLagStatus | EdgeLag) => {
+  return port.hasOwnProperty('lagType')
+}
+
+export const appendIsLagPortOnPortConfig =
+  (portsData: EdgePortWithStatus[] | undefined,
+    lags: EdgeLag[] | EdgeLagStatus[] | undefined) => {
+
+    return portsData?.map((item) => {
+      const isLagPort = lags?.some(lag =>
+        lag.lagMembers?.some(lagMember =>
+          lagMember.portId === item.id)) ?? false
+
+      return { ...item, isLagPort }
+    })
+  }
+
+export const isEdgeConfigurable = (data: EdgeStatus | undefined):boolean => {
+  return data ? data.deviceStatus !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD : false
 }

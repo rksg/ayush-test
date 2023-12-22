@@ -31,7 +31,13 @@ const DefaultSystemLanguageFormItem = () => {
   const handleDefaultLangChange = async (langCode: string) => {
     if (!langCode) return
     const payload = {
-      global: { defaultLanguage: langCode }
+      global: {
+        // pTenant service processes userProfile.preferredLanguage
+        // by reference admin setting data - preferredLanguage which is not defaultLanguage
+        // Hence needed both these two attributes
+        defaultLanguage: langCode,
+        preferredLanguage: langCode
+      }
     }
     updatePreferences({ newData: payload, onSuccess: () => {
       const code = langCode as LangKey
