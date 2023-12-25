@@ -1,7 +1,9 @@
+/* eslint-disable max-len */
 import React, { useState, useEffect, useMemo, useContext, useImperativeHandle, forwardRef, Ref } from 'react'
 
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
-import { Badge }               from 'antd'
+import { Badge, Checkbox }               from 'antd'
+import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 import { useIntl }             from 'react-intl'
 
 import {
@@ -10,6 +12,7 @@ import {
   TableProps,
   deviceStatusColors,
   ColumnType,
+  ColumnState,
   showToast
 } from '@acx-ui/components'
 import {
@@ -37,9 +40,13 @@ import {
   usePollingTableQuery,
   APExtendedGrouped,
   AFCMaxPowerRender,
-  AFCPowerStateRender
+  AFCPowerStateRender,
+  getFilters, 
+  CommonResult, 
+  ImportErrorRes, 
+  FILTER
 } from '@acx-ui/rc/utils'
-import { getFilters, CommonResult, ImportErrorRes, FILTER }               from '@acx-ui/rc/utils'
+import { ApFeatureCompatibility, ApCompatibilityQueryTypes, ApCompatibilityDrawer } from '@acx-ui/rc/components'
 import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                                 from '@acx-ui/types'
 import { filterByAccess }                                                 from '@acx-ui/user'
@@ -54,6 +61,7 @@ import {
 } from './config'
 import { ApsTabContext } from './context'
 import { useExportCsv }  from './useExportCsv'
+
 
 export const defaultApPayload = {
   searchString: '',
@@ -116,7 +124,8 @@ interface ApTableProps
   searchable?: boolean
   enableActions?: boolean
   filterables?: { [key: string]: ColumnType['filterable'] }
-  enableGroups?: boolean
+  enableGroups?: boolean,
+  enableApCompatibleCheck?: boolean
 }
 
 export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefType>) => {
@@ -125,8 +134,18 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
   const location = useLocation()
   const params = useParams()
   const filters = getFilters(params) as FILTER
-  const { searchable, filterables, enableGroups=true } = props
+  const { searchable, filterables, enableGroups=true, enableApCompatibleCheck=false } = props
   const { setApsCount } = useContext(ApsTabContext)
+  const [ compatibilitiesDrawerVisible, setCompatibilitiesDrawerVisible ] = useState(false)
+  const [ selectedApSN, setSelectedApSN ] = useState('')
+  const [ selectedApName, setSelectedApName ] = useState('')
+  const [ showFeatureCompatibilitiy, setShowFeatureCompatibilitiy ] = useState(false)
+  const secureBootFlag = useIsSplitOn(Features.WIFI_EDA_SECURE_BOOT_TOGGLE)
+  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
+  const apMgmtVlanFlag = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
+  const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
+  const supportApCompatibleCheck = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE) && enableApCompatibleCheck
+
   const apListTableQuery = usePollingTableQuery({
     useQuery: useApListQuery,
     defaultPayload: {
@@ -142,10 +161,6 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       'deviceStatus', 'fwVersion']
   })
   const tableQuery = props.tableQuery || apListTableQuery
-  const secureBootFlag = useIsSplitOn(Features.WIFI_EDA_SECURE_BOOT_TOGGLE)
-  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
-  const apMgmtVlanFlag = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
-  const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
 
 
   useEffect(() => {
@@ -403,11 +418,34 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
         return AFCMaxPowerRender(row.apStatusData?.afcInfo, row.apRadioDeploy)
       }
     }
-    ]: [])
+    ]: []),
+    ...(supportApCompatibleCheck ? [{
+      key: 'featureIncompatible',
+      tooltip: $t({ defaultMessage: 'Check for the venue’s Wi-Fi features not supported by earlier versions or AP models.' }),
+      title: $t({ defaultMessage: 'Feature Compatibility' }),
+      dataIndex: 'incompatible',
+      filterKey: 'fwVersion',
+      width: 200,
+      filterableWidth: 200,
+      filterable: showFeatureCompatibilitiy && filterables ? filterables['featureIncompatible']: false,
+      // filterMultiple: false,
+      show: false,
+      sorter: false,
+      render: (data: React.ReactNode, row: APExtended) => {
+        return (<ApFeatureCompatibility 
+          count={row?.incompatible} 
+          onClick={() => {
+            setSelectedApSN(row?.serialNumber)
+            setSelectedApName(row?.name ?? '')
+            setCompatibilitiesDrawerVisible(true)
+          }} />
+        )
+      }
+      }] : [])
     ]
 
     return columns
-  }, [$t, tableQuery.data?.extra])
+  }, [$t, tableQuery.data?.extra, showFeatureCompatibilitiy])
 
   const isActionVisible = (
     selectedRows: APExtended[],
@@ -466,6 +504,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       apAction.showDownloadApLog(rows[0].serialNumber, params.tenantId)
     }
   }]
+  
   const [ isImportResultLoading, setIsImportResultLoading ] = useState(false)
   const [ importVisible, setImportVisible ] = useState(false)
   const [ importAps, importApsResult ] = useImportApOldMutation()
@@ -526,12 +565,26 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
     }
     tableQuery.handleTableChange?.(pagination, filters, customSorter, extra)
   }
+
+  const handleColumnStateChange = (state: ColumnState) => {
+    if (supportApCompatibleCheck && enableApCompatibleCheck) {
+      console.info('state:', state)
+      if (showFeatureCompatibilitiy !== state['featureIncompatible']) {
+        setShowFeatureCompatibilitiy(state['featureIncompatible'])
+      }
+    }
+  }
   return (
     <Loader states={[tableQuery]}>
       <Table<APExtended | APExtendedGrouped>
         {...props}
         settingsId='ap-table'
         columns={columns}
+        columnState={supportApCompatibleCheck? 
+          { 
+            onChange: handleColumnStateChange 
+          } : {} 
+        }
         dataSource={tableData}
         getAllPagesData={tableQuery.getAllPagesData}
         rowKey='serialNumber'
@@ -602,6 +655,14 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
           }
         }}
         onClose={() => setImportVisible(false)}/>
+      <ApCompatibilityDrawer
+        visible={compatibilitiesDrawerVisible}
+        venueId={params.venueId}
+        queryType={ApCompatibilityQueryTypes.CHECK_VENUE_WITH_APS}
+        apIds={selectedApSN ? [selectedApSN] : []}
+        apName={selectedApName}
+        onClose={() => setCompatibilitiesDrawerVisible(false)}
+      />
     </Loader>
   )
 })

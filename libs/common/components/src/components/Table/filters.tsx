@@ -205,7 +205,7 @@ export function renderFilter <RecordType> (
     {options?.map((option, index) =>
       <Select.Option
         value={option.key}
-        key={option.key ?? index}
+        key={Array.isArray(option.key) ? index : (option.key ?? index)}
         data-testid={`option-${option.key}`}
         title={option.value}
         children={option.label ?? option.value}

@@ -6,7 +6,7 @@ import { CommonUrlsInfo, WifiUrlsInfo }             from '@acx-ui/rc/utils'
 import { Provider }                                 from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen }    from '@acx-ui/test-utils'
 
-import { venueSetting } from '../../__tests__/fixtures'
+import { venueSetting, venueApCompatibilitiesData } from '../../__tests__/fixtures'
 
 import { VenueDevicesTab } from '.'
 
@@ -111,7 +111,12 @@ describe('VenueWifi', () => {
       ),
       rest.get(
         CommonUrlsInfo.getVenueSettings.url,
-        (_, res, ctx) => res(ctx.json(venueSetting)))
+        (_, res, ctx) => res(ctx.json(venueSetting))
+      ),
+      rest.post(
+        WifiUrlsInfo.getApCompatibilitiesVenue.url,
+        (req, res, ctx) => res(ctx.json(venueApCompatibilitiesData))
+      )
     )
   })
 
@@ -131,6 +136,15 @@ describe('VenueWifi', () => {
 
     fireEvent.click(await screen.findByTestId('MeshSolid'))
     expect(await screen.findByRole('row', { name: /AP-981604906462/i })).toBeVisible()
+  })
+
+  it('should render Ap Compatibilities Note correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider><VenueDevicesTab /></Provider>, {
+      route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/:activeTab/:activeSubTab' }
+    })
+    expect(await screen.findByTestId('ApTable')).toBeVisible()
+    expect(await screen.findByTestId('ap-compatibility-alert-note')).toBeVisible()
   })
 })
 

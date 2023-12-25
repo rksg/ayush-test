@@ -1,5 +1,7 @@
-import _          from 'lodash'
-import { Params } from 'react-router-dom'
+/* eslint-disable max-len */
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
+import _                       from 'lodash'
+import { Params }              from 'react-router-dom'
 
 import { Filter }                    from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
@@ -55,7 +57,10 @@ import {
   AFCPowerMode,
   AFCStatus,
   ApGroupViewModel,
-  ApManagementVlan
+  ApManagementVlan,
+  ApFeatureSet,
+  ApCompatibility
+
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -68,27 +73,48 @@ export type ApsExportPayload = {
 
 export const apApi = baseApApi.injectEndpoints({
   endpoints: (build) => ({
-    apList: build.query<TableResult<APExtended | APExtendedGrouped, ApExtraParams>,
-    RequestPayload>({
-      query: ({ params, payload }:{ payload:Record<string,unknown>, params: Params<string> }) => {
+    apList: build.query<TableResult<APExtended | APExtendedGrouped, ApExtraParams>, RequestPayload>({
+      async queryFn (
+        { params, payload }:{ payload:Record<string,unknown>, params: Params<string> },
+        _queryApi, _extraOptions, fetchWithBQ) {
         const hasGroupBy = payload?.groupBy
-        const fields = hasGroupBy ? payload.groupByFields : payload.fields
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const fields:any = hasGroupBy ? payload?.groupByFields : payload?.fields
         const apsReq = hasGroupBy
           ? createHttpRequest(CommonUrlsInfo.getApGroupsListByGroup, params)
           : createHttpRequest(CommonUrlsInfo.getApsList, params)
-        return {
-          ...apsReq,
-          body: { ...payload, fields: fields }
+        const isExistIncompatible = (fields && fields['incompatible'] !== undefined) ?? false
+        const apIdsToIncompatible:{ [key:string]: number } = {}
+        const apsQuery = await fetchWithBQ({ ...apsReq, body: { ...payload, fields } })
+        const aps = apsQuery.data as TableResult<APExtended | APExtendedGrouped, ApExtraParams>
+
+        if (isExistIncompatible) {
+          const apIds = retriedApIds(aps, !!hasGroupBy)
+          if (apIds.length > 0) {
+            const apsCompatibilitiesReq = {
+              ...createHttpRequest(WifiUrlsInfo.getApCompatibilitiesVenue, { venueId: params.venueId }),
+              body: { filters: { apIds }, queryType: 'CHECK_VENUE_WITH_APS' }
+            }
+
+            const allApInCompatibilitiesQuery = await fetchWithBQ(apsCompatibilitiesReq)
+            const apInCompatibilities = allApInCompatibilitiesQuery.data as ApCompatibility[]
+            apIds.forEach((id:string) => {
+              const apIncompatible = _.find(apInCompatibilities, ap => id===ap.id)
+              apIdsToIncompatible[id] = apIncompatible?.incompatible ?? 0
+            })
+          }
         }
-      },
-      transformResponse (
-        result: TableResult<APExtended, ApExtraParams>,
-        _: unknown,
-        args: { payload : Record<string,unknown> }
-      ) {
-        if((args?.payload)?.groupBy)
-          return transformGroupByList(result as TableResult<APExtendedGrouped, ApExtraParams>)
-        return transformApList(result)
+
+        let aggregatedList:TableResult<APExtended | APExtendedGrouped, ApExtraParams>
+        if(payload?.groupBy) {
+          aggregatedList = transformGroupByList(aps as TableResult<APExtendedGrouped, ApExtraParams>, apIdsToIncompatible)
+        } else {
+          aggregatedList = transformApList(aps, apIdsToIncompatible)
+        }
+
+        return apsQuery.data
+          ? { data: aggregatedList }
+          : { error: apsQuery.error as FetchBaseQueryError }
       },
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'Ap', id: 'LIST' }],
@@ -934,6 +960,25 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'ApManagementVlan' }]
+    }),
+    getApFeatureSets: build.query<ApFeatureSet[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApFeatureSets, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'ApFeatureSets' }]
+    }),
+    getApCompatibilities: build.query<ApCompatibility[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApCompatibilities, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'ApCompatibilities' }]
     })
   })
 })
@@ -1024,7 +1069,9 @@ export const {
   useGetApManagementVlanQuery,
   useLazyGetApManagementVlanQuery,
   useUpdateApManagementVlanMutation,
-  useDeleteApManagementVlanMutation
+  useDeleteApManagementVlanMutation,
+  useGetApFeatureSetsQuery,
+  useLazyGetApCompatibilitiesQuery
 } = apApi
 
 
@@ -1072,7 +1119,7 @@ const setPoEPortStatus = (row: APExtended, lanPortStatus: LanPortStatusPropertie
   }
 }
 
-const transformApList = (result: TableResult<APExtended, ApExtraParams>) => {
+const transformApList = (result: TableResult<APExtended, ApExtraParams>, apIdsToIncompatible:{ [key:string]: number }) => {
   let channelColumnStatus = {
     channel24: false,
     channel50: false,
@@ -1092,13 +1139,29 @@ const transformApList = (result: TableResult<APExtended, ApExtraParams>) => {
       setPoEPortStatus(item, lanPortStatus)
     }
 
+    if (apIdsToIncompatible[item.serialNumber]) {
+      item.incompatible = apIdsToIncompatible[item.serialNumber]
+    }
+
     return item
   })
   result.extra = channelColumnStatus
   return result
 }
 
-const transformGroupByList = (result: TableResult<APExtendedGrouped, ApExtraParams>) => {
+const retriedApIds = (result: TableResult<APExtended | APExtendedGrouped, ApExtraParams>, hasGroupBy:boolean) => {
+  const apIds:string[] = []
+  if (hasGroupBy) {
+    result.data?.forEach(item => {
+      (item as unknown as { aps: APExtended[] }).aps?.forEach(ap => apIds.push(ap.serialNumber))
+    })
+  } else {
+    result.data?.forEach(ap => apIds.push(ap.serialNumber))
+  }
+  return apIds
+}
+
+const transformGroupByList = (result: TableResult<APExtendedGrouped, ApExtraParams>, apIdsToIncompatible:{ [key:string]: number }) => {
   let channelColumnStatus = {
     channel24: false,
     channel50: false,
@@ -1116,6 +1179,9 @@ const transformGroupByList = (result: TableResult<APExtendedGrouped, ApExtraPara
       }
       if (lanPortStatus) {
         setPoEPortStatus(ap, lanPortStatus)
+      }
+      if (apIdsToIncompatible[item.serialNumber]) {
+        item.incompatible = apIdsToIncompatible[item.serialNumber]
       }
       return ap
     })

@@ -1,3 +1,6 @@
+/* eslint-disable max-len */
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   CommonUrlsInfo,
@@ -65,7 +68,8 @@ import {
   FloorPlanMeshAP,
   VenueClientAdmissionControl,
   RogueApLocation,
-  ApManagementVlan
+  ApManagementVlan,
+  ApCompatibility
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -84,6 +88,56 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...venueListReq,
           body: payload
         }
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'Venue', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'AddVenue',
+            'UpdateVenue',
+            'DeleteVenue',
+            'DeleteVenues',
+            'UpdateVenueRogueAp',
+            'AddRoguePolicy',
+            'UpdateRoguePolicy',
+            'UpdateDenialOfServiceProtection'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    venuesTable: build.query<TableResult<Venue>, RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const venueListReq = {
+          ...createHttpRequest(CommonUrlsInfo.getVenuesList, arg.params),
+          body: arg.payload
+        }
+        const venueListQuery = await fetchWithBQ(venueListReq)
+        const venueList = venueListQuery.data as TableResult<Venue>
+        const venueIds = venueList?.data?.map(v => v.id) || []
+        const venueIdsToIncompatible:{ [key:string]: number } = {}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const allApCompatibilitiesQuery:any = await Promise.all(venueIds.map(id => {
+          const apCompatibilitiesReq = {
+            ...createHttpRequest(WifiUrlsInfo.getApCompatibilitiesVenue, { venueId: id }),
+            body: { filters: {}, queryType: 'CHECK_VENUE' }
+          }
+          return fetchWithBQ(apCompatibilitiesReq)
+        }))
+        venueIds.forEach((id:string, index:number) => {
+          const allApCompatibilitiesData = allApCompatibilitiesQuery[index]?.data as ApCompatibility[]
+          venueIdsToIncompatible[id] = allApCompatibilitiesData[0]?.incompatible ?? 0
+        })
+        const aggregatedList = aggregatedVenueCompatibilitiesData(
+          venueList, venueIdsToIncompatible)
+
+        return venueListQuery.data
+          ? { data: aggregatedList }
+          : { error: venueListQuery.error as FetchBaseQueryError }
       },
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'Venue', id: 'LIST' }],
@@ -389,6 +443,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const req = createHttpRequest(WifiUrlsInfo.getVenueApCapabilities, params)
         return{
           ...req
+        }
+      }
+    }),
+    getApCompatibilitiesVenue: build.query<ApCompatibility[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApCompatibilitiesVenue, params)
+        return{
+          ...req,
+          body: payload
         }
       }
     }),
@@ -1285,6 +1348,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
 export const {
   useVenuesListQuery,
   useLazyVenuesListQuery,
+  useVenuesTableQuery,
   useAddVenueMutation,
   useGetVenueQuery,
   useLazyGetVenueQuery,
@@ -1311,6 +1375,8 @@ export const {
   useUpdateApPositionMutation,
   useUpdateCloudpathServerPositionMutation,
   useGetVenueCapabilitiesQuery,
+  useGetApCompatibilitiesVenueQuery,
+  useLazyGetApCompatibilitiesVenueQuery,
   useGetVenueApModelsQuery,
   useGetVenueLedOnQuery,
   useLazyGetVenueLedOnQuery,
@@ -1398,3 +1464,17 @@ export const {
   useLazyGetVenueApManagementVlanQuery,
   useUpdateVenueApManagementVlanMutation
 } = venueApi
+
+
+export const aggregatedVenueCompatibilitiesData = (venueList: TableResult<Venue>,
+  apCompatibilities: { [key:string]: number }) => {
+  const data:Venue[] = []
+  venueList.data.forEach(item=>{
+    item.incompatible = apCompatibilities[item.id]
+    data.push(item)
+  })
+  return {
+    ...venueList,
+    data
+  }
+}
