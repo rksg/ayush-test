@@ -12,7 +12,7 @@ import {
   mockApCompatibilitiesNetwork
 } from './__test__/fixtures'
 
-import { 
+import {
   ApCompatibilityType,
   InCompatibilityFeatures,
   ApCompatibilityQueryTypes,
