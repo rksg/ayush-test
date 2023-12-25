@@ -146,7 +146,7 @@ describe('Edge centrailized forwarding form: settings', () => {
     expect(within(formBody).queryByTestId('rc-CorePortFormItem')).toBeValid()
 
     await waitFor(() => {
-      expect(mockedSetFieldValue).toBeCalledWith('corePortMac', '00:00:00:00:00:00')
+      expect(mockedSetFieldValue).toBeCalledWith('corePortMac', 'port2')
     })
     expect(mockedSetFieldValue).toBeCalledWith('corePortName', 'Port2')
 
@@ -203,7 +203,7 @@ describe('Edge centrailized forwarding form: settings', () => {
     await waitFor(() => {
       expect(mockedSetFieldValue).toBeCalledWith('corePortName', 'Port2')
     })
-    expect(mockedSetFieldValue).toBeCalledWith('corePortMac', '00:00:00:00:00:00')
+    expect(mockedSetFieldValue).toBeCalledWith('corePortMac', 'port2')
   })
 
   it('Input invalid service name should show error message', async () => {
