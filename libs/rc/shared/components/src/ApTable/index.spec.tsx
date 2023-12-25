@@ -2,10 +2,10 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
-import { apApi }                                                 from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo, AFCPowerMode, AFCStatus } from '@acx-ui/rc/utils'
-import { Provider, store }                                       from '@acx-ui/store'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { apApi }                        from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }              from '@acx-ui/store'
 import {
   cleanup,
   findTBody,

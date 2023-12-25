@@ -87,6 +87,13 @@ function useDefaultAndInitialState <RecordType> ({
       localStorage.setItem(settingsId, JSON.stringify(initialState))
     }
     else if (settingsId && state) {
+      // if (columnState?.fixedInitValue) {
+      //   _.entries(columnState?.fixedInitValue).forEach(([key, value]) => {
+      //     if (state[key]) {
+      //       state[key].show = value
+      //     }
+      //   })
+      // }
       state = {
         ...initialState,
         ...(_.pick(state, _.keys(initialState)))

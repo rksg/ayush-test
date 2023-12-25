@@ -474,6 +474,7 @@ export const aggregatedVenueNetworksData = (networkList: TableResult<Network>,
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const fetchVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
   const venueNetworkListInfo = {
     ...createHttpRequest(CommonUrlsInfo.getVenueNetworkList, arg.params),

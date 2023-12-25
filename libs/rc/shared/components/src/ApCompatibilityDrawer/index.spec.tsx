@@ -1,11 +1,11 @@
 
-import { Form }  from 'antd'
-import { rest }  from 'msw'
+import { Form } from 'antd'
+import { rest } from 'msw'
 
-import { venueApi }                                       from '@acx-ui/rc/services'
-import { ApCompatibility, WifiUrlsInfo }                  from '@acx-ui/rc/utils'
-import { Provider, store }                                from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, fireEvent } from '@acx-ui/test-utils'
+import { venueApi }                              from '@acx-ui/rc/services'
+import { ApCompatibility, WifiUrlsInfo }         from '@acx-ui/rc/utils'
+import { Provider, store }                       from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
 
 import { InCompatibilityFeatures,
   ApCompatibilityQueryTypes,

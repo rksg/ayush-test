@@ -2,8 +2,7 @@
 import React, { useState, useEffect, useMemo, useContext, useImperativeHandle, forwardRef, Ref } from 'react'
 
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
-import { Badge, Checkbox }               from 'antd'
-import type { CheckboxChangeEvent } from 'antd/es/checkbox'
+import { Badge }               from 'antd'
 import { useIntl }             from 'react-intl'
 
 import {
@@ -41,27 +40,26 @@ import {
   APExtendedGrouped,
   AFCMaxPowerRender,
   AFCPowerStateRender,
-  getFilters, 
-  CommonResult, 
-  ImportErrorRes, 
+  getFilters,
+  CommonResult,
+  ImportErrorRes,
   FILTER
 } from '@acx-ui/rc/utils'
-import { ApFeatureCompatibility, ApCompatibilityQueryTypes, ApCompatibilityDrawer } from '@acx-ui/rc/components'
 import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                                 from '@acx-ui/types'
 import { filterByAccess }                                                 from '@acx-ui/user'
 import { exportMessageMapping }                                           from '@acx-ui/utils'
 
-import { seriesMappingAP }                                 from '../DevicesWidget/helper'
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
-import { useApActions }                                    from '../useApActions'
+import { ApFeatureCompatibility, ApCompatibilityQueryTypes, ApCompatibilityDrawer } from '../ApCompatibilityDrawer'
+import { seriesMappingAP }                                                          from '../DevicesWidget/helper'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                          from '../ImportFileDrawer'
+import { useApActions }                                                             from '../useApActions'
 
 import {
   getGroupableConfig, groupedFields
 } from './config'
 import { ApsTabContext } from './context'
 import { useExportCsv }  from './useExportCsv'
-
 
 export const defaultApPayload = {
   searchString: '',
@@ -432,8 +430,8 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       show: false,
       sorter: false,
       render: (data: React.ReactNode, row: APExtended) => {
-        return (<ApFeatureCompatibility 
-          count={row?.incompatible} 
+        return (<ApFeatureCompatibility
+          count={row?.incompatible}
           onClick={() => {
             setSelectedApSN(row?.serialNumber)
             setSelectedApName(row?.name ?? '')
@@ -441,7 +439,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
           }} />
         )
       }
-      }] : [])
+    }] : [])
     ]
 
     return columns
@@ -504,7 +502,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       apAction.showDownloadApLog(rows[0].serialNumber, params.tenantId)
     }
   }]
-  
+
   const [ isImportResultLoading, setIsImportResultLoading ] = useState(false)
   const [ importVisible, setImportVisible ] = useState(false)
   const [ importAps, importApsResult ] = useImportApOldMutation()
@@ -568,7 +566,6 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
 
   const handleColumnStateChange = (state: ColumnState) => {
     if (supportApCompatibleCheck && enableApCompatibleCheck) {
-      console.info('state:', state)
       if (showFeatureCompatibilitiy !== state['featureIncompatible']) {
         setShowFeatureCompatibilitiy(state['featureIncompatible'])
       }
@@ -580,10 +577,11 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
         {...props}
         settingsId='ap-table'
         columns={columns}
-        columnState={supportApCompatibleCheck? 
-          { 
-            onChange: handleColumnStateChange 
-          } : {} 
+        columnState={supportApCompatibleCheck?
+          {
+            // fixedInitValue: { featureIncompatible: false },
+            onChange: handleColumnStateChange
+          } : {}
         }
         dataSource={tableData}
         getAllPagesData={tableQuery.getAllPagesData}
