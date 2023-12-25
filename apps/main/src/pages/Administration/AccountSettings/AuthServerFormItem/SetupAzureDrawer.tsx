@@ -6,6 +6,8 @@ import {
 } from '@ant-design/icons'
 import {
   Form,
+  FormInstance,
+  Input,
   Space,
   Typography,
   Upload,
@@ -26,7 +28,8 @@ import {
   TenantAuthentications,
   TenantAuthenticationType,
   SamlFileType,
-  UploadUrlResponse
+  UploadUrlResponse//,
+  // domainNameRegExp
 } from '@acx-ui/rc/utils'
 
 import { reloadAuthTable } from '../AppTokenFormItem'
@@ -48,6 +51,7 @@ interface ImportFileDrawerProps extends DrawerProps {
   isEditMode: boolean
   setEditMode: (editMode: boolean) => void
   editData?: TenantAuthentications
+  isGroupBasedLoginEnabled?: boolean
 }
 
 const fileTypeMap: Record<AcceptableType, string[]>= {
@@ -74,7 +78,8 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
   const params = useParams()
 
   const { maxSize, isLoading, acceptType,
-    formDataName = 'file', setVisible, setEditMode, isEditMode, editData } = props
+    formDataName = 'file', setVisible, setEditMode,
+    isEditMode, editData, isGroupBasedLoginEnabled } = props
 
   const [fileDescription, setFileDescription] = useState<ReactNode>('')
   const [formData, setFormData] = useState<FormData>()
@@ -103,6 +108,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
       setFileDescription(<Typography.Text><FileTextOutlined /> {editData?.name} </Typography.Text>)
       // TODO: setMetadata() to contents of file only if we want to see file contents in metadata in editmode
       // fetchMetaData()
+      form.setFieldValue('domains', editData?.domains?.toString())
     }
   }, [form, props.visible])
 
@@ -193,12 +199,15 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
         }
       }
 
+      const allowedDomains =
+        isGroupBasedLoginEnabled ? form.getFieldValue('domains').split(',') : undefined
       if(isEditMode) {
         const ssoEditData: TenantAuthentications = {
           name: metadataFile.name,
           authenticationType: TenantAuthenticationType.saml,
           samlFileType: fileType,
-          samlFileURL: fileType === SamlFileType.file ? fileURL?.data.fileId : directUrlPath
+          samlFileURL: fileType === SamlFileType.file ? fileURL?.data.fileId : directUrlPath,
+          domains: allowedDomains
         }
         await updateSso({ params: { authenticationId: editData?.id },
           payload: ssoEditData }).unwrap()
@@ -208,7 +217,8 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
           name: metadataFile.name,
           authenticationType: TenantAuthenticationType.saml,
           samlFileType: fileType,
-          samlFileURL: fileType === SamlFileType.file ? fileURL?.data.fileId : directUrlPath
+          samlFileURL: fileType === SamlFileType.file ? fileURL?.data.fileId : directUrlPath,
+          domains: allowedDomains
         }
         await addSso({ payload: ssoData }).unwrap()
         reloadAuthTable(2)
@@ -221,25 +231,65 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     }
   }
 
-  return (<UI.ImportFileDrawer {...props}
-    keyboard={false}
-    closable={true}
-    width={550}
-    footer={<div>
+  const domainsValidator = async (value: string) => {
+    // eslint-disable-next-line max-len
+    const re = new RegExp(/(^((22[0-3]|2[0-1][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9]?)\.)((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){2}((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))$)|(^(\b((?=[A-Za-z0-9-]{1,63}\.)(xn--)?[A-Za-z0-9]+(-[A-Za-z0-9]+)*\.)+[A-Za-z]{2,63}\b)$)/)
+    const domains = value.split(',')
+    let invalid = false
+    domains.forEach((domain) => {
+      if (!re.test(domain.trim())) {
+        invalid = true
+      }
+    })
+    return invalid ? Promise.reject(
+      `${$t({ defaultMessage: 'Please enter domains separated by comma' })} `
+    ) : Promise.resolve()
+  }
+
+  const ApplyButton = ({ form }: { form: FormInstance }) => {
+    const [submittable, setSubmittable] = useState(false)
+
+    const values = Form.useWatch([], form)
+
+    useEffect(() => {
+      form.validateFields().then(
+        () => setSubmittable(true),
+        () => setSubmittable(false)
+      )
+    }, [values])
+
+    return (
       <Button
-        disabled={!formData}
+        disabled={!formData && !submittable}
         loading={isLoading}
         onClick={() => okHandler()}
         type={'primary'}
       >
         {$t({ defaultMessage: 'Apply' })}
       </Button>
-      <Button onClick={() => {
-        setVisible(false)
-      }}>
-        {$t({ defaultMessage: 'Cancel' })}
-      </Button>
-    </div>} >
+    )
+  }
+
+  const SamlContent = () => {
+    return <> <Form style={{ marginTop: 10 }} layout='vertical' form={form}>
+      {isGroupBasedLoginEnabled && <Form.Item
+        name='domains'
+        label={$t({ defaultMessage: 'Allowed Domains' })}
+        rules={[
+          { type: 'string', required: true },
+          { min: 2, transform: (value) => value.trim() },
+          { max: 64, transform: (value) => value.trim() },
+          { validator: (_, value) => domainsValidator(value) }
+
+        ]}
+        children={
+          <Input
+            placeholder={$t({ defaultMessage: 'Enter domains separated by comma' })}
+          />
+        }
+      />}
+    </Form>
+
     <label>
       { $t({ defaultMessage: 'IdP Metadata' }) }
     </label>
@@ -292,6 +342,31 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     <Form layout='vertical' form={form} >
       {props.children}
     </Form>
+    </>
+  }
+
+  return (<UI.ImportFileDrawer {...props}
+    keyboard={false}
+    closable={true}
+    width={550}
+    footer={<div>
+      {isGroupBasedLoginEnabled ? <ApplyButton form={form}></ApplyButton>
+        : <Button
+          disabled={!formData}
+          loading={isLoading}
+          onClick={() => okHandler()}
+          type={'primary'}
+        >
+          {$t({ defaultMessage: 'Apply' })}
+        </Button>}
+      <Button onClick={() => {
+        setVisible(false)
+      }}>
+        {$t({ defaultMessage: 'Cancel' })}
+      </Button>
+    </div>} >
+
+    <SamlContent />
 
   </UI.ImportFileDrawer>)
 }
