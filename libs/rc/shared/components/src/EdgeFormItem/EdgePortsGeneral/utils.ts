@@ -1,8 +1,4 @@
-import { FormInstance } from 'antd'
-
-import { EdgePortTypeEnum, isSubnetOverlap } from '@acx-ui/rc/utils'
-
-import { EdgePortConfigFormType } from '.'
+import { EdgeLag, EdgePort, EdgePortTypeEnum, isSubnetOverlap } from '@acx-ui/rc/utils'
 
 export const INNER_PORT_FORM_ID_PREFIX = 'port_'
 export const getInnerPortFormID = (index: number | string) => `${INNER_PORT_FORM_ID_PREFIX}${index}`
@@ -26,22 +22,28 @@ export async function lanPortsubnetValidator (
   return Promise.resolve()
 }
 
-export const getEnabledCorePortMac = (form: FormInstance) => {
-  const portsData = form.getFieldsValue(true) as EdgePortConfigFormType
+export const getEnabledCorePortKey = (portsData: EdgePort[], lagData: EdgeLag[]) : {
+    key: string | undefined,
+    isLag: boolean
+  } => {
+  const physicalCorePort = portsData.filter(item => item.corePortEnabled && item.enabled)
+  const lagCorePort = lagData.filter(item => item.corePortEnabled && item.lagEnabled)
+  const corePortKey = physicalCorePort[0]?.mac || lagCorePort[0]?.id
 
-  let corePort
-  let portConfig
-  for(let portId in portsData) {
-    portConfig = portsData[portId][0]
-    if (portConfig.corePortEnabled && portConfig.enabled)
-      corePort = portConfig.mac
+  return {
+    key: corePortKey !== undefined ? (corePortKey+'') : corePortKey,
+    isLag: physicalCorePort[0]?.mac ? false : lagCorePort[0]?.id !== undefined
   }
-  return corePort
 }
 
-export const isWANPortExist = (allValues: EdgePortConfigFormType): boolean => {
-  return Object.values(allValues)
-    .filter(port =>
-      port[0].enabled && port[0].portType === EdgePortTypeEnum.WAN
-    ).length > 0
+export const isWANPortExist = (portsData: EdgePort[],
+  lagData: EdgeLag[]): boolean => {
+  const portWAN = portsData.filter(port =>
+    port.enabled && port.portType === EdgePortTypeEnum.WAN
+  ).length > 0
+
+  const lagWAN = lagData.filter(lag =>
+    lag.lagEnabled && lag.portType === EdgePortTypeEnum.WAN
+  ).length > 0
+  return portWAN || lagWAN
 }

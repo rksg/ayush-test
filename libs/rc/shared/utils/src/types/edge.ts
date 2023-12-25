@@ -69,7 +69,7 @@ export interface EdgeDetails {
 }
 
 export interface EdgePort {
-  id?: string
+  id: string
   portType: EdgePortTypeEnum.WAN | EdgePortTypeEnum.LAN | EdgePortTypeEnum.UNCONFIGURED
   name: string
   mac: string
