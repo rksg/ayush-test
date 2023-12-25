@@ -1,3 +1,5 @@
+import { AFCPowerMode, AFCStatus } from '@acx-ui/rc/utils'
+
 export const apList = {
   totalCount: 1,
   page: 1,

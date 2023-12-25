@@ -30,7 +30,8 @@ import {
   list,
   params,
   networkVenue_allAps,
-  networkVenue_apgroup
+  networkVenue_apgroup,
+  networkVenueApCompatibilities
 } from './__tests__/fixtures'
 
 import { NetworkVenuesTab } from './index'
@@ -98,6 +99,10 @@ describe('NetworkVenuesTab', () => {
           mockedApplyFn()
           return res(ctx.json({}))
         }
+      ),
+      rest.post(
+        WifiUrlsInfo.getApCompatibilitiesNetwork.url,
+        (req, res, ctx) => res(ctx.json(networkVenueApCompatibilities))
       )
     )
   })
@@ -157,6 +162,8 @@ describe('NetworkVenuesTab', () => {
     await waitFor(() => rows.forEach(row => expect(row).toBeChecked()))
 
     const row2 = await screen.findByRole('row', { name: /My-Venue/i })
+    const icon = await within(row2).findByTestId('InformationSolid')
+    expect(icon).toBeVisible()
 
     await screen.findByRole('row', { name: /VLAN Pool/i })
 

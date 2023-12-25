@@ -167,6 +167,7 @@ export {
   ActivateNetworkSwitchButton } from './EdgeSdLan/SdLanNetworkTable'
 export type { ActivatedNetworksTableProps } from './EdgeSdLan/SdLanNetworkTable'
 export {
+  ApCompatibilityType,
   ApCompatibilityQueryTypes,
   InCompatibilityFeatures,
   ApFeatureCompatibility,

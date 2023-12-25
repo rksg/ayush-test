@@ -28,6 +28,7 @@ import {
   useDeleteNetworkVenueMutation,
   useDeleteNetworkVenuesMutation,
   useNetworkVenueListQuery,
+  useNetworkVenueTableQuery,
   useGetVenueCityListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -91,8 +92,9 @@ interface schedule {
 
 export function NetworkVenuesTab () {
   const { $t } = useIntl()
+  const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
   const tableQuery = useTableQuery({
-    useQuery: useNetworkVenueListQuery,
+    useQuery: isApCompatibleCheckEnabled ? useNetworkVenueTableQuery : useNetworkVenueListQuery,
     defaultPayload,
     search: {
       searchTargetFields: defaultPayload.searchTargetFields as string[]
@@ -398,7 +400,7 @@ export function NetworkVenuesTab () {
       dataIndex: 'aps',
       width: 80,
       render: function (_, row) {
-        return transformAps(getCurrentVenue(row), networkQuery.data as NetworkSaveData, (e) => handleClickApGroups(row, e), systemNetwork)
+        return transformAps(getCurrentVenue(row), networkQuery.data as NetworkSaveData, (e) => handleClickApGroups(row, e), systemNetwork, row.incompatible)
       }
     },
     {

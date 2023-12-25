@@ -6,12 +6,20 @@ import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Tooltip, Drawer, Button, Loader, cssStr } from '@acx-ui/components'
 import { QuestionMarkCircleOutlined }              from '@acx-ui/icons'
-import { useLazyGetApCompatibilitiesVenueQuery }   from '@acx-ui/rc/services'
-import { ApCompatibility }                         from '@acx-ui/rc/utils'
-import { TenantLink }                              from '@acx-ui/react-router-dom'
+import {
+  useLazyGetApCompatibilitiesVenueQuery,
+  useLazyGetApCompatibilitiesNetworkQuery
+}   from '@acx-ui/rc/services'
+import { ApCompatibility } from '@acx-ui/rc/utils'
+import { TenantLink }      from '@acx-ui/react-router-dom'
 
 
 import { StyledWrapper, CheckMarkCircleSolidIcon, WarningTriangleSolidIcon, UnknownIcon } from './styledComponents'
+
+export enum ApCompatibilityType {
+  NETWORK='Network',
+  VENUE='Venue'
+}
 
 export enum InCompatibilityFeatures {
   AP_70 = 'WIFI7 302MHz',
@@ -23,7 +31,11 @@ export enum ApCompatibilityQueryTypes {
   CHECK_VENUE='CHECK_VENUE',
   CHECK_VENUE_WITH_FEATURE='CHECK_VENUE_WITH_FEATURE',
   CHECK_VENUE_WITH_APS='CHECK_VENUE_WITH_APS',
-  CHECK_NETWORKS_OF_VENUE='CHECK_NETWORKS_OF_VENUE'
+  CHECK_NETWORKS_OF_VENUE='CHECK_NETWORKS_OF_VENUE',
+
+  CHECK_NETWORK='CHECK_NETWORK',
+  CHECK_NETWORK_WITH_APS='CHECK_NETWORK_WITH_APS',
+  CHECK_VENUES_OF_NETWORK='CHECK_VENUES_OF_NETWORK'
 }
 
 export type ApCompatibilityToolTipProps = {
@@ -129,13 +141,16 @@ export function ApFeatureCompatibility (props: ApFeatureCompatibilityProps) {
 
 export type ApCompatibilityDrawerProps = {
   visible: boolean,
+  type?: ApCompatibilityType,
   isMultiple?: boolean,
   venueId?: string,
+  venueName?: string,
+  networkId?: string,
   apName?: string,
   featureName?: InCompatibilityFeatures,
   networkIds?: string[],
   apIds?: string[],
-  venueName?: string,
+  venueIds?: string[],
   queryType?: ApCompatibilityQueryTypes,
   data?: ApCompatibility[],
   onClose: () => void
@@ -156,6 +171,7 @@ const detailStyle = { fontSize: '13px',
 Sample 1: Open drawer and then fetch data
   <ApCompatibilityDrawer
     visible={drawerVisible}
+    type={ApCompatibilityType.VENUE}
     venueId={venueId}
     featureName={InCompatibilityFeatures.BETA_DPSK3}
     venueName={venueData?.name ?? ''}
@@ -166,6 +182,7 @@ Sample 1: Open drawer and then fetch data
 Sample 2: Display data on drawer
   <ApCompatibilityDrawer
     isMultiple
+    type={ApCompatibilityType.VENUE}
     visible={drawerVisible}
     data={apCompatibility}
     onClose={() => setDrawerVisible(false)}
@@ -174,10 +191,11 @@ Sample 2: Display data on drawer
 export function ApCompatibilityDrawer (props: ApCompatibilityDrawerProps) {
   const { $t } = useIntl()
   const [form] = Form.useForm()
-  const { visible, isMultiple = false, venueName, featureName='', apName, apIds=[], networkIds=[], venueId, queryType, data=[] } = props
+  const { visible, type=ApCompatibilityType.VENUE, isMultiple=false, venueId, venueName, networkId, featureName, apName, apIds=[], networkIds=[], venueIds=[], queryType, data=[] } = props
   const [ isInitializing, setIsInitializing ] = useState(data.length === 0)
   const [ apCompatibilities, setApCompatibilities ] = useState<ApCompatibility[]>(data)
   const [ getApCompatibilitiesVenue ] = useLazyGetApCompatibilitiesVenueQuery()
+  const [ getApCompatibilitiesNetwork ] = useLazyGetApCompatibilitiesNetworkQuery()
 
   const apNameTitle = (apName) ? `: ${apName}` : ''
 
@@ -199,25 +217,44 @@ export function ApCompatibilityDrawer (props: ApCompatibilityDrawerProps) {
     'Also note that not all features are available on all access points. You may upgrade your firmware from '
   })
 
-  const multipleTitle = (apName) ? multipleFromAp : multipleFromFeature
-
-  const contentTxt = isMultiple ? multipleTitle : $t(
+  const singleFromNetwork= $t(
     {
       defaultMessage:
-            'To utilize the {featureName}, ensure that the access points on the venue ' +
-            '({venueName}) meet the minimum required version and AP model support list below. You may upgrade your firmware from '
+    'To utilize the {featureName}, ensure that the access points meet the minimum '+
+    'required version and AP model support list below. You may upgrade your firmware from'
     },
-    { featureName, venueName }
-  )
+    { featureName: featureName?.valueOf() ?? '' })
+
+  const singleFromVenue = $t(
+    {
+      defaultMessage:
+              'To utilize the {featureName}, ensure that the access points on the venue ' +
+              '({venueName}) meet the minimum required version and AP model support list below. You may upgrade your firmware from '
+    },
+    { featureName: featureName?.valueOf() ?? '', venueName })
+
+  const multipleTitle = (apName) ? multipleFromAp : multipleFromFeature
+  const singleTitle = (ApCompatibilityType.VENUE === type) ? singleFromVenue : singleFromNetwork
+
+  const contentTxt = isMultiple ? multipleTitle : singleTitle
 
   useEffect(() => {
     if (visible && data.length === 0 && apCompatibilities?.length === 0) {
       const fetchApCompatibilities = async () => {
         try {
-          const apCompatibilitiesResponse = await getApCompatibilitiesVenue({
-            params: { venueId },
-            payload: { filters: { apIds, networkIds }, feature: InCompatibilityFeatures.BETA_DPSK3, queryType }
-          }).unwrap()
+          const apCompatibilitiesReq = () => {
+            if (ApCompatibilityType.NETWORK === type) {
+              return getApCompatibilitiesNetwork({
+                params: { networkId },
+                payload: { filters: { apIds, venueIds }, feature: featureName, queryType }
+              })
+            }
+            return getApCompatibilitiesVenue({
+              params: { venueId },
+              payload: { filters: { apIds, networkIds }, feature: featureName, queryType }
+            })
+          }
+          const apCompatibilitiesResponse = await apCompatibilitiesReq().unwrap()
 
           setApCompatibilities(apCompatibilitiesResponse)
           setIsInitializing(false)
@@ -243,22 +280,26 @@ export function ApCompatibilityDrawer (props: ApCompatibilityDrawerProps) {
             </Typography.Text>
           </Form.Item>
         }
-        <Form.Item
-          key={`minfw_${index}`}
-          label={$t({ defaultMessage: 'Minimum required version' })}
-          style={detailStyle}
-          className='ApCompatibilityDrawerFormItem'
-        >
-          {itemDetail?.requiredFw}
-        </Form.Item>
-        <Form.Item
-          key={`model_${index}`}
-          label={$t({ defaultMessage: 'Supported AP Model Family' })}
-          style={detailStyle}
-          className='ApCompatibilityDrawerFormItem'
-        >
-          {itemDetail?.requiredModel}
-        </Form.Item>
+        {itemDetail?.requiredFw &&
+          <Form.Item
+            key={`minfw_${index}`}
+            label={$t({ defaultMessage: 'Minimum required version' })}
+            style={detailStyle}
+            className='ApCompatibilityDrawerFormItem'
+          >
+            {itemDetail?.requiredFw}
+          </Form.Item>
+        }
+        {itemDetail?.requiredModel &&
+          <Form.Item
+            key={`model_${index}`}
+            label={$t({ defaultMessage: 'Supported AP Model Family' })}
+            style={detailStyle}
+            className='ApCompatibilityDrawerFormItem'
+          >
+            {itemDetail?.requiredModel}
+          </Form.Item>
+        }
         {!apName &&
           <Form.Item
             key={`total_${index}`}

@@ -3,7 +3,13 @@ import { ReactNode, useEffect, useState } from 'react'
 import { useIntl, FormattedMessage } from 'react-intl'
 import { useNavigate, useParams }    from 'react-router-dom'
 
-import { showActionModal, Loader, TableProps, Table  }            from '@acx-ui/components'
+import { showActionModal,
+  Loader,
+  TableProps,
+  Table,
+  cssStr,
+  Tooltip
+} from '@acx-ui/components'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { useDeleteNetworkMutation, useLazyVenuesListQuery }       from '@acx-ui/rc/services'
 import {
@@ -23,7 +29,8 @@ import { getIntl, noDataDisplay }    from '@acx-ui/utils'
 
 const disabledType: NetworkTypeEnum[] = []
 
-function getCols (intl: ReturnType<typeof useIntl>, oweTransFlag: boolean, clientsFlag: boolean) {
+function getCols (intl: ReturnType<typeof useIntl>,
+  oweTransFlag: boolean, clientsFlag: boolean, supportApCompatibleCheck: boolean) {
   function getSecurityProtocol (securityProtocol: WlanSecurityEnum, oweMaster?: boolean) {
     let _securityProtocol: string = ''
     switch (securityProtocol) {
@@ -137,11 +144,28 @@ function getCols (intl: ReturnType<typeof useIntl>, oweTransFlag: boolean, clien
           return row.aps
         }else{
           return (
-            row?.isOnBoarded
-              ? <span>{row.aps || noDataDisplay}</span>
-              : <TenantLink to={`/networks/wireless/${row.id}/network-details/aps`}>
-                {row.aps}
-              </TenantLink>
+            <>
+              {row?.isOnBoarded
+                ? <span>{row.aps || noDataDisplay}</span>
+                : <TenantLink to={`/networks/wireless/${row.id}/network-details/aps`}>
+                  {row.aps}
+                </TenantLink>}
+              {supportApCompatibleCheck && row.incompatible && row.incompatible > 0 &&
+                <Tooltip.Info isFilled
+                  title={intl.$t({
+                    defaultMessage: 'Some access points may not be compatible with ' +
+                    'certain features in this venue.'
+                  })}
+                  placement='right'
+                  iconStyle={{
+                    height: '10px',
+                    width: '10px',
+                    marginBottom: '-3px',
+                    marginLeft: '6px',
+                    color: cssStr('--acx-semantics-yellow-50') }}
+                />
+              }
+            </>
           )
         }
       }
@@ -292,6 +316,7 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
   const navigate = useNavigate()
   const linkToEditNetwork = useTenantLink('/networks/wireless/')
   const listOfClientsPerWlanFlag = useIsSplitOn(Features.LIST_OF_CLIENTS_PER_WLAN)
+  const supportApCompatibleCheck = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
 
   useEffect(() => {
     if (tableQuery?.data?.data) {
@@ -398,7 +423,11 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
     ]}>
       <Table
         settingsId='network-table'
-        columns={getCols(intl, supportOweTransition, listOfClientsPerWlanFlag)}
+        columns={getCols(intl,
+          supportOweTransition,
+          listOfClientsPerWlanFlag,
+          supportApCompatibleCheck
+        )}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}

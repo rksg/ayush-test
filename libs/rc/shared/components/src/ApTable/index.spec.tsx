@@ -65,7 +65,7 @@ describe('Aps', () => {
         (req, res, ctx) => res(ctx.json(apList))
       ),
       rest.post(
-        CommonUrlsInfo.getApCompatibilitiesVenue.url,
+        WifiUrlsInfo.getApCompatibilitiesVenue.url,
         (req, res, ctx) => res(ctx.json(apCompatibilities))
       ),
       rest.post(

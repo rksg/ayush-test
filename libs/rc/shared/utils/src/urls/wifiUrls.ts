@@ -629,5 +629,11 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/venues/:venueId/aps/compatibilities/query',
     newApi: true
+  },
+  getApCompatibilitiesNetwork: {
+    method: 'post',
+    url: '/wifiNetworks/:networkId/aps/compatibilities/query',
+    newApi: true
   }
+
 }

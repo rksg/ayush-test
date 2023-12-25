@@ -3,11 +3,18 @@ import { Form } from 'antd'
 import { rest } from 'msw'
 
 import { venueApi }                              from '@acx-ui/rc/services'
-import { ApCompatibility, WifiUrlsInfo }         from '@acx-ui/rc/utils'
+import { WifiUrlsInfo }                          from '@acx-ui/rc/utils'
 import { Provider, store }                       from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
 
-import { InCompatibilityFeatures,
+import {
+  mockApCompatibilitiesVenue,
+  mockApCompatibilitiesNetwork
+} from './__test__/fixtures'
+
+import { 
+  ApCompatibilityType,
+  InCompatibilityFeatures,
   ApCompatibilityQueryTypes,
   ApCompatibilityToolTip,
   ApFeatureCompatibility,
@@ -50,51 +57,25 @@ describe('ApCompatibilityToolTip > ApFeatureCompatibility > ApCompatibilityDrawe
   })
 
   describe('ApCompatibilityDrawer', () => {
-    const venueId = 'Test VenueId'
-    let params = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac', venueId }
+    const venueId = '8caa8f5e01494b5499fa156a6c565138'
+    const networkId = 'c9d5f4c771c34ad2898f7078cebbb191'
+    const tenantId = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+    let params = { tenantId, venueId }
     const venueName = 'Test Venue'
     const mockedCloseDrawer = jest.fn()
-    const mockApCompatibilities: ApCompatibility[] = [
-      {
-        id: '48b026b6e6544dbcaf4d59216a64b6d2',
-        incompatibleFeatures: [ {
-          featureName: 'EXAMPLE-FEATURE-1',
-          requiredFw: '7.0.0.0.123',
-          requiredModel: '11be',
-          incompatibleDevices: [{
-            firmware: '6.2.3.103.233',
-            model: 'R550',
-            count: 1
-          }]
-        }
-        ],
-        total: 1,
-        incompatible: 1
-      },{
-        id: '74d0491836274f3aab6754e6e8c85aca',
-        incompatibleFeatures: [ {
-          featureName: 'EXAMPLE-FEATURE-3',
-          requiredFw: '6.2.3.103.250',
-          incompatibleDevices: [{
-            firmware: '6.2.3.103.233',
-            model: 'R550',
-            count: 1
-          }]
-        }
-        ],
-        total: 1,
-        incompatible: 1
-      }
-    ]
+
     beforeEach(() => {
       store.dispatch(venueApi.util.resetApiState())
       mockServer.use(
         rest.post(
           WifiUrlsInfo.getApCompatibilitiesVenue.url,
-          (_, res, ctx) => res(ctx.json(mockApCompatibilities)))
+          (_, res, ctx) => res(ctx.json(mockApCompatibilitiesVenue))),
+        rest.post(
+          WifiUrlsInfo.getApCompatibilitiesNetwork.url,
+          (_, res, ctx) => res(ctx.json(mockApCompatibilitiesNetwork)))
       )
     })
-    it('should fetch and display render correctly', async () => {
+    it('should fetch and display render venue correctly', async () => {
       render(
         <Provider>
           <Form>
@@ -107,9 +88,29 @@ describe('ApCompatibilityToolTip > ApFeatureCompatibility > ApCompatibilityDrawe
               onClose={mockedCloseDrawer}
             /></Form>
         </Provider>, {
-          route: { params, path: '/:tenantId' }
+          route: { params: { tenantId, venueId }, path: '/:tenantId' }
         })
       expect(await screen.findByText('7.0.0.0.123')).toBeInTheDocument()
+      const icon = await screen.findByTestId('CloseSymbol')
+      expect(icon).toBeVisible()
+    })
+
+    it('should fetch and display render network correctly', async () => {
+      render(
+        <Provider>
+          <Form>
+            <ApCompatibilityDrawer
+              visible={true}
+              type={ApCompatibilityType.NETWORK}
+              networkId={networkId}
+              featureName={InCompatibilityFeatures.BETA_DPSK3}
+              queryType={ApCompatibilityQueryTypes.CHECK_NETWORK}
+              onClose={mockedCloseDrawer}
+            /></Form>
+        </Provider>, {
+          route: { params: { tenantId, networkId }, path: '/:tenantId' }
+        })
+      expect(await screen.findByText('6.2.3.103.251')).toBeInTheDocument()
       const icon = await screen.findByTestId('CloseSymbol')
       expect(icon).toBeVisible()
     })
@@ -121,7 +122,7 @@ describe('ApCompatibilityToolTip > ApFeatureCompatibility > ApCompatibilityDrawe
             <ApCompatibilityDrawer
               isMultiple
               visible={true}
-              data={mockApCompatibilities}
+              data={mockApCompatibilitiesVenue}
               onClose={mockedCloseDrawer}
             /></Form>
         </Provider>, {
