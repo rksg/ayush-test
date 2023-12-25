@@ -5,7 +5,7 @@ import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
 
 import { Dropdown, Button, CaretDownSolidIcon } from '@acx-ui/components'
 
-type SliceType = 'property' | 'lsp'
+export type SliceType = 'property' | 'lsp'
 const slices: Record<SliceType, MessageDescriptor> = {
   property: defineMessage({ defaultMessage: 'Property' }),
   lsp: defineMessage({ defaultMessage: 'LSP' })
