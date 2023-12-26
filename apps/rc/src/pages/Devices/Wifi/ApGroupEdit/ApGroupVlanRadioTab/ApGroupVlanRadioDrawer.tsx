@@ -1,10 +1,11 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { Form, InputNumber, Select } from 'antd'
-import _                             from 'lodash'
-import { useIntl }                   from 'react-intl'
+import { Form, InputNumber } from 'antd'
+import { DefaultOptionType } from 'antd/lib/select'
+import _                     from 'lodash'
+import { useIntl }           from 'react-intl'
 
-import { Drawer }                                               from '@acx-ui/components'
+import { Drawer, Select }                                       from '@acx-ui/components'
 import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
 import { IsNetworkSupport6g, Network, RadioTypeEnum, VlanType } from '@acx-ui/rc/utils'
 
@@ -176,7 +177,7 @@ export function ApGroupVlanRadioDrawer ({ updateData }: { updateData: (data: Net
             <Select labelInValue
               fieldNames={{ label: 'name', value: 'id' }}
               placeholder={$t({ defaultMessage: 'Select profile...' })}
-              options={vlanPoolOptions}
+              options={vlanPoolOptions as unknown as DefaultOptionType[]}
               style={{ width: '250px' }} />
           } />
       )}
@@ -187,7 +188,9 @@ export function ApGroupVlanRadioDrawer ({ updateData }: { updateData: (data: Net
           { required: true }
         ]}
         children={
-          <Select mode='multiple'
+          <Select
+            mode='multiple'
+            showArrow
             style={{ width: '250px' }}
           >
             <Select.Option value={RadioTypeEnum._2_4_GHz} >

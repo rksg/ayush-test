@@ -928,7 +928,7 @@ exports[`incident details should render incident details correctly when there is
                               class="ant-descriptions-item-content"
                             >
                               <span
-                                class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
                               >
                                 --
                               </span>
