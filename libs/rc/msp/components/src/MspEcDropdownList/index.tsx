@@ -201,9 +201,8 @@ export function MspEcDropdownList () {
         } : {}
       },
       render: function (_, row) {
-        const to = `/${row.id}/t`
         return (
-          (row.status === 'Active') ? <Link to={to}>{row.name}</Link> : row.name
+          (row.status === 'Active') ? <Link to={''}>{row.name}</Link> : row.name
         )
       }
     },
@@ -237,9 +236,8 @@ export function MspEcDropdownList () {
         }
       },
       render: function (_, row) {
-        const to = `/${row.tenantId}/t`
         return (
-          <Link to={to}>{row.tenantName}</Link>
+          <Link to={''}>{row.tenantName}</Link>
         )
       }
     },
