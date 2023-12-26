@@ -260,21 +260,21 @@ describe('Test', () => {
       {
         component: AirtimeTx,
         fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-tx-24g-high' as IncidentCode },
-        hasNetworkImpact: false,
+        hasNetworkImpact: true,
         hasTimeSeries: true,
         charts: []
       },
       {
         component: AirtimeTx,
         fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-tx-5g-high' as IncidentCode },
-        hasNetworkImpact: false,
+        hasNetworkImpact: true,
         hasTimeSeries: true,
         charts: []
       },
       {
         component: AirtimeTx,
         fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-tx-6(5)g-high' as IncidentCode },
-        hasNetworkImpact: false,
+        hasNetworkImpact: true,
         hasTimeSeries: true,
         charts: []
       }

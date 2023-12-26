@@ -191,6 +191,7 @@ export enum TrustedPortTypeEnum {
   DHCP = 'dhcp',
   ARP = 'arp'
 }
+
 export enum WanConnectionEnum {
   ETH_WITH_CELLULAR_FAILOVER = 'ETH_WITH_CELLULAR_FAILOVER',
   CELLULAR_WITH_ETH_FAILOVER = 'CELLULAR_WITH_ETH_FAILOVER',
