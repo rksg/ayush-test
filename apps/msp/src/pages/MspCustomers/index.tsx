@@ -725,6 +725,8 @@ export function MspCustomers () {
   }
 
   const SupportEcTable = () => {
+    const [mspEcTenantList, setMspEcTenantList] = useState([] as string[])
+    const [mspEcAlarmList, setEcAlarmData] = useState({} as MspEcAlarmList)
     const tableQuery = useTableQuery({
       useQuery: useSupportMspCustomerListQuery,
       defaultPayload: supportPayload,
@@ -733,7 +735,21 @@ export function MspCustomers () {
       }
     })
 
-    const columns = useColumns()
+    const alarmList = useGetMspEcAlarmListQuery(
+      { params, payload: { mspEcTenants: mspEcTenantList } },
+      { skip: !isSupportEcAlarmCount || mspEcTenantList.length === 0 })
+
+    useEffect(() => {
+      if (tableQuery?.data?.data) {
+        const ecList = tableQuery?.data.data.map(item => item.id)
+        setMspEcTenantList(ecList)
+      }
+      if (alarmList?.data) {
+        setEcAlarmData(alarmList?.data)
+      }
+    }, [tableQuery?.data?.data, alarmList?.data])
+
+    const columns = useColumns(mspEcAlarmList)
 
     return (
       <Loader states={[
