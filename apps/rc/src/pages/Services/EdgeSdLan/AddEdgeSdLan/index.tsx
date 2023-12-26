@@ -50,6 +50,7 @@ const AddEdgeSdLan = () => {
         networkIds: formData.activatedNetworks.map(network => network.id),
         tunnelProfileId: formData.tunnelProfileId
       }
+
       await addEdgeSdLan({ payload }).unwrap()
       navigate(linkToServiceList, { replace: true })
     } catch(err) {

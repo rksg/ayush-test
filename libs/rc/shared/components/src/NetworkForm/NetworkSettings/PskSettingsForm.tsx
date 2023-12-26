@@ -92,7 +92,7 @@ export function PskSettingsForm () {
 }
 
 function SettingsForm () {
-  const { editMode, data, setData } = useContext(NetworkFormContext)
+  const { editMode, cloneMode, data, setData } = useContext(NetworkFormContext)
   const intl = useIntl()
   const form = Form.useFormInstance()
   const [
@@ -206,6 +206,14 @@ function SettingsForm () {
       })
     }
   },[data])
+
+  useEffect(() => {
+    if (!editMode && !cloneMode) {
+      if (!wlanSecurity || !Object.keys(PskWlanSecurityEnum).includes(wlanSecurity)) {
+        form.setFieldValue(['wlan', 'wlanSecurity'], WlanSecurityEnum.WPA2Personal)
+      }
+    }
+  }, [cloneMode, editMode, form, wlanSecurity])
 
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const disablePolicies = !useIsSplitOn(Features.POLICIES)

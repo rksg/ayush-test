@@ -4,14 +4,14 @@ import { useIntl }    from 'react-intl'
 import { calculateSeverity, Incident, shortDescription } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol }    from '@acx-ui/components'
 
-import { FixedAutoSizer }                    from '../../DescriptionSection/styledComponents'
-import { WanthroughputTable }                from '../Charts/WanthroughputTable'
-import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
-import { Insights }                          from '../Insights'
-import { NetworkImpact, NetworkImpactProps } from '../NetworkImpact'
-import { NetworkImpactChartTypes }           from '../NetworkImpact/config'
-import { TimeSeries }                        from '../TimeSeries'
-import { TimeSeriesChartTypes }              from '../TimeSeries/config'
+import { FixedAutoSizer }                                   from '../../DescriptionSection/styledComponents'
+import { WanthroughputTable }                               from '../Charts/WanthroughputTable'
+import { IncidentAttributes, Attributes }                   from '../IncidentAttributes'
+import { Insights }                                         from '../Insights'
+import { NetworkImpact, NetworkImpactProps }                from '../NetworkImpact'
+import { NetworkImpactChartTypes, NetworkImpactQueryTypes } from '../NetworkImpact/config'
+import { TimeSeries }                                       from '../TimeSeries'
+import { TimeSeriesChartTypes }                             from '../TimeSeries/config'
 
 import MuteIncident from './MuteIncident'
 
@@ -30,10 +30,12 @@ export const ApinfraWanthroughputLow = (incident: Incident) => {
 
   const networkImpactCharts: NetworkImpactProps['charts'] = [{
     chart: NetworkImpactChartTypes.APModelByAP,
+    query: NetworkImpactQueryTypes.TopN,
     type: 'apInfra',
     dimension: 'apModels'
   }, {
     chart: NetworkImpactChartTypes.APFwVersionByAP,
+    query: NetworkImpactQueryTypes.TopN,
     type: 'apInfra',
     dimension: 'apFwVersions'
   }]
