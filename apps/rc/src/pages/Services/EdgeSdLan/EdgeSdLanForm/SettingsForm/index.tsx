@@ -156,7 +156,7 @@ export const SettingsForm = () => {
       let corePortMac, corePortName
       portsConfig?.forEach((port) => {
         if (port.corePortEnabled && port.enabled) {
-          corePortMac = port.mac
+          corePortMac = port.interfaceName
           corePortName = getEdgePortDisplayName(port)
         }
       })
