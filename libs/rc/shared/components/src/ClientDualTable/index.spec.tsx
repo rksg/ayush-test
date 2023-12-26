@@ -1,8 +1,9 @@
 import { rest } from 'msw'
 
 import { useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
+import { clientApi }                                                        from '@acx-ui/rc/services'
 import { ClientUrlsInfo, CommonUrlsInfo }                                   from '@acx-ui/rc/utils'
-import { Provider }                                                         from '@acx-ui/store'
+import { Provider, store }                                                  from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { ClientDualTable } from './index'
@@ -15,6 +16,7 @@ describe('ClientDualTable', () => {
   }
 
   beforeEach(() => {
+    store.dispatch(clientApi.util.resetApiState())
     mockServer.use(
       rest.post(
         ClientUrlsInfo.getClientList.url,
