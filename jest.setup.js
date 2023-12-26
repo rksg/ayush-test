@@ -72,7 +72,7 @@ beforeEach(async () => {
       )
     )
   )
-  await config.initialize()
+  await config.initialize('test')
 
   require('@acx-ui/user').setUserProfile({
     allowedOperations: [],
