@@ -59,16 +59,18 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   }, [isListForm, formListID, getFieldPath])
 
   const mac = useWatch(getFieldFullPath('mac'), form)
-  const lagId = useWatch(getFieldFullPath('id'), form)
   const portType = useWatch(getFieldFullPath('portType'), form)
   const portEnabled = useWatch(getFieldFullPath('enabled'), form)
   const corePortEnabled = useWatch(getFieldFullPath('corePortEnabled'), form)
+
+  const lagId = form.getFieldValue(getFieldFullPath('id'))
+  const physicalPortIfName = form.getFieldValue(getFieldFullPath('interfaceName'))
 
   const corePortInfo = getEnabledCorePortKey(portsData, lagData || [])
   const hasCorePortEnabled = !!corePortInfo.key
   const isCurrentPortCorePortEnabled = corePortEnabled || (hasCorePortEnabled && (corePortInfo.isLag
     ? corePortInfo.key === (lagId + '')
-    : corePortInfo.key === mac))
+    : corePortInfo.key === physicalPortIfName))
 
   // corePort should be grey-out when one of the following NOT matches :
   // - enabled WAN port cannot exist and current LAN port is core port
