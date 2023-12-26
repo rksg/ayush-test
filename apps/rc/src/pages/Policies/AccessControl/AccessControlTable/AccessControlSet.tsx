@@ -121,6 +121,7 @@ const AccessControlSet = () => {
     },
     {
       label: $t({ defaultMessage: 'Edit' }),
+      visible: (selectedItems => selectedItems.length === 1),
       onClick: ([{ id }]) => {
         navigate({
           ...tenantBasePath,

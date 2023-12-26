@@ -5,8 +5,7 @@ import {
   mockServer,
   render,
   screen,
-  fireEvent,
-  waitFor
+  fireEvent
 } from '@acx-ui/test-utils'
 import { UserUrlsInfo } from '@acx-ui/user'
 
@@ -50,9 +49,7 @@ describe('Enable RUCKUS One Beta Checkbox', () => {
     expect(enableBtn).toBeVisible()
 
     fireEvent.click(enableBtn)
-    await waitFor(() => {
-      expect(enableBtn).not.toBeVisible()
-    })
+    expect(enableBtn).not.toBeVisible()
 
     const currentBeta = await screen.findByRole('link', { name: 'Current beta features' })
     fireEvent.click(currentBeta)
@@ -65,7 +62,8 @@ describe('Enable RUCKUS One Beta Checkbox', () => {
 
   it('should show terms and condition drawer', async () => {
     const mockedSetVisible = jest.fn()
-
+    // eslint-disable-next-line max-len
+    const content = 'In order to enable the Beta features, we have to log you out. Once you log-in back, the features will be available for you to use.'
     render(
       <Provider>
         <BetaFeaturesDrawer
@@ -77,15 +75,14 @@ describe('Enable RUCKUS One Beta Checkbox', () => {
         route: { params }
       })
 
-    await screen.findByRole('dialog')
-    const okBtn = await screen.findByRole('button', { name: 'Ok' })
+    await screen.findAllByRole('dialog')
+    const okBtn = await screen.findByRole('button', { name: 'Log Out Now' })
     expect(okBtn).toBeVisible()
-
+    expect(await screen.findByText(content)).toBeInTheDocument()
+    expect(await screen.findByText('Enabling Beta Features')).toBeVisible()
+    expect(await screen.findByText('RUCKUS One Beta Features')).toBeVisible()
     fireEvent.click(okBtn)
-    await waitFor(() => {
-      expect(okBtn).toBeVisible()
-    })
-
+    expect(okBtn).toBeVisible()
   })
 
   it('should display correctly if no data', async () => {
