@@ -349,25 +349,30 @@ export function AddRecCustomer () {
           }
         ]}
       />
-      <StepsForm
-        onFinish={isEditMode ? async () => {} : handleAddCustomer}
-        onCancel={() => navigate(linkToRecCustomers)}
-        buttonLabel={{ submit: isEditMode ?
-          intl.$t({ defaultMessage: 'Save' }):
-          intl.$t({ defaultMessage: 'Add' }) }}
-      >
-        <StepsForm.StepForm
-          name='accountDetail'
-          title={intl.$t({ defaultMessage: 'Account Details' })}
+      {isEditMode ? <Form>
+        <Subtitle level={3}>
+          { intl.$t({ defaultMessage: 'Account Details' }) }</Subtitle>
+        <MspAdminsForm />
+        <EnableSupportForm />
+      </Form>
+        : <StepsForm
+          onFinish={isEditMode ? async () => {} : handleAddCustomer}
+          onCancel={() => navigate(linkToRecCustomers)}
+          buttonLabel={{ submit: isEditMode ?
+            intl.$t({ defaultMessage: 'Save' }):
+            intl.$t({ defaultMessage: 'Add' }) }}
         >
-          <Subtitle level={3}>
-            { intl.$t({ defaultMessage: 'Account Details' }) }</Subtitle>
+          <StepsForm.StepForm
+            name='accountDetail'
+            title={intl.$t({ defaultMessage: 'Account Details' })}
+          >
+            <Subtitle level={3}>
+              { intl.$t({ defaultMessage: 'Account Details' }) }</Subtitle>
 
-          <MspAdminsForm></MspAdminsForm>
-          {isEditMode && <EnableSupportForm />}
+            <MspAdminsForm></MspAdminsForm>
 
-        </StepsForm.StepForm>
-      </StepsForm>
+          </StepsForm.StepForm>
+        </StepsForm>}
 
       {drawerRecVisible && <SelectRecCustomerDrawer
         visible={drawerRecVisible}
