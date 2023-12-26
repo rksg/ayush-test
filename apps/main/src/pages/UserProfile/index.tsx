@@ -47,6 +47,7 @@ export function UserProfile () {
     navigate({
       pathname: location.from
     }, { replace: true })
+    window.location.reload()
   }
 
   const handleCancel = () => {
