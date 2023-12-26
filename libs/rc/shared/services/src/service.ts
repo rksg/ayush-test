@@ -55,8 +55,7 @@ import {
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
-  ApplicationPolicy,
-  AccessControlProfile
+  ApplicationPolicy
 } from '@acx-ui/rc/utils'
 import { baseServiceApi }             from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
@@ -133,17 +132,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         )
         return {
           ...applicationPolicyListReq
-        }
-      }
-    }),
-    accessControlProfileList: build.query<AccessControlProfile[], RequestPayload>({
-      query: ({ params }) => {
-        const accessControlProfileListReq = createHttpRequest(
-          AccessControlUrls.getAccessControlProfileList,
-          params
-        )
-        return {
-          ...accessControlProfileListReq
         }
       }
     }),
@@ -963,7 +951,6 @@ export const {
   useGetDHCPProfileQuery,
   useSaveOrUpdateDHCPMutation,
   useDeleteDHCPServiceMutation,
-  useAccessControlProfileListQuery,
   useGetDHCPProfileListQuery,
   useLazyGetDHCPProfileListQuery,
   useGetMdnsProxyQuery,

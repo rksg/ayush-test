@@ -19,6 +19,11 @@ export type NetworkImpactType = 'ap'
 | 'airtimeCast'
 
 export enum NetworkImpactChartTypes {
+  AirtimeBusy = 'airtimeBusy',
+  AirtimeCast = 'airtimeCast',
+  AirtimeMgmtFrame = 'airtimeMgmtFrame',
+  AirtimeRx = 'airtimeRx',
+  AirtimeTx = 'airtimeTx',
   APFwVersionByAP = 'apFwVersionByAP',
   APModel = 'apModel',
   APModelByAP = 'apModelByAP',
@@ -31,12 +36,7 @@ export enum NetworkImpactChartTypes {
   RebootReasonsByEvent = 'rebootReasonsByEvent',
   Reason = 'reason',
   ReasonByAP = 'reasonByAP',
-  WLAN = 'WLAN',
-  AirtimeBusy = 'airtimeBusy',
-  AirtimeTx = 'airtimeTx',
-  AirtimeRx = 'airtimeRx',
-  AirtimeMgmtFrame = 'airtimeMgmtFrame',
-  AirtimeCast = 'airtimeCast'
+  WLAN = 'WLAN'
 }
 
 export enum NetworkImpactQueryTypes {

@@ -2,11 +2,11 @@ import { BrowserRouter } from 'react-router-dom'
 
 import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
-import { OptimalConfiguration, OptimalConfigurationWithData, NoAiOpsLicense } from './extra'
+import { OptimalConfiguration, OptimalConfigurationWithData, NoAiOpsLicense, optimalConfigurationText } from './extra'
 
 describe('OptimalConfiguration', () => {
   it('should render correctly with the prop', () => {
-    const { asFragment } = render(<OptimalConfiguration />)
+    const { asFragment } = render(<OptimalConfiguration text={optimalConfigurationText}/>)
     expect(asFragment()).toMatchSnapshot()
   })
 })

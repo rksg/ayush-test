@@ -45,7 +45,14 @@ export function ScheduleStep (props: ScheduleStepProps) {
   const [selectedVersion, setSelectedVersion] = useState('')
   const [selectedAboveTenVersion, setSelectedAboveTenVersion] = useState<string>('')
   const [hasSelectedDate, setHasSelectedDate] = useState<boolean>(false)
-  const [checked, setChecked] = useState(false)
+  const getCurrentChecked = function () {
+    if (upgradeVenueList.length + upgradeSwitchList.length === 1) {
+      return upgradeVenueList.length === 1 ?
+        upgradeVenueList[0].preDownload : upgradeSwitchList[0].preDownload
+    } return false
+  }
+
+  const [checked, setChecked] = useState(getCurrentChecked())
 
   const getCurrentSchedule = function () {
     if (upgradeVenueList.length + upgradeSwitchList.length === 1) {
@@ -63,6 +70,21 @@ export function ScheduleStep (props: ScheduleStepProps) {
   useEffect(()=>{
     setShowSubTitle(false)
   }, [current])
+
+  useEffect(() => {
+    if ((hasVenue || nonIcx8200Count > 0)) {
+      setSelectedVersion(currentScheduleVersion || '')
+      form.setFieldValue('switchVersion', currentScheduleVersion)
+    }
+
+    if ((hasVenue || icx8200Count > 0)) {
+      setSelectedAboveTenVersion(currentScheduleVersionAboveTen || '')
+      form.setFieldValue('switchVersionAboveTen', currentScheduleVersionAboveTen)
+    }
+
+    form.setFieldValue('preDownloadChecked', getCurrentChecked())
+
+  }, [upgradeVenueList, upgradeSwitchList])
 
   const getAvailableVersionsByPrefix = (availableVersions?: FirmwareVersion[],
     aboveTenPrefix?: boolean, currentScheduleVersion?: string) => {

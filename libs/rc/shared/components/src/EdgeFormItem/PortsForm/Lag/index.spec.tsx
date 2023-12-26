@@ -1,23 +1,27 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeLagFixtures, EdgeUrlsInfo }               from '@acx-ui/rc/utils'
+import { EdgeLag, EdgeLagFixtures, EdgeUrlsInfo }      from '@acx-ui/rc/utils'
 import { Provider }                                    from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
+
+import { EdgePortsDataContext } from '../PortDataProvider'
 
 import Lag from '.'
 
 const { mockedEdgeLagList, mockEdgeLagStatusList } = EdgeLagFixtures
 
+const defaultPortsContextdata = {
+  portData: [],
+  lagData: mockedEdgeLagList.content as EdgeLag[],
+  isLoading: false,
+  isFetching: false
+}
+
 describe('EditEdge ports - LAG', () => {
-  let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
+  const mockedEdgeID = 'mocked_edge_id'
+
   beforeEach(() => {
-    params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      serialNumber: '000000000000',
-      activeTab: 'ports',
-      activeSubTab: 'sub-interface'
-    }
     mockServer.use(
       rest.get(
         EdgeUrlsInfo.getEdgeLagList.url,
@@ -33,54 +37,47 @@ describe('EditEdge ports - LAG', () => {
   it('Should render LAG tab correctly', async () => {
     render(
       <Provider>
-        <Lag
-          lagStatusList={mockEdgeLagStatusList.data}
-          isLoading={false}
-          portList={[]}
-        />
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
-        }
-      })
-    const rows = await screen.findAllByRole('row')
+        <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+          <Lag
+            serialNumber={mockedEdgeID}
+            lagStatusList={mockEdgeLagStatusList.data}
+            isLoading={false}
+          />
+        </EdgePortsDataContext.Provider>
+      </Provider>)
+    const rows = await screen.findAllByRole('row', { name: /LAG \d/i })
     expect(rows.length).toBe(2)
   })
 
   it('Should open add LAG drawer correctly', async () => {
     render(
       <Provider>
-        <Lag
-          lagStatusList={mockEdgeLagStatusList.data}
-          isLoading={false}
-          portList={[]}
-        />
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
-        }
-      })
+        <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+          <Lag
+            serialNumber={mockedEdgeID}
+            lagStatusList={mockEdgeLagStatusList.data}
+            isLoading={false}
+          />
+        </EdgePortsDataContext.Provider>
+      </Provider>)
+
     await userEvent.click(screen.getByRole('button', { name: 'Add LAG' }))
     const drawer = await screen.findByRole('dialog')
     expect(within(drawer).getByText('Add LAG')).toBeVisible()
   })
 
-  it.skip('Should delete LAG correctly', async () => {
+  it('Should delete LAG correctly', async () => {
     render(
       <Provider>
-        <Lag
-          lagStatusList={mockEdgeLagStatusList.data}
-          isLoading={false}
-          portList={[]}
-        />
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
-        }
-      })
+        <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+          <Lag
+            serialNumber={mockedEdgeID}
+            lagStatusList={mockEdgeLagStatusList.data}
+            isLoading={false}
+          />
+        </EdgePortsDataContext.Provider>
+      </Provider>)
+
     const row = await screen.findByRole('row', { name: /LAG 1/i })
     await userEvent.click(within(row).getByRole('radio'))
     await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
