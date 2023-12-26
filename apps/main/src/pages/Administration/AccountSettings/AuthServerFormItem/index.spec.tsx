@@ -57,6 +57,11 @@ describe('Auth Server Form Item', () => {
     utils.loadImageWithJWT = jest.fn().mockImplementation(() =>
       Promise.resolve('fileUrl')
     )
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      enumerable: true,
+      value: { href: new URL('https://url/').href }
+    })
     global.fetch = jest.fn().mockImplementation(() =>
       Promise.resolve({
         json: () => Promise.resolve(xmlText),
