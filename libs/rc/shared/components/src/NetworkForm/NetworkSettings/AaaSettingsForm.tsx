@@ -1,6 +1,6 @@
 import { useContext, useEffect } from 'react'
 
-import { Space } from 'antd'
+import { Input, Space } from 'antd'
 import {
   Col,
   Form,
@@ -18,6 +18,8 @@ import {
 import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { InformationSolid, QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
+  AAAWlanSecurityEnum,
+  ManagementFrameProtectionEnum,
   WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 
@@ -34,16 +36,20 @@ export function AaaSettingsForm () {
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   useEffect(()=>{
-    if((editMode || cloneMode) && data){
+    if(data && (editMode || cloneMode)){
+
       form.setFieldsValue({
         enableAuthProxy: data.enableAuthProxy,
         enableAccountingProxy: data.enableAccountingProxy,
         enableAccountingService: data.enableAccountingService,
         authRadius: data.authRadius,
         accountingRadius: data.accountingRadius,
-        wlanSecurity: data?.wlan?.wlanSecurity,
         accountingRadiusId: data.accountingRadiusId,
-        authRadiusId: data.authRadiusId
+        authRadiusId: data.authRadiusId,
+        wlan: {
+          wlanSecurity: data.wlan?.wlanSecurity,
+          managementFrameProtection: data.wlan?.managementFrameProtection
+        }
       })
     }
   }, [data])
@@ -67,7 +73,8 @@ export function AaaSettingsForm () {
 
 function SettingsForm () {
   const { $t } = useIntl()
-  const wlanSecurity = useWatch('wlanSecurity')
+  const { editMode, cloneMode } = useContext(NetworkFormContext)
+  const wlanSecurity = useWatch(['wlan', 'wlanSecurity'])
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const wpa2Description = <FormattedMessage
     /* eslint-disable max-len */
@@ -92,6 +99,26 @@ function SettingsForm () {
     defaultMessage: 'WPA3 is the highest level of Wi-Fi security available but is supported only by devices manufactured after 2019.'
   })
 
+  const form = Form.useFormInstance()
+  useEffect(() => {
+    if (!editMode && !cloneMode) {
+      if (!wlanSecurity || !Object.keys(AAAWlanSecurityEnum).includes(wlanSecurity)) {
+        form.setFieldValue(['wlan', 'wlanSecurity'], WlanSecurityEnum.WPA2Enterprise)
+        // eslint-disable-next-line max-len
+        form.setFieldValue(['wlan', 'managementFrameProtection'], ManagementFrameProtectionEnum.Disabled)
+      }
+    }
+
+  }, [cloneMode, editMode, form, wlanSecurity])
+
+  const handleWlanSecurityChanged = (v: WlanSecurityEnum) => {
+    const managementFrameProtection = (v === WlanSecurityEnum.WPA3)
+      ? ManagementFrameProtectionEnum.Required
+      : ManagementFrameProtectionEnum.Disabled
+
+    form.setFieldValue(['wlan', 'managementFrameProtection'], managementFrameProtection)
+  }
+
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>
@@ -99,15 +126,14 @@ function SettingsForm () {
         {triBandRadioFeatureFlag &&
           <Form.Item
             label='Security Protocol'
-            name='wlanSecurity'
-            initialValue={WlanSecurityEnum.WPA2Enterprise}
+            name={['wlan', 'wlanSecurity']}
             extra={
               wlanSecurity === WlanSecurityEnum.WPA2Enterprise
                 ? wpa2Description
                 : wpa3Description
             }
           >
-            <Select>
+            <Select onChange={handleWlanSecurityChanged}>
               <Option value={WlanSecurityEnum.WPA2Enterprise}>
                 { $t({ defaultMessage: 'WPA2 (Recommended)' }) }
               </Option>
@@ -115,6 +141,9 @@ function SettingsForm () {
             </Select>
           </Form.Item>
         }
+        <Form.Item name={['wlan', 'managementFrameProtection']} noStyle>
+          <Input type='hidden' />
+        </Form.Item>
       </div>
       <div>
         <AaaService />

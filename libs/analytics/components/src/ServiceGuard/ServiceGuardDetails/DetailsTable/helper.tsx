@@ -149,7 +149,6 @@ export const getTableColumns = ({
       render: function (_, row: TestResultByAP, index: number) {
         const failure = getClientFailureInfo(row)[key]
         const failureCode = failure?.event
-        const intl = getIntl()
         const error = row?.error
         const noFailureText =
           contents.noFailureDetailsMap[failureCode as keyof typeof contents.noFailureDetailsMap]
@@ -163,7 +162,7 @@ export const getTableColumns = ({
               defineMessage({
                 defaultMessage: 'Failure reason: {reason}'
               }),
-              { reason: mapCodeToReason(failureCode as string, intl) }
+              { reason: mapCodeToReason(failureCode as string) }
             )
         const wrappedContent = getToolTipText({ error, toolTipText, wlanAuthSettings, clientType })
         const type = row[key] as TrendType
