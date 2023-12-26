@@ -24,7 +24,7 @@ export const LagSubInterfaceTable = (props: LagSubInterfaceTableProps) => {
   const tableQuery = useTableQuery<EdgeSubInterface>({
     useQuery: useGetLagSubInterfacesQuery,
     defaultPayload: {},
-    apiParams: { lagId: lagId.toString() }
+    apiParams: { serialNumber, lagId: lagId.toString() }
   })
   const [addSubInterface] = useAddLagSubInterfacesMutation()
   const [updateSubInterface] = useUpdateLagSubInterfacesMutation()
@@ -40,11 +40,13 @@ export const LagSubInterfaceTable = (props: LagSubInterfaceTableProps) => {
   }
 
   const handleUpdate = async (data: EdgeSubInterface) => {
+    const { id, ...payloadData } = data
+
     const requestPayload = {
-      params: { serialNumber, lagId: lagId.toString(), subInterfaceId: data?.id },
-      payload: data
+      params: { serialNumber, lagId: lagId.toString(), subInterfaceId: id },
+      payload: payloadData
     }
-    delete requestPayload.payload.id
+
     await updateSubInterface(requestPayload).unwrap()
   }
 

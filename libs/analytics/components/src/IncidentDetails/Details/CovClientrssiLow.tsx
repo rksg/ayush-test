@@ -8,14 +8,14 @@ import {
 } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
 
-import { FixedAutoSizer }                    from '../../DescriptionSection/styledComponents'
-import { RssDistributionChart }              from '../Charts/RssDistributionChart'
-import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
-import { Insights }                          from '../Insights'
-import { NetworkImpact, NetworkImpactProps } from '../NetworkImpact'
-import { NetworkImpactChartTypes }           from '../NetworkImpact/config'
-import { TimeSeries }                        from '../TimeSeries'
-import { TimeSeriesChartTypes }              from '../TimeSeries/config'
+import { FixedAutoSizer }                                   from '../../DescriptionSection/styledComponents'
+import { RssDistributionChart }                             from '../Charts/RssDistributionChart'
+import { IncidentAttributes, Attributes }                   from '../IncidentAttributes'
+import { Insights }                                         from '../Insights'
+import { NetworkImpact, NetworkImpactProps }                from '../NetworkImpact'
+import { NetworkImpactChartTypes, NetworkImpactQueryTypes } from '../NetworkImpact/config'
+import { TimeSeries }                                       from '../TimeSeries'
+import { TimeSeriesChartTypes }                             from '../TimeSeries/config'
 
 import MuteIncident from './MuteIncident'
 
@@ -33,22 +33,27 @@ export const CovClientrssiLow = (incident: Incident) => {
   ]
   const networkImpactCharts: NetworkImpactProps['charts'] = [{
     chart: NetworkImpactChartTypes.WLAN,
+    query: NetworkImpactQueryTypes.TopN,
     type: 'client',
     dimension: 'ssids'
   }, {
     chart: NetworkImpactChartTypes.OS,
+    query: NetworkImpactQueryTypes.TopN,
     type: 'client',
     dimension: 'osType'
   }, {
     chart: NetworkImpactChartTypes.APModel,
+    query: NetworkImpactQueryTypes.TopN,
     type: 'client',
     dimension: 'apModels'
   }, {
     chart: NetworkImpactChartTypes.APVersion,
+    query: NetworkImpactQueryTypes.TopN,
     type: 'client',
     dimension: 'apFwVersions'
   }, {
     chart: NetworkImpactChartTypes.Radio,
+    query: NetworkImpactQueryTypes.TopN,
     type: 'client',
     dimension: 'radios'
   }]

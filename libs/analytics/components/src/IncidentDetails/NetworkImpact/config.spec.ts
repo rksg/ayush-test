@@ -1,5 +1,3 @@
-import { useIntl } from 'react-intl'
-
 import { Incident }   from '@acx-ui/analytics/utils'
 import { renderHook } from '@acx-ui/test-utils'
 
@@ -8,7 +6,8 @@ import {
   getDominance,
   getWLANDominance,
   getDominanceByThreshold,
-  getAPRebootReason
+  getAPRebootReason,
+  transformAirtimeKey
 } from './config'
 
 describe('getDataWithPercentage', () => {
@@ -110,12 +109,22 @@ describe('getWLANDominance', () => {
 describe('getAPRebootReason', () => {
   it('return key if no mapping', () => {
     const key = 'random_key_123'
-    const { current } = renderHook(() => getAPRebootReason(key, useIntl())).result
+    const { current } = renderHook(() => getAPRebootReason(key)).result
     expect(current).toEqual(key)
   })
   it('return value of given key', () => {
     const key = 'system recovery by watchdog'
-    const { current } = renderHook(() => getAPRebootReason(key, useIntl())).result
+    const { current } = renderHook(() => getAPRebootReason(key)).result
     expect(current).toEqual('system recovery by WatchDog')
+  })
+})
+
+describe('transformAirtimeKey', () => {
+  it('should return correct key', () => {
+    expect(transformAirtimeKey('airtimeBusy')).toBe('Airtime Busy')
+    expect(transformAirtimeKey('airtimeRx')).toBe('Airtime Rx')
+    expect(transformAirtimeKey('airtimeTx')).toBe('Airtime Tx')
+    expect(transformAirtimeKey('airtimeIdle')).toBe('Airtime Idle')
+    expect(transformAirtimeKey('random')).toBe('')
   })
 })

@@ -1,13 +1,16 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgePortConfigFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                             from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }  from '@acx-ui/test-utils'
+import { EdgeLag, EdgeLagFixtures, EdgePortConfigFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                       from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }                            from '@acx-ui/test-utils'
+
+import { EdgePortsDataContext } from '../PortDataProvider'
 
 import { LagDrawer } from './LagDrawer'
 
 const { mockEdgePortConfig } = EdgePortConfigFixtures
+const { mockedEdgeLagList } = EdgeLagFixtures
 
 type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void
@@ -29,17 +32,19 @@ jest.mock('antd', () => {
   return { ...components, Select }
 })
 
+const defaultPortsContextdata = {
+  portData: [],
+  lagData: mockedEdgeLagList.content as EdgeLag[],
+  isLoading: false,
+  isFetching: false
+}
+
 const mockedSetVisible = jest.fn()
 
 describe('EditEdge ports - LAG Drawer', () => {
-  let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
+  const mockedEdgeID = 'mocked_edge_id'
+
   beforeEach(() => {
-    params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      serialNumber: '000000000000',
-      activeTab: 'ports',
-      activeSubTab: 'sub-interface'
-    }
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.addEdgeLag.url,
@@ -55,17 +60,16 @@ describe('EditEdge ports - LAG Drawer', () => {
   it('Should add LAG correctly', async () => {
     render(
       <Provider>
-        <LagDrawer
-          visible={true}
-          setVisible={mockedSetVisible}
-          portList={mockEdgePortConfig.ports}
-        />
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
-        }
-      })
+        <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+          <LagDrawer
+            serialNumber={mockedEdgeID}
+            visible={true}
+            setVisible={mockedSetVisible}
+            portList={mockEdgePortConfig.ports}
+          />
+        </EdgePortsDataContext.Provider>
+      </Provider>)
+
     const selector = await screen.findAllByRole('combobox')
     await userEvent.selectOptions(selector[0], '2')
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
@@ -75,17 +79,16 @@ describe('EditEdge ports - LAG Drawer', () => {
   it('Should pop up warning modal when select inused port', async () => {
     render(
       <Provider>
-        <LagDrawer
-          visible={true}
-          setVisible={mockedSetVisible}
-          portList={mockEdgePortConfig.ports}
-        />
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
-        }
-      })
+        <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+          <LagDrawer
+            serialNumber={mockedEdgeID}
+            visible={true}
+            setVisible={mockedSetVisible}
+            portList={mockEdgePortConfig.ports}
+          />
+        </EdgePortsDataContext.Provider>
+      </Provider>)
+
     const selector = await screen.findAllByRole('combobox')
     await userEvent.selectOptions(selector[0], '2')
     await userEvent.click(screen.getByRole('checkbox', { name: 'Port1' }))
