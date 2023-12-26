@@ -3,16 +3,15 @@ import { Key, useEffect, useState } from 'react'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import { Col, Row }            from 'antd'
 import { useIntl }             from 'react-intl'
-import { useParams }           from 'react-router-dom'
 
-import { Loader, Table, TableProps, showActionModal }      from '@acx-ui/components'
-import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '@acx-ui/rc/components'
-import { EdgeSubInterface, TableQuery }                    from '@acx-ui/rc/utils'
-import { RequestPayload }                                  from '@acx-ui/types'
-import { filterByAccess, hasAccess }                       from '@acx-ui/user'
+import { Loader, Table, TableProps, showActionModal } from '@acx-ui/components'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
+import { EdgeSubInterface, TableQuery }               from '@acx-ui/rc/utils'
+import { RequestPayload }                             from '@acx-ui/types'
+import { filterByAccess, hasAccess }                  from '@acx-ui/user'
 
-import * as UI from '../styledComponents'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../../../ImportFileDrawer'
+import * as UI                                             from '../styledComponents'
 
 import SubInterfaceDrawer from './SubInterfaceDrawer'
 
@@ -37,11 +36,17 @@ const importTemplateLink = 'assets/templates/sub-interfaces_import_template.csv'
 
 export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   const { $t } = useIntl()
-  const params = useParams()
   const isEdgeSubInterfaceCSVEnabled = useIsSplitOn(Features.EDGES_SUB_INTERFACE_CSV_TOGGLE)
   const {
-    currentTab, ip, mac, tableQuery, handleAdd,
-    handleUpdate, handleDelete, handleUpload, uploadResult
+    currentTab,
+    ip,
+    mac,
+    tableQuery,
+    handleAdd,
+    handleUpdate,
+    handleDelete,
+    handleUpload,
+    uploadResult
   } = props
 
   const [drawerVisible, setDrawerVisible] = useState(false)
@@ -60,11 +65,10 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   }, [currentTab])
 
   useEffect(() => {
-    if (params.activeSubTab !== 'sub-interface') {
+    return () => {
       closeDrawers()
     }
-  }, [params])
-
+  }, [])
 
   const columns: TableProps<EdgeSubInterface>['columns'] = [
     {

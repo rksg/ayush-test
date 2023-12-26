@@ -24,7 +24,7 @@ describe('Summary form', () => {
       networkIds: ['network_1'],
       tunnelProfileId: 'tunnelProfileId2',
       tunnelProfileName: 'tunnelProfile2',
-      corePort: 'Port 2',
+      corePortName: 'Port2',
       activatedNetworks: [{
         name: 'MockedNetwork 1',
         id: 'network_1'
@@ -59,7 +59,7 @@ describe('Summary form', () => {
       networkIds: ['network_1'],
       tunnelProfileId: 'tunnelProfileId1',
       tunnelProfileName: 'tunnelProfile1',
-      corePort: 'Port 3',
+      corePortName: 'Port3',
       activatedNetworks: undefined
     }
 

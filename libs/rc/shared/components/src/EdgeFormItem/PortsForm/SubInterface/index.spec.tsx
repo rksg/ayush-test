@@ -4,12 +4,14 @@ import { rest }                                                from 'msw'
 import { IntlProvider }                                        from 'react-intl'
 import { MemoryRouter, Route, Routes, useNavigate }            from 'react-router-dom'
 
-import { useIsSplitOn }                                                                                      from '@acx-ui/feature-toggle'
-import { EdgeLagFixtures, EdgePortConfigFixtures, EdgeSubInterface, EdgeSubInterfaceFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                                                          from '@acx-ui/store'
-import { mockServer, render, screen, within }                                                                from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                                                                          from '@acx-ui/feature-toggle'
+import { EdgeLagFixtures, EdgePortConfigFixtures, EdgePortWithStatus, EdgeSubInterface, EdgeSubInterfaceFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                              from '@acx-ui/store'
+import { mockServer, render, screen, within }                                                                                    from '@acx-ui/test-utils'
 
-import { EdgeEditContext } from '../..'
+import { EdgePortTabEnum }                from '..'
+import { EditContext as EdgeEditContext } from '../../EdgeEditContext'
+import { EdgePortsDataContext }           from '../PortDataProvider'
 
 import SubInterface from '.'
 
@@ -49,18 +51,28 @@ const defaultContextData = {
   setActiveSubTab: jest.fn(),
   setFormControl: jest.fn()
 }
+const defaultEmptyPortsContextdata = {
+  portData: [],
+  lagData: [],
+  isLoading: false,
+  isFetching: false
+}
+
+const defaultPortsContextdata = {
+  ...defaultEmptyPortsContextdata,
+  portData: mockEdgePortConfig.ports as EdgePortWithStatus[]
+}
 
 describe('EditEdge ports - sub-interface', () => {
-  let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
+  const mockedEdgeID = 'mocked_edge_id'
+  const defaultProps = {
+    serialNumber: mockedEdgeID,
+    // portData: mockEdgePortConfig.ports as EdgePortWithStatus[],
+    lagData: mockEdgeLagStatusList.data
+  }
+
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-
-    params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      serialNumber: '000000000000',
-      activeTab: 'ports',
-      activeSubTab: 'sub-interface'
-    }
 
     mockServer.use(
       rest.get(
@@ -88,14 +100,14 @@ describe('EditEdge ports - sub-interface', () => {
         <EdgeEditContext.Provider
           value={defaultContextData}
         >
-          <SubInterface portData={[]} />
+          <EdgePortsDataContext.Provider value={defaultEmptyPortsContextdata}>
+            <SubInterface
+              serialNumber={mockedEdgeID}
+            />
+          </EdgePortsDataContext.Provider>
         </EdgeEditContext.Provider>
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
-        }
-      })
+      </Provider>)
+
     expect(await screen.findByText('No data to display')).toBeVisible()
   })
 
@@ -105,17 +117,14 @@ describe('EditEdge ports - sub-interface', () => {
         <EdgeEditContext.Provider
           value={defaultContextData}
         >
-          <SubInterface
-            portData={mockEdgePortConfig.ports}
-            lagData={mockEdgeLagStatusList.data}
-          />
+          <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+            <SubInterface
+              {...defaultProps}
+            />
+          </EdgePortsDataContext.Provider>
         </EdgeEditContext.Provider>
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
-        }
-      })
+      </Provider>)
+
     expect((await screen.findAllByRole('row')).length).toBe(11)
   })
 
@@ -126,17 +135,14 @@ describe('EditEdge ports - sub-interface', () => {
         <EdgeEditContext.Provider
           value={defaultContextData}
         >
-          <SubInterface
-            portData={mockEdgePortConfig.ports}
-            lagData={mockEdgeLagStatusList.data}
-          />
+          <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+            <SubInterface
+              {...defaultProps}
+            />
+          </EdgePortsDataContext.Provider>
         </EdgeEditContext.Provider>
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
-        }
-      })
+      </Provider>)
+
     const rows = await screen.findAllByRole('row')
     await user.click(within(rows[1]).getByRole('radio'))
     await user.click(await screen.findByRole('button', { name: 'Delete' }))
@@ -153,17 +159,13 @@ describe('EditEdge ports - sub-interface', () => {
         <EdgeEditContext.Provider
           value={defaultContextData}
         >
-          <SubInterface
-            portData={mockEdgePortConfig.ports}
-            lagData={mockEdgeLagStatusList.data}
-          />
+          <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+            <SubInterface
+              {...defaultProps}
+            />
+          </EdgePortsDataContext.Provider>
         </EdgeEditContext.Provider>
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
-        }
-      })
+      </Provider>)
 
     await screen.findAllByRole('columnheader')
     const rows = await screen.findAllByRole('row')
@@ -175,6 +177,12 @@ describe('EditEdge ports - sub-interface', () => {
   })
 
   it('should close subInterface drawer after routed into another subTab', async () => {
+    const params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      serialNumber: '000000000000',
+      activeTab: 'ports',
+      activeSubTab: 'sub-interface'
+    }
     const getWrapper = (basePath: string = '') =>
       ({ children }: { children: React.ReactElement }) => (
         <IntlProvider locale='en'>
@@ -189,10 +197,11 @@ describe('EditEdge ports - sub-interface', () => {
                         <EdgeEditContext.Provider
                           value={defaultContextData}
                         >
-                          <SubInterface
-                            portData={mockEdgePortConfig.ports}
-                            lagData={mockEdgeLagStatusList.data}
-                          />
+                          <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+                            <SubInterface
+                              {...defaultProps}
+                            />
+                          </EdgePortsDataContext.Provider>
                         </EdgeEditContext.Provider>
                         {children}
                       </div>
@@ -211,11 +220,11 @@ describe('EditEdge ports - sub-interface', () => {
     expect(within(addFormDialog).queryByText('visible')).toBeValid()
     act(() => {
       // eslint-disable-next-line max-len
-      result.current(`/${params.tenantId}/t/devices/edge/${params.serialNumber}/edit/${params.activeTab}/ports-general`)
+      result.current(`/${params.tenantId}/t/devices/edge/${params.serialNumber}/edit/${params.activeTab}/${EdgePortTabEnum.PORTS_GENERAL}`)
     })
 
     await waitFor(async () => {
-      expect(within(await screen.findByTestId('subDialog')).queryByText('invisible')).toBeValid()
+      expect(within(await screen.findByTestId('subDialog')).queryByText('invisible')).toBe(null)
     })
   })
 
@@ -232,17 +241,13 @@ describe('EditEdge ports - sub-interface', () => {
         <EdgeEditContext.Provider
           value={defaultContextData}
         >
-          <SubInterface
-            portData={mockEdgePortConfig.ports}
-            lagData={mockEdgeLagStatusList.data}
-          />
+          <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+            <SubInterface
+              {...defaultProps}
+            />
+          </EdgePortsDataContext.Provider>
         </EdgeEditContext.Provider>
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
-        }
-      })
+      </Provider>)
 
     await userEvent.click(await screen.findByRole('button', { name: /Import from file/i }))
 
@@ -266,41 +271,34 @@ describe('EditEdge ports - sub-interface', () => {
         <EdgeEditContext.Provider
           value={defaultContextData}
         >
-          <SubInterface
-            portData={mockEdgePortConfig.ports}
-            lagData={mockEdgeLagStatusList.data}
-          />
+          <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+            <SubInterface
+              {...defaultProps}
+            />
+          </EdgePortsDataContext.Provider>
         </EdgeEditContext.Provider>
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
-        }
-      })
+      </Provider>)
 
     const btn = screen.queryByRole('button', { name: 'Import from file' })
     expect(btn).toBeNull()
   })
 
-  it.skip('should render LAG SubInterface successfully', async () => {
+  it('should render LAG SubInterface successfully', async () => {
     render(
       <Provider>
         <EdgeEditContext.Provider
           value={defaultContextData}
         >
-          <SubInterface
-            portData={mockEdgePortConfig.ports}
-            lagData={mockEdgeLagStatusList.data}
-          />
+          <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+            <SubInterface
+              {...defaultProps}
+            />
+          </EdgePortsDataContext.Provider>
         </EdgeEditContext.Provider>
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
-        }
-      })
+      </Provider>)
     const lagTab = await screen.findByRole('tab', { name: 'LAG 1' })
     await userEvent.click(lagTab)
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect((await screen.findAllByRole('row')).length).toBe(11)
   })
 
@@ -311,17 +309,13 @@ describe('EditEdge ports - sub-interface', () => {
         <EdgeEditContext.Provider
           value={defaultContextData}
         >
-          <SubInterface
-            portData={mockEdgePortConfig.ports}
-            lagData={mockEdgeLagStatusList.data}
-          />
+          <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+            <SubInterface
+              {...defaultProps}
+            />
+          </EdgePortsDataContext.Provider>
         </EdgeEditContext.Provider>
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
-        }
-      })
+      </Provider>)
     const lagTab = await screen.findByRole('tab', { name: 'LAG 1' })
     await userEvent.click(lagTab)
     const rows = await screen.findAllByRole('row')
@@ -346,17 +340,13 @@ describe('EditEdge ports - sub-interface', () => {
         <EdgeEditContext.Provider
           value={defaultContextData}
         >
-          <SubInterface
-            portData={mockEdgePortConfig.ports}
-            lagData={mockEdgeLagStatusList.data}
-          />
+          <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+            <SubInterface
+              {...defaultProps}
+            />
+          </EdgePortsDataContext.Provider>
         </EdgeEditContext.Provider>
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
-        }
-      })
+      </Provider>)
 
     const lagTab = await screen.findByRole('tab', { name: 'LAG 1' })
     await userEvent.click(lagTab)

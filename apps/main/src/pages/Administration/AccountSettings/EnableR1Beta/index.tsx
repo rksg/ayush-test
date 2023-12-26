@@ -7,6 +7,7 @@ import { useParams }                                     from 'react-router-dom'
 import { Loader, showActionModal }                                        from '@acx-ui/components'
 import { SpaceWrapper }                                                   from '@acx-ui/rc/components'
 import { BetaStatus, useGetBetaStatusQuery, useToggleBetaStatusMutation } from '@acx-ui/user'
+import { userLogout }                                                     from '@acx-ui/utils'
 
 import { MessageMapping } from '../MessageMapping'
 
@@ -39,14 +40,13 @@ export function EnableR1Beta (props: EnableR1BetaProps) {
 
   const handleEnableR1BetaChange = async (e: CheckboxChangeEvent) => {
     const isChecked = e.target.checked
-    const modalMsg = $t(MessageMapping.enable_r1_beta_disable_description)
 
     if (!isChecked) {
       showActionModal({
         type: 'confirm',
         width: 450,
         title: $t({ defaultMessage: 'Disable Beta Features?' }),
-        content: modalMsg,
+        content: $t(MessageMapping.enable_r1_beta_disable_description, { br1: <br/>, br2: <br/> }),
         okText: $t({ defaultMessage: 'Disable Beta Features' }),
         cancelText: $t({ defaultMessage: 'Keep Beta Features' }),
         onOk: async () => {
@@ -59,7 +59,7 @@ export function EnableR1Beta (props: EnableR1BetaProps) {
           } catch (error) {
             console.log(error) // eslint-disable-line no-console
           }
-          window.location.reload()
+          userLogout()
         }
       })
     } else openR1BetaTermsConditionDrawer()

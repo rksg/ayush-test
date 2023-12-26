@@ -195,7 +195,7 @@ describe('AccessControlForm Component', () => {
     }), 'acl-test-modify')
 
     await userEvent.click(screen.getByRole('button', {
-      name: 'Add'
+      name: 'Apply'
     }))
   })
 })
