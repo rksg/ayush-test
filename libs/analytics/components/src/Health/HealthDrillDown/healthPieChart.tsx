@@ -15,7 +15,6 @@ import {
 } from '@acx-ui/components'
 import { get }                  from '@acx-ui/config'
 import { formatter }            from '@acx-ui/formatter'
-import { getIntl }              from '@acx-ui/utils'
 import { NodesFilter }          from '@acx-ui/utils'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 
@@ -70,8 +69,8 @@ export const transformData = (
     const events = data.network.hierarchyNode.events
       ? getTopPieChartData(data.network.hierarchyNode.events).map((event) => ({
         ...event,
-        key: mapCodeToReason(event.key, getIntl()),
-        name: mapCodeToReason(event.name, getIntl())
+        key: mapCodeToReason(event.key),
+        name: mapCodeToReason(event.name)
       }))
       : []
     const osManufacturersData = getTopPieChartData(osManufacturers)
