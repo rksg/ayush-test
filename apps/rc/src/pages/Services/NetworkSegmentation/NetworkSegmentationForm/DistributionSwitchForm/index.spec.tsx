@@ -4,12 +4,13 @@ import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 import { StepsForm }        from '@acx-ui/components'
+import { nsgApi }           from '@acx-ui/rc/services'
 import {
   DistributionSwitch,
   EdgeUrlsInfo,
   NetworkSegmentationUrls
 } from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -60,6 +61,8 @@ describe('DistributionSwitchForm', () => {
 
   const requestSpy = jest.fn()
   beforeEach(() => {
+    store.dispatch(nsgApi.util.resetApiState())
+
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       serviceId: 'testServiceId'
@@ -89,7 +92,7 @@ describe('DistributionSwitchForm', () => {
     )
   })
 
-  it.skip('should edit correctly', async () => {
+  it('should edit correctly', async () => {
     const user = userEvent.setup()
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
@@ -100,9 +103,7 @@ describe('DistributionSwitchForm', () => {
       venueId: 'venueId',
       edgeId: 'edgeId',
       distributionSwitchInfos: mockNsgSwitchInfoData.distributionSwitches,
-      originalDistributionSwitchInfos: mockNsgSwitchInfoData.distributionSwitches,
-      accessSwitchInfos: mockNsgSwitchInfoData.accessSwitches,
-      originalAccessSwitchInfos: mockNsgSwitchInfoData.accessSwitches
+      accessSwitchInfos: mockNsgSwitchInfoData.accessSwitches
     })
 
     render(
@@ -111,16 +112,16 @@ describe('DistributionSwitchForm', () => {
       </Provider>, {
         route: { params, path: updateNsgPath }
       })
+
     const row = await screen.findByRole('row', { name: /FMN4221R00H---DS---3/i })
     await user.click(await within(row).findByRole('radio'))
-    const alert = await screen.findByRole('alert')
-    await user.click(await within(alert).findByRole('button', { name: 'Edit' }))
+    await user.click(await screen.findByRole('button', { name: 'Edit' }))
 
     const dialog = await screen.findByTestId('DistributionSwitchDrawer')
     await user.click(await within(dialog).findByRole('button', { name: 'Cancel' }))
     await waitFor(() => expect(dialog).not.toBeVisible())
 
-    await user.click(await within(alert).findByRole('button', { name: 'Delete' }))
+    await user.click(await screen.findByRole('button', { name: 'Delete' }))
 
     await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(2))
   })
