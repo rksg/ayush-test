@@ -67,6 +67,7 @@ export { ReactComponent as CaretRightOutlined } from './icons/CaretRightOutlined
 export { ReactComponent as CaretRightSolid } from './icons/CaretRightSolid.svg'
 export { ReactComponent as CaretUpOutlined } from './icons/CaretUpOutlined.svg'
 export { ReactComponent as CaretUpSolid } from './icons/CaretUpSolid.svg'
+export { ReactComponent as Check } from './icons/Check.svg'
 export { ReactComponent as CheckMark } from './icons/CheckMark.svg'
 export { ReactComponent as CheckMarkCircleOutline } from './icons/CheckMarkCircleOutline.svg'
 export { ReactComponent as CheckMarkCircleSolid } from './icons/CheckMarkCircleSolid.svg'
@@ -331,5 +332,8 @@ export { ReactComponent as Workplace } from './appInsight/Workplace.svg'
 export { ReactComponent as Zoom } from './appInsight/Zoom.svg'
 export { ReactComponent as ChatbotLink } from './icons/ChatbotLink.svg'
 export { ReactComponent as UploadDocument } from './icons/UploadDocument.svg'
+
+export { ReactComponent as UpArrow } from './icons/UpArrow.svg'
+export { ReactComponent as DownArrow } from './icons/DownArrow.svg'
 
 export * from './styledComponents'
