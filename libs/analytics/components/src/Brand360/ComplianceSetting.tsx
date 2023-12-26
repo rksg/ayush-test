@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
@@ -31,12 +31,12 @@ export function ComplianceSetting ({ settings }: { settings: Settings }) {
     || ssidValue === ssidRegex
     || !isRegExp(ssidValue)
   const [updateSlas, result] = useUpdateTenantSettingsMutation()
-  const saveSSIDRegex = () => {
+  const saveSSIDRegex = useCallback(() => {
     updateSlas({
       ...settings,
       'brand-ssid-compliance-matcher': ssidValue
     })
-  }
+  }, [settings, ssidValue])
 
   useEffect(() => {
     form && form.setFieldValue(ssidField, ssidRegex)
