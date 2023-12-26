@@ -69,7 +69,8 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
     }
   }
 
-  const managementFrameProtection = (data.wlanSecurity === WlanSecurityEnum.WPA3)
+  const wlanSecurity = data.wlan?.wlanSecurity
+  const managementFrameProtection = (wlanSecurity === WlanSecurityEnum.WPA3)
     ? ManagementFrameProtectionEnum.Required
     : ManagementFrameProtectionEnum.Disabled
 
@@ -78,7 +79,7 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
       ...saveData,
       ...{
         wlan: {
-          wlanSecurity: data.wlanSecurity,
+          wlanSecurity: wlanSecurity,
           managementFrameProtection
         }
       }
@@ -88,7 +89,7 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
       ...saveData,
       ...{
         wlan: {
-          wlanSecurity: data.wlanSecurity,
+          wlanSecurity: wlanSecurity,
           advancedCustomization: new AAAWlanAdvancedCustomization(),
           bypassCNA: false,
           bypassCPUsingMacAddressAuthentication: false,
@@ -99,7 +100,6 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
       }
     }
   }
-
 
   return saveData
 }
@@ -443,9 +443,9 @@ export function transferVenuesToSave (data: NetworkSaveData, originalData: Netwo
 }
 
 function cleanClientIsolationAllowlistId (venues: NetworkVenue[]): NetworkVenue[] {
-  const incomingVenues = [...venues!]
+  const networkVenues = [...venues!]
 
-  incomingVenues.map((v) => {
+  const incomingVenues = networkVenues.map((v) => {
     return { ...v, clientIsolationAllowlistId: undefined }
   })
 

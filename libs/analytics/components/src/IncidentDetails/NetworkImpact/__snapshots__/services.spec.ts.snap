@@ -38,6 +38,31 @@ Object {
       },
     ],
   },
+  "airtimeBusy": Object {
+    "count": 0.65,
+    "data": Array [
+      Object {
+        "key": "airtimBusy",
+        "name": "airtimBusy",
+        "value": 0.5,
+      },
+      Object {
+        "key": "airtimRx",
+        "name": "airtimRx",
+        "value": 0.3,
+      },
+      Object {
+        "key": "airtimTx",
+        "name": "airtimTx",
+        "value": 0.1,
+      },
+      Object {
+        "key": "airtimIdle",
+        "name": "airtimIdle",
+        "value": 0.1,
+      },
+    ],
+  },
   "clientManufacturer": Object {
     "count": 2,
     "data": Array [

@@ -67,7 +67,7 @@ exports[`NetworkImpact handles charts data with total & disabled 1`] = `
                     <div
                       _echarts_instance_="ec_mock"
                       class="echarts-for-react "
-                      size-sensor-id="5"
+                      size-sensor-id="6"
                       style="height: 770px; width: 1280px; position: relative;"
                     >
                       <div
@@ -196,7 +196,7 @@ exports[`NetworkImpact handles charts data with total & disabled 1`] = `
                     <div
                       _echarts_instance_="ec_mock"
                       class="echarts-for-react "
-                      size-sensor-id="6"
+                      size-sensor-id="7"
                       style="height: 770px; width: 1280px; position: relative;"
                     >
                       <div
@@ -878,6 +878,153 @@ exports[`NetworkImpact should match snapshot 1`] = `
                       width="1280"
                     >
                       This incident impacted 2 radios
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="resize-triggers"
+              >
+                <div
+                  class="expand-trigger"
+                >
+                  <div
+                    style="width: 1281px; height: 801px;"
+                  />
+                </div>
+                <div
+                  class="contract-trigger"
+                />
+              </div>
+            </div>
+            <div
+              class="ant-col ant-col-6"
+              style="height: 200px;"
+            >
+              <div
+                style="overflow: visible; height: 0px; width: 0px;"
+              >
+                <div
+                  class="ant-space ant-space-vertical"
+                >
+                  <div
+                    class="ant-space-item"
+                    style="margin-bottom: 0px;"
+                  >
+                    <div
+                      _echarts_instance_="ec_mock"
+                      class="echarts-for-react "
+                      size-sensor-id="5"
+                      style="height: 770px; width: 1280px; position: relative;"
+                    >
+                      <div
+                        style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
+                      >
+                        <svg
+                          baseProfile="full"
+                          height="800"
+                          style="position:absolute;left:0;top:0;user-select:none"
+                          version="1.1"
+                          width="1280"
+                          xmlns="http://www.w3.org/2000/svg"
+                          xmlns:xlink="http://www.w3.org/1999/xlink"
+                        >
+                          <rect
+                            fill="none"
+                            fill-opacity="1"
+                            height="800"
+                            id="0"
+                            width="1280"
+                            x="0"
+                            y="0"
+                          />
+                          <g>
+                            <path
+                              d="M640 32A368 368 0 1 1 640 768L640 712A312 312 0 0 0 640 88Z"
+                              fill="#66B1E8"
+                              stroke="#FFFFFF"
+                              stroke-linejoin="round"
+                            />
+                            <path
+                              d="M640 768A368 368 0 0 1 290.0112 286.2817L343.2704 303.5867A312 312 0 0 0 640 712Z"
+                              fill="#EC7100"
+                              stroke="#FFFFFF"
+                              stroke-linejoin="round"
+                            />
+                            <path
+                              d="M290.0112 286.2817A368 368 0 0 1 423.695 102.2817L456.611 147.5867A312 312 0 0 0 343.2704 303.5867Z"
+                              fill="#F9C34B"
+                              stroke="#FFFFFF"
+                              stroke-linejoin="round"
+                            />
+                            <path
+                              d="M423.695 102.2817A368 368 0 0 1 640 32L640 88A312 312 0 0 0 456.611 147.5867Z"
+                              fill="#61C46E"
+                              stroke="#FFFFFF"
+                              stroke-linejoin="round"
+                            />
+                            <path
+                              d="M-11 -5l22 0l0 50l-22 0Z"
+                              fill="rgb(0,0,0)"
+                              fill-opacity="0"
+                              stroke="#ccc"
+                              stroke-width="0"
+                              transform="translate(640 380)"
+                            />
+                            <path
+                              d="M-6 0l12 0l0 16l-12 0Z"
+                              fill="none"
+                              transform="translate(640 380)"
+                            />
+                            <text
+                              dominant-baseline="central"
+                              fill="#333333"
+                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              text-anchor="middle"
+                              transform="translate(640 380)"
+                              xml:space="preserve"
+                              y="8"
+                            >
+                              Airtime Busy
+                            </text>
+                            <path
+                              d="M-1.5 20l3 0l0 20l-3 0Z"
+                              fill="none"
+                              transform="translate(640 380)"
+                            />
+                            <text
+                              dominant-baseline="central"
+                              fill="#333333"
+                              style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
+                              text-anchor="middle"
+                              transform="translate(640 380)"
+                              y="30"
+                            >
+                              50%
+                            </text>
+                          </g>
+                        </svg>
+                      </div>
+                      <div
+                        class=""
+                      />
+                      <object
+                        class="size-sensor-object"
+                        data="about:blank"
+                        style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                        tabindex="-1"
+                        type="text/html"
+                      />
+                    </div>
+                  </div>
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      class="sc-bczRLJ cUrAee"
+                      width="1280"
+                    >
+                      Peak airtime busy was 65%
                     </div>
                   </div>
                 </div>
