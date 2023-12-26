@@ -114,13 +114,13 @@ onClose: () => void
               <Card type='solid-bg'>
                 <VlansTrunked
                   title={tooltipEdge?.fromName || ''}
-                  untagged={tooltipEdge?.correspondingPortUntaggedVlan}
-                  tagged={tooltipEdge?.correspondingPortTaggedVlan}
+                  untagged={tooltipEdge?.connectedPortUntaggedVlan}
+                  tagged={tooltipEdge?.connectedPortTaggedVlan}
                 />
                 <VlansTrunked
                   title={tooltipEdge?.toName || ''}
-                  untagged={tooltipEdge?.connectedPortUntaggedVlan}
-                  tagged={tooltipEdge?.connectedPortTaggedVlan}
+                  untagged={tooltipEdge?.correspondingPortUntaggedVlan}
+                  tagged={tooltipEdge?.correspondingPortTaggedVlan}
                 />
               </Card>}
           />
