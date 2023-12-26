@@ -33,7 +33,7 @@ const PortsGeneralModal = (props: {
     .map(status => [status.portId, status.ip]))
 
   const portsDataWithStatusIp = portsData.map((item) => {
-    return { ...item, statusIp: statusIpMap[item.id ?? ''] }
+    return { ...item, statusIp: statusIpMap[item.id] }
   })
 
   const handleClose = () => {
