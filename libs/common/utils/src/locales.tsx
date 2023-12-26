@@ -3,7 +3,7 @@ import { createContext, ReactElement, useContext, useEffect, useMemo, useState }
 import { Locale } from 'antd/lib/locale-provider'
 import { merge }  from 'lodash'
 
-import { get } from '@acx-ui/config'
+import { get, getJwtToken } from '@acx-ui/config'
 
 import { setUpIntl } from './intlUtil'
 
@@ -32,8 +32,10 @@ export async function localePath (locale: string) {
   // Also this is a management ask till FF is set to ON, we default to en-US from local repo only
   // and not from GCS bucket.
   if (locale === DEFAULT_SYS_LANG) {
+    const headers = { Authorization: `Bearer ${getJwtToken()}` }
     const url = `locales/compiled/${locale}.json`
-    return await fetch(url).then(res => res.json())
+    return await fetch(url, { headers }).then(res => res.json())
+
   }
   const gcs = get('STATIC_ASSETS')
   const myHeaders = new Headers()
