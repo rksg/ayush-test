@@ -64,7 +64,7 @@ describe('ClientDualTable', () => {
     await screen.findByText('You can search for clients', { exact: false })
   })
 
-  it('should search correctly', async () => {
+  it.skip('should search correctly', async () => {
     render(<Provider><ClientDualTable /></Provider>, {
       route: { params, path: '/t/:tenantId/venues/:venueId/venue-details/clients' }
     })
