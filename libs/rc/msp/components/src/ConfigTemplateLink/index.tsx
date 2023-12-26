@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 
 import { ConfigTemplateType } from '@acx-ui/msp/utils'
 import {
+  LocationExtended,
   PolicyDetailsLinkProps,
   PolicyOperation,
   PolicyRoutePathProps,
@@ -10,15 +11,21 @@ import {
   getPolicyDetailsLink,
   getPolicyRoutePath
 } from '@acx-ui/rc/utils'
-import { MspTenantLink } from '@acx-ui/react-router-dom'
+import { LinkProps, MspTenantLink, useLocation } from '@acx-ui/react-router-dom'
 
-interface ConfigTemplateLinkProps {
-  children: ReactNode
-  path: string
+interface ConfigTemplateLinkProps extends Omit<LinkProps, 'to'> {
+  to: string
+  attachCurrentPathToState?: boolean
 }
 export function ConfigTemplateLink (props: ConfigTemplateLinkProps) {
+  const { to, attachCurrentPathToState = true, state = {}, ...rest } = props
+  const location = useLocation()
+  // eslint-disable-next-line max-len
+  const currentPathState: LocationExtended['state'] | {} = attachCurrentPathToState ? { from: location } : {}
+  const finalState = { ...state, ...currentPathState }
+
   return (
-    <MspTenantLink to={getConfigTemplateLink(props.path)}>
+    <MspTenantLink to={getConfigTemplateLink(to)} state={finalState} {...rest}>
       {props.children}
     </MspTenantLink>
   )
@@ -26,11 +33,13 @@ export function ConfigTemplateLink (props: ConfigTemplateLinkProps) {
 
 interface PolicyConfigTemplateLinkProps extends PolicyRoutePathProps {
 	children: ReactNode
+  attachCurrentPathToState?: boolean
 }
 export function PolicyConfigTemplateLink (props: PolicyConfigTemplateLinkProps) {
-  const { children, ...rest } = props
+  const { children, attachCurrentPathToState = true, ...rest } = props
   return (
-    <ConfigTemplateLink path={getPolicyRoutePath(rest)}>
+    // eslint-disable-next-line max-len
+    <ConfigTemplateLink to={getPolicyRoutePath(rest)} attachCurrentPathToState={attachCurrentPathToState}>
       {props.children}
     </ConfigTemplateLink>
   )
@@ -38,11 +47,13 @@ export function PolicyConfigTemplateLink (props: PolicyConfigTemplateLinkProps) 
 
 interface PolicyConfigTemplateDetailsLinkProps extends PolicyDetailsLinkProps {
 	children: ReactNode
+  attachCurrentPathToState?: boolean
 }
 export function PolicyConfigTemplateDetailsLink (props: PolicyConfigTemplateDetailsLinkProps) {
-  const { children, ...rest } = props
+  const { children, attachCurrentPathToState = true, ...rest } = props
   return (
-    <ConfigTemplateLink path={getPolicyDetailsLink(rest)}>
+    // eslint-disable-next-line max-len
+    <ConfigTemplateLink to={getPolicyDetailsLink(rest)} attachCurrentPathToState={attachCurrentPathToState}>
       {props.children}
     </ConfigTemplateLink>
   )
@@ -56,6 +67,6 @@ export function renderConfigTemplateDetailsLink (type: ConfigTemplateType, id: s
       return <PolicyConfigTemplateDetailsLink type={PolicyType.AAA} oper={PolicyOperation.DETAIL} policyId={id} children={name} />
     case ConfigTemplateType.NETWORK:
       // eslint-disable-next-line max-len
-      return <ConfigTemplateLink path={`networks/wireless/${id}/network-details/venues`} children={name} />
+      return <ConfigTemplateLink to={`networks/wireless/${id}/network-details/venues`} children={name} />
   }
 }

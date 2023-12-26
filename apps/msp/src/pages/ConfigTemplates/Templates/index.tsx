@@ -4,6 +4,7 @@ import { MenuProps } from 'antd'
 import moment        from 'moment'
 import { useIntl }   from 'react-intl'
 
+
 import {
   Table,
   TableProps,
@@ -151,7 +152,7 @@ function getAddTemplateMenuProps (): Omit<MenuProps, 'placement'> {
     expandIcon: <UI.MenuExpandArrow />,
     items: [{
       key: 'add-wifi-network',
-      label: <ConfigTemplateLink path='networks/wireless/add'>
+      label: <ConfigTemplateLink to='networks/wireless/add'>
         {$t({ defaultMessage: 'Wi-Fi Network' })}
       </ConfigTemplateLink>
     }, {

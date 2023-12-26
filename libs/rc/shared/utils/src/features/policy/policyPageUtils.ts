@@ -2,12 +2,13 @@ import { useMemo } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { useTenantLink } from '@acx-ui/react-router-dom'
-import { getIntl }       from '@acx-ui/utils'
+import { useLocation, useTenantLink } from '@acx-ui/react-router-dom'
+import { getIntl }                    from '@acx-ui/utils'
 
-import { CONFIG_TEMPLATE_LIST_PATH, generateConfigTemplateBreadcrumb, useConfigTemplate } from '../../configTemplate'
-import { generatePageHeaderTitle }                                                        from '../../pages'
-import { PolicyType }                                                                     from '../../types'
+import { LocationExtended }                                    from '../../common/redirect.utils'
+import { generateConfigTemplateBreadcrumb, useConfigTemplate } from '../../configTemplate'
+import { generatePageHeaderTitle }                             from '../../pages'
+import { PolicyType }                                          from '../../types'
 
 import { policyTypeLabelMapping }                                      from './contentsMap'
 import { PolicyOperation, getPolicyListRoutePath, getPolicyRoutePath } from './policyRouteUtils'
@@ -38,9 +39,9 @@ export function usePolicyBreadcrumb (type: PolicyType, oper: PolicyOperation) {
   return breadcrumb
 }
 
-export function usePolicyInstanceListPath (type: PolicyType, oper: PolicyOperation) {
-  const { isTemplate } = useConfigTemplate()
-  const tablePath = getPolicyRoutePath({ type, oper })
+export function usePolicyPreviousPath (type: PolicyType, oper: PolicyOperation) {
+  const fallbackPath = useTenantLink(getPolicyRoutePath({ type, oper }), 't')
+  const location = useLocation()
 
-  return useTenantLink(isTemplate ? CONFIG_TEMPLATE_LIST_PATH : tablePath, isTemplate ? 'v' : 't')
+  return (location as LocationExtended)?.state?.from?.pathname ?? fallbackPath
 }

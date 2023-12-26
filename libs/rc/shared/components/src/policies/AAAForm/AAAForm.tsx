@@ -20,7 +20,7 @@ import {
   PolicyType,
   useConfigTemplate,
   usePolicyBreadcrumb,
-  usePolicyInstanceListPath
+  usePolicyPreviousPath
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -36,7 +36,7 @@ type AAAFormProps = {
 export const AAAForm = (props: AAAFormProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToInstanceList = usePolicyInstanceListPath(PolicyType.AAA, PolicyOperation.LIST)
+  const linkToInstanceList = usePolicyPreviousPath(PolicyType.AAA, PolicyOperation.LIST)
   const params = useParams()
   const { type, edit, networkView, backToNetwork } = props
   const isEdit = edit && !networkView

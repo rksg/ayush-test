@@ -1,21 +1,41 @@
 import { render, screen } from '@testing-library/react'
 
-import { PolicyDetailsLinkProps, PolicyOperation, PolicyRoutePathProps, PolicyType, getConfigTemplateLink, getPolicyDetailsLink, getPolicyRoutePath } from '@acx-ui/rc/utils'
+import { PolicyDetailsLinkProps, PolicyOperation, PolicyType, getConfigTemplateLink, getPolicyDetailsLink, getPolicyRoutePath } from '@acx-ui/rc/utils'
 
 import {
+  ConfigTemplateLink,
   PolicyConfigTemplateDetailsLink,
   PolicyConfigTemplateLink
 } from '.'
 
+const mockedMspTenantLinkStateFn = jest.fn()
+const mockedLocation = { pathname: 'previous/path' }
+const mockedLocationFn = jest.fn().mockReturnValue(mockedLocation)
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
-  MspTenantLink: (props: { to: string }) => <div>{props.to}</div>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  MspTenantLink: (props: { to: string, state: any }) => {
+    mockedMspTenantLinkStateFn(props.state)
+    return <div>{props.to}</div>
+  },
+  useLocation: () => mockedLocationFn()
 }))
 
 describe('ConfigTemplateLink', () => {
+  afterEach(() => {
+    mockedMspTenantLinkStateFn.mockClear()
+  })
+
+  it('renders ConfigTemplateLink with state prop', () => {
+    render(<ConfigTemplateLink to='test/config'>Config Template Link</ConfigTemplateLink>)
+
+    const targetPath = getConfigTemplateLink('test/config')
+    expect(screen.getByText(targetPath)).toBeInTheDocument()
+    expect(mockedMspTenantLinkStateFn).toHaveBeenCalledWith({ from: mockedLocation })
+  })
+
   it('renders children with PolicyConfigTemplateLink', () => {
-    // eslint-disable-next-line max-len
-    const targetPolicyParams: PolicyRoutePathProps = { type: PolicyType.AAA, oper: PolicyOperation.CREATE }
+    const targetPolicyParams = { type: PolicyType.AAA, oper: PolicyOperation.CREATE }
     render(
       <PolicyConfigTemplateLink {...targetPolicyParams}>Policy Test Child</PolicyConfigTemplateLink>
     )
