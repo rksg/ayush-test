@@ -1,7 +1,8 @@
 import { Middleware, isFulfilled } from '@reduxjs/toolkit'
+import jwtDecode                   from 'jwt-decode'
 
-import { ErrorDetailsProps }  from '@acx-ui/components'
-import { CatchErrorResponse } from '@acx-ui/rc/utils'
+import { ErrorDetailsProps }            from '@acx-ui/components'
+import { CatchErrorResponse, JwtToken } from '@acx-ui/rc/utils'
 
 type QueryMeta = {
   response?: Response,
@@ -39,21 +40,30 @@ export const isDev = () => {
 }
 
 export const refreshTokenMiddleware: Middleware = () => (next) => (action: MiddlewareAction) => {
-  // const isDevModeOn = window.location.hostname === 'localhost'
-
   // JWT refresh flow support in UI
   // isDev flag is used for initial testing by QA purpose, will be cleaned up once testing is done by QA
   // temporary logs below will be cleanup once this is tested by QA & before moving the code to higher envs
   if ((isFulfilled(action)) && isDev) {
+    const cache = new Map<string, JwtToken>()
     const jwt = sessionStorage.getItem('jwt') ?? 'null'
     const loginToken = action?.meta?.baseQueryMeta?.response?.headers.get('login-token')
     if (loginToken) {
       // eslint-disable-next-line no-console
-      console.log('login-token: ',
+      console.log('%c[%s] Refreshing login token:::: [%s]',
+        'color: green',
+        new Date().toLocaleString(),
         action?.meta?.baseQueryMeta?.response?.headers.get('login-token'))
+      sessionStorage.setItem('sessionJwt', jwt) // temporary parameter, will clean up once testing is done
+      sessionStorage.setItem('jwt', loginToken ?? jwt)
+
+      try {
+        const token = jwtDecode(loginToken) as JwtToken
+        cache.clear()
+        cache.set(jwt, token)
+      } catch {
+        throw new Error('Unable to parse JWT Token')
+      }
     }
-    sessionStorage.setItem('sessionJwt', jwt) // temporary parameter, will clean up once testing is done
-    sessionStorage.setItem('jwt', loginToken ?? jwt)
   }
   return next(action)
 }
