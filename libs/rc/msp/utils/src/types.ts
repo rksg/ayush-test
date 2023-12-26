@@ -455,10 +455,9 @@ export interface ConfigTemplate {
   id?: string,
   name: string,
   createdBy: string,
-  createdOn: string,
+  createdOn: number,
   appliedTo: number,
-  category: string,
-  type: ConfigTemplateType,
-  lastModified: string,
-  lastApplied: string
+  templateType: ConfigTemplateType,
+  lastModified: number,
+  lastApplied: number
 }

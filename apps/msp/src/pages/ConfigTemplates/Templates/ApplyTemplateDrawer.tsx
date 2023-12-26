@@ -74,10 +74,15 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
   }
 
   const onApply = async () => {
-    const params = { templateId: selectedTemplates[0].id }
-    const payload = { targetTenants: selectedRows.map(ec => ec.id) }
+    const allRequests = selectedRows.map(ec => {
+      return applyConfigTemplate({
+        params: { templateId: selectedTemplates[0].id, tenantId: ec.id },
+        payload: {}
+      }).unwrap()
+    })
+
     try {
-      await applyConfigTemplate({ params, payload }).unwrap()
+      await Promise.all(allRequests)
       onClose()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console

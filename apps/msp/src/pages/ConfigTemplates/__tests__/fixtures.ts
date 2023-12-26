@@ -5,35 +5,32 @@ export const mockedConfigTemplateList = {
     {
       id: '1',
       name: 'Template 1',
-      createdOn: '2021-01-01',
+      createdOn: 1690598400000,
       createdBy: 'Author 1',
       appliedTo: '5',
-      category: 'Category 1',
-      type: 'NETWORK',
-      lastModified: '2021-02-01',
-      lastApplied: '2021-03-01'
+      templateType: 'NETWORK',
+      lastModified: 1690598400000,
+      lastApplied: 1690598405000
     },
     {
       id: '2',
       name: 'Template 2',
-      createdOn: '2021-02-01',
+      createdOn: 1690598500000,
       createdBy: 'Author 2',
       appliedTo: '2',
-      category: 'Category 2',
-      type: 'NETWORK',
-      lastModified: '2021-03-01',
-      lastApplied: '2021-04-01'
+      templateType: 'NETWORK',
+      lastModified: 1690598500000,
+      lastApplied: 1690598505000
     },
     {
       id: '3',
       name: 'Template 3',
-      createdOn: '2021-03-01',
+      createdOn: 1690598500000,
       createdBy: 'Author 3',
       appliedTo: '7',
-      category: 'Category 3',
-      type: 'RADIUS',
-      lastModified: '2021-04-01',
-      lastApplied: '2021-05-01'
+      templateType: 'RADIUS',
+      lastModified: 1690598500000,
+      lastApplied: 1690598510000
     }
   ]
 }

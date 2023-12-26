@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { MenuProps } from 'antd'
+import moment        from 'moment'
 import { useIntl }   from 'react-intl'
 
 import {
@@ -8,6 +9,7 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
+import { DateFormatEnum, userDateTimeFormat }                                            from '@acx-ui/formatter'
 import { ConfigTemplateLink, PolicyConfigTemplateLink, renderConfigTemplateDetailsLink } from '@acx-ui/msp/components'
 import { useGetConfigTemplateListQuery }                                                 from '@acx-ui/msp/services'
 import { ConfigTemplate }                                                                from '@acx-ui/msp/utils'
@@ -78,6 +80,7 @@ export function ConfigTemplateList () {
 
 function useColumns () {
   const { $t } = useIntl()
+  const dateFormat = userDateTimeFormat(DateFormatEnum.DateTimeFormatWithSeconds)
 
   const columns: TableProps<ConfigTemplate>['columns'] = [
     {
@@ -87,19 +90,13 @@ function useColumns () {
       sorter: true,
       searchable: true,
       render: (_, row) => {
-        return renderConfigTemplateDetailsLink(row.type, row.id!, row.name)
+        return renderConfigTemplateDetailsLink(row.templateType, row.id!, row.name)
       }
     },
     {
-      key: 'category',
-      title: $t({ defaultMessage: 'Category' }),
-      dataIndex: 'category',
-      sorter: true
-    },
-    {
-      key: 'type',
+      key: 'templateType',
       title: $t({ defaultMessage: 'Type' }),
-      dataIndex: 'type',
+      dataIndex: 'templateType',
       sorter: true
     },
     {
@@ -119,19 +116,28 @@ function useColumns () {
       key: 'createdOn',
       title: $t({ defaultMessage: 'Created On' }),
       dataIndex: 'createdOn',
-      sorter: true
+      sorter: true,
+      render: function (_, row) {
+        return moment(row.createdOn).format(dateFormat)
+      }
     },
     {
       key: 'lastModified',
       title: $t({ defaultMessage: 'Last Modified' }),
       dataIndex: 'lastModified',
-      sorter: true
+      sorter: true,
+      render: function (_, row) {
+        return moment(row.lastModified).format(dateFormat)
+      }
     },
     {
       key: 'lastApplied',
       title: $t({ defaultMessage: 'Last Applied' }),
       dataIndex: 'lastApplied',
-      sorter: true
+      sorter: true,
+      render: function (_, row) {
+        return row.lastApplied ? moment(row.lastApplied).format(dateFormat) : ''
+      }
     }
   ]
 

@@ -8,8 +8,7 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   },
   applyConfigTemplate: {
     method: 'post',
-    url: '/templates/:templateId/instances',
-    // url: '/templates/:templateId/tenant/:tenantId'
+    url: '/templates/:templateId/tenant/:tenantId',
     newApi: true
   },
   addNetworkTemplate: {

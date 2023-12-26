@@ -48,7 +48,7 @@ describe('ConfigTemplateList component', () => {
         ConfigTemplateUrlsInfo.applyConfigTemplate.url,
         (req, res, ctx) => {
           applyFn()
-          return res(ctx.json({ ...mockedMSPCustomerList }))
+          return res(ctx.json({ requestId: '123456789ABCDEFG' }))
         }
       )
     )
