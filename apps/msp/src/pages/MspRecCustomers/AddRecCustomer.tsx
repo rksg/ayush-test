@@ -19,6 +19,7 @@ import {
   useDisableMspEcSupportMutation,
   useEnableMspEcSupportMutation,
   useGetMspEcDelegatedAdminsQuery,
+  useGetMspEcQuery,
   useGetMspEcSupportQuery,
   useMspAdminListQuery,
   useMspCustomerListQuery
@@ -68,6 +69,9 @@ export function AddRecCustomer () {
   const isEditMode = action === 'edit'
 
   const { data: userProfileData } = useUserProfileContext()
+  const { data: recCustomer } =
+      useGetMspEcQuery({ params: { mspEcTenantId } }, { skip: !isEditMode })
+
   const { data: Administrators } =
       useMspAdminListQuery({ params: useParams() }, { skip: !isEditMode })
   const { data: delegatedAdmins } =
@@ -241,6 +245,10 @@ export function AddRecCustomer () {
     </>
   }
 
+  const displayEditRecCustomer = () => {
+    return recCustomer?.name ? <h4>{recCustomer.name}</h4> : noDataDisplay
+  }
+
   const displayMspAdmins = () => {
     if (!mspAdmins || mspAdmins.length === 0)
       return noDataDisplay
@@ -283,7 +291,8 @@ export function AddRecCustomer () {
     return <>
       <UI.FieldLabelAdmins width='275px' style={{ marginTop: '15px' }}>
         <label>{intl.$t({ defaultMessage: 'RUCKUS End Customer' })}</label>
-        <Form.Item children={<div>{displayRecCustomer()}</div>} />
+        <Form.Item
+          children={<div>{isEditMode ? displayEditRecCustomer() : displayRecCustomer()}</div>} />
         {!isEditMode && <Form.Item
           children={<UI.FieldTextLink onClick={() => setDrawerRecVisible(true)}>
             {intl.$t({ defaultMessage: 'Manage' })}
