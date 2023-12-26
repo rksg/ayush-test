@@ -1,4 +1,6 @@
 
+import _ from 'lodash'
+
 import {
   ConfigTemplateUrlsInfo,
   ConfigTemplate
@@ -18,6 +20,7 @@ import {
 import { baseConfigTemplateApi }      from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
 import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
+
 
 export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
   endpoints: (build) => ({
@@ -58,11 +61,11 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'NetworkTemplate', id: '' }]
     }),
     getNetworkTemplate: build.query<NetworkSaveData, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.getNetworkTemplate, false),
+      query: commonQueryFn(ConfigTemplateUrlsInfo.getNetworkTemplate),
       providesTags: [{ type: 'NetworkTemplate', id: 'DETAIL' }]
     }),
     getNetworkTemplateList: build.query<TableResult<Network>, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.getNetworkTemplateList, true),
+      query: commonQueryFn(ConfigTemplateUrlsInfo.getNetworkTemplateList),
       providesTags: [{ type: 'NetworkTemplate', id: 'LIST' }],
       transformResponse: transformNetworkListResponse,
       async onCacheEntryAdded (requestArgs, api) {
@@ -87,7 +90,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'AAATemplate', id: 'LIST' }]
     }),
     getAAAPolicyTemplate: build.query<AAAPolicyType, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.getAAAPolicyTemplate, false),
+      query: commonQueryFn(ConfigTemplateUrlsInfo.getAAAPolicyTemplate),
       providesTags: [{ type: 'AAATemplate', id: 'DETAIL' }]
     }),
     updateAAAPolicyTemplate: build.mutation<AAAPolicyType, RequestPayload>({
@@ -95,7 +98,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'AAATemplate', id: 'LIST' }]
     }),
     getAAAPolicyTemplateList: build.query<TableResult<AAAViewModalType>, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.getAAAPolicyTemplateList, false),
+      query: commonQueryFn(ConfigTemplateUrlsInfo.getAAAPolicyTemplateList),
       providesTags: [{ type: 'AAATemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -124,16 +127,18 @@ export const {
   useLazyGetNetworkTemplateListQuery,
   useAddAAAPolicyTemplateMutation,
   useGetAAAPolicyTemplateQuery,
+  useLazyGetAAAPolicyTemplateQuery,
   useUpdateAAAPolicyTemplateMutation,
   useGetAAAPolicyTemplateListQuery
 } = configTemplateApi
 
-function commonQueryFn (apiInfo: ApiInfo, withPayload = true) {
+function commonQueryFn (apiInfo: ApiInfo, withPayload?: boolean) {
   return ({ params, payload }: RequestPayload) => {
     const req = createHttpRequest(apiInfo, params)
+    const needPayload = _.isUndefined(withPayload) ? apiInfo.method !== 'get' : withPayload
     return {
       ...req,
-      ...(withPayload ? { body: payload } : {})
+      ...(needPayload ? { body: payload } : {})
     }
   }
 }

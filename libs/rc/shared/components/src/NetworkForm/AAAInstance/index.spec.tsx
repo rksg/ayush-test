@@ -16,7 +16,8 @@ import {
 import {
   mockAAAPolicyListResponse,
   mockAAAPolicyNewCreateResponse,
-  mockAAAPolicyTemplateListResponse
+  mockAAAPolicyTemplateListResponse,
+  mockAAAPolicyTemplateResponse
 } from '../__tests__/fixtures'
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -52,6 +53,10 @@ describe('AAA Instance Page', () => {
       rest.post(
         ConfigTemplateUrlsInfo.getAAAPolicyTemplateList.url,
         (_, res, ctx) => res(ctx.json(mockAAAPolicyTemplateListResponse))
+      ),
+      rest.get(
+        ConfigTemplateUrlsInfo.getAAAPolicyTemplate.url,
+        (_, res, ctx) => res(ctx.json(mockAAAPolicyTemplateResponse))
       )
     )
   })
@@ -77,16 +82,31 @@ describe('AAA Instance Page', () => {
     await userEvent.click((await screen.findByRole('button', { name: /Cancel/i })))
     await userEvent.click(await screen.findByRole('button', { name: /Add Server/i }))
     await userEvent.click(await screen.findByRole('button', { name: /Add Secondary Server/i }))
-    await userEvent.type(await screen.findByRole(
-      'textbox', { name: /Profile Name/i }), mockAAAPolicyNewCreateResponse.name)
-    await userEvent.type((await screen.findAllByRole('textbox', { name: 'IP Address' }))[0],
-      mockAAAPolicyNewCreateResponse.primary.ip)
-    await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[0],
-      mockAAAPolicyNewCreateResponse.primary.sharedSecret)
-    await userEvent.type((await screen.findAllByRole('textbox', { name: 'IP Address' }))[1],
-      mockAAAPolicyNewCreateResponse.secondary.ip)
-    await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[1],
-      mockAAAPolicyNewCreateResponse.secondary.sharedSecret)
+
+    const profileNameElement = await screen.findByRole('textbox', { name: /Profile Name/i })
+    await userEvent.type(profileNameElement, mockAAAPolicyNewCreateResponse.name)
+
+    const primaryIpElement = (await screen.findAllByRole('textbox', { name: 'IP Address' }))[0]
+    await userEvent.type(primaryIpElement, mockAAAPolicyNewCreateResponse.primary.ip)
+
+    const primaryPortElement = (await screen.findAllByRole('spinbutton', { name: 'Port' }))[0]
+    await userEvent.clear(primaryPortElement)
+    await userEvent.type(primaryPortElement, mockAAAPolicyNewCreateResponse.primary.port.toString())
+
+    const primarySecretElement = (await screen.findAllByLabelText('Shared Secret'))[0]
+    await userEvent.type(primarySecretElement, mockAAAPolicyNewCreateResponse.primary.sharedSecret)
+
+    const secondaryIpElement = (await screen.findAllByRole('textbox', { name: 'IP Address' }))[1]
+    await userEvent.type(secondaryIpElement, mockAAAPolicyNewCreateResponse.secondary.ip)
+
+    const secondaryPortElement = (await screen.findAllByRole('spinbutton', { name: 'Port' }))[1]
+    await userEvent.clear(secondaryPortElement)
+    // eslint-disable-next-line max-len
+    await userEvent.type(secondaryPortElement, mockAAAPolicyNewCreateResponse.secondary.port.toString())
+
+    const secondarySecret = (await screen.findAllByLabelText('Shared Secret'))[1]
+    await userEvent.type(secondarySecret, mockAAAPolicyNewCreateResponse.secondary.sharedSecret)
+
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
 
     await userEvent.click((await screen.findAllByRole('combobox'))[0])

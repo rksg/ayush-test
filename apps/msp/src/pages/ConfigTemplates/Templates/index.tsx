@@ -8,9 +8,9 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { ConfigTemplateLink, PolicyConfigTemplateLink } from '@acx-ui/msp/components'
-import { useGetConfigTemplateListQuery }                from '@acx-ui/msp/services'
-import { ConfigTemplate }                               from '@acx-ui/msp/utils'
+import { ConfigTemplateLink, PolicyConfigTemplateLink, renderConfigTemplateDetailsLink } from '@acx-ui/msp/components'
+import { useGetConfigTemplateListQuery }                                                 from '@acx-ui/msp/services'
+import { ConfigTemplate }                                                                from '@acx-ui/msp/utils'
 import {
   PolicyOperation,
   PolicyType,
@@ -85,7 +85,10 @@ function useColumns () {
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       sorter: true,
-      searchable: true
+      searchable: true,
+      render: (_, row) => {
+        return renderConfigTemplateDetailsLink(row.type, row.id!, row.name)
+      }
     },
     {
       key: 'category',

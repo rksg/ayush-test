@@ -14,14 +14,13 @@ import { useParams }                 from 'react-router-dom'
 
 import { Subtitle, Tooltip, PasswordInput }   from '@acx-ui/components'
 import { get }                                from '@acx-ui/config'
-import { useLazyAaaPolicyQuery }              from '@acx-ui/rc/services'
 import { AaaServerOrderEnum, AuthRadiusEnum } from '@acx-ui/rc/utils'
 
-import AAAInstance                     from '../../../AAAInstance'
-import AAAPolicyModal                  from '../../../AAAInstance/AAAPolicyModal'
-import { useGetAAAPolicyInstanceList } from '../../../AAAInstance/useGetAAAPolicyInstanceList'
-import * as contents                   from '../../../contentsMap'
-import NetworkFormContext              from '../../../NetworkFormContext'
+import { useLazyGetAAAPolicyInstance, useGetAAAPolicyInstanceList } from '../../../../policies/AAAForm/aaaPolicyQuerySwitcher'
+import AAAInstance                                                  from '../../../AAAInstance'
+import AAAPolicyModal                                               from '../../../AAAInstance/AAAPolicyModal'
+import * as contents                                                from '../../../contentsMap'
+import NetworkFormContext                                           from '../../../NetworkFormContext'
 
 import { Description }         from './styledComponents'
 import { WISPrAuthAccContext } from './WISPrAuthAccServerReducer'
@@ -35,9 +34,10 @@ export function WISPrAuthAccServer (props : {
   const { useWatch } = Form
   const form = Form.useFormInstance()
   const { data, setData } = useContext(NetworkFormContext)
-  // eslint-disable-next-line max-len
-  const { data: aaaAuthListQuery } = useGetAAAPolicyInstanceList({ filters: { type: ['AUTHENTICATION'] } })
-  const [ getAaaPolicy ] = useLazyAaaPolicyQuery()
+  const { data: aaaAuthListQuery } = useGetAAAPolicyInstanceList({
+    customPayload: { filters: { type: ['AUTHENTICATION'] } }
+  })
+  const [ getAaaPolicy ] = useLazyGetAAAPolicyInstance()
   const [aaaList, setAaaList]= useState([] as DefaultOptionType[])
   const selectedAuthProfileId = Form.useWatch('authRadiusId')
   const radiusValue = Form.useWatch('authRadius')

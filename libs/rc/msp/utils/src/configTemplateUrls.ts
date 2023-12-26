@@ -3,42 +3,53 @@ import { ApiInfo } from '@acx-ui/utils'
 export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getConfigTemplates: {
     method: 'post',
-    url: '/templates'
+    url: '/templates',
+    newApi: true
   },
   applyConfigTemplate: {
     method: 'post',
-    url: '/templates/:templateId/instance'
+    url: '/templates/:templateId/instances',
+    // url: '/templates/:templateId/tenant/:tenantId'
+    newApi: true
   },
   addNetworkTemplate: {
     method: 'post',
-    url: '/templates/wifiNetworks'
+    url: '/templates/wifiNetworks',
+    newApi: true
   },
   updateNetworkTemplate: {
     method: 'put',
-    url: '/templates/wifiNetworks/:networkId'
+    url: '/templates/wifiNetworks/:networkId',
+    newApi: true
   },
   getNetworkTemplate: {
     method: 'get',
-    url: '/templates/wifiNetworks/:networkId'
+    url: '/templates/wifiNetworks/:networkId',
+    newApi: true
   },
   getNetworkTemplateList: {
     method: 'post',
-    url: '/templates/wifiNetworks/query'
+    url: '/templates/wifiNetworks/query',
+    newApi: true
   },
   addAAAPolicyTemplate: {
     method: 'post',
-    url: '/templates/radiusServerProfiles'
+    url: '/templates/radiusServerProfiles',
+    newApi: true
   },
   getAAAPolicyTemplate: {
     method: 'get',
-    url: '/templates/radiusServerProfiles/:policyId'
+    url: '/templates/radiusServerProfiles/:policyId',
+    newApi: true
   },
   updateAAAPolicyTemplate: {
     method: 'put',
-    url: '/templates/radiusServerProfiles/:policyId'
+    url: '/templates/radiusServerProfiles/:policyId',
+    newApi: true
   },
   getAAAPolicyTemplateList: {
     method: 'post',
-    url: '/templates/enhancedRadiusServerProfiles/query'
+    url: '/templates/radiusServerProfiles/query',
+    newApi: true
   }
 }

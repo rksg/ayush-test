@@ -1795,6 +1795,8 @@ export const mockAAAPolicyTemplateListResponse = {
   ]
 }
 
+export const mockAAAPolicyTemplateResponse = mockAAAPolicyTemplateListResponse.data[1]
+
 export const mockAAAPolicyNewCreateResponse = {
   id: '3',
   name: 'test 3',

@@ -9,7 +9,7 @@ export const mockedConfigTemplateList = {
       createdBy: 'Author 1',
       appliedTo: '5',
       category: 'Category 1',
-      type: 'Type 1',
+      type: 'NETWORK',
       lastModified: '2021-02-01',
       lastApplied: '2021-03-01'
     },
@@ -20,7 +20,7 @@ export const mockedConfigTemplateList = {
       createdBy: 'Author 2',
       appliedTo: '2',
       category: 'Category 2',
-      type: 'Type 2',
+      type: 'NETWORK',
       lastModified: '2021-03-01',
       lastApplied: '2021-04-01'
     },
@@ -31,7 +31,7 @@ export const mockedConfigTemplateList = {
       createdBy: 'Author 3',
       appliedTo: '7',
       category: 'Category 3',
-      type: 'Type 3',
+      type: 'RADIUS',
       lastModified: '2021-04-01',
       lastApplied: '2021-05-01'
     }
