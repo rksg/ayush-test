@@ -13,6 +13,11 @@ export enum PskWlanSecurityEnum {
   WEP = 'WEP'
 }
 
+export enum AAAWlanSecurityEnum {
+  WPA2Enterprise = 'WPA2 (Recommended)',
+  WPA3 = 'WPA3'
+}
+
 export enum SecurityOptionsDescription {
   /* eslint-disable max-len */
   WPA2Personal = 'WPA2 is strong Wi-Fi security that is widely available on all mobile devices manufactured after 2006. WPA2 should be selected unless you have a specific reason to choose otherwise.',
