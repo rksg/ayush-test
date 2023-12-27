@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Tooltip should render disbled correctly 1`] = `
+<DocumentFragment>
+  <span
+    class="styledComponents__Disabled-sc-xryt7m-0 buwDvo"
+  >
+    Some text
+  </span>
+</DocumentFragment>
+`;

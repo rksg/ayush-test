@@ -4,7 +4,7 @@ import { Tooltip as AntTooltip } from 'antd'
 
 import { InformationOutlined, InformationSolid, QuestionMarkCircleOutlined } from '@acx-ui/icons'
 
-import * as UI from './styledComponents'
+import { TooltipGlobalStyle, Disabled } from './styledComponents'
 
 import type { TooltipProps } from 'antd'
 
@@ -13,15 +13,20 @@ Tooltip.defaultProps = {
   mouseEnterDelay: 0.5
 }
 
-function Tooltip ({ ...props }: TooltipProps) {
+function BaseTooltip ({ ...props }: TooltipProps) {
   return <>
-    <UI.TooltipGlobalStyle />
+    <TooltipGlobalStyle />
     <AntTooltip {...props} />
   </>
 }
 
-export { Tooltip, TooltipProps }
+function Tooltip ({ disabled, ...props }: TooltipProps & { disabled?: boolean }) {
+  return disabled
+    ? <BaseTooltip {...props} children={<Disabled>{props.children}</Disabled>} />
+    : <BaseTooltip {...props} />
+}
 
+export { Tooltip, TooltipProps }
 
 type PredefinedTooltipProps = Omit<TooltipProps, 'children'> & {
   iconStyle?: CSSProperties,
@@ -44,3 +49,4 @@ Tooltip.Info = function InfoTooltip (props: PredefinedTooltipProps) {
     }
   </Tooltip>
 }
+

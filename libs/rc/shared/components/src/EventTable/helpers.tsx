@@ -7,7 +7,6 @@ import { TenantLink, generatePath }             from '@acx-ui/react-router-dom'
 import { getIntl, noDataDisplay }               from '@acx-ui/utils'
 
 import { typeMapping } from './mapping'
-import * as UI         from './styledComponents'
 
 type EntityType = typeof entityTypes[number]
 type EntityExistsKey = `is${Capitalize<EntityType>}Exists`
@@ -65,8 +64,9 @@ export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
   const exists = data[existKey as keyof typeof data]
 
   if (!exists) return <Tooltip
+    disabled
     title={<FormattedMessage defaultMessage='Not available' />}
-    children={<UI.Disabled>{name}</UI.Disabled>}
+    children={name}
   />
 
   const spec = pathSpecs[entity]

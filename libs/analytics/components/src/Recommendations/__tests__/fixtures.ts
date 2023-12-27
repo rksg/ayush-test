@@ -293,7 +293,8 @@ export const insufficientLicenses = {
       type: 'zone',
       name: '01-Alethea-WiCheck Test'
     }
-  ] as NetworkPath
+  ] as NetworkPath,
+  preferences: null
 }
 
 export const verificationError = {
@@ -329,7 +330,8 @@ export const verificationError = {
       type: 'zone',
       name: '22-US-CA-Z22-Aaron-Home'
     }
-  ] as NetworkPath
+  ] as NetworkPath,
+  preferences: null
 }
 
 export const verified = {
@@ -387,7 +389,8 @@ export const verified = {
       type: 'zone',
       name: '01-US-CA-D1-Ruckus-HQ-QA-interop'
     }
-  ] as NetworkPath
+  ] as NetworkPath,
+  preferences: null
 }
 
 export const recommendationListResult = {
@@ -412,15 +415,15 @@ export const recommendationListResult = {
         { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c7' },
         { type: 'zone', name: 'EDU-MeshZone_S12348' }
       ] as NetworkPath,
-      preferences: {
-        fullOptimization: true
-      },
       statusTrail: [
         { status: 'new' },
         { status: 'applyscheduled' },
         { status: 'applyscheduleinprogress' },
         { status: 'applied' }
-      ]
+      ],
+      preferences: {
+        fullOptimization: true
+      }
     },
     {
       id: '2',
@@ -454,7 +457,8 @@ export const recommendationListResult = {
         { status: 'applyscheduleinprogress' },
         { status: 'applied' },
         { status: 'revertscheduled' }
-      ]
+      ],
+      preferences: null
     },
     {
       id: '3',
@@ -480,7 +484,8 @@ export const recommendationListResult = {
       path: [
         { type: 'system', name: 'vsz6' },
         { type: 'zone', name: 'EDU' }
-      ] as NetworkPath
+      ] as NetworkPath,
+      preferences: null
     },
     {
       id: '4',
@@ -510,7 +515,8 @@ export const recommendationListResult = {
       ] as NetworkPath,
       statusTrail: [
         { status: 'new' }
-      ]
+      ],
+      preferences: null
     },
     insufficientLicenses,
     verificationError,
@@ -523,7 +529,7 @@ export const recommendationListResult = {
       updatedAt: '2023-06-16T06:05:02.839Z',
       sliceType: 'zone',
       sliceValue: 'zone-1',
-      metadata: {},
+      metadata: { algorithmData: { isFullyOptimized: false } },
       isMuted: false,
       mutedAt: null,
       mutedBy: '',
@@ -536,7 +542,7 @@ export const recommendationListResult = {
         { type: 'zone', name: 'EDU-MeshZone_S12348' }
       ] as NetworkPath,
       preferences: {
-        fullOptimization: false
+        fullOptimization: true
       }
     }
   ]

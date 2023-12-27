@@ -378,9 +378,9 @@ export const api = recommendationApi.injectEndpoints({
         const { $t } = getIntl()
         return response.recommendations.map(recommendation => {
           const {
-            id, path, sliceValue, sliceType, code, status, metadata, updatedAt, preferences
+            id, path, sliceValue, sliceType, code, status, metadata, updatedAt
           } = recommendation
-          const isFullyOptimized = preferences ? preferences.fullOptimization : true
+          const isFullyOptimized = !!_.get(metadata, 'algorithmData.isFullyOptimized', true)
           const newId = id === 'unknown' ? uniqueId() : id
           const statusEnum = status as StateType
           const getCode = code === 'unknown'

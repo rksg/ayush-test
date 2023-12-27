@@ -1,3 +1,4 @@
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { EnhancedRecommendation } from './services'
@@ -6,7 +7,7 @@ import { getRecommendationsText } from './Values'
 
 export const CrrmValuesExtra = ({ details }: { details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
-  const isFullyOptimized = details.preferences ? details.preferences.fullOptimization : true
+  const isFullyOptimized = !!_.get(details, 'metadata.algorithmData.isFullyOptimized', true)
   const recommendationText = getRecommendationsText(details, isFullyOptimized)
   return <>
     <Title>{$t({ defaultMessage: 'Why this recommendation?' })}</Title>
