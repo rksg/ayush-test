@@ -35,7 +35,7 @@ const transformResponse = ({ incident }: Response, _: {}, payload: RequestPayloa
     if (config.query === NetworkImpactQueryTypes.Distribution) {
       agg[config.chart] = {
         ...result,
-        count: incident[`${config.dimension}Peak`] as number,
+        peak: incident[`${config.chart}Peak`] as number,
         data: result.data.map(item => ({ ...item, name: item.key }))
       }
     } else {
