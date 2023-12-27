@@ -36,6 +36,7 @@ import {
 
 import AAAInstance                 from '../AAAInstance'
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
+import { MLOContext }              from '../NetworkForm'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
@@ -100,6 +101,7 @@ function SettingsForm (props: {
   setMLOButtonDisable: Function
 }) {
   const { editMode, cloneMode, data, setData } = useContext(NetworkFormContext)
+  const { isDisableMLO, disableMLO } = useContext(MLOContext)
   const intl = useIntl()
   const form = Form.useFormInstance()
   const [

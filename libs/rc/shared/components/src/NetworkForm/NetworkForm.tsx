@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, createContext } from 'react'
 
 import { Form }                   from 'antd'
 import _                          from 'lodash'
@@ -54,6 +54,12 @@ import PortalInstance                       from './PortalInstance'
 import { useNetworkVxLanTunnelProfileInfo } from './utils'
 import { Venues }                           from './Venues/Venues'
 
+export interface MLOContextType {
+  isDisableMLO?: boolean,
+  disableMLO?: (state: boolean) => void
+}
+
+export const MLOContext = createContext({} as MLOContextType)
 
 const settingTitle = defineMessage({
   defaultMessage: `{type, select,
@@ -528,45 +534,49 @@ export function NetworkForm (props:{
           data: saveState,
           setData: updateSaveState
         }}>
-          <StepsFormLegacy<NetworkSaveData>
-            formRef={formRef}
-            editMode={editMode}
-            onCancel={() => modalMode
-              ? modalCallBack?.()
-              : redirectPreviousPage(navigate, previousPath, linkToNetworks)
-            }
-            onFinish={editMode ? handleEditNetwork : handleAddNetwork}
-          >
-            <StepsFormLegacy.StepForm
-              name='details'
-              title={intl.$t({ defaultMessage: 'Network Details' })}
-              onFinish={handleDetails}
+          <MLOContext.Provider value={{
+            isDisableMLO: MLOButtonDisable,
+            disableMLO: setMLOButtonDisable
+          }}>
+            <StepsFormLegacy<NetworkSaveData>
+              formRef={formRef}
+              editMode={editMode}
+              onCancel={() => modalMode
+                ? modalCallBack?.()
+                : redirectPreviousPage(navigate, previousPath, linkToNetworks)
+              }
+              onFinish={editMode ? handleEditNetwork : handleAddNetwork}
             >
-              <NetworkDetailForm />
-            </StepsFormLegacy.StepForm>
+              <StepsFormLegacy.StepForm
+                name='details'
+                title={intl.$t({ defaultMessage: 'Network Details' })}
+                onFinish={handleDetails}
+              >
+                <NetworkDetailForm />
+              </StepsFormLegacy.StepForm>
 
-            <StepsFormLegacy.StepForm
-              name='settings'
-              title={intl.$t(settingTitle, { type: saveState.type })}
-              onFinish={handleSettings}
-            >
-              {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
-              {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm/>}
-              {(saveState.type || createType) === NetworkTypeEnum.DPSK &&
+              <StepsFormLegacy.StepForm
+                name='settings'
+                title={intl.$t(settingTitle, { type: saveState.type })}
+                onFinish={handleSettings}
+              >
+                {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
+                {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm/>}
+                {(saveState.type || createType) === NetworkTypeEnum.DPSK &&
               <DpskSettingsForm
                 MLOButtonDisable={MLOButtonDisable}
                 setMLOButtonDisable={setMLOButtonDisable} />}
-              {
-                (saveState.type || createType) === NetworkTypeEnum.CAPTIVEPORTAL &&
+                {
+                  (saveState.type || createType) === NetworkTypeEnum.CAPTIVEPORTAL &&
                   <PortalTypeForm/>
-              }
-              {saveState.type === NetworkTypeEnum.PSK &&
+                }
+                {saveState.type === NetworkTypeEnum.PSK &&
               <PskSettingsForm
                 MLOButtonDisable={MLOButtonDisable}
                 setMLOButtonDisable={setMLOButtonDisable} />}
 
-            </StepsFormLegacy.StepForm>
-            { saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+              </StepsFormLegacy.StepForm>
+              { saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
                 <StepsFormLegacy.StepForm
                   name='onboarding'
                   title={
@@ -576,29 +586,30 @@ export function NetworkForm (props:{
                   {!!(saveState?.guestPortal?.guestNetworkType) &&
                       pickOneCaptivePortalForm(saveState)}
                 </StepsFormLegacy.StepForm>
-            }
-            { isPortalWebRender(saveState) &&<StepsFormLegacy.StepForm
-              name='portalweb'
-              title={intl.$t({ defaultMessage: 'Portal Web Page' })}
-              onFinish={handlePortalWebPage}
-            >
-              <PortalInstance updatePortalData={(data)=>setPortalDemo(data)}/>
-            </StepsFormLegacy.StepForm>
-            }
-            <StepsFormLegacy.StepForm
-              name='venues'
-              title={intl.$t({ defaultMessage: 'Venues' })}
-              onFinish={handleVenues}
-            >
-              <Venues />
-            </StepsFormLegacy.StepForm>
-            <StepsFormLegacy.StepForm
-              name='summary'
-              title={intl.$t({ defaultMessage: 'Summary' })}
-            >
-              <SummaryForm summaryData={saveState} portalData={portalDemo}/>
-            </StepsFormLegacy.StepForm>
-          </StepsFormLegacy>
+              }
+              { isPortalWebRender(saveState) &&<StepsFormLegacy.StepForm
+                name='portalweb'
+                title={intl.$t({ defaultMessage: 'Portal Web Page' })}
+                onFinish={handlePortalWebPage}
+              >
+                <PortalInstance updatePortalData={(data)=>setPortalDemo(data)}/>
+              </StepsFormLegacy.StepForm>
+              }
+              <StepsFormLegacy.StepForm
+                name='venues'
+                title={intl.$t({ defaultMessage: 'Venues' })}
+                onFinish={handleVenues}
+              >
+                <Venues />
+              </StepsFormLegacy.StepForm>
+              <StepsFormLegacy.StepForm
+                name='summary'
+                title={intl.$t({ defaultMessage: 'Summary' })}
+              >
+                <SummaryForm summaryData={saveState} portalData={portalDemo}/>
+              </StepsFormLegacy.StepForm>
+            </StepsFormLegacy>
+          </MLOContext.Provider>
         </NetworkFormContext.Provider>
       }
       {editMode &&
