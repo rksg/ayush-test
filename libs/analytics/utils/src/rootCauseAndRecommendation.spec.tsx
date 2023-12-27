@@ -282,6 +282,9 @@ describe('getRootCauseAndRecommendations', () => {
   })
 
   describe('airtime Rx Incident', () => {
+    const params = {
+      ssidCountPerRadioSlice: 1
+    }
     it('should return correct data for all true', () => {
       const checks = [
         { isHighDensityWifiDevices: true },
@@ -311,7 +314,7 @@ describe('getRootCauseAndRecommendations', () => {
       })
       const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
       const airtimeRxRCA = getAirtimeRXRootCauses(checks)
-      const airtimeRxRecommendations = getAirtimeRXRecommendations(checks)
+      const airtimeRxRecommendations = getAirtimeRXRecommendations(checks, params)
       expect(rootCauses.rootCauseText).toEqual(airtimeRxRCA.rootCauseText)
       expect(recommendations.recommendationsText).toEqual(
         airtimeRxRecommendations.recommendationsText)
@@ -345,7 +348,7 @@ describe('getRootCauseAndRecommendations', () => {
       })
       const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
       const airtimeRxRCA = getAirtimeRXRootCauses(checks)
-      const airtimeRxRecommendations = getAirtimeRXRecommendations(checks)
+      const airtimeRxRecommendations = getAirtimeRXRecommendations(checks, params)
       expect(rootCauses.rootCauseText).toEqual(airtimeRxRCA.rootCauseText)
       expect(recommendations.recommendationsText).toEqual(
         airtimeRxRecommendations.recommendationsText)
@@ -379,7 +382,7 @@ describe('getRootCauseAndRecommendations', () => {
       })
       const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
       const airtimeRxRCA = getAirtimeRXRootCauses(checks)
-      const airtimeRxRecommendations = getAirtimeRXRecommendations(checks)
+      const airtimeRxRecommendations = getAirtimeRXRecommendations(checks, params)
       expect(rootCauses.rootCauseText).toEqual(airtimeRxRCA.rootCauseText)
       expect(recommendations.recommendationsText).toEqual(
         airtimeRxRecommendations.recommendationsText)
@@ -387,6 +390,9 @@ describe('getRootCauseAndRecommendations', () => {
   })
 
   describe('airtime Tx Incident', () => {
+    const params = {
+      ssidCountPerRadioSlice: 1
+    }
     it('should return correct data for all true', () => {
       const checks = [
         { isHighDensityWifiDevices: true },
@@ -416,7 +422,7 @@ describe('getRootCauseAndRecommendations', () => {
       })
       const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
       const airtimeTxRCA = getAirtimeTXRootCauses(checks)
-      const airtimeTxRecommendations = getAirtimeTXRecommendations(checks)
+      const airtimeTxRecommendations = getAirtimeTXRecommendations(checks, params)
       expect(rootCauses.rootCauseText).toEqual(airtimeTxRCA.rootCauseText)
       expect(recommendations.recommendationsText).toEqual(
         airtimeTxRecommendations.recommendationsText)
@@ -450,7 +456,7 @@ describe('getRootCauseAndRecommendations', () => {
       })
       const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
       const airtimeTxRCA = getAirtimeTXRootCauses(checks)
-      const airtimeTxRecommendations = getAirtimeTXRecommendations(checks)
+      const airtimeTxRecommendations = getAirtimeTXRecommendations(checks, params)
       expect(rootCauses.rootCauseText).toEqual(airtimeTxRCA.rootCauseText)
       expect(recommendations.recommendationsText).toEqual(
         airtimeTxRecommendations.recommendationsText)
@@ -484,7 +490,7 @@ describe('getRootCauseAndRecommendations', () => {
       })
       const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
       const airtimeTxRCA = getAirtimeTXRootCauses(checks)
-      const airtimeTxRecommendations = getAirtimeTXRecommendations(checks)
+      const airtimeTxRecommendations = getAirtimeTXRecommendations(checks, params)
       expect(rootCauses.rootCauseText).toEqual(airtimeTxRCA.rootCauseText)
       expect(recommendations.recommendationsText).toEqual(
         airtimeTxRecommendations.recommendationsText)
