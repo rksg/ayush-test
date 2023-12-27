@@ -554,7 +554,7 @@ exports[`Test Details should render AirtimeB correctly 1`] = `
           <div
             data-dimension="airtimeBusy"
             data-testid="network-impact-airtimeBusy"
-            data-type="airtime"
+            data-type="airtimeMetric"
           />
           <div
             data-dimension="rogueChannel"
@@ -1149,7 +1149,7 @@ exports[`Test Details should render AirtimeB correctly 2`] = `
           <div
             data-dimension="airtimeBusy"
             data-testid="network-impact-airtimeBusy"
-            data-type="airtime"
+            data-type="airtimeMetric"
           />
           <div
             data-dimension="rogueChannel"
@@ -1744,7 +1744,7 @@ exports[`Test Details should render AirtimeB correctly 3`] = `
           <div
             data-dimension="airtimeBusy"
             data-testid="network-impact-airtimeBusy"
-            data-type="airtime"
+            data-type="airtimeMetric"
           />
           <div
             data-dimension="rogueChannel"
@@ -2339,7 +2339,7 @@ exports[`Test Details should render AirtimeRx correctly 1`] = `
           <div
             data-dimension="airtimeRx"
             data-testid="network-impact-airtimeRx"
-            data-type="airtime"
+            data-type="airtimeMetric"
           />
           <div
             data-dimension="apModels"
@@ -2924,7 +2924,7 @@ exports[`Test Details should render AirtimeRx correctly 2`] = `
           <div
             data-dimension="airtimeRx"
             data-testid="network-impact-airtimeRx"
-            data-type="airtime"
+            data-type="airtimeMetric"
           />
           <div
             data-dimension="apModels"
@@ -3509,7 +3509,7 @@ exports[`Test Details should render AirtimeRx correctly 3`] = `
           <div
             data-dimension="airtimeRx"
             data-testid="network-impact-airtimeRx"
-            data-type="airtime"
+            data-type="airtimeMetric"
           />
           <div
             data-dimension="apModels"
@@ -4094,7 +4094,17 @@ exports[`Test Details should render AirtimeTx correctly 1`] = `
           <div
             data-dimension="airtimeTx"
             data-testid="network-impact-airtimeTx"
-            data-type="airtime"
+            data-type="airtimeMetric"
+          />
+          <div
+            data-dimension="summary"
+            data-testid="network-impact-airtimeMgmtFrame"
+            data-type="airtimeFrame"
+          />
+          <div
+            data-dimension="summary"
+            data-testid="network-impact-airtimeCast"
+            data-type="airtimeCast"
           />
         </div>
       </div>
@@ -4674,7 +4684,17 @@ exports[`Test Details should render AirtimeTx correctly 2`] = `
           <div
             data-dimension="airtimeTx"
             data-testid="network-impact-airtimeTx"
-            data-type="airtime"
+            data-type="airtimeMetric"
+          />
+          <div
+            data-dimension="summary"
+            data-testid="network-impact-airtimeMgmtFrame"
+            data-type="airtimeFrame"
+          />
+          <div
+            data-dimension="summary"
+            data-testid="network-impact-airtimeCast"
+            data-type="airtimeCast"
           />
         </div>
       </div>
@@ -5254,7 +5274,17 @@ exports[`Test Details should render AirtimeTx correctly 3`] = `
           <div
             data-dimension="airtimeTx"
             data-testid="network-impact-airtimeTx"
-            data-type="airtime"
+            data-type="airtimeMetric"
+          />
+          <div
+            data-dimension="summary"
+            data-testid="network-impact-airtimeMgmtFrame"
+            data-type="airtimeFrame"
+          />
+          <div
+            data-dimension="summary"
+            data-testid="network-impact-airtimeCast"
+            data-type="airtimeCast"
           />
         </div>
       </div>

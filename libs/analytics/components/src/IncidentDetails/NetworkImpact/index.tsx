@@ -31,9 +31,11 @@ export const transformSummary = (
   incident: Incident
 ) => {
   const { $t } = getIntl()
-  const { count, total, data } = metric
+  const { peak, count, total, data } = metric
+
   if(queryType === NetworkImpactQueryTypes.Distribution) {
-    return $t( config.summary as MessageDescriptor, { count: formatter('percentFormat')(count) })}
+    return $t(config.summary as MessageDescriptor, { count: formatter('percentFormat')(peak) })
+  }
 
   const dominance = (config.dominanceFn || getDominanceByThreshold())(data, incident)
   if (dominance) {
@@ -77,8 +79,7 @@ export const NetworkImpact: React.FC<NetworkImpactProps> = ({ charts, incident }
               {({ height, width }) => {
                 let [value, subTitle]: string[] = []
                 if (chart.query === NetworkImpactQueryTypes.Distribution) {
-                  const val = chartData.data.find(({ key }) => key === chart.chart)?.value
-                  value = formatter('percentFormat')(val)
+                  value = formatter('percentFormat')(chartData.summary)
                   subTitle = transformSummary(chart.query, config, chartData, incident)
                 } else {
                   if (chart.disabled && config.disabled) {
@@ -98,9 +99,7 @@ export const NetworkImpact: React.FC<NetworkImpactProps> = ({ charts, incident }
                   value={value}
                   subTitle={subTitle}
                   tooltipFormat={config.tooltipFormat}
-                  dataFormatter={chart.query === NetworkImpactQueryTypes.Distribution
-                    ? formatter('percentFormat')
-                    : formatter('countFormat')}
+                  dataFormatter={config.dataFomatter || formatter('countFormat')}
                   data={transformData(config, chartData)}
                 />
               }}

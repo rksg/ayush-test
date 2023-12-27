@@ -34,7 +34,7 @@ export const AirtimeB = (incident: Incident) => {
     {
       chart: NetworkImpactChartTypes.AirtimeBusy,
       query: NetworkImpactQueryTypes.Distribution,
-      type: 'airtime',
+      type: 'airtimeMetric',
       dimension: 'airtimeBusy'
     },
     {
