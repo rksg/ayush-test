@@ -108,7 +108,7 @@ export function MspCustomers () {
 
   const techPartnerAssignEcsEanbled = useIsSplitOn(Features.TECH_PARTNER_ASSIGN_ECS)
 
-  if (tenantType === AccountType.VAR &&
+  if ((tenantType === AccountType.VAR || tenantType === AccountType.REC) &&
       (userProfile?.support === false || isSupportToMspDashboardAllowed)) {
     navigate(linkVarPath, { replace: true })
   }
