@@ -529,7 +529,7 @@ export const recommendationListResult = {
       updatedAt: '2023-06-16T06:05:02.839Z',
       sliceType: 'zone',
       sliceValue: 'zone-1',
-      metadata: { algorithmData: { isFullyOptimized: false } },
+      metadata: { algorithmData: { isFullOptimized: false } },
       isMuted: false,
       mutedAt: null,
       mutedBy: '',

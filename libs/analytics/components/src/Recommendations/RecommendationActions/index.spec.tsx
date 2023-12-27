@@ -54,28 +54,28 @@ describe('RecommendationActions', () => {
         icons: ['CheckMarkCircleOutline', 'Reload'],
         statusTrail: [ { status: 'new' } ],
         preferences: { fullOptimization: true },
-        metadata: { algorithmData: { isFullyOptimized: true } }
+        metadata: { algorithmData: { isFullOptimized: true } }
       },
       {
         statusEnum: 'new' as 'new',
         icons: ['CheckMarkCircleOutline', 'Reload'],
         statusTrail: [ { status: 'new' } ],
         preferences: { fullOptimization: true },
-        metadata: { algorithmData: { isFullyOptimized: false } }
+        metadata: { algorithmData: { isFullOptimized: false } }
       },
       {
         statusEnum: 'new' as 'new',
         icons: ['CheckMarkCircleOutline', 'Reload'],
         statusTrail: [ { status: 'new' } ],
         preferences: { fullOptimization: false },
-        metadata: { algorithmData: { isFullyOptimized: true } }
+        metadata: { algorithmData: { isFullOptimized: true } }
       },
       {
         statusEnum: 'new' as 'new',
         icons: ['CheckMarkCircleOutline', 'Reload'],
         statusTrail: [ { status: 'new' } ],
         preferences: { fullOptimization: false },
-        metadata: { algorithmData: { isFullyOptimized: false } }
+        metadata: { algorithmData: { isFullOptimized: false } }
       },
       {
         statusEnum: 'applyscheduled' as 'applyscheduled',
@@ -255,19 +255,19 @@ describe('RecommendationActions', () => {
 describe('isCrrmOptimizationMatched', () => {
   it('should return correct value', () => {
     expect(isCrrmOptimizationMatched(
-      { algorithmData: { isFullyOptimized: true } } as unknown as Recommendation['metadata'],
+      { algorithmData: { isFullOptimized: true } } as unknown as Recommendation['metadata'],
       { fullOptimization: true } as unknown as Recommendation['preferences']
     )).toBe(true)
     expect(isCrrmOptimizationMatched(
-      { algorithmData: { isFullyOptimized: false } } as unknown as Recommendation['metadata'],
+      { algorithmData: { isFullOptimized: false } } as unknown as Recommendation['metadata'],
       { fullOptimization: false } as unknown as Recommendation['preferences']
     )).toBe(true)
     expect(isCrrmOptimizationMatched(
-      { algorithmData: { isFullyOptimized: true } } as unknown as Recommendation['metadata'],
+      { algorithmData: { isFullOptimized: true } } as unknown as Recommendation['metadata'],
       { fullOptimization: false } as unknown as Recommendation['preferences']
     )).toBe(false)
     expect(isCrrmOptimizationMatched(
-      { algorithmData: { isFullyOptimized: false } } as unknown as Recommendation['metadata'],
+      { algorithmData: { isFullOptimized: false } } as unknown as Recommendation['metadata'],
       { fullOptimization: true } as unknown as Recommendation['preferences']
     )).toBe(false)
     expect(isCrrmOptimizationMatched(
