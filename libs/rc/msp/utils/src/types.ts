@@ -456,7 +456,7 @@ export interface ConfigTemplate {
   name: string,
   createdBy: string,
   createdOn: number,
-  appliedTo: number,
+  ecTenants: string[],
   templateType: ConfigTemplateType,
   lastModified: number,
   lastApplied: number

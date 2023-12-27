@@ -101,11 +101,14 @@ function useColumns () {
       sorter: true
     },
     {
-      key: 'appliedTo',
+      key: 'ecTenants',
       title: $t({ defaultMessage: 'Applied To' }),
-      dataIndex: 'appliedTo',
+      dataIndex: 'ecTenants',
       sorter: true,
-      align: 'center'
+      align: 'center',
+      render: function (_, row) {
+        return row.ecTenants.length
+      }
     },
     {
       key: 'createdBy',

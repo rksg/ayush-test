@@ -7,7 +7,7 @@ export const mockedConfigTemplateList = {
       name: 'Template 1',
       createdOn: 1690598400000,
       createdBy: 'Author 1',
-      appliedTo: '5',
+      ecTenants: ['t1', 't2'],
       templateType: 'NETWORK',
       lastModified: 1690598400000,
       lastApplied: 1690598405000
@@ -17,7 +17,7 @@ export const mockedConfigTemplateList = {
       name: 'Template 2',
       createdOn: 1690598500000,
       createdBy: 'Author 2',
-      appliedTo: '2',
+      ecTenants: [],
       templateType: 'NETWORK',
       lastModified: 1690598500000,
       lastApplied: 1690598505000
@@ -27,7 +27,7 @@ export const mockedConfigTemplateList = {
       name: 'Template 3',
       createdOn: 1690598500000,
       createdBy: 'Author 3',
-      appliedTo: '7',
+      ecTenants: ['t1'],
       templateType: 'RADIUS',
       lastModified: 1690598500000,
       lastApplied: 1690598510000
