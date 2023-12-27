@@ -7,7 +7,9 @@ import {
   getWLANDominance,
   getDominanceByThreshold,
   getAPRebootReason,
-  transformAirtimeKey
+  transformAirtimeMetricKey,
+  transformAirtimeFrame,
+  transformAirtimeCast
 } from './config'
 
 describe('getDataWithPercentage', () => {
@@ -119,12 +121,21 @@ describe('getAPRebootReason', () => {
   })
 })
 
-describe('transformAirtimeKey', () => {
-  it('should return correct key', () => {
-    expect(transformAirtimeKey('airtimeBusy')).toBe('Airtime Busy')
-    expect(transformAirtimeKey('airtimeRx')).toBe('Airtime Rx')
-    expect(transformAirtimeKey('airtimeTx')).toBe('Airtime Tx')
-    expect(transformAirtimeKey('airtimeIdle')).toBe('Airtime Idle')
-    expect(transformAirtimeKey('random')).toBe('')
-  })
+it('transformAirtimeMetricKey should return correct key', () => {
+  expect(transformAirtimeMetricKey('airtimeBusy')).toBe('Airtime Busy')
+  expect(transformAirtimeMetricKey('airtimeRx')).toBe('Airtime Rx')
+  expect(transformAirtimeMetricKey('airtimeTx')).toBe('Airtime Tx')
+  expect(transformAirtimeMetricKey('airtimeIdle')).toBe('Airtime Idle')
+  expect(transformAirtimeMetricKey('random')).toBe('')
+})
+
+it('transformAirtimeFrame should return correct key', () => {
+  expect(transformAirtimeFrame('mgmtFrames')).toBe('Mgmt. Frames')
+  expect(transformAirtimeFrame('dataFrames')).toBe('Data Frames')
+})
+
+it('transformAirtimeCast should return correct key', () => {
+  expect(transformAirtimeCast('txUnicastFrames')).toBe('Unicast Frames')
+  expect(transformAirtimeCast('txBroadcastFrames')).toBe('Broadcast Frames')
+  expect(transformAirtimeCast('txMulticastFrames')).toBe('Multicast Frames')
 })
