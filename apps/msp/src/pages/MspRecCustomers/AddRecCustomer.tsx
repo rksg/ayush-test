@@ -246,7 +246,7 @@ export function AddRecCustomer () {
   }
 
   const displayEditRecCustomer = () => {
-    return recCustomer?.name ? <h4>{recCustomer.name}</h4> : noDataDisplay
+    return recCustomer?.name ? recCustomer.name : noDataDisplay
   }
 
   const displayMspAdmins = () => {
