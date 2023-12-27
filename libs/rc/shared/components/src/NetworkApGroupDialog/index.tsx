@@ -11,8 +11,7 @@ import {
   Radio,
   Row,
   Space,
-  Spin,
-  Select
+  Spin
 } from 'antd'
 import _             from 'lodash'
 import { useIntl }   from 'react-intl'
@@ -20,6 +19,7 @@ import { useParams } from 'react-router-dom'
 
 import {
   Modal,
+  Select,
   Tooltip
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
@@ -164,6 +164,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
       <Select
         {...props}
         mode='multiple'
+        showArrow
         style={{ width: '220px' }}
       >
         <Select.Option value={RadioTypeEnum._2_4_GHz} title=''>{radioTypeEnumToString(RadioTypeEnum._2_4_GHz)}</Select.Option>

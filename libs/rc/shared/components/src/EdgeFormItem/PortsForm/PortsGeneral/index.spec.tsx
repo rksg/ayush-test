@@ -4,8 +4,8 @@ import userEvent              from '@testing-library/user-event'
 import { Form, FormInstance } from 'antd'
 import { rest }               from 'msw'
 
-import { EdgePortConfigFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                             from '@acx-ui/store'
+import { EdgeLag, EdgeLagFixtures, EdgePortConfigFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                       from '@acx-ui/store'
 import {
   act,
   mockServer,
@@ -14,11 +14,15 @@ import {
   screen,
   waitFor } from '@acx-ui/test-utils'
 
-import { EdgeEditContext } from '../..'
+import { EdgePortTabEnum }                from '..'
+import { EditContext as EdgeEditContext } from '../../EdgeEditContext'
+import { EdgePortsDataContext }           from '../PortDataProvider'
 
 import PortsGeneral from './'
 
 const { mockEdgePortConfig, mockEdgePortConfigWithStatusIp } = EdgePortConfigFixtures
+const { mockedEdgeLagList } = EdgeLagFixtures
+
 jest.mock('@acx-ui/utils', () => {
   const reactIntl = jest.requireActual('react-intl')
   const intl = reactIntl.createIntl({
@@ -52,24 +56,19 @@ const MockedPortsForm = (props: MockedPortsFormType) => {
   </Form>
 }
 
-jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
+jest.mock('../../EdgePortsGeneral', () => ({
+  ...jest.requireActual('../../EdgePortsGeneral'),
   EdgePortsGeneral: (props: MockedPortsFormType) => {
     return <MockedPortsForm {...props}/>
   }
 }))
 
-const mockedUsedNavigate = jest.fn()
 const mockedContextSetActiveSubTab = jest.fn()
 const mockedSetFormControl = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
-}))
 
 const defaultContextData = {
   activeSubTab: {
-    key: 'ports-general',
+    key: EdgePortTabEnum.PORTS_GENERAL,
     title: 'Ports General'
   },
   formControl: {
@@ -80,22 +79,23 @@ const defaultContextData = {
   setActiveSubTab: mockedContextSetActiveSubTab,
   setFormControl: mockedSetFormControl
 }
+const defaultPortsContextdata = {
+  portData: mockEdgePortConfigWithStatusIp.ports,
+  lagData: mockedEdgeLagList.content as EdgeLag[],
+  isLoading: false,
+  isFetching: false
+}
 
 describe('EditEdge ports - ports general', () => {
-  let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
   const mockedUpdateReq = jest.fn()
+  const mockedCancelFn = jest.fn()
+  const mockedEdgeID = 'mocked_edge_id'
 
   beforeEach(() => {
-    params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      serialNumber: '000000000000',
-      activeTab: 'ports',
-      activeSubTab: 'ports-general'
-    }
-
     mockedContextSetActiveSubTab.mockClear()
     mockedSetFormControl.mockClear()
     mockedUpdateReq.mockClear()
+    mockedCancelFn.mockClear()
 
     mockServer.use(
       rest.get(
@@ -118,8 +118,8 @@ describe('EditEdge ports - ports general', () => {
       const [data, setData] = React.useState({
         isDirty: false,
         hasError: false,
-        discardFn: () => {},
-        applyFn: () => {}
+        discardFn: jest.fn(),
+        applyFn: jest.fn()
       })
       return { data, setData }
     })
@@ -135,14 +135,14 @@ describe('EditEdge ports - ports general', () => {
         <EdgeEditContext.Provider
           value={contextData}
         >
-          <PortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
+          <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+            <PortsGeneral
+              serialNumber={mockedEdgeID}
+              onCancel={mockedCancelFn}
+            />
+          </EdgePortsDataContext.Provider>
         </EdgeEditContext.Provider>
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
-        }
-      })
+      </Provider>)
 
     await screen.findByTestId('rc-EdgePortsGeneral')
     await user.click(await screen.findByRole('button', { name: 'FormChange' }))
@@ -157,48 +157,42 @@ describe('EditEdge ports - ports general', () => {
   })
 
   it('should correctly handle with form finished', async () => {
-    const user = userEvent.setup()
     render(
       <Provider>
         <EdgeEditContext.Provider
           value={defaultContextData}
         >
-          <PortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
+          <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+            <PortsGeneral
+              serialNumber={mockedEdgeID}
+              onCancel={mockedCancelFn}
+            />
+          </EdgePortsDataContext.Provider>
         </EdgeEditContext.Provider>
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
-        }
-      })
+      </Provider>)
 
     await screen.findByTestId('rc-EdgePortsGeneral')
-    await user.click(await screen.findByRole('button', { name: 'Submit' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Submit' }))
     expect(mockedSetFormControl).toHaveBeenCalledTimes(1)
   })
 
   it('cancel and go back to edge list', async () => {
-    const user = userEvent.setup()
     render(
       <Provider>
         <EdgeEditContext.Provider
           value={defaultContextData}
         >
-          <PortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
+          <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+            <PortsGeneral
+              serialNumber={mockedEdgeID}
+              onCancel={mockedCancelFn}
+            />
+          </EdgePortsDataContext.Provider>
         </EdgeEditContext.Provider>
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
-        }
-      })
+      </Provider>)
 
     await screen.findByTestId('rc-EdgePortsGeneral')
-    await user.click(screen.getByRole('button', { name: 'Cancel' }))
-    expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/devices/edge`,
-      hash: '',
-      search: ''
-    })
+    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+    expect(mockedCancelFn).toBeCalled()
   })
 })
