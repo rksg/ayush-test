@@ -359,7 +359,7 @@ describe('getRootCauseAndRecommendations', () => {
       expect(recommendations.recommendationsText).toEqual(
         airtimeRxRecommendations.recommendationsText)
     })
-    it('should return correct varied data 1', () => {
+    it('should return correct varied data', () => {
       const checks = [
         { isHighDensityWifiDevices: true },
         { isAclbRaised: false },

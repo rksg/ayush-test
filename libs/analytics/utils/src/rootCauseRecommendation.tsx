@@ -91,6 +91,7 @@ type AirtimeRxChecks = {
   isAclbRaised: boolean
   isHighSsidCountPerRadio: boolean
   isLargeMgmtFrameCount: boolean
+  isHighCoChannelInterference: boolean
   isCRRMRaised: boolean
   isChannelFlyEnabled: boolean
   isHighLegacyWifiDevicesCount: boolean
@@ -163,7 +164,7 @@ export const getAirtimeRXRootCauses = (checks: AirtimeRxArray) => {
   const allFalseText = [highDensityWifi, excessiveFrame, highCoChannel, highLegacy]
   const text1 = checkTrue.includes('isHighDensityWifiDevices') ? highDensityWifi : ''
   const text2 = checkTrue.includes('isLargeMgmtFrameCount') ? checkTrue.includes('isHighSsidCountPerRadio') ? excessiveSSID : excessiveFrame : ''
-  const text3 = checkTrue.includes('isChannelFlyEnabled') ? highCoChannel : ''
+  const text3 = checkTrue.includes('isHighCoChannelInterference') ? highCoChannel : ''
   const text4 = checkTrue.includes('isHighLegacyWifiDevicesCount') ? highLegacy : ''
   const stringlist = allFalse ? allFalseText : [text1, text2, text3, text4]
 
@@ -196,10 +197,10 @@ export const getAirtimeRXRecommendations = (checks: AirtimeRxArray, params: Airt
   const highLegacyCount = <FormattedMessage defaultMessage={'<li>Remove legacy devices or upgrade them. If possible, enable OFDM-only mode on WLANs.</li>'} values={htmlValues}/>
 
   const allFalseText = [clientLoadBalanceOff, enableAirtimeDecongestion, channelFlyDisabled, highLegacyCount]
-  const text1 = checkTrue.includes('isAclbRaised') ? clientLoadBalanceOn : clientLoadBalanceOff
+  const text1 = checkTrue.includes('isHighDensityWifiDevices') ? checkTrue.includes('isAclbRaised') ? clientLoadBalanceOn : clientLoadBalanceOff: ''
   const text2 = checkTrue.includes('isLargeMgmtFrameCount') ? checkTrue.includes('isHighSsidCountPerRadio') ? highSSIDCountText : enableAirtimeDecongestion : ''
-  const text3 = checkTrue.includes('isCRRMRaised') ? checkTrue.includes('isChannelFlyEnabled') ? crrmRaisedChannelFly : crrmRaisedNoChannelFly : ''
-  const text4 = !checkTrue.includes('isCRRMRaised') && !checkTrue.includes('isChannelFlyEnabled') ? channelFlyDisabled : ''
+  const text3 = checkTrue.includes('isHighCoChannelInterference') ? checkTrue.includes('isCRRMRaised') ? checkTrue.includes('isChannelFlyEnabled') ? crrmRaisedChannelFly : crrmRaisedNoChannelFly : '' : ''
+  const text4 = checkTrue.includes('isHighCoChannelInterference') ? !checkTrue.includes('isCRRMRaised') && !checkTrue.includes('isChannelFlyEnabled') ? channelFlyDisabled : '' : ''
   const text5 = checkTrue.includes('isHighLegacyWifiDevicesCount') ? highLegacyCount : ''
   const stringlist = allFalse ? allFalseText : [text1, text2, text3, text4, text5]
 
@@ -263,7 +264,7 @@ export const getAirtimeTXRecommendations = (checks: AirtimeTxArray, params: Airt
   const highLegacyCount = <FormattedMessage defaultMessage={'<li>Remove legacy devices or upgrade them. If possible, enable OFDM-only mode on WLANs.</li>'} values={htmlValues}/>
 
   const allFalseText = [clientLoadBalanceOff, enableAirtimeDecongestion, nonWifiInterference, highMCBC, highLegacyCount]
-  const text1 = checkTrue.includes('isAclbRaised') ? clientLoadBalanceOn : clientLoadBalanceOff
+  const text1 = checkTrue.includes('isHighDensityWifiDevices') ? checkTrue.includes('isAclbRaised') ? clientLoadBalanceOn : clientLoadBalanceOff: ''
   const text2 = checkTrue.includes('isLargeMgmtFrameCount') ? checkTrue.includes('isHighSsidCountPerRadio') ? highSSIDCountText : enableAirtimeDecongestion : ''
   const text3 = checkTrue.includes('isHighPacketErrorCount') ? nonWifiInterference : ''
   const text4 = checkTrue.includes('isHighMcbcTraffic') ? highMCBC : ''
