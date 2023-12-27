@@ -197,7 +197,7 @@ export const getAirtimeRXRecommendations = (checks: AirtimeRxArray, params: Airt
   const highLegacyCount = <FormattedMessage defaultMessage={'<li>Remove legacy devices or upgrade them. If possible, enable OFDM-only mode on WLANs.</li>'} values={htmlValues}/>
 
   const allFalseText = [clientLoadBalanceOff, enableAirtimeDecongestion, channelFlyDisabled, highLegacyCount]
-  const text1 = checkTrue.includes('isHighDensityWifiDevices') ? checkTrue.includes('isAclbRaised') ? clientLoadBalanceOn : clientLoadBalanceOff: ''
+  const text1 = checkTrue.includes('isHighDensityWifiDevices') ? checkTrue.includes('isAclbRaised') ? clientLoadBalanceOn : clientLoadBalanceOff : ''
   const text2 = checkTrue.includes('isLargeMgmtFrameCount') ? checkTrue.includes('isHighSsidCountPerRadio') ? highSSIDCountText : enableAirtimeDecongestion : ''
   const text3 = checkTrue.includes('isHighCoChannelInterference') ? checkTrue.includes('isCRRMRaised') ? checkTrue.includes('isChannelFlyEnabled') ? crrmRaisedChannelFly : crrmRaisedNoChannelFly : '' : ''
   const text4 = checkTrue.includes('isHighCoChannelInterference') ? !checkTrue.includes('isCRRMRaised') && !checkTrue.includes('isChannelFlyEnabled') ? channelFlyDisabled : '' : ''
@@ -264,7 +264,7 @@ export const getAirtimeTXRecommendations = (checks: AirtimeTxArray, params: Airt
   const highLegacyCount = <FormattedMessage defaultMessage={'<li>Remove legacy devices or upgrade them. If possible, enable OFDM-only mode on WLANs.</li>'} values={htmlValues}/>
 
   const allFalseText = [clientLoadBalanceOff, enableAirtimeDecongestion, nonWifiInterference, highMCBC, highLegacyCount]
-  const text1 = checkTrue.includes('isHighDensityWifiDevices') ? checkTrue.includes('isAclbRaised') ? clientLoadBalanceOn : clientLoadBalanceOff: ''
+  const text1 = checkTrue.includes('isHighDensityWifiDevices') ? checkTrue.includes('isAclbRaised') ? clientLoadBalanceOn : clientLoadBalanceOff : ''
   const text2 = checkTrue.includes('isLargeMgmtFrameCount') ? checkTrue.includes('isHighSsidCountPerRadio') ? highSSIDCountText : enableAirtimeDecongestion : ''
   const text3 = checkTrue.includes('isHighPacketErrorCount') ? nonWifiInterference : ''
   const text4 = checkTrue.includes('isHighMcbcTraffic') ? highMCBC : ''

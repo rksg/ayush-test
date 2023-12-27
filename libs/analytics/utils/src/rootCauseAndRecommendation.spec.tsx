@@ -287,11 +287,12 @@ describe('getRootCauseAndRecommendations', () => {
       const checks = [
         { isHighDensityWifiDevices: true },
         { isAclbRaised: true },
-        { isHighSsidCountPerRadio: true },
-        { isChannelFlyEnabled: true },
         { isLargeMgmtFrameCount: true },
-        { isHighLegacyWifiDevicesCount: true },
-        { isCRRMRaised: true }
+        { isHighSsidCountPerRadio: true },
+        { isHighCoChannelInterference: true },
+        { isCRRMRaised: true },
+        { isChannelFlyEnabled: true },
+        { isHighLegacyWifiDevicesCount: true }
       ] as unknown as AirtimeRxArray
       const params = {
         ssidCountPerRadioSlice: 1
@@ -304,11 +305,12 @@ describe('getRootCauseAndRecommendations', () => {
             checks: [
               { isHighDensityWifiDevices: true },
               { isAclbRaised: true },
-              { isHighSsidCountPerRadio: true },
-              { isChannelFlyEnabled: true },
               { isLargeMgmtFrameCount: true },
-              { isHighLegacyWifiDevicesCount: true },
-              { isCRRMRaised: true }
+              { isHighSsidCountPerRadio: true },
+              { isHighCoChannelInterference: true },
+              { isCRRMRaised: true },
+              { isChannelFlyEnabled: true },
+              { isHighLegacyWifiDevicesCount: true }
             ],
             params
           }
@@ -325,11 +327,12 @@ describe('getRootCauseAndRecommendations', () => {
       const checks = [
         { isHighDensityWifiDevices: false },
         { isAclbRaised: false },
-        { isHighSsidCountPerRadio: false },
-        { isChannelFlyEnabled: false },
         { isLargeMgmtFrameCount: false },
-        { isHighLegacyWifiDevicesCount: false },
-        { isCRRMRaised: false }
+        { isHighSsidCountPerRadio: false },
+        { isHighCoChannelInterference: false },
+        { isCRRMRaised: false },
+        { isChannelFlyEnabled: false },
+        { isHighLegacyWifiDevicesCount: false }
       ] as unknown as AirtimeRxArray
       const params = {
         ssidCountPerRadioSlice: 0
@@ -342,11 +345,12 @@ describe('getRootCauseAndRecommendations', () => {
             checks: [
               { isHighDensityWifiDevices: false },
               { isAclbRaised: false },
-              { isHighSsidCountPerRadio: false },
-              { isChannelFlyEnabled: false },
               { isLargeMgmtFrameCount: false },
-              { isHighLegacyWifiDevicesCount: false },
-              { isCRRMRaised: false }
+              { isHighSsidCountPerRadio: false },
+              { isHighCoChannelInterference: false },
+              { isCRRMRaised: false },
+              { isChannelFlyEnabled: false },
+              { isHighLegacyWifiDevicesCount: false }
             ],
             params
           }
@@ -359,15 +363,16 @@ describe('getRootCauseAndRecommendations', () => {
       expect(recommendations.recommendationsText).toEqual(
         airtimeRxRecommendations.recommendationsText)
     })
-    it('should return correct varied data', () => {
+    it('should return correct varied data 1', () => {
       const checks = [
         { isHighDensityWifiDevices: true },
         { isAclbRaised: false },
-        { isHighSsidCountPerRadio: false },
-        { isChannelFlyEnabled: false },
         { isLargeMgmtFrameCount: true },
-        { isHighLegacyWifiDevicesCount: false },
-        { isCRRMRaised: true }
+        { isHighSsidCountPerRadio: false },
+        { isHighCoChannelInterference: true },
+        { isCRRMRaised: false },
+        { isChannelFlyEnabled: false },
+        { isHighLegacyWifiDevicesCount: false }
       ] as unknown as AirtimeRxArray
       const params = {
         ssidCountPerRadioSlice: 0
@@ -380,11 +385,52 @@ describe('getRootCauseAndRecommendations', () => {
             checks: [
               { isHighDensityWifiDevices: true },
               { isAclbRaised: false },
-              { isHighSsidCountPerRadio: false },
-              { isChannelFlyEnabled: false },
               { isLargeMgmtFrameCount: true },
-              { isHighLegacyWifiDevicesCount: false },
-              { isCRRMRaised: true }
+              { isHighSsidCountPerRadio: false },
+              { isHighCoChannelInterference: true },
+              { isCRRMRaised: false },
+              { isChannelFlyEnabled: false },
+              { isHighLegacyWifiDevicesCount: false }
+            ],
+            params
+          }
+        }
+      })
+      const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
+      const airtimeRxRCA = getAirtimeRXRootCauses(checks)
+      const airtimeRxRecommendations = getAirtimeRXRecommendations(checks, params)
+      expect(rootCauses.rootCauseText).toEqual(airtimeRxRCA.rootCauseText)
+      expect(recommendations.recommendationsText).toEqual(
+        airtimeRxRecommendations.recommendationsText)
+    })
+    it('should return correct varied data 2', () => {
+      const checks = [
+        { isHighDensityWifiDevices: true },
+        { isAclbRaised: false },
+        { isLargeMgmtFrameCount: true },
+        { isHighSsidCountPerRadio: false },
+        { isHighCoChannelInterference: true },
+        { isCRRMRaised: true },
+        { isChannelFlyEnabled: false },
+        { isHighLegacyWifiDevicesCount: false }
+      ] as unknown as AirtimeRxArray
+      const params = {
+        ssidCountPerRadioSlice: 0
+      } as AirtimeParams
+      const incident = fakeIncident({
+        ...airtimeRxIncident,
+        metadata: {
+          dominant: {},
+          rootCauseChecks: {
+            checks: [
+              { isHighDensityWifiDevices: true },
+              { isAclbRaised: false },
+              { isLargeMgmtFrameCount: true },
+              { isHighSsidCountPerRadio: false },
+              { isHighCoChannelInterference: true },
+              { isCRRMRaised: true },
+              { isChannelFlyEnabled: false },
+              { isHighLegacyWifiDevicesCount: false }
             ],
             params
           }
@@ -478,7 +524,7 @@ describe('getRootCauseAndRecommendations', () => {
     })
     it('should return correct varied data', () => {
       const checks = [
-        { isHighDensityWifiDevices: false },
+        { isHighDensityWifiDevices: true },
         { isAclbRaised: false },
         { isHighSsidCountPerRadio: false },
         { isHighPacketErrorCount: false },
@@ -495,7 +541,7 @@ describe('getRootCauseAndRecommendations', () => {
           dominant: {},
           rootCauseChecks: {
             checks: [
-              { isHighDensityWifiDevices: false },
+              { isHighDensityWifiDevices: true },
               { isAclbRaised: false },
               { isHighSsidCountPerRadio: false },
               { isHighPacketErrorCount: false },
