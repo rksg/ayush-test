@@ -87,6 +87,9 @@ describe('Ap Client Admission Control', () => {
         route: { params }
       })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    await screen.findByText(/Test-Venue/)
+    await screen.findByText(/Customize/)
+
     expect(await screen.findByTestId('client-admission-control-enable-read-only-24g'))
       .toHaveTextContent('Off')
     expect(await screen.findByTestId('client-admission-control-enable-read-only-50g'))

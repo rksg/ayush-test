@@ -99,7 +99,7 @@ export function PskSettingsForm (props: {
 function SettingsForm (props: {
   setMLOButtonDisable: Function
 }) {
-  const { editMode, data, setData } = useContext(NetworkFormContext)
+  const { editMode, cloneMode, data, setData } = useContext(NetworkFormContext)
   const intl = useIntl()
   const form = Form.useFormInstance()
   const [
@@ -224,6 +224,14 @@ function SettingsForm (props: {
       }
     }
   },[data])
+
+  useEffect(() => {
+    if (!editMode && !cloneMode) {
+      if (!wlanSecurity || !Object.keys(PskWlanSecurityEnum).includes(wlanSecurity)) {
+        form.setFieldValue(['wlan', 'wlanSecurity'], WlanSecurityEnum.WPA2Personal)
+      }
+    }
+  }, [cloneMode, editMode, form, wlanSecurity])
 
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const disablePolicies = !useIsSplitOn(Features.POLICIES)
