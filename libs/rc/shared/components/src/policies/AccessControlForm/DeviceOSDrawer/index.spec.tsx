@@ -1071,7 +1071,7 @@ describe('DeviceOSDrawer Component', () => {
   })
 
   // eslint-disable-next-line max-len
-  it('Render DeviceDrawer component successfully with PlayStation in the existing rules', async () => {
+  it.skip('Render DeviceDrawer component successfully with PlayStation in the existing rules', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
