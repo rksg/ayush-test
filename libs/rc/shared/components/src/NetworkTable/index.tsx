@@ -150,7 +150,7 @@ function getCols (intl: ReturnType<typeof useIntl>,
                 : <TenantLink to={`/networks/wireless/${row.id}/network-details/aps`}>
                   {row.aps}
                 </TenantLink>}
-              {supportApCompatibleCheck && row.incompatible && row.incompatible > 0 &&
+              {supportApCompatibleCheck && row?.incompatible && row.incompatible > 0 ?
                 <Tooltip.Info isFilled
                   title={intl.$t({
                     defaultMessage: 'Some access points may not be compatible with ' +
@@ -158,12 +158,12 @@ function getCols (intl: ReturnType<typeof useIntl>,
                   })}
                   placement='right'
                   iconStyle={{
-                    height: '10px',
-                    width: '10px',
-                    marginBottom: '-3px',
-                    marginLeft: '6px',
+                    height: '14px',
+                    width: '14px',
+                    marginBottom: '-2px',
+                    marginLeft: '4px',
                     color: cssStr('--acx-semantics-yellow-50') }}
-                />
+                /> : []
               }
             </>
           )

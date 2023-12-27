@@ -113,15 +113,15 @@ function useColumns (
         return (
           <>
             <TenantLink
-              to={`/venues/${row.id}/venue-details/devices/${row.incompatible}`}
+              to={`/venues/${row.id}/venue-details/devices`}
               children={count ? count : 0}
             />
-            {isApCompatibleCheckEnabled && row.incompatible && row.incompatible > 0 &&
-            <Tooltip.Info isFilled
-              title={$t({ defaultMessage: 'Some access points may not be compatible with certain features in this venue.' })}
-              placement='right'
-              iconStyle={{ height: '10px', width: '10px', marginBottom: '-3px', marginLeft: '6px', color: cssStr('--acx-semantics-yellow-50') }}
-            />
+            {isApCompatibleCheckEnabled && row?.incompatible && row.incompatible > 0 ?
+              <Tooltip.Info isFilled
+                title={$t({ defaultMessage: 'Some access points may not be compatible with certain features in this venue.' })}
+                placement='right'
+                iconStyle={{ height: '14px', width: '14px', marginBottom: '-2px', marginLeft: '4px', color: cssStr('--acx-semantics-yellow-50') }}
+              />:[]
             }
           </>
         )
