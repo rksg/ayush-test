@@ -2,11 +2,11 @@ import React, { useEffect } from 'react'
 
 import {
   Form,
-  Radio,
-  Select
+  Radio
 } from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 
+import { Select }                  from '@acx-ui/components'
 import { useMspCustomerListQuery } from '@acx-ui/msp/services'
 import { SpaceWrapper }            from '@acx-ui/rc/components'
 import { useTableQuery }           from '@acx-ui/rc/utils'
@@ -115,6 +115,7 @@ const MspCustomerSelector = () => {
                       options={options}
                       disabled={tableQuery.isLoading}
                       showSearch
+                      showArrow
                       allowClear
                       optionFilterProp='label'
                     />
