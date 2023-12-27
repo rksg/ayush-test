@@ -810,7 +810,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                               xml:space="preserve"
                               y="8"
                             >
-                              Average no. of clients per AP
+                              Average No. of Clients per AP
                             </text>
                             <path
                               d="M-2 20l4 0l0 20l-4 0Z"

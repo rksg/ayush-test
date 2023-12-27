@@ -382,19 +382,19 @@ export const networkImpactChartConfigs: Readonly<Record<
     summary: defineMessage({ defaultMessage: 'Peak airtime Rx was {count}' })
   },
   [NetworkImpactChartTypes.AirtimeMgmtFrame]: {
-    title: defineMessage({ defaultMessage: 'Average % of mgmt. frames' }),
+    title: defineMessage({ defaultMessage: 'Average % of Mgmt. Frames' }),
     tooltipFormat: tooltipFormats.distribution,
     transformKeyFn: transformAirtimeFrame,
     summary: defineMessage({ defaultMessage: 'Peak percentage of mgmt. frames was {count}' })
   },
   [NetworkImpactChartTypes.AirtimeCast]: {
-    title: defineMessage({ defaultMessage: 'Average % of MC & BC frames' }),
+    title: defineMessage({ defaultMessage: 'Average % of MC & BC Frames' }),
     tooltipFormat: tooltipFormats.distribution,
     transformKeyFn: transformAirtimeCast,
     summary: defineMessage({ defaultMessage: 'Peak percentage of MC & BC frames was {count}' })
   },
   [NetworkImpactChartTypes.AirtimeClientsByAP]: {
-    title: defineMessage({ defaultMessage: 'Average no. of clients per AP' }),
+    title: defineMessage({ defaultMessage: 'Average No. of Clients per AP' }),
     tooltipFormat: tooltipFormats.aps,
     valueFormatter: formatter('countFormat'),
     transformKeyFn: transformAirtimeClientsByAP,
