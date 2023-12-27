@@ -21,15 +21,7 @@ exports[`AccessControlForm should render Access Control form successfully 1`] = 
           type="button"
         >
           <span>
-            Save as AC Profile
-          </span>
-        </button>
-        <button
-          class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 kBDiup"
-          type="button"
-        >
-          <span>
-            Select Access Control profile
+            Select separate profiles
           </span>
         </button>
       </span>
@@ -37,187 +29,7 @@ exports[`AccessControlForm should render Access Control form successfully 1`] = 
         class="styledComponents__FieldLabel-sc-1jfjsg1-0 dOGJsk"
         width="175px"
       >
-        Layer 2
-        <div
-          style="display: grid; grid-template-columns: 50px 190px auto;"
-        >
-          <div
-            class="ant-form-item"
-            style="margin-bottom: 10px;"
-          >
-            <div
-              class="ant-row ant-form-item-row"
-            >
-              <div
-                class="ant-col ant-form-item-control"
-              >
-                <div
-                  class="ant-form-item-control-input"
-                >
-                  <div
-                    class="ant-form-item-control-input-content"
-                  >
-                    <button
-                      aria-checked="false"
-                      class="ant-switch"
-                      id="wlan_advancedCustomization_l2AclEnable"
-                      role="switch"
-                      type="button"
-                    >
-                      <div
-                        class="ant-switch-handle"
-                      />
-                      <span
-                        class="ant-switch-inner"
-                      />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        class="styledComponents__FieldLabel-sc-1jfjsg1-0 dOGJsk"
-        width="175px"
-      >
-        Layer 3
-        <div
-          style="display: grid; grid-template-columns: 50px 190px auto;"
-        >
-          <div
-            class="ant-form-item"
-            style="margin-bottom: 10px;"
-          >
-            <div
-              class="ant-row ant-form-item-row"
-            >
-              <div
-                class="ant-col ant-form-item-control"
-              >
-                <div
-                  class="ant-form-item-control-input"
-                >
-                  <div
-                    class="ant-form-item-control-input-content"
-                  >
-                    <button
-                      aria-checked="false"
-                      class="ant-switch"
-                      id="wlan_advancedCustomization_l3AclEnable"
-                      role="switch"
-                      type="button"
-                    >
-                      <div
-                        class="ant-switch-handle"
-                      />
-                      <span
-                        class="ant-switch-inner"
-                      />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        class="styledComponents__FieldLabel-sc-1jfjsg1-0 dOGJsk"
-        width="175px"
-      >
-        Device & OS
-        <div
-          style="display: grid; grid-template-columns: 50px 190px auto;"
-        >
-          <div
-            class="ant-form-item"
-            style="margin-bottom: 10px;"
-          >
-            <div
-              class="ant-row ant-form-item-row"
-            >
-              <div
-                class="ant-col ant-form-item-control"
-              >
-                <div
-                  class="ant-form-item-control-input"
-                >
-                  <div
-                    class="ant-form-item-control-input-content"
-                  >
-                    <button
-                      aria-checked="false"
-                      class="ant-switch"
-                      id="enableDeviceOs"
-                      role="switch"
-                      type="button"
-                    >
-                      <div
-                        class="ant-switch-handle"
-                      />
-                      <span
-                        class="ant-switch-inner"
-                      />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        class="styledComponents__FieldLabel-sc-1jfjsg1-0 dOGJsk"
-        width="175px"
-      >
-        Applications
-        <div
-          style="display: grid; grid-template-columns: 50px 190px auto;"
-        >
-          <div
-            class="ant-form-item"
-            style="margin-bottom: 10px;"
-          >
-            <div
-              class="ant-row ant-form-item-row"
-            >
-              <div
-                class="ant-col ant-form-item-control"
-              >
-                <div
-                  class="ant-form-item-control-input"
-                >
-                  <div
-                    class="ant-form-item-control-input-content"
-                  >
-                    <button
-                      aria-checked="false"
-                      class="ant-switch"
-                      id="wlan_advancedCustomization_applicationPolicyEnable"
-                      role="switch"
-                      type="button"
-                    >
-                      <div
-                        class="ant-switch-handle"
-                      />
-                      <span
-                        class="ant-switch-inner"
-                      />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        class="styledComponents__FieldLabel-sc-1jfjsg1-0 dOGJsk"
-        width="175px"
-      >
-        Client Rate Limit
+        Access Control
         <div
           class="ant-form-item"
           style="margin-bottom: 10px;"
@@ -237,7 +49,7 @@ exports[`AccessControlForm should render Access Control form successfully 1`] = 
                   <button
                     aria-checked="false"
                     class="ant-switch"
-                    id="enableClientRateLimit"
+                    id="accessControlProfileEnable"
                     role="switch"
                     type="button"
                   >
@@ -253,6 +65,63 @@ exports[`AccessControlForm should render Access Control form successfully 1`] = 
             </div>
           </div>
         </div>
+      </div>
+      <div
+        class="styledComponents__FieldLabel-sc-1jfjsg1-0 dOGJsk"
+        style="font-weight: 700;"
+        width="175px"
+      >
+        <span>
+          Access Policy
+        </span>
+        <span>
+          Policy Details
+        </span>
+      </div>
+      <div
+        class="styledComponents__FieldLabel-sc-1jfjsg1-0 dOGJsk"
+        width="175px"
+      >
+        Layer 2
+        <span>
+          --
+        </span>
+      </div>
+      <div
+        class="styledComponents__FieldLabel-sc-1jfjsg1-0 dOGJsk"
+        width="175px"
+      >
+        Layer 3
+        <span>
+          --
+        </span>
+      </div>
+      <div
+        class="styledComponents__FieldLabel-sc-1jfjsg1-0 dOGJsk"
+        width="175px"
+      >
+        Device & OS
+        <span>
+          --
+        </span>
+      </div>
+      <div
+        class="styledComponents__FieldLabel-sc-1jfjsg1-0 dOGJsk"
+        width="175px"
+      >
+        Applications
+        <span>
+          --
+        </span>
+      </div>
+      <div
+        class="styledComponents__FieldLabel-sc-1jfjsg1-0 dOGJsk"
+        width="175px"
+      >
+        Client Rate Limit
+        <span>
+          --
+        </span>
       </div>
     </div>
   </form>

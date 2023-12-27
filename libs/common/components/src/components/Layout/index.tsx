@@ -124,6 +124,7 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
 
     const { uri, tenantType, activeIcon, inactiveIcon, adminItem, ...rest } = item
     delete rest.isActiveCheck
+    delete rest.openNewTab
 
     const activePatterns = getActivePatterns(item)
     const isActive = activePatterns?.some(pattern => activeUri.match(pattern))

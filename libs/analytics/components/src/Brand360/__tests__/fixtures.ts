@@ -34,3 +34,122 @@ export const fetchBrandProperties = () => {
     }
   })
 }
+
+export const mockBrandTimeseries = {
+  data: {
+    franchisorTimeseries: {
+      time: [
+        '2023-12-11T22:00:00.000Z',
+        '2023-12-11T23:00:00.000Z',
+        '2023-12-12T00:00:00.000Z',
+        '2023-12-12T01:00:00.000Z',
+        '2023-12-12T02:00:00.000Z',
+        '2023-12-12T03:00:00.000Z',
+        '2023-12-12T04:00:00.000Z',
+        '2023-12-12T05:00:00.000Z',
+        '2023-12-12T06:00:00.000Z'
+      ],
+      incidentCount: [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      ssidComplianceSLA: [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      timeToConnectSLA: [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      clientThroughputSLA: [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      connectionSuccessSLA: [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0.5,
+        0.5454545454545454,
+        0.7,
+        0
+      ],
+      errors: []
+    }
+  }
+}
+
+
+export const prevTimeseries = {
+  time: [
+    '2023-12-11T22:00:00.000Z'
+  ],
+  incidentCount: [
+    20
+  ],
+  ssidComplianceSLA: [
+    0.5
+  ],
+  timeToConnectSLA: [
+    0.5
+  ],
+  clientThroughputSLA: [
+    0.5
+  ],
+  connectionSuccessSLA: [
+    0.5
+  ],
+  errors: []
+}
+
+export const currTimeseries = {
+  time: [
+    '2023-12-11T22:00:00.000Z'
+  ],
+  incidentCount: [
+    20
+  ],
+  ssidComplianceSLA: [
+    0.4
+  ],
+  timeToConnectSLA: [
+    0.4
+  ],
+  clientThroughputSLA: [
+    0.4
+  ],
+  connectionSuccessSLA: [
+    0.8
+  ],
+  errors: []
+}

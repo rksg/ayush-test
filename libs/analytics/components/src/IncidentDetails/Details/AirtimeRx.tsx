@@ -4,13 +4,13 @@ import { useIntl }    from 'react-intl'
 import { calculateSeverity, Incident, shortDescription } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol }    from '@acx-ui/components'
 
-import { FixedAutoSizer }                    from '../../DescriptionSection/styledComponents'
-import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
-import { Insights }                          from '../Insights'
-import { NetworkImpact, NetworkImpactProps } from '../NetworkImpact'
-import { NetworkImpactChartTypes }           from '../NetworkImpact/config'
-import { TimeSeries }                        from '../TimeSeries'
-import { TimeSeriesChartTypes }              from '../TimeSeries/config'
+import { FixedAutoSizer }                                   from '../../DescriptionSection/styledComponents'
+import { IncidentAttributes, Attributes }                   from '../IncidentAttributes'
+import { Insights }                                         from '../Insights'
+import { NetworkImpact, NetworkImpactProps }                from '../NetworkImpact'
+import { NetworkImpactChartTypes, NetworkImpactQueryTypes } from '../NetworkImpact/config'
+import { TimeSeries }                                       from '../TimeSeries'
+import { TimeSeriesChartTypes }                             from '../TimeSeries/config'
 
 import MuteIncident from './MuteIncident'
 
@@ -30,7 +30,14 @@ export const AirtimeRx = (incident: Incident) => {
 
   const networkImpactCharts: NetworkImpactProps['charts'] = [
     {
+      chart: NetworkImpactChartTypes.AirtimeRx,
+      query: NetworkImpactQueryTypes.Distribution,
+      type: 'airtimeMetric',
+      dimension: 'airtimeRx'
+    },
+    {
       chart: NetworkImpactChartTypes.APModelByAP,
+      query: NetworkImpactQueryTypes.TopN,
       type: 'apInfra',
       dimension: 'apModels'
     }

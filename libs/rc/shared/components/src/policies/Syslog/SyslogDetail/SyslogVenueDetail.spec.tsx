@@ -1,8 +1,8 @@
 import { rest } from 'msw'
 
-import { SyslogUrls }                 from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { SyslogUrls }                          from '@acx-ui/rc/utils'
+import { Provider }                            from '@acx-ui/store'
+import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import SyslogVenueDetail from './SyslogVenueDetail'
 
@@ -75,14 +75,23 @@ const detailContent = {
   id: 'policyId1'
 }
 
+const params: { tenantId: string, policyId: string } = {
+  tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+  policyId: 'policy-id'
+}
+
 describe('SyslogVenueDetail', () => {
   it('should render SyslogVenueDetail successfully', async () => {
+    const mockGetSyslogPolicy = jest.fn()
     mockServer.use(
       rest.get(
         SyslogUrls.getSyslogPolicy.url,
-        (_, res, ctx) => res(
-          ctx.json(detailContent)
-        )
+        (_, res, ctx) => {
+          mockGetSyslogPolicy()
+          return res(
+            ctx.json(detailContent)
+          )
+        }
       ),
       rest.post(
         SyslogUrls.getVenueSyslogList.url,
@@ -92,8 +101,12 @@ describe('SyslogVenueDetail', () => {
       )
     )
 
-    render(<Provider><SyslogVenueDetail /></Provider>)
+    render(<Provider><SyslogVenueDetail /></Provider>, { route: { params } })
 
+    await waitFor(()=>{
+      expect(mockGetSyslogPolicy).toBeCalled()
+    })
     expect(await screen.findByText(/Venue Name/i)).toBeInTheDocument()
+    expect(await screen.findByText(/Instance \(1\)/)).toBeVisible()
   })
 })

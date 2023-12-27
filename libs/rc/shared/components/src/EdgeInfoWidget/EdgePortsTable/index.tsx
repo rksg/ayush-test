@@ -20,6 +20,16 @@ export const EdgePortsTable = (props: EdgePortsTableProps) => {
   const { $t } = useIntl()
   const isEdgeLagEnabled = useIsSplitOn(Features.EDGE_LAG)
 
+  const showPortInfo = (portId: string, data:string) => {
+    if(isEdgeLagEnabled && lagData?.length > 0) {
+      const isLagMember = lagData.some(lag =>
+        lag.lagMembers.some(member =>
+          member.portId === portId))
+      return isLagMember ? '' : data
+    }
+    return data
+  }
+
   const columns: TableProps<EdgePortsTableDataType>['columns'] = [
     {
       title: $t({ defaultMessage: 'Port Name' }),
@@ -54,7 +64,10 @@ export const EdgePortsTable = (props: EdgePortsTableProps) => {
       title: $t({ defaultMessage: 'Port Type' }),
       key: 'type',
       dataIndex: 'type',
-      sorter: { compare: sortProp('type', defaultSort) }
+      sorter: { compare: sortProp('type', defaultSort) },
+      render: (_, { portId, type }) => {
+        return showPortInfo(portId, type)
+      }
     },
     {
       title: $t({ defaultMessage: 'Interface MAC' }),
@@ -66,16 +79,20 @@ export const EdgePortsTable = (props: EdgePortsTableProps) => {
       title: $t({ defaultMessage: 'IP Address' }),
       key: 'ip',
       dataIndex: 'ip',
-      sorter: { compare: sortProp('ip', defaultSort) }
+      sorter: { compare: sortProp('ip', defaultSort) },
+      render: (_, { portId, ip }) => {
+        return showPortInfo(portId, ip)
+      }
     },
     {
       title: $t({ defaultMessage: 'IP Type' }),
       key: 'ipMode',
       dataIndex: 'ipMode',
       sorter: { compare: sortProp('ipMode', defaultSort) },
-      render: (_, { ipMode }) => {
+      render: (_, { portId, ipMode }) => {
         const ipModeUpperCase = ipMode.toUpperCase()
-        return getEdgePortIpModeString($t, ipModeUpperCase)
+        const ipModeStr = getEdgePortIpModeString($t, ipModeUpperCase)
+        return showPortInfo(portId, ipModeStr)
       }
     },
     {

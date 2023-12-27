@@ -4,32 +4,33 @@ import { Form, FormInstance } from 'antd'
 import { flatMap, isEqual }   from 'lodash'
 import { useIntl }            from 'react-intl'
 
-import { EdgePortsGeneral, EdgePortConfigFormType } from '@acx-ui/rc/components'
-import { useUpdatePortConfigMutation }              from '@acx-ui/rc/services'
-import { EdgePortWithStatus }                       from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }    from '@acx-ui/react-router-dom'
+import { useUpdatePortConfigMutation } from '@acx-ui/rc/services'
+import { EdgePortWithStatus }          from '@acx-ui/rc/utils'
 
-import { EdgeEditContext } from '../..'
+import { EdgePortTabEnum }                          from '..'
+import { EditContext }                              from '../../EdgeEditContext'
+import { EdgePortConfigFormType, EdgePortsGeneral } from '../../EdgePortsGeneral'
+import { EdgePortsDataContext }                     from '../PortDataProvider'
 
 interface PortsGeneralProps {
-  data: EdgePortWithStatus[]
+  serialNumber: string
+  onCancel: () => void
 }
 
 const PortsGeneral = (props: PortsGeneralProps) => {
-  const { data } = props
+  const { serialNumber, /*data,*/ onCancel } = props
   const { $t } = useIntl()
-  const navigate = useNavigate()
-  const { serialNumber } = useParams()
   const [form] = Form.useForm<EdgePortConfigFormType>()
-  const linkToEdgeList = useTenantLink('/devices/edge')
-  const editEdgeContext = useContext(EdgeEditContext)
+  const editEdgeContext = useContext(EditContext)
+  const portsData = useContext(EdgePortsDataContext)
+  const data = portsData.portData as EdgePortWithStatus[]
   const [updatePortConfig] = useUpdatePortConfigMutation()
 
   const handleFormChange = (_: FormInstance<EdgePortConfigFormType>, hasError: boolean) => {
     const formData = flatMap(form.getFieldsValue(true))
 
     editEdgeContext.setActiveSubTab({
-      key: 'ports-general',
+      key: EdgePortTabEnum.PORTS_GENERAL,
       title: $t({ defaultMessage: 'Ports General' })
     })
 
@@ -63,7 +64,7 @@ const PortsGeneral = (props: PortsGeneralProps) => {
   }
 
   const handleCancel = async () => {
-    navigate(linkToEdgeList)
+    onCancel()
   }
 
   return <EdgePortsGeneral

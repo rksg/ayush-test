@@ -240,7 +240,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
-    addAccessControlProfile: build.mutation<AccessControlInfoType, RequestPayload>({
+    addAccessControlProfile: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(AccessControlUrls.addAccessControlProfile, params)
         return {
@@ -250,7 +250,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
-    updateAccessControlProfile: build.mutation<AccessControlInfoType, RequestPayload>({
+    updateAccessControlProfile: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
         const req = createHttpRequest(AccessControlUrls.updateAccessControlProfile, params)
@@ -261,7 +261,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
-    deleteAccessControlProfile: build.mutation<AccessControlInfoType, RequestPayload>({
+    deleteAccessControlProfile: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
         const req = createHttpRequest(AccessControlUrls.deleteAccessControlProfile, params)
@@ -272,7 +272,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
-    deleteAccessControlProfiles: build.mutation<AccessControlInfoType, RequestPayload>({
+    deleteAccessControlProfiles: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
         const req = createHttpRequest(AccessControlUrls.deleteAccessControlProfiles, params)
@@ -482,7 +482,23 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'AccessControl', id: 'DETAIL' }]
+      providesTags: [{ type: 'AccessControl', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            ...AccessControlUseCases,
+            ...L2AclUseCases,
+            ...L3AclUseCases,
+            ...DeviceUseCases,
+            ...ApplicationUseCases
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'AccessControl', id: 'LIST' }
+            ]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     // eslint-disable-next-line max-len
     getEnhancedAccessControlProfileList: build.query<TableResult<EnhancedAccessControlInfoType>, RequestPayload>({
