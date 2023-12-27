@@ -77,19 +77,18 @@ export const NetworkImpact: React.FC<NetworkImpactProps> = ({ charts, incident }
           return <Col key={chart.chart} span={6} style={{ height: 200 }}>
             <AutoSizer>
               {({ height, width }) => {
-                let [value, subTitle]: string[] = []
+                let [value, subTitle]: string[] = [
+                  undefined as unknown as string,
+                  transformSummary(chart.query, config, chartData, incident)
+                ]
                 if (chart.query === NetworkImpactQueryTypes.Distribution) {
                   value = formatter('percentFormat')(chartData.summary)
-                  subTitle = transformSummary(chart.query, config, chartData, incident)
                 } else {
                   if (chart.disabled && config.disabled) {
                     value = $t(config.disabled.value)
                     subTitle = $t(config.disabled.summary)
                   } else if (Number.isFinite(chartData?.total)){
                     value = formatter('countFormat')(chartData?.total)
-                    subTitle = transformSummary(chart.query, config, chartData, incident)
-                  } else {
-                    subTitle = transformSummary(chart.query, config, chartData, incident)
                   }
                 }
                 return <DonutChart
