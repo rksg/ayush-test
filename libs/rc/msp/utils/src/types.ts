@@ -96,6 +96,7 @@ export interface MspEcData {
   admin_delegations?: MspEcDelegatedAdmins[];
   number_of_days?: string;
   isManageAllEcs?: boolean;
+  tier?: MspEcTierEnum;
 }
 
 export interface VarCustomer {
@@ -444,4 +445,9 @@ export interface MspRecCustomer {
   flexera_llm_account_id?: string,
   acx_trial_in_progress?: boolean,
   email_id?: string
+}
+
+export enum MspEcTierEnum {
+  Essential = 'GOLD',
+  Professional = 'PLATINUM'
 }

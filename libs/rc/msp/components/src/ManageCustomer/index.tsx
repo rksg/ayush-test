@@ -52,7 +52,8 @@ import {
   MspAssignmentSummary,
   MspEcDelegatedAdmins,
   MspIntegratorDelegated,
-  AssignActionEnum
+  AssignActionEnum,
+  MspEcTierEnum
 } from '@acx-ui/msp/utils'
 import { GoogleMapWithPreference, usePlacesAutocomplete } from '@acx-ui/rc/components'
 import {
@@ -97,7 +98,8 @@ interface EcFormData {
     admin_role: RolesEnum,
     wifiLicense: number,
     switchLicense: number,
-    apswLicense: number
+    apswLicense: number,
+    tier: MspEcTierEnum
 }
 
 export const retrieveCityState = (addressComponents: Array<AddressComponent>, country: string) => {
@@ -166,6 +168,7 @@ export function ManageCustomer () {
   const optionalAdminFF = useIsSplitOn(Features.MSPEC_OPTIONAL_ADMIN)
   const edgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
+  const createEcWithTierEnabled = useIsSplitOn(Features.MSP_EC_CREATE_WITH_TIER)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
@@ -471,7 +474,8 @@ export function ManageCustomer () {
         service_effective_date: today,
         service_expiration_date: expirationDate,
         admin_delegations: delegations,
-        licenses: assignLicense
+        licenses: assignLicense,
+        tier: createEcWithTierEnabled ? ecFormData.tier : undefined
       }
       if (ecFormData.admin_email) {
         customer.admin_email = ecFormData.admin_email
@@ -768,6 +772,28 @@ export function ManageCustomer () {
         />}
       </UI.FieldLabelAdmins>
     </>
+  }
+
+  const EcTierForm = () => {
+    return <Form.Item
+      name='tier'
+      label={intl.$t({ defaultMessage: 'Tier' })}
+      style={{ width: '300px' }}
+      rules={[{ required: true }]}
+      initialValue={MspEcTierEnum.Professional}
+      children={
+        <Select>
+          {
+            Object.entries(MspEcTierEnum).map(([label, value]) => (
+              <Option
+                key={label}
+                value={value}>{intl.$t({ defaultMessage: '{tier}' }, { tier: label })}
+              </Option>
+            ))
+          }
+        </Select>
+      }
+    />
   }
 
   const CustomerAdminsForm = () => {
@@ -1397,6 +1423,7 @@ export function ManageCustomer () {
             </Form.Item>
 
             <MspAdminsForm></MspAdminsForm>
+            {createEcWithTierEnabled && <EcTierForm />}
             <CustomerAdminsForm></CustomerAdminsForm>
           </StepsFormLegacy.StepForm>
 
