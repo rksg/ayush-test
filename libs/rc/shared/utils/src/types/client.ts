@@ -17,6 +17,7 @@ export interface ClientList {
   }
   clientAnalytics?: string
   clientVlan: string
+  vni?: string
   deviceTypeStr: string
   modelName: string
   totalTraffic: string

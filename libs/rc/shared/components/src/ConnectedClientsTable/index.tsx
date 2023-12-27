@@ -76,14 +76,14 @@ function GetNetworkFilterOptions (tenantId: string|undefined) {
 
 export const defaultClientPayload = {
   searchString: '',
-  searchTargetFields: ['clientMac','ipAddress','Username','hostname','ssid','clientVlan','osType'],
+  searchTargetFields: ['clientMac','ipAddress','Username','hostname','ssid','clientVlan','osType','vni'],
   filters: {},
   fields: [
     'hostname','osType','healthCheckStatus','clientMac','ipAddress','Username','serialNumber','venueId','switchSerialNumber',
     'ssid','wifiCallingClient','sessStartTime','clientAnalytics','clientVlan','deviceTypeStr','modelName','totalTraffic',
     'trafficToClient','trafficFromClient','receiveSignalStrength','rssi','radio.mode','cpeMac','authmethod','status',
     'encryptMethod','packetsToClient','packetsFromClient','packetsDropFrom','radio.channel',
-    'cog','venueName','apName','clientVlan','networkId','switchName','healthStatusReason','lastUpdateTime', 'networkType', 'mldAddr']
+    'cog','venueName','apName','clientVlan','networkId','switchName','healthStatusReason','lastUpdateTime', 'networkType', 'mldAddr', 'vni']
 }
 
 export const isEqualCaptivePortalPlainText = (networkType?: string) : boolean => {
@@ -344,6 +344,14 @@ export const ConnectedClientsTable = (props: {
         sorter: true,
         show: !!showAllColumns,
         render: (_, { clientVlan }) => clientVlan || '--'
+      },
+      {
+        key: 'vni',
+        title: intl.$t({ defaultMessage: 'VNI' }),
+        dataIndex: 'vni',
+        sorter: true,
+        show: !!showAllColumns,
+        render: (_, { vni }) => vni || '--'
       },
       {
         key: 'deviceTypeStr',

@@ -105,7 +105,7 @@ const EdgeSdLanDetail = () => {
                   { count: edgeSdLanData.networkIds?.length || 0 }
                 )}
               </UI.InstancesTitle>
-
+              {/*   // TODO: hide this temporarily and wait for furthur enhancement
               <Space size={10}>
                 <Typography.Text>
                   {$t(
@@ -123,6 +123,7 @@ const EdgeSdLanDetail = () => {
                   )}
                 </Typography.Text>
               </Space>
+              */}
             </UI.InstancesContainer>
             <NetworkTable networkIds={edgeSdLanData.networkIds || []} />
           </Card>
