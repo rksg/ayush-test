@@ -99,7 +99,7 @@ exports[`NetworkImpact handles charts data with total & disabled 1`] = `
                               stroke-linejoin="round"
                             />
                             <path
-                              d="M-9.5 -5l19 0l0 46l-19 0Z"
+                              d="M-45 -5l54.5 0l0 46l-54.5 0Z"
                               fill="rgb(0,0,0)"
                               fill-opacity="0"
                               stroke="#ccc"
@@ -228,7 +228,7 @@ exports[`NetworkImpact handles charts data with total & disabled 1`] = `
                               stroke-linejoin="round"
                             />
                             <path
-                              d="M-11.5 -5l23 0l0 50l-23 0Z"
+                              d="M-45 -5l56.5 0l0 50l-56.5 0Z"
                               fill="rgb(0,0,0)"
                               fill-opacity="0"
                               stroke="#ccc"

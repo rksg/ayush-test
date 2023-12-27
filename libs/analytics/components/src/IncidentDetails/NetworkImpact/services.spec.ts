@@ -100,12 +100,14 @@ describe('networkImpactChartsApi', () => {
       ...payload,
       charts: [{
         chart: NetworkImpactChartTypes.RogueAPByChannel,
+        query: NetworkImpactQueryTypes.TopN,
         type: 'rogueAp',
         dimension: 'rogueChannel',
         disabled: true
       },
       {
         chart: NetworkImpactChartTypes.RxPhyErrByAP,
+        query: NetworkImpactQueryTypes.TopN,
         type: 'apAirtime',
         dimension: 'phyErr'
       }]
