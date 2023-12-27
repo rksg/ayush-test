@@ -365,11 +365,9 @@ export function AddRecCustomer () {
         <EnableSupportForm />
       </Form>
         : <StepsForm
-          onFinish={isEditMode ? async () => {} : handleAddCustomer}
+          onFinish={handleAddCustomer}
           onCancel={() => navigate(linkToRecCustomers)}
-          buttonLabel={{ submit: isEditMode ?
-            intl.$t({ defaultMessage: 'Save' }):
-            intl.$t({ defaultMessage: 'Add' }) }}
+          buttonLabel={{ submit: intl.$t({ defaultMessage: 'Add' }) }}
         >
           <StepsForm.StepForm
             name='accountDetail'
