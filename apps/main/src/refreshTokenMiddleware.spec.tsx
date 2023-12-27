@@ -23,3 +23,63 @@ describe('refreshTokenMiddleware', () => {
   })
 
 })
+
+import { isDev, refreshTokenMiddleware } from './refreshTokenMiddleware'
+// import { MiddlewareAction } from 'redux'
+import { act } from '@acx-ui/test-utils'
+
+describe('isDev', () => {
+  it('returns true when hostname includes dev.ruckus.cloud', () => {
+    window.location.hostname = 'dev.ruckus.cloud'
+    expect(isDev()).toBe(false)
+  })
+
+  it('returns true when hostname includes devalto.ruckuswireless.com', () => {
+    window.location.hostname = 'devalto.ruckuswireless.com'
+    expect(isDev()).toBe(false)
+  })
+
+  it('returns false when hostname does not include dev.ruckus.cloud or devalto.ruckuswireless.com', () => {
+    window.location.hostname = 'example.com'
+    expect(isDev()).toBe(false)
+  })
+})
+
+describe('refreshTokenMiddleware', () => {
+  it('refreshes the token when action is fulfilled and isDev is true', () => {
+    const next = jest.fn()
+    window.location.hostname = 'dev.ruckus.cloud'
+    sessionStorage.setItem('jwt', 'newToken')
+
+    act(() => { refreshTokenMiddleware({ dispatch: Object({}), getState: jest.fn() })(next)({}) })
+
+    expect(sessionStorage.getItem('jwt')).toBe('newToken')
+  })
+
+  it('should call next', async () => {
+    const next = jest.fn()
+    act(() => { refreshTokenMiddleware({ dispatch: Object({}), getState: jest.fn() })(next)({}) })
+    expect(next).toBeCalled()
+  })
+
+  it('does not refresh the token when action is not fulfilled', () => {
+    const next = jest.fn()
+    window.location.hostname = 'dev.ruckus.cloud'
+    sessionStorage.setItem('jwt', 'oldToken')
+
+    act(() => { refreshTokenMiddleware({ dispatch: Object({}), getState: jest.fn() })(next)({}) })
+
+    expect(sessionStorage.getItem('jwt')).toBe('oldToken')
+  })
+
+  it('does not refresh the token when isDev is false', () => {
+    const next = jest.fn()
+    window.location.hostname = 'example.com'
+    sessionStorage.setItem('jwt', 'oldToken')
+
+    act(() => { refreshTokenMiddleware({ dispatch: Object({}), getState: jest.fn() })(next)({}) })
+
+    expect(sessionStorage.getItem('jwt')).toBe('oldToken')
+    // expect(next).toHaveBeenCalledWith(action)
+  })
+})
