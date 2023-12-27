@@ -15,7 +15,9 @@ export interface RequestPayload {
 }
 
 export interface NetworkImpactChartData {
-  count: number
+  peak?: number
+  summary?: number
+  count?: number
   data: { key: string, name: string, value: number }[]
 }
 export interface Response {
@@ -25,11 +27,11 @@ export interface Response {
 type ResultType = Partial<Record<NetworkImpactChartTypes, NetworkImpactChartData>>
 
 const transformResponse = ({ incident }: Response, _: {}, payload: RequestPayload) => {
-  return payload.charts.reduce((agg: ResultType, { chart, query, dimension }) => {
+  return payload.charts.reduce((agg: ResultType, { chart, query }) => {
     const result = incident[chart] as NetworkImpactChartData
     agg[chart] = query === NetworkImpactQueryTypes.Distribution
       ? { ...result,
-        count: incident[`${dimension}Peak`] as number,
+        peak: incident[`${chart}Peak`] as number,
         data: result.data.map(item => ({ ...item, name: item.key })) }
       : { ...result, data: result.data.map(item => ({ ...item, name: item.key })) }
     return agg
@@ -44,8 +46,10 @@ export const networkImpactChartsApi = dataApi.injectEndpoints({
           switch(query){
             case NetworkImpactQueryTypes.Distribution:
               return [
-                gql`${chart}: getDistribution(by: "${type}") { data { key value } }`,
-                gql`${dimension}Peak: getPeak(by: "${dimension}", type: "${type}")`
+                gql`${chart}: distribution(by: "${dimension}", type: "${type}") {
+                  summary data { key value }
+                }`,
+                gql`${chart}Peak: peak(by: "${dimension}", type: "${type}")`
               ]
             case  NetworkImpactQueryTypes.TopN:
             default:
