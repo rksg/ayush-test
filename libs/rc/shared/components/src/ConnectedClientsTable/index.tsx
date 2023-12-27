@@ -26,6 +26,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { RequestPayload }        from '@acx-ui/types'
+import { noDataDisplay }         from '@acx-ui/utils'
 
 import { ClientHealthIcon } from '../ClientHealthIcon'
 
@@ -179,7 +180,7 @@ export const ConnectedClientsTable = (props: {
         render: (_, row) => {
           return <TenantLink
             to={`users/wifi/clients/${row.clientMac}/details/overview?clientStatus=connected`}
-          >{row.hostname || '--'}</TenantLink>
+          >{row.hostname || noDataDisplay}</TenantLink>
         }
       },
       {
@@ -222,7 +223,7 @@ export const ConnectedClientsTable = (props: {
         render: (_, { clientMac }) => {
           const mac = clientMac?.toLowerCase() || undefined
           return <Tooltip title={mac}>
-            {mac || '--'}
+            {mac || noDataDisplay}
           </Tooltip>
         }
       },
@@ -236,7 +237,7 @@ export const ConnectedClientsTable = (props: {
         render: (_: React.ReactNode, row: ClientList) => {
           const mac = row.mldAddr?.toLowerCase() || undefined
           return <Tooltip title={mac}>
-            {mac || '--'}
+            {mac || noDataDisplay}
           </Tooltip>
         }
       }] : []),
@@ -247,7 +248,7 @@ export const ConnectedClientsTable = (props: {
         sorter: true,
         render: (_, { ipAddress }) => {
           return <Tooltip title={ipAddress}>
-            {ipAddress || '--'}
+            {ipAddress || noDataDisplay}
           </Tooltip>
         }
       },
@@ -258,7 +259,7 @@ export const ConnectedClientsTable = (props: {
         sorter: true,
         render: (_, { Username }) => {
           return <Tooltip title={Username}>
-            {Username || '--'}
+            {Username || noDataDisplay}
           </Tooltip>
         }
       },
@@ -295,7 +296,7 @@ export const ConnectedClientsTable = (props: {
         sorter: true,
         render: (_, row) => {
           if(!row.switchName){
-            return '--'
+            return noDataDisplay
           }else{
             return (
               <TenantLink to={`/devices/switch/${row.switchId}/${row.switchSerialNumber}/details/overview`}>{row.switchName}</TenantLink>
@@ -325,7 +326,7 @@ export const ConnectedClientsTable = (props: {
         title: intl.$t({ defaultMessage: 'Network Type' }),
         dataIndex: ['networkType'],
         sorter: true,
-        render: (_: React.ReactNode, row: ClientList) => row.networkType || '--',
+        render: (_: React.ReactNode, row: ClientList) => row.networkType || noDataDisplay,
         filterable: _.uniqWith(tableQuery.data?.data.map((result)=> {
           return { key: result.networkType, value: result.networkType }
         }), _.isEqual)
@@ -343,7 +344,7 @@ export const ConnectedClientsTable = (props: {
         dataIndex: 'clientVlan',
         sorter: true,
         show: !!showAllColumns,
-        render: (_, { clientVlan }) => clientVlan || '--'
+        render: (_, { clientVlan }) => clientVlan || noDataDisplay
       },
       {
         key: 'vni',
@@ -351,7 +352,7 @@ export const ConnectedClientsTable = (props: {
         dataIndex: 'vni',
         sorter: true,
         show: !!showAllColumns,
-        render: (_, { vni }) => vni || '--'
+        render: (_, { vni }) => vni || noDataDisplay
       },
       {
         key: 'deviceTypeStr',
@@ -373,7 +374,7 @@ export const ConnectedClientsTable = (props: {
         dataIndex: 'modelName',
         sorter: true,
         show: !!showAllColumns,
-        render: (_, { modelName }) => modelName || '--'
+        render: (_, { modelName }) => modelName || noDataDisplay
       },
       {
         key: 'totalTraffic',
@@ -381,7 +382,7 @@ export const ConnectedClientsTable = (props: {
         dataIndex: 'totalTraffic',
         sorter: true,
         show: !!showAllColumns,
-        render: (_, { totalTraffic }) => totalTraffic || '--'
+        render: (_, { totalTraffic }) => totalTraffic || noDataDisplay
       },
       {
         key: 'trafficToClient',
@@ -389,7 +390,7 @@ export const ConnectedClientsTable = (props: {
         dataIndex: 'trafficToClient',
         sorter: true,
         show: !!showAllColumns,
-        render: (_, { trafficToClient }) => trafficToClient || '--'
+        render: (_, { trafficToClient }) => trafficToClient || noDataDisplay
       },
       {
         key: 'trafficFromClient',
@@ -397,7 +398,7 @@ export const ConnectedClientsTable = (props: {
         dataIndex: 'trafficFromClient',
         sorter: true,
         show: !!showAllColumns,
-        render: (_, { trafficFromClient }) => trafficFromClient || '--'
+        render: (_, { trafficFromClient }) => trafficFromClient || noDataDisplay
       },
       {
         key: 'receiveSignalStrength',
@@ -405,7 +406,7 @@ export const ConnectedClientsTable = (props: {
         dataIndex: 'receiveSignalStrength',
         sorter: true,
         show: !!showAllColumns,
-        render: (_, { receiveSignalStrength }) => receiveSignalStrength || '--'
+        render: (_, { receiveSignalStrength }) => receiveSignalStrength || noDataDisplay
       },
       {
         key: 'rssi',
@@ -413,7 +414,7 @@ export const ConnectedClientsTable = (props: {
         dataIndex: 'rssi',
         sorter: true,
         show: !!showAllColumns,
-        render: (_, { rssi }) => rssi || '--'
+        render: (_, { rssi }) => rssi || noDataDisplay
       },
       {
         key: 'radio.mode',
@@ -421,7 +422,7 @@ export const ConnectedClientsTable = (props: {
         dataIndex: ['radio', 'mode'],
         sorter: true,
         show: !!showAllColumns,
-        render: (_, { radio }) => radio?.mode || '--'
+        render: (_, { radio }) => radio?.mode || noDataDisplay
       },
       {
         key: 'cpeMac',
@@ -429,7 +430,7 @@ export const ConnectedClientsTable = (props: {
         dataIndex: 'cpeMac',
         sorter: true,
         show: !!showAllColumns,
-        render: (_, { cpeMac }) => cpeMac || '--'
+        render: (_, { cpeMac }) => cpeMac || noDataDisplay
       },
       {
         key: 'authmethod',
@@ -437,7 +438,7 @@ export const ConnectedClientsTable = (props: {
         dataIndex: 'authmethod',
         sorter: true,
         show: !!showAllColumns,
-        render: (_, { authmethod }) => authmethod || '--'
+        render: (_, { authmethod }) => authmethod || noDataDisplay
       },
       {
         key: 'status',
@@ -447,9 +448,9 @@ export const ConnectedClientsTable = (props: {
         show: !!showAllColumns,
         render: (_, { status }) => {
           const statusInt = parseInt(status, 10)
-          if (isNaN(statusInt)) return '--'
+          if (isNaN(statusInt)) return noDataDisplay
 
-          let statusText = '--'
+          let statusText = noDataDisplay as string
           if (statusInt === 1) {
             statusText = intl.$t({ defaultMessage: 'Authorized' })
           } else if (statusInt === 0) {
@@ -466,7 +467,7 @@ export const ConnectedClientsTable = (props: {
         dataIndex: 'encryptMethod',
         sorter: true,
         show: !!showAllColumns,
-        render: (_, { encryptMethod }) => encryptMethod || '--'
+        render: (_, { encryptMethod }) => encryptMethod || noDataDisplay
       },
       {
         key: 'packetsToClient',
@@ -474,7 +475,7 @@ export const ConnectedClientsTable = (props: {
         dataIndex: 'packetsToClient',
         sorter: true,
         show: !!showAllColumns,
-        render: (_, { packetsToClient }) => packetsToClient || '--'
+        render: (_, { packetsToClient }) => packetsToClient || noDataDisplay
       },
       {
         key: 'packetsFromClient',
@@ -482,7 +483,7 @@ export const ConnectedClientsTable = (props: {
         dataIndex: 'packetsFromClient',
         sorter: true,
         show: !!showAllColumns,
-        render: (_, { packetsFromClient }) => packetsFromClient || '--'
+        render: (_, { packetsFromClient }) => packetsFromClient || noDataDisplay
       },
       {
         key: 'packetsDropFrom',
@@ -490,7 +491,7 @@ export const ConnectedClientsTable = (props: {
         dataIndex: 'packetsDropFrom',
         sorter: true,
         show: !!showAllColumns,
-        render: (_, { packetsDropFrom }) => packetsDropFrom || '--'
+        render: (_, { packetsDropFrom }) => packetsDropFrom || noDataDisplay
       },
       {
         key: 'radio.channel',
@@ -498,7 +499,7 @@ export const ConnectedClientsTable = (props: {
         dataIndex: ['radio', 'channel'],
         sorter: true,
         show: !!showAllColumns,
-        render: (_, { radio }) => radio?.channel || '--'
+        render: (_, { radio }) => radio?.channel || noDataDisplay
       }
       // { // TODO: Waiting for TAG feature support
       //   key: 'tags',
