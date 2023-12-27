@@ -1,5 +1,5 @@
-import { Space, Typography } from 'antd'
-import { useIntl }           from 'react-intl'
+import { Space }   from 'antd'
+import { useIntl } from 'react-intl'
 
 import { Button, Card, Loader, PageHeader, SummaryCard } from '@acx-ui/components'
 import { useGetEdgeSdLanViewDataListQuery }              from '@acx-ui/rc/services'
