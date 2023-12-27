@@ -39,17 +39,17 @@ export function WISPrAuthAccServer (props : {
   })
   const [ getAaaPolicy ] = useLazyGetAAAPolicyInstance()
   const [aaaList, setAaaList]= useState([] as DefaultOptionType[])
-  const selectedAuthProfileId = Form.useWatch('authRadiusId')
-  const radiusValue = Form.useWatch('authRadius')
   const context = useContext(WISPrAuthAccContext)
 
   const [
     enableAccountingService,
     authRadius,
+    selectedAuthProfileId,
     accountingRadius
   ] = [
     useWatch<boolean>(['enableAccountingService']),
     useWatch('authRadius'),
+    useWatch('authRadiusId'),
     useWatch('accountingRadius')
   ]
 
@@ -213,13 +213,13 @@ export function WISPrAuthAccServer (props : {
 
         <div style={{ marginTop: 6, backgroundColor: 'var(--acx-neutrals-20)',
           width: 210, paddingLeft: 5 }}>
-          {radiusValue?.[AaaServerOrderEnum.PRIMARY]&&<>
+          {authRadius?.[AaaServerOrderEnum.PRIMARY]&&<>
             <Form.Item
               label={$t(contents.aaaServerTypes[AaaServerOrderEnum.PRIMARY])}
               children={$t({ defaultMessage: '{ipAddress}:{port}' }, {
-                ipAddress: _.get(radiusValue,
+                ipAddress: _.get(authRadius,
                   `${AaaServerOrderEnum.PRIMARY}.ip`),
-                port: _.get(radiusValue,
+                port: _.get(authRadius,
                   `${AaaServerOrderEnum.PRIMARY}.port`)
               })} />
             <Form.Item
@@ -227,17 +227,17 @@ export function WISPrAuthAccServer (props : {
               children={<PasswordInput
                 readOnly
                 bordered={false}
-                value={_.get(radiusValue,
+                value={_.get(authRadius,
                   `${AaaServerOrderEnum.PRIMARY}.sharedSecret`)}
               />}
             /></>}
-          {radiusValue?.[AaaServerOrderEnum.SECONDARY]&&<>
+          {authRadius?.[AaaServerOrderEnum.SECONDARY]&&<>
             <Form.Item
               label={$t(contents.aaaServerTypes[AaaServerOrderEnum.SECONDARY])}
               children={$t({ defaultMessage: '{ipAddress}:{port}' }, {
-                ipAddress: _.get(radiusValue,
+                ipAddress: _.get(authRadius,
                   `${AaaServerOrderEnum.SECONDARY}.ip`),
-                port: _.get(radiusValue,
+                port: _.get(authRadius,
                   `${AaaServerOrderEnum.SECONDARY}.port`)
               })} />
             <Form.Item
@@ -245,7 +245,7 @@ export function WISPrAuthAccServer (props : {
               children={<PasswordInput
                 readOnly
                 bordered={false}
-                value={_.get(radiusValue,
+                value={_.get(authRadius,
                   `${AaaServerOrderEnum.SECONDARY}.sharedSecret`)}
               />}
             />

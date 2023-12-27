@@ -28,7 +28,6 @@ const AAAInstance = (props:{ serverLabel: string, type: 'authRadius' | 'accounti
   const selectedAaaProfileId = Form.useWatch(radiusIdName)
 
   const { data: aaaListQuery } = useGetAAAPolicyInstanceList({
-    queryOptions: { refetchOnMountOrArgChange: 300 },
     customPayload: { filters: { type: [radiusType[props.type]] } }
   })
   const [ getAaaPolicy ] = useLazyGetAAAPolicyInstance()

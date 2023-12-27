@@ -34,11 +34,9 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       providesTags: [{ type: 'ConfigTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          // XXX: These are mocked activity messages
           const activities = [
-            'CreateConfigTemplate',
-            'DeleteConfigTemplate',
-            'UpdateConfigTemplate'
+            'AddRadiusServerProfileTemplateRecord',
+            'AddWifiNetworkTemplateRecord'
           ]
           onActivityMessageReceived(msg, activities, () => {
             // eslint-disable-next-line max-len
@@ -54,11 +52,13 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     addNetworkTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.addNetworkTemplate),
-      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'NetworkTemplate', id: '' }]
+      // eslint-disable-next-line max-len
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'NetworkTemplate', id: 'LIST' }]
     }),
     updateNetworkTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.updateNetworkTemplate),
-      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'NetworkTemplate', id: '' }]
+      // eslint-disable-next-line max-len
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'NetworkTemplate', id: 'LIST' }]
     }),
     getNetworkTemplate: build.query<NetworkSaveData, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.getNetworkTemplate),
@@ -70,11 +70,8 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       transformResponse: transformNetworkListResponse,
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          // XXX: These are mocked activity messages
           const activities = [
-            'CreateNetworkConfigTemplate',
-            'DeleteNetworkConfigTemplate',
-            'UpdateNetworkConfigTemplate'
+            'AddWifiNetworkTemplateRecord'
           ]
           onActivityMessageReceived(msg, activities, () => {
             // eslint-disable-next-line max-len
@@ -102,11 +99,8 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       providesTags: [{ type: 'AAATemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          // XXX: These are mocked activity messages
           const activities = [
-            'CreateAAAConfigTemplate',
-            'DeleteAAAConfigTemplate',
-            'UpdateAAAConfigTemplate'
+            'AddRadiusServerProfileTemplateRecord'
           ]
           onActivityMessageReceived(msg, activities, () => {
             // eslint-disable-next-line max-len
