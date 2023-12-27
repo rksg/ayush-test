@@ -170,6 +170,7 @@ export {
   ApCompatibilityType,
   ApCompatibilityQueryTypes,
   InCompatibilityFeatures,
+  retrievedCompatibilitiesOptions,
   ApFeatureCompatibility,
   ApCompatibilityToolTip,
   ApCompatibilityDrawer } from './ApCompatibilityDrawer'

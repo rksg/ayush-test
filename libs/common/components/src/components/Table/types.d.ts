@@ -137,7 +137,6 @@ export type TableColumn<RecordType = unknown, ValueType = 'text'>
 export type ColumnState = { [columnKey: string]: boolean }
 export type ColumnStateOption = {
   defaultValue?: ColumnState,
-  fixedInitValue?: ColumnState
   onChange?: (state: ColumnState) => void
 }
 

@@ -10,15 +10,16 @@ import {
   useLazyGetApCompatibilitiesVenueQuery,
   useLazyGetApCompatibilitiesNetworkQuery
 }   from '@acx-ui/rc/services'
-import { ApCompatibility } from '@acx-ui/rc/utils'
-import { TenantLink }      from '@acx-ui/react-router-dom'
+import { ApCompatibility, ApIncompatibleFeature, ApIncompatibleDevice } from '@acx-ui/rc/utils'
+import { TenantLink }                                                   from '@acx-ui/react-router-dom'
 
 
 import { StyledWrapper, CheckMarkCircleSolidIcon, WarningTriangleSolidIcon, UnknownIcon } from './styledComponents'
 
 export enum ApCompatibilityType {
   NETWORK='Network',
-  VENUE='Venue'
+  VENUE='Venue',
+  ALONE='ALONE'
 }
 
 export enum InCompatibilityFeatures {
@@ -42,6 +43,25 @@ export type ApCompatibilityToolTipProps = {
   visible: boolean,
   title: string,
   onClick: () => void
+}
+
+export const retrievedCompatibilitiesOptions = (data?: ApCompatibility[]) => {
+  const compatibilitiesFilterOptions: { key: string[]; value: string }[] = []
+  if (data?.[0]) {
+    const { incompatibleFeatures, incompatible } = data[0]
+    if (incompatible > 0) {
+      incompatibleFeatures?.forEach((feature:ApIncompatibleFeature) => {
+        const { featureName, incompatibleDevices } = feature
+        const fwVersions: string[] = []
+        incompatibleDevices?.forEach((device:ApIncompatibleDevice) => {
+          fwVersions.push(device.firmware)
+        })
+        compatibilitiesFilterOptions.push({ key: fwVersions, value: featureName })
+      })
+    }
+    return { compatibilitiesFilterOptions, apCompatibilities: data, incompatible }
+  }
+  return { compatibilitiesFilterOptions, apCompatibilities: data, incompatible: 0 }
 }
 
 /*
@@ -234,7 +254,8 @@ export function ApCompatibilityDrawer (props: ApCompatibilityDrawerProps) {
     { featureName: featureName?.valueOf() ?? '', venueName })
 
   const multipleTitle = (apName) ? multipleFromAp : multipleFromFeature
-  const singleTitle = (ApCompatibilityType.VENUE === type) ? singleFromVenue : singleFromNetwork
+  const singleTitle = (ApCompatibilityType.VENUE === type && ApCompatibilityType.ALONE !== type)
+    ? singleFromVenue : singleFromNetwork
 
   const contentTxt = isMultiple ? multipleTitle : singleTitle
 

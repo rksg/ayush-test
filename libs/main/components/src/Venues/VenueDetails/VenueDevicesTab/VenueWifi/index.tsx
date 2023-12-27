@@ -5,17 +5,16 @@ import { List }    from 'antd'
 import { useIntl } from 'react-intl'
 
 
-import { Table, TableProps, Loader, Tooltip, Tabs, Button, cssStr }                                               from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                 from '@acx-ui/feature-toggle'
-import { DevicesOutlined, LineChartOutline, ListSolid, MeshSolid }                                                from '@acx-ui/icons'
-import { ApGroupTable, ApTable, ApCompatibilityDrawer, ApCompatibilityQueryTypes }                                from '@acx-ui/rc/components'
-import { useApGroupsListQuery, useGetVenueSettingsQuery, useMeshApsQuery, useLazyGetApCompatibilitiesVenueQuery } from '@acx-ui/rc/services'
+import { Table, TableProps, Loader, Tooltip, Tabs, Button, cssStr }                                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                   from '@acx-ui/feature-toggle'
+import { DevicesOutlined, LineChartOutline, ListSolid, MeshSolid }                                                  from '@acx-ui/icons'
+import { ApGroupTable, ApTable, ApCompatibilityDrawer, ApCompatibilityQueryTypes, retrievedCompatibilitiesOptions } from '@acx-ui/rc/components'
+import { useApGroupsListQuery, useGetVenueSettingsQuery, useMeshApsQuery, useGetApCompatibilitiesVenueQuery }       from '@acx-ui/rc/services'
 import {
   useTableQuery,
   APMesh,
   APMeshRole,
-  ACX_UI_AP_COMPATIBILITY_NOTE_HIDDEN_KEY,
-  ApCompatibility
+  ACX_UI_AP_COMPATIBILITY_NOTE_HIDDEN_KEY
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { TenantLink }                            from '@acx-ui/react-router-dom'
@@ -210,11 +209,18 @@ export function VenueWifi () {
   const [ enabledMesh, setEnabledMesh ] = useState(false)
   const [ showCompatibilityNote, setShowCompatibilityNote ] = useState(false)
   const [ drawerVisible, setDrawerVisible ] = useState(false)
-  const [ allApCompatibilities, setAllApCompatibilities ] = useState<ApCompatibility[]>([])
-  const [ compatibilitiesFilterOptions, setCompatibilitiesFilterOptions ] = useState<{ key: string[], value: string }[]>([])
   const apCompatibilityTenantId = localStorage.getItem(ACX_UI_AP_COMPATIBILITY_NOTE_HIDDEN_KEY) ?? ''
-  const [ getApCompatibilitiesVenue ] = useLazyGetApCompatibilitiesVenueQuery()
   const { data: venueWifiSetting } = useGetVenueSettingsQuery({ params })
+
+  const { compatibilitiesFilterOptions, apCompatibilities, incompatible } = useGetApCompatibilitiesVenueQuery(
+    {
+      params: { venueId: params.venueId },
+      payload: { filters: {}, queryType: ApCompatibilityQueryTypes.CHECK_VENUE }
+    },
+    {
+      skip: !isApCompatibleCheckEnabled,
+      selectFromResult: ({ data }) => (retrievedCompatibilitiesOptions(data))
+    })
 
   const { apgroupFilterOptions } = useApGroupsListQuery({
     params: { tenantId: params.tenantId }, payload: {
@@ -237,42 +243,12 @@ export function VenueWifi () {
   }, [venueWifiSetting])
 
   useEffect(() => {
-    if (allApCompatibilities[0]) {
-      const { incompatibleFeatures, incompatible } = allApCompatibilities[0]
-      const filterOptions: { key: string[]; value: string }[] = []
-      if (incompatible > 0) {
-        if (apCompatibilityTenantId !== params.tenantId) {
-          setShowCompatibilityNote(true)
-        }
-        incompatibleFeatures?.forEach((feature) => {
-          const { featureName, incompatibleDevices } = feature
-          const fwVersions: string[] = []
-          incompatibleDevices?.forEach((device) => {
-            fwVersions.push(device.firmware)
-          })
-          filterOptions.push({ key: fwVersions, value: featureName })
-        })
-        setCompatibilitiesFilterOptions(filterOptions)
+    if (incompatible > 0) {
+      if (apCompatibilityTenantId !== params.tenantId) {
+        setShowCompatibilityNote(true)
       }
     }
-
-  }, [allApCompatibilities])
-
-  useEffect(() => {
-    const fetchApCompatibilities = async () => {
-      try {
-        const apCompatibilitiesResponse = await getApCompatibilitiesVenue({
-          params: { venueId: params.venueId },
-          payload: { filters: {}, queryType: ApCompatibilityQueryTypes.CHECK_VENUE }
-        }).unwrap()
-
-        setAllApCompatibilities(apCompatibilitiesResponse)
-      } catch (error) {
-        console.log(error) // eslint-disable-line no-console
-      }
-    }
-    if (isApCompatibleCheckEnabled && allApCompatibilities.length === 0) fetchApCompatibilities()
-  }, [])
+  }, [incompatible])
 
   const onCategoryTabChange = (tab: string) => {
     const { activeSubTab } = params
@@ -307,7 +283,7 @@ export function VenueWifi () {
               {$t({
                 defaultMessage:
           '  {total} access points are not compatible with certain Wi-Fi features.' },
-              { total: allApCompatibilities[0]?.incompatible })}
+              { total: incompatible })}
             </span>
             <Button
               type='link'
@@ -348,7 +324,7 @@ export function VenueWifi () {
           <ApCompatibilityDrawer
             isMultiple
             visible={drawerVisible}
-            data={allApCompatibilities}
+            data={apCompatibilities}
             queryType={ApCompatibilityQueryTypes.CHECK_VENUE}
             onClose={() => setDrawerVisible(false)}
           />
