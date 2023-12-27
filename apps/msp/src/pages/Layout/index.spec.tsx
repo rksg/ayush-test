@@ -167,6 +167,10 @@ describe('Layout', () => {
       return { data: {} }
     })
     mockServer.use(
+      rest.get(
+        FirmwareUrlsInfo.getFirmwareVersionIdList.url,
+        (req, res, ctx) => res(ctx.json(['6.2.1.103.1710']))
+      ),
       rest.post(
         CommonUrlsInfo.getAlarmsList.url,
         (req, res, ctx) => res(ctx.json({
