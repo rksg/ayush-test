@@ -254,7 +254,7 @@ export function ApCompatibilityDrawer (props: ApCompatibilityDrawerProps) {
     { featureName: featureName?.valueOf() ?? '', venueName })
 
   const multipleTitle = (apName) ? multipleFromAp : multipleFromFeature
-  const singleTitle = (ApCompatibilityType.VENUE === type && ApCompatibilityType.ALONE !== type)
+  const singleTitle = (ApCompatibilityType.VENUE === type)
     ? singleFromVenue : singleFromNetwork
 
   const contentTxt = isMultiple ? multipleTitle : singleTitle
