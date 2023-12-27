@@ -106,7 +106,7 @@ type AirtimeTxChecks = {
   isHighLegacyWifiDevicesCount: boolean
 }[]
 
-type AirtimeParams = {
+export type AirtimeParams = {
   ssidCountPerRadioSlice: number
 }
 

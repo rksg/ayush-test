@@ -16,7 +16,8 @@ import {
   getAirtimeTXRootCauses,
   getAirtimeTXRecommendations,
   ccd80211RootCauseRecommendations,
-  htmlValues
+  htmlValues,
+  AirtimeParams
 } from './rootCauseRecommendation'
 
 const baseIncident = fakeIncident({
@@ -113,9 +114,9 @@ describe('getRootCauseAndRecommendations', () => {
       }
     })
     const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
-    expect(rootCauses).toEqual(defineMessage(
+    expect(rootCauses.rootCauseText).toEqual(defineMessage(
       { defaultMessage: '<p>Calculating...</p>' }))
-    expect(recommendations).toEqual(defineMessage(
+    expect(recommendations.recommendationsText).toEqual(defineMessage(
       { defaultMessage: '<p>Calculating...</p>' }))
   })
 
@@ -282,19 +283,19 @@ describe('getRootCauseAndRecommendations', () => {
   })
 
   describe('airtime Rx Incident', () => {
-    const params = {
-      ssidCountPerRadioSlice: 1
-    }
     it('should return correct data for all true', () => {
       const checks = [
         { isHighDensityWifiDevices: true },
-        { isClbRecommendationRaised: true },
-        { isHighSSIDCountPerRadio: true },
+        { isAclbRaised: true },
+        { isHighSsidCountPerRadio: true },
         { isChannelFlyEnabled: true },
         { isLargeMgmtFrameCount: true },
         { isHighLegacyWifiDevicesCount: true },
         { isCRRMRaised: true }
       ] as unknown as AirtimeRxArray
+      const params = {
+        ssidCountPerRadioSlice: 1
+      } as AirtimeParams
       const incident = fakeIncident({
         ...airtimeRxIncident,
         metadata: {
@@ -302,13 +303,14 @@ describe('getRootCauseAndRecommendations', () => {
           rootCauseChecks: {
             checks: [
               { isHighDensityWifiDevices: true },
-              { isClbRecommendationRaised: true },
-              { isHighSSIDCountPerRadio: true },
+              { isAclbRaised: true },
+              { isHighSsidCountPerRadio: true },
               { isChannelFlyEnabled: true },
               { isLargeMgmtFrameCount: true },
               { isHighLegacyWifiDevicesCount: true },
               { isCRRMRaised: true }
-            ]
+            ],
+            params
           }
         }
       })
@@ -322,13 +324,16 @@ describe('getRootCauseAndRecommendations', () => {
     it('should return correct data for all false', () => {
       const checks = [
         { isHighDensityWifiDevices: false },
-        { isClbRecommendationRaised: false },
-        { isHighSSIDCountPerRadio: false },
+        { isAclbRaised: false },
+        { isHighSsidCountPerRadio: false },
         { isChannelFlyEnabled: false },
         { isLargeMgmtFrameCount: false },
         { isHighLegacyWifiDevicesCount: false },
         { isCRRMRaised: false }
       ] as unknown as AirtimeRxArray
+      const params = {
+        ssidCountPerRadioSlice: 0
+      } as AirtimeParams
       const incident = fakeIncident({
         ...airtimeRxIncident,
         metadata: {
@@ -336,13 +341,14 @@ describe('getRootCauseAndRecommendations', () => {
           rootCauseChecks: {
             checks: [
               { isHighDensityWifiDevices: false },
-              { isClbRecommendationRaised: false },
-              { isHighSSIDCountPerRadio: false },
+              { isAclbRaised: false },
+              { isHighSsidCountPerRadio: false },
               { isChannelFlyEnabled: false },
               { isLargeMgmtFrameCount: false },
               { isHighLegacyWifiDevicesCount: false },
               { isCRRMRaised: false }
-            ]
+            ],
+            params
           }
         }
       })
@@ -353,16 +359,19 @@ describe('getRootCauseAndRecommendations', () => {
       expect(recommendations.recommendationsText).toEqual(
         airtimeRxRecommendations.recommendationsText)
     })
-    it('should return correct varied data', () => {
+    it('should return correct varied data 1', () => {
       const checks = [
         { isHighDensityWifiDevices: true },
-        { isClbRecommendationRaised: false },
-        { isHighSSIDCountPerRadio: false },
+        { isAclbRaised: false },
+        { isHighSsidCountPerRadio: false },
         { isChannelFlyEnabled: false },
         { isLargeMgmtFrameCount: true },
         { isHighLegacyWifiDevicesCount: false },
         { isCRRMRaised: true }
       ] as unknown as AirtimeRxArray
+      const params = {
+        ssidCountPerRadioSlice: 0
+      } as AirtimeParams
       const incident = fakeIncident({
         ...airtimeRxIncident,
         metadata: {
@@ -370,13 +379,14 @@ describe('getRootCauseAndRecommendations', () => {
           rootCauseChecks: {
             checks: [
               { isHighDensityWifiDevices: true },
-              { isClbRecommendationRaised: false },
-              { isHighSSIDCountPerRadio: false },
+              { isAclbRaised: false },
+              { isHighSsidCountPerRadio: false },
               { isChannelFlyEnabled: false },
               { isLargeMgmtFrameCount: true },
               { isHighLegacyWifiDevicesCount: false },
               { isCRRMRaised: true }
-            ]
+            ],
+            params
           }
         }
       })
@@ -390,19 +400,19 @@ describe('getRootCauseAndRecommendations', () => {
   })
 
   describe('airtime Tx Incident', () => {
-    const params = {
-      ssidCountPerRadioSlice: 1
-    }
     it('should return correct data for all true', () => {
       const checks = [
         { isHighDensityWifiDevices: true },
-        { isClbRecommendationRaised: true },
-        { isHighSSIDCountPerRadio: true },
+        { isAclbRaised: true },
+        { isHighSsidCountPerRadio: true },
         { isHighPacketErrorCount: true },
         { isLargeMgmtFrameCount: true },
         { isHighLegacyWifiDevicesCount: true },
-        { isHighMCBCTraffic: true }
+        { isHighMcbcTraffic: true }
       ] as unknown as AirtimeTxArray
+      const params = {
+        ssidCountPerRadioSlice: 1
+      } as AirtimeParams
       const incident = fakeIncident({
         ...airtimeTxIncident,
         metadata: {
@@ -410,13 +420,14 @@ describe('getRootCauseAndRecommendations', () => {
           rootCauseChecks: {
             checks: [
               { isHighDensityWifiDevices: true },
-              { isClbRecommendationRaised: true },
-              { isHighSSIDCountPerRadio: true },
+              { isAclbRaised: true },
+              { isHighSsidCountPerRadio: true },
               { isHighPacketErrorCount: true },
               { isLargeMgmtFrameCount: true },
               { isHighLegacyWifiDevicesCount: true },
-              { isHighMCBCTraffic: true }
-            ]
+              { isHighMcbcTraffic: true }
+            ],
+            params
           }
         }
       })
@@ -430,13 +441,16 @@ describe('getRootCauseAndRecommendations', () => {
     it('should return correct data for all false', () => {
       const checks = [
         { isHighDensityWifiDevices: false },
-        { isClbRecommendationRaised: false },
-        { isHighSSIDCountPerRadio: false },
+        { isAclbRaised: false },
+        { isHighSsidCountPerRadio: false },
         { isHighPacketErrorCount: false },
         { isLargeMgmtFrameCount: false },
         { isHighLegacyWifiDevicesCount: false },
-        { isHighMCBCTraffic: false }
+        { isHighMcbcTraffic: false }
       ] as unknown as AirtimeTxArray
+      const params = {
+        ssidCountPerRadioSlice: 0
+      } as AirtimeParams
       const incident = fakeIncident({
         ...airtimeTxIncident,
         metadata: {
@@ -444,13 +458,14 @@ describe('getRootCauseAndRecommendations', () => {
           rootCauseChecks: {
             checks: [
               { isHighDensityWifiDevices: false },
-              { isClbRecommendationRaised: false },
-              { isHighSSIDCountPerRadio: false },
+              { isAclbRaised: false },
+              { isHighSsidCountPerRadio: false },
               { isHighPacketErrorCount: false },
               { isLargeMgmtFrameCount: false },
               { isHighLegacyWifiDevicesCount: false },
-              { isHighMCBCTraffic: false }
-            ]
+              { isHighMcbcTraffic: false }
+            ],
+            params
           }
         }
       })
@@ -464,13 +479,16 @@ describe('getRootCauseAndRecommendations', () => {
     it('should return correct varied data', () => {
       const checks = [
         { isHighDensityWifiDevices: false },
-        { isClbRecommendationRaised: false },
-        { isHighSSIDCountPerRadio: false },
+        { isAclbRaised: false },
+        { isHighSsidCountPerRadio: false },
         { isHighPacketErrorCount: false },
         { isLargeMgmtFrameCount: true },
         { isHighLegacyWifiDevicesCount: false },
-        { isHighMCBCTraffic: false }
+        { isHighMcbcTraffic: false }
       ] as unknown as AirtimeTxArray
+      const params = {
+        ssidCountPerRadioSlice: 0
+      } as AirtimeParams
       const incident = fakeIncident({
         ...airtimeTxIncident,
         metadata: {
@@ -478,13 +496,14 @@ describe('getRootCauseAndRecommendations', () => {
           rootCauseChecks: {
             checks: [
               { isHighDensityWifiDevices: false },
-              { isClbRecommendationRaised: false },
-              { isHighSSIDCountPerRadio: false },
+              { isAclbRaised: false },
+              { isHighSsidCountPerRadio: false },
               { isHighPacketErrorCount: false },
               { isLargeMgmtFrameCount: true },
               { isHighLegacyWifiDevicesCount: false },
-              { isHighMCBCTraffic: false }
-            ]
+              { isHighMcbcTraffic: false }
+            ],
+            params
           }
         }
       })
