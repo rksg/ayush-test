@@ -13,20 +13,14 @@ Tooltip.defaultProps = {
   mouseEnterDelay: 0.5
 }
 
-function BaseTooltip ({ ...props }: TooltipProps) {
+function Tooltip ({ ...props }: TooltipProps) {
   return <>
     <TooltipGlobalStyle />
     <AntTooltip {...props} />
   </>
 }
 
-function Tooltip ({ disabled, ...props }: TooltipProps & { disabled?: boolean }) {
-  return disabled
-    ? <BaseTooltip {...props} children={<Disabled>{props.children}</Disabled>} />
-    : <BaseTooltip {...props} />
-}
-
-export { Tooltip, TooltipProps }
+export { Tooltip, TooltipProps, Disabled }
 
 type PredefinedTooltipProps = Omit<TooltipProps, 'children'> & {
   iconStyle?: CSSProperties,
@@ -49,4 +43,3 @@ Tooltip.Info = function InfoTooltip (props: PredefinedTooltipProps) {
     }
   </Tooltip>
 }
-

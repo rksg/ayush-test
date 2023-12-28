@@ -10,12 +10,6 @@ describe('Tooltip', () => {
     expect(content).toBeVisible()
   })
 
-  it('should render disbled correctly', async () => {
-    const { asFragment } = render(
-      <Tooltip disabled title={'This is a tooltip'} children='Some text' />)
-    expect(asFragment()).toMatchSnapshot()
-  })
-
   it('renders Tooltip.Question', async () => {
     render(<Tooltip.Question title='question tooltip' iconStyle={{ width: '16px' }}/>)
     const icon = await screen.findByTestId('QuestionMarkCircleOutlined')

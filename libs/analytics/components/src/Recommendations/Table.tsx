@@ -10,12 +10,12 @@ import {
   dateSort,
   sortProp
 } from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Tooltip }        from '@acx-ui/components'
-import { get }                                from '@acx-ui/config'
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }          from '@acx-ui/formatter'
-import { TenantLink, useParams }              from '@acx-ui/react-router-dom'
-import { getIntl, noDataDisplay, PathFilter } from '@acx-ui/utils'
+import { Disabled, Loader, TableProps, Tooltip } from '@acx-ui/components'
+import { get }                                   from '@acx-ui/config'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }             from '@acx-ui/formatter'
+import { TenantLink, useParams }                 from '@acx-ui/react-router-dom'
+import { getIntl, noDataDisplay, PathFilter }    from '@acx-ui/utils'
 
 import { getParamString } from '../AIDrivenRRM/extra'
 
@@ -40,9 +40,8 @@ const DateLink = ({ value, disabled }: { value: RecommendationListItem, disabled
   const { activeTab } = useParams()
   return disabled
     ? <Tooltip
-      disabled
       title={<FormattedMessage defaultMessage='Not available' />}
-      children={formatter(DateFormatEnum.DateTimeFormat)(value.updatedAt)}
+      children={<Disabled>{formatter(DateFormatEnum.DateTimeFormat)(value.updatedAt)}</Disabled>}
     />
     : <TenantLink to={`analytics/recommendations/${activeTab}/${value.id}`}>
       {formatter(DateFormatEnum.DateTimeFormat)(value.updatedAt)}
