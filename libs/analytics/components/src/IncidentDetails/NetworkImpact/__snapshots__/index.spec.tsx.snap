@@ -789,7 +789,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                               stroke-linejoin="round"
                             />
                             <path
-                              d="M-45 -5l64.5 0l0 50l-64.5 0Z"
+                              d="M-45 -5l67 0l0 50l-67 0Z"
                               fill="rgb(0,0,0)"
                               fill-opacity="0"
                               stroke="#ccc"
@@ -797,7 +797,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                               transform="translate(640 380)"
                             />
                             <path
-                              d="M-14.5 0l29 0l0 16l-29 0Z"
+                              d="M-17 0l34 0l0 16l-34 0Z"
                               fill="none"
                               transform="translate(640 380)"
                             />
@@ -810,10 +810,10 @@ exports[`NetworkImpact should match snapshot 1`] = `
                               xml:space="preserve"
                               y="8"
                             >
-                              Average No. of Clients per AP
+                              Average Peak No. of Clients per AP
                             </text>
                             <path
-                              d="M-2 20l4 0l0 20l-4 0Z"
+                              d="M-1 20l2 0l0 20l-2 0Z"
                               fill="none"
                               transform="translate(640 380)"
                             />
@@ -825,7 +825,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                               transform="translate(640 380)"
                               y="30"
                             >
-                              27.5
+                              28
                             </text>
                           </g>
                         </svg>
