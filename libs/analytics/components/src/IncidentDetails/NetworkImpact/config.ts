@@ -394,9 +394,9 @@ export const networkImpactChartConfigs: Readonly<Record<
     summary: defineMessage({ defaultMessage: 'Peak percentage of MC & BC frames was {count}' })
   },
   [NetworkImpactChartTypes.AirtimeClientsByAP]: {
-    title: defineMessage({ defaultMessage: 'Average No. of Clients per AP' }),
+    title: defineMessage({ defaultMessage: 'Average Peak No. of Clients per AP' }),
     tooltipFormat: tooltipFormats.aps,
-    valueFormatter: formatter('countFormat'),
+    valueFormatter: formatter('countFormatRound'),
     transformKeyFn: transformAirtimeClientsByAP,
     summary: defineMessage({ defaultMessage: 'Peak number of clients per AP was {count}' })
   }
