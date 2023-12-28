@@ -52,6 +52,7 @@ export interface NewDpskPassphrase {
   identityId?: string; // PersonaGroup id - This DPSK had bound with PersonaGroup
   revocationDate?: string;
   revocationReason?: string;
+  devices?: DPSKDeviceInfo[];
 }
 
 export interface CreateDpskPassphrasesFormFields {
