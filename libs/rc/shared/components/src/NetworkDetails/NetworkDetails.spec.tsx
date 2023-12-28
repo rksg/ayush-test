@@ -8,7 +8,7 @@ import { mockServer, render, screen }                   from '@acx-ui/test-utils
 import { RolesEnum }                                    from '@acx-ui/types'
 import { getUserProfile, setUserProfile }               from '@acx-ui/user'
 
-import NetworkDetails from './NetworkDetails'
+import { NetworkDetails } from './NetworkDetails'
 
 jest.mock('./NetworkIncidentsTab', () => ({
   NetworkIncidentsTab: () => <div data-testid='rc-NetworkIncidentsTab'>incidents</div>
