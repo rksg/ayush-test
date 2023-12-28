@@ -224,12 +224,15 @@ export const getAirtimeTxRootCauses = (checks: AirtimeArray) => {
   const highLegacy = <FormattedMessage defaultMessage={'<li>High number of legacy Wi-Fi devices.</li><ul><li>Definition of legacy devices - 11b, 11a, and a combination of 11a and 11b.</li></ul>'} values={htmlValues}/>
 
   const allFalseText = [highDensityWifi, excessiveFrame, highPacket, highMCBC, highLegacy]
-  const text1 = checkTrue.includes('isHighDensityWifiDevices') ? highDensityWifi : ''
-  const text2 = checkTrue.includes('isLargeMgmtFrameCount') ? checkTrue.includes('isHighSsidCountPerRadio') ? excessiveFrameAndSsid : excessiveFrame : ''
-  const text3 = checkTrue.includes('isHighPacketErrorCount') ? highPacket : ''
-  const text4 = checkTrue.includes('isHighMcbcTraffic') ? highMCBC : ''
-  const text5 = checkTrue.includes('isHighLegacyWifiDevicesCount') ? highLegacy : ''
-  const stringlist = allFalse ? allFalseText : [text1, text2, text3, text4, text5]
+  const stringlist = allFalse
+    ? allFalseText
+    : [
+      checkTrue.includes('isHighDensityWifiDevices') ? highDensityWifi : '',
+      checkTrue.includes('isLargeMgmtFrameCount') ? checkTrue.includes('isHighSsidCountPerRadio') ? excessiveFrameAndSsid : excessiveFrame : '',
+      checkTrue.includes('isHighPacketErrorCount') ? highPacket : '',
+      checkTrue.includes('isHighMcbcTraffic') ? highMCBC : '',
+      checkTrue.includes('isHighLegacyWifiDevicesCount') ? highLegacy : ''
+    ]
 
   return {
     rootCauseText: defineMessage({ defaultMessage: `<p>Airtime Tx is unusually high, and this can be a result from various factors, such as a high density of Wi-Fi devices, excessive number of management frames, high multicast/broadcast (MC/BC) traffic and sub-optimal configurations.</p>
@@ -259,12 +262,15 @@ export const getAirtimeTxRecommendations = (checks: AirtimeArray, params: Airtim
   const highLegacyCount = <FormattedMessage defaultMessage={'<li>Remove legacy devices or upgrade them. If possible, enable OFDM-only mode on WLANs.</li>'} values={htmlValues}/>
 
   const allFalseText = [clientLoadBalanceOff, enableAirtimeDecongestion, nonWifiInterference, highMCBC, highLegacyCount]
-  const text1 = checkTrue.includes('isHighDensityWifiDevices') ? checkTrue.includes('isAclbRaised') ? clientLoadBalanceOn : clientLoadBalanceOff : ''
-  const text2 = checkTrue.includes('isLargeMgmtFrameCount') ? checkTrue.includes('isHighSsidCountPerRadio') ? highSSIDCountText : enableAirtimeDecongestion : ''
-  const text3 = checkTrue.includes('isHighPacketErrorCount') ? nonWifiInterference : ''
-  const text4 = checkTrue.includes('isHighMcbcTraffic') ? highMCBC : ''
-  const text5 = checkTrue.includes('isHighLegacyWifiDevicesCount') ? highLegacyCount : ''
-  const stringlist = allFalse ? allFalseText : [text1, text2, text3, text4, text5]
+  const stringlist = allFalse
+    ? allFalseText
+    : [
+      checkTrue.includes('isHighDensityWifiDevices') ? checkTrue.includes('isAclbRaised') ? clientLoadBalanceOn : clientLoadBalanceOff : '',
+      checkTrue.includes('isLargeMgmtFrameCount') ? checkTrue.includes('isHighSsidCountPerRadio') ? highSSIDCountText : enableAirtimeDecongestion : '',
+      checkTrue.includes('isHighPacketErrorCount') ? nonWifiInterference : '',
+      checkTrue.includes('isHighMcbcTraffic') ? highMCBC : '',
+      checkTrue.includes('isHighLegacyWifiDevicesCount') ? highLegacyCount : ''
+    ]
 
   return {
     recommendationsText: defineMessage({ defaultMessage: `<p>Based on the root {count, plural, one {cause} other {causes}} identified, the recommended {count, plural, one {resolution} other {resolutions}} {count, plural, one {is} other {are}}:</p>
