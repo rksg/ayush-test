@@ -269,6 +269,7 @@ export function MulticastForm (props: { wlanData: NetworkSaveData | null }) {
   )
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isNotWPA3orOWE (wlanData: NetworkSaveData | any | null) : boolean {
   const wlanSecurity = wlanData?.wlan?.wlanSecurity
   if (wlanSecurity != null) {
