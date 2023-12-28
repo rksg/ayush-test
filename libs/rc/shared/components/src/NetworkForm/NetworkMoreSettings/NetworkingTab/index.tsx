@@ -18,8 +18,7 @@ import WiFi7 from './WiFi7'
 const { useWatch } = Form
 
 export function NetworkingTab (props: {
-  wlanData: NetworkSaveData | null,
-  MLOButtonDisable?: boolean
+  wlanData: NetworkSaveData | null
 }) {
   const { $t } = useIntl()
   const { data } = useContext(NetworkFormContext)
@@ -448,7 +447,7 @@ export function NetworkingTab (props: {
       </>}
 
       { wifi6AndWifi7Flag && enableAP70 &&
-      <WiFi7 wlanData={wlanData} MLOButtonDisable={props.MLOButtonDisable}/> }
+      <WiFi7 wlanData={wlanData} /> }
 
       {showRadiusOptions &&
       <>

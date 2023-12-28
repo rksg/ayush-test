@@ -24,6 +24,7 @@ import {
 import { DpskForm }                   from '../../services/DpskForm/DpskForm'
 import { useDpskNewConfigFlowParams } from '../../services/useDpskNewConfigFlowParams'
 import { NetworkDiagram }             from '../NetworkDiagram/NetworkDiagram'
+import { MLOContext }                 from '../NetworkForm'
 import NetworkFormContext             from '../NetworkFormContext'
 
 import { NetworkMoreSettingsForm } from './../NetworkMoreSettings/NetworkMoreSettingsForm'
@@ -33,10 +34,7 @@ const { Option } = Select
 
 const { useWatch } = Form
 
-export function DpskSettingsForm (props: {
-  MLOButtonDisable?: boolean,
-  setMLOButtonDisable: Function
-}) {
+export function DpskSettingsForm () {
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   useEffect(()=>{
@@ -58,7 +56,7 @@ export function DpskSettingsForm (props: {
   return (<>
     <Row gutter={20}>
       <Col span={10}>
-        <SettingsForm setMLOButtonDisable={props.setMLOButtonDisable} />
+        <SettingsForm/>
       </Col>
       <Col span={14} style={{ height: '100%' }}>
         <NetworkDiagram />
@@ -67,7 +65,6 @@ export function DpskSettingsForm (props: {
     {!(editMode) && <Row>
       <Col span={24}>
         <NetworkMoreSettingsForm
-          MLOButtonDisable={props.MLOButtonDisable}
           wlanData={data} />
       </Col>
     </Row>}
@@ -75,11 +72,10 @@ export function DpskSettingsForm (props: {
 
 }
 
-function SettingsForm (props: {
-  setMLOButtonDisable: Function
-}) {
+function SettingsForm () {
   const form = Form.useFormInstance()
   const { editMode, data, setData } = useContext(NetworkFormContext)
+  const { disableMLO } = useContext(MLOContext)
   const { $t } = useIntl()
   const isCloudpathEnabled = useWatch('isCloudpathEnabled')
   const dpskWlanSecurity = useWatch('dpskWlanSecurity')
@@ -91,17 +87,17 @@ function SettingsForm (props: {
   }
   const onSecurityProtocolChange= (value: WlanSecurityEnum) => {
     if(value === WlanSecurityEnum.WPA23Mixed){
-      props.setMLOButtonDisable(true)
+      disableMLO(true)
       form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
     } else {
-      props.setMLOButtonDisable(false)
+      disableMLO(false)
     }
   }
   useEffect(()=>{
     form.setFieldsValue({ ...data })
 
     if (editMode && data && data?.wlan?.wlanSecurity === WlanSecurityEnum.WPA23Mixed) {
-      props.setMLOButtonDisable(true)
+      disableMLO(true)
       form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
     }
   },[data])

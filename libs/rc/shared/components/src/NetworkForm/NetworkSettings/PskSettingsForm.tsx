@@ -46,10 +46,7 @@ const { Option } = Select
 
 const { useWatch } = Form
 
-export function PskSettingsForm (props: {
-  MLOButtonDisable?: boolean,
-  setMLOButtonDisable: Function
-}) {
+export function PskSettingsForm () {
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   useEffect(()=>{
@@ -81,7 +78,7 @@ export function PskSettingsForm (props: {
   return (<>
     <Row gutter={20}>
       <Col span={10}>
-        <SettingsForm setMLOButtonDisable={props.setMLOButtonDisable} />
+        <SettingsForm />
       </Col>
       <Col span={14} style={{ height: '100%' }}>
         <NetworkDiagram />
@@ -90,18 +87,15 @@ export function PskSettingsForm (props: {
     {!(editMode) && <Row>
       <Col span={24}>
         <NetworkMoreSettingsForm
-          MLOButtonDisable={props.MLOButtonDisable}
           wlanData={data} />
       </Col>
     </Row>}
   </>)
 }
 
-function SettingsForm (props: {
-  setMLOButtonDisable: Function
-}) {
+function SettingsForm () {
   const { editMode, cloneMode, data, setData } = useContext(NetworkFormContext)
-  const { isDisableMLO, disableMLO } = useContext(MLOContext)
+  const { disableMLO } = useContext(MLOContext)
   const intl = useIntl()
   const form = Form.useFormInstance()
   const [
@@ -193,10 +187,10 @@ function SettingsForm (props: {
     })
 
     if(value === WlanSecurityEnum.WPA23Mixed){
-      props.setMLOButtonDisable(true)
+      disableMLO(true)
       form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
     } else {
-      props.setMLOButtonDisable(false)
+      disableMLO(false)
     }
   }
   const onMacAuthChange = (checked: boolean) => {
@@ -221,7 +215,7 @@ function SettingsForm (props: {
         }
       })
       if (editMode && data && data?.wlan?.wlanSecurity === WlanSecurityEnum.WPA23Mixed) {
-        props.setMLOButtonDisable(true)
+        disableMLO(true)
         form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
       }
     }

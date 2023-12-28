@@ -55,8 +55,8 @@ import { useNetworkVxLanTunnelProfileInfo } from './utils'
 import { Venues }                           from './Venues/Venues'
 
 export interface MLOContextType {
-  isDisableMLO?: boolean,
-  disableMLO?: (state: boolean) => void
+  isDisableMLO: boolean,
+  disableMLO: (state: boolean) => void
 }
 
 export const MLOContext = createContext({} as MLOContextType)
@@ -563,17 +563,13 @@ export function NetworkForm (props:{
                 {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
                 {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm/>}
                 {(saveState.type || createType) === NetworkTypeEnum.DPSK &&
-              <DpskSettingsForm
-                MLOButtonDisable={MLOButtonDisable}
-                setMLOButtonDisable={setMLOButtonDisable} />}
+              <DpskSettingsForm />}
                 {
                   (saveState.type || createType) === NetworkTypeEnum.CAPTIVEPORTAL &&
                   <PortalTypeForm/>
                 }
                 {saveState.type === NetworkTypeEnum.PSK &&
-              <PskSettingsForm
-                MLOButtonDisable={MLOButtonDisable}
-                setMLOButtonDisable={setMLOButtonDisable} />}
+              <PskSettingsForm/>}
 
               </StepsFormLegacy.StepForm>
               { saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
@@ -621,39 +617,43 @@ export function NetworkForm (props:{
           data: saveState,
           setData: updateSaveState
         }}>
-          <StepsForm<NetworkSaveData>
-            form={form}
-            editMode={editMode}
-            onCancel={() => modalMode
-              ? modalCallBack?.()
-              : redirectPreviousPage(navigate, previousPath, linkToNetworks)
-            }
-            onFinish={editMode ? handleEditNetwork : handleAddNetwork}
-          >
-            <StepsForm.StepForm
-              name='details'
-              title={intl.$t({ defaultMessage: 'Network Details' })}
-              onFinish={handleDetails}
+          <MLOContext.Provider value={{
+            isDisableMLO: MLOButtonDisable,
+            disableMLO: setMLOButtonDisable
+          }}>
+            <StepsForm<NetworkSaveData>
+              form={form}
+              editMode={editMode}
+              onCancel={() => modalMode
+                ? modalCallBack?.()
+                : redirectPreviousPage(navigate, previousPath, linkToNetworks)
+              }
+              onFinish={editMode ? handleEditNetwork : handleAddNetwork}
             >
-              <NetworkDetailForm />
-            </StepsForm.StepForm>
+              <StepsForm.StepForm
+                name='details'
+                title={intl.$t({ defaultMessage: 'Network Details' })}
+                onFinish={handleDetails}
+              >
+                <NetworkDetailForm />
+              </StepsForm.StepForm>
 
-            <StepsForm.StepForm
-              name='settings'
-              title={intl.$t(settingTitle, { type: saveState.type })}
-              onFinish={handleSettings}
-            >
-              {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
-              {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm/>}
-              {(saveState.type || createType) === NetworkTypeEnum.DPSK &&
-              <DpskSettingsForm setMLOButtonDisable={setMLOButtonDisable} />}
-              {(saveState.type || createType) === NetworkTypeEnum.CAPTIVEPORTAL &&
+              <StepsForm.StepForm
+                name='settings'
+                title={intl.$t(settingTitle, { type: saveState.type })}
+                onFinish={handleSettings}
+              >
+                {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
+                {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm/>}
+                {(saveState.type || createType) === NetworkTypeEnum.DPSK &&
+              <DpskSettingsForm />}
+                {(saveState.type || createType) === NetworkTypeEnum.CAPTIVEPORTAL &&
                 <PortalTypeForm/>}
-              {saveState.type === NetworkTypeEnum.PSK &&
-              <PskSettingsForm setMLOButtonDisable={setMLOButtonDisable}/>}
+                {saveState.type === NetworkTypeEnum.PSK &&
+              <PskSettingsForm />}
 
-            </StepsForm.StepForm>
-            { saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+              </StepsForm.StepForm>
+              { saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
                 <StepsForm.StepForm
                   name='onboarding'
                   title={
@@ -663,33 +663,33 @@ export function NetworkForm (props:{
                   {!!(saveState?.guestPortal?.guestNetworkType) &&
                       pickOneCaptivePortalForm(saveState)}
                 </StepsForm.StepForm>
-            }
-            {editMode &&
+              }
+              {editMode &&
               <StepsForm.StepForm
                 name='moreSettings'
                 title={intl.$t({ defaultMessage: 'More Settings' })}
                 onFinish={handleMoreSettings}>
 
-                <NetworkMoreSettingsForm wlanData={saveState}
-                  MLOButtonDisable={MLOButtonDisable}/>
+                <NetworkMoreSettingsForm wlanData={saveState} />
 
               </StepsForm.StepForm>}
-            { isPortalWebRender(saveState) &&<StepsForm.StepForm
-              name='portalweb'
-              title={intl.$t({ defaultMessage: 'Portal Web Page' })}
-              onFinish={handlePortalWebPage}
-            >
-              <PortalInstance updatePortalData={(data)=>setPortalDemo(data)}/>
-            </StepsForm.StepForm>
-            }
-            <StepsForm.StepForm
-              name='venues'
-              title={intl.$t({ defaultMessage: 'Venues' })}
-              onFinish={handleVenues}
-            >
-              <Venues />
-            </StepsForm.StepForm>
-          </StepsForm>
+              { isPortalWebRender(saveState) &&<StepsForm.StepForm
+                name='portalweb'
+                title={intl.$t({ defaultMessage: 'Portal Web Page' })}
+                onFinish={handlePortalWebPage}
+              >
+                <PortalInstance updatePortalData={(data)=>setPortalDemo(data)}/>
+              </StepsForm.StepForm>
+              }
+              <StepsForm.StepForm
+                name='venues'
+                title={intl.$t({ defaultMessage: 'Venues' })}
+                onFinish={handleVenues}
+              >
+                <Venues />
+              </StepsForm.StepForm>
+            </StepsForm>
+          </MLOContext.Provider>
         </NetworkFormContext.Provider>
       }
     </>

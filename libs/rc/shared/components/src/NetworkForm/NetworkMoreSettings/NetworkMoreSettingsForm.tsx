@@ -24,7 +24,6 @@ import { VlanTab }           from './VlanTab'
 
 export function NetworkMoreSettingsForm (props: {
   wlanData: NetworkSaveData | null,
-  MLOButtonDisable?: boolean
 }) {
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
@@ -81,8 +80,7 @@ export function NetworkMoreSettingsForm (props: {
   const [enableMoreSettings, setEnabled] = useState(cloneMode)
 
   if (data && editMode) {
-    return <MoreSettingsTabs wlanData={wlanData}
-      MLOButtonDisable={props.MLOButtonDisable}/>
+    return <MoreSettingsTabs wlanData={wlanData} />
   } else {
     return <div>
       <Button
@@ -96,16 +94,13 @@ export function NetworkMoreSettingsForm (props: {
           $t({ defaultMessage: 'Show more settings' })}
       </Button>
       {enableMoreSettings &&
-        <MoreSettingsTabs wlanData={wlanData}
-          MLOButtonDisable={props.MLOButtonDisable}
-        />}
+        <MoreSettingsTabs wlanData={wlanData} />}
     </div>
   }
 }
 
 export function MoreSettingsTabs (props: {
-  wlanData: NetworkSaveData | null,
-  MLOButtonDisable?: boolean
+  wlanData: NetworkSaveData | null
 }) {
   const { $t } = useIntl()
   const { data, editMode } = useContext(NetworkFormContext)
@@ -178,7 +173,7 @@ export function MoreSettingsTabs (props: {
       <RadioTab />
     </div>
     <div style={{ display: currentTab === 'networking' ? 'block' : 'none' }}>
-      <NetworkingTab wlanData={wlanData} MLOButtonDisable={props.MLOButtonDisable}/>
+      <NetworkingTab wlanData={wlanData} />
     </div>
     <div style={{ display: currentTab === 'advanced' ? 'block' : 'none' }}>
       <AdvancedTab />

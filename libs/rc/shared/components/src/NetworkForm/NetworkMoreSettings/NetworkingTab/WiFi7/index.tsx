@@ -1,17 +1,19 @@
 /* eslint-disable max-len */
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 
 import { Form, Space, Switch } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox/Checkbox'
 import { get, isUndefined }    from 'lodash'
 import { useIntl }             from 'react-intl'
 
+
 import { Tooltip }                                                                                               from '@acx-ui/components'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                from '@acx-ui/feature-toggle'
 import { InformationSolid }                                                                                      from '@acx-ui/icons'
 import { NetworkSaveData, WlanSecurityEnum, MultiLinkOperationOptions, IsNetworkSupport6g, IsSecuritySupport6g } from '@acx-ui/rc/utils'
 
-import * as UI from '../../../NetworkMoreSettings/styledComponents'
+import { MLOContext } from '../../../NetworkForm'
+import * as UI        from '../../../NetworkMoreSettings/styledComponents'
 
 interface Option {
   index: number
@@ -268,12 +270,12 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
   )
 }
 
-function WiFi7 ({ wlanData, MLOButtonDisable } : { wlanData : NetworkSaveData | null, MLOButtonDisable?: boolean }) {
+function WiFi7 ({ wlanData } : { wlanData : NetworkSaveData | null }) {
   const { $t } = useIntl()
   const wifi7MloFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_TOGGLE)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
   const form = Form.useFormInstance()
-
+  const { isDisableMLO } = useContext(MLOContext)
   const initWifi7Enabled = get(wlanData, ['wlan', 'advancedCustomization', 'wifi7Enabled'], true)
   const [
     wifi7Enabled,
@@ -360,7 +362,7 @@ function WiFi7 ({ wlanData, MLOButtonDisable } : { wlanData : NetworkSaveData | 
                   valuePropName='checked'
                   style={{ marginBottom: '15px', width: '300px' }}
                   initialValue={false}
-                  children={<Switch disabled={!wifi7Enabled || MLOButtonDisable} />}
+                  children={<Switch disabled={!wifi7Enabled || isDisableMLO} />}
                 />
               </UI.FieldLabel>
       }
