@@ -29,7 +29,9 @@ jest.mock('react-router-dom', () => ({
 }))
 
 describe('NetworkingTab', () => {
+  const mockGetApsList = jest.fn()
   beforeEach(() => {
+    mockGetApsList.mockClear()
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.get(
@@ -55,7 +57,10 @@ describe('NetworkingTab', () => {
         (_, res, ctx) => res(ctx.json({}))),
       rest.post(
         CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json(venueApsList))),
+        (_, res, ctx) => {
+          mockGetApsList()
+          return res(ctx.json(venueApsList))
+        }),
       rest.get(
         getUrlForTest(WifiUrlsInfo.getVenueDirectedMulticast),
         (_, res, ctx) => res(ctx.json(mockDirectedMulticast))
@@ -120,6 +125,7 @@ describe('NetworkingTab', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider><NetworkingTab /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    await waitFor(() => expect(mockGetApsList).toBeCalled())
     await waitFor(() => screen.findByText('Override the settings in active networks'))
 
     userEvent.click(

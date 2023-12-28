@@ -1,9 +1,11 @@
 import '@testing-library/jest-dom'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { CommonUrlsInfo, RogueApUrls }           from '@acx-ui/rc/utils'
-import { Provider }                              from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
+
+import { CommonUrlsInfo, RogueApUrls } from '@acx-ui/rc/utils'
+import { Provider }                    from '@acx-ui/store'
+import { mockServer, render, screen }  from '@acx-ui/test-utils'
 
 import { defaultValue }                  from '../../contentsMap'
 import { EditContext, VenueEditContext } from '../index'
@@ -90,7 +92,9 @@ describe('WifiConfigTab', () => {
     await screen.findByRole('tab', { name: 'Network Control' })
     await screen.findByRole('tab', { name: 'Advanced' })
 
-    fireEvent.click(await screen.findByRole('tab', { name: 'Security' }))
+    const securityTab = await screen.findByRole('tab', { name: 'Security' })
+    await userEvent.click(securityTab)
+    expect(securityTab.getAttribute('aria-selected')).toBeTruthy()
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/venues/${params.venueId}/edit/wifi/security`,
       hash: '',

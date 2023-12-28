@@ -71,10 +71,10 @@ export function NetworkingTab () {
     if (getApList) {
       getApList({ params: { tenantId }, payload }, true).unwrap().then((res)=>{
         const { data } = res || {}
-        if (data) {
+        if (data?.length) {
           //const findAp = data.filter((ap: APExtended) => ap.venueId === venueId)
           const findAp = data
-          setHasCellularAps((findAp.length > 0))
+          setHasCellularAps((findAp?.length > 0))
         }
       })
     }
@@ -151,7 +151,7 @@ export function NetworkingTab () {
       await editNetworkingContextData?.updateDirectedMulticast?.()
       await editNetworkingContextData?.updateRadiusOptions?.()
 
-      setEditContextData({
+      setEditContextData?.({
         ...editContextData,
         unsavedTabKey: 'networking',
         isDirty: false
