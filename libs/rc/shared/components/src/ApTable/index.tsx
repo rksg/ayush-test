@@ -480,6 +480,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       key: 'featureIncompatible',
       tooltip: $t({ defaultMessage: 'Check for the venue’s Wi-Fi features not supported by earlier versions or AP models.' }),
       title: $t({ defaultMessage: 'Feature Compatibility' }),
+      filterPlaceholder: $t({ defaultMessage: 'Feature Compatibility' }),
       dataIndex: 'incompatible',
       filterKey: 'fwVersion',
       width: 200,

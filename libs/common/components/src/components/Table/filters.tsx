@@ -197,7 +197,7 @@ export function renderFilter <RecordType> (
       setFilterValues(filters)
     }}
     filterOption={filterOption}
-    placeholder={column.title as string}
+    placeholder={column.filterPlaceholder ?? column.title as string}
     showArrow
     allowClear
     style={{ width }}

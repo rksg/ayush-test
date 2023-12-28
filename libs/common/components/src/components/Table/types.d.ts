@@ -70,6 +70,12 @@ type AdditionalColumnType <RecordType, ValueType> = {
    */
   filterSearchable?: boolean
   /**
+   * Set the filter placeholder
+   * If `filterPlaceholder` is set, this prop will be override to original filter placeholder
+   * @default undefined
+   */
+  filterPlaceholder?: string
+  /**
    * Allow filter to appear as one of the type specified
    */
   filterComponent?: ({ type: 'checkbox' | 'rangepicker', label?: string })
