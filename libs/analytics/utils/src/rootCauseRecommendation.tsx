@@ -141,17 +141,6 @@ export const getAirtimeBusyRecommendations = (checks: AirtimeArray) => {
   }
 }
 
-// const checksRx = [
-//   { isHighDensityWifiDevices: true },
-//   { isAclbRaised: true },
-//   { isLargeMgmtFrameCount: true },
-//   { isHighSsidCountPerRadio: false },
-//   { isHighCoChannelInterference: true },
-//   { isCRRMRaised: false },
-//   { isChannelFlyEnabled: false },
-//   { isHighLegacyWifiDevicesCount: true }
-// ]
-
 export const getAirtimeRxRootCauses = (checks: AirtimeArray) => {
   const checkTrue = checkTrueParams(checks)
   const allFalse = checkTrue.length === 0
@@ -206,7 +195,7 @@ export const getAirtimeRxRecommendations = (checks: AirtimeArray, params: Airtim
     : [
       checkTrue.includes('isHighDensityWifiDevices') ? checkTrue.includes('isAclbRaised') ? clientLoadBalanceOn : clientLoadBalanceOff : '',
       checkTrue.includes('isLargeMgmtFrameCount') ? checkTrue.includes('isHighSsidCountPerRadio') ? highSSIDCountText : enableAirtimeDecongestion : '',
-      checkTrue.includes('isHighCoChannelInterference') ? checkTrue.includes('isCRRMRaised') ? checkTrue.includes('isChannelFlyEnabled') ? channelFlyEnabled : crrmRaisedText : checkTrue.includes('isChannelFlyEnabled') ? '' : channelFlyDisabled : '',
+      checkTrue.includes('isHighCoChannelInterference') ? checkTrue.includes('isCRRMRaised') ? checkTrue.includes('isChannelFlyEnabled') ? channelFlyEnabled : crrmRaisedText : channelFlyDisabled : '',
       checkTrue.includes('isHighLegacyWifiDevicesCount') ? highLegacyCount : ''
     ]
 
