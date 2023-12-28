@@ -80,6 +80,9 @@ describe('IpAddressDrawer', () => {
       fireEvent.click(saveButton)
     })
     await waitFor(() => expect(onCloseFn).toBeCalled())
+    await waitFor(async () =>
+      expect(await screen.findByText(/IP Address 192.168.1.3 was updated/)).toBeVisible()
+    )
   })
 
   it('Add conflict ip address and show error toast correctly', async () => {
