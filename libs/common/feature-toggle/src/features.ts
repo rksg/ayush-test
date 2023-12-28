@@ -141,7 +141,7 @@ export enum Features {
   GROUP_BASED_LOGIN_TOGGLE = 'group-based-login-toggle',
   GOOGLE_WORKSPACE_SSO_TOGGLE = 'google-workspace-sso-toggle',
   ANY_3RDPARTY_INVITE_TOGGLE = 'ptenant-any-3rdparty-invite-toggle',
-  MSP_EC_CREATE_WITH_TIER = 'hsp-loc1-demo'
+  MSP_EC_CREATE_WITH_TIER = 'mspservice-mspec-create-pass-tier-info'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
