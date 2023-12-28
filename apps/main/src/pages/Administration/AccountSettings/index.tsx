@@ -2,21 +2,22 @@ import { Form, Divider } from 'antd'
 import styled            from 'styled-components/macro'
 
 import { Loader }                                                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                        from '@acx-ui/feature-toggle'
 import { useGetMspEcProfileQuery }                                         from '@acx-ui/msp/services'
 import { MSPUtils }                                                        from '@acx-ui/msp/utils'
 import { useGetRecoveryPassphraseQuery, useGetTenantAuthenticationsQuery } from '@acx-ui/rc/services'
-import { isDelegationMode }                                                from '@acx-ui/rc/utils'
 import {
   useUserProfileContext,
-  useGetMfaTenantDetailsQuery
+  useGetMfaTenantDetailsQuery,
+  useGetBetaStatusQuery
 } from '@acx-ui/user'
-import { useTenantId } from '@acx-ui/utils'
+import { isDelegationMode, useTenantId } from '@acx-ui/utils'
 
 import { AccessSupportFormItem }         from './AccessSupportFormItem'
 import { AppTokenFormItem }              from './AppTokenFormItem'
 import { AuthServerFormItem }            from './AuthServerFormItem'
 import { DefaultSystemLanguageFormItem } from './DefaultSystemLanguageFormItem'
+import { EnableR1Beta }                  from './EnableR1Beta'
 import { MapRegionFormItem }             from './MapRegionFormItem'
 import { MFAFormItem }                   from './MFAFormItem'
 import { RecoveryPassphraseFormItem }    from './RecoveryPassphraseFormItem'
@@ -28,6 +29,7 @@ interface AccountSettingsProps {
 const AccountSettings = (props : AccountSettingsProps) => {
   const { className } = props
   const params = { tenantId: useTenantId() }
+  const betaButtonToggle = useIsSplitOn(Features.BETA_BUTTON)
   const {
     data: userProfileData,
     isPrimeAdmin
@@ -37,21 +39,32 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const recoveryPassphraseData = useGetRecoveryPassphraseQuery({ params })
   const mfaTenantDetailsData = useGetMfaTenantDetailsQuery({ params })
   const mspEcProfileData = useGetMspEcProfileQuery({ params })
+  const betaStatusData = useGetBetaStatusQuery({ params }, { skip: !betaButtonToggle })
 
   const canMSPDelegation = isDelegationMode() === false
   const hasMSPEcLabel = mspUtils.isMspEc(mspEcProfileData.data)
   // has msp-ec label AND non-delegationMode
   const isMspEc = hasMSPEcLabel && userProfileData?.varTenantId && canMSPDelegation === true
+  const isDogfood = userProfileData?.dogfood
 
   const isPrimeAdminUser = isPrimeAdmin()
   const isI18n = useIsSplitOn(Features.I18N_TOGGLE)
-  const isIdmDecoupling = useIsSplitOn(Features.IDM_DECOUPLING)
+  const isSsoAllowed = useIsTierAllowed(Features.SSO)
+  const isIdmDecoupling = useIsSplitOn(Features.IDM_DECOUPLING) && isSsoAllowed
+  const isApiKeyEnabled = useIsSplitOn(Features.IDM_APPLICATION_KEY_TOGGLE)
+
   const showRksSupport = isMspEc === false
   const isFirstLoading = recoveryPassphraseData.isLoading
     || mfaTenantDetailsData.isLoading || mspEcProfileData.isLoading
+    || betaStatusData.isLoading
+
+  const showSsoSupport = isPrimeAdminUser && isIdmDecoupling && !isDogfood
+    && canMSPDelegation && !isMspEc
+  const showApiKeySupport = isPrimeAdminUser && isApiKeyEnabled && canMSPDelegation && !isMspEc
+  const showBetaButton = isPrimeAdminUser && betaButtonToggle && showRksSupport
 
   const authenticationData =
-    useGetTenantAuthenticationsQuery({ params }, { skip: !isIdmDecoupling })
+    useGetTenantAuthenticationsQuery({ params }, { skip: !isPrimeAdminUser })
   const isFetching = recoveryPassphraseData.isFetching
 
   return (
@@ -87,6 +100,16 @@ const AccountSettings = (props : AccountSettingsProps) => {
           </>
         )}
 
+        { showBetaButton && (
+          <>
+            <Divider />
+            <EnableR1Beta
+              betaStatusData={betaStatusData.data}
+              isPrimeAdminUser={isPrimeAdminUser}
+            />
+          </>
+        )}
+
         {canMSPDelegation && (
           <>
             <Divider />
@@ -97,7 +120,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
           </>
         )}
 
-        { isPrimeAdminUser && isIdmDecoupling && (
+        { showSsoSupport && (
           <>
             <Divider />
             <AuthServerFormItem
@@ -106,7 +129,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
           </>
         )}
 
-        { isPrimeAdminUser && isIdmDecoupling && (
+        { showApiKeySupport && (
           <>
             <Divider />
             <AppTokenFormItem

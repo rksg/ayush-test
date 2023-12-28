@@ -5,6 +5,7 @@ import { CustomDrawer }         from './CustomDrawer'
 import { DrawerWithBackButton } from './DrawerWithBackButton'
 import { DrawerWithIcon }       from './DrawerWithIcon'
 import { DrawerWithSubtitle }   from './DrawerWithSubtitle'
+import { FullHeightDrawer }     from './FullHeightDrawer'
 
 storiesOf('Drawer', module)
   .add('Basic Drawer', BasicDrawer)
@@ -12,5 +13,5 @@ storiesOf('Drawer', module)
   .add('Drawer With BackButton', DrawerWithBackButton)
   .add('Drawer With Subtitle', DrawerWithSubtitle)
   .add('Drawer With Icon', DrawerWithIcon)
-
+  .add('Full Height Drawer', FullHeightDrawer)
 export {}

@@ -1,7 +1,7 @@
 import { defineMessage, useIntl } from 'react-intl'
 import AutoSizer                  from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter, getSeriesData } from '@acx-ui/analytics/utils'
+import { getSeriesData } from '@acx-ui/analytics/utils'
 import {
   DonutChart,
   DonutChartData,
@@ -11,7 +11,8 @@ import {
   NoData,
   qualitativeColorSet
 }                                         from '@acx-ui/components'
-import { formatter } from '@acx-ui/formatter'
+import { formatter }            from '@acx-ui/formatter'
+import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import { App, useTopApplicationsQuery } from './services'
 

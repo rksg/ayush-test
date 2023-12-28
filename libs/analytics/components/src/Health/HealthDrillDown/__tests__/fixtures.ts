@@ -46,14 +46,16 @@ export const mockImpactedClient = {
           manufacturer: 'Intel Corporate',
           ssid: 'Divya_1_hour',
           hostname: 'DESKTOP-K1PAM9U',
-          username: 'DPSK_User_8709'
+          username: 'DPSK_User_8709',
+          osType: 'osType 1'
         },
         {
           mac: 'D0:C6:37:D7:52:80',
           manufacturer: 'Intel Corporate',
           ssid: 'Divya_tomorrow',
           hostname: 'DESKTOP-K1PAM9U',
-          username: 'DPSK_User_8709'
+          username: 'DPSK_User_8709',
+          osType: 'osType 2'
         }
       ]
     }
@@ -68,7 +70,7 @@ export const mockConnectionFailureResponse = {
         {
           key: '01-Alethea-WiCheck Test',
           value: 379,
-          name: null
+          name: 'some name'
         },
         { key: 'AlphaNet_5_1',
           value: 350,
@@ -115,6 +117,58 @@ export const mockConnectionFailureResponse = {
           key: 'FONGDSL',
           value: 47
         }
+      ],
+      osManufacturers: [
+        {
+          key: 'Apple, Inc.',
+          value: 1028
+        },
+        {
+          key: 'Tuya Smart Inc.',
+          value: 1010
+        },
+        {
+          key: 'HTC Corporation',
+          value: 869
+        },
+        {
+          key: 'Sony Corporation',
+          value: 731
+        },
+        {
+          key: 'Nokia Corporation',
+          value: 705
+        },
+        {
+          key: 'Hon Hai Precision Ind. Co.,Ltd.',
+          value: 691
+        }
+      ],
+      events: [
+        {
+          key: 'CCD_REASON_PREV_AUTH_NOT_VALID',
+          value: 3243
+        },
+        {
+          key: 'CCD_REASON_TIMEOUT',
+          value: 1306
+        },
+        {
+          key: 'CCD_REASON_DEAUTH_LEAVING',
+          value: 1047
+        },
+        {
+          key: 'CCD_REASON_UNSPECIFIED',
+          value: 652
+        },
+        {
+          key: 'CCD_REASON_IEEE_802_1X_AUTH_FAILED',
+          value: 565
+        },
+        {
+          key: 'CCD_REASON_KICKOUT',
+          value: 450
+        }
       ]
     }
   }
@@ -135,6 +189,20 @@ export const mockTtcResponse = {
           key: 'aaron-dot1x',
           value: 1295.797373358349
         }
+      ],
+      osManufacturers: [
+        {
+          key: 'Apple, Inc.',
+          value: 1028
+        },
+        {
+          key: 'Tuya Smart Inc.',
+          value: 1010
+        },
+        {
+          key: 'HTC Corporation',
+          value: 869
+        }
       ]
     }
   }
@@ -148,11 +216,27 @@ export const mockOnlyWlansResponse = {
           key: 'aaron-dot1x',
           value: 1295.797373358349
         }
+      ],
+      osManufacturers: [],
+      events: [
+        {
+          key: 'CCD_REASON_PREV_AUTH_NOT_VALID',
+          value: 3243
+        }
       ]
     }
   }
 }
 
+export const noDataResponse = {
+  network: {
+    hierarchyNode: {
+      wlans: [],
+      osManufacturers: [],
+      events: []
+    }
+  }
+}
 export const mockPathWithAp: NetworkPath = [
   {
     type: 'network',

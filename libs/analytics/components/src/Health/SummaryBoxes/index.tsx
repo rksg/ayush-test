@@ -1,9 +1,9 @@
 import { isNull }                                    from 'lodash'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
-import { AnalyticsFilter }          from '@acx-ui/analytics/utils'
 import { GridRow, GridCol, Loader } from '@acx-ui/components'
 import { formatter, intlFormats }   from '@acx-ui/formatter'
+import type { AnalyticsFilter }     from '@acx-ui/utils'
 import { noDataDisplay }            from '@acx-ui/utils'
 
 import { DrilldownSelection } from '../HealthDrillDown/config'

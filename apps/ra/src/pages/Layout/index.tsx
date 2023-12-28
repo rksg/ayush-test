@@ -1,25 +1,26 @@
 import { useState } from 'react'
 
-import { UserButton } from '@acx-ui/analytics/components'
+import { HelpButton, UserButton, MelissaBot } from '@acx-ui/analytics/components'
+import { getUserProfile }                     from '@acx-ui/analytics/utils'
 import {
   Layout as LayoutComponent,
   LayoutUI
 } from '@acx-ui/components'
 import { SplitProvider } from '@acx-ui/feature-toggle'
 import {
-  // HelpButton,
+  GlobalSearchBar,
   HeaderContext
 } from '@acx-ui/main/components'
 import { Outlet, useParams, TenantNavLink } from '@acx-ui/react-router-dom'
 
 import { ReactComponent as Logo } from '../../assets/Logo.svg'
 
-import { useMenuConfig } from './menuConfig'
-// import SearchBar         from './SearchBar'
+import { AccountsDrawer } from './AccountsDrawer'
+import { useMenuConfig }  from './menuConfig'
 
 function Layout () {
   const params = useParams()
-  const companyName = 'companyName'
+  const userProfile = getUserProfile()
   const searchFromUrl = params.searchVal || ''
   const [searchExpanded, setSearchExpanded] = useState<boolean>(searchFromUrl !== '')
   const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
@@ -31,12 +32,16 @@ function Layout () {
       rightHeaderContent={<>
         <HeaderContext.Provider value={{
           searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
-          {/*<SearchBar />*/}
+          <GlobalSearchBar />
         </HeaderContext.Provider>
         <LayoutUI.Divider />
-        <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>
-        {/*<HelpButton/>*/}
+        { userProfile.tenants.length > 1 || userProfile.invitations.length > 0
+          ? <AccountsDrawer user={userProfile} />
+          : <LayoutUI.CompanyName>{userProfile?.selectedTenant.name}</LayoutUI.CompanyName>
+        }
+        <HelpButton/>
         <UserButton/>
+        <MelissaBot/>
       </>}
     />
   )

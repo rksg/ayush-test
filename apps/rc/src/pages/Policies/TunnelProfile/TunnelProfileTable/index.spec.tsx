@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { networkApi, nsgApi, tunnelProfileApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   getPolicyDetailsLink,
@@ -12,7 +12,7 @@ import {
   PolicyType,
   TunnelProfileUrls
 } from '@acx-ui/rc/utils'
-import { Provider }                                    from '@acx-ui/store'
+import { Provider, store }                             from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { mockedNetworkOptions, mockedNsgOptions, mockedTunnelProfileViewData } from '../__tests__/fixtures'
@@ -44,6 +44,9 @@ describe('TunnelProfileList', () => {
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
+    store.dispatch(tunnelProfileApi.util.resetApiState())
+    store.dispatch(nsgApi.util.resetApiState())
+    store.dispatch(networkApi.util.resetApiState())
 
     mockServer.use(
       rest.post(
@@ -86,22 +89,7 @@ describe('TunnelProfileList', () => {
     expect(row.length).toBe(2)
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <TunnelProfileTable />
-      </Provider>, {
-        route: { params, path: tablePath }
-      })
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'Policies & Profiles'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <TunnelProfileTable />

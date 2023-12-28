@@ -99,10 +99,7 @@ export const TabWithHint = styled.span`
     height: 18px;
     width: 18px;
     margin-left: 5px;
-    path {
-      stroke: var(--acx-primary-white);
-      fill: var(--acx-accents-orange-50);
-    }
+    color: var(--acx-accents-orange-50);
   }
 `
 

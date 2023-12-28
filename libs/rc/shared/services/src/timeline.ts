@@ -1,6 +1,6 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 
-import { Filter } from '@acx-ui/components'
+import { Filter }             from '@acx-ui/components'
 import {
   Activity,
   EventBase,
@@ -14,7 +14,9 @@ import {
   onSocketActivityChanged,
   downloadFile,
   SEARCH,
-  SORTER
+  SORTER,
+  EventExportSchedule,
+  onActivityMessageReceived
 } from '@acx-ui/rc/utils'
 import { baseTimelineApi }   from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -33,7 +35,8 @@ const metaFields = [
   'apGroupName',
   'floorPlanName',
   'recipientName',
-  'edgeName'
+  'edgeName',
+  'unitName'
 ]
 
 export type EventsExportPayload = {
@@ -63,7 +66,8 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, () => {
           api.dispatch(timelineApi.util.invalidateTags([{ type: 'Activity', id: 'LIST' }]))
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     events: build.query<TableResult<Event>, RequestPayload>({
       providesTags: [{ type: 'Event', id: 'LIST' }],
@@ -97,6 +101,11 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
             })) as Event[]
           }
         }
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, () => {
+          api.dispatch(timelineApi.util.invalidateTags([{ type: 'Event', id: 'LIST' }]))
+        })
       }
     }),
     adminLogs: build.query<TableResult<AdminLog>, RequestPayload>({
@@ -131,7 +140,8 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
             })) as AdminLog[]
           }
         }
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     downloadEventsCSV: build.mutation<Blob, EventsExportPayload>({
       query: (payload) => {
@@ -150,6 +160,44 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
           }
         }
       }
+    }),
+    addExportSchedules: build.mutation<EventExportSchedule, RequestPayload>({
+      query: (payload) => {
+        const req = createHttpRequest(CommonUrlsInfo.addExportSchedules)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    updateExportSchedules: build.mutation<EventExportSchedule, RequestPayload>({
+      query: (payload) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateExportSchedules )
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Event', id: 'Detail' }]
+    }),
+    getExportSchedules: build.query<EventExportSchedule, RequestPayload>({
+      query: () => {
+        const req = createHttpRequest(CommonUrlsInfo.getExportSchedules)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Event', id: 'Detail' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'export'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(timelineApi.util.invalidateTags([{ type: 'Event', id: 'Detail' }]))
+          })
+        })
+      }
     })
   })
 })
@@ -158,5 +206,8 @@ export const {
   useActivitiesQuery,
   useEventsQuery,
   useAdminLogsQuery,
-  useDownloadEventsCSVMutation
+  useDownloadEventsCSVMutation,
+  useAddExportSchedulesMutation,
+  useUpdateExportSchedulesMutation,
+  useGetExportSchedulesQuery
 } = timelineApi

@@ -1,5 +1,4 @@
-import { RolesEnum }   from '@acx-ui/types'
-import { AccountTier } from '@acx-ui/utils'
+import { RolesEnum } from '@acx-ui/types'
 
 import {
   EntitlementDeviceType,
@@ -78,10 +77,6 @@ export interface TenantPreferenceSettings {
   edgeBeta?: TenantPreferenceSettingValue;
 }
 
-export interface TenantAccountTierValue {
-  acx_account_tier: AccountTier
-}
-
 export interface Administrator {
   id: string;
   email: string;
@@ -135,6 +130,7 @@ export interface Delegation {
   createdDate: string;
   updateDate: string;
   delegatedTo: string;
+  delegatedToAdmin?: string;
   delegatedToName: string;
   type: AdministrationDelegationType;
   status: AdministrationDelegationStatus;
@@ -206,6 +202,7 @@ export interface TenantAuthentications {
   tenant?: string;
   url?: string;
   scopes?: string;
+  domains?: string[];
 }
 
 export interface Entitlement {
@@ -227,6 +224,7 @@ export interface Entitlement {
   typeLiteral?: string;
   createdDate: string;
   updatedDate: string;
+  assignedLicense?: boolean;
 }
 
 export interface EntitlementSummary {
@@ -250,3 +248,25 @@ export interface NewEntitlementSummary {
 }
 
 export type EntitlementDeviceTypes = Array<{ label: string, value: EntitlementDeviceType }>
+
+export interface AdminGroup {
+  id?: string,
+  name?: string,
+  groupId?: string,
+  role?: RolesEnum,
+  customRole?: CustomRole,
+  processingPriority?: number,
+  swapPriority?: boolean,
+  sourceGroupId?: string
+}
+
+export interface CustomRole {
+  id?: string,
+  name?: RolesEnum,
+  description?: string,
+  roleType?: string,
+  frameworkRO?: boolean,
+  createdDate?: string,
+  updatedDate?: string
+}
+

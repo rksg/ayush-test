@@ -40,8 +40,12 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       transformResponse (result: TableResult<Network>) {
         result.data = result.data.map(item => ({
           ...item,
-          activated: item.activated ?? { isActivated: false }
-        }))
+          activated: item.activated ?? { isActivated: false },
+          ...(item?.dsaeOnboardNetwork &&
+            { children: [{ ...item?.dsaeOnboardNetwork,
+              isOnBoarded: true,
+              id: item?.name + 'onboard' } as Network] })
+        })) as Network[]
         return result
       },
       keepUnusedDataFor: 0,
@@ -53,7 +57,8 @@ export const networkApi = baseNetworkApi.injectEndpoints({
               api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'LIST' }]))
             })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     addNetwork: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -107,6 +112,16 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     updateNetworkVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.updateNetworkVenue, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
+    }),
+    updateNetworkVenues: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateNetworkVenues, params, RKS_NEW_UI)
         return {
           ...req,
           body: payload
@@ -188,7 +203,50 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Network', id: 'LIST' }]
+      providesTags: [{ type: 'Network', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
+    }),
+    apGroupNetworkList: build.query<TableResult<Network>, RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const apGroupNetworkListInfo = {
+          ...createHttpRequest(CommonUrlsInfo.getApGroupNetworkList, arg.params),
+          body: arg.payload
+        }
+        const apGroupNetworkListQuery = await fetchWithBQ(apGroupNetworkListInfo)
+        const networkList = apGroupNetworkListQuery.data as TableResult<Network>
+
+        let venueNetworkApGroupList = {} as { response: NetworkVenue[] }
+        let networkDeepListList = {} as { response: NetworkDetail[] }
+
+        if (networkList && networkList.data.length > 0) {
+          const venueNetworkApGroupInfo = {
+            ...createHttpRequest(CommonUrlsInfo.venueNetworkApGroup, arg.params),
+            body: networkList.data.map(item => ({
+              networkId: item.id,
+              ssids: [item.ssid],
+              venueId: arg.params?.venueId
+            }))
+          }
+          const venueNetworkApGroupQuery = await fetchWithBQ(venueNetworkApGroupInfo)
+          venueNetworkApGroupList = venueNetworkApGroupQuery.data as { response: NetworkVenue[] }
+
+          const networkDeepListInfo = {
+            ...createHttpRequest(CommonUrlsInfo.getNetworkDeepList, arg.params),
+            body: networkList.data.map(item => item.id)
+          }
+          const networkDeepListQuery = await fetchWithBQ(networkDeepListInfo)
+          networkDeepListList = networkDeepListQuery.data as { response: NetworkDetail[] }
+        }
+
+        const aggregatedList = aggregatedVenueNetworksData(
+          networkList, venueNetworkApGroupList, networkDeepListList)
+
+        return apGroupNetworkListQuery.data
+          ? { data: aggregatedList }
+          : { error: apGroupNetworkListQuery.error as FetchBaseQueryError }
+      },
+      providesTags: [{ type: 'Network', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     networkVenueList: build.query<TableResult<Venue>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
@@ -237,7 +295,8 @@ export const networkApi = baseNetworkApi.injectEndpoints({
             api.dispatch(networkApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     venueNetworkList: build.query<TableResult<Network>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
@@ -277,6 +336,31 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         return venueNetworkListQuery.data
           ? { data: aggregatedList }
           : { error: venueNetworkListQuery.error as FetchBaseQueryError }
+      },
+      providesTags: [{ type: 'Network', id: 'DETAIL' }],
+      extraOptions: { maxRetries: 5 }
+    }),
+    venueNetworkActivationsDataList: build.query<NetworkSaveData[], RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const networkActivations = {
+          ...createHttpRequest(CommonUrlsInfo.networkActivations, arg.params),
+          body: arg.payload
+        }
+        const networkActivationsQuery = await fetchWithBQ(networkActivations)
+        const networkVenueList = networkActivationsQuery.data as TableResult<NetworkVenue>
+
+        let networkDeepList = { response: [] } as { response: NetworkSaveData[] }
+
+        if (networkVenueList && networkVenueList.data && networkVenueList.data.length > 0) {
+          const networkDeepListInfo = {
+            ...createHttpRequest(CommonUrlsInfo.getNetworkDeepList, arg.params),
+            body: networkVenueList.data.map(item => item.networkId)
+          }
+          const networkDeepListQuery = await fetchWithBQ(networkDeepListInfo)
+          networkDeepList = networkDeepListQuery.data as { response: NetworkSaveData[] }
+        }
+
+        return { data: networkDeepList.response }
       },
       providesTags: [{ type: 'Network', id: 'DETAIL' }]
     }),
@@ -359,6 +443,13 @@ export const aggregatedVenueNetworksData = (networkList: TableResult<Network>,
     const deepNetwork = networkDeepListList?.response?.find(
       i => i.id === item.id
     )
+    if (item?.dsaeOnboardNetwork) {
+      item = { ...item,
+        ...{ children: [{ ...item?.dsaeOnboardNetwork,
+          isOnBoarded: true,
+          activated: calculateNetworkActivated(networkApGroup) } as Network] }
+      }
+    }
     if (networkApGroup) {
       data.push({
         ...item,
@@ -417,15 +508,19 @@ export const {
   useLazyGetVenueNetworkApGroupQuery,
   useNetworkDetailHeaderQuery,
   useNetworkVenueListQuery,
+  useVenueNetworkActivationsDataListQuery,
   useAddNetworkMutation,
   useUpdateNetworkMutation,
   useDeleteNetworkMutation,
   useAddNetworkVenueMutation,
   useAddNetworkVenuesMutation,
   useUpdateNetworkVenueMutation,
+  useUpdateNetworkVenuesMutation,
   useDeleteNetworkVenueMutation,
   useDeleteNetworkVenuesMutation,
   useApNetworkListQuery,
+  useApGroupNetworkListQuery,
+  useLazyApGroupNetworkListQuery,
   useVenueNetworkListQuery,
   useDashboardOverviewQuery,
   useDashboardV2OverviewQuery,

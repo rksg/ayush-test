@@ -1,5 +1,5 @@
-import { Dropdown as AntDropdown } from 'antd'
-import styled                      from 'styled-components/macro'
+import { Dropdown as AntDropdown, Space } from 'antd'
+import styled                             from 'styled-components/macro'
 
 import { CaretDownSolid } from '@acx-ui/icons'
 
@@ -12,6 +12,11 @@ export const Dropdown = styled(AntDropdown)`
     padding-left: 11px;
     padding-right: 7px;
   }
+`
+
+export const MenuItemWithIcon = styled(Space).attrs({ size: 5 })`
+  display: flex;
+  .ant-space-item { display: flex; }
 `
 
 export const OverlayContainer = styled.div`

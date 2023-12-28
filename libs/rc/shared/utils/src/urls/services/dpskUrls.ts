@@ -8,17 +8,22 @@ export const DpskPassphraseBaseUrl = '/api/dpskServices/:serviceId/passphrases'
 
 export const DpskPassphraseBaseUrlWithId = DpskPassphraseBaseUrl + '/:passphraseId'
 
-export const DpskPassphraseDevices = DpskPassphraseBaseUrl + '/:passphraseId/devices'
+export const DpskPassphraseDevices = DpskPassphraseBaseUrlWithId + '/devices'
+
+// ======== New API ========
 
 export const NewDpskBaseUrl = '/dpskServices'
 
 export const NewDpskBaseUrlWithId = NewDpskBaseUrl + '/:serviceId'
 
-export const NewDpskPassphraseBaseUrl = '/dpskServices/:serviceId/passphrases'
+export const NewDpskPassphraseBaseUrl = NewDpskBaseUrlWithId + '/passphrases'
 
 export const NewDpskPassphraseBaseUrlWithId = NewDpskPassphraseBaseUrl + '/:passphraseId'
 
-export const NewDpskPassphraseDevices = NewDpskPassphraseBaseUrl + '/:passphraseId/devices'
+export const NewDpskPassphraseDevices = NewDpskPassphraseBaseUrlWithId + '/devices'
+
+const DpskNewFlowPassphraseDevicesUrl = '/v2' + NewDpskPassphraseDevices
+
 
 const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
 
@@ -101,6 +106,11 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
     oldUrl: DpskPassphraseBaseUrl + '?timezone=:timezone&date-format=:dateFormat',
     newApi: true
   },
+  exportNewFlowPassphrases: {
+    method: 'post',
+    url: '/v2' + NewDpskPassphraseBaseUrl + '?timezone=:timezone&date-format=:dateFormat',
+    newApi: true
+  },
   revokePassphrases: {
     method: 'PATCH',
     url: NewDpskPassphraseBaseUrl,
@@ -110,6 +120,11 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
   getPassphraseClient: {
     method: 'post',
     url: '/dpskpassphrases/client',
+    newApi: true
+  },
+  getNewFlowPassphraseClient: {
+    method: 'get',
+    url: '/v2/dpskServices/client?mac=:mac&networkId=:networkId',
     newApi: true
   },
   getPassphraseDevices: {
@@ -129,5 +144,25 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
     url: NewDpskPassphraseDevices + '?tenantId=:tenantId',
     oldUrl: DpskPassphraseDevices + '?tenantId=:tenantId',
     newApi: true
+  },
+  getNewFlowPassphraseDevices: {
+    method: 'get',
+    url: DpskNewFlowPassphraseDevicesUrl,
+    newApi: true
+  },
+  updateNewFlowPassphraseDevices: {
+    method: 'post',
+    url: DpskNewFlowPassphraseDevicesUrl,
+    newApi: true
+  },
+  deleteNewFlowPassphraseDevices: {
+    method: 'delete',
+    url: DpskNewFlowPassphraseDevicesUrl,
+    newApi: true
   }
+}
+
+
+export function convertDpskNewFlowUrl (url: string): string {
+  return '/v2' + url
 }

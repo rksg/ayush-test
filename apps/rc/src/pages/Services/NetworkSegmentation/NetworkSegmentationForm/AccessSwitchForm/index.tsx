@@ -13,10 +13,9 @@ import {
   useStepFormContext
 } from '@acx-ui/components'
 import { AccessSwitchTable, AccessSwitchTableDataType } from '@acx-ui/rc/components'
-import { AccessSwitch }                                 from '@acx-ui/rc/utils'
+import { AccessSwitch, DistributionSwitch }             from '@acx-ui/rc/utils'
 
 import { NetworkSegmentationGroupFormData } from '..'
-import { useWatch }                         from '../../useWatch'
 
 import { AccessSwitchDrawer } from './AccessSwitchDrawer'
 
@@ -28,9 +27,12 @@ export function AccessSwitchForm () {
   const [selected, setSelected] = useState<AccessSwitch[]>([])
   const [accessSwitchData, setAccessSwitchData] = useState<AccessSwitchTableDataType[]>([])
 
-  const distributionSwitchInfos = useWatch('distributionSwitchInfos', form)
-  const accessSwitchInfos = useWatch('accessSwitchInfos', form)
-  const venueId = useWatch('venueId', form)
+  const distributionSwitchInfos = form.getFieldValue(
+    'distributionSwitchInfos'
+  ) as DistributionSwitch[]
+  const accessSwitchInfos = Form.useWatch('accessSwitchInfos', form) ||
+    form.getFieldValue('accessSwitchInfos')
+  const venueId = form.getFieldValue('venueId')
 
   useEffect(() => {
     setAccessSwitchData(accessSwitchInfos?.map(as => ({

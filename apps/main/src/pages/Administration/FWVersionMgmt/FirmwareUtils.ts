@@ -1,6 +1,7 @@
 import moment        from 'moment-timezone'
 import { IntlShape } from 'react-intl'
 
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   firmwareTypeTrans,
   FirmwareCategory,
@@ -10,7 +11,8 @@ import {
   FirmwareVenueVersion,
   FirmwareType,
   Schedule,
-  LatestEdgeFirmwareVersion
+  LatestEdgeFirmwareVersion,
+  parseSwitchVersion
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -67,14 +69,26 @@ export const isBetaFirmware = (category: FirmwareCategory): boolean => {
 }
 
 export const compareSwitchVersion = (a: string, b: string): number => {
-  const switchVersionReg = /^(?:[A-Z]{3,})?(?<major>\d{4,})(?<minor>[a-z]*)(?:_b(?<build>\d+))?$/
+  // eslint-disable-next-line max-len
+  const switchVersionReg = /^(?:[A-Z]{3,})?(?<major>\d{4,})(?<minor>[a-z]*)(?:_cd(?<candidate>\d+))?(?:_rc(?<rcbuild>\d+))?(?:_b(?<build>\d+))?$/
   const group1 = a?.match(switchVersionReg)?.groups
   const group2 = b?.match(switchVersionReg)?.groups
   if (group1 && group2) {
     let res = 0
-    const keys = ['major', 'minor', 'build']
+    const keys = ['major', 'minor', 'candidate', 'rcbuild', 'build']
     keys.every(key=>{
-      res = group1[key].localeCompare(group2[key], 'en-u-kn-true') // sort by charCode and numeric
+      const initValue = (key === 'candidate') ? '0' : (key === 'build') ? '999' : ''
+      const aValue = group1[key] || initValue
+      const bValue = group2[key] || initValue
+      res = aValue.localeCompare(bValue, 'en-u-kn-true') // sort by charCode and numeric
+
+      if (key === 'rcbuild' && (
+        (aValue && bValue === '' && !group2['build']) ||
+        (aValue === '' && !group1['build'] && bValue)
+      )) { // '10010' == '10010_rc2'
+        res = 0
+        return false
+      }
       return res === 0 // false to break every loop
     })
     return res
@@ -108,16 +122,24 @@ export function getReleaseFirmware<T extends FirmwareVersionType> (firmwareVersi
   return firmwareVersions.filter(categoryIsReleaseFunc)
 }
 
-type VersionLabelType = { name: string, category: FirmwareCategory, onboardDate?: string }
+type VersionLabelType = {
+  name: string,
+  category: FirmwareCategory,
+  onboardDate?: string,
+  releaseDate?: string
+}
 // eslint-disable-next-line max-len
-export const getVersionLabel = (intl: IntlShape, version: VersionLabelType, showType: boolean = true): string => {
+export const getVersionLabel = (intl: IntlShape, version: VersionLabelType, showType = true): string => {
   const transform = firmwareTypeTrans(intl.$t)
   const versionName = version?.name
   const versionType = transform(version?.category)
-  const versionOnboardDate = version.onboardDate ? toUserDate(version.onboardDate) : ''
+  const displayDate = version.releaseDate ?? version.onboardDate
+  const versionDate = displayDate
+    ? formatter(DateFormatEnum.DateFormat)(displayDate)
+    : ''
 
   // eslint-disable-next-line max-len
-  return `${versionName}${showType ? ` (${versionType}) ` : ' '}${versionOnboardDate ? '- ' + versionOnboardDate : ''}`
+  return `${versionName}${showType ? ` (${versionType}) ` : ' '}${versionDate ? '- ' + versionDate : ''}`
 }
 
 export const getSwitchVersionLabel = (intl: IntlShape, version: FirmwareVersion): string => {
@@ -125,12 +147,17 @@ export const getSwitchVersionLabel = (intl: IntlShape, version: FirmwareVersion)
   const versionName = parseSwitchVersion(version?.name)
   const versionType = transform(version?.category)
 
-  return `${versionName} (${versionType})`
+  let displayVersion = `${versionName} (${versionType})`
+  if(version.inUse){
+    // eslint-disable-next-line max-len
+    displayVersion = `${displayVersion} - ${intl.$t({ defaultMessage: 'Selected Venues are already on this release' })}`
+  }
+  return displayVersion
 }
 
 export const toUserDate = (date: string): string => {
   if (date) {
-    return getDateByFormat(date, 'MM/DD/YYYY hh:mm A')
+    return formatter(DateFormatEnum.DateTimeFormatWith12HourSystem)(date)
   }
   return date
 }
@@ -233,35 +260,4 @@ export const getSwitchNextScheduleTplTooltip = (venue: FirmwareSwitchVenue): str
   return ''
 }
 
-export const parseSwitchVersion = (version: string) => {
-  const defaultVersion = ['09010f_b19', '09010e_b392', '10010_rc3', '10010a_b36']
-  if (defaultVersion.includes(version)) {
-    return convertSwitchVersionFormat(version.split('_')[0])
-  }
-  return convertSwitchVersionFormat(version)
-}
-
-export const convertSwitchVersionFormat = (version: string) => {
-  // eslint-disable-next-line max-len
-  const switchVersionReg = /^(?:[A-Z]{3,})?(?<major>\d{4,})(?<minor>[a-z]*)(?:(?<build>(_[a-z]*\d+)*))?$/
-  const versionGroup = version?.match(switchVersionReg)?.groups
-  const newVersionGroup: string[] = []
-
-  if (versionGroup) {
-    const majorVersionReg = /(\d{2,})(\d+)(\d{2,})$/
-    const majorGroup = versionGroup['major']?.match(majorVersionReg)
-
-    if (majorGroup && majorGroup.shift()) { // remove matched full string
-      if (majorGroup[0].startsWith('0')) {
-        majorGroup[0] = majorGroup[0].replace(/^0+/, '')
-      }
-      newVersionGroup.push(majorGroup.join('.'))
-    }
-    newVersionGroup.push(versionGroup['minor'])
-    newVersionGroup.push(versionGroup['build'])
-
-    return newVersionGroup.join('')
-  }
-  return version
-}
 

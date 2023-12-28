@@ -15,7 +15,6 @@ import {
   StepsFormLegacyInstance,
   Subtitle
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   useCreateWebAuthTemplateMutation,
   useGetWebAuthTemplateQuery,
@@ -46,7 +45,6 @@ export default function NetworkSegAuthForm (
   const navigate = useNavigate()
   const location = useLocation()
   const linkToServices = useTenantLink(getServiceListRoutePath(true))
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const path = getServiceRoutePath(
     { type: ServiceType.WEBAUTH_SWITCH, oper: ServiceOperation.LIST })
 
@@ -114,14 +112,13 @@ export default function NetworkSegAuthForm (
     <>
       { !modalMode && <PageHeader
         title={editMode ?
-          $t({ defaultMessage: 'Edit Network Segmentation Auth page for Switch' }) :
-          $t({ defaultMessage: 'Add Network Segmentation Auth page for Switch' })}
-        breadcrumb={isNavbarEnhanced ? [
+          $t({ defaultMessage: 'Edit Personal Identity Network Auth Page for Switch' }) :
+          $t({ defaultMessage: 'Add Personal Identity Network Auth Page for Switch' })}
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          { text: $t({ defaultMessage: 'Network Segmentation Auth Page for Switch' }), link: path }
-        ] : [
-          { text: $t({ defaultMessage: 'Services' }), link: '/services' }
+          // eslint-disable-next-line max-len
+          { text: $t({ defaultMessage: 'Personal Identity Network Auth Page for Switch' }), link: path }
         ]}
       />}
       <StepsFormLegacy<WebAuthTemplate>

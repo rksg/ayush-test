@@ -3,7 +3,7 @@ import { useContext, useEffect } from 'react'
 import { connect }  from 'echarts'
 import ReactECharts from 'echarts-for-react'
 
-import { AnalyticsFilter } from '@acx-ui/analytics/utils'
+import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import { NetworkHistory }    from '../../NetworkHistory'
 import { HealthPageContext } from '../HealthPageContext'
@@ -14,8 +14,7 @@ const ConnectedClientsOverTime = (props: { filters : AnalyticsFilter }) => {
     endDate,
     range,
     timeWindow,
-    setTimeWindow,
-    apCount
+    setTimeWindow
   } = useContext(HealthPageContext)
   const { filters: healthPageFilters } = props
   const filters = { ...healthPageFilters, startDate, endDate, range }
@@ -34,7 +33,6 @@ const ConnectedClientsOverTime = (props: { filters : AnalyticsFilter }) => {
       type='no-border'
       hideTitle
       hideIncidents
-      apCount={apCount}
     />
   )}
 

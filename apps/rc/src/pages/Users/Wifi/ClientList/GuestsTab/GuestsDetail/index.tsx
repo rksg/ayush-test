@@ -27,9 +27,9 @@ import {
   transformDisplayText,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { RolesEnum }             from '@acx-ui/types'
-import { hasRoles }              from '@acx-ui/user'
+import { TenantLink, useParams }     from '@acx-ui/react-router-dom'
+import { RolesEnum, RequestPayload } from '@acx-ui/types'
+import { hasRoles }                  from '@acx-ui/user'
 
 import {
   renderAllowedNetwork,
@@ -43,7 +43,8 @@ import { useGuestActions }          from './guestActions'
 
 interface GuestDetailsDrawerProps {
   currentGuest: Guest,
-  triggerClose: () => void
+  triggerClose: () => void,
+  queryPayload?: RequestPayload
 }
 
 export const defaultGuestPayload = {
@@ -68,14 +69,15 @@ export const defaultGuestPayload = {
     'ssid',
     'socialLogin',
     'expiryDate',
-    'cog'
+    'cog',
+    'hostApprovalEmail'
   ]
 }
 
 
 export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
   const { $t } = useIntl()
-  const { currentGuest } = props
+  const { currentGuest, queryPayload = {} } = props
   const { tenantId } = useParams()
   const [guestDetail, setGuestDetail] = useState({} as Guest)
   const [generateModalVisible, setGenerateModalVisible] = useState(false)
@@ -83,7 +85,10 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
 
   const tableQuery = useTableQuery({
     useQuery: useGetGuestsListQuery,
-    defaultPayload: defaultGuestPayload
+    defaultPayload: {
+      ...defaultGuestPayload,
+      ...queryPayload
+    }
   })
 
   const hasOnlineClient = function (row: Guest) {
@@ -91,7 +96,14 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
   }
 
   useEffect(() => {
-    const guest = tableQuery.data?.data.filter((item: Guest) => item.id === currentGuest.id)[0]
+    tableQuery.setPayload({
+      ...tableQuery.payload,
+      ...queryPayload
+    })
+  }, [queryPayload])
+
+  useEffect(() => {
+    const guest = tableQuery?.data?.data.filter((item: Guest) => item.id === currentGuest.id)[0]
     if (guest) {
       setGuestDetail(guest)
     }

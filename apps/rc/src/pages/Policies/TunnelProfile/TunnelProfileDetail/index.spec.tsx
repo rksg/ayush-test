@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn }                                                                       from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                              from '@acx-ui/rc/components'
 import { CommonUrlsInfo, getPolicyRoutePath, PolicyOperation, PolicyType, TunnelProfileUrls } from '@acx-ui/rc/utils'
 import { Provider }                                                                           from '@acx-ui/store'
 import { mockServer, render, screen }                                                         from '@acx-ui/test-utils'
@@ -9,6 +9,10 @@ import { mockedNetworkViewData, mockedTunnelProfileViewData, mockedDefaultTunnel
 
 import TunnelProfileDetail from '.'
 
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
 describe('TunnelProfileDetail', () => {
   let params: { tenantId: string, policyId: string }
   const detailPath = '/:tenantId/' + getPolicyRoutePath({
@@ -33,7 +37,7 @@ describe('TunnelProfileDetail', () => {
     )
   })
 
-  it.skip('Should render TunnelProfileDetail successfully', async () => {
+  it('Should render TunnelProfileDetail successfully', async () => {
     render(
       <Provider>
         <TunnelProfileDetail />
@@ -48,25 +52,7 @@ describe('TunnelProfileDetail', () => {
     expect(row.length).toBe(2)
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <TunnelProfileDetail />
-      </Provider>, {
-        route: { params, path: detailPath }
-      })
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'Policies & Profiles'
-    })).toBeVisible()
-    expect(screen.getByRole('link', {
-      name: 'Tunnel Profile'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <TunnelProfileDetail />
@@ -97,5 +83,44 @@ describe('TunnelProfileDetail', () => {
       })
     await screen.findByText('Default')
     expect(screen.queryByRole('button', { name: 'Configure' })).toBeDisabled()
+  })
+
+  describe('when SD-LAN ready', () => {
+    beforeEach(() => {
+      jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
+    })
+
+    it('should display tunnel type', async () => {
+      render(
+        <Provider>
+          <TunnelProfileDetail />
+        </Provider>, {
+          route: { params, path: detailPath }
+        })
+      await screen.findByText('Tunnel Type')
+      await screen.findByText('VxLAN')
+    })
+
+    it('should display VxLAN as default tunnel type', async () => {
+      const mockedDataWithoutType = {
+        ...mockedTunnelProfileViewData
+      }
+      mockedDataWithoutType.data[0].type = ''
+
+      mockServer.use(
+        rest.post(
+          TunnelProfileUrls.getTunnelProfileViewDataList.url,
+          (_, res, ctx) => res(ctx.json(mockedDataWithoutType))
+        ))
+
+      render(
+        <Provider>
+          <TunnelProfileDetail />
+        </Provider>, {
+          route: { params, path: detailPath }
+        })
+      await screen.findByText('Tunnel Type')
+      await screen.findByText('VxLAN')
+    })
   })
 })

@@ -106,7 +106,6 @@ export const KPIs = () => {
   return <>
     <DropDownWrapper>
       <Dropdown
-        key='date-dropdown'
         overlay={<Menu
           onClick={handleMenuClick}
           items={kpiCatergories

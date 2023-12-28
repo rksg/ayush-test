@@ -45,23 +45,7 @@ describe('EdgeDhcpDetail', () => {
     expect(await screen.findByText('TestDHCP-1')).toBeVisible()
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <EdgeDHCPDetail />
-      </Provider>, {
-        route: { params, path: detailPath }
-      })
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.queryByText('My Services')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'DHCP for SmartEdge'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <EdgeDHCPDetail />

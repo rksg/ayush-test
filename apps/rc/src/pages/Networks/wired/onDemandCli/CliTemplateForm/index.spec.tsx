@@ -3,7 +3,6 @@ import { Form, Modal } from 'antd'
 import { rest }        from 'msw'
 
 import { StepsForm }                      from '@acx-ui/components'
-import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import { switchApi }                      from '@acx-ui/rc/services'
 import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                from '@acx-ui/store'
@@ -126,18 +125,7 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
     Modal.destroyAll()
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/:configType/add' }
-    })
-    expect(screen.getByRole('link', {
-      name: /wired networks/i
-    })).toBeTruthy()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(<Provider><CliTemplateForm /></Provider>, {
       route: { params, path: '/:tenantId/networks/wired/:configType/add' }
     })
@@ -161,14 +149,14 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
       )
 
       expect(await screen.findByText(/Read this before you start/)).toBeVisible()
-      await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
       expect(onFinishSpy).not.toBeCalledTimes(1)
       expect(await screen.findByText(/Please type “AGREE”/)).toBeVisible()
 
       await userEvent.type(
         await screen.findByLabelText(/Please type “AGREE” here to continue/), 'agree'
       )
-      await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
       expect(onFinishSpy).toBeCalledTimes(1)
     })
   })
@@ -195,7 +183,7 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
 
       await userEvent.click(await screen.findByRole('tab', { name: 'Variables' }))
       await addVariable('var1', 'range')
-      await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
       expect(onFinishSpy).toBeCalledWith({
         ...formValue,
         variables: [{
@@ -227,7 +215,7 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
 
       await userEvent.click(await screen.findByRole('tab', { name: 'Variables' }))
       await addVariable('var1', 'address')
-      await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
       expect(onFinishSpy).toBeCalledWith({
         ...formValue,
         variables: [{
@@ -259,7 +247,7 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
 
       await userEvent.click(await screen.findByRole('tab', { name: 'Variables' }))
       await addVariable('var1', 'string')
-      await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
       expect(onFinishSpy).toBeCalledWith({
         ...formValue,
         variables: [{
@@ -332,7 +320,7 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
       await userEvent.click(addExampleBtns[1])
       await screen.findByText(/ip arp inspection vlan/)
 
-      await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
       expect(onFinishSpy).toBeCalledTimes(0)
     })
 
@@ -357,7 +345,7 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
       })
       const row1 = await screen.findByRole('row', { name: /7150stack/i })
       await userEvent.click(await within(row1).findByRole('checkbox'))
-      await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
       expect(onFinishSpy).toBeCalledWith({
         applySwitch: {
           a98653366d2240b9ae370e48fab3a9a1: [{
@@ -388,7 +376,7 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
       )
 
       expect(await screen.findByText('Template Name')).toBeVisible()
-      await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
       expect(onFinishSpy).toBeCalledTimes(1)
     })
 
@@ -429,7 +417,7 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
       )
 
       expect(await screen.findByText('Template Name')).toBeVisible()
-      await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
       expect(onFinishSpy).toBeCalledWith(values)
     })
   })
@@ -637,6 +625,7 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
     })
 
     it('should handle error occurred', async () => {
+      const spyLog = jest.spyOn(console, 'log')
       mockServer.use(
         rest.put(SwitchUrlsInfo.updateCliTemplate.url,
           (_, res, ctx) => res(ctx.status(404), ctx.json({ errors: [{ code: 'xxxx' }] }))
@@ -656,7 +645,10 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
       await screen.findByRole('heading', { level: 3, name: 'CLI Configuration' })
       await screen.findByText('CLI commands')
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
-      // await screen.findByText('Server Error')
+
+      await waitFor(() => {
+        expect(spyLog).toBeCalledTimes(1)
+      })
     })
 
     it('should redirect to list table after clicking cancel button', async () => {

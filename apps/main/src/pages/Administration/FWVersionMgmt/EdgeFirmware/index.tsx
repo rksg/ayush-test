@@ -1,5 +1,5 @@
 import { VenueFirmwareList } from './VenueFirmwareList'
-import VersionBanner         from './VersionBanner'
+import { VersionBanner }     from './VersionBanner'
 
 const EdgeFirmware = () => {
   return (

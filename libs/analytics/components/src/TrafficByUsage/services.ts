@@ -1,8 +1,9 @@
 /* eslint-disable max-len */
 import { gql } from 'graphql-request'
 
-import { AnalyticsFilter, calculateGranularity } from '@acx-ui/analytics/utils'
-import { dataApi }                               from '@acx-ui/store'
+import { calculateGranularity } from '@acx-ui/analytics/utils'
+import { dataApi }              from '@acx-ui/store'
+import type { AnalyticsFilter } from '@acx-ui/utils'
 
 export type TrafficByUsageData = {
   time: string[]

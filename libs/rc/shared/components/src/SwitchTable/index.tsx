@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState, useImperativeHandle, forwardRef
 
 import { FetchBaseQueryError }    from '@reduxjs/toolkit/dist/query'
 import { Badge }                  from 'antd'
+import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import {
@@ -46,8 +47,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                    from '@acx-ui/types'
-import { filterByAccess }                                    from '@acx-ui/user'
-import { getIntl }                                           from '@acx-ui/utils'
+import { filterByAccess, getShowWithoutRbacCheckKey }        from '@acx-ui/user'
+import { exportMessageMapping, getIntl }                     from '@acx-ui/utils'
 
 import { seriesSwitchStatusMapping }                       from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
@@ -91,7 +92,7 @@ const handleStatusColor = (status: DeviceConnectionStatus) => {
 const PasswordTooltip = {
   SYNCING: defineMessage({ defaultMessage: 'We are not able to determine the password before completing data synchronization.' }),
   SYNCED: defineMessage({ defaultMessage: 'To change the admin password in venue setting, please go to Venue > Venue Configuration > Switch Configuration > AAA' }),
-  CUSTOM: defineMessage({ defaultMessage: 'For security reasons, R1 is not able to show custom passwords that are set on the switch.' })
+  CUSTOM: defineMessage({ defaultMessage: 'For security reasons, RUCKUS One is not able to show custom passwords that are set on the switch.' })
 }
 
 export const defaultSwitchPayload = {
@@ -323,7 +324,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       sorter: true
     }, {
       key: 'clientCount',
-      title: $t({ defaultMessage: 'Clients' }),
+      title: $t({ defaultMessage: 'Connected Clients' }),
       dataIndex: 'clientCount',
       align: 'center',
       sorter: true,
@@ -364,11 +365,13 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     disabled: (rows) => rows[0].deviceStatus === SwitchStatusEnum.DISCONNECTED
   }, {
     label: $t({ defaultMessage: 'CLI Session' }),
-    key: 'EnableCliSessionButton',
+    key: getShowWithoutRbacCheckKey('EnableCliSessionButton'),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     disabled: (rows) => {
       const row = rows[0]
-      return row.deviceStatus !== SwitchStatusEnum.OPERATIONAL
+      const isUpgradeFail = row.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
+      const isOperational = row.deviceStatus === SwitchStatusEnum.OPERATIONAL
+      return !(isOperational || isUpgradeFail)
     },
     onClick: async (rows) => {
       const row = rows[0]
@@ -395,7 +398,9 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     disabled: (rows: SwitchRow[]) => {
       return rows.filter((row:SwitchRow) => {
         const isConfigSynced = row?.configReady && row?.syncedSwitchConfig
-        return !row?.syncedAdminPassword && isConfigSynced
+        const isOperational = row?.deviceStatus === SwitchStatusEnum.OPERATIONAL ||
+          row?.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
+        return !row?.syncedAdminPassword && isConfigSynced && isOperational
       }).length === 0
     },
     onClick: handleClickMatchPassword
@@ -427,9 +432,22 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH, groupBy?: GROUPBY) => {
     if (customFilters.deviceStatus?.includes('ONLINE')) {
       customFilters.syncedSwitchConfig = [true]
-    } else {
+    } else if(!_.isEmpty(customFilters)) {
       customFilters.syncedSwitchConfig = null
     }
+
+    if (customFilters.deviceStatus?.includes(SwitchStatusEnum.FIRMWARE_UPD_START)) {
+      customFilters.deviceStatus = [
+        SwitchStatusEnum.FIRMWARE_UPD_START,
+        SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_PARAMETERS,
+        SwitchStatusEnum.FIRMWARE_UPD_DOWNLOADING,
+        SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_IMAGE,
+        SwitchStatusEnum.FIRMWARE_UPD_SYNCING_TO_REMOTE,
+        SwitchStatusEnum.FIRMWARE_UPD_WRITING_TO_FLASH,
+        SwitchStatusEnum.FIRMWARE_UPD_FAIL
+      ]
+    }
+
     tableQuery.handleFilterChange(customFilters, customSearch, groupBy)
   }
 
@@ -505,8 +523,12 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
         }
       }
       ] : [])}
-      // eslint-disable-next-line max-len
-      iconButton={exportDevice ? { icon: <DownloadOutlined />, disabled, onClick: exportCsv } : undefined}
+      iconButton={exportDevice ? {
+        icon: <DownloadOutlined />,
+        disabled,
+        tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
+        onClick: exportCsv
+      } : undefined}
     />
     <SwitchCliSession
       modalState={cliModalState}

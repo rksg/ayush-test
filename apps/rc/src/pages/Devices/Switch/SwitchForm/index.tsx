@@ -16,17 +16,17 @@ import {
   Alert,
   showToast
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import {
   switchApi,
   useGetSwitchQuery,
-  useVenuesListQuery,
   useAddSwitchMutation,
   useUpdateSwitchMutation,
   useAddStackMemberMutation,
   useLazyGetSwitchListQuery,
   useSwitchDetailHeaderQuery,
-  useLazyGetVlansByVenueQuery
+  useLazyGetVlansByVenueQuery,
+  useGetSwitchVenueVersionListQuery
 } from '@acx-ui/rc/services'
 import {
   SwitchMessages,
@@ -40,8 +40,8 @@ import {
   isOperationalSwitch,
   redirectPreviousPage,
   LocationExtended,
-  SWITCH_SERIAL_PATTERN_SUPPORT_RODAN,
-  VenueMessages
+  VenueMessages,
+  checkVersionAtLeast09010h
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -54,16 +54,10 @@ import { store } from '@acx-ui/store'
 import { SwitchStackSetting }                                          from '../SwitchStackSetting'
 import { SwitchUpgradeNotification, SWITCH_UPGRADE_NOTIFICATION_TYPE } from '../SwitchUpgradeNotification'
 
-import * as UI from './styledComponents'
+import {  getTsbBlockedSwitch, showTsbBlockedSwitchErrorDialog } from './blockListRelatedTsb.util'
+import * as UI                                                   from './styledComponents'
 
 const { Option } = Select
-
-const defaultPayload = {
-  fields: ['name', 'country', 'latitude', 'longitude', 'dhcp', 'id'],
-  pageSize: 10000,
-  sortField: 'name',
-  sortOrder: 'ASC'
-}
 
 export enum MEMEBER_TYPE {
   STANDALONE = 'standalone',
@@ -84,12 +78,17 @@ export function SwitchForm () {
   const location = useLocation()
   const formRef = useRef<StepsFormLegacyInstance<Switch>>()
   const basePath = useTenantLink('/devices/')
-  const venuesList = useVenuesListQuery({ params: { tenantId: tenantId }, payload: defaultPayload })
+  const venuesList = useGetSwitchVenueVersionListQuery({
+    params: { tenantId: tenantId }, payload: {
+      firmwareType: '',
+      firmwareVersion: '',
+      search: '', updateAvailable: ''
+    }
+  })
   const { data: switchData, isLoading: isSwitchDataLoading } =
     useGetSwitchQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
   const { data: switchDetail, isLoading: isSwitchDetailLoading } =
     useSwitchDetailHeaderQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const [addSwitch] = useAddSwitchMutation()
   const [updateSwitch] = useUpdateSwitchMutation()
@@ -111,7 +110,10 @@ export function SwitchForm () {
   const [disableIpSetting, setDisableIpSetting] = useState(false)
   const dataFetchedRef = useRef(false)
   const [previousPath, setPreviousPath] = useState('')
-  const isSupportIcx8200 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
+  const [currentFW, setCurrentFW] = useState('')
+  const [currentAboveTenFW, setCurrentAboveTenFW] = useState('')
+
+  const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
 
   const switchListPayload = {
     searchString: '',
@@ -181,6 +183,15 @@ export function SwitchForm () {
 
   const handleVenueChange = async (value: string) => {
     setVenueId(value)
+    if (venuesList && venuesList.data) {
+      // eslint-disable-next-line max-len
+      const venueFW = venuesList.data?.data?.find(venue => venue.id === value)?.switchFirmwareVersion?.id
+      // eslint-disable-next-line max-len
+      const venueAboveTenFW = venuesList.data?.data?.find(venue => venue.id === value)?.switchFirmwareVersionAboveTen?.id
+      setCurrentFW(venueFW || '')
+      setCurrentAboveTenFW(venueAboveTenFW || '')
+    }
+
     const vlansByVenue = value ?
       (await getVlansByVenue({ params: { tenantId: tenantId, venueId: value } })).data
         ?.map((item: Vlan) => ({
@@ -207,6 +218,13 @@ export function SwitchForm () {
   }
 
   const handleAddSwitch = async (values: Switch) => {
+    if (!checkVersionAtLeast09010h(currentFW) && isBlockingTsbSwitch) {
+      if (getTsbBlockedSwitch(values.id)?.length > 0) {
+        showTsbBlockedSwitchErrorDialog()
+        return
+      }
+    }
+
     if (switchRole === MEMEBER_TYPE.STANDALONE) {
       try {
         if (isOnlyFirmware) { values.specifiedType = FIRMWARE.AUTO }
@@ -325,8 +343,7 @@ export function SwitchForm () {
     // Only 7150-C08P/C08PT are Switch Only.
     // Only 7850 all models are Router Only.
     const modelOnlyFirmware = ['ICX7150-C08P', 'ICX7150-C08PT', 'ICX7850']
-    const re = isSupportIcx8200 ? new RegExp(SWITCH_SERIAL_PATTERN_SUPPORT_RODAN)
-      : new RegExp(SWITCH_SERIAL_PATTERN)
+    const re = new RegExp(SWITCH_SERIAL_PATTERN)
     if (value && !re.test(value)) {
       return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
     }
@@ -365,12 +382,10 @@ export function SwitchForm () {
         $t({ defaultMessage: '{name}' }, {
           name: switchDetail?.name || switchDetail?.switchName || switchDetail?.serialNumber }):
         $t({ defaultMessage: 'Add Switch' })}
-      breadcrumb={isNavbarEnhanced ? [
+      breadcrumb={[
         { text: $t({ defaultMessage: 'Wired' }) },
         { text: $t({ defaultMessage: 'Switches' }) },
         { text: $t({ defaultMessage: 'Switch List' }), link: '/devices/switch' }
-      ] : [
-        { text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }
       ]}
     />
     <StepsFormLegacy
@@ -444,6 +459,8 @@ export function SwitchForm () {
                   <SwitchUpgradeNotification
                     isDisplay={!_.isEmpty(switchModel)}
                     isDisplayHeader={true}
+                    venueFirmware={currentFW}
+                    venueAboveTenFirmware={currentAboveTenFW}
                     type={switchRole === MEMEBER_TYPE.STANDALONE ?
                       SWITCH_UPGRADE_NOTIFICATION_TYPE.SWITCH :
                       SWITCH_UPGRADE_NOTIFICATION_TYPE.STACK}
@@ -584,9 +601,6 @@ export function SwitchForm () {
                   <>
                     <Form.Item name='id' hidden={true}><Input /></Form.Item>
                     <Form.Item name='firmwareVersion' hidden={true}><Input /></Form.Item>
-                    <Form.Item name='isPrimaryDeleted' hidden={true}><Input /></Form.Item>
-                    <Form.Item name='sendedHostname' hidden={true}><Input /></Form.Item>
-                    <Form.Item name='softDeleted' hidden={true}><Input /></Form.Item>
                     <Form.Item name='trustPorts' hidden={true}><Input /></Form.Item>
                   </>
               }

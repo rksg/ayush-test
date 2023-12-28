@@ -22,6 +22,10 @@ jest.mock('./RadioSettings/RadioSettings', () => ({
   RadioSettings: () => <div data-testid={'radioSettings'}></div>
 }))
 
+jest.mock('./ClientAdmissionControlSettings/ClientAdmissionControlSettings', () => ({
+  ClientAdmissionControlSettings: () => <div data-testid={'clientAdmissionControlSettings'}></div>
+}))
+
 describe('AP Radio Tab', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -64,7 +68,8 @@ describe('AP Radio Tab', () => {
           editContextData: newEditContextData,
           setEditContextData: jest.fn(),
           editRadioContextData: newEditRadioContextData,
-          setEditNetworkControlContextData: jest.fn()
+          setEditNetworkControlContextData: jest.fn(),
+          setEditRadioContextData: jest.fn()
         }} >
           <ApDataContext.Provider value={{
             apData: ApData_T750SE,
@@ -102,7 +107,8 @@ describe('AP Radio Tab', () => {
           editContextData: newEditContextData,
           setEditContextData: jest.fn(),
           editRadioContextData: newEditRadioContextData,
-          setEditNetworkControlContextData: jest.fn()
+          setEditNetworkControlContextData: jest.fn(),
+          setEditRadioContextData: jest.fn()
         }} >
           <ApDataContext.Provider value={{
             apData: ApData_T750SE,

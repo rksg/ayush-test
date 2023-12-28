@@ -1,6 +1,5 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, DHCPUrls } from '@acx-ui/rc/utils'
 import { Provider }                 from '@acx-ui/store'
 import {
@@ -81,23 +80,7 @@ describe('DHCP Detail Page', () => {
     expect(await screen.findByText((`Instances (${list.data.length})`))).toBeInTheDocument()
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <DHCPServiceDetail />
-      </Provider>, {
-        route: { params, path: '/:tenantId/t/services/dhcp/:serviceId/detail' }
-      })
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.queryByText('My Services')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'DHCP Services'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <DHCPServiceDetail />

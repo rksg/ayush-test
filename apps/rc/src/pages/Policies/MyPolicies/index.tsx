@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }             from '@acx-ui/feature-toggle'
 import {
   useGetEnhancedAccessControlProfileListQuery,
   useGetAAAPolicyViewModelListQuery,
@@ -9,6 +9,7 @@ import {
   useEnhancedRoguePoliciesQuery,
   useGetApSnmpViewModelQuery,
   useGetEnhancedClientIsolationListQuery,
+  useGetEnhancedIdentityProviderListQuery,
   useSyslogPolicyListQuery,
   useMacRegListsQuery,
   useGetTunnelProfileViewDataListQuery,
@@ -50,7 +51,6 @@ const defaultPayload = {
 export default function MyPolicies () {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const policies: CardDataProps[] = useCardData()
 
@@ -58,9 +58,7 @@ export default function MyPolicies () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Policies & Profiles' })}
-        breadcrumb={isNavbarEnhanced ? [
-          { text: $t({ defaultMessage: 'Network Control' }) }
-        ]: undefined}
+        breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
         extra={filterByAccess([
           <TenantLink to={getSelectPolicyRoutePath(true)}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Policy or Profile' })}</Button>
@@ -98,7 +96,8 @@ export default function MyPolicies () {
 function useCardData (): CardDataProps[] {
   const params = useParams()
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
@@ -128,6 +127,16 @@ function useCardData (): CardDataProps[] {
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST }))
+    },
+    {
+      type: PolicyType.IDENTITY_PROVIDER,
+      categories: [RadioCardCategory.WIFI],
+      totalCount: useGetEnhancedIdentityProviderListQuery({
+        params, payload: defaultPayload
+      }, { skip: !supportHotspot20R1 }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.LIST })),
+      disabled: !supportHotspot20R1
     },
     {
       type: PolicyType.MAC_REGISTRATION_LIST,

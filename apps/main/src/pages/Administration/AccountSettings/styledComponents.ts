@@ -47,11 +47,6 @@ export const styles = css`
     align-content: flex-start;
   }
 
-  .ant-divider {
-    margin: 4px 0px 20px;
-    background: var(--acx-neutrals-30);
-  }
-
   ${checkboxStyles}
   ${greyTextStyles}
   ${darkGreyTextStyles}

@@ -58,14 +58,13 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
   const appTokenData = tenantAuthenticationData?.filter(n =>
     n.authenticationType !== TenantAuthenticationType.saml)
   useEffect(() => {
-    if (appTokenData && appTokenData.length > 0) {
-      setAppToken(true)
-    }
+    const hasTokenData = (Array.isArray(appTokenData) && appTokenData.length > 0)
+    setAppToken(hasTokenData)
   }, [appTokenData])
 
   const AddAppLink = () => {
     return (
-      <Col style={{ width: '800px' }}>
+      <Col style={{ width: '800px', paddingLeft: 0 }}>
         <Card type='solid-bg'>
           <Form.Item
             children={
@@ -93,21 +92,24 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
       {
         title: $t({ defaultMessage: 'Status' }),
         dataIndex: 'clientIDStatus',
-        key: 'clientIDStatus'
+        key: 'clientIDStatus',
+        render: function (_, row) {
+          return row.clientIDStatus === ApplicationAuthenticationStatus.ACTIVE
+            ? $t({ defaultMessage: 'Active' }) : $t({ defaultMessage: 'Revoked' })
+        }
       },
       {
         title: $t({ defaultMessage: 'Client ID' }),
         dataIndex: 'clientID',
-        align: 'center',
         key: 'clientID',
-        width: 245,
+        width: 275,
         render: function (_, row) {
           return <div>
             <Input
               readOnly
               bordered={false}
               value={row.clientID}
-              style={{ overflow: 'hidden', width: '190px' }}
+              style={{ paddingLeft: '0px', width: '270px' }}
             />
             <Button
               ghost
@@ -121,16 +123,16 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
         }
       },
       {
-        title: $t({ defaultMessage: 'Share Secret' }),
+        title: $t({ defaultMessage: 'Shared Secret' }),
         dataIndex: 'clientSecret',
-        align: 'center',
         key: 'clientSecret',
+        width: 275,
         render: function (_, row) {
           return <div onClick={(e)=> {e.stopPropagation()}}>
             <PasswordInput
-              readOnly
               bordered={false}
               value={row.clientSecret}
+              style={{ paddingLeft: '0px', width: '275px' }}
             />
             <Button
               ghost
@@ -138,31 +140,6 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
               icon={<CopyOutlined />}
               onClick={() =>
                 navigator.clipboard.writeText(row.clientSecret ?? '')
-              }
-            />
-          </div>
-        }
-      },
-      {
-        title: $t({ defaultMessage: 'URL' }),
-        align: 'center',
-        dataIndex: 'url',
-        key: 'url',
-        width: 245,
-        render: function (_, row) {
-          return <div>
-            <Input
-              readOnly
-              bordered={false}
-              value={row.clientID}
-              style={{ overflow: 'hidden', width: '190px' }}
-            />
-            <Button
-              ghost
-              data-testid={'copy'}
-              icon={<CopyOutlined />}
-              onClick={() =>
-                navigator.clipboard.writeText(row.url ?? '')
               }
             />
           </div>
@@ -215,8 +192,9 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
             title: title,
             content: $t({
               defaultMessage: `
-              Revoke "{formattedName}" will suspend all its services,
-                are you sure you want to proceed?
+              You are about to revoke access for the "{formattedName}" application.
+              This will prevent the application from accessing your data and performing 
+              actions on your behalf
               `
             }, { formattedName: rows[0].name }),
             okText: $t({ defaultMessage: 'Revoke' }),
@@ -244,31 +222,15 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
           return false
         },
         onClick: (rows, clearSelection) => {
-          const title = $t(
-            { defaultMessage: 'Activate application "{formattedName}"?' },
-            { formattedName: rows[0].name }
-          )
-
-          showActionModal({
-            type: 'confirm',
-            title: title,
-            content: $t(
-              { defaultMessage: 'Activate this application "{formattedName}"?' },
-              { formattedName: rows[0].name }
-            ),
-            okText: $t({ defaultMessage: 'Activate' }),
-            onOk: () => {
-              const payload: TenantAuthentications = {
-                name: rows[0].name,
-                authenticationType: rows[0].authenticationType,
-                clientIDStatus: ApplicationAuthenticationStatus.ACTIVE
-              }
-              updateTenantAuthentications({ params: { authenticationId: rows[0].id },
-                payload: payload })
-                .then(clearSelection)
-              reloadAuthTable(2)
-            }
-          })
+          const payload: TenantAuthentications = {
+            name: rows[0].name,
+            authenticationType: rows[0].authenticationType,
+            clientIDStatus: ApplicationAuthenticationStatus.ACTIVE
+          }
+          updateTenantAuthentications({ params: { authenticationId: rows[0].id },
+            payload: payload })
+            .then(clearSelection)
+          reloadAuthTable(2)
         }
       },
       {
@@ -307,7 +269,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
     <Row gutter={24} style={{ marginBottom: '25px' }}>
       <Col style={{ width: '1200px' }}>
         <Form.Item
-          style={hasAppTokenConfigured ? { marginBottom: '-20px' } : { marginBottom: '10px' }}
+          style={hasAppTokenConfigured ? { marginBottom: '-10px' } : { marginBottom: '10px' }}
           colon={false}
           label={<>
             {$t({ defaultMessage: 'Application Tokens' })}

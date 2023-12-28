@@ -5,10 +5,12 @@ import { useIntl }  from 'react-intl'
 import AutoSizer    from 'react-virtualized-auto-sizer'
 
 import { KpiThresholdType, KPIHistogramResponse, healthApi }                     from '@acx-ui/analytics/services'
-import { AnalyticsFilter, kpiConfig, productNames }                              from '@acx-ui/analytics/utils'
+import { kpiConfig, productNames }                                               from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader, cssStr, VerticalBarChart, showToast, NoData } from '@acx-ui/components'
 import type { TimeStamp }                                                        from '@acx-ui/types'
+import type { AnalyticsFilter }                                                  from '@acx-ui/utils'
 
+import GenericError         from '../../GenericError'
 import { defaultThreshold } from '../Kpi'
 
 import  HistogramSlider from './HistogramSlider'
@@ -165,7 +167,7 @@ function Histogram ({
   const unit = histogram?.xUnit
 
   return (
-    <Loader states={[queryResults]} key={kpi}>
+    <Loader states={[queryResults]} key={kpi} errorFallback={<GenericError />}>
       <GridRow>
         <GridCol col={{ span: 18 }} style={{ height: '160px' }}>
           <AutoSizer>

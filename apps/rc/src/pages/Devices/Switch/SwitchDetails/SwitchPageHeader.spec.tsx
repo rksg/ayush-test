@@ -3,14 +3,14 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                  from '@acx-ui/feature-toggle'
-import { SwitchStatusEnum, SwitchUrlsInfo, SWITCH_TYPE } from '@acx-ui/rc/utils'
-import { Provider }                                      from '@acx-ui/store'
-import { render, screen, mockServer }                    from '@acx-ui/test-utils'
+import { FirmwareUrlsInfo, SwitchStatusEnum, SwitchUrlsInfo, SWITCH_TYPE } from '@acx-ui/rc/utils'
+import { Provider }                                                        from '@acx-ui/store'
+import { render, screen, mockServer }                                      from '@acx-ui/test-utils'
 
-import {
-  jwtToken } from './__tests__/fixtures'
-import SwitchPageHeader from './SwitchPageHeader'
+import { switchFirmwareVenue } from '../__tests__/fixtures'
+
+import { jwtToken, switchDetailsContextData } from './__tests__/fixtures'
+import SwitchPageHeader                       from './SwitchPageHeader'
 
 import { SwitchDetailsContext } from '.'
 
@@ -18,25 +18,6 @@ const params = {
   tenantId: 'tenantId',
   switchId: 'switchId',
   serialNumber: 'serialNumber'
-}
-
-const switchDetailsContextData = {
-  switchName: '',
-  currentSwitchOperational: true,
-  switchDetailHeader: {
-    configReady: true,
-    name: 'test',
-    isStack: false,
-    switchMac: '58:fb:96:0e:bc:f8',
-    switchName: 'ICX7150-C12 Router',
-    serialNumber: 'FEK3230S0C5',
-    deviceStatus: SwitchStatusEnum.OPERATIONAL,
-    id: 'id',
-    venueId: 'venue-id',
-    stackMembers: [],
-    syncedSwitchConfig: true,
-    switchType: SWITCH_TYPE.ROUTER
-  }
 }
 
 const stackDetailsContextData = {
@@ -96,7 +77,9 @@ describe('SwitchPageHeader', () => {
       rest.post( SwitchUrlsInfo.getSwitchList.url,
         (_, res, ctx) => res(ctx.json(switchOnlineData))),
       rest.post (SwitchUrlsInfo.reboot.url,
-        (_, res, ctx) => res(ctx.json({})))
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(FirmwareUrlsInfo.getSwitchVenueVersionList.url,
+        (_, res, ctx) => res(ctx.json(switchFirmwareVenue)))
     )
   })
   it.skip('should render switch correctly', async () => {
@@ -112,23 +95,7 @@ describe('SwitchPageHeader', () => {
     await screen.findByText('Reboot Switch')
   })
 
-  it('should render switch breadcrumb correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<Provider>
-      <SwitchDetailsContext.Provider value={{
-        switchDetailsContextData,
-        setSwitchDetailsContextData: jest.fn()
-      }}>
-        <SwitchPageHeader />
-      </SwitchDetailsContext.Provider>
-    </Provider>, { route: { params } })
-    expect(screen.getByRole('link', {
-      name: /switches/i
-    })).toBeTruthy()
-  })
-
-  it('should render switch breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render switch breadcrumb correctly', async () => {
     render(<Provider>
       <SwitchDetailsContext.Provider value={{
         switchDetailsContextData,

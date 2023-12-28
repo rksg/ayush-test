@@ -1,5 +1,3 @@
-import { useContext } from 'react'
-
 import { sum }     from 'lodash'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
@@ -9,17 +7,18 @@ import {
   KPITimeseriesResponse,
   KPIHistogramResponse
 } from '@acx-ui/analytics/services'
-import { AnalyticsFilter, kpiConfig, productNames } from '@acx-ui/analytics/utils'
-import { Tooltip, ProgressPill, Loader }            from '@acx-ui/components'
-import { formatter }                                from '@acx-ui/formatter'
-import { InformationOutlined }                      from '@acx-ui/icons'
-import { TimeStampRange }                           from '@acx-ui/types'
+import { kpiConfig, productNames }       from '@acx-ui/analytics/utils'
+import { Tooltip, ProgressPill, Loader } from '@acx-ui/components'
+import { formatter }                     from '@acx-ui/formatter'
+import { InformationOutlined }           from '@acx-ui/icons'
+import { TimeStampRange }                from '@acx-ui/types'
+import type { AnalyticsFilter }          from '@acx-ui/utils'
 
-import { HealthPageContext } from '../HealthPageContext'
-import * as UI               from '../styledComponents'
+import GenericError from '../../GenericError'
+import * as UI      from '../styledComponents'
 
 
-type PillData = { success: number, total: number }
+export type PillData = { success: number, total: number }
 
 export const transformTSResponse = (
   { data, time }: KPITimeseriesResponse,
@@ -51,35 +50,59 @@ export const tranformHistResponse = (
   const success = sum(highlightedData)
   return { success, total }
 }
+
 const formatPillText = (value: number = 0, suffix: string) => suffix
   ? `${formatter('percentFormatRound')(value / 100)} ${suffix}`
   : `${formatter('percentFormatRound')(value / 100)}`
 
-function HealthPill ({ filters, kpi, timeWindow, threshold }: {
-  filters: AnalyticsFilter, kpi: string, timeWindow: TimeStampRange, threshold: number
-}) {
-  const { histogram, pill, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
-  const { $t } = useIntl()
-  const [ startDate, endDate ] = timeWindow as [string, string]
-  const { apCount } = useContext(HealthPageContext)
-  const histogramQuery = healthApi.useKpiHistogramQuery({ ...filters, startDate, endDate, kpi }, {
+type PillQueryProps = {
+  kpi: string
+  filters: AnalyticsFilter
+  timeWindow: {
+    startDate: string
+    endDate: string
+  }
+  threshold: number
+  apCount?: number
+}
+
+export const usePillQuery = ({ kpi, filters, timeWindow, threshold }: PillQueryProps) => {
+  const { histogram } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
+  const histogramQuery = healthApi.useKpiHistogramQuery({ ...filters, ...timeWindow, kpi }, {
     skip: !Boolean(histogram),
     selectFromResult: ({ data, ...rest }) => ({
       ...rest,
       data: data ? tranformHistResponse({ ...data!, kpi, threshold }) : { success: 0, total: 0 }
     })
   })
-  const timeseriesQuery = healthApi.useKpiTimeseriesQuery({ ...filters, kpi, apCount }, {
+  const timeseriesQuery = healthApi.useKpiTimeseriesQuery({ ...filters, kpi }, {
     skip: Boolean(histogram),
     selectFromResult: ({ data, ...rest }) => ({
       ...rest,
-      data: data ? transformTSResponse(data!, { startDate, endDate }) : { success: 0, total: 0 }
+      data: data ? transformTSResponse(data!, timeWindow) : { success: 0, total: 0 }
     })
   })
   const queryResults = histogram ? histogramQuery : timeseriesQuery
 
   const { success, total } = queryResults.data as PillData
-  const percent = total > 0 ? (success / total) * 100 : 0
+  const percent = total > 0 ? (success / total) : 0
+
+  return { queryResults, percent }
+}
+
+function HealthPill ({ filters, kpi, timeWindow, threshold }: {
+  filters: AnalyticsFilter, kpi: string, timeWindow: TimeStampRange, threshold: number
+}) {
+  const { $t } = useIntl()
+
+  const { pill, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
+  const [ startDate, endDate ] = timeWindow as [string, string]
+
+  const { queryResults, percent } = usePillQuery({
+    kpi, filters, timeWindow: { startDate, endDate }, threshold
+  })
+  const { success, total } = queryResults.data as PillData
+
   const { pillSuffix, description, thresholdDesc, thresholdFormatter, tooltip } = pill
   const countFormat = formatter('countFormat')
   const translatedDesc = description
@@ -97,7 +120,7 @@ function HealthPill ({ filters, kpi, timeWindow, threshold }: {
       )
     )
   }
-  return <Loader states={[queryResults]} key={kpi}>
+  return <Loader states={[queryResults]} key={kpi} errorFallback={<GenericError />}>
     <UI.PillTitle>
       <span>{$t(text, productNames)}</span>
       <span>
@@ -108,7 +131,7 @@ function HealthPill ({ filters, kpi, timeWindow, threshold }: {
     </UI.PillTitle>
     <UI.PillWrap>
       <ProgressPill
-        percent={percent}
+        percent={percent * 100}
         formatter={value => formatPillText(value, pillSuffix && $t(pillSuffix))}
       />
     </UI.PillWrap>

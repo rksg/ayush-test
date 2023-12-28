@@ -1,11 +1,11 @@
 import { rest } from 'msw'
 
-import { AnalyticsFilter }                                 from '@acx-ui/analytics/utils'
 import { EventParams }                                     from '@acx-ui/components'
 import { EdgeUrlsInfo }                                    from '@acx-ui/rc/utils'
 import { BrowserRouter, Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { Provider }                                        from '@acx-ui/store'
 import { mockServer,render,renderHook,screen }             from '@acx-ui/test-utils'
+import type { AnalyticsFilter }                            from '@acx-ui/utils'
 import { DateRange }                                       from '@acx-ui/utils'
 
 import { mockedTopEdgesTrafficData } from './__tests__/fixtures'

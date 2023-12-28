@@ -8,6 +8,13 @@ import { getIntl }                                  from '@acx-ui/utils'
 
 import { compareVersions, getVersionLabel, isBetaFirmware } from '../../FirmwareUtils'
 
+export type EolApFirmwareGroup = {
+  name: string,
+  latestEolVersion: string,
+  apModels: string[],
+  isUpgradable: boolean
+}
+
 type MaxEolABFVersionEntity = {
   maxVersion: string,
   isAllTheSame: boolean,
@@ -32,43 +39,6 @@ export function useApEolFirmware () {
     }
   })
   const intl = getIntl()
-
-  const compactEolApFirmwares = (selectedRows: FirmwareVenue[]): EolApFirmware[] => {
-    return _.compact(selectedRows.map(row => row.eolApFirmwares)).flat()
-  }
-
-  const findMaxEolABFVersion = (selectedRows: FirmwareVenue[]): MaxEolABFVersionMap => {
-    const eolFirmwares = compactEolApFirmwares(selectedRows)
-    let result: MaxEolABFVersionMap = {}
-
-    eolFirmwares.forEach((eol: EolApFirmware) => {
-      if (result.hasOwnProperty(eol.name)) {
-        const current = result[eol.name]
-        const comparedResult = compareVersions(current.maxVersion, eol.currentEolVersion)
-
-        result[eol.name] = {
-          maxVersion: comparedResult >= 0 ? current.maxVersion : eol.currentEolVersion,
-          isAllTheSame: current.isAllTheSame && comparedResult === 0,
-          latestVersion: eol.latestEolVersion
-        }
-      } else {
-        result[eol.name] = {
-          maxVersion: eol.currentEolVersion,
-          isAllTheSame: true,
-          latestVersion: eol.latestEolVersion
-        }
-      }
-    })
-
-    return result
-  }
-
-  // eslint-disable-next-line max-len
-  const canABFVersionDisplay = (maxEolABFVersionEntity: MaxEolABFVersionEntity, abfVersion: string): boolean => {
-    const comparedResult = compareVersions(abfVersion, maxEolABFVersionEntity.maxVersion)
-    return (abfVersion !== maxEolABFVersionEntity.latestVersion)
-      && ((comparedResult > 0) || (comparedResult === 0 && !maxEolABFVersionEntity.isAllTheSame))
-  }
 
   // eslint-disable-next-line max-len
   const getEolABFOtherVersionsOptions = (selectedRows: FirmwareVenue[]): { [abfName: string]: DefaultOptionType[] } => {
@@ -101,20 +71,26 @@ export function useApEolFirmware () {
     return result
   }
 
-  const getAvailableEolApFirmwares = (selectedRows?: FirmwareVenue[]): EolApFirmware[] => {
+  // eslint-disable-next-line max-len
+  const getAvailableEolApFirmwareGroups = (selectedRows?: FirmwareVenue[]): EolApFirmwareGroup[] => {
     if (!selectedRows || selectedRows.length === 0) return []
 
     const selectedEolApFirmwares = compactEolApFirmwares(selectedRows)
     // eslint-disable-next-line max-len
-    const uniqueEolApFirmwares = selectedEolApFirmwares.reduce((acc: EolApFirmware[], cur: EolApFirmware) => {
-      if (cur.currentEolVersion === cur.latestEolVersion) return acc //ACX-33594 Ignore the EOL firmware if it is already upgraded to the latest one
-
-      let currentEol = { ...cur }
+    const uniqueEolApFirmwares = selectedEolApFirmwares.reduce((acc: EolApFirmwareGroup[], cur: EolApFirmware) => {
+      const currentEol = {
+        ...cur,
+        // ACX-33594 Disable the EOL firmware if it is already upgraded to the latest one
+        // ACX-45424 Enable the EOL firmware when the ABF is greater than the current venue ABF, even if the ABF has been marked to the latest version
+        // eslint-disable-next-line max-len
+        isUpgradable: cur.currentEolVersion !== cur.latestEolVersion || cur.isAbfGreaterThanVenueCurrentAbf
+      }
       const foundIndex = acc.findIndex(eol => eol.name === currentEol.name)
       if (foundIndex === -1) {
         acc.push(currentEol)
       } else {
         acc[foundIndex].apModels = _.uniq(acc[foundIndex].apModels.concat(currentEol.apModels))
+        acc[foundIndex].isUpgradable = acc[foundIndex].isUpgradable || currentEol.isUpgradable
       }
 
       return acc
@@ -125,13 +101,6 @@ export function useApEolFirmware () {
     })
 
     return uniqueEolApFirmwares
-  }
-
-  // eslint-disable-next-line max-len
-  const getGreaterABFVersionList = (abfVersionList: ABFVersion[], abfName: string, eolVersion: string) => {
-    return abfVersionList.filter(abfVersion => {
-      return abfVersion.abf === abfName && compareVersions(abfVersion.id, eolVersion) > 0
-    })
   }
 
   const canUpdateEolApFirmware = (selectedRows?: FirmwareVenue[]): boolean => {
@@ -150,14 +119,58 @@ export function useApEolFirmware () {
 
     const target = releasedABFList.find(abf => abf.id === eolVersion)
 
-    return target ? getVersionLabel(intl, target) : ''
+    return target ? getVersionLabel(intl, target, false) : ''
   }
 
   return {
-    getAvailableEolApFirmwares,
+    getAvailableEolApFirmwareGroups,
     getEolABFOtherVersionsOptions,
     canUpdateEolApFirmware,
     getDefaultEolVersionLabel,
     latestEolVersionByABFs
   }
+}
+
+// eslint-disable-next-line max-len
+function canABFVersionDisplay (maxEolABFVersionEntity: MaxEolABFVersionEntity, abfVersion: string): boolean {
+  const comparedResult = compareVersions(abfVersion, maxEolABFVersionEntity.maxVersion)
+  return (abfVersion !== maxEolABFVersionEntity.latestVersion)
+    && ((comparedResult > 0) || (comparedResult === 0 && !maxEolABFVersionEntity.isAllTheSame))
+}
+
+// eslint-disable-next-line max-len
+function getGreaterABFVersionList (abfVersionList: ABFVersion[], abfName: string, eolVersion: string) {
+  return abfVersionList.filter(abfVersion => {
+    return abfVersion.abf === abfName && compareVersions(abfVersion.id, eolVersion) > 0
+  })
+}
+
+function compactEolApFirmwares (selectedRows: FirmwareVenue[]): EolApFirmware[] {
+  return _.compact(selectedRows.map(row => row.eolApFirmwares)).flat()
+}
+
+function findMaxEolABFVersion (selectedRows: FirmwareVenue[]): MaxEolABFVersionMap {
+  const eolFirmwares = compactEolApFirmwares(selectedRows)
+  let result: MaxEolABFVersionMap = {}
+
+  eolFirmwares.forEach((eol: EolApFirmware) => {
+    if (result.hasOwnProperty(eol.name)) {
+      const current = result[eol.name]
+      const comparedResult = compareVersions(current.maxVersion, eol.currentEolVersion)
+
+      result[eol.name] = {
+        maxVersion: comparedResult >= 0 ? current.maxVersion : eol.currentEolVersion,
+        isAllTheSame: current.isAllTheSame && comparedResult === 0,
+        latestVersion: eol.latestEolVersion
+      }
+    } else {
+      result[eol.name] = {
+        maxVersion: eol.currentEolVersion,
+        isAllTheSame: true,
+        latestVersion: eol.latestEolVersion
+      }
+    }
+  })
+
+  return result
 }

@@ -136,7 +136,7 @@ export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => 
   const transformAdminRole = (id: string, initialRole: RolesEnum) => {
     const role = initialRole
     return <Select defaultValue={role}
-      style={{ width: '200px' }}
+      style={{ width: '150px' }}
       onChange={value => handleRoleChange(id, value)}>
       {
         Object.entries(RolesEnum).map(([label, value]) => (

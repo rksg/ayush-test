@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Button } from '@acx-ui/components'
-import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
-import { DownloadOutlined }                  from '@acx-ui/icons'
-import { AdminLog, TableQuery }              from '@acx-ui/rc/utils'
-import { RequestPayload }                    from '@acx-ui/types'
-import { noDataDisplay }                     from '@acx-ui/utils'
+import { Loader, Table, TableProps, Button }   from '@acx-ui/components'
+import { DateFormatEnum, formatter }           from '@acx-ui/formatter'
+import { DownloadOutlined }                    from '@acx-ui/icons'
+import { AdminLog, TableQuery }                from '@acx-ui/rc/utils'
+import { RequestPayload }                      from '@acx-ui/types'
+import { exportMessageMapping, noDataDisplay } from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
@@ -115,9 +115,14 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
-      iconButton={{ icon: <DownloadOutlined />, disabled, onClick: exportCsv }}
+      iconButton={{
+        icon: <DownloadOutlined />,
+        disabled,
+        tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
+        onClick: exportCsv
+      }}
     />
-    {visible && <TimelineDrawer
+    {current && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Log Details' })}
       visible={visible}
       onClose={()=>setVisible(false)}

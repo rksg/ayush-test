@@ -1,4 +1,4 @@
-import { AccessSwitch, DistributionSwitch, LeaseTimeUnit, NewTablePageable } from '@acx-ui/rc/utils'
+import { AccessSwitch, DistributionSwitch, LeaseTimeUnit, NewTablePageable, PersonaGroup } from '@acx-ui/rc/utils'
 
 const paginationPattern = '?size=:pageSize&page=:page&sort=:sort'
 export const replacePagination = (url: string) => url.replace(paginationPattern, '')
@@ -146,6 +146,22 @@ export const mockVenueNetworkData = {
   ]
 }
 
+export const mockNetworkSaveData = {
+  fields: ['venueId', 'networkId'],
+  totalCount: 1,
+  page: 1,
+  data: [
+    { networkId: '1', venueId: 'testVenueId1' }
+  ]
+}
+
+export const mockDeepNetworkList = {
+  requestId: '639283c7-7a5e-4ab3-8fdb-6289fe0ed255',
+  response: [
+    { name: 'Network 1', id: '1', type: 'dpsk' }
+  ]
+}
+
 export const mockNetworkGroup = {
   requestId: '1234',
   response: [
@@ -162,7 +178,8 @@ export const mockNsgStatsList = {
     'networkIds',
     'name',
     'id',
-    'tags'
+    'tags',
+    'edgeAlarmSummary'
   ],
   totalCount: 2,
   page: 1,
@@ -177,7 +194,7 @@ export const mockNsgStatsList = {
         {
           id: '7a5474bf-be4a-4207-b808-e3aaa8be7a3e',
           venueId: 'mock_venue_1',
-          venueName: 'Mock Venue 1',
+          venueName: 'MockVenue1',
           personaGroupId: 'per-444'
         }
       ],
@@ -185,12 +202,21 @@ export const mockNsgStatsList = {
         {
           id: '5e5a85d5-1540-4aab-86c4-a8d8b9f3e28b',
           edgeId: '0000000001',
-          edgeName: 'Smart Edge 1',
+          edgeName: 'SmartEdge1',
           segments: 1,
           devices: 1,
           dhcpInfoId: 'ee61bd6e-c637-4177-b070-0ded060af3bd',
           dhcpPoolId: '1',
           vniRange: ''
+        }
+      ],
+      edgeAlarmSummary: [
+        {
+          edgeId: '0000000001',
+          severitySummary: {
+            critical: 1
+          },
+          totalCount: 1
         }
       ]
     },
@@ -386,21 +412,23 @@ export const mockPropertyConfigs = {
   personaGroupId: 'testPersonaId'
 }
 
-export const mockPersonaGroup = {
+export const mockPersonaGroup: PersonaGroup = {
   id: 'testPersonaId',
   name: 'TestPersona',
-  personaCount: 2,
+  identityCount: 2,
   dpskPoolId: 'testDpskId',
-  personas: [
+  identities: [
     {
       id: 'c677cbb0-8520-421c-99b6-59b3cef5ebc1',
       groupId: 'e5247c1c-630a-46f1-a715-1974e49ec867',
-      name: 'mock-persona1'
+      name: 'mock-persona1',
+      revoked: false
     },
     {
       id: '1e7f81ab-9bb7-4db7-ae20-315743f83183',
       groupId: 'e5247c1c-630a-46f1-a715-1974e49ec867',
-      name: 'mock-persona2'
+      name: 'mock-persona2',
+      revoked: false
     }
   ]
 }

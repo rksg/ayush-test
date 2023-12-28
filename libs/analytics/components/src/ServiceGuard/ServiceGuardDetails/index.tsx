@@ -1,7 +1,6 @@
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { PageHeader, Tabs }                                    from '@acx-ui/components'
-import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
 import { generatePath, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { Details }                                     from './DetailsTable'
@@ -47,10 +46,8 @@ export function ServiceGuardDetails () {
         title={<Title />}
         subTitle={<SubTitle />}
         breadcrumb={[
-          ...(useIsSplitOn(Features.NAVBAR_ENHANCEMENT) ? [
-            { text: $t({ defaultMessage: 'AI Assurance' }) },
-            { text: $t({ defaultMessage: 'Network Assurance' }) }
-          ]:[]),
+          { text: $t({ defaultMessage: 'AI Assurance' }) },
+          { text: $t({ defaultMessage: 'Network Assurance' }) },
           {
             text: $t({ defaultMessage: 'Service Validation' }),
             link: '/analytics/serviceValidation'

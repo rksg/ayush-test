@@ -101,7 +101,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/viewmodel/:tenantId/aps/grouped'
   },
-  getApGroupList: {
+  getApGroupListByVenue: {
     method: 'get',
     url: '/venues/:venueId/apGroups',
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/ap-group',
@@ -111,12 +111,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/wifiCallingProfiles',
     oldUrl: '/api/tenant/:tenantId/wifi/wifi-calling-profile',
-    newApi: true
-  },
-  getVlanPoolList: {
-    method: 'get',
-    url: '/vlanPools',
-    oldUrl: '/api/tenant/:tenantId/wifi/vlan-pool',
     newApi: true
   },
   getServicesList: {
@@ -136,12 +130,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/query',
     oldUrl: '/api/viewmodel/tenant/:tenantId/venues',
     newApi: true
-  },
-  newAddVenue: { // Only for IT test
-    method: 'post',
-    newApi: true,
-    url: '/venues'
-    // url: '/api/tenant/:tenantId/venue'
   },
   addVenue: {
     method: 'post',
@@ -295,6 +283,16 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/led',
     newApi: true
   },
+  getVenueApModelBandModeSettings: {
+    method: 'get',
+    url: '/venues/:venueId/bandModeSettings',
+    newApi: true
+  },
+  updateVenueApModelBandModeSettings: {
+    method: 'put',
+    url: '/venues/:venueId/bandModeSettings',
+    newApi: true
+  },
   getVenueBssColoring: {
     method: 'get',
     url: '/venues/:venueId/bssColoringSettings',
@@ -332,6 +330,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/venue/network-ap-group'
   },
+  networkActivations: {
+    method: 'post',
+    url: '/networkActivations/query',
+    newApi: true
+  },
   getNetworkDeepList: {
     // [New API] request not support list
     // method: 'get',
@@ -363,6 +366,13 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/venues/:venueId/rogueApSettings',
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/rogue/ap',
+    newApi: true
+  },
+  getRogueApLocation: {
+    method: 'get',
+    url: '/venues/:venueId/rogueLocations?rogueMac=:rogueMac&numLocatingAps=:numLocatingAps',
+    // eslint-disable-next-line max-len
+    oldUrl: '/api/viewmodel/tenant/:tenantId/venue/:venueId/rogue/location?rogueMac=:rogueMac&numLocatingAps=:numLocatingAps',
     newApi: true
   },
   getOldVenueRogueAp: {
@@ -426,22 +436,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader',
     newApi: true
   },
-  getClientSessionHistory: {
-    method: 'post',
-    url: '/reports/clients/sessionHistories',
-    oldUrl: '/api/reporting/tenant/:tenantId/report/clientSessionHistory',
-    newApi: true
-  },
   getHistoricalClientList: {
     method: 'post',
     url: '/historicalClients/query',
     oldUrl: '/api/eventalarmapi/:tenantId/event/hist_client_list',
-    newApi: true
-  },
-  getHistoricalStatisticsReportsV2: {
-    method: 'post',
-    url: '/reports/clients/statistics',
-    oldUrl: '/api/reporting/tenant/:tenantId/report/clientStats/v2',
     newApi: true
   },
   getGuestsList: {
@@ -460,6 +458,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/aps/:serialNumber/networks/query',
     oldUrl: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/networks',
+    newApi: true
+  },
+  getApGroupNetworkList: {
+    method: 'post',
+    url: '/apGroups/:apGroupId/networks/query',
     newApi: true
   },
   getExternalProviders: {
@@ -506,6 +509,96 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueRadiusOptions: {
     method: 'put',
     url: '/venues/:venueId/radiusOptions',
+    newApi: true
+  },
+  getRwgList: {
+    method: 'get',
+    url: '/rwgs',
+    newApi: true
+  },
+  deleteGateways: {
+    method: 'delete',
+    url: '/rwgs',
+    newApi: true
+  },
+  deleteGateway: {
+    method: 'delete',
+    url: '/rwgs/:rwgId',
+    newApi: true
+  },
+  getGateway: {
+    method: 'get',
+    url: '/rwgs/:gatewayId',
+    newApi: true
+  },
+  updateGateway: {
+    method: 'post',
+    url: '/rwgs',
+    newApi: true
+  },
+  addGateway: {
+    method: 'post',
+    url: '/rwgs',
+    newApi: true
+  },
+  getGatewayAlarms: {
+    method: 'get',
+    url: '/rwgs/:gatewayId/alarms',
+    newApi: true
+  },
+  getGatewayDashboard: {
+    method: 'get',
+    url: '/rwgs/:gatewayId/dashboards',
+    newApi: true
+  },
+  getGatewayTopProcess: {
+    method: 'get',
+    url: '/rwgs/:gatewayId/topprocess',
+    newApi: true
+  },
+  getGatewayFileSystems: {
+    method: 'get',
+    url: '/rwgs/:gatewayId/filesystems',
+    newApi: true
+  },
+  getGatewayDetails: {
+    method: 'get',
+    url: '/rwgs/:gatewayId/details',
+    newApi: true
+  },
+  getDNSRecords: {
+    method: 'get',
+    url: '/rwgs/:gatewayId/dnsrecords',
+    newApi: true
+  },
+  getDNSRecord: {
+    method: 'get',
+    url: '/rwgs/:gatewayId/dnsrecords/:dnsRecordId',
+    newApi: true
+  },
+  deleteDnsRecords: {
+    method: 'delete',
+    url: '/rwgs/:gatewayId/dnsrecords/:dnsRecordId',
+    newApi: true
+  },
+  addUpdateDnsRecord: {
+    method: 'post',
+    url: '/rwgs/:gatewayId/dnsrecords',
+    newApi: true
+  },
+  addExportSchedules: {
+    method: 'post',
+    url: '/reports/exportSchedules',
+    newApi: true
+  },
+  updateExportSchedules: {
+    method: 'put',
+    url: '/reports/exportSchedules',
+    newApi: true
+  },
+  getExportSchedules: {
+    method: 'get',
+    url: '/reports/exportSchedules',
     newApi: true
   }
 }

@@ -5,11 +5,11 @@ import { useWatch }            from 'antd/lib/form/Form'
 import TextArea                from 'antd/lib/input/TextArea'
 import { useIntl }             from 'react-intl'
 
-import { Alert, Loader, Tooltip, useStepFormContext } from '@acx-ui/components'
-import { useVenuesListQuery }                         from '@acx-ui/rc/services'
-import { EdgeGeneralSetting }                         from '@acx-ui/rc/utils'
-import { useParams }                                  from '@acx-ui/react-router-dom'
-import { getIntl, validationMessages }                from '@acx-ui/utils'
+import { Alert, Loader, Tooltip, useStepFormContext }    from '@acx-ui/components'
+import { useVenuesListQuery }                            from '@acx-ui/rc/services'
+import { PRODUCT_CODE_VIRTUAL_EDGE, EdgeGeneralSetting } from '@acx-ui/rc/utils'
+import { useParams }                                     from '@acx-ui/react-router-dom'
+import { getIntl, validationMessages }                   from '@acx-ui/utils'
 
 interface EdgeSettingFormProps {
   isEdit?: boolean
@@ -29,8 +29,26 @@ const venueOptionsDefaultPayload = {
 
 async function edgeSerialNumberValidator (value: string) {
   const { $t } = getIntl()
-  if (value.startsWith('96')) return
+  if (value.startsWith(PRODUCT_CODE_VIRTUAL_EDGE)) {
+    return validateVirtualEdgeSerialNumber(value)
+  }
   return Promise.reject($t(validationMessages.invalid))
+}
+
+function validateVirtualEdgeSerialNumber (value: string) {
+  const { $t } = getIntl()
+
+  if (!new RegExp(/^[0-9a-z]+$/i).test(value)) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+
+  if (value.length !== 34) {
+    return Promise.reject($t({
+      defaultMessage: 'Field must be exactly 34 characters'
+    }))
+  }
+
+  return Promise.resolve()
 }
 
 export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
@@ -92,8 +110,7 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
             required: true,
             message: $t({ defaultMessage: 'Please enter Serial Number' })
           },
-          { max: 34 },
-          { validator: (_, value) => edgeSerialNumberValidator(value) }
+          props.isEdit ? {} : { validator: (_, value) => edgeSerialNumberValidator(value) }
         ]}
         children={<Input disabled={props.isEdit} />}
         validateFirst

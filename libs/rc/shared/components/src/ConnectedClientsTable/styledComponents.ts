@@ -2,7 +2,8 @@ import styled from 'styled-components/macro'
 
 export const IconContainer = styled.div`
   svg {
-    height: 24px
+    width: 24px;
+    height: 24px;
   }
 `
 export const ClientTableDiv = styled.div`

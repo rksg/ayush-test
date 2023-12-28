@@ -46,13 +46,12 @@ export function FrontViewPort (props:{
     let taggedVlanText
 
     if (port.vlanIds !== '' && port.vlanIds !== undefined) {
-      let vlanIdsArray = port.vlanIds.split(' ')
+      let vlanIdsArray = port.vlanIds.split(' ').sort((a:string, b:string) => Number(a) - Number(b))
 
       if (isUnTaggedVlanValid) {
         let taggedVlan = '--'
         if (vlanIdsArray.length > 1) {
           vlanIdsArray = _.remove(vlanIdsArray, n => n !== port.unTaggedVlan)
-          vlanIdsArray.sort((a:string, b:string) => Number(a) - Number(b))
           // CMS-779 PLM feedback: Show up to 15 vlans in tooltip. If more than 15 VLANs, truncate and add an ellipsis
           const ellipsis = (vlanIdsArray.length > 15) ? '...' : ''
           const showVlanIdArray = (vlanIdsArray.length > 15) ?

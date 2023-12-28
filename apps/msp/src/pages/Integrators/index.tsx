@@ -11,6 +11,7 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   AssignEcDrawer,
   ResendInviteModal,
@@ -26,11 +27,11 @@ import {
   MspEc
 } from '@acx-ui/msp/utils'
 import { useTableQuery }                                                          from '@acx-ui/rc/utils'
-import { Link, TenantLink, MspTenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
+import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                              from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, hasRoles, hasAccess }             from '@acx-ui/user'
 import {
-  AccountType
+  AccountType, isDelegationMode
 } from '@acx-ui/utils'
 
 const transformAssignedCustomerCount = (row: MspEc) => {
@@ -58,10 +59,12 @@ export function Integrators () {
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const params = useParams()
+  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
+  const isSupportToMspDashboardAllowed =
+    useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
 
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerEcVisible, setDrawerEcVisible] = useState(false)
-  const [modalVisible, setModalVisible] = useState(false)
   const [tenantId, setTenantId] = useState('')
   const [tenantType, setTenantType] = useState('')
   const { data: userProfile } = useUserProfileContext()
@@ -78,12 +81,12 @@ export function Integrators () {
       searchable: true,
       defaultSortOrder: 'ascend' as SortOrder,
       onCell: (data) => {
-        return {
+        return isSupportToMspDashboardAllowed ? {} : {
           onClick: () => { checkDelegateAdmin(data.id, userProfile!.adminId) }
         }
       },
       render: function (_, { name }, __, highlightFn) {
-        return (
+        return (isSupportToMspDashboardAllowed ? name :
           <Link to=''>{highlightFn(name)}</Link>
         )
       }
@@ -156,6 +159,8 @@ export function Integrators () {
   ]
 
   const IntegratorssTable = () => {
+    const [modalVisible, setModalVisible] = useState(false)
+    const [selTenantId, setSelTenantId] = useState('')
     const navigate = useNavigate()
     const basePath = useTenantLink('/integrators/edit', 'v')
     const tableQuery = useTableQuery({
@@ -174,7 +179,6 @@ export function Integrators () {
       {
         label: $t({ defaultMessage: 'Edit' }),
         onClick: (selectedRows) => {
-          setTenantId(selectedRows[0].id)
           const type = selectedRows[0].tenantType
           navigate({
             ...basePath,
@@ -185,7 +189,7 @@ export function Integrators () {
       {
         label: $t({ defaultMessage: 'Resend Invitation Email' }),
         onClick: (selectedRows) => {
-          setTenantId(selectedRows[0].id)
+          setSelTenantId(selectedRows[0].id)
           setModalVisible(true)
         }
       },
@@ -222,6 +226,11 @@ export function Integrators () {
           rowKey='id'
           rowSelection={hasAccess() && { type: 'radio' }}
         />
+        {modalVisible && <ResendInviteModal
+          visible={modalVisible}
+          setVisible={setModalVisible}
+          tenantId={selTenantId}
+        />}
       </Loader>
     )
   }
@@ -232,18 +241,19 @@ export function Integrators () {
         title={$t({ defaultMessage: 'Tech Partners' })}
         extra={isAdmin ?
           [
-            <TenantLink to='/dashboard'>
+            !isHspSupportEnabled ? <TenantLink to='/dashboard'>
               <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
-            </TenantLink>,
+            </TenantLink> : null,
             <MspTenantLink to='/integrators/create'>
               <Button
                 hidden={!onBoard}
                 type='primary'>{$t({ defaultMessage: 'Add Tech Partner' })}</Button>
             </MspTenantLink>
           ]
-          : [<TenantLink to='/dashboard'>
-            <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
-          </TenantLink>
+          : [
+            !isHspSupportEnabled ? <TenantLink to='/dashboard'>
+              <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
+            </TenantLink> : null
           ]}
       />
       <IntegratorssTable />
@@ -259,11 +269,6 @@ export function Integrators () {
         setSelected={() => {}}
         tenantId={tenantId}
         tenantType={tenantType}
-      />}
-      {modalVisible && <ResendInviteModal
-        visible={modalVisible}
-        setVisible={setModalVisible}
-        tenantId={tenantId}
       />}
     </>
   )

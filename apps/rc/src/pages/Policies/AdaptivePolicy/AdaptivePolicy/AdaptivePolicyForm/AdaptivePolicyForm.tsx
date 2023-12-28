@@ -4,7 +4,6 @@ import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { Loader, PageHeader, showToast, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
 import {
   useAddAdaptivePolicyMutation,
   useAddPolicyConditionsMutation,
@@ -42,7 +41,6 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
   const [addConditions] = useAddPolicyConditionsMutation()
   const [updateConditions] = useUpdatePolicyConditionsMutation()
   const [deleteCondition] = useDeletePolicyConditionsMutation()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const [updateAdaptivePolicy] = useUpdateAdaptivePolicyMutation()
   // eslint-disable-next-line max-len
@@ -175,7 +173,7 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
           title={editMode
             ? $t({ defaultMessage: 'Configure {name}' }, { name: data?.name })
             : $t({ defaultMessage: 'Add Adaptive Policy' })}
-          breadcrumb={isNavbarEnhanced ? [
+          breadcrumb={[
             { text: $t({ defaultMessage: 'Network Control' }) },
             {
               text: $t({ defaultMessage: 'Policies & Profiles' }),
@@ -183,14 +181,6 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
             },
             { text: $t({ defaultMessage: 'Adaptive Policy' }),
               link: tablePath }
-          ] : [
-            {
-              text: $t({ defaultMessage: 'Policies & Profiles' }),
-              link: getPolicyListRoutePath(true)
-            },
-            { text: $t({ defaultMessage: 'Adaptive Policy' }),
-              link: tablePath
-            }
           ]}
         />
       }

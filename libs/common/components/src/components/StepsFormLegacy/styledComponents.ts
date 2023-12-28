@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components/macro'
 
-import modifyVars from '../../theme/modify-vars'
+import modifyVars                  from '../../theme/modify-vars'
+import { disableStickyPagination } from '../Table/styledComponents'
 
 export {
   Title,
@@ -10,12 +11,16 @@ export {
   ActionsContainer
 } from '../StepsForm/styledComponents'
 
-const stepCompletedStyle = css`
+const stepCompletedStyle = css<{ editMode?: boolean }>`
   .ant-steps-item-container .ant-steps-item-icon .ant-steps-icon-dot {
     &::after {
       top: 1px;
       left: 1px;
-      background-color: var(--acx-steps-form-steps-step-color);
+      ${props => !props.editMode ? css`
+        background-color: var(--acx-steps-form-steps-step-color);
+      ` : css`
+        background-color: transparent;
+      `}
     }
   }
 `
@@ -58,6 +63,8 @@ export const Wrapper = styled.section<{
   --acx-steps-form-form-title-margin-bottom: 16px;
 
   --acx-steps-form-actions-vertical-space: 12px;
+
+  ${disableStickyPagination}
 
   .ant-pro-steps-form {
     position: relative;

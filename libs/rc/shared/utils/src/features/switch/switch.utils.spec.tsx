@@ -1,6 +1,8 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
 
+import { Input } from 'antd'
+
 import { DeviceConnectionStatus }                                                         from '../../constants'
 import { STACK_MEMBERSHIP, SwitchStatusEnum, SwitchViewModel, SwitchClient, SWITCH_TYPE } from '../../types'
 
@@ -14,11 +16,13 @@ import {
   getPoeUsage,
   getStackMemberStatus,
   getClientIpAddr,
+  getAdminPassword,
   transformSwitchUnitStatus,
   isRouter,
   isEmpty,
   getSwitchPortLabel,
-  sortPortFunction
+  sortPortFunction,
+  isSameModelFamily
 } from '.'
 
 const switchRow ={
@@ -53,6 +57,12 @@ describe('switch.utils', () => {
       expect(getSwitchModel('FJN4312T00C')).toBe('ICX7150-48ZP')
       expect(getSwitchModel('EZC4312T00C')).toBe('ICX7650-48ZP')
       expect(getSwitchModel('')).toBe('Unknown')
+    })
+    it('should check model family correctly', async () => {
+      expect(isSameModelFamily('', '')).toBe(true)
+      expect(isSameModelFamily('xxxx', '----')).toBe(true)
+      expect(isSameModelFamily('FEK3230S0DA', 'FEK3230S3DA')).toBe(true)
+      expect(isSameModelFamily('FJN3226U73C', 'FNC3333R015')).toBe(false)
     })
   })
 
@@ -283,6 +293,66 @@ describe('switch.utils', () => {
         ...data,
         clientIpv6Addr: '1:0:0:0:0:0:0:0'
       })).toBe('1:0:0:0:0:0:0:0')
+    })
+  })
+
+  describe('Test getAdminPassword function', () => {
+    it('should render correctly', async () => {
+      expect(getAdminPassword({
+        ...switchRow,
+        configReady: true,
+        syncedSwitchConfig: true,
+        deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD
+      })).toBe('--')
+
+      expect(getAdminPassword({
+        ...switchRow,
+        configReady: true,
+        syncedSwitchConfig: true,
+        deviceStatus: SwitchStatusEnum.FIRMWARE_UPD_START
+      })).toBe('--')
+
+      expect(getAdminPassword({
+        ...switchRow,
+        configReady: false,
+        syncedSwitchConfig: true,
+        deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD
+      })).toBe('--')
+
+      expect(getAdminPassword({
+        ...switchRow,
+        id: 'c0:c5:20:aa:24:7b',
+        configReady: true,
+        syncedSwitchConfig: true,
+        deviceStatus: SwitchStatusEnum.OPERATIONAL
+      })).toBe('Custom')
+
+      expect(getAdminPassword({
+        ...switchRow,
+        id: 'c0:c5:20:aa:24:7b',
+        configReady: true,
+        syncedSwitchConfig: true,
+        syncedAdminPassword: true,
+        adminPassword: 'test123',
+        deviceStatus: SwitchStatusEnum.OPERATIONAL
+      }, Input.Password)).not.toBe('Custom')
+
+      expect(getAdminPassword({
+        ...switchRow,
+        id: 'c0:c5:20:aa:24:7b',
+        configReady: true,
+        syncedSwitchConfig: true,
+        deviceStatus: SwitchStatusEnum.DISCONNECTED
+      })).toBe('Custom')
+
+      expect(getAdminPassword({
+        ...switchRow,
+        id: 'c0:c5:20:aa:24:7b',
+        configReady: true,
+        syncedSwitchConfig: true,
+        deviceStatus: SwitchStatusEnum.FIRMWARE_UPD_START
+      })).toBe('Custom')
+
     })
   })
 

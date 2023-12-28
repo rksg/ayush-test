@@ -11,7 +11,7 @@ export interface EdgeDhcpSetting {
     secondaryDnsIp:string;
     leaseTime?: number;
     leaseTimeUnit?: LeaseTimeUnit;
-    dhcpPools: EdgeDhcpPool[];
+    dhcpPools?: EdgeDhcpPool[];
     hosts?: EdgeDhcpHost[];
     dhcpOptions?: EdgeDhcpOption[];
     edgeIds: string[];
@@ -44,13 +44,14 @@ export interface EdgeDhcpOption {
 export interface DhcpPoolStats {
   tenantId: string
   id:string
-  edgeIds: string[]
+  edgeId: string
   dhcpId: string
   poolName: string
   subnetMask: string
   poolRange: string
   gateway: string
   activated: string
+  utilization?: number
 }
 
 export interface DhcpStats {
@@ -93,4 +94,5 @@ export interface DhcpUeSummaryStats {
 export interface EdgeDhcpSettingFormData extends EdgeDhcpSetting {
   enableSecondaryDNSServer?: boolean
   leaseTimeType?: LeaseTimeType
+  usedForNSG?: boolean
 }

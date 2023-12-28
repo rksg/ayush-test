@@ -49,7 +49,7 @@ jest.mock('antd', () => {
 
 const mockedFinishFn = jest.fn()
 
-const createNsgPath = '/:tenantId/services/networkSegmentation/create'
+const createNsgPath = '/:tenantId/services/personalIdentityNetwork/create'
 
 describe('SummaryForm', () => {
   let params: { tenantId: string, serviceId: string }
@@ -70,18 +70,20 @@ describe('SummaryForm', () => {
   it('should render correctly', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
-      form.setFieldValue('name', 'testNsgName')
-      form.setFieldValue('tags', ['Tag1', 'Tag2'])
-      form.setFieldValue('venueName', 'testVenue')
-      form.setFieldValue('edgeName', 'testEdge')
-      form.setFieldValue('segments', 10)
-      form.setFieldValue('devices', 10)
-      form.setFieldValue('dhcpName', 'testDhcp')
-      form.setFieldValue('poolName', 'testDhcpPool')
-      form.setFieldValue('tunnelProfileName', 'Default')
-      form.setFieldValue('networkNames', ['testDpsk1', 'testDpsk2'])
-      form.setFieldValue('distributionSwitchInfos', mockNsgSwitchInfoData.distributionSwitches)
-      form.setFieldValue('accessSwitchInfos', mockNsgSwitchInfoData.accessSwitches)
+      form.setFieldsValue({
+        name: 'testNsgName',
+        tags: ['Tag1', 'Tag2'],
+        venueName: 'testVenue',
+        edgeName: 'testEdge',
+        segments: 10,
+        devices: 10,
+        dhcpName: 'testDhcp',
+        poolName: 'testDhcpPool',
+        tunnelProfileName: 'Default',
+        networkNames: ['testDpsk1', 'testDpsk2'],
+        distributionSwitchInfos: mockNsgSwitchInfoData.distributionSwitches,
+        accessSwitchInfos: mockNsgSwitchInfoData.accessSwitches
+      })
       return form
     })
     const user = userEvent.setup()
@@ -94,6 +96,6 @@ describe('SummaryForm', () => {
         </StepsForm>
       </Provider>,
       { route: { params, path: createNsgPath } })
-    await user.click(await screen.findByRole('button', { name: 'Finish' }))
+    await user.click(await screen.findByRole('button', { name: 'Add' }))
   })
 })

@@ -7,8 +7,8 @@ import _                                                              from 'loda
 import Highlighter                                                    from 'react-highlight-words'
 import { useIntl }                                                    from 'react-intl'
 
-import { SettingsOutlined }        from '@acx-ui/icons'
-import { TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
+import { MinusSquareOutlined, PlusSquareOutlined, SettingsOutlined } from '@acx-ui/icons'
+import { TABLE_DEFAULT_PAGE_SIZE }                                   from '@acx-ui/utils'
 
 import { Button, DisabledButton, ButtonProps } from '../Button'
 import { Dropdown }                            from '../Dropdown'
@@ -44,7 +44,7 @@ import type {
   TableProps as AntTableProps,
   TablePaginationConfig
 } from 'antd'
-import type { RowSelectMethod } from 'antd/lib/table/interface'
+import type { ExpandableConfig, RowSelectMethod } from 'antd/lib/table/interface'
 
 export type {
   ColumnType,
@@ -72,6 +72,7 @@ export interface TableProps <RecordType>
     onResetState?: CallableFunction
     enableApiFilter?: boolean
     floatRightFilters?: boolean
+    alwaysShowFilters? : boolean
     onFilterChange?: (
       filters: Filter,
       search: { searchString?: string, searchTargetFields?: string[] },
@@ -80,6 +81,9 @@ export interface TableProps <RecordType>
     iconButton?: IconButtonProps,
     filterableWidth?: number,
     searchableWidth?: number,
+    stickyHeaders?: boolean,
+    stickyPagination?: boolean,
+    enableResizableColumn?: boolean,
     onDisplayRowChange?: (displayRows: RecordType[]) => void,
     getAllPagesData?: () => RecordType[]
   }
@@ -90,6 +94,18 @@ export interface TableHighlightFnArgs {
     formatFn?: (keyword: string) => React.ReactNode
   ): string | React.ReactNode
 }
+
+export const NestedTableExpandableDefaultConfig = {
+  type: 'default',
+  columnWidth: '12px',
+  fixed: 'left',
+  expandIcon: ({ expanded, onExpand, record }) => {
+    const ExpandedIcon = expanded ? MinusSquareOutlined : PlusSquareOutlined
+    return <ExpandedIcon onClick={(e) =>
+      onExpand(record, e as unknown as React.MouseEvent<HTMLElement>)
+    } />
+  }
+} as ExpandableConfig<Record<string, unknown>>
 
 const defaultPagination = {
   mini: true,
@@ -129,9 +145,10 @@ function useSelectedRowKeys <RecordType> (
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Table <RecordType extends Record<string, any>> ({
   type = 'tall', columnState, enableApiFilter, iconButton, onFilterChange, settingsId,
-  onDisplayRowChange, ...props
+  enableResizableColumn = true, onDisplayRowChange, stickyHeaders, stickyPagination, ...props
 }: TableProps<RecordType>) {
   const { dataSource, filterableWidth, searchableWidth, style } = props
+  const wrapperRef = useRef<HTMLDivElement>(null)
   const layout = useLayoutContext()
   const rowKey = (props.rowKey ?? 'key')
   const intl = useIntl()
@@ -160,6 +177,13 @@ function Table <RecordType extends Record<string, any>> ({
   }, 1000)
   const filterWidth = filterableWidth || 200
   const searchWidth = searchableWidth || 292
+
+  // stickyHeaders/stickyPagination is true by default while this
+  // Table is under LayoutComponent (not in Modal or Drawer)
+  if (type === 'tall' && wrapperRef?.current?.closest('#root')) {
+    if (stickyHeaders === undefined) stickyHeaders = true
+    if (stickyPagination === undefined) stickyPagination = true
+  }
 
   useEffect(() => {
     onFilter.current = onFilterChange
@@ -313,7 +337,21 @@ function Table <RecordType extends Record<string, any>> ({
     return all
   }, {} as Record<string, TableColumn<RecordType, 'text'>>))
 
-  const filterables = aggregator(columns, 'filterable')
+  const sortFilterableItems = (
+    a: TableColumn<RecordType, 'text'>,
+    b: TableColumn<RecordType, 'text'>): number => {
+    const aType = a.filterComponent ? _.get(a.filterComponent, 'type') : ''
+    const bType = b.filterComponent ? _.get(b.filterComponent, 'type') : ''
+
+    const priorityOrder: ('rangepicker' | 'checkbox')[] = ['rangepicker', 'checkbox']
+
+    const aIndex = priorityOrder.indexOf(aType as 'rangepicker' | 'checkbox')
+    const bIndex = priorityOrder.indexOf(bType as 'rangepicker' | 'checkbox')
+
+    return aIndex - bIndex
+  }
+
+  const filterables = aggregator(columns, 'filterable').sort(sortFilterableItems)
   const searchables = aggregator(columns, 'searchable')
 
   const activeFilters = filterables.filter(column => {
@@ -324,13 +362,16 @@ function Table <RecordType extends Record<string, any>> ({
 
   const hasRowSelected = Boolean(selectedRowKeys.length)
   const hasRowActionsOffset = [
-    props.rowSelection?.type && props.tableAlertRender !== false,
+    props.rowSelection?.type
+      && props.tableAlertRender !== false
+      && !props.rowSelection?.alwaysShowAlert,
     filterables.length,
     searchables.length,
     groupable.length,
     iconButton
   ].some(Boolean)
-  const shouldRenderHeader = !hasRowSelected || props.tableAlertRender === false
+  const shouldRenderHeader = props.alwaysShowFilters
+    || !hasRowSelected || props.tableAlertRender === false
   const hasHeaderItems = shouldRenderHeader && (
     Boolean(filterables.length) || Boolean(searchables.length) ||
     Boolean(groupable.length) || Boolean(iconButton)
@@ -390,7 +431,7 @@ function Table <RecordType extends Record<string, any>> ({
 
   const components = _.merge({},
     props.components || {},
-    type === 'tall' ? { header: { cell: ResizableColumn } } : {}
+    type === 'tall' && enableResizableColumn ? { header: { cell: ResizableColumn } } : {}
   ) as TableProps<RecordType>['components']
 
   const onRow: TableProps<RecordType>['onRow'] = function (record) {
@@ -414,7 +455,7 @@ function Table <RecordType extends Record<string, any>> ({
         onHeaderCell: (column: TableColumn<RecordType, 'text'>) => ({
           onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width }),
           width: colWidth[column.key],
-          definedWidth: col.width
+          ...(enableResizableColumn ? { definedWidth: col.width } : {})
         })
       })
       : col
@@ -493,7 +534,7 @@ function Table <RecordType extends Record<string, any>> ({
   let offsetHeader = layout.pageHeaderY
   if (props.actions?.length) offsetHeader += 22
   if (hasRowActionsOffset) offsetHeader += 36
-  const sticky = type === 'tall' &&
+  const sticky = stickyHeaders &&
     // disable in test env as it will result in 2 tables rendered
     // this is to prevent confusing/inconvenience for implementor
     // to find out themselves when they are using Table and
@@ -508,7 +549,10 @@ function Table <RecordType extends Record<string, any>> ({
       '--sticky-has-actions': props.actions?.length ? '1' : '0',
       '--sticky-has-row-actions-offset': hasRowActionsOffset ? '1' : '0'
     } as React.CSSProperties}
+    ref={wrapperRef}
     $type={type}
+    $stickyHeaders={!!stickyHeaders}
+    $stickyPagination={!!stickyPagination}
   >
     <UI.TableSettingsGlobalOverride />
     {props.actions && <UI.ActionsContainer
@@ -565,7 +609,7 @@ function Table <RecordType extends Record<string, any>> ({
       onRow={onRow}
       showSorterTooltip={false}
       tableAlertOptionRender={false}
-      expandable={expandable}
+      expandable={props?.expandable || expandable}
       onExpand={isGroupByActive ? onExpand : undefined}
       rowClassName={props.rowClassName
         ? props.rowClassName

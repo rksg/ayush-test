@@ -10,13 +10,13 @@
         "compiler": "babel",
         "outputPath": "dist/apps/ra",
         "index": "apps/ra/src/index.html",
-        "baseHref": "/analytics/next/",
+        "baseHref": "/ai/",
         "main": "apps/ra/src/main.tsx",
         "polyfills": "apps/ra/src/polyfills.ts",
         "tsConfig": "apps/ra/tsconfig.app.json",
         "assets": [
           "apps/ra/src/favicon.ico",
-          "apps/ra/src/env.json",
+          "apps/ra/src/globalValues.json",
           "apps/ra/src/assets",
           "apps/ra/src/locales",
           "apps/ra/src/robots.txt"

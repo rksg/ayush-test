@@ -1,13 +1,18 @@
-import { APMeshRole }                                   from '../constants'
-import { ApPosition, CapabilitiesApModel, PoeModeEnum } from '../models'
-import { ApDeep }                                       from '../models/ApDeep'
-import { ApPacketCaptureStateEnum }                     from '../models/ApPacketCaptureEnum'
-import { DeviceGps }                                    from '../models/DeviceGps'
-import { DhcpApInfo }                                   from '../models/DhcpApInfo'
-import { ExternalAntenna }                              from '../models/ExternalAntenna'
-import { VenueLanPort }                                 from '../models/VenueLanPort'
+import { APMeshRole, ApDeviceStatusEnum } from '../constants'
+import {
+  ApDeep,
+  ApPacketCaptureStateEnum,
+  ApPosition,
+  BandModeEnum,
+  CapabilitiesApModel,
+  DeviceGps,
+  DhcpApInfo,
+  ExternalAntenna,
+  PoeModeEnum,
+  VenueLanPort
+} from '../models'
 
-import { ApVenueStatusEnum } from '.'
+import { ApVenueStatusEnum, CountAndNames } from '.'
 
 export interface IpSettings {
   ipType?: string,
@@ -20,6 +25,7 @@ export interface IpSettings {
 export interface APSystem extends IpSettings {
   uptime?: number
   secureBootEnabled?: boolean
+  managementVlan?: number
 }
 
 export interface APNetworkSettings extends IpSettings {
@@ -29,13 +35,7 @@ export interface APNetworkSettings extends IpSettings {
 export interface AP {
   IP?: string,
   apMac?: string,
-  apStatusData?: {
-    APRadio?: Array<RadioProperties>,
-    cellularInfo?: CelluarInfo,
-    APSystem?: APSystem,
-    lanPortStatus?: Array<LanPortStatusProperties>,
-    vxlanStatus?: VxlanStatus
-  },
+  apStatusData?: ApStatus,
   clients?: number,
   deviceGroupId: string,
   deviceGroupName?: string,
@@ -66,7 +66,8 @@ export interface AP {
   apUpRssi?: number,
   poePort?: string,
   healthStatus?: string,
-  downLinkCount?: number
+  downLinkCount?: number,
+  apRadioDeploy?: string
 }
 
 export interface ApViewModel extends AP {
@@ -97,7 +98,8 @@ export interface APExtended extends AP {
   name?: string,
   switchSerialNumber?: string,
   switchId?: string,
-  switchName?: string
+  switchName?: string,
+  rogueCategory?: { [key: string]: number }
 }
 
 export interface CelluarInfo {
@@ -178,11 +180,19 @@ export interface ApDetails {
 }
 
 export interface ApGroup {
-  aps?: ApDeep[],
   id: string,
-  isDefault: boolean,
   name: string,
-  venueId: string
+  isDefault: boolean,
+  venueId: string,
+  aps?: ApDeep[]
+}
+
+export interface ApGroupViewModel extends ApGroup {
+  venueName?: string,
+  members?: CountAndNames,
+  networks?: CountAndNames,
+  clients?: number,
+  incidents?: unknown
 }
 
 export interface AddApGroup {
@@ -197,6 +207,14 @@ export interface VenueDefaultApGroup {
   isDefault: boolean,
   venueId: string,
   aps?: ApDeep[]
+}
+
+export interface ApGroupDetailHeader {
+  title: string
+  headers: {
+    members: number
+    networks: number
+  }
 }
 
 export interface ApDetailHeader {
@@ -227,7 +245,7 @@ export interface APMesh {
   apStatusData?: {
     APRadio?: Array<RadioProperties>
   },
-  clients?: { count: number, names: string[] },
+  clients?: CountAndNames,
   deviceGroupId?: string,
   deviceGroupName?: string,
   deviceStatus?: string,
@@ -313,7 +331,10 @@ export interface ApModel {
   externalAntenna?: ExternalAntenna,
   supportMesh?: boolean,
   version?: string,
-  support11AX?: boolean
+  support11AX?: boolean,
+  supportBandCombination?: boolean,
+  bandCombinationCapabilities?: BandModeEnum[],
+  defaultBandCombination?: BandModeEnum
 }
 
 export interface PingAp {
@@ -351,6 +372,11 @@ export interface ApLanPort {
 
 export interface ApLedSettings {
   ledEnabled: boolean,
+  useVenueSettings: boolean
+}
+
+export interface ApBandModeSettings {
+  bandMode: BandModeEnum,
   useVenueSettings: boolean
 }
 
@@ -473,7 +499,6 @@ export enum UplinkModeEnum {
   MANUAL = 'MANUAL',
   SMART = 'SMART'
 }
-
 export type APMeshSettings = {
   venueMeshEnabled?: boolean, //read-only (get method only)
   meshMode: MeshModeEnum,
@@ -492,4 +517,125 @@ export type MeshUplinkAp = {
   deviceStatus: string,
   healthStatus: string,
   neighbors: MeshApNeighbor[]
+}
+
+export interface AFCProps {
+  featureFlag?: boolean,
+  isAFCEnabled? : boolean,
+  afcInfo?: AFCInfo
+}
+
+export interface LPIButtonText {
+  buttonText: JSX.Element,
+  LPIModeOnChange: Function,
+  LPIModeState: boolean,
+  isAPOutdoor?: boolean
+}
+
+export type AFCInfo = {
+  afcStatus?: AFCStatus,
+  availableChannel?: number,
+  availableChannels?: number[],
+  geoLocation?: GeoLocation,
+  powerMode?: AFCPowerMode,
+  minPowerDbm?: number,
+  maxPowerDbm?: number
+}
+
+export interface GeoLocation {
+  height?: number,
+  lateralUncertainty?: number,
+  latitude?: number,
+  longitude?: number,
+  source?: string,
+  verticalUncertainty?: number
+}
+
+export enum AFCPowerMode {
+  LOW_POWER = 'LOW_POWER',
+  STANDARD_POWER = 'STANDARD_POWER'
+}
+
+export enum AFCStatus {
+  AFC_NOT_REQUIRED = 'AFC_NOT_REQUIRED',
+  WAIT_FOR_LOCATION = 'WAIT_FOR_LOCATION',
+  WAIT_FOR_RESPONSE = 'WAIT_FOR_RESPONSE',
+  REJECTED = 'REJECTED',
+  PASSED = 'PASSED'
+}
+
+export interface ApStatus {
+  APRadio?: Array<RadioProperties>,
+  cellularInfo?: CelluarInfo,
+  APSystem?: APSystem,
+  lanPortStatus?: Array<LanPortStatusProperties>,
+  vxlanStatus?: VxlanStatus,
+  afcInfo?: AFCInfo
+}
+export interface ApRfNeighbor {
+  deviceName: string,
+  apMac: string,
+  status: ApDeviceStatusEnum,
+  model: string,
+  venueName: string,
+  ip: string,
+  channel24G: string | null,
+  channel5G: string | null,
+  channel6G: string | null,
+  snr24G: string | null,
+  snr5G: string | null,
+  snr6G: string | null
+}
+
+export interface ApLldpNeighbor {
+  neighborManaged: boolean,
+  neighborSerialNumber: string | null,
+  lldpInterface: string | null,
+  lldpVia: string | null,
+  lldpRID: string | null,
+  lldpTime: string,
+  lldpChassisID: string | null,
+  lldpSysName: string | null,
+  lldpSysDesc: string | null,
+  lldpMgmtIP: string | null,
+  lldpCapability: string | null,
+  lldpPortID: string | null,
+  lldpPortDesc: string | null,
+  lldpMFS: string | null,
+  lldpPMDAutoNeg: string | null,
+  lldpAdv: string | null,
+  lldpMAUOperType: string | null,
+  lldpMDIPower: string | null,
+  lldpDeviceType: string | null,
+  lldpPowerPairs: string | null,
+  lldpClass: string | null,
+  lldpPowerType: string | null,
+  lldpPowerSource: string | null,
+  lldpPowerPriority: string | null,
+  lldpPDReqPowerVal: string | null,
+  lldpPSEAllocPowerVal: string | null,
+  lldpUPOE: string | null
+}
+
+export interface ApRfNeighborsResponse {
+  detectedTime: string,
+  neighbors: ApRfNeighbor[]
+}
+
+export interface ApLldpNeighborsResponse {
+  detectedTime: string,
+  neighbors: ApLldpNeighbor[]
+}
+
+export interface SupportCcdVenue {
+  id: string,
+  name: string
+}
+
+export interface SupportCcdApGroup {
+  apGroupId: string,
+  apGroupName: string,
+  venueId: string,
+  members: number,
+  aps: APExtended[]
 }

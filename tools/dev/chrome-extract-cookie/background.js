@@ -17,7 +17,10 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 function execute_copy(source_domain, tab) {
   const domain = tab.url.startsWith('https://staging.mlisa.io')
     ? 'staging.mlisa.io'
-    : source_domain
+    : tab.url.startsWith('https://local.mlisa.io')
+      ? 'local.mlisa.io'
+      : source_domain
+
   console.log('copying cookies from domain', domain)
   chrome.cookies.getAll({ domain: "localhost" }, function (cookies) {
     cookies.forEach(function (item, i) {
@@ -41,7 +44,7 @@ function execute_copy(source_domain, tab) {
     };
 
     chrome.notifications.create('', opt);
-    if (domain === 'staging.mlisa.io') {
+    if (['staging.mlisa.io', 'local.mlisa.io'].includes(domain)) {
       open_localhostRA(tab)
     } else {
       open_localhost(tab);// ACX/R1
@@ -63,9 +66,9 @@ function open_localhost(tab) {
   }
 
   let tenantId;
-  
+
   const matchedIds = tab.url.match(/[a-f0-9]{32}/)
-  
+
   if (matchedIds) {
     tenantId = matchedIds[0];
   } else {
@@ -90,7 +93,9 @@ function open_localhostRA(tab) {
     return;
   }
 
-  if (tab.url.indexOf('staging.mlisa.io') === -1) {
+  const isNotRAUrl = ['staging.mlisa.io', 'local.mlisa.io']
+    .every(hostname => tab.url.indexOf(hostname) === -1);
+  if (isNotRAUrl) {
     console.log('Not a RUCKUS Analytics URL. Do not open new tab');
     return;
   }

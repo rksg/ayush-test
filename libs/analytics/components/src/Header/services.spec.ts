@@ -1,7 +1,8 @@
-import { AnalyticsFilter, pathToFilter } from '@acx-ui/analytics/utils'
-import { dataApiURL, store }             from '@acx-ui/store'
-import { mockGraphqlQuery }              from '@acx-ui/test-utils'
-import { DateRange, NetworkPath }        from '@acx-ui/utils'
+import { pathToFilter }           from '@acx-ui/analytics/utils'
+import { dataApiURL, store }      from '@acx-ui/store'
+import { mockGraphqlQuery }       from '@acx-ui/test-utils'
+import { DateRange, NetworkPath } from '@acx-ui/utils'
+import type { AnalyticsFilter }   from '@acx-ui/utils'
 
 import * as fixtures from './__tests__/fixtures'
 import { api }       from './services'

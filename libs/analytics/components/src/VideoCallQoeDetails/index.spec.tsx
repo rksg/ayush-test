@@ -1,6 +1,7 @@
 /* eslint-disable testing-library/no-node-access */
 import userEvent from '@testing-library/user-event'
 
+import * as config                                              from '@acx-ui/config'
 import { useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import { Provider, dataApiSearchURL, store, r1VideoCallQoeURL } from '@acx-ui/store'
 import {
@@ -19,6 +20,9 @@ import { clientSearchApi } from '../VideoCallQoe/services'
 
 import { VideoCallQoeDetails } from '.'
 
+jest.mock('@acx-ui/config')
+const get = jest.mocked(config.get)
+
 describe('VideoCallQoe Details Page', () => {
   const params = {
     tenantId: 'tenant-id'
@@ -30,7 +34,27 @@ describe('VideoCallQoe Details Page', () => {
       data: searchClientsFixture
     })
   })
+  afterEach(() => {
+    get.mockReturnValue('')
+  })
   it('render the page properly', async () => {
+    mockGraphqlQuery(r1VideoCallQoeURL, 'CallQoeTestDetails',
+      { data: callQoeTestDetailsFixtures1 })
+
+    const { asFragment } = render(
+      <Provider>
+        <VideoCallQoeDetails />
+      </Provider>, {
+        route: { params }
+      })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const fragment = asFragment()
+    fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
+      .forEach((node: Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))
+    expect(fragment).toMatchSnapshot()
+  })
+  it('render the page properly when IS_MLISA_SA', async () => {
+    get.mockReturnValue('true')
     mockGraphqlQuery(r1VideoCallQoeURL, 'CallQoeTestDetails',
       { data: callQoeTestDetailsFixtures1 })
 
@@ -157,14 +181,5 @@ describe('VideoCallQoe Details Page', () => {
     fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
       .forEach((node: Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))
     expect(fragment).toMatchSnapshot()
-  })
-  it('should handle when feature flag NAVBAR_ENHANCEMENT is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    mockGraphqlQuery(r1VideoCallQoeURL, 'CallQoeTestDetails', { data: callQoeTestDetailsFixtures1 })
-    render(<VideoCallQoeDetails />, {
-      wrapper: Provider, route: { params } })
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    expect(screen.queryByText('AI Assurance')).toBeNull()
-    expect(screen.queryByText('Network Assurance')).toBeNull()
   })
 })

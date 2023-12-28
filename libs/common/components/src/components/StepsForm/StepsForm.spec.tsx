@@ -38,14 +38,13 @@ describe('StepsForm', () => {
 
     const actions = screen.getByTestId('steps-form-actions')
 
-    expect(within(actions).getAllByRole('button').length).toEqual(3)
-    expect(screen.getByRole('button', { name: 'Back' })).toBeDisabled()
+    expect(within(actions).getAllByRole('button').length).toEqual(2)
 
     expect(await screen.findByRole('heading', { name: 'Step 1 Title' })).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Step 2 Title' })).toBeVisible()
-    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
 
     expect(screen.getByRole('button', { name: 'Back' })).toBeEnabled()
 
@@ -203,7 +202,7 @@ describe('StepsForm', () => {
 
     expect(screen.getAllByRole('button').length).toEqual(2)
 
-    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
     await waitFor(() => expect(onFinish).toHaveBeenCalled())
   })
 
@@ -216,7 +215,6 @@ describe('StepsForm', () => {
     }} />)
 
     expect(screen.getByRole('button', { name: 'Kill' })).toBeVisible()
-    expect(screen.getByRole('button', { name: 'Before' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'After' })).toBeVisible()
 
     await userEvent.click(screen.getByRole('button', { name: 'After' }))
@@ -232,7 +230,7 @@ describe('StepsForm', () => {
       cancel: 'Kill',
       submit: ''
     }} />)
-    expect(screen.getAllByRole('button').length).toBe(3)
+    expect(screen.getAllByRole('button').length).toBe(2)
   })
 
   it.skip('prevent navigate to other steps when field invalid', async () => {
@@ -309,7 +307,7 @@ describe('StepsForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
     expect(await screen.findByRole('heading', { name: 'Step 2' })).toBeVisible()
 
-    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
     expect(await screen.findByRole('alert')).toBeVisible()
 
     await userEvent.click(await screen.findByRole('button', { name: 'Back' }))
@@ -367,7 +365,7 @@ describe('StepsForm', () => {
     expect(onFinish1).toHaveBeenCalledWith({ field1: 'value' })
 
     await userEvent.type(screen.getByRole('textbox', { name: 'Field 2' }), 'value')
-    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
 
     expect(await screen.findByRole('heading', { name: 'Done 1' })).toBeVisible()
     expect(onFinish2).toHaveBeenCalledWith({ field1: 'value', field2: 'value' })

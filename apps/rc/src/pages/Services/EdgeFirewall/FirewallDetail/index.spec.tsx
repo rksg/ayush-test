@@ -1,16 +1,14 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
-import { EdgeFirewallUrls, EdgeUrlsInfo }      from '@acx-ui/rc/utils'
-import { Provider }                            from '@acx-ui/store'
-import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { EdgeFirewallUrls, EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                            from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }                 from '@acx-ui/test-utils'
 
-import { mockEdgeList }           from '../../../Devices/Edge/__tests__/fixtures'
 import { mockedFirewallDataList } from '../__tests__/fixtures'
 
 import FirewallDetail from '.'
 
-
+const { mockEdgeList } = EdgeGeneralFixtures
 const mockedUsedNavigate = jest.fn()
 const mockedEdgeListReq = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -59,25 +57,7 @@ describe('Firewall Detail', () => {
     expect(await screen.findByText('ON (IN: 2 rules, OUT: 2 rules)')).toBeVisible()
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <FirewallDetail />
-      </Provider>, {
-        route: { params, path: '/:tenantId/services/firewall/:serviceId/detail' }
-      }
-    )
-    expect(await screen.findByRole('link', {
-      name: 'Firewall'
-    })).toBeVisible()
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.queryByText('My Services')).toBeNull()
-
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <FirewallDetail />

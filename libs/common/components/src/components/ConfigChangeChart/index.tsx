@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import ReactECharts from 'echarts-for-react'
 import { useIntl }  from 'react-intl'
@@ -24,7 +24,8 @@ import {
   getSymbol,
   getChartLayoutConfig,
   tooltipFormatter,
-  getTooltipCoordinate
+  getTooltipCoordinate,
+  useLegendTableFilter
 } from './helper'
 import { ResetButton, ChartWrapper } from './styledComponents'
 
@@ -36,6 +37,12 @@ export function ConfigChangeChart ({
   selectedData,
   onDotClick,
   onBrushPositionsChange,
+  chartZoom,
+  setChartZoom,
+  setInitialZoom,
+  setLegend,
+  setSelectedData,
+  setPagination,
   ...props
 }: ConfigChangeChartProps) {
 
@@ -49,7 +56,12 @@ export function ConfigChangeChart ({
     xAxisHeight, brushWidth, symbolSize
   } = chartLayoutConfig
 
-  const [selected, setSelected] = useState<number|undefined>(selectedData)
+  const [selected, setSelected] = useState<number|undefined>(selectedData?.id)
+
+  useEffect(() => {
+    setSelected(selectedData?.filterId)
+  }, [selectedData])
+
   const [selectedLegend, setSelectedLegend] = useState(
     chartRowMapping.map(({ label }) => label).reduce((selected, label) => {
       selected[label as string] = true
@@ -58,10 +70,12 @@ export function ConfigChangeChart ({
 
   useDotClick(eChartsRef, setSelected, onDotClick)
   useLegendSelectChanged(eChartsRef, setSelectedLegend)
+  useLegendTableFilter(
+    selectedLegend, data, selectedData, setLegend, setSelectedData, setPagination)
   const { setBoundary } = useBoundaryChange(
     eChartsRef, chartLayoutConfig, chartBoundary, brushWidth, onBrushPositionsChange)
   const { canResetZoom, resetZoomCallback } =
-    useDataZoom(eChartsRef, chartBoundary, setBoundary)
+    useDataZoom(eChartsRef, chartBoundary, setBoundary, chartZoom, setChartZoom, setInitialZoom)
 
   const option: EChartsOption = {
     animation: false,
@@ -141,7 +155,7 @@ export function ConfigChangeChart ({
     toolbox: toolboxDataZoomOptions,
     dataZoom: [{
       ...dataZoomOptions([])[0],
-      minValueSpan: 60 * 60 * 1000 // an hour
+      minValueSpan: 60 * 60 * 1000
     }],
     series: chartRowMapping.slice().reverse().map(
       ({ key, label }) =>

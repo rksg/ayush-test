@@ -7,11 +7,19 @@ import moment                     from 'moment-timezone'
 import { useIntl }                from 'react-intl'
 
 import { Dropdown, Button, CaretDownSolidIcon, PageHeader, RangePicker, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                              from '@acx-ui/formatter'
 import { SwitchCliSession, SwitchStatus, useSwitchActions }                       from '@acx-ui/rc/components'
-import { useGetJwtTokenQuery, useLazyGetSwitchListQuery }                         from '@acx-ui/rc/services'
-import { SwitchRow, SwitchStatusEnum, SwitchViewModel }                           from '@acx-ui/rc/utils'
+import {
+  useGetJwtTokenQuery,
+  useLazyGetSwitchListQuery,
+  useLazyGetSwitchVenueVersionListQuery
+}                         from '@acx-ui/rc/services'
+import {
+  getStackUnitsMinLimitation,
+  SwitchRow,
+  SwitchStatusEnum,
+  SwitchViewModel
+}                           from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
@@ -43,7 +51,7 @@ function SwitchPageHeader () {
   const {
     switchDetailsContextData
   } = useContext(SwitchDetailsContext)
-  const { switchDetailHeader, currentSwitchOperational } = switchDetailsContextData
+  const { switchData, switchDetailHeader, currentSwitchOperational } = switchDetailsContextData
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -51,6 +59,7 @@ function SwitchPageHeader () {
   const linkToSwitch = useTenantLink('/devices/switch/')
 
   const [getSwitchList] = useLazyGetSwitchListQuery()
+  const [getSwitchVenueVersionList] = useLazyGetSwitchVenueVersionListQuery()
   const jwtToken = useGetJwtTokenQuery({ params: { tenantId, serialNumber } })
 
   const [isSyncing, setIsSyncing] = useState(false)
@@ -58,10 +67,14 @@ function SwitchPageHeader () {
   const [cliModalState, setCliModalOpen] = useState(false)
   const [addStackMemberOpen, setAddStackMemberOpen] = useState(false)
 
-  const isOperational = switchDetailHeader?.deviceStatus === SwitchStatusEnum.OPERATIONAL
+  const [venueFW, setVenueFW] = useState('')
+  const [venueAboveTenFw, setVenueAboveTenFw] = useState('')
+  const [maxMembers, setMaxMembers] = useState(12)
+
+  const isOperational = switchDetailHeader?.deviceStatus === SwitchStatusEnum.OPERATIONAL ||
+    switchDetailHeader?.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
   const isStack = switchDetailHeader?.isStack || false
   const isSyncedSwitchConfig = switchDetailHeader?.syncedSwitchConfig
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
 
@@ -132,6 +145,48 @@ function SwitchPageHeader () {
     }
   }
 
+  const setVenueVersion = async (switchDetail: SwitchViewModel) => {
+    return switchDetail.venueName ?
+      await getSwitchVenueVersionList({
+        params: { tenantId }, payload: {
+          firmwareType: '',
+          firmwareVersion: '',
+          searchString: switchDetail.venueName,
+          updateAvailable: ''
+        }
+      }).unwrap()
+        .then(result => {
+          const venueFw = result?.data?.find(
+            venue => venue.id === switchDetail.venueId)?.switchFirmwareVersion?.id || ''
+          const venueAboveTenFw = result?.data?.find(
+            venue => venue.id === switchDetail?.venueId)?.switchFirmwareVersionAboveTen?.id || ''
+
+          setVenueFW(venueFw)
+          setVenueAboveTenFw(venueAboveTenFw)
+
+        }).catch((error) => {
+          console.log(error) // eslint-disable-line no-console
+        }) : {}
+  }
+
+  useEffect(() => {
+    if (switchDetailHeader?.stackMembers) {
+      setVenueVersion(switchDetailHeader)
+    }
+  }, [switchDetailHeader])
+
+  useEffect(() => {
+    if(switchDetailHeader?.stackMembers){
+      const switchModel = switchDetailHeader?.model || ''
+      const syncedStackMemberCount = switchData?.stackMembers?.length || 0
+      const currentFW = switchDetailHeader?.firmwareVersion || venueFW || ''
+      const currentAboveTenFW = switchDetailHeader?.firmwareVersion || venueAboveTenFw || ''
+      const maxUnits = getStackUnitsMinLimitation(switchModel, currentFW, currentAboveTenFW)
+
+      setMaxMembers(maxUnits - syncedStackMemberCount)
+    }
+  }, [switchDetailHeader, switchData, venueFW, venueAboveTenFw])
+
   useEffect(() => {
     if (switchDetailHeader?.switchMac) {
       handleSyncData()
@@ -171,9 +226,11 @@ function SwitchPageHeader () {
           <Menu.Divider />
         </>
       }
-      {isStack &&
+      {isStack && (maxMembers > 0) &&
       <Menu.Item
-        key={MoreActions.ADD_MEMBER}>
+        key={MoreActions.ADD_MEMBER}
+        disabled={maxMembers === 0}
+      >
         {$t({ defaultMessage: 'Add Member' })}
       </Menu.Item>
       }
@@ -192,12 +249,14 @@ function SwitchPageHeader () {
       <PageHeader
         title={switchDetailHeader?.name || switchDetailHeader?.switchName || switchDetailHeader?.serialNumber || ''}
         titleExtra={
-          <SwitchStatus row={switchDetailHeader as unknown as SwitchRow} showText={!currentSwitchOperational} />}
-        breadcrumb={isNavbarEnhanced ? [
+          <SwitchStatus row={switchDetailHeader as unknown as SwitchRow}
+            showText={!currentSwitchOperational ||
+              (switchDetailHeader.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL)} />}
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Wired' }) },
           { text: $t({ defaultMessage: 'Switches' }) },
           { text: $t({ defaultMessage: 'Switch List' }), link: '/devices/switch' }
-        ] : [{ text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }]}
+        ]}
         extra={[
           !checkTimeFilterDisabled() && <RangePicker
             selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
@@ -238,7 +297,12 @@ function SwitchPageHeader () {
         jwtToken={jwtToken.data?.access_token || ''}
         switchName={switchDetailHeader?.name || switchDetailHeader?.switchName || switchDetailHeader?.serialNumber || ''}
       />
-      <AddStackMember visible={addStackMemberOpen} setVisible={setAddStackMemberOpen} />
+      <AddStackMember
+        visible={addStackMemberOpen}
+        setVisible={setAddStackMemberOpen}
+        maxMembers={maxMembers}
+        venueFirmwareVersion={venueFW}
+      />
     </>
   )
 }

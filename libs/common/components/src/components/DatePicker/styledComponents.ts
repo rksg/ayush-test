@@ -1,17 +1,114 @@
-import { TimePicker, Space } from 'antd'
-import styled                from 'styled-components/macro'
+import { TimePicker, Space }         from 'antd'
+import styled, { createGlobalStyle } from 'styled-components/macro'
 
-import { DateRange, defaultRanges } from '@acx-ui/utils'
+import { DateRange } from '@acx-ui/utils'
+
+import { RangesType } from '.'
 
 type RangePickerWrapperProps = {
   rangeOptions?: DateRange[]
   selectionType: DateRange
   isCalendarOpen: boolean
   rangeText: string
+  showTimePicker?: boolean
+  timeRangesForSelection: RangesType
 }
 
 /* eslint-disable max-len */
 const datePickerStyle = `
+  font-size: var(--acx-body-4-font-size);
+  padding: 10px 0;
+  & .ant-picker-panel {
+    border: none;
+  }
+
+  .ant-picker-panel-container {
+    border-radius: 4px;
+    background: var(--acx-primary-white);
+    box-shadow: 0px 6px 16px rgba(51, 51, 51, 0.2);
+    padding-left: var(--acx-date-picker-ranges-width);
+  }
+
+  .ant-picker-panel {
+    .ant-picker-header {
+      align-items: baseline;
+      border-bottom: none;
+      .ant-picker-header-view {
+        font-family: var(--acx-accent-brand-font);
+        font-size: var(--acx-headline-5-font-size);
+        font-weight: var(--acx-headline-5-font-weight-semi-bold);
+        color: var(--acx-neutrals-70);
+        button:hover {
+          color: inherit;
+          cursor: default;
+        }
+      }
+    }
+
+    .ant-picker-body {
+      th {
+        font-size: var(--acx-subtitle-6-font-size);
+        font-weight: var(--acx-subtitle-6-font-weight-bold);
+        color: var(--acx-neutrals-60);
+      }
+      td {
+        font-size: var(--acx-subtitle-5-font-size);
+        font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
+      }
+    }
+  }
+
+  .ant-picker-cell-in-view.ant-picker-cell-selected .ant-picker-cell-inner,
+  .ant-picker-cell-in-view.ant-picker-cell-range-start .ant-picker-cell-inner,
+  .ant-picker-cell-in-view.ant-picker-cell-range-end .ant-picker-cell-inner {
+    color: var(--acx-primary-white);
+    background: var(--acx-accents-blue-50);
+    border-radius: 20px;
+  }
+  .ant-picker-cell-in-view. ant-picker-cell-range-hover .ant-picker-cell-inner::before,
+  .ant-picker-cell-in-view. ant-picker-cell-range-hover-start .ant-picker-cell-inner::before,
+  .ant-picker-cell-in-view. ant-picker-cell-range-hover-end .ant-picker-cell-inner::before {
+    background: var(--acx-accents-blue-10);
+  }
+  .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover::before,
+  .ant-picker-cell-in-view.ant-picker-cell-range-start.ant-picker-cell-range-hover::before,
+  .ant-picker-cell-in-view.ant-picker-cell-range-end.ant-picker-cell-range-hover::before,
+  .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single).ant-picker-cell-range-hover-start::before,
+  .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single).ant-picker-cell-range-hover-end::before,
+  .ant-picker-panel > :not(.ant-picker-date-panel) .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-start::before,
+  .ant-picker-panel > :not(.ant-picker-date-panel) .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-end::before,
+  .ant-picker-cell-in-view.ant-picker-cell-in-range::before,
+  .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single)::before,
+  .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single)::before {
+    background: var(--acx-accents-blue-10);
+  }
+  .ant-picker-date-panel .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-start .ant-picker-cell-inner::after,
+  .ant-picker-date-panel .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-end .ant-picker-cell-inner::after {
+    background: var(--acx-accents-blue-10);
+  }
+  .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
+    border-color: var(--acx-accents-blue-50);
+  }
+  .ant-picker-cell-in-view.ant-picker-cell-range-hover:not(.ant-picker-cell-in-range)::after,
+  .ant-picker-cell-in-view.ant-picker-cell-range-hover-start:not(.ant-picker-cell-in-range)::after,
+  .ant-picker-cell-in-view.ant-picker-cell-range-hover-end:not(.ant-picker-cell-in-range)::after {
+    border-color: var(--acx-accents-blue-50);
+  }
+  .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single):not(.ant-picker-cell-range-end) .ant-picker-cell-inner,
+  .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single):not(.ant-picker-cell-range-start) .ant-picker-cell-inner {
+    border-radius: 20px;
+  }
+  .ant-picker-cell:hover .ant-picker-cell-inner,
+  .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
+    border-radius: 20px;
+  }
+
+  .ant-picker-footer {
+    display: none;
+  }
+`
+
+export const Wrapper = styled.div`
   .ant-picker-input {
     .ant-picker-clear {
       span[role=img] {
@@ -35,104 +132,10 @@ const datePickerStyle = `
   }
 
   .ant-picker-dropdown {
-    font-size: var(--acx-body-4-font-size);
-    padding: 10px 0;
-    & .ant-picker-panel {
-      border: none;
-    }
-
-    .ant-picker-panel-container {
-      border-radius: 4px;
-      background: var(--acx-primary-white);
-      box-shadow: 0px 6px 16px rgba(51, 51, 51, 0.2);
-      padding-left: var(--acx-date-picker-ranges-width);
-    }
-
-    .ant-picker-panel {
-      .ant-picker-header {
-        align-items: baseline;
-        border-bottom: none;
-        .ant-picker-header-view {
-          font-family: var(--acx-accent-brand-font);
-          font-size: var(--acx-headline-5-font-size);
-          font-weight: var(--acx-headline-5-font-weight-semi-bold);
-          color: var(--acx-neutrals-70);
-          button:hover {
-            color: inherit;
-            cursor: default;
-          }
-        }
-      }
-
-      .ant-picker-body {
-        th {
-          font-size: var(--acx-subtitle-6-font-size);
-          font-weight: var(--acx-subtitle-6-font-weight-bold);
-          color: var(--acx-neutrals-60);
-        }
-        td {
-          font-size: var(--acx-subtitle-5-font-size);
-          font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
-        }
-      }
-    }
-
-    .ant-picker-cell-in-view.ant-picker-cell-selected .ant-picker-cell-inner,
-    .ant-picker-cell-in-view.ant-picker-cell-range-start .ant-picker-cell-inner,
-    .ant-picker-cell-in-view.ant-picker-cell-range-end .ant-picker-cell-inner {
-      color: var(--acx-primary-white);
-      background: var(--acx-accents-blue-50);
-      border-radius: 20px;
-    }
-    .ant-picker-cell-in-view. ant-picker-cell-range-hover .ant-picker-cell-inner::before,
-    .ant-picker-cell-in-view. ant-picker-cell-range-hover-start .ant-picker-cell-inner::before,
-    .ant-picker-cell-in-view. ant-picker-cell-range-hover-end .ant-picker-cell-inner::before {
-      background: var(--acx-accents-blue-10);
-    }
-    .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover::before,
-    .ant-picker-cell-in-view.ant-picker-cell-range-start.ant-picker-cell-range-hover::before,
-    .ant-picker-cell-in-view.ant-picker-cell-range-end.ant-picker-cell-range-hover::before,
-    .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single).ant-picker-cell-range-hover-start::before,
-    .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single).ant-picker-cell-range-hover-end::before,
-    .ant-picker-panel > :not(.ant-picker-date-panel) .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-start::before,
-    .ant-picker-panel > :not(.ant-picker-date-panel) .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-end::before,
-    .ant-picker-cell-in-view.ant-picker-cell-in-range::before,
-    .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single)::before,
-    .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single)::before {
-      background: var(--acx-accents-blue-10);
-    }
-    .ant-picker-date-panel .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-start .ant-picker-cell-inner::after,
-    .ant-picker-date-panel .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-end .ant-picker-cell-inner::after {
-      background: var(--acx-accents-blue-10);
-    }
-    .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
-      border-color: var(--acx-accents-blue-50);
-    }
-    .ant-picker-cell-in-view.ant-picker-cell-range-hover:not(.ant-picker-cell-in-range)::after,
-    .ant-picker-cell-in-view.ant-picker-cell-range-hover-start:not(.ant-picker-cell-in-range)::after,
-    .ant-picker-cell-in-view.ant-picker-cell-range-hover-end:not(.ant-picker-cell-in-range)::after {
-      border-color: var(--acx-accents-blue-50);
-    }
-    .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single):not(.ant-picker-cell-range-end) .ant-picker-cell-inner,
-    .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single):not(.ant-picker-cell-range-start) .ant-picker-cell-inner {
-      border-radius: 20px;
-    }
-    .ant-picker-cell:hover .ant-picker-cell-inner,
-    .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
-      border-radius: 20px;
-    }
-
-    .ant-picker-footer {
-      display: none;
-    }
+    ${datePickerStyle}
   }
 `
 /* eslint-enable */
-
-export const Wrapper = styled.div`
-  ${datePickerStyle}
-`
-
 
 export const RangePickerWrapper = styled(Wrapper)<RangePickerWrapperProps>`
   --acx-date-picker-ranges-width: 125px;
@@ -149,8 +152,10 @@ export const RangePickerWrapper = styled(Wrapper)<RangePickerWrapperProps>`
           display: none;
         }
       `
-    : `
+    : props.showTimePicker ? `
         width: 322px;
+      ` : `
+        width: 235px;
       `
 }
     padding: 6px 11px 5px;
@@ -189,7 +194,7 @@ export const RangePickerWrapper = styled(Wrapper)<RangePickerWrapperProps>`
         li:nth-child(${
   (props) => props.rangeOptions
     ? props.rangeOptions.indexOf(props.selectionType) + 1
-    : Object.keys(defaultRanges()).indexOf(props.selectionType) + 1}) {
+    : Object.keys(props.timeRangesForSelection).indexOf(props.selectionType) + 1}) {
           font-weight: var(--acx-body-font-weight-bold);
         }
         li {
@@ -269,31 +274,31 @@ export const Buttons = styled(Space)`
 `
 
 export const ApplyMsgWrapper = styled.div`
-  padding: 0 12px;
+  padding: 5px 12px;
+  white-space: normal;
+  font-size: var(--acx-body-5-font-size);
+  line-height: var(--acx-body-5-line-height);
 `
 
 export const HiddenDateInput = styled.div`
   cursor: pointer;
   caret-color: transparent;
 
-  ${datePickerStyle}
-
-  .datepicker input {
-    height: 0px;
-    width: 0px;
-    padding: 0px;
-    width: 0px;
-    position: absolute;
-  }
-
-  .datepicker {
+  .ant-picker-borderless {
+    > .ant-picker-input > input {
+      height: 0px;
+      width: 0px;
+      padding: 0px;
+      position: absolute;
+    }
     border: 0px;
     padding: 0px;
-    
-    .ant-picker-input {
-      height: 24px;
-      width: 24px;
-    }
+  }
+`
+
+export const HiddenDateInputGlobalOverride = createGlobalStyle`
+  .ant-picker-dropdown.hidden-date-input-popover {
+    ${datePickerStyle}
 
     .ant-picker-panel {
       .ant-picker-footer {
@@ -309,8 +314,8 @@ export const HiddenDateInput = styled.div`
 
 export const FooterWrapper = styled.div`
   line-height: 20px;
-  font-size: 9.5px;
   margin-top: 5px;
+  width: 280px;
 
   button {
     float: right;
@@ -331,18 +336,6 @@ export const FooterWrapper = styled.div`
       .ant-picker-ranges {
         display: none;
       }
-    }
-  }
-
-  ${TimePickerWrapper} {
-    input {
-      display: block;
-      height: auto;
-      width: 30px;
-    }
-    .ant-picker-input {
-      justify-content: flex-end;
-      height: 15px;
     }
   }
 `

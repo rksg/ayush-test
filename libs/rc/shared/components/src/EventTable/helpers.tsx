@@ -11,7 +11,8 @@ import * as UI         from './styledComponents'
 
 type EntityType = typeof entityTypes[number]
 type EntityExistsKey = `is${Capitalize<EntityType>}Exists`
-const entityTypes = ['ap', 'client', 'network', 'switch', 'venue', 'transaction', 'edge'] as const
+const entityTypes
+  = ['ap', 'client', 'network', 'switch', 'venue', 'transaction', 'edge', 'unit'] as const
 const configurationUpdate = 'Configuration Update' as const
 
 export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
@@ -48,6 +49,10 @@ export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
     edge: {
       path: 'devices/edge/:serialNumber/details/overview',
       params: ['serialNumber']
+    },
+    unit: {
+      path: 'venues/:venueId/venue-details/units',
+      params: ['venueId']
     }
   }
 
@@ -95,6 +100,7 @@ export function valueFrom <Mapping extends Record<string, MessageDescriptor>> (
 export const getSource = (data: Event, highlightFn?: TableHighlightFnArgs) => {
   const sourceMapping: Record<keyof typeof typeMapping, keyof Event> = {
     AP: 'apName',
+    SECURITY: 'apName',
     CLIENT: 'clientName',
     NETWORK: 'apName',
     SWITCH: 'switchName',

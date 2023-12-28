@@ -6,7 +6,6 @@ import { useIntl }                           from 'react-intl'
 import { useParams }                         from 'react-router-dom'
 
 import { Button, PageHeader, SummaryCard } from '@acx-ui/components'
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import {
   useGetAdaptivePolicyQuery,
   useGetConditionsInPolicyQuery,
@@ -31,7 +30,6 @@ export default function AdaptivePolicyDetail () {
   const [attributeGroupName, seAttributeGroupName] = useState('' as string)
   const tablePath = getPolicyRoutePath(
     { type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST })
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   // eslint-disable-next-line max-len
   const { data: policyData, isLoading: isGetAdaptivePolicyLoading }= useGetAdaptivePolicyQuery({ params: { templateId, policyId } })
@@ -77,7 +75,7 @@ export default function AdaptivePolicyDetail () {
     <>
       <PageHeader
         title={policyData?.name || ''}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           {
             text: $t({ defaultMessage: 'Policies & Profiles' }),
@@ -85,14 +83,6 @@ export default function AdaptivePolicyDetail () {
           },
           { text: $t({ defaultMessage: 'Adaptive Policy' }),
             link: tablePath }
-        ] : [
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          { text: $t({ defaultMessage: 'Adaptive Policy' }),
-            link: tablePath
-          }
         ]}
         extra={filterByAccess([
           <TenantLink

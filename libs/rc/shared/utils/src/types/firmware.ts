@@ -1,5 +1,7 @@
 import { IntlShape } from 'react-intl'
 
+import { SwitchStatusEnum } from '..'
+
 export interface UpgradePreferences {
   days?: Array<string>,
   times?: Array<string>,
@@ -49,6 +51,13 @@ export interface UpdateScheduleRequest {
   switchVersionAboveTen?: string
 }
 
+export interface EdgeUpdateScheduleRequest {
+  date?: string;
+  time?: string;
+  version?: string
+  venueIds?: string[] | null
+}
+
 export interface UpdateNowRequest {
   firmwareCategoryId?: string;
   firmwareVersion?: string;
@@ -71,6 +80,7 @@ export enum FirmwareType {
   AP_FIRMWARE_UPGRADE = 'AP_FIRMWARE_UPGRADE',
   DP_FIRMWARE_UPGRADE = 'DP_FIRMWARE_UPGRADE',
   SWITCH_FIRMWARE_UPGRADE = 'SWITCH_FIRMWARE_UPGRADE',
+  EDGE_FIRMWARE_UPGRADE = 'EDGE_FIRMWARE_UPGRADE',
 }
 
 export interface VenueUpdateAdvice {
@@ -89,6 +99,7 @@ export interface FirmwareVersion {
   createdDate?: string; // onboardDate
   onboardDate?: string;
   releaseDate?: string;
+  inUse?: boolean;
 }
 
 export interface ABFVersion {
@@ -106,6 +117,7 @@ export interface EolApFirmware {
   latestEolVersion: string;
   apCount: string;
   apModels: string[];
+  isAbfGreaterThanVenueCurrentAbf: boolean;
 }
 
 export interface FirmwareVenue {
@@ -120,6 +132,7 @@ export interface FirmwareVenue {
   lastScheduleUpdate: string;
   eolApFirmwares?: EolApFirmware[];
   apModels?: string[];
+  currentVenueUnsupportedApModels? : string[]
 }
 
 export interface FirmwareVenueVersion {
@@ -153,16 +166,18 @@ export interface VersionHistory {
 export interface switchVersion {
   id: string;
   name: string;
-  version: string;
+  version?: string;
   category: FirmwareCategory;
 }
 
 export interface switchSchedule {
   timeSlot: {
-    startDateTime: string;
-    versionInfo: ScheduleVersionInfo;
+    endDateTime?: string;
+    startDateTime?: string;
+    versionInfo?: ScheduleVersionInfo;
   };
   version?: {
+    id: string;
     name: string;
     category: FirmwareCategory;
   }
@@ -178,14 +193,61 @@ export interface FirmwareSwitchVenue {
   preDownload: boolean;
   switchFirmwareVersionAboveTen: switchVersion;
   switchFirmwareVersion: switchVersion;
-  updatedAdvice: VenueUpdateAdvice;
+  updatedAdvice?: VenueUpdateAdvice;
   availableVersions: switchVersion[];
   nextSchedule: switchSchedule;
-  lastSkippedVersions: SkippedVersion[];
-  versionHistory: VersionHistory[];
+  lastSkippedVersions?: SkippedVersion[];
+  versionHistory?: VersionHistory[];
   lastScheduleUpdateTime: string;
-  switchCount?: number;
-  aboveTenSwitchCount?: number;
+  switchCount: number;
+  aboveTenSwitchCount: number;
+  status: SwitchFirmwareStatusType;
+  scheduleCount: number;
+}
+
+export enum SwitchFirmwareStatusType {
+  NONE = 'NONE',
+  INITIATE = 'INITIATE',
+  SUCCESS = 'SUCCESS',
+  FAILED = 'FAILED'
+}
+
+export interface SwitchFirmware {
+  switchId: string;
+  id: string;
+  switchName: string;
+  isStack: boolean;
+  venueId: string;
+  model: string;
+  venueName: string;
+  preDownload: boolean;
+  isSwitchLevelSchedule: boolean;
+  currentFirmware: string;
+  availableVersion: switchVersion;
+  updatedAdvice?: VenueUpdateAdvice;
+  availableVersions: switchVersion[];
+  switchNextSchedule: switchSchedule;
+  venueNextSchedule: switchSchedule;
+}
+
+export enum SwitchFwStatusEnum {
+  FW_UPD_START = 'FW_UPD_START',
+  FW_UPD_VALIDATING_PARAMETERS = 'FW_UPD_VALIDATING_PARAMETERS',
+  FW_UPD_DOWNLOADING = 'FW_UPD_DOWNLOADING',
+  FW_UPD_VALIDATING_IMAGE = 'FW_UPD_VALIDATING_IMAGE',
+  FW_UPD_SYNCING_TO_REMOTE = 'FW_UPD_SYNCING_TO_REMOTE',
+  FW_UPD_WRITING_TO_FLASH = 'FW_UPD_WRITING_TO_FLASH',
+  FW_UPD_COMPLETE = 'FW_UPD_COMPLETE',
+  FW_UPD_FAIL = 'FW_UPD_FAIL',
+  FW_UPD_PRE_DOWNLOAD_COMPLETE = 'FW_UPD_PRE_DOWNLOAD_COMPLETE',
+  FW_UPD_WAITING_RESPONSE = 'FW_UPD_WAITING_RESPONSE'
+}
+export interface SwitchFirmwareStatus {
+  switchId: string;
+  switchName: string;
+  status: SwitchFwStatusEnum;
+  targetFirmware: string;
+  switchStatus: SwitchStatusEnum;
 }
 
 export interface CurrentVersions {

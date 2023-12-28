@@ -5,6 +5,7 @@ import { useIntl }               from 'react-intl'
 
 
 import { Button, Card, showActionModal, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { CsvSize }                                from '@acx-ui/rc/components'
 import {
   useGetAdminListQuery,
@@ -37,6 +38,7 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
   const [authenticationData, setAuthenticationData] = useState<TenantAuthentications>()
   const navigate = useNavigate()
   const linkToAdministrators = useTenantLink('/administration/administrators')
+  const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
 
   const { data: adminList } = useGetAdminListQuery({ params })
 
@@ -130,23 +132,33 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
           }
         />
 
-        {hasSsoConfigured && <Col style={{ width: '190px' }}>
+        {hasSsoConfigured && <Col style={{ width: '296px', paddingLeft: 0 }}>
           <Card type='solid-bg' >
+            {isGroupBasedLoginEnabled && <div>
+              <Form.Item
+                colon={false}
+                label={$t({ defaultMessage: 'Allowed Domains' })} />
+              <h3 style={{ marginTop: '-15px' }}>
+                {authenticationData?.domains?.toString()}</h3>
+            </div>}
             <Form.Item
               colon={false}
               label={$t({ defaultMessage: 'IdP Metadata' })}
             />
-            <div style={{ marginTop: '-10px' }}><Button type='link'
+            <div style={{ marginTop: '-15px' }}><Button type='link'
               key='viewxml'
               onClick={async () => {
-                const url = authenticationData?.samlFileType === SamlFileType.direct_url
-                  ? authenticationData?.samlFileURL
-                  : await loadImageWithJWT(authenticationData?.samlFileURL as string)
-                await fetch(url)
-                  .then((response) => response.text())
-                  .then((text) => {
-                    setXmlData(text)
-                  })
+                const isDirectUrl = authenticationData?.samlFileType === SamlFileType.direct_url
+                if (isDirectUrl) {
+                  setXmlData(authenticationData?.samlFileURL || '')
+                } else {
+                  const url = await loadImageWithJWT(authenticationData?.samlFileURL as string)
+                  await fetch(url)
+                    .then((response) => response.text())
+                    .then((text) => {
+                      setXmlData(text)
+                    })
+                }
                 setModalVisible(true)
               }}>
               {$t({ defaultMessage: 'View XML code' })}
@@ -181,6 +193,7 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
       maxSize={CsvSize['5MB']}
       maxEntries={512}
       acceptType={['xml']}
+      isGroupBasedLoginEnabled={isGroupBasedLoginEnabled}
     />}
     {modalVisible && <ViewXmlModal
       visible={modalVisible}

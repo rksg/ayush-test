@@ -1,12 +1,13 @@
 import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { useIsSplitOn }                            from '@acx-ui/feature-toggle'
-import { Event, EventBase, EventMeta, TableQuery } from '@acx-ui/rc/utils'
-import { Provider }                                from '@acx-ui/store'
-import { findTBody, render, screen, within }       from '@acx-ui/test-utils'
-import { RequestPayload }                          from '@acx-ui/types'
+import { useIsSplitOn }                                            from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, Event, EventBase, EventMeta, TableQuery } from '@acx-ui/rc/utils'
+import { Provider }                                                from '@acx-ui/store'
+import { findTBody, mockServer, render, screen, within }           from '@acx-ui/test-utils'
+import { RequestPayload }                                          from '@acx-ui/types'
 
 import { events, eventsMeta } from './__tests__/fixtures'
 
@@ -121,9 +122,11 @@ describe('EventTable', () => {
       name: /AP 730-11-60 RF operating channel was changed from channel 7 to channel 9./
     })
     await userEvent.click(within(row).getByRole('button', { name: /2022/ }))
-    screen.getByText('Event Details')
+    expect(screen.getByRole('dialog')).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: 'Close' }))
-    expect(screen.queryByText('Event Details')).toBeNull()
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(screen.getByRole('dialog').parentNode)
+      .toHaveClass('ant-drawer-content-wrapper-hidden')
   })
 
   it('should close drawer, when data changed', async () => {
@@ -143,7 +146,9 @@ describe('EventTable', () => {
       ...tableQuery, data: { data: [] }
     } as unknown as TableQuery<Event, RequestPayload<unknown>, unknown>
     rerender(<Provider><EventTable tableQuery={newTableQuery} /></Provider>)
-    expect(screen.queryByText('Event Details')).toBeNull()
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(screen.getByRole('dialog').parentNode)
+      .toHaveClass('ant-drawer-content-wrapper-hidden')
   })
 
   it('renders value as-is for non entity prop', async () => {
@@ -184,7 +189,8 @@ describe('EventTable', () => {
     expect(await within(cell).findByTestId('tooltip-content')).toHaveTextContent('Not available')
   })
 
-  it('should download csv on click', async () => {
+  it('should download csv on click with event export toggle FF off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <EventTable tableQuery={tableQuery} />,
       { route: { params }, wrapper: Provider }
@@ -193,11 +199,54 @@ describe('EventTable', () => {
     expect(mockExportCsv).toBeCalled()
   })
 
+  it('should download csv on click with event export toggle FF on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockServer.use(rest.post(
+      CommonUrlsInfo.addExportSchedules.url,
+      (req, res, ctx) => {
+        return res(ctx.json({}))
+      }
+    ))
+    render(
+      <EventTable tableQuery={tableQuery} />,
+      { route: { params }, wrapper: Provider }
+    )
+    await userEvent.click(screen.getByTestId('DownloadOutlined'))
+    await userEvent.click(await screen.findByRole('menuitem', { name: 'Export Now' }))
+    expect(await
+    screen.findByText('The event export is being generated. This is taking some time…'))
+      .toBeInTheDocument()
+  })
+
   it('should not render omitColumns',async () => {
     render(
       <EventTable tableQuery={tableQuery} omitColumns={['product']}/>,
       { route: { params }, wrapper: Provider }
     )
     expect(screen.queryByText('Product')).toBeNull()
+  })
+
+  it('should open/close schedule event export drawer', async () => {
+    const params = {
+      tenantId: '7b8cb9e8e99a4f42884ae9053604a376',
+      gatewayId: 'bbc41563473348d29a36b76e95c50381',
+      activeTab: 'overview'
+    }
+    mockServer.use(
+      rest.get(
+        CommonUrlsInfo.getExportSchedules.url,
+        (req, res, ctx) => res(ctx.json({ enable: false }))
+      )
+    )
+    render(
+      <EventTable tableQuery={tableQuery} />,
+      { route: { params }, wrapper: Provider }
+    )
+    await userEvent.click(screen.getByTestId('DownloadOutlined'))
+    await userEvent.click(await screen.findByRole('menuitem', { name: 'Schedule Export' }))
+    const drawerHeader = await screen.findByText('Schedule Event Export')
+    expect(drawerHeader).toBeInTheDocument()
+    await userEvent.click(await screen.findByRole('button', { name: 'Close' }))
+    expect(drawerHeader).not.toBeInTheDocument()
   })
 })

@@ -5,12 +5,16 @@ import { TrendTypeEnum, incidentSeverities } from '@acx-ui/analytics/utils'
 
 import { IncidentSeverities } from '.'
 
-const pillColor = ({ type }: { type: TrendTypeEnum | IncidentSeverities }) => {
+const pillColor = ({ type, color }: {
+  type: TrendTypeEnum | IncidentSeverities | 'color',
+  color?: string
+}) => {
   switch (type) {
-    case TrendTypeEnum.Positive: return '--acx-semantics-green-50'
-    case TrendTypeEnum.Negative: return '--acx-semantics-red-50'
-    case TrendTypeEnum.None: return '--acx-neutrals-50'
-    default: return incidentSeverities[type as IncidentSeverities].color
+    case TrendTypeEnum.Positive: return 'var(--acx-semantics-green-50)'
+    case TrendTypeEnum.Negative: return 'var(--acx-semantics-red-50)'
+    case TrendTypeEnum.None: return 'var(--acx-neutrals-50)'
+    case 'color': return color
+    default: return `var(${incidentSeverities[type as IncidentSeverities].color})`
   }
 }
 
@@ -24,7 +28,7 @@ export const Pill = styled.span`
   display: inline-block;
   border-radius: 10px;
   padding: 3px 8px;
-  background-color: var(${pillColor});
+  background-color: ${pillColor};
   line-height: var(--acx-subtitle-6-line-height);
   ${textStyle}
   font-weight: var(--acx-subtitle-6-font-weight-bold);

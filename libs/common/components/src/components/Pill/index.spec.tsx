@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { TrendTypeEnum } from '@acx-ui/analytics/utils'
 import { render }        from '@acx-ui/test-utils'
 
-import { TrendPill, SeverityPill, ProgressPill } from '.'
+import { TrendPill, SeverityPill, ColorPill, ProgressPill } from '.'
 
 describe('TrendPill', () => {
   it('renders negative trend', () => {
@@ -35,6 +35,13 @@ describe('SeverityPill', () => {
   })
   it('renders P4', () => {
     const { asFragment } = render(<SeverityPill severity='P4' />)
+    expect(asFragment()).toMatchSnapshot()
+  })
+})
+
+describe('ColorPill', () => {
+  it('renders color pill', () => {
+    const { asFragment } = render(<ColorPill color='red' value='Red' />)
     expect(asFragment()).toMatchSnapshot()
   })
 })

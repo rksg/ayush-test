@@ -1,127 +1,74 @@
+import { Form }    from 'antd'
+import { useIntl } from 'react-intl'
 
-import { useEffect } from 'react'
+import { Loader }                                                                                                        from '@acx-ui/components'
+import { Features }                                                                                                      from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady, useTunnelProfileActions }                                                                from '@acx-ui/rc/components'
+import { useGetEdgeSdLanViewDataListQuery, useGetNetworkSegmentationViewDataListQuery, useGetTunnelProfileByIdQuery }    from '@acx-ui/rc/services'
+import { getTunnelProfileFormDefaultValues, isDefaultTunnelProfile as getIsDefaultTunnelProfile, TunnelProfileFormType } from '@acx-ui/rc/utils'
+import { useParams }                                                                                                     from '@acx-ui/react-router-dom'
 
-import { Col, Form, Row } from 'antd'
-import { useIntl }        from 'react-intl'
-
-import { PageHeader, StepsForm }                                        from '@acx-ui/components'
-import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
-import { TunnelProfileForm, TunnelProfileFormType }                     from '@acx-ui/rc/components'
-import { useGetTunnelProfileByIdQuery, useUpdateTunnelProfileMutation } from '@acx-ui/rc/services'
-import {
-  getPolicyDetailsLink,
-  getPolicyListRoutePath,
-  getPolicyRoutePath,
-  LocationExtended,
-  MtuTypeEnum,
-  PolicyOperation,
-  PolicyType,
-  redirectPreviousPage
-} from '@acx-ui/rc/utils'
-import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { TunnelProfileForm } from '../TunnelProfileForm'
 
 const EditTunnelProfile = () => {
-
   const { $t } = useIntl()
-  const navigate = useNavigate()
-  const params = useParams()
-  const location = useLocation()
-  const previousPath = (location as LocationExtended)?.state?.from?.pathname
-  const tablePath = getPolicyRoutePath({
-    type: PolicyType.TUNNEL_PROFILE,
-    oper: PolicyOperation.LIST
-  })
-  const linkToTableView = useTenantLink(tablePath)
+  const { tenantId, policyId } = useParams()
   const [form] = Form.useForm()
-  const { data: tunnelProfileData } = useGetTunnelProfileByIdQuery(
-    { params: { id: params.policyId } }
+  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
+  const { data: tunnelProfileData, isLoading } = useGetTunnelProfileByIdQuery(
+    { params: { id: policyId } }
   )
-  const [updateTunnelProfile] = useUpdateTunnelProfileMutation()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const { updateTunnelProfile } = useTunnelProfileActions()
 
-  const isDefaultTunnelProfile = params.tenantId === tunnelProfileData?.id
-
-  useEffect(() => {
-    form.setFieldValue('name', tunnelProfileData?.name)
-    form.setFieldValue('mtuSize', tunnelProfileData?.mtuSize)
-    form.setFieldValue('mtuType', tunnelProfileData?.mtuType)
-    form.setFieldValue('forceFragmentation', tunnelProfileData?.forceFragmentation)
-
-    const ageTime = tunnelProfileData?.ageTimeMinutes || 20
-    if (ageTime % 10080 === 0) {
-      form.setFieldValue('ageTimeMinutes', ageTime / 10080)
-      form.setFieldValue('ageTimeUnit', 'week')
-    } else if (ageTime % 1440 === 0) {
-      form.setFieldValue('ageTimeMinutes', ageTime / 1440)
-      form.setFieldValue('ageTimeUnit', 'days')
-    } else {
-      form.setFieldValue('ageTimeMinutes', ageTime)
-      form.setFieldValue('ageTimeUnit', 'minutes')
+  const { edgeSdLanData, isSdLanLoading } = useGetEdgeSdLanViewDataListQuery(
+    { payload: {
+      filters: { tunnelProfileId: [policyId] }
+    } },
+    {
+      skip: !isEdgeSdLanReady,
+      selectFromResult: ({ data, isLoading }) => ({
+        edgeSdLanData: data?.data?.[0],
+        isSdLanLoading: isLoading
+      })
     }
-  }, [form, tunnelProfileData])
+  )
 
-  const handleUpdateTunnelProfile = async (data: TunnelProfileFormType) => {
-    try {
-      if (data.ageTimeUnit === 'week') {
-        data.ageTimeMinutes = data.ageTimeMinutes* 7 * 24 * 60
-      } else if (data.ageTimeUnit === 'days') {
-        data.ageTimeMinutes = data.ageTimeMinutes * 24 * 60
+  const {
+    nsgId,
+    isNSGLoading
+  } = useGetNetworkSegmentationViewDataListQuery({
+    payload: {
+      filters: { vxlanTunnelProfileId: [policyId] }
+    }
+  }, {
+    skip: !isEdgeSdLanReady,
+    selectFromResult: ({ data, isLoading }) => {
+      return {
+        nsgId: data?.data[0]?.id,
+        isNSGLoading: isLoading
       }
-      let pathParams = { id: params.policyId }
-      await updateTunnelProfile({ params: pathParams, payload: data }).unwrap()
-      redirectPreviousPage(navigate, previousPath, linkToTableView)
-    } catch (error) {
-      // TODO Error message TBD
     }
-  }
+  })
+
+  const handelUpdate = (data: TunnelProfileFormType) =>
+    updateTunnelProfile(policyId || '', data)
+
+  const isDefaultTunnelProfile = getIsDefaultTunnelProfile(tunnelProfileData, tenantId!)
+  const formInitValues = getTunnelProfileFormDefaultValues(tunnelProfileData)
+  if (nsgId || edgeSdLanData)
+    formInitValues.disabledFields = ['type']
 
   return (
-    <>
-      <PageHeader
-        title={$t({ defaultMessage: 'Edit Tunnel Profile' })}
-        breadcrumb={isNavbarEnhanced ? [
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          {
-            text: $t({ defaultMessage: 'Tunnel Profile' }),
-            link: tablePath
-          }
-        ] : [
-          {
-            text: $t({ defaultMessage: 'Tunnel Profile' }),
-            link: tablePath
-          },
-          {
-            text: tunnelProfileData?.name || '',
-            link: getPolicyDetailsLink({
-              type: PolicyType.TUNNEL_PROFILE,
-              oper: PolicyOperation.DETAIL,
-              policyId: tunnelProfileData?.id || ''
-            })
-          }
-        ]}
-      />
-      <StepsForm
+    <Loader states={[{ isLoading: isLoading || isSdLanLoading || isNSGLoading }]}>
+      <TunnelProfileForm
         form={form}
-        onFinish={handleUpdateTunnelProfile}
-        onCancel={() => redirectPreviousPage(navigate, previousPath, linkToTableView)}
-        buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
-        initialValues={{
-          mtuType: MtuTypeEnum.AUTO
-        }}
-      >
-        <StepsForm.StepForm>
-          <Row gutter={20}>
-            <Col span={8}>
-              <TunnelProfileForm isDefaultTunnelProfile={isDefaultTunnelProfile}/>
-            </Col>
-          </Row>
-        </StepsForm.StepForm>
-      </StepsForm>
-    </>
+        title={$t({ defaultMessage: 'Edit Tunnel Profile' })}
+        submitButtonLabel={$t({ defaultMessage: 'Apply' })}
+        onFinish={handelUpdate}
+        isDefaultTunnel={isDefaultTunnelProfile}
+        initialValues={formInitValues}
+      />
+    </Loader>
   )
 }
 

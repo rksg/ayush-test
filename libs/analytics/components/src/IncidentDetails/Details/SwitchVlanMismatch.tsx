@@ -6,13 +6,14 @@ import {
   shortDescription
 } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
-import { useIsSplitOn, Features }                     from '@acx-ui/feature-toggle'
 
+import { FixedAutoSizer }                 from '../../DescriptionSection/styledComponents'
+import { ImpactedSwitchVLANsDetails }     from '../Charts/ImpactedSwitchVLANDetails'
+import { ImpactedSwitchVLANsTable }       from '../Charts/ImpactedSwitchVLANsTable'
 import { IncidentAttributes, Attributes } from '../IncidentAttributes'
 import { Insights }                       from '../Insights'
 
 import MuteIncident from './MuteIncident'
-import * as UI      from './styledComponents'
 
 export const SwitchVlanMismatch = (incident: Incident) => {
   const { $t } = useIntl()
@@ -32,10 +33,8 @@ export const SwitchVlanMismatch = (incident: Incident) => {
         title={$t({ defaultMessage: 'Incident Details' })}
         titleExtra={<SeverityPill severity={calculateSeverity(incident.severity)!} />}
         breadcrumb={[
-          ...(useIsSplitOn(Features.NAVBAR_ENHANCEMENT) ? [
-            { text: $t({ defaultMessage: 'AI Assurance' }) },
-            { text: $t({ defaultMessage: 'AI Analytics' }) }
-          ]:[]),
+          { text: $t({ defaultMessage: 'AI Assurance' }) },
+          { text: $t({ defaultMessage: 'AI Analytics' }) },
           { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
         ]}
         subTitle={shortDescription(incident)}
@@ -43,14 +42,20 @@ export const SwitchVlanMismatch = (incident: Incident) => {
       />
       <GridRow>
         <GridCol col={{ span: 4 }}>
-          <UI.FixedAutoSizer>
+          <FixedAutoSizer>
             {({ width }) => (<div style={{ width }}>
               <IncidentAttributes incident={incident} visibleFields={attributeList} />
             </div>)}
-          </UI.FixedAutoSizer>
+          </FixedAutoSizer>
         </GridCol>
         <GridCol col={{ span: 20 }}>
           <Insights incident={incident} />
+        </GridCol>
+        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '129px' }}>
+          <ImpactedSwitchVLANsDetails incident={incident} />
+        </GridCol>
+        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '326px' }}>
+          <ImpactedSwitchVLANsTable incident={incident} />
         </GridCol>
       </GridRow>
     </>

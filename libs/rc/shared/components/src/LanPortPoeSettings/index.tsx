@@ -5,6 +5,7 @@ import { useIntl }              from 'react-intl'
 import { ApModel, CapabilitiesApModel, VenueLanPorts, WifiApSetting } from '@acx-ui/rc/utils'
 
 export function LanPortPoeSettings (props: {
+  context?: string,
   selectedModel: VenueLanPorts | WifiApSetting,
   selectedModelCaps: ApModel | CapabilitiesApModel,
   onGUIChanged?: (fieldName: string) => void,
@@ -13,6 +14,7 @@ export function LanPortPoeSettings (props: {
 
   const { $t } = useIntl()
   const {
+    context = 'venue',
     selectedModel,
     selectedModelCaps,
     onGUIChanged,
@@ -24,7 +26,7 @@ export function LanPortPoeSettings (props: {
   }
 
   // waiting for backend support AP PoE Mode
-  const isPoeModeImplemented = false
+  const isPoeModeImplemented = (context === 'venue')
 
   return (<>
     { (isPoeModeImplemented && selectedModelCaps?.canSupportPoeMode) &&

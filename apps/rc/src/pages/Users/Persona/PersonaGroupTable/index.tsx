@@ -3,15 +3,17 @@ import { useEffect, useState, useContext } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, showToast, Table, TableProps } from '@acx-ui/components'
-import { Features, useIsTierAllowed }           from '@acx-ui/feature-toggle'
-import { DownloadOutlined }                     from '@acx-ui/icons'
+import { Loader, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
+import { TierFeatures, useIsTierAllowed }                    from '@acx-ui/feature-toggle'
+import { DownloadOutlined }                                  from '@acx-ui/icons'
 import {
   DpskPoolLink,
   MacRegistrationPoolLink,
   NetworkSegmentationLink,
-  PersonaGroupLink,
-  VenueLink
+  IdentityGroupLink,
+  useDpskNewConfigFlowParams,
+  VenueLink,
+  PersonaGroupDrawer
 } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
@@ -29,9 +31,9 @@ import {
 } from '@acx-ui/rc/services'
 import { FILTER, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess }                   from '@acx-ui/user'
+import { exportMessageMapping }                        from '@acx-ui/utils'
 
-import { PersonaGroupContext } from '..'
-import { PersonaGroupDrawer }  from '../PersonaGroupDrawer'
+import { IdentityGroupContext } from '..'
 
 const propertyConfigDefaultPayload = {
   sortField: 'venueName',
@@ -47,9 +49,10 @@ function useColumns (
   nsgMap: Map<string, string>
 ) {
   const { $t } = useIntl()
-  const networkSegmentationEnabled = useIsTierAllowed(Features.EDGES)
+  const networkSegmentationEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
-  const { data: dpskPool } = useGetDpskListQuery({})
+  const { data: dpskPool } = useGetDpskListQuery({ params: dpskNewConfigFlowParams })
   const { data: macList } = useMacRegListsQuery({
     payload: { sortField: 'name', sortOrder: 'ASC', page: 1, pageSize: 10000 }
   })
@@ -70,12 +73,12 @@ function useColumns (
   const columns: TableProps<PersonaGroup>['columns'] = [
     {
       key: 'name',
-      title: $t({ defaultMessage: 'Persona Group' }),
+      title: $t({ defaultMessage: 'Identity Group' }),
       dataIndex: 'name',
       sorter: true,
       searchable: true,
       render: (_, row) =>
-        <PersonaGroupLink
+        <IdentityGroupLink
           name={row.name}
           personaGroupId={row.id}
         />
@@ -126,23 +129,23 @@ function useColumns (
           macRegistrationPoolId={row.macRegistrationPoolId}
         />
     },
-    {
-      key: 'nsgId',
-      title: $t({ defaultMessage: 'Network Segmentation' }),
-      dataIndex: 'nsgId',
+    ...(networkSegmentationEnabled ? [{
+      key: 'personalIdentityNetworkId',
+      title: $t({ defaultMessage: 'Personal Identity Network' }),
+      dataIndex: 'personalIdentityNetworkId',
       sorter: true,
       filterMultiple: false,
       filterable: nsgList?.data.map(nsg => ({ key: nsg.id, value: nsg.name })) ?? [],
       render: (_, row) =>
         <NetworkSegmentationLink
-          nsgId={row.nsgId}
-          name={nsgMap.get(row.nsgId ?? '')}
+          id={row.personalIdentityNetworkId}
+          name={nsgMap.get(row.personalIdentityNetworkId ?? '')}
         />
-    },
+    } as TableColumn<PersonaGroup>] : []),
     {
-      key: 'personaCount',
-      title: $t({ defaultMessage: 'Personas' }),
-      dataIndex: 'personaCount',
+      key: 'identityCount',
+      title: $t({ defaultMessage: 'Identities' }),
+      dataIndex: 'identityCount',
       align: 'center'
     }
   ]
@@ -170,7 +173,8 @@ export function PersonaGroupTable () {
     visible: false,
     data: {} as PersonaGroup | undefined
   })
-  const { setPersonaGroupCount } = useContext(PersonaGroupContext)
+  const { setIdentityGroupCount } = useContext(IdentityGroupContext)
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
   const [getVenues] = useLazyVenuesListQuery()
   const [getDpskById] = useLazyGetDpskQuery()
@@ -197,7 +201,12 @@ export function PersonaGroupTable () {
     const nsgPools = new Map()
 
     tableQuery.data?.data.forEach(personaGroup => {
-      const { macRegistrationPoolId, dpskPoolId, propertyId, nsgId } = personaGroup
+      const {
+        macRegistrationPoolId,
+        dpskPoolId,
+        propertyId,
+        personalIdentityNetworkId
+      } = personaGroup
 
       if (propertyId) {
         venueIds.push(propertyId)
@@ -213,7 +222,7 @@ export function PersonaGroupTable () {
       }
 
       if (dpskPoolId) {
-        getDpskById({ params: { serviceId: dpskPoolId } })
+        getDpskById({ params: { serviceId: dpskPoolId, ...dpskNewConfigFlowParams } })
           .then(result => {
             if (result.data) {
               dpskPools.set(dpskPoolId, result.data.name)
@@ -221,11 +230,11 @@ export function PersonaGroupTable () {
           })
       }
 
-      if (nsgId) {
-        getNsgById({ params: { tenantId, serviceId: nsgId } })
+      if (personalIdentityNetworkId) {
+        getNsgById({ params: { tenantId, serviceId: personalIdentityNetworkId } })
           .then(result => {
             if (result.data) {
-              nsgPools.set(nsgId, result.data.name)
+              nsgPools.set(personalIdentityNetworkId, result.data.name)
             }
           })
       }
@@ -256,17 +265,20 @@ export function PersonaGroupTable () {
     const { id, name } = selectedRow
     doProfileDelete(
       [selectedRow],
-      $t({ defaultMessage: 'Persona Group' }),
+      $t({ defaultMessage: 'Identity Group' }),
       selectedRow.name,
       [
-        { fieldName: 'nsgId', fieldText: $t({ defaultMessage: 'Network segmentation' }) },
+        {
+          fieldName: 'personalIdentityNetworkId',
+          fieldText: $t({ defaultMessage: 'Personal Identity Network' })
+        },
         { fieldName: 'propertyId', fieldText: $t({ defaultMessage: 'Venue' }) }
       ],
       async () => deletePersonaGroup({ params: { groupId: id } })
         .then(() => {
           showToast({
             type: 'success',
-            content: $t({ defaultMessage: 'Persona Group {name} was deleted' }, { name })
+            content: $t({ defaultMessage: 'Identity Group {name} was deleted' }, { name })
           })
           callback()
         })
@@ -275,7 +287,7 @@ export function PersonaGroupTable () {
 
   const actions: TableProps<PersonaGroup>['actions'] = [
     {
-      label: $t({ defaultMessage: 'Add Persona Group' }),
+      label: $t({ defaultMessage: 'Add Identity Group' }),
       onClick: () => {
         setDrawerState({ isEdit: false, visible: true, data: undefined })
       }
@@ -293,8 +305,8 @@ export function PersonaGroupTable () {
     {
       label: $t({ defaultMessage: 'Delete' }),
       disabled: (([selectedItem]) =>
-        (selectedItem && selectedItem.personaCount)
-          ? selectedItem.personaCount > 0 : false
+        (selectedItem && selectedItem.identityCount)
+          ? selectedItem.identityCount > 0 : false
       ),
       onClick: ([selectedRow], clearSelection) => {
         doDelete(selectedRow, clearSelection)
@@ -310,7 +322,8 @@ export function PersonaGroupTable () {
         ? customFilters?.dpskPoolId[0] : undefined,
       macRegistrationPoolId: Array.isArray(customFilters?.macRegistrationPoolId)
         ? customFilters?.macRegistrationPoolId[0] : undefined,
-      nsgId: Array.isArray(customFilters?.nsgId) ? customFilters?.nsgId[0] : undefined,
+      personalIdentityNetworkId: Array.isArray(customFilters?.personalIdentityNetworkId)
+        ? customFilters?.personalIdentityNetworkId[0] : undefined,
       propertyId: Array.isArray(customFilters?.propertyId)
         ? customFilters?.propertyId[0] : undefined
     }
@@ -318,7 +331,7 @@ export function PersonaGroupTable () {
     tableQuery.setPayload(payload)
   }
 
-  setPersonaGroupCount?.(tableQuery.data?.totalCount || 0)
+  setIdentityGroupCount?.(tableQuery.data?.totalCount || 0)
   return (
     <Loader
       states={[
@@ -340,6 +353,7 @@ export function PersonaGroupTable () {
         rowSelection={hasAccess() && { type: 'radio' }}
         iconButton={{
           icon: <DownloadOutlined data-testid={'export-persona-group'} />,
+          tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
           onClick: downloadPersonaGroups
         }}
       />

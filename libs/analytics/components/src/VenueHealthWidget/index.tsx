@@ -1,8 +1,9 @@
 import { useIntl } from 'react-intl'
 
 import { healthApi }                               from '@acx-ui/analytics/services'
-import { AnalyticsFilter, kpiConfig }              from '@acx-ui/analytics/utils'
+import { kpiConfig }                               from '@acx-ui/analytics/utils'
 import { Card, GridRow, GridCol, Loader, Tooltip } from '@acx-ui/components'
+import type { AnalyticsFilter }                    from '@acx-ui/utils'
 
 import { KpiWidget } from '../KpiWidget'
 

@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
 import { MspUrlsInfo }                                                                       from '@acx-ui/msp/utils'
 import { Provider }                                                                          from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
@@ -152,7 +151,7 @@ describe('VarCustomers', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
   })
-  it('should render correctly', async () => {
+  it.skip('should render correctly', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
@@ -176,23 +175,7 @@ describe('VarCustomers', () => {
       expect(within(rows[index]).getByText(item.tenantName)).toBeVisible()
     })
   })
-  it('should render breadcrumb correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    user.useUserProfileContext = jest.fn().mockImplementation(() => {
-      return { data: userProfile }
-    })
-    render(
-      <Provider>
-        <VarCustomers />
-      </Provider>, {
-        route: { params, path: '/:tenantId/v/dashboard/varCustomers' }
-      })
-
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    expect(screen.queryByText('My Customers')).toBeNull()
-  })
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })

@@ -160,7 +160,10 @@ const FirewallEdgesTable = (props: { data?: FirewallFormEdge[] }) => {
       'firewallName'
     ],
     sortField: 'name',
-    sortOrder: 'ASC'
+    sortOrder: 'ASC',
+    filters: {
+      wanPortEnabled: ['TRUE']
+    }
   }
 
   return (

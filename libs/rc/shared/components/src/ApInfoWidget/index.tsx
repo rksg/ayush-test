@@ -6,7 +6,7 @@ import {
   IncidentBySeverityDonutChart, KpiWidget, TtcTimeWidget
 } from '@acx-ui/analytics/components'
 import { healthApi }                                               from '@acx-ui/analytics/services'
-import { AnalyticsFilter, kpiConfig }                              from '@acx-ui/analytics/utils'
+import { kpiConfig }                                               from '@acx-ui/analytics/utils'
 import { cssStr, Loader, Card, GridRow, GridCol, NoActiveContent } from '@acx-ui/components'
 import type { DonutChartData }                                     from '@acx-ui/components'
 import {  useAlarmsListQuery }                                     from '@acx-ui/rc/services'
@@ -18,6 +18,7 @@ import {
 import { CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'
 import { WrapIfAccessible }              from '@acx-ui/user'
+import type { AnalyticsFilter }          from '@acx-ui/utils'
 
 import { AlarmsDrawer } from '../AlarmsDrawer'
 

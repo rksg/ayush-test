@@ -1,7 +1,6 @@
 import { useIntl } from 'react-intl'
 
 import { PageHeader, Tabs }                               from '@acx-ui/components'
-import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import { useNavigate, useTenantLink }                     from '@acx-ui/react-router-dom'
 import { EmbeddedReport, ReportType, usePageHeaderExtra } from '@acx-ui/reports/components'
 import { filterByAccess }                                 from '@acx-ui/user'
@@ -28,7 +27,6 @@ function isElementArray (data: JSX.Element | JSX.Element[]
 
 const useTabs = () : SwitchTab[] => {
   const { $t } = useIntl()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const listTab = {
     key: SwitchTabsEnum.LIST,
     ...useSwitchesTable()
@@ -42,16 +40,12 @@ const useTabs = () : SwitchTab[] => {
     />,
     headerExtra: usePageHeaderExtra(ReportType.WIRED)
   }
-  return [
-    listTab,
-    ...(isNavbarEnhanced ? [wiredReportTab] : [])
-  ]
+  return [listTab, wiredReportTab]
 }
 
 export function SwitchList ({ tab }: { tab: SwitchTabsEnum }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const basePath = useTenantLink('/devices/')
   const onTabChange = (tab: string) =>
     navigate({
@@ -62,14 +56,8 @@ export function SwitchList ({ tab }: { tab: SwitchTabsEnum }) {
   const { component, headerExtra } = tabs.find(({ key }) => key === tab)!
   return <>
     <PageHeader
-      title={isNavbarEnhanced
-        ? $t({ defaultMessage: 'Switches' })
-        : $t({ defaultMessage: 'Switch' })
-      }
-      breadcrumb={isNavbarEnhanced
-        ? [{ text: $t({ defaultMessage: 'Wired' }) }]
-        : undefined
-      }
+      title={$t({ defaultMessage: 'Switches' })}
+      breadcrumb={[{ text: $t({ defaultMessage: 'Wired' }) }]}
       footer={
         tabs.length > 1 && <Tabs activeKey={tab} onChange={onTabChange}>
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}

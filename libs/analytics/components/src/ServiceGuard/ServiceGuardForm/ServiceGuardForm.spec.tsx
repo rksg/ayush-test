@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
+import { get }            from '@acx-ui/config'
 import { useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { networkApi }     from '@acx-ui/rc/services'
 import { CommonUrlsInfo } from '@acx-ui/rc/utils'
@@ -26,12 +27,14 @@ import {
   fetchServiceGuardSpec,
   serviceGuardSpecNames,
   mockNetworkHierarchy
-}                                 from '../__tests__/fixtures'
+}                                from '../__tests__/fixtures'
 import { ServiceGuardSpecGuard } from '../ServiceGuardGuard'
 
 import { ServiceGuardForm } from './ServiceGuardForm'
 
 const { click, type, selectOptions } = userEvent
+
+jest.mock('@acx-ui/config', () => ({ get: jest.fn() }))
 
 const mockedNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -84,7 +87,7 @@ describe('ServiceGuardForm', () => {
     store.dispatch(dataApi.util.resetApiState())
     store.dispatch(networkApi.util.resetApiState())
     store.dispatch(api.util.resetApiState())
-    mockGraphqlQuery(dataApiURL, 'RecentNetworkHierarchy', { data: mockNetworkHierarchy })
+    mockGraphqlQuery(dataApiURL, 'VenueHierarchy', { data: mockNetworkHierarchy })
     mockNetworksQuery()
     mockGraphqlQuery(apiUrl, 'ServiceGuardSpecNames', { data: serviceGuardSpecNames })
     mockGraphqlQuery(apiUrl, 'Wlans', { data: { wlans } })
@@ -98,17 +101,6 @@ describe('ServiceGuardForm', () => {
     })
     expect(await screen.findByText('AI Assurance')).toBeVisible()
     expect(await screen.findByText('Network Assurance')).toBeVisible()
-    expect(await screen.findByText('Service Validation')).toBeVisible()
-  })
-
-  it('should handle when feature flag NAVBAR_ENHANCEMENT is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<ServiceGuardForm />, {
-      wrapper: Provider,
-      route: { params: { tenantId: 't-id' } }
-    })
-    expect(screen.queryByText('AI Assurance')).toBeNull()
-    expect(screen.queryByText('Network Assurance')).toBeNull()
     expect(await screen.findByText('Service Validation')).toBeVisible()
   })
 
@@ -158,7 +150,7 @@ describe('ServiceGuardForm', () => {
       data: { createServiceGuardSpec: expected }
     })
 
-    await click(actions.getByRole('button', { name: 'Finish' }))
+    await click(actions.getByRole('button', { name: 'Create' }))
 
     expect(await screen.findByText('Service Validation test created')).toBeVisible()
     expect(mockedNavigate).toBeCalled()
@@ -226,5 +218,23 @@ describe('ServiceGuardForm', () => {
 
     expect(await screen.findByText('Duplicate test name exist')).toBeVisible()
     expect(mockedNavigate).not.toBeCalled()
+  })
+
+  describe('RA', () => {
+    beforeEach(() => jest.mocked(get).mockReturnValue('true'))
+
+    it('renders tooltip in heading', async () => {
+      render(<ServiceGuardForm />, {
+        wrapper: Provider,
+        route: { params: { tenantId: 't-id' } }
+      })
+
+      const form = within(await screen.findByTestId('steps-form'))
+      const body = within(form.getByTestId('steps-form-body'))
+
+      const heading = await body.findByRole('heading', { name: 'Settings' })
+      expect(heading).toBeVisible()
+      expect(await within(heading).findByTestId('QuestionMarkCircleOutlined')).toBeVisible()
+    })
   })
 })

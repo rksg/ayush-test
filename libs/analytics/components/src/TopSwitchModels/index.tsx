@@ -1,9 +1,9 @@
 import { defineMessage, useIntl } from 'react-intl'
 import AutoSizer                  from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter }                                                 from '@acx-ui/analytics/utils'
 import type { DonutChartData }                                             from '@acx-ui/components'
 import { HistoricalCard, Loader, NoData, DonutChart, qualitativeColorSet } from '@acx-ui/components'
+import type { AnalyticsFilter }                                            from '@acx-ui/utils'
 
 import { useTopSwitchModelsQuery } from './services'
 

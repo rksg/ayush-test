@@ -1,13 +1,12 @@
-import { Menu, Dropdown } from 'antd'
-import { useIntl }        from 'react-intl'
+import { Menu }    from 'antd'
+import { useIntl } from 'react-intl'
 
-import { LayoutUI }                from '@acx-ui/components'
+import { LayoutUI, Dropdown }      from '@acx-ui/components'
 import { get }                     from '@acx-ui/config'
 import { AccountCircleSolid }      from '@acx-ui/icons'
 import { TenantLink, useLocation } from '@acx-ui/react-router-dom'
 import { useUserProfileContext }   from '@acx-ui/user'
-
-import { UserNameButton, LogOut } from './styledComponents'
+import { userLogout }              from '@acx-ui/utils'
 
 const UserButton = () => {
   const { $t } = useIntl()
@@ -29,9 +28,7 @@ const UserButton = () => {
             window.open(changePasswordUrl, '_blank')
             break
           case 'logout':
-            const token = sessionStorage.getItem('jwt')?? null
-            sessionStorage.removeItem('jwt')
-            window.location.href = token? `/logout?token=${token}` : '/logout'
+            userLogout()
             break
         }
       }}
@@ -50,24 +47,20 @@ const UserButton = () => {
         { type: 'divider' },
         {
           key: 'logout',
-          label: <div style={{ display: 'flex', alignItems: 'center' }}>
-            <LogOut/>
-            <span>{$t({ defaultMessage: 'Log out' })}  </span>
-          </div>
+          label: <Dropdown.MenuItemWithIcon>
+            <LayoutUI.LogOutIcon />
+            {$t({ defaultMessage: 'Log out' })}
+          </Dropdown.MenuItemWithIcon>
         }
       ]}
     />
   )
 
-  return (
-    <Dropdown overlay={menuHeaderDropdown} trigger={['click']} placement='bottomLeft'>
-      {
-        userProfile?.initials
-          ? <UserNameButton>{userProfile.initials}</UserNameButton>
-          : <LayoutUI.ButtonSolid icon={<AccountCircleSolid />} />
-      }
-    </Dropdown>
-  )
+  return <Dropdown overlay={menuHeaderDropdown} placement='bottomLeft'>{() =>
+    userProfile?.initials
+      ? <LayoutUI.UserNameButton>{userProfile.initials}</LayoutUI.UserNameButton>
+      : <LayoutUI.ButtonSolid icon={<AccountCircleSolid />} />
+  }</Dropdown>
 }
 
 export default UserButton

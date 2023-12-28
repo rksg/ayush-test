@@ -4,11 +4,13 @@ import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 import { StepsForm }        from '@acx-ui/components'
+import { nsgApi }           from '@acx-ui/rc/services'
 import {
   DistributionSwitch,
+  EdgeUrlsInfo,
   NetworkSegmentationUrls
 } from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -22,10 +24,12 @@ import {
   mockNsgSwitchInfoData
 } from '../../__tests__/fixtures'
 
+import { StaticRouteModal } from './StaticRouteModal'
+
 import { DistributionSwitchForm } from './'
 
-const createNsgPath = '/:tenantId/services/networkSegmentation/create'
-const updateNsgPath = '/:tenantId/services/networkSegmentation/:serviceId/edit'
+const createNsgPath = '/:tenantId/services/personalIdentityNetwork/create'
+const updateNsgPath = '/:tenantId/services/personalIdentityNetwork/:serviceId/edit'
 
 type MockDrawerProps = React.PropsWithChildren<{
   open: boolean
@@ -46,12 +50,19 @@ jest.mock('./DistributionSwitchDrawer', () => ({
     </div>
 }))
 
+jest.mock('../../../../Devices/Edge/EdgeDetails/EditEdge/StaticRoutes', () => ({
+  ...jest.requireActual('../../../../Devices/Edge/EdgeDetails/EditEdge/StaticRoutes'),
+  default: () => <div data-testid={'StaticRoutes'}></div>
+}))
+
 
 describe('DistributionSwitchForm', () => {
   let params: { tenantId: string, serviceId: string }
 
   const requestSpy = jest.fn()
   beforeEach(() => {
+    store.dispatch(nsgApi.util.resetApiState())
+
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       serviceId: 'testServiceId'
@@ -70,6 +81,10 @@ describe('DistributionSwitchForm', () => {
           ] }))
         }
       ),
+      rest.get(
+        EdgeUrlsInfo.getEdge.url,
+        (req, res, ctx) => res(ctx.json({ serialNumber: '0000000001', name: 'Smart Edge 1' }))
+      ),
       rest.post(
         NetworkSegmentationUrls.validateDistributionSwitchInfo.url,
         (req, res, ctx) => res(ctx.json({ response: { valid: true } }))
@@ -77,7 +92,7 @@ describe('DistributionSwitchForm', () => {
     )
   })
 
-  it.skip('should edit correctly', async () => {
+  it('should edit correctly', async () => {
     const user = userEvent.setup()
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
@@ -88,9 +103,7 @@ describe('DistributionSwitchForm', () => {
       venueId: 'venueId',
       edgeId: 'edgeId',
       distributionSwitchInfos: mockNsgSwitchInfoData.distributionSwitches,
-      originalDistributionSwitchInfos: mockNsgSwitchInfoData.distributionSwitches,
-      accessSwitchInfos: mockNsgSwitchInfoData.accessSwitches,
-      originalAccessSwitchInfos: mockNsgSwitchInfoData.accessSwitches
+      accessSwitchInfos: mockNsgSwitchInfoData.accessSwitches
     })
 
     render(
@@ -99,16 +112,16 @@ describe('DistributionSwitchForm', () => {
       </Provider>, {
         route: { params, path: updateNsgPath }
       })
+
     const row = await screen.findByRole('row', { name: /FMN4221R00H---DS---3/i })
     await user.click(await within(row).findByRole('radio'))
-    const alert = await screen.findByRole('alert')
-    await user.click(await within(alert).findByRole('button', { name: 'Edit' }))
+    await user.click(await screen.findByRole('button', { name: 'Edit' }))
 
     const dialog = await screen.findByTestId('DistributionSwitchDrawer')
     await user.click(await within(dialog).findByRole('button', { name: 'Cancel' }))
     await waitFor(() => expect(dialog).not.toBeVisible())
 
-    await user.click(await within(alert).findByRole('button', { name: 'Delete' }))
+    await user.click(await screen.findByRole('button', { name: 'Delete' }))
 
     await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(2))
   })
@@ -138,5 +151,20 @@ describe('DistributionSwitchForm', () => {
     await user.click(await within(dialog).findByRole('button', { name: 'Save' }))
 
     await waitFor(() => expect(dialog).not.toBeVisible())
+  })
+})
+
+describe('StaticRouteModal', () => {
+  it('Should render successfully', async () => {
+    render(<StaticRouteModal edgeId='0000000001' edgeName='Smart Edge 1' />)
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Static Route' }))
+
+    const form = await screen.findByTestId('StaticRoutes')
+    await waitFor(() => expect(form).toBeVisible())
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+
+    expect(form).not.toBeVisible()
   })
 })

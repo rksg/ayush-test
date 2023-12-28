@@ -83,7 +83,7 @@ export function DataRateSettingForm () {
     <StepsForm.FieldLabel width='200px'>
       {$t({ defaultMessage: 'Enable Rate Limiting' })}
       <Form.Item
-        name='rateLimitEnabled'
+        name={'rateLimitEnabled'}
         valuePropName='checked'
         children={<Switch/>}
       />
@@ -94,7 +94,8 @@ export function DataRateSettingForm () {
                 {$t({ defaultMessage: 'One of the total rate limit setting should be chosen' })}
               </Label>}
 
-              <Form.Item name='uploadRate'>
+              <Form.Item
+                name={'uploadRate'}>
                 <RateSetting
                   label={$t({ defaultMessage: 'Total Upload Limit' })}
                   tooltip={$t({ defaultMessage: `The total upload traffic limit 
@@ -105,7 +106,8 @@ export function DataRateSettingForm () {
                   }}
                   rate={form.getFieldValue('uploadRate')}></RateSetting>
               </Form.Item>
-              <Form.Item name='downloadRate'>
+              <Form.Item
+                name={'downloadRate'}>
                 <RateSetting
                   label={$t({ defaultMessage: 'Total Download Limit' })}
                   tooltip={$t({ defaultMessage: `The total download traffic limit 
@@ -117,7 +119,6 @@ export function DataRateSettingForm () {
                   rate={form.getFieldValue('downloadRate')}></RateSetting>
               </Form.Item>
               <Form.Item
-                name={'rateLimitWarningMessage'}
                 noStyle
                 rules={[
                   { validator: () => {

@@ -3,11 +3,14 @@ import { useIntl }       from 'react-intl'
 import { defineMessage } from 'react-intl'
 import AutoSizer         from 'react-virtualized-auto-sizer'
 
-import { KPITimeseriesResponse, healthApi }         from '@acx-ui/analytics/services'
-import { AnalyticsFilter, kpiConfig, productNames } from '@acx-ui/analytics/utils'
-import { Loader, VerticalBarChart, NoData }         from '@acx-ui/components'
-import { formatter }                                from '@acx-ui/formatter'
-import { noDataDisplay }                            from '@acx-ui/utils'
+import { KPITimeseriesResponse, healthApi } from '@acx-ui/analytics/services'
+import { kpiConfig, productNames }          from '@acx-ui/analytics/utils'
+import { Loader, VerticalBarChart, NoData } from '@acx-ui/components'
+import { formatter }                        from '@acx-ui/formatter'
+import { noDataDisplay }                    from '@acx-ui/utils'
+import type { AnalyticsFilter }             from '@acx-ui/utils'
+
+import GenericError from '../../GenericError'
 
 const barChartText = {
   title: defineMessage({ defaultMessage: 'last 7 days' })
@@ -70,7 +73,7 @@ function BarChart ({
   }
 
   return (
-    <Loader states={[queryResults]} key={kpi}>
+    <Loader states={[queryResults]} key={kpi} errorFallback={<GenericError />}>
       <AutoSizer>
         {({ width, height }) =>
           queryResults?.data?.[0]?.data.length

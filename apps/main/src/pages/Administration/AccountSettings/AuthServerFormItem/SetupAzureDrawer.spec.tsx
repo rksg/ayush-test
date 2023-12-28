@@ -3,10 +3,7 @@ import { rest }  from 'msw'
 
 import { CsvSize }                                                                                           from '@acx-ui/rc/components'
 import { AdministrationUrlsInfo, ApplicationAuthenticationStatus, CommonUrlsInfo, TenantAuthenticationType } from '@acx-ui/rc/utils'
-// import {
-//   UploadUrlResponse
-// } from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
+import { Provider }                                                                                          from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -30,67 +27,45 @@ const tenantAuthenticationData =
 // eslint-disable-next-line max-len
 const metadataText = '<note><to>Me</to><from>You</from><heading>Reminder</heading><body></body></note>'
 
-// const response: UploadUrlResponse = {
-//   fileId: 'f1-001.xml',
-//   // eslint-disable-next-line max-len
-//   signedUrl: 'https://storage.googleapis.com/dev-alto-file-storage-0/tenant/ecc2d7cf9d2342fdb31ae0e24958fcac/f1-001.xml'
-// }
-// const uploadUrlResponse = {
-//   data: {
-//     fileId: 'f1-001.xml',
-//     signedUrl: 'www.storage.com'
-//   }
-// }
-
 const services = require('@acx-ui/rc/services')
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services')
 }))
 
 describe('Setup Azure Drawer', () => {
-  let params: { tenantId: string }
+  const params = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
   beforeEach(async () => {
     jest.spyOn(services, 'useGetUploadURLMutation')
+    jest.spyOn(services, 'useAddTenantAuthenticationsMutation')
+    jest.spyOn(services, 'useUpdateTenantAuthenticationsMutation')
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getUploadURL.url,
-        (req, res, ctx) => res(ctx.json({ fileId: 'f1-001/xml', signedUrl: 'www.storage.com' }))
-      )
-    )
-    // TODO: mock response.clone for getUploadURL
-    // services.useGetUploadURLMutation.clone = jest.fn().mockReturnValue(uploadUrlResponse)
-    // services.useGetUploadURLMutation = jest.fn().mockImplementation(() =>
-    //   Promise.resolve({
-    //     json: () => Promise.resolve(uploadUrlResponse),
-    //     text: () => Promise.resolve({}),
-    //     clone: () => Promise.resolve(uploadUrlResponse)
-    //   })
-    // )
-    jest.spyOn(services, 'useAddTenantAuthenticationsMutation')
-    mockServer.use(
+        (req, res, ctx) => res(ctx.json({
+          fileId: 'f1-001/xml',
+          signedUrl: 'https://example.com/image.png'
+        }))
+      ),
       rest.post(
         AdministrationUrlsInfo.addTenantAuthentications.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123' }))
-      )
-    )
-    jest.spyOn(services, 'useUpdateTenantAuthenticationsMutation')
-    mockServer.use(
+      ),
       rest.put(
         AdministrationUrlsInfo.updateTenantAuthentications.url,
         (req, res, ctx) => res(ctx.json({ requestId: '456' }))
+      ),
+      // Mocked exact fetch call instead of mocking global.fetch = jest.fn()
+      // since CommonUrlsInfo.getUploadURL seems to use global.fetch too
+      rest.put(
+        'https://example.com/image.png',
+        (req, res, ctx) => res(ctx.json({ requestId: 'fetch' }))
       )
     )
-    global.URL.createObjectURL = jest.fn()
+    global.URL.createObjectURL = jest.fn().mockReturnValue('url')
     jest.spyOn(global.URL, 'createObjectURL')
-    global.fetch = jest.fn().mockImplementation(() =>
-      Promise.resolve({
-        json: () => Promise.resolve({}),
-        text: () => Promise.resolve({})
-      })
-    )
-    params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-    }
+  })
+  afterEach(() => {
+    jest.clearAllMocks()
   })
   it('should render add layout correctly', async () => {
     const mockedCloseDrawer = jest.fn()
@@ -121,11 +96,6 @@ describe('Setup Azure Drawer', () => {
     await userEvent.click(screen.getByRole('button',
       { name: 'Paste IdP Metadata code or link instead' }))
     expect(screen.getByText('IdP Metadata')).toBeVisible()
-    // TODO: check if add page should start out on metadata page; if not, should use below tests instead
-    // expect(screen.getByRole('button', { name: 'Browse' })).toBeVisible()
-    // await userEvent.click(screen.getByRole('button', { name: 'Paste IdP Metadata code or link instead' }))
-    // await userEvent.click(await screen.findByRole('button', { name: 'Upload file instead' }))
-    // expect(await screen.findByRole('button', { name: 'Browse' })).toBeVisible()
   })
   it('should render edit layout correctly', async () => {
     const mockedCloseDrawer = jest.fn()
@@ -190,6 +160,8 @@ describe('Setup Azure Drawer', () => {
     // Assert file added to be uploaded
     expect(await screen.findByText('saml.xml' )).toBeVisible()
     expect(screen.getByRole('button', { name: 'Apply' })).toBeEnabled()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
   })
   it('should validate file type correctly', async () => {
     const mockedCloseDrawer = jest.fn()
@@ -228,6 +200,19 @@ describe('Setup Azure Drawer', () => {
     // Assert jpeg file is not added to be uploaded
     expect(screen.queryByText('image.jpeg')).toBeNull()
     expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled()
+
+    // Upload normal file (to prevent errors from updated state for apply button)
+    const xmlFile = new File(['(⌐□_□)'], 'saml.xml', { type: 'text/xml' })
+    // eslint-disable-next-line testing-library/no-node-access
+    const fileInput2 = document.querySelector('input[type=file]')! as Element
+    fireEvent.change(fileInput2, { target: { files: [xmlFile] } })
+    // Assert file added to be uploaded
+    expect(await screen.findByText('saml.xml' )).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Apply' })).toBeEnabled()
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+    await waitFor(() => {
+      expect(mockedCloseDrawer).toHaveBeenLastCalledWith(false)
+    })
   })
   it('should validate file size correctly', async () => {
     const mockedCloseDrawer = jest.fn()
@@ -254,7 +239,6 @@ describe('Setup Azure Drawer', () => {
     expect(screen.getByRole('button', { name: 'Change File' })).toBeVisible()
 
     // Upload xml file over max size
-    // const xmlFile = new File(['(⌐□_□)'], 'saml.xml', { type: 'text/xml' })
     await userEvent.click(screen.getByRole('button', { name: 'Change File' }))
     // eslint-disable-next-line testing-library/no-node-access
     const fileInput = document.querySelector('input[type=file]')! as Element
@@ -267,6 +251,19 @@ describe('Setup Azure Drawer', () => {
     // Assert xml file is not added to be uploaded
     expect(screen.queryByText('saml.xml')).toBeNull()
     expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled()
+
+    // Upload normal file (to prevent errors from updated state for apply button)
+    const xmlFile = new File(['(⌐□_□)'], 'saml.xml', { type: 'text/xml' })
+    // eslint-disable-next-line testing-library/no-node-access
+    const fileInput2 = document.querySelector('input[type=file]')! as Element
+    fireEvent.change(fileInput2, { target: { files: [xmlFile] } })
+    // Assert file added to be uploaded
+    expect(await screen.findByText('saml.xml' )).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Apply' })).toBeEnabled()
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+    await waitFor(() => {
+      expect(mockedCloseDrawer).toHaveBeenLastCalledWith(false)
+    })
   })
   it('should close drawer when cancel button clicked', async () => {
     const mockedCloseDrawer = jest.fn()
@@ -353,20 +350,187 @@ describe('Setup Azure Drawer', () => {
     fireEvent.change(metadataInput, { target: { value: metadataText } })
 
     await waitFor(() => {
-      expect(button).toBeEnabled()
+      expect(screen.getByRole('button', { name: 'Apply' })).toBeEnabled()
     })
-    await userEvent.click(button)
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
 
-    // const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
-    //   data: { requestId: '123' },
-    //   status: 'fulfilled'
-    // })]
-    // await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loading' }))
+    const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
+      data: { requestId: '123' },
+      status: 'fulfilled'
+    })]
 
-    // await waitFor(()=>
-    //   expect(services.useAddTenantAuthenticationsMutation).toHaveLastReturnedWith(value))
     await waitFor(() => {
       expect(mockedCloseDrawer).toHaveBeenLastCalledWith(false)
+    })
+    await waitFor(() => {
+      expect(services.useAddTenantAuthenticationsMutation).toHaveLastReturnedWith(value)
+    })
+  })
+  it('should save new metadata url correctly', async () => {
+    const mockedCloseDrawer = jest.fn()
+    render(
+      <Provider>
+        <SetupAzureDrawer
+          title={'Set Up SSO with 3rd Party Provider'}
+          visible={true}
+          isEditMode={false}
+          setEditMode={jest.fn()}
+          setVisible={mockedCloseDrawer}
+          maxSize={CsvSize['5MB']}
+          maxEntries={512}
+          acceptType={['xml']} />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('IdP Metadata')).toBeVisible()
+    const button = screen.getByRole('button', { name: 'Apply' })
+    expect(button).toBeDisabled()
+    const metadataInput = screen.getByRole('textbox')
+    fireEvent.change(metadataInput, { target: { value: 'https://test.com' } })
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Apply' })).toBeEnabled()
+    })
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+
+    const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
+      data: { requestId: '123' },
+      status: 'fulfilled'
+    })]
+
+    await waitFor(() => {
+      expect(mockedCloseDrawer).toHaveBeenLastCalledWith(false)
+    })
+    await waitFor(() => {
+      expect(services.useAddTenantAuthenticationsMutation).toHaveLastReturnedWith(value)
+    })
+  })
+  it('should save edited metadata url correctly', async () => {
+    const mockedCloseDrawer = jest.fn()
+    render(
+      <Provider>
+        <SetupAzureDrawer
+          title={'Set Up SSO with 3rd Party Provider'}
+          visible={true}
+          isEditMode={true}
+          setEditMode={jest.fn()}
+          editData={tenantAuthenticationData}
+          setVisible={mockedCloseDrawer}
+          maxSize={CsvSize['5MB']}
+          maxEntries={512}
+          acceptType={['xml']} />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('IdP Metadata')).toBeVisible()
+    const button = screen.getByRole('button', { name: 'Apply' })
+    expect(button).toBeDisabled()
+    await userEvent.click(screen.getByRole('button',
+      { name: 'Paste IdP Metadata code or link instead' }))
+    const metadataInput = screen.getByRole('textbox')
+    fireEvent.change(metadataInput, { target: { value: 'https://test.com' } })
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Apply' })).toBeEnabled()
+    })
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+
+    const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
+      data: { requestId: '456' },
+      status: 'fulfilled'
+    })]
+
+    await waitFor(() => {
+      expect(mockedCloseDrawer).toHaveBeenLastCalledWith(false)
+    })
+    await waitFor(() => {
+      expect(services.useUpdateTenantAuthenticationsMutation).toHaveLastReturnedWith(value)
+    })
+  })
+  it('should validate domain correctly', async () => {
+    const mockedCloseDrawer = jest.fn()
+    render(
+      <Provider>
+        <SetupAzureDrawer
+          title={'Edit SSO with 3rd Party Provider'}
+          visible={true}
+          isEditMode={true}
+          setEditMode={jest.fn()}
+          editData={tenantAuthenticationData}
+          setVisible={mockedCloseDrawer}
+          maxSize={CsvSize['5MB']}
+          maxEntries={512}
+          acceptType={['xml']}
+          isGroupBasedLoginEnabled={true} />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('Edit SSO with 3rd Party Provider')).toBeVisible()
+    expect(screen.getByText('IdP Metadata')).toBeVisible()
+    expect(screen.getByText('test123.xml')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Change File' })).toBeVisible()
+    expect(screen.getByText('Allowed Domains')).toBeVisible()
+
+    const input = screen.getByRole('textbox')
+    fireEvent.change(input, { target: { value: 'commscope.c' } } )
+    expect(await screen.findByText('Please enter domains separated by comma')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled()
+    fireEvent.change(input, { target: { value: 'commscope.com' } } )
+    await waitFor(() => {
+      expect(screen.queryByText('Please enter domains separated by comma')).toBeNull()
+    })
+    expect(screen.getByRole('button', { name: 'Apply' })).toBeEnabled()
+  })
+  it('should not save when error uploading file', async () => {
+    const mockedCloseDrawer = jest.fn()
+    // Mocking global.fetch will cause error in uploading file
+    global.fetch = jest.fn().mockImplementation(() => Promise.resolve({
+      json: () => ({}),
+      text: () => ({}),
+      clone: () => ({})
+    }))
+    render(
+      <Provider>
+        <SetupAzureDrawer
+          title={'Set Up SSO with 3rd Party Provider'}
+          visible={true}
+          isEditMode={true}
+          setEditMode={jest.fn()}
+          editData={tenantAuthenticationData}
+          setVisible={mockedCloseDrawer}
+          maxSize={CsvSize['5MB']}
+          maxEntries={512}
+          acceptType={['xml']} />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('IdP Metadata')).toBeVisible()
+    const button = screen.getByRole('button', { name: 'Apply' })
+    expect(button).toBeDisabled()
+    await userEvent.click(screen.getByRole('button',
+      { name: 'Paste IdP Metadata code or link instead' }))
+    const metadataInput = screen.getByRole('textbox')
+    fireEvent.change(metadataInput, { target: { value: metadataText } })
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Apply' })).toBeEnabled()
+    })
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+
+    const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
+      isUninitialized: true
+    })]
+
+    await waitFor(() => {
+      expect(mockedCloseDrawer).toHaveBeenLastCalledWith(false)
+    })
+    await waitFor(() => {
+      expect(services.useUpdateTenantAuthenticationsMutation).toHaveLastReturnedWith(value)
     })
   })
 })

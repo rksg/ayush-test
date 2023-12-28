@@ -4,11 +4,15 @@ import { Row, Col, Badge, Typography } from 'antd'
 import { useIntl }                     from 'react-intl'
 
 import {
+  Button,
   Loader,
   showActionModal,
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
+import { useGetMspProfileQuery }           from '@acx-ui/msp/services'
+import { MSPUtils }                        from '@acx-ui/msp/utils'
 import {
   useGetNotificationRecipientsQuery,
   useDeleteNotificationRecipientsMutation,
@@ -23,8 +27,10 @@ import {
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
-import RecipientDialog from './RecipientDialog'
-import * as UI         from './styledComponents'
+import { AINotificationDrawer } from './AINotificationDrawer'
+import { PreferenceDrawer }     from './PreferenceDrawer'
+import RecipientDialog          from './RecipientDialog'
+import * as UI                  from './styledComponents'
 
 const FunctionEnabledStatusLightConfig = {
   active: {
@@ -39,7 +45,9 @@ export const NotificationsTable = () => {
   const { $t } = useIntl()
   const params = useParams()
   const [showDialog, setShowDialog] = useState(false)
+  const [showDrawer, setShowDrawer] = useState(false)
   const [editMode, setEditMode] = useState(false)
+  const allowIncidentsEmail = useIsSplitOn(Features.INCIDENTS_EMAIL_NOTIFICATION_TOGGLE)
   // eslint-disable-next-line max-len
   const [editData, setEditData] = useState<NotificationRecipientUIModel>({} as NotificationRecipientUIModel)
 
@@ -54,6 +62,10 @@ export const NotificationsTable = () => {
     setEditMode(false)
     setEditData({} as NotificationRecipientUIModel)
     setShowDialog(true)
+  }
+
+  const handleEnableIncidents = () => {
+    setShowDrawer(true)
   }
 
   const isDuplicated = (type: string, value: string): boolean => {
@@ -154,10 +166,18 @@ export const NotificationsTable = () => {
     }
   ]
 
-  const tableActions = [{
-    label: $t({ defaultMessage: 'Add Recipient' }),
-    onClick: handleClickAddRecipient
-  }]
+  const tableActions = [
+    {
+      label: $t({ defaultMessage: 'Add Recipient' }),
+      onClick: handleClickAddRecipient
+    },
+    ...(allowIncidentsEmail
+      ? [{
+        label: $t({ defaultMessage: 'AI Notifications' }),
+        onClick: handleEnableIncidents
+      }]
+      : [])
+  ]
 
   const isLoading = deleteOneState.isLoading || deleteMultipleState.isLoading
 
@@ -183,13 +203,23 @@ export const NotificationsTable = () => {
         editData={editData}
         isDuplicated={isDuplicated}
       />
+      {showDrawer
+      && <AINotificationDrawer
+        showDrawer={showDrawer}
+        setShowDrawer={setShowDrawer}
+      />}
     </>
   )
 }
 
-
 const Notifications = () => {
   const { $t } = useIntl()
+  const mspUtils = MSPUtils()
+  const { data: mspProfile } = useGetMspProfileQuery({})
+  const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
+  const isMspAggregateNotification =
+    useIsSplitOn(Features.MSP_AGGREGATE_NOTIFICATION_TOGGLE) && isOnboardedMsp
+  const [showPreference, setShowPreference] = useState(false)
 
   return <UI.Wrapper>
     <Row>
@@ -199,10 +229,22 @@ const Notifications = () => {
             // eslint-disable-next-line max-len
             $t({ defaultMessage: 'System notifications will be sent to the following email addresses and mobile devices:' })
           }
+          {isMspAggregateNotification && <Button style={{ marginLeft: 13 }}
+            type='link'
+            size='small'
+            onClick={() => { setShowPreference(true) }}>
+            {$t({ defaultMessage: 'Preference' })}
+          </Button>}
         </Typography>
+
       </Col>
     </Row>
     <UI.Spacer />
+    {showPreference && <PreferenceDrawer
+      visible={showPreference}
+      setVisible={setShowPreference}
+    />}
+
     <NotificationsTable />
   </UI.Wrapper>
 }

@@ -2,41 +2,36 @@ import { useEffect, useState } from 'react'
 
 import { Col, Row, Form, Checkbox } from 'antd'
 import _                            from 'lodash'
-import { useIntl }                  from 'react-intl'
 
 
-import { Tooltip } from '@acx-ui/components'
+import { Tooltip }                 from '@acx-ui/components'
+import { AFCProps }                from '@acx-ui/rc/utils'
+import { ChannelButtonTextRender } from '@acx-ui/rc/utils'
 
+import { RadioChannel }                        from '../../RadioSettings/RadioSettingsContents'
 import { BarButton6G, CheckboxGroupFor320Mhz } from '../styledComponents'
 
-import { defaultStates, ChannelGroup320MhzEnum, findIsolatedGroup } from './ChannelComponentStates'
+import {
+  defaultStates,
+  ChannelGroup320MhzEnum,
+  findIsolatedGroup,
+  ButtonDisplayStatusEnum,
+  filterUnselectedChannels
+} from './ChannelComponentStates'
+
 
 import type { CheckboxValueType } from 'antd/es/checkbox/Group'
-
-interface RadioChannel {
-    value: string;
-    selected: boolean;
-}
-
-const filterUnselectedChannels = (channels: RadioChannel[]) : string [] => {
-  const selectedChannels = [] as string[]
-  channels.forEach((channel)=> {
-    if (channel.selected === true) {
-      selectedChannels.push(channel.value)
-    }
-  })
-  return selectedChannels
-}
 
 export function RadioSettingsChannels320Mhz (props: {
     context?: string
     formName: string[],
     channelList: RadioChannel[],
     disabled?: boolean,
-    handleChanged?: () => void
+    handleChanged?: () => void,
+    afcProps?: AFCProps
 }) {
 
-  let { disabled = false, channelList, handleChanged } = props
+  let { disabled = false, channelList, handleChanged, afcProps } = props
 
   const form = Form.useFormInstance()
 
@@ -67,9 +62,44 @@ export function RadioSettingsChannels320Mhz (props: {
       }
     })
 
+
+
+    // hide 160Mhz Button if channel not available, the available channels are
+    // chosen by backend
+    let clone160MHz = _.cloneDeep(complexGroupChannelState.ChannelGroup_160MHz)
+    _.forIn(clone160MHz, (settings, key) => {
+      let unsavedSetting = _.cloneDeep(settings)
+
+      if(_.intersection(settings.channels, systemChannelOptions).length === 0){
+        _.set(unsavedSetting, 'display', ButtonDisplayStatusEnum.Hide)
+      }
+      else {
+        _.set(unsavedSetting, 'display', ButtonDisplayStatusEnum.Display)
+      }
+
+      _.set(clone160MHz, key, unsavedSetting)
+    })
+
+    // Same as 160Mhz, but 320Mhz needs to have more than 8 channels(which means over half)
+    let clone320MHz = _.cloneDeep(complexGroupChannelState.ChannelGroup_320MHz)
+    _.forIn(clone320MHz, (settings, key) => {
+      let unsavedSetting = _.cloneDeep(settings)
+      const intersection = _.intersection(settings.channels, systemChannelOptions).length
+
+      if (intersection <= 8) {
+        _.set(unsavedSetting, 'display', ButtonDisplayStatusEnum.Hide)
+      }
+      else {
+        _.set(unsavedSetting, 'display', ButtonDisplayStatusEnum.Display)
+      }
+
+      _.set(clone320MHz, key, unsavedSetting)
+    })
+
     let unsavedStates = _.cloneDeep(complexGroupChannelState)
     _.set(unsavedStates, 'enabledCheckbox', checked160MHzGroup)
-
+    _.set(unsavedStates, 'ChannelGroup_160MHz', clone160MHz)
+    _.set(unsavedStates, 'ChannelGroup_320MHz', clone320MHz)
     setComplexGroupChannelState(unsavedStates)
   }, [channelList, form, props.formName])
 
@@ -112,12 +142,12 @@ export function RadioSettingsChannels320Mhz (props: {
     let isolatedChannel = [] as CheckboxValueType[]
 
     /**
-     * Once user click 320Mhz group botton, depends on the intersection with channel160Groups,
+     * Once user click 320Mhz group button, depends on the intersection with channel160Groups,
      * unselect when both two checkbox(160Mhz) is selected.
      *
-     * On the contray, no matter only 1 or none heckbox is selected, both 160Mhz checkbox in the
+     * On the contrary, no matter only 1 or none checkbox is selected, both 160Mhz checkbox in the
      * channel160Groups will be selected.
-     */
+          */
     if(intersection.length === 2) {
       let removeIntersection = _.difference(unsavedStates.enabledCheckbox, intersection)
       _.set(unsavedStates, 'enabledCheckbox', removeIntersection)
@@ -156,18 +186,16 @@ export function RadioSettingsChannels320Mhz (props: {
     availability: boolean
   }) {
 
-    const { $t } = useIntl()
     const { channelGroupNumber, availability } = props
+    const channels = complexGroupChannelState.ChannelGroup_160MHz[channelGroupNumber].channels
+    let message = ChannelButtonTextRender(channels.map(Number), availability, afcProps)
 
-    const message = availability ?
-      $t({ defaultMessage: 'Disable this channel' }) :
-      $t({ defaultMessage: 'Enable this channel' })
     /* eslint-disable max-len */
     return (
       <Tooltip
         title={
           <div style={{ textAlign: 'center' }}>
-            <p>{buildTooltipMessage(message, complexGroupChannelState.ChannelGroup_160MHz[channelGroupNumber].channels)}</p>
+            <p>{buildTooltipMessage(message, channels)}</p>
           </div>
         }
       >
@@ -180,19 +208,22 @@ export function RadioSettingsChannels320Mhz (props: {
   const render320MHzGroup = (assignedGroup: ChannelGroup320MhzEnum) => {
     let node: React.ReactNode[] = []
     _.forIn(complexGroupChannelState.ChannelGroup_320MHz, function (value, key){
-      if(value.group === assignedGroup)
-        node.push(
-          <Col span={6} key={key}>
-            <BarButton6G
-              disabled={disabled}
-              data-testid={`320-button-${key}`}
-              onClick={handleClick320MhzGroupChannels}
-              id={key}
-            >
-              {key}
-            </BarButton6G>
-          </Col>
-        )
+      if(value.group === assignedGroup){
+        if(value.display === ButtonDisplayStatusEnum.Display){
+          node.push(
+            <Col span={6} key={key}>
+              <BarButton6G
+                disabled={disabled}
+                data-testid={`320-button-${key}`}
+                onClick={handleClick320MhzGroupChannels}
+                id={key}
+              >
+                {key}
+              </BarButton6G>
+            </Col>
+          )
+        }
+      }
     })
     return node
   }
@@ -200,33 +231,35 @@ export function RadioSettingsChannels320Mhz (props: {
   const render160MHzGroup = () => {
     let node: React.ReactNode[] = []
     _.forIn(complexGroupChannelState.ChannelGroup_160MHz, function (value, key){
-      node.push(
-        <Col span={3} key={key}>
-          <Checkbox
-            disabled={disabled}
-            className={value.isolated ? 'isolated' : ''}
-            data-testid={`160-checkbox-${key}`}
-            value={key}>
-            <TooltipFor320Mhz
-              channelGroupNumber={key}
-              availability={complexGroupChannelState.enabledCheckbox.includes(key)}
-            />
-          </Checkbox>
-        </Col>
-      )
+      if(value.display === ButtonDisplayStatusEnum.Display) {
+        node.push(
+          <Col span={3} key={key}>
+            <Checkbox
+              disabled={disabled}
+              className={value.isolated ? 'isolated' : ''}
+              data-testid={`160-checkbox-${key}`}
+              value={key}>
+              <TooltipFor320Mhz
+                channelGroupNumber={key}
+                availability={complexGroupChannelState.enabledCheckbox.includes(key)}
+              />
+            </Checkbox>
+          </Col>
+        )
+      }
     })
     return node
   }
 
   return (<>
-    <Form.Item name={props.formName} hidden/>
+    <Form.Item name={props.formName} hidden children={<></>} />
     <CheckboxGroupFor320Mhz
       style={{ width: '100%' }}
       disabled={disabled}
       onChange={handleClick160MhzGroupChannels}
       value={complexGroupChannelState.enabledCheckbox}
     >
-      <div style={{ marginTop: '10px' }}>
+      <div style={{ marginTop: '10px', width: '1150px' }}>
         <Row style={
           { height: '30px' }}>
           <Col span={2}>

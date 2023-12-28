@@ -52,6 +52,7 @@ export interface NewDpskPassphrase {
   identityId?: string; // PersonaGroup id - This DPSK had bound with PersonaGroup
   revocationDate?: string;
   revocationReason?: string;
+  devices?: DPSKDeviceInfo[];
 }
 
 export interface CreateDpskPassphrasesFormFields {
@@ -90,13 +91,51 @@ export interface DpskPassphraseClient {
   numberOfDevices?: number;
   clientMac: string[];
   createdDate: string;
-  expirationDate: string;
+  expirationDate?: string;
+}
+
+
+export interface DpskNewFlowPassphraseClient {
+  id: string;
+  username: string;
+  passphrase: string;
+  numberOfDevices?: number;
+  createdDate: string;
+  devices: { mac: string }[];
+  expirationDate?: string;
 }
 
 export interface DPSKDeviceInfo {
   mac: string,
-  online: boolean,
-  lastConnected: string,
+  online?: boolean,
+  lastConnected: string | null,
   lastConnectedNetwork: string,
   devicePassphrase: string
+  deviceConnectivity?: 'CONFIGURED' | 'CONNECTED',
+  lastConnectedNetworkId?: string | null,
+  lastConnectedTime?: string | null
+}
+
+export type DpskNewFlowMutationResult = {
+  requestId: string
+  id?: string
+}
+
+export type DpskMutationResult = DpskSaveData | DpskNewFlowMutationResult
+
+export interface DpskDownloadPassphrasesPayload {
+  timezone?: string,
+  dateFormat?: string,
+}
+
+export interface DpskDownloadNewFlowPassphrasesPayload extends DpskDownloadPassphrasesPayload{
+  page: number,
+  pageSize: number,
+  searchString?: string
+}
+
+export interface DpskPassphrasesClientPayload {
+  networkId: string,
+  mac: string,
+  username?: string
 }

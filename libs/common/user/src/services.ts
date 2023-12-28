@@ -9,6 +9,7 @@ import {
   MfaDetailStatus,
   MfaOtpMethod,
   PlmMessageBanner,
+  TenantAccountTierValue,
   UserSettings,
   UserProfile,
   UserSettingsUIModel,
@@ -34,6 +35,11 @@ export const UserUrlsInfo = {
     oldUrl: '/api/tenant/:tenantId/user-profile',
     newApi: true
   },
+  getAccountTier: {
+    method: 'get',
+    url: '/tenants/accountTier',
+    newApi: true
+  },
   getCloudVersion: {
     method: 'get',
     url: '/upgradeConfig/productVersions',
@@ -46,11 +52,15 @@ export const UserUrlsInfo = {
   },
   getAllUserSettings: {
     method: 'get',
-    url: '/api/tenant/:tenantId/admin-settings/ui'
+    url: '/admins/admins-settings/ui',
+    oldUrl: '/api/tenant/:tenantId/admin-settings/ui',
+    newApi: true
   },
   saveUserSettings: {
     method: 'put',
-    url: '/api/tenant/:tenantId/admin-settings/ui/:productKey'
+    url: '/admins/admins-settings/ui/:productKey',
+    oldUrl: '/api/tenant/:tenantId/admin-settings/ui/:productKey',
+    newApi: true
   },
   wifiAllowedOperations: {
     method: 'get',
@@ -139,6 +149,7 @@ export const {
   useGetAllUserSettingsQuery,
   useLazyGetAllUserSettingsQuery,
   useSaveUserSettingsMutation,
+  useGetAccountTierQuery,
   useGetCloudVersionQuery,
   useGetCloudScheduleVersionQuery,
   useLazyGetCloudScheduleVersionQuery,
@@ -175,6 +186,15 @@ export const {
         ...createHttpRequest(UserUrlsInfo.saveUserSettings, params),
         body: payload
       })
+    }),
+    getAccountTier: build.query<TenantAccountTierValue, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(UserUrlsInfo.getAccountTier, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'UserProfile', id: 'ACCOUNT_TIER' }]
     }),
     getCloudVersion: build.query<CloudVersion, RequestPayload>({
       query: ({ params }) => createHttpRequest(UserUrlsInfo.getCloudVersion, params)
@@ -281,11 +301,13 @@ export const {
     }),
     getBetaStatus: build.query<BetaStatus, RequestPayload>({
       query: ({ params }) => createHttpRequest(UserUrlsInfo.getBetaStatus, params),
-      transformResponse: (betaStatus: { 'Start Date': string, enabled: string }) =>
-        ({ startDate: betaStatus['Start Date'], enabled: betaStatus.enabled })
+      transformResponse: (betaStatus: { startDate: string, enabled: string }) =>
+        ({ startDate: betaStatus?.startDate, enabled: betaStatus?.enabled }),
+      providesTags: [{ type: 'Beta', id: 'DETAIL' }]
     }),
-    toggleBetaStatus: build.mutation<BetaStatus, RequestPayload>({
-      query: ({ params }) => createHttpRequest(UserUrlsInfo.toggleBetaStatus, params)
+    toggleBetaStatus: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => createHttpRequest(UserUrlsInfo.toggleBetaStatus, params),
+      invalidatesTags: [{ type: 'Beta', id: 'DETAIL' }]
     })
   })
 })

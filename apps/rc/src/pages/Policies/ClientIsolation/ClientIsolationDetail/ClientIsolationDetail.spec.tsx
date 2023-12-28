@@ -1,6 +1,5 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ClientIsolationUrls,
   getPolicyDetailsLink,
@@ -58,24 +57,7 @@ describe('ClientIsolationDetail', () => {
     expect(await screen.findByRole('row', { name: new RegExp(targetVenue.venueName) })).toBeVisible()
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <ClientIsolationDetail />
-      </Provider>, {
-        route: { params, path: detailPath }
-      }
-    )
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.queryByText('Policies & Profiles')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'Client Isolation'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <ClientIsolationDetail />

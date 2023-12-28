@@ -42,7 +42,7 @@ describe('Drawer', () => {
       screen.getByText('1 Impacted AP')
       const links: HTMLAnchorElement[] = screen.getAllByRole('link')
       expect(links[0].href).toBe(
-        'http://localhost/undefined/t/devices/wifi/mac/details/overview'
+        'http://localhost/undefined/t/devices/wifi/mac/details/ai'
       )
     })
     it('should render error', async () => {
@@ -61,14 +61,16 @@ describe('Drawer', () => {
         manufacturer: 'manufacturer',
         ssid: 'ssid',
         hostname: 'hostname',
-        username: 'username'
+        username: 'username',
+        osType: 'osType'
       },
       {
         mac: 'mac',
         manufacturer: 'manufacturer 2',
         ssid: 'ssid 2',
         hostname: 'hostname 2',
-        username: 'username 2'
+        username: 'username 2',
+        osType: 'osType2'
       }
     ] as ImpactedClient[]
     it('should render loader', () => {
@@ -89,9 +91,10 @@ describe('Drawer', () => {
       screen.getByPlaceholderText('Search for...')
       screen.getByText(sample[0].mac)
       screen.getByText(`${sample[0].manufacturer} (2)`)
+      screen.getByText(`${sample[0].osType} (2)`)
       screen.getByText(`${sample[0].ssid} (2)`)
       expect(screen.getByRole('link').textContent)
-        .toEqual(`${sample[0].hostname}${sample[1].hostname}`)
+        .toEqual(`${sample[0].hostname} (2)`)
       screen.getByText(`${sample[0].username} (2)`)
       screen.getByText('1 Impacted Client')
       screen.getByText('Hostname')

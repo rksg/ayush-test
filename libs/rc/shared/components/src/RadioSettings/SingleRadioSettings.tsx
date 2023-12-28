@@ -6,8 +6,9 @@ import { Col, Row, Form, Switch } from 'antd'
 import { isEmpty }                from 'lodash'
 import { useIntl }                from 'react-intl'
 
-import { Button, cssStr }         from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Button, cssStr }                                         from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
+import { AFCProps }                                               from '@acx-ui/rc/utils'
 
 import { RadioSettingsChannels }       from '../RadioSettingsChannels'
 import { findIsolatedGroupByChannel }  from '../RadioSettingsChannels/320Mhz/ChannelComponentStates'
@@ -23,7 +24,8 @@ import {
   RadioChannel,
   SelectItemOption,
   split5GChannels,
-  VenueRadioTypeDataKeyMap
+  VenueRadioTypeDataKeyMap,
+  LPIButtonText
 } from './RadioSettingsContents'
 import { RadioSettingsForm } from './RadioSettingsForm'
 
@@ -61,7 +63,9 @@ export function SingleRadioSettings (props:{
   onResetDefaultValue?: Function,
   testId?: string,
   isUseVenueSettings?: boolean,
-  supportDfsChannels?: any
+  supportDfsChannels?: any,
+  LPIButtonText?: LPIButtonText,
+  afcProps?: AFCProps
 }) {
 
   const { $t } = useIntl()
@@ -71,7 +75,10 @@ export function SingleRadioSettings (props:{
     inherit5G = false,
     context = 'venue',
     isUseVenueSettings = false,
-    testId } = props
+    testId,
+    LPIButtonText,
+    afcProps
+  } = props
 
   const {
     radioType,
@@ -118,6 +125,8 @@ export function SingleRadioSettings (props:{
 
   const allowIndoorForOutdoorFeatureFlag = useIsSplitOn(Features.ALLOW_INDOOR_CHANNEL_TOGGLE)
   const wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
+  const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
+
 
   if (context === 'venue') {
     const { indoor, outdoor, indoorForOutdoorAp } = supportChannels
@@ -144,16 +153,14 @@ export function SingleRadioSettings (props:{
     allowedChannels,
     allowedIndoorChannels,
     allowedOutdoorChannels,
-    combinChannels,
-    channelBandwidth320MhzGroup
+    combinChannels
   ] = [
     useWatch<string>(methodFieldName),
     useWatch<string>(channelBandwidthFieldName),
     useWatch<string[]>(allowedChannelsFieldName),
     useWatch<string[]>(allowedIndoorChannelsFieldName),
     useWatch<string[]>(allowedOutdoorChannelsFieldName),
-    useWatch<boolean>(combinChannelsFieldName),
-    useWatch<string>(channelBandwidth320MhzGroupFieldName)
+    useWatch<boolean>(combinChannelsFieldName)
   ]
 
   useEffect(() => {
@@ -178,16 +185,6 @@ export function SingleRadioSettings (props:{
     if (channelBandwidth !== 'AUTO' &&
         !bandwidthOptions.find(option => option.value === channelBandwidth)) {
       form.setFieldValue(channelBandwidthFieldName, 'AUTO')
-    }
-
-    if (radioType === ApRadioTypeEnum.Radio6G) {
-      if (channelBandwidth === '320MHz' && channelMethod === 'MANUAL') {
-        if (!channelBandwidth320MhzGroup || channelBandwidth320MhzGroup === 'AUTO') {
-          form.setFieldValue(channelBandwidth320MhzGroupFieldName, '320MHz-1')
-        }
-      } else {
-        form.setFieldValue(channelBandwidth320MhzGroupFieldName, 'AUTO')
-      }
     }
 
     const bandwidth = (channelBandwidth === 'AUTO')? 'auto' : channelBandwidth
@@ -336,7 +333,7 @@ export function SingleRadioSettings (props:{
   }
 
   const selectRadioChannelSelectionType = () => {
-    if(channelBandwidth === '320MHz' && wifi7_320Mhz_FeatureFlag) {
+    if(channelBandwidth === '320MHz' && (wifi7_320Mhz_FeatureFlag && enableAP70)) {
       if (channelMethod === 'MANUAL' && context === 'ap') {
         return (
           <Row gutter={20}>
@@ -347,6 +344,7 @@ export function SingleRadioSettings (props:{
                 channelList={channelList}
                 disabled={inherit5G || disable || isUseVenueSettings}
                 handleChanged={handleChanged}
+                afcProps={afcProps}
               />
             </Col>
           </Row>
@@ -361,6 +359,7 @@ export function SingleRadioSettings (props:{
               channelList={channelList}
               disabled={inherit5G || disable || isUseVenueSettings}
               handleChanged={handleChanged}
+              afcProps={afcProps}
             />
           </Col>
         </Row>
@@ -377,6 +376,7 @@ export function SingleRadioSettings (props:{
               channelBars={channelBars}
               disabled={inherit5G || disable || isUseVenueSettings}
               handleChanged={handleChanged}
+              afcProps={afcProps}
             />
           </Col>
         </Row>
@@ -389,7 +389,7 @@ export function SingleRadioSettings (props:{
       {
         isSupportRadio &&
       <>
-        <Row gutter={20} data-testid={testId}>
+        <Row style={{ marginTop: '10px' }} gutter={20} data-testid={testId}>
           <Col span={8}>
             <RadioSettingsForm
               radioType={radioType}
@@ -399,6 +399,8 @@ export function SingleRadioSettings (props:{
               context={context}
               isUseVenueSettings={isUseVenueSettings}
               onGUIChanged={handleSettingGUIChanged}
+              isAFCEnabled={afcProps?.isAFCEnabled}
+              LPIButtonText={LPIButtonText}
             />
           </Col>
           { context === 'venue' && !inherit5G && !disable &&
@@ -486,6 +488,7 @@ export function SingleRadioSettings (props:{
                 channelBars={indoorChannelBars}
                 disabled={inherit5G || disable}
                 handleChanged={handleChanged}
+                afcProps={afcProps}
               />
             </Col>
           </Row>
@@ -515,6 +518,7 @@ export function SingleRadioSettings (props:{
                 channelBars={outdoorChannelBars}
                 disabled={inherit5G || disable}
                 handleChanged={handleChanged}
+                afcProps={afcProps}
               />
             </Col>
           </Row>
@@ -544,6 +548,7 @@ export function SingleRadioSettings (props:{
                 channelBars={indoorChannelBars}
                 disabled={inherit5G || disable}
                 handleChanged={handleChanged}
+                afcProps={afcProps}
               />
             </Col>
           </Row>

@@ -10,10 +10,16 @@ import {
   FirmwareSwitchVenue,
   ABFVersion,
   onSocketActivityChanged,
-  onActivityMessageReceived
+  onActivityMessageReceived,
+  LatestEdgeFirmwareVersion,
+  EdgeVenueFirmware,
+  EdgeFirmwareVersion,
+  SwitchFirmwareStatus,
+  SwitchFirmware
 } from '@acx-ui/rc/utils'
 import { baseFirmwareApi }   from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
+import { CloudVersion }      from '@acx-ui/user'
 import { createHttpRequest } from '@acx-ui/utils'
 
 export const firmwareApi = baseFirmwareApi.injectEndpoints({
@@ -87,7 +93,8 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
           })
         })
       },
-      providesTags: [{ type: 'Firmware', id: 'LIST' }]
+      providesTags: [{ type: 'Firmware', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getLatestFirmwareList: build.query<FirmwareVersion[], RequestPayload>({
       query: ({ params }) => {
@@ -225,7 +232,8 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         } as TableResult<FirmwareSwitchVenue>
       },
       keepUnusedDataFor: 0,
-      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
+      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getSwitchAvailableFirmwareList: build.query<FirmwareVersion[], RequestPayload>({
       query: ({ params }) => {
@@ -244,6 +252,36 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
+    }),
+    getSwitchFirmwareStatusList: build.query<TableResult<SwitchFirmwareStatus>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getSwitchFirmwareStatusList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }],
+      transformResponse (result: { upgradeStatusDetailsViewList: SwitchFirmwareStatus[] }) {
+        return {
+          data: result.upgradeStatusDetailsViewList
+        } as unknown as TableResult<SwitchFirmwareStatus>
+      }
+    }),
+    getSwitchFirmwareList: build.query<TableResult<SwitchFirmware>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getSwitchFirmwareList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }],
+      transformResponse (result: { upgradeSwitchViewList: FirmwareSwitchVenue[] }) {
+        return {
+          data: result.upgradeSwitchViewList
+        } as unknown as TableResult<SwitchFirmware>
+      }
     }),
     getSwitchFirmwarePredownload: build.query<PreDownload, RequestPayload>({
       query: ({ params }) => {
@@ -264,6 +302,97 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'SwitchFirmware', id: 'LIST' }, { type: 'SwitchFirmware', id: 'PREDOWNLOAD' }]
+    }),
+    getLatestEdgeFirmware: build.query<LatestEdgeFirmwareVersion[], RequestPayload>({
+      query: () => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getLatestEdgeFirmware)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'EdgeFirmware', id: 'LATEST' }]
+    }),
+    getVenueEdgeFirmwareList: build.query<EdgeVenueFirmware[], RequestPayload>({
+      query: () => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getVenueEdgeFirmwareList)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'EdgeFirmware', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Update Edge Firmware Now',
+            'Change Edge Upgrade Schedule',
+            'Skip Edge Upgrade Schedule'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(firmwareApi.util.invalidateTags([{ type: 'EdgeFirmware', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
+    getAvailableEdgeFirmwareVersions: build.query<EdgeFirmwareVersion[], RequestPayload>({
+      query: () => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getAvailableEdgeFirmwareVersions)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'EdgeFirmware', id: 'AVAILABLE_LIST' }]
+    }),
+    updateEdgeFirmwareNow: build.mutation<CommonResult, RequestPayload>({
+      query: ({ payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.updateEdgeFirmware)
+        return {
+          ...req,
+          body: { ...(payload as Object), state: 'UPDATE_NOW' }
+        }
+      },
+      invalidatesTags: [{ type: 'EdgeFirmware', id: 'LIST' }]
+    }),
+    getEdgeUpgradePreferences: build.query<UpgradePreferences, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getEdgeUpgradePreferences, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'EdgeFirmware', id: 'PREFERENCES' }]
+    }),
+    updateEdgeUpgradePreferences: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.updateEdgeUpgradePreferences, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'EdgeFirmware', id: 'PREFERENCES' }]
+    }),
+    skipEdgeUpgradeSchedules: build.mutation<CommonResult, RequestPayload>({
+      query: ({ payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.skipEdgeUpgradeSchedules)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'EdgeFirmware', id: 'LIST' }]
+    }),
+    updateEdgeVenueSchedules: build.mutation<CommonResult, RequestPayload>({
+      query: ({ payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.updateEdgeVenueSchedules)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'EdgeFirmware', id: 'LIST' }]
+    }),
+    getScheduledFirmware: build.query<CloudVersion, RequestPayload>({
+      query: ({ params }) => createHttpRequest(FirmwareUrlsInfo.getScheduledFirmware, params)
     })
   })
 })
@@ -290,5 +419,20 @@ export const {
   useGetSwitchAvailableFirmwareListQuery,
   useGetSwitchCurrentVersionsQuery,
   useGetSwitchFirmwarePredownloadQuery,
-  useUpdateSwitchFirmwarePredownloadMutation
+  useUpdateSwitchFirmwarePredownloadMutation,
+  useGetAvailableEdgeFirmwareVersionsQuery,
+  useGetLatestEdgeFirmwareQuery,
+  useGetVenueEdgeFirmwareListQuery,
+  useUpdateEdgeFirmwareNowMutation,
+  useGetEdgeUpgradePreferencesQuery,
+  useUpdateEdgeUpgradePreferencesMutation,
+  useSkipEdgeUpgradeSchedulesMutation,
+  useUpdateEdgeVenueSchedulesMutation,
+  useLazyGetVenueEdgeFirmwareListQuery,
+  useGetSwitchFirmwareListQuery,
+  useLazyGetSwitchFirmwareListQuery,
+  useGetSwitchFirmwareStatusListQuery,
+  useLazyGetSwitchFirmwareStatusListQuery,
+  useGetScheduledFirmwareQuery,
+  useLazyGetScheduledFirmwareQuery
 } = firmwareApi

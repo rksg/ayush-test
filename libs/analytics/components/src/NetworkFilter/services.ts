@@ -1,14 +1,14 @@
 import { gql } from 'graphql-request'
 
-import { AnalyticsFilter, defaultNetworkPath } from '@acx-ui/analytics/utils'
-import { dataApi }                             from '@acx-ui/store'
-import { NetworkPath, PathNode }               from '@acx-ui/utils'
+import { dataApi }              from '@acx-ui/store'
+import { PathNode }             from '@acx-ui/utils'
+import type { AnalyticsFilter } from '@acx-ui/utils'
 
-type NetworkData = PathNode & { id:string, path: NetworkPath }
-type NetworkHierarchyFilter = AnalyticsFilter & { shouldQuerySwitch? : Boolean }
-
+// R1
+type NetworkData = PathNode & { id:string }
+type NetworkHierarchyFilter = Omit<AnalyticsFilter, 'filter'> &
+  { shouldQueryAp? : Boolean, shouldQuerySwitch? : Boolean }
 export type ApOrSwitch = {
-  path?: NetworkPath
   name: string
   mac: string
   serial?: string
@@ -17,97 +17,90 @@ export type ApOrSwitch = {
 }
 export type ApsOrSwitches = { aps?: ApOrSwitch[], switches?: ApOrSwitch[] }
 export type Child = NetworkData & ApsOrSwitches
-interface Response {
+interface VenuesResponse { network: { venueHierarchy: Child[] } }
+
+// RAI
+type NetworkHierarchy<T> = T & { children?: NetworkHierarchy<T>[] }
+export interface NetworkNode extends NetworkHierarchy<PathNode & {
+  mac?: string, model?: string, firmware?: string, deviceId?: string
+}>{}
+interface HierarchyResponse {
   network: {
-    hierarchyNode: { children: Child[] }
+    apHierarchy: NetworkNode[]
+    switchHierarchy: NetworkNode[]
   }
 }
+const mergeNodes = (children: NetworkNode[]): NetworkNode[] => {
+  return Object.values(children.reduce((nodes, node) => {
+    const key = node.type + node.name
+    if (nodes[key]) {
+      nodes[key].children!.push(...node.children!)
+    } else {
+      nodes[key] = node
+    }
+    return nodes
+  }, {} as { [key: string]: NetworkNode }))
+}
+
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    networkFilter: build.query<
-      Child[],
-      Omit<NetworkHierarchyFilter, 'filter'>
-    >({
+    venuesHierarchy: build.query<Child[], NetworkHierarchyFilter>({
       query: payload => ({
         document: gql`
-          query NetworkHierarchy(
-            $path: [HierarchyNodeInput], $start: DateTime, $end: DateTime, $querySwitch: Boolean
+          query VenueHierarchy(
+            $start: DateTime,
+            $end: DateTime,
+            $querySwitch: Boolean,
+            $queryAp: Boolean
           ) {
-            network(start: $start, end: $end) {
-              hierarchyNode(path: $path, querySwitch: $querySwitch) {
-                type
-                name
-                path {
-                  type
-                  name
-                }
-                children {
-                  id
-                  type
-                  name
-                  path {
-                    type
-                    name
-                  }
-                  aps {
-                    name
-                    mac
-                  }
-                  switches {
-                    name
-                    mac
-                  }
-                }
-              }
+              network(start: $start, end: $end) {
+                venueHierarchy (queryAp: $queryAp, querySwitch: $querySwitch)
             }
           }
         `,
         variables: {
-          path: defaultNetworkPath,
           start: payload.startDate,
           end: payload.endDate,
-          querySwitch: payload.shouldQuerySwitch
+          querySwitch: payload.shouldQuerySwitch,
+          queryAp: payload.shouldQueryAp
         }
       }),
-      providesTags: [{ type: 'Monitoring', id: 'ANALYTICS_NETWORK_FILTER' }],
-      transformResponse: (response: Response) =>
-        response.network.hierarchyNode.children
+      providesTags: [{ type: 'Monitoring', id: 'ANALYTICS_NETWORK_HIERARCHY' }],
+      transformResponse: ({ network }: VenuesResponse) => network.venueHierarchy
     }),
-    recentNetworkFilter: build.query<
-      Child[],
-      Omit<NetworkHierarchyFilter, 'filter'>
-    >({
+    networkHierarchy: build.query<NetworkNode, NetworkHierarchyFilter>({
       query: payload => ({
         document: gql`
-          query RecentNetworkHierarchy(
-            $path: [HierarchyNodeInput], $start: DateTime, $end: DateTime
-          ) {
-            network(start: $start, end: $end) {
-              hierarchyNode(path: $path) {
-                type
-                name
-                path { type name }
-                children {
-                  id
-                  type
-                  name
-                  path { type name }
-                  aps: recentAps { name mac serial model firmware }
-                }
-              }
+          query Network($start: DateTime, $end: DateTime) {
+              network(start: $start, end: $end) {
+                ${payload.shouldQueryAp ? 'apHierarchy' : ''}
+                ${payload.shouldQuerySwitch ? 'switchHierarchy' : ''}
             }
           }
         `,
         variables: {
-          path: defaultNetworkPath,
           start: payload.startDate,
           end: payload.endDate
         }
       }),
-      providesTags: [{ type: 'Monitoring', id: 'ANALYTICS_RECENT_NETWORK_FILTER' }],
-      transformResponse: (response: Response) => response.network.hierarchyNode.children
+      providesTags: [{ type: 'Monitoring', id: 'ANALYTICS_NETWORK_HIERARCHY' }],
+      transformResponse: ({ network: { apHierarchy, switchHierarchy } }: HierarchyResponse) => ({
+        name: 'Network',
+        type: 'network',
+        children: mergeNodes((apHierarchy || []).concat((switchHierarchy || [])))
+          .map((system: NetworkNode): NetworkNode => ({
+            ...system,
+            children: mergeNodes(system.children!.reduce(
+              (nodes, node) => nodes.concat(node.name === '1||Administration Domain'
+                ? node.children!
+                : [{ ...node, name: node.name.slice(3) }]
+              ),
+              [] as NetworkNode[]
+            ))
+          }))
+      } as NetworkNode)
     })
   })
 })
 
-export const { useNetworkFilterQuery, useRecentNetworkFilterQuery } = api
+export const { useVenuesHierarchyQuery, useNetworkHierarchyQuery } = api

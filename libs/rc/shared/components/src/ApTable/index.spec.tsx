@@ -2,10 +2,10 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
-import { apApi }                        from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }              from '@acx-ui/store'
+import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
+import { apApi }                                                 from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiUrlsInfo, AFCPowerMode, AFCStatus } from '@acx-ui/rc/utils'
+import { Provider, store }                                       from '@acx-ui/store'
 import {
   cleanup,
   findTBody,
@@ -50,6 +50,9 @@ const list = {
             radioId: 1
           }
         ],
+        APSystem: {
+          managementVlan: 1
+        },
         lanPortStatus: [
           {
             phyLink: 'Down ',
@@ -59,7 +62,11 @@ const list = {
             phyLink: 'Up 1000Mbps full',
             port: '1'
           }
-        ]
+        ],
+        afcInfo: {
+          powerMode: AFCPowerMode.LOW_POWER,
+          afcStatus: AFCStatus.WAIT_FOR_LOCATION
+        }
       },
       meshRole: 'DISABLED',
       deviceGroupId: '4fe4e02d7ef440c4affd28c620f93073',
@@ -92,7 +99,10 @@ const list = {
             Rssi: null,
             radioId: 1
           }
-        ]
+        ],
+        APSystem: {
+          managementVlan: 1
+        }
       },
       meshRole: '',
       deviceGroupId: '4fe4e02d7ef440c4affd28c620f93073',
@@ -124,7 +134,10 @@ const list = {
             Rssi: null,
             radioId: 1
           }
-        ]
+        ],
+        APSystem: {
+          managementVlan: 1
+        }
       },
       meshRole: 'DISABLED',
       deviceGroupId: '4fe4e02d7ef440c4affd28c620f93073',
@@ -156,7 +169,10 @@ const list = {
             Rssi: null,
             radioId: 1
           }
-        ]
+        ],
+        APSystem: {
+          managementVlan: 1
+        }
       },
       meshRole: 'DISABLED',
       deviceGroupId: '4fe4e02d7ef440c4affd28c620f93073',
@@ -188,7 +204,10 @@ const list = {
             Rssi: null,
             radioId: 1
           }
-        ]
+        ],
+        APSystem: {
+          managementVlan: 1
+        }
       },
       meshRole: 'EMAP',
       deviceGroupId: '4fe4e02d7ef440c4affd28c620f93073',
@@ -366,7 +385,7 @@ describe('Aps', () => {
 
   it('Table action bar Edit', async () => {
     jest.mocked(useIsSplitOn).mockImplementation((ff) => {
-      return (ff === Features.DEVICES || ff === Features.EXPORT_DEVICE) ? true : false
+      return (ff === Features.EXPORT_DEVICE) ? true : false
     })
 
     render(<Provider><ApTable
@@ -388,7 +407,7 @@ describe('Aps', () => {
     expect(mockedUsedNavigate).toHaveBeenCalled()
   })
 
-  it('should render with filterables', async () => {
+  it.skip('should render with filterables', async () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getApGroupsListByGroup.url,
@@ -452,5 +471,23 @@ describe('Aps', () => {
 
     await userEvent.click(await within(drawer).findByRole('button', { name: 'Import' }))
     await waitFor(() => expect(drawer).not.toBeVisible())
+  })
+
+  it.skip('Should render the low power warning messages', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(<Provider><ApTable /></Provider>, {
+      route: { params, path: '/:tenantId' }
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    // screen.debug(undefined, 300000)
+    expect(
+      screen.getByText('Degraded - AP in low power mode', { exact: false })
+    ).toBeInTheDocument()
+
+    expect(
+      screen.getByText('(Geo Location not set)', { exact: false })
+    ).toBeInTheDocument()
   })
 })

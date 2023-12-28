@@ -1,1 +1,5 @@
 export * from './healthApi'
+export * from './rbacApi'
+export * from './searchApi'
+export * from './notificationApi'
+export * from './detailsApi'

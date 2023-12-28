@@ -8,10 +8,10 @@ module.exports = {
   coverageDirectory: '../../../coverage/libs/common/feature-toggle',
   coverageThreshold: {
     global: {
-      statements: 28.57,
-      branches: 29.41,
-      functions: 20,
-      lines: 29.26
+      statements: 93,
+      branches: 90,
+      functions: 80,
+      lines: 95
     }
   }
 }

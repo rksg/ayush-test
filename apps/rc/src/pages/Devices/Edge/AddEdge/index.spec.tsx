@@ -2,18 +2,19 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                     from '@acx-ui/store'
+import { CommonUrlsInfo, EdgeErrorsFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                         from '@acx-ui/store'
 import {
   fireEvent, mockServer, render,
   screen,
   waitFor
 } from '@acx-ui/test-utils'
 
-import { mockValidationFailedDataWithDefinedCode, mockValidationFailedDataWithUndefinedCode, mockVenueData } from '../__tests__/fixtures'
+import { mockVenueData } from '../__tests__/fixtures'
 
 import AddEdge from './index'
 
+const { mockValidationFailedDataWithDefinedCode, mockValidationFailedDataWithUndefinedCode } = EdgeErrorsFixtures
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -86,10 +87,10 @@ describe('AddEdge', () => {
     const edgeNameInput = await screen.findByRole('textbox', { name: 'SmartEdge Name' })
     fireEvent.change(edgeNameInput, { target: { value: '12345678901234567890123456789012345678901234567890123456789012345' } })
     const serialNumberInput = screen.getByRole('textbox', { name: 'Serial Number' })
-    fireEvent.change(serialNumberInput, { target: { value: '12345678901234567890123456789012345' } })
+    fireEvent.change(serialNumberInput, { target: { value: '9612345678901234567890123456789012345' } })
     await user.click(screen.getByRole('button', { name: 'Add' }))
     expect(await screen.findByText('SmartEdge Name must be up to 64 characters')).toBeVisible()
-    expect(await screen.findByText('serialNumber must be up to 34 characters')).toBeVisible()
+    expect(await screen.findByText('Field must be exactly 34 characters')).toBeVisible()
   })
 
   it('should be blocked when serial number is invalid', async () => {
@@ -121,7 +122,7 @@ describe('AddEdge', () => {
     fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })
     const serialNumberInput = screen.getByRole('textbox',
       { name: 'Serial Number' })
-    fireEvent.change(serialNumberInput, { target: { value: '96123456789' } })
+    fireEvent.change(serialNumberInput, { target: { value: '967107237F423711EE948762BC9B5F795A' } })
     await user.click(screen.getByRole('button', { name: 'Add' }))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/devices/edge`,
@@ -181,7 +182,7 @@ describe('AddEdge api fail', () => {
     fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })
     const serialNumberInput = screen.getByRole('textbox',
       { name: 'Serial Number' })
-    fireEvent.change(serialNumberInput, { target: { value: '96123456789' } })
+    fireEvent.change(serialNumberInput, { target: { value: '967107237F423711EE948762BC9B5F795A' } })
     await user.click(screen.getByRole('button', { name: 'Add' }))
     await screen.findByText("There's no available SmartEdge license")
   })
@@ -211,7 +212,7 @@ describe('AddEdge api fail', () => {
     fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })
     const serialNumberInput = screen.getByRole('textbox',
       { name: 'Serial Number' })
-    fireEvent.change(serialNumberInput, { target: { value: '96123456789' } })
+    fireEvent.change(serialNumberInput, { target: { value: '967107237F423711EE948762BC9B5F795A' } })
     await user.click(screen.getByRole('button', { name: 'Add' }))
     await screen.findByText('Undefined message')
   })

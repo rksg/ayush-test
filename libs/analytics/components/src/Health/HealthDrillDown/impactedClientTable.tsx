@@ -1,13 +1,14 @@
 import { useIntl } from 'react-intl'
 
-import { AnalyticsFilter, sortProp, defaultSort, aggregateDataBy } from '@acx-ui/analytics/utils'
+import { sortProp, defaultSort, aggregateDataBy } from '@acx-ui/analytics/utils'
 import {
   Loader,
   Table,
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }           from '@acx-ui/react-router-dom'
+import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import {
   Stages,
@@ -77,7 +78,7 @@ export const ImpactedClientsTable = ({
       dataIndex: 'mac',
       key: 'mac',
       render: (_, { mac }) => (
-        <TenantLink to={`users/wifi/clients/${mac?.[0]?.toLowerCase()}/details/overview`}>
+        <TenantLink to={`users/wifi/clients/${mac?.[0]?.toLowerCase()}/details/troubleshooting`}>
           {mac}
         </TenantLink>
       ),
@@ -89,6 +90,13 @@ export const ImpactedClientsTable = ({
       key: 'manufacturer',
       render: (_, { manufacturer }) => renderMultiValue(manufacturer as string[]),
       sorter: { compare: sortProp('manufacturer', defaultSort) }
+    },
+    {
+      title: $t({ defaultMessage: 'OS Type' }),
+      dataIndex: 'osType',
+      key: 'osType',
+      render: (_, { osType }) => renderMultiValue(osType as string[]),
+      sorter: { compare: sortProp('osType', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'SSID' }),
@@ -134,7 +142,7 @@ export const ImpactedClientsTable = ({
       </TableHeading>
       <Table
         columns={columns}
-        dataSource={queryResults.data as ImpactedClient[]}
+        dataSource={(queryResults.data)?.slice(0, topImpactedClientLimit) as ImpactedClient[]}
         rowKey='id'
         type='compactBordered'
       />

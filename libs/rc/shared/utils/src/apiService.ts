@@ -6,7 +6,7 @@ export {
   getFilters,
   getUrlForTest,
   isDev,
-  isDelegationMode,
+  // isDelegationMode,
   isLocalHost,
   isIntEnv
 } from '@acx-ui/utils'

@@ -3,12 +3,25 @@ import { useEffect } from 'react'
 import { renderHook, render } from '@testing-library/react'
 import { MemoryRouter }       from 'react-router-dom'
 
-import { resetRanges, fixedEncodeURIComponent } from '@acx-ui/utils'
+import { get }                                               from '@acx-ui/config'
+import { resetRanges, fixedEncodeURIComponent, NetworkPath } from '@acx-ui/utils'
 
-import { useAnalyticsFilter, getFilterPayload, getSelectedNodePath, pathToFilter } from './analyticsFilter'
+import {
+  useAnalyticsFilter,
+  getFilterPayload,
+  getSelectedNodePath,
+  pathToFilter,
+  defaultNetworkPath,
+  isSwitchPath,
+  isApPath
+} from './analyticsFilter'
 
 const network = { type: 'network', name: 'Network' }
 const original = Date.now
+const mockGet = get as jest.Mock
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
+}))
 describe('useAnalyticsFilter', () => {
   beforeEach(() => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
@@ -23,8 +36,14 @@ describe('useAnalyticsFilter', () => {
     })
     expect(result.current.filters).toEqual({
       filter: {},
-      startDate: '2021-12-31T00:00:00+00:00',
-      endDate: '2022-01-01T00:00:59+00:00',
+      startDate: '2021-12-31T00:01:00+00:00',
+      endDate: '2022-01-01T00:01:00+00:00',
+      range: 'Last 24 Hours'
+    })
+    expect(result.current.pathFilters).toEqual({
+      path: defaultNetworkPath,
+      startDate: '2021-12-31T00:01:00+00:00',
+      endDate: '2022-01-01T00:01:00+00:00',
       range: 'Last 24 Hours'
     })
   })
@@ -37,40 +56,59 @@ describe('useAnalyticsFilter', () => {
     raw: ['[{\\"type\\":\\"zone\\",\\"name\\":\\"A-T-Venue\\"},...]']
   }
   const path = fixedEncodeURIComponent(JSON.stringify(filter))
+
   it('should render correctly', () => {
     function Component () {
-      const { filters } = useAnalyticsFilter()
-      return <div>{JSON.stringify(filters)}</div>
+      const { filters, pathFilters } = useAnalyticsFilter()
+      return (
+        <div>
+          {JSON.stringify(filters)} | {JSON.stringify(pathFilters)}
+        </div>
+      )
     }
-    const { asFragment } = render(<MemoryRouter initialEntries={[{
-      pathname: '/analytics/incidents',
-      search: ''
-    }]}>
-      <Component />
-    </MemoryRouter>)
+    const { asFragment } = render(
+      <MemoryRouter
+        initialEntries={[
+          {
+            pathname: '/analytics/incidents',
+            search: ''
+          }
+        ]}>
+        <Component />
+      </MemoryRouter>
+    )
     expect(asFragment()).toMatchSnapshot()
   })
   it('changes filter value', () => {
     function Component () {
-      const { filters, raw, setNetworkPath } = useAnalyticsFilter()
+      const { filters, pathFilters, raw, setNetworkPath } = useAnalyticsFilter()
       useEffect(() => {
         setNetworkPath([], raw)
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [])
-      return <div>{JSON.stringify(filters)}</div>
+      return (
+        <div>
+          {JSON.stringify(filters)} | {JSON.stringify(pathFilters)}
+        </div>
+      )
     }
-    const { asFragment } = render(<MemoryRouter initialEntries={[{
-      pathname: '/analytics/incidents',
-      search: `?analyticsNetworkFilter=${path}`
-    }]}>
-      <Component />
-    </MemoryRouter>)
+    const { asFragment } = render(
+      <MemoryRouter
+        initialEntries={[
+          {
+            pathname: '/analytics/incidents',
+            search: `?analyticsNetworkFilter=${path}`
+          }
+        ]}>
+        <Component />
+      </MemoryRouter>
+    )
     expect(asFragment()).toMatchSnapshot()
   })
   it('gets initial value from search parameters', () => {
     function Component () {
-      const { filters } = useAnalyticsFilter()
-      return <div>{JSON.stringify(filters)}</div>
+      const { filters, pathFilters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)} | {JSON.stringify(pathFilters)}</div>
     }
     const { asFragment } = render(
       <MemoryRouter initialEntries={[{
@@ -92,8 +130,8 @@ describe('useAnalyticsFilter', () => {
     }
     const path = fixedEncodeURIComponent(JSON.stringify(filter))
     function Component () {
-      const { filters } = useAnalyticsFilter()
-      return <div>{JSON.stringify(filters)}</div>
+      const { filters, pathFilters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)} | {JSON.stringify(pathFilters)}</div>
     }
     const { asFragment } = render(
       <MemoryRouter initialEntries={[{
@@ -114,8 +152,8 @@ describe('useAnalyticsFilter', () => {
     }
     const path = fixedEncodeURIComponent(JSON.stringify(filter))
     function Component () {
-      const { filters } = useAnalyticsFilter()
-      return <div>{JSON.stringify(filters)}</div>
+      const { filters, pathFilters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)} | {JSON.stringify(pathFilters)}</div>
     }
     const { asFragment } = render(
       <MemoryRouter initialEntries={[{
@@ -128,7 +166,7 @@ describe('useAnalyticsFilter', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('should set path to default when path is health and selected node is switch', () => {
+  it('should set path to default when path is health and selected node is switch for R1', () => {
     const filter = {
       path: [
         { type: 'switchGroup', name: 'switchGroup' }
@@ -137,12 +175,56 @@ describe('useAnalyticsFilter', () => {
     }
     const path = fixedEncodeURIComponent(JSON.stringify(filter))
     function Component () {
-      const { filters } = useAnalyticsFilter()
-      return <div>{JSON.stringify(filters)}</div>
+      const { filters, pathFilters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)} | {JSON.stringify(pathFilters)}</div>
     }
     const { asFragment } = render(
       <MemoryRouter initialEntries={[{
         pathname: '/analytics/health',
+        search: `?analyticsNetworkFilter=${path}`
+      }]}>
+        <Component />
+      </MemoryRouter>
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should set path to default when path is health and selected node is switch for RAI', () => {
+    const filter = {
+      path: [
+        { type: 'switchGroup', name: 'switchGroup' }
+      ],
+      raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
+    }
+    const path = fixedEncodeURIComponent(JSON.stringify(filter))
+    function Component () {
+      const { filters, pathFilters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)} | {JSON.stringify(pathFilters)}</div>
+    }
+    const { asFragment } = render(
+      <MemoryRouter initialEntries={[{
+        pathname: '/ai/health',
+        search: `?analyticsNetworkFilter=${path}`
+      }]}>
+        <Component />
+      </MemoryRouter>
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should set path to default when path is wired report and selected node is ap for RAI', () => {
+    const filter = {
+      path: [
+        { type: 'apGroup', name: 'apGroup' }
+      ],
+      raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
+    }
+    const path = fixedEncodeURIComponent(JSON.stringify(filter))
+    function Component () {
+      const { filters, pathFilters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)} | {JSON.stringify(pathFilters)}</div>
+    }
+    const { asFragment } = render(
+      <MemoryRouter initialEntries={[{
+        pathname: '/ai/reports/wired',
         search: `?analyticsNetworkFilter=${path}`
       }]}>
         <Component />
@@ -159,8 +241,31 @@ describe('useAnalyticsFilter', () => {
     }
     const path = fixedEncodeURIComponent(JSON.stringify(filter))
     function Component () {
-      const { filters } = useAnalyticsFilter()
-      return <div>{JSON.stringify(filters)}</div>
+      const { filters, pathFilters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)} | {JSON.stringify(pathFilters)}</div>
+    }
+    const { asFragment } = render(
+      <MemoryRouter initialEntries={[{
+        pathname: '/analytics/health',
+        search: `?analyticsNetworkFilter=${path}`
+      }]}>
+        <Component />
+      </MemoryRouter>
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should set filters correctly for mlisa app', () => {
+    mockGet.mockReturnValueOnce('true')
+    const filter = {
+      path: [
+        { type: 'zone', name: 'Zone' }
+      ],
+      raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
+    }
+    const path = fixedEncodeURIComponent(JSON.stringify(filter))
+    function Component () {
+      const { filters, pathFilters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)} | {JSON.stringify(pathFilters)}</div>
     }
     const { asFragment } = render(
       <MemoryRouter initialEntries={[{
@@ -177,8 +282,8 @@ describe('useAnalyticsFilter', () => {
       nodes: [['venueId1']]
     }))
     function Component () {
-      const { filters } = useAnalyticsFilter()
-      return <div>{JSON.stringify(filters)}</div>
+      const { filters, pathFilters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)} | {JSON.stringify(pathFilters)}</div>
     }
     const { asFragment } = render(
       <MemoryRouter initialEntries={[{
@@ -190,6 +295,7 @@ describe('useAnalyticsFilter', () => {
     )
     expect(asFragment()).toMatchSnapshot()
   })
+
 })
 describe('getFilterPayload', () => {
   it('returns default path', () => {
@@ -214,7 +320,7 @@ describe('getSelectedNodePath', () => {
     })).toEqual([network, { type: 'switchGroup', name: 'Switches' }])
     expect(getSelectedNodePath({
       networkNodes: [[{ type: 'zone', name: 'Zone' }, { type: 'apGroup', name: 'a1' }]]
-    })).toEqual([network, { type: 'zone', name: 'Zone' }]) // TODO , { type: 'apGroup', name: 'a1' }
+    })).toEqual([network, { type: 'zone', name: 'Zone' }, { type: 'apGroup', name: 'a1' }])
     expect(getSelectedNodePath({
       networkNodes: [[{ type: 'zone', name: 'Zone' }, { type: 'apMac', list: ['m1'] }]]
     })).toEqual([network, { type: 'zone', name: 'Zone' }, { type: 'AP', name: 'm1' }])
@@ -239,8 +345,54 @@ describe('pathToFilter', () => {
     expect(pathToFilter(
       [{ type: 'zone', name: 'z1' }, { type: 'apGroup', name: 'a1' }]
     )).toEqual({
-      networkNodes: [[{ type: 'zone', name: 'z1' }]], // TODO , { type: 'apGroup', name: 'a1' }
-      switchNodes: [[{ type: 'zone', name: 'z1' }]] // TODO , { type: 'apGroup', name: 'a1' }
+      networkNodes: [[{ type: 'zone', name: 'z1' }, { type: 'apGroup', name: 'a1' }]],
+      switchNodes: [[{ type: 'zone', name: 'z1' }, { type: 'apGroup', name: 'a1' }]]
     })
+  })
+  it('returns correct filter for mlisa app', () => {
+    mockGet.mockReturnValueOnce('true')
+    expect(pathToFilter(
+      [{ type: 'zone', name: 'z1' }, { type: 'apGroup', name: 'a1' }]
+    )).toEqual({
+      networkNodes: [[{ name: 'z1', type: 'zone' }, { name: 'a1', type: 'apGroup' }]],
+      switchNodes: [[{ name: 'z1', type: 'zone' }, { name: 'a1', type: 'apGroup' }]]
+    })
+  })
+  it('returns correct empty object filter for empty array', () => {
+    mockGet.mockReturnValueOnce('true')
+    expect(pathToFilter(
+      []
+    )).toEqual({})
+  })
+})
+describe('isSwitchPath', () => {
+  it('returns true if is switch path', () => {
+    const path = [
+      { type: 'network', name: 'Network' },
+      { type: 'system', name: 's1' },
+      { type: 'switchGroup', name: 'sg1' },
+      { type: 'switch', name: 'sw1', list: ['60:9C:9F:FE:64:14'] }
+    ] as NetworkPath
+    expect(isSwitchPath(path)).toBe(true)
+  })
+  it('returns false if not switch path', () => {
+    const path = [{ type: 'network', name: 'Network' }] as NetworkPath
+    expect(isSwitchPath(path)).toBe(false)
+  })
+})
+describe('isApPath', () => {
+  it('returns true if is ap path', () => {
+    const path = [
+      { type: 'network', name: 'Network' },
+      { type: 'system', name: 's1' },
+      { type: 'zone', name: 'z1' },
+      { type: 'apGroup', name: 'a1' },
+      { type: 'AP', name: 'm1' }
+    ] as NetworkPath
+    expect(isApPath(path)).toBe(true)
+  })
+  it('returns false if not ap path', () => {
+    const path = [{ type: 'network', name: 'Network' }] as NetworkPath
+    expect(isApPath(path)).toBe(false)
   })
 })

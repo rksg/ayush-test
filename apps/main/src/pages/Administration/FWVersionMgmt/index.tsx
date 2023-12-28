@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs, Tooltip }                            from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { InformationSolid }                         from '@acx-ui/icons'
+import { Tabs, Tooltip }                                          from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { InformationSolid }                                       from '@acx-ui/icons'
 import {
   useGetLatestEdgeFirmwareQuery,
   useGetLatestFirmwareListQuery,
@@ -34,7 +34,7 @@ const FWVersionMgmt = () => {
   const params = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/administration/fwVersionMgmt')
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const enableSigPackUpgrade = useIsSplitOn(Features.SIGPACK_UPGRADE)
   const { data: latestReleaseVersions } = useGetLatestFirmwareListQuery({ params })
   const { data: venueVersionList } = useGetVenueVersionListQuery({ params })
@@ -56,7 +56,6 @@ const FWVersionMgmt = () => {
   const [isEdgeFirmwareAvailable, setIsEdgeFirmwareAvailable] = useState(false)
   const [isAPPLibraryAvailable, setIsAPPLibraryAvailable] = useState(false)
 
-  const enableSwitchRodanFirmware = useIsSplitOn(Features.SWITCH_RODAN_FIRMWARE)
   useEffect(()=>{
     if(sigPackUpdate&&sigPackUpdate.currentVersion!==sigPackUpdate.latestVersion){
       setIsAPPLibraryAvailable(true)
@@ -81,9 +80,8 @@ const FWVersionMgmt = () => {
       const latest10 = getReleaseFirmware(latestSwitchReleaseVersions)[1] // 10010e
       const hasOutdated09 = latest09 && switchVenueVersionList.data.some(fv=>
         compareSwitchVersion(latest09.id, fv.switchFirmwareVersion?.id))
-      const hasOutdated10 = enableSwitchRodanFirmware ?
-        (latest10 && switchVenueVersionList.data.some(fv =>
-          compareSwitchVersion(latest10.id, fv.switchFirmwareVersionAboveTen?.id))) : false
+      const hasOutdated10 = latest10 && switchVenueVersionList.data.some(fv =>
+        compareSwitchVersion(latest10.id, fv.switchFirmwareVersionAboveTen?.id))
 
       setIsSwitchFirmwareAvailable(hasOutdated09 || hasOutdated10)
     }

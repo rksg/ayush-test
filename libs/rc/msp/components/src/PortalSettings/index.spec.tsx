@@ -112,6 +112,7 @@ jest.mock('react-router-dom', () => ({
 describe('PortalSettings', () => {
   const params = { tenantId: '3061bd56e37445a8993ac834c01e2710' }
   const fileUrl: string = '/api/file/tenant/' + params.tenantId + '/'
+  const unmockedFetch = global.fetch
 
   beforeEach(async () => {
     rcServices.useExternalProvidersQuery = jest.fn().mockImplementation(() => {
@@ -155,6 +156,7 @@ describe('PortalSettings', () => {
   })
   afterEach(() => {
     jest.clearAllMocks()
+    global.fetch = unmockedFetch
   })
   it('should render correctly for add', async () => {
     services.useGetMspLabelQuery = jest.fn().mockImplementation(() => {
@@ -174,7 +176,6 @@ describe('PortalSettings', () => {
     expect(screen.getByRole('heading', { level: 3, name: 'Branding' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo:' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo Preview:' })).toBeVisible()
-    expect(screen.getByRole('button', { name: 'Back' })).toBeDisabled()
     expect(screen.getByRole('button', { name: 'Next' })).not.toBeDisabled()
     expect(screen.getByRole('button', { name: 'Cancel' })).not.toBeDisabled()
   })
@@ -888,7 +889,6 @@ describe('PortalSettings', () => {
     expect(screen.getByRole('heading', { level: 3, name: 'Branding' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo:' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo Preview:' })).toBeVisible()
-    expect(screen.getByRole('button', { name: 'Back' })).toBeDisabled()
     expect(screen.getByRole('button', { name: 'Next' })).not.toBeDisabled()
     expect(screen.getByRole('button', { name: 'Cancel' })).not.toBeDisabled()
 

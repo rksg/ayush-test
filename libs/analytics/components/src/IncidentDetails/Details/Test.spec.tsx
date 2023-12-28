@@ -9,13 +9,21 @@ import {
   fakeIncidentSwitchMemory,
   fakeIncidentPoePd,
   fakeIncidentTtc,
-  fakeIncidentChannelDist
+  fakeIncidentChannelDist,
+  fakeIncidentNetTime,
+  fakeIncidentNetSzNetLatency,
+  fakeIncidentLoadSzCpuLoad,
+  fakeIncidentAirtimeB,
+  IncidentCode
 }                         from '@acx-ui/analytics/utils'
 import { useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
 import * as fixtures               from './__tests__/fixtures'
+import { AirtimeB }                from './AirtimeB'
+import { AirtimeRx }               from './AirtimeRx'
+import { AirtimeTx }               from './AirtimeTx'
 import { ApinfraPoeLow }           from './ApinfraPoeLow'
 import { ApinfraWanthroughputLow } from './ApinfraWanthroughputLow'
 import { ApservContinuousReboots } from './ApservContinuousReboots'
@@ -27,12 +35,14 @@ import { ChannelDist }             from './ChannelDist'
 import { CovClientrssiLow }        from './CovClientrssiLow'
 import { DhcpFailure }             from './DhcpFailure'
 import { EapFailure }              from './EapFailure'
+import { LoadSzCpuLoad }           from './LoadSzCpuLoad'
+import { NetSzNetLatency }         from './NetSzNetLatency'
+import { NetTime }                 from './NetTime'
 import { RadiusFailure }           from './RadiusFailure'
 import { SwitchMemoryHigh }        from './SwitchMemoryHigh'
 import { SwitchPoePd }             from './SwitchPoePd'
 import { SwitchVlanMismatch }      from './SwitchVlanMismatch'
 import { Ttc }                     from './Ttc'
-
 
 jest.mock('../Insights', () => ({
   Insights: () => <div data-testid='insights' />
@@ -51,6 +61,9 @@ jest.mock('../Charts/PoeLowTable', () => ({
 }))
 jest.mock('../Charts/PoePdTable', () => ({
   PoePdTable: () => <div data-testid='poePdTable' />
+}))
+jest.mock('../Charts/ImpactedSwitchVLANsTable', () => ({
+  ImpactedSwitchVLANsTable: () => <div data-testid='ImpactedSwitchVLANsTable' />
 }))
 jest.mock('../Charts/WanthroughputTable', () => ({
   WanthroughputTable: () => <div data-testid='wanthroughputTable' />
@@ -168,19 +181,102 @@ describe('Test', () => {
       },
       {
         component: ChannelDist,
-        fakeIncident: fakeIncidentChannelDist, //5g
+        fakeIncident: fakeIncidentChannelDist, // 5g
         hasNetworkImpact: false,
         hasTimeSeries: true,
-        charts: [],
-        exclude_NAVBAR_ENHANCEMENT_Test: true
+        charts: []
       },
       {
         component: ChannelDist,
-        fakeIncident: { ...fakeIncidentChannelDist, code: 'p-channeldist-suboptimal-plan-24g' }, //2.4g
+        fakeIncident: { ...fakeIncidentChannelDist,
+          code: 'p-channeldist-suboptimal-plan-24g' as IncidentCode }, // 2.4g
         hasNetworkImpact: false,
         hasTimeSeries: true,
-        charts: [],
-        exclude_NAVBAR_ENHANCEMENT_Test: true
+        charts: []
+      },
+      {
+        component: NetTime,
+        fakeIncident: fakeIncidentNetTime,
+        hasNetworkImpact: false,
+        hasTimeSeries: false,
+        charts: []
+      },
+      {
+        component: NetSzNetLatency,
+        fakeIncident: fakeIncidentNetSzNetLatency,
+        hasNetworkImpact: false,
+        hasTimeSeries: false,
+        charts: []
+      },
+      {
+        component: LoadSzCpuLoad,
+        fakeIncident: fakeIncidentLoadSzCpuLoad,
+        hasNetworkImpact: false,
+        hasTimeSeries: false,
+        charts: []
+      },
+      {
+        component: AirtimeB,
+        fakeIncident: fakeIncidentAirtimeB,
+        hasNetworkImpact: true,
+        hasTimeSeries: true,
+        charts: []
+      },
+      {
+        component: AirtimeB,
+        fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-b-5g-high' as IncidentCode },
+        hasNetworkImpact: true,
+        hasTimeSeries: true,
+        charts: []
+      },
+      {
+        component: AirtimeB,
+        fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-b-6(5)g-high' as IncidentCode },
+        hasNetworkImpact: true,
+        hasTimeSeries: true,
+        charts: []
+      },
+      {
+        component: AirtimeRx,
+        fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-rx-24g-high' as IncidentCode },
+        hasNetworkImpact: true,
+        hasTimeSeries: true,
+        charts: []
+      },
+      {
+        component: AirtimeRx,
+        fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-rx-5g-high' as IncidentCode },
+        hasNetworkImpact: true,
+        hasTimeSeries: true,
+        charts: []
+      },
+      {
+        component: AirtimeRx,
+        fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-rx-6(5)g-high' as IncidentCode },
+        hasNetworkImpact: true,
+        hasTimeSeries: true,
+        charts: []
+      },
+      {
+        component: AirtimeTx,
+        fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-tx-24g-high' as IncidentCode },
+        hasNetworkImpact: true,
+        hasTimeSeries: true,
+        charts: []
+      },
+      {
+        component: AirtimeTx,
+        fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-tx-5g-high' as IncidentCode },
+        hasNetworkImpact: true,
+        hasTimeSeries: true,
+        charts: []
+      },
+      {
+        component: AirtimeTx,
+        fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-tx-6(5)g-high' as IncidentCode },
+        hasNetworkImpact: true,
+        hasTimeSeries: true,
+        charts: []
       }
     ].forEach((test) => {
       it(`should render ${test.component.name} correctly`, () => {
@@ -208,17 +304,6 @@ describe('Test', () => {
           expect(screen.getByTestId(chart)).toBeVisible()
         })
         expect(asFragment()).toMatchSnapshot()
-      })
-      if (test.exclude_NAVBAR_ENHANCEMENT_Test) return
-      // eslint-disable-next-line max-len
-      it(`should handle ${test.component.name} when feature flag NAVBAR_ENHANCEMENT is off`, async () => {
-        jest.mocked(useIsSplitOn).mockReturnValue(false)
-        const params = { incidentId: test.fakeIncident.id }
-        render(<Provider>
-          <test.component {...test.fakeIncident} />
-        </Provider>, { route: { params } })
-        expect(screen.queryByText('AI Assurance')).toBeNull()
-        expect(screen.queryByText('Network Assurance')).toBeNull()
       })
     })
   })

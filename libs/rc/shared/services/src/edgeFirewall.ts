@@ -103,7 +103,8 @@ export const edgeFirewallApi = baseEdgeFirewallApi.injectEndpoints({
             ]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     deleteEdgeFirewall: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {

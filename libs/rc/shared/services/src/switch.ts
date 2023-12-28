@@ -123,10 +123,14 @@ export const switchApi = baseSwitchApi.injectEndpoints({
             'ImportSwitches'
           ]
           onActivityMessageReceived(msg, activities, () => {
-            api.dispatch(switchApi.util.invalidateTags([{ type: 'Switch', id: 'LIST' }]))
+            api.dispatch(switchApi.util.invalidateTags([
+              { type: 'Switch', id: 'LIST' },
+              { type: 'Switch', id: 'DETAIL' }
+            ]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     stackMemberList: build.query<TableResult<StackMember>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -158,7 +162,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Switch', id: 'Detail' }, { type: 'Switch', id: 'StackMemberList' }]
+      invalidatesTags: [{ type: 'Switch', id: 'DETAIL' }, { type: 'Switch', id: 'StackMemberList' }]
     }),
     acknowledgeSwitch: build.mutation<SwitchRow, RequestPayload>({
       query: ({ params, payload }) => {
@@ -168,7 +172,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Switch', id: 'Detail' }, { type: 'Switch', id: 'StackMemberList' }]
+      invalidatesTags: [{ type: 'Switch', id: 'DETAIL' }, { type: 'Switch', id: 'StackMemberList' }]
     }),
     rebootSwitch: build.mutation<SwitchRow, RequestPayload>({
       query: ({ params, payload }) => {
@@ -269,7 +273,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         })
       },
       keepUnusedDataFor: 0,
-      providesTags: [{ type: 'SwitchPort', id: 'LIST' }]
+      providesTags: [{ type: 'SwitchPort', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getProfiles: build.query<TableResult<SwitchProfileModel>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -575,7 +580,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           totalCount: res.response.totalCount,
           page: arg.payload.page
         }
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     addStackMember: build.mutation<{}, RequestPayload>({
       query: ({ params }) => {
@@ -605,7 +611,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Switch', id: 'VE' }]
+      providesTags: [{ type: 'Switch', id: 'VE' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getVenueRoutedList: build.query<TableResult<VeViewModel>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -615,7 +622,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Switch', id: 'VE' }]
+      providesTags: [{ type: 'Switch', id: 'VE' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getVlanListBySwitchLevel: build.query<TableResult<Vlan>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -624,7 +632,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     getSwitchAcls: build.query<TableResult<Acl>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -633,7 +642,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     getJwtToken: build.query<JwtToken, RequestPayload>({
       query: ({ params }) => {
@@ -825,7 +835,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           : { error: listQuery.error as FetchBaseQueryError }
       },
       keepUnusedDataFor: 0,
-      providesTags: [{ type: 'SwitchClient', id: 'LIST' }]
+      providesTags: [{ type: 'SwitchClient', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getSwitchClientDetails: build.query<SwitchClient, RequestPayload>({
       query: ({ params }) => {
@@ -914,7 +925,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Switch', id: 'DETAIL' }]
+      invalidatesTags: [
+        { type: 'Switch', id: 'SWITCH' }
+      ]
     }),
     getLagList: build.query<Lag[], RequestPayload>({
       query: ({ params }) => {
@@ -963,7 +976,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Switch', id: 'DHCP' }]
+      providesTags: [{ type: 'Switch', id: 'DHCP' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getDhcpServer: build.query<SwitchDhcp, RequestPayload>({
       query: ({ params }) => {

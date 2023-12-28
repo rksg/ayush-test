@@ -6,12 +6,14 @@ import { ApDetailHeader, ApDeviceStatusEnum, useApContext } from '@acx-ui/rc/uti
 import { useNavigate, useTenantLink }                       from '@acx-ui/react-router-dom'
 import { hasAccess }                                        from '@acx-ui/user'
 
+import { useIsApNeighborsOn } from './ApNeighbors/useApNeighbors'
 
 function ApTabs (props:{ apDetail: ApDetailHeader }) {
   const { $t } = useIntl()
   const params = useApContext()
   const basePath = useTenantLink(`/devices/wifi/${params.serialNumber}/details/`)
   const navigate = useNavigate()
+  const isApNeighborsOn = useIsApNeighborsOn()
   const onTabChange = (tab: string) => {
     if (tab === 'troubleshooting') tab = `${tab}/ping`
     navigate({
@@ -29,6 +31,12 @@ function ApTabs (props:{ apDetail: ApDetailHeader }) {
       {currentApOperational &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'Troubleshooting' })}
           key='troubleshooting' />}
+      {isApNeighborsOn &&
+        <Tabs.TabPane
+          tab={$t({ defaultMessage: 'Neighbors' })}
+          key='neighbors'
+        />
+      }
       <Tabs.TabPane tab={$t({ defaultMessage: 'Reports' })}
         key='reports'
       />

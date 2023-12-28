@@ -1,6 +1,7 @@
-import { AnalyticsFilter, pathToFilter } from '@acx-ui/analytics/utils'
-import { SwitchViewModel }               from '@acx-ui/rc/utils'
-import { useDateFilter }                 from '@acx-ui/utils'
+import { pathToFilter }         from '@acx-ui/analytics/utils'
+import { SwitchViewModel }      from '@acx-ui/rc/utils'
+import { useDateFilter }        from '@acx-ui/utils'
+import type { AnalyticsFilter } from '@acx-ui/utils'
 
 export const useSwitchFilter = (details: SwitchViewModel | undefined): AnalyticsFilter => {
   const { dateFilter } = useDateFilter()

@@ -9,10 +9,11 @@ import intlTelInput              from 'intl-tel-input'
 interface PhoneInputProps {
   name: string | string[]
   callback?: (value: string) => void
-  onTop: boolean
+  onTop: boolean,
+  defaultCountryCode?: string
 }
 
-export function PhoneInput ({ callback, name, onTop }: PhoneInputProps) {
+export function PhoneInput ({ callback, name, onTop, defaultCountryCode }: PhoneInputProps) {
   const inputRef = useRef<InputRef>(null)
   const form = Form.useFormInstance()
 
@@ -37,6 +38,8 @@ export function PhoneInput ({ callback, name, onTop }: PhoneInputProps) {
 
       if(form.getFieldValue(name)) {
         iti.getNumber()
+      } else {
+        defaultCountryCode && iti.setCountry(defaultCountryCode)
       }
     }
   }, [name])

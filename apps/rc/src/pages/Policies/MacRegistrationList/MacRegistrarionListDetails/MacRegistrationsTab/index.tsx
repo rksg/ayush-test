@@ -11,12 +11,19 @@ import {
   useUpdateMacRegistrationMutation,
   useUploadMacRegistrationMutation
 } from '@acx-ui/rc/services'
-import { FILTER, MacRegistration, MacRegistrationPool, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
-import { useParams }                                                           from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                                           from '@acx-ui/user'
+import {
+  FILTER,
+  MacRegistration,
+  MacRegistrationPool,
+  returnExpirationString,
+  SEARCH,
+  toDateTimeString,
+  useTableQuery
+} from '@acx-ui/rc/utils'
+import { useParams }                 from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
-import { MacAddressDrawer }                         from '../../MacRegistrationListForm/MacRegistrationListMacAddresses/MacAddressDrawer'
-import { returnExpirationString, toDateTimeString } from '../../MacRegistrationListUtils'
+import { MacAddressDrawer } from '../../MacRegistrationListForm/MacRegistrationListMacAddresses/MacAddressDrawer'
 
 export function MacRegistrationsTab () {
   const { $t } = useIntl()
@@ -83,7 +90,7 @@ export function MacRegistrationsTab () {
         $t({ defaultMessage: 'MAC Address' }),
         selectedRows[0].macAddress,
         [
-          { fieldName: 'identityId', fieldText: $t({ defaultMessage: 'Persona' }) }
+          { fieldName: 'identityId', fieldText: $t({ defaultMessage: 'Identity' }) }
         ],
         // eslint-disable-next-line max-len
         async () => deleteMacRegistrations({ params: { policyId, registrationId: selectedRows[0].id }, payload: selectedRows.map(p => p.id) })

@@ -41,6 +41,8 @@ export interface ClientList {
   switchName?: string
   healthClass: string
   sessStartTimeParssed: boolean
+  networkType: string
+  mldAddr: string
 }
 
 export interface ClientListMeta {
@@ -71,7 +73,8 @@ export interface Guest {
     guestStatus: GuestStatusEnum,
     clients?: GuestClient[],
     langCode?: string,
-    socialLogin?: string
+    socialLogin?: string,
+    hostApprovalEmail?: string
 }
 
 export interface GuestClient {

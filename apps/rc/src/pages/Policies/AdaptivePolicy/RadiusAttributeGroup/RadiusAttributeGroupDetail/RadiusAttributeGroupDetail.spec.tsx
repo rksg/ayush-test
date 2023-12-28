@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn }                                   from '@acx-ui/feature-toggle'
+import { policyApi }                                      from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
   getPolicyRoutePath,
@@ -8,7 +8,7 @@ import {
   PolicyType,
   RadiusAttributeGroupUrlsInfo, RulesManagementUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
+import { Provider, store }            from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { mockGroup, policyList, policySetList, prioritizedPolicies, templateList } from './__tests__/fixtures'
@@ -20,6 +20,7 @@ describe('RadiusAttributeGroupDetail', () => {
     policyId: mockGroup.id
   }
   beforeEach(() => {
+    store.dispatch(policyApi.util.resetApiState())
     mockServer.use(
       rest.get(
         RadiusAttributeGroupUrlsInfo.getAttributeGroup.url,
@@ -61,25 +62,10 @@ describe('RadiusAttributeGroupDetail', () => {
     await screen.findByText(mockGroup.attributeAssignments[1].attributeName)
     await screen.findByText(mockGroup.attributeAssignments[1].attributeValue)
     await screen.findByText('Instance (' + policyList.content.length + ')')
-    await screen.findByRole('row', { name: new RegExp('ap2') })
+    await screen.findByRole('row', { name: 'ap2 2' })
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<Provider><RadiusAttributeGroupDetail /></Provider>, {
-      route: { params, path }
-    })
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'Policies & Profiles'
-    })).toBeVisible()
-    expect(screen.getByRole('link', {
-      name: 'RADIUS Attribute Groups'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(<Provider><RadiusAttributeGroupDetail /></Provider>, {
       route: { params, path }
     })

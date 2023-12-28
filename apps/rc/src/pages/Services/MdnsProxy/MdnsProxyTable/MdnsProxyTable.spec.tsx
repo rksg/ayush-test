@@ -1,8 +1,8 @@
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
-import { Path }  from 'react-router-dom'
+import { waitForElementToBeRemoved } from '@testing-library/react'
+import userEvent                     from '@testing-library/user-event'
+import { rest }                      from 'msw'
+import { Path }                      from 'react-router-dom'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
   getServiceDetailsLink,
@@ -84,14 +84,13 @@ describe('MdnsProxyTable', () => {
         route: { params, path: tablePath }
       }
     )
-
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const targetServiceName = mockedTableResult.data[0].name
     expect(await screen.findByRole('button', { name: /Add mDNS Proxy Service/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: new RegExp(targetServiceName) })).toBeVisible()
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <MdnsProxyTable />
@@ -99,21 +98,7 @@ describe('MdnsProxyTable', () => {
         route: { params, path: tablePath }
       }
     )
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'My Services'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    render(
-      <Provider>
-        <MdnsProxyTable />
-      </Provider>, {
-        route: { params, path: tablePath }
-      }
-    )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'My Services'
@@ -140,6 +125,7 @@ describe('MdnsProxyTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const target = mockedTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
@@ -168,6 +154,7 @@ describe('MdnsProxyTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const target = mockedTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })

@@ -9,7 +9,6 @@ import AutoSizer                                   from 'react-virtualized-auto-
 
 import {
   getBarChartSeriesData,
-  AnalyticsFilter,
   BarChartData
 }                                     from '@acx-ui/analytics/utils'
 import {
@@ -24,6 +23,7 @@ import {
 }                                     from '@acx-ui/components'
 import { formatter }                                          from '@acx-ui/formatter'
 import { NavigateFunction, Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import type { AnalyticsFilter }                               from '@acx-ui/utils'
 
 import { useTopSwitchesByTrafficQuery } from './services'
 

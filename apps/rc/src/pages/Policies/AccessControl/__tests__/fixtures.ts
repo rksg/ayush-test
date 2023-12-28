@@ -64,18 +64,6 @@ export const enhancedAccessControlList = {
 
 export const aclList = [aclDetail]
 
-export const aclResponse = {
-  requestId: '7305b668-b40b-439f-ba25-05ba6d587333'
-}
-
-export const emptyListResponse = {
-  data: [],
-  fields: ['name', 'id'],
-  totalCount: 0,
-  totalPages: 1,
-  page: 1
-}
-
 export const enhancedLayer2PolicyListResponse = {
   fields: [
     'macAddress',
@@ -185,24 +173,6 @@ export const enhancedApplicationPolicyListResponse = {
   ]
 }
 
-export const applicationPolicyListResponse = {
-  data: [
-    {
-      id: '8097d6206f094410ba09fb1cc81ddf5d',
-      name: 'app-policy-1',
-      rulesCount: 1,
-      networksCount: 0
-    }
-  ],
-  fields: [
-    'name',
-    'id'
-  ],
-  totalCount: 1,
-  totalPages: 1,
-  page: 1
-}
-
 export const enhancedDevicePolicyListResponse = {
   fields: [
     'networkIds',
@@ -283,7 +253,7 @@ export const networkListResponse = {
   ]
 }
 
-export const deviceDetailResponse = {
+export const devicePolicyDetailResponse = {
   tenantId: '6de6a5239a1441cfb9c7fde93aa613fe',
   name: 'device1-another',
   defaultAccess: 'ALLOW',
@@ -383,16 +353,6 @@ export const queryApplication = [
   {
     id: 'e1ba3e5ca73b4bbf8c53bb5feff31f9b',
     name: 'app6-activityMsg',
-    rulesCount: 1,
-    networksCount: 0
-  }
-]
-
-export const queryApplicationUpdate = [
-  ...queryApplication,
-  {
-    id: '6ab1a781711e492eb05a70f9f9ba253a',
-    name: 'app1-test',
     rulesCount: 1,
     networksCount: 0
   }

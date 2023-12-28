@@ -54,6 +54,7 @@ export const CloseButton = styled(Button).attrs({ icon: <CancelCircle /> })`
   &&&&.ant-btn-icon-only {
     width: 16px;
     height: 16px;
+    min-width: unset;
   }
 `
 
@@ -135,6 +136,9 @@ const toolbarHeight = '45px'
 
 type StyledTable = {
   $type: 'tall' | 'compact' | 'tooltip' | 'form' | 'compactBordered'
+  $stickyHeaders?: boolean
+  $stickyPagination?: boolean
+  children?: React.ReactNode[]
 }
 
 export const ResizableHover = styled.div``
@@ -216,12 +220,6 @@ const tallStyle = css<StyledTable>`
       order: 2;
       height: ${toolbarHeight};
       pointer-events: none; // prevent from blocking table header
-      position: sticky;
-      top: calc(
-        var(--sticky-offset) +
-        (${actionsHeight} * var(--sticky-has-actions)) +
-        (${rowActionsHeight} * var(--sticky-has-row-actions-offset))
-      );
       z-index: 4;
       overflow: visible;
       &-container {
@@ -240,11 +238,6 @@ const tallStyle = css<StyledTable>`
     &-alert {
       order: 1;
       margin: 0px;
-      position: sticky;
-      top: calc(
-        var(--sticky-offset) +
-        (${actionsHeight} * var(--sticky-has-actions))
-      );
       z-index: 4;
       overflow: visible;
 
@@ -273,6 +266,44 @@ const tallStyle = css<StyledTable>`
       padding: 16px 0;
       margin: unset;
     }
+
+    ${({ children }) =>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    children?.find((child: any) => child?.props?.expandable?.type === 'default') && css`
+      .ant-table-expanded-row-fixed {
+        margin: -18px -8px !important;
+        padding: 12px 8px !important;
+      }
+      .ant-table-row-expand-icon-cell {
+        padding: 0 !important;
+        svg {
+          display: block;
+          width: 16px;
+          height: 16px;
+          cursor: pointer;
+          path {
+            stroke: var(--acx-accents-blue-50);
+          }
+        }      
+      }
+  
+      .ant-pro-table {
+        margin: -8px !important;
+        .ant-table {
+          &-thead > tr th {
+            background: var(--acx-neutrals-30)
+          }
+          &-thead > tr th:first-child,
+          &-tbody > tr td:first-child {
+            padding-left: 46px;
+          }
+          &-tbody > tr:last-child > td {
+            border-bottom: 0;
+          }
+        }
+      }
+    `}
+
   }
 `
 
@@ -399,12 +430,7 @@ export const Header = styled.div`
   height: ${rowActionsHeight};
   display: flex;
   justify-content: space-between;
-  position: sticky;
-  top: calc(
-    var(--sticky-offset) +
-    (${actionsHeight} * var(--sticky-has-actions))
-  );
-  z-index: 3;
+  z-index: 4;
   background-color: var(--acx-primary-white);
 `
 
@@ -552,6 +578,8 @@ export const Wrapper = styled.div<StyledTable>`
   }
 
   ${props => styles[props.$type]}
+  ${props => props.$stickyHeaders && stickyHeaders}
+  ${props => props.$stickyPagination && stickyPagination}
 `
 
 export const Divider = styled(AntDivider)`
@@ -579,10 +607,39 @@ export const ActionsContainer = styled(Space)`
   display: flex;
   justify-content: flex-end;
   padding: 3px 0;
-  position: sticky;
-  top: var(--sticky-offset);
   background-color: var(--acx-primary-white);
   z-index: 3;
+`
+
+const stickyHeaders = css`
+  .ant-pro-table {
+    &-list-toolbar {
+      position: sticky;
+      top: calc(
+        var(--sticky-offset) +
+        (${actionsHeight} * var(--sticky-has-actions)) +
+        (${rowActionsHeight} * var(--sticky-has-row-actions-offset))
+      );
+    }
+    &-alert {
+      position: sticky;
+      top: calc(
+        var(--sticky-offset) +
+        (${actionsHeight} * var(--sticky-has-actions))
+      );
+    }
+  }
+  ${Header} {
+    position: sticky;
+    top: calc(
+      var(--sticky-offset) +
+      (${actionsHeight} * var(--sticky-has-actions))
+    );
+  }
+  ${ActionsContainer} {
+    position: sticky;
+    top: var(--sticky-offset);
+  }
 `
 
 export const disableStickyHeaders = css`
@@ -606,4 +663,41 @@ export const disableStickyHeaders = css`
     position: relative;
     top: unset;
   }
+`
+
+const stickyPagination = css`
+  .ant-pro-table {
+    .ant-pagination {
+      position: sticky;
+      bottom: 0;
+      .ant-select-dropdown {
+        left: 0 !important;
+        top: -204px !important;
+        &[class*="enter-active"],
+        &[class*="appear-active"]
+        { animation-name: antSlideDownIn; }
+
+        &[class*="leave-active"]
+        { animation-name: antSlideDownOut; }
+      }
+    }
+  }
+`
+export const disableStickyPagination = css`
+  .ant-pro-table {
+    .ant-pagination {
+      position: relative;
+      bottom: unset;
+      background-color: var(--acx-primary-white);
+    }
+  }
+`
+
+export const FilterRangePicker = styled.div`
+.ant-picker {
+  border: 1px solid var(--acx-neutrals-50);
+}
+.ant-picker-focused {
+  border-color: var(--acx-neutrals-70) !important;
+}
 `

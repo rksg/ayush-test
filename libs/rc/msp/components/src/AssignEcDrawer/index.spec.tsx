@@ -53,7 +53,7 @@ describe('AssignEcDrawer', () => {
     })
     jest.spyOn(services, 'useAssignMspEcToIntegratorMutation')
     mockServer.use(
-      rest.post(
+      rest.patch(
         MspUrlsInfo.assignMspEcToIntegrator.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123' }))
       )
@@ -74,7 +74,7 @@ describe('AssignEcDrawer', () => {
       })
 
     expect(await screen.findByRole('dialog')).toBeVisible()
-    expect(screen.getByText('Manage Customers Assigned')).toBeVisible()
+    expect(screen.getByText('Manage Assigned Customers')).toBeVisible()
     expect(screen.getByRole('button', { name: 'Save' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
 

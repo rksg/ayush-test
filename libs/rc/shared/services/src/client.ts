@@ -1,11 +1,10 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 
-import { convertEpochToRelativeTime, formatter } from '@acx-ui/formatter'
+import { convertEpochToRelativeTime, formatter }    from '@acx-ui/formatter'
 import {
   Client,
   ClientList,
   ClientListMeta,
-  ClientStatistic,
   ClientUrlsInfo,
   CommonResult,
   CommonUrlsInfo,
@@ -20,13 +19,23 @@ import {
   downloadFile,
   transformByte,
   WifiUrlsInfo,
-  RequestFormData, enableNewApi
+  RequestFormData, enableNewApi, ClientStatusEnum
 } from '@acx-ui/rc/utils'
 import { baseClientApi }                       from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 import { latestTimeFilter } from './utils'
+
+const historicalPayload = {
+  fields: ['clientMac', 'clientIP', 'userId', 'username', 'userName', 'hostname', 'venueId',
+    'serialNumber', 'networkId', 'disconnectTime', 'ssid', 'osType',
+    'sessionDuration', 'venueName', 'apName', 'bssid'],
+  sortField: 'event_datetime',
+  searchTargetFields: ['clientMac'],
+  page: 1,
+  pageSize: 10
+}
 
 export const clientApi = baseClientApi.injectEndpoints({
   endpoints: (build) => ({
@@ -57,7 +66,8 @@ export const clientApi = baseClientApi.injectEndpoints({
           ? { data: aggregatedList }
           : { error: clientListQuery.error as FetchBaseQueryError }
       },
-      providesTags: [{ type: 'Client', id: 'LIST' }]
+      providesTags: [{ type: 'Client', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     disconnectClient: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -65,6 +75,21 @@ export const clientApi = baseClientApi.injectEndpoints({
         if (enableNewApi(ClientUrlsInfo.disconnectClient)) {
           payload = {
             action: 'disconnect',
+            clients: payload
+          }
+        }
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    revokeClient: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ClientUrlsInfo.disconnectClient, params)
+        if (enableNewApi(ClientUrlsInfo.disconnectClient)) {
+          payload = {
+            action: 'revoke',
             clients: payload
           }
         }
@@ -99,12 +124,14 @@ export const clientApi = baseClientApi.injectEndpoints({
               'DisableGuest',
               'EnableGuest',
               'AddGuest',
-              'DeleteGuest'
+              'DeleteGuest',
+              'DeleteBulk'
             ], () => {
               api.dispatch(clientApi.util.invalidateTags([{ type: 'Guest', id: 'LIST' }]))
             })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     deleteGuests: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -152,16 +179,6 @@ export const clientApi = baseClientApi.injectEndpoints({
             ...req.headers,
             Accept: 'application/json,text/plain,*/*'
           }
-        }
-      }
-    }),
-    getClientDetails: build.query<Client, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(ClientUrlsInfo.getClientDetails, params, {
-          ...ignoreErrorModal
-        })
-        return {
-          ...req
         }
       }
     }),
@@ -234,13 +251,8 @@ export const clientApi = baseClientApi.injectEndpoints({
           }
         }
       },
-      providesTags: [{ type: 'HistoricalClient', id: 'LIST' }]
-    }),
-    getHistoricalStatisticsReports: build.query<ClientStatistic, RequestPayload>({
-      query: ({ params, payload }) => ({
-        ...createHttpRequest(CommonUrlsInfo.getHistoricalStatisticsReportsV2, params),
-        body: latestTimeFilter(payload)
-      })
+      providesTags: [{ type: 'HistoricalClient', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     addGuestPass: build.mutation<Guest, RequestPayload>({
       query: ({ params, payload }) => {
@@ -274,6 +286,49 @@ export const clientApi = baseClientApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
+    }),
+    getClientOrHistoryDetail: build.query<{ data: Client, isHistorical: boolean }, RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const { status, clientId, ...params } = arg.params as Record<string, string>
+
+        if(status !== ClientStatusEnum.HISTORICAL) {
+          const clientDetail = (await fetchWithBQ({
+            ...createHttpRequest(
+              ClientUrlsInfo.getClientDetails, arg.params, { ...ignoreErrorModal })
+          }))?.data as Client
+          if(clientDetail) { return { data: { data: clientDetail, isHistorical: false } } }
+        }
+
+        const historicalClientList = (await fetchWithBQ({
+          ...createHttpRequest(
+            CommonUrlsInfo.getHistoricalClientList, params),
+          body: { ...historicalPayload, searchString: clientId }
+        }))?.data as TableResult<Client>
+
+        const metaList = (await fetchWithBQ({
+          ...createHttpRequest(
+            CommonUrlsInfo.getEventListMeta, params),
+          body: {
+            fields: ['networkId', 'venueName', 'apName'],
+            filters: { id: historicalClientList?.data?.map(d => d.id) }
+          }
+        }))?.data as { data: EventMeta[] }
+
+        return { data: {
+          data: (historicalClientList?.totalCount > 0
+            ? historicalClientList?.data?.map((item) => {
+              return {
+                ...item,
+                ...metaList?.data?.filter(data => data.id === item.id)?.[0]
+              }
+            })[0]
+            : {}
+          ) as Client,
+          isHistorical: true
+        } }
+      },
+      providesTags: [{ type: 'HistoricalClient', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     })
   })
 })
@@ -309,11 +364,10 @@ export const aggregatedClientListData = (clientList: TableResult<ClientList>,
 export const {
   useGetGuestsListQuery,
   useDisconnectClientMutation,
+  useRevokeClientMutation,
   useLazyGetGuestsListQuery,
   useAddGuestPassMutation,
   useLazyGetGuestNetworkListQuery,
-  useGetClientDetailsQuery,
-  useLazyGetClientDetailsQuery,
   useGetDpskPassphraseByQueryQuery,
   useLazyGetDpskPassphraseByQueryQuery,
   useGetHistoricalClientListQuery,
@@ -325,7 +379,6 @@ export const {
   useEnableGuestsMutation,
   useDisableGuestsMutation,
   useGenerateGuestPasswordMutation,
-  useGetHistoricalStatisticsReportsQuery,
-  useLazyGetHistoricalStatisticsReportsQuery,
-  useImportGuestPassMutation
+  useImportGuestPassMutation,
+  useGetClientOrHistoryDetailQuery
 } = clientApi

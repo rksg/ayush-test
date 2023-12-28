@@ -1,3 +1,6 @@
+import { defineMessage, MessageDescriptor } from 'react-intl'
+
+/* eslint-disable max-len */
 export enum Features {
   DATA_PLANE = 'dataPlane',
   AP_GPS = 'ap-gps-toggle',
@@ -8,28 +11,24 @@ export enum Features {
   SERVICES = 'acx-ui-services',
   PLM_FF = 'ACX-PLM-FF',
   POLICIES = 'acx-ui-policies',
-  DEVICES = 'acx-ui-devices',
   DELETE_SOLO = 'ap-delete-with-solo-image-toggle',
-  EDGES = 'PLCY-EDGE',
-  EDGES_TOGGLE = 'acx-ui-edges-toggle', // temporary. to prevent Edge related API being triggered in prod env
+  EDGES_TOGGLE = 'acx-ui-edges-toggle',
   EDGES_SUB_INTERFACE_CSV_TOGGLE = 'acx-ui-edges-sub-interface-csv-toggle',
   EDGES_DHCP_CSV_TOGGLE = 'acx-ui-edges-dhcp-csv-toggle',
   EDGES_PING_TRACEROUTE_TOGGLE = 'acx-ui-edges-ping-traceroute-toggle',
+  EDGES_SD_LAN_TOGGLE = 'acx-ui-edges-centralized-forwarding-toggle', // centralized-forwarding is renamed into SD-LAN
+  EDGES_SD_LAN_PHASE2_TOGGLE = 'acx-ui-edges-sdlan-phase2-toggle',
   NETWORK_SEGMENTATION = 'acx-ui-network-segmentation-toggle',
   NETWORK_SEGMENTATION_SWITCH = 'switch-consumer-nsg-toggle',
-  UNRELEASED = 'acx-ui-unreleased',
-  SERVICE_VALIDATION = 'acx-ui-service-validation-toggle',
   VIDEO_CALL_QOE = 'acx-ui-video-call-qoe-toggle',
   DIRECTED_MULTICAST = 'wifi-consumer-directed-multicast-toggle',
   HELP_SUPPORT = 'acx-ui-help-support',
   LICENSE_BANNER = 'acx-ui-license-banner',
   LOAD_BALANCING = 'wifi-consumer-load-balancing-toggle',
   AP_STATIC_IP = 'wifi-consumer-ap-static-ip-toggle',
-  SWITCH_SUPPORT_ICX8200 = 'switch-support-icx8200',
   SWITCH_DHCP_CLIENTS = 'switch-dhcp-clients',
   MDNS_FENCING = 'wifi-consumer-bonjour-fencing-toggle',
   AP_SNMP = 'wifi-consumer-ap-snmp-toggle',
-  NEW_API = 'acx-ui-new-api',
   WISPR_ENCRYPT_MAC_IP = 'acx-ui-wispr-encrypt-mac-ip-toggle',
   HEALTH_DRILLDOWN = 'acx-ui-health-drilldown-toggle',
   CONNECTION_METERING = 'connection-metering-enabled',
@@ -38,23 +37,20 @@ export enum Features {
   WIFI_EDA_READY_TOGGLE = 'wifi-eda-ready-toggle',
   WIFI_EDA_BYPASS_CNA_TOGGLE = 'wifi-eda-bypass-cna-toggle',
   CLOUDMOTE_SERVICE = 'cloudmote-service-enabled',
-  CLOUDMOTE_BETA = 'BETA-ZD2R1',
   RADIUS_OPTIONS = 'wifi-eda-wlan-radius-options-toggle',
   MESH_ENHANCEMENTS = 'wifi-eda-mesh-enhancements-toggle',
   ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
-  SWITCH_RODAN_FIRMWARE = 'switch-consumer-collect-config-toggle',
   SWITCH_ADMIN_PASSWORD = 'switch-consumer-admin-password-toggle',
   EXPORT_DEVICE = 'viewmodel-export-device-inventory',
   WPA3_80211R = 'wifi-eda-wpa3-80211r-toggle',
   I18N_TOGGLE = 'acx-ui-i18n-toggle',
   I18N_PHASE2_TOGGLE = 'acx-ui-i18n-phase2-toggle',
+  I18N_DATA_STUDIO_TOGGLE = 'acx-ui-i18n-data-studio-toggle',
   STICKY_CLIENT_STEERING = 'wifi-eda-sticky-client-steering-toggle',
   WIFI_EDA_NON_PROXY_DPSK_TOGGLE = 'wifi-eda-non-proxy-dpsk-toggle',
   SIGPACK_UPGRADE = 'acx-ui-sigpack-upgrade',
   WIFI_EDA_BSS_PRIORITY_TOGGLE = 'wifi-eda-bss-priority-toggle',
-  SWITCH_BREAKOUT_PORT = 'switch-breakout-port',
   EOL_AP_2022_12_PHASE_2_TOGGLE = 'eol-ap-2022-12-phase-2-toggle',
-  NAVBAR_ENHANCEMENT = 'acx-ui-navbar-enhancement-toggle',
   WIFI_EDA_WISPR_ALWAYS_ACCEPT_TOGGLE = 'wifi-eda-wispr-always-accept-toggle',
   NEW_OS_VENDOR_IN_DEVICE_POLICY = 'acx-ui-new-os-vendor-in-device-policy-toggle',
   SWITCH_STACK_UNIT_LIMITATION = 'switch-stack-unit-limitation',
@@ -73,8 +69,11 @@ export enum Features {
   WIFI_FR_6029_FG3_2_TOGGLE = 'wifi-fr-6029-fg3-2-toggle',
   MULTICAST_RATE_LIMIT_TOGGLE = 'wifi-eda-multicast-rate-limiting-toggle',
   WIFI_EDA_MULTICAST_FILTER_TOGGLE = 'wifi-eda-multicast-filter-toggle',
+  WIFI_EDA_QOS_MAP_SET_TOGGLE = 'wifi-eda-qos-map-set-toggle',
+  WIFI_EDA_NEIGHBORS_TOGGLE = 'wifi-eda-neighbors-toggle',
   ASSIGN_MULTI_EC_TO_MSP_ADMINS = 'mspservice-assign-multi-ec-to-multi-msp-admin',
   BETA_FLAG = 'acx-ui-beta-flag-toggle',
+  BETA_BUTTON = 'acx-ui-beta-button-toggle',
   WIFI_EDA_OWE_TOGGLE = 'wifi-eda-owe-toggle',
   WIFI_EDA_WIFI7_MLO_TOGGLE = 'wifi-eda-wifi7-mlo-toggle',
   WIFI_EDA_WIFI6_AND_WIFI7_FLAG_TOGGLE = 'wifi-eda-wifi6-and-wifi7-flag-toggle',
@@ -82,16 +81,86 @@ export enum Features {
   WIFI_AP_BSS_COLORING_TOGGLE = 'wifi-ap-bss-coloring-toggle',
   WIFI_VENUE_BSS_COLORING_TOGGLE = 'wifi-fr-6029-fg1-toggle',
   WIFI_FR_6029_FG6_1_TOGGLE = 'wifi-fr-6029-fg6-1-toggle',
+  WIFI_FR_6029_FG6_2_TOGGLE = 'wifi-fr-6029-fg6-2-toggle',
+  WIFI_FR_HOTSPOT20_R1_TOGGLE = 'wifi-fr-hotspot20-r1-toggle',
   WIFI_EDA_OWE_TRANSITION_TOGGLE = 'wifi-eda-owe-transition-toggle',
   AI_RECOMMENDATIONS = 'acx-ui-ai-recommendations-toggle',
+  AI_CRRM = 'acx-ui-ai-crrm-toggle',
   WIFI_DTIM_TOGGLE = 'wifi-dtim-toggle',
   WIFI_AMB_TOGGLE = 'wifi-amb-toggle',
   WIFI_DHCP_OPT_82_TOGGLE = 'wifi-dhcp-opt-82-toggle',
   WIFI_EDA_SECURE_BOOT_TOGGLE = 'wifi-eda-secure-boot-toggle',
-  ADDITIONAL_REGULATORY_DOMAINS_TOGGLE = 'wifi-eda-additional-regulatory-domains-toggle'
+  ADDITIONAL_REGULATORY_DOMAINS_TOGGLE = 'wifi-eda-additional-regulatory-domains-toggle',
+  CCD_TOGGLE = 'ap-ops-client-connection-diagnosis-toggle',
+  WIFI_EDA_WPA3_DSAE_TOGGLE = 'wifi-eda-wpa3-dsae-toggle',
+  SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE = 'switch-firmware-related-tsb-blocking-toggle',
+  ROGUE_EVENTS_FILTER = 'rogue-events-filter-enabled',
+  SWITCH_VOICE_VLAN = 'switch-consumer-support-voice-vlan-in-profile-toggle',
+  WIFI_EDA_QOS_MIRRORING_TOGGLE = 'wifi-eda-qos-mirroring-toggle',
+  DEVICE_AGNOSTIC = 'entitlement-device-agnostic-sku-toggle',
+  MSP_SELF_ASSIGNMENT = 'entitlement-msp-own-license-assignment-toggle',
+  WIFI_DYNAMIC_VLAN_TOGGLE = 'wifi-dynamic-vlan-toggle',
+  DPSK_NEW_CONFIG_FLOW_TOGGLE = 'dpsk-new-auth-flow-toggle',
+  SWITCH_STACK_NAME_DISPLAY_TOGGLE = 'switch-stack-name-display-toggle',
+  DPSK_PER_BOUND_PASSPHRASE_ALLOWED_DEVICE_INCREASED_LIMIT = 'dpsk-per-bound-passphrase-allowed-device-increased-limit',
+  EDGES_SCHEDULE_UPGRADE_TOGGLE = 'acx-ui-edges-schedule-upgrade-toggle',
+  WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE = 'wifi-trunk-port-untagged-vlan-toggle',
+  RUCKUS_WAN_GATEWAY_UI_SHOW = 'ruckus-wan-gateway-ui-show',
+  MSP_AGGREGATE_NOTIFICATION_TOGGLE = 'aggregate-notification-toggle',
+  SWITCH_UPGRADE_BY_SWITCH = 'switch-consumer-upgrade-by-switch-toggle',
+  SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE = 'acx-ui-support-to-msp-dashboard-toggle',
+  INCIDENTS_EMAIL_NOTIFICATION_TOGGLE = 'acx-ui-incidents-notification-toggle',
+  RECOMMENDATION_EMAIL_NOTIFICIATION_TOGGLE = 'acx-ui-recommendation-notification-toggle',
+  MULTIPLE_VAR_INVITATION_TOGGLE = 'ptenant-multiple-var-support-toggle',
+  MSPEC_ALARM_COUNT_SUPPORT_TOGGLE = 'acx-ui-mspec-alarm-count-toggle',
+  AP_AFC_TOGGLE = 'ap-afc-toggle',
+  MSP_UPGRADE_MULTI_EC_FIRMWARE = 'mspservice-multi-ec-to-upgrade-ap-firmware',
+  VENUE_AP_MANAGEMENT_VLAN_TOGGLE = 'wifi-venue-ap-mgmt-vlan-toggle',
+  AP_MANAGEMENT_VLAN_AP_LEVEL_TOGGLE = 'wifi-ap-mgmt-vlan-ap-level-toggle',
+  APP_INSIGHTS = 'acx-ui-app-insights-toggle',
+  HOST_APPROVAL_EMAIL_LIST_TOGGLE = 'guest-host-approval-email-list-toggle',
+  IDM_APPLICATION_KEY_TOGGLE = 'ptenant-application-key-toggle',
+  WIFI_SWITCHABLE_RF_TOGGLE = 'wifi-switchable-rf-toggle',
+  WIFI_EDA_PER_AP_RADIO_CUSTOMIZATION_TOGGLE = 'wifi-eda-per-ap-radio-customization-toggle',
+  AP_GROUP_TOGGLE = 'wifi-eda-ap-group-table-toggle',
+  TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
+  SSO = 'ADMN-SSO',
+  EXPORT_EVENTS_TOGGLE = 'acx-ui-scheduled-events-export-toggle',
+  RUCKUS_AI_CHATBOT_TOGGLE = 'ruckus-ai-chatbot-toggle',
+  RUCKUS_AI_INCIDENT_SUMMARY_TOGGLE = 'ruckus-ai-incident-summary-toggle',
+  EDGE_LAG = 'acx-ui-edges-lag-toggle',
+  MSP_HSP_SUPPORT = 'mspservice-hsp-01',
+  MSP_BRAND_360 = 'acx-ui-msp-brand360-toggle',
+  RUCKUS_AI_ZONES_LIST = 'ruckus-ai-zones-toggle',
+  LINKEDIN_OIDC_TOGGLE = 'guest-linkedin-openid-connect-toggle',
+  TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs',
+  WIFI_EDA_CLIENT_REVOKE_TOGGLE = 'wifi-eda-client-revoke-toggle',
+  LIST_OF_CLIENTS_PER_WLAN = 'acx-ui-list-of-clients-per-wlan-toggle',
+  RUCKUS_AI_CRRM_PARTIAL = 'ruckus-ai-recommendations-crrm-partial-toggle',
+  CRRM_PARTIAL = 'acx-ui-recommendations-crrm-partial-toggle',
+  GROUP_BASED_LOGIN_TOGGLE = 'group-based-login-toggle',
+  GOOGLE_WORKSPACE_SSO_TOGGLE = 'google-workspace-sso-toggle',
+  ANY_3RDPARTY_INVITE_TOGGLE = 'ptenant-any-3rdparty-invite-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
-  BETA_MESH = 'BETA-MESH',
-  BETA_CLB = 'BETA-CLB'
+  AP_70 = 'AP-70',
+  BETA_DPSK3 = 'BETA-DPSK3',
+  SMART_EDGES = 'PLCY-EDGE'
 }
+
+interface BetaList {
+  key: TierFeatures
+  description: MessageDescriptor
+  status: boolean
+}
+
+// This is Mandatory for Beta features list...
+// When every we add a TierFeatures enum value above we need it's related
+// description details and status value - true/false to show/hide
+// from displaying in UI drawer component BetaFeaturesDrawer
+export const BetaListDetails:BetaList[] = [
+  { key: TierFeatures.BETA_DPSK3, description: defineMessage({ defaultMessage: 'DPSK3: Dynamic Preshared Keys working with WPA3-DSAE. Users connect their devices to a WPA2/WPA3 network with DPSK and are automatically moved to the WPA3 WLAN, allowing DPSK operation with WiFi 6e or WiFi7. DPSK3 allows the customer to take advantage of the flexibility of DPSK with the security of WPA3.' }), status: true },
+  { key: TierFeatures.AP_70, description: defineMessage({ defaultMessage: 'AP-70: Wi-Fi 7 - Wi-Fi 7 UI configuration available for early adopters and customers provided with advance units of the R770. Contact your reseller for more information on availability of the new R770!' }), status: true },
+  { key: TierFeatures.SMART_EDGES, description: defineMessage({ defaultMessage: 'PLCY-EDGE' }), status: false }
+]

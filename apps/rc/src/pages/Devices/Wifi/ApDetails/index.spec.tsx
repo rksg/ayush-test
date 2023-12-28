@@ -43,6 +43,15 @@ jest.mock('./ApOverviewTab/ApProperties', () => ({
   ApProperties: () => <div data-testid='ApProperties' />
 }))
 
+jest.mock('./ApNeighbors', () => ({
+  ApNeighborsTab: () => <div data-testid='ApNeighborsTab' />
+}))
+
+jest.mock('./ApNeighbors/useApNeighbors', () => ({
+  ...jest.requireActual('./ApNeighbors/useApNeighbors'),
+  useIsApNeighborsOn: () => true
+}))
+
 const mockedUsedNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
@@ -102,7 +111,11 @@ describe('ApDetails', () => {
         (_, res, ctx) => res(ctx.json(list))
       ),
       rest.get(CommonUrlsInfo.getApDetailHeader.url,
-        (_, res, ctx) => res(ctx.json(apDetailData)))
+        (_, res, ctx) => res(ctx.json(apDetailData))),
+      rest.patch(
+        WifiUrlsInfo.detectApNeighbors.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '123456789' }))
+      )
     )
   })
 
@@ -117,7 +130,7 @@ describe('ApDetails', () => {
     })
 
     expect(await screen.findByText('Overview')).toBeVisible()
-    expect(await screen.findAllByRole('tab')).toHaveLength(6)
+    expect(await screen.findAllByRole('tab')).toHaveLength(7)
   })
 
   it('should navigate to analytic tab correctly', async () => {
@@ -218,6 +231,19 @@ describe('ApDetails', () => {
     expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
       .toEqual('Timeline')
     await screen.findByTestId('rc-ActivityTable')
+  })
+
+  it('should navigate to neighbors tab correctly', async () => {
+    const params = {
+      tenantId: 'tenant-id',
+      apId: 'ap-id',
+      activeTab: 'neighbors'
+    }
+    render(<Provider><ApDetails /></Provider>, {
+      route: { params, path: '/:tenantId/devices/wifi/:apId/details/:activeTab' }
+    })
+    expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
+      .toEqual('Neighbors')
   })
 
   it('should not navigate to non-existent tab', async () => {

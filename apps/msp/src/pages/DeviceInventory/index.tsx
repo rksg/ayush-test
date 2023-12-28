@@ -9,6 +9,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   useDeviceInventoryListQuery,
   useExportDeviceInventoryMutation
@@ -27,12 +28,13 @@ import {
   SwitchStatusEnum,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { AccountType }           from '@acx-ui/utils'
+import { TenantLink, useParams }             from '@acx-ui/react-router-dom'
+import { AccountType, exportMessageMapping } from '@acx-ui/utils'
 
 export const deviceTypeMapping = {
   DVCNWTYPE_WIFI: defineMessage({ defaultMessage: 'Access Point' }),
-  DVCNWTYPE_SWITCH: defineMessage({ defaultMessage: 'Switch' })
+  DVCNWTYPE_SWITCH: defineMessage({ defaultMessage: 'Switch' }),
+  APSW: defineMessage({ defaultMessage: 'Device' })
 }
 
 const transformDeviceTypeString = (row: EcDeviceInventory, { $t }: IntlShape) => {
@@ -43,6 +45,10 @@ const transformDeviceTypeString = (row: EcDeviceInventory, { $t }: IntlShape) =>
       return $t({ defaultMessage: 'Switch' })
   }
   return ''
+}
+
+const transformMacaddressString = (row: EcDeviceInventory) => {
+  return row.apMac ? row.apMac : (row.switchMac ? row.switchMac : '')
 }
 
 function transformDeviceOperStatus (row: EcDeviceInventory, intl: IntlShape) {
@@ -81,6 +87,7 @@ export function DeviceInventory () {
   const intl = useIntl()
   const { $t } = intl
   const { tenantId } = useParams()
+  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
 
   const [ downloadCsv ] = useExportDeviceInventoryMutation()
   const tenantDetailsData = useGetTenantDetailsQuery({ params: { tenantId } })
@@ -103,6 +110,7 @@ export function DeviceInventory () {
       'name',
       'deviceStatus'
     ],
+    pageSize: 10000,
     searchTargetFields: ['apMac','switchMac','serialNumber'],
     filters: {}
   }
@@ -146,7 +154,10 @@ export function DeviceInventory () {
       dataIndex: 'apMac',
       sorter: true,
       key: 'apMac',
-      defaultSortOrder: 'ascend' as SortOrder
+      defaultSortOrder: 'ascend' as SortOrder,
+      render: function (_, row) {
+        return transformMacaddressString(row)
+      }
     },
     {
       title: $t({ defaultMessage: 'Serial Number' }),
@@ -218,7 +229,7 @@ export function DeviceInventory () {
 
   const actions = [
     {
-      label: $t({ defaultMessage: 'Export To CSV' }),
+      label: $t(exportMessageMapping.EXPORT_TO_CSV),
       onClick: () => ExportInventory(),
       disabled: (list && list.totalCount === 0)
     }
@@ -275,8 +286,9 @@ export function DeviceInventory () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Device Inventory' })}
-        extra={
+        title={$t({ defaultMessage: 'Device Inventory ({count})' },
+          { count: list?.totalCount || 0 })}
+        extra={!isHspSupportEnabled &&
           <TenantLink to='/dashboard'>
             <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
           </TenantLink>

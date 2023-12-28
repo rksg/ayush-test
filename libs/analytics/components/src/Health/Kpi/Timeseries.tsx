@@ -1,17 +1,18 @@
-import { RefCallback, useContext } from 'react'
+import { RefCallback } from 'react'
 
 import ReactECharts from 'echarts-for-react'
 import { useIntl }  from 'react-intl'
 import AutoSizer    from 'react-virtualized-auto-sizer'
 
 import { KPITimeseriesResponse, healthApi }         from '@acx-ui/analytics/services'
-import { AnalyticsFilter, kpiConfig, productNames } from '@acx-ui/analytics/utils'
+import { kpiConfig, productNames }                  from '@acx-ui/analytics/utils'
 import { Loader, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
 import { formatter }                                from '@acx-ui/formatter'
 import type { TimeStamp, TimeStampRange }           from '@acx-ui/types'
 import { noDataDisplay }                            from '@acx-ui/utils'
+import type { AnalyticsFilter }                     from '@acx-ui/utils'
 
-import { HealthPageContext } from '../HealthPageContext'
+import GenericError from '../../GenericError'
 
 const transformResponse = ({ data, time }: KPITimeseriesResponse) => data
   .map((datum, index) => ([
@@ -41,9 +42,8 @@ function KpiTimeseries ({
 }) {
   const { $t } = useIntl()
   const { text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
-  const { apCount } = useContext(HealthPageContext)
   const queryResults = healthApi.useKpiTimeseriesQuery(
-    { ...filters, kpi, threshold: threshold as unknown as string, apCount },
+    { ...filters, kpi, threshold: threshold as unknown as string },
     {
       selectFromResult: ({ data, ...rest }) => ({
         ...rest,
@@ -58,7 +58,7 @@ function KpiTimeseries ({
     }
   )
   return (
-    <Loader states={[queryResults]}>
+    <Loader states={[queryResults]} errorFallback={<GenericError />}>
       <AutoSizer>
         {({ height, width }) =>
           queryResults.data[0]?.data.length ? (

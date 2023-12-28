@@ -10,8 +10,11 @@ export enum AccountTier {
 
 export enum AccountVertical {
   DEFAULT = 'Default',
-  HOSPITALITY = 'Hospitality',
   EDU = 'Education',
+  GOVERNMENT = 'Government',
+  HOSPITALITY = 'Hospitality',
+  NONPROFIT = 'Non Profit',
+  UNKNOWN = 'Unknown'
 }
 
 export enum AccountRegion {
@@ -25,6 +28,7 @@ export enum AccountType {
   MSP = 'MSP',
   VAR = 'VAR',
   MSP_EC = 'MSP_EC',
+  MSP_REC = 'MSP_REC',
   MSP_NON_VAR = 'MSP_NON_VAR',
   MSP_INTEGRATOR = 'MSP_INTEGRATOR',
   MSP_INSTALLER = 'MSP_INSTALLER'
@@ -41,29 +45,22 @@ interface JwtToken {
   tenantType?: AccountType
   sub?: string
   lastName: string
-  companyName: string
   pver?: string
   iss?: string
-  userIdmTenantId?: string
   mlisaUserRole?: string
   scope?: string
   adminId?: string
   exp: number
   iat?: number
-  email: string
   isVar?: boolean
-  isRuckusUser?: boolean
   userName: string
-  varIdmTenantId?: string
   firstName: string
-  varAltoTenantId?: string
   flexera_alm_account_id?: string
   tenantId: string
   roleName?: string[]
   isRuckusSupport?: boolean
   renew?: number
   region?: string
-  acx_account_regions?: AccountRegion[]
   acx_account_tier?: AccountTier
   acx_account_vertical?: AccountVertical
   acx_trial_in_progress?: boolean

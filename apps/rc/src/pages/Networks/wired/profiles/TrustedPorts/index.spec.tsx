@@ -70,7 +70,7 @@ describe('Wired - TrustedPorts', () => {
     fireEvent.change(await within(dialog).findByRole('combobox'), {
       target: { value: '1/1/1' }
     })
-    const saveTrustPortButton = await within(dialog).findAllByRole('button', { name: 'Finish' })
+    const saveTrustPortButton = await within(dialog).findAllByRole('button', { name: 'Add' })
     await userEvent.click(saveTrustPortButton[0])
   })
 

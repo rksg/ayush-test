@@ -47,7 +47,8 @@ export enum EdgeStatusSeverityEnum {
 export enum EdgeServiceTypeEnum {
   DHCP = 'DHCP',
   FIREWALL = 'FIREWALL',
-  NETWORK_SEGMENTATION = 'NETWORK_SEGMENTATION'
+  NETWORK_SEGMENTATION = 'NETWORK_SEGMENTATION',
+  SD_LAN = 'SDLAN'
 }
 
 export enum EdgeServiceStatusEnum {
@@ -55,4 +56,19 @@ export enum EdgeServiceStatusEnum {
   REQUIRES_ATTENTION = 'REQUIRES_ATTENTION',
   POOR = 'POOR',
   UNKNOWN = 'UNKNOWN'
+}
+
+export enum EdgeLagTypeEnum {
+  STATIC = 'STATIC',
+  LACP = 'LACP'
+}
+
+export enum EdgeLagLacpModeEnum {
+  ACTIVE = 'ACTIVE',
+  PASSIVE = 'PASSIVE'
+}
+
+export enum EdgeLagTimeoutEnum {
+  SHORT = 'SHORT',
+  LONG = 'LONG'
 }

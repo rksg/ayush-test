@@ -283,3 +283,19 @@ export const MeshApRoleIconContainer = styled.div.attrs(props => ({
     transform: unset !important;
   }
 `
+
+export const RogueApLocation = styled('div')`
+&.mark-location-rogue {
+  border: 4px solid;
+  background-color: var(--acx-primary-white);
+  z-index: 20;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  position: absolute;
+  transform: translate(100%, -30%);
+  text-align: center;
+
+  ${getRogueTypeBorderCss()}
+}
+`

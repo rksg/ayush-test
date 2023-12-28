@@ -1,16 +1,16 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
-import { EdgeDhcpUrls }                        from '@acx-ui/rc/utils'
-import { Provider }                            from '@acx-ui/store'
-import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { useIsSplitOn }                                 from '@acx-ui/feature-toggle'
+import { EdgeDHCPFixtures, EdgeDhcpUrls, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                     from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }          from '@acx-ui/test-utils'
 
-import { mockDhcpPoolStatsData, mockEdgeDhcpDataList } from '../../../../Services/DHCP/Edge/__tests__/fixtures'
-import { mockEdgeDhcpHostStats }                       from '../../__tests__/fixtures'
+import { mockDhcpPoolStatsData, mockEdgeDhcpData, mockEdgeDhcpDataList } from '../../../../Services/DHCP/Edge/__tests__/fixtures'
 
 import { EdgeDhcp } from '.'
 
+const { mockEdgeDhcpHostStats } = EdgeDHCPFixtures
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -18,6 +18,7 @@ jest.mock('react-router-dom', () => ({
 }))
 
 jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
   EdgeDhcpLeaseTable: () => <div data-testid='edge-dhcp-lease-table' />,
   EdgeDhcpPoolTable: () => <div data-testid='edge-dhcp-pool-table' />
 }))
@@ -48,6 +49,16 @@ describe('Edge DHCP no initial data', () => {
       rest.patch(
         EdgeDhcpUrls.patchDhcpService.url,
         (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.get(
+        EdgeDhcpUrls.getDhcpByEdgeId.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeDhcpData))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeServiceList.url,
+        (req, res, ctx) => res(ctx.json({
+          data: []
+        }))
       )
     )
   })
@@ -66,6 +77,8 @@ describe('Edge DHCP no initial data', () => {
       })
     await user.click(screen.getByRole('switch'))
     await screen.findByText('Manage DHCP for SmartEdge Service')
+
+    expect(await screen.findByText('DHCP Service')).toBeVisible()
   })
 })
 
@@ -96,6 +109,16 @@ describe('Edge DHCP', () => {
       rest.patch(
         EdgeDhcpUrls.patchDhcpService.url,
         (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.get(
+        EdgeDhcpUrls.getDhcpByEdgeId.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeDhcpData))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeServiceList.url,
+        (req, res, ctx) => res(ctx.json({
+          data: []
+        }))
       )
     )
   })
@@ -113,6 +136,7 @@ describe('Edge DHCP', () => {
       })
     const poolsTab = screen.getByRole('tab', { name: 'Pools' })
     expect(poolsTab.getAttribute('aria-selected')).toBeTruthy()
+    expect(await screen.findByTestId('edge-dhcp-pool-table')).toBeVisible()
   })
 
   it('Active Leases tab successfully', async () => {
@@ -128,6 +152,7 @@ describe('Edge DHCP', () => {
       })
     const leasesTab = await screen.findByRole('tab', { name: 'Leases ( 2 online )' })
     expect(leasesTab.getAttribute('aria-selected')).toBeTruthy()
+    expect(await screen.findByTestId('edge-dhcp-lease-table')).toBeVisible()
   })
 
   it('switch tab', async () => {

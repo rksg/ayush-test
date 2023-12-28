@@ -1,11 +1,14 @@
 import moment from 'moment-timezone'
 
-import { PageHeader, PageHeaderProps, RangePicker } from '@acx-ui/components'
-import { getShowWithoutRbacCheckKey }               from '@acx-ui/user'
-import { useDateFilter }                            from '@acx-ui/utils'
+import { PageHeader, PageHeaderProps, RangePicker, TimeRangeDropDown } from '@acx-ui/components'
+import { get }                                                         from '@acx-ui/config'
+import { getShowWithoutRbacCheckKey }                                  from '@acx-ui/user'
+import { useDateFilter }                                               from '@acx-ui/utils'
 
-import { NetworkFilter } from '../NetworkFilter'
+import { NetworkFilter }   from '../NetworkFilter'
+import { SANetworkFilter } from '../NetworkFilter/SANetworkFilter'
 
+const isMLISA = get('IS_MLISA_SA')
 export type SubTitle = {
   key: string
   value: (number | string)[]
@@ -16,42 +19,49 @@ export type HeaderData = {
   subTitle: SubTitle[]
 }
 
-type useHeaderExtraProps = {
+type UseHeaderExtraProps = {
   shouldQuerySwitch?: boolean,
   withIncidents?: boolean,
-  excludeNetworkFilter?: boolean
+  excludeNetworkFilter?: boolean,
+  /** @default 'datepicker' */
+  datepicker?: 'dropdown' | 'datepicker'
 }
-type HeaderProps = Omit<PageHeaderProps, 'subTitle'> & useHeaderExtraProps
+type HeaderProps = Omit<PageHeaderProps, 'subTitle'> & UseHeaderExtraProps
 
 const Filter = (
-  { shouldQuerySwitch, withIncidents, excludeNetworkFilter }: useHeaderExtraProps
+  { shouldQuerySwitch, withIncidents, excludeNetworkFilter }: UseHeaderExtraProps
 ) => {
   return excludeNetworkFilter
     ? null
-    : <NetworkFilter
-      key={getShowWithoutRbacCheckKey('network-filter')}
-      shouldQuerySwitch={Boolean(shouldQuerySwitch)}
-      withIncidents={withIncidents}
-    />
+    : isMLISA
+      ? <SANetworkFilter shouldQuerySwitch={Boolean(shouldQuerySwitch)} />
+      : <NetworkFilter
+        key={getShowWithoutRbacCheckKey('network-filter')}
+        shouldQuerySwitch={Boolean(shouldQuerySwitch)}
+        shouldQueryAp
+        withIncidents={withIncidents}
+      />
 }
 
-export const useHeaderExtra = (props: useHeaderExtraProps) => {
+export const useHeaderExtra = ({ datepicker, ...props }: UseHeaderExtraProps) => {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
   return [
     <Filter
       key={getShowWithoutRbacCheckKey('network-filter')}
       {...props}
     />,
-    <RangePicker
-      key={getShowWithoutRbacCheckKey('range-picker')}
-      selectedRange={{
-        startDate: moment(startDate),
-        endDate: moment(endDate)
-      }}
-      onDateApply={setDateFilter as CallableFunction}
-      showTimePicker
-      selectionType={range}
-    />
+    datepicker === 'dropdown'
+      ? <TimeRangeDropDown/>
+      : <RangePicker
+        key={getShowWithoutRbacCheckKey('range-picker')}
+        selectedRange={{
+          startDate: moment(startDate),
+          endDate: moment(endDate)
+        }}
+        onDateApply={setDateFilter as CallableFunction}
+        showTimePicker
+        selectionType={range}
+      />
   ]
 }
 

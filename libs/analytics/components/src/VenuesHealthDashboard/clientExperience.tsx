@@ -2,10 +2,10 @@ import { mean }    from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter }                                         from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, HistoricalCard, Loader, ProgressBarV2 } from '@acx-ui/components'
 import { useNavigateToPath }                                       from '@acx-ui/react-router-dom'
 import { hasAccess }                                               from '@acx-ui/user'
+import type { AnalyticsFilter }                                    from '@acx-ui/utils'
 
 import { HealthData, useHealthQuery } from './services'
 

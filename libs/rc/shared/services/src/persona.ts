@@ -62,7 +62,8 @@ export const personaApi = basePersonaApi.injectEndpoints({
         return transferToTableResult<PersonaGroup>(result)
       },
       keepUnusedDataFor: 0,
-      providesTags: [{ type: 'PersonaGroup', id: 'LIST' }]
+      providesTags: [{ type: 'PersonaGroup', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getPersonaGroupById: build.query<PersonaGroup, RequestPayload>({
       query: ({ params }) => {
@@ -113,7 +114,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
             const headerContent = response.headers.get('content-disposition')
             const fileName = headerContent
               ? headerContent.split('filename=')[1]
-              : 'PersonaGroups.csv'
+              : 'IdentityGroups.csv'
             downloadFile(response, fileName)
           }
         }
@@ -143,19 +144,6 @@ export const personaApi = basePersonaApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Persona' }]
-    }),
-    getPersonaList: build.query<TableResult<Persona>, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(PersonaUrls.getPersonaList, params)
-        return {
-          ...req,
-          params
-        }
-      },
-      transformResponse (result: NewTableResult<Persona>) {
-        return transferToTableResult<Persona>(result)
-      },
-      providesTags: [{ type: 'Persona', id: 'LIST' }]
     }),
     getPersonaById: build.query<Persona, RequestPayload<{ groupId: string, id: string }>>({
       query: ({ params }) => {
@@ -213,7 +201,8 @@ export const personaApi = basePersonaApi.injectEndpoints({
         })
       },
       keepUnusedDataFor: 0,
-      providesTags: [{ type: 'Persona', id: 'LIST' }]
+      providesTags: [{ type: 'Persona', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     updatePersona: build.mutation<Persona, RequestPayload>({
       query: ({ params, payload }) => {
@@ -237,8 +226,8 @@ export const personaApi = basePersonaApi.injectEndpoints({
       invalidatesTags: [{ type: 'Persona' }]
     }),
     deletePersonas: build.mutation({
-      query: ({ payload }) => {
-        const req = createHttpRequest(PersonaUrls.deletePersonas)
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PersonaUrls.deletePersonas, params)
         return {
           ...req,
           body: payload
@@ -248,7 +237,9 @@ export const personaApi = basePersonaApi.injectEndpoints({
     }),
     addPersonaDevices: build.mutation<PersonaDevice, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(PersonaUrls.addPersonaDevices, params)
+        const req = createHttpRequest(PersonaUrls.addPersonaDevices, params, {
+          ...ignoreErrorModal
+        })
         return {
           ...req,
           body: payload
@@ -282,7 +273,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
             const headerContent = response.headers.get('content-disposition')
             const fileName = headerContent
               ? headerContent.split('filename=')[1]
-              : 'Personas.csv'
+              : 'Identities.csv'
             downloadFile(response, fileName)
           }
         }

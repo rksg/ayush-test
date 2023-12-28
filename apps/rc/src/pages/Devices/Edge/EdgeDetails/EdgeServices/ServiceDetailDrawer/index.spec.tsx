@@ -1,7 +1,21 @@
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { EdgeDhcpUrls, EdgeFirewallUrls, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                     from '@acx-ui/store'
+import {
+  EdgeDHCPFixtures,
+  EdgeDhcpUrls,
+  EdgeFirewallFixtures,
+  EdgeFirewallUrls,
+  EdgeGeneralFixtures,
+  EdgeNSGFixtures,
+  EdgeSdLanFixtures,
+  EdgeSdLanUrls,
+  EdgeUrlsInfo,
+  NetworkSegmentationUrls,
+  PersonaUrls,
+  TunnelProfileUrls
+} from '@acx-ui/rc/utils'
+import { Provider }           from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -10,17 +24,26 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  mockEdgeData as currentEdge,
-  mockEdgeList,
-  mockDhcpStatsData,
-  mockedEdgeServiceList,
-  mockFirewallData } from '../../../__tests__/fixtures'
+  mockedPersonaGroup,
+  mockedTunnelProfileData
+} from '../../../__tests__/fixtures'
 
 import { ServiceDetailDrawer } from '.'
 
+const {
+  mockEdgeData: currentEdge,
+  mockEdgeList,
+  mockEdgeServiceList
+} = EdgeGeneralFixtures
+const { mockedSdLanDataList } = EdgeSdLanFixtures
+const { mockFirewallData } = EdgeFirewallFixtures
+const { mockNsgStatsList } = EdgeNSGFixtures
+const { mockDhcpStatsData, mockEdgeDhcpDataList } = EdgeDHCPFixtures
+
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
-  EdgeFirewallGroupedStatsTables: () => <div data-testid='rc-EdgeFirewallGroupedStatsTables' />
+  EdgeFirewallGroupedStatsTables: () => <div data-testid='rc-EdgeFirewallGroupedStatsTables' />,
+  NetworkSegmentationDetailTableGroup: () => <div data-testid='rc-NsgTableGroup' />
 }))
 
 const mockedSetVisible = jest.fn()
@@ -42,6 +65,26 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
       rest.get(
         EdgeFirewallUrls.getEdgeFirewall.url,
         (req, res, ctx) => res(ctx.json(mockFirewallData))
+      ),
+      rest.post(
+        NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
+        (req, res, ctx) => res(ctx.json(mockNsgStatsList))
+      ),
+      rest.get(
+        EdgeDhcpUrls.getDhcp.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeDhcpDataList.content[0]))
+      ),
+      rest.get(
+        PersonaUrls.getPersonaGroupById.url,
+        (req, res, ctx) => res(ctx.json(mockedPersonaGroup))
+      ),
+      rest.get(
+        TunnelProfileUrls.getTunnelProfile.url,
+        (req, res, ctx) => res(ctx.json(mockedTunnelProfileData))
+      ),
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataList }))
       )
     )
   })
@@ -52,7 +95,7 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
         <ServiceDetailDrawer
           visible={true}
           setVisible={mockedSetVisible}
-          serviceData={mockedEdgeServiceList.data[0]}
+          serviceData={mockEdgeServiceList.data[0]}
         />
       </Provider>, {
         route: { params }
@@ -62,6 +105,8 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
     expect(await screen.findByText('DHCP-1')).toBeVisible()
     expect(await screen.findByText('Service Type')).toBeVisible()
     expect(await screen.findByText('DHCP')).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: 'Close' }))
+    expect(mockedSetVisible).toBeCalledWith(false)
   })
 
   it('should render DHCP detail successfully', async () => {
@@ -70,7 +115,7 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
         <ServiceDetailDrawer
           visible={true}
           setVisible={mockedSetVisible}
-          serviceData={mockedEdgeServiceList.data[0]}
+          serviceData={mockEdgeServiceList.data[0]}
         />
       </Provider>, {
         route: { params }
@@ -90,7 +135,7 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
         <ServiceDetailDrawer
           visible={true}
           setVisible={mockedSetVisible}
-          serviceData={mockedEdgeServiceList.data[2]}
+          serviceData={mockEdgeServiceList.data[2]}
         />
       </Provider>, {
         route: { params }
@@ -109,12 +154,39 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
         <ServiceDetailDrawer
           visible={true}
           setVisible={mockedSetVisible}
-          serviceData={mockedEdgeServiceList.data[1]}
+          serviceData={mockEdgeServiceList.data[1]}
         />
       </Provider>, {
         route: { params }
       })
+    expect(await screen.findByRole('link', { name: 'NSG-1' })).toBeVisible()
+    expect(await screen.findByText('Venue')).toBeVisible()
+    expect(await screen.findByRole('link', { name: 'MockVenue1' })).toBeVisible()
+    expect(await screen.findByText('Persona Group')).toBeVisible()
+    expect(await screen.findByRole('link', { name: 'TestPersona' })).toBeVisible()
+    expect(await screen.findByText('Number of Segments')).toBeVisible()
+    expect(await screen.findByText('Number of devices per segment')).toBeVisible()
+    expect((await screen.findAllByText('10')).length).toBe(2)
+    expect(await screen.findByText('DHCP Service')).toBeVisible()
+    expect(await screen.findByRole('link', { name: 'TestDhcp-1' })).toBeVisible()
+    expect(await screen.findByText('Tunnel Profile')).toBeVisible()
+    expect(await screen.findByRole('link', { name: /tunnelProfile1/i })).toBeVisible()
+    expect(await screen.findByText('Networks')).toBeVisible()
+    expect(await screen.findByText('2')).toBeVisible()
+    expect(await screen.findByTestId('rc-NsgTableGroup')).toBeVisible()
+  })
 
-    expect(await screen.findByText('Nsg Details')).toBeVisible()
+  it('should render SD-LAN detail successfully', async () => {
+    render(
+      <Provider>
+        <ServiceDetailDrawer
+          visible={true}
+          setVisible={mockedSetVisible}
+          serviceData={mockEdgeServiceList.data[3]}
+        />
+      </Provider>, {
+        route: { params }
+      })
+    expect(await screen.findByRole('link', { name: 'Mocked_tunnel-1' })).toBeVisible()
   })
 })

@@ -2,7 +2,10 @@ import { pick }                             from 'lodash'
 import moment                               from 'moment-timezone'
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
+import { DateFilter } from './dateFilter'
+
 export enum DateRange {
+  last8Hours = 'Last 8 Hours',
   last24Hours = 'Last 24 Hours',
   last7Days = 'Last 7 Days',
   last30Days = 'Last 30 Days',
@@ -15,6 +18,8 @@ export type DateRangeFilter = {
   endDate: string
   range: DateRange
 }
+
+const ceilMinute = () => moment().add(1, 'minutes').seconds(0).milliseconds(0)
 
 type Ranges = Record<string, [moment.Moment, moment.Moment]>
 let ranges = defaultRanges()
@@ -36,24 +41,18 @@ export function getDateRangeFilter (
       )
   return { startDate, endDate, range }
 }
+export function getDatePickerValues (state: DateFilter) {
+  return state.range !== DateRange.custom
+    ? getDateRangeFilter(state.range)
+    : state
+}
 export function defaultRanges (subRange?: DateRange[]) {
   const defaultRange: Partial<{ [key in DateRange]: moment.Moment[] }> = {
-    [DateRange.last24Hours]: [
-      moment().subtract(1, 'days').seconds(0).milliseconds(0),
-      moment().seconds(59).milliseconds(999)
-    ],
-    [DateRange.last7Days]: [
-      moment().subtract(7, 'days').seconds(0).milliseconds(0),
-      moment().seconds(59).milliseconds(999)
-    ],
-    [DateRange.last30Days]: [
-      moment().subtract(30, 'days').seconds(0).milliseconds(0),
-      moment().seconds(59).milliseconds(999)
-    ],
-    [DateRange.allTime]: [
-      moment(),
-      moment()
-    ]
+    [DateRange.last8Hours]: [ceilMinute().subtract(8, 'hours'), ceilMinute()],
+    [DateRange.last24Hours]: [ceilMinute().subtract(1, 'days'), ceilMinute()],
+    [DateRange.last7Days]: [ceilMinute().subtract(7, 'days'), ceilMinute()],
+    [DateRange.last30Days]: [ceilMinute().subtract(30, 'days'), ceilMinute()],
+    [DateRange.allTime]: [moment(), moment()]
   }
   if (subRange) {
     return pick(defaultRange, subRange)
@@ -96,6 +95,9 @@ export function dateRangeForLast (
 }
 
 export const dateRangeMap : Record<DateRange, MessageDescriptor> = {
+  [DateRange.last8Hours]: defineMessage({
+    defaultMessage: 'Last 8 Hours'
+  }),
   [DateRange.last24Hours]: defineMessage({
     defaultMessage: 'Last 24 Hours'
   }),

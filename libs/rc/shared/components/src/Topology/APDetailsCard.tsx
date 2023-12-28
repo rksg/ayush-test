@@ -2,12 +2,13 @@ import { Badge, Button, Divider, Space } from 'antd'
 import { useIntl }                       from 'react-intl'
 
 import { IncidentsBySeverityData, useIncidentsBySeverityQuery }                                     from '@acx-ui/analytics/components'
-import { AnalyticsFilter }                                                                          from '@acx-ui/analytics/utils'
 import { Card, Descriptions, Loader, Subtitle }                                                     from '@acx-ui/components'
 import { DateFormatEnum, formatter }                                                                from '@acx-ui/formatter'
 import { CloseSymbol }                                                                              from '@acx-ui/icons'
 import { ApDeviceStatusEnum, APMeshRole, APView, ApViewModel, SwitchStatusEnum, transformApStatus } from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                                                               from '@acx-ui/react-router-dom'
 import { noDataDisplay, useDateFilter }                                                             from '@acx-ui/utils'
+import type { AnalyticsFilter }                                                                     from '@acx-ui/utils'
 
 import IncidentStackedBar              from './IncidentStackedBar'
 import * as UI                         from './styledComponents'
@@ -23,6 +24,8 @@ export function APDetailsCard (props: {
   const { $t } = useIntl()
 
   const { dateFilter } = useDateFilter()
+  const navigate = useNavigate()
+  const basePath = useTenantLink('/devices/wifi')
 
   const filters = {
     ...dateFilter,
@@ -51,10 +54,17 @@ export function APDetailsCard (props: {
             padding: 0
           }}
           size='small'
+          onClick={
+            () =>{
+              navigate({
+                pathname: `${basePath.pathname}/${apDetail?.apMac}/details/overview`
+              })
+            }}
+          disabled={!(apDetail?.apMac)}
           type='link'>
           {apDetail?.name
-          || apDetail?.apMac
-          || $t({ defaultMessage: 'Unknown' }) // for unknown device
+              || apDetail?.apMac
+              || $t({ defaultMessage: 'Unknown' }) // for unknown device
           }
         </UI.NodeTitle>
         <Button size='small' type='link' onClick={onClose} icon={<CloseSymbol />}/>

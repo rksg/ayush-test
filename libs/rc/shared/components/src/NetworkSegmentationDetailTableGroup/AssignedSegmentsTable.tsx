@@ -35,13 +35,13 @@ export const AssignedSegmentsTable = (props: PersonaTableProps) => {
       fixed: 'left' as const
     },
     {
-      title: $t({ defaultMessage: 'Persona' }),
+      title: $t({ defaultMessage: 'Identity' }),
       key: 'name',
       dataIndex: 'name',
       sorter: { compare: sortProp('name', defaultSort) },
       render: (_, row) => {
         return <TenantLink
-          to={`users/persona-management/persona-group/${row.groupId}/persona/${row.id}`}
+          to={`users/identity-management/identity-group/${row.groupId}/identity/${row.id}`}
         >
           {row.name ?? row.id}
         </TenantLink>

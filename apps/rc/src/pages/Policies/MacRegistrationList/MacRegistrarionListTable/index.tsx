@@ -4,45 +4,42 @@ import { useIntl } from 'react-intl'
 
 import {
   Button,
+  Loader,
   PageHeader,
   Table,
   TableProps,
-  Loader,
   showToast
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }                        from '@acx-ui/rc/components'
+import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }          from '@acx-ui/rc/components'
 import {
-  doProfileDelete,
+  doProfileDelete, useAdaptivePolicySetListQuery,
   useDeleteMacRegListMutation,
-  useLazyGetAdaptivePolicySetQuery,
   useLazyNetworkListQuery,
   useSearchMacRegListsQuery
 } from '@acx-ui/rc/services'
 import {
   FILTER,
-  getPolicyDetailsLink,
-  getPolicyListRoutePath,
-  getPolicyRoutePath,
   MacRegistrationDetailsTabKey,
   MacRegistrationPool,
   PolicyOperation,
-  PolicyType, SEARCH,
+  PolicyType,
+  SEARCH,
+  getPolicyDetailsLink,
+  getPolicyListRoutePath,
+  getPolicyRoutePath,
+  returnExpirationString,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { Path, TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                                          from '@acx-ui/user'
-
-import { returnExpirationString } from '../MacRegistrationListUtils'
+import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess }                               from '@acx-ui/user'
 
 export default function MacRegistrationListsTable () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
-  const [policySetMap, setPolicySetMap] = useState(new Map())
   const [networkVenuesMap, setNetworkVenuesMap] = useState(new Map())
   const params = useParams()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const policyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
@@ -67,8 +64,19 @@ export default function MacRegistrationListsTable () {
     { isLoading: isDeleteMacRegListUpdating }
   ] = useDeleteMacRegListMutation()
 
-  const [getAdaptivePolicySet] = useLazyGetAdaptivePolicySetQuery()
   const [getNetworkList] = useLazyNetworkListQuery()
+
+  const { policySetMap, getPolicySetsLoading } = useAdaptivePolicySetListQuery(
+    { payload: { page: 1, pageSize: '2147483647' } }, {
+      selectFromResult: ({ data, isLoading }) => {
+        const policySetMap = new Map(data?.data.map((policySet) =>
+          [policySet.id, policySet.name]))
+        return {
+          policySetMap,
+          getPolicySetsLoading: isLoading
+        }
+      }, skip: !policyEnabled
+    })
 
   useEffect(() => {
     if (tableQuery.isLoading)
@@ -86,18 +94,6 @@ export default function MacRegistrationListsTable () {
       setNetworkVenuesMap(networkList)
     })
 
-    if(policyEnabled) {
-      tableQuery.data?.data.forEach(macPools => {
-        const { policySetId } = macPools
-        if (policySetId) {
-          getAdaptivePolicySet({ params: { policySetId } })
-            .then(result => {
-              // eslint-disable-next-line max-len
-              setPolicySetMap(map => new Map(map.set(policySetId, result.data?.name ?? policySetId)))
-            })
-        }
-      })
-    }
   }, [tableQuery.data])
 
   function useColumns () {
@@ -210,7 +206,7 @@ export default function MacRegistrationListsTable () {
         $t({ defaultMessage: 'List' }),
         selectedRow.name,
         [
-          { fieldName: 'associationIds', fieldText: $t({ defaultMessage: 'Persona' }) },
+          { fieldName: 'associationIds', fieldText: $t({ defaultMessage: 'Identity' }) },
           { fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }
         ],
         async () => deleteMacRegList({ params: { policyId: selectedRow.id } })
@@ -240,14 +236,11 @@ export default function MacRegistrationListsTable () {
   return (
     <>
       <PageHeader
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'Policies & Profiles' }),
             link: getPolicyListRoutePath(true) }
-        ] : [{
-          text: $t({ defaultMessage: 'Policies & Profiles' }),
-          link: getPolicyListRoutePath(true)
-        }]}
+        ]}
         title={$t({ defaultMessage: 'MAC Registration Lists' })}
         extra={filterByAccess([
           <TenantLink
@@ -260,7 +253,7 @@ export default function MacRegistrationListsTable () {
       />
       <Loader states={[
         tableQuery,
-        { isLoading: false, isFetching: isDeleteMacRegListUpdating }
+        { isLoading: getPolicySetsLoading, isFetching: isDeleteMacRegListUpdating }
       ]}>
         <Table<MacRegistrationPool>
           enableApiFilter
@@ -270,9 +263,9 @@ export default function MacRegistrationListsTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={rowActions}
+          rowActions={filterByAccess(rowActions)}
           onFilterChange={handleFilterChange}
-          rowSelection={{ type: 'radio' }}
+          rowSelection={hasAccess() && { type: 'radio' }}
         />
       </Loader>
     </>

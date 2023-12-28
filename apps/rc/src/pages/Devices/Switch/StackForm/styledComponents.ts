@@ -11,6 +11,7 @@ export const TableContainer = styled.div`
     color: var(--acx-neutrals-60);
     font-weight: var(--acx-body-font-weight);
   }
+  .ant-pro-table .ant-table-thead > tr:last-child > th:nth-child(2),
   .ant-pro-table .ant-table-thead > tr:last-child > th:nth-child(3),
   .ant-pro-table .ant-table-thead > tr:last-child > th:nth-child(4) {
     text-align: center;
@@ -24,6 +25,7 @@ export const TableContainer = styled.div`
   .ant-pro-table .ant-table-tbody > tr > td:first-child{
     color: var(--acx-neutrals-60);
   }
+  .ant-pro-table .ant-table-tbody > tr > td:nth-child(2),
   .ant-pro-table .ant-table-tbody > tr > td:nth-child(3),
   .ant-pro-table .ant-table-tbody > tr > td:nth-child(4) {
     text-align: center;

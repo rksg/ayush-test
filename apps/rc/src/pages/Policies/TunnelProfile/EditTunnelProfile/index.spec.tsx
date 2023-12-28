@@ -2,10 +2,10 @@ import { waitFor } from '@testing-library/react'
 import userEvent   from '@testing-library/user-event'
 import { rest }    from 'msw'
 
-import { useIsSplitOn }               from '@acx-ui/feature-toggle'
-import { TunnelProfileUrls }          from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { Features, useIsSplitOn, useIsTierAllowed }                  from '@acx-ui/feature-toggle'
+import { EdgeSdLanUrls, NetworkSegmentationUrls, TunnelProfileUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                  from '@acx-ui/store'
+import { mockServer, render, screen }                                from '@acx-ui/test-utils'
 
 import { mockedTunnelProfileData } from '../__tests__/fixtures'
 
@@ -46,7 +46,7 @@ describe('EditTunnelProfile', () => {
       </Provider>
       , { route: { path: editViewPath, params } }
     )
-    const policyNameField = screen.getByRole('textbox', { name: 'Policy Name' })
+    const policyNameField = await screen.findByRole('textbox', { name: 'Profile Name' })
     await user.type(policyNameField, 'TestTunnel')
     await user.click(screen.getByRole('button', { name: 'Apply' }))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
@@ -56,23 +56,7 @@ describe('EditTunnelProfile', () => {
     }))
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <EditTunnelProfile />
-      </Provider>
-      , { route: { path: editViewPath, params } }
-    )
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.queryByText('Policies & Profiles')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'Tunnel Profile'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <EditTunnelProfile />
@@ -101,6 +85,62 @@ describe('EditTunnelProfile', () => {
       pathname: `/${params.tenantId}/t/policies/tunnelProfile/list`,
       hash: '',
       search: ''
+    })
+  })
+
+
+  describe('when SD-LAN is ready', () => {
+    const mockNsgList = {
+      totalCount: 0,
+      data: []
+    }
+
+    const mockedSdLanDataList = {
+      totalCount: 1,
+      data: [{ id: 'testSDLAN' }]
+    }
+
+    const mockedReqSdLan = jest.fn()
+    const mockedReqNSG = jest.fn()
+    beforeEach(() => {
+      jest.mocked(useIsSplitOn).mockImplementation((flag: string) => {
+        if (flag === Features.EDGES_SD_LAN_TOGGLE || flag === Features.EDGES_TOGGLE) return true
+        return false
+      })
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+      mockServer.use(
+        rest.post(
+          EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+          (_, res, ctx) => {
+            mockedReqSdLan()
+            return res(ctx.json(mockedSdLanDataList))
+          }
+        ),
+        rest.post(
+          NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
+          (_, res, ctx) => {
+            mockedReqNSG()
+            return res(ctx.json(mockNsgList))
+          }
+        )
+      )
+    })
+
+    it('should lock type fields when it is used in NSG/SD-LAN', async () => {
+      render(
+        <Provider>
+          <EditTunnelProfile />
+        </Provider>
+        , { route: { path: editViewPath, params } }
+      )
+
+      await waitFor(() => {
+        expect(mockedReqSdLan).toBeCalled()
+      })
+      expect(mockedReqNSG).toBeCalled()
+      const typeField = await screen.findByRole('combobox', { name: 'Tunnel Type' })
+      expect(typeField).toBeDisabled()
     })
   })
 })

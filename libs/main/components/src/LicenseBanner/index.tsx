@@ -135,7 +135,8 @@ export function LicenseBanner (props: BannerProps) {
               a: (chunks) =>
                 <UI.ActiveBtn onClick={()=>{setLicenseExpanded(false)}}
                   $expired={isExpired}
-                  to='administration/subscriptions'>
+                  tenantType={isMSPUser ? 'v' : 't'}
+                  to={isMSPUser ? 'mspLicenses' : 'administration/subscriptions'}>
                   {chunks}
                 </UI.ActiveBtn>,
               expireDeviceType: EntitlementUtil.getDeviceTypeText($t, expireInfo.deviceType),

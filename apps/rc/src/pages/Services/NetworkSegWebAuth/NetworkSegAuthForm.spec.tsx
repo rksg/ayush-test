@@ -57,7 +57,7 @@ describe( 'NetworkSegAuthForm', () => {
     )
 
     expect(await screen.findByRole('heading', { level: 1 }))
-      .toHaveTextContent('Add Network Segmentation Auth page for Switch')
+      .toHaveTextContent('Add Personal Identity Network Auth Page for Switch')
 
     fireEvent.change(screen.getByLabelText('Service Name'), { target: { value: 'Page Name2' } })
 
@@ -67,7 +67,7 @@ describe( 'NetworkSegAuthForm', () => {
     fireEvent.click(screen.getAllByRole('button', { name: 'Reset to default' })[3])
     fireEvent.click(screen.getAllByRole('button', { name: 'Reset to default' })[4])
 
-    fireEvent.click(screen.getByRole('button', { name: 'Finish' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Add' }))
 
     await waitFor(() => expect(mockedUsedNavigate).toBeCalled())
   })
@@ -95,7 +95,7 @@ describe( 'NetworkSegAuthForm', () => {
     )
 
     expect(await screen.findByRole('heading', { level: 1 }))
-      .toHaveTextContent('Edit Network Segmentation Auth page for Switch')
+      .toHaveTextContent('Edit Personal Identity Network Auth Page for Switch')
 
     await waitFor(() =>
       expect(screen.getByDisplayValue(

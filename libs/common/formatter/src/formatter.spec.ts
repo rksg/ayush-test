@@ -105,6 +105,12 @@ describe('formatter', () => {
     expect(formatter('ratioFormat')([1, 2])).toBe('1 / 2')
     expect(formatter('ratioFormat')([2, 2])).toBe('2 / 2')
   })
+  it('bandwidthFormat', () => {
+    expect(formatter('bandwidthFormat')(20)).toBe('20 MHz')
+    expect(formatter('bandwidthFormat')(40)).toBe('40 MHz')
+    expect(formatter('bandwidthFormat')(80)).toBe('80 MHz')
+    expect(formatter('bandwidthFormat')(160)).toBe('160 MHz')
+  })
   describe('txFormat', () => {
     it('should return same value if not in txpowerMapping', () => {
       expect(formatter('txFormat')('MIN')).toBe('MIN')
@@ -313,6 +319,26 @@ describe('formatter', () => {
         [false,'Disabled']
       ])
     })
+    describe('countFormatRound', () => {
+      testFormat('countFormatRound', [
+        [0.5,'1'],
+        [11.5,'12'],
+        [123.5,'124'],
+        [1234.5,'1.23K'],
+        [12345.5,'12.3K'],
+        [12344.5,'12.3K'],
+        [123456.5,'123K'],
+        [1234567.5,'1.23M'],
+        [12345678.5,'12.3M'],
+        [123000000000.5,'123B'],
+        [123000000000000.5,'123T'],
+        [123000000000000000.5,'123,000T'],
+        [123.456789,'123'],
+        [1.00,'1'],
+        [1500,'1.5K'],
+        [2000,'2K']
+      ])
+    })
     describe('countFormat', () => {
       testFormat('countFormat', [
         [1,'1'],
@@ -353,33 +379,6 @@ describe('formatter', () => {
         expect(typeof formatter('longDurationFormat')(convertEpochToRelativeTime(1669693917)))
           .toBe('string')
       })
-    })
-  })
-
-  describe('crrmFormat', () => {
-    it('should return correct value for string', () => {
-      const test_auto = formatter('crrmFormat')('Auto')
-      expect(test_auto)
-        .toMatch('AI-Driven Cloud RRM for channel planning and channel bandwidth selection')
-    })
-
-    it('should return correct value for crrm object', () => {
-      expect(formatter('crrmFormat')([{
-        radio: '2.4',
-        channelWidth: '_AUTO',
-        channelMode: 'BACKGROUND_SCANNING'
-      }])).toMatch('Background scanning and Auto for 2.4 GHz with static AP Power')
-      expect(formatter('crrmFormat')([{
-        radio: '5.0',
-        channelWidth: '_80MHZ',
-        channelMode: 'CHANNEL_FLY',
-        autoCellSizing: true
-      }])).toMatch('ChannelFly and 80 MHz for 5.0 GHz with Auto Cell Sizing on')
-    })
-    it('returns txPower texts', () => {
-      expect(formatter('crrmFormat')({})).toMatch('AI-Driven Cloud RRM for channel planning and channel bandwidth selection with no change in AP transmit power') // eslint-disable-line max-len
-      expect(formatter('crrmFormat')({ txPowerAPCount: 1 })).toMatch('AI-Driven Cloud RRM for channel planning and channel bandwidth selection with static AP transmit power and lower AP transmit power in 1 AP') // eslint-disable-line max-len
-      expect(formatter('crrmFormat')({ txPowerAPCount: 2 })).toMatch('AI-Driven Cloud RRM for channel planning and channel bandwidth selection with static AP transmit power and lower AP transmit power in 2 APs') // eslint-disable-line max-len
     })
   })
 

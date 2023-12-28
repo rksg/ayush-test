@@ -1,4 +1,396 @@
-export const apiResult = {
+import { NetworkPath } from '@acx-ui/utils'
+
+import { StateType } from '../config'
+
+export const crrmListResult = {
+  crrmCount: 3,
+  zoneCount: 3,
+  optimizedZoneCount: 1,
+  crrmScenarios: 13888,
+  recommendations: [
+    {
+      id: '1',
+      code: 'c-crrm-channel5g-auto',
+      status: 'applied' as StateType,
+      sliceValue: 'zone-1',
+      kpi_number_of_interfering_links: {
+        current: 0,
+        previous: 3,
+        projected: null
+      }
+    },
+    {
+      id: '2',
+      code: 'c-crrm-channel24g-auto',
+      status: 'reverted' as StateType,
+      sliceValue: 'zone-2',
+      kpi_number_of_interfering_links: {
+        current: 5,
+        previous: 5,
+        projected: null
+      }
+    },
+    {
+      id: '3',
+      code: 'c-crrm-channel6g-auto',
+      status: 'new' as StateType,
+      sliceValue: 'Deeps Place',
+      kpi_number_of_interfering_links: {
+        current: 2,
+        previous: null,
+        projected: 0
+      }
+    }
+  ]
+}
+
+export const crrmUnknownListResult = {
+  crrmCount: 3,
+  zoneCount: 3,
+  optimizedZoneCount: 1,
+  crrmScenarios: 13888,
+  recommendations: [
+    {
+      id: '1',
+      code: 'c-crrm-channel5g-auto',
+      status: 'applied' as StateType,
+      sliceValue: 'zone-1',
+      kpi_number_of_interfering_links: {
+        current: 0,
+        previous: 3,
+        projected: null
+      }
+    },
+    {
+      id: '2',
+      code: 'c-crrm-channel24g-auto',
+      status: 'reverted' as StateType,
+      sliceValue: 'zone-2',
+      kpi_number_of_interfering_links: {
+        current: 5,
+        previous: 5,
+        projected: null
+      }
+    },
+    {
+      id: 'unknown',
+      code: 'unknown',
+      status: 'verificationError' as StateType,
+      sliceValue: 'Deeps Place',
+      kpi_number_of_interfering_links: {
+        current: null,
+        previous: null,
+        projected: null
+      },
+      metadata: {
+        audit: [{
+          code: 'global',
+          stage: 'filter',
+          failure: {
+            mesh: false
+          }
+        }]
+      }
+    },
+    {
+      id: 'unknown',
+      code: 'unknown',
+      status: 'insufficientLicenses' as StateType,
+      sliceValue: 'zone-3',
+      kpi_number_of_interfering_links: {
+        current: null,
+        previous: null,
+        projected: null
+      },
+      metadata: {
+        audit: [{
+          code: 'global',
+          stage: 'filter',
+          failure: {
+            'not-fully-licensed': false
+          }
+        }]
+      }
+    },
+    {
+      id: 'unknown',
+      code: 'unknown',
+      status: 'verificationError' as StateType,
+      sliceValue: 'zone-4',
+      kpi_number_of_interfering_links: {
+        current: null,
+        previous: null,
+        projected: null
+      },
+      metadata: {
+        audit: [
+          {
+            code: 'c-crrm-channel24g-auto',
+            stage: 'trigger',
+            failure: {
+              'global-zone-checker': false
+            }
+          },
+          {
+            code: 'c-crrm-channel5g-auto',
+            stage: 'trigger',
+            failure: {
+              'global-zone-checker': false
+            }
+          },
+          {
+            code: 'c-crrm-channel6g-auto',
+            stage: 'trigger',
+            failure: {
+              'global-zone-checker': false
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
+
+export const crrmNoLicenseListResult = {
+  crrmCount: 3,
+  zoneCount: 3,
+  optimizedZoneCount: 1,
+  crrmScenarios: 13888,
+  recommendations: [
+    {
+      id: 'unknown',
+      code: 'unknown',
+      status: 'insufficientLicenses' as StateType,
+      sliceValue: 'zone-1',
+      kpi_number_of_interfering_links: {
+        current: null,
+        previous: null,
+        projected: null
+      },
+      metadata: {
+        audit: [{
+          code: 'global',
+          stage: 'filter',
+          failure: {
+            'not-fully-licensed': false
+          }
+        }]
+      }
+    },
+    {
+      id: 'unknown',
+      code: 'unknown',
+      status: 'insufficientLicenses' as StateType,
+      sliceValue: 'zone-2',
+      kpi_number_of_interfering_links: {
+        current: null,
+        previous: null,
+        projected: null
+      },
+      metadata: {
+        audit: [{
+          code: 'global',
+          stage: 'filter',
+          failure: {
+            'not-fully-licensed': false
+          }
+        }]
+      }
+    },
+    {
+      id: 'unknown',
+      code: 'unknown',
+      status: 'insufficientLicenses' as StateType,
+      sliceValue: 'zone-3',
+      kpi_number_of_interfering_links: {
+        current: null,
+        previous: null,
+        projected: null
+      },
+      metadata: {
+        audit: [{
+          code: 'global',
+          stage: 'filter',
+          failure: {
+            'not-fully-licensed': false
+          }
+        }]
+      }
+    }
+  ]
+}
+
+export const aiOpsListResult = {
+  aiOpsCount: 2,
+  recommendations: [
+    {
+      id: '2',
+      code: 'c-txpower-same',
+      updatedAt: '2023-06-16T06:06:02.839Z',
+      sliceValue: 'zone-2',
+      status: 'new'
+    },
+    {
+      id: '3',
+      code: 'c-bandbalancing-enable',
+      updatedAt: '2023-07-06T06:05:21.004Z',
+      sliceValue: 'Deeps Place',
+      status: 'new'
+    }
+  ]
+}
+
+export const aiOpsNonNewListResult = {
+  aiOpsCount: 2,
+  recommendations: [
+    {
+      id: '2',
+      code: 'c-txpower-same',
+      updatedAt: '2023-06-16T06:06:02.839Z',
+      sliceValue: 'zone-2',
+      status: 'applied'
+    },
+    {
+      id: '3',
+      code: 'c-bandbalancing-enable',
+      updatedAt: '2023-07-06T06:05:21.004Z',
+      sliceValue: 'Deeps Place',
+      status: 'reverted'
+    }
+  ]
+}
+
+export const insufficientLicenses = {
+  id: '5',
+  code: 'unknown',
+  status: 'insufficientLicenses',
+  createdAt: '2023-11-09T07:05:14.900Z',
+  updatedAt: '2023-11-12T06:05:21.004Z',
+  sliceType: 'zone',
+  sliceValue: '01-Alethea-WiCheck Test',
+  metadata: {
+    audit: [{
+      code: 'global',
+      stage: 'filter',
+      failure: {
+        'not-fully-licensed': false
+      }
+    }]
+  },
+  isMuted: false,
+  mutedBy: '',
+  mutedAt: null,
+  path: [
+    {
+      type: 'system',
+      name: 'vsz34'
+    },
+    {
+      type: 'domain',
+      name: '01-US-CA-D1-Test-Home'
+    },
+    {
+      type: 'zone',
+      name: '01-Alethea-WiCheck Test'
+    }
+  ] as NetworkPath
+}
+
+export const verificationError = {
+  id: '6',
+  code: 'unknown',
+  status: 'verificationError',
+  createdAt: '2023-11-09T07:05:14.900Z',
+  updatedAt: '2023-11-13T06:05:21.004Z',
+  sliceType: 'zone',
+  sliceValue: '22-US-CA-Z22-Aaron-Home',
+  metadata: {
+    audit: [{
+      code: 'global',
+      stage: 'filter',
+      failure: {
+        mesh: false
+      }
+    }]
+  },
+  isMuted: false,
+  mutedBy: '',
+  mutedAt: null,
+  path: [
+    {
+      type: 'system',
+      name: 'vsz34'
+    },
+    {
+      type: 'domain',
+      name: '22-US-CA-D22-Aaron-Home'
+    },
+    {
+      type: 'zone',
+      name: '22-US-CA-Z22-Aaron-Home'
+    }
+  ] as NetworkPath
+}
+
+export const verified = {
+  id: '7',
+  code: 'unknown',
+  status: 'verified',
+  createdAt: '2023-11-09T07:05:14.900Z',
+  updatedAt: '2023-11-14T06:05:21.004Z',
+  sliceType: 'zone',
+  sliceValue: '01-US-CA-D1-Ruckus-HQ-QA-interop',
+  metadata: {
+    audit: [
+      {
+        code: 'c-crrm-channel24g-auto',
+        stage: 'kpi',
+        failure: {
+          'cloud-rrm-ccir': {
+            'above-medium-ccir-24g': false
+          }
+        }
+      },
+      {
+        code: 'c-crrm-channel5g-auto',
+        stage: 'kpi',
+        failure: {
+          'cloud-rrm-ccir': {
+            'above-medium-ccir-5g': false
+          }
+        }
+      },
+      {
+        code: 'c-crrm-channel6g-auto',
+        stage: 'kpi',
+        failure: {
+          'cloud-rrm-ccir': {
+            'above-medium-ccir-6g': false
+          }
+        }
+      }
+    ]
+  },
+  isMuted: false,
+  mutedBy: '',
+  mutedAt: null,
+  path: [
+    {
+      type: 'system',
+      name: 'vsz34'
+    },
+    {
+      type: 'domain',
+      name: '01-US-CA-D1-Test-Home'
+    },
+    {
+      type: 'zone',
+      name: '01-US-CA-D1-Ruckus-HQ-QA-interop'
+    }
+  ] as NetworkPath
+}
+
+export const recommendationListResult = {
   recommendations: [
     {
       id: '1',
@@ -10,13 +402,62 @@ export const apiResult = {
       sliceValue: 'zone-1',
       metadata: {},
       isMuted: false,
+      mutedAt: null,
+      mutedBy: '',
       path: [
         { type: 'system', name: 'vsz611' },
         { type: 'zone', name: 'EDU-MeshZone_S12348' }
+      ] as NetworkPath,
+      idPath: [
+        { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c7' },
+        { type: 'zone', name: 'EDU-MeshZone_S12348' }
+      ] as NetworkPath,
+      preferences: {
+        fullOptimization: true
+      },
+      statusTrail: [
+        { status: 'new' },
+        { status: 'applyscheduled' },
+        { status: 'applyscheduleinprogress' },
+        { status: 'applied' }
       ]
     },
     {
       id: '2',
+      code: 'c-crrm-channel5g-auto',
+      status: 'revertscheduled',
+      createdAt: '2023-06-13T07:05:08.638Z',
+      updatedAt: '2023-06-16T06:05:02.839Z',
+      sliceType: 'zone',
+      sliceValue: 'zone-1',
+      metadata: {
+        scheduledAt: '2023-06-17T00:00:00.000Z',
+        error: {
+          details: [{
+            apName: 'AP',
+            apMac: 'MAC',
+            configKey: 'radio5g',
+            message: 'unknown error'
+          }]
+        }
+      },
+      isMuted: false,
+      mutedAt: null,
+      mutedBy: '',
+      path: [
+        { type: 'system', name: 'vsz611' },
+        { type: 'zone', name: 'EDU-MeshZone_S12348' }
+      ] as NetworkPath,
+      statusTrail: [
+        { status: 'new' },
+        { status: 'applyscheduled' },
+        { status: 'applyscheduleinprogress' },
+        { status: 'applied' },
+        { status: 'revertscheduled' }
+      ]
+    },
+    {
+      id: '3',
       code: 'c-txpower-same',
       status: 'revertfailed',
       createdAt: '2023-06-13T07:05:08.638Z',
@@ -34,13 +475,15 @@ export const apiResult = {
         }
       },
       isMuted: false,
+      mutedBy: '',
+      mutedAt: null,
       path: [
         { type: 'system', name: 'vsz6' },
         { type: 'zone', name: 'EDU' }
-      ]
+      ] as NetworkPath
     },
     {
-      id: '3',
+      id: '4',
       code: 'c-bandbalancing-enable',
       status: 'new',
       createdAt: '2023-06-12T07:05:14.900Z',
@@ -49,8 +492,8 @@ export const apiResult = {
       sliceValue: 'Deeps Place',
       metadata: {},
       isMuted: true,
-      mutedBy: '',
-      mutedAt: null,
+      mutedBy: 'a',
+      mutedAt: '2023-08-31T13:30:42.671Z',
       path: [
         {
           type: 'system',
@@ -64,7 +507,37 @@ export const apiResult = {
           type: 'zone',
           name: 'Deeps Place'
         }
+      ] as NetworkPath,
+      statusTrail: [
+        { status: 'new' }
       ]
+    },
+    insufficientLicenses,
+    verificationError,
+    verified,
+    {
+      id: '8',
+      code: 'c-crrm-channel24g-auto',
+      status: 'new',
+      createdAt: '2023-06-13T07:05:08.638Z',
+      updatedAt: '2023-06-16T06:05:02.839Z',
+      sliceType: 'zone',
+      sliceValue: 'zone-1',
+      metadata: {},
+      isMuted: false,
+      mutedAt: null,
+      mutedBy: '',
+      path: [
+        { type: 'system', name: 'vsz612' },
+        { type: 'zone', name: 'EDU-MeshZone_S12348' }
+      ] as NetworkPath,
+      idPath: [
+        { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c8' },
+        { type: 'zone', name: 'EDU-MeshZone_S12348' }
+      ] as NetworkPath,
+      preferences: {
+        fullOptimization: false
+      }
     }
   ]
 }

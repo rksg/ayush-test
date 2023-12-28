@@ -2,11 +2,12 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { AnalyticsFilter, useAnalyticsFilter, categoryTabs, CategoryTab } from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, Tabs }                                         from '@acx-ui/components'
-import { get }                                                            from '@acx-ui/config'
-import {  useIsTierAllowed }                                              from '@acx-ui/feature-toggle'
-import { useNavigate, useParams, useTenantLink }                          from '@acx-ui/react-router-dom'
+import { useAnalyticsFilter, categoryTabs, CategoryTab } from '@acx-ui/analytics/utils'
+import { GridCol, GridRow, Tabs }                        from '@acx-ui/components'
+import { get }                                           from '@acx-ui/config'
+import {  useIsTierAllowed }                             from '@acx-ui/feature-toggle'
+import { useNavigate, useParams, useTenantLink }         from '@acx-ui/react-router-dom'
+import type { AnalyticsFilter }                          from '@acx-ui/utils'
 
 import { Header } from '../Header'
 

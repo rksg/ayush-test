@@ -17,8 +17,10 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useAssignMspEcToIntegratorMutation,
+  useAssignMspEcToIntegrator_v1Mutation,
   useGetAssignedMspEcToIntegratorQuery,
   useMspCustomerListQuery
 } from '@acx-ui/msp/services'
@@ -44,6 +46,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
   const { visible, setVisible, setSelected, tenantId, tenantType } = props
   const [resetField, setResetField] = useState(false)
   const [form] = Form.useForm()
+  const techPartnerAssignEcsEnabled = useIsSplitOn(Features.TECH_PARTNER_ASSIGN_ECS)
 
   const isSkip = tenantId === undefined
 
@@ -58,26 +61,33 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
   }
 
   const [ assignMspCustomers ] = useAssignMspEcToIntegratorMutation()
+  const [ assignMspCustomers_v1 ] = useAssignMspEcToIntegrator_v1Mutation()
 
   const handleSave = () => {
     let payload = {
-      delegation_type: tenantType,
+      delegation_type: tenantType as string,
       number_of_days: form.getFieldValue(['number_of_days']),
       mspec_list: [] as string[]
     }
     const selectedRows = form.getFieldsValue(['ecCustomers'])
     if (selectedRows && selectedRows.ecCustomers) {
       selectedRows.ecCustomers.forEach((element: MspEc) => {
-        payload.mspec_list.push ( element.id)
+        (payload.mspec_list as string[]).push ( element.id)
       })
     }
 
     if (tenantId) {
-      assignMspCustomers({ payload, params: { mspIntegratorId: tenantId } })
-        .then(() => {
-          setVisible(false)
-          resetFields()
-        })
+      techPartnerAssignEcsEnabled
+        ? assignMspCustomers_v1({ payload, params: { mspIntegratorId: tenantId } })
+          .then(() => {
+            setVisible(false)
+            resetFields()
+          })
+        : assignMspCustomers({ payload, params: { mspIntegratorId: tenantId } })
+          .then(() => {
+            setVisible(false)
+            resetFields()
+          })
     } else {
       setSelected(selectedRows.ecCustomers)
     }
@@ -129,7 +139,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
 
   const defaultPayload = {
     searchString: '',
-    filters: { tenantType: ['MSP_EC'] },
+    filters: { tenantType: [AccountType.MSP_EC, AccountType.MSP_REC] },
     fields: [
       'id',
       'name',
@@ -167,9 +177,12 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
           moment(assignedEcs.data.expiry_date).diff(moment(Date()), 'days'))
         : form.setFieldValue(['number_of_days'], '')
 
-      dataSource = tenantType === AccountType.MSP_INSTALLER
-        ? queryResults.data.data.filter(rec => !rec.installer || selectedKeys.includes(rec.id))
-        : queryResults.data.data.filter(rec => !rec.integrator || selectedKeys.includes(rec.id))
+      techPartnerAssignEcsEnabled
+        ? dataSource = queryResults.data.data
+        : dataSource = tenantType === AccountType.MSP_INSTALLER
+          ? queryResults.data.data.filter(rec => !rec.installer || selectedKeys.includes(rec.id))
+          : queryResults.data.data.filter(rec => !rec.integrator || selectedKeys.includes(rec.id))
+
     }
 
     return (
@@ -180,6 +193,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
           dataSource={dataSource}
           type='form'
           rowKey='id'
+          alwaysShowFilters={true}
           rowSelection={{
             type: 'checkbox',
             selectedRowKeys: selectedKeys,
@@ -195,7 +209,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
   const content =
   <Form layout='vertical' form={form} onFinish={onClose}>
     {tenantId && <div>
-      <Subtitle level={4}>{$t({ defaultMessage: 'Access Periods' })}</Subtitle>
+      <Subtitle level={4}>{$t({ defaultMessage: 'Access Period' })}</Subtitle>
       {tenantType === AccountType.MSP_INTEGRATOR && <label>Not Limited</label>}
       {tenantType === AccountType.MSP_INSTALLER && <UI.FieldLabelAccessPeriod width='275px'>
         <label>{$t({ defaultMessage: 'Limited To' })}</label>
@@ -236,7 +250,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
 
   return (
     <Drawer
-      title={$t({ defaultMessage: 'Manage Customers Assigned' })}
+      title={$t({ defaultMessage: 'Manage Assigned Customers' })}
       visible={visible}
       onClose={onClose}
       children={content}

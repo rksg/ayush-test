@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { LayoutProps } from '@acx-ui/components'
+import { LayoutProps }            from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ConfigurationOutlined,
   ConfigurationSolid,
@@ -11,15 +12,19 @@ import {
   IntegratorsOutlined,
   IntegratorsSolid,
   UsersThreeOutlined,
-  UsersThreeSolid
+  UsersThreeSolid,
+  SpeedIndicatorSolid,
+  SpeedIndicatorOutlined
 } from '@acx-ui/icons'
 import { TenantType }  from '@acx-ui/react-router-dom'
 import { RolesEnum }   from '@acx-ui/types'
 import { hasRoles }    from '@acx-ui/user'
 import { AccountType } from '@acx-ui/utils'
 
-export function useMenuConfig (tenantType: string, hasLicense: boolean) {
+export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfood?: boolean) {
   const { $t } = useIntl()
+  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
+  const isBrand360 = useIsSplitOn(Features.MSP_BRAND_360)
 
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isVar = tenantType === AccountType.VAR
@@ -29,16 +34,29 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean) {
   tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
 
   const config: LayoutProps['menuConfig'] = [
+    ...(isBrand360 ? [{
+      uri: '/brand360',
+      label: $t({ defaultMessage: 'Brand 360' }),
+      tenantType: 'v' as TenantType,
+      inactiveIcon: SpeedIndicatorOutlined,
+      activeIcon: SpeedIndicatorSolid
+    }] : []),
     {
       label: $t({ defaultMessage: 'My Customers' }),
       inactiveIcon: UsersThreeOutlined,
       activeIcon: UsersThreeSolid,
       children: [
-        {
+        ...(isVar || isDogfood ? [] : [{
           uri: '/dashboard/mspCustomers',
           tenantType: 'v' as TenantType,
           label: $t({ defaultMessage: 'MSP Customers' })
         },
+        ...(!isHspSupportEnabled || isSupport ? [] : [{
+          uri: '/dashboard/mspRecCustomers',
+          tenantType: 'v' as TenantType,
+          label: $t({ defaultMessage: 'RUCKUS End Customers' })
+        }])
+        ]),
         ...((isNonVarMSP || isIntegrator) ? [] : [{
           uri: '/dashboard/varCustomers',
           tenantType: 'v' as TenantType,
@@ -70,13 +88,13 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean) {
       activeIcon: MspSubscriptionSolid
     }]),
     ...((!isPrimeAdmin || isIntegrator || isSupport || !hasLicense)
-      ? [{ label: '' }]
-      : [{
+      ? [] : [{
         uri: '/portalSetting',
         label: $t({ defaultMessage: 'Settings' }),
         tenantType: 'v' as TenantType,
         inactiveIcon: ConfigurationOutlined,
-        activeIcon: ConfigurationSolid
+        activeIcon: ConfigurationSolid,
+        adminItem: true
       }])
   ]
   return config

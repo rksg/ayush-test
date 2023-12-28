@@ -2,7 +2,7 @@ import { FlagFilled }  from '@ant-design/icons'
 import styled, { css } from 'styled-components/macro'
 
 export const StyledFlagFilled = styled(FlagFilled)`
-  color: ${(props) => props.color || 'grey'};
+  color: ${(props) => props.color};
  `
 
 export const ModalStyles = css`

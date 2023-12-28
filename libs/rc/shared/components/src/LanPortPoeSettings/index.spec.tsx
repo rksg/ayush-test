@@ -40,7 +40,7 @@ const params = {
 }
 
 // waiting for backend support AP PoE Mode
-xdescribe('LanPortPoeSettings', () => {
+describe('LanPortPoeSettings', () => {
   it('should render correctly', async () => {
     render(
       <Provider>

@@ -214,7 +214,7 @@ describe('SwitchLagModal', () => {
     })
     await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(1))
     await screen.findByText(/edit lag/i)
-    await screen.findByText(/1 item/i)
+    await screen.findByText(/1 selected/i)
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
   })
 
@@ -251,7 +251,7 @@ describe('SwitchLagModal', () => {
     })
     await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(1))
     await screen.findByText(/edit lag/i)
-    await screen.findByText(/1 item/i)
+    await screen.findByText(/1 selected/i)
 
     const editButtons = await screen.findAllByRole('button', { name: 'Edit' })
     await userEvent.click(editButtons[2])
@@ -290,7 +290,7 @@ describe('SwitchLagModal', () => {
     })
     await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(1))
     await screen.findByText(/edit lag/i)
-    await screen.findByText(/1 item/i)
+    await screen.findByText(/1 selected/i)
 
     await user.click(await screen.findByText('1 Gbits per second copper'))
     await user.click(await screen.findByText('10 Gbits per second fiber'))

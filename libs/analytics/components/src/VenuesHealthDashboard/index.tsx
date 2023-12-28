@@ -2,7 +2,7 @@ import { mean }    from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
+import { kpiConfig } from '@acx-ui/analytics/utils'
 import {
   HistoricalCard,
   Loader,
@@ -15,6 +15,7 @@ import {
 import { intlFormats, formatter }        from '@acx-ui/formatter'
 import { TenantLink, useNavigateToPath } from '@acx-ui/react-router-dom'
 import { noDataDisplay }                 from '@acx-ui/utils'
+import type { AnalyticsFilter }          from '@acx-ui/utils'
 
 import { useHealthQuery, HealthData } from './services'
 import * as UI                        from './styledComponents'

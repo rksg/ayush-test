@@ -43,6 +43,8 @@ import {
   createNewTableHttpRequest, TableChangePayload, RequestFormData,
   ClientIsolationListUsageByVenue,
   VenueUsageByClientIsolation,
+  IdentityProviderUrls,
+  IdentityProviderViewModel,
   AAAPolicyNetwork,
   ClientIsolationViewModel,
   ApSnmpUrls, ApSnmpPolicy, VenueApSnmpSettings,
@@ -76,6 +78,12 @@ const clientIsolationMutationUseCases = [
   'AddClientIsolationAllowlist',
   'UpdateClientIsolationAllowlist',
   'DeleteClientIsolationAllowlists'
+]
+
+const IdentityProviderMutationUseCases = [
+  'AddHotspot20IdentityProvider',
+  'UpdateHotspot20IdentityProvider',
+  'DeleteHotspot20IdentityProviders'
 ]
 
 const L2AclUseCases = [
@@ -232,7 +240,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
-    addAccessControlProfile: build.mutation<AccessControlInfoType, RequestPayload>({
+    addAccessControlProfile: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(AccessControlUrls.addAccessControlProfile, params)
         return {
@@ -242,7 +250,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
-    updateAccessControlProfile: build.mutation<AccessControlInfoType, RequestPayload>({
+    updateAccessControlProfile: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
         const req = createHttpRequest(AccessControlUrls.updateAccessControlProfile, params)
@@ -253,7 +261,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
-    deleteAccessControlProfile: build.mutation<AccessControlInfoType, RequestPayload>({
+    deleteAccessControlProfile: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
         const req = createHttpRequest(AccessControlUrls.deleteAccessControlProfile, params)
@@ -264,7 +272,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
-    deleteAccessControlProfiles: build.mutation<AccessControlInfoType, RequestPayload>({
+    deleteAccessControlProfiles: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
         const req = createHttpRequest(AccessControlUrls.deleteAccessControlProfiles, params)
@@ -474,7 +482,23 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'AccessControl', id: 'DETAIL' }]
+      providesTags: [{ type: 'AccessControl', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            ...AccessControlUseCases,
+            ...L2AclUseCases,
+            ...L3AclUseCases,
+            ...DeviceUseCases,
+            ...ApplicationUseCases
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'AccessControl', id: 'LIST' }
+            ]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     // eslint-disable-next-line max-len
     getEnhancedAccessControlProfileList: build.query<TableResult<EnhancedAccessControlInfoType>, RequestPayload>({
@@ -500,7 +524,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
             ]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     getEnhancedL2AclProfileList: build.query<TableResult<L2AclPolicy>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -519,7 +544,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
             ]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     getEnhancedL3AclProfileList: build.query<TableResult<L3AclPolicy>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -538,7 +564,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
             ]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     getEnhancedDeviceProfileList: build.query<TableResult<DevicePolicy>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -557,7 +584,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
             ]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     getEnhancedApplicationProfileList: build.query<TableResult<ApplicationPolicy>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -576,7 +604,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
             ]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     delRoguePolicies: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -626,7 +655,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
             api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     enhancedRoguePolicies: build.query<TableResult<EnhancedRoguePolicyType>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -654,7 +684,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
             ]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     policyList: build.query<TableResult<Policy>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -681,7 +712,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
             api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     addAAAPolicy: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
       query: ({ params, payload }) => {
@@ -745,7 +777,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
             api.dispatch(policyApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     aaaPolicy: build.query<AAAPolicyType, RequestPayload>({
       query: ({ params }) => {
@@ -774,7 +807,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'AAA', id: 'LIST' }]
+      providesTags: [{ type: 'AAA', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getAAAProfileDetail: build.query<AAAPolicyType | undefined, RequestPayload>({
       query: ({ params }) => {
@@ -888,7 +922,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       transformResponse (result: NewTableResult<MacRegistrationPool>) {
         return transferToTableResult<MacRegistrationPool>(result)
       },
-      providesTags: [{ type: 'MacRegistrationPool', id: 'LIST' }]
+      providesTags: [{ type: 'MacRegistrationPool', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     macRegistrations: build.query<TableResult<MacRegistration>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -904,7 +939,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       transformResponse (result: NewTableResult<MacRegistration>) {
         return transferToTableResult<MacRegistration>(result)
       },
-      providesTags: [{ type: 'MacRegistration', id: 'LIST' }]
+      providesTags: [{ type: 'MacRegistration', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     searchMacRegistrations: build.query<TableResult<MacRegistration>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -921,7 +957,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       transformResponse (result: NewTableResult<MacRegistration>) {
         return transferToTableResult<MacRegistration>(result)
       },
-      providesTags: [{ type: 'MacRegistration', id: 'LIST' }]
+      providesTags: [{ type: 'MacRegistration', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     addMacRegList: build.mutation<MacRegistrationPool, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1072,7 +1109,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
             ]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     getClientIsolation: build.query<ClientIsolationSaveData, RequestPayload>({
       query: ({ params }) => {
@@ -1082,6 +1120,59 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Policy', id: 'DETAIL' }, { type: 'ClientIsolation', id: 'LIST' }]
+    }),
+    addIdentityProvider: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(IdentityProviderUrls.addIdentityProvider, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'IdentityProvider', id: 'LIST' }]
+    }),
+    updateIdentityProvider: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(IdentityProviderUrls.updateIdentityProvider, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'IdentityProvider', id: 'LIST' }]
+    }),
+    deleteIdentityProviderList: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(IdentityProviderUrls.deleteIdentityProviderList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'IdentityProvider', id: 'LIST' }]
+    }),
+    // eslint-disable-next-line max-len
+    getEnhancedIdentityProviderList: build.query<TableResult<IdentityProviderViewModel>, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(IdentityProviderUrls.getEnhancedIdentityProviderList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'IdentityProvider', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, IdentityProviderMutationUseCases, () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'Policy', id: 'LIST' },
+              { type: 'IdentityProvider', id: 'LIST' }
+            ]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     getVLANPoolPolicyViewModelList:
     build.query<TableResult<VLANPoolViewModelType>,RequestPayload>({
@@ -1105,7 +1196,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
             api.dispatch(policyApi.util.invalidateTags([{ type: 'VLANPool', id: 'LIST' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     getVLANPoolPolicyDetail: build.query<VLANPoolPolicyType, RequestPayload>({
       query: ({ params }) => {
@@ -1163,7 +1255,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'VLANPool', id: 'LIST' }]
+      providesTags: [{ type: 'VLANPool', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     updateClientIsolation: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1184,7 +1277,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     // eslint-disable-next-line max-len
     getVenueUsageByClientIsolation: build.query<TableResult<VenueUsageByClientIsolation>, RequestPayload>({
@@ -1195,7 +1289,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     uploadMacRegistration: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
@@ -1277,7 +1372,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Syslog', id: 'VENUE' }]
+      providesTags: [{ type: 'Syslog', id: 'VENUE' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getSyslogPolicy: build.query<SyslogPolicyDetailType, RequestPayload>({
       query: ({ params }) => {
@@ -1358,7 +1454,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
             api.dispatch(policyApi.util.invalidateTags([{ type: 'Syslog', id: 'LIST' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     getApSnmpPolicyList: build.query<ApSnmpPolicy[], RequestPayload>({
       query: ({ params }) => {
@@ -1461,7 +1558,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
             api.dispatch(policyApi.util.invalidateTags([{ type: 'SnmpAgent', id: 'LIST' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     getVenueApSnmpSettings: build.query<VenueApSnmpSettings, RequestPayload>({
       query: ({ params }) => {
@@ -1525,7 +1623,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       transformResponse (result: NewTableResult<RadiusAttributeGroup>) {
         return transferToTableResult<RadiusAttributeGroup>(result)
       },
-      providesTags: [{ type: 'RadiusAttributeGroup', id: 'LIST' }]
+      providesTags: [{ type: 'RadiusAttributeGroup', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     // eslint-disable-next-line max-len
     radiusAttributeGroupListByQuery: build.query<TableResult<RadiusAttributeGroup>, RequestPayload>({
@@ -1540,7 +1639,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
           }
         }
       },
-      providesTags: [{ type: 'RadiusAttributeGroup', id: 'LIST' }]
+      providesTags: [{ type: 'RadiusAttributeGroup', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     radiusAttributeList: build.query<TableResult<RadiusAttribute>, RequestPayload>({
       query: ({ params }) => {
@@ -1674,7 +1774,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       transformResponse (result: NewAPITableResult<AdaptivePolicy>) {
         return transferNewResToTableResult<AdaptivePolicy>(result, { pageStartZero: true })
       },
-      providesTags: [{ type: 'AdaptivePolicy', id: 'LIST' }]
+      providesTags: [{ type: 'AdaptivePolicy', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     adaptivePolicyListByQuery: build.query<TableResult<AdaptivePolicy>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1690,7 +1791,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       transformResponse (result: NewAPITableResult<AdaptivePolicy>) {
         return transferNewResToTableResult<AdaptivePolicy>(result, { pageStartZero: true })
       },
-      providesTags: [{ type: 'AdaptivePolicy', id: 'LIST' }]
+      providesTags: [{ type: 'AdaptivePolicy', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getAdaptivePolicy: build.query<AdaptivePolicy, RequestPayload>({
       query: ({ params }) => {
@@ -1822,7 +1924,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       transformResponse (result: NewAPITableResult<AdaptivePolicySet>) {
         return transferNewResToTableResult<AdaptivePolicySet>(result, { pageStartZero: true })
       },
-      providesTags: [{ type: 'AdaptivePolicySet', id: 'LIST' }]
+      providesTags: [{ type: 'AdaptivePolicySet', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     deleteAdaptivePolicySet: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -1847,7 +1950,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       transformResponse (result: NewAPITableResult<AdaptivePolicySet>) {
         return transferNewResToTableResult<AdaptivePolicySet>(result, { pageStartZero: true })
       },
-      providesTags: [{ type: 'AdaptivePolicySet', id: 'LIST' }]
+      providesTags: [{ type: 'AdaptivePolicySet', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getAdaptivePolicySet: build.query<AdaptivePolicySet, RequestPayload>({
       query: ({ params }) => {
@@ -2002,6 +2106,10 @@ export const {
   useUpdateClientIsolationMutation,
   useGetClientIsolationUsageByVenueQuery,
   useGetVenueUsageByClientIsolationQuery,
+  useAddIdentityProviderMutation,
+  useUpdateIdentityProviderMutation,
+  useDeleteIdentityProviderListMutation,
+  useGetEnhancedIdentityProviderListQuery,
   useLazyGetMacRegListQuery,
   useUploadMacRegistrationMutation,
   useAddSyslogPolicyMutation,

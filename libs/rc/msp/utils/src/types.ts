@@ -4,7 +4,8 @@ import {
   Address,
   EntitlementDeviceType,
   EntitlementDeviceSubType,
-  EntitlementNetworkDeviceType
+  EntitlementNetworkDeviceType,
+  Entitlement
 } from '@acx-ui/rc/utils'
 import { RolesEnum } from '@acx-ui/types'
 
@@ -36,6 +37,9 @@ export interface DelegationEntitlementRecord {
   type: string;
   subTypeText?: string;
   percentageUsage?: string;
+  outOfComplianceDevices?: number;
+  futureOutOfComplianceDevices?: number;
+  futureOfComplianceDate?: number;
 }
 
 export interface MspEc {
@@ -53,9 +57,12 @@ export interface MspEc {
   mspIntegratorAdminCount?: number;
   integrator?: string,
   installer?: string,
+  integratorCount?: number,
+  installerCount?: number,
   expirationDate: string;
   wifiLicenses: string;
   switchLicenses: string;
+  apswLicenses: string;
   edgeLicenses?: string;
   assignedMspEcList: string[];
   creationDate: number;
@@ -88,6 +95,7 @@ export interface MspEcData {
   delegations?: MspIntegratorDelegated[];
   admin_delegations?: MspEcDelegatedAdmins[];
   number_of_days?: string;
+  isManageAllEcs?: boolean;
 }
 
 export interface VarCustomer {
@@ -97,6 +105,7 @@ export interface VarCustomer {
   tenantEmail: string;
   wifiLicenses: string;
   switchLicenses: string;
+  apswLicenses: string;
   entitlements: DelegationEntitlementRecord[];
   entitlement: DelegationEntitlementRecord;
 }
@@ -167,6 +176,14 @@ export interface MspEntitlementSummary {
   effectiveDate: string;
   expirationDate: string;
   remainingDays: number;
+  remainingLicenses: number;
+  trial: boolean;
+}
+
+export interface NewMspEntitlementSummary {
+  mspEntitlementBanners: Array<unknown>;
+  mspEntitlements: Entitlement[];
+  mspEntitlementSummaries: MspEntitlementSummary[];
 }
 
 export interface EntitlementAssignment {
@@ -200,6 +217,7 @@ export interface MspAssignmentSummary {
   courtesyMspEntitlementsUsed: boolean;
   remainingDevices: number;
   trial: boolean;
+  myAssignments?: number;
 }
 
 export interface MspEcAdmin {
@@ -220,6 +238,7 @@ export interface MspIntegratorDelegated {
   delegation_type: string;
   delegation_id?: string;
   number_of_days?: string;
+  isManageAllEcs?: boolean;
 }
 
 export interface EcInvitation {
@@ -371,4 +390,58 @@ export interface MspLogoFile {
 
 export interface ParentLogoUrl {
   logo_url: string
+}
+
+export interface MspAggregations {
+  aggregation: boolean,
+  ecExclusionEnabled: boolean
+}
+
+export interface MspEcAlarmList {
+  mspEcAlarmCountList: {
+    tenantId?: string;
+    alarmCount?: number;
+  }[]
+}
+
+export interface RecommendFirmwareUpgrade {
+  defaultABF: string,
+  defaultApBranchFamilyApFirmwares: UpgradeFirmwareVer[]
+}
+
+export interface UpgradeFirmwareVer {
+  seq: number,
+  name: string,
+  defaultApFirmware: string,
+  branches: string[]
+}
+
+export interface MspRecData {
+  account_id?: string;
+  delegations?: MspIntegratorDelegated[];
+  admin_delegations?: MspEcDelegatedAdmins[];
+}
+
+export interface AvailableMspRecCustomers {
+  parent_account_name: string,
+  parent_account_id?: string,
+  child_accounts?: MspRecCustomer[]
+  totalPages?: number,
+  totalElements: number,
+  number: number,
+  content: MspRecCustomer[]
+}
+
+export interface MspRecCustomer {
+  account_name: string,
+  account_id?: string,
+  billing_street?: string,
+  billing_city?: string,
+  billing_state?: string,
+  billing_postal_code?: string,
+  billing_country?: string,
+  kumo?: boolean,
+  flexera_llm_account_id?: string,
+  acx_trial_in_progress?: boolean,
+  email_id?: string
 }

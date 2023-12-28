@@ -2,7 +2,6 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   SyslogUrls,
   getPolicyDetailsLink,
@@ -15,7 +14,7 @@ import { Provider } from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen,
+  screen, waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
 
@@ -85,14 +84,14 @@ describe('SyslogTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const targetName = mockTableResult.data[0].name
     expect(await screen.findByRole('button', { name: /Add Syslog Server/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: new RegExp(targetName) })).toBeVisible()
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <SyslogTable />
@@ -100,21 +99,8 @@ describe('SyslogTable', () => {
         route: { params, path: tablePath }
       }
     )
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'Policies & Profiles'
-    })).toBeVisible()
-  })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    render(
-      <Provider>
-        <SyslogTable />
-      </Provider>, {
-        route: { params, path: tablePath }
-      }
-    )
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'Policies & Profiles'
@@ -132,6 +118,7 @@ describe('SyslogTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const target = mockTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })

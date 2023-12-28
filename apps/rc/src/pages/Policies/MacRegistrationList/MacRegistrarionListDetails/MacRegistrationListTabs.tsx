@@ -1,11 +1,12 @@
 import { Tabs }    from 'antd'
 import { useIntl } from 'react-intl'
 
+import { useMacRegistrationsQuery } from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
   MacRegistrationDetailsTabKey,
   PolicyOperation,
-  PolicyType
+  PolicyType, useTableQuery
 } from '@acx-ui/rc/utils'
 import {
   Path,
@@ -18,6 +19,15 @@ function MacRegistrationListTabs () {
   const { $t } = useIntl()
   const { policyId, activeTab } = useParams()
   const navigate = useNavigate()
+
+  const tableQuery = useTableQuery({
+    useQuery: useMacRegistrationsQuery,
+    defaultPayload: {},
+    sorter: {
+      sortField: 'macAddress',
+      sortOrder: 'asc'
+    }
+  })
 
   const tabsPathMapping: Record<MacRegistrationDetailsTabKey, Path> = {
     [MacRegistrationDetailsTabKey.OVERVIEW]: useTenantLink(getPolicyDetailsLink({
@@ -44,7 +54,8 @@ function MacRegistrationListTabs () {
         key={MacRegistrationDetailsTabKey.OVERVIEW}
       />
       <Tabs.TabPane
-        tab={$t({ defaultMessage: 'MAC Registrations' })}
+        tab={$t({ defaultMessage: 'MAC Registrations ({count})' },
+          { count: tableQuery.data?.totalCount ?? 0 })}
         key={MacRegistrationDetailsTabKey.MAC_REGISTRATIONS}
       />
     </Tabs>

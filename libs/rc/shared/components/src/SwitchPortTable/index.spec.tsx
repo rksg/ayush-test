@@ -340,7 +340,7 @@ jest.mock('./SwitchLagDrawer', () => ({
   SwitchLagDrawer: () => <div data-testid='SwitchLagDrawer' />
 }))
 
-jest.mock('./editPortDrawer', () => ({
+jest.mock('./editPortDrawerLegacy', () => ({
   EditPortDrawer: () => <div data-testid='editPortDrawer' />
 }))
 

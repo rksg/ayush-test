@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
-import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { defaultNetworkPayload, SimpleListTooltip }      from '@acx-ui/rc/components'
 import {
   doProfileDelete,
@@ -21,12 +20,11 @@ import {
   Network,
   AclOptionType,
   WifiCallingSetting,
-  QosPriorityEnum
+  QosPriorityEnum,
+  wifiCallingQosPriorityLabelMapping
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }                               from '@acx-ui/user'
-
-import { wifiCallingQosPriorityLabelMapping } from '../../contentsMap'
 
 const defaultPayload = {
   searchString: '',
@@ -46,7 +44,6 @@ export default function WifiCallingTable () {
   const params = useParams()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDeleteWifiCallingServicesMutation()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const WIFICALLING_LIMIT_NUMBER = 5
 
   const [networkFilterOptions, setNetworkFilterOptions] = useState([] as AclOptionType[])
@@ -141,10 +138,8 @@ export default function WifiCallingTable () {
             count: tableQuery.data?.totalCount
           })
         }
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
-        ] : [
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
         extra={filterByAccess([

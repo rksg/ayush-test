@@ -1,14 +1,14 @@
 /* eslint-disable max-len */
 import { useEffect } from 'react'
 
+
 import { Form, Slider, InputNumber, Space, Switch, Checkbox } from 'antd'
 import { CheckboxChangeEvent }                                from 'antd/lib/checkbox'
-import { useIntl }                                            from 'react-intl'
+import { FormattedMessage, useIntl }                          from 'react-intl'
 
-import { cssStr }                 from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { InformationOutlined }    from '@acx-ui/icons'
-
+import { cssStr, Tooltip }                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { InformationOutlined, QuestionMarkCircleOutlined } from '@acx-ui/icons'
 
 import {
   ApRadioTypeEnum,
@@ -19,7 +19,8 @@ import {
   mgmtTxRate6GOptions,
   txPowerAdjustment6GOptions,
   apChannelSelectionMethodsOptions,
-  apChannelSelectionMethods6GOptions
+  apChannelSelectionMethods6GOptions,
+  LPIButtonText
 } from './RadioSettingsContents'
 import { Label, FieldLabel, FormItemNoLabel, RadioFormSelect } from './styledComponents'
 
@@ -32,18 +33,22 @@ export function RadioSettingsForm (props:{
   channelBandwidthOptions: SelectItemOption[],
   context?: string
   isUseVenueSettings?: boolean,
-  onGUIChanged?: (fieldName: string) => void
+  onGUIChanged?: (fieldName: string) => void,
+  isAFCEnabled? : boolean,
+  LPIButtonText?: LPIButtonText
 }) {
-
   const { $t } = useIntl()
   const radio6GRateControlFeatureFlag = useIsSplitOn(Features.RADIO6G_RATE_CONTROL)
+  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
   const { radioType,
     disabled = false,
     radioDataKey,
     channelBandwidthOptions,
     context = 'venue',
     isUseVenueSettings = false,
-    onGUIChanged
+    onGUIChanged,
+    isAFCEnabled = true,
+    LPIButtonText
   } = props
 
   const methodFieldName = [...radioDataKey, 'method']
@@ -58,6 +63,7 @@ export function RadioSettingsForm (props:{
   const enableDownloadLimitFieldName = [...radioDataKey, 'enableMulticastDownlinkRateLimiting']
   const uploadLimitFieldName = [...radioDataKey, 'multicastUplinkRateLimiting']
   const downloadLimitFieldName = [...radioDataKey, 'multicastDownlinkRateLimiting']
+  const enableAfcFieldName = [...radioDataKey, 'enableAfc']
 
   const channelSelectionOpts = (context === 'venue') ?
     channelSelectionMethodsOptions :
@@ -70,19 +76,26 @@ export function RadioSettingsForm (props:{
     enableMulticastRateLimiting,
     enableUploadLimit,
     enableDownloadLimit,
-    channelBandwidth
+    channelBandwidth,
+    enableAfc
   ] = [
     useWatch<boolean>(enableMulticastRateLimitingFieldName),
     useWatch<boolean>(enableUploadLimitFieldName),
     useWatch<boolean>(enableDownloadLimitFieldName),
-    useWatch<string>(['radioParams6G', 'channelBandwidth'])
+    useWatch<string>(channelBandwidthFieldName),
+    useWatch<boolean>(enableAfcFieldName)
   ]
 
   useEffect(() => {
     form.setFieldValue(enableMulticastRateLimitingFieldName,
       form.getFieldValue(enableUploadLimitFieldName) || form.getFieldValue(enableDownloadLimitFieldName))
-
   }, [] )
+
+  useEffect(()=> {
+    if(LPIButtonText?.LPIModeState !== enableAfc) {
+      LPIButtonText?.LPIModeOnChange(enableAfc)
+    }
+  }, [enableAfc])
 
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -104,8 +117,40 @@ export function RadioSettingsForm (props:{
     onChangedByCustom('bssMinRate')
   }
 
+
+
   return (
     <>
+      { AFC_Featureflag && ApRadioTypeEnum.Radio6G === radioType &&
+        <FieldLabel width='180px' style={(context === 'ap' && LPIButtonText?.isAPOutdoor) ? { display: 'hidden' } : { display: 'flex' }}>
+          <div style={{ float: 'left' }}>
+            <p style={{ width: '180px' }}>{$t({ defaultMessage: 'Enable AFC:' })}</p>
+          </div>
+          <Form.Item
+            style={{ width: '50px' }}
+            name={enableAfcFieldName}
+            valuePropName={'checked'}
+            initialValue={true}>
+            {isUseVenueSettings ?
+              LPIButtonText?.buttonText :
+              <Switch
+                disabled={!isAFCEnabled || isUseVenueSettings}
+                onChange={() => {
+                  onChangedByCustom('enableAfc')
+                }}
+              />}
+          </Form.Item>
+          <Tooltip title={
+            <FormattedMessage
+              values={{ br: () => <br /> }}
+              defaultMessage={'These settings apply only to indoor APs.'}
+            />
+          }
+          placement='bottom'>
+            <QuestionMarkCircleOutlined style={{ width: '18px', marginTop: '5px' }}/>
+          </Tooltip>
+        </FieldLabel>
+      }
       <Form.Item
         label={$t({ defaultMessage: 'Channel selection method:' })}
         name={methodFieldName}>
@@ -169,7 +214,7 @@ export function RadioSettingsForm (props:{
           onChange={() => onChangedByCustom('bandwidth')}
         />
       </Form.Item>
-      {channelBandwidth === '320MHz' ?
+      {(channelBandwidth === '320MHz')?
         <div style={{ color: cssStr('--acx-neutrals-50'), fontSize: '12px', marginBottom: '14px' }}>
           <InformationOutlined style={{
             height: '14px',
@@ -224,16 +269,25 @@ export function RadioSettingsForm (props:{
 
         {multicastRateLimitFlag && <>
           <FieldLabel width='175px'>
-            {$t({ defaultMessage: 'Multicast Rate Limiting' })}
+            <Space>
+              {$t({ defaultMessage: 'Multicast Rate Limiting' })}
+              <Tooltip.Question
+                title={$t({ defaultMessage: 'Note that enabling Directed Multicast in Venue/AP settings, which converting multicast packets to unicast, will impact the functionality of Multicast Rate Limiting.' })}
+                placement='right'
+                iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+              />
+            </Space>
             <Form.Item
               name={enableMulticastRateLimitingFieldName}
               style={{ marginBottom: '10px' }}
               valuePropName='checked'
               initialValue={form.getFieldValue(enableUploadLimitFieldName)||form.getFieldValue(enableDownloadLimitFieldName)}
             >
-              {!isUseVenueSettings ? (
-                <Switch
-                  disabled={disabled}
+              { isUseVenueSettings && !(form.getFieldValue(enableUploadLimitFieldName)||form.getFieldValue(enableDownloadLimitFieldName)) ?
+                <span>OFF</span>
+                : <Switch
+                  disabled={disabled || isUseVenueSettings}
+                  defaultChecked={form.getFieldValue(enableUploadLimitFieldName)||form.getFieldValue(enableDownloadLimitFieldName)}
                   onChange={function (checked: boolean) {
                     if (!checked) {
                       form.setFieldValue(
@@ -242,7 +296,7 @@ export function RadioSettingsForm (props:{
                         enableUploadLimitFieldName, false)
                     }
                   }} />
-              ) : <span>ON</span>}
+              }
             </Form.Item>
           </FieldLabel>
 

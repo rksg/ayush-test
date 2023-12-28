@@ -3,17 +3,16 @@ import { useIntl }    from 'react-intl'
 
 import { calculateSeverity, Incident, shortDescription } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol }    from '@acx-ui/components'
-import { useIsSplitOn, Features }                        from '@acx-ui/feature-toggle'
 
-import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
-import { Insights }                          from '../Insights'
-import { NetworkImpact, NetworkImpactProps } from '../NetworkImpact'
-import { NetworkImpactChartTypes }           from '../NetworkImpact/config'
-import { TimeSeries }                        from '../TimeSeries'
-import { TimeSeriesChartTypes }              from '../TimeSeries/config'
+import { FixedAutoSizer }                                   from '../../DescriptionSection/styledComponents'
+import { IncidentAttributes, Attributes }                   from '../IncidentAttributes'
+import { Insights }                                         from '../Insights'
+import { NetworkImpact, NetworkImpactProps }                from '../NetworkImpact'
+import { NetworkImpactChartTypes, NetworkImpactQueryTypes } from '../NetworkImpact/config'
+import { TimeSeries }                                       from '../TimeSeries'
+import { TimeSeriesChartTypes }                             from '../TimeSeries/config'
 
 import MuteIncident from './MuteIncident'
-import * as UI      from './styledComponents'
 
 export const ApservContinuousReboots = (incident: Incident) => {
   const { $t } = useIntl()
@@ -31,18 +30,22 @@ export const ApservContinuousReboots = (incident: Incident) => {
 
   const networkImpactCharts: NetworkImpactProps['charts'] = [{
     chart: NetworkImpactChartTypes.APModelByAP,
+    query: NetworkImpactQueryTypes.TopN,
     type: 'apReboot',
     dimension: 'apModel'
   }, {
     chart: NetworkImpactChartTypes.APFwVersionByAP,
+    query: NetworkImpactQueryTypes.TopN,
     type: 'apReboot',
     dimension: 'apFwVersion'
   }, {
     chart: NetworkImpactChartTypes.RebootReasonByAP,
+    query: NetworkImpactQueryTypes.TopN,
     type: 'apReboot',
     dimension: 'reason'
   }, {
     chart: NetworkImpactChartTypes.RebootReasonsByEvent,
+    query: NetworkImpactQueryTypes.TopN,
     type: 'apRebootEvent',
     dimension: 'reason'
   }]
@@ -63,10 +66,8 @@ export const ApservContinuousReboots = (incident: Incident) => {
         title={$t({ defaultMessage: 'Incident Details' })}
         titleExtra={<SeverityPill severity={calculateSeverity(incident.severity)!} />}
         breadcrumb={[
-          ...(useIsSplitOn(Features.NAVBAR_ENHANCEMENT) ? [
-            { text: $t({ defaultMessage: 'AI Assurance' }) },
-            { text: $t({ defaultMessage: 'AI Analytics' }) }
-          ]:[]),
+          { text: $t({ defaultMessage: 'AI Assurance' }) },
+          { text: $t({ defaultMessage: 'AI Analytics' }) },
           { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
         ]}
         subTitle={shortDescription(incident)}
@@ -74,11 +75,11 @@ export const ApservContinuousReboots = (incident: Incident) => {
       />
       <GridRow>
         <GridCol col={{ span: 4 }}>
-          <UI.FixedAutoSizer>
+          <FixedAutoSizer>
             {({ width }) => (<div style={{ width }}>
               <IncidentAttributes incident={incident} visibleFields={attributeList} />
             </div>)}
-          </UI.FixedAutoSizer>
+          </FixedAutoSizer>
         </GridCol>
         <GridCol col={{ span: 20 }}>
           <Insights incident={incident} />

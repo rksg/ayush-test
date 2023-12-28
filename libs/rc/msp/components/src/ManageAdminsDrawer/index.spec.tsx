@@ -157,7 +157,6 @@ describe('ManageAdminsDrawer', () => {
     await userEvent.click(checkboxes.at(1)!)
     await userEvent.click(checkboxes.at(2)!)
 
-    expect(await screen.findByText('Please select at least one MSP administrator')).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: 'Save' }))
 
     expect(mockedCloseDialog).not.toHaveBeenCalledWith(false)

@@ -14,16 +14,20 @@ export enum EntitlementDeviceType {
   WIFI='WIFI',
   LTE='LTE',
   SWITCH='SWITCH',
+  APSW='APSW',
   ANALYTICS='ANALYTICS',
   MSP_WIFI='MSP_WIFI',
   MSP_SWITCH='MSP_SWITCH',
-  EDGE='EDGE'
+  EDGE='EDGE',
+  MSP_APSW='MSP_APSW',
+  MSP_APSW_TEMP='MSP_APSW_TEMP'
 }
 
 export enum EntitlementNetworkDeviceType {
   SWITCH = 'DVCNWTYPE_SWITCH',
   WIFI = 'DVCNWTYPE_WIFI',
-  LTE = 'DVCNWTYPE_LTE'
+  LTE = 'DVCNWTYPE_LTE',
+  APSW = 'DVCNWTYPE_APSW'
 }
 
 export enum EntitlementDeviceSubType {

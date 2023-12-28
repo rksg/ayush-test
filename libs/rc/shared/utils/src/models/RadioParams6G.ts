@@ -25,6 +25,8 @@ export class RadioParams6G {
 
   txPower: TxPowerEnum
 
+  enableAfc: boolean
+
   constructor () {
     this.method = ScanMethodEnum.CHANNELFLY
 
@@ -41,5 +43,7 @@ export class RadioParams6G {
     this.scanInterval = 20
 
     this.txPower = TxPowerEnum.MAX
+
+    this.enableAfc = false
   }
 }

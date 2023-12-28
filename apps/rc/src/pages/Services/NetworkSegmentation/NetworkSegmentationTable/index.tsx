@@ -1,3 +1,4 @@
+import { Row }     from 'antd'
 import { useIntl } from 'react-intl'
 
 import {
@@ -8,7 +9,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { EdgeServiceStatusLight } from '@acx-ui/rc/components'
 import {
   useDeleteNetworkSegmentationGroupMutation,
   useGetEdgeListQuery,
@@ -38,7 +39,8 @@ const getNetworkSegmentationPayload = {
     'venueInfos',
     'edgeInfos',
     'distributionSwitchInfos',
-    'accessSwitchInfos'
+    'accessSwitchInfos',
+    'edgeAlarmSummary'
   ]
 }
 const venueOptionsDefaultPayload = {
@@ -73,7 +75,6 @@ const NetworkSegmentationTable = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const basePath = useTenantLink('')
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const tableQuery = useTableQuery({
     useQuery: useGetNetworkSegmentationViewDataListQuery,
     defaultPayload: getNetworkSegmentationPayload,
@@ -203,9 +204,15 @@ const NetworkSegmentationTable = () => {
     },
     {
       title: $t({ defaultMessage: 'Health' }),
-      key: 'health',
-      dataIndex: 'health',
-      sorter: true
+      key: 'edgeAlarmSummary',
+      dataIndex: 'edgeAlarmSummary',
+      align: 'center',
+      render: (data, row) =>
+        (row?.edgeInfos?.length)
+          ? <Row justify='center'>
+            <EdgeServiceStatusLight data={row.edgeAlarmSummary} />
+          </Row>
+          : '--'
     },
     {
       title: $t({ defaultMessage: 'Update Available' }),
@@ -254,7 +261,7 @@ const NetworkSegmentationTable = () => {
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Network Segmentation' }),
+            entityName: $t({ defaultMessage: 'Personal Identity Network' }),
             entityValue: rows.length === 1 ? rows[0].name : undefined,
             numOfEntities: rows.length
           },
@@ -272,13 +279,11 @@ const NetworkSegmentationTable = () => {
     <>
       <PageHeader
         title={
-          $t({ defaultMessage: 'Network Segmentation ({count})' },
+          $t({ defaultMessage: 'Personal Identity Network ({count})' },
             { count: tableQuery.data?.totalCount })
         }
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
-        ] : [
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
         extra={filterByAccess([
@@ -287,7 +292,8 @@ const NetworkSegmentationTable = () => {
               type: ServiceType.NETWORK_SEGMENTATION,
               oper: ServiceOperation.CREATE
             })}>
-            <Button type='primary'>{$t({ defaultMessage: 'Add Network Segmenation' })}</Button>
+            {/* eslint-disable-next-line max-len */}
+            <Button type='primary'>{$t({ defaultMessage: 'Add Personal Identity Network' })}</Button>
           </TenantLink>
         ])}
       />

@@ -1,10 +1,10 @@
 /* eslint-disable testing-library/no-node-access */
-import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
 import { dataApiURL, Provider, store }      from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { RolesEnum }                        from '@acx-ui/types'
 import { getUserProfile, setUserProfile }   from '@acx-ui/user'
 import { DateRange }                        from '@acx-ui/utils'
+import type { AnalyticsFilter }             from '@acx-ui/utils'
 
 import { healthWidgetFixture } from './__tests__/fixtures'
 import { ClientExperience }    from './clientExperience'

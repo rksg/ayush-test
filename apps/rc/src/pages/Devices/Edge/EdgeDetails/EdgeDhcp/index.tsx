@@ -8,13 +8,16 @@ import { showActionModal, Tabs }                 from '@acx-ui/components'
 import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { EdgeDhcpLeaseTable, EdgeDhcpPoolTable } from '@acx-ui/rc/components'
 import {
+  useGetDhcpByEdgeIdQuery,
   useGetDhcpHostStatsQuery,
   useGetDhcpPoolStatsQuery,
+  useGetEdgeServiceListQuery,
   usePatchEdgeDhcpServiceMutation
 } from '@acx-ui/rc/services'
 import {
   DhcpPoolStats,
   EdgeDhcpHostStatus,
+  EdgeServiceTypeEnum,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { useTenantLink }  from '@acx-ui/react-router-dom'
@@ -32,17 +35,28 @@ export const EdgeDhcp = () => {
   const [updateEdgeDhcpService] = usePatchEdgeDhcpServiceMutation()
   const [drawerVisible, setDrawerVisible] = useState(false)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const { isLeaseTimeInfinite } = useGetDhcpByEdgeIdQuery(
+    { params: { edgeId: serialNumber } },
+    {
+      skip: !!!serialNumber,
+      selectFromResult: ({ data }) => ({
+        isLeaseTimeInfinite: data?.leaseTime === -1
+      })
+    }
+  )
   const getDhcpPoolStatsPayload = {
     fields: [
       'id',
       'dhcpId',
+      'poolId',
       'poolName',
       'subnetMask',
       'poolRange',
       'gateway',
-      'edgeIds'
+      'edgeId',
+      'utilization'
     ],
-    filters: { edgeIds: [serialNumber] },
+    filters: { edgeId: [serialNumber] },
     sortField: 'name',
     sortOrder: 'ASC'
   }
@@ -61,6 +75,19 @@ export const EdgeDhcp = () => {
   },{
     skip: !isEdgeReady
   })
+  const { hasNsg } = useGetEdgeServiceListQuery({
+    payload: {
+      fields: ['serviceType'],
+      filters: { edgeId: [serialNumber] }
+    }
+  }, {
+    skip: !isEdgeReady,
+    selectFromResult: ({ data, isLoading }) => ({
+      hasNsg: isLoading || data?.data.some(
+        service => service.serviceType === EdgeServiceTypeEnum.NETWORK_SEGMENTATION
+      )
+    })
+  })
 
   useEffect(() => {
     setIsDhcpServiceActive((poolTableQuery.data?.totalCount || 0) > 0)
@@ -76,7 +103,7 @@ export const EdgeDhcp = () => {
         { defaultMessage: 'Leases ( {count} online )' },
         { count: dhcpHostStats?.totalCount || 0 }
       ),
-      content: <EdgeDhcpLeaseTable edgeId={serialNumber} />
+      content: <EdgeDhcpLeaseTable edgeId={serialNumber} isInfinite={isLeaseTimeInfinite} />
     }
   }
 
@@ -91,7 +118,7 @@ export const EdgeDhcp = () => {
         onOk: () => {
           if((poolTableQuery.data?.totalCount || 0) > 0) {
             const params = { id: poolTableQuery.data?.data[0].dhcpId }
-            const edgeIds = poolTableQuery.data?.data[0].edgeIds || []
+            const edgeIds = [poolTableQuery.data?.data[0].edgeId]
             const payload = {
               edgeIds: [
                 ...edgeIds.filter(id => id !== serialNumber)
@@ -134,6 +161,7 @@ export const EdgeDhcp = () => {
         visible={drawerVisible}
         setVisible={setDrawerVisible}
         inUseService={poolTableQuery.data?.data[0]?.dhcpId || null}
+        hasNsg={hasNsg}
       />
       <Tabs
         onChange={onTabChange}

@@ -1,7 +1,9 @@
 import type { TimeStamp } from '@acx-ui/types'
 
-import { FirmwareCategory }                                                              from '..'
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, EdgeStatusSeverityEnum } from '../models/EdgeEnum'
+import { FirmwareCategory, SkippedVersion }                                                                                                        from '..'
+import { EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, EdgeStatusSeverityEnum } from '../models/EdgeEnum'
+
+export const PRODUCT_CODE_VIRTUAL_EDGE = '96'
 
 export interface EdgeGeneralSetting {
   description: string
@@ -77,6 +79,13 @@ export interface EdgePort {
   subnet: string
   gateway: string
   natEnabled: boolean
+  corePortEnabled: boolean
+  interfaceName?: string
+}
+
+export interface EdgePortWithStatus extends EdgePort {
+  statusIp: string
+  isLagPort?: boolean
 }
 
 export interface EdgePortConfig {
@@ -112,10 +121,11 @@ export interface EdgePortStatus {
   speedKbps: number
   duplex: string
   ip: string,
-  ipMode: string,
+  ipMode: string
   sortIdx: number
   vlan: string
   subnet: string
+  interfaceName?: string
 }
 
 export interface EdgeStatusSeverityStatistic {
@@ -134,6 +144,21 @@ export interface EdgeVenueFirmware {
   name: string
   updatedDate: string
   versions: EdgeFirmwareVersion[]
+  availableVersions: EdgeFirmwareVersion[]
+  nextSchedule: EdgeSchedule
+  lastSkippedVersions?: SkippedVersion[]
+}
+
+export interface EdgeSchedule {
+  timeSlot: {
+    startDateTime: string
+    endDateTime: string
+  }
+  version: {
+    id: string
+    name: string
+    category: FirmwareCategory
+  }
 }
 
 export interface EdgeFirmwareVersion {
@@ -161,6 +186,10 @@ export interface EdgeTotalUpDownTime {
 
 export interface EdgeTopTraffic {
   traffic: number[]       // bytes
+  portTraffic: {
+    portName: string,
+    traffic: number       // bytes
+  }[]
 }
 
 export type EdgeResourceTimeSeries = {
@@ -177,6 +206,7 @@ export type EdgeResourceUtilizationData = {
 }
 
 export interface EdgePortTrafficTimeSeries {
+  portName: string,
   tx: number[],
   rx: number[],
   total: number[]
@@ -260,4 +290,56 @@ export interface EdgeAlarmSummary {
 export enum EdgeTroubleshootingType {
   PING = 'PING',
   TRACE_ROUTE = 'TRACE_ROUTE'
+}
+
+export interface EdgeLagMemberStatus {
+  portId: string
+  name: string
+  state?: string
+  rxCount?: number
+  txCount?: number
+  systemId?: string
+  key?: string
+  peerSystemId?: string
+  peerKey?: string
+}
+
+export interface EdgeLagStatus {
+  lagId: number
+  tenantId: string
+  serialNumber: string
+  name: string
+  description: string
+  status?: string
+  adminStatus?: string
+  portType: EdgePortTypeEnum
+  lagType: EdgeLagTypeEnum
+  lacpTimeout: EdgeLagTimeoutEnum
+  lagMembers: EdgeLagMemberStatus[]
+  ipMode: EdgeIpModeEnum
+  mac?: string
+  vlan: string
+  ip?: string
+  subnet?: string
+  isCorePort: string
+}
+
+export interface EdgeLag {
+    id: number,
+    description: string
+    lagType: EdgeLagTypeEnum
+    lacpMode: EdgeLagLacpModeEnum
+    lacpTimeout: EdgeLagTimeoutEnum
+    lagMembers: {
+        portId: string
+        portEnabled: boolean
+    }[]
+    portType: EdgePortTypeEnum
+    ipMode: EdgeIpModeEnum
+    ip?: string
+    subnet?: string
+    gateway?: string
+    corePortEnabled: boolean
+    natEnabled: boolean
+    lagEnabled: boolean
 }

@@ -1,8 +1,8 @@
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
-import { Path }  from 'react-router-dom'
+import { waitForElementToBeRemoved } from '@testing-library/react'
+import userEvent                     from '@testing-library/user-event'
+import { rest }                      from 'msw'
+import { Path }                      from 'react-router-dom'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ClientIsolationUrls,
   CommonUrlsInfo,
@@ -92,6 +92,7 @@ describe('ClientIsolationTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const targetName = mockedTableResult.data[0].name
     // eslint-disable-next-line max-len
@@ -99,8 +100,7 @@ describe('ClientIsolationTable', () => {
     expect(await screen.findByRole('row', { name: new RegExp(targetName) })).toBeVisible()
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <ClientIsolationTable />
@@ -108,22 +108,7 @@ describe('ClientIsolationTable', () => {
         route: { params, path: tablePath }
       }
     )
-
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'Policies & Profiles'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    render(
-      <Provider>
-        <ClientIsolationTable />
-      </Provider>, {
-        route: { params, path: tablePath }
-      }
-    )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
@@ -151,6 +136,7 @@ describe('ClientIsolationTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const target = mockedTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
@@ -180,6 +166,8 @@ describe('ClientIsolationTable', () => {
       }
     )
 
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
     const target = mockedTableResult.data[1]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
     await userEvent.click(within(row).getByRole('checkbox'))
@@ -198,6 +186,7 @@ describe('ClientIsolationTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const target = mockedTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })

@@ -1,49 +1,33 @@
 /* eslint-disable max-len */
 import { defaultNetworkPath } from '@acx-ui/analytics/utils'
 
-export const networkFilterResult = {
-  children: [{
-    id: 'id1',
-    type: 'zone',
-    name: 'venue',
-    path: [...defaultNetworkPath, { type: 'zone', name: 'venue' }],
-    aps: [{ name: 'ap', mac: 'ap-mac' }],
-    switches: []
-  }, {
-    id: 'id2',
-    type: 'switchGroup',
-    name: 'venue',
-    path: [...defaultNetworkPath, { type: 'switchGroup', name: 'venue' }],
-    aps: [],
-    switches: [{ name: 'switch', mac: 'switch-mac' }]
-  }, {
-    id: 'id3',
-    type: 'zone',
-    name: 'venue1',
-    path: [...defaultNetworkPath, { type: 'zone', name: 'venue1' }],
-    aps: [{ name: 'ap2', mac: 'ap-mac2' }],
-    switches: []
-  }, {
-    id: 'id4',
-    type: 'switchGroup',
-    name: 'swg',
-    path: [...defaultNetworkPath, { type: 'switchGroup', name: 'swg' }],
-    aps: [],
-    switches: [{ name: 'switch2', mac: 'switch-mac2' }]
-  },
-  {
-    id: 'id5',
-    type: 'switchGroup',
-    name: 'swg1',
-    path: [...defaultNetworkPath, { type: 'switchGroup', name: 'swg1' }],
-    aps: [{ name: 'ap3', mac: 'ap-mac3' }],
-    switches: [{ name: 'switch3', mac: 'switch-mac3' }]
-  }
-  ],
-  name: 'Network',
-  type: 'network',
-  path: defaultNetworkPath
-}
+export const networkFilterResult = [{
+  id: 'id1',
+  name: 'venue',
+  aps: [{ name: 'ap', mac: 'ap-mac' }],
+  switches: []
+}, {
+  id: 'id2',
+  name: 'venue',
+  aps: [],
+  switches: [{ name: 'switch', mac: 'switch-mac' }]
+}, {
+  id: 'id3',
+  name: 'venue1',
+  aps: [{ name: 'ap2', mac: 'ap-mac2' }],
+  switches: []
+}, {
+  id: 'id4',
+  name: 'swg',
+  aps: [],
+  switches: [{ name: 'switch2', mac: 'switch-mac2' }]
+},
+{
+  id: 'id5',
+  name: 'swg1',
+  aps: [{ name: 'ap3', mac: 'ap-mac3' }],
+  switches: [{ name: 'switch3', mac: 'switch-mac3' }]
+}]
 
 export const recentNetworkFilterResult = {
   children: [{
@@ -65,4 +49,176 @@ export const recentNetworkFilterResult = {
   name: 'Network',
   type: 'network',
   path: defaultNetworkPath
+}
+
+export const hierarchyQueryResult = {
+  network: {
+    apHierarchy: [
+      {
+        name: 'test-system',
+        type: 'system',
+        children: [
+          {
+            name: '1||Administration Domain',
+            type: 'domain',
+            children: [
+              {
+                name: 'somenames',
+                type: 'zone',
+                children: [
+                  {
+                    name: 'group 1',
+                    type: 'apGroup'
+                  }
+                ]
+              }
+            ]
+          }, {
+            name: '2||somenames',
+            type: 'domain',
+            children: [
+              {
+                name: 'zone 1',
+                type: 'zone'
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    switchHierarchy: [
+      {
+        name: 'test-system',
+        type: 'system',
+        children: [
+          {
+            name: '1||Administration Domain',
+            type: 'domain',
+            children: [
+              {
+                name: 'switchGroup 0',
+                type: 'switchGroup'
+              }
+            ]
+          },
+          {
+            name: '2||somenames',
+            type: 'domain',
+            children: [
+              {
+                name: 'switchGroup 1',
+                type: 'switchGroup'
+              }
+            ]
+          }
+        ]
+      },
+      {
+        name: 'test-system2',
+        type: 'system',
+        children: [
+          {
+            name: '2||second domain',
+            type: 'domain',
+            children: [
+              {
+                name: 'switchGroup 1',
+                type: 'switchGroup'
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
+
+export const fullHierarchyQueryOuput = {
+  type: 'network',
+  name: 'Network',
+  children: [
+    {
+      name: 'test-system',
+      type: 'system',
+      children: [
+        {
+          name: 'somenames',
+          type: 'zone',
+          children: [
+            {
+              name: 'group 1',
+              type: 'apGroup'
+            }
+          ]
+        },
+        {
+          name: 'somenames',
+          type: 'domain',
+          children: [
+            {
+              name: 'zone 1',
+              type: 'zone'
+            },
+            {
+              name: 'switchGroup 1',
+              type: 'switchGroup'
+            }
+          ]
+        },
+        {
+          name: 'switchGroup 0',
+          type: 'switchGroup'
+        }
+      ]
+    },
+    {
+      name: 'test-system2',
+      type: 'system',
+      children: [
+        {
+          name: 'second domain',
+          type: 'domain',
+          children: [
+            {
+              name: 'switchGroup 1',
+              type: 'switchGroup'
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+export const apsOnlyHierarchyQueryOuput = {
+  type: 'network',
+  name: 'Network',
+  children: [
+    {
+      name: 'test-system',
+      type: 'system',
+      children: [
+        {
+          name: 'somenames',
+          type: 'zone',
+          children: [
+            {
+              name: 'group 1',
+              type: 'apGroup'
+            }
+          ]
+        },
+        {
+          name: 'somenames',
+          type: 'domain',
+          children: [
+            {
+              name: 'zone 1',
+              type: 'zone'
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }

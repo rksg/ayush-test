@@ -161,7 +161,7 @@ function calculateAllVenueRogueApInfo (device: NetworkDevice): RogueApInfo {
 
   const rogueType = categoryNames[0] || 'ignored'
   const totalRogueNumber = categoryNums
-    .reduce((accumulator: number, currentValue: number) => accumulator + currentValue)
+    .reduce((accumulator: number, currentValue: number) => accumulator + currentValue, 0)
   const deviceColor = `ap-rogue-type-${rogueType}`
 
   return {

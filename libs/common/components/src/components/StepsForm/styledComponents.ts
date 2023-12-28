@@ -1,8 +1,9 @@
 import { Typography, Steps as AntSteps, Space } from 'antd'
 import styled, { css }                          from 'styled-components/macro'
 
-import modifyVars   from '../../theme/modify-vars'
-import { Subtitle } from '../Subtitle'
+import modifyVars                  from '../../theme/modify-vars'
+import { Subtitle }                from '../Subtitle'
+import { disableStickyPagination } from '../Table/styledComponents'
 
 export const Wrapper = styled.section`
   --acx-steps-form-steps-title-color: var(--acx-primary-black);
@@ -20,14 +21,20 @@ export const Wrapper = styled.section`
   --acx-steps-form-actions-vertical-space: 12px;
 
   padding-block-end: calc(var(--acx-steps-form-actions-vertical-space) * 2 + 32px);
+
+  ${disableStickyPagination}
 `
 
-const stepCompletedStyle = css`
+const stepCompletedStyle = css<{ $editMode?: boolean }>`
   .ant-steps-item-container .ant-steps-item-icon .ant-steps-icon-dot {
     &::after {
       top: 1px;
       left: 1px;
-      background-color: var(--acx-steps-form-steps-step-color);
+      ${props => !props.$editMode ? css`
+        background-color: var(--acx-steps-form-steps-step-color);
+      ` : css`
+        background-color: transparent;
+      `}
     }
   }
 `
@@ -150,7 +157,7 @@ export const ActionsContainer = styled.div`
   bottom: 0;
   padding: var(--acx-steps-form-actions-vertical-space) 0;
   background-color: var(--acx-neutrals-10);
-  z-index: 3;
+  z-index: 5;
   &::before {
     content: '';
     position: absolute;
@@ -173,8 +180,7 @@ export const ActionsButtons = styled(Space).attrs((props: ActionsButtonsProps) =
   align: props.$editMode ? 'start' : 'center'
 }))<ActionsButtonsProps>`
   ${props => props.$editMode && props.$multipleSteps && `
-    // col span=4/24, gutter=20px
-    margin-left: calc((100% + 20px) * 4 / 24);
+    margin-left: 0;
   `}
 `
 

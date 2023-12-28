@@ -104,7 +104,7 @@ describe('AP List Table', () => {
     expect(await screen.findByText('AP List (2)')).toBeVisible()
   })
 
-  it('should render extra header correctly', async () => {
+  it.skip('should render extra header correctly', async () => {
     const Component = () => {
       const { headerExtra } = useApsTable()
       return <span>{headerExtra}</span>

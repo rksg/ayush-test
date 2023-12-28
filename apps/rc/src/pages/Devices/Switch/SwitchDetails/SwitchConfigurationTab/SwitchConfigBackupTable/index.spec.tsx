@@ -4,8 +4,8 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }       from '@acx-ui/store'
+import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                       from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -16,11 +16,12 @@ import {
 } from '@acx-ui/test-utils'
 
 import { SwitchDetailsContext } from '../..'
+import { networkApGroup }       from '../../__tests__/fixtures'
 
 import { SwitchConfigBackupTable } from '.'
 
-jest.mock('@acx-ui/rc/utils', () => ({
-  ...jest.requireActual('@acx-ui/rc/utils'),
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
   handleBlobDownloadFile: jest.fn()
 }))
 
@@ -90,6 +91,10 @@ describe('SwitchConfigBackupTable', () => {
       rest.post(
         SwitchUrlsInfo.getSwitchConfigBackupList.url,
         (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.post(
+        CommonUrlsInfo.venueNetworkApGroup.url,
+        (req, res, ctx) => res(ctx.json(networkApGroup))
       )
     )
   })

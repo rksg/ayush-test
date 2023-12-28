@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { MspUrlsInfo }                         from '@acx-ui/msp/utils'
-import { CommonUrlsInfo }                      from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, FirmwareUrlsInfo }    from '@acx-ui/rc/utils'
 import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { UserUrlsInfo }                        from '@acx-ui/user'
 
 import Layout from '.'
 
@@ -19,6 +19,21 @@ const tenantDetail = {
   ruckusUser: false,
   status: 'active',
   tenantType: 'VAR',
+  updatedDate: '2022-12-24T01:06:05.021+00:00',
+  upgradeGroup: 'production'
+}
+
+const tenantNonVarDetail = {
+  createdDate: '2022-12-24T01:06:03.205+00:00',
+  entitlementId: 'asgn__24de8731-832c-4191-b1b0-c2d2a339d6b1_GioRFRJW',
+  externalId: '_24de8731-832c-4191-b1b0-c2d2a339d6b1_GioRFRJW',
+  id: '3061bd56e37445a8993ac834c01e2710',
+  isActivated: true,
+  maintenanceState: false,
+  name: 'Din Tai Fung',
+  ruckusUser: false,
+  status: 'active',
+  tenantType: 'MSP_NON_VAR',
   updatedDate: '2022-12-24T01:06:05.021+00:00',
   upgradeGroup: 'production'
 }
@@ -133,6 +148,9 @@ describe('Layout', () => {
     services.useGetMspEcProfileQuery = jest.fn().mockImplementation(() => {
       return { data: mspEcProfile }
     })
+    services.useMspEntitlementListQuery = jest.fn().mockImplementation(() => {
+      return { data: entitlement }
+    })
     services.useGetAlarmCountQuery = jest.fn().mockImplementation(() => {
       return {}
     })
@@ -149,6 +167,10 @@ describe('Layout', () => {
       return { data: {} }
     })
     mockServer.use(
+      rest.get(
+        FirmwareUrlsInfo.getFirmwareVersionIdList.url,
+        (req, res, ctx) => res(ctx.json(['6.2.1.103.1710']))
+      ),
       rest.post(
         CommonUrlsInfo.getAlarmsList.url,
         (req, res, ctx) => res(ctx.json({
@@ -163,12 +185,30 @@ describe('Layout', () => {
           totalCount: 0
         }))
       ),
-      rest.get(
-        MspUrlsInfo.getMspEntitlement.url,
-        (req, res, ctx) => res(ctx.json(entitlement))
+      rest.post(
+        FirmwareUrlsInfo.getSwitchVenueVersionList.url,
+        (req, res, ctx) => res(ctx.json({
+          upgradeVenueViewList: []
+        }))
       ),
       rest.get(
         'https://docs.cloud.ruckuswireless.com/ruckusone/userguide/mapfile/doc-mapper.json',
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        CommonUrlsInfo.getDashboardOverview.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        UserUrlsInfo.getAllUserSettings.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        UserUrlsInfo.getCloudVersion.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        FirmwareUrlsInfo.getScheduledFirmware.url.replace('?status=scheduled', ''),
         (req, res, ctx) => res(ctx.json({}))
       )
     )
@@ -264,4 +304,24 @@ describe('Layout', () => {
       search: ''
     })
   })
+  it('should render layout correctly for non-var', async () => {
+    services.useGetTenantDetailQuery = jest.fn().mockImplementation(() => {
+      return { data: tenantNonVarDetail }
+    })
+
+    render(
+      <Provider>
+        <Layout />
+      </Provider>, { route: { params } })
+
+    await waitFor(async () => {
+      expect(await screen.findByText('My Customers')).toBeVisible()
+    })
+    expect(screen.queryByRole('menuitem', { name: 'Var Customers' })).toBeNull()
+    expect(screen.queryByRole('menuitem', { name: 'Tech Partners' })).toBeVisible()
+    expect(screen.getByRole('menuitem', { name: 'Device Inventory' })).toBeVisible()
+    expect(screen.getByRole('menuitem', { name: 'Subscriptions' })).toBeVisible()
+    expect(screen.getByRole('menuitem', { name: 'Settings' })).toBeVisible()
+  })
+
 })

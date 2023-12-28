@@ -55,19 +55,26 @@ describe('ActivityButton', () => {
     </Provider>, { route: { params } })
     await userEvent.click(screen.getByRole('button'))
     const activity = await screen.findByText('123roam')
-    expect(activity).toBeVisible()
 
     await userEvent.click(activity)
-    let startTime = await screen.findByText('Start Time')
-    expect(startTime).toBeVisible()
+    expect(await screen.findByText('Start Time')).toBeVisible()
     await userEvent.click((await screen.findAllByRole('button', { name: 'Close' }))[1])
-    expect(startTime).not.toBeVisible()
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(screen.getAllByRole('dialog')[0].parentNode)
+      .toHaveClass('ant-drawer-content-wrapper-hidden')
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(screen.getAllByRole('dialog')[1].parentNode)
+      .toHaveClass('ant-drawer-content-wrapper-hidden')
 
     await userEvent.click(screen.getAllByRole('button')[0])
     await userEvent.click(activity)
-    startTime = await screen.findByText('Start Time')
-    expect(startTime).toBeVisible()
+    expect(await screen.findByText('Start Time')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Back' }))
-    expect(startTime).not.toBeVisible()
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(screen.getAllByRole('dialog')[0].parentNode)
+      .not.toHaveClass('ant-drawer-content-wrapper-hidden')
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(screen.getAllByRole('dialog')[1].parentNode)
+      .toHaveClass('ant-drawer-content-wrapper-hidden')
   })
 })

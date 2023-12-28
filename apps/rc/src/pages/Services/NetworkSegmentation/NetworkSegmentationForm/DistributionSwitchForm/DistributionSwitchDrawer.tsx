@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
 
-import { Col, Form, Input, InputNumber, Row, Select, Space, Transfer } from 'antd'
-import _                                                               from 'lodash'
-import { useIntl }                                                     from 'react-intl'
-import styled                                                          from 'styled-components'
+import { Col, Form, Input, InputNumber, Row, Select, Space } from 'antd'
+import _                                                     from 'lodash'
+import { useIntl }                                           from 'react-intl'
+import styled                                                from 'styled-components'
 
-import { Button, Drawer, Modal, Subtitle, Table, useStepFormContext } from '@acx-ui/components'
-import { useValidateDistributionSwitchInfoMutation }                  from '@acx-ui/rc/services'
+import { Button, Drawer, Modal, Subtitle, Table, Transfer, useStepFormContext } from '@acx-ui/components'
+import { useValidateDistributionSwitchInfoMutation }                            from '@acx-ui/rc/services'
 import {
   AccessSwitch,
   checkVlanMember,
@@ -135,17 +135,17 @@ export function DistributionSwitchDrawer (props: {
           <Input />
         </Form.Item>
         <Form.Item name='loopbackInterfaceId'
-          label={$t({ defaultMessage: 'Lookback Interface ID' })}
+          label={$t({ defaultMessage: 'Loopback Interface ID' })}
           rules={[{ required: true }, { type: 'number', max: 64, min: 1, transform: Number }]}>
           <Input />
         </Form.Item>
         <Form.Item name='loopbackInterfaceIp'
-          label={$t({ defaultMessage: 'Lookback Interface IP Address' })}
+          label={$t({ defaultMessage: 'Loopback Interface IP Address' })}
           rules={[{ required: true }, { validator: (_, value) => networkWifiIpRegExp(value) }]}>
           <Input />
         </Form.Item>
         <Form.Item name='loopbackInterfaceSubnetMask'
-          label={$t({ defaultMessage: 'Lookback Interface Subnet Mask' })}
+          label={$t({ defaultMessage: 'Loopback Interface Subnet Mask' })}
           rules={[{ required: true }, { validator: (_, value) => subnetMaskIpRegExp(value) }]}>
           <Input />
         </Form.Item>
@@ -262,7 +262,7 @@ function SelectAccessSwitchModal ({
         targetKeys={selectedAsIds}
         showSearch
         showSelectAll={false}
-        listStyle={{ width: 250, height: 300 }}
+        listStyle={{ width: 240, height: 300 }}
         titles={[
           $t({ defaultMessage: 'Available Access Switch' }),
           $t({ defaultMessage: 'Applied Profiles' })

@@ -4,7 +4,8 @@ import {
   getDateRangeFilter,
   resetRanges,
   getCurrentDate,
-  computeRangeFilter
+  computeRangeFilter,
+  getDatePickerValues
 } from './dateUtil'
 
 
@@ -28,29 +29,54 @@ describe('dateUtil', () => {
     })
   })
 
+  describe('getDatePickerValues', () => {
+    it('returns state if not custom', () => {
+      const range = DateRange.last24Hours
+      expect(getDatePickerValues({
+        range,
+        endDate: '2023-01-01T00:01:00+00:00',
+        startDate: '2022-12-31T00:01:00+00:00'
+      })).toMatchObject({
+        range,
+        endDate: '2022-01-01T00:01:00+00:00',
+        startDate: '2021-12-31T00:01:00+00:00'
+      })
+    })
+    it('returns dates if custom', () => {
+      expect(getDatePickerValues({
+        range: DateRange.custom,
+        endDate: '2023-01-01T00:01:00+00:00',
+        startDate: '2022-12-31T00:01:00+00:00'
+      })).toMatchObject({
+        range: DateRange.custom,
+        endDate: '2023-01-01T00:01:00+00:00',
+        startDate: '2022-12-31T00:01:00+00:00'
+      })
+    })
+  })
   describe('getDateRangeFilter', () => {
     it('should return correct range input', () => {
       const range = DateRange.last24Hours
       expect(getDateRangeFilter(range)).toMatchObject({
         range,
-        endDate: '2022-01-01T00:00:59+00:00',
-        startDate: '2021-12-31T00:00:00+00:00'
+        endDate: '2022-01-01T00:01:00+00:00',
+        startDate: '2021-12-31T00:01:00+00:00'
       })
 
       jest.mocked(Date.now).mockReturnValue(now + 5 * 60 * 1000)
 
       expect(getDateRangeFilter(range)).toMatchObject({
         range,
-        endDate: '2022-01-01T00:05:59+00:00',
-        startDate: '2021-12-31T00:05:00+00:00'
+        endDate: '2022-01-01T00:06:00+00:00',
+        startDate: '2021-12-31T00:06:00+00:00'
       })
     })
     it('corrects range input to default one', () => {
       const dateFilter = getDateRangeFilter('not valid' as DateRange)
       expect(dateFilter).toMatchObject({
         range: 'not valid',
-        endDate: '2022-01-01T00:00:59+00:00',
-        startDate: '2021-12-31T00:00:00+00:00'
+        endDate: '2022-01-01T00:01:00+00:00',
+        startDate: '2021-12-31T00:01:00+00:00'
       })
     })
   })
@@ -74,15 +100,15 @@ describe('dateUtil', () => {
     it('compute date filter', () => {
       expect(computeRangeFilter(filters)).toMatchObject({
         abc: 'def',
-        startDate: '2021-12-31T00:00:00Z',
-        endDate: '2022-01-01T00:00:59Z'
+        startDate: '2021-12-31T00:01:00Z',
+        endDate: '2022-01-01T00:01:00Z'
       })
     })
     it('allow customize field name', () => {
       expect(computeRangeFilter(filters, ['fromTime', 'toTime'])).toMatchObject({
         abc: 'def',
-        fromTime: '2021-12-31T00:00:00Z',
-        toTime: '2022-01-01T00:00:59Z'
+        fromTime: '2021-12-31T00:01:00Z',
+        toTime: '2022-01-01T00:01:00Z'
       })
     })
   })

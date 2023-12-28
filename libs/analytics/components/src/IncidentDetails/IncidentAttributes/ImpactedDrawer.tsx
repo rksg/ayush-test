@@ -16,7 +16,8 @@ import {
   useImpactedClientsQuery
 } from './services'
 
-export interface ImpactedDrawerProps extends Pick<Incident, 'id'> {
+export interface ImpactedDrawerProps extends
+  Pick<Incident, 'id' | 'impactedStart' | 'impactedEnd'> {
   impactedCount: number
   visible: boolean
   onClose: () => void
@@ -38,6 +39,7 @@ export interface AggregatedImpactedClient {
   ssid: string[]
   hostname: string[]
   username: string[]
+  osType: string[]
 }
 
 export function column <RecordType> (
@@ -79,7 +81,9 @@ export const ImpactedClientsDrawer: React.FC<ImpactedClientsDrawerProps> = (prop
   const queryResults = useImpactedClientsQuery({
     id: props.id,
     search,
-    n: 100
+    n: 100,
+    impactedStart: props.impactedStart,
+    impactedEnd: props.impactedEnd
   }, { selectFromResult: (states) => ({
     ...states,
     data: states.data && aggregateDataBy<ImpactedClient>('mac')(states.data)
@@ -97,7 +101,8 @@ export const ImpactedClientsDrawer: React.FC<ImpactedClientsDrawerProps> = (prop
       render: (_, { mac, hostname }) =>
         <TenantLink
           to={`/users/wifi/clients/${mac}/details/troubleshooting?period=${period}`}
-        >{hostname}</TenantLink>
+          title={hostname.join(', ')}
+        >{`${hostname[0]} ${hostname.length > 1 ? `(${hostname.length})` : ''}`}</TenantLink>
     }),
     column('mac', { title: $t({ defaultMessage: 'MAC Address' }) }),
     column('username', {
@@ -105,12 +110,13 @@ export const ImpactedClientsDrawer: React.FC<ImpactedClientsDrawerProps> = (prop
       tooltip: tooltips.username
     }),
     column('manufacturer', { title: $t({ defaultMessage: 'Manufacturer' }) }),
+    column('osType', { title: $t({ defaultMessage: 'OS Type' }) }),
     column('ssid', { title: $t({ defaultMessage: 'Network' }) })
   ] as TableColumn<AggregatedImpactedClient>[], [$t])
 
   // TODO: use search from table component
   return <Drawer
-    width={'650px'}
+    width={'800px'}
     title={$t(
       { defaultMessage: '{count} Impacted {count, plural, one {Client} other {Clients}}' },
       { count: props.impactedCount }
@@ -134,7 +140,9 @@ export const ImpactedAPsDrawer: React.FC<ImpactedDrawerProps> = (props) => {
   const queryResults = useImpactedAPsQuery({
     id: props.id,
     search,
-    n: 100
+    n: 100,
+    impactedStart: props.impactedStart,
+    impactedEnd: props.impactedEnd
   },{ selectFromResult: (states) => ({
     ...states,
     data: states.data && aggregateDataBy<ImpactedAP>('mac')(states.data)
@@ -144,7 +152,7 @@ export const ImpactedAPsDrawer: React.FC<ImpactedDrawerProps> = (props) => {
     column('name', {
       title: $t({ defaultMessage: 'AP Name' }),
       render: (_, { name, mac }) =>
-        <TenantLink to={`devices/wifi/${mac}/details/overview`}>{name}</TenantLink>
+        <TenantLink to={`devices/wifi/${mac}/details/ai`}>{name}</TenantLink>
     }),
     column('model', { title: $t({ defaultMessage: 'Model' }) }),
     column('mac', { title: $t({ defaultMessage: 'MAC Address' }) }),

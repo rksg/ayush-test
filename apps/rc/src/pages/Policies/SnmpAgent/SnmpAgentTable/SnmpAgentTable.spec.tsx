@@ -1,8 +1,8 @@
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
-import { Path }  from 'react-router-dom'
+import { waitForElementToBeRemoved } from '@testing-library/react'
+import userEvent                     from '@testing-library/user-event'
+import { rest }                      from 'msw'
+import { Path }                      from 'react-router-dom'
 
-import { useIsSplitOn }                                                from '@acx-ui/feature-toggle'
 import { ApSnmpUrls, getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
 import { Provider }                                                    from '@acx-ui/store'
 import { mockServer, render, screen, within }                          from '@acx-ui/test-utils'
@@ -75,23 +75,7 @@ describe('SnmpAgentTable', () => {
     expect(await screen.findByRole('row', { name: new RegExp(targetName) })).toBeVisible()
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <SnmpAgentTable />
-      </Provider>, {
-        route: { params, path: tablePath }
-      }
-    )
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'Policies & Profiles'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <SnmpAgentTable />
@@ -125,6 +109,7 @@ describe('SnmpAgentTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     let target = mockTableResult.data[0]
     let row = await screen.findByRole('row', { name: new RegExp(target.name) })
@@ -136,6 +121,7 @@ describe('SnmpAgentTable', () => {
     row = await screen.findByRole('row', { name: new RegExp(target.name) })
     await userEvent.click(within(row).getByRole('radio'))
     await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+
     /*
     expect(await screen.findByText('Delete a SNMP agent that is currently in use?')).toBeVisible()
 
@@ -151,7 +137,6 @@ describe('SnmpAgentTable', () => {
 
     await userEvent.click(deleteBtns[1])
     */
-
   })
 
   it('should navigate to the Edit view', async () => {
@@ -169,5 +154,6 @@ describe('SnmpAgentTable', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /Edit/ }))
 
+    expect(screen.queryByText('Edit')).toBeNull()
   })
 })

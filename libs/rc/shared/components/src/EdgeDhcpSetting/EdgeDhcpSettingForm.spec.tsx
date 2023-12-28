@@ -31,7 +31,7 @@ describe('EdgeDhcpSettingForm', () => {
     expect(await screen.findByTestId('steps-form')).toBeVisible()
     expect(await screen.findByText('Service Name')).toBeVisible()
     expect(await screen.findByRole('textbox', { name: 'Primary DNS Server' })).toBeVisible()
-    await userEvent.click(await screen.findByRole('switch', { name: 'DHCP Relay:' }))
+    await userEvent.click(await screen.findByRole('switch', { name: 'DHCP Relay' }))
     expect(await screen.findByRole('textbox', { name: 'FQDN Name or IP Address' })).toBeVisible()
   })
 
@@ -82,12 +82,13 @@ describe('EdgeDhcpSettingForm', () => {
       </StepsForm>
     )
 
+    expect(await screen.findByRole('switch', { name: 'DHCP Relay' })).toBeChecked()
     const pools = await screen.findAllByRole('row', { name: /PoolTest/i })
     expect(pools.length).toBe(1)
-    expect(screen.getByRole('switch', { name: 'DHCP Relay:' })).toBeChecked()
+
     // change relay from ON to OFF
-    await userEvent.click(screen.getByRole('switch', { name: 'DHCP Relay:' }))
-    expect(screen.getByRole('switch', { name: 'DHCP Relay:' })).not.toBeChecked()
+    await userEvent.click(screen.getByRole('switch', { name: 'DHCP Relay' }))
+    expect(screen.getByRole('switch', { name: 'DHCP Relay' })).not.toBeChecked()
     expect(await screen.findByRole('radio', { name: 'Infinite' })).toBeChecked()
 
     // change lease time type
@@ -122,6 +123,7 @@ describe('EdgeDhcpSettingForm', () => {
       leaseTime: 24,
       leaseTimeType: 'Limited',
       leaseTimeUnit: 'HOURS',
+      usedForNSG: true,
       dhcpPools: [
         {
           id: '1',
@@ -157,14 +159,14 @@ describe('EdgeDhcpSettingForm', () => {
 
     const pools = await screen.findAllByRole('row', { name: /RelayOffPoolTest/i })
     expect(pools.length).toBe(1)
-    expect(screen.getByRole('switch', { name: 'DHCP Relay:' })).not.toBeChecked()
+    expect(screen.getByRole('switch', { name: 'DHCP Relay' })).not.toBeChecked()
 
     // change lease time type into infinite
     await userEvent.click(await screen.findByText( 'Infinite' ))
 
     // change relay from OFF to ON
-    await userEvent.click(screen.getByRole('switch', { name: 'DHCP Relay:' }))
-    expect(screen.getByRole('switch', { name: 'DHCP Relay:' })).toBeChecked()
+    await userEvent.click(screen.getByRole('switch', { name: 'DHCP Relay' }))
+    expect(screen.getByRole('switch', { name: 'DHCP Relay' })).toBeChecked()
 
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
     await waitFor(() => expect(mockedUpdateReq).toBeCalledWith({
@@ -178,6 +180,7 @@ describe('EdgeDhcpSettingForm', () => {
       leaseTime: 25,
       leaseTimeType: 'Infinite',
       leaseTimeUnit: 'HOURS',
+      usedForNSG: true,
       dhcpPools: [
         {
           id: '1',
@@ -213,7 +216,7 @@ describe('EdgeDhcpSettingForm', () => {
 
     const pools = await screen.findAllByRole('row', { name: /PoolTest/i })
     expect(pools.length).toBe(1)
-    expect(screen.getByRole('switch', { name: 'DHCP Relay:' })).toBeChecked()
+    expect(screen.getByRole('switch', { name: 'DHCP Relay' })).toBeChecked()
 
     act(() => {
       formRef.current.setFieldValue('dhcpPools', [{

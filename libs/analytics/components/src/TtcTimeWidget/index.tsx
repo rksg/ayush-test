@@ -1,8 +1,8 @@
 import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
 
-import { AnalyticsFilter }          from '@acx-ui/analytics/utils'
 import { GridRow, GridCol, Loader } from '@acx-ui/components'
+import type { AnalyticsFilter }     from '@acx-ui/utils'
 
 import { useAverageTtcQuery } from './services'
 import * as UI                from './styledComponents'

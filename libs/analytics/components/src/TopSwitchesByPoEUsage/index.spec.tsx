@@ -1,9 +1,9 @@
-import { AnalyticsFilter }                                 from '@acx-ui/analytics/utils'
 import { EventParams }                                     from '@acx-ui/components'
 import { BrowserRouter, Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { dataApiURL, Provider, store }                     from '@acx-ui/store'
 import { render, renderHook, screen }                      from '@acx-ui/test-utils'
 import { mockGraphqlQuery }                                from '@acx-ui/test-utils'
+import type { AnalyticsFilter }                            from '@acx-ui/utils'
 import { DateRange }                                       from '@acx-ui/utils'
 
 import { topSwitchesByPoEUsageResponse } from './__tests__/fixtures'

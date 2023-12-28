@@ -36,4 +36,20 @@ describe('PhoneInput', () => {
     )
     fireEvent.change(await screen.findByLabelText('Test'), { target: { value: '+12015550123' } })
   })
+
+  it('should render default country code correctly', async () => {
+    render(
+      <Provider>
+        <Form>
+          <Form.Item
+            name='test'
+            label='Test'
+          >
+            <PhoneInput name='test' callback={jest.fn()} onTop={true} defaultCountryCode={'tw'} />
+          </Form.Item>
+        </Form>
+      </Provider>
+    )
+    expect((await screen.findByLabelText('Test')).getAttribute('placeholder')).toMatch(/\+886/i)
+  })
 })

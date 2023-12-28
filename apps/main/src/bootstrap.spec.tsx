@@ -27,15 +27,39 @@ jest.mock('@acx-ui/user', () => ({
 }))
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
+  renderPendo: jest.fn(),
   UserProfileProvider: (props: { children: React.ReactNode }) => <div
     {...props}
     data-testid='user-profile-provider'
   />,
   useLocaleContext: () => ({ messages: { 'en-US': { lang: 'Language' } } })
 }))
+jest.mock('./BrowserDialog/BrowserDialog', () => ({
+  detectBrowserLang: jest.fn(),
+  isNonProdEnv: jest.fn(),
+  showBrowserLangDialog: jest.fn(),
+  updateUserProfile: jest.fn()
+}))
 
+const renderPendo = jest.mocked(require('@acx-ui/utils').renderPendo)
 
 describe('bootstrap.init', () => {
+  const data = {
+    externalId: '0032h00000gXuBNAA0',
+    firstName: 'firstName1',
+    lastName: 'lastName1',
+    role: 'PRIME_ADMIN',
+    pver: '1.0.0',
+    var: true,
+    varTenantId: '9c2718296e134c628c0c8949b1f87f3b',
+    support: true,
+    dogfood: true,
+    region: 'us',
+    username: 'username1',
+    tenantId: '9c2718296e134c628c0c8949b1f87f3b',
+    email: 'email1',
+    companyName: 'companyName1'
+  }
   beforeEach(() => {
     mockServer.use(
       rest.get(
@@ -46,13 +70,17 @@ describe('bootstrap.init', () => {
       ),
       rest.get(
         UserUrlsInfo.getUserProfile.url,
-        (_req, res, ctx) => res(ctx.json({ data: {
+        (_req, res, ctx) => res(ctx.json({
+          ...data,
           preferredLanguage: 'en-US'
-        } }))
+        }))
       )
     )
   })
-  it('renders correctly', async () => {
+  afterEach(() => {
+    mockServer.resetHandlers()
+  })
+  it('calls pendo and renders', async () => {
     const rootEl = document.createElement('div')
     rootEl.id = 'root'
     document.body.appendChild(rootEl)
@@ -60,5 +88,28 @@ describe('bootstrap.init', () => {
     await act(() => bootstrap.init(root))
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(screen.getByTestId('all-routes')).toBeVisible()
+    expect(renderPendo).toHaveBeenCalled()
+    expect(await renderPendo.mock.calls[0][0]()).toEqual({
+      account: {
+        id: '9c2718296e134c628c0c8949b1f87f3b',
+        name: 'companyName1',
+        productName: 'RuckusOne',
+        sfdcId: '0032h00000gXuBNAA0'
+      },
+      visitor: {
+        delegated: false,
+        dogfood: true,
+        email: 'email1',
+        full_name: 'firstName1 lastName1',
+        id: '0032h00000gXuBNAA0',
+        region: 'us',
+        role: 'PRIME_ADMIN',
+        support: true,
+        username: 'username1',
+        var: true,
+        varTenantId: '9c2718296e134c628c0c8949b1f87f3b',
+        version: '1.0.0'
+      }
+    })
   })
 })

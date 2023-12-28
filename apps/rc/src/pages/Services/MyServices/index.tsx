@@ -1,7 +1,8 @@
 import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, RadioCardCategory } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }  from '@acx-ui/feature-toggle'
+import { useDpskNewConfigFlowParams }                              from '@acx-ui/rc/components'
 import {
   useGetDHCPProfileListViewModelQuery,
   useGetDhcpStatsQuery,
@@ -12,7 +13,8 @@ import {
   useGetEnhancedWifiCallingServiceListQuery,
   useWebAuthTemplateListQuery,
   useGetResidentPortalListQuery,
-  useGetEdgeFirewallViewDataListQuery
+  useGetEdgeFirewallViewDataListQuery,
+  useGetEdgeSdLanViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
   getSelectServiceRoutePath,
@@ -32,19 +34,20 @@ export default function MyServices () {
   const params = useParams()
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
   const services = [
     {
       type: ServiceType.MDNS_PROXY,
-      category: RadioCardCategory.WIFI,
+      categories: [RadioCardCategory.WIFI],
       tableQuery: useGetEnhancedMdnsProxyListQuery({ params, payload: defaultPayload })
     },
     {
       type: ServiceType.DHCP,
-      category: RadioCardCategory.WIFI,
+      categories: [RadioCardCategory.WIFI],
       tableQuery: useGetDHCPProfileListViewModelQuery({ params, payload: defaultPayload })
     },
     {
@@ -68,6 +71,16 @@ export default function MyServices () {
       disabled: !isEdgeEnabled || !isEdgeReady
     },
     {
+      type: ServiceType.EDGE_SD_LAN,
+      categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+      tableQuery: useGetEdgeSdLanViewDataListQuery({
+        params, payload: { ...defaultPayload }
+      },{
+        skip: !isEdgeEnabled || !isEdgeReady || !isEdgeSdLanReady
+      }),
+      disabled: !isEdgeEnabled || !isEdgeReady || !isEdgeSdLanReady
+    },
+    {
       type: ServiceType.EDGE_FIREWALL,
       categories: [RadioCardCategory.EDGE],
       tableQuery: useGetEdgeFirewallViewDataListQuery({
@@ -80,7 +93,7 @@ export default function MyServices () {
     {
       type: ServiceType.DPSK,
       categories: [RadioCardCategory.WIFI],
-      tableQuery: useGetDpskListQuery({})
+      tableQuery: useGetDpskListQuery({ params: dpskNewConfigFlowParams })
     },
     {
       type: ServiceType.WIFI_CALLING,
@@ -117,9 +130,7 @@ export default function MyServices () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'My Services' })}
-        breadcrumb={isNavbarEnhanced ? [
-          { text: $t({ defaultMessage: 'Network Control' }) }
-        ]: undefined}
+        breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
         extra={filterByAccess([
           <TenantLink to={getSelectServiceRoutePath(true)}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Service' })}</Button>

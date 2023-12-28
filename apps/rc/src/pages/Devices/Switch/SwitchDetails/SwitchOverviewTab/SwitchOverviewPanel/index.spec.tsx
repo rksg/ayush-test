@@ -1,10 +1,10 @@
-import { AnalyticsFilter } from '@acx-ui/analytics/utils'
-import { Provider }        from '@acx-ui/store'
+import { Provider } from '@acx-ui/store'
 import {
   render,
   screen
 } from '@acx-ui/test-utils'
-import { DateRange } from '@acx-ui/utils'
+import type { AnalyticsFilter } from '@acx-ui/utils'
+import { DateRange }            from '@acx-ui/utils'
 
 import { stackMembersData } from './__tests__/fixtures'
 

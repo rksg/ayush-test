@@ -3,12 +3,12 @@ import { gql } from 'graphql-request'
 import {
   getSelectedNodePath,
   getFilterPayload,
-  AnalyticsFilter,
   calculateGranularity,
   kpiConfig
 } from '@acx-ui/analytics/utils'
-import { dataApi }     from '@acx-ui/store'
-import { NodesFilter } from '@acx-ui/utils'
+import { dataApi }              from '@acx-ui/store'
+import { NodesFilter }          from '@acx-ui/utils'
+import type { AnalyticsFilter } from '@acx-ui/utils'
 
 export interface KpiThresholdType {
   timeToConnect: number
@@ -42,7 +42,7 @@ export type KpiPayload = AnalyticsFilter & {
   kpi: string;
   threshold?: string;
   granularity?: string;
-} & { apCount?: number }
+}
 
 type ConfigCode = keyof typeof kpiConfig
 
@@ -76,10 +76,10 @@ const getKPIMetric = (kpi: string, threshold?: string) : string => {
     : apiMetric
 }
 
-const getGranularity = (start: string, end: string, kpi: string, apCount: number) => {
+const getGranularity = (start: string, end: string, kpi: string) => {
   const config = kpiConfig[kpi as keyof typeof kpiConfig]
   const { timeseries: { minGranularity } } = config
-  return calculateGranularity(start, end, minGranularity, apCount)
+  return calculateGranularity(start, end, minGranularity)
 }
 const getHistogramQuery = (kpi: string) => {
   const config = kpiConfig[kpi as keyof typeof kpiConfig]
@@ -111,17 +111,10 @@ interface ThresholdsApiResponse {
   switchPoeUtilizationThreshold?: ThresholdData
   clusterLatencyThreshold?: ThresholdData
 }
-interface APCountForNode {
-  apCount?: number
-}
-interface APCountResponse <APCountForNode> {
-  network: {
-    node: APCountForNode
-  }
-}
+
 type KpisHavingThreshold = keyof KpiThresholdType
 
-export type KpiThresholsPayload = AnalyticsFilter & { kpis?: KpisHavingThreshold[] }
+export type KpiThresholdPayload = AnalyticsFilter & { kpis?: KpisHavingThreshold[] }
 
 const getHealthFilter = (payload: Omit<KpiPayload, 'range'>) => { // we do not want to filter switches to always display poe info
   const { filter: { ssids, networkNodes } } = getFilterPayload(payload)
@@ -152,7 +145,7 @@ export const healthApi = dataApi.injectEndpoints({
           start: payload.startDate,
           end: payload.endDate,
           granularity: payload.granularity ||
-          getGranularity(payload.startDate, payload.endDate, payload.kpi, payload.apCount ?? 0),
+          getGranularity(payload.startDate, payload.endDate, payload.kpi),
           ...getHealthFilter(payload)
         }
       }),
@@ -179,7 +172,7 @@ export const healthApi = dataApi.injectEndpoints({
     }),
     getKpiThresholds: build.query<
       ThresholdsApiResponse,
-      KpiThresholsPayload
+      KpiThresholdPayload
     >({
       query: (payload) => {
         let kpis:KpisHavingThreshold[] = payload.kpis && payload.kpis.length ?
@@ -239,27 +232,6 @@ export const healthApi = dataApi.injectEndpoints({
         }
       }
       )
-    }),
-    apCountForNode: build.query<APCountResponse<APCountForNode>, Omit<KpiPayload, 'kpi'>>({
-      query: (payload) => ({
-        document: gql`
-        query APCountForNode(
-          $path: [HierarchyNodeInput], $startDate: DateTime,
-          $endDate: DateTime, $filter: FilterInput
-        ){
-          network(start: $startDate, end: $endDate, filter: $filter) {
-            node: hierarchyNode(path:$path) {
-              apCount
-            }
-          }
-        }
-      `,
-        variables: {
-          ...payload,
-          ...getFilterPayload(payload)
-        }
-      })
     })
   })
 })
-export const { useApCountForNodeQuery } = healthApi

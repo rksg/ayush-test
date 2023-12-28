@@ -3,24 +3,18 @@ import {
   ServiceStatus,
   ServiceType,
   ApDeviceStatusEnum,
-  GuestNetworkTypeEnum,
-  WlanSecurityEnum,
-  NetworkTypeEnum,
   QosPriorityEnum
 } from '../constants'
-import { EdgeStatusSeverityEnum }        from '../models'
-import { AAAWlanAdvancedCustomization }  from '../models/AAAWlanAdvancedCustomization'
-import { DpskWlanAdvancedCustomization } from '../models/DpskWlanAdvancedCustomization'
-import { NetworkVenue }                  from '../models/NetworkVenue'
-import { OpenWlanAdvancedCustomization } from '../models/OpenWlanAdvancedCustomization'
-import { PskWlanAdvancedCustomization }  from '../models/PskWlanAdvancedCustomization'
-import { TrustedCAChain }                from '../models/TrustedCAChain'
+import { EdgeStatusSeverityEnum } from '../models'
+import { NetworkVenue }           from '../models/NetworkVenue'
+import { TrustedCAChain }         from '../models/TrustedCAChain'
 
 import { ApModel }                     from './ap'
 import { EdgeStatusSeverityStatistic } from './edge'
 import { EPDG }                        from './services'
 import { SwitchStatusEnum }            from './switch'
 
+export * from './common'
 export * from './ap'
 export * from './venue'
 export * from './network'
@@ -45,7 +39,9 @@ export * from './googleMaps'
 export * from './applicationPolicy'
 export interface CommonResult {
   requestId: string
-  response?:{}
+  response?: {
+    id?: string
+  }
 }
 
 export interface CommonErrorsResult<T> {
@@ -56,42 +52,9 @@ export interface CommonErrorsResult<T> {
   status: number;
 }
 
-export interface Network {
-  id: string
-  name: string
-  description: string
-  nwSubType: string
-  ssid: string
-  vlan: number
-  aps: number
-  clients: number
-  venues: { count: number, names: string[], ids: string[] }
-  captiveType: GuestNetworkTypeEnum
-  deepNetwork?: NetworkDetail
-  vlanPool?: { name: string }
-  activated: { isActivated: boolean, isDisabled?: boolean, errors?: string[] }
-  allApDisabled?: boolean
-  isOweMaster?: boolean
-}
-
-export interface NetworkDetail {
-  type: NetworkTypeEnum
-  tenantId: string
-  name: string
-  venues: NetworkVenue[]
-  id: string
-  wlan: {
-    wlanSecurity: WlanSecurityEnum,
-    ssid?: string;
-    vlanId?: number;
-    enable?: boolean;
-    advancedCustomization?:
-      OpenWlanAdvancedCustomization |
-      AAAWlanAdvancedCustomization |
-      DpskWlanAdvancedCustomization |
-      PskWlanAdvancedCustomization;
-  }
-  isOweMaster?: boolean
+export interface KeyValue<K, V> {
+  key: K;
+  value: V;
 }
 
 export interface Venue {
@@ -102,6 +65,7 @@ export interface Venue {
   status: string
   city: string
   country: string
+  countryCode?: string
   latitude: string
   longitude: string
   mesh: { enabled: boolean }
@@ -151,6 +115,130 @@ export interface AlarmMeta {
   switchName: string
   isSwitchExists: boolean
   edgeName: string
+}
+
+export interface RWG {
+  id: string
+  name: string
+  status: string
+  venueId: string
+  venueName: string
+  loginUrl: string
+  username: string
+  password: string
+  rwgId: string
+  tenantId: string
+}
+
+export interface GatewayAlarms {
+  total: number
+}
+export interface MinMaxValue {
+  max: number,
+  value: number,
+  min: number
+}
+
+export interface GatewayDashboard {
+  cpuPercentage: MinMaxValue,
+  memoryInMb: MinMaxValue,
+  temperatureInCelsius: MinMaxValue,
+  storageInGb: MinMaxValue
+}
+
+export interface GatewayTopProcess {
+  processName: string,
+  cpu: string,
+  memory: string,
+  time: string
+}
+
+export interface GatewayFileSystem {
+  partition: string,
+  size: number,
+  used: number,
+  free: number,
+  capacity: string
+}
+export interface GatewayDetailsGeneral {
+  venueName: string,
+  venueId: string,
+  hostname: string,
+  username: string,
+  password: string,
+  uptimeInSeconds: string,
+  bootedAt: string,
+  temperature: string,
+  created: string,
+  updated: string
+}
+
+export interface GatewayDetailsHardware {
+  baseboardManufacturer: string,
+  baseboardProductName: string,
+  baseboardSerialNumber: string,
+  baseboardVersion: string,
+  biosVendor: string,
+  biosVersion: string,
+  biosReleaseDate: string,
+  chassisManufacturer: string,
+  chassisSerialNumber: string,
+  chassisType: string,
+  chassisVersion: string,
+  processorFamily: string,
+  processorFrequency: string,
+  systemManufacturer: string,
+  systemProductName: string,
+  systemSerialNumber: string,
+  systemUuid: string,
+  systemVersion: string,
+  systemFamily: string
+}
+
+export interface GatewayDetailsOs {
+  architecture: string,
+  branch: string,
+  kernel: string,
+  name: string,
+  release: string,
+  version: string
+}
+
+export interface GatewayDetailsDiskMemory {
+  diskDevice: string,
+  diskTotalSpaceInGb: number,
+  memoryTotalSpaceInMb: number,
+  memoryUsedSpaceInMb: number,
+  memoryFreeSpaceInMb: number,
+  processorCount: number
+}
+
+export interface GatewayDetails {
+  gatewayDetailsGeneral: GatewayDetailsGeneral
+  gatewayDetailsHardware: GatewayDetailsHardware
+  gatewayDetailsOs: GatewayDetailsOs
+  gatewayDetailsDiskMemory: GatewayDetailsDiskMemory
+}
+
+export interface DNSRecord {
+    id: string,
+    name: string,
+    host: string,
+    ttl: number,
+    dataType: string,
+    data: string
+}
+
+export enum DNSDataType {
+  A = 'A',
+  AAAA = 'AAAA',
+  CNAME = 'CNAME',
+  LOC = 'LOC',
+  MX = 'MX',
+  NS = 'NS',
+  PTR = 'PTR',
+  SRV = 'SRV',
+  TXT = 'TXT'
 }
 
 export type Alarm = AlarmBase & AlarmMeta
@@ -207,6 +295,7 @@ export interface NetworkDetailHeader {
   network: {
     name: string
     id: string
+    clients: number
   }
 }
 
@@ -485,8 +574,17 @@ export interface SwitchClient {
   venueId: string
   venueName: string
   isRuckusAP: boolean
+  vni?: string
   dhcpClientOsVendorName?: string
   dhcpClientDeviceTypeName?: string
   dhcpClientModelName?: string
   dhcpClientHostName?: string
+}
+
+export interface QosMapRule {
+  enabled: boolean
+  priority: number
+  dscpLow: number
+  dscpHigh: number
+  dscpExceptionValues: number[]
 }

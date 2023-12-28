@@ -1,9 +1,10 @@
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import { waitForElementToBeRemoved } from '@testing-library/react'
+import userEvent                     from '@testing-library/user-event'
+import { rest }                      from 'msw'
 
-import { useIsSplitOn }           from '@acx-ui/feature-toggle'
 import {
   EdgeDhcpUrls,
+  EdgeGeneralFixtures,
   EdgeUrlsInfo,
   getServiceDetailsLink,
   getServiceRoutePath,
@@ -12,11 +13,11 @@ import {
 import { Provider }                                    from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import { mockEdgeList }      from '../../../../Devices/Edge/__tests__/fixtures'
 import { mockDhcpStatsData } from '../__tests__/fixtures'
 
 import DHCPTable from '.'
 
+const { mockEdgeList } = EdgeGeneralFixtures
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -65,32 +66,19 @@ describe('EdgeDhcpTable', () => {
       </Provider>, {
         route: { params, path: tablePath }
       })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const row = await screen.findAllByRole('row', { name: /TestDHCP-/i })
     expect(row.length).toBe(4)
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <DHCPTable />
       </Provider>, {
         route: { params, path: tablePath }
       })
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'My Services'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    render(
-      <Provider>
-        <DHCPTable />
-      </Provider>, {
-        route: { params, path: tablePath }
-      })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'My Services'
@@ -104,6 +92,7 @@ describe('EdgeDhcpTable', () => {
       </Provider>, {
         route: { params, path: tablePath }
       })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const edgeDhcpServiceDetailLink = await screen.findByRole('link',
       { name: 'TestDHCP-1' }) as HTMLAnchorElement
     expect(edgeDhcpServiceDetailLink.href)
@@ -122,6 +111,7 @@ describe('EdgeDhcpTable', () => {
       </Provider>, {
         route: { params, path: tablePath }
       })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const row = await screen.findByRole('row', { name: /TestDHCP-1/i })
     await user.click(within(row).getByRole('radio'))
     await user.click(screen.getByRole('button', { name: 'Edit' }))
@@ -158,6 +148,7 @@ describe('EdgeDhcpTable', () => {
       </Provider>, {
         route: { params, path: tablePath }
       })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const row = await screen.findByRole('row', { name: /TestDHCP-1/i })
     await user.click(within(row).getByRole('radio'))
     await user.click(screen.getByRole('button', { name: 'Delete' }))
@@ -194,6 +185,7 @@ describe('EdgeDhcpTable', () => {
       </Provider>, {
         route: { params, path: tablePath }
       })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const row = await screen.findByRole('row', { name: /DHCP-1/i })
     await user.click(within(row).getByRole('radio'))
     await user.click(screen.getByRole('button', { name: 'Update Now' }))
@@ -231,6 +223,7 @@ describe('EdgeDhcpTable', () => {
       </Provider>, {
         route: { params, path: tablePath }
       })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const row = await screen.findByRole('row', { name: /TestDHCP-1/i })
     expect(await within(row).findByText('Yes')).toBeValid()
     const row1 = await screen.findByRole('row', { name: /TestDHCP-2/i })

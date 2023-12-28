@@ -73,7 +73,28 @@ const list = {
     {
       assignedMspEcList: [],
       creationDate: '1659589676050',
-      entitlements: [],
+      entitlements: [
+        {
+          consumed: '0',
+          entitlementDeviceType: 'APSW',
+          expirationDate: '2022-11-02T06:59:59Z',
+          expirationDateTs: '1667372399000',
+          quantity: '5',
+          tenantId: '701fe9df5f6b4c17928a29851c07cc06',
+          toBeRemovedQuantity: 0,
+          type: 'entitlement'
+        },
+        {
+          consumed: '0',
+          entitlementDeviceType: 'APSW',
+          expirationDate: '2022-11-02T06:59:59Z',
+          expirationDateTs: '1667372399000',
+          quantity: '0',
+          tenantId: '701fe9df5f6b4c17928a29851c07cc06',
+          toBeRemovedQuantity: 0,
+          type: 'entitlement'
+        }
+      ],
       id: '701fe9df5f6b4c17928a29851c07cc06',
       integrator: '675dc01dc28846c383219b00d2f28f48',
       mspAdminCount: 1,
@@ -85,9 +106,53 @@ const list = {
       streetAddress: '675 Tasman Dr, Sunnyvale, CA 94089, USA',
       tenantType: 'MSP_EC',
       wifiLicenses: 0
+    },
+    {
+      assignedMspEcList: [],
+      creationDate: '1659589676050',
+      entitlements: [
+        {
+          consumed: '0',
+          entitlementDeviceType: 'APSW',
+          expirationDate: '2022-11-02T06:59:59Z',
+          expirationDateTs: '1667372399000',
+          quantity: '0',
+          tenantId: '701fe9df5f6b4c17928a29851c07cc07',
+          toBeRemovedQuantity: 0,
+          type: 'entitlement'
+        }
+      ],
+      id: '701fe9df5f6b4c17928a29851c07cc07',
+      integrator: '675dc01dc28846c383219b00d2f28f48',
+      mspAdminCount: 1,
+      mspIntegratorAdminCount: 1,
+      mspAdmins: ['aefb12fab1194bf6ba061ddcec14230d'],
+      mspEcAdminCount: 1,
+      name: 'ec 444',
+      status: 'Inactive',
+      streetAddress: '675 Tasman Dr, Sunnyvale, CA 94089, USA',
+      tenantType: 'MSP_EC',
+      wifiLicenses: 0
     }
   ]
 }
+const alarmList = {
+  mspEcAlarmCountList: [
+    {
+      tenantId: '701fe9df5f6b4c17928a29851c07cc04',
+      alarmCount: 0
+    },
+    {
+      tenantId: '701fe9df5f6b4c17928a29851c07cc05',
+      alarmCount: 0
+    },
+    {
+      tenantId: '701fe9df5f6b4c17928a29851c07cc06',
+      alarmCount: 0
+    }
+  ]
+}
+
 const userProfile = {
   adminId: '9b85c591260542c188f6a12c62bb3912',
   companyName: 'msp.eleu1658',
@@ -148,6 +213,7 @@ describe('MspCustomers', () => {
     jest.spyOn(services, 'useDeleteMspEcMutation')
     jest.spyOn(services, 'useDeactivateMspEcMutation')
     jest.spyOn(services, 'useReactivateMspEcMutation')
+    jest.spyOn(services, 'useGetMspEcAlarmListQuery')
     mockServer.use(
       rest.post(
         MspUrlsInfo.getMspCustomersList.url,
@@ -172,11 +238,16 @@ describe('MspCustomers', () => {
       rest.post(
         MspUrlsInfo.getIntegratorCustomersList.url,
         (req, res, ctx) => res(ctx.json({ ...list }))
+      ),
+      rest.post(
+        MspUrlsInfo.getMspEcAlarmList.url,
+        (req, res, ctx) => res(ctx.json(alarmList))
       )
     )
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
   afterEach(() => {
     jest.clearAllMocks()
@@ -192,7 +263,6 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
     expect(screen.getByText('MSP Customers')).toBeVisible()
-    expect(screen.getByText('Manage My Account')).toBeVisible()
     expect(screen.getByText('Add Customer')).toBeVisible()
 
     // eslint-disable-next-line testing-library/no-node-access
@@ -205,21 +275,7 @@ describe('MspCustomers', () => {
       expect(within(rows[index]).getByText(item.name)).toBeVisible()
     })
   })
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    user.useUserProfileContext = jest.fn().mockImplementation(() => {
-      return { data: userProfile }
-    })
-    render(
-      <Provider>
-        <MspCustomers />
-      </Provider>, {
-        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
-      })
-    expect(screen.queryByText('My Customers')).toBeNull()
-  })
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
@@ -230,6 +286,51 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
     expect(await screen.findByText('My Customers')).toBeVisible()
+  })
+  it('should render correctly when feature flag turned on', async () => {
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+    expect(await screen.findByText('My Customers')).toBeVisible()
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
+    })
+    expect(screen.getByText('Installed Devices')).toBeVisible()
+    // expect(screen.getByText('Device Subscriptions Utilization')).toBeVisible()
+
+    expect(screen.queryByText('Wi-Fi Licenses')).toBeNull()
+  })
+  it('should render correctly when feature flag turned off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+    expect(await screen.findByText('My Customers')).toBeVisible()
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
+    })
+    expect(screen.getByText('Wi-Fi Licenses')).toBeVisible()
+    expect(screen.getByText('Wi-Fi License Utilization')).toBeVisible()
+    expect(screen.getByText('Switch Licenses')).toBeVisible()
+    expect(screen.getByText('SmartEdge Licenses')).toBeVisible()
+    expect(screen.getByText('Active From')).toBeVisible()
+    expect(screen.getByText('Service Expires On')).toBeVisible()
+    expect(screen.queryByText('Tenant ID')).toBeNull()
+
+    expect(screen.queryByText('Installed Devices')).toBeNull()
+    expect(screen.queryByText('Device Subscriptions Utilization')).toBeNull()
   })
   it('should edit for selected trial account row', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
@@ -429,7 +530,7 @@ describe('MspCustomers', () => {
 
     const dialog = await screen.findByRole('dialog')
     expect(dialog).toBeVisible()
-    expect(screen.getByText('Assign MSP Administrators')).toBeVisible()
+    expect(screen.getAllByText('Assign MSP Administrators')).toHaveLength(2)
   })
   it('should render table for support user', async () => {
     const supportUserProfile = { ...userProfile }
@@ -456,7 +557,7 @@ describe('MspCustomers', () => {
       expect(within(rows[index]).getByText(item.name)).toBeVisible()
     })
   })
-  it('should render table for integrator', async () => {
+  it('should render table for installer', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
@@ -491,7 +592,44 @@ describe('MspCustomers', () => {
     fireEvent.click(within(row).getByRole('link', { name: '0' }))
 
     expect(screen.getByRole('dialog')).toBeVisible()
-    expect(screen.getByText('Manage MSP Administrators')).toBeVisible()
+    expect(screen.getByText('Manage Tech Partner Administrators')).toBeVisible()
+  })
+  it('should render table for integrator', async () => {
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    const tenantDetails = { tenantType: AccountType.MSP_INTEGRATOR }
+    rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
+      return { data: tenantDetails }
+    })
+    user.hasRoles = jest.fn().mockImplementation(() => {
+      return true
+    })
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard/mspCustomers' }
+      })
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
+    expect(tbody).toBeVisible()
+
+    const rows = within(tbody).getAllByRole('row')
+    expect(rows).toHaveLength(list.data.length)
+    list.data.forEach((item, index) => {
+      expect(within(rows[index]).getByText(item.name)).toBeVisible()
+    })
+
+    expect(screen.queryByText('Integrator')).toBeNull()
+
+    // Assert MSP Admin Count link works
+    const row = await screen.findByRole('row', { name: /ec 111/i })
+    fireEvent.click(within(row).getByRole('link', { name: '0' }))
+
+    expect(screen.getByRole('dialog')).toBeVisible()
+    expect(screen.getByText('Manage Tech Partner Administrators')).toBeVisible()
   })
   it('should render table for mspec', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
@@ -517,8 +655,8 @@ describe('MspCustomers', () => {
       expect(within(rows[index]).getByText(item.name)).toBeVisible()
     })
 
-    expect(screen.getByText('Integrator')).toBeVisible()
-    expect(screen.getByText('Installer')).toBeVisible()
+    expect(screen.getByText('Integrator Count')).toBeVisible()
+    expect(screen.getByText('Installer Count')).toBeVisible()
   })
   it('should open dialog when msp admin count link clicked', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
@@ -599,5 +737,25 @@ describe('MspCustomers', () => {
     const row2 = await screen.findByRole('row', { name: /ec 222/i })
     expect(within(row2).queryByRole('link', { name: '675dc01dc28846c383219b00d2f28f48' }))
       .toBeNull()
+  })
+  it('should navigate correctly for non-support var user', async () => {
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
+      return { data: { tenantType: AccountType.VAR } }
+    })
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/${params.tenantId}/v/dashboard/varCustomers`,
+      hash: '',
+      search: ''
+    }, { replace: true })
   })
 })

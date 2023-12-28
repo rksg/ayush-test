@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
 
 import { Divider, List, Space } from 'antd'
+import moment                   from 'moment-timezone'
 import { useIntl }              from 'react-intl'
 
-import { Card, Loader, Subtitle, Tooltip, Descriptions } from '@acx-ui/components'
-import { DateFormatEnum, formatter }                     from '@acx-ui/formatter'
-import { PassphraseViewer, WifiSignal }                  from '@acx-ui/rc/components'
+import { Card, Loader, Subtitle, Tooltip, Descriptions }            from '@acx-ui/components'
+import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                from '@acx-ui/formatter'
+import { PassphraseViewer, WifiSignal, useDpskNewConfigFlowParams } from '@acx-ui/rc/components'
 import {
   useGetPassphraseClientQuery,
   useLazyGetApQuery,
@@ -28,7 +30,8 @@ import {
   NetworkTypeEnum,
   transformAdvancedDpskExpirationText,
   ExpirationType,
-  displayDeviceCountLimit
+  displayDeviceCountLimit,
+  EXPIRATION_TIME_FORMAT
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { getIntl }               from '@acx-ui/utils'
@@ -219,6 +222,12 @@ function ClientDetails ({ client }: { client: ClientExtended }) {
         label={$t({ defaultMessage: 'MAC Address' })}
         children={client?.clientMac || '--'}
       />
+      { client?.mldAddr &&
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'MLD MAC Address' })}
+          children={client?.mldAddr}
+        />
+      }
       <Descriptions.Item
         label={$t({ defaultMessage: 'IP Address' })}
         children={client?.ipAddress || client?.clientIP || '--'}
@@ -247,6 +256,7 @@ function ClientDetails ({ client }: { client: ClientExtended }) {
 }
 
 function Connection ({ client }: { client: ClientExtended }) {
+  const wifiEDAClientRevokeToggle = useIsSplitOn(Features.WIFI_EDA_CLIENT_REVOKE_TOGGLE)
   const { $t } = getIntl()
   const showVni = !!client.vni
 
@@ -336,6 +346,26 @@ function Connection ({ client }: { client: ClientExtended }) {
         >{$t({ defaultMessage: 'BSSID' })}
         </Tooltip>}
         children={client?.bssid || '--'}
+      />
+      { wifiEDAClientRevokeToggle && <Descriptions.Item
+        label={<Tooltip
+          placement='bottom'
+          title={$t({ defaultMessage: 'Network Type' })}
+        >{$t({ defaultMessage: 'Network Type' })}
+        </Tooltip>}
+        children={client?.networkType || '--'}
+      /> }
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Auth Method' })}
+        children={client?.authmethod || '--'}
+      />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Auth Status' })}
+        children={getAuthStatus(client)}
+      />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Encryption' })}
+        children={client?.encryptMethod || '--'}
       />
     </Descriptions>
   </>
@@ -581,7 +611,7 @@ function GuestDetails ({ guestDetail, clientMac }: {
           client =>
             <TenantLink
               // eslint-disable-next-line max-len
-              to={`/users/wifi/clients/${client.clientMac}/details/overview?hostname=${client.hostname}`}
+              to={`/users/wifi/clients/${client.clientMac}/details/overview`}
               key={client.clientMac}
             >
               {client.clientMac}
@@ -595,8 +625,10 @@ function GuestDetails ({ guestDetail, clientMac }: {
 function DpskPassphraseDetails (props: { networkId: string, clientMac: string, username?: string }) {
   const { networkId, clientMac, username } = props
   const intl = getIntl()
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
   const { passphraseClient } = useGetPassphraseClientQuery({
-    param: {}, payload: { networkId, mac: clientMac, username: username ?? '' }
+    params: dpskNewConfigFlowParams,
+    payload: { networkId, mac: clientMac, username: username ?? '' }
   }, {
     selectFromResult: ({ data }) => {
       return {
@@ -623,7 +655,7 @@ function DpskPassphraseDetails (props: { networkId: string, clientMac: string, u
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Creation Time' })}
         children={passphraseClient &&
-          formatter(DateFormatEnum.DateTimeFormat)(passphraseClient.createdDate)
+          moment(passphraseClient.createdDate).format(EXPIRATION_TIME_FORMAT)
         }
       />
       <Descriptions.Item
@@ -691,4 +723,20 @@ function getGuestsPayload ({ clientMac }: Client) {
 
 function getClientUsername (client?: Client): string | undefined {
   return client?.userName || client?.username
+}
+
+function getAuthStatus (client?: Client) {
+  const { $t } = getIntl()
+  const statusInt = parseInt((client?.status || ''), 10)
+  if (isNaN(statusInt)) return '--'
+
+  let statusText = '--'
+  if (statusInt === 1) {
+    statusText = $t({ defaultMessage: 'Authorized' })
+  } else if (statusInt === 0) {
+    statusText = $t({ defaultMessage: 'Unauthorized' })
+  } else if (statusInt === -1) {
+    statusText = $t({ defaultMessage: 'N/A' })
+  }
+  return statusText
 }

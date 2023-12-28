@@ -1,16 +1,16 @@
 
 import { ReactNode, useCallback, useEffect } from 'react'
 
-import { Form }                   from 'antd'
-import _                          from 'lodash'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Form } from 'antd'
+import _        from 'lodash'
+
 
 import { StepsForm }                                               from '@acx-ui/components'
 import { useLazyGetEdgeListQuery }                                 from '@acx-ui/rc/services'
 import { EdgeFirewallSetting }                                     from '@acx-ui/rc/utils'
 import { getServiceRoutePath, ServiceOperation, ServiceType }      from '@acx-ui/rc/utils'
 import { ACLDirection, AddressType, StatefulAcl, StatefulAclRule } from '@acx-ui/rc/utils'
-import { useTenantLink }                                           from '@acx-ui/react-router-dom'
+import { useNavigate, useParams, useTenantLink }                   from '@acx-ui/react-router-dom'
 
 import { defaultStatefulACLs } from './SettingsForm/StatefulACLFormItem'
 
@@ -160,10 +160,18 @@ const FirewallForm = (props: FirewallFormProps) => {
     }
   }, [form, editData])
 
+  const handleFinish = async (formData: FirewallFormModel) => {
+    const data = _.cloneDeep(formData)
+    const statefulAcls = (formData.statefulAclEnabled || editMode) ? formData.statefulAcls : []
+    data.statefulAcls = filterCustomACLRules(statefulAcls)
+    processFirewallACLPayload(data.statefulAcls)
+    onFinish(data)
+  }
+
   return (<StepsForm
     form={form}
     onCancel={() => navigate(linkToServiceList)}
-    onFinish={onFinish}
+    onFinish={handleFinish}
     editMode={editMode}
   >
     {

@@ -1,7 +1,6 @@
 import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
 import { PageHeader }             from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { getPolicyListRoutePath } from '@acx-ui/rc/utils'
 
 import AdaptivePolicyTable       from './AdaptivePolicy/AdaptivePolicyTable'
@@ -31,20 +30,16 @@ const tabsName: Record<AdaptivePolicyTabKey, MessageDescriptor> = {
 
 export default function AdaptivePolicyList (props: { tabKey: AdaptivePolicyTabKey }) {
   const { $t } = useIntl()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const Tab = tabs[props.tabKey]
   return <>
     <PageHeader
-      breadcrumb={isNavbarEnhanced ? [
+      breadcrumb={[
         { text: $t({ defaultMessage: 'Network Control' }) },
         {
           text: $t({ defaultMessage: 'Policies & Profiles' }),
           link: getPolicyListRoutePath(true)
         }
-      ] : [{
-        text: $t({ defaultMessage: 'Policies & Profiles' }),
-        link: getPolicyListRoutePath(true)
-      }]}
+      ]}
       title={$t(tabsName[props.tabKey])}
       footer={<AdaptivePolicyTabs activeTab={props.tabKey}/>}
     />

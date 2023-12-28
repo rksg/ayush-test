@@ -13,7 +13,7 @@ exports[`EventDetails renders Details correctly 1`] = `
       />
     </span>
     <h3
-      class="styledComponents__Header-sc-hmshlr-19 ekMGOe"
+      class="styledComponents__Header-sc-hmshlr-19 fPLKOQ"
     >
       Connection Event Details
     </h3>

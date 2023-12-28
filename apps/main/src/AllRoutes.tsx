@@ -4,27 +4,26 @@ import { PageNotFound }                      from '@acx-ui/components'
 import { useStreamActivityMessagesQuery }    from '@acx-ui/rc/services'
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 
-import Administration   from './pages/Administration'
-import MigrationForm    from './pages/Administration/OnpremMigration/MigrationForm/MigrationForm'
-import MigrationSummary from './pages/Administration/OnpremMigration/MigrationTable/summary'
-import AnalyticsBase    from './pages/Analytics'
-import Dashboard        from './pages/Dashboard'
-import Dashboardv2      from './pages/Dashboardv2'
-import DevicesBase      from './pages/Devices'
-import Layout           from './pages/Layout'
-import { MFACheck }     from './pages/Layout/MFACheck'
-import NetworksBase     from './pages/Networks'
-import PoliciesBase     from './pages/Policies'
-import ReportsBase      from './pages/Reports'
-import SearchResults    from './pages/SearchResults'
-import ServicesBase     from './pages/Services'
-import TimelineBase     from './pages/Timeline'
-import { UserProfile }  from './pages/UserProfile'
-import UsersBase        from './pages/Users'
-import { VenueDetails } from './pages/Venues/VenueDetails'
-import { VenueEdit }    from './pages/Venues/VenueEdit'
-import { VenuesForm }   from './pages/Venues/VenuesForm'
-import { VenuesTable }  from './pages/Venues/VenuesTable'
+import Administration                                       from './pages/Administration'
+import MigrationForm                                        from './pages/Administration/OnpremMigration/MigrationForm/MigrationForm'
+import MigrationSummary                                     from './pages/Administration/OnpremMigration/MigrationTable/summary'
+import AnalyticsBase                                        from './pages/Analytics'
+import Dashboard                                            from './pages/Dashboard'
+import DevicesBase                                          from './pages/Devices'
+import Layout                                               from './pages/Layout'
+import { MFACheck }                                         from './pages/Layout/MFACheck'
+import NetworksBase                                         from './pages/Networks'
+import PoliciesBase                                         from './pages/Policies'
+import ReportsBase                                          from './pages/Reports'
+import { RWGDetails }                                       from './pages/RWG/RWGDetails'
+import { RWGForm }                                          from './pages/RWG/RWGForm'
+import { RWGTable }                                         from './pages/RWG/RWGTable'
+import SearchResults                                        from './pages/SearchResults'
+import ServicesBase                                         from './pages/Services'
+import TimelineBase                                         from './pages/Timeline'
+import { UserProfile }                                      from './pages/UserProfile'
+import UsersBase                                            from './pages/Users'
+import { VenueDetails, VenuesForm, VenueEdit, VenuesTable } from './pages/Venues'
 /* eslint-disable @nrwl/nx/enforce-module-boundaries */
 const MspRoutes = React.lazy(() => import('@msp/Routes'))
 const RcRoutes = React.lazy(() => import('@rc/Routes'))
@@ -40,8 +39,7 @@ function AllRoutes () {
         <Route path='*' element={<Layout />}>
           <Route index element={<TenantNavigate replace to='/dashboard' />} />
           <Route path='*' element={<PageNotFound />} />
-          <Route path='dashboard' element={<Dashboardv2 />} />
-          <Route path='dashboard-v1' element={<Dashboard />} />
+          <Route path='dashboard' element={<Dashboard />} />
           <Route path='userprofile' element={<UserProfile />} />
           <Route path='analytics/*' element={<AnalyticsBase />}>
             <Route path='*' element={<AnalyticsRoutes />} />
@@ -73,6 +71,7 @@ function AllRoutes () {
           </Route>
           <Route path='venues/*' element={<VenuesRoutes />} />
           <Route path='administration/*' element={<AdministrationRoutes />} />
+          <Route path='ruckus-wan-gateway/*' element={<RWGRoutes />} />
         </Route>
       </Route>
       <Route path=':tenantId/v/*' element={<MFACheck />}>
@@ -124,6 +123,18 @@ function AdministrationRoutes () {
       <Route path=':activeTab/:activeSubTab' element={<Administration />} />
       <Route path='onpremMigration/add' element={<MigrationForm />} />
       <Route path='onpremMigration/:taskId/summary' element={<MigrationSummary />} />
+    </Route>
+  )
+}
+
+function RWGRoutes () {
+  return rootRoutes(
+    <Route path='/:tenantId/t/ruckus-wan-gateway'>
+      <Route index element={<RWGTable />} />
+      <Route path='*' element={<PageNotFound />} />
+      <Route path='add' element={<RWGForm />} />
+      <Route path=':gatewayId/:action' element={<RWGForm />} />
+      <Route path=':gatewayId/gateway-details/:activeTab' element={<RWGDetails />} />
     </Route>
   )
 }

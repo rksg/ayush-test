@@ -1,7 +1,6 @@
 import { useIntl } from 'react-intl'
 
 import { PageHeader, Tabs }                               from '@acx-ui/components'
-import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import { useNavigate, useTenantLink }                     from '@acx-ui/react-router-dom'
 import { EmbeddedReport, ReportType, usePageHeaderExtra } from '@acx-ui/reports/components'
 import { filterByAccess }                                 from '@acx-ui/user'
@@ -30,7 +29,6 @@ function isElementArray (data: JSX.Element | JSX.Element[]
 
 const useTabs = () : NetworkTab[] => {
   const { $t } = useIntl()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const listTab = {
     key: NetworkTabsEnum.LIST,
     ...useNetworksTable()
@@ -62,16 +60,12 @@ const useTabs = () : NetworkTab[] => {
     />,
     headerExtra: usePageHeaderExtra(ReportType.WIRELESS)
   }
-  return [
-    listTab,
-    ...(isNavbarEnhanced ? [wlanReportTab, applicationsReportTab, wirelessReportTab] : [])
-  ]
+  return [listTab, wlanReportTab, applicationsReportTab, wirelessReportTab]
 }
 
 export function NetworksList ({ tab }: { tab: NetworkTabsEnum }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const basePath = useTenantLink('/networks/')
   const onTabChange = (tab: string) =>
     navigate({
@@ -82,14 +76,8 @@ export function NetworksList ({ tab }: { tab: NetworkTabsEnum }) {
   const { component, headerExtra } = tabs.find(({ key }) => key === tab)!
   return <>
     <PageHeader
-      title={isNavbarEnhanced
-        ? $t({ defaultMessage: 'Wi-Fi Networks' })
-        : $t({ defaultMessage: 'Networks' })
-      }
-      breadcrumb={isNavbarEnhanced
-        ? [{ text: $t({ defaultMessage: 'Wi-Fi' }) }]
-        : undefined
-      }
+      title={$t({ defaultMessage: 'Wi-Fi Networks' })}
+      breadcrumb={[{ text: $t({ defaultMessage: 'Wi-Fi' }) }]}
       footer={
         tabs.length > 1 && <Tabs activeKey={tab} onChange={onTabChange}>
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}

@@ -158,7 +158,7 @@ export function useStepsForm <T> ({
   const labels = {
     next: $t({ defaultMessage: 'Next' }),
     apply: $t({ defaultMessage: 'Apply' }),
-    submit: $t({ defaultMessage: 'Finish' }),
+    submit: $t({ defaultMessage: 'Add' }),
     pre: $t({ defaultMessage: 'Back' }),
     cancel: $t({ defaultMessage: 'Cancel' }),
     ...buttonLabel
@@ -172,7 +172,7 @@ export function useStepsForm <T> ({
     pre: <Button
       onClick={() => newConfig.gotoStep(formConfig.current - 1)}
       children={labels.pre}
-      disabled={formConfig.current === 0}
+      hidden={formConfig.current === 0}
     />,
     // TODO:
     // - handle disable when validation not passed

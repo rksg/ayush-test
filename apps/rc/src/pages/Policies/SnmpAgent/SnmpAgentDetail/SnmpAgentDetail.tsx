@@ -2,7 +2,6 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { PageHeader, Button, GridRow, Loader, GridCol }                                                                                      from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                            from '@acx-ui/feature-toggle'
 import { useGetApSnmpViewModelQuery }                                                                                                        from '@acx-ui/rc/services'
 import { ApSnmpViewModelData, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, PolicyOperation, PolicyType, useTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                                                        from '@acx-ui/react-router-dom'
@@ -22,7 +21,6 @@ const defaultPayload = {
 export default function SnmpAgentDetail () {
   const { $t } = useIntl()
   const params = useParams()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const tablePath = getPolicyRoutePath(
     { type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST })
 
@@ -42,15 +40,12 @@ export default function SnmpAgentDetail () {
     <>
       <PageHeader
         title={basicData?.name||''}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           {
             text: $t({ defaultMessage: 'Policies & Profiles' }),
             link: getPolicyListRoutePath(true)
           },
-          { text: $t({ defaultMessage: 'SNMP Agent' }), link: tablePath }
-        ] : [
-          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath() },
           { text: $t({ defaultMessage: 'SNMP Agent' }), link: tablePath }
         ]}
         extra={[

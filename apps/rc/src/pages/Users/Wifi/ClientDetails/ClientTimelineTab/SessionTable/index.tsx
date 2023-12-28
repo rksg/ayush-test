@@ -2,12 +2,12 @@ import { useMemo } from 'react'
 
 import { useIntl, defineMessage } from 'react-intl'
 
-import { AnalyticsFilter }           from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Table } from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { defaultSort, sortProp }     from '@acx-ui/rc/utils'
 import { TenantLink, useParams }     from '@acx-ui/react-router-dom'
 import { useDateFilter }             from '@acx-ui/utils'
+import type { AnalyticsFilter }      from '@acx-ui/utils'
 
 import {
   Session,

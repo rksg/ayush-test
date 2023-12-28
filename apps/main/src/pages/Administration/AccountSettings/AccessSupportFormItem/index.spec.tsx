@@ -24,19 +24,28 @@ jest.spyOn(Date, 'now').mockImplementation(() => {
 })
 
 const userProfileContextValues = {
-  data: fakeUserProfile
+  data: fakeUserProfile,
+  hasAccess: () => true
 } as UserProfileContextProps
 
 describe('Access Support Form Item', () => {
+  const mockedDisabledReq = jest.fn()
+
   beforeEach(async () => {
-    setUserProfile({ profile: fakeUserProfile, allowedOperations: [] })
+    setUserProfile({ profile: fakeUserProfile, allowedOperations: ['POST:/api/tenant/{tenantId}/delegation/support'] })
+    mockedDisabledReq.mockClear()
 
     mockServer.use(
       rest.get(
         AdministrationUrlsInfo.getTenantDelegation.url.split('?')[0],
         (_req, res, ctx) => res(ctx.json(fakeTenantDelegation))
-      )
-
+      ),
+      rest.delete(
+        AdministrationUrlsInfo.disableAccessSupport.url,
+        (req, res, ctx) => {
+          mockedDisabledReq()
+          return res(ctx.json({}))
+        })
     )
   })
 
@@ -110,9 +119,11 @@ describe('Access Support Form Item', () => {
         route: { params }
       })
 
-    const infoText = await screen.findByText(/- Administrator-level access is granted on .*/)
-    expect(infoText.innerHTML).toBe('- Administrator-level access is granted on 01/10/2023 - 11:26 UTC')
+    const infoText = await screen.findByText(/- Administrator-level access was granted on .*/)
+    expect(infoText.innerHTML).toBe('- Administrator-level access was granted on 01/10/2023 - 11:26 UTC. Expires on 01/12/2023.')
   })
+
+
 
   it('should display revoke count down and datetime string by tooltip if it is enabled', async () => {
     mockServer.use(
@@ -136,7 +147,7 @@ describe('Access Support Form Item', () => {
         route: { params }
       })
 
-    const infoText = await screen.findByText('- Administrator-level access is granted on 01/10/2023 - 11:26 UTC')
+    const infoText = await screen.findByText('- Administrator-level access was granted on 01/10/2023 - 11:26 UTC. Expires on 01/12/2023.')
     expect(infoText).toBeInTheDocument()
 
     const formItem = screen.getByRole('checkbox', { name: 'Enable access to Ruckus Support' })
@@ -145,6 +156,7 @@ describe('Access Support Form Item', () => {
 
   it('should display not allowed message when support user', async () => {
     const supportUser = {
+      ...userProfileContextValues,
       data: { ...fakeUserProfile, support: true }
     } as UserProfileContextProps
 
@@ -172,6 +184,123 @@ describe('Access Support Form Item', () => {
       expect(screen.getByRole('tooltip').textContent).toBe('You are not allowed to change this')
     })
   })
+
+  it('should be disabled when RBAC check is not allowed', async () => {
+    const notAllowedOperation = {
+      ...userProfileContextValues,
+      hasAccess: () => false
+    } as UserProfileContextProps
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={notAllowedOperation}
+        >
+          <AccessSupportFormItem
+            hasMSPEcLabel={false}
+            canMSPDelegation={true}
+          />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    screen.getByRole('checkbox', { name: 'Enable access to Ruckus Support' })
+    fireEvent.mouseOver(screen.getByRole('checkbox', { name: 'Enable access to Ruckus Support' }))
+    expect(screen.getByRole('checkbox', { name: 'Enable access to Ruckus Support' })).toBeDisabled()
+    await waitFor(async () => {
+      expect(await screen.findByRole('tooltip')).toBeInTheDocument()
+    })
+    await waitFor(() => {
+      expect(screen.getByRole('tooltip').textContent).toBe('You are not allowed to change this')
+    })
+  })
+
+  it('should revoke support when its expiration is less than 60 seconds', async () => {
+    const testRevokeExpire = _.cloneDeep(fakeTenantDelegation)
+    testRevokeExpire[0].createdDate = '2022-12-21T12:33:50.101+00:00'
+    testRevokeExpire[0].expiryDate = '2023-01-11T12:33:50.101+00:00'
+
+    const mockedReqFn = jest.fn()
+    mockServer.use(
+      rest.get(
+        AdministrationUrlsInfo.getTenantDelegation.url.split('?')[0],
+        (_req, res, ctx) => {
+          mockedReqFn()
+          return res(ctx.json(testRevokeExpire))
+        })
+    )
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <AccessSupportFormItem
+            hasMSPEcLabel={false}
+            canMSPDelegation={true}
+          />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    await waitFor(() => expect(mockedReqFn).toBeCalled())
+    const infoText = await screen.findByText(/- Administrator-level access was granted on .*/)
+    expect(infoText.innerHTML).toBe('- Administrator-level access was granted on 12/21/2022 - 12:33 UTC. Expires on 01/11/2023.')
+    expect(mockedDisabledReq).toBeCalledTimes(1)
+  })
+
+  it('should not trigger revoke again when revoke the expired suport failed', async () => {
+    const spyConsole = jest.spyOn(console, 'log')
+
+    const testRevokeExpire = _.cloneDeep(fakeTenantDelegation)
+    testRevokeExpire[0].createdDate = '2022-12-21T12:33:50.101+00:00'
+    testRevokeExpire[0].expiryDate = '2023-01-11T12:33:50.101+00:00'
+
+    const mockedGetFn = jest.fn()
+    const mockedDisabledReq = jest.fn()
+    mockServer.use(
+      rest.get(
+        AdministrationUrlsInfo.getTenantDelegation.url.split('?')[0],
+        (_req, res, ctx) => {
+          mockedGetFn()
+          return res(ctx.json(testRevokeExpire))
+        }),
+      rest.delete(
+        AdministrationUrlsInfo.disableAccessSupport.url,
+        (req, res, ctx) => {
+          mockedDisabledReq()
+          return res(ctx.status(500), ctx.json(null))
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <AccessSupportFormItem
+            hasMSPEcLabel={false}
+            canMSPDelegation={true}
+          />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    await waitFor(() => expect(mockedGetFn).toBeCalled())
+    const infoText = await screen.findByText(/- Administrator-level access was granted on .*/)
+    expect(infoText.innerHTML).toBe('- Administrator-level access was granted on 12/21/2022 - 12:33 UTC. Expires on 01/11/2023.')
+    expect(mockedDisabledReq).toBeCalled()
+
+    await waitFor(() => {
+      expect(spyConsole).toBeCalled()
+    })
+
+    expect(mockedDisabledReq).toBeCalledTimes(1)
+  })
 })
 
 describe('Access Support Form Item - Msp Delegate EC', () => {
@@ -179,6 +308,7 @@ describe('Access Support Form Item - Msp Delegate EC', () => {
     const spyConsole = jest.spyOn(console, 'log')
 
     const MspECUser = {
+      ...userProfileContextValues,
       data: { ...fakeUserProfile, varTenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
     } as UserProfileContextProps
 

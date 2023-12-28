@@ -1,15 +1,18 @@
 import { gql } from 'graphql-request'
+import _       from 'lodash'
 import moment  from 'moment'
 
-import { getFilterPayload, AnalyticsFilter } from '@acx-ui/analytics/utils'
-import { dataApi }                           from '@acx-ui/store'
+import { getFilterPayload }                 from '@acx-ui/analytics/utils'
+import { dataApi }                          from '@acx-ui/store'
+import type { DashboardFilter, PathFilter } from '@acx-ui/utils'
 
 import { DidYouKnowData } from './facts'
 
 interface Response <FactsData> {
   network: {
     hierarchyNode: {
-      facts: FactsData
+      facts: FactsData,
+      availableFacts: string[]
     }
   }
 }
@@ -17,35 +20,54 @@ interface Response <FactsData> {
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     facts: build.query<
-      DidYouKnowData[],
-      AnalyticsFilter
-    >({
-      query: (payload) => ({
-        document: gql`
-        query Facts(
-          $path: [HierarchyNodeInput],
-          $start: DateTime,
-          $end: DateTime,
-          $filter: FilterInput
-        ) {
-          network(start: $start, end: $end, filter : $filter) {
-            hierarchyNode(path: $path) {
-              facts(n: 9, timeZone: "${moment.tz.guess()}") {
-                key values labels
+      {
+        facts: DidYouKnowData[]
+        availableFacts: string[]
+      },
+      (PathFilter | DashboardFilter) & { requestedList: string[] }
+        >({
+          query: (payload) => {
+            const useFilter = 'filter' in payload
+            let variables: (Partial<PathFilter> | Partial<DashboardFilter>) & {
+          requestedList: string[]
+        }
+            if (useFilter) {
+              variables = {
+                startDate: payload.startDate,
+                endDate: payload.endDate,
+                ...getFilterPayload(payload),
+                requestedList: payload.requestedList
+              }
+            } else {
+              variables = _.pick(payload, ['path', 'startDate', 'endDate', 'requestedList'])
+            }
+            return {
+              document: gql`
+          query Facts(
+            ${useFilter ? '$filter: FilterInput' : ''},
+            $path: [HierarchyNodeInput]
+            $startDate: DateTime,
+            $endDate: DateTime
+            $requestedList: [String]
+          ) {
+            network(start: $startDate, end: $endDate${useFilter ? ', filter: $filter' : ''}) {
+              hierarchyNode(path: $path) {
+                facts(n: 2, timeZone: "${moment.tz.guess()}", requestedList: $requestedList) {
+                  key values labels
+                }
+                availableFacts(timeZone: "${moment.tz.guess()}")
               }
             }
           }
-        }
-        `,
-        variables: {
-          start: payload.startDate,
-          end: payload.endDate,
-          ...getFilterPayload(payload)
-        }
-      }),
-      transformResponse: (response: Response<DidYouKnowData[]>) =>
-        response.network.hierarchyNode.facts
-    })
+          `,
+              variables
+            }
+          },
+          transformResponse: (response: Response<DidYouKnowData[]>) => ({
+            facts: response.network.hierarchyNode.facts,
+            availableFacts: response.network.hierarchyNode.availableFacts
+          })
+        })
   })
 })
 

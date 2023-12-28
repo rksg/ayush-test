@@ -60,6 +60,11 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/network-venue/:networkVenueId?quickAck=true',
     newApi: true
   },
+  updateNetworkVenues: {
+    method: 'put',
+    url: '/networkActivations/mappings',
+    newApi: true
+  },
   deleteNetworkVenue: {
     method: 'delete',
     url: '/networkActivations/:networkVenueId',
@@ -98,7 +103,7 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getDefaultRadioCustomization: {
     method: 'get',
-    url: '/venues/:venueId/radioSettings',
+    url: '/venues/:venueId/radioSettings?defaultOnly=true',
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/radio/default',
     newApi: true
   },
@@ -407,6 +412,21 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/aps/:serialNumber/ledSettings',
     newApi: true
   },
+  getApBandModeSettings: {
+    method: 'get',
+    url: '/venues/aps/:serialNumber/bandModeSettings',
+    newApi: true
+  },
+  updateApBandModeSettings: {
+    method: 'put',
+    url: '/venues/aps/:serialNumber/bandModeSettings',
+    newApi: true
+  },
+  resetApBandModeSettings: {
+    method: 'delete',
+    url: '/venues/aps/:serialNumber/bandModeSettings',
+    newApi: true
+  },
   getApBssColoring: {
     method: 'get',
     url: '/venues/aps/:serialNumber/bssColoringSettings',
@@ -497,6 +517,21 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/clientAdmissionControlSettings',
     newApi: true
   },
+  getApClientAdmissionControl: {
+    method: 'get',
+    url: '/venues/aps/:serialNumber/clientAdmissionControlSettings',
+    newApi: true
+  },
+  updateApClientAdmissionControl: {
+    method: 'put',
+    url: '/venues/aps/:serialNumber/clientAdmissionControlSettings',
+    newApi: true
+  },
+  deleteApClientAdmissionControl: {
+    method: 'delete',
+    url: '/venues/aps/:serialNumber/clientAdmissionControlSettings',
+    newApi: true
+  },
   getApNetworkSettings: {
     method: 'get',
     url: '/venues/aps/:serialNumber/networkSettings',
@@ -528,6 +563,61 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   getMeshUplinkAPs: {
     method: 'post',
     url: '/aps/neighbors/query',
+    newApi: true
+  },
+  getApRfNeighbors: {
+    method: 'get',
+    url: '/venues/aps/:serialNumber/rfNeighbors',
+    newApi: true
+  },
+  getApLldpNeighbors: {
+    method: 'get',
+    url: '/venues/aps/:serialNumber/lldpNeighbors',
+    newApi: true
+  },
+  detectApNeighbors: {
+    method: 'PATCH',
+    url: '/venues/aps/:serialNumber/neighbors',
+    newApi: true
+  },
+  getCcdSupportVenues: {
+    method: 'post',
+    url: '/venues/clientConnectionDiagnosis/query',
+    newApi: true
+  },
+  getCcdSupportApGroups: {
+    method: 'post',
+    url: '/apGroups/clientConnectionDiagnosis/query?venueId=:venueId',
+    newApi: true
+  },
+  runCcd: {
+    method: 'post',
+    url: '/venues/:venueId/clientConnectionDiagnosis',
+    newApi: true
+  },
+  getVenueApManagementVlan: {
+    method: 'get',
+    url: '/venues/:venueId/aps/managementTrafficVlanSettings',
+    newApi: true
+  },
+  updateVenueApManagementVlan: {
+    method: 'put',
+    url: '/venues/:venueId/aps/managementTrafficVlanSettings',
+    newApi: true
+  },
+  getApManagementVlan: {
+    method: 'get',
+    url: '/venues/aps/:serialNumber/managementTrafficVlanSettings',
+    newApi: true
+  },
+  updateApManagementVlan: {
+    method: 'put',
+    url: '/venues/aps/:serialNumber/managementTrafficVlanSettings',
+    newApi: true
+  },
+  deleteApManagementVlan: {
+    method: 'delete',
+    url: '/venues/aps/:serialNumber/managementTrafficVlanSettings',
     newApi: true
   }
 }

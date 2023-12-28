@@ -8,11 +8,11 @@ import {
   TopSSIDsByTraffic,
   TrafficByVolume
 } from '@acx-ui/analytics/components'
-import { AnalyticsFilter }                                                                                                        from '@acx-ui/analytics/utils'
 import { GridCol, GridRow }                                                                                                       from '@acx-ui/components'
 import { ApInfoWidget, TopologyFloorPlanWidget }                                                                                  from '@acx-ui/rc/components'
 import { useApDetailsQuery, useApViewModelQuery }                                                                                 from '@acx-ui/rc/services'
 import { ApDetails, ApViewModel, NetworkDevice, NetworkDevicePosition, NetworkDeviceType, ShowTopologyFloorplanOn, useApContext } from '@acx-ui/rc/utils'
+import type { AnalyticsFilter }                                                                                                   from '@acx-ui/utils'
 
 import { useApFilter } from '../apFilter'
 

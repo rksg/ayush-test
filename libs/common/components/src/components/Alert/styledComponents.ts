@@ -20,8 +20,7 @@ export const AlertStyle = styled(Alert)`
   border: 1px solid var(--acx-accents-orange-25);
 
   svg.ant-alert-icon path:nth-child(-n+2) {
-    fill: var(--acx-accents-orange-50);
-    stroke: var(--acx-accents-orange-50);
+    color: var(--acx-accents-orange-50);
   }
 }
 

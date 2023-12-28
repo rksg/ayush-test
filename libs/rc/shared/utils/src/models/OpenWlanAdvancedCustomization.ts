@@ -1,6 +1,8 @@
 import { BasicServiceSetPriorityEnum } from './BasicServiceSetPriorityEnum'
 import { ClientIsolationOptions }      from './ClientIsolationOptions'
 import { DnsProxy }                    from './DnsProxy'
+import { MultiLinkOperationOptions }   from './MultiLinkOperationOptions'
+import { QosMapSetOptions }            from './QosMapSetOptions'
 import { RadiusOptions }               from './RadiusOptions'
 import { VlanPool }                    from './VlanPool'
 import { WlanRadioCustomization }      from './WlanRadioCustomization'
@@ -47,6 +49,8 @@ export class OpenWlanAdvancedCustomization {
   forceMobileDeviceDhcp?: boolean
 
   clientLoadBalancingEnable?: boolean
+
+  enableAaaVlanOverride?: boolean
 
   // This is a per radio client count at which an AP will stop converting group addressed data traffic to unicast. The directed threshold value (and action) is checked by the AP after it has performed other multicast handling actions (e.g. SmartCast), such as application detection and checking IGMP subscription of clients. Due to the order of actions on some traffic, the directed threshold may not be the final determinant in multicast frame handling.
   directedThreshold: number
@@ -144,6 +148,22 @@ export class OpenWlanAdvancedCustomization {
   enableMulticastDownlinkRateLimiting6G?: boolean
 
   enableAdditionalRegulatoryDomains?: boolean
+
+  wifi6Enabled?: boolean
+
+  wifi7Enabled?: boolean
+
+  multiLinkOperationEnabled?: boolean
+
+  multiLinkOperationOptions?: MultiLinkOperationOptions
+
+  qosMirroringEnabled?: boolean
+
+  qosMirroringScope?: string
+
+  qosMapSetEnabled?: boolean
+
+  qosMapSetOptions?: QosMapSetOptions
 
   constructor () {
     this.clientIsolation = true
@@ -252,5 +272,15 @@ export class OpenWlanAdvancedCustomization {
     this.enableMulticastDownlinkRateLimiting6G = false
 
     this.enableAdditionalRegulatoryDomains = true
+
+    this.wifi6Enabled = true
+
+    this.wifi7Enabled = true
+
+    this.multiLinkOperationEnabled = false
+
+    this.qosMapSetEnabled = false
+
+    this.qosMapSetOptions = new QosMapSetOptions()
   }
 }

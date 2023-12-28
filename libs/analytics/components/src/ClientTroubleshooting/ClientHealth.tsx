@@ -3,10 +3,10 @@ import { groupBy }            from 'lodash'
 import moment                 from 'moment-timezone'
 import { useIntl }            from 'react-intl'
 
-import { AnalyticsFilter }                              from '@acx-ui/analytics/utils'
 import { cssStr, cssNumber, Loader, Tooltip, BarChart } from '@acx-ui/components'
 import { formatter, DateFormatEnum }                    from '@acx-ui/formatter'
 import { WarningTriangleOutlined }                      from '@acx-ui/icons'
+import type { AnalyticsFilter }                         from '@acx-ui/utils'
 import { noDataDisplay }                                from '@acx-ui/utils'
 
 import { LabelledQuality }                                       from './config'

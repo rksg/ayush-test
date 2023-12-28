@@ -4,8 +4,7 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { PageHeader, StepsForm }  from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { PageHeader, StepsForm } from '@acx-ui/components'
 import {
   useAddMdnsProxyMutation,
   useGetMdnsProxyQuery,
@@ -43,7 +42,6 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
   const { data: dataFromServer } = useGetMdnsProxyQuery({ params }, { skip: !editMode })
   const [ addMdnsProxy ] = useAddMdnsProxyMutation()
   const [ updateMdnsProxy ] = useUpdateMdnsProxyMutation()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   useEffect(() => {
     if (dataFromServer && editMode) {
@@ -81,16 +79,11 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
           ? $t({ defaultMessage: 'Configure mDNS Proxy Service' })
           : $t({ defaultMessage: 'Add mDNS Proxy Service' })
         }
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
           {
             text: $t({ defaultMessage: 'mDNS Proxy' }),
-            link: tablePath
-          }
-        ] : [
-          {
-            text: $t({ defaultMessage: 'Services' }),
             link: tablePath
           }
         ]}

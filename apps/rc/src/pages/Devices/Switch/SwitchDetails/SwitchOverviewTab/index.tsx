@@ -1,14 +1,35 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { GridCol, GridRow, Loader, Tabs }                                                        from '@acx-ui/components'
-import { SwitchInfoWidget }                                                                      from '@acx-ui/rc/components'
-import { useGetVenueQuery, useStackMemberListQuery, useSwitchDetailHeaderQuery }                 from '@acx-ui/rc/services'
-import { NetworkDevice, NetworkDeviceType, SwitchViewModel, isRouter, SWITCH_TYPE, StackMember } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                                                 from '@acx-ui/react-router-dom'
+import {
+  GridCol,
+  GridRow,
+  Loader,
+  Tabs
+} from '@acx-ui/components'
+import { SwitchInfoWidget } from '@acx-ui/rc/components'
+import {
+  useGetVenueQuery,
+  useStackMemberListQuery
+} from '@acx-ui/rc/services'
+import {
+  NetworkDevice,
+  NetworkDeviceType,
+  SwitchViewModel,
+  isRouter,
+  SWITCH_TYPE,
+  StackMember
+} from '@acx-ui/rc/utils'
+import {
+  useNavigate,
+  useParams,
+  useTenantLink
+} from '@acx-ui/react-router-dom'
+import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
-import { useSwitchFilter } from '../switchFilter'
+import { SwitchDetailsContext } from '..'
+import { useSwitchFilter }      from '../switchFilter'
 
 import { SwitchOverviewACLs }            from './SwitchOverviewACLs'
 import { SwitchOverviewPanel }           from './SwitchOverviewPanel'
@@ -23,36 +44,48 @@ export function SwitchOverviewTab () {
   const switchFilter = useSwitchFilter(switchDetail)
   const [supportRoutedInterfaces, setSupportRoutedInterfaces] = useState(false)
   const [currentSwitchDevice, setCurrentSwitchDevice] = useState<NetworkDevice>({} as NetworkDevice)
-  const switchDetailQuery = useSwitchDetailHeaderQuery({ params })
+  const [syncedStackMember, setSyncedStackMember] = useState([] as StackMember[])
+
+  const { switchDetailsContextData } = useContext(SwitchDetailsContext)
+  const { switchDetailHeader, switchData } = switchDetailsContextData
+
   const { data: venue } = useGetVenueQuery({
-    params: { tenantId: params.tenantId, venueId: switchDetailQuery.data?.venueId } },
-  { skip: !switchDetailQuery.isSuccess })
+    params: { tenantId: params.tenantId, venueId: switchDetailHeader?.venueId } },
+  { skip: !switchDetailHeader?.venueId })
   const { data: stackMember } = useStackMemberListQuery({ params,
     payload: {
       fields: ['activeUnitId', 'unitId', 'unitStatus', 'name', 'deviceStatus', 'model',
         'serialNumber', 'activeSerial', 'switchMac', 'ip', 'venueName', 'uptime'],
       filters: { activeUnitId: [params.serialNumber] } } },
-  { skip: !switchDetailQuery.isSuccess })
+  { skip: !switchDetailHeader, pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL })
+
   const navigate = useNavigate()
   const basePath = useTenantLink(
     `/devices/switch/${params.switchId}/${params.serialNumber}/details/overview/`
   )
 
   useEffect(() => {
-    if(switchDetailQuery.data && venue && stackMember) {
+    if(switchDetailHeader && venue && stackMember && switchData) {
+      const stackMemberIds = switchData?.stackMembers?.map(s => s.id)
+      const syncedStackMember
+        = stackMember?.data?.filter(stack => stackMemberIds?.includes(stack.id))
+
       setSwitchDetail({
-        ...switchDetailQuery.data,
+        ...switchDetailHeader,
         venueDescription: venue.description,
-        unitDetails: stackMember?.data
+        unitDetails: syncedStackMember
       })
-      setSupportRoutedInterfaces(isRouter(switchDetailQuery.data?.switchType || SWITCH_TYPE.SWITCH))
+      setSyncedStackMember(syncedStackMember)
+      setSupportRoutedInterfaces(isRouter(switchDetailHeader?.switchType || SWITCH_TYPE.SWITCH))
     }
-  }, [switchDetailQuery.data, venue, stackMember])
+  }, [switchDetailHeader, switchData, venue, stackMember])
 
   useEffect(() => {
     if(switchDetail) {
-      const _currentSwitchDevice: NetworkDevice = { ...switchDetail,
-        networkDeviceType: NetworkDeviceType.switch } as NetworkDevice
+      const _currentSwitchDevice: NetworkDevice = {
+        ...switchDetail,
+        networkDeviceType: NetworkDeviceType.switch
+      } as NetworkDevice
       switchDetail.position = {
         floorplanId: switchDetail?.floorplanId,
         xPercent: switchDetail?.xPercent,
@@ -91,7 +124,7 @@ export function SwitchOverviewTab () {
       <Tabs.TabPane tab={$t({ defaultMessage: 'Panel' })} key='panel'>
         <SwitchOverviewPanel
           filters={switchFilter}
-          stackMember={stackMember?.data as StackMember[]}
+          stackMember={syncedStackMember as StackMember[]}
           switchDetail={switchDetail}
           currentSwitchDevice={currentSwitchDevice} />
       </Tabs.TabPane>

@@ -1,6 +1,5 @@
 import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
-import { Modal }      from 'antd'
 import { rest }       from 'msw'
 
 import { useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
@@ -34,12 +33,12 @@ const validCoordinates = [
   '51.508506, -0.124915',
   '40.769141, -73.9429713'
 ]
-// TODO
-// const invalidCoordinates = '51.508506, -0.12xxxx'
+
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
+  useNavigate: () => mockedUsedNavigate,
+  useLocation: jest.fn().mockReturnValue({ state: { venueId: '123' } })
 }))
 const venue = [
   {
@@ -175,7 +174,7 @@ describe('AP Form - Add', () => {
         (_, res, ctx) => res(ctx.json(venueCaps))),
       rest.post(CommonUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json(aplist))),
-      rest.get(CommonUrlsInfo.getApGroupList.url,
+      rest.get(CommonUrlsInfo.getApGroupListByVenue.url,
         (_, res, ctx) => res(ctx.json(apGrouplist))),
       rest.post(WifiUrlsInfo.addAp.url,
         (_, res, ctx) => {
@@ -191,12 +190,15 @@ describe('AP Form - Add', () => {
         (_req, res, ctx) => res(ctx.json({ global: {
           mapRegion: 'TW'
         } }))
+      ),
+      rest.get(
+        WifiUrlsInfo.getVenueApManagementVlan.url,
+        (_req, res, ctx) => res(ctx.json({ vlanOverrideEnabled: false, vlanId: 1 }))
       )
     )
   })
   afterEach(() => {
     addRequestSpy.mockClear()
-    Modal.destroyAll()
   })
   it('should render correctly', async () => {
     render(<Provider><ApForm /></Provider>, {
@@ -213,20 +215,7 @@ describe('AP Form - Add', () => {
     })
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<Provider><ApForm /></Provider>, {
-      route: { params, path: '/:tenantId/t/devices/wifi/:action' }
-    })
-
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    expect(screen.getByRole('link', {
-      name: /access points/i
-    })).toBeTruthy()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(<Provider><ApForm /></Provider>, {
       route: { params, path: '/:tenantId/t/devices/wifi/:action' }
     })
@@ -244,7 +233,7 @@ describe('AP Form - Add', () => {
       jest.mocked(useIsSplitOn).mockReturnValue(true)
     })
 
-    it('should handle Add AP', async () => {
+    it('should handle Add AP correctly', async () => {
       render(<Provider><ApForm /></Provider>, {
         route: { params, path: '/:tenantId/t/devices/wifi/:action' }
       })
@@ -315,6 +304,10 @@ describe('AP Form - Add', () => {
   })
 
   describe('handle error occurred', () => {
+    beforeEach(async () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+    })
+
     it('should handle error occurred', async () => {
       mockServer.use(
         rest.post(WifiUrlsInfo.addAp.url,
@@ -329,7 +322,13 @@ describe('AP Form - Add', () => {
       await fillInForm()
 
       await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
-      await screen.findByText('Error occurred while creating AP')
+
+      const dialog = await screen.findByRole('dialog')
+      expect(await screen.findByText('Error occurred while creating AP')).toBeInTheDocument()
+      await userEvent.click(await within(dialog).findByRole('button', { name: 'OK' }))
+      await waitFor(() => {
+        expect(dialog).not.toBeVisible()
+      })
     })
     it('should handle request locking error', async () => {
       mockServer.use(
@@ -345,7 +344,15 @@ describe('AP Form - Add', () => {
       await fillInForm()
 
       await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
-      await screen.findByText(/A configuration request is currently being executed/)
+
+      const dialog = await screen.findByRole('dialog')
+      expect(
+        await screen.findByText(/A configuration request is currently being executed/)
+      ).toBeInTheDocument()
+      await userEvent.click(await within(dialog).findByRole('button', { name: 'OK' }))
+      await waitFor(() => {
+        expect(dialog).not.toBeVisible()
+      })
     })
   })
 })

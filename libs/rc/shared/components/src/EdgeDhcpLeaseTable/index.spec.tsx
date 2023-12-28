@@ -1,4 +1,5 @@
-import { rest } from 'msw'
+import { waitForElementToBeRemoved } from '@testing-library/react'
+import { rest }                      from 'msw'
 
 import { useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { EdgeDhcpUrls }               from '@acx-ui/rc/utils'
@@ -30,6 +31,7 @@ describe('EdgeDhcpLeaseTable', () => {
       <Provider>
         <EdgeDhcpLeaseTable edgeId='testId' />
       </Provider>)
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const row = await screen.findAllByRole('row', { name: /TestHost/i })
     expect(row.length).toBe(2)
   })
@@ -37,11 +39,10 @@ describe('EdgeDhcpLeaseTable', () => {
   it('Should render expired time correctly', async () => {
     render(
       <Provider>
-        <EdgeDhcpLeaseTable edgeId='testId' />
+        <EdgeDhcpLeaseTable edgeId='testId' isInfinite />
       </Provider>)
-    const infiniteText = await screen.findByText('Infinite')
-    const timeText = await screen.findByText('1,440 Days 00:00:00')
-    expect(infiniteText).toBeVisible()
-    expect(timeText).toBeVisible()
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const infiniteText = await screen.findAllByText('Infinite')
+    expect(infiniteText.length).toBe(2)
   })
 })

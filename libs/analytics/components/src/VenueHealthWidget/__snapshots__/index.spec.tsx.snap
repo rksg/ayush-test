@@ -6,7 +6,7 @@ exports[`Health Widget should render KPI widgets 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
+      class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
       type="default"
     >
       <div
@@ -67,7 +67,7 @@ exports[`Health Widget should render KPI widgets 1`] = `
                     >
                       Client Experience
                       <svg
-                        class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 styledComponents__HistoricalIcon-sc-1chsnnf-1 dGmXEJ dtUtKV"
+                        class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 styledComponents__HistoricalIcon-sc-1chsnnf-1 eSbgcz dtUtKV"
                         data-testid="HistoricalOutlined"
                       />
                     </div>
@@ -160,7 +160,7 @@ exports[`Health Widget should render KPI widgets for empty threshold value 1`] =
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
+      class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
       type="default"
     >
       <div
@@ -221,7 +221,7 @@ exports[`Health Widget should render KPI widgets for empty threshold value 1`] =
                     >
                       Client Experience
                       <svg
-                        class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 styledComponents__HistoricalIcon-sc-1chsnnf-1 dGmXEJ dtUtKV"
+                        class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 styledComponents__HistoricalIcon-sc-1chsnnf-1 eSbgcz dtUtKV"
                         data-testid="HistoricalOutlined"
                       />
                     </div>

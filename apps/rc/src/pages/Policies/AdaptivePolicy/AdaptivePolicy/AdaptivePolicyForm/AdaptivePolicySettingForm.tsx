@@ -7,6 +7,7 @@ import { useParams }                 from 'react-router-dom'
 import { v4 as uuidv4 }              from 'uuid'
 
 import { Button, Descriptions, GridCol, GridRow, Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { AccessConditionDrawer, RadiusAttributeGroupSelectDrawer }                            from '@acx-ui/rc/components'
 import {
   useLazyAdaptivePolicyListByQueryQuery,
   useLazyGetRadiusAttributeGroupQuery,
@@ -17,12 +18,9 @@ import {
   AttributeAssignment,
   checkObjectNotExists,
   CriteriaOption, defaultSort,
-  RadiusAttributeGroup, sortProp
+  RadiusAttributeGroup, sortProp, trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
-
-import { AccessConditionDrawer }            from './AccessConditionDrawer'
-import { RadiusAttributeGroupSelectDrawer } from './RadiusAttributeGroupSelectDrawer'
 
 interface AdaptivePolicySettingFormProps {
   editMode?: boolean,
@@ -70,7 +68,10 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
       }).then(result => radiusAttributeGroup = {
         id: result.data?.id,
         name: result.data?.name ?? '',
-        attributeAssignments: result.data?.attributeAssignments ?? []
+        attributeAssignments: result.data?.attributeAssignments ?? [],
+        attributeCount: result.data?.attributeCount ?? 0,
+        externalAssignmentsCount: result.data?.externalAssignmentsCount ?? 0,
+        externalServiceAssignments: result.data?.externalServiceAssignments ?? []
       } ).finally(() => setSelectRadiusAttributeGroup(radiusAttributeGroup))
     } else {
       setSelectRadiusAttributeGroup({} as RadiusAttributeGroup)
@@ -192,7 +193,9 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
             label={$t({ defaultMessage: 'Policy Name' })}
             rules={[
               { required: true },
-              { validator: (_, value) => nameValidator(value) }
+              { validator: (_, value) => nameValidator(value) },
+              { max: 255 },
+              { validator: (_, value) => trailingNorLeadingSpaces(value) }
             ]}
             validateFirst
             hasFeedback

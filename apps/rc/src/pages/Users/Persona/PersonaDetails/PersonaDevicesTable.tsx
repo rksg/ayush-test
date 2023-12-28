@@ -4,9 +4,15 @@ import moment        from 'moment-timezone'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, showActionModal, Subtitle, Table, TableProps, Tooltip } from '@acx-ui/components'
-import { SuccessSolid }                                                  from '@acx-ui/icons'
-import { OSIconContainer }                                               from '@acx-ui/rc/components'
+import { Loader, showActionModal, showToast, Subtitle, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
+import { SuccessSolid }                                                             from '@acx-ui/icons'
+import {
+  OSIconContainer,
+  useDpskNewConfigFlowParams,
+  PersonaDeviceItem,
+  PersonaDevicesImportDialog
+} from '@acx-ui/rc/components'
 import {
   useAddPersonaDevicesMutation,
   useDeletePersonaDevicesMutation,
@@ -21,13 +27,12 @@ import {
   getOsTypeIcon,
   Persona,
   PersonaDevice,
+  PersonaErrorResponse,
   sortProp
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 import { noDataDisplay }             from '@acx-ui/utils'
 
-import { PersonaDeviceItem }          from '../PersonaForm/PersonaDevicesForm'
-import { PersonaDevicesImportDialog } from '../PersonaForm/PersonaDevicesImportDialog'
 
 const defaultPayload = {
   searchString: '',
@@ -49,13 +54,16 @@ export function PersonaDevicesTable (props: {
   const [dpskDevices, setDpskDevices] = useState<PersonaDevice[]>([])
   const [clientMac, setClientMac] = useState<Set<string>>(new Set())  // including the MAC auth and DPSK devices
   const addClientMac = (mac: string) => setClientMac(prev => new Set(prev.add(mac)))
+  const isNewConfigFlow = useIsSplitOn(Features.DPSK_NEW_CONFIG_FLOW_TOGGLE)
 
   const [getClientList] = useLazyGetClientListQuery()
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
   const { data: dpskDevicesData, ...dpskDevicesResult } = useGetDpskPassphraseDevicesQuery({
     params: {
       tenantId,
       serviceId: dpskPoolId,
-      passphraseId: persona?.dpskGuid
+      passphraseId: persona?.dpskGuid,
+      ...dpskNewConfigFlowParams
     }
   }, { skip: !persona?.dpskGuid || !dpskPoolId })
 
@@ -106,11 +114,12 @@ export function PersonaDevicesTable (props: {
       //  via DPSK,     the authmethod would be: "Standard+Open"
       const isMacAuth = client?.authmethod?.toUpperCase()?.includes('MAC')
 
-      return client && !isMacAuth
+      return client && !isMacAuth && device.online
         ? {
           ...device,
           os: client.osType,
-          deviceName: client.hostname
+          deviceName: client.hostname,
+          lastSeenAt: client.lastUpdateTime
         }
         : {
           ...device,
@@ -147,12 +156,17 @@ export function PersonaDevicesTable (props: {
   }
 
   const toOnlinePersonaDevice = (dpskDevices: DPSKDeviceInfo[]): PersonaDevice[] => {
+    // Show all dpsk devices, but only connected devices show lastSeenAt.
     return dpskDevices
-      .filter(d => d.online)
       .map(device => ({
         personaId: persona?.id ?? '',
         macAddress: device.mac,
-        lastSeenAt: moment.utc(device.lastConnected, 'M/D/YYYY, h:mm:ss A').toISOString(),
+        online: isNewConfigFlow ? device.deviceConnectivity === 'CONNECTED' : device.online,
+        lastSeenAt: isNewConfigFlow
+          ? device.deviceConnectivity === 'CONNECTED'
+            ? device.lastConnectedTime ?? undefined
+            : undefined
+          : moment.utc(device.lastConnected, 'M/D/YYYY, h:mm:ss A').toISOString(),
         hasDpskRegistered: true
       }))
   }
@@ -210,6 +224,7 @@ export function PersonaDevicesTable (props: {
       key: 'hasDpskRegistered',
       dataIndex: 'hasDpskRegistered',
       title: $t({ defaultMessage: 'DPSK' }),
+      align: 'center',
       render: (_, { hasDpskRegistered }) => hasDpskRegistered && <SuccessSolid/>,
       sorter: { compare: sortProp('hasDpskRegistered', defaultSort) }
     },
@@ -249,7 +264,7 @@ export function PersonaDevicesTable (props: {
           },
           // FIXME: Need to add mac registration list id into this dialog
           // eslint-disable-next-line max-len
-          content: $t({ defaultMessage: 'It will remove these devices from the MAC Registration list associated with this persona. Are you sure you want to delete them?' }),
+          content: $t({ defaultMessage: 'It will remove these devices from the MAC Registration list associated with this identity. Are you sure you want to delete them?' }),
           onOk: () => {
             deleteDevices(selectedItems)
             clearSelection()
@@ -278,8 +293,35 @@ export function PersonaDevicesTable (props: {
     }).unwrap()
       .then(() => handleModalCancel())
       .catch(error => {
-        console.log(error) // eslint-disable-line no-console
+        handleAddDevicesError(error)
       })
+  }
+
+  const handleAddDevicesError = (error: PersonaErrorResponse) => {
+    if (error.status && error.status === 400) {
+      const subError = error.data.subErrors && error.data.subErrors.at(0)?.message
+
+      showToast({
+        type: 'error',
+        content: undefined,
+        extraContent: (error.data.message
+            ?? error.data.debugMessage
+            ?? $t({ defaultMessage: 'An error occurred' })
+        ) + (subError ? (' - ' + subError) : '')
+      })
+    } else {
+      showActionModal({
+        type: 'error',
+        title: $t({ defaultMessage: 'Error' }),
+        content: $t({
+          defaultMessage: 'The following information was reported for the error you encountered.'
+        }),
+        customContent: {
+          action: 'SHOW_ERRORS',
+          errorDetails: error
+        }
+      })
+    }
   }
 
   return (
@@ -312,13 +354,15 @@ export function PersonaDevicesTable (props: {
         pagination={{ defaultPageSize: 5 }}
       />
 
-      <PersonaDevicesImportDialog
-        visible={modelVisible}
-        personaGroupId={persona?.groupId}
-        selectedMacAddress={persona?.devices?.map(d => d.macAddress.replaceAll('-', ':')) ?? []}
-        onCancel={handleModalCancel}
-        onSubmit={handleModalSubmit}
-      />
+      {modelVisible &&
+        <PersonaDevicesImportDialog
+          visible={true}
+          personaGroupId={persona?.groupId}
+          selectedMacAddress={persona?.devices?.map(d => d.macAddress.replaceAll('-', ':')) ?? []}
+          onCancel={handleModalCancel}
+          onSubmit={handleModalSubmit}
+        />
+      }
     </Loader>
 
   )

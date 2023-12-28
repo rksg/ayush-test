@@ -3,7 +3,6 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, showActionModal, Table, TableProps, Loader } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import { useDeleteWebAuthTemplateMutation, useWebAuthTemplateListQuery }  from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -31,7 +30,6 @@ const getNetworkSegAuthPayload = {
 
 export default function NetworkSegAuthTable () {
   const { $t } = useIntl()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const navigate = useNavigate()
   const location = useLocation()
   const basePath = useTenantLink('')
@@ -116,7 +114,7 @@ export default function NetworkSegAuthTable () {
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Network Segmentation Auth Page for Switch' }),
+            entityName: $t({ defaultMessage: 'Personal Identity Network Auth Page for Switch' }),
             entityValue: rows.length === 1 ? rows[0].name : undefined,
             numOfEntities: rows.length
           },
@@ -148,12 +146,10 @@ export default function NetworkSegAuthTable () {
 
   return (<>
     <PageHeader
-      title={$t({ defaultMessage: 'Network Segmentation Auth Page for Switch ({count})' },
+      title={$t({ defaultMessage: 'Personal Identity Network Auth Page for Switch ({count})' },
         { count: tableQuery.data?.totalCount })}
-      breadcrumb={isNavbarEnhanced ? [
+      breadcrumb={[
         { text: $t({ defaultMessage: 'Network Control' }) },
-        { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
-      ] : [
         { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
       ]}
       extra={filterByAccess([
@@ -161,7 +157,7 @@ export default function NetworkSegAuthTable () {
           to={getServiceRoutePath({
             type: ServiceType.WEBAUTH_SWITCH, oper: ServiceOperation.CREATE
           })}>
-          <Button type='primary'>{$t({ defaultMessage: 'Add Auth Page' })}</Button>
+          <Button type='primary'>{$t({ defaultMessage: 'Add Auth Page Template' })}</Button>
         </TenantLink>
       ])} />
     <Loader states={[tableQuery]}>

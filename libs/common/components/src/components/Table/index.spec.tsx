@@ -1,15 +1,21 @@
 import { useState } from 'react'
 
-import userEvent from '@testing-library/user-event'
+import userEvent         from '@testing-library/user-event'
+import { BrowserRouter } from 'react-router-dom'
 
 import { DownloadOutlined }                                                                 from '@acx-ui/icons'
 import { render, fireEvent, screen, within, mockDOMSize, findTBody, waitFor, cleanup, act } from '@acx-ui/test-utils'
 
-import { columns as filteredColumns, data as filteredData } from './stories/FilteredTable'
-import { GroupTable }                                       from './stories/GroupTable'
-import { defaultColumnWidth, settingsKeyWidth }             from './useColumnsState'
+import {
+  columns as filteredColumns,
+  data as filteredData,
+  RecordType,
+  dataWithStatus
+} from './stories/FilteredTable'
+import { GroupTable }                           from './stories/GroupTable'
+import { defaultColumnWidth, settingsKeyWidth } from './useColumnsState'
 
-import { Table, TableProps } from '.'
+import { Table, TableProps, NestedTableExpandableDefaultConfig } from '.'
 
 const { type, clear } = userEvent
 
@@ -137,6 +143,68 @@ describe('Table component', () => {
     expect(alert).toBeVisible()
     rerender(<Table {...props} tableAlertRender={false} />)
     expect(alert).not.toBeVisible()
+  })
+
+  it('renders stickyPagination table', () => {
+    const { asFragment } = render(<div id='root'><Table
+      type='tall'
+      columns={testColumns}
+      dataSource={testData}
+    /></div>)
+    expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('renders nested table', async () => {
+    const expandedRowRender = () => {
+      const columns: TableProps<typeof data[0]>['columns'] = [
+        { title: 'Date', dataIndex: 'date', key: 'date' },
+        { title: 'Name', dataIndex: 'name', key: 'name' },
+        { title: 'Upgrade Status', dataIndex: 'upgradeNum', key: 'upgradeNum' }
+      ]
+
+      const data = [{
+        key: '1',
+        date: '2014-12-24 23:12:00',
+        name: 'This is production name',
+        upgradeNum: 'Upgraded: 56'
+      }, {
+        key: '2',
+        date: '2014-12-24 23:18:00',
+        name: 'This is production name',
+        upgradeNum: 'Upgraded: 57'
+      }, {
+        key: '3',
+        date: '2014-12-24 23:25:00',
+        name: 'This is production name',
+        upgradeNum: 'Upgraded: 58'
+      }]
+
+      return <Table columns={columns} dataSource={data} stickyHeaders={false} />
+    }
+
+    const { asFragment } = render(<div id='root'>
+      <Table
+        columns={testColumns}
+        expandable={{
+          ...NestedTableExpandableDefaultConfig,
+          expandedRowRender,
+          defaultExpandedRowKeys: ['1']
+        }}
+        dataSource={testData}
+        pagination={false}
+      />
+    </div>)
+
+    expect(asFragment()).toMatchSnapshot()
+    expect(await screen.findAllByTestId('MinusSquareOutlined')).toHaveLength(1)
+    expect(await screen.findAllByTestId('PlusSquareOutlined')).toHaveLength(2)
+
+    const row1 = await screen.findByRole('row', { name: /Jane/i })
+    await userEvent.click(await within(row1).findByTestId('PlusSquareOutlined'))
+    expect(await screen.findAllByTestId('PlusSquareOutlined')).toHaveLength(1)
+
+    await userEvent.click(await within(row1).findByTestId('MinusSquareOutlined'))
+    expect(await screen.findAllByTestId('PlusSquareOutlined')).toHaveLength(2)
   })
 
   it('shows search/filter when no selected bar and row selected', async () => {
@@ -764,6 +832,18 @@ describe('Table component', () => {
       expect(await tbody.findAllByRole('checkbox')).toHaveLength(4)
     })
 
+
+    it('Enabled the flag: alwaysShowFilters', async () => {
+      render(<Table
+        columns={filteredColumns}
+        dataSource={filteredData}
+        alwaysShowFilters={true}
+        rowSelection={{ defaultSelectedRowKeys: ['1'] }}
+      />)
+      expect(await screen.findByPlaceholderText(
+        'Search Name, Given Name, Surname, Description, Address')).toBeVisible()
+    })
+
     it('filtering inputs & searching', async () => {
       render(<Table
         columns={filteredColumns}
@@ -796,6 +876,49 @@ describe('Table component', () => {
       expect(after).toHaveLength(1)
       expect(await screen.findByRole('img', { name: 'check', hidden: true }))
         .toBeInTheDocument()
+    })
+
+    it('test Coordinated filters', async () => {
+      const testFilteredColumns = filteredColumns.map(col => ({
+        ...col,
+        ...(col.key === 'name' ? { coordinatedKeys: ['age'] } : {})
+      }))
+      render(<Table
+        columns={testFilteredColumns}
+        dataSource={filteredData}
+        rowSelection={{ selectedRowKeys: [] }}
+      />)
+
+      const tbody = await findTBody()
+      expect(tbody).toBeVisible()
+      const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
+      expect(filters).toHaveLength(2)
+
+      const [ nameFilter, ageFilter ] = filters
+      fireEvent.keyDown(nameFilter, { key: 'John Doe', code: 'John Doe' })
+      let filteredOptions = await screen.findAllByTestId('option-John Doe')
+      expect(filteredOptions).toHaveLength(1)
+      fireEvent.click(filteredOptions[0])
+
+      fireEvent.keyDown(ageFilter, { key: '32', code: '32' })
+      filteredOptions = await screen.findAllByTestId('option-32')
+      expect(filteredOptions).toHaveLength(1)
+      fireEvent.click(filteredOptions[0])
+
+      // eslint-disable-next-line testing-library/no-node-access
+      const selection = document.querySelectorAll('.ant-select-selection-item')
+      expect(selection).toHaveLength(2)
+
+      fireEvent.keyDown(nameFilter, { key: 'Sam Smith', code: 'Sam Smith' })
+      filteredOptions = await screen.findAllByTestId('option-Sam Smith')
+      expect(filteredOptions).toHaveLength(1)
+      fireEvent.click(filteredOptions[0])
+
+      await waitFor(() => {
+        // eslint-disable-next-line testing-library/no-node-access
+        const selection = document.querySelectorAll('.ant-select-selection-item')
+        expect(selection).toHaveLength(1)
+      })
     })
 
     it('should highlight when search', async () => {
@@ -1231,6 +1354,61 @@ describe('Table component', () => {
       expect(targetElems).toHaveLength(1)
 
       jest.useRealTimers()
+    })
+  })
+  describe('checkbox and range picker filter', () => {
+    it('should render checkbox and range picker  filter', async () => {
+      const columns: TableProps<RecordType>['columns'] = [
+        {
+          title: 'Name',
+          dataIndex: 'name',
+          key: 'name'
+        },
+        {
+          title: 'Age',
+          dataIndex: 'age',
+          key: 'age',
+          align: 'center'
+        },
+        {
+          title: 'Description',
+          dataIndex: 'description',
+          key: 'description'
+        },
+        {
+          title: 'Address',
+          dataIndex: 'address',
+          key: 'address'
+        },
+        {
+          title: 'Status',
+          dataIndex: 'status',
+          key: 'status',
+          align: 'center',
+          filterComponent: { type: 'checkbox', label: 'Show online users' },
+          filterKey: 'status',
+          defaultFilteredValue: [false],
+          filterable: true,
+          render: function (_, row) {
+            return row.status === 'true' ? 'Online' : 'Offline'
+          }
+        },
+        {
+          title: 'Date of Employment',
+          dataIndex: 'hiredate',
+          key: 'hiredate',
+          align: 'center',
+          filterable: true,
+          filterKey: 'hiredate',
+          filterMultiple: false,
+          filterComponent: { type: 'rangepicker' }
+        }
+      ]
+      render(<BrowserRouter><Table
+        columns={columns}
+        dataSource={dataWithStatus}
+        enableApiFilter={true}
+      /></BrowserRouter>)
     })
   })
 })

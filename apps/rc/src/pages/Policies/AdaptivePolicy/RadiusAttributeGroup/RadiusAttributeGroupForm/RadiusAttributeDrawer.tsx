@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Drawer }              from '@acx-ui/components'
+import { RadiusAttributeForm } from '@acx-ui/rc/components'
 import { AttributeAssignment } from '@acx-ui/rc/utils'
 
-import { RadiusAttributeForm } from './RadiusAttributeForm'
 
 interface RadiusAttributeDrawerProps {
   visible: boolean
@@ -24,12 +24,6 @@ export function RadiusAttributeDrawer (props: RadiusAttributeDrawerProps) {
   const [form] = Form.useForm()
   const [resetField, setResetField] = useState(false)
 
-  useEffect(() => {
-    if (editAttribute && visible) {
-      form.setFieldsValue(editAttribute)
-    }
-  }, [editAttribute, visible])
-
   const onClose = () => {
     setVisible(false)
     form.resetFields()
@@ -45,7 +39,7 @@ export function RadiusAttributeDrawer (props: RadiusAttributeDrawerProps) {
       await form.validateFields()
       const data = form.getFieldsValue()
       setAttributeAssignments(data)
-      onClose()
+      resetFields()
     } catch (e) {
       console.log(e) // eslint-disable-line no-console
     }

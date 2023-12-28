@@ -4,6 +4,7 @@ const nxPreset = require('@nrwl/jest/preset')
 const esModules = [
   'd3',
   'd3-array',
+  'csv-stringify',
   'InternMap',
   'react-dnd',
   'dnd-core',
@@ -14,6 +15,7 @@ const esModules = [
 module.exports = {
   ...nxPreset,
   moduleNameMapper: {
+    "^csv-stringify/browser/esm/sync": "node_modules/csv-stringify/dist/umd/sync.js",
     '^antd/es/(.*)$': `${__dirname}/node_modules/antd/lib/$1`,
     '^d3-(.*)$': `d3-$1/dist/d3-$1`
   },

@@ -7,7 +7,11 @@ import { useParams }             from 'react-router-dom'
 import { StepsFormLegacy }                                from '@acx-ui/components'
 import { MdnsProxyForwardingRulesTable, RULES_MAX_COUNT } from '@acx-ui/rc/components'
 import { useLazyGetMdnsProxyListQuery }                   from '@acx-ui/rc/services'
-import { checkObjectNotExists, MdnsProxyForwardingRule }  from '@acx-ui/rc/utils'
+import {
+  checkObjectNotExists,
+  MdnsProxyForwardingRule,
+  servicePolicyNameRegExp
+}  from '@acx-ui/rc/utils'
 
 import MdnsProxyFormContext from './MdnsProxyFormContext'
 import * as UI              from './styledComponents'
@@ -52,7 +56,8 @@ export function MdnsProxySettingsForm () {
             { required: true },
             { min: 2 },
             { max: 32 },
-            { validator: (_, value) => nameValidator(value) }
+            { validator: (_, value) => nameValidator(value) },
+            { validator: (_, value) => servicePolicyNameRegExp(value) }
           ]}
           validateFirst
           hasFeedback
@@ -68,18 +73,20 @@ export function MdnsProxySettingsForm () {
             $t({ defaultMessage: 'Forwarding Rules ({count})' }, { count: rules?.length ?? 0 })
           }
         >
-          <UI.TableSubLabel>
-            {$t({
-              defaultMessage: 'Up to {maxCount} rules may be added'
-            }, {
-              maxCount: RULES_MAX_COUNT
-            })}
-          </UI.TableSubLabel>
-          <MdnsProxyForwardingRulesTable
-            readonly={false}
-            rules={rules}
-            setRules={handleSetRules}
-          />
+          <>
+            <UI.TableSubLabel>
+              {$t({
+                defaultMessage: 'Up to {maxCount} rules may be added'
+              }, {
+                maxCount: RULES_MAX_COUNT
+              })}
+            </UI.TableSubLabel>
+            <MdnsProxyForwardingRulesTable
+              readonly={false}
+              rules={rules}
+              setRules={handleSetRules}
+            />
+          </>
         </Form.Item>
       </Col>
     </Row>

@@ -9,8 +9,8 @@ import {
   Loader,
   TableColumn
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                                 from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }                                                                        from '@acx-ui/rc/components'
+import { Features, useIsTierAllowed }                                                               from '@acx-ui/feature-toggle'
+import { SimpleListTooltip, useDpskNewConfigFlowParams }                                            from '@acx-ui/rc/components'
 import { doProfileDelete, useDeleteDpskMutation, useGetEnhancedDpskListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -46,12 +46,13 @@ export default function DpskTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteDpsk ] = useDeleteDpskMutation()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedDpskListQuery,
     defaultPayload,
-    search: defaultSearch
+    search: defaultSearch,
+    apiParams: dpskNewConfigFlowParams
   })
 
   const doDelete = (selectedRow: DpskSaveData, callback: () => void) => {
@@ -60,10 +61,12 @@ export default function DpskTable () {
       intl.$t({ defaultMessage: 'DPSK Service' }),
       selectedRow.name,
       [
-        { fieldName: 'identityId', fieldText: intl.$t({ defaultMessage: 'Persona' }) },
+        { fieldName: 'identityId', fieldText: intl.$t({ defaultMessage: 'Identity' }) },
         { fieldName: 'networkIds', fieldText: intl.$t({ defaultMessage: 'Network' }) }
       ],
-      async () => deleteDpsk({ params: { serviceId: selectedRow.id } }).then(callback)
+      async () => deleteDpsk({
+        params: { serviceId: selectedRow.id, ...dpskNewConfigFlowParams }
+      }).then(callback)
     )
   }
 
@@ -88,16 +91,13 @@ export default function DpskTable () {
   ]
 
   const breadCrumb = !hasRoles(RolesEnum.DPSK_ADMIN)
-    ? (isNavbarEnhanced ? [
+    ? [
       { text: intl.$t({ defaultMessage: 'Network Control' }) },
       {
         text: intl.$t({ defaultMessage: 'My Services' }),
         link: getServiceListRoutePath(true)
       }
-    ] : [{
-      text: intl.$t({ defaultMessage: 'My Services' }),
-      link: getServiceListRoutePath(true)
-    }])
+    ]
     : []
 
   const title = !hasRoles(RolesEnum.DPSK_ADMIN)

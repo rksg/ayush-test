@@ -1,7 +1,6 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
   HistoricalCard,
   Loader,
@@ -9,8 +8,9 @@ import {
   DonutChart,
   qualitativeColorSet
 } from '@acx-ui/components'
-import type { DonutChartData } from '@acx-ui/components'
-import { formatter }           from '@acx-ui/formatter'
+import type { DonutChartData }  from '@acx-ui/components'
+import { formatter }            from '@acx-ui/formatter'
+import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import { HierarchyNodeData, useTopAppsByTrafficQuery } from './services'
 

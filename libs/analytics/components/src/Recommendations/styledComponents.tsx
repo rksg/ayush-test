@@ -1,76 +1,49 @@
-import styled from 'styled-components'
+import { Badge as AntBadge } from 'antd'
+import styled                from 'styled-components'
 
 import { Table, TableProps } from '@acx-ui/components'
 
-import { RecommendationRow } from './table'
+import { mutedStyles } from '../IncidentTable/styledComponents'
 
-const colors = [
+import { RecommendationListItem } from './services'
+
+export const colors = [
   '--acx-semantics-yellow-30',
   '--acx-semantics-yellow-60',
   '--acx-semantics-red-60'
 ]
 
-export const withDottedUnderline = `
-  text-decoration: dotted underline;
-  // below css will hide the default safari tooltip
-  :after {
-    content: '';
-    display: block;
-  }
-`
-export const UnderlinedSpan = styled.span<{ $statusEnum?: string }>`
-  ${withDottedUnderline}
+export const optimizedColors = [
+  '--acx-semantics-green-60',
+  '--acx-semantics-red-60',
+  '--acx-neutrals-50'
+]
+
+export const Status = styled.span<{ $statusEnum?: string }>`
   ${props => props.$statusEnum === 'applywarning' && 'color: var(--acx-semantics-red-50);'}
 `
 
-export const Priority = styled.div`
-  display: flex;
-  align-items: center
-`
-export const PriorityIcon = styled.span.attrs((props: { value: number }) => props)`
-  display: flex;
-  margin-right: 5px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: var(${props => colors[props.value]});
-`
+interface IconProps {
+  value: number
+  text?: string
+}
+export const PriorityIcon = styled(AntBadge).attrs((props: IconProps) => ({
+  color: `var(${colors[props.value]})`,
+  text: props.text
+}))<IconProps>``
+
+export const OptimizedIcon = styled(AntBadge)
+  .attrs((props: IconProps) => ({ color: `var(${optimizedColors[props.value]})` }))<IconProps>``
 
 export const RecommendationTableWrapper =
-styled((props: TableProps<RecommendationRow>) => <Table {...props} />)`
-  --recommendation-table-muted-row-font-color: var(--acx-neutrals-40);
-  --recommendation-table-muted-row-background-color: var(--acx-neutrals-20);
+styled((props: TableProps<RecommendationListItem>) => <Table {...props} />)`
+  ${mutedStyles}
+`
 
-  .table-row-muted {
-    color: var(--recommendation-table-muted-row-font-color);
-    background-color: var(--recommendation-table-muted-row-background-color);
-  }
+export const OptimizationHeader = styled.div`
+  display: flex;
+`
 
-  && tbody > tr.table-row-muted:hover > td {
-    background: var(--recommendation-table-muted-row-background-color);
-  }
-
-  .ant-table-row-selected.table-row-muted {
-    background-color: var(--recommendation-table-muted-row-background-color);
-  }
-
-  .table-row-muted .ant-table-cell {
-    background-color: var(--recommendation-table-muted-row-background-color);
-  }
-
-  .ant-table-row.table-row-muted:hover {
-    background-color: var(--recommendation-table-muted-row-background-color);
-  }
-
-  .table-row-muted .ant-table-cell-row-hover {
-    background-color: var(--recommendation-table-muted-row-background-color);
-  }
-
-  .ant-radio-inner {
-    background-color: var(--acx-primary-white);
-  }
-
-  .ant-table-content {
-    overflow: unset !important;
-  }
+export const OptimizationTooltip = styled.div`
+  padding-left: 8px;
 `

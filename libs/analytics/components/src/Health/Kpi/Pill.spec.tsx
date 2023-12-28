@@ -1,10 +1,11 @@
 import userEvent from '@testing-library/user-event'
 
-import { healthApi }                                from '@acx-ui/analytics/services'
-import { AnalyticsFilter, kpiConfig, productNames } from '@acx-ui/analytics/utils'
-import { dataApiURL, Provider, store }              from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen }         from '@acx-ui/test-utils'
-import { DateRange, getIntl }                       from '@acx-ui/utils'
+import { healthApi }                        from '@acx-ui/analytics/services'
+import { kpiConfig, productNames }          from '@acx-ui/analytics/utils'
+import { dataApiURL, Provider, store }      from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
+import { DateRange, getIntl }               from '@acx-ui/utils'
+import type { AnalyticsFilter }             from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 

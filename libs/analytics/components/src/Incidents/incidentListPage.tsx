@@ -1,7 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { useAnalyticsFilter, AnalyticsFilter } from '@acx-ui/analytics/utils'
-import { GridRow, GridCol }                    from '@acx-ui/components'
+import { useAnalyticsFilter }   from '@acx-ui/analytics/utils'
+import { GridRow, GridCol }     from '@acx-ui/components'
+import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import { Header }             from '../Header'
 import { IncidentBySeverity } from '../IncidentBySeverity'
@@ -10,10 +11,9 @@ import { NetworkHistory }     from '../NetworkHistory'
 
 export const IncidentTabContent = (props: {
   filters?: AnalyticsFilter,
-  disableGraphs?: boolean,
-  systemNetwork?: boolean
+  disableGraphs?: boolean
 }) => {
-  const { filters: widgetFilters, disableGraphs, systemNetwork } = props
+  const { filters: widgetFilters, disableGraphs } = props
   const { filters } = useAnalyticsFilter()
   const incidentsPageFilters = widgetFilters ? widgetFilters : filters
   return (
@@ -27,7 +27,7 @@ export const IncidentTabContent = (props: {
         </GridCol>
       </>}
       <GridCol col={{ span: 24 }} style={{ minHeight: '180px' }}>
-        <IncidentTable filters={incidentsPageFilters} systemNetwork={systemNetwork} />
+        <IncidentTable filters={incidentsPageFilters} />
       </GridCol>
     </GridRow>
   )

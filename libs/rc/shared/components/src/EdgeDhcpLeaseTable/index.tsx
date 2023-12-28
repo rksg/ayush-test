@@ -10,6 +10,7 @@ import { RequestPayload }                                    from '@acx-ui/types
 
 interface EdgeDhcpLeaseTableProps {
   edgeId?: string
+  isInfinite?: boolean
 }
 
 export const EdgeDhcpLeaseTable = (props: EdgeDhcpLeaseTableProps) => {
@@ -37,10 +38,10 @@ export const EdgeDhcpLeaseTable = (props: EdgeDhcpLeaseTableProps) => {
     {
       skip: !!!props.edgeId,
       selectFromResult: ({ data }) => ({
-        dhcpPoolOptions: data?.dhcpPools.map(pool => ({
+        dhcpPoolOptions: data?.dhcpPools?.map(pool => ({
           key: pool.poolName,
           value: pool.poolName
-        }))
+        })) ?? []
       })
     }
   )
@@ -48,10 +49,6 @@ export const EdgeDhcpLeaseTable = (props: EdgeDhcpLeaseTableProps) => {
   const genExpireTimeString = (seconds?: number) => {
     const days = seconds && seconds > 0 ? Math.floor(seconds/86400) : 0
     const lessThanADaySec = seconds && seconds > 0 ? Math.floor(seconds%86400) : 0
-    if(days >= 1440 && lessThanADaySec > 0) {
-      // rather than 1440 days means infinite
-      return $t({ defaultMessage: 'Infinite' })
-    }
     return $t(
       { defaultMessage: '{days, plural, =0 {} one {# Day} other {# Days}} {time}' },
       {
@@ -114,7 +111,10 @@ export const EdgeDhcpLeaseTable = (props: EdgeDhcpLeaseTableProps) => {
       title: $t({ defaultMessage: 'Lease expires in...' }),
       key: 'hostRemainingTime',
       dataIndex: 'hostRemainingTime',
-      render: (_, { hostRemainingTime }) => genExpireTimeString(hostRemainingTime)
+      render: (_, { hostRemainingTime }) => {
+        if(props.isInfinite) return $t({ defaultMessage: 'Infinite' })
+        return genExpireTimeString(hostRemainingTime)
+      }
     }
   ]
 

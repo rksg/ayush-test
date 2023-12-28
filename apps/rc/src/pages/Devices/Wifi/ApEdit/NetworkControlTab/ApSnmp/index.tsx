@@ -3,7 +3,7 @@ import { useEffect, useState, useContext, useRef } from 'react'
 import { Form, Select, Switch, Row, Button, Col, Space } from 'antd'
 import { useIntl }                                       from 'react-intl'
 
-import { Loader, StepsFormLegacy, showToast, StepsFormLegacyInstance, showActionModal } from '@acx-ui/components'
+import { Loader, StepsFormLegacy, showToast, StepsFormLegacyInstance, showActionModal, AnchorContext } from '@acx-ui/components'
 import {
   useGetApSnmpPolicyListQuery,
   useGetApSnmpSettingsQuery,
@@ -53,6 +53,7 @@ export function ApSnmp () {
   } = useContext(ApEditContext)
 
   const { apData: apDetails } = useContext(ApDataContext)
+  const { setReadyToScroll } = useContext(AnchorContext)
 
   const formRef = useRef<StepsFormLegacyInstance<ApSnmpSettings>>()
   const isUseVenueSettingsRef = useRef<boolean>(false)
@@ -97,6 +98,8 @@ export function ApSnmp () {
         setIsUseVenueSettings(apSnmp.useVenueSettings)
         isUseVenueSettingsRef.current = apSnmp.useVenueSettings
         setFormInitializing(false)
+
+        setReadyToScroll?.(r => [...(new Set(r.concat('AP-SNMP')))])
       }
       setData()
     }
@@ -137,7 +140,7 @@ export function ApSnmp () {
     })
 
     // Reset all the states and make it identical to the database state
-    setApSnmpSettings(apSnmpSettings)
+    setApSnmpSettings(apSnmpSettings => apSnmpSettings)
     setIsApSnmpEnable(apSnmpSettings.enableApSnmp)
     setIsUseVenueSettings(apSnmpSettings.useVenueSettings)
     isUseVenueSettingsRef.current = apSnmpSettings.useVenueSettings

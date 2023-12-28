@@ -7,8 +7,8 @@ import {
   SpeedIndicatorOutlined,
   SpeedIndicatorSolid
 } from '@acx-ui/icons'
-import { TenantType }                              from '@acx-ui/react-router-dom'
-import { fireEvent, act, render, screen, waitFor } from '@acx-ui/test-utils'
+import { TenantType }                                      from '@acx-ui/react-router-dom'
+import { fireEvent, act, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import menuConfig   from './stories/menuConfig'
 import { LayoutUI } from './styledComponents'
@@ -69,7 +69,7 @@ describe('Layout', () => {
     await screen.findByTestId('SpeedIndicatorOutlined')
     expect(asFragment()).toMatchSnapshot()
   })
-  it('should collapsed', async () => {
+  it('should collapse', async () => {
     render(<Layout
       logo={<div />}
       menuConfig={menuConfig}
@@ -78,8 +78,10 @@ describe('Layout', () => {
       content={<div>content</div>}
     />, { route })
     await screen.findByTestId('AIOutlined')
+    const menus = await screen.findAllByRole('menu')
+    expect(menus).toHaveLength(2)
     fireEvent.click(screen.getByText('Collapse'))
-    await screen.findByTestId('ArrowChevronRight')
+    await within(menus[1]).findByTestId('ArrowChevronRight')
   })
   it('should render corresponding icons', async () => {
     render(<Layout
@@ -112,12 +114,81 @@ describe('Layout', () => {
       content={<div>content</div>}
     />, {
       route: {
-        path: '/analytics/next/dashboard',
+        path: '/ai/dashboard',
         params: { page: 'dashboard' },
         wrapRoutes: false
       }
     })
     await screen.findByTestId('SpeedIndicatorSolid')
+  })
+  it('should render correctly when adminItem = true', async () => {
+    const config = [
+      {
+        uri: '/dashboard',
+        label: 'Dashboard',
+        inactiveIcon: SpeedIndicatorOutlined,
+        activeIcon: SpeedIndicatorSolid,
+        adminItem: true
+      }
+    ]
+    const { asFragment } = render(<Layout
+      logo={<div />}
+      menuConfig={config}
+      leftHeaderContent={<div>Left header</div>}
+      rightHeaderContent={<div>Right header</div>}
+      content={<div>content</div>}
+    />, {
+      route: {
+        path: '/ai/dashboard',
+        params: { page: 'dashboard' },
+        wrapRoutes: false
+      }
+    })
+    await waitFor(() => screen.findByText('Left header'))
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should render correctly when openNewTab = true', async () => {
+    get.mockReturnValue('true')
+    const config = [
+      {
+        uri: '/analytics/dashboard',
+        label: 'Dashboard',
+        inactiveIcon: SpeedIndicatorOutlined,
+        activeIcon: SpeedIndicatorSolid,
+        openNewTab: true
+      }
+    ]
+    const { asFragment } = render(<Layout
+      logo={<div />}
+      menuConfig={config}
+      leftHeaderContent={<div>Left header</div>}
+      rightHeaderContent={<div>Right header</div>}
+      content={<div>content</div>}
+    />, {
+      route: {
+        path: '/ai/dashboard',
+        params: { page: 'dashboard' },
+        wrapRoutes: false
+      }
+    })
+    await waitFor(() => screen.findByText('Left header'))
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should render IframeContent when location pathname has "dataStudio"', async () => {
+    render(<Layout
+      logo={<div />}
+      menuConfig={menuConfig}
+      leftHeaderContent={<LayoutUI.DropdownText>Left header</LayoutUI.DropdownText>}
+      rightHeaderContent={<div>Right header</div>}
+      content={<div>content</div>}
+    />, {
+      route: {
+        path: '/some/path/dataStudio',
+        params: { page: 'dashboard' },
+        wrapRoutes: false
+      }
+    })
+    await waitFor(() => screen.findByText('Left header'))
   })
   it('should render correctly when innerWidth >= 1280', async () => {
     render(<Layout

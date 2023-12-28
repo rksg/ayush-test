@@ -166,7 +166,7 @@ describe('videoCallQoeTestDetails', () => {
       data: searchClientsFixture
     })
     const { status, data, error } = await store.dispatch(
-      clientSearchApi.endpoints.seachClients.initiate(searchPayload))
+      clientSearchApi.endpoints.searchClients.initiate(searchPayload))
 
     expect(error).toBeUndefined()
     expect(status).toBe('fulfilled')

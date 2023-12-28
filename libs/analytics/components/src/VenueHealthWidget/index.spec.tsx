@@ -1,8 +1,8 @@
 import { healthApi }                        from '@acx-ui/analytics/services'
-import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
 import { dataApiURL, Provider, store }      from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'
+import type { AnalyticsFilter }             from '@acx-ui/utils'
 
 import { VenueHealth } from './index'
 

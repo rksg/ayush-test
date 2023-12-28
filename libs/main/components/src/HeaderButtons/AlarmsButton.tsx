@@ -26,11 +26,20 @@ export default function AlarmsHeaderButton () {
     }
   }
 
+  const getOffset = function (totalCount: number) {
+    if(totalCount >= 1000){
+      return -9
+    }else if(totalCount >= 100){
+      return -6
+    }
+    return -3
+  }
+
   return <>
     <Badge
       count={getCount()}
-      overflowCount={9}
-      offset={[-3, 0]}
+      overflowCount={999}
+      offset={[getOffset(getCount()), 0]}
       children={<LayoutUI.ButtonSolid
         icon={<NotificationSolid />}
         onClick={()=> setVisible(!visible)}

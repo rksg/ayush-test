@@ -1,4 +1,6 @@
 /* eslint-disable max-len */
+import { SwitchPortViewModel } from '@acx-ui/rc/utils'
+
 export const selectedPorts = [{
   adminStatus: 'Down',
   broadcastIn: '0',
@@ -115,7 +117,7 @@ export const selectedPorts = [{
   unitStatus: 'Standalone',
   usedInFormingStack: false,
   vlanIds: '1'
-}]
+}] as SwitchPortViewModel[]
 
 export const switchDetailHeader = {
   activeSerial: 'FEK3224R0AG',
@@ -218,6 +220,32 @@ export const switchVlanUnion = {
     { switchId: 'c0:c5:20:aa:32:79', vlanConfigName: '999', profileLevel: false, defaultVlan: false, vlanId: 999 }
   ]
 }
+
+export const singleVlansByVenue = [
+  {
+    id: '7d313d9b1a9140e49b6b61bb820c83f5',
+    vlanId: 21,
+    ipv4DhcpSnooping: false,
+    arpInspection: false,
+    igmpSnooping: 'none',
+    spanningTreeProtocol: 'none',
+    spanningTreePriority: 32768,
+    switchFamilyModels: [
+      {
+        id: '04c9f1ef13d649b8b54da80c40b6a1a6',
+        model: 'ICX7150-C12P',
+        taggedPorts: '1/1/2',
+        untaggedPorts: '1/1/5',
+        slots: [
+          {
+            slotNumber: 1,
+            enable: true
+          }
+        ]
+      }
+    ]
+  }
+]
 
 export const vlansByVenue = [{
   arpInspection: true,

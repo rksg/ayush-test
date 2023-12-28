@@ -4,7 +4,7 @@ import { defineMessage } from 'react-intl'
 export const apGroupKeyMap = [
   { id: 1, value: 'configurationMessage.clusterInfo.tenantInfos.domainMessage.zoneInfos.zoneName.apGroupInfos.apGroupName', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 2, value: 'initialState.CcmApGroup.id', text: 'NA', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
-  { id: 3, value: 'initialState.CcmApGroup.name', text: defineMessage({ defaultMessage: 'Name' }), textAlto: defineMessage({ defaultMessage: 'Name' }), enumType: '', incidents: {}, kpis: {} },
+  { id: 3, value: 'initialState.CcmApGroup.name', text: defineMessage({ defaultMessage: 'Name' }), textAlto: defineMessage({ defaultMessage: 'AP Group' }), enumType: '', incidents: {}, kpis: {} },
   { id: 4, value: 'initialState.CcmApGroup.common.sci_enabled', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 5, value: 'initialState.CcmApGroup.common.ap_login', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 6, value: 'initialState.CcmApGroup.common.ap_management_vlan_id', text: defineMessage({ defaultMessage: 'AP Management VLAN' }), textAlto: 'TBD', enumType: '', incidents: { 'i-apserv-high-num-reboots': 1, 'i-apserv-continuous-reboots': 1 }, kpis: {} },

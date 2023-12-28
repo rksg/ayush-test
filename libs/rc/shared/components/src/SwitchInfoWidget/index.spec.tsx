@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 import { rest } from 'msw'
 
-import { AnalyticsFilter }                         from '@acx-ui/analytics/utils'
 import { useIsSplitOn }                            from '@acx-ui/feature-toggle'
 import {  Alarm, CommonUrlsInfo, SwitchViewModel } from '@acx-ui/rc/utils'
 import { Provider  }                               from '@acx-ui/store'
@@ -10,7 +9,8 @@ import { render,
   screen,
   fireEvent,
   waitFor } from '@acx-ui/test-utils'
-import { DateRange } from '@acx-ui/utils'
+import { DateRange }            from '@acx-ui/utils'
+import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import { switchDetail, stackDetailData } from './__tests__/fixtures'
 

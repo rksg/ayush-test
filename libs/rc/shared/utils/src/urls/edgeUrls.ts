@@ -114,30 +114,6 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/edges/subInterfaces/query',
     newApi: true
   },
-  getLatestEdgeFirmware: {
-    method: 'get',
-    url: '/edges/upgrade/version/latest',
-    oldUrl: '/api/edges/upgrade/version/latest',
-    newApi: true
-  },
-  getVenueEdgeFirmwareList: {
-    method: 'get',
-    url: '/edges/upgrade/venue',
-    oldUrl: '/api/edges/upgrade/venue',
-    newApi: true
-  },
-  getAvailableEdgeFirmwareVersions: {
-    method: 'get',
-    url: '/edges/upgrade/version',
-    oldUrl: '/api/edges/upgrade/version',
-    newApi: true
-  },
-  updateEdgeFirmware: {
-    method: 'post',
-    url: '/edges/upgrade/updateNow',
-    oldUrl: '/api/edges/upgrade/updateNow',
-    newApi: true
-  },
   reboot: {
     method: 'post',
     url: '/edges/:serialNumber/reboot',
@@ -221,6 +197,61 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   importSubInterfacesCSV: {
     method: 'post',
     url: '/edges/:serialNumber/ports/:mac/subInterfaces',
+    newApi: true
+  },
+  getEdgeLagStatusList: {
+    method: 'post',
+    url: '/edges/:serialNumber/linkAggregationGroups/query',
+    newApi: true
+  },
+  getEdgeLagList: {
+    method: 'get',
+    url: '/edges/:serialNumber/linkAggregationGroups',
+    newApi: true
+  },
+  addEdgeLag: {
+    method: 'post',
+    url: '/edges/:serialNumber/linkAggregationGroups',
+    newApi: true
+  },
+  updateEdgeLag: {
+    method: 'put',
+    url: '/edges/:serialNumber/linkAggregationGroups/:lagId',
+    newApi: true
+  },
+  deleteEdgeLag: {
+    method: 'delete',
+    url: '/edges/:serialNumber/linkAggregationGroups/:lagId',
+    newApi: true
+  },
+  getLagSubInterfaces: {
+    method: 'get',
+    url: '/edges/:serialNumber/linkAggregationGroups/:lagId/subInterfaces',
+    newApi: true
+  },
+  addLagSubInterfaces: {
+    method: 'post',
+    url: '/edges/:serialNumber/linkAggregationGroups/:lagId/subInterfaces',
+    newApi: true
+  },
+  updateLagSubInterfaces: {
+    method: 'PATCH',
+    url: '/edges/:serialNumber/linkAggregationGroups/:lagId/subInterfaces/:subInterfaceId',
+    newApi: true
+  },
+  deleteLagSubInterfaces: {
+    method: 'delete',
+    url: '/edges/:serialNumber/linkAggregationGroups/:lagId/subInterfaces/:subInterfaceId',
+    newApi: true
+  },
+  importLagSubInterfacesCSV: {
+    method: 'post',
+    url: '/edges/:serialNumber/linkAggregationGroups/:lagId/subInterfaces',
+    newApi: true
+  },
+  getLagSubInterfacesStatus: {
+    method: 'post',
+    url: '/edges/:serialNumber/linkAggregationGroups/query?isSubInterface=true',
     newApi: true
   }
 }

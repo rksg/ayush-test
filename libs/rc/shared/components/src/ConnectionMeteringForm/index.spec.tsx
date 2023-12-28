@@ -1,6 +1,7 @@
 
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
+import { Path }  from 'react-router-dom'
 
 import { useIsSplitOn }                                                                                   from '@acx-ui/feature-toggle'
 import { ConnectionMetering, ConnectionMeteringUrls, NewTablePageable, NewTableResult, BillingCycleType } from '@acx-ui/rc/utils'
@@ -90,6 +91,19 @@ const list : NewTableResult<ConnectionMetering> = {
 
 const paginationPattern = '?size=:pageSize&page=:page&sort=:sort'
 export const replacePagination = (url: string) => url.replace(paginationPattern, '')
+
+const mockedUseNavigate = jest.fn()
+const mockedTenantPath: Path = {
+  pathname: 't/__tenantId__',
+  search: '',
+  hash: ''
+}
+
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUseNavigate,
+  useTenantLink: (): Path => mockedTenantPath
+}))
 
 describe('ConnectionMeteringForm', () => {
   const createConnectionMeteringApi = jest.fn()

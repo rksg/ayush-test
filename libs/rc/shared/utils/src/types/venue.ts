@@ -1,14 +1,22 @@
 import { Key } from 'react'
 
-import { APMeshRole, ApDeviceStatusEnum, CellularNetworkSelectionEnum, LteBandRegionEnum, WanConnectionEnum } from '../constants'
-import { BandBalancing }                                                                                      from '../models/BandBalancing'
-import { DenialOfServiceProtection }                                                                          from '../models/DenialOfServiceProtection'
-import { Mesh }                                                                                               from '../models/Mesh'
-import { VenueDhcpServiceSetting }                                                                            from '../models/VenueDhcpServiceSetting'
-import { VenueRadioCustomization }                                                                            from '../models/VenueRadioCustomization'
-import { VenueRogueAp }                                                                                       from '../models/VenueRogueAp'
-import { VenueSyslog }                                                                                        from '../models/VenueSyslog'
-
+import {
+  APMeshRole,
+  ApDeviceStatusEnum,
+  CellularNetworkSelectionEnum,
+  LteBandRegionEnum,
+  WanConnectionEnum
+} from '../constants'
+import {
+  BandBalancing,
+  BandModeEnum,
+  DenialOfServiceProtection,
+  Mesh,
+  VenueDhcpServiceSetting,
+  VenueRadioCustomization,
+  VenueRogueAp,
+  VenueSyslog
+} from '../models'
 
 import { ApStatusDetails, LanPort }                  from './ap'
 import { RogueCategory }                             from './policies'
@@ -142,6 +150,28 @@ export interface NetworkDevice {
   meshRole?: APMeshRole;
 }
 
+export interface RogueApLocation {
+  category: string,
+  classificationPolicyName: string,
+  classificationRuleName: string,
+  detectingNodes: DetectingNode[],
+  floorPlanId: string,
+  rogueMac: string,
+  ssid: string,
+  xPercent?: number,
+  yPercent?: number
+}
+
+export interface DetectingNode {
+  apMac: string,
+  floorPlanId: string,
+  name: string,
+  serialNumber: string,
+  snr: number,
+  xPercent: number,
+  yPercent: number
+}
+
 export interface RogueApInfo {
 	deviceColor: string;
     rogueSnrClass?: string;
@@ -218,6 +248,11 @@ export interface VenueLed {
 	manual?: boolean
 }
 
+export interface VenueApModelBandModeSettings {
+	model: string,
+	bandMode: BandModeEnum
+}
+
 export interface VenueBssColoring {
 	bssColoringEnabled: boolean
 }
@@ -279,8 +314,9 @@ export interface VenueExtended {
   disableByMaxReached?: boolean
   mesh: MeshOptions
   dhcp: DhcpOptions
-	id?: string,
-	country: string,
+  id?: string
+  country: string
+  countryCode?: string
   version?: string
 }
 
@@ -359,7 +395,8 @@ export interface SwitchModel {
 	model: string,
 	slots: SwitchModelSlot[],
   taggedPorts?: string,
-  untaggedPorts?: string
+	untaggedPorts?: string,
+	voicePorts?: string
 }
 
 export interface Vlan {
@@ -437,7 +474,8 @@ export interface VenueDefaultRegulatoryChannels {
   },
   '6GChannels': {
     [key: string]: string[]
-  }
+  },
+  'afcEnabled': boolean
 }
 
 export interface VenueDefaultRegulatoryChannelsForm {
@@ -695,19 +733,14 @@ export interface VenueLoadBalancing {
   steeringMode: SteeringModeEnum
 }
 
-export interface VenueClientAdmissionControl {
-	enable24G: boolean,
-	enable50G: boolean,
-	minClientCount24G?: number,
-	minClientCount50G?: number,
-	maxRadioLoad24G?: number,
-	maxRadioLoad50G?: number,
-	minClientThroughput24G?: number,
-	minClientThroughput50G?: number
-}
-
 export interface VenueBssColoring {
 	bssColoringEnabled: boolean
+}
+
+export interface ApManagementVlan {
+	vlanOverrideEnabled: boolean
+	vlanId: number
+	useVenueSettings: boolean
 }
 
 export interface Node {

@@ -22,7 +22,12 @@ import {
   MspProfile,
   MspEcProfile,
   MspPortal,
-  ParentLogoUrl
+  ParentLogoUrl,
+  NewMspEntitlementSummary,
+  MspAggregations,
+  MspEcAlarmList,
+  RecommendFirmwareUpgrade,
+  AvailableMspRecCustomers
 } from '@acx-ui/msp/utils'
 import {
   TableResult,
@@ -33,10 +38,10 @@ import {
   MspEntitlement,
   downloadFile
 } from '@acx-ui/rc/utils'
-import { baseMspApi }                  from '@acx-ui/store'
-import { RequestPayload }              from '@acx-ui/types'
-import { UserUrlsInfo, UserProfile }   from '@acx-ui/user'
-import { createHttpRequest, PverName } from '@acx-ui/utils'
+import { baseMspApi }                                    from '@acx-ui/store'
+import { RequestPayload }                                from '@acx-ui/types'
+import { UserUrlsInfo, UserProfile }                     from '@acx-ui/user'
+import { createHttpRequest, ignoreErrorModal, PverName } from '@acx-ui/utils'
 
 export function useCheckDelegateAdmin () {
   const { $t } = useIntl()
@@ -93,18 +98,21 @@ export const mspApi = baseMspApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'CreateMspEc',
+            'DeleteMspEc',
             'UpdateMspEc',
             'Deactivate MspEc',
             'Reactivate MspEc',
             'Update MSP Admin list',
             'assign MspEc List To delegate',
-            'MspAdminAssociation'
+            'MspAdminAssociation',
+            'AP_FIRMWARE_UPGRADE'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     integratorCustomerList: build.query<TableResult<MspEc>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -119,17 +127,21 @@ export const mspApi = baseMspApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'CreateMspEc',
+            'DeleteMspEc',
             'UpdateMspEc',
             'Deactivate MspEc',
             'Reactivate MspEc',
             'Update MSP Admin list',
-            'assign MspEc List To delegate'
+            'assign MspEc List To delegate',
+            'MspAdminAssociation',
+            'AP_FIRMWARE_UPGRADE'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     deleteMspEc: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -158,7 +170,8 @@ export const mspApi = baseMspApi.injectEndpoints({
             api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     inviteCustomerList: build.query<TableResult<VarCustomer>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -178,7 +191,8 @@ export const mspApi = baseMspApi.injectEndpoints({
             api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     deviceInventoryList: build.query<TableResult<EcDeviceInventory>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -189,7 +203,8 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Msp', id: 'LIST' }]
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     integratorDeviceInventoryList: build.query<TableResult<EcDeviceInventory>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -250,6 +265,11 @@ export const mspApi = baseMspApi.injectEndpoints({
             api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))
           })
         })
+      },
+      transformResponse: (response) => {
+        return MspUrlsInfo.getMspEntitlementSummary.newApi ?
+          (response as NewMspEntitlementSummary).mspEntitlementSummaries
+          : response as MspEntitlementSummary[]
       }
     }),
     mspAssignmentSummary: build.query<MspAssignmentSummary[], RequestPayload>({
@@ -281,7 +301,8 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Msp', id: 'LIST' }]
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     varCustomerListDropdown: build.query<TableResult<VarCustomer>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -292,7 +313,8 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Msp', id: 'LIST' }]
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     supportCustomerListDropdown: build.query<TableResult<MspEc>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -303,7 +325,8 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Msp', id: 'LIST' }]
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     integratorCustomerListDropdown: build.query<TableResult<MspEc>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -314,7 +337,8 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Msp', id: 'LIST' }]
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getTenantDetail: build.query<TenantDetail, RequestPayload>({
       query: ({ params }) => {
@@ -345,7 +369,8 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Msp', id: 'LIST' }]
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getMspEcProfile: build.query<MspEcProfile, RequestPayload>({
       query: ({ params }) => {
@@ -459,6 +484,16 @@ export const mspApi = baseMspApi.injectEndpoints({
         return {
           ...req,
           body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    assignMspEcToIntegrator_v1: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.assignMspEcToIntegrator, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
@@ -671,6 +706,127 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    addMspAssignment: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.addMspAssignment, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    updateMspAssignment: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.updateMspAssignment, params, {
+          ...ignoreErrorModal
+        })
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    deleteMspAssignment: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.deleteMspAssignment, params, {
+          ...ignoreErrorModal
+        })
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getMspAggregations: build.query<MspAggregations, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MspUrlsInfo.getMspAggregations, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    addMspAggregations: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.addMspAggregations, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    updateMspAggregations: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.updateMspAggregations, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    deleteMspAggregations: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MspUrlsInfo.deleteMspAggregations, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getMspEcAlarmList: build.query<MspEcAlarmList, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest( MspUrlsInfo.getMspEcAlarmList, params )
+        return { ...req, body: payload }
+      }
+    }),
+    getRecommandFirmwareUpgrade: build.query<RecommendFirmwareUpgrade, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.getRecommandFirmwareUpgrade, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    mspEcFirmwareUpgradeSchedules: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.mspEcFirmwareUpgradeSchedules, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getAvailableMspRecCustomers: build.query<AvailableMspRecCustomers, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.getAvailableMspRecCustomers, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    addRecCustomer: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.addMspRecCustomer, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    assignMspEcToMultiIntegrators: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.assignMspEcToMultiIntegrators, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     })
   })
 })
@@ -724,5 +880,19 @@ export const {
   useGetGenerateLicenseUsageRptQuery,
   useGetParentLogoUrlQuery,
   useLazyGetUserProfilePverQuery,
-  useAssignMultiMspEcDelegatedAdminsMutation
+  useAssignMultiMspEcDelegatedAdminsMutation,
+  useAddMspAssignmentMutation,
+  useUpdateMspAssignmentMutation,
+  useDeleteMspAssignmentMutation,
+  useGetMspAggregationsQuery,
+  useAddMspAggregationsMutation,
+  useUpdateMspAggregationsMutation,
+  useDeleteMspAggregationsMutation,
+  useGetMspEcAlarmListQuery,
+  useGetRecommandFirmwareUpgradeQuery,
+  useMspEcFirmwareUpgradeSchedulesMutation,
+  useGetAvailableMspRecCustomersQuery,
+  useAddRecCustomerMutation,
+  useAssignMspEcToMultiIntegratorsMutation,
+  useAssignMspEcToIntegrator_v1Mutation
 } = mspApi

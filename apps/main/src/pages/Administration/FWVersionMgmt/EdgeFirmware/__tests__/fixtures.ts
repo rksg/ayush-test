@@ -19,12 +19,23 @@ export const venueFirmwareList = [
     updatedDate: '2023-02-23T09:16:05.388+0000',
     versions: [
       {
-        name: '1.0.0.1710',
-        id: '1.0.0.1710',
+        name: '1.0.0.1709',
+        id: '1.0.0.1709',
         category: FirmwareCategory.RECOMMENDED,
         onboardDate: '2023-02-23T09:16:05.388+0000'
       }
-    ]
+    ],
+    nextSchedule: {
+      timeSlot: {
+        startDateTime: '2023-08-26T02:00:00-07:00',
+        endDateTime: '2023-08-26T04:00:00-07:00'
+      },
+      version: {
+        id: '10010b_b37',
+        name: '10010b_b37',
+        category: 'RECOMMENDED'
+      }
+    }
   },
   {
     id: '2',
@@ -73,3 +84,17 @@ export const availableVersions = [
     onboardDate: '2023-02-23T09:16:05.388+0000'
   }
 ]
+
+export const preferenceData = {
+  days: [
+    'Sunday',
+    'Saturday'
+  ],
+  times: [
+    '00:00-02:00',
+    '02:00-04:00',
+    '04:00-06:00'
+  ],
+  autoSchedule: true,
+  betaProgram: false
+}

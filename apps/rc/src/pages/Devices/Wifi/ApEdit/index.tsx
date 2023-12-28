@@ -2,7 +2,7 @@ import { createContext, useEffect, useState } from 'react'
 
 import { showActionModal, CustomButtonProps }       from '@acx-ui/components'
 import { useGetApCapabilitiesQuery, useGetApQuery } from '@acx-ui/rc/services'
-import { ApDeep, ApModel }                          from '@acx-ui/rc/utils'
+import { ApDeep, ApModel, ApViewModel }             from '@acx-ui/rc/utils'
 import { useParams }                                from '@acx-ui/react-router-dom'
 import { getIntl }                                  from '@acx-ui/utils'
 
@@ -54,6 +54,8 @@ export interface ApEditContextExtendedProps extends ApEditContextProps {
   setPreviousPath: (data: string) => void
   isOnlyOneTab: boolean
   setIsOnlyOneTab: (data: boolean) => void
+  apViewContextData: ApViewModel
+  setApViewContextData: (data: ApViewModel) => void
 }
 
 export const ApEditContext = createContext({} as ApEditContextExtendedProps)
@@ -73,6 +75,7 @@ export function ApEdit () {
       = useState({} as ApNetworkControlContext)
   const [editAdvancedContextData, setEditAdvancedContextData]
       = useState({} as ApAdvancedContext)
+  const [apViewContextData, setApViewContextData] = useState({} as ApViewModel)
 
   const [apData, setApData] = useState<ApDeep>()
   const [apCapabilities, setApCapabilities] = useState<ApModel>()
@@ -115,7 +118,9 @@ export function ApEdit () {
     editNetworkControlContextData,
     setEditNetworkControlContextData,
     editAdvancedContextData,
-    setEditAdvancedContextData
+    setEditAdvancedContextData,
+    apViewContextData,
+    setApViewContextData
   }}>
     <ApEditPageHeader />
     { Tab &&
@@ -126,7 +131,7 @@ export function ApEdit () {
   </ApEditContext.Provider>
 }
 
-interface apEditSettingsProps {
+interface ApEditSettingsProps {
   editContextData: ApEditContextType
   editRadioContextData: ApRadioContext
   editNetworkingContextData: ApNetworkingContext
@@ -134,7 +139,7 @@ interface apEditSettingsProps {
   editAdvancedContextData: ApAdvancedContext
 }
 
-const processApEditSettings = (props: apEditSettingsProps) => {
+const processApEditSettings = (props: ApEditSettingsProps) => {
   const { editContextData,
     editRadioContextData,
     editNetworkingContextData,
@@ -145,6 +150,7 @@ const processApEditSettings = (props: apEditSettingsProps) => {
   switch(editContextData?.unsavedTabKey){
     case 'radio':
       editRadioContextData.updateWifiRadio?.()
+      editRadioContextData.updateClientAdmissionControl?.()
       editRadioContextData.updateExternalAntenna?.()
       break
     case 'networking':
@@ -160,6 +166,7 @@ const processApEditSettings = (props: apEditSettingsProps) => {
     case 'advanced':
       editAdvancedContextData.updateApLed?.()
       editAdvancedContextData.updateBssColoring?.()
+      editAdvancedContextData.updateApManagementVlan?.()
       break
     default: // General
       editContextData?.updateChanges?.()
@@ -167,7 +174,7 @@ const processApEditSettings = (props: apEditSettingsProps) => {
   }
 }
 
-const discardApEditSettings = (props: apEditSettingsProps) => {
+const discardApEditSettings = (props: ApEditSettingsProps) => {
   const { editContextData,
     editRadioContextData,
     editNetworkingContextData,
@@ -178,6 +185,7 @@ const discardApEditSettings = (props: apEditSettingsProps) => {
   switch(editContextData?.unsavedTabKey){
     case 'radio':
       editRadioContextData.discardWifiRadioChanges?.()
+      editRadioContextData.discardClientAdmissionControlChanges?.()
       editRadioContextData.discardExternalAntennaChanges?.()
       break
     case 'networking':
@@ -193,6 +201,7 @@ const discardApEditSettings = (props: apEditSettingsProps) => {
     case 'advanced':
       editAdvancedContextData.discardApLedChanges?.()
       editAdvancedContextData.discardBssColoringChanges?.()
+      editAdvancedContextData.discardApManagementVlan?.()
       break
     default: // General
       editContextData?.discardChanges?.()
@@ -228,6 +237,8 @@ const resetApEditContextData = (props: ApEditContextProps) => {
       const newRadioContextData = { ...editRadioContextData }
       delete newRadioContextData.updateWifiRadio
       delete newRadioContextData.discardWifiRadioChanges
+      delete newRadioContextData.updateClientAdmissionControl
+      delete newRadioContextData.discardClientAdmissionControlChanges
       delete newRadioContextData.updateExternalAntenna
       delete newRadioContextData.discardWifiRadioChanges
 
@@ -261,6 +272,8 @@ const resetApEditContextData = (props: ApEditContextProps) => {
       delete newAdvancedContextData.discardApLedChanges
       delete newAdvancedContextData.updateBssColoring
       delete newAdvancedContextData.discardBssColoringChanges
+      delete newAdvancedContextData.updateApManagementVlan
+      delete newAdvancedContextData.discardApManagementVlan
 
       setEditAdvancedContextData(newAdvancedContextData)
       break

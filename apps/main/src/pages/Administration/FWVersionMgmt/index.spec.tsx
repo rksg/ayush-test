@@ -1,8 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }               from '@acx-ui/feature-toggle'
 import {
-  FirmwareUrlsInfo
+  FirmwareUrlsInfo, SigPackUrlsInfo
 } from '@acx-ui/rc/utils'
 import {
   Provider
@@ -13,6 +14,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 import { UserProfileContext, UserProfileContextProps } from '@acx-ui/user'
+
 
 import {
   availableVersions, versionLatest,
@@ -68,6 +70,10 @@ describe('Firmware Version Management', () => {
       rest.post(
         FirmwareUrlsInfo.getSwitchVenueVersionList.url,
         (req, res, ctx) => res(ctx.json(switchVenue))
+      ),
+      rest.get(
+        SigPackUrlsInfo.getSigPack.url.replace('?changesIncluded=:changesIncluded', ''),
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
     params = {
@@ -78,6 +84,7 @@ describe('Firmware Version Management', () => {
   })
 
   it('should render correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.get(
         FirmwareUrlsInfo.getLatestFirmwareList.url.replace('?status=latest', ''),
@@ -95,47 +102,5 @@ describe('Firmware Version Management', () => {
     await screen.findByTestId('mocked-ApFirmware-table')
     userEvent.click(await screen.findByRole('tab', { name: /Switch Firmware/ }))
     await screen.findByTestId('mocked-SwitchFirmware-table')
-  })
-
-  it('should render version banner (Recommended) correctly', async () => {
-    render(
-      <Provider>
-        <UserProfileContext.Provider value={{} as UserProfileContextProps}>
-          <FWVersionMgmt />
-        </UserProfileContext.Provider>
-      </Provider>, {
-        route: { params, path: '/:tenantId/administration/fwVersionMgmt/apFirmware' }
-      })
-    await screen.findByTestId('mocked-ApFirmware-table')
-
-    expect(await screen.findByText(/Latest Version/i)).toBeVisible()
-    expect(await screen.findByText(/6.2.1.103.1580/i)).toBeVisible()
-    expect(await screen.findByText(/Recommended/i)).toBeVisible()
-    expect(await screen.findByText(/12\/16\/2022/i)).toBeVisible()
-  })
-
-  it('should render version banner (critical) correctly', async () => {
-    mockServer.use(
-      rest.get(
-        FirmwareUrlsInfo.getLatestFirmwareList.url.replace('?status=latest', ''),
-        (req, res, ctx) => res(ctx.json([{
-          ...versionLatest,
-          category: 'CRITICAL'
-        }]))
-      )
-    )
-    render(
-      <Provider>
-        <UserProfileContext.Provider value={{} as UserProfileContextProps}>
-          <FWVersionMgmt />
-        </UserProfileContext.Provider>
-      </Provider>, {
-        route: { params, path: '/:tenantId/administration/fwVersionMgmt/apFirmware' }
-      })
-    await screen.findByTestId('mocked-ApFirmware-table')
-
-    expect(await screen.findByText(/Latest Version/i)).toBeVisible()
-    expect(await screen.findByText(/6.2.1.103.1580/i)).toBeVisible()
-    expect(await screen.findByText(/Critical/i)).toBeVisible()
   })
 })

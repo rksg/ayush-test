@@ -23,6 +23,7 @@ import {
 } from '@acx-ui/msp/services'
 import {
   DelegationEntitlementRecord,
+  MSPUtils,
   VarCustomer
 } from '@acx-ui/msp/utils'
 import {
@@ -33,11 +34,12 @@ import {
 import { Link, TenantLink, useParams }     from '@acx-ui/react-router-dom'
 import { RolesEnum }                       from '@acx-ui/types'
 import { hasRoles, useUserProfileContext } from '@acx-ui/user'
+import { isDelegationMode }                from '@acx-ui/utils'
 
-const transformApUtilization = (row: VarCustomer) => {
+const transformApUtilization = (row: VarCustomer, deviceType: EntitlementNetworkDeviceType ) => {
   if (row.entitlements) {
     const entitlement = row.entitlements.filter((en:DelegationEntitlementRecord) =>
-      en.entitlementDeviceType === EntitlementNetworkDeviceType.WIFI)
+      en.entitlementDeviceType === deviceType)
     if (entitlement.length > 0) {
       const apEntitlement = entitlement[0]
       const quantity = parseInt(apEntitlement.quantity, 10)
@@ -82,7 +84,11 @@ export function VarCustomers () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
+  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
+  const isSupportToMspDashboardAllowed =
+    useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
+  const mspUtils = MSPUtils()
 
   const { data: userProfile } = useUserProfileContext()
   const [ handleInvitation
@@ -208,13 +214,14 @@ export function VarCustomers () {
       sorter: true,
       defaultSortOrder: 'ascend' as SortOrder,
       onCell: (data) => {
-        return {
+        return (!isSupportToMspDashboardAllowed) ? {
           onClick: () => { delegateToMspEcPath(data.tenantId) }
-        }
+        } : {}
       },
       render: function (_, { tenantName }, __, highlightFn) {
         return (
-          <Link to=''>{highlightFn(tenantName)}</Link>
+          (!isSupportToMspDashboardAllowed)
+            ? <Link to=''>{highlightFn(tenantName)}</Link> : tenantName
         )
       }
     },
@@ -226,37 +233,74 @@ export function VarCustomers () {
       sorter: true
     },
     {
-      title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
-      dataIndex: 'apEntitlement.quantity',
-      align: 'center',
-      key: 'apEntitlement.quantity',
-      sorter: true,
-      render: function (_, row) {
-        return row.wifiLicenses ? row.wifiLicenses : 0
-      }
+      title: $t({ defaultMessage: 'Alarm Count' }),
+      dataIndex: 'alarmCount',
+      key: 'alarmCount',
+      show: false,
+      sorter: true
     },
-    {
-      title: $t({ defaultMessage: 'Wi-Fi Licenses Utilization' }),
-      dataIndex: 'wifiLicensesUtilization',
-      align: 'center',
-      key: 'wifiLicensesUtilization',
-      sorter: true,
-      render: function (_, row) {
-        return transformApUtilization(row)
+    ...(isDeviceAgnosticEnabled ? [
+      {
+        title: $t({ defaultMessage: 'Installed Devices' }),
+        dataIndex: 'apswLicenseInstalled',
+        key: 'apswLicenseInstalled',
+        sorter: true,
+        render: function (data: React.ReactNode, row: VarCustomer) {
+          return mspUtils.transformInstalledDevice(row.entitlements)
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Devices Subscriptions' }),
+        dataIndex: 'apswLicense',
+        key: 'apswLicense',
+        sorter: true,
+        render: function (data: React.ReactNode, row: VarCustomer) {
+          return mspUtils.transformDeviceEntitlement(row.entitlements)
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Device Subscriptions Utilization' }),
+        dataIndex: 'apswLicensesUtilization',
+        key: 'apswLicensesUtilization',
+        sorter: true,
+        render: function (data: React.ReactNode, row: VarCustomer) {
+          return mspUtils.transformDeviceUtilization(row.entitlements)
+        }
       }
-    },
+    ] : [
+
+      {
+        title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
+        dataIndex: 'apEntitlement.quantity',
+        // align: 'center',
+        key: 'apEntitlement.quantity',
+        sorter: true,
+        render: function (data: React.ReactNode, row: VarCustomer) {
+          return row.wifiLicenses ? row.wifiLicenses : 0
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Wi-Fi Licenses Utilization' }),
+        dataIndex: 'wifiLicensesUtilization',
+        // align: 'center',
+        key: 'wifiLicensesUtilization',
+        sorter: true,
+        render: function (data: React.ReactNode, row: VarCustomer) {
+          return transformApUtilization(row, EntitlementNetworkDeviceType.WIFI)
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Switch Licenses' }),
+        dataIndex: 'switchEntitlement',
+        // align: 'center',
+        key: 'switchEntitlement',
+        sorter: true,
+        render: function (data: React.ReactNode, row: VarCustomer) {
+          return row.switchLicenses ? row.switchLicenses : 0
+        }
+      }]),
     {
-      title: $t({ defaultMessage: 'Switch Licenses' }),
-      dataIndex: 'switchEntitlement',
-      align: 'center',
-      key: 'switchEntitlement',
-      sorter: true,
-      render: function (_, row) {
-        return row.switchLicenses ? row.switchLicenses : 0
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Next License Expiration' }),
+      title: $t({ defaultMessage: 'Next Subscription Expiration' }),
       dataIndex: 'expirationDate',
       key: 'expirationDate',
       sorter: true,
@@ -266,8 +310,8 @@ export function VarCustomers () {
     }
   ]
 
-  const delegationType =
-    userProfile?.support ? ['DELEGATION_TYPE_SUPPORT'] : ['DELEGATION_TYPE_VAR']
+  const delegationType = userProfile?.support && !isSupportToMspDashboardAllowed
+    ? ['DELEGATION_TYPE_SUPPORT'] : ['DELEGATION_TYPE_VAR']
   const varCustomerPayload = {
     searchString: '',
     fields: [
@@ -316,16 +360,14 @@ export function VarCustomers () {
     )
   }
 
-  const title = userProfile?.support
+  const title = userProfile?.support || userProfile?.dogfood
     ? $t({ defaultMessage: 'RUCKUS Customers' }) : $t({ defaultMessage: 'VAR Customers' })
   return (
     <>
       <PageHeader
         title={title}
-        breadcrumb={isNavbarEnhanced
-          ? [{ text: $t({ defaultMessage: 'My Customers' }) }]
-          : undefined}
-        extra={
+        breadcrumb={[{ text: $t({ defaultMessage: 'My Customers' }) }]}
+        extra={!isHspSupportEnabled &&
           <TenantLink to='/dashboard' key='add'>
             <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
           </TenantLink>
