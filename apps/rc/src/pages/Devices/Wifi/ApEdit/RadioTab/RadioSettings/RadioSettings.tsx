@@ -673,6 +673,10 @@ export function RadioSettings () {
   }, [apBandModeSavedData, venueBandMode])
 
   useEffect(() => {
+    if (!isSupportBandManagementAp) {
+      return
+    }
+
     console.info('[RadioSettings] currentApBandModeData = ', currentApBandModeData) // eslint-disable-line no-console
 
     if (isSupportDual5GAp) {
@@ -687,7 +691,7 @@ export function RadioSettings () {
     if (!isEqual(currentApBandModeData, initApBandModeData)) {
       handleChange()
     }
-  }, [currentApBandModeData, initApBandModeData, isSupportDual5GAp])
+  }, [currentApBandModeData, initApBandModeData, isSupportBandManagementAp, isSupportDual5GAp])
 
   // useEffect(() => console.info('[RadioSettings] initApBandModeData = ', initApBandModeData), [initApBandModeData]) // eslint-disable-line no-console
   // useEffect(() => console.info('[RadioSettings] isApBandModeDataInitializing = ', isApBandModeDataInitializing), [isApBandModeDataInitializing]) // eslint-disable-line no-console
