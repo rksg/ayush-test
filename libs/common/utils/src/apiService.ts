@@ -5,6 +5,10 @@ import { get } from '@acx-ui/config'
 
 import { getTenantId }                       from './getTenantId'
 import { getJwtTokenPayload, getJwtHeaders } from './jwtToken'
+import { RequestPayload } from '@acx-ui/types'
+import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
+import { MaybePromise } from '@reduxjs/toolkit/dist/query/tsHelpers'
+import { QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 
 export interface ApiInfo {
   url: string;
@@ -101,6 +105,24 @@ export const createHttpRequest = (
     method: method,
     url: `${domain}${url}`
   }
+}
+
+export const patchApi = (apiInfo: ApiInfo, requests: RequestPayload<unknown>[],
+  fetchWithBQ:(arg: string | FetchArgs) => MaybePromise<QueryReturnValue<unknown, FetchBaseQueryError, FetchBaseQueryMeta>>) => {
+  const promises = requests.map((arg) => {
+    const req = createHttpRequest(apiInfo, arg.params)
+    return fetchWithBQ({
+      ...req,
+      body: arg.payload
+    })
+  });
+  return Promise.all(promises)
+  .then((results) => {
+    return { data: results }
+  })
+  .catch((error)=>{
+    return error
+  })                   
 }
 
 export interface Filters {

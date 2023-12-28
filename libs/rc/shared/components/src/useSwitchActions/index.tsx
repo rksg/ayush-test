@@ -4,6 +4,7 @@ import { useIntl } from 'react-intl'
 import { showActionModal }         from '@acx-ui/components'
 import {
   useDeleteSwitchesMutation,
+  usePatchDeleteSwitchMutation,
   useRebootSwitchMutation,
   useSyncDataMutation,
   useSyncSwitchesDataMutation,
@@ -16,10 +17,15 @@ import {
   SwitchStatusEnum,
   SwitchViewModel
 } from '@acx-ui/rc/utils'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import _ from 'lodash'
 
 export function useSwitchActions () {
   const { $t } = useIntl()
+  // TODO: replace with RBAC API feature flag 
+  const rbacApiToggle = useIsSplitOn('acx-ui-announcement-alert-toggle')
   const [ deleteSwitches ] = useDeleteSwitchesMutation()
+  const [ patchDeleteSwitch ] = usePatchDeleteSwitchMutation()
   const [ rebootSwitch ] = useRebootSwitchMutation()
   const [ syncData ] = useSyncDataMutation()
   const [ syncSwitchesData ] = useSyncSwitchesDataMutation()
@@ -43,9 +49,15 @@ export function useSwitchActions () {
         confirmationText: !shouldHideConfirmation(rows) ? 'Delete' : undefined
       },
       onOk: () => {
-        const switchIdList = rows.map(item => item.id || item.serialNumber)
-        deleteSwitches({ params: { tenantId }, payload: switchIdList })
-          .then(callBack)
+        if(!rbacApiToggle) {
+          const switchIdList = rows.map(item => item.id || item.serialNumber)
+          deleteSwitches({ params: { tenantId }, payload: switchIdList })
+            .then(callBack)
+        } else {
+          const groups = _.groupBy(rows, 'venueId')
+          const requests = Object.keys(groups).map(key => ({ params: {venueId: key} , payload: groups[key].map(item => item.id || item.serialNumber)}))
+          patchDeleteSwitch(requests)
+        }
       }
     })
   }
