@@ -114,8 +114,3 @@ export const PieChartTitle = styled.div`
   font-size: 12px;
   padding-bottom: 10px;
 `
-
-export const SinglePieChartWrapper = styled.div`
-  margin-top: 48px;
-  height: 100%;
-`

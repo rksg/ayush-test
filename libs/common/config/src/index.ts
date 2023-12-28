@@ -44,9 +44,10 @@ type EnvironmentConfig = commonEnvironment & R1Environment & RAEnvironment
 
 const config: { value?: EnvironmentConfig } = {}
 
-export async function initialize (deployment: 'r1' | 'ra') {
+export async function initialize (deployment: 'r1' | 'ra' | 'test') {
   const baseUrl = trimEnd(document.baseURI, '/')
   const envConfigUrl = `${baseUrl}/globalValues.json`
+  const isTestDeployment = deployment === 'test'
 
   let requestConfig: RequestInit = {}
   if (deployment === 'r1') {
@@ -54,7 +55,7 @@ export async function initialize (deployment: 'r1' | 'ra') {
   }
 
   const response = await fetch(envConfigUrl, requestConfig)
-  userAuthFailedLogout(response)
+  !isTestDeployment && userAuthFailedLogout(response)
 
   const jsonValue = await response.json()
 

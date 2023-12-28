@@ -55,7 +55,7 @@ const defaultPayload = {
 }
 
 const defaultSearch = {
-  searchTargetFields: ['username'],
+  searchTargetFields: ['username', 'mac'],
   searchString: ''
 }
 
@@ -114,15 +114,6 @@ export default function DpskPassphraseManagement () {
     }
   }
 
-  const macColumn = isNewConfigFlow ? [] : [
-    {
-      key: 'mac',
-      title: $t({ defaultMessage: 'MAC Address' }),
-      dataIndex: 'mac',
-      sorter: true
-    }
-  ]
-
   const columns: TableProps<NewDpskPassphrase>['columns'] = [
     {
       key: 'createdDate',
@@ -153,7 +144,6 @@ export default function DpskPassphraseManagement () {
           : $t(unlimitedNumberOfDeviceLabel)
       }
     },
-    ...macColumn,
     {
       key: 'passphrase',
       title: $t({ defaultMessage: 'Passphrase' }),
@@ -161,6 +151,16 @@ export default function DpskPassphraseManagement () {
       sorter: false,
       render: function (_, { passphrase }) {
         return <PassphraseViewer passphrase={passphrase}/>
+      }
+    },
+    {
+      key: 'devices',
+      title: $t({ defaultMessage: 'MAC Address' }),
+      dataIndex: 'devices',
+      sorter: true,
+      searchable: true,
+      render: function (_, { devices }) {
+        return devices?.map(device => device.mac).join(', ')
       }
     },
     {

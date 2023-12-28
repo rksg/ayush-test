@@ -21,7 +21,7 @@ const tabs = {
   clients: NetworkClientsTab
 }
 
-export default function NetworkDetails () {
+export function NetworkDetails () {
   const { activeTab } = useParams()
   const Tab = tabs[activeTab as keyof typeof tabs]
   const [selectedVenues, setSelectedVenues] = useState<string[]>([])
