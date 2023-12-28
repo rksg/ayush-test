@@ -1,9 +1,13 @@
 
 import { useParams } from 'react-router-dom'
 
-import { Features, useIsSplitOn }                                              from '@acx-ui/feature-toggle'
-import { ApTable, ApCompatibilityQueryTypes, retrievedCompatibilitiesOptions } from '@acx-ui/rc/components'
-import { useApGroupsListQuery, useGetApCompatibilitiesNetworkQuery }           from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
+import { useApGroupsListQuery, useGetApCompatibilitiesNetworkQuery } from '@acx-ui/rc/services'
+
+import { ApCompatibilityQueryTypes, retrievedCompatibilitiesOptions } from '../../ApCompatibilityDrawer'
+import { ApTable }                                                    from '../../ApTable'
+
+
 
 export function NetworkApsTab () {
   const { tenantId, networkId } = useParams()

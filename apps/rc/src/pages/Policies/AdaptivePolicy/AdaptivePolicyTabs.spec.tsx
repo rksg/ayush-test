@@ -50,6 +50,12 @@ export const policySetList = {
   ]
 }
 
+const mockedUsedNavigate = jest.fn()
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
+
 describe('AdaptivePolicyTabs', () =>{
 
   beforeEach(() => {
@@ -86,6 +92,11 @@ describe('AdaptivePolicyTabs', () =>{
     const attributeTab = await screen.findByText('RADIUS Attribute Groups (' + groupList.content.length + ')')
 
     await userEvent.click(setTab)
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: '/_tenantId_/t/policies/adaptivePolicySet/list',
+      hash: '',
+      search: ''
+    })
     await userEvent.click(attributeTab)
   })
 
