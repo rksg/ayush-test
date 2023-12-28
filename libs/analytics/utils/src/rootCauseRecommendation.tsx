@@ -81,39 +81,25 @@ const extractFailureCode = (
         code => code.startsWith('CCD_REASON') || ttcFailureCodes.includes(code))[0]
 }
 
-type AirtimeBChecks = {
+type AirtimeChecks = {
   isRogueDetectionEnabled: boolean
   isCRRMRaised: boolean
-}[]
-
-type AirtimeRxChecks = {
   isHighDensityWifiDevices: boolean
   isAclbRaised: boolean
   isHighSsidCountPerRadio: boolean
-  isLargeMgmtFrameCount: boolean
   isHighCoChannelInterference: boolean
-  isCRRMRaised: boolean
   isChannelFlyEnabled: boolean
-  isHighLegacyWifiDevicesCount: boolean
-}[]
-
-type AirtimeTxChecks = {
-  isHighDensityWifiDevices: boolean
-  isAclbRaised: boolean
-  isHighSsidCountPerRadio: boolean
   isLargeMgmtFrameCount: boolean
+  isHighLegacyWifiDevicesCount: boolean
   isHighPacketErrorCount: boolean
   isHighMcbcTraffic: boolean
-  isHighLegacyWifiDevicesCount: boolean
-}[]
+}
+
+export type AirtimeArray = AirtimeChecks[]
 
 export type AirtimeParams = {
   ssidCountPerRadioSlice: number
 }
-
-export type AirtimeBArray = AirtimeBChecks[]
-export type AirtimeRxArray = AirtimeRxChecks[]
-export type AirtimeTxArray = AirtimeTxChecks[]
 
 export const htmlValues = {
   p: (text: string) => <p>{text}</p>,
@@ -122,22 +108,26 @@ export const htmlValues = {
   ul: (text: string) => <ul>{text}</ul>
 }
 
+const checkTrueParams = (checks: AirtimeArray) => checks.filter(item => Object.values(item)[0]).map(item => Object.keys(item)[0])
+
 export const getAirtimeBusyRootCauses = () => {
   return {
     rootCauseText: defineMessage({ defaultMessage: '<p>Airtime Busy is unusually high and this is typically caused by external sources of interference, such as neighboring WiFi networks, microwave ovens, Bluetooth devices, and other electronic devices operating in the same frequency range, can cause disruptions to your network.</p>' }),
     rootCauseValues: {}
   }
 }
-export const getAirtimeBusyRecommendations = (checks: AirtimeBArray) => {
-  const checkTrue = checks.filter(item => Object.values(item)[0]).map(item => Object.keys(item)[0])
-  const rogueAPEnabled = <FormattedMessage defaultMessage={'<li>Enable rogue AP detection to search, identify, and physically remove rogue APs from your premises.</li>'} values={htmlValues}/>
-  const rogueAPDisabled = <FormattedMessage defaultMessage={'<li>Remove rogue APs in your premises.</li>'} values={htmlValues}/>
+export const getAirtimeBusyRecommendations = (checks: AirtimeArray) => {
+  const checkTrue = checkTrueParams(checks)
+  const rogueAPDisabled = <FormattedMessage defaultMessage={'<li>Enable rogue AP detection to search, identify, and physically remove rogue APs from your premises.</li>'} values={htmlValues}/>
+  const rogueAPEnabled = <FormattedMessage defaultMessage={'<li>Remove rogue APs in your premises.</li>'} values={htmlValues}/>
   const nonWifiInterference = <FormattedMessage defaultMessage={'<li>Identify and mitigate sources of non-WiFi interference, such as microwave ovens, Bluetooth devices, and cordless phones.</li>'} values={htmlValues}/>
-  const crrmRaised = <FormattedMessage defaultMessage={'<li>Enable rogue AP detection to search, identify, and physically remove rogue APs from your premises. </li>'} values={htmlValues}/>
+  const crrmRaised = <FormattedMessage defaultMessage={'<li>Apply the AI-Driven RRM recommendation.</li>'} values={htmlValues}/>
 
-  const text1 = checkTrue.includes('isRogueDetectionEnabled') ? rogueAPEnabled : rogueAPDisabled
-  const text2 = checkTrue.includes('isCRRMRaised') ? crrmRaised : ''
-  const stringlist = [text1, nonWifiInterference, text2]
+  const stringlist = [
+    checkTrue.includes('isRogueDetectionEnabled') ? rogueAPEnabled : rogueAPDisabled,
+    nonWifiInterference,
+    checkTrue.includes('isCRRMRaised') ? crrmRaised : ''
+  ]
 
   return {
     recommendationsText: defineMessage({ defaultMessage: `<p>Identifying the sources of external interference is the key to resolving this issue:</p>
@@ -151,8 +141,19 @@ export const getAirtimeBusyRecommendations = (checks: AirtimeBArray) => {
   }
 }
 
-export const getAirtimeRXRootCauses = (checks: AirtimeRxArray) => {
-  const checkTrue = checks.filter(item => Object.values(item)[0]).map(item => Object.keys(item)[0])
+// const checksRx = [
+//   { isHighDensityWifiDevices: true },
+//   { isAclbRaised: true },
+//   { isLargeMgmtFrameCount: true },
+//   { isHighSsidCountPerRadio: false },
+//   { isHighCoChannelInterference: true },
+//   { isCRRMRaised: false },
+//   { isChannelFlyEnabled: false },
+//   { isHighLegacyWifiDevicesCount: true }
+// ]
+
+export const getAirtimeRxRootCauses = (checks: AirtimeArray) => {
+  const checkTrue = checkTrueParams(checks)
   const allFalse = checkTrue.length === 0
 
   const highDensityWifi = <FormattedMessage defaultMessage={'<li>High density of Wi-Fi devices in the network.</li>'} values={htmlValues}/>
@@ -162,11 +163,14 @@ export const getAirtimeRXRootCauses = (checks: AirtimeRxArray) => {
   const highLegacy = <FormattedMessage defaultMessage={'<li>High number of legacy Wi-Fi devices.</li><ul><li>Definition of legacy devices - 11b, 11a, and a combination of 11a and 11b.</li></ul>'} values={htmlValues}/>
 
   const allFalseText = [highDensityWifi, excessiveFrame, highCoChannel, highLegacy]
-  const text1 = checkTrue.includes('isHighDensityWifiDevices') ? highDensityWifi : ''
-  const text2 = checkTrue.includes('isLargeMgmtFrameCount') ? checkTrue.includes('isHighSsidCountPerRadio') ? excessiveSSID : excessiveFrame : ''
-  const text3 = checkTrue.includes('isHighCoChannelInterference') ? highCoChannel : ''
-  const text4 = checkTrue.includes('isHighLegacyWifiDevicesCount') ? highLegacy : ''
-  const stringlist = allFalse ? allFalseText : [text1, text2, text3, text4]
+  const stringlist = allFalse
+    ? allFalseText
+    : [
+      checkTrue.includes('isHighDensityWifiDevices') ? highDensityWifi : '',
+      checkTrue.includes('isLargeMgmtFrameCount') ? checkTrue.includes('isHighSsidCountPerRadio') ? excessiveSSID : excessiveFrame : '',
+      checkTrue.includes('isHighCoChannelInterference') ? highCoChannel : '',
+      checkTrue.includes('isHighLegacyWifiDevicesCount') ? highLegacy : ''
+    ]
 
   return {
     rootCauseText: defineMessage({ defaultMessage: `<p>Airtime Rx is unusually high, and this can be a result from various factors, such as a high density of Wi-Fi devices, channel congestion due to co-channel interference, excessive number of management frames, and sub-optimal configurations.</p>
@@ -182,8 +186,8 @@ export const getAirtimeRXRootCauses = (checks: AirtimeRxArray) => {
     }
   }
 }
-export const getAirtimeRXRecommendations = (checks: AirtimeRxArray, params: AirtimeParams) => {
-  const checkTrue = checks.filter(item => Object.values(item)[0]).map(item => Object.keys(item)[0])
+export const getAirtimeRxRecommendations = (checks: AirtimeArray, params: AirtimeParams) => {
+  const checkTrue = checkTrueParams(checks)
   const allFalse = checkTrue.length === 0
   const ssidCountPerRadioSlice = params.ssidCountPerRadioSlice
 
@@ -191,18 +195,20 @@ export const getAirtimeRXRecommendations = (checks: AirtimeRxArray, params: Airt
   const clientLoadBalanceOff = <FormattedMessage defaultMessage={'<li>Increase AP density to distribute the client load.</li>'} values={htmlValues}/>
   const highSSIDCountText = <FormattedMessage defaultMessage={'<li>There are currently an average of {ssidCountPerRadioSlice} SSIDs/WLANs being broadcasted per AP. Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less. Enabling Airtime Decongestion would be recommended as well.</li>'} values={{ ...htmlValues, ssidCountPerRadioSlice }}/>
   const enableAirtimeDecongestion = <FormattedMessage defaultMessage={'<li>Enable Airtime Decongestion.</li>'} values={htmlValues}/>
-  const crrmRaisedNoChannelFly = <FormattedMessage defaultMessage={'<li>Apply the AI-Driven RRM recommendation.</li>'} values={htmlValues}/>
-  const crrmRaisedChannelFly = <FormattedMessage defaultMessage={'<li>Apply the AI-Driven RRM recommendation. Review the channel planning, AP density and deployment.</li>'} values={htmlValues}/>
+  const crrmRaisedText = <FormattedMessage defaultMessage={'<li>Apply the AI-Driven RRM recommendation.</li>'} values={htmlValues}/>
+  const channelFlyEnabled = <FormattedMessage defaultMessage={'<li>Apply the AI-Driven RRM recommendation. Review the channel planning, AP density and deployment.</li>'} values={htmlValues}/>
   const channelFlyDisabled = <FormattedMessage defaultMessage={'<li>Enable ChannelFly for the Zone.</li>'} values={htmlValues}/>
   const highLegacyCount = <FormattedMessage defaultMessage={'<li>Remove legacy devices or upgrade them. If possible, enable OFDM-only mode on WLANs.</li>'} values={htmlValues}/>
 
   const allFalseText = [clientLoadBalanceOff, enableAirtimeDecongestion, channelFlyDisabled, highLegacyCount]
-  const text1 = checkTrue.includes('isHighDensityWifiDevices') ? checkTrue.includes('isAclbRaised') ? clientLoadBalanceOn : clientLoadBalanceOff : ''
-  const text2 = checkTrue.includes('isLargeMgmtFrameCount') ? checkTrue.includes('isHighSsidCountPerRadio') ? highSSIDCountText : enableAirtimeDecongestion : ''
-  const text3 = checkTrue.includes('isHighCoChannelInterference') ? checkTrue.includes('isCRRMRaised') ? checkTrue.includes('isChannelFlyEnabled') ? crrmRaisedChannelFly : crrmRaisedNoChannelFly : '' : ''
-  const text4 = checkTrue.includes('isHighCoChannelInterference') ? !checkTrue.includes('isCRRMRaised') && !checkTrue.includes('isChannelFlyEnabled') ? channelFlyDisabled : '' : ''
-  const text5 = checkTrue.includes('isHighLegacyWifiDevicesCount') ? highLegacyCount : ''
-  const stringlist = allFalse ? allFalseText : [text1, text2, text3, text4, text5]
+  const stringlist = allFalse
+    ? allFalseText
+    : [
+      checkTrue.includes('isHighDensityWifiDevices') ? checkTrue.includes('isAclbRaised') ? clientLoadBalanceOn : clientLoadBalanceOff : '',
+      checkTrue.includes('isLargeMgmtFrameCount') ? checkTrue.includes('isHighSsidCountPerRadio') ? highSSIDCountText : enableAirtimeDecongestion : '',
+      checkTrue.includes('isHighCoChannelInterference') ? checkTrue.includes('isCRRMRaised') ? checkTrue.includes('isChannelFlyEnabled') ? channelFlyEnabled : crrmRaisedText : checkTrue.includes('isChannelFlyEnabled') ? '' : channelFlyDisabled : '',
+      checkTrue.includes('isHighLegacyWifiDevicesCount') ? highLegacyCount : ''
+    ]
 
   return {
     recommendationsText: defineMessage({ defaultMessage: `<p>Based on the root {count, plural, one {cause} other {causes}} identified, the recommended {count, plural, one {resolution} other {resolutions}} {count, plural, one {is} other {are}}:</p>
@@ -217,8 +223,8 @@ export const getAirtimeRXRecommendations = (checks: AirtimeRxArray, params: Airt
   }
 }
 
-export const getAirtimeTXRootCauses = (checks: AirtimeTxArray) => {
-  const checkTrue = checks.filter(item => Object.values(item)[0]).map(item => Object.keys(item)[0])
+export const getAirtimeTxRootCauses = (checks: AirtimeArray) => {
+  const checkTrue = checkTrueParams(checks)
   const allFalse = checkTrue.length === 0
 
   const highDensityWifi = <FormattedMessage defaultMessage={'<li>High density of Wi-Fi devices in the network.</li>'} values={htmlValues}/>
@@ -250,8 +256,8 @@ export const getAirtimeTXRootCauses = (checks: AirtimeTxArray) => {
     }
   }
 }
-export const getAirtimeTXRecommendations = (checks: AirtimeTxArray, params: AirtimeParams) => {
-  const checkTrue = checks.filter(item => Object.values(item)[0]).map(item => Object.keys(item)[0])
+export const getAirtimeTxRecommendations = (checks: AirtimeArray, params: AirtimeParams) => {
+  const checkTrue = checkTrueParams(checks)
   const allFalse = checkTrue.length === 0
   const ssidCountPerRadioSlice = params.ssidCountPerRadioSlice
 
@@ -1152,14 +1158,14 @@ export const rootCauseRecommendationMap = {
   },
   'airtime-rx': {
     DEFAULT: {
-      rootCauses: getAirtimeRXRootCauses,
-      recommendations: getAirtimeRXRecommendations
+      rootCauses: getAirtimeRxRootCauses,
+      recommendations: getAirtimeRxRecommendations
     }
   },
   'airtime-tx': {
     DEFAULT: {
-      rootCauses: getAirtimeTXRootCauses,
-      recommendations: getAirtimeTXRecommendations
+      rootCauses: getAirtimeTxRootCauses,
+      recommendations: getAirtimeTxRecommendations
     }
   }
 } as Readonly<Record<string, Record<string, RootCauseAndRecommendation>>>

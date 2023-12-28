@@ -8,16 +8,14 @@ import {
   rootCauseRecommendationMap,
   getAirtimeBusyRootCauses,
   getAirtimeBusyRecommendations,
-  AirtimeBArray,
-  getAirtimeRXRootCauses,
-  getAirtimeRXRecommendations,
-  AirtimeRxArray,
-  AirtimeTxArray,
-  getAirtimeTXRootCauses,
-  getAirtimeTXRecommendations,
+  getAirtimeRxRootCauses,
+  getAirtimeRxRecommendations,
+  getAirtimeTxRootCauses,
+  getAirtimeTxRecommendations,
   ccd80211RootCauseRecommendations,
   htmlValues,
-  AirtimeParams
+  AirtimeParams,
+  AirtimeArray
 } from './rootCauseRecommendation'
 
 const baseIncident = fakeIncident({
@@ -236,7 +234,7 @@ describe('getRootCauseAndRecommendations', () => {
       const checks = [
         { isRogueDetectionEnabled: true },
         { isCRRMRaised: true }
-      ] as unknown as AirtimeBArray
+      ] as unknown as AirtimeArray
       const incident = fakeIncident({
         ...airtimeBusyIncident,
         metadata: {
@@ -260,7 +258,7 @@ describe('getRootCauseAndRecommendations', () => {
       const checks = [
         { isRogueDetectionEnabled: true },
         { isCRRMRaised: true }
-      ] as unknown as AirtimeBArray
+      ] as unknown as AirtimeArray
       const incident = fakeIncident({
         ...airtimeBusyIncident,
         metadata: {
@@ -293,7 +291,7 @@ describe('getRootCauseAndRecommendations', () => {
         { isCRRMRaised: true },
         { isChannelFlyEnabled: true },
         { isHighLegacyWifiDevicesCount: true }
-      ] as unknown as AirtimeRxArray
+      ] as unknown as AirtimeArray
       const params = {
         ssidCountPerRadioSlice: 1
       } as AirtimeParams
@@ -317,8 +315,8 @@ describe('getRootCauseAndRecommendations', () => {
         }
       })
       const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
-      const airtimeRxRCA = getAirtimeRXRootCauses(checks)
-      const airtimeRxRecommendations = getAirtimeRXRecommendations(checks, params)
+      const airtimeRxRCA = getAirtimeRxRootCauses(checks)
+      const airtimeRxRecommendations = getAirtimeRxRecommendations(checks, params)
       expect(rootCauses.rootCauseText).toEqual(airtimeRxRCA.rootCauseText)
       expect(recommendations.recommendationsText).toEqual(
         airtimeRxRecommendations.recommendationsText)
@@ -333,7 +331,7 @@ describe('getRootCauseAndRecommendations', () => {
         { isCRRMRaised: false },
         { isChannelFlyEnabled: false },
         { isHighLegacyWifiDevicesCount: false }
-      ] as unknown as AirtimeRxArray
+      ] as unknown as AirtimeArray
       const params = {
         ssidCountPerRadioSlice: 0
       } as AirtimeParams
@@ -357,8 +355,8 @@ describe('getRootCauseAndRecommendations', () => {
         }
       })
       const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
-      const airtimeRxRCA = getAirtimeRXRootCauses(checks)
-      const airtimeRxRecommendations = getAirtimeRXRecommendations(checks, params)
+      const airtimeRxRCA = getAirtimeRxRootCauses(checks)
+      const airtimeRxRecommendations = getAirtimeRxRecommendations(checks, params)
       expect(rootCauses.rootCauseText).toEqual(airtimeRxRCA.rootCauseText)
       expect(recommendations.recommendationsText).toEqual(
         airtimeRxRecommendations.recommendationsText)
@@ -373,7 +371,7 @@ describe('getRootCauseAndRecommendations', () => {
         { isCRRMRaised: false },
         { isChannelFlyEnabled: false },
         { isHighLegacyWifiDevicesCount: false }
-      ] as unknown as AirtimeRxArray
+      ] as unknown as AirtimeArray
       const params = {
         ssidCountPerRadioSlice: 0
       } as AirtimeParams
@@ -397,8 +395,8 @@ describe('getRootCauseAndRecommendations', () => {
         }
       })
       const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
-      const airtimeRxRCA = getAirtimeRXRootCauses(checks)
-      const airtimeRxRecommendations = getAirtimeRXRecommendations(checks, params)
+      const airtimeRxRCA = getAirtimeRxRootCauses(checks)
+      const airtimeRxRecommendations = getAirtimeRxRecommendations(checks, params)
       expect(rootCauses.rootCauseText).toEqual(airtimeRxRCA.rootCauseText)
       expect(recommendations.recommendationsText).toEqual(
         airtimeRxRecommendations.recommendationsText)
@@ -413,7 +411,7 @@ describe('getRootCauseAndRecommendations', () => {
         { isCRRMRaised: true },
         { isChannelFlyEnabled: false },
         { isHighLegacyWifiDevicesCount: false }
-      ] as unknown as AirtimeRxArray
+      ] as unknown as AirtimeArray
       const params = {
         ssidCountPerRadioSlice: 0
       } as AirtimeParams
@@ -437,8 +435,8 @@ describe('getRootCauseAndRecommendations', () => {
         }
       })
       const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
-      const airtimeRxRCA = getAirtimeRXRootCauses(checks)
-      const airtimeRxRecommendations = getAirtimeRXRecommendations(checks, params)
+      const airtimeRxRCA = getAirtimeRxRootCauses(checks)
+      const airtimeRxRecommendations = getAirtimeRxRecommendations(checks, params)
       expect(rootCauses.rootCauseText).toEqual(airtimeRxRCA.rootCauseText)
       expect(recommendations.recommendationsText).toEqual(
         airtimeRxRecommendations.recommendationsText)
@@ -455,7 +453,7 @@ describe('getRootCauseAndRecommendations', () => {
         { isLargeMgmtFrameCount: true },
         { isHighLegacyWifiDevicesCount: true },
         { isHighMcbcTraffic: true }
-      ] as unknown as AirtimeTxArray
+      ] as unknown as AirtimeArray
       const params = {
         ssidCountPerRadioSlice: 1
       } as AirtimeParams
@@ -478,8 +476,8 @@ describe('getRootCauseAndRecommendations', () => {
         }
       })
       const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
-      const airtimeTxRCA = getAirtimeTXRootCauses(checks)
-      const airtimeTxRecommendations = getAirtimeTXRecommendations(checks, params)
+      const airtimeTxRCA = getAirtimeTxRootCauses(checks)
+      const airtimeTxRecommendations = getAirtimeTxRecommendations(checks, params)
       expect(rootCauses.rootCauseText).toEqual(airtimeTxRCA.rootCauseText)
       expect(recommendations.recommendationsText).toEqual(
         airtimeTxRecommendations.recommendationsText)
@@ -493,7 +491,7 @@ describe('getRootCauseAndRecommendations', () => {
         { isLargeMgmtFrameCount: false },
         { isHighLegacyWifiDevicesCount: false },
         { isHighMcbcTraffic: false }
-      ] as unknown as AirtimeTxArray
+      ] as unknown as AirtimeArray
       const params = {
         ssidCountPerRadioSlice: 0
       } as AirtimeParams
@@ -516,8 +514,8 @@ describe('getRootCauseAndRecommendations', () => {
         }
       })
       const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
-      const airtimeTxRCA = getAirtimeTXRootCauses(checks)
-      const airtimeTxRecommendations = getAirtimeTXRecommendations(checks, params)
+      const airtimeTxRCA = getAirtimeTxRootCauses(checks)
+      const airtimeTxRecommendations = getAirtimeTxRecommendations(checks, params)
       expect(rootCauses.rootCauseText).toEqual(airtimeTxRCA.rootCauseText)
       expect(recommendations.recommendationsText).toEqual(
         airtimeTxRecommendations.recommendationsText)
@@ -531,7 +529,7 @@ describe('getRootCauseAndRecommendations', () => {
         { isLargeMgmtFrameCount: true },
         { isHighLegacyWifiDevicesCount: false },
         { isHighMcbcTraffic: false }
-      ] as unknown as AirtimeTxArray
+      ] as unknown as AirtimeArray
       const params = {
         ssidCountPerRadioSlice: 0
       } as AirtimeParams
@@ -554,8 +552,8 @@ describe('getRootCauseAndRecommendations', () => {
         }
       })
       const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
-      const airtimeTxRCA = getAirtimeTXRootCauses(checks)
-      const airtimeTxRecommendations = getAirtimeTXRecommendations(checks, params)
+      const airtimeTxRCA = getAirtimeTxRootCauses(checks)
+      const airtimeTxRecommendations = getAirtimeTxRecommendations(checks, params)
       expect(rootCauses.rootCauseText).toEqual(airtimeTxRCA.rootCauseText)
       expect(recommendations.recommendationsText).toEqual(
         airtimeTxRecommendations.recommendationsText)
