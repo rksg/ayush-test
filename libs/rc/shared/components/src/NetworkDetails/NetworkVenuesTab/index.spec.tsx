@@ -42,13 +42,16 @@ type MockDialogProps = React.PropsWithChildren<{
   onOk?: () => void
   onCancel?: () => void
 }>
-jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
+jest.mock('../../NetworkApGroupDialog', () => ({
+  ...jest.requireActual('../../NetworkApGroupDialog'),
   NetworkApGroupDialog: ({ onOk = ()=>{}, onCancel = ()=>{}, visible }: MockDialogProps) =>
     visible && <div data-testid={'NetworkApGroupDialog'}>
       <button onClick={(e)=>{e.preventDefault();onOk()}}>Apply</button>
       <button onClick={(e)=>{e.preventDefault();onCancel()}}>Cancel</button>
-    </div>,
+    </div>
+}))
+jest.mock('../../NetworkVenueScheduleDialog', () => ({
+  ...jest.requireActual('../../NetworkVenueScheduleDialog'),
   NetworkVenueScheduleDialog: ({ onOk = ()=>{}, onCancel = ()=>{}, visible }: MockDialogProps) =>
     visible && <div data-testid={'NetworkVenueScheduleDialog'}>
       <button onClick={(e)=>{e.preventDefault();onOk()}}>Apply</button>

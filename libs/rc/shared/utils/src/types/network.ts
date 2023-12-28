@@ -135,6 +135,7 @@ export interface NetworkSaveData {
   isOweMaster?: boolean
   owePairNetworkId?: string
   accessControlProfileEnable?: boolean
+  enableOwe?: boolean
 }
 export interface ExternalProviders{
   providers: Providers[]
