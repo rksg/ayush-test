@@ -14,14 +14,6 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
-  NetworkApGroupDialog,
-  transformVLAN,
-  transformAps,
-  transformRadios,
-  transformScheduling,
-  NetworkVenueScheduleDialog
-} from '@acx-ui/rc/components'
-import {
   useAddNetworkVenueMutation,
   useAddNetworkVenuesMutation,
   useUpdateNetworkVenueMutation,
@@ -47,6 +39,16 @@ import {
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
+import {
+  NetworkApGroupDialog } from '../../NetworkApGroupDialog'
+import {
+  NetworkVenueScheduleDialog
+} from '../../NetworkVenueScheduleDialog'
+import {
+  transformVLAN,
+  transformAps,
+  transformRadios,
+  transformScheduling } from '../../pipes/apGroupPipes'
 import { useGetNetwork } from '../services'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'

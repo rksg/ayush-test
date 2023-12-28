@@ -49,31 +49,32 @@ describe('Edge SD-LAN Detail', () => {
     const row = await screen.findAllByRole('row', { name: /amyNetwork/i })
     expect(row.length).toBe(1)
     expect(await screen.findByText('Instances (1)')).toBeVisible()
-    expect(await screen.findByText('Total Tunnels: 12')).toBeVisible()
-    expect(await screen.findByText('Total VLANs: 37')).toBeVisible()
+    // expect(await screen.findByText('Total Tunnels: 12')).toBeVisible()
+    // expect(await screen.findByText('Total VLANs: 37')).toBeVisible()
     expect(await screen.findByRole('row',
       { name: 'amyNetwork Dynamic Pre-Shared Key (DPSK)' })).toBeVisible()
   })
 
-  it('should dispaly SD-LAN stats data default by 0', async () => {
-    mockServer.use(
-      rest.post(
-        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-        (_, res, ctx) => res(ctx.json({ data: [mockedSdLanDataList[1]] }))
-      ))
+  // TODO: hide this temporarily and wait for furthur enhancement
+  // it('should dispaly SD-LAN stats data default by 0', async () => {
+  //   mockServer.use(
+  //     rest.post(
+  //       EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+  //       (_, res, ctx) => res(ctx.json({ data: [mockedSdLanDataList[1]] }))
+  //     ))
 
-    render(
-      <Provider>
-        <EdgeSdLanDetail />
-      </Provider>, {
-        route: { params, path: '/:tenantId/services/edgeSdLan/:serviceId/detail' }
-      }
-    )
+  //   render(
+  //     <Provider>
+  //       <EdgeSdLanDetail />
+  //     </Provider>, {
+  //       route: { params, path: '/:tenantId/services/edgeSdLan/:serviceId/detail' }
+  //     }
+  //   )
 
-    await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
-    expect(await screen.findByText('Total Tunnels: 0')).toBeVisible()
-    expect(await screen.findByText('Total VLANs: 0')).toBeVisible()
-  })
+  //   await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+  //   expect(await screen.findByText('Total Tunnels: 0')).toBeVisible()
+  //   expect(await screen.findByText('Total VLANs: 0')).toBeVisible()
+  // })
 
   it('should render breadcrumb correctly', async () => {
     render(

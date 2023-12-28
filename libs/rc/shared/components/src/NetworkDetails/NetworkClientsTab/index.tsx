@@ -1,4 +1,4 @@
-import { ClientDualTable } from '@acx-ui/rc/components'
+import { ClientDualTable } from '../../ClientDualTable'
 
 export function NetworkClientsTab () {
   return (
