@@ -2312,6 +2312,11 @@ exports[`Test Details should render AirtimeRx correctly 1`] = `
             data-type="airtimeMetric"
           />
           <div
+            data-dimension="summary"
+            data-testid="network-impact-airtimeClientsByAP"
+            data-type="airtimeClientsByAP"
+          />
+          <div
             data-dimension="apModels"
             data-testid="network-impact-apModelByAP"
             data-type="apInfra"
@@ -2897,6 +2902,11 @@ exports[`Test Details should render AirtimeRx correctly 2`] = `
             data-type="airtimeMetric"
           />
           <div
+            data-dimension="summary"
+            data-testid="network-impact-airtimeClientsByAP"
+            data-type="airtimeClientsByAP"
+          />
+          <div
             data-dimension="apModels"
             data-testid="network-impact-apModelByAP"
             data-type="apInfra"
@@ -3480,6 +3490,11 @@ exports[`Test Details should render AirtimeRx correctly 3`] = `
             data-dimension="airtimeRx"
             data-testid="network-impact-airtimeRx"
             data-type="airtimeMetric"
+          />
+          <div
+            data-dimension="summary"
+            data-testid="network-impact-airtimeClientsByAP"
+            data-type="airtimeClientsByAP"
           />
           <div
             data-dimension="apModels"
@@ -4076,6 +4091,11 @@ exports[`Test Details should render AirtimeTx correctly 1`] = `
             data-testid="network-impact-airtimeCast"
             data-type="airtimeCast"
           />
+          <div
+            data-dimension="summary"
+            data-testid="network-impact-airtimeClientsByAP"
+            data-type="airtimeClientsByAP"
+          />
         </div>
       </div>
     </div>
@@ -4666,6 +4686,11 @@ exports[`Test Details should render AirtimeTx correctly 2`] = `
             data-testid="network-impact-airtimeCast"
             data-type="airtimeCast"
           />
+          <div
+            data-dimension="summary"
+            data-testid="network-impact-airtimeClientsByAP"
+            data-type="airtimeClientsByAP"
+          />
         </div>
       </div>
     </div>
@@ -5255,6 +5280,11 @@ exports[`Test Details should render AirtimeTx correctly 3`] = `
             data-dimension="summary"
             data-testid="network-impact-airtimeCast"
             data-type="airtimeCast"
+          />
+          <div
+            data-dimension="summary"
+            data-testid="network-impact-airtimeClientsByAP"
+            data-type="airtimeClientsByAP"
           />
         </div>
       </div>
