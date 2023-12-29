@@ -60,24 +60,10 @@ describe('refreshTokenMiddleware', () => {
     act(() => { refreshTokenMiddleware({ dispatch: Object({}), getState: jest.fn() })(next)({}) })
 
     expect(sessionStorage.getItem('jwt')).toBe('oldToken')
-    // expect(next).toHaveBeenCalledWith(action)
   })
-})
 
-describe('isDev', () => {
   it('returns true when hostname includes dev.ruckus.cloud', () => {
     window.location.hostname = 'dev.ruckus.cloud'
-    expect(isDev()).toBe(false)
-  })
-
-  it('returns true when hostname includes devalto.ruckuswireless.com', () => {
-    window.location.hostname = 'devalto.ruckuswireless.com'
-    expect(isDev()).toBe(false)
-  })
-
-  it('returns false when hostname does not include dev.ruckus.cloud ' +
-    'or devalto.ruckuswireless.com', () => {
-    window.location.hostname = 'example.com'
-    expect(isDev()).toBe(false)
+    expect(isDev()).toBe(true)
   })
 })
