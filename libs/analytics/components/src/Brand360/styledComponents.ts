@@ -24,11 +24,13 @@ export const IconWrapper = styled.span`
   height: 100%;
 `
 
-export const ListWrapper = styled.div`
+export const ListWrapper = styled.div<{ $showCursor: boolean }>`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  cursor: pointer;
+  cursor: ${props => props.$showCursor
+    ? 'pointer'
+    : 'none'};
   white-space: nowrap;
 `
 
