@@ -1,3 +1,5 @@
+import * as EdgeEditContext from './EdgeFormItem/EdgeEditContext'
+
 export {
   ActivityTable,
   columnState as activityTableColumnState,
@@ -17,7 +19,11 @@ export { ClientDualTable } from './ClientDualTable'
 export { ClientHealthIcon } from './ClientHealthIcon'
 export { ClientsWidget, ClientsWidgetV2 } from './ClientsWidget'
 export { CodeMirrorWidget } from './CodeMirrorWidget'
-export { ConnectedClientsTable, defaultClientPayload } from './ConnectedClientsTable'
+export {
+  ConnectedClientsTable,
+  defaultClientPayload,
+  isEqualCaptivePortalPlainText
+} from './ConnectedClientsTable'
 export { DevicesDashboardWidget, DevicesDashboardWidgetV2 } from './DevicesDashboardWidget'
 export { DevicesWidget, seriesMappingAP } from './DevicesWidget'
 export { EdgeSettingForm } from './EdgeSettingForm'
@@ -120,6 +126,9 @@ export { GroupedStatsTables as EdgeFirewallGroupedStatsTables }
   from './EdgeFirewallTables/GroupedStatsTables'
 export { EdgePortsGeneral } from './EdgeFormItem/EdgePortsGeneral'
 export type { EdgePortConfigFormType } from './EdgeFormItem/EdgePortsGeneral'
+export { EdgeEditContext }
+export { EdgePortsForm, EdgePortTabEnum } from './EdgeFormItem/PortsForm'
+export type { EdgePortsFormProps } from './EdgeFormItem/PortsForm'
 
 export { TunnelProfileForm } from './TunnelProfile/TunnelProfileForm'
 export { useTunnelProfileActions } from './TunnelProfile/TunnelProfileForm/useTunnelProfileActions'
@@ -170,4 +179,5 @@ export * from './RadioSettingsChannels/320Mhz/ChannelComponentStates'
 export * from './CommonLinkHelper'
 export * from './ZoomWidget'
 export * from './NetworkForm'
+export * from './NetworkDetails'
 export * from './users'

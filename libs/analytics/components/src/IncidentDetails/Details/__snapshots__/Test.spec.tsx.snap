@@ -218,7 +218,7 @@ exports[`Test Details should render AirtimeB correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
                               --
                             </span>
@@ -551,6 +551,11 @@ exports[`Test Details should render AirtimeB correctly 1`] = `
         <div
           data-testid="networkImpact"
         >
+          <div
+            data-dimension="airtimeBusy"
+            data-testid="network-impact-airtimeBusy"
+            data-type="airtimeMetric"
+          />
           <div
             data-dimension="apModels"
             data-testid="network-impact-apModelByAP"
@@ -798,7 +803,7 @@ exports[`Test Details should render AirtimeB correctly 2`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
                               --
                             </span>
@@ -1131,6 +1136,11 @@ exports[`Test Details should render AirtimeB correctly 2`] = `
         <div
           data-testid="networkImpact"
         >
+          <div
+            data-dimension="airtimeBusy"
+            data-testid="network-impact-airtimeBusy"
+            data-type="airtimeMetric"
+          />
           <div
             data-dimension="apModels"
             data-testid="network-impact-apModelByAP"
@@ -1378,7 +1388,7 @@ exports[`Test Details should render AirtimeB correctly 3`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
                               --
                             </span>
@@ -1711,6 +1721,11 @@ exports[`Test Details should render AirtimeB correctly 3`] = `
         <div
           data-testid="networkImpact"
         >
+          <div
+            data-dimension="airtimeBusy"
+            data-testid="network-impact-airtimeBusy"
+            data-type="airtimeMetric"
+          />
           <div
             data-dimension="apModels"
             data-testid="network-impact-apModelByAP"
@@ -1958,7 +1973,7 @@ exports[`Test Details should render AirtimeRx correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
                               --
                             </span>
@@ -2291,6 +2306,11 @@ exports[`Test Details should render AirtimeRx correctly 1`] = `
         <div
           data-testid="networkImpact"
         >
+          <div
+            data-dimension="airtimeRx"
+            data-testid="network-impact-airtimeRx"
+            data-type="airtimeMetric"
+          />
           <div
             data-dimension="apModels"
             data-testid="network-impact-apModelByAP"
@@ -2538,7 +2558,7 @@ exports[`Test Details should render AirtimeRx correctly 2`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
                               --
                             </span>
@@ -2871,6 +2891,11 @@ exports[`Test Details should render AirtimeRx correctly 2`] = `
         <div
           data-testid="networkImpact"
         >
+          <div
+            data-dimension="airtimeRx"
+            data-testid="network-impact-airtimeRx"
+            data-type="airtimeMetric"
+          />
           <div
             data-dimension="apModels"
             data-testid="network-impact-apModelByAP"
@@ -3118,7 +3143,7 @@ exports[`Test Details should render AirtimeRx correctly 3`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
                               --
                             </span>
@@ -3452,6 +3477,11 @@ exports[`Test Details should render AirtimeRx correctly 3`] = `
           data-testid="networkImpact"
         >
           <div
+            data-dimension="airtimeRx"
+            data-testid="network-impact-airtimeRx"
+            data-type="airtimeMetric"
+          />
+          <div
             data-dimension="apModels"
             data-testid="network-impact-apModelByAP"
             data-type="apInfra"
@@ -3698,7 +3728,7 @@ exports[`Test Details should render AirtimeTx correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
                               --
                             </span>
@@ -4027,7 +4057,27 @@ exports[`Test Details should render AirtimeTx correctly 1`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 dRhDDA"
         style="min-height: 228px;"
-      />
+      >
+        <div
+          data-testid="networkImpact"
+        >
+          <div
+            data-dimension="airtimeTx"
+            data-testid="network-impact-airtimeTx"
+            data-type="airtimeMetric"
+          />
+          <div
+            data-dimension="summary"
+            data-testid="network-impact-airtimeMgmtFrame"
+            data-type="airtimeFrame"
+          />
+          <div
+            data-dimension="summary"
+            data-testid="network-impact-airtimeCast"
+            data-type="airtimeCast"
+          />
+        </div>
+      </div>
     </div>
     <div
       class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
@@ -4268,7 +4318,7 @@ exports[`Test Details should render AirtimeTx correctly 2`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
                               --
                             </span>
@@ -4597,7 +4647,27 @@ exports[`Test Details should render AirtimeTx correctly 2`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 dRhDDA"
         style="min-height: 228px;"
-      />
+      >
+        <div
+          data-testid="networkImpact"
+        >
+          <div
+            data-dimension="airtimeTx"
+            data-testid="network-impact-airtimeTx"
+            data-type="airtimeMetric"
+          />
+          <div
+            data-dimension="summary"
+            data-testid="network-impact-airtimeMgmtFrame"
+            data-type="airtimeFrame"
+          />
+          <div
+            data-dimension="summary"
+            data-testid="network-impact-airtimeCast"
+            data-type="airtimeCast"
+          />
+        </div>
+      </div>
     </div>
     <div
       class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
@@ -4838,7 +4908,7 @@ exports[`Test Details should render AirtimeTx correctly 3`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
                               --
                             </span>
@@ -5167,7 +5237,27 @@ exports[`Test Details should render AirtimeTx correctly 3`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 dRhDDA"
         style="min-height: 228px;"
-      />
+      >
+        <div
+          data-testid="networkImpact"
+        >
+          <div
+            data-dimension="airtimeTx"
+            data-testid="network-impact-airtimeTx"
+            data-type="airtimeMetric"
+          />
+          <div
+            data-dimension="summary"
+            data-testid="network-impact-airtimeMgmtFrame"
+            data-type="airtimeFrame"
+          />
+          <div
+            data-dimension="summary"
+            data-testid="network-impact-airtimeCast"
+            data-type="airtimeCast"
+          />
+        </div>
+      </div>
     </div>
     <div
       class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"

@@ -135,7 +135,13 @@ export enum Features {
   LINKEDIN_OIDC_TOGGLE = 'guest-linkedin-openid-connect-toggle',
   TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs',
   CONFIG_TEMPLATE = 'acx-ui-config-template',
-  LIST_OF_CLIENTS_PER_WLAN = 'acx-ui-list-of-clients-per-wlan-toggle'
+  WIFI_EDA_CLIENT_REVOKE_TOGGLE = 'wifi-eda-client-revoke-toggle',
+  LIST_OF_CLIENTS_PER_WLAN = 'acx-ui-list-of-clients-per-wlan-toggle',
+  RUCKUS_AI_CRRM_PARTIAL = 'ruckus-ai-recommendations-crrm-partial-toggle',
+  CRRM_PARTIAL = 'acx-ui-recommendations-crrm-partial-toggle',
+  GROUP_BASED_LOGIN_TOGGLE = 'group-based-login-toggle',
+  GOOGLE_WORKSPACE_SSO_TOGGLE = 'google-workspace-sso-toggle',
+  ANY_3RDPARTY_INVITE_TOGGLE = 'ptenant-any-3rdparty-invite-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

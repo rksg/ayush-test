@@ -1,6 +1,13 @@
 import { groupBy, mean } from 'lodash'
+import moment            from 'moment-timezone'
+import { defineMessage } from 'react-intl'
 
-import { Response } from './services'
+import { formatter } from '@acx-ui/formatter'
+
+import type { Response }  from './services'
+import type { SliceType } from './useSliceType'
+
+export type ChartKey = 'incident' | 'experience' | 'compliance'
 
 type SLARecord = [ number, number ]
 export interface Common {
@@ -91,3 +98,38 @@ export const transformToPropertyView = (data: Response[]): Property[] =>
       guestExp: calGuestExp(avgConnSuccess, avgClientThroughput, avgTTC)
     } as Property
   })
+
+export function computePastRange (
+  startDate: string, endDate: string
+): [string, string] {
+  return [
+    moment(startDate).subtract(moment(endDate).diff(startDate)).format(),
+    startDate
+  ]
+}
+
+export const slaKpiConfig = {
+  incident: {
+    getTitle: (sliceType: SliceType) => sliceType === 'lsp'
+      ? defineMessage({ defaultMessage: 'Distressed LSPs' })
+      : defineMessage({ defaultMessage: 'Distressed Properties' }),
+    dataKey: 'p1Incidents',
+    avg: false,
+    formatter: formatter('countFormat'),
+    direction: 'low'
+  },
+  experience: {
+    getTitle: () => defineMessage({ defaultMessage: 'Guest Experience' }),
+    dataKey: 'guestExp',
+    avg: true,
+    formatter: formatter('percentFormat'),
+    direction: 'high'
+  },
+  compliance: {
+    getTitle: () => defineMessage({ defaultMessage: 'Brand SSID Compliance' }),
+    dataKey: 'ssidCompliance',
+    avg: true,
+    formatter: formatter('percentFormat'),
+    direction: 'high'
+  }
+}

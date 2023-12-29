@@ -57,6 +57,7 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
   const allowDeleteAdminFF = useIsSplitOn(Features.MSPEC_ALLOW_DELETE_ADMIN)
   const isSsoAllowed = useIsTierAllowed(Features.SSO)
   const idmDecouplngFF = useIsSplitOn(Features.IDM_DECOUPLING) && isSsoAllowed
+  const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
 
   const { data: mspProfile } = useGetMspProfileQuery({ params })
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
@@ -242,11 +243,11 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
         isFetching: isFetching || isDeleteAdminUpdating || isDeleteAdminsUpdating
       }
     ]}>
-      <UI.TableTitleWrapper direction='vertical'>
+      {!isGroupBasedLoginEnabled && <UI.TableTitleWrapper direction='vertical'>
         <Subtitle level={4}>
           {$t({ defaultMessage: 'Local Administrators' })}
         </Subtitle>
-      </UI.TableTitleWrapper>
+      </UI.TableTitleWrapper>}
       <Table
         columns={columns}
         dataSource={adminList}

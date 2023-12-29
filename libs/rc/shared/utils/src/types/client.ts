@@ -17,6 +17,7 @@ export interface ClientList {
   }
   clientAnalytics?: string
   clientVlan: string
+  vni?: string
   deviceTypeStr: string
   modelName: string
   totalTraffic: string
@@ -41,6 +42,7 @@ export interface ClientList {
   switchName?: string
   healthClass: string
   sessStartTimeParssed: boolean
+  networkType: string
   mldAddr: string
 }
 

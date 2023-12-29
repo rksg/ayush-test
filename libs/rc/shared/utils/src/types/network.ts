@@ -134,10 +134,11 @@ export interface NetworkSaveData {
   dpskServiceProfileId?: string
   isOweMaster?: boolean
   owePairNetworkId?: string
-  accessControlProfileEnable?: boolean,
-  maxRate?: MaxRateEnum,
-  totalUplinkLimited? : boolean,
+  maxRate?: MaxRateEnum
+  totalUplinkLimited? : boolean
   totalDownlinkLimited? : boolean
+  accessControlProfileEnable?: boolean
+  enableOwe?: boolean
 }
 
 export enum MaxRateEnum {

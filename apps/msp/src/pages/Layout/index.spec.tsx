@@ -172,6 +172,10 @@ describe('Layout', () => {
       return { data: {} }
     })
     mockServer.use(
+      rest.get(
+        FirmwareUrlsInfo.getFirmwareVersionIdList.url,
+        (req, res, ctx) => res(ctx.json(['6.2.1.103.1710']))
+      ),
       rest.post(
         CommonUrlsInfo.getAlarmsList.url,
         (req, res, ctx) => res(ctx.json({
@@ -209,7 +213,7 @@ describe('Layout', () => {
         (req, res, ctx) => res(ctx.json({}))
       ),
       rest.get(
-        UserUrlsInfo.getCloudScheduleVersion.url.split('?')[0],
+        FirmwareUrlsInfo.getScheduledFirmware.url.replace('?status=scheduled', ''),
         (req, res, ctx) => res(ctx.json({}))
       )
     )

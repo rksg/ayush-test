@@ -29,7 +29,7 @@ import { ConfigTemplateContext }                                                
 import { Outlet, useParams, useNavigate, useTenantLink, TenantNavLink, TenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                                from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                                          from '@acx-ui/user'
-import { PverName, getJwtTokenPayload, isDelegationMode }                           from '@acx-ui/utils'
+import { AccountType, PverName, getJwtTokenPayload, isDelegationMode }              from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 import * as UI           from './styledComponents'
@@ -57,6 +57,8 @@ function Layout () {
   const { data: mspEntitlement } = useMspEntitlementListQuery({ params })
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
+  const nonVarDelegation = useIsSplitOn(Features.ANY_3RDPARTY_INVITE_TOGGLE)
+
   const showSupportHomeButton = isSupportToMspDashboardAllowed && isDelegationMode()
   const isBackToRC = (PverName.ACX === getJwtTokenPayload().pver ||
     PverName.ACX_HYBRID === getJwtTokenPayload().pver)
@@ -78,12 +80,14 @@ function Layout () {
 
   useEffect(() => {
     if (data && userProfile) {
-      if (!isSupportToMspDashboardAllowed && (userProfile?.support || userProfile?.dogfood)) {
+      const isRecDelegation = nonVarDelegation && data.tenantType === AccountType.REC
+      if (!isSupportToMspDashboardAllowed &&
+         (userProfile?.support || userProfile?.dogfood || isRecDelegation)) {
         setTenantType('SUPPORT')
       } else {
         setTenantType(data.tenantType)
       }
-      setDogfood(userProfile?.dogfood && !userProfile?.support)
+      setDogfood((userProfile?.dogfood && !userProfile?.support) || isRecDelegation)
     }
     if (mspEntitlement?.length && mspEntitlement?.length > 0) {
       setHasLicense(true)
