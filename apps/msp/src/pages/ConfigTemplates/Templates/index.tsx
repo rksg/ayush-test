@@ -15,9 +15,10 @@ import { ConfigTemplateLink, PolicyConfigTemplateLink, renderConfigTemplateDetai
 import { useGetConfigTemplateListQuery }                                                 from '@acx-ui/msp/services'
 import { ConfigTemplate }                                                                from '@acx-ui/msp/utils'
 import {
+  defaultSort,
   PolicyOperation,
   PolicyType,
-  policyTypeLabelMapping,
+  policyTypeLabelMapping, sortProp,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
@@ -107,7 +108,7 @@ function useColumns () {
       key: 'ecTenants',
       title: $t({ defaultMessage: 'Applied To' }),
       dataIndex: 'ecTenants',
-      sorter: true,
+      sorter: sortProp('ecTenants.length', defaultSort),
       align: 'center',
       render: function (_, row) {
         return row.ecTenants.length
