@@ -94,6 +94,8 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
               $t({ defaultMessage: 'Firmware Update - Pre-download Completed' }),
             [SwitchFwStatusEnum.FW_UPD_FAIL]:
               $t({ defaultMessage: 'Firmware Update - Failed' }),
+            [SwitchFwStatusEnum.FW_UPD_WAITING_RESPONSE]:
+              $t({ defaultMessage: 'Firmware Upgrade - Waiting for Switch Response' }),
             [SwitchStatusEnum.DISCONNECTED]:
               $t({ defaultMessage: 'Disconnected from cloud' })
           }
