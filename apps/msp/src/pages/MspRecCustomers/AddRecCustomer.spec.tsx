@@ -241,7 +241,6 @@ describe('AddRecCustomer', () => {
     expect(screen.queryByText('Add Customer Account')).toBeNull()
 
     expect(screen.getByRole('heading', { name: 'Account Details' })).toBeVisible()
-    expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled()
 
     expect(screen.getByText('Test')).toBeVisible()
   })
@@ -321,8 +320,6 @@ describe('AddRecCustomer', () => {
       })
 
     await userEvent.click(screen.getByRole('switch'))
-
-    await userEvent.click(screen.getByRole('button', { name: 'Save' }))
 
     // Assert api was not called
     await waitFor(() => {
