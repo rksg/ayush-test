@@ -75,6 +75,22 @@ export const mockedDpskPassphraseList = {
       username: 'DPSK_USER_4',
       vlanId: 4,
       mac: 'AA:BB:CC:11:22:44',
+      devices: [
+        {
+          mac: 'AA:BB:CC:11:22:44',
+          isOnline: null,
+          lastConnected: null,
+          lastConnectedNetwork: null,
+          devicePassphrase: 'a%sdfa@gw342r3f'
+        },
+        {
+          mac: 'AD:2C:3B:1D:4D:5E',
+          isOnline: null,
+          lastConnected: null,
+          lastConnectedNetwork: null,
+          devicePassphrase: 'a%sdfa@gw332r3f'
+        }
+      ],
       numberOfDevices: 1,
       createdDate: '2022-12-08T09:00:00',
       identityId: '123456789'

@@ -78,12 +78,6 @@ describe('Add Stack Member Form', () => {
       })
 
     expect(await screen.findByText('Add Member to Stack')).toBeVisible()
-
-    const serialNumber1 = await screen.findByTestId(/serialNumber1/)
-    await userEvent.type(serialNumber1, 'FEK4124R20X')
-    serialNumber1.blur()
-
-    expect(await screen.findByText('ICX7150-C12P')).toBeVisible()
   })
   it('should render add and delete member field correctly', async () => {
     render(

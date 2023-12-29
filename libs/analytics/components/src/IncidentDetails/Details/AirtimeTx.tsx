@@ -32,8 +32,26 @@ export const AirtimeTx = (incident: Incident) => {
     {
       chart: NetworkImpactChartTypes.AirtimeTx,
       query: NetworkImpactQueryTypes.Distribution,
-      type: 'airtime',
+      type: 'airtimeMetric',
       dimension: 'airtimeTx'
+    },
+    {
+      chart: NetworkImpactChartTypes.AirtimeMgmtFrame,
+      query: NetworkImpactQueryTypes.Distribution,
+      type: 'airtimeFrame',
+      dimension: 'summary'
+    },
+    {
+      chart: NetworkImpactChartTypes.AirtimeCast,
+      query: NetworkImpactQueryTypes.Distribution,
+      type: 'airtimeCast',
+      dimension: 'summary'
+    },
+    {
+      chart: NetworkImpactChartTypes.AirtimeClientsByAP,
+      query: NetworkImpactQueryTypes.Distribution,
+      type: 'airtimeClientsByAP',
+      dimension: 'summary'
     }
   ]
 
