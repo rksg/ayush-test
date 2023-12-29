@@ -248,9 +248,14 @@ export const LagDrawer = (props: LagDrawerProps) => {
           name='id'
           rules={[{
             required: true,
-            message: $t({ defaultMessage: 'Please enter LAG Name' })
+            message: $t({ defaultMessage: 'Please select a LAG Name' })
           }]}
-          children={<Select options={getUseableLagOptions(existedLagList)} disabled={isEditMode} />}
+          children={
+            <Select
+              style={{ width: 60 }}
+              options={getUseableLagOptions(existedLagList)}
+              disabled={isEditMode} />
+          }
           noStyle
           hasFeedback
         />

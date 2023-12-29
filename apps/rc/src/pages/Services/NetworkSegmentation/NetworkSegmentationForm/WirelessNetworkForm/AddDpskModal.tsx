@@ -3,10 +3,10 @@ import { Dispatch, SetStateAction } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Modal, ModalType, useStepFormContext } from '@acx-ui/components'
+import { NetworkForm }                          from '@acx-ui/rc/components'
 import { NetworkTypeEnum }                      from '@acx-ui/rc/utils'
 
 import { NetworkSegmentationGroupFormData } from '..'
-import NetworkForm                          from '../../../../Networks/wireless/NetworkForm/NetworkForm'
 
 interface AddDpskModalProps {
   visible: boolean
@@ -39,6 +39,7 @@ export const AddDpskModal = (props: AddDpskModalProps) => {
       type={ModalType.ModalStepsForm}
       mask={true}
       children={content}
+      destroyOnClose={true}
     />
 
   )

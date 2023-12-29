@@ -111,6 +111,20 @@ export function Venues (props: VenuesProps) {
   const [scheduleModalState, setScheduleModalState] = useState<SchedulingModalState>({
     visible: false
   })
+  const isDefaultVenueSetted = useRef(false)
+
+  useEffect(() => {
+    if(isDefaultVenueSetted.current) return
+    if(defaultActiveVenues && tableData?.length > 0) {
+      defaultActiveVenues.forEach(defaultVenueId => {
+        const defaultVenueItem = tableData?.find(data => data.id === defaultVenueId)
+        if(defaultVenueItem) {
+          handleActivateVenue(true, [defaultVenueItem])
+        }
+      })
+      isDefaultVenueSetted.current = true
+    }
+  }, [defaultActiveVenues, tableData])
 
   const handleVenueSaveData = (newSelectedNetworkVenues: NetworkVenue[]) => {
     setData && setData({ ...data, venues: newSelectedNetworkVenues })
@@ -295,10 +309,7 @@ export function Venues (props: VenuesProps) {
           placement='bottom'>
           <Switch
             disabled={disabled}
-            defaultChecked={
-              Boolean(row.activated?.isActivated) ||
-              defaultActiveVenues?.some(venueId => venueId === row.id)
-            }
+            checked={Boolean(row.activated?.isActivated)}
             onClick={(checked, event) => {
               event.stopPropagation()
               handleActivateVenue(checked, [row])
