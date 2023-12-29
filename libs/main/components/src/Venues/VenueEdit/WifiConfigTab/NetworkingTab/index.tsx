@@ -74,7 +74,7 @@ export function NetworkingTab () {
         if (data?.length) {
           //const findAp = data.filter((ap: APExtended) => ap.venueId === venueId)
           const findAp = data
-          setHasCellularAps((findAp?.length > 0))
+          setHasCellularAps((findAp.length > 0))
         }
       })
     }
