@@ -1,5 +1,5 @@
-import { Space, Typography } from 'antd'
-import { useIntl }           from 'react-intl'
+import { Space }   from 'antd'
+import { useIntl } from 'react-intl'
 
 import { Button, Card, Loader, PageHeader, SummaryCard } from '@acx-ui/components'
 import { useGetEdgeSdLanViewDataListQuery }              from '@acx-ui/rc/services'
@@ -105,7 +105,7 @@ const EdgeSdLanDetail = () => {
                   { count: edgeSdLanData.networkIds?.length || 0 }
                 )}
               </UI.InstancesTitle>
-
+              {/*   // TODO: hide this temporarily and wait for furthur enhancement
               <Space size={10}>
                 <Typography.Text>
                   {$t(
@@ -123,6 +123,7 @@ const EdgeSdLanDetail = () => {
                   )}
                 </Typography.Text>
               </Space>
+              */}
             </UI.InstancesContainer>
             <NetworkTable networkIds={edgeSdLanData.networkIds || []} />
           </Card>
