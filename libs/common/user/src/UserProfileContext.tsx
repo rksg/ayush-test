@@ -5,6 +5,8 @@ import { useTenantId, useLocaleContext } from '@acx-ui/utils'
 
 import {
   useAllowedOperationsQuery,
+  useGetAccountTierQuery,
+  useGetBetaStatusQuery,
   useGetUserProfileQuery
 } from './services'
 import { UserProfile }                         from './types'
@@ -16,6 +18,8 @@ export interface UserProfileContextProps {
   hasRole: typeof hasRoles
   hasAccess: typeof hasAccess
   isPrimeAdmin: () => boolean
+  accountTier?: string
+  betaStatus?: string
 }
 
 const isPrimeAdmin = () => hasRoles(RolesEnum.PRIME_ADMIN)
@@ -36,8 +40,12 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   const { data: allowedOperations } = useAllowedOperationsQuery(tenantId!, {
     skip: !Boolean(profile)
   })
-
-  if (allowedOperations) setUserProfile({ profile: profile!, allowedOperations })
+  const { data: beta } = useGetBetaStatusQuery({ params: { tenantId } })
+  const betaStatus = beta?.enabled
+  const { data: accTierResponse } = useGetAccountTierQuery({ params: { tenantId } })
+  const accountTier = accTierResponse?.acx_account_tier
+  if (allowedOperations && accountTier && betaStatus) setUserProfile({ profile: profile!,
+    allowedOperations, accountTier, betaStatus })
 
   return <UserProfileContext.Provider
     value={{
@@ -45,7 +53,9 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       allowedOperations: allowedOperations || [],
       hasRole,
       isPrimeAdmin,
-      hasAccess
+      hasAccess,
+      accountTier: accountTier,
+      betaStatus: betaStatus
     }}
     children={props.children}
   />

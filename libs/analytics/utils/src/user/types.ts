@@ -8,6 +8,8 @@ export type UserProfile = {
   invitations: Invitation[]
   tenants: Tenant[]
   selectedTenant: Tenant
+  accountTier?: string
+  betaStatus?: string
 }
 export type Invitation = {
   accountName: string
