@@ -10,7 +10,7 @@ import {
   AdaptivePolicySetForm,
   MacRegistrationListForm,
   AccessControlForm,
-  AAAForm,
+  AAAForm, AAAPolicyDetail,
   VLANPoolForm,
   WifiCallingForm, WifiCallingConfigureForm, WifiCallingDetailView,
   SyslogDetailView, SyslogForm, DHCPForm, PortalForm, ClientIsolationForm,
@@ -53,8 +53,7 @@ import CliTemplateForm                              from './pages/Networks/wired
 import CliProfileForm                               from './pages/Networks/wired/profiles/CliProfileForm'
 import { ConfigurationProfileForm }                 from './pages/Networks/wired/profiles/ConfigurationProfileForm'
 import { NetworksList, NetworkTabsEnum }            from './pages/Networks/wireless'
-import NetworkDetails                               from './pages/Networks/wireless/NetworkDetails/NetworkDetails'
-import AAAPolicyDetail                              from './pages/Policies/AAA/AAADetail'
+import NetworkDetails                               from './pages/Networks/wireless/NetworkDetails'
 import AAATable                                     from './pages/Policies/AAA/AAATable/AAATable'
 import AccessControlDetail                          from './pages/Policies/AccessControl/AccessControlDetail'
 import AccessControlTable                           from './pages/Policies/AccessControl/AccessControlTable/AccessControlTable'
