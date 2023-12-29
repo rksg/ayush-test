@@ -81,21 +81,33 @@ const extractFailureCode = (
         code => code.startsWith('CCD_REASON') || ttcFailureCodes.includes(code))[0]
 }
 
-type AirtimeChecks = {
+export type AirtimeBusyChecks = {
   isRogueDetectionEnabled: boolean
   isCRRMRaised: boolean
+}
+
+export type AirtimeRxChecks = {
   isHighDensityWifiDevices: boolean
   isAclbRaised: boolean
   isHighSsidCountPerRadio: boolean
-  isHighCoChannelInterference: boolean
-  isChannelFlyEnabled: boolean
   isLargeMgmtFrameCount: boolean
+  isHighCoChannelInterference: boolean
+  isCRRMRaised: boolean
+  isChannelFlyEnabled: boolean
   isHighLegacyWifiDevicesCount: boolean
-  isHighPacketErrorCount: boolean
-  isHighMcbcTraffic: boolean
 }
 
-export type AirtimeArray = AirtimeChecks[]
+export type AirtimeTxChecks = {
+  isHighDensityWifiDevices: boolean
+  isAclbRaised: boolean
+  isHighSsidCountPerRadio: boolean
+  isLargeMgmtFrameCount: boolean
+  isHighPacketErrorCount: boolean
+  isHighMcbcTraffic: boolean
+  isHighLegacyWifiDevicesCount: boolean
+}
+
+export type AirtimeArray = (AirtimeBusyChecks | AirtimeRxChecks | AirtimeTxChecks)[]
 
 export type AirtimeParams = {
   ssidCountPerRadioSlice: number
@@ -108,7 +120,7 @@ export const htmlValues = {
   ul: (text: string) => <ul>{text}</ul>
 }
 
-const checkTrueParams = (checks: AirtimeArray) => checks.filter(item => Object.values(item)[0]).map(item => Object.keys(item)[0])
+const checkTrueParams = (checks: (AirtimeBusyChecks | AirtimeRxChecks | AirtimeTxChecks)[]) => checks.filter(item => Object.values(item)[0]).map(item => Object.keys(item)[0])
 
 export const getAirtimeBusyRootCauses = () => {
   return {
@@ -116,7 +128,7 @@ export const getAirtimeBusyRootCauses = () => {
     rootCauseValues: {}
   }
 }
-export const getAirtimeBusyRecommendations = (checks: AirtimeArray) => {
+export const getAirtimeBusyRecommendations = (checks: (AirtimeBusyChecks)[]) => {
   const checkTrue = checkTrueParams(checks)
   const rogueAPDisabled = <FormattedMessage defaultMessage={'<li>Enable rogue AP detection to search, identify, and physically remove rogue APs from your premises.</li>'} values={htmlValues}/>
   const rogueAPEnabled = <FormattedMessage defaultMessage={'<li>Remove rogue APs in your premises.</li>'} values={htmlValues}/>
@@ -141,7 +153,7 @@ export const getAirtimeBusyRecommendations = (checks: AirtimeArray) => {
   }
 }
 
-export const getAirtimeRxRootCauses = (checks: AirtimeArray) => {
+export const getAirtimeRxRootCauses = (checks: (AirtimeRxChecks)[]) => {
   const checkTrue = checkTrueParams(checks)
   const allFalse = checkTrue.length === 0
 
@@ -175,7 +187,7 @@ export const getAirtimeRxRootCauses = (checks: AirtimeArray) => {
     }
   }
 }
-export const getAirtimeRxRecommendations = (checks: AirtimeArray, params: AirtimeParams) => {
+export const getAirtimeRxRecommendations = (checks: (AirtimeRxChecks)[], params: AirtimeParams) => {
   const checkTrue = checkTrueParams(checks)
   const allFalse = checkTrue.length === 0
   const ssidCountPerRadioSlice = params.ssidCountPerRadioSlice
@@ -212,7 +224,7 @@ export const getAirtimeRxRecommendations = (checks: AirtimeArray, params: Airtim
   }
 }
 
-export const getAirtimeTxRootCauses = (checks: AirtimeArray) => {
+export const getAirtimeTxRootCauses = (checks: (AirtimeTxChecks)[]) => {
   const checkTrue = checkTrueParams(checks)
   const allFalse = checkTrue.length === 0
 
@@ -248,7 +260,7 @@ export const getAirtimeTxRootCauses = (checks: AirtimeArray) => {
     }
   }
 }
-export const getAirtimeTxRecommendations = (checks: AirtimeArray, params: AirtimeParams) => {
+export const getAirtimeTxRecommendations = (checks: (AirtimeTxChecks)[], params: AirtimeParams) => {
   const checkTrue = checkTrueParams(checks)
   const allFalse = checkTrue.length === 0
   const ssidCountPerRadioSlice = params.ssidCountPerRadioSlice
