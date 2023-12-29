@@ -2,14 +2,9 @@ import { groupBy, mean } from 'lodash'
 import moment            from 'moment-timezone'
 import { defineMessage } from 'react-intl'
 
-import { formatter } from '@acx-ui/formatter'
-import {
-  MspEc
-} from '@acx-ui/msp/utils'
-import {
-  TableResult
-
-} from '@acx-ui/rc/utils'
+import { formatter }   from '@acx-ui/formatter'
+import { MspEc }       from '@acx-ui/msp/utils'
+import { TableResult } from '@acx-ui/rc/utils'
 
 import type { Response, BrandVenuesSLA } from './services'
 import type { SliceType }                from './useSliceType'
@@ -40,7 +35,7 @@ interface TransformedItem {
   integrator?:string
 }
 
-interface TransformedMap {
+export interface TransformedMap {
   [key: string]: TransformedItem;
 }
 

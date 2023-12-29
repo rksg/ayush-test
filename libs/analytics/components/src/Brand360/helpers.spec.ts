@@ -1,5 +1,42 @@
-import { computePastRange } from './helpers'
+import { MspEc }       from '@acx-ui/msp/utils'
+import { TableResult } from '@acx-ui/rc/utils'
 
+import { computePastRange, transformLookupAndMappingData, transformVenuesData, TransformedMap } from './helpers'
+
+import type { BrandVenuesSLA } from './services'
+
+const mockMappingData = {
+  data: [
+    { id: '1', name: 'Name1', tenantType: 'Type1', integrator: 'Integrator1' },
+    { id: '2', name: 'Name2', tenantType: 'Type2' }
+  ]
+}
+const mockVenuesData = {
+  data: [
+    {
+      tenantId: '1',
+      incidentCount: 5,
+      ssidComplianceSLA: [1, 2],
+      onlineApsSLA: [3, 4],
+      connectionSuccessSLA: [5, 6],
+      timeToConnectSLA: [7, 8],
+      clientThroughputSLA: [9, 10]
+    },
+    {
+      tenantId: '1',
+      incidentCount: 3,
+      ssidComplianceSLA: [2, 3],
+      onlineApsSLA: [4, 5],
+      connectionSuccessSLA: [6, 7],
+      timeToConnectSLA: [8, 9],
+      clientThroughputSLA: [10, 11]
+    }
+  ]
+}
+const mockLookupAndMappingData = {
+  1: { name: 'Property1', integrator: '2', content: [mockMappingData.data[0]] },
+  2: { name: 'IntegratorName', content: [mockMappingData.data[1]] }
+}
 
 describe('helpers', () => {
   describe('computePastRange', () => {
@@ -45,5 +82,64 @@ describe('helpers', () => {
       expect(range[0]).toMatch('2023-09-12T00:00:00+00:00')
       expect(range[1]).toMatch(startDate)
     })
+  })
+})
+
+
+describe('transformLookupAndMappingData', () => {
+  it('transforms mapping data correctly', () => {
+
+    const transformed = transformLookupAndMappingData(mockMappingData as TableResult<MspEc>)
+    expect(transformed['1']).toEqual({
+      name: 'Name1',
+      type: 'Type1',
+      integrator: 'Integrator1',
+      content: [mockMappingData.data[0]]
+    })
+    expect(transformed['2']).toEqual({
+      name: 'Name2',
+      type: 'Type2',
+      content: [mockMappingData.data[1]]
+    })
+  })
+
+  it('handles empty data', () => {
+    const transformed = transformLookupAndMappingData({ data: [] } as unknown as TableResult<MspEc>)
+    expect(transformed).toEqual({})
+  })
+})
+
+describe('transformVenuesData', () => {
+
+  it('transforms and sums venue data correctly', () => {
+    const transformed = transformVenuesData(
+      mockVenuesData as { data: BrandVenuesSLA[] },
+      mockLookupAndMappingData as unknown as TransformedMap
+    )
+    expect(transformed).toEqual([
+      {
+        property: 'Property1',
+        lsp: 'IntegratorName',
+        p1Incidents: 8,
+        ssidCompliance: [3, 5],
+        deviceCount: 9,
+        avgConnSuccess: [11, 13],
+        avgTTC: [15, 17],
+        avgClientThroughput: [19, 21]
+      }
+    ])
+  })
+
+  it('handles empty venue data', () => {
+    const transformed = transformVenuesData(
+      { data: [] },
+      mockLookupAndMappingData as unknown as TransformedMap
+    )
+    expect(transformed).toEqual([])
+  })
+
+  it('handles undefined mapping data', () => {
+    const transformed = transformVenuesData(mockVenuesData as { data: BrandVenuesSLA[] }, {})
+    expect(transformed).toEqual([])
   })
 })
