@@ -9,10 +9,12 @@ import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import { EdgeInfoWidget }          from '@acx-ui/rc/components'
 import {
   useEdgeBySerialNumberQuery,
+  useGetEdgeLagsStatusListQuery,
   useGetEdgePortsStatusListQuery
 } from '@acx-ui/rc/services'
-import {  EdgePortStatus } from '@acx-ui/rc/utils'
+import { EdgePortStatus, isEdgeConfigurable } from '@acx-ui/rc/utils'
 
+import { LagsTab }              from './LagsTab'
 import { MonitorTab }           from './MonitorTab'
 import { PortsTab }             from './PortsTab'
 import { EdgeSubInterfacesTab } from './SubInterfacesTab'
@@ -20,6 +22,7 @@ import { EdgeSubInterfacesTab } from './SubInterfacesTab'
 enum OverviewInfoType {
     MONITOR = 'monitor',
     PORTS = 'ports',
+    LAGS = 'lags',
     SUB_INTERFACES = 'subInterfaces'
 }
 export const EdgeOverview = () => {
@@ -27,6 +30,7 @@ export const EdgeOverview = () => {
   const { serialNumber, activeSubTab } = useParams()
   const [currentTab, setCurrentTab] = useState<string | undefined>(undefined)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const isEdgeLagEnabled = useIsSplitOn(Features.EDGE_LAG)
 
   const edgeStatusPayload = {
     fields: [
@@ -60,6 +64,8 @@ export const EdgeOverview = () => {
     payload: edgeStatusPayload
   })
 
+  const isConfigurable = isEdgeConfigurable(currentEdge)
+
   const edgePortStatusPayload = {
     fields: [
       'port_id',
@@ -81,12 +87,47 @@ export const EdgeOverview = () => {
     sortOrder: 'ASC'
   }
 
+  const edgeLagStatusPayload = {
+    fields: [
+      'lagId',
+      'name',
+      'description',
+      'lagType',
+      'status',
+      'adminStatus',
+      'lagMembers',
+      'portType',
+      'mac',
+      'ip',
+      'ipMode',
+      'lacpTimeout'
+    ],
+    sortField: 'lagId',
+    sortOrder: 'ASC'
+  }
+
   const {
-    data: portStatusList,
+    data: portStatusList = [],
     isLoading: isPortListLoading
   } = useGetEdgePortsStatusListQuery({
     params: { serialNumber },
     payload: edgePortStatusPayload
+  })
+
+  const {
+    lagStatusList = [],
+    isLagListLoading
+  } = useGetEdgeLagsStatusListQuery({
+    params: { serialNumber },
+    payload: edgeLagStatusPayload
+  }, {
+    skip: !isEdgeLagEnabled,
+    selectFromResult ({ data, isLoading }) {
+      return {
+        lagStatusList: data?.data,
+        isLagListLoading: isLoading
+      }
+    }
   })
 
   const handleTabChange = (val: string) => {
@@ -96,6 +137,10 @@ export const EdgeOverview = () => {
   const handleClickWidget = (type: string) => {
     if (type === 'port')
       handleTabChange(OverviewInfoType.PORTS)
+  }
+
+  const handleClickLagName = () => {
+    handleTabChange(OverviewInfoType.LAGS)
   }
 
   useEffect(() => {
@@ -110,13 +155,31 @@ export const EdgeOverview = () => {
   }, {
     label: $t({ defaultMessage: 'Ports' }),
     value: 'ports',
-    children: <PortsTab isLoading={isPortListLoading} data={portStatusList as EdgePortStatus[]}/>
-  }, {
+    children: <PortsTab
+      isConfigurable={isConfigurable}
+      portData={portStatusList}
+      lagData={lagStatusList}
+      isLoading={isPortListLoading || isLagListLoading}
+      handleClickLagName={handleClickLagName}
+    />
+  },
+  ...(isEdgeLagEnabled ? [{
+    label: $t({ defaultMessage: 'LAGs' }),
+    value: 'lags',
+    children: <LagsTab
+      isConfigurable={isConfigurable}
+      data={lagStatusList}
+      isLoading={isLagListLoading}
+    />
+  }] : []),
+  {
     label: $t({ defaultMessage: 'Sub-Interfaces' }),
     value: 'subInterfaces',
     children: <EdgeSubInterfacesTab
-      isLoading={isPortListLoading}
+      isConfigurable={isConfigurable}
+      isLoading={isPortListLoading || isLagListLoading}
       ports={portStatusList as EdgePortStatus[]}
+      lags={lagStatusList}
     />
   }].filter(i => i.value !== 'monitor' || isEdgeReady)
 

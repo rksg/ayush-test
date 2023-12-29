@@ -24,6 +24,7 @@ import {
 import { Administrator, sortProp, defaultSort }                 from '@acx-ui/rc/utils'
 import { RolesEnum }                                            from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, roleStringMap } from '@acx-ui/user'
+import { AccountType }                                          from '@acx-ui/utils'
 
 import * as UI from '../styledComponents'
 
@@ -34,6 +35,7 @@ interface AdministratorsTableProps {
   currentUserMail: string | undefined;
   isPrimeAdminUser: boolean;
   isMspEc: boolean;
+  tenantType?: string;
 }
 
 interface TooltipRowProps extends React.PropsWithChildren {
@@ -42,7 +44,7 @@ interface TooltipRowProps extends React.PropsWithChildren {
 
 const AdministratorsTable = (props: AdministratorsTableProps) => {
   const { $t } = useIntl()
-  const { isPrimeAdminUser, isMspEc } = props
+  const { isPrimeAdminUser, isMspEc, tenantType } = props
   const params = useParams()
   const [showDialog, setShowDialog] = useState(false)
   const [editMode, setEditMode] = useState(false)
@@ -55,6 +57,7 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
   const allowDeleteAdminFF = useIsSplitOn(Features.MSPEC_ALLOW_DELETE_ADMIN)
   const isSsoAllowed = useIsTierAllowed(Features.SSO)
   const idmDecouplngFF = useIsSplitOn(Features.IDM_DECOUPLING) && isSsoAllowed
+  const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
 
   const { data: mspProfile } = useGetMspProfileQuery({ params })
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
@@ -213,7 +216,7 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
   ]
 
   const tableActions = []
-  if (isPrimeAdminUser) {
+  if (isPrimeAdminUser && tenantType !== AccountType.MSP_REC) {
     tableActions.push({
       label: $t({ defaultMessage: 'Add Administrator' }),
       onClick: handleClickAdd
@@ -240,11 +243,11 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
         isFetching: isFetching || isDeleteAdminUpdating || isDeleteAdminsUpdating
       }
     ]}>
-      <UI.TableTitleWrapper direction='vertical'>
+      {!isGroupBasedLoginEnabled && <UI.TableTitleWrapper direction='vertical'>
         <Subtitle level={4}>
           {$t({ defaultMessage: 'Local Administrators' })}
         </Subtitle>
-      </UI.TableTitleWrapper>
+      </UI.TableTitleWrapper>}
       <Table
         columns={columns}
         dataSource={adminList}

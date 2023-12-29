@@ -92,7 +92,7 @@ const handleStatusColor = (status: DeviceConnectionStatus) => {
 const PasswordTooltip = {
   SYNCING: defineMessage({ defaultMessage: 'We are not able to determine the password before completing data synchronization.' }),
   SYNCED: defineMessage({ defaultMessage: 'To change the admin password in venue setting, please go to Venue > Venue Configuration > Switch Configuration > AAA' }),
-  CUSTOM: defineMessage({ defaultMessage: 'For security reasons, R1 is not able to show custom passwords that are set on the switch.' })
+  CUSTOM: defineMessage({ defaultMessage: 'For security reasons, RUCKUS One is not able to show custom passwords that are set on the switch.' })
 }
 
 export const defaultSwitchPayload = {

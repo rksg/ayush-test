@@ -25,7 +25,7 @@ export function DistributionSwitchForm () {
   const distributionSwitchInfos = Form.useWatch('distributionSwitchInfos', form) ||
     form.getFieldValue('distributionSwitchInfos')
   const accessSwitchInfos = form.getFieldValue('accessSwitchInfos') as AccessSwitch []
-  const venueId = form.getFieldValue('venueId')
+  const venueId = form.getFieldValue('venueId') as string
   const edgeId = form.getFieldValue('edgeId') as string
   const edgeName = form.getFieldValue('edgeName') as string
 
@@ -38,7 +38,7 @@ export function DistributionSwitchForm () {
         // filter out switches already selected in this MDU
         !distributionSwitchInfos?.find(ds => ds.id === sw.id) &&
         !accessSwitchInfos?.find(ds => ds.id === sw.id)
-      ) || []
+      )
     })
   })
 
@@ -125,7 +125,7 @@ export function DistributionSwitchForm () {
     <DistributionSwitchDrawer
       open={openDrawer}
       editRecord={selected}
-      availableSwitches={availableSwitches}
+      availableSwitches={availableSwitches || []}
       onSaveDS={handleSaveDS}
       onClose={()=>setOpenDrawer(false)} />
     { distributionSwitchInfos && distributionSwitchInfos.length > 0 && <Alert type='info'

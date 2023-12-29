@@ -12,7 +12,8 @@ import { useIntl } from 'react-intl'
 import {
   PageHeader,
   StepsForm,
-  Subtitle
+  Subtitle,
+  showActionModal
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
@@ -61,6 +62,18 @@ interface Assignment {
   deviceType: EntitlementDeviceType
   useTemporaryMspEntitlement?: boolean
 }
+
+interface ErrorsResult<T> {
+  data: T;
+  status: number;
+}
+
+interface ErrorDetails {
+  code: string,
+  message?: string,
+  errorMessage?: string
+}
+
 
 export function AssignMspLicense () {
   const intl = useIntl()
@@ -155,12 +168,31 @@ export function AssignMspLicense () {
     return Promise.resolve()
   }
 
+  const handleSubmitFailed = (error: ErrorsResult<ErrorDetails>) => {
+    let title = intl.$t({ defaultMessage: 'Assign Subscription Failed' })
+    let message
+    const status = error.status
+    if (status === 409) {
+      // eslint-disable-next-line max-len
+      message = error.data.errorMessage ?? intl.$t({ defaultMessage: 'Operation failed' })
+    } else {
+      const status = error.status
+      title = intl.$t({ defaultMessage: 'Server Error' })
+      // eslint-disable-next-line max-len
+      message = intl.$t({ defaultMessage: 'Error has occurred. Backend returned code {status}' }, { status })
+    }
+    showActionModal({
+      type: 'error',
+      title: title,
+      content: message
+    })
+  }
+
   const handleAssignLicense = async (values: SubscriptionAssignmentForm) => {
     try {
       const ecFormData = { ...values }
       const today = EntitlementUtil.getServiceStartDate()
-      const expirationDate = EntitlementUtil.getServiceStartDate(
-        formatter(DateFormatEnum.DateFormat)(ecFormData.serviceExpirationDate))
+      const expirationDate = EntitlementUtil.getServiceStartDate((ecFormData.serviceExpirationDate))
 
       const addAssignment = []
       const updateAssignment = []
@@ -255,7 +287,8 @@ export function AssignMspLicense () {
       }
       navigate(linkToSubscriptions, { replace: true })
     } catch (error) {
-      console.log(error) // eslint-disable-line no-console
+      const respData = error as ErrorsResult<ErrorDetails>
+      handleSubmitFailed(respData)
     }
   }
 
@@ -446,7 +479,6 @@ export function AssignMspLicense () {
             <DatePicker
               format={formatter(DateFormatEnum.DateFormat)}
               disabled={!customDate}
-              // defaultValue={moment(formatter(DateFormatEnum.DateFormat)(subscriptionEndDate))}
               disabledDate={(current) => {
                 return current && current < moment().endOf('day')
               }}

@@ -16,9 +16,9 @@ import {
   Table,
   TableProps,
   Loader } from '@acx-ui/components'
-import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                       from '@acx-ui/formatter'
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                    from '@acx-ui/formatter'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType, NetworkForm } from '@acx-ui/rc/components'
 import {
   useGetGuestsListQuery,
   useNetworkListQuery,
@@ -41,7 +41,6 @@ import { RolesEnum, RequestPayload }                          from '@acx-ui/type
 import { filterByAccess, GuestErrorRes, hasAccess, hasRoles } from '@acx-ui/user'
 import { getIntl  }                                           from '@acx-ui/utils'
 
-import NetworkForm                           from '../../../../../Networks/wireless/NetworkForm/NetworkForm'
 import { defaultGuestPayload, GuestsDetail } from '../GuestsDetail'
 import { GenerateNewPasswordModal }          from '../GuestsDetail/generateNewPasswordModal'
 import { useGuestActions }                   from '../GuestsDetail/guestActions'
@@ -77,6 +76,7 @@ export const GuestsTable = () => {
     includeExpired: ['true']
   }
   const { setGuestCount } = useContext(GuestTabContext)
+
 
   const queryOptions = {
     defaultPayload: {
@@ -127,6 +127,7 @@ export const GuestsTable = () => {
   const [currentGuest, setCurrentGuest] = useState({} as Guest)
   const [guestDetail, setGuestDetail] = useState({} as Guest)
   const [allowedNetworkList, setAllowedNetworkList] = useState<Network[]>([])
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
 
   const [importVisible, setImportVisible] = useState(false)
   const [importCsv, importResult] = useImportGuestPassMutation()
@@ -296,6 +297,10 @@ export const GuestsTable = () => {
     setVisible(false)
   }
 
+  const clearSelection = () => {
+    setSelectedRowKeys([])
+  }
+
   const rowActions: TableProps<Guest>['rowActions'] = isReadOnly ? [
     {
       label: $t({ defaultMessage: 'Download Information' }),
@@ -307,7 +312,7 @@ export const GuestsTable = () => {
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows) => {
-        guestAction.showDeleteGuest(selectedRows, params.tenantId)
+        guestAction.showDeleteGuest(selectedRows, params.tenantId, clearSelection)
       }
     },
     {
@@ -386,6 +391,7 @@ export const GuestsTable = () => {
         rowKey='id'
         rowActions={rowActions}
         rowSelection={{
+          selectedRowKeys,
           type: 'checkbox'
         }}
         actions={filterByAccess([{

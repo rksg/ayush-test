@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react'
 
 import { Radio, RadioChangeEvent, Space } from 'antd'
 import { DefaultOptionType }              from 'antd/lib/select'
+import _                                  from 'lodash'
 import { useIntl }                        from 'react-intl'
 
-import { Modal }     from '@acx-ui/components'
+import { Modal, Tooltip }   from '@acx-ui/components'
+import { InformationSolid } from '@acx-ui/icons'
 import {
-  EolApFirmware,
   FirmwareCategory,
   FirmwareVenue,
   FirmwareVersion,
@@ -15,9 +16,10 @@ import {
 
 import { getVersionLabel, isBetaFirmware } from '../../FirmwareUtils'
 
-import * as UI                          from './styledComponents'
-import { firmwareNote1, firmwareNote2 } from './UpdateNowDialog'
-import { useApEolFirmware }             from './useApEolFirmware'
+import * as UI                                  from './styledComponents'
+import { SupportedAPModelsList }                from './SupportedAPModelsList'
+import { firmwareNote1, firmwareNote2 }         from './UpdateNowDialog'
+import { EolApFirmwareGroup, useApEolFirmware } from './useApEolFirmware'
 
 type UpdateNowRequestWithoutVenues = Exclude<UpdateNowRequest, 'venueIds'>
 
@@ -29,22 +31,35 @@ export interface AdvancedUpdateNowDialogProps {
 }
 
 export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
-  // eslint-disable-next-line max-len
-  const { getAvailableEolApFirmwares, getEolABFOtherVersionsOptions, getDefaultEolVersionLabel } = useApEolFirmware()
+  const {
+    getAvailableEolApFirmwareGroups,
+    getEolABFOtherVersionsOptions,
+    getDefaultEolVersionLabel
+  } = useApEolFirmware()
   const intl = useIntl()
   const { onSubmit, onCancel, data: venuesData = [], availableVersions } = props
-  const eolApFirmwares = getAvailableEolApFirmwares(venuesData)
+  const eolApFirmwareGroups = getAvailableEolApFirmwareGroups(venuesData)
   const eolABFOtherVersion = getEolABFOtherVersionsOptions(venuesData)
   const [disableSave, setDisableSave] = useState(false)
   const [updateNowRequestPayload, setUpdateNowRequestPayload] = useState<
     { [key: string]: UpdateNowRequestWithoutVenues | null }
   >()
 
+  const EOL_ABF_LABEL = {
+    'ABF2-3R': intl.$t({ defaultMessage: 'Available firmware for Wi-Fi 6, 6E and 11ac wave2 AP' }),
+    'eol-ap-2022-12': intl.$t({ defaultMessage: 'Available firmware for 11ac AP' })
+  } as { [key: string]: string }
+
   // eslint-disable-next-line max-len
   const defaultActiveVersion: FirmwareVersion | undefined = getDefaultActiveVersion(availableVersions)
   const otherActiveVersions: FirmwareVersion[] = filteredOtherActiveVersions(availableVersions)
-  // eslint-disable-next-line max-len
-  const activeApModels = venuesData.filter(venue => venue.apModels).map(venue => venue.apModels).flat()
+  const activeApModels = venuesData
+    .map(venue => {
+      return venue.apModels
+        ? _.difference(venue.apModels, venue.currentVenueUnsupportedApModels ?? []) // filter out the unsupported AP models, ACX-44848
+        : []
+    })
+    .flat()
   const uniqueActiveApModels = [...new Set(activeApModels)].join(', ')
 
   const getUpdateNowRequestPayload = () => {
@@ -97,11 +112,11 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
       okButtonProps={{ disabled: disableSave }}
       destroyOnClose={true}
     >
-      { defaultActiveVersion &&
-        <UI.Section>
+      { defaultActiveVersion
+        ? <UI.Section>
           <ABFSelector
             categoryId={'active'}
-            abfLabel={intl.$t({ defaultMessage: 'Available firmware' })}
+            abfLabel={intl.$t({ defaultMessage: 'Available firmware for Wi-Fi 7 AP' })}
             defaultChecked={true}
             defaultVersionId={defaultActiveVersion.id}
             defaultVersionLabel={getVersionLabel(intl, defaultActiveVersion)}
@@ -110,22 +125,33 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
             update={updateSelectedABF}
           />
         </UI.Section>
+        : (uniqueActiveApModels && <UI.Section>
+          <div>{// eslint-disable-next-line max-len
+            intl.$t({ defaultMessage: 'There are one or more devices in selected venues ({apModels}).' }, { apModels: uniqueActiveApModels })}
+          </div>
+          <div>{intl.$t({ defaultMessage: 'No available firmware.' })}</div>
+        </UI.Section>)
       }
-      { eolApFirmwares.length > 0
-        ? eolApFirmwares.map((eol: EolApFirmware) => {
-          return (
-            <UI.Section key={eol.name}>
-              <ABFSelector
+      { eolApFirmwareGroups.length > 0
+        ? eolApFirmwareGroups.map((eol: EolApFirmwareGroup) => {
+          return <UI.Section key={eol.name}>
+            {eol.isUpgradable
+              ? <ABFSelector
                 categoryId={eol.name}
-                abfLabel={intl.$t({ defaultMessage: 'Available firmware for legacy devices' })}
+                abfLabel={EOL_ABF_LABEL[eol.name]}
+                defaultChecked={true}
                 defaultVersionId={eol.latestEolVersion}
                 defaultVersionLabel={getDefaultEolVersionLabel(eol.latestEolVersion)}
                 apModels={eol.apModels?.join(', ')}
                 otherVersions={eolABFOtherVersion[eol.name] ? eolABFOtherVersion[eol.name] : []}
                 update={updateSelectedABF}
               />
-            </UI.Section>
-          )
+              : <><div>{// eslint-disable-next-line max-len
+                intl.$t({ defaultMessage: 'There are one or more legacy devices in selected venues ({eolApModels}).' }, { eolApModels: eol.apModels.join(', ') })}
+              </div>
+              <div>{intl.$t({ defaultMessage: 'No available firmware.' })}</div></>
+            }
+          </UI.Section>
         })
         : null
       }
@@ -207,14 +233,21 @@ function ABFSelector (props: ABFSelectorProps) {
   }, [selectedVersion])
 
   return (<>
-    <UI.TitleActive>
-      {abfLabel}&nbsp;
-      ({ apModels
-        ? apModels
-        // eslint-disable-next-line max-len
-        : <span className='empty'>{$t({ defaultMessage: 'No Access Point in selected venue(s)' })}</span>
-      })
-    </UI.TitleActive>
+    <UI.LabelWithHint>
+      <UI.TitleActive>
+        {abfLabel}&nbsp;
+        ({ apModels
+          ? apModels
+          // eslint-disable-next-line max-len
+          : <span className='empty'>{$t({ defaultMessage: 'No Access Point in selected venue(s)' })}</span>
+        })
+      </UI.TitleActive>
+      <Tooltip
+        overlayInnerStyle={{ minWidth: '500px' }}
+        children={<InformationSolid />}
+        title={<SupportedAPModelsList />}
+      />
+    </UI.LabelWithHint>
     <UI.ValueContainer>
       <Radio.Group
         onChange={onSelectedVersionChange}

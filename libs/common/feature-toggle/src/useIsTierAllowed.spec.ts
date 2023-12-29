@@ -1,6 +1,6 @@
 import { AccountType } from '@acx-ui/utils'
 
-import { Features }         from './features'
+import { TierFeatures }     from './features'
 import { useIsTierAllowed } from './useIsTierAllowed'
 
 jest.mock('react', () => ({
@@ -34,6 +34,11 @@ jest.mock('./useIsSplitOn', () => ({
   useIsSplitOn: jest.fn().mockReturnValue(false)
 }))
 
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user'),
+  useUserProfileContext: jest.fn(() => ({ data: { dogfood: 'false' } }))
+}))
+
 describe('Test useIsTierAllowed function', () => {
   beforeEach(async () => {
     user.useGetBetaStatusQuery = jest.fn().mockImplementation(() => {
@@ -45,7 +50,7 @@ describe('Test useIsTierAllowed function', () => {
   })
   it('should function correctly for beta flag true and REC tenant type', async () => {
     useIsSplitOn.useIsSplitOn = jest.fn().mockReturnValue(true)
-    const enabled = useIsTierAllowed(Features.EDGES)
+    const enabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
     expect(enabled).toBeFalsy()
   })
   it('should function correctly for beta flag false and VAR tenant type', async () => {
@@ -58,7 +63,7 @@ describe('Test useIsTierAllowed function', () => {
         tenantType: AccountType.VAR
       }
     })
-    const enabled = useIsTierAllowed(Features.EDGES)
+    const enabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
     expect(enabled).toBeFalsy()
   })
   it('should function correctly for beta flag false and MSP tenant type', async () => {
@@ -73,7 +78,7 @@ describe('Test useIsTierAllowed function', () => {
         isBetaFlag: false
       }
     })
-    const enabled = useIsTierAllowed(Features.EDGES)
+    const enabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
     expect(enabled).toBeFalsy()
   })
 })

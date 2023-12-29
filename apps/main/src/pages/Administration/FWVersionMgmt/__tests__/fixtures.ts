@@ -36,9 +36,7 @@ export const venue = [
     id: '0842f2133565438d85e1e46103889744',
     name: 'Peter-Venue',
     apCount: 1,
-    apModels: [
-      'R750'
-    ],
+    apModels: ['R750'],
     versions: [
       {
         version: '6.2.1.103.1580',
@@ -51,9 +49,8 @@ export const venue = [
     id: '8ee8acc996734a5dbe43777b72469857',
     name: 'Ben-Venue-US',
     apCount: 1,
-    apModels: [
-      'R610'
-    ],
+    apModels: ['R610', 'R770'],
+    currentVenueUnsupportedApModels: ['R770'],
     versions: [
       {
         version: '6.2.1.103.1580',
@@ -67,7 +64,8 @@ export const venue = [
         currentEolVersion: '6.1.0.10.413',
         latestEolVersion: '6.1.0.10.453',
         apCount: 1,
-        apModels: ['T300']
+        apModels: ['T300'],
+        isAbfGreaterThanVenueCurrentAbf: false
       }
     ],
     lastScheduleUpdate: '2023-02-18T01:07:33.203-08:00'
@@ -89,14 +87,24 @@ export const venue = [
         currentEolVersion: '6.1.0.10.433',
         latestEolVersion: '6.1.0.10.453',
         apCount: 1,
-        apModels: ['R300', 'R500', 'R550']
+        apModels: ['R300', 'R550'],
+        isAbfGreaterThanVenueCurrentAbf: false
       },
       {
         name: 'eol-ap-2022-12',
         currentEolVersion: '6.2.0.103.533',
         latestEolVersion: '6.2.0.103.533',
         apCount: 1,
-        apModels: ['R500']
+        apModels: ['R500'],
+        isAbfGreaterThanVenueCurrentAbf: false
+      },
+      {
+        name: 'eol-ap-2023-03',
+        currentEolVersion: '6.2.3.103.200',
+        latestEolVersion: '6.2.3.103.200',
+        apCount: 1,
+        apModels: ['R555'],
+        isAbfGreaterThanVenueCurrentAbf: true
       }
     ]
   },
@@ -120,7 +128,8 @@ export const venue = [
         currentEolVersion: '6.2.0.103.513',
         latestEolVersion: '6.2.0.103.533',
         apCount: 1,
-        apModels: ['T300']
+        apModels: ['T300'],
+        isAbfGreaterThanVenueCurrentAbf: true
       }
     ]
   },
@@ -374,6 +383,14 @@ export const availableABFList = [
     id: '7.0.0.103.260'
   },
   {
+    abf: 'eol-ap-2023-03',
+    releaseDate: '2023-05-15T19:29:20.563+0000',
+    category: 'RECOMMENDED',
+    onboardDate: '2023-05-15T10:14:59.048+0000',
+    name: '6.2.3.103.200',
+    id: '6.2.3.103.200'
+  },
+  {
     abf: 'eol-ap-2022-12',
     releaseDate: '2023-05-05T19:29:20.563+0000',
     category: 'RECOMMENDED',
@@ -414,3 +431,5 @@ export const availableABFList = [
     id: '6.1.0.10.413'
   }
 ]
+
+export const mockedFirmwareVersionIdList = availableABFList.filter(abf => abf.abf === 'active').map(abf => abf.id)

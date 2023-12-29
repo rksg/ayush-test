@@ -174,7 +174,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="sc-kDDrLX kUhlcE"
+      class="sc-kDDrLX hDGSyh"
     >
       Participant Details
     </div>
@@ -194,7 +194,38 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
           >
             <div
               class="ant-pro-table-list-toolbar"
-            />
+            >
+              <div
+                class="ant-pro-table-list-toolbar-container"
+              >
+                <div
+                  class="ant-pro-table-list-toolbar-left"
+                />
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
+                >
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
+                    >
+                      <div
+                        class="ant-space-item"
+                      >
+                        <div
+                          class="ant-pro-table-list-toolbar-setting-item"
+                        >
+                          <svg
+                            data-testid="SettingsOutlined"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div
               class="ant-table-wrapper"
             >
@@ -205,7 +236,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                   class="ant-spin-container"
                 >
                   <div
-                    class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
+                    class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-left ant-table-has-fix-right"
                   >
                     <div
                       class="ant-table-container"
@@ -215,20 +246,11 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                         style="overflow-x: auto; overflow-y: hidden;"
                       >
                         <table
-                          style="width: 1302px; min-width: 100%; table-layout: fixed;"
+                          style="width: 1412px; min-width: 100%; table-layout: fixed;"
                         >
                           <colgroup>
                             <col
-                              style="width: 120px;"
-                            />
-                            <col
-                              style="width: 200px;"
-                            />
-                            <col
-                              style="width: 120px;"
-                            />
-                            <col
-                              style="width: 100px;"
+                              style="width: 150px;"
                             />
                             <col
                               style="width: 120px;"
@@ -243,10 +265,19 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               style="width: 120px;"
                             />
                             <col
-                              style="width: 50px;"
+                              style="width: 120px;"
                             />
                             <col
-                              style="width: 50px;"
+                              style="width: 120px;"
+                            />
+                            <col
+                              style="width: 120px;"
+                            />
+                            <col
+                              style="width: 120px;"
+                            />
+                            <col
+                              style="width: 120px;"
                             />
                             <col
                               style="width: 150px;"
@@ -260,12 +291,17 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                           >
                             <tr>
                               <th
-                                class="ant-table-cell ant-table-cell-ellipsis react-resizable"
+                                class="ant-table-cell ant-table-cell-fix-left ant-table-cell-fix-left-last ant-table-cell-ellipsis react-resizable"
+                                style="position: sticky; left: 0px;"
                               >
                                 <div
                                   class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
-                                Client MAC
+                                <span
+                                  class="ant-table-cell-content"
+                                >
+                                  Client MAC
+                                </span>
                                 <div
                                   class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
@@ -309,7 +345,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 <div
                                   class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
-                                AP
+                                AP Name
                                 <div
                                   class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
@@ -349,7 +385,6 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell ant-table-cell-ellipsis react-resizable"
-                                style="text-align: center;"
                               >
                                 <div
                                   class="styledComponents__ResizableHover-sc-1abm7iv-8"
@@ -361,7 +396,6 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell ant-table-cell-ellipsis react-resizable"
-                                style="text-align: center;"
                               >
                                 <div
                                   class="styledComponents__ResizableHover-sc-1abm7iv-8"
@@ -511,30 +545,35 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               data-row-key="13"
                             >
                               <td
-                                class="ant-table-cell ant-table-cell-ellipsis"
+                                class="ant-table-cell ant-table-cell-fix-left ant-table-cell-fix-left-last ant-table-cell-ellipsis"
+                                style="position: sticky; left: 0px;"
                               >
-                                <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center"
+                                <span
+                                  class="ant-table-cell-content"
                                 >
                                   <div
-                                    class="ant-space-item"
-                                    style="margin-right: 8px;"
+                                    class="ant-space ant-space-horizontal ant-space-align-center"
                                   >
                                     <div
-                                      style="width: 100px;"
+                                      class="ant-space-item"
+                                      style="margin-right: 8px;"
                                     >
-                                      -
+                                      <div
+                                        style="width: 100px;"
+                                      >
+                                        -
+                                      </div>
+                                    </div>
+                                    <div
+                                      class="ant-space-item"
+                                    >
+                                      <svg
+                                        data-testid="EditOutlinedDisabledIcon"
+                                        style="height: 16px; width: 16px; cursor: not-allowed;"
+                                      />
                                     </div>
                                   </div>
-                                  <div
-                                    class="ant-space-item"
-                                  >
-                                    <svg
-                                      data-testid="EditOutlinedDisabledIcon"
-                                      style="height: 16px; width: 16px; cursor: not-allowed;"
-                                    />
-                                  </div>
-                                </div>
+                                </span>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
@@ -602,9 +641,12 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                title="-"
                               >
-                                -
+                                <span
+                                  class="ant-typography"
+                                  style="width: 100%; margin: 0px; padding: 0px;"
+                                  title=""
+                                />
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
@@ -626,14 +668,12 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                style="text-align: center;"
                                 title="10:21"
                               >
                                 10:21
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                style="text-align: center;"
                                 title="10:28"
                               >
                                 <span>
@@ -657,28 +697,35 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               data-row-key="14"
                             >
                               <td
-                                class="ant-table-cell ant-table-cell-ellipsis"
+                                class="ant-table-cell ant-table-cell-fix-left ant-table-cell-fix-left-last ant-table-cell-ellipsis"
+                                style="position: sticky; left: 0px;"
                               >
-                                <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center"
+                                <span
+                                  class="ant-table-cell-content"
                                 >
                                   <div
-                                    class="ant-space-item"
-                                    style="margin-right: 8px;"
+                                    class="ant-space ant-space-horizontal ant-space-align-center"
                                   >
-                                    <span>
-                                      F0:81:73:20:84:39
-                                    </span>
+                                    <div
+                                      class="ant-space-item"
+                                      style="margin-right: 8px;"
+                                    >
+                                      <a
+                                        href="/tenant-id/t/users/wifi/clients/F0:81:73:20:84:39/details/troubleshooting?period=%7B%22startDate%22%3A%222023-04-18T10%3A22%3A17%2B00%3A00%22%2C%22endDate%22%3A%222023-04-18T10%3A29%3A01%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
+                                      >
+                                        F0:81:73:20:84:39
+                                      </a>
+                                    </div>
+                                    <div
+                                      class="ant-space-item"
+                                    >
+                                      <svg
+                                        data-testid="EditOutlinedIcon"
+                                        style="height: 16px; width: 16px; cursor: pointer;"
+                                      />
+                                    </div>
                                   </div>
-                                  <div
-                                    class="ant-space-item"
-                                  >
-                                    <svg
-                                      data-testid="EditOutlinedIcon"
-                                      style="height: 16px; width: 16px; cursor: pointer;"
-                                    />
-                                  </div>
-                                </div>
+                                </span>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
@@ -748,18 +795,36 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 class="ant-table-cell ant-table-cell-ellipsis"
                                 title="AP-Group-Issue"
                               >
-                                <a
-                                  href="/tenant-id/t/devices/wifi/F0:3E:90:36:D3:00/details/overview"
+                                <span
+                                  aria-label="AP-Group-Issue"
+                                  class="ant-typography ant-typography-ellipsis ant-typography-single-line"
+                                  style="width: 100%; margin: 0px; padding: 0px;"
+                                  title=""
                                 >
                                   AP-Group-Issue
-                                </a>
+                                  <span
+                                    aria-hidden="true"
+                                    style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; word-break: keep-all; white-space: nowrap;"
+                                  >
+                                    lg
+                                  </span>
+                                  <span
+                                    aria-hidden="true"
+                                    style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; width: 0px; white-space: normal; margin: 0px; padding: 0px;"
+                                  >
+                                    <span
+                                      aria-hidden="true"
+                                    >
+                                      ...
+                                    </span>
+                                  </span>
+                                </span>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                title="F0:3E:90:36:D3:00"
                               >
                                 <a
-                                  href="/tenant-id/t/devices/wifi/F0:3E:90:36:D3:00/details/overview"
+                                  href="/tenant-id/t/devices/wifi/F0:3E:90:36:D3:00/details/overview?period=%7B%22startDate%22%3A%222023-04-18T10%3A22%3A17%2B00%3A00%22%2C%22endDate%22%3A%222023-04-18T10%3A29%3A01%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
                                 >
                                   F0:3E:90:36:D3:00
                                 </a>
@@ -778,14 +843,12 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                style="text-align: center;"
                                 title="10:22"
                               >
                                 10:22
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                style="text-align: center;"
                                 title="10:29"
                               >
                                 <span>
@@ -825,7 +888,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
     class="sc-jqUVSM dmMTeH"
   >
     <div
-      class="sc-kDDrLX kUhlcE"
+      class="sc-kDDrLX hDGSyh"
       style="padding: 15px 0px;"
     >
       Zoom Call Statistics
@@ -5308,7 +5371,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="sc-kDDrLX kUhlcE"
+      class="sc-kDDrLX hDGSyh"
     >
       Participant Details
     </div>
@@ -5328,7 +5391,38 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
           >
             <div
               class="ant-pro-table-list-toolbar"
-            />
+            >
+              <div
+                class="ant-pro-table-list-toolbar-container"
+              >
+                <div
+                  class="ant-pro-table-list-toolbar-left"
+                />
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
+                >
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
+                    >
+                      <div
+                        class="ant-space-item"
+                      >
+                        <div
+                          class="ant-pro-table-list-toolbar-setting-item"
+                        >
+                          <svg
+                            data-testid="SettingsOutlined"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div
               class="ant-table-wrapper"
             >
@@ -5339,7 +5433,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                   class="ant-spin-container"
                 >
                   <div
-                    class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
+                    class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-left ant-table-has-fix-right"
                   >
                     <div
                       class="ant-table-container"
@@ -5349,20 +5443,11 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                         style="overflow-x: auto; overflow-y: hidden;"
                       >
                         <table
-                          style="width: 1302px; min-width: 100%; table-layout: fixed;"
+                          style="width: 1412px; min-width: 100%; table-layout: fixed;"
                         >
                           <colgroup>
                             <col
-                              style="width: 120px;"
-                            />
-                            <col
-                              style="width: 200px;"
-                            />
-                            <col
-                              style="width: 120px;"
-                            />
-                            <col
-                              style="width: 100px;"
+                              style="width: 150px;"
                             />
                             <col
                               style="width: 120px;"
@@ -5377,10 +5462,19 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               style="width: 120px;"
                             />
                             <col
-                              style="width: 50px;"
+                              style="width: 120px;"
                             />
                             <col
-                              style="width: 50px;"
+                              style="width: 120px;"
+                            />
+                            <col
+                              style="width: 120px;"
+                            />
+                            <col
+                              style="width: 120px;"
+                            />
+                            <col
+                              style="width: 120px;"
                             />
                             <col
                               style="width: 150px;"
@@ -5394,12 +5488,17 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                           >
                             <tr>
                               <th
-                                class="ant-table-cell ant-table-cell-ellipsis react-resizable"
+                                class="ant-table-cell ant-table-cell-fix-left ant-table-cell-fix-left-last ant-table-cell-ellipsis react-resizable"
+                                style="position: sticky; left: 0px;"
                               >
                                 <div
                                   class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
-                                Client MAC
+                                <span
+                                  class="ant-table-cell-content"
+                                >
+                                  Client MAC
+                                </span>
                                 <div
                                   class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
@@ -5443,7 +5542,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 <div
                                   class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
-                                AP
+                                AP Name
                                 <div
                                   class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
@@ -5483,7 +5582,6 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               </th>
                               <th
                                 class="ant-table-cell ant-table-cell-ellipsis react-resizable"
-                                style="text-align: center;"
                               >
                                 <div
                                   class="styledComponents__ResizableHover-sc-1abm7iv-8"
@@ -5495,7 +5593,6 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               </th>
                               <th
                                 class="ant-table-cell ant-table-cell-ellipsis react-resizable"
-                                style="text-align: center;"
                               >
                                 <div
                                   class="styledComponents__ResizableHover-sc-1abm7iv-8"
@@ -5652,28 +5749,35 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               data-row-key="9"
                             >
                               <td
-                                class="ant-table-cell ant-table-cell-ellipsis"
+                                class="ant-table-cell ant-table-cell-fix-left ant-table-cell-fix-left-last ant-table-cell-ellipsis"
+                                style="position: sticky; left: 0px;"
                               >
-                                <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center"
+                                <span
+                                  class="ant-table-cell-content"
                                 >
                                   <div
-                                    class="ant-space-item"
-                                    style="margin-right: 8px;"
+                                    class="ant-space ant-space-horizontal ant-space-align-center"
                                   >
-                                    <span>
-                                      A8:64:F1:1A:D0:33
-                                    </span>
+                                    <div
+                                      class="ant-space-item"
+                                      style="margin-right: 8px;"
+                                    >
+                                      <a
+                                        href="/tenant-id/t/users/wifi/clients/A8:64:F1:1A:D0:33/details/troubleshooting?period=%7B%22startDate%22%3A%222023-04-11T04%3A40%3A20%2B00%3A00%22%2C%22endDate%22%3A%222023-04-11T04%3A44%3A06%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
+                                      >
+                                        A8:64:F1:1A:D0:33
+                                      </a>
+                                    </div>
+                                    <div
+                                      class="ant-space-item"
+                                    >
+                                      <svg
+                                        data-testid="EditOutlinedIcon"
+                                        style="height: 16px; width: 16px; cursor: pointer;"
+                                      />
+                                    </div>
                                   </div>
-                                  <div
-                                    class="ant-space-item"
-                                  >
-                                    <svg
-                                      data-testid="EditOutlinedIcon"
-                                      style="height: 16px; width: 16px; cursor: pointer;"
-                                    />
-                                  </div>
-                                </div>
+                                </span>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
@@ -5743,18 +5847,36 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 class="ant-table-cell ant-table-cell-ellipsis"
                                 title="Switch_client"
                               >
-                                <a
-                                  href="/tenant-id/t/devices/wifi/9876543210/details/overview"
+                                <span
+                                  aria-label="Switch_client"
+                                  class="ant-typography ant-typography-ellipsis ant-typography-single-line"
+                                  style="width: 100%; margin: 0px; padding: 0px;"
+                                  title=""
                                 >
                                   Switch_client
-                                </a>
+                                  <span
+                                    aria-hidden="true"
+                                    style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; word-break: keep-all; white-space: nowrap;"
+                                  >
+                                    lg
+                                  </span>
+                                  <span
+                                    aria-hidden="true"
+                                    style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; width: 0px; white-space: normal; margin: 0px; padding: 0px;"
+                                  >
+                                    <span
+                                      aria-hidden="true"
+                                    >
+                                      ...
+                                    </span>
+                                  </span>
+                                </span>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                title="C8:08:73:08:10:50"
                               >
                                 <a
-                                  href="/tenant-id/t/devices/wifi/9876543210/details/overview"
+                                  href="/tenant-id/t/devices/wifi/9876543210/details/overview?period=%7B%22startDate%22%3A%222023-04-11T04%3A40%3A20%2B00%3A00%22%2C%22endDate%22%3A%222023-04-11T04%3A44%3A06%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
                                 >
                                   C8:08:73:08:10:50
                                 </a>
@@ -5773,14 +5895,12 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                style="text-align: center;"
                                 title="04:40"
                               >
                                 04:40
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                style="text-align: center;"
                                 title="04:44"
                               >
                                 <span>
@@ -5808,28 +5928,35 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               data-row-key="10"
                             >
                               <td
-                                class="ant-table-cell ant-table-cell-ellipsis"
+                                class="ant-table-cell ant-table-cell-fix-left ant-table-cell-fix-left-last ant-table-cell-ellipsis"
+                                style="position: sticky; left: 0px;"
                               >
-                                <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center"
+                                <span
+                                  class="ant-table-cell-content"
                                 >
                                   <div
-                                    class="ant-space-item"
-                                    style="margin-right: 8px;"
+                                    class="ant-space ant-space-horizontal ant-space-align-center"
                                   >
-                                    <span>
-                                      F0:B3:EC:2A:A8:05
-                                    </span>
+                                    <div
+                                      class="ant-space-item"
+                                      style="margin-right: 8px;"
+                                    >
+                                      <a
+                                        href="/tenant-id/t/users/wifi/clients/F0:B3:EC:2A:A8:05/details/troubleshooting?period=%7B%22startDate%22%3A%222023-04-11T04%3A41%3A28%2B00%3A00%22%2C%22endDate%22%3A%222023-04-11T04%3A43%3A39%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
+                                      >
+                                        F0:B3:EC:2A:A8:05
+                                      </a>
+                                    </div>
+                                    <div
+                                      class="ant-space-item"
+                                    >
+                                      <svg
+                                        data-testid="EditOutlinedIcon"
+                                        style="height: 16px; width: 16px; cursor: pointer;"
+                                      />
+                                    </div>
                                   </div>
-                                  <div
-                                    class="ant-space-item"
-                                  >
-                                    <svg
-                                      data-testid="EditOutlinedIcon"
-                                      style="height: 16px; width: 16px; cursor: pointer;"
-                                    />
-                                  </div>
-                                </div>
+                                </span>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
@@ -5899,18 +6026,36 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 class="ant-table-cell ant-table-cell-ellipsis"
                                 title="r320-11-154"
                               >
-                                <a
-                                  href="/tenant-id/t/devices/wifi/6789012345/details/overview"
+                                <span
+                                  aria-label="r320-11-154"
+                                  class="ant-typography ant-typography-ellipsis ant-typography-single-line"
+                                  style="width: 100%; margin: 0px; padding: 0px;"
+                                  title=""
                                 >
                                   r320-11-154
-                                </a>
+                                  <span
+                                    aria-hidden="true"
+                                    style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; word-break: keep-all; white-space: nowrap;"
+                                  >
+                                    lg
+                                  </span>
+                                  <span
+                                    aria-hidden="true"
+                                    style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; width: 0px; white-space: normal; margin: 0px; padding: 0px;"
+                                  >
+                                    <span
+                                      aria-hidden="true"
+                                    >
+                                      ...
+                                    </span>
+                                  </span>
+                                </span>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                title="B4:79:C8:12:8C:50"
                               >
                                 <a
-                                  href="/tenant-id/t/devices/wifi/6789012345/details/overview"
+                                  href="/tenant-id/t/devices/wifi/6789012345/details/overview?period=%7B%22startDate%22%3A%222023-04-11T04%3A41%3A28%2B00%3A00%22%2C%22endDate%22%3A%222023-04-11T04%3A43%3A39%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
                                 >
                                   B4:79:C8:12:8C:50
                                 </a>
@@ -5929,14 +6074,12 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                style="text-align: center;"
                                 title="04:41"
                               >
                                 04:41
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                style="text-align: center;"
                                 title="04:43"
                               >
                                 <span>
@@ -5976,7 +6119,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
     class="sc-jqUVSM dmMTeH"
   >
     <div
-      class="sc-kDDrLX kUhlcE"
+      class="sc-kDDrLX hDGSyh"
       style="padding: 15px 0px;"
     >
       Zoom Call Statistics
@@ -9981,19 +10124,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
               <span
                 class="ant-breadcrumb-link"
               >
-                AI Assurance
-              </span>
-              <span
-                class="ant-breadcrumb-separator"
-              >
-                /
-              </span>
-            </li>
-            <li>
-              <span
-                class="ant-breadcrumb-link"
-              >
-                Network Assurance
+                App Experience
               </span>
               <span
                 class="ant-breadcrumb-separator"
@@ -10099,7 +10230,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="sc-kDDrLX kUhlcE"
+      class="sc-kDDrLX hDGSyh"
     >
       Participant Details
     </div>
@@ -10119,7 +10250,38 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
           >
             <div
               class="ant-pro-table-list-toolbar"
-            />
+            >
+              <div
+                class="ant-pro-table-list-toolbar-container"
+              >
+                <div
+                  class="ant-pro-table-list-toolbar-left"
+                />
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
+                >
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
+                    >
+                      <div
+                        class="ant-space-item"
+                      >
+                        <div
+                          class="ant-pro-table-list-toolbar-setting-item"
+                        >
+                          <svg
+                            data-testid="SettingsOutlined"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div
               class="ant-table-wrapper"
             >
@@ -10130,7 +10292,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                   class="ant-spin-container"
                 >
                   <div
-                    class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
+                    class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-left ant-table-has-fix-right"
                   >
                     <div
                       class="ant-table-container"
@@ -10140,20 +10302,11 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                         style="overflow-x: auto; overflow-y: hidden;"
                       >
                         <table
-                          style="width: 1302px; min-width: 100%; table-layout: fixed;"
+                          style="width: 1412px; min-width: 100%; table-layout: fixed;"
                         >
                           <colgroup>
                             <col
-                              style="width: 120px;"
-                            />
-                            <col
-                              style="width: 200px;"
-                            />
-                            <col
-                              style="width: 120px;"
-                            />
-                            <col
-                              style="width: 100px;"
+                              style="width: 150px;"
                             />
                             <col
                               style="width: 120px;"
@@ -10168,10 +10321,19 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               style="width: 120px;"
                             />
                             <col
-                              style="width: 50px;"
+                              style="width: 120px;"
                             />
                             <col
-                              style="width: 50px;"
+                              style="width: 120px;"
+                            />
+                            <col
+                              style="width: 120px;"
+                            />
+                            <col
+                              style="width: 120px;"
+                            />
+                            <col
+                              style="width: 120px;"
                             />
                             <col
                               style="width: 150px;"
@@ -10185,12 +10347,17 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                           >
                             <tr>
                               <th
-                                class="ant-table-cell ant-table-cell-ellipsis react-resizable"
+                                class="ant-table-cell ant-table-cell-fix-left ant-table-cell-fix-left-last ant-table-cell-ellipsis react-resizable"
+                                style="position: sticky; left: 0px;"
                               >
                                 <div
                                   class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
-                                Client MAC
+                                <span
+                                  class="ant-table-cell-content"
+                                >
+                                  Client MAC
+                                </span>
                                 <div
                                   class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
@@ -10234,7 +10401,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                                 <div
                                   class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
-                                AP
+                                AP Name
                                 <div
                                   class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
@@ -10274,7 +10441,6 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               </th>
                               <th
                                 class="ant-table-cell ant-table-cell-ellipsis react-resizable"
-                                style="text-align: center;"
                               >
                                 <div
                                   class="styledComponents__ResizableHover-sc-1abm7iv-8"
@@ -10286,7 +10452,6 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               </th>
                               <th
                                 class="ant-table-cell ant-table-cell-ellipsis react-resizable"
-                                style="text-align: center;"
                               >
                                 <div
                                   class="styledComponents__ResizableHover-sc-1abm7iv-8"
@@ -10443,30 +10608,35 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               data-row-key="13"
                             >
                               <td
-                                class="ant-table-cell ant-table-cell-ellipsis"
+                                class="ant-table-cell ant-table-cell-fix-left ant-table-cell-fix-left-last ant-table-cell-ellipsis"
+                                style="position: sticky; left: 0px;"
                               >
-                                <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center"
+                                <span
+                                  class="ant-table-cell-content"
                                 >
                                   <div
-                                    class="ant-space-item"
-                                    style="margin-right: 8px;"
+                                    class="ant-space ant-space-horizontal ant-space-align-center"
                                   >
                                     <div
-                                      style="width: 100px;"
+                                      class="ant-space-item"
+                                      style="margin-right: 8px;"
                                     >
-                                      -
+                                      <div
+                                        style="width: 100px;"
+                                      >
+                                        -
+                                      </div>
+                                    </div>
+                                    <div
+                                      class="ant-space-item"
+                                    >
+                                      <svg
+                                        data-testid="EditOutlinedDisabledIcon"
+                                        style="height: 16px; width: 16px; cursor: not-allowed;"
+                                      />
                                     </div>
                                   </div>
-                                  <div
-                                    class="ant-space-item"
-                                  >
-                                    <svg
-                                      data-testid="EditOutlinedDisabledIcon"
-                                      style="height: 16px; width: 16px; cursor: not-allowed;"
-                                    />
-                                  </div>
-                                </div>
+                                </span>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
@@ -10500,9 +10670,12 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                title="-"
                               >
-                                -
+                                <span
+                                  class="ant-typography"
+                                  style="width: 100%; margin: 0px; padding: 0px;"
+                                  title=""
+                                />
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
@@ -10524,14 +10697,12 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                style="text-align: center;"
                                 title="10:21"
                               >
                                 10:21
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                style="text-align: center;"
                                 title="10:28"
                               >
                                 <span>
@@ -10555,28 +10726,35 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               data-row-key="14"
                             >
                               <td
-                                class="ant-table-cell ant-table-cell-ellipsis"
+                                class="ant-table-cell ant-table-cell-fix-left ant-table-cell-fix-left-last ant-table-cell-ellipsis"
+                                style="position: sticky; left: 0px;"
                               >
-                                <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center"
+                                <span
+                                  class="ant-table-cell-content"
                                 >
                                   <div
-                                    class="ant-space-item"
-                                    style="margin-right: 8px;"
+                                    class="ant-space ant-space-horizontal ant-space-align-center"
                                   >
-                                    <span>
-                                      F0:81:73:20:84:39
-                                    </span>
+                                    <div
+                                      class="ant-space-item"
+                                      style="margin-right: 8px;"
+                                    >
+                                      <a
+                                        href="/ai/users/wifi/clients/F0:81:73:20:84:39/details/troubleshooting?period=%7B%22startDate%22%3A%222023-04-18T10%3A22%3A17%2B00%3A00%22%2C%22endDate%22%3A%222023-04-18T10%3A29%3A01%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
+                                      >
+                                        F0:81:73:20:84:39
+                                      </a>
+                                    </div>
+                                    <div
+                                      class="ant-space-item"
+                                    >
+                                      <svg
+                                        data-testid="EditOutlinedIcon"
+                                        style="height: 16px; width: 16px; cursor: pointer;"
+                                      />
+                                    </div>
                                   </div>
-                                  <div
-                                    class="ant-space-item"
-                                  >
-                                    <svg
-                                      data-testid="EditOutlinedIcon"
-                                      style="height: 16px; width: 16px; cursor: pointer;"
-                                    />
-                                  </div>
-                                </div>
+                                </span>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
@@ -10612,18 +10790,19 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                                 class="ant-table-cell ant-table-cell-ellipsis"
                                 title="AP-Group-Issue"
                               >
-                                <a
-                                  href="/ai/devices/wifi/F0:3E:90:36:D3:00/details/ai"
+                                <span
+                                  class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                  style="width: 100%; margin: 0px; padding: 0px;"
+                                  title=""
                                 >
                                   AP-Group-Issue
-                                </a>
+                                </span>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                title="F0:3E:90:36:D3:00"
                               >
                                 <a
-                                  href="/ai/devices/wifi/F0:3E:90:36:D3:00/details/ai"
+                                  href="/ai/devices/wifi/F0:3E:90:36:D3:00/details/ai?period=%7B%22startDate%22%3A%222023-04-18T10%3A22%3A17%2B00%3A00%22%2C%22endDate%22%3A%222023-04-18T10%3A29%3A01%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
                                 >
                                   F0:3E:90:36:D3:00
                                 </a>
@@ -10642,14 +10821,12 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                style="text-align: center;"
                                 title="10:22"
                               >
                                 10:22
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                style="text-align: center;"
                                 title="10:29"
                               >
                                 <span>
@@ -10689,7 +10866,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
     class="sc-jqUVSM dmMTeH"
   >
     <div
-      class="sc-kDDrLX kUhlcE"
+      class="sc-kDDrLX hDGSyh"
       style="padding: 15px 0px;"
     >
       Zoom Call Statistics
@@ -15172,7 +15349,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="sc-kDDrLX kUhlcE"
+      class="sc-kDDrLX hDGSyh"
     >
       Participant Details
     </div>
@@ -15230,7 +15407,38 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
           >
             <div
               class="ant-pro-table-list-toolbar"
-            />
+            >
+              <div
+                class="ant-pro-table-list-toolbar-container"
+              >
+                <div
+                  class="ant-pro-table-list-toolbar-left"
+                />
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
+                >
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
+                    >
+                      <div
+                        class="ant-space-item"
+                      >
+                        <div
+                          class="ant-pro-table-list-toolbar-setting-item"
+                        >
+                          <svg
+                            data-testid="SettingsOutlined"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div
               class="ant-table-wrapper"
             >
@@ -15241,7 +15449,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                   class="ant-spin-container"
                 >
                   <div
-                    class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
+                    class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-left ant-table-has-fix-right"
                   >
                     <div
                       class="ant-table-container"
@@ -15251,20 +15459,11 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                         style="overflow-x: auto; overflow-y: hidden;"
                       >
                         <table
-                          style="width: 1302px; min-width: 100%; table-layout: fixed;"
+                          style="width: 1412px; min-width: 100%; table-layout: fixed;"
                         >
                           <colgroup>
                             <col
-                              style="width: 120px;"
-                            />
-                            <col
-                              style="width: 200px;"
-                            />
-                            <col
-                              style="width: 120px;"
-                            />
-                            <col
-                              style="width: 100px;"
+                              style="width: 150px;"
                             />
                             <col
                               style="width: 120px;"
@@ -15279,10 +15478,19 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                               style="width: 120px;"
                             />
                             <col
-                              style="width: 50px;"
+                              style="width: 120px;"
                             />
                             <col
-                              style="width: 50px;"
+                              style="width: 120px;"
+                            />
+                            <col
+                              style="width: 120px;"
+                            />
+                            <col
+                              style="width: 120px;"
+                            />
+                            <col
+                              style="width: 120px;"
                             />
                             <col
                               style="width: 150px;"
@@ -15296,12 +15504,17 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                           >
                             <tr>
                               <th
-                                class="ant-table-cell ant-table-cell-ellipsis react-resizable"
+                                class="ant-table-cell ant-table-cell-fix-left ant-table-cell-fix-left-last ant-table-cell-ellipsis react-resizable"
+                                style="position: sticky; left: 0px;"
                               >
                                 <div
                                   class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
-                                Client MAC
+                                <span
+                                  class="ant-table-cell-content"
+                                >
+                                  Client MAC
+                                </span>
                                 <div
                                   class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
@@ -15345,7 +15558,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                                 <div
                                   class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
-                                AP
+                                AP Name
                                 <div
                                   class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
@@ -15385,7 +15598,6 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                               </th>
                               <th
                                 class="ant-table-cell ant-table-cell-ellipsis react-resizable"
-                                style="text-align: center;"
                               >
                                 <div
                                   class="styledComponents__ResizableHover-sc-1abm7iv-8"
@@ -15397,7 +15609,6 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                               </th>
                               <th
                                 class="ant-table-cell ant-table-cell-ellipsis react-resizable"
-                                style="text-align: center;"
                               >
                                 <div
                                   class="styledComponents__ResizableHover-sc-1abm7iv-8"
@@ -15554,30 +15765,35 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                               data-row-key="11"
                             >
                               <td
-                                class="ant-table-cell ant-table-cell-ellipsis"
+                                class="ant-table-cell ant-table-cell-fix-left ant-table-cell-fix-left-last ant-table-cell-ellipsis"
+                                style="position: sticky; left: 0px;"
                               >
-                                <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center"
+                                <span
+                                  class="ant-table-cell-content"
                                 >
                                   <div
-                                    class="ant-space-item"
-                                    style="margin-right: 8px;"
+                                    class="ant-space ant-space-horizontal ant-space-align-center"
                                   >
                                     <div
-                                      style="width: 100px;"
+                                      class="ant-space-item"
+                                      style="margin-right: 8px;"
                                     >
-                                      -
+                                      <div
+                                        style="width: 100px;"
+                                      >
+                                        -
+                                      </div>
+                                    </div>
+                                    <div
+                                      class="ant-space-item"
+                                    >
+                                      <svg
+                                        data-testid="EditOutlinedIcon"
+                                        style="height: 16px; width: 16px; cursor: pointer;"
+                                      />
                                     </div>
                                   </div>
-                                  <div
-                                    class="ant-space-item"
-                                  >
-                                    <svg
-                                      data-testid="EditOutlinedIcon"
-                                      style="height: 16px; width: 16px; cursor: pointer;"
-                                    />
-                                  </div>
-                                </div>
+                                </span>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
@@ -15645,9 +15861,12 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                title="-"
                               >
-                                -
+                                <span
+                                  class="ant-typography"
+                                  style="width: 100%; margin: 0px; padding: 0px;"
+                                  title=""
+                                />
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
@@ -15669,14 +15888,12 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                style="text-align: center;"
                                 title="05:04"
                               >
                                 05:04
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                style="text-align: center;"
                                 title="05:08"
                               >
                                 <span>
@@ -15700,30 +15917,35 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                               data-row-key="12"
                             >
                               <td
-                                class="ant-table-cell ant-table-cell-ellipsis"
+                                class="ant-table-cell ant-table-cell-fix-left ant-table-cell-fix-left-last ant-table-cell-ellipsis"
+                                style="position: sticky; left: 0px;"
                               >
-                                <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center"
+                                <span
+                                  class="ant-table-cell-content"
                                 >
                                   <div
-                                    class="ant-space-item"
-                                    style="margin-right: 8px;"
+                                    class="ant-space ant-space-horizontal ant-space-align-center"
                                   >
                                     <div
-                                      style="width: 100px;"
+                                      class="ant-space-item"
+                                      style="margin-right: 8px;"
                                     >
-                                      -
+                                      <div
+                                        style="width: 100px;"
+                                      >
+                                        -
+                                      </div>
+                                    </div>
+                                    <div
+                                      class="ant-space-item"
+                                    >
+                                      <svg
+                                        data-testid="EditOutlinedDisabledIcon"
+                                        style="height: 16px; width: 16px; cursor: not-allowed;"
+                                      />
                                     </div>
                                   </div>
-                                  <div
-                                    class="ant-space-item"
-                                  >
-                                    <svg
-                                      data-testid="EditOutlinedDisabledIcon"
-                                      style="height: 16px; width: 16px; cursor: not-allowed;"
-                                    />
-                                  </div>
-                                </div>
+                                </span>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
@@ -15791,9 +16013,12 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                title="-"
                               >
-                                -
+                                <span
+                                  class="ant-typography"
+                                  style="width: 100%; margin: 0px; padding: 0px;"
+                                  title=""
+                                />
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
@@ -15815,14 +16040,12 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                style="text-align: center;"
                                 title="05:05"
                               >
                                 05:05
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                style="text-align: center;"
                                 title="05:08"
                               >
                                 <span>
@@ -15858,7 +16081,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
     class="sc-jqUVSM dmMTeH"
   >
     <div
-      class="sc-kDDrLX kUhlcE"
+      class="sc-kDDrLX hDGSyh"
       style="padding: 15px 0px;"
     >
       Zoom Call Statistics
@@ -15971,10 +16194,10 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                   style="overflow: visible; height: 0px; width: 0px;"
                 >
                   <div
-                    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bZEmQl"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 izicZw cMdQDn"
                     >
                       <div
                         class="ant-space-item"
@@ -16055,10 +16278,10 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                   style="overflow: visible; height: 0px; width: 0px;"
                 >
                   <div
-                    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bZEmQl"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 izicZw cMdQDn"
                     >
                       <div
                         class="ant-space-item"
@@ -16153,10 +16376,10 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                   style="overflow: visible; height: 0px; width: 0px;"
                 >
                   <div
-                    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bZEmQl"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 izicZw cMdQDn"
                     >
                       <div
                         class="ant-space-item"
@@ -16237,10 +16460,10 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                   style="overflow: visible; height: 0px; width: 0px;"
                 >
                   <div
-                    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bZEmQl"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 izicZw cMdQDn"
                     >
                       <div
                         class="ant-space-item"
@@ -16335,10 +16558,10 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                   style="overflow: visible; height: 0px; width: 0px;"
                 >
                   <div
-                    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bZEmQl"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 izicZw cMdQDn"
                     >
                       <div
                         class="ant-space-item"
@@ -16419,10 +16642,10 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                   style="overflow: visible; height: 0px; width: 0px;"
                 >
                   <div
-                    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bZEmQl"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 izicZw cMdQDn"
                     >
                       <div
                         class="ant-space-item"
@@ -16517,10 +16740,10 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                   style="overflow: visible; height: 0px; width: 0px;"
                 >
                   <div
-                    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bZEmQl"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 izicZw cMdQDn"
                     >
                       <div
                         class="ant-space-item"
@@ -16601,10 +16824,10 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                   style="overflow: visible; height: 0px; width: 0px;"
                 >
                   <div
-                    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bZEmQl"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 izicZw cMdQDn"
                     >
                       <div
                         class="ant-space-item"
@@ -16775,7 +16998,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="sc-kDDrLX kUhlcE"
+      class="sc-kDDrLX hDGSyh"
     >
       Participant Details
     </div>
@@ -16833,7 +17056,38 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
           >
             <div
               class="ant-pro-table-list-toolbar"
-            />
+            >
+              <div
+                class="ant-pro-table-list-toolbar-container"
+              >
+                <div
+                  class="ant-pro-table-list-toolbar-left"
+                />
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
+                >
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
+                    >
+                      <div
+                        class="ant-space-item"
+                      >
+                        <div
+                          class="ant-pro-table-list-toolbar-setting-item"
+                        >
+                          <svg
+                            data-testid="SettingsOutlined"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div
               class="ant-table-wrapper"
             >
@@ -16844,7 +17098,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                   class="ant-spin-container"
                 >
                   <div
-                    class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
+                    class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-left ant-table-has-fix-right"
                   >
                     <div
                       class="ant-table-container"
@@ -16854,20 +17108,11 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                         style="overflow-x: auto; overflow-y: hidden;"
                       >
                         <table
-                          style="width: 1302px; min-width: 100%; table-layout: fixed;"
+                          style="width: 1412px; min-width: 100%; table-layout: fixed;"
                         >
                           <colgroup>
                             <col
-                              style="width: 120px;"
-                            />
-                            <col
-                              style="width: 200px;"
-                            />
-                            <col
-                              style="width: 120px;"
-                            />
-                            <col
-                              style="width: 100px;"
+                              style="width: 150px;"
                             />
                             <col
                               style="width: 120px;"
@@ -16882,10 +17127,19 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                               style="width: 120px;"
                             />
                             <col
-                              style="width: 50px;"
+                              style="width: 120px;"
                             />
                             <col
-                              style="width: 50px;"
+                              style="width: 120px;"
+                            />
+                            <col
+                              style="width: 120px;"
+                            />
+                            <col
+                              style="width: 120px;"
+                            />
+                            <col
+                              style="width: 120px;"
                             />
                             <col
                               style="width: 150px;"
@@ -16899,12 +17153,17 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                           >
                             <tr>
                               <th
-                                class="ant-table-cell ant-table-cell-ellipsis react-resizable"
+                                class="ant-table-cell ant-table-cell-fix-left ant-table-cell-fix-left-last ant-table-cell-ellipsis react-resizable"
+                                style="position: sticky; left: 0px;"
                               >
                                 <div
                                   class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
-                                Client MAC
+                                <span
+                                  class="ant-table-cell-content"
+                                >
+                                  Client MAC
+                                </span>
                                 <div
                                   class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
@@ -16948,7 +17207,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                                 <div
                                   class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
-                                AP
+                                AP Name
                                 <div
                                   class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
@@ -16988,7 +17247,6 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                               </th>
                               <th
                                 class="ant-table-cell ant-table-cell-ellipsis react-resizable"
-                                style="text-align: center;"
                               >
                                 <div
                                   class="styledComponents__ResizableHover-sc-1abm7iv-8"
@@ -17000,7 +17258,6 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                               </th>
                               <th
                                 class="ant-table-cell ant-table-cell-ellipsis react-resizable"
-                                style="text-align: center;"
                               >
                                 <div
                                   class="styledComponents__ResizableHover-sc-1abm7iv-8"
@@ -17157,30 +17414,35 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                               data-row-key="11"
                             >
                               <td
-                                class="ant-table-cell ant-table-cell-ellipsis"
+                                class="ant-table-cell ant-table-cell-fix-left ant-table-cell-fix-left-last ant-table-cell-ellipsis"
+                                style="position: sticky; left: 0px;"
                               >
-                                <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center"
+                                <span
+                                  class="ant-table-cell-content"
                                 >
                                   <div
-                                    class="ant-space-item"
-                                    style="margin-right: 8px;"
+                                    class="ant-space ant-space-horizontal ant-space-align-center"
                                   >
                                     <div
-                                      style="width: 100px;"
+                                      class="ant-space-item"
+                                      style="margin-right: 8px;"
                                     >
-                                      -
+                                      <div
+                                        style="width: 100px;"
+                                      >
+                                        -
+                                      </div>
+                                    </div>
+                                    <div
+                                      class="ant-space-item"
+                                    >
+                                      <svg
+                                        data-testid="EditOutlinedIcon"
+                                        style="height: 16px; width: 16px; cursor: pointer;"
+                                      />
                                     </div>
                                   </div>
-                                  <div
-                                    class="ant-space-item"
-                                  >
-                                    <svg
-                                      data-testid="EditOutlinedIcon"
-                                      style="height: 16px; width: 16px; cursor: pointer;"
-                                    />
-                                  </div>
-                                </div>
+                                </span>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
@@ -17248,9 +17510,12 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                title="-"
                               >
-                                -
+                                <span
+                                  class="ant-typography"
+                                  style="width: 100%; margin: 0px; padding: 0px;"
+                                  title=""
+                                />
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
@@ -17272,14 +17537,12 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                style="text-align: center;"
                                 title="05:04"
                               >
                                 05:04
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                style="text-align: center;"
                                 title="05:08"
                               >
                                 <span>
@@ -17303,30 +17566,35 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                               data-row-key="12"
                             >
                               <td
-                                class="ant-table-cell ant-table-cell-ellipsis"
+                                class="ant-table-cell ant-table-cell-fix-left ant-table-cell-fix-left-last ant-table-cell-ellipsis"
+                                style="position: sticky; left: 0px;"
                               >
-                                <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center"
+                                <span
+                                  class="ant-table-cell-content"
                                 >
                                   <div
-                                    class="ant-space-item"
-                                    style="margin-right: 8px;"
+                                    class="ant-space ant-space-horizontal ant-space-align-center"
                                   >
                                     <div
-                                      style="width: 100px;"
+                                      class="ant-space-item"
+                                      style="margin-right: 8px;"
                                     >
-                                      -
+                                      <div
+                                        style="width: 100px;"
+                                      >
+                                        -
+                                      </div>
+                                    </div>
+                                    <div
+                                      class="ant-space-item"
+                                    >
+                                      <svg
+                                        data-testid="EditOutlinedDisabledIcon"
+                                        style="height: 16px; width: 16px; cursor: not-allowed;"
+                                      />
                                     </div>
                                   </div>
-                                  <div
-                                    class="ant-space-item"
-                                  >
-                                    <svg
-                                      data-testid="EditOutlinedDisabledIcon"
-                                      style="height: 16px; width: 16px; cursor: not-allowed;"
-                                    />
-                                  </div>
-                                </div>
+                                </span>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
@@ -17394,9 +17662,12 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                title="-"
                               >
-                                -
+                                <span
+                                  class="ant-typography"
+                                  style="width: 100%; margin: 0px; padding: 0px;"
+                                  title=""
+                                />
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
@@ -17418,14 +17689,12 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                style="text-align: center;"
                                 title="05:05"
                               >
                                 05:05
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
-                                style="text-align: center;"
                                 title="05:08"
                               >
                                 <span>
@@ -17461,7 +17730,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
     class="sc-jqUVSM dmMTeH"
   >
     <div
-      class="sc-kDDrLX kUhlcE"
+      class="sc-kDDrLX hDGSyh"
       style="padding: 15px 0px;"
     >
       Zoom Call Statistics
@@ -17574,10 +17843,10 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                   style="overflow: visible; height: 0px; width: 0px;"
                 >
                   <div
-                    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bZEmQl"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 izicZw cMdQDn"
                     >
                       <div
                         class="ant-space-item"
@@ -18193,10 +18462,10 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                   style="overflow: visible; height: 0px; width: 0px;"
                 >
                   <div
-                    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bZEmQl"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 izicZw cMdQDn"
                     >
                       <div
                         class="ant-space-item"
@@ -18827,10 +19096,10 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                   style="overflow: visible; height: 0px; width: 0px;"
                 >
                   <div
-                    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bZEmQl"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 izicZw cMdQDn"
                     >
                       <div
                         class="ant-space-item"
@@ -19347,10 +19616,10 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                   style="overflow: visible; height: 0px; width: 0px;"
                 >
                   <div
-                    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bZEmQl"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 izicZw cMdQDn"
                     >
                       <div
                         class="ant-space-item"
@@ -19431,10 +19700,10 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                   style="overflow: visible; height: 0px; width: 0px;"
                 >
                   <div
-                    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bZEmQl"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 izicZw cMdQDn"
                     >
                       <div
                         class="ant-space-item"

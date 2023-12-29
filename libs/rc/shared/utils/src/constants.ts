@@ -122,7 +122,8 @@ export enum ServiceType {
   NETWORK_SEGMENTATION = 'Personal Identity Network',
   WEBAUTH_SWITCH = 'Web Auth',
   RESIDENT_PORTAL = 'Resident Portal',
-  EDGE_CENTRALIZED_FORWARDING = 'Centralized Forwarding'
+  EDGE_SD_LAN = 'SD-LAN',
+  EDGE_SD_LAN_P2 = 'SD-LAN-P2' // temporary type before SD-LAN GA2 dev done.
 }
 
 export enum ServiceStatus {
@@ -190,6 +191,7 @@ export enum TrustedPortTypeEnum {
   DHCP = 'dhcp',
   ARP = 'arp'
 }
+
 export enum WanConnectionEnum {
   ETH_WITH_CELLULAR_FAILOVER = 'ETH_WITH_CELLULAR_FAILOVER',
   CELLULAR_WITH_ETH_FAILOVER = 'CELLULAR_WITH_ETH_FAILOVER',

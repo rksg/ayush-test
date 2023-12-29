@@ -35,7 +35,11 @@ export type RecommendationDetails = {
   sliceValue: string;
   path: NetworkPath;
   statusTrail: StatusTrail;
-  updatedAt: string
+  updatedAt: string;
+  dataEndTime: string;
+  preferences?: {
+    fullOptimization: boolean;
+  }
 } & Partial<RecommendationKpi>
 
 export type EnhancedRecommendation = RecommendationDetails & {
@@ -135,14 +139,18 @@ export const api = recommendationApi.injectEndpoints({
         response.recommendation,
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_CODE' }]
     }),
-    recommendationDetails: build.query<EnhancedRecommendation, BasicRecommendation>({
-      query: ({ id, code }) => ({
+    recommendationDetails: build.query<
+      EnhancedRecommendation,
+      BasicRecommendation & { isCrrmPartialEnabled: boolean }
+    >({
+      query: ({ id, code, isCrrmPartialEnabled }) => ({
         document: gql`
           query ConfigRecommendationDetails($id: String) {
             recommendation(id: $id) {
               id code status appliedTime isMuted
               originalValue currentValue recommendedValue metadata
-              sliceType sliceValue updatedAt
+              sliceType sliceValue updatedAt dataEndTime
+              ${isCrrmPartialEnabled ? 'preferences' : ''}
               path { type name }
               statusTrail { status createdAt }
               ${kpiHelper(code!)}

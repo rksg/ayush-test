@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import { MspUrlsInfo }                                            from '@acx-ui/msp/utils'
 import { Provider }                                               from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, within, waitFor } from '@acx-ui/test-utils'
@@ -74,7 +75,7 @@ describe('AssignEcDrawer', () => {
       })
 
     expect(await screen.findByRole('dialog')).toBeVisible()
-    expect(screen.getByText('Manage Customers Assigned')).toBeVisible()
+    expect(screen.getByText('Manage Assigned Customers')).toBeVisible()
     expect(screen.getByRole('button', { name: 'Save' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
 
@@ -291,5 +292,31 @@ describe('AssignEcDrawer', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
 
     expect(mockedCloseDialog).toHaveBeenLastCalledWith(false)
+  })
+  it('should render table correctly when Device Agnostic enabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.DEVICE_AGNOSTIC)
+    render(
+      <Provider>
+        <AssignEcDrawer visible={true}
+          setSelected={jest.fn()}
+          setVisible={jest.fn()}/>
+      </Provider>, {
+        route: { params,
+          path: '/:tenantId/integrators/edit/MSP_INSTALLER/3061bd56e37445a8993ac834c01e2710' }
+      })
+
+    expect(await screen.findByRole('dialog')).toBeVisible()
+    expect(screen.getByText('Manage Assigned Customers')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Save' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
+
+    //eslint-disable-next-line testing-library/no-node-access
+    const tbody = screen.getByRole('table').querySelector('tbody')!
+    expect(tbody).toBeVisible()
+    const rows = await within(tbody).findAllByRole('row')
+    expect(rows).toHaveLength(list.data.length)
+    expect(screen.getByText('Din Tai Fung')).toBeVisible()
+    expect(screen.getByText('Eva Airways')).toBeVisible()
+    expect(screen.getAllByRole('columnheader', { name: 'Devices Subscriptions' })).toHaveLength(1)
   })
 })

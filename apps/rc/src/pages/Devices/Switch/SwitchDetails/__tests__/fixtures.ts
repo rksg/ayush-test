@@ -1,4 +1,4 @@
-import { SwitchViewModel, SwitchStatusEnum, SWITCH_TYPE, DHCP_OPTION_TYPE, SwitchDhcp } from '@acx-ui/rc/utils'
+import { SwitchViewModel, SwitchStatusEnum, SWITCH_TYPE, DHCP_OPTION_TYPE, SwitchDhcp, Switch } from '@acx-ui/rc/utils'
 
 export const switchDetailData: SwitchViewModel = {
   type: 'device',
@@ -29,7 +29,8 @@ export const switchDetailData: SwitchViewModel = {
     { model: 'ICX7150-C12P', id: 'FEK3216Q05B' }
   ],
   uptime: '7 days, 7:36:21.00',
-  formStacking: false
+  formStacking: false,
+  unitId: 1
 }
 
 export const venueData = {
@@ -134,3 +135,64 @@ export const jwtToken = {
   id_token: 'id_token',
   type: 'JWT'
 }
+
+export const switchDetailsContextData = {
+  switchName: '',
+  currentSwitchOperational: true,
+  switchDetailHeader: {
+    cliApplied: false,
+    configReady: true,
+    name: 'test',
+    isStack: false,
+    switchMac: '58:fb:96:0e:bc:f8',
+    switchName: 'ICX7150-C12 Router',
+    serialNumber: 'FEK3230S0C5',
+    deviceStatus: SwitchStatusEnum.OPERATIONAL,
+    id: 'id',
+    venueId: 'venue-id',
+    stackMembers: [],
+    syncedSwitchConfig: true,
+    switchType: SWITCH_TYPE.ROUTER,
+    activeSerial: 'FEK3230S0C5'
+  },
+  switchData: {
+    id: 'id',
+    venueId: 'venueId',
+    name: 'name',
+    stackMembers: []
+  } as Switch
+}
+
+export const networkApGroup = {
+  response: [{
+    allApGroupsRadio: 'Both',
+    apGroups: [{
+      apGroupId: '58195e050b8a4770acc320f6233ad8d9',
+      apGroupName: 'joe-test-apg',
+      id: 'f71c3dc400bb46e5a03662d48d0adb2c',
+      isDefault: false,
+      radio: 'Both',
+      radioTypes: ['5-GHz', '2.4-GHz'],
+      validationError: false,
+      validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+      validationErrorReachedMaxConnectedNetworksLimit: false,
+      validationErrorSsidAlreadyActivated: false,
+      vlanPoolId: '545c8f5dd44f45c2b47f19f8db4f53dc',
+      vlanPoolName: 'joe-vlanpool-1'
+    }, {
+      apGroupId: '75f7751cd7d34bf19cc9446f92d82ee5',
+      isDefault: true,
+      radio: 'Both',
+      validationError: false,
+      validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+      validationErrorReachedMaxConnectedNetworksLimit: false,
+      validationErrorSsidAlreadyActivated: false
+    }],
+    dual5gEnabled: false,
+    isAllApGroups: false,
+    networkId: '3c83529e839746ae960fa8fb6d4fd387',
+    tripleBandEnabled: true,
+    venueId: '991eb992ece042a183b6945a2398ddb9'
+  }]
+}
+

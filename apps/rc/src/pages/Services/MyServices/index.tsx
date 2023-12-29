@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, RadioCardCategory } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }  from '@acx-ui/feature-toggle'
 import { useDpskNewConfigFlowParams }                              from '@acx-ui/rc/components'
 import {
   useGetDHCPProfileListViewModelQuery,
@@ -13,7 +13,8 @@ import {
   useGetEnhancedWifiCallingServiceListQuery,
   useWebAuthTemplateListQuery,
   useGetResidentPortalListQuery,
-  useGetEdgeFirewallViewDataListQuery
+  useGetEdgeFirewallViewDataListQuery,
+  useGetEdgeSdLanViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
   getSelectServiceRoutePath,
@@ -33,8 +34,9 @@ export default function MyServices () {
   const params = useParams()
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
   const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
   const services = [
@@ -67,6 +69,16 @@ export default function MyServices () {
         skip: !isEdgeEnabled || !isEdgeReady
       }),
       disabled: !isEdgeEnabled || !isEdgeReady
+    },
+    {
+      type: ServiceType.EDGE_SD_LAN,
+      categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+      tableQuery: useGetEdgeSdLanViewDataListQuery({
+        params, payload: { ...defaultPayload }
+      },{
+        skip: !isEdgeEnabled || !isEdgeReady || !isEdgeSdLanReady
+      }),
+      disabled: !isEdgeEnabled || !isEdgeReady || !isEdgeSdLanReady
     },
     {
       type: ServiceType.EDGE_FIREWALL,

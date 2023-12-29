@@ -52,11 +52,15 @@ export const UserUrlsInfo = {
   },
   getAllUserSettings: {
     method: 'get',
-    url: '/api/tenant/:tenantId/admin-settings/ui'
+    url: '/admins/admins-settings/ui',
+    oldUrl: '/api/tenant/:tenantId/admin-settings/ui',
+    newApi: true
   },
   saveUserSettings: {
     method: 'put',
-    url: '/api/tenant/:tenantId/admin-settings/ui/:productKey'
+    url: '/admins/admins-settings/ui/:productKey',
+    oldUrl: '/api/tenant/:tenantId/admin-settings/ui/:productKey',
+    newApi: true
   },
   wifiAllowedOperations: {
     method: 'get',
@@ -297,11 +301,13 @@ export const {
     }),
     getBetaStatus: build.query<BetaStatus, RequestPayload>({
       query: ({ params }) => createHttpRequest(UserUrlsInfo.getBetaStatus, params),
-      transformResponse: (betaStatus: { 'Start Date': string, enabled: string }) =>
-        ({ startDate: betaStatus['Start Date'], enabled: betaStatus.enabled })
+      transformResponse: (betaStatus: { startDate: string, enabled: string }) =>
+        ({ startDate: betaStatus?.startDate, enabled: betaStatus?.enabled }),
+      providesTags: [{ type: 'Beta', id: 'DETAIL' }]
     }),
-    toggleBetaStatus: build.mutation<BetaStatus, RequestPayload>({
-      query: ({ params }) => createHttpRequest(UserUrlsInfo.toggleBetaStatus, params)
+    toggleBetaStatus: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => createHttpRequest(UserUrlsInfo.toggleBetaStatus, params),
+      invalidatesTags: [{ type: 'Beta', id: 'DETAIL' }]
     })
   })
 })

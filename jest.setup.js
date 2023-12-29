@@ -59,9 +59,9 @@ beforeAll(() => {
 })
 beforeEach(async () => {
   mockDOMSize(1280, 800)
-  const env = require('./apps/main/src/env.json')
+  const env = require('./apps/main/src/globalValues.json')
   mockServer.use(
-    rest.get(`${document.baseURI}env.json`, (_, res, ctx) => res(ctx.json(env))),
+    rest.get(`${document.baseURI}globalValues.json`, (_, res, ctx) => res(ctx.json(env))),
     rest.get('/mfa/tenant/:tenantId', (_req, res, ctx) =>
       res(
         ctx.json({
@@ -72,7 +72,7 @@ beforeEach(async () => {
       )
     )
   )
-  await config.initialize()
+  await config.initialize('test')
 
   require('@acx-ui/user').setUserProfile({
     allowedOperations: [],
@@ -141,6 +141,8 @@ window.crypto = {
 
 window.open = jest.fn()
 window.scrollTo = jest.fn()
+console.info = jest.fn()
+console.log = jest.fn()
 
 jest.mock('libs/common/components/src/theme/helper', () => ({
   __esModule: true,

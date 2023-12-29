@@ -14,6 +14,7 @@ import {
   APMesh,
   Capabilities,
   VenueLed,
+  VenueApModelBandModeSettings,
   VenueApModels,
   ExternalAntenna,
   CapabilitiesApModel,
@@ -415,6 +416,20 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    // eslint-disable-next-line max-len
+    getVenueApModelBandModeSettings: build.query<VenueApModelBandModeSettings[], RequestPayload<void>>({
+      query: ({ params }) =>
+        createHttpRequest(CommonUrlsInfo.getVenueApModelBandModeSettings, params),
+      providesTags: [{ type: 'Venue', id: 'BandMode' }]
+    }),
+    // eslint-disable-next-line max-len
+    updateVenueApModelBandModeSettings: build.mutation<CommonResult, RequestPayload<VenueApModelBandModeSettings>>({
+      query: ({ params, payload }) => ({
+        ...createHttpRequest(CommonUrlsInfo.updateVenueApModelBandModeSettings, params),
+        body: payload
+      }),
+      invalidatesTags: [{ type: 'Venue', id: 'BandMode' }]
     }),
     getVenueLanPorts: build.query<VenueLanPorts[], RequestPayload>({
       query: ({ params }) => {
@@ -1300,6 +1315,9 @@ export const {
   useGetVenueLedOnQuery,
   useLazyGetVenueLedOnQuery,
   useUpdateVenueLedOnMutation,
+  useGetVenueApModelBandModeSettingsQuery,
+  useLazyGetVenueApModelBandModeSettingsQuery,
+  useUpdateVenueApModelBandModeSettingsMutation,
   useGetVenueLanPortsQuery,
   useLazyGetVenueLanPortsQuery,
   useUpdateVenueLanPortsMutation,
@@ -1377,5 +1395,6 @@ export const {
   useLazyGetVenueClientAdmissionControlQuery,
   useUpdateVenueClientAdmissionControlMutation,
   useGetVenueApManagementVlanQuery,
+  useLazyGetVenueApManagementVlanQuery,
   useUpdateVenueApManagementVlanMutation
 } = venueApi

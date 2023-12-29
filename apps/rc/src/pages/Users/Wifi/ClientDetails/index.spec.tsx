@@ -1,10 +1,10 @@
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import userEvent         from '@testing-library/user-event'
+import { graphql, rest } from 'msw'
 
 import { useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import { apApi, clientApi }                             from '@acx-ui/rc/services'
 import { CommonUrlsInfo, ClientUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { store, Provider }                              from '@acx-ui/store'
+import { store, Provider, dataApiURL }                  from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -92,8 +92,8 @@ describe('ClientDetails', () => {
         (_, res, ctx) => res(ctx.json(clientVenueList[0]))),
       rest.post(CommonUrlsInfo.getHistoricalClientList.url,
         (_, res, ctx) => res(ctx.json(histClientList ))),
-      rest.post(CommonUrlsInfo.getHistoricalStatisticsReportsV2.url,
-        (_, res, ctx) => res(ctx.json(clientReportList[0]))),
+      graphql.link(dataApiURL).query('ClientStatisics', (_, res, ctx) =>
+        res(ctx.data({ client: clientReportList[0] }))),
       rest.get(WifiUrlsInfo.getApCapabilities.url,
         (_, res, ctx) => res(ctx.json(apCaps))),
       rest.patch(ClientUrlsInfo.disconnectClient.url,
@@ -110,7 +110,9 @@ describe('ClientDetails', () => {
 
   it('should render correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('connected')
+    jest.spyOn(URLSearchParams.prototype, 'get').mockImplementation(key =>
+      key === 'clientStatus' ? 'connected' : null
+    )
     const params = {
       tenantId: 'tenant-id',
       clientId: 'user-id',
@@ -135,6 +137,9 @@ describe('ClientDetails', () => {
       hash: '',
       search: ''
     })
+    expect(await screen.findByText('(')).toBeVisible()
+    expect(await screen.findByText('LP-XXXXX')).toBeVisible()
+    expect(await screen.findByText(')')).toBeVisible()
   })
 
   it('should render breadcrumb correctly', async () => {
@@ -155,7 +160,9 @@ describe('ClientDetails', () => {
 
   it('should render correctly with featureToggle off', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
-    jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('connected')
+    jest.spyOn(URLSearchParams.prototype, 'get').mockImplementation(key =>
+      key === 'clientStatus' ? 'connected' : null
+    )
     const params = {
       tenantId: 'tenant-id',
       clientId: 'user-id',

@@ -23,12 +23,15 @@ import {
   useApListQuery,
   useAddApMutation,
   useGetApOperationalQuery,
-  useLazyApGroupListQuery,
+  useLazyApGroupListByVenueQuery,
   useLazyGetDhcpApQuery,
   useUpdateApMutation,
   useVenuesListQuery,
   useWifiCapabilitiesQuery,
-  useGetVenueVersionListQuery
+  useGetVenueVersionListQuery,
+  useLazyGetVenueApManagementVlanQuery,
+  useLazyGetApManagementVlanQuery,
+  useLazyApViewModelQuery
 } from '@acx-ui/rc/services'
 import {
   ApDeep,
@@ -81,6 +84,8 @@ export function ApForm () {
   const isApGpsFeatureEnabled = useIsSplitOn(Features.AP_GPS)
   const wifiEdaflag = useIsSplitOn(Features.WIFI_EDA_READY_TOGGLE)
   const wifiEdaGatewayflag = useIsSplitOn(Features.WIFI_EDA_GATEWAY)
+  const supportVenueMgmtVlan = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
+  const supportApMgmtVlan = useIsSplitOn(Features.AP_MANAGEMENT_VLAN_AP_LEVEL_TOGGLE)
   const { tenantId, action, serialNumber } = useParams()
   const formRef = useRef<StepsFormLegacyInstance<ApDeep>>()
   const navigate = useNavigate()
@@ -101,7 +106,10 @@ export function ApForm () {
   const [addAp] = useAddApMutation()
   const [updateAp, { isLoading: isApDetailsUpdating }] = useUpdateApMutation()
   const [getDhcpAp] = useLazyGetDhcpApQuery()
-  const [apGroupList] = useLazyApGroupListQuery()
+  const [apGroupList] = useLazyApGroupListByVenueQuery()
+  const [getTargetVenueMgmtVlan] = useLazyGetVenueApManagementVlanQuery()
+  const [getApMgmtVlan] = useLazyGetApManagementVlanQuery()
+  const [getCurrentApMgmtVlan] = useLazyApViewModelQuery()
 
   const isEditMode = action === 'edit'
   const [selectedVenue, setSelectedVenue] = useState({} as unknown as VenueExtended)
@@ -110,6 +118,7 @@ export function ApForm () {
   const [apGroupOption, setApGroupOption] = useState([] as DefaultOptionType[])
   const [gpsModalVisible, setGpsModalVisible] = useState(false)
   const [deviceGps, setDeviceGps] = useState(null as DeviceGps | null)
+  const [changeMgmtVlan, setChangeMgmtVlan] = useState(false)
 
   const [dhcpRoleDisabled, setDhcpRoleDisabled] = useState(false)
   const [apMeshRoleDisabled, setApMeshRoleDisabled] = useState(false)
@@ -121,6 +130,15 @@ export function ApForm () {
 
 
   const BASE_VERSION = '6.2.1'
+
+  const apViewModelPayload = {
+    fields: ['serialNumber', 'venueName', 'venueId', 'apStatusData.APSystem.managementVlan'],
+    searchTargetFields: [
+      'apMac',
+      'serialNumber'
+    ],
+    searchString: params.serialNumber
+  }
 
   // the payload would different based on the feature flag
   const retrieveDhcpAp = (dhcpApResponse: DhcpAp) => {
@@ -191,7 +209,9 @@ export function ApForm () {
         setSelectedVenue(selectVenue as unknown as VenueExtended)
         setApGroupOption(options as DefaultOptionType[])
         setApMeshRoleDisabled(
-          !!apDetails?.meshRole && (apDetails?.meshRole !== APMeshRole.DISABLED))
+          !!apDetails?.meshRole
+          && (apDetails?.meshRole !== APMeshRole.DISABLED)
+          && (apDetails?.meshRole !== 'DOWN'))
         setDhcpRoleDisabled(checkDhcpRoleDisabled(dhcpAp as DhcpApInfo))
         setDeviceGps((apDetails?.deviceGps || venueLatLng) as unknown as DeviceGps)
         formRef?.current?.setFieldsValue({ description: '', ...apDetails })
@@ -244,6 +264,33 @@ export function ApForm () {
   }
 
   const handleUpdateAp = async (values: ApDeep) => {
+    if (supportVenueMgmtVlan && changeMgmtVlan) {
+      showActionModal({
+        type: 'confirm',
+        width: 450,
+        title: $t({ defaultMessage: 'AP Management VLAN Change' }),
+        content: (<FormattedMessage
+          defaultMessage={
+            `Moving to Venue: <b>{venueName}</b> will change the AP
+            management VLAN and reboot this AP device. Incorrect
+            settings between APs and switches could result in AP access
+            loss. Are you sure you want to continue?`
+          }
+          values={{
+            b: (text: string) => <strong>{text}</strong>,
+            venueName: selectedVenue.name
+          }}/>),
+        okText: $t({ defaultMessage: 'Continue' }),
+        onOk: async () => {
+          processUpdateAp(values)
+        }
+      })
+    } else {
+      processUpdateAp(values)
+    }
+  }
+
+  const processUpdateAp = async (values: ApDeep) => {
     const sameAsVenue = isEqual(deviceGps, pick(selectedVenue, ['latitude', 'longitude']))
     try {
       const payload = {
@@ -330,6 +377,25 @@ export function ApForm () {
   const handleVenueChange = async (value: string) => {
     const selectVenue = getVenueById(venuesList?.data as unknown as VenueExtended[], value)
     const options = await getApGroupOptions(value)
+    if (supportVenueMgmtVlan) {
+      const targetVenueMgmtVlan = (await getTargetVenueMgmtVlan(
+        { params: { venueId: value } })).data
+      if (targetVenueMgmtVlan?.vlanOverrideEnabled === undefined ||
+          targetVenueMgmtVlan?.vlanOverrideEnabled === false) {
+        setChangeMgmtVlan(false)
+      } else if (supportApMgmtVlan) {
+        const apMgmtVlan = (await getApMgmtVlan(
+          { params: { serialNumber } })).data
+        setChangeMgmtVlan(apMgmtVlan?.useVenueSettings === true &&
+          apMgmtVlan?.vlanId !== targetVenueMgmtVlan?.vlanId ? true : false)
+      } else {
+        const currentMgmtVlan = (await getCurrentApMgmtVlan(
+          { params, payload: apViewModelPayload })).data
+        setChangeMgmtVlan(currentMgmtVlan?.apStatusData?.APSystem &&
+          currentMgmtVlan?.apStatusData?.APSystem.managementVlan
+           !== targetVenueMgmtVlan?.vlanId ? true : false)
+      }
+    }
     setSelectedVenue(selectVenue as unknown as VenueExtended)
     setApGroupOption(options as DefaultOptionType[])
     const sameAsVenue = isEqual(deviceGps, pick(selectedVenue, ['latitude', 'longitude']))

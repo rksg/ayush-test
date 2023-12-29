@@ -114,6 +114,16 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/switch/tenant/:tenantId/switch/upgrade/venue/currentVersions',
     newApi: true
   },
+  getSwitchFirmwareList: {
+    method: 'post',
+    url: '/venues/switchFirmwares/switches/schedules/query',
+    newApi: true
+  },
+  getSwitchFirmwareStatusList: {
+    method: 'post',
+    url: '/venues/switchFirmwares/upgradeStatusDetails/query',
+    newApi: true
+  },
   getInvalidTimeSlots: {
     method: 'get',
     url: '/upgradeConfig/invalidTime',
@@ -190,6 +200,12 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/venues/edgeFirmwares/releases',
     oldUrl: '/venues/edgeFirmwares/releases',
+    newApi: true
+  },
+  getScheduledFirmware: {
+    method: 'get',
+    url: '/apFirmwares?status=scheduled',
+    oldUrl: '/api/tenant/:tenantId/wifi/upgrade/schedule-version',
     newApi: true
   }
 }

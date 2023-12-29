@@ -14,6 +14,8 @@ jest.mock('@acx-ui/analytics/components', () => {
 })
 jest.mock('./pages/Dashboard', () => () => <div data-testid='Dashboard' />)
 jest.mock('./pages/ZoneDetails', () => () => <div data-testid='ZoneDetails' />)
+jest.mock('./pages/Zones', () => () => <div data-testid='ZonesList' />)
+
 jest.mock('@reports/Routes', () => () => {
   return <div data-testid='reports' />
 }, { virtual: true })
@@ -76,12 +78,12 @@ describe('AllRoutes', () => {
 
   it('redirects to return url', async () => {
     const search = new URLSearchParams()
-    search.set('return', '/ai/incidents')
+    search.set('return', '/ai/incidents?selectedTenants=WyJhaWQiXQ==')
     jest.mocked(useSearchParams).mockReturnValue([search, () => {}])
     render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
     expect(Navigate).toHaveBeenCalledWith({
       replace: true,
-      to: { pathname: '/ai/incidents', search: '?selectedTenants=WyJhaWQiXQ==' }
+      to: '/ai/incidents?selectedTenants=WyJhaWQiXQ=='
     }, {})
   })
 
@@ -142,6 +144,13 @@ describe('AllRoutes', () => {
     expect(await screen.findByText('Logo.svg')).toBeVisible()
     expect(await screen.findByTestId('CrrmDetails')).toBeVisible()
   })
+  it('should render unknown details correctly', async () => {
+    render(<AllRoutes />, {
+      route: { path: '/ai/recommendations/crrm/unknown/*' },
+      wrapper: Provider })
+    expect(await screen.findByText('Logo.svg')).toBeVisible()
+    expect(await screen.findByTestId('UnknownDetails')).toBeVisible()
+  })
   it('should render aiOps details correctly', async () => {
     render(<AllRoutes />, {
       route: { path: '/ai/recommendations/aiOps/test-recommendation-id' },
@@ -167,7 +176,7 @@ describe('AllRoutes', () => {
   it('should render zone list correctly', async () => {
     render(<AllRoutes />, { route: { path: '/ai/zones' }
       , wrapper: Provider })
-    await screen.findByText('Zones List')
+    await screen.findByTestId('ZonesList')
   })
   it('should render zone details correctly', async () => {
     render(<AllRoutes />, { route: {

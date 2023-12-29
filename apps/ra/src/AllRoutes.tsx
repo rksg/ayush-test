@@ -5,6 +5,7 @@ import {
   NetworkAssurance,
   NetworkAssuranceTabEnum,
   CrrmDetails,
+  UnknownDetails,
   VideoCallQoe,
   VideoCallQoeForm,
   VideoCallQoeDetails,
@@ -31,6 +32,7 @@ import NetworkDetails                        from './pages/WifiNetworks/NetworkD
 import Wired, { AISwitchTabsEnum }           from './pages/Wired'
 import SwitchDetails                         from './pages/Wired/SwitchDetails'
 import ZoneDetails                           from './pages/ZoneDetails'
+import Zones                                 from './pages/Zones'
 
 const Dashboard = React.lazy(() => import('./pages/Dashboard'))
 const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
@@ -38,20 +40,22 @@ const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
 function Init () {
   const [ search ] = useSearchParams()
   updateSelectedTenant()
-  const { selectedTenant } = getUserProfile()
-  const { id, permissions } = selectedTenant
   const previousURL = search.get('return')!
-  const selectedTenants = search.get('selectedTenants') || window.btoa(JSON.stringify([id]))
-  return <Navigate
-    replace
-    to={{
-      search: `?selectedTenants=${selectedTenants}`,
-      pathname: previousURL
-        ? decodeURIComponent(previousURL)
-        : permissions[PERMISSION_VIEW_ANALYTICS]
+  if (previousURL) {
+    return <Navigate replace to={decodeURIComponent(previousURL)} />
+  } else {
+    const { selectedTenant: { id, permissions } } = getUserProfile()
+    const selectedTenants = search.get('selectedTenants') || window.btoa(JSON.stringify([id]))
+    return <Navigate
+      replace
+      to={{
+        search: `?selectedTenants=${selectedTenants}`,
+        pathname: permissions[PERMISSION_VIEW_ANALYTICS]
           ? `${MLISA_BASE_PATH}/dashboard`
           : `${MLISA_BASE_PATH}/reports`
-    }} />
+      }}
+    />
+  }
 }
 
 function AllRoutes () {
@@ -64,6 +68,7 @@ function AllRoutes () {
         <Route path=':activeTab' element={<Recommendations/>} />
         <Route path='aiOps/:id' element={<RecommendationDetails />} />
         <Route path='crrm/:id' element={<CrrmDetails />} />
+        <Route path='crrm/unknown/*' element={<UnknownDetails />} />
       </Route>
       <Route path='incidents'>
         <Route index={true} element={<Incidents />} />
@@ -158,7 +163,7 @@ function AllRoutes () {
         </Route>
       </Route>
       <Route path='zones'>
-        <Route index element={<div>Zones List</div>} />
+        <Route index element={<Zones />} />
         <Route path=':systemName/:zoneName/:activeTab' element={<ZoneDetails />} />
         <Route path=':systemName/:zoneName/:activeTab/:activeSubTab' element={<ZoneDetails />} />
         <Route

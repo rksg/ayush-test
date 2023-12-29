@@ -5,18 +5,20 @@ import userEvent from '@testing-library/user-event'
 import { useAnalyticsFilter, defaultNetworkPath }             from '@acx-ui/analytics/utils'
 import { defaultTimeRangeDropDownContextValue, useDateRange } from '@acx-ui/components'
 import { get }                                                from '@acx-ui/config'
+import { useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { BrowserRouter as Router, Link }                      from '@acx-ui/react-router-dom'
 import { recommendationUrl, Provider, store }                 from '@acx-ui/store'
 import {
   mockGraphqlQuery,
   render,
   screen,
-  waitForElementToBeRemoved
+  waitForElementToBeRemoved,
+  within
 } from '@acx-ui/test-utils'
 import { setUpIntl, DateRange, NetworkPath } from '@acx-ui/utils'
 
-import { recommendationListResult }           from './__tests__/fixtures'
-import { api, useMuteRecommendationMutation } from './services'
+import { recommendationListResult }                                     from './__tests__/fixtures'
+import { api, useMuteRecommendationMutation, useSetPreferenceMutation } from './services'
 
 import { RecommendationTabContent } from './index'
 
@@ -35,9 +37,11 @@ jest.mock('@acx-ui/config', () => ({
 }))
 
 const mockedMuteRecommendation = jest.fn()
+const mockedSetPreference = jest.fn()
 jest.mock('./services', () => ({
   ...jest.requireActual('./services'),
-  useMuteRecommendationMutation: jest.fn()
+  useMuteRecommendationMutation: jest.fn(),
+  useSetPreferenceMutation: jest.fn()
 }))
 
 describe('RecommendationTabContent', () => {
@@ -71,6 +75,13 @@ describe('RecommendationTabContent', () => {
       mockedMuteRecommendation,
       { reset: jest.fn() }
     ])
+
+    jest.mocked(useSetPreferenceMutation).mockImplementation(() => [
+      mockedSetPreference,
+      { reset: jest.fn() }
+    ])
+
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
 
   it('should render loader', () => {
@@ -84,15 +95,25 @@ describe('RecommendationTabContent', () => {
   it('should render crrm table for R1', async () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: { recommendations: recommendationListResult.recommendations
-        .filter(r => r.code.includes('crrm')) }
+        .filter(r => r.code.includes('crrm') || r.code.includes('unknown')) }
     })
     render(<RecommendationTabContent/>, {
       route: { params: { activeTab: 'crrm' } },
       wrapper: Provider
     })
+    mockedSetPreference.mockImplementation(() => ({
+      unwrap: () => Promise.resolve({
+        setPreference: { success: true, errorCode: '', errorMsg: '' }
+      })
+    }))
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-
+    const row = screen.getByRole('row', {
+      // eslint-disable-next-line max-len
+      name: /non-optimized 06\/16\/2023 06:05 optimal channel plan found for 2\.4 ghz radio zone-1 new/i
+    })
+    const nonOptimizedSwitch = within(row).getByRole('switch')
+    await userEvent.click(nonOptimizedSwitch)
     const text = await screen.findAllByText('Optimized')
     expect(text).toHaveLength(1)
     expect(screen.getByText('Venue')).toBeVisible()
@@ -102,7 +123,7 @@ describe('RecommendationTabContent', () => {
   it('should render crrm table for RA', async () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: { recommendations: recommendationListResult.recommendations
-        .filter(r => r.code.includes('crrm')) }
+        .filter(r => r.code.includes('crrm') || r.code.includes('unknown')) }
     })
     jest.mocked(get).mockReturnValue('true')
     render(<RecommendationTabContent/>, {

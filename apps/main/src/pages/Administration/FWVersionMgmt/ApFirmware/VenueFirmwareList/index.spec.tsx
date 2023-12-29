@@ -1,4 +1,5 @@
 import userEvent from '@testing-library/user-event'
+import { Modal } from 'antd'
 import { rest }  from 'msw'
 
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
@@ -12,7 +13,6 @@ import {
   mockServer,
   render,
   screen,
-  fireEvent,
   within,
   waitForElementToBeRemoved,
   waitFor
@@ -24,7 +24,8 @@ import {
   preference,
   availableVersions,
   successResponse,
-  availableABFList
+  availableABFList,
+  mockedFirmwareVersionIdList
 } from '../../__tests__/fixtures'
 
 import { VenueFirmwareList } from '.'
@@ -35,17 +36,18 @@ describe('Firmware Venues Table', () => {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
   }
 
-  beforeEach(async () => {
+  beforeEach(() => {
     mockServer.use(
       rest.get(
         FirmwareUrlsInfo.getVenueVersionList.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json([...venue]))
+        (req, res, ctx) => res(ctx.json([ ...venue ]))
       ),
       rest.get(
         FirmwareUrlsInfo.getAvailableFirmwareList.url.replace('?status=release', ''),
         (req, res, ctx) => {
           const searchParams = req.url.searchParams
-          if (searchParams.get('status') !== 'release') return res(ctx.json([]))
+          // eslint-disable-next-line max-len
+          if (searchParams.get('status') !== 'release') return res(ctx.json([ ...mockedFirmwareVersionIdList ]))
 
           if (searchParams.get('abf') !== null) return res(ctx.json([ ...availableABFList ]))
 
@@ -65,6 +67,7 @@ describe('Firmware Venues Table', () => {
 
   afterEach(() => {
     jest.mocked(useIsSplitOn).mockRestore()
+    Modal.destroyAll()
   })
 
   it('should render table', async () => {
@@ -75,7 +78,9 @@ describe('Firmware Venues Table', () => {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
       })
 
-    expect(await screen.findByRole('row', { name: /My-Venue/ })).toBeVisible()
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    expect(await screen.findByRole('row', { name: /Latest-Venue/ })).toBeVisible()
   })
 
   it('should update selected row', async () => {
@@ -89,22 +94,22 @@ describe('Firmware Venues Table', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const row = await screen.findByRole('row', { name: /My-Venue/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
+    await userEvent.click(within(row).getByRole('checkbox'))
 
     const row2 = await screen.findByRole('row', { name: /Peter-Venue/i })
-    fireEvent.click(within(row2).getByRole('checkbox'))
+    await userEvent.click(within(row2).getByRole('checkbox'))
 
     const updateButton = screen.getByRole('button', { name: /Update Now/i })
-    fireEvent.click(updateButton)
+    await userEvent.click(updateButton)
 
     const confirmDialog = await screen.findByRole('dialog')
     await screen.findByText('Active Device')
     const updateVenueButton = await screen.findByText('Run Update')
-    fireEvent.click(updateVenueButton)
+    await userEvent.click(updateVenueButton)
     await waitFor(() => expect(confirmDialog).not.toBeVisible())
   })
 
-  it.skip('should update multiple selected row', async () => {
+  it('should update multiple selected row', async () => {
     render(
       <Provider>
         <VenueFirmwareList />
@@ -115,19 +120,17 @@ describe('Firmware Venues Table', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const row = await screen.findByRole('row', { name: /My-Venue/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
+    await userEvent.click(within(row).getByRole('checkbox'))
 
     const row2 = await screen.findByRole('row', { name: /Peter-Venue/i })
-    fireEvent.click(within(row2).getByRole('checkbox'))
+    await userEvent.click(within(row2).getByRole('checkbox'))
 
     const updateButton = screen.getByRole('button', { name: /Update Now/i })
-    fireEvent.click(updateButton)
+    await userEvent.click(updateButton)
 
-    const confirmDialog = await screen.findByRole('dialog')
-    await screen.findByText('Active Device')
-    const updateVenueButton = await screen.findByText('Run Update')
-    fireEvent.click(updateVenueButton)
-    await waitFor(() => expect(confirmDialog).not.toBeVisible())
+    const updateNowDialog = await screen.findByRole('dialog')
+    await userEvent.click(within(updateNowDialog).getByText('Run Update'))
+    await waitFor(() => expect(updateNowDialog).not.toBeVisible())
   })
 
   it('should update selected row with advanced dialog', async () => {
@@ -151,6 +154,8 @@ describe('Firmware Venues Table', () => {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
       })
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
     const row = await screen.findByRole('row', { name: /My-Venue/i })
     await userEvent.click(within(row).getByRole('checkbox'))
 
@@ -158,9 +163,21 @@ describe('Firmware Venues Table', () => {
     await userEvent.click(within(row2).getByRole('checkbox'))
 
     await userEvent.click(screen.getByRole('button', { name: /Update Now/i }))
-    const confirmDialog = await screen.findByRole('dialog')
+    const updateNowDialog = await screen.findByRole('dialog')
+
+    // Verify that the active ABF's AP models displayed are accurate
+    expect(await within(updateNowDialog)
+      .findByText(/available firmware for Wi-Fi 7 AP \(r610\)/i)).toBeVisible()
+
+    // Verify that the message displayed is accurate when there is no available firmware update,
+    // it's ABF: "eol-ap-2022-12" in "My-Venue" with AP model "R500"
+    expect(
+      await screen.findByText('There are one or more legacy devices in selected venues (R500).')
+    ).toBeVisible()
+
     await userEvent.click(await screen.findByRole('button', { name: /Update Firmware/ }))
 
+    // Verify that the payload of Update Firmware is accurate
     const targetActiveAbfVersion = availableABFList.filter(item => item.abf === 'active')[0]
     await waitFor(() => {
       expect(updateNowFn).toHaveBeenCalledWith([{
@@ -170,10 +187,25 @@ describe('Firmware Venues Table', () => {
           '02b81f0e31e34921be5cf47e6dce1f3f', // The venue ID of My-Venue
           '8ee8acc996734a5dbe43777b72469857' // The venue ID of Ben-Venue-US
         ]
+      }, {
+        // The legacy ABF should also be updated to the latest version by default, ACX-44461
+        firmwareCategoryId: 'eol-ap-2023-03',
+        firmwareVersion: '6.2.3.103.200',
+        venueIds: [
+          '02b81f0e31e34921be5cf47e6dce1f3f',
+          '8ee8acc996734a5dbe43777b72469857'
+        ]
+      }, {
+        firmwareCategoryId: 'eol-ap-2021-05',
+        firmwareVersion: '6.1.0.10.453',
+        venueIds: [
+          '02b81f0e31e34921be5cf47e6dce1f3f',
+          '8ee8acc996734a5dbe43777b72469857'
+        ]
       }])
     })
 
-    await waitFor(() => expect(confirmDialog).not.toBeVisible())
+    await waitFor(() => expect(updateNowDialog).not.toBeVisible())
   })
 
   it('should render Legacy AP Firmware column', async () => {
@@ -183,6 +215,8 @@ describe('Firmware Venues Table', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
       })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const rowWithLegacyAp = await screen.findByRole('row', { name: /Ben-Venue-US/ })
     expect(within(rowWithLegacyAp).getByRole('cell', { name: '6.1.0.10.413' })).toBeVisible()
@@ -201,12 +235,22 @@ describe('Firmware Venues Table', () => {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
       })
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
     const row = await screen.findByRole('row', { name: /My-Venue/i })
     await userEvent.click(within(row).getByRole('checkbox'))
 
     await userEvent.click(screen.getByRole('button', { name: /Update Now/i }))
 
     const dialog = await screen.findByRole('dialog', { name: 'Update Now' })
+
+    // Verify that the message displayed is accurate when the active ABF has no AP models
     expect(await within(dialog).findByText('No Access Point in selected venue(s)')).toBeVisible()
+
+    // Verify that the ABF can be upgraded when it is greater than the current venue ABF even if its current version equals to the latest version
+    expect(within(dialog).getByRole('radio', { name: /6\.2\.3\.103\.200/i })).toBeVisible()
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Update Now' })).toBeNull())
   })
 })

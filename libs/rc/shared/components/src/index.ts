@@ -1,3 +1,5 @@
+import * as EdgeEditContext from './EdgeFormItem/EdgeEditContext'
+
 export {
   ActivityTable,
   columnState as activityTableColumnState,
@@ -9,12 +11,19 @@ export { ApTable, APStatus, defaultApPayload } from './ApTable'
 export type { ApTableRefType } from './ApTable'
 export { ApsTabContext } from './ApTable/context'
 export { groupedFields } from './ApTable/config'
+export { CountAndNamesTooltip } from './CountAndNamesTooltip'
+export { ApGroupTable, defaultApGroupPayload } from './ApGroupTable'
+export { ApGroupsTabContext } from './ApGroupTable/context'
 export { ClientTabContext } from './ClientDualTable/context'
 export { ClientDualTable } from './ClientDualTable'
 export { ClientHealthIcon } from './ClientHealthIcon'
 export { ClientsWidget, ClientsWidgetV2 } from './ClientsWidget'
 export { CodeMirrorWidget } from './CodeMirrorWidget'
-export { ConnectedClientsTable, defaultClientPayload } from './ConnectedClientsTable'
+export {
+  ConnectedClientsTable,
+  defaultClientPayload,
+  isEqualCaptivePortalPlainText
+} from './ConnectedClientsTable'
 export { DevicesDashboardWidget, DevicesDashboardWidgetV2 } from './DevicesDashboardWidget'
 export { DevicesWidget, seriesMappingAP } from './DevicesWidget'
 export { EdgeSettingForm } from './EdgeSettingForm'
@@ -94,7 +103,6 @@ export { SwitchClientsTable } from './SwitchClientsTable'
 export { ClientsTable, defaultSwitchClientPayload } from './SwitchClientsTable/ClientsTable'
 export { SwitchClientDetails } from './SwitchClientsTable/SwitchClientDetails'
 export { SwitchClientContext } from './SwitchClientsTable/context'
-export { PersonaGroupSelect } from './PersonaGroupSelect'
 export { TemplateSelector } from './TemplateSelector'
 export { SelectConnectedClientsTable, OSIconContainer } from './SelectConnectedClientsTable'
 export { usePreference, countryCodes, wifiCountryCodes } from './usePreference'
@@ -118,10 +126,12 @@ export { GroupedStatsTables as EdgeFirewallGroupedStatsTables }
   from './EdgeFirewallTables/GroupedStatsTables'
 export { EdgePortsGeneral } from './EdgeFormItem/EdgePortsGeneral'
 export type { EdgePortConfigFormType } from './EdgeFormItem/EdgePortsGeneral'
+export { EdgeEditContext }
+export { EdgePortsForm, EdgePortTabEnum } from './EdgeFormItem/PortsForm'
+export type { EdgePortsFormProps } from './EdgeFormItem/PortsForm'
 
 export { TunnelProfileForm } from './TunnelProfile/TunnelProfileForm'
 export { useTunnelProfileActions } from './TunnelProfile/TunnelProfileForm/useTunnelProfileActions'
-export type { TunnelProfileFormType } from './TunnelProfile/TunnelProfileForm'
 export { TunnelProfileAddModal } from './TunnelProfile/TunnelProfileAddModal'
 export { EdgeDhcpPoolTable } from './EdgeDhcpPoolTable'
 export { EdgeDhcpLeaseTable } from './EdgeDhcpLeaseTable'
@@ -142,12 +152,9 @@ export { DistSwitchesTable } from './NetworkSegmentationDetailTableGroup/DistSwi
 export type {
   AccessSwitchTableDataType
 } from './NetworkSegmentationDetailTableGroup/AccessSwitchTable'
-export { useEdgeActions } from './useEdgeActions'
+export { useEdgeActions, useIsEdgeFeatureReady } from './useEdgeActions'
 export { EdgeServiceStatusLight } from './EdgeServiceStatusLight'
 export { PropertyManagementForm } from './PropertyManagementForm'
-export { MacRegistrationListForm } from './MacRegistrationListForm'
-export { PersonaGroupDrawer } from './PersonaGroupDrawer'
-export { DpskForm } from './DpskForm/DpskForm'
 export { AdaptivePolicySetForm } from './AdaptivePolicySetForm'
 export { RadiusAttributeGroupSettingForm } from './RadiusAttributeGroupSettingForm'
 export { RadiusAttributeForm } from './RadiusAttributeForm'
@@ -155,16 +162,22 @@ export { AccessConditionDrawer } from './AdaptivePolicySettingForm/AccessConditi
 export {
   RadiusAttributeGroupSelectDrawer
 } from './AdaptivePolicySettingForm/RadiusAttributeGroupSelectDrawer'
+export {
+  EdgeSdLanActivatedNetworksTable,
+  ActivateNetworkSwitchButton } from './EdgeSdLan/SdLanNetworkTable'
+export type { ActivatedNetworksTableProps } from './EdgeSdLan/SdLanNetworkTable'
 
 export * from './services'
+export * from './policies'
 export * from './EdgeStatisticWidget'
 export * from './pipes/apGroupPipes'
 export * from './ExpirationDateSelector'
 export * from './RadioSettings/RadioSettingsContents'
 export * from './SimpleListTooltip'
-export * from './RogueAPDetection'
 export * from './VlanSettingDrawer'
 export * from './RadioSettingsChannels/320Mhz/ChannelComponentStates'
-export * from './ResidentPortal'
 export * from './CommonLinkHelper'
 export * from './ZoomWidget'
+export * from './NetworkForm'
+export * from './NetworkDetails'
+export * from './users'

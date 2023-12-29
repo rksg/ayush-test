@@ -15,7 +15,8 @@ import {
   ServiceGuardTestGuard,
   VideoCallQoeForm,
   VideoCallQoeDetails,
-  CrrmDetails
+  CrrmDetails,
+  UnknownDetails
 }                                                   from '@acx-ui/analytics/components'
 import { PageNotFound }                             from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
@@ -27,6 +28,7 @@ export default function AnalyticsRoutes () {
   const canUseAnltAdv = useIsTierAllowed('ANLT-ADV')
   const isVideoCallQoeEnabled = useIsSplitOn(Features.VIDEO_CALL_QOE)
   const isConfigChangeEnabled = useIsSplitOn(Features.CONFIG_CHANGE)
+  const crrmEnabled = useIsSplitOn(Features.AI_CRRM)
   const recommendationsEnabled = useIsSplitOn(Features.AI_RECOMMENDATIONS)
   // eslint-disable-next-line react/jsx-no-useless-fragment
   if (!hasAccess()) return <React.Fragment />
@@ -55,7 +57,8 @@ export default function AnalyticsRoutes () {
       <Route path='analytics/recommendations/'>
         <Route path=':activeTab' element={<AIAnalytics />} />
         <Route path='aiOps/:id' element={<RecommendationDetails />} />
-        <Route path='crrm/:id' element={<CrrmDetails />} />
+        {crrmEnabled && <Route path='crrm/:id' element={<CrrmDetails />} />}
+        {crrmEnabled && <Route path='crrm/unknown/*' element={<UnknownDetails />} />}
       </Route>}
       {canUseAnltAdv && isConfigChangeEnabled &&
         <Route path='analytics/configChange'

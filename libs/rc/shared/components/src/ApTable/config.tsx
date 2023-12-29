@@ -80,7 +80,7 @@ export const getGroupableConfig = (
       {
         key: 'edit',
         renderer: (record: APExtended) => record.deviceGroupName
-          ? <TenantLink to={`devices/apgroups/${record.deviceGroupId}/edit`}>
+          ? <TenantLink to={`devices/apgroups/${record.deviceGroupId}/edit/general`}>
             {$t(defineMessage({ defaultMessage: 'Edit' }))}
           </TenantLink>
           : <span></span>

@@ -1,7 +1,8 @@
 import { Form, Input, Modal }       from 'antd'
 import { RawIntlProvider, useIntl } from 'react-intl'
 
-import { showActionModal } from '@acx-ui/components'
+import { showActionModal }                                        from '@acx-ui/components'
+import { useIsSplitOn, useIsTierAllowed, Features, TierFeatures } from '@acx-ui/feature-toggle'
 import {
   useDeleteEdgeMutation,
   useFactoryResetEdgeMutation,
@@ -13,6 +14,12 @@ import { getIntl }                    from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
+export const useIsEdgeFeatureReady = (featureFlagKey: Features) => {
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const isEdgeFeatureReady = useIsSplitOn(featureFlagKey)
+  return isEdgeEnabled && isEdgeReady && isEdgeFeatureReady
+}
 
 export const useEdgeActions = () => {
   const { $t } = useIntl()

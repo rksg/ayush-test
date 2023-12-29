@@ -142,6 +142,7 @@ describe('Test useApActions', () => {
     fireEvent.click(within(dialog).getByRole('button', { name: 'Reboot' }))
 
     expect(callback).toBeCalled()
+    await waitFor(async () => expect(dialog).not.toBeVisible())
   })
 
   it('showDownloadApLog', async () => {

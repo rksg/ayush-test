@@ -2,9 +2,9 @@ import { Typography }             from 'antd'
 import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { GridCol, GridRow, PageHeader }             from '@acx-ui/components'
-import { RadioCardCategory }                        from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { GridCol, GridRow, PageHeader }                           from '@acx-ui/components'
+import { RadioCardCategory }                                      from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   ServiceType
 } from '@acx-ui/rc/utils'
@@ -19,8 +19,9 @@ export default function ServiceCatalog () {
   const { $t } = useIntl()
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
 
   const sets = [
     {
@@ -38,6 +39,11 @@ export default function ServiceCatalog () {
           type: ServiceType.NETWORK_SEGMENTATION,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
           disabled: !isEdgeEnabled || !isEdgeReady
+        },
+        {
+          type: ServiceType.EDGE_SD_LAN,
+          categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+          disabled: !isEdgeEnabled || !isEdgeReady || !isEdgeSdLanReady
         }
       ]
     },

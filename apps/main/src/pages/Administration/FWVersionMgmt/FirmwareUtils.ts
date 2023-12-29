@@ -11,7 +11,8 @@ import {
   FirmwareVenueVersion,
   FirmwareType,
   Schedule,
-  LatestEdgeFirmwareVersion
+  LatestEdgeFirmwareVersion,
+  parseSwitchVersion
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -259,39 +260,4 @@ export const getSwitchNextScheduleTplTooltip = (venue: FirmwareSwitchVenue): str
   return ''
 }
 
-export const parseSwitchVersion = (version: string) => {
-  const defaultVersion = [
-    '09010f_b19', '09010e_b392', '10010_rc3', '10010a_b36',
-    '09010h_rc1', '09010h_cd1_b3', '10010a_cd3_b11', '09010h_cd2_b4',
-    '10010b_rc88']
-
-  if (defaultVersion.includes(version)) {
-    return convertSwitchVersionFormat(version.replace(/_[^_]*$/, ''))
-  }
-  return convertSwitchVersionFormat(version)
-}
-
-export const convertSwitchVersionFormat = (version: string) => {
-  // eslint-disable-next-line max-len
-  const switchVersionReg = /^(?:[A-Z]{3,})?(?<major>\d{4,})(?<minor>[a-z]*)(?:(?<build>(_[a-z]*\d+)*))?$/
-  const versionGroup = version?.match(switchVersionReg)?.groups
-  const newVersionGroup: string[] = []
-
-  if (versionGroup) {
-    const majorVersionReg = /(\d{2,})(\d+)(\d{2,})$/
-    const majorGroup = versionGroup['major']?.match(majorVersionReg)
-
-    if (majorGroup && majorGroup.shift()) { // remove matched full string
-      if (majorGroup[0].startsWith('0')) {
-        majorGroup[0] = majorGroup[0].replace(/^0+/, '')
-      }
-      newVersionGroup.push(majorGroup.join('.'))
-    }
-    newVersionGroup.push(versionGroup['minor'])
-    newVersionGroup.push(versionGroup['build'])
-
-    return newVersionGroup.join('')
-  }
-  return version
-}
 

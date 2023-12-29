@@ -19,7 +19,8 @@ export interface IncidentMetadata {
     checks: Record<string,boolean>[]
     params: Record<string,string>
   }
-  apRadioDeploy?: string
+  apRadioDeploy?: string,
+  avgAnomalousAirtime?: number
 }
 
 export interface Incident extends IncidentInformation {
@@ -45,6 +46,8 @@ export interface Incident extends IncidentInformation {
   slaThreshold: number|null
   currentSlaThreshold: number|null
   relatedIncidents?: Incident[]
+  impactedStart?: string
+  impactedEnd?: string
 }
 
 export interface IncidentAttributesProps
