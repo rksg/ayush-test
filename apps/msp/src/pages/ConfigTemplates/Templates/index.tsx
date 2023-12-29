@@ -34,7 +34,10 @@ export function ConfigTemplateList () {
 
   const tableQuery = useTableQuery({
     useQuery: useGetConfigTemplateListQuery,
-    defaultPayload: {}
+    defaultPayload: {},
+    search: {
+      searchTargetFields: ['name']
+    }
   })
 
   const rowActions: TableProps<ConfigTemplate>['rowActions'] = [

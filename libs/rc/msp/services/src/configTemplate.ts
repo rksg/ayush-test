@@ -25,12 +25,7 @@ import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
 export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
   endpoints: (build) => ({
     getConfigTemplateList: build.query<TableResult<ConfigTemplate>, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(ConfigTemplateUrlsInfo.getConfigTemplates, params)
-        return {
-          ...req
-        }
-      },
+      query: commonQueryFn(ConfigTemplateUrlsInfo.getConfigTemplates),
       providesTags: [{ type: 'ConfigTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
