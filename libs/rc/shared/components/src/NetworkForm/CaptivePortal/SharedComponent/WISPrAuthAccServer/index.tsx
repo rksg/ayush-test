@@ -7,7 +7,6 @@ import {
   Select,
   Radio
 } from 'antd'
-import { DefaultOptionType }         from 'antd/lib/select'
 import _                             from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { useParams }                 from 'react-router-dom'
@@ -35,10 +34,12 @@ export function WISPrAuthAccServer (props : {
   const form = Form.useFormInstance()
   const { data, setData } = useContext(NetworkFormContext)
   const { data: aaaAuthListQuery } = useGetAAAPolicyInstanceList({
+    queryOptions: { refetchOnMountOrArgChange: 10 },
     customPayload: { filters: { type: ['AUTHENTICATION'] } }
   })
   const [ getAaaPolicy ] = useLazyGetAAAPolicyInstance()
-  const [aaaList, setAaaList]= useState([] as DefaultOptionType[])
+  const authDropdownItems = aaaAuthListQuery?.data.map(m => ({ label: m.name, value: m.id })) ?? []
+  const [ aaaList, setAaaList ]= useState(authDropdownItems)
   const context = useContext(WISPrAuthAccContext)
 
   const [

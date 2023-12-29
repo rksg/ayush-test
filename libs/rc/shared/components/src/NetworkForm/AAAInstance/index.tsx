@@ -39,12 +39,12 @@ const AAAInstance = (props: AAAInstanceProps) => {
   })
   const [ getAaaPolicy ] = useLazyGetAAAPolicyInstance()
   // eslint-disable-next-line max-len
-  const [ aaaDropdownItems, setAaaDropdownItems ]= useState(aaaListToDropdownItems(radiusType, aaaListQuery?.data))
+  const [ aaaDropdownItems, setAaaDropdownItems ]= useState(convertAaaListToDropdownItems(radiusType, aaaListQuery?.data))
   const { data, setData } = useContext(NetworkFormContext)
 
   useEffect(()=>{
     if (aaaListQuery?.data) {
-      setAaaDropdownItems(aaaListToDropdownItems(radiusType, aaaListQuery.data))
+      setAaaDropdownItems(convertAaaListToDropdownItems(radiusType, aaaListQuery.data))
     }
   },[aaaListQuery])
 
@@ -151,7 +151,7 @@ const AAAInstance = (props: AAAInstanceProps) => {
 
 export default AAAInstance
 
-function aaaListToDropdownItems (
+function convertAaaListToDropdownItems (
   targetRadiusType: typeof radiusTypeMap[keyof typeof radiusTypeMap],
   aaaList?: AAAViewModalType[]
 ): DefaultOptionType[] {
