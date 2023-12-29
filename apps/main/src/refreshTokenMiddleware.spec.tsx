@@ -1,5 +1,9 @@
 import { isFulfilled } from '@reduxjs/toolkit'
 
+import { act } from '@acx-ui/test-utils'
+
+import { isDev, refreshTokenMiddleware } from './refreshTokenMiddleware'
+
 describe('refreshTokenMiddleware', () => {
   it('should refresh jwt token', async () => {
     const action = {
@@ -22,30 +26,6 @@ describe('refreshTokenMiddleware', () => {
     sessionStorage.removeItem('sessionJwt')
   })
 
-})
-
-import { isDev, refreshTokenMiddleware } from './refreshTokenMiddleware'
-// import { MiddlewareAction } from 'redux'
-import { act } from '@acx-ui/test-utils'
-
-describe('isDev', () => {
-  it('returns true when hostname includes dev.ruckus.cloud', () => {
-    window.location.hostname = 'dev.ruckus.cloud'
-    expect(isDev()).toBe(false)
-  })
-
-  it('returns true when hostname includes devalto.ruckuswireless.com', () => {
-    window.location.hostname = 'devalto.ruckuswireless.com'
-    expect(isDev()).toBe(false)
-  })
-
-  it('returns false when hostname does not include dev.ruckus.cloud or devalto.ruckuswireless.com', () => {
-    window.location.hostname = 'example.com'
-    expect(isDev()).toBe(false)
-  })
-})
-
-describe('refreshTokenMiddleware', () => {
   it('refreshes the token when action is fulfilled and isDev is true', () => {
     const next = jest.fn()
     window.location.hostname = 'dev.ruckus.cloud'
@@ -81,5 +61,23 @@ describe('refreshTokenMiddleware', () => {
 
     expect(sessionStorage.getItem('jwt')).toBe('oldToken')
     // expect(next).toHaveBeenCalledWith(action)
+  })
+})
+
+describe('isDev', () => {
+  it('returns true when hostname includes dev.ruckus.cloud', () => {
+    window.location.hostname = 'dev.ruckus.cloud'
+    expect(isDev()).toBe(false)
+  })
+
+  it('returns true when hostname includes devalto.ruckuswireless.com', () => {
+    window.location.hostname = 'devalto.ruckuswireless.com'
+    expect(isDev()).toBe(false)
+  })
+
+  it('returns false when hostname does not include dev.ruckus.cloud ' +
+    'or devalto.ruckuswireless.com', () => {
+    window.location.hostname = 'example.com'
+    expect(isDev()).toBe(false)
   })
 })
