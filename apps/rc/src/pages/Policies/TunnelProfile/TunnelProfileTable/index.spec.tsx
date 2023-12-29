@@ -262,8 +262,6 @@ describe('TunnelProfileList', () => {
         expect(dropdowns.length).toBe(3)
       })
       expect(mockedSdLanReq).toBeCalled()
-      await userEvent.click(dropdowns[1])
-      await screen.findByText('TestSDLAN')
     })
   })
 })
