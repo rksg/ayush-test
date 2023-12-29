@@ -6,37 +6,45 @@ import { get }                 from 'lodash'
 import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
 
-import { Tooltip, PasswordInput } from '@acx-ui/components'
-import { AaaServerOrderEnum }     from '@acx-ui/rc/utils'
+import { Tooltip, PasswordInput }               from '@acx-ui/components'
+import { AaaServerOrderEnum, AAAViewModalType } from '@acx-ui/rc/utils'
 
 import { useLazyGetAAAPolicyInstance, useGetAAAPolicyInstanceList } from '../../policies/AAAForm/aaaPolicyQuerySwitcher'
 import * as contents                                                from '../contentsMap'
 import NetworkFormContext                                           from '../NetworkFormContext'
 
 import AAAPolicyModal from './AAAPolicyModal'
-const radiusType: { [key:string]:string }={
+
+const radiusTypeMap: { [key:string]: string } = {
   authRadius: 'AUTHENTICATION',
   accountingRadius: 'ACCOUNTING'
+} as const
+
+interface AAAInstanceProps {
+  serverLabel: string
+  type: 'authRadius' | 'accountingRadius'
 }
-const AAAInstance = (props:{ serverLabel: string, type: 'authRadius' | 'accountingRadius' }) => {
+
+const AAAInstance = (props: AAAInstanceProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const form = Form.useFormInstance()
+  const radiusType = radiusTypeMap[props.type]
   const radiusIdName = props.type + 'Id'
-  const watchedRadius = Form.useWatch(props.type)
-  const radiusFromFormField = form.getFieldValue(props.type)
-  const selectedAaaProfileId = Form.useWatch(radiusIdName)
+  const watchedRadius = Form.useWatch(props.type) || form.getFieldValue(props.type)
+  const watchedRadiusId = Form.useWatch(radiusIdName) || form.getFieldValue(radiusIdName)
 
   const { data: aaaListQuery } = useGetAAAPolicyInstanceList({
-    customPayload: { filters: { type: [radiusType[props.type]] } }
+    queryOptions: { refetchOnMountOrArgChange: 10 }
   })
   const [ getAaaPolicy ] = useLazyGetAAAPolicyInstance()
-  const [ aaaList, setAaaList ]= useState([] as DefaultOptionType[])
+  // eslint-disable-next-line max-len
+  const [ aaaDropdownItems, setAaaDropdownItems ]= useState(aaaListToDropdownItems(radiusType, aaaListQuery?.data))
   const { data, setData } = useContext(NetworkFormContext)
 
   useEffect(()=>{
-    if(aaaListQuery?.data){
-      setAaaList(aaaListQuery.data?.map(m => ({ label: m.name, value: m.id })))
+    if (aaaListQuery?.data) {
+      setAaaDropdownItems(aaaListToDropdownItems(radiusType, aaaListQuery.data))
     }
   },[aaaListQuery])
 
@@ -55,10 +63,10 @@ const AAAInstance = (props:{ serverLabel: string, type: 'authRadius' | 'accounti
   }, [watchedRadius])
 
   useEffect(() => {
-    if (selectedAaaProfileId === watchedRadius?.id) return
+    if (watchedRadiusId === watchedRadius?.id) return
 
-    if (selectedAaaProfileId) {
-      getAaaPolicy({ params: { ...params, policyId: selectedAaaProfileId } })
+    if (watchedRadiusId) {
+      getAaaPolicy({ params: { ...params, policyId: watchedRadiusId } })
         .unwrap()
         .then(aaaPolicy => form.setFieldValue(props.type, aaaPolicy))
         // eslint-disable-next-line no-console
@@ -66,7 +74,7 @@ const AAAInstance = (props:{ serverLabel: string, type: 'authRadius' | 'accounti
     } else {
       form.setFieldValue(props.type, undefined)
     }
-  }, [selectedAaaProfileId])
+  }, [watchedRadiusId])
 
   return (
     <>
@@ -78,56 +86,56 @@ const AAAInstance = (props:{ serverLabel: string, type: 'authRadius' | 'accounti
           rules={[
             { required: true }
           ]}
-          initialValue={''}
+          initialValue={watchedRadiusId ?? ''}
           children={<Select
             style={{ width: 210 }}
             options={[
               { label: $t({ defaultMessage: 'Select RADIUS' }), value: '' },
-              ...aaaList
+              ...aaaDropdownItems
             ]}
           />}
         />
         <Tooltip>
           <AAAPolicyModal updateInstance={(data) => {
-            setAaaList([...aaaList, { label: data.name, value: data.id }])
+            setAaaDropdownItems([...aaaDropdownItems, { label: data.name, value: data.id }])
             form.setFieldValue(radiusIdName, data.id)
             form.setFieldValue(props.type, data)
           }}
-          aaaCount={aaaList.length}
-          type={radiusType[props.type]}
+          aaaCount={aaaDropdownItems.length}
+          type={radiusType}
           />
         </Tooltip></Space>
       </Form.Item>
       <div style={{ marginTop: 6, backgroundColor: 'var(--acx-neutrals-20)',
         width: 210, paddingLeft: 5 }}>
-        {radiusFromFormField?.[AaaServerOrderEnum.PRIMARY] && <>
+        {watchedRadius?.[AaaServerOrderEnum.PRIMARY] && <>
           <Form.Item
             label={$t(contents.aaaServerTypes[AaaServerOrderEnum.PRIMARY])}
             children={$t({ defaultMessage: '{ipAddress}:{port}' }, {
-              ipAddress: get(radiusFromFormField, `${AaaServerOrderEnum.PRIMARY}.ip`),
-              port: get(radiusFromFormField, `${AaaServerOrderEnum.PRIMARY}.port`)
+              ipAddress: get(watchedRadius, `${AaaServerOrderEnum.PRIMARY}.ip`),
+              port: get(watchedRadius, `${AaaServerOrderEnum.PRIMARY}.port`)
             })} />
           <Form.Item
             label={$t({ defaultMessage: 'Shared Secret' })}
             children={<PasswordInput
               readOnly
               bordered={false}
-              value={get(radiusFromFormField, `${AaaServerOrderEnum.PRIMARY}.sharedSecret`)}
+              value={get(watchedRadius, `${AaaServerOrderEnum.PRIMARY}.sharedSecret`)}
             />}
           /></>}
-        {radiusFromFormField?.[AaaServerOrderEnum.SECONDARY] && <>
+        {watchedRadius?.[AaaServerOrderEnum.SECONDARY] && <>
           <Form.Item
             label={$t(contents.aaaServerTypes[AaaServerOrderEnum.SECONDARY])}
             children={$t({ defaultMessage: '{ipAddress}:{port}' }, {
-              ipAddress: get(radiusFromFormField, `${AaaServerOrderEnum.SECONDARY}.ip`),
-              port: get(radiusFromFormField, `${AaaServerOrderEnum.SECONDARY}.port`)
+              ipAddress: get(watchedRadius, `${AaaServerOrderEnum.SECONDARY}.ip`),
+              port: get(watchedRadius, `${AaaServerOrderEnum.SECONDARY}.port`)
             })} />
           <Form.Item
             label={$t({ defaultMessage: 'Shared Secret' })}
             children={<PasswordInput
               readOnly
               bordered={false}
-              value={get(radiusFromFormField, `${AaaServerOrderEnum.SECONDARY}.sharedSecret`)}
+              value={get(watchedRadius, `${AaaServerOrderEnum.SECONDARY}.sharedSecret`)}
             />}
           />
         </>}
@@ -142,3 +150,11 @@ const AAAInstance = (props:{ serverLabel: string, type: 'authRadius' | 'accounti
 }
 
 export default AAAInstance
+
+function aaaListToDropdownItems (
+  targetRadiusType: typeof radiusTypeMap[keyof typeof radiusTypeMap],
+  aaaList?: AAAViewModalType[]
+): DefaultOptionType[] {
+  // eslint-disable-next-line max-len
+  return aaaList?.filter(m => m.type === targetRadiusType).map(m => ({ label: m.name, value: m.id })) ?? []
+}
