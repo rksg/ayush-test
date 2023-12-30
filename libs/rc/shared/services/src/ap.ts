@@ -56,7 +56,7 @@ import {
   AFCStatus,
   ApGroupViewModel,
   ApManagementVlan,
-  ApFeatureSet,
+  ApIncompatibleFeature,
   ApCompatibility
 
 } from '@acx-ui/rc/utils'
@@ -938,7 +938,7 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'ApManagementVlan' }]
     }),
-    getApFeatureSets: build.query<ApFeatureSet[], RequestPayload>({
+    getApFeatureSets: build.query<ApIncompatibleFeature[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getApFeatureSets, params)
         return{
@@ -1047,7 +1047,7 @@ export const {
   useLazyGetApManagementVlanQuery,
   useUpdateApManagementVlanMutation,
   useDeleteApManagementVlanMutation,
-  useGetApFeatureSetsQuery,
+  useLazyGetApFeatureSetsQuery,
   useLazyGetApCompatibilitiesQuery
 } = apApi
 

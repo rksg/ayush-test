@@ -8,7 +8,8 @@ import { Tooltip, Drawer, Button, Loader, cssStr } from '@acx-ui/components'
 import { QuestionMarkCircleOutlined }              from '@acx-ui/icons'
 import {
   useLazyGetApCompatibilitiesVenueQuery,
-  useLazyGetApCompatibilitiesNetworkQuery
+  useLazyGetApCompatibilitiesNetworkQuery,
+  useLazyGetApFeatureSetsQuery
 }   from '@acx-ui/rc/services'
 import { ApCompatibility, ApIncompatibleFeature, ApIncompatibleDevice } from '@acx-ui/rc/utils'
 import { TenantLink }                                                   from '@acx-ui/react-router-dom'
@@ -46,7 +47,7 @@ export type ApCompatibilityToolTipProps = {
 }
 
 export const retrievedCompatibilitiesOptions = (data?: ApCompatibility[]) => {
-  const compatibilitiesFilterOptions: { key: string[]; value: string }[] = []
+  const compatibilitiesFilterOptions: { key: string; value: string; label: string; }[] = []
   if (data?.[0]) {
     const { incompatibleFeatures, incompatible } = data[0]
     if (incompatible > 0) {
@@ -56,7 +57,7 @@ export const retrievedCompatibilitiesOptions = (data?: ApCompatibility[]) => {
         incompatibleDevices?.forEach((device:ApIncompatibleDevice) => {
           fwVersions.push(device.firmware)
         })
-        compatibilitiesFilterOptions.push({ key: fwVersions, value: featureName })
+        compatibilitiesFilterOptions.push({ key: fwVersions.join(','), value: featureName, label: featureName })
       })
     }
     return { compatibilitiesFilterOptions, apCompatibilities: data, incompatible }
@@ -146,9 +147,7 @@ export function ApFeatureCompatibility (props: ApFeatureCompatibilityProps) {
 
   return (
     <>
-      <WarningTriangleSolidIcon
-        style={{ height: '18px', marginBottom: -3 }}
-      />
+      <WarningTriangleSolidIcon/>
       <Button
         type='link'
         style={{ fontSize: cssStr('--acx-body-4-font-size') }}
@@ -216,6 +215,7 @@ export function ApCompatibilityDrawer (props: ApCompatibilityDrawerProps) {
   const [ apCompatibilities, setApCompatibilities ] = useState<ApCompatibility[]>(data)
   const [ getApCompatibilitiesVenue ] = useLazyGetApCompatibilitiesVenueQuery()
   const [ getApCompatibilitiesNetwork ] = useLazyGetApCompatibilitiesNetworkQuery()
+  const [ getApFeatureSets ] = useLazyGetApFeatureSetsQuery()
 
   const apNameTitle = (apName) ? `: ${apName}` : ''
 
@@ -263,21 +263,31 @@ export function ApCompatibilityDrawer (props: ApCompatibilityDrawerProps) {
     if (visible && data.length === 0 && apCompatibilities?.length === 0) {
       const fetchApCompatibilities = async () => {
         try {
-          const apCompatibilitiesReq = () => {
+          const getApCompatibilities = async () => {
             if (ApCompatibilityType.NETWORK === type) {
               return getApCompatibilitiesNetwork({
                 params: { networkId },
                 payload: { filters: { apIds, venueIds }, feature: featureName, queryType }
-              })
+              }).unwrap()
+            } else if (ApCompatibilityType.VENUE === type) {
+              return getApCompatibilitiesVenue({
+                params: { venueId },
+                payload: { filters: { apIds, networkIds }, feature: featureName, queryType }
+              }).unwrap()
             }
-            return getApCompatibilitiesVenue({
-              params: { venueId },
-              payload: { filters: { apIds, networkIds }, feature: featureName, queryType }
-            })
+            const apFeatureSets = await getApFeatureSets({
+              params: { featureName: queryType }
+            }).unwrap()
+            const apCompatibility = {
+              id: 'ApFeatureSet',
+              incompatibleFeatures: apFeatureSets,
+              incompatible: 0,
+              total: 0
+            } as ApCompatibility
+            return [apCompatibility]
           }
-          const apCompatibilitiesResponse = await apCompatibilitiesReq().unwrap()
 
-          setApCompatibilities(apCompatibilitiesResponse)
+          setApCompatibilities(await getApCompatibilities())
           setIsInitializing(false)
         } catch (error) {
           console.log(error) // eslint-disable-line no-console

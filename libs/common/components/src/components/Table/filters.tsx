@@ -178,9 +178,10 @@ export function renderFilter <RecordType> (
     mode={column.filterMultiple === false ? undefined : 'multiple'}
     showSearch={column?.filterSearchable ?? undefined}
     value={filterValues[key as keyof Filter]}
-    onChange={(value: unknown) => {
+    onChange={(value: unknown | string) => {
       const isValidValue = Array.isArray(value) ? (value as string[]).length : value
-      const filterValue = Array.isArray(value) ? value : [value]
+      const filterArrayValue = column.filterValueArray&&value?(value as string).split(','):[value]
+      const filterValue = Array.isArray(value) ? value : filterArrayValue
       let filters = {} as Filter
 
       if (column.filterValueNullable === false &&
@@ -205,7 +206,7 @@ export function renderFilter <RecordType> (
     {options?.map((option, index) =>
       <Select.Option
         value={option.key}
-        key={Array.isArray(option.key) ? index : (option.key ?? index)}
+        key={`key-${index}-${option.key}`}
         data-testid={`option-${option.key}`}
         title={option.value}
         children={option.label ?? option.value}

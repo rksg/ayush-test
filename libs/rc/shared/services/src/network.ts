@@ -383,14 +383,14 @@ export const networkApi = baseNetworkApi.injectEndpoints({
 
         const apCompatibilities = apCompatibilitiesQuery.data as ApCompatibility[]
 
-        const venueIdsToIncompatible:{ [key:string]: number } = {}
+        const networkIdsToIncompatible:{ [key:string]: number } = {}
 
         apCompatibilities.forEach((item:ApCompatibility) => {
-          venueIdsToIncompatible[item.id] = item.incompatible
+          networkIdsToIncompatible[item.id] = item.incompatible
         })
 
         const aggregatedList = aggregatedVenueNetworksData(
-          networkList, venueNetworkApGroupList, networkDeepListList, venueIdsToIncompatible)
+          networkList, venueNetworkApGroupList, networkDeepListList, networkIdsToIncompatible)
 
         return venueNetworkListQuery.data
           ? { data: aggregatedList }

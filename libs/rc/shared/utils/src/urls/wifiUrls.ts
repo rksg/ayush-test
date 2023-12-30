@@ -622,7 +622,7 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getApFeatureSets: {
     method: 'get',
-    url: '/aps/featureSets',
+    url: '/venues/aps/featureSets?featureName={featureName}',
     newApi: true
   },
   getApCompatibilitiesVenue: {

@@ -154,6 +154,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
   const [ compatibilitiesDrawerVisible, setCompatibilitiesDrawerVisible ] = useState(false)
   const [ selectedApSN, setSelectedApSN ] = useState('')
   const [ selectedApName, setSelectedApName ] = useState('')
+  const [ tableData, setTableData ] = useState([] as APExtended[])
   const [ hasGroupBy, setHasGroupBy ] = useState(false)
   const [ showFeatureCompatibilitiy, setShowFeatureCompatibilitiy ] = useState(false)
   const secureBootFlag = useIsSplitOn(Features.WIFI_EDA_SECURE_BOOT_TOGGLE)
@@ -184,18 +185,21 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
     const totalCount = tableQuery.data?.totalCount || 0
 
     const fetchApCompatibilitiesAndSetData = async (apIds:string[]) => {
+      let result = [] as APExtended[]
       if (tableQuery.data?.data) {
         let apCompatibilities:ApCompatibility[] = []
-        if (params.venueId) {
-          apCompatibilities = await getApCompatibilitiesVenue({
-            params: { venueId: params.venueId },
-            payload: { filters: { apIds }, queryType: ApCompatibilityQueryTypes.CHECK_VENUE_WITH_APS }
-          }).unwrap()
-        } else if (params.networkId) {
-          apCompatibilities = await getApCompatibilitiesNetwork({
-            params: { networkId: params.networkId },
-            payload: { filters: { apIds }, queryType: ApCompatibilityQueryTypes.CHECK_NETWORK_WITH_APS }
-          }).unwrap()
+        if (apIds.length > 0) {
+          if (params.venueId) {
+            apCompatibilities = await getApCompatibilitiesVenue({
+              params: { venueId: params.venueId },
+              payload: { filters: { apIds }, queryType: ApCompatibilityQueryTypes.CHECK_VENUE_WITH_APS }
+            }).unwrap()
+          } else if (params.networkId) {
+            apCompatibilities = await getApCompatibilitiesNetwork({
+              params: { networkId: params.networkId },
+              payload: { filters: { apIds }, queryType: ApCompatibilityQueryTypes.CHECK_NETWORK_WITH_APS }
+            }).unwrap()
+          }
         }
 
         if (apCompatibilities.length > 0) {
@@ -205,14 +209,15 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
             apIdsToIncompatible[id] = apIncompatible?.incompatible ?? 0
           })
           if (hasGroupBy) {
-            tableQuery.data.data?.map(item => {
+            result = tableQuery.data.data?.map(item => {
               (item as unknown as { aps: APExtended[] }).aps?.map(ap => ({ ...ap, incompatible: apIdsToIncompatible[ap.serialNumber] }))
               return item
             })
           } else {
-            tableQuery.data.data?.map(ap => ({ ...ap, incompatible: apIdsToIncompatible[ap.serialNumber] }))
+            result = tableQuery.data.data?.map(ap => ({ ...ap, incompatible: apIdsToIncompatible[ap.serialNumber] }))
           }
         }
+        setTableData(result)
       }
     }
     setApsCount?.(totalCount)
@@ -220,15 +225,16 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       const aps = tableQuery.data as TableResult<APExtended | APExtendedGrouped, ApExtraParams>
       const apIds:string[] = retriedApIds(aps, !!hasGroupBy)
       fetchApCompatibilitiesAndSetData(apIds)
-
+    } else {
+      setTableData(tableQuery?.data?.data ?? [])
     }
+
   }, [tableQuery.data])
 
   const apAction = useApActions()
   const statusFilterOptions = seriesMappingAP().map(({ key, name, color }) => ({
     key, value: name, label: <Badge color={color} text={name} />
   }))
-  const tableData = tableQuery?.data?.data ?? []
   const linkToEditAp = useTenantLink('/devices/wifi/')
 
   const columns = useMemo(() => {
@@ -481,12 +487,13 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       tooltip: $t({ defaultMessage: 'Check for the venue’s Wi-Fi features not supported by earlier versions or AP models.' }),
       title: $t({ defaultMessage: 'Feature Compatibility' }),
       filterPlaceholder: $t({ defaultMessage: 'Feature Compatibility' }),
+      filterValueArray: true,
       dataIndex: 'incompatible',
       filterKey: 'fwVersion',
       width: 200,
       filterableWidth: 200,
       filterable: showFeatureCompatibilitiy && filterables ? filterables['featureIncompatible']: false,
-      // filterMultiple: false,
+      filterMultiple: false,
       show: false,
       sorter: false,
       render: (data: React.ReactNode, row: APExtended) => {

@@ -51,7 +51,7 @@ type AdditionalColumnType <RecordType, ValueType> = {
    * the table will show a multi select dropdown to filter the column
    * @default false
    */
-  filterable?: boolean | ({ key: string | string[], value: string, label?: React.ReactNode }) []
+  filterable?: boolean | ({ key: string, value: string, label?: React.ReactNode }) []
   /**
    * Set the key in filters of payload
    * It is useful when the dataIndex is different from the filter key
@@ -64,6 +64,12 @@ type AdditionalColumnType <RecordType, ValueType> = {
    * @default undefined
    */
   filterValueNullable?: boolean
+  /**
+   * Set the value in filters to be array, and setting values with comma(,) to connect all values
+   * Due to option value is array, UI ant component onChange event transform value is undefined
+   * @default undefined
+   */
+  filterValueArray?: boolean
   /**
    * Set the filter to be searchable
    * @default undefined
