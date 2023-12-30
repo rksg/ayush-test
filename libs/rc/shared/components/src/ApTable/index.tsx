@@ -216,6 +216,8 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
           } else {
             result = tableQuery.data.data?.map(ap => ({ ...ap, incompatible: apIdsToIncompatible[ap.serialNumber] }))
           }
+        } else {
+          result = tableQuery.data.data
         }
         setTableData(result)
       }
