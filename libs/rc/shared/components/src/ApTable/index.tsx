@@ -182,54 +182,52 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
 
 
   useEffect(() => {
-    const totalCount = tableQuery.data?.totalCount || 0
-
-    const fetchApCompatibilitiesAndSetData = async (apIds:string[]) => {
-      let result = [] as APExtended[]
+    const fetchApCompatibilitiesAndSetData = async () => {
+      const result:React.SetStateAction<APExtended[]> = []
+      const apIdsToIncompatible:{ [key:string]: number } = {}
       if (tableQuery.data?.data) {
         let apCompatibilities:ApCompatibility[] = []
-        if (apIds.length > 0) {
-          if (params.venueId) {
-            apCompatibilities = await getApCompatibilitiesVenue({
-              params: { venueId: params.venueId },
-              payload: { filters: { apIds }, queryType: ApCompatibilityQueryTypes.CHECK_VENUE_WITH_APS }
-            }).unwrap()
-          } else if (params.networkId) {
-            apCompatibilities = await getApCompatibilitiesNetwork({
-              params: { networkId: params.networkId },
-              payload: { filters: { apIds }, queryType: ApCompatibilityQueryTypes.CHECK_NETWORK_WITH_APS }
-            }).unwrap()
+        let apIds:string[] = []
+        if (enableApCompatibleCheck && showFeatureCompatibilitiy) {
+          const aps = tableQuery.data as TableResult<APExtended | APExtendedGrouped, ApExtraParams>
+          apIds = retriedApIds(aps, !!hasGroupBy)
+          if (apIds.length > 0) {
+            if (params.venueId) {
+              apCompatibilities = await getApCompatibilitiesVenue({
+                params: { venueId: params.venueId },
+                payload: { filters: { apIds }, queryType: ApCompatibilityQueryTypes.CHECK_VENUE_WITH_APS }
+              }).unwrap()
+            } else if (params.networkId) {
+              apCompatibilities = await getApCompatibilitiesNetwork({
+                params: { networkId: params.networkId },
+                payload: { filters: { apIds }, queryType: ApCompatibilityQueryTypes.CHECK_NETWORK_WITH_APS }
+              }).unwrap()
+            }
           }
         }
 
         if (apCompatibilities.length > 0) {
-          const apIdsToIncompatible:{ [key:string]: number } = {}
           apIds.forEach((id:string) => {
             const apIncompatible = _.find(apCompatibilities, ap => id===ap.id)
             apIdsToIncompatible[id] = apIncompatible?.incompatible ?? 0
           })
-          if (hasGroupBy) {
-            result = tableQuery.data.data?.map(item => {
-              (item as unknown as { aps: APExtended[] }).aps?.map(ap => ({ ...ap, incompatible: apIdsToIncompatible[ap.serialNumber] }))
-              return item
-            })
-          } else {
-            result = tableQuery.data.data?.map(ap => ({ ...ap, incompatible: apIdsToIncompatible[ap.serialNumber] }))
-          }
-        } else {
-          result = tableQuery.data.data
         }
-        setTableData(result)
+        if (hasGroupBy) {
+          tableQuery.data.data?.forEach(item => {
+            (item as unknown as { aps: APExtended[] }).aps?.map(ap => ({ ...ap, incompatible: apIdsToIncompatible[ap.serialNumber] }))
+            result.push({ ...item })
+          })
+        } else {
+          tableQuery.data.data?.forEach(ap => (result.push({ ...ap, incompatible: apIdsToIncompatible[ap.serialNumber] })))
+        }
       }
+      setTableData(result)
     }
+    if (tableQuery.data) {
+      fetchApCompatibilitiesAndSetData()
+    }
+    const totalCount = tableQuery.data?.totalCount || 0
     setApsCount?.(totalCount)
-    if (tableQuery.data && totalCount > 0 && enableApCompatibleCheck && showFeatureCompatibilitiy) {
-      const aps = tableQuery.data as TableResult<APExtended | APExtendedGrouped, ApExtraParams>
-      const apIds:string[] = retriedApIds(aps, !!hasGroupBy)
-      fetchApCompatibilitiesAndSetData(apIds)
-    } else {
-      setTableData(tableQuery?.data?.data ?? [])
-    }
 
   }, [tableQuery.data])
 

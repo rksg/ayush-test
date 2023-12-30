@@ -32,6 +32,11 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+const utils = require('@acx-ui/rc/utils')
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils')
+}))
+
 type MockDrawerProps = React.PropsWithChildren<{
   visible: boolean
   importRequest: () => void
@@ -59,6 +64,9 @@ describe('Aps', () => {
   })
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
+    utils.usePollingTableQuery = jest.fn().mockImplementation(() => {
+      return { data: apList }
+    })
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getApsList.url,
