@@ -219,7 +219,7 @@ export function VenueWifi () {
     },
     {
       skip: !isApCompatibleCheckEnabled,
-      selectFromResult: ({ data }) => (retrievedCompatibilitiesOptions(data))
+      selectFromResult: ({ data }) => retrievedCompatibilitiesOptions(data)
     })
 
   const { apgroupFilterOptions } = useApGroupsListQuery({
@@ -286,6 +286,7 @@ export function VenueWifi () {
               { total: incompatible })}
             </span>
             <Button
+              data-testid='ap-compatibility-alert-note-open'
               type='link'
               style={{ fontSize: '12px', marginBottom: '4px' }}
               onClick={() => {

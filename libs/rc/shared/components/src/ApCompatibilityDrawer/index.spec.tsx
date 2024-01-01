@@ -9,7 +9,8 @@ import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
 
 import {
   mockApCompatibilitiesVenue,
-  mockApCompatibilitiesNetwork
+  mockApCompatibilitiesNetwork,
+  mockFeatureCompatibilities
 } from './__test__/fixtures'
 
 import {
@@ -60,7 +61,8 @@ describe('ApCompatibilityToolTip > ApFeatureCompatibility > ApCompatibilityDrawe
     const venueId = '8caa8f5e01494b5499fa156a6c565138'
     const networkId = 'c9d5f4c771c34ad2898f7078cebbb191'
     const tenantId = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-    let params = { tenantId, venueId }
+    const featureName = InCompatibilityFeatures.BETA_DPSK3
+    let params = { tenantId, venueId, featureName: InCompatibilityFeatures.BETA_DPSK3 }
     const venueName = 'Test Venue'
     const mockedCloseDrawer = jest.fn()
 
@@ -72,7 +74,10 @@ describe('ApCompatibilityToolTip > ApFeatureCompatibility > ApCompatibilityDrawe
           (_, res, ctx) => res(ctx.json(mockApCompatibilitiesVenue))),
         rest.post(
           WifiUrlsInfo.getApCompatibilitiesNetwork.url,
-          (_, res, ctx) => res(ctx.json(mockApCompatibilitiesNetwork)))
+          (_, res, ctx) => res(ctx.json(mockApCompatibilitiesNetwork))),
+        rest.get(
+          WifiUrlsInfo.getApFeatureSets.url,
+          (_, res, ctx) => res(ctx.json(mockFeatureCompatibilities)))
       )
     })
     it('should fetch and display render venue correctly', async () => {
@@ -81,6 +86,7 @@ describe('ApCompatibilityToolTip > ApFeatureCompatibility > ApCompatibilityDrawe
           <Form>
             <ApCompatibilityDrawer
               visible={true}
+              type={ApCompatibilityType.VENUE}
               venueId={venueId}
               featureName={InCompatibilityFeatures.BETA_DPSK3}
               venueName={venueName}
@@ -109,6 +115,24 @@ describe('ApCompatibilityToolTip > ApFeatureCompatibility > ApCompatibilityDrawe
             /></Form>
         </Provider>, {
           route: { params: { tenantId, networkId }, path: '/:tenantId' }
+        })
+      expect(await screen.findByText('6.2.3.103.251')).toBeInTheDocument()
+      const icon = await screen.findByTestId('CloseSymbol')
+      expect(icon).toBeVisible()
+    })
+
+    it('should fetch and display render alone correctly', async () => {
+      render(
+        <Provider>
+          <Form>
+            <ApCompatibilityDrawer
+              visible={true}
+              type={ApCompatibilityType.ALONE}
+              featureName={InCompatibilityFeatures.BETA_DPSK3}
+              onClose={mockedCloseDrawer}
+            /></Form>
+        </Provider>, {
+          route: { params: { tenantId, featureName }, path: '/:tenantId' }
         })
       expect(await screen.findByText('6.2.3.103.251')).toBeInTheDocument()
       const icon = await screen.findByTestId('CloseSymbol')

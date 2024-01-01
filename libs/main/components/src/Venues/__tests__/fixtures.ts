@@ -90,6 +90,14 @@ export const venueApCompatibilitiesData = [
   }
 ]
 
+export const apCompatibilitiesFilterData = [
+  {
+    key: '6.2.3.103.233',
+    value: 'EXAMPLE-FEATURE-1',
+    label: 'EXAMPLE-FEATURE-1'
+  }
+]
+
 export const venueData = {
   address: {
     addressLine: '1093 Main St, New York, NY, 10044, United States',

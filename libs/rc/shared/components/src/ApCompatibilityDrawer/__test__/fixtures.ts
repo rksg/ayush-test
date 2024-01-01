@@ -1,4 +1,4 @@
-import { ApCompatibility } from '@acx-ui/rc/utils'
+import { ApCompatibility, ApIncompatibleFeature } from '@acx-ui/rc/utils'
 
 export const mockApCompatibilitiesVenue: ApCompatibility[] = [
   {
@@ -51,3 +51,14 @@ export const mockApCompatibilitiesNetwork: ApCompatibility[] = [
     incompatible: 1
   }
 ]
+
+export const mockFeatureCompatibilities: ApIncompatibleFeature[] = [{
+  featureName: 'EXAMPLE-FEATURE-3',
+  requiredFw: '6.2.3.103.251',
+  requiredModel: '11be',
+  incompatibleDevices: [{
+    firmware: '6.2.3.103.233',
+    model: 'R550',
+    count: 1
+  }]
+}]

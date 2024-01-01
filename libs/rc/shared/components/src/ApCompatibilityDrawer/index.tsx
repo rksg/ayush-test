@@ -46,7 +46,7 @@ export type ApCompatibilityToolTipProps = {
   onClick: () => void
 }
 
-export const retrievedCompatibilitiesOptions = (data?: ApCompatibility[]) => {
+export function retrievedCompatibilitiesOptions (data?: ApCompatibility[]) {
   const compatibilitiesFilterOptions: { key: string; value: string; label: string; }[] = []
   if (data?.[0]) {
     const { incompatibleFeatures, incompatible } = data[0]
@@ -365,6 +365,7 @@ export function ApCompatibilityDrawer (props: ApCompatibilityDrawerProps) {
 
   return (
     <Drawer
+      data-testid={'ap-compatibility-drawer'}
       title={title}
       visible={visible}
       closable={true}
