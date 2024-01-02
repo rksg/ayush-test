@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 import { Switch } from 'antd'
 
@@ -9,19 +9,27 @@ import * as UI from './styledComponents'
 
 type Overlay = {
   title: string
-  content: string
+  content: string | React.ReactNode
 }
-interface MuteToggleProps {
+interface DropdownContainerProps {
   toggleCallback: CallableFunction
   muted: boolean
   overlay: Overlay
+  extraOverlay?: Overlay
 }
-function MuteToggle ({ toggleCallback, muted, overlay } : MuteToggleProps) {
+function DropdownContainer (
+  { toggleCallback, muted, overlay, extraOverlay } : DropdownContainerProps) {
   const [ isMuted, setIsMuted ] = useState(muted)
 
   return <Dropdown
-    overlay={<UI.MuteIncidentContainer>
-      <Dropdown.OverlayTitle>{overlay.title}</Dropdown.OverlayTitle>
+    overlay={<UI.DropdownContainer>
+      {extraOverlay && <>
+        <Dropdown.OverlayTitle>{extraOverlay.title}</Dropdown.OverlayTitle>
+        <UI.ExtraContainer>
+          {extraOverlay.content}
+        </UI.ExtraContainer>
+      </>}
+      <UI.MuteTitle>{overlay.title}</UI.MuteTitle>
       <Switch
         checked={isMuted}
         onChange={async (checked) => {
@@ -30,9 +38,9 @@ function MuteToggle ({ toggleCallback, muted, overlay } : MuteToggleProps) {
         }}
       />
       <p>{overlay.content}</p>
-    </UI.MuteIncidentContainer>}
+    </UI.DropdownContainer>}
   >
     {() => <Button icon={<ConfigurationOutlined />} />}
   </Dropdown>
 }
-export default MuteToggle
+export default DropdownContainer

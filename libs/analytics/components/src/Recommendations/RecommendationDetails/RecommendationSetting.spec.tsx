@@ -6,7 +6,7 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import { useMuteRecommendationMutation } from '../services'
 
-import MuteRecommendation from './MuteRecommendation'
+import RecommendationSetting from './RecommendationSetting'
 
 const mockedUseRecommendationMutation = useMuteRecommendationMutation as jest.Mock
 const mockedMuteRecommendation = jest.fn()
@@ -26,7 +26,8 @@ describe('Mute Recommendation', () => {
     id: 'id',
     isMuted: false,
     link: 'link',
-    type: 'type'
+    type: 'type',
+    actions: <>1</>
   }
   beforeEach(() => {
     mockedUseRecommendationMutation.mockImplementation(() => [mockedMuteRecommendation])
@@ -36,7 +37,7 @@ describe('Mute Recommendation', () => {
   })
   it('should render correctly', async () => {
     render(
-      <Provider><MuteRecommendation {...props}/></Provider>,
+      <Provider><RecommendationSetting {...props}/></Provider>,
       { route: { params } }
     )
     const configButton = screen.getByTestId('ConfigurationOutlined')
@@ -51,7 +52,7 @@ describe('Mute Recommendation', () => {
       })
     }))
     render(
-      <Provider><MuteRecommendation {...props} /></Provider>,
+      <Provider><RecommendationSetting {...props} /></Provider>,
       { route: { params } }
     )
     const configButton = screen.getByTestId('ConfigurationOutlined')
@@ -74,7 +75,7 @@ describe('Mute Recommendation', () => {
       })
     }))
     render(
-      <Provider><MuteRecommendation {...props} /></Provider>,
+      <Provider><RecommendationSetting {...props} /></Provider>,
       { route: { params } }
     )
     const configButton = screen.getByTestId('ConfigurationOutlined')

@@ -20,7 +20,6 @@ import {
 
 import * as UI from './styledComponents'
 
-
 // eslint-disable-next-line max-len
 const applyFooterMsg = defineMessage({ defaultMessage: 'This recommendation will be applied at the chosen time whenever there is a need to change the channel plan. Schedule a time during off-hours when the number of WiFi clients is at the minimum.' })
 
@@ -49,7 +48,10 @@ function getFutureTime (value: Moment) {
   return bufferedTime.clone().add(remainder, 'minutes')
 }
 
-type ActionButtonProps = RecommendationListItem & {
+type RecommendationActionType = Pick<
+  RecommendationListItem, 'id' | 'code' | 'statusEnum' | 'metadata' | 'isMuted' | 'statusTrail'>
+
+type ActionButtonProps = RecommendationActionType & {
   disabled: boolean
   type: keyof typeof actionTooltip
 }
@@ -141,11 +143,11 @@ function CancelCalendar ({ disabled, id }: Omit<ActionButtonProps, 'type'>) {
 }
 
 const actions = {
-  schedule: (props: ActionButtonProps) => <ApplyCalendar {...props} />,
+  schedule: (props: ActionButtonProps ) => <ApplyCalendar {...props} />,
   cancel: (props: Omit<ActionButtonProps, 'type'>) => <CancelCalendar {...props} />
 }
 
-const getAvailableActions = (recommendation: RecommendationListItem) => {
+const getAvailableActions = (recommendation: RecommendationActionType) => {
   const { isMuted, statusEnum } = recommendation
   const props = { ...recommendation }
   if (isMuted) {
@@ -194,7 +196,7 @@ const getAvailableActions = (recommendation: RecommendationListItem) => {
   }
 }
 
-export const RecommendationActions = (props: { recommendation: RecommendationListItem }) => {
+export const RecommendationActions = (props: { recommendation: RecommendationActionType }) => {
   const { recommendation } = props
   const actionButtons = getAvailableActions(recommendation)
   return <UI.Actions>

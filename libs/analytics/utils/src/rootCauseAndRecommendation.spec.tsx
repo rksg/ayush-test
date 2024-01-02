@@ -238,6 +238,9 @@ describe('getRootCauseAndRecommendations', () => {
         { isRogueDetectionEnabled: true },
         { isCRRMRaised: true }
       ] as unknown as AirtimeArray
+      const params = {
+        recommendationId: '1'
+      }
       const incident = fakeIncident({
         ...airtimeBusyIncident,
         metadata: {
@@ -246,22 +249,29 @@ describe('getRootCauseAndRecommendations', () => {
             checks: [
               { isRogueDetectionEnabled: true },
               { isCRRMRaised: true }
-            ]
+            ],
+            params: {
+              recommendationId: '1'
+            }
           }
         }
       })
       const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
       const airtimeBRCA = getAirtimeBusyRootCauses()
-      const airtimeBRecommendations = getAirtimeBusyRecommendations(checks as (AirtimeBusyChecks)[])
+      const airtimeBRecommendations = getAirtimeBusyRecommendations(
+        checks as (AirtimeBusyChecks)[], params as AirtimeParams)
       expect(rootCauses.rootCauseText).toEqual(airtimeBRCA.rootCauseText)
       expect(recommendations.recommendationsText).toEqual(
         airtimeBRecommendations.recommendationsText)
     })
     it('should return correct data if both false', () => {
       const checks = [
-        { isRogueDetectionEnabled: true },
-        { isCRRMRaised: true }
+        { isRogueDetectionEnabled: false },
+        { isCRRMRaised: false }
       ] as unknown as AirtimeArray
+      const params = {
+        recommendationId: ''
+      }
       const incident = fakeIncident({
         ...airtimeBusyIncident,
         metadata: {
@@ -270,13 +280,17 @@ describe('getRootCauseAndRecommendations', () => {
             checks: [
               { isRogueDetectionEnabled: false },
               { isCRRMRaised: false }
-            ]
+            ],
+            params: {
+              recommendationId: ''
+            }
           }
         }
       })
       const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
       const airtimeBRCA = getAirtimeBusyRootCauses()
-      const airtimeBRecommendations = getAirtimeBusyRecommendations(checks as (AirtimeBusyChecks)[])
+      const airtimeBRecommendations = getAirtimeBusyRecommendations(
+        checks as (AirtimeBusyChecks)[], params as AirtimeParams)
       expect(rootCauses.rootCauseText).toEqual(airtimeBRCA.rootCauseText)
       expect(recommendations.recommendationsText).toEqual(
         airtimeBRecommendations.recommendationsText)

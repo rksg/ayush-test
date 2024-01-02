@@ -5,11 +5,12 @@ import { GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
 import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { useParams }                            from '@acx-ui/react-router-dom'
 
-import { FixedAutoSizer } from '../../DescriptionSection/styledComponents'
+import { FixedAutoSizer }        from '../../DescriptionSection/styledComponents'
+import { RecommendationActions } from '../RecommendationActions'
 
 import { Kpis }                   from './Kpis'
-import MuteRecommendation         from './MuteRecommendation'
 import { Overview }               from './Overview'
+import RecommendationSetting      from './RecommendationSetting'
 import {
   useRecommendationCodeQuery,
   useRecommendationDetailsQuery
@@ -42,11 +43,17 @@ export const RecommendationDetails = () => {
         { text: $t({ defaultMessage: 'AI Analytics' }) },
         { text: $t(aiOps), link }
       ]}
-      extra={[<MuteRecommendation {...{
+      extra={[<RecommendationSetting {...{
         id: details.id,
         isMuted: details.isMuted,
         link,
-        type: $t(aiOps)
+        type: $t(aiOps),
+        actions: <RecommendationActions recommendation={
+          {
+            ...details,
+            statusEnum: details.status
+          }
+        } />
       }} />]}
     />}
     <GridRow>

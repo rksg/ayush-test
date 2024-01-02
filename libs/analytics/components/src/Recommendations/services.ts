@@ -76,7 +76,7 @@ export type Recommendation = {
   updatedAt: string
   sliceType: string
   sliceValue: string
-  metadata: { scheduledAt: string }
+  metadata: object & { scheduledAt: string }
   isMuted: boolean
   mutedBy: string
   mutedAt: string | null

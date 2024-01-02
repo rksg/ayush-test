@@ -3,6 +3,8 @@ import _                                    from 'lodash'
 import { defineMessage, MessageDescriptor } from 'react-intl'
 import { FormattedMessage }                 from 'react-intl'
 
+import { TenantLink } from '@acx-ui/react-router-dom'
+
 import { IncidentCode }               from './constants'
 import { Incident, IncidentMetadata } from './types/incidents'
 
@@ -111,6 +113,7 @@ export type AirtimeArray = (AirtimeBusyChecks | AirtimeRxChecks | AirtimeTxCheck
 
 export type AirtimeParams = {
   ssidCountPerRadioSlice: number
+  recommendationId: string
 }
 
 export const htmlValues = {
@@ -128,12 +131,14 @@ export const getAirtimeBusyRootCauses = () => {
     rootCauseValues: {}
   }
 }
-export const getAirtimeBusyRecommendations = (checks: (AirtimeBusyChecks)[]) => {
+export const getAirtimeBusyRecommendations = (checks: (AirtimeBusyChecks)[], params: AirtimeParams) => {
   const checkTrue = checkTrueParams(checks)
+  const recommendationId = params.recommendationId
+  const link = <TenantLink to={`/recommendations/crrm/${recommendationId}`}>here</TenantLink>
   const rogueAPDisabled = <FormattedMessage defaultMessage={'<li>Enable rogue AP detection to search, identify, and physically remove rogue APs from your premises.</li>'} values={htmlValues}/>
   const rogueAPEnabled = <FormattedMessage defaultMessage={'<li>Remove rogue APs in your premises.</li>'} values={htmlValues}/>
   const nonWifiInterference = <FormattedMessage defaultMessage={'<li>Identify and mitigate sources of non-WiFi interference, such as microwave ovens, Bluetooth devices, and cordless phones.</li>'} values={htmlValues}/>
-  const crrmRaised = <FormattedMessage defaultMessage={'<li>Apply the AI-Driven RRM recommendation.</li>'} values={htmlValues}/>
+  const crrmRaised = <FormattedMessage defaultMessage={'<li>Click {link} to apply the AI-Driven RRM recommendation.</li>'} values={{ ...htmlValues, link }}/>
 
   const stringlist = [
     checkTrue.includes('isRogueDetectionEnabled') ? rogueAPEnabled : rogueAPDisabled,
@@ -190,14 +195,16 @@ export const getAirtimeRxRootCauses = (checks: (AirtimeRxChecks)[]) => {
 export const getAirtimeRxRecommendations = (checks: (AirtimeRxChecks)[], params: AirtimeParams) => {
   const checkTrue = checkTrueParams(checks)
   const allFalse = checkTrue.length === 0
-  const ssidCountPerRadioSlice = params.ssidCountPerRadioSlice
+  const { ssidCountPerRadioSlice, recommendationId } = params
+  const aiOpsLink = <TenantLink to={`/recommendations/aiOps/${recommendationId}`}>here</TenantLink>
+  const crrmLink = <TenantLink to={`/recommendations/crrm/${recommendationId}`}>here</TenantLink>
 
-  const clientLoadBalanceOn = <FormattedMessage defaultMessage={'<li>Enable client load balancing AIOps recommendation.</li>'} values={htmlValues}/>
+  const clientLoadBalanceOn = <FormattedMessage defaultMessage={'<li>Click {aiOpsLink} to enable client load balancing AIOps recommendation.</li>'} values={{ ...htmlValues, aiOpsLink }}/>
   const clientLoadBalanceOff = <FormattedMessage defaultMessage={'<li>Increase AP density to distribute the client load.</li>'} values={htmlValues}/>
   const highSSIDCountText = <FormattedMessage defaultMessage={'<li>There are currently an average of {ssidCountPerRadioSlice} SSIDs/WLANs being broadcasted per AP. Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less. Enabling Airtime Decongestion would be recommended as well.</li>'} values={{ ...htmlValues, ssidCountPerRadioSlice }}/>
   const enableAirtimeDecongestion = <FormattedMessage defaultMessage={'<li>Enable Airtime Decongestion.</li>'} values={htmlValues}/>
-  const crrmRaisedText = <FormattedMessage defaultMessage={'<li>Apply the AI-Driven RRM recommendation.</li>'} values={htmlValues}/>
-  const channelFlyEnabled = <FormattedMessage defaultMessage={'<li>Apply the AI-Driven RRM recommendation. Review the channel planning, AP density and deployment.</li>'} values={htmlValues}/>
+  const crrmRaisedText = <FormattedMessage defaultMessage={'<li>Click {crrmLink} to apply the AI-Driven RRM recommendation.</li>'} values={{ ...htmlValues, crrmLink }}/>
+  const channelFlyEnabled = <FormattedMessage defaultMessage={'<li>Click {crrmLink} to apply the AI-Driven RRM recommendation. Review the channel planning, AP density and deployment.</li>'} values={{ ...htmlValues, crrmLink }}/>
   const channelFlyDisabled = <FormattedMessage defaultMessage={'<li>Enable ChannelFly for the Zone.</li>'} values={htmlValues}/>
   const highLegacyCount = <FormattedMessage defaultMessage={'<li>Remove legacy devices or upgrade them. If possible, enable OFDM-only mode on WLANs.</li>'} values={htmlValues}/>
 
@@ -263,9 +270,10 @@ export const getAirtimeTxRootCauses = (checks: (AirtimeTxChecks)[]) => {
 export const getAirtimeTxRecommendations = (checks: (AirtimeTxChecks)[], params: AirtimeParams) => {
   const checkTrue = checkTrueParams(checks)
   const allFalse = checkTrue.length === 0
-  const ssidCountPerRadioSlice = params.ssidCountPerRadioSlice
+  const { ssidCountPerRadioSlice, recommendationId } = params
+  const link = <TenantLink to={`/recommendations/aiOps/${recommendationId}`}>here</TenantLink>
 
-  const clientLoadBalanceOn = <FormattedMessage defaultMessage={'<li>Enable client load balancing AIOps recommendation.</li>'} values={htmlValues}/>
+  const clientLoadBalanceOn = <FormattedMessage defaultMessage={'<li>Click {link} to enable client load balancing AIOps recommendation.</li>'} values={{ ...htmlValues, link }}/>
   const clientLoadBalanceOff = <FormattedMessage defaultMessage={'<li>Increase AP density to distribute the client load.</li>'} values={htmlValues}/>
   const highSSIDCountText = <FormattedMessage defaultMessage={'<li>There are currently an average of {ssidCountPerRadioSlice} SSIDs/WLANs being broadcasted per AP. Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less. Enabling Airtime Decongestion would be recommended as well.</li>'} values={{ ...htmlValues, ssidCountPerRadioSlice }}/>
   const enableAirtimeDecongestion = <FormattedMessage defaultMessage={'<li>Enable Airtime Decongestion.</li>'} values={htmlValues}/>
