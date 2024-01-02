@@ -423,7 +423,7 @@ describe('Recommendation services', () => {
       { wrapper: Provider }
     )
     act(() => {
-      result.current[0]({ code: 'test', path: idPath, preferences: { fullOptimization: false } })
+      result.current[0]({ path: idPath, preferences: { fullOptimization: false } })
     })
     await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
     expect(result.current[1].data)

@@ -125,7 +125,6 @@ interface ScheduleResponse {
 }
 
 interface PreferencePayload {
-  code: string
   path: NetworkPath
   preferences: {
     fullOptimization: boolean
@@ -506,29 +505,13 @@ export const api = recommendationApi.injectEndpoints({
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }]
     }),
     setPreference: build.mutation<PreferenceResponse, PreferencePayload>({
-      query: (payload) => ({
+      query: (variables) => ({
+        variables,
         document: gql`
-          mutation SetPreference(
-            $code: String,
-            $path: [HierarchyNodeInput],
-            $preferences: JSON
-          ) {
-            setPreference(
-              code: $code,
-              path: $path,
-              preferences: $preferences
-            ) {
-              success
-              errorMsg
-              errorCode
-            }
+          mutation SetPreference($path: [HierarchyNodeInput], $preferences: JSON) {
+            setPreference(path: $path, preferences: $preferences) { success errorMsg errorCode }
           }
-        `,
-        variables: {
-          code: payload.code,
-          path: payload.path,
-          preferences: payload.preferences
-        }
+        `
       }),
       invalidatesTags: [
         { type: 'Monitoring', id: 'RECOMMENDATION_LIST' },
