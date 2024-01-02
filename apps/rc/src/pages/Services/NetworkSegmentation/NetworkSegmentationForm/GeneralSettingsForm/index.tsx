@@ -10,9 +10,9 @@ import { useVenuesListQuery }                            from '@acx-ui/rc/servic
 import { NetworkSegmentationGroupFormData } from '..'
 import * as UI                              from '../styledComponents'
 
-import { PersonalIdentityDrawer }       from './PersonalIdentityDrawer'
-import { PropertyManagementInfo }       from './PropertyManagementInfo'
-import { AlertCheckMarkIcon, Sub5Bold } from './styledComponents'
+import { PersonalIdentityGuildlinesDrawer } from './PersonalIdentityGuildlinesDrawer'
+import { PropertyManagementInfo }           from './PropertyManagementInfo'
+import { AlertCheckMarkIcon, Sub5Bold }     from './styledComponents'
 
 interface GeneralSettingsFormProps {
   editMode?: boolean
@@ -162,7 +162,7 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
           </Row>
         }
       </Col>
-      <PersonalIdentityDrawer open={openDrawer}
+      <PersonalIdentityGuildlinesDrawer open={openDrawer}
         onClose={()=>setOpenDrawer(false)}
         venueInfo={venueMap[venueId]} />
     </Row>

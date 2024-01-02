@@ -39,8 +39,8 @@ jest.mock('antd', () => {
   return { ...components, Select }
 })
 
-jest.mock('./PersonalIdentityDrawer', () => ({
-  PersonalIdentityDrawer: () => <div data-testid='PersonalIdentityDrawer' />
+jest.mock('./PersonalIdentityGuildlinesDrawer', () => ({
+  PersonalIdentityGuildlinesDrawer: () => <div data-testid='PersonalIdentityGuildlinesDrawer' />
 }))
 jest.mock('./PropertyManagementInfo', () => ({
   PropertyManagementInfo: () => <div data-testid='PropertyManagementInfo' />
@@ -76,7 +76,7 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
       { route: { params, path: createNsgPath } })
     expect(await screen.findByRole('textbox', { name: 'Service Name' })).toBeVisible()
     expect(await screen.findByRole('combobox', { name: 'Venue with the property management enabled' })).toBeVisible()
-    expect(await screen.findByTestId('PersonalIdentityDrawer')).toBeVisible()
+    expect(await screen.findByTestId('PersonalIdentityGuildlinesDrawer')).toBeVisible()
   })
 
   it('Step1 - Shuould show property config when the venue has been selected', async () => {

@@ -8,7 +8,7 @@ import { PersonalIdentityDiagram } from './PersonalIdentityDiagram'
 import * as UI                     from './styledComponents'
 
 
-export function PersonalIdentityDrawer (props: {
+export function PersonalIdentityGuildlinesDrawer (props: {
   open: boolean;
   onClose?: () => void;
   venueInfo: {
