@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { message } from 'antd'
 
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { showToast } from '@acx-ui/components'
 import {
   showTxToast,
   ToastMessage,
@@ -11,7 +11,6 @@ import {
   CountdownNode
 } from '@acx-ui/rc/utils'
 
-import { showToast } from '../../index'
 
 import { mockdata } from './mockData'
 
