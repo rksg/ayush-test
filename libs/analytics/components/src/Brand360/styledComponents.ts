@@ -30,8 +30,9 @@ export const ListWrapper = styled.div<{ $showCursor: boolean }>`
   justify-content: space-between;
   cursor: ${props => props.$showCursor
     ? 'pointer'
-    : 'none'};
+    : 'default'};
   white-space: nowrap;
+  min-height: 48px;
 `
 
 export const HighlightedIcon = styled.div<{ $highlight?: boolean }>`

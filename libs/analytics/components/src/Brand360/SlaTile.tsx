@@ -129,7 +129,11 @@ const TopElementsSwitcher = ({ data, chartKey }:
   return <UI.ListWrapper
     $showCursor={enableSort}
     onClick={
-      (e) => enableSort ? setIsAsc(asc => !asc) : e.preventDefault
+      () => {
+        if (enableSort) {
+          setIsAsc(asc => !asc)
+        }
+      }
     }>
     <div>
       {slice.map(([key, val, ind]) => <li key={key}>{ind}. {key} ({formatter(val)})</li>)}

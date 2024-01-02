@@ -41,8 +41,7 @@ export interface TransformedMap {
 
 const calcSLA = (sla: SLARecord) => (sla[1] !== 0 ? sla[0] / sla[1] : 0)
 
-const calGuestExp = (cS: number, ttc: number, cT: number) =>
-  mean([cS, ttc, cT])
+const calGuestExp = (cS: number, ttc: number, cT: number) => mean([cS, ttc, cT])
 export const transformToLspView = (properties: Response[]): Lsp[] => {
   const lsps = groupBy(properties, (p) => p.lsp)
   return Object.entries(lsps).map(([lsp, properties]) => {
@@ -158,7 +157,6 @@ export const transformLookupAndMappingData = (mappingData : TableResult<MspEc>) 
     }
     return newObj
   }, {} as TransformedMap)
-
 }
 
 export const transformVenuesData = (

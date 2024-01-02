@@ -29,7 +29,7 @@ import { SlaTile }      from './SlaTile'
 import { BrandTable }   from './Table'
 import { useSliceType } from './useSliceType'
 
-const payload = {
+const rcApiPayload = {
   searchString: '',
   filters: { tenantType: ['MSP_INTEGRATOR', 'MSP_REC'] },
   fields: ['id', 'name', 'tenantType', 'status'],
@@ -59,7 +59,7 @@ export function Brand360 () {
     ssidRegex: settings['brand-ssid-compliance-matcher']!
   }
   const mspPropertiesData = useMspCustomerListDropdownQuery(
-    { params: { tenantId: getJwtTokenPayload().tenantId },payload } )
+    { params: { tenantId: getJwtTokenPayload().tenantId },rcApiPayload } )
   const lookupAndMappingData = mspPropertiesData.data
     ? transformLookupAndMappingData(mspPropertiesData.data)
     : {}

@@ -155,4 +155,17 @@ describe('SlaTile', () => {
     const recentItems = await screen.findAllByRole('listitem')
     expect(recentItems[0].isEqualNode(prevItems[0])).toBeTruthy()
   })
+  it('should handle empty tableData', async () => {
+    const props = {
+      chartKey: 'incident' as const,
+      ...baseProps,
+      tableData: [],
+      sliceType: 'property' as const
+    }
+    render(<SlaTile {...props}/>, { wrapper: Provider })
+    expect(await screen.findByText('# of Properties with P1 Incident'))
+      .toBeVisible()
+    const downIcon = screen.queryByTestId('DownArrow')
+    expect(downIcon).toBeNull()
+  })
 })
