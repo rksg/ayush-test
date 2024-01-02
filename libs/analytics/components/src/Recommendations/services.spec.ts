@@ -204,7 +204,8 @@ describe('Recommendation services', () => {
         crrmOptimizedState: {
           ...crrmStates.optimized,
           text: 'Optimized'
-        }
+        },
+        toggles: { preferences: false }
       },
       {
         ...recommendationListResult.recommendations[1],
@@ -223,7 +224,8 @@ describe('Recommendation services', () => {
         crrmOptimizedState: {
           ...crrmStates.nonOptimized,
           text: 'Non-Optimized'
-        }
+        },
+        toggles: { preferences: false }
       },
       {
         ...recommendationListResult.recommendations[2],
@@ -333,7 +335,8 @@ describe('Recommendation services', () => {
         crrmOptimizedState: {
           ...crrmStates.nonOptimized,
           text: 'Non-Optimized'
-        }
+        },
+        toggles: { preferences: true }
       }
     ]
     expect(error).toBe(undefined)

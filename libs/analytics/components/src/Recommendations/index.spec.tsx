@@ -112,12 +112,12 @@ describe('RecommendationTabContent', () => {
       // eslint-disable-next-line max-len
       name: /non-optimized 06\/16\/2023 06:05 optimal channel plan found for 2\.4 ghz radio zone-1 new/i
     })
-    const nonOptimizedSwitch = within(row).getByRole('switch')
-    await userEvent.click(nonOptimizedSwitch)
+    await userEvent.click(within(row).getByRole('switch'))
     const text = await screen.findAllByText('Optimized')
     expect(text).toHaveLength(1)
     expect(screen.getByText('Venue')).toBeVisible()
     expect(useDateRange).toBeCalled()
+    expect(mockedSetPreference).toBeCalled()
   })
 
   it('should render crrm table for RA', async () => {

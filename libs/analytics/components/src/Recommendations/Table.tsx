@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect } from 'react'
 
 import { Checkbox, Switch }       from 'antd'
+import _                          from 'lodash'
 import { useIntl, defineMessage } from 'react-intl'
 
 import {
@@ -226,27 +227,25 @@ export function RecommendationTable (
       width: 180,
       fixed: 'right',
       tooltip: optimizationTooltipText,
-      render: (_, value) => {
-        const { code, statusEnum, idPath } = value
-        // eslint-disable-next-line max-len
-        const appliedStates = ['applyscheduled', 'applyscheduleinprogress', 'applied', 'revertscheduled', 'revertscheduleinprogress', 'revertfailed', 'applywarning']
-        const disabled = appliedStates.includes(statusEnum) ? true : false
-        const isOptimized = value.preferences? value.preferences.fullOptimization : true
-        const tooltipText = disabled
+      render: (_value, record) => {
+        const preferences = _.get(record, 'preferences') || { fullOptimization: true }
+        const tooltipText = record.toggles?.preferences
           ? $t({ defaultMessage: `
-            Optimization option cannot be changed while the recommendation is in Applied status.
-            Please revert the recommendation back to the New status before changing
-            the optimization option.
+            Optimization option cannot be changed while recommendation(s) of the Zone is in Applied
+            status. Please revert all to New status before changing the optimization option.
           ` })
           : ''
         return <Tooltip placement='top' title={tooltipText}>
           <Switch
             defaultChecked
-            checked={isOptimized}
-            disabled={disabled}
+            checked={preferences.fullOptimization}
+            disabled={record.toggles?.preferences === false}
             onChange={() => {
-              const updatedPreference = { fullOptimization: !isOptimized }
-              setPreference({ code, path: idPath, preferences: updatedPreference })
+              const updatedPreference = {
+                ...preferences,
+                fullOptimization: !preferences.fullOptimization
+              }
+              setPreference({ path: record.idPath, preferences: updatedPreference })
             }}
           />
         </Tooltip>

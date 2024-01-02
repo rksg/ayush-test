@@ -86,6 +86,7 @@ export type Recommendation = {
     fullOptimization: boolean
   }
   statusTrail: StatusTrail
+  toggles?: { preferences: boolean }
 }
 
 export type RecommendationListItem = Recommendation & {
@@ -375,7 +376,7 @@ export const api = recommendationApi.injectEndpoints({
       }),
       transformResponse: (response: Response<Recommendation>) => {
         const { $t } = getIntl()
-        return response.recommendations.map(recommendation => {
+        const items = response.recommendations.map(recommendation => {
           const {
             id, path, sliceValue, sliceType, code, status, metadata, updatedAt, preferences
           } = recommendation
@@ -388,6 +389,7 @@ export const api = recommendationApi.injectEndpoints({
           return {
             ...recommendation,
             id: newId,
+            pathKey: JSON.stringify(recommendation.idPath),
             scope: formattedPath(path, sliceValue),
             type: nodeTypes(sliceType as NodeType),
             priority: {
@@ -395,7 +397,7 @@ export const api = recommendationApi.injectEndpoints({
               text: $t(codes[getCode].priority.label)
             },
             category: $t(codes[getCode].category),
-            summary: isFullyOptimized
+            summary: isFullyOptimized || code === 'unknown'
               ? $t(codes[getCode].summary)
               : $t(codes[getCode].partialOptimizedSummary!),
             status: $t(states[statusEnum].text),
@@ -408,6 +410,17 @@ export const api = recommendationApi.injectEndpoints({
               }
             })
           }
+        })
+
+        // eslint-disable-next-line max-len
+        const appliedStates = ['applyscheduled', 'applyscheduleinprogress', 'applied', 'revertscheduled', 'revertscheduleinprogress', 'revertfailed', 'applywarning']
+        const grouped = _.groupBy(items, 'pathKey')
+
+        return items.map(({ pathKey, ...item }) => {
+          if (!item.code.startsWith('c-crrm')) return item
+
+          const preferences = grouped[pathKey].every(v => !appliedStates.includes(v.statusEnum))
+          return { ...item, toggles: { preferences } }
         })
       },
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
