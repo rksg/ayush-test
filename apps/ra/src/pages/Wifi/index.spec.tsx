@@ -7,7 +7,6 @@ import {
   mockGraphqlQuery,
   render,
   screen,
-  waitFor,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
@@ -22,7 +21,8 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('@acx-ui/analytics/components', () => ({
   ...jest.requireActual('@acx-ui/analytics/components'),
-  NetworkFilter: () => <div data-testid='NetworkFilter' />
+  NetworkFilter: () => <div data-testid='NetworkFilter' />,
+  SANetworkFilter: () => <div data-testid='SANetworkFilter' />
 }))
 
 jest.mock('@acx-ui/reports/components', () => ({
@@ -100,9 +100,9 @@ describe('WiFi Page', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<WiFiPage tab={WifiTabsEnum.AP_REPORT}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    userEvent.click(await screen.findByText('Airtime Utilization Report'))
-    await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
+    await userEvent.click(await screen.findByText('Airtime Utilization Report'))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: '/ai/devices/wifi/reports/airtime', hash: '', search: ''
-    }))
+    })
   })
 })
