@@ -102,12 +102,6 @@ export const NetworkImpact: React.FC<NetworkImpactProps> = ({ charts, incident }
                   tooltipFormat={config.tooltipFormat}
                   dataFormatter={config.dataFomatter || formatter('countFormat')}
                   data={transformData(config, chartData)}
-<<<<<<< HEAD
-=======
-                  value={query === NetworkImpactQueryTypes.Distribution
-                    ? (config.valueFormatter || formatter('percentFormat'))(chartData.summary)
-                    : undefined}
->>>>>>> origin/master
                 />
               }}
             </AutoSizer>
