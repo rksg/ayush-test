@@ -20,44 +20,33 @@ import {
   HeaderContext,
   RegionButton
 } from '@acx-ui/main/components'
-import {
-  useMspEntitlementListQuery,
-  useGetTenantDetailQuery
-} from '@acx-ui/msp/services'
 import { CloudMessageBanner }                                                       from '@acx-ui/rc/components'
 import { ConfigTemplateContext }                                                    from '@acx-ui/rc/utils'
 import { Outlet, useParams, useNavigate, useTenantLink, TenantNavLink, TenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                                from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                                          from '@acx-ui/user'
-import { AccountType, PverName, getJwtTokenPayload, isDelegationMode }              from '@acx-ui/utils'
+import { PverName, getJwtTokenPayload, isDelegationMode }                           from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 import * as UI           from './styledComponents'
 
 function Layout () {
   const { $t } = useIntl()
-  const { tenantId } = useParams()
-  const [tenantType, setTenantType] = useState('')
-  const [hasLicense, setHasLicense] = useState(false)
-  const [isDogfood, setDogfood] = useState(false)
   const [supportStatus,setSupportStatus] = useState('')
   const basePath = useTenantLink('/users/guestsManager')
   const dpskBasePath = useTenantLink('/users/dpskAdmin')
   const navigate = useNavigate()
   const params = useParams()
   const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
-
-  const { data } = useGetTenantDetailQuery({ params: { tenantId } })
   const { data: userProfile } = useUserProfileContext()
   const companyName = userProfile?.companyName
+
   const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
   const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
-  const { data: mspEntitlement } = useMspEntitlementListQuery({ params })
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
-  const nonVarDelegation = useIsSplitOn(Features.ANY_3RDPARTY_INVITE_TOGGLE)
 
   const showSupportHomeButton = isSupportToMspDashboardAllowed && isDelegationMode()
   const isBackToRC = (PverName.ACX === getJwtTokenPayload().pver ||
@@ -78,26 +67,10 @@ function Layout () {
     }
   }, [isGuestManager, isDPSKAdmin, params['*']])
 
-  useEffect(() => {
-    if (data && userProfile) {
-      const isRecDelegation = nonVarDelegation && data.tenantType === AccountType.REC
-      if (!isSupportToMspDashboardAllowed &&
-         (userProfile?.support || userProfile?.dogfood || isRecDelegation)) {
-        setTenantType('SUPPORT')
-      } else {
-        setTenantType(data.tenantType)
-      }
-      setDogfood((userProfile?.dogfood && !userProfile?.support) || isRecDelegation)
-    }
-    if (mspEntitlement?.length && mspEntitlement?.length > 0) {
-      setHasLicense(true)
-    }
-  }, [data, userProfile, mspEntitlement])
-
   return (
     <LayoutComponent
       logo={<TenantNavLink to={indexPath} tenantType={'v'} children={<Logo />} />}
-      menuConfig={useMenuConfig(tenantType, hasLicense, isDogfood)}
+      menuConfig={useMenuConfig()}
       content={
         <>
           <CloudMessageBanner />
