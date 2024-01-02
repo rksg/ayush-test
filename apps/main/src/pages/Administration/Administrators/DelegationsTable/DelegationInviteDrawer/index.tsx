@@ -11,7 +11,7 @@ import {
   useInviteDelegationMutation
 } from '@acx-ui/rc/services'
 import {
-  emailRegExp,
+  sfdcEmailRegExp,
   CommonErrorsResult,
   CatchErrorDetails
 } from '@acx-ui/rc/utils'
@@ -147,7 +147,7 @@ const DelegationInviteDrawer = (props: DelegationInviteDrawerProps) =>{
           name='email'
           rules={[
             { required: true },
-            { validator: (_, value) => emailRegExp(value) }
+            { validator: (_, value) => sfdcEmailRegExp(value) }
           ]}
         >
           <Input placeholder={$t({ defaultMessage: 'Enter email address' })} />
