@@ -7,36 +7,33 @@ import {
 } from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 
-import { SpaceWrapper } from '@acx-ui/rc/components'
+import { SpaceWrapper }             from '@acx-ui/rc/components'
+import { TenantAuthenticationType } from '@acx-ui/rc/utils'
 
 interface AuthTypeSelectorProps {
   ssoConfigured: boolean
   setSelected: (selectedAuth: string) => void
 }
 
-export enum AuthTypeEnum {
-  saml = 'saml',
-  google = 'google'
-}
-
-export const GetAuthTypeString = (type: AuthTypeEnum) => {
+export const GetAuthTypeString = (type: TenantAuthenticationType) => {
   switch (type) {
-    case AuthTypeEnum.saml:
+    case TenantAuthenticationType.saml:
       return defineMessage({ defaultMessage: 'SAML' })
-    case AuthTypeEnum.google:
+    case TenantAuthenticationType.google_workspace:
       return defineMessage({ defaultMessage: 'Google Workspace' })
   }
+  return defineMessage({ defaultMessage: 'SAML' })
 }
 
 export const getAuthTypes = () => {
   return [
     {
-      label: GetAuthTypeString(AuthTypeEnum.saml),
-      value: AuthTypeEnum.saml
+      label: GetAuthTypeString(TenantAuthenticationType.saml),
+      value: TenantAuthenticationType.saml
     },
     {
-      label: GetAuthTypeString(AuthTypeEnum.google),
-      value: AuthTypeEnum.google
+      label: GetAuthTypeString(TenantAuthenticationType.google_workspace),
+      value: TenantAuthenticationType.google_workspace
     }]
 }
 
@@ -58,7 +55,7 @@ const AuthTypeSelector = (props: AuthTypeSelectorProps) => {
     <Form.Item
       name='authType'
       label={$t({ defaultMessage: 'Auth Type' })}
-      initialValue={AuthTypeEnum.saml}
+      initialValue={TenantAuthenticationType.saml}
     >
       <Radio.Group
         style={{ width: '100%' }}
@@ -68,7 +65,7 @@ const AuthTypeSelector = (props: AuthTypeSelectorProps) => {
           {authTypesList.map((item) => {
             return (
               <React.Fragment key={item.value}>
-                <Radio disabled={!ssoConfigured && item.value === AuthTypeEnum.saml}
+                <Radio disabled={!ssoConfigured && item.value === TenantAuthenticationType.saml}
                   value={item.value}>
                   {item.label}
                 </Radio>
@@ -78,7 +75,6 @@ const AuthTypeSelector = (props: AuthTypeSelectorProps) => {
       </Radio.Group>
     </Form.Item>
   </Form>
-//   )
 }
 
 export default AuthTypeSelector

@@ -53,7 +53,8 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
   }
 
   const ssoData = tenantAuthenticationData?.filter(n =>
-    n.authenticationType === TenantAuthenticationType.saml)
+    n.authenticationType === TenantAuthenticationType.saml ||
+    n.authenticationType === TenantAuthenticationType.google_workspace)
   useEffect(() => {
     if (ssoData && ssoData.length > 0) {
       setSsoConfigured(true)
@@ -135,6 +136,16 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
 
         {hasSsoConfigured && <Col style={{ width: '296px', paddingLeft: 0 }}>
           <Card type='solid-bg' >
+            {isGoogleWorkspaceEnabled && <div>
+              <Form.Item
+                colon={false}
+                label={$t({ defaultMessage: 'Type' })} />
+              <h3 style={{ marginTop: '-15px' }}>
+                {authenticationData?.authenticationType === TenantAuthenticationType.saml
+                  ? $t({ defaultMessage: 'SAML' })
+                  : $t({ defaultMessage: 'Google Workspace' })
+                }</h3>
+            </div>}
             {isGroupBasedLoginEnabled && <div>
               <Form.Item
                 colon={false}

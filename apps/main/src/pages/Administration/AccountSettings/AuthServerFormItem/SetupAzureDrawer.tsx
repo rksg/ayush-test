@@ -35,8 +35,8 @@ import {
 
 import { reloadAuthTable } from '../AppTokenFormItem'
 
-import AuthTypeSelector,  { AuthTypeEnum } from './authTypeSelector'
-import * as UI                             from './styledComponents'
+import AuthTypeSelector from './authTypeSelector'
+import * as UI          from './styledComponents'
 
 type AcceptableType = 'xml'
 
@@ -113,6 +113,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
       // TODO: setMetadata() to contents of file only if we want to see file contents in metadata in editmode
       // fetchMetaData()
       form.setFieldValue('domains', editData?.domains?.toString())
+      setSelectedAuth(editData?.authenticationType || TenantAuthenticationType.saml)
     }
   }, [form, props.visible])
 
@@ -235,6 +236,42 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     }
   }
 
+  const okHandlerGoogle = async () => {
+    try {
+      const allowedDomains =
+        isGroupBasedLoginEnabled ? form.getFieldValue('domains').split(',') : undefined
+      const clientId = form.getFieldValue('clientId')
+      const secret = form.getFieldValue('secret')
+
+      if(isEditMode) {
+        const ssoEditData: TenantAuthentications = {
+          name: 'googleWorkspace',
+          authenticationType: TenantAuthenticationType.google_workspace,
+          clientSecret: secret,
+          domains: allowedDomains
+        }
+        await updateSso({ params: { authenticationId: editData?.id },
+          payload: ssoEditData }).unwrap()
+        reloadAuthTable(2)
+      } else {
+        const ssoData: TenantAuthentications = {
+          name: 'googleWorkspace',
+          authenticationType: TenantAuthenticationType.google_workspace,
+          clientID: clientId,
+          clientSecret: secret,
+          domains: allowedDomains
+        }
+        await addSso({ payload: ssoData }).unwrap()
+        reloadAuthTable(2)
+      }
+      setVisible(false)
+      setEditMode(true)
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+      setVisible(false)
+    }
+  }
+
   const domainsValidator = async (value: string) => {
     // eslint-disable-next-line max-len
     const re = new RegExp(/(^((22[0-3]|2[0-1][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9]?)\.)((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){2}((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))$)|(^(\b((?=[A-Za-z0-9-]{1,63}\.)(xn--)?[A-Za-z0-9]+(-[A-Za-z0-9]+)*\.)+[A-Za-z]{2,63}\b)$)/)
@@ -266,7 +303,8 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
       <Button
         disabled={!formData && !submittable}
         loading={isLoading}
-        onClick={() => okHandler()}
+        onClick={() =>
+          selectedAuth === TenantAuthenticationType.saml ? okHandler() : okHandlerGoogle()}
         type={'primary'}
       >
         {$t({ defaultMessage: 'Apply' })}
@@ -352,19 +390,25 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
   const GoogleContent = () => {
     return <Form style={{ marginTop: 10 }} layout='vertical' form={form} >
       <Form.Item
-        name='allowedDomains'
+        name='domains'
         label={$t({ defaultMessage: 'Allowed Domains' })}
-        initialValue={editData?.name || ''}
         rules={[
-          { required: true },
-          { min: 2 },
-          { max: 64 }
+          { type: 'string', required: true },
+          { min: 2, transform: (value) => value.trim() },
+          { max: 64, transform: (value) => value.trim() },
+          { validator: (_, value) => domainsValidator(value) }
+
         ]}
-        children={<Input />}
+        children={
+          <Input
+            placeholder={$t({ defaultMessage: 'Enter domains separated by comma' })}
+          />
+        }
       />
       <Form.Item
         name='clientId'
         label={$t({ defaultMessage: 'Client ID' })}
+        initialValue={editData?.clientID || ''}
         rules={[
           { required: true },
           { min: 2 },
@@ -375,6 +419,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
       <Form.Item
         name='secret'
         label={$t({ defaultMessage: 'Client secret' })}
+        initialValue={editData?.clientSecret || ''}
         rules={[
           { required: true },
           { validator: (_, value) =>
@@ -419,12 +464,27 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
       </Button>
     </div>} >
 
-    {isGroupBasedLoginEnabled && isGoogleWorkspaceEnabled && <AuthTypeSelector
+    {isEditMode && <Form layout='vertical'>
+      <Form.Item
+        name='authType'
+        label={$t({ defaultMessage: 'Auth Type' })}
+        children={
+          <label>
+            {editData?.authenticationType === TenantAuthenticationType.saml
+              ? $t({ defaultMessage: 'SAML' })
+              : $t({ defaultMessage: 'Google Workspace' })}
+          </label>
+        }
+      /></Form>}
+
+    {isGroupBasedLoginEnabled && isGoogleWorkspaceEnabled && !isEditMode &&
+    <AuthTypeSelector
       ssoConfigured={true}
       setSelected={setSelectedAuth}
     />}
 
-    {selectedAuth === AuthTypeEnum.google ? <GoogleContent /> : <SamlContent />}
+    {selectedAuth === TenantAuthenticationType.google_workspace
+      ? <GoogleContent /> : <SamlContent />}
 
   </UI.ImportFileDrawer>)
 }
