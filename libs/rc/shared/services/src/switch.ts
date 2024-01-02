@@ -116,7 +116,6 @@ export const switchApi = baseSwitchApi.injectEndpoints({
             }
             return false
           })
-          list.totalCount = list.data.length
           return list
         }
 
