@@ -25,6 +25,7 @@ import {
   useMspCustomerListQuery
 } from '@acx-ui/msp/services'
 import {
+  MSPUtils,
   MspEc
 } from '@acx-ui/msp/utils'
 import { useTableQuery } from '@acx-ui/rc/utils'
@@ -47,6 +48,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
   const [resetField, setResetField] = useState(false)
   const [form] = Form.useForm()
   const techPartnerAssignEcsEnabled = useIsSplitOn(Features.TECH_PARTNER_ASSIGN_ECS)
+  const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
 
   const isSkip = tenantId === undefined
 
@@ -117,24 +119,33 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
       width: 200,
       sorter: true
     },
-    {
-      title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
-      dataIndex: 'wifiLicenses',
-      key: 'wifiLicenses',
-      align: 'center',
-      render: function (_, row) {
-        return row.wifiLicenses ? row.wifiLicenses : 0
+    ...(isDeviceAgnosticEnabled ? [
+      {
+        title: $t({ defaultMessage: 'Devices Subscriptions' }),
+        dataIndex: 'apswLicense',
+        key: 'apswLicense',
+        sorter: true,
+        render: function (_data: React.ReactNode, row: MspEc) {
+          return MSPUtils().transformDeviceEntitlement(row.entitlements)
+        }
       }
-    },
-    {
-      title: $t({ defaultMessage: 'Switch Licenses' }),
-      dataIndex: 'switchLicenses',
-      key: 'switchLicenses',
-      align: 'center',
-      render: function (_, row) {
-        return row.switchLicenses ? row.switchLicenses : 0
-      }
-    }
+    ] : [
+      {
+        title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
+        dataIndex: 'wifiLicenses',
+        key: 'wifiLicenses',
+        render: function (_: React.ReactNode, row: MspEc) {
+          return row.wifiLicenses ? row.wifiLicenses : 0
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Switch Licenses' }),
+        dataIndex: 'switchLicenses',
+        key: 'switchLicenses',
+        render: function (_: React.ReactNode, row: MspEc) {
+          return row.switchLicenses ? row.switchLicenses : 0
+        }
+      }])
   ]
 
   const defaultPayload = {

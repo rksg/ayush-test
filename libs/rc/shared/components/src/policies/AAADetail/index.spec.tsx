@@ -10,7 +10,7 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import AAAPolicyDetail from '.'
+import { AAAPolicyDetail } from '.'
 
 const list = {
   fields: [

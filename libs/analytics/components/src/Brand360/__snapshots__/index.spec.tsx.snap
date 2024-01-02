@@ -156,7 +156,7 @@ exports[`Brand360 resets SLAs 1`] = `
             <div
               data-testid="brand360Tile"
             >
-              {"chartKey":"incident","sliceType":"property","chartData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"prevData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"currData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]}}
+              {"chartKey":"incident","sliceType":"property","chartData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"prevData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"currData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"settings":{"brand-ssid-compliance-matcher":"^[a-zA-Z0-9]{5}_GUEST$","sla-p1-incidents-count":"1","sla-guest-experience":"2","sla-brand-ssid-compliance":"3"}}
             </div>
           </div>
         </div>
@@ -174,7 +174,7 @@ exports[`Brand360 resets SLAs 1`] = `
             <div
               data-testid="brand360Tile"
             >
-              {"chartKey":"experience","sliceType":"property","chartData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"prevData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"currData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]}}
+              {"chartKey":"experience","sliceType":"property","chartData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"prevData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"currData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"settings":{"brand-ssid-compliance-matcher":"^[a-zA-Z0-9]{5}_GUEST$","sla-p1-incidents-count":"1","sla-guest-experience":"2","sla-brand-ssid-compliance":"3"}}
             </div>
           </div>
         </div>
@@ -192,7 +192,7 @@ exports[`Brand360 resets SLAs 1`] = `
             <div
               data-testid="brand360Tile"
             >
-              {"chartKey":"compliance","sliceType":"property","chartData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"prevData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"currData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]}}
+              {"chartKey":"compliance","sliceType":"property","chartData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"prevData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"currData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"settings":{"brand-ssid-compliance-matcher":"^[a-zA-Z0-9]{5}_GUEST$","sla-p1-incidents-count":"1","sla-guest-experience":"2","sla-brand-ssid-compliance":"3"}}
             </div>
           </div>
         </div>
@@ -205,7 +205,7 @@ exports[`Brand360 resets SLAs 1`] = `
           class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
           <div
-            class="styledComponents__SliderWrapper-sc-i3rlsn-10 gQMkjl"
+            class="styledComponents__SliderWrapper-sc-i3rlsn-12 eawbTj"
           >
             <div
               class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
@@ -253,7 +253,7 @@ exports[`Brand360 resets SLAs 1`] = `
                     class="ant-card-body"
                   >
                     <div
-                      class="styledComponents__SliderLabel-sc-i3rlsn-0 lprNRR"
+                      class="styledComponents__SliderLabel-sc-i3rlsn-2 cuGoCf"
                     >
                       P1 Incidents
                     </div>
@@ -307,7 +307,7 @@ exports[`Brand360 resets SLAs 1`] = `
                       </div>
                     </div>
                     <div
-                      class="styledComponents__SliderLabel-sc-i3rlsn-0 lprNRR"
+                      class="styledComponents__SliderLabel-sc-i3rlsn-2 cuGoCf"
                     >
                       Guest Experience
                     </div>
@@ -361,7 +361,7 @@ exports[`Brand360 resets SLAs 1`] = `
                       </div>
                     </div>
                     <div
-                      class="styledComponents__SliderLabel-sc-i3rlsn-0 lprNRR"
+                      class="styledComponents__SliderLabel-sc-i3rlsn-2 cuGoCf"
                     >
                       SSID Compliance
                     </div>
@@ -415,7 +415,7 @@ exports[`Brand360 resets SLAs 1`] = `
                       </div>
                     </div>
                     <div
-                      class="styledComponents__Buttons-sc-i3rlsn-1 fChEcA"
+                      class="styledComponents__Buttons-sc-i3rlsn-3 vQTsO"
                     >
                       <button
                         class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup"

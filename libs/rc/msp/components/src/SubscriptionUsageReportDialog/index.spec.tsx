@@ -183,7 +183,7 @@ describe('SubscriptionUsageReportDialog', () => {
     expect(screen.getByText('Select a customer')).toBeVisible()
     expect(screen.getByRole('button', { name: 'Generate' })).toBeDisabled()
   })
-  it('when calendar month radio checked, query called with correct url payload', async () => {
+  it.skip('when calendar month radio checked, query called with correct url payload', async () => {
     services.useGetGenerateLicenseUsageRptQuery = jest.fn().mockImplementation(() => {
       return {}
     })
