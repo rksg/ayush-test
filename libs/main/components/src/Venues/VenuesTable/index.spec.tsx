@@ -1,8 +1,8 @@
 import { rest } from 'msw'
 
-import { useIsTierAllowed }   from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider }           from '@acx-ui/store'
+import { useIsTierAllowed, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, WifiUrlsInfo }   from '@acx-ui/rc/utils'
+import { Provider }                       from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -14,7 +14,8 @@ import {
 
 
 import {
-  venuelist
+  venuelist,
+  venuesApCompatibilitiesData
 } from '../__tests__/fixtures'
 
 import { VenuesTable } from '.'
@@ -37,6 +38,10 @@ describe('Venues Table', () => {
       rest.post(
         CommonUrlsInfo.getVenueCityList.url,
         (req, res, ctx) => res(ctx.json([]))
+      ),
+      rest.post(
+        WifiUrlsInfo.getApCompatibilitiesVenue.url,
+        (req, res, ctx) => res(ctx.json(venuesApCompatibilitiesData))
       ),
       rest.delete(
         CommonUrlsInfo.deleteVenue.url,
@@ -157,5 +162,22 @@ describe('Venues Table', () => {
     expect(screen.getByRole('heading', {
       name: /venues \(0\)/i
     })).toBeTruthy()
+  })
+
+  it('should have ap compatibilies correct', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(
+      <Provider>
+        <VenuesTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/venues' }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const row = await screen.findByRole('row', { name: /My-Venue/i })
+    const icon = await within(row).findByTestId('InformationSolid')
+    expect(icon).toBeVisible()
   })
 })
