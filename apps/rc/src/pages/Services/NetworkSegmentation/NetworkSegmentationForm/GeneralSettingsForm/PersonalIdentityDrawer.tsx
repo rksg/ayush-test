@@ -1,52 +1,23 @@
 import { useIntl } from 'react-intl'
 
-import { Drawer, useStepFormContext } from '@acx-ui/components'
-import { useVenuesListQuery }         from '@acx-ui/rc/services'
-import { useParams }                  from '@acx-ui/react-router-dom'
+import { Drawer }    from '@acx-ui/components'
+import { useParams } from '@acx-ui/react-router-dom'
 
-import { NetworkSegmentationGroupFormData } from '..'
 
 import { PersonalIdentityDiagram } from './PersonalIdentityDiagram'
 import * as UI                     from './styledComponents'
-
-const venueOptionsDefaultPayload = {
-  fields: [
-    'name',
-    'id',
-    'switches'
-  ],
-  pageSize: 10000,
-  sortField: 'name',
-  sortOrder: 'ASC'
-}
 
 
 export function PersonalIdentityDrawer (props: {
   open: boolean;
   onClose?: () => void;
+  venueInfo: {
+    switchCount: number
+  }
 }) {
   const { $t } = useIntl()
   useParams()
   const { open, onClose = ()=>{} } = props
-
-  const { form: nsgForm } = useStepFormContext<NetworkSegmentationGroupFormData>()
-  const venueId = nsgForm.getFieldValue('venueId')
-
-  const {
-    venueMap = {} as { [key: string]: { switchCount: number } }
-  } = useVenuesListQuery(
-    { payload: venueOptionsDefaultPayload }, {
-      selectFromResult: ({ data, isLoading }) => {
-        return {
-          venueOptions: data?.data.map(item => ({ label: item.name, value: item.id })),
-          isVenueOptionsLoading: isLoading,
-          venueMap: data?.data.reduce((a, item) => ({
-            ...a,
-            [item.id]: { switchCount: item.switches ?? 0 }
-          }), {}) as { [key: string]: { switchCount: number } }
-        }
-      }
-    })
 
   return (
     <Drawer
@@ -107,7 +78,7 @@ export function PersonalIdentityDrawer (props: {
           <b>See how everything connects together:</b>
         </dl>
       </UI.List>
-      <PersonalIdentityDiagram venueInfo={venueMap[venueId]} />
+      <PersonalIdentityDiagram venueInfo={props.venueInfo} />
     </Drawer>
   )
 }

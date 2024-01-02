@@ -37,6 +37,7 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
   const venueId = Form.useWatch('venueId', form)
   const {
     venueOptions = [],
+    venueMap = {} as { [key: string]: { switchCount: number } },
     isVenueOptionsLoading
   } = useVenuesListQuery(
     { payload: venueOptionsDefaultPayload }, {
@@ -161,7 +162,9 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
           </Row>
         }
       </Col>
-      <PersonalIdentityDrawer open={openDrawer} onClose={()=>setOpenDrawer(false)} />
+      <PersonalIdentityDrawer open={openDrawer}
+        onClose={()=>setOpenDrawer(false)}
+        venueInfo={venueMap[venueId]} />
     </Row>
   )
 }
