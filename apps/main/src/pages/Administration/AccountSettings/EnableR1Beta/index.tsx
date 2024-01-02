@@ -2,11 +2,10 @@ import { useEffect, useState } from 'react'
 
 import { Col, Form, Row, Typography, Checkbox, Tooltip } from 'antd'
 import { useIntl }                                       from 'react-intl'
-import { useParams }                                     from 'react-router-dom'
 
 import { Loader, showActionModal }                                        from '@acx-ui/components'
 import { SpaceWrapper }                                                   from '@acx-ui/rc/components'
-import { BetaStatus, useGetBetaStatusQuery, useToggleBetaStatusMutation } from '@acx-ui/user'
+import { BetaStatus, useUserProfileContext, useToggleBetaStatusMutation } from '@acx-ui/user'
 import { userLogout }                                                     from '@acx-ui/utils'
 
 import { MessageMapping } from '../MessageMapping'
@@ -25,12 +24,11 @@ export interface EnableR1BetaProps {
 
 export function EnableR1Beta (props: EnableR1BetaProps) {
   const { $t } = useIntl()
-  const params = useParams()
-  const { data: betaStatus } = useGetBetaStatusQuery({ params })
+  const { betaEnabled } = useUserProfileContext()
   const { className, betaStatusData } = props
   const [showBetaTermsConditionDrawer, setBetaTermsConditionDrawer] = useState(false)
   const [showShowBetaFeaturesDrawer, setShowBetaFeaturesDrawer] = useState(false)
-  const [checked, setChecked] = useState(betaStatus?.enabled === 'true'?? false)
+  const [checked, setChecked] = useState(betaEnabled)
   const [toggleBetaStatus, { isLoading: isUpdating }] = useToggleBetaStatusMutation()
   const isDisabled = isUpdating
 

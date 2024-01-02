@@ -8,13 +8,13 @@ type Profile = {
   profile: UserProfile
   allowedOperations: string []
   accountTier?: string
-  betaStatus?: string
+  betaEnabled?: boolean
 }
 const userProfile: Profile = {
   profile: {} as UserProfile,
   allowedOperations: [],
   accountTier: '',
-  betaStatus: ''
+  betaEnabled: false
 }
 const SHOW_WITHOUT_RBAC_CHECK = 'SHOW_WITHOUT_RBAC_CHECK'
 
@@ -24,7 +24,7 @@ export const setUserProfile = (profile: Profile) => {
   userProfile.profile = profile.profile
   userProfile.allowedOperations = profile.allowedOperations
   userProfile.accountTier = profile.accountTier
-  userProfile.betaStatus = profile.betaStatus
+  userProfile.betaEnabled = profile.betaEnabled
 }
 
 export const getShowWithoutRbacCheckKey = (id:string) => {

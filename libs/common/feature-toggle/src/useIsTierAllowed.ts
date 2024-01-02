@@ -2,7 +2,7 @@ import { useDebugValue, useMemo } from 'react'
 
 import { useTreatments } from '@splitsoftware/splitio-react'
 
-import { getUserProfile, useUserProfileContext }            from '@acx-ui/user'
+import { useUserProfileContext }                            from '@acx-ui/user'
 import { AccountType, AccountVertical, getJwtTokenPayload } from '@acx-ui/utils'
 
 import { Features } from './features'
@@ -20,11 +20,9 @@ export const defaultConfig: Partial<Record<TierKey, string[]>> = {
 
 export function useFFList (): { featureList?: string[], betaList?: string[],
   alphaList?: string[] } {
-  const { accountTier, betaStatus } = getUserProfile()
+  const { data: userProfile, accountTier, betaEnabled } = useUserProfileContext()
   const jwtPayload = getJwtTokenPayload()
-  const betaEnabled = (betaStatus === 'true')? true : false
   const acxAccountTier = accountTier?? jwtPayload?.acx_account_tier
-  const { data: userProfile } = useUserProfileContext()
 
   const tenantType = (jwtPayload?.tenantType === AccountType.REC ||
     jwtPayload?.tenantType === AccountType.VAR)? AccountType.REC

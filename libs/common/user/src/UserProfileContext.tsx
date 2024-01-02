@@ -19,7 +19,7 @@ export interface UserProfileContextProps {
   hasAccess: typeof hasAccess
   isPrimeAdmin: () => boolean
   accountTier?: string
-  betaStatus?: string
+  betaEnabled?: boolean
 }
 
 const isPrimeAdmin = () => hasRoles(RolesEnum.PRIME_ADMIN)
@@ -41,11 +41,11 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
     skip: !Boolean(profile)
   })
   const { data: beta } = useGetBetaStatusQuery({ params: { tenantId } })
-  const betaStatus = beta?.enabled
+  const betaEnabled = (beta?.enabled === 'true')? true : false
   const { data: accTierResponse } = useGetAccountTierQuery({ params: { tenantId } })
   const accountTier = accTierResponse?.acx_account_tier
-  if (allowedOperations && accountTier && betaStatus) setUserProfile({ profile: profile!,
-    allowedOperations, accountTier, betaStatus })
+  if (allowedOperations && accountTier) setUserProfile({ profile: profile!,
+    allowedOperations, accountTier, betaEnabled })
 
   return <UserProfileContext.Provider
     value={{
@@ -55,7 +55,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       isPrimeAdmin,
       hasAccess,
       accountTier: accountTier,
-      betaStatus: betaStatus
+      betaEnabled
     }}
     children={props.children}
   />

@@ -9,7 +9,7 @@ export type UserProfile = {
   tenants: Tenant[]
   selectedTenant: Tenant
   accountTier?: string
-  betaStatus?: string
+  betaEnabled?: boolean
 }
 export type Invitation = {
   accountName: string
