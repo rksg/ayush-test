@@ -39,7 +39,9 @@ export * from './googleMaps'
 export * from './applicationPolicy'
 export interface CommonResult {
   requestId: string
-  response?:{}
+  response?: {
+    id?: string
+  }
 }
 
 export interface CommonErrorsResult<T> {
@@ -91,7 +93,8 @@ export interface Venue {
   activatedApsId?: string[]
   dhcp?: { enabled: boolean }
   clients?: number
-  edges?: number
+  edges?: number,
+  incompatible?: number
 }
 
 export interface AlarmBase {

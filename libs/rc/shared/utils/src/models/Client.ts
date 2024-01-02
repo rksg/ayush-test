@@ -45,6 +45,7 @@ export class Client {
   isVenueExists?: boolean
   wifiCallingClient?: boolean
   isApExists?: boolean
+  networkType?: string
   mldAddr?: string
   authmethod?: string
   encryptMethod?: string

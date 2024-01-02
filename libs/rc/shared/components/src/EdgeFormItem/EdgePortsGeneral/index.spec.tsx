@@ -2,15 +2,17 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                                                             from '@acx-ui/feature-toggle'
-import { EdgeIpModeEnum, EdgePortConfigFixtures, EdgePortTypeEnum, EdgeSdLanFixtures, EdgeSdLanUrls, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                 from '@acx-ui/store'
+import { useIsSplitOn }                                                                                                                     from '@acx-ui/feature-toggle'
+import { EdgeIpModeEnum, EdgePortConfigFixtures, EdgePortTypeEnum, EdgeSdLanFixtures, EdgeSdLanUrls, EdgeUrlsInfo, getEdgePortDisplayName } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                         from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen,
   waitFor
 } from '@acx-ui/test-utils'
+
+import { EdgePortTabEnum } from '../PortsForm'
 
 import { EdgePortsGeneral } from './'
 
@@ -43,7 +45,8 @@ jest.mock('antd', () => {
 const {
   mockEdgePortConfigWithStatusIp,
   mockEdgeOnlyLanPortConfig,
-  mockEdgePortConfigWithStatusIpWithoutCorePort
+  mockEdgePortConfigWithStatusIpWithoutCorePort,
+  mockEdgePortConfig
 } = EdgePortConfigFixtures
 const { mockedCorePortLostEdgeSdLanDataList, mockedSdLanDataList } = EdgeSdLanFixtures
 
@@ -63,7 +66,7 @@ describe('EditEdge ports - ports general and SD-LAN off', () => {
         tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
         serialNumber: '000000000000',
         activeTab: 'ports',
-        activeSubTab: 'ports-general'
+        activeSubTab: EdgePortTabEnum.PORTS_GENERAL
       }
       mockedUpdateReq.mockClear()
       mockedGetSdLanReq.mockClear()
@@ -85,6 +88,29 @@ describe('EditEdge ports - ports general and SD-LAN off', () => {
         )
       )
     })
+
+    it ('IP status on each port tab should be displayed correctly', async () => {
+      render(
+        <Provider>
+          <EdgePortsGeneral data={mockEdgePortConfigWithStatusIpWithoutCorePort.ports} />
+        </Provider>, {
+          route: {
+            params,
+            path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          }
+        })
+
+      for (let i = 0; i < mockEdgePortConfig.ports.length; ++i) {
+        await userEvent.click(await screen.findByRole('tab',
+          { name: getEdgePortDisplayName(mockEdgePortConfig.ports[i]) }))
+        const expectedIp = mockEdgePortConfigWithStatusIpWithoutCorePort.ports[i]?.statusIp || 'N/A'
+        await screen.findByText(
+          'IP Address: ' + expectedIp + ' | ' +
+            'MAC Address: ' + mockEdgePortConfig.ports[i].mac)
+
+      }
+    })
+
     it('should update successfully', async () => {
       const user = userEvent.setup()
       render(
@@ -456,7 +482,7 @@ describe('EditEdge ports - ports general and SD-LAN off', () => {
         tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
         serialNumber: '000000000000',
         activeTab: 'ports',
-        activeSubTab: 'ports-general'
+        activeSubTab: EdgePortTabEnum.PORTS_GENERAL
       }
 
       mockServer.use(
@@ -503,7 +529,7 @@ describe('EditEdge ports - SD-LAN ready', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       serialNumber: '000000000000',
       activeTab: 'ports',
-      activeSubTab: 'ports-general'
+      activeSubTab: EdgePortTabEnum.PORTS_GENERAL
     }
 
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -578,7 +604,7 @@ describe('EditEdge ports - SD-LAN ready', () => {
 
     // select port 1 as core port again
     await userEvent.click(corePortCheckbox)
-    expect(corePortCheckbox).toBeChecked()
+    await waitFor(() => expect(corePortCheckbox).toBeChecked())
     gw = await screen.findByRole('textbox', { name: 'Gateway' })
     expect(gw).toHaveValue('2.2.2.2')
     expect(gw).not.toBeDisabled()
@@ -718,11 +744,11 @@ describe('EditEdge ports - SD-LAN ready', () => {
   it('should clear gateway after core port unselected', async () => {
     render(
       <Provider>
-        <EdgePortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
+        <EdgePortsGeneral edgeId='mocked_edge' data={mockEdgePortConfigWithStatusIp.ports} />
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/services/edgeSdLan/create'
         }
       })
 
@@ -738,7 +764,8 @@ describe('EditEdge ports - SD-LAN ready', () => {
 
     // unselect core port
     await userEvent.click(port2CorePort)
-    expect(gw).not.toBeVisible()
+    expect(port2CorePort).not.toBeChecked()
+    await waitFor(() => expect(gw).not.toBeVisible())
 
     await userEvent.click(await screen.findByRole('button', { name: 'Apply Ports General' }))
     const expectedResult = _.cloneDeep(mockEdgePortConfigWithStatusIp)

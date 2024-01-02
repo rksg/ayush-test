@@ -11,6 +11,7 @@ import { hasAccess }                                                            
 import { getIntl }                                                                         from '@acx-ui/utils'
 
 interface LagsTabProps {
+  isConfigurable: boolean
   data: EdgeLagStatus[]
   isLoading?: boolean
 }
@@ -26,7 +27,7 @@ interface LagMemberTableType extends EdgeLagMemberStatus {
 
 export const LagsTab = (props: LagsTabProps) => {
 
-  const { data, isLoading = false } = props
+  const { data, isLoading = false, isConfigurable } = props
   const { $t } = useIntl()
   const { serialNumber } = useParams()
   const navigate = useNavigate()
@@ -99,7 +100,7 @@ export const LagsTab = (props: LagsTabProps) => {
 
   return (
     <GridRow justify='end'>
-      {hasAccess() &&
+      {hasAccess() && isConfigurable &&
       <Button
         size='small'
         type='link'

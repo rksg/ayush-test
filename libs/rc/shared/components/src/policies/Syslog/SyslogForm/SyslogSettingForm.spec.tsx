@@ -138,9 +138,7 @@ describe('SyslogSettingForm', () => {
         state: initStateEditMode,
         dispatch: setSyslogAPConfigure
       }}>
-        <Form>
-          <SyslogForm edit={true}/>
-        </Form>
+        <SyslogForm edit={true} />
       </SyslogContext.Provider>
       , {
         wrapper: wrapper,

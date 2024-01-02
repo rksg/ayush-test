@@ -2,10 +2,10 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { apApi, venueApi }                                       from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo, getUrlForTest }           from '@acx-ui/rc/utils'
-import { Provider, store }                                       from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { apApi, venueApi }                                                from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiUrlsInfo, getUrlForTest }                    from '@acx-ui/rc/utils'
+import { Provider, store }                                                from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { ApDataContext, ApEditContext } from '../..'
 import { r760Ap, venueData }            from '../../../../__tests__/fixtures'
@@ -31,6 +31,7 @@ const mockApManagementVlan = {
 }
 
 const resetApLedSpy = jest.fn()
+const getVenueApManagementVlanSpy = jest.fn()
 
 describe('ApManagementVlanForm', () => {
   beforeEach(() => {
@@ -38,13 +39,17 @@ describe('ApManagementVlanForm', () => {
     store.dispatch(apApi.util.resetApiState())
 
     resetApLedSpy.mockClear()
+    getVenueApManagementVlanSpy.mockClear()
     mockServer.use(
       rest.get(
         getUrlForTest(CommonUrlsInfo.getVenue),
         (_, res, ctx) => res(ctx.json(venueData))),
       rest.get(
         getUrlForTest(WifiUrlsInfo.getVenueApManagementVlan),
-        (_, res, ctx) => res(ctx.json(mockVenueApManagementVlan))),
+        (_, res, ctx) => {
+          getVenueApManagementVlanSpy()
+          return res(ctx.json(mockVenueApManagementVlan))
+        }),
       rest.get(
         getUrlForTest(WifiUrlsInfo.getApManagementVlan),
         (_, res, ctx) => res(ctx.json(mockApManagementVlan)))
@@ -64,6 +69,7 @@ describe('ApManagementVlanForm', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitFor(() => expect(getVenueApManagementVlanSpy).toBeCalledTimes(1))
 
     expect(await screen.findByRole('button', { name: /Customize/ })).toBeVisible()
     expect(await screen.findByTestId('ap-managment-vlan-vlan-id-span')).toBeVisible()

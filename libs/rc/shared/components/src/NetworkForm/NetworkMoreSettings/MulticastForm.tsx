@@ -139,7 +139,7 @@ export function MulticastForm (props: { wlanData: NetworkSaveData | null }) {
               checked={true}
               switchStyle={{ display: 'none' }}
               style={{ width: 'max-content', marginLeft: '-8px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '175px 1fr' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '175px 261px' }}>
                 <UI.FormItemNoLabel
                   name={['wlan', 'advancedCustomization', 'enableMulticastUplinkRateLimiting']}
                   valuePropName='checked'
@@ -171,7 +171,7 @@ export function MulticastForm (props: { wlanData: NetworkSaveData | null }) {
                 }
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '175px 1fr' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '175px 261px' }}>
                 <UI.FormItemNoLabel
                   name={['wlan', 'advancedCustomization', 'enableMulticastDownlinkRateLimiting']}
                   valuePropName='checked'
@@ -179,14 +179,14 @@ export function MulticastForm (props: { wlanData: NetworkSaveData | null }) {
                   style={{ lineHeight: '50px' }}
                   children={
                     <Checkbox data-testid='enableMulticastDownLimit'
-                      children={<>
+                      children={<Space>
                         {$t({ defaultMessage: 'Download Limit' })}
                         <Tooltip.Question
                           title={$t({ defaultMessage: 'The multicast download rate limiting should remain below 50% of the BSS minimum rate' })}
                           placement='bottom'
                           iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
                         />
-                      </>}
+                      </Space>}
                     />}
                 />
                 {
@@ -218,47 +218,47 @@ export function MulticastForm (props: { wlanData: NetworkSaveData | null }) {
               style={{ width: 'max-content', marginLeft: '-8px' }}
             >
 
-              <div style={{ display: 'grid', gridTemplateColumns: '175px 1fr' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '175px 261px' }}>
                 <UI.FormItemNoLabel
                   name={['wlan', 'advancedCustomization', 'enableMulticastUplinkRateLimiting6G']}
                   valuePropName='checked'
                   initialValue={false}
                   style={{ lineHeight: '50px' }}
                   children={
-                    <>
-                      <Checkbox data-testid='enableMulticastUpLimit6G'
-                        children={$t({ defaultMessage: 'Upload Limit' })}
-                        disabled={isNotWPA3orOWE(wlanData)} />
-                      {isNotWPA3orOWE(wlanData) &&
-                       <Tooltip.Question
-                         title={$t({ defaultMessage: '6GHz only works when this network is using WPA3 or OWE encryption.' })}
-                         placement='right'
-                         iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }} />
-                      }
-                    </>
-                  }
+                    <Checkbox data-testid='enableMulticastUpLimit6G'
+                      disabled={isNotWPA3orOWE(wlanData)}
+                      children={<Space>
+                        {$t({ defaultMessage: 'Upload Limit' })}
+                        {isNotWPA3orOWE(wlanData) &&
+                          <Tooltip.Question
+                            title={$t({ defaultMessage: '6GHz only works when this network is using WPA3 or OWE encryption.' })}
+                            placement='right'
+                            iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }} />
+                        }
+                      </Space>}
+                    />}
                 />
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '175px 1fr' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '175px 261px' }}>
                 <UI.FormItemNoLabel
                   name={['wlan', 'advancedCustomization', 'enableMulticastDownlinkRateLimiting6G']}
                   valuePropName='checked'
                   initialValue={false}
                   style={{ lineHeight: '50px' }}
                   children={
-                    <>
-                      <Checkbox data-testid='enableMulticastDownLimit6G'
-                        children={$t({ defaultMessage: 'Download Limit' })}
-                        disabled={isNotWPA3orOWE(wlanData)} />
-                      {isNotWPA3orOWE(wlanData) &&
-                      <Tooltip.Question
-                        title={$t({ defaultMessage: '6GHz only works when this network is using WPA3 or OWE encryption.' })}
-                        placement='right'
-                        iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }} />
-                      }
-                    </>
-                  }
+                    <Checkbox data-testid='enableMulticastDownLimit6G'
+                      disabled={isNotWPA3orOWE(wlanData)}
+                      children={<Space>
+                        {$t({ defaultMessage: 'Download Limit' })}
+                        {isNotWPA3orOWE(wlanData) &&
+                          <Tooltip.Question
+                            title={$t({ defaultMessage: '6GHz only works when this network is using WPA3 or OWE encryption.' })}
+                            placement='right'
+                            iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }} />
+                        }
+                      </Space>}
+                    />}
                 />
               </div>
 
@@ -271,7 +271,11 @@ export function MulticastForm (props: { wlanData: NetworkSaveData | null }) {
 
 function isNotWPA3orOWE (wlanData: NetworkSaveData | null) : boolean {
   const wlanSecurity = wlanData?.wlan?.wlanSecurity
-  return (wlanSecurity !== WlanSecurityEnum.WPA3) && (wlanSecurity !== WlanSecurityEnum.OWE)
+  if (wlanSecurity != null) {
+    return (wlanSecurity !== WlanSecurityEnum.WPA3) && (wlanSecurity !== WlanSecurityEnum.OWE)
+  }
+  const enableOweWhenCreate: boolean = !!wlanData?.enableOwe
+  return !enableOweWhenCreate
 }
 
 enum BssMinRateEnum {

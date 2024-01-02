@@ -69,7 +69,8 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
     }
   }
 
-  const managementFrameProtection = (data.wlanSecurity === WlanSecurityEnum.WPA3)
+  const wlanSecurity = data.wlan?.wlanSecurity
+  const managementFrameProtection = (wlanSecurity === WlanSecurityEnum.WPA3)
     ? ManagementFrameProtectionEnum.Required
     : ManagementFrameProtectionEnum.Disabled
 
@@ -78,7 +79,7 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
       ...saveData,
       ...{
         wlan: {
-          wlanSecurity: data.wlanSecurity,
+          wlanSecurity: wlanSecurity,
           managementFrameProtection
         }
       }
@@ -88,7 +89,7 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
       ...saveData,
       ...{
         wlan: {
-          wlanSecurity: data.wlanSecurity,
+          wlanSecurity: wlanSecurity,
           advancedCustomization: new AAAWlanAdvancedCustomization(),
           bypassCNA: false,
           bypassCPUsingMacAddressAuthentication: false,
@@ -99,7 +100,6 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
       }
     }
   }
-
 
   return saveData
 }
@@ -320,28 +320,27 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     (advancedCustomization as OpenWlanAdvancedCustomization).enableAaaVlanOverride = undefined
   }
 
-  if (!get(data, 'accessControlProfileEnable')) {
+  const accessControlProfileEnable = get(data, 'accessControlProfileEnable')
+
+  advancedCustomization.respectiveAccessControl = !accessControlProfileEnable
+  if (!accessControlProfileEnable) {
     advancedCustomization.accessControlProfileId = null
     advancedCustomization.accessControlEnable = false
+  } else { // accessControlProfileEnable is true
+    const accessControlProfileId = get(data, 'wlan.advancedCustomization.accessControlProfileId')
+    if (accessControlProfileId) {
+      advancedCustomization.l2AclEnable = false
+      advancedCustomization.l2AclPolicyId = null
+      advancedCustomization.l3AclEnable = false
+      advancedCustomization.l3AclPolicyId = null
+      advancedCustomization.applicationPolicyEnable = false
+      advancedCustomization.applicationPolicyId = null
+      advancedCustomization.devicePolicyId = null
+
+      advancedCustomization.accessControlEnable = true
+      advancedCustomization.accessControlProfileId = accessControlProfileId
+    }
   }
-
-  advancedCustomization.respectiveAccessControl = !get(data, 'accessControlProfileEnable')
-
-  if (get(data, 'accessControlProfileEnable')
-    && get(data, 'wlan.advancedCustomization.accessControlProfileId')) {
-    advancedCustomization.l2AclEnable = false
-    advancedCustomization.l2AclPolicyId = null
-    advancedCustomization.l3AclEnable = false
-    advancedCustomization.l3AclPolicyId = null
-    advancedCustomization.applicationPolicyEnable = false
-    advancedCustomization.applicationPolicyId = null
-    advancedCustomization.devicePolicyId = null
-
-    advancedCustomization.accessControlEnable = true
-    // eslint-disable-next-line max-len
-    advancedCustomization.accessControlProfileId = get(data, 'wlan.advancedCustomization.accessControlProfileId')
-  }
-
 
   // accessControlForm
   if (!Number.isInteger(get(data, 'wlan.advancedCustomization.userUplinkRateLimiting'))) {
@@ -444,9 +443,9 @@ export function transferVenuesToSave (data: NetworkSaveData, originalData: Netwo
 }
 
 function cleanClientIsolationAllowlistId (venues: NetworkVenue[]): NetworkVenue[] {
-  const incomingVenues = [...venues!]
+  const networkVenues = [...venues!]
 
-  incomingVenues.map((v) => {
+  const incomingVenues = networkVenues.map((v) => {
     return { ...v, clientIsolationAllowlistId: undefined }
   })
 
