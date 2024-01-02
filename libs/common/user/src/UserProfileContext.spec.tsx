@@ -31,7 +31,7 @@ const mockedUserProfile = {
 }
 
 function TestUserProfile () {
-  const { data: userProfile, allowedOperations, accountTier, betaEnabled } = useUserProfileContext()
+  const { data: userProfile, allowedOperations } = useUserProfileContext()
   return <>
     <div>{userProfile?.fullName}</div>
     <div>{JSON.stringify(allowedOperations)}</div>
@@ -127,7 +127,6 @@ describe('UserProfileContext', () => {
     )
 
     const { result } = renderHook(() => useUserProfileContext(), { wrapper, route })
-    console.log('result::::::', result)
     await waitFor(() => {
       expect(result.current.data?.fullName).toBe('')
     })
