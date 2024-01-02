@@ -1,7 +1,8 @@
 import { useParams } from 'react-router-dom'
 
-import { ApTable }              from '@acx-ui/rc/components'
 import { useApGroupsListQuery } from '@acx-ui/rc/services'
+
+import { ApTable } from '../../ApTable'
 
 
 export function NetworkApsTab () {

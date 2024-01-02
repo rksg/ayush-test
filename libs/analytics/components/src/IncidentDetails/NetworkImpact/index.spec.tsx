@@ -2,8 +2,8 @@ import { Incident }                                                    from '@ac
 import { dataApiURL, Provider, store }                                 from '@acx-ui/store'
 import { mockGraphqlQuery, render, waitForElementToBeRemoved, screen } from '@acx-ui/test-utils'
 
-import { NetworkImpactChartTypes, networkImpactChartConfigs } from './config'
-import { networkImpactChartsApi }                             from './services'
+import { NetworkImpactChartTypes, NetworkImpactQueryTypes, networkImpactChartConfigs } from './config'
+import { networkImpactChartsApi }                                                      from './services'
 
 import { transformData, transformSummary, NetworkImpact, NetworkImpactProps } from '.'
 
@@ -25,7 +25,28 @@ const NetworkImpactData = { incident: {
     data: [
       { key: 'manufacturer1', name: 'manufacturer1', value: 1 },
       { key: 'manufacturer2', name: 'manufacturer2', value: 1 }
-    ] }
+    ] },
+  [NetworkImpactChartTypes.AirtimeBusy]: {
+    peak: 0.65,
+    summary: 0.5,
+    data: [
+      { key: 'airtimeBusy', name: 'airtimeBusy', value: 0.5 },
+      { key: 'airtimeRx', name: 'airtimeRx', value: 0.3 },
+      { key: 'airtimeTx', name: 'airtimTex', value: 0.1 },
+      { key: 'airtimeIdle', name: 'airtimeIdle', value: 0.1 }
+    ]
+  },
+  [`${NetworkImpactChartTypes.AirtimeBusy}Peak`]: 0.65,
+  [NetworkImpactChartTypes.AirtimeClientsByAP]: {
+    peak: 60,
+    summary: 27.5,
+    data: [
+      { key: 'small', name: 'small', value: 2 },
+      { key: 'medium', name: 'medium', value: 1 },
+      { key: 'large', name: 'airtimTex', value: 1 }
+    ]
+  },
+  [`${NetworkImpactChartTypes.AirtimeClientsByAP}Peak`]: 60
 } }
 
 describe('transformData', () => {
@@ -45,6 +66,7 @@ describe('transformSummary', () => {
   it('should return correct result when having dominanceFn', () => {
     const incident = { id: 'id', metadata: { dominant: { } } } as Incident
     const result = transformSummary(
+      NetworkImpactQueryTypes.TopN,
       networkImpactChartConfigs[NetworkImpactChartTypes.WLAN],
       NetworkImpactData.incident.WLAN,
       incident
@@ -54,6 +76,7 @@ describe('transformSummary', () => {
   it('should return correct result when no dominanceFn', () => {
     const incident = { id: 'id', metadata: { dominant: { } } } as Incident
     const result = transformSummary(
+      NetworkImpactQueryTypes.TopN,
       networkImpactChartConfigs[NetworkImpactChartTypes.Reason],
       NetworkImpactData.incident.reason,
       incident
@@ -63,11 +86,22 @@ describe('transformSummary', () => {
   it('should return correct result when no transformKeyFn', () => {
     const incident = { id: 'id', metadata: { dominant: { ssid: 'ssid2' } } } as Incident
     const result = transformSummary(
+      NetworkImpactQueryTypes.TopN,
       networkImpactChartConfigs[NetworkImpactChartTypes.WLAN],
       NetworkImpactData.incident.WLAN,
       incident
     )
     expect(result).toEqual('33% of failures impacted ssid2')
+  })
+  it('should return correct result for NetworkImpactQueryTypes = distribution', () => {
+    const incident = { id: 'id' } as Incident
+    const result = transformSummary(
+      NetworkImpactQueryTypes.Distribution,
+      networkImpactChartConfigs[NetworkImpactChartTypes.AirtimeBusy],
+      NetworkImpactData.incident.airtimeBusy,
+      incident
+    )
+    expect(result).toEqual('Peak airtime busy was 65%')
   })
 })
 
@@ -76,20 +110,36 @@ describe('NetworkImpact', () => {
     incident: { id: 'id', metadata: { dominant: { } } } as Incident,
     charts: [{
       chart: NetworkImpactChartTypes.WLAN,
+      query: NetworkImpactQueryTypes.TopN,
       type: 'client',
       dimension: 'ssids'
     }, {
       chart: NetworkImpactChartTypes.Reason,
+      query: NetworkImpactQueryTypes.TopN,
       type: 'client',
       dimension: 'reasonCodes'
     }, {
       chart: NetworkImpactChartTypes.ClientManufacturer,
+      query: NetworkImpactQueryTypes.TopN,
       type: 'client',
       dimension: 'manufacturer'
     }, {
       chart: NetworkImpactChartTypes.Radio,
+      query: NetworkImpactQueryTypes.TopN,
       type: 'client',
       dimension: 'radios'
+    },
+    {
+      chart: NetworkImpactChartTypes.AirtimeBusy,
+      query: NetworkImpactQueryTypes.Distribution,
+      type: 'airtimeMetric',
+      dimension: 'airtimeBusy'
+    },
+    {
+      chart: NetworkImpactChartTypes.AirtimeClientsByAP,
+      query: NetworkImpactQueryTypes.Distribution,
+      type: 'airtimeClientsByAP',
+      dimension: 'summary'
     }]
   }
   it('should match snapshot', async () => {
