@@ -16,8 +16,8 @@ import {
   EdgeLagTypeEnum,
   EdgePort,
   EdgePortTypeEnum,
-  getEdgePortDisplayName,
   convertEdgePortsConfigToApiPayload,
+  getEdgePortDisplayName,
   getEdgePortTypeOptions
 } from '@acx-ui/rc/utils'
 
