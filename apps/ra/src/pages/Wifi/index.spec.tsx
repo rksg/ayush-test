@@ -31,54 +31,56 @@ jest.mock('@acx-ui/reports/components', () => ({
 }))
 
 describe('WiFi Page', () => {
-  beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
-  it('should render aps table tab', async () => {
-    const apList = {
-      network: {
-        search: {
-          aps: [
-            {
-              apName: 'AL-Guest-R610',
-              macAddress: '90:3A:72:24:D0:40',
-              apModel: 'R610',
-              ipAddress: '192.168.2.105',
-              version: '6.1.2.0.580',
-              apZone: 'Albert-Home-Main',
-              networkPath: [
-                {
-                  name: 'Network',
-                  type: 'network'
-                },
-                {
-                  name: 'vsz34',
-                  type: 'system'
-                },
-                {
-                  name: '04-US-CA-D4-Albert-Home',
-                  type: 'domain'
-                },
-                {
-                  name: 'Albert-Home-Main',
-                  type: 'zone'
-                },
-                {
-                  name: 'default',
-                  type: 'apGroup'
-                },
-                {
-                  name: '90:3A:72:24:D0:40',
-                  type: 'AP'
-                }
-              ]
-            }
-          ]
-        }
+  const apList = {
+    network: {
+      search: {
+        aps: [
+          {
+            apName: 'AL-Guest-R610',
+            macAddress: '90:3A:72:24:D0:40',
+            apModel: 'R610',
+            ipAddress: '192.168.2.105',
+            version: '6.1.2.0.580',
+            apZone: 'Albert-Home-Main',
+            networkPath: [
+              {
+                name: 'Network',
+                type: 'network'
+              },
+              {
+                name: 'vsz34',
+                type: 'system'
+              },
+              {
+                name: '04-US-CA-D4-Albert-Home',
+                type: 'domain'
+              },
+              {
+                name: 'Albert-Home-Main',
+                type: 'zone'
+              },
+              {
+                name: 'default',
+                type: 'apGroup'
+              },
+              {
+                name: '90:3A:72:24:D0:40',
+                type: 'AP'
+              }
+            ]
+          }
+        ]
       }
     }
-
+  }
+  beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockGraphqlQuery(dataApiURL, 'Network', {
       data: apList
     })
+  })
+
+  it('should render aps table tab', async () => {
     render(<WiFiPage tab={WifiTabsEnum.LIST}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
