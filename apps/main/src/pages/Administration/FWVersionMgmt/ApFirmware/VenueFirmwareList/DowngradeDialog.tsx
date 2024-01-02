@@ -98,6 +98,7 @@ export function DowngradeDialog (props: DowngradeDialogProps) {
         </Button>,
         <Button
           hidden={step !== 2}
+          key='downgrade'
           type='primary'
           onClick={triggerSubmit}
         >
