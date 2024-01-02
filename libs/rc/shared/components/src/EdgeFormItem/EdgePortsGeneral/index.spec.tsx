@@ -744,11 +744,11 @@ describe('EditEdge ports - SD-LAN ready', () => {
   it('should clear gateway after core port unselected', async () => {
     render(
       <Provider>
-        <EdgePortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
+        <EdgePortsGeneral edgeId='mocked_edge' data={mockEdgePortConfigWithStatusIp.ports} />
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/services/edgeSdLan/create'
         }
       })
 
