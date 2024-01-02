@@ -59,7 +59,7 @@ export function Brand360 () {
     ssidRegex: settings['brand-ssid-compliance-matcher']!
   }
   const mspPropertiesData = useMspCustomerListDropdownQuery(
-    { params: { tenantId: getJwtTokenPayload().tenantId },rcApiPayload } )
+    { params: { tenantId: getJwtTokenPayload().tenantId },payload: rcApiPayload } )
   const lookupAndMappingData = mspPropertiesData.data
     ? transformLookupAndMappingData(mspPropertiesData.data)
     : {}

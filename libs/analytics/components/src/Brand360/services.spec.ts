@@ -1,8 +1,8 @@
 import { dataApiURL, store } from '@acx-ui/store'
 import { mockGraphqlQuery }  from '@acx-ui/test-utils'
 
-import { mockBrandTimeseries } from './__tests__/fixtures'
-import { api }                 from './services'
+import { mockBrandTimeseries, franchisorZones } from './__tests__/fixtures'
+import { api }                                  from './services'
 
 describe('services', () => {
   beforeEach(() => {
@@ -67,5 +67,19 @@ describe('services', () => {
       expect(data).toStrictEqual(mockBrandTimeseries.data.franchisorTimeseries)
     })
     await Promise.all(fetchPromise)
+  })
+
+  it('should handle fetching zones correctly', async () => {
+    mockGraphqlQuery(dataApiURL, 'FranchisorZones', { data: {
+      franchisorZones: franchisorZones.data
+    } })
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.fetchBrandProperties.initiate({
+        ...baseProps
+      })
+    )
+    expect(error).toBeUndefined()
+    expect(status).toBe('fulfilled')
+    expect(data).toStrictEqual(franchisorZones.data)
   })
 })
