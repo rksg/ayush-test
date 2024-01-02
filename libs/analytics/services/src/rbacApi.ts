@@ -59,7 +59,8 @@ export const rbacApi = baseRbacApi.injectEndpoints({
           body,
           responseHandler: 'text'
         }
-      }
+      },
+      invalidatesTags: [{ type: 'RBAC', id: 'GET_TENANT_SETTINGS' }]
     }),
     updateInvitation: build.mutation<
        string, { resourceGroupId: string, state: string, userId: string }
