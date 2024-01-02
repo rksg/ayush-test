@@ -5,18 +5,18 @@ import {
 } from '@acx-ui/test-utils'
 
 
-import { PersonalIdentityGuildlinesDrawer } from './PersonalIdentityGuildlinesDrawer'
+import { PersonalIdentityPreparationListDrawer } from './PersonalIdentityPreparationListDrawer'
 
 
 jest.mock('./PersonalIdentityDiagram', () => ({
   PersonalIdentityDiagram: () => <div data-testid='PersonalIdentityDiagram' />
 }))
 
-it('Should render PersonalIdentityGuildlinesDrawer successfully', async () => {
+it('Should render PersonalIdentityPreparationListDrawer successfully', async () => {
   render(
     <Provider>
-      <PersonalIdentityGuildlinesDrawer open={true}>
-      </PersonalIdentityGuildlinesDrawer>
+      <PersonalIdentityPreparationListDrawer open={true}>
+      </PersonalIdentityPreparationListDrawer>
     </Provider>)
 
   expect(await screen.findByText('Get prepared for Personal Identity Network:')).toBeVisible()
