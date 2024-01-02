@@ -31,17 +31,19 @@ jest.mock('./SlaTile', () => ({
     sliceType,
     chartData,
     prevData,
-    currData
+    currData,
+    settings
   }
   :{
     chartKey: string,
     sliceType: string,
     chartData: string,
     prevData: string,
-    currData: string
+    currData: string,
+    settings: Settings
   }) =>
     <div data-testid={'brand360Tile'}>
-      {JSON.stringify({ chartKey, sliceType, chartData, prevData, currData })}
+      {JSON.stringify({ chartKey, sliceType, chartData, prevData, currData, settings })}
     </div>
 }))
 
