@@ -1,5 +1,19 @@
 import styled from 'styled-components/macro'
 
+import { SettingsSolid } from '@acx-ui/icons'
+
+export const ComplianceSetting = {
+  Icon: styled(SettingsSolid)`
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+  `,
+  Wrapper: styled.div`
+    margin-bottom: 20px
+  `
+}
+
 export const SliderLabel = styled.div`
   padding-top: 5px;
   color: var(--acx-neutrals-60);
