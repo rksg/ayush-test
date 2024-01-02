@@ -34,7 +34,9 @@ export const transformSummary = (
   const { peak, count, total, data } = metric
 
   if(queryType === NetworkImpactQueryTypes.Distribution) {
-    return $t(config.summary as MessageDescriptor, { count: formatter('percentFormat')(peak) })
+    return $t(config.summary as MessageDescriptor, {
+      count: (config.valueFormatter || formatter('percentFormat'))(peak)
+    })
   }
 
   const dominance = (config.dominanceFn || getDominanceByThreshold())(data, incident)
@@ -100,6 +102,12 @@ export const NetworkImpact: React.FC<NetworkImpactProps> = ({ charts, incident }
                   tooltipFormat={config.tooltipFormat}
                   dataFormatter={config.dataFomatter || formatter('countFormat')}
                   data={transformData(config, chartData)}
+<<<<<<< HEAD
+=======
+                  value={query === NetworkImpactQueryTypes.Distribution
+                    ? (config.valueFormatter || formatter('percentFormat'))(chartData.summary)
+                    : undefined}
+>>>>>>> origin/master
                 />
               }}
             </AutoSizer>

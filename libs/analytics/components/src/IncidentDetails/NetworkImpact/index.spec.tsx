@@ -36,7 +36,17 @@ const networkImpactData = { incident: {
       { key: 'airtimeIdle', name: 'airtimeIdle', value: 0.1 }
     ]
   },
-  [`${NetworkImpactChartTypes.AirtimeBusy}Peak`]: 0.65
+  [`${NetworkImpactChartTypes.AirtimeBusy}Peak`]: 0.65,
+  [NetworkImpactChartTypes.AirtimeClientsByAP]: {
+    peak: 60,
+    summary: 27.5,
+    data: [
+      { key: 'small', name: 'small', value: 2 },
+      { key: 'medium', name: 'medium', value: 1 },
+      { key: 'large', name: 'airtimTex', value: 1 }
+    ]
+  },
+  [`${NetworkImpactChartTypes.AirtimeClientsByAP}Peak`]: 60
 } }
 
 describe('transformData', () => {
@@ -124,6 +134,12 @@ describe('NetworkImpact', () => {
       query: NetworkImpactQueryTypes.Distribution,
       type: 'airtimeMetric',
       dimension: 'airtimeBusy'
+    },
+    {
+      chart: NetworkImpactChartTypes.AirtimeClientsByAP,
+      query: NetworkImpactQueryTypes.Distribution,
+      type: 'airtimeClientsByAP',
+      dimension: 'summary'
     }]
   }
   it('should match snapshot', async () => {

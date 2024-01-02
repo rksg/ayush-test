@@ -88,6 +88,7 @@ export function Brand360 () {
             chartData={chartData}
             prevData={prevData}
             currData={currData}
+            settings={settings as Settings}
           />
         </Loader>
       </GridCol>)}

@@ -1,9 +1,9 @@
 import { rest } from 'msw'
 
-import { apApi, networkApi }               from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo }    from '@acx-ui/rc/utils'
-import { Provider, store }                 from '@acx-ui/store'
-import { act, mockServer, render, screen } from '@acx-ui/test-utils'
+import { apApi, networkApi }                        from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiUrlsInfo }             from '@acx-ui/rc/utils'
+import { Provider, store }                          from '@acx-ui/store'
+import { act, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { ApGroupEditContext }                                                                                 from '..'
 import { apGroupMembers, apGroupNetworkLinks, networkApGroup, networkDeepList, oneApGroupList, vlanPoolList } from '../../ApGroupDetails/__tests__/fixtures'
@@ -17,6 +17,11 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+jest.mock('./ApGroupVlanRadioTable', () => ({
+  ApGroupVlanRadioTable: () => <div data-testid={'apGroupVlanRadioTable'}></div>
+}))
+
+const mockGetApGroup = jest.fn()
 const setEditContextDataFn = jest.fn()
 
 describe('AP Group vlan & radio tab', () => {
@@ -28,6 +33,13 @@ describe('AP Group vlan & radio tab', () => {
     })
 
     mockServer.use(
+      rest.get(
+        WifiUrlsInfo.getApGroup.url,
+        (req, res, ctx) => {
+          mockGetApGroup()
+          return res(ctx.json({}))
+        }
+      ),
       rest.post(
         WifiUrlsInfo.getApGroupsList.url,
         (req, res, ctx) => res(ctx.json(oneApGroupList))
@@ -77,6 +89,7 @@ describe('AP Group vlan & radio tab', () => {
       }
     )
 
+    await waitFor(() => expect(mockGetApGroup).toBeCalledTimes(1))
     // eslint-disable-next-line max-len
     const note = await screen.findByText('Configure the VLAN & Radio settings for the following networks which are applied to this AP group:')
     expect(note).toBeVisible()

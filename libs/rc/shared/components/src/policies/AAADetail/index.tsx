@@ -10,7 +10,7 @@ import { filterByAccess }                                                       
 import AAAInstancesTable from './AAAInstancesTable'
 import AAAOverview       from './AAAOverview'
 
-export default function AAAPolicyDetail () {
+export function AAAPolicyDetail () {
   const { $t } = useIntl()
   const params = useParams()
   const queryResults = useGetAAAProfileDetailQuery({ params })
