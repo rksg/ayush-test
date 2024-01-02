@@ -1,7 +1,4 @@
-import { useEffect, useState } from 'react'
-
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { useIntl } from 'react-intl'
 
 import { LayoutProps }            from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
@@ -21,45 +18,16 @@ import {
   SpeedIndicatorSolid,
   SpeedIndicatorOutlined
 } from '@acx-ui/icons'
-import { useGetTenantDetailQuery, useMspEntitlementListQuery }  from '@acx-ui/msp/services'
 import { CONFIG_TEMPLATE_PATH_PREFIX, hasConfigTemplateAccess } from '@acx-ui/rc/utils'
 import { TenantType }                                           from '@acx-ui/react-router-dom'
 import { RolesEnum }                                            from '@acx-ui/types'
-import { hasRoles, useUserProfileContext }                      from '@acx-ui/user'
-import { AccountType, isDelegationMode }                        from '@acx-ui/utils'
+import { hasRoles  }                                            from '@acx-ui/user'
+import { AccountType  }                                         from '@acx-ui/utils'
 
-export function useMenuConfig () {
+export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfood?: boolean) {
   const { $t } = useIntl()
-  const [tenantType, setTenantType] = useState('')
-  const [hasLicense, setHasLicense] = useState(false)
-  const [isDogfood, setDogfood] = useState(false)
-  const params = useParams()
-
-  const { data: userProfile } = useUserProfileContext()
-  const { data: mspEntitlement } = useMspEntitlementListQuery({ params })
-  const { data } = useGetTenantDetailQuery({ params })
-
-  const nonVarDelegation = useIsSplitOn(Features.ANY_3RDPARTY_INVITE_TOGGLE)
-  const isSupportToMspDashboardAllowed =
-    useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
   const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
   const isBrand360 = useIsSplitOn(Features.MSP_BRAND_360)
-
-  useEffect(() => {
-    if (data && userProfile) {
-      const isRecDelegation = nonVarDelegation && data.tenantType === AccountType.REC
-      if (!isSupportToMspDashboardAllowed &&
-        (userProfile?.support || userProfile?.dogfood || isRecDelegation)) {
-        setTenantType('SUPPORT')
-      } else {
-        setTenantType(data.tenantType)
-      }
-      setDogfood((userProfile?.dogfood && !userProfile?.support) || isRecDelegation)
-    }
-    if (mspEntitlement?.length && mspEntitlement?.length > 0) {
-      setHasLicense(true)
-    }
-  }, [data, userProfile, mspEntitlement])
 
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isVar = tenantType === AccountType.VAR
