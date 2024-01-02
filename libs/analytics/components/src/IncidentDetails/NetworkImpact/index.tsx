@@ -84,7 +84,7 @@ export const NetworkImpact: React.FC<NetworkImpactProps> = ({ charts, incident }
                   transformSummary(chart.query, config, chartData, incident)
                 ]
                 if (chart.query === NetworkImpactQueryTypes.Distribution) {
-                  value = formatter('percentFormat')(chartData.summary)
+                  value = (config.valueFormatter || formatter('percentFormat'))(chartData.summary)
                 } else {
                   if (chart.disabled && config.disabled) {
                     value = $t(config.disabled.value)
