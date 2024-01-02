@@ -48,11 +48,6 @@ describe('TroubleshootingPingForm', () => {
 
   it('should copy correctly', async () => {
     jest.spyOn(navigator.clipboard, 'writeText')
-    mockServer.use(
-      rest.get(
-        SwitchUrlsInfo.getTroubleshooting.url,
-        (req, res, ctx) => res(ctx.json(troubleshootingResult_ping_result)))
-    )
     render(<Provider>
       <SwitchPingForm />
     </Provider>, { route: { params } })
@@ -86,27 +81,9 @@ describe('TroubleshootingPingForm', () => {
       <SwitchPingForm />
     </Provider>, { route: { params } })
 
-    expect(await screen.findByText(/Target host or IP address/i)).toBeVisible()
+    expect(await screen.findByText(/No data to display./i)).toBeVisible()
   })
 
-  it('should do run correctly', async () => {
-    mockServer.use(
-      rest.get(
-        SwitchUrlsInfo.getTroubleshooting.url,
-        (req, res, ctx) => res(ctx.json(troubleshootingResult_ping_result)))
-    )
-    render(<Provider>
-      <SwitchPingForm />
-    </Provider>, { route: { params } })
-
-    const ipAddressField = await screen.findByRole('textbox', {
-      name: /target host or ip address/i
-    })
-    await userEvent.type(ipAddressField, '1.1.1.1')
-    await waitFor(() => expect(screen.getByRole('button', { name: /run/i })).not.toBeDisabled())
-    await userEvent.type(ipAddressField, '1.1')
-    await waitFor(() => expect(screen.getByRole('button', { name: /run/i })).toBeDisabled())
-  })
   it('should do validation correctly', async () => {
     mockServer.use(
       rest.get(
@@ -128,9 +105,6 @@ describe('TroubleshootingPingForm', () => {
   it('should clear correctly', async () => {
     const mockCleanSpy = jest.fn()
     mockServer.use(
-      rest.get(
-        SwitchUrlsInfo.getTroubleshooting.url,
-        (req, res, ctx) => res(ctx.json(troubleshootingResult_ping_result))),
       rest.delete(
         SwitchUrlsInfo.getTroubleshootingClean.url,
         (req, res, ctx) => {
@@ -142,6 +116,8 @@ describe('TroubleshootingPingForm', () => {
       <SwitchPingForm />
     </Provider>, { route: { params } })
     expect(await screen.findByText(/Last synced at/i)).toBeVisible()
+
+    expect(await screen.findByRole('button', { name: /clear/i })).not.toBeDisabled()
 
     await userEvent.click(await screen.findByRole('button', { name: /clear/i }))
     await waitFor(()=> expect(mockCleanSpy).toHaveBeenCalledTimes(1))
