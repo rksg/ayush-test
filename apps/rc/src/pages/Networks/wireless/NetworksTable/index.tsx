@@ -3,16 +3,18 @@ import { useState, useEffect } from 'react'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Button }                                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import { NetworkTabContext, NetworkTable, defaultNetworkPayload } from '@acx-ui/rc/components'
-import { useNetworkListQuery }                                    from '@acx-ui/rc/services'
+import { useNetworkListQuery, useNetworkTableQuery }              from '@acx-ui/rc/services'
 import { Network, usePollingTableQuery }                          from '@acx-ui/rc/utils'
 import { TenantLink }                                             from '@acx-ui/react-router-dom'
 
 export default function useNetworksTable () {
   const { $t } = useIntl()
   const [ networkCount, setNetworkCount ] = useState(0)
+  const supportApCompatibleCheck = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
   const tableQuery = usePollingTableQuery<Network>({
-    useQuery: useNetworkListQuery,
+    useQuery: supportApCompatibleCheck ? useNetworkTableQuery : useNetworkListQuery,
     defaultPayload: defaultNetworkPayload
   })
 

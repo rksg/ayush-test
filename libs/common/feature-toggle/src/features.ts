@@ -140,6 +140,7 @@ export enum Features {
   CRRM_PARTIAL = 'acx-ui-recommendations-crrm-partial-toggle',
   GROUP_BASED_LOGIN_TOGGLE = 'group-based-login-toggle',
   GOOGLE_WORKSPACE_SSO_TOGGLE = 'google-workspace-sso-toggle',
+  WIFI_COMPATIBILITY_CHECK_TOGGLE = 'wifi-compatibility-check-toggle',
   ANY_3RDPARTY_INVITE_TOGGLE = 'ptenant-any-3rdparty-invite-toggle',
   MSP_EC_CREATE_WITH_TIER = 'mspservice-mspec-create-pass-tier-info'
 }
