@@ -1350,7 +1350,7 @@ exports[`incident details should render incident details correctly when there is
                         <ol>
                            
                           <li>
-                            Click here for a list of rogue APs for removal in your premises.
+                            Enable rogue AP detection to search, identify, and physically remove rogue APs from your premises.
                           </li>
                           <li>
                             Identify and mitigate sources of non-WiFi interference, such as microwave ovens, Bluetooth devices, and cordless phones.
