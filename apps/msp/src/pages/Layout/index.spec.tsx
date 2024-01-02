@@ -208,7 +208,7 @@ describe('Layout', () => {
         (req, res, ctx) => res(ctx.json({}))
       ),
       rest.get(
-        UserUrlsInfo.getCloudScheduleVersion.url,
+        FirmwareUrlsInfo.getScheduledFirmware.url.replace('?status=scheduled', ''),
         (req, res, ctx) => res(ctx.json({}))
       )
     )

@@ -673,6 +673,10 @@ export function RadioSettings () {
   }, [apBandModeSavedData, venueBandMode])
 
   useEffect(() => {
+    if (!isSupportBandManagementAp) {
+      return
+    }
+
     console.info('[RadioSettings] currentApBandModeData = ', currentApBandModeData) // eslint-disable-line no-console
 
     if (isSupportDual5GAp) {
@@ -687,7 +691,7 @@ export function RadioSettings () {
     if (!isEqual(currentApBandModeData, initApBandModeData)) {
       handleChange()
     }
-  }, [currentApBandModeData, initApBandModeData, isSupportDual5GAp])
+  }, [currentApBandModeData, initApBandModeData, isSupportBandManagementAp, isSupportDual5GAp])
 
   // useEffect(() => console.info('[RadioSettings] initApBandModeData = ', initApBandModeData), [initApBandModeData]) // eslint-disable-line no-console
   // useEffect(() => console.info('[RadioSettings] isApBandModeDataInitializing = ', isApBandModeDataInitializing), [isApBandModeDataInitializing]) // eslint-disable-line no-console
@@ -874,14 +878,7 @@ export function RadioSettings () {
       })
 
       const payload = { ...form.getFieldsValue() }
-
       const {
-        enable24G,
-        enable50G,
-        enable6G,
-        apRadioParams24G,
-        apRadioParams50G,
-        apRadioParams6G,
         apRadioParamsDual5G
       } = payload
       const fieldDual5GEnable = formRef.current?.getFieldValue(['apRadioParamsDual5G', 'enabled'])
@@ -893,29 +890,15 @@ export function RadioSettings () {
         return
       }
 
-      // UseVenueSettings will possibly be true in init data
-      // To avoid this, change the payload with origin payload's useVenueSettings
-      if (!enable24G && !apRadioParams24G.useVenueSettings) {
-        set(payload, ['apRadioParams24G'], initApRadioData.apRadioParams24G)
-        set(payload, ['apRadioParams24G', 'useVenueSettings'], apRadioParams24G.useVenueSettings)
-      }
       updateRadioParams(payload.apRadioParams24G, support24GChannels)
 
       if (hasRadio5G) {
-        if (!enable50G && !apRadioParams50G?.useVenueSettings) {
-          set(payload, ['apRadioParams50G'], initApRadioData.apRadioParams50G)
-          set(payload, ['apRadioParams50G', 'useVenueSettings'], apRadioParams50G.useVenueSettings)
-        }
         updateRadioParams(payload.apRadioParams50G, support5GChannels)
       } else {
         delete payload.apRadioParams50G
       }
 
       if (hasRadio6G) {
-        if (!enable6G && !apRadioParams6G?.useVenueSettings) {
-          set(payload, ['apRadioParams6G'], initApRadioData.apRadioParams6G)
-          set(payload, ['apRadioParams6G', 'useVenueSettings'], apRadioParams6G.useVenueSettings)
-        }
         updateRadioParams(payload.apRadioParams6G, support6GChannels)
       } else {
         delete payload.apRadioParams6G
@@ -923,18 +906,8 @@ export function RadioSettings () {
 
       if (hasRadioDual5G) {
         const radioDual5G = apRadioParamsDual5G || new ApRadioParamsDual5G()
-
-        if (!radioDual5G.lower5gEnabled && !apRadioParamsDual5G?.radioParamsLower5G?.useVenueSettings) {
-          set(payload, ['apRadioParamsDual5G', 'radioParamsLower5G'], initApRadioData?.apRadioParamsDual5G?.radioParamsLower5G)
-          set(payload, ['apRadioParamsDual5G', 'radioParamsLower5G', 'useVenueSettings'], apRadioParamsDual5G?.radioParamsLower5G?.useVenueSettings)
-        }
-        if (!radioDual5G.upper5gEnabled && !apRadioParamsDual5G?.radioParamsUpper5G?.useVenueSettings) {
-          set(payload, ['apRadioParamsDual5G', 'radioParamsUpper5G'], initApRadioData?.apRadioParamsDual5G?.radioParamsUpper5G)
-          set(payload, ['apRadioParamsDual5G', 'radioParamsUpper5G', 'useVenueSettings'], apRadioParamsDual5G?.radioParamsUpper5G?.useVenueSettings)
-        }
         updateRadioParams(radioDual5G.radioParamsLower5G, supportLower5GChannels)
         updateRadioParams(radioDual5G.radioParamsUpper5G, supportUpper5GChannels)
-
         payload.apRadioParamsDual5G = radioDual5G
       }
       else if (isSupportDual5GAp) {
