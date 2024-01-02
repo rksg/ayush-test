@@ -2,18 +2,21 @@ import { omit }                                      from 'lodash'
 import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
 import { useNavigate, useParams }                    from 'react-router-dom'
 
-import { Tabs }      from '@acx-ui/components'
-import {
-  ActivityTable,
-  activityTableColumnState,
-  EventTable,
-  eventTableColumnState,
-  useActivityTableQuery,
-  useEventsTableQuery,
-  eventTypeMapping
-} from '@acx-ui/rc/components'
+import { Tabs }          from '@acx-ui/components'
 import { TimelineTypes } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
+
+import {
+  ActivityTable,
+  columnState as activityTableColumnState,
+  useActivityTableQuery
+} from '../../ActivityTable'
+import {
+  EventTable,
+  defaultColumnState as eventTableColumnState,
+  useEventsTableQuery,
+  eventTypeMapping
+} from '../../EventTable'
 
 const Events = () => {
   const { networkId } = useParams()
