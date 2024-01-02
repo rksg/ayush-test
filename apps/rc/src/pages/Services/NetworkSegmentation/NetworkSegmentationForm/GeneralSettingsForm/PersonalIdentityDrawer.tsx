@@ -21,7 +21,7 @@ export function PersonalIdentityDrawer (props: {
 
   return (
     <Drawer
-      title={$t({ defaultMessage: 'Get prepared for Network Segmentation:' })}
+      title={$t({ defaultMessage: 'Get prepared for Personal Identity Network:' })}
       visible={open}
       onClose={onClose}
       destroyOnClose={true}
@@ -57,7 +57,7 @@ export function PersonalIdentityDrawer (props: {
               Ensure the DPSK networks are using the
             <b>DPSK pool service</b> selected in the persona group
                in the venue’s property management.
-              A DPSK network only can be associated with one network segmentation
+              A DPSK network only can be associated with one personal identity network
           </li></ul></dd>
         </dl>
         <dl>
@@ -70,7 +70,7 @@ export function PersonalIdentityDrawer (props: {
       </UI.List>
       <UI.List>
         <dl>
-        Now, let’s get started to create a Network Segmentation for your clients.
+        Now, let’s get started to create a Personal Identity Network for your clients.
         </dl>
       </UI.List>
       <UI.List>
