@@ -9,10 +9,7 @@ type QueryMeta = {
 export type MiddlewareAction = {
   type: string,
   meta?: {
-    baseQueryMeta?: QueryMeta,
-    arg?: {
-      endpointName: string
-    }
+    baseQueryMeta?: QueryMeta
   }
 }
 
@@ -36,7 +33,7 @@ export const refreshTokenMiddleware: Middleware = () => (next) => (action: Middl
         new Date().toLocaleString(),
         action?.meta?.baseQueryMeta?.response?.headers.get('login-token'))
       sessionStorage.setItem('oldJwt', jwt) // temporary parameter, will clean up once testing is done
-      sessionStorage.setItem('jwt', loginToken ?? jwt)
+      sessionStorage.setItem('jwt', loginToken)
       updateJwtCache(loginToken)
     }
   }
