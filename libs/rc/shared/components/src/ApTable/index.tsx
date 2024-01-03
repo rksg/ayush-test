@@ -10,7 +10,8 @@ import {
   TableProps,
   deviceStatusColors,
   ColumnType,
-  showToast
+  showToast,
+  Tooltip
 } from '@acx-ui/components'
 import {
   Features, TierFeatures,
@@ -37,7 +38,8 @@ import {
   usePollingTableQuery,
   APExtendedGrouped,
   AFCMaxPowerRender,
-  AFCPowerStateRender
+  AFCPowerStateRender,
+  AFCStatusRender
 } from '@acx-ui/rc/utils'
 import { getFilters, CommonResult, ImportErrorRes, FILTER }               from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
@@ -61,12 +63,8 @@ export const defaultApPayload = {
   fields: [
     'name', 'deviceStatus', 'model', 'IP', 'apMac', 'venueName',
     'switchName', 'meshRole', 'clients', 'deviceGroupName',
-    'apStatusData.APRadio.band', 'tags', 'serialNumber',
-    'venueId', 'apStatusData.APRadio.radioId', 'apStatusData.APRadio.channel',
-    'poePort', 'apStatusData.lanPortStatus.phyLink', 'apStatusData.lanPortStatus.port',
-    'fwVersion', 'apStatusData.afcInfo.powerMode', 'apStatusData.afcInfo.afcStatus','apRadioDeploy',
-    'apStatusData.APSystem.secureBootEnabled', 'apStatusData.APSystem.managementVlan',
-    'apStatusData.afcInfo.maxPowerDbm'
+    'apStatusData', 'tags', 'serialNumber',
+    'venueId', 'poePort', 'fwVersion'
   ]
 }
 
@@ -385,13 +383,34 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
         }
       }] : []),
     ...(AFC_Featureflag ? [{
+      key: 'afcStatus',
+      title: $t({ defaultMessage: 'AFC Status' }),
+      dataIndex: ['apStatusData','afcInfo','powerMode'],
+      show: false,
+      sorter: false,
+      render: (data: React.ReactNode, row: APExtended) => {
+        return AFCStatusRender(row.apStatusData?.afcInfo, row.apRadioDeploy)
+      }
+    },
+    {
       key: 'afcPowerMode',
       title: $t({ defaultMessage: 'AFC Power State' }),
       dataIndex: ['apStatusData','afcInfo','powerMode'],
       show: false,
       sorter: false,
       render: (data: React.ReactNode, row: APExtended) => {
-        return AFCPowerStateRender(row.apStatusData?.afcInfo, row.apRadioDeploy, false)
+        const status = AFCPowerStateRender(row.apStatusData?.afcInfo, row.apRadioDeploy)
+        return (
+          <>
+            {status.columnText}
+            {/* eslint-disable-next-line*/}
+            {(status.columnText !== '--' && status.columnText === 'Low power' && status.tooltipText) && <Tooltip.Info
+              placement='bottom'
+              iconStyle={{ height: '12px', width: '12px', marginBottom: '-3px' }}
+              title={status.tooltipText}
+            />}
+          </>
+        )
       }
     },
     { key: 'afcMaxPower',
@@ -403,7 +422,8 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
         return AFCMaxPowerRender(row.apStatusData?.afcInfo, row.apRadioDeploy)
       }
     }
-    ]: [])
+
+    ] : [])
     ]
 
     return columns
