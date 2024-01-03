@@ -11,7 +11,9 @@ import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemov
 
 import {
   venueSyslog,
-  syslogServerProfiles
+  syslogServerProfiles,
+  resultOfGetVenueApSnmpAgentSettings,
+  resultOfGetApSnmpAgentProfiles
 } from '../../../__tests__/fixtures'
 import { VenueEditContext, EditContext } from '../../index'
 
@@ -59,14 +61,12 @@ describe('ServerTab', () => {
       rest.post(
         CommonUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json({ data: [] }))),
-      rest.get(ApSnmpUrls.getApSnmpPolicyList.url,
-        (_, res, ctx) => res(ctx.json([]))),
-      rest.get(ApSnmpUrls.getVenueApSnmpSettings.url, (req, res, ctx) => {
-        return res(ctx.json({
-          apSnmpAgentProfileId: 'c1082e7d05d74eb897bb3600a15c1dc7',
-          enableApSnmp: true
-        }))
-      })
+      rest.get(
+        ApSnmpUrls.getApSnmpPolicyList.url,
+        (_, res, ctx) => res(ctx.json(resultOfGetApSnmpAgentProfiles))),
+      rest.get(
+        ApSnmpUrls.getVenueApSnmpSettings.url,
+        (_, res, ctx) => res(ctx.json(resultOfGetVenueApSnmpAgentSettings)))
     )
   })
   it('should render correctly', async () => {

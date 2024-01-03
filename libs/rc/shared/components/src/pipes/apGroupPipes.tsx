@@ -105,11 +105,14 @@ export const transformVLAN = (
           poolName: firstApGroup.vlanPoolName,
           isCustom: true
         })
-      } else {
+      } else if (firstApGroup?.vlanId !== undefined) {
         displayText = $t(vlanContents.vlan, {
-          id: firstApGroup?.vlanId?.toString() ?? '1',
+          id: firstApGroup.vlanId.toString(),
           isCustom: true
         })
+      } else {
+        const vlan = getVlanString(network?.wlan?.advancedCustomization?.vlanPool, network?.wlan?.vlanId)
+        displayText = vlan.vlanText
       }
 
       tooltipTitle = displayText

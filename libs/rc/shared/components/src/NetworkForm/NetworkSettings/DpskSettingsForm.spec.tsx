@@ -13,7 +13,8 @@ import {
   networkDeepResponse,
   venueListResponse,
   dpskListResponse,
-  partialDpskNetworkEntity
+  partialDpskNetworkEntity,
+  mockAAAPolicyListResponse
 } from '../__tests__/fixtures'
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -37,8 +38,8 @@ describe('DpskSettingsForm', () => {
         (_, res, ctx) => res(ctx.json(dpskListResponse))),
       rest.get('/v2/dpskServices',
         (_, res, ctx) => res(ctx.json(dpskListResponse))),
-      rest.get(AaaUrls.getAAAPolicyList.url,
-        (_, res, ctx) => res(ctx.json([{ id: '1', name: 'test1' }])))
+      rest.post(AaaUrls.getAAAPolicyViewModelList.url,
+        (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse)))
     )
   })
 

@@ -4,14 +4,13 @@ import { Form, Input, InputNumber, Radio, Space } from 'antd'
 import { useIntl }                                from 'react-intl'
 
 import { Button, Fieldset, GridCol, GridRow, StepsFormLegacy, PasswordInput } from '@acx-ui/components'
-import { useGetAAAPolicyListQuery }                                           from '@acx-ui/rc/services'
 import {
   AAAPolicyType, checkObjectNotExists, servicePolicyNameRegExp,
-  networkWifiIpRegExp, networkWifiSecretRegExp
+  networkWifiIpRegExp, networkWifiSecretRegExp,
+  policyTypeLabelMapping, PolicyType
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
 
-
+import { useGetAAAPolicyInstanceList } from './aaaPolicyQuerySwitcher'
 
 type AAASettingFormProps = {
   edit: boolean,
@@ -23,30 +22,25 @@ type AAASettingFormProps = {
 export const AAASettingForm = (props: AAASettingFormProps) => {
   const { $t } = useIntl()
   const { edit, saveState } = props
-  const params = useParams()
-  const { aaaPolicyList, aaaPolicyIpList } = useGetAAAPolicyListQuery({ params }, {
-    refetchOnMountOrArgChange: 30,
-    pollingInterval: 30000,
-    selectFromResult: function ({ data }) {
-      return {
-        aaaPolicyList: data,
-        aaaPolicyIpList: data && data.data.length > 0 ? data.data.map(
-          policy => `${policy.primary!.ip!}:${policy.primary!.port!}`
-        ) : []
-      }
+  const { data: instanceListResult } = useGetAAAPolicyInstanceList({
+    queryOptions: {
+      refetchOnMountOrArgChange: 30,
+      pollingInterval: 30000
     }
   })
   const form = Form.useFormInstance()
   const { useWatch } = Form
-  const [enableSecondaryServer, type ] =
-    [useWatch('enableSecondaryServer'), useWatch('type')]
+  const [enableSecondaryServer, type ] = [useWatch('enableSecondaryServer'), useWatch('type')]
+
   const nameValidator = async (value: string) => {
-    const policyList = aaaPolicyList?.data!
+    const policyList = instanceListResult?.data!
+
     return checkObjectNotExists(policyList.filter(
       policy => edit ? policy.id !== saveState.id : true
     ).map(policy => ({ name: policy.name })), { name: value } ,
-    $t({ defaultMessage: 'AAA Policy' }))
+    $t(policyTypeLabelMapping[PolicyType.AAA]))
   }
+
   const radiusIpPortValidator = async (isPrimary: boolean) => {
     const primaryValue =
       `${form.getFieldValue(['primary', 'ip'])}:${form.getFieldValue(['primary', 'port'])}`
@@ -66,10 +60,9 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
         : `${saveState.secondary?.ip}:${saveState.secondary?.port}`
     }
 
-    if (aaaPolicyIpList
-      .filter(policy => edit ? policy !== stateValue : true)
-      .includes(value)
-    ) {
+    const existingPrimaryIpList = (instanceListResult?.data ?? []).map(policy => policy.primary)
+    // eslint-disable-next-line max-len
+    if (existingPrimaryIpList.filter(primaryIp => edit ? primaryIp !== stateValue : true).includes(value) ) {
       return Promise.reject($t({
         // eslint-disable-next-line max-len
         defaultMessage: 'IP address and Port combinations must be unique, there is an existing combination in the list.'
