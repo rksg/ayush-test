@@ -69,7 +69,6 @@ describe('Brand360', () => {
     mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', mockBrandTimeseries)
     mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', wrapData(prevTimeseries))
     mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', wrapData(currTimeseries))
-    mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', wrapData(currTimeseries))
 
     render(<Provider><Brand360 /></Provider>)
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
