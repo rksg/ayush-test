@@ -48,7 +48,7 @@ export const AirtimeB = (incident: Incident) => {
       chart: NetworkImpactChartTypes.RxPhyErrByAP,
       query: NetworkImpactQueryTypes.TopN,
       type: 'apAirtime',
-      dimension: 'phyErr'
+      dimension: 'phyError'
     },
     {
       chart: NetworkImpactChartTypes.APModelByAP,

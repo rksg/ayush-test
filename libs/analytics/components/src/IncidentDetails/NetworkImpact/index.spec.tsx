@@ -170,7 +170,7 @@ describe('NetworkImpact', () => {
         chart: NetworkImpactChartTypes.RxPhyErrByAP,
         query: NetworkImpactQueryTypes.TopN,
         type: 'apAirtime',
-        dimension: 'phyErr'
+        dimension: 'phyError'
       }]
     }
     const data = {

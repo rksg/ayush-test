@@ -562,7 +562,7 @@ exports[`Test Details should render AirtimeB correctly 1`] = `
             data-type="rogueAp"
           />
           <div
-            data-dimension="phyErr"
+            data-dimension="phyError"
             data-testid="network-impact-rxPhyErrByAP"
             data-type="apAirtime"
           />
@@ -1157,7 +1157,7 @@ exports[`Test Details should render AirtimeB correctly 2`] = `
             data-type="rogueAp"
           />
           <div
-            data-dimension="phyErr"
+            data-dimension="phyError"
             data-testid="network-impact-rxPhyErrByAP"
             data-type="apAirtime"
           />
@@ -1752,7 +1752,7 @@ exports[`Test Details should render AirtimeB correctly 3`] = `
             data-type="rogueAp"
           />
           <div
-            data-dimension="phyErr"
+            data-dimension="phyError"
             data-testid="network-impact-rxPhyErrByAP"
             data-type="apAirtime"
           />

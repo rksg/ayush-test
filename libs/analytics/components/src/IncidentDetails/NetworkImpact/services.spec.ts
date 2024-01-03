@@ -109,7 +109,7 @@ describe('networkImpactChartsApi', () => {
         chart: NetworkImpactChartTypes.RxPhyErrByAP,
         query: NetworkImpactQueryTypes.TopN,
         type: 'apAirtime',
-        dimension: 'phyErr'
+        dimension: 'phyError'
       }]
     }
     const { status, data, error } = await store.dispatch(
