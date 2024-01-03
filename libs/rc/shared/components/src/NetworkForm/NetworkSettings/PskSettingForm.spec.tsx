@@ -18,7 +18,7 @@ import {
   networksResponse,
   successResponse,
   networkDeepResponse,
-  mockMacRegistrationPoolList, mockUpdatedMacRegistrationPoolList
+  mockMacRegistrationPoolList, mockUpdatedMacRegistrationPoolList, mockAAAPolicyListResponse
 } from '../__tests__/fixtures'
 import { NetworkForm } from '../NetworkForm'
 
@@ -130,8 +130,8 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(networkDeepResponse))),
-      rest.get(AaaUrls.getAAAPolicyList.url,
-        (_, res, ctx) => res(ctx.json([{ id: '1', name: 'test1' }]))),
+      rest.post(AaaUrls.getAAAPolicyViewModelList.url,
+        (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse))),
       rest.post(CommonUrlsInfo.getNetworkDeepList.url,
         (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] }))),
       rest.post(
