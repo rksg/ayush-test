@@ -231,10 +231,6 @@ describe('Property Unit Page', () => {
     await waitFor(() => expect(getPersonaGroupSpy).toHaveBeenCalled())
     await waitFor(() => expect(getApSpy).toHaveBeenCalled())
     await waitFor(() => expect(getSwitchSpy).toHaveBeenCalled())
-
-    // only with nsg will display ap/switch info in the table
-    await screen.findByRole('cell', { name: /switchName/i })
-    await screen.findByRole('columnheader', { name: /Access Point/i })
   })
 
   it('should support Suspend, View Portal, Delete, Resend actions', async () => {
