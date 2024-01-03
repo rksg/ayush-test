@@ -27,7 +27,6 @@ import {
   transferToTableResult,
   AAAPolicyType,
   AaaUrls,
-  AAATempType,
   AAAViewModalType,
   l3AclPolicyInfoType,
   l2AclPolicyInfoType,
@@ -63,12 +62,13 @@ import {
   AccessCondition,
   PrioritizedPolicy,
   Assignment,
-  NewAPITableResult, transferNewResToTableResult, transferToNewTablePaginationParams
+  NewAPITableResult, transferNewResToTableResult,
+  transferToNewTablePaginationParams,
+  CommonResultWithEntityResponse
 } from '@acx-ui/rc/utils'
 import { basePolicyApi }     from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
 import { createHttpRequest } from '@acx-ui/utils'
-
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -715,7 +715,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    addAAAPolicy: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
+    addAAAPolicy: build.mutation<CommonResultWithEntityResponse<AAAPolicyType>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(AaaUrls.addAAAPolicy, params)
         return {
@@ -734,29 +734,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
-    }),
-    getAAAPolicyList: build.query<TableResult<AAATempType>, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(AaaUrls.getAAAPolicyList, params)
-        return {
-          ...req
-        }
-      },
-      providesTags: [{ type: 'AAA', id: 'LIST' }],
-      transformResponse (result: AAATempType[]) {
-        return { data: result, totalCount: result.length, page: 0 }
-      },
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, [
-            'AddRadius',
-            'UpdateRadius',
-            'DeleteRadiuses'
-          ], () => {
-            api.dispatch(policyApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
-          })
-        })
-      }
     }),
     getAAAPolicyViewModelList: build.query<TableResult<AAAViewModalType>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -2084,10 +2061,9 @@ export const {
   useLazyMacRegistrationsQuery,
   useAddAAAPolicyMutation,
   useDeleteAAAPolicyListMutation,
-  useGetAAAPolicyListQuery,
-  useLazyGetAAAPolicyListQuery,
   useUpdateAAAPolicyMutation,
   useAaaPolicyQuery,
+  useLazyAaaPolicyQuery,
   useAaaNetworkInstancesQuery,
   useGetAAAProfileDetailQuery,
   useAddVLANPoolPolicyMutation,

@@ -52,6 +52,7 @@ export enum Features {
   SIGPACK_UPGRADE = 'acx-ui-sigpack-upgrade',
   WIFI_EDA_BSS_PRIORITY_TOGGLE = 'wifi-eda-bss-priority-toggle',
   EOL_AP_2022_12_PHASE_2_TOGGLE = 'eol-ap-2022-12-phase-2-toggle',
+  WIFI_DOWNGRADE_VENUE_ABF_TOGGLE = 'wifi-downgrade-venue-abf-toggle',
   WIFI_EDA_WISPR_ALWAYS_ACCEPT_TOGGLE = 'wifi-eda-wispr-always-accept-toggle',
   NEW_OS_VENDOR_IN_DEVICE_POLICY = 'acx-ui-new-os-vendor-in-device-policy-toggle',
   SWITCH_STACK_UNIT_LIMITATION = 'switch-stack-unit-limitation',
@@ -135,12 +136,15 @@ export enum Features {
   RUCKUS_AI_ZONES_LIST = 'ruckus-ai-zones-toggle',
   LINKEDIN_OIDC_TOGGLE = 'guest-linkedin-openid-connect-toggle',
   TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs',
+  CONFIG_TEMPLATE = 'acx-ui-config-template',
   WIFI_EDA_CLIENT_REVOKE_TOGGLE = 'wifi-eda-client-revoke-toggle',
   LIST_OF_CLIENTS_PER_WLAN = 'acx-ui-list-of-clients-per-wlan-toggle',
   RUCKUS_AI_CRRM_PARTIAL = 'ruckus-ai-recommendations-crrm-partial-toggle',
   CRRM_PARTIAL = 'acx-ui-recommendations-crrm-partial-toggle',
   GROUP_BASED_LOGIN_TOGGLE = 'group-based-login-toggle',
-  GOOGLE_WORKSPACE_SSO_TOGGLE = 'google-workspace-sso-toggle'
+  GOOGLE_WORKSPACE_SSO_TOGGLE = 'google-workspace-sso-toggle',
+  WIFI_COMPATIBILITY_CHECK_TOGGLE = 'wifi-compatibility-check-toggle',
+  ANY_3RDPARTY_INVITE_TOGGLE = 'ptenant-any-3rdparty-invite-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

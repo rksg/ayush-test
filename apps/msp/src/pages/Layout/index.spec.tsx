@@ -138,6 +138,11 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+const mockedHasConfigTemplateAccess = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  hasConfigTemplateAccess: () => mockedHasConfigTemplateAccess
+}))
 
 describe('Layout', () => {
   let params: { tenantId: string }
@@ -167,6 +172,10 @@ describe('Layout', () => {
       return { data: {} }
     })
     mockServer.use(
+      rest.get(
+        FirmwareUrlsInfo.getFirmwareVersionIdList.url,
+        (req, res, ctx) => res(ctx.json(['6.2.1.103.1710']))
+      ),
       rest.post(
         CommonUrlsInfo.getAlarmsList.url,
         (req, res, ctx) => res(ctx.json({
@@ -204,7 +213,7 @@ describe('Layout', () => {
         (req, res, ctx) => res(ctx.json({}))
       ),
       rest.get(
-        UserUrlsInfo.getCloudScheduleVersion.url,
+        FirmwareUrlsInfo.getScheduledFirmware.url.replace('?status=scheduled', ''),
         (req, res, ctx) => res(ctx.json({}))
       )
     )
@@ -320,4 +329,14 @@ describe('Layout', () => {
     expect(screen.getByRole('menuitem', { name: 'Settings' })).toBeVisible()
   })
 
+  it('should render config template layout for MSP-Non-Var users', async () => {
+    mockedHasConfigTemplateAccess.mockReturnValue(true)
+
+    render(
+      <Provider>
+        <Layout />
+      </Provider>, { route: { params } })
+
+    expect(await screen.findByRole('menuitem', { name: 'Config Templates' })).toBeVisible()
+  })
 })

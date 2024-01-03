@@ -14,12 +14,12 @@ export enum PolicyOperation {
   LIST
 }
 
-interface PolicyRoutePathProps {
+export interface PolicyRoutePathProps {
   type: PolicyType;
   oper: PolicyOperation;
 }
 
-interface PolicyDetailsLinkProps extends PolicyRoutePathProps {
+export interface PolicyDetailsLinkProps extends PolicyRoutePathProps {
   oper: Exclude<PolicyOperation, PolicyOperation.CREATE>;
   policyId: string;
   activeTab?: MacRegistrationDetailsTabKey; // Union the other policies tab keys if needed
@@ -91,7 +91,6 @@ function hasTab ({ type, oper }: PolicyRoutePathProps): boolean {
   return false
 }
 
-// eslint-disable-next-line max-len
 export function getAdaptivePolicyDetailRoutePath (oper: PolicyOperation): string {
   const paths = ['policies']
   paths.push(typePathMapping[PolicyType.ADAPTIVE_POLICY])

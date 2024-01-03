@@ -44,6 +44,11 @@ export interface CommonResult {
   }
 }
 
+export interface CommonResultWithEntityResponse<EntityType> {
+  requestId: string
+  response: EntityType
+}
+
 export interface CommonErrorsResult<T> {
   data: {
     errors: T[];
@@ -93,7 +98,8 @@ export interface Venue {
   activatedApsId?: string[]
   dhcp?: { enabled: boolean }
   clients?: number
-  edges?: number
+  edges?: number,
+  incompatible?: number
 }
 
 export interface AlarmBase {

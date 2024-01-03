@@ -1,3 +1,4 @@
+import { Settings } from '@acx-ui/analytics/utils'
 import { Provider } from '@acx-ui/store'
 import {
   render,
@@ -33,7 +34,13 @@ describe('SlaTile', () => {
     tableData: fetchBrandProperties() as unknown as Response[],
     chartData: franchisorTimeseries as unknown as FranchisorTimeseries,
     prevData: prevTimeseries as unknown as FranchisorTimeseries,
-    currData: currTimeseries as unknown as FranchisorTimeseries
+    currData: currTimeseries as unknown as FranchisorTimeseries,
+    settings: {
+      'brand-ssid-compliance-matcher': '^[a-zA-Z0-9]{5}_GUEST$',
+      'sla-p1-incidents-count': '0',
+      'sla-guest-experience': '100',
+      'sla-brand-ssid-compliance': '100'
+    } as Settings
   }
 
   it('should render correctly by lsp', async () => {
@@ -89,7 +96,13 @@ describe('SlaTile', () => {
         chartData: undefined,
         currData: undefined,
         prevData: undefined,
-        sliceType: 'lsp' as const
+        sliceType: 'lsp' as const,
+        settings: {
+          'brand-ssid-compliance-matcher': '^[a-zA-Z0-9]{5}_GUEST$',
+          'sla-p1-incidents-count': '0',
+          'sla-guest-experience': '100',
+          'sla-brand-ssid-compliance': '100'
+        } as Settings
       }
       return () => <SlaTile {...props} />
     })
@@ -116,7 +129,13 @@ describe('SlaTile', () => {
         chartData: undefined,
         currData: undefined,
         prevData: undefined,
-        sliceType: 'property' as const
+        sliceType: 'property' as const,
+        settings: {
+          'brand-ssid-compliance-matcher': '^[a-zA-Z0-9]{5}_GUEST$',
+          'sla-p1-incidents-count': '0',
+          'sla-guest-experience': '100',
+          'sla-brand-ssid-compliance': '100'
+        } as Settings
       }
       return () => <SlaTile {...props} />
     })
