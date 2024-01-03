@@ -60,7 +60,9 @@ describe('Brand360', () => {
     services.useMspCustomerListDropdownQuery = jest.fn().mockImplementation(() => {
       return { data: propertiesMappingData }
     })
-    mockGraphqlQuery(dataApiURL, 'FranchisorZones', { data: { franchisorZones } })
+    mockGraphqlQuery(dataApiURL, 'FranchisorZones', {
+      data: { franchisorZones: franchisorZones.data }
+    })
     jest.useFakeTimers()
     jest.setSystemTime(new Date(Date.parse('2023-12-12T00:00:00+00:00')))
   })
