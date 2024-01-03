@@ -1,9 +1,9 @@
 /* eslint-disable max-len */
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { LiteralElement } from '@formatjs/icu-messageformat-parser'
 import { Space }          from 'antd'
-import _                  from 'lodash'
+import _, { set }         from 'lodash'
 import { useIntl }        from 'react-intl'
 
 import { Subtitle, Tooltip, Table, TableProps, Loader, showActionModal  } from '@acx-ui/components'
@@ -151,6 +151,18 @@ export const ConnectedClientsTable = (props: {
     }
   }, [searchString])
 
+
+  function getAllNetworkTypeMessage () : { key :string, value: string, label?: React.ReactNode }[] {
+    let allNetwork : { key :string, value: string, label?: React.ReactNode }[] = []
+    Object.entries(networkTypes).forEach(([_, value]) => {
+      if (value.defaultMessage !== undefined) {
+        const network = value.defaultMessage[0] as unknown as LiteralElement
+        allNetwork.push({ key: network.value, value: network.value, label: network.value })
+      }
+
+    })
+    return allNetwork
+  }
 
   function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
     const { $t } = useIntl()
@@ -327,9 +339,7 @@ export const ConnectedClientsTable = (props: {
         dataIndex: ['networkType'],
         sorter: true,
         render: (_: React.ReactNode, row: ClientList) => row.networkType || noDataDisplay,
-        filterable: _.uniqWith(tableQuery.data?.data.map((result)=> {
-          return { key: result.networkType, value: result.networkType }
-        }), _.isEqual)
+        filterable: getAllNetworkTypeMessage()
       }] : []),
       {
         key: 'sessStartTime',
