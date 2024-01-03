@@ -48,12 +48,8 @@ const DateLink = ({ value, disabled }: { value: RecommendationListItem, disabled
     </TenantLink>
 }
 
-interface RowProps extends React.HTMLAttributes<HTMLTableRowElement> {
-  'data-row-key': string
-  // children: RecommendationListItem[]
-}
+interface RowProps extends React.HTMLAttributes<HTMLTableRowElement> { 'data-row-key': string }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function RowTooltip (props: RowProps) {
   const { $t } = getIntl()
   const row = (props.children as React.ReactNode[])?.filter(
