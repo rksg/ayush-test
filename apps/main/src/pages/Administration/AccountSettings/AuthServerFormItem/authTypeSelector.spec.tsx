@@ -1,5 +1,3 @@
-import { Form } from 'antd'
-
 import { Provider } from '@acx-ui/store'
 import {
   render,
@@ -18,11 +16,9 @@ describe('Auth Type Selector', () => {
   it('should render correctly when not sso configured', async () => {
     render(
       <Provider>
-        <Form>
-          <AuthenticationSelector
-            ssoConfigured={false}
-            setSelected={() => void {}} />
-        </Form>
+        <AuthenticationSelector
+          ssoConfigured={false}
+          setSelected={() => void {}} />
       </Provider>, {
         route: { params }
       })
@@ -36,11 +32,9 @@ describe('Auth Type Selector', () => {
   it('should render correctly when sso configured', async () => {
     render(
       <Provider>
-        <Form>
-          <AuthenticationSelector
-            ssoConfigured={true}
-            setSelected={() => void {}} />
-        </Form>
+        <AuthenticationSelector
+          ssoConfigured={true}
+          setSelected={() => void {}} />
       </Provider>, {
         route: { params }
       })

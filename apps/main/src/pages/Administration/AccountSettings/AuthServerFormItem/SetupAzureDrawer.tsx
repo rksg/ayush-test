@@ -205,7 +205,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
       }
 
       const allowedDomains =
-        isGroupBasedLoginEnabled ? form.getFieldValue('domains').split(',') : undefined
+        isGroupBasedLoginEnabled ? form.getFieldValue('domains')?.split(',') : undefined
       if(isEditMode) {
         const ssoEditData: TenantAuthentications = {
           name: metadataFile.name,
@@ -239,7 +239,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
   const okHandlerGoogle = async () => {
     try {
       const allowedDomains =
-        isGroupBasedLoginEnabled ? form.getFieldValue('domains').split(',') : undefined
+        isGroupBasedLoginEnabled ? form.getFieldValue('domains')?.split(',') : undefined
       const clientId = form.getFieldValue('clientId')
       const secret = form.getFieldValue('secret')
 
@@ -275,13 +275,18 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
   const domainsValidator = async (value: string) => {
     // eslint-disable-next-line max-len
     const re = new RegExp(/(^((22[0-3]|2[0-1][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9]?)\.)((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){2}((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))$)|(^(\b((?=[A-Za-z0-9-]{1,63}\.)(xn--)?[A-Za-z0-9]+(-[A-Za-z0-9]+)*\.)+[A-Za-z]{2,63}\b)$)/)
-    const domains = value.split(',')
+    const domains = value?.split(',')
     let invalid = false
-    domains.forEach((domain) => {
-      if (!re.test(domain.trim())) {
-        invalid = true
-      }
-    })
+    if (!domains || domains.length === 0) {
+      invalid = true
+    }
+    else {
+      domains.forEach((domain) => {
+        if (!re.test(domain.trim())) {
+          invalid = true
+        }
+      })
+    }
     return invalid ? Promise.reject(
       `${$t({ defaultMessage: 'Please enter domains separated by comma' })} `
     ) : Promise.resolve()
