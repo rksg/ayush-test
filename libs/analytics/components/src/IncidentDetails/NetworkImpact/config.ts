@@ -1,8 +1,9 @@
-import _                                               from 'lodash'
-import { defineMessage, IntlShape, MessageDescriptor } from 'react-intl'
+import _                                    from 'lodash'
+import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import { mapCodeToReason, Incident } from '@acx-ui/analytics/utils'
 import { formatter }                 from '@acx-ui/formatter'
+import { getIntl }                   from '@acx-ui/utils'
 
 import { apRebootReasonMap }      from './apRebootReasonMap'
 import { NetworkImpactChartData } from './services'
@@ -13,27 +14,63 @@ export type NetworkImpactType = 'ap'
 | 'apReboot'
 | 'apRebootEvent'
 | 'apInfra'
+| 'airtimeMetric'
+| 'airtimeFrame'
+| 'airtimeCast'
+| 'airtimeClientsByAP'
+
+export enum NetworkImpactChartTypes {
+  AirtimeBusy = 'airtimeBusy',
+  AirtimeCast = 'airtimeCast',
+  AirtimeClientsByAP = 'airtimeClientsByAP',
+  AirtimeMgmtFrame = 'airtimeMgmtFrame',
+  AirtimeRx = 'airtimeRx',
+  AirtimeTx = 'airtimeTx',
+  APFwVersionByAP = 'apFwVersionByAP',
+  APModel = 'apModel',
+  APModelByAP = 'apModelByAP',
+  APVersion = 'apVersion',
+  ClientManufacturer = 'clientManufacturer',
+  EventTypeByAP = 'eventTypeByAP',
+  OS = 'os',
+  Radio = 'radio',
+  RebootReasonByAP = 'rebootReasonByAP',
+  RebootReasonsByEvent = 'rebootReasonsByEvent',
+  Reason = 'reason',
+  ReasonByAP = 'reasonByAP',
+  WLAN = 'WLAN'
+}
+
+export enum NetworkImpactQueryTypes {
+  TopN = 'topN',
+  Distribution = 'distribution'
+}
 
 export type NetworkImpactChartConfig = {
   chart: NetworkImpactChartTypes
+  query: NetworkImpactQueryTypes
   type: NetworkImpactType
   dimension: string
+}
+
+export type DominanceSummary = {
+  dominance: MessageDescriptor,
+  broad: MessageDescriptor
 }
 
 export interface NetworkImpactChart {
   title: MessageDescriptor
   tooltipFormat: MessageDescriptor
+  dataFomatter?: (value: unknown, tz?: string | undefined) => string
+  valueFormatter?: (value: unknown, tz?: string | undefined) => string
   dominanceFn?: (data: NetworkImpactChartData['data'], incident: Incident) => {
     key: string
     value: number
     percentage: number
   } | null,
-  transformKeyFn?: (key: string, intl: IntlShape) => string
-  transformValueFn?: (val: number, intl: IntlShape) => number
-  summary: {
-    dominance: MessageDescriptor,
-    broad: MessageDescriptor
-  }
+  transformKeyFn?: (key: string) => string
+  transformValueFn?: (val: number) => number
+  summary: DominanceSummary | MessageDescriptor
 }
 
 export const getDataWithPercentage = (data: NetworkImpactChartData['data']) => {
@@ -44,9 +81,50 @@ export const getDataWithPercentage = (data: NetworkImpactChartData['data']) => {
 export const getDominance = (data: NetworkImpactChartData['data']) =>
   _.maxBy(getDataWithPercentage(data), 'percentage')
 
-export const getAPRebootReason = (key: string, { $t }: IntlShape) => {
+export const getAPRebootReason = (key: string) => {
+  const { $t } = getIntl()
   const content = _.get(apRebootReasonMap, key.replace(/cubic/ig, 'cia'))
   return content ? $t(content) : key
+}
+
+export const transformAirtimeMetricKey = (key: string) => {
+  const { $t } = getIntl()
+  const map = {
+    airtimeBusy: $t({ defaultMessage: 'Airtime Busy' }),
+    airtimeRx: $t({ defaultMessage: 'Airtime Rx' }),
+    airtimeTx: $t({ defaultMessage: 'Airtime Tx' }),
+    airtimeIdle: $t({ defaultMessage: 'Airtime Idle' })
+  }
+  return _.get(map, key, '')
+}
+
+export const transformAirtimeFrame = (key: string) => {
+  const { $t } = getIntl()
+  const map = {
+    mgmtFrames: $t({ defaultMessage: 'Mgmt. Frames' }),
+    dataFrames: $t({ defaultMessage: 'Data Frames' })
+  }
+  return _.get(map, key, '')
+}
+
+export const transformAirtimeCast = (key: string) => {
+  const { $t } = getIntl()
+  const map = {
+    txUnicastFrames: $t({ defaultMessage: 'Unicast Frames' }),
+    txBroadcastFrames: $t({ defaultMessage: 'Broadcast Frames' }),
+    txMulticastFrames: $t({ defaultMessage: 'Multicast Frames' })
+  }
+  return _.get(map, key, '')
+}
+
+export const transformAirtimeClientsByAP = (key: string) => {
+  const { $t } = getIntl()
+  const map = {
+    small: $t({ defaultMessage: 'Less than 30 clients' }),
+    medium: $t({ defaultMessage: '31 to 50 clients' }),
+    large: $t({ defaultMessage: 'More than 50 clients' })
+  }
+  return _.get(map, key, '')
 }
 
 const dominanceThreshold = 0.7
@@ -87,6 +165,10 @@ const tooltipFormats = {
       one {event}
       other {events}
     }</b></space>`
+  }),
+  distribution: defineMessage({
+    defaultMessage: `{name}<br></br>
+    <space><b>{formattedValue}</b></space>`
   })
 }
 
@@ -97,22 +179,6 @@ const dominanceFormats = {
   ofReason: defineMessage({
     defaultMessage: "{percentage} of failures caused by ''{dominant}''"
   })
-}
-
-export enum NetworkImpactChartTypes {
-  APFwVersionByAP = 'apFwVersionByAP',
-  APModel = 'apModel',
-  APModelByAP = 'apModelByAP',
-  APVersion = 'apVersion',
-  ClientManufacturer = 'clientManufacturer',
-  EventTypeByAP = 'eventTypeByAP',
-  OS = 'os',
-  Radio = 'radio',
-  RebootReasonByAP = 'rebootReasonByAP',
-  RebootReasonsByEvent = 'rebootReasonsByEvent',
-  Reason = 'reason',
-  ReasonByAP = 'reasonByAP',
-  WLAN = 'WLAN',
 }
 
 export const networkImpactChartConfigs: Readonly<Record<
@@ -293,5 +359,45 @@ export const networkImpactChartConfigs: Readonly<Record<
         }`
       })
     }
+  },
+  [NetworkImpactChartTypes.AirtimeBusy]: {
+    title: defineMessage({ defaultMessage: 'Airtime Busy' }),
+    tooltipFormat: tooltipFormats.distribution,
+    dataFomatter: formatter('percentFormat'),
+    transformKeyFn: transformAirtimeMetricKey,
+    summary: defineMessage({ defaultMessage: 'Peak airtime busy was {count}' })
+  },
+  [NetworkImpactChartTypes.AirtimeTx]: {
+    title: defineMessage({ defaultMessage: 'Airtime Tx' }),
+    tooltipFormat: tooltipFormats.distribution,
+    dataFomatter: formatter('percentFormat'),
+    transformKeyFn: transformAirtimeMetricKey,
+    summary: defineMessage({ defaultMessage: 'Peak airtime Tx was {count}' })
+  },
+  [NetworkImpactChartTypes.AirtimeRx]: {
+    title: defineMessage({ defaultMessage: 'Airtime Rx' }),
+    tooltipFormat: tooltipFormats.distribution,
+    dataFomatter: formatter('percentFormat'),
+    transformKeyFn: transformAirtimeMetricKey,
+    summary: defineMessage({ defaultMessage: 'Peak airtime Rx was {count}' })
+  },
+  [NetworkImpactChartTypes.AirtimeMgmtFrame]: {
+    title: defineMessage({ defaultMessage: 'Average % of Mgmt. Frames' }),
+    tooltipFormat: tooltipFormats.distribution,
+    transformKeyFn: transformAirtimeFrame,
+    summary: defineMessage({ defaultMessage: 'Peak percentage of mgmt. frames was {count}' })
+  },
+  [NetworkImpactChartTypes.AirtimeCast]: {
+    title: defineMessage({ defaultMessage: 'Average % of MC & BC Frames' }),
+    tooltipFormat: tooltipFormats.distribution,
+    transformKeyFn: transformAirtimeCast,
+    summary: defineMessage({ defaultMessage: 'Peak percentage of MC & BC frames was {count}' })
+  },
+  [NetworkImpactChartTypes.AirtimeClientsByAP]: {
+    title: defineMessage({ defaultMessage: 'Average Peak No. of Clients per AP' }),
+    tooltipFormat: tooltipFormats.aps,
+    valueFormatter: formatter('countFormatRound'),
+    transformKeyFn: transformAirtimeClientsByAP,
+    summary: defineMessage({ defaultMessage: 'Peak number of clients per AP was {count}' })
   }
 }

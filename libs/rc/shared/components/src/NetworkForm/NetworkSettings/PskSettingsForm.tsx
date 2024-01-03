@@ -36,6 +36,7 @@ import {
 
 import AAAInstance                 from '../AAAInstance'
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
+import { MLOContext }              from '../NetworkForm'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
@@ -85,14 +86,16 @@ export function PskSettingsForm () {
     </Row>
     {!(editMode) && <Row>
       <Col span={24}>
-        <NetworkMoreSettingsForm wlanData={data} />
+        <NetworkMoreSettingsForm
+          wlanData={data} />
       </Col>
     </Row>}
   </>)
 }
 
 function SettingsForm () {
-  const { editMode, data, setData } = useContext(NetworkFormContext)
+  const { editMode, cloneMode, data, setData } = useContext(NetworkFormContext)
+  const { disableMLO } = useContext(MLOContext)
   const intl = useIntl()
   const form = Form.useFormInstance()
   const [
@@ -182,6 +185,13 @@ function SettingsForm () {
         }
       }
     })
+
+    if(value === WlanSecurityEnum.WPA23Mixed){
+      disableMLO(true)
+      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
+    } else {
+      disableMLO(false)
+    }
   }
   const onMacAuthChange = (checked: boolean) => {
     setData && setData({
@@ -204,8 +214,20 @@ function SettingsForm () {
           macRegistrationListId: data.wlan?.macRegistrationListId
         }
       })
+      if (editMode && data && data?.wlan?.wlanSecurity === WlanSecurityEnum.WPA23Mixed) {
+        disableMLO(true)
+        form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
+      }
     }
   },[data])
+
+  useEffect(() => {
+    if (!editMode && !cloneMode) {
+      if (!wlanSecurity || !Object.keys(PskWlanSecurityEnum).includes(wlanSecurity)) {
+        form.setFieldValue(['wlan', 'wlanSecurity'], WlanSecurityEnum.WPA2Personal)
+      }
+    }
+  }, [cloneMode, editMode, form, wlanSecurity])
 
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const disablePolicies = !useIsSplitOn(Features.POLICIES)

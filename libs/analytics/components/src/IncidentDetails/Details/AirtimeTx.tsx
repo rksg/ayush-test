@@ -4,12 +4,13 @@ import { useIntl }    from 'react-intl'
 import { calculateSeverity, Incident, shortDescription } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol }    from '@acx-ui/components'
 
-import { FixedAutoSizer }                    from '../../DescriptionSection/styledComponents'
-import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
-import { Insights }                          from '../Insights'
-import { NetworkImpact, NetworkImpactProps } from '../NetworkImpact'
-import { TimeSeries }                        from '../TimeSeries'
-import { TimeSeriesChartTypes }              from '../TimeSeries/config'
+import { FixedAutoSizer }                                   from '../../DescriptionSection/styledComponents'
+import { IncidentAttributes, Attributes }                   from '../IncidentAttributes'
+import { Insights }                                         from '../Insights'
+import { NetworkImpact, NetworkImpactProps }                from '../NetworkImpact'
+import { NetworkImpactChartTypes, NetworkImpactQueryTypes } from '../NetworkImpact/config'
+import { TimeSeries }                                       from '../TimeSeries'
+import { TimeSeriesChartTypes }                             from '../TimeSeries/config'
 
 import MuteIncident from './MuteIncident'
 
@@ -27,7 +28,32 @@ export const AirtimeTx = (incident: Incident) => {
     Attributes.EventEndTime
   ]
 
-  const networkImpactCharts: NetworkImpactProps['charts'] = []
+  const networkImpactCharts: NetworkImpactProps['charts'] = [
+    {
+      chart: NetworkImpactChartTypes.AirtimeTx,
+      query: NetworkImpactQueryTypes.Distribution,
+      type: 'airtimeMetric',
+      dimension: 'airtimeTx'
+    },
+    {
+      chart: NetworkImpactChartTypes.AirtimeMgmtFrame,
+      query: NetworkImpactQueryTypes.Distribution,
+      type: 'airtimeFrame',
+      dimension: 'summary'
+    },
+    {
+      chart: NetworkImpactChartTypes.AirtimeCast,
+      query: NetworkImpactQueryTypes.Distribution,
+      type: 'airtimeCast',
+      dimension: 'summary'
+    },
+    {
+      chart: NetworkImpactChartTypes.AirtimeClientsByAP,
+      query: NetworkImpactQueryTypes.Distribution,
+      type: 'airtimeClientsByAP',
+      dimension: 'summary'
+    }
+  ]
 
   const timeSeriesCharts: TimeSeriesChartTypes[] = [
     TimeSeriesChartTypes.AirtimeUtilizationChart
@@ -63,10 +89,7 @@ export const AirtimeTx = (incident: Incident) => {
           <Insights incident={incident} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '228px' }}>
-          {/* TODO: remove conditional check after adding networkImpactCharts */}
-          { networkImpactCharts.length > 0
-            ? <NetworkImpact incident={incident} charts={networkImpactCharts} />
-            : null}
+          <NetworkImpact incident={incident} charts={networkImpactCharts} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '250px' }}>
           <TimeSeries
