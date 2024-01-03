@@ -20,15 +20,13 @@ import {
   HeaderContext,
   RegionButton
 } from '@acx-ui/main/components'
-import {
-  useMspEntitlementListQuery,
-  useGetTenantDetailQuery
-} from '@acx-ui/msp/services'
+import { useGetTenantDetailQuery, useMspEntitlementListQuery }                      from '@acx-ui/msp/services'
 import { CloudMessageBanner }                                                       from '@acx-ui/rc/components'
+import { ConfigTemplateContext }                                                    from '@acx-ui/rc/utils'
 import { Outlet, useParams, useNavigate, useTenantLink, TenantNavLink, TenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                                from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                                          from '@acx-ui/user'
-import { AccountType, PverName, getJwtTokenPayload, isDelegationMode }              from '@acx-ui/utils'
+import { PverName, getJwtTokenPayload, isDelegationMode, AccountType }              from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 import * as UI           from './styledComponents'
@@ -81,7 +79,7 @@ function Layout () {
     if (data && userProfile) {
       const isRecDelegation = nonVarDelegation && data.tenantType === AccountType.REC
       if (!isSupportToMspDashboardAllowed &&
-         (userProfile?.support || userProfile?.dogfood || isRecDelegation)) {
+        (userProfile?.support || userProfile?.dogfood || isRecDelegation)) {
         setTenantType('SUPPORT')
       } else {
         setTenantType(data.tenantType)
@@ -150,3 +148,9 @@ function LayoutWithSplitProvider () {
 }
 
 export default LayoutWithSplitProvider
+
+export function LayoutWithConfigTemplateContext () {
+  return <ConfigTemplateContext.Provider value={{ isTemplate: true }}>
+    <Outlet />
+  </ConfigTemplateContext.Provider>
+}

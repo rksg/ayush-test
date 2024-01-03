@@ -790,6 +790,29 @@ export const cloudPathDataNone = {
     bypassCNA: false
   }
 }
+
+export const mockedCloudPathAuthRadius = {
+  id: '21',
+  name: 'auth1',
+  primary: {
+    ip: '123.123.123.1',
+    port: 1187,
+    sharedSecret: '12345678'
+  },
+  type: 'AUTHENTICATION'
+}
+
+export const mockedCloudPathAcctRadius = {
+  id: '22',
+  name: 'auth1',
+  primary: {
+    ip: '12.12.12.1',
+    port: 1187,
+    sharedSecret: '12345678'
+  },
+  type: 'ACCOUNTING'
+}
+
 export const wisprDataNone = {
   guestPortal: {
     walledGardens: ['aa.com'],
@@ -1732,16 +1755,63 @@ export const mockPolicySetList = {
   ]
 }
 
-export const mockAAAPolicyResponse = [{
-  id: '1',
-  name: 'test1',
-  type: 'AUTHENTICATION',
+export const mockAAAPolicyListResponse = {
+  page: 1,
+  totalCount: 2,
+  data: [
+    {
+      name: 'test1',
+      type: 'AUTHENTICATION',
+      primary: '1.1.1.2:1812',
+      id: '1'
+    },
+    {
+      name: 'policy-id',
+      type: 'AUTHENTICATION',
+      primary: '2.3.3.4:101',
+      secondary: '2.3.3.4:1187',
+      id: '2'
+    }
+  ]
+}
+
+export const mockAAAPolicyTemplateListResponse = {
+  page: 1,
+  totalCount: 2,
+  data: [
+    {
+      name: 'AAA-Template1',
+      type: 'AUTHENTICATION',
+      primary: '11.11.11.1:1812',
+      id: '1'
+    },
+    {
+      name: 'AAA-Template2',
+      type: 'ACCOUNTING',
+      primary: '12.12.12.1:1011',
+      secondary: '12.12.12.2:1187',
+      id: '2'
+    }
+  ]
+}
+
+export const mockAAAPolicyTemplateResponse = mockAAAPolicyTemplateListResponse.data[1]
+
+export const mockAAAPolicyNewCreateResponse = {
+  id: '3',
+  name: 'test 3',
   primary: {
-    ip: '1.1.1.2',
-    port: 1812,
-    sharedSecret: '111211121112'
-  }
-}]
+    ip: '123.123.123.1',
+    port: 1187,
+    sharedSecret: '12345678'
+  },
+  secondary: {
+    ip: '123.123.123.2',
+    port: 1187,
+    sharedSecret: '12345678'
+  },
+  type: 'AUTHENTICATION'
+}
 
 export const vlanList = [{
   tenantId: 'd1ec841a4ff74436b23bca6477f6a631',
