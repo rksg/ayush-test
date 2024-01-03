@@ -1,4 +1,13 @@
-import { ClientIsolationVenue, DpskWlanAdvancedCustomization, NetworkSaveData, NetworkTypeEnum, NetworkVenue, RadioEnum, TunnelTypeEnum } from '@acx-ui/rc/utils'
+import {
+  ClientIsolationVenue,
+  DpskWlanAdvancedCustomization,
+  MaxRateEnum,
+  NetworkSaveData,
+  NetworkTypeEnum,
+  NetworkVenue,
+  RadioEnum,
+  TunnelTypeEnum, WlanSecurityEnum
+} from '@acx-ui/rc/utils'
 
 import { updateClientIsolationAllowlist, tranferSettingsToSave, transferMoreSettingsToSave } from './parser'
 
@@ -121,21 +130,113 @@ describe('NetworkForm parser', () => {
     })
   })
 
-  describe('transfer AccessControl settings', () => {
-    it('verify the AccessControlSet profile and subprofile settings', () => {
+  describe('transfer NetworkMoreSettings', () => {
+    it('verify the AccessControlSet profile and subprofile settings with dnsProxyEnabled', () => {
       const incomingData: NetworkSaveData = {
         type: NetworkTypeEnum.OPEN,
         accessControlProfileEnable: true,
         wlan: {
           advancedCustomization: {
             accessControlProfileId: 'testId',
-            devicePolicyId: 'devicePolicyId'
+            l2AclPolicyId: 'removeL2Id',
+            l3AclPolicyId: 'removeL3Id',
+            l2AclEnable: false,
+            l3AclEnable: false,
+            devicePolicyId: 'devicePolicyId',
+            dnsProxyEnabled: true,
+            dnsProxyRules: [{
+              domainName: 'test.com',
+              ipList: ['192.168.0.100']
+            }]
           }
-        } as unknown as NetworkSaveData
-      }
+        }
+      } as unknown as NetworkSaveData
 
       // eslint-disable-next-line max-len
       expect(transferMoreSettingsToSave(incomingData, incomingData)).not.toHaveProperty('devicePolicy')
+    })
+
+    it('verify the loadControlForm with maxRate unlimited', () => {
+      const incomingData: NetworkSaveData = {
+        type: NetworkTypeEnum.OPEN,
+        accessControlProfileEnable: true,
+        wlan: {
+          advancedCustomization: {
+            dnsProxyEnabled: true,
+            dnsProxyRules: [{
+              domainName: 'test.com',
+              ipList: ['192.168.0.100']
+            }]
+          }
+        },
+        maxRate: MaxRateEnum.UNLIMITED
+      } as unknown as NetworkSaveData
+
+      expect(transferMoreSettingsToSave(incomingData, incomingData))
+        .toHaveProperty(['wlan', 'advancedCustomization', 'totalUplinkRateLimiting'])
+    })
+
+    it('verify the loadControlForm with maxRate pre-ap', () => {
+      const incomingData: NetworkSaveData = {
+        type: NetworkTypeEnum.OPEN,
+        accessControlProfileEnable: true,
+        wlan: {
+          advancedCustomization: {
+            dnsProxyEnabled: true,
+            dnsProxyRules: [{
+              domainName: 'test.com',
+              ipList: ['192.168.0.100']
+            }]
+          }
+        },
+        maxRate: MaxRateEnum.PER_AP,
+        totalUplinkLimited: false,
+        totalDownlinkLimited: false
+      } as unknown as NetworkSaveData
+
+      expect(transferMoreSettingsToSave(incomingData, incomingData))
+        .toHaveProperty(['wlan', 'advancedCustomization', 'totalUplinkRateLimiting'])
+    })
+  })
+
+  describe('transfer AAASetting data', () => {
+    it('verify the AAASetting data', () => {
+      const incomingData: NetworkSaveData = {
+        type: NetworkTypeEnum.AAA,
+        authRadiusId: '',
+        authRadius: {
+          primary: {
+            ip: '1.1.1.1'
+          }
+        },
+        wlan: {
+          advancedCustomization: {}
+        },
+        enableAccountingService: true
+      } as unknown as NetworkSaveData
+
+      // eslint-disable-next-line max-len
+      expect(tranferSettingsToSave(incomingData, false)).toHaveProperty('authRadiusId')
+    })
+
+    it('verify the AAASetting data with WPA3 and editMode', () => {
+      const incomingData: NetworkSaveData = {
+        type: NetworkTypeEnum.AAA,
+        authRadiusId: '',
+        authRadius: {
+          primary: {
+            ip: '1.1.1.1'
+          }
+        },
+        wlan: {
+          advancedCustomization: {}
+        },
+        wlanSecurity: WlanSecurityEnum.WPA3,
+        enableAccountingService: true
+      } as unknown as NetworkSaveData
+
+      // eslint-disable-next-line max-len
+      expect(tranferSettingsToSave(incomingData, true)).not.toHaveProperty(['wlan', 'vlanId'])
     })
   })
 })

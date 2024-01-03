@@ -165,6 +165,7 @@ export const PortalForm = (props:{
         currentLang, setCurrentLang }}>
         <StepsFormLegacy<Portal>
           formRef={formRef}
+          editMode={editMode}
           onCancel={() => networkView? backToNetwork?.()
             : navigate(linkToServices)}
           onFinish={async (data) => {
