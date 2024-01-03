@@ -1,3 +1,7 @@
+import { QueryReturnValue }                                   from '@reduxjs/toolkit/dist/query/baseQueryTypes'
+import { MaybePromise }                                       from '@reduxjs/toolkit/dist/query/tsHelpers'
+import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
+
 import {
   enableNewApi,
   isDev, isIntEnv,
@@ -6,8 +10,15 @@ import {
   isIgnoreErrorModal, isShowApiError,
   createHttpRequest,
   getFilters,
-  getUrlForTest
+  getUrlForTest,
+  patchApi
 } from './apiService'
+
+const fetchWithBQSuccess: (arg: string | FetchArgs) => MaybePromise<QueryReturnValue<
+unknown, FetchBaseQueryError, FetchBaseQueryMeta>> = jest.fn().mockResolvedValue('success')
+
+const fetchWithBQFail: (arg: string | FetchArgs) => MaybePromise<QueryReturnValue<
+unknown, FetchBaseQueryError, FetchBaseQueryMeta>> = jest.fn().mockRejectedValue('error')
 
 describe('ApiInfo', () => {
   it('Check the envrionment', async () => {
@@ -69,6 +80,34 @@ describe('ApiInfo', () => {
     expect(createHttpRequest(apiInfo2)).toStrictEqual(httpRequest)
     expect(getUrlForTest(apiInfo1)).toBe('/venues/aaaServers/query')
     expect(getUrlForTest(apiInfo2)).toBe('/venues/aaaServers/query')
+  })
+
+  it('patchApi: success', async () => {
+    expect(await patchApi(
+      {
+        method: 'delete',
+        url: '/venues/{venueId}/switches'
+      },
+      [
+        { params: { venueId: '905493085d224d1aabfbcf91e5139218' }, payload: ['FMF4250Q06L'] },
+        { params: { venueId: '905493085d224d1aabfbcf91e5139219' }, payload: ['FMF4250Q07L'] }
+      ],
+      fetchWithBQSuccess
+    )).toEqual({ data: ['success', 'success'] })
+  })
+
+  it('patchApi: fail', async () => {
+    expect(await patchApi(
+      {
+        method: 'delete',
+        url: '/venues/{venueId}/switches'
+      },
+      [
+        { params: { venueId: '905493085d224d1aabfbcf91e5139218' }, payload: ['FMF4250Q06L'] },
+        { params: { venueId: '905493085d224d1aabfbcf91e5139219' }, payload: ['FMF4250Q07L'] }
+      ],
+      fetchWithBQFail
+    )).toEqual('error')
   })
 
 })
