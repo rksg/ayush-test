@@ -58,8 +58,8 @@ import {
   SEARCH,
   SORTER
 } from '@acx-ui/rc/utils'
-import { baseSwitchApi }     from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
+import { baseSwitchApi }               from '@acx-ui/store'
+import { RequestPayload }              from '@acx-ui/types'
 import { createHttpRequest, patchApi } from '@acx-ui/utils'
 
 export type SwitchsExportPayload = {
@@ -146,7 +146,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       providesTags: [{ type: 'Switch', id: 'StackMemberList' }]
     }),
     patchDeleteSwitch: build.mutation<void, RequestPayload[]>({
-      async queryFn(requests, _queryApi, _extraOptions, fetchWithBQ) {    
+      async queryFn (requests, _queryApi, _extraOptions, fetchWithBQ) {
         return patchApi(SwitchUrlsInfo.deleteSwitches, requests, fetchWithBQ)
         // const promises = requests.map((arg) => {
         //   const req = createHttpRequest(SwitchUrlsInfo.deleteSwitches, arg.params)
@@ -154,14 +154,14 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         //     ...req,
         //     body: arg.payload
         //   })
-        // });
-        // return Promise.all(promises)
-        // .then((results) => {
-        //   return { data: results }
         // })
-        // .catch((error)=>{
-        //   return error
-        // })                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+        // return Promise.all(promises)
+        //   .then((results) => {
+        //     return { data: results }
+        //   })
+        //   .catch((error)=>{
+        //     return error
+        //   })
       },
       invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
     }),

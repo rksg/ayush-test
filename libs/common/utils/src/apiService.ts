@@ -1,14 +1,14 @@
-import _                        from 'lodash'
-import { generatePath, Params } from 'react-router-dom'
+import { QueryReturnValue }                                   from '@reduxjs/toolkit/dist/query/baseQueryTypes'
+import { MaybePromise }                                       from '@reduxjs/toolkit/dist/query/tsHelpers'
+import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
+import _                                                      from 'lodash'
+import { generatePath, Params }                               from 'react-router-dom'
 
-import { get } from '@acx-ui/config'
+import { get }            from '@acx-ui/config'
+import { RequestPayload } from '@acx-ui/types'
 
 import { getTenantId }                       from './getTenantId'
 import { getJwtTokenPayload, getJwtHeaders } from './jwtToken'
-import { RequestPayload } from '@acx-ui/types'
-import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
-import { MaybePromise } from '@reduxjs/toolkit/dist/query/tsHelpers'
-import { QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 
 export interface ApiInfo {
   url: string;
@@ -115,14 +115,14 @@ export const patchApi = (apiInfo: ApiInfo, requests: RequestPayload<unknown>[],
       ...req,
       body: arg.payload
     })
-  });
-  return Promise.all(promises)
-  .then((results) => {
-    return { data: results }
   })
-  .catch((error)=>{
-    return error
-  })                   
+  return Promise.all(promises)
+    .then((results) => {
+      return { data: results }
+    })
+    .catch((error)=>{
+      return error
+    })
 }
 
 export interface Filters {

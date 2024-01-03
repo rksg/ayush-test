@@ -1,7 +1,9 @@
 /* eslint-disable max-len */
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { showActionModal }         from '@acx-ui/components'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import {
   useDeleteSwitchesMutation,
   usePatchDeleteSwitchMutation,
@@ -17,13 +19,10 @@ import {
   SwitchStatusEnum,
   SwitchViewModel
 } from '@acx-ui/rc/utils'
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import _ from 'lodash'
 
 export function useSwitchActions () {
   const { $t } = useIntl()
-  // TODO: replace with RBAC API feature flag 
-  const rbacApiToggle = useIsSplitOn('acx-ui-announcement-alert-toggle')
+  const rbacApiToggle = useIsSplitOn(Features.SWITCH_RBAC_API)
   const [ deleteSwitches ] = useDeleteSwitchesMutation()
   const [ patchDeleteSwitch ] = usePatchDeleteSwitchMutation()
   const [ rebootSwitch ] = useRebootSwitchMutation()
@@ -55,8 +54,9 @@ export function useSwitchActions () {
             .then(callBack)
         } else {
           const groups = _.groupBy(rows, 'venueId')
-          const requests = Object.keys(groups).map(key => ({ params: {venueId: key} , payload: groups[key].map(item => item.id || item.serialNumber)}))
+          const requests = Object.keys(groups).map(key => ({ params: { venueId: key } , payload: groups[key].map(item => item.id || item.serialNumber) }))
           patchDeleteSwitch(requests)
+            .then(callBack)
         }
       }
     })
