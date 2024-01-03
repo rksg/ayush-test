@@ -6,21 +6,25 @@ import { InformationOutlined, InformationSolid, QuestionMarkCircleOutlined } fro
 
 import { TooltipGlobalStyle, Disabled } from './styledComponents'
 
-import type { TooltipProps } from 'antd'
+import type { TooltipProps as AntTooltipProps } from 'antd'
 
 Tooltip.defaultProps = {
   ...AntTooltip.defaultProps,
   mouseEnterDelay: 0.5
 }
 
-function Tooltip ({ ...props }: TooltipProps) {
+type TooltipProps = AntTooltipProps & { disabled?: boolean }
+
+function Tooltip ({ disabled, ...props }: TooltipProps) {
+  let children = props.children
+  if (disabled) children = <Disabled children={children} />
   return <>
     <TooltipGlobalStyle />
-    <AntTooltip {...props} />
+    <AntTooltip {...props} children={children} />
   </>
 }
 
-export { Tooltip, TooltipProps, Disabled }
+export { Tooltip, TooltipProps }
 
 type PredefinedTooltipProps = Omit<TooltipProps, 'children'> & {
   iconStyle?: CSSProperties,

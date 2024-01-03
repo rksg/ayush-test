@@ -1,10 +1,10 @@
 import _                                       from 'lodash'
 import { FormattedMessage, MessageDescriptor } from 'react-intl'
 
-import { Table, TableHighlightFnArgs, Tooltip, Disabled } from '@acx-ui/components'
-import { Event, replaceStrings }                          from '@acx-ui/rc/utils'
-import { TenantLink, generatePath }                       from '@acx-ui/react-router-dom'
-import { getIntl, noDataDisplay }                         from '@acx-ui/utils'
+import { Table, TableHighlightFnArgs, Tooltip } from '@acx-ui/components'
+import { Event, replaceStrings }                from '@acx-ui/rc/utils'
+import { TenantLink, generatePath }             from '@acx-ui/react-router-dom'
+import { getIntl, noDataDisplay }               from '@acx-ui/utils'
 
 import { typeMapping } from './mapping'
 
@@ -64,8 +64,9 @@ export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
   const exists = data[existKey as keyof typeof data]
 
   if (!exists) return <Tooltip
+    disabled
     title={<FormattedMessage defaultMessage='Not available' />}
-    children={<Disabled>{name}</Disabled>}
+    children={name}
   />
 
   const spec = pathSpecs[entity]
