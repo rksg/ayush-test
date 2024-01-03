@@ -97,7 +97,11 @@ export function useIsTierAllowed (featureId: string): boolean {
   const enabled =
     featureList?.includes(featureId) || betaList.includes(featureId)
     || alphaList.includes(featureId)
-  useDebugValue(`PLM CONFIG: featureList: ${featureList}, betaList: ${betaList}, 
+  useDebugValue(`PLM CONFIG: featureList: ${featureList}, betaList: ${betaList},
   alphaList: ${alphaList}, ${featureId}: ${enabled}`)
   return enabled
+}
+
+export const useGetBetaList = (): string[] => {
+  return useFFList().betaList?? []
 }
