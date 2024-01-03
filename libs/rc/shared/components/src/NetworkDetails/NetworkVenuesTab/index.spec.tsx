@@ -30,7 +30,8 @@ import {
   list,
   params,
   networkVenue_allAps,
-  networkVenue_apgroup
+  networkVenue_apgroup,
+  networkVenueApCompatibilities
 } from './__tests__/fixtures'
 
 import { NetworkVenuesTab } from './index'
@@ -42,13 +43,16 @@ type MockDialogProps = React.PropsWithChildren<{
   onOk?: () => void
   onCancel?: () => void
 }>
-jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
+jest.mock('../../NetworkApGroupDialog', () => ({
+  ...jest.requireActual('../../NetworkApGroupDialog'),
   NetworkApGroupDialog: ({ onOk = ()=>{}, onCancel = ()=>{}, visible }: MockDialogProps) =>
     visible && <div data-testid={'NetworkApGroupDialog'}>
       <button onClick={(e)=>{e.preventDefault();onOk()}}>Apply</button>
       <button onClick={(e)=>{e.preventDefault();onCancel()}}>Cancel</button>
-    </div>,
+    </div>
+}))
+jest.mock('../../NetworkVenueScheduleDialog', () => ({
+  ...jest.requireActual('../../NetworkVenueScheduleDialog'),
   NetworkVenueScheduleDialog: ({ onOk = ()=>{}, onCancel = ()=>{}, visible }: MockDialogProps) =>
     visible && <div data-testid={'NetworkVenueScheduleDialog'}>
       <button onClick={(e)=>{e.preventDefault();onOk()}}>Apply</button>
@@ -98,6 +102,10 @@ describe('NetworkVenuesTab', () => {
           mockedApplyFn()
           return res(ctx.json({}))
         }
+      ),
+      rest.post(
+        WifiUrlsInfo.getApCompatibilitiesNetwork.url,
+        (req, res, ctx) => res(ctx.json(networkVenueApCompatibilities))
       )
     )
   })
@@ -142,6 +150,10 @@ describe('NetworkVenuesTab', () => {
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json({ response: [networkVenue_allAps, newApGroup2] }))
+      ),
+      rest.post(
+        WifiUrlsInfo.getApCompatibilitiesNetwork.url,
+        (req, res, ctx) => res(ctx.json(networkVenueApCompatibilities))
       )
     )
 
@@ -157,6 +169,8 @@ describe('NetworkVenuesTab', () => {
     await waitFor(() => rows.forEach(row => expect(row).toBeChecked()))
 
     const row2 = await screen.findByRole('row', { name: /My-Venue/i })
+    const icon = await within(row2).findByTestId('InformationSolid')
+    expect(icon).toBeVisible()
 
     await screen.findByRole('row', { name: /VLAN Pool/i })
 
@@ -227,6 +241,10 @@ describe('NetworkVenuesTab', () => {
       rest.put(
         WifiUrlsInfo.updateNetworkDeep.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        WifiUrlsInfo.getApCompatibilitiesNetwork.url,
+        (req, res, ctx) => res(ctx.json(networkVenueApCompatibilities))
       )
     )
 
@@ -250,6 +268,10 @@ describe('NetworkVenuesTab', () => {
             { ...list.data[1], allApDisabled: true }
           ]
         }))
+      ),
+      rest.post(
+        WifiUrlsInfo.getApCompatibilitiesNetwork.url,
+        (req, res, ctx) => res(ctx.json(networkVenueApCompatibilities))
       )
     )
 
@@ -278,6 +300,7 @@ describe('NetworkVenuesTab', () => {
         WifiUrlsInfo.updateNetworkDeep.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({}))
       )
+
     )
 
     const tbody = await findTBody()
@@ -317,6 +340,10 @@ describe('NetworkVenuesTab', () => {
       rest.put(
         WifiUrlsInfo.updateNetworkDeep.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        WifiUrlsInfo.getApCompatibilitiesNetwork.url,
+        (req, res, ctx) => res(ctx.json(networkVenueApCompatibilities))
       )
     )
     await userEvent.click(await screen.findByRole('row', { name: /network-venue-1/i }))
@@ -361,6 +388,10 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
       rest.post(
         CommonUrlsInfo.getVenueCityList.url,
         (req, res, ctx) => res(ctx.json([]))
+      ),
+      rest.post(
+        WifiUrlsInfo.getApCompatibilitiesNetwork.url,
+        (req, res, ctx) => res(ctx.json(networkVenueApCompatibilities))
       )
     )
   })
@@ -432,6 +463,10 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
           networkVenue_allAps,
           { ...networkVenue_apgroup, apGroups: newAPGroups }
         ] }))
+      ),
+      rest.post(
+        WifiUrlsInfo.getApCompatibilitiesNetwork.url,
+        (req, res, ctx) => res(ctx.json(networkVenueApCompatibilities))
       )
     )
 
@@ -491,6 +526,10 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
           { ...networkVenue_allAps, apGroups: newVenues[0].apGroups },
           networkVenue_apgroup
         ] }))
+      ),
+      rest.post(
+        WifiUrlsInfo.getApCompatibilitiesNetwork.url,
+        (req, res, ctx) => res(ctx.json(networkVenueApCompatibilities))
       )
     )
 
@@ -532,6 +571,10 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json({ response: [networkVenue_apgroup] }))
+      ),
+      rest.post(
+        WifiUrlsInfo.getApCompatibilitiesNetwork.url,
+        (req, res, ctx) => res(ctx.json(networkVenueApCompatibilities))
       )
     )
 
@@ -579,6 +622,10 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
       rest.post(
         CommonUrlsInfo.getNetworkDeepList.url,
         (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: newVenues }] }))
+      ),
+      rest.post(
+        WifiUrlsInfo.getApCompatibilitiesNetwork.url,
+        (req, res, ctx) => res(ctx.json(networkVenueApCompatibilities))
       )
     )
 

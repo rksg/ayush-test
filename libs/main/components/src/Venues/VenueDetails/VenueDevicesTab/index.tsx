@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                  from '@acx-ui/components'
-import {  useIsTierAllowed, TierFeatures }       from '@acx-ui/feature-toggle'
+import { useIsTierAllowed, TierFeatures }        from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { VenueEdge }   from './VenueEdge'

@@ -9,9 +9,13 @@ import { activities, events, eventsMeta } from './__tests__/fixtures'
 
 import { NetworkTimelineTab } from '.'
 
-jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  ActivityTable: () => <div data-testid='ActivityTable'></div>,
+jest.mock('../../ActivityTable', () => ({
+  ...jest.requireActual('../../ActivityTable'),
+  ActivityTable: () => <div data-testid='ActivityTable'></div>
+}))
+
+jest.mock('../../EventTable', () => ({
+  ...jest.requireActual('../../EventTable'),
   EventTable: () => <div data-testid='EventTable'></div>
 }))
 

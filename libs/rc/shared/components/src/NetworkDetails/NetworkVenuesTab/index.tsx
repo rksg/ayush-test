@@ -14,20 +14,13 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
-  NetworkApGroupDialog,
-  transformVLAN,
-  transformAps,
-  transformRadios,
-  transformScheduling,
-  NetworkVenueScheduleDialog
-} from '@acx-ui/rc/components'
-import {
   useAddNetworkVenueMutation,
   useAddNetworkVenuesMutation,
   useUpdateNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
   useDeleteNetworkVenuesMutation,
   useNetworkVenueListQuery,
+  useNetworkVenueTableQuery,
   useGetVenueCityListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -47,6 +40,16 @@ import {
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
+import {
+  NetworkApGroupDialog } from '../../NetworkApGroupDialog'
+import {
+  NetworkVenueScheduleDialog
+} from '../../NetworkVenueScheduleDialog'
+import {
+  transformVLAN,
+  transformAps,
+  transformRadios,
+  transformScheduling } from '../../pipes/apGroupPipes'
 import { useGetNetwork } from '../services'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
@@ -91,8 +94,9 @@ interface schedule {
 
 export function NetworkVenuesTab () {
   const { $t } = useIntl()
+  const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
   const tableQuery = useTableQuery({
-    useQuery: useNetworkVenueListQuery,
+    useQuery: isApCompatibleCheckEnabled ? useNetworkVenueTableQuery : useNetworkVenueListQuery,
     defaultPayload,
     search: {
       searchTargetFields: defaultPayload.searchTargetFields as string[]
@@ -398,7 +402,7 @@ export function NetworkVenuesTab () {
       dataIndex: 'aps',
       width: 80,
       render: function (_, row) {
-        return transformAps(getCurrentVenue(row), networkQuery.data as NetworkSaveData, (e) => handleClickApGroups(row, e), systemNetwork)
+        return transformAps(getCurrentVenue(row), networkQuery.data as NetworkSaveData, (e) => handleClickApGroups(row, e), systemNetwork, row.incompatible)
       }
     },
     {
