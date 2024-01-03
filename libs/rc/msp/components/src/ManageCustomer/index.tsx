@@ -600,7 +600,8 @@ export function ManageCustomer () {
         city: address.city,
         country: address.country,
         service_effective_date: today,
-        service_expiration_date: expirationDate
+        service_expiration_date: expirationDate,
+        tier: createEcWithTierEnabled ? ecFormData.tier : undefined
       }
       if (!isTrialMode && licAssignment.length > 0) {
         let assignLicense = {
@@ -1365,6 +1366,7 @@ export function ManageCustomer () {
           </Form.Item >
 
           <MspAdminsForm></MspAdminsForm>
+          {createEcWithTierEnabled && <EcTierForm />}
           <Subtitle level={3}>
             { intl.$t({ defaultMessage: 'Customer Administrator' }) }</Subtitle>
           <Form.Item children={displayCustomerAdmins()} />
