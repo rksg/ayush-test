@@ -536,7 +536,10 @@ export const ConnectedClientsTable = (props: {
           }
         }
       })
-    }
+    },
+    getCheckboxProps: (record: ClientList) => ({
+      disabled: record.serialNumber === undefined
+    })
   }
 
   const clearRowSelections = () => {
