@@ -296,6 +296,16 @@ export const franchisorZones = {
       clientThroughputSLA: [7, 7],
       connectionSuccessSLA: [45, 56],
       onlineApsSLA: [1, 1]
+    },
+    {
+      tenantId: '3',
+      zoneName: 'zoneName-7',
+      incidentCount: 0,
+      ssidComplianceSLA: [0, 0],
+      timeToConnectSLA: [0, 0],
+      clientThroughputSLA: [0, 0],
+      connectionSuccessSLA: [0, 0],
+      onlineApsSLA: [0, 0]
     }
   ]
 }

@@ -60,7 +60,7 @@ export function Brand360 () {
   }
   const mspPropertiesData = useMspCustomerListDropdownQuery(
     { params: { tenantId: getJwtTokenPayload().tenantId },payload: rcApiPayload } )
-  const lookupAndMappingData = mspPropertiesData.data
+  const lookupAndMappingData = mspPropertiesData?.data
     ? transformLookupAndMappingData(mspPropertiesData.data)
     : {}
   const venuesData = useFetchBrandPropertiesQuery(chartPayload)

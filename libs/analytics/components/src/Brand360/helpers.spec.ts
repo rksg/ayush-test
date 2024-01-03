@@ -1,7 +1,7 @@
 import { MspEc }       from '@acx-ui/msp/utils'
 import { TableResult } from '@acx-ui/rc/utils'
 
-import { computePastRange, transformLookupAndMappingData, transformVenuesData, TransformedMap } from './helpers'
+import { computePastRange, transformLookupAndMappingData, transformVenuesData, TransformedMap, calcSLA } from './helpers'
 
 import type { BrandVenuesSLA } from './services'
 
@@ -30,6 +30,24 @@ const mockVenuesData = {
       connectionSuccessSLA: [6, 7],
       timeToConnectSLA: [8, 9],
       clientThroughputSLA: [10, 11]
+    },
+    {
+      tenantId: '1',
+      incidentCount: null,
+      ssidComplianceSLA: [null, null],
+      onlineApsSLA: [null, null],
+      connectionSuccessSLA: [null, null],
+      timeToConnectSLA: [null, null],
+      clientThroughputSLA: [null, null]
+    },
+    {
+      tenantId: '1',
+      incidentCount: 0,
+      ssidComplianceSLA: [0, 0],
+      onlineApsSLA: [0, 0],
+      connectionSuccessSLA: [0, 0],
+      timeToConnectSLA: [0, 0],
+      clientThroughputSLA: [0, 0]
     }
   ]
 }
@@ -142,4 +160,8 @@ describe('transformVenuesData', () => {
     const transformed = transformVenuesData(mockVenuesData as { data: BrandVenuesSLA[] }, {})
     expect(transformed).toEqual([])
   })
+  it('calcSLA should handle [0,0]', () => {
+    expect(calcSLA([0,0])).toEqual(0)
+  })
 })
+

@@ -39,7 +39,7 @@ export interface TransformedMap {
   [key: string]: TransformedItem;
 }
 
-const calcSLA = (sla: SLARecord) => (sla[1] !== 0 ? sla[0] / sla[1] : 0)
+export const calcSLA = (sla: SLARecord) => (sla[1] !== 0 ? sla[0] / sla[1] : 0)
 
 const calGuestExp = (cS: number, ttc: number, cT: number) => mean([cS, ttc, cT])
 export const transformToLspView = (properties: Response[]): Lsp[] => {
@@ -166,7 +166,7 @@ export const transformVenuesData = (
   const groupByTenantID = groupBy(venuesData?.data, 'tenantId')
   const sumSLAData = (data: ([number | null, number | null] | null)[], initial: number[]) =>
     data.reduce((total, current) => {
-      const values = current || [0, 0]
+      const values = current as [number, number]
       return total.map((num, index) => num + (values[index] || 0)) as [number, number]
     }, initial)
   return Object.keys(groupByTenantID).reduce((newObj, tenantId) => {

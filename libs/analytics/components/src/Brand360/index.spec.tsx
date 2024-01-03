@@ -60,7 +60,7 @@ describe('Brand360', () => {
     services.useMspCustomerListDropdownQuery = jest.fn().mockImplementation(() => {
       return { data: propertiesMappingData }
     })
-    mockGraphqlQuery(dataApiURL, 'FranchisorZones', franchisorZones)
+    mockGraphqlQuery(dataApiURL, 'FranchisorZones', { data: { franchisorZones } })
     jest.useFakeTimers()
     jest.setSystemTime(new Date(Date.parse('2023-12-12T00:00:00+00:00')))
   })
@@ -69,7 +69,6 @@ describe('Brand360', () => {
     mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', mockBrandTimeseries)
     mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', wrapData(prevTimeseries))
     mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', wrapData(currTimeseries))
-
     render(<Provider><Brand360 /></Provider>)
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findAllByDisplayValue('Last 8 Hours')).toHaveLength(2)

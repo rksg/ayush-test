@@ -70,9 +70,7 @@ describe('services', () => {
   })
 
   it('should handle fetching zones correctly', async () => {
-    mockGraphqlQuery(dataApiURL, 'FranchisorZones', { data: {
-      franchisorZones: franchisorZones.data
-    } })
+    mockGraphqlQuery(dataApiURL, 'FranchisorZones', { data: { franchisorZones } })
     const { status, data, error } = await store.dispatch(
       api.endpoints.fetchBrandProperties.initiate({
         ...baseProps
