@@ -108,7 +108,8 @@ export const createHttpRequest = (
 }
 
 export const patchApi = (apiInfo: ApiInfo, requests: RequestPayload<unknown>[],
-  fetchWithBQ:(arg: string | FetchArgs) => MaybePromise<QueryReturnValue<unknown, FetchBaseQueryError, FetchBaseQueryMeta>>) => {
+  fetchWithBQ:(arg: string | FetchArgs) => MaybePromise<
+  QueryReturnValue<unknown, FetchBaseQueryError, FetchBaseQueryMeta>>) => {
   const promises = requests.map((arg) => {
     const req = createHttpRequest(apiInfo, arg.params)
     return fetchWithBQ({
