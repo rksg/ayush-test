@@ -136,9 +136,18 @@ export interface NetworkSaveData {
   dpskServiceProfileId?: string
   isOweMaster?: boolean
   owePairNetworkId?: string
+  maxRate?: MaxRateEnum
+  totalUplinkLimited? : boolean
+  totalDownlinkLimited? : boolean
   accessControlProfileEnable?: boolean
   enableOwe?: boolean
 }
+
+export enum MaxRateEnum {
+  PER_AP = 'perAp',
+  UNLIMITED = 'unlimited'
+}
+
 export interface ExternalProviders{
   providers: Providers[]
 }

@@ -2,16 +2,17 @@ import '@testing-library/jest-dom'
 
 import React from 'react'
 
-import userEvent             from '@testing-library/user-event'
-import { Form }              from 'antd'
-import { SliderSingleProps } from 'antd/lib/slider'
-import { rest }              from 'msw'
+import { fireEvent, waitFor } from '@testing-library/react'
+import userEvent              from '@testing-library/user-event'
+import { Form }               from 'antd'
+import { SliderSingleProps }  from 'antd/lib/slider'
+import { rest }               from 'msw'
 
 import { AccessControlUrls }          from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { avcApp, avcCat, queryApplication, queryApplicationUpdate } from '../__tests__/fixtures'
+import { applicationDetail, avcApp, avcCat, queryApplication, queryApplicationUpdate } from '../__tests__/fixtures'
 
 import { ApplicationDrawer } from './index'
 
@@ -85,6 +86,80 @@ const systemDefinedSection = async () => {
   )
 }
 
+const getApplicationDetail = jest.fn()
+
+describe('ApplicationDrawer Component with view mode', () => {
+  beforeEach(() => {
+    mockServer.use(
+      rest.get(
+        AccessControlUrls.getAppPolicyList.url,
+        (_, res, ctx) => res(
+          ctx.json(queryApplication)
+        )
+      ), rest.post(
+        AccessControlUrls.addAppPolicy.url,
+        (_, res, ctx) => res(
+          ctx.json(applicationResponse)
+        )
+      ), rest.get(
+        AccessControlUrls.getAvcCategory.url,
+        (_, res, ctx) => res(
+          ctx.json(avcCat)
+        )
+      ), rest.get(
+        AccessControlUrls.getAvcApp.url,
+        (_, res, ctx) => res(
+          ctx.json(avcApp)
+        )
+      ), rest.get(
+        AccessControlUrls.getAppPolicy.url,
+        (_, res, ctx) => {
+          getApplicationDetail()
+          return res(
+            ctx.json(applicationDetail)
+          )
+        }
+      ))
+  })
+
+  it('Render ApplicationDrawer component successfully with viewMode', async () => {
+    render(
+      <Provider>
+        <Form>
+          <ApplicationDrawer
+            onlyViewMode={{ id: 'edac8b0c22e140cd95e63a9e81421576', viewText: 'viewText' }}
+            isOnlyViewMode={true}
+          />
+        </Form>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenantId1' }
+        }
+      }
+    )
+
+    await screen.findByText('viewText')
+
+    fireEvent.click(screen.getByText('viewText'))
+
+    expect(getApplicationDetail).toHaveBeenCalled()
+
+    await waitFor(async () =>
+      expect(await screen.findByText(/application access settings/i)).toBeInTheDocument()
+    )
+
+    const rulesCount = await screen.findByText(/rules \(3\)/i)
+
+    await screen.findByText(/uplink \- 1\.25 mbps\|downlink \- 9\.25 mbps/i)
+
+    expect(rulesCount).toBeVisible()
+
+    await userEvent.click(screen.getByText('Cancel'))
+
+    expect(screen.queryByText(/application access settings/i)).not.toBeInTheDocument()
+  })
+})
+
 describe('ApplicationDrawer Component', () => {
   beforeEach(() => {
     mockServer.use(
@@ -108,6 +183,14 @@ describe('ApplicationDrawer Component', () => {
         (_, res, ctx) => res(
           ctx.json(avcApp)
         )
+      ), rest.get(
+        AccessControlUrls.getAppPolicy.url,
+        (_, res, ctx) => {
+          getApplicationDetail()
+          return res(
+            ctx.json(applicationDetail)
+          )
+        }
       ))
   })
   it('Render ApplicationDrawer component successfully with new added profile', async () => {
@@ -295,9 +378,27 @@ describe('ApplicationDrawer Component', () => {
       name: /rule name/i
     }), '-modify')
 
+    await userEvent.click(screen.getByText(/rate limit/i))
+
+    await userEvent.click(screen.getByRole('checkbox', {
+      name: /max uplink rate:/i
+    }))
+
+    await userEvent.click(screen.getByRole('checkbox', {
+      name: /max downlink rate:/i
+    }))
+
     await userEvent.click(screen.getAllByText('Save')[1])
 
     await screen.findByText('app1rule1-modify')
+
+    await userEvent.click(screen.getByText('app1rule1-modify'))
+
+    await userEvent.click(screen.getByRole('button', {
+      name: 'Edit'
+    }))
+
+    await userEvent.click(screen.getAllByText('Cancel')[1])
 
     await userEvent.click(screen.getByText('app1rule1-modify'))
 
