@@ -49,11 +49,6 @@ describe('SwitchTraceRouteForm', () => {
 
   it('should copy correctly', async () => {
     jest.spyOn(navigator.clipboard, 'writeText')
-    mockServer.use(
-      rest.get(
-        SwitchUrlsInfo.getTroubleshooting.url,
-        (req, res, ctx) => res(ctx.json(troubleshootingResult_traceRoute_result)))
-    )
     render(<Provider>
       <SwitchTraceRouteForm />
     </Provider>, { route: { params } })
@@ -145,9 +140,6 @@ describe('SwitchTraceRouteForm', () => {
   it('should clear correctly', async () => {
     const mockCleanSpy = jest.fn()
     mockServer.use(
-      rest.get(
-        SwitchUrlsInfo.getTroubleshooting.url,
-        (req, res, ctx) => res(ctx.json(troubleshootingResult_traceRoute_result))),
       rest.delete(
         SwitchUrlsInfo.getTroubleshootingClean.url,
         (req, res, ctx) => {

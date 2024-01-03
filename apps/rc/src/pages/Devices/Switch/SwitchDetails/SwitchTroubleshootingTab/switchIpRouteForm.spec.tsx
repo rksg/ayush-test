@@ -87,11 +87,6 @@ describe('TroubleshootingIpRouteForm', () => {
 
 
   it('should do run correctly', async () => {
-    mockServer.use(
-      rest.get(
-        SwitchUrlsInfo.getTroubleshooting.url,
-        (req, res, ctx) => res(ctx.json(troubleshootingResult_route_result)))
-    )
     render(<Provider>
       <SwitchIpRouteForm />
     </Provider>, { route: { params } })
@@ -104,9 +99,6 @@ describe('TroubleshootingIpRouteForm', () => {
   it('should clear correctly', async () => {
     const mockCleanSpy = jest.fn()
     mockServer.use(
-      rest.get(
-        SwitchUrlsInfo.getTroubleshooting.url,
-        (req, res, ctx) => res(ctx.json(troubleshootingResult_route_result))),
       rest.delete(
         SwitchUrlsInfo.getTroubleshootingClean.url,
         (req, res, ctx) => {
@@ -125,11 +117,6 @@ describe('TroubleshootingIpRouteForm', () => {
 
   it('should copy correctly', async () => {
     jest.spyOn(navigator.clipboard, 'writeText')
-    mockServer.use(
-      rest.get(
-        SwitchUrlsInfo.getTroubleshooting.url,
-        (req, res, ctx) => res(ctx.json(troubleshootingResult_route_result)))
-    )
     render(<Provider>
       <SwitchIpRouteForm />
     </Provider>, { route: { params } })
@@ -145,10 +132,7 @@ describe('TroubleshootingIpRouteForm', () => {
     mockServer.use(
       rest.post(
         SwitchUrlsInfo.ipRoute.url,
-        (_, res, ctx) => res(ctx.status(404), ctx.json({}))),
-      rest.get(
-        SwitchUrlsInfo.getTroubleshooting.url,
-        (req, res, ctx) => res(ctx.json(troubleshootingResult_route_result)))
+        (_, res, ctx) => res(ctx.status(404), ctx.json({})))
     )
     render(<Provider>
       <SwitchIpRouteForm />
