@@ -18,7 +18,7 @@ interface PortsGeneralProps {
 }
 
 const PortsGeneral = (props: PortsGeneralProps) => {
-  const { serialNumber, /*data,*/ onCancel } = props
+  const { serialNumber, onCancel } = props
   const { $t } = useIntl()
   const [form] = Form.useForm<EdgePortConfigFormType>()
   const editEdgeContext = useContext(EditContext)
@@ -70,6 +70,7 @@ const PortsGeneral = (props: PortsGeneralProps) => {
   return <EdgePortsGeneral
     form={form}
     data={data}
+    edgeId={serialNumber}
     onValuesChange={handleFormChange}
     onFinish={handleFinish}
     onCancel={handleCancel}

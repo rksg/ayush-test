@@ -18,8 +18,8 @@ export const PersonalIdentityDiagram = (props: PersonalIdentityDiagramProps) => 
   const diagram = getDiagram(props)
 
   return (
-    <Row>
-      <Col offset={4}>
+    <Row >
+      <Col offset={3} >
         <Diagram>
           {
             diagram &&

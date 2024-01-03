@@ -3,7 +3,7 @@ import React, { ReactNode } from 'react'
 import { ClockCircleOutlined } from '@ant-design/icons'
 import _                       from 'lodash'
 
-import { Button, Tooltip } from '@acx-ui/components'
+import { Button, Tooltip, cssStr } from '@acx-ui/components'
 import {
   NetworkSaveData,
   NetworkVenue,
@@ -134,7 +134,8 @@ export const transformAps = (
   currentVenue?: NetworkVenue,
   network?: NetworkSaveData,
   callback?: React.MouseEventHandler<HTMLElement>,
-  readOnly?: boolean
+  readOnly?: boolean,
+  incompatible?: number
 ) => {
   const { $t } = getIntl()
   let result = ''
@@ -150,7 +151,18 @@ export const transformAps = (
       other {{count} AP Groups}
     }` }, { count: currentVenue.apGroups.length, apGroupName: apGroupName })
   }
-  return <Tooltip title={(network && apGroupTooltip('aps', currentVenue, network)) || result}><Button type='link' onClick={callback} disabled={readOnly}>{result}</Button></Tooltip>
+  return (
+    <>
+      <Tooltip title={(network && apGroupTooltip('aps', currentVenue, network)) || result}><Button type='link' onClick={callback} disabled={readOnly}>{result}</Button></Tooltip>
+      {incompatible && incompatible > 0 ?
+        <Tooltip.Info isFilled
+          title={$t({ defaultMessage: 'Some access points may not be compatible with certain Wi-Fi features in this venue.' })}
+          placement='right'
+          iconStyle={{ height: '20px', width: '20px', marginBottom: '-3px', marginLeft: '6px', color: cssStr('--acx-semantics-yellow-50') }}
+        /> :[]
+      }
+    </>
+  )
 }
 
 const _getRadioString = (deprecatedRadio: RadioEnum, radioTypes?: RadioTypeEnum[]) => {
