@@ -619,5 +619,21 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/venues/aps/:serialNumber/managementTrafficVlanSettings',
     newApi: true
+  },
+  getApFeatureSets: {
+    method: 'get',
+    url: '/venues/aps/featureSets?featureName={featureName}',
+    newApi: true
+  },
+  getApCompatibilitiesVenue: {
+    method: 'post',
+    url: '/venues/:venueId/aps/compatibilities/query',
+    newApi: true
+  },
+  getApCompatibilitiesNetwork: {
+    method: 'post',
+    url: '/wifiNetworks/:networkId/aps/compatibilities/query',
+    newApi: true
   }
+
 }
