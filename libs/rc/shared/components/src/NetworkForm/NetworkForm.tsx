@@ -1,10 +1,15 @@
-import { useEffect, useRef, useState, createContext } from 'react'
+import { useEffect, useMemo, useRef, useState, createContext } from 'react'
 
 import { Form }                   from 'antd'
 import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { PageHeader, StepsForm, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import {
+  useAddNetworkTemplateMutation,
+  useGetNetworkTemplateQuery,
+  useUpdateNetworkTemplateMutation
+} from '@acx-ui/msp/services'
 import {
   useAddNetworkMutation,
   useAddNetworkVenuesMutation,
@@ -16,6 +21,7 @@ import {
 import {
   AuthRadiusEnum,
   Demo,
+  generateConfigTemplateBreadcrumb,
   GuestNetworkTypeEnum,
   GuestPortal,
   LocationExtended,
@@ -24,9 +30,11 @@ import {
   NetworkTypeEnum,
   NetworkVenue,
   redirectPreviousPage,
+  useConfigTemplate,
   WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { getIntl }                                            from '@acx-ui/utils'
 
 import { CloudpathForm }           from './CaptivePortal/CloudpathForm'
 import { GuestPassForm }           from './CaptivePortal/GuestPassForm'
@@ -104,8 +112,8 @@ export function NetworkForm (props:{
   const editMode = params.action === 'edit'
   const cloneMode = params.action === 'clone'
 
-  const [addNetwork] = useAddNetworkMutation()
-  const [updateNetwork] = useUpdateNetworkMutation()
+  const addNetworkInstance = useAddInstance()
+  const updateNetworkInstance = useUpdateInstance()
   const [addNetworkVenues] = useAddNetworkVenuesMutation()
   const [updateNetworkVenues] = useUpdateNetworkVenuesMutation()
   const [deleteNetworkVenues] = useDeleteNetworkVenuesMutation()
@@ -144,8 +152,12 @@ export function NetworkForm (props:{
     updateSaveState({ ...saveState, ...newSavedata })
   }
 
-  const { data } = useGetNetworkQuery({ params })
+  const { data } = useGetInstance(editMode)
   const networkVxLanTunnelProfileInfo = useNetworkVxLanTunnelProfileInfo(data ?? null)
+
+  // Config Template related states
+  const { isTemplate } = useConfigTemplate()
+  const breadcrumb = useBreadcrumb()
 
   useEffect(() => {
     if(saveState){
@@ -430,7 +442,7 @@ export function NetworkForm (props:{
             'pskProtocol',
             'isOweMaster',
             'owePairNetworkId']))
-      const result = await addNetwork({ params, payload }).unwrap()
+      const result = await addNetworkInstance({ params, payload }).unwrap()
       if (result && result.response && payload.venues) {
         // @ts-ignore
         const network: Network = result.response
@@ -502,7 +514,7 @@ export function NetworkForm (props:{
     try {
       processData(formData)
       const payload = updateClientIsolationAllowlist(saveContextRef.current as NetworkSaveData)
-      await updateNetwork({ params, payload }).unwrap()
+      await updateNetworkInstance({ params, payload }).unwrap()
       if (payload.id && (payload.venues || data?.venues)) {
         await handleNetworkVenues(payload.id, payload.venues, data?.venues)
       }
@@ -516,14 +528,8 @@ export function NetworkForm (props:{
   return (
     <>
       {!modalMode && <PageHeader
-        title={editMode
-          ? intl.$t({ defaultMessage: 'Edit Network' })
-          : intl.$t({ defaultMessage: 'Create New Network' })}
-        breadcrumb={[
-          { text: intl.$t({ defaultMessage: 'Wi-Fi' }) },
-          { text: intl.$t({ defaultMessage: 'Wi-Fi Networks' }) },
-          { text: intl.$t({ defaultMessage: 'Network List' }), link: '/networks' }
-        ]}
+        title={generatePageHeaderTitle(editMode, isTemplate)}
+        breadcrumb={breadcrumb}
       />}
       {(!editMode || cloneMode) &&
         <NetworkFormContext.Provider value={{
@@ -732,4 +738,55 @@ function pickOneCaptivePortalForm (saveState: NetworkSaveData) {
       console.error(`Unknown Network Type: ${saveState?.guestPortal?.guestNetworkType}`)
       return <OnboardingForm />
   }
+}
+
+function generatePageHeaderTitle (isEdit: boolean, isTemplate: boolean): string {
+  const { $t } = getIntl()
+
+  return $t({ defaultMessage: '{action} Network {templateText}' }, {
+    action: isEdit ? $t({ defaultMessage: 'Edit' }) : $t({ defaultMessage: 'Create New' }),
+    templateText: isTemplate ? $t({ defaultMessage: 'Template' }) : ''
+  })
+}
+
+function useBreadcrumb () {
+  const { isTemplate } = useConfigTemplate()
+  const { $t } = useIntl()
+  const breadcrumb = useMemo(() => {
+    return isTemplate
+      ? generateConfigTemplateBreadcrumb()
+      : [
+        { text: $t({ defaultMessage: 'Wi-Fi' }) },
+        { text: $t({ defaultMessage: 'Wi-Fi Networks' }) },
+        { text: $t({ defaultMessage: 'Network List' }), link: '/networks' }
+      ]
+  }, [isTemplate])
+
+  return breadcrumb
+}
+
+function useAddInstance () {
+  const { isTemplate } = useConfigTemplate()
+  const [ addNetwork ] = useAddNetworkMutation()
+  const [ addNetworkTemplate ] = useAddNetworkTemplateMutation()
+
+  return isTemplate ? addNetworkTemplate : addNetwork
+}
+
+function useUpdateInstance () {
+  const { isTemplate } = useConfigTemplate()
+  const [ updateNetwork ] = useUpdateNetworkMutation()
+  const [ updateNetworkTemplate ] = useUpdateNetworkTemplateMutation()
+
+  return isTemplate ? updateNetworkTemplate : updateNetwork
+}
+
+function useGetInstance (isEdit: boolean) {
+  const { isTemplate } = useConfigTemplate()
+  const params = useParams()
+  const networkResult = useGetNetworkQuery({ params }, { skip: isTemplate })
+  // eslint-disable-next-line max-len
+  const networkTemplateResult = useGetNetworkTemplateQuery({ params }, { skip: !isEdit || !isTemplate })
+
+  return isTemplate ? networkTemplateResult : networkResult
 }

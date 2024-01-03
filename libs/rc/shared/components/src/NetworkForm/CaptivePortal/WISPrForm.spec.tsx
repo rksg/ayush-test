@@ -21,7 +21,7 @@ import {
   wisprDataWPA2,
   wisprDataForAllAccept,
   wisprDataForOnlyAuth,
-  mockAAAPolicyResponse
+  mockAAAPolicyListResponse
 } from '../__tests__/fixtures'
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -74,10 +74,8 @@ describe('CaptiveNetworkForm-WISPr', () => {
       rest.get(MspUrlsInfo.getMspEcProfile.url, (_req, res, ctx) =>
         res(ctx.json(mspEcProfileData))
       ),
-      rest.get(
-        AaaUrls.getAAAPolicyList.url,
-        (req, res, ctx) => res(ctx.json(mockAAAPolicyResponse))
-      ),
+      rest.post(AaaUrls.getAAAPolicyViewModelList.url,
+        (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse))),
       rest.post(CommonUrlsInfo.getNetworkDeepList.url,
         (_, res, ctx) => res(ctx.json({ response: [wisprRes] })))
     )
