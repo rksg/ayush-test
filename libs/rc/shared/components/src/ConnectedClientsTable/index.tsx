@@ -528,19 +528,29 @@ export const ConnectedClientsTable = (props: {
     }
   }
 
+  const clearRowSelections = () => {
+    const newStateTableSelected = _.clone(tableSelected)
+    setTableSelected(_.set(newStateTableSelected, 'selectedRowKeys', []))
+  }
+
   const rowActions: TableProps<ClientList>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Disconnect' }),
       onClick: (selectedRows) => {
-        const disconnectList = selectedRows.map((row) => {
+        const disconnectList = selectedRows.filter((row) => {
+          return row.serialNumber !== undefined
+        }).map((row) => {
           return {
             clientMac: row.clientMac,
             serialNumber: row.serialNumber
           }
         })
-        sendDisconnect({
-          payload: disconnectList
-        })
+        if(!_.isEmpty(disconnectList)){
+          sendDisconnect({
+            payload: disconnectList
+          })
+        }
+        clearRowSelections()
       }
     },
     {
@@ -551,29 +561,33 @@ export const ConnectedClientsTable = (props: {
       ),
       disabled: tableSelected.actionButton.revoke.disable,
       onClick: (selectedRows) => {
-
-        const revokeList = selectedRows.filter((row) => isEqualCaptivePortalPlainText(row.networkType)).map((row) => {
+        const revokeList = selectedRows.filter((row) => {
+          return isEqualCaptivePortalPlainText(row.networkType) && row.serialNumber !== undefined
+        }).map((row) => {
           return {
             clientMac: row.clientMac,
             serialNumber: row.serialNumber
           }
         })
 
-        if (tableSelected.actionButton.revoke.showModal){
-          showActionModal({
-            type: 'info',
-            width: 450,
-            title: $t({ defaultMessage: 'Revoking Client Access' }),
-            content: $t({ defaultMessage: 'Only clients connected to captive portal networks may have their access revoked' }),
-            okText: $t({ defaultMessage: 'OK' }),
-            onOk: async () => {
-              sendRevoke({ payload: revokeList })
-            }
-          })
-        } else {
-          sendRevoke({ payload: revokeList })
+        if(!_.isEmpty(revokeList)){
+          if (tableSelected.actionButton.revoke.showModal){
+            showActionModal({
+              type: 'info',
+              width: 450,
+              title: $t({ defaultMessage: 'Revoking Client Access' }),
+              content: $t({ defaultMessage: 'Only clients connected to captive portal networks may have their access revoked' }),
+              okText: $t({ defaultMessage: 'OK' }),
+              onOk: async () => {
+                sendRevoke({ payload: revokeList })
+              }
+            })
+          } else {
+            sendRevoke({ payload: revokeList })
+          }
         }
 
+        clearRowSelections()
       }
     }
   ]
