@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
 import React, { useState, useEffect } from 'react'
 
-import { LiteralElement } from '@formatjs/icu-messageformat-parser'
-import { Space }          from 'antd'
-import _                  from 'lodash'
-import { useIntl }        from 'react-intl'
+import { LiteralElement }             from '@formatjs/icu-messageformat-parser'
+import { Space }                      from 'antd'
+import _                              from 'lodash'
+import { useIntl, MessageDescriptor } from 'react-intl'
 
 import { Subtitle, Tooltip, Table, TableProps, Loader, showActionModal  } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
@@ -150,20 +150,6 @@ export const ConnectedClientsTable = (props: {
         ...(tableQuery.payload as typeof defaultClientPayload), searchString })
     }
   }, [searchString])
-
-
-  function getAllNetworkTypeMessage () : { key :string, value: string, label?: React.ReactNode }[] {
-    let allNetwork : { key :string, value: string, label?: React.ReactNode }[] = []
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    Object.entries(networkTypes).forEach(([_, value]) => {
-      if (value.defaultMessage !== undefined) {
-        const network = value.defaultMessage[0] as unknown as LiteralElement
-        allNetwork.push({ key: network.value, value: network.value, label: network.value })
-      }
-
-    })
-    return allNetwork
-  }
 
   function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
     const { $t } = useIntl()
@@ -340,7 +326,9 @@ export const ConnectedClientsTable = (props: {
         dataIndex: ['networkType'],
         sorter: true,
         render: (_: React.ReactNode, row: ClientList) => row.networkType || noDataDisplay,
-        filterable: getAllNetworkTypeMessage()
+        filterable: Object.values(networkTypes).map((message: MessageDescriptor) => {
+          return { key: $t(message), value: $t(message), label: $t(message) }
+        })
       }] : []),
       {
         key: 'sessStartTime',
@@ -542,28 +530,19 @@ export const ConnectedClientsTable = (props: {
     })
   }
 
-  const clearRowSelections = () => {
-    const newStateTableSelected = _.clone(tableSelected)
-    setTableSelected(_.set(newStateTableSelected, 'selectedRowKeys', []))
-  }
-
   const rowActions: TableProps<ClientList>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Disconnect' }),
-      onClick: (selectedRows) => {
-        const disconnectList = selectedRows.filter((row) => {
-          return row.serialNumber !== undefined
-        }).map((row) => {
+      onClick: (selectedRows, clearRowSelections) => {
+        const disconnectList = selectedRows.map((row) => {
           return {
             clientMac: row.clientMac,
             serialNumber: row.serialNumber
           }
         })
-        if(!_.isEmpty(disconnectList)){
-          sendDisconnect({
-            payload: disconnectList
-          })
-        }
+        sendDisconnect({
+          payload: disconnectList
+        })
         clearRowSelections()
       }
     },
@@ -574,31 +553,27 @@ export const ConnectedClientsTable = (props: {
         :''
       ),
       disabled: tableSelected.actionButton.revoke.disable,
-      onClick: (selectedRows) => {
-        const revokeList = selectedRows.filter((row) => {
-          return isEqualCaptivePortalPlainText(row.networkType) && row.serialNumber !== undefined
-        }).map((row) => {
+      onClick: (selectedRows, clearRowSelections) => {
+        const revokeList = selectedRows.filter((row) => isEqualCaptivePortalPlainText(row.networkType)).map((row) => {
           return {
             clientMac: row.clientMac,
             serialNumber: row.serialNumber
           }
         })
 
-        if(!_.isEmpty(revokeList)){
-          if (tableSelected.actionButton.revoke.showModal){
-            showActionModal({
-              type: 'info',
-              width: 450,
-              title: $t({ defaultMessage: 'Revoking Client Access' }),
-              content: $t({ defaultMessage: 'Only clients connected to captive portal networks may have their access revoked' }),
-              okText: $t({ defaultMessage: 'OK' }),
-              onOk: async () => {
-                sendRevoke({ payload: revokeList })
-              }
-            })
-          } else {
-            sendRevoke({ payload: revokeList })
-          }
+        if (tableSelected.actionButton.revoke.showModal){
+          showActionModal({
+            type: 'info',
+            width: 450,
+            title: $t({ defaultMessage: 'Revoking Client Access' }),
+            content: $t({ defaultMessage: 'Only clients connected to captive portal networks may have their access revoked' }),
+            okText: $t({ defaultMessage: 'OK' }),
+            onOk: async () => {
+              sendRevoke({ payload: revokeList })
+            }
+          })
+        } else {
+          sendRevoke({ payload: revokeList })
         }
 
         clearRowSelections()
