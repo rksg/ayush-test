@@ -27,3 +27,8 @@ export const Wrapper = styled.section`
     &:last-of-type { margin-block-end: 0; }
   }
 `
+
+export const DrawerTextContent = styled.span`
+  cursor: pointer;
+  text-decoration: dotted underline;
+`

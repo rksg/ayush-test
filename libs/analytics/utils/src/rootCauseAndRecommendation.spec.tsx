@@ -252,7 +252,8 @@ describe('getRootCauseAndRecommendations', () => {
       })
       const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
       const airtimeBRCA = getAirtimeBusyRootCauses()
-      const airtimeBRecommendations = getAirtimeBusyRecommendations(checks as (AirtimeBusyChecks)[])
+      const airtimeBRecommendations = getAirtimeBusyRecommendations(
+        checks as (AirtimeBusyChecks)[], {} as AirtimeParams, {})
       expect(rootCauses.rootCauseText).toEqual(airtimeBRCA.rootCauseText)
       expect(recommendations.recommendationsText).toEqual(
         airtimeBRecommendations.recommendationsText)
@@ -276,7 +277,8 @@ describe('getRootCauseAndRecommendations', () => {
       })
       const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
       const airtimeBRCA = getAirtimeBusyRootCauses()
-      const airtimeBRecommendations = getAirtimeBusyRecommendations(checks as (AirtimeBusyChecks)[])
+      const airtimeBRecommendations = getAirtimeBusyRecommendations(
+        checks as (AirtimeBusyChecks)[], {} as AirtimeParams, {})
       expect(rootCauses.rootCauseText).toEqual(airtimeBRCA.rootCauseText)
       expect(recommendations.recommendationsText).toEqual(
         airtimeBRecommendations.recommendationsText)

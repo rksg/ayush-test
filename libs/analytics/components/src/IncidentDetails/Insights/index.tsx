@@ -16,15 +16,14 @@ import {
 
 import * as UI from './styledComponents'
 
-export const Insights = ({ incident }: { incident: Incident }) => {
+export const Insights = (
+  { incident, extraValues = {} }: { incident: Incident, extraValues?: Record<string,Function>
+}) => {
   const { $t } = useIntl()
-  const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
+  const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident, extraValues)
   const { rootCauseText, rootCauseValues } = rootCauses
   const { recommendationsText, recommendationsValues } = recommendations
-  const values = {
-    ...productNames,
-    ...htmlValues
-  }
+  const values = { ...productNames, ...htmlValues }
   return (
     <Card type='solid-bg'>
       <UI.Wrapper>

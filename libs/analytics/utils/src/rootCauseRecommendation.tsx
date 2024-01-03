@@ -128,10 +128,12 @@ export const getAirtimeBusyRootCauses = () => {
     rootCauseValues: {}
   }
 }
-export const getAirtimeBusyRecommendations = (checks: (AirtimeBusyChecks)[]) => {
+export const getAirtimeBusyRecommendations = (
+  checks: Array<AirtimeBusyChecks>, _: AirtimeParams, extraValues: Record<string, Function>
+) => {
   const checkTrue = checkTrueParams(checks)
   const rogueAPDisabled = <FormattedMessage defaultMessage={'<li>Enable rogue AP detection to search, identify, and physically remove rogue APs from your premises.</li>'} values={htmlValues}/>
-  const rogueAPEnabled = <FormattedMessage defaultMessage={'<li>Remove rogue APs in your premises.</li>'} values={htmlValues}/>
+  const rogueAPEnabled = <FormattedMessage defaultMessage={'<li>Click <rogueapdrawer>here</rogueapdrawer> for a list of rogue APs for removal in your premises.</li>'} values={{ ...htmlValues, ...extraValues }}/>
   const nonWifiInterference = <FormattedMessage defaultMessage={'<li>Identify and mitigate sources of non-WiFi interference, such as microwave ovens, Bluetooth devices, and cordless phones.</li>'} values={htmlValues}/>
   const crrmRaised = <FormattedMessage defaultMessage={'<li>Apply the AI-Driven RRM recommendation.</li>'} values={htmlValues}/>
 
@@ -1315,7 +1317,8 @@ export const ccd80211RootCauseRecommendations = {
 const TBD = defineMessage({ defaultMessage: '<p>TBD</p>' })
 const calculating = defineMessage({ defaultMessage: '<p>Calculating...</p>' })
 
-export function getRootCauseAndRecommendations ({ code, metadata }: Incident) {
+export function getRootCauseAndRecommendations (incdient: Incident, extraValues?: Record<string,Function>) {
+  const { code, metadata } = incdient
   const failureType = codeToFailureTypeMap[code]
   if (!metadata.rootCauseChecks) return [{ rootCauses: { rootCauseText: calculating }, recommendations: { recommendationsText: calculating } }]
   const { checks, params } = metadata.rootCauseChecks
@@ -1329,6 +1332,6 @@ export function getRootCauseAndRecommendations ({ code, metadata }: Incident) {
   }
   const { rootCauses, recommendations } = results
   const moddedRootCause = typeof rootCauses === 'function' ? rootCauses(checks, params) : { rootCauseText: rootCauses, rootCauseValues: {} }
-  const moddedRecommendations = typeof recommendations === 'function' ? recommendations(checks, params) : { recommendationsText: recommendations, recommendationsValues: {} }
+  const moddedRecommendations = typeof recommendations === 'function' ? recommendations(checks, params, extraValues) : { recommendationsText: recommendations, recommendationsValues: {} }
   return [{ rootCauses: moddedRootCause, recommendations: moddedRecommendations }]
 }
