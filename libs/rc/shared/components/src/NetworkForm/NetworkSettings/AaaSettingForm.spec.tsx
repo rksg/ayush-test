@@ -15,7 +15,8 @@ import {
   networksResponse,
   successResponse,
   cloudpathResponse,
-  networkDeepResponse
+  networkDeepResponse,
+  mockAAAPolicyListResponse
 } from '../__tests__/fixtures'
 import { NetworkForm } from '../NetworkForm'
 
@@ -77,10 +78,8 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
-      rest.get(AaaUrls.getAAAPolicyList.url,
-        (_, res, ctx) => res(ctx.json([{ id: '1', name: 'test1', type: 'AUTHENTICATION', primary: {
-          ip: '1.1.1.1', port: '123', sharedSecret: 'xxxxxxxx'
-        } }]))),
+      rest.post(AaaUrls.getAAAPolicyViewModelList.url,
+        (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(networkDeepResponse))),
       rest.post(CommonUrlsInfo.getNetworkDeepList.url,

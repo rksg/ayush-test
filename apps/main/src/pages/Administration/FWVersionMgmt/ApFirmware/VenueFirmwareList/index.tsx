@@ -57,6 +57,7 @@ import * as UI               from '../../styledComponents'
 
 import { AdvancedUpdateNowDialog } from './AdvancedUpdateNowDialog'
 import { ChangeScheduleDialog }    from './ChangeScheduleDialog'
+import { DowngradeDialog }         from './DowngradeDialog'
 import { RevertDialog }            from './RevertDialog'
 import { UpdateNowDialog }         from './UpdateNowDialog'
 import { useApEolFirmware }        from './useApEolFirmware'
@@ -411,7 +412,7 @@ const VenueFirmwareTable = ({ tableQuery, filterables }: VenueTableProps) => {
         onCancel={handleChangeScheduleModalCancel}
         onSubmit={handleChangeScheduleModalSubmit}
       />}
-      {revertModelVisible && <RevertDialog
+      {revertModelVisible && <RevertDialogSwitcher
         data={venues}
         availableVersions={revertVersions}
         onCancel={handleRevertModalCancel}
@@ -489,4 +490,19 @@ function UpdateNowDialogSwitcher (props: UpdateNowDialogSwitcherProps) {
   return isEolApPhase2Enabled
     ? <AdvancedUpdateNowDialog {...props} />
     : <UpdateNowDialog {...({ ...props, ...eolApFirmware })} />
+}
+
+interface RevertDialogSwitcherProps {
+  onCancel: () => void,
+  onSubmit: (data: UpdateNowRequest[]) => void,
+  data?: FirmwareVenue[],
+  availableVersions?: FirmwareVersion[]
+}
+
+function RevertDialogSwitcher (props: RevertDialogSwitcherProps) {
+  const isWifiDowngradeVenueABF = useIsSplitOn(Features.WIFI_DOWNGRADE_VENUE_ABF_TOGGLE)
+
+  return isWifiDowngradeVenueABF
+    ? <DowngradeDialog {...props} />
+    : <RevertDialog {...props} />
 }

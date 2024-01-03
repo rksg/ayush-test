@@ -1,0 +1,118 @@
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
+
+import { ConfigTemplateUrlsInfo, MspUrlsInfo }         from '@acx-ui/msp/utils'
+import { CONFIG_TEMPLATE_PATH_PREFIX }                 from '@acx-ui/rc/utils'
+import { Provider }                                    from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
+
+import { ConfigTemplateTabKey }                            from '..'
+import { mockedConfigTemplateList, mockedMSPCustomerList } from '../__tests__/fixtures'
+
+import { ConfigTemplateList } from '.'
+
+describe('ConfigTemplateList component', () => {
+  const path = `/:tenantId/v/${CONFIG_TEMPLATE_PATH_PREFIX}/:activeTab`
+  const params = { tenantId: '__TENANT_ID', activeTab: ConfigTemplateTabKey.TEMPLATES }
+
+  beforeEach(() => {
+    mockServer.use(
+      rest.post(
+        ConfigTemplateUrlsInfo.getConfigTemplates.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedConfigTemplateList }))
+      ),
+      rest.post(
+        MspUrlsInfo.getMspCustomersList.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedMSPCustomerList }))
+      )
+    )
+  })
+  it('should render table with data', async () => {
+    render(
+      <Provider>
+        <ConfigTemplateList />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    expect(await screen.findByRole('button', { name: /Add Template/i })).toBeVisible()
+    expect(await screen.findByRole('row', { name: /Template 1/i })).toBeVisible()
+  })
+
+  it('should apply template', async () => {
+    const applyFn = jest.fn()
+
+    mockServer.use(
+      rest.post(
+        ConfigTemplateUrlsInfo.applyConfigTemplate.url,
+        (req, res, ctx) => {
+          applyFn()
+          return res(ctx.json({ requestId: '123456789ABCDEFG' }))
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <ConfigTemplateList />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    const targetRow = await screen.findByRole('row', { name: /Template 1/i })
+
+    await userEvent.click(within(targetRow).getByRole('radio'))
+    await userEvent.click(await screen.findByRole('button', { name: /Apply Template/ }))
+
+    const applyTemplateDrawer = await screen.findByRole('dialog')
+    const targetEcRow = await within(applyTemplateDrawer).findByRole('row', { name: /ec-1/i })
+
+    await userEvent.click(within(targetEcRow).getByRole('checkbox'))
+    await userEvent.click(await screen.findByRole('button', { name: /Next/ }))
+
+    await waitFor(() => expect(screen.queryAllByRole('dialog').length).toBe(2))
+
+    const confirmationDrawer = screen.queryAllByRole('dialog')[1]
+    expect(await within(confirmationDrawer).findByText('- Template 1')).toBeVisible()
+    // eslint-disable-next-line max-len
+    await userEvent.click(within(confirmationDrawer).getByRole('button', { name: /Apply Template/ }))
+
+    await waitFor(() => expect(applyFn).toHaveBeenCalledTimes(1))
+
+    await waitFor(() => expect(screen.queryAllByRole('dialog').length).toBe(0))
+  })
+
+  it('should cancel dialog', async () => {
+    render(
+      <Provider>
+        <ConfigTemplateList />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    const targetRow = await screen.findByRole('row', { name: /Template 1/i })
+
+    await userEvent.click(within(targetRow).getByRole('radio'))
+    await userEvent.click(await screen.findByRole('button', { name: /Apply Template/ }))
+
+    const applyTemplateDrawer = await screen.findByRole('dialog')
+    const targetEcRow = await within(applyTemplateDrawer).findByRole('row', { name: /ec-1/i })
+
+    await userEvent.click(within(targetEcRow).getByRole('checkbox'))
+    await userEvent.click(await screen.findByRole('button', { name: /Next/ }))
+
+    await waitFor(() => expect(screen.queryAllByRole('dialog').length).toBe(2))
+
+    const confirmationDrawer = screen.queryAllByRole('dialog')[1]
+    await userEvent.click(within(confirmationDrawer).getByRole('button', { name: /Back/ }))
+
+    await waitFor(() => expect(screen.queryAllByRole('dialog').length).toBe(1))
+
+    await userEvent.click(within(applyTemplateDrawer).getByRole('button', { name: /Cancel/ }))
+
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
+  })
+})

@@ -7,6 +7,7 @@ import { useIntl }                             from 'react-intl'
 
 import { Button, StepsFormLegacy, Tooltip, cssStr }                    from '@acx-ui/components'
 import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
+import { useLazyGetNetworkTemplateListQuery }                          from '@acx-ui/msp/services'
 import { useLazyGetVenueNetworkApGroupQuery, useLazyNetworkListQuery } from '@acx-ui/rc/services'
 import {
   ssidBackendNameRegExp,
@@ -14,7 +15,9 @@ import {
   WifiNetworkMessages,
   checkObjectNotExists,
   NetworkVenue,
-  networkTypes } from '@acx-ui/rc/utils'
+  networkTypes,
+  useConfigTemplate
+} from '@acx-ui/rc/utils'
 import { useParams }          from '@acx-ui/react-router-dom'
 import { validationMessages } from '@acx-ui/utils'
 
@@ -64,13 +67,13 @@ export function NetworkDetailForm () {
     filters: {},
     pageSize: 10000
   }
-  const [getNetworkList] = useLazyNetworkListQuery()
+  const [getInstanceList] = useGetLazyInstanceList()
   const [getVenueNetrworkApGroupList] = useLazyGetVenueNetworkApGroupQuery()
   const params = useParams()
 
   const nameValidator = async (value: string) => {
     const payload = { ...networkListPayload, searchString: value }
-    const list = (await getNetworkList({ params, payload }, true).unwrap()).data
+    const list = (await getInstanceList({ params, payload }, true).unwrap()).data
       .filter(n => n.id !== params.networkId)
       .map(n => n.name)
 
@@ -259,4 +262,10 @@ export function NetworkDetailForm () {
   )
 }
 
+function useGetLazyInstanceList () {
+  const { isTemplate } = useConfigTemplate()
+  const networkListQuery = useLazyNetworkListQuery()
+  const networkTemplateListQuery = useLazyGetNetworkTemplateListQuery()
 
+  return isTemplate ? networkTemplateListQuery : networkListQuery
+}
