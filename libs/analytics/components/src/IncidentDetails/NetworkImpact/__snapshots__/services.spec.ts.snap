@@ -18,7 +18,6 @@ Object {
     ],
   },
   "airtimeBusy": Object {
-    "count": 0.65,
     "data": Array [
       Object {
         "key": "airtimBusy",
@@ -41,6 +40,8 @@ Object {
         "value": 0.1,
       },
     ],
+    "peak": 0.65,
+    "summary": 0.5,
   },
   "clientManufacturer": Object {
     "count": 2,

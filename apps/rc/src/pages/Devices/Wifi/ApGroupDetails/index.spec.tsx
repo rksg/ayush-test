@@ -1,10 +1,10 @@
 import { rest } from 'msw'
 
-import { apApi, networkApi }               from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo }    from '@acx-ui/rc/utils'
-import { Provider, store }                 from '@acx-ui/store'
-import { act, mockServer, render, screen } from '@acx-ui/test-utils'
-import { AnalyticsFilter }                 from '@acx-ui/utils'
+import { apApi, networkApi }                        from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiUrlsInfo }             from '@acx-ui/rc/utils'
+import { Provider, store }                          from '@acx-ui/store'
+import { act, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { AnalyticsFilter }                          from '@acx-ui/utils'
 
 import { apGroupMembers, apGroupNetworkLinks, networkApGroup, networkDeepList, oneApGroupList } from './__tests__/fixtures'
 
@@ -17,8 +17,11 @@ jest.mock('@acx-ui/analytics/components', () => ({
     data-testid='incidents-table'>{JSON.stringify(props.filters)}</div>
 }))
 
+const mockvenueNetworkApGroup = jest.fn()
+
 describe('ApGroupDetails', () => {
   beforeEach(() => {
+    mockvenueNetworkApGroup.mockClear()
     act(() => {
       store.dispatch(networkApi.util.resetApiState())
       store.dispatch(apApi.util.resetApiState())
@@ -39,7 +42,10 @@ describe('ApGroupDetails', () => {
       ),
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
-        (req, res, ctx) => res(ctx.json(networkApGroup))
+        (req, res, ctx) => {
+          mockvenueNetworkApGroup()
+          return res(ctx.json(networkApGroup))
+        }
       ),
       rest.post(
         CommonUrlsInfo.getNetworkDeepList.url,
@@ -73,6 +79,7 @@ describe('ApGroupDetails', () => {
       route: { params, path: '/:tenantId/devices/apgroups/:apGroupId/details/:activeTab' }
     })
 
+    await waitFor(() => expect(mockvenueNetworkApGroup).toBeCalledTimes(1))
     expect(await screen.findByText(/Networks/)).toBeVisible()
     expect(await screen.findAllByRole('tab')).toHaveLength(3)
   })

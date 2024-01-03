@@ -10,7 +10,7 @@ import { Provider }                                                  from '@acx-
 import { mockServer, render, screen }                                from '@acx-ui/test-utils'
 
 import {
-  mockAAAPolicyResponse,
+  mockAAAPolicyListResponse,
   mockMacRegistrationPoolList,
   networkDeepResponse,
   networksResponse,
@@ -42,11 +42,10 @@ describe('OpenNetwork form', () => {
         (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] }))),
       rest.get(WifiUrlsInfo.getVlanPools.url,
         (_, res, ctx) => res(ctx.json([]))),
-      rest.get(AaaUrls.getAAAPolicyList.url,
-        (_, res, ctx) => res(ctx.json(mockAAAPolicyResponse))),
-      rest.get(MacRegListUrlsInfo.getMacRegistrationPools.url
-        .split('?')[0],
-      (_, res, ctx) => res(ctx.json(mockMacRegistrationPoolList)))
+      rest.post(AaaUrls.getAAAPolicyViewModelList.url,
+        (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse))),
+      rest.get(MacRegListUrlsInfo.getMacRegistrationPools.url.split('?')[0],
+        (_, res, ctx) => res(ctx.json(mockMacRegistrationPoolList)))
     )
 
   })

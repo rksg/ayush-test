@@ -3,11 +3,11 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
-import { serviceApi }                     from '@acx-ui/rc/services'
-import { CommonUrlsInfo, PortalUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                from '@acx-ui/store'
-import { mockServer, render, screen }     from '@acx-ui/test-utils'
-import { UserUrlsInfo }                   from '@acx-ui/user'
+import { serviceApi }                          from '@acx-ui/rc/services'
+import { CommonUrlsInfo, PortalUrlsInfo }      from '@acx-ui/rc/utils'
+import { Provider, store }                     from '@acx-ui/store'
+import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { UserUrlsInfo }                        from '@acx-ui/user'
 
 import PortalForm from './PortalForm'
 
@@ -27,8 +27,12 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 describe('PortalForm', () => {
+  const mockAdd = jest.fn()
+  const mockSavePortal = jest.fn()
   beforeEach(() => {
     store.dispatch(serviceApi.util.resetApiState())
+    mockAdd.mockClear()
+    mockSavePortal.mockClear()
     mockServer.use(
       rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))
@@ -39,7 +43,10 @@ describe('PortalForm', () => {
         }),
       rest.post(
         PortalUrlsInfo.savePortal.url.replace('?quickAck=true', ''),
-        (_, res, ctx) => {return res(ctx.json(successResponse))}
+        (_, res, ctx) => {
+          mockSavePortal()
+          return res(ctx.json(successResponse))
+        }
       ),
       rest.get(PortalUrlsInfo.getPortalLang.url,
         (_, res, ctx) => {
@@ -51,6 +58,7 @@ describe('PortalForm', () => {
         }),
       rest.put('/api/test',
         (_, res, ctx) => {
+          mockAdd()
           return res(ctx.json({}))
         }),
       rest.get(PortalUrlsInfo.getPortalProfileList.url
@@ -80,6 +88,8 @@ describe('PortalForm', () => {
     await userEvent.click(await screen.findByText('Select image'))
 
     await userEvent.click(await screen.findByText('Add'))
+    await waitFor(() => expect(mockAdd).toBeCalled())
+    await waitFor(() => expect(mockSavePortal).toBeCalled())
     expect(await screen.findByText('English')).toBeVisible()
   })
   it('should create Portal successfully', async () => {
@@ -94,5 +104,6 @@ describe('PortalForm', () => {
       'textbox', { name: 'Service Name' }),'create Portal test')
 
     await userEvent.click(await screen.findByText('Add'))
+    await waitFor(() => expect(mockSavePortal).toBeCalled())
   })
 })

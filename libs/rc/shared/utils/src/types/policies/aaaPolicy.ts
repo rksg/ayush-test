@@ -15,19 +15,12 @@ export interface AAATacacsServer{
   sharedSecret: string,
   purpose: AAAPurposeEnum
 }
-export interface AAATempType {
-  id?: string,
-  name: string,
-  type?: 'ACCOUNTING' | 'AUTHENTICATION',
-  primary?: RadiusServer,
-  secondary?: RadiusServer
-}
 export interface AAAViewModalType {
   id?: string,
   name: string,
-  primary?: RadiusServer,
-  secondary?: RadiusServer,
-  type?: 'ACCOUNTING' | 'AUTHENTICATION',
+  primary: string, // Primary server IP:Port
+  secondary?: string, // Secondary server IP:Port
+  type: 'ACCOUNTING' | 'AUTHENTICATION',
   networkIds?: string[]
 }
 export enum AAAPurposeEnum{

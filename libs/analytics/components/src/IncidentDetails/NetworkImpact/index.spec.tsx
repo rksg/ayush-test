@@ -27,7 +27,8 @@ const NetworkImpactData = { incident: {
       { key: 'manufacturer2', name: 'manufacturer2', value: 1 }
     ] },
   [NetworkImpactChartTypes.AirtimeBusy]: {
-    count: 0.65,
+    peak: 0.65,
+    summary: 0.5,
     data: [
       { key: 'airtimeBusy', name: 'airtimeBusy', value: 0.5 },
       { key: 'airtimeRx', name: 'airtimeRx', value: 0.3 },
@@ -35,7 +36,17 @@ const NetworkImpactData = { incident: {
       { key: 'airtimeIdle', name: 'airtimeIdle', value: 0.1 }
     ]
   },
-  [`${NetworkImpactChartTypes.AirtimeBusy}Peak`]: 0.65
+  [`${NetworkImpactChartTypes.AirtimeBusy}Peak`]: 0.65,
+  [NetworkImpactChartTypes.AirtimeClientsByAP]: {
+    peak: 60,
+    summary: 27.5,
+    data: [
+      { key: 'small', name: 'small', value: 2 },
+      { key: 'medium', name: 'medium', value: 1 },
+      { key: 'large', name: 'airtimTex', value: 1 }
+    ]
+  },
+  [`${NetworkImpactChartTypes.AirtimeClientsByAP}Peak`]: 60
 } }
 
 describe('transformData', () => {
@@ -83,7 +94,7 @@ describe('transformSummary', () => {
     expect(result).toEqual('33% of failures impacted ssid2')
   })
   it('should return correct result for NetworkImpactQueryTypes = distribution', () => {
-    const incident = { id: 'id', metadata: { dominant: { } } } as Incident
+    const incident = { id: 'id' } as Incident
     const result = transformSummary(
       NetworkImpactQueryTypes.Distribution,
       networkImpactChartConfigs[NetworkImpactChartTypes.AirtimeBusy],
@@ -121,8 +132,14 @@ describe('NetworkImpact', () => {
     {
       chart: NetworkImpactChartTypes.AirtimeBusy,
       query: NetworkImpactQueryTypes.Distribution,
-      type: 'airtime',
+      type: 'airtimeMetric',
       dimension: 'airtimeBusy'
+    },
+    {
+      chart: NetworkImpactChartTypes.AirtimeClientsByAP,
+      query: NetworkImpactQueryTypes.Distribution,
+      type: 'airtimeClientsByAP',
+      dimension: 'summary'
     }]
   }
   it('should match snapshot', async () => {
