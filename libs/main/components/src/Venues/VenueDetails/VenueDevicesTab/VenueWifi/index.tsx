@@ -1,18 +1,20 @@
+/* eslint-disable max-len */
 import { useEffect, useState } from 'react'
 
 import { List }    from 'antd'
 import { useIntl } from 'react-intl'
 
 
-import { Table, TableProps, Loader, Tooltip, Tabs }                        from '@acx-ui/components'
-import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
-import { DevicesOutlined, LineChartOutline, ListSolid, MeshSolid }         from '@acx-ui/icons'
-import { ApGroupTable, ApTable }                                           from '@acx-ui/rc/components'
-import { useApGroupsListQuery, useGetVenueSettingsQuery, useMeshApsQuery } from '@acx-ui/rc/services'
+import { Table, TableProps, Loader, Tooltip, Tabs, Button, cssStr }                                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                   from '@acx-ui/feature-toggle'
+import { DevicesOutlined, LineChartOutline, ListSolid, MeshSolid }                                                  from '@acx-ui/icons'
+import { ApGroupTable, ApTable, ApCompatibilityDrawer, ApCompatibilityQueryTypes, retrievedCompatibilitiesOptions } from '@acx-ui/rc/components'
+import { useApGroupsListQuery, useGetVenueSettingsQuery, useMeshApsQuery, useGetApCompatibilitiesVenueQuery }       from '@acx-ui/rc/services'
 import {
   useTableQuery,
   APMesh,
-  APMeshRole
+  APMeshRole,
+  ACX_UI_AP_COMPATIBILITY_NOTE_HIDDEN_KEY
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { TenantLink }                            from '@acx-ui/react-router-dom'
@@ -21,6 +23,7 @@ import {
   ReportType
 } from '@acx-ui/reports/components'
 
+
 import {
   ArrowCornerIcon,
   ApSingleIcon,
@@ -28,8 +31,10 @@ import {
   SignalUpIcon,
   WiredIcon,
   SpanStyle,
-  IconThirdTab
+  IconThirdTab,
+  AlertNote
 } from './styledComponents'
+
 
 function venueNameColTpl (
   name: string, meshRole: string, id: string, intl: ReturnType<typeof useIntl>){
@@ -199,9 +204,23 @@ export function VenueWifi () {
 
   const isShowApGroupTable = useIsSplitOn(Features.AP_GROUP_TOGGLE)
 
-  const [ enabledMesh, setEnabledMesh ] = useState(false)
+  const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
 
+  const [ enabledMesh, setEnabledMesh ] = useState(false)
+  const [ showCompatibilityNote, setShowCompatibilityNote ] = useState(false)
+  const [ drawerVisible, setDrawerVisible ] = useState(false)
+  const apCompatibilityTenantId = localStorage.getItem(ACX_UI_AP_COMPATIBILITY_NOTE_HIDDEN_KEY) ?? ''
   const { data: venueWifiSetting } = useGetVenueSettingsQuery({ params })
+
+  const { compatibilitiesFilterOptions, apCompatibilities, incompatible } = useGetApCompatibilitiesVenueQuery(
+    {
+      params: { venueId: params.venueId },
+      payload: { filters: {}, queryType: ApCompatibilityQueryTypes.CHECK_VENUE }
+    },
+    {
+      skip: !isApCompatibleCheckEnabled,
+      selectFromResult: ({ data }) => retrievedCompatibilitiesOptions(data)
+    })
 
   const { apgroupFilterOptions } = useApGroupsListQuery({
     params: { tenantId: params.tenantId }, payload: {
@@ -223,6 +242,14 @@ export function VenueWifi () {
     }
   }, [venueWifiSetting])
 
+  useEffect(() => {
+    if (incompatible > 0) {
+      if (apCompatibilityTenantId !== params.tenantId) {
+        setShowCompatibilityNote(true)
+      }
+    }
+  }, [incompatible])
+
   const onCategoryTabChange = (tab: string) => {
     const { activeSubTab } = params
     activeSubTab && navigate({
@@ -231,11 +258,55 @@ export function VenueWifi () {
     })
   }
 
+  const clickCloseNote = () => {
+    if (params.tenantId) {
+      localStorage.setItem(ACX_UI_AP_COMPATIBILITY_NOTE_HIDDEN_KEY, params.tenantId)
+      setShowCompatibilityNote(false)
+    }
+  }
+
+  const alertNote = () => {
+    return (
+      <AlertNote
+        data-testid='ap-compatibility-alert-note'
+        message={
+          <>
+            <Tooltip.Info
+              isFilled
+              iconStyle={{
+                height: '16px',
+                width: '16px',
+                marginBottom: '-3px',
+                color: cssStr('--acx-semantics-yellow-50')
+              }} />
+            <span style={{ lineHeight: '28px' }}>
+              {$t({
+                defaultMessage:
+          '  {total} access points are not compatible with certain Wi-Fi features.' },
+              { total: incompatible })}
+            </span>
+            <Button
+              data-testid='ap-compatibility-alert-note-open'
+              type='link'
+              style={{ fontSize: '12px', marginBottom: '4px' }}
+              onClick={() => {
+                setDrawerVisible(true)
+              }}>
+              {$t({ defaultMessage: 'See details' })}
+            </Button>
+          </>}
+        type='info'
+        closable
+        onClose={clickCloseNote} />
+    )
+  }
+
   return (
     <IconThirdTab
       activeKey={params?.categoryTab}
       defaultActiveKey='list'
       onChange={onCategoryTabChange}
+      tabBarExtraContent={showCompatibilityNote? alertNote(): []}
     >
       <Tabs.TabPane key='list'
         tab={<Tooltip title={$t({ defaultMessage: 'Device List' })}>
@@ -244,10 +315,21 @@ export function VenueWifi () {
         <ApTable rowSelection={{ type: 'checkbox' }}
           searchable={true}
           enableActions={true}
+          enableApCompatibleCheck={isApCompatibleCheckEnabled}
           filterables={{
-            deviceGroupId: apgroupFilterOptions
+            deviceGroupId: apgroupFilterOptions,
+            featureIncompatible: compatibilitiesFilterOptions
           }}
         />
+        {isApCompatibleCheckEnabled &&
+          <ApCompatibilityDrawer
+            isMultiple
+            visible={drawerVisible}
+            data={apCompatibilities}
+            queryType={ApCompatibilityQueryTypes.CHECK_VENUE}
+            onClose={() => setDrawerVisible(false)}
+          />
+        }
       </Tabs.TabPane>
       { enabledMesh && <Tabs.TabPane key='mesh'
         tab={<Tooltip title={$t({ defaultMessage: 'Mesh List' })}>

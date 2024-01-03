@@ -893,3 +893,29 @@ export enum SignalStrengthLevel {
   LOW,
   POOR
 }
+
+export interface ApFeatureSet {
+  name: string,
+  requiredFw: string,
+  requiredModel: string
+}
+
+export interface ApCompatibility {
+  id: string,
+  incompatibleFeatures?: ApIncompatibleFeature[]
+  total: number,
+  incompatible: number
+}
+
+export interface ApIncompatibleFeature {
+  featureName: string;
+  requiredFw: string;
+  requiredModel?: string;
+  incompatibleDevices: ApIncompatibleDevice[];
+}
+
+export interface ApIncompatibleDevice {
+	firmware: string,
+	model: string,
+	count: number
+}
