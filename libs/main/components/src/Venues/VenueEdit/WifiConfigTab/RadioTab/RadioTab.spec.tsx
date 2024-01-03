@@ -47,9 +47,6 @@ describe('RadioTab', () => {
         CommonUrlsInfo.getDashboardOverview.url,
         (_, res, ctx) => res(ctx.json({}))),
       rest.get(
-        CommonUrlsInfo.getVenue.url,
-        (_, res, ctx) => res(ctx.json(venueData))),
-      rest.get(
         CommonUrlsInfo.getVenueSettings.url,
         (_, res, ctx) => res(ctx.json(venueSetting))),
       rest.get(
@@ -104,142 +101,16 @@ describe('RadioTab', () => {
     editAdvancedContextData: {} as AdvanceSettingContext,
     setEditAdvancedContextData: jest.fn(),
 
-    editRadioContextData: {} as RadioContext,
+    editRadioContextData: {
+      apiApModels: externalAntennaApModels,
+      apModels: externalAntennaApModels,
+      radioData: radioCustomizationData as VenueRadioCustomization
+    } as RadioContext,
     setEditRadioContextData: jest.fn(),
 
     previousPath: '',
     setPreviousPath: jest.fn()
   }
-  it.skip('should render External Antenna: E510 correctly', async () => {
-    render(<Provider>
-      <VenueEditContext.Provider value={{
-        ...venueEditContextDataObject,
-        editRadioContextData: {
-          apiApModels: externalAntennaApModels,
-          apModels: externalAntennaApModels,
-          radioData: radioCustomizationData as VenueRadioCustomization
-        }
-      }}>
-        <RadioTab />
-      </VenueEditContext.Provider>
-    </Provider>, { route: { params } })
-
-    // this would only be visible when loader removed
-    const sectionEl = await screen.findByTestId('external-antenna-section')
-    const section = within(sectionEl)
-
-    await section.findByText('No model selected')
-    const apModelSelect = await section.findByRole('combobox')
-    await userEvent.click(apModelSelect)
-
-    await userEvent.click(await screen.findByTitle('E510'))
-    expect(await section.findByText('Enable 2.4 GHz:')).toBeVisible()
-    expect(await section.findByText('Enable 5 GHz:')).toBeVisible()
-
-    const toggle24G = await section.findByRole('switch', { name: /Enable 2.4 GHz:/i })
-    const toggle50G = await section.findByRole('switch', { name: /Enable 5 GHz:/i })
-    await userEvent.click(toggle24G)
-    await userEvent.click(toggle50G)
-
-    expect(await section.findAllByRole('spinbutton')).toHaveLength(2)
-
-    const gain24G = await section.findByTestId('gain24G')
-    const gain50G = await section.findByTestId('gain50G')
-    await userEvent.type(gain24G, '1')
-    await userEvent.type(gain50G, '1')
-    await userEvent.click(toggle24G)
-    await userEvent.click(toggle50G)
-
-    await userEvent.click(apModelSelect)
-    await userEvent.click(await screen.findByTitle('T350SE'))
-    expect(await section.findByRole('switch', { name: 'Enable:' })).toBeVisible()
-
-    await userEvent.click(apModelSelect)
-    await userEvent.click(await screen.findByTitle('E510'))
-    expect(await section.findByRole('switch', { name: 'Enable 2.4 GHz:' })).toBeVisible()
-    await userEvent.click(await section.findByRole('switch', { name: 'Enable 2.4 GHz:' }))
-    const gain51024G = await section.findByTestId('gain24G')
-    expect(gain51024G).toHaveValue('3') // reset to API value
-  })
-
-  it.skip('should render External Antenna: T350SE & T300E correctly', async () => {
-    render(<Provider>
-      <VenueEditContext.Provider value={{
-        ...venueEditContextDataObject,
-        editRadioContextData: {
-          apiApModels: externalAntennaApModels,
-          apModels: externalAntennaApModels,
-          radioData: radioCustomizationData as VenueRadioCustomization
-        }
-      }}>
-        <RadioTab />
-      </VenueEditContext.Provider>
-    </Provider>, { route: { params } })
-
-    // this would only be visible when loader removed
-    const sectionEl = await screen.findByTestId('external-antenna-section')
-    const section = within(sectionEl)
-
-    await section.findByText('No model selected')
-    const apModelSelect = await section.findByRole('combobox')
-    await userEvent.click(apModelSelect)
-    await userEvent.click(await screen.findByTitle('T350SE'))
-    expect(await screen.findByText('Enable:')).toBeVisible()
-    await userEvent.click(await screen.findByRole('switch', { name: /Enable:/i }))
-
-    await userEvent.click(apModelSelect)
-    await userEvent.click(await screen.findByTitle('T300E'))
-    expect(await screen.findByText('Enable:')).toBeVisible()
-    await userEvent.click(await screen.findByRole('switch', { name: /Enable:/i }))
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
-  })
-
-  it.skip('should render Wi-Fi Radio Settings correctly when on/off tri-band button', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-
-    render(<Provider>
-      <VenueEditContext.Provider value={{
-        ...venueEditContextDataObject,
-        editRadioContextData: {
-          apiApModels: externalAntennaApModels,
-          apModels: externalAntennaApModels,
-          radioData: radioCustomizationData as VenueRadioCustomization
-        }
-      }}>
-        <RadioTab />
-      </VenueEditContext.Provider>
-    </Provider>, { route: { params } })
-
-    // this would only be visible when loader removed
-    const sectionEl = await screen.findByTestId('radio-settings')
-    const section = within(sectionEl)
-
-    const triBand = await section.findByRole('switch')
-    // turn off tri-band radio
-    await userEvent.click(triBand)
-
-    await section.findByTestId('radio-24g-tab')
-    await section.findByTestId('radio-5g-tab')
-
-    // turn on tri-band radio
-    await userEvent.click(triBand)
-    await section.findByTestId('radio-6g-tab')
-
-    const dual5gBtn = await section.findByRole('radio',
-      { name: /Split 5GHz into lower and upper bands/i })
-
-    await userEvent.click(dual5gBtn)
-    expect(dual5gBtn).toBeChecked()
-
-    await section.findByTestId('radio-u5g-tab')
-    await userEvent.click(await section.findByRole('tab', { name: /Lower 5 GHz/ }))
-    await section.findByRole('radio', { name: /Custom Settings/i })
-
-    await section.findByTestId('radio-l5g-tab')
-    await userEvent.click(await section.findByRole('tab', { name: /Lower 5 GHz/ }))
-    await section.findByRole('radio', { name: /Custom Settings/i })
-  })
 
   it.skip('should render Wi-Fi Radio 24G Settings correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
