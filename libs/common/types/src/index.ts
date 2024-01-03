@@ -35,5 +35,9 @@ export const browserSupportedLocales: Record<string, LangKey> = {
   'ko': 'ko-KR',
   'ko-KR': 'ko-KR',
   'pt': 'pt-BR',
-  'pt-BR': 'pt-BR'
+  'pt-BR': 'pt-BR',
+  'de': 'de-DE',
+  'de-DE': 'de-DE',
+  'zh': 'zh-TW',
+  'zh-TW': 'zh-TW'
 }
