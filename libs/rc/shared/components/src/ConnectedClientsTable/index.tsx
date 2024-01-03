@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react'
 
 import { LiteralElement }             from '@formatjs/icu-messageformat-parser'
 import { Space }                      from 'antd'
-import _                              from 'lodash'
 import { useIntl, MessageDescriptor } from 'react-intl'
 
 import { Subtitle, Tooltip, Table, TableProps, Loader, showActionModal  } from '@acx-ui/components'
