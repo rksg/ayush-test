@@ -134,7 +134,7 @@ export function VenuePropertyTab () {
   const [apMap, setApMap] = useState(new Map())
   const [switchMap, setSwitchMap] = useState(new Map())
   const [connectionMeteringMap, setConnectionMeteringMap] = useState(new Map())
-  const [withNsg, setWithNsg] = useState(false)
+  const [withNsg, setWithNsg] = useState(true)
   const [drawerState, setDrawerState] = useState<{
     isEdit: boolean,
     visible: boolean,
