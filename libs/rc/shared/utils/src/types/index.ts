@@ -98,7 +98,8 @@ export interface Venue {
   activatedApsId?: string[]
   dhcp?: { enabled: boolean }
   clients?: number
-  edges?: number
+  edges?: number,
+  incompatible?: number
 }
 
 export interface AlarmBase {
