@@ -119,7 +119,7 @@ export function EmailRecipientDialog (props: EmailRecipientDialogProps) {
               name: record.name,
               email: record.email
             }),
-            defaultSelectedRowKeys: selectedRecipientsList.map(record => record.id)
+            selectedRowKeys: selectedRecipientsList.map(record => record.id)
           }}
         />
       </Loader>
