@@ -1261,9 +1261,9 @@ export const venueExternalAntennaCap = {
       canSupportLacp: false,
       requireOneEnabledTrunkPort: true,
       lanPortPictureDownloadUrl:
-        'https://storage.googleapis.com/dev-alto-file-storage-0/wifi/firmware/6.2.0.103.500/e510.jpg?GoogleAccessId=dev-alto-file-storage@alto-dev-200221.iam.gserviceaccount.com&Expires=1697360552&Signature=Mv%2BMAuVUIlgxIyK%2FqT0pbPllGYpxAoJvLwOnAx48ibKNGFVJ3eobxvpbctu5rCVDW14nakRxqaqcDph5AHvmVJZqmbFTJFD6OOWGv3tpVrx5mIbOcriib2tRgl74%2FfJWZbKNxHhVGZqyYcVbGaTBWpxZMh4OHvhIjAKB4wWd5WZtqBLz3A%2BoiPXKVs59lTPga%2BzsoFzAdcuH1Xd3yWbcR6QSOD5RNeUfpUIa%2Fr7LdlZDMw3QmcPKZlpL3hmlK6%2Fj6SeLY2Zr1fuuRyunjR38s0PC%2FMR3g6gMGFXQDp8L%2FAyvygsSu%2BiTkU7bfp75ncKC50qj0HKKlNfQAxCce9lPdw%3D%3D',
+        'https://lanPort_E510.jpg',
       pictureDownloadUrl:
-        'https://storage.googleapis.com/dev-alto-file-storage-0/wifi/firmware/6.2.0.103.500/appearance-e510.jpg?GoogleAccessId=dev-alto-file-storage@alto-dev-200221.iam.gserviceaccount.com&Expires=1697360552&Signature=BQkBmg5cRnf49LRr8cuf%2Fwy%2By5NoFTYOBxRBl4ysnKLI4TiZI3OEJ2sfHbNV9wIET7pXA29S0f3DdBj3KA1DgErNt0Fsh9TlBixzRxfLh3KNYugoE2vG0IorF%2FdCFTQd1XLqyOmdAELEb%2FviZVxihNvwicLu4xQvZI0ct2hw7hlkioK2HQJCoCqiS9mF2Acgc0OQ6v3VaeaWF9qr0WG0W4cDVpFyNxgKG4wtwFk0Co1ZlKmzYsNeR81wJiCXieeuStAtEqn8IwnNGcbpVdX9eBEEbL2j8Gj8TJbTVPmtXiigot8erQZBAJqW9ntbllL64au8BfFYpodUutcBGXjd5w%3D%3D',
+        'https://E510.jpg',
       canSupportCellular: false,
       simCardPrimaryEnabled: true,
       simCardPrimaryRoaming: true,
@@ -1308,9 +1308,9 @@ export const venueExternalAntennaCap = {
       canSupportLacp: false,
       requireOneEnabledTrunkPort: true,
       lanPortPictureDownloadUrl:
-        'https://storage.googleapis.com/dev-alto-file-storage-0/wifi/firmware/6.2.0.103.500/t300e.jpg?GoogleAccessId=dev-alto-file-storage@alto-dev-200221.iam.gserviceaccount.com&Expires=1697360554&Signature=JkUWlNY%2FdEMDe7fHZZVL2aFsDlM7xPNTnih9TMwdDGUs%2B79N1uPk7Nj%2FBGCu%2FfIS8LSER3WGTg2SyALiiKd3QU36NF3MJYgDJSr3aqu1sfI8b4qnUVTVRSMPWa8qvAChl8bCVaVu%2BWUug7NFZE7qKZNfz6ieqjjLE%2FYXmzHbz9ew1D5PblwRKKRmGDgt8z90UuEXnrqk1Fs5popwXrkKfLNNZX0rbZ5tEA%2Ba4c%2Fn%2F5ye0YNHzH0PGfKGBPagmss7HJiJ64Lj2RKWTvrnmsgoYndLSpbFjFW5wt4kuzX%2Feh9LL16xVbLSKqNkaoGLZwt9ION3o2kVKrGcqAGynJjW9g%3D%3D',
+        'https://lanPort_T300.jpg',
       pictureDownloadUrl:
-        'https://storage.googleapis.com/dev-alto-file-storage-0/wifi/firmware/6.2.0.103.500/appearance-t300e.jpg?GoogleAccessId=dev-alto-file-storage@alto-dev-200221.iam.gserviceaccount.com&Expires=1697360554&Signature=OkwHtgmgZAxl01FI%2F8MSiDXBk12ZSSqIjyi8hNpvYOjyRh9RUDqXFSAjhh45yJhyGNRJMQ6A3ZS5ZblzA%2Fret%2FP8Q0SS7GvaXfuldOYZYgxR%2F3R1HEYVA8pnIDRfMAN3I98jlqwBWWZg9nGFPBwXOstFHu%2F4d7Uih54KZpQA7JOV5Bb4EHj%2BlKMprJqBSJkQbXDxYUzcEN0X4v4NY2vjXskHD9z%2BBR9HqmIiZ3eNPs5VVnpZIMNBV5IYSkCJLm1SdLtICpXwXm0b%2FV6rDYlCrtxS1GH0XOPLRUS%2BHRCGjoDGU3d6FaLdNiIG5J3GQ3wu5g10AVVAR1UZJRFjIBKI7A%3D%3D',
+        'https://T300.png',
       canSupportCellular: false,
       simCardPrimaryEnabled: true,
       simCardPrimaryRoaming: true,
@@ -1359,9 +1359,9 @@ export const venueExternalAntennaCap = {
       requireOneEnabledTrunkPort: true,
       poeModeCapabilities: ['Auto', '802.3af', '802.3at'],
       lanPortPictureDownloadUrl:
-        'https://storage.googleapis.com/dev-alto-file-storage-0/wifi/firmware/6.2.0.103.500/t350se.jpg?GoogleAccessId=dev-alto-file-storage@alto-dev-200221.iam.gserviceaccount.com&Expires=1697360554&Signature=FaTWx6J4bpnC0jpuLGXJbpz3sFmo02yJyhFr6xQ3nO4hkC%2BkbAN1QBr5forzkiej5jugJK6hjZk2TeVkvp1Yzbf6bs45YcD%2B3wE%2FckDDJkaagyZR5hkTKckyZXeJiw3yzkExZKRiYCidgdvkiBr1Aei0wXguj5QcdRtDIYU8T%2BW49kuEo9vo%2BvHIoBDf%2FbozcTnoMbHFb7ySS%2BLbmwipAvusJLL4mG13dOGNrWalKB1h92YWmGMzSGihHRAwxGhlAgT55Yw2U73X2u1GoLTt14BaKj3LAyjX%2BhLyaXMmYUlV6IApze3jRDeB0253Rv57ipQUbTbr%2FyXDUlOMFlu40A%3D%3D',
+        'https://lanPort_T350SE.png',
       pictureDownloadUrl:
-        'https://storage.googleapis.com/dev-alto-file-storage-0/wifi/firmware/6.2.0.103.500/appearance-t350se.jpg?GoogleAccessId=dev-alto-file-storage@alto-dev-200221.iam.gserviceaccount.com&Expires=1697360554&Signature=cGpqgx0R9TGzheyvbsiTprvigZuSJu101peG%2FAFzSE9jvpnqhGcxmGMtspVwdIq2Q0JQyWiU%2Br6XkdL9fT9wbzVSq916RMPuCINzHhsHtTGfjbK0748vY12PU0C8e775jn%2BlvsEGwgcU5fA16LQxzHYLLbfjdMnIod1FqmfcKw39ZUpztGrZZIZ0KLb%2FGVo1V%2FVmuHXeKAICpvLVNHMZmR5CF3GrCx07VeJ5N2YiZ%2FWRh5qAbnwIv3VhTxtR1cT%2BR975PMUrIl08IaMV4R9V2E%2B7VmmBDFIoLI%2BPcv9GOe%2F7oUBCkw1%2F7eftx5ggAPVDmGNpV0xV85EdQOl19G4k9A%3D%3D',
+        'https://T350SE.png',
       canSupportCellular: false,
       simCardPrimaryEnabled: true,
       simCardPrimaryRoaming: true,
@@ -1436,9 +1436,9 @@ export const venueExternalAntennaCap = {
         '802.3bt-Class_7'
       ],
       lanPortPictureDownloadUrl:
-        'https://storage.googleapis.com/dev-alto-file-storage-0/wifi/firmware/6.2.0.103.500/t750se.jpg?GoogleAccessId=dev-alto-file-storage@alto-dev-200221.iam.gserviceaccount.com&Expires=1697360555&Signature=OGe2ztxZKG3eq%2BnUIlVVazwlaPV5pG0j3%2BFXiaGrWOTL1Xxemm5%2FjGp1Bwp%2BbUaAs2995zQP7%2FZfLodSOMNzpOJ2i2WPN7MNiNVp2IxyCIiRZ0P66xtAbBThxBz13p3rQ51k5Faac1KQlIBfCUcKl9gd9fFLzFfA8dXlmjRHLhXIR6UXy3Tldcmpe9ae51bOmJtpQekIPw0AClOpgvi5RCjMEdT3Y4lomRvV6pCvVL6GD2ZWPUwtEdvTE6K2%2BjbU6Uo4GwvnCHOMRZ05Eppc5YRqUBnoYe6YDIlUXrHobz1C%2BBOTbCR0ggmrWafg6zZfSaDQKDrNETOmFff%2FDdsoPA%3D%3D',
+        'https://lanPort_T750SE.png',
       pictureDownloadUrl:
-        'https://storage.googleapis.com/dev-alto-file-storage-0/wifi/firmware/6.2.0.103.500/appearance-t750se.jpg?GoogleAccessId=dev-alto-file-storage@alto-dev-200221.iam.gserviceaccount.com&Expires=1697360555&Signature=aRWgJxGnOgJ%2BR%2BrOVF%2F%2F3VHM%2BiJimHls1Eg1Wj0ndcsDzaylvIpz%2BV2Mjo%2BwXBnV0Gx0gilFS7eFISxVX8Z6kL%2B5CGmwXXGTU%2F%2FTG9FKworqMHUd4UP%2BXyGIoUoinW9752EeNmR6w%2FEZ9tivDciVFuQn%2BygwSn6qO8yzOCg6BXZB40bGryR6PhXXvJqSNGHS19sjnZGLDSNsbHCYd148pRjkLknEz6wRVyaUEj9I21Vg1p9WikFfffpO9hSiISG39zMrZT1VolS6571GxK%2F1nvAG%2FUqNPQ%2BJZsRhVF84PjV904jWmdwMinI4nZ5qkq1%2BPNUdYbMyHm0hX0v5KYbjVg%3D%3D',
+        'https://T750SE.png',
       canSupportCellular: false,
       simCardPrimaryEnabled: true,
       simCardPrimaryRoaming: true,
@@ -1488,6 +1488,125 @@ export const externalAntennaApModels = {
   }
 } as unknown as {
   [index: string]: ExternalAntenna;
+}
+
+export const triBandApCap = {
+  apModels: [
+    { model: 'R560',
+      allowCbandCountry: ['GB'],
+      allowDfsCountry: ['US', 'SG'],
+      canSupportCellular: false,
+      canSupportLacp: true,
+      canSupportPoeMode: true,
+      canSupportPoeOut: false,
+      capabilityScore: 288,
+      has160MHzChannelBandwidth: true,
+      isOutdoor: false,
+      lanPortPictureDownloadUrl:
+        'https://fakeLanportPic/wifi/firmware/6.2.0.99.1486/r560.jpg',
+      lanPorts: [
+        {
+          id: '1',
+          defaultType: 'TRUNK',
+          isPoeOutPort: false,
+          isPoePort: false,
+          supportDisable: true,
+          trunkPortOnly: false,
+          untagId: 1,
+          vlanMembers: '1-4094'
+        }, {
+          id: '2',
+          defaultType: 'TRUNK',
+          isPoeOutPort: false,
+          isPoePort: true,
+          supportDisable: false,
+          trunkPortOnly: false,
+          untagId: 1,
+          vlanMembers: '1-4094'
+
+        }
+      ],
+      ledOn: true,
+      lldpAdInterval: 30,
+      lldpEnable: true,
+      lldpHoldTime: 120,
+      lldpMgmtEnable: true,
+      maxChannelization5G: 80,
+      maxChannelization6G: 160,
+      maxChannelization24G: 40,
+      pictureDownloadUrl:
+        'https://fakeApPic/wifi/firmware/6.2.0.99.1486/r560.jpg',
+      poeModeCapabilities: ['Auto', '802.3at', '802.3bt-Class_5'],
+      requireOneEnabledTrunkPort: true,
+      simCardPrimaryEnabled: true,
+      simCardPrimaryRoaming: true,
+      simCardSecondaryEnabled: true,
+      simCardSecondaryRoaming: true,
+      support11AX: true,
+      support11BE: false,
+      supportChannel144: true,
+      supportDual5gMode: false,
+      supportTriRadio: true,
+      supportMesh: true,
+      version: '6.2.1.103.2554'
+    },
+    { model: 'R760',
+      allowCbandCountry: ['GB'],
+      allowDfsCountry: ['US', 'SG'],
+      canSupportCellular: false,
+      canSupportLacp: true,
+      canSupportPoeMode: true,
+      canSupportPoeOut: false,
+      capabilityScore: 288,
+      has160MHzChannelBandwidth: true,
+      isOutdoor: false,
+      lanPortPictureDownloadUrl:
+        'https://fakeLanPortPic/wifi/firmware/6.2.0.99.1486/r760.jpg',
+      lanPorts: [
+        {
+          id: '1',
+          defaultTyp: 'TRUNK',
+          isPoeOutPort: false,
+          isPoePort: false,
+          supportDisable: true,
+          trunkPortOnly: false,
+          untagId: 1,
+          vlanMembers: '1-4094'
+        }, {
+          id: '2',
+          defaultType: 'TRUNK',
+          isPoeOutPort: false,
+          isPoePort: true,
+          supportDisable: false,
+          trunkPortOnly: false,
+          untagId: 1,
+          vlanMembers: '1-4094'
+        }
+      ],
+      ledOn: true,
+      lldpAdInterval: 30,
+      lldpEnable: true,
+      lldpHoldTime: 120,
+      lldpMgmtEnable: true,
+      maxChannelization5G: 160,
+      maxChannelization6G: 160,
+      maxChannelization24G: 40,
+      pictureDownloadUrl:
+        'https://fakeApPic/wifi/firmware/6.2.0.99.1486/r760.jpg',
+      poeModeCapabilities: ['Auto', '802.3at', '802.3bt-Class_5'],
+      requireOneEnabledTrunkPort: true,
+      simCardPrimaryEnabled: true,
+      simCardPrimaryRoaming: true,
+      simCardSecondaryEnabled: true,
+      simCardSecondaryRoaming: true,
+      support11AX: true,
+      supportChannel144: true,
+      supportDual5gMode: true,
+      supportTriRadio: true,
+      supportMesh: true,
+      version: '6.2.1.103.2554'
+    }
+  ]
 }
 
 export const emptyList = {
