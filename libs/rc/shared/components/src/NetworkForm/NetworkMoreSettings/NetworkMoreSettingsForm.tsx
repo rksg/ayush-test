@@ -8,7 +8,7 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import { Button, Tabs }                                           from '@acx-ui/components'
 import { useIsSplitOn, Features, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
-import { NetworkSaveData, NetworkTypeEnum }                       from '@acx-ui/rc/utils'
+import { NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum }     from '@acx-ui/rc/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -23,7 +23,7 @@ import { VlanTab }           from './VlanTab'
 
 
 export function NetworkMoreSettingsForm (props: {
-  wlanData: NetworkSaveData | null
+  wlanData: NetworkSaveData | null,
 }) {
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
@@ -55,6 +55,13 @@ export function NetworkMoreSettingsForm (props: {
         bssMinimumPhyRate: get(data,
           'wlan.advancedCustomization.radioCustomization.bssMinimumPhyRate')
       })
+      // When security protocal is WPA23Mixed MLO should be deactivated.
+      // Please note that you will find the similar code in PSK/DPSK, but this fragment is necessary
+      // It's because under edit mode, user may click more settings instead of click step by step,
+      // and the behavior will cause MLO still be active coz the code in PSK and DPSK didn't execute.
+      if(data.wlan?.wlanSecurity === WlanSecurityEnum.WPA23Mixed) {
+        form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
+      }
     }
   }, [data, editMode, cloneMode])
   const { $t } = useIntl()
@@ -92,7 +99,9 @@ export function NetworkMoreSettingsForm (props: {
   }
 }
 
-export function MoreSettingsTabs (props: { wlanData: NetworkSaveData | null }) {
+export function MoreSettingsTabs (props: {
+  wlanData: NetworkSaveData | null
+}) {
   const { $t } = useIntl()
   const { data, editMode } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
