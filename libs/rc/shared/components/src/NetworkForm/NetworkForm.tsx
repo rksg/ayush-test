@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, createContext } from 'react'
 
 import { Form }                   from 'antd'
 import _                          from 'lodash'
@@ -54,6 +54,12 @@ import PortalInstance                       from './PortalInstance'
 import { useNetworkVxLanTunnelProfileInfo } from './utils'
 import { Venues }                           from './Venues/Venues'
 
+export interface MLOContextType {
+  isDisableMLO: boolean,
+  disableMLO: (state: boolean) => void
+}
+
+export const MLOContext = createContext({} as MLOContextType)
 
 const settingTitle = defineMessage({
   defaultMessage: `{type, select,
@@ -117,6 +123,8 @@ export function NetworkForm (props:{
 
   const [portalDemo, setPortalDemo]=useState<Demo>()
   const [previousPath, setPreviousPath] = useState('')
+  const [MLOButtonDisable, setMLOButtonDisable] = useState(false)
+
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
     if(!editMode&&!saveState.enableAccountingService){
       delete saveState.accountingRadius
@@ -526,39 +534,45 @@ export function NetworkForm (props:{
           data: saveState,
           setData: updateSaveState
         }}>
-          <StepsFormLegacy<NetworkSaveData>
-            formRef={formRef}
-            editMode={editMode}
-            onCancel={() => modalMode
-              ? modalCallBack?.()
-              : redirectPreviousPage(navigate, previousPath, linkToNetworks)
-            }
-            onFinish={editMode ? handleEditNetwork : handleAddNetwork}
-          >
-            <StepsFormLegacy.StepForm
-              name='details'
-              title={intl.$t({ defaultMessage: 'Network Details' })}
-              onFinish={handleDetails}
-            >
-              <NetworkDetailForm />
-            </StepsFormLegacy.StepForm>
-
-            <StepsFormLegacy.StepForm
-              name='settings'
-              title={intl.$t(settingTitle, { type: saveState.type })}
-              onFinish={handleSettings}
-            >
-              {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
-              {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm/>}
-              {(saveState.type || createType) === NetworkTypeEnum.DPSK && <DpskSettingsForm />}
-              {
-                (saveState.type || createType) === NetworkTypeEnum.CAPTIVEPORTAL &&
-                  <PortalTypeForm/>
+          <MLOContext.Provider value={{
+            isDisableMLO: MLOButtonDisable,
+            disableMLO: setMLOButtonDisable
+          }}>
+            <StepsFormLegacy<NetworkSaveData>
+              formRef={formRef}
+              editMode={editMode}
+              onCancel={() => modalMode
+                ? modalCallBack?.()
+                : redirectPreviousPage(navigate, previousPath, linkToNetworks)
               }
-              {saveState.type === NetworkTypeEnum.PSK && <PskSettingsForm />}
+              onFinish={editMode ? handleEditNetwork : handleAddNetwork}
+            >
+              <StepsFormLegacy.StepForm
+                name='details'
+                title={intl.$t({ defaultMessage: 'Network Details' })}
+                onFinish={handleDetails}
+              >
+                <NetworkDetailForm />
+              </StepsFormLegacy.StepForm>
 
-            </StepsFormLegacy.StepForm>
-            { saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+              <StepsFormLegacy.StepForm
+                name='settings'
+                title={intl.$t(settingTitle, { type: saveState.type })}
+                onFinish={handleSettings}
+              >
+                {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
+                {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm/>}
+                {(saveState.type || createType) === NetworkTypeEnum.DPSK &&
+              <DpskSettingsForm />}
+                {
+                  (saveState.type || createType) === NetworkTypeEnum.CAPTIVEPORTAL &&
+                  <PortalTypeForm/>
+                }
+                {saveState.type === NetworkTypeEnum.PSK &&
+              <PskSettingsForm/>}
+
+              </StepsFormLegacy.StepForm>
+              { saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
                 <StepsFormLegacy.StepForm
                   name='onboarding'
                   title={
@@ -568,29 +582,30 @@ export function NetworkForm (props:{
                   {!!(saveState?.guestPortal?.guestNetworkType) &&
                       pickOneCaptivePortalForm(saveState)}
                 </StepsFormLegacy.StepForm>
-            }
-            { isPortalWebRender(saveState) &&<StepsFormLegacy.StepForm
-              name='portalweb'
-              title={intl.$t({ defaultMessage: 'Portal Web Page' })}
-              onFinish={handlePortalWebPage}
-            >
-              <PortalInstance updatePortalData={(data)=>setPortalDemo(data)}/>
-            </StepsFormLegacy.StepForm>
-            }
-            <StepsFormLegacy.StepForm
-              name='venues'
-              title={intl.$t({ defaultMessage: 'Venues' })}
-              onFinish={handleVenues}
-            >
-              <Venues />
-            </StepsFormLegacy.StepForm>
-            <StepsFormLegacy.StepForm
-              name='summary'
-              title={intl.$t({ defaultMessage: 'Summary' })}
-            >
-              <SummaryForm summaryData={saveState} portalData={portalDemo}/>
-            </StepsFormLegacy.StepForm>
-          </StepsFormLegacy>
+              }
+              { isPortalWebRender(saveState) &&<StepsFormLegacy.StepForm
+                name='portalweb'
+                title={intl.$t({ defaultMessage: 'Portal Web Page' })}
+                onFinish={handlePortalWebPage}
+              >
+                <PortalInstance updatePortalData={(data)=>setPortalDemo(data)}/>
+              </StepsFormLegacy.StepForm>
+              }
+              <StepsFormLegacy.StepForm
+                name='venues'
+                title={intl.$t({ defaultMessage: 'Venues' })}
+                onFinish={handleVenues}
+              >
+                <Venues />
+              </StepsFormLegacy.StepForm>
+              <StepsFormLegacy.StepForm
+                name='summary'
+                title={intl.$t({ defaultMessage: 'Summary' })}
+              >
+                <SummaryForm summaryData={saveState} portalData={portalDemo}/>
+              </StepsFormLegacy.StepForm>
+            </StepsFormLegacy>
+          </MLOContext.Provider>
         </NetworkFormContext.Provider>
       }
       {editMode &&
@@ -602,37 +617,43 @@ export function NetworkForm (props:{
           data: saveState,
           setData: updateSaveState
         }}>
-          <StepsForm<NetworkSaveData>
-            form={form}
-            editMode={editMode}
-            onCancel={() => modalMode
-              ? modalCallBack?.()
-              : redirectPreviousPage(navigate, previousPath, linkToNetworks)
-            }
-            onFinish={editMode ? handleEditNetwork : handleAddNetwork}
-          >
-            <StepsForm.StepForm
-              name='details'
-              title={intl.$t({ defaultMessage: 'Network Details' })}
-              onFinish={handleDetails}
+          <MLOContext.Provider value={{
+            isDisableMLO: MLOButtonDisable,
+            disableMLO: setMLOButtonDisable
+          }}>
+            <StepsForm<NetworkSaveData>
+              form={form}
+              editMode={editMode}
+              onCancel={() => modalMode
+                ? modalCallBack?.()
+                : redirectPreviousPage(navigate, previousPath, linkToNetworks)
+              }
+              onFinish={editMode ? handleEditNetwork : handleAddNetwork}
             >
-              <NetworkDetailForm />
-            </StepsForm.StepForm>
+              <StepsForm.StepForm
+                name='details'
+                title={intl.$t({ defaultMessage: 'Network Details' })}
+                onFinish={handleDetails}
+              >
+                <NetworkDetailForm />
+              </StepsForm.StepForm>
 
-            <StepsForm.StepForm
-              name='settings'
-              title={intl.$t(settingTitle, { type: saveState.type })}
-              onFinish={handleSettings}
-            >
-              {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
-              {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm/>}
-              {(saveState.type || createType) === NetworkTypeEnum.DPSK && <DpskSettingsForm />}
-              {(saveState.type || createType) === NetworkTypeEnum.CAPTIVEPORTAL &&
+              <StepsForm.StepForm
+                name='settings'
+                title={intl.$t(settingTitle, { type: saveState.type })}
+                onFinish={handleSettings}
+              >
+                {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
+                {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm/>}
+                {(saveState.type || createType) === NetworkTypeEnum.DPSK &&
+              <DpskSettingsForm />}
+                {(saveState.type || createType) === NetworkTypeEnum.CAPTIVEPORTAL &&
                 <PortalTypeForm/>}
-              {saveState.type === NetworkTypeEnum.PSK && <PskSettingsForm />}
+                {saveState.type === NetworkTypeEnum.PSK &&
+              <PskSettingsForm />}
 
-            </StepsForm.StepForm>
-            { saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+              </StepsForm.StepForm>
+              { saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
                 <StepsForm.StepForm
                   name='onboarding'
                   title={
@@ -642,8 +663,8 @@ export function NetworkForm (props:{
                   {!!(saveState?.guestPortal?.guestNetworkType) &&
                       pickOneCaptivePortalForm(saveState)}
                 </StepsForm.StepForm>
-            }
-            {editMode &&
+              }
+              {editMode &&
               <StepsForm.StepForm
                 name='moreSettings'
                 title={intl.$t({ defaultMessage: 'More Settings' })}
@@ -652,22 +673,23 @@ export function NetworkForm (props:{
                 <NetworkMoreSettingsForm wlanData={saveState} />
 
               </StepsForm.StepForm>}
-            { isPortalWebRender(saveState) &&<StepsForm.StepForm
-              name='portalweb'
-              title={intl.$t({ defaultMessage: 'Portal Web Page' })}
-              onFinish={handlePortalWebPage}
-            >
-              <PortalInstance updatePortalData={(data)=>setPortalDemo(data)}/>
-            </StepsForm.StepForm>
-            }
-            <StepsForm.StepForm
-              name='venues'
-              title={intl.$t({ defaultMessage: 'Venues' })}
-              onFinish={handleVenues}
-            >
-              <Venues />
-            </StepsForm.StepForm>
-          </StepsForm>
+              { isPortalWebRender(saveState) &&<StepsForm.StepForm
+                name='portalweb'
+                title={intl.$t({ defaultMessage: 'Portal Web Page' })}
+                onFinish={handlePortalWebPage}
+              >
+                <PortalInstance updatePortalData={(data)=>setPortalDemo(data)}/>
+              </StepsForm.StepForm>
+              }
+              <StepsForm.StepForm
+                name='venues'
+                title={intl.$t({ defaultMessage: 'Venues' })}
+                onFinish={handleVenues}
+              >
+                <Venues />
+              </StepsForm.StepForm>
+            </StepsForm>
+          </MLOContext.Provider>
         </NetworkFormContext.Provider>
       }
     </>
