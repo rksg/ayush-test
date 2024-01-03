@@ -229,7 +229,8 @@ export function RecommendationTable (
       tooltip: optimizationTooltipText,
       render: (_value, record) => {
         const preferences = _.get(record, 'preferences') || { fullOptimization: true }
-        const tooltipText = record.toggles?.preferences
+        const disabled = record.toggles?.preferences === false
+        const tooltipText = disabled
           ? $t({ defaultMessage: `
             Optimization option cannot be changed while recommendation(s) of the Zone is in Applied
             status. Please revert all to New status before changing the optimization option.
@@ -239,7 +240,7 @@ export function RecommendationTable (
           <Switch
             defaultChecked
             checked={preferences.fullOptimization}
-            disabled={record.toggles?.preferences === false}
+            disabled={disabled}
             onChange={() => {
               const updatedPreference = {
                 ...preferences,
