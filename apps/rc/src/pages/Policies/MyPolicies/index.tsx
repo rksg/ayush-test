@@ -20,7 +20,8 @@ import {
   getPolicyRoutePath,
   getSelectPolicyRoutePath,
   PolicyType,
-  PolicyOperation
+  PolicyOperation,
+  policyTypeLabelMapping
 } from '@acx-ui/rc/utils'
 import {
   Path,
@@ -32,8 +33,7 @@ import {
 import { filterByAccess } from '@acx-ui/user'
 
 import {
-  policyTypeDescMapping,
-  policyTypeLabelMapping
+  policyTypeDescMapping
 } from '../contentsMap'
 
 interface CardDataProps {

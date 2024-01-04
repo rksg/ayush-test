@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 
-import { Tabs } from '@acx-ui/components'
+import { Tabs, Alert as UIAlert } from '@acx-ui/components'
 import {
   ArrowCorner,
   SignalDown,
@@ -62,5 +62,12 @@ export const IconThirdTab = styled(Tabs).attrs({ type: 'third' })`
   .ant-tabs-tab  {
     padding: 3px 7px 1px !important;
     height: 30px;
+  }
+`
+export const AlertNote = styled(UIAlert)`
+  &.ant-alert-info {
+    width: 500px;
+    height: 28px;
+    border-radius: 4px;
   }
 `

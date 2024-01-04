@@ -83,7 +83,7 @@ export function ApGroupVlanRadioTab () {
         const { data } = await getApGroupNetworkList({
           params: { tenantId, venueId, apGroupId },
           payload
-        }, true)
+        })
 
         setVenueId(venueId)
         const initData = data?.data || [] as Network[]

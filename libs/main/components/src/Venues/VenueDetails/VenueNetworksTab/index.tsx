@@ -21,6 +21,7 @@ import {
   useUpdateNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
   useVenueNetworkListQuery,
+  useVenueNetworkTableQuery,
   useVenueDetailsHeaderQuery
 } from '@acx-ui/rc/services'
 import {
@@ -76,8 +77,9 @@ interface schedule {
 
 export function VenueNetworksTab () {
   const { $t } = useIntl()
+  const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
   const tableQuery = useTableQuery({
-    useQuery: useVenueNetworkListQuery,
+    useQuery: isApCompatibleCheckEnabled ? useVenueNetworkTableQuery: useVenueNetworkListQuery,
     defaultPayload
   })
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
@@ -273,7 +275,7 @@ export function VenueNetworksTab () {
       dataIndex: 'aps',
       width: 80,
       render: function (_, row) {
-        return transformAps(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e), isSystemCreatedNetwork(row) || !!row?.isOnBoarded)
+        return transformAps(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e), isSystemCreatedNetwork(row) || !!row?.isOnBoarded, row?.incompatible)
       }
     },
     {

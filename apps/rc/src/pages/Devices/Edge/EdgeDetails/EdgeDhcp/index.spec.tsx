@@ -136,6 +136,7 @@ describe('Edge DHCP', () => {
       })
     const poolsTab = screen.getByRole('tab', { name: 'Pools' })
     expect(poolsTab.getAttribute('aria-selected')).toBeTruthy()
+    expect(await screen.findByTestId('edge-dhcp-pool-table')).toBeVisible()
   })
 
   it('Active Leases tab successfully', async () => {
@@ -151,6 +152,7 @@ describe('Edge DHCP', () => {
       })
     const leasesTab = await screen.findByRole('tab', { name: 'Leases ( 2 online )' })
     expect(leasesTab.getAttribute('aria-selected')).toBeTruthy()
+    expect(await screen.findByTestId('edge-dhcp-lease-table')).toBeVisible()
   })
 
   it('switch tab', async () => {

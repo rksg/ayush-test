@@ -1,5 +1,6 @@
-import { NetworkTypeEnum, WlanSecurityEnum } from './constants'
-import { NetworkDetail, NetworkSaveData }    from './types/network'
+import { NetworkTypeEnum, WlanSecurityEnum }       from './constants'
+import { Network, NetworkDetail, NetworkSaveData } from './types/network'
+import { TableResult }                             from './useTableQuery'
 
 const SupportRadio6gSecurityList = [
   WlanSecurityEnum.WPA3,
@@ -21,4 +22,17 @@ export const IsNetworkSupport6g = (networkDetail?: NetworkDetail | NetworkSaveDa
   }
 
   return IsSecuritySupport6g(wlanSecurity)
+}
+
+export const transformNetworkListResponse = (result: TableResult<Network>) => {
+  result.data = result.data.map(item => ({
+    ...item,
+    activated: item.activated ?? { isActivated: false },
+    ...(item?.dsaeOnboardNetwork &&
+      { children: [{ ...item?.dsaeOnboardNetwork,
+        isOnBoarded: true,
+        id: item?.name + 'onboard' } as Network] })
+  })) as Network[]
+
+  return result
 }

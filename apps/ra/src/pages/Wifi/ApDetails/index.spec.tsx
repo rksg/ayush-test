@@ -10,6 +10,10 @@ jest.mock('@acx-ui/reports/components', () => ({
   EmbeddedReport: () => <div data-testid={'some-report-id'} id='acx-report' />
 }))
 
+jest.mock('./ApAnalyticsTab', () => () => {
+  return <div data-testid='ApAnalyticsTab' />
+})
+
 const apDetailsFixture = {
   network: {
     ap: {

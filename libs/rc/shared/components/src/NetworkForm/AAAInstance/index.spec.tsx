@@ -3,83 +3,140 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
+import { ConfigTemplateUrlsInfo }  from '@acx-ui/msp/utils'
 import { AaaUrls, CommonUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen
+  screen,
+  waitFor
 } from '@acx-ui/test-utils'
 
-import { mockAAAPolicyResponse } from '../__tests__/fixtures'
-import NetworkFormContext        from '../NetworkFormContext'
+import {
+  mockAAAPolicyListResponse,
+  mockAAAPolicyNewCreateResponse,
+  mockAAAPolicyTemplateListResponse,
+  mockAAAPolicyTemplateResponse
+} from '../__tests__/fixtures'
+import NetworkFormContext from '../NetworkFormContext'
 
 import AAAInstance from '.'
 
+const mockedUseConfigTemplate = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useConfigTemplate: () => mockedUseConfigTemplate()
+}))
+
 describe('AAA Instance Page', () => {
   beforeEach(async () => {
-    const mockPolicyResponse = { id: '2', name: 'test2' }
     mockServer.use(
-      rest.get(
-        AaaUrls.getAAAPolicyList.url,
-        (req, res, ctx) => res(ctx.json(mockAAAPolicyResponse))
+      rest.post(
+        AaaUrls.getAAAPolicyViewModelList.url,
+        (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse))
       ),
       rest.post(CommonUrlsInfo.validateRadius.url, (_, res, ctx) =>
         res(ctx.json({}))
       ),
       rest.get(
         AaaUrls.getAAAPolicy.url,
-        (_, res, ctx) => res(ctx.json({
-          requestId: 'request-id', ...mockPolicyResponse
-        }))
-      ),
-      rest.put(
-        AaaUrls.updateAAAPolicy.url,
-        (_, res, ctx) => res(ctx.json({
-          requestId: 'request-id', ...mockPolicyResponse
-        }))
+        (_, res, ctx) => res(ctx.json({ ...mockAAAPolicyNewCreateResponse }))
       ),
       rest.post(
         AaaUrls.addAAAPolicy.url,
         (req, res, ctx) => res(ctx.json({
           requestId: 'request-id',
-          response: mockPolicyResponse
+          response: mockAAAPolicyNewCreateResponse
         }))
+      ),
+      rest.post(
+        ConfigTemplateUrlsInfo.getAAAPolicyTemplateList.url,
+        (_, res, ctx) => res(ctx.json(mockAAAPolicyTemplateListResponse))
+      ),
+      rest.get(
+        ConfigTemplateUrlsInfo.getAAAPolicyTemplate.url,
+        (_, res, ctx) => res(ctx.json(mockAAAPolicyTemplateResponse))
       )
     )
   })
+
+  beforeEach(() => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+  })
+
+  afterEach(() => {
+    mockedUseConfigTemplate.mockRestore()
+  })
+
   it('should render instance page', async () => {
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', policyId: 'test-id' }
     render(<Provider><NetworkFormContext.Provider value={{
       editMode: false, cloneMode: false, data: { guestPortal:
         { enableSmsLogin: true, socialIdentities: {} } }
     }}><Form><AAAInstance serverLabel='' type='authRadius'/>
       </Form></NetworkFormContext.Provider></Provider>,
     {
-      route: { params }
+      route: { params: { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' } }
     })
-    await userEvent.click(await screen.findByText('Add Server'))
-    await userEvent.click((await screen.findAllByText('Cancel'))[0])
-    await userEvent.click(await screen.findByText('Add Server'))
-    await userEvent.click(await screen.findByText('Add Secondary Server'))
-    await userEvent.type(await screen.findByRole(
-      'textbox', { name: 'Profile Name' }),'create test')
-    await userEvent.type((await screen.findAllByRole('textbox', { name: 'IP Address' }))[0],
-      '8.8.8.8')
-    await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[0],
-      'test1234')
-    await userEvent.type((await screen.findAllByRole('textbox', { name: 'IP Address' }))[1],
-      '8.8.8.7')
-    await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[1],
-      'test1234')
-    await userEvent.click(await screen.findByText('Add'))
+    await userEvent.click(await screen.findByRole('button', { name: /Add Server/i }))
+    await userEvent.click((await screen.findByRole('button', { name: /Cancel/i })))
+    await userEvent.click(await screen.findByRole('button', { name: /Add Server/i }))
+    await userEvent.click(await screen.findByRole('button', { name: /Add Secondary Server/i }))
 
-    await changeAAA()
+    const profileNameElement = await screen.findByRole('textbox', { name: /Profile Name/i })
+    await userEvent.type(profileNameElement, mockAAAPolicyNewCreateResponse.name)
 
-    expect((await screen.findAllByTitle('test1'))[0]).toBeVisible()
+    const primaryIpElement = (await screen.findAllByRole('textbox', { name: 'IP Address' }))[0]
+    await userEvent.type(primaryIpElement, mockAAAPolicyNewCreateResponse.primary.ip)
+
+    const primaryPortElement = (await screen.findAllByRole('spinbutton', { name: 'Port' }))[0]
+    await userEvent.clear(primaryPortElement)
+    await userEvent.type(primaryPortElement, mockAAAPolicyNewCreateResponse.primary.port.toString())
+
+    const primarySecretElement = (await screen.findAllByLabelText('Shared Secret'))[0]
+    await userEvent.type(primarySecretElement, mockAAAPolicyNewCreateResponse.primary.sharedSecret)
+
+    const secondaryIpElement = (await screen.findAllByRole('textbox', { name: 'IP Address' }))[1]
+    await userEvent.type(secondaryIpElement, mockAAAPolicyNewCreateResponse.secondary.ip)
+
+    const secondaryPortElement = (await screen.findAllByRole('spinbutton', { name: 'Port' }))[1]
+    await userEvent.clear(secondaryPortElement)
+    // eslint-disable-next-line max-len
+    await userEvent.type(secondaryPortElement, mockAAAPolicyNewCreateResponse.secondary.port.toString())
+
+    const secondarySecret = (await screen.findAllByLabelText('Shared Secret'))[1]
+    await userEvent.type(secondarySecret, mockAAAPolicyNewCreateResponse.secondary.sharedSecret)
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+
+    await userEvent.click((await screen.findAllByRole('combobox'))[0])
+    await userEvent.click((await screen.findAllByTitle(mockAAAPolicyNewCreateResponse.name))[0])
+
+    expect((await screen.findByText(
+      mockAAAPolicyNewCreateResponse.primary.ip + ':' + mockAAAPolicyNewCreateResponse.primary.port
+    ))).toBeVisible()
+  })
+
+  it('should render template page', async () => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+
+    render(<Provider>
+      <NetworkFormContext.Provider value={{
+        editMode: false,
+        cloneMode: false,
+        data: { guestPortal: { enableSmsLogin: true, socialIdentities: {} } }
+      }}>
+        <Form><AAAInstance serverLabel='Authentication Server' type='authRadius'/></Form>
+      </NetworkFormContext.Provider>
+    </Provider>,
+    {
+      route: { params: { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' } }
+    })
+
+    await userEvent.click((await screen.findByRole('combobox')))
+
+    await waitFor(() => {
+      expect(screen.getByText(mockAAAPolicyTemplateListResponse.data[0].name)).toBeInTheDocument()
+    })
   })
 })
-async function changeAAA (){
-  await userEvent.click((await screen.findAllByRole('combobox'))[0])
-  await userEvent.click((await screen.findAllByTitle('test1'))[0])
-}
