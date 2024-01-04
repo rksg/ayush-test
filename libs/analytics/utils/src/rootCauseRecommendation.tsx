@@ -6,9 +6,29 @@ import { FormattedMessage }                 from 'react-intl'
 import { IncidentCode }               from './constants'
 import { Incident, IncidentMetadata } from './types/incidents'
 
+import type { Props as FormattedMessageProps } from 'react-intl/lib/src/components/message'
+
+type RootCauseChecks = Exclude<IncidentMetadata['rootCauseChecks'], undefined>
+type RootCausesResult = {
+  rootCauseText: MessageDescriptor
+  rootCauseValues?: FormattedMessageProps['values']
+}
+type RecommendationsResult = {
+  recommendationsText: MessageDescriptor
+  recommendationsValues?: FormattedMessageProps['values']
+}
+type RootCausesFunction = (
+  checks: RootCauseChecks['checks'],
+  params: RootCauseChecks['params']
+) => RootCausesResult
+type RecommendationsFunction = (
+  checks: RootCauseChecks['checks'],
+  params: RootCauseChecks['params']
+) => RecommendationsResult
+
 interface RootCauseAndRecommendation {
-  rootCauses: MessageDescriptor | Function
-  recommendations: MessageDescriptor | Function
+  rootCauses: MessageDescriptor | RootCausesFunction
+  recommendations: MessageDescriptor | RecommendationsFunction
 }
 
 const commonRecommendations = defineMessage({
@@ -113,11 +133,11 @@ export type AirtimeParams = {
   ssidCountPerRadioSlice: number
 }
 
-export const htmlValues = {
-  p: (text: string) => <p>{text}</p>,
-  ol: (text: string) => <ol>{text}</ol>,
-  li: (text: string) => <li>{text}</li>,
-  ul: (text: string) => <ul>{text}</ul>
+export const htmlValues: FormattedMessageProps['values'] = {
+  p: (children) => <p>{children}</p>,
+  ol: (children) => <ol>{children}</ol>,
+  li: (children) => <li>{children}</li>,
+  ul: (children) => <ul>{children}</ul>
 }
 
 const checkTrueParams = (checks: (AirtimeBusyChecks | AirtimeRxChecks | AirtimeTxChecks)[]) => checks.filter(item => Object.values(item)[0]).map(item => Object.keys(item)[0])
@@ -160,8 +180,8 @@ export const getAirtimeRxRootCauses = (checks: (AirtimeRxChecks)[]) => {
   const highDensityWifi = <FormattedMessage defaultMessage={'<li>High density of Wi-Fi devices in the network.</li>'} values={htmlValues}/>
   const excessiveSSID = <FormattedMessage defaultMessage={'<li>Excessive number of management frames due to too many SSIDs being broadcasted in the network.</li>'} values={htmlValues}/>
   const excessiveFrame = <FormattedMessage defaultMessage={'<li>Excessive number of management frames.</li>'} values={htmlValues}/>
-  const highCoChannel = <FormattedMessage defaultMessage={'<li>High co-channel interference.</li><ul><li>Check the number of interfering links in the zone.</li></ul>'} values={htmlValues} />
-  const highLegacy = <FormattedMessage defaultMessage={'<li>High number of legacy Wi-Fi devices.</li><ul><li>Definition of legacy devices - 11b, 11a, and a combination of 11a and 11b.</li></ul>'} values={htmlValues}/>
+  const highCoChannel = <FormattedMessage defaultMessage={'<li>High co-channel interference.<ul><li>Check the number of interfering links in the zone.</li></ul></li>'} values={htmlValues} />
+  const highLegacy = <FormattedMessage defaultMessage={'<li>High number of legacy Wi-Fi devices.<ul><li>Definition of legacy devices - 11b, 11a, and a combination of 11a and 11b.</li></ul></li>'} values={htmlValues}/>
 
   const allFalseText = [highDensityWifi, excessiveFrame, highCoChannel, highLegacy]
   const stringlist = allFalse
@@ -233,7 +253,7 @@ export const getAirtimeTxRootCauses = (checks: (AirtimeTxChecks)[]) => {
   const excessiveFrame = <FormattedMessage defaultMessage={'<li>Excessive number of management frames.</li>'} values={htmlValues}/>
   const highPacket = <FormattedMessage defaultMessage={'<li>High number of packet errors leading to unnecessary retransmissions.</li>'} values={htmlValues}/>
   const highMCBC = <FormattedMessage defaultMessage={'<li>High multicast/broadcast (MC/BC) traffic on WLANs.</li>'} values={htmlValues}/>
-  const highLegacy = <FormattedMessage defaultMessage={'<li>High number of legacy Wi-Fi devices.</li><ul><li>Definition of legacy devices - 11b, 11a, and a combination of 11a and 11b.</li></ul>'} values={htmlValues}/>
+  const highLegacy = <FormattedMessage defaultMessage={'<li>High number of legacy Wi-Fi devices.<ul><li>Definition of legacy devices - 11b, 11a, and a combination of 11a and 11b.</li></ul></li>'} values={htmlValues}/>
 
   const allFalseText = [highDensityWifi, excessiveFrame, highPacket, highMCBC, highLegacy]
   const stringlist = allFalse
@@ -1315,7 +1335,9 @@ export const ccd80211RootCauseRecommendations = {
 const TBD = defineMessage({ defaultMessage: '<p>TBD</p>' })
 const calculating = defineMessage({ defaultMessage: '<p>Calculating...</p>' })
 
-export function getRootCauseAndRecommendations ({ code, metadata }: Incident) {
+export function getRootCauseAndRecommendations (
+  { code, metadata }: Incident
+): { rootCauses: RootCausesResult, recommendations: RecommendationsResult }[] {
   const failureType = codeToFailureTypeMap[code]
   if (!metadata.rootCauseChecks) return [{ rootCauses: { rootCauseText: calculating }, recommendations: { recommendationsText: calculating } }]
   const { checks, params } = metadata.rootCauseChecks
@@ -1325,10 +1347,18 @@ export function getRootCauseAndRecommendations ({ code, metadata }: Incident) {
   if (results === undefined && ccdResult === undefined) {
     return [{ rootCauses: { rootCauseText: TBD }, recommendations: { recommendationsText: TBD } }]
   } else if (results === undefined) {
-    return [{ rootCauses: { rootCauseText: ccdResult.rootCauses }, recommendations: { recommendationsText: ccdResult.recommendations } }]
+    return [{
+      rootCauses: { rootCauseText: ccdResult.rootCauses as MessageDescriptor },
+      recommendations: { recommendationsText: ccdResult.recommendations as MessageDescriptor }
+    }]
   }
   const { rootCauses, recommendations } = results
-  const moddedRootCause = typeof rootCauses === 'function' ? rootCauses(checks, params) : { rootCauseText: rootCauses, rootCauseValues: {} }
-  const moddedRecommendations = typeof recommendations === 'function' ? recommendations(checks, params) : { recommendationsText: recommendations, recommendationsValues: {} }
+  const moddedRootCause: ReturnType<RootCausesFunction> = typeof rootCauses === 'function'
+    ? rootCauses(checks, params)
+    : { rootCauseText: rootCauses, rootCauseValues: {} }
+  const moddedRecommendations: ReturnType<RecommendationsFunction> =
+    typeof recommendations === 'function'
+      ? recommendations(checks, params)
+      : { recommendationsText: recommendations, recommendationsValues: {} }
   return [{ rootCauses: moddedRootCause, recommendations: moddedRecommendations }]
 }
