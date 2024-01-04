@@ -727,7 +727,7 @@ function getClientUsername (client?: Client): string | undefined {
 
 function getAuthStatus (client?: Client) {
   const { $t } = getIntl()
-  const statusInt = parseInt((client?.status || ''), 10)
+  const statusInt = parseInt(client?.status ?? '', 10)
   if (isNaN(statusInt)) return '--'
 
   let statusText = '--'
