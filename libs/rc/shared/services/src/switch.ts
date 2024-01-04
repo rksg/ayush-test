@@ -60,7 +60,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { baseSwitchApi }               from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
-import { createHttpRequest, patchApi } from '@acx-ui/utils'
+import { createHttpRequest, batchApi } from '@acx-ui/utils'
 
 export type SwitchsExportPayload = {
   filters: Filter
@@ -147,7 +147,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     }),
     patchDeleteSwitch: build.mutation<void, RequestPayload[]>({
       async queryFn (requests, _queryApi, _extraOptions, fetchWithBQ) {
-        return patchApi(SwitchUrlsInfo.deleteSwitches, requests, fetchWithBQ)
+        return batchApi(SwitchUrlsInfo.deleteSwitches, requests, fetchWithBQ)
       },
       invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
     }),

@@ -11,7 +11,7 @@ import {
   createHttpRequest,
   getFilters,
   getUrlForTest,
-  patchApi
+  batchApi
 } from './apiService'
 
 const fetchWithBQSuccess: (arg: string | FetchArgs) => MaybePromise<QueryReturnValue<
@@ -82,8 +82,8 @@ describe('ApiInfo', () => {
     expect(getUrlForTest(apiInfo2)).toBe('/venues/aaaServers/query')
   })
 
-  it('patchApi: success', async () => {
-    expect(await patchApi(
+  it('batchApi: success', async () => {
+    expect(await batchApi(
       {
         method: 'delete',
         url: '/venues/{venueId}/switches'
@@ -96,8 +96,8 @@ describe('ApiInfo', () => {
     )).toEqual({ data: ['success', 'success'] })
   })
 
-  it('patchApi: fail', async () => {
-    expect(await patchApi(
+  it('batchApi: fail', async () => {
+    expect(await batchApi(
       {
         method: 'delete',
         url: '/venues/{venueId}/switches'
