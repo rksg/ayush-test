@@ -31,6 +31,7 @@ import type { PendoParameters } from '@acx-ui/utils'
 import AllRoutes                                                                   from './AllRoutes'
 import { showBrowserLangDialog, detectBrowserLang, isNonProdEnv, PartialUserData } from './BrowserDialog/BrowserDialog'
 import { errorMiddleware }                                                         from './errorMiddleware'
+import { refreshTokenMiddleware }                                                  from './refreshTokenMiddleware'
 
 import '@acx-ui/theme'
 
@@ -144,7 +145,7 @@ function DataGuardLoader (props: React.PropsWithChildren) {
 
 export async function init (root: Root) {
   renderPendo(pendoInitalization)
-  addMiddleware(errorMiddleware)
+  addMiddleware(refreshTokenMiddleware, errorMiddleware)
   root.render(
     <React.StrictMode>
       <Provider>

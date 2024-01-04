@@ -106,9 +106,22 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           stackMembers[id] = allStacksMember[index]?.data.data
         })
 
+        const getUniqSerialNumberList = function (list: TableResult<SwitchRow>) {
+          const seenSerialNumbers = new Set()
+
+          list.data = list.data.filter((item: SwitchRow) => {
+            if (!seenSerialNumbers.has(item.serialNumber)) {
+              seenSerialNumbers.add(item.serialNumber)
+              return true
+            }
+            return false
+          })
+          return list
+        }
+
         const aggregatedList = hasGroupBy
           ? aggregatedSwitchGroupByListData(list, stackMembers)
-          : aggregatedSwitchListData(list, stackMembers)
+          : aggregatedSwitchListData(getUniqSerialNumberList(list), stackMembers)
 
         return { data: aggregatedList }
       },
