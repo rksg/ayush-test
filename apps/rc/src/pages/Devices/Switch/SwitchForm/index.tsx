@@ -589,7 +589,7 @@ export function SwitchForm () {
                   </>}
                   children={
                     <Select
-                      disabled={dhcpClientOption.length < 1}
+                      disabled={dhcpClientOption?.length < 1}
                       options={[
                         { label: $t({ defaultMessage: 'Select VLAN...' }), value: null },
                         ...dhcpClientOption
