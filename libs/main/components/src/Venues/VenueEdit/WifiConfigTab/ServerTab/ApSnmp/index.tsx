@@ -1,8 +1,8 @@
 import { useEffect, useState, useContext } from 'react'
 
-import { Form, Select, Space, Switch,Button } from 'antd'
-import { isEqual }                            from 'lodash'
-import { useIntl }                            from 'react-intl'
+import { Form, Select, Space, Switch, Button } from 'antd'
+import { isEqual }                             from 'lodash'
+import { useIntl }                             from 'react-intl'
 
 import { Loader, StepsFormLegacy, showToast, showActionModal, AnchorContext } from '@acx-ui/components'
 import {
@@ -79,7 +79,7 @@ export function ApSnmp () {
     setEditServerContextData && setEditServerContextData({
       ...editServerContextData,
       updateVenueApSnmp: () => updateVenueApSnmpSetting(newVenueApSnmpSetting),
-      discardVenueApSnmp: () => discarVenuedApSnmpChanges(stateOfVenueApSnmpSettings)
+      discardVenueApSnmp: () => discardVenuedApSnmpChanges(stateOfVenueApSnmpSettings)
     })
 
   }
@@ -97,7 +97,7 @@ export function ApSnmp () {
     setEditServerContextData && setEditServerContextData({
       ...editServerContextData,
       updateVenueApSnmp: () => updateVenueApSnmpSetting(newVenueApSnmpSetting),
-      discardVenueApSnmp: () => discarVenuedApSnmpChanges(stateOfVenueApSnmpSettings)
+      discardVenueApSnmp: () => discardVenuedApSnmpChanges(stateOfVenueApSnmpSettings)
     })
 
   }
@@ -137,7 +137,7 @@ export function ApSnmp () {
     }
   }
 
-  const discarVenuedApSnmpChanges = async (oldData : VenueApSnmpSettings) => {
+  const discardVenuedApSnmpChanges = async (oldData : VenueApSnmpSettings) => {
     setEnableApSnmp(oldData.enableApSnmp ?? false)
   }
   return ( <Loader states={[{
@@ -151,7 +151,7 @@ export function ApSnmp () {
       >
         <span>{$t({ defaultMessage: 'Use AP SNMP' })}</span>
         <Switch
-          data-testid='ApSnmp-switch'
+          data-testid='snmp-switch'
           checked={stateOfEnableApSnmp}
           onClick={(newState) => {
             handleApSnmpSwitchEnableChange(newState)
@@ -176,18 +176,20 @@ export function ApSnmp () {
           <Button
             data-testid='use-push'
             type='link'
+            style={{ marginLeft: '20px' }}
             onClick={async () => {
               await setEditContextData({
                 ...editContextData,
                 isDirty: false,
                 hasError: false
               })
-              await navigate(`${toPolicyPath.pathname}/${getPolicyRoutePath({
+
+              const policyRoutePath = getPolicyRoutePath({
                 type: PolicyType.SNMP_AGENT,
                 oper: PolicyOperation.CREATE
-              })}`)
-            }
-            }
+              })
+              await navigate(`${toPolicyPath.pathname}/${policyRoutePath}`)
+            }}
           >
             {$t({ defaultMessage: 'Add' })}
           </Button>}
