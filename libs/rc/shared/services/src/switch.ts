@@ -145,7 +145,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       providesTags: [{ type: 'Switch', id: 'StackMemberList' }]
     }),
-    patchDeleteSwitch: build.mutation<void, RequestPayload[]>({
+    batchDeleteSwitch: build.mutation<void, RequestPayload[]>({
       async queryFn (requests, _queryApi, _extraOptions, fetchWithBQ) {
         return batchApi(SwitchUrlsInfo.deleteSwitches, requests, fetchWithBQ)
       },
@@ -1285,7 +1285,7 @@ const aggregatedSwitchClientData = (
 export const {
   useSwitchListQuery,
   useStackMemberListQuery,
-  usePatchDeleteSwitchMutation,
+  useBatchDeleteSwitchMutation,
   useDeleteSwitchesMutation,
   useDeleteStackMemberMutation,
   useAcknowledgeSwitchMutation,

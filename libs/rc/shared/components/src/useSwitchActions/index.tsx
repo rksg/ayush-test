@@ -6,7 +6,7 @@ import { showActionModal }         from '@acx-ui/components'
 import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import {
   useDeleteSwitchesMutation,
-  usePatchDeleteSwitchMutation,
+  useBatchDeleteSwitchMutation,
   useRebootSwitchMutation,
   useSyncDataMutation,
   useSyncSwitchesDataMutation,
@@ -24,7 +24,7 @@ export function useSwitchActions () {
   const { $t } = useIntl()
   const rbacApiToggle = useIsSplitOn(Features.SWITCH_RBAC_API)
   const [ deleteSwitches ] = useDeleteSwitchesMutation()
-  const [ patchDeleteSwitch ] = usePatchDeleteSwitchMutation()
+  const [ batchDeleteSwitch ] = useBatchDeleteSwitchMutation()
   const [ rebootSwitch ] = useRebootSwitchMutation()
   const [ syncData ] = useSyncDataMutation()
   const [ syncSwitchesData ] = useSyncSwitchesDataMutation()
@@ -55,7 +55,7 @@ export function useSwitchActions () {
         } else {
           const groups = _.groupBy(rows, 'venueId')
           const requests = Object.keys(groups).map(key => ({ params: { venueId: key } , payload: groups[key].map(item => item.id || item.serialNumber) }))
-          patchDeleteSwitch(requests)
+          batchDeleteSwitch(requests)
             .then(callBack)
         }
       }
