@@ -115,6 +115,7 @@ describe('NetworkingTab', () => {
     render(<Provider><NetworkingTab /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
     await waitFor(() => screen.findByText('AP Model'))
+    await waitFor(() => expect(mockGetApsList).toBeCalled())
 
     await waitFor(() => screen.findByText('Multicast Traffic from:'))
     await userEvent.click(screen.getByTestId('network-switch'))
