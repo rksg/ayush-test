@@ -258,8 +258,8 @@ function ClientDetails ({ client }: { client: ClientExtended }) {
 
 function Connection ({ client }: { client: ClientExtended }) {
   const wifiEDAClientRevokeToggle = useIsSplitOn(Features.WIFI_EDA_CLIENT_REVOKE_TOGGLE)
-  const { $t } = getIntl()
   const intl = useIntl()
+  const { $t } = intl
   const showVni = !!client.vni
   return <>
     <Subtitle level={4}>
