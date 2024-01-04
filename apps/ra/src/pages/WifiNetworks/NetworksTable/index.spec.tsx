@@ -62,7 +62,7 @@ describe('Network List', () => {
     })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const searchPlaceHolder = 'Search Name'
-    userEvent.click(
+    await userEvent.click(
       await screen.findByPlaceholderText(searchPlaceHolder)
     )
     userEvent.type(
