@@ -19,6 +19,9 @@ import * as UI from './styledComponents'
 
 const tunnelProfileDefaultPayload = {
   fields: ['name', 'id'],
+  filters: {
+    type: [TunnelTypeEnum.VXLAN]
+  },
   pageSize: 10000,
   sortField: 'name',
   sortOrder: 'ASC'
