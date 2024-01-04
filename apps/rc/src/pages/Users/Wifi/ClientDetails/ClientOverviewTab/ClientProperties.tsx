@@ -4,10 +4,10 @@ import { Divider, List, Space } from 'antd'
 import moment                   from 'moment-timezone'
 import { useIntl }              from 'react-intl'
 
-import { Card, Loader, Subtitle, Tooltip, Descriptions }            from '@acx-ui/components'
-import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                                from '@acx-ui/formatter'
-import { PassphraseViewer, WifiSignal, useDpskNewConfigFlowParams } from '@acx-ui/rc/components'
+import { Card, Loader, Subtitle, Tooltip, Descriptions }                                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                                              from '@acx-ui/formatter'
+import { PassphraseViewer, WifiSignal, useDpskNewConfigFlowParams, useNetworkTypeTransformation } from '@acx-ui/rc/components'
 import {
   useGetPassphraseClientQuery,
   useLazyGetApQuery,
@@ -59,6 +59,7 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
   const [getGuestsList] = useLazyGetGuestsListQuery()
   const [guestDetail, setGuestDetail] = useState({} as Guest)
   const [isExternalDpskClient, setIsExternalDpskClient] = useState(false)
+
 
   useEffect(() => {
     if (Object.keys(clientDetails)?.length) {
@@ -259,7 +260,7 @@ function Connection ({ client }: { client: ClientExtended }) {
   const wifiEDAClientRevokeToggle = useIsSplitOn(Features.WIFI_EDA_CLIENT_REVOKE_TOGGLE)
   const { $t } = getIntl()
   const showVni = !!client.vni
-
+  const [networkDisplayTransformer] = useNetworkTypeTransformation()
   return <>
     <Subtitle level={4}>
       {$t({ defaultMessage: 'Connection' })}
@@ -353,7 +354,7 @@ function Connection ({ client }: { client: ClientExtended }) {
           title={$t({ defaultMessage: 'Network Type' })}
         >{$t({ defaultMessage: 'Network Type' })}
         </Tooltip>}
-        children={client?.networkType || '--'}
+        children={networkDisplayTransformer(client?.networkType)}
       /> }
       <Descriptions.Item
         label={$t({ defaultMessage: 'Auth Method' })}

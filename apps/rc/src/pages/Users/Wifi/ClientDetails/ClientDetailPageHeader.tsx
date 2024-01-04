@@ -4,7 +4,7 @@ import { useIntl }                from 'react-intl'
 
 import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker }                          from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
-import { isEqualCaptivePortalPlainText }                                                          from '@acx-ui/rc/components'
+import { useNetworkTypeTransformation }                                                           from '@acx-ui/rc/components'
 import { useDisconnectClientMutation, useGetClientOrHistoryDetailQuery, useRevokeClientMutation } from '@acx-ui/rc/services'
 import { Client, ClientStatusEnum, ClientUrlsInfo }                                               from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useSearchParams, useTenantLink }                                 from '@acx-ui/react-router-dom'
@@ -36,6 +36,8 @@ function ClientDetailPageHeader () {
     } })
   const clentDetails = (result?.isHistorical ?
     { hostname: result?.data?.hostname } : result?.data) as Client
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  const [_, isEqualCaptivePortalPlainText] = useNetworkTypeTransformation()
   const [disconnectClient] = useDisconnectClientMutation()
   const [revokeClient] = useRevokeClientMutation()
   const navigate = useNavigate()

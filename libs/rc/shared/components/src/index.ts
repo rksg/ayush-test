@@ -22,7 +22,7 @@ export { CodeMirrorWidget } from './CodeMirrorWidget'
 export {
   ConnectedClientsTable,
   defaultClientPayload,
-  isEqualCaptivePortalPlainText
+  useNetworkTypeTransformation
 } from './ConnectedClientsTable'
 export { DevicesDashboardWidget, DevicesDashboardWidgetV2 } from './DevicesDashboardWidget'
 export { DevicesWidget, seriesMappingAP } from './DevicesWidget'

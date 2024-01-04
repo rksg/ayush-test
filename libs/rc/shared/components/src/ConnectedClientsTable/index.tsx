@@ -1,9 +1,9 @@
 /* eslint-disable max-len */
 import React, { useState, useEffect } from 'react'
 
-import { LiteralElement }             from '@formatjs/icu-messageformat-parser'
-import { Space }                      from 'antd'
-import { useIntl, MessageDescriptor } from 'react-intl'
+import { LiteralElement } from '@formatjs/icu-messageformat-parser'
+import { Space }          from 'antd'
+import { useIntl }        from 'react-intl'
 
 import { Subtitle, Tooltip, Table, TableProps, Loader, showActionModal  } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
@@ -21,7 +21,8 @@ import {
   getOsTypeIcon,
   TableQuery,
   usePollingTableQuery,
-  networkTypes
+  networkTypes,
+  NetworkTypeEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { RequestPayload }        from '@acx-ui/types'
@@ -86,17 +87,38 @@ export const defaultClientPayload = {
     'cog','venueName','apName','clientVlan','networkId','switchName','healthStatusReason','lastUpdateTime', 'networkType', 'mldAddr', 'vni']
 }
 
-export const isEqualCaptivePortalPlainText = (networkType?: string) : boolean => {
-  if(!networkType){
-    return false
+export const useNetworkTypeTransformation = () => {
+
+  const { $t } = useIntl()
+
+  const networkDisplayTransformer = (networkType?: string) => {
+    if(!networkType) return noDataDisplay
+    // Please be advice displayText will be undefined if no NetworkTypeEnum is matched.
+    const displayText = networkTypes[networkType as NetworkTypeEnum]
+    if(displayText) {
+      // If match NetworkTypeEnum, it will return Message descriptor and we can render it by react.intl
+      return $t(displayText)
+    } else {
+      // If not, it's possibly that backend return full description (like 'Passphrase (PSK/SAE)')
+      // instead of mapping key (like psk, aaa....), then just show the full description
+      return networkType
+    }
   }
-  let networkTypePlainText = 'Captive Portal'
-  if (networkTypes.guest.defaultMessage) {
-    const message = networkTypes.guest.defaultMessage[0] as unknown as LiteralElement
-    networkTypePlainText = message.value
+
+  const isEqualCaptivePortalPlainText = (networkType?: string) : boolean => {
+    if(!networkType){
+      return false
+    }
+    // Backend might send full description or mapping key, in case any unexpected error occur,
+    // all input will transform into full description and do comparing.
+    const transformedNetworkType = networkDisplayTransformer(networkType)
+    const captivePortalPlainText = $t(networkTypes[NetworkTypeEnum.CAPTIVEPORTAL])
+    return transformedNetworkType === captivePortalPlainText
   }
-  return networkType === networkTypePlainText
+
+  return [networkDisplayTransformer, isEqualCaptivePortalPlainText]
 }
+
 
 export const ConnectedClientsTable = (props: {
   showAllColumns?: boolean,
@@ -107,6 +129,7 @@ export const ConnectedClientsTable = (props: {
   const { $t } = useIntl()
   const params = useParams()
   const wifiEDAClientRevokeToggle = useIsSplitOn(Features.WIFI_EDA_CLIENT_REVOKE_TOGGLE)
+  const [networkDisplayTransformer, isEqualCaptivePortalPlainText] = useNetworkTypeTransformation()
   const { showAllColumns, searchString, setConnectedClientCount } = props
   const [ tableSelected, setTableSelected] = useState({
     selectedRowKeys: [] as React.Key[],
@@ -324,10 +347,8 @@ export const ConnectedClientsTable = (props: {
         title: intl.$t({ defaultMessage: 'Network Type' }),
         dataIndex: ['networkType'],
         sorter: true,
-        render: (_: React.ReactNode, row: ClientList) => row.networkType || noDataDisplay,
-        filterable: Object.values(networkTypes).map((message: MessageDescriptor) => {
-          return { key: $t(message), value: $t(message), label: $t(message) }
-        })
+        filterable: Object.entries(networkTypes).map(([key, value]) => {return { key: key, value: $t(value) }}),
+        render: (_: React.ReactNode, row: ClientList) => networkDisplayTransformer(row.networkType)
       }] : []),
       {
         key: 'sessStartTime',
