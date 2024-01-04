@@ -1,10 +1,8 @@
 /* eslint-disable max-len */
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 
-import { LiteralElement } from '@formatjs/icu-messageformat-parser'
-import { Space }          from 'antd'
-import _                  from 'lodash'
-import { useIntl }        from 'react-intl'
+import { Space }              from 'antd'
+import { IntlShape, useIntl } from 'react-intl'
 
 import { Subtitle, Tooltip, Table, TableProps, Loader, showActionModal  } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
@@ -22,7 +20,8 @@ import {
   getOsTypeIcon,
   TableQuery,
   usePollingTableQuery,
-  networkTypes
+  networkTypes,
+  NetworkTypeEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { RequestPayload }        from '@acx-ui/types'
@@ -87,17 +86,23 @@ export const defaultClientPayload = {
     'cog','venueName','apName','clientVlan','networkId','switchName','healthStatusReason','lastUpdateTime', 'networkType', 'mldAddr', 'vni']
 }
 
-export const isEqualCaptivePortalPlainText = (networkType?: string) : boolean => {
+export const networkDisplayTransformer = (intl: ReturnType<typeof useIntl>, networkType?: string) => {
+  if(!networkType) return noDataDisplay
+  const displayText = networkTypes[networkType as NetworkTypeEnum]
+  if(displayText) {
+    return intl.$t(displayText)
+  } else {
+    return networkType
+  }
+}
+
+export const isEqualCaptivePortal = (networkType?: string) : boolean => {
   if(!networkType){
     return false
   }
-  let networkTypePlainText = 'Captive Portal'
-  if (networkTypes.guest.defaultMessage) {
-    const message = networkTypes.guest.defaultMessage[0] as unknown as LiteralElement
-    networkTypePlainText = message.value
-  }
-  return networkType === networkTypePlainText
+  return networkType === NetworkTypeEnum.CAPTIVEPORTAL
 }
+
 
 export const ConnectedClientsTable = (props: {
   showAllColumns?: boolean,
@@ -151,8 +156,7 @@ export const ConnectedClientsTable = (props: {
     }
   }, [searchString])
 
-
-  function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
+  function GetCols (intl: IntlShape, showAllColumns?: boolean) {
     const { $t } = useIntl()
     const wifi7MLOToggle = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_TOGGLE)
     const { tenantId, venueId, apId, networkId } = useParams()
@@ -326,10 +330,8 @@ export const ConnectedClientsTable = (props: {
         title: intl.$t({ defaultMessage: 'Network Type' }),
         dataIndex: ['networkType'],
         sorter: true,
-        render: (_: React.ReactNode, row: ClientList) => row.networkType || noDataDisplay,
-        filterable: _.uniqWith(tableQuery.data?.data.map((result)=> {
-          return { key: result.networkType, value: result.networkType }
-        }), _.isEqual)
+        filterable: Object.entries(networkTypes).map(([key, value]) => {return { key: key, value: $t(value) }}),
+        render: (_: React.ReactNode, row: ClientList) => networkDisplayTransformer(intl, row.networkType)
       }] : []),
       {
         key: 'sessStartTime',
@@ -513,8 +515,8 @@ export const ConnectedClientsTable = (props: {
   const rowSelection = {
     selectedRowKeys: tableSelected.selectedRowKeys,
     onChange: (newSelectedRowKeys: React.Key[], newSelectedRows: ClientList[]) => {
-      const isNoGuestNetworkExist = newSelectedRows.filter((row) => isEqualCaptivePortalPlainText(row.networkType)).length === 0
-      const isOtherNetworkExist = newSelectedRows.filter((row) => !isEqualCaptivePortalPlainText(row.networkType)).length !== 0
+      const isNoGuestNetworkExist = newSelectedRows.filter((row) => isEqualCaptivePortal(row.networkType)).length === 0
+      const isOtherNetworkExist = newSelectedRows.filter((row) => !isEqualCaptivePortal(row.networkType)).length !== 0
       setTableSelected({
         selectedRowKeys: newSelectedRowKeys,
         selectRows: newSelectedRows,
@@ -525,13 +527,16 @@ export const ConnectedClientsTable = (props: {
           }
         }
       })
-    }
+    },
+    getCheckboxProps: (record: ClientList) => ({
+      disabled: record.serialNumber === undefined
+    })
   }
 
   const rowActions: TableProps<ClientList>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Disconnect' }),
-      onClick: (selectedRows) => {
+      onClick: (selectedRows, clearRowSelections) => {
         const disconnectList = selectedRows.map((row) => {
           return {
             clientMac: row.clientMac,
@@ -541,6 +546,7 @@ export const ConnectedClientsTable = (props: {
         sendDisconnect({
           payload: disconnectList
         })
+        clearRowSelections()
       }
     },
     {
@@ -550,9 +556,8 @@ export const ConnectedClientsTable = (props: {
         :''
       ),
       disabled: tableSelected.actionButton.revoke.disable,
-      onClick: (selectedRows) => {
-
-        const revokeList = selectedRows.filter((row) => isEqualCaptivePortalPlainText(row.networkType)).map((row) => {
+      onClick: (selectedRows, clearRowSelections) => {
+        const revokeList = selectedRows.filter((row) => isEqualCaptivePortal(row.networkType)).map((row) => {
           return {
             clientMac: row.clientMac,
             serialNumber: row.serialNumber
@@ -574,6 +579,7 @@ export const ConnectedClientsTable = (props: {
           sendRevoke({ payload: revokeList })
         }
 
+        clearRowSelections()
       }
     }
   ]
