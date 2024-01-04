@@ -15,7 +15,7 @@ import { CorePortFormItem } from './CorePortFormItem'
 import * as UI              from './styledComponents'
 
 const tunnelProfileDefaultPayload = {
-  fields: ['name', 'id', 'type'],
+  fields: ['name', 'id'],
   filters: {
     type: [TunnelTypeEnum.VLAN_VXLAN]
   },
