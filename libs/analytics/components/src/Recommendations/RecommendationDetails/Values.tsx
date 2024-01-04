@@ -71,7 +71,7 @@ export const translateMetadataValue = (value: string) => {
 
 export const getRecommendationsText = (
   details: EnhancedRecommendation,
-  isFullyOptimized = true
+  isFullOptimized = true
 ) => {
   const { $t } = getIntl()
   const {
@@ -118,16 +118,16 @@ export const getRecommendationsText = (
     }
   }
   return {
-    actionText: isFullyOptimized
+    actionText: isFullOptimized
       ? $t(actionText, parameters)
       : $t(partialOptimizedActionText!, parameters),
     reasonText: appliedOnce && appliedReasonText
-      ? (isFullyOptimized
+      ? (isFullOptimized
         ? $t(appliedReasonText, parameters)
         : $t(partialOptimizationAppliedReasonText!, parameters)
       )
       : $t(reasonText, parameters),
-    tradeoffText: isFullyOptimized
+    tradeoffText: isFullOptimized
       ? $t(tradeoffText, parameters)
       : $t(partialOptimizedTradeoffText!, parameters)
   }
