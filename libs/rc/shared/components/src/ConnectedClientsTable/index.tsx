@@ -1,9 +1,8 @@
 /* eslint-disable max-len */
 import React, { useState, useEffect } from 'react'
 
-import { LiteralElement } from '@formatjs/icu-messageformat-parser'
-import { Space }          from 'antd'
-import { useIntl }        from 'react-intl'
+import { Space }   from 'antd'
+import { useIntl } from 'react-intl'
 
 import { Subtitle, Tooltip, Table, TableProps, Loader, showActionModal  } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
@@ -87,36 +86,21 @@ export const defaultClientPayload = {
     'cog','venueName','apName','clientVlan','networkId','switchName','healthStatusReason','lastUpdateTime', 'networkType', 'mldAddr', 'vni']
 }
 
-export const useNetworkTypeTransformation = () => {
-
-  const { $t } = useIntl()
-
-  const networkDisplayTransformer = (networkType?: string) => {
-    if(!networkType) return noDataDisplay
-    // Please be advice displayText will be undefined if no NetworkTypeEnum is matched.
-    const displayText = networkTypes[networkType as NetworkTypeEnum]
-    if(displayText) {
-      // If match NetworkTypeEnum, it will return Message descriptor and we can render it by react.intl
-      return $t(displayText)
-    } else {
-      // If not, it's possibly that backend return full description (like 'Passphrase (PSK/SAE)')
-      // instead of mapping key (like psk, aaa....), then just show the full description
-      return networkType
-    }
+export const networkDisplayTransformer = (intl: ReturnType<typeof useIntl>, networkType?: string) => {
+  if(!networkType) return noDataDisplay
+  const displayText = networkTypes[networkType as NetworkTypeEnum]
+  if(displayText) {
+    return intl.$t(displayText)
+  } else {
+    return networkType
   }
+}
 
-  const isEqualCaptivePortalPlainText = (networkType?: string) : boolean => {
-    if(!networkType){
-      return false
-    }
-    // Backend might send full description or mapping key, in case any unexpected error occur,
-    // all input will transform into full description and do comparing.
-    const transformedNetworkType = networkDisplayTransformer(networkType)
-    const captivePortalPlainText = $t(networkTypes[NetworkTypeEnum.CAPTIVEPORTAL])
-    return transformedNetworkType === captivePortalPlainText
+export const isEqualCaptivePortal = (networkType?: string) : boolean => {
+  if(!networkType){
+    return false
   }
-
-  return [networkDisplayTransformer, isEqualCaptivePortalPlainText]
+  return networkType === NetworkTypeEnum.CAPTIVEPORTAL
 }
 
 
@@ -129,7 +113,6 @@ export const ConnectedClientsTable = (props: {
   const { $t } = useIntl()
   const params = useParams()
   const wifiEDAClientRevokeToggle = useIsSplitOn(Features.WIFI_EDA_CLIENT_REVOKE_TOGGLE)
-  const [networkDisplayTransformer, isEqualCaptivePortalPlainText] = useNetworkTypeTransformation()
   const { showAllColumns, searchString, setConnectedClientCount } = props
   const [ tableSelected, setTableSelected] = useState({
     selectedRowKeys: [] as React.Key[],
@@ -348,7 +331,7 @@ export const ConnectedClientsTable = (props: {
         dataIndex: ['networkType'],
         sorter: true,
         filterable: Object.entries(networkTypes).map(([key, value]) => {return { key: key, value: $t(value) }}),
-        render: (_: React.ReactNode, row: ClientList) => networkDisplayTransformer(row.networkType)
+        render: (_: React.ReactNode, row: ClientList) => networkDisplayTransformer(intl, row.networkType)
       }] : []),
       {
         key: 'sessStartTime',
@@ -532,8 +515,8 @@ export const ConnectedClientsTable = (props: {
   const rowSelection = {
     selectedRowKeys: tableSelected.selectedRowKeys,
     onChange: (newSelectedRowKeys: React.Key[], newSelectedRows: ClientList[]) => {
-      const isNoGuestNetworkExist = newSelectedRows.filter((row) => isEqualCaptivePortalPlainText(row.networkType)).length === 0
-      const isOtherNetworkExist = newSelectedRows.filter((row) => !isEqualCaptivePortalPlainText(row.networkType)).length !== 0
+      const isNoGuestNetworkExist = newSelectedRows.filter((row) => isEqualCaptivePortal(row.networkType)).length === 0
+      const isOtherNetworkExist = newSelectedRows.filter((row) => !isEqualCaptivePortal(row.networkType)).length !== 0
       setTableSelected({
         selectedRowKeys: newSelectedRowKeys,
         selectRows: newSelectedRows,
@@ -574,7 +557,7 @@ export const ConnectedClientsTable = (props: {
       ),
       disabled: tableSelected.actionButton.revoke.disable,
       onClick: (selectedRows, clearRowSelections) => {
-        const revokeList = selectedRows.filter((row) => isEqualCaptivePortalPlainText(row.networkType)).map((row) => {
+        const revokeList = selectedRows.filter((row) => isEqualCaptivePortal(row.networkType)).map((row) => {
           return {
             clientMac: row.clientMac,
             serialNumber: row.serialNumber
