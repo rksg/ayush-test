@@ -333,9 +333,9 @@ export function RecommendationTable (
         ]}
         rowClassName={(record) => {
           if(record.isMuted)
-            return 'table-row-muted'
+            return 'table-row-disabled'
           if(!isCrrmOptimizationMatched(record.metadata, record.preferences))
-            return 'table-row-muted crrm-optimization-mismatch'
+            return 'table-row-disabled crrm-optimization-mismatch'
           return 'table-row-normal'
         }}
         filterableWidth={155}
