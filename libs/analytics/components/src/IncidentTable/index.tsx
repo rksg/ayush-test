@@ -84,8 +84,7 @@ const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incid
     ...productNames,
     p: (text: string) => <UI.DrawerPara>{text}</UI.DrawerPara>,
     ol: (text: string) => <UI.DrawerOrderList>{text}</UI.DrawerOrderList>,
-    li: (text: string) => <UI.DrawerList>{text}</UI.DrawerList>,
-    ul: (text: string) => <UI.DrawerUnorderedList>{text}</UI.DrawerUnorderedList>
+    li: (text: string) => <UI.DrawerList>{text}</UI.DrawerList>
   }
   const { dominant } = metadata
   const wlanInfo = (dominant && dominant.ssid)

@@ -8,6 +8,10 @@ jest.mock('@acx-ui/reports/components', () => ({
   EmbeddedReport: () => <div data-testid={'some-report-id'} id='acx-report'>Report Content</div>
 }))
 
+jest.mock('./SwitchIncidentsTab', () => ({
+  default: () => <div data-testid={'some-incident-id'}>Incident Content</div>
+}))
+
 const switchDetailsFixture = {
   network: {
     switch: {

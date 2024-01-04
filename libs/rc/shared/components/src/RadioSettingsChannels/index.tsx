@@ -42,7 +42,8 @@ export function RadioSettingsChannels (props: {
   handleChanged?: () => void,
   afcProps?: AFCProps
 }) {
-  const { $t } = useIntl()
+  const intl = useIntl()
+  const { $t } = intl
   const form = Form.useFormInstance()
 
   const {
@@ -187,7 +188,7 @@ export function RadioSettingsChannels (props: {
                 key={group?.channels?.[0].value}
                 title={disabled ?
                   '' :
-                  ChannelButtonTextRender(group.channels.map(
+                  ChannelButtonTextRender(intl, group.channels.map(
                     (radioChannel) => {
                       return Number(radioChannel.value)
                     }), group.selected, afcProps)
