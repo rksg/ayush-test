@@ -18,7 +18,10 @@ import { NetworkSegmentationGroupFormData } from '..'
 import * as UI from './styledComponents'
 
 const tunnelProfileDefaultPayload = {
-  fields: ['name', 'id'],
+  fields: ['name', 'id', 'type'],
+  filters: {
+    type: [TunnelTypeEnum.VXLAN]
+  },
   pageSize: 10000,
   sortField: 'name',
   sortOrder: 'ASC'
