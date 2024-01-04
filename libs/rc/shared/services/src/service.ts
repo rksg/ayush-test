@@ -661,7 +661,9 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             'UPDATE_DPSK_PASSPHRASE',
             'DELETE_DPSK_PASSPHRASE',
             'UPDATE_DPSK_PASSPHRASES',
-            'IMPORT_DPSK_PASSPHRASES'
+            'IMPORT_DPSK_PASSPHRASES',
+            'CREATE_PASSPHRASE_DEVICES',
+            'DELETE_PASSPHRASE_DEVICES',
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'DpskPassphrase', id: 'LIST' }
@@ -717,7 +719,13 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
             'CREATE_PASSPHRASE_DEVICES',
-            'DELETE_PASSPHRASE_DEVICES'
+            'DELETE_PASSPHRASE_DEVICES',
+            'CREATE_DPSK_PASSPHRASE',
+            'CREATE_DPSK_PASSPHRASES',
+            'UPDATE_DPSK_PASSPHRASE',
+            'DELETE_DPSK_PASSPHRASE',
+            'UPDATE_DPSK_PASSPHRASES',
+            'IMPORT_DPSK_PASSPHRASES'
           ], () => {
             // eslint-disable-next-line max-len
             api.dispatch(serviceApi.util.invalidateTags( [{ type: 'DpskPassphraseDevices', id: 'LIST' }]))
