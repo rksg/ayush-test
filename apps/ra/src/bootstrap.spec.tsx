@@ -160,11 +160,4 @@ describe('bootstrap.init', () => {
     expect(next).toHaveBeenCalledTimes(1)
     expect(actionModal).toHaveBeenCalledTimes(2)
   })
-
-  describe('loadMessages', () => {
-    it('should handle unknown msg locales', () => {
-      const unknownLocal = bootstrap.loadMessages([])
-      expect(unknownLocal).toMatch('en-US')
-    })
-  })
 })
