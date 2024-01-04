@@ -96,6 +96,7 @@ export interface MspEcData {
   admin_delegations?: MspEcDelegatedAdmins[];
   number_of_days?: string;
   isManageAllEcs?: boolean;
+  tier?: MspEcTierEnum;
 }
 
 export interface VarCustomer {
@@ -460,4 +461,9 @@ export interface ConfigTemplate {
   templateType: ConfigTemplateType,
   lastModified: number,
   lastApplied: number
+}
+
+export enum MspEcTierEnum {
+  Essential = 'GOLD',
+  Professional = 'PLATINUM'
 }
