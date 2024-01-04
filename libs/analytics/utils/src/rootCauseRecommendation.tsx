@@ -196,8 +196,8 @@ export const getAirtimeRxRecommendations = (checks: (AirtimeRxChecks)[], params:
   const checkTrue = checkTrueParams(checks)
   const allFalse = checkTrue.length === 0
   const { ssidCountPerRadioSlice, recommendationId } = params
-  const aiOpsLink = <TenantLink to={`/recommendations/aiOps/${recommendationId}`}>here</TenantLink>
-  const crrmLink = <TenantLink to={`/recommendations/crrm/${recommendationId}`}>here</TenantLink>
+  const aiOpsLink = <TenantLink style={{ color: 'black', textDecoration: 'none' }} to={`/recommendations/aiOps/${recommendationId}`}>here</TenantLink>
+  const crrmLink = <TenantLink style={{ color: 'black', textDecoration: 'none' }} to={`/recommendations/crrm/${recommendationId}`}>here</TenantLink>
 
   const clientLoadBalanceOn = <FormattedMessage defaultMessage={'<li>Click {aiOpsLink} to enable client load balancing AIOps recommendation.</li>'} values={{ ...htmlValues, aiOpsLink }}/>
   const clientLoadBalanceOff = <FormattedMessage defaultMessage={'<li>Increase AP density to distribute the client load.</li>'} values={htmlValues}/>
@@ -271,7 +271,7 @@ export const getAirtimeTxRecommendations = (checks: (AirtimeTxChecks)[], params:
   const checkTrue = checkTrueParams(checks)
   const allFalse = checkTrue.length === 0
   const { ssidCountPerRadioSlice, recommendationId } = params
-  const link = <TenantLink to={`/recommendations/aiOps/${recommendationId}`}>here</TenantLink>
+  const link = <TenantLink style={{ color: 'black', textDecoration: 'none' }} to={`/recommendations/aiOps/${recommendationId}`}>here</TenantLink>
 
   const clientLoadBalanceOn = <FormattedMessage defaultMessage={'<li>Click {link} to enable client load balancing AIOps recommendation.</li>'} values={{ ...htmlValues, link }}/>
   const clientLoadBalanceOff = <FormattedMessage defaultMessage={'<li>Increase AP density to distribute the client load.</li>'} values={htmlValues}/>
