@@ -43,7 +43,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
     fields: ['name', 'serialNumber'],
     pageSize: 10000,
     sortField: 'name',
-    filters: { venueId: [venueId] },
+    filters: { venueId: [venueId], wanPortEnabled: ['TRUE'] },
     sortOrder: 'ASC'
   }
 
