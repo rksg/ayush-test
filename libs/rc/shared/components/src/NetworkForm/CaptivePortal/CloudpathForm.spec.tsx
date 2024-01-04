@@ -15,7 +15,10 @@ import {
   successResponse,
   networkDeepResponse,
   dhcpResponse,
-  cloudPathDataNone
+  cloudPathDataNone,
+  mockAAAPolicyListResponse,
+  mockedCloudPathAuthRadius,
+  mockedCloudPathAcctRadius
 } from '../__tests__/fixtures'
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -44,12 +47,18 @@ describe('CaptiveNetworkForm-Cloudpath', () => {
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
-      rest.get(AaaUrls.getAAAPolicyList.url,
-        (_, res, ctx) => res(ctx.json([{ id: '1', name: 'test1' }]))),
+      rest.post(AaaUrls.getAAAPolicyViewModelList.url,
+        (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(wisprRes))),
       rest.post(CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json({ response: [wisprRes] })))
+        (_, res, ctx) => res(ctx.json({ response: [wisprRes] }))),
+      rest.get(AaaUrls.getAAAPolicy.url,
+        (req, res, ctx) => {
+          // eslint-disable-next-line max-len
+          return res(ctx.json(req.params.venueId === '21' ? mockedCloudPathAuthRadius : mockedCloudPathAcctRadius))
+        }
+      )
     )
   })
 

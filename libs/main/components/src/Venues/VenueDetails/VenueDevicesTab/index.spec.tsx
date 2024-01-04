@@ -1,16 +1,19 @@
 import '@testing-library/jest-dom'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, WifiUrlsInfo }             from '@acx-ui/rc/utils'
-import { Provider }                                 from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen }    from '@acx-ui/test-utils'
+import { Features, useIsSplitOn, useIsTierAllowed }       from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, WifiUrlsInfo }                   from '@acx-ui/rc/utils'
+import { Provider }                                       from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
-import { venueSetting } from '../../__tests__/fixtures'
+import { venueSetting, venueApCompatibilitiesData, apCompatibilitiesFilterData } from '../../__tests__/fixtures'
 
 import { VenueDevicesTab } from '.'
 
 
+const filterData = () => apCompatibilitiesFilterData
+const apCompatibilitiesData = () => venueApCompatibilitiesData
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -22,10 +25,22 @@ jest.mock('@acx-ui/reports/components', () => ({
   ...jest.requireActual('@acx-ui/reports/components'),
   EmbeddedReport: () => <div data-testid={'some-report-id'} id='acx-report' />
 }))
+
+const mockedretrievedOptions = jest.fn()
+
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   ApTable: () => <div data-testid={'ApTable'} />,
-  EdgesTable: () => <div data-testid={'EdgesTable'} />
+  EdgesTable: () => <div data-testid={'EdgesTable'} />,
+  ApCompatibilityDrawer: () => <div data-testid={'ap-compatibility-drawer'} />,
+  retrievedCompatibilitiesOptions: () => {
+    mockedretrievedOptions()
+    return {
+      compatibilitiesFilterOptions: filterData(),
+      apCompatibilities: apCompatibilitiesData(),
+      incompatible: 1
+    }
+  }
 }))
 
 const meshData = {
@@ -111,7 +126,12 @@ describe('VenueWifi', () => {
       ),
       rest.get(
         CommonUrlsInfo.getVenueSettings.url,
-        (_, res, ctx) => res(ctx.json(venueSetting)))
+        (_, res, ctx) => res(ctx.json(venueSetting))
+      ),
+      rest.post(
+        WifiUrlsInfo.getApCompatibilitiesVenue.url,
+        (req, res, ctx) => res(ctx.json(venueApCompatibilitiesData))
+      )
     )
   })
 
@@ -131,6 +151,31 @@ describe('VenueWifi', () => {
 
     fireEvent.click(await screen.findByTestId('MeshSolid'))
     expect(await screen.findByRole('row', { name: /AP-981604906462/i })).toBeVisible()
+  })
+
+  it('should render Ap Compatibilities Note correctly', async () => {
+    const mockSetLocalStorage = jest.fn()
+    global.localStorage.setItem = mockSetLocalStorage
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider><VenueDevicesTab /></Provider>, {
+      route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/:activeTab/:activeSubTab' }
+    })
+    expect(await screen.findByTestId('ApTable')).toBeVisible()
+    expect(mockedretrievedOptions).toBeCalled()
+    expect(await screen.findByTestId('ap-compatibility-alert-note')).toBeVisible()
+    expect(await screen.findByTestId('InformationSolid')).toBeVisible()
+    await waitFor(async () => {
+      expect(
+        await screen.findByText(/1 access points are not compatible with certain Wi-Fi features./i)
+      ).toBeVisible()
+    })
+    const openButton = await screen.findByTestId('ap-compatibility-alert-note-open')
+    expect(openButton).toBeVisible()
+    await userEvent.click(openButton)
+    expect(await screen.findByTestId('ap-compatibility-drawer')).toBeVisible()
+    await userEvent.click(screen.getByRole('img', { name: 'close' }))
+    expect(mockSetLocalStorage).toBeCalled()
+    expect(screen.queryByTestId('ap-compatibility-alert-note')).not.toBeInTheDocument()
   })
 })
 
