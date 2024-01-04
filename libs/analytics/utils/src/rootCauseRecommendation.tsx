@@ -217,7 +217,7 @@ export const getAirtimeRxRecommendations = (checks: (AirtimeRxChecks)[], params:
   const highSSIDCountText = <FormattedMessage defaultMessage={'<li>There are currently an average of {ssidCountPerRadioSlice} SSIDs/WLANs being broadcasted per AP. Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less. Enabling Airtime Decongestion would be recommended as well.</li>'} values={{ ...htmlValues, ssidCountPerRadioSlice }}/>
   const enableAirtimeDecongestion = <FormattedMessage defaultMessage={'<li>Enable Airtime Decongestion.</li>'} values={htmlValues}/>
   const crrmRaisedText = <FormattedMessage defaultMessage={'<li>Apply the AI-Driven RRM recommendation.</li>'} values={htmlValues}/>
-  const channelFlyEnabled = <FormattedMessage defaultMessage={'<li>Apply the AI-Driven RRM recommendation. Review the channel planning, AP density and deployment.</li>'} values={htmlValues}/>
+  const channelFlyEnabled = <FormattedMessage defaultMessage={'<li>Review the channel planning, AP density and deployment.</li>'} values={htmlValues}/>
   const channelFlyDisabled = <FormattedMessage defaultMessage={'<li>Enable ChannelFly for the Zone.</li>'} values={htmlValues}/>
   const highLegacyCount = <FormattedMessage defaultMessage={'<li>Remove legacy devices or upgrade them. If possible, enable OFDM-only mode on WLANs.</li>'} values={htmlValues}/>
 
@@ -227,7 +227,12 @@ export const getAirtimeRxRecommendations = (checks: (AirtimeRxChecks)[], params:
     : [
       checkTrue.includes('isHighDensityWifiDevices') ? checkTrue.includes('isAclbRaised') ? clientLoadBalanceOn : clientLoadBalanceOff : '',
       checkTrue.includes('isLargeMgmtFrameCount') ? checkTrue.includes('isHighSsidCountPerRadio') ? highSSIDCountText : enableAirtimeDecongestion : '',
-      checkTrue.includes('isHighCoChannelInterference') ? checkTrue.includes('isCRRMRaised') ? checkTrue.includes('isChannelFlyEnabled') ? channelFlyEnabled : crrmRaisedText : channelFlyDisabled : '',
+      checkTrue.includes('isHighCoChannelInterference')
+        ? checkTrue.includes('isCRRMRaised')
+          ? crrmRaisedText
+          : checkTrue.includes('isChannelFlyEnabled')
+            ? channelFlyEnabled : channelFlyDisabled
+        : '',
       checkTrue.includes('isHighLegacyWifiDevicesCount') ? highLegacyCount : ''
     ]
 
