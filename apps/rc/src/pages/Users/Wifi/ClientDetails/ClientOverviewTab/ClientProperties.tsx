@@ -259,6 +259,7 @@ function ClientDetails ({ client }: { client: ClientExtended }) {
 function Connection ({ client }: { client: ClientExtended }) {
   const wifiEDAClientRevokeToggle = useIsSplitOn(Features.WIFI_EDA_CLIENT_REVOKE_TOGGLE)
   const { $t } = getIntl()
+  const intl = useIntl()
   const showVni = !!client.vni
   return <>
     <Subtitle level={4}>
@@ -353,7 +354,7 @@ function Connection ({ client }: { client: ClientExtended }) {
           title={$t({ defaultMessage: 'Network Type' })}
         >{$t({ defaultMessage: 'Network Type' })}
         </Tooltip>}
-        children={networkDisplayTransformer(getIntl(), client?.networkType)}
+        children={networkDisplayTransformer(intl, client?.networkType)}
       /> }
       <Descriptions.Item
         label={$t({ defaultMessage: 'Auth Method' })}

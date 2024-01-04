@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
 import React, { useState, useEffect } from 'react'
 
-import { Space }   from 'antd'
-import { useIntl } from 'react-intl'
+import { Space }              from 'antd'
+import { IntlShape, useIntl } from 'react-intl'
 
 import { Subtitle, Tooltip, Table, TableProps, Loader, showActionModal  } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
@@ -156,7 +156,7 @@ export const ConnectedClientsTable = (props: {
     }
   }, [searchString])
 
-  function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
+  function GetCols (intl: IntlShape, showAllColumns?: boolean) {
     const { $t } = useIntl()
     const wifi7MLOToggle = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_TOGGLE)
     const { tenantId, venueId, apId, networkId } = useParams()
