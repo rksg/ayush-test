@@ -188,7 +188,11 @@ export const getAirtimeRxRootCauses = (checks: (AirtimeRxChecks)[]) => {
     ? allFalseText
     : [
       checkTrue.includes('isHighDensityWifiDevices') ? highDensityWifi : '',
-      checkTrue.includes('isLargeMgmtFrameCount') ? checkTrue.includes('isHighSsidCountPerRadio') ? excessiveSSID : excessiveFrame : '',
+      checkTrue.includes('isLargeMgmtFrameCount')
+        ? checkTrue.includes('isHighSsidCountPerRadio')
+          ? excessiveSSID
+          : excessiveFrame
+        : '',
       checkTrue.includes('isHighCoChannelInterference') ? highCoChannel : '',
       checkTrue.includes('isHighLegacyWifiDevicesCount') ? highLegacy : ''
     ]
@@ -225,8 +229,16 @@ export const getAirtimeRxRecommendations = (checks: (AirtimeRxChecks)[], params:
   const stringlist = allFalse
     ? allFalseText
     : [
-      checkTrue.includes('isHighDensityWifiDevices') ? checkTrue.includes('isAclbRaised') ? clientLoadBalanceOn : clientLoadBalanceOff : '',
-      checkTrue.includes('isLargeMgmtFrameCount') ? checkTrue.includes('isHighSsidCountPerRadio') ? highSSIDCountText : enableAirtimeDecongestion : '',
+      checkTrue.includes('isHighDensityWifiDevices')
+        ? checkTrue.includes('isAclbRaised')
+          ? clientLoadBalanceOn
+          : clientLoadBalanceOff
+        : '',
+      checkTrue.includes('isLargeMgmtFrameCount')
+        ? checkTrue.includes('isHighSsidCountPerRadio')
+          ? highSSIDCountText
+          : enableAirtimeDecongestion
+        : '',
       checkTrue.includes('isHighCoChannelInterference')
         ? checkTrue.includes('isCRRMRaised')
           ? crrmRaisedText
@@ -265,7 +277,11 @@ export const getAirtimeTxRootCauses = (checks: (AirtimeTxChecks)[]) => {
     ? allFalseText
     : [
       checkTrue.includes('isHighDensityWifiDevices') ? highDensityWifi : '',
-      checkTrue.includes('isLargeMgmtFrameCount') ? checkTrue.includes('isHighSsidCountPerRadio') ? excessiveFrameAndSsid : excessiveFrame : '',
+      checkTrue.includes('isLargeMgmtFrameCount')
+        ? checkTrue.includes('isHighSsidCountPerRadio')
+          ? excessiveFrameAndSsid
+          : excessiveFrame
+        : '',
       checkTrue.includes('isHighPacketErrorCount') ? highPacket : '',
       checkTrue.includes('isHighMcbcTraffic') ? highMCBC : '',
       checkTrue.includes('isHighLegacyWifiDevicesCount') ? highLegacy : ''
@@ -302,8 +318,16 @@ export const getAirtimeTxRecommendations = (checks: (AirtimeTxChecks)[], params:
   const stringlist = allFalse
     ? allFalseText
     : [
-      checkTrue.includes('isHighDensityWifiDevices') ? checkTrue.includes('isAclbRaised') ? clientLoadBalanceOn : clientLoadBalanceOff : '',
-      checkTrue.includes('isLargeMgmtFrameCount') ? checkTrue.includes('isHighSsidCountPerRadio') ? highSSIDCountText : enableAirtimeDecongestion : '',
+      checkTrue.includes('isHighDensityWifiDevices')
+        ? checkTrue.includes('isAclbRaised')
+          ? clientLoadBalanceOn
+          : clientLoadBalanceOff
+        : '',
+      checkTrue.includes('isLargeMgmtFrameCount')
+        ? checkTrue.includes('isHighSsidCountPerRadio')
+          ? highSSIDCountText
+          : enableAirtimeDecongestion
+        : '',
       checkTrue.includes('isHighPacketErrorCount') ? nonWifiInterference : '',
       checkTrue.includes('isHighMcbcTraffic') ? highMCBC : '',
       checkTrue.includes('isHighLegacyWifiDevicesCount') ? highLegacyCount : ''
