@@ -1,129 +1,141 @@
 import { useContext, useEffect, useState } from 'react'
 
 import { Form, Select, Space } from 'antd'
+import { DefaultOptionType }   from 'antd/lib/select'
 import { get }                 from 'lodash'
 import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
 
-import { Tooltip, PasswordInput }          from '@acx-ui/components'
-import { useGetAAAPolicyListQuery }        from '@acx-ui/rc/services'
-import { AaaServerOrderEnum, AAATempType } from '@acx-ui/rc/utils'
+import { Tooltip, PasswordInput }               from '@acx-ui/components'
+import { AaaServerOrderEnum, AAAViewModalType } from '@acx-ui/rc/utils'
 
-import * as contents      from '../contentsMap'
-import NetworkFormContext from '../NetworkFormContext'
+import { useLazyGetAAAPolicyInstance, useGetAAAPolicyInstanceList } from '../../policies/AAAForm/aaaPolicyQuerySwitcher'
+import * as contents                                                from '../contentsMap'
+import NetworkFormContext                                           from '../NetworkFormContext'
 
 import AAAPolicyModal from './AAAPolicyModal'
-const radiusType: { [key:string]:string }={
+
+const radiusTypeMap: { [key:string]: string } = {
   authRadius: 'AUTHENTICATION',
   accountingRadius: 'ACCOUNTING'
-}
-const AAAInstance = (props:{
-  serverLabel: string,
+} as const
+
+interface AAAInstanceProps {
+  serverLabel: string
   type: 'authRadius' | 'accountingRadius'
-}) => {
+}
+
+const AAAInstance = (props: AAAInstanceProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const form = Form.useFormInstance()
-  const radiusValue = Form.useWatch(props.type)
-  const { data: aaaListQuery } = useGetAAAPolicyListQuery({ params })
-  const aaaServices = aaaListQuery?.data?.map(m => ({ label: m.name, value: m.id })) ?? []
-  const [aaaList, setAaaList]= useState(aaaServices)
-  const [aaaData, setAaaData]= useState([] as AAATempType[])
+  const radiusType = radiusTypeMap[props.type]
+  const radiusIdName = props.type + 'Id'
+  const watchedRadius = Form.useWatch(props.type) || form.getFieldValue(props.type)
+  const watchedRadiusId = Form.useWatch(radiusIdName) || form.getFieldValue(radiusIdName)
+
+  const { data: aaaListQuery } = useGetAAAPolicyInstanceList({
+    queryOptions: { refetchOnMountOrArgChange: 10 }
+  })
+  const [ getAaaPolicy ] = useLazyGetAAAPolicyInstance()
+  // eslint-disable-next-line max-len
+  const [ aaaDropdownItems, setAaaDropdownItems ]= useState(convertAaaListToDropdownItems(radiusType, aaaListQuery?.data))
   const { data, setData } = useContext(NetworkFormContext)
 
   useEffect(()=>{
-    if(aaaListQuery?.data){
-      setAaaData([...aaaListQuery.data])
-      setAaaList(((aaaListQuery.data?.filter(d => d.type === radiusType[props.type])))
-        .map(m => ({ label: m.name, value: m.id })))
+    if (aaaListQuery?.data) {
+      setAaaDropdownItems(convertAaaListToDropdownItems(radiusType, aaaListQuery.data))
     }
   },[aaaListQuery])
 
   useEffect(() => {
+    if (!watchedRadius) return
+
     const currentDataAaaProfileId = data && data[props.type]?.id
-    if (radiusValue && radiusValue.name && radiusValue.id !== currentDataAaaProfileId) {
+    if (watchedRadius.id !== currentDataAaaProfileId) {
       setData && setData({
         ...data,
-        [props.type]: radiusValue,
-        [props.type + 'Id']: radiusValue.id
+        [props.type]: watchedRadius,
+        [radiusIdName]: watchedRadius.id
       })
     }
 
-  }, [radiusValue])
+  }, [watchedRadius])
+
+  useEffect(() => {
+    if (watchedRadiusId === watchedRadius?.id) return
+
+    if (watchedRadiusId) {
+      getAaaPolicy({ params: { ...params, policyId: watchedRadiusId } })
+        .unwrap()
+        .then(aaaPolicy => form.setFieldValue(props.type, aaaPolicy))
+        // eslint-disable-next-line no-console
+        .catch(console.log)
+    } else {
+      form.setFieldValue(props.type, undefined)
+    }
+  }, [watchedRadiusId])
+
   return (
     <>
       <Form.Item label={props.serverLabel}><Space>
         <Form.Item
-          name={props.type+'Id'}
+          name={radiusIdName}
           noStyle
           label={props.serverLabel}
           rules={[
             { required: true }
           ]}
-          initialValue={''}
+          initialValue={watchedRadiusId ?? ''}
           children={<Select
             style={{ width: 210 }}
-            onChange={(value)=>{
-              form.setFieldValue(props.type,
-                aaaData?.filter(d => d.id === value)[0])
-            }}
             options={[
               { label: $t({ defaultMessage: 'Select RADIUS' }), value: '' },
-              ...aaaList
+              ...aaaDropdownItems
             ]}
           />}
         />
         <Tooltip>
-          <AAAPolicyModal updateInstance={(data)=>{
-            aaaList.push({
-              label: data.name, value: data.id })
-            setAaaList([...aaaList])
-            aaaData.push({ ...data })
-            setAaaData([...aaaData])
-            form.setFieldValue(props.type+'Id', data.id)
+          <AAAPolicyModal updateInstance={(data) => {
+            setAaaDropdownItems([...aaaDropdownItems, { label: data.name, value: data.id }])
+            form.setFieldValue(radiusIdName, data.id)
             form.setFieldValue(props.type, data)
           }}
-          aaaCount={aaaData.length}
-          type={radiusType[props.type]}
+          aaaCount={aaaDropdownItems.length}
+          type={radiusType}
           />
         </Tooltip></Space>
       </Form.Item>
       <div style={{ marginTop: 6, backgroundColor: 'var(--acx-neutrals-20)',
         width: 210, paddingLeft: 5 }}>
-        {radiusValue?.[AaaServerOrderEnum.PRIMARY]&&<>
+        {watchedRadius?.[AaaServerOrderEnum.PRIMARY] && <>
           <Form.Item
             label={$t(contents.aaaServerTypes[AaaServerOrderEnum.PRIMARY])}
             children={$t({ defaultMessage: '{ipAddress}:{port}' }, {
-              ipAddress: get(radiusValue,
-                `${AaaServerOrderEnum.PRIMARY}.ip`),
-              port: get(radiusValue,
-                `${AaaServerOrderEnum.PRIMARY}.port`)
+              ipAddress: get(watchedRadius, `${AaaServerOrderEnum.PRIMARY}.ip`),
+              port: get(watchedRadius, `${AaaServerOrderEnum.PRIMARY}.port`)
             })} />
           <Form.Item
             label={$t({ defaultMessage: 'Shared Secret' })}
             children={<PasswordInput
               readOnly
               bordered={false}
-              value={get(radiusValue,
-                `${AaaServerOrderEnum.PRIMARY}.sharedSecret`)}
+              value={get(watchedRadius, `${AaaServerOrderEnum.PRIMARY}.sharedSecret`)}
             />}
           /></>}
-        {radiusValue?.[AaaServerOrderEnum.SECONDARY]&&<>
+        {watchedRadius?.[AaaServerOrderEnum.SECONDARY] && <>
           <Form.Item
             label={$t(contents.aaaServerTypes[AaaServerOrderEnum.SECONDARY])}
             children={$t({ defaultMessage: '{ipAddress}:{port}' }, {
-              ipAddress: get(radiusValue,
-                `${AaaServerOrderEnum.SECONDARY}.ip`),
-              port: get(radiusValue,
-                `${AaaServerOrderEnum.SECONDARY}.port`)
+              ipAddress: get(watchedRadius, `${AaaServerOrderEnum.SECONDARY}.ip`),
+              port: get(watchedRadius, `${AaaServerOrderEnum.SECONDARY}.port`)
             })} />
           <Form.Item
             label={$t({ defaultMessage: 'Shared Secret' })}
             children={<PasswordInput
               readOnly
               bordered={false}
-              value={get(radiusValue,
-                `${AaaServerOrderEnum.SECONDARY}.sharedSecret`)}
+              value={get(watchedRadius, `${AaaServerOrderEnum.SECONDARY}.sharedSecret`)}
             />}
           />
         </>}
@@ -138,3 +150,11 @@ const AAAInstance = (props:{
 }
 
 export default AAAInstance
+
+function convertAaaListToDropdownItems (
+  targetRadiusType: typeof radiusTypeMap[keyof typeof radiusTypeMap],
+  aaaList?: AAAViewModalType[]
+): DefaultOptionType[] {
+  // eslint-disable-next-line max-len
+  return aaaList?.filter(m => m.type === targetRadiusType).map(m => ({ label: m.name, value: m.id })) ?? []
+}

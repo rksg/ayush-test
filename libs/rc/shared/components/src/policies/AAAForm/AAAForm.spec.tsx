@@ -2,114 +2,71 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { AaaUrls }                                       from '@acx-ui/rc/utils'
-import { Provider }                                      from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, within } from '@acx-ui/test-utils'
-import { UserUrlsInfo }                                  from '@acx-ui/user'
+import { ConfigTemplateUrlsInfo }                                 from '@acx-ui/msp/utils'
+import { AaaUrls }                                                from '@acx-ui/rc/utils'
+import { Provider }                                               from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
+import { UserUrlsInfo }                                           from '@acx-ui/user'
 
-import { AAAForm } from './AAAForm'
+import { aaaData, successResponse, aaaList, aaaTemplateList } from './__tests__/fixtures'
+import { AAAForm }                                            from './AAAForm'
 
-const aaaData={
-  id: 'policy-id',
-  name: 'test2',
-  type: 'AUTHENTICATION',
-  primary: {
-    ip: '2.3.3.4',
-    port: 101,
-    sharedSecret: 'xxxxxxxx'
-  },
-  secondary: {
-    ip: '2.3.3.4',
-    port: 101,
-    sharedSecret: 'xxxxxxxx'
-  },
-  tags: ['xxdd']
+const mockedUsedNavigate = jest.fn()
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
+
+const mockedUseConfigTemplate = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useConfigTemplate: () => mockedUseConfigTemplate()
+}))
+
+const params = {
+  networkId: 'UNKNOWN-NETWORK-ID',
+  tenantId: 'tenant-id',
+  type: 'wifi',
+  policyId: 'policy-id'
 }
-const successResponse = { requestId: 'request-id', id: '2', name: 'test2' }
-const aaaList=[
-  {
-    name: 'test1',
-    type: 'AUTHENTICATION',
-    primary: {
-      ip: '1.1.1.2',
-      port: 1812,
-      sharedSecret: '111211121112'
-    },
-    id: '1'
-  },
-  {
-    name: 'policy-id',
-    type: 'AUTHENTICATION',
-    primary: {
-      ip: '2.3.3.4',
-      port: 101,
-      sharedSecret: 'xxxxxxxx'
-    },
-    secondary: {
-      ip: '2.3.3.4',
-      port: 101,
-      sharedSecret: 'xxxxxxxx'
-    },
-    id: '2'
-  },
-  {
-    name: 'aaa2',
-    type: 'AUTHENTICATION',
-    primary: {
-      ip: '1.1.1.1',
-      port: 1812,
-      sharedSecret: '11111111'
-    },
-    id: '9f1ce5aecc834f0f95d3df1e97f85f19'
-  },
-  {
-    name: 'aaa-temp',
-    type: 'AUTHENTICATION',
-    primary: {
-      ip: '2.2.2.2',
-      port: 1812,
-      sharedSecret: 'asdfasdf'
-    },
-    id: '3e9e139d6ef3459c95ab547acb1672b5'
-  },
-  {
-    name: 'aaa-temp1',
-    type: 'AUTHENTICATION',
-    primary: {
-      ip: '1.1.1.19',
-      port: 1805,
-      sharedSecret: '34tgweg453g45g34g'
-    },
-    id: '343ddabf261546258bc46c049e0641e5'
-  }
-]
-const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', type: 'wifi',
-  policyId: 'policy-id' }
 describe('AAAForm', () => {
-
-  beforeEach(()=>{
+  beforeEach(() => {
     mockServer.use(
       rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))
       ),
       rest.get(
         AaaUrls.getAAAPolicy.url,
-        (_, res, ctx) => {return res(ctx.json(aaaData))}
+        (_, res, ctx) => res(ctx.json(aaaData))
       ),
       rest.post(
         AaaUrls.addAAAPolicy.url,
-        (_, res, ctx) => {return res(ctx.json(successResponse))}
+        (_, res, ctx) => res(ctx.json(successResponse))
       ),
       rest.put(
         AaaUrls.updateAAAPolicy.url,
-        (_, res, ctx) => {return res(ctx.json(successResponse))}
+        (_, res, ctx) => res(ctx.json(successResponse))
       ),
-      rest.get(
-        AaaUrls.getAAAPolicyList.url,
-        (_, res, ctx) => {return res(ctx.json(aaaList))}
+      rest.post(
+        AaaUrls.getAAAPolicyViewModelList.url,
+        (_, res, ctx) => res(ctx.json(aaaList))
+      ),
+      rest.post(
+        ConfigTemplateUrlsInfo.getAAAPolicyTemplateList.url,
+        (_, res, ctx) => res(ctx.json(aaaTemplateList))
       )
     )
   })
+
+  beforeEach(() => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+  })
+
+  afterEach(() => {
+    jest.clearAllMocks()
+    mockedUseConfigTemplate.mockRestore()
+  })
+
   it('should create AAA successfully', async () => {
     render(<Provider><AAAForm edit={false} networkView={true}/></Provider>, {
       route: { params }
@@ -184,6 +141,64 @@ describe('AAAForm', () => {
     const secondaryAlert = await within(secondaryFieldset).findByRole('alert')
     expect(secondaryAlert).toHaveTextContent('255 characters')
   })
+
+  it('should create AAA template successfully', async () => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+    const addTemplateFn = jest.fn()
+
+    mockServer.use(
+      rest.post(
+        ConfigTemplateUrlsInfo.addAAAPolicyTemplate.url,
+        (_, res, ctx) => {
+          addTemplateFn()
+          return res(ctx.json(successResponse))
+        }
+      )
+    )
+    render(
+      <Provider>
+        <AAAForm edit={false} />
+      </Provider>, { route: { params } }
+    )
+
+    await userEvent.type(await screen.findByLabelText(/Profile Name/), 'AAA template')
+    await userEvent.type(await screen.findByLabelText(/IP Address/), '2.3.3.4')
+    await userEvent.type(await screen.findByLabelText(/Shared Secret/), 'test1234')
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+
+    await waitFor(() => expect(addTemplateFn).toHaveBeenCalled())
+    await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalled())
+  })
+
+  it('should update AAA template successfully', async () => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+    const updateTemplateFn = jest.fn()
+
+    mockServer.use(
+      rest.put(
+        ConfigTemplateUrlsInfo.updateAAAPolicyTemplate.url,
+        (_, res, ctx) => {
+          updateTemplateFn()
+          return res(ctx.json(successResponse))
+        }
+      ),
+      rest.get(
+        ConfigTemplateUrlsInfo.getAAAPolicyTemplate.url,
+        (_, res, ctx) => res(ctx.json(aaaData))
+      )
+    )
+    render(
+      <Provider>
+        <AAAForm edit={true} />
+      </Provider>, { route: { params } }
+    )
+
+    expect(await screen.findByDisplayValue(aaaData.name)).toBeVisible()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
+
+    await waitFor(() => expect(updateTemplateFn).toHaveBeenCalled())
+  })
 })
 
 async function editAAA (){
@@ -200,7 +215,7 @@ async function editAAA (){
   await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[1],
     'test1234')
   await fillInProfileName('test1')
-  await userEvent.click(await screen.findByText('Add'))
+  await userEvent.click(await screen.findByText('Finish'))
   await userEvent.type(port2, '1812')
   await fillInProfileName('test2 update')
   // FIXME: Do not use "setTimeout"

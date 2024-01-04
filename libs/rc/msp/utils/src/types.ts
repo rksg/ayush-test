@@ -445,3 +445,19 @@ export interface MspRecCustomer {
   acx_trial_in_progress?: boolean,
   email_id?: string
 }
+
+export enum ConfigTemplateType {
+  NETWORK = 'NETWORK',
+  RADIUS = 'RADIUS'
+}
+
+export interface ConfigTemplate {
+  id?: string,
+  name: string,
+  createdBy: string,
+  createdOn: number,
+  ecTenants: string[],
+  templateType: ConfigTemplateType,
+  lastModified: number,
+  lastApplied: number
+}

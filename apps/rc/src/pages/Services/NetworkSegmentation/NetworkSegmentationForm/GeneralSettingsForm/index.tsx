@@ -1,4 +1,6 @@
 
+import { useState } from 'react'
+
 import { Col, Form, Input, Row, Select } from 'antd'
 import { FormattedMessage, useIntl }     from 'react-intl'
 
@@ -8,9 +10,9 @@ import { useVenuesListQuery }                            from '@acx-ui/rc/servic
 import { NetworkSegmentationGroupFormData } from '..'
 import * as UI                              from '../styledComponents'
 
-import { PersonalIdentityDiagram }      from './PersonalIdentityDiagram'
-import { PropertyManagementInfo }       from './PropertyManagementInfo'
-import { AlertCheckMarkIcon, Sub5Bold } from './styledComponents'
+import { PersonalIdentityPreparationListDrawer } from './PersonalIdentityPreparationListDrawer'
+import { PropertyManagementInfo }                from './PropertyManagementInfo'
+import { AlertCheckMarkIcon, Sub5Bold }          from './styledComponents'
 
 interface GeneralSettingsFormProps {
   editMode?: boolean
@@ -28,7 +30,7 @@ const venueOptionsDefaultPayload = {
 }
 
 export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
-
+  const [openDrawer,setOpenDrawer] = useState(true)
   const { editMode } = props
   const { $t } = useIntl()
   const { form } = useStepFormContext<NetworkSegmentationGroupFormData>()
@@ -160,9 +162,9 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
           </Row>
         }
       </Col>
-      <Col span={14}>
-        <PersonalIdentityDiagram venueInfo={venueMap[venueId]} />
-      </Col>
+      <PersonalIdentityPreparationListDrawer open={openDrawer}
+        onClose={()=>setOpenDrawer(false)}
+        venueInfo={venueMap[venueId]} />
     </Row>
   )
 }
