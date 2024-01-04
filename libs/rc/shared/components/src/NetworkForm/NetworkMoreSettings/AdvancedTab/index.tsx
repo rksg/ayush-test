@@ -56,7 +56,7 @@ export function AdvancedTab () {
       </UI.FieldLabel>
       }
 
-      {(qosMapSetFlag || qosMirroringFlag && enableAP70) && <QoS wlanData={data} />}
+      {(qosMapSetFlag || (qosMirroringFlag && enableAP70)) && <QoS wlanData={data} />}
     </>
   )
 }

@@ -178,6 +178,7 @@ export function ResidentPortalForm (props: ResidentPortalFormProps) {
       <Loader states={[{ isLoading: (isLoading || areImagesLoading), isFetching }]}>
         <StepsFormLegacy<CreateResidentPortalFormFields>
           formRef={formRef}
+          editMode={editMode}
           onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToServices)}
           onFinish={saveData}>
           <StepsFormLegacy.StepForm<CreateResidentPortalFormFields>

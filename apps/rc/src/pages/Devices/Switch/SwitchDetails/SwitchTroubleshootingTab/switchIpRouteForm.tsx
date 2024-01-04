@@ -17,6 +17,8 @@ import {
   TroubleshootingType
 } from '@acx-ui/rc/utils'
 
+import { parseResult } from './switchPingForm'
+
 export function SwitchIpRouteForm () {
   const { $t } = useIntl()
   const { tenantId, switchId } = useParams()
@@ -42,10 +44,6 @@ export function SwitchIpRouteForm () {
     setTimeout(() => {
       getTroubleshooting.refetch()
     }, 3000)
-  }
-
-  const parseResult = function (response: string) {
-    return response === 'EMPTY_RESULT' ? $t({ defaultMessage: 'No data to display.' }) : response
   }
 
   useEffect(() => {

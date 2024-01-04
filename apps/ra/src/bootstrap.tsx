@@ -15,8 +15,6 @@ import { Provider }      from '@acx-ui/store'
 import {
   renderPendo,
   useLocaleContext,
-  LangKey,
-  DEFAULT_SYS_LANG,
   LocaleProvider,
   setUpIntl,
   getIntl
@@ -27,33 +25,12 @@ import AllRoutes from './AllRoutes'
 import '@acx-ui/theme'
 import type { AnyAction } from '@reduxjs/toolkit'
 
-// Needed for Browser language detection
-const supportedLocales: Record<string, LangKey> = {
-  'en-US': 'en-US',
-  'en': 'en-US',
-  'es': 'es-ES',
-  'es-ES': 'es-ES',
-  'de-DE': 'de-DE',
-  'de': 'de-DE',
-  'ja-JP': 'ja-JP',
-  'ja': 'ja-JP',
-  'fr-FR': 'fr-FR',
-  'ko-KR': 'ko-KR',
-  'pt-BR': 'pt-BR'
-}
-
-export function loadMessages (locales: readonly string[]): LangKey {
-  const locale = locales.find(locale =>
-    supportedLocales[locale as keyof typeof supportedLocales]) || DEFAULT_SYS_LANG
-  return supportedLocales[locale as keyof typeof supportedLocales]
-}
-
 function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   const { lang } = useLocaleContext()
   const { children } = props
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
-    children={<ConfigProvider children={children} lang={loadMessages([lang])} />}
+    children={<ConfigProvider children={children} lang={lang} />}
   />
 }
 
