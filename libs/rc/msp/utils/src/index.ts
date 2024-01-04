@@ -15,6 +15,7 @@ import {
 
 export * from './types'
 export * from './urls'
+export * from './configTemplateUrls'
 
 export const MSP_USER_SETTING = 'COMMON$MSP'
 
@@ -103,7 +104,7 @@ export const MSPUtils = () => {
 
   const transformFutureOutOfComplianceDevices = (entitlements: DelegationEntitlementRecord[]) => {
     return entitlements && entitlements.length > 0
-      ? `${(entitlements[0].futureOutOfComplianceDevices || 0)} 
+      ? `${(entitlements[0].futureOutOfComplianceDevices || 0)}
         / ${futureOfComplianceDays(entitlements[0].futureOfComplianceDate)}` : '0 / --'
   }
 
@@ -175,7 +176,7 @@ export const MSPUtils = () => {
 
   const transformMspRecAddress = (data: MspRecCustomer) => {
     const address =
-    `${data.billing_street}, ${data.billing_city}, ${data.billing_state}, 
+    `${data.billing_street}, ${data.billing_city}, ${data.billing_state},
     ${data.billing_postal_code}, ${data.billing_country}`
     return address
   }

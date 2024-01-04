@@ -249,9 +249,9 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       }
     },
     {
-      key: 'networkCount',
+      key: 'networkIds',
       title: $t({ defaultMessage: 'Networks' }),
-      dataIndex: 'networkCount',
+      dataIndex: 'networkIds',
       align: 'center',
       filterable: networkFilterOptions,
       sorter: true,

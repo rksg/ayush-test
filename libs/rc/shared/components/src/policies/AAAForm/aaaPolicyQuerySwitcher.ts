@@ -1,0 +1,33 @@
+import { useGetAAAPolicyTemplateListQuery, useLazyGetAAAPolicyTemplateQuery } from '@acx-ui/msp/services'
+import { useGetAAAPolicyViewModelListQuery, useLazyAaaPolicyQuery }           from '@acx-ui/rc/services'
+import { useConfigTemplate }                                                  from '@acx-ui/rc/utils'
+import { useParams }                                                          from '@acx-ui/react-router-dom'
+
+interface useGetAAAPolicyInstanceListProps {
+  customPayload?: {}
+  queryOptions?: {}
+}
+export function useGetAAAPolicyInstanceList (props: useGetAAAPolicyInstanceListProps) {
+  const { customPayload = {}, queryOptions = {} } = props
+  const { isTemplate } = useConfigTemplate()
+  const params = useParams()
+  const requestPayload = { params, payload: customPayload }
+  const aaaPolicyListResult = useGetAAAPolicyViewModelListQuery(requestPayload, {
+    ...queryOptions,
+    skip: isTemplate
+  })
+  const aaaPolicyTemplateListResult = useGetAAAPolicyTemplateListQuery(requestPayload, {
+    ...queryOptions,
+    skip: !isTemplate
+  })
+
+  return isTemplate ? aaaPolicyTemplateListResult : aaaPolicyListResult
+}
+
+export function useLazyGetAAAPolicyInstance () {
+  const { isTemplate } = useConfigTemplate()
+  const lazyGetAaaPolicy = useLazyAaaPolicyQuery()
+  const lazyGetAaaPolicyTemplate = useLazyGetAAAPolicyTemplateQuery()
+
+  return isTemplate ? lazyGetAaaPolicyTemplate : lazyGetAaaPolicy
+}
