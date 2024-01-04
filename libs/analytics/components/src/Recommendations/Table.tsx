@@ -55,7 +55,7 @@ function RowTooltip (props: RowProps) {
   const { $t } = getIntl()
   const row = (props.children as React.ReactNode[])?.filter(
     (child) => _.get(child, 'props.record.id') === props['data-row-key'])[0]
-  const showToolTip = String(props.className).includes('table-row-muted')
+  const showToolTip = String(props.className).includes('crrm-optimization-mismatch')
   const isFullOptimization = _.get(
     row, 'props.record.preferences.fullOptimization', true)
   const fullOptimizationText = defineMessage({ defaultMessage: `
@@ -269,10 +269,10 @@ export function RecommendationTable (
       fixed: 'right',
       tooltip: optimizationTooltipText,
       render: (_, value) => {
-        const { code, statusEnum, idPath } = value
+        const { code, statusEnum, idPath, isMuted } = value
         // eslint-disable-next-line max-len
         const appliedStates = ['applyscheduled', 'applyscheduleinprogress', 'applied', 'revertscheduled', 'revertscheduleinprogress', 'revertfailed', 'applywarning']
-        const disabled = appliedStates.includes(statusEnum) ? true : false
+        const disabled = isMuted || (appliedStates.includes(statusEnum) ? true : false)
         const isOptimized = value.preferences? value.preferences.fullOptimization : true
         const tooltipText = disabled
           ? $t({ defaultMessage: `
@@ -331,9 +331,13 @@ export function RecommendationTable (
             children={$t({ defaultMessage: 'Show Muted Recommendations' })}
           />
         ]}
-        rowClassName={(record) => (
-          record.isMuted || !isCrrmOptimizationMatched(record.metadata, record.preferences)
-        ) ? 'table-row-muted' : 'table-row-normal'}
+        rowClassName={(record) => {
+          if(record.isMuted)
+            return 'table-row-muted'
+          if(!isCrrmOptimizationMatched(record.metadata, record.preferences))
+            return 'table-row-muted crrm-optimization-mismatch'
+          return 'table-row-normal'
+        }}
         filterableWidth={155}
         searchableWidth={240}
         components={{ body: { row: RowTooltip } }}
