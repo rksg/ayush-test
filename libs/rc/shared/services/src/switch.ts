@@ -58,9 +58,9 @@ import {
   SEARCH,
   SORTER
 } from '@acx-ui/rc/utils'
-import { baseSwitchApi }     from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { baseSwitchApi }               from '@acx-ui/store'
+import { RequestPayload }              from '@acx-ui/types'
+import { createHttpRequest, batchApi } from '@acx-ui/utils'
 
 export type SwitchsExportPayload = {
   filters: Filter
@@ -157,6 +157,12 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Switch', id: 'StackMemberList' }]
+    }),
+    batchDeleteSwitch: build.mutation<void, RequestPayload[]>({
+      async queryFn (requests, _queryApi, _extraOptions, fetchWithBQ) {
+        return batchApi(SwitchUrlsInfo.deleteSwitches, requests, fetchWithBQ)
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
     }),
     deleteSwitches: build.mutation<SwitchRow, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1292,6 +1298,7 @@ const aggregatedSwitchClientData = (
 export const {
   useSwitchListQuery,
   useStackMemberListQuery,
+  useBatchDeleteSwitchMutation,
   useDeleteSwitchesMutation,
   useDeleteStackMemberMutation,
   useAcknowledgeSwitchMutation,
