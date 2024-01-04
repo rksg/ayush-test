@@ -138,7 +138,7 @@ export function ScheduleExportForm (props: ScheduleExportFormProps) {
           formScheduleExportData.context.product)
         form.setFieldValue([context, 'severity'],
           formScheduleExportData.context.severity)
-        if (formScheduleExportData.context.searchString?.length) {
+        if (formScheduleExportData.context?.searchString?.length) {
           // it will always be single string in array as per API implementation
           form.setFieldValue([context, 'searchString'],
             formScheduleExportData.context.searchString[0])
