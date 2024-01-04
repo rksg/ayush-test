@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from 'react'
 
-import { Checkbox, Switch }                         from 'antd'
+import { Checkbox, Typography, Switch }             from 'antd'
 import _                                            from 'lodash'
 import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
 
@@ -38,14 +38,14 @@ type RecommendationWithUpdatedMetadata = RecommendationListItem & {
 
 const DateLink = ({ value, disabled }: { value: RecommendationListItem, disabled: boolean }) => {
   const { activeTab } = useParams()
+  const text = formatter(DateFormatEnum.DateTimeFormat)(value.updatedAt)
   return disabled
     ? <Tooltip
-      disabled
       title={<FormattedMessage defaultMessage='Not available' />}
-      children={formatter(DateFormatEnum.DateTimeFormat)(value.updatedAt)}
+      children={<Typography.Text disabled children={text} />}
     />
     : <TenantLink to={`analytics/recommendations/${activeTab}/${value.id}`}>
-      {formatter(DateFormatEnum.DateTimeFormat)(value.updatedAt)}
+      {text}
     </TenantLink>
 }
 

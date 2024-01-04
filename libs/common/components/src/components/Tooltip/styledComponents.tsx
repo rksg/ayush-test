@@ -1,4 +1,4 @@
-import styled, { createGlobalStyle } from 'styled-components/macro'
+import { createGlobalStyle } from 'styled-components/macro'
 
 export const TooltipGlobalStyle = createGlobalStyle`
   .ant-tooltip {
@@ -31,9 +31,4 @@ export const TooltipGlobalStyle = createGlobalStyle`
       }
     }
   }
-`
-
-export const Disabled = styled.span`
-  color: var(--acx-neutrals-40);
-  cursor: not-allowed;
 `

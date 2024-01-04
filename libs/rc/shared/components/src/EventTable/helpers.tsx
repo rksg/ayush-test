@@ -1,3 +1,4 @@
+import { Typography }                          from 'antd'
 import _                                       from 'lodash'
 import { FormattedMessage, MessageDescriptor } from 'react-intl'
 
@@ -64,9 +65,8 @@ export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
   const exists = data[existKey as keyof typeof data]
 
   if (!exists) return <Tooltip
-    disabled
     title={<FormattedMessage defaultMessage='Not available' />}
-    children={name}
+    children={<Typography.Text disabled children={name} />}
   />
 
   const spec = pathSpecs[entity]

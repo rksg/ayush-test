@@ -10,17 +10,6 @@ describe('Tooltip', () => {
     expect(content).toBeVisible()
   })
 
-  it('should render disabled state', async () => {
-    const { container } = render(<Tooltip
-      disabled
-      title={'This is a tooltip'}
-      children='Some text'
-    />)
-    // eslint-disable-next-line testing-library/no-container
-    const element = container.childNodes.item(0) as HTMLElement
-    expect(element.className).toContain('Disabled')
-  })
-
   it('renders Tooltip.Question', async () => {
     render(<Tooltip.Question title='question tooltip' iconStyle={{ width: '16px' }}/>)
     const icon = await screen.findByTestId('QuestionMarkCircleOutlined')

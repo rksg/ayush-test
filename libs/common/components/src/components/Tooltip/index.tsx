@@ -4,23 +4,19 @@ import { Tooltip as AntTooltip } from 'antd'
 
 import { InformationOutlined, InformationSolid, QuestionMarkCircleOutlined } from '@acx-ui/icons'
 
-import { TooltipGlobalStyle, Disabled } from './styledComponents'
+import * as UI from './styledComponents'
 
-import type { TooltipProps as AntTooltipProps } from 'antd'
+import type { TooltipProps } from 'antd'
 
 Tooltip.defaultProps = {
   ...AntTooltip.defaultProps,
   mouseEnterDelay: 0.5
 }
 
-type TooltipProps = AntTooltipProps & { disabled?: boolean }
-
-function Tooltip ({ disabled, ...props }: TooltipProps) {
-  let children = props.children
-  if (disabled) children = <Disabled children={children} />
+function Tooltip (props: TooltipProps) {
   return <>
-    <TooltipGlobalStyle />
-    <AntTooltip {...props} children={children} />
+    <UI.TooltipGlobalStyle />
+    <AntTooltip {...props} />
   </>
 }
 
