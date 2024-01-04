@@ -104,18 +104,19 @@ export function ExternalAntennaForm (props:{
     let isEnableSingleToggle = false
 
     if (extAnt !== undefined) {
-      if (extAnt.coupled !== undefined) {
+      const { coupled, enable24G, enable50G } = extAnt
+      if (coupled !== undefined) {
         // T750SE, one enable toggle for 2.4G and 5G setting
-        if (extAnt.coupled) {
+        if (coupled) {
           isShowSingleToggle = true
-          isEnableSingleToggle = !!(extAnt.enable24G && extAnt.enable50G)
+          isEnableSingleToggle = !!(enable24G && enable50G)
         }
-      } else if (extAnt.enable24G === undefined || extAnt.enable50G === undefined) {
+      } else if (enable24G === undefined || enable50G === undefined) {
         // T300E, one enable toggle for 5G setting
         isShowSingleToggle = true
-        if (extAnt.enable24G !== undefined) {
+        if (enable24G !== undefined) {
           isEnableSingleToggle = !!extAnt.enable24G
-        } else if (extAnt.enable50G !== undefined) {
+        } else if (enable50G !== undefined) {
           isEnableSingleToggle = !!extAnt.enable50G
         }
       } else {
