@@ -594,6 +594,7 @@ export function RadioSettings () {
               <>
                 {$t({ defaultMessage: 'Tri-band radio settings' })}
                 <Switch
+                  data-testid={'tri-band-switch'}
                   disabled={hasTriBandAps}
                   checked={isTriBandRadio}
                   defaultChecked={isTriBandRadio}

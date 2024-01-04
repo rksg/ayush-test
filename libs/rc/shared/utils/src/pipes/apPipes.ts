@@ -165,8 +165,7 @@ export const AFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy?: string, r
 }
 
 /* eslint-disable max-len */
-export const ChannelButtonTextRender = (channels: number[], isChecked: boolean, afcProps?: AFCProps): string => {
-  const { $t } = useIntl()
+export const ChannelButtonTextRender = ({ $t }: IntlShape, channels: number[], isChecked: boolean, afcProps?: AFCProps): string => {
   let message = isChecked
     ? $t({ defaultMessage: 'Disable this channel' })
     : $t({ defaultMessage: 'Enable this channel' })
