@@ -570,13 +570,52 @@ describe('getRootCauseAndRecommendations', () => {
       expect(recommendations.recommendationsText).toEqual(
         airtimeTxRecommendations.recommendationsText)
     })
-    it('should return correct varied data', () => {
+    it('should return correct varied data 1', () => {
       const checks = [
         { isHighDensityWifiDevices: true },
         { isAclbRaised: false },
         { isHighSsidCountPerRadio: false },
         { isHighPacketErrorCount: false },
         { isLargeMgmtFrameCount: true },
+        { isHighLegacyWifiDevicesCount: false },
+        { isHighMcbcTraffic: false }
+      ] as unknown as AirtimeArray
+      const params = {
+        ssidCountPerRadioSlice: 0
+      } as AirtimeParams
+      const incident = fakeIncident({
+        ...airtimeTxIncident,
+        metadata: {
+          dominant: {},
+          rootCauseChecks: {
+            checks: [
+              { isHighDensityWifiDevices: true },
+              { isAclbRaised: false },
+              { isHighSsidCountPerRadio: false },
+              { isHighPacketErrorCount: false },
+              { isLargeMgmtFrameCount: true },
+              { isHighLegacyWifiDevicesCount: false },
+              { isHighMcbcTraffic: false }
+            ],
+            params
+          }
+        }
+      })
+      const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
+      const airtimeTxRCA = getAirtimeTxRootCauses(checks as (AirtimeTxChecks)[])
+      const airtimeTxRecommendations = getAirtimeTxRecommendations(
+        checks as (AirtimeTxChecks)[], params)
+      expect(rootCauses.rootCauseText).toEqual(airtimeTxRCA.rootCauseText)
+      expect(recommendations.recommendationsText).toEqual(
+        airtimeTxRecommendations.recommendationsText)
+    })
+    it('should return correct varied data 2', () => {
+      const checks = [
+        { isHighDensityWifiDevices: false },
+        { isAclbRaised: false },
+        { isHighSsidCountPerRadio: false },
+        { isHighPacketErrorCount: true },
+        { isLargeMgmtFrameCount: false },
         { isHighLegacyWifiDevicesCount: false },
         { isHighMcbcTraffic: false }
       ] as unknown as AirtimeArray
