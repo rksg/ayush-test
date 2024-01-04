@@ -787,7 +787,7 @@ export function ManageCustomer () {
           {
             Object.entries(MspEcTierEnum).map(([label, value]) => (
               <Option
-                key={label}
+                key={value}
                 value={value}>{intl.$t({ defaultMessage: '{tier}' }, { tier: label })}
               </Option>
             ))
