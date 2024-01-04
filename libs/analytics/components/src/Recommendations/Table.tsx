@@ -274,7 +274,7 @@ export function RecommendationTable (
         const appliedStates = ['applyscheduled', 'applyscheduleinprogress', 'applied', 'revertscheduled', 'revertscheduleinprogress', 'revertfailed', 'applywarning']
         const disabled = isMuted || (appliedStates.includes(statusEnum) ? true : false)
         const isOptimized = value.preferences? value.preferences.fullOptimization : true
-        const tooltipText = disabled
+        const tooltipText = disabled && !isMuted
           ? $t({ defaultMessage: `
             Optimization option cannot be changed while the recommendation is in Applied status.
             Please revert the recommendation back to the New status before changing
