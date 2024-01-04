@@ -10,7 +10,7 @@ export const DropdownContainer = styled(Dropdown.OverlayContainer)`
 `
 
 export const ExtraContainer = styled.div`
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid var(--acx-neutrals-30);
   padding-bottom: 10px;
 `
 
