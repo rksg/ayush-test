@@ -377,10 +377,13 @@ export function BasePersonaTable (props: PersonaTableProps) {
             }),
           onOk: () => {
             const ids = selectedItems.map(({ id }) => id)
-            // const names = selectedItems.map(({ name }) => name).join(', ')
 
-            deletePersonas({ params: { groupId: personaGroupId }, payload: ids })
-              .unwrap()
+            if (ids.length === 0) return
+
+            deletePersonas({
+              params: { groupId: personaGroupId ?? selectedItems[0].groupId },
+              payload: ids
+            }).unwrap()
               .then(() => {
                 clearSelection()
               })
