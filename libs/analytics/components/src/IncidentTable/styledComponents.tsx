@@ -85,28 +85,28 @@ export const mutedStyles = css`
   --acx-table-muted-row-font-color: var(--acx-neutrals-40);
   --acx-table-muted-row-background-color: var(--acx-neutrals-20);
 
-  .table-row-muted {
+  .table-row-disabled {
     color: var(--acx-table-muted-row-font-color);
     background-color: var(--acx-table-muted-row-background-color);
   }
 
-  && tbody > tr.table-row-muted:hover > td {
+  && tbody > tr.table-row-disabled:hover > td {
     background: var(--acx-table-muted-row-background-color);
   }
 
-  .ant-table-row-selected.table-row-muted {
+  .ant-table-row-selected.table-row-disabled {
     background-color: var(--acx-table-muted-row-background-color);
   }
 
-  .table-row-muted .ant-table-cell {
+  .table-row-disabled .ant-table-cell {
     background-color: var(--acx-table-muted-row-background-color);
   }
 
-  .ant-table-row.table-row-muted:hover {
+  .ant-table-row.table-row-disabled:hover {
     background-color: var(--acx-table-muted-row-background-color);
   }
 
-  .table-row-muted .ant-table-cell-row-hover {
+  .table-row-disabled .ant-table-cell-row-hover {
     background-color: var(--acx-table-muted-row-background-color);
   }
 
