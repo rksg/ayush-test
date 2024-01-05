@@ -123,7 +123,9 @@ export function Venues () {
           }
           return newNetworkVenue
         })
-      newSelectedNetworkVenues = _.uniq([...newSelectedNetworkVenues, ...newActivatedNetworkVenues])
+
+      // eslint-disable-next-line max-len
+      newSelectedNetworkVenues = _.uniqBy([...newSelectedNetworkVenues, ...newActivatedNetworkVenues], 'venueId')
     } else {
       const handleVenuesIds = rows.map(row => row.id)
       _.remove(newSelectedNetworkVenues, v => handleVenuesIds.includes(v.venueId as string))
