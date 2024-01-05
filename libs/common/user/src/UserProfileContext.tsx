@@ -31,15 +31,13 @@ export const useUserProfileContext = () => useContext(UserProfileContext)
 
 export function UserProfileProvider (props: React.PropsWithChildren) {
   const locale = useLocaleContext()
-
   const tenantId = useTenantId()
   const { data: profile } = useGetUserProfileQuery({ params: { tenantId } }, {
     // 401 will show error on UI, so locale needs to be loaded first
     skip: !Boolean(locale.messages)
   })
-  const { data: allowedOperations } = useAllowedOperationsQuery(tenantId!, {
-    skip: !Boolean(profile)
-  })
+  const { data: allowedOperations } = useAllowedOperationsQuery(tenantId!,
+    { skip: !Boolean(profile) })
   const { data: beta } = useGetBetaStatusQuery({ params: { tenantId } })
   const betaEnabled = (beta?.enabled === 'true')? true : false
   const { data: accTierResponse } = useGetAccountTierQuery({ params: { tenantId } })
