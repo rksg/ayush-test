@@ -214,7 +214,7 @@ describe('Conversation component', () => {
       listCallback={jest.fn()}
       style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}
     />)
-    expect(screen.getAllByText('Ruckus AI').length).toBe(2)
+    expect(screen.getAllByText('RUCKUS AI').length).toBe(2)
   })
   it('should render Conversation component with link', () => {
     render(<BrowserRouter><Conversation content={contentLink}
