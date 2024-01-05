@@ -6,16 +6,22 @@ import { FormattedMessage }                 from 'react-intl'
 import { IncidentCode }               from './constants'
 import { Incident, IncidentMetadata } from './types/incidents'
 
-import type { Props as FormattedMessageProps } from 'react-intl/lib/src/components/message'
+import type { FormatXMLElementFn, PrimitiveType } from 'intl-messageformat'
+
+export type FormatMessageValue = React.ReactNode
+  | PrimitiveType
+  | FormatXMLElementFn<React.ReactNode, React.ReactNode>
+
+type FormatMessageValues = Record<string, FormatMessageValue>
 
 type RootCauseChecks = Exclude<IncidentMetadata['rootCauseChecks'], undefined>
 type RootCausesResult = {
   rootCauseText: MessageDescriptor
-  rootCauseValues?: FormattedMessageProps['values']
+  rootCauseValues?: FormatMessageValues
 }
 type RecommendationsResult = {
   recommendationsText: MessageDescriptor
-  recommendationsValues?: FormattedMessageProps['values']
+  recommendationsValues?: FormatMessageValues
 }
 type RootCausesFunction = (
   checks: RootCauseChecks['checks'],
@@ -24,7 +30,7 @@ type RootCausesFunction = (
 type RecommendationsFunction = (
   checks: RootCauseChecks['checks'],
   params: RootCauseChecks['params'],
-  extraValues?: Record<string,Function>
+  extraValues?: FormatMessageValues
 ) => RecommendationsResult
 
 interface RootCauseAndRecommendation {
@@ -134,7 +140,7 @@ export type AirtimeParams = {
   ssidCountPerRadioSlice: number
 }
 
-export const htmlValues: FormattedMessageProps['values'] = {
+export const htmlValues: FormatMessageValues = {
   p: (children) => <p>{children}</p>,
   ol: (children) => <ol>{children}</ol>,
   li: (children) => <li>{children}</li>,
@@ -1339,7 +1345,7 @@ const TBD = defineMessage({ defaultMessage: '<p>TBD</p>' })
 const calculating = defineMessage({ defaultMessage: '<p>Calculating...</p>' })
 
 export function getRootCauseAndRecommendations (
-  { code, metadata }: Incident, extraValues?: Record<string,Function>
+  { code, metadata }: Incident, extraValues?: FormatMessageValues
 ): { rootCauses: RootCausesResult, recommendations: RecommendationsResult }[] {
   const failureType = codeToFailureTypeMap[code]
   if (!metadata.rootCauseChecks) return [{ rootCauses: { rootCauseText: calculating }, recommendations: { recommendationsText: calculating } }]

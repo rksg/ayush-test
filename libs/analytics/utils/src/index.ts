@@ -17,6 +17,7 @@ export {
   codeToFailureTypeMap,
   htmlValues
 } from './rootCauseRecommendation'
+export type { FormatMessageValue } from './rootCauseRecommendation'
 export {
   clientEventDescription,
   mapDisconnectCode,

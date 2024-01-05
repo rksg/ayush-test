@@ -1,12 +1,12 @@
-import { Space }            from 'antd'
-import { FormattedMessage } from 'react-intl'
-import { useIntl }          from 'react-intl'
+import { Space }                     from 'antd'
+import { useIntl, FormattedMessage } from 'react-intl'
 
 import {
   productNames,
   getRootCauseAndRecommendations,
   Incident,
-  htmlValues
+  htmlValues,
+  FormatMessageValue
 } from '@acx-ui/analytics/utils'
 import {
   Card,
@@ -16,9 +16,9 @@ import {
 
 import * as UI from './styledComponents'
 
-export const Insights = (
-  { incident, extraValues = {} }: { incident: Incident, extraValues?: Record<string,Function>
-}) => {
+type InsightsProps = { incident: Incident, extraValues?: Record<string, FormatMessageValue> }
+
+export const Insights: React.FC<InsightsProps> = ({ incident, extraValues = {} }) => {
   const { $t } = useIntl()
   const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident, extraValues)
   const { rootCauseText, rootCauseValues } = rootCauses
