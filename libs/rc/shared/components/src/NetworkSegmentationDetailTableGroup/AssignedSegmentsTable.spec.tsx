@@ -88,7 +88,7 @@ describe('NetworkSegmentationDetailTableGroup - AssignedSegmentsTable', () => {
     const icon = await screen.findByTestId('QuestionMarkCircleOutlined')
     expect(icon).toBeVisible()
 
-    userEvent.hover(icon)
+    await userEvent.hover(icon)
     await waitFor(() => {
       expect(screen.getByRole('tooltip')).toBeInTheDocument()
     })
