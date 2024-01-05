@@ -38,9 +38,11 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   })
   const { data: allowedOperations } = useAllowedOperationsQuery(tenantId!,
     { skip: !Boolean(profile) })
-  const { data: beta } = useGetBetaStatusQuery({ params: { tenantId } })
+  const { data: beta } = useGetBetaStatusQuery({ params: { tenantId } },
+    {skip: !Boolean(locale.messages)})
   const betaEnabled = (beta?.enabled === 'true')? true : false
-  const { data: accTierResponse } = useGetAccountTierQuery({ params: { tenantId } })
+  const { data: accTierResponse } = useGetAccountTierQuery({ params: { tenantId } },
+    {skip: !Boolean(locale.messages)})
   const accountTier = accTierResponse?.acx_account_tier
   if (allowedOperations && accountTier) setUserProfile({ profile: profile!,
     allowedOperations, accountTier, betaEnabled })
