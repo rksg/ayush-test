@@ -1,6 +1,4 @@
 
-import _ from 'lodash'
-
 import {
   ConfigTemplateUrlsInfo,
   ConfigTemplate
@@ -60,6 +58,11 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       query: commonQueryFn(ConfigTemplateUrlsInfo.getNetworkTemplate),
       providesTags: [{ type: 'NetworkTemplate', id: 'DETAIL' }]
     }),
+    deleteNetworkTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(ConfigTemplateUrlsInfo.deleteNetworkTemplate),
+      // eslint-disable-next-line max-len
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'NetworkTemplate', id: 'LIST' }]
+    }),
     getNetworkTemplateList: build.query<TableResult<Network>, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.getNetworkTemplateList),
       providesTags: [{ type: 'NetworkTemplate', id: 'LIST' }],
@@ -86,6 +89,10 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
     getAAAPolicyTemplate: build.query<AAAPolicyType, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.getAAAPolicyTemplate),
       providesTags: [{ type: 'AAATemplate', id: 'DETAIL' }]
+    }),
+    deleteAAAPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(ConfigTemplateUrlsInfo.deleteAAAPolicyTemplate),
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'AAATemplate', id: 'LIST' }]
     }),
     updateAAAPolicyTemplate: build.mutation<AAAPolicyType, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.updateAAAPolicyTemplate),
@@ -116,18 +123,22 @@ export const {
   useAddNetworkTemplateMutation,
   useUpdateNetworkTemplateMutation,
   useGetNetworkTemplateQuery,
+  useDeleteNetworkTemplateMutation,
   useLazyGetNetworkTemplateListQuery,
   useAddAAAPolicyTemplateMutation,
   useGetAAAPolicyTemplateQuery,
+  useDeleteAAAPolicyTemplateMutation,
   useLazyGetAAAPolicyTemplateQuery,
   useUpdateAAAPolicyTemplateMutation,
   useGetAAAPolicyTemplateListQuery
 } = configTemplateApi
 
+const requestMethodWithPayload = ['post', 'put', 'PATCH']
+
 function commonQueryFn (apiInfo: ApiInfo, withPayload?: boolean) {
   return ({ params, payload }: RequestPayload) => {
     const req = createHttpRequest(apiInfo, params)
-    const needPayload = _.isUndefined(withPayload) ? apiInfo.method !== 'get' : withPayload
+    const needPayload = withPayload ?? requestMethodWithPayload.includes(apiInfo.method)
     return {
       ...req,
       ...(needPayload ? { body: payload } : {})

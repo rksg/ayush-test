@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { ConfigTemplateUrlsInfo, MspUrlsInfo }         from '@acx-ui/msp/utils'
-import { CONFIG_TEMPLATE_PATH_PREFIX }                 from '@acx-ui/rc/utils'
-import { Provider }                                    from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
+import { ConfigTemplateUrlsInfo, MspUrlsInfo }                                    from '@acx-ui/msp/utils'
+import { CONFIG_TEMPLATE_PATH_PREFIX }                                            from '@acx-ui/rc/utils'
+import { Provider }                                                               from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import { ConfigTemplateTabKey }                            from '..'
 import { mockedConfigTemplateList, mockedMSPCustomerList } from '../__tests__/fixtures'
@@ -113,6 +113,43 @@ describe('ConfigTemplateList component', () => {
 
     await userEvent.click(within(applyTemplateDrawer).getByRole('button', { name: /Cancel/ }))
 
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
+  })
+
+  it('should delete selected template', async () => {
+    const deleteFn = jest.fn()
+
+    mockServer.use(
+      rest.delete(
+        ConfigTemplateUrlsInfo.deleteNetworkTemplate.url,
+        (req, res, ctx) => {
+          deleteFn(req.body)
+          return res(ctx.json({ requestId: '12345' }))
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <ConfigTemplateList />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+    const targetTemplate = mockedConfigTemplateList.data.find(t => t.templateType === 'NETWORK')!
+    const row = await screen.findByRole('row', { name: new RegExp(targetTemplate.name) })
+    await userEvent.click(within(row).getByRole('radio'))
+
+    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+
+    expect(await screen.findByText('Delete "' + targetTemplate.name + '"?')).toBeVisible()
+    const deleteButton = await screen.findByRole('button', { name: /Delete Config Template/i })
+    await userEvent.click(deleteButton)
+
+    await waitFor(() => expect(deleteFn).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
   })
 })

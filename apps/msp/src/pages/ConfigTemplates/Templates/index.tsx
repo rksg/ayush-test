@@ -8,12 +8,17 @@ import { useIntl }   from 'react-intl'
 import {
   Table,
   TableProps,
-  Loader
+  Loader,
+  showActionModal
 } from '@acx-ui/components'
 import { DateFormatEnum, userDateTimeFormat }                                            from '@acx-ui/formatter'
 import { ConfigTemplateLink, PolicyConfigTemplateLink, renderConfigTemplateDetailsLink } from '@acx-ui/msp/components'
-import { useGetConfigTemplateListQuery }                                                 from '@acx-ui/msp/services'
-import { ConfigTemplate }                                                                from '@acx-ui/msp/utils'
+import {
+  useDeleteAAAPolicyTemplateMutation,
+  useDeleteNetworkTemplateMutation,
+  useGetConfigTemplateListQuery
+} from '@acx-ui/msp/services'
+import { ConfigTemplate, ConfigTemplateType } from '@acx-ui/msp/utils'
 import {
   PolicyOperation,
   PolicyType,
@@ -31,6 +36,7 @@ export function ConfigTemplateList () {
   const { $t } = useIntl()
   const [ applyTemplateDrawerVisible, setApplyTemplateDrawerVisible ] = useState(false)
   const [ selectedTemplates, setSelectedTemplates ] = useState<ConfigTemplate[]>([])
+  const deleteMutationMap = useDeleteMutation()
 
   const tableQuery = useTableQuery({
     useQuery: useGetConfigTemplateListQuery,
@@ -46,6 +52,26 @@ export function ConfigTemplateList () {
       onClick: (rows: ConfigTemplate[]) => {
         setSelectedTemplates(rows)
         setApplyTemplateDrawerVisible(true)
+      }
+    },
+    {
+      label: $t({ defaultMessage: 'Delete' }),
+      onClick: (selectedRows, clearSelection) => {
+        const selectedRow = selectedRows[0]
+
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: $t({ defaultMessage: 'Config Template' }),
+            entityValue: selectedRow.name,
+            numOfEntities: selectedRows.length
+          },
+          onOk: async () => {
+            const deleteFn = deleteMutationMap[selectedRow.templateType]
+            deleteFn({ params: { templateId: selectedRow.id! } }).then(clearSelection)
+          }
+        })
       }
     }
   ]
@@ -149,6 +175,16 @@ function useColumns () {
   ]
 
   return columns
+}
+
+function useDeleteMutation () {
+  const [ deleteNetworkTemplate ] = useDeleteNetworkTemplateMutation()
+  const [ deleteAaaTemplate ] = useDeleteAAAPolicyTemplateMutation()
+
+  return {
+    [ConfigTemplateType.NETWORK]: deleteNetworkTemplate,
+    [ConfigTemplateType.RADIUS]: deleteAaaTemplate
+  }
 }
 
 function getAddTemplateMenuProps (): Omit<MenuProps, 'placement'> {
