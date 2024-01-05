@@ -75,7 +75,7 @@ describe('Brand360', () => {
     mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', wrapData(currTimeseries))
     render(<Provider><Brand360 /></Provider>)
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    expect(await screen.findAllByDisplayValue('Last 8 Hours')).toHaveLength(2)
+    expect(await screen.findAllByDisplayValue('Last 24 Hours')).toHaveLength(2)
     const tiles = await screen.findAllByTestId('brand360Tile')
     expect(tiles).toHaveLength(3)
     tiles.forEach(tile => expect(tile).toBeVisible())
