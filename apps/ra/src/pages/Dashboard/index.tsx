@@ -120,7 +120,9 @@ const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
         <ReportTile pathFilters={pathFilters} />
       </div>
       { enableAppInsights
-        ? [<div key='1' style={{ gridArea: 'a2-start/ a2-start/ a3-end / a3-end' }}><AppInsights /></div>]
+        ? [<div key='1' style={{ gridArea: 'a2-start/ a2-start/ a3-end / a3-end' }}>
+          <AppInsights />
+        </div>]
         : [
           <div key='1' style={{ gridArea: 'a2' }}>
             <NetworkHistory hideLegend historicalIcon={false} filters={filters} />
