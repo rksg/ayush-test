@@ -7,23 +7,39 @@ import { useGetTenantSettingsQuery }                         from '@acx-ui/analy
 import type { Settings }                                     from '@acx-ui/analytics/utils'
 import { PageHeader, RangePicker, GridRow, GridCol, Loader } from '@acx-ui/components'
 import {
+  useMspCustomerListDropdownQuery
+} from '@acx-ui/msp/services'
+import {
   DateFilter,
   DateRange,
   getDateRangeFilter,
   getDatePickerValues
 } from '@acx-ui/utils'
+import { getJwtTokenPayload } from '@acx-ui/utils'
 
-import { ChartKey, computePastRange } from './helpers'
+import { ChartKey, computePastRange, transformLookupAndMappingData, transformVenuesData } from './helpers'
 import {
   Response,
+  useFetchBrandTimeseriesQuery,
   useFetchBrandPropertiesQuery,
-  useFetchBrandTimeseriesQuery
+  BrandVenuesSLA
 } from './services'
 import { SlaSliders }   from './SlaSliders'
 import { SlaTile }      from './SlaTile'
 import { BrandTable }   from './Table'
 import { useSliceType } from './useSliceType'
 
+const rcApiPayload = {
+  searchString: '',
+  filters: { tenantType: ['MSP_INTEGRATOR', 'MSP_REC'] },
+  fields: ['id', 'name', 'tenantType', 'status'],
+  page: 1,
+  pageSize: 10000,
+  defaultPageSize: 10000,
+  total: 0,
+  sortField: 'name',
+  sortOrder: 'ASC'
+}
 
 export function Brand360 () {
   const settingsQuery = useGetTenantSettingsQuery()
@@ -36,12 +52,21 @@ export function Brand360 () {
   const { data } = settingsQuery
   useEffect(() => { data && setSettings(data) }, [data])
   const { startDate, endDate, range } = getDatePickerValues(dateFilterState)
-  const tableResults = useFetchBrandPropertiesQuery({})
+
   const chartPayload = {
     start: startDate,
     end: endDate,
     ssidRegex: settings['brand-ssid-compliance-matcher']!
   }
+  const mspPropertiesData = useMspCustomerListDropdownQuery(
+    { params: { tenantId: getJwtTokenPayload().tenantId },payload: rcApiPayload } )
+  const lookupAndMappingData = mspPropertiesData?.data
+    ? transformLookupAndMappingData(mspPropertiesData.data)
+    : {}
+  const venuesData = useFetchBrandPropertiesQuery(chartPayload)
+  const tableResults = venuesData.data
+    ? transformVenuesData(venuesData as { data : BrandVenuesSLA[] }, lookupAndMappingData)
+    : []
   const {
     data: chartData,
     ...chartResults
@@ -60,7 +85,7 @@ export function Brand360 () {
     ...currResults
   } = useFetchBrandTimeseriesQuery({ ...chartPayload, granularity: 'all' })
   const chartMap: ChartKey[] = ['incident', 'experience', 'compliance']
-  return <Loader states={[settingsQuery, tableResults]}>
+  return <Loader states={[settingsQuery, mspPropertiesData, venuesData]}>
     <PageHeader
       title={$t({ defaultMessage: 'Brand 360' })}
       extra={[
@@ -84,7 +109,7 @@ export function Brand360 () {
           <SlaTile
             chartKey={val}
             sliceType={sliceType}
-            tableData={tableResults.data as Response[]}
+            tableData={tableResults as Response[]}
             chartData={chartData}
             prevData={prevData}
             currData={currData}
@@ -99,7 +124,7 @@ export function Brand360 () {
         <BrandTable
           sliceType={sliceType}
           slaThreshold={settings}
-          data={tableResults.data as Response[]}
+          data={tableResults as Response[]}
         />
       </GridCol>
     </GridRow>

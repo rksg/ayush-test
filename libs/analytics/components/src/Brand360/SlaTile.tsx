@@ -127,11 +127,20 @@ const TopElementsSwitcher = ({ data, chartKey }:
   const indexData = data.map((val, ind) => [...val, ind + 1])
   const slice = indexData.slice(start, end)
   const { formatter } = slaKpiConfig[chartKey]
-  return <UI.ListWrapper onClick={() => setIsAsc(asc => !asc)}>
+  const enableSort = data.length > 3
+  return <UI.ListWrapper
+    $showCursor={enableSort}
+    onClick={
+      () => {
+        if (enableSort) {
+          setIsAsc(asc => !asc)
+        }
+      }
+    }>
     <div>
       {slice.map(([key, val, ind]) => <li key={key}>{ind}. {key} ({formatter(val)})</li>)}
     </div>
-    <SwitcherIcon order={isAsc} />
+    {enableSort && <SwitcherIcon order={isAsc} /> }
   </UI.ListWrapper>
 }
 

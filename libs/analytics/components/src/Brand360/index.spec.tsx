@@ -6,8 +6,8 @@ import type { Settings }                                                        
 import { dataApiURL, Provider, rbacApiURL }                                                   from '@acx-ui/store'
 import { render, screen, mockServer, fireEvent, mockGraphqlQuery, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { mockBrandTimeseries, prevTimeseries, currTimeseries } from './__tests__/fixtures'
-import { FranchisorTimeseries }                                from './services'
+import { mockBrandTimeseries, prevTimeseries, currTimeseries, propertiesMappingData, franchisorZones } from './__tests__/fixtures'
+import { FranchisorTimeseries }                                                                        from './services'
 
 import { Brand360 } from '.'
 
@@ -18,7 +18,10 @@ jest.mock('./Table', () => ({
       {sliceType} {JSON.stringify(slaThreshold)}
     </div>
 }))
-
+const services = require('@acx-ui/msp/services')
+jest.mock('@acx-ui/msp/services', () => ({
+  ...jest.requireActual('@acx-ui/msp/services')
+}))
 const wrapData = (value: unknown) => ({
   data: {
     franchisorTimeseries: value as FranchisorTimeseries
@@ -56,6 +59,12 @@ describe('Brand360', () => {
         '[{"key": "sla-p1-incidents-count", "value": "1"},{"key": "sla-guest-experience", "value": "2"},{"key": "sla-brand-ssid-compliance", "value": "3"}]'
       )))
     )
+    services.useMspCustomerListDropdownQuery = jest.fn().mockImplementation(() => {
+      return { data: propertiesMappingData }
+    })
+    mockGraphqlQuery(dataApiURL, 'FranchisorZones', {
+      data: { franchisorZones: franchisorZones.data }
+    })
     jest.useFakeTimers()
     jest.setSystemTime(new Date(Date.parse('2023-12-12T00:00:00+00:00')))
   })
