@@ -51,7 +51,7 @@ export function QosMapSetForm () {
 
     if (data) {
       const qosMapSetData = data.wlan?.advancedCustomization?.qosMapSetOptions
-      if (!qosMapSetData?.hasOwnProperty('rules')) {
+      if (!qosMapSetData?.hasOwnProperty('rules') || qosMapSetData.rules?.length === 0) {
         setQosMapSetOptionTable(initialQosMapSetData)
       } else {
         let ruleData = qosMapSetData.rules
