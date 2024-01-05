@@ -21,7 +21,8 @@ import {
   venueNetworkList,
   networkDeepList,
   venueNetworkApGroup,
-  venueData
+  venueData,
+  venueNetworkApCompatibilitiesData
 } from '../../__tests__/fixtures'
 
 import { VenueNetworksTab } from './index'
@@ -80,6 +81,10 @@ describe('VenueNetworksTab', () => {
       rest.get(
         CommonUrlsInfo.getVenueDetailsHeader.url,
         (req, res, ctx) => res(ctx.json({ venue: venueData }))
+      ),
+      rest.post(
+        WifiUrlsInfo.getApCompatibilitiesVenue.url,
+        (req, res, ctx) => res(ctx.json(venueNetworkApCompatibilitiesData))
       )
     )
   })
@@ -188,5 +193,18 @@ describe('VenueNetworksTab', () => {
     await userEvent.click(await within(dialog).findByRole('button', { name: 'Cancel' }))
     await waitFor(() => expect(dialog).not.toBeVisible())
     await waitFor(() => expect(dialog2).not.toBeVisible())
+  })
+
+  it('should render ap compatibilies correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(<Provider><VenueNetworksTab /></Provider>, {
+      route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
+    })
+
+    const row = await screen.findByRole('row', { name: /test_1/i })
+
+    const icon = await within(row).findByTestId('InformationSolid')
+    expect(icon).toBeVisible()
   })
 })

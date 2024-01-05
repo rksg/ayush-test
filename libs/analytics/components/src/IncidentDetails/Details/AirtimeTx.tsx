@@ -46,6 +46,12 @@ export const AirtimeTx = (incident: Incident) => {
       query: NetworkImpactQueryTypes.Distribution,
       type: 'airtimeCast',
       dimension: 'summary'
+    },
+    {
+      chart: NetworkImpactChartTypes.AirtimeClientsByAP,
+      query: NetworkImpactQueryTypes.Distribution,
+      type: 'airtimeClientsByAP',
+      dimension: 'summary'
     }
   ]
 

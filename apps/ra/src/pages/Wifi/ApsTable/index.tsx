@@ -113,6 +113,7 @@ export function APList ({
 
   return <Loader states={[results]}>
     <Table<AP>
+      rowKey='ipAddress'
       columns={apTablecolumnHeaders}
       dataSource={(results.data)?.aps as AP[]}
       pagination={pagination}

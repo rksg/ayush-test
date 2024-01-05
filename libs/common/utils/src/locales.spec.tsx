@@ -6,6 +6,7 @@ import {
   fireEvent,
   mockServer,
   render,
+  renderHook,
   screen,
   waitFor
 } from '@acx-ui/test-utils'
@@ -16,7 +17,9 @@ import {
   LocaleContext,
   useLocaleContext,
   localeLoaders,
-  localePath
+  localePath,
+  LangKey,
+  useSupportedLangs
 } from './locales'
 
 const messages = {
@@ -38,14 +41,15 @@ const messages = {
 }
 
 describe('loadLocale', () => {
-  it('loads locale translation json of correct language', async () => {
+  beforeEach(() => {
     mockServer.use(
       rest.get('/locales/compiled/:locale.json', (req, res, ctx) => {
         const { locale } = req.params as { locale: keyof typeof messages }
         return res(ctx.json({ ...messages[locale], locale }))
       })
     )
-
+  })
+  it('loads locale translation json of correct language', async () => {
     const en = await loadLocale('en-US')
     expect(en).toEqual(expect.objectContaining({
       ..._.omit(messages['en-US'], 'stepsForm'),
@@ -80,108 +84,26 @@ describe('loadLocale', () => {
   it('loads from cache when available', async () => {
     mockServer.close()
     mockServer.listen({ onUnhandledRequest: 'error' })
-    mockServer.use(
-      rest.get('/locales/compiled/:locale.json', (req, res, ctx) => {
-        const { locale } = req.params as { locale: keyof typeof messages }
-        return res.once(ctx.json({ ...messages[locale], locale }))
-      })
-    )
 
     await loadLocale('en-US')
     // should throw if cache not being use
     await loadLocale('en-US')
   })
 
-  it('locale ja-JP provided is in allowed list of languages', async () => {
-    mockServer.use(
-      rest.get('/locales/compiled/:locale.json', (req, res, ctx) => {
-        const { locale } = req.params as { locale: keyof typeof messages }
-        return res.once(ctx.json({ ...messages[locale], locale }))
-      })
-    )
-    const locale = 'ja-JP'
-    const spy = jest.spyOn(localeLoaders, locale)
-    await loadLocale(locale, true)
-    expect(spy).toBeCalled()
-  })
-
   it('locale provided is NOT in allowed list of languages', async () => {
     const locale = 'ru-RU'
-    mockServer.use(
-      rest.get('/locales/compiled/:locale.json', (req, res, ctx) => {
-        const { locale } = req.params as { locale: keyof typeof messages }
-        return res(ctx.json({ ...messages[locale], locale }))
-      })
-    )
     const spy = jest.spyOn(localeLoaders, 'en-US')
-    await loadLocale(locale as keyof typeof localeLoaders, true)
+    await loadLocale(locale as LangKey, true)
     expect(spy).toBeCalled()
   })
 
-  it('locale es-ES provided is in allowed list of languages', async () => {
-    mockServer.use(
-      rest.get('/locales/compiled/:locale.json', (req, res, ctx) => {
-        const { locale } = req.params as { locale: keyof typeof messages }
-        return res.once(ctx.json({ ...messages[locale], locale }))
-      })
-    )
-    const locale = 'es-ES'
-    const spy = jest.spyOn(localeLoaders, locale)
-    await loadLocale(locale, true)
-    expect(spy).toBeCalled()
-  })
-
-  it('locale fr-FR provided is in allowed list of languages', async () => {
-    mockServer.use(
-      rest.get('/locales/compiled/:locale.json', (req, res, ctx) => {
-        const { locale } = req.params as { locale: keyof typeof messages }
-        return res.once(ctx.json({ ...messages[locale], locale }))
-      })
-    )
-    const locale = 'fr-FR'
-    const spy = jest.spyOn(localeLoaders, locale)
-    await loadLocale(locale, true)
-    expect(spy).toBeCalled()
-  })
-
-  it('locale ko-KR provided is in allowed list of languages', async () => {
-    mockServer.use(
-      rest.get('/locales/compiled/:locale.json', (req, res, ctx) => {
-        const { locale } = req.params as { locale: keyof typeof messages }
-        return res.once(ctx.json({ ...messages[locale], locale }))
-      })
-    )
-    const locale = 'ko-KR'
-    const spy = jest.spyOn(localeLoaders, locale)
-    await loadLocale(locale, true)
-    expect(spy).toBeCalled()
-  })
-
-  it('locale pt-BR provided is in allowed list of languages', async () => {
-    mockServer.use(
-      rest.get('/locales/compiled/:locale.json', (req, res, ctx) => {
-        const { locale } = req.params as { locale: keyof typeof messages }
-        return res.once(ctx.json({ ...messages[locale], locale }))
-      })
-    )
-    const locale = 'pt-BR'
-    const spy = jest.spyOn(localeLoaders, locale)
-    await loadLocale(locale, true)
-    expect(spy).toBeCalled()
-  })
-
-  it('locale zh-CN provided is in allowed list of languages', async () => {
-    mockServer.use(
-      rest.get('/locales/compiled/:locale.json', (req, res, ctx) => {
-        const { locale } = req.params as { locale: keyof typeof messages }
-        return res.once(ctx.json({ ...messages[locale], locale }))
-      })
-    )
-    const locale = 'zh-CN'
-    const spy = jest.spyOn(localeLoaders, locale)
-    await loadLocale(locale, true)
-    expect(spy).toBeCalled()
-  })
+  it.each(Object.keys(localeLoaders) as LangKey[])(
+    'locale %s provided is in allowed list of languages',
+    async (locale) => {
+      const spy = jest.spyOn(localeLoaders, locale)
+      await loadLocale(locale, true)
+      expect(spy).toBeCalled()
+    })
 })
 
 describe('LocaleProvider', () => {
@@ -311,5 +233,22 @@ describe('localePath', () => {
     )
     const result = await localePath('es')
     expect(result).toEqual({})
+  })
+})
+
+describe('useSupportedLangs', () => {
+  it('should return supported laguage list', async () => {
+    const langList = [
+      { label: 'English', value: 'en-US' },
+      { label: '日本語', value: 'ja-JP' },
+      { label: 'français', value: 'fr-FR' },
+      { label: 'português', value: 'pt-BR' },
+      { label: '한국어', value: 'ko-KR' },
+      { label: 'español', value: 'es-ES' },
+      { label: 'Deutsch', value: 'de-DE' },
+      { label: '繁體中文', value: 'zh-TW' }
+    ]
+    const { result } = renderHook(() => useSupportedLangs(true))
+    expect(result.current).toStrictEqual(langList)
   })
 })
