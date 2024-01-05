@@ -8,11 +8,27 @@ export const checkVersionAtLeast10010b = (version: string): boolean => {
   }
 }
 
+export const checkVersionAtLeast10010c = (version: string): boolean => {
+  if (_.isString(version) && version.includes('10010c')) {
+    return true
+  } else {
+    return compareSwitchVersion(version, '10010c') > 0
+  }
+}
+
 export const checkVersionAtLeast09010h = (version: string): boolean => {
   if (_.isString(version) && version.includes('09010h')) {
     return true
   } else {
     return compareSwitchVersion(version, '09010h') > 0
+  }
+}
+
+export const checkVersionAtLeast09010j = (version: string): boolean => {
+  if (_.isString(version) && version.includes('09010j')) {
+    return true
+  } else {
+    return compareSwitchVersion(version, '09010j') > 0
   }
 }
 
