@@ -5,6 +5,7 @@ import { HTML5Backend }                  from 'react-dnd-html5-backend'
 import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
+
 import {
   Loader,
   showActionModal,
@@ -18,11 +19,13 @@ import {
   useUpdateAdminGroupsMutation
 } from '@acx-ui/rc/services'
 import { AdminGroup, sortProp, defaultSort }                    from '@acx-ui/rc/utils'
+import { Link }                                                 from '@acx-ui/react-router-dom'
 import { RolesEnum }                                            from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, roleStringMap } from '@acx-ui/user'
 import { AccountType }                                          from '@acx-ui/utils'
 
-import { AddGroupDrawer } from './AddGroupDrawer'
+import { AddGroupDrawer }    from './AddGroupDrawer'
+import { ShowMembersDrawer } from './ShowMembersDrawer'
 
 interface AdminGroupsTableProps {
   isPrimeAdminUser: boolean;
@@ -48,6 +51,8 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
   const [showDialog, setShowDialog] = useState(false)
   const [editMode, setEditMode] = useState(false)
   const [editData, setEditData] = useState<AdminGroup>({} as AdminGroup)
+  const [membersGroupId, setMemberGroupId] = useState('')
+  const [membersDrawerVisible, setMembersDrawerVisible] = useState(false)
   const { data: userProfileData } = useUserProfileContext()
 
   const { data: adminList, isLoading, isFetching } = useGetAdminGroupsQuery({ params })
@@ -70,25 +75,43 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
       title: $t({ defaultMessage: 'Group Name' }),
       key: 'name',
       dataIndex: 'name',
-      sorter: { compare: sortProp('name', defaultSort) }
+      onCell: (data) => {
+        return {
+          onClick: () => {
+            setMemberGroupId(data.groupId as string)
+            setMembersDrawerVisible(true)
+          }
+        }
+      },
+      render: function (_, row) {
+        return (
+          <Link to=''>{row.name}</Link>
+
+        )
+      }
     },
     {
       title: $t({ defaultMessage: 'Group ID' }),
       key: 'groupId',
-      dataIndex: 'groupId',
-      sorter: { compare: sortProp('groupId', defaultSort) }
+      dataIndex: 'groupId'
     },
     {
       title: $t({ defaultMessage: 'Processing Priority' }),
       key: 'processingPriority',
       dataIndex: 'processingPriority',
+      show: false,
+      defaultSortOrder: 'ascend',
       sorter: { compare: sortProp('processingPriority', defaultSort) }
+    },
+    {
+      title: $t({ defaultMessage: 'Logged Members' }),
+      key: 'loggedInMembers',
+      dataIndex: 'loggedInMembers'
     },
     {
       title: $t({ defaultMessage: 'Role' }),
       key: 'role',
       dataIndex: 'role',
-      sorter: { compare: sortProp('role', defaultSort) },
       render: function (_, row) {
         return row.role ? $t(roleStringMap[row.role]) : ''
       }
@@ -251,6 +274,11 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
         setVisible={setShowDialog}
         isEditMode={editMode}
         editData={editMode ? editData : undefined}
+      />}
+      {membersDrawerVisible && <ShowMembersDrawer
+        visible={membersDrawerVisible}
+        setVisible={setMembersDrawerVisible}
+        membersGroupId={membersGroupId}
       />}
     </Loader>
   )
