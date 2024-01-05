@@ -22,6 +22,15 @@ jest.mock('../../policies/MacRegistrationListForm', () => ({
   </div>
 }))
 
+jest.mock('../utils', () => ({
+  ...jest.requireActual('../utils'),
+  useNetworkVxLanTunnelProfileInfo: jest.fn().mockReturnValue({
+    enableTunnel: false,
+    enableVxLan: false,
+    vxLanTunnels: undefined
+  })
+}))
+
 type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void
 }>
