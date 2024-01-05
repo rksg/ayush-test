@@ -13,7 +13,7 @@ Tooltip.defaultProps = {
   mouseEnterDelay: 0.5
 }
 
-function Tooltip ({ ...props }: TooltipProps) {
+function Tooltip (props: TooltipProps) {
   return <>
     <UI.TooltipGlobalStyle />
     <AntTooltip {...props} />
@@ -21,7 +21,6 @@ function Tooltip ({ ...props }: TooltipProps) {
 }
 
 export { Tooltip, TooltipProps }
-
 
 type PredefinedTooltipProps = Omit<TooltipProps, 'children'> & {
   iconStyle?: CSSProperties,
