@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { venueApi }                                                                  from '@acx-ui/rc/services'
+import { policyApi, venueApi }                                                       from '@acx-ui/rc/services'
 import { ApSnmpUrls }                                                                from '@acx-ui/rc/utils'
 import { Provider, store }                                                           from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
@@ -30,9 +30,17 @@ const params = {
   activeSubTab: 'servers'
 }
 
+const mockedUsedNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
+
 describe('Ap Snmp', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
+    store.dispatch(policyApi.util.resetApiState())
+    mockedUsedNavigate.mockClear()
     mockServer.use(
       rest.get(ApSnmpUrls.getApSnmpPolicyList.url, (req, res, ctx) => {
         return res(ctx.json(resultOfGetApSnmpAgentProfiles))
@@ -103,7 +111,30 @@ describe('Ap Snmp', () => {
     await waitFor(() => screen.findByText('Use AP SNMP'))
     expect(await screen.findByText(/Use AP SNMP/)).toBeVisible()
 
-    fireEvent.click(await screen.findByTestId('ApSnmp-switch'))
+    fireEvent.click(await screen.findByTestId('snmp-switch'))
 
+  })
+
+  it('should handle click the Add Server Profile button', async () => {
+    render(
+      <Provider>
+        <VenueEditContext.Provider value={{
+          editContextData,
+          setEditServerContextData: jest.fn(),
+          editServerContextData,
+          setEditContextData }}>
+          <Form>
+            <ApSnmp />
+          </Form>
+        </VenueEditContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
+      })
+    await waitFor(() => screen.findByText('Use AP SNMP'))
+    expect(await screen.findByText(/Use AP SNMP/)).toBeVisible()
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Add' }))
+
+    await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalled())
   })
 })

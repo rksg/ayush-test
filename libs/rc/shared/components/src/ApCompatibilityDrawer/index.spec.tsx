@@ -76,7 +76,7 @@ describe('ApCompatibilityToolTip > ApFeatureCompatibility > ApCompatibilityDrawe
           WifiUrlsInfo.getApCompatibilitiesNetwork.url,
           (_, res, ctx) => res(ctx.json(mockApCompatibilitiesNetwork))),
         rest.get(
-          WifiUrlsInfo.getApFeatureSets.url,
+          WifiUrlsInfo.getApFeatureSets.url.split('?')[0],
           (_, res, ctx) => res(ctx.json(mockFeatureCompatibilities)))
       )
     })

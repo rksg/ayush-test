@@ -1,7 +1,11 @@
-import _                        from 'lodash'
-import { generatePath, Params } from 'react-router-dom'
+import { QueryReturnValue }                                   from '@reduxjs/toolkit/dist/query/baseQueryTypes'
+import { MaybePromise }                                       from '@reduxjs/toolkit/dist/query/tsHelpers'
+import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
+import _                                                      from 'lodash'
+import { generatePath, Params }                               from 'react-router-dom'
 
-import { get } from '@acx-ui/config'
+import { get }            from '@acx-ui/config'
+import { RequestPayload } from '@acx-ui/types'
 
 import { getTenantId }                       from './getTenantId'
 import { getJwtTokenPayload, getJwtHeaders } from './jwtToken'
@@ -101,6 +105,25 @@ export const createHttpRequest = (
     method: method,
     url: `${domain}${url}`
   }
+}
+
+export const batchApi = (apiInfo: ApiInfo, requests: RequestPayload<unknown>[],
+  fetchWithBQ:(arg: string | FetchArgs) => MaybePromise<
+  QueryReturnValue<unknown, FetchBaseQueryError, FetchBaseQueryMeta>>) => {
+  const promises = requests.map((arg) => {
+    const req = createHttpRequest(apiInfo, arg.params)
+    return fetchWithBQ({
+      ...req,
+      body: arg.payload
+    })
+  })
+  return Promise.all(promises)
+    .then((results) => {
+      return { data: results }
+    })
+    .catch((error)=>{
+      return error
+    })
 }
 
 export interface Filters {
