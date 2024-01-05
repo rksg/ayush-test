@@ -229,7 +229,7 @@ describe('Network utils test', () => {
       )
     })
 
-    it('should bring out tunnel type',async () => {
+    it('should bring out tunnel info',async () => {
       const { result } = renderHook(() => {
         return useNetworkVxLanTunnelProfileInfo({
         } as NetworkSaveData)

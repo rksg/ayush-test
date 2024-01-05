@@ -102,7 +102,7 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const tunnelProfileDefaultPayload = {
-    fields: ['name', 'id'],
+    fields: ['name', 'id', 'type'],
     pageSize: 10000,
     sortField: 'name',
     sortOrder: 'ASC'
@@ -117,7 +117,7 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
         tunnelOptions: data?.data
           .filter(item =>
             // due to 'type' might be empty(=== TunnelTypeEnum.VXLAN)
-            (!enableVxLan && item.type !== TunnelTypeEnum.VXLAN)
+            (!enableVxLan && item.type === TunnelTypeEnum.VLAN_VXLAN)
             || (enableVxLan && item.type !== TunnelTypeEnum.VLAN_VXLAN))
           .map(item => ({ label: item.name, value: item.id })),
         isLoading

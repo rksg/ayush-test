@@ -8,7 +8,6 @@ export interface NetworkVxLanTunnelProfileInfo {
   enableTunnel: boolean,
   enableVxLan: boolean,
   vxLanTunnels: TunnelProfileViewData[] | undefined
-  // tunnelType: TunnelTypeEnum | undefined
 }
 
 export const hasAuthRadius = (data: NetworkSaveData | null, wlanData: any) => {
