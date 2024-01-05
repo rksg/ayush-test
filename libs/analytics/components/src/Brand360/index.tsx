@@ -50,27 +50,29 @@ export function Brand360 () {
     getDateRangeFilter(DateRange.last8Hours)
   )
   const { data } = settingsQuery
+  const ssid = data?.['brand-ssid-compliance-matcher']!
+  const skip = !Boolean(ssid)
   useEffect(() => { data && setSettings(data) }, [data])
   const { startDate, endDate, range } = getDatePickerValues(dateFilterState)
 
   const chartPayload = {
     start: startDate,
     end: endDate,
-    ssidRegex: settings['brand-ssid-compliance-matcher']!
+    ssidRegex: ssid
   }
   const mspPropertiesData = useMspCustomerListDropdownQuery(
     { params: { tenantId: getJwtTokenPayload().tenantId },payload: rcApiPayload } )
   const lookupAndMappingData = mspPropertiesData?.data
     ? transformLookupAndMappingData(mspPropertiesData.data)
     : {}
-  const venuesData = useFetchBrandPropertiesQuery(chartPayload)
+  const venuesData = useFetchBrandPropertiesQuery(chartPayload, { skip })
   const tableResults = venuesData.data
     ? transformVenuesData(venuesData as { data : BrandVenuesSLA[] }, lookupAndMappingData)
     : []
   const {
     data: chartData,
     ...chartResults
-  } = useFetchBrandTimeseriesQuery(chartPayload)
+  } = useFetchBrandTimeseriesQuery(chartPayload, { skip })
   const [pastStart, pastEnd] = computePastRange(startDate, endDate)
   const {
     data: prevData,
@@ -79,11 +81,11 @@ export function Brand360 () {
     ...chartPayload,
     start: pastStart,
     end: pastEnd,
-    granularity: 'all' })
+    granularity: 'all' }, { skip })
   const {
     data: currData,
     ...currResults
-  } = useFetchBrandTimeseriesQuery({ ...chartPayload, granularity: 'all' })
+  } = useFetchBrandTimeseriesQuery({ ...chartPayload, granularity: 'all' }, { skip })
   const chartMap: ChartKey[] = ['incident', 'experience', 'compliance']
   return <Loader states={[settingsQuery, mspPropertiesData, venuesData]}>
     <PageHeader
