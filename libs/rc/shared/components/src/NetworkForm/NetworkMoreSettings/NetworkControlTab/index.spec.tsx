@@ -2,10 +2,10 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                                                                                                       from '@acx-ui/feature-toggle'
-import { AccessControlUrls, BasicServiceSetPriorityEnum, NetworkSaveData, OpenWlanAdvancedCustomization, TunnelProfileUrls, TunnelTypeEnum, WifiCallingUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                                           from '@acx-ui/store'
-import { mockServer, render, screen, within }                                                                                                                 from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                                                                                                                    from '@acx-ui/feature-toggle'
+import { AccessControlUrls, BasicServiceSetPriorityEnum, MtuTypeEnum, NetworkSaveData, OpenWlanAdvancedCustomization, TunnelProfileUrls, TunnelTypeEnum, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                                                        from '@acx-ui/store'
+import { mockServer, render, screen, within }                                                                                                                              from '@acx-ui/test-utils'
 
 import { mockedTunnelProfileViewData, devicePolicyListResponse, policyListResponse } from '../../__tests__/fixtures'
 import NetworkFormContext                                                            from '../../NetworkFormContext'
@@ -52,7 +52,11 @@ const mockWifiCallingList = [
 
 jest.mock('../../utils', () => ({
   ...jest.requireActual('../../utils'),
-  useNetworkVxLanTunnelProfileInfo: jest.fn().mockReturnValue({ enabldVxLan: false })
+  useNetworkVxLanTunnelProfileInfo: jest.fn().mockReturnValue({
+    enableTunnel: false,
+    enableVxLan: false,
+    vxLanTunnels: undefined
+  })
 }))
 
 const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
@@ -294,8 +298,21 @@ describe('Network More settings - Network Control Tab', () => {
 
   it('should display tunnel profile when it use VxLan tunnel', async () => {
     jest.mocked(useNetworkVxLanTunnelProfileInfo).mockReturnValue({
+      enableTunnel: true,
       enableVxLan: true,
-      tunnelType: TunnelTypeEnum.VXLAN
+      vxLanTunnels: [{
+        id: 'mocked_tunnel',
+        name: 'tunnelProfile1',
+        mtuType: MtuTypeEnum.MANUAL,
+        mtuSize: 1450,
+        forceFragmentation: true,
+        ageTimeMinutes: 20,
+        personalIdentityNetworkIds: ['mocked_pin_1'],
+        sdLanIds: [],
+        networkIds: ['mocked_network_1'],
+        type: TunnelTypeEnum.VXLAN,
+        tags: []
+      }]
     })
 
     render(
@@ -308,7 +325,13 @@ describe('Network More settings - Network Control Tab', () => {
 
     const clientIsolationContainer = screen.getByText(/client isolation/i)
     expect(within(clientIsolationContainer).getByRole('switch')).toBeDisabled()
-    const tunnelProfileDropdown = await screen.findByRole('combobox', { name: 'Tunnel Profile' })
+    await screen.findByText('Tunnel Profile')
+    const tunnelProfileLabel = await screen.findByText('Tunnel Profile')
+    // because TunnelProfile is not binding by formItem name, we could not access it via getByRole with name
+    // eslint-disable-next-line testing-library/no-node-access
+    const tunnelProfileFormItem = tunnelProfileLabel.closest('.ant-form-item-row')
+    // eslint-disable-next-line max-len
+    const tunnelProfileDropdown = within(tunnelProfileFormItem as HTMLElement).getByRole('combobox')
     expect(tunnelProfileDropdown).toBeDisabled()
     // eslint-disable-next-line max-len
     await screen.findByText(/All networks under the same Network Segmentation share the same tunnel profile/i)
