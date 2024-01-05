@@ -68,6 +68,7 @@ export function SwitchList ({ searchVal = '' }: { searchVal?: string }) {
       pagination={pagination}
       settingsId='switches-list-table'
       onFilterChange={updateSearchString}
+      rowKey='switchMac'
     />
   </Loader>
 }
