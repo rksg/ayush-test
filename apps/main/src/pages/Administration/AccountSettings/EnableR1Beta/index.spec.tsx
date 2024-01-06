@@ -2,6 +2,7 @@ import { rest } from 'msw'
 
 import { Provider  } from '@acx-ui/store'
 import {
+  act,
   mockServer,
   render,
   screen,
@@ -9,11 +10,29 @@ import {
 } from '@acx-ui/test-utils'
 import { UserUrlsInfo } from '@acx-ui/user'
 
-import { fakeBetaStatusDetail } from '../__tests__/fixtures'
+import { BetaFeaturesDrawer } from './BetaFeaturesDrawer'
 
-import BetaFeaturesDrawer from './BetaFeaturesDrawer'
+import { EnableR1Beta } from './'
 
-import EnableR1Beta from './'
+type MockDrawerProps = React.PropsWithChildren<{
+  open: boolean
+  onSave: () => void
+  onClose: () => void
+}>
+jest.mock('./BetaFeaturesDrawer', () => ({
+  ...jest.requireActual('./BetaFeaturesDrawer'),
+  default: ({ onSave, onClose, open }: MockDrawerProps) =>
+    open && <div data-testid={'BetaFeaturesDrawer'}>
+      <button onClick={(e)=>{
+        e.preventDefault()
+        onSave()
+      }}>Save</button>
+      <button onClick={(e)=>{
+        e.preventDefault()
+        onClose()
+      }}>Cancel</button>
+    </div>
+}))
 
 describe('Enable RUCKUS One Beta Checkbox', () => {
   const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
@@ -34,7 +53,7 @@ describe('Enable RUCKUS One Beta Checkbox', () => {
     render(
       <Provider>
         <EnableR1Beta
-          betaStatusData={fakeBetaStatusDetail}
+          betaStatus={false}
           isPrimeAdminUser={true}
         />
       </Provider>, {
@@ -43,17 +62,23 @@ describe('Enable RUCKUS One Beta Checkbox', () => {
 
     const formItem = screen.getByRole('checkbox', { name: /Enable RUCKUS One Beta features/i })
     expect(formItem).not.toBeChecked()
-    fireEvent.click(formItem)
-
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(() => {
+      fireEvent.click(formItem)
+    })
     const enableBtn = await screen.findByRole('button', { name: 'Enable Beta' })
     expect(enableBtn).toBeVisible()
-
-    fireEvent.click(enableBtn)
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(() => {
+      fireEvent.click(enableBtn)
+    })
     expect(enableBtn).not.toBeVisible()
 
     const currentBeta = await screen.findByRole('link', { name: 'Current beta features' })
-    fireEvent.click(currentBeta)
-
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(() => {
+      fireEvent.click(currentBeta)
+    })
     const okBtn = await screen.findByRole('button', { name: 'Ok' })
     expect(okBtn).toBeVisible()
 
@@ -81,7 +106,10 @@ describe('Enable RUCKUS One Beta Checkbox', () => {
     expect(await screen.findByText(content)).toBeInTheDocument()
     expect(await screen.findByText('Enabling Beta Features')).toBeVisible()
     expect(await screen.findByText('RUCKUS One Beta Features')).toBeVisible()
-    fireEvent.click(okBtn)
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(() => {
+      fireEvent.click(okBtn)
+    })
     expect(okBtn).toBeVisible()
   })
 
@@ -89,16 +117,19 @@ describe('Enable RUCKUS One Beta Checkbox', () => {
     render(
       <Provider>
         <EnableR1Beta
-          betaStatusData={undefined}
+          betaStatus={undefined}
           isPrimeAdminUser={true}
         />
       </Provider>, {
         route: { params }
       })
 
-    const formItem = screen.getByRole('checkbox', { name: /Enable RUCKUS One Beta features/i })
-    expect(formItem).not.toBeChecked()
-    fireEvent.click(formItem)
+    const dialog = screen.getByRole('checkbox', { name: /Enable RUCKUS One Beta features/i })
+    expect(dialog).not.toBeChecked()
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(() => {
+      fireEvent.click(dialog)
+    })
   })
 
 })

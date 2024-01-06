@@ -10,8 +10,8 @@ import { userLogout }                                         from '@acx-ui/util
 
 import { MessageMapping } from '../MessageMapping'
 
-import BetaFeaturesDrawer         from './BetaFeaturesDrawer'
-import R1BetaTermsConditionDrawer from './R1BetaTermsConditionDrawer'
+import { BetaFeaturesDrawer }         from './BetaFeaturesDrawer'
+import { R1BetaTermsConditionDrawer } from './R1BetaTermsConditionDrawer'
 
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
@@ -22,7 +22,7 @@ export interface EnableR1BetaProps {
   isPrimeAdminUser: boolean;
 }
 
-export function EnableR1Beta (props: EnableR1BetaProps) {
+function EnableR1Beta (props: EnableR1BetaProps) {
   const { $t } = useIntl()
   const { betaEnabled } = useUserProfileContext()
   const { className, betaStatus } = props
@@ -123,3 +123,5 @@ export function EnableR1Beta (props: EnableR1BetaProps) {
     }
   </Loader>
 }
+
+export { EnableR1Beta }
