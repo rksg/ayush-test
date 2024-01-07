@@ -26,7 +26,7 @@ const useTabs = () : WifiTab[] => {
   const listTab = {
     key: WifiTabsEnum.LIST,
     component: <APList/>,
-    title: $t({ defaultMessage: 'AP List' }),
+    title: $t({ defaultMessage: 'AP List (Top 100 by traffic)' }),
     headerExtra: [<TimeRangeDropDown/>]
   }
   const apReportTab = {
