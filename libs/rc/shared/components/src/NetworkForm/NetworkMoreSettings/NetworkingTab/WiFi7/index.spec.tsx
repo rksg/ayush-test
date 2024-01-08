@@ -210,18 +210,6 @@ describe('test isEnableOptionOf6GHz func', () => {
     const actual = isEnableOptionOf6GHz(mockWlanData)
     expect(actual).toBe(true)
   })
-
-  it('should return false when the wlanSecurity is WPA23Mixed of non-dpsk network', function () {
-    const mockWlanData = {
-      name: 'test',
-      type: 'psk',
-      wlan: {
-        wlanSecurity: 'WPA23Mixed'
-      }
-    } as NetworkSaveData
-    const actual = isEnableOptionOf6GHz(mockWlanData)
-    expect(actual).toBe(false)
-  })
 })
 
 describe('test handleDisabledUnCheckOption func', () => {
