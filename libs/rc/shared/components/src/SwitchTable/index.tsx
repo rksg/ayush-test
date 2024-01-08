@@ -54,6 +54,7 @@ import { seriesSwitchStatusMapping }                       from '../DevicesWidge
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
 import { SwitchCliSession }                                from '../SwitchCliSession'
 import { useSwitchActions }                                from '../useSwitchActions'
+import { useSwitchFirmwareActions }                        from '../useSwitchFirmwareActions'
 
 import {
   getGroupableConfig
@@ -159,6 +160,8 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const enableSwitchAdminPassword = useIsSplitOn(Features.SWITCH_ADMIN_PASSWORD)
 
   const switchAction = useSwitchActions()
+  const switchFirmwareAction = useSwitchFirmwareActions()
+
   const tableData = tableQuery.data?.data ?? []
 
   const statusFilterOptions = seriesSwitchStatusMapping().map(({ key, name, color }) => ({
@@ -298,13 +301,11 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       key: 'firmware',
       title: $t({ defaultMessage: 'Firmware' }),
       dataIndex: 'firmware',
-      sorter: true
+      sorter: true,
+      render: (_, { firmware }) => {
+        return switchFirmwareAction.parseSwitchVersion(firmware || '')
+      }
     },
-    // { TODO: Health scope
-    //   key: 'incidents',
-    //   title: $t({ defaultMessage: 'Incidents' }),
-    //   dataIndex: 'incidents',
-    // },
     ...(params.venueId ? [] : [{
       key: 'venueName',
       title: $t({ defaultMessage: 'Venue' }),

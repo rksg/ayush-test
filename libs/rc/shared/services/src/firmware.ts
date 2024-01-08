@@ -251,7 +251,8 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
+      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }],
+      keepUnusedDataFor: 60
     }),
     getSwitchFirmwareStatusList: build.query<TableResult<SwitchFirmwareStatus>, RequestPayload>({
       query: ({ params, payload }) => {
