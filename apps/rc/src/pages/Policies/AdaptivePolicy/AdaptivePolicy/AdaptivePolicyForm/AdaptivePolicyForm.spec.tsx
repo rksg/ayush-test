@@ -11,6 +11,7 @@ import {
   mockServer,
   render,
   screen,
+  waitFor,
   within
 } from '@acx-ui/test-utils'
 
@@ -26,6 +27,8 @@ import {
 import AdaptivePolicyForm from './AdaptivePolicyForm'
 
 const mockedUsedNavigate = jest.fn()
+const mockAddConditions = jest.fn()
+const mockCreatePolicy = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
@@ -33,6 +36,8 @@ jest.mock('react-router-dom', () => ({
 
 describe('AdaptivePolicyForm', () => {
   beforeEach(() => {
+    mockCreatePolicy.mockClear()
+    mockAddConditions.mockClear()
     mockServer.use(
       rest.get(
         RulesManagementUrlsInfo.getPolicyTemplateAttributes.url.split('?')[0],
@@ -96,13 +101,19 @@ describe('AdaptivePolicyForm', () => {
       ),
       rest.post(
         RulesManagementUrlsInfo.createPolicy.url,
-        (req, res, ctx) => res(ctx.json({
-          id: 'policy_id'
-        }))
+        (req, res, ctx) => {
+          mockCreatePolicy()
+          return res(ctx.json({
+            id: 'policy_id'
+          }))
+        }
       ),
       rest.post(
         RulesManagementUrlsInfo.addConditions.url,
-        (req, res, ctx) => res(ctx.json({}))
+        (req, res, ctx) => {
+          mockAddConditions()
+          return res(ctx.json({}))
+        }
       ),
       rest.get(
         RadiusAttributeGroupUrlsInfo.getAttributeGroup.url,
@@ -154,6 +165,12 @@ describe('AdaptivePolicyForm', () => {
 
     await userEvent.click(screen.getByText('Apply'))
 
+    await waitFor(()=>{
+      expect(mockCreatePolicy).toBeCalled()
+    })
+    await waitFor(()=>{
+      expect(mockAddConditions).toBeCalled()
+    })
     await screen.findByText('Policy testPolicy was added')
 
     expect(mockedUsedNavigate).toBeCalled()
