@@ -211,7 +211,10 @@ export const APPropertiesAFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy
         displayList.push($t({ defaultMessage: '[User set]' }))
         break
       case AFCStatus.PASSED:
-        displayList.push($t({ defaultMessage: '[AP isworking on LPI channel]' }))
+        displayList.push($t({ defaultMessage: '[AP is working on LPI channel]' }))
+        break
+      case AFCStatus.AFC_SERVER_FAILURE:
+        displayList.push($t({ defaultMessage: '[AFC Server failure]' }))
         break
     }
   }

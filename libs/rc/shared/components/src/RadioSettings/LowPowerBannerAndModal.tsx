@@ -40,9 +40,11 @@ export function LowPowerBannerAndModal (props: {
     if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
       APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '(Pending response from the AFC server)' })
     }
-
     if (afcInfo?.afcStatus === AFCStatus.PASSED) {
       APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '(AP is working on LPI channel)' })
+    }
+    if (afcInfo?.afcStatus === AFCStatus.AFC_SERVER_FAILURE) {
+      APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '(AFC Server failure)' })
     }
 
     setBannerText(APWarningMessage)
