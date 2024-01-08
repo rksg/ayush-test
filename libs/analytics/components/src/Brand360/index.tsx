@@ -31,7 +31,10 @@ import { useSliceType } from './useSliceType'
 
 const rcApiPayload = {
   searchString: '',
-  filters: { tenantType: ['MSP_INTEGRATOR', 'MSP_REC'] },
+  filters: {
+    tenantType: ['MSP_INTEGRATOR', 'MSP_REC'],
+    status: ['Active']
+  },
   fields: ['id', 'name', 'tenantType', 'status'],
   page: 1,
   pageSize: 10000,
