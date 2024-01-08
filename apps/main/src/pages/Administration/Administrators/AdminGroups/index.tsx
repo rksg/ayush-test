@@ -19,13 +19,11 @@ import {
   useUpdateAdminGroupsMutation
 } from '@acx-ui/rc/services'
 import { AdminGroup, sortProp, defaultSort }                    from '@acx-ui/rc/utils'
-import { Link }                                                 from '@acx-ui/react-router-dom'
 import { RolesEnum }                                            from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, roleStringMap } from '@acx-ui/user'
 import { AccountType }                                          from '@acx-ui/utils'
 
-import { AddGroupDrawer }    from './AddGroupDrawer'
-import { ShowMembersDrawer } from './ShowMembersDrawer'
+import { AddGroupDrawer } from './AddGroupDrawer'
 
 interface AdminGroupsTableProps {
   isPrimeAdminUser: boolean;
@@ -51,8 +49,6 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
   const [showDialog, setShowDialog] = useState(false)
   const [editMode, setEditMode] = useState(false)
   const [editData, setEditData] = useState<AdminGroup>({} as AdminGroup)
-  const [membersGroupId, setMemberGroupId] = useState('')
-  const [membersDrawerVisible, setMembersDrawerVisible] = useState(false)
   const { data: userProfileData } = useUserProfileContext()
 
   const { data: adminList, isLoading, isFetching } = useGetAdminGroupsQuery({ params })
@@ -74,21 +70,7 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
     {
       title: $t({ defaultMessage: 'Group Name' }),
       key: 'name',
-      dataIndex: 'name',
-      onCell: (data) => {
-        return {
-          onClick: () => {
-            setMemberGroupId(data.groupId as string)
-            setMembersDrawerVisible(true)
-          }
-        }
-      },
-      render: function (_, row) {
-        return (
-          <Link to=''>{row.name}</Link>
-
-        )
-      }
+      dataIndex: 'name'
     },
     {
       title: $t({ defaultMessage: 'Group ID' }),
@@ -99,7 +81,6 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
       title: $t({ defaultMessage: 'Processing Priority' }),
       key: 'processingPriority',
       dataIndex: 'processingPriority',
-      show: false,
       defaultSortOrder: 'ascend',
       sorter: { compare: sortProp('processingPriority', defaultSort) }
     },
@@ -274,11 +255,6 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
         setVisible={setShowDialog}
         isEditMode={editMode}
         editData={editMode ? editData : undefined}
-      />}
-      {membersDrawerVisible && <ShowMembersDrawer
-        visible={membersDrawerVisible}
-        setVisible={setMembersDrawerVisible}
-        membersGroupId={membersGroupId}
       />}
     </Loader>
   )
