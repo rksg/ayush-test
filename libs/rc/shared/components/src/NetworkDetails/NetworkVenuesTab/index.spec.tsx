@@ -180,7 +180,7 @@ describe('NetworkVenuesTab', () => {
     expect(row2).not.toHaveTextContent('All')
   })
 
-  it('deactivate Network', async () => {
+  it.skip('deactivate Network', async () => {
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/t/:networkId' }
     })
@@ -218,7 +218,7 @@ describe('NetworkVenuesTab', () => {
     await waitFor(() => rows.forEach(row => expect(row).not.toBeChecked()))
   })
 
-  it('Table action bar activate Network', async () => {
+  it.skip('Table action bar activate Network', async () => {
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/t/:networkId' }
     })

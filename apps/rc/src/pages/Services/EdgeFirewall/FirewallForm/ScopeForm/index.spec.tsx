@@ -5,8 +5,9 @@ import { Form }               from 'antd'
 import { rest }               from 'msw'
 
 import { StepsForm }                                         from '@acx-ui/components'
+import { edgeApi, venueApi }                                 from '@acx-ui/rc/services'
 import { CommonUrlsInfo, EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                          from '@acx-ui/store'
+import { Provider, store }                                   from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -22,7 +23,8 @@ const { click } = userEvent
 describe('Scope Form', () => {
   beforeEach(() => {
     mockedSetFieldValue.mockReset()
-
+    store.dispatch(edgeApi.util.resetApiState())
+    store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.getEdgeList.url,
