@@ -101,7 +101,7 @@ const Administrators = () => {
       content: <DelegationsTable
         isMspEc={isMspEc}
         userProfileData={userProfileData}/>,
-      visible: true
+      visible: isDelegationReady ? true : false
     }
   }
 
