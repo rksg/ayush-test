@@ -35,7 +35,6 @@ import { noDataDisplay }  from '@acx-ui/utils'
 
 import {
   getNextScheduleTpl,
-  getSwitchNextScheduleTplTooltip,
   toUserDate
 } from '../../FirmwareUtils'
 import { PreferencesDialog } from '../../PreferencesDialog'
@@ -66,6 +65,7 @@ export const VenueFirmwareTable = (
   const { $t } = useIntl()
   const intl = useIntl()
   const params = useParams()
+  const { getSwitchNextScheduleTplTooltip } = useSwitchFirmwareUtils()
   const { data: availableVersions } = useGetSwitchAvailableFirmwareListQuery({ params })
   const [modelVisible, setModelVisible] = useState(false)
   const [updateNowWizardVisible, setUpdateNowWizardVisible] = useState(false)

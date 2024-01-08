@@ -26,8 +26,7 @@ import { noDataDisplay }  from '@acx-ui/utils'
 
 import { SwitchFirmwareWizardType } from '..'
 import {
-  getNextScheduleTpl,
-  getSwitchNextScheduleTplTooltip
+  getNextScheduleTpl
 } from '../../../../FirmwareUtils'
 import * as UI                      from '../../styledComponents'
 import {
@@ -48,6 +47,7 @@ const getTooltipText = function (value: string, customDisplayValue?: string | Re
 
 function useColumns () {
   const intl = useIntl()
+  const { getSwitchNextScheduleTplTooltip } = useSwitchFirmwareUtils()
 
   const columns: TableProps<FirmwareSwitchVenue>['columns'] = [
     {

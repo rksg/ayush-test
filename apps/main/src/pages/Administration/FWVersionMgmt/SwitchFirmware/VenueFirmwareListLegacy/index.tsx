@@ -43,7 +43,6 @@ import { noDataDisplay }  from '@acx-ui/utils'
 import {
   getNextScheduleTpl,
   getReleaseFirmware,
-  getSwitchNextScheduleTplTooltip,
   isSwitchNextScheduleTooltipDisabled,
   toUserDate
 } from '../../FirmwareUtils'
@@ -58,7 +57,7 @@ function useColumns (
   filterables?: { [key: string]: ColumnType['filterable'] }
 ) {
   const intl = useIntl()
-  const { parseSwitchVersion } = useSwitchFirmwareUtils()
+  const { parseSwitchVersion, getSwitchNextScheduleTplTooltip } = useSwitchFirmwareUtils()
 
   const columns: TableProps<FirmwareSwitchVenue>['columns'] = [
     {

@@ -5,10 +5,8 @@ import { IntlShape } from 'react-intl'
 
 import {
   FirmwareSwitchVenue,
-  FirmwareVersion,
   SortResult,
   SwitchFirmware,
-  firmwareTypeTrans,
   parseSwitchVersion
 } from '@acx-ui/rc/utils'
 import { noDataDisplay } from '@acx-ui/utils'
@@ -53,20 +51,6 @@ export const getSwitchNextScheduleTpl = (intl: IntlShape, s: SwitchFirmware) => 
 
 const getDateByFormat = (date: string, format: string) => {
   return moment(date).format(format)
-}
-
-
-export const getSwitchVersionLabel = (intl: IntlShape, version: FirmwareVersion): string => {
-  const transform = firmwareTypeTrans(intl.$t)
-  const versionName = parseSwitchVersion(version?.name)
-  const versionType = transform(version?.category)
-
-  let displayVersion = `${versionName} (${versionType})`
-  if(version.inUse){
-    // eslint-disable-next-line max-len
-    displayVersion = `${displayVersion} - ${intl.$t({ defaultMessage: 'The selected switches are already running this version' })}`
-  }
-  return displayVersion
 }
 
 

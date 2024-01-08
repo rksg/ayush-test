@@ -8,6 +8,7 @@ import {
   TableProps,
   Drawer
 } from '@acx-ui/components'
+import { useSwitchFirmwareUtils }            from '@acx-ui/rc/components'
 import { useLazyGetSwitchFirmwareListQuery } from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenue,
@@ -17,8 +18,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
-import { getNextScheduleTpl, getSwitchNextScheduleTplTooltip } from '../../../FirmwareUtils'
-import * as UI                                                 from '../../../styledComponents'
+import { getNextScheduleTpl } from '../../../FirmwareUtils'
+import * as UI                from '../../../styledComponents'
 import {
   enableSwitchScheduleTooltip,
   getSwitchNextScheduleTpl,
@@ -33,6 +34,7 @@ export interface SwitchScheduleDrawerProps {
 export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
   const intl = useIntl()
 
+  const { getSwitchNextScheduleTplTooltip } = useSwitchFirmwareUtils()
   const [ getSwitchFirmwareStatusList ] = useLazyGetSwitchFirmwareListQuery({
     pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL
   })
