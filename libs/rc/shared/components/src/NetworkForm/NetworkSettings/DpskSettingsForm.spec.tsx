@@ -13,12 +13,21 @@ import {
   networkDeepResponse,
   venueListResponse,
   dpskListResponse,
-  partialDpskNetworkEntity
+  partialDpskNetworkEntity,
+  mockAAAPolicyListResponse
 } from '../__tests__/fixtures'
 import NetworkFormContext from '../NetworkFormContext'
 
 import { DpskSettingsForm } from './DpskSettingsForm'
 
+jest.mock('../utils', () => ({
+  ...jest.requireActual('../utils'),
+  useNetworkVxLanTunnelProfileInfo: jest.fn().mockReturnValue({
+    enableTunnel: false,
+    enableVxLan: false,
+    vxLanTunnels: undefined
+  })
+}))
 
 describe('DpskSettingsForm', () => {
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
@@ -37,8 +46,8 @@ describe('DpskSettingsForm', () => {
         (_, res, ctx) => res(ctx.json(dpskListResponse))),
       rest.get('/v2/dpskServices',
         (_, res, ctx) => res(ctx.json(dpskListResponse))),
-      rest.get(AaaUrls.getAAAPolicyList.url,
-        (_, res, ctx) => res(ctx.json([{ id: '1', name: 'test1' }])))
+      rest.post(AaaUrls.getAAAPolicyViewModelList.url,
+        (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse)))
     )
   })
 
