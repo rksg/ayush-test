@@ -14,7 +14,8 @@ import {
   getPolicyListRoutePath,
   getPolicyRoutePath,
   getTunnelTypeString,
-  TunnelTypeEnum
+  TunnelTypeEnum,
+  isDefaultTunnelProfile as getIsDefaultTunnelProfile
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { filterByAccess }        from '@acx-ui/user'
@@ -46,7 +47,7 @@ const TunnelProfileDetail = () => {
     }
   )
 
-  const isDefaultTunnelProfile = tunnelProfileData.id === params.tenantId
+  const isDefaultTunnelProfile = getIsDefaultTunnelProfile(tunnelProfileData)
 
   const tunnelInfo = [
     // {
