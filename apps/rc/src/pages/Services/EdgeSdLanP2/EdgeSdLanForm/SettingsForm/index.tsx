@@ -4,10 +4,10 @@ import { Col, Form, Input, Row, Select } from 'antd'
 import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
-import { StepsForm, useStepFormContext }                                                                                                                    from '@acx-ui/components'
-import { SpaceWrapper, TunnelProfileAddModal }                                                                                                              from '@acx-ui/rc/components'
-import { useGetEdgeListQuery, useGetEdgeSdLanViewDataListQuery, useGetPortConfigQuery, useGetTunnelProfileViewDataListQuery, useVenuesListQuery }           from '@acx-ui/rc/services'
-import { EdgeSdLanSetting, EdgeStatusEnum, getEdgePortDisplayName, isDefaultTunnelProfile, servicePolicyNameRegExp, TunnelProfileFormType, TunnelTypeEnum } from '@acx-ui/rc/utils'
+import { StepsForm, useStepFormContext }                                                                                                                             from '@acx-ui/components'
+import { SpaceWrapper, TunnelProfileAddModal }                                                                                                                       from '@acx-ui/rc/components'
+import { useGetEdgeListQuery, useGetEdgeSdLanViewDataListQuery, useGetPortConfigQuery, useGetTunnelProfileViewDataListQuery, useVenuesListQuery }                    from '@acx-ui/rc/services'
+import { EdgeSdLanSetting, EdgeStatusEnum, getEdgePortDisplayName, getTunnelProfileOptsWithDefault, servicePolicyNameRegExp, TunnelProfileFormType, TunnelTypeEnum } from '@acx-ui/rc/utils'
 
 import diagram from '../../../../../assets/images/edge-sd-lan-diagrams/edge-sd-lan-early-access.png'
 
@@ -117,11 +117,8 @@ export const SettingsForm = () => {
   }, {
     selectFromResult: ({ data, isLoading }) => {
       return {
-        tunnelProfileOptions: data?.data
-          .filter(t => isDefaultTunnelProfile(t, params.tenantId!) === false)
-          .map(item => ({
-            label: item.name, value: item.id
-          })),
+        // eslint-disable-next-line max-len
+        tunnelProfileOptions: getTunnelProfileOptsWithDefault(data?.data, TunnelTypeEnum.VLAN_VXLAN),
         isTunnelOptionsLoading: isLoading
       }
     }
