@@ -103,10 +103,10 @@ export const getAPRebootReason = (key: string) => {
 export const transformAirtimeMetricKey = (key: string) => {
   const { $t } = getIntl()
   const map = {
-    airtimeBusy: $t({ defaultMessage: 'Airtime Busy' }),
-    airtimeRx: $t({ defaultMessage: 'Airtime Rx' }),
-    airtimeTx: $t({ defaultMessage: 'Airtime Tx' }),
-    airtimeIdle: $t({ defaultMessage: 'Airtime Idle' })
+    airtimeBusy: $t({ defaultMessage: 'Avg Airtime Busy' }),
+    airtimeRx: $t({ defaultMessage: 'Avg Airtime Rx' }),
+    airtimeTx: $t({ defaultMessage: 'Avg Airtime Tx' }),
+    airtimeIdle: $t({ defaultMessage: 'Avg Airtime Idle' })
   }
   return _.get(map, key, '')
 }
@@ -405,7 +405,7 @@ export const networkImpactChartConfigs: Readonly<Record<
     }
   },
   [NetworkImpactChartTypes.RxPhyErrByAP]: {
-    title: defineMessage({ defaultMessage: 'Rx PHY Errors' }),
+    title: defineMessage({ defaultMessage: 'Rx PHY Errors' }), //
     tooltipFormat: defineMessage({
       defaultMessage: `{name}<br></br>
       <space><b>{formattedValue} {value, plural,
@@ -418,7 +418,7 @@ export const networkImpactChartConfigs: Readonly<Record<
         defaultMessage: '{dominant} has the highest Rx PHY errors'
       }),
       broad: defineMessage({
-        defaultMessage: `Rx PHY errors observed in {count} {count, plural,
+        defaultMessage: `{total} Rx PHY errors observed in {count} {count, plural,
           one {AP}
           other {APs}
         }`
@@ -426,21 +426,21 @@ export const networkImpactChartConfigs: Readonly<Record<
     }
   },
   [NetworkImpactChartTypes.AirtimeBusy]: {
-    title: defineMessage({ defaultMessage: 'Airtime Busy' }),
+    title: defineMessage({ defaultMessage: 'Average Airtime Busy' }),
     tooltipFormat: tooltipFormats.distribution,
     dataFomatter: formatter('percentFormat'),
     transformKeyFn: transformAirtimeMetricKey,
     summary: defineMessage({ defaultMessage: 'Peak airtime busy was {count}' })
   },
   [NetworkImpactChartTypes.AirtimeTx]: {
-    title: defineMessage({ defaultMessage: 'Airtime Tx' }),
+    title: defineMessage({ defaultMessage: 'Average Airtime Tx' }),
     tooltipFormat: tooltipFormats.distribution,
     dataFomatter: formatter('percentFormat'),
     transformKeyFn: transformAirtimeMetricKey,
     summary: defineMessage({ defaultMessage: 'Peak airtime Tx was {count}' })
   },
   [NetworkImpactChartTypes.AirtimeRx]: {
-    title: defineMessage({ defaultMessage: 'Airtime Rx' }),
+    title: defineMessage({ defaultMessage: 'Average Airtime Rx' }),
     tooltipFormat: tooltipFormats.distribution,
     dataFomatter: formatter('percentFormat'),
     transformKeyFn: transformAirtimeMetricKey,
