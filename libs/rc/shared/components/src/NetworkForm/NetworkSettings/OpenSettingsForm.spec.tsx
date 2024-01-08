@@ -24,6 +24,15 @@ jest.mock('./MacRegistrationListComponent', () => () => {
   return <div data-testid='MacRegistrationListComponentId' />
 })
 
+jest.mock('../utils', () => ({
+  ...jest.requireActual('../utils'),
+  useNetworkVxLanTunnelProfileInfo: jest.fn().mockReturnValue({
+    enableTunnel: false,
+    enableVxLan: false,
+    vxLanTunnels: undefined
+  })
+}))
+
 describe('OpenNetwork form', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)

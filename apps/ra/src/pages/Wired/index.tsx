@@ -24,7 +24,7 @@ const useTabs = () : SwitchTab[] => {
   const { $t } = useIntl()
   const switchListTab = {
     key: AISwitchTabsEnum.SWITCH_LIST,
-    title: $t({ defaultMessage: 'Switch List' }),
+    title: $t({ defaultMessage: 'Switch List (Top 100 by traffic)' }),
     component: <SwitchList />,
     headerExtra: [<TimeRangeDropDown/>]
   }

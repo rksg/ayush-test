@@ -31,6 +31,14 @@ jest.mock('react-intl', () => {
     useIntl: () => intl
   }
 })
+jest.mock('../utils', () => ({
+  ...jest.requireActual('../utils'),
+  useNetworkVxLanTunnelProfileInfo: jest.fn().mockReturnValue({
+    enableTunnel: false,
+    enableVxLan: false,
+    vxLanTunnels: undefined
+  })
+}))
 jest.mocked(useIsSplitOn).mockReturnValue(true) // mock AAA policy
 
 async function fillInBeforeSettings (networkName: string) {

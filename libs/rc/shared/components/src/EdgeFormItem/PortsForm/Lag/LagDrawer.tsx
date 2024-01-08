@@ -16,8 +16,8 @@ import {
   EdgeLagTypeEnum,
   EdgePort,
   EdgePortTypeEnum,
-  getEdgePortDisplayName,
   convertEdgePortsConfigToApiPayload,
+  getEdgePortDisplayName,
   getEdgePortTypeOptions
 } from '@acx-ui/rc/utils'
 
@@ -248,7 +248,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
           name='id'
           rules={[{
             required: true,
-            message: $t({ defaultMessage: 'Please enter LAG Name' })
+            message: $t({ defaultMessage: 'Please select a LAG Name' })
           }]}
           children={<Select options={getUseableLagOptions(existedLagList)} disabled={isEditMode} />}
           noStyle
