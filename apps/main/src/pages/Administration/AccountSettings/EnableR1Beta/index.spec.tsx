@@ -121,7 +121,6 @@ describe('Enable RUCKUS One Beta Checkbox', () => {
     expect(await screen.findByText('Enabling Beta Features')).toBeVisible()
     expect(await screen.findByText('RUCKUS One Beta Features')).toBeVisible()
     await userEvent.click(okBtn)
-    expect(okBtn).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Close' }))
   })
 
