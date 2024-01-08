@@ -283,4 +283,17 @@ describe('Create Network: Venues Step', () => {
     expect(rows).toHaveLength(2)
     await waitFor(() => rows.forEach(row => expect(row).not.toBeChecked()))
   })
+
+  it('Default activate Network', async () => {
+    render(<Venues defaultActiveVenues={[list.data[0].id]} />, {
+      wrapper,
+      route: { params, path: '/:tenantId/:networkId' }
+    })
+
+    const tbody = await findTBody()
+    const rows = await within(tbody).findAllByRole('switch')
+    expect(rows).toHaveLength(2)
+    const toogleButton = rows[0]
+    await waitFor(() => expect(toogleButton).toBeChecked())
+  })
 })

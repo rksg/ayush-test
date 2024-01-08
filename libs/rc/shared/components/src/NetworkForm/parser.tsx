@@ -14,8 +14,7 @@ import {
   NetworkVenue,
   ClientIsolationVenue,
   ManagementFrameProtectionEnum,
-  GuestNetworkTypeEnum,
-  TunnelTypeEnum
+  GuestNetworkTypeEnum
 } from '@acx-ui/rc/utils'
 
 import { NetworkVxLanTunnelProfileInfo } from './utils'
@@ -360,9 +359,7 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     vlanId = data?.wlan?.vlanId ?? originalData?.wlan?.vlanId
   }
 
-  if (tunnelInfo?.enableVxLan
-    && tunnelInfo?.tunnelType === TunnelTypeEnum.VXLAN
-    && data.type === NetworkTypeEnum.DPSK) {
+  if (tunnelInfo?.enableVxLan && data.type === NetworkTypeEnum.DPSK) {
     (advancedCustomization as DpskWlanAdvancedCustomization).enableAaaVlanOverride = false
   }
 
