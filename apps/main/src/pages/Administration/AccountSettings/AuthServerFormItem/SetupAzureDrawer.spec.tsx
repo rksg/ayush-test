@@ -604,9 +604,7 @@ describe('Setup Azure Drawer', () => {
     expect(screen.getByRole('button', { name: 'Change File' })).toBeVisible()
     expect(screen.getByText('Allowed Domains')).toBeVisible()
     expect(screen.queryByText('Please enter domains separated by comma')).toBeNull()
-    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
 
-    // Wait for form to finish resetting before completing test to avoid act() error
-    expect(await screen.findByText('Please enter domains separated by comma')).toBeVisible()
   })
 })

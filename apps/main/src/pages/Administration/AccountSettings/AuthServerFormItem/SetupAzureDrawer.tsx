@@ -276,20 +276,13 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     // eslint-disable-next-line max-len
     const re = new RegExp(/(^((22[0-3]|2[0-1][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9]?)\.)((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){2}((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))$)|(^(\b((?=[A-Za-z0-9-]{1,63}\.)(xn--)?[A-Za-z0-9]+(-[A-Za-z0-9]+)*\.)+[A-Za-z]{2,63}\b)$)/)
     const domains = value?.split(',')
-    let invalid = false
-    if (!domains || domains.length === 0) {
-      invalid = true
-    }
-    else {
-      domains.forEach((domain) => {
-        if (!re.test(domain.trim())) {
-          invalid = true
-        }
-      })
-    }
-    return invalid ? Promise.reject(
+    const isValid = domains?.every((domain) => {
+      return re.test(domain.trim())
+    })
+
+    return isValid ? Promise.resolve() : Promise.reject(
       `${$t({ defaultMessage: 'Please enter domains separated by comma' })} `
-    ) : Promise.resolve()
+    )
   }
 
   const ApplyButton = ({ form }: { form: FormInstance }) => {
@@ -324,10 +317,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
         label={$t({ defaultMessage: 'Allowed Domains' })}
         rules={[
           { type: 'string', required: true },
-          { min: 2, transform: (value) => value.trim() },
-          { max: 64, transform: (value) => value.trim() },
           { validator: (_, value) => domainsValidator(value) }
-
         ]}
         children={
           <Input
