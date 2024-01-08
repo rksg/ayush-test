@@ -1,20 +1,22 @@
-import { rest } from 'msw'
+import { useState } from 'react'
+
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { Provider  } from '@acx-ui/store'
 import {
-  act,
   mockServer,
   render,
   screen,
-  fireEvent,
   renderHook
 } from '@acx-ui/test-utils'
 import { UserUrlsInfo } from '@acx-ui/user'
 
-import { BetaFeaturesDrawer } from './BetaFeaturesDrawer'
+import { BetaFeaturesDrawer }         from './BetaFeaturesDrawer'
+import { R1BetaTermsConditionDrawer } from './R1BetaTermsConditionDrawer'
 
 import { EnableR1Beta } from './'
-import { useState } from 'react'
+
 
 type MockDrawerProps = React.PropsWithChildren<{
   open: boolean
@@ -23,12 +25,22 @@ type MockDrawerProps = React.PropsWithChildren<{
 }>
 jest.mock('./BetaFeaturesDrawer', () => ({
   ...jest.requireActual('./BetaFeaturesDrawer'),
-  default: ({ onSave, onClose, open }: MockDrawerProps) =>
+  default: ({ onClose, open }: MockDrawerProps) =>
     open && <div data-testid={'BetaFeaturesDrawer'}>
       <button onClick={(e)=>{
         e.preventDefault()
+        onClose()
+      }}>Ok</button>
+    </div>
+}))
+jest.mock('./R1BetaTermsConditionDrawer', () => ({
+  ...jest.requireActual('./R1BetaTermsConditionDrawer'),
+  default: ({ onSave, onClose, open }: MockDrawerProps) =>
+    open && <div data-testid={'R1BetaTermsConditionDrawer'}>
+      <button onClick={(e)=>{
+        e.preventDefault()
         onSave()
-      }}>Save</button>
+      }}>Enable Beta</button>
       <button onClick={(e)=>{
         e.preventDefault()
         onClose()
@@ -38,6 +50,7 @@ jest.mock('./BetaFeaturesDrawer', () => ({
 
 describe('Enable RUCKUS One Beta Checkbox', () => {
   const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
+  const { location } = window
   beforeEach(() => {
     mockServer.use(
       rest.put(
@@ -49,7 +62,14 @@ describe('Enable RUCKUS One Beta Checkbox', () => {
         (_req, res, ctx) => res(ctx.status(200))
       )
     )
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      enumerable: true,
+      value: { href: new URL('https://url/').href }
+    })
   })
+  afterEach(() => Object.defineProperty(window, 'location', {
+    configurable: true, enumerable: true, value: location }))
 
   it('should display enable R1 beta terms & condition drawer when checkbox changed', async () => {
     render(
@@ -64,42 +84,31 @@ describe('Enable RUCKUS One Beta Checkbox', () => {
 
     const formItem = screen.getByRole('checkbox', { name: /Enable RUCKUS One Beta features/i })
     expect(formItem).not.toBeChecked()
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(() => {
-      fireEvent.click(formItem)
-    })
+    await userEvent.click(formItem)
     const enableBtn = await screen.findByRole('button', { name: 'Enable Beta' })
     expect(enableBtn).toBeVisible()
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(() => {
-      fireEvent.click(enableBtn)
-    })
+    await userEvent.click(enableBtn)
     expect(enableBtn).not.toBeVisible()
 
     const currentBeta = await screen.findByRole('link', { name: 'Current beta features' })
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(() => {
-      fireEvent.click(currentBeta)
-    })
+    await userEvent.click(currentBeta)
     const okBtn = await screen.findByRole('button', { name: 'Ok' })
     expect(okBtn).toBeVisible()
-
+    await userEvent.click(okBtn)
+    await userEvent.click(await screen.findByRole('button', { name: 'Close' }))
     await screen.findByText('RUCKUS One Beta Features')
   })
 
-  it('should show terms and condition drawer', async () => {
-    const { result } = renderHook(() => {
-      const [showBetaTermsConditionDrawer, setBetaTermsConditionDrawer] = useState(true)
-      return { showBetaTermsConditionDrawer, setBetaTermsConditionDrawer }
-    })
+  it('should show beta features drawer', async () => {
+    const onCloseFn = jest.fn()
     // eslint-disable-next-line max-len
     const content = 'In order to enable the Beta features, we have to log you out. Once you log-in back, the features will be available for you to use.'
     render(
       <Provider>
         <BetaFeaturesDrawer
-          visible={result.current.showBetaTermsConditionDrawer}
-          setVisible={result.current.setBetaTermsConditionDrawer}
-          onClose={() => (result.current.setBetaTermsConditionDrawer(false))}
+          visible={true}
+          setVisible={onCloseFn}
+          onClose={onCloseFn}
         />
       </Provider>, {
         route: { params }
@@ -111,11 +120,35 @@ describe('Enable RUCKUS One Beta Checkbox', () => {
     expect(await screen.findByText(content)).toBeInTheDocument()
     expect(await screen.findByText('Enabling Beta Features')).toBeVisible()
     expect(await screen.findByText('RUCKUS One Beta Features')).toBeVisible()
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(() => {
-      fireEvent.click(okBtn)
-    })
+    await userEvent.click(okBtn)
     expect(okBtn).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: 'Close' }))
+  })
+
+  it('should show terms and condition drawer', async () => {
+    const { result } = renderHook(() => {
+      const [showBetaTermsConditionDrawer, setBetaTermsConditionDrawer] = useState(true)
+      return { showBetaTermsConditionDrawer, setBetaTermsConditionDrawer }
+    })
+    render(
+      <Provider>
+        <R1BetaTermsConditionDrawer
+          visible={result.current.showBetaTermsConditionDrawer}
+          setVisible={result.current.setBetaTermsConditionDrawer}
+          onClose={() => (result.current.setBetaTermsConditionDrawer(false))}
+          onSubmit={() => (result.current.setBetaTermsConditionDrawer(false))}
+        />
+      </Provider>, {
+        route: { params }
+      })
+    await screen.findAllByRole('dialog')
+    const okBtn = await screen.findByRole('button', { name: 'Enable Beta' })
+    expect(okBtn).toBeVisible()
+    await userEvent.click(okBtn)
+    const cancelBtn = await screen.findByRole('button', { name: 'Cancel' })
+    expect(cancelBtn).toBeVisible()
+    await userEvent.click(cancelBtn)
+    await userEvent.click(await screen.findByRole('button', { name: 'Close' }))
   })
 
   it('should display correctly if no data', async () => {
@@ -129,12 +162,11 @@ describe('Enable RUCKUS One Beta Checkbox', () => {
         route: { params }
       })
 
-    const dialog = screen.getByRole('checkbox', { name: /Enable RUCKUS One Beta features/i })
-    expect(dialog).not.toBeChecked()
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(() => {
-      fireEvent.click(dialog)
-    })
+    const formItem = screen.getByRole('checkbox', { name: /Enable RUCKUS One Beta features/i })
+    await expect(formItem).not.toBeChecked()
+    await userEvent.click(formItem)
+    await userEvent.click(await screen.findByRole('button', { name: 'Close' }))
+    await expect(window.location.href).toEqual('/logout')
   })
 
 })
