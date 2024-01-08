@@ -6,13 +6,15 @@ import {
   mockServer,
   render,
   screen,
-  fireEvent
+  fireEvent,
+  renderHook
 } from '@acx-ui/test-utils'
 import { UserUrlsInfo } from '@acx-ui/user'
 
 import { BetaFeaturesDrawer } from './BetaFeaturesDrawer'
 
 import { EnableR1Beta } from './'
+import { useState } from 'react'
 
 type MockDrawerProps = React.PropsWithChildren<{
   open: boolean
@@ -86,15 +88,18 @@ describe('Enable RUCKUS One Beta Checkbox', () => {
   })
 
   it('should show terms and condition drawer', async () => {
-    const mockedSetVisible = jest.fn()
+    const { result } = renderHook(() => {
+      const [showBetaTermsConditionDrawer, setBetaTermsConditionDrawer] = useState(true)
+      return { showBetaTermsConditionDrawer, setBetaTermsConditionDrawer }
+    })
     // eslint-disable-next-line max-len
     const content = 'In order to enable the Beta features, we have to log you out. Once you log-in back, the features will be available for you to use.'
     render(
       <Provider>
         <BetaFeaturesDrawer
-          visible={true}
-          setVisible={() => (mockedSetVisible)}
-          onClose={() => (false)}
+          visible={result.current.showBetaTermsConditionDrawer}
+          setVisible={result.current.setBetaTermsConditionDrawer}
+          onClose={() => (result.current.setBetaTermsConditionDrawer(false))}
         />
       </Provider>, {
         route: { params }
