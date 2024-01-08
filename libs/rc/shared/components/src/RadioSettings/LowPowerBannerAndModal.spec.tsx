@@ -4,7 +4,7 @@ import { LowPowerBannerAndModal } from './LowPowerBannerAndModal'
 
 describe('LowPowerBannerAndModal Unit Test', () => {
   it('Test Case for how to fix this button', () => {
-    render(<LowPowerBannerAndModal parent='ap' />)
+    render(<LowPowerBannerAndModal />)
     const howToFixThisButton = screen.getByTestId('how-to-fix-this-button')
     expect(howToFixThisButton).toBeInTheDocument()
     fireEvent.click(howToFixThisButton)
@@ -16,8 +16,8 @@ describe('LowPowerBannerAndModal Unit Test', () => {
   })
 
   it('Test Case for AP Banner display', async () => {
-    render(<LowPowerBannerAndModal parent='ap' />)
-    expect(await screen.findByText('Degraded - AP in low power mode')).toBeInTheDocument()
+    render(<LowPowerBannerAndModal />)
+    expect(await screen.findByText('6 GHz radio operating in low power mode')).toBeInTheDocument()
   })
 
 })
