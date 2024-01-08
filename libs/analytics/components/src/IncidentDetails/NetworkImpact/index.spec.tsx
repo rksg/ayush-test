@@ -32,7 +32,7 @@ const networkImpactData = { incident: {
     data: [
       { key: 'airtimeBusy', name: 'airtimeBusy', value: 0.5 },
       { key: 'airtimeRx', name: 'airtimeRx', value: 0.3 },
-      { key: 'airtimeTx', name: 'airtimTex', value: 0.1 },
+      { key: 'airtimeTx', name: 'airtimeTx', value: 0.1 },
       { key: 'airtimeIdle', name: 'airtimeIdle', value: 0.1 }
     ]
   },
@@ -53,11 +53,25 @@ describe('transformData', () => {
   it('should return correct result', async () => {
     const result = transformData(
       networkImpactChartConfigs[NetworkImpactChartTypes.WLAN],
-      networkImpactData.incident.WLAN
+      networkImpactData.incident.WLAN,
+      'assoc-failure'
     )
     expect(result).toEqual([
       { color: '#66B1E8', key: 'ssid1', name: 'ssid1', value: 2 },
       { color: '#EC7100', key: 'ssid2', name: 'ssid2', value: 1 }
+    ])
+  })
+  it('should return correct result for airtime', async () => {
+    const result = transformData(
+      networkImpactChartConfigs[NetworkImpactChartTypes.AirtimeBusy],
+      networkImpactData.incident[NetworkImpactChartTypes.AirtimeBusy],
+      'p-airtime-b-5g-high'
+    )
+    expect(result).toEqual([
+      { color: '#66B1E8', key: 'airtimeBusy', name: 'Avg Airtime Busy', value: 0.5 },
+      { color: '#EC7100', key: 'airtimeRx', name: 'Avg Airtime Rx', value: 0.3 },
+      { color: '#F9C34B', key: 'airtimeTx', name: 'Avg Airtime Tx', value: 0.1 },
+      { color: '#F095FF', key: 'airtimeIdle', name: 'Avg Airtime Idle', value: 0.1 }
     ])
   })
 })

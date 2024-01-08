@@ -123,10 +123,10 @@ describe('getAPRebootReason', () => {
 })
 
 it('transformAirtimeMetricKey should return correct key', () => {
-  expect(transformAirtimeMetricKey('airtimeBusy')).toBe('Airtime Busy')
-  expect(transformAirtimeMetricKey('airtimeRx')).toBe('Airtime Rx')
-  expect(transformAirtimeMetricKey('airtimeTx')).toBe('Airtime Tx')
-  expect(transformAirtimeMetricKey('airtimeIdle')).toBe('Airtime Idle')
+  expect(transformAirtimeMetricKey('airtimeBusy')).toBe('Avg Airtime Busy')
+  expect(transformAirtimeMetricKey('airtimeRx')).toBe('Avg Airtime Rx')
+  expect(transformAirtimeMetricKey('airtimeTx')).toBe('Avg Airtime Tx')
+  expect(transformAirtimeMetricKey('airtimeIdle')).toBe('Avg Airtime Idle')
   expect(transformAirtimeMetricKey('random')).toBe('')
 })
 

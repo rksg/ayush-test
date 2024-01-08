@@ -964,7 +964,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                               stroke-linejoin="round"
                             />
                             <path
-                              d="M-45 -5l56 0l0 50l-56 0Z"
+                              d="M-45 -5l60 0l0 50l-60 0Z"
                               fill="rgb(0,0,0)"
                               fill-opacity="0"
                               stroke="#ccc"
@@ -972,7 +972,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                               transform="translate(640 380)"
                             />
                             <path
-                              d="M-6 0l12 0l0 16l-12 0Z"
+                              d="M-10 0l20 0l0 16l-20 0Z"
                               fill="none"
                               transform="translate(640 380)"
                             />
@@ -985,7 +985,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                               xml:space="preserve"
                               y="8"
                             >
-                              Airtime Busy
+                              Average Airtime Busy
                             </text>
                             <path
                               d="M-1.5 20l3 0l0 20l-3 0Z"
