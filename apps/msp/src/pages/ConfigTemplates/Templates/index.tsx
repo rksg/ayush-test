@@ -24,10 +24,12 @@ import {
   policyTypeLabelMapping,
   useTableQuery,
   ConfigTemplate,
-  ConfigTemplateType
+  ConfigTemplateType,
+  getConfigTemplateEditPath
 } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
-import { getIntl }                   from '@acx-ui/utils'
+import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess }               from '@acx-ui/user'
+import { getIntl }                                 from '@acx-ui/utils'
 
 import { ApplyTemplateDrawer } from './ApplyTemplateDrawer'
 import * as UI                 from './styledComponents'
@@ -35,9 +37,12 @@ import * as UI                 from './styledComponents'
 
 export function ConfigTemplateList () {
   const { $t } = useIntl()
+  const navigate = useNavigate()
+  const location = useLocation()
   const [ applyTemplateDrawerVisible, setApplyTemplateDrawerVisible ] = useState(false)
   const [ selectedTemplates, setSelectedTemplates ] = useState<ConfigTemplate[]>([])
   const deleteMutationMap = useDeleteMutation()
+  const mspTenantLink = useTenantLink('', 'v')
 
   const tableQuery = useTableQuery({
     useQuery: useGetConfigTemplateListQuery,
@@ -48,6 +53,13 @@ export function ConfigTemplateList () {
   })
 
   const rowActions: TableProps<ConfigTemplate>['rowActions'] = [
+    {
+      label: $t({ defaultMessage: 'Edit' }),
+      onClick: ([ selectedRow ]) => {
+        const editPath = getConfigTemplateEditPath(selectedRow.templateType, selectedRow.id!)
+        navigate(`${mspTenantLink.pathname}/${editPath}`, { state: { from: location } })
+      }
+    },
     {
       label: $t({ defaultMessage: 'Apply Template' }),
       onClick: (rows: ConfigTemplate[]) => {

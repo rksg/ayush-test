@@ -533,17 +533,14 @@ function PolicyRoutes () {
         element={<RogueAPDetectionTable />}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
         element={<AAAForm edit={false}/>}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.EDIT })}
         element={<AAAForm edit={true}/>}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.DETAIL })}
         element={<AAAPolicyDetail/>}
       />
@@ -552,12 +549,10 @@ function PolicyRoutes () {
         element={<AAATable />}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.CREATE })}
         element={<SyslogForm edit={false}/>}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.EDIT })}
         element={<SyslogForm edit={true}/>}
       />
@@ -565,7 +560,6 @@ function PolicyRoutes () {
         path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.LIST })}
         element={<SyslogTable />} />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.DETAIL })}
         element={<SyslogDetailView />}
       />
@@ -588,17 +582,14 @@ function PolicyRoutes () {
           element={<MacRegistrationListForm editMode={true} />}
         /> </> : <></> }
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.CREATE })}
         element={<VLANPoolForm edit={false}/>}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.EDIT })}
         element={<VLANPoolForm edit={true}/>}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.DETAIL })}
         element={<VLANPoolDetail/>}
       />
@@ -611,12 +602,10 @@ function PolicyRoutes () {
         element={<AccessControlForm editMode={false}/>}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT })}
         element={<AccessControlForm editMode={true}/>}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.DETAIL })}
         element={<AccessControlDetail />}
       />
@@ -649,12 +638,10 @@ function PolicyRoutes () {
         element={<IdentityProviderTable />}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE })}
         element={<SnmpAgentForm editMode={false}/>}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.EDIT })}
         element={<SnmpAgentForm editMode={true}/>}
       />
@@ -663,7 +650,6 @@ function PolicyRoutes () {
         element={<SnmpAgentTable />}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.DETAIL })}
         element={<SnmpAgentDetail />}
       />

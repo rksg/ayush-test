@@ -447,7 +447,7 @@ export function NetworkForm (props:{
         await handleNetworkVenues(network.id, payload.venues)
       }
 
-      modalMode? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
+      modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -517,7 +517,7 @@ export function NetworkForm (props:{
         await handleNetworkVenues(payload.id, payload.venues, data?.venues)
       }
 
-      modalMode? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
+      modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

@@ -11,6 +11,14 @@ import { mockedConfigTemplateList, mockedMSPCustomerList } from '../__tests__/fi
 
 import { ConfigTemplateList } from '.'
 
+const mockedUsedNavigate = jest.fn()
+const mockedLocation = '/test'
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUsedNavigate,
+  useLocation: () => mockedLocation
+}))
+
 describe('ConfigTemplateList component', () => {
   const path = `/:tenantId/v/${CONFIG_TEMPLATE_PATH_PREFIX}/:activeTab`
   const params = { tenantId: '__TENANT_ID', activeTab: ConfigTemplateTabKey.TEMPLATES }
@@ -84,7 +92,7 @@ describe('ConfigTemplateList component', () => {
     await waitFor(() => expect(screen.queryAllByRole('dialog').length).toBe(0))
   })
 
-  it('should cancel dialog', async () => {
+  it('should cancel Apply Template dialog', async () => {
     render(
       <Provider>
         <ConfigTemplateList />
@@ -151,5 +159,28 @@ describe('ConfigTemplateList component', () => {
 
     await waitFor(() => expect(deleteFn).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
+  })
+
+  it('should navigate to the edit page', async () => {
+    render(
+      <Provider>
+        <ConfigTemplateList />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+    const targetTemplate = mockedConfigTemplateList.data.find(t => t.templateType === 'NETWORK')!
+    const row = await screen.findByRole('row', { name: new RegExp(targetTemplate.name) })
+    await userEvent.click(within(row).getByRole('radio'))
+
+    await userEvent.click(screen.getByRole('button', { name: /Edit/ }))
+
+    expect(mockedUsedNavigate).toHaveBeenCalledWith(
+      `/__TENANT_ID/v/configTemplates/networks/wireless/${targetTemplate.id}/edit`,
+      expect.objectContaining({ state: { from: mockedLocation } })
+    )
   })
 })

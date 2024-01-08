@@ -5,9 +5,9 @@ import { ManageCustomer, ManageIntegrator, PortalSettings } from '@acx-ui/msp/co
 import { AAAForm, NetworkForm }                             from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
-  CONFIG_TEMPLATE_PATH_PREFIX,
   PolicyOperation,
   PolicyType,
+  getConfigTemplatePath,
   getPolicyRoutePath
 }  from '@acx-ui/rc/utils'
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
@@ -42,7 +42,7 @@ export default function MspRoutes () {
       <Route path='msplicenses/*' element={<CustomersRoutes />} />
       <Route path='portalSetting' element={<PortalSettings />} />
       <Route path='brand360' element={<Brand360 />} />
-      <Route path={CONFIG_TEMPLATE_PATH_PREFIX + '/*'} element={<ConfigTemplatesRoutes />} />
+      <Route path={getConfigTemplatePath('/*')} element={<ConfigTemplatesRoutes />} />
     </Route>
   )
   return (
@@ -84,7 +84,7 @@ function ConfigTemplatesRoutes () {
 
   return isConfigTemplateEnabled ? rootRoutes(
     <Route path=':tenantId/v/'>
-      <Route path={CONFIG_TEMPLATE_PATH_PREFIX}
+      <Route path={getConfigTemplatePath()}
         element={<LayoutWithConfigTemplateContext />}
       >
         <Route index

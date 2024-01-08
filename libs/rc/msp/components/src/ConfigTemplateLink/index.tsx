@@ -7,7 +7,7 @@ import {
   PolicyOperation,
   PolicyRoutePathProps,
   PolicyType,
-  getConfigTemplateLink,
+  getConfigTemplatePath,
   getPolicyDetailsLink,
   getPolicyRoutePath
 } from '@acx-ui/rc/utils'
@@ -25,7 +25,7 @@ export function ConfigTemplateLink (props: ConfigTemplateLinkProps) {
   const finalState = { ...state, ...currentPathState }
 
   return (
-    <MspTenantLink to={getConfigTemplateLink(to)} state={finalState} {...rest}>
+    <MspTenantLink to={getConfigTemplatePath(to)} state={finalState} {...rest}>
       {props.children}
     </MspTenantLink>
   )
