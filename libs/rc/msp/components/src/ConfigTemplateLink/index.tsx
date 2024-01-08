@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
-import { ConfigTemplateType } from '@acx-ui/msp/utils'
 import {
+  ConfigTemplateType,
   LocationExtended,
   PolicyDetailsLinkProps,
   PolicyOperation,

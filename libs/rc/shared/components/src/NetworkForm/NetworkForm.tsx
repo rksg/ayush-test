@@ -6,17 +6,15 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import { PageHeader, StepsForm, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
 import {
-  useAddNetworkTemplateMutation,
-  useGetNetworkTemplateQuery,
-  useUpdateNetworkTemplateMutation
-} from '@acx-ui/msp/services'
-import {
   useAddNetworkMutation,
   useAddNetworkVenuesMutation,
   useDeleteNetworkVenuesMutation,
   useGetNetworkQuery,
   useUpdateNetworkMutation,
-  useUpdateNetworkVenuesMutation
+  useUpdateNetworkVenuesMutation,
+  useAddNetworkTemplateMutation,
+  useGetNetworkTemplateQuery,
+  useUpdateNetworkTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,

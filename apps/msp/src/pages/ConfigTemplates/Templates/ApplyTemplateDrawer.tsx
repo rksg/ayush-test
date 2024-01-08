@@ -10,17 +10,15 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
+import { useMspCustomerListQuery } from '@acx-ui/msp/services'
 import {
-  useApplyConfigTemplateMutation,
-  useMspCustomerListQuery
-} from '@acx-ui/msp/services'
-import {
-  ConfigTemplate,
   MSPUtils,
   MspEc
 } from '@acx-ui/msp/utils'
+import { useApplyConfigTemplateMutation } from '@acx-ui/rc/services'
 import {
+  ConfigTemplate,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { RolesEnum }                                  from '@acx-ui/types'

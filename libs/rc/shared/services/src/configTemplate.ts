@@ -1,8 +1,3 @@
-
-import {
-  ConfigTemplateUrlsInfo,
-  ConfigTemplate
-} from '@acx-ui/msp/utils'
 import {
   TableResult,
   CommonResult,
@@ -13,7 +8,9 @@ import {
   NetworkSaveData,
   AAAViewModalType,
   transformNetworkListResponse,
-  Network
+  Network,
+  ConfigTemplate,
+  ConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi }      from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'

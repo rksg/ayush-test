@@ -1,8 +1,8 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { ConfigTemplateUrlsInfo, MspUrlsInfo }                                    from '@acx-ui/msp/utils'
-import { CONFIG_TEMPLATE_PATH_PREFIX }                                            from '@acx-ui/rc/utils'
+import { MspUrlsInfo }                                                            from '@acx-ui/msp/utils'
+import { CONFIG_TEMPLATE_PATH_PREFIX, ConfigTemplateUrlsInfo }                    from '@acx-ui/rc/utils'
 import { Provider }                                                               from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 

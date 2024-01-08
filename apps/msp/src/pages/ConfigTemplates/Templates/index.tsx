@@ -17,13 +17,14 @@ import {
   useDeleteAAAPolicyTemplateMutation,
   useDeleteNetworkTemplateMutation,
   useGetConfigTemplateListQuery
-} from '@acx-ui/msp/services'
-import { ConfigTemplate, ConfigTemplateType } from '@acx-ui/msp/utils'
+} from '@acx-ui/rc/services'
 import {
   PolicyOperation,
   PolicyType,
   policyTypeLabelMapping,
-  useTableQuery
+  useTableQuery,
+  ConfigTemplate,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 import { getIntl }                   from '@acx-ui/utils'
