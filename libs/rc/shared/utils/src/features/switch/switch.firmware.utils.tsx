@@ -24,14 +24,6 @@ export const checkVersionAtLeast09010h = (version: string): boolean => {
   }
 }
 
-export const checkVersionAtLeast09010j = (version: string): boolean => {
-  if (_.isString(version) && version.includes('09010j')) {
-    return true
-  } else {
-    return compareSwitchVersion(version, '09010j') > 0
-  }
-}
-
 export const getStackUnitsMinLimitation = (
   switchModel: string, firmwareVersion: string, firmwareVersionAboveTen: string): number => {
   if (switchModel?.includes('ICX8200')) {
