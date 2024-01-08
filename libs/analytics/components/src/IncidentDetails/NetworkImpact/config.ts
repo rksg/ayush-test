@@ -14,6 +14,8 @@ export type NetworkImpactType = 'ap'
 | 'apReboot'
 | 'apRebootEvent'
 | 'apInfra'
+| 'rogueAp'
+| 'apAirtime'
 | 'airtimeMetric'
 | 'airtimeFrame'
 | 'airtimeCast'
@@ -38,7 +40,9 @@ export enum NetworkImpactChartTypes {
   RebootReasonsByEvent = 'rebootReasonsByEvent',
   Reason = 'reason',
   ReasonByAP = 'reasonByAP',
-  WLAN = 'WLAN'
+  WLAN = 'WLAN',
+  RogueAPByChannel = 'rogueAPByChannel',
+  RxPhyErrByAP = 'rxPhyErrByAP',
 }
 
 export enum NetworkImpactQueryTypes {
@@ -51,6 +55,11 @@ export type NetworkImpactChartConfig = {
   query: NetworkImpactQueryTypes
   type: NetworkImpactType
   dimension: string
+  /**
+   * @description prevent query from firing
+   * @default false
+   **/
+  disabled?: boolean
 }
 
 export type DominanceSummary = {
@@ -71,6 +80,10 @@ export interface NetworkImpactChart {
   transformKeyFn?: (key: string) => string
   transformValueFn?: (val: number) => number
   summary: DominanceSummary | MessageDescriptor
+  disabled?: {
+    value: MessageDescriptor
+    summary: MessageDescriptor
+  }
 }
 
 export const getDataWithPercentage = (data: NetworkImpactChartData['data']) => {
@@ -356,6 +369,58 @@ export const networkImpactChartConfigs: Readonly<Record<
         defaultMessage: `This incident impacted {count} {count, plural,
           one {WLAN}
           other {WLANs}
+        }`
+      })
+    }
+  },
+  [NetworkImpactChartTypes.RogueAPByChannel]: {
+    title: defineMessage({ defaultMessage: 'Rogue APs' }),
+    tooltipFormat: defineMessage({
+      defaultMessage: `{name, select,
+        Others {Others}
+        other {Channel {name}}
+      }<br></br>
+      <space><b>{formattedValue} {value, plural,
+        one {rogue AP}
+        other {rogue APs}
+      }</b></space>`
+    }),
+    summary: {
+      dominance: defineMessage({
+        defaultMessage: `{value} {value, plural,
+          one {rogue AP}
+          other {rogue APs}
+        } in Channel {dominant}`
+      }),
+      broad: defineMessage({
+        defaultMessage: `{total} rogue APs detected in {count} {count, plural,
+          one {channel}
+          other {channels}
+        }`
+      })
+    },
+    disabled: {
+      value: defineMessage({ defaultMessage: 'Unknown' }),
+      summary: defineMessage({ defaultMessage: 'Enable rogue AP detection' })
+    }
+  },
+  [NetworkImpactChartTypes.RxPhyErrByAP]: {
+    title: defineMessage({ defaultMessage: 'Rx PHY Errors' }),
+    tooltipFormat: defineMessage({
+      defaultMessage: `{name}<br></br>
+      <space><b>{formattedValue} {value, plural,
+        one {error}
+        other {errors}
+      }</b></space>`
+    }),
+    summary: {
+      dominance: defineMessage({
+        defaultMessage: '{dominant} has the highest Rx PHY errors'
+      }),
+      broad: defineMessage({
+        defaultMessage: `Rx PHY errors observed in {count} {count, plural,
+          one {AP}
+          other {APs}
         }`
       })
     }

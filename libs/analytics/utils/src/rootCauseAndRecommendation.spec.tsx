@@ -1,4 +1,6 @@
-import { defineMessage } from 'react-intl'
+import { FormattedMessage, defineMessage } from 'react-intl'
+
+import { render, screen } from '@acx-ui/test-utils'
 
 import { IncidentCode } from './constants'
 import { fakeIncident } from './fakeIncident'
@@ -382,11 +384,11 @@ describe('getRootCauseAndRecommendations', () => {
     })
     it('should return correct varied data 1', () => {
       const checks = [
-        { isHighDensityWifiDevices: false },
+        { isHighDensityWifiDevices: true },
         { isAclbRaised: false },
         { isLargeMgmtFrameCount: false },
         { isHighSsidCountPerRadio: false },
-        { isHighCoChannelInterference: true },
+        { isHighCoChannelInterference: false },
         { isCRRMRaised: false },
         { isChannelFlyEnabled: false },
         { isHighLegacyWifiDevicesCount: false }
@@ -404,7 +406,7 @@ describe('getRootCauseAndRecommendations', () => {
               { isAclbRaised: false },
               { isLargeMgmtFrameCount: false },
               { isHighSsidCountPerRadio: false },
-              { isHighCoChannelInterference: true },
+              { isHighCoChannelInterference: false },
               { isCRRMRaised: false },
               { isChannelFlyEnabled: false },
               { isHighLegacyWifiDevicesCount: false }
@@ -423,7 +425,7 @@ describe('getRootCauseAndRecommendations', () => {
     })
     it('should return correct varied data 2', () => {
       const checks = [
-        { isHighDensityWifiDevices: true },
+        { isHighDensityWifiDevices: false },
         { isAclbRaised: false },
         { isLargeMgmtFrameCount: true },
         { isHighSsidCountPerRadio: false },
@@ -441,7 +443,7 @@ describe('getRootCauseAndRecommendations', () => {
           dominant: {},
           rootCauseChecks: {
             checks: [
-              { isHighDensityWifiDevices: true },
+              { isHighDensityWifiDevices: false },
               { isAclbRaised: false },
               { isLargeMgmtFrameCount: true },
               { isHighSsidCountPerRadio: false },
@@ -468,7 +470,48 @@ describe('getRootCauseAndRecommendations', () => {
         { isAclbRaised: false },
         { isLargeMgmtFrameCount: true },
         { isHighSsidCountPerRadio: false },
-        { isHighCoChannelInterference: false },
+        { isHighCoChannelInterference: true },
+        { isCRRMRaised: false },
+        { isChannelFlyEnabled: true },
+        { isHighLegacyWifiDevicesCount: false }
+      ] as unknown as AirtimeArray
+      const params = {
+        ssidCountPerRadioSlice: 0
+      } as AirtimeParams
+      const incident = fakeIncident({
+        ...airtimeRxIncident,
+        metadata: {
+          dominant: {},
+          rootCauseChecks: {
+            checks: [
+              { isHighDensityWifiDevices: true },
+              { isAclbRaised: false },
+              { isLargeMgmtFrameCount: true },
+              { isHighSsidCountPerRadio: false },
+              { isHighCoChannelInterference: true },
+              { isCRRMRaised: false },
+              { isChannelFlyEnabled: true },
+              { isHighLegacyWifiDevicesCount: false }
+            ],
+            params
+          }
+        }
+      })
+      const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
+      const airtimeRxRCA = getAirtimeRxRootCauses(checks as (AirtimeRxChecks)[])
+      const airtimeRxRecommendations = getAirtimeRxRecommendations(
+        checks as (AirtimeRxChecks)[], params)
+      expect(rootCauses.rootCauseText).toEqual(airtimeRxRCA.rootCauseText)
+      expect(recommendations.recommendationsText).toEqual(
+        airtimeRxRecommendations.recommendationsText)
+    })
+    it('should return correct varied data 4', () => {
+      const checks = [
+        { isHighDensityWifiDevices: true },
+        { isAclbRaised: false },
+        { isLargeMgmtFrameCount: true },
+        { isHighSsidCountPerRadio: false },
+        { isHighCoChannelInterference: true },
         { isCRRMRaised: false },
         { isChannelFlyEnabled: false },
         { isHighLegacyWifiDevicesCount: false }
@@ -486,7 +529,7 @@ describe('getRootCauseAndRecommendations', () => {
               { isAclbRaised: false },
               { isLargeMgmtFrameCount: true },
               { isHighSsidCountPerRadio: false },
-              { isHighCoChannelInterference: false },
+              { isHighCoChannelInterference: true },
               { isCRRMRaised: false },
               { isChannelFlyEnabled: false },
               { isHighLegacyWifiDevicesCount: false }
@@ -642,7 +685,7 @@ describe('getRootCauseAndRecommendations', () => {
           dominant: {},
           rootCauseChecks: {
             checks: [
-              { isHighDensityWifiDevices: true },
+              { isHighDensityWifiDevices: false },
               { isAclbRaised: false },
               { isHighSsidCountPerRadio: false },
               { isHighPacketErrorCount: false },
@@ -665,36 +708,25 @@ describe('getRootCauseAndRecommendations', () => {
   })
 
   describe('htmlValues', () => {
-    it('should render a paragraph', () => {
-      const text = 'Test paragraph'
-      const result = htmlValues.p(text)
+    function testNode (node: string) {
+      const FormatMessage = FormattedMessage
+      return () => {
+        const text = 'Test paragraph'
+        const message = `<${node}>${text}</${node}>`
+        render(<FormatMessage
+          id='test-rcr-html-values'
+          defaultMessage={message}
+          values={htmlValues}
+        />)
 
-      expect(result.type).toBe('p')
-      expect(result.props.children).toBe(text)
-    })
-
-    it('should render an ordered list', () => {
-      const text = 'Test ordered list'
-      const result = htmlValues.ol(text)
-
-      expect(result.type).toBe('ol')
-      expect(result.props.children).toBe(text)
-    })
-
-    it('should render a list item', () => {
-      const text = 'Test list item'
-      const result = htmlValues.li(text)
-
-      expect(result.type).toBe('li')
-      expect(result.props.children).toBe(text)
-    })
-
-    it('should render an unordered list', () => {
-      const text = 'Test unordered list'
-      const result = htmlValues.ul(text)
-
-      expect(result.type).toBe('ul')
-      expect(result.props.children).toBe(text)
-    })
+        const result = screen.getByText(text)
+        expect(result.nodeName).toBe(node.toUpperCase())
+        expect(result.textContent).toBe(text)
+      }
+    }
+    it('should render a paragraph', testNode('p'))
+    it('should render an ordered list', testNode('ol'))
+    it('should render a list item', testNode('li'))
+    it('should render an unordered list', testNode('ul'))
   })
 })
