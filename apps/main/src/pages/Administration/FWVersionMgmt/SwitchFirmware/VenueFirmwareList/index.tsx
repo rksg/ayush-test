@@ -39,11 +39,10 @@ import {
 } from '../../FirmwareUtils'
 import { PreferencesDialog } from '../../PreferencesDialog'
 
-import * as UI                                                                              from './styledComponents'
-import { getSwitchFirmwareList, getSwitchVenueAvailableVersions, sortAvailableVersionProp } from './switch.upgrade.util'
-import { SwitchScheduleDrawer }                                                             from './SwitchScheduleDrawer'
-import { SwitchFirmwareWizardType, SwitchUpgradeWizard }                                    from './SwitchUpgradeWizard'
-import { VenueStatusDrawer }                                                                from './VenueStatusDrawer'
+import * as UI                                           from './styledComponents'
+import { SwitchScheduleDrawer }                          from './SwitchScheduleDrawer'
+import { SwitchFirmwareWizardType, SwitchUpgradeWizard } from './SwitchUpgradeWizard'
+import { VenueStatusDrawer }                             from './VenueStatusDrawer'
 
 export const useDefaultVenuePayload = (): RequestPayload => {
   return {
@@ -65,7 +64,12 @@ export const VenueFirmwareTable = (
   const { $t } = useIntl()
   const intl = useIntl()
   const params = useParams()
-  const { getSwitchNextScheduleTplTooltip } = useSwitchFirmwareUtils()
+  const {
+    getSwitchNextScheduleTplTooltip,
+    getSwitchFirmwareList,
+    getSwitchVenueAvailableVersions,
+    sortAvailableVersionProp
+  } = useSwitchFirmwareUtils()
   const { data: availableVersions } = useGetSwitchAvailableFirmwareListQuery({ params })
   const [modelVisible, setModelVisible] = useState(false)
   const [updateNowWizardVisible, setUpdateNowWizardVisible] = useState(false)

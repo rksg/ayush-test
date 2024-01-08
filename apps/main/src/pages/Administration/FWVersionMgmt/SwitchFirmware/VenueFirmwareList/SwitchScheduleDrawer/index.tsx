@@ -22,8 +22,7 @@ import { getNextScheduleTpl } from '../../../FirmwareUtils'
 import * as UI                from '../../../styledComponents'
 import {
   enableSwitchScheduleTooltip,
-  getSwitchNextScheduleTpl,
-  getSwitchScheduleTpl
+  getSwitchNextScheduleTpl
 } from '../switch.upgrade.util'
 export interface SwitchScheduleDrawerProps {
   visible: boolean,
@@ -33,8 +32,11 @@ export interface SwitchScheduleDrawerProps {
 
 export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
   const intl = useIntl()
+  const {
+    getSwitchNextScheduleTplTooltip,
+    getSwitchScheduleTpl
+  } = useSwitchFirmwareUtils()
 
-  const { getSwitchNextScheduleTplTooltip } = useSwitchFirmwareUtils()
   const [ getSwitchFirmwareStatusList ] = useLazyGetSwitchFirmwareListQuery({
     pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL
   })

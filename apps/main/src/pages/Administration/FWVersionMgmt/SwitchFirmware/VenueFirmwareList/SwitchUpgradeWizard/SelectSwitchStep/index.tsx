@@ -28,13 +28,10 @@ import { SwitchFirmwareWizardType } from '..'
 import {
   getNextScheduleTpl
 } from '../../../../FirmwareUtils'
-import * as UI                      from '../../styledComponents'
+import * as UI               from '../../styledComponents'
 import {
   getHightlightSearch,
-  getSwitchFirmwareList,
-  getSwitchNextScheduleTpl,
-  getSwitchScheduleTpl,
-  getSwitchVenueAvailableVersions
+  getSwitchNextScheduleTpl
 } from '../../switch.upgrade.util'
 
 const getTooltipText = function (value: string, customDisplayValue?: string | React.ReactNode) {
@@ -47,7 +44,9 @@ const getTooltipText = function (value: string, customDisplayValue?: string | Re
 
 function useColumns () {
   const intl = useIntl()
-  const { getSwitchNextScheduleTplTooltip } = useSwitchFirmwareUtils()
+  const { getSwitchNextScheduleTplTooltip,
+    getSwitchFirmwareList,
+    getSwitchVenueAvailableVersions } = useSwitchFirmwareUtils()
 
   const columns: TableProps<FirmwareSwitchVenue>['columns'] = [
     {
@@ -126,7 +125,7 @@ export const SelectSwitchStep = (
 
   const { form, current } = useStepFormContext()
   const { tenantId } = useParams()
-  const { parseSwitchVersion } = useSwitchFirmwareUtils()
+  const { parseSwitchVersion, getSwitchScheduleTpl } = useSwitchFirmwareUtils()
 
   const [ getSwitchList ] = useLazyGetSwitchFirmwareListQuery()
 

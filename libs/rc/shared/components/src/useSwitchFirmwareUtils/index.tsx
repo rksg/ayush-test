@@ -6,10 +6,13 @@ import {
 import {
   FirmwareSwitchVenue,
   FirmwareVersion,
+  SortResult,
+  SwitchFirmware,
   convertSwitchVersionFormat,
   firmwareTypeTrans
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
+import { noDataDisplay } from '@acx-ui/utils'
 
 export function useSwitchFirmwareUtils () {
   const switchVersions = useGetSwitchCurrentVersionsQuery({ params: useParams() })
@@ -56,11 +59,71 @@ export function useSwitchFirmwareUtils () {
     return ''
   }
 
+  // const { getSwitchScheduleTpl } = useSwitchFirmwareUtils()
+  const getSwitchScheduleTpl = (s: SwitchFirmware): string | undefined => {
+    if (s.switchNextSchedule) {
+      const versionName = s.switchNextSchedule.version?.name
+      const versionAboveTenName = s.switchNextSchedule.versionAboveTen?.name
+      let names = []
 
+      if (versionName) {
+        names.push(parseSwitchVersion(versionName))
+      }
+
+      if (versionAboveTenName) {
+        names.push(parseSwitchVersion(versionAboveTenName))
+      }
+      return names.join(', ')
+    }
+    return ''
+  }
+
+  // const { getSwitchFirmwareList } = useSwitchFirmwareUtils()
+  const getSwitchFirmwareList = function (row: FirmwareSwitchVenue) {
+    let versionList = []
+    if (row.switchFirmwareVersion?.id) {
+      versionList.push(parseSwitchVersion(row.switchFirmwareVersion.id))
+    }
+    if (row.switchFirmwareVersionAboveTen?.id) {
+      versionList.push(parseSwitchVersion(row.switchFirmwareVersionAboveTen.id))
+    }
+    return versionList
+  }
+
+  const getSwitchVenueAvailableVersions = function (row: FirmwareSwitchVenue) {
+    const { availableVersions } = row
+    if (!Array.isArray(availableVersions) || availableVersions.length === 0) {
+      return noDataDisplay
+    }
+
+    const availableVersionList = availableVersions.map(version =>
+      parseSwitchVersion(version.id))
+    const switchFirmwareList = getSwitchFirmwareList(row)
+
+    const filteredArray = availableVersionList.filter(value =>
+      !switchFirmwareList.includes(value))
+
+    return filteredArray.length > 0 ? filteredArray.join(',') : noDataDisplay
+  }
+
+  const sortAvailableVersionProp = function (
+    sortFn: (a: string, b: string) => SortResult
+  ) {
+    return (a: FirmwareSwitchVenue,
+      b: FirmwareSwitchVenue) => {
+      const valueA = getSwitchVenueAvailableVersions(a)
+      const valueB = getSwitchVenueAvailableVersions(b)
+      return sortFn(valueA, valueB)
+    }
+  }
 
   return {
     parseSwitchVersion,
     getSwitchVersionLabel,
-    getSwitchNextScheduleTplTooltip
+    getSwitchNextScheduleTplTooltip,
+    getSwitchScheduleTpl,
+    getSwitchFirmwareList,
+    getSwitchVenueAvailableVersions,
+    sortAvailableVersionProp
   }
 }
