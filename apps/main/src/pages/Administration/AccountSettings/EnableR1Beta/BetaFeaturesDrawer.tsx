@@ -27,12 +27,13 @@ export function BetaFeaturesDrawer (
   const betaListFeatureIds = useGetBetaList()
   const showBetaList = betaListFeatureIds.length > 0
   if (betaListFeatureIds) {
-    Object.keys(betaList).map(k2 => {
-      // console.log(betaList[c].key, betaListFeatureIds.includes(betaList[c].key), betaList[c].status)
-      betaList[Number(k2)].status =
-        (betaListFeatureIds.includes(betaList[Number(k2)].key))? true : false
+    Object.keys(betaList).map(k => {
+      betaList[Number(k)].status =
+        (betaListFeatureIds.includes(betaList[Number(k)].key))? true : false
     })
   }
+
+  const drawerTitle = $t({ defaultMessage: 'RUCKUS One Beta Features' })
 
   const footer =<div>
     <Button type='primary'
@@ -43,7 +44,7 @@ export function BetaFeaturesDrawer (
     </Button>
   </div>
   return ( showBetaList ? <Drawer
-    title={$t({ defaultMessage: 'RUCKUS One Beta Features' })}
+    title={drawerTitle}
     visible={visible}
     onClose={onClose}
     width={props.width}
@@ -68,7 +69,7 @@ export function BetaFeaturesDrawer (
     }
     footer={footer}
   /> : <Drawer
-    title={$t({ defaultMessage: 'RUCKUS One Beta Features' })}
+    title={drawerTitle}
     visible={visible}
     onClose={onClose}
     width={props.width}
