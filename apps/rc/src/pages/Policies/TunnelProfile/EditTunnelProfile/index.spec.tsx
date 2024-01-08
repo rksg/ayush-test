@@ -2,28 +2,34 @@ import { waitFor } from '@testing-library/react'
 import userEvent   from '@testing-library/user-event'
 import { rest }    from 'msw'
 
-import { Features, useIsSplitOn, useIsTierAllowed }                  from '@acx-ui/feature-toggle'
-import { EdgeSdLanUrls, NetworkSegmentationUrls, TunnelProfileUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                  from '@acx-ui/store'
-import { mockServer, render, screen }                                from '@acx-ui/test-utils'
-
-import { mockedTunnelProfileData } from '../__tests__/fixtures'
+import { Features, useIsSplitOn, useIsTierAllowed }                                             from '@acx-ui/feature-toggle'
+import { EdgeSdLanUrls, EdgeTunnelProfileFixtures, NetworkSegmentationUrls, TunnelProfileUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                                             from '@acx-ui/store'
+import { mockServer, render, screen }                                                           from '@acx-ui/test-utils'
 
 import EditTunnelProfile from '.'
 
+const {
+  mockedTunnelProfileData,
+  mockedDefaultTunnelProfileData
+} = EdgeTunnelProfileFixtures
+const tenantId = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
-
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  getTenantId: jest.fn().mockReturnValue(tenantId)
+}))
 const editViewPath = '/:tenantId/t/policies/tunnelProfile/:policyId/edit'
 
 describe('EditTunnelProfile', () => {
   let params: { tenantId: string, policyId: string }
   beforeEach(() => {
     params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      tenantId: tenantId,
       policyId: 'testPolicyId'
     }
 
@@ -88,6 +94,33 @@ describe('EditTunnelProfile', () => {
     })
   })
 
+  it('all fields should be grey out when it is default profile', async () => {
+    mockServer.use(
+      rest.get(
+        TunnelProfileUrls.getTunnelProfile.url,
+        (_, res, ctx) => res(ctx.json(mockedDefaultTunnelProfileData))
+      )
+    )
+
+    render(
+      <Provider>
+        <EditTunnelProfile />
+      </Provider>
+      , { route: { path: editViewPath, params } }
+    )
+
+    await waitFor(async () => {
+      expect(await screen.findByRole('textbox', { name: 'Profile Name' })).toBeDisabled()
+    })
+    expect(await screen.findByRole('textbox', { name: 'Profile Name' })).toBeDisabled()
+    expect(await screen.findByRole('switch', { name: 'Force Fragmentation' })).toBeDisabled()
+    await (await screen.findAllByRole('radio')).forEach(item => {
+      expect(item).toBeDisabled()
+    })
+    const ageTimeMinutesInput = await (await screen.findAllByRole('spinbutton'))
+      .filter(ele => ele.id === 'ageTimeMinutes')[0]
+    expect(ageTimeMinutesInput).toBeDisabled()
+  })
 
   describe('when SD-LAN is ready', () => {
     const mockNsgList = {
