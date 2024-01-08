@@ -297,7 +297,7 @@ export function IncidentTable ({ filters }: {
             children={$t({ defaultMessage: 'Show Muted Incidents' })}
           />
         ]}
-        rowClassName={(record) => record.isMuted ? 'table-row-muted' : 'table-row-normal'}
+        rowClassName={(record) => record.isMuted ? 'table-row-disabled' : 'table-row-normal'}
         filterableWidth={155}
         searchableWidth={240}
       />
