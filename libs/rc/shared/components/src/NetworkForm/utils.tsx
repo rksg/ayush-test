@@ -2,8 +2,18 @@
 
 import _ from 'lodash'
 
-import { useGetTunnelProfileViewDataListQuery }                                                                                                         from '@acx-ui/rc/services'
-import { AuthRadiusEnum, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, DpskWlanAdvancedCustomization, TunnelTypeEnum, TunnelProfileViewData } from '@acx-ui/rc/utils'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useGetTunnelProfileViewDataListQuery }                   from '@acx-ui/rc/services'
+import {
+  AuthRadiusEnum,
+  GuestNetworkTypeEnum,
+  NetworkSaveData,
+  NetworkTypeEnum,
+  DpskWlanAdvancedCustomization,
+  TunnelTypeEnum,
+  TunnelProfileViewData
+} from '@acx-ui/rc/utils'
+
 export interface NetworkVxLanTunnelProfileInfo {
   enableTunnel: boolean,
   enableVxLan: boolean,
@@ -87,12 +97,14 @@ export const hasVxLanTunnelProfile = (data: NetworkSaveData | null) => {
 
 export const useNetworkVxLanTunnelProfileInfo =
   (data: NetworkSaveData | null): NetworkVxLanTunnelProfileInfo => {
-    const getTunnelProfilePayload = {
-      filters: { networkIds: [data?.id] }
-    }
+    const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+    const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+
     const { data: tunnelProfileData } = useGetTunnelProfileViewDataListQuery(
-      { payload: getTunnelProfilePayload },
-      { skip: !data }
+      { payload: {
+        filters: { networkIds: [data?.id] }
+      } },
+      { skip: !isEdgeEnabled || !isEdgeReady || !data }
     )
 
     const vxLanTunnels = tunnelProfileData?.data.filter(item => item.type === TunnelTypeEnum.VXLAN

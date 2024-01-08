@@ -11,7 +11,7 @@ import { useParams }                               from 'react-router-dom'
 import { Button, Loader, StepsForm, useStepFormContext }                                                                             from '@acx-ui/components'
 import { TunnelProfileAddModal }                                                                                                     from '@acx-ui/rc/components'
 import { useGetNetworkSegmentationViewDataListQuery, useGetTunnelProfileViewDataListQuery, useVenueNetworkActivationsDataListQuery } from '@acx-ui/rc/services'
-import { isDefaultTunnelProfile, TunnelProfileFormType, TunnelTypeEnum }                                                             from '@acx-ui/rc/utils'
+import { getTunnelProfileOptsWithDefault, TunnelProfileFormType, TunnelTypeEnum }                                                    from '@acx-ui/rc/utils'
 
 import { NetworkSegmentationGroupFormData } from '..'
 
@@ -40,25 +40,16 @@ export const WirelessNetworkForm = () => {
   const venueId = form.getFieldValue('venueId')
   const venueName = form.getFieldValue('venueName')
 
-  const { tunnelProfileList , isTunnelLoading } = useGetTunnelProfileViewDataListQuery({
+  const { tunnelProfileOptions , isTunnelLoading } = useGetTunnelProfileViewDataListQuery({
     payload: tunnelProfileDefaultPayload
   }, {
     selectFromResult: ({ data, isLoading }) => {
       return {
-        tunnelProfileList: data,
+        tunnelProfileOptions: getTunnelProfileOptsWithDefault(data?.data, TunnelTypeEnum.VXLAN),
         isTunnelLoading: isLoading
       }
     }
   })
-
-  const hasDefaultProfile = tunnelProfileList?.data
-    .some(item => isDefaultTunnelProfile(item, params.tenantId!))
-  const tunnelProfileOptions = tunnelProfileList?.data
-    .filter(item => item.type !== TunnelTypeEnum.VLAN_VXLAN)
-    .map(item => ({ label: item.name, value: item.id }))
-  if (!hasDefaultProfile) {
-    tunnelProfileOptions?.unshift({ label: 'Default', value: params.tenantId as string })
-  }
 
   const onTunnelProfileChange = (value: string) => {
     form.setFieldValue('tunnelProfileName',

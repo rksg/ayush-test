@@ -33,25 +33,6 @@ export const mockedVenueList = {
   ]
 }
 
-export const mockedTunnelProfileViewData = {
-  totalCount: 3,
-  page: 1,
-  data: [
-    {
-      id: 'tunnelProfileId1',
-      name: 'tunnelProfile1'
-    },
-    {
-      id: 'tunnelProfileId2',
-      name: 'tunnelProfile2'
-    },
-    {
-      id: 'tunnelProfileId3',
-      name: 'Default'
-    }
-  ]
-}
-
 export const mockNetworkSaveData = {
   fields: ['venueId', 'networkId'],
   totalCount: 3,
