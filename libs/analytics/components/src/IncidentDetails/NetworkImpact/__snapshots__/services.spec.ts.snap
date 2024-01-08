@@ -1,5 +1,26 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`networkImpactChartsApi does not send query for disabled config and use default data 1`] = `
+Object {
+  "rogueAPByChannel": Object {
+    "count": 0,
+    "data": Array [],
+    "total": 0,
+  },
+  "rxPhyErrByAP": Object {
+    "count": 10,
+    "data": Array [
+      Object {
+        "key": "00:00:00:00:00:00",
+        "name": "00:00:00:00:00:00",
+        "value": 10,
+      },
+    ],
+    "total": 10,
+  },
+}
+`;
+
 exports[`networkImpactChartsApi should return correct data 1`] = `
 Object {
   "WLAN": Object {
@@ -16,6 +37,32 @@ Object {
         "value": 1,
       },
     ],
+  },
+  "airtimeBusy": Object {
+    "data": Array [
+      Object {
+        "key": "airtimBusy",
+        "name": "airtimBusy",
+        "value": 0.5,
+      },
+      Object {
+        "key": "airtimRx",
+        "name": "airtimRx",
+        "value": 0.3,
+      },
+      Object {
+        "key": "airtimTx",
+        "name": "airtimTx",
+        "value": 0.1,
+      },
+      Object {
+        "key": "airtimIdle",
+        "name": "airtimIdle",
+        "value": 0.1,
+      },
+    ],
+    "peak": 0.65,
+    "summary": 0.5,
   },
   "clientManufacturer": Object {
     "count": 2,

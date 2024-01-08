@@ -166,6 +166,14 @@ export {
   EdgeSdLanActivatedNetworksTable,
   ActivateNetworkSwitchButton } from './EdgeSdLan/SdLanNetworkTable'
 export type { ActivatedNetworksTableProps } from './EdgeSdLan/SdLanNetworkTable'
+export {
+  ApCompatibilityType,
+  ApCompatibilityQueryTypes,
+  InCompatibilityFeatures,
+  retrievedCompatibilitiesOptions,
+  ApFeatureCompatibility,
+  ApCompatibilityToolTip,
+  ApCompatibilityDrawer } from './ApCompatibilityDrawer'
 
 export * from './services'
 export * from './policies'
@@ -179,4 +187,5 @@ export * from './RadioSettingsChannels/320Mhz/ChannelComponentStates'
 export * from './CommonLinkHelper'
 export * from './ZoomWidget'
 export * from './NetworkForm'
+export * from './NetworkDetails'
 export * from './users'

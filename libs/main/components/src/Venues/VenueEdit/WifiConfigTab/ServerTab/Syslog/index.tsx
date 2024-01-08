@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { Form, Select, Space, Switch, Typography } from 'antd'
-import { isEqual }                                 from 'lodash'
-import { useIntl }                                 from 'react-intl'
+import { Button, Form, Select, Space, Switch, Typography } from 'antd'
+import { isEqual }                                         from 'lodash'
+import { useIntl }                                         from 'react-intl'
 
 import { AnchorContext, Loader, StepsFormLegacy } from '@acx-ui/components'
 import {
@@ -21,8 +21,9 @@ import {
   PolicyType
 } from '@acx-ui/rc/utils'
 import {
-  TenantLink,
-  useParams
+  useNavigate,
+  useParams,
+  useTenantLink
 } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../..'
@@ -38,6 +39,8 @@ export function Syslog () {
   const { Paragraph } = Typography
   const { $t } = useIntl()
   const { tenantId, venueId } = useParams()
+  const navigate = useNavigate()
+  const toPolicyPath = useTenantLink('')
   const {
     editContextData,
     setEditContextData,
@@ -165,15 +168,24 @@ export function Syslog () {
               })}
               style={{ width: '200px' }}
             />
-            <TenantLink
-              to={getPolicyRoutePath({
-                type: PolicyType.SYSLOG,
-                oper: PolicyOperation.CREATE
-              })}
+            <Button type='link'
               style={{ marginLeft: '20px' }}
+              onClick={async () => {
+                await setEditContextData({
+                  ...editContextData,
+                  isDirty: false,
+                  hasError: false
+                })
+
+                const policyRoutePath = getPolicyRoutePath({
+                  type: PolicyType.SYSLOG,
+                  oper: PolicyOperation.CREATE
+                })
+                await navigate(`${toPolicyPath.pathname}/${policyRoutePath}`)
+              }}
             >
               {$t({ defaultMessage: 'Add Server Profile' })}
-            </TenantLink>
+            </Button>
           </Form.Item>
           {defaultSyslogValue &&
           <UI.FieldGroup>
