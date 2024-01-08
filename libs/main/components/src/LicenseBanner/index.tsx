@@ -128,7 +128,7 @@ export function LicenseBanner (props: BannerProps) {
       </UI.LicenseIconWrapper>
       <UI.TipsWrapper>
         <UI.MainTips expired={isExpired} children={getMainTipsContent(expireInfo)}/>
-        <UI.SubTips expired={isExpired}>
+        <UI.SubTips expired={isExpired} style={{ whiteSpace: 'pre' }}>
           <FormattedMessage {...descTips}
             values={{
               b: chunks => chunks,

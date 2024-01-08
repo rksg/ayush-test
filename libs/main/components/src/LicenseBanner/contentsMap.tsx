@@ -36,10 +36,10 @@ export const LicenseBannerDescMapping = ()=> {
       defaultMessage: '<b>Ensure service level</b>, <a>Act now</a>'
     }),
     [LicenseBannerTypeEnum.gracePeriod]: defineMessage({
-      defaultMessage: '<b>{expireDeviceType} configuration will be deleted on {graceDate}</b>, <a>Act now</a>'
+      defaultMessage: '<b>{expireDeviceType} configuration may be deleted on {graceDate}</b>, <a>Act now</a> <b>to prevent outage</b>'
     }),
     [LicenseBannerTypeEnum.expired]: defineMessage({
-      defaultMessage: '<b>{expireDeviceType} configuration was deleted</b>'
+      defaultMessage: '<b>{expireDeviceType} configuration will be deleted</b>, <a>Act now</a> <b>to prevent outage</b>'
     }),
     [LicenseBannerTypeEnum.msp_expired]: defineMessage({
       defaultMessage: '<b>MSP subscriptions have expired</b>'
@@ -78,7 +78,7 @@ export const MSPLicenseBannerDescMapping = ()=> {
       defaultMessage: '<b>Ensure service level</b>, <a>Act now</a>'
     }),
     [LicenseBannerTypeEnum.gracePeriod]: defineMessage({
-      defaultMessage: '<b>{expireDeviceType} configuration will be deleted on {graceDate}</b>, <a>Act now</a>'
+      defaultMessage: '<b>{expireDeviceType} configuration may be deleted on {graceDate}</b>, <a>Act now</a> <b>to prevent outage</b>'
     }),
     [LicenseBannerTypeEnum.expired]: defineMessage({
       defaultMessage: '<b>MSP subscriptions usage exceeds limit</b>'
