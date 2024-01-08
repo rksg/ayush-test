@@ -95,21 +95,25 @@ export function getJwtTokenPayload () {
 
   if (cache.has(jwt)) return cache.get(jwt)!
 
-  try {
-    const token = jwtDecode(jwt) as JwtToken
-
-    cache.clear()
-    cache.set(jwt, token)
-    return token
-  } catch {
-    throw new Error('Unable to parse JWT Token')
-  }
+  return updateJwtCache(jwt)
 }
 
 export function getJwtHeaders ({ ignoreDelegation = false }: { ignoreDelegation?: boolean } = {}) {
   return {
     ...(getJwtToken() && { Authorization: `Bearer ${getJwtToken()}` }),
     ...(!ignoreDelegation && isDelegationMode() && { 'x-rks-tenantid': getTenantId() })
+  }
+}
+
+export function updateJwtCache (newJwt: string) {
+  try {
+    const token = jwtDecode(newJwt) as JwtToken
+
+    cache.clear()
+    cache.set(newJwt, token)
+    return token
+  } catch {
+    throw new Error('Unable to parse JWT Token')
   }
 }
 

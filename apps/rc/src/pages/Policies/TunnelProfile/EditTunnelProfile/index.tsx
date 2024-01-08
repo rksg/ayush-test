@@ -12,7 +12,7 @@ import { TunnelProfileForm } from '../TunnelProfileForm'
 
 const EditTunnelProfile = () => {
   const { $t } = useIntl()
-  const { tenantId, policyId } = useParams()
+  const { policyId } = useParams()
   const [form] = Form.useForm()
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const { data: tunnelProfileData, isLoading } = useGetTunnelProfileByIdQuery(
@@ -53,7 +53,7 @@ const EditTunnelProfile = () => {
   const handelUpdate = (data: TunnelProfileFormType) =>
     updateTunnelProfile(policyId || '', data)
 
-  const isDefaultTunnelProfile = getIsDefaultTunnelProfile(tunnelProfileData, tenantId!)
+  const isDefaultTunnelProfile = getIsDefaultTunnelProfile(tunnelProfileData)
   const formInitValues = getTunnelProfileFormDefaultValues(tunnelProfileData)
   if (nsgId || edgeSdLanData)
     formInitValues.disabledFields = ['type']

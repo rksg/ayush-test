@@ -24,4 +24,5 @@ export * from './pokeSocket'
 export * from './ccdSocket'
 export * from './macAddressUtils'
 export * from './networkUtils'
-
+export * from './configTemplate'
+export * from './pages'

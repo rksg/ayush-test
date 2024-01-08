@@ -22,7 +22,8 @@ export { CodeMirrorWidget } from './CodeMirrorWidget'
 export {
   ConnectedClientsTable,
   defaultClientPayload,
-  isEqualCaptivePortalPlainText
+  networkDisplayTransformer,
+  isEqualCaptivePortal
 } from './ConnectedClientsTable'
 export { DevicesDashboardWidget, DevicesDashboardWidgetV2 } from './DevicesDashboardWidget'
 export { DevicesWidget, seriesMappingAP } from './DevicesWidget'
@@ -166,6 +167,14 @@ export {
   EdgeSdLanActivatedNetworksTable,
   ActivateNetworkSwitchButton } from './EdgeSdLan/SdLanNetworkTable'
 export type { ActivatedNetworksTableProps } from './EdgeSdLan/SdLanNetworkTable'
+export {
+  ApCompatibilityType,
+  ApCompatibilityQueryTypes,
+  InCompatibilityFeatures,
+  retrievedCompatibilitiesOptions,
+  ApFeatureCompatibility,
+  ApCompatibilityToolTip,
+  ApCompatibilityDrawer } from './ApCompatibilityDrawer'
 
 export * from './services'
 export * from './policies'

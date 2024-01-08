@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { Col, Row, Form } from 'antd'
 import { Radio }          from 'antd'
 import _                  from 'lodash'
+import { useIntl }        from 'react-intl'
 
 import { Tooltip }                 from '@acx-ui/components'
 import { AFCProps }                from '@acx-ui/rc/utils'
@@ -43,7 +44,7 @@ export function RadioSettingsChannelsManual320Mhz (props: {
   channelMethod?: string,
   afcProps?: AFCProps
 }) {
-
+  const intl = useIntl()
   const form = Form.useFormInstance()
   const [checkedGroup, setCheckGroup] = useState('320MHz-1')
   const [checkedChannel, setCheckedChannel] = useState([] as CheckboxValueType[])
@@ -133,7 +134,7 @@ export function RadioSettingsChannelsManual320Mhz (props: {
                 <Tooltip
                   key={value}
                   // eslint-disable-next-line
-                  title={disabled ? '' : ChannelButtonTextRender(Array.of(Number(value)), checkedChannel.includes(value), afcProps)}
+                  title={disabled ? '' : ChannelButtonTextRender(intl, Array.of(Number(value)), checkedChannel.includes(value), afcProps)}
                 >
                   {value}
                 </Tooltip>,
@@ -159,7 +160,7 @@ export function RadioSettingsChannelsManual320Mhz (props: {
                 <Tooltip
                   key={value}
                   // eslint-disable-next-line
-                  title={disabled ? '' : ChannelButtonTextRender(Array.of(Number(value)), checkedChannel.includes(value), afcProps)}
+                  title={disabled ? '' : ChannelButtonTextRender(intl, Array.of(Number(value)), checkedChannel.includes(value), afcProps)}
                 >
                   {value}
                 </Tooltip>,
