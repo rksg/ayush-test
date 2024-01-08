@@ -9,9 +9,9 @@ import {
   useGetTunnelProfileViewDataListQuery,
   useNetworkListQuery
 }                                    from '@acx-ui/rc/services'
-import { getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, MtuTypeEnum, PolicyOperation, PolicyType, TunnelProfileViewData, useTableQuery } from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useTenantLink, useParams }                                                                                          from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                                                                                                                        from '@acx-ui/user'
+import { getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, isDefaultTunnelProfile, MtuTypeEnum, PolicyOperation, PolicyType, TunnelProfileViewData, useTableQuery } from '@acx-ui/rc/utils'
+import { Path, TenantLink, useNavigate, useTenantLink }                                                                                                                             from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess }                                                                                                                                                from '@acx-ui/user'
 const defaultTunnelProfileTablePayload = {}
 
 const TunnelProfileTable = () => {
@@ -19,7 +19,6 @@ const TunnelProfileTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath: Path = useTenantLink('')
-  const params = useParams()
   const isSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
   const tableQuery = useTableQuery({
     useQuery: useGetTunnelProfileViewDataListQuery,
@@ -164,8 +163,9 @@ const TunnelProfileTable = () => {
 
   const rowActions: TableProps<TunnelProfileViewData>['rowActions'] = [
     {
+      // Default Tunnel profile cannot Edit
       visible: (selectedRows) => selectedRows.length === 1
-        && selectedRows[0].id !== params.tenantId, // Default Tunnel profile cannot Edit
+            && !isDefaultTunnelProfile(selectedRows[0]),
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
         navigate({

@@ -29,10 +29,16 @@ import {
 
 import { WirelessNetworkForm } from '.'
 
+const tenantId = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
+}))
+
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  getTenantId: jest.fn().mockReturnValue(tenantId)
 }))
 
 type MockSelectProps = React.PropsWithChildren<{
@@ -66,7 +72,7 @@ describe('NetworkSegmentation - WirelessNetworkForm', () => {
   beforeEach(() => {
     mockedGetNetworkDeepList.mockReset()
     params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      tenantId: tenantId,
       serviceId: 'testServiceId'
     }
 
