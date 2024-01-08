@@ -1,14 +1,22 @@
+import { useEffect, useState } from 'react'
+
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Tabs }                                                                                           from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                         from '@acx-ui/feature-toggle'
-import { useGetMspEcProfileQuery }                                                                        from '@acx-ui/msp/services'
-import { MSPUtils }                                                                                       from '@acx-ui/msp/utils'
-import { useGetAdminGroupsQuery, useGetAdminListQuery, useGetDelegationsQuery, useGetTenantDetailsQuery } from '@acx-ui/rc/services'
-import { TenantType }                                                                                     from '@acx-ui/rc/utils'
-import { useTenantLink }                                                                                  from '@acx-ui/react-router-dom'
-import { useUserProfileContext }                                                                          from '@acx-ui/user'
+import { Tabs }                    from '@acx-ui/components'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
+import { useGetMspEcProfileQuery } from '@acx-ui/msp/services'
+import { MSPUtils }                from '@acx-ui/msp/utils'
+import {
+  useGetAdminGroupsQuery,
+  useGetAdminListQuery,
+  useGetDelegationsQuery,
+  useGetTenantAuthenticationsQuery,
+  useGetTenantDetailsQuery
+} from '@acx-ui/rc/services'
+import { TenantAuthenticationType, TenantType } from '@acx-ui/rc/utils'
+import { useTenantLink }                        from '@acx-ui/react-router-dom'
+import { useUserProfileContext }                from '@acx-ui/user'
 
 import AdminGroups         from './AdminGroups'
 import AdministratorsTable from './AdministratorsTable'
@@ -21,6 +29,7 @@ const Administrators = () => {
   const navigate = useNavigate()
   const basePath = useTenantLink('/administration/administrators')
   const mspUtils = MSPUtils()
+  const [isSsoConfigured, setSsoConfigured] = useState(false)
   const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
 
   const { data: userProfileData, isPrimeAdmin } = useUserProfileContext()
@@ -44,12 +53,25 @@ const Administrators = () => {
   const isNonVarMsp = (tenantType === TenantType.MSP_NON_VAR)
   let isMspEc = mspUtils.isMspEc(mspEcProfileData.data)
   let currentUserMail = userProfileData?.email
+  const tenantAuthenticationData =
+    useGetTenantAuthenticationsQuery({ params })
 
   if (mspEcProfileData.data) {
     if (isMspEc === true) {
       currentUserMail = ''
     }
   }
+
+  useEffect(() => {
+    if (tenantAuthenticationData) {
+      const ssoData = tenantAuthenticationData.data?.filter(n =>
+        n.authenticationType === TenantAuthenticationType.saml)
+      if (ssoData?.length && ssoData?.length > 0) {
+        setSsoConfigured(true)
+      }
+    }
+  }, [tenantAuthenticationData])
+
 
   const isPrimeAdminUser = isPrimeAdmin()
   const isDelegationReady = (!isVAR && !isNonVarMsp) || isMspEc
@@ -71,7 +93,7 @@ const Administrators = () => {
         isPrimeAdminUser={isPrimeAdminUser}
         tenantType={tenantType}
       />,
-      visible: true
+      visible: isSsoConfigured ? true : false
     },
     delegatedAdmins: {
       title: $t({ defaultMessage: 'Delegated Admins ({delegatedAdminCount})' },
