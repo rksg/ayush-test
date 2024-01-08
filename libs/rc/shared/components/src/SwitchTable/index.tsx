@@ -54,7 +54,7 @@ import { seriesSwitchStatusMapping }                       from '../DevicesWidge
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
 import { SwitchCliSession }                                from '../SwitchCliSession'
 import { useSwitchActions }                                from '../useSwitchActions'
-import { useSwitchFirmwareActions }                        from '../useSwitchFirmwareActions'
+import { useSwitchFirmwareUtils }                        from '../useSwitchFirmwareUtils'
 
 import {
   getGroupableConfig
@@ -156,12 +156,12 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   }, [tableQuery.data])
 
   const { exportCsv, disabled } = useExportCsv<SwitchRow>(tableQuery as TableQuery<SwitchRow, RequestPayload<unknown>, unknown>)
+  const { parseSwitchVersion } = useSwitchFirmwareUtils()
+
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
   const enableSwitchAdminPassword = useIsSplitOn(Features.SWITCH_ADMIN_PASSWORD)
 
   const switchAction = useSwitchActions()
-  const switchFirmwareAction = useSwitchFirmwareActions()
-
   const tableData = tableQuery.data?.data ?? []
 
   const statusFilterOptions = seriesSwitchStatusMapping().map(({ key, name, color }) => ({
@@ -303,7 +303,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       dataIndex: 'firmware',
       sorter: true,
       render: (_, { firmware }) => {
-        return switchFirmwareAction.parseSwitchVersion(firmware || '')
+        return parseSwitchVersion(firmware || '')
       }
     },
     ...(params.venueId ? [] : [{

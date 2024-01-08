@@ -12,13 +12,13 @@ import {
   useStepFormContext
 } from '@acx-ui/components'
 import { ArrowExpand, SearchOutlined, ChevronRight } from '@acx-ui/icons'
+import { useSwitchFirmwareUtils }                    from '@acx-ui/rc/components'
 import {
   useLazyGetSwitchFirmwareListQuery
 } from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenue,
-  SwitchFirmware,
-  parseSwitchVersion
+  SwitchFirmware
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
@@ -121,10 +121,12 @@ type SelectSwitchStepProps = {
 export const SelectSwitchStep = (
   { data, setShowSubTitle }: SelectSwitchStepProps) => {
 
-  const { form, current } = useStepFormContext()
   const columns = useColumns()
   const intl = useIntl()
+
+  const { form, current } = useStepFormContext()
   const { tenantId } = useParams()
+  const { parseSwitchVersion } = useSwitchFirmwareUtils()
 
   const [ getSwitchList ] = useLazyGetSwitchFirmwareListQuery()
 
@@ -142,6 +144,7 @@ export const SelectSwitchStep = (
   })
   const [isLoading, setIsLoading] = useState(false)
   const totalSwitchCount = data.reduce((total, venue) => total + venue.switchCount, 0)
+
 
   useEffect(()=>{
     setShowSubTitle(true)

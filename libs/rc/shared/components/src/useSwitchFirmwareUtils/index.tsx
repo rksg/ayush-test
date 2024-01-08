@@ -6,7 +6,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-export function useSwitchFirmwareActions () {
+export function useSwitchFirmwareUtils () {
   const switchVersions = useGetSwitchCurrentVersionsQuery({ params: useParams() })
 
 

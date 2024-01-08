@@ -9,7 +9,7 @@ import {
   Drawer,
   showToast
 } from '@acx-ui/components'
-import { useSwitchActions }                        from '@acx-ui/rc/components'
+import { useSwitchActions, useSwitchFirmwareUtils }                        from '@acx-ui/rc/components'
 import { useLazyGetSwitchFirmwareStatusListQuery } from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenue,
@@ -17,7 +17,6 @@ import {
   SwitchFwStatusEnum,
   SwitchStatusEnum,
   defaultSort,
-  parseSwitchVersion,
   sortProp
 } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
@@ -33,6 +32,8 @@ export interface VenueStatusDrawerProps {
 
 export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
   const { $t } = useIntl()
+  const { parseSwitchVersion } = useSwitchFirmwareUtils()
+
   const params = useParams()
   const switchAction = useSwitchActions()
 

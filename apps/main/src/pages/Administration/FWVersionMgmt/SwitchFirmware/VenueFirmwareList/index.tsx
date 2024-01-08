@@ -10,6 +10,7 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
+import { useSwitchFirmwareUtils }        from '@acx-ui/rc/components'
 import {
   useGetSwitchUpgradePreferencesQuery,
   useUpdateSwitchUpgradePreferencesMutation,
@@ -26,8 +27,7 @@ import {
   sortProp,
   defaultSort,
   usePollingTableQuery,
-  SwitchFirmwareStatusType,
-  parseSwitchVersion
+  SwitchFirmwareStatusType
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
@@ -315,6 +315,7 @@ export const VenueFirmwareTable = (
 
 export function VenueFirmwareList () {
   const venuePayload = useDefaultVenuePayload()
+  const { parseSwitchVersion } = useSwitchFirmwareUtils()
 
   const tableQuery = usePollingTableQuery<FirmwareSwitchVenue>({
     useQuery: useGetSwitchVenueVersionListQuery,

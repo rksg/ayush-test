@@ -12,6 +12,7 @@ import {
   Loader
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { useSwitchFirmwareUtils }       from '@acx-ui/rc/components'
 import {
   useGetSwitchUpgradePreferencesQuery,
   useUpdateSwitchUpgradePreferencesMutation,
@@ -33,8 +34,7 @@ import {
   sortProp,
   defaultSort,
   FirmwareCategory,
-  switchSchedule,
-  parseSwitchVersion
+  switchSchedule
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
@@ -58,6 +58,7 @@ function useColumns (
   filterables?: { [key: string]: ColumnType['filterable'] }
 ) {
   const intl = useIntl()
+  const { parseSwitchVersion } = useSwitchFirmwareUtils()
 
   const columns: TableProps<FirmwareSwitchVenue>['columns'] = [
     {
@@ -427,6 +428,7 @@ export const VenueFirmwareTable = (
 
 export function VenueFirmwareListLegacy () {
   const venuePayload = useDefaultVenuePayload()
+  const { parseSwitchVersion } = useSwitchFirmwareUtils()
 
   const tableQuery = useTableQuery<FirmwareSwitchVenue>({
     useQuery: useGetSwitchVenueVersionListQuery,
