@@ -72,6 +72,10 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/upgrade/update-now',
     newApi: true
   },
+  updateDowngrade: {
+    method: 'put',
+    url: '/venues/:venueId/apFirmwares/:firmwareVersion'
+  },
   skipSwitchUpgradeSchedules: {
     method: 'delete',
     url: '/venues/switchFirmwares/schedules',
