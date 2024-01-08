@@ -4,12 +4,8 @@ import moment        from 'moment'
 import { IntlShape } from 'react-intl'
 
 import {
-  FirmwareSwitchVenue,
-  SortResult,
-  SwitchFirmware,
-  parseSwitchVersion
+  SwitchFirmware
 } from '@acx-ui/rc/utils'
-import { noDataDisplay } from '@acx-ui/utils'
 
 import {
   SCHEDULE_END_TIME_FORMAT,

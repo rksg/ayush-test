@@ -54,7 +54,7 @@ import { seriesSwitchStatusMapping }                       from '../DevicesWidge
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
 import { SwitchCliSession }                                from '../SwitchCliSession'
 import { useSwitchActions }                                from '../useSwitchActions'
-import { useSwitchFirmwareUtils }                        from '../useSwitchFirmwareUtils'
+import { useSwitchFirmwareUtils }                          from '../useSwitchFirmwareUtils'
 
 import {
   getGroupableConfig

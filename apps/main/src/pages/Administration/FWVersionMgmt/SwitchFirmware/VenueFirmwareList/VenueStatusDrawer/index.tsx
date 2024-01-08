@@ -9,8 +9,8 @@ import {
   Drawer,
   showToast
 } from '@acx-ui/components'
-import { useSwitchActions, useSwitchFirmwareUtils }                        from '@acx-ui/rc/components'
-import { useLazyGetSwitchFirmwareStatusListQuery } from '@acx-ui/rc/services'
+import { useSwitchActions, useSwitchFirmwareUtils } from '@acx-ui/rc/components'
+import { useLazyGetSwitchFirmwareStatusListQuery }  from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenue,
   SwitchFirmwareStatus,
