@@ -7,6 +7,7 @@ import { rest }  from 'msw'
 import { StepsForm }  from '@acx-ui/components'
 import {
   CommonUrlsInfo,
+  EdgeTunnelProfileFixtures,
   NetworkSegmentationUrls,
   TunnelProfileUrls
 } from '@acx-ui/rc/utils'
@@ -19,15 +20,17 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
-import { mockedTunnelProfileViewData } from '../../../../Policies/TunnelProfile/__tests__/fixtures'
 import {
   mockDeepNetworkList,
   mockNetworkGroup, mockNetworkSaveData,
   mockNsgStatsList
 } from '../../__tests__/fixtures'
 
-
 import { WirelessNetworkForm } from '.'
+
+const {
+  mockedTunnelProfileViewData
+} = EdgeTunnelProfileFixtures
 
 const tenantId = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 const mockedUsedNavigate = jest.fn()

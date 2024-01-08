@@ -3,7 +3,7 @@ import { Form }  from 'antd'
 import { rest }  from 'msw'
 import { act }   from 'react-dom/test-utils'
 
-import { StepsForm }  from '@acx-ui/components'
+import { StepsForm }          from '@acx-ui/components'
 import {
   CommonUrlsInfo,
   EdgeGeneralFixtures,
@@ -12,7 +12,8 @@ import {
   EdgeSdLanUrls,
   EdgeStatusEnum,
   EdgeUrlsInfo,
-  TunnelProfileUrls
+  TunnelProfileUrls,
+  EdgeTunnelProfileFixtures
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -25,13 +26,17 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { mockedTunnelProfileViewData, mockedVenueList } from '../../__tests__/fixtures'
+import { mockedVenueList } from '../../__tests__/fixtures'
 
 import { SettingsForm } from '.'
 
 const { mockedSdLanDataList } = EdgeSdLanFixtures
 const { mockEdgeList } = EdgeGeneralFixtures
 const { mockEdgePortConfig } = EdgePortConfigFixtures
+const {
+  mockedTunnelProfileViewData
+} = EdgeTunnelProfileFixtures
+
 jest.mock('antd', () => {
   const components = jest.requireActual('antd')
   const Select = ({
