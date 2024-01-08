@@ -1,10 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useGetTunnelProfileByIdQuery }                                                                                          from '@acx-ui/rc/services'
-import { AuthRadiusEnum, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, DpskWlanAdvancedCustomization, TunnelTypeEnum } from '@acx-ui/rc/utils'
+import _ from 'lodash'
+
+import { useGetTunnelProfileViewDataListQuery }                                                                                                         from '@acx-ui/rc/services'
+import { AuthRadiusEnum, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, DpskWlanAdvancedCustomization, TunnelTypeEnum, TunnelProfileViewData } from '@acx-ui/rc/utils'
 export interface NetworkVxLanTunnelProfileInfo {
+  enableTunnel: boolean,
   enableVxLan: boolean,
-  tunnelType: TunnelTypeEnum | undefined
+  vxLanTunnels: TunnelProfileViewData[] | undefined
 }
 
 export const hasAuthRadius = (data: NetworkSaveData | null, wlanData: any) => {
@@ -84,21 +87,22 @@ export const hasVxLanTunnelProfile = (data: NetworkSaveData | null) => {
 
 export const useNetworkVxLanTunnelProfileInfo =
   (data: NetworkSaveData | null): NetworkVxLanTunnelProfileInfo => {
-    const wlanAdvaced = (data?.wlan?.advancedCustomization as DpskWlanAdvancedCustomization)
-
-    const { data: tunnelProfileData } = useGetTunnelProfileByIdQuery(
-      { params: { id: wlanAdvaced?.tunnelProfileId! } },
-      { skip: !data || !wlanAdvaced?.tunnelProfileId }
+    const getTunnelProfilePayload = {
+      filters: { networkIds: [data?.id] }
+    }
+    const { data: tunnelProfileData } = useGetTunnelProfileViewDataListQuery(
+      { payload: getTunnelProfilePayload },
+      { skip: !data }
     )
 
-    let enableVxLan = false
-
-    if (wlanAdvaced?.tunnelProfileId) {
-      enableVxLan = true
-    }
+    const vxLanTunnels = tunnelProfileData?.data.filter(item => item.type === TunnelTypeEnum.VXLAN
+      && item.personalIdentityNetworkIds.length > 0)
+    const enableTunnel = !_.isEmpty(tunnelProfileData?.data)
+    const enableVxLan = !_.isEmpty(vxLanTunnels)
 
     return {
+      enableTunnel,
       enableVxLan,
-      tunnelType: tunnelProfileData?.type
+      vxLanTunnels
     }
   }

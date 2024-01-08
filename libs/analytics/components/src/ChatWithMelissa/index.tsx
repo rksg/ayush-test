@@ -46,7 +46,7 @@ export function ChatWithMelissa () {
     }}
   />
   const subTitleIncidents = <FormattedMessage
-    defaultMessage='Ruckus AI has identified<br></br> the <b>most frequent incidents</b>'
+    defaultMessage='RUCKUS AI has identified<br></br> the <b>most frequent incidents</b>'
     description='SubTitle for Chatbot incident summary widget'
     values={{
       ...defaultRichTextFormatValues

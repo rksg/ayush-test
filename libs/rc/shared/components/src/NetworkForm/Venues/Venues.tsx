@@ -77,7 +77,12 @@ interface schedule {
   [key: string]: string
 }
 
-export function Venues () {
+interface VenuesProps {
+  defaultActiveVenues?: string[]
+}
+
+export function Venues (props: VenuesProps) {
+  const { defaultActiveVenues } = props
   const form = Form.useFormInstance()
   const { cloneMode, data, setData } = useContext(NetworkFormContext)
 
@@ -106,6 +111,20 @@ export function Venues () {
   const [scheduleModalState, setScheduleModalState] = useState<SchedulingModalState>({
     visible: false
   })
+  const isDefaultVenueSetted = useRef(false)
+
+  useEffect(() => {
+    if(isDefaultVenueSetted.current) return
+    if(defaultActiveVenues && tableData?.length > 0) {
+      defaultActiveVenues.forEach(defaultVenueId => {
+        const defaultVenueItem = tableData?.find(data => data.id === defaultVenueId)
+        if(defaultVenueItem) {
+          handleActivateVenue(true, [defaultVenueItem])
+        }
+      })
+      isDefaultVenueSetted.current = true
+    }
+  }, [defaultActiveVenues, tableData])
 
   const handleVenueSaveData = (newSelectedNetworkVenues: NetworkVenue[]) => {
     setData && setData({ ...data, venues: newSelectedNetworkVenues })
@@ -287,7 +306,8 @@ export function Venues () {
         }
         return <Tooltip
           title={title}
-          placement='bottom'><Switch
+          placement='bottom'>
+          <Switch
             disabled={disabled}
             checked={Boolean(row.activated?.isActivated)}
             onClick={(checked, event) => {

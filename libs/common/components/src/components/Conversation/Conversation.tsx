@@ -55,7 +55,7 @@ function parseLink (link: string): string {
 const Expandable = (props: { text: string, maxChar: number, isRuckusAi?:boolean }) => {
   const { $t } = useIntl()
   const [expanded, setExpanded] = useState(true)
-  const RUCKUS_AI_TEXT = $t({ defaultMessage: 'Ruckus AI' })
+  const RUCKUS_AI_TEXT = $t({ defaultMessage: 'RUCKUS AI' })
   const readMoreText = $t({ defaultMessage: 'Read more...' })
   const readLessText = $t({ defaultMessage: 'Read less' })
   const RUCKUS_AI_HEADER = props.isRuckusAi ? <>
