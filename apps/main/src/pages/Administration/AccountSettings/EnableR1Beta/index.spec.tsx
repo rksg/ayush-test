@@ -105,9 +105,6 @@ describe('Enable RUCKUS One Beta Checkbox', () => {
     expect(cancelBtn).toBeVisible()
     await userEvent.click(cancelBtn)
     await waitFor(() => expect(drawer).not.toBeVisible())
-    // await waitFor(() =>
-    //   // eslint-disable-next-line testing-library/no-node-access
-    //   expect(drawer.parentNode).toHaveClass('ant-drawer-content-wrapper-hidden'))
   })
 
   it('should show beta features drawer', async () => {
