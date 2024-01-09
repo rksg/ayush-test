@@ -5,7 +5,7 @@ import { cloneDeep }              from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Loader, StepsFormLegacy, Table, TableProps }             from '@acx-ui/components'
+import { Loader, StepsForm, Table, TableProps }                   from '@acx-ui/components'
 import { useGetStaticRoutesQuery, useUpdateStaticRoutesMutation } from '@acx-ui/rc/services'
 import { EdgeStaticRoute }                                        from '@acx-ui/rc/utils'
 import { useTenantLink }                                          from '@acx-ui/react-router-dom'
@@ -113,12 +113,12 @@ const StaticRoutes = (
   }
 
   return (
-    <StepsFormLegacy<void>
+    <StepsForm<void>
       onFinish={handleFinish}
       onCancel={() => modalMode ? modalCallBack() : navigate(linkToEdgeList)}
       buttonLabel={{ submit: $t({ defaultMessage: 'Apply Static Routes' }) }}
     >
-      <StepsFormLegacy.StepForm>
+      <StepsForm.StepForm>
         <Row>
           <Col span={8} style={{ minWidth: 480 }}>
             <Loader states={[
@@ -146,8 +146,8 @@ const StaticRoutes = (
             </Loader>
           </Col>
         </Row>
-      </StepsFormLegacy.StepForm>
-    </StepsFormLegacy>
+      </StepsForm.StepForm>
+    </StepsForm>
   )
 }
 

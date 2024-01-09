@@ -28,8 +28,8 @@ export function ApOverviewTab () {
     fields: ['name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
       'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',
       'meshRole', 'hops', 'apUpRssi', 'deviceStatus', 'deviceStatusSeverity',
-      'isMeshEnable', 'lastUpdTime', 'deviceModelType', 'apStatusData.APSystem.uptime',
-      'venueId', 'uplink', 'apStatusData', 'apStatusData.cellularInfo', 'tags'],
+      'isMeshEnable', 'lastUpdTime', 'deviceModelType',
+      'venueId', 'uplink', 'apStatusData', 'tags', 'apRadioDeploy'],
     filters: { serialNumber: [params.serialNumber] }
   }
   const { data: currentAP, isLoading: isLoadingApViewModel, isFetching: isFetchingApViewModel }
