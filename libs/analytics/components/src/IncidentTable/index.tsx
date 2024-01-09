@@ -78,6 +78,7 @@ const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incid
   const { $t } = useIntl()
   const { metadata, id } = props.selectedIncidentToShowDescription
   const [{ rootCauses }] = getRootCauseAndRecommendations(props.selectedIncidentToShowDescription)
+  const { rootCauseText, rootCauseValues } = rootCauses
   const gotoIncident = useNavigateToPath(`/analytics/incidents/${id}`)
   const values = {
     ...productNames,
@@ -100,7 +101,7 @@ const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incid
         {$t(defineMessage({ defaultMessage: 'Root cause' }))}{':'}
       </UI.IncidentRootCauses>
       <div>
-        <FormattedMessage {...rootCauses} values={values} />
+        <FormattedMessage {...rootCauseText} values={{ ...values, ...rootCauseValues }} />
         <Button type='link' onClick={gotoIncident} size='small'>
           {$t({ defaultMessage: 'More Details' })}
         </Button>
@@ -297,7 +298,7 @@ export function IncidentTable ({ filters }: {
             children={$t({ defaultMessage: 'Show Muted Incidents' })}
           />
         ]}
-        rowClassName={(record) => record.isMuted ? 'table-row-muted' : 'table-row-normal'}
+        rowClassName={(record) => record.isMuted ? 'table-row-disabled' : 'table-row-normal'}
         filterableWidth={155}
         searchableWidth={240}
       />
