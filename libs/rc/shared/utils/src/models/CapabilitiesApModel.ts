@@ -1,3 +1,4 @@
+import { BandModeEnum }        from './BandModeEnum'
 import { CapabilitiesLanPort } from './CapabilitiesLanPort'
 import { ExternalAntenna }     from './ExternalAntenna'
 
@@ -79,6 +80,12 @@ export class CapabilitiesApModel {
   maxChannelization6G?: number
 
   supportMesh?: boolean
+
+  supportBandCombination?: boolean
+
+  bandCombinationCapabilities?: BandModeEnum[]
+
+  defaultBandCombination?: BandModeEnum
 
   constructor () {
     this.externalAntenna = new ExternalAntenna()
