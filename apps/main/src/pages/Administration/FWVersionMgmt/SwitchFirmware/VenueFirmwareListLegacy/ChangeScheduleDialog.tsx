@@ -9,14 +9,14 @@ import { useIntl }                                          from 'react-intl'
 
 import { Modal, Subtitle }        from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useSwitchFirmwareUtils } from '@acx-ui/rc/components'
 import {
   AVAILABLE_SLOTS,
   FirmwareCategory,
   FirmwareSwitchVenue,
   FirmwareVersion,
   switchSchedule,
-  UpdateScheduleRequest,
-  useSwitchFirmwareUtils
+  UpdateScheduleRequest
 } from '@acx-ui/rc/utils'
 
 import { PreDownload } from '../../PreDownload'

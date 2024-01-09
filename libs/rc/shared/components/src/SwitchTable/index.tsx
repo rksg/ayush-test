@@ -43,8 +43,7 @@ import {
   SEARCH,
   GROUPBY,
   getSwitchModel,
-  getAdminPassword,
-  useSwitchFirmwareUtils
+  getAdminPassword
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                    from '@acx-ui/types'
@@ -55,6 +54,7 @@ import { seriesSwitchStatusMapping }                       from '../DevicesWidge
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
 import { SwitchCliSession }                                from '../SwitchCliSession'
 import { useSwitchActions }                                from '../useSwitchActions'
+import { useSwitchFirmwareUtils }                          from '../useSwitchFirmwareUtils'
 
 import {
   getGroupableConfig

@@ -12,6 +12,7 @@ import {
   Loader
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { useSwitchFirmwareUtils }       from '@acx-ui/rc/components'
 import {
   useGetSwitchUpgradePreferencesQuery,
   useUpdateSwitchUpgradePreferencesMutation,
@@ -33,8 +34,7 @@ import {
   sortProp,
   defaultSort,
   FirmwareCategory,
-  switchSchedule,
-  useSwitchFirmwareUtils
+  switchSchedule
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'

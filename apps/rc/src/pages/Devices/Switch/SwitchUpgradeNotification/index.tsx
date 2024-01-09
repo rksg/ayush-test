@@ -5,7 +5,7 @@ import _                             from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
-import { useSwitchFirmwareUtils } from '@acx-ui/rc/utils'
+import { useSwitchFirmwareUtils } from '@acx-ui/rc/components'
 
 import * as UI                     from './styledComponents'
 import { SwitchRequirementsModal } from './switchRequirementsModal'

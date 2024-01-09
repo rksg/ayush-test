@@ -10,6 +10,7 @@ import {
   Modal, ModalType, StepsForm, showActionModal
 } from '@acx-ui/components'
 import { WarningCircleOutlined }          from '@acx-ui/icons'
+import { useSwitchFirmwareUtils }         from '@acx-ui/rc/components'
 import {
   useGetSwitchAvailableFirmwareListQuery,
   useGetSwitchLatestFirmwareListQuery,
@@ -20,8 +21,7 @@ import {
   FirmwareSwitchVenue,
   FirmwareVersion,
   SwitchFirmware,
-  UpdateScheduleRequest,
-  useSwitchFirmwareUtils
+  UpdateScheduleRequest
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
