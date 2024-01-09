@@ -64,6 +64,7 @@ describe('NetworksList with feature toggle', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<NetworksList tab={NetworkTabsEnum.WIRELESS_REPORT}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(await screen.findAllByRole('tab')).toHaveLength(4)
     userEvent.click(await screen.findByText('WLANs Report'))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: '/tenant-id/t/networks/wireless/reports/wlans', hash: '', search: ''
@@ -72,6 +73,5 @@ describe('NetworksList with feature toggle', () => {
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: '/tenant-id/t/networks/wireless/reports/applications', hash: '', search: ''
     }))
-    // TODO: fix warning
   })
 })
