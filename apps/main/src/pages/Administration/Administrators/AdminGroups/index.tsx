@@ -5,6 +5,7 @@ import { HTML5Backend }                  from 'react-dnd-html5-backend'
 import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
+
 import {
   Loader,
   showActionModal,
@@ -69,26 +70,31 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
     {
       title: $t({ defaultMessage: 'Group Name' }),
       key: 'name',
-      dataIndex: 'name',
-      sorter: { compare: sortProp('name', defaultSort) }
+      dataIndex: 'name'
     },
     {
       title: $t({ defaultMessage: 'Group ID' }),
       key: 'groupId',
-      dataIndex: 'groupId',
-      sorter: { compare: sortProp('groupId', defaultSort) }
+      dataIndex: 'groupId'
     },
     {
       title: $t({ defaultMessage: 'Processing Priority' }),
       key: 'processingPriority',
       dataIndex: 'processingPriority',
+      defaultSortOrder: 'ascend',
+      show: false,
       sorter: { compare: sortProp('processingPriority', defaultSort) }
+    },
+    {
+      title: $t({ defaultMessage: 'Logged Members' }),
+      key: 'loggedInMembers',
+      show: false,
+      dataIndex: 'loggedInMembers'
     },
     {
       title: $t({ defaultMessage: 'Role' }),
       key: 'role',
       dataIndex: 'role',
-      sorter: { compare: sortProp('role', defaultSort) },
       render: function (_, row) {
         return row.role ? $t(roleStringMap[row.role]) : ''
       }
