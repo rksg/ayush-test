@@ -57,6 +57,7 @@ export interface EdgeStatus extends EdgeResourceUtilization {
   firewallId?: string
   firewallName?: string
   upTime?: number
+  clusterInterface?: string
 }
 export interface EdgeDetails {
   serialNumber: string
@@ -342,4 +343,22 @@ export interface EdgeLag {
     corePortEnabled: boolean
     natEnabled: boolean
     lagEnabled: boolean
+}
+
+export interface EdgeClusterStatus {
+  tenantId?: string
+  clusterId?: string
+  name?: string
+  virtualIp?: string
+  venueId?: string
+  venueName?: string
+  clusterStatus?: string
+  haStatus?: string
+  edgeList?: EdgeStatus[]
+}
+
+export interface EdgeClusterTableDataType extends EdgeStatus,
+Omit<EdgeClusterStatus, 'tenantId' | 'name' | 'venueId' | 'venueName'> {
+  isFirstLevel?: boolean
+  children?: EdgeStatus[]
 }
