@@ -93,7 +93,7 @@ describe('bootstrap.init', () => {
   afterEach(() => {
     mockServer.resetHandlers()
   })
-  it.skip('calls pendo and renders', async () => {
+  it('calls pendo and renders', async () => {
     const rootEl = document.createElement('div')
     rootEl.id = 'root'
     document.body.appendChild(rootEl)

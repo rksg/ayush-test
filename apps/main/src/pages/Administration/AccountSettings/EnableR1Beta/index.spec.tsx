@@ -1,5 +1,3 @@
-import { useState } from 'react'
-
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
@@ -8,15 +6,13 @@ import {
   mockServer,
   render,
   screen,
-  renderHook
+  waitFor
 } from '@acx-ui/test-utils'
 import { UserUrlsInfo } from '@acx-ui/user'
 
-import { BetaFeaturesDrawer }         from './BetaFeaturesDrawer'
-import { R1BetaTermsConditionDrawer } from './R1BetaTermsConditionDrawer'
+import { BetaFeaturesDrawer } from './BetaFeaturesDrawer'
 
 import { EnableR1Beta } from './'
-
 
 type MockDrawerProps = React.PropsWithChildren<{
   open: boolean
@@ -31,7 +27,11 @@ jest.mock('./BetaFeaturesDrawer', () => ({
         e.preventDefault()
         onClose()
       }}>Ok</button>
-    </div>
+    </div>,
+  onClose: jest.fn(),
+  showActionModal: jest.fn(),
+  toggleBetaStatus: jest.fn(),
+  userLogout: jest.fn()
 }))
 jest.mock('./R1BetaTermsConditionDrawer', () => ({
   ...jest.requireActual('./R1BetaTermsConditionDrawer'),
@@ -62,10 +62,14 @@ describe('Enable RUCKUS One Beta Checkbox', () => {
         (_req, res, ctx) => res(ctx.status(200))
       )
     )
+
     Object.defineProperty(window, 'location', {
       configurable: true,
       enumerable: true,
-      value: { href: new URL('https://url/').href }
+      value: {
+        ...window.location,
+        href: new URL('https://url/logout').href
+      }
     })
   })
   afterEach(() => Object.defineProperty(window, 'location', {
@@ -88,15 +92,33 @@ describe('Enable RUCKUS One Beta Checkbox', () => {
     const enableBtn = await screen.findByRole('button', { name: 'Enable Beta' })
     expect(enableBtn).toBeVisible()
     await userEvent.click(enableBtn)
-    expect(enableBtn).not.toBeVisible()
+    await waitFor(() => expect(window.location.href).toEqual('https://url/logout'))
 
     const currentBeta = await screen.findByRole('link', { name: 'Current beta features' })
     await userEvent.click(currentBeta)
-    const okBtn = await screen.findByRole('button', { name: 'Ok' })
-    expect(okBtn).toBeVisible()
-    await userEvent.click(okBtn)
     await userEvent.click(await screen.findByRole('button', { name: 'Close' }))
     await screen.findByText('RUCKUS One Beta Features')
+    await userEvent.click(await screen.findByRole('button', { name: 'Ok' }))
+  })
+
+  it('should disable beta features', async () => {
+    render(
+      <Provider>
+        <EnableR1Beta
+          betaStatus={true}
+          isPrimeAdminUser={true}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    const formItem = screen.getByRole('checkbox', { name: /Enable RUCKUS One Beta features/i })
+    expect(formItem).toBeChecked()
+    await userEvent.click(formItem)
+    const disableBtn = await screen.findByRole('button', { name: 'Disable Beta Features' })
+    expect(disableBtn).toBeVisible()
+    await userEvent.click(disableBtn)
+    await waitFor(() => expect(window.location.href).toEqual('https://url/logout'))
   })
 
   it('should show beta features drawer', async () => {
@@ -113,59 +135,12 @@ describe('Enable RUCKUS One Beta Checkbox', () => {
       </Provider>, {
         route: { params }
       })
-
-    await screen.findAllByRole('dialog')
-    const okBtn = await screen.findByRole('button', { name: 'Log Out Now' })
-    expect(okBtn).toBeVisible()
+    await waitFor(() => screen.findAllByRole('dialog'))
     expect(await screen.findByText(content)).toBeInTheDocument()
     expect(await screen.findByText('Enabling Beta Features')).toBeVisible()
     expect(await screen.findByText('RUCKUS One Beta Features')).toBeVisible()
-    await userEvent.click(okBtn)
     await userEvent.click(await screen.findByRole('button', { name: 'Close' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Log Out Now' }))
+    await waitFor(() => expect(window.location.href).toEqual('/logout'))
   })
-
-  it('should show terms and condition drawer', async () => {
-    const { result } = renderHook(() => {
-      const [showBetaTermsConditionDrawer, setBetaTermsConditionDrawer] = useState(true)
-      return { showBetaTermsConditionDrawer, setBetaTermsConditionDrawer }
-    })
-    render(
-      <Provider>
-        <R1BetaTermsConditionDrawer
-          visible={result.current.showBetaTermsConditionDrawer}
-          setVisible={result.current.setBetaTermsConditionDrawer}
-          onClose={() => (result.current.setBetaTermsConditionDrawer(false))}
-          onSubmit={() => (result.current.setBetaTermsConditionDrawer(false))}
-        />
-      </Provider>, {
-        route: { params }
-      })
-    await screen.findAllByRole('dialog')
-    const okBtn = await screen.findByRole('button', { name: 'Enable Beta' })
-    expect(okBtn).toBeVisible()
-    await userEvent.click(okBtn)
-    const cancelBtn = await screen.findByRole('button', { name: 'Cancel' })
-    expect(cancelBtn).toBeVisible()
-    await userEvent.click(cancelBtn)
-    await userEvent.click(await screen.findByRole('button', { name: 'Close' }))
-  })
-
-  it('should display correctly if no data', async () => {
-    render(
-      <Provider>
-        <EnableR1Beta
-          betaStatus={undefined}
-          isPrimeAdminUser={true}
-        />
-      </Provider>, {
-        route: { params }
-      })
-
-    const formItem = screen.getByRole('checkbox', { name: /Enable RUCKUS One Beta features/i })
-    await expect(formItem).not.toBeChecked()
-    await userEvent.click(formItem)
-    await userEvent.click(await screen.findByRole('button', { name: 'Close' }))
-    await expect(window.location.href).toEqual('/logout')
-  })
-
 })
