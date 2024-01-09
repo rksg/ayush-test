@@ -9,15 +9,16 @@ import {
   Drawer,
   showToast
 } from '@acx-ui/components'
-import { useSwitchActions, useSwitchFirmwareUtils } from '@acx-ui/rc/components'
-import { useLazyGetSwitchFirmwareStatusListQuery }  from '@acx-ui/rc/services'
+import { useSwitchActions }                        from '@acx-ui/rc/components'
+import { useLazyGetSwitchFirmwareStatusListQuery } from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenue,
   SwitchFirmwareStatus,
   SwitchFwStatusEnum,
   SwitchStatusEnum,
   defaultSort,
-  sortProp
+  sortProp,
+  useSwitchFirmwareUtils
 } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'

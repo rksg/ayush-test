@@ -8,11 +8,11 @@ import {
   Modal, Subtitle
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { useSwitchFirmwareUtils } from '@acx-ui/rc/components'
 import {
   FirmwareSwitchVenue,
   FirmwareVersion,
-  UpdateScheduleRequest
+  UpdateScheduleRequest,
+  useSwitchFirmwareUtils
 } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'

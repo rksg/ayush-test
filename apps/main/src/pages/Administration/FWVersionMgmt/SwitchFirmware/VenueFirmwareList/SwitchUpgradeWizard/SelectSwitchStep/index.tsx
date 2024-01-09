@@ -12,13 +12,13 @@ import {
   useStepFormContext
 } from '@acx-ui/components'
 import { ArrowExpand, SearchOutlined, ChevronRight } from '@acx-ui/icons'
-import { useSwitchFirmwareUtils }                    from '@acx-ui/rc/components'
 import {
   useLazyGetSwitchFirmwareListQuery
 } from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenue,
-  SwitchFirmware
+  SwitchFirmware,
+  useSwitchFirmwareUtils
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'

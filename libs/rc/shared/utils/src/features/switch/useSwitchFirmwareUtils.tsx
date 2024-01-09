@@ -17,7 +17,6 @@ import { noDataDisplay } from '@acx-ui/utils'
 export function useSwitchFirmwareUtils () {
   const switchVersions = useGetSwitchCurrentVersionsQuery({ params: useParams() })
 
-  // const { parseSwitchVersion } = useSwitchFirmwareUtils()
   const parseSwitchVersion = (version: string) => {
     const defaultVersion = switchVersions?.data?.generalVersions
 
@@ -26,7 +25,7 @@ export function useSwitchFirmwareUtils () {
     }
     return convertSwitchVersionFormat(version)
   }
-  // const { getSwitchVersionLabel } = useSwitchFirmwareUtils()
+
   const getSwitchVersionLabel = (intl: IntlShape, version: FirmwareVersion): string => {
     const transform = firmwareTypeTrans(intl.$t)
     const versionName = parseSwitchVersion(version?.name)
@@ -40,7 +39,6 @@ export function useSwitchFirmwareUtils () {
     return displayVersion
   }
 
-  // const { getSwitchNextScheduleTplTooltip } = useSwitchFirmwareUtils()
   const getSwitchNextScheduleTplTooltip = (venue: FirmwareSwitchVenue): string | undefined => {
     if (venue.nextSchedule) {
       const versionName = venue.nextSchedule.version?.name
@@ -59,7 +57,6 @@ export function useSwitchFirmwareUtils () {
     return ''
   }
 
-  // const { getSwitchScheduleTpl } = useSwitchFirmwareUtils()
   const getSwitchScheduleTpl = (s: SwitchFirmware): string | undefined => {
     if (s.switchNextSchedule) {
       const versionName = s.switchNextSchedule.version?.name
@@ -78,7 +75,6 @@ export function useSwitchFirmwareUtils () {
     return ''
   }
 
-  // const { getSwitchFirmwareList } = useSwitchFirmwareUtils()
   const getSwitchFirmwareList = function (row: FirmwareSwitchVenue) {
     let versionList = []
     if (row.switchFirmwareVersion?.id) {

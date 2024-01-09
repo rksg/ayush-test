@@ -9,9 +9,8 @@ import { useIntl }                              from 'react-intl'
 import {
   Subtitle, useStepFormContext
 } from '@acx-ui/components'
-import { useSwitchFirmwareUtils } from '@acx-ui/rc/components'
 import {
-  FirmwareVersion
+  FirmwareVersion, useSwitchFirmwareUtils
 } from '@acx-ui/rc/utils'
 
 import * as UI from '../../styledComponents'

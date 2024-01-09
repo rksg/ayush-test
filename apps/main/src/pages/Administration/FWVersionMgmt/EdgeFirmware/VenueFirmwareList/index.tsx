@@ -10,7 +10,6 @@ import {
   showActionModal
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
-import { useSwitchFirmwareUtils }       from '@acx-ui/rc/components'
 import {
   useGetAvailableEdgeFirmwareVersionsQuery,
   useGetEdgeUpgradePreferencesQuery,
@@ -31,7 +30,8 @@ import {
   dateSort,
   defaultSort,
   firmwareTypeTrans,
-  sortProp
+  sortProp,
+  useSwitchFirmwareUtils
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 import { noDataDisplay }             from '@acx-ui/utils'

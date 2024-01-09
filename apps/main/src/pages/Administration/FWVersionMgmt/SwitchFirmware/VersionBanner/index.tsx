@@ -1,10 +1,10 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { useSwitchFirmwareUtils }       from '@acx-ui/rc/components'
 import {
   useGetSwitchLatestFirmwareListQuery
 } from '@acx-ui/rc/services'
+import { useSwitchFirmwareUtils } from '@acx-ui/rc/utils'
 
 import { FirmwareBanner }     from '../../FirmwareBanner'
 import { getReleaseFirmware } from '../../FirmwareUtils'
