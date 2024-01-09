@@ -484,15 +484,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
     getVenueApModelBandModeSettings: build.query<VenueApModelBandModeSettings[], RequestPayload<void>>({
       query: ({ params }) =>
         createHttpRequest(CommonUrlsInfo.getVenueApModelBandModeSettings, params),
-      providesTags: [{ type: 'Venue', id: 'BandMode' }]
+      providesTags: [{ type: 'Venue', id: 'BandModeSettings' }]
     }),
     // eslint-disable-next-line max-len
-    updateVenueApModelBandModeSettings: build.mutation<CommonResult, RequestPayload<VenueApModelBandModeSettings>>({
+    updateVenueApModelBandModeSettings: build.mutation<CommonResult, RequestPayload<VenueApModelBandModeSettings[]>>({
       query: ({ params, payload }) => ({
         ...createHttpRequest(CommonUrlsInfo.updateVenueApModelBandModeSettings, params),
         body: payload
       }),
-      invalidatesTags: [{ type: 'Venue', id: 'BandMode' }]
+      invalidatesTags: [{ type: 'Venue', id: 'BandModeSettings' }]
     }),
     getVenueLanPorts: build.query<VenueLanPorts[], RequestPayload>({
       query: ({ params }) => {
@@ -703,7 +703,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return{
           ...req
         }
-      }
+      },
+      providesTags: [{ type: 'Venue', id: 'TripleBandRadioSettings' }]
     }),
     updateVenueTripleBandRadioSettings:
     build.mutation<CommonResult, RequestPayload>({
@@ -713,7 +714,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'TripleBandRadioSettings' }]
     }),
     getVenueApCapabilities: build.query<{
       version: string,
