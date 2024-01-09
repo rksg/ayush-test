@@ -94,11 +94,15 @@ const params = { tenantId, venueId: 'f892848466d047798430de7ac234e940' }
 const enableNsgParams = { tenantId, venueId: '23edaec8639a42c89ce0a52143c64f15' }
 const updateUnitFn = jest.fn()
 const getPersonaGroupSpy = jest.fn()
+const getApSpy = jest.fn()
+const getSwitchSpy = jest.fn()
 jest.mocked(useIsSplitOn).mockReturnValue(true)
 describe('Property Unit Page', () => {
   beforeEach(async () => {
     updateUnitFn.mockClear()
     getPersonaGroupSpy.mockClear()
+    getApSpy.mockClear()
+    getSwitchSpy.mockClear()
 
     mockServer.use(
       rest.get(
@@ -147,15 +151,20 @@ describe('Property Unit Page', () => {
       ),
       rest.post(
         CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json({ data: [{ apMac: '11:22:33:44:55:66' }], totalCount: 0 }))
+        (_, res, ctx) => {
+          getApSpy()
+          return res(ctx.json({ data: [{ apMac: '11:22:33:44:55:66' }], totalCount: 0 }))
+        }
       ),
       rest.post(
         SwitchUrlsInfo.getSwitchList.url,
-        (_, res, ctx) =>
-          res(ctx.json({
+        (_, res, ctx) => {
+          getSwitchSpy()
+          return res(ctx.json({
             data: [{ switchMac: '11:11:11:11:11:11', name: 'switchName' }],
             totalCount: 0
           }))
+        }
       ),
       rest.get(
         ConnectionMeteringUrls.getConnectionMeteringDetail.url,
@@ -209,7 +218,7 @@ describe('Property Unit Page', () => {
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
   })
 
-  it.skip('show render Unit table withNsg', async () => {
+  it('should render Unit table withNsg', async () => {
     render(<Provider><VenuePropertyTab /></Provider>, {
       route: {
         params: enableNsgParams,
@@ -219,8 +228,9 @@ describe('Property Unit Page', () => {
 
     const firstRowName = mockPropertyUnitList.content[0].name
     await screen.findByRole('cell', { name: firstRowName })
-    await waitFor(async () => await screen.findByRole('cell', { name: /switchName/i }))
-    await waitFor(async () => await screen.findByRole('columnheader', { name: /Access Point/i }))
+    await waitFor(() => expect(getPersonaGroupSpy).toHaveBeenCalled())
+    await waitFor(() => expect(getApSpy).toHaveBeenCalled())
+    await waitFor(() => expect(getSwitchSpy).toHaveBeenCalled())
   })
 
   it('should support Suspend, View Portal, Delete, Resend actions', async () => {

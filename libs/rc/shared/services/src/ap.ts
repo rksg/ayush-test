@@ -602,18 +602,18 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     getApBandModeSettings: build.query<ApBandModeSettings, RequestPayload<void>>({
       query: ({ params }) => createHttpRequest(WifiUrlsInfo.getApBandModeSettings, params),
-      providesTags: [{ type: 'Ap', id: 'BandMode' }]
+      providesTags: [{ type: 'Ap', id: 'BandModeSettings' }]
     }),
     updateApBandModeSettings: build.mutation<CommonResult, RequestPayload<ApBandModeSettings>>({
       query: ({ params, payload }) => ({
         ...createHttpRequest(WifiUrlsInfo.updateApBandModeSettings, params),
         body: payload
       }),
-      invalidatesTags: [{ type: 'Ap', id: 'BandMode' }]
+      invalidatesTags: [{ type: 'Ap', id: 'BandModeSettings' }]
     }),
     resetApBandModeSettings: build.mutation<CommonResult, RequestPayload<void>>({
       query: ({ params }) => createHttpRequest(WifiUrlsInfo.resetApBandModeSettings, params),
-      invalidatesTags: [{ type: 'Ap', id: 'BandMode' }]
+      invalidatesTags: [{ type: 'Ap', id: 'BandModeSettings' }]
     }),
     getApBssColoring: build.query<ApBssColoringSettings, RequestPayload>({
       query: ({ params, payload }) => {
