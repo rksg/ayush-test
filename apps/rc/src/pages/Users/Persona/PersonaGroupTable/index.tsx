@@ -3,9 +3,9 @@ import { useEffect, useState, useContext } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { TierFeatures, useIsTierAllowed }                    from '@acx-ui/feature-toggle'
-import { DownloadOutlined }                                  from '@acx-ui/icons'
+import { Loader, Table, TableColumn, TableProps } from '@acx-ui/components'
+import { TierFeatures, useIsTierAllowed }         from '@acx-ui/feature-toggle'
+import { DownloadOutlined }                       from '@acx-ui/icons'
 import {
   DpskPoolLink,
   MacRegistrationPoolLink,
@@ -13,7 +13,8 @@ import {
   IdentityGroupLink,
   useDpskNewConfigFlowParams,
   VenueLink,
-  PersonaGroupDrawer
+  PersonaGroupDrawer,
+  usePersonaAsyncHeaders
 } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
@@ -175,6 +176,7 @@ export function PersonaGroupTable () {
   })
   const { setIdentityGroupCount } = useContext(IdentityGroupContext)
   const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
+  const { customHeaders } = usePersonaAsyncHeaders()
 
   const [getVenues] = useLazyVenuesListQuery()
   const [getDpskById] = useLazyGetDpskQuery()
@@ -266,7 +268,7 @@ export function PersonaGroupTable () {
     doProfileDelete(
       [selectedRow],
       $t({ defaultMessage: 'Identity Group' }),
-      selectedRow.name,
+      name,
       [
         {
           fieldName: 'personalIdentityNetworkId',
@@ -274,14 +276,7 @@ export function PersonaGroupTable () {
         },
         { fieldName: 'propertyId', fieldText: $t({ defaultMessage: 'Venue' }) }
       ],
-      async () => deletePersonaGroup({ params: { groupId: id } })
-        .then(() => {
-          showToast({
-            type: 'success',
-            content: $t({ defaultMessage: 'Identity Group {name} was deleted' }, { name })
-          })
-          callback()
-        })
+      async () => deletePersonaGroup({ params: { groupId: id }, customHeaders }).then(callback)
     )
   }
 

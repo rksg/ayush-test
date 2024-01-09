@@ -42,7 +42,8 @@ import {
 import { PersonaDrawer } from '../PersonaDrawer'
 import {
   PersonaGroupSelect } from '../PersonaGroupSelect'
-import { PersonaBlockedIcon } from '../styledComponents'
+import { PersonaBlockedIcon }     from '../styledComponents'
+import { usePersonaAsyncHeaders } from '../usePersonaEDAHeaders'
 
 const IdentitiesContext = createContext({} as {
   setIdentitiesCount: (data: number) => void
@@ -219,6 +220,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
   const [getUnitById] = useLazyGetPropertyUnitByIdQuery()
   const { setIdentitiesCount } = useContext(IdentitiesContext)
   const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
+  const { customHeaders } = usePersonaAsyncHeaders()
 
   const personaListQuery = useTableQuery<Persona>({
     useQuery: useSearchPersonaListQuery,
@@ -382,7 +384,8 @@ export function BasePersonaTable (props: PersonaTableProps) {
 
             deletePersonas({
               params: { groupId: personaGroupId ?? selectedItems[0].groupId },
-              payload: ids
+              payload: ids,
+              customHeaders
             }).unwrap()
               .then(() => {
                 clearSelection()
