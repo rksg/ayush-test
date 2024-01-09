@@ -99,13 +99,14 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
       title: $t({ defaultMessage: 'Processing Priority' }),
       key: 'processingPriority',
       dataIndex: 'processingPriority',
-      show: false,
       defaultSortOrder: 'ascend',
+      show: false,
       sorter: { compare: sortProp('processingPriority', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Logged Members' }),
       key: 'loggedInMembers',
+      show: false,
       dataIndex: 'loggedInMembers'
     },
     {

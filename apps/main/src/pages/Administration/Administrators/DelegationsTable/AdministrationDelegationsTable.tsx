@@ -167,8 +167,10 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
   const tableActions = []
   if (!isSupport && hasInvite3rdPartyPermmision) {
     tableActions.push({
-      label: is3PartyVarEnabled ? $t({ defaultMessage: 'Invite 3rd Party Admin' })
-        : $t({ defaultMessage: 'Invite 3rd Party Administrator' }),
+      label: isGroupBasedLoginEnabled ? $t({ defaultMessage: 'Add Delegated Admin' })
+        : (is3PartyVarEnabled
+          ? $t({ defaultMessage: 'Invite 3rd Party Admin' })
+          : $t({ defaultMessage: 'Invite 3rd Party Administrator' })),
       disabled: maxInvitationReached,
       onClick: handleClickInviteDelegation
     })

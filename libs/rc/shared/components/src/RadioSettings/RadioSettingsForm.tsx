@@ -6,7 +6,7 @@ import { Form, Slider, InputNumber, Space, Switch, Checkbox } from 'antd'
 import { CheckboxChangeEvent }                                from 'antd/lib/checkbox'
 import { FormattedMessage, useIntl }                          from 'react-intl'
 
-import { cssStr, Tooltip }                                 from '@acx-ui/components'
+import { cssStr, Tooltip, Button }                         from '@acx-ui/components'
 import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { InformationOutlined, QuestionMarkCircleOutlined } from '@acx-ui/icons'
 
@@ -140,11 +140,21 @@ export function RadioSettingsForm (props:{
                 }}
               />}
           </Form.Item>
-          <Tooltip title={
+          <Tooltip title={<>
             <FormattedMessage
               values={{ br: () => <br /> }}
-              defaultMessage={'These settings apply only to indoor APs.'}
+              defaultMessage={'Please ensure that configure the AFC Geo-location for the APs in the mobile APP.'}
             />
+            <Button type='link'
+              style={{
+                height: '16px',
+                lineHeight: '12px',
+                fontSize: '12px'
+              }}
+              onClick={() => {}}>
+              {$t({ defaultMessage: 'See details.' })}
+            </Button>
+          </>
           }
           placement='bottom'>
             <QuestionMarkCircleOutlined style={{ width: '18px', marginTop: '5px' }}/>
