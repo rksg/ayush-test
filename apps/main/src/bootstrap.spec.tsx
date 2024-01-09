@@ -3,7 +3,7 @@ import { rest }       from 'msw'
 import { createRoot } from 'react-dom/client'
 
 import { AdministrationUrlsInfo }                             from '@acx-ui/rc/utils'
-import { act, screen, mockServer, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { act, screen, mockServer, waitForElementToBeRemoved, waitFor } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                                       from '@acx-ui/user'
 
 import * as bootstrap from './bootstrap'
@@ -23,7 +23,7 @@ jest.mock('@acx-ui/user', () => ({
     {...props}
     data-testid='user-profile-provider'
   />,
-  useUserProfileContext: () => ({ allowedOperations: ['some-operation'] })
+  useUserProfileContext: () => ({ allowedOperations: ['some-operation'], accountTier: 'Gold' })
 }))
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
@@ -86,8 +86,16 @@ describe('bootstrap.init', () => {
           ...data,
           preferredLanguage: 'en-US'
         }))
+      ),
+      rest.get(UserUrlsInfo.getAccountTier.url as string,
+        (req, res, ctx) => {
+          return res(ctx.json({ acx_account_tier: 'Gold' }))
+        }
+      ),
+      rest.get(
+        UserUrlsInfo.getBetaStatus.url,
+        (_req, res, ctx) => res(ctx.status(200))
       )
-
     )
   })
   afterEach(() => {
