@@ -131,12 +131,6 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
       }
     },
     {
-      // visible: (selectedRows) => {
-      //   const allPrimeAdminSelected = isAllPrimeAdminSelected(selectedRows)
-      //   const selfSelected = isSelfSelected(selectedRows)
-      //   if (selfSelected) return false
-      //   return allPrimeAdminSelected === false
-      // },
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         showActionModal({
