@@ -97,6 +97,11 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
   const [updateSso] = useUpdateTenantAuthenticationsMutation()
   const [getUploadURL] = useGetUploadURLMutation()
 
+  const onClose = () => {
+    setVisible(false)
+    form.resetFields()
+  }
+
   useEffect(()=>{
     form.resetFields()
     setFormData(undefined)
@@ -442,6 +447,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     keyboard={false}
     closable={true}
     width={550}
+    onClose={onClose}
     footer={<div>
       {isGroupBasedLoginEnabled ? <ApplyButton form={form}></ApplyButton>
         : <Button
