@@ -74,7 +74,8 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   },
   updateDowngrade: {
     method: 'put',
-    url: '/venues/:venueId/apFirmwares/:firmwareVersion'
+    url: '/venues/:venueId/apFirmwares/:firmwareVersion',
+    newApi: true
   },
   skipSwitchUpgradeSchedules: {
     method: 'delete',
