@@ -285,12 +285,12 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getVenueApModelBandModeSettings: {
     method: 'get',
-    url: '/venues/:venueId/bandModeSettings',
+    url: '/venues/:venueId/apModelBandModeSettings',
     newApi: true
   },
   updateVenueApModelBandModeSettings: {
     method: 'put',
-    url: '/venues/:venueId/bandModeSettings',
+    url: '/venues/:venueId/apModelBandModeSettings',
     newApi: true
   },
   getVenueBssColoring: {
