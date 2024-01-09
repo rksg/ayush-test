@@ -1,3 +1,4 @@
+import { renderHook }                   from '@acx-ui/test-utils'
 import { AccountType, AccountVertical } from '@acx-ui/utils'
 
 import { TierFeatures }                    from './features'
@@ -110,3 +111,15 @@ describe('Test useIsTierAllowed function', () => {
   })
 
 })
+
+describe('useGetBetaList', () => {
+  const useFFList = jest.fn(() => JSON.stringify({
+    betaList: ['beta1', 'beta2', 'beta3']
+  }))
+
+  it('returns the correct beta list', () => {
+    const { result } = renderHook(() => useFFList())
+    expect(JSON.parse(result.current)?.betaList).toEqual(['beta1', 'beta2', 'beta3'])
+  })
+})
+

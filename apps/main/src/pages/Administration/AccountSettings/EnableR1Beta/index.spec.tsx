@@ -13,6 +13,10 @@ import { UserUrlsInfo } from '@acx-ui/user'
 
 import { EnableR1Beta } from './'
 
+jest.mock('@acx-ui/feature-toggle', () => ({
+  useGetBetaList: () => ['beta1', 'beta2', 'beta3']
+}))
+
 describe('Enable RUCKUS One Beta Checkbox', () => {
   const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
   const { location } = window
