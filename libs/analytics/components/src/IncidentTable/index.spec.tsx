@@ -158,7 +158,6 @@ const airtimeTests = [
           { isAclbRaised: true },
           { isLargeMgmtFrameCount: true },
           { isHighSsidCountPerRadio: true },
-          { isHighCoChannelInterference: true },
           { isCRRMRaised: true },
           { isChannelFlyEnabled: true },
           { isHighLegacyWifiDevicesCount: true }
@@ -447,7 +446,7 @@ describe('IncidentTable', () => {
     )
     expect(await screen.findByText('Root cause:')).toBeVisible()
     expect(await screen.findByText(
-      'Check the number of interfering links in the zone.')).toBeVisible()
+      'High co-channel interference.')).toBeVisible()
   })
   it('should render drawer when click on description & show impacted clients', async () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {

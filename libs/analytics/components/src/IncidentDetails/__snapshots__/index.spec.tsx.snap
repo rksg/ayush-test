@@ -573,7 +573,7 @@ exports[`incident details should render incident details correctly 1`] = `
                 class="ant-card-body"
               >
                 <section
-                  class="styledComponents__Wrapper-sc-1t8f1ur-3 lewDjh"
+                  class="styledComponents__Wrapper-sc-1t8f1ur-3 ldDrAQ"
                 >
                   <div
                     class="ant-space ant-space-horizontal ant-space-align-start"
@@ -1286,7 +1286,7 @@ exports[`incident details should render incident details correctly when there is
                 class="ant-card-body"
               >
                 <section
-                  class="styledComponents__Wrapper-sc-1t8f1ur-3 lewDjh"
+                  class="styledComponents__Wrapper-sc-1t8f1ur-3 ldDrAQ"
                 >
                   <div
                     class="ant-space ant-space-horizontal ant-space-align-start"
