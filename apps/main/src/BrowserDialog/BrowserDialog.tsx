@@ -19,7 +19,8 @@ export const isNonProdEnv = () => {
     window.location.hostname === 'dev.ruckus.cloud' ||
     window.location.hostname === 'qa.ruckus.cloud' ||
     window.location.hostname === 'scale.ruckus.cloud' ||
-    window.location.hostname === 'int.ruckus.cloud'
+    window.location.hostname === 'int.ruckus.cloud' ||
+    window.location.hostname === 'stage.ruckus.cloud'
 }
 
 
