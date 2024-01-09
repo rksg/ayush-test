@@ -15,7 +15,7 @@ import {
   useApContext,
   Capabilities,
   AFCMaxPowerRender,
-  AFCPowerStateRender } from '@acx-ui/rc/utils'
+  APPropertiesAFCPowerStateRender } from '@acx-ui/rc/utils'
 import { TenantLink }            from '@acx-ui/react-router-dom'
 import { useUserProfileContext } from '@acx-ui/user'
 
@@ -72,7 +72,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
         <Descriptions.Item
           label={$t({ defaultMessage: 'AFC Power State' })}
           children={
-            AFCPowerStateRender(currentAP?.apStatusData?.afcInfo, apRadioDeploy, true)
+            APPropertiesAFCPowerStateRender(currentAP?.apStatusData?.afcInfo, apRadioDeploy)
           }
         />
         <Descriptions.Item

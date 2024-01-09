@@ -15,7 +15,7 @@ export interface BetaFeaturesDrawerProps {
   width?: number
 }
 
-export function BetaFeaturesDrawer (
+function BetaFeaturesDrawer (
   props: BetaFeaturesDrawerProps
 ) {
   const { $t } = useIntl()
@@ -84,5 +84,5 @@ export function BetaFeaturesDrawer (
   )
 }
 
-export default BetaFeaturesDrawer
+export { BetaFeaturesDrawer }
 
