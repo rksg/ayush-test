@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { useIsSplitOn, useIsTierAllowed }                                                                                           from '@acx-ui/feature-toggle'
 import { DpskWlanAdvancedCustomization, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, TunnelProfileUrls, TunnelTypeEnum } from '@acx-ui/rc/utils'
 import { Provider }                                                                                                                 from '@acx-ui/store'
 import { mockServer, renderHook, waitFor }                                                                                          from '@acx-ui/test-utils'
@@ -194,6 +195,8 @@ describe('Network utils test', () => {
     const mockedTunnelReq = jest.fn()
     beforeEach(() => {
       mockedTunnelReq.mockRestore()
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
 
       mockServer.use(
         rest.post(
@@ -246,6 +249,20 @@ describe('Network utils test', () => {
     it('should handle with null network data',async () => {
       const { result } = renderHook(() => {
         return useNetworkVxLanTunnelProfileInfo(null)
+      }, { wrapper: Provider })
+
+      expect(mockedTunnelReq).not.toBeCalled()
+      expect(result.current.enableVxLan).toBe(false)
+      expect(result.current.enableTunnel).toBe(false)
+      expect(result.current.vxLanTunnels).toBe(undefined)
+    })
+
+    it('should return false when edge flag is not ON',async () => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(false)
+      jest.mocked(useIsSplitOn).mockReturnValue(false)
+      const { result } = renderHook(() => {
+        return useNetworkVxLanTunnelProfileInfo({
+        } as NetworkSaveData)
       }, { wrapper: Provider })
 
       expect(mockedTunnelReq).not.toBeCalled()
