@@ -10,8 +10,8 @@ import {
   TableProps,
   showToast
 } from '@acx-ui/components'
-import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }          from '@acx-ui/rc/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }                        from '@acx-ui/rc/components'
 import {
   doProfileDelete, useAdaptivePolicySetListQuery,
   useDeleteMacRegListMutation,
@@ -42,6 +42,7 @@ export default function MacRegistrationListsTable () {
   const params = useParams()
 
   const policyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isAsync = useIsSplitOn(Features.DPSK_NEW_CONFIG_FLOW_TOGGLE)
 
   const filter = {
     filterKey: 'name',
@@ -209,13 +210,16 @@ export default function MacRegistrationListsTable () {
           { fieldName: 'associationIds', fieldText: $t({ defaultMessage: 'Identity' }) },
           { fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }
         ],
-        async () => deleteMacRegList({ params: { policyId: selectedRow.id } })
+        async () => deleteMacRegList({ params: { policyId: selectedRow.id }, isAsync })
           .unwrap()
           .then(() => {
-            showToast({
-              type: 'success',
-              content: $t({ defaultMessage: 'List {name} was deleted' }, { name: selectedRow.name })
-            })
+            if (!isAsync) {
+              showToast({
+                type: 'success',
+                content: $t({ defaultMessage: 'List {name} was deleted' },
+                  { name: selectedRow.name })
+              })
+            }
             clearSelection()
           }).catch((error) => {
             console.log(error) // eslint-disable-line no-console

@@ -938,8 +938,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     addMacRegList: build.mutation<MacRegistrationPool, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MacRegListUrlsInfo.createMacRegistrationPool, params)
+      // eslint-disable-next-line max-len
+      query: ({ params, payload, isAsync }: { params?: Params<string>, payload?: unknown, isAsync?: boolean }) => {
+        let customHeaders
+        if (isAsync) {
+          customHeaders = { Accept: 'application/vnd.ruckus.v2+json' }
+        }
+        const req = createHttpRequest(MacRegListUrlsInfo.createMacRegistrationPool, params,
+          customHeaders)
         return {
           ...req,
           body: payload
@@ -948,8 +954,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'MacRegistrationPool', id: 'LIST' }]
     }),
     updateMacRegList: build.mutation<MacRegistrationPool, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MacRegListUrlsInfo.updateMacRegistrationPool, params)
+      // eslint-disable-next-line max-len
+      query: ({ params, payload, isAsync }: { params?: Params<string>, payload?: unknown, isAsync?: boolean }) => {
+        let customHeaders
+        if (isAsync) {
+          customHeaders = { Accept: 'application/vnd.ruckus.v2+json' }
+        }
+        const req = createHttpRequest(MacRegListUrlsInfo.updateMacRegistrationPool, params,
+          customHeaders)
         return {
           ...req,
           body: payload
@@ -958,8 +970,13 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'MacRegistrationPool', id: 'LIST' }]
     }),
     deleteMacRegList: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(MacRegListUrlsInfo.deleteMacRegistrationPool, params)
+      query: ({ params, isAsync }: { params?: Params<string>, isAsync?: boolean }) => {
+        let customHeaders
+        if (isAsync) {
+          customHeaders = { Accept: 'application/vnd.ruckus.v2+json' }
+        }
+        const req = createHttpRequest(MacRegListUrlsInfo.deleteMacRegistrationPool, params,
+          customHeaders)
         return {
           ...req
         }
@@ -967,8 +984,13 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'MacRegistrationPool', id: 'LIST' }]
     }),
     deleteMacRegistration: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(MacRegListUrlsInfo.deleteMacRegistration, params)
+      query: ({ params, isAsync }: { params?: Params<string>, isAsync?: boolean }) => {
+        let customHeaders
+        if (isAsync) {
+          customHeaders = { Accept: 'application/vnd.ruckus.v2+json' }
+        }
+        const req = createHttpRequest(MacRegListUrlsInfo.deleteMacRegistration, params,
+          customHeaders)
         return {
           ...req
         }
@@ -976,8 +998,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
     }),
     deleteMacRegistrations: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MacRegListUrlsInfo.deleteMacRegistrations, params)
+      // eslint-disable-next-line max-len
+      query: ({ params, payload, isAsync }: { params?: Params<string>, payload?: unknown, isAsync?: boolean }) => {
+        let customHeaders
+        if (isAsync) {
+          customHeaders = { Accept: 'application/vnd.ruckus.v2+json' }
+        }
+        const req = createHttpRequest(MacRegListUrlsInfo.deleteMacRegistrations, params,
+          customHeaders)
         return {
           ...req,
           body: payload
@@ -995,8 +1023,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
       providesTags: [{ type: 'MacRegistrationPool', id: 'DETAIL' }]
     }),
     addMacRegistration: build.mutation<MacRegistration, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MacRegListUrlsInfo.addMacRegistration, params)
+      // eslint-disable-next-line max-len
+      query: ({ params, payload, isAsync }: { params?: Params<string>, payload?: unknown, isAsync?: boolean }) => {
+        let customHeaders
+        if (isAsync) {
+          customHeaders = { Accept: 'application/vnd.ruckus.v2+json' }
+        }
+        const req = createHttpRequest(MacRegListUrlsInfo.addMacRegistration, params,
+          customHeaders)
         return {
           ...req,
           body: payload
@@ -1005,8 +1039,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
     }),
     updateMacRegistration: build.mutation<MacRegistration, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MacRegListUrlsInfo.updateMacRegistration, params)
+      // eslint-disable-next-line max-len
+      query: ({ params, payload, isAsync }: { params?: Params<string>, payload?: unknown, isAsync?: boolean }) => {
+        let customHeaders
+        if (isAsync) {
+          customHeaders = { Accept: 'application/vnd.ruckus.v2+json' }
+        }
+        const req = createHttpRequest(MacRegListUrlsInfo.updateMacRegistration, params,
+          customHeaders)
         return {
           ...req,
           body: payload
@@ -1270,10 +1310,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     uploadMacRegistration: build.mutation<{}, RequestFormData>({
-      query: ({ params, payload }) => {
+      // eslint-disable-next-line max-len
+      query: ({ params, payload, isAsync }: { params?: Params<string>, payload?: unknown, isAsync?: boolean }) => {
         const req = createHttpRequest(MacRegListUrlsInfo.uploadMacRegistration, params, {
           'Content-Type': undefined,
-          'Accept': '*/*'
+          'Accept': (isAsync) ? 'application/vnd.ruckus.v2+json' : '*/*'
         })
         return {
           ...req,
