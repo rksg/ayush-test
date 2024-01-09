@@ -418,7 +418,14 @@ export function ApForm () {
 
   const displayAFCGeolocation = () : boolean => {
 
-    const afcInfo = apList?.data[0].apStatusData?.afcInfo
+    // Get ap info separately in case apStatusData is undefined and have no check
+    const apInfo = apList?.data?.[0]
+
+    if (!apInfo) {
+      return false
+    }
+
+    const afcInfo = apInfo.apStatusData?.afcInfo
     const requiredStatus = [AFCStatus.AFC_NOT_REQUIRED, AFCStatus.WAIT_FOR_LOCATION]
 
     // AFC info possibly does not exist.
