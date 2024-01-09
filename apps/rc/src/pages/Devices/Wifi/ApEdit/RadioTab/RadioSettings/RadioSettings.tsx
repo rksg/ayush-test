@@ -538,8 +538,7 @@ export function RadioSettings () {
           apRadioParams24G: venueRadioParams24G,
           apRadioParams50G: venueRadioParams50G,
           apRadioParamsDual5G: venueRadioParamsDual5G,
-          apRadioParams6G: venueRadioParams6G,
-          useVenueSettings: true
+          apRadioParams6G: venueRadioParams6G
         }
       }
 
@@ -1152,11 +1151,6 @@ export function RadioSettings () {
             }
           </Tabs>
           {displayVenueSettingAndCustomize('underTab')}
-          <Form.Item
-            name={['useVenueSettings']}
-            hidden
-            children={<></>}
-          />
           <div style={{ display: currentTab === RadioType.Normal24GHz ? 'block' : 'none' }}>
             <ApSingleRadioSettings
               isEnabled={isEnable24g}
