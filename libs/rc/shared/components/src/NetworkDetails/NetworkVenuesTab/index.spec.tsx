@@ -488,6 +488,7 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
     expect(row1).toHaveTextContent('ON now') // { day: 'Thu', timeIndex: 5 }
     expect(row2).toHaveTextContent('OFF now')  // { day: 'Wed', timeIndex: 45 }
 
+    jest.runOnlyPendingTimers()
     jest.useRealTimers()
   })
 

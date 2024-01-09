@@ -20,6 +20,7 @@ import {
 describe('Test schedule.utils', () => {
 
   afterEach(()=>{
+    jest.runOnlyPendingTimers()
     jest.useRealTimers()
   })
 
