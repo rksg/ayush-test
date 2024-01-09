@@ -6,6 +6,8 @@ import {
 import {
   CommonResult,
   EdgeAllPortTrafficData,
+  EdgeClusterStatus,
+  EdgeClusterTableDataType,
   EdgeDnsServers,
   EdgeGeneralSetting,
   EdgeLag,
@@ -13,6 +15,7 @@ import {
   EdgePasswordDetail,
   EdgePortConfig,
   EdgePortStatus,
+  EdgePortWithStatus,
   EdgeResourceUtilizationData,
   EdgeService,
   EdgeStaticRouteConfig,
@@ -32,8 +35,7 @@ import {
   TraceRouteEdge,
   downloadFile,
   onActivityMessageReceived,
-  onSocketActivityChanged,
-  EdgePortWithStatus
+  onSocketActivityChanged
 } from '@acx-ui/rc/utils'
 import { baseEdgeApi }                         from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -56,7 +58,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Edge', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'CLUSTER_LIST' }]
     }),
     getEdge: build.query<EdgeGeneralSetting, RequestPayload>({
       query: ({ params }) => {
@@ -75,7 +77,8 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'DETAIL' }]
+      invalidatesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'DETAIL' },
+        { type: 'Edge', id: 'CLUSTER_LIST' }]
     }),
     getEdgeList: build.query<TableResult<EdgeStatus>, RequestPayload>({
       query: ({ payload, params }) => {
@@ -118,7 +121,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           }
         }
       },
-      invalidatesTags: [{ type: 'Edge', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'CLUSTER_LIST' }]
     }),
     sendOtp: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -297,13 +300,15 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       query: ({ params }) => {
         return createHttpRequest(EdgeUrlsInfo.reboot, params)
       },
-      invalidatesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'DETAIL' }]
+      invalidatesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'DETAIL' },
+        { type: 'Edge', id: 'CLUSTER_LIST' }]
     }),
     factoryResetEdge: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         return createHttpRequest(EdgeUrlsInfo.factoryReset, params)
       },
-      invalidatesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'DETAIL' }]
+      invalidatesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'DETAIL' },
+        { type: 'Edge', id: 'CLUSTER_LIST' }]
     }),
     pingEdge: build.mutation<PingEdge, RequestPayload>({
       query: ({ params, payload }) => {
@@ -662,6 +667,85 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       providesTags: [{ type: 'Edge', id: 'DETAIL' }, { type: 'Edge', id: 'LAG_SUB_INTERFACE' }],
       extraOptions: { maxRetries: 5 }
+    }),
+    getEdgeClusterList: build.query<TableResult<EdgeClusterStatus>, RequestPayload>({
+      query: ({ payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgeClusterStatusList)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'CLUSTER_LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Add Edge',
+            'Delete Edges',
+            'Create SmartEdge cluster',
+            'Delete SmartEdge clusters'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'CLUSTER_LIST' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    getEdgeClusterListForTable: build.query<TableResult<EdgeClusterTableDataType>, RequestPayload>({
+      query: ({ payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgeClusterStatusList)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'CLUSTER_LIST' }],
+      transformResponse: (result: TableResult<EdgeClusterStatus>) => {
+        result.data = result.data.map(item => {
+          const tmp = {
+            ...item,
+            isFirstLevel: true
+          } as EdgeClusterTableDataType
+          if(item.edgeList) {
+            tmp.children = item.edgeList
+            delete item.edgeList
+            EdgeStatusTransformer(tmp.children)
+          }
+          return tmp
+        })
+        return result as TableResult<EdgeClusterTableDataType>
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Add Edge',
+            'Delete Edges',
+            'Create SmartEdge cluster',
+            'Delete SmartEdge clusters'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'CLUSTER_LIST' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    addEdgeCluster: build.mutation<unknown, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.addEdgeCluster, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'CLUSTER_LIST' }]
+    }),
+    deleteEdgeCluster: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(EdgeUrlsInfo.deleteEdgeCluster, params)
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'CLUSTER_LIST' }]
     })
   })
 })
@@ -727,5 +811,9 @@ export const {
   useUpdateEdgeLagMutation,
   useImportLagSubInterfacesCSVMutation,
   useGetEdgeLagSubInterfacesStatusListQuery,
-  useGetEdgePortListWithStatusQuery
+  useGetEdgePortListWithStatusQuery,
+  useGetEdgeClusterListForTableQuery,
+  useGetEdgeClusterListQuery,
+  useAddEdgeClusterMutation,
+  useDeleteEdgeClusterMutation
 } = edgeApi
