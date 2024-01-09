@@ -419,7 +419,7 @@ export function ApForm () {
   const displayAFCGeolocation = () : boolean => {
 
     // Get ap info separately in case apStatusData is undefined and have no check
-    const apInfo = apList?.data[0]
+    const apInfo = apList?.data?.[0]
 
     if (!apInfo) {
       return false
