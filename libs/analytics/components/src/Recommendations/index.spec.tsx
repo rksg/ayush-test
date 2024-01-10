@@ -9,6 +9,7 @@ import { useIsSplitOn }                                       from '@acx-ui/feat
 import { BrowserRouter as Router, Link }                      from '@acx-ui/react-router-dom'
 import { recommendationUrl, Provider, store }                 from '@acx-ui/store'
 import {
+  findTBody,
   mockGraphqlQuery,
   render,
   screen,
@@ -84,12 +85,19 @@ describe('RecommendationTabContent', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
 
-  it('should render loader', () => {
+  it('should render loader and empty table', async () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: { recommendations: [] }
     })
     render(<Router><Provider><RecommendationTabContent /></Provider></Router>)
-    expect(screen.getAllByRole('img', { name: 'loader' })).toBeTruthy()
+
+    const loader = screen.queryByRole('img', { name: 'loader' })
+    expect(loader).toBeVisible()
+
+    await waitForElementToBeRemoved(loader)
+
+    const tbody = await findTBody()
+    expect(await within(tbody).findAllByRole('row')).toHaveLength(1)
   })
 
   it('should render crrm table for R1', async () => {

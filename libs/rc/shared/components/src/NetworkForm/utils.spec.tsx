@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { useIsSplitOn, useIsTierAllowed }                                                                                           from '@acx-ui/feature-toggle'
 import { DpskWlanAdvancedCustomization, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, TunnelProfileUrls, TunnelTypeEnum } from '@acx-ui/rc/utils'
 import { Provider }                                                                                                                 from '@acx-ui/store'
 import { mockServer, renderHook, waitFor }                                                                                          from '@acx-ui/test-utils'
@@ -194,39 +195,55 @@ describe('Network utils test', () => {
     const mockedTunnelReq = jest.fn()
     beforeEach(() => {
       mockedTunnelReq.mockRestore()
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
 
       mockServer.use(
-        rest.get(
-          TunnelProfileUrls.getTunnelProfile.url,
+        rest.post(
+          TunnelProfileUrls.getTunnelProfileViewDataList.url,
           (_, res, ctx) => {
             mockedTunnelReq()
             return res(ctx.json({
-              id: 'mocked_tunnel',
-              name: 'tunnelProfile1',
-              mtuType: 'MANUAL',
-              mtuSize: 1450,
-              forceFragmentation: true,
-              ageTimeMinutes: 20,
-              type: TunnelTypeEnum.VXLAN
+              data: [{
+                id: 'mocked_tunnel',
+                name: 'tunnelProfile1',
+                mtuType: 'MANUAL',
+                mtuSize: 1450,
+                forceFragmentation: true,
+                ageTimeMinutes: 20,
+                personalIdentityNetworkIds: ['mocked_pin_1'],
+                sdLanIds: [],
+                networkIds: ['mocked_network_1'],
+                type: TunnelTypeEnum.VXLAN
+              }, {
+                id: 'mocked_tunnel_2',
+                name: 'tunnelProfile2',
+                mtuType: 'AUTO',
+                forceFragmentation: false,
+                ageTimeMinutes: 20,
+                personalIdentityNetworkIds: [],
+                sdLanIds: ['mocked_sdlan_1'],
+                networkIds: ['mocked_network_1'],
+                type: TunnelTypeEnum.VLAN_VXLAN
+              }]
             }))
           }
         )
       )
     })
 
-    it.skip('should bring out tunnel type',async () => {
+    it('should bring out tunnel info',async () => {
       const { result } = renderHook(() => {
         return useNetworkVxLanTunnelProfileInfo({
-          wlan: {
-            advancedCustomization: {
-              tunnelProfileId: 'mocked_tunnel'
-            }
-          }
         } as NetworkSaveData)
       }, { wrapper: Provider })
 
-      await waitFor(() => expect(result.current.tunnelType).toBe('VXLAN'))
-      expect(result.current.enableVxLan).toBe(true)
+      expect(result.current.enableVxLan).toBe(false)
+      expect(result.current.enableTunnel).toBe(false)
+      expect(result.current.vxLanTunnels).toBe(undefined)
+      await waitFor(() => expect(mockedTunnelReq).toBeCalled())
+      await waitFor(() => expect(result.current.enableVxLan).toBe(true))
+      expect(result.current.enableTunnel).toBe(true)
     })
 
     it('should handle with null network data',async () => {
@@ -236,7 +253,22 @@ describe('Network utils test', () => {
 
       expect(mockedTunnelReq).not.toBeCalled()
       expect(result.current.enableVxLan).toBe(false)
-      expect(result.current.tunnelType).toBe(undefined)
+      expect(result.current.enableTunnel).toBe(false)
+      expect(result.current.vxLanTunnels).toBe(undefined)
+    })
+
+    it('should return false when edge flag is not ON',async () => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(false)
+      jest.mocked(useIsSplitOn).mockReturnValue(false)
+      const { result } = renderHook(() => {
+        return useNetworkVxLanTunnelProfileInfo({
+        } as NetworkSaveData)
+      }, { wrapper: Provider })
+
+      expect(mockedTunnelReq).not.toBeCalled()
+      expect(result.current.enableVxLan).toBe(false)
+      expect(result.current.enableTunnel).toBe(false)
+      expect(result.current.vxLanTunnels).toBe(undefined)
     })
   })
 })

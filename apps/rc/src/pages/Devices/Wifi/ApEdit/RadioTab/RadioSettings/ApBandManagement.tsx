@@ -22,18 +22,16 @@ import { ApDataContext } from '../..'
 import { VenueNameDisplay } from './RadioSettings'
 
 export interface ApBandManagementPorps {
-  venue: VenueExtended,
-  venueBandMode: BandModeEnum,
-  isSupportDual5GAp: boolean,
-  isSupportTriBandRadioAp: boolean,
-  currentApBandModeData: ApBandModeSettings,
+  venue: VenueExtended
+  venueBandMode: BandModeEnum
+  isSupportDual5GAp: boolean
+  isSupportTriBandRadioAp: boolean
+  currentApBandModeData: ApBandModeSettings
   setCurrentApBandModeData: (data: ApBandModeSettings) => void
 }
 
-export const ApBandManagement = (props: ApBandManagementPorps) => {
-  const { venue, venueBandMode,
-    isSupportDual5GAp, isSupportTriBandRadioAp,
-    currentApBandModeData, setCurrentApBandModeData } = props
+export const ApBandManagement = ({ venue, venueBandMode, isSupportDual5GAp, isSupportTriBandRadioAp,
+  currentApBandModeData, setCurrentApBandModeData }: ApBandManagementPorps) => {
 
   const { $t } = useIntl()
 
