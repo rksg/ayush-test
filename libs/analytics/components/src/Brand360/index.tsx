@@ -67,7 +67,7 @@ export function Brand360 () {
     ? transformLookupAndMappingData(mspPropertiesData.data)
     : {}
   const venuesData = useFetchBrandPropertiesQuery(chartPayload)
-  const tableResults = venuesData.data
+  const tableResults = venuesData.data && lookupAndMappingData
     ? transformVenuesData(venuesData as { data : BrandVenuesSLA[] }, lookupAndMappingData)
     : []
   const {

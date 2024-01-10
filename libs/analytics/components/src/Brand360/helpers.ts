@@ -164,31 +164,35 @@ export const transformVenuesData = (
   lookupAndMappingData: TransformedMap
 ): Response[] => {
   const groupByTenantID = groupBy(venuesData?.data, 'tenantId')
+
   const sumSLAData = (data: ([number | null, number | null] | null)[], initial: number[]) =>
-    data.reduce((total, current) => {
-      const values = current as [number, number]
-      return total.map((num, index) => num + (values[index] || 0)) as [number, number]
-    }, initial)
-  return Object.keys(groupByTenantID).reduce((newObj, tenantId) => {
+    data
+      ? data?.reduce((total, current) => {
+        const values = current as [number, number]
+        return total.map((num, index) => num + (values[index] || 0)) as [number, number]
+      }, initial)
+      : [0,0]
+  return Object.keys(lookupAndMappingData).reduce((newObj, tenantId) => {
     const mappingData = lookupAndMappingData[tenantId]
     if (mappingData?.integrator) {
       const tenantData = groupByTenantID[tenantId]
       newObj.push({
         property: mappingData?.name,
         lsp: lookupAndMappingData[mappingData.integrator]?.name,
-        p1Incidents: tenantData.reduce((total, venue) => total + (venue.incidentCount || 0), 0),
+        p1Incidents: tenantData
+          ? tenantData?.reduce((total, venue) => total + (venue.incidentCount || 0), 0) : 0,
         ssidCompliance: sumSLAData(
-          tenantData.map(v => v.ssidComplianceSLA), [0, 0]
+          tenantData?.map(v => v.ssidComplianceSLA), [0, 0]
         ) as [number, number],
         deviceCount: (sumSLAData(
-          tenantData.map(v => v.onlineApsSLA), [0, 0]
+          tenantData?.map(v => v.onlineApsSLA), [0, 0]
         ) as [number, number])?.[1],
         avgConnSuccess: sumSLAData(
-          tenantData.map(v => v.connectionSuccessSLA), [0, 0]
+          tenantData?.map(v => v.connectionSuccessSLA), [0, 0]
         ) as [number, number],
-        avgTTC: sumSLAData(tenantData.map(v => v.timeToConnectSLA), [0, 0]) as [number, number],
+        avgTTC: sumSLAData(tenantData?.map(v => v.timeToConnectSLA), [0, 0]) as [number, number],
         avgClientThroughput: sumSLAData(
-          tenantData.map(v => v.clientThroughputSLA), [0, 0]
+          tenantData?.map(v => v.clientThroughputSLA), [0, 0]
         ) as [number, number]
       })
     }
