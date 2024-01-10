@@ -9,7 +9,6 @@ import {
   createNewTableHttpRequest,
   TableChangePayload,
   downloadFile,
-  RequestFormData,
   onSocketActivityChanged,
   onActivityMessageReceived
 } from '@acx-ui/rc/utils'
