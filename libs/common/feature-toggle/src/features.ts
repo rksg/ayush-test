@@ -146,7 +146,8 @@ export enum Features {
   WIFI_VENUE_BSS_COLORING_TOGGLE = 'wifi-fr-6029-fg1-toggle',
   WISPR_ENCRYPT_MAC_IP = 'acx-ui-wispr-encrypt-mac-ip-toggle',
   WPA3_80211R = 'wifi-eda-wpa3-80211r-toggle',
-  ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle'
+  ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
+  CLOUDPATH_ASYNC_API_TOGGLE = 'acx-ui-cloudpath-async-api-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

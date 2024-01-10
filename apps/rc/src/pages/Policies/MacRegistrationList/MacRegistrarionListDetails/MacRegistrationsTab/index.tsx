@@ -36,7 +36,8 @@ export function MacRegistrationsTab () {
   const [ uploadCsv, uploadCsvResult ] = useUploadMacRegistrationMutation()
 
   const macRegistrationListQuery = useGetMacRegListQuery({ params: { policyId } })
-  const isAsync = useIsSplitOn(Features.DPSK_NEW_CONFIG_FLOW_TOGGLE)
+  const isAsync = useIsSplitOn(Features.CLOUDPATH_ASYNC_API_TOGGLE)
+  const customHeaders = (isAsync) ? { Accept: 'application/vnd.ruckus.v2+json' } : undefined
 
   const sorter = {
     sortField: 'macAddress',
@@ -95,7 +96,7 @@ export function MacRegistrationsTab () {
           { fieldName: 'identityId', fieldText: $t({ defaultMessage: 'Identity' }) }
         ],
         // eslint-disable-next-line max-len
-        async () => deleteMacRegistrations({ params: { policyId, registrationId: selectedRows[0].id }, payload: selectedRows.map(p => p.id), isAsync })
+        async () => deleteMacRegistrations({ params: { policyId, registrationId: selectedRows[0].id }, payload: selectedRows.map(p => p.id), customHeaders })
           .then(() => {
             const macAddress = selectedRows.map(row => row.macAddress).join(', ')
             if (!isAsync) {
@@ -132,7 +133,7 @@ export function MacRegistrationsTab () {
         {
           params: { policyId, registrationId: rows[0].id },
           payload: { revoked: true },
-          isAsync
+          customHeaders
         }).then(clearSelection)
     }
   },
@@ -144,7 +145,7 @@ export function MacRegistrationsTab () {
         {
           params: { policyId, registrationId: rows[0].id },
           payload: { revoked: false },
-          isAsync
+          customHeaders
         }).then(clearSelection)
     }
   }]
@@ -242,7 +243,8 @@ export function MacRegistrationsTab () {
         isLoading={uploadCsvResult.isLoading}
         importRequest={async (formData) => {
           try {
-            await uploadCsv({ params: { policyId }, payload: formData }).unwrap()
+            // eslint-disable-next-line max-len
+            await uploadCsv({ params: { policyId }, payload: formData, customHeaders: { ...customHeaders, 'Content-Type': undefined } }).unwrap()
             setUploadCsvDrawerVisible(false)
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (error) {

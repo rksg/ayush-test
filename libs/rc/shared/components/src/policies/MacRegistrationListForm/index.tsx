@@ -45,7 +45,8 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
   const [updateMacRegList, { isLoading: isUpdating }] = useUpdateMacRegListMutation()
 
   const policyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isAsync = useIsSplitOn(Features.DPSK_NEW_CONFIG_FLOW_TOGGLE)
+  const isAsync = useIsSplitOn(Features.CLOUDPATH_ASYNC_API_TOGGLE)
+  const customHeaders = (isAsync) ? { Accept: 'application/vnd.ruckus.v2+json' } : undefined
 
   useEffect(() => {
     if (data && editMode) {
@@ -74,7 +75,7 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
         policySetId: data.policySetId
       }
       // eslint-disable-next-line max-len
-      const result = await addMacRegList({ payload: saveData, isAsync }).unwrap() as MacRegistrationPool
+      const result = await addMacRegList({ payload: saveData, customHeaders }).unwrap() as MacRegistrationPool
 
       if (!isAsync) {
         showToast({
@@ -104,7 +105,7 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
       await updateMacRegList({
         params: { policyId },
         payload: saveData,
-        isAsync
+        customHeaders
       }).unwrap()
 
       if (!isAsync) {

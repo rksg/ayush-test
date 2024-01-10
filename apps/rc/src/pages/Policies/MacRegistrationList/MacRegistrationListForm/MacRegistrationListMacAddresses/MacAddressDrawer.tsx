@@ -39,7 +39,8 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
   const [editMacRegistration] = useUpdateMacRegistrationMutation()
   const { policyId } = useParams()
   const [ macReg ] = useLazyMacRegistrationsQuery()
-  const isAsync = useIsSplitOn(Features.DPSK_NEW_CONFIG_FLOW_TOGGLE)
+  const isAsync = useIsSplitOn(Features.CLOUDPATH_ASYNC_API_TOGGLE)
+  const customHeaders = (isAsync) ? { Accept: 'application/vnd.ruckus.v2+json' } : undefined
 
   const macAddressValidator = async (macAddress: string) => {
     const list = (await macReg({
@@ -97,13 +98,13 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
           {
             params: { policyId, registrationId: editData?.id },
             payload: _.omit(payload, 'macAddress'),
-            isAsync
+            customHeaders
           }).unwrap()
       } else {
         await addMacRegistration({
           params: { policyId },
           payload,
-          isAsync
+          customHeaders
         }).unwrap()
       }
 

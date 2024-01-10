@@ -42,7 +42,8 @@ export default function MacRegistrationListsTable () {
   const params = useParams()
 
   const policyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isAsync = useIsSplitOn(Features.DPSK_NEW_CONFIG_FLOW_TOGGLE)
+  const isAsync = useIsSplitOn(Features.CLOUDPATH_ASYNC_API_TOGGLE)
+  const customHeaders = (isAsync) ? { Accept: 'application/vnd.ruckus.v2+json' } : undefined
 
   const filter = {
     filterKey: 'name',
@@ -210,7 +211,7 @@ export default function MacRegistrationListsTable () {
           { fieldName: 'associationIds', fieldText: $t({ defaultMessage: 'Identity' }) },
           { fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }
         ],
-        async () => deleteMacRegList({ params: { policyId: selectedRow.id }, isAsync })
+        async () => deleteMacRegList({ params: { policyId: selectedRow.id }, customHeaders })
           .unwrap()
           .then(() => {
             if (!isAsync) {
