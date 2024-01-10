@@ -430,7 +430,17 @@ export const networkApi = baseNetworkApi.injectEndpoints({
 
         return { data: networkDeepList.response }
       },
-      providesTags: [{ type: 'Network', id: 'DETAIL' }]
+      providesTags: [{ type: 'Network', id: 'DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'AddNetwork'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
+          })
+        })
+      }
     }),
     dashboardOverview: build.query<Dashboard, RequestPayload>({
       query: ({ params }) => {

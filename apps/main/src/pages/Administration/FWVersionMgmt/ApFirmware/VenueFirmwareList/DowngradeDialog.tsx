@@ -32,6 +32,8 @@ export function DowngradeDialog (props: DowngradeDialogProps) {
   const [form] = useForm()
   const { onSubmit, onCancel, data, availableVersions } = props
   const [selectedVersion, setSelectedVersion] = useState<string>('')
+  const [selectedFirmware, setSelectedFirmware] = useState<FirmwareVersion>()
+  const [unSupportedModels, setUnSupportedModels] = useState<string[]>()
   const [step, setStep] = useState(0)
 
   useEffect(() => {
@@ -47,7 +49,7 @@ export function DowngradeDialog (props: DowngradeDialogProps) {
   const createRequest = (): UpdateNowRequest[] => {
     const venuesData = data as FirmwareVenue[]
     const request = [{
-      firmwareCategoryId: 'active',
+      firmwareCategoryId: selectedFirmware?.abf,
       firmwareVersion: selectedVersion,
       venueIds: venuesData.map(venue => venue.id)
     }]
@@ -72,6 +74,20 @@ export function DowngradeDialog (props: DowngradeDialogProps) {
   }
 
   const onNext = () => {
+    // eslint-disable-next-line max-len
+    const fw = availableVersions?.filter((abfVersion: FirmwareVersion) => abfVersion.id === selectedVersion)
+    if (fw && fw.length > 0) {
+      setSelectedFirmware(fw[0])
+      if (data && data[0] && data[0].apModels) {
+        let unSupportedModels: string[] = []
+        for (let model of data[0].apModels) {
+          if (!fw[0].supportedApModels?.includes(model)) {
+            unSupportedModels.push(model)
+          }
+        }
+        setUnSupportedModels(unSupportedModels)
+      }
+    }
     setStep(2)
   }
 
@@ -159,14 +175,21 @@ export function DowngradeDialog (props: DowngradeDialogProps) {
         }
         {step === 2 &&
           <Form.Item>
-            <Typography style={{ fontWeight: 700 }}>
-              { // eslint-disable-next-line max-len
-                intl.$t({ defaultMessage: 'The selected firmware version will be updated on all devices in the venue, except for the device models listed below. Firmware for these models is not supported and won’t be updated during downgrade.' })}
-            </Typography>
-            <UI.Ul>
-              <UI.Li>R650</UI.Li>
-              <UI.Li>R770</UI.Li>
-            </UI.Ul>
+            { unSupportedModels && unSupportedModels.length > 0 &&
+            <>
+              <Typography style={{ fontWeight: 700 }}>
+                { // eslint-disable-next-line max-len
+                  intl.$t({ defaultMessage: 'The selected firmware version will be updated on all devices in the venue, except for the device models listed below. Firmware for these models is not supported and won’t be updated during downgrade.' })}
+              </Typography>
+              <UI.Ul>
+                { unSupportedModels.map((model, index) => {
+                  return (
+                    <UI.Li key={index}>{model}</UI.Li>
+                  )
+                })}
+              </UI.Ul>
+            </>
+            }
             <Typography>
               { // eslint-disable-next-line max-len
                 intl.$t({ defaultMessage: 'Are you sure you want to downgrade the firmware version on devices in this venue?' })}
