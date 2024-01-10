@@ -2,11 +2,12 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { firmwareApi }  from '@acx-ui/rc/services'
 import {
   FirmwareUrlsInfo
 } from '@acx-ui/rc/utils'
 import {
-  Provider
+  Provider, store
 } from '@acx-ui/store'
 import {
   mockServer,
@@ -31,6 +32,7 @@ import { VenueFirmwareListLegacy } from '.'
 describe('Firmware Venues Table', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
+    store.dispatch(firmwareApi.util.resetApiState())
     mockServer.use(
       rest.get(
         FirmwareUrlsInfo.getSwitchFirmwarePredownload.url,

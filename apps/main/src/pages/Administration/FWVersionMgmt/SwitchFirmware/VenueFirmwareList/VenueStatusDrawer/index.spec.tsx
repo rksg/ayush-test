@@ -14,8 +14,7 @@ import {
 } from '@acx-ui/test-utils'
 
 
-import { VenueFirmwareList }     from '..'
-import { switchCurrentVersions } from '../../../__tests__/fixtures'
+import { VenueFirmwareList } from '..'
 import {
   switchVenue,
   preference,
@@ -33,6 +32,14 @@ jest.mock('./SwitchUpgradeWizard', () => ({
 }))
 
 const retryRequestSpy = jest.fn()
+
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetSwitchCurrentVersionsQuery: () => ({
+    data: require('../../../__tests__/fixtures').switchCurrentVersions
+  })
+}))
+
 
 describe('SwitchFirmware - VenueStatusDrawer', () => {
   let params: { tenantId: string }
@@ -55,10 +62,6 @@ describe('SwitchFirmware - VenueStatusDrawer', () => {
         (req, res, ctx) => res(ctx.json({
           preDownload: false
         }))
-      ),
-      rest.get(
-        FirmwareUrlsInfo.getSwitchCurrentVersions.url,
-        (req, res, ctx) => res(ctx.json(switchCurrentVersions))
       ),
       rest.post(
         FirmwareUrlsInfo.updateSwitchVenueSchedules.url,

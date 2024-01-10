@@ -1,10 +1,8 @@
 import userEvent       from '@testing-library/user-event'
 import { Form, Modal } from 'antd'
-import { rest }        from 'msw'
 
 import {
   FirmwareSwitchVenue,
-  FirmwareUrlsInfo,
   SwitchFirmware
 } from '@acx-ui/rc/utils'
 import {
@@ -16,7 +14,6 @@ import {
 } from '@acx-ui/test-utils'
 
 
-import { switchCurrentVersions } from '../../../../__tests__/fixtures'
 import {
   switchVenue,
   upgradeSwitchViewList,
@@ -38,14 +35,17 @@ jest.mock('@acx-ui/components', () => ({
   })
 }))
 
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetSwitchCurrentVersionsQuery: () => ({
+    data: require('../../../../__tests__/fixtures').switchCurrentVersions
+  })
+}))
+
 describe('ScheduleStep', () => {
   const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
   beforeEach(async () => {
     Modal.destroyAll()
-    rest.get(
-      FirmwareUrlsInfo.getSwitchCurrentVersions.url,
-      (req, res, ctx) => res(ctx.json(switchCurrentVersions))
-    )
   })
 
   it('render ScheduleStep - 1 Venue', async () => {
@@ -96,6 +96,7 @@ describe('ScheduleStep', () => {
       , {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
+
 
     expect(await screen.findByText(/Firmware available for ICX 8200 Series/i)).toBeInTheDocument()
     expect(screen.getByText(/9.0.10f/i)).toBeInTheDocument()

@@ -2,17 +2,18 @@ import userEvent       from '@testing-library/user-event'
 import { Form, Modal } from 'antd'
 import { rest }        from 'msw'
 
+import { firmwareApi }      from '@acx-ui/rc/services'
 import { FirmwareUrlsInfo } from '@acx-ui/rc/utils'
 import {
-  Provider
+  Provider, store
 } from '@acx-ui/store'
 import {
+  mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
 
 
-import { switchCurrentVersions } from '../../../../__tests__/fixtures'
 import {
   availableVersions,
   availableVersions_hasInUse
@@ -33,14 +34,17 @@ jest.mock('@acx-ui/components', () => ({
   })
 }))
 
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetSwitchCurrentVersionsQuery: () => ({
+    data: require('../../../../__tests__/fixtures').switchCurrentVersions
+  })
+}))
+
 describe('UpdateNowStep', () => {
   const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
   beforeEach(async () => {
     Modal.destroyAll()
-    rest.get(
-      FirmwareUrlsInfo.getSwitchCurrentVersions.url,
-      (req, res, ctx) => res(ctx.json(switchCurrentVersions))
-    )
   })
 
   it('render UpdateNowStep - 1 Venue', async () => {

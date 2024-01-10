@@ -1,11 +1,12 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { firmwareApi } from '@acx-ui/rc/services'
 import {
   FirmwareUrlsInfo
 } from '@acx-ui/rc/utils'
 import {
-  Provider
+  Provider, store
 } from '@acx-ui/store'
 import {
   mockServer,
@@ -14,8 +15,6 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-
-import { switchCurrentVersions } from '../../__tests__/fixtures'
 
 import {
   switchVenue,
@@ -41,9 +40,18 @@ jest.mock('./VenueStatusDrawer', () => ({
   }
 }))
 
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetSwitchCurrentVersionsQuery: () => ({
+    data: require('../../__tests__/fixtures').switchCurrentVersions
+  })
+}))
+
+
 describe('SwitchFirmware - VenueFirmwareList', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
+    store.dispatch(firmwareApi.util.resetApiState())
     mockServer.use(
       rest.post(
         FirmwareUrlsInfo.getSwitchVenueVersionList.url,
@@ -62,10 +70,6 @@ describe('SwitchFirmware - VenueFirmwareList', () => {
         (req, res, ctx) => res(ctx.json({
           preDownload: false
         }))
-      ),
-      rest.get(
-        FirmwareUrlsInfo.getSwitchCurrentVersions.url,
-        (req, res, ctx) => res(ctx.json(switchCurrentVersions))
       ),
       rest.post(
         FirmwareUrlsInfo.updateSwitchVenueSchedules.url,

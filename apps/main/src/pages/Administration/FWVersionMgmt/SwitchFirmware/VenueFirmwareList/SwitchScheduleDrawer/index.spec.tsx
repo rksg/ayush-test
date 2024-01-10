@@ -1,12 +1,13 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { firmwareApi } from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenue,
   FirmwareUrlsInfo
 } from '@acx-ui/rc/utils'
 import {
-  Provider
+  Provider, store
 } from '@acx-ui/store'
 import {
   mockServer,
@@ -39,6 +40,7 @@ jest.mock('./SwitchUpgradeWizard', () => ({
 describe('SwitchFirmware - SwitchScheduleDrawer', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
+    store.dispatch(firmwareApi.util.resetApiState())
     mockServer.use(
       rest.post(
         FirmwareUrlsInfo.getSwitchVenueVersionList.url,
