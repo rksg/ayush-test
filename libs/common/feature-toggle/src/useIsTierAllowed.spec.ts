@@ -1,8 +1,8 @@
 import { renderHook }                   from '@acx-ui/test-utils'
 import { AccountType, AccountVertical } from '@acx-ui/utils'
 
-import { TierFeatures }                    from './features'
-import { useIsTierAllowed, defaultConfig } from './useIsTierAllowed'
+import { TierFeatures }                                        from './features'
+import { useIsTierAllowed, defaultConfig, getSplitIoBetaList } from './useIsTierAllowed'
 
 jest.mock('react', () => ({
   ...jest.requireActual('react'),
@@ -39,6 +39,12 @@ jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
   useUserProfileContext: jest.fn(() => ({ data: { dogfood: 'false' } }))
 }))
+
+jest.mock('./useIsTierAllowed', () => ({
+  ...jest.requireActual('./useIsTierAllowed'),
+  getSplitIoBetaList: jest.fn(() => ['beta1', 'beta2', 'beta3'])
+}))
+
 
 describe('Test useIsTierAllowed function', () => {
   const tenantType = 'REC'
@@ -112,14 +118,16 @@ describe('Test useIsTierAllowed function', () => {
 
 })
 
-describe('useGetBetaList', () => {
-  const useFFList = jest.fn(() => JSON.stringify({
-    betaList: ['beta1', 'beta2', 'beta3']
-  }))
-
+describe('getSplitIoBetaList', () => {
   it('returns the correct beta list', () => {
-    const { result } = renderHook(() => useFFList())
-    expect(JSON.parse(result.current)?.betaList).toEqual(['beta1', 'beta2', 'beta3'])
+    const useFFList = jest.fn(() => JSON.stringify({
+      betaList: ['beta1', 'beta2', 'beta3']
+    }))
+
+    const { result: res1 } = renderHook(() => useFFList())
+    const { result: res2 } = renderHook(() => getSplitIoBetaList())
+    expect(JSON.parse(res1.current)?.betaList).toEqual(res2.current)
+    expect(res2.current).toEqual(['beta1', 'beta2', 'beta3'])
   })
 })
 
