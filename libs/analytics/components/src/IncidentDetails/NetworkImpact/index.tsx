@@ -57,7 +57,7 @@ export const transformData = (
   config: NetworkImpactChart,
   metric: NetworkImpactChartData
 ) => {
-  const colors = qualitativeColorSet()
+  const colors = (config.colorSetFn && config.colorSetFn()) || qualitativeColorSet()
   return metric.data.map((record, index) => ({
     ...record,
     name: config.transformKeyFn ? config.transformKeyFn(record.name) : record.name,
