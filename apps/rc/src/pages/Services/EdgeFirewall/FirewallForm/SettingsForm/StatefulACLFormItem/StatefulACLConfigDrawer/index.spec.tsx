@@ -55,7 +55,7 @@ describe('Stateful ACL config drawer', () => {
     mockedGetRuleSubmitData.mockReset()
   })
 
-  it.skip('should correctly handle delete', async () => {
+  it('should correctly handle delete', async () => {
     const mockedData = _.cloneDeep(mockedDefaultValue[1]) as StatefulAcl
     mockedData.rules.splice(3, 0, {
       priority: 4,
@@ -214,7 +214,7 @@ describe('Stateful ACL config drawer', () => {
       }, outboundData])
     })
 
-    it.skip('should correctly handle edit', async () => {
+    it('should correctly handle edit', async () => {
       const mockedData = _.cloneDeep(mockedDefaultValue[1]) as StatefulAcl
       mockedData.rules.splice(3, 0, {
         priority: 4,

@@ -5,14 +5,13 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { networkApi }             from '@acx-ui/rc/services'
+import { networkApi, venueApi }   from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
-  act,
   findTBody,
   fireEvent,
   mockServer,
@@ -63,10 +62,8 @@ jest.mock('../../NetworkVenueScheduleDialog', () => ({
 const mockedApplyFn = jest.fn()
 describe('NetworkVenuesTab', () => {
   beforeEach(() => {
-    act(() => {
-      store.dispatch(networkApi.util.resetApiState())
-    })
-
+    store.dispatch(networkApi.util.resetApiState())
+    store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getNetworksVenuesList.url,
@@ -180,7 +177,7 @@ describe('NetworkVenuesTab', () => {
     expect(row2).not.toHaveTextContent('All')
   })
 
-  it.skip('deactivate Network', async () => {
+  it('deactivate Network', async () => {
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/t/:networkId' }
     })
@@ -218,7 +215,7 @@ describe('NetworkVenuesTab', () => {
     await waitFor(() => rows.forEach(row => expect(row).not.toBeChecked()))
   })
 
-  it.skip('Table action bar activate Network', async () => {
+  it('Table action bar activate Network', async () => {
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/t/:networkId' }
     })
@@ -360,10 +357,8 @@ describe('NetworkVenuesTab', () => {
 
 describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
   beforeEach(() => {
-    act(() => {
-      store.dispatch(networkApi.util.resetApiState())
-    })
-
+    store.dispatch(networkApi.util.resetApiState())
+    store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getNetworksVenuesList.url,

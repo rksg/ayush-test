@@ -2,8 +2,9 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { EdgeEditContext, EdgePortTabEnum }                          from '@acx-ui/rc/components'
+import { edgeApi }                                                   from '@acx-ui/rc/services'
 import { EdgeGeneralFixtures, EdgePortConfigFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                  from '@acx-ui/store'
+import { Provider, store }                                           from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved }     from '@acx-ui/test-utils'
 
 import Ports from './index'
@@ -40,7 +41,7 @@ describe('EditEdge - Ports', () => {
       activeTab: 'ports',
       activeSubTab: EdgePortTabEnum.PORTS_GENERAL
     }
-
+    store.dispatch(edgeApi.util.resetApiState())
     mockServer.use(
       rest.get(
         EdgeUrlsInfo.getEdge.url,
