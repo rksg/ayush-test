@@ -14,9 +14,15 @@ export enum MessageType {
     WEBPUSH = 'WEBPUSH'
 }
 
+export enum AssociatedResource {
+    VENUE = 'venue'
+}
+
 export interface Registration {
     id: string,
     templateId: string,
+    associatedResource: AssociatedResource,
+    associatedResourceId: string,
     usageLocalizationKey: string,
     usageDescriptionFieldOne: string,
     usageDescriptionFieldTwo: string

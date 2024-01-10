@@ -22,6 +22,6 @@ export const MsgTemplateUrls: { [key: string]: ApiInfo } = {
   putRegistrationById: {
     newApi: true,
     method: 'put',
-    url: msgTemplateBaseUrl + '/:templateScopeId/registrations/:registrationId'
+    url: msgTemplateBaseUrl + '/:templateScopeId/:associatedResource/:associatedResourceId/registrations/:registrationId'
   }
 }
