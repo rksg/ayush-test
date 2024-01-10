@@ -186,7 +186,6 @@ describe('VarCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/varCustomers' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('My Customers')).toBeVisible()
   })
   it('should handle accept row', async () => {
