@@ -1,18 +1,11 @@
 import userEvent       from '@testing-library/user-event'
 import { Form, Modal } from 'antd'
-import { rest }        from 'msw'
 
-import { firmwareApi }      from '@acx-ui/rc/services'
-import { FirmwareUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider } from '@acx-ui/store'
 import {
-  Provider, store
-} from '@acx-ui/store'
-import {
-  mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
-
 
 import {
   availableVersions,
@@ -20,8 +13,6 @@ import {
 } from '../../__test__/fixtures'
 
 import { UpdateNowStep } from '.'
-
-
 
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
