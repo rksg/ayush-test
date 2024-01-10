@@ -5,7 +5,7 @@ import { Drawer }                                                    from '@acx-
 import { useAddPersonaGroupMutation, useUpdatePersonaGroupMutation } from '@acx-ui/rc/services'
 import { PersonaGroup }                                              from '@acx-ui/rc/utils'
 
-import { usePersonaAsyncHeaders } from '../usePersonaEDAHeaders'
+import { usePersonaAsyncHeaders } from '../usePersonaAsyncHeaders'
 
 import { PersonaGroupForm } from './PersonaGroupForm'
 

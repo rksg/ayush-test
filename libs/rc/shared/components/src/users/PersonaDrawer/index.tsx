@@ -9,7 +9,7 @@ import { useAddPersonaMutation, useUpdatePersonaMutation } from '@acx-ui/rc/serv
 import { Persona }                                         from '@acx-ui/rc/utils'
 
 import { PersonaForm }            from '../PersonaForm'
-import { usePersonaAsyncHeaders } from '../usePersonaEDAHeaders'
+import { usePersonaAsyncHeaders } from '../usePersonaAsyncHeaders'
 
 
 interface PersonaDrawerProps {

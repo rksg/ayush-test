@@ -1,5 +1,6 @@
-import { useIsSplitOn }           from '@acx-ui/feature-toggle'
-import { usePersonaAsyncHeaders } from '@acx-ui/rc/components'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
+
+import { usePersonaAsyncHeaders } from './index'
 
 
 const expectedHeaders = {
@@ -7,7 +8,7 @@ const expectedHeaders = {
   'Accept': 'application/vnd.ruckus.v2+json'
 }
 
-describe('UsePersonaEDAHeaders', () => {
+describe('UsePersonaAsyncHeaders', () => {
   it('should return correct headers when FF is on', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
