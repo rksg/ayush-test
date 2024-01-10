@@ -176,6 +176,8 @@ export {
   ApFeatureCompatibility,
   ApCompatibilityToolTip,
   ApCompatibilityDrawer } from './ApCompatibilityDrawer'
+export { EdgeClusterCommonForm } from './EdgeFormItem/EdgeClusterCommonForm'
+export { useEdgeClusterActions } from './useEdgeClusterActions'
 
 export * from './services'
 export * from './policies'
