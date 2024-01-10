@@ -161,10 +161,11 @@ export const personaApi = basePersonaApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Persona' }]
     }),
-    importPersonas: build.mutation<{}, RequestFormData>({
-      query: ({ params, payload }) => {
+    importPersonas: build.mutation<{}, RequestPayload>({
+      query: ({ params, payload, customHeaders }) => {
         const req = createHttpRequest(PersonaUrls.importPersonas, params, {
           ...ignoreErrorModal,
+          ...customHeaders,
           'Content-Type': undefined
         })
         return {

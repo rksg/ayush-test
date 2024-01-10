@@ -310,7 +310,8 @@ export function BasePersonaTable (props: PersonaTableProps) {
     try {
       await uploadCsv({
         params: { groupId: personaGroupId ?? groupId },
-        payload: formData
+        payload: formData,
+        customHeaders
       }).unwrap()
       setUploadCsvDrawerVisible(false)
     } catch (error) {
