@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { useIsTierAllowed }                                                from '@acx-ui/feature-toggle'
+import { useIsSplitOn, useIsTierAllowed }                                  from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, EdgeGeneralFixtures, EdgeUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                        from '@acx-ui/store'
 import {
@@ -18,6 +18,9 @@ const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
+}))
+jest.mock('./EdgeClusterTable', () => ({
+  EdgeClusterTable: () => <div data-testid='edge-cluster-table' />
 }))
 
 describe('EdgeList', () => {
@@ -63,5 +66,16 @@ describe('EdgeList', () => {
       })
     const row = await screen.findAllByRole('row', { name: /Smart Edge/i })
     expect(row.length).toBe(5)
+  })
+
+  it('should show edge cluster table when HA FF is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <EdgeList />
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge' }
+      })
+    expect(screen.getByTestId('edge-cluster-table')).toBeVisible()
   })
 })
