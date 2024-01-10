@@ -3,13 +3,13 @@ import { useEffect, useState } from 'react'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, RangePicker }                    from '@acx-ui/components'
-import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
-import { CONFIG_TEMPLATE_LIST_PATH, useConfigTemplate }       from '@acx-ui/rc/utils'
-import { TenantType }                                         from '@acx-ui/react-router-dom'
-import { useLocation, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
-import { filterByAccess }                                     from '@acx-ui/user'
-import { useDateFilter }                                      from '@acx-ui/utils'
+import { Button, PageHeader, RangePicker }                     from '@acx-ui/components'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { generateConfigTemplateBreadcrumb, useConfigTemplate } from '@acx-ui/rc/utils'
+import { TenantType }                                          from '@acx-ui/react-router-dom'
+import { useLocation, useNavigate, useTenantLink, useParams }  from '@acx-ui/react-router-dom'
+import { filterByAccess }                                      from '@acx-ui/user'
+import { useDateFilter }                                       from '@acx-ui/utils'
 
 import { ActiveVenueFilter } from './ActiveVenueFilter'
 import NetworkTabs           from './NetworkTabs'
@@ -36,11 +36,7 @@ function NetworkPageHeader ({
   const GenBreadcrumb = () => {
     const { isTemplate } = useConfigTemplate()
     if (isTemplate) {
-      return [
-        { text: $t({ defaultMessage: 'Config Templates' }), link: '', tenantType: 'v' },
-        // eslint-disable-next-line max-len
-        { text: $t({ defaultMessage: 'Template List' }), link: CONFIG_TEMPLATE_LIST_PATH, tenantType: 'v' }
-      ] as { text: string, link?: string, tenantType?: TenantType }[]
+      return generateConfigTemplateBreadcrumb()
     }
 
     return [
