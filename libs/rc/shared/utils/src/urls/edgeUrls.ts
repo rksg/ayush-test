@@ -253,5 +253,20 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/edges/:serialNumber/linkAggregationGroups/query?isSubInterface=true',
     newApi: true
+  },
+  getEdgeClusterStatusList: {
+    method: 'post',
+    url: '/edgeClusterProfiles/query',
+    newApi: true
+  },
+  addEdgeCluster: {
+    method: 'post',
+    url: '/venues/:venueId/edgeClusters',
+    newApi: true
+  },
+  deleteEdgeCluster: {
+    method: 'delete',
+    url: '/venues/:venueId/edgeClusters/:clusterId',
+    newApi: true
   }
 }
