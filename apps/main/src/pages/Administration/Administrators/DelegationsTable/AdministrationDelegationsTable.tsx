@@ -51,6 +51,7 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
   const isMultipleVarEnabled = useIsSplitOn(Features.MULTIPLE_VAR_INVITATION_TOGGLE)
   const is3PartyVarEnabled = useIsSplitOn(Features.ANY_3RDPARTY_INVITE_TOGGLE)
   const MAX_VAR_INVITATIONS = 10
+  const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
 
   const { data, isLoading, isFetching }= useGetDelegationsQuery({ params })
 
@@ -166,8 +167,10 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
   const tableActions = []
   if (!isSupport && hasInvite3rdPartyPermmision) {
     tableActions.push({
-      label: is3PartyVarEnabled ? $t({ defaultMessage: 'Invite 3rd Party Admin' })
-        : $t({ defaultMessage: 'Invite 3rd Party Administrator' }),
+      label: isGroupBasedLoginEnabled ? $t({ defaultMessage: 'Add Delegated Admin' })
+        : (is3PartyVarEnabled
+          ? $t({ defaultMessage: 'Invite 3rd Party Admin' })
+          : $t({ defaultMessage: 'Invite 3rd Party Administrator' })),
       disabled: maxInvitationReached,
       onClick: handleClickInviteDelegation
     })
@@ -230,7 +233,7 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
         isFetching: isFetching
       }
     ]}>
-      <UI.TableTitleWrapper direction='vertical'>
+      {!isGroupBasedLoginEnabled && <UI.TableTitleWrapper direction='vertical'>
         <Subtitle level={4}>
           {is3PartyVarEnabled
             ? $t({ defaultMessage: '3rd Party Administrators' })
@@ -240,7 +243,7 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
           {!is3PartyVarEnabled &&
             $t({ defaultMessage: 'You can delegate access rights to a 3rd party administrator.' }) }
         </Subtitle>
-      </UI.TableTitleWrapper>
+      </UI.TableTitleWrapper>}
 
       {is3PartyVarEnabled ? <Table
         columns={columns}

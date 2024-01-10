@@ -1,8 +1,8 @@
-import { useMemo, useState, useEffect } from 'react'
+import { useMemo, useState, useEffect, Children } from 'react'
 
-import { Checkbox, Switch }       from 'antd'
-import _                          from 'lodash'
-import { useIntl, defineMessage } from 'react-intl'
+import { Checkbox, Typography, Switch }             from 'antd'
+import _                                            from 'lodash'
+import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
 
 import {
   isSwitchPath,
@@ -10,16 +10,16 @@ import {
   dateSort,
   sortProp
 } from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Tooltip } from '@acx-ui/components'
-import { get }                         from '@acx-ui/config'
-import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }   from '@acx-ui/formatter'
-import { TenantLink, useParams }       from '@acx-ui/react-router-dom'
-import { noDataDisplay, PathFilter }   from '@acx-ui/utils'
+import { Loader, TableProps, Tooltip }        from '@acx-ui/components'
+import { get }                                from '@acx-ui/config'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }          from '@acx-ui/formatter'
+import { TenantLink, useParams }              from '@acx-ui/react-router-dom'
+import { getIntl, noDataDisplay, PathFilter } from '@acx-ui/utils'
 
 import { getParamString } from '../AIDrivenRRM/extra'
 
-import { RecommendationActions } from './RecommendationActions'
+import { RecommendationActions, isCrrmOptimizationMatched } from './RecommendationActions'
 import {
   useRecommendationListQuery,
   RecommendationListItem,
@@ -36,11 +36,49 @@ type RecommendationWithUpdatedMetadata = RecommendationListItem & {
   metadata: Metadata;
 }
 
-const DateLink = ({ value }: { value: RecommendationListItem }) => {
+const DateLink = ({ value, disabled }: { value: RecommendationListItem, disabled: boolean }) => {
   const { activeTab } = useParams()
-  return <TenantLink to={`analytics/recommendations/${activeTab}/${value.id}`}>
-    {formatter(DateFormatEnum.DateTimeFormat)(value.updatedAt)}
-  </TenantLink>
+  const text = formatter(DateFormatEnum.DateTimeFormat)(value.updatedAt)
+  return disabled
+    ? <Tooltip
+      title={<FormattedMessage defaultMessage='Not available' />}
+      children={<Typography.Text disabled children={text} />}
+    />
+    : <TenantLink to={`analytics/recommendations/${activeTab}/${value.id}`}>
+      {text}
+    </TenantLink>
+}
+
+interface RowProps extends React.HTMLAttributes<HTMLTableRowElement> { 'data-row-key': string }
+
+function RowTooltip (props: RowProps) {
+  const { $t } = getIntl()
+  const row = Children.toArray(props.children).filter(
+    (child) => _.get(child, 'props.record.id') === props['data-row-key'])[0]
+  const showToolTip = String(props.className).includes('crrm-optimization-mismatch')
+  const isFullOptimization = _.get(
+    row, 'props.record.preferences.fullOptimization', true)
+  const fullOptimizationText = defineMessage({ defaultMessage: `
+    RUCKUS AI is currently working on optimizing this Zone, with the full
+    optimization criteria, where the channel bandwidth and AP Tx
+    power will be included in the optimization plan. A new
+    recommendation for this zone will be generated only if a better
+    channel plan can be found within the next 24 hours.
+  ` })
+  const partialOptimizationText = defineMessage({ defaultMessage: `
+    RUCKUS AI is currently working on optimizing this Zone, without the
+    full optimization criteria, where the channel bandwidth and AP Tx
+    power will not be included in the optimization plan. A new
+    recommendation for this zone will be generated only if a better
+    channel plan can be found within the next 24 hours.
+  ` })
+  return (
+    showToolTip
+      ? <Tooltip title={$t(isFullOptimization ? fullOptimizationText : partialOptimizationText)}>
+        <tr {...props} />
+      </Tooltip>
+      :<tr {...props} />
+  )
 }
 
 export const UnknownLink = ({ value }: { value: RecommendationWithUpdatedMetadata }) => {
@@ -161,7 +199,10 @@ export function RecommendationTable (
       key: 'updatedAt',
       render: (_, value) => (value.code === 'unknown')
         ? <UnknownLink value={value as RecommendationWithUpdatedMetadata} />
-        : <DateLink value={value}/>,
+        : <DateLink
+          value={value}
+          disabled={!isCrrmOptimizationMatched(value.metadata, value.preferences)}
+        />,
       sorter: { compare: sortProp('updatedAt', dateSort) },
       fixed: 'left'
     },
@@ -230,7 +271,7 @@ export function RecommendationTable (
       render: (_value, record) => {
         const preferences = _.get(record, 'preferences') || { fullOptimization: true }
         const disabled = record.toggles?.preferences === false
-        const tooltipText = disabled
+        const tooltipText = disabled && !record.isMuted
           ? $t({ defaultMessage: `
             Optimization option cannot be changed while recommendation(s) of the Zone is in Applied
             status. Please revert all to New status before changing the optimization option.
@@ -289,9 +330,16 @@ export function RecommendationTable (
             children={$t({ defaultMessage: 'Show Muted Recommendations' })}
           />
         ]}
-        rowClassName={(record) => record.isMuted ? 'table-row-muted' : 'table-row-normal'}
+        rowClassName={(record) => {
+          if(record.isMuted)
+            return 'table-row-disabled'
+          if(!isCrrmOptimizationMatched(record.metadata, record.preferences))
+            return 'table-row-disabled crrm-optimization-mismatch'
+          return 'table-row-normal'
+        }}
         filterableWidth={155}
         searchableWidth={240}
+        components={{ body: { row: RowTooltip } }}
       />
     </Loader>
   )

@@ -409,7 +409,7 @@ export function RadioSettings () {
     useDeleteApRadioCustomizationMutation()
 
   const { data: apBandModeSavedData } =
-    useGetApBandModeSettingsQuery({ params: { serialNumber } }, { skip: isSupportDual5GAp || !isSupportBandManagementAp })
+    useGetApBandModeSettingsQuery({ params: { venueId: venue.id, serialNumber } }, { skip: isSupportDual5GAp || !isSupportBandManagementAp })
 
   const [ updateApBandMode, { isLoading: isUpdatingApBandMode } ] =
     useUpdateApBandModeSettingsMutation()
@@ -925,10 +925,10 @@ export function RadioSettings () {
 
       if (isSupportBandManagementAp && !isSupportDual5GAp) {
         if (currentApBandModeData?.useVenueSettings ?? true) {
-          await resetApBandMode({ params: { serialNumber } }).unwrap()
+          await resetApBandMode({ params: { venueId: venue.id, serialNumber } }).unwrap()
         } else {
           await updateApBandMode({
-            params: { serialNumber },
+            params: { venueId: venue.id, serialNumber },
             payload: currentApBandModeData
           }).unwrap()
         }

@@ -378,9 +378,9 @@ export const api = recommendationApi.injectEndpoints({
         const { $t } = getIntl()
         const items = response.recommendations.map(recommendation => {
           const {
-            id, path, sliceValue, sliceType, code, status, metadata, updatedAt, preferences
+            id, path, sliceValue, sliceType, code, status, metadata, updatedAt
           } = recommendation
-          const isFullyOptimized = preferences ? preferences.fullOptimization : true
+          const isFullOptimized = !!_.get(metadata, 'algorithmData.isFullOptimized', true)
           const newId = id === 'unknown' ? uniqueId() : id
           const statusEnum = status as StateType
           const getCode = code === 'unknown'
@@ -397,7 +397,7 @@ export const api = recommendationApi.injectEndpoints({
               text: $t(codes[getCode].priority.label)
             },
             category: $t(codes[getCode].category),
-            summary: isFullyOptimized || code === 'unknown'
+            summary: isFullOptimized || code === 'unknown'
               ? $t(codes[getCode].summary)
               : $t(codes[getCode].partialOptimizedSummary!),
             status: $t(states[statusEnum].text),

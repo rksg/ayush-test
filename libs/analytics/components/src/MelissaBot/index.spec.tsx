@@ -11,6 +11,8 @@ import { responseBody, uploadRes } from './__tests__/fixtures'
 import { MelissaBot } from '.'
 describe('MelissaBot', () => {
   let container:HTMLDivElement|undefined=undefined
+  // eslint-disable-next-line max-len
+  const ERROR_MSG = 'Oops! We are currently experiencing unexpected technical difficulties. Please try again later.'
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     // setup a DOM element as a render target
@@ -126,7 +128,7 @@ describe('MelissaBot', () => {
       await userEvent.type(screen.getByRole('textbox'),'What is cloud RRM?{enter}')
     })
     await screen.findByText('What is cloud RRM?')
-    await screen.findByText('Some Error')
+    await screen.findByText(ERROR_MSG)
     expect(document.querySelectorAll('.conversation > div')?.length).toBe(5)
     expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('after:error1')
     global.fetch = jest.fn().mockImplementation(() =>
@@ -138,7 +140,7 @@ describe('MelissaBot', () => {
       await userEvent.type(screen.getByRole('textbox'),'What is datastudio?{enter}')
     })
     await screen.findByText('What is datastudio?')
-    await screen.findByText('Something went wrong.')
+    await screen.findAllByText(ERROR_MSG)
     expect(document.querySelectorAll('.conversation > div')?.length).toBe(7)
     expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('after:error2')
   })
