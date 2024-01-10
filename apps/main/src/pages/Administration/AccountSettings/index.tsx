@@ -8,8 +8,7 @@ import { MSPUtils }                                                        from 
 import { useGetRecoveryPassphraseQuery, useGetTenantAuthenticationsQuery } from '@acx-ui/rc/services'
 import {
   useUserProfileContext,
-  useGetMfaTenantDetailsQuery,
-  useGetBetaStatusQuery
+  useGetMfaTenantDetailsQuery
 } from '@acx-ui/user'
 import { isDelegationMode, useTenantId } from '@acx-ui/utils'
 
@@ -32,15 +31,14 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const betaButtonToggle = useIsSplitOn(Features.BETA_BUTTON)
   const {
     data: userProfileData,
-    isPrimeAdmin
+    isPrimeAdmin,
+    betaEnabled
   } = useUserProfileContext()
   const mspUtils = MSPUtils()
 
   const recoveryPassphraseData = useGetRecoveryPassphraseQuery({ params })
   const mfaTenantDetailsData = useGetMfaTenantDetailsQuery({ params })
   const mspEcProfileData = useGetMspEcProfileQuery({ params })
-  const betaStatusData = useGetBetaStatusQuery({ params }, { skip: !betaButtonToggle })
-
   const canMSPDelegation = isDelegationMode() === false
   const hasMSPEcLabel = mspUtils.isMspEc(mspEcProfileData.data)
   // has msp-ec label AND non-delegationMode
@@ -56,7 +54,6 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const showRksSupport = isMspEc === false
   const isFirstLoading = recoveryPassphraseData.isLoading
     || mfaTenantDetailsData.isLoading || mspEcProfileData.isLoading
-    || betaStatusData.isLoading
 
   const showSsoSupport = isPrimeAdminUser && isIdmDecoupling && !isDogfood
     && canMSPDelegation && !isMspEc
@@ -104,7 +101,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
           <>
             <Divider />
             <EnableR1Beta
-              betaStatusData={betaStatusData.data}
+              betaStatus={betaEnabled}
               isPrimeAdminUser={isPrimeAdminUser}
             />
           </>
