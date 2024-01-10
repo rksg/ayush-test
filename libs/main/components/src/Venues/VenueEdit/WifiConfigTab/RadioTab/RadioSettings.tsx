@@ -312,12 +312,12 @@ export function RadioSettings () {
       })
     }
 
-    if (venueSavedChannelsData){
+    if (!isLoadingVenueData && venueSavedChannelsData && formRef?.current) {
       setRadioFormData(venueSavedChannelsData)
 
       setReadyToScroll?.(r => [...(new Set(r.concat('Wi-Fi-Radio')))])
     }
-  }, [venueSavedChannelsData])
+  }, [isLoadingVenueData, venueSavedChannelsData, formRef?.current])
 
   useEffect(() => {
     if (!isWifiSwitchableRfEnabled || !venueBandModeSavedData) {
