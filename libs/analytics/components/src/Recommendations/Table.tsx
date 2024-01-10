@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react'
+import { useMemo, useState, useEffect, Children } from 'react'
 
 import { Checkbox, Typography, Switch }             from 'antd'
 import _                                            from 'lodash'
@@ -53,7 +53,7 @@ interface RowProps extends React.HTMLAttributes<HTMLTableRowElement> { 'data-row
 
 function RowTooltip (props: RowProps) {
   const { $t } = getIntl()
-  const row = (props.children as React.ReactNode[])?.filter(
+  const row = Children.toArray(props.children).filter(
     (child) => _.get(child, 'props.record.id') === props['data-row-key'])[0]
   const showToolTip = String(props.className).includes('crrm-optimization-mismatch')
   const isFullOptimization = _.get(

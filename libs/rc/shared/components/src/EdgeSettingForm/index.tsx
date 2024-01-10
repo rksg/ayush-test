@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react'
 
-import { Form, Input, Select } from 'antd'
-import { useWatch }            from 'antd/lib/form/Form'
-import TextArea                from 'antd/lib/input/TextArea'
-import { useIntl }             from 'react-intl'
+import { Col, Form, Input, Row, Select } from 'antd'
+import { useWatch }                      from 'antd/lib/form/Form'
+import TextArea                          from 'antd/lib/input/TextArea'
+import { useIntl }                       from 'react-intl'
 
-import { Alert, Loader, Tooltip, useStepFormContext }    from '@acx-ui/components'
-import { useVenuesListQuery }                            from '@acx-ui/rc/services'
-import { PRODUCT_CODE_VIRTUAL_EDGE, EdgeGeneralSetting } from '@acx-ui/rc/utils'
-import { useParams }                                     from '@acx-ui/react-router-dom'
-import { getIntl, validationMessages }                   from '@acx-ui/utils'
+import { Alert, Loader, useStepFormContext }              from '@acx-ui/components'
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
+import { useGetEdgeClusterListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
+import { EdgeGeneralSetting, PRODUCT_CODE_VIRTUAL_EDGE }  from '@acx-ui/rc/utils'
+import { useParams }                                      from '@acx-ui/react-router-dom'
+import { getIntl, validationMessages }                    from '@acx-ui/utils'
+
 
 interface EdgeSettingFormProps {
   isEdit?: boolean
@@ -21,6 +23,16 @@ const venueOptionsDefaultPayload = {
   fields: [
     'name',
     'id'
+  ],
+  sortField: 'name',
+  sortOrder: 'ASC',
+  pageSize: 10000
+}
+const clusterOptionsDefaultPayload = {
+  searchString: '',
+  fields: [
+    'name',
+    'clusterId'
   ],
   sortField: 'name',
   sortOrder: 'ASC',
@@ -55,9 +67,12 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
 
   const { $t } = useIntl()
   const params = useParams()
+  const isEdgeHaEnabled = useIsSplitOn(Features.EDGE_HA_TOGGLE)
   const [showOtpMessage, setShowOtpMessage] = useState(false)
+  // const [addClusterDrawerVisible, setAddClusterDrawerVisible] = useState(false)
   const { form } = useStepFormContext<EdgeGeneralSetting>()
   const serialNumber = useWatch('serialNumber', form)
+  // const venueId = useWatch('venueId', form)
   const { venueOptions, isLoading: isVenuesListLoading } = useVenuesListQuery({ params:
     { tenantId: params.tenantId }, payload: venueOptionsDefaultPayload }, {
     selectFromResult: ({ data, isLoading }) => {
@@ -67,6 +82,17 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
       }
     }
   })
+  const { clusterOptions, isLoading: isClusterListLoading } = useGetEdgeClusterListQuery(
+    { payload: clusterOptionsDefaultPayload },
+    {
+      skip: !isEdgeHaEnabled,
+      selectFromResult: ({ data, isLoading }) => {
+        return {
+          clusterOptions: data?.data.map(item => ({ label: item.name, value: item.clusterId })),
+          isLoading
+        }
+      }
+    })
 
   useEffect(() => {
     setShowOtpMessage(!!serialNumber?.startsWith('96') && !!!props.isEdit)
@@ -74,57 +100,98 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
 
   return (
     <Loader states={[{
-      isLoading: isVenuesListLoading,
+      isLoading: isVenuesListLoading || isClusterListLoading,
       isFetching: props.isFetching
     }]}>
-      <Form.Item
-        name='venueId'
-        label={$t({ defaultMessage: 'Venue' })}
-        rules={[{
-          required: true
-        }]}
-      >
-        <Select options={venueOptions} disabled={props.isEdit}/>
-      </Form.Item>
-      <Form.Item
-        name='name'
-        label={$t({ defaultMessage: 'SmartEdge Name' })}
-        rules={[
-          { required: true },
-          { max: 64 }
-        ]}
-        children={<Input />}
-        validateFirst
-      />
-      <Form.Item
-        name='serialNumber'
-        label={<>
-          { $t({ defaultMessage: 'Serial Number' }) }
-          <Tooltip.Question
-            title={$t({ defaultMessage: 'Serial Number' })}
-            placement='bottom'
+      <Row gutter={9} align='middle'>
+        <Col span={23}>
+          <Form.Item
+            name='venueId'
+            label={$t({ defaultMessage: 'Venue' })}
+            rules={[{
+              required: true
+            }]}
+          >
+            <Select options={venueOptions} disabled={props.isEdit}/>
+          </Form.Item>
+        </Col>
+
+        {
+          isEdgeHaEnabled &&
+          <>
+            <Col span={23}>
+              <Form.Item
+                name='clusterId'
+                label={$t({ defaultMessage: 'Cluster' })}
+              >
+                <Select options={[
+                  {
+                    label: $t({ defaultMessage: 'Select...' }),
+                    value: null
+                  },
+                  ...(clusterOptions ? clusterOptions : [])
+                ]}
+                disabled={props.isEdit}
+                />
+              </Form.Item>
+            </Col>
+            {
+              // !props.isEdit &&
+              // <Col span={1}>
+              //   <Button
+              //     type='link'
+              //     children={$t({ defaultMessage: 'Add' })}
+              //     onClick={() => setAddClusterDrawerVisible(true)}
+              //   />
+              // </Col>
+            }
+            {/* <AddClusterDrawer
+              visible={addClusterDrawerVisible}
+              setVisible={setAddClusterDrawerVisible}
+              venueId={venueId}
+            /> */}
+          </>
+        }
+        <Col span={23}>
+          <Form.Item
+            name='name'
+            label={$t({ defaultMessage: 'SmartEdge Name' })}
+            rules={[
+              { required: true },
+              { max: 64 }
+            ]}
+            children={<Input />}
+            validateFirst
           />
-        </>}
-        rules={[
-          {
-            required: true,
-            message: $t({ defaultMessage: 'Please enter Serial Number' })
-          },
-          props.isEdit ? {} : { validator: (_, value) => edgeSerialNumberValidator(value) }
-        ]}
-        children={<Input disabled={props.isEdit} />}
-        validateFirst
-      />
-      <Form.Item
-        name='description'
-        label={$t({ defaultMessage: 'Description' })}
-        children={<TextArea rows={4} maxLength={255} />}
-      />
-      {/* <Form.Item
+        </Col>
+        <Col span={23}>
+          <Form.Item
+            name='serialNumber'
+            label={$t({ defaultMessage: 'Serial Number' })}
+            rules={[
+              {
+                required: true,
+                message: $t({ defaultMessage: 'Please enter Serial Number' })
+              },
+              props.isEdit ? {} : { validator: (_, value) => edgeSerialNumberValidator(value) }
+            ]}
+            children={<Input disabled={props.isEdit} />}
+            validateFirst
+          />
+        </Col>
+        <Col span={23}>
+          <Form.Item
+            name='description'
+            label={$t({ defaultMessage: 'Description' })}
+            children={<TextArea rows={4} maxLength={255} />}
+          />
+        </Col>
+        {/* <Form.Item
         name='tags'
         label={$t({ defaultMessage: 'Tags' })}
         children={<Select mode='tags' />}
       /> */}
+      </Row>
       {showOtpMessage ?
         <Alert message={
           $t({ defaultMessage: `The one-time-password (OTP) will be automatically sent to
