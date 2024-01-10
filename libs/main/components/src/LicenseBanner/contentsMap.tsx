@@ -18,7 +18,7 @@ export const LicenseBannerRemindMapping = (expireInfo:ExpireInfo, $t: IntlShape[
   return {
     [LicenseBannerTypeEnum.gracePeriod]: isMulti ? $t({ defaultMessage: 'Your RUCKUS One subscription has expired. You can use the application for {daysText} days' }, param):
       $t({ defaultMessage: 'Your RUCKUS One subscription for {deviceCount} {deviceText} has expired.  You can use the application for {daysText} days' }, param),
-    [LicenseBannerTypeEnum.initial]: isMulti ? $t({ defaultMessage: 'Subscription about to expire in {daysText} days' }, param)
+    [LicenseBannerTypeEnum.initial]: isMulti ? $t({ defaultMessage: 'Your RUCKUS One subscription expires in {daysText} days' }, param)
       : $t({ defaultMessage: 'Your RUCKUS One subscription for {deviceCount} {deviceText} expires in {daysText} days' }, param),
     [LicenseBannerTypeEnum.closeToExpiration]: isMulti ? $t({ defaultMessage: 'Subscription for {deviceCount} {deviceText} expires in {daysText} days' }, param):
       $t({ defaultMessage: 'Your RUCKUS One subscription for {deviceText} will expire in {daysText} days' }, param),
@@ -59,7 +59,7 @@ export const MSPLicenseBannerRemindMapping = (expireInfo:ExpireInfo, $t: IntlSha
     [LicenseBannerTypeEnum.gracePeriod]: isMulti ? $t({ defaultMessage: 'Your RUCKUS One subscription has expired. You can use the application for {daysText} days' }, param):
       $t({ defaultMessage: 'Your RUCKUS One subscription for {deviceCount} {deviceText} has expired. You can use the application for {daysText} days' }, param),
     [LicenseBannerTypeEnum.initial]: isMulti ? $t({ defaultMessage: 'Your RUCKUS One subscription for {deviceCount} {deviceText} expires in {daysText} days' }, param)
-      : $t({ defaultMessage: 'Your RUCKUS One subscription about to expire in {daysText} days' }, param),
+      : $t({ defaultMessage: 'Your RUCKUS One subscription expires in {daysText} days' }, param),
     [LicenseBannerTypeEnum.closeToExpiration]: isMulti ? $t({ defaultMessage: 'Your RUCKUS One subscription for {deviceCount} {deviceText} expires in {daysText} days' }, param)
       : $t({ defaultMessage: 'Your RUCKUS One subscription expires in {daysText} days' }, param),
     [LicenseBannerTypeEnum.expired]: isMulti ? $t({ defaultMessage: 'Your RUCKUS One subscriptions have expired' })
