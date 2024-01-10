@@ -1,8 +1,8 @@
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import { renderHook }   from '@acx-ui/test-utils'
+import { IncidentToggle } from '@acx-ui/analytics/utils'
+import { useIsSplitOn }   from '@acx-ui/feature-toggle'
+import { renderHook }     from '@acx-ui/test-utils'
 
-import { IncidentToggle }     from '../../../utils/src/constants'
-import { useIncidentToggles } from '.'
+import { useIncidentToggles } from './index'
 
 describe('useIncidentToggles', () => {
   it('should return correct toggles', async () => {
