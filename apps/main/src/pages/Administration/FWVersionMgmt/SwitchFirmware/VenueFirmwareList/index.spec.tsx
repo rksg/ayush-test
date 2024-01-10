@@ -15,11 +15,12 @@ import {
 } from '@acx-ui/test-utils'
 
 
+import { switchCurrentVersions } from '../../__tests__/fixtures'
+
 import {
   switchVenue,
   preference,
   switchRelease,
-  switchCurrentVersions,
   switchLatest,
   switchVenueWithEmptyFirmware
 } from './__test__/fixtures'

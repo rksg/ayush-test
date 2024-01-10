@@ -16,11 +16,11 @@ import {
 
 
 import { VenueFirmwareList }          from '..'
+import { switchCurrentVersions }      from '../../../__tests__/fixtures'
 import {
   switchVenue,
   preference,
   switchRelease,
-  switchCurrentVersions,
   switchLatest,
   upgradeSwitchViewList_KittoVenue1
 } from '../__test__/fixtures'

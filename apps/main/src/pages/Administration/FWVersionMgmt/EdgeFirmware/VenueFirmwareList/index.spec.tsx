@@ -8,6 +8,7 @@ import { FirmwareUrlsInfo }                            from '@acx-ui/rc/utils'
 import { Provider, store }                             from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
+import { switchCurrentVersions }                                from '../../__tests__/fixtures'
 import { availableVersions, preferenceData, venueFirmwareList } from '../__tests__/fixtures'
 
 import { ChangeScheduleDialogProps } from './ChangeScheduleDialog'
@@ -81,6 +82,10 @@ describe('Edge venue firmware list', () => {
           mockedUpdateSchedule()
           return res(ctx.status(202))
         }
+      ),
+      rest.get(
+        FirmwareUrlsInfo.getSwitchCurrentVersions.url,
+        (req, res, ctx) => res(ctx.json(switchCurrentVersions))
       )
     )
     params = {

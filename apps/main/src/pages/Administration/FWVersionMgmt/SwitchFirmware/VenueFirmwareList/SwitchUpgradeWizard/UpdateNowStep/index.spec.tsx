@@ -1,6 +1,8 @@
 import userEvent       from '@testing-library/user-event'
 import { Form, Modal } from 'antd'
+import { rest }        from 'msw'
 
+import { FirmwareUrlsInfo } from '@acx-ui/rc/utils'
 import {
   Provider
 } from '@acx-ui/store'
@@ -10,6 +12,7 @@ import {
 } from '@acx-ui/test-utils'
 
 
+import { switchCurrentVersions } from '../../../../__tests__/fixtures'
 import {
   availableVersions,
   availableVersions_hasInUse
@@ -34,6 +37,10 @@ describe('UpdateNowStep', () => {
   const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
   beforeEach(async () => {
     Modal.destroyAll()
+    rest.get(
+      FirmwareUrlsInfo.getSwitchCurrentVersions.url,
+      (req, res, ctx) => res(ctx.json(switchCurrentVersions))
+    )
   })
 
   it('render UpdateNowStep - 1 Venue', async () => {

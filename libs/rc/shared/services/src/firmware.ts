@@ -254,8 +254,8 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
     getSwitchCurrentVersions: build.query<CurrentVersions, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(FirmwareUrlsInfo.getSwitchCurrentVersions, params)
+      query: () => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getSwitchCurrentVersions, {})
         return {
           ...req
         }

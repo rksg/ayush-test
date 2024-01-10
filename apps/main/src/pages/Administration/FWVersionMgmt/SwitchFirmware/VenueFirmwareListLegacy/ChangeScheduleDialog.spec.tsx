@@ -21,8 +21,8 @@ import {
   switchVenue,
   preference,
   switchRelease,
-  switchCurrentVersions,
-  switchLatest
+  switchLatest,
+  switchCurrentVersions
 } from '../../__tests__/fixtures'
 
 import { VenueFirmwareListLegacy } from '.'

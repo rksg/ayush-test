@@ -14,13 +14,13 @@ import {
 } from '@acx-ui/test-utils'
 
 
-import { VenueFirmwareList } from '..'
+import { VenueFirmwareList }     from '..'
+import { switchCurrentVersions } from '../../../__tests__/fixtures'
 import {
   switchVenue,
   preference,
   switchRelease,
   switchUpgradeStatusDetails_KittoVenue1,
-  switchCurrentVersions,
   switchLatest
 } from '../__test__/fixtures'
 

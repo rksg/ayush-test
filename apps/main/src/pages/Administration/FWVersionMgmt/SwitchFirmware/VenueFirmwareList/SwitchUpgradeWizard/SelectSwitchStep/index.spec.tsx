@@ -16,11 +16,11 @@ import {
   within
 } from '@acx-ui/test-utils'
 
+import { switchCurrentVersions } from '../../../../__tests__/fixtures'
 import {
   switchVenue,
   preference,
   switchRelease,
-  switchCurrentVersions,
   switchLatest,
   upgradeSwitchViewList
 } from '../../__test__/fixtures'

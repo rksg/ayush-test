@@ -1,8 +1,10 @@
 import userEvent       from '@testing-library/user-event'
 import { Form, Modal } from 'antd'
+import { rest }        from 'msw'
 
 import {
   FirmwareSwitchVenue,
+  FirmwareUrlsInfo,
   SwitchFirmware
 } from '@acx-ui/rc/utils'
 import {
@@ -14,6 +16,7 @@ import {
 } from '@acx-ui/test-utils'
 
 
+import { switchCurrentVersions } from '../../../../__tests__/fixtures'
 import {
   switchVenue,
   upgradeSwitchViewList,
@@ -39,6 +42,10 @@ describe('ScheduleStep', () => {
   const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
   beforeEach(async () => {
     Modal.destroyAll()
+    rest.get(
+      FirmwareUrlsInfo.getSwitchCurrentVersions.url,
+      (req, res, ctx) => res(ctx.json(switchCurrentVersions))
+    )
   })
 
   it('render ScheduleStep - 1 Venue', async () => {

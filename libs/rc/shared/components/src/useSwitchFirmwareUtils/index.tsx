@@ -11,11 +11,13 @@ import {
   convertSwitchVersionFormat,
   firmwareTypeTrans
 } from '@acx-ui/rc/utils'
-import { useParams }     from '@acx-ui/react-router-dom'
 import { noDataDisplay } from '@acx-ui/utils'
 
 export function useSwitchFirmwareUtils () {
-  const switchVersions = useGetSwitchCurrentVersionsQuery({ params: useParams() })
+  const switchVersions = useGetSwitchCurrentVersionsQuery({}, {
+    refetchOnMountOrArgChange: false
+  })
+
 
   const parseSwitchVersion = (version: string) => {
     const defaultVersion = switchVersions?.data?.generalVersions
@@ -113,6 +115,28 @@ export function useSwitchFirmwareUtils () {
     }
   }
 
+  const checkCurrentVersions = function (version: string, rodanVersion: string,
+    filterVersions: FirmwareVersion[]): FirmwareVersion[] {
+    const defaultVersion = switchVersions?.data?.generalVersions
+    const getParseVersion = function (version: string) {
+      if (defaultVersion?.includes(version)) {
+        return version.replace(/_[^_]*$/, '')
+      }
+      return version
+    }
+    let inUseVersions = [] as FirmwareVersion[]
+
+    filterVersions.forEach((v: FirmwareVersion) => {
+      if (getParseVersion(v.id) === getParseVersion(version) ||
+        getParseVersion(v.id) === getParseVersion(rodanVersion)) {
+        v = { ...v, inUse: true }
+      }
+      inUseVersions.push(v)
+    })
+
+    return inUseVersions
+  }
+
   return {
     parseSwitchVersion,
     getSwitchVersionLabel,
@@ -120,6 +144,7 @@ export function useSwitchFirmwareUtils () {
     getSwitchScheduleTpl,
     getSwitchFirmwareList,
     getSwitchVenueAvailableVersions,
-    sortAvailableVersionProp
+    sortAvailableVersionProp,
+    checkCurrentVersions
   }
 }

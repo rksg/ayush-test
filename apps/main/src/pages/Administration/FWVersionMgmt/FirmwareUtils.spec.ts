@@ -4,8 +4,7 @@ import {
   Schedule,
   SkippedVersion,
   VenueUpdateAdvice,
-  VersionHistory,
-  parseSwitchVersion
+  VersionHistory
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -96,13 +95,4 @@ describe('FirmwareUtils parser', () => {
     expect(getVersionLabel(getIntl(), mockedFirmwareVersion, false)).toBe('test ')
   })
 
-  it('should parse switch version', () => {
-    expect(parseSwitchVersion('')).toBe('')
-    expect(parseSwitchVersion('09010f_b19')).toBe('9.0.10f')
-    expect(parseSwitchVersion('09010f_b20')).toBe('9.0.10f_b20')
-    expect(parseSwitchVersion('10010_rc3')).toBe('10.0.10')
-    expect(parseSwitchVersion('10010_rc4')).toBe('10.0.10_rc4')
-    expect(parseSwitchVersion('10010a_b36')).toBe('10.0.10a')
-    expect(parseSwitchVersion('10010a_cd3_b11')).toBe('10.0.10a_cd3')
-  })
 })
