@@ -2,6 +2,7 @@ import _                                    from 'lodash'
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import { mapCodeToReason, Incident } from '@acx-ui/analytics/utils'
+import { qualitativeColorSet }       from '@acx-ui/components'
 import { formatter }                 from '@acx-ui/formatter'
 import { getIntl }                   from '@acx-ui/utils'
 
@@ -83,7 +84,8 @@ export interface NetworkImpactChart {
   disabled?: {
     value: MessageDescriptor
     summary: MessageDescriptor
-  }
+  },
+  colorSet?: string[]
 }
 
 export const getDataWithPercentage = (data: NetworkImpactChartData['data']) => {
@@ -405,7 +407,7 @@ export const networkImpactChartConfigs: Readonly<Record<
     }
   },
   [NetworkImpactChartTypes.RxPhyErrByAP]: {
-    title: defineMessage({ defaultMessage: 'Rx PHY Errors' }), //
+    title: defineMessage({ defaultMessage: 'Rx PHY Errors' }),
     tooltipFormat: defineMessage({
       defaultMessage: `{name}<br></br>
       <space><b>{formattedValue} {value, plural,
@@ -430,21 +432,24 @@ export const networkImpactChartConfigs: Readonly<Record<
     tooltipFormat: tooltipFormats.distribution,
     dataFomatter: formatter('percentFormat'),
     transformKeyFn: transformAirtimeMetricKey,
-    summary: defineMessage({ defaultMessage: 'Peak airtime busy was {count}' })
+    summary: defineMessage({ defaultMessage: 'Peak airtime busy was {count}' }),
+    colorSet: qualitativeColorSet().filter((_,index) => index !== 3)
   },
   [NetworkImpactChartTypes.AirtimeTx]: {
     title: defineMessage({ defaultMessage: 'Average Airtime Tx' }),
     tooltipFormat: tooltipFormats.distribution,
     dataFomatter: formatter('percentFormat'),
     transformKeyFn: transformAirtimeMetricKey,
-    summary: defineMessage({ defaultMessage: 'Peak airtime Tx was {count}' })
+    summary: defineMessage({ defaultMessage: 'Peak airtime Tx was {count}' }),
+    colorSet: qualitativeColorSet().filter((_,index) => index !== 3)
   },
   [NetworkImpactChartTypes.AirtimeRx]: {
     title: defineMessage({ defaultMessage: 'Average Airtime Rx' }),
     tooltipFormat: tooltipFormats.distribution,
     dataFomatter: formatter('percentFormat'),
     transformKeyFn: transformAirtimeMetricKey,
-    summary: defineMessage({ defaultMessage: 'Peak airtime Rx was {count}' })
+    summary: defineMessage({ defaultMessage: 'Peak airtime Rx was {count}' }),
+    colorSet: qualitativeColorSet().filter((_,index) => index !== 3)
   },
   [NetworkImpactChartTypes.AirtimeMgmtFrame]: {
     title: defineMessage({ defaultMessage: 'Average % of Mgmt. Frames' }),

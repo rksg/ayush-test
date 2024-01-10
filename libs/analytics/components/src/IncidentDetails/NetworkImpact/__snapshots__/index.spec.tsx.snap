@@ -959,7 +959,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                             />
                             <path
                               d="M423.695 102.2817A368 368 0 0 1 640 32L640 88A312 312 0 0 0 456.611 147.5867Z"
-                              fill="#61C46E"
+                              fill="#F095FF"
                               stroke="#FFFFFF"
                               stroke-linejoin="round"
                             />
