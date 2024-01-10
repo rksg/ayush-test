@@ -75,7 +75,7 @@ describe('AccessPointList with feature toggle', () => {
     render(<AccessPointList tab={WifiTabsEnum.AP_REPORT}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     const tab = await screen.findByRole('tab', { name: 'Airtime Utilization Report' })
-    userEvent.click(tab)
+    await userEvent.click(tab)
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: '/tenant-id/t/devices/wifi/reports/airtime', hash: '', search: ''

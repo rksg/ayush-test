@@ -100,6 +100,7 @@ describe('EditEdge - Ports', () => {
         }
       })
 
+    expect(await screen.findByRole('tab', { name: 'Ports General', selected: true })).toBeVisible()
     await userEvent.click(await screen.findByRole('tab', { name: 'Sub-Interface' }))
     expect(mockedUsedNavigate).toBeCalledWith({
       // eslint-disable-next-line max-len
