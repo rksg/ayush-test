@@ -183,7 +183,7 @@ describe('Recommendation services', () => {
     })
 
     const { status, data, error } = await store.dispatch(
-      api.endpoints.recommendationList.initiate(props)
+      api.endpoints.recommendationList.initiate({ ...props, isCrrmPartialEnabled: true })
     )
 
     const expectedResult = [

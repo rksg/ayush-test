@@ -4,7 +4,6 @@ import { Form, Select, Switch } from 'antd'
 import { useIntl }              from 'react-intl'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { TunnelTypeEnum }         from '@acx-ui/rc/utils'
 
 import NetworkFormContext                   from '../../NetworkFormContext'
 import { useNetworkVxLanTunnelProfileInfo } from '../../utils'
@@ -35,7 +34,7 @@ export default function ClientIsolationForm (props: { labelWidth?: string }) {
   const clientIsolationAllowlistEnabled = useWatch<boolean>(['wlan','advancedCustomization', 'clientIsolationAllowlistEnabled'])
   // eslint-disable-next-line max-len
   const clientIsolationAllowlistEnabledInitValue = data?.venues?.some(v => v.clientIsolationAllowlistId)
-  const { enableVxLan, tunnelType } = useNetworkVxLanTunnelProfileInfo(data)
+  const { enableVxLan } = useNetworkVxLanTunnelProfileInfo(data)
 
   const onClientIsolationEnabledChanged = (checked: boolean) => {
     if(!checked){
@@ -44,7 +43,7 @@ export default function ClientIsolationForm (props: { labelWidth?: string }) {
     }
   }
 
-  const clientIsolationDisabled = enableVxLan && tunnelType === TunnelTypeEnum.VXLAN
+  const clientIsolationDisabled = enableVxLan
   return (<>
     <UI.FieldLabel width={labelWidth}>
       {$t({ defaultMessage: 'Client Isolation' })}

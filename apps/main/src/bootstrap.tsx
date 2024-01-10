@@ -9,6 +9,7 @@ import {
   SuspenseBoundary
 } from '@acx-ui/components'
 import { useGetPreferencesQuery } from '@acx-ui/rc/services'
+import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
 import { BrowserRouter }          from '@acx-ui/react-router-dom'
 import { Provider }               from '@acx-ui/store'
 import {
@@ -40,6 +41,11 @@ async function pendoInitalization (): Promise<PendoParameters> {
   const userProfileRequest = createHttpRequest(UserUrlsInfo.getUserProfile, { tenantId })
   const res = await fetch(userProfileRequest.url, userProfileRequest)
   const user = await res.json()
+  const tenantDetailRequest =
+    createHttpRequest(AdministrationUrlsInfo.getTenantDetails, { tenantId })
+  const resTenant = await fetch(tenantDetailRequest.url, tenantDetailRequest)
+  const tenant = await resTenant.json()
+
   return {
     visitor: {
       id: user.externalId,
@@ -59,7 +65,7 @@ async function pendoInitalization (): Promise<PendoParameters> {
       productName: 'RuckusOne',
       id: user.tenantId,
       name: user.companyName,
-      sfdcId: user.externalId
+      sfdcId: tenant.externalId
     }
   }
 }
@@ -137,7 +143,8 @@ function DataGuardLoader (props: React.PropsWithChildren) {
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
     states={[{ isLoading:
         !Boolean(locale.messages) ||
-        !Boolean(userProfile.allowedOperations.length)
+        !Boolean(userProfile.allowedOperations.length) ||
+        !Boolean(userProfile.accountTier)
     }]}
     children={props.children}
   />
