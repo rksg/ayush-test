@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 import { EdgeEditContext, EdgePortTabEnum }                          from '@acx-ui/rc/components'
 import { EdgeGeneralFixtures, EdgePortConfigFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                  from '@acx-ui/store'
-import { mockServer, render, screen }                                from '@acx-ui/test-utils'
+import { mockServer, render, screen, waitForElementToBeRemoved }     from '@acx-ui/test-utils'
 
 import Ports from './index'
 
@@ -76,6 +76,9 @@ describe('EditEdge - Ports', () => {
         }
       })
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText(/IP Address: 10.206.78.152/)).toBeVisible()
+
     expect(await screen.findByRole('tab', { name: 'Ports General', selected: true })).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
@@ -100,7 +103,9 @@ describe('EditEdge - Ports', () => {
         }
       })
 
-    expect(await screen.findByRole('tab', { name: 'Ports General', selected: true })).toBeVisible()
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText(/IP Address: 10.206.78.152/)).toBeVisible()
+
     await userEvent.click(await screen.findByRole('tab', { name: 'Sub-Interface' }))
     expect(mockedUsedNavigate).toBeCalledWith({
       // eslint-disable-next-line max-len
