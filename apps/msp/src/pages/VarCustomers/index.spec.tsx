@@ -123,13 +123,7 @@ const userProfile = {
 }
 
 const services = require('@acx-ui/msp/services')
-jest.mock('@acx-ui/msp/services', () => ({
-  ...jest.requireActual('@acx-ui/msp/services')
-}))
 const user = require('@acx-ui/user')
-jest.mock('@acx-ui/user', () => ({
-  ...jest.requireActual('@acx-ui/user')
-}))
 
 describe('VarCustomers', () => {
   let params: { tenantId: string }
