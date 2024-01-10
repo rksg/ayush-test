@@ -464,6 +464,6 @@ export interface ConfigTemplate {
 }
 
 export enum MspEcTierEnum {
-  Essential = 'GOLD',
-  Professional = 'PLATINUM'
+  Essential = 'Gold',
+  Professional = 'Platinum'
 }

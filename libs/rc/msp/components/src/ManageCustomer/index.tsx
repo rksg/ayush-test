@@ -287,7 +287,8 @@ export function ManageCustomer () {
           wifiLicense: wLic,
           switchLicense: sLic,
           apswLicense: apswLic,
-          service_expiration_date: moment(data?.service_expiration_date)
+          service_expiration_date: moment(data?.service_expiration_date),
+          tier: data?.tier ?? MspEcTierEnum.Professional
         })
         formRef.current?.setFieldValue(['address', 'addressLine'], data?.street_address)
         data?.is_active === 'true' ? setTrialActive(true) : setTrialActive(false)
