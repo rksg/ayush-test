@@ -3,6 +3,7 @@ import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
 import type { Settings }                                                                      from '@acx-ui/analytics/utils'
+import { useIsSplitOn }                                                                       from '@acx-ui/feature-toggle'
 import { dataApiURL, Provider, rbacApiURL }                                                   from '@acx-ui/store'
 import { render, screen, mockServer, fireEvent, mockGraphqlQuery, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -10,7 +11,6 @@ import { mockBrandTimeseries, prevTimeseries, currTimeseries } from './__tests__
 import { FranchisorTimeseries }                                from './services'
 
 import { Brand360 } from '.'
-
 
 jest.mock('./Table', () => ({
   BrandTable: ({ sliceType, slaThreshold }: { sliceType: string, slaThreshold: Settings }) =>
@@ -58,6 +58,7 @@ describe('Brand360', () => {
     )
     jest.useFakeTimers()
     jest.setSystemTime(new Date(Date.parse('2023-12-12T00:00:00+00:00')))
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
   afterEach(() => jest.useRealTimers())
   it('renders widgets', async () => {
