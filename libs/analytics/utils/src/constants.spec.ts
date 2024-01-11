@@ -83,5 +83,13 @@ describe('constants', () => {
         'p-airtime-tx-6(5)g-high'
       ])
     })
+    it('handle incorrect category', () => {
+      const { incidentsToggle, categoryCodeMap } = require('.')
+      const toggles = {
+        [IncidentToggle.AirtimeIncidents]: true
+      }
+      const code = categoryCodeMap.performance.codes
+      expect(incidentsToggle({ code, toggles }, 'infrastructure')).toEqual(code)
+    })
   })
 })
