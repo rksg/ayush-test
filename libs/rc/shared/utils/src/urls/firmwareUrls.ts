@@ -47,6 +47,11 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/upgrade/version/release/all',
     newApi: true
   },
+  getApModelFamilies: {
+    method: 'post',
+    url: '/apModelFamilies/query',
+    newApi: true
+  },
   getFirmwareVersionIdList: {
     method: 'get',
     url: '/apFirmwares',

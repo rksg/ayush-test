@@ -112,9 +112,7 @@ export const venue = [
     id: 'aaa2f2133565438d85e1e46103889999',
     name: 'Legacy-Venue',
     apCount: 1,
-    apModels: [
-      'R512'
-    ],
+    apModels: ['R512'],
     versions: [
       {
         version: '6.1.0.10.433',
@@ -137,9 +135,7 @@ export const venue = [
     id: 'zzz2f2133565438d85e1e46103889999',
     name: 'Latest-Venue',
     apCount: 1,
-    apModels: [
-      'R599'
-    ],
+    apModels: ['R599'],
     versions: [
       {
         version: '7.0.0.103.288',
@@ -372,7 +368,8 @@ export const availableABFList = [
     category: 'RECOMMENDED',
     onboardDate: '2023-05-31T02:31:12.682+0000',
     name: '7.0.0.103.288',
-    id: '7.0.0.103.288'
+    id: '7.0.0.103.288',
+    supportedApModels: ['R770']
   },
   {
     abf: 'active',
@@ -380,7 +377,8 @@ export const availableABFList = [
     category: 'RECOMMENDED',
     onboardDate: '2023-05-01T02:31:12.682+0000',
     name: '7.0.0.103.260',
-    id: '7.0.0.103.260'
+    id: '7.0.0.103.260',
+    supportedApModels: ['R770']
   },
   {
     abf: 'eol-ap-2023-03',
@@ -388,7 +386,8 @@ export const availableABFList = [
     category: 'RECOMMENDED',
     onboardDate: '2023-05-15T10:14:59.048+0000',
     name: '6.2.3.103.200',
-    id: '6.2.3.103.200'
+    id: '6.2.3.103.200',
+    supportedApModels: ['R555']
   },
   {
     abf: 'eol-ap-2022-12',
@@ -396,7 +395,8 @@ export const availableABFList = [
     category: 'RECOMMENDED',
     onboardDate: '2023-05-05T10:14:59.048+0000',
     name: '6.2.0.103.533',
-    id: '6.2.0.103.533'
+    id: '6.2.0.103.533',
+    supportedApModels: ['R500']
   },
   {
     abf: 'eol-ap-2022-12',
@@ -404,7 +404,8 @@ export const availableABFList = [
     category: 'RECOMMENDED',
     onboardDate: '2023-04-18T08:04:31.098+0000',
     name: '6.2.0.103.513',
-    id: '6.2.0.103.513'
+    id: '6.2.0.103.513',
+    supportedApModels: ['R500']
   },
   {
     abf: 'eol-ap-2021-05',
@@ -412,7 +413,8 @@ export const availableABFList = [
     category: 'RECOMMENDED',
     onboardDate: '2023-02-07T09:16:58.390+0000',
     name: '6.1.0.10.453',
-    id: '6.1.0.10.453'
+    id: '6.1.0.10.453',
+    supportedApModels: ['R300', 'R550']
   },
   {
     abf: 'eol-ap-2021-05',
@@ -420,7 +422,8 @@ export const availableABFList = [
     category: 'RECOMMENDED',
     onboardDate: '2023-02-01T09:16:58.390+0000',
     name: '6.1.0.10.433',
-    id: '6.1.0.10.433'
+    id: '6.1.0.10.433',
+    supportedApModels: ['R300', 'R550']
   },
   {
     abf: 'eol-ap-2021-05',
@@ -428,8 +431,81 @@ export const availableABFList = [
     category: 'RECOMMENDED',
     onboardDate: '2023-01-31T02:31:12.682+0000',
     name: '6.1.0.10.413',
-    id: '6.1.0.10.413'
+    id: '6.1.0.10.413',
+    supportedApModels: ['R300', 'R550']
   }
 ]
 
 export const mockedFirmwareVersionIdList = availableABFList.filter(abf => abf.abf === 'active').map(abf => abf.id)
+
+export const mockedApModelFamilies = [
+  {
+    name: 'AC_WAVE1',
+    apModels: [
+      'R600',
+      'R500',
+      'R310',
+      'R730',
+      'T300',
+      'T300E',
+      'T301N',
+      'T301S'
+    ]
+  },
+  {
+    name: 'AC_WAVE2',
+    apModels: [
+      'R720',
+      'R710',
+      'R610',
+      'R510',
+      'R320',
+      'M510',
+      'H510',
+      'H320',
+      'E510',
+      'T710',
+      'T710S',
+      'T610',
+      'T610S',
+      'T310C',
+      'T310D',
+      'T310N',
+      'T310S'
+    ]
+  },
+  {
+    name: 'WIFI_6',
+    apModels: [
+      'R850',
+      'R750',
+      'R650',
+      'R550',
+      'R350',
+      'H550',
+      'H350',
+      'T750',
+      'T750SE',
+      'T350C',
+      'T350D',
+      'T350SE'
+    ]
+  },
+  {
+    name: 'WIFI_6E',
+    apModels: [
+      'R560',
+      'R760'
+    ]
+  },
+  {
+    name: 'WIFI_7',
+    apModels: [
+      'R770',
+      'R670',
+      'T670',
+      'T670SN',
+      'H670'
+    ]
+  }
+]

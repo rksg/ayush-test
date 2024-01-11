@@ -83,6 +83,22 @@ export enum FirmwareType {
   EDGE_FIRMWARE_UPGRADE = 'EDGE_FIRMWARE_UPGRADE',
 }
 
+export enum ApModelFamilyType {
+  WIFI_11AC_1 = 'AC_WAVE1',
+  WIFI_11AC_2 = 'AC_WAVE2',
+  WIFI_6 = 'WIFI_6',
+  WIFI_6E = 'WIFI_6E',
+  WIFI_7 = 'WIFI_7'
+}
+
+export const apModelFamilyTypeLabels: { [key in ApModelFamilyType]: string } = {
+  [ApModelFamilyType.WIFI_11AC_1]: '11ac',
+  [ApModelFamilyType.WIFI_11AC_2]: '11ac wave2',
+  [ApModelFamilyType.WIFI_6]: 'Wi-Fi 6',
+  [ApModelFamilyType.WIFI_6E]: 'Wi-Fi 6E',
+  [ApModelFamilyType.WIFI_7]: 'Wi-Fi 7'
+}
+
 export interface VenueUpdateAdvice {
   type: FirmwareType;
   advice: UpdateAdvice;
@@ -109,6 +125,12 @@ export interface ABFVersion {
   category: FirmwareCategory;
   releaseDate: string;
   onboardDate: string;
+  supportedApModels: string[];
+}
+
+export interface ApModelFamily {
+  name: ApModelFamilyType;
+  apModels: string[]
 }
 
 export interface EolApFirmware {

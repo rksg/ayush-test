@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   FirmwareUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -25,7 +25,8 @@ import {
   availableVersions,
   successResponse,
   availableABFList,
-  mockedFirmwareVersionIdList
+  mockedFirmwareVersionIdList,
+  mockedApModelFamilies
 } from '../../__tests__/fixtures'
 
 import { VenueFirmwareList } from '.'
@@ -61,6 +62,10 @@ describe('Firmware Venues Table', () => {
       rest.patch(
         FirmwareUrlsInfo.updateNow.url,
         (req, res, ctx) => res(ctx.json({ ...successResponse }))
+      ),
+      rest.post(
+        FirmwareUrlsInfo.getApModelFamilies.url,
+        (req, res, ctx) => res(ctx.json(mockedApModelFamilies))
       )
     )
   })
@@ -134,7 +139,9 @@ describe('Firmware Venues Table', () => {
   })
 
   it('should update selected row with advanced dialog', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(featureFlag => {
+      return featureFlag !== Features.WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE
+    })
 
     const updateNowFn = jest.fn()
     mockServer.use(

@@ -144,7 +144,8 @@ export enum Features {
   GROUP_BASED_LOGIN_TOGGLE = 'group-based-login-toggle',
   GOOGLE_WORKSPACE_SSO_TOGGLE = 'google-workspace-sso-toggle',
   WIFI_COMPATIBILITY_CHECK_TOGGLE = 'wifi-compatibility-check-toggle',
-  ANY_3RDPARTY_INVITE_TOGGLE = 'ptenant-any-3rdparty-invite-toggle'
+  ANY_3RDPARTY_INVITE_TOGGLE = 'ptenant-any-3rdparty-invite-toggle',
+  WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE = 'wifi-eda-branch-level-supported-models-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
