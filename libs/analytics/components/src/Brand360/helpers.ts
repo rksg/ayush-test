@@ -2,9 +2,10 @@ import { groupBy, mean } from 'lodash'
 import moment            from 'moment-timezone'
 import { defineMessage } from 'react-intl'
 
-import { formatter }   from '@acx-ui/formatter'
-import { MspEc }       from '@acx-ui/msp/utils'
-import { TableResult } from '@acx-ui/rc/utils'
+import { formatter }     from '@acx-ui/formatter'
+import { MspEc }         from '@acx-ui/msp/utils'
+import { TableResult }   from '@acx-ui/rc/utils'
+import { noDataDisplay } from '@acx-ui/utils'
 
 import type { Response, BrandVenuesSLA } from './services'
 import type { SliceType }                from './useSliceType'
@@ -165,13 +166,13 @@ export const transformVenuesData = (
 ): Response[] => {
   const groupByTenantID = groupBy(venuesData?.data, 'tenantId')
 
-  const sumSLAData = (data: ([number | null, number | null] | null)[], initial: number[]) =>
+  const sumData = (data: ([number | null, number | null] | null)[], initial: number[]) =>
     data
       ? data?.reduce((total, current) => {
         const values = current as [number, number]
         return total.map((num, index) => num + (values[index] || 0)) as [number, number]
       }, initial)
-      : [0,0]
+      : noDataDisplay
   return Object.keys(lookupAndMappingData).reduce((newObj, tenantId) => {
     const mappingData = lookupAndMappingData[tenantId]
     if (mappingData?.integrator) {
@@ -181,17 +182,16 @@ export const transformVenuesData = (
         lsp: lookupAndMappingData[mappingData.integrator]?.name,
         p1Incidents: tenantData
           ? tenantData?.reduce((total, venue) => total + (venue.incidentCount || 0), 0) : 0,
-        ssidCompliance: sumSLAData(
+        ssidCompliance: sumData(
           tenantData?.map(v => v.ssidComplianceSLA), [0, 0]
         ) as [number, number],
-        deviceCount: (sumSLAData(
-          tenantData?.map(v => v.onlineApsSLA), [0, 0]
-        ) as [number, number])?.[1],
-        avgConnSuccess: sumSLAData(
+        deviceCount: tenantData
+          ? tenantData?.reduce((total, venue) => total + (venue.onlineApsSLA?.[1] || 0), 0) : 0,
+        avgConnSuccess: sumData(
           tenantData?.map(v => v.connectionSuccessSLA), [0, 0]
         ) as [number, number],
-        avgTTC: sumSLAData(tenantData?.map(v => v.timeToConnectSLA), [0, 0]) as [number, number],
-        avgClientThroughput: sumSLAData(
+        avgTTC: sumData(tenantData?.map(v => v.timeToConnectSLA), [0, 0]) as [number, number],
+        avgClientThroughput: sumData(
           tenantData?.map(v => v.clientThroughputSLA), [0, 0]
         ) as [number, number]
       })

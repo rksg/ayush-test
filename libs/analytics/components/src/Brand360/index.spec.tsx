@@ -80,7 +80,7 @@ describe('Brand360', () => {
     expect(tiles).toHaveLength(3)
     tiles.forEach(tile => expect(tile).toBeVisible())
     // eslint-disable-next-line max-len
-    expect(await screen.findAllByText('property {"brand-ssid-compliance-matcher":"^[a-zA-Z0-9]{5}_GUEST$","sla-p1-incidents-count":"1","sla-guest-experience":"2","sla-brand-ssid-compliance":"3"}')).toHaveLength(1)
+    expect(await screen.findAllByText('lsp {"brand-ssid-compliance-matcher":"^[a-zA-Z0-9]{5}_GUEST$","sla-p1-incidents-count":"1","sla-guest-experience":"2","sla-brand-ssid-compliance":"3"}')).toHaveLength(1)
     expect(await screen.findByTestId('brand360Table')).toBeVisible()
   })
   it('should render with empty mspPropertiesData', async () => {
@@ -97,7 +97,7 @@ describe('Brand360', () => {
     expect(tiles).toHaveLength(3)
     tiles.forEach(tile => expect(tile).toBeVisible())
     // eslint-disable-next-line max-len
-    expect(await screen.findAllByText('property {"brand-ssid-compliance-matcher":"^[a-zA-Z0-9]{5}_GUEST$","sla-p1-incidents-count":"1","sla-guest-experience":"2","sla-brand-ssid-compliance":"3"}')).toHaveLength(1)
+    expect(await screen.findAllByText('lsp {"brand-ssid-compliance-matcher":"^[a-zA-Z0-9]{5}_GUEST$","sla-p1-incidents-count":"1","sla-guest-experience":"2","sla-brand-ssid-compliance":"3"}')).toHaveLength(1)
     expect(await screen.findByTestId('brand360Table')).toBeVisible()
   })
   it('changes sliceType', async () => {
@@ -107,13 +107,13 @@ describe('Brand360', () => {
     render(<Provider><Brand360 /></Provider>)
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     fireEvent.click(await screen.findByTestId('CaretDownSolid'))
-    fireEvent.click(await screen.findByText('LSP'))
+    fireEvent.click(await screen.findByText('Property'))
     // eslint-disable-next-line max-len
-    expect(await screen.findAllByText('lsp {"brand-ssid-compliance-matcher":"^[a-zA-Z0-9]{5}_GUEST$","sla-p1-incidents-count":"1","sla-guest-experience":"2","sla-brand-ssid-compliance":"3"}')).toHaveLength(1)
+    expect(await screen.findAllByText('property {"brand-ssid-compliance-matcher":"^[a-zA-Z0-9]{5}_GUEST$","sla-p1-incidents-count":"1","sla-guest-experience":"2","sla-brand-ssid-compliance":"3"}')).toHaveLength(1)
     expect(await screen.findByTestId('brand360Table')).toBeVisible()
     const tiles = await screen.findAllByTestId('brand360Tile')
     const tile = tiles[0]
-    expect(tile.textContent?.includes('lsp')).toBeTruthy()
+    expect(tile.textContent?.includes('property')).toBeTruthy()
   })
   it('applies SLAs', async () => {
     const update = new Promise(resolve => mockServer.use(
