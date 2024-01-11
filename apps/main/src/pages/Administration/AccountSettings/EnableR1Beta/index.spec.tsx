@@ -8,12 +8,18 @@ import {
   renderHook,
   screen,
   waitFor,
-  // within,
+  within,
   logRoles
 } from '@acx-ui/test-utils'
 import { UserUrlsInfo } from '@acx-ui/user'
 
 import { EnableR1Beta } from './'
+import { useGetBetaList } from '@acx-ui/feature-toggle'
+
+// jest.mock('@acx-ui/feature-toggle', () => ({
+//   ...jest.requireActual('@acx-ui/feature-toggle'),
+//   useGetBetaList: jest.fn(() => ['beta1', 'beta2', 'beta3'])
+// }))
 
 describe('Enable RUCKUS One Beta Checkbox', () => {
   const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
@@ -111,9 +117,8 @@ describe('Enable RUCKUS One Beta Checkbox', () => {
   })
 
   it('should show beta features drawer', async () => {
-    // const useGetBetaList = jest.fn().mockReturnValue(['beta1', 'beta2', 'beta3'])
-    // renderHook(() => useGetBetaList())
-
+    (useGetBetaList as jest.Mock).mockReturnValue(['beta1', 'beta2', 'beta3'])
+    
     const { container } = await render(
       <Provider>
         <EnableR1Beta
@@ -124,15 +129,13 @@ describe('Enable RUCKUS One Beta Checkbox', () => {
         route: { params }
       })
 
-    await screen.findByRole('link', { name: 'Current beta features' })
-    // const currentBeta = await screen.findByRole('link', { name: 'Current beta features' })
+    const currentBeta = await screen.findByRole('link', { name: 'Current beta features' })
+    await userEvent.click(currentBeta)
+    await screen.findAllByRole('dialog')
     logRoles(container)
 
-    // await userEvent.click(currentBeta)
     // TODO: Test case is unable to find the 'dialog' roles so below
     //  assertions are commented temporarily...
-    logRoles(container)
-
     // const drawer = await screen.findAllByRole('dialog')
     // await within(drawer).findByText('RUCKUS One Beta Features')
     // await userEvent.click(await within(drawer).findByRole('button', { name: 'Ok' }))

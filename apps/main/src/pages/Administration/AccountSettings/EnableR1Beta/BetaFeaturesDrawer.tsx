@@ -24,9 +24,10 @@ function BetaFeaturesDrawer (
   const onClose = () => {
     setVisible(false)
   }
+  // beta list feature Ids fetched from split.io 
   const betaListFeatureIds = useGetBetaList()
   const showBetaList = betaListFeatureIds.length > 0
-  if (betaListFeatureIds) {
+  if (showBetaList && betaList) {
     Object.keys(betaList).forEach(k => {
       betaList[Number(k)].status =
         (betaListFeatureIds.includes(betaList[Number(k)].key))? true : false
@@ -34,7 +35,6 @@ function BetaFeaturesDrawer (
   }
 
   const drawerTitle = $t({ defaultMessage: 'RUCKUS One Beta Features' })
-
   const footer =<div>
     <Button type='primary'
       onClick={() => {

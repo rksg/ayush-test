@@ -76,6 +76,8 @@ beforeEach(async () => {
 
   require('@acx-ui/user').setUserProfile({
     allowedOperations: [],
+    accountTier: 'Gold',
+    betaEnabled: false,
     profile: {
       region: '[NA]',
       allowedRegions: [
@@ -162,7 +164,8 @@ jest.mock('@acx-ui/feature-toggle', () => ({
   useFFList: jest.fn(),
   useGetBetaList: jest.fn().mockReturnValue([]),
   Features: require('libs/common/feature-toggle/src/features').Features,
-  TierFeatures:require('libs/common/feature-toggle/src/features').TierFeatures
+  TierFeatures:require('libs/common/feature-toggle/src/features').TierFeatures,
+  BetaListDetails:require('libs/common/feature-toggle/src/features').BetaListDetails
 }), { virtual: true })
 
 jest.mock('@acx-ui/icons', ()=> {
