@@ -72,7 +72,8 @@ const mockedUseConfigTemplate = jest.fn()
 const mockedUsePolicyBreadcrumb = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
-  useConfigTemplate: () => mockedUseConfigTemplate()
+  useConfigTemplate: () => mockedUseConfigTemplate(),
+  usePolicyBreadcrumb: () => mockedUsePolicyBreadcrumb()
 }))
 
 describe('AAA Detail Page', () => {
