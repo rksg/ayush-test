@@ -11,7 +11,7 @@ import { useParams }                               from 'react-router-dom'
 import { Button, Loader, StepsForm, useStepFormContext }                                                                             from '@acx-ui/components'
 import { TunnelProfileAddModal }                                                                                                     from '@acx-ui/rc/components'
 import { useGetNetworkSegmentationViewDataListQuery, useGetTunnelProfileViewDataListQuery, useVenueNetworkActivationsDataListQuery } from '@acx-ui/rc/services'
-import { getTunnelProfileOptsWithDefault, TunnelProfileFormType, TunnelTypeEnum }                                                    from '@acx-ui/rc/utils'
+import { getTunnelProfileOptsWithDefault, isDsaeOnboardingNetwork, TunnelProfileFormType, TunnelTypeEnum }                           from '@acx-ui/rc/utils'
 
 import { NetworkSegmentationGroupFormData } from '..'
 
@@ -73,7 +73,8 @@ export const WirelessNetworkForm = () => {
       }
     }
   })
-  const networkOptions = networkList?.filter(item => item.type === 'dpsk')
+  const networkOptions = networkList?.filter(item =>
+    item.type === 'dpsk' && !isDsaeOnboardingNetwork(item))
     .map(item => ({ label: item.name as string, value: item.id as string }))
   const networkIds = networkList?.map(item => (item.id))
 

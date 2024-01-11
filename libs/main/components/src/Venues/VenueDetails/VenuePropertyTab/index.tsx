@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 
 import moment        from 'moment-timezone'
@@ -134,7 +134,7 @@ export function VenuePropertyTab () {
   const [apMap, setApMap] = useState(new Map())
   const [switchMap, setSwitchMap] = useState(new Map())
   const [connectionMeteringMap, setConnectionMeteringMap] = useState(new Map())
-  const [withNsg, setWithNsg] = useState(false)
+  const [withNsg, setWithNsg] = useState(true)
   const [drawerState, setDrawerState] = useState<{
     isEdit: boolean,
     visible: boolean,
@@ -460,41 +460,40 @@ export function VenuePropertyTab () {
       align: 'center',
       render: (_, row) => personaMap.get(row.personaId)?.vlan
     },
-    {
-      show: withNsg,
-      key: 'accessPoint',
-      title: $t({ defaultMessage: 'Access Point' }),
-      dataIndex: 'accessPoint',
-      render: (_, row) => {
-        const persona = personaMap.get(row.personaId)
-        const apMac = persona?.ethernetPorts?.[0]?.macAddress ?? ''
-        const apName = (apMap.get(apMac) as APExtended)?.name
-          ?? persona?.ethernetPorts?.[0]?.name
-        return apName
-          ? `${apName} ${persona?.ethernetPorts?.map(port => `LAN ${port.portIndex}`).join(', ')}`
-          : undefined
-      }
-    },
-    {
-      show: withNsg,
-      key: 'switchPorts',
-      title: $t({ defaultMessage: 'Switch Ports' }),
-      dataIndex: 'switchPorts',
-      render: (_, row) => {
-        const switchList: string[] = []
+    ...withNsg ? [
+      {
+        key: 'accessPoint',
+        title: $t({ defaultMessage: 'Access Point' }),
+        dataIndex: 'accessPoint',
+        render: (_: ReactNode, row: PropertyUnit) => {
+          const persona = personaMap.get(row.personaId)
+          const apMac = persona?.ethernetPorts?.[0]?.macAddress ?? ''
+          const apName = (apMap.get(apMac) as APExtended)?.name
+            ?? persona?.ethernetPorts?.[0]?.name
+          return apName
+            ? `${apName} ${persona?.ethernetPorts?.map(port => `LAN ${port.portIndex}`).join(', ')}`
+            : undefined
+        }
+      },
+      {
+        key: 'switchPorts',
+        title: $t({ defaultMessage: 'Switch Ports' }),
+        dataIndex: 'switchPorts',
+        render: (_: ReactNode, row: PropertyUnit) => {
+          const switchList: string[] = []
 
-        personaMap.get(row.personaId)?.switches?.forEach(s => {
-          const switchMac = s.macAddress
-          const switchName = (switchMap.get(switchMac) as SwitchViewModel)?.name
+          personaMap.get(row.personaId)?.switches?.forEach(s => {
+            const switchMac = s.macAddress
+            const switchName = (switchMap.get(switchMac) as SwitchViewModel)?.name
 
-          if (switchName) {
-            switchList.push(`${switchName} ${s.portId}`)
-          }
-        })
+            if (switchName) {
+              switchList.push(`${switchName} ${s.portId}`)
+            }
+          })
 
-        return switchList.map((s, index) => <div key={index}>{s}</div>)
-      }
-    },
+          return switchList.map((s, index) => <div key={index}>{s}</div>)
+        }
+      }] : [],
     {
       show: isConnectionMeteringEnabled,
       key: 'connectionMetering',
