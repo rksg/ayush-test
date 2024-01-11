@@ -8,7 +8,6 @@ import {
 import { UserUrlsInfo } from '@acx-ui/user'
 
 import { detectBrowserLang,
-  updateBrowserCached,
   showBrowserLangDialog,
   isNonProdEnv } from './BrowserDialog'
 
@@ -92,21 +91,6 @@ describe('showBrowserLangDialog', () => {
     const result = await showBrowserLangDialog()
     await Promise.resolve()
     expect(result).toStrictEqual({ lang: 'fr-FR', isLoading: false })
-  })
-})
-
-describe('updateBrowserCached', () => {
-  beforeEach(() => {
-    localStorage.clear()
-  })
-
-  it('should update localStorage with the correct values', async () => {
-    const lang = 'en-US'
-    updateBrowserCached(lang)
-    Storage.prototype.setItem = jest.fn()
-    updateBrowserCached('en-US')
-    expect(localStorage.setItem).toHaveBeenCalledWith('browserLang', 'en-US')
-    expect(localStorage.setItem).toHaveBeenCalledWith('isBrowserDialog', 'true')
   })
 })
 
