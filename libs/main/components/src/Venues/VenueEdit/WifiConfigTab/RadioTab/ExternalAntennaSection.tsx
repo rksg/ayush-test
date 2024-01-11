@@ -21,7 +21,10 @@ export function ExternalAntennaSection () {
   const readOnly = false // TODO: !rbacService.isRoleAllowed('UpdateExternalAntennas')
   const imageTitle = $t({ defaultMessage: 'AP external Antenna image' })
   const params = useParams()
-  const { editRadioContextData,
+  const {
+    editContextData,
+    setEditContextData,
+    editRadioContextData,
     setEditRadioContextData } = useContext(VenueEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
   const [handledApExternalAntennas, setHandledApExternalAntennas] = useState([] as ExternalAntenna[])
@@ -47,13 +50,6 @@ export function ExternalAntennaSection () {
       console.log(error) // eslint-disable-line no-console
     }
   }
-
-  useEffect(() => {
-    setEditRadioContextData({
-      ...editRadioContextData,
-      updateExternalAntenna: handleUpdateExternalAntenna
-    })
-  }, [])
 
 
   const filterModelCapabilities = (model: string) => {
@@ -124,6 +120,22 @@ export function ExternalAntennaSection () {
     }
   }
 
+  const handleExternalAntennasChanged = (apModels: { [index: string]: ExternalAntenna }) => {
+
+    setEditRadioContextData({
+      ...editRadioContextData,
+      apModels,
+      updateExternalAntenna: handleUpdateExternalAntenna
+    })
+
+    setEditContextData({
+      ...editContextData,
+      unsavedTabKey: 'radio',
+      tabTitle: $t({ defaultMessage: 'Radio' }),
+      isDirty: true
+    })
+  }
+
   return (
     <Loader states={[{
       isLoading: isLoadingCapabilities || isLoadingExternalAntenna,
@@ -140,18 +152,18 @@ export function ExternalAntennaSection () {
               options={selectOptions}
             />
           </Form.Item>
-          {
-            selectedApExternalAntenna && apiSelectedApExternalAntenna ?
-              <ExternalAntennaForm
-                model={selectedApExternalAntenna.model}
-                apiSelectedApExternalAntenna={apiSelectedApExternalAntenna}
-                selectedApExternalAntenna={selectedApExternalAntenna}
-                readOnly={readOnly}
-              /> :
-              <img style={{ marginTop: '60px' }}
-                src={selectedApCapabilities?.lanPortPictureDownloadUrl || ApModelPlaceholder}
-                alt={imageTitle}
-              />
+          {(selectedApExternalAntenna && apiSelectedApExternalAntenna) ?
+            <ExternalAntennaForm
+              model={selectedApExternalAntenna?.model}
+              apiSelectedApExternalAntenna={apiSelectedApExternalAntenna}
+              selectedApExternalAntenna={selectedApExternalAntenna}
+              readOnly={readOnly}
+              onExternalAntennaChanged={handleExternalAntennasChanged}
+            /> :
+            <img style={{ marginTop: '60px' }}
+              src={selectedApCapabilities?.lanPortPictureDownloadUrl || ApModelPlaceholder}
+              alt={imageTitle}
+            />
           }
         </Col>
       </Row>

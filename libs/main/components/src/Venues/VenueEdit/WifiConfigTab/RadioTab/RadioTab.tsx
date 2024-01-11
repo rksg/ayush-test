@@ -97,6 +97,7 @@ export function RadioTab () {
     try {
       const {
         apModels,
+        updateExternalAntenna,
         radioData,
         isLoadBalancingDataChanged,
         isClientAdmissionControlDataChanged
@@ -131,9 +132,7 @@ export function RadioTab () {
         }
       }
 
-      if (
-        apModels ||
-        radioData ||
+      if (apModels || updateExternalAntenna || radioData ||
         isLoadBalancingDataChanged ||
         isClientAdmissionControlDataChanged) {
         setEditContextData({
@@ -147,7 +146,7 @@ export function RadioTab () {
           isLoadBalancingDataChanged: false,
           isClientAdmissionControlDataChanged: false
         }
-        delete newRadioContextData.apModels
+        delete newRadioContextData.updateExternalAntenna
         delete newRadioContextData.radioData
 
         setEditRadioContextData(newRadioContextData)

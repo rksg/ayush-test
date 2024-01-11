@@ -172,7 +172,7 @@ function processWifiTab (
       editNetworkingContextData?.updateRadiusOptions?.()
       break
     case 'radio':
-      if (editRadioContextData.apModels) {
+      if (editRadioContextData?.apModels) {
         const extPayload = getExternalAntennaPayload(editRadioContextData.apModels)
         editRadioContextData?.updateExternalAntenna?.(extPayload)
       }
