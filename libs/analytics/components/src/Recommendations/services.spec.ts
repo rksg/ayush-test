@@ -260,6 +260,7 @@ describe('Recommendation services', () => {
       },
       {
         ...recommendationListResult.recommendations[4],
+        id: '1', // _.uniqueId()
         scope: `vsz34 (SZ Cluster)
 > 01-US-CA-D1-Test-Home (Domain)
 > 01-Alethea-WiCheck Test (Venue)`,
@@ -276,10 +277,12 @@ describe('Recommendation services', () => {
         crrmOptimizedState: {
           ...crrmStates.insufficientLicenses,
           text: 'Insufficient Licenses'
-        }
+        },
+        toggles: { preferences: true }
       },
       {
         ...recommendationListResult.recommendations[5],
+        id: '2', // _.uniqueId()
         scope: `vsz34 (SZ Cluster)
 > 22-US-CA-D22-Aaron-Home (Domain)
 > 22-US-CA-Z22-Aaron-Home (Venue)`,
@@ -296,10 +299,12 @@ describe('Recommendation services', () => {
         crrmOptimizedState: {
           ...crrmStates.verificationError,
           text: 'Verification Error'
-        }
+        },
+        toggles: { preferences: true }
       },
       {
         ...recommendationListResult.recommendations[6],
+        id: '3', // _.uniqueId()
         scope: `vsz34 (SZ Cluster)
 > 01-US-CA-D1-Test-Home (Domain)
 > 01-US-CA-D1-Ruckus-HQ-QA-interop (Venue)`,
@@ -316,7 +321,8 @@ describe('Recommendation services', () => {
         crrmOptimizedState: {
           ...crrmStates.verified,
           text: 'Verified'
-        }
+        },
+        toggles: { preferences: true }
       },
       {
         ...recommendationListResult.recommendations[7],

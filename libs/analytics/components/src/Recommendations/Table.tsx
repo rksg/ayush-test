@@ -77,7 +77,7 @@ function RowTooltip (props: RowProps) {
       ? <Tooltip title={$t(isFullOptimization ? fullOptimizationText : partialOptimizationText)}>
         <tr {...props} />
       </Tooltip>
-      :<tr {...props} />
+      : <tr {...props} />
   )
 }
 
@@ -270,8 +270,8 @@ export function RecommendationTable (
       tooltip: optimizationTooltipText,
       render: (_value, record) => {
         const preferences = _.get(record, 'preferences') || { fullOptimization: true }
-        const disabled = record.toggles?.preferences === false
-        const tooltipText = disabled && !record.isMuted
+        const canToggle = record.toggles?.preferences === true
+        const tooltipText = !canToggle && !record.isMuted
           ? $t({ defaultMessage: `
             Optimization option cannot be changed while recommendation(s) of the Zone is in Applied
             status. Please revert all to New status before changing the optimization option.
@@ -281,7 +281,7 @@ export function RecommendationTable (
           <Switch
             defaultChecked
             checked={preferences.fullOptimization}
-            disabled={disabled}
+            disabled={!canToggle || record.isMuted}
             onChange={() => {
               const updatedPreference = {
                 ...preferences,
@@ -331,11 +331,14 @@ export function RecommendationTable (
           />
         ]}
         rowClassName={(record) => {
-          if(record.isMuted)
-            return 'table-row-disabled'
-          if(!isCrrmOptimizationMatched(record.metadata, record.preferences))
-            return 'table-row-disabled crrm-optimization-mismatch'
-          return 'table-row-normal'
+          const classNames = []
+          if (record.isMuted)
+            classNames.push('table-row-disabled')
+          if (!isCrrmOptimizationMatched(record.metadata, record.preferences))
+            classNames.push('table-row-disabled', 'crrm-optimization-mismatch')
+          return classNames.length > 0
+            ? Array.from(new Set(classNames)).join(' ')
+            : 'table-row-normal'
         }}
         filterableWidth={155}
         searchableWidth={240}
