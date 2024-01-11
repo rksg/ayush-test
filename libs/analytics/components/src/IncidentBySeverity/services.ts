@@ -4,7 +4,8 @@ import {
   getFilterPayload,
   IncidentFilter,
   incidentSeverities,
-  incidentCodes
+  IncidentsToggleFilter,
+  incidentsToggle
 } from '@acx-ui/analytics/utils'
 import { dataApi } from '@acx-ui/store'
 
@@ -21,7 +22,10 @@ interface Response <IncidentsBySeverityData> {
 }
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    incidentsBySeverity: build.query<IncidentsBySeverityData, IncidentFilter>({
+    incidentsBySeverity: build.query<
+      IncidentsBySeverityData,
+      IncidentFilter & IncidentsToggleFilter
+    >({
       query: (payload) => ({
         document: gql`
         query IncidentsBySeverityWidget(
@@ -47,7 +51,7 @@ export const api = dataApi.injectEndpoints({
         variables: {
           start: payload.startDate,
           end: payload.endDate,
-          code: payload.code ?? incidentCodes,
+          code: incidentsToggle(payload),
           ...getFilterPayload(payload)
         }
       }),
@@ -87,7 +91,7 @@ export const api = dataApi.injectEndpoints({
         `,
         variables: {
           ...payload.variables,
-          code: payload.code ?? incidentCodes
+          code: incidentsToggle(payload)
         }
       }),
       transformResponse: (response: Response<IncidentsBySeverityData>) => {
