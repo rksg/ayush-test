@@ -3,11 +3,15 @@ import { Modal } from 'antd'
 import { rest }  from 'msw'
 
 import {
+  firmwareApi
+} from '@acx-ui/rc/services'
+import {
   FirmwareSwitchVenue,
   FirmwareUrlsInfo
 } from '@acx-ui/rc/utils'
 import {
-  Provider
+  Provider,
+  store
 } from '@acx-ui/store'
 import {
   mockServer,
@@ -48,6 +52,7 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
     Modal.destroyAll()
+    store.dispatch(firmwareApi.util.resetApiState())
     mockServer.use(
       rest.post(
         FirmwareUrlsInfo.getSwitchVenueVersionList.url,

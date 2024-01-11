@@ -1,11 +1,12 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { policyApi }        from '@acx-ui/rc/services'
 import {
   RadiusAttributeGroupUrlsInfo,
   RulesManagementUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
+import { Provider, store } from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -38,6 +39,7 @@ describe('AdaptivePolicyForm', () => {
   beforeEach(() => {
     mockCreatePolicy.mockClear()
     mockAddConditions.mockClear()
+    store.dispatch(policyApi.util.resetApiState())
     mockServer.use(
       rest.get(
         RulesManagementUrlsInfo.getPolicyTemplateAttributes.url.split('?')[0],
