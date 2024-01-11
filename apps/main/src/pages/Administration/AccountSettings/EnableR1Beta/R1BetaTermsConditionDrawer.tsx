@@ -18,7 +18,7 @@ export interface R1BetaTermsConditionDrawerProps {
   width?: number
 }
 
-export function R1BetaTermsConditionDrawer (
+function R1BetaTermsConditionDrawer (
   props: R1BetaTermsConditionDrawerProps
 ) {
   const { $t } = useIntl()
@@ -79,5 +79,5 @@ export function R1BetaTermsConditionDrawer (
   />
 }
 
-export default R1BetaTermsConditionDrawer
+export { R1BetaTermsConditionDrawer }
 
