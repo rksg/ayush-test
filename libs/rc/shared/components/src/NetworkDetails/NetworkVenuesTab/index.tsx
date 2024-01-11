@@ -50,7 +50,8 @@ import {
   transformAps,
   transformRadios,
   transformScheduling } from '../../pipes/apGroupPipes'
-import { useGetNetwork } from '../services'
+import { useSdLanScopedNetworkVenues } from '../../useEdgeActions'
+import { useGetNetwork }               from '../services'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
@@ -140,7 +141,7 @@ export function NetworkVenuesTab () {
 
   const [addNetworkVenues] = useAddNetworkVenuesMutation()
   const [deleteNetworkVenues] = useDeleteNetworkVenuesMutation()
-
+  const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(params.networkId)
 
   const getCurrentVenue = (row: Venue) => {
     if (!row.activated.isActivated) {
@@ -172,6 +173,7 @@ export function NetworkVenuesTab () {
           setSystemNetwork(networkQuery.data?.isOweMaster === false && networkQuery.data?.owePairNetworkId !== undefined)
         }
       })
+
       setTableData(data)
     }
   }, [tableQuery.data, networkQuery.data, supportOweTransition])
@@ -204,10 +206,12 @@ export function NetworkVenuesTab () {
       if (checked) { // activate
         addNetworkVenue({ params: { tenantId: params.tenantId }, payload: newNetworkVenue })
       } else { // deactivate
-        deleteNetworkVenue({
-          params: {
-            tenantId: params.tenantId, networkVenueId: deactivateNetworkVenueId
-          }
+        checkDependencyDeactivateAction([row.id], () => {
+          deleteNetworkVenue({
+            params: {
+              tenantId: params.tenantId, networkVenueId: deactivateNetworkVenueId
+            }
+          })
         })
       }
     }
@@ -218,6 +222,21 @@ export function NetworkVenuesTab () {
       addNetworkVenues({ payload: networkVenues }).then(clearSelection)
     } else {
       clearSelection()
+    }
+  }
+
+  const checkDependencyDeactivateAction = (networkVenueIds: string[], cb: () => void) => {
+    if (_.intersection(sdLanScopedNetworkVenues, networkVenueIds).length > 0) {
+      showActionModal({
+        type: 'confirm',
+        title: $t({ defaultMessage: 'Deactivate network' }),
+        content: $t({ defaultMessage: 'This network is running the SD-LAN service on this venue. Are you sure you want to deactivate it?' }),
+        onOk: () => {
+          cb()
+        }
+      })
+    } else {
+      cb()
     }
   }
 
@@ -309,8 +328,10 @@ export function NetworkVenuesTab () {
       label: $t({ defaultMessage: 'Deactivate' }),
       visible: activation,
       onClick: (rows, clearSelection) => {
-        const deActivateNetworkVenueIds = deActivateSelected(rows)
-        handleDeleteNetworkVenues(deActivateNetworkVenueIds, clearSelection)
+        checkDependencyDeactivateAction(rows.map(item => item.id), () => {
+          const deActivateNetworkVenueIds = deActivateSelected(rows)
+          handleDeleteNetworkVenues(deActivateNetworkVenueIds, clearSelection)
+        })
       }
     }
   ]

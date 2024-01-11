@@ -1,4 +1,5 @@
 import { Form, Input, Modal }       from 'antd'
+import _                            from 'lodash'
 import { RawIntlProvider, useIntl } from 'react-intl'
 
 import { showActionModal }                                        from '@acx-ui/components'
@@ -6,6 +7,7 @@ import { useIsSplitOn, useIsTierAllowed, Features, TierFeatures } from '@acx-ui/
 import {
   useDeleteEdgeMutation,
   useFactoryResetEdgeMutation,
+  useGetEdgeSdLanViewDataListQuery,
   useRebootEdgeMutation,
   useSendOtpMutation
 } from '@acx-ui/rc/services'
@@ -211,3 +213,38 @@ export const showDeleteModal = (data: EdgeStatus[], handleOk?: () => void) => {
   })
 }
 
+export const useSdLanScopedNetworks = (networkIds: string[] | undefined) => {
+  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
+
+  const { scopedNetworkIds } = useGetEdgeSdLanViewDataListQuery({
+    payload: {
+      filters: { networkIds },
+      pageSize: 10000
+    }
+  }, {
+    skip: !networkIds || !isEdgeSdLanReady,
+    selectFromResult: ({ data }) => ({
+      scopedNetworkIds: _.uniq(_.flatMap(data?.data, (item) => item.networkIds))
+    })
+  })
+
+  return scopedNetworkIds
+}
+
+export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
+  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
+
+  const { networkVenueIds } = useGetEdgeSdLanViewDataListQuery({
+    payload: {
+      filters: { networkIds: [networkId] },
+      pageSize: 10000
+    }
+  }, {
+    skip: !networkId || !isEdgeSdLanReady,
+    selectFromResult: ({ data }) => ({
+      networkVenueIds: data?.data.map(item => item.venueId)
+    })
+  })
+
+  return networkVenueIds
+}
