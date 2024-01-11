@@ -14,6 +14,8 @@ import * as UI        from './styledComponents'
 
 export function ChatWithMelissa () {
   const { $t } = useIntl()
+  // eslint-disable-next-line max-len
+  const GENERIC_ERROR_MSG= $t({ defaultMessage: 'Oops! We are currently experiencing unexpected technical difficulties. Please try again later.' })
   const { search } = useLocation()
   const [summary,setSummary] = useState<string|null>('')
   const [isRecurringUser,setIsRecurringUser] = useState(localStorage.getItem('isRecurringUser'))
@@ -28,7 +30,7 @@ export function ChatWithMelissa () {
       }).catch((error:Error)=>{
         // eslint-disable-next-line no-console
         console.error(error)
-        setSummary(error.message)
+        setSummary(GENERIC_ERROR_MSG)
       })
     }
   },[showIncidentSummary,search])

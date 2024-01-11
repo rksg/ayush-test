@@ -69,13 +69,16 @@ export const UnstyledLink = styled(Link)`
   text-decoration: inherit;
 `
 export const DrawerPara = styled.p`
-  margin-bottom: 0;
+  margin-block-end: 1em;
 `
 export const DrawerList = styled.li`
-  margin-bottom: 5px;
+  margin-block-end: 1em;
 `
 export const DrawerOrderList = styled.ol`
-  padding-inline-start: 30px;
+  padding-inline-start: 1em;
+`
+export const DrawerUnorderedList = styled.ul`
+  padding-inline-start: 1em;
 `
 
 export const mutedStyles = css`

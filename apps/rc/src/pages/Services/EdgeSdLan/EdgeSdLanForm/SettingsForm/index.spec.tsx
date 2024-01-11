@@ -14,6 +14,7 @@ import {
   EdgeStatusEnum,
   EdgeUrlsInfo,
   TunnelProfileUrls,
+  EdgeTunnelProfileFixtures,
   EdgeLagFixtures
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
@@ -27,13 +28,17 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { mockedTunnelProfileViewData, mockedVenueList } from '../../__tests__/fixtures'
+import { mockedVenueList } from '../../__tests__/fixtures'
 
 import { SettingsForm } from '.'
 
 const { mockedSdLanDataList } = EdgeSdLanFixtures
 const { mockEdgeList } = EdgeGeneralFixtures
 const { mockEdgePortConfig, mockEdgeOnlyLanPortConfigWithoutCorePort } = EdgePortConfigFixtures
+const {
+  mockedTunnelProfileViewData
+} = EdgeTunnelProfileFixtures
+
 const { mockedEdgeLagList } = EdgeLagFixtures
 
 jest.mock('antd', () => {
