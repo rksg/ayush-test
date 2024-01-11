@@ -69,7 +69,12 @@ export function PortalSummaryForm (props: {
             label={$t({ defaultMessage: 'Host Contacts:' })}
           >
             {hostDomains && <>
-              {hostDomains.map((domain)=> <div key={domain}>{domain}</div>)}
+              {hostDomains.map((domain, index)=> {
+                return <div key={domain}>
+                  {(index === 0 ) && `${domain} (Entire Domain)`}
+                  {(index !== 0 ) && `${domain}`}
+                </div>
+              })}
             </>}
             {hostEmails && <>
               {$t({ defaultMessage: 'Specific E-mail Contacts' }) + ` (${hostEmails.length})`}
