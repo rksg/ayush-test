@@ -30,7 +30,6 @@ export function PortalSummaryForm (props: {
   const isCloudPath = summaryData.guestPortal?.guestNetworkType===GuestNetworkTypeEnum.Cloudpath
   const hostDomains = summaryData.guestPortal?.hostGuestConfig?.hostDomains
   const hostEmails = summaryData.guestPortal?.hostGuestConfig?.hostEmails
-  const [showFullEmailContact, setShowFullEmailContact] = useState(false)
   const HAEmailList_FeatureFlag = useIsSplitOn(Features.HOST_APPROVAL_EMAIL_LIST_TOGGLE)
 
   return (
@@ -60,34 +59,32 @@ export function PortalSummaryForm (props: {
       }
       { summaryData.guestPortal?.guestNetworkType===GuestNetworkTypeEnum.HostApproval && <>
         {
-          hostDomains && <Form.Item
+          !HAEmailList_FeatureFlag && hostDomains && <Form.Item
             label={$t({ defaultMessage: 'Host Domains:' })}
             children={hostDomains.map((domain)=> <div key={domain}>{domain}</div>)}
           />
         }
         {
-          HAEmailList_FeatureFlag && hostEmails && <Form.Item
+          HAEmailList_FeatureFlag && <Form.Item
             label={$t({ defaultMessage: 'Host Contacts:' })}
           >
-            <Button
-              type='text'
-              style={{ paddingLeft: '0px', border: '0px', background: '#ffffff' }}
-              onClick={()=> setShowFullEmailContact(!showFullEmailContact)}>
-              {
-                showFullEmailContact ?
-                  $t({ defaultMessage: 'Specific E-mail Contacts' }) + ` (${hostEmails.length})` :
-                  extractDomainFromEmails(hostEmails) + $t({ defaultMessage: ' (Entire Domain)' })}
-            </Button>
-            <div style={showFullEmailContact ? {} : { display: 'none' }}>
-              {
-                hostEmails.map((email) => {
-                  return (
-                    <div style={{ color: '#808284', fontSize: '12px' }} key={email}>{
-                      email}
-                    </div>)
-                })
-              }
-            </div>
+            {hostDomains && <>
+              {hostDomains.map((domain)=> <div key={domain}>{domain}</div>)}
+            </>}
+            {hostEmails && <>
+              {$t({ defaultMessage: 'Specific E-mail Contacts' }) + ` (${hostEmails.length})`}
+              <div>
+                {
+                  hostEmails.map((email) => {
+                    return (
+                      <div style={{ color: '#808284', fontSize: '12px' }} key={email}>{
+                        email}
+                      </div>)
+                  })
+                }
+              </div>
+            </>}
+
           </Form.Item>
         }
 
