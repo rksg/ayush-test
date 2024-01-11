@@ -83,7 +83,7 @@ export type Recommendation = {
   path: NetworkPath
   idPath: NetworkPath
   preferences?: {
-    fullOptimization: boolean
+    crrmFullOptimization: boolean
   }
   statusTrail: StatusTrail
   toggles?: { preferences: boolean }
@@ -128,7 +128,7 @@ interface ScheduleResponse {
 interface PreferencePayload {
   path: NetworkPath
   preferences: {
-    fullOptimization: boolean
+    crrmFullOptimization: boolean
   }
 }
 
@@ -380,7 +380,7 @@ export const api = recommendationApi.injectEndpoints({
           const {
             id, path, sliceValue, sliceType, code, status, metadata, updatedAt
           } = recommendation
-          const isFullOptimized = !!_.get(metadata, 'algorithmData.isFullOptimized', true)
+          const isFullOptimization = !!_.get(metadata, 'algorithmData.isCrrmFullOptimization', true)
           const newId = id === 'unknown' ? uniqueId() : id
           const statusEnum = status as StateType
           const getCode = code === 'unknown'
@@ -397,7 +397,7 @@ export const api = recommendationApi.injectEndpoints({
               text: $t(codes[getCode].priority.label)
             },
             category: $t(codes[getCode].category),
-            summary: isFullOptimized || code === 'unknown'
+            summary: isFullOptimization || code === 'unknown'
               ? $t(codes[getCode].summary)
               : $t(codes[getCode].partialOptimizedSummary!),
             status: $t(states[statusEnum].text),

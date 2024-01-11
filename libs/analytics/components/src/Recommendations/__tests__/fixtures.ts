@@ -421,7 +421,7 @@ export const recommendationListResult = {
         { status: 'applyscheduleinprogress' },
         { status: 'applied' }
       ],
-      preferences: { fullOptimization: true }
+      preferences: { crrmFullOptimization: true }
     },
     {
       id: '12',
@@ -527,7 +527,7 @@ export const recommendationListResult = {
       updatedAt: '2023-06-16T06:05:02.839Z',
       sliceType: 'zone',
       sliceValue: 'zone-1',
-      metadata: { algorithmData: { isFullOptimized: false } },
+      metadata: { algorithmData: { isCrrmFullOptimization: false } },
       isMuted: false,
       mutedAt: null,
       mutedBy: '',
@@ -539,7 +539,7 @@ export const recommendationListResult = {
         { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c8' },
         { type: 'zone', name: 'EDU-MeshZone_S12348' }
       ] as NetworkPath,
-      preferences: { fullOptimization: true }
+      preferences: { crrmFullOptimization: true }
     }
   ]
 }

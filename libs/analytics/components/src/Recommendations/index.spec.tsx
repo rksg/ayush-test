@@ -321,8 +321,8 @@ describe('RecommendationTabContent', () => {
       appliedRecommendation,
       {
         ...newRecommendation,
-        metadata: { algorithmData: { isFullOptimized: true } },
-        preferences: { fullOptimization: false },
+        metadata: { algorithmData: { isCrrmFullOptimization: true } },
+        preferences: { crrmFullOptimization: false },
         isMuted: true
       }
     ] } })
@@ -352,7 +352,7 @@ describe('RecommendationTabContent', () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', { data: { recommendations: [
       {
         ...unknownRecommendation,
-        preferences: { fullOptimization: false }
+        preferences: { crrmFullOptimization: false }
       }
     ] } })
     render(<RecommendationTabContent/>, {

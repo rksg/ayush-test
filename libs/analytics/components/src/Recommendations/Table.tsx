@@ -57,7 +57,7 @@ function RowTooltip (props: RowProps) {
     (child) => _.get(child, 'props.record.id') === props['data-row-key'])[0]
   const showToolTip = String(props.className).includes('crrm-optimization-mismatch')
   const isFullOptimization = _.get(
-    row, 'props.record.preferences.fullOptimization', true)
+    row, 'props.record.preferences.crrmFullOptimization', true)
   const fullOptimizationText = defineMessage({ defaultMessage: `
     RUCKUS AI is currently working on optimizing this Zone, with the full
     optimization criteria, where the channel bandwidth and AP Tx
@@ -269,7 +269,7 @@ export function RecommendationTable (
       fixed: 'right',
       tooltip: optimizationTooltipText,
       render: (_value, record) => {
-        const preferences = _.get(record, 'preferences') || { fullOptimization: true }
+        const preferences = _.get(record, 'preferences') || { crrmFullOptimization: true }
         const canToggle = record.toggles?.preferences === true
         const tooltipText = !canToggle && !record.isMuted
           ? $t({ defaultMessage: `
@@ -280,12 +280,12 @@ export function RecommendationTable (
         return <Tooltip placement='top' title={tooltipText}>
           <Switch
             defaultChecked
-            checked={preferences.fullOptimization}
+            checked={preferences.crrmFullOptimization}
             disabled={!canToggle || record.isMuted}
             onChange={() => {
               const updatedPreference = {
                 ...preferences,
-                fullOptimization: !preferences.fullOptimization
+                crrmFullOptimization: !preferences.crrmFullOptimization
               }
               setPreference({ path: record.idPath, preferences: updatedPreference })
             }}
