@@ -82,4 +82,41 @@ describe('networkImpactChartsApi', () => {
     expect(data).toBe(undefined)
     expect(error).not.toBe(undefined)
   })
+
+  it('does not send query for disabled config and use default data', async () => {
+    const expectedResult = {
+      incident: {
+        [NetworkImpactChartTypes.RxPhyErrByAP]: {
+          count: 10,
+          total: 10,
+          data: [{ key: '00:00:00:00:00:00', value: 10 }]
+        }
+      }
+    }
+    mockGraphqlQuery(dataApiURL, 'NetworkImpactCharts', {
+      data: expectedResult
+    })
+    const newPayload: RequestPayload = {
+      ...payload,
+      charts: [{
+        chart: NetworkImpactChartTypes.RogueAPByChannel,
+        query: NetworkImpactQueryTypes.TopN,
+        type: 'rogueAp',
+        dimension: 'rogueChannel',
+        disabled: true
+      },
+      {
+        chart: NetworkImpactChartTypes.RxPhyErrByAP,
+        query: NetworkImpactQueryTypes.TopN,
+        type: 'apAirtime',
+        dimension: 'phyError'
+      }]
+    }
+    const { status, data, error } = await store.dispatch(
+      networkImpactChartsApi.endpoints.networkImpactCharts.initiate(newPayload)
+    )
+    expect(status).toBe('fulfilled')
+    expect(data).toMatchSnapshot()
+    expect(error).toBe(undefined)
+  })
 })

@@ -22,7 +22,8 @@ export { CodeMirrorWidget } from './CodeMirrorWidget'
 export {
   ConnectedClientsTable,
   defaultClientPayload,
-  isEqualCaptivePortalPlainText
+  networkDisplayTransformer,
+  isEqualCaptivePortal
 } from './ConnectedClientsTable'
 export { DevicesDashboardWidget, DevicesDashboardWidgetV2 } from './DevicesDashboardWidget'
 export { DevicesWidget, seriesMappingAP } from './DevicesWidget'
@@ -174,6 +175,8 @@ export {
   ApFeatureCompatibility,
   ApCompatibilityToolTip,
   ApCompatibilityDrawer } from './ApCompatibilityDrawer'
+export { EdgeClusterCommonForm } from './EdgeFormItem/EdgeClusterCommonForm'
+export { useEdgeClusterActions } from './useEdgeClusterActions'
 
 export * from './services'
 export * from './policies'

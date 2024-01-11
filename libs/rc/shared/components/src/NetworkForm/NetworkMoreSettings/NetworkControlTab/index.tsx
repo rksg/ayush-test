@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
 import { Checkbox, Form, InputNumber, Select, Space, Switch, Tooltip } from 'antd'
+import _                                                               from 'lodash'
 import { useIntl }                                                     from 'react-intl'
 
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
@@ -9,7 +10,6 @@ import { useGetNetworkSegmentationViewDataListQuery, useGetTunnelProfileViewData
 import {
   DnsProxyContextType,
   DnsProxyRule,
-  DpskWlanAdvancedCustomization,
   NetworkSaveData,
   ServiceOperation,
   ServiceType,
@@ -94,7 +94,7 @@ export function NetworkControlTab (props: { wlanData: NetworkSaveData | null }) 
     return Promise.resolve()
   }
 
-  const { enableVxLan: showTunnelProfile, tunnelType } = useNetworkVxLanTunnelProfileInfo(data)
+  const { enableTunnel, enableVxLan, vxLanTunnels } = useNetworkVxLanTunnelProfileInfo(data)
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const tunnelProfileDefaultPayload = {
@@ -107,22 +107,21 @@ export function NetworkControlTab (props: { wlanData: NetworkSaveData | null }) 
   const { tunnelOptions = [], isLoading: isTunnelLoading } = useGetTunnelProfileViewDataListQuery({
     payload: tunnelProfileDefaultPayload
   }, {
-    skip: !isEdgeEnabled || !isEdgeReady,
+    skip: !isEdgeEnabled || !isEdgeReady || !enableTunnel,
     selectFromResult: ({ data, isLoading }) => {
       return {
         tunnelOptions: data?.data
           .filter(item =>
           // due to 'type' might be empty(=== TunnelTypeEnum.VXLAN)
-            (tunnelType === TunnelTypeEnum.VLAN_VXLAN && item.type === TunnelTypeEnum.VLAN_VXLAN)
-          || (tunnelType === TunnelTypeEnum.VXLAN && item.type !== TunnelTypeEnum.VLAN_VXLAN))
+            (!enableVxLan && item.type === TunnelTypeEnum.VLAN_VXLAN)
+          || (enableVxLan && item.type !== TunnelTypeEnum.VLAN_VXLAN))
           .map(item => ({ label: item.name, value: item.id })),
         isLoading
       }
     }
   })
 
-  const tunnelProfileId =
-    (data?.wlan?.advancedCustomization as DpskWlanAdvancedCustomization)?.tunnelProfileId
+  const tunnelProfileId = _.get(vxLanTunnels, ['0', 'id'])
   const {
     nsgId
   } = useGetNetworkSegmentationViewDataListQuery({
@@ -133,7 +132,7 @@ export function NetworkControlTab (props: { wlanData: NetworkSaveData | null }) 
     skip: !!!tunnelProfileId || !!!isEdgeEnabled,
     selectFromResult: ({ data }) => {
       return {
-        nsgId: data?.data[0]?.id
+        nsgId: _.get(data?.data.filter(item => item.networkIds.length > 0), ['0', 'id'])
       }
     }
   })
@@ -309,12 +308,12 @@ export function NetworkControlTab (props: { wlanData: NetworkSaveData | null }) 
 
       <AccessControlForm/>
 
-      { showTunnelProfile && tunnelType === TunnelTypeEnum.VXLAN &&
+      { enableVxLan &&
       <Form.Item
-        name={['wlan','advancedCustomization','tunnelProfileId']}
         label={$t({ defaultMessage: 'Tunnel Profile' })}
         children={
           <Select
+            value={tunnelProfileId}
             loading={isTunnelLoading}
             options={tunnelOptions}
             disabled={true}
@@ -323,7 +322,7 @@ export function NetworkControlTab (props: { wlanData: NetworkSaveData | null }) 
       />
       }
 
-      { showTunnelProfile && tunnelType === TunnelTypeEnum.VXLAN &&
+      { enableVxLan &&
         <Space size={1}>
           <UI.InfoIcon />
           <UI.Description>

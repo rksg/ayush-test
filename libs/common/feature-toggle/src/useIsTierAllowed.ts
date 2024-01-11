@@ -1,17 +1,15 @@
 import { useDebugValue, useMemo } from 'react'
 
 import { useTreatments } from '@splitsoftware/splitio-react'
-import { useParams }     from 'react-router-dom'
 
-import { useGetAccountTierQuery, useGetBetaStatusQuery, useUserProfileContext } from '@acx-ui/user'
-import { AccountType, AccountVertical, getJwtTokenPayload, isDelegationMode }   from '@acx-ui/utils'
+import { useUserProfileContext }                            from '@acx-ui/user'
+import { AccountType, AccountVertical, getJwtTokenPayload } from '@acx-ui/utils'
 
-import { Features }     from './features'
-import { useIsSplitOn } from './useIsSplitOn'
+import { Features } from './features'
 type TierKey = `feature-${AccountType}-${AccountVertical}` | 'betaList' | 'alphaList'
 
 /* eslint-disable max-len, key-spacing */
-const defaultConfig: Partial<Record<TierKey, string[]>> = {
+export const defaultConfig: Partial<Record<TierKey, string[]>> = {
   'feature-REC-Default'     : ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS', 'ANLT-ESNTLS', 'ANLT-FNDT', 'PLCY-ESNTLS', 'API-CLOUD', 'BETA-CP','ADMN-SSO','AP-CCD','AP-NEIGHBORS', 'BETA-CLB', 'BETA-MESH','BETA-ZD2R1' ],
   'feature-REC-Education'   : ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS', 'ANLT-ESNTLS', 'ANLT-FNDT', 'PLCY-ESNTLS', 'API-CLOUD', 'BETA-CP','ADMN-SSO', 'BETA-CLB'],
   'feature-MSP-Default'     : ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS', 'ANLT-ESNTLS', 'ANLT-FNDT', 'ANLT-ADV', 'ANLT-STUDIO', 'PLCY-ESNTLS', 'PLCY-SGMNT', 'API-CLOUD', 'BETA-CP','ADMN-SSO','AP-CCD','AP-NEIGHBORS', 'BETA-CLB', 'BETA-MESH','BETA-ZD2R1'],
@@ -22,20 +20,9 @@ const defaultConfig: Partial<Record<TierKey, string[]>> = {
 
 export function useFFList (): { featureList?: string[], betaList?: string[],
   alphaList?: string[] } {
-  const params = useParams()
+  const { data: userProfile, accountTier, betaEnabled } = useUserProfileContext()
   const jwtPayload = getJwtTokenPayload()
-  // only if it's delgation flow and FF true then call -
-  // getBetaStatus value
-  const isBetaFFlag = useIsSplitOn(Features.BETA_FLAG) && isDelegationMode()
-  const { data } = useGetBetaStatusQuery({ params }, { skip: !isBetaFFlag })
-  const betaEnabled = isBetaFFlag? ((data?.enabled === 'true')? true : false)
-    : jwtPayload?.isBetaFlag
-
-  // only if it's delgation flow and FF true then call -
-  const isDelegationTierApi = useIsSplitOn(Features.DELEGATION_TIERING) && isDelegationMode()
-  const accTierResponse = useGetAccountTierQuery({ params }, { skip: !isDelegationTierApi })
-  const acxAccountTier = accTierResponse?.data?.acx_account_tier?? jwtPayload?.acx_account_tier
-  const { data: userProfile } = useUserProfileContext()
+  const acxAccountTier = accountTier?? jwtPayload?.acx_account_tier
 
   const tenantType = (jwtPayload?.tenantType === AccountType.REC ||
     jwtPayload?.tenantType === AccountType.VAR)? AccountType.REC
@@ -97,7 +84,7 @@ export function useIsTierAllowed (featureId: string): boolean {
   const enabled =
     featureList?.includes(featureId) || betaList.includes(featureId)
     || alphaList.includes(featureId)
-  useDebugValue(`PLM CONFIG: featureList: ${featureList}, betaList: ${betaList}, 
+  useDebugValue(`PLM CONFIG: featureList: ${featureList}, betaList: ${betaList},
   alphaList: ${alphaList}, ${featureId}: ${enabled}`)
   return enabled
 }

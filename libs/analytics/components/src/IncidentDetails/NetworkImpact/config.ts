@@ -2,6 +2,7 @@ import _                                    from 'lodash'
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import { mapCodeToReason, Incident } from '@acx-ui/analytics/utils'
+import { qualitativeColorSet }       from '@acx-ui/components'
 import { formatter }                 from '@acx-ui/formatter'
 import { getIntl }                   from '@acx-ui/utils'
 
@@ -14,6 +15,8 @@ export type NetworkImpactType = 'ap'
 | 'apReboot'
 | 'apRebootEvent'
 | 'apInfra'
+| 'rogueAp'
+| 'apAirtime'
 | 'airtimeMetric'
 | 'airtimeFrame'
 | 'airtimeCast'
@@ -38,7 +41,9 @@ export enum NetworkImpactChartTypes {
   RebootReasonsByEvent = 'rebootReasonsByEvent',
   Reason = 'reason',
   ReasonByAP = 'reasonByAP',
-  WLAN = 'WLAN'
+  WLAN = 'WLAN',
+  RogueAPByChannel = 'rogueAPByChannel',
+  RxPhyErrByAP = 'rxPhyErrByAP',
 }
 
 export enum NetworkImpactQueryTypes {
@@ -51,6 +56,11 @@ export type NetworkImpactChartConfig = {
   query: NetworkImpactQueryTypes
   type: NetworkImpactType
   dimension: string
+  /**
+   * @description prevent query from firing
+   * @default false
+   **/
+  disabled?: boolean
 }
 
 export type DominanceSummary = {
@@ -71,6 +81,11 @@ export interface NetworkImpactChart {
   transformKeyFn?: (key: string) => string
   transformValueFn?: (val: number) => number
   summary: DominanceSummary | MessageDescriptor
+  disabled?: {
+    value: MessageDescriptor
+    summary: MessageDescriptor
+  },
+  colorSetFn?: () => string[]
 }
 
 export const getDataWithPercentage = (data: NetworkImpactChartData['data']) => {
@@ -90,10 +105,10 @@ export const getAPRebootReason = (key: string) => {
 export const transformAirtimeMetricKey = (key: string) => {
   const { $t } = getIntl()
   const map = {
-    airtimeBusy: $t({ defaultMessage: 'Airtime Busy' }),
-    airtimeRx: $t({ defaultMessage: 'Airtime Rx' }),
-    airtimeTx: $t({ defaultMessage: 'Airtime Tx' }),
-    airtimeIdle: $t({ defaultMessage: 'Airtime Idle' })
+    airtimeBusy: $t({ defaultMessage: 'Avg Airtime Busy' }),
+    airtimeRx: $t({ defaultMessage: 'Avg Airtime Rx' }),
+    airtimeTx: $t({ defaultMessage: 'Avg Airtime Tx' }),
+    airtimeIdle: $t({ defaultMessage: 'Avg Airtime Idle' })
   }
   return _.get(map, key, '')
 }
@@ -180,6 +195,8 @@ const dominanceFormats = {
     defaultMessage: "{percentage} of failures caused by ''{dominant}''"
   })
 }
+
+export const getAirtimeMetricColorSet = () => qualitativeColorSet().filter((_,index) => index !== 3)
 
 export const networkImpactChartConfigs: Readonly<Record<
   NetworkImpactChartTypes,
@@ -360,26 +377,81 @@ export const networkImpactChartConfigs: Readonly<Record<
       })
     }
   },
+  [NetworkImpactChartTypes.RogueAPByChannel]: {
+    title: defineMessage({ defaultMessage: 'Rogue APs' }),
+    tooltipFormat: defineMessage({
+      defaultMessage: `{name, select,
+        Others {Others}
+        other {Channel {name}}
+      }<br></br>
+      <space><b>{formattedValue} {value, plural,
+        one {rogue AP}
+        other {rogue APs}
+      }</b></space>`
+    }),
+    summary: {
+      dominance: defineMessage({
+        defaultMessage: `{value} {value, plural,
+          one {rogue AP}
+          other {rogue APs}
+        } in Channel {dominant}`
+      }),
+      broad: defineMessage({
+        defaultMessage: `{total} rogue APs detected in {count} {count, plural,
+          one {channel}
+          other {channels}
+        }`
+      })
+    },
+    disabled: {
+      value: defineMessage({ defaultMessage: 'Unknown' }),
+      summary: defineMessage({ defaultMessage: 'Enable rogue AP detection' })
+    }
+  },
+  [NetworkImpactChartTypes.RxPhyErrByAP]: {
+    title: defineMessage({ defaultMessage: 'Rx PHY Errors' }),
+    tooltipFormat: defineMessage({
+      defaultMessage: `{name}<br></br>
+      <space><b>{formattedValue} {value, plural,
+        one {error}
+        other {errors}
+      }</b></space>`
+    }),
+    summary: {
+      dominance: defineMessage({
+        defaultMessage: '{dominant} has the highest Rx PHY errors'
+      }),
+      broad: defineMessage({
+        defaultMessage: `{total} Rx PHY errors observed in {count} {count, plural,
+          one {AP}
+          other {APs}
+        }`
+      })
+    }
+  },
   [NetworkImpactChartTypes.AirtimeBusy]: {
-    title: defineMessage({ defaultMessage: 'Airtime Busy' }),
+    title: defineMessage({ defaultMessage: 'Average Airtime Busy' }),
     tooltipFormat: tooltipFormats.distribution,
     dataFomatter: formatter('percentFormat'),
     transformKeyFn: transformAirtimeMetricKey,
-    summary: defineMessage({ defaultMessage: 'Peak airtime busy was {count}' })
+    summary: defineMessage({ defaultMessage: 'Peak airtime busy was {count}' }),
+    colorSetFn: getAirtimeMetricColorSet
   },
   [NetworkImpactChartTypes.AirtimeTx]: {
-    title: defineMessage({ defaultMessage: 'Airtime Tx' }),
+    title: defineMessage({ defaultMessage: 'Average Airtime Tx' }),
     tooltipFormat: tooltipFormats.distribution,
     dataFomatter: formatter('percentFormat'),
     transformKeyFn: transformAirtimeMetricKey,
-    summary: defineMessage({ defaultMessage: 'Peak airtime Tx was {count}' })
+    summary: defineMessage({ defaultMessage: 'Peak airtime Tx was {count}' }),
+    colorSetFn: getAirtimeMetricColorSet
   },
   [NetworkImpactChartTypes.AirtimeRx]: {
-    title: defineMessage({ defaultMessage: 'Airtime Rx' }),
+    title: defineMessage({ defaultMessage: 'Average Airtime Rx' }),
     tooltipFormat: tooltipFormats.distribution,
     dataFomatter: formatter('percentFormat'),
     transformKeyFn: transformAirtimeMetricKey,
-    summary: defineMessage({ defaultMessage: 'Peak airtime Rx was {count}' })
+    summary: defineMessage({ defaultMessage: 'Peak airtime Rx was {count}' }),
+    colorSetFn: getAirtimeMetricColorSet
   },
   [NetworkImpactChartTypes.AirtimeMgmtFrame]: {
     title: defineMessage({ defaultMessage: 'Average % of Mgmt. Frames' }),

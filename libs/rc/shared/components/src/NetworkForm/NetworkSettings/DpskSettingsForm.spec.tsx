@@ -20,6 +20,14 @@ import NetworkFormContext from '../NetworkFormContext'
 
 import { DpskSettingsForm } from './DpskSettingsForm'
 
+jest.mock('../utils', () => ({
+  ...jest.requireActual('../utils'),
+  useNetworkVxLanTunnelProfileInfo: jest.fn().mockReturnValue({
+    enableTunnel: false,
+    enableVxLan: false,
+    vxLanTunnels: undefined
+  })
+}))
 
 describe('DpskSettingsForm', () => {
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }

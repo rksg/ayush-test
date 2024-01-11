@@ -5,7 +5,8 @@ import { useIntl }          from 'react-intl'
 import {
   productNames,
   getRootCauseAndRecommendations,
-  Incident
+  Incident,
+  htmlValues
 } from '@acx-ui/analytics/utils'
 import {
   Card,
@@ -18,11 +19,11 @@ import * as UI from './styledComponents'
 export const Insights = ({ incident }: { incident: Incident }) => {
   const { $t } = useIntl()
   const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
+  const { rootCauseText, rootCauseValues } = rootCauses
+  const { recommendationsText, recommendationsValues } = recommendations
   const values = {
     ...productNames,
-    p: (text: string) => <p>{text}</p>,
-    ol: (text: string) => <ol>{text}</ol>,
-    li: (text: string) => <li>{text}</li>
+    ...htmlValues
   }
   return (
     <Card type='solid-bg'>
@@ -34,11 +35,14 @@ export const Insights = ({ incident }: { incident: Incident }) => {
         <GridRow>
           <GridCol col={{ span: 12 }}>
             <UI.Subtitle>{$t({ defaultMessage: 'Root Cause Analysis' })}</UI.Subtitle>
-            <FormattedMessage {...rootCauses} values={values} />
+            <FormattedMessage {...rootCauseText} values={{ ...values, ...rootCauseValues }} />
           </GridCol>
           <GridCol col={{ span: 12 }}>
             <UI.Subtitle>{$t({ defaultMessage: 'Recommended Action' })}</UI.Subtitle>
-            <FormattedMessage {...recommendations} values={values} />
+            <FormattedMessage
+              {...recommendationsText}
+              values={{ ...values, ...recommendationsValues }}
+            />
           </GridCol>
         </GridRow>
       </UI.Wrapper>

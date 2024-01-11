@@ -128,7 +128,7 @@ export function LicenseBanner (props: BannerProps) {
       </UI.LicenseIconWrapper>
       <UI.TipsWrapper>
         <UI.MainTips expired={isExpired} children={getMainTipsContent(expireInfo)}/>
-        <UI.SubTips expired={isExpired}>
+        <UI.SubTips expired={isExpired} style={{ whiteSpace: 'pre' }}>
           <FormattedMessage {...descTips}
             values={{
               b: chunks => chunks,
@@ -164,7 +164,7 @@ export function LicenseBanner (props: BannerProps) {
       <UI.WarningBtnContainer>
         <UI.ContentWrapper>
           <UI.LicenseIconWrapper>
-            <UI.LayoutIcon children={<UI.WarnIcon isCritical={isCritical}/>} />
+            <UI.LayoutIcon children={<UI.WarnIcon $isCritical={isCritical}/>} />
           </UI.LicenseIconWrapper>
           <UI.TipsWrapper>
             <UI.MainTips>
@@ -194,7 +194,7 @@ export function LicenseBanner (props: BannerProps) {
             }
           }
           const isExpired = getIsExpired(expireInfo)
-          return <UI.LicenseGrid expired={isExpired} isWhiteBorder={isWhiteBorder}>
+          return <UI.LicenseGrid expired={isExpired} key={index} isWhiteBorder={isWhiteBorder}>
             { getCardItem(expireInfo) }
           </UI.LicenseGrid>
         })}

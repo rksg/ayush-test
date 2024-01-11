@@ -31,9 +31,10 @@ export const transformSummary = (
   incident: Incident
 ) => {
   const { $t } = getIntl()
-  const { peak, count, data } = metric
+  const { peak, count, total, data } = metric
+
   if(queryType === NetworkImpactQueryTypes.Distribution) {
-    return $t( config.summary as MessageDescriptor, {
+    return $t(config.summary as MessageDescriptor, {
       count: (config.valueFormatter || formatter('percentFormat'))(peak)
     })
   }
@@ -41,13 +42,14 @@ export const transformSummary = (
   const dominance = (config.dominanceFn || getDominanceByThreshold())(data, incident)
   if (dominance) {
     return $t((config.summary as DominanceSummary).dominance, {
+      value: dominance.value,
       percentage: formatter('percentFormatRound')(dominance.percentage),
       dominant: config.transformKeyFn
         ? config.transformKeyFn(dominance.key)
         : dominance.key
     })
   } else {
-    return $t((config.summary as DominanceSummary).broad, { count })
+    return $t((config.summary as DominanceSummary).broad, { count, total })
   }
 }
 
@@ -55,7 +57,7 @@ export const transformData = (
   config: NetworkImpactChart,
   metric: NetworkImpactChartData
 ) => {
-  const colors = qualitativeColorSet()
+  const colors = (config.colorSetFn && config.colorSetFn()) || qualitativeColorSet()
   return metric.data.map((record, index) => ({
     ...record,
     name: config.transformKeyFn ? config.transformKeyFn(record.name) : record.name,
@@ -71,25 +73,37 @@ export const NetworkImpact: React.FC<NetworkImpactProps> = ({ charts, incident }
   return <Loader states={[queryResults]}>
     <Card title={$t({ defaultMessage: 'Network Impact' })} type='no-border'>
       <Row>
-        {charts.map(({ chart, query })=>{
-          const config = networkImpactChartConfigs[chart]
-          const chartData = queryResults.data?.[chart]!
-          return <Col key={chart} span={6} style={{ height: 200 }}>
+        {charts.map((chart) => {
+          const config = networkImpactChartConfigs[chart.chart]
+          const chartData = queryResults.data?.[chart.chart]!
+          return <Col key={chart.chart} span={6} style={{ height: 200 }}>
             <AutoSizer>
-              {({ height, width }) => (
-                <DonutChart
+              {({ height, width }) => {
+                let [value, subTitle]: string[] = [
+                  undefined as unknown as string,
+                  transformSummary(chart.query, config, chartData, incident)
+                ]
+                if (chart.query === NetworkImpactQueryTypes.Distribution) {
+                  value = (config.valueFormatter || formatter('percentFormat'))(chartData.summary)
+                } else {
+                  if (chart.disabled && config.disabled) {
+                    value = $t(config.disabled.value)
+                    subTitle = $t(config.disabled.summary)
+                  } else if (Number.isFinite(chartData?.total)){
+                    value = formatter('countFormat')(chartData?.total)
+                  }
+                }
+                return <DonutChart
                   showLegend={false}
                   style={{ width, height }}
                   title={$t(config.title)}
-                  subTitle={transformSummary(query, config, chartData, incident)}
+                  value={value}
+                  subTitle={subTitle}
                   tooltipFormat={config.tooltipFormat}
                   dataFormatter={config.dataFomatter || formatter('countFormat')}
                   data={transformData(config, chartData)}
-                  value={query === NetworkImpactQueryTypes.Distribution
-                    ? (config.valueFormatter || formatter('percentFormat'))(chartData.summary)
-                    : undefined}
                 />
-              )}
+              }}
             </AutoSizer>
           </Col>
         })}

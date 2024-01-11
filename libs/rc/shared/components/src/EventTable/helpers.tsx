@@ -1,3 +1,4 @@
+import { Typography }                          from 'antd'
 import _                                       from 'lodash'
 import { FormattedMessage, MessageDescriptor } from 'react-intl'
 
@@ -7,7 +8,6 @@ import { TenantLink, generatePath }             from '@acx-ui/react-router-dom'
 import { getIntl, noDataDisplay }               from '@acx-ui/utils'
 
 import { typeMapping } from './mapping'
-import * as UI         from './styledComponents'
 
 type EntityType = typeof entityTypes[number]
 type EntityExistsKey = `is${Capitalize<EntityType>}Exists`
@@ -66,7 +66,7 @@ export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
 
   if (!exists) return <Tooltip
     title={<FormattedMessage defaultMessage='Not available' />}
-    children={<UI.Disabled>{name}</UI.Disabled>}
+    children={<Typography.Text disabled children={name} />}
   />
 
   const spec = pathSpecs[entity]

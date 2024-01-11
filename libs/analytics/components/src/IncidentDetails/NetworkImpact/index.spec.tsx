@@ -7,7 +7,7 @@ import { networkImpactChartsApi }                                               
 
 import { transformData, transformSummary, NetworkImpact, NetworkImpactProps } from '.'
 
-const NetworkImpactData = { incident: {
+const networkImpactData = { incident: {
   [NetworkImpactChartTypes.WLAN]: {
     count: 2,
     data: [{ key: 'ssid1', name: 'ssid1', value: 2 }, { key: 'ssid2', name: 'ssid2', value: 1 }]
@@ -32,7 +32,7 @@ const NetworkImpactData = { incident: {
     data: [
       { key: 'airtimeBusy', name: 'airtimeBusy', value: 0.5 },
       { key: 'airtimeRx', name: 'airtimeRx', value: 0.3 },
-      { key: 'airtimeTx', name: 'airtimTex', value: 0.1 },
+      { key: 'airtimeTx', name: 'airtimeTx', value: 0.1 },
       { key: 'airtimeIdle', name: 'airtimeIdle', value: 0.1 }
     ]
   },
@@ -53,11 +53,25 @@ describe('transformData', () => {
   it('should return correct result', async () => {
     const result = transformData(
       networkImpactChartConfigs[NetworkImpactChartTypes.WLAN],
-      NetworkImpactData.incident.WLAN
+      networkImpactData.incident.WLAN,
+      'assoc-failure'
     )
     expect(result).toEqual([
       { color: '#66B1E8', key: 'ssid1', name: 'ssid1', value: 2 },
       { color: '#EC7100', key: 'ssid2', name: 'ssid2', value: 1 }
+    ])
+  })
+  it('should return correct result for airtime', async () => {
+    const result = transformData(
+      networkImpactChartConfigs[NetworkImpactChartTypes.AirtimeBusy],
+      networkImpactData.incident[NetworkImpactChartTypes.AirtimeBusy],
+      'p-airtime-b-5g-high'
+    )
+    expect(result).toEqual([
+      { color: '#66B1E8', key: 'airtimeBusy', name: 'Avg Airtime Busy', value: 0.5 },
+      { color: '#EC7100', key: 'airtimeRx', name: 'Avg Airtime Rx', value: 0.3 },
+      { color: '#F9C34B', key: 'airtimeTx', name: 'Avg Airtime Tx', value: 0.1 },
+      { color: '#F095FF', key: 'airtimeIdle', name: 'Avg Airtime Idle', value: 0.1 }
     ])
   })
 })
@@ -68,7 +82,7 @@ describe('transformSummary', () => {
     const result = transformSummary(
       NetworkImpactQueryTypes.TopN,
       networkImpactChartConfigs[NetworkImpactChartTypes.WLAN],
-      NetworkImpactData.incident.WLAN,
+      networkImpactData.incident.WLAN,
       incident
     )
     expect(result).toEqual('This incident impacted 2 WLANs')
@@ -78,7 +92,7 @@ describe('transformSummary', () => {
     const result = transformSummary(
       NetworkImpactQueryTypes.TopN,
       networkImpactChartConfigs[NetworkImpactChartTypes.Reason],
-      NetworkImpactData.incident.reason,
+      networkImpactData.incident.reason,
       incident
     )
     expect(result).toEqual("100% of failures caused by 'AAA Auth Failure'")
@@ -88,7 +102,7 @@ describe('transformSummary', () => {
     const result = transformSummary(
       NetworkImpactQueryTypes.TopN,
       networkImpactChartConfigs[NetworkImpactChartTypes.WLAN],
-      NetworkImpactData.incident.WLAN,
+      networkImpactData.incident.WLAN,
       incident
     )
     expect(result).toEqual('33% of failures impacted ssid2')
@@ -98,7 +112,7 @@ describe('transformSummary', () => {
     const result = transformSummary(
       NetworkImpactQueryTypes.Distribution,
       networkImpactChartConfigs[NetworkImpactChartTypes.AirtimeBusy],
-      NetworkImpactData.incident.airtimeBusy,
+      networkImpactData.incident.airtimeBusy,
       incident
     )
     expect(result).toEqual('Peak airtime busy was 65%')
@@ -145,9 +159,45 @@ describe('NetworkImpact', () => {
   it('should match snapshot', async () => {
     store.dispatch(networkImpactChartsApi.util.resetApiState())
     mockGraphqlQuery(dataApiURL, 'NetworkImpactCharts', {
-      data: NetworkImpactData
+      data: networkImpactData
     })
     const { asFragment } = render(<Provider><NetworkImpact {...props}/></Provider>)
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const fragment = asFragment()
+    fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
+      .forEach((node:Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))
+    expect(fragment).toMatchSnapshot()
+  })
+
+  it('handles charts data with total & disabled', async () => {
+    store.dispatch(networkImpactChartsApi.util.resetApiState())
+    const newProps: NetworkImpactProps = {
+      ...props,
+      charts: [{
+        chart: NetworkImpactChartTypes.RogueAPByChannel,
+        query: NetworkImpactQueryTypes.TopN,
+        type: 'rogueAp',
+        dimension: 'rogueChannel',
+        disabled: true
+      },
+      {
+        chart: NetworkImpactChartTypes.RxPhyErrByAP,
+        query: NetworkImpactQueryTypes.TopN,
+        type: 'apAirtime',
+        dimension: 'phyError'
+      }]
+    }
+    const data = {
+      incident: {
+        [NetworkImpactChartTypes.RxPhyErrByAP]: {
+          count: 10,
+          total: 10,
+          data: [{ key: '00:00:00:00:00:00', value: 10 }]
+        }
+      }
+    }
+    mockGraphqlQuery(dataApiURL, 'NetworkImpactCharts', { data })
+    const { asFragment } = render(<NetworkImpact {...newProps} />, { wrapper: Provider })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const fragment = asFragment()
     fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
