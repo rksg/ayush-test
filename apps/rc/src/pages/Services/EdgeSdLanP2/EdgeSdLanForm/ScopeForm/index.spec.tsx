@@ -4,9 +4,10 @@ import userEvent                            from '@testing-library/user-event'
 import { Form }                             from 'antd'
 import { rest }                             from 'msw'
 
-import { StepsForm }      from '@acx-ui/components'
-import { CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }       from '@acx-ui/store'
+import { StepsForm }       from '@acx-ui/components'
+import { networkApi }      from '@acx-ui/rc/services'
+import { CommonUrlsInfo }  from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -32,6 +33,7 @@ describe('Scope Form', () => {
   beforeEach(() => {
     mockedSetFieldValue.mockReset()
     mockedGetNetworkDeepList.mockReset()
+    store.dispatch(networkApi.util.resetApiState())
 
     mockServer.use(
       rest.post(

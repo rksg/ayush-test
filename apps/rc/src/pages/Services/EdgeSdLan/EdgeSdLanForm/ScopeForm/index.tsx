@@ -14,7 +14,7 @@ const NetworksTable = (props: NetworksTableProps) => {
   const { data, ...others } = props
   return <EdgeSdLanActivatedNetworksTable
     {...others}
-    activated={data?.map(i => i.id!) ?? []}
+    activated={data?.map(i => i.id!)}
   />
 }
 export const ScopeForm = () => {
