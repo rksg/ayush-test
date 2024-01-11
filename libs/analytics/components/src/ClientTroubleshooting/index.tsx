@@ -9,6 +9,8 @@ import { Cascader, Button, Loader }           from '@acx-ui/components'
 import { formatter, DateFormatEnum }          from '@acx-ui/formatter'
 import { useEncodedParameter, useDateFilter } from '@acx-ui/utils'
 
+import { useIncidentToggles } from '../useIncidentToggles'
+
 import { ClientTroubleShootingConfig, DisplayEvent, IncidentDetails } from './config'
 import { ConnectionEventPopover }                                     from './ConnectionEvent'
 import { FormattedEvent, History }                                    from './EventsHistory'
@@ -66,7 +68,8 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   const { $t } = intl
   const { read, write } = useEncodedParameter<Filters>('clientTroubleShootingSelections')
   const { startDate, endDate, range } = useDateFilter()
-  const results = useClientInfoQuery({ startDate, endDate, range, clientMac })
+  const toggles = useIncidentToggles()
+  const results = useClientInfoQuery({ startDate, endDate, range, clientMac, toggles })
   const filters = read()
   const [eventState, setEventState] = useState({} as DisplayEvent)
   const [popoverVisible, setPopoverVisible] = useState(false)
