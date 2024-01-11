@@ -293,7 +293,7 @@ export function RecommendationTable (
       tooltip: optimizationTooltipText,
       render: (_value, record) => {
         const preferences = _.get(record, 'preferences') || { crrmFullOptimization: true }
-        const canToggle = record.toggles?.preferences === true
+        const canToggle = record.toggles?.crrmFullOptimization === true
         const tooltipText = !canToggle && !record.isMuted
           ? get('IS_MLISA_SA')
             ? $t({ defaultMessage: `

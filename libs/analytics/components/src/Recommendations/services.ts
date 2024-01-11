@@ -86,7 +86,7 @@ export type Recommendation = {
     crrmFullOptimization: boolean
   }
   statusTrail: StatusTrail
-  toggles?: { preferences: boolean }
+  toggles?: { crrmFullOptimization: boolean }
 }
 
 export type RecommendationListItem = Recommendation & {
@@ -417,10 +417,15 @@ export const api = recommendationApi.injectEndpoints({
         const grouped = _.groupBy(items, 'pathKey')
 
         return items.map(({ pathKey, ...item }) => {
-          if (item.code === 'unknown') return { ...item, toggles: { preferences: true } }
+          if (item.code === 'unknown') return { ...item, toggles: { crrmFullOptimization: true } }
           if (!item.code.startsWith('c-crrm')) return item
-          const preferences = grouped[pathKey].every(v => !appliedStates.includes(v.statusEnum))
-          return { ...item, toggles: { preferences } }
+          return {
+            ...item,
+            toggles: {
+              crrmFullOptimization: grouped[pathKey]
+                .every(v => !appliedStates.includes(v.statusEnum))
+            }
+          }
         })
       },
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]

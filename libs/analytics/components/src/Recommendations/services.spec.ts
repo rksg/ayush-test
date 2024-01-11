@@ -205,7 +205,7 @@ describe('Recommendation services', () => {
           ...crrmStates.optimized,
           text: 'Optimized'
         },
-        toggles: { preferences: false }
+        toggles: { crrmFullOptimization: false }
       },
       {
         ...recommendationListResult.recommendations[1],
@@ -225,7 +225,7 @@ describe('Recommendation services', () => {
           ...crrmStates.nonOptimized,
           text: 'Non-Optimized'
         },
-        toggles: { preferences: false }
+        toggles: { crrmFullOptimization: false }
       },
       {
         ...recommendationListResult.recommendations[2],
@@ -278,7 +278,7 @@ describe('Recommendation services', () => {
           ...crrmStates.insufficientLicenses,
           text: 'Insufficient Licenses'
         },
-        toggles: { preferences: true }
+        toggles: { crrmFullOptimization: true }
       },
       {
         ...recommendationListResult.recommendations[5],
@@ -300,7 +300,7 @@ describe('Recommendation services', () => {
           ...crrmStates.verificationError,
           text: 'Verification Error'
         },
-        toggles: { preferences: true }
+        toggles: { crrmFullOptimization: true }
       },
       {
         ...recommendationListResult.recommendations[6],
@@ -322,7 +322,7 @@ describe('Recommendation services', () => {
           ...crrmStates.verified,
           text: 'Verified'
         },
-        toggles: { preferences: true }
+        toggles: { crrmFullOptimization: true }
       },
       {
         ...recommendationListResult.recommendations[7],
@@ -342,7 +342,7 @@ describe('Recommendation services', () => {
           ...crrmStates.nonOptimized,
           text: 'Non-Optimized'
         },
-        toggles: { preferences: true }
+        toggles: { crrmFullOptimization: true }
       }
     ]
     expect(error).toBe(undefined)
