@@ -20,7 +20,6 @@ import {
 describe('Test schedule.utils', () => {
 
   afterEach(()=>{
-    jest.runOnlyPendingTimers()
     jest.useRealTimers()
   })
 
@@ -41,6 +40,7 @@ describe('Test schedule.utils', () => {
       timeIndex: 5
     })
 
+    jest.runOnlyPendingTimers()
   })
 
   it('fetchVenueTimeZone and getCurrentTimeSlotIndex', async () => {
@@ -85,6 +85,7 @@ describe('Test schedule.utils', () => {
       timeIndex: 5
     }))
 
+    jest.runOnlyPendingTimers()
   })
 
   it('getSchedulingCustomTooltip (today)', async () => {
