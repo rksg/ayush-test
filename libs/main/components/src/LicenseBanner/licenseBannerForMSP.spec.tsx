@@ -167,7 +167,8 @@ describe('License Banner Component', () => {
       })
 
     await userEvent.click((await screen.findByTestId('arrowBtn')))
-    expect(await screen.findByText('MSP subscription about to expire in 53 days')).toBeVisible()
+    expect(await
+    screen.findByText('Your RUCKUS One subscription expires in 53 days')).toBeVisible()
 
   })
 

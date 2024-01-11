@@ -2,6 +2,7 @@ import _                                    from 'lodash'
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import { mapCodeToReason, Incident } from '@acx-ui/analytics/utils'
+import { qualitativeColorSet }       from '@acx-ui/components'
 import { formatter }                 from '@acx-ui/formatter'
 import { getIntl }                   from '@acx-ui/utils'
 
@@ -83,7 +84,8 @@ export interface NetworkImpactChart {
   disabled?: {
     value: MessageDescriptor
     summary: MessageDescriptor
-  }
+  },
+  colorSetFn?: () => string[]
 }
 
 export const getDataWithPercentage = (data: NetworkImpactChartData['data']) => {
@@ -103,10 +105,10 @@ export const getAPRebootReason = (key: string) => {
 export const transformAirtimeMetricKey = (key: string) => {
   const { $t } = getIntl()
   const map = {
-    airtimeBusy: $t({ defaultMessage: 'Airtime Busy' }),
-    airtimeRx: $t({ defaultMessage: 'Airtime Rx' }),
-    airtimeTx: $t({ defaultMessage: 'Airtime Tx' }),
-    airtimeIdle: $t({ defaultMessage: 'Airtime Idle' })
+    airtimeBusy: $t({ defaultMessage: 'Avg Airtime Busy' }),
+    airtimeRx: $t({ defaultMessage: 'Avg Airtime Rx' }),
+    airtimeTx: $t({ defaultMessage: 'Avg Airtime Tx' }),
+    airtimeIdle: $t({ defaultMessage: 'Avg Airtime Idle' })
   }
   return _.get(map, key, '')
 }
@@ -193,6 +195,8 @@ const dominanceFormats = {
     defaultMessage: "{percentage} of failures caused by ''{dominant}''"
   })
 }
+
+export const getAirtimeMetricColorSet = () => qualitativeColorSet().filter((_,index) => index !== 3)
 
 export const networkImpactChartConfigs: Readonly<Record<
   NetworkImpactChartTypes,
@@ -418,7 +422,7 @@ export const networkImpactChartConfigs: Readonly<Record<
         defaultMessage: '{dominant} has the highest Rx PHY errors'
       }),
       broad: defineMessage({
-        defaultMessage: `Rx PHY errors observed in {count} {count, plural,
+        defaultMessage: `{total} Rx PHY errors observed in {count} {count, plural,
           one {AP}
           other {APs}
         }`
@@ -426,25 +430,28 @@ export const networkImpactChartConfigs: Readonly<Record<
     }
   },
   [NetworkImpactChartTypes.AirtimeBusy]: {
-    title: defineMessage({ defaultMessage: 'Airtime Busy' }),
+    title: defineMessage({ defaultMessage: 'Average Airtime Busy' }),
     tooltipFormat: tooltipFormats.distribution,
     dataFomatter: formatter('percentFormat'),
     transformKeyFn: transformAirtimeMetricKey,
-    summary: defineMessage({ defaultMessage: 'Peak airtime busy was {count}' })
+    summary: defineMessage({ defaultMessage: 'Peak airtime busy was {count}' }),
+    colorSetFn: getAirtimeMetricColorSet
   },
   [NetworkImpactChartTypes.AirtimeTx]: {
-    title: defineMessage({ defaultMessage: 'Airtime Tx' }),
+    title: defineMessage({ defaultMessage: 'Average Airtime Tx' }),
     tooltipFormat: tooltipFormats.distribution,
     dataFomatter: formatter('percentFormat'),
     transformKeyFn: transformAirtimeMetricKey,
-    summary: defineMessage({ defaultMessage: 'Peak airtime Tx was {count}' })
+    summary: defineMessage({ defaultMessage: 'Peak airtime Tx was {count}' }),
+    colorSetFn: getAirtimeMetricColorSet
   },
   [NetworkImpactChartTypes.AirtimeRx]: {
-    title: defineMessage({ defaultMessage: 'Airtime Rx' }),
+    title: defineMessage({ defaultMessage: 'Average Airtime Rx' }),
     tooltipFormat: tooltipFormats.distribution,
     dataFomatter: formatter('percentFormat'),
     transformKeyFn: transformAirtimeMetricKey,
-    summary: defineMessage({ defaultMessage: 'Peak airtime Rx was {count}' })
+    summary: defineMessage({ defaultMessage: 'Peak airtime Rx was {count}' }),
+    colorSetFn: getAirtimeMetricColorSet
   },
   [NetworkImpactChartTypes.AirtimeMgmtFrame]: {
     title: defineMessage({ defaultMessage: 'Average % of Mgmt. Frames' }),
