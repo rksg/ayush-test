@@ -1,8 +1,10 @@
+import { useTreatments } from '@splitsoftware/splitio-react'
+
 import { renderHook }                   from '@acx-ui/test-utils'
 import { AccountType, AccountVertical } from '@acx-ui/utils'
 
-import { TierFeatures }                                        from './features'
-import { useIsTierAllowed, defaultConfig, getSplitIoBetaList } from './useIsTierAllowed'
+import { TierFeatures }                     from './features'
+import { useIsTierAllowed, useGetBetaList } from './useIsTierAllowed'
 
 jest.mock('react', () => ({
   ...jest.requireActual('react'),
@@ -17,7 +19,7 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('@splitsoftware/splitio-react', () => ({
   ...jest.requireActual('@splitsoftware/splitio-react'),
-  useTreatments: jest.fn().mockReturnValue({})
+  useTreatments: jest.fn().mockReturnValue({ treatment: 'control', config: '' })
 }))
 
 const user = require('@acx-ui/user')
@@ -42,7 +44,7 @@ jest.mock('@acx-ui/user', () => ({
 
 jest.mock('./useIsTierAllowed', () => ({
   ...jest.requireActual('./useIsTierAllowed'),
-  getSplitIoBetaList: jest.fn(() => ['beta1', 'beta2', 'beta3'])
+  useGetBetaList: jest.fn(() => ['beta1', 'beta2', 'beta3'])
 }))
 
 
@@ -105,27 +107,33 @@ describe('Test useIsTierAllowed function', () => {
   })
 
   it('should return the account vertical if it is not in default verticals', () => {
-    const treatment = { treatment: 'control', config: null }
     const jwtPayload = { acx_account_vertical: 'MSP' }
     // eslint-disable-next-line max-len
     const accountVertical = defaultVerticals.includes(jwtPayload?.acx_account_vertical as AccountVertical)
       ? AccountVertical.DEFAULT : jwtPayload?.acx_account_vertical
     expect(accountVertical).toBe('MSP')
 
-    const config = (treatment?.treatment === 'control')? defaultConfig : treatment?.config
-    expect(config).toBe(defaultConfig)
+    const { result: res1 } = renderHook(() => useTreatments(['TEST-PLM-FF'], {
+      tier: 'Gold',
+      vertical: accountVertical,
+      tenantType: tenantType,
+      tenantId: '233444',
+      isBetaFlag: true
+    }))
+    expect(res1.current.treatment).toBe('control')
+    expect(res1.current.config).toBe('')
   })
 
 })
 
-describe('getSplitIoBetaList', () => {
+describe('useGetBetaList', () => {
   it('returns the correct beta list', () => {
     const useFFList = jest.fn(() => JSON.stringify({
       betaList: ['beta1', 'beta2', 'beta3']
     }))
 
     const { result: res1 } = renderHook(() => useFFList())
-    const { result: res2 } = renderHook(() => getSplitIoBetaList())
+    const { result: res2 } = renderHook(() => useGetBetaList())
     expect(JSON.parse(res1.current)?.betaList).toEqual(res2.current)
     expect(res2.current).toEqual(['beta1', 'beta2', 'beta3'])
   })
