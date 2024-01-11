@@ -160,6 +160,7 @@ jest.mock('@acx-ui/feature-toggle', () => ({
   useIsSplitOn: jest.fn(),
   useIsTierAllowed: jest.fn(),
   useFFList: jest.fn(),
+  useGetBetaList: jest.fn().mockReturnValue([]),
   Features: require('libs/common/feature-toggle/src/features').Features,
   TierFeatures:require('libs/common/feature-toggle/src/features').TierFeatures
 }), { virtual: true })
