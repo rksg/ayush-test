@@ -103,17 +103,19 @@ export function CliStepVenues () {
   }, [data])
 
   useEffect(() => {
-    const list = transformData(tableQuery?.data?.data, data?.models, selectedRows)
-    const venues = form?.getFieldValue('venues')
-    const updateVenues = venues?.filter((vId:string) => {
-      const venueApplyModels = list?.find(v => v.id === vId)?.models
-      const excludeApplyingModels = venueApplyModels?.filter(m => !data?.models?.includes(m))
-      const isModelOverlap = _.intersection(data?.models, excludeApplyingModels)?.length > 0
-      return !isModelOverlap
-    })
-    setSelectedRows(updateVenues as React.Key[])
-    form?.setFieldValue('venues', updateVenues)
-  }, [data?.models])
+    if (!tableQuery.isLoading) {
+      const list = transformData(tableQuery?.data?.data, data?.models, selectedRows)
+      const venues = form?.getFieldValue('venues')
+      const updateVenues = venues?.filter((vId:string) => {
+        const venueApplyModels = list?.find(v => v.id === vId)?.models
+        const excludeApplyingModels = venueApplyModels?.filter(m => !data?.models?.includes(m))
+        const isModelOverlap = _.intersection(data?.models, excludeApplyingModels)?.length > 0
+        return !isModelOverlap
+      })
+      setSelectedRows(updateVenues as React.Key[])
+      form?.setFieldValue('venues', updateVenues)
+    }
+  }, [data?.models, tableQuery.isLoading])
 
   return <Row gutter={24}>
     <Col span={24}>
