@@ -1,10 +1,12 @@
 
+import { isNaN }   from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { getDefaultSettings }               from '@acx-ui/analytics/services'
 import { defaultSort, sortProp, Settings  } from '@acx-ui/analytics/utils'
 import { Table, TableProps, Tooltip }       from '@acx-ui/components'
 import { formatter }                        from '@acx-ui/formatter'
+import { noDataDisplay }                    from '@acx-ui/utils'
 
 import {
   transformToLspView, transformToPropertyView, Property, Common, Lsp
@@ -24,6 +26,8 @@ export function BrandTable ({ sliceType, slaThreshold, data }:
   const thresholdSSID = thresholds['sla-brand-ssid-compliance' as keyof typeof slaThreshold]
   const pColor = 'var(--acx-accents-blue-50)'
   const nColor = 'var(--acx-semantics-red-50)'
+  const noDataColor = 'var(--acx-primary-black)'
+
   const tableData = sliceType === 'lsp'
     ? transformToLspView(data)
     : transformToPropertyView(data)
@@ -54,19 +58,28 @@ export function BrandTable ({ sliceType, slaThreshold, data }:
           // eslint-disable-next-line max-len
           defaultMessage: 'Average Connection Success: {avgConnSuccess}{nl} Average Time to Connect: {avgTTC}{nl} Average Client Throughput: {avgClientThroughput}'
         }, {
-          avgConnSuccess: formatter('percentFormat')(row.avgConnSuccess),
-          avgTTC: formatter('percentFormat')(row.avgTTC),
-          avgClientThroughput: formatter('percentFormat')(row.avgClientThroughput),
+          avgConnSuccess: !isNaN(row.avgConnSuccess)
+            ? formatter('percentFormat')(row.avgConnSuccess)
+            : noDataDisplay,
+          avgTTC: !isNaN(row.avgTTC)
+            ? formatter('percentFormat')(row.avgTTC)
+            : noDataDisplay,
+          avgClientThroughput: !isNaN(row.avgClientThroughput)
+            ? formatter('percentFormat')(row.avgClientThroughput)
+            : noDataDisplay,
           nl: '\n'
         })}
       >
         <span
           style={{
-            color: row?.guestExp >= parseFloat(thresholdGuestExp as string)/100
-              ? pColor : nColor
+            color: !isNaN(row?.guestExp)
+              ? row?.guestExp >= parseFloat(thresholdGuestExp as string)/100
+                ? pColor
+                : nColor
+              : noDataColor
           }}
         >
-          {formatter('percentFormat')(row?.guestExp)}
+          {!isNaN(row?.guestExp) ? formatter('percentFormat')(row?.guestExp) : noDataDisplay}
         </span>
       </Tooltip>
     },
@@ -78,11 +91,16 @@ export function BrandTable ({ sliceType, slaThreshold, data }:
       render: (_, row: Common) =>
         <span
           style={{
-            color: row?.ssidCompliance >= parseFloat(thresholdSSID as string)/100
-              ? pColor : nColor
+            color: !isNaN(row?.ssidCompliance)
+              ? row?.ssidCompliance >= parseFloat(thresholdSSID as string)/100
+                ? pColor
+                : nColor
+              : noDataColor
           }}
         >
-          {formatter('percentFormat')(row?.ssidCompliance)}
+          {!isNaN(row?.ssidCompliance)
+            ? formatter('percentFormat')(row?.ssidCompliance)
+            : noDataDisplay}
         </span>
     },
     {

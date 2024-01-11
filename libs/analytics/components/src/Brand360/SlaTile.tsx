@@ -14,6 +14,7 @@ import { useIntl } from 'react-intl'
 import type { Settings }      from '@acx-ui/analytics/utils'
 import { Card }               from '@acx-ui/components'
 import { UpArrow, DownArrow } from '@acx-ui/icons'
+import { noDataDisplay }      from '@acx-ui/utils'
 
 import { SlaChart }                                                   from './Chart'
 import { ComplianceSetting }                                          from './ComplianceSetting'
@@ -122,10 +123,8 @@ const SwitcherIcon = ({ order }: { order: boolean }) => {
 const TopElementsSwitcher = ({ data, chartKey }:
 { data: Array<[string, number]>, chartKey: ChartKey }) => {
   const [isAsc, setIsAsc] = useState(true)
-  const start = isAsc ? 0 : -4
-  const end = isAsc ? 3 : -1
   const indexData = data.map((val, ind) => [...val, ind + 1])
-  const slice = indexData.slice(start, end)
+  const topSortedItems = isAsc ? indexData.slice(0, 3) : indexData.slice(-3)
   const { formatter } = slaKpiConfig[chartKey]
   const enableSort = data.length > 3
   return <UI.ListWrapper
@@ -138,7 +137,8 @@ const TopElementsSwitcher = ({ data, chartKey }:
       }
     }>
     <div>
-      {slice.map(([key, val, ind]) => <li key={key}>{ind}. {key} ({formatter(val)})</li>)}
+      {topSortedItems.map(([key, val, ind]) =>
+        <li key={key}>{ind}. {key} ({!isNaN(val as number) ? formatter(val) : noDataDisplay})</li>)}
     </div>
     {enableSort && <SwitcherIcon order={isAsc} /> }
   </UI.ListWrapper>
