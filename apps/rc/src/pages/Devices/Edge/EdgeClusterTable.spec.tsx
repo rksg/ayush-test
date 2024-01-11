@@ -2,8 +2,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { edgeApi }                           from '@acx-ui/rc/services'
 import { EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                          from '@acx-ui/store'
+import { Provider, store }                   from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -37,6 +38,7 @@ describe('Edge Cluster Table', () => {
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
+    store.dispatch(edgeApi.util.resetApiState())
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.getEdgeClusterStatusList.url,
