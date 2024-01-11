@@ -153,7 +153,17 @@ describe('transformVenuesData', () => {
       { data: [] },
       mockLookupAndMappingData as unknown as TransformedMap
     )
-    expect(transformed).toEqual([])
+    expect(transformed).toEqual([
+      {
+        avgClientThroughput: [0, 0],
+        avgConnSuccess: [0, 0],
+        avgTTC: [0, 0],
+        deviceCount: 0,
+        lsp: 'IntegratorName',
+        p1Incidents: 0,
+        property: 'Property1',
+        ssidCompliance: [0, 0]
+      }])
   })
 
   it('handles undefined mapping data', () => {

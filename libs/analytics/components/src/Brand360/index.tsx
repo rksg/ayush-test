@@ -31,7 +31,10 @@ import { useSliceType } from './useSliceType'
 
 const rcApiPayload = {
   searchString: '',
-  filters: { tenantType: ['MSP_INTEGRATOR', 'MSP_REC'] },
+  filters: {
+    tenantType: ['MSP_INTEGRATOR', 'MSP_REC'],
+    status: ['Active']
+  },
   fields: ['id', 'name', 'tenantType', 'status'],
   page: 1,
   pageSize: 10000,
@@ -66,7 +69,7 @@ export function Brand360 () {
     ? transformLookupAndMappingData(mspPropertiesData.data)
     : {}
   const venuesData = useFetchBrandPropertiesQuery(chartPayload, { skip })
-  const tableResults = venuesData.data
+  const tableResults = venuesData.data && lookupAndMappingData
     ? transformVenuesData(venuesData as { data : BrandVenuesSLA[] }, lookupAndMappingData)
     : []
   const {

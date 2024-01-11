@@ -83,6 +83,23 @@ describe('Brand360', () => {
     expect(await screen.findAllByText('property {"brand-ssid-compliance-matcher":"^[a-zA-Z0-9]{5}_GUEST$","sla-p1-incidents-count":"1","sla-guest-experience":"2","sla-brand-ssid-compliance":"3"}')).toHaveLength(1)
     expect(await screen.findByTestId('brand360Table')).toBeVisible()
   })
+  it('should render with empty mspPropertiesData', async () => {
+    mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', mockBrandTimeseries)
+    mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', wrapData(prevTimeseries))
+    mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', wrapData(currTimeseries))
+    services.useMspCustomerListDropdownQuery = jest.fn().mockImplementation(() => {
+      return { data: null }
+    })
+    render(<Provider><Brand360 /></Provider>)
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    expect(await screen.findAllByDisplayValue('Last 8 Hours')).toHaveLength(2)
+    const tiles = await screen.findAllByTestId('brand360Tile')
+    expect(tiles).toHaveLength(3)
+    tiles.forEach(tile => expect(tile).toBeVisible())
+    // eslint-disable-next-line max-len
+    expect(await screen.findAllByText('property {"brand-ssid-compliance-matcher":"^[a-zA-Z0-9]{5}_GUEST$","sla-p1-incidents-count":"1","sla-guest-experience":"2","sla-brand-ssid-compliance":"3"}')).toHaveLength(1)
+    expect(await screen.findByTestId('brand360Table')).toBeVisible()
+  })
   it('changes sliceType', async () => {
     mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', mockBrandTimeseries)
     mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', wrapData(prevTimeseries))
