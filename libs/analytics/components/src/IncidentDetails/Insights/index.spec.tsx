@@ -126,8 +126,10 @@ describe('Insights Component', () => {
       </BrowserRouter>
     )
     expect(screen.getByText(
-      'Based on the root causes identified, the recommended resolutions are:')).toBeVisible()
-    const link = screen.getByText(/here/i)
+      'Based on the root cause identified, the recommended resolution is:')).toBeVisible()
+    const link = screen.getByRole('link', {
+      name: /here/i
+    })
     expect(link).toHaveAttribute('href', '/undefined/t/recommendations/aiOps/123456')
   })
 })
