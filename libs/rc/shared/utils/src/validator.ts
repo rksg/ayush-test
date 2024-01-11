@@ -5,7 +5,9 @@ import {
   includes,
   remove,
   split,
-  isEmpty
+  isEmpty,
+  difference,
+  uniq
 }                from 'lodash'
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
@@ -578,6 +580,41 @@ export function emailsRegExp (value: string[]) {
     return re.test(email.replace(/\n/, '').trim())
   })
   return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.emailAddress))
+}
+
+export function emailDuplicationValidation (emailArray: string[]) {
+
+  const { $t } = getIntl()
+
+  let isValid = true
+
+  // Empty Guard
+  if(isEmpty(emailArray)) {return Promise.reject($t(validationMessages.emailAddress))}
+
+  const uniqEmailArray = uniq(emailArray)
+
+  if(uniqEmailArray.length !== emailArray.length) {
+    isValid = false
+  }
+
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.emailDuplication))
+}
+
+export function emailMaxCountValidation (emailArray: string[], maxCount: number){
+
+  const { $t } = getIntl()
+
+  let isValid = true
+
+  // Empty Guard
+  if(isEmpty(emailArray)) {return Promise.reject($t(validationMessages.emailAddress))}
+
+  if (emailArray.length > maxCount) {
+    isValid = false
+  }
+
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.emailMaxCount, { maxCount }))
+
 }
 
 export function emailsSameDomainValidation (emailArray: string[]) {

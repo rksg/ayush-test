@@ -22,7 +22,10 @@ import {
   NetworkTypeEnum,
   domainsNameRegExp,
   emailsRegExp,
-  emailsSameDomainValidation } from '@acx-ui/rc/utils'
+  emailsSameDomainValidation,
+  emailDuplicationValidation,
+  emailMaxCountValidation
+} from '@acx-ui/rc/utils'
 import { validationMessages } from '@acx-ui/utils'
 
 import { captivePasswordExpiration } from '../contentsMap'
@@ -142,7 +145,9 @@ export function HostApprovalForm () {
               rules={[
                 { required: true },
                 { validator: (rule, value) => emailsRegExp((Array.isArray(value)? value : value.split(','))) },
-                { validator: (rule, value) => emailsSameDomainValidation((Array.isArray(value)? value : value.split(','))) }
+                { validator: (rule, value) => emailsSameDomainValidation((Array.isArray(value)? value : value.split(','))) },
+                { validator: (rule, value) => emailDuplicationValidation((Array.isArray(value)? value : value.split(','))) },
+                { validator: (rule, value) => emailMaxCountValidation((Array.isArray(value)? value : value.split(',')), 100) }
               ]
               }
               normalize={(value: string) => value.split(',').map((text: string)=>text.replace(/\n/, '').trim())}
