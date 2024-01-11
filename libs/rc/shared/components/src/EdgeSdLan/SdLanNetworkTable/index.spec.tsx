@@ -80,7 +80,13 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
     expect(mockedOnChangeFn).toBeCalledWith({
       id: 'network_3',
       name: 'MockedNetwork 3',
-      type: 'open' }, false, ['network_2'])
+      type: 'open' },
+    false,
+    [{
+      id: 'network_2',
+      name: 'MockedNetwork 2',
+      type: 'psk'
+    }])
   })
   it('should correctly activate by switcher', async () => {
     render(
@@ -101,6 +107,12 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
       id: 'network_2',
       name: 'MockedNetwork 2',
       type: 'psk'
-    }, true, ['network_2'])
+    },
+    true,
+    [{
+      id: 'network_2',
+      name: 'MockedNetwork 2',
+      type: 'psk'
+    }])
   })
 })
