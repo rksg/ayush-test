@@ -24,7 +24,7 @@ function BetaFeaturesDrawer (
   const onClose = () => {
     setVisible(false)
   }
-  // beta list feature Ids fetched from split.io 
+  // beta list feature Ids fetched from split.io
   const betaListFeatureIds = useGetBetaList()
   const showBetaList = betaListFeatureIds.length > 0
   if (showBetaList && betaList) {

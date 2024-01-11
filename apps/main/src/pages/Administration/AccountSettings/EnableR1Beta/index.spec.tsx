@@ -1,25 +1,19 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Provider  } from '@acx-ui/store'
+import { useGetBetaList } from '@acx-ui/feature-toggle'
+import { Provider  }      from '@acx-ui/store'
 import {
   mockServer,
   render,
   renderHook,
   screen,
   waitFor,
-  within,
   logRoles
 } from '@acx-ui/test-utils'
 import { UserUrlsInfo } from '@acx-ui/user'
 
 import { EnableR1Beta } from './'
-import { useGetBetaList } from '@acx-ui/feature-toggle'
-
-// jest.mock('@acx-ui/feature-toggle', () => ({
-//   ...jest.requireActual('@acx-ui/feature-toggle'),
-//   useGetBetaList: jest.fn(() => ['beta1', 'beta2', 'beta3'])
-// }))
 
 describe('Enable RUCKUS One Beta Checkbox', () => {
   const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
@@ -118,7 +112,7 @@ describe('Enable RUCKUS One Beta Checkbox', () => {
 
   it('should show beta features drawer', async () => {
     (useGetBetaList as jest.Mock).mockReturnValue(['beta1', 'beta2', 'beta3'])
-    
+
     const { container } = await render(
       <Provider>
         <EnableR1Beta
