@@ -14,7 +14,7 @@ export interface TunnelProfile {
 export interface TunnelProfileViewData {
   id: string
   name: string
-  tags: string[]
+  tags?: string[]
   mtuType: MtuTypeEnum
   mtuSize: number
   forceFragmentation: boolean

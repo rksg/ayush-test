@@ -136,7 +136,7 @@ export const useEdgeActions = () => {
   }
 }
 
-const showDeleteModal = (data: EdgeStatus[], handleOk?: () => void) => {
+export const showDeleteModal = (data: EdgeStatus[], handleOk?: () => void) => {
   const intl = getIntl()
   const { $t } = intl
   const modal = Modal.confirm({})
