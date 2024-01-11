@@ -150,7 +150,7 @@ const getAirtimeBusyRootCauses = () => {
     rootCauseValues: {}
   }
 }
-export const getAirtimeBusyRecommendations = (checks: (AirtimeBusyChecks)[], params: AirtimeParams) => {
+const getAirtimeBusyRecommendations = (checks: (AirtimeBusyChecks)[], params: AirtimeParams) => {
   const checkTrue = checkTrueParams(checks)
   const recommendationId = params.recommendationId
   const link = <TenantLink to={`/recommendations/crrm/${recommendationId}`}>here</TenantLink>
