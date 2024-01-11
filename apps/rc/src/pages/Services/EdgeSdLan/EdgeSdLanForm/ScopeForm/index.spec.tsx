@@ -4,9 +4,10 @@ import userEvent                                                       from '@te
 import { Form }                                                        from 'antd'
 import { rest }                                                        from 'msw'
 
-import { StepsForm }      from '@acx-ui/components'
-import { CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }       from '@acx-ui/store'
+import { StepsForm }       from '@acx-ui/components'
+import { networkApi }      from '@acx-ui/rc/services'
+import { CommonUrlsInfo }  from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -27,23 +28,19 @@ const useMockedFormHook = () => {
 }
 
 describe('Scope Form', () => {
-  const mockedGetNetworkDeepList = jest.fn()
 
   beforeEach(() => {
     mockedSetFieldValue.mockReset()
-    mockedGetNetworkDeepList.mockReset()
+    store.dispatch(networkApi.util.resetApiState())
 
     mockServer.use(
       rest.post(
         CommonUrlsInfo.networkActivations.url,
-        (req, res, ctx) => res(ctx.json(mockNetworkSaveData))
+        (_, res, ctx) => res(ctx.json(mockNetworkSaveData))
       ),
       rest.post(
         CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => {
-          mockedGetNetworkDeepList()
-          return res(ctx.json(mockDeepNetworkList))
-        }
+        (_, res, ctx) => res(ctx.json(mockDeepNetworkList))
       )
     )
   })
@@ -59,7 +56,6 @@ describe('Scope Form', () => {
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
     expect(await screen.findByText('Scope')).toBeVisible()
-    // await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
     const title = await screen.findByText(/Activate networks for the SD-LAN service on the venue/i)
     expect(title.textContent).toBe('Activate networks for the SD-LAN service on the venue (airport):')
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
@@ -90,7 +86,6 @@ describe('Scope Form', () => {
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
     expect(await screen.findByText('Scope')).toBeVisible()
-    // await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
     const title = await screen.findByText(/Activate networks for the SD-LAN service on the venue/i)
     expect(title.textContent).toBe('Activate networks for the SD-LAN service on the venue (airport):')
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
@@ -120,12 +115,10 @@ describe('Scope Form', () => {
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
     expect(await screen.findByText('Scope')).toBeVisible()
-    // await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
     expect(rows.length).toBe(3)
     expect(stepFormRef.current.getFieldValue('activatedNetworks')).toStrictEqual([])
-
     await click(
       within(await screen.findByRole('row', { name: /MockedNetwork 2/i })).getByRole('switch'))
 
@@ -152,12 +145,9 @@ describe('Scope Form', () => {
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
     expect(await screen.findByText('Scope')).toBeVisible()
-    // await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-
     const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
     expect(rows.length).toBe(3)
-
     const switchBtn = within(await screen.findByRole('row', { name: /MockedNetwork 1/i })).getByRole('switch')
     expect(switchBtn).toBeChecked()
     await click(switchBtn)
@@ -179,9 +169,7 @@ describe('Scope Form', () => {
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
     expect(await screen.findByText('Scope')).toBeVisible()
-    // await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-
     const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
     expect(rows.length).toBe(3)
     await click(await screen.findByRole('button', { name: /Add/i }))
