@@ -1,6 +1,5 @@
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
 
-import _             from 'lodash'
 import { AlignType } from 'rc-table/lib/interface'
 import { useIntl }   from 'react-intl'
 
@@ -26,21 +25,18 @@ export const NetworkTable = (props: EdgeSdLanServiceProps) => {
   const { $t } = useIntl()
   const { venueId } = useParams()
   const { serviceId, activatedNetworkIds } = props
+  const activtaedNetworkTableRef = useRef<{
+    dataSource: NetworkSaveData[]
+  }>(null)
   const [
     updateEdgeSdLan,
     { isLoading: isActivateUpdating }
   ] = useUpdateEdgeSdLanPartialMutation()
 
-  const handleActivateChange = async (data: NetworkSaveData, checked: boolean) => {
+  // eslint-disable-next-line max-len
+  const handleActivateChange = async (_data: NetworkSaveData, _checked: boolean, activated: NetworkSaveData[]) => {
     try {
-      let newNetworkIds
-      if (checked) {
-        newNetworkIds = _.union(activatedNetworkIds, [data.id])
-      } else {
-        newNetworkIds = [...activatedNetworkIds]
-        _.remove(newNetworkIds, (i) => i === data.id)
-      }
-
+      const newNetworkIds = activated.map(item => item.id)
       const payload = {
         networkIds: newNetworkIds
       }
@@ -71,8 +67,7 @@ export const NetworkTable = (props: EdgeSdLanServiceProps) => {
     render: (_, row) => {
       return $t(networkTypes[row.type!])
     }
-  },
-  ...(hasAccess() ? [{
+  }, {
     title: $t({ defaultMessage: 'Active' }),
     key: 'action',
     dataIndex: 'action',
@@ -81,18 +76,19 @@ export const NetworkTable = (props: EdgeSdLanServiceProps) => {
     render: (_: unknown, row: NetworkSaveData) => {
       return <ActivateNetworkSwitchButton
         row={row}
+        rows={activtaedNetworkTableRef.current?.dataSource ?? []}
         activated={activatedNetworkIds}
+        disabled={hasAccess() === false}
         onChange={handleActivateChange}
       />
     }
-  }] : [])
-  ]), [$t, activatedNetworkIds])
+  }]), [$t, activatedNetworkIds])
 
   return (
     <EdgeSdLanActivatedNetworksTable
+      ref={activtaedNetworkTableRef}
       venueId={venueId!}
       columns={columns}
-      activated={activatedNetworkIds}
       isUpdating={isActivateUpdating}
     />
   )
