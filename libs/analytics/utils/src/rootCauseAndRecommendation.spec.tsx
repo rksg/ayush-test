@@ -8,19 +8,10 @@ import {
   getRootCauseAndRecommendations,
   codeToFailureTypeMap,
   rootCauseRecommendationMap,
-  getAirtimeBusyRootCauses,
-  getAirtimeBusyRecommendations,
-  getAirtimeRxRootCauses,
-  getAirtimeRxRecommendations,
-  getAirtimeTxRootCauses,
-  getAirtimeTxRecommendations,
   ccd80211RootCauseRecommendations,
   htmlValues,
   AirtimeParams,
-  AirtimeArray,
-  AirtimeBusyChecks,
-  AirtimeRxChecks,
-  AirtimeTxChecks
+  AirtimeArray
 } from './rootCauseRecommendation'
 
 const baseIncident = fakeIncident({
@@ -235,7 +226,7 @@ describe('getRootCauseAndRecommendations', () => {
   })
 
   describe('airtime Busy Incident', () => {
-    it('should return correct data if both true', () => {
+    it('should return correct data for all true', () => {
       const checks = [
         { isRogueDetectionEnabled: true },
         { isCRRMRaised: true }
@@ -244,46 +235,24 @@ describe('getRootCauseAndRecommendations', () => {
         ...airtimeBusyIncident,
         metadata: {
           dominant: {},
-          rootCauseChecks: {
-            checks: [
-              { isRogueDetectionEnabled: true },
-              { isCRRMRaised: true }
-            ]
-          }
+          rootCauseChecks: { checks }
         }
       })
-      const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
-      const airtimeBRCA = getAirtimeBusyRootCauses()
-      const airtimeBRecommendations = getAirtimeBusyRecommendations(
-        checks as (AirtimeBusyChecks)[], {} as AirtimeParams, {})
-      expect(rootCauses.rootCauseText).toEqual(airtimeBRCA.rootCauseText)
-      expect(recommendations.recommendationsText).toEqual(
-        airtimeBRecommendations.recommendationsText)
+      expect(getRootCauseAndRecommendations(incident)).toMatchSnapshot()
     })
-    it('should return correct data if both false', () => {
+    it('should return correct data for all false', () => {
       const checks = [
-        { isRogueDetectionEnabled: true },
-        { isCRRMRaised: true }
+        { isRogueDetectionEnabled: false },
+        { isCRRMRaised: false }
       ] as unknown as AirtimeArray
       const incident = fakeIncident({
         ...airtimeBusyIncident,
         metadata: {
           dominant: {},
-          rootCauseChecks: {
-            checks: [
-              { isRogueDetectionEnabled: false },
-              { isCRRMRaised: false }
-            ]
-          }
+          rootCauseChecks: { checks }
         }
       })
-      const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
-      const airtimeBRCA = getAirtimeBusyRootCauses()
-      const airtimeBRecommendations = getAirtimeBusyRecommendations(
-        checks as (AirtimeBusyChecks)[], {} as AirtimeParams, {})
-      expect(rootCauses.rootCauseText).toEqual(airtimeBRCA.rootCauseText)
-      expect(recommendations.recommendationsText).toEqual(
-        airtimeBRecommendations.recommendationsText)
+      expect(getRootCauseAndRecommendations(incident)).toMatchSnapshot()
     })
   })
 
@@ -294,7 +263,6 @@ describe('getRootCauseAndRecommendations', () => {
         { isAclbRaised: true },
         { isLargeMgmtFrameCount: true },
         { isHighSsidCountPerRadio: true },
-        { isHighCoChannelInterference: true },
         { isCRRMRaised: true },
         { isChannelFlyEnabled: true },
         { isHighLegacyWifiDevicesCount: true }
@@ -306,28 +274,10 @@ describe('getRootCauseAndRecommendations', () => {
         ...airtimeRxIncident,
         metadata: {
           dominant: {},
-          rootCauseChecks: {
-            checks: [
-              { isHighDensityWifiDevices: true },
-              { isAclbRaised: true },
-              { isLargeMgmtFrameCount: true },
-              { isHighSsidCountPerRadio: true },
-              { isHighCoChannelInterference: true },
-              { isCRRMRaised: true },
-              { isChannelFlyEnabled: true },
-              { isHighLegacyWifiDevicesCount: true }
-            ],
-            params
-          }
+          rootCauseChecks: { checks, params }
         }
       })
-      const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
-      const airtimeRxRCA = getAirtimeRxRootCauses(checks as (AirtimeRxChecks)[])
-      const airtimeRxRecommendations = getAirtimeRxRecommendations(
-        checks as (AirtimeRxChecks)[], params)
-      expect(rootCauses.rootCauseText).toEqual(airtimeRxRCA.rootCauseText)
-      expect(recommendations.recommendationsText).toEqual(
-        airtimeRxRecommendations.recommendationsText)
+      expect(getRootCauseAndRecommendations(incident)).toMatchSnapshot()
     })
     it('should return correct data for all false', () => {
       const checks = [
@@ -335,7 +285,6 @@ describe('getRootCauseAndRecommendations', () => {
         { isAclbRaised: false },
         { isLargeMgmtFrameCount: false },
         { isHighSsidCountPerRadio: false },
-        { isHighCoChannelInterference: false },
         { isCRRMRaised: false },
         { isChannelFlyEnabled: false },
         { isHighLegacyWifiDevicesCount: false }
@@ -347,118 +296,17 @@ describe('getRootCauseAndRecommendations', () => {
         ...airtimeRxIncident,
         metadata: {
           dominant: {},
-          rootCauseChecks: {
-            checks: [
-              { isHighDensityWifiDevices: false },
-              { isAclbRaised: false },
-              { isLargeMgmtFrameCount: false },
-              { isHighSsidCountPerRadio: false },
-              { isHighCoChannelInterference: false },
-              { isCRRMRaised: false },
-              { isChannelFlyEnabled: false },
-              { isHighLegacyWifiDevicesCount: false }
-            ],
-            params
-          }
+          rootCauseChecks: { checks, params }
         }
       })
-      const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
-      const airtimeRxRCA = getAirtimeRxRootCauses(checks as (AirtimeRxChecks)[])
-      const airtimeRxRecommendations = getAirtimeRxRecommendations(
-        checks as (AirtimeRxChecks)[], params)
-      expect(rootCauses.rootCauseText).toEqual(airtimeRxRCA.rootCauseText)
-      expect(recommendations.recommendationsText).toEqual(
-        airtimeRxRecommendations.recommendationsText)
+      expect(getRootCauseAndRecommendations(incident)).toMatchSnapshot()
     })
-    it('should return correct varied data 1', () => {
-      const checks = [
-        { isHighDensityWifiDevices: true },
-        { isAclbRaised: false },
-        { isLargeMgmtFrameCount: false },
-        { isHighSsidCountPerRadio: false },
-        { isHighCoChannelInterference: false },
-        { isCRRMRaised: false },
-        { isChannelFlyEnabled: false },
-        { isHighLegacyWifiDevicesCount: false }
-      ] as unknown as AirtimeArray
-      const params = {
-        ssidCountPerRadioSlice: 0
-      } as AirtimeParams
-      const incident = fakeIncident({
-        ...airtimeRxIncident,
-        metadata: {
-          dominant: {},
-          rootCauseChecks: {
-            checks: [
-              { isHighDensityWifiDevices: false },
-              { isAclbRaised: false },
-              { isLargeMgmtFrameCount: false },
-              { isHighSsidCountPerRadio: false },
-              { isHighCoChannelInterference: false },
-              { isCRRMRaised: false },
-              { isChannelFlyEnabled: false },
-              { isHighLegacyWifiDevicesCount: false }
-            ],
-            params
-          }
-        }
-      })
-      const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
-      const airtimeRxRCA = getAirtimeRxRootCauses(checks as (AirtimeRxChecks)[])
-      const airtimeRxRecommendations = getAirtimeRxRecommendations(
-        checks as (AirtimeRxChecks)[], params)
-      expect(rootCauses.rootCauseText).toEqual(airtimeRxRCA.rootCauseText)
-      expect(recommendations.recommendationsText).toEqual(
-        airtimeRxRecommendations.recommendationsText)
-    })
-    it('should return correct varied data 2', () => {
+    it('should return correct data when checks are false but text conditions are true', () => {
       const checks = [
         { isHighDensityWifiDevices: false },
-        { isAclbRaised: false },
-        { isLargeMgmtFrameCount: true },
-        { isHighSsidCountPerRadio: false },
-        { isHighCoChannelInterference: true },
-        { isCRRMRaised: true },
-        { isChannelFlyEnabled: false },
-        { isHighLegacyWifiDevicesCount: false }
-      ] as unknown as AirtimeArray
-      const params = {
-        ssidCountPerRadioSlice: 0
-      } as AirtimeParams
-      const incident = fakeIncident({
-        ...airtimeRxIncident,
-        metadata: {
-          dominant: {},
-          rootCauseChecks: {
-            checks: [
-              { isHighDensityWifiDevices: false },
-              { isAclbRaised: false },
-              { isLargeMgmtFrameCount: true },
-              { isHighSsidCountPerRadio: false },
-              { isHighCoChannelInterference: true },
-              { isCRRMRaised: true },
-              { isChannelFlyEnabled: false },
-              { isHighLegacyWifiDevicesCount: false }
-            ],
-            params
-          }
-        }
-      })
-      const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
-      const airtimeRxRCA = getAirtimeRxRootCauses(checks as (AirtimeRxChecks)[])
-      const airtimeRxRecommendations = getAirtimeRxRecommendations(
-        checks as (AirtimeRxChecks)[], params)
-      expect(rootCauses.rootCauseText).toEqual(airtimeRxRCA.rootCauseText)
-      expect(recommendations.recommendationsText).toEqual(
-        airtimeRxRecommendations.recommendationsText)
-    })
-    it('should return correct varied data 3', () => {
-      const checks = [
-        { isHighDensityWifiDevices: true },
-        { isAclbRaised: false },
-        { isLargeMgmtFrameCount: true },
-        { isHighSsidCountPerRadio: false },
-        { isHighCoChannelInterference: true },
+        { isAclbRaised: true },
+        { isLargeMgmtFrameCount: false },
+        { isHighSsidCountPerRadio: true },
         { isCRRMRaised: false },
         { isChannelFlyEnabled: true },
         { isHighLegacyWifiDevicesCount: false }
@@ -470,36 +318,17 @@ describe('getRootCauseAndRecommendations', () => {
         ...airtimeRxIncident,
         metadata: {
           dominant: {},
-          rootCauseChecks: {
-            checks: [
-              { isHighDensityWifiDevices: true },
-              { isAclbRaised: false },
-              { isLargeMgmtFrameCount: true },
-              { isHighSsidCountPerRadio: false },
-              { isHighCoChannelInterference: true },
-              { isCRRMRaised: false },
-              { isChannelFlyEnabled: true },
-              { isHighLegacyWifiDevicesCount: false }
-            ],
-            params
-          }
+          rootCauseChecks: { checks, params }
         }
       })
-      const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
-      const airtimeRxRCA = getAirtimeRxRootCauses(checks as (AirtimeRxChecks)[])
-      const airtimeRxRecommendations = getAirtimeRxRecommendations(
-        checks as (AirtimeRxChecks)[], params)
-      expect(rootCauses.rootCauseText).toEqual(airtimeRxRCA.rootCauseText)
-      expect(recommendations.recommendationsText).toEqual(
-        airtimeRxRecommendations.recommendationsText)
+      expect(getRootCauseAndRecommendations(incident)).toMatchSnapshot()
     })
-    it('should return correct varied data 4', () => {
+    it('should return correct data when only 1 root cause', () => {
       const checks = [
-        { isHighDensityWifiDevices: true },
+        { isHighDensityWifiDevices: false },
         { isAclbRaised: false },
         { isLargeMgmtFrameCount: true },
-        { isHighSsidCountPerRadio: false },
-        { isHighCoChannelInterference: true },
+        { isHighSsidCountPerRadio: true },
         { isCRRMRaised: false },
         { isChannelFlyEnabled: false },
         { isHighLegacyWifiDevicesCount: false }
@@ -511,28 +340,32 @@ describe('getRootCauseAndRecommendations', () => {
         ...airtimeRxIncident,
         metadata: {
           dominant: {},
-          rootCauseChecks: {
-            checks: [
-              { isHighDensityWifiDevices: true },
-              { isAclbRaised: false },
-              { isLargeMgmtFrameCount: true },
-              { isHighSsidCountPerRadio: false },
-              { isHighCoChannelInterference: true },
-              { isCRRMRaised: false },
-              { isChannelFlyEnabled: false },
-              { isHighLegacyWifiDevicesCount: false }
-            ],
-            params
-          }
+          rootCauseChecks: { checks, params }
         }
       })
-      const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
-      const airtimeRxRCA = getAirtimeRxRootCauses(checks as (AirtimeRxChecks)[])
-      const airtimeRxRecommendations = getAirtimeRxRecommendations(
-        checks as (AirtimeRxChecks)[], params)
-      expect(rootCauses.rootCauseText).toEqual(airtimeRxRCA.rootCauseText)
-      expect(recommendations.recommendationsText).toEqual(
-        airtimeRxRecommendations.recommendationsText)
+      expect(getRootCauseAndRecommendations(incident)).toMatchSnapshot()
+    })
+    it('should return correct data when only 1 root cause not triggered', () => {
+      const checks = [
+        { isHighDensityWifiDevices: true },
+        { isAclbRaised: false },
+        { isLargeMgmtFrameCount: false },
+        { isHighSsidCountPerRadio: false },
+        { isCRRMRaised: true },
+        { isChannelFlyEnabled: false },
+        { isHighLegacyWifiDevicesCount: true }
+      ] as unknown as AirtimeArray
+      const params = {
+        ssidCountPerRadioSlice: 0
+      } as AirtimeParams
+      const incident = fakeIncident({
+        ...airtimeRxIncident,
+        metadata: {
+          dominant: {},
+          rootCauseChecks: { checks, params }
+        }
+      })
+      expect(getRootCauseAndRecommendations(incident)).toMatchSnapshot()
     })
   })
 
@@ -541,11 +374,11 @@ describe('getRootCauseAndRecommendations', () => {
       const checks = [
         { isHighDensityWifiDevices: true },
         { isAclbRaised: true },
+        { isLargeMgmtFrameCount: true },
         { isHighSsidCountPerRadio: true },
         { isHighPacketErrorCount: true },
-        { isLargeMgmtFrameCount: true },
-        { isHighLegacyWifiDevicesCount: true },
-        { isHighMcbcTraffic: true }
+        { isHighMcbcTraffic: true },
+        { isHighLegacyWifiDevicesCount: true }
       ] as unknown as AirtimeArray
       const params = {
         ssidCountPerRadioSlice: 1
@@ -554,76 +387,20 @@ describe('getRootCauseAndRecommendations', () => {
         ...airtimeTxIncident,
         metadata: {
           dominant: {},
-          rootCauseChecks: {
-            checks: [
-              { isHighDensityWifiDevices: true },
-              { isAclbRaised: true },
-              { isHighSsidCountPerRadio: true },
-              { isHighPacketErrorCount: true },
-              { isLargeMgmtFrameCount: true },
-              { isHighLegacyWifiDevicesCount: true },
-              { isHighMcbcTraffic: true }
-            ],
-            params
-          }
+          rootCauseChecks: { checks, params }
         }
       })
-      const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
-      const airtimeTxRCA = getAirtimeTxRootCauses(checks as (AirtimeTxChecks)[])
-      const airtimeTxRecommendations = getAirtimeTxRecommendations(
-        checks as (AirtimeTxChecks)[], params)
-      expect(rootCauses.rootCauseText).toEqual(airtimeTxRCA.rootCauseText)
-      expect(recommendations.recommendationsText).toEqual(
-        airtimeTxRecommendations.recommendationsText)
+      expect(getRootCauseAndRecommendations(incident)).toMatchSnapshot()
     })
     it('should return correct data for all false', () => {
       const checks = [
         { isHighDensityWifiDevices: false },
         { isAclbRaised: false },
-        { isHighSsidCountPerRadio: false },
-        { isHighPacketErrorCount: false },
         { isLargeMgmtFrameCount: false },
-        { isHighLegacyWifiDevicesCount: false },
-        { isHighMcbcTraffic: false }
-      ] as unknown as AirtimeArray
-      const params = {
-        ssidCountPerRadioSlice: 0
-      } as AirtimeParams
-      const incident = fakeIncident({
-        ...airtimeTxIncident,
-        metadata: {
-          dominant: {},
-          rootCauseChecks: {
-            checks: [
-              { isHighDensityWifiDevices: false },
-              { isAclbRaised: false },
-              { isHighSsidCountPerRadio: false },
-              { isHighPacketErrorCount: false },
-              { isLargeMgmtFrameCount: false },
-              { isHighLegacyWifiDevicesCount: false },
-              { isHighMcbcTraffic: false }
-            ],
-            params
-          }
-        }
-      })
-      const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
-      const airtimeTxRCA = getAirtimeTxRootCauses(checks as (AirtimeTxChecks)[])
-      const airtimeTxRecommendations = getAirtimeTxRecommendations(
-        checks as (AirtimeTxChecks)[], params)
-      expect(rootCauses.rootCauseText).toEqual(airtimeTxRCA.rootCauseText)
-      expect(recommendations.recommendationsText).toEqual(
-        airtimeTxRecommendations.recommendationsText)
-    })
-    it('should return correct varied data 1', () => {
-      const checks = [
-        { isHighDensityWifiDevices: true },
-        { isAclbRaised: false },
         { isHighSsidCountPerRadio: false },
         { isHighPacketErrorCount: false },
-        { isLargeMgmtFrameCount: true },
-        { isHighLegacyWifiDevicesCount: false },
-        { isHighMcbcTraffic: false }
+        { isHighMcbcTraffic: false },
+        { isHighLegacyWifiDevicesCount: false }
       ] as unknown as AirtimeArray
       const params = {
         ssidCountPerRadioSlice: 0
@@ -632,37 +409,42 @@ describe('getRootCauseAndRecommendations', () => {
         ...airtimeTxIncident,
         metadata: {
           dominant: {},
-          rootCauseChecks: {
-            checks: [
-              { isHighDensityWifiDevices: true },
-              { isAclbRaised: false },
-              { isHighSsidCountPerRadio: false },
-              { isHighPacketErrorCount: false },
-              { isLargeMgmtFrameCount: true },
-              { isHighLegacyWifiDevicesCount: false },
-              { isHighMcbcTraffic: false }
-            ],
-            params
-          }
+          rootCauseChecks: { checks, params }
         }
       })
-      const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
-      const airtimeTxRCA = getAirtimeTxRootCauses(checks as (AirtimeTxChecks)[])
-      const airtimeTxRecommendations = getAirtimeTxRecommendations(
-        checks as (AirtimeTxChecks)[], params)
-      expect(rootCauses.rootCauseText).toEqual(airtimeTxRCA.rootCauseText)
-      expect(recommendations.recommendationsText).toEqual(
-        airtimeTxRecommendations.recommendationsText)
+      expect(getRootCauseAndRecommendations(incident)).toMatchSnapshot()
     })
-    it('should return correct varied data 2', () => {
+    it('should return correct data when checks are false but text conditions are true', () => {
+      const checks = [
+        { isHighDensityWifiDevices: false },
+        { isAclbRaised: true },
+        { isLargeMgmtFrameCount: false },
+        { isHighSsidCountPerRadio: true },
+        { isHighPacketErrorCount: false },
+        { isHighMcbcTraffic: false },
+        { isHighLegacyWifiDevicesCount: false }
+      ] as unknown as AirtimeArray
+      const params = {
+        ssidCountPerRadioSlice: 0
+      } as AirtimeParams
+      const incident = fakeIncident({
+        ...airtimeTxIncident,
+        metadata: {
+          dominant: {},
+          rootCauseChecks: { checks, params }
+        }
+      })
+      expect(getRootCauseAndRecommendations(incident)).toMatchSnapshot()
+    })
+    it('should return correct data when only 1 root cause', () => {
       const checks = [
         { isHighDensityWifiDevices: false },
         { isAclbRaised: false },
-        { isHighSsidCountPerRadio: false },
-        { isHighPacketErrorCount: true },
-        { isLargeMgmtFrameCount: false },
-        { isHighLegacyWifiDevicesCount: false },
-        { isHighMcbcTraffic: false }
+        { isLargeMgmtFrameCount: true },
+        { isHighSsidCountPerRadio: true },
+        { isHighPacketErrorCount: false },
+        { isHighMcbcTraffic: false },
+        { isHighLegacyWifiDevicesCount: false }
       ] as unknown as AirtimeArray
       const params = {
         ssidCountPerRadioSlice: 0
@@ -671,27 +453,32 @@ describe('getRootCauseAndRecommendations', () => {
         ...airtimeTxIncident,
         metadata: {
           dominant: {},
-          rootCauseChecks: {
-            checks: [
-              { isHighDensityWifiDevices: false },
-              { isAclbRaised: false },
-              { isHighSsidCountPerRadio: false },
-              { isHighPacketErrorCount: false },
-              { isLargeMgmtFrameCount: true },
-              { isHighLegacyWifiDevicesCount: false },
-              { isHighMcbcTraffic: false }
-            ],
-            params
-          }
+          rootCauseChecks: { checks, params }
         }
       })
-      const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
-      const airtimeTxRCA = getAirtimeTxRootCauses(checks as (AirtimeTxChecks)[])
-      const airtimeTxRecommendations = getAirtimeTxRecommendations(
-        checks as (AirtimeTxChecks)[], params)
-      expect(rootCauses.rootCauseText).toEqual(airtimeTxRCA.rootCauseText)
-      expect(recommendations.recommendationsText).toEqual(
-        airtimeTxRecommendations.recommendationsText)
+      expect(getRootCauseAndRecommendations(incident)).toMatchSnapshot()
+    })
+    it('should return correct data when only 1 root cause not triggered', () => {
+      const checks = [
+        { isHighDensityWifiDevices: true },
+        { isAclbRaised: false },
+        { isLargeMgmtFrameCount: false },
+        { isHighSsidCountPerRadio: false },
+        { isHighPacketErrorCount: true },
+        { isHighMcbcTraffic: true },
+        { isHighLegacyWifiDevicesCount: true }
+      ] as unknown as AirtimeArray
+      const params = {
+        ssidCountPerRadioSlice: 0
+      } as AirtimeParams
+      const incident = fakeIncident({
+        ...airtimeTxIncident,
+        metadata: {
+          dominant: {},
+          rootCauseChecks: { checks, params }
+        }
+      })
+      expect(getRootCauseAndRecommendations(incident)).toMatchSnapshot()
     })
   })
 

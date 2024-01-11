@@ -1,6 +1,6 @@
-import { RadioEnum, RadioTypeEnum } from '../../contents'
-import { SchedulerTypeEnum }        from '../../models/SchedulerTypeEnum'
-import { Venue, ApVenueStatusEnum } from '../../types'
+import { RadioEnum, RadioTypeEnum }                           from '../../contents'
+import { SchedulerTypeEnum }                                  from '../../models/SchedulerTypeEnum'
+import { Venue, ApVenueStatusEnum, Network, NetworkSaveData } from '../../types'
 
 export const generateDefaultNetworkVenue = (venueId: string, networkId:string) => {
   return {
@@ -41,4 +41,12 @@ export const checkVenuesNotInSetup = (networkAdvertisedVenues: Venue[]) => {
     return v.status !== ApVenueStatusEnum.IN_SETUP_PHASE
   })
   return venuesNotInSetup && venuesNotInSetup.length > 0
+}
+
+export const isOweTransitionNetwork = (data: Network | NetworkSaveData): boolean => {
+  return data.isOweMaster === false && data.owePairNetworkId !== undefined
+}
+
+export const isDsaeOnboardingNetwork = (data: NetworkSaveData): boolean => {
+  return data.isDsaeServiceNetwork === false && data.dsaeNetworkPairId !== undefined
 }

@@ -573,7 +573,7 @@ exports[`incident details should render incident details correctly 1`] = `
                 class="ant-card-body"
               >
                 <section
-                  class="styledComponents__Wrapper-sc-1t8f1ur-3 lewDjh"
+                  class="styledComponents__Wrapper-sc-1t8f1ur-3 ldDrAQ"
                 >
                   <div
                     class="ant-space ant-space-horizontal ant-space-align-start"
@@ -806,10 +806,10 @@ exports[`incident details should render incident details correctly when there is
           class="ant-page-header-content"
         >
           <span
-            aria-label="Airtime Utilization is unusually high in 2.4 GHz in Access Point: RuckusAP (70:CA:97:01:A0:C0)"
+            aria-label="Airtime Busy is unusually high in 2.4 GHz in Access Point: RuckusAP (70:CA:97:01:A0:C0)"
             class="ant-typography ant-typography-ellipsis ant-typography-single-line"
           >
-            Airtime Utilization is unusually high in 2.4 GHz in Access Point: RuckusAP (70:CA:97:01:A0:C0)
+            Airtime Busy is unusually high in 2.4 GHz in Access Point: RuckusAP (70:CA:97:01:A0:C0)
             <span
               aria-hidden="true"
               style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; word-break: keep-all; white-space: nowrap;"
@@ -1286,7 +1286,7 @@ exports[`incident details should render incident details correctly when there is
                 class="ant-card-body"
               >
                 <section
-                  class="styledComponents__Wrapper-sc-1t8f1ur-3 lewDjh"
+                  class="styledComponents__Wrapper-sc-1t8f1ur-3 ldDrAQ"
                 >
                   <div
                     class="ant-space ant-space-horizontal ant-space-align-start"

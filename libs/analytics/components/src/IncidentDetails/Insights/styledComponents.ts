@@ -17,12 +17,10 @@ export const Subtitle = styled(Card.Title)`
 `
 
 export const Wrapper = styled.section`
-  ol {
-    padding: 0;
-    margin-bottom: 0;
+  ol, ul {
+    padding-inline-start: 1em;
   }
   li {
-    list-style-position: inside;
     margin-block-end: 1em;
     &:last-of-type { margin-block-end: 0; }
   }

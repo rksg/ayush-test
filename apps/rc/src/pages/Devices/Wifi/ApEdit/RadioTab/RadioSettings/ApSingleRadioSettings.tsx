@@ -57,7 +57,7 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
   const defaultButtonTextSetting: LPIButtonText = {
     buttonText:
       <p style={{ fontSize: '12px', margin: '0px' }}>
-        {$t({ defaultMessage: 'Standard power' })}
+        {$t({ defaultMessage: 'On' })}
       </p>
     ,
     LPIModeOnChange: setEnableAfc,
@@ -73,8 +73,8 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
     if(isUseVenueSettings){
       newButtonText = ( <p style={{ fontSize: '12px', margin: '0px' }}>
         {enableAfc ?
-          $t({ defaultMessage: 'Standard power' }):
-          $t({ defaultMessage: 'Low power' })
+          $t({ defaultMessage: 'On ' }):
+          $t({ defaultMessage: 'Off' })
         }
       </p>)
     }

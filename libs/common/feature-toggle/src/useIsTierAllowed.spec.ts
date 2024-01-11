@@ -1,7 +1,7 @@
-import { AccountType } from '@acx-ui/utils'
+import { AccountType, AccountVertical } from '@acx-ui/utils'
 
-import { TierFeatures }     from './features'
-import { useIsTierAllowed } from './useIsTierAllowed'
+import { TierFeatures }                    from './features'
+import { useIsTierAllowed, defaultConfig } from './useIsTierAllowed'
 
 jest.mock('react', () => ({
   ...jest.requireActual('react'),
@@ -40,6 +40,13 @@ jest.mock('@acx-ui/user', () => ({
 }))
 
 describe('Test useIsTierAllowed function', () => {
+  const tenantType = 'REC'
+  const recDefaultVerticals = [AccountVertical.DEFAULT, AccountVertical.GOVERNMENT,
+    AccountVertical.UNKNOWN, AccountVertical.NONPROFIT]
+  const mspDefaultVerticals = [...recDefaultVerticals, AccountVertical.EDU]
+  const defaultVerticals = tenantType === AccountType.REC ? recDefaultVerticals
+    : mspDefaultVerticals
+
   beforeEach(async () => {
     user.useGetBetaStatusQuery = jest.fn().mockImplementation(() => {
       return { data: { enabled: 'true' } }
@@ -81,4 +88,25 @@ describe('Test useIsTierAllowed function', () => {
     const enabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
     expect(enabled).toBeFalsy()
   })
+
+  it('should return DEFAULT if account vertical is in default verticals', () => {
+    const jwtPayload = { acx_account_vertical: 'Default' }
+    // eslint-disable-next-line max-len
+    const accountVertical = defaultVerticals.includes(jwtPayload?.acx_account_vertical as AccountVertical)
+      ? AccountVertical.DEFAULT : jwtPayload?.acx_account_vertical
+    expect(accountVertical).toBe(AccountVertical.DEFAULT)
+  })
+
+  it('should return the account vertical if it is not in default verticals', () => {
+    const treatment = { treatment: 'control', config: null }
+    const jwtPayload = { acx_account_vertical: 'MSP' }
+    // eslint-disable-next-line max-len
+    const accountVertical = defaultVerticals.includes(jwtPayload?.acx_account_vertical as AccountVertical)
+      ? AccountVertical.DEFAULT : jwtPayload?.acx_account_vertical
+    expect(accountVertical).toBe('MSP')
+
+    const config = (treatment?.treatment === 'control')? defaultConfig : treatment?.config
+    expect(config).toBe(defaultConfig)
+  })
+
 })
