@@ -50,8 +50,8 @@ import {
   transformAps,
   transformRadios,
   transformScheduling } from '../../pipes/apGroupPipes'
-import { useSdLanScopedNetworkVenues } from '../../useEdgeActions'
-import { useGetNetwork }               from '../services'
+import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues } from '../../useEdgeActions'
+import { useGetNetwork }                                                        from '../services'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
@@ -206,7 +206,7 @@ export function NetworkVenuesTab () {
       if (checked) { // activate
         addNetworkVenue({ params: { tenantId: params.tenantId }, payload: newNetworkVenue })
       } else { // deactivate
-        checkDependencyDeactivateAction([row.id], () => {
+        checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues, [row.id], () => {
           deleteNetworkVenue({
             params: {
               tenantId: params.tenantId, networkVenueId: deactivateNetworkVenueId
@@ -222,21 +222,6 @@ export function NetworkVenuesTab () {
       addNetworkVenues({ payload: networkVenues }).then(clearSelection)
     } else {
       clearSelection()
-    }
-  }
-
-  const checkDependencyDeactivateAction = (networkVenueIds: string[], cb: () => void) => {
-    if (_.intersection(sdLanScopedNetworkVenues, networkVenueIds).length > 0) {
-      showActionModal({
-        type: 'confirm',
-        title: $t({ defaultMessage: 'Deactivate network' }),
-        content: $t({ defaultMessage: 'This network is running the SD-LAN service on this venue. Are you sure you want to deactivate it?' }),
-        onOk: () => {
-          cb()
-        }
-      })
-    } else {
-      cb()
     }
   }
 
@@ -328,7 +313,7 @@ export function NetworkVenuesTab () {
       label: $t({ defaultMessage: 'Deactivate' }),
       visible: activation,
       onClick: (rows, clearSelection) => {
-        checkDependencyDeactivateAction(rows.map(item => item.id), () => {
+        checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues, rows.map(item => item.id), () => {
           const deActivateNetworkVenueIds = deActivateSelected(rows)
           handleDeleteNetworkVenues(deActivateNetworkVenueIds, clearSelection)
         })

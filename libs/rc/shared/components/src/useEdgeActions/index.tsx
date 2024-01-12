@@ -248,3 +248,31 @@ export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
 
   return networkVenueIds
 }
+
+export const checkSdLanScopedNetworkDeactivateAction =
+  (scopedIds: string[] | undefined, selectedIds: string[] | undefined, cb: () => void) => {
+    if (!scopedIds || !selectedIds) {
+      cb()
+      return
+    }
+
+    const { $t } = getIntl()
+
+    if (_.intersection(scopedIds, selectedIds).length > 0) {
+      showActionModal({
+        type: 'confirm',
+        title: $t({ defaultMessage: 'Deactivate network' }),
+        content: selectedIds!.length === 1
+          // eslint-disable-next-line max-len
+          ? $t({ defaultMessage: 'This network is running the SD-LAN service on this venue. Are you sure you want to deactivate it?' })
+          // eslint-disable-next-line max-len
+          : $t({ defaultMessage: 'The SD-LAN service is running on one or some of the selected venues. Are you sure you want to deactivate?' }),
+        okText: $t({ defaultMessage: 'Deactivate' }),
+        onOk: () => {
+          cb()
+        }
+      })
+    } else {
+      cb()
+    }
+  }

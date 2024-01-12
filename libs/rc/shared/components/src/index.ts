@@ -157,7 +157,8 @@ export {
   useEdgeActions,
   useIsEdgeFeatureReady,
   useSdLanScopedNetworks,
-  useSdLanScopedNetworkVenues
+  useSdLanScopedNetworkVenues,
+  checkSdLanScopedNetworkDeactivateAction
 } from './useEdgeActions'
 export { EdgeServiceStatusLight } from './EdgeServiceStatusLight'
 export { PropertyManagementForm } from './PropertyManagementForm'

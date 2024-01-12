@@ -9,17 +9,17 @@ import {
   Loader,
   Table,
   TableProps,
-  Tooltip,
-  showActionModal
+  Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { transformVLAN,
   transformAps,
   transformRadios,
   transformScheduling,
   NetworkApGroupDialog,
   NetworkVenueScheduleDialog,
-  useSdLanScopedNetworks
+  useSdLanScopedNetworks,
+  checkSdLanScopedNetworkDeactivateAction
 } from '@acx-ui/rc/components'
 import {
   useAddNetworkVenueMutation,
@@ -181,17 +181,6 @@ export function VenueNetworksTab () {
     return supportOweTransition && row?.isOweMaster === false && row?.owePairNetworkId !== undefined
   }
 
-  const confirmSdLanDeactivateAction = (checked: boolean, row: Network) => {
-    showActionModal({
-      type: 'confirm',
-      title: $t({ defaultMessage: 'Deactivate network' }),
-      content: $t({ defaultMessage: 'This network is running the SD-LAN service on this venue. Are you sure you want to deactivate it?' }),
-      onOk: () => {
-        activateNetwork(checked, row)
-      }
-    })
-  }
-
   // TODO: Waiting for API support
   // const actions: TableProps<Network>['actions'] = [
   //   {
@@ -272,8 +261,10 @@ export function VenueNetworksTab () {
             checked={Boolean(row.activated?.isActivated)}
             disabled={disabled}
             onClick={(checked, event) => {
-              if (!checked && sdLanScopedNetworks.includes(row.id)) {
-                confirmSdLanDeactivateAction(checked, row)
+              if (!checked) {
+                checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworks, [row.id], () => {
+                  activateNetwork(checked, row)
+                })
               } else {
                 activateNetwork(checked, row)
               }
