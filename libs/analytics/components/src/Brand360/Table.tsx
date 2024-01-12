@@ -9,7 +9,7 @@ import { formatter }                        from '@acx-ui/formatter'
 import { noDataDisplay }                    from '@acx-ui/utils'
 
 import {
-  transformToLspView, transformToPropertyView, Property, Common, Lsp
+  transformToLspView, transformToPropertyView, Property, Common, Lsp, customSort
 } from './helpers'
 import {
   Response
@@ -36,7 +36,7 @@ export function BrandTable ({ sliceType, slaThreshold, data }:
       title: $t({ defaultMessage: 'P1 Incidents Count' }),
       dataIndex: 'p1Incidents',
       key: 'p1Incidents',
-      sorter: { compare: sortProp('p1Incidents', defaultSort) },
+      sorter: { compare: sortProp('p1Incidents', customSort) },
       render: (_, row: Common) =>
         <span
           style={{
@@ -51,7 +51,7 @@ export function BrandTable ({ sliceType, slaThreshold, data }:
       title: $t({ defaultMessage: 'Guest Experience' }),
       dataIndex: 'guestExp',
       key: 'guestExp',
-      sorter: { compare: sortProp('guestExp', defaultSort) },
+      sorter: { compare: sortProp('guestExp', customSort) },
       render: (_, row: Common) => <Tooltip
         placement='top'
         title={$t({
@@ -87,7 +87,7 @@ export function BrandTable ({ sliceType, slaThreshold, data }:
       title: $t({ defaultMessage: 'SSID Compliance' }),
       dataIndex: 'ssidCompliance',
       key: 'ssidCompliance',
-      sorter: { compare: sortProp('ssidCompliance', defaultSort) },
+      sorter: { compare: sortProp('ssidCompliance', customSort) },
       render: (_, row: Common) =>
         <span
           style={{
@@ -107,7 +107,7 @@ export function BrandTable ({ sliceType, slaThreshold, data }:
       title: $t({ defaultMessage: 'Devices Total' }),
       dataIndex: 'deviceCount',
       key: 'deviceCount',
-      sorter: { compare: sortProp('deviceCount', defaultSort) }
+      sorter: { compare: sortProp('deviceCount', customSort) }
     }
   ]
   const lspCols: TableProps<Pick<Lsp,'lsp' | 'propertyCount'>>['columns'] = [

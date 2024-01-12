@@ -12,6 +12,8 @@ import type { SliceType }                from './useSliceType'
 export type ChartKey = 'incident' | 'experience' | 'compliance'
 
 type SLARecord = [ number, number ]
+type SortResult = -1 | 0 | 1
+
 export interface Common {
   lsp: string
   p1Incidents: number
@@ -129,21 +131,24 @@ export const slaKpiConfig = {
     dataKey: 'p1Incidents',
     avg: false,
     formatter: formatter('countFormat'),
-    direction: 'low'
+    direction: 'low',
+    order: 'asc'
   },
   experience: {
     getTitle: () => defineMessage({ defaultMessage: 'Guest Experience' }),
     dataKey: 'guestExp',
     avg: true,
     formatter: formatter('percentFormat'),
-    direction: 'high'
+    direction: 'high',
+    order: 'desc'
   },
   compliance: {
     getTitle: () => defineMessage({ defaultMessage: 'Brand SSID Compliance' }),
     dataKey: 'ssidCompliance',
     avg: true,
     formatter: formatter('percentFormat'),
-    direction: 'high'
+    direction: 'high',
+    order: 'desc'
   }
 }
 
@@ -198,4 +203,10 @@ export const transformVenuesData = (
     }
     return newObj
   }, [] as Response[])
+}
+
+export function customSort (a: unknown, b: unknown): SortResult {
+  if (isNaN(a as number)) return -1
+  if (isNaN(b as number)) return 1
+  return Number(a) - Number(b) as SortResult
 }
