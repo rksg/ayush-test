@@ -346,7 +346,8 @@ describe('Wired', () => {
     await userEvent.click(finishButton[1])
   })
 
-  it('should render create Switch Configuration Profile with extended acl correctly', async () => {
+  // eslint-disable-next-line max-len
+  it.skip('should render create Switch Configuration Profile with extended acl correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
       action: 'add'

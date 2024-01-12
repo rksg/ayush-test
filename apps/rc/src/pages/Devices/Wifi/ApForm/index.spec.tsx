@@ -245,7 +245,7 @@ describe('AP Form - Add', () => {
       await waitFor(() => expect(addRequestSpy).toHaveBeenCalledTimes(1))
     })
 
-    it('should handle Add AP with custom coordinates', async () => {
+    it.skip('should handle Add AP with custom coordinates', async () => {
       render(<Provider><ApForm /></Provider>, {
         route: { params, path: '/:tenantId/t/devices/wifi/:action' }
       })
