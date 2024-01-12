@@ -39,7 +39,8 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
 
   const [deleteAdminGroup, { isLoading: isDeleteAdminUpdating }] = useDeleteAdminGroupsMutation()
   //   const [updateAdminGroup] = useUpdateAdminGroupsMutation()
-  const linkAddPriviledgePath = useTenantLink('/dashboard/varCustomers/', 't')
+  const linkAddPriviledgePath =
+    useTenantLink('/administration/userPrivileges/privilegeGroups', 't')
 
   const handleClickAdd = () => {
     navigate({
@@ -97,14 +98,14 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
           return false
         }
       },
-      label: $t({ defaultMessage: 'Edit' }),
+      label: $t({ defaultMessage: 'View' }),
       onClick: (selectedRows) => {
         // show edit dialog
         // setEditData(selectedRows[0])
         // setEditMode(true)
         navigate({
           ...linkAddPriviledgePath,
-          pathname: `${linkAddPriviledgePath.pathname}/${selectedRows[0].id}`
+          pathname: `${linkAddPriviledgePath.pathname}/edit/${selectedRows[0].id}`
         })
       }
     },
