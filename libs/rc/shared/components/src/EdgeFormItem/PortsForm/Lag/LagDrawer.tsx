@@ -21,8 +21,8 @@ import {
   getEdgePortTypeOptions
 } from '@acx-ui/rc/utils'
 
-import { EdgePortCommonForm }   from '../../PortCommonForm'
-import { EdgePortsDataContext } from '../PortDataProvider'
+import { EdgePortCommonForm }                             from '../../PortCommonForm'
+import { EdgePortsDataContext, EdgePortsDataContextType } from '../PortDataProvider'
 
 interface LagDrawerProps {
   serialNumber: string
@@ -343,30 +343,15 @@ export const LagDrawer = (props: LagDrawerProps) => {
 
     <Form.Item
       noStyle
-      shouldUpdate={(prev, cur) => {
-        return _.get(prev, 'corePortEnabled') !== _.get(cur, 'corePortEnabled')
-        || _.get(prev, 'portType') !== _.get(cur, 'portType')
-        || _.get(prev, 'lagEnabled') !== _.get(cur, 'lagEnabled')
-        || _.get(prev, 'ipMode') !== _.get(cur, 'ipMode')
-      }}
+      shouldUpdate={(prev, cur) => forceUpdateCondition(prev, cur)}
     >
       {({ getFieldsValue }) => {
         const allValues = getFieldsValue(true) as EdgeLag
-        let lagData
-        if (portsData.lagData) {
-          lagData = _.cloneDeep(portsData.lagData)
-          const targetIdx = lagData.findIndex(item => item.id === allValues.id)
-          if (targetIdx !== -1) {
-            lagData[targetIdx] = allValues
-          } else {
-            lagData.push(allValues)
-          }
-        }
 
         return <EdgePortCommonForm
           formRef={form}
           portsData={portData as EdgePort[]}
-          lagData={lagData}
+          lagData={getMergedLagData(portsData, allValues)}
           isEdgeSdLanRun={isEdgeSdLanRun}
           isListForm={false}
           formFieldsProps={{
@@ -405,4 +390,26 @@ export const LagDrawer = (props: LagDrawerProps) => {
       footer={footer}
     />
   )
+}
+
+const forceUpdateCondition = (prev:unknown, cur: unknown) => {
+  return _.get(prev, 'corePortEnabled') !== _.get(cur, 'corePortEnabled')
+        || _.get(prev, 'portType') !== _.get(cur, 'portType')
+        || _.get(prev, 'lagEnabled') !== _.get(cur, 'lagEnabled')
+        || _.get(prev, 'ipMode') !== _.get(cur, 'ipMode')
+}
+
+// Merge changed lag data and current lag data form api
+const getMergedLagData = (portsData: EdgePortsDataContextType, changedLag: EdgeLag) => {
+  let lagData
+  if (portsData.lagData) {
+    lagData = _.cloneDeep(portsData.lagData)
+    const targetIdx = lagData.findIndex(item => item.id === changedLag.id)
+    if (targetIdx !== -1) {
+      lagData[targetIdx] = changedLag
+    } else {
+      lagData.push(changedLag)
+    }
+  }
+  return lagData
 }

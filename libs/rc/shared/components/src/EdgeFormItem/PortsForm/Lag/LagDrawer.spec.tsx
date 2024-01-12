@@ -11,6 +11,7 @@ import { LagDrawer } from './LagDrawer'
 
 const { mockEdgePortConfig } = EdgePortConfigFixtures
 const { mockedEdgeLagList } = EdgeLagFixtures
+const noCoreLagList = mockedEdgeLagList.content.map(item => ({ ...item, corePortEnabled: false }))
 
 type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void
@@ -34,7 +35,7 @@ jest.mock('antd', () => {
 
 const defaultPortsContextdata = {
   portData: [],
-  lagData: mockedEdgeLagList.content as EdgeLag[],
+  lagData: noCoreLagList as EdgeLag[],
   isLoading: false,
   isFetching: false
 }
@@ -94,8 +95,10 @@ describe('EditEdge ports - LAG Drawer', () => {
     await userEvent.click(screen.getByRole('checkbox', { name: 'Port1' }))
     await userEvent.click(screen.getByRole('switch', { name: 'Port Enabled' }))
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
-    await userEvent.click(await screen.findByRole('button', { name: 'Replace with LAG settings' }))
+    const okBtn = await screen.findByRole('button', { name: 'Replace with LAG settings' })
+    await userEvent.click(okBtn)
     await waitFor(() => expect(mockedSetVisible).toBeCalled())
+    await waitFor(() => expect(okBtn).not.toBeVisible())
   })
 
   it('Should enable port when enabling LAG', async () => {
