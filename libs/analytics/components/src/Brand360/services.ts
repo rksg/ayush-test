@@ -4,6 +4,7 @@ import { IncidentsToggleFilter, calculateGranularity, incidentsToggle } from '@a
 import { dataApi }                                                      from '@acx-ui/store'
 
 export interface Response {
+  id?: string
   lsp: string
   p1Incidents: number
   ssidCompliance: [number, number]
@@ -78,13 +79,13 @@ export const api = dataApi.injectEndpoints({
         .franchisorTimeseries
     }),
     fetchBrandProperties: build.query({
-      query: ({ granularity, ...payload }: BrandTimeseriesPayload) => ({
+      query: ({ granularity, ...payload }: BrandTimeseriesPayload & IncidentsToggleFilter) => ({
         document: gql`
         query FranchisorZones(
-          $start: DateTime, 
-          $end: DateTime, 
-          $ssidRegex: String, 
-          $severity: [Range], 
+          $start: DateTime,
+          $end: DateTime,
+          $ssidRegex: String,
+          $severity: [Range],
           $code: [String]) {
           franchisorZones(
             start: $start
@@ -109,7 +110,7 @@ export const api = dataApi.injectEndpoints({
         variables: {
           ...payload,
           severity: { gt: 0.9, lte: 1 },
-          code: incidentCodes
+          code: incidentsToggle(payload)
         }
       }),
       transformResponse: (res: { franchisorZones: BrandVenuesSLA[] }) => res.franchisorZones
