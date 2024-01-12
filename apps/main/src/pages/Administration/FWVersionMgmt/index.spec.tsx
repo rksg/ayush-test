@@ -39,6 +39,13 @@ jest.mock('./ApFirmware/VenueFirmwareList', () => ({
   VenueFirmwareList: () => <div data-testid='mocked-ApFirmware-table'></div>
 }))
 
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetSwitchCurrentVersionsQuery: () => ({
+    data: require('./__tests__/fixtures').switchCurrentVersions
+  })
+}))
+
 describe('Firmware Version Management', () => {
   let params: { tenantId: string, activeTab: string, activeSubTab: string }
   beforeEach(async () => {

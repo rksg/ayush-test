@@ -31,6 +31,13 @@ const lastestFirmware = [
     category: FirmwareCategory.RECOMMENDED, createdDate: '2023-02-07T16:31:10.245+00:00'
   }]
 
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetSwitchCurrentVersionsQuery: () => ({
+    data: require('../../__tests__/fixtures').switchCurrentVersions
+  })
+}))
+
 describe('Switch Firmware Banner', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
