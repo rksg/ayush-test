@@ -43,6 +43,7 @@ const initialState:MelissaBotState = {
 
 export function MelissaBot (){
   const { $t } = useIntl()
+  const GENERIC_ERROR_MSG= $t({ defaultMessage: 'Oops! We are currently experiencing unexpected technical difficulties. Please try again later.' })
   const isMelissaBotEnabled = useIsSplitOn(Features.RUCKUS_AI_CHATBOT_TOGGLE)
   const { pathname, search } = useLocation()
   const inputRef = useRef<InputRef>(null)
@@ -83,10 +84,12 @@ export function MelissaBot (){
         const form = new FormData()
         form.append('file', file)
         await uploadFile(incidentId,form).catch((error)=>{
+          // eslint-disable-next-line no-console
+          console.error(error.message)
           setState({ ...state,isReplying: false })
           const errorMessage: Content = {
             type: 'bot',
-            contentList: [{ text: { text: [error.message] } }]
+            contentList: [{ text: { text: [GENERIC_ERROR_MSG] } }]
           }
           messages.push(errorMessage)
           setMessages(messages)
@@ -138,18 +141,21 @@ export function MelissaBot (){
         defer(doAfterResponse)
       }else{
         const errorMessage:string=get(json,'error')
-        if(errorMessage)
+        if(errorMessage){
           throw new Error(errorMessage)
+        }
         else
-          throw new Error('Something went wrong.')
+          throw new Error(GENERIC_ERROR_MSG)
       }
     }).catch((error)=>{
+      // eslint-disable-next-line no-console
+      console.error(error.message)
       setState({ ...state,
         isReplying: false,
         isInputDisabled: false })
       const errorMessage: Content = {
         type: 'bot',
-        contentList: [{ text: { text: [error.message] } }]
+        contentList: [{ text: { text: [GENERIC_ERROR_MSG] } }]
       }
       messages.push(errorMessage)
       setMessages(messages)

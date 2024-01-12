@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { calculateGranularity, incidentCodes } from '@acx-ui/analytics/utils'
-import { dataApi }                             from '@acx-ui/store'
+import { IncidentsToggleFilter, calculateGranularity, incidentsToggle } from '@acx-ui/analytics/utils'
+import { dataApi }                                                      from '@acx-ui/store'
 
 export interface Response {
   lsp: string
@@ -42,7 +42,7 @@ export interface BrandVenuesSLA {
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     fetchBrandTimeseries: build.query({
-      query: ({ granularity, ...payload }: BrandTimeseriesPayload) => ({
+      query: ({ granularity, ...payload }: BrandTimeseriesPayload & IncidentsToggleFilter) => ({
         document: gql`
         query FranchisorTimeseries(
           $start: DateTime,
@@ -71,7 +71,7 @@ export const api = dataApi.injectEndpoints({
           ...payload,
           granularity: granularity || calculateGranularity(payload.start, payload.end),
           severity: { gt: 0.9, lte: 1 },
-          code: incidentCodes
+          code: incidentsToggle(payload)
         }
       }),
       transformResponse: (res: { franchisorTimeseries: FranchisorTimeseries }) => res

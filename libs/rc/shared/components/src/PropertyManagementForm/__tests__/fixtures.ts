@@ -10,7 +10,8 @@ import {
   PropertyUnit,
   PropertyUnitStatus,
   ResidentPortal,
-  TemplateScope
+  TemplateScope,
+  Template
 } from '@acx-ui/rc/utils'
 
 const defaultPageable: NewTablePageable = {
@@ -86,7 +87,7 @@ export const mockPersonaGroup: PersonaGroup = {
   description: '',
   macRegistrationPoolId: 'mac-id-1',
   dpskPoolId: 'dpsk-pool-2',
-  nsgId: 'nsgId-700',
+  personalIdentityNetworkId: 'nsgId-700',
   propertyId: 'propertyId-100'
 }
 
@@ -111,6 +112,14 @@ export const mockedTemplateScope: TemplateScope = {
   messageType: MessageType.EMAIL,
   nameLocalizationKey: 'unit.assigned.email',
   defaultTemplateId: '746ac7b2-1ec5-412c-9354-e5ac274b7bd9'
+}
+
+export const mockAllTemplates: NewTableResult<Template> = {
+  sort: defaultPageable.sort,
+  totalElements: 1,
+  totalPages: 1,
+  pageable: defaultPageable,
+  content: []
 }
 
 export const mockResidentPortalProfileList: NewTableResult<ResidentPortal> = {

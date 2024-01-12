@@ -22,6 +22,15 @@ import {
 } from '../__tests__/fixtures'
 import { NetworkForm } from '../NetworkForm'
 
+jest.mock('../utils', () => ({
+  ...jest.requireActual('../utils'),
+  useNetworkVxLanTunnelProfileInfo: jest.fn().mockReturnValue({
+    enableTunnel: false,
+    enableVxLan: false,
+    vxLanTunnels: undefined
+  })
+}))
+
 async function fillInBeforeSettings (networkName: string) {
   const insertInput = await screen.findByLabelText(/Network Name/)
   fireEvent.change(insertInput, { target: { value: networkName } })

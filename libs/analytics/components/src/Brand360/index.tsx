@@ -17,7 +17,14 @@ import {
 } from '@acx-ui/utils'
 import { getJwtTokenPayload } from '@acx-ui/utils'
 
-import { ChartKey, computePastRange, transformLookupAndMappingData, transformVenuesData } from './helpers'
+import { useIncidentToggles } from '../useIncidentToggles'
+
+import {
+  ChartKey,
+  computePastRange,
+  transformLookupAndMappingData,
+  transformVenuesData
+} from './helpers'
 import {
   Response,
   useFetchBrandTimeseriesQuery,
@@ -59,7 +66,8 @@ export function Brand360 () {
   const chartPayload = {
     start: startDate,
     end: endDate,
-    ssidRegex: settings['brand-ssid-compliance-matcher']!
+    ssidRegex: settings['brand-ssid-compliance-matcher']!,
+    toggles: useIncidentToggles()
   }
   const mspPropertiesData = useMspCustomerListDropdownQuery(
     { params: { tenantId: getJwtTokenPayload().tenantId },payload: rcApiPayload } )

@@ -5,6 +5,7 @@ import { HTML5Backend }                  from 'react-dnd-html5-backend'
 import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
+
 import {
   Loader,
   showActionModal,
@@ -49,8 +50,11 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
   const [editMode, setEditMode] = useState(false)
   const [editData, setEditData] = useState<AdminGroup>({} as AdminGroup)
   const { data: userProfileData } = useUserProfileContext()
+  const MAX_ADMIN_GROUPS = 10
 
   const { data: adminList, isLoading, isFetching } = useGetAdminGroupsQuery({ params })
+  const shouldAddGroupEnabled = (adminList?.length && adminList.length < MAX_ADMIN_GROUPS ) || false
+  const maxAllowedGroupReached = Boolean(adminList?.length) && !shouldAddGroupEnabled
 
   const [deleteAdminGroup, { isLoading: isDeleteAdminUpdating }] = useDeleteAdminGroupsMutation()
   const [updateAdminGroup] = useUpdateAdminGroupsMutation()
@@ -69,26 +73,31 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
     {
       title: $t({ defaultMessage: 'Group Name' }),
       key: 'name',
-      dataIndex: 'name',
-      sorter: { compare: sortProp('name', defaultSort) }
+      dataIndex: 'name'
     },
     {
       title: $t({ defaultMessage: 'Group ID' }),
       key: 'groupId',
-      dataIndex: 'groupId',
-      sorter: { compare: sortProp('groupId', defaultSort) }
+      dataIndex: 'groupId'
     },
     {
       title: $t({ defaultMessage: 'Processing Priority' }),
       key: 'processingPriority',
       dataIndex: 'processingPriority',
+      defaultSortOrder: 'ascend',
+      show: false,
       sorter: { compare: sortProp('processingPriority', defaultSort) }
+    },
+    {
+      title: $t({ defaultMessage: 'Logged Members' }),
+      key: 'loggedInMembers',
+      show: false,
+      dataIndex: 'loggedInMembers'
     },
     {
       title: $t({ defaultMessage: 'Role' }),
       key: 'role',
       dataIndex: 'role',
-      sorter: { compare: sortProp('role', defaultSort) },
       render: function (_, row) {
         return row.role ? $t(roleStringMap[row.role]) : ''
       }
@@ -123,12 +132,6 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
       }
     },
     {
-      // visible: (selectedRows) => {
-      //   const allPrimeAdminSelected = isAllPrimeAdminSelected(selectedRows)
-      //   const selfSelected = isSelfSelected(selectedRows)
-      //   if (selfSelected) return false
-      //   return allPrimeAdminSelected === false
-      // },
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         showActionModal({
@@ -168,6 +171,7 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
   if (isPrimeAdminUser && tenantType !== AccountType.MSP_REC) {
     tableActions.push({
       label: $t({ defaultMessage: 'Add Group' }),
+      disabled: maxAllowedGroupReached,
       onClick: handleClickAdd
     })
   }
