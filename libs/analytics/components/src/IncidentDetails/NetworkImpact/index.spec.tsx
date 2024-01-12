@@ -53,8 +53,7 @@ describe('transformData', () => {
   it('should return correct result', async () => {
     const result = transformData(
       networkImpactChartConfigs[NetworkImpactChartTypes.WLAN],
-      networkImpactData.incident.WLAN,
-      'assoc-failure'
+      networkImpactData.incident.WLAN
     )
     expect(result).toEqual([
       { color: '#66B1E8', key: 'ssid1', name: 'ssid1', value: 2 },
@@ -64,8 +63,7 @@ describe('transformData', () => {
   it('should return correct result for airtime', async () => {
     const result = transformData(
       networkImpactChartConfigs[NetworkImpactChartTypes.AirtimeBusy],
-      networkImpactData.incident[NetworkImpactChartTypes.AirtimeBusy],
-      'p-airtime-b-5g-high'
+      networkImpactData.incident[NetworkImpactChartTypes.AirtimeBusy]
     )
     expect(result).toEqual([
       { color: '#66B1E8', key: 'airtimeBusy', name: 'Avg Airtime Busy', value: 0.5 },
@@ -150,6 +148,12 @@ describe('NetworkImpact', () => {
       dimension: 'airtimeBusy'
     },
     {
+      chart: NetworkImpactChartTypes.AirtimeClientsByAP,
+      query: NetworkImpactQueryTypes.Distribution,
+      type: 'airtimeClientsByAP',
+      dimension: 'summary'
+    },
+    { // config disabled, chart not disabled
       chart: NetworkImpactChartTypes.AirtimeClientsByAP,
       query: NetworkImpactQueryTypes.Distribution,
       type: 'airtimeClientsByAP',
