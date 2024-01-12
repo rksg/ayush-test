@@ -6,14 +6,17 @@ import { HistoricalCard, Loader, NoActiveData, DonutChart, DonutChartData, cssSt
 import { useNavigateToPath }                                                        from '@acx-ui/react-router-dom'
 import { hasAccess }                                                                from '@acx-ui/user'
 
+import { useIncidentToggles } from '../useIncidentToggles'
+
 import { useIncidentsBySeverityDashboardv2Query } from './services'
 import * as UI                                    from './styledComponents'
 
 export function IncidentsDashboardv2 ({ filters }: { filters: IncidentFilter }) {
   const { $t } = useIntl()
+  const toggles = useIncidentToggles()
   const onArrowClick = useNavigateToPath('/analytics/incidents/')
 
-  const response = useIncidentsBySeverityDashboardv2Query(filters)
+  const response = useIncidentsBySeverityDashboardv2Query({ ...filters, toggles })
   const { data: severities } = response
 
   const incidentCountBySeverity: { [severity: string] : number } = {}
