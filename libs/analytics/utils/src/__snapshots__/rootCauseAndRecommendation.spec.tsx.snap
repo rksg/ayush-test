@@ -169,7 +169,21 @@ Array [
                   "children": Array [
                     Object {
                       "type": 0,
-                      "value": "Remove rogue APs in your premises.",
+                      "value": "Click ",
+                    },
+                    Object {
+                      "children": Array [
+                        Object {
+                          "type": 0,
+                          "value": "here",
+                        },
+                      ],
+                      "type": 8,
+                      "value": "rogueapdrawer",
+                    },
+                    Object {
+                      "type": 0,
+                      "value": " for a list of rogue APs for removal in your premises.",
                     },
                   ],
                   "type": 8,
@@ -177,7 +191,7 @@ Array [
                 },
               ]
             }
-            id="EzBTep"
+            id="U89dBh"
             values={
               Object {
                 "li": [Function],
