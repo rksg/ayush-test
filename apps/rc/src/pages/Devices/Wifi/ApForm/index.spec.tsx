@@ -3,7 +3,7 @@ import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
 
 import { useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
-import { apApi, venueApi }                                                        from '@acx-ui/rc/services'
+import { administrationApi, apApi, firmwareApi, venueApi }                        from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo, CommonUrlsInfo, FirmwareUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                                        from '@acx-ui/store'
 import {
@@ -162,7 +162,9 @@ describe('AP Form - Add', () => {
   const params = { tenantId: 'tenant-id', action: 'add' }
   const addRequestSpy = jest.fn()
   beforeEach(() => {
+    store.dispatch(administrationApi.util.resetApiState())
     store.dispatch(apApi.util.resetApiState())
+    store.dispatch(firmwareApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
     initialize()
     mockServer.use(

@@ -1,9 +1,10 @@
 import { rest } from 'msw'
 
 import { useIsEdgeFeatureReady }                                                              from '@acx-ui/rc/components'
+import { networkApi, tunnelProfileApi }                                                       from '@acx-ui/rc/services'
 import { CommonUrlsInfo, getPolicyRoutePath, PolicyOperation, PolicyType, TunnelProfileUrls } from '@acx-ui/rc/utils'
 import { EdgeTunnelProfileFixtures }                                                          from '@acx-ui/rc/utils'
-import { Provider }                                                                           from '@acx-ui/store'
+import { Provider, store }                                                                    from '@acx-ui/store'
 import { mockServer, render, screen }                                                         from '@acx-ui/test-utils'
 
 import { mockedNetworkViewData } from '../__tests__/fixtures'
@@ -38,7 +39,8 @@ describe('TunnelProfileDetail', () => {
       tenantId: tenantId,
       policyId: 'testPolicyId'
     }
-
+    store.dispatch(tunnelProfileApi.util.resetApiState())
+    store.dispatch(networkApi.util.resetApiState())
     mockServer.use(
       rest.post(
         TunnelProfileUrls.getTunnelProfileViewDataList.url,
