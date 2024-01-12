@@ -16,6 +16,8 @@ export enum CRRMStates {
   nonOptimized = 'nonOptimized',
   verified = 'verified',
   insufficientLicenses = 'insufficientLicenses',
+  unqualifiedZone = 'unqualifiedZone',
+  noAps = 'noAps',
   verificationError = 'verificationError'
 }
 
@@ -30,6 +32,8 @@ export const crrmStates: Record<CRRMStates, IconValue> = {
   [CRRMStates.nonOptimized]: { order: 1, label: defineMessage({ defaultMessage: 'Non-Optimized' }) },
   [CRRMStates.verified]: { order: 0, label: defineMessage({ defaultMessage: 'Verified' }) },
   [CRRMStates.insufficientLicenses]: { order: 2, label: defineMessage({ defaultMessage: 'Insufficient Licenses' }) },
+  [CRRMStates.unqualifiedZone]: { order: 2, label: defineMessage({ defaultMessage: 'Unqualified Zone' }) },
+  [CRRMStates.noAps]: { order: 2, label: defineMessage({ defaultMessage: 'No APs' }) },
   [CRRMStates.verificationError]: { order: 2, label: defineMessage({ defaultMessage: 'Verification Error' }) }
 }
 
@@ -153,6 +157,14 @@ export const states = {
   deleted: {
     text: defineMessage({ defaultMessage: 'Deleted' }),
     tooltip: defineMessage({ defaultMessage: 'Deleted' })
+  },
+  unqualifiedZone: {
+    text: crrmStates[CRRMStates.unqualifiedZone].label,
+    tooltip: crrmStates[CRRMStates.unqualifiedZone].label
+  },
+  noAps: {
+    text: crrmStates[CRRMStates.noAps].label,
+    tooltip: crrmStates[CRRMStates.noAps].label
   },
   insufficientLicenses: {
     text: crrmStates[CRRMStates.insufficientLicenses].label,
@@ -502,6 +514,16 @@ export const codes = {
       format: formatter('countFormat'),
       deltaSign: '-'
     }]
+  },
+  'unqualifiedZone': {
+    category: crrmStates[CRRMStates.unqualifiedZone].label,
+    summary: crrmStates[CRRMStates.unqualifiedZone].label,
+    priority: priorities.low
+  },
+  'noAps': {
+    category: crrmStates[CRRMStates.noAps].label,
+    summary: crrmStates[CRRMStates.noAps].label,
+    priority: priorities.low
   },
   'insufficientLicenses': {
     category: crrmStates[CRRMStates.insufficientLicenses].label,
