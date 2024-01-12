@@ -120,7 +120,7 @@ export function ApForm () {
   const [gpsModalVisible, setGpsModalVisible] = useState(false)
   const [deviceGps, setDeviceGps] = useState(null as DeviceGps | null)
   const [changeMgmtVlan, setChangeMgmtVlan] = useState(false)
-  const [isVenueSameCountry, setIsVenueSameCountry] = useState(true)
+  const [isVenueSameCountry, setIsVenueSameCountry] = useState(false)
   const [dhcpRoleDisabled, setDhcpRoleDisabled] = useState(false)
   const [apMeshRoleDisabled, setApMeshRoleDisabled] = useState(false)
   const [cellularApModels, setCellularApModels] = useState([] as string[])
@@ -417,6 +417,11 @@ export function ApForm () {
   }
 
   const displayAFCGeolocation = () : boolean => {
+
+    // Should not display under Add AP. Only display under edit mode
+    if (!isEditMode) {
+      return false
+    }
 
     // Get ap info separately in case apStatusData is undefined and have no check
     const apInfo = apList?.data?.[0]
