@@ -83,9 +83,10 @@ export type Recommendation = {
   path: NetworkPath
   idPath: NetworkPath
   preferences?: {
-    fullOptimization: boolean
+    crrmFullOptimization: boolean
   }
   statusTrail: StatusTrail
+  toggles?: { crrmFullOptimization: boolean }
 }
 
 export type RecommendationListItem = Recommendation & {
@@ -125,10 +126,9 @@ interface ScheduleResponse {
 }
 
 interface PreferencePayload {
-  code: string
   path: NetworkPath
   preferences: {
-    fullOptimization: boolean
+    crrmFullOptimization: boolean
   }
 }
 
@@ -376,11 +376,11 @@ export const api = recommendationApi.injectEndpoints({
       }),
       transformResponse: (response: Response<Recommendation>) => {
         const { $t } = getIntl()
-        return response.recommendations.map(recommendation => {
+        const items = response.recommendations.map(recommendation => {
           const {
             id, path, sliceValue, sliceType, code, status, metadata, updatedAt
           } = recommendation
-          const isFullOptimized = !!_.get(metadata, 'algorithmData.isFullOptimized', true)
+          const isFullOptimization = !!_.get(metadata, 'algorithmData.isCrrmFullOptimization', true)
           const newId = id === 'unknown' ? uniqueId() : id
           const statusEnum = status as StateType
           const getCode = code === 'unknown'
@@ -389,6 +389,7 @@ export const api = recommendationApi.injectEndpoints({
           return {
             ...recommendation,
             id: newId,
+            pathKey: JSON.stringify(recommendation.idPath),
             scope: formattedPath(path, sliceValue),
             type: nodeTypes(sliceType as NodeType),
             priority: {
@@ -396,7 +397,7 @@ export const api = recommendationApi.injectEndpoints({
               text: $t(codes[getCode].priority.label)
             },
             category: $t(codes[getCode].category),
-            summary: isFullOptimized
+            summary: isFullOptimization || code === 'unknown'
               ? $t(codes[getCode].summary)
               : $t(codes[getCode].partialOptimizedSummary!),
             status: $t(states[statusEnum].text),
@@ -408,6 +409,22 @@ export const api = recommendationApi.injectEndpoints({
                 text: $t(getCrrmOptimizedState(statusEnum).label)
               }
             })
+          }
+        })
+
+        // eslint-disable-next-line max-len
+        const appliedStates = ['applyscheduled', 'applyscheduleinprogress', 'applied', 'revertscheduled', 'revertscheduleinprogress', 'revertfailed', 'applywarning']
+        const grouped = _.groupBy(items, 'pathKey')
+
+        return items.map(({ pathKey, ...item }) => {
+          if (item.code === 'unknown') return { ...item, toggles: { crrmFullOptimization: true } }
+          if (!item.code.startsWith('c-crrm')) return item
+          return {
+            ...item,
+            toggles: {
+              crrmFullOptimization: grouped[pathKey]
+                .every(v => !appliedStates.includes(v.statusEnum))
+            }
           }
         })
       },
@@ -506,29 +523,13 @@ export const api = recommendationApi.injectEndpoints({
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }]
     }),
     setPreference: build.mutation<PreferenceResponse, PreferencePayload>({
-      query: (payload) => ({
+      query: (variables) => ({
+        variables,
         document: gql`
-          mutation SetPreference(
-            $code: String,
-            $path: [HierarchyNodeInput],
-            $preferences: JSON
-          ) {
-            setPreference(
-              code: $code,
-              path: $path,
-              preferences: $preferences
-            ) {
-              success
-              errorMsg
-              errorCode
-            }
+          mutation SetPreference($path: [HierarchyNodeInput], $preferences: JSON) {
+            setPreference(path: $path, preferences: $preferences) { success errorMsg errorCode }
           }
-        `,
-        variables: {
-          code: payload.code,
-          path: payload.path,
-          preferences: payload.preferences
-        }
+        `
       }),
       invalidatesTags: [
         { type: 'Monitoring', id: 'RECOMMENDATION_LIST' },
