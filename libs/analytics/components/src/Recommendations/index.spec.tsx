@@ -336,11 +336,11 @@ describe('RecommendationTabContent', () => {
     await userEvent.click(await screen.findByText('Show Muted Recommendations'))
     const appliedRow = screen.getByRole('row', {
       // eslint-disable-next-line max-len
-      name: /Optimized 06\/16\/2023 06:05 Optimal Ch\/Width and Tx Power found for 5 GHz radio zone-1 Applied 2024-01-11 2024-01-11/i
+      name: /Optimized 06\/16\/2023 06:05 Optimal Ch\/Width and Tx Power found for 5 GHz radio zone-1 Applied/i
     })
     const newRow = screen.getByRole('row', {
       // eslint-disable-next-line max-len
-      name: /Non-Optimized 06\/16\/2023 06:05 Optimal Ch\/Width and Tx Power found for 2.4 GHz radio zone-1 New 2024-01-11 2024-01-11/i
+      name: /Non-Optimized 06\/16\/2023 06:05 Optimal Ch\/Width and Tx Power found for 2.4 GHz radio zone-1 New/i
     })
     expect(within(appliedRow).getByRole('switch')).toBeDisabled()
     expect(within(newRow).getByRole('switch')).toBeDisabled()
