@@ -78,7 +78,7 @@ export const api = dataApi.injectEndpoints({
         .franchisorTimeseries
     }),
     fetchBrandProperties: build.query({
-      query: ({ granularity, ...payload }: BrandTimeseriesPayload) => ({
+      query: ({ granularity, ...payload }: BrandTimeseriesPayload & IncidentsToggleFilter) => ({
         document: gql`
         query FranchisorZones(
           $start: DateTime, 
@@ -109,7 +109,7 @@ export const api = dataApi.injectEndpoints({
         variables: {
           ...payload,
           severity: { gt: 0.9, lte: 1 },
-          code: incidentCodes
+          code: incidentsToggle(payload)
         }
       }),
       transformResponse: (res: { franchisorZones: BrandVenuesSLA[] }) => res.franchisorZones
