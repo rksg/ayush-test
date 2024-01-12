@@ -441,7 +441,7 @@ describe('IncidentTable', () => {
     })
     fireEvent.click(
       await screen.findByText(
-        'Airtime Utilization is unusually high in 2.4 GHz in Venue: SV-AX-APs'
+        'Airtime Rx is unusually high in 2.4 GHz in Venue: SV-AX-APs'
       )
     )
     expect(await screen.findByText('Root cause:')).toBeVisible()

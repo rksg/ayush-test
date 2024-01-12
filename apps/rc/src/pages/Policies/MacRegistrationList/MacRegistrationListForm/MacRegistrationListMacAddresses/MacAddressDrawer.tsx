@@ -5,6 +5,7 @@ import _               from 'lodash'
 import { useIntl }     from 'react-intl'
 
 import { Drawer, showToast }         from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { ExpirationDateSelector }    from '@acx-ui/rc/components'
 import {
   useAddMacRegistrationMutation, useLazyMacRegistrationsQuery,
@@ -38,6 +39,8 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
   const [editMacRegistration] = useUpdateMacRegistrationMutation()
   const { policyId } = useParams()
   const [ macReg ] = useLazyMacRegistrationsQuery()
+  const isAsync = useIsSplitOn(Features.CLOUDPATH_ASYNC_API_TOGGLE)
+  const customHeaders = (isAsync) ? { Accept: 'application/vnd.ruckus.v2+json' } : undefined
 
   const macAddressValidator = async (macAddress: string) => {
     const list = (await macReg({
@@ -94,22 +97,27 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
         await editMacRegistration(
           {
             params: { policyId, registrationId: editData?.id },
-            payload: _.omit(payload, 'macAddress')
+            payload: _.omit(payload, 'macAddress'),
+            customHeaders
           }).unwrap()
       } else {
         await addMacRegistration({
           params: { policyId },
-          payload
+          payload,
+          customHeaders
         }).unwrap()
       }
-      showToast({
-        type: 'success',
-        content: intl.$t(
-          // eslint-disable-next-line max-len
-          { defaultMessage: 'MAC Address {name} was {isEdit, select, true {updated} other {added}}' },
-          { name: data.macAddress, isEdit }
-        )
-      })
+
+      if (!isAsync) {
+        showToast({
+          type: 'success',
+          content: intl.$t(
+            // eslint-disable-next-line max-len
+            { defaultMessage: 'MAC Address {name} was {isEdit, select, true {updated} other {added}}' },
+            { name: data.macAddress, isEdit }
+          )
+        })
+      }
       onClose()
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error) {

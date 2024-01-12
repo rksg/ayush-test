@@ -8,7 +8,9 @@ import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved }     
 
 import { TopologyGraph } from '.'
 
+
 jest.mock('@acx-ui/analytics/components', () => ({
+  useIncidentToggles: () => ({}),
   useIncidentsBySeverityQuery: () => ([])
 }))
 

@@ -54,8 +54,11 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
   const [membersGroupId, setMemberGroupId] = useState('')
   const [membersDrawerVisible, setMembersDrawerVisible] = useState(false)
   const { data: userProfileData } = useUserProfileContext()
+  const MAX_ADMIN_GROUPS = 10
 
   const { data: adminList, isLoading, isFetching } = useGetAdminGroupsQuery({ params })
+  const shouldAddGroupEnabled = (adminList?.length && adminList.length < MAX_ADMIN_GROUPS ) || false
+  const maxAllowedGroupReached = Boolean(adminList?.length) && !shouldAddGroupEnabled
 
   const [deleteAdminGroup, { isLoading: isDeleteAdminUpdating }] = useDeleteAdminGroupsMutation()
   const [updateAdminGroup] = useUpdateAdminGroupsMutation()
@@ -147,12 +150,6 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
       }
     },
     {
-      // visible: (selectedRows) => {
-      //   const allPrimeAdminSelected = isAllPrimeAdminSelected(selectedRows)
-      //   const selfSelected = isSelfSelected(selectedRows)
-      //   if (selfSelected) return false
-      //   return allPrimeAdminSelected === false
-      // },
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         showActionModal({
@@ -192,6 +189,7 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
   if (isPrimeAdminUser && tenantType !== AccountType.MSP_REC) {
     tableActions.push({
       label: $t({ defaultMessage: 'Add Group' }),
+      disabled: maxAllowedGroupReached,
       onClick: handleClickAdd
     })
   }

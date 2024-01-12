@@ -85,9 +85,8 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
     if (userProfile) {
       const lang = userProfile?.preferredLanguage
       const browserLang = detectBrowserLang()
-      const isBrowserDialog = Boolean(localStorage.getItem('isBrowserDialog'))
       const openDialog = browserLang !== DEFAULT_SYS_LANG && browserLang !== lang
-      if (openDialog && isNonProdEnv() && !isBrowserDialog) {
+      if (openDialog && isNonProdEnv()) {
         const userPreflang = showBrowserLangDialog()
         userPreflang.then((dialogResult) => {
           // update user profile - 'yes' language change
@@ -143,7 +142,8 @@ function DataGuardLoader (props: React.PropsWithChildren) {
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
     states={[{ isLoading:
         !Boolean(locale.messages) ||
-        !Boolean(userProfile.allowedOperations.length)
+        !Boolean(userProfile.allowedOperations.length) ||
+        !Boolean(userProfile.accountTier)
     }]}
     children={props.children}
   />

@@ -258,7 +258,9 @@ describe('AllRoutes', () => {
       profile: {
         ...getUserProfile().profile,
         roles: [RolesEnum.READ_ONLY]
-      }
+      },
+      accountTier: 'Gold',
+      betaEnabled: false
     })
 
     rerender(<AllRoutes />)
