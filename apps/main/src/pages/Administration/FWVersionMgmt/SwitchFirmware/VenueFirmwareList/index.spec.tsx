@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { firmwareApi } from '@acx-ui/rc/services'
+import { firmwareApi }                       from '@acx-ui/rc/services'
 import {
-  FirmwareUrlsInfo
+  FirmwareUrlsInfo, SwitchFirmwareFixtures
 } from '@acx-ui/rc/utils'
 import {
   Provider, store
@@ -26,6 +26,8 @@ import {
 
 import { VenueFirmwareList } from '.'
 
+const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
+
 jest.mock('./SwitchUpgradeWizard', () => ({
   ...jest.requireActual('./SwitchUpgradeWizard'),
   SwitchUpgradeWizard: () => {
@@ -43,7 +45,7 @@ jest.mock('./VenueStatusDrawer', () => ({
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useGetSwitchCurrentVersionsQuery: () => ({
-    data: require('../../__tests__/fixtures').switchCurrentVersions
+    data: mockSwitchCurrentVersions
   })
 }))
 

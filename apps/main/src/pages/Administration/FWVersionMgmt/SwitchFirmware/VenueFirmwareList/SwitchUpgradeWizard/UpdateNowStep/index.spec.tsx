@@ -1,7 +1,8 @@
 import userEvent       from '@testing-library/user-event'
 import { Form, Modal } from 'antd'
 
-import { Provider } from '@acx-ui/store'
+import { SwitchFirmwareFixtures } from '@acx-ui/rc/utils'
+import { Provider }               from '@acx-ui/store'
 import {
   render,
   screen
@@ -13,6 +14,8 @@ import {
 } from '../../__test__/fixtures'
 
 import { UpdateNowStep } from '.'
+
+const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
 
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
@@ -28,7 +31,7 @@ jest.mock('@acx-ui/components', () => ({
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useGetSwitchCurrentVersionsQuery: () => ({
-    data: require('../../../../__tests__/fixtures').switchCurrentVersions
+    data: mockSwitchCurrentVersions
   })
 }))
 

@@ -3,7 +3,8 @@ import { Form, Modal } from 'antd'
 
 import {
   FirmwareSwitchVenue,
-  SwitchFirmware
+  SwitchFirmware,
+  SwitchFirmwareFixtures
 } from '@acx-ui/rc/utils'
 import {
   Provider
@@ -23,6 +24,7 @@ import {
 
 import { ScheduleStep } from '.'
 
+const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
 
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
@@ -38,7 +40,7 @@ jest.mock('@acx-ui/components', () => ({
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useGetSwitchCurrentVersionsQuery: () => ({
-    data: require('../../../../__tests__/fixtures').switchCurrentVersions
+    data: mockSwitchCurrentVersions
   })
 }))
 

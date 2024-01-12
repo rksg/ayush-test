@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import {
-  FirmwareUrlsInfo, SwitchUrlsInfo
+  FirmwareUrlsInfo, SwitchFirmwareFixtures, SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
 import {
   Provider
@@ -23,6 +23,9 @@ import {
   switchLatest
 } from '../__test__/fixtures'
 
+const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
+
+const retryRequestSpy = jest.fn()
 
 jest.mock('./SwitchUpgradeWizard', () => ({
   ...jest.requireActual('./SwitchUpgradeWizard'),
@@ -31,12 +34,10 @@ jest.mock('./SwitchUpgradeWizard', () => ({
   }
 }))
 
-const retryRequestSpy = jest.fn()
-
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useGetSwitchCurrentVersionsQuery: () => ({
-    data: require('../../../__tests__/fixtures').switchCurrentVersions
+    data: mockSwitchCurrentVersions
   })
 }))
 

@@ -2,7 +2,8 @@ import { rest } from 'msw'
 
 import {
   FirmwareCategory,
-  FirmwareUrlsInfo
+  FirmwareUrlsInfo,
+  SwitchFirmwareFixtures
 } from '@acx-ui/rc/utils'
 import {
   Provider
@@ -13,13 +14,14 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-
 import {
   switchVenue,
   switchRelease
 } from '../../__tests__/fixtures'
 
 import VersionBanner from '.'
+
+const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
 
 const lastestFirmware = [
   {
@@ -34,7 +36,7 @@ const lastestFirmware = [
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useGetSwitchCurrentVersionsQuery: () => ({
-    data: require('../../__tests__/fixtures').switchCurrentVersions
+    data: mockSwitchCurrentVersions
   })
 }))
 

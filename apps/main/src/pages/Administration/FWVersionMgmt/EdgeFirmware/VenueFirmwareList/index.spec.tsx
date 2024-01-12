@@ -2,18 +2,20 @@ import userEvent             from '@testing-library/user-event'
 import { Modal, ModalProps } from 'antd'
 import { rest }              from 'msw'
 
-import { useIsSplitOn }                                from '@acx-ui/feature-toggle'
-import { firmwareApi }                                 from '@acx-ui/rc/services'
-import { FirmwareUrlsInfo }                            from '@acx-ui/rc/utils'
+import { useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { firmwareApi }     from '@acx-ui/rc/services'
+import { FirmwareUrlsInfo,
+  SwitchFirmwareFixtures }                            from '@acx-ui/rc/utils'
 import { Provider, store }                             from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import { switchCurrentVersions }                                from '../../__tests__/fixtures'
 import { availableVersions, preferenceData, venueFirmwareList } from '../__tests__/fixtures'
 
 import { ChangeScheduleDialogProps } from './ChangeScheduleDialog'
 
 import { VenueFirmwareList } from '.'
+
+const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
 
 const MockModal = (props: ModalProps) => <Modal {...props} />
 
@@ -85,7 +87,7 @@ describe('Edge venue firmware list', () => {
       ),
       rest.get(
         FirmwareUrlsInfo.getSwitchCurrentVersions.url,
-        (req, res, ctx) => res(ctx.json(switchCurrentVersions))
+        (req, res, ctx) => res(ctx.json(mockSwitchCurrentVersions))
       )
     )
     params = {
