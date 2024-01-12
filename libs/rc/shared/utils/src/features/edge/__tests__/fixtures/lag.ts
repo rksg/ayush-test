@@ -23,7 +23,7 @@ export const mockedEdgeLagList = {
       ip: '',
       subnet: '',
       gateway: '',
-      corePortEnabled: true,
+      corePortEnabled: false,
       natEnabled: true,
       lagEnabled: true
     },

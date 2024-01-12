@@ -97,4 +97,54 @@ describe('EditEdge ports - LAG Drawer', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Replace with LAG settings' }))
     await waitFor(() => expect(mockedSetVisible).toBeCalled())
   })
+
+  it('Should enable port when enabling LAG', async () => {
+    render(
+      <Provider>
+        <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+          <LagDrawer
+            serialNumber={mockedEdgeID}
+            visible={true}
+            setVisible={mockedSetVisible}
+            portList={mockEdgePortConfig.ports}
+          />
+        </EdgePortsDataContext.Provider>
+      </Provider>)
+
+    const lagEnabled = screen.getByRole('switch', { name: /lag enabled/i })
+    await userEvent.click(lagEnabled)
+    await waitFor(() => expect(lagEnabled).toBeChecked())
+    await userEvent.click(await screen.findByRole('checkbox', { name: 'Port1' }))
+    await userEvent.click(await screen.findByRole('checkbox', { name: 'Port2' }))
+    const portEnableds = await screen.findAllByRole('switch', { name: 'Port Enabled' })
+    for(let portEnabled of portEnableds) {
+      await waitFor(() => expect(portEnabled).toBeChecked())
+    }
+  })
+
+  it('Should pop up a dialog when disabling LAG', async () => {
+    render(
+      <Provider>
+        <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+          <LagDrawer
+            serialNumber={mockedEdgeID}
+            visible={true}
+            setVisible={mockedSetVisible}
+            portList={mockEdgePortConfig.ports}
+          />
+        </EdgePortsDataContext.Provider>
+      </Provider>)
+
+    const lagEnabled = screen.getByRole('switch', { name: /lag enabled/i })
+    await userEvent.click(lagEnabled)
+    await waitFor(() => expect(lagEnabled).toBeChecked())
+    await userEvent.click(lagEnabled)
+    const warningStr = await screen.findByText('Warning')
+    expect(warningStr).toBeVisible()
+    const disableButton = screen.getByRole('button', { name: 'Disable' })
+    await userEvent.click(disableButton)
+    await waitFor(() => expect(warningStr).not.toBeVisible())
+    await waitFor(() => expect(disableButton).not.toBeVisible())
+    await waitFor(() => expect(lagEnabled).not.toBeChecked())
+  })
 })

@@ -52,11 +52,10 @@ export const LagDrawer = (props: LagDrawerProps) => {
   const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
   const portTypeOptions = getEdgePortTypeOptions($t)
     .filter(item => item.value !== EdgePortTypeEnum.UNCONFIGURED)
-  const [formRef] = Form.useForm()
+  const [form] = Form.useForm()
   const [enabledPorts, setEnabledPorts] = useState<string[]>()
-  const lagMembers = Form.useWatch('lagMembers', formRef) as string[]
-  Form.useWatch('ipMode', formRef)
-  Form.useWatch('portType', formRef)
+  const lagMembers = Form.useWatch('lagMembers', form) as string[]
+  const lagEnabled = Form.useWatch('lagEnabled', form) as string[]
 
   const [addEdgeLag] = useAddEdgeLagMutation()
   const [updateEdgeLag] = useUpdateEdgeLagMutation()
@@ -83,8 +82,8 @@ export const LagDrawer = (props: LagDrawerProps) => {
 
   useEffect(() => {
     if(visible) {
-      formRef.resetFields()
-      formRef.setFieldsValue({
+      form.resetFields()
+      form.setFieldsValue({
         ...defaultFormValues,
         ...data,
         lagMembers: data?.lagMembers.map(item => item.portId)
@@ -92,7 +91,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
       setEnabledPorts(data?.lagMembers.filter(item => item.portEnabled)
         .map(item => item.portId))
     }
-  }, [visible, formRef, data])
+  }, [visible, form, data])
 
   const lagNameOptions = [
     { label: 0,value: 0 },
@@ -141,12 +140,12 @@ export const LagDrawer = (props: LagDrawerProps) => {
   }
 
   const handleSave = async () => {
-    formRef.submit()
+    form.submit()
   }
 
   const handleFinish = async () => {
     try {
-      const formData = formRef.getFieldsValue(true)
+      const formData = form.getFieldsValue(true)
       // exclude id first, then add it when need
       const { id, ...otherFormData } = formData
       const payload = {
@@ -200,12 +199,36 @@ export const LagDrawer = (props: LagDrawerProps) => {
   const handleFormChange = async (changedValues: Partial<EdgeLag>) => {
     if (changedValues.portType) {
       handlePortTypeChange(changedValues['portType'])
+    }else if(changedValues.lagEnabled !== undefined) {
+      if(changedValues.lagEnabled) {
+        setEnabledPorts(lagMembers)
+      } else {
+        showActionModal({
+          type: 'confirm',
+          title: $t({ defaultMessage: 'Warning' }),
+          content: $t({
+            defaultMessage: `Modify this options may cause the Edge lost
+            connection with the controller`
+          }),
+          okText: $t({ defaultMessage: 'Disable' }),
+          onOk: () => {
+            setEnabledPorts([])
+          },
+          onCancel: () => {
+            form.setFieldValue('lagEnabled', true)
+          }
+        })
+      }
+    } else if (changedValues.lagMembers) {
+      if(lagEnabled) {
+        setEnabledPorts(changedValues.lagMembers as unknown as string[])
+      }
     }
   }
 
   const handlePortTypeChange = (changedValue: EdgePortTypeEnum | undefined) => {
     if (changedValue === EdgePortTypeEnum.LAN) {
-      formRef.setFieldValue('ipMode', EdgeIpModeEnum.STATIC)
+      form.setFieldValue('ipMode', EdgeIpModeEnum.STATIC)
     }
   }
 
@@ -235,7 +258,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
 
   const drawerContent = <Form
     layout='vertical'
-    form={formRef}
+    form={form}
     onFinish={handleFinish}
     onValuesChange={handleFormChange}
   >
@@ -324,6 +347,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
         return _.get(prev, 'corePortEnabled') !== _.get(cur, 'corePortEnabled')
         || _.get(prev, 'portType') !== _.get(cur, 'portType')
         || _.get(prev, 'lagEnabled') !== _.get(cur, 'lagEnabled')
+        || _.get(prev, 'ipMode') !== _.get(cur, 'ipMode')
       }}
     >
       {({ getFieldsValue }) => {
@@ -334,13 +358,13 @@ export const LagDrawer = (props: LagDrawerProps) => {
           const targetIdx = lagData.findIndex(item => item.id === allValues.id)
           if (targetIdx !== -1) {
             lagData[targetIdx] = allValues
+          } else {
+            lagData.push(allValues)
           }
-        } else {
-          lagData = [allValues]
         }
 
         return <EdgePortCommonForm
-          formRef={formRef}
+          formRef={form}
           portsData={portData as EdgePort[]}
           lagData={lagData}
           isEdgeSdLanRun={isEdgeSdLanRun}
