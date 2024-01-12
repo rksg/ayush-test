@@ -75,7 +75,7 @@ export const defaultApPayload = {
     'name', 'deviceStatus', 'model', 'IP', 'apMac', 'venueName',
     'switchName', 'meshRole', 'clients', 'deviceGroupName',
     'apStatusData', 'tags', 'serialNumber',
-    'venueId', 'poePort', 'fwVersion'
+    'venueId', 'poePort', 'fwVersion', 'apRadioDeploy'
   ]
 }
 
