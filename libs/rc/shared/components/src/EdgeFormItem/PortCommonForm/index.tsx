@@ -278,8 +278,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                 placement='topRight'
                 title={
                   // eslint-disable-next-line max-len
-                  // TODO: still waiting for PLM
-                  $t({ defaultMessage: 'core port' })
+                  $t({ defaultMessage: 'Utilized for SD-LAN service, the core port on this SmartEdge establishes tunnels for directing data traffic effectively' })
                 }
               >
                 <UI.StyledQuestionIcon />

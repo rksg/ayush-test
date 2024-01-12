@@ -11,6 +11,8 @@ import { Incident }      from '@acx-ui/analytics/utils'
 import { Tooltip }       from '@acx-ui/components'
 import { useDateFilter } from '@acx-ui/utils'
 
+import { useIncidentToggles } from '../useIncidentToggles'
+
 import {
   ClientTroubleShootingConfig,
   TYPES,
@@ -60,6 +62,7 @@ type CoordDisplayEvent = DisplayEvent & {
 export function TimeLine (props: TimeLineProps) {
   const { $t } = useIntl()
   const intl = useIntl()
+  const toggles = useIncidentToggles()
   const {
     data, filters, connectChart, sharedChartName, onChartReady,
     popoverRef, setEventState, setVisible
@@ -117,7 +120,7 @@ export function TimeLine (props: TimeLineProps) {
     )
   }
 
-  const TimelineData = getTimelineData(events, incidents)
+  const TimelineData = getTimelineData(events, incidents, toggles)
   const roamingEventsAps = connectionDetailsByAP(data?.connectionDetailsByAp as RoamingByAP[])
   const roamingEventsTimeSeries = connectionDetailsByApChartData(
     data?.connectionDetailsByAp as RoamingByAP[]

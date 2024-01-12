@@ -5,7 +5,7 @@ import _                                       from 'lodash'
 import { useIntl }                             from 'react-intl'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
-import { IncidentsBySeverityData, useLazyIncidentsListBySeverityQuery }                                        from '@acx-ui/analytics/components'
+import { IncidentsBySeverityData, useIncidentToggles, useLazyIncidentsListBySeverityQuery }                    from '@acx-ui/analytics/components'
 import { ColumnType, Loader, StackedBarChart, Table, TableProps, cssStr, deviceStatusColors, showActionModal } from '@acx-ui/components'
 import { useApGroupsListQuery, useDeleteApGroupsMutation }                                                     from '@acx-ui/rc/services'
 import { ApGroupViewModel, FILTER, TableQuery, getFilters, transformDisplayNumber, usePollingTableQuery }      from '@acx-ui/rc/utils'
@@ -61,6 +61,7 @@ const defaultTableData: ApGroupViewModel[] = []
 
 export const ApGroupTable = (props : ApGroupTableProps) => {
   const { $t } = useIntl()
+  const toggles = useIncidentToggles()
   const navigate = useNavigate()
   const location = useLocation()
   const params = useParams()
@@ -96,7 +97,7 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
     setApGroupsCount?.(totalCount)
 
     const addIncidentsData = async () => {
-      const incidentsPayload = genIncidentsPayload(apGroupsData)
+      const incidentsPayload = { ...genIncidentsPayload(apGroupsData), toggles }
       const { data: incidentsData } = await getIncidentsList(incidentsPayload, true)
 
       const newTableData = _.cloneDeep(apGroupsData)
