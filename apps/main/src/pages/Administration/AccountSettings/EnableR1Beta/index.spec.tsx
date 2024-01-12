@@ -8,8 +8,7 @@ import {
   render,
   renderHook,
   screen,
-  waitFor,
-  logRoles
+  waitFor
 } from '@acx-ui/test-utils'
 import { UserUrlsInfo } from '@acx-ui/user'
 
@@ -113,7 +112,7 @@ describe('Enable RUCKUS One Beta Checkbox', () => {
   it('should show beta features drawer', async () => {
     (useGetBetaList as jest.Mock).mockReturnValue(['beta1', 'beta2', 'beta3'])
 
-    const { container } = await render(
+    await render(
       <Provider>
         <EnableR1Beta
           betaStatus={true}
@@ -126,8 +125,6 @@ describe('Enable RUCKUS One Beta Checkbox', () => {
     const currentBeta = await screen.findByRole('link', { name: 'Current beta features' })
     await userEvent.click(currentBeta)
     await screen.findAllByRole('dialog')
-    logRoles(container)
-
     // TODO: Test case is unable to find the 'dialog' roles so below
     //  assertions are commented temporarily...
     // const drawer = await screen.findAllByRole('dialog')
