@@ -72,20 +72,20 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
       }
     },
     {
+      title: $t({ defaultMessage: 'Scope' }),
+      key: 'scope',
+      dataIndex: 'scope'
+    },
+    {
       title: $t({ defaultMessage: 'Group Type' }),
       key: 'groupType',
       dataIndex: 'groupType',
       filterable: true
     },
     {
-      title: $t({ defaultMessage: 'Scope' }),
-      key: 'scope',
-      dataIndex: 'scope'
-    },
-    {
-      title: $t({ defaultMessage: 'Assigned Users' }),
-      key: 'assignedUsers',
-      dataIndex: 'assignedUsers'
+      title: $t({ defaultMessage: 'Members' }),
+      key: 'members',
+      dataIndex: 'members'
     }
   ]
 

@@ -68,7 +68,7 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
 
   const columns:TableProps<AdminGroup>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Group Name' }),
+      title: $t({ defaultMessage: 'Name' }),
       key: 'name',
       dataIndex: 'name'
     },

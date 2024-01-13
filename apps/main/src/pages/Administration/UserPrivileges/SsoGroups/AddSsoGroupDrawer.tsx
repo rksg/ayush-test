@@ -120,8 +120,8 @@ export const AddSsoGroupDrawer = (props: AddGroupDrawerProps) => {
   return (
     <Drawer
       title={isEditMode
-        ? $t({ defaultMessage: 'Edit SSO Admins Group' })
-        : $t({ defaultMessage: 'Add SSO Admin Group' })}
+        ? $t({ defaultMessage: 'Edit SSO User Group' })
+        : $t({ defaultMessage: 'Add SSO User Group' })}
       width={452}
       visible={visible}
       onClose={onClose}
