@@ -3,10 +3,13 @@ import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
 import { act }        from 'react-dom/test-utils'
 
-import { useIsSplitOn }                                     from '@acx-ui/feature-toggle'
-import { venueApi }                                         from '@acx-ui/rc/services'
-import { CommonUrlsInfo, FirmwareUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                  from '@acx-ui/store'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { venueApi }     from '@acx-ui/rc/services'
+import { CommonUrlsInfo,
+  FirmwareUrlsInfo,
+  SwitchFirmwareFixtures,
+  SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -18,16 +21,29 @@ import {
 
 import { staticRoutes, switchFirmwareVenue } from '../__tests__/fixtures'
 
-import { swtichListResponse, venueListResponse, vlansByVenueListResponse, switchResponse, switchDetailHeader } from './__tests__/fixtures'
+import {
+  swtichListResponse,
+  venueListResponse,
+  vlansByVenueListResponse,
+  switchResponse,
+  switchDetailHeader
+} from './__tests__/fixtures'
 
 import { SwitchForm } from '.'
 
-//switchListEmptyResponse
-//vlansByVenueListEmptyResponse
+const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
 const mockedUsedNavigate = jest.fn()
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
+}))
+
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetSwitchCurrentVersionsQuery: () => ({
+    data: mockSwitchCurrentVersions
+  })
 }))
 
 describe('Add switch form', () => {
