@@ -70,6 +70,8 @@ export const UnknownDetails = () => {
     mesh: defineMessage({ defaultMessage:
       `RUCKUS AI has detected mesh configuration in your zone and
       this configuration is not supported for RRM recommendations.`
+    }),
+    noAps: defineMessage({ defaultMessage: 'There are no APs in this {value}.'
     })
   }
 

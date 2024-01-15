@@ -267,7 +267,7 @@ describe('Recommendation services', () => {
           text: 'Low'
         },
         category: 'Insufficient Licenses',
-        summary: 'Insufficient Licenses',
+        summary: 'No RRM recommendation due to incomplete license compliance',
         status: 'Insufficient Licenses',
         statusTooltip: 'Insufficient Licenses',
         statusEnum: 'insufficientLicenses',
@@ -287,7 +287,7 @@ describe('Recommendation services', () => {
           text: 'Low'
         },
         category: 'Verification Error',
-        summary: 'Verification Error',
+        summary: 'No RRM recommendation due to verification error',
         status: 'Verification Error',
         statusTooltip: 'Verification Error',
         statusEnum: 'verificationError',
@@ -307,7 +307,7 @@ describe('Recommendation services', () => {
           text: 'Low'
         },
         category: 'Verified',
-        summary: 'Verified',
+        summary: 'AI verified and in optimal state',
         status: 'Verified',
         statusTooltip: 'Verified',
         statusEnum: 'verified',
@@ -318,6 +318,46 @@ describe('Recommendation services', () => {
       },
       {
         ...recommendationListResult.recommendations[7],
+        scope: `vsz34 (SZ Cluster)
+> 23-IND-BNG-D23-Keshav-Home (Domain)
+> 23-IND-BNG-D23-Keshav-Home (Venue)`,
+        type: 'Venue',
+        priority: {
+          ...priorities.low,
+          text: 'Low'
+        },
+        category: 'Unqualified Zone',
+        summary: 'No RRM recommendation as zone is unqualified',
+        status: 'Unqualified Zone',
+        statusTooltip: 'Unqualified Zone',
+        statusEnum: 'unqualifiedZone',
+        crrmOptimizedState: {
+          ...crrmStates.unqualifiedZone,
+          text: 'Unqualified Zone'
+        }
+      },
+      {
+        ...recommendationListResult.recommendations[8],
+        scope: `vsz34 (SZ Cluster)
+> 25-US-CA-D25-SandeepKour-home (Domain)
+> 25-US-CA-D25-SandeepKour-home (Venue)`,
+        type: 'Venue',
+        priority: {
+          ...priorities.low,
+          text: 'Low'
+        },
+        category: 'No APs',
+        summary: 'No APs',
+        status: 'No APs',
+        statusTooltip: 'No APs',
+        statusEnum: 'noAps',
+        crrmOptimizedState: {
+          ...crrmStates.noAps,
+          text: 'No APs'
+        }
+      },
+      {
+        ...recommendationListResult.recommendations[9],
         scope: `vsz612 (SZ Cluster)
 > EDU-MeshZone_S12348 (Venue)`,
         type: 'Venue',

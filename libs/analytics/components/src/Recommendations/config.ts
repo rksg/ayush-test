@@ -86,7 +86,9 @@ const categories = {
   'AI-Driven Cloud RRM': defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
   'Insufficient Licenses': crrmStates[CRRMStates.insufficientLicenses].label,
   'Verification Error': crrmStates[CRRMStates.verificationError].label,
-  'Verified': crrmStates[CRRMStates.verified].label
+  'Verified': crrmStates[CRRMStates.verified].label,
+  'Unqualified Zone': crrmStates[CRRMStates.unqualifiedZone].label,
+  'No APs': crrmStates[CRRMStates.noAps].label
 }
 
 const bandbalancingEnable: RecommendationConfig = {
@@ -517,7 +519,7 @@ export const codes = {
   },
   'unqualifiedZone': {
     category: crrmStates[CRRMStates.unqualifiedZone].label,
-    summary: crrmStates[CRRMStates.unqualifiedZone].label,
+    summary: defineMessage({ defaultMessage: 'No RRM recommendation as zone is unqualified' }),
     priority: priorities.low
   },
   'noAps': {
@@ -527,17 +529,17 @@ export const codes = {
   },
   'insufficientLicenses': {
     category: crrmStates[CRRMStates.insufficientLicenses].label,
-    summary: crrmStates[CRRMStates.insufficientLicenses].label,
+    summary: defineMessage({ defaultMessage: 'No RRM recommendation due to incomplete license compliance' }),
     priority: priorities.low
   },
   'verificationError': {
     category: crrmStates[CRRMStates.verificationError].label,
-    summary: crrmStates[CRRMStates.verificationError].label,
+    summary: defineMessage({ defaultMessage: 'No RRM recommendation due to verification error' }),
     priority: priorities.low
   },
   'verified': {
     category: crrmStates[CRRMStates.verified].label,
-    summary: crrmStates[CRRMStates.verified].label,
+    summary: defineMessage({ defaultMessage: 'AI verified and in optimal state' }),
     priority: priorities.low
   }
 } as unknown as Record<string, RecommendationConfig & CodeInfo>
