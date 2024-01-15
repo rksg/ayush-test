@@ -9,6 +9,7 @@ import { useIntl }                                          from 'react-intl'
 
 import { Modal, Subtitle }        from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useSwitchFirmwareUtils } from '@acx-ui/rc/components'
 import {
   AVAILABLE_SLOTS,
   FirmwareCategory,
@@ -18,9 +19,6 @@ import {
   UpdateScheduleRequest
 } from '@acx-ui/rc/utils'
 
-import {
-  getSwitchVersionLabel
-} from '../../FirmwareUtils'
 import { PreDownload } from '../../PreDownload'
 
 import * as UI from './styledComponents'
@@ -41,6 +39,7 @@ export interface ChangeScheduleDialogProps {
 
 export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
   const { $t } = useIntl()
+  const { getSwitchVersionLabel } = useSwitchFirmwareUtils()
   const intl = useIntl()
   const [form] = useForm()
   const { visible, onSubmit, onCancel, data, availableVersions, nonIcx8200Count, icx8200Count,
