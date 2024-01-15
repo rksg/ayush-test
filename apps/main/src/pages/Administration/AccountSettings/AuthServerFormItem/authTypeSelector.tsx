@@ -15,7 +15,7 @@ interface AuthTypeSelectorProps {
   setSelected: (selectedAuth: string) => void
 }
 
-export const GetAuthTypeString = (type: TenantAuthenticationType) => {
+const getAuthTypeString = (type: TenantAuthenticationType) => {
   switch (type) {
     case TenantAuthenticationType.saml:
       return defineMessage({ defaultMessage: 'SAML' })
@@ -28,11 +28,11 @@ export const GetAuthTypeString = (type: TenantAuthenticationType) => {
 export const getAuthTypes = () => {
   return [
     {
-      label: GetAuthTypeString(TenantAuthenticationType.saml),
+      label: getAuthTypeString(TenantAuthenticationType.saml),
       value: TenantAuthenticationType.saml
     },
     {
-      label: GetAuthTypeString(TenantAuthenticationType.google_workspace),
+      label: getAuthTypeString(TenantAuthenticationType.google_workspace),
       value: TenantAuthenticationType.google_workspace
     }]
 }

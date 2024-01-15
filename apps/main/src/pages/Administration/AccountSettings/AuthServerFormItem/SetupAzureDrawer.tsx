@@ -394,10 +394,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
         label={$t({ defaultMessage: 'Allowed Domains' })}
         rules={[
           { type: 'string', required: true },
-          { min: 2, transform: (value) => value.trim() },
-          { max: 64, transform: (value) => value.trim() },
           { validator: (_, value) => domainsValidator(value) }
-
         ]}
         children={
           <Input
