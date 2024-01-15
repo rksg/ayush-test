@@ -61,6 +61,7 @@ export type NetworkImpactChartConfig = {
    * @default false
    **/
   disabled?: boolean
+  showTotal?: boolean
 }
 
 export type DominanceSummary = {

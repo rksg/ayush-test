@@ -35,22 +35,26 @@ export const ApservDowntimeHigh = (incident: Incident) => {
     chart: NetworkImpactChartTypes.APModelByAP,
     query: NetworkImpactQueryTypes.TopN,
     type: 'apDowntime',
-    dimension: 'apModel'
+    dimension: 'apModel',
+    showTotal: false
   }, {
     chart: NetworkImpactChartTypes.APFwVersionByAP,
     query: NetworkImpactQueryTypes.TopN,
     type: 'apDowntime',
-    dimension: 'apFwVersion'
+    dimension: 'apFwVersion',
+    showTotal: false
   }, {
     chart: NetworkImpactChartTypes.EventTypeByAP,
     query: NetworkImpactQueryTypes.TopN,
     type: 'apDowntime',
-    dimension: 'eventType'
+    dimension: 'eventType',
+    showTotal: false
   }, {
     chart: NetworkImpactChartTypes.ReasonByAP,
     query: NetworkImpactQueryTypes.TopN,
     type: 'apDowntime',
-    dimension: 'reason'
+    dimension: 'reason',
+    showTotal: false
   }]
 
   const timeSeriesCharts: TimeSeriesChartTypes[] = [

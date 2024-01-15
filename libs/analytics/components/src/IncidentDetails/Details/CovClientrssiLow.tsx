@@ -35,27 +35,32 @@ export const CovClientrssiLow = (incident: Incident) => {
     chart: NetworkImpactChartTypes.WLAN,
     query: NetworkImpactQueryTypes.TopN,
     type: 'client',
-    dimension: 'ssids'
+    dimension: 'ssids',
+    showTotal: false
   }, {
     chart: NetworkImpactChartTypes.OS,
     query: NetworkImpactQueryTypes.TopN,
     type: 'client',
-    dimension: 'osType'
+    dimension: 'osType',
+    showTotal: false
   }, {
     chart: NetworkImpactChartTypes.APModel,
     query: NetworkImpactQueryTypes.TopN,
     type: 'client',
-    dimension: 'apModels'
+    dimension: 'apModels',
+    showTotal: false
   }, {
     chart: NetworkImpactChartTypes.APVersion,
     query: NetworkImpactQueryTypes.TopN,
     type: 'client',
-    dimension: 'apFwVersions'
+    dimension: 'apFwVersions',
+    showTotal: false
   }, {
     chart: NetworkImpactChartTypes.Radio,
     query: NetworkImpactQueryTypes.TopN,
     type: 'client',
-    dimension: 'radios'
+    dimension: 'radios',
+    showTotal: false
   }]
   const timeSeriesCharts: TimeSeriesChartTypes[] = [
     TimeSeriesChartTypes.RssQualityByClientsChart

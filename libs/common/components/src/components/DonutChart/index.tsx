@@ -36,7 +36,7 @@ interface DonutChartOptionalProps {
   showLegend: boolean,
   animation: boolean,
   showLabel: boolean,
-  showTotal?: boolean,
+  showTotal: boolean,
   legend: 'value' | 'name' | 'name-value',
   size: 'small' | 'medium' | 'large' | 'x-large'
 }

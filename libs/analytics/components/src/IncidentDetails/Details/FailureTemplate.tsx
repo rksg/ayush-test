@@ -30,22 +30,26 @@ export const FailureTemplate = (incident: Incident) => {
     chart: NetworkImpactChartTypes.WLAN,
     query: NetworkImpactQueryTypes.TopN,
     type: 'client',
-    dimension: 'ssids'
+    dimension: 'ssids',
+    showTotal: false
   }, {
     chart: NetworkImpactChartTypes.Reason,
     query: NetworkImpactQueryTypes.TopN,
     type: 'client',
-    dimension: 'reasonCodes'
+    dimension: 'reasonCodes',
+    showTotal: false
   }, {
     chart: NetworkImpactChartTypes.ClientManufacturer,
     query: NetworkImpactQueryTypes.TopN,
     type: 'client',
-    dimension: 'manufacturer'
+    dimension: 'manufacturer',
+    showTotal: false
   }, {
     chart: NetworkImpactChartTypes.Radio,
     query: NetworkImpactQueryTypes.TopN,
     type: 'client',
-    dimension: 'radios'
+    dimension: 'radios',
+    showTotal: false
   }]
 
   const timeSeriesCharts: TimeSeriesChartTypes[] = [

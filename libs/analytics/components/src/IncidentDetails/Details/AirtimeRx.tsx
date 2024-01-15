@@ -45,7 +45,8 @@ export const AirtimeRx = (incident: Incident) => {
       chart: NetworkImpactChartTypes.APModelByAP,
       query: NetworkImpactQueryTypes.TopN,
       type: 'apInfra',
-      dimension: 'apModels'
+      dimension: 'apModels',
+      showTotal: false
     }
   ]
 

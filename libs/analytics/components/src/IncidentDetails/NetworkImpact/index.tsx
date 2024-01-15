@@ -85,13 +85,11 @@ export const NetworkImpact: React.FC<NetworkImpactProps> = ({ charts, incident }
                 ]
                 if (chart.query === NetworkImpactQueryTypes.Distribution) {
                   value = (config.valueFormatter || formatter('percentFormat'))(chartData.summary)
-                } else if (config.disabled) {
-                  if (chart.disabled) {
-                    value = $t(config.disabled.value)
-                    subTitle = $t(config.disabled.summary)
-                  } else if (Number.isFinite(chartData?.total)){
-                    value = formatter('countFormat')(chartData?.total)
-                  }
+                } else if (chart.disabled && config.disabled) {
+                  value = $t(config.disabled.value)
+                  subTitle = $t(config.disabled.summary)
+                } else if (Number.isFinite(chartData?.total)){
+                  value = formatter('countFormat')(chartData?.total)
                 }
                 return <DonutChart
                   showLegend={false}
