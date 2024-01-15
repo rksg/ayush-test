@@ -58,6 +58,8 @@ describe('Anchor', () => {
       jest.runAllTimers() // trigger setTimeout
     })
     expect(await screen.findByText('Content 3')).toBeVisible()
+    jest.runOnlyPendingTimers()
+    jest.useRealTimers()
   })
 })
 
