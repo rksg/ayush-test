@@ -67,20 +67,6 @@ export const compareSwitchVersion = (a: string, b: string): number => {
   return 0
 }
 
-export const DefaultSwitchVersion = [
-  '09010f_b19', '09010e_b392', '10010_rc3', '10010a_b36',
-  '09010h_rc1', '09010h_cd1_b3', '10010a_cd3_b11', '09010h_cd2_b4',
-  '10010b_rc88', '10010c_rc168']
-
-
-export const parseSwitchVersion = (version: string) => {
-  const defaultVersion = DefaultSwitchVersion
-
-  if (defaultVersion.includes(version)) {
-    return convertSwitchVersionFormat(version.replace(/_[^_]*$/, ''))
-  }
-  return convertSwitchVersionFormat(version)
-}
 
 export const convertSwitchVersionFormat = (version: string) => {
   // eslint-disable-next-line max-len

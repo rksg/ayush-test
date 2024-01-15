@@ -13,6 +13,8 @@ import {
   getDatePickerValues
 } from '@acx-ui/utils'
 
+import { useIncidentToggles } from '../useIncidentToggles'
+
 import { ChartKey, computePastRange } from './helpers'
 import {
   Response,
@@ -40,7 +42,8 @@ export function Brand360 () {
   const chartPayload = {
     start: startDate,
     end: endDate,
-    ssidRegex: settings['brand-ssid-compliance-matcher']!
+    ssidRegex: settings['brand-ssid-compliance-matcher']!,
+    toggles: useIncidentToggles()
   }
   const {
     data: chartData,

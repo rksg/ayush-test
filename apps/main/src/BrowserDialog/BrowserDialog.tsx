@@ -23,12 +23,6 @@ export const isNonProdEnv = () => {
     window.location.hostname === 'stage.ruckus.cloud'
 }
 
-
-export const updateBrowserCached = (lang: LangKey) => {
-  localStorage.setItem('browserLang', lang)
-  localStorage.setItem('isBrowserDialog', 'true')
-}
-
 export const detectBrowserLang = () => {
   const locales = navigator.languages
   const locale = locales.find(locale =>
@@ -67,7 +61,6 @@ export const showBrowserLangDialog = ():Promise<BrowserDialogResult> => {
           key: 'cancel',
           closeAfterAction: true,
           handler: () => {
-            updateBrowserCached(browserLang)
             const result = { lang: '', isLoading: false }
             reject(result)
           }
@@ -77,7 +70,6 @@ export const showBrowserLangDialog = ():Promise<BrowserDialogResult> => {
           key: 'ok',
           closeAfterAction: true,
           handler: () => {
-            updateBrowserCached(browserLang)
             const result = { lang: browserLang, isLoading: false }
             resolve(result)
           }
