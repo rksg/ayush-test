@@ -336,7 +336,7 @@ describe('Recommendation services', () => {
           text: 'Low'
         },
         category: 'Unqualified Zone',
-        summary: 'No RRM recommendation as zone is unqualified',
+        summary: 'No RRM recommendation as venue is unqualified',
         status: 'Unqualified Zone',
         statusTooltip: 'Unqualified Zone',
         statusEnum: 'unqualifiedZone',
@@ -358,7 +358,7 @@ describe('Recommendation services', () => {
           text: 'Low'
         },
         category: 'No APs',
-        summary: 'No APs',
+        summary: 'No APs in this venue',
         status: 'No APs',
         statusTooltip: 'No APs',
         statusEnum: 'noAps',
