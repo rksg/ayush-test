@@ -358,7 +358,7 @@ describe('Recommendation services', () => {
           text: 'Low'
         },
         category: 'No APs',
-        summary: 'No APs in this venue',
+        summary: 'No RRM recommendation as venue has no APs',
         status: 'No APs',
         statusTooltip: 'No APs',
         statusEnum: 'noAps',

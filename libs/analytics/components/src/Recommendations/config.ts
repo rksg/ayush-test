@@ -527,8 +527,8 @@ export const codes = {
   'noAps': {
     category: crrmStates[CRRMStates.noAps].label,
     summary: get('IS_MLISA_SA')
-      ? defineMessage({ defaultMessage: 'No APs in this zone' })
-      : defineMessage({ defaultMessage: 'No APs in this venue' }),
+      ? defineMessage({ defaultMessage: 'No RRM recommendation as zone has no APs' })
+      : defineMessage({ defaultMessage: 'No RRM recommendation as venue has no APs' }),
     priority: priorities.low
   },
   'insufficientLicenses': {
