@@ -87,7 +87,7 @@ export const venue = [
         currentEolVersion: '6.1.0.10.433',
         latestEolVersion: '6.1.0.10.453',
         apCount: 1,
-        apModels: ['R300', 'R550'],
+        apModels: ['T300'],
         isAbfGreaterThanVenueCurrentAbf: false
       },
       {
@@ -95,15 +95,15 @@ export const venue = [
         currentEolVersion: '6.2.0.103.533',
         latestEolVersion: '6.2.0.103.533',
         apCount: 1,
-        apModels: ['R500'],
+        apModels: ['R550'],
         isAbfGreaterThanVenueCurrentAbf: false
       },
       {
-        name: 'eol-ap-2023-03',
+        name: 'ABF2-3R',
         currentEolVersion: '6.2.3.103.200',
         latestEolVersion: '6.2.3.103.200',
         apCount: 1,
-        apModels: ['R555'],
+        apModels: ['H550'],
         isAbfGreaterThanVenueCurrentAbf: true
       }
     ]
@@ -364,6 +364,15 @@ export const switchCurrentVersions = {
 export const availableABFList = [
   {
     abf: 'active',
+    releaseDate: '2023-11-15T18:54:43.177+0000',
+    category: 'RECOMMENDED',
+    onboardDate: '2023-11-31T02:31:12.682+0000',
+    name: '7.0.0.104.100',
+    id: '7.0.0.104.100',
+    supportedApModels: ['R770', 'R550']
+  },
+  {
+    abf: 'active',
     releaseDate: '2023-06-15T18:54:43.177+0000',
     category: 'RECOMMENDED',
     onboardDate: '2023-05-31T02:31:12.682+0000',
@@ -381,13 +390,13 @@ export const availableABFList = [
     supportedApModels: ['R770']
   },
   {
-    abf: 'eol-ap-2023-03',
+    abf: 'ABF2-3R',
     releaseDate: '2023-05-15T19:29:20.563+0000',
     category: 'RECOMMENDED',
     onboardDate: '2023-05-15T10:14:59.048+0000',
     name: '6.2.3.103.200',
     id: '6.2.3.103.200',
-    supportedApModels: ['R555']
+    supportedApModels: ['H550']
   },
   {
     abf: 'eol-ap-2022-12',
@@ -396,7 +405,7 @@ export const availableABFList = [
     onboardDate: '2023-05-05T10:14:59.048+0000',
     name: '6.2.0.103.533',
     id: '6.2.0.103.533',
-    supportedApModels: ['R500']
+    supportedApModels: ['R550']
   },
   {
     abf: 'eol-ap-2022-12',
@@ -405,7 +414,7 @@ export const availableABFList = [
     onboardDate: '2023-04-18T08:04:31.098+0000',
     name: '6.2.0.103.513',
     id: '6.2.0.103.513',
-    supportedApModels: ['R500']
+    supportedApModels: ['R550']
   },
   {
     abf: 'eol-ap-2021-05',
@@ -414,7 +423,7 @@ export const availableABFList = [
     onboardDate: '2023-02-07T09:16:58.390+0000',
     name: '6.1.0.10.453',
     id: '6.1.0.10.453',
-    supportedApModels: ['R300', 'R550']
+    supportedApModels: ['T300']
   },
   {
     abf: 'eol-ap-2021-05',
@@ -423,7 +432,7 @@ export const availableABFList = [
     onboardDate: '2023-02-01T09:16:58.390+0000',
     name: '6.1.0.10.433',
     id: '6.1.0.10.433',
-    supportedApModels: ['R300', 'R550']
+    supportedApModels: ['T300']
   },
   {
     abf: 'eol-ap-2021-05',
@@ -432,7 +441,7 @@ export const availableABFList = [
     onboardDate: '2023-01-31T02:31:12.682+0000',
     name: '6.1.0.10.413',
     id: '6.1.0.10.413',
-    supportedApModels: ['R300', 'R550']
+    supportedApModels: ['T300']
   }
 ]
 
