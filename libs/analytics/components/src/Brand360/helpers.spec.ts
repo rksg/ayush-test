@@ -1,7 +1,14 @@
 import { MspEc }       from '@acx-ui/msp/utils'
 import { TableResult } from '@acx-ui/rc/utils'
 
-import { computePastRange, transformLookupAndMappingData, transformVenuesData, TransformedMap, calcSLA } from './helpers'
+import {
+  computePastRange,
+  transformLookupAndMappingData,
+  transformVenuesData,
+  TransformedMap,
+  calcSLA,
+  customSort
+} from './helpers'
 
 import type { BrandVenuesSLA } from './services'
 
@@ -175,3 +182,21 @@ describe('transformVenuesData', () => {
   })
 })
 
+describe('customSort', () => {
+  it('should sort numbers correctly', () => {
+    const array = [3, 1, 2]
+    const sortedArray = array.sort(customSort)
+    expect(sortedArray).toEqual([1, 2, 3])
+  })
+  it('should handle multiple NaN values correctly', () => {
+    const array = [NaN, 3, NaN, 1]
+    const sortedArray = array.sort(customSort)
+    expect(sortedArray).toEqual([NaN, NaN, 1, 3])
+  })
+
+  it('should handle an array with all NaN values', () => {
+    const array = [NaN, NaN, NaN]
+    const sortedArray = array.sort(customSort)
+    expect(sortedArray).toEqual([NaN, NaN, NaN])
+  })
+})

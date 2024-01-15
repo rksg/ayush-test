@@ -12,6 +12,8 @@ import type { SliceType }                from './useSliceType'
 export type ChartKey = 'incident' | 'experience' | 'compliance'
 
 type SLARecord = [ number, number ]
+type SortResult = -1 | 0 | 1
+
 export interface Common {
   lsp: string
   p1Incidents: number
@@ -41,6 +43,17 @@ export interface TransformedMap {
 }
 
 export const calcSLA = (sla: SLARecord) => (sla[1] !== 0 ? sla[0] / sla[1] : 0)
+export const checkNaN = (val: number) => (!isNaN(val) ? val : 0)
+function checkPropertiesForNaN (
+  properties : Response[],
+  valueType: 'avgConnSuccess' | 'avgTTC' | 'avgClientThroughput' | 'ssidCompliance',
+  calculatedValue: number[]
+) {
+  return properties.some(property =>
+    !isNaN(property[valueType]?.[0]) && !isNaN(property[valueType]?.[1]))
+    ? calcSLA(calculatedValue as SLARecord)
+    : NaN
+}
 
 const calGuestExp = (cS: number, ttc: number, cT: number) => mean([cS, ttc, cT])
 export const transformToLspView = (properties: Response[]): Lsp[] => {
@@ -56,18 +69,19 @@ export const transformToLspView = (properties: Response[]): Lsp[] => {
     } = properties.reduce(
       (acc, cur) => ({
         connSuccess: [
-          acc.connSuccess[0] + cur.avgConnSuccess[0],
-          acc.connSuccess[1] + cur.avgConnSuccess[1]
+          acc.connSuccess[0] + checkNaN(cur.avgConnSuccess[0]),
+          acc.connSuccess[1] + checkNaN(cur.avgConnSuccess[1])
         ],
-        ttc: [acc.ttc[0] + cur.avgTTC[0], acc.ttc[1] + cur.avgTTC[1]],
+        ttc: [acc.ttc[0] + checkNaN(cur.avgTTC[0]),
+          acc.ttc[1] + checkNaN(cur.avgTTC[1])],
         clientThroughput: [
-          acc.clientThroughput[0] + cur.avgClientThroughput[0],
-          acc.clientThroughput[1] + cur.avgClientThroughput[1]
+          acc.clientThroughput[0] + checkNaN(cur.avgClientThroughput[0]),
+          acc.clientThroughput[1] + checkNaN(cur.avgClientThroughput[1])
         ],
         p1Incidents: acc.p1Incidents + cur.p1Incidents,
         ssidCompliance: [
-          acc.ssidCompliance[0] + cur.ssidCompliance[0],
-          acc.ssidCompliance[1] + cur.ssidCompliance[1]
+          acc.ssidCompliance[0] + checkNaN(cur.ssidCompliance[0]),
+          acc.ssidCompliance[1] + checkNaN(cur.ssidCompliance[1])
         ],
         deviceCount: acc.deviceCount + cur.deviceCount
       }),
@@ -80,9 +94,18 @@ export const transformToLspView = (properties: Response[]): Lsp[] => {
         deviceCount: 0
       }
     )
-    const avgConnSuccess = calcSLA(connSuccess as SLARecord)
-    const avgTTC = calcSLA(ttc as SLARecord)
-    const avgClientThroughput = calcSLA(clientThroughput as SLARecord)
+    const avgConnSuccess = checkPropertiesForNaN(properties, 'avgConnSuccess', connSuccess)
+    const avgTTC = checkPropertiesForNaN(properties, 'avgTTC', ttc)
+    const avgClientThroughput = checkPropertiesForNaN(
+      properties,
+      'avgClientThroughput',
+      clientThroughput
+    )
+    const validatedSsidCompliance = checkPropertiesForNaN(
+      properties,
+      'ssidCompliance',
+      ssidCompliance
+    )
     return {
       id: `${lsp}-${ind}`,
       lsp,
@@ -91,7 +114,7 @@ export const transformToLspView = (properties: Response[]): Lsp[] => {
       avgTTC,
       avgClientThroughput,
       p1Incidents,
-      ssidCompliance: calcSLA(ssidCompliance as SLARecord),
+      ssidCompliance: validatedSsidCompliance,
       deviceCount,
       guestExp: calGuestExp(avgConnSuccess, avgTTC, avgClientThroughput)
     }
@@ -130,21 +153,24 @@ export const slaKpiConfig = {
     dataKey: 'p1Incidents',
     avg: false,
     formatter: formatter('countFormat'),
-    direction: 'low'
+    direction: 'low',
+    order: 'asc'
   },
   experience: {
     getTitle: () => defineMessage({ defaultMessage: 'Guest Experience' }),
     dataKey: 'guestExp',
     avg: true,
     formatter: formatter('percentFormat'),
-    direction: 'high'
+    direction: 'high',
+    order: 'desc'
   },
   compliance: {
     getTitle: () => defineMessage({ defaultMessage: 'Brand SSID Compliance' }),
     dataKey: 'ssidCompliance',
     avg: true,
     formatter: formatter('percentFormat'),
-    direction: 'high'
+    direction: 'high',
+    order: 'desc'
   }
 }
 
@@ -200,4 +226,10 @@ export const transformVenuesData = (
     }
     return newObj
   }, [] as Response[])
+}
+
+export function customSort (a: unknown, b: unknown): SortResult {
+  if (isNaN(a as number)) return -1
+  if (isNaN(b as number)) return 1
+  return Number(a) - Number(b) as SortResult
 }

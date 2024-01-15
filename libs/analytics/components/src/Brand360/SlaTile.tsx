@@ -3,11 +3,12 @@ import { useState } from 'react'
 import {
   meanBy,
   mean,
-  sortBy,
+  orderBy,
   sumBy,
   groupBy,
   reduce,
-  toPairs
+  toPairs,
+  isNaN
 } from 'lodash'
 import { useIntl } from 'react-intl'
 
@@ -97,7 +98,7 @@ const getListData = (
   groupedData: Record<string, (Lsp | Property)[]>,
   chartKey: ChartKey
 ): Array<[string, number]> => {
-  const { dataKey, avg } = slaKpiConfig[chartKey]
+  const { dataKey, avg, order } = slaKpiConfig[chartKey]
   const res = reduce(groupedData, (
     result: Record<string, number>,
     val: (Lsp | Property)[],
@@ -106,7 +107,7 @@ const getListData = (
     result[key] = curr + (avg ? meanBy(val, dataKey) : sumBy(val, dataKey))
     return result
   }, {} as Record<string, number>)
-  return sortBy(toPairs(res), val => val[1])
+  return orderBy(toPairs(res), val =>isNaN(val[1]) ? -1 : val[1],[order as 'asc' | 'desc'])
 }
 
 const SwitcherIcon = ({ order }: { order: boolean }) => {

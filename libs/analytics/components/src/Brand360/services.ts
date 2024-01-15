@@ -99,9 +99,7 @@ export const api = dataApi.injectEndpoints({
             incidentCount
             ssidComplianceSLA
             timeToConnectSLA
-            timeToConnectThreshold
             clientThroughputSLA
-            clientThroughputThreshold
             connectionSuccessSLA
             onlineApsSLA
           }
