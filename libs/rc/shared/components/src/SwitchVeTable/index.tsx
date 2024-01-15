@@ -145,9 +145,9 @@ export function SwitchVeTable ( { isVenueLevel } : {
 
     const connectedVeList = rows.filter(row => row.connectedVe === true)
 
-    const connectedVe = _.map(connectedVeList, 'veId')
+    const connectedVeId = _.map(connectedVeList, 'veId')
     const tooltip = connectedVeList.length > 0 ?
-      `VE ${connectedVe} ${$t({
+      `VE ${connectedVeId} ${$t({
         defaultMessage: 'is member of default VLAN that cannot be deleted.'
       })}` : ''
     setDisabledDelete(connectedVeList.length > 0)
