@@ -5,6 +5,8 @@ import { Drawer, showToast }                                         from '@acx-
 import { useAddPersonaGroupMutation, useUpdatePersonaGroupMutation } from '@acx-ui/rc/services'
 import { PersonaGroup }                                              from '@acx-ui/rc/utils'
 
+import { usePersonaAsyncHeaders } from '../usePersonaAsyncHeaders'
+
 import { PersonaGroupForm } from './PersonaGroupForm'
 
 interface PersonaGroupDrawerProps {
@@ -20,6 +22,7 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
   const { isEdit, data, visible, onClose } = props
   const [addPersonaGroup] = useAddPersonaGroupMutation()
   const [updatePersonaGroup] = useUpdatePersonaGroupMutation()
+  const { isAsync, customHeaders } = usePersonaAsyncHeaders()
 
   const onFinish = async (contextData: PersonaGroup) => {
     try {
@@ -27,14 +30,17 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
         ? await handleEditPersonaGroup(contextData)
         : await handleAddPersonaGroup(contextData)
 
-      showToast({
-        type: 'success',
-        content: $t({
-          defaultMessage: 'Identity Group {name} was {isEdit, select, true {updated} other {added}}'
-        },
-        { name: contextData.name, isEdit }
-        )
-      })
+      if (!isAsync) {
+        showToast({
+          type: 'success',
+          content: $t({
+            defaultMessage: 'Identity Group {name} was ' +
+              '{isEdit, select, true {updated} other {added}}'
+          },
+          { name: contextData.name, isEdit }
+          )
+        })
+      }
 
       onClose(result)
     } catch (error) {
@@ -43,7 +49,7 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
   }
 
   const handleAddPersonaGroup = async (submittedData: PersonaGroup) => {
-    return addPersonaGroup({ payload: { ...submittedData } }).unwrap()
+    return addPersonaGroup({ payload: { ...submittedData }, customHeaders }).unwrap()
   }
 
   const handleEditPersonaGroup = async (submittedData: PersonaGroup) => {
@@ -60,7 +66,11 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
 
     if (Object.keys(patchData).length === 0) return
 
-    return updatePersonaGroup({ params: { groupId: data?.id }, payload: patchData }).unwrap()
+    return updatePersonaGroup({
+      params: { groupId: data?.id },
+      payload: patchData,
+      customHeaders
+    }).unwrap()
   }
 
   const onSave = async () => {
