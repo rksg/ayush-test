@@ -5,14 +5,15 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { networkApi }             from '@acx-ui/rc/services'
+import { networkApi, venueApi }   from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
-  WifiUrlsInfo
+  EdgeSdLanUrls,
+  WifiUrlsInfo,
+  EdgeSdLanFixtures
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
-  act,
   findTBody,
   fireEvent,
   mockServer,
@@ -36,7 +37,15 @@ import {
 
 import { NetworkVenuesTab } from './index'
 
-jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP) // isMapEnabled = false
+const mockedSdLanDataList = {
+  data: [{
+    ...EdgeSdLanFixtures.mockedSdLanDataList[0],
+    venueId: list.data[0].id,
+    networkIds: [params.networkId]
+  }]
+}
+// isMapEnabled = false && SD-LAN not enabled
+jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP && ff !== Features.EDGES_SD_LAN_TOGGLE)
 
 type MockDialogProps = React.PropsWithChildren<{
   visible: boolean
@@ -59,13 +68,18 @@ jest.mock('../../NetworkVenueScheduleDialog', () => ({
       <button onClick={(e)=>{e.preventDefault();onCancel()}}>Cancel</button>
     </div>
 }))
+jest.mock('../../useEdgeActions', () => ({
+  ...jest.requireActual('../../useEdgeActions'),
+  useSdLanScopedNetworkVenues: jest.fn().mockReturnValue([])
+}))
 
 const mockedApplyFn = jest.fn()
+const mockedGetSdLanFn = jest.fn()
 describe('NetworkVenuesTab', () => {
   beforeEach(() => {
-    act(() => {
-      store.dispatch(networkApi.util.resetApiState())
-    })
+    store.dispatch(networkApi.util.resetApiState())
+    store.dispatch(venueApi.util.resetApiState())
+    mockedGetSdLanFn.mockClear()
 
     mockServer.use(
       rest.post(
@@ -106,6 +120,13 @@ describe('NetworkVenuesTab', () => {
       rest.post(
         WifiUrlsInfo.getApCompatibilitiesNetwork.url,
         (req, res, ctx) => res(ctx.json(networkVenueApCompatibilities))
+      ),
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => {
+          mockedGetSdLanFn()
+          return res(ctx.json(mockedSdLanDataList))
+        }
       )
     )
   })
@@ -360,8 +381,10 @@ describe('NetworkVenuesTab', () => {
 
 describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
   beforeEach(() => {
-    act(() => {
-      store.dispatch(networkApi.util.resetApiState())
+    store.dispatch(networkApi.util.resetApiState())
+    store.dispatch(venueApi.util.resetApiState())
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
+      return ff === Features.EDGES_SD_LAN_TOGGLE || ff === Features.G_MAP ? false : true
     })
 
     mockServer.use(
@@ -488,6 +511,7 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
     expect(row1).toHaveTextContent('ON now') // { day: 'Thu', timeIndex: 5 }
     expect(row2).toHaveTextContent('OFF now')  // { day: 'Wed', timeIndex: 45 }
 
+    jest.runOnlyPendingTimers()
     jest.useRealTimers()
   })
 
