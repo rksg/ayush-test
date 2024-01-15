@@ -8,7 +8,9 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { networkApi, venueApi }   from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
-  WifiUrlsInfo
+  EdgeSdLanUrls,
+  WifiUrlsInfo,
+  EdgeSdLanFixtures
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -35,7 +37,15 @@ import {
 
 import { NetworkVenuesTab } from './index'
 
-jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP) // isMapEnabled = false
+const mockedSdLanDataList = {
+  data: [{
+    ...EdgeSdLanFixtures.mockedSdLanDataList[0],
+    venueId: list.data[0].id,
+    networkIds: [params.networkId]
+  }]
+}
+// isMapEnabled = false && SD-LAN not enabled
+jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP && ff !== Features.EDGES_SD_LAN_TOGGLE)
 
 type MockDialogProps = React.PropsWithChildren<{
   visible: boolean
@@ -58,12 +68,19 @@ jest.mock('../../NetworkVenueScheduleDialog', () => ({
       <button onClick={(e)=>{e.preventDefault();onCancel()}}>Cancel</button>
     </div>
 }))
+jest.mock('../../useEdgeActions', () => ({
+  ...jest.requireActual('../../useEdgeActions'),
+  useSdLanScopedNetworkVenues: jest.fn().mockReturnValue([])
+}))
 
 const mockedApplyFn = jest.fn()
+const mockedGetSdLanFn = jest.fn()
 describe('NetworkVenuesTab', () => {
   beforeEach(() => {
     store.dispatch(networkApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
+    mockedGetSdLanFn.mockClear()
+
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getNetworksVenuesList.url,
@@ -103,6 +120,13 @@ describe('NetworkVenuesTab', () => {
       rest.post(
         WifiUrlsInfo.getApCompatibilitiesNetwork.url,
         (req, res, ctx) => res(ctx.json(networkVenueApCompatibilities))
+      ),
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => {
+          mockedGetSdLanFn()
+          return res(ctx.json(mockedSdLanDataList))
+        }
       )
     )
   })
@@ -359,6 +383,10 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
   beforeEach(() => {
     store.dispatch(networkApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
+      return ff === Features.EDGES_SD_LAN_TOGGLE || ff === Features.G_MAP ? false : true
+    })
+
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getNetworksVenuesList.url,
