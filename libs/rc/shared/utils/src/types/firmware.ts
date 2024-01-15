@@ -60,6 +60,7 @@ export interface EdgeUpdateScheduleRequest {
 
 export interface UpdateNowRequest {
   firmwareCategoryId?: string;
+  firmwareSequence?: number,
   firmwareVersion?: string;
   venueIds: Array<string>;
 }

@@ -96,6 +96,14 @@ export const compareSwitchVersion = (a: string, b: string): number => {
   return 0
 }
 
+export const getCurrentEolVersion = (venue: FirmwareVenue): string | undefined => {
+  if (!venue.eolApFirmwares) {
+    return undefined
+  }
+
+  return venue.eolApFirmwares.length > 0 ? venue.eolApFirmwares[0]['currentEolVersion'] : undefined
+}
+
 // eslint-disable-next-line max-len
 const typeIsApFunc = (value: FirmwareVenueVersion) => value && value.type && value.type === FirmwareType.AP_FIRMWARE_UPGRADE
 
