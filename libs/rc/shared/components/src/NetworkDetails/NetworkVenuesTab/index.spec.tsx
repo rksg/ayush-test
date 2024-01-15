@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { networkApi }             from '@acx-ui/rc/services'
+import { networkApi, venueApi }   from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   EdgeSdLanUrls,
@@ -14,7 +14,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
-  act,
   findTBody,
   fireEvent,
   mockServer,
@@ -78,10 +77,8 @@ const mockedApplyFn = jest.fn()
 const mockedGetSdLanFn = jest.fn()
 describe('NetworkVenuesTab', () => {
   beforeEach(() => {
-    act(() => {
-      store.dispatch(networkApi.util.resetApiState())
-    })
-
+    store.dispatch(networkApi.util.resetApiState())
+    store.dispatch(venueApi.util.resetApiState())
     mockedGetSdLanFn.mockClear()
 
     mockServer.use(
@@ -384,9 +381,8 @@ describe('NetworkVenuesTab', () => {
 
 describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
   beforeEach(() => {
-    act(() => {
-      store.dispatch(networkApi.util.resetApiState())
-    })
+    store.dispatch(networkApi.util.resetApiState())
+    store.dispatch(venueApi.util.resetApiState())
     jest.mocked(useIsSplitOn).mockImplementation((ff) => {
       return ff === Features.EDGES_SD_LAN_TOGGLE || ff === Features.G_MAP ? false : true
     })
@@ -515,6 +511,7 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
     expect(row1).toHaveTextContent('ON now') // { day: 'Thu', timeIndex: 5 }
     expect(row2).toHaveTextContent('OFF now')  // { day: 'Wed', timeIndex: 45 }
 
+    jest.runOnlyPendingTimers()
     jest.useRealTimers()
   })
 
