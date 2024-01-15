@@ -312,7 +312,10 @@ export function VenuesTable () {
     search: {
       searchTargetFields: venuePayload.searchTargetFields as string[]
     },
-    enableSelectAllPagesData: ['id', 'name']
+    enableSelectAllPagesData: ['id', 'name'],
+    pagination: {
+      settingsId: 'venues-table'
+    }
   })
 
   const { cityFilterOptions } = useGetVenueCityListQuery({ params: useParams() }, {
