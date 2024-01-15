@@ -92,7 +92,7 @@ export function Brand360 () {
     start: pastStart,
     end: pastEnd,
     granularity: 'all' },
-    { skip: ssidSkip })
+  { skip: ssidSkip })
   const {
     data: currData,
     ...currResults
