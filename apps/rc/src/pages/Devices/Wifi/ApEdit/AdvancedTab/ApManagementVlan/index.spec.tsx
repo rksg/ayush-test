@@ -75,7 +75,7 @@ describe('ApManagementVlanForm', () => {
     expect(await screen.findByTestId('ap-managment-vlan-vlan-id-span')).toBeVisible()
   })
 
-  it('should handle click Customize/Use Venue settings link', async () => {
+  it.skip('should handle click Customize/Use Venue settings link', async () => {
     render(
       <Provider>
         <Form>

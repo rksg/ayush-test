@@ -4,10 +4,13 @@ import { debounce } from 'lodash'
 import { rest }     from 'msw'
 import { act }      from 'react-dom/test-utils'
 
-import { useIsSplitOn }                                     from '@acx-ui/feature-toggle'
-import { apApi, switchApi, venueApi }                       from '@acx-ui/rc/services'
-import { CommonUrlsInfo, FirmwareUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                  from '@acx-ui/store'
+import { useIsSplitOn }               from '@acx-ui/feature-toggle'
+import { apApi, switchApi, venueApi } from '@acx-ui/rc/services'
+import { CommonUrlsInfo,
+  FirmwareUrlsInfo,
+  SwitchUrlsInfo,
+  SwitchFirmwareFixtures } from '@acx-ui/rc/utils'
+import { Provider, store }    from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -32,10 +35,20 @@ import {
 
 import { StackForm } from '.'
 
+const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
+
 const mockedUsedNavigate = jest.fn()
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
+}))
+
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetSwitchCurrentVersionsQuery: () => ({
+    data: mockSwitchCurrentVersions
+  })
 }))
 
 type MockSelectProps = React.PropsWithChildren<{

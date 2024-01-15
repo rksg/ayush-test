@@ -11,8 +11,7 @@ import {
   FirmwareVenueVersion,
   FirmwareType,
   Schedule,
-  LatestEdgeFirmwareVersion,
-  parseSwitchVersion
+  LatestEdgeFirmwareVersion
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -150,19 +149,6 @@ export const getVersionLabel = (intl: IntlShape, version: VersionLabelType, show
   return `${versionName}${showType ? ` (${versionType}) ` : ' '}${versionDate ? '- ' + versionDate : ''}`
 }
 
-export const getSwitchVersionLabel = (intl: IntlShape, version: FirmwareVersion): string => {
-  const transform = firmwareTypeTrans(intl.$t)
-  const versionName = parseSwitchVersion(version?.name)
-  const versionType = transform(version?.category)
-
-  let displayVersion = `${versionName} (${versionType})`
-  if(version.inUse){
-    // eslint-disable-next-line max-len
-    displayVersion = `${displayVersion} - ${intl.$t({ defaultMessage: 'Selected Venues are already on this release' })}`
-  }
-  return displayVersion
-}
-
 export const toUserDate = (date: string): string => {
   if (date) {
     return formatter(DateFormatEnum.DateTimeFormatWith12HourSystem)(date)
@@ -250,22 +236,5 @@ export const isSwitchNextScheduleTooltipDisabled = (venue: FirmwareSwitchVenue) 
   return venue.nextSchedule
 }
 
-export const getSwitchNextScheduleTplTooltip = (venue: FirmwareSwitchVenue): string | undefined => {
-  if (venue.nextSchedule) {
-    const versionName = venue.nextSchedule.version?.name
-    const versionAboveTenName = venue.nextSchedule.versionAboveTen?.name
-    let names = []
-
-    if (versionName) {
-      names.push(parseSwitchVersion(versionName))
-    }
-
-    if (versionAboveTenName) {
-      names.push(parseSwitchVersion(versionAboveTenName))
-    }
-    return names.join(', ')
-  }
-  return ''
-}
 
 
