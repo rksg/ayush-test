@@ -212,7 +212,9 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           onActivityMessageReceived(msg,
             [
               'AddNetworkVenue',
+              'AddNetworkVenueMappings',
               'DeleteNetworkVenue',
+              'DeleteNetworkVenues',
               'UpdateNetworkDeep',
               'UpdateNetworkVenue'
             ], () => {
