@@ -57,7 +57,7 @@ export function Brand360 () {
   const { sliceType, SliceTypeDropdown } = useSliceType()
   const [settings, setSettings] = useState<Partial<Settings>>({})
   const [dateFilterState, setDateFilterState] = useState<DateFilter>(
-    getDateRangeFilter(DateRange.last8Hours)
+    getDateRangeFilter(DateRange.last24Hours)
   )
   const { data } = settingsQuery
   useEffect(() => { data && setSettings(data) }, [data])

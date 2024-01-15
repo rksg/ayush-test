@@ -10,6 +10,7 @@ import { BrandTable } from './Table'
 describe('Brand 360 Table', () => {
   it('should render table correctly for proptery view', async () => {
     const data = [{
+      id: '1',
       property: 'p',
       lsp: 'l',
       p1Incidents: 10,
@@ -30,6 +31,7 @@ describe('Brand 360 Table', () => {
   })
   it('should render table correctly for proptery view for nodata', async () => {
     const data = [{
+      id: '1',
       property: 'p',
       lsp: 'l',
       p1Incidents: 0,
@@ -55,6 +57,7 @@ describe('Brand 360 Table', () => {
       'sla-brand-ssid-compliance': '40'
     }
     const data = [{
+      id: '1',
       property: 'p',
       lsp: 'l',
       p1Incidents: 10,
@@ -80,6 +83,7 @@ describe('Brand 360 Table', () => {
       'sla-brand-ssid-compliance': '40'
     }
     const data = [{
+      id: '1',
       property: 'p',
       lsp: 'l',
       p1Incidents: 0,
