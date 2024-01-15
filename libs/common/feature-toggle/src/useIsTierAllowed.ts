@@ -88,3 +88,7 @@ export function useIsTierAllowed (featureId: string): boolean {
   alphaList: ${alphaList}, ${featureId}: ${enabled}`)
   return enabled
 }
+
+export const useGetBetaList = (): string[] => {
+  return useFFList().betaList?? []
+}
