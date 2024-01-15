@@ -15,7 +15,8 @@ import {
   PropertyUnitLink,
   useDpskNewConfigFlowParams,
   PassphraseViewer,
-  PersonaDrawer
+  PersonaDrawer,
+  usePersonaAsyncHeaders
 } from '@acx-ui/rc/components'
 import {
   useLazyGetDpskQuery,
@@ -66,6 +67,7 @@ function PersonaDetails () {
   const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
   const [vniRetryable, setVniRetryable] = useState<boolean>(false)
   const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
+  const { customHeaders } = usePersonaAsyncHeaders()
 
   useEffect(() => {
     if (personaDetailsQuery.isLoading) return
@@ -136,7 +138,8 @@ function PersonaDetails () {
   const revokePersona = async () => {
     return await updatePersona({
       params: { groupId: personaGroupId, id: personaId },
-      payload: { revoked: !personaDetailsQuery.data?.revoked }
+      payload: { revoked: !personaDetailsQuery.data?.revoked },
+      customHeaders
     })
   }
 

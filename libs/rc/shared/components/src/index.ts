@@ -91,6 +91,7 @@ export { ToggleButton } from './ToggleButton'
 export { TopologyFloorPlanWidget } from './TopologyFloorPlanWidget'
 export { useApActions } from './useApActions'
 export { useSwitchActions } from './useSwitchActions'
+export { useSwitchFirmwareUtils } from './useSwitchFirmwareUtils'
 export { VenueDevicesWidget } from './VenueDevicesWidget'
 export { VenueAlarmWidget } from './VenueAlarmWidget'
 export { VenuesDashboardWidget, VenuesDashboardWidgetV2 } from './VenuesDashboardWidget'
@@ -153,7 +154,13 @@ export { DistSwitchesTable } from './NetworkSegmentationDetailTableGroup/DistSwi
 export type {
   AccessSwitchTableDataType
 } from './NetworkSegmentationDetailTableGroup/AccessSwitchTable'
-export { useEdgeActions, useIsEdgeFeatureReady } from './useEdgeActions'
+export {
+  useEdgeActions,
+  useIsEdgeFeatureReady,
+  useSdLanScopedNetworks,
+  useSdLanScopedNetworkVenues,
+  checkSdLanScopedNetworkDeactivateAction
+} from './useEdgeActions'
 export { EdgeServiceStatusLight } from './EdgeServiceStatusLight'
 export { PropertyManagementForm } from './PropertyManagementForm'
 export { AdaptivePolicySetForm } from './AdaptivePolicySetForm'
