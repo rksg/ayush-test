@@ -519,12 +519,16 @@ export const codes = {
   },
   'unqualifiedZone': {
     category: crrmStates[CRRMStates.unqualifiedZone].label,
-    summary: defineMessage({ defaultMessage: 'No RRM recommendation as zone is unqualified' }),
+    summary: get('IS_MLISA_SA')
+      ? defineMessage({ defaultMessage: 'No RRM recommendation as zone is unqualified' })
+      : defineMessage({ defaultMessage: 'No RRM recommendation as venue is unqualified' }),
     priority: priorities.low
   },
   'noAps': {
     category: crrmStates[CRRMStates.noAps].label,
-    summary: crrmStates[CRRMStates.noAps].label,
+    summary: get('IS_MLISA_SA')
+      ? defineMessage({ defaultMessage: 'No APs in this zone' })
+      : defineMessage({ defaultMessage: 'No APs in this venue' }),
     priority: priorities.low
   },
   'insufficientLicenses': {
