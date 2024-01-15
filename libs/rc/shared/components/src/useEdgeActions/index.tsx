@@ -250,7 +250,11 @@ export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
 }
 
 export const checkSdLanScopedNetworkDeactivateAction =
-  (scopedIds: string[] | undefined, selectedIds: string[] | undefined, cb: () => void) => {
+  (
+    scopedIds: string[] | undefined,
+    selectedIds: string[] | undefined,
+    cb: () => void
+  ) => {
     if (!scopedIds || !selectedIds) {
       cb()
       return
@@ -259,6 +263,7 @@ export const checkSdLanScopedNetworkDeactivateAction =
     const { $t } = getIntl()
 
     if (_.intersection(scopedIds, selectedIds).length > 0) {
+
       showActionModal({
         type: 'confirm',
         title: $t({ defaultMessage: 'Deactivate network' }),

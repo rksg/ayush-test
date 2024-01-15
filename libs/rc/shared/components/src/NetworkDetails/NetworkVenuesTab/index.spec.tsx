@@ -4,8 +4,8 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { networkApi }                               from '@acx-ui/rc/services'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { networkApi }             from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   EdgeSdLanUrls,
@@ -45,7 +45,8 @@ const mockedSdLanDataList = {
     networkIds: [params.networkId]
   }]
 }
-jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP) // isMapEnabled = false
+// isMapEnabled = false && SD-LAN not enabled
+jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP && ff !== Features.EDGES_SD_LAN_TOGGLE)
 
 type MockDialogProps = React.PropsWithChildren<{
   visible: boolean
@@ -67,6 +68,10 @@ jest.mock('../../NetworkVenueScheduleDialog', () => ({
       <button onClick={(e)=>{e.preventDefault();onOk()}}>Apply</button>
       <button onClick={(e)=>{e.preventDefault();onCancel()}}>Cancel</button>
     </div>
+}))
+jest.mock('../../useEdgeActions', () => ({
+  ...jest.requireActual('../../useEdgeActions'),
+  useSdLanScopedNetworkVenues: jest.fn().mockReturnValue([])
 }))
 
 const mockedApplyFn = jest.fn()
@@ -374,66 +379,6 @@ describe('NetworkVenuesTab', () => {
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
   })
-
-  it('should not trigger SD-LAN API when FF is not on', async () => {
-    jest.mocked(useIsSplitOn).mockImplementationOnce((ff) => {
-      return ff === Features.EDGES_SD_LAN_TOGGLE || ff === Features.G_MAP ? false : true
-    })
-
-    render(<Provider><NetworkVenuesTab /></Provider>, {
-      route: { params, path: '/:tenantId/t/:networkId' }
-    })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-    await screen.findByRole('row', { name: /network-venue-1/i })
-    expect(mockedGetSdLanFn).toBeCalledTimes(0)
-  })
-
-
-  describe('Edge SD-LAN FF is on', () => {
-    beforeEach(() => {
-      jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    })
-
-    it('confirm deactivate when SD-LAN is scoped in the selected network', async () => {
-      mockServer.use(
-        rest.get(
-          WifiUrlsInfo.getNetwork.url,
-          (req, res, ctx) => res(ctx.json({ ...network, venues: [] }))
-        ),
-        rest.post(
-          CommonUrlsInfo.getNetworkDeepList.url,
-          (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: [] }] }))
-        ),
-        rest.delete(
-          WifiUrlsInfo.deleteNetworkVenues.url,
-          (req, res, ctx) => res(ctx.json({ requestId: '456' }))
-        ),
-        rest.put(
-          WifiUrlsInfo.updateNetworkDeep.url.split('?')[0],
-          (req, res, ctx) => res(ctx.json({}))
-        ),
-        rest.post(
-          WifiUrlsInfo.getApCompatibilitiesNetwork.url,
-          (req, res, ctx) => res(ctx.json(networkVenueApCompatibilities))
-        )
-      )
-
-      render(<Provider><NetworkVenuesTab /></Provider>, {
-        route: { params, path: '/:tenantId/t/:networkId' }
-      })
-
-      await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-      const activatedRow = await screen.findByRole('row', { name: /network-venue-1/i })
-      const toogleButton = await within(activatedRow).findByRole('switch', { checked: true })
-      await userEvent.click(toogleButton)
-      const popup = await screen.findByRole('dialog')
-      await screen.findByText(/This network is running the SD-LAN service on this venue/i)
-      await userEvent.click( await within(popup).findByRole('button', { name: 'Cancel' }))
-      await waitFor(() => expect(popup).not.toBeVisible())
-    })
-  })
 })
 
 
@@ -442,7 +387,7 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
     act(() => {
       store.dispatch(networkApi.util.resetApiState())
     })
-    jest.mocked(useIsSplitOn).mockImplementationOnce((ff) => {
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
       return ff === Features.EDGES_SD_LAN_TOGGLE || ff === Features.G_MAP ? false : true
     })
 

@@ -195,7 +195,6 @@ export function Venues (props: VenuesProps) {
           () => {
             handleActivateVenue(false, rows)
           })
-        // handleActivateVenue(false, rows)
       }
     }
   ]
