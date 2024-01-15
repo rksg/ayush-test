@@ -1,7 +1,10 @@
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 
-export function usePersonaAsyncHeaders (): { customHeaders: Record<string, string> } {
+export function usePersonaAsyncHeaders (): {
+  isAsync: boolean,
+  customHeaders: Record<string, string>
+  } {
   const isAsync = useIsSplitOn(Features.CLOUDPATH_ASYNC_API_TOGGLE)
 
   const asyncHeaders = {
@@ -10,6 +13,7 @@ export function usePersonaAsyncHeaders (): { customHeaders: Record<string, strin
   }
 
   return {
+    isAsync,
     customHeaders: isAsync ? asyncHeaders : {}
   }
 }

@@ -14,6 +14,7 @@ describe('UsePersonaAsyncHeaders', () => {
 
     const result = usePersonaAsyncHeaders()
 
+    expect(result.isAsync).toBe(true)
     expect(result.customHeaders).toStrictEqual(expectedHeaders)
   })
 
@@ -21,6 +22,7 @@ describe('UsePersonaAsyncHeaders', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     const result = usePersonaAsyncHeaders()
 
+    expect(result.isAsync).toBe(false)
     expect(result.customHeaders).toStrictEqual({})
   })
 })

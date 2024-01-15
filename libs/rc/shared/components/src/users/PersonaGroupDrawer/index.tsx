@@ -1,7 +1,7 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Drawer }                                                    from '@acx-ui/components'
+import { Drawer, showToast }                                         from '@acx-ui/components'
 import { useAddPersonaGroupMutation, useUpdatePersonaGroupMutation } from '@acx-ui/rc/services'
 import { PersonaGroup }                                              from '@acx-ui/rc/utils'
 
@@ -22,13 +22,25 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
   const { isEdit, data, visible, onClose } = props
   const [addPersonaGroup] = useAddPersonaGroupMutation()
   const [updatePersonaGroup] = useUpdatePersonaGroupMutation()
-  const { customHeaders } = usePersonaAsyncHeaders()
+  const { isAsync, customHeaders } = usePersonaAsyncHeaders()
 
   const onFinish = async (contextData: PersonaGroup) => {
     try {
       const result = isEdit
         ? await handleEditPersonaGroup(contextData)
         : await handleAddPersonaGroup(contextData)
+
+      if (!isAsync) {
+        showToast({
+          type: 'success',
+          content: $t({
+            defaultMessage: 'Identity Group {name} was ' +
+              '{isEdit, select, true {updated} other {added}}'
+          },
+          { name: contextData.name, isEdit }
+          )
+        })
+      }
 
       onClose(result)
     } catch (error) {
