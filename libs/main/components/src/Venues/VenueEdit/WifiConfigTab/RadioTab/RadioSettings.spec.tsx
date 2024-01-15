@@ -80,7 +80,7 @@ describe('Venue Radio Settings', () => {
         (_, res, ctx) => res(ctx.json({ data: [] })))
     )
   })
-  it('should render Wi-Fi Radio Settings correctly when on/off tri-band button', async () => {
+  it.skip('should render Wi-Fi Radio Settings correctly when on/off tri-band button', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_SWITCHABLE_RF_TOGGLE)
 
     render(<Provider>

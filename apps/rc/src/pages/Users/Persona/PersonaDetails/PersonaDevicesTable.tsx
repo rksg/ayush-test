@@ -11,7 +11,8 @@ import {
   OSIconContainer,
   useDpskNewConfigFlowParams,
   PersonaDeviceItem,
-  PersonaDevicesImportDialog
+  PersonaDevicesImportDialog,
+  usePersonaAsyncHeaders
 } from '@acx-ui/rc/components'
 import {
   useAddPersonaDevicesMutation,
@@ -55,6 +56,7 @@ export function PersonaDevicesTable (props: {
   const [clientMac, setClientMac] = useState<Set<string>>(new Set())  // including the MAC auth and DPSK devices
   const addClientMac = (mac: string) => setClientMac(prev => new Set(prev.add(mac)))
   const isNewConfigFlow = useIsSplitOn(Features.DPSK_NEW_CONFIG_FLOW_TOGGLE)
+  const { customHeaders } = usePersonaAsyncHeaders()
 
   const [getClientList] = useLazyGetClientListQuery()
   const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
@@ -183,7 +185,8 @@ export function PersonaDevicesTable (props: {
   const deleteDevices = (devices: PersonaDevice[]) => {
     devices.forEach(device => {
       deletePersonaDevicesMutation({
-        params: { groupId: persona?.groupId, id: persona?.id, macAddress: device.macAddress }
+        params: { groupId: persona?.groupId, id: persona?.id, macAddress: device.macAddress },
+        customHeaders
       }).unwrap()
         .then()
         .catch(error => {
@@ -289,7 +292,8 @@ export function PersonaDevicesTable (props: {
   const handleModalSubmit = (data: Partial<PersonaDeviceItem>[]) => {
     addPersonaDevicesMutation({
       params: { groupId: persona?.groupId, id: persona?.id },
-      payload: data
+      payload: data,
+      customHeaders
     }).unwrap()
       .then(() => handleModalCancel())
       .catch(error => {

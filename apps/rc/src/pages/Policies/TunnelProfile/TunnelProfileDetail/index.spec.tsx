@@ -1,10 +1,11 @@
 import { rest } from 'msw'
 
 import { useIsEdgeFeatureReady }                                                              from '@acx-ui/rc/components'
+import { networkApi, tunnelProfileApi }                                                       from '@acx-ui/rc/services'
 import { CommonUrlsInfo, getPolicyRoutePath, PolicyOperation, PolicyType, TunnelProfileUrls } from '@acx-ui/rc/utils'
 import { EdgeTunnelProfileFixtures }                                                          from '@acx-ui/rc/utils'
-import { Provider }                                                                           from '@acx-ui/store'
-import { mockServer, render, screen }                                                         from '@acx-ui/test-utils'
+import { Provider, store }                                                                    from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved }                     from '@acx-ui/test-utils'
 
 import { mockedNetworkViewData } from '../__tests__/fixtures'
 
@@ -33,12 +34,15 @@ describe('TunnelProfileDetail', () => {
     type: PolicyType.TUNNEL_PROFILE,
     oper: PolicyOperation.DETAIL
   })
+  const mockedGetVMNetworksList = jest.fn()
   beforeEach(() => {
     params = {
       tenantId: tenantId,
       policyId: 'testPolicyId'
     }
-
+    store.dispatch(tunnelProfileApi.util.resetApiState())
+    store.dispatch(networkApi.util.resetApiState())
+    mockedGetVMNetworksList.mockClear()
     mockServer.use(
       rest.post(
         TunnelProfileUrls.getTunnelProfileViewDataList.url,
@@ -46,7 +50,10 @@ describe('TunnelProfileDetail', () => {
       ),
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
-        (_, res, ctx) => res(ctx.json(mockedNetworkViewData))
+        (_, res, ctx) => {
+          mockedGetVMNetworksList()
+          return res(ctx.json(mockedNetworkViewData))
+        }
       )
     )
   })
@@ -58,6 +65,8 @@ describe('TunnelProfileDetail', () => {
       </Provider>, {
         route: { params, path: detailPath }
       })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => expect(mockedGetVMNetworksList).toBeCalled())
     await screen.findByText('tunnelProfile1')
     // await screen.findByText('tag1')
     await screen.findByText('Manual (1450)')
@@ -73,6 +82,8 @@ describe('TunnelProfileDetail', () => {
       </Provider>, {
         route: { params, path: detailPath }
       })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => expect(mockedGetVMNetworksList).toBeCalled())
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'Policies & Profiles'
@@ -95,6 +106,8 @@ describe('TunnelProfileDetail', () => {
       </Provider>, {
         route: { params, path: detailPath }
       })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => expect(mockedGetVMNetworksList).toBeCalled())
     await screen.findByText('Default')
     expect(screen.queryByRole('button', { name: 'Configure' })).toBeDisabled()
   })
@@ -111,6 +124,8 @@ describe('TunnelProfileDetail', () => {
         </Provider>, {
           route: { params, path: detailPath }
         })
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      await waitFor(() => expect(mockedGetVMNetworksList).toBeCalled())
       await screen.findByText('Tunnel Type')
       await screen.findByText('VxLAN')
     })
@@ -134,6 +149,8 @@ describe('TunnelProfileDetail', () => {
         </Provider>, {
           route: { params, path: detailPath }
         })
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      await waitFor(() => expect(mockedGetVMNetworksList).toBeCalled())
       await screen.findByText('tunnelProfile2')
       await screen.findByText('Tunnel Type')
       await screen.findByText('VxLAN')
@@ -152,7 +169,8 @@ describe('TunnelProfileDetail', () => {
         </Provider>, {
           route: { params, path: detailPath }
         })
-
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      await waitFor(() => expect(mockedGetVMNetworksList).toBeCalled())
       await screen.findByText('Default tunnel profile (SD-LAN)')
       await screen.findByText('VLAN-VxLAN')
       expect(screen.queryByRole('button', { name: 'Configure' })).toBeDisabled()
