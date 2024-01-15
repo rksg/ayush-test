@@ -36,7 +36,7 @@ interface DonutChartOptionalProps {
   showLegend: boolean,
   animation: boolean,
   showLabel: boolean,
-  showTotal: boolean,
+  showTotal?: boolean,
   legend: 'value' | 'name' | 'name-value',
   size: 'small' | 'medium' | 'large' | 'x-large'
 }
@@ -244,7 +244,9 @@ export function DonutChart ({
     title: {
       show: true,
       text: props.title,
-      subtext: props.value,
+      subtext: props.value
+        ? props.value
+        : props.showTotal ? `${dataFormatter(sum)}` : undefined,
       left: props.showLegend && !isEmpty ? '28%' : 'center',
       top: 'center',
       textVerticalAlign: 'top',
