@@ -153,13 +153,11 @@ describe('EditEdge ports - sub-interface', () => {
         enabled: true,
         gateway: '',
         id: 'fa663fd2-3057-44d9-ba25-9b45c93069cd',
-        ip: '',
         ipMode: 'DHCP',
         mac: '00:0c:29:b6:ad:04',
         name: 'local0',
         natEnabled: false,
         portType: 'LAN',
-        subnet: '',
         vlan: 999
       })
     })
