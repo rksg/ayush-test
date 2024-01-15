@@ -204,7 +204,8 @@ describe('Recommendation services', () => {
         crrmOptimizedState: {
           ...crrmStates.optimized,
           text: 'Optimized'
-        }
+        },
+        toggles: { crrmFullOptimization: false }
       },
       {
         ...recommendationListResult.recommendations[1],
@@ -223,7 +224,8 @@ describe('Recommendation services', () => {
         crrmOptimizedState: {
           ...crrmStates.nonOptimized,
           text: 'Non-Optimized'
-        }
+        },
+        toggles: { crrmFullOptimization: false }
       },
       {
         ...recommendationListResult.recommendations[2],
@@ -258,6 +260,7 @@ describe('Recommendation services', () => {
       },
       {
         ...recommendationListResult.recommendations[4],
+        id: '1', // _.uniqueId()
         scope: `vsz34 (SZ Cluster)
 > 01-US-CA-D1-Test-Home (Domain)
 > 01-Alethea-WiCheck Test (Venue)`,
@@ -274,10 +277,12 @@ describe('Recommendation services', () => {
         crrmOptimizedState: {
           ...crrmStates.insufficientLicenses,
           text: 'Insufficient Licenses'
-        }
+        },
+        toggles: { crrmFullOptimization: true }
       },
       {
         ...recommendationListResult.recommendations[5],
+        id: '2', // _.uniqueId()
         scope: `vsz34 (SZ Cluster)
 > 22-US-CA-D22-Aaron-Home (Domain)
 > 22-US-CA-Z22-Aaron-Home (Venue)`,
@@ -294,10 +299,12 @@ describe('Recommendation services', () => {
         crrmOptimizedState: {
           ...crrmStates.verificationError,
           text: 'Verification Error'
-        }
+        },
+        toggles: { crrmFullOptimization: true }
       },
       {
         ...recommendationListResult.recommendations[6],
+        id: '3', // _.uniqueId()
         scope: `vsz34 (SZ Cluster)
 > 01-US-CA-D1-Test-Home (Domain)
 > 01-US-CA-D1-Ruckus-HQ-QA-interop (Venue)`,
@@ -314,10 +321,12 @@ describe('Recommendation services', () => {
         crrmOptimizedState: {
           ...crrmStates.verified,
           text: 'Verified'
-        }
+        },
+        toggles: { crrmFullOptimization: true }
       },
       {
         ...recommendationListResult.recommendations[7],
+        id: '4', // _.uniqueId()
         scope: `vsz34 (SZ Cluster)
 > 23-IND-BNG-D23-Keshav-Home (Domain)
 > 23-IND-BNG-D23-Keshav-Home (Venue)`,
@@ -334,10 +343,12 @@ describe('Recommendation services', () => {
         crrmOptimizedState: {
           ...crrmStates.unqualifiedZone,
           text: 'Unqualified Zone'
-        }
+        },
+        toggles: { crrmFullOptimization: true }
       },
       {
         ...recommendationListResult.recommendations[8],
+        id: '5', // _.uniqueId()
         scope: `vsz34 (SZ Cluster)
 > 25-US-CA-D25-SandeepKour-home (Domain)
 > 25-US-CA-D25-SandeepKour-home (Venue)`,
@@ -354,7 +365,8 @@ describe('Recommendation services', () => {
         crrmOptimizedState: {
           ...crrmStates.noAps,
           text: 'No APs'
-        }
+        },
+        toggles: { crrmFullOptimization: true }
       },
       {
         ...recommendationListResult.recommendations[9],
@@ -373,7 +385,8 @@ describe('Recommendation services', () => {
         crrmOptimizedState: {
           ...crrmStates.nonOptimized,
           text: 'Non-Optimized'
-        }
+        },
+        toggles: { crrmFullOptimization: true }
       }
     ]
     expect(error).toBe(undefined)
@@ -463,7 +476,7 @@ describe('Recommendation services', () => {
       { wrapper: Provider }
     )
     act(() => {
-      result.current[0]({ code: 'test', path: idPath, preferences: { fullOptimization: false } })
+      result.current[0]({ path: idPath, preferences: { crrmFullOptimization: false } })
     })
     await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
     expect(result.current[1].data)

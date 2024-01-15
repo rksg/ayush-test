@@ -257,7 +257,8 @@ export interface SwitchFirmwareStatus {
 
 export interface CurrentVersions {
   currentVersions: string[];
-  currentVersionsAboveTen: string[]
+  currentVersionsAboveTen: string[];
+  generalVersions: string[];
 }
 
 export interface PreDownload {
