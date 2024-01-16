@@ -6,7 +6,6 @@ import { apApi, venueApi }                                       from '@acx-ui/r
 import { CommonUrlsInfo, WifiUrlsInfo }                          from '@acx-ui/rc/utils'
 import { Provider, store }                                       from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
-import { getUrlForTest }                                         from '@acx-ui/utils'
 
 import { ApNetworkingContext }          from '..'
 import { ApDataContext, ApEditContext } from '../..'
@@ -74,11 +73,9 @@ describe('ApMeshTab', () => {
     store.dispatch(apApi.util.resetApiState())
 
     mockServer.use(
-      rest.get(
-        getUrlForTest(CommonUrlsInfo.getVenue),
+      rest.get(CommonUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(venueData))),
-      rest.post(
-        getUrlForTest(WifiUrlsInfo.getMeshUplinkAPs),
+      rest.post(WifiUrlsInfo.getMeshUplinkAPs.url,
         (_, res, ctx) => res(ctx.json(mockMeshUplinkAps)))
     )
 
@@ -192,8 +189,7 @@ describe('ApMeshTab', () => {
       rest.get(
         WifiUrlsInfo.getApMeshSettings.url,
         (_, res, ctx) => res(ctx.json(mockApMeshSettings2))),
-      rest.post(
-        getUrlForTest(WifiUrlsInfo.getMeshUplinkAPs),
+      rest.post(WifiUrlsInfo.getMeshUplinkAPs.url,
         (_, res, ctx) => res(ctx.json(mockNoMeshUplinkAps)))
     )
 

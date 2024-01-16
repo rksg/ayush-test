@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
-import { act }   from 'react-dom/test-utils'
 
 import { SwitchConfigurationProfile }        from '@acx-ui/rc/utils'
 import { Provider }                          from '@acx-ui/store'
@@ -125,10 +124,10 @@ describe('Wired - AclSetting', () => {
     await screen.findByRole('heading', { level: 3, name: /ACLs/ })
 
     const row = await screen.findByRole('row', { name: /acl-01/i })
-    fireEvent.click(await within(row).findByRole('radio'))
+    await userEvent.click(await within(row).findByRole('radio'))
 
     const editButton = await screen.findByRole('button', { name: /Edit/i })
-    fireEvent.click(editButton)
+    await userEvent.click(editButton)
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
   })
 
@@ -159,7 +158,7 @@ describe('Wired - AclSetting', () => {
     await screen.findByRole('heading', { level: 3, name: /ACLs/ })
 
     const row = await screen.findByRole('row', { name: /acl-01/i })
-    fireEvent.click(await within(row).findByRole('radio'))
+    await userEvent.click(await within(row).findByRole('radio'))
 
     // fireEvent.click(await screen.findByRole('button', { name: /Delete/i }))
     // await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
@@ -194,19 +193,13 @@ describe('Wired - AclSetting', () => {
     await screen.findByRole('heading', { level: 3, name: /ACLs/ })
 
     const row = await screen.findByRole('row', { name: /acl-01/i })
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      fireEvent.click(await within(row).findByRole('radio'))
-      fireEvent.click(await screen.findByRole('button', { name: /Edit/i }))
-    })
+    await userEvent.click(await within(row).findByRole('radio'))
+    await userEvent.click(await screen.findByRole('button', { name: /Edit/i }))
 
     const drawer = await screen.findByRole('dialog')
     const row2 = await screen.findByRole('row', { name: /888/i })
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      fireEvent.click(await within(row2).findByRole('radio'))
-      fireEvent.click(await within(drawer).findByRole('button', { name: /Edit/i }))
-    })
+    await userEvent.click(await within(row2).findByRole('radio'))
+    await userEvent.click(await within(drawer).findByRole('button', { name: /Edit/i }))
     await userEvent.click(await screen.findByRole('button', { name: 'OK' }))
   })
 
@@ -236,12 +229,12 @@ describe('Wired - AclSetting', () => {
     await screen.findByRole('heading', { level: 3, name: /ACLs/ })
 
     const row = await screen.findByRole('row', { name: /acl-01/i })
-    fireEvent.click(await within(row).findByRole('radio'))
-    fireEvent.click(await screen.findByRole('button', { name: /Edit/i }))
+    await userEvent.click(await within(row).findByRole('radio'))
+    await userEvent.click(await screen.findByRole('button', { name: /Edit/i }))
 
     const drawer = await screen.findByRole('dialog')
     const row2 = await screen.findByRole('row', { name: /65000/i })
-    fireEvent.click(await within(row2).findByRole('radio'))
-    fireEvent.click(await within(drawer).findByRole('button', { name: /Delete/i }))
+    await userEvent.click(await within(row2).findByRole('radio'))
+    await userEvent.click(await within(drawer).findByRole('button', { name: /Delete/i }))
   })
 })

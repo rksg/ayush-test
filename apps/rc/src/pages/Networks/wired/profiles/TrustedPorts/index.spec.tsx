@@ -96,10 +96,10 @@ describe('Wired - TrustedPorts', () => {
     await screen.findByRole('heading', { level: 3, name: /Trusted Ports/ })
 
     const row = await screen.findByRole('row', { name: /ICX7150-48/i })
-    fireEvent.click(await within(row).findByRole('radio'))
+    await userEvent.click(await within(row).findByRole('radio'))
 
     const editButton = await screen.findByRole('button', { name: /Edit/i })
-    fireEvent.click(editButton)
+    await userEvent.click(editButton)
     await userEvent.click((await screen.findAllByText('Trusted Ports'))[1])
     await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
   })
@@ -130,11 +130,11 @@ describe('Wired - TrustedPorts', () => {
     await screen.findByRole('heading', { level: 3, name: /Trusted Ports/ })
 
     const row = await screen.findByRole('row', { name: /ICX7150-48/i })
-    fireEvent.click(await within(row).findByRole('radio'))
+    await userEvent.click(await within(row).findByRole('radio'))
 
-    fireEvent.click(await screen.findByRole('button', { name: /Delete/i }))
+    await userEvent.click(await screen.findByRole('button', { name: /Delete/i }))
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
-    fireEvent.click(await screen.findByRole('button', { name: /Delete/i }))
+    await userEvent.click(await screen.findByRole('button', { name: /Delete/i }))
     await userEvent.click(await screen.findByRole('button', { name: 'Delete Trust Port' }))
   })
 })
