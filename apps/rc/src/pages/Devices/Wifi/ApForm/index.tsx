@@ -437,15 +437,12 @@ export function ApForm () {
       return false
     }
 
-    const afcInfo = apInfo?.apStatusData?.afcInfo
+    const afcInfo = apInfo.apStatusData?.afcInfo
+
     const requiredStatus = [AFCStatus.AFC_NOT_REQUIRED, AFCStatus.WAIT_FOR_LOCATION]
 
-    // AFC info possibly does not exist.
-    if (!afcInfo) {
-      return false
-    }
-    // Also does Geo-location
-    if (afcInfo.geoLocation === undefined) {
+    // AFC info and Geo-location possibly does not exist.
+    if (!afcInfo || afcInfo.geoLocation === undefined) {
       return false
     }
     // Same, and if Status is in requires status, then false.
