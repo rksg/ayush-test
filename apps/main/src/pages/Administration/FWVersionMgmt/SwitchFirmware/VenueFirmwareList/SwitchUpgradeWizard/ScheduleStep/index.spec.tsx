@@ -3,7 +3,8 @@ import { Form, Modal } from 'antd'
 
 import {
   FirmwareSwitchVenue,
-  SwitchFirmware
+  SwitchFirmware,
+  SwitchFirmwareFixtures
 } from '@acx-ui/rc/utils'
 import {
   Provider
@@ -23,6 +24,7 @@ import {
 
 import { ScheduleStep } from '.'
 
+const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
 
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
@@ -32,6 +34,13 @@ jest.mock('@acx-ui/components', () => ({
       setFieldValue: jest.fn(),
       validateFields: jest.fn()
     }
+  })
+}))
+
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetSwitchCurrentVersionsQuery: () => ({
+    data: mockSwitchCurrentVersions
   })
 }))
 
@@ -89,6 +98,7 @@ describe('ScheduleStep', () => {
       , {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
+
 
     expect(await screen.findByText(/Firmware available for ICX 8200 Series/i)).toBeInTheDocument()
     expect(screen.getByText(/9.0.10f/i)).toBeInTheDocument()

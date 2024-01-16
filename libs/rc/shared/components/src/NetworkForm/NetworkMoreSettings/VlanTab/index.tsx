@@ -128,7 +128,7 @@ export function VlanTab (props: { wlanData: NetworkSaveData | null }) {
           style={{ marginBottom: '10px' }}
           valuePropName='checked'
           initialValue={false}
-          children={<Switch disabled={pureVxLanEnabled}/>}
+          children={<Switch />}
         />
       </UI.FieldLabel>
     </>

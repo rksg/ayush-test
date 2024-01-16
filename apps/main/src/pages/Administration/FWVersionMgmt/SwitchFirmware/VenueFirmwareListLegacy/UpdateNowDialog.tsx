@@ -8,15 +8,12 @@ import {
   Modal, Subtitle
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useSwitchFirmwareUtils } from '@acx-ui/rc/components'
 import {
   FirmwareSwitchVenue,
   FirmwareVersion,
   UpdateScheduleRequest
 } from '@acx-ui/rc/utils'
-
-import {
-  getSwitchVersionLabel
-} from '../../FirmwareUtils'
 
 import * as UI from './styledComponents'
 
@@ -32,6 +29,7 @@ export interface UpdateNowDialogProps {
 
 export function UpdateNowDialog (props: UpdateNowDialogProps) {
   const { $t } = useIntl()
+  const { getSwitchVersionLabel } = useSwitchFirmwareUtils()
   const intl = useIntl()
   const [form] = useForm()
   const { visible, onSubmit, onCancel, data, availableVersions,
