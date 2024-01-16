@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 
-import { Col, Form, Input, Row, Select, Space } from 'antd'
-import { DefaultOptionType }                    from 'antd/lib/select'
-import { isEqual, omit, pick, isEmpty, omitBy } from 'lodash'
-import { FormattedMessage, useIntl }            from 'react-intl'
+import { Col, Form, Input, Row, Select, Space }       from 'antd'
+import { DefaultOptionType }                          from 'antd/lib/select'
+import { isEqual, omit, pick, isEmpty, omitBy, find } from 'lodash'
+import { FormattedMessage, useIntl }                  from 'react-intl'
 
 import {
   Button,
@@ -426,14 +426,11 @@ export function ApForm () {
 
     const aps = apList?.data
 
-    let apInfo = {} as APExtended
+    let apInfo = {} as APExtended | undefined
+
 
     if (aps) {
-      aps.forEach((ap) => {
-        if (ap && ap.serialNumber === apDetails?.serialNumber) {
-          apInfo = ap
-        }
-      })
+      apInfo = find(aps, (ap) => ap.serialNumber === apDetails?.serialNumber)
     }
 
     if (!apInfo) {
