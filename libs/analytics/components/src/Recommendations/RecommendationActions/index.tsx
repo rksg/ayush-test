@@ -152,8 +152,8 @@ const actions = {
 
 export const isCrrmOptimizationMatched = (
   metadata: Recommendation['metadata'], preferences: Recommendation['preferences']
-) => _.get(metadata, 'algorithmData.isFullOptimized', true) ===
-      _.get(preferences, 'fullOptimization', true)
+) => _.get(metadata, 'audit') || _.get(metadata, 'algorithmData.isCrrmFullOptimization', true)
+  === _.get(preferences, 'crrmFullOptimization', true)
 
 const getAvailableActions = (recommendation: RecommendationActionType) => {
   const { isMuted, statusEnum, metadata, preferences } = recommendation

@@ -1,5 +1,6 @@
 import { FormattedMessage, defineMessage } from 'react-intl'
 
+import { get }            from '@acx-ui/config'
 import { render, screen } from '@acx-ui/test-utils'
 
 import { IncidentCode } from './constants'
@@ -13,6 +14,10 @@ import {
   AirtimeParams,
   AirtimeArray
 } from './rootCauseRecommendation'
+
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
+}))
 
 const baseIncident = fakeIncident({
   id: '1',
@@ -288,6 +293,29 @@ describe('getRootCauseAndRecommendations', () => {
       expect(getRootCauseAndRecommendations(incident)).toMatchSnapshot()
     })
     it('should return correct data for all false', () => {
+      const checks = [
+        { isHighDensityWifiDevices: false },
+        { isAclbRaised: false },
+        { isLargeMgmtFrameCount: false },
+        { isHighSsidCountPerRadio: false },
+        { isCRRMRaised: false },
+        { isChannelFlyEnabled: false },
+        { isHighLegacyWifiDevicesCount: false }
+      ] as unknown as AirtimeArray
+      const params = {
+        ssidCountPerRadioSlice: 0
+      } as AirtimeParams
+      const incident = fakeIncident({
+        ...airtimeRxIncident,
+        metadata: {
+          dominant: {},
+          rootCauseChecks: { checks, params }
+        }
+      })
+      expect(getRootCauseAndRecommendations(incident)).toMatchSnapshot()
+    })
+    it('should return correct data for all false for RA', () => {
+      jest.mocked(get).mockReturnValue('true')
       const checks = [
         { isHighDensityWifiDevices: false },
         { isAclbRaised: false },

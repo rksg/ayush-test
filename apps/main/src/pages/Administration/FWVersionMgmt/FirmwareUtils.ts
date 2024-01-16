@@ -11,8 +11,7 @@ import {
   FirmwareVenueVersion,
   FirmwareType,
   Schedule,
-  LatestEdgeFirmwareVersion,
-  parseSwitchVersion
+  LatestEdgeFirmwareVersion
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -68,32 +67,12 @@ export const isBetaFirmware = (category: FirmwareCategory): boolean => {
   return category.toUpperCase() === FirmwareCategory.BETA.toUpperCase()
 }
 
-export const compareSwitchVersion = (a: string, b: string): number => {
-  // eslint-disable-next-line max-len
-  const switchVersionReg = /^(?:[A-Z]{3,})?(?<major>\d{4,})(?<minor>[a-z]*)(?:_cd(?<candidate>\d+))?(?:_rc(?<rcbuild>\d+))?(?:_b(?<build>\d+))?$/
-  const group1 = a?.match(switchVersionReg)?.groups
-  const group2 = b?.match(switchVersionReg)?.groups
-  if (group1 && group2) {
-    let res = 0
-    const keys = ['major', 'minor', 'candidate', 'rcbuild', 'build']
-    keys.every(key=>{
-      const initValue = (key === 'candidate') ? '0' : (key === 'build') ? '999' : ''
-      const aValue = group1[key] || initValue
-      const bValue = group2[key] || initValue
-      res = aValue.localeCompare(bValue, 'en-u-kn-true') // sort by charCode and numeric
-
-      if (key === 'rcbuild' && (
-        (aValue && bValue === '' && !group2['build']) ||
-        (aValue === '' && !group1['build'] && bValue)
-      )) { // '10010' == '10010_rc2'
-        res = 0
-        return false
-      }
-      return res === 0 // false to break every loop
-    })
-    return res
+export const getCurrentEolVersion = (venue: FirmwareVenue): string | undefined => {
+  if (!venue.eolApFirmwares) {
+    return undefined
   }
-  return 0
+
+  return venue.eolApFirmwares.length > 0 ? venue.eolApFirmwares[0]['currentEolVersion'] : undefined
 }
 
 // eslint-disable-next-line max-len
@@ -140,19 +119,6 @@ export const getVersionLabel = (intl: IntlShape, version: VersionLabelType, show
 
   // eslint-disable-next-line max-len
   return `${versionName}${showType ? ` (${versionType}) ` : ' '}${versionDate ? '- ' + versionDate : ''}`
-}
-
-export const getSwitchVersionLabel = (intl: IntlShape, version: FirmwareVersion): string => {
-  const transform = firmwareTypeTrans(intl.$t)
-  const versionName = parseSwitchVersion(version?.name)
-  const versionType = transform(version?.category)
-
-  let displayVersion = `${versionName} (${versionType})`
-  if(version.inUse){
-    // eslint-disable-next-line max-len
-    displayVersion = `${displayVersion} - ${intl.$t({ defaultMessage: 'Selected Venues are already on this release' })}`
-  }
-  return displayVersion
 }
 
 export const toUserDate = (date: string): string => {
@@ -242,22 +208,5 @@ export const isSwitchNextScheduleTooltipDisabled = (venue: FirmwareSwitchVenue) 
   return venue.nextSchedule
 }
 
-export const getSwitchNextScheduleTplTooltip = (venue: FirmwareSwitchVenue): string | undefined => {
-  if (venue.nextSchedule) {
-    const versionName = venue.nextSchedule.version?.name
-    const versionAboveTenName = venue.nextSchedule.versionAboveTen?.name
-    let names = []
-
-    if (versionName) {
-      names.push(parseSwitchVersion(versionName))
-    }
-
-    if (versionAboveTenName) {
-      names.push(parseSwitchVersion(versionAboveTenName))
-    }
-    return names.join(', ')
-  }
-  return ''
-}
 
 

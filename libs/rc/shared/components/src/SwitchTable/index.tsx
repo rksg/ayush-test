@@ -300,11 +300,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       dataIndex: 'firmware',
       sorter: true
     },
-    // { TODO: Health scope
-    //   key: 'incidents',
-    //   title: $t({ defaultMessage: 'Incidents' }),
-    //   dataIndex: 'incidents',
-    // },
     ...(params.venueId ? [] : [{
       key: 'venueName',
       title: $t({ defaultMessage: 'Venue' }),
