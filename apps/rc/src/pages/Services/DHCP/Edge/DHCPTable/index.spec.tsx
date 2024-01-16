@@ -2,6 +2,7 @@ import { waitForElementToBeRemoved } from '@testing-library/react'
 import userEvent                     from '@testing-library/user-event'
 import { rest }                      from 'msw'
 
+import { edgeApi, edgeDhcpApi }   from '@acx-ui/rc/services'
 import {
   EdgeDhcpUrls,
   EdgeGeneralFixtures,
@@ -10,7 +11,7 @@ import {
   getServiceRoutePath,
   ServiceOperation, ServiceType
 } from '@acx-ui/rc/utils'
-import { Provider }                                    from '@acx-ui/store'
+import { Provider, store }                             from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { mockDhcpStatsData } from '../__tests__/fixtures'
@@ -35,6 +36,8 @@ describe('EdgeDhcpTable', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
 
+    store.dispatch(edgeApi.util.resetApiState())
+    store.dispatch(edgeDhcpApi.util.resetApiState())
     mockServer.use(
       rest.post(
         EdgeDhcpUrls.getDhcpStats.url,

@@ -27,5 +27,7 @@ describe('DownloadLink', () => {
 
     expect(await screen.findByText('Download')).toBeInTheDocument()
 
+    jest.runOnlyPendingTimers()
+    jest.useRealTimers()
   })
 })

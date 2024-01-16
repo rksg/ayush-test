@@ -71,6 +71,7 @@ describe.skip('Guest Table', () => {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
     await screen.findByText('test1')
+    jest.runOnlyPendingTimers()
     jest.useRealTimers()
   })
 
