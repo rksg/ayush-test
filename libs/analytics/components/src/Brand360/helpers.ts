@@ -58,7 +58,7 @@ function checkPropertiesForNaN (
 const calGuestExp = (cS: number, ttc: number, cT: number) => mean([cS, ttc, cT])
 export const transformToLspView = (properties: Response[]): Lsp[] => {
   const lsps = groupBy(properties, (p) => p.lsp)
-  return Object.entries(lsps).map(([lsp, properties]) => {
+  return Object.entries(lsps).map(([lsp, properties], ind) => {
     const {
       connSuccess,
       ttc,
@@ -107,6 +107,7 @@ export const transformToLspView = (properties: Response[]): Lsp[] => {
       ssidCompliance
     )
     return {
+      id: `${lsp}-${ind}`,
       lsp,
       propertyCount: properties.length,
       avgConnSuccess,
@@ -199,11 +200,12 @@ export const transformVenuesData = (
         return total.map((num, index) => num + (values[index] || 0)) as [number, number]
       }, initial)
       : noDataDisplay
-  return Object.keys(lookupAndMappingData).reduce((newObj, tenantId) => {
+  return Object.keys(lookupAndMappingData).reduce((newObj, tenantId, ind) => {
     const mappingData = lookupAndMappingData[tenantId]
     if (mappingData?.integrator) {
       const tenantData = groupByTenantID[tenantId]
       newObj.push({
+        id: `${mappingData?.name}-${lookupAndMappingData[mappingData.integrator]?.name}-${ind}`,
         property: mappingData?.name,
         lsp: lookupAndMappingData[mappingData.integrator]?.name,
         p1Incidents: tenantData
