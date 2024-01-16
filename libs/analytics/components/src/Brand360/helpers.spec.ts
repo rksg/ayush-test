@@ -150,7 +150,8 @@ describe('transformVenuesData', () => {
         deviceCount: 9,
         avgConnSuccess: [11, 13],
         avgTTC: [15, 17],
-        avgClientThroughput: [19, 21]
+        avgClientThroughput: [19, 21],
+        id: 'Property1-IntegratorName-0'
       }
     ])
   })
@@ -169,7 +170,8 @@ describe('transformVenuesData', () => {
         lsp: 'IntegratorName',
         p1Incidents: 0,
         property: 'Property1',
-        ssidCompliance: '--'
+        ssidCompliance: '--',
+        id: 'Property1-IntegratorName-0'
       }])
   })
 

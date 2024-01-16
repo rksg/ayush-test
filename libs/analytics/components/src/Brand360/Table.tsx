@@ -155,5 +155,6 @@ export function BrandTable ({ sliceType, slaThreshold, data }:
     dataSource={tableData as Property[] | Lsp[]}
     pagination={pagination}
     settingsId='property-list-table'
+    rowKey='id'
   />
 }

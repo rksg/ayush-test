@@ -4,6 +4,7 @@ import { IncidentsToggleFilter, calculateGranularity, incidentsToggle } from '@a
 import { dataApi }                                                      from '@acx-ui/store'
 
 export interface Response {
+  id?: string
   lsp: string
   p1Incidents: number
   ssidCompliance: [number, number]
@@ -81,10 +82,10 @@ export const api = dataApi.injectEndpoints({
       query: ({ granularity, ...payload }: BrandTimeseriesPayload & IncidentsToggleFilter) => ({
         document: gql`
         query FranchisorZones(
-          $start: DateTime, 
-          $end: DateTime, 
-          $ssidRegex: String, 
-          $severity: [Range], 
+          $start: DateTime,
+          $end: DateTime,
+          $ssidRegex: String,
+          $severity: [Range],
           $code: [String]) {
           franchisorZones(
             start: $start
