@@ -4,10 +4,10 @@ import { useIntl } from 'react-intl'
 import { Button, Drawer, Loader, Table, TableProps } from '@acx-ui/components'
 import { DateFormatEnum, formatter }                 from '@acx-ui/formatter'
 import {
-  useAdminLogsQuery
+  useGetAdminGroupLastLoginsQuery
 } from '@acx-ui/rc/services'
-import { AdminLog, CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
-import { noDataDisplay }                           from '@acx-ui/utils'
+import { groupMembers }  from '@acx-ui/rc/utils'
+import { noDataDisplay } from '@acx-ui/utils'
 
 interface ShowMembersDrawerProps {
   visible: boolean
@@ -26,69 +26,38 @@ export const ShowMembersDrawer = (props: ShowMembersDrawerProps) => {
     form.resetFields()
   }
 
-  const tableQuery = useTableQuery({
-    useQuery: useAdminLogsQuery,
-    pagination: {
-      pageSize: 10000
-    },
-    defaultPayload: {
-      url: CommonUrlsInfo.getEventList.url,
-      fields: [
-        'event_datetime',
-        'severity',
-        'entity_type',
-        'entity_id',
-        'message',
-        'adminName',
-        'id',
-        'ipAddress'
-      ],
-      searchString: 'logged',
-      filters: {
-        entity_type: ['ADMIN', 'NOTIFICATION']
-      }
-    },
-    sorter: {
-      sortField: 'event_datetime',
-      sortOrder: 'DESC'
-    }
-  })
+  const { data: adminLastLogins } =
+    useGetAdminGroupLastLoginsQuery({ params: { adminGroupId: membersGroupId } })
 
-  const tableData = getProfilesByType(tableQuery.data?.data as AdminLog[])
+  const memberCount = adminLastLogins?.count || 0
 
-  function getProfilesByType (queryData: AdminLog[]) {
-    // return queryData
-    return queryData?.filter(p =>
-      p.message.includes('logged into') && p.message.includes(membersGroupId)).slice(0, 5)
-  }
-
-  const columnsRecentLogin: TableProps<AdminLog>['columns'] = [
+  const columnsRecentLogin: TableProps<groupMembers>['columns'] = [
     {
       title: $t({ defaultMessage: 'Email' }),
-      dataIndex: 'ipAddress',
-      key: 'ipAddress',
+      dataIndex: 'email',
+      key: 'email',
       searchable: true,
       render: function (_, row) {
-        return (row.ipAddress?? noDataDisplay)
+        return (row.email?? noDataDisplay)
       }
     },
     {
       title: $t({ defaultMessage: 'Last Log-In' }),
-      dataIndex: 'event_datetime',
-      key: 'date',
+      dataIndex: 'lastLoginDate',
+      key: 'lastLoginDate',
       render: function (_, row) {
-        return formatter(DateFormatEnum.DateTimeFormatWithSeconds)(row.event_datetime)
+        return formatter(DateFormatEnum.DateTimeFormatWithSeconds)(row.lastLoginDate)
       }
     }
   ]
 
-  const EventListTable = () => {
+  const GroupMembersTable = () => {
     return (
-      <Loader states={[tableQuery]}>
+      <Loader >
         <Table
           columns={columnsRecentLogin}
-          dataSource={tableData}
-          style={{ width: '300px' }}
+          dataSource={adminLastLogins?.lastLoginList}
+          style={{ width: '350px' }}
           rowKey='id'
           type={'form'}
         />
@@ -101,7 +70,7 @@ export const ShowMembersDrawer = (props: ShowMembersDrawerProps) => {
       defaultMessage:
         'Only group members who have already logged in to RUCKUS One are listed here'
     })}</h4>
-    <EventListTable />
+    <GroupMembersTable />
   </Form>
 
   const footer =<div>
@@ -115,7 +84,7 @@ export const ShowMembersDrawer = (props: ShowMembersDrawerProps) => {
 
   return (
     <Drawer
-      title={$t({ defaultMessage: 'Logged Group Members' })}
+      title={$t({ defaultMessage: 'Logged Group Members ({memberCount})' }, { memberCount })}
       width={452}
       visible={visible}
       onClose={onClose}
