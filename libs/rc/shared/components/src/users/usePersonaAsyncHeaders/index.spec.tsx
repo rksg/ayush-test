@@ -4,7 +4,7 @@ import { usePersonaAsyncHeaders } from './index'
 
 
 const expectedHeaders = {
-  'Content-Type': 'application/vnd.ruckus.v2+json',
+  'Content-Type': 'application/vnd.ruckus.v1+json',
   'Accept': 'application/vnd.ruckus.v2+json'
 }
 
