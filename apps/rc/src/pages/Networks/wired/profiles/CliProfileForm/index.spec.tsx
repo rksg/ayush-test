@@ -50,10 +50,13 @@ document.createRange = () => {
   return range
 }
 
-describe('Cli Profile Form - Add', () => {
+describe('Cli Profile Form', () => {
   const onFinishSpy = jest.fn()
+  const mockedUpdate = jest.fn()
   const params = {
-    tenantId: 'tenant-id', configType: 'profiles'
+    tenantId: 'tenant-id',
+    action: 'add',
+    configType: 'profiles'
   }
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
@@ -73,17 +76,27 @@ describe('Cli Profile Form - Add', () => {
       ),
       rest.post(SwitchUrlsInfo.addSwitchConfigProfile.url,
         (_, res, ctx) => res(ctx.json({ requestId: 'request-id' }))
+      ),
+      rest.get(SwitchUrlsInfo.getSwitchConfigProfile.url,
+        (_, res, ctx) => res(ctx.json(cliProfile))
+      ),
+      rest.put(SwitchUrlsInfo.updateSwitchConfigProfile.url,
+        (_, res, ctx) => {
+          mockedUpdate()
+          return res(ctx.json({ requestId: 'request-id' }))
+        }
       )
     )
   })
   afterEach(() => {
     onFinishSpy.mockClear()
+    mockedUpdate.mockClear()
     Modal.destroyAll()
   })
 
   it('should render breadcrumb correctly', async () => {
     render(<Provider><CliProfileForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/:configType/cli/add' }
+      route: { params, path: '/:tenantId/networks/wired/:configType/cli/:action' }
     })
 
     expect(await screen.findByText('Wired')).toBeVisible()
@@ -102,7 +115,9 @@ describe('Cli Profile Form - Add', () => {
               <CliStepModels />
             </StepsForm.StepForm>
           </StepsForm>
-        </Provider>, { route: { params, path: '/:tenantId/t/networks/wired/:configType/cli/add' } }
+        </Provider>, {
+          route: { params, path: '/:tenantId/t/networks/wired/:configType/cli/:action' }
+        }
       )
 
       await screen.findByText('Select switch models')
@@ -125,7 +140,9 @@ describe('Cli Profile Form - Add', () => {
               <CliStepModels />
             </StepsForm.StepForm>
           </StepsForm>
-        </Provider>, { route: { params, path: '/:tenantId/t/networks/wired/:configType/cli/add' } }
+        </Provider>, {
+          route: { params, path: '/:tenantId/t/networks/wired/:configType/cli/:action' }
+        }
       )
 
       await screen.findByText('Select switch models')
@@ -148,7 +165,9 @@ describe('Cli Profile Form - Add', () => {
               <CliStepModels />
             </StepsForm.StepForm>
           </StepsForm>
-        </Provider>, { route: { params, path: '/:tenantId/t/networks/wired/:configType/cli/add' } }
+        </Provider>, {
+          route: { params, path: '/:tenantId/t/networks/wired/:configType/cli/:action' }
+        }
       )
 
       await screen.findByText('Select switch models')
@@ -174,7 +193,9 @@ describe('Cli Profile Form - Add', () => {
               <CliStepVenues />
             </StepsForm.StepForm>
           </StepsForm>
-        </Provider>, { route: { params, path: '/:tenantId/t/networks/wired/:configType/cli/add' } }
+        </Provider>, {
+          route: { params, path: '/:tenantId/t/networks/wired/:configType/cli/:action' }
+        }
       )
 
       await waitFor(() => {
@@ -199,7 +220,9 @@ describe('Cli Profile Form - Add', () => {
               <CliStepSummary />
             </StepsForm.StepForm>
           </StepsForm>
-        </Provider>, { route: { params, path: '/:tenantId/t/networks/wired/:configType/cli/add' } }
+        </Provider>, {
+          route: { params, path: '/:tenantId/t/networks/wired/:configType/cli/:action' }
+        }
       )
 
       expect(await screen.findByText('Profile Name')).toBeVisible()
@@ -234,7 +257,9 @@ describe('Cli Profile Form - Add', () => {
               <CliStepSummary />
             </StepsForm.StepForm>
           </StepsForm>
-        </Provider>, { route: { params, path: '/:tenantId/t/networks/wired/:configType/cli/add' } }
+        </Provider>, {
+          route: { params, path: '/:tenantId/t/networks/wired/:configType/cli/:action' }
+        }
       )
 
       expect(await screen.findByText('Profile Name')).toBeVisible()
@@ -247,116 +272,124 @@ describe('Cli Profile Form - Add', () => {
     })
   })
 
-  it.todo('should handle error occurred')
+  describe('Add mode', () => {
+    it.todo('should add profile correctly')
+    it.todo('should handle error occurred')
+  })
+
+  describe('Edit mode', () => {
+    const params = {
+      tenantId: 'tenant-id',
+      action: 'edit',
+      configType: 'profiles',
+      profileId: '4515bc6524544cc79303cc6a6443f6c4'
+    }
+
+    it('should render correctly', async () => {
+      render(<Provider><CliProfileForm /></Provider>, {
+        route: { params, path: '/:tenantId/networks/wired/:configType/cli/:profileId/:action' }
+      })
+
+      await waitFor(() => {
+        expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+      })
+      expect(await screen.findByText('Edit CLI Configuration Profile')).toBeVisible()
+      expect(await screen.findByText(/Once the CLI Configuration profile/)).toBeVisible()
+      await userEvent.click(await screen.findByRole('button', { name: 'Venues' }))
+
+      await screen.findByRole('heading', { level: 3, name: 'Venues' })
+      await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+      expect(mockedUpdate).toBeCalled()
+    })
+
+    it('should select at least one model', async () => {
+      render(<Provider><CliProfileForm /></Provider>, {
+        route: { params, path: '/:tenantId/networks/wired/:configType/cli/:profileId/:action' }
+      })
+
+      await waitFor(() => {
+        expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+      })
+      expect(await screen.findByText('Edit CLI Configuration Profile')).toBeVisible()
+      expect(await screen.findByText(/Once the CLI Configuration profile/)).toBeVisible()
+      await userEvent.click(await screen.findByRole('button', { name: 'Models' }))
+
+      await screen.findByRole('heading', { level: 3, name: 'Models' })
+      await userEvent.click(await screen.findByRole('button', { name: 'Select All' }))
+      await screen.findByText('39 Models selected')
+      await userEvent.click(await screen.findByRole('button', { name: 'Deselect All' }))
+      await screen.findByText('0 Models selected')
+      await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+      expect(mockedUpdate).not.toBeCalled()
+      expect(await screen.findByText(/Please select at least one model/)).toBeVisible()
+    })
+
+    it('should validate CLI commands', async () => {
+      mockServer.use(
+        rest.get(SwitchUrlsInfo.getSwitchConfigProfile.url,
+          (_, res, ctx) => res(ctx.json({
+            ...cliProfile,
+            venueCliTemplate: {
+              ...cliProfile.venueCliTemplate,
+              cli: 'manager registrar ${test2}'
+            }
+          }))
+        )
+      )
+      render(<Provider><CliProfileForm /></Provider>, {
+        route: { params, path: '/:tenantId/networks/wired/:configType/cli/:profileId/:action' }
+      })
+
+      await waitFor(() => {
+        expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+      })
+      expect(await screen.findByText('Edit CLI Configuration Profile')).toBeVisible()
+      await userEvent.click(await screen.findByRole('button', { name: 'CLI Configuration' }))
+      const addExampleBtns = await screen.findAllByTestId('add-example-btn')
+      await userEvent.click(addExampleBtns[0])
+      await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+      expect(mockedUpdate).not.toBeCalled()
+      expect(await screen.findByText(/Please define variable\(s\) in CLI commands/)).toBeVisible()
+    })
+
+    it('should handle error occurred', async () => {
+      mockServer.use(
+        rest.put(SwitchUrlsInfo.updateSwitchConfigProfile.url,
+          (_, res, ctx) => res(ctx.status(404), ctx.json({ errors: [{ code: 'xxxx' }] }))
+        )
+      )
+      render(<Provider><CliProfileForm /></Provider>, {
+        route: { params, path: '/:tenantId/networks/wired/:configType/cli/:profileId/:action' }
+      })
+
+      await waitFor(() => {
+        expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+      })
+      expect(await screen.findByText('Edit CLI Configuration Profile')).toBeVisible()
+      await userEvent.click(await screen.findByRole('button', { name: 'Venues' }))
+
+      await waitFor(() => {
+        expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+      })
+      await screen.findByRole('heading', { level: 3, name: 'Venues' })
+      expect(await screen.findAllByRole('row')).toHaveLength(5)
+      await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+      expect(mockedUpdate).not.toBeCalled()
+      // await screen.findByText('Server Error')
+    })
+
+    it('should redirect to list table after clicking cancel button', async () => {
+      render(<Provider><CliProfileForm /></Provider>, {
+        route: { params, path: '/:tenantId/networks/wired/:configType/cli/:profileId/:action' }
+      })
+      await waitFor(() => {
+        expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+      })
+      expect(await screen.findByText('Edit CLI Configuration Profile')).toBeVisible()
+      await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+    })
+  })
 })
 
 
-describe('Cli Profile Form - Edit', () => {
-  const params = {
-    tenantId: 'tenant-id',
-    action: 'edit',
-    configType: 'profiles',
-    profileId: '4515bc6524544cc79303cc6a6443f6c4'
-  }
 
-  beforeEach(() => {
-    store.dispatch(switchApi.util.resetApiState())
-    store.dispatch(venueApi.util.resetApiState())
-    mockServer.use(
-      rest.post(CommonUrlsInfo.getVenuesList.url,
-        (_, res, ctx) => res(ctx.json({ data: venues }))
-      ),
-      rest.post(CommonUrlsInfo.getConfigProfiles.url,
-        (_, res, ctx) => res(ctx.json({ data: profiles }))
-      ),
-      rest.get(SwitchUrlsInfo.getSwitchConfigProfile.url,
-        (_, res, ctx) => res(ctx.json(cliProfile))
-      ),
-      rest.get(SwitchUrlsInfo.getCliConfigExamples.url,
-        (_, res, ctx) => res(ctx.json(configExamples))
-      ),
-      rest.get(SwitchUrlsInfo.getCliFamilyModels.url,
-        (_, res, ctx) => res(ctx.json(familyModels))
-      ),
-      rest.put(SwitchUrlsInfo.updateSwitchConfigProfile.url,
-        (_, res, ctx) => res(ctx.json({ requestId: 'request-id' }))
-      )
-    )
-  })
-  afterEach(() => {
-    Modal.destroyAll()
-  })
-
-  it('should render correctly', async () => {
-    render(<Provider><CliProfileForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/:configType/cli/:profileId/:action' }
-    })
-
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
-    })
-    expect(await screen.findByText('Edit CLI Configuration Profile')).toBeVisible()
-    expect(await screen.findByText(/Once the CLI Configuration profile/)).toBeVisible()
-    await userEvent.click(await screen.findByRole('button', { name: 'Venues' }))
-
-    await screen.findByRole('heading', { level: 3, name: 'Venues' })
-    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
-  })
-
-  it('should select at least one model', async () => {
-    render(<Provider><CliProfileForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/:configType/cli/:profileId/:action' }
-    })
-
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
-    })
-    expect(await screen.findByText('Edit CLI Configuration Profile')).toBeVisible()
-    expect(await screen.findByText(/Once the CLI Configuration profile/)).toBeVisible()
-    await userEvent.click(await screen.findByRole('button', { name: 'Models' }))
-
-    await screen.findByRole('heading', { level: 3, name: 'Models' })
-    await userEvent.click(await screen.findByRole('button', { name: 'Select All' }))
-    await screen.findByText('39 Models selected')
-    await userEvent.click(await screen.findByRole('button', { name: 'Deselect All' }))
-    await screen.findByText('0 Models selected')
-    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
-    expect(await screen.findByText(/Please select at least one model/)).toBeVisible()
-  })
-
-  it('should handle error occurred', async () => {
-    mockServer.use(
-      rest.put(SwitchUrlsInfo.updateSwitchConfigProfile.url,
-        (_, res, ctx) => res(ctx.status(404), ctx.json({ errors: [{ code: 'xxxx' }] }))
-      )
-    )
-    render(<Provider><CliProfileForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/:configType/cli/:profileId/:action' }
-    })
-
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
-    })
-    expect(await screen.findByText('Edit CLI Configuration Profile')).toBeVisible()
-    await userEvent.click(await screen.findByRole('button', { name: 'Venues' }))
-
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
-    })
-    await screen.findByRole('heading', { level: 3, name: 'Venues' })
-    expect(await screen.findAllByRole('row')).toHaveLength(5)
-    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
-    // await screen.findByText('Server Error')
-  })
-
-  it('should redirect to list table after clicking cancel button', async () => {
-    render(<Provider><CliProfileForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/:configType/cli/:profileId/:action' }
-    })
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
-    })
-    expect(await screen.findByText('Edit CLI Configuration Profile')).toBeVisible()
-    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
-  })
-})
