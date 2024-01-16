@@ -359,4 +359,30 @@ describe('Property Unit Page', () => {
     await userEvent.click(exportBtn)
     await waitFor(() => expect(exportFn).toHaveBeenCalled())
   })
+
+  it('should support edit multiple units', async () => {
+    render(<Provider><VenuePropertyTab /></Provider>, {
+      route: {
+        params,
+        path: '/:tenantId/t/venues/:venueId/venue-details/units'
+      }
+    })
+
+    await waitFor(() => expect(getPersonaGroupSpy).toHaveBeenCalled())
+
+    await waitFor(() => {
+      expect(screen.queryByText(/Access Point/i)).toBeNull()
+    })
+    expect(await screen.findByText(/unit name/i)).toBeInTheDocument()
+
+    // Find rows for editing
+    const firstRowName = mockPropertyUnitList.content[0].name
+    const firstRow = await screen.findByRole('cell', { name: firstRowName })
+    const secondRowName = mockPropertyUnitList.content[1].name
+    const secondRow = await screen.findByRole('cell', { name: secondRowName })
+
+    await userEvent.click(firstRow)
+    await userEvent.click(secondRow)
+    await screen.findByRole('button', { name: /edit/i })
+  })
 })

@@ -23,7 +23,8 @@ type PropertyUrlType =
   'getResidentPortalLogo' |
   'getResidentPortalFavicon' |
   'deleteResidentPortalLogo' |
-  'deleteResidentPortalFavicon'
+  'deleteResidentPortalFavicon' |
+  'bulkUpdateUnitProfile'
 
 const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
 
@@ -137,5 +138,10 @@ export const PropertyUrlsInfo: { [key in PropertyUrlType]: ApiInfo } = {
     method: 'delete',
     newApi: true,
     url: '/residentPortals/:serviceId/files/favIcon'
+  },
+  bulkUpdateUnitProfile: {
+    method: 'put',
+    newApi: true,
+    url: '/venues/:venueId/units/qosProfileAssignments/:profileId'
   }
 }
