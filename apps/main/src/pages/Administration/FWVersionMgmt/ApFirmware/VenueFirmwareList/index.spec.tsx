@@ -253,7 +253,7 @@ describe('Firmware Venues Table', () => {
     const dialog = await screen.findByRole('dialog', { name: 'Update Now' })
 
     // Verify that the message displayed is accurate when the active ABF has no AP models
-    expect(await within(dialog).findByText('No Access Point in selected venue(s)')).toBeVisible()
+    expect(await within(dialog).findByText('No affected AP for this upgrade')).toBeVisible()
 
     // Verify that the ABF can be upgraded when it is greater than the current venue ABF even if its current version equals to the latest version
     expect(within(dialog).getByRole('radio', { name: /6\.2\.3\.103\.200/i })).toBeVisible()

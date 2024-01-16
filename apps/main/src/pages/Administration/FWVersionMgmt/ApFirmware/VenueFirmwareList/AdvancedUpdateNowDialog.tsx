@@ -225,7 +225,7 @@ interface ABFSelectorProps {
 }
 
 function ABFSelector (props: ABFSelectorProps) {
-  const { abfName, upgradableApModelsAndFamilies,defaultChecked = false,
+  const { abfName, upgradableApModelsAndFamilies, defaultChecked = false,
     defaultVersionId, defaultVersionLabel, otherVersions = [], update } = props
   const { $t } = useIntl()
   const [ selectedVersion, setSelectedVersion ] = useState(defaultChecked ? defaultVersionId : '')
@@ -264,7 +264,7 @@ function ABFSelector (props: ABFSelectorProps) {
         ({ apModels
           ? apModels
           // eslint-disable-next-line max-len
-          : <span className='empty'>{$t({ defaultMessage: 'No Access Point in selected venue(s)' })}</span>
+          : <span className='empty'>{$t({ defaultMessage: 'No affected AP for this upgrade' })}</span>
         })
       </UI.TitleActive>
       <Tooltip
