@@ -15,7 +15,10 @@ export default function useNetworksTable () {
   const supportApCompatibleCheck = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
   const tableQuery = usePollingTableQuery<Network>({
     useQuery: supportApCompatibleCheck ? useNetworkTableQuery : useNetworkListQuery,
-    defaultPayload: defaultNetworkPayload
+    defaultPayload: defaultNetworkPayload,
+    pagination: {
+      settingsId: 'network-table'
+    }
   })
 
   useEffect(() => {

@@ -312,7 +312,8 @@ export function VenueWifi () {
         tab={<Tooltip title={$t({ defaultMessage: 'Device List' })}>
           <ListSolid />
         </Tooltip>}>
-        <ApTable rowSelection={{ type: 'checkbox' }}
+        <ApTable settingsId='venue-ap-table'
+          rowSelection={{ type: 'checkbox' }}
           searchable={true}
           enableActions={true}
           enableApCompatibleCheck={isApCompatibleCheckEnabled}
@@ -388,7 +389,10 @@ export function VenueMeshApsTable () {
 
   const tableQuery = useTableQuery({
     useQuery: useMeshApsQuery,
-    defaultPayload
+    defaultPayload,
+    pagination: {
+      settingsId: 'venue-mesh-aps-table'
+    }
   })
 
   return (

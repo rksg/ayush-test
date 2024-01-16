@@ -41,7 +41,7 @@ export function NetworkApsTab () {
   )
 
   return (
-    <ApTable
+    <ApTable settingsId='network-ap-table'
       searchable={true}
       enableGroups={false}
       enableApCompatibleCheck={isApCompatibleCheckEnabled}

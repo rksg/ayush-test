@@ -30,6 +30,9 @@ export const VenueEdge = () => {
         'firmwareVersion'
       ],
       filters: { venueId: [params.venueId] }
+    },
+    pagination: {
+      settingsId: 'venue-edges-table'
     }
   }
 
@@ -40,6 +43,6 @@ export const VenueEdge = () => {
       </TenantLink>
     </SpaceWrapper>
 
-    <EdgesTable tableQuery={tableQuery} filterColumns={['venue']}/>
+    <EdgesTable tableQuery={tableQuery} filterColumns={['venue']} settingsId='venue-edges-table' />
   </>)
 }
