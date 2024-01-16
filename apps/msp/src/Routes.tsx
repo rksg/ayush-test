@@ -1,8 +1,8 @@
-import { Brand360 }                                         from '@acx-ui/analytics/components'
-import { ConfigProvider, PageNotFound }                     from '@acx-ui/components'
-import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
-import { ManageCustomer, ManageIntegrator, PortalSettings } from '@acx-ui/msp/components'
-import { AAAForm, NetworkForm }                             from '@acx-ui/rc/components'
+import { Brand360 }                                              from '@acx-ui/analytics/components'
+import { ConfigProvider, PageNotFound }                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
+import { ManageCustomer, ManageIntegrator, PortalSettings }      from '@acx-ui/msp/components'
+import { AAAForm, AAAPolicyDetail, NetworkDetails, NetworkForm } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
   CONFIG_TEMPLATE_PATH_PREFIX,
@@ -23,7 +23,6 @@ import { AddRecCustomer }                          from './pages/MspRecCustomers
 import { Subscriptions }                           from './pages/Subscriptions'
 import { AssignMspLicense }                        from './pages/Subscriptions/AssignMspLicense'
 import { VarCustomers }                            from './pages/VarCustomers'
-
 
 export default function MspRoutes () {
   const routes = rootRoutes(
@@ -101,13 +100,13 @@ function ConfigTemplatesRoutes () {
         />
         <Route
           path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.DETAIL })}
-          element={<div>AAA Details</div>}
+          element={<AAAPolicyDetail />}
         />
         <Route path='networks/wireless/add' element={<NetworkForm />} />
         <Route path='networks/wireless/:networkId/:action' element={<NetworkForm />} />
         <Route
           path='networks/wireless/:networkId/network-details/:activeTab'
-          element={<div>Network Details</div>}
+          element={<NetworkDetails />}
         />
       </Route>
     </Route>
