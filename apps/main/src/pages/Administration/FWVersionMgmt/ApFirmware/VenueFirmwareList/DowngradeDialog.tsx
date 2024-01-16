@@ -50,6 +50,7 @@ export function DowngradeDialog (props: DowngradeDialogProps) {
     const venuesData = data as FirmwareVenue[]
     const request = [{
       firmwareCategoryId: selectedFirmware?.abf,
+      firmwareSequence: selectedFirmware?.sequence,
       firmwareVersion: selectedVersion,
       venueIds: venuesData.map(venue => venue.id)
     }]

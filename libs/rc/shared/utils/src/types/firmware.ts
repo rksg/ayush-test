@@ -60,6 +60,7 @@ export interface EdgeUpdateScheduleRequest {
 
 export interface UpdateNowRequest {
   firmwareCategoryId?: string;
+  firmwareSequence?: number,
   firmwareVersion?: string;
   venueIds: Array<string>;
 }
@@ -257,7 +258,8 @@ export interface SwitchFirmwareStatus {
 
 export interface CurrentVersions {
   currentVersions: string[];
-  currentVersionsAboveTen: string[]
+  currentVersionsAboveTen: string[];
+  generalVersions: string[];
 }
 
 export interface PreDownload {

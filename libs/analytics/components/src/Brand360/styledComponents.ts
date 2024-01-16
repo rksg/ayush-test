@@ -38,12 +38,15 @@ export const IconWrapper = styled.span`
   height: 100%;
 `
 
-export const ListWrapper = styled.div`
+export const ListWrapper = styled.div<{ $showCursor: boolean }>`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  cursor: pointer;
+  cursor: ${props => props.$showCursor
+    ? 'pointer'
+    : 'default'};
   white-space: nowrap;
+  min-height: 48px;
 `
 
 export const HighlightedIcon = styled.div<{ $highlight?: boolean }>`

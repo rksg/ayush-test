@@ -3,6 +3,7 @@ import _                                    from 'lodash'
 import { defineMessage, MessageDescriptor } from 'react-intl'
 import { FormattedMessage }                 from 'react-intl'
 
+import { get }        from '@acx-ui/config'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
 import { IncidentCode }               from './constants'
@@ -240,7 +241,9 @@ const getAirtimeRxRecommendations = (checks: (AirtimeRxChecks)[], params: Airtim
   const crrmRaisedText = <FormattedMessage defaultMessage={'<li>Click {crrmLink} to apply the AI-Driven RRM recommendation.</li>'} values={{ ...htmlValues, crrmLink }}/>
   const channelFly = checkTrue.includes('isChannelFlyEnabled')
     ? <FormattedMessage defaultMessage={'<li>Review the channel planning, AP density and deployment.</li>'} values={htmlValues}/>
-    : <FormattedMessage defaultMessage={'<li>Enable ChannelFly for the Zone.</li>'} values={htmlValues}/>
+    : get('IS_MLISA_SA')
+      ? <FormattedMessage defaultMessage={'<li>Enable ChannelFly for the zone.</li>'} values={htmlValues}/>
+      : <FormattedMessage defaultMessage={'<li>Enable ChannelFly for the venue.</li>'} values={htmlValues}/>
   const highLegacyCount = <FormattedMessage defaultMessage={'<li>Remove legacy devices or upgrade them. If possible, enable OFDM-only mode on WLANs.</li>'} values={htmlValues}/>
 
   const allFalseText = [
