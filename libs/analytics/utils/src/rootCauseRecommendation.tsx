@@ -153,7 +153,7 @@ const getAirtimeBusyRootCauses = () => {
 const getAirtimeBusyRecommendations = (checks: (AirtimeBusyChecks)[], params: AirtimeParams) => {
   const checkTrue = checkTrueParams(checks)
   const recommendationId = params.recommendationId
-  const link = <TenantLink to={`/recommendations/crrm/${recommendationId}`}>here</TenantLink>
+  const link = <TenantLink to={`/recommendations/crrm/${recommendationId}`}><FormattedMessage defaultMessage={'here'}/></TenantLink>
   const rogueAP = checkTrue.includes('isRogueDetectionEnabled')
     ? <FormattedMessage defaultMessage={'<li>Remove rogue APs in your premises.</li>'} values={htmlValues}/>
     : <FormattedMessage defaultMessage={'<li>Enable rogue AP detection to search, identify, and physically remove rogue APs from your premises.</li>'} values={htmlValues}/>
@@ -228,8 +228,8 @@ const getAirtimeRxRecommendations = (checks: (AirtimeRxChecks)[], params: Airtim
   const checkTrue = checkTrueParams(checks)
   const allFalse = airtimeRxAllFalseChecks.filter(check => checkTrue.includes(check)).length === 0
   const { ssidCountPerRadioSlice, recommendationId } = params
-  const aiOpsLink = <TenantLink style={{ color: 'black', textDecoration: 'none' }} to={`/recommendations/aiOps/${recommendationId}`}>here</TenantLink>
-  const crrmLink = <TenantLink style={{ color: 'black', textDecoration: 'none' }} to={`/recommendations/crrm/${recommendationId}`}>here</TenantLink>
+  const aiOpsLink = <TenantLink to={`/recommendations/aiOps/${recommendationId}`}>{<FormattedMessage defaultMessage={'here'}/>}</TenantLink>
+  const crrmLink = <TenantLink to={`/recommendations/crrm/${recommendationId}`}>{<FormattedMessage defaultMessage={'here'}/>}</TenantLink>
 
   const highDensityWifi = checkTrue.includes('isAclbRaised')
     ? <FormattedMessage defaultMessage={'<li>Click {aiOpsLink} to enable client load balancing AI Ops recommendation.</li>'} values={{ ...htmlValues, aiOpsLink }}/>
@@ -319,7 +319,7 @@ const getAirtimeTxRecommendations = (checks: (AirtimeTxChecks)[], params: Airtim
   const checkTrue = checkTrueParams(checks)
   const allFalse = airtimeTxAllFalseChecks.filter(check => checkTrue.includes(check)).length === 0
   const { ssidCountPerRadioSlice, recommendationId } = params
-  const link = <TenantLink style={{ color: 'black', textDecoration: 'none' }} to={`/recommendations/aiOps/${recommendationId}`}>here</TenantLink>
+  const link = <TenantLink to={`/recommendations/aiOps/${recommendationId}`}><FormattedMessage defaultMessage={'here'}/></TenantLink>
 
   const highDensityWifi = checkTrue.includes('isAclbRaised')
     ? <FormattedMessage defaultMessage={'<li>Click {link} to enable client load balancing AI Ops recommendation.</li>'} values={{ ...htmlValues, link }}/>
