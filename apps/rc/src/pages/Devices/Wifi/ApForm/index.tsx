@@ -430,10 +430,9 @@ export function ApForm () {
 
     if (aps) {
       aps.forEach((ap) => {
-        if (ap.serialNumber === apDetails?.serialNumber) {
+        if (ap && ap.serialNumber === apDetails?.serialNumber) {
           apInfo = ap
         }
-
       })
     }
 
