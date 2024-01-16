@@ -328,8 +328,8 @@ export const GuestsTable = () => {
         const guestDetail = selectedRows[0]
         const flag = (guestDetail.guestStatus?.indexOf(GuestStatusEnum.ONLINE) !== -1) ||
         ((guestDetail.guestStatus === GuestStatusEnum.OFFLINE) &&
-          guestDetail.networkId && !guestDetail.socialLogin)
-
+          guestDetail.networkId &&
+          guestDetail.guestType !== GuestTypesEnum.SELF_SIGN_IN)
         return Boolean(flag)
       },
       onClick: (selectedRows) => {
