@@ -35,6 +35,7 @@ import {
   useLazyApViewModelQuery
 } from '@acx-ui/rc/services'
 import {
+  APExtended,
   ApDeep,
   ApDhcpRoleEnum,
   ApErrorHandlingMessages,
@@ -423,14 +424,24 @@ export function ApForm () {
       return false
     }
 
-    // Get ap info separately in case apStatusData is undefined and have no check
-    const apInfo = apList?.data?.[0]
+    const aps = apList?.data
+
+    let apInfo = {} as APExtended
+
+    if (aps) {
+      aps.forEach((ap) => {
+        if (ap.serialNumber === apDetails?.serialNumber) {
+          apInfo = ap
+        }
+
+      })
+    }
 
     if (!apInfo) {
       return false
     }
 
-    const afcInfo = apInfo.apStatusData?.afcInfo
+    const afcInfo = apInfo?.apStatusData?.afcInfo
     const requiredStatus = [AFCStatus.AFC_NOT_REQUIRED, AFCStatus.WAIT_FOR_LOCATION]
 
     // AFC info possibly does not exist.
