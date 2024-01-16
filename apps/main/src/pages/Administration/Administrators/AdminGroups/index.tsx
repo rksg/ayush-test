@@ -54,6 +54,7 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
 
   const { data: adminList, isLoading, isFetching } = useGetAdminGroupsQuery({ params })
   const shouldAddGroupEnabled = (adminList?.length && adminList.length < MAX_ADMIN_GROUPS ) || false
+  const maxAllowedGroupReached = Boolean(adminList?.length) && !shouldAddGroupEnabled
 
   const [deleteAdminGroup, { isLoading: isDeleteAdminUpdating }] = useDeleteAdminGroupsMutation()
   const [updateAdminGroup] = useUpdateAdminGroupsMutation()
@@ -170,7 +171,7 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
   if (isPrimeAdminUser && tenantType !== AccountType.MSP_REC) {
     tableActions.push({
       label: $t({ defaultMessage: 'Add Group' }),
-      disabled: !shouldAddGroupEnabled,
+      disabled: maxAllowedGroupReached,
       onClick: handleClickAdd
     })
   }

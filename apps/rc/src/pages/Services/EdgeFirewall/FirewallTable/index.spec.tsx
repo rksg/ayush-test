@@ -1,8 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { edgeApi, edgeFirewallApi }                                                                                  from '@acx-ui/rc/services'
 import { EdgeFirewallUrls, EdgeUrlsInfo, ServiceOperation, ServiceType, getServiceDetailsLink, EdgeGeneralFixtures } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                  from '@acx-ui/store'
+import { Provider, store }                                                                                           from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved, within }                                  from '@acx-ui/test-utils'
 
 import { mockedFirewallDataList } from '../__tests__/fixtures'
@@ -23,6 +24,8 @@ describe('Firewall Table', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
 
+    store.dispatch(edgeApi.util.resetApiState())
+    store.dispatch(edgeFirewallApi.util.resetApiState())
     mockServer.use(
       rest.post(
         EdgeFirewallUrls.getEdgeFirewallViewDataList.url,
