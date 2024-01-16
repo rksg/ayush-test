@@ -235,7 +235,12 @@ describe('getRootCauseAndRecommendations', () => {
         ...airtimeBusyIncident,
         metadata: {
           dominant: {},
-          rootCauseChecks: { checks }
+          rootCauseChecks: {
+            checks,
+            params: {
+              recommendationId: '123'
+            }
+          }
         }
       })
       expect(getRootCauseAndRecommendations(incident)).toMatchSnapshot()
@@ -249,7 +254,10 @@ describe('getRootCauseAndRecommendations', () => {
         ...airtimeBusyIncident,
         metadata: {
           dominant: {},
-          rootCauseChecks: { checks }
+          rootCauseChecks: {
+            checks,
+            params: {}
+          }
         }
       })
       expect(getRootCauseAndRecommendations(incident)).toMatchSnapshot()

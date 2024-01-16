@@ -219,7 +219,15 @@ Array [
                   "children": Array [
                     Object {
                       "type": 0,
-                      "value": "Apply the AI-Driven RRM recommendation.",
+                      "value": "Click ",
+                    },
+                    Object {
+                      "type": 1,
+                      "value": "link",
+                    },
+                    Object {
+                      "type": 0,
+                      "value": " to apply the AI-Driven RRM recommendation.",
                     },
                   ],
                   "type": 8,
@@ -227,10 +235,25 @@ Array [
                 },
               ]
             }
-            id="TwuT0I"
+            id="JxjU5A"
             values={
               Object {
                 "li": [Function],
+                "link": <TenantLink
+                  to="/recommendations/crrm/123"
+                >
+                  <Memo(MemoizedFormattedMessage)
+                    defaultMessage={
+                      Array [
+                        Object {
+                          "type": 0,
+                          "value": "here",
+                        },
+                      ]
+                    }
+                    id="hniz8Z"
+                  />
+                </TenantLink>,
                 "ol": [Function],
                 "p": [Function],
                 "ul": [Function],
@@ -862,7 +885,15 @@ Array [
                   "children": Array [
                     Object {
                       "type": 0,
-                      "value": "Enable client load balancing AI Ops recommendation.",
+                      "value": "Click ",
+                    },
+                    Object {
+                      "type": 1,
+                      "value": "aiOpsLink",
+                    },
+                    Object {
+                      "type": 0,
+                      "value": " to enable client load balancing AI Ops recommendation.",
                     },
                   ],
                   "type": 8,
@@ -870,9 +901,24 @@ Array [
                 },
               ]
             }
-            id="Ynuuvu"
+            id="OHOWDL"
             values={
               Object {
+                "aiOpsLink": <TenantLink
+                  to="/recommendations/aiOps/undefined"
+                >
+                  <Memo(MemoizedFormattedMessage)
+                    defaultMessage={
+                      Array [
+                        Object {
+                          "type": 0,
+                          "value": "here",
+                        },
+                      ]
+                    }
+                    id="hniz8Z"
+                  />
+                </TenantLink>,
                 "li": [Function],
                 "ol": [Function],
                 "p": [Function],
@@ -921,7 +967,15 @@ Array [
                   "children": Array [
                     Object {
                       "type": 0,
-                      "value": "Apply the AI-Driven RRM recommendation.",
+                      "value": "Click ",
+                    },
+                    Object {
+                      "type": 1,
+                      "value": "crrmLink",
+                    },
+                    Object {
+                      "type": 0,
+                      "value": " to apply the AI-Driven RRM recommendation.",
                     },
                   ],
                   "type": 8,
@@ -929,9 +983,24 @@ Array [
                 },
               ]
             }
-            id="TwuT0I"
+            id="u1xTUb"
             values={
               Object {
+                "crrmLink": <TenantLink
+                  to="/recommendations/crrm/undefined"
+                >
+                  <Memo(MemoizedFormattedMessage)
+                    defaultMessage={
+                      Array [
+                        Object {
+                          "type": 0,
+                          "value": "here",
+                        },
+                      ]
+                    }
+                    id="hniz8Z"
+                  />
+                </TenantLink>,
                 "li": [Function],
                 "ol": [Function],
                 "p": [Function],
@@ -1336,7 +1405,15 @@ Array [
                   "children": Array [
                     Object {
                       "type": 0,
-                      "value": "Enable client load balancing AI Ops recommendation.",
+                      "value": "Click ",
+                    },
+                    Object {
+                      "type": 1,
+                      "value": "aiOpsLink",
+                    },
+                    Object {
+                      "type": 0,
+                      "value": " to enable client load balancing AI Ops recommendation.",
                     },
                   ],
                   "type": 8,
@@ -1344,9 +1421,24 @@ Array [
                 },
               ]
             }
-            id="Ynuuvu"
+            id="OHOWDL"
             values={
               Object {
+                "aiOpsLink": <TenantLink
+                  to="/recommendations/aiOps/undefined"
+                >
+                  <Memo(MemoizedFormattedMessage)
+                    defaultMessage={
+                      Array [
+                        Object {
+                          "type": 0,
+                          "value": "here",
+                        },
+                      ]
+                    }
+                    id="hniz8Z"
+                  />
+                </TenantLink>,
                 "li": [Function],
                 "ol": [Function],
                 "p": [Function],
@@ -2150,7 +2242,15 @@ Array [
                   "children": Array [
                     Object {
                       "type": 0,
-                      "value": "Apply the AI-Driven RRM recommendation.",
+                      "value": "Click ",
+                    },
+                    Object {
+                      "type": 1,
+                      "value": "crrmLink",
+                    },
+                    Object {
+                      "type": 0,
+                      "value": " to apply the AI-Driven RRM recommendation.",
                     },
                   ],
                   "type": 8,
@@ -2158,9 +2258,24 @@ Array [
                 },
               ]
             }
-            id="TwuT0I"
+            id="u1xTUb"
             values={
               Object {
+                "crrmLink": <TenantLink
+                  to="/recommendations/crrm/undefined"
+                >
+                  <Memo(MemoizedFormattedMessage)
+                    defaultMessage={
+                      Array [
+                        Object {
+                          "type": 0,
+                          "value": "here",
+                        },
+                      ]
+                    }
+                    id="hniz8Z"
+                  />
+                </TenantLink>,
                 "li": [Function],
                 "ol": [Function],
                 "p": [Function],
@@ -3056,7 +3171,15 @@ Array [
                   "children": Array [
                     Object {
                       "type": 0,
-                      "value": "Enable client load balancing AI Ops recommendation.",
+                      "value": "Click ",
+                    },
+                    Object {
+                      "type": 1,
+                      "value": "link",
+                    },
+                    Object {
+                      "type": 0,
+                      "value": " to enable client load balancing AI Ops recommendation.",
                     },
                   ],
                   "type": 8,
@@ -3064,10 +3187,25 @@ Array [
                 },
               ]
             }
-            id="Ynuuvu"
+            id="dwDQ8B"
             values={
               Object {
                 "li": [Function],
+                "link": <TenantLink
+                  to="/recommendations/aiOps/undefined"
+                >
+                  <Memo(MemoizedFormattedMessage)
+                    defaultMessage={
+                      Array [
+                        Object {
+                          "type": 0,
+                          "value": "here",
+                        },
+                      ]
+                    }
+                    id="hniz8Z"
+                  />
+                </TenantLink>,
                 "ol": [Function],
                 "p": [Function],
                 "ul": [Function],
@@ -3580,7 +3718,15 @@ Array [
                   "children": Array [
                     Object {
                       "type": 0,
-                      "value": "Enable client load balancing AI Ops recommendation.",
+                      "value": "Click ",
+                    },
+                    Object {
+                      "type": 1,
+                      "value": "link",
+                    },
+                    Object {
+                      "type": 0,
+                      "value": " to enable client load balancing AI Ops recommendation.",
                     },
                   ],
                   "type": 8,
@@ -3588,10 +3734,25 @@ Array [
                 },
               ]
             }
-            id="Ynuuvu"
+            id="dwDQ8B"
             values={
               Object {
                 "li": [Function],
+                "link": <TenantLink
+                  to="/recommendations/aiOps/undefined"
+                >
+                  <Memo(MemoizedFormattedMessage)
+                    defaultMessage={
+                      Array [
+                        Object {
+                          "type": 0,
+                          "value": "here",
+                        },
+                      ]
+                    }
+                    id="hniz8Z"
+                  />
+                </TenantLink>,
                 "ol": [Function],
                 "p": [Function],
                 "ul": [Function],
