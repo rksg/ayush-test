@@ -106,6 +106,7 @@ function ZonesList () {
         dataSource={results.data?.zones as Zone[]}
         pagination={pagination}
         settingsId='zonesList-table'
+        rowKey='id'
       />
     </Loader>
   )
