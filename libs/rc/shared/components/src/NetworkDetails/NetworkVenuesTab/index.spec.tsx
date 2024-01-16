@@ -179,11 +179,7 @@ describe('NetworkVenuesTab', () => {
     )
 
     const toogleButton = await screen.findByRole('switch', { checked: false })
-    fireEvent.click(toogleButton)
-
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
-    })
+    await userEvent.click(toogleButton)
 
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
@@ -228,11 +224,7 @@ describe('NetworkVenuesTab', () => {
     )
 
     const toogleButton = await screen.findByRole('switch', { checked: true })
-    fireEvent.click(toogleButton)
-
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
-    })
+    await userEvent.click(toogleButton)
 
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
