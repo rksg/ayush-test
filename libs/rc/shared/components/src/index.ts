@@ -154,7 +154,13 @@ export { DistSwitchesTable } from './NetworkSegmentationDetailTableGroup/DistSwi
 export type {
   AccessSwitchTableDataType
 } from './NetworkSegmentationDetailTableGroup/AccessSwitchTable'
-export { useEdgeActions, useIsEdgeFeatureReady } from './useEdgeActions'
+export {
+  useEdgeActions,
+  useIsEdgeFeatureReady,
+  useSdLanScopedNetworks,
+  useSdLanScopedNetworkVenues,
+  checkSdLanScopedNetworkDeactivateAction
+} from './useEdgeActions'
 export { EdgeServiceStatusLight } from './EdgeServiceStatusLight'
 export { PropertyManagementForm } from './PropertyManagementForm'
 export { AdaptivePolicySetForm } from './AdaptivePolicySetForm'

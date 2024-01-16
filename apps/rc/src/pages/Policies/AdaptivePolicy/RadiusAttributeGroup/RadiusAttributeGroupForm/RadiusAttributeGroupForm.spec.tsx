@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { policyApi }             from '@acx-ui/rc/services'
 import {
   getPolicyRoutePath,
   PolicyOperation,
@@ -8,7 +9,7 @@ import {
   RadiusAttributeGroupUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Path, To, useTenantLink } from '@acx-ui/react-router-dom'
-import { Provider }                from '@acx-ui/store'
+import { Provider, store }         from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -52,6 +53,7 @@ describe('RadiusAttributeGroupForm', () => {
   const editPath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.EDIT })
 
   beforeEach(async () => {
+    store.dispatch(policyApi.util.resetApiState())
     mockServer.use(
       rest.get(
         RadiusAttributeGroupUrlsInfo.getAttributeGroups.url.split('?')[0],
