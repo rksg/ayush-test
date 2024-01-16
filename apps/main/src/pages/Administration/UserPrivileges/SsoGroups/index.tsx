@@ -78,14 +78,6 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
       dataIndex: 'groupId'
     },
     {
-      title: $t({ defaultMessage: 'Processing Priority' }),
-      key: 'processingPriority',
-      dataIndex: 'processingPriority',
-      defaultSortOrder: 'ascend',
-      show: false,
-      sorter: { compare: sortProp('processingPriority', defaultSort) }
-    },
-    {
       title: $t({ defaultMessage: 'Logged Members' }),
       key: 'loggedInMembers',
       show: false,
@@ -98,6 +90,13 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
       render: function (_, row) {
         return row.role ? $t(roleStringMap[row.role]) : ''
       }
+    },
+    {
+      title: $t({ defaultMessage: 'Processing Priority' }),
+      key: 'processingPriority',
+      dataIndex: 'processingPriority',
+      defaultSortOrder: 'ascend',
+      sorter: { compare: sortProp('processingPriority', defaultSort) }
     },
     {
       dataIndex: 'sort',

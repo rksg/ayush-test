@@ -130,8 +130,8 @@ export const AddSsoGroupDrawer = (props: AddGroupDrawerProps) => {
         <Drawer.FormFooter
           buttonLabel={{
             save: isEditMode
-              ? $t({ defaultMessage: 'Save' })
-              : $t({ defaultMessage: 'Add' })
+              ? $t({ defaultMessage: 'Apply' })
+              : $t({ defaultMessage: 'Add Group' })
           }}
           onCancel={onClose}
           onSave={onSubmit}

@@ -27,9 +27,9 @@ import { filterByAccess, useUserProfileContext, roleStringMap } from '@acx-ui/us
 import { AccountType }                                          from '@acx-ui/utils'
 
 
-import AddAdministratorDialog  from '../../Administrators/AdministratorsTable/AddAdministratorDialog'
-import EditAdministratorDialog from '../../Administrators/AdministratorsTable/EditAdministratorDialog'
-import * as UI                 from '../../Administrators/styledComponents'
+import AddUserDrawer  from '../../Administrators/AdministratorsTable/AddUserDrawer'
+import EditUserDrawer from '../../Administrators/AdministratorsTable/EditUserDrawer'
+import * as UI        from '../../Administrators/styledComponents'
 
 interface UsersTableProps {
   currentUserMail: string | undefined;
@@ -274,7 +274,7 @@ const UsersTable = (props: UsersTableProps) => {
       />
 
       { editMode ?
-        <EditAdministratorDialog
+        <EditUserDrawer
           visible={showDialog}
           setVisible={setShowDialog}
           editData={editData}
@@ -282,7 +282,7 @@ const UsersTable = (props: UsersTableProps) => {
           isMspEc={isMspEc}
           currentUserDetailLevel={currentUserDetailLevel}
         /> :
-        <AddAdministratorDialog
+        <AddUserDrawer
           visible={showDialog}
           setVisible={setShowDialog}
           isMspEc={isMspEc}
