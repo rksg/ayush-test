@@ -1,12 +1,14 @@
 import { createContext, useState } from 'react'
 
+import { isEmpty }   from 'lodash'
 import { IntlShape } from 'react-intl'
 
 import { showActionModal, CustomButtonProps } from '@acx-ui/components'
 import { VenueLed,
   VenueSwitchConfiguration,
   ExternalAntenna,
-  VenueRadioCustomization } from '@acx-ui/rc/utils'
+  VenueRadioCustomization,
+  ApAntennaTypeSetting } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 import { getIntl }   from '@acx-ui/utils'
 
@@ -19,6 +21,7 @@ import { AdvanceSettingContext }    from './WifiConfigTab/AdvancedTab'
 import { NetworkingSettingContext } from './WifiConfigTab/NetworkingTab'
 import { SecuritySettingContext }   from './WifiConfigTab/SecurityTab'
 import { ServerSettingContext }     from './WifiConfigTab/ServerTab'
+
 
 const tabs = {
   details: VenueDetailsTab,
@@ -49,6 +52,8 @@ export interface RadioContext {
   apiApModels?: { [index: string]: ExternalAntenna }
   apModels?: { [index: string]: ExternalAntenna }
   updateExternalAntenna?: ((data: ExternalAntenna[]) => void)
+  apModelAntennaTypes?: { [index: string]: ApAntennaTypeSetting }
+  updateAntennaType?: ((data: ApAntennaTypeSetting[]) => void)
 
   radioData?: VenueRadioCustomization,
   updateWifiRadio?: ((data: VenueRadioCustomization) => void)
@@ -150,6 +155,10 @@ export function getExternalAntennaPayload (apModels: { [index: string]: External
   return extPayload
 }
 
+export function getAntennaTypePayload (antTypeModels: { [index: string]: ApAntennaTypeSetting }) {
+  return isEmpty(antTypeModels)? [] : Object.values(antTypeModels)
+}
+
 function processWifiTab (
   editContextData: EditContext,
   editNetworkingContextData: NetworkingSettingContext,
@@ -172,19 +181,33 @@ function processWifiTab (
       editNetworkingContextData?.updateRadiusOptions?.()
       break
     case 'radio':
-      if (editRadioContextData?.apModels) {
-        const extPayload = getExternalAntennaPayload(editRadioContextData.apModels)
+
+      const {
+        apModels,
+        apModelAntennaTypes,
+        isLoadBalancingDataChanged,
+        isClientAdmissionControlDataChanged
+      } = editRadioContextData || {}
+
+      // Antenna
+      if (apModels) {
+        const extPayload = getExternalAntennaPayload(apModels)
         editRadioContextData?.updateExternalAntenna?.(extPayload)
       }
+      if (apModelAntennaTypes) {
+        const antennaTypePayload = getAntennaTypePayload(apModelAntennaTypes)
+        editRadioContextData?.updateAntennaType?.(antennaTypePayload)
+      }
 
+      // radio
       editRadioContextData?.updateWifiRadio?.
       (editRadioContextData.radioData as VenueRadioCustomization)
 
-      if (editRadioContextData.isLoadBalancingDataChanged) {
+      if (isLoadBalancingDataChanged) {
         editRadioContextData?.updateLoadBalancing?.()
       }
 
-      if (editRadioContextData.isClientAdmissionControlDataChanged) {
+      if (isClientAdmissionControlDataChanged) {
         editRadioContextData?.updateClientAdmissionControl?.()
       }
 

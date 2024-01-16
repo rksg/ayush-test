@@ -919,3 +919,13 @@ export interface ApIncompatibleDevice {
 	model: string,
 	count: number
 }
+
+export enum ApAntennaTypeEnum {
+	SECTOR = 'SECTOR',
+	NARROW = 'NARROW'
+}
+
+export type ApAntennaTypeSetting = {
+	model: string
+	antennaType: ApAntennaTypeEnum
+}

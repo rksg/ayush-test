@@ -77,22 +77,32 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/network-venue',
     newApi: true
   },
-  getVenueExternalAntenna: {
-    method: 'get',
-    url: '/venues/:venueId/externalAntennaSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/externalAntenna',
-    newApi: true
-  },
   getVenueApCapabilities: {
     method: 'get',
     url: '/venues/:venueId/aps/capabilities',
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/capabilities',
     newApi: true
   },
+  getVenueExternalAntenna: {
+    method: 'get',
+    url: '/venues/:venueId/externalAntennaSettings',
+    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/externalAntenna',
+    newApi: true
+  },
   updateVenueExternalAntenna: {
     method: 'put',
     url: '/venues/:venueId/externalAntennaSettings',
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/externalAntenna',
+    newApi: true
+  },
+  getVenueAntennaType: {
+    method: 'get',
+    url: '/venues/:venueId/apModelAntennaTypeSettings',
+    newApi: true
+  },
+  updateVenueAntennaType: {
+    method: 'put',
+    url: '/venues/:venueId/apModelAntennaTypeSettings',
     newApi: true
   },
   getVenueDefaultRegulatoryChannels: {
@@ -425,6 +435,21 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   resetApBandModeSettings: {
     method: 'delete',
     url: '/venues/:venueId/aps/:serialNumber/bandModeSettings',
+    newApi: true
+  },
+  getApAntennaType: {
+    method: 'get',
+    url: '/venues/:venueId/aps/:serialNumber/apAntennaTypeSettings',
+    newApi: true
+  },
+  updateApAntennaType: {
+    method: 'put',
+    url: '/venues/:venueId/aps/:serialNumber/apAntennaTypeSettings',
+    newApi: true
+  },
+  resetApAntennaType: {
+    method: 'delete',
+    url: '/venues/:venueId/aps/:serialNumber/apAntennaTypeSettings',
     newApi: true
   },
   getApBssColoring: {
