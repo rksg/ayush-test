@@ -129,10 +129,12 @@ describe('AAATable', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
 
+    const dialog = await screen.findByRole('dialog')
     expect(await screen.findByText('Delete "' + target.name + '"?')).toBeVisible()
 
     await userEvent.click(await screen.findByRole('button', { name: /Delete Policy/i }))
 
+    await waitFor(() => expect(dialog).not.toBeVisible())
     await waitFor(() => {
       expect(deleteFn).toHaveBeenCalled()
     })
