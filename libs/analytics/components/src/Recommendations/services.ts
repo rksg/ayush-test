@@ -194,13 +194,19 @@ const getStatusTooltip = (code: string, state: StateType, metadata: Metadata) =>
   })
 }
 
-const optimizedStates = ['applied', 'applyscheduleinprogress', 'applyscheduled']
-export const unknownStates = [ 'insufficientLicenses', 'verificationError', 'verified' ]
+const optimizedStates = [ 'applied', 'applyscheduleinprogress', 'applyscheduled']
+export const unknownStates = [
+  CRRMStates.insufficientLicenses,
+  CRRMStates.verificationError,
+  CRRMStates.verified,
+  CRRMStates.unqualifiedZone,
+  CRRMStates.noAps
+]
 
 export const getCrrmOptimizedState = (state: StateType) => {
   return optimizedStates.includes(state)
     ? crrmStates.optimized
-    : unknownStates.includes(state)
+    : unknownStates.includes(state as CRRMStates)
       ? crrmStates[state as CRRMStates]
       : crrmStates.nonOptimized
 }
