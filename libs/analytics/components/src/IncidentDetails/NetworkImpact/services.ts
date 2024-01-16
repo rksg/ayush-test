@@ -66,13 +66,9 @@ export const networkImpactChartsApi = dataApi.injectEndpoints({
               ]
             case  NetworkImpactQueryTypes.TopN:
             default:
-              return showTotal ? [
+              return [
                 gql`${chart}: topN(n: 10, by: "${dimension}", type: "${type}") {
-                  count ${useTotal ? 'total' : ''} data { key value }
-                }`
-              ] : [
-                gql`${chart}: topN(n: 10, by: "${dimension}", type: "${type}") {
-                  count data { key value }
+                  count ${showTotal && useTotal ? 'total' : ''} data { key value }
                 }`
               ]
           }

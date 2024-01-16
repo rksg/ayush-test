@@ -32,14 +32,12 @@ export const ApinfraWanthroughputLow = (incident: Incident) => {
     chart: NetworkImpactChartTypes.APModelByAP,
     query: NetworkImpactQueryTypes.TopN,
     type: 'apInfra',
-    dimension: 'apModels',
-    showTotal: false
+    dimension: 'apModels'
   }, {
     chart: NetworkImpactChartTypes.APFwVersionByAP,
     query: NetworkImpactQueryTypes.TopN,
     type: 'apInfra',
-    dimension: 'apFwVersions',
-    showTotal: false
+    dimension: 'apFwVersions'
   }]
 
   const timeSeriesCharts: TimeSeriesChartTypes[] = [

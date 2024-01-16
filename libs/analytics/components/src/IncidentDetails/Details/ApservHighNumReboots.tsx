@@ -32,26 +32,22 @@ export const ApservHighNumReboots = (incident: Incident) => {
     chart: NetworkImpactChartTypes.APModelByAP,
     query: NetworkImpactQueryTypes.TopN,
     type: 'apReboot',
-    dimension: 'apModel',
-    showTotal: false
+    dimension: 'apModel'
   }, {
     chart: NetworkImpactChartTypes.APFwVersionByAP,
     query: NetworkImpactQueryTypes.TopN,
     type: 'apReboot',
-    dimension: 'apFwVersion',
-    showTotal: false
+    dimension: 'apFwVersion'
   }, {
     chart: NetworkImpactChartTypes.RebootReasonByAP,
     query: NetworkImpactQueryTypes.TopN,
     type: 'apReboot',
-    dimension: 'reason',
-    showTotal: false
+    dimension: 'reason'
   }, {
     chart: NetworkImpactChartTypes.RebootReasonsByEvent,
     query: NetworkImpactQueryTypes.TopN,
     type: 'apRebootEvent',
-    dimension: 'reason',
-    showTotal: false
+    dimension: 'reason'
   }]
 
   const timeSeriesCharts: TimeSeriesChartTypes[] = [
