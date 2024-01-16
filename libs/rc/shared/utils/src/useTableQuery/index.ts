@@ -135,7 +135,7 @@ export function useTableQuery <
     ...DEFAULT_PAGINATION,
     ...(option?.pagination ? {
       defaultPageSize: option.pagination.pageSize || TABLE_DEFAULT_PAGE_SIZE,
-      ...(_.omit(option.pagination, '_settingsId'))
+      ...(_.omit(option.pagination, 'settingsId'))
     } : {})
   }
 
@@ -151,7 +151,8 @@ export function useTableQuery <
 
     const settingsId = option.pagination.settingsId
     const pageSizeDefined = Number(localStorage.getItem(`${settingsId}-pagesize`))
-    const pageSize = pageSizeDefined ?? option.pagination.pageSize ?? TABLE_DEFAULT_PAGE_SIZE
+    const pageSize = (pageSizeDefined > 0) ? pageSizeDefined :
+      (option.pagination.pageSize ?? TABLE_DEFAULT_PAGE_SIZE)
     const onShowSizeChange = (current: number, pageSize: number) => {
       localStorage.setItem(`${settingsId}-pagesize`, pageSize.toString())
     }
@@ -160,8 +161,6 @@ export function useTableQuery <
       onShowSizeChange, pageSize, defaultPageSize: pageSize
     }
   })
-  const [sorter, setSorter] = useState<SORTER>(initialSorter)
-  const [search, setSearch] = useState<SEARCH>(initialSearch)
 
   const initialPayload = {
     ...option.defaultPayload,
@@ -169,6 +168,9 @@ export function useTableQuery <
     ...(initialSorter as unknown as Partial<Payload>),
     ...(initialSearch.searchString && initialSearch)
   } as Payload
+
+  const [sorter, setSorter] = useState<SORTER>(initialSorter)
+  const [search, setSearch] = useState<SEARCH>(initialSearch)
   const [payload, setPayload] = useState<Payload>(initialPayload)
   const [filterKeys, setFilterKeys] = useState<string[]>([])
 

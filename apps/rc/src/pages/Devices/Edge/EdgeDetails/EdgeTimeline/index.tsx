@@ -18,7 +18,10 @@ import { useTenantLink } from '@acx-ui/react-router-dom'
 const EdgeActivityTable = () => {
 
   const { serialNumber } = useParams()
-  const tableQuery = useActivityTableQuery({ entityType: 'EDGE', entityId: serialNumber! })
+  const tableQuery = useActivityTableQuery(
+    { entityType: 'EDGE', entityId: serialNumber! },
+    { settingsId: 'edge-activity-table' }
+  )
 
   return (
     <ActivityTable
@@ -36,7 +39,9 @@ const EdgeEventTable = () => {
   const tableQuery = useEventsTableQuery({
     serialNumber: [serialNumber],
     entity_type: [...eventDefaultFilters.entity_type, 'EDGE']
-  })
+  }, undefined,
+  { settingsId: 'edge-event-table' }
+  )
 
   return (
     <EventTable

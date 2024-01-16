@@ -9,15 +9,23 @@ import { useTenantLink }                                                        
 const Events = () => {
   return <EventTable
     settingsId='venue-event-table'
-    tableQuery={useEventsTableQuery({ venueId: [useParams().venueId] })}
+    tableQuery={useEventsTableQuery(
+      { venueId: [useParams().venueId] },
+      undefined,
+      { settingsId: 'venue-event-table' }
+    )}
   />
 }
 
 const Activities = () => {
   const { venueId } = useParams()
-  const tableQuery = useActivityTableQuery({ entityType: 'VENUE', entityId: venueId! })
+  const tableQuery = useActivityTableQuery(
+    { entityType: 'VENUE', entityId: venueId! },
+    { settingsId: 'venue-activity-table' }
+  )
 
   return <ActivityTable
+    settingsId='venue-activity-table'
     tableQuery={tableQuery}
     filterables={['status', 'product']}
   />

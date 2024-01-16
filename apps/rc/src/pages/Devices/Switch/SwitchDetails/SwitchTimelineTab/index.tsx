@@ -15,7 +15,11 @@ import { useTenantLink } from '@acx-ui/react-router-dom'
 
 const Events = () => {
   const { serialNumber } = useParams()
-  const tableQuery = useEventsTableQuery({ serialNumber: [serialNumber] })
+  const tableQuery = useEventsTableQuery(
+    { serialNumber: [serialNumber] },
+    undefined,
+    { settingsId: 'switch-event-table' }
+  )
   return <EventTable
     settingsId='switch-event-table'
     tableQuery={tableQuery}
@@ -26,7 +30,10 @@ const Events = () => {
 
 const Activities = () => {
   const { serialNumber } = useParams()
-  const tableQuery = useActivityTableQuery({ entityType: 'SWITCH', entityId: serialNumber! })
+  const tableQuery = useActivityTableQuery(
+    { entityType: 'SWITCH', entityId: serialNumber! },
+    { settingsId: 'switch-activity-table' }
+  )
 
   return <ActivityTable
     settingsId='switch-activity-table'

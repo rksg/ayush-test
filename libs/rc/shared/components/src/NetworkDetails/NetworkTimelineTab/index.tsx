@@ -20,7 +20,11 @@ import {
 
 const Events = () => {
   const { networkId } = useParams()
-  const tableQuery = useEventsTableQuery({ networkId: [networkId] })
+  const tableQuery = useEventsTableQuery(
+    { networkId: [networkId] },
+    undefined,
+    { settingsId: 'network-event-table' }
+  )
   return <EventTable
     settingsId='network-event-table'
     tableQuery={tableQuery}
@@ -32,7 +36,10 @@ const Events = () => {
 
 const Activities = () => {
   const { networkId } = useParams()
-  const tableQuery = useActivityTableQuery({ entityType: 'NETWORK', entityId: networkId! })
+  const tableQuery = useActivityTableQuery(
+    { entityType: 'NETWORK', entityId: networkId! },
+    { settingsId: 'network-activity-table' }
+  )
 
   return <ActivityTable
     settingsId='network-activity-table'
