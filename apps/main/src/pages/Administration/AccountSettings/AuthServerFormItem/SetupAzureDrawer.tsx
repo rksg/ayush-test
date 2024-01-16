@@ -118,8 +118,8 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
       // TODO: setMetadata() to contents of file only if we want to see file contents in metadata in editmode
       // fetchMetaData()
       form.setFieldValue('domains', editData?.domains?.toString())
-      setSelectedAuth(editData?.authenticationType || TenantAuthenticationType.saml)
     }
+    setSelectedAuth(editData?.authenticationType || TenantAuthenticationType.saml)
   }, [form, props.visible])
 
   const beforeUpload = (file: File) => {
