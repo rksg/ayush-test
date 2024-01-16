@@ -61,6 +61,7 @@ export type NetworkImpactChartConfig = {
    * @default false
    **/
   disabled?: boolean
+  showTotal?: boolean
 }
 
 export type DominanceSummary = {
@@ -85,7 +86,8 @@ export interface NetworkImpactChart {
     value: MessageDescriptor
     summary: MessageDescriptor
   },
-  colorSetFn?: () => string[]
+  colorSetFn?: () => string[],
+  showTotal?: boolean
 }
 
 export const getDataWithPercentage = (data: NetworkImpactChartData['data']) => {
@@ -213,7 +215,8 @@ export const networkImpactChartConfigs: Readonly<Record<
           other {AP firmwares}
         }`
       })
-    }
+    },
+    showTotal: false
   },
   [NetworkImpactChartTypes.APModel]: {
     title: defineMessage({ defaultMessage: 'AP Model' }),
@@ -226,7 +229,8 @@ export const networkImpactChartConfigs: Readonly<Record<
           other {AP models}
         }`
       })
-    }
+    },
+    showTotal: false
   },
   [NetworkImpactChartTypes.APModelByAP]: {
     title: defineMessage({ defaultMessage: 'AP Model' }),
@@ -239,7 +243,8 @@ export const networkImpactChartConfigs: Readonly<Record<
           other {AP models}
         }`
       })
-    }
+    },
+    showTotal: false
   },
   [NetworkImpactChartTypes.APVersion]: {
     title: defineMessage({ defaultMessage: 'AP Version' }),
@@ -252,7 +257,8 @@ export const networkImpactChartConfigs: Readonly<Record<
           other {AP firmwares}
         }`
       })
-    }
+    },
+    showTotal: false
   },
   [NetworkImpactChartTypes.ClientManufacturer]: {
     title: defineMessage({ defaultMessage: 'Client Manufacturer' }),
@@ -264,7 +270,8 @@ export const networkImpactChartConfigs: Readonly<Record<
           one {client manufacturer}
           other {client manufacturers}
         }` })
-    }
+    },
+    showTotal: false
   },
   [NetworkImpactChartTypes.EventTypeByAP]: {
     title: defineMessage({ defaultMessage: 'Event Type' }),
@@ -277,7 +284,8 @@ export const networkImpactChartConfigs: Readonly<Record<
           other {event types}
         } contributed to this incident`
       })
-    }
+    },
+    showTotal: false
   },
   [NetworkImpactChartTypes.OS]: {
     title: defineMessage({ defaultMessage: 'OS' }),
@@ -290,7 +298,8 @@ export const networkImpactChartConfigs: Readonly<Record<
           other {operating systems}
         }`
       })
-    }
+    },
+    showTotal: false
   },
   [NetworkImpactChartTypes.Radio]: {
     title: defineMessage({ defaultMessage: 'Radio' }),
@@ -304,7 +313,8 @@ export const networkImpactChartConfigs: Readonly<Record<
           other {radios}
         }`
       })
-    }
+    },
+    showTotal: false
   },
   [NetworkImpactChartTypes.Reason]: {
     title: defineMessage({ defaultMessage: 'Reason' }),
@@ -319,7 +329,8 @@ export const networkImpactChartConfigs: Readonly<Record<
           other {reasons}
         } contributed to this incident`
       })
-    }
+    },
+    showTotal: false
   },
   [NetworkImpactChartTypes.ReasonByAP]: {
     title: defineMessage({ defaultMessage: 'Reason' }),
@@ -333,7 +344,8 @@ export const networkImpactChartConfigs: Readonly<Record<
           other {reasons}
         } contributed to this incident`
       })
-    }
+    },
+    showTotal: false
   },
   [NetworkImpactChartTypes.RebootReasonByAP]: {
     title: defineMessage({ defaultMessage: 'Reason by AP' }),
@@ -347,7 +359,8 @@ export const networkImpactChartConfigs: Readonly<Record<
           other {reasons}
         } contributed to this incident`
       })
-    }
+    },
+    showTotal: false
   },
   [NetworkImpactChartTypes.RebootReasonsByEvent]: {
     title: defineMessage({ defaultMessage: 'Reason by Event' }),
@@ -361,7 +374,8 @@ export const networkImpactChartConfigs: Readonly<Record<
           other {reasons}
         } contributed to this incident`
       })
-    }
+    },
+    showTotal: false
   },
   [NetworkImpactChartTypes.WLAN]: {
     title: defineMessage({ defaultMessage: 'WLAN' }),
@@ -375,7 +389,8 @@ export const networkImpactChartConfigs: Readonly<Record<
           other {WLANs}
         }`
       })
-    }
+    },
+    showTotal: false
   },
   [NetworkImpactChartTypes.RogueAPByChannel]: {
     title: defineMessage({ defaultMessage: 'Rogue APs' }),
