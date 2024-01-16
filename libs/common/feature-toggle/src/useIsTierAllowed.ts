@@ -18,7 +18,10 @@ export const defaultConfig: Partial<Record<TierKey, string[]>> = {
 }
 /* eslint-enable */
 
-export function useFFList (): { featureList?: string[], betaList?: string[],
+export function useFFList (): {
+  featureList?: string[],
+  betaList?: string[],
+  featureDrawerBetaList?: string[],
   alphaList?: string[] } {
   const { data: userProfile, accountTier, betaEnabled } = useUserProfileContext()
   const jwtPayload = getJwtTokenPayload()
@@ -71,6 +74,7 @@ export function useFFList (): { featureList?: string[], betaList?: string[],
   return {
     featureList: userFFConfig[featureKey],
     betaList: betaEnabled? userFFConfig['betaList'] : [],
+    featureDrawerBetaList: userFFConfig['betaList'],
     alphaList: (betaEnabled && userProfile?.dogfood) ? userFFConfig['alphaList'] : []
   }
 }
@@ -90,5 +94,5 @@ export function useIsTierAllowed (featureId: string): boolean {
 }
 
 export const useGetBetaList = (): string[] => {
-  return useFFList().betaList?? []
+  return useFFList().featureDrawerBetaList?? []
 }
