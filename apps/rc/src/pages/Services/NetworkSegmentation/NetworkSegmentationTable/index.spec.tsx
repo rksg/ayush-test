@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { edgeApi, networkApi, nsgApi, switchApi, venueApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   EdgeUrlsInfo,
@@ -12,7 +13,7 @@ import {
   ServiceType,
   SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider }                           from '@acx-ui/store'
+import { Provider, store }                    from '@acx-ui/store'
 import {
   mockServer, render,
   screen, waitForElementToBeRemoved, within
@@ -44,6 +45,11 @@ describe('NetworkSegmentationList', () => {
     oper: ServiceOperation.LIST
   })
   beforeEach(() => {
+    store.dispatch(edgeApi.util.resetApiState())
+    store.dispatch(networkApi.util.resetApiState())
+    store.dispatch(nsgApi.util.resetApiState())
+    store.dispatch(switchApi.util.resetApiState())
+    store.dispatch(venueApi.util.resetApiState())
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }

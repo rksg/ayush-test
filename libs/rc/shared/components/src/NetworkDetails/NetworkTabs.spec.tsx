@@ -9,17 +9,9 @@ import { mockServer, render, screen, waitFor, fireEvent } from '@acx-ui/test-uti
 import { RolesEnum }                                      from '@acx-ui/types'
 import { getUserProfile, setUserProfile }                 from '@acx-ui/user'
 
-import NetworkTabs from './NetworkTabs'
+import { networkDetailHeaderData } from './__tests__/fixtures'
+import NetworkTabs                 from './NetworkTabs'
 
-const networkDetailHeaderData = {
-  activeVenueCount: 1,
-  aps: {
-    totalApCount: 1
-  },
-  network: {
-    clients: 1
-  }
-}
 const params = { networkId: 'network-id', tenantId: 'tenant-id' }
 const url = generatePath(CommonUrlsInfo.getNetworksDetailHeader.url, params)
 const mockedUsedNavigate = jest.fn()

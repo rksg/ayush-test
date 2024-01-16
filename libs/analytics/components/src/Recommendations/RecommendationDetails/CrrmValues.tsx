@@ -20,8 +20,8 @@ export const CrrmValues = ({ details }: { details: EnhancedRecommendation }) => 
     appliedOnce, status, original, current, recommended
   } = getValues(details)
   const applied = appliedOnce && status !== 'reverted'
-  const isFullOptimized = !!_.get(details, 'metadata.algorithmData.isFullOptimized', true)
-  const recommendationText = getRecommendationsText(details, isFullOptimized)
+  const isFullOptimization = !!_.get(details, 'metadata.algorithmData.isCrrmFullOptimization', true)
+  const recommendationText = getRecommendationsText(details, isFullOptimization)
 
   const fields = [
     {
@@ -34,7 +34,7 @@ export const CrrmValues = ({ details }: { details: EnhancedRecommendation }) => 
       label: applied
         ? $t({ defaultMessage: 'Current Configuration' })
         : $t({ defaultMessage: 'Recommended Configuration' }),
-      value: isFullOptimized
+      value: isFullOptimization
         ? (applied ? current : recommended)
         : $t({ defaultMessage: 'AI-Driven RRM for channel plan' })
     }

@@ -13,7 +13,8 @@ import {
   IdentityGroupLink,
   useDpskNewConfigFlowParams,
   VenueLink,
-  PersonaGroupDrawer
+  PersonaGroupDrawer,
+  usePersonaAsyncHeaders
 } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
@@ -175,6 +176,7 @@ export function PersonaGroupTable () {
   })
   const { setIdentityGroupCount } = useContext(IdentityGroupContext)
   const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
+  const { isAsync, customHeaders } = usePersonaAsyncHeaders()
 
   const [getVenues] = useLazyVenuesListQuery()
   const [getDpskById] = useLazyGetDpskQuery()
@@ -266,7 +268,7 @@ export function PersonaGroupTable () {
     doProfileDelete(
       [selectedRow],
       $t({ defaultMessage: 'Identity Group' }),
-      selectedRow.name,
+      name,
       [
         {
           fieldName: 'personalIdentityNetworkId',
@@ -274,12 +276,14 @@ export function PersonaGroupTable () {
         },
         { fieldName: 'propertyId', fieldText: $t({ defaultMessage: 'Venue' }) }
       ],
-      async () => deletePersonaGroup({ params: { groupId: id } })
+      async () => deletePersonaGroup({ params: { groupId: id }, customHeaders })
         .then(() => {
-          showToast({
-            type: 'success',
-            content: $t({ defaultMessage: 'Identity Group {name} was deleted' }, { name })
-          })
+          if (!isAsync) {
+            showToast({
+              type: 'success',
+              content: $t({ defaultMessage: 'Identity Group {name} was deleted' }, { name })
+            })
+          }
           callback()
         })
     )
