@@ -1,6 +1,7 @@
 import { useDebugValue, useMemo } from 'react'
 
 import { useTreatments } from '@splitsoftware/splitio-react'
+import _                 from 'lodash'
 
 import { useUserProfileContext }                            from '@acx-ui/user'
 import { AccountType, AccountVertical, getJwtTokenPayload } from '@acx-ui/utils'
@@ -62,7 +63,7 @@ export function useFFList (): {
 
   const userFFConfig = useMemo(() => {
     if (treatment?.treatment === 'control') return defaultConfig
-    return JSON.parse(String(treatment?.config))
+    return treatment?.config ? JSON.parse(String(treatment.config)) : {}
   }, [treatment])
 
   const featureKey = [
@@ -79,7 +80,7 @@ export function useFFList (): {
 
   return {
     featureList: (accountVertical === AccountVertical.DEFAULT)?
-      userFFConfig[featureKey] : [...userFFConfig[featureKey], ...userFFConfig[featureDefaultKey]],
+      userFFConfig[featureKey] : _.union(userFFConfig[featureKey], userFFConfig[featureDefaultKey]),
     betaList: betaEnabled? userFFConfig['betaList'] : [],
     featureDrawerBetaList: userFFConfig['betaList'],
     alphaList: (betaEnabled && userProfile?.dogfood) ? userFFConfig['alphaList'] : []
