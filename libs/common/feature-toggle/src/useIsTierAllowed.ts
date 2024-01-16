@@ -71,8 +71,15 @@ export function useFFList (): {
     accountVertical
   ].join('-') as keyof typeof defaultConfig
 
+  const featureDefaultKey = [
+    'feature',
+    tenantType,
+    'Default'
+  ].join('-') as keyof typeof defaultConfig
+
   return {
-    featureList: userFFConfig[featureKey],
+    featureList: (accountVertical === AccountVertical.DEFAULT)?
+      userFFConfig[featureKey] : [...userFFConfig[featureKey], ...userFFConfig[featureDefaultKey]],
     betaList: betaEnabled? userFFConfig['betaList'] : [],
     featureDrawerBetaList: userFFConfig['betaList'],
     alphaList: (betaEnabled && userProfile?.dogfood) ? userFFConfig['alphaList'] : []
