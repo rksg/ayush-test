@@ -433,10 +433,6 @@ export function ApForm () {
       apInfo = find(aps, (ap) => ap.serialNumber === apDetails?.serialNumber)
     }
 
-    if (!apInfo) {
-      return false
-    }
-
     const afcInfo = apInfo.apStatusData?.afcInfo
 
     const requiredStatus = [AFCStatus.AFC_NOT_REQUIRED, AFCStatus.WAIT_FOR_LOCATION]
