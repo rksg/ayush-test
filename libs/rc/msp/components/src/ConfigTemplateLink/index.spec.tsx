@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 
-import { PolicyDetailsLinkProps, PolicyOperation, PolicyType, getConfigTemplateLink, getPolicyDetailsLink, getPolicyRoutePath } from '@acx-ui/rc/utils'
+import { PolicyDetailsLinkProps, PolicyOperation, PolicyType, getConfigTemplatePath, getPolicyDetailsLink, getPolicyRoutePath } from '@acx-ui/rc/utils'
 
 import {
   ConfigTemplateLink,
@@ -29,7 +29,7 @@ describe('ConfigTemplateLink', () => {
   it('renders ConfigTemplateLink with state prop', () => {
     render(<ConfigTemplateLink to='test/config'>Config Template Link</ConfigTemplateLink>)
 
-    const targetPath = getConfigTemplateLink('test/config')
+    const targetPath = getConfigTemplatePath('test/config')
     expect(screen.getByText(targetPath)).toBeInTheDocument()
     expect(mockedMspTenantLinkStateFn).toHaveBeenCalledWith({ from: mockedLocation })
   })
@@ -40,7 +40,7 @@ describe('ConfigTemplateLink', () => {
       <PolicyConfigTemplateLink {...targetPolicyParams}>Policy Test Child</PolicyConfigTemplateLink>
     )
 
-    const targetPath = getConfigTemplateLink(getPolicyRoutePath(targetPolicyParams))
+    const targetPath = getConfigTemplatePath(getPolicyRoutePath(targetPolicyParams))
     expect(screen.getByText(targetPath)).toBeInTheDocument()
   })
 
@@ -56,7 +56,7 @@ describe('ConfigTemplateLink', () => {
       <PolicyConfigTemplateDetailsLink {...targetPolicyParams}>Policy Details Child</PolicyConfigTemplateDetailsLink>
     )
 
-    const targetPath = getConfigTemplateLink(getPolicyDetailsLink(targetPolicyParams))
+    const targetPath = getConfigTemplatePath(getPolicyDetailsLink(targetPolicyParams))
     expect(screen.getByText(targetPath)).toBeInTheDocument()
   })
 })

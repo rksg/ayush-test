@@ -33,6 +33,11 @@ jest.mock('./GuestsTab', () => ({
   GuestsTab: () => <div data-testid='GuestsTab' />
 }))
 
+jest.mock('./ClientTab', () => ({
+  ...jest.requireActual('./ClientTab'),
+  ClientTab: () => <div data-testid='ClientTab' />
+}))
+
 jest.mock('@acx-ui/reports/components', () => ({
   ...jest.requireActual('@acx-ui/reports/components'),
   EmbeddedReport: (props: { reportName: ReportType }) => <div data-testid={props.reportName} />
@@ -59,7 +64,7 @@ describe.skip('WifiClientList with feature toggle', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<WifiClientList tab={WirelessTabsEnum.GUESTS}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    userEvent.click(await screen.findByText('Wireless Clients Report'))
+    await userEvent.click(await screen.findByText('Wireless Clients Report'))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: '/tenant-id/t/users/wifi/reports/clients', hash: '', search: ''
     }))
@@ -103,5 +108,6 @@ describe('WifiClientList render', () => {
     expect(await screen.findByRole('tab', {
       name: /clients list \(0\)/i
     })).toBeVisible()
+    expect(await screen.findByTestId('ClientTab')).toBeVisible()
   })
 })

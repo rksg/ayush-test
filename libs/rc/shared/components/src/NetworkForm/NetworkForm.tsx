@@ -6,17 +6,15 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import { PageHeader, StepsForm, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
 import {
-  useAddNetworkTemplateMutation,
-  useGetNetworkTemplateQuery,
-  useUpdateNetworkTemplateMutation
-} from '@acx-ui/msp/services'
-import {
   useAddNetworkMutation,
   useAddNetworkVenuesMutation,
   useDeleteNetworkVenuesMutation,
   useGetNetworkQuery,
   useUpdateNetworkMutation,
-  useUpdateNetworkVenuesMutation
+  useUpdateNetworkVenuesMutation,
+  useAddNetworkTemplateMutation,
+  useGetNetworkTemplateQuery,
+  useUpdateNetworkTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -450,7 +448,7 @@ export function NetworkForm (props:{
         await handleNetworkVenues(network.id, payload.venues)
       }
 
-      modalMode? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
+      modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -520,7 +518,7 @@ export function NetworkForm (props:{
         await handleNetworkVenues(payload.id, payload.venues, data?.venues)
       }
 
-      modalMode? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
+      modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react'
+import { useMemo, useRef, useState } from 'react'
 
 import { AlignType } from 'rc-table/lib/interface'
 import { useIntl }   from 'react-intl'
@@ -25,12 +25,13 @@ export const NetworkTable = (props: EdgeSdLanServiceProps) => {
   const { $t } = useIntl()
   const { venueId } = useParams()
   const { serviceId, activatedNetworkIds } = props
+  const [isActivateUpdating, setIsActivateUpdating] = useState<boolean>(false)
   const activtaedNetworkTableRef = useRef<{
     dataSource: NetworkSaveData[]
   }>(null)
   const [
     updateEdgeSdLan,
-    { isLoading: isActivateUpdating }
+    { isLoading: isActivateRequesting }
   ] = useUpdateEdgeSdLanPartialMutation()
 
   // eslint-disable-next-line max-len
@@ -41,7 +42,14 @@ export const NetworkTable = (props: EdgeSdLanServiceProps) => {
         networkIds: newNetworkIds
       }
 
-      await updateEdgeSdLan({ params: { serviceId }, payload }).unwrap()
+      setIsActivateUpdating(true)
+      await updateEdgeSdLan({
+        params: { serviceId },
+        payload,
+        callback: () => {
+          setIsActivateUpdating(false)
+        } }).unwrap()
+
     } catch(err) {
       // eslint-disable-next-line no-console
       console.log(err)
@@ -89,7 +97,7 @@ export const NetworkTable = (props: EdgeSdLanServiceProps) => {
       ref={activtaedNetworkTableRef}
       venueId={venueId!}
       columns={columns}
-      isUpdating={isActivateUpdating}
+      isUpdating={isActivateUpdating || isActivateRequesting}
     />
   )
 }
