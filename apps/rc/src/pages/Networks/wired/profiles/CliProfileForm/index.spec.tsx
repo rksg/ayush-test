@@ -50,6 +50,12 @@ document.createRange = () => {
   return range
 }
 
+const clearToast = async () => {
+  const toast = await screen.findByTestId('toast-content')
+  await userEvent.click(await within(toast).findByRole('img', { name: 'close' }))
+  expect(toast).not.toBeVisible()
+}
+
 describe('Cli Profile Form', () => {
   const onFinishSpy = jest.fn()
   const mockedUpdate = jest.fn()
@@ -322,9 +328,10 @@ describe('Cli Profile Form', () => {
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       expect(mockedUpdate).not.toBeCalled()
       expect(await screen.findByText(/Please select at least one model/)).toBeVisible()
+      await clearToast()
     })
 
-    it('should validate CLI commands', async () => {
+    it('should handle CLI commands with undefined variables', async () => {
       mockServer.use(
         rest.get(SwitchUrlsInfo.getSwitchConfigProfile.url,
           (_, res, ctx) => res(ctx.json({
@@ -350,6 +357,36 @@ describe('Cli Profile Form', () => {
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       expect(mockedUpdate).not.toBeCalled()
       expect(await screen.findByText(/Please define variable\(s\) in CLI commands/)).toBeVisible()
+      await clearToast()
+    })
+
+    it('should handle CLI commands with undefined attributes', async () => {
+      mockServer.use(
+        rest.get(SwitchUrlsInfo.getSwitchConfigProfile.url,
+          (_, res, ctx) => res(ctx.json({
+            ...cliProfile,
+            venueCliTemplate: {
+              ...cliProfile.venueCliTemplate,
+              cli: 'manager registrar test'
+            }
+          }))
+        )
+      )
+      render(<Provider><CliProfileForm /></Provider>, {
+        route: { params, path: '/:tenantId/networks/wired/:configType/cli/:profileId/:action' }
+      })
+
+      await waitFor(() => {
+        expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+      })
+      expect(await screen.findByText('Edit CLI Configuration Profile')).toBeVisible()
+      await userEvent.click(await screen.findByRole('button', { name: 'CLI Configuration' }))
+      const addExampleBtns = await screen.findAllByTestId('add-example-btn')
+      await userEvent.click(addExampleBtns[1])
+      await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+      expect(mockedUpdate).not.toBeCalled()
+      expect(await screen.findByText(/Please define attribute\(s\) in CLI commands/)).toBeVisible()
+      await clearToast()
     })
 
     it('should handle error occurred', async () => {
@@ -375,7 +412,6 @@ describe('Cli Profile Form', () => {
       expect(await screen.findAllByRole('row')).toHaveLength(5)
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       expect(mockedUpdate).not.toBeCalled()
-      // await screen.findByText('Server Error')
     })
 
     it('should redirect to list table after clicking cancel button', async () => {
