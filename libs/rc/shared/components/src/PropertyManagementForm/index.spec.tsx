@@ -25,7 +25,8 @@ import {
   mockedTemplateScope,
   mockEnabledNoNSGPropertyConfig,
   mockPropertyUnitList,
-  mockResidentPortalProfileList
+  mockResidentPortalProfileList,
+  mockAllTemplates
 } from './__tests__/fixtures'
 
 import { PropertyManagementForm } from '.'
@@ -102,6 +103,10 @@ describe('Property Config Form', () => {
       rest.get(
         MsgTemplateUrls.getTemplateScopeByIdWithRegistration.url.split('?')[0],
         (_, res, ctx) => res(ctx.json(mockedTemplateScope))
+      ),
+      rest.get(
+        MsgTemplateUrls.getAllTemplatesByTemplateScopeId.url.split('?')[0],
+        (_, res, ctx) => res(ctx.json(mockAllTemplates))
       )
     )
   })
@@ -197,7 +202,7 @@ describe('Property Config Form', () => {
     await waitFor(() => expect(saveConfigFn).toHaveBeenCalled())
   })
 
-  it.skip('should render Property config tab with msg-template', async () => {
+  it('should render Property config tab with msg-template and save', async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     render(
@@ -213,7 +218,47 @@ describe('Property Config Form', () => {
     await waitFor(() => expect(enableSwitch).toHaveAttribute('aria-checked', 'true'))
 
     // check rending msg-template tab list view
-    await screen.findByRole('tablist')
+    await screen.findByRole('tabpanel', { name: /email/i })
+
+    // Trigger save form
+    const formSaveBtn = await screen.findByRole('button', { name: /save/i })
+    await userEvent.click(formSaveBtn)
+  })
+
+  it('should render resident portal selector correctly without residentPortalId', async () => {
+    mockServer.use(
+      rest.get(
+        PropertyUrlsInfo.getPropertyConfigs.url,
+        (req, res, ctx) => {
+          return res(ctx.json({
+            ...mockEnabledNoNSGPropertyConfig,
+            residentPortalId: undefined,
+            unitConfig: {
+              ...mockEnabledNoNSGPropertyConfig.unitConfig,
+              residentApiAllowed: true,
+              residentPortalAllowed: false
+            }
+          }))
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <PropertyManagementForm
+          venueId={enabledParams.venueId}
+        />
+      </Provider>, { route: { params: enabledParams } }
+    )
+
+    // check toggle with 'true' value
+    const enableSwitch = await screen.findByTestId('property-enable-switch')
+    await waitFor(() => expect(enableSwitch).toHaveAttribute('aria-checked', 'true'))
+
+    // Trigger save form
+    const formSaveBtn = await screen.findByRole('button', { name: /save/i })
+    await userEvent.click(formSaveBtn)
+    expect(saveConfigFn).toHaveBeenCalled()
   })
 
   it('should pop up warning dialog while disable property', async () => {

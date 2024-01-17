@@ -15,17 +15,11 @@ export interface PartialUserData {
 }
 
 export const isNonProdEnv = () => {
-  return window.location.hostname === 'localhost' ||
-    window.location.hostname === 'dev.ruckus.cloud' ||
-    window.location.hostname === 'qa.ruckus.cloud' ||
-    window.location.hostname === 'scale.ruckus.cloud' ||
-    window.location.hostname === 'int.ruckus.cloud'
-}
-
-
-export const updateBrowserCached = (lang: LangKey) => {
-  localStorage.setItem('browserLang', lang)
-  localStorage.setItem('isBrowserDialog', 'true')
+  const domains = ['localhost', 'int', 'dev', 'qa', 'scale', 'stage']
+  // Subdomain
+  const len = window.location.hostname.split('.').length - 3
+  const subdomain = window.location.hostname.split('.')[len]
+  return (window.location.hostname === 'localhost' || domains.includes(subdomain))
 }
 
 export const detectBrowserLang = () => {
@@ -66,7 +60,6 @@ export const showBrowserLangDialog = ():Promise<BrowserDialogResult> => {
           key: 'cancel',
           closeAfterAction: true,
           handler: () => {
-            updateBrowserCached(browserLang)
             const result = { lang: '', isLoading: false }
             reject(result)
           }
@@ -76,7 +69,6 @@ export const showBrowserLangDialog = ():Promise<BrowserDialogResult> => {
           key: 'ok',
           closeAfterAction: true,
           handler: () => {
-            updateBrowserCached(browserLang)
             const result = { lang: browserLang, isLoading: false }
             resolve(result)
           }

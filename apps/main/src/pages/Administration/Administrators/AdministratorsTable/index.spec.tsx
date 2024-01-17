@@ -3,9 +3,11 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { mspApi }                 from '@acx-ui/msp/services'
 import { MspUrlsInfo }            from '@acx-ui/msp/utils'
+import { administrationApi }      from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }               from '@acx-ui/store'
+import { Provider, store }        from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -62,6 +64,9 @@ describe('Administrators table without prime-admin itself', () => {
     params = {
       tenantId: '8c36a0a9ab9d4806b060e112205add6f'
     }
+
+    store.dispatch(administrationApi.util.resetApiState())
+    store.dispatch(mspApi.util.resetApiState())
 
     mockServer.use(
       rest.get(
@@ -131,6 +136,9 @@ describe('Administrators Table', () => {
     params = {
       tenantId: '8c36a0a9ab9d4806b060e112205add6f'
     }
+
+    store.dispatch(administrationApi.util.resetApiState())
+    store.dispatch(mspApi.util.resetApiState())
 
     mockServer.use(
       rest.get(
@@ -376,6 +384,9 @@ describe('Administrators table with MSP-EC FF enabled', () => {
     params = {
       tenantId: '8c36a0a9ab9d4806b060e112205add6f'
     }
+
+    store.dispatch(administrationApi.util.resetApiState())
+    store.dispatch(mspApi.util.resetApiState())
 
     mockServer.use(
       rest.get(

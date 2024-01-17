@@ -350,44 +350,36 @@ export const switchRelease = [
   }
 ]
 
-export const switchCurrentVersions = {
-  currentVersions: [
-    '09010e_b392',
-    '09010f_b19'
-  ],
-  currentVersionsAboveTen: [
-    '10010_b176',
-    '10010_rc3'
-  ]
-}
-
 export const availableABFList = [
   {
     abf: 'active',
+    sequence: 3,
+    supportedApModels: ['R770', 'R550'],
     releaseDate: '2023-11-15T18:54:43.177+0000',
     category: 'RECOMMENDED',
     onboardDate: '2023-11-31T02:31:12.682+0000',
     name: '7.0.0.104.100',
-    id: '7.0.0.104.100',
-    supportedApModels: ['R770', 'R550']
+    id: '7.0.0.104.100'
   },
   {
     abf: 'active',
+    sequence: 3,
+    supportedApModels: ['R770'],
     releaseDate: '2023-06-15T18:54:43.177+0000',
     category: 'RECOMMENDED',
     onboardDate: '2023-05-31T02:31:12.682+0000',
     name: '7.0.0.103.288',
-    id: '7.0.0.103.288',
-    supportedApModels: ['R770']
+    id: '7.0.0.103.288'
   },
   {
     abf: 'active',
+    sequence: 3,
+    supportedApModels: ['R770'],
     releaseDate: '2023-06-19T18:54:43.177+0000',
     category: 'RECOMMENDED',
     onboardDate: '2023-05-01T02:31:12.682+0000',
     name: '7.0.0.103.260',
-    id: '7.0.0.103.260',
-    supportedApModels: ['R770']
+    id: '7.0.0.103.260'
   },
   {
     abf: 'ABF2-3R',
@@ -400,21 +392,99 @@ export const availableABFList = [
   },
   {
     abf: 'eol-ap-2022-12',
+    sequence: 1,
+    supportedApModels: [
+      'R500',
+      'R600',
+      'R730',
+      'T300',
+      'T300E',
+      'T301N',
+      'T301S',
+      'R310',
+      'H320',
+      'R320',
+      'H510',
+      'R510',
+      'M510',
+      'R610',
+      'R710',
+      'R720',
+      'T310C',
+      'T310D',
+      'T310N',
+      'T310S',
+      'T610',
+      'T610S',
+      'T710',
+      'T710S',
+      'E510',
+      'H350',
+      'H550',
+      'R350',
+      'R550',
+      'R650',
+      'R750',
+      'R850',
+      'T350C',
+      'T350D',
+      'T350SE',
+      'T750',
+      'T750SE'
+    ],
     releaseDate: '2023-05-05T19:29:20.563+0000',
     category: 'RECOMMENDED',
     onboardDate: '2023-05-05T10:14:59.048+0000',
     name: '6.2.0.103.533',
-    id: '6.2.0.103.533',
-    supportedApModels: ['R550']
+    id: '6.2.0.103.533'
   },
   {
     abf: 'eol-ap-2022-12',
+    sequence: 1,
+    supportedApModels: [
+      'R500',
+      'R600',
+      'R730',
+      'T300',
+      'T300E',
+      'T301N',
+      'T301S',
+      'R310',
+      'H320',
+      'R320',
+      'H510',
+      'R510',
+      'M510',
+      'R610',
+      'R710',
+      'R720',
+      'T310C',
+      'T310D',
+      'T310N',
+      'T310S',
+      'T610',
+      'T610S',
+      'T710',
+      'T710S',
+      'E510',
+      'H350',
+      'H550',
+      'R350',
+      'R550',
+      'R650',
+      'R750',
+      'R850',
+      'T350C',
+      'T350D',
+      'T350SE',
+      'T750',
+      'T750SE'
+    ],
     releaseDate: '2023-04-18T23:33:30.771+0000',
     category: 'RECOMMENDED',
     onboardDate: '2023-04-18T08:04:31.098+0000',
     name: '6.2.0.103.513',
-    id: '6.2.0.103.513',
-    supportedApModels: ['R550']
+    id: '6.2.0.103.513'
   },
   {
     abf: 'eol-ap-2021-05',

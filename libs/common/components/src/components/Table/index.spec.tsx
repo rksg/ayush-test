@@ -1353,6 +1353,7 @@ describe('Table component', () => {
       const targetElems = await screen.findAllByText('Members: 2')
       expect(targetElems).toHaveLength(1)
 
+      jest.runOnlyPendingTimers()
       jest.useRealTimers()
     })
   })

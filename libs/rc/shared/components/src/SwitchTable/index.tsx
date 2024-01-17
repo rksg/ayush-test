@@ -300,11 +300,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       dataIndex: 'firmware',
       sorter: true
     },
-    // { TODO: Health scope
-    //   key: 'incidents',
-    //   title: $t({ defaultMessage: 'Incidents' }),
-    //   dataIndex: 'incidents',
-    // },
     ...(params.venueId ? [] : [{
       key: 'venueName',
       title: $t({ defaultMessage: 'Venue' }),
@@ -481,7 +476,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       enableApiFilter={true}
       searchableWidth={220}
       filterableWidth={140}
-      rowKey={(record)=> record.isGroup || record.serialNumber + (!record.isFirstLevel ? 'stack-member' : '')}
+      rowKey={(record)=> record.isGroup || record.serialNumber + (!record.isFirstLevel ? record.switchMac + 'stack-member' : '')}
       rowActions={filterByAccess(rowActions)}
       rowSelection={searchable !== false ? {
         type: 'checkbox',

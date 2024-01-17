@@ -171,6 +171,15 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Firmware', id: 'LIST' }]
     }),
+    updateDowngrade: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.updateDowngrade, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Firmware', id: 'LIST' }]
+    }),
     skipSwitchUpgradeSchedules: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(FirmwareUrlsInfo.skipSwitchUpgradeSchedules, params)
@@ -420,6 +429,7 @@ export const {
   useSkipVenueUpgradeSchedulesMutation,
   useUpdateVenueSchedulesMutation,
   useUpdateNowMutation,
+  useUpdateDowngradeMutation,
   useSkipSwitchUpgradeSchedulesMutation,
   useUpdateSwitchVenueSchedulesMutation,
   useGetSwitchLatestFirmwareListQuery,

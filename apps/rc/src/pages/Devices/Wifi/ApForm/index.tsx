@@ -15,7 +15,8 @@ import {
   showActionModal,
   StepsFormLegacy,
   StepsFormLegacyInstance,
-  Tooltip
+  Tooltip,
+  Alert
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import { GoogleMapWithPreference } from '@acx-ui/rc/components'
@@ -52,7 +53,7 @@ import {
   WifiNetworkMessages,
   gpsToFixed,
   redirectPreviousPage,
-  validateTags, DhcpAp, DhcpApResponse
+  validateTags, DhcpAp, DhcpApResponse, AFCStatus
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -75,7 +76,7 @@ const defaultPayload = {
 }
 
 const defaultApPayload = {
-  fields: ['serialNumber', 'name', 'venueId'],
+  fields: ['serialNumber', 'name', 'venueId', 'apStatusData'],
   pageSize: 10000
 }
 
@@ -120,7 +121,7 @@ export function ApForm () {
   const [gpsModalVisible, setGpsModalVisible] = useState(false)
   const [deviceGps, setDeviceGps] = useState(null as DeviceGps | null)
   const [changeMgmtVlan, setChangeMgmtVlan] = useState(false)
-
+  const [isVenueSameCountry, setIsVenueSameCountry] = useState(false)
   const [dhcpRoleDisabled, setDhcpRoleDisabled] = useState(false)
   const [apMeshRoleDisabled, setApMeshRoleDisabled] = useState(false)
   const [cellularApModels, setCellularApModels] = useState([] as string[])
@@ -417,6 +418,39 @@ export function ApForm () {
     setGpsModalVisible(false)
   }
 
+  const displayAFCGeolocation = () : boolean => {
+
+    // Should not display under Add AP. Only display under edit mode
+    if (!isEditMode) {
+      return false
+    }
+
+    // Get ap info separately in case apStatusData is undefined and have no check
+    const apInfo = apList?.data?.[0]
+
+    if (!apInfo) {
+      return false
+    }
+
+    const afcInfo = apInfo.apStatusData?.afcInfo
+    const requiredStatus = [AFCStatus.AFC_NOT_REQUIRED, AFCStatus.WAIT_FOR_LOCATION]
+
+    // AFC info possibly does not exist.
+    if (!afcInfo) {
+      return false
+    }
+    // Also does Geo-location
+    if (afcInfo.geoLocation === undefined) {
+      return false
+    }
+    // Same, and if Status is in requires status, then false.
+    if (afcInfo.afcStatus && requiredStatus.includes(afcInfo.afcStatus)) {
+      return false
+    }
+
+    return isVenueSameCountry
+  }
+
   const handleUpdateContext = () => {
     if (isEditMode) {
       const form = formRef?.current as StepsFormLegacyInstance
@@ -498,8 +532,13 @@ export function ApForm () {
                     const selectVenue = getVenueById(venues, value)
                     const originalVenue = getVenueById(venues, apDetails?.venueId as string)
                     if (selectVenue?.countryCode && originalVenue?.countryCode) {
+                      // isVenueSameCountry is used for display the AFC Geo-location message
+                      // eslint-disable-next-line max-len
+                      setIsVenueSameCountry(isEqual(selectVenue.countryCode, originalVenue.countryCode))
                       return checkValues(selectVenue.countryCode, originalVenue.countryCode, true)
                     } else if (selectVenue?.country && originalVenue?.country) {
+                      // eslint-disable-next-line max-len
+                      setIsVenueSameCountry(isEqual(selectVenue?.country, originalVenue?.country))
                       return checkValues(selectVenue?.country, originalVenue?.country, true)
                     }
                     return Promise.resolve()
@@ -524,10 +563,16 @@ export function ApForm () {
                   onChange={async (value) => await handleVenueChange(value)}
                 />}
               />
-              {/* <Form.Item name='venueInfos'>
-                {getVenueInfos(venueFwVersion)}
-              </Form.Item> */}
-              {getVenueInfos(venueFwVersion)}
+              { getVenueInfos(venueFwVersion) }
+              { displayAFCGeolocation() &&
+                  <Alert message={
+                    'Moving this device to a new venue will reset AFC geolocation.\
+                  6GHz operation will remain in low power mode \
+                  until geolocation information is reestablished.'}
+                  showIcon={true}
+                  type={'warning'}
+                  />
+              }
               <Form.Item
                 name='apGroupId'
                 label={$t({ defaultMessage: 'AP Group' })}

@@ -10,6 +10,7 @@ import {
   showActionModal
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { useSwitchFirmwareUtils }       from '@acx-ui/rc/components'
 import {
   useGetAvailableEdgeFirmwareVersionsQuery,
   useGetEdgeUpgradePreferencesQuery,
@@ -38,7 +39,6 @@ import { noDataDisplay }             from '@acx-ui/utils'
 import {
   compareVersions,
   getNextScheduleTpl,
-  getSwitchNextScheduleTplTooltip,
   isSwitchNextScheduleTooltipDisabled,
   toUserDate
 } from '../../FirmwareUtils'
@@ -64,6 +64,7 @@ export function VenueFirmwareList () {
   const [updateModalVisible, setUpdateModalVisible] = useState(false)
   const [preferenceModalVisible, setPreferenceModalVisible] = useState(false)
   const [changeScheduleModal, setChangeScheduleModal] = useState(false)
+  const { getSwitchNextScheduleTplTooltip } = useSwitchFirmwareUtils()
   const {
     data: venueFirmwareList,
     isLoading: isVenueFirmwareListLoading

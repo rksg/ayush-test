@@ -10,7 +10,12 @@ import styled                                                                   
 
 import { Drawer, Loader, StepsForm, Button,  Modal, ModalType, Subtitle, Tooltip, DatePicker } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
-import { ConnectionMeteringForm, ConnectionMeteringFormMode, PhoneInput }                      from '@acx-ui/rc/components'
+import {
+  ConnectionMeteringForm,
+  ConnectionMeteringFormMode,
+  PhoneInput,
+  usePersonaAsyncHeaders
+} from '@acx-ui/rc/components'
 import {
   useAddPropertyUnitMutation,
   useApListQuery,
@@ -412,6 +417,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   const [addUnitMutation] = useAddPropertyUnitMutation()
   const [updateUnitMutation] = useUpdatePropertyUnitMutation()
   const [updatePersonaMutation] = useUpdatePersonaMutation()
+  const { customHeaders } = usePersonaAsyncHeaders()
 
   useEffect(()=>{
     if (!connectionMeteringListQuery.isLoading && connectionMeteringListQuery?.data) {
@@ -601,7 +607,11 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
 
   const patchPersona = async (id?: string, payload?: UnitPersonaConfig) => {
     return (id && payload)
-      ? await updatePersonaMutation({ params: { groupId: personaGroupId, id }, payload }).unwrap()
+      ? await updatePersonaMutation({
+        params: { groupId: personaGroupId, id },
+        payload,
+        customHeaders
+      }).unwrap()
       : Promise.resolve()
   }
 

@@ -225,6 +225,7 @@ const EdgeSdLanTable = () => {
   const rowActions: TableProps<EdgeSdLanViewData>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
+      visible: (selectedRows) => selectedRows.length === 1,
       onClick: (selectedRows) => {
         navigate({
           ...basePath,

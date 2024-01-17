@@ -3,12 +3,14 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
+import { firmwareApi }     from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenue,
-  FirmwareUrlsInfo
+  FirmwareUrlsInfo,
+  SwitchFirmwareFixtures
 } from '@acx-ui/rc/utils'
 import {
-  Provider
+  Provider, store
 } from '@acx-ui/store'
 import {
   mockServer,
@@ -21,12 +23,17 @@ import {
   switchVenue,
   preference,
   switchRelease,
-  switchCurrentVersions,
   switchLatest,
   upgradeSwitchViewList
 } from '../__test__/fixtures'
 
 import { SwitchFirmwareWizardType, SwitchUpgradeWizard } from '.'
+
+const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
+
+const mockedCancel = jest.fn()
+const updateRequestSpy = jest.fn()
+const getSwitchRequestSpy = jest.fn()
 
 jest.mock('../../../PreferencesDialog', () => ({
   ...jest.requireActual('../../../PreferencesDialog'),
@@ -35,7 +42,6 @@ jest.mock('../../../PreferencesDialog', () => ({
   }
 }))
 
-
 jest.mock('./VenueStatusDrawer', () => ({
   ...jest.requireActual('./VenueStatusDrawer'),
   PreferencesDialog: () => {
@@ -43,13 +49,10 @@ jest.mock('./VenueStatusDrawer', () => ({
   }
 }))
 
-const mockedCancel = jest.fn()
-const updateRequestSpy = jest.fn()
-const getSwitchRequestSpy = jest.fn()
-
 describe('SwitchFirmware - SwitchUpgradeWizard', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
+    store.dispatch(firmwareApi.util.resetApiState())
     Modal.destroyAll()
     mockServer.use(
       rest.post(
@@ -72,7 +75,7 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
       ),
       rest.get(
         FirmwareUrlsInfo.getSwitchCurrentVersions.url,
-        (req, res, ctx) => res(ctx.json(switchCurrentVersions))
+        (req, res, ctx) => res(ctx.json(mockSwitchCurrentVersions))
       ),
       rest.post(
         FirmwareUrlsInfo.updateSwitchVenueSchedules.url,

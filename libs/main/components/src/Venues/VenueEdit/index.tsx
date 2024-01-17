@@ -52,6 +52,7 @@ export interface RadioContext {
 
   radioData?: VenueRadioCustomization,
   updateWifiRadio?: ((data: VenueRadioCustomization) => void)
+  discardWifiRadioChanges?: (data?: unknown) => void | Promise<void>
 
   isLoadBalancingDataChanged?: boolean,
   updateLoadBalancing?: ((callback?: () => void) => void)
@@ -229,7 +230,14 @@ export function showUnsavedModal (
     closeAfterAction: true,
     handler: async () => {
       const { setData, oldData, tabKey } = editContextData
-      if(editContextData?.unsavedTabKey === 'networking'){
+      if (editContextData?.unsavedTabKey === 'radio') {
+        editRadioContextData?.discardWifiRadioChanges?.()
+        setEditContextData({
+          ...editContextData,
+          isDirty: false,
+          hasError: false
+        })
+      } else if (editContextData?.unsavedTabKey === 'networking') {
         editNetworkingContextData?.discardLanPorts?.()
         setEditContextData({
           ...editContextData,

@@ -1,7 +1,8 @@
-import { useMemo, useState, useEffect } from 'react'
+import { useMemo, useState, useEffect, Children } from 'react'
 
-import { Checkbox, Switch }       from 'antd'
-import { useIntl, defineMessage } from 'react-intl'
+import { Checkbox, Typography, Switch }             from 'antd'
+import _                                            from 'lodash'
+import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
 
 import {
   isSwitchPath,
@@ -9,16 +10,16 @@ import {
   dateSort,
   sortProp
 } from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Tooltip } from '@acx-ui/components'
-import { get }                         from '@acx-ui/config'
-import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }   from '@acx-ui/formatter'
-import { TenantLink, useParams }       from '@acx-ui/react-router-dom'
-import { noDataDisplay, PathFilter }   from '@acx-ui/utils'
+import { Loader, TableProps, Tooltip }        from '@acx-ui/components'
+import { get }                                from '@acx-ui/config'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }          from '@acx-ui/formatter'
+import { TenantLink, useParams }              from '@acx-ui/react-router-dom'
+import { getIntl, noDataDisplay, PathFilter } from '@acx-ui/utils'
 
 import { getParamString } from '../AIDrivenRRM/extra'
 
-import { RecommendationActions } from './RecommendationActions'
+import { RecommendationActions, isCrrmOptimizationMatched } from './RecommendationActions'
 import {
   useRecommendationListQuery,
   RecommendationListItem,
@@ -35,11 +36,65 @@ type RecommendationWithUpdatedMetadata = RecommendationListItem & {
   metadata: Metadata;
 }
 
-const DateLink = ({ value }: { value: RecommendationListItem }) => {
+const DateLink = ({ value, disabled }: { value: RecommendationListItem, disabled: boolean }) => {
   const { activeTab } = useParams()
-  return <TenantLink to={`analytics/recommendations/${activeTab}/${value.id}`}>
-    {formatter(DateFormatEnum.DateTimeFormat)(value.updatedAt)}
-  </TenantLink>
+  const text = formatter(DateFormatEnum.DateTimeFormat)(value.updatedAt)
+  return disabled
+    ? <Tooltip
+      title={<FormattedMessage defaultMessage='Not available' />}
+      children={<Typography.Text disabled children={text} />}
+    />
+    : <TenantLink to={`analytics/recommendations/${activeTab}/${value.id}`}>
+      {text}
+    </TenantLink>
+}
+
+interface RowProps extends React.HTMLAttributes<HTMLTableRowElement> { 'data-row-key': string }
+
+function RowTooltip (props: RowProps) {
+  const { $t } = getIntl()
+  const row = Children.toArray(props.children).filter(
+    (child) => _.get(child, 'props.record.id') === props['data-row-key'])[0]
+  const showToolTip = String(props.className).includes('crrm-optimization-mismatch')
+  const isFullOptimization = _.get(
+    row, 'props.record.preferences.crrmFullOptimization', true)
+  const fullOptimizationText = get('IS_MLISA_SA')
+    ? defineMessage({ defaultMessage: `
+      RUCKUS AI is currently working on optimizing this zone, with the full
+      optimization criteria, where the channel bandwidth and AP Tx
+      power will be included in the optimization plan. A new
+      recommendation for this zone will be generated only if a better
+      channel plan can be found within the next 24 hours.
+    ` })
+    : defineMessage({ defaultMessage: `
+      RUCKUS AI is currently working on optimizing this venue, with the full
+      optimization criteria, where the channel bandwidth and AP Tx
+      power will be included in the optimization plan. A new
+      recommendation for this venue will be generated only if a better
+      channel plan can be found within the next 24 hours.
+    ` })
+  const partialOptimizationText = get('IS_MLISA_SA')
+    ? defineMessage({ defaultMessage: `
+      RUCKUS AI is currently working on optimizing this zone, without the
+      full optimization criteria, where the channel bandwidth and AP Tx
+      power will not be included in the optimization plan. A new
+      recommendation for this zone will be generated only if a better
+      channel plan can be found within the next 24 hours.
+    ` })
+    : defineMessage({ defaultMessage: `
+      RUCKUS AI is currently working on optimizing this venue, without the
+      full optimization criteria, where the channel bandwidth and AP Tx
+      power will not be included in the optimization plan. A new
+      recommendation for this venue will be generated only if a better
+      channel plan can be found within the next 24 hours.
+    ` })
+  return (
+    showToolTip
+      ? <Tooltip title={$t(isFullOptimization ? fullOptimizationText : partialOptimizationText)}>
+        <tr {...props} />
+      </Tooltip>
+      : <tr {...props} />
+  )
 }
 
 export const UnknownLink = ({ value }: { value: RecommendationWithUpdatedMetadata }) => {
@@ -98,12 +153,19 @@ export function RecommendationTable (
     }
   ]
 
-  const optimizationTooltipText = $t({ defaultMessage: `
-    When Full Optimization is enabled, AI-Driven RRM will comprehensively optimize the channel plan,
-    channel bandwidth and Tx power with the objective of minimizing co-channel interference.
-    When it is disabled, only the channel plan will be optimized, using the currently configured
-    Zone channel bandwidth and Tx power.
-  ` })
+  const optimizationTooltipText = get('IS_MLISA_SA')
+    ? $t({ defaultMessage: `
+      When Full Optimization is enabled, AI-Driven RRM will comprehensively optimize the channel
+      plan, channel bandwidth and Tx power with the objective of minimizing co-channel interference.
+      When it is disabled, only the channel plan will be optimized, using the currently configured
+      zone channel bandwidth and Tx power.
+    ` })
+    : $t({ defaultMessage: `
+      When Full Optimization is enabled, AI-Driven RRM will comprehensively optimize the channel
+      plan, channel bandwidth and Tx power with the objective of minimizing co-channel interference.
+      When it is disabled, only the channel plan will be optimized, using the currently configured
+      venue channel bandwidth and Tx power.
+    ` })
 
   const isCrrmPartialEnabled = [
     useIsSplitOn(Features.RUCKUS_AI_CRRM_PARTIAL),
@@ -160,7 +222,10 @@ export function RecommendationTable (
       key: 'updatedAt',
       render: (_, value) => (value.code === 'unknown')
         ? <UnknownLink value={value as RecommendationWithUpdatedMetadata} />
-        : <DateLink value={value}/>,
+        : <DateLink
+          value={value}
+          disabled={!isCrrmOptimizationMatched(value.metadata, value.preferences)}
+        />,
       sorter: { compare: sortProp('updatedAt', dateSort) },
       fixed: 'left'
     },
@@ -226,27 +291,33 @@ export function RecommendationTable (
       width: 180,
       fixed: 'right',
       tooltip: optimizationTooltipText,
-      render: (_, value) => {
-        const { code, statusEnum, idPath } = value
-        // eslint-disable-next-line max-len
-        const appliedStates = ['applyscheduled', 'applyscheduleinprogress', 'applied', 'revertscheduled', 'revertscheduleinprogress', 'revertfailed', 'applywarning']
-        const disabled = appliedStates.includes(statusEnum) ? true : false
-        const isOptimized = value.preferences? value.preferences.fullOptimization : true
-        const tooltipText = disabled
-          ? $t({ defaultMessage: `
-            Optimization option cannot be changed while the recommendation is in Applied status.
-            Please revert the recommendation back to the New status before changing
-            the optimization option.
-          ` })
+      render: (_value, record) => {
+        const preferences = _.get(record, 'preferences') || { crrmFullOptimization: true }
+        const canToggle = record.toggles?.crrmFullOptimization === true
+        const tooltipText = !canToggle && !record.isMuted
+          ? get('IS_MLISA_SA')
+            ? $t({ defaultMessage: `
+              Optimization option cannot be changed while recommendation(s) of the zone
+              is in Applied status. Please revert all to New status before changing the
+              optimization option.
+            ` })
+            : $t({ defaultMessage: `
+              Optimization option cannot be changed while recommendation(s) of the venue
+              is in Applied status. Please revert all to New status before changing the
+              optimization option.
+            ` })
           : ''
         return <Tooltip placement='top' title={tooltipText}>
           <Switch
             defaultChecked
-            checked={isOptimized}
-            disabled={disabled}
+            checked={preferences.crrmFullOptimization}
+            disabled={!canToggle || record.isMuted}
             onChange={() => {
-              const updatedPreference = { fullOptimization: !isOptimized }
-              setPreference({ code, path: idPath, preferences: updatedPreference })
+              const updatedPreference = {
+                ...preferences,
+                crrmFullOptimization: !preferences.crrmFullOptimization
+              }
+              setPreference({ path: record.idPath, preferences: updatedPreference })
             }}
           />
         </Tooltip>
@@ -289,9 +360,19 @@ export function RecommendationTable (
             children={$t({ defaultMessage: 'Show Muted Recommendations' })}
           />
         ]}
-        rowClassName={(record) => record.isMuted ? 'table-row-muted' : 'table-row-normal'}
+        rowClassName={(record) => {
+          const classNames = []
+          if (record.isMuted)
+            classNames.push('table-row-disabled')
+          if (!isCrrmOptimizationMatched(record.metadata, record.preferences))
+            classNames.push('table-row-disabled', 'crrm-optimization-mismatch')
+          return classNames.length > 0
+            ? Array.from(new Set(classNames)).join(' ')
+            : 'table-row-normal'
+        }}
         filterableWidth={155}
         searchableWidth={240}
+        components={{ body: { row: RowTooltip } }}
       />
     </Loader>
   )

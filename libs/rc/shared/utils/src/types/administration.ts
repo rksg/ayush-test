@@ -33,7 +33,8 @@ export enum TenantAuthenticationType {
   saml = 'SAML',
   oauth2_client = 'OAUTH2_CLIENT_CREDENTIALS',
   oauth2_oidc = 'OAUTH2_OIDC',
-  ldap = 'LDAP'
+  ldap = 'LDAP',
+  google_workspace = 'GOOGLE_WORKSPACE'
 }
 
 export enum SamlFileType {
@@ -255,6 +256,7 @@ export interface AdminGroup {
   groupId?: string,
   role?: RolesEnum,
   customRole?: CustomRole,
+  loggedInMembers?: number,
   processingPriority?: number,
   swapPriority?: boolean,
   sourceGroupId?: string

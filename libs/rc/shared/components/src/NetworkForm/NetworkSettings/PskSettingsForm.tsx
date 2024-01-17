@@ -120,10 +120,12 @@ function SettingsForm () {
           WlanSecurityEnum.WPAPersonal,
           WlanSecurityEnum.WEP
         ].indexOf(wlanSecurity) > -1 &&
+        <div>
           <Space align='start' size={2}>
             <InformationSolid />
             {SecurityOptionsDescription.WPA2_DESCRIPTION_WARNING}
           </Space>
+        </div>
         }
       </>
     )
@@ -185,13 +187,7 @@ function SettingsForm () {
         }
       }
     })
-
-    if(value === WlanSecurityEnum.WPA23Mixed){
-      disableMLO(true)
-      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
-    } else {
-      disableMLO(false)
-    }
+    disableMLO(false)
   }
   const onMacAuthChange = (checked: boolean) => {
     setData && setData({
@@ -214,10 +210,6 @@ function SettingsForm () {
           macRegistrationListId: data.wlan?.macRegistrationListId
         }
       })
-      if (editMode && data && data?.wlan?.wlanSecurity === WlanSecurityEnum.WPA23Mixed) {
-        disableMLO(true)
-        form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
-      }
     }
   },[data])
 

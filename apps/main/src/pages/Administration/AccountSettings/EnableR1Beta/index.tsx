@@ -2,35 +2,33 @@ import { useEffect, useState } from 'react'
 
 import { Col, Form, Row, Typography, Checkbox, Tooltip } from 'antd'
 import { useIntl }                                       from 'react-intl'
-import { useParams }                                     from 'react-router-dom'
 
-import { Loader, showActionModal }                                        from '@acx-ui/components'
-import { SpaceWrapper }                                                   from '@acx-ui/rc/components'
-import { BetaStatus, useGetBetaStatusQuery, useToggleBetaStatusMutation } from '@acx-ui/user'
-import { userLogout }                                                     from '@acx-ui/utils'
+import { Loader, showActionModal }                            from '@acx-ui/components'
+import { SpaceWrapper }                                       from '@acx-ui/rc/components'
+import { useUserProfileContext, useToggleBetaStatusMutation } from '@acx-ui/user'
+import { userLogout }                                         from '@acx-ui/utils'
 
 import { MessageMapping } from '../MessageMapping'
 
-import BetaFeaturesDrawer         from './BetaFeaturesDrawer'
-import R1BetaTermsConditionDrawer from './R1BetaTermsConditionDrawer'
+import { BetaFeaturesDrawer }         from './BetaFeaturesDrawer'
+import { R1BetaTermsConditionDrawer } from './R1BetaTermsConditionDrawer'
 
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 /* eslint-disable-next-line */
 export interface EnableR1BetaProps {
   className?: string;
-  betaStatusData?: BetaStatus;
+  betaStatus?: boolean;
   isPrimeAdminUser: boolean;
 }
 
-export function EnableR1Beta (props: EnableR1BetaProps) {
+function EnableR1Beta (props: EnableR1BetaProps) {
   const { $t } = useIntl()
-  const params = useParams()
-  const { data: betaStatus } = useGetBetaStatusQuery({ params })
-  const { className, betaStatusData } = props
+  const { betaEnabled } = useUserProfileContext()
+  const { className, betaStatus } = props
   const [showBetaTermsConditionDrawer, setBetaTermsConditionDrawer] = useState(false)
   const [showShowBetaFeaturesDrawer, setShowBetaFeaturesDrawer] = useState(false)
-  const [checked, setChecked] = useState(betaStatus?.enabled === 'true'?? false)
+  const [checked, setChecked] = useState(betaEnabled)
   const [toggleBetaStatus, { isLoading: isUpdating }] = useToggleBetaStatusMutation()
   const isDisabled = isUpdating
 
@@ -68,7 +66,7 @@ export function EnableR1Beta (props: EnableR1BetaProps) {
   const openBetaFeaturesDrawer = () => {
     setShowBetaFeaturesDrawer(true)
   }
-  const isBetaEnabled = betaStatusData?.enabled === 'true'?? false
+  const isBetaEnabled = betaStatus
 
   useEffect(() => {
     setChecked(isBetaEnabled)
@@ -116,7 +114,7 @@ export function EnableR1Beta (props: EnableR1BetaProps) {
       />
     }
 
-    {
+    { showShowBetaFeaturesDrawer &&
       <BetaFeaturesDrawer
         visible={showShowBetaFeaturesDrawer}
         setVisible={() => setShowBetaFeaturesDrawer(false)}
@@ -126,4 +124,4 @@ export function EnableR1Beta (props: EnableR1BetaProps) {
   </Loader>
 }
 
-export default EnableR1Beta
+export { EnableR1Beta }

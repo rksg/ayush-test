@@ -101,21 +101,7 @@ describe('Venue Edge SD-LAN Service', () => {
       })
     })
   })
-  it.skip('should be able to activate network', async () => {
-    // jest.spyOn(RcComponents, 'ActivateNetworkSwitchButton').mockImplementation(
-    //   (props: {
-    //     row: NetworkSaveData,
-    //     activated: string[],
-    //     onChange?: (data: NetworkSaveData, checked: boolean, activated: string[]) => void }) => {
-    //     return <input
-    //       type='checkbox'
-    //       checked={false}
-    //       data-testid='ActivateNetworkSwitchButton'
-    //       onChange={() => {
-    //         props.onChange?.({ id: 'network_2' } as NetworkSaveData, true, [])
-    //       }} />
-    //   })
-
+  it('should be able to activate network', async () => {
     render(
       <Provider>
         <EdgeSdLan data={mockedEdgeSdLan} />
@@ -129,7 +115,7 @@ describe('Venue Edge SD-LAN Service', () => {
 
     await screen.findAllByRole('row', { name: /MockedNetwork/i })
     const network2 = await screen.findByRole('row', { name: /MockedNetwork 2/i })
-    const switchBtn = within(network2).getByTestId('ActivateNetworkSwitchButton')
+    const switchBtn = within(network2).getByRole('switch')
     expect(switchBtn).not.toBeChecked()
     await userEvent.click(switchBtn)
     await waitFor(() => {

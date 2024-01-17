@@ -4,10 +4,10 @@ import { MomentInput } from 'moment-timezone'
 import { Provider, recommendationUrl }                  from '@acx-ui/store'
 import { mockGraphqlMutation, render, screen, cleanup } from '@acx-ui/test-utils'
 
-import { recommendationListResult } from '../__tests__/fixtures'
-import { RecommendationListItem }   from '../services'
+import { recommendationListResult }               from '../__tests__/fixtures'
+import { Recommendation, RecommendationListItem } from '../services'
 
-import { RecommendationActions } from '.'
+import { RecommendationActions, isCrrmOptimizationMatched } from '.'
 
 const mockedCrrm = {
   ...recommendationListResult.recommendations[0],
@@ -48,6 +48,34 @@ describe('RecommendationActions', () => {
         statusEnum: 'new' as 'new',
         icons: ['CheckMarkCircleOutline', 'Reload'],
         statusTrail: [ { status: 'new' } ]
+      },
+      {
+        statusEnum: 'new' as 'new',
+        icons: ['CheckMarkCircleOutline', 'Reload'],
+        statusTrail: [ { status: 'new' } ],
+        preferences: { crrmFullOptimization: true },
+        metadata: { algorithmData: { isCrrmFullOptimization: true } }
+      },
+      {
+        statusEnum: 'new' as 'new',
+        icons: ['CheckMarkCircleOutline', 'Reload'],
+        statusTrail: [ { status: 'new' } ],
+        preferences: { crrmFullOptimization: true },
+        metadata: { algorithmData: { isCrrmFullOptimization: false } }
+      },
+      {
+        statusEnum: 'new' as 'new',
+        icons: ['CheckMarkCircleOutline', 'Reload'],
+        statusTrail: [ { status: 'new' } ],
+        preferences: { crrmFullOptimization: false },
+        metadata: { algorithmData: { isCrrmFullOptimization: true } }
+      },
+      {
+        statusEnum: 'new' as 'new',
+        icons: ['CheckMarkCircleOutline', 'Reload'],
+        statusTrail: [ { status: 'new' } ],
+        preferences: { crrmFullOptimization: false },
+        metadata: { algorithmData: { isCrrmFullOptimization: false } }
       },
       {
         statusEnum: 'applyscheduled' as 'applyscheduled',
@@ -221,5 +249,30 @@ describe('RecommendationActions', () => {
     await user.click((await screen.findAllByText('Apply'))[0])
     expect(await screen.findByText('Scheduled time cannot be before 07/15/2023 14:15'))
       .toBeVisible()
+  })
+})
+
+describe('isCrrmOptimizationMatched', () => {
+  it('should return correct value', () => {
+    expect(isCrrmOptimizationMatched(
+      { algorithmData: { isCrrmFullOptimization: true } } as unknown as Recommendation['metadata'],
+      { crrmFullOptimization: true } as unknown as Recommendation['preferences']
+    )).toBe(true)
+    expect(isCrrmOptimizationMatched(
+      { algorithmData: { isCrrmFullOptimization: false } } as unknown as Recommendation['metadata'],
+      { crrmFullOptimization: false } as unknown as Recommendation['preferences']
+    )).toBe(true)
+    expect(isCrrmOptimizationMatched(
+      { algorithmData: { isCrrmFullOptimization: true } } as unknown as Recommendation['metadata'],
+      { crrmFullOptimization: false } as unknown as Recommendation['preferences']
+    )).toBe(false)
+    expect(isCrrmOptimizationMatched(
+      { algorithmData: { isCrrmFullOptimization: false } } as unknown as Recommendation['metadata'],
+      { crrmFullOptimization: true } as unknown as Recommendation['preferences']
+    )).toBe(false)
+    expect(isCrrmOptimizationMatched(
+      {} as unknown as Recommendation['metadata'],
+      null as unknown as Recommendation['preferences']
+    )).toBe(true)
   })
 })

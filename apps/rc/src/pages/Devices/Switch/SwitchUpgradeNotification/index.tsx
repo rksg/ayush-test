@@ -5,7 +5,7 @@ import _                             from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
-import { parseSwitchVersion }     from '@acx-ui/rc/utils'
+import { useSwitchFirmwareUtils } from '@acx-ui/rc/components'
 
 import * as UI                     from './styledComponents'
 import { SwitchRequirementsModal } from './switchRequirementsModal'
@@ -69,13 +69,15 @@ export function SwitchUpgradeNotification (props: {
   const linkMessage = $t({ defaultMessage: 'Click here for information about the upgrade procedure' })
 
   const isNeedUpgrade = modelNeedUpgrade[type].filter(model => validateModel.indexOf(model) > -1).length > 0
+  const isRodanModel = switchModel?.includes('8200') || (validateModel[0]?.includes('8200') && isDisplayHeader)
+
   const descriptionIndex = isNeedUpgrade ? 1 : 0
   //TODO: Check style with UX WarningTriangleSolid or WarningTriangleOutlined
   const icon = isNeedUpgrade ? <UI.WarningTriangle /> : ''
   const content = upgradeDescription[type][descriptionIndex]
   const enableStackUnitLimitationFlag = useIsSplitOn(Features.SWITCH_STACK_UNIT_LIMITATION)
 
-  const isRodanModel = switchModel?.includes('8200') || (validateModel[0]?.includes('8200') && isDisplayHeader)
+  const { parseSwitchVersion } = useSwitchFirmwareUtils()
 
   const StackUnitsMinLimitaionMsg = () => <FormattedMessage
     defaultMessage='For the {model} series, a stack may hold up to <b>{minStackes} switches</b>'
