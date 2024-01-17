@@ -178,7 +178,7 @@ exports[`Test Details should render AirtimeB correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
                             >
                               1 of 10 clients (10%)
                             </span>
@@ -773,7 +773,7 @@ exports[`Test Details should render AirtimeB correctly 2`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
                             >
                               1 of 10 clients (10%)
                             </span>
@@ -1368,7 +1368,7 @@ exports[`Test Details should render AirtimeB correctly 3`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
                             >
                               1 of 10 clients (10%)
                             </span>
@@ -1963,7 +1963,7 @@ exports[`Test Details should render AirtimeRx correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
                             >
                               1 of 10 clients (10%)
                             </span>
@@ -2553,7 +2553,7 @@ exports[`Test Details should render AirtimeRx correctly 2`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
                             >
                               1 of 10 clients (10%)
                             </span>
@@ -3143,7 +3143,7 @@ exports[`Test Details should render AirtimeRx correctly 3`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
                             >
                               1 of 10 clients (10%)
                             </span>
@@ -3733,7 +3733,7 @@ exports[`Test Details should render AirtimeTx correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
                             >
                               1 of 10 clients (10%)
                             </span>
@@ -4328,7 +4328,7 @@ exports[`Test Details should render AirtimeTx correctly 2`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
                             >
                               1 of 10 clients (10%)
                             </span>
@@ -4923,7 +4923,7 @@ exports[`Test Details should render AirtimeTx correctly 3`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
                             >
                               1 of 10 clients (10%)
                             </span>
@@ -5518,7 +5518,7 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
                             >
                               1 of 1 AP (100%)
                             </span>
@@ -6076,7 +6076,7 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
                             >
                               7 of 21 APs (33.33%)
                             </span>
@@ -6634,7 +6634,7 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
                             >
                               1 of 1 client (100%)
                             </span>
@@ -6674,7 +6674,7 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
                             >
                               1 of 1 AP (100%)
                             </span>
@@ -7232,7 +7232,7 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
                             >
                               6 of 7 APs (85.71%)
                             </span>
@@ -7790,7 +7790,7 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
                             >
                               1 of 1 client (100%)
                             </span>
@@ -7830,7 +7830,7 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
                             >
                               1 of 1 AP (100%)
                             </span>
@@ -8391,7 +8391,7 @@ exports[`Test Details should render ChannelDist correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
                             >
                               14 of 14 APs (100%)
                             </span>
@@ -8948,7 +8948,7 @@ exports[`Test Details should render ChannelDist correctly 2`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
                             >
                               14 of 14 APs (100%)
                             </span>
@@ -9497,7 +9497,7 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
                             >
                               20 of 30 clients (66.67%)
                             </span>
@@ -10070,7 +10070,7 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
                             >
                               5 of 27 clients (18.52%)
                             </span>
@@ -10631,7 +10631,7 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
                             >
                               5 of 27 clients (18.52%)
                             </span>
@@ -11192,7 +11192,7 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
                             >
                               5 of 27 clients (18.52%)
                             </span>
@@ -11753,7 +11753,7 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
                             >
                               5 of 27 clients (18.52%)
                             </span>
@@ -12314,7 +12314,7 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
                             >
                               5 of 27 clients (18.52%)
                             </span>
@@ -15731,7 +15731,7 @@ exports[`Test Details should render Ttc correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
                             >
                               15 of 1 client (1,500%)
                             </span>

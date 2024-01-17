@@ -5,10 +5,22 @@ import {
 import AutoSizer       from 'react-virtualized-auto-sizer'
 import styled, { css } from 'styled-components/macro'
 
-import { withDottedUnderline } from '../IncidentTable/styledComponents'
+export const withUrlStyle = css`
+  cursor: pointer;
+  color: var(--acx-accents-blue-50);
+  &:hover {
+    color: var(--acx-accents-blue-60);
+    text-decoration: underline;
+  }
+  // below css will hide the default safari tooltip
+  :after {
+    content: '';
+    display: block;
+  }
+`
 
 export const TextContent = styled.span`${props => props.onClick ? css`
-  ${withDottedUnderline}
+  ${withUrlStyle}
 ` : ''}`
 
 export const Descriptions = styled(AntDescriptions)<DescriptionsProps>`
