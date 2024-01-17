@@ -67,7 +67,7 @@ export type ManagedUser = {
   tenantId: string
   resourceGroupId: string
   resourceGroupName: string
-  updatedAt: string
+  updatedAt?: string
   type: null | string
   invitation: null | {
     state: 'pending' | 'accepted' | 'rejected',

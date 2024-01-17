@@ -4,7 +4,7 @@ import { defaultSort, getUserProfile, ManagedUser, sortProp } from '@acx-ui/anal
 import { Table, TableProps }                                  from '@acx-ui/components'
 import { noDataDisplay }                                      from '@acx-ui/utils'
 
-type DisplayUser = Omit<ManagedUser, 'role'> & {
+export type DisplayUser = Omit<ManagedUser, 'role'> & {
   invitationState: string,
   invitor: string,
   role: string
@@ -87,21 +87,18 @@ export const UsersTable = ({ data }: { data?: ManagedUser[] }) => {
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'type',
       key: 'type',
-      filterable: true,
       sorter: { compare: sortProp('type', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Role' }),
       dataIndex: 'role',
       key: 'role',
-      filterable: true,
       sorter: { compare: sortProp('role', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Resource Group' }),
       dataIndex: 'resourceGroupName',
       key: 'resourceGroupName',
-      filterable: true,
       sorter: { compare: sortProp('resourceGroupName', defaultSort) }
     },
     {
@@ -115,14 +112,12 @@ export const UsersTable = ({ data }: { data?: ManagedUser[] }) => {
       title: $t({ defaultMessage: 'Invited by' }),
       dataIndex: 'invitor',
       key: 'invitor',
-      filterable: true,
       sorter: { compare: sortProp('invitor', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Invitation Status' }),
       dataIndex: 'invitationState',
       key: 'invitationState',
-      filterable: true,
       sorter: { compare: sortProp('invitationState', defaultSort) }
     }
   ]
