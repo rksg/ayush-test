@@ -65,10 +65,10 @@ export const ShowMembersDrawer = (props: ShowMembersDrawerProps) => {
   }
 
   const formContent = <Form layout='vertical'form={form} >
-    <h4 style={{ marginBottom: 20 }}>{$t({
+    <div style={{ marginBottom: 20 }}>{$t({
       defaultMessage:
         'Only group members who have already logged in to RUCKUS One are listed here'
-    })}</h4>
+    })}</div>
     <GroupMembersTable />
   </Form>
 
