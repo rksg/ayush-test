@@ -33,3 +33,19 @@ export interface EdgeSdLanViewData {
   vlanNum?: number
   vxlanTunnelNum?: number
 }
+
+export interface EdgeSdLanSettingP2 extends Omit<EdgeSdLanSetting, 'corePortMac'> {
+  corePortKey: string;
+  isGuestTunnelEnabled: boolean;
+  guestEdgeId: string;
+  guestTunnelProfileId: string;
+}
+
+export interface EdgeSdLanViewDataP2 extends Omit<EdgeSdLanViewData, 'corePortMac'> {
+  corePortKey: string
+  isGuestTunnelEnabled: boolean
+  guestEdgeId: string
+  guestTunnelProfileId: string
+  guestEdgeName?: string
+  guestTunnelProfileName?: string
+}

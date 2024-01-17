@@ -11,7 +11,8 @@ import {
   EdgeSdLanSetting,
   EdgeSdLanViewData,
   EdgeUrlsInfo,
-  EdgeStatus
+  EdgeStatus,
+  EdgeSdLanViewDataP2
 } from '@acx-ui/rc/utils'
 import { baseEdgeSdLanApi }  from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -151,7 +152,35 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
 
       },
       invalidatesTags: [{ type: 'EdgeSdLan', id: 'LIST' }]
-    })
+    }),
+    getEdgeSdLanP2ViewDataList:
+      build.query<TableResult<EdgeSdLanViewDataP2>, RequestPayload>({
+        query: ({ payload }) => {
+          const req = createHttpRequest(EdgeSdLanUrls.getEdgeSdLanViewDataList)
+          return {
+            ...req,
+            body: payload
+          }
+        },
+        providesTags: [{ type: 'EdgeSdLan', id: 'LIST' }],
+        async onCacheEntryAdded (requestArgs, api) {
+          await onSocketActivityChanged(requestArgs, api, (msg) => {
+            onActivityMessageReceived(msg, [
+              'Add SD-LAN',
+              'Update SD-LAN',
+              'Delete SD-LAN'
+            ], () => {
+              api.dispatch(serviceApi.util.invalidateTags([
+                { type: 'Service', id: 'LIST' }
+              ]))
+              api.dispatch(edgeSdLanApi.util.invalidateTags([
+                { type: 'EdgeSdLan', id: 'LIST' }
+              ]))
+            })
+          })
+        },
+        extraOptions: { maxRetries: 5 }
+      })
   })
 })
 
@@ -162,5 +191,6 @@ export const {
   useAddEdgeSdLanMutation,
   useUpdateEdgeSdLanMutation,
   useUpdateEdgeSdLanPartialMutation,
-  useDeleteEdgeSdLanMutation
+  useDeleteEdgeSdLanMutation,
+  useGetEdgeSdLanP2ViewDataListQuery
 } = edgeSdLanApi

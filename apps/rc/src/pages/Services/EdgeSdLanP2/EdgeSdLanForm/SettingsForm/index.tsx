@@ -1,38 +1,39 @@
 import { useEffect } from 'react'
 
-import { Col, Form, Input, Row, Select } from 'antd'
+import { Col, Form, Input, Row, Switch } from 'antd'
 import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
-import { StepsForm, useStepFormContext }                                                                                                                    from '@acx-ui/components'
-import { SpaceWrapper, TunnelProfileAddModal }                                                                                                              from '@acx-ui/rc/components'
-import { useGetEdgeListQuery, useGetEdgeSdLanViewDataListQuery, useGetPortConfigQuery, useGetTunnelProfileViewDataListQuery, useVenuesListQuery }           from '@acx-ui/rc/services'
-import { EdgeSdLanSetting, EdgeStatusEnum, getEdgePortDisplayName, isDefaultTunnelProfile, servicePolicyNameRegExp, TunnelProfileFormType, TunnelTypeEnum } from '@acx-ui/rc/utils'
+import { Select, StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
+import { InformationSolid }                               from '@acx-ui/icons'
+import { SpaceWrapper }                                   from '@acx-ui/rc/components'
+import {
+  useGetEdgeListQuery,
+  useGetEdgeSdLanP2ViewDataListQuery,
+  useGetPortConfigQuery,
+  useVenuesListQuery
+} from '@acx-ui/rc/services'
+import {
+  EdgeSdLanSettingP2,
+  EdgeStatusEnum,
+  getEdgePortDisplayName,
+  servicePolicyNameRegExp
+} from '@acx-ui/rc/utils'
 
-import diagram from '../../../../../assets/images/edge-sd-lan-diagrams/edge-sd-lan-early-access.png'
+import diagram             from '../../../../../assets/images/edge-sd-lan-diagrams/edge-sd-lan-early-access.png'
+import { messageMappings } from '../messageMappings'
 
-import { CorePortFormItem } from './CorePortFormItem'
-import * as UI              from './styledComponents'
-
-const tunnelProfileDefaultPayload = {
-  fields: ['name', 'id'],
-  filters: {
-    type: [TunnelTypeEnum.VLAN_VXLAN]
-  },
-  pageSize: 10000,
-  sortField: 'name',
-  sortOrder: 'ASC'
-}
+import * as UI from './styledComponents'
 
 export const SettingsForm = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const { form, editMode } = useStepFormContext<EdgeSdLanSetting>()
+  const { form, editMode } = useStepFormContext<EdgeSdLanSettingP2>()
 
   const venueId = Form.useWatch('venueId', form)
   const edgeId = Form.useWatch('edgeId', form)
 
-  const { sdLanBoundEdges, isSdLanBoundEdgesLoading } = useGetEdgeSdLanViewDataListQuery(
+  const { sdLanBoundEdges, isSdLanBoundEdgesLoading } = useGetEdgeSdLanP2ViewDataListQuery(
     { payload: {
       fields: ['id', 'edgeId']
     } },
@@ -109,24 +110,6 @@ export const SettingsForm = () => {
     }
   })
 
-  const {
-    tunnelProfileOptions,
-    isTunnelOptionsLoading
-  } = useGetTunnelProfileViewDataListQuery({
-    payload: tunnelProfileDefaultPayload
-  }, {
-    selectFromResult: ({ data, isLoading }) => {
-      return {
-        tunnelProfileOptions: data?.data
-          .filter(t => isDefaultTunnelProfile(t, params.tenantId!) === false)
-          .map(item => ({
-            label: item.name, value: item.id
-          })),
-        isTunnelOptionsLoading: isLoading
-      }
-    }
-  })
-
   // prepare venue info
   useEffect(() => {
     form.setFieldValue('venueName', venueOptions?.filter(i => i.value === venueId)[0]?.label)
@@ -136,15 +119,15 @@ export const SettingsForm = () => {
   useEffect(() => {
     if (portsConfig) {
     // find corePort
-      let corePortMac, corePortName
+      let corePortKey, corePortName
       portsConfig?.forEach((port) => {
         if (port.corePortEnabled) {
-          corePortMac = port.mac
+          corePortKey = port.id
           corePortName = getEdgePortDisplayName(port)
         }
       })
 
-      form.setFieldValue('corePortMac', corePortMac)
+      form.setFieldValue('corePortKey', corePortKey)
       form.setFieldValue('corePortName', corePortName)
     }
   }, [portsConfig])
@@ -158,41 +141,40 @@ export const SettingsForm = () => {
     form.setFieldValue('edgeName', edgeData?.label)
   }
 
-  const onTunnelChange = (val: string) => {
-    form.setFieldValue('tunnelProfileName',
-      tunnelProfileOptions?.filter(i => i.value === val)[0]?.label)
-  }
-
-  const formInitValues = {
-    type: TunnelTypeEnum.VLAN_VXLAN,
-    disabledFields: ['type']
+  const onDmzEdgeChange = (val: string) => {
+    const edgeData = edgeOptions?.filter(i => i.value === val)[0]
+    form.setFieldValue('guestEdgeName', edgeData?.label)
   }
 
   return (
     <Row>
-      <Col span={14}>
+      <Col span={12}>
         <SpaceWrapper full direction='vertical' size={30}>
           <Row>
-            <Col span={24}>
+            <Col span={18}>
               <StepsForm.Title>
                 {$t({ defaultMessage: 'Settings' })}
               </StepsForm.Title>
+              <Form.Item
+                name='name'
+                label={$t({ defaultMessage: 'Service Name' })}
+                rules={[
+                  { required: true },
+                  { min: 2, max: 32 },
+                  { validator: (_, value) => servicePolicyNameRegExp(value) }
+                ]}
+                children={<Input />}
+              />
+            </Col>
+          </Row>
+
+          <Row>
+            <Col span={24}>
+              <UI.VenueSelectorText>
+                {$t({ defaultMessage: 'Select the venue where you want to apply the SD-LAN:' })}
+              </UI.VenueSelectorText>
               <Row>
-                <Col span={13}>
-                  <Form.Item
-                    name='name'
-                    label={$t({ defaultMessage: 'Service Name' })}
-                    rules={[
-                      { required: true },
-                      { min: 2, max: 32 },
-                      { validator: (_, value) => servicePolicyNameRegExp(value) }
-                    ]}
-                    children={<Input />}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col span={13}>
+                <Col span={18}>
                   <Form.Item
                     name='venueId'
                     label={$t({ defaultMessage: 'Venue' })}
@@ -203,7 +185,6 @@ export const SettingsForm = () => {
                   >
                     <Select
                       loading={isVenueOptionsLoading}
-                      placeholder={$t({ defaultMessage: 'Select...' })}
                       options={venueOptions}
                       disabled={editMode}
                       onChange={onVenueChange}
@@ -212,93 +193,118 @@ export const SettingsForm = () => {
                 </Col>
               </Row>
               <Row>
-                <Col span={13}>
+                <Col span={18}>
                   <Form.Item
                     name='edgeId'
-                    label={$t({ defaultMessage: 'SmartEdge' })}
+                    label={<>
+                      { $t({ defaultMessage: 'Cluster' }) }
+                      <Tooltip.Question
+                        title={$t(messageMappings.setting_cluster_tooltip)}
+                        placement='bottom'
+                      />
+                    </>}
                     rules={[{
                       required: true,
-                      message: $t({ defaultMessage: 'Please select a SmartEdge' })
+                      message: $t({ defaultMessage: 'Please select a Cluster' })
                     }]}
                   >
                     <Select
                       loading={isEdgeOptionsLoading || isSdLanBoundEdgesLoading}
-                      placeholder={$t({ defaultMessage: 'Select...' })}
                       options={edgeOptions}
                       disabled={editMode}
                       onChange={onEdgeChange}
                     />
-                  </Form.Item>
-                </Col>
-              </Row>
-              <Row>
-                <Col span={13}>
-                  <Form.Item
-                    noStyle
-                    shouldUpdate={(prevValues, currentValues) =>
-                      prevValues.corePortMac !== currentValues.corePortMac
-                    }
-                  >
-                    {({ getFieldValue }) => {
-                      const corePort = getFieldValue('corePortMac')
-                      const corePortName = getFieldValue('corePortName')
-                      const edgeName = getFieldValue('edgeName')
 
-                      return <Form.Item
-                        name='corePortMac'
-                        noStyle
-                        rules={[{
-                          required: true
-                        }]}
-                      >
-                        <CorePortFormItem
-                          data={corePort}
-                          name={corePortName}
-                          edgeId={edgeId}
-                          edgeName={edgeName}
-                          portsData={portsConfig}
-                        />
-                      </Form.Item>
-                    }}
                   </Form.Item>
+                  <UI.ClusterSelectorHelper>
+                    <InformationSolid />
+                    {$t(messageMappings.setting_cluster_helper, {
+                      infoLink: <a href=''>
+                        {$t({ defaultMessage: 'See more information' })}
+                      </a>
+                    })}
+                  </UI.ClusterSelectorHelper>
                 </Col>
               </Row>
             </Col>
           </Row>
 
           <Row>
-            <Col span={24}>
-              <StepsForm.Title>
-                {$t({ defaultMessage: 'Tunnel Settings' })}
-              </StepsForm.Title>
-              <Row align='middle' gutter={9}>
-                <Col span={13}>
-                  <Form.Item
-                    name='tunnelProfileId'
-                    label={$t({ defaultMessage: 'Tunnel Profile' })}
-                    rules={[{
-                      required: true,
-                      message: $t({ defaultMessage: 'Please select a Tunnel Profile' })
-                    }]}
-                  >
-                    <Select
-                      loading={isTunnelOptionsLoading}
-                      placeholder={$t({ defaultMessage: 'Select...' })}
-                      options={tunnelProfileOptions}
-                      onChange={onTunnelChange}
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span={3}>
-                  <TunnelProfileAddModal initialValues={formInitValues as TunnelProfileFormType} />
-                </Col>
-              </Row>
+            <Col span={15}>
+              <UI.FieldText>
+                {$t({ defaultMessage: 'Tunnel guest traffic to another cluster (DMZ)' })}
+              </UI.FieldText>
+            </Col>
+            <Col span={3}>
+              <Form.Item
+                name='isGuestTunnelEnabled'
+                valuePropName='checked'
+                initialValue={false}
+                noStyle
+              >
+                <Switch aria-label='dmzEnabled' />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row>
+            <Col span={18}>
+              <Form.Item
+                noStyle
+                dependencies={['isGuestTunnelEnabled']}
+              >
+                {({ getFieldValue }) => {
+                  return getFieldValue('isGuestTunnelEnabled')
+                    ? (<>
+                      <Form.Item
+                        name='guestEdgeId'
+                        label={<>
+                          { $t({ defaultMessage: 'DMZ Cluster' }) }
+                          <Tooltip.Question
+                            title={$t(messageMappings.setting_dmz_cluster_tooltip)}
+                            placement='bottom'
+                          />
+                        </>}
+                        rules={[{
+                          required: true,
+                          message: $t({ defaultMessage: 'Please select a DMZ Cluster' })
+                        }]}
+                      >
+                        <Select
+                          loading={isEdgeOptionsLoading || isSdLanBoundEdgesLoading}
+                          options={edgeOptions?.filter(item => item.value !== edgeId)}
+                          disabled={editMode}
+                          onChange={onDmzEdgeChange}
+                        />
+                      </Form.Item>
+                      <UI.ClusterSelectorHelper>
+                        <InformationSolid />
+                        {$t(messageMappings.setting_cluster_helper, {
+                          infoLink: <a href=''>
+                            {$t({ defaultMessage: 'See more information' })}
+                          </a>
+                        })}
+                      </UI.ClusterSelectorHelper>
+                    </>)
+                    : null
+                }}
+              </Form.Item>
             </Col>
           </Row>
         </SpaceWrapper>
       </Col>
-      <Col>
-        <UI.Diagram src={diagram} alt={$t({ defaultMessage: 'SD-LAN' })} />
+      <UI.VerticalSplitLine span={1} />
+      <Col span={10}>
+        <Form.Item
+          noStyle
+          dependencies={['isGuestTunnelEnabled']}
+        >
+          {({ getFieldValue }) => {
+            return getFieldValue('isGuestTunnelEnabled')
+              ? <UI.Diagram src={diagram} alt={$t({ defaultMessage: 'SD-LAN with DMZ' })} />
+              : <UI.Diagram src={diagram} alt={$t({ defaultMessage: 'SD-LAN' })} />
+          }}
+        </Form.Item>
       </Col>
     </Row>
 

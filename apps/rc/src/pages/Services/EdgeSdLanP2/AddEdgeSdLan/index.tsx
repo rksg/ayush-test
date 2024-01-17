@@ -6,10 +6,10 @@ import { useAddEdgeSdLanMutation }                                              
 import { getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                                                  from '@acx-ui/react-router-dom'
 
-import EdgeSdLanFormP2, { EdgeSdLanFormModel } from '../EdgeSdLanForm'
-import { ScopeForm }                           from '../EdgeSdLanForm/ScopeForm'
-import { SettingsForm }                        from '../EdgeSdLanForm/SettingsForm'
-import { SummaryForm }                         from '../EdgeSdLanForm/SummaryForm'
+import EdgeSdLanFormP2, { EdgeSdLanFormModelP2 } from '../EdgeSdLanForm'
+import { SettingsForm }                          from '../EdgeSdLanForm/SettingsForm'
+import { SummaryForm }                           from '../EdgeSdLanForm/SummaryForm'
+import { TunnelScopeForm }                       from '../EdgeSdLanForm/TunnelScopeForm'
 
 
 const AddEdgeSdLanP2 = () => {
@@ -31,8 +31,8 @@ const AddEdgeSdLanP2 = () => {
       content: <SettingsForm />
     },
     {
-      title: $t({ defaultMessage: 'Scope' }),
-      content: <ScopeForm />
+      title: $t({ defaultMessage: 'Tunnel & Network' }),
+      content: <TunnelScopeForm />
     },
     {
       title: $t({ defaultMessage: 'Summary' }),
@@ -41,12 +41,12 @@ const AddEdgeSdLanP2 = () => {
   ]
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleFinish = async (formData: EdgeSdLanFormModel) => {
+  const handleFinish = async (formData: EdgeSdLanFormModelP2) => {
     try {
       const payload = {
         name: formData.name,
         edgeId: formData.edgeId,
-        corePortMac: formData.corePortMac,
+        corePortKey: formData.corePortKey,
         networkIds: formData.activatedNetworks.map(network => network.id),
         tunnelProfileId: formData.tunnelProfileId
       }
@@ -61,7 +61,7 @@ const AddEdgeSdLanP2 = () => {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Add SD-LAN Phase 2' })}
+        title={$t({ defaultMessage: 'Add SD-LAN Service' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },

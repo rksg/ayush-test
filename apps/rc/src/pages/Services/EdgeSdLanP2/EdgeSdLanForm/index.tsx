@@ -5,15 +5,16 @@ import { FormInstance } from 'antd'
 import { StepsForm } from '@acx-ui/components'
 import {
   EdgeSdLanSetting,
+  EdgeSdLanSettingP2,
   getServiceRoutePath,
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { EdgeSdLanActivatedNetwork } from './ScopeForm'
+import { EdgeSdLanActivatedNetwork } from './TunnelScopeForm'
 
-export interface EdgeSdLanFormModel extends EdgeSdLanSetting {
+export interface EdgeSdLanFormModelP2 extends EdgeSdLanSettingP2 {
   venueName?: string;
   edgeName?: string;
   tunnelProfileName?: string;
@@ -30,7 +31,7 @@ interface EdgeSdLanFormP2Props {
   form: FormInstance,
   steps: EdgeSdLanFormStep[]
   editData?: EdgeSdLanSetting
-  onFinish: (values: EdgeSdLanFormModel) => Promise<boolean | void>
+  onFinish: (values: EdgeSdLanFormModelP2) => Promise<boolean | void>
 }
 
 const EdgeSdLanFormP2 = (props: EdgeSdLanFormP2Props) => {
@@ -42,7 +43,7 @@ const EdgeSdLanFormP2 = (props: EdgeSdLanFormP2Props) => {
     oper: ServiceOperation.LIST
   }))
 
-  const handleFinish = async (formData: EdgeSdLanFormModel) => {
+  const handleFinish = async (formData: EdgeSdLanFormModelP2) => {
     onFinish(formData)
   }
 
