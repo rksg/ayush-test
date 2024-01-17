@@ -15,7 +15,7 @@ describe('VersionChangeAlert', () => {
     />)
 
     // eslint-disable-next-line max-len
-    expect(await screen.findByText('This will cause firmware version downgrading, please consider the AP stability.')).toBeInTheDocument()
+    expect(await screen.findByText('Moving to this venue involves a firmware version downgrade. Please consider the impact on AP stability before proceeding.')).toBeInTheDocument()
   })
 
   it('renders nothing when the condition is not met', async () => {
@@ -27,7 +27,7 @@ describe('VersionChangeAlert', () => {
     />)
 
     // eslint-disable-next-line max-len
-    expect(screen.queryByText('This will cause firmware version downgrading, please consider the AP stability.')).toBeNull()
+    expect(screen.queryByText('Moving to this venue involves a firmware version downgrade. Please consider the impact on AP stability before proceeding.')).toBeNull()
 
     rerender(<VersionChangeAlert
       targetVenueVersion={'7.0.0.104.1'}
@@ -35,6 +35,6 @@ describe('VersionChangeAlert', () => {
     />)
 
     // eslint-disable-next-line max-len
-    expect(screen.queryByText('This will cause firmware version downgrading, please consider the AP stability.')).toBeNull()
+    expect(screen.queryByText('Moving to this venue involves a firmware version downgrade. Please consider the impact on AP stability before proceeding.')).toBeNull()
   })
 })
