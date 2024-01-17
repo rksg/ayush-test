@@ -63,10 +63,10 @@ describe('Wired - AclSetting', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Add ACL' }))
     expect(await screen.findByLabelText('ACL Name')).toBeVisible()
     const aclNameInput = await screen.findByLabelText('ACL Name')
-    fireEvent.change(aclNameInput, { target: { value: '1' } })
+    await userEvent.type(aclNameInput, '1')
 
     await userEvent.click(await screen.findByRole('button', { name: 'Add Rule' }))
-    fireEvent.change(await screen.findByLabelText('Sequence'), { target: { value: '1' } })
+    await userEvent.type(await screen.findByLabelText('Sequence'), '1')
     await userEvent.click(await screen.findByRole('button', { name: 'OK' }))
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
   })
@@ -91,7 +91,7 @@ describe('Wired - AclSetting', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Add ACL' }))
     const aclNameInput = await screen.findByLabelText('ACL Name')
-    fireEvent.change(aclNameInput, { target: { value: '100' } })
+    await userEvent.type(aclNameInput, '100')
     const extendedOption = await screen.findByLabelText('Extended')
     await userEvent.click(extendedOption)
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
@@ -159,12 +159,8 @@ describe('Wired - AclSetting', () => {
 
     const row = await screen.findByRole('row', { name: /acl-01/i })
     await userEvent.click(await within(row).findByRole('radio'))
-
-    // fireEvent.click(await screen.findByRole('button', { name: /Delete/i }))
-    // await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
-    // fireEvent.click(await screen.findByRole('button', { name: /Delete/i }))
-    // await userEvent.click(await screen.findByRole('button', { name: 'Delete ACL' }))
-  })
+    expect(await within(row).findByRole('radio')).toBeChecked()
+})
 
   it('should handle edit ACL rule correctly', async () => {
     const params = {

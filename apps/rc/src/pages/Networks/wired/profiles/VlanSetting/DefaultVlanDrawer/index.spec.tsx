@@ -95,6 +95,7 @@ describe('Wired - VlanSetting', () => {
     const row2 = await within(drawer).findByRole('row', { name: /ICX7550-24P/i })
     const radio2 = await within(row2).findByRole('radio')
     await userEvent.click(radio2)
+    expect(radio2).toBeChecked()
     // const deleteButton = await within(drawer).findByRole('button', { name: /Delete/i })
     // fireEvent.click(deleteButton)
     // const deleteModel = await screen.findByRole('button', { name: /Delete Model/i })
