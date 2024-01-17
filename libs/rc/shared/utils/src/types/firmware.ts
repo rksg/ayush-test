@@ -125,7 +125,6 @@ export interface FirmwareVersion {
 export interface ABFVersion {
   abf: string;
   sequence?: number;
-  supportedApModels?: string[];
   id: string;
   name: string;
   category: FirmwareCategory;
