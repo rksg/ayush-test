@@ -33,6 +33,7 @@ import Wired, { AISwitchTabsEnum }           from './pages/Wired'
 import SwitchDetails                         from './pages/Wired/SwitchDetails'
 import ZoneDetails                           from './pages/ZoneDetails'
 import Zones                                 from './pages/Zones'
+import Users                                 from './pages/Users'
 
 const Dashboard = React.lazy(() => import('./pages/Dashboard'))
 const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
@@ -139,7 +140,9 @@ function AllRoutes () {
       </Route>
       <Route path='occupancy' element={<div>Occupancy</div>} />
       <Route path='search/:searchVal' element={<SearchResults />} />
-      <Route path='admin/*' element={<div>Admin</div>} />
+      <Route path='admin'>
+        <Route path='users' element={<Users/>} />
+      </Route>
       <Route path='health'>
         <Route index={true} element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />} />
         <Route index={false}
