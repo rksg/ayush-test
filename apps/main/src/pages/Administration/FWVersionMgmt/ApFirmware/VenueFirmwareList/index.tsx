@@ -48,7 +48,6 @@ import { getIntl, noDataDisplay }    from '@acx-ui/utils'
 import {
   compareVersions,
   getApVersion,
-  getCurrentEolVersion,
   getApNextScheduleTpl,
   getNextSchedulesTooltip,
   toUserDate,
@@ -247,7 +246,7 @@ const VenueFirmwareTable = ({ tableQuery, filterables }: VenueTableProps) => {
 
   const handleDowngradeModalSubmit = async (data: UpdateNowRequest[]) => {
     try {
-      if (data[0] && data[0].firmwareSequence !== venueActiveSeq) {
+      if (data[0] && data[0].firmwareSequence && data[0].firmwareSequence !== venueActiveSeq) {
         // eslint-disable-next-line max-len
         await updateDowngrade({ params: { venueId: data[0].venueIds[0], firmwareVersion: data[0].firmwareVersion } }).unwrap()
       } else {
@@ -376,7 +375,11 @@ const VenueFirmwareTable = ({ tableQuery, filterables }: VenueTableProps) => {
           if (!version) {
             return false
           }
-          const currentEolVersion = getCurrentEolVersion(row)
+          let currentEolVersion
+          const displayEolFirmware = getDisplayEolFirmware(row)
+          const eolVersions = displayEolFirmware.map(function (fw) {
+            return fw.currentEolVersion
+          })
           let isLegacy = false
           let venueSequence = 0
           for (let i = 0; i < downgradeVersions.length; i++) {
@@ -390,9 +393,9 @@ const VenueFirmwareTable = ({ tableQuery, filterables }: VenueTableProps) => {
               if (downgradeVersions[i].sequence === (venueSequence - 1))
               {
                 tmpVersions.push(downgradeVersions[i])
-                // eslint-disable-next-line max-len
-                if (currentEolVersion && compareVersions(downgradeVersions[i].id, currentEolVersion) === 0) {
+                if (eolVersions.includes(downgradeVersions[i].id)) {
                   isLegacy = true
+                  currentEolVersion = downgradeVersions[i].id
                 }
               }
             }
@@ -438,7 +441,11 @@ const VenueFirmwareTable = ({ tableQuery, filterables }: VenueTableProps) => {
       selectedRows.forEach((row: FirmwareVenue) => {
         const version = getApVersion(row)
         if (isWifiDowngradeVenueABF) {
-          const currentEolVersion = getCurrentEolVersion(row)
+          let currentEolVersion
+          const displayEolFirmware = getDisplayEolFirmware(row)
+          const eolVersions = displayEolFirmware.map(function (fw) {
+            return fw.currentEolVersion
+          })
           if (downgradeVersions) {
             let isLegacy = false
             let venueSequence = 0
@@ -453,9 +460,9 @@ const VenueFirmwareTable = ({ tableQuery, filterables }: VenueTableProps) => {
                 if (downgradeVersions[i].sequence === (venueSequence - 1))
                 {
                   tmpVersions.push(downgradeVersions[i])
-                  // eslint-disable-next-line max-len
-                  if (currentEolVersion && compareVersions(downgradeVersions[i].id, currentEolVersion) === 0) {
+                  if (eolVersions.includes(downgradeVersions[i].id)) {
                     isLegacy = true
+                    currentEolVersion = downgradeVersions[i].id
                   }
                 }
               }
