@@ -64,8 +64,8 @@ import { compareVersions, validationMessages } from '@acx-ui/utils'
 
 import { ApEditContext } from '../ApEdit/index'
 
-import * as UI                             from './styledComponents'
-import { Wifi66eToWifi7OnlyFwVersionInfo } from './Wifi66eToWifi7OnlyFwVersionInfo'
+import * as UI                from './styledComponents'
+import { VersionChangeAlert } from './VersionChangeAlert'
 
 const defaultPayload = {
   fields: ['name', 'country', 'countryCode', 'latitude', 'longitude', 'dhcp', 'id'],
@@ -152,7 +152,7 @@ export function ApForm () {
     }
   }
 
-  const venueInfos = (venueFwVersion: string) => {
+  const getVenueInfos = (venueFwVersion: string) => {
     const contentInfo = $t({
       defaultMessage: 'If you are adding an <b>{apModels} or {lastApModel}</b> AP, ' +
         'please update the firmware in this venue to <b>{baseVersion}</b> or greater. ' +
@@ -161,20 +161,18 @@ export function ApForm () {
       apModels: triApModels.length > 1 ? triApModels.slice(0, -1).join(',') : 'R560',
       lastApModel: triApModels.length > 1 ? triApModels[triApModels.length - 1] : 'R760',
       baseVersion: BASE_VERSION,
-      fwManagementLink: (<TenantLink
-        to={'/administration/fwVersionMgmt'}>{
-          $t({ defaultMessage: 'Firmware Management' })
-        }</TenantLink>)
+      fwManagementLink: (<TenantLink to={'/administration/fwVersionMgmt'}>
+        { $t({ defaultMessage: 'Firmware Management' }) }
+      </TenantLink>)
     })
 
-    return <Space direction='vertical'>
+    return <Space direction='vertical' style={{ margin: '8px 0' }}>
       {$t({ defaultMessage: 'Venue Firmware Version: {fwVersion}' }, {
         fwVersion: venueFwVersion
       })}
-      { checkTriApModelsAndBaseFwVersion(venueFwVersion) ? <span>{contentInfo}</span> : '' }
-      { isEditMode && apDetails && <Wifi66eToWifi7OnlyFwVersionInfo
+      { checkTriApModelsAndBaseFwVersion(venueFwVersion) ? <span>{contentInfo}</span> : null }
+      { isEditMode && apDetails && <VersionChangeAlert
         targetVenueVersion={venueFwVersion}
-        apModel={apDetails.model}
         apFirmwareVersion={apDetails.firmware}
       /> }
     </Space>
@@ -526,11 +524,10 @@ export function ApForm () {
                   onChange={async (value) => await handleVenueChange(value)}
                 />}
               />
-              <Form.Item
-                name='venueInfos'
-              >
-                {venueInfos(venueFwVersion)}
-              </Form.Item>
+              {/* <Form.Item name='venueInfos'>
+                {getVenueInfos(venueFwVersion)}
+              </Form.Item> */}
+              {getVenueInfos(venueFwVersion)}
               <Form.Item
                 name='apGroupId'
                 label={$t({ defaultMessage: 'AP Group' })}
