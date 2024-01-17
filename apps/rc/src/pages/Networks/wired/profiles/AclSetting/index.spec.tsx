@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { SwitchConfigurationProfile }        from '@acx-ui/rc/utils'
-import { Provider }                          from '@acx-ui/store'
-import { fireEvent, render, screen, within } from '@acx-ui/test-utils'
+import { SwitchConfigurationProfile } from '@acx-ui/rc/utils'
+import { Provider }                   from '@acx-ui/store'
+import { render, screen, within }     from '@acx-ui/test-utils'
 
 import { ConfigurationProfileFormContext, ConfigurationProfileType } from '../ConfigurationProfileFormContext'
 
@@ -160,7 +160,7 @@ describe('Wired - AclSetting', () => {
     const row = await screen.findByRole('row', { name: /acl-01/i })
     await userEvent.click(await within(row).findByRole('radio'))
     expect(await within(row).findByRole('radio')).toBeChecked()
-})
+  })
 
   it('should handle edit ACL rule correctly', async () => {
     const params = {

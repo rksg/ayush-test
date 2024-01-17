@@ -1,7 +1,6 @@
 import { useState } from 'react'
 
 import userEvent from '@testing-library/user-event'
-import { act }   from 'react-dom/test-utils'
 
 import { switchApi } from '@acx-ui/rc/services'
 import {
