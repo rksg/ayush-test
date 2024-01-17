@@ -3,6 +3,8 @@ import { MaybePromise }                                       from '@reduxjs/too
 import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 
 import {
+  isDev,
+  isLocalHost,
   isIgnoreErrorModal, isShowApiError,
   createHttpRequest,
   getFilters,
@@ -16,6 +18,10 @@ const fetchWithBQFail: (arg: string | FetchArgs) => MaybePromise<QueryReturnValu
 unknown, FetchBaseQueryError, FetchBaseQueryMeta>> = jest.fn().mockRejectedValue('error')
 
 describe('ApiInfo', () => {
+  it('Check the envrionment', async () => {
+    expect(isLocalHost()).toBe(true)
+    expect(isDev()).toBe(false)
+  })
   it('Check the error modal flag', async () => {
     expect(isIgnoreErrorModal()).toBe(false)
     expect(isShowApiError()).toBe(false)
@@ -34,6 +40,11 @@ describe('ApiInfo', () => {
       networkId: ['networkId'],
       venueId: ['venueId']
     })
+    expect(getFilters({
+      apGroupId: 'apGroupId'
+    })).toStrictEqual({
+      deviceGroupId: ['apGroupId']
+    })
   })
 
   it('Check enable new API', async () => {
@@ -41,12 +52,6 @@ describe('ApiInfo', () => {
       method: 'post',
       url: '/venues/aaaServers/query'
     }
-
-    const apiInfo2 = {
-      method: 'post',
-      url: '/venues/aaaServers/query'
-    }
-
     const httpRequest = {
       credentials: 'include',
       headers: {
@@ -58,9 +63,7 @@ describe('ApiInfo', () => {
     }
 
     expect(createHttpRequest(apiInfo1)).toStrictEqual(httpRequest)
-    expect(createHttpRequest(apiInfo2)).toStrictEqual(httpRequest)
     expect(apiInfo1.url).toBe('/venues/aaaServers/query')
-    expect(apiInfo2.url).toBe('/venues/aaaServers/query')
   })
 
   it('batchApi: success', async () => {
