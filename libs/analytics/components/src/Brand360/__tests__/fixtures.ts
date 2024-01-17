@@ -153,3 +153,159 @@ export const currTimeseries = {
   ],
   errors: []
 }
+
+export const propertiesMappingData = [
+  {
+    id: '1',
+    name: 'property-1',
+    streetAddress: '950 Battery Ave',
+    mspAdminCount: 1,
+    mspEcAdminCount: 0,
+    entitlements: [],
+    status: 'Active',
+    creationDate: '1704166457659',
+    tenantType: 'MSP_REC',
+    integrator: '4',
+    installerCount: 0,
+    integratorCount: 1
+  },
+  {
+    id: '2',
+    name: 'property-2',
+    streetAddress: '951 Battery Ave',
+    mspAdminCount: 1,
+    mspEcAdminCount: 0,
+    entitlements: [],
+    status: 'Active',
+    creationDate: '1704166457659',
+    tenantType: 'MSP_REC',
+    integrator: '4',
+    installerCount: 0,
+    integratorCount: 1
+  },
+  {
+    id: '3',
+    name: 'property-3',
+    streetAddress: '952 Battery Ave',
+    mspAdminCount: 1,
+    mspEcAdminCount: 0,
+    entitlements: [],
+    status: 'Active',
+    creationDate: '1704166457659',
+    tenantType: 'MSP_REC',
+    integrator: '4',
+    installerCount: 0,
+    integratorCount: 1
+  },
+  {
+    id: '4',
+    name: 'Integrator1',
+    entitlements: [
+      {
+        expirationDateTs: '1709644975000',
+        consumed: '0',
+        quantity: '1',
+        entitlementDeviceType: 'DVCNWTYPE_APSW',
+        tenantId: '6508c4b77f124f42b9663aa3074bf317',
+        type: 'entitlement',
+        expirationDate: '2024-03-05T13:22:55Z',
+        toBeRemovedQuantity: 0,
+        accountType: 'PAID',
+        wifiDeviceCount: '0',
+        switchDeviceCount: '0',
+        edgeDeviceCount: '0',
+        outOfComplianceDevices: '0',
+        futureOutOfComplianceDevices: '0',
+        futureOfComplianceDate: '1709644975000'
+      }
+    ],
+    status: 'Active',
+    accountType: 'PAID',
+    wifiLicenses: 0,
+    switchLicenses: 0,
+    edgeLicenses: 0,
+    apSwLicenses: 1,
+    tenantType: 'MSP_INTEGRATOR',
+    assignedMspEcList: [
+      '1',
+      '2',
+      '3'
+    ],
+    installerCount: 0,
+    integratorCount: 0
+  }
+]
+export const franchisorZones = {
+  data: [
+    {
+      tenantId: '1',
+      zoneName: 'zoneName-1',
+      incidentCount: 3,
+      ssidComplianceSLA: [3, 3],
+      timeToConnectSLA: [84, 84],
+      clientThroughputSLA: [34, 44],
+      connectionSuccessSLA: [0, 0],
+      onlineApsSLA: [1, 1]
+    },
+    {
+      tenantId: '1',
+      zoneName: 'zoneName-2',
+      incidentCount: null,
+      ssidComplianceSLA: [null, null],
+      timeToConnectSLA: [null, null],
+      clientThroughputSLA: [null, null],
+      connectionSuccessSLA: [null, null],
+      onlineApsSLA: [null, null]
+    },
+    {
+      tenantId: '2',
+      zoneName: 'zoneName-3',
+      incidentCount: null,
+      ssidComplianceSLA: [null, null],
+      timeToConnectSLA: [null, null],
+      clientThroughputSLA: [null, null],
+      connectionSuccessSLA: [null, null],
+      onlineApsSLA: [null, null]
+    },
+    {
+      tenantId: '2',
+      zoneName: 'zoneName-4',
+      incidentCount: 1,
+      ssidComplianceSLA: [3, 4],
+      timeToConnectSLA: [84, 84],
+      clientThroughputSLA: [34, 44],
+      connectionSuccessSLA: [344, 344],
+      onlineApsSLA: [1, 1]
+    },
+    {
+      tenantId: '3',
+      zoneName: 'zoneName-5',
+      incidentCount: 1,
+      ssidComplianceSLA: [2, 4],
+      timeToConnectSLA: [39, 42],
+      clientThroughputSLA: [12, 40],
+      connectionSuccessSLA: [304, 316],
+      onlineApsSLA: [1, 1]
+    },
+    {
+      tenantId: '3',
+      zoneName: 'zoneName-6',
+      incidentCount: 8,
+      ssidComplianceSLA: [1, 3],
+      timeToConnectSLA: [11, 12],
+      clientThroughputSLA: [7, 7],
+      connectionSuccessSLA: [45, 56],
+      onlineApsSLA: [1, 1]
+    },
+    {
+      tenantId: '3',
+      zoneName: 'zoneName-7',
+      incidentCount: 0,
+      ssidComplianceSLA: [0, 0],
+      timeToConnectSLA: [0, 0],
+      clientThroughputSLA: [0, 0],
+      connectionSuccessSLA: [0, 0],
+      onlineApsSLA: [0, 0]
+    }
+  ]
+}

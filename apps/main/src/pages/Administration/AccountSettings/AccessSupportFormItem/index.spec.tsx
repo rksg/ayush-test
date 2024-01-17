@@ -327,6 +327,8 @@ describe('Access Support Form Item - Msp Delegate EC', () => {
 
     const getTenantDelegationFn = jest.fn()
 
+    store.dispatch(administrationApi.util.resetApiState())
+
     mockServer.use(
       rest.get(
         AdministrationUrlsInfo.getTenantDelegation.url.split('?')[0],

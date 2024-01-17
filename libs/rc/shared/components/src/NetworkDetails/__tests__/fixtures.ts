@@ -211,3 +211,13 @@ export const timezoneResult = {
   timeZoneId: 'America/Los_Angeles',
   timeZoneName: 'Pacific Daylight Time'
 }
+
+export const networkDetailHeaderData = {
+  activeVenueCount: 1,
+  aps: {
+    totalApCount: 1
+  },
+  network: {
+    clients: 1
+  }
+}

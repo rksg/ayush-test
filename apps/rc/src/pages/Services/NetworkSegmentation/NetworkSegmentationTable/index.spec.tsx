@@ -1,11 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { edgeApi,
-  networkApi,
-  nsgApi,
-  switchApi,
-  venueApi } from '@acx-ui/rc/services'
+import { edgeApi, networkApi, nsgApi, switchApi, venueApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   EdgeUrlsInfo,
