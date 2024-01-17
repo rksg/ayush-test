@@ -15,8 +15,8 @@ import {
   useUpdateVenueAntennaTypeMutation,
   useUpdateVenueExternalAntennaMutation
 } from '@acx-ui/rc/services'
-import { ApAntennaTypeSetting, CapabilitiesApModel, ExternalAntenna } from '@acx-ui/rc/utils'
-import { useParams }                                                  from '@acx-ui/react-router-dom'
+import { ApAntennaTypeEnum, CapabilitiesApModel, ExternalAntenna, VeuneApAntennaTypeSettings } from '@acx-ui/rc/utils'
+import { useParams }                                                                           from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../..'
 import ApModelPlaceholder   from '../../../assets/images/aps/ap-model-placeholder.png'
@@ -28,7 +28,7 @@ export function ExternalAntennaSection () {
   const form = Form.useFormInstance()
   const readOnly = false // TODO: !rbacService.isRoleAllowed('UpdateExternalAntennas')
   const imageTitle = $t({ defaultMessage: 'AP external Antenna image' })
-  const isSupportAntennaType = useIsSplitOn(Features.WIFI_ANTENNA_TYPE_TOGGLE)
+  const supportAntennaTypeSelection = useIsSplitOn(Features.WIFI_ANTENNA_TYPE_TOGGLE)
 
   const params = useParams()
   const {
@@ -43,8 +43,8 @@ export function ExternalAntennaSection () {
   const [selectedApCapabilities, setSelectedApCapabilities] = useState(null as CapabilitiesApModel | null)
   const [apiSelectedApExternalAntenna, setApiSelectedApExternalAntenna] = useState(null as ExternalAntenna | null)
   const [selectedApExternalAntenna, setSelectedApExternalAntenna] = useState(null as ExternalAntenna | null)
-  const [antennaTypeModels, setAntennaTypeModels] = useState([] as ApAntennaTypeSetting[])
-  const [selectedApAntennaType, setSelectedApAntennaType] = useState(null as ApAntennaTypeSetting | null)
+  const [antennaTypeModels, setAntennaTypeModels] = useState([] as VeuneApAntennaTypeSettings[])
+  const [selectedApAntennaType, setSelectedApAntennaType] = useState(null as VeuneApAntennaTypeSettings | null)
 
   const { allApModelCapabilities, isLoadingCapabilities } = useGetVenueApCapabilitiesQuery({ params }, {
     selectFromResult ({ data, isLoading }) {
@@ -57,7 +57,7 @@ export function ExternalAntennaSection () {
   const { data: allApExternalAntennas, isLoading: isLoadingExternalAntenna } = useGetVenueExternalAntennaQuery({ params })
   const [updateVenueExternalAntenna, { isLoading: isUpdatingExternalAntenna }] = useUpdateVenueExternalAntennaMutation()
 
-  const { data: antennaTypeSettings } = useGetVenueAntennaTypeQuery({ params }, { skip: !isSupportAntennaType })
+  const { data: antennaTypeSettings } = useGetVenueAntennaTypeQuery({ params }, { skip: !supportAntennaTypeSelection })
   const [updateVenueAntennaType, { isLoading: isUpdateAntennaType }] = useUpdateVenueAntennaTypeMutation()
 
   const handleUpdateExternalAntenna = async (data: ExternalAntenna[]) => {
@@ -68,7 +68,7 @@ export function ExternalAntennaSection () {
     }
   }
 
-  const handleUpdateAntennaType = async (data: ApAntennaTypeSetting[]) => {
+  const handleUpdateAntennaType = async (data: VeuneApAntennaTypeSettings[]) => {
     try {
       await updateVenueAntennaType({ params, payload: [ ...data ] })
     } catch (error) {
@@ -99,23 +99,23 @@ export function ExternalAntennaSection () {
       let selectItems = apExternalAntennas.map((item:ExternalAntenna) => ({ label: item.model, value: item.model })) || []
       selectItems.unshift({ label: $t({ defaultMessage: 'No model selected' }), value: '' })
 
-      if (isSupportAntennaType && antennaTypeSettings && antennaTypeSettings.length > 0) {
+      if (supportAntennaTypeSelection && antennaTypeSettings && antennaTypeSettings.length > 0) {
         setAntennaTypeModels(antennaTypeSettings)
-        antennaTypeSettings.forEach((item: ApAntennaTypeSetting) => {
+        antennaTypeSettings.forEach((item: VeuneApAntennaTypeSettings) => {
           selectItems.push({ label: item.model, value: item.model })
         })
         uniqBy(selectItems, 'value')
       }
 
       setSelectOptions(selectItems)
-
-      setReadyToScroll?.(r => [...(new Set(r.concat('External-Antenna')))])
+      const anchorItemName = supportAntennaTypeSelection? 'Antenna' : 'External-Antenna'
+      setReadyToScroll?.(r => [...(new Set(r.concat(anchorItemName)))])
     }
-  }, [allApModelCapabilities, allApExternalAntennas, isSupportAntennaType, antennaTypeSettings])
+  }, [allApModelCapabilities, allApExternalAntennas, supportAntennaTypeSelection, antennaTypeSettings])
 
   useEffect(() => {
     const apModelsMap = {} as { [index: string]: ExternalAntenna }
-    const antennaTypeModelsMap = {} as { [index: string]: ApAntennaTypeSetting }
+    const antennaTypeModelsMap = {} as { [index: string]: VeuneApAntennaTypeSettings }
 
     const externalAntennaLength = handledApExternalAntennas.length
     const antennaTypeModelsLength = antennaTypeModels.length
@@ -127,7 +127,7 @@ export function ExternalAntennaSection () {
     }
 
     if (antennaTypeModels.length) {
-      antennaTypeModels.forEach((item: ApAntennaTypeSetting) => {
+      antennaTypeModels.forEach((item: VeuneApAntennaTypeSettings) => {
         antennaTypeModelsMap[item.model] = item
       })
     }
@@ -188,11 +188,12 @@ export function ExternalAntennaSection () {
     })
   }
 
-  const handleAntennaTypesChanged = (newApModelAntennaTypes: ApAntennaTypeSetting) => {
-    const model = newApModelAntennaTypes.model
+  const handleAntennaTypesChanged = (newApModelAntennaTypes: VeuneApAntennaTypeSettings | ApAntennaTypeEnum) => {
+    const newAntTypes = (newApModelAntennaTypes as VeuneApAntennaTypeSettings)
+    const model = newAntTypes.model
     const apModelAntennaTypes = {
       ...editRadioContextData.apModelAntennaTypes,
-      [model]: newApModelAntennaTypes
+      [model]: newAntTypes
     }
     setEditRadioContextData({
       ...editRadioContextData,

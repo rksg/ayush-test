@@ -437,19 +437,19 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/bandModeSettings',
     newApi: true
   },
-  getApAntennaType: {
+  getApAntennaTypeSettings: {
     method: 'get',
-    url: '/venues/:venueId/aps/:serialNumber/apAntennaTypeSettings',
+    url: '/venues/:venueId/aps/:serialNumber/antennaTypeSettings',
     newApi: true
   },
-  updateApAntennaType: {
+  updateApAntennaTypeSettings: {
     method: 'put',
-    url: '/venues/:venueId/aps/:serialNumber/apAntennaTypeSettings',
+    url: '/venues/:venueId/aps/:serialNumber/antennaTypeSettings',
     newApi: true
   },
-  resetApAntennaType: {
+  resetApAntennaTypeSettings: {
     method: 'delete',
-    url: '/venues/:venueId/aps/:serialNumber/apAntennaTypeSettings',
+    url: '/venues/:venueId/aps/:serialNumber/antennaTypeSettings',
     newApi: true
   },
   getApBssColoring: {

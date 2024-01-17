@@ -33,11 +33,11 @@ export function RadioTab () {
 
   const supportLoadBalancing = useIsSplitOn(Features.LOAD_BALANCING)
   const supoortClientAdmissionControl = useIsSplitOn(Features.WIFI_FR_6029_FG6_1_TOGGLE)
-  const isSupportAntennaType = useIsSplitOn(Features.WIFI_ANTENNA_TYPE_TOGGLE)
+  const supportAntennaTypeSelection = useIsSplitOn(Features.WIFI_ANTENNA_TYPE_TOGGLE)
 
   const wifiSettingLink = $t({ defaultMessage: 'Wi-Fi Radio' })
   const wifiSettingTitle = $t({ defaultMessage: 'Wi-Fi Radio Settings' })
-  const externalTitle = isSupportAntennaType?
+  const externalTitle = supportAntennaTypeSelection?
     $t({ defaultMessage: 'Antenna' }) :
     $t({ defaultMessage: 'External Antenna' })
   const loadBalancingTitle = $t({ defaultMessage: 'Load Balancing' })

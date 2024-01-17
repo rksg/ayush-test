@@ -1,18 +1,18 @@
 import { useEffect } from 'react'
 
-import { Form, FormItemProps } from 'antd'
-import { useIntl }             from 'react-intl'
+import { Form }    from 'antd'
+import { useIntl } from 'react-intl'
 
-import { Select }                                  from '@acx-ui/components'
-import { ApAntennaTypeEnum, ApAntennaTypeSetting } from '@acx-ui/rc/utils'
+import { ApAntennaTypeEnum, ApAntennaTypeSettings, VeuneApAntennaTypeSettings } from '@acx-ui/rc/utils'
+
+import { ReadOnlySelect } from './styledComponents'
 
 
 export type ApAntennaTypeSelectorProps = {
-  formItemProps?: FormItemProps
-  model: string
-  selectedApAntennaType: ApAntennaTypeSetting
+  model?: string
+  selectedApAntennaType: VeuneApAntennaTypeSettings | ApAntennaTypeSettings
   readOnly?: boolean
-  onAntennaTypeChanged?: (antennaTypeModels: ApAntennaTypeSetting) => void
+  onAntennaTypeChanged?: (antennaTypeModels: VeuneApAntennaTypeSettings | ApAntennaTypeEnum) => void
 }
 
 
@@ -24,27 +24,37 @@ export function ApAntennaTypeSelector (props: ApAntennaTypeSelectorProps) {
   ]
 
   const form = Form.useFormInstance()
-  const { model, selectedApAntennaType, readOnly=false, onAntennaTypeChanged } = props
+  const {
+    model,
+    selectedApAntennaType,
+    readOnly=false,
+    onAntennaTypeChanged } = props
+
+  const fieldName = (model) ? ['external', 'apModel', model, 'antennaType'] : 'antennaType'
 
   useEffect(() => {
     if (selectedApAntennaType) {
       const modelData = { antennaType: selectedApAntennaType.antennaType }
-      form.setFieldsValue({
-        external: {
-          apModel: {
-            selected: model,
-            [model]: modelData
+      if (model) {
+        form.setFieldsValue({
+          external: {
+            apModel: {
+              selected: model,
+              [model]: modelData
+            }
           }
-        }
-      })
+        })
+      } else {
+        form.setFieldsValue(modelData)
+      }
     }
   }, [selectedApAntennaType])
 
   const handleAntTypeChanged = (value: ApAntennaTypeEnum) => {
-    const modelData = {
+    const modelData = model? {
       model: model,
       antennaType: value
-    }
+    } : value
 
     onAntennaTypeChanged?.(modelData)
   }
@@ -52,8 +62,12 @@ export function ApAntennaTypeSelector (props: ApAntennaTypeSelectorProps) {
   return (
     <Form.Item
       label={$t({ defaultMessage: 'Antenna Type' })}
-      name={['external', 'apModel', model, 'antennaType']}>
-      <Select options={antennaTypeOptions} disabled={readOnly} onChange={handleAntTypeChanged}/>
+      name={fieldName}>
+      <ReadOnlySelect options={antennaTypeOptions}
+        bordered={!readOnly}
+        showArrow={!readOnly}
+        className={readOnly? 'readOnly' : undefined}
+        onChange={handleAntTypeChanged} />
     </Form.Item>
   )
 }

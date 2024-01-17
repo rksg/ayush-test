@@ -8,7 +8,7 @@ import { VenueLed,
   VenueSwitchConfiguration,
   ExternalAntenna,
   VenueRadioCustomization,
-  ApAntennaTypeSetting } from '@acx-ui/rc/utils'
+  VeuneApAntennaTypeSettings } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 import { getIntl }   from '@acx-ui/utils'
 
@@ -52,8 +52,8 @@ export interface RadioContext {
   apiApModels?: { [index: string]: ExternalAntenna }
   apModels?: { [index: string]: ExternalAntenna }
   updateExternalAntenna?: ((data: ExternalAntenna[]) => void)
-  apModelAntennaTypes?: { [index: string]: ApAntennaTypeSetting }
-  updateAntennaType?: ((data: ApAntennaTypeSetting[]) => void)
+  apModelAntennaTypes?: { [index: string]: VeuneApAntennaTypeSettings }
+  updateAntennaType?: ((data: VeuneApAntennaTypeSettings[]) => void)
 
   radioData?: VenueRadioCustomization,
   updateWifiRadio?: ((data: VenueRadioCustomization) => void)
@@ -155,7 +155,8 @@ export function getExternalAntennaPayload (apModels: { [index: string]: External
   return extPayload
 }
 
-export function getAntennaTypePayload (antTypeModels: { [index: string]: ApAntennaTypeSetting }) {
+// eslint-disable-next-line max-len
+export function getAntennaTypePayload (antTypeModels: { [index: string]: VeuneApAntennaTypeSettings }) {
   return isEmpty(antTypeModels)? [] : Object.values(antTypeModels)
 }
 

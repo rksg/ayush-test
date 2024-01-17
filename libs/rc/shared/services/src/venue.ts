@@ -70,7 +70,7 @@ import {
   RogueApLocation,
   ApManagementVlan,
   ApCompatibility,
-  ApAntennaTypeSetting
+  VeuneApAntennaTypeSettings
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -1345,7 +1345,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
-    getVenueAntennaType: build.query< ApAntennaTypeSetting[], RequestPayload>({
+    getVenueAntennaType: build.query< VeuneApAntennaTypeSettings[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getVenueAntennaType, params)
         return{

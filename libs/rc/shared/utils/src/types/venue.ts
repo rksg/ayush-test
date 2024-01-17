@@ -8,6 +8,7 @@ import {
   WanConnectionEnum
 } from '../constants'
 import {
+  ApAntennaTypeEnum,
   BandBalancing,
   BandModeEnum,
   DenialOfServiceProtection,
@@ -251,6 +252,11 @@ export interface VenueLed {
 export interface VenueApModelBandModeSettings {
 	model: string,
 	bandMode: BandModeEnum
+}
+
+export type VeuneApAntennaTypeSettings = {
+	model: string
+	antennaType: ApAntennaTypeEnum
 }
 
 export interface VenueBssColoring {
@@ -918,14 +924,4 @@ export interface ApIncompatibleDevice {
 	firmware: string,
 	model: string,
 	count: number
-}
-
-export enum ApAntennaTypeEnum {
-	SECTOR = 'SECTOR',
-	NARROW = 'NARROW'
-}
-
-export type ApAntennaTypeSetting = {
-	model: string
-	antennaType: ApAntennaTypeEnum
 }
