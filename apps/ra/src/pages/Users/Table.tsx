@@ -1,7 +1,8 @@
-import { defaultSort, getUserProfile, ManagedUser, sortProp } from "@acx-ui/analytics/utils";
-import { Table, TableProps } from "@acx-ui/components";
-import { noDataDisplay } from "@acx-ui/utils";
-import { IntlShape, useIntl } from "react-intl";
+import { IntlShape, useIntl } from 'react-intl'
+
+import { defaultSort, getUserProfile, ManagedUser, sortProp } from '@acx-ui/analytics/utils'
+import { Table, TableProps }                                  from '@acx-ui/components'
+import { noDataDisplay }                                      from '@acx-ui/utils'
 
 type DisplayUser = Omit<ManagedUser, 'role'> & {
   invitationState: string,
@@ -25,12 +26,15 @@ const getDisplayType = (type: ManagedUser['type'], $t: IntlShape['$t'], franchis
   }
 }
 
-const getDisplayState = (state: NonNullable<ManagedUser['invitation']>['state'] | undefined, $t: IntlShape['$t']) => {
- switch (state) {
-   case 'accepted': return $t({ defaultMessage: 'Accepted' })
-   case 'rejected': return $t({ defaultMessage: 'Rejected' })
-   case 'pending': return $t({ defaultMessage: 'Pending' })
-   default: return noDataDisplay
+const getDisplayState = (
+  state: NonNullable<ManagedUser['invitation']>['state'] | undefined,
+  $t: IntlShape['$t']
+) => {
+  switch (state) {
+    case 'accepted': return $t({ defaultMessage: 'Accepted' })
+    case 'rejected': return $t({ defaultMessage: 'Rejected' })
+    case 'pending': return $t({ defaultMessage: 'Pending' })
+    default: return noDataDisplay
   }
 }
 

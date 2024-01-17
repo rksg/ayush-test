@@ -1,7 +1,9 @@
-import { useGetUsersQuery } from "@acx-ui/analytics/services";
-import { Loader, PageHeader } from "@acx-ui/components";
-import { defineMessage, useIntl } from "react-intl";
-import { UsersTable } from "./Table";
+import { defineMessage, useIntl } from 'react-intl'
+
+import { useGetUsersQuery }   from '@acx-ui/analytics/services'
+import { Loader, PageHeader } from '@acx-ui/components'
+
+import { UsersTable } from './Table'
 
 const title = defineMessage({
   defaultMessage: '{usersCount, plural, one {User} other {Users}}'
