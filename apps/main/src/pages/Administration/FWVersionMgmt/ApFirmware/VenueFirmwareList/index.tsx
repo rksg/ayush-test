@@ -246,7 +246,7 @@ const VenueFirmwareTable = ({ tableQuery, filterables }: VenueTableProps) => {
 
   const handleDowngradeModalSubmit = async (data: UpdateNowRequest[]) => {
     try {
-      if (data[0] && data[0].firmwareSequence !== venueActiveSeq) {
+      if (data[0] && data[0].firmwareSequence && data[0].firmwareSequence !== venueActiveSeq) {
         // eslint-disable-next-line max-len
         await updateDowngrade({ params: { venueId: data[0].venueIds[0], firmwareVersion: data[0].firmwareVersion } }).unwrap()
       } else {
