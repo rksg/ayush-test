@@ -53,6 +53,7 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
   const [editData, setEditData] = useState<AdminGroup>({} as AdminGroup)
   const [membersGroupId, setMemberGroupId] = useState('')
   const [membersDrawerVisible, setMembersDrawerVisible] = useState(false)
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
   const { data: userProfileData } = useUserProfileContext()
   const MAX_ADMIN_GROUPS = 10
 
@@ -65,6 +66,15 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
 
   const handleOpenDialog = () => {
     setShowDialog(true)
+  }
+
+  const clearSelection = () => {
+    setSelectedRowKeys([])
+  }
+
+  const setMembersDrawer = () => {
+    setMembersDrawerVisible(false)
+    clearSelection()
   }
 
   const handleClickAdd = () => {
@@ -257,6 +267,7 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
             ? filterByAccess(rowActions)
             : undefined}
           rowSelection={isPrimeAdminUser ? {
+            selectedRowKeys,
             type: 'checkbox'//,
           // onSelect: handleRowSelectChange
           } : undefined}
@@ -276,7 +287,7 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
       />}
       {membersDrawerVisible && <ShowMembersDrawer
         visible={membersDrawerVisible}
-        setVisible={setMembersDrawerVisible}
+        setVisible={setMembersDrawer}
         membersGroupId={membersGroupId}
       />}
     </Loader>
