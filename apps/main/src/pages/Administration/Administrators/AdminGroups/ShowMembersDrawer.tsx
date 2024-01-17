@@ -6,8 +6,7 @@ import { DateFormatEnum, formatter }                 from '@acx-ui/formatter'
 import {
   useGetAdminGroupLastLoginsQuery
 } from '@acx-ui/rc/services'
-import { groupMembers }  from '@acx-ui/rc/utils'
-import { noDataDisplay } from '@acx-ui/utils'
+import { groupMembers } from '@acx-ui/rc/utils'
 
 interface ShowMembersDrawerProps {
   visible: boolean
@@ -38,7 +37,7 @@ export const ShowMembersDrawer = (props: ShowMembersDrawerProps) => {
       key: 'email',
       searchable: true,
       render: function (_, row) {
-        return (row.email?? noDataDisplay)
+        return (row.email)
       }
     },
     {
@@ -58,7 +57,7 @@ export const ShowMembersDrawer = (props: ShowMembersDrawerProps) => {
           columns={columnsRecentLogin}
           dataSource={adminLastLogins?.lastLoginList}
           style={{ width: '350px' }}
-          rowKey='id'
+          rowKey='email'
           type={'form'}
         />
       </Loader>
