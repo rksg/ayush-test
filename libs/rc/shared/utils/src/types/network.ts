@@ -47,7 +47,8 @@ export interface BaseNetwork {
   deepNetwork?: NetworkDetail
   vlanPool?: { name: string }
   activated?: { isActivated: boolean, isDisabled?: boolean, errors?: string[] }
-  allApDisabled?: boolean
+  allApDisabled?: boolean,
+  incompatible?: number
 }
 export interface Network extends BaseNetwork{
   children?: BaseNetwork[]
@@ -55,7 +56,8 @@ export interface Network extends BaseNetwork{
   securityProtocol?: string
   isOnBoarded?: boolean
   isOweMaster?: boolean
-  owePairNetworkId?: string
+  owePairNetworkId?: string,
+  incompatible?: number
 }
 
 export interface NetworkExtended extends Network {
@@ -134,9 +136,20 @@ export interface NetworkSaveData {
   dpskServiceProfileId?: string
   isOweMaster?: boolean
   owePairNetworkId?: string
+  maxRate?: MaxRateEnum
+  totalUplinkLimited? : boolean
+  totalDownlinkLimited? : boolean
   accessControlProfileEnable?: boolean
   enableOwe?: boolean
+  isDsaeServiceNetwork?: boolean
+  dsaeNetworkPairId?: string
 }
+
+export enum MaxRateEnum {
+  PER_AP = 'perAp',
+  UNLIMITED = 'unlimited'
+}
+
 export interface ExternalProviders{
   providers: Providers[]
 }

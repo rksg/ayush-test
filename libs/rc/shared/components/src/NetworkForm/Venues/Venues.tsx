@@ -31,10 +31,11 @@ import {
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
-import { NetworkApGroupDialog }                               from '../../NetworkApGroupDialog'
-import { NetworkVenueScheduleDialog }                         from '../../NetworkVenueScheduleDialog'
-import { transformAps, transformRadios, transformScheduling } from '../../pipes/apGroupPipes'
-import NetworkFormContext                                     from '../NetworkFormContext'
+import { NetworkApGroupDialog }                                                 from '../../NetworkApGroupDialog'
+import { NetworkVenueScheduleDialog }                                           from '../../NetworkVenueScheduleDialog'
+import { transformAps, transformRadios, transformScheduling }                   from '../../pipes/apGroupPipes'
+import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues } from '../../useEdgeActions'
+import NetworkFormContext                                                       from '../NetworkFormContext'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
@@ -77,7 +78,12 @@ interface schedule {
   [key: string]: string
 }
 
-export function Venues () {
+interface VenuesProps {
+  defaultActiveVenues?: string[]
+}
+
+export function Venues (props: VenuesProps) {
+  const { defaultActiveVenues } = props
   const form = Form.useFormInstance()
   const { cloneMode, data, setData } = useContext(NetworkFormContext)
 
@@ -106,6 +112,21 @@ export function Venues () {
   const [scheduleModalState, setScheduleModalState] = useState<SchedulingModalState>({
     visible: false
   })
+  const isDefaultVenueSetted = useRef(false)
+  const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(params.networkId)
+
+  useEffect(() => {
+    if(isDefaultVenueSetted.current) return
+    if(defaultActiveVenues && tableData?.length > 0) {
+      defaultActiveVenues.forEach(defaultVenueId => {
+        const defaultVenueItem = tableData?.find(data => data.id === defaultVenueId)
+        if(defaultVenueItem) {
+          handleActivateVenue(true, [defaultVenueItem])
+        }
+      })
+      isDefaultVenueSetted.current = true
+    }
+  }, [defaultActiveVenues, tableData])
 
   const handleVenueSaveData = (newSelectedNetworkVenues: NetworkVenue[]) => {
     setData && setData({ ...data, venues: newSelectedNetworkVenues })
@@ -123,7 +144,9 @@ export function Venues () {
           }
           return newNetworkVenue
         })
-      newSelectedNetworkVenues = _.uniq([...newSelectedNetworkVenues, ...newActivatedNetworkVenues])
+
+      // eslint-disable-next-line max-len
+      newSelectedNetworkVenues = _.uniqBy([...newSelectedNetworkVenues, ...newActivatedNetworkVenues], 'venueId')
     } else {
       const handleVenuesIds = rows.map(row => row.id)
       _.remove(newSelectedNetworkVenues, v => handleVenuesIds.includes(v.venueId as string))
@@ -167,7 +190,11 @@ export function Venues () {
         return !enabled
       },
       onClick: (rows) => {
-        handleActivateVenue(false, rows)
+        checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues,
+          rows.map(item => item.id),
+          () => {
+            handleActivateVenue(false, rows)
+          })
       }
     }
   ]
@@ -287,12 +314,21 @@ export function Venues () {
         }
         return <Tooltip
           title={title}
-          placement='bottom'><Switch
+          placement='bottom'>
+          <Switch
             disabled={disabled}
             checked={Boolean(row.activated?.isActivated)}
             onClick={(checked, event) => {
               event.stopPropagation()
-              handleActivateVenue(checked, [row])
+              if (!checked) {
+                checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues,
+                  [row.id],
+                  () => {
+                    handleActivateVenue(false, [row])
+                  })
+              } else {
+                handleActivateVenue(checked, [row])
+              }
             }}
           /></Tooltip>
 

@@ -37,11 +37,18 @@ export * from './msgTemplate'
 export * from './property'
 export * from './googleMaps'
 export * from './applicationPolicy'
+export * from './configTemplate'
+
 export interface CommonResult {
   requestId: string
   response?: {
     id?: string
   }
+}
+
+export interface CommonResultWithEntityResponse<EntityType> {
+  requestId: string
+  response: EntityType
 }
 
 export interface CommonErrorsResult<T> {
@@ -93,7 +100,8 @@ export interface Venue {
   activatedApsId?: string[]
   dhcp?: { enabled: boolean }
   clients?: number
-  edges?: number
+  edges?: number,
+  incompatible?: number
 }
 
 export interface AlarmBase {

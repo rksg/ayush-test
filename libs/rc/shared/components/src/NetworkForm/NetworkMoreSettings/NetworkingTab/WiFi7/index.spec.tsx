@@ -12,77 +12,10 @@ import { fireEvent, render, screen }         from '@acx-ui/test-utils'
 import WiFi7, {
   disabledUnCheckOption,
   enableAllRadioCheckboxes, getIsOwe,
-  getInitMloEnabled,
   getInitMloOptions,
   inverseTargetValue,
   isEnableOptionOf6GHz
 } from '.'
-
-describe('test getInitMloEnabled', () => {
-  // eslint-disable-next-line max-len
-  it('should return true when multiLinkOperationEnabled is true and initWifi7Enabled is true', function () {
-    const initWifi7Enabled = true
-    const mockWlanData = {
-      name: 'test',
-      type: 'open',
-      wlan: {
-        advancedCustomization: {
-          multiLinkOperationEnabled: true
-        }
-      }
-    } as NetworkSaveData
-    const actual = getInitMloEnabled(mockWlanData, initWifi7Enabled)
-    expect(actual).toBe(true)
-  })
-
-  // eslint-disable-next-line max-len
-  it('should return false when multiLinkOperationEnabled is false and initWifi7Enabled is true', function () {
-    const initWifi7Enabled = true
-    const mockWlanData = {
-      name: 'test',
-      type: 'open',
-      wlan: {
-        advancedCustomization: {
-          multiLinkOperationEnabled: false
-        }
-      }
-    } as NetworkSaveData
-    const actual = getInitMloEnabled(mockWlanData, initWifi7Enabled)
-    expect(actual).toBe(false)
-  })
-
-  // eslint-disable-next-line max-len
-  it('should return false when multiLinkOperationEnabled is true and initWifi7Enabled is false', function () {
-    const initWifi7Enabled = false
-    const mockWlanData = {
-      name: 'test',
-      type: 'open',
-      wlan: {
-        advancedCustomization: {
-          multiLinkOperationEnabled: true
-        }
-      }
-    } as NetworkSaveData
-    const actual = getInitMloEnabled(mockWlanData, initWifi7Enabled)
-    expect(actual).toBe(false)
-  })
-
-  // eslint-disable-next-line max-len
-  it('should return false when multiLinkOperationEnabled is false and initWifi7Enabled is false', function () {
-    const initWifi7Enabled = false
-    const mockWlanData = {
-      name: 'test',
-      type: 'open',
-      wlan: {
-        advancedCustomization: {
-          multiLinkOperationEnabled: false
-        }
-      }
-    } as NetworkSaveData
-    const actual = getInitMloEnabled(mockWlanData, initWifi7Enabled)
-    expect(actual).toBe(false)
-  })
-})
 
 describe('WiFi7', () => {
   it('should render correctly when useIsSplitOn return true', function () {
@@ -276,18 +209,6 @@ describe('test isEnableOptionOf6GHz func', () => {
 
     const actual = isEnableOptionOf6GHz(mockWlanData)
     expect(actual).toBe(true)
-  })
-
-  it('should return false when the wlanSecurity is WPA23Mixed of non-dpsk network', function () {
-    const mockWlanData = {
-      name: 'test',
-      type: 'psk',
-      wlan: {
-        wlanSecurity: 'WPA23Mixed'
-      }
-    } as NetworkSaveData
-    const actual = isEnableOptionOf6GHz(mockWlanData)
-    expect(actual).toBe(false)
   })
 })
 

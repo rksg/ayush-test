@@ -24,6 +24,7 @@ import {
 import { DpskForm }                   from '../../services/DpskForm/DpskForm'
 import { useDpskNewConfigFlowParams } from '../../services/useDpskNewConfigFlowParams'
 import { NetworkDiagram }             from '../NetworkDiagram/NetworkDiagram'
+import { MLOContext }                 from '../NetworkForm'
 import NetworkFormContext             from '../NetworkFormContext'
 
 import { NetworkMoreSettingsForm } from './../NetworkMoreSettings/NetworkMoreSettingsForm'
@@ -55,7 +56,7 @@ export function DpskSettingsForm () {
   return (<>
     <Row gutter={20}>
       <Col span={10}>
-        <SettingsForm />
+        <SettingsForm/>
       </Col>
       <Col span={14} style={{ height: '100%' }}>
         <NetworkDiagram />
@@ -63,7 +64,8 @@ export function DpskSettingsForm () {
     </Row>
     {!(editMode) && <Row>
       <Col span={24}>
-        <NetworkMoreSettingsForm wlanData={data} />
+        <NetworkMoreSettingsForm
+          wlanData={data} />
       </Col>
     </Row>}
   </>)
@@ -73,6 +75,7 @@ export function DpskSettingsForm () {
 function SettingsForm () {
   const form = Form.useFormInstance()
   const { editMode, data, setData } = useContext(NetworkFormContext)
+  const { disableMLO } = useContext(MLOContext)
   const { $t } = useIntl()
   const isCloudpathEnabled = useWatch('isCloudpathEnabled')
   const dpskWlanSecurity = useWatch('dpskWlanSecurity')
@@ -82,8 +85,21 @@ function SettingsForm () {
 
     setData && setData({ ...data, isCloudpathEnabled: e.target.value })
   }
+  const onSecurityProtocolChange= (value: WlanSecurityEnum) => {
+    if(value === WlanSecurityEnum.WPA23Mixed){
+      disableMLO(true)
+      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
+    } else {
+      disableMLO(false)
+    }
+  }
   useEffect(()=>{
     form.setFieldsValue({ ...data })
+
+    if (editMode && data && data?.wlan?.wlanSecurity === WlanSecurityEnum.WPA23Mixed) {
+      disableMLO(true)
+      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
+    }
   },[data])
 
   useEffect(() => {
@@ -108,7 +124,7 @@ function SettingsForm () {
           initialValue={WlanSecurityEnum.WPA2Personal}
           extra={dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed ? securityDescription : null}
         >
-          <Select>
+          <Select onChange={onSecurityProtocolChange}>
             <Option value={WlanSecurityEnum.WPA2Personal}>
               { $t({ defaultMessage: 'WPA2 (Recommended)' }) }
             </Option>

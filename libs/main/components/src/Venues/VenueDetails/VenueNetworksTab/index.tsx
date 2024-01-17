@@ -11,16 +11,22 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { transformVLAN,
   transformAps,
   transformRadios,
-  transformScheduling, NetworkApGroupDialog, NetworkVenueScheduleDialog } from '@acx-ui/rc/components'
+  transformScheduling,
+  NetworkApGroupDialog,
+  NetworkVenueScheduleDialog,
+  useSdLanScopedNetworks,
+  checkSdLanScopedNetworkDeactivateAction
+} from '@acx-ui/rc/components'
 import {
   useAddNetworkVenueMutation,
   useUpdateNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
   useVenueNetworkListQuery,
+  useVenueNetworkTableQuery,
   useVenueDetailsHeaderQuery
 } from '@acx-ui/rc/services'
 import {
@@ -76,8 +82,9 @@ interface schedule {
 
 export function VenueNetworksTab () {
   const { $t } = useIntl()
+  const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
   const tableQuery = useTableQuery({
-    useQuery: useVenueNetworkListQuery,
+    useQuery: isApCompatibleCheckEnabled ? useVenueNetworkTableQuery: useVenueNetworkListQuery,
     defaultPayload
   })
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
@@ -105,6 +112,7 @@ export function VenueNetworksTab () {
     deleteNetworkVenue,
     { isLoading: isDeleteNetworkUpdating }
   ] = useDeleteNetworkVenueMutation()
+  const sdLanScopedNetworks = useSdLanScopedNetworks(tableQuery.data?.data.map(item => item.id))
 
   useEffect(()=>{
     if (tableQuery.data) {
@@ -241,10 +249,10 @@ export function VenueNetworksTab () {
         } else if (row?.isOnBoarded) {
           disabled = true
           title = $t({ defaultMessage: 'This is a Onboarding network for WPA3-DPSK3 for DPSK, so its activation on this venue is tied to the Service network exclusively.' })
-        }else if (isSystemCreatedNetwork(row)) {
+        } else if (isSystemCreatedNetwork(row)) {
           disabled = true
           title = $t({ defaultMessage: 'Activating the OWE network also enables the read-only OWE transition network.' })
-        }else{
+        } else {
           title = ''
         }
         return <Tooltip
@@ -253,7 +261,14 @@ export function VenueNetworksTab () {
             checked={Boolean(row.activated?.isActivated)}
             disabled={disabled}
             onClick={(checked, event) => {
-              activateNetwork(checked, row)
+              if (!checked) {
+                checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworks, [row.id], () => {
+                  activateNetwork(checked, row)
+                })
+              } else {
+                activateNetwork(checked, row)
+              }
+
               event.stopPropagation()
             }}
           /></Tooltip>
@@ -273,7 +288,7 @@ export function VenueNetworksTab () {
       dataIndex: 'aps',
       width: 80,
       render: function (_, row) {
-        return transformAps(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e), isSystemCreatedNetwork(row) || !!row?.isOnBoarded)
+        return transformAps(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e), isSystemCreatedNetwork(row) || !!row?.isOnBoarded, row?.incompatible)
       }
     },
     {

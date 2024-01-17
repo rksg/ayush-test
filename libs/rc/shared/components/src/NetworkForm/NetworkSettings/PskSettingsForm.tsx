@@ -36,6 +36,7 @@ import {
 
 import AAAInstance                 from '../AAAInstance'
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
+import { MLOContext }              from '../NetworkForm'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
@@ -85,7 +86,8 @@ export function PskSettingsForm () {
     </Row>
     {!(editMode) && <Row>
       <Col span={24}>
-        <NetworkMoreSettingsForm wlanData={data} />
+        <NetworkMoreSettingsForm
+          wlanData={data} />
       </Col>
     </Row>}
   </>)
@@ -93,6 +95,7 @@ export function PskSettingsForm () {
 
 function SettingsForm () {
   const { editMode, cloneMode, data, setData } = useContext(NetworkFormContext)
+  const { disableMLO } = useContext(MLOContext)
   const intl = useIntl()
   const form = Form.useFormInstance()
   const [
@@ -117,10 +120,12 @@ function SettingsForm () {
           WlanSecurityEnum.WPAPersonal,
           WlanSecurityEnum.WEP
         ].indexOf(wlanSecurity) > -1 &&
+        <div>
           <Space align='start' size={2}>
             <InformationSolid />
             {SecurityOptionsDescription.WPA2_DESCRIPTION_WARNING}
           </Space>
+        </div>
         }
       </>
     )
@@ -182,6 +187,7 @@ function SettingsForm () {
         }
       }
     })
+    disableMLO(false)
   }
   const onMacAuthChange = (checked: boolean) => {
     setData && setData({

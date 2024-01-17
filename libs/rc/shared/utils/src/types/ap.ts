@@ -99,7 +99,8 @@ export interface APExtended extends AP {
   switchSerialNumber?: string,
   switchId?: string,
   switchName?: string,
-  rogueCategory?: { [key: string]: number }
+  rogueCategory?: { [key: string]: number },
+  incompatible?: number
 }
 
 export interface CelluarInfo {
@@ -560,6 +561,7 @@ export enum AFCStatus {
   AFC_NOT_REQUIRED = 'AFC_NOT_REQUIRED',
   WAIT_FOR_LOCATION = 'WAIT_FOR_LOCATION',
   WAIT_FOR_RESPONSE = 'WAIT_FOR_RESPONSE',
+  AFC_SERVER_FAILURE = 'AFC_SERVER_FAILURE',
   REJECTED = 'REJECTED',
   PASSED = 'PASSED'
 }

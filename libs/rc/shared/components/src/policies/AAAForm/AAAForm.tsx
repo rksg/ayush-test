@@ -7,15 +7,24 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { useAaaPolicyQuery, useAddAAAPolicyMutation, useUpdateAAAPolicyMutation } from '@acx-ui/rc/services'
+import {
+  useAaaPolicyQuery,
+  useAddAAAPolicyMutation,
+  useUpdateAAAPolicyMutation,
+  useAddAAAPolicyTemplateMutation,
+  useGetAAAPolicyTemplateQuery,
+  useUpdateAAAPolicyTemplateMutation
+} from '@acx-ui/rc/services'
 import {
   AAAPolicyType,
-  getPolicyListRoutePath,
-  getPolicyRoutePath,
+  generatePolicyPageHeaderTitle,
   PolicyOperation,
-  PolicyType
+  PolicyType,
+  useConfigTemplate,
+  usePolicyBreadcrumb,
+  usePolicyPreviousPath
 } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
 import { AAASettingForm } from './AAASettingForm'
 
@@ -29,83 +38,93 @@ type AAAFormProps = {
 export const AAAForm = (props: AAAFormProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const tablePath = getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST })
-  const linkToPolicies = useTenantLink(tablePath)
+  const linkToInstanceList = usePolicyPreviousPath(PolicyType.AAA, PolicyOperation.LIST)
   const params = useParams()
-  const edit = props.edit && !props.networkView
+  const { type, edit, networkView, backToNetwork } = props
+  const isEdit = edit && !networkView
   const formRef = useRef<StepsFormLegacyInstance<AAAPolicyType>>()
-  const { data } = useAaaPolicyQuery({ params }, { skip: !props.edit })
-  const [ createAAAPolicy ] = useAddAAAPolicyMutation()
+  const { isTemplate } = useConfigTemplate()
+  const breadcrumb = usePolicyBreadcrumb(PolicyType.AAA, PolicyOperation.LIST)
+  const { data } = useGetInstance(isEdit)
+  const createInstance = useAddInstance()
+  const updateInstance = useUpdateInstance()
+  const [saveState, setSaveState] = useState<AAAPolicyType>({ name: '' })
 
-  const [ updateAAAPolicy ] = useUpdateAAAPolicyMutation()
-  const [saveState, updateSaveState] = useState<AAAPolicyType>({
-    name: ''
-  })
-  const updateSaveData = (saveData: Partial<AAAPolicyType>) => {
-    updateSaveState({ ...saveState, ...saveData })
-  }
   useEffect(() => {
     if (data) {
       formRef?.current?.resetFields()
       formRef?.current?.setFieldsValue(data)
-      updateSaveData(data)
+      setSaveState({ ...saveState, ...data })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
-  const addOrUpdateAAA = async (data: AAAPolicyType, edit: boolean) =>{
-    if (!edit) {
-      await createAAAPolicy({
-        params,
-        payload: data
-      }).unwrap().then((res)=>{
-        data.id = res?.response?.id
-      })
-    } else {
-      await updateAAAPolicy({
-        params,
-        payload: data
-      }).unwrap()
-    }
-    props.networkView? props.backToNetwork?.(data) : navigate(linkToPolicies, { replace: true })
-  }
+
   const handleAAAPolicy = async (data: AAAPolicyType) => {
+    const requestPayload = { params, payload: data }
     try {
-      await addOrUpdateAAA(data, edit)
+      if (isEdit) {
+        await updateInstance(requestPayload).unwrap()
+      } else {
+        await createInstance(requestPayload).unwrap().then(res => data.id = res?.response?.id)
+      }
+      networkView ? backToNetwork?.(data) : navigate(linkToInstanceList, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
   }
 
+  const onCancel = () => {
+    networkView ? backToNetwork?.() : navigate(linkToInstanceList)
+  }
+
   return (
     <>
-      {!props.networkView &&<PageHeader
-        title={edit
-          ? $t({ defaultMessage: 'Edit RADIUS Server' })
-          : $t({ defaultMessage: 'Add RADIUS Server' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          { text: $t({ defaultMessage: 'RADIUS Server' }), link: tablePath }
-        ]}
+      {!networkView && <PageHeader
+        title={generatePolicyPageHeaderTitle(isEdit, isTemplate, PolicyType.AAA)}
+        breadcrumb={breadcrumb}
       />}
       <StepsFormLegacy<AAAPolicyType>
         formRef={formRef}
-        onCancel={() => props.networkView? props.backToNetwork?.():navigate(linkToPolicies)}
-        onFinish={async (data) => {return handleAAAPolicy(data)}}
+        onCancel={onCancel}
+        onFinish={handleAAAPolicy}
+        editMode={isEdit}
       >
         <StepsFormLegacy.StepForm
           name='settings'
           title={$t({ defaultMessage: 'Settings' })}
         >
-          <AAASettingForm edit={edit}
+          <AAASettingForm edit={isEdit}
             saveState={saveState}
-            type={props.type}
-            networkView={props.networkView}/>
+            type={type}
+            networkView={networkView}/>
         </StepsFormLegacy.StepForm>
       </StepsFormLegacy>
     </>
   )
+}
+
+function useAddInstance () {
+  const { isTemplate } = useConfigTemplate()
+  const [ createAAAPolicy ] = useAddAAAPolicyMutation()
+  const [ createAAAPolicyTemplate ] = useAddAAAPolicyTemplateMutation()
+
+  return isTemplate ? createAAAPolicyTemplate : createAAAPolicy
+}
+
+function useGetInstance (isEdit: boolean) {
+  const { isTemplate } = useConfigTemplate()
+  const params = useParams()
+  const aaaPolicyResult = useAaaPolicyQuery({ params }, { skip: !isEdit || isTemplate })
+  // eslint-disable-next-line max-len
+  const aaaPolicyTemplateResult = useGetAAAPolicyTemplateQuery({ params }, { skip: !isEdit || !isTemplate })
+
+  return isTemplate ? aaaPolicyTemplateResult : aaaPolicyResult
+}
+
+function useUpdateInstance () {
+  const { isTemplate } = useConfigTemplate()
+  const [ updateAAAPolicy ] = useUpdateAAAPolicyMutation()
+  const [ updateAAAPolicyTemplate ] = useUpdateAAAPolicyTemplateMutation()
+
+  return isTemplate ? updateAAAPolicyTemplate : updateAAAPolicy
 }

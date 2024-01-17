@@ -1,6 +1,4 @@
 import { Params } from 'react-router-dom'
-
-import { LangKey } from '@acx-ui/utils'
 export * from './RTKQuery'
 
 export type TimeStamp = string | number
@@ -23,7 +21,7 @@ export interface RequestPayload <Payload = unknown> extends Record<string,unknow
 }
 
 // Needed for Browser language detection
-export const browserSupportedLocales: Record<string, LangKey> = {
+export const browserSupportedLocales: Record<string, string> = {
   'en-US': 'en-US',
   'en': 'en-US',
   'es': 'es-ES',
@@ -35,5 +33,9 @@ export const browserSupportedLocales: Record<string, LangKey> = {
   'ko': 'ko-KR',
   'ko-KR': 'ko-KR',
   'pt': 'pt-BR',
-  'pt-BR': 'pt-BR'
+  'pt-BR': 'pt-BR',
+  'de': 'de-DE',
+  'de-DE': 'de-DE',
+  'zh': 'zh-TW',
+  'zh-TW': 'zh-TW'
 }

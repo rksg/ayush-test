@@ -55,7 +55,10 @@ import {
   AFCPowerMode,
   AFCStatus,
   ApGroupViewModel,
-  ApManagementVlan
+  ApManagementVlan,
+  ApIncompatibleFeature,
+  ApCompatibility
+
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -599,18 +602,18 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     getApBandModeSettings: build.query<ApBandModeSettings, RequestPayload<void>>({
       query: ({ params }) => createHttpRequest(WifiUrlsInfo.getApBandModeSettings, params),
-      providesTags: [{ type: 'Ap', id: 'BandMode' }]
+      providesTags: [{ type: 'Ap', id: 'BandModeSettings' }]
     }),
     updateApBandModeSettings: build.mutation<CommonResult, RequestPayload<ApBandModeSettings>>({
       query: ({ params, payload }) => ({
         ...createHttpRequest(WifiUrlsInfo.updateApBandModeSettings, params),
         body: payload
       }),
-      invalidatesTags: [{ type: 'Ap', id: 'BandMode' }]
+      invalidatesTags: [{ type: 'Ap', id: 'BandModeSettings' }]
     }),
     resetApBandModeSettings: build.mutation<CommonResult, RequestPayload<void>>({
       query: ({ params }) => createHttpRequest(WifiUrlsInfo.resetApBandModeSettings, params),
-      invalidatesTags: [{ type: 'Ap', id: 'BandMode' }]
+      invalidatesTags: [{ type: 'Ap', id: 'BandModeSettings' }]
     }),
     getApBssColoring: build.query<ApBssColoringSettings, RequestPayload>({
       query: ({ params, payload }) => {
@@ -934,6 +937,25 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'ApManagementVlan' }]
+    }),
+    getApFeatureSets: build.query<ApIncompatibleFeature[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApFeatureSets, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'ApFeatureSets' }]
+    }),
+    getApCompatibilities: build.query<ApCompatibility[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApCompatibilities, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'ApCompatibilities' }]
     })
   })
 })
@@ -1024,7 +1046,9 @@ export const {
   useGetApManagementVlanQuery,
   useLazyGetApManagementVlanQuery,
   useUpdateApManagementVlanMutation,
-  useDeleteApManagementVlanMutation
+  useDeleteApManagementVlanMutation,
+  useLazyGetApFeatureSetsQuery,
+  useLazyGetApCompatibilitiesQuery
 } = apApi
 
 

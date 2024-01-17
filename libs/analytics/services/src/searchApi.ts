@@ -69,6 +69,7 @@ export interface AP {
   ipAddress: string
   version: string
   apZone: string
+  traffic: number
   networkPath: NetworkPath
 }
 
@@ -77,6 +78,7 @@ export interface Switch {
   switchMac: string
   switchModel: string
   switchVersion: string
+  traffic: number
 }
 
 export interface ClientByTraffic {
@@ -175,6 +177,7 @@ export const searchApi = dataApiSearch.injectEndpoints({
               switchMac: switchId
               switchModel
               switchVersion: switchFirmware
+              traffic
             }
           }
         }
@@ -208,6 +211,7 @@ export const networkSearchApi = dataApi.injectEndpoints({
                 ipAddress
                 version
                 apZone
+                traffic
                 networkPath {
                   name
                   type

@@ -2,83 +2,107 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
+import { CommonUrlsInfo,  AaaUrls, ConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                         from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }              from '@acx-ui/test-utils'
 
-import { useIsSplitOn }               from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo,  AaaUrls }   from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
-
+import {
+  mockAAAPolicyListResponse,
+  mockAAAPolicyNewCreateResponse,
+  mockAAAPolicyTemplateListResponse,
+  mockAAAPolicyTemplateResponse
+} from '../../../__tests__/fixtures'
 import NetworkFormContext from '../../../NetworkFormContext'
 
 import { statesCollection, WISPrAuthAccContext } from './WISPrAuthAccServerReducer'
 
 import { WISPrAuthAccServer } from '.'
 
-describe('WISPRAuthACCServer Unit tests', () => {
+const mockedUseConfigTemplate = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useConfigTemplate: () => mockedUseConfigTemplate()
+}))
+
+describe('WISPRAuthACCServer', () => {
+  const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', policyId: 'test-id' }
+
   beforeEach(async () => {
-    const mockPolicyResponse = { id: '2', name: 'test2' }
     mockServer.use(
-      rest.get(
-        AaaUrls.getAAAPolicyList.url,
-        (req, res, ctx) => res(ctx.json([{
-          id: '1',
-          name: 'test1',
-          type: 'AUTHENTICATION',
-          primary: {
-            ip: '1.1.1.2',
-            port: 1812,
-            sharedSecret: '111211121112'
-          }
-        }]))
-      ),
+      rest.post(AaaUrls.getAAAPolicyViewModelList.url,
+        (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse))),
       rest.post(CommonUrlsInfo.validateRadius.url, (_, res, ctx) =>
         res(ctx.json({}))
       ),
       rest.get(
         AaaUrls.getAAAPolicy.url,
-        (_, res, ctx) => res(ctx.json({ requestId: 'request-id', ...mockPolicyResponse }))
-      ),
-      rest.put(
-        AaaUrls.updateAAAPolicy.url,
-        (_, res, ctx) => res(ctx.json({ requestId: 'request-id', ...mockPolicyResponse }))
+        (_, res, ctx) => res(ctx.json(mockAAAPolicyNewCreateResponse))
       ),
       rest.post(
         AaaUrls.addAAAPolicy.url,
         (req, res, ctx) => res(ctx.json({
           requestId: 'request-id',
-          response: mockPolicyResponse
+          response: mockAAAPolicyNewCreateResponse
         }))
+      ),
+      rest.post(
+        ConfigTemplateUrlsInfo.getAAAPolicyTemplateList.url,
+        (_, res, ctx) => res(ctx.json(mockAAAPolicyTemplateListResponse))
+      ),
+      rest.get(
+        ConfigTemplateUrlsInfo.getAAAPolicyTemplate.url,
+        (_, res, ctx) => res(ctx.json(mockAAAPolicyTemplateResponse))
       )
     )
   })
+
+  beforeEach(() => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+  })
+
+  afterEach(() => {
+    mockedUseConfigTemplate.mockRestore()
+  })
   it('should render instance page', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', policyId: 'test-id' }
     render(WISPRAuthACCServerNormalTestCase(),{ route: { params } })
-    await userEvent.click(await screen.findByText('Add Server'))
-    await userEvent.click((await screen.findAllByText('Cancel'))[0])
-    await userEvent.click(await screen.findByText('Add Server'))
-    await userEvent.click(await screen.findByText('Add Secondary Server'))
+
+    await userEvent.click(await screen.findByRole('button', { name: /Add Server/i }))
+    await userEvent.click((await screen.findByRole('button', { name: /Cancel/i })))
+    await userEvent.click(await screen.findByRole('button', { name: /Add Server/i }))
+    await userEvent.click(await screen.findByRole('button', { name: /Add Secondary Server/i }))
+
     await userEvent.type(await screen.findByRole(
-      'textbox', { name: 'Profile Name' }),'create test')
+      'textbox', { name: /Profile Name/i }), mockAAAPolicyNewCreateResponse.name)
     await userEvent.type((await screen.findAllByRole('textbox', { name: 'IP Address' }))[0],
-      '8.8.8.8')
+      mockAAAPolicyNewCreateResponse.primary.ip)
     await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[0],
-      'test1234')
+      mockAAAPolicyNewCreateResponse.primary.sharedSecret)
     await userEvent.type((await screen.findAllByRole('textbox', { name: 'IP Address' }))[1],
-      '8.8.8.7')
+      mockAAAPolicyNewCreateResponse.secondary.ip)
     await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[1],
-      'test1234')
-    // await userEvent.click(await screen.findByText('Add'))
-    // FIXME: Do not use "setTimeout"
-    // await new Promise((r)=>{setTimeout(r, 500)})
-    // await changeAAA()
+      mockAAAPolicyNewCreateResponse.secondary.sharedSecret)
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+
+    await userEvent.click((await screen.findAllByRole('combobox'))[0])
+    await userEvent.click((await screen.findAllByTitle(mockAAAPolicyNewCreateResponse.name))[0])
+
+    expect((await screen.findByText(
+      mockAAAPolicyNewCreateResponse.primary.ip + ':' + mockAAAPolicyNewCreateResponse.primary.port
+    ))).toBeVisible()
+  })
+
+  it('should render template page', async () => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+
+    render(WISPRAuthACCServerNormalTestCase(),{ route: { params } })
+
+    await userEvent.click((await screen.findByRole('combobox')))
+
+    await waitFor(() => {
+      expect(screen.getByText(mockAAAPolicyTemplateListResponse.data[0].name)).toBeInTheDocument()
+    })
   })
 })
-// async function changeAAA (){
-//   await userEvent.click((await screen.findAllByRole('combobox'))[0])
-//   await userEvent.click((await screen.findAllByTitle('test1'))[0])
-// }
 
 function WISPRAuthACCServerNormalTestCase () {
   const data = {

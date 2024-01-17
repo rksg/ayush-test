@@ -115,7 +115,7 @@ exports[`Test Details should render AirtimeB correctly 1`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          Airtime Utilization is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
+          Airtime Busy is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
         </span>
       </div>
     </div>
@@ -555,6 +555,16 @@ exports[`Test Details should render AirtimeB correctly 1`] = `
             data-dimension="airtimeBusy"
             data-testid="network-impact-airtimeBusy"
             data-type="airtimeMetric"
+          />
+          <div
+            data-dimension="rogueChannel"
+            data-testid="network-impact-rogueAPByChannel"
+            data-type="rogueAp"
+          />
+          <div
+            data-dimension="phyError"
+            data-testid="network-impact-rxPhyErrByAP"
+            data-type="apAirtime"
           />
           <div
             data-dimension="apModels"
@@ -700,7 +710,7 @@ exports[`Test Details should render AirtimeB correctly 2`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          Airtime Utilization is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
+          Airtime Busy is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
         </span>
       </div>
     </div>
@@ -1140,6 +1150,16 @@ exports[`Test Details should render AirtimeB correctly 2`] = `
             data-dimension="airtimeBusy"
             data-testid="network-impact-airtimeBusy"
             data-type="airtimeMetric"
+          />
+          <div
+            data-dimension="rogueChannel"
+            data-testid="network-impact-rogueAPByChannel"
+            data-type="rogueAp"
+          />
+          <div
+            data-dimension="phyError"
+            data-testid="network-impact-rxPhyErrByAP"
+            data-type="apAirtime"
           />
           <div
             data-dimension="apModels"
@@ -1285,7 +1305,7 @@ exports[`Test Details should render AirtimeB correctly 3`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          Airtime Utilization is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
+          Airtime Busy is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
         </span>
       </div>
     </div>
@@ -1727,6 +1747,16 @@ exports[`Test Details should render AirtimeB correctly 3`] = `
             data-type="airtimeMetric"
           />
           <div
+            data-dimension="rogueChannel"
+            data-testid="network-impact-rogueAPByChannel"
+            data-type="rogueAp"
+          />
+          <div
+            data-dimension="phyError"
+            data-testid="network-impact-rxPhyErrByAP"
+            data-type="apAirtime"
+          />
+          <div
             data-dimension="apModels"
             data-testid="network-impact-apModelByAP"
             data-type="apInfra"
@@ -1870,7 +1900,7 @@ exports[`Test Details should render AirtimeRx correctly 1`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          Airtime Utilization is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
+          Airtime Busy is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
         </span>
       </div>
     </div>
@@ -2460,7 +2490,7 @@ exports[`Test Details should render AirtimeRx correctly 2`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          Airtime Utilization is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
+          Airtime Busy is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
         </span>
       </div>
     </div>
@@ -3050,7 +3080,7 @@ exports[`Test Details should render AirtimeRx correctly 3`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          Airtime Utilization is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
+          Airtime Busy is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
         </span>
       </div>
     </div>
@@ -3640,7 +3670,7 @@ exports[`Test Details should render AirtimeTx correctly 1`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          Airtime Utilization is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
+          Airtime Busy is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
         </span>
       </div>
     </div>
@@ -4235,7 +4265,7 @@ exports[`Test Details should render AirtimeTx correctly 2`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          Airtime Utilization is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
+          Airtime Busy is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
         </span>
       </div>
     </div>
@@ -4830,7 +4860,7 @@ exports[`Test Details should render AirtimeTx correctly 3`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          Airtime Utilization is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
+          Airtime Busy is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
         </span>
       </div>
     </div>

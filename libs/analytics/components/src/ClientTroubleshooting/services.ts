@@ -1,8 +1,8 @@
 import { gql } from 'graphql-request'
 
-import { incidentCodes, Incident  } from '@acx-ui/analytics/utils'
-import { dataApi }                  from '@acx-ui/store'
-import { DateFilter, NetworkPath }  from '@acx-ui/utils'
+import { Incident, IncidentsToggleFilter, incidentsToggle  } from '@acx-ui/analytics/utils'
+import { dataApi }                                           from '@acx-ui/store'
+import { DateFilter, NetworkPath }                           from '@acx-ui/utils'
 
 export type ConnectionEvent = {
   event: string,
@@ -73,7 +73,7 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     clientInfo: build.query<
     ClientInfoData,
-    ClientFilter
+    ClientFilter & IncidentsToggleFilter
     >({
       query: (payload) => ({
         document: gql`
@@ -142,7 +142,7 @@ export const api = dataApi.injectEndpoints({
           mac: payload.clientMac,
           start: payload.startDate,
           end: payload.endDate,
-          code: incidentCodes
+          code: incidentsToggle(payload)
         }
       }),
       providesTags: [

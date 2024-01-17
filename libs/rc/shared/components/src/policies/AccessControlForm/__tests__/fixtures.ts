@@ -553,7 +553,7 @@ export const queryApplication = [
   {
     id: 'edac8b0c22e140cd95e63a9e81421576',
     name: 'app1',
-    rulesCount: 2,
+    rulesCount: 3,
     networksCount: 0
   },
   {
@@ -603,6 +603,19 @@ export const applicationDetail = {
   tenantId: '6de6a5239a1441cfb9c7fde93aa613fe',
   name: 'app1',
   rules: [
+    {
+      name: 'appRule3',
+      ruleType: 'SIGNATURE',
+      accessControl: 'RATE_LIMIT',
+      priority: 3,
+      category: 'Antivirus',
+      categoryId: 1,
+      applicationName: 'Lookout Mobile Security',
+      applicationId: 2795,
+      uplink: 1250,
+      downlink: 9250,
+      id: '5d7414032d254bb39926792181276e4b'
+    },
     {
       name: 'appRule2',
       ruleType: 'USER_DEFINED',

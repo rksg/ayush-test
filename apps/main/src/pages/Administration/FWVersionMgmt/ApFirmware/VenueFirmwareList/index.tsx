@@ -19,7 +19,8 @@ import {
   useGetFirmwareVersionIdListQuery,
   useSkipVenueUpgradeSchedulesMutation,
   useUpdateVenueSchedulesMutation,
-  useUpdateNowMutation
+  useUpdateNowMutation,
+  useUpdateDowngradeMutation
 } from '@acx-ui/rc/services'
 import {
   Schedule,
@@ -57,6 +58,7 @@ import * as UI               from '../../styledComponents'
 
 import { AdvancedUpdateNowDialog } from './AdvancedUpdateNowDialog'
 import { ChangeScheduleDialog }    from './ChangeScheduleDialog'
+import { DowngradeDialog }         from './DowngradeDialog'
 import { RevertDialog }            from './RevertDialog'
 import { UpdateNowDialog }         from './UpdateNowDialog'
 import { useApEolFirmware }        from './useApEolFirmware'
@@ -177,20 +179,28 @@ type VenueTableProps = {
 }
 
 const VenueFirmwareTable = ({ tableQuery, filterables }: VenueTableProps) => {
+  const isWifiDowngradeVenueABF = useIsSplitOn(Features.WIFI_DOWNGRADE_VENUE_ABF_TOGGLE)
   const { $t } = useIntl()
   const params = useParams()
-  const { availableVersions } = useGetAvailableABFListQuery({ params }, {
-    refetchOnMountOrArgChange: false,
-    selectFromResult: ({ data }) => {
-      return {
-        availableVersions: data?.filter((abfVersion: ABFVersion) => abfVersion.abf === 'active')
-          .sort((abfVersionA, abfVersionB) => -compareVersions(abfVersionA.id, abfVersionB.id))
-      }
-    }
+  const { data: availableABFLists } = useGetAvailableABFListQuery({ params }, {
+    refetchOnMountOrArgChange: false
   })
+  // eslint-disable-next-line max-len
+  const availableVersions = availableABFLists?.filter((abfVersion: ABFVersion) => abfVersion.abf === 'active')
+    .sort((abfVersionA, abfVersionB) => -compareVersions(abfVersionA.id, abfVersionB.id))
+
+  let downgradeVersions: ABFVersion[] = []
+  if (isWifiDowngradeVenueABF && availableVersions && availableVersions.length > 0) {
+    const sequence = availableVersions[0].sequence ? availableVersions[0].sequence : 0
+    // eslint-disable-next-line max-len
+    downgradeVersions = availableABFLists?.filter((abfVersion: ABFVersion) => abfVersion.sequence as number <= sequence)
+      // eslint-disable-next-line max-len
+      .sort((abfVersionA, abfVersionB) => -compareVersions(abfVersionA.id, abfVersionB.id)) as ABFVersion[]
+  }
   const [skipVenueUpgradeSchedules] = useSkipVenueUpgradeSchedulesMutation()
   const [updateVenueSchedules] = useUpdateVenueSchedulesMutation()
   const [updateNow] = useUpdateNowMutation()
+  const [updateDowngrade] = useUpdateDowngradeMutation()
   const [preferencesModelVisible, setPreferencesModelVisible] = useState(false)
   const [updateModelVisible, setUpdateModelVisible] = useState(false)
   const [changeScheduleModelVisible, setChangeScheduleModelVisible] = useState(false)
@@ -199,6 +209,7 @@ const VenueFirmwareTable = ({ tableQuery, filterables }: VenueTableProps) => {
   const [upgradeVersions, setUpgradeVersions] = useState<FirmwareVersion[]>([])
   const [changeUpgradeVersions, setChangeUpgradeVersions] = useState<FirmwareVersion[]>([])
   const [revertVersions, setRevertVersions] = useState<FirmwareVersion[]>([])
+  const [venueActiveSeq, setVenueActiveSeq] = useState(0)
   const { canUpdateEolApFirmware } = useApEolFirmware()
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
 
@@ -227,6 +238,20 @@ const VenueFirmwareTable = ({ tableQuery, filterables }: VenueTableProps) => {
   const handleUpdateModalSubmit = async (data: UpdateNowRequest[]) => {
     try {
       await updateNow({ params: { ...params }, payload: data }).unwrap()
+      clearSelection()
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
+
+  const handleDowngradeModalSubmit = async (data: UpdateNowRequest[]) => {
+    try {
+      if (data[0] && data[0].firmwareSequence && data[0].firmwareSequence !== venueActiveSeq) {
+        // eslint-disable-next-line max-len
+        await updateDowngrade({ params: { venueId: data[0].venueIds[0], firmwareVersion: data[0].firmwareVersion } }).unwrap()
+      } else {
+        await updateNow({ params: { ...params }, payload: data }).unwrap()
+      }
       clearSelection()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -339,34 +364,128 @@ const VenueFirmwareTable = ({ tableQuery, filterables }: VenueTableProps) => {
       if (selectedRows.length > 1) {
         return false
       }
-      if (!availableVersions || availableVersions.length === 0) {
-        return false
-      }
-
-      return selectedRows.every((row: FirmwareVenue) => {
-        const version = getApVersion(row)
-        if (!version) {
+      if (isWifiDowngradeVenueABF) {
+        if (!downgradeVersions || downgradeVersions.length === 0) {
           return false
         }
 
-        for (let i = 0; i < availableVersions.length; i++) {
-          if (compareVersions(availableVersions[i].id, version) < 0) {
-            filterVersions.push(availableVersions[i])
+        let tmpVersions: FirmwareVersion[] = []
+        return selectedRows.every((row: FirmwareVenue) => {
+          const version = getApVersion(row)
+          if (!version) {
+            return false
           }
+          let currentEolVersion
+          const displayEolFirmware = getDisplayEolFirmware(row)
+          const eolVersions = displayEolFirmware.map(function (fw) {
+            return fw.currentEolVersion
+          })
+          let isLegacy = false
+          let venueSequence = 0
+          for (let i = 0; i < downgradeVersions.length; i++) {
+            if (compareVersions(downgradeVersions[i].id, version) === 0) {
+              venueSequence = downgradeVersions[i].sequence as number
+            }
+            if (compareVersions(downgradeVersions[i].id, version) < 0) {
+              if (downgradeVersions[i].sequence === venueSequence) {
+                tmpVersions.push(downgradeVersions[i])
+              }
+              if (downgradeVersions[i].sequence === (venueSequence - 1))
+              {
+                tmpVersions.push(downgradeVersions[i])
+                if (eolVersions.includes(downgradeVersions[i].id)) {
+                  isLegacy = true
+                  currentEolVersion = downgradeVersions[i].id
+                }
+              }
+            }
+          }
+          if (isLegacy) {
+            for (let i = 0; i < tmpVersions.length; i++) {
+              // eslint-disable-next-line max-len
+              if (tmpVersions[i].sequence === venueSequence || compareVersions(tmpVersions[i].id, currentEolVersion) <= 0) {
+                filterVersions.push(tmpVersions[i])
+
+              }
+            }
+            return filterVersions.length > 0
+          } else {
+            return tmpVersions.length > 0
+          }
+        })
+      } else {
+        if (!availableVersions || availableVersions.length === 0) {
+          return false
         }
-        return filterVersions.length > 0
-      })
+
+        return selectedRows.every((row: FirmwareVenue) => {
+          const version = getApVersion(row)
+          if (!version) {
+            return false
+          }
+
+          for (let i = 0; i < availableVersions.length; i++) {
+            if (compareVersions(availableVersions[i].id, version) < 0) {
+              filterVersions.push(availableVersions[i])
+            }
+          }
+          return filterVersions.length > 0
+        })
+      }
     },
     label: $t({ defaultMessage: 'Revert Now' }),
     onClick: (selectedRows) => {
       setVenues(selectedRows)
+      let tmpVersions: FirmwareVersion[] = []
       let filterVersions: FirmwareVersion[] = []
       selectedRows.forEach((row: FirmwareVenue) => {
         const version = getApVersion(row)
-        if (availableVersions) {
-          for (let i = 0; i < availableVersions.length; i++) {
-            if (compareVersions(availableVersions[i].id, version) < 0) {
-              filterVersions.push(availableVersions[i])
+        if (isWifiDowngradeVenueABF) {
+          let currentEolVersion
+          const displayEolFirmware = getDisplayEolFirmware(row)
+          const eolVersions = displayEolFirmware.map(function (fw) {
+            return fw.currentEolVersion
+          })
+          if (downgradeVersions) {
+            let isLegacy = false
+            let venueSequence = 0
+            for (let i = 0; i < downgradeVersions.length; i++) {
+              if (compareVersions(downgradeVersions[i].id, version) === 0) {
+                venueSequence = downgradeVersions[i].sequence as number
+              }
+              if (compareVersions(downgradeVersions[i].id, version) < 0) {
+                if (downgradeVersions[i].sequence === venueSequence) {
+                  tmpVersions.push(downgradeVersions[i])
+                }
+                if (downgradeVersions[i].sequence === (venueSequence - 1))
+                {
+                  tmpVersions.push(downgradeVersions[i])
+                  if (eolVersions.includes(downgradeVersions[i].id)) {
+                    isLegacy = true
+                    currentEolVersion = downgradeVersions[i].id
+                  }
+                }
+              }
+            }
+            if (isLegacy) {
+              for (let i = 0; i < tmpVersions.length; i++) {
+                // eslint-disable-next-line max-len
+                if (tmpVersions[i].sequence === venueSequence || compareVersions(tmpVersions[i].id, currentEolVersion) <= 0) {
+                  filterVersions.push(tmpVersions[i])
+
+                }
+              }
+            } else {
+              filterVersions = tmpVersions
+            }
+            setVenueActiveSeq(venueSequence)
+          }
+        } else {
+          if (availableVersions) {
+            for (let i = 0; i < availableVersions.length; i++) {
+              if (compareVersions(availableVersions[i].id, version) < 0) {
+                filterVersions.push(availableVersions[i])
+              }
             }
           }
         }
@@ -411,11 +530,11 @@ const VenueFirmwareTable = ({ tableQuery, filterables }: VenueTableProps) => {
         onCancel={handleChangeScheduleModalCancel}
         onSubmit={handleChangeScheduleModalSubmit}
       />}
-      {revertModelVisible && <RevertDialog
+      {revertModelVisible && <RevertDialogSwitcher
         data={venues}
         availableVersions={revertVersions}
         onCancel={handleRevertModalCancel}
-        onSubmit={handleUpdateModalSubmit}
+        onSubmit={handleDowngradeModalSubmit}
       />}
       <PreferencesDialog
         visible={preferencesModelVisible}
@@ -489,4 +608,19 @@ function UpdateNowDialogSwitcher (props: UpdateNowDialogSwitcherProps) {
   return isEolApPhase2Enabled
     ? <AdvancedUpdateNowDialog {...props} />
     : <UpdateNowDialog {...({ ...props, ...eolApFirmware })} />
+}
+
+interface RevertDialogSwitcherProps {
+  onCancel: () => void,
+  onSubmit: (data: UpdateNowRequest[]) => void,
+  data?: FirmwareVenue[],
+  availableVersions?: FirmwareVersion[]
+}
+
+function RevertDialogSwitcher (props: RevertDialogSwitcherProps) {
+  const isWifiDowngradeVenueABF = useIsSplitOn(Features.WIFI_DOWNGRADE_VENUE_ABF_TOGGLE)
+
+  return isWifiDowngradeVenueABF
+    ? <DowngradeDialog {...props} />
+    : <RevertDialog {...props} />
 }

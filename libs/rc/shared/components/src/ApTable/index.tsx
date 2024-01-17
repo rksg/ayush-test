@@ -1,7 +1,9 @@
+/* eslint-disable max-len */
 import React, { useState, useEffect, useMemo, useContext, useImperativeHandle, forwardRef, Ref } from 'react'
 
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
 import { Badge }               from 'antd'
+import _                       from 'lodash'
 import { useIntl }             from 'react-intl'
 
 import {
@@ -10,7 +12,9 @@ import {
   TableProps,
   deviceStatusColors,
   ColumnType,
-  showToast
+  showToast,
+  Tooltip,
+  ColumnState
 } from '@acx-ui/components'
 import {
   Features, TierFeatures,
@@ -21,7 +25,8 @@ import {
   DownloadOutlined
 } from '@acx-ui/icons'
 import {
-  useApListQuery, useImportApOldMutation, useImportApMutation, useLazyImportResultQuery
+  useApListQuery, useImportApOldMutation, useImportApMutation, useLazyImportResultQuery,
+  useLazyGetApCompatibilitiesVenueQuery, useLazyGetApCompatibilitiesNetworkQuery
 } from '@acx-ui/rc/services'
 import {
   ApDeviceStatusEnum,
@@ -34,20 +39,28 @@ import {
   transformDisplayNumber,
   transformDisplayText,
   TableQuery,
+  TableResult,
   usePollingTableQuery,
   APExtendedGrouped,
   AFCMaxPowerRender,
-  AFCPowerStateRender
+  AFCPowerStateRender,
+  AFCStatusRender,
+  getFilters,
+  CommonResult,
+  ImportErrorRes,
+  FILTER,
+  SEARCH,
+  ApCompatibility
 } from '@acx-ui/rc/utils'
-import { getFilters, CommonResult, ImportErrorRes, FILTER }               from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                                 from '@acx-ui/types'
 import { filterByAccess }                                                 from '@acx-ui/user'
 import { exportMessageMapping }                                           from '@acx-ui/utils'
 
-import { seriesMappingAP }                                 from '../DevicesWidget/helper'
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
-import { useApActions }                                    from '../useApActions'
+import { ApFeatureCompatibility, ApCompatibilityQueryTypes, ApCompatibilityDrawer } from '../ApCompatibilityDrawer'
+import { seriesMappingAP }                                                          from '../DevicesWidget/helper'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                          from '../ImportFileDrawer'
+import { useApActions }                                                             from '../useApActions'
 
 import {
   getGroupableConfig, groupedFields
@@ -61,12 +74,8 @@ export const defaultApPayload = {
   fields: [
     'name', 'deviceStatus', 'model', 'IP', 'apMac', 'venueName',
     'switchName', 'meshRole', 'clients', 'deviceGroupName',
-    'apStatusData.APRadio.band', 'tags', 'serialNumber',
-    'venueId', 'apStatusData.APRadio.radioId', 'apStatusData.APRadio.channel',
-    'poePort', 'apStatusData.lanPortStatus.phyLink', 'apStatusData.lanPortStatus.port',
-    'fwVersion', 'apStatusData.afcInfo.powerMode', 'apStatusData.afcInfo.afcStatus','apRadioDeploy',
-    'apStatusData.APSystem.secureBootEnabled', 'apStatusData.APSystem.managementVlan',
-    'apStatusData.afcInfo.maxPowerDbm'
+    'apStatusData', 'tags', 'serialNumber',
+    'venueId', 'poePort', 'fwVersion', 'apRadioDeploy'
   ]
 }
 
@@ -94,6 +103,18 @@ const transformMeshRole = (value: APMeshRole) => {
   return transformDisplayText(meshRole)
 }
 
+const retriedApIds = (result: TableResult<APExtended | APExtendedGrouped, ApExtraParams>, hasGroupBy:boolean) => {
+  const apIds:string[] = []
+  if (hasGroupBy) {
+    result.data?.forEach(item => {
+      (item as unknown as { aps: APExtended[] }).aps?.forEach(ap => apIds.push(ap.serialNumber))
+    })
+  } else {
+    result.data?.forEach(ap => apIds.push(ap.serialNumber))
+  }
+  return apIds
+}
+
 export const APStatus = (
   { status, showText = true }: { status: ApDeviceStatusEnum, showText?: boolean }
 ) => {
@@ -116,7 +137,8 @@ interface ApTableProps
   searchable?: boolean
   enableActions?: boolean
   filterables?: { [key: string]: ColumnType['filterable'] }
-  enableGroups?: boolean
+  enableGroups?: boolean,
+  enableApCompatibleCheck?: boolean
 }
 
 export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefType>) => {
@@ -125,8 +147,21 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
   const location = useLocation()
   const params = useParams()
   const filters = getFilters(params) as FILTER
-  const { searchable, filterables, enableGroups=true } = props
+  const { searchable, filterables, enableGroups=true, enableApCompatibleCheck=false } = props
   const { setApsCount } = useContext(ApsTabContext)
+  const [ compatibilitiesDrawerVisible, setCompatibilitiesDrawerVisible ] = useState(false)
+  const [ selectedApSN, setSelectedApSN ] = useState('')
+  const [ selectedApName, setSelectedApName ] = useState('')
+  const [ tableData, setTableData ] = useState([] as APExtended[])
+  const [ hasGroupBy, setHasGroupBy ] = useState(false)
+  const [ showFeatureCompatibilitiy, setShowFeatureCompatibilitiy ] = useState(false)
+  const secureBootFlag = useIsSplitOn(Features.WIFI_EDA_SECURE_BOOT_TOGGLE)
+  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
+  const apMgmtVlanFlag = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
+  const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
+  const [ getApCompatibilitiesVenue ] = useLazyGetApCompatibilitiesVenueQuery()
+  const [ getApCompatibilitiesNetwork ] = useLazyGetApCompatibilitiesNetworkQuery()
+
   const apListTableQuery = usePollingTableQuery({
     useQuery: useApListQuery,
     defaultPayload: {
@@ -142,21 +177,62 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       'deviceStatus', 'fwVersion']
   })
   const tableQuery = props.tableQuery || apListTableQuery
-  const secureBootFlag = useIsSplitOn(Features.WIFI_EDA_SECURE_BOOT_TOGGLE)
-  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
-  const apMgmtVlanFlag = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
-  const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
 
 
   useEffect(() => {
-    setApsCount?.(tableQuery.data?.totalCount || 0)
+    const fetchApCompatibilitiesAndSetData = async () => {
+      const result:React.SetStateAction<APExtended[]> = []
+      const apIdsToIncompatible:{ [key:string]: number } = {}
+      if (tableQuery.data?.data) {
+        let apCompatibilities:ApCompatibility[] = []
+        let apIds:string[] = []
+        if (enableApCompatibleCheck && showFeatureCompatibilitiy) {
+          const aps = tableQuery.data as TableResult<APExtended | APExtendedGrouped, ApExtraParams>
+          apIds = retriedApIds(aps, !!hasGroupBy)
+          if (apIds.length > 0) {
+            if (params.venueId) {
+              apCompatibilities = await getApCompatibilitiesVenue({
+                params: { venueId: params.venueId },
+                payload: { filters: { apIds }, queryType: ApCompatibilityQueryTypes.CHECK_VENUE_WITH_APS }
+              }).unwrap()
+            } else if (params.networkId) {
+              apCompatibilities = await getApCompatibilitiesNetwork({
+                params: { networkId: params.networkId },
+                payload: { filters: { apIds }, queryType: ApCompatibilityQueryTypes.CHECK_NETWORK_WITH_APS }
+              }).unwrap()
+            }
+          }
+        }
+
+        if (apCompatibilities.length > 0) {
+          apIds.forEach((id:string) => {
+            const apIncompatible = _.find(apCompatibilities, ap => id===ap.id)
+            apIdsToIncompatible[id] = apIncompatible?.incompatible ?? 0
+          })
+        }
+        if (hasGroupBy) {
+          tableQuery.data.data?.forEach(item => {
+            (item as unknown as { aps: APExtended[] }).aps?.map(ap => ({ ...ap, incompatible: apIdsToIncompatible[ap.serialNumber] }))
+            result.push({ ...item })
+          })
+        } else {
+          tableQuery.data.data?.forEach(ap => (result.push({ ...ap, incompatible: apIdsToIncompatible[ap.serialNumber] })))
+        }
+      }
+      setTableData(result)
+    }
+    if (tableQuery.data) {
+      fetchApCompatibilitiesAndSetData()
+    }
+    const totalCount = tableQuery.data?.totalCount || 0
+    setApsCount?.(totalCount)
+
   }, [tableQuery.data])
 
   const apAction = useApActions()
   const statusFilterOptions = seriesMappingAP().map(({ key, name, color }) => ({
     key, value: name, label: <Badge color={color} text={name} />
   }))
-  const tableData = tableQuery?.data?.data ?? []
   const linkToEditAp = useTenantLink('/devices/wifi/')
 
   const columns = useMemo(() => {
@@ -385,13 +461,34 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
         }
       }] : []),
     ...(AFC_Featureflag ? [{
+      key: 'afcStatus',
+      title: $t({ defaultMessage: 'AFC Status' }),
+      dataIndex: ['apStatusData','afcInfo','powerMode'],
+      show: false,
+      sorter: false,
+      render: (data: React.ReactNode, row: APExtended) => {
+        return AFCStatusRender(row.apStatusData?.afcInfo, row.apRadioDeploy)
+      }
+    },
+    {
       key: 'afcPowerMode',
       title: $t({ defaultMessage: 'AFC Power State' }),
       dataIndex: ['apStatusData','afcInfo','powerMode'],
       show: false,
       sorter: false,
       render: (data: React.ReactNode, row: APExtended) => {
-        return AFCPowerStateRender(row.apStatusData?.afcInfo, row.apRadioDeploy, false)
+        const status = AFCPowerStateRender(row.apStatusData?.afcInfo, row.apRadioDeploy)
+        return (
+          <>
+            {status.columnText}
+            {/* eslint-disable-next-line*/}
+            {(status.columnText !== '--' && status.columnText === 'Low power' && status.tooltipText) && <Tooltip.Info
+              placement='bottom'
+              iconStyle={{ height: '12px', width: '12px', marginBottom: '-3px' }}
+              title={status.tooltipText}
+            />}
+          </>
+        )
       }
     },
     { key: 'afcMaxPower',
@@ -403,11 +500,35 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
         return AFCMaxPowerRender(row.apStatusData?.afcInfo, row.apRadioDeploy)
       }
     }
-    ]: [])
+    ]: []),
+    ...(enableApCompatibleCheck ? [{
+      key: 'featureIncompatible',
+      tooltip: $t({ defaultMessage: 'Check for the venue’s Wi-Fi features not supported by earlier versions or AP models.' }),
+      title: $t({ defaultMessage: 'Feature Compatibility' }),
+      filterPlaceholder: $t({ defaultMessage: 'Feature Compatibility' }),
+      filterValueArray: true,
+      dataIndex: 'incompatible',
+      filterKey: 'fwVersion',
+      width: 200,
+      filterableWidth: 200,
+      filterable: showFeatureCompatibilitiy && filterables ? filterables['featureIncompatible']: false,
+      filterMultiple: false,
+      show: false,
+      sorter: false,
+      render: (data: React.ReactNode, row: APExtended) => {
+        return (<ApFeatureCompatibility
+          count={row?.incompatible}
+          onClick={() => {
+            setSelectedApSN(row?.serialNumber)
+            setSelectedApName(row?.name ?? '')
+            setCompatibilitiesDrawerVisible(true)
+          }} />
+        )
+      }
+    }] : [])
     ]
-
     return columns
-  }, [$t, tableQuery.data?.extra])
+  }, [$t, tableQuery.data?.extra, showFeatureCompatibilitiy])
 
   const isActionVisible = (
     selectedRows: APExtended[],
@@ -466,6 +587,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       apAction.showDownloadApLog(rows[0].serialNumber, params.tenantId)
     }
   }]
+
   const [ isImportResultLoading, setIsImportResultLoading ] = useState(false)
   const [ importVisible, setImportVisible ] = useState(false)
   const [ importAps, importApsResult ] = useImportApOldMutation()
@@ -526,18 +648,37 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
     }
     tableQuery.handleTableChange?.(pagination, filters, customSorter, extra)
   }
+
+  const handleFilterChange = (
+    customFilters: FILTER,
+    customSearch: SEARCH,
+    groupBy?: string | undefined
+  ) => {
+    setHasGroupBy(!!groupBy)
+    tableQuery.handleFilterChange?.(customFilters, customSearch, groupBy)
+  }
+
+  const handleColumnStateChange = (state: ColumnState) => {
+    if (enableApCompatibleCheck) {
+      if (showFeatureCompatibilitiy !== state['featureIncompatible']) {
+        setShowFeatureCompatibilitiy(state['featureIncompatible'])
+      }
+    }
+  }
+
   return (
     <Loader states={[tableQuery]}>
       <Table<APExtended | APExtendedGrouped>
         {...props}
         settingsId='ap-table'
         columns={columns}
+        columnState={enableApCompatibleCheck?{ onChange: handleColumnStateChange } : {}}
         dataSource={tableData}
         getAllPagesData={tableQuery.getAllPagesData}
         rowKey='serialNumber'
         pagination={tableQuery.pagination}
         onChange={handleTableChange}
-        onFilterChange={tableQuery.handleFilterChange}
+        onFilterChange={handleFilterChange}
         enableApiFilter={true}
         rowActions={filterByAccess(rowActions)}
         actions={props.enableActions ? filterByAccess([{
@@ -602,6 +743,17 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
           }
         }}
         onClose={() => setImportVisible(false)}/>
+      <ApCompatibilityDrawer
+        visible={compatibilitiesDrawerVisible}
+        venueId={params.venueId}
+        networkId={params.networkId}
+        queryType={params.venueId ?
+          ApCompatibilityQueryTypes.CHECK_VENUE_WITH_APS :
+          ApCompatibilityQueryTypes.CHECK_NETWORK_WITH_APS}
+        apIds={selectedApSN ? [selectedApSN] : []}
+        apName={selectedApName}
+        onClose={() => setCompatibilitiesDrawerVisible(false)}
+      />
     </Loader>
   )
 })

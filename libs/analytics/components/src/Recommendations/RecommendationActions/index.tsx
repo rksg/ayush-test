@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useRef } from 'react'
 
+import _                          from 'lodash'
 import moment, { Moment }         from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
@@ -13,6 +14,7 @@ import {
 } from '@acx-ui/icons'
 
 import {
+  Recommendation,
   RecommendationListItem,
   useCancelRecommendationMutation,
   useScheduleRecommendationMutation
@@ -145,8 +147,13 @@ const actions = {
   cancel: (props: Omit<ActionButtonProps, 'type'>) => <CancelCalendar {...props} />
 }
 
+export const isCrrmOptimizationMatched = (
+  metadata: Recommendation['metadata'], preferences: Recommendation['preferences']
+) => _.get(metadata, 'audit') || _.get(metadata, 'algorithmData.isCrrmFullOptimization', true)
+  === _.get(preferences, 'crrmFullOptimization', true)
+
 const getAvailableActions = (recommendation: RecommendationListItem) => {
-  const { isMuted, statusEnum } = recommendation
+  const { isMuted, statusEnum, metadata, preferences } = recommendation
   const props = { ...recommendation }
   if (isMuted) {
     return [
@@ -154,10 +161,15 @@ const getAvailableActions = (recommendation: RecommendationListItem) => {
       { icon: actions.schedule({ ...props, disabled: true, type: 'Revert' }) }
     ]
   }
+
   switch (statusEnum) {
     case 'new':
       return [
-        { icon: actions.schedule({ ...props, disabled: false, type: 'Apply' }) },
+        { icon: actions.schedule({
+          ...props,
+          disabled: !isCrrmOptimizationMatched(metadata, preferences),
+          type: 'Apply' })
+        },
         { icon: actions.schedule({ ...props, disabled: true, type: 'Revert' }) }
       ]
     case 'applyscheduled':

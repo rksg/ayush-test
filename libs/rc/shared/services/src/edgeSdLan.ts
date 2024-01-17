@@ -112,7 +112,21 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'EdgeSdLan', id: 'LIST' }]
+      invalidatesTags: [{ type: 'EdgeSdLan', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          try {
+            const response = await api.cacheDataLoaded
+
+            if (response && msg.useCase === 'Update SD-LAN'
+                && msg.steps?.find((step) =>
+                  (step.id === 'Update SD-LAN'))?.status !== 'IN_PROGRESS') {
+              (requestArgs.callback as Function)(response.data)
+            }
+          } catch {
+          }
+        })
+      }
     }),
     getEdgeSdLanViewDataList:
       build.query<TableResult<EdgeSdLanViewData>, RequestPayload>({

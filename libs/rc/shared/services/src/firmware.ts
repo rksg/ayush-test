@@ -86,7 +86,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, ['UpdateNow'], () => {
+          onActivityMessageReceived(msg, ['UpdateNow', 'DowngradeVenueAbf'], () => {
             api.dispatch(firmwareApi.util.invalidateTags([
               { type: 'Firmware', id: 'LIST' }
             ]))
@@ -158,6 +158,15 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         return {
           ...req,
           body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Firmware', id: 'LIST' }]
+    }),
+    updateDowngrade: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.updateDowngrade, params)
+        return {
+          ...req
         }
       },
       invalidatesTags: [{ type: 'Firmware', id: 'LIST' }]
@@ -410,6 +419,7 @@ export const {
   useSkipVenueUpgradeSchedulesMutation,
   useUpdateVenueSchedulesMutation,
   useUpdateNowMutation,
+  useUpdateDowngradeMutation,
   useSkipSwitchUpgradeSchedulesMutation,
   useUpdateSwitchVenueSchedulesMutation,
   useGetSwitchLatestFirmwareListQuery,

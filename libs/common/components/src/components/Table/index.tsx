@@ -50,7 +50,8 @@ export type {
   ColumnType,
   ColumnGroupType,
   RecordWithChildren,
-  TableColumn
+  TableColumn,
+  ColumnState
 } from './types'
 
 export interface TableProps <RecordType>
@@ -502,7 +503,7 @@ function Table <RecordType extends Record<string, any>> ({
         {filterables.map((column, i) =>
           renderFilter<RecordType>(
             column, i, dataSource, filterValues,
-            setFilterValues, !!enableApiFilter, filterWidth)
+            setFilterValues, !!enableApiFilter, column.filterableWidth ?? filterWidth)
         )}
         {Boolean(groupable.length) && <GroupSelect<RecordType>
           $t={$t}

@@ -3,9 +3,9 @@ import { useContext, useEffect } from 'react'
 import { Form, InputNumber, Space, Switch } from 'antd'
 import { useIntl }                          from 'react-intl'
 
-import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
-import { GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, TunnelTypeEnum } from '@acx-ui/rc/utils'
-import { validationMessages }                                                     from '@acx-ui/utils'
+import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
+import { GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { validationMessages }                                     from '@acx-ui/utils'
 
 import NetworkFormContext                   from '../../NetworkFormContext'
 import { useNetworkVxLanTunnelProfileInfo } from '../../utils'
@@ -53,8 +53,8 @@ export function VlanTab (props: { wlanData: NetworkSaveData | null }) {
         data?.wlan?.bypassCPUsingMacAddressAuthentication) ||
       (data?.type === NetworkTypeEnum.OPEN && data.wlan?.macAddressAuthentication)))
 
-  const { enableVxLan, tunnelType } = useNetworkVxLanTunnelProfileInfo(wlanData)
-  const pureVxLanEnabled = enableVxLan && tunnelType === TunnelTypeEnum.VXLAN
+  const { enableVxLan: pureVxLanEnabled } = useNetworkVxLanTunnelProfileInfo(wlanData)
+
   return (
     <>
       <UI.FieldLabel width={labelWidth}>
@@ -128,7 +128,7 @@ export function VlanTab (props: { wlanData: NetworkSaveData | null }) {
           style={{ marginBottom: '10px' }}
           valuePropName='checked'
           initialValue={false}
-          children={<Switch disabled={pureVxLanEnabled}/>}
+          children={<Switch />}
         />
       </UI.FieldLabel>
     </>

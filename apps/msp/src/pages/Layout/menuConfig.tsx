@@ -13,13 +13,16 @@ import {
   IntegratorsSolid,
   UsersThreeOutlined,
   UsersThreeSolid,
+  CopyOutlined,
+  CopySolid,
   SpeedIndicatorSolid,
   SpeedIndicatorOutlined
 } from '@acx-ui/icons'
-import { TenantType }  from '@acx-ui/react-router-dom'
-import { RolesEnum }   from '@acx-ui/types'
-import { hasRoles }    from '@acx-ui/user'
-import { AccountType } from '@acx-ui/utils'
+import { getConfigTemplatePath, hasConfigTemplateAccess } from '@acx-ui/rc/utils'
+import { TenantType }                                     from '@acx-ui/react-router-dom'
+import { RolesEnum }                                      from '@acx-ui/types'
+import { hasRoles  }                                      from '@acx-ui/user'
+import { AccountType  }                                   from '@acx-ui/utils'
 
 export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfood?: boolean) {
   const { $t } = useIntl()
@@ -32,6 +35,8 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfoo
   const isSupport = tenantType === 'SUPPORT'
   const isIntegrator =
   tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
+  // eslint-disable-next-line max-len
+  const isConfigTemplateEnabled = hasConfigTemplateAccess(useIsSplitOn(Features.CONFIG_TEMPLATE), tenantType)
 
   const config: LayoutProps['menuConfig'] = [
     ...(isBrand360 ? [{
@@ -87,6 +92,14 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfoo
       inactiveIcon: MspSubscriptionOutlined,
       activeIcon: MspSubscriptionSolid
     }]),
+    ...(isConfigTemplateEnabled
+      ? [{
+        uri: '/' + getConfigTemplatePath(),
+        label: $t({ defaultMessage: 'Config Templates' }),
+        tenantType: 'v' as TenantType,
+        inactiveIcon: CopyOutlined,
+        activeIcon: CopySolid
+      }] : []),
     ...((!isPrimeAdmin || isIntegrator || isSupport || !hasLicense)
       ? [] : [{
         uri: '/portalSetting',

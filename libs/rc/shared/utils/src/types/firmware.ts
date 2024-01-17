@@ -60,6 +60,7 @@ export interface EdgeUpdateScheduleRequest {
 
 export interface UpdateNowRequest {
   firmwareCategoryId?: string;
+  firmwareSequence?: number,
   firmwareVersion?: string;
   venueIds: Array<string>;
 }
@@ -91,6 +92,9 @@ export interface VenueUpdateAdvice {
 export interface FirmwareVersion {
   id: string;
   name: string;
+  abf?: string;
+  sequence?: number;
+  supportedApModels?: string[];
   category: FirmwareCategory;
   releaseNotesUrl?: string;
   features?: string[];
@@ -104,6 +108,8 @@ export interface FirmwareVersion {
 
 export interface ABFVersion {
   abf: string;
+  sequence?: number;
+  supportedApModels?: string[];
   id: string;
   name: string;
   category: FirmwareCategory;
@@ -252,7 +258,8 @@ export interface SwitchFirmwareStatus {
 
 export interface CurrentVersions {
   currentVersions: string[];
-  currentVersionsAboveTen: string[]
+  currentVersionsAboveTen: string[];
+  generalVersions: string[];
 }
 
 export interface PreDownload {

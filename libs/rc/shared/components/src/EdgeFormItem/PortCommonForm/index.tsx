@@ -61,14 +61,13 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   const mac = useWatch(getFieldFullPath('mac'), form)
   const portType = useWatch(getFieldFullPath('portType'), form)
   const portEnabled = useWatch(getFieldFullPath('enabled'), form)
-  const corePortEnabled = useWatch(getFieldFullPath('corePortEnabled'), form)
 
   const lagId = form.getFieldValue(getFieldFullPath('id'))
   const physicalPortIfName = form.getFieldValue(getFieldFullPath('interfaceName'))
 
   const corePortInfo = getEnabledCorePortKey(portsData, lagData || [])
   const hasCorePortEnabled = !!corePortInfo.key
-  const isCurrentPortCorePortEnabled = corePortEnabled || (hasCorePortEnabled && (corePortInfo.isLag
+  const isCurrentPortCorePortEnabled = (hasCorePortEnabled && (corePortInfo.isLag
     ? corePortInfo.key === (lagId + '')
     : corePortInfo.key === physicalPortIfName))
 
@@ -279,8 +278,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                 placement='topRight'
                 title={
                   // eslint-disable-next-line max-len
-                  // TODO: still waiting for PLM
-                  $t({ defaultMessage: 'core port' })
+                  $t({ defaultMessage: 'Utilized for SD-LAN service, the core port on this SmartEdge establishes tunnels for directing data traffic effectively' })
                 }
               >
                 <UI.StyledQuestionIcon />

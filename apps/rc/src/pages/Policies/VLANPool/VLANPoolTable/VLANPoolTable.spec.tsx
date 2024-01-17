@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
+import { policyApi, venueApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   getPolicyDetailsLink,
@@ -11,7 +12,7 @@ import {
   VlanPoolUrls,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -89,6 +90,8 @@ describe('VLANPoolTable', () => {
   const tablePath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.LIST })
 
   beforeEach(async () => {
+    store.dispatch(policyApi.util.resetApiState())
+    store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.post(
         WifiUrlsInfo.getVlanPoolViewModelList.url,
@@ -157,11 +160,13 @@ describe('VLANPoolTable', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
 
+    const dialog = await screen.findByRole('dialog')
     expect(await screen.findByText('Delete "' + target.name + '"?')).toBeVisible()
 
     // eslint-disable-next-line max-len
     await userEvent.click(await screen.findByRole('button', { name: /Delete Policy/i }))
 
+    await waitFor(() => expect(dialog).not.toBeVisible())
     await waitFor(() => {
       expect(deleteFn).toHaveBeenCalled()
     })

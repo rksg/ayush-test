@@ -20,6 +20,7 @@ import {
   useDeleteNetworkVenueMutation,
   useDeleteNetworkVenuesMutation,
   useNetworkVenueListQuery,
+  useNetworkVenueTableQuery,
   useGetVenueCityListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -49,7 +50,8 @@ import {
   transformAps,
   transformRadios,
   transformScheduling } from '../../pipes/apGroupPipes'
-import { useGetNetwork } from '../services'
+import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues } from '../../useEdgeActions'
+import { useGetNetwork }                                                        from '../services'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
@@ -93,8 +95,9 @@ interface schedule {
 
 export function NetworkVenuesTab () {
   const { $t } = useIntl()
+  const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
   const tableQuery = useTableQuery({
-    useQuery: useNetworkVenueListQuery,
+    useQuery: isApCompatibleCheckEnabled ? useNetworkVenueTableQuery : useNetworkVenueListQuery,
     defaultPayload,
     search: {
       searchTargetFields: defaultPayload.searchTargetFields as string[]
@@ -138,7 +141,7 @@ export function NetworkVenuesTab () {
 
   const [addNetworkVenues] = useAddNetworkVenuesMutation()
   const [deleteNetworkVenues] = useDeleteNetworkVenuesMutation()
-
+  const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(params.networkId)
 
   const getCurrentVenue = (row: Venue) => {
     if (!row.activated.isActivated) {
@@ -170,6 +173,7 @@ export function NetworkVenuesTab () {
           setSystemNetwork(networkQuery.data?.isOweMaster === false && networkQuery.data?.owePairNetworkId !== undefined)
         }
       })
+
       setTableData(data)
     }
   }, [tableQuery.data, networkQuery.data, supportOweTransition])
@@ -202,10 +206,12 @@ export function NetworkVenuesTab () {
       if (checked) { // activate
         addNetworkVenue({ params: { tenantId: params.tenantId }, payload: newNetworkVenue })
       } else { // deactivate
-        deleteNetworkVenue({
-          params: {
-            tenantId: params.tenantId, networkVenueId: deactivateNetworkVenueId
-          }
+        checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues, [row.id], () => {
+          deleteNetworkVenue({
+            params: {
+              tenantId: params.tenantId, networkVenueId: deactivateNetworkVenueId
+            }
+          })
         })
       }
     }
@@ -307,8 +313,10 @@ export function NetworkVenuesTab () {
       label: $t({ defaultMessage: 'Deactivate' }),
       visible: activation,
       onClick: (rows, clearSelection) => {
-        const deActivateNetworkVenueIds = deActivateSelected(rows)
-        handleDeleteNetworkVenues(deActivateNetworkVenueIds, clearSelection)
+        checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues, rows.map(item => item.id), () => {
+          const deActivateNetworkVenueIds = deActivateSelected(rows)
+          handleDeleteNetworkVenues(deActivateNetworkVenueIds, clearSelection)
+        })
       }
     }
   ]
@@ -400,7 +408,7 @@ export function NetworkVenuesTab () {
       dataIndex: 'aps',
       width: 80,
       render: function (_, row) {
-        return transformAps(getCurrentVenue(row), networkQuery.data as NetworkSaveData, (e) => handleClickApGroups(row, e), systemNetwork)
+        return transformAps(getCurrentVenue(row), networkQuery.data as NetworkSaveData, (e) => handleClickApGroups(row, e), systemNetwork, row.incompatible)
       }
     },
     {
