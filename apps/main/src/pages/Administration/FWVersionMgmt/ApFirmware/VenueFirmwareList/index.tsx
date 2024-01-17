@@ -193,7 +193,7 @@ const VenueFirmwareTable = ({ tableQuery, filterables }: VenueTableProps) => {
   if (isWifiDowngradeVenueABF && availableVersions && availableVersions.length > 0) {
     const sequence = availableVersions[0].sequence ? availableVersions[0].sequence : 0
     // eslint-disable-next-line max-len
-    downgradeVersions = availableABFLists?.filter((abfVersion: ABFVersion) => abfVersion.sequence === sequence || abfVersion.sequence === (sequence - 1))
+    downgradeVersions = availableABFLists?.filter((abfVersion: ABFVersion) => abfVersion.sequence as number <= sequence)
       // eslint-disable-next-line max-len
       .sort((abfVersionA, abfVersionB) => -compareVersions(abfVersionA.id, abfVersionB.id)) as ABFVersion[]
   }
@@ -209,6 +209,7 @@ const VenueFirmwareTable = ({ tableQuery, filterables }: VenueTableProps) => {
   const [upgradeVersions, setUpgradeVersions] = useState<FirmwareVersion[]>([])
   const [changeUpgradeVersions, setChangeUpgradeVersions] = useState<FirmwareVersion[]>([])
   const [revertVersions, setRevertVersions] = useState<FirmwareVersion[]>([])
+  const [venueActiveSeq, setVenueActiveSeq] = useState(0)
   const { canUpdateEolApFirmware } = useApEolFirmware()
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
 
@@ -245,7 +246,7 @@ const VenueFirmwareTable = ({ tableQuery, filterables }: VenueTableProps) => {
 
   const handleDowngradeModalSubmit = async (data: UpdateNowRequest[]) => {
     try {
-      if (data[0] && data[0].firmwareCategoryId !== 'active') {
+      if (data[0] && data[0].firmwareSequence && data[0].firmwareSequence !== venueActiveSeq) {
         // eslint-disable-next-line max-len
         await updateDowngrade({ params: { venueId: data[0].venueIds[0], firmwareVersion: data[0].firmwareVersion } }).unwrap()
       } else {
@@ -368,18 +369,49 @@ const VenueFirmwareTable = ({ tableQuery, filterables }: VenueTableProps) => {
           return false
         }
 
+        let tmpVersions: FirmwareVersion[] = []
         return selectedRows.every((row: FirmwareVenue) => {
           const version = getApVersion(row)
           if (!version) {
             return false
           }
-
+          let currentEolVersion
+          const displayEolFirmware = getDisplayEolFirmware(row)
+          const eolVersions = displayEolFirmware.map(function (fw) {
+            return fw.currentEolVersion
+          })
+          let isLegacy = false
+          let venueSequence = 0
           for (let i = 0; i < downgradeVersions.length; i++) {
+            if (compareVersions(downgradeVersions[i].id, version) === 0) {
+              venueSequence = downgradeVersions[i].sequence as number
+            }
             if (compareVersions(downgradeVersions[i].id, version) < 0) {
-              filterVersions.push(downgradeVersions[i])
+              if (downgradeVersions[i].sequence === venueSequence) {
+                tmpVersions.push(downgradeVersions[i])
+              }
+              if (downgradeVersions[i].sequence === (venueSequence - 1))
+              {
+                tmpVersions.push(downgradeVersions[i])
+                if (eolVersions.includes(downgradeVersions[i].id)) {
+                  isLegacy = true
+                  currentEolVersion = downgradeVersions[i].id
+                }
+              }
             }
           }
-          return filterVersions.length > 0
+          if (isLegacy) {
+            for (let i = 0; i < tmpVersions.length; i++) {
+              // eslint-disable-next-line max-len
+              if (tmpVersions[i].sequence === venueSequence || compareVersions(tmpVersions[i].id, currentEolVersion) <= 0) {
+                filterVersions.push(tmpVersions[i])
+
+              }
+            }
+            return filterVersions.length > 0
+          } else {
+            return tmpVersions.length > 0
+          }
         })
       } else {
         if (!availableVersions || availableVersions.length === 0) {
@@ -404,16 +436,49 @@ const VenueFirmwareTable = ({ tableQuery, filterables }: VenueTableProps) => {
     label: $t({ defaultMessage: 'Revert Now' }),
     onClick: (selectedRows) => {
       setVenues(selectedRows)
+      let tmpVersions: FirmwareVersion[] = []
       let filterVersions: FirmwareVersion[] = []
       selectedRows.forEach((row: FirmwareVenue) => {
         const version = getApVersion(row)
         if (isWifiDowngradeVenueABF) {
+          let currentEolVersion
+          const displayEolFirmware = getDisplayEolFirmware(row)
+          const eolVersions = displayEolFirmware.map(function (fw) {
+            return fw.currentEolVersion
+          })
           if (downgradeVersions) {
+            let isLegacy = false
+            let venueSequence = 0
             for (let i = 0; i < downgradeVersions.length; i++) {
+              if (compareVersions(downgradeVersions[i].id, version) === 0) {
+                venueSequence = downgradeVersions[i].sequence as number
+              }
               if (compareVersions(downgradeVersions[i].id, version) < 0) {
-                filterVersions.push(downgradeVersions[i])
+                if (downgradeVersions[i].sequence === venueSequence) {
+                  tmpVersions.push(downgradeVersions[i])
+                }
+                if (downgradeVersions[i].sequence === (venueSequence - 1))
+                {
+                  tmpVersions.push(downgradeVersions[i])
+                  if (eolVersions.includes(downgradeVersions[i].id)) {
+                    isLegacy = true
+                    currentEolVersion = downgradeVersions[i].id
+                  }
+                }
               }
             }
+            if (isLegacy) {
+              for (let i = 0; i < tmpVersions.length; i++) {
+                // eslint-disable-next-line max-len
+                if (tmpVersions[i].sequence === venueSequence || compareVersions(tmpVersions[i].id, currentEolVersion) <= 0) {
+                  filterVersions.push(tmpVersions[i])
+
+                }
+              }
+            } else {
+              filterVersions = tmpVersions
+            }
+            setVenueActiveSeq(venueSequence)
           }
         } else {
           if (availableVersions) {

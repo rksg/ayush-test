@@ -86,7 +86,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, ['UpdateNow'], () => {
+          onActivityMessageReceived(msg, ['UpdateNow', 'DowngradeVenueAbf'], () => {
             api.dispatch(firmwareApi.util.invalidateTags([
               { type: 'Firmware', id: 'LIST' }
             ]))

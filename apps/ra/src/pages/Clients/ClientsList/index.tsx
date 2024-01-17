@@ -134,6 +134,7 @@ export function ClientsList ({ searchVal='', queryParmsForZone }:
       pagination={pagination}
       settingsId='clients-list-table'
       onFilterChange={onSearch}
+      rowKey='mac'
     />
   </Loader>
 }
