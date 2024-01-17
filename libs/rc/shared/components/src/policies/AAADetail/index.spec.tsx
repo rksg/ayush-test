@@ -1,7 +1,6 @@
 import { rest } from 'msw'
 
-import { ConfigTemplateUrlsInfo }                      from '@acx-ui/msp/utils'
-import { AaaUrls }                                     from '@acx-ui/rc/utils'
+import { AaaUrls, ConfigTemplateUrlsInfo }             from '@acx-ui/rc/utils'
 import { Provider }                                    from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
