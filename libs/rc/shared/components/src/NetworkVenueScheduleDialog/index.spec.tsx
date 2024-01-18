@@ -1,5 +1,4 @@
 import '@testing-library/jest-dom'
-import userEvent    from '@testing-library/user-event'
 import { debounce } from 'lodash'
 import { rest }     from 'msw'
 
@@ -60,8 +59,8 @@ describe('NetworkVenueTabScheduleDialog', () => {
     render(<NetworkVenueScheduleDialog {...props} visible={true} />)
     const dialog = await waitFor(async () => await screen.findByRole('dialog'))
     const alwaysOn = await within(dialog).findByRole('radio', { name: '24/7' })
-    await userEvent.click(alwaysOn)
-    await userEvent.click(await within(dialog).findByRole('button', { name: 'Apply' }))
+    fireEvent.click(alwaysOn)
+    fireEvent.click(await within(dialog).findByRole('button', { name: 'Apply' }))
     // eslint-disable-next-line testing-library/no-node-access
     expect(dialog.querySelector('.ant-spin-spinning')).toBeVisible()
   })
@@ -77,16 +76,16 @@ describe('NetworkVenueTabScheduleDialog', () => {
     render(<NetworkVenueScheduleDialog {...props} visible={true} />)
     const dialog = await waitFor(async () => await screen.findByRole('dialog'))
     const customSchedule = await within(dialog).findByRole('radio', { name: 'Custom Schedule' })
-    await userEvent.click(customSchedule)
+    fireEvent.click(customSchedule)
     const scheduleCheckbox = await within(dialog).findAllByRole('checkbox')
     expect(scheduleCheckbox[0]).toBeVisible()
-    await userEvent.click(scheduleCheckbox[0])
+    fireEvent.click(scheduleCheckbox[0])
     expect(await within(dialog).findByTestId('mon_0')).toBeVisible()
 
     const mondayTimeSlot = await within(dialog).findByTestId('mon_0')
-    await userEvent.click(mondayTimeSlot)
+    fireEvent.click(mondayTimeSlot)
 
-    await userEvent.click(await within(dialog).findByRole('button', { name: 'Apply' }))
+    fireEvent.click(await within(dialog).findByRole('button', { name: 'Apply' }))
     // eslint-disable-next-line testing-library/no-node-access
     expect(dialog.querySelector('.ant-spin-spinning')).toBeVisible()
   })
@@ -106,11 +105,11 @@ describe('NetworkVenueTabScheduleDialog', () => {
 
     const dialog = await waitFor(async () => await screen.findByRole('dialog'))
     const customSchedule = await within(dialog).findByRole('radio', { name: 'Custom Schedule' })
-    await userEvent.click(customSchedule)
-    await userEvent.click(await within(dialog).findByRole('button', { name: 'See tips' }))
+    fireEvent.click(customSchedule)
+    fireEvent.click(await within(dialog).findByRole('button', { name: 'See tips' }))
     const tipsDialog = await screen.findAllByRole('dialog')
     expect(tipsDialog[1]).toBeInTheDocument()
-    await userEvent.click(await within(tipsDialog[1]).findByRole('button', { name: 'OK' }))
+    fireEvent.click(await within(tipsDialog[1]).findByRole('button', { name: 'OK' }))
 
     // update the props "visible"
     rerender(<NetworkVenueScheduleDialog {...props} visible={false}/>)
@@ -128,11 +127,11 @@ describe('NetworkVenueTabScheduleDialog', () => {
 
     const dialog = await waitFor(async () => screen.findByRole('dialog'))
     const customSchedule = await within(dialog).findByRole('radio', { name: 'Custom Schedule' })
-    await userEvent.click(customSchedule)
-    await userEvent.click(await within(dialog).findByRole('button', { name: 'See tips' }))
+    fireEvent.click(customSchedule)
+    fireEvent.click(await within(dialog).findByRole('button', { name: 'See tips' }))
     const tipsDialog = await screen.findAllByRole('dialog')
     expect(tipsDialog[1]).toBeInTheDocument()
-    await userEvent.click(await within(tipsDialog[1]).findByRole('button', { name: 'OK' }))
+    fireEvent.click(await within(tipsDialog[1]).findByRole('button', { name: 'OK' }))
 
     // update the props "visible"
     rerender(<NetworkVenueScheduleDialog {...props} visible={false}/>)
@@ -149,9 +148,9 @@ describe('NetworkVenueTabScheduleDialog', () => {
     render(<NetworkVenueScheduleDialog {...props} visible={true} />)
     const dialog = await waitFor(async () => screen.findByRole('dialog'))
     const customSchedule = await within(dialog).findByRole('radio', { name: 'Custom Schedule' })
-    await userEvent.click(customSchedule)
+    fireEvent.click(customSchedule)
     const scheduleCheckbox = await within(dialog).findAllByRole('checkbox')
-    await userEvent.click(scheduleCheckbox[0])
+    fireEvent.click(scheduleCheckbox[0])
     const mondayTimeSlot = await within(dialog).findByTestId('mon_0')
     const mondayLastTimeSlot = await within(dialog).findByTestId('mon_95')
 
@@ -172,9 +171,9 @@ describe('NetworkVenueTabScheduleDialog', () => {
     render(<NetworkVenueScheduleDialog {...props} visible={true} />)
     const dialog = await waitFor(async () => screen.findByRole('dialog'))
     const customSchedule = await within(dialog).findByRole('radio', { name: 'Custom Schedule' })
-    await userEvent.click(customSchedule)
+    fireEvent.click(customSchedule)
     const scheduleCheckbox = await within(dialog).findAllByRole('checkbox')
-    await userEvent.click(scheduleCheckbox[1])
+    fireEvent.click(scheduleCheckbox[1])
     const tuesdayTimeSlot1 = await within(dialog).findByTestId('tue_0')
     const tuesdayTimeSlot2= await within(dialog).findByTestId('tue_50')
 
