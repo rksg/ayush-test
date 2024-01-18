@@ -14,7 +14,7 @@ const info = defineMessage({
   belong to your organisation into this RUCKUS AI account.
   {br}
   {br}
-  "Add internal User" allows you to include a user who belongs to your
+  "Add Internal User" allows you to include a user who belongs to your
   organisation into this RUCKUS AI account.
   {br}
   {br}
@@ -31,7 +31,7 @@ export default function Users () {
       title={<>
         {$t(title,{ usersCount })} ({usersCount})
         <Tooltip.Info
-          data-html={true}
+          data-html
           title={$t(info, { br: <br/> })} />
       </>}
     />
