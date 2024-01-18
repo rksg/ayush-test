@@ -18,6 +18,7 @@ export const usePersonaListQuery = (props: UsePersonaListQueryProps) => {
   const isNewConfigFlow = useIsSplitOn(Features.DPSK_NEW_CONFIG_FLOW_TOGGLE)
   const [isPersonaPayloadReady,setIsPersonaPayloadReady] = useState(false)
   const [dataSource, setDataSource] = useState<Persona[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
   const personaGroupQuery = useGetPersonaGroupByIdQuery(
@@ -80,6 +81,7 @@ export const usePersonaListQuery = (props: UsePersonaListQueryProps) => {
         deviceCount: (item.deviceCount ?? 0) + (dpskDeviceCounts[item.dpskGuid ?? ''] ?? 0)
       }))
       setDataSource(result as Persona[])
+      setIsLoading(false)
     })
 
   }, [personaListTableQuery.isLoading, personaGroupQuery.isLoading])
@@ -89,6 +91,7 @@ export const usePersonaListQuery = (props: UsePersonaListQueryProps) => {
       ...data,
       data: dataSource
     },
-    ...rest
+    ...rest,
+    isLoading
   }
 }

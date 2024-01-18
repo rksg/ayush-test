@@ -232,7 +232,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
 
     setVenueId(venueId)
     setUnitPool(pool)
-  }, [personaListQuery.data, personaGroupQuery.data])
+  }, [personaListQuery.isLoading, personaGroupQuery.data])
 
   const toastDetailErrorMessage = (error: PersonaErrorResponse) => {
     const hasSubMessages = error.data?.subErrors
