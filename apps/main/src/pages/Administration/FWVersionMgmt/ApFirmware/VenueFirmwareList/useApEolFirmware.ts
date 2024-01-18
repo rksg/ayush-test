@@ -2,10 +2,10 @@
 import { DefaultOptionType } from 'antd/lib/select'
 import _                     from 'lodash'
 
-import { Features, useIsSplitOn }                                                               from '@acx-ui/feature-toggle'
-import { useGetApModelFamiliesQuery, useGetAvailableABFListQuery }                              from '@acx-ui/rc/services'
-import { ABFVersion, ApModelFamilyType, EolApFirmware, FirmwareVenue, apModelFamilyTypeLabels } from '@acx-ui/rc/utils'
-import { getIntl }                                                                              from '@acx-ui/utils'
+import { Features, useIsSplitOn }                                                                        from '@acx-ui/feature-toggle'
+import { useGetApModelFamiliesQuery, useGetAvailableABFListQuery }                                       from '@acx-ui/rc/services'
+import { ABFVersion, ApModelFamilyType, EolApFirmware, FirmwareVenue, defaultApModelFamilyDisplayNames } from '@acx-ui/rc/utils'
+import { getIntl }                                                                                       from '@acx-ui/utils'
 
 import { MaxABFVersionEntity, compactEolApFirmwares, compareVersions, findMaxEolABFVersions, getActiveApModels, getVersionLabel, isBetaFirmware } from '../../FirmwareUtils'
 
@@ -41,16 +41,20 @@ export function useApEolFirmware () {
       }
     }
   })
-  // modelToFamilyMap will be like { 'R770': 'WiFi 7', 'R600': 'AC WAVE1', ... }
-  const { modelToFamilyMap } = useGetApModelFamiliesQuery({}, {
+  const { modelToFamilyMap, apModelFamilyDisplayNames } = useGetApModelFamiliesQuery({}, {
     skip: !isBranchLevelSupportedModelsEnabled,
     refetchOnMountOrArgChange: false,
     selectFromResult: ({ data }) => ({
       // eslint-disable-next-line max-len
-      modelToFamilyMap: (data ?? []).reduce((result: { [key: string]: ApModelFamilyType }, item) => {
+      modelToFamilyMap: (data ?? []).reduce((result: Record<string, ApModelFamilyType>, item) => {
         item.apModels.forEach(apModel => result[apModel] = item.name)
         return result
-      }, {})
+      }, {}),
+      // eslint-disable-next-line max-len
+      apModelFamilyDisplayNames: (data ?? []).reduce((result: Record<ApModelFamilyType, string>, item) => {
+        result[item.name] = item.displayName
+        return result
+      }, { ...defaultApModelFamilyDisplayNames })
     })
   })
 
@@ -175,7 +179,7 @@ export function useApEolFirmware () {
     Object.keys(upgradableApModelAndFamilies).forEach(abf => {
       const target = upgradableApModelAndFamilies[abf]
       // eslint-disable-next-line max-len
-      target.familyNames = [...new Set(target.apModels.map(model => apModelFamilyTypeLabels[modelToFamilyMap[model]]))]
+      target.familyNames = [...new Set(target.apModels.map(model => apModelFamilyDisplayNames[modelToFamilyMap[model]]))]
     })
 
     return upgradableApModelAndFamilies
@@ -206,12 +210,13 @@ function getGreaterABFVersionList (abfVersionList: ABFVersion[], abfName: string
 }
 
 const eolABFSupportedApFamilyLabels: { [abfName: string]: string[] } = {
+  'active': [defaultApModelFamilyDisplayNames[ApModelFamilyType.WIFI_7]],
   'ABF2-3R': [
-    apModelFamilyTypeLabels[ApModelFamilyType.WIFI_6],
-    apModelFamilyTypeLabels[ApModelFamilyType.WIFI_6E],
-    apModelFamilyTypeLabels[ApModelFamilyType.WIFI_11AC_2]
+    defaultApModelFamilyDisplayNames[ApModelFamilyType.WIFI_6],
+    defaultApModelFamilyDisplayNames[ApModelFamilyType.WIFI_6E],
+    defaultApModelFamilyDisplayNames[ApModelFamilyType.WIFI_11AC_2]
   ],
-  'eol-ap-2022-12': [apModelFamilyTypeLabels[ApModelFamilyType.WIFI_11AC_1]]
+  'eol-ap-2022-12': [defaultApModelFamilyDisplayNames[ApModelFamilyType.WIFI_11AC_1]]
 }
 // eslint-disable-next-line max-len
 function extractUpgradableApModelsAndFamilies (selectedRows: FirmwareVenue[]): UpgradableApModelsAndFamilies {
@@ -221,7 +226,7 @@ function extractUpgradableApModelsAndFamilies (selectedRows: FirmwareVenue[]): U
 
   if (activeABFApModels.length > 0) {
     upgradableApModelAndFamilies['active'] = {
-      familyNames: [apModelFamilyTypeLabels[ApModelFamilyType.WIFI_7]],
+      familyNames: eolABFSupportedApFamilyLabels['active'],
       apModels: activeABFApModels
     }
   }
