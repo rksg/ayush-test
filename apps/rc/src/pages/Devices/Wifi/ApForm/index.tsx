@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 
-import { Col, Form, Input, Row, Select, Space } from 'antd'
-import { DefaultOptionType }                    from 'antd/lib/select'
-import { isEqual, omit, pick, isEmpty, omitBy } from 'lodash'
-import { FormattedMessage, useIntl }            from 'react-intl'
+import { Col, Form, Input, Row, Select, Space }       from 'antd'
+import { DefaultOptionType }                          from 'antd/lib/select'
+import { isEqual, omit, pick, isEmpty, omitBy, find } from 'lodash'
+import { FormattedMessage, useIntl }                  from 'react-intl'
 
 import {
   Button,
@@ -35,6 +35,7 @@ import {
   useLazyApViewModelQuery
 } from '@acx-ui/rc/services'
 import {
+  APExtended,
   ApDeep,
   ApDhcpRoleEnum,
   ApErrorHandlingMessages,
@@ -65,7 +66,8 @@ import { compareVersions, validationMessages } from '@acx-ui/utils'
 
 import { ApEditContext } from '../ApEdit/index'
 
-import * as UI from './styledComponents'
+import * as UI                from './styledComponents'
+import { VersionChangeAlert } from './VersionChangeAlert'
 
 const defaultPayload = {
   fields: ['name', 'country', 'countryCode', 'latitude', 'longitude', 'dhcp', 'id'],
@@ -152,8 +154,8 @@ export function ApForm () {
     }
   }
 
-  const venueInfos = (venueFwVersion: string) => {
-    const contentInfo = <><br/><br/>{$t({
+  const getVenueInfos = (venueFwVersion: string) => {
+    const contentInfo = $t({
       defaultMessage: 'If you are adding an <b>{apModels} or {lastApModel}</b> AP, ' +
         'please update the firmware in this venue to <b>{baseVersion}</b> or greater. ' +
         'This can be accomplished in the Administration\'s {fwManagementLink} section.' }, {
@@ -161,23 +163,24 @@ export function ApForm () {
       apModels: triApModels.length > 1 ? triApModels.slice(0, -1).join(',') : 'R560',
       lastApModel: triApModels.length > 1 ? triApModels[triApModels.length - 1] : 'R760',
       baseVersion: BASE_VERSION,
-      fwManagementLink: (<TenantLink
-        to={'/administration/fwVersionMgmt'}>{
-          $t({ defaultMessage: 'Firmware Management' })
-        }</TenantLink>)
-    })}</>
+      fwManagementLink: (<TenantLink to={'/administration/fwVersionMgmt'}>
+        { $t({ defaultMessage: 'Firmware Management' }) }
+      </TenantLink>)
+    })
 
-    return <span>
+    return <Space direction='vertical' style={{ margin: '8px 0' }}>
       {$t({ defaultMessage: 'Venue Firmware Version: {fwVersion}' }, {
         fwVersion: venueFwVersion
       })}
-      {
-        checkBelowFwVersion(venueFwVersion) ? contentInfo : ''
-      }
-    </span>
+      { checkTriApModelsAndBaseFwVersion(venueFwVersion) ? <span>{contentInfo}</span> : null }
+      { isEditMode && apDetails && <VersionChangeAlert
+        targetVenueVersion={venueFwVersion}
+        apFirmwareVersion={apDetails.firmware}
+      /> }
+    </Space>
   }
 
-  const checkBelowFwVersion = (version: string) => {
+  const checkTriApModelsAndBaseFwVersion = (version: string) => {
     if (version === '-') return false
     if (isEditMode && apDetails) {
       if (!triApModels.includes(apDetails.model)) return false
@@ -423,22 +426,25 @@ export function ApForm () {
       return false
     }
 
-    // Get ap info separately in case apStatusData is undefined and have no check
-    const apInfo = apList?.data?.[0]
+    const aps = apList?.data
+
+    let apInfo: APExtended | undefined
+
+
+    if (aps && aps.length > 0) {
+      apInfo = find(aps, (ap) => ap.serialNumber === apDetails?.serialNumber)
+    }
 
     if (!apInfo) {
       return false
     }
 
     const afcInfo = apInfo.apStatusData?.afcInfo
+
     const requiredStatus = [AFCStatus.AFC_NOT_REQUIRED, AFCStatus.WAIT_FOR_LOCATION]
 
-    // AFC info possibly does not exist.
-    if (!afcInfo) {
-      return false
-    }
-    // Also does Geo-location
-    if (afcInfo.geoLocation === undefined) {
+    // AFC info and Geo-location possibly does not exist.
+    if (!afcInfo || afcInfo.geoLocation === undefined) {
       return false
     }
     // Same, and if Status is in requires status, then false.
@@ -446,7 +452,7 @@ export function ApForm () {
       return false
     }
 
-    return isVenueSameCountry
+    return true
   }
 
   const handleUpdateContext = () => {
@@ -561,15 +567,8 @@ export function ApForm () {
                   onChange={async (value) => await handleVenueChange(value)}
                 />}
               />
-              <Form.Item
-                name='venueInfos'
-                style={{
-                  marginBottom: '0px'
-                }}
-              >
-                {venueInfos(venueFwVersion)}
-              </Form.Item>
-              { displayAFCGeolocation() &&
+              { getVenueInfos(venueFwVersion) }
+              { displayAFCGeolocation() && isVenueSameCountry &&
                   <Alert message={
                     'Moving this device to a new venue will reset AFC geolocation.\
                   6GHz operation will remain in low power mode \
