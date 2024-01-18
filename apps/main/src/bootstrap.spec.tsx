@@ -6,7 +6,8 @@ import { AdministrationUrlsInfo }                             from '@acx-ui/rc/u
 import { act, screen, mockServer, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                                       from '@acx-ui/user'
 
-import * as bootstrap from './bootstrap'
+import * as bootstrap            from './bootstrap'
+import { showBrowserLangDialog } from './BrowserDialog/BrowserDialog'
 
 jest.mock('./AllRoutes', () => () => <div data-testid='all-routes' />)
 jest.mock('@acx-ui/theme', () => {}, { virtual: true })
@@ -42,6 +43,11 @@ jest.mock('./BrowserDialog/BrowserDialog', () => ({
 }))
 
 const renderPendo = jest.mocked(require('@acx-ui/utils').renderPendo)
+const mockedUpdateUserProfileFn = jest.fn()
+const mockBrowserDialog = jest.fn().mockResolvedValue({
+  lang: 'fr-FR',
+  isLoading: false
+})
 
 describe('bootstrap.init', () => {
   const data = {
@@ -65,7 +71,6 @@ describe('bootstrap.init', () => {
     externalId: '0012h00000oNjOXAA0',
     name: 'msp.demo'
   }
-
   beforeEach(() => {
     mockServer.use(
       rest.get(
@@ -95,6 +100,13 @@ describe('bootstrap.init', () => {
       rest.get(
         UserUrlsInfo.getBetaStatus.url,
         (_req, res, ctx) => res(ctx.status(200))
+      ),
+      rest.put(
+        UserUrlsInfo.updateUserProfile.url,
+        (req, res, ctx) => {
+          mockedUpdateUserProfileFn(req.body)
+          return res(ctx.json({}))
+        }
       )
     )
   })
@@ -132,5 +144,16 @@ describe('bootstrap.init', () => {
         version: '1.0.0'
       }
     })
+  })
+
+  it('should open browser dialog and return updated preferred language', async () => {
+    global.localStorage.getItem = jest.fn().mockReturnValue(null)
+    global.localStorage.setItem = jest.fn()
+    jest.spyOn(require('./BrowserDialog/BrowserDialog'),
+      'showBrowserLangDialog').mockImplementation(mockBrowserDialog)
+    await Promise.resolve()
+    const result = await showBrowserLangDialog()
+    await Promise.resolve()
+    expect(result).toStrictEqual({ lang: 'fr-FR', isLoading: false })
   })
 })
