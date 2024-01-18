@@ -58,8 +58,7 @@ type PAGINATION = {
   pageSize: number,
   defaultPageSize: number,
   total: number,
-  settingsId?: string,
-  onShowSizeChange?: (current: number, pageSize: number) => void
+  settingsId?: string
 }
 
 const DEFAULT_PAGINATION = {
@@ -153,18 +152,15 @@ export function useTableQuery <
     const pageSizeDefined = Number(localStorage.getItem(`${settingsId}-pagesize`))
     const pageSize = (pageSizeDefined > 0) ? pageSizeDefined :
       (option.pagination.pageSize ?? TABLE_DEFAULT_PAGE_SIZE)
-    const onShowSizeChange = (current: number, pageSize: number) => {
-      localStorage.setItem(`${settingsId}-pagesize`, pageSize.toString())
-    }
+
     return {
-      ...initialPagination,
-      onShowSizeChange, pageSize, defaultPageSize: pageSize
+      ...initialPagination, pageSize
     }
   })
 
   const initialPayload = {
     ...option.defaultPayload,
-    ...(_.omit(pagination, 'onShowSizeChange') as unknown as Partial<Payload>),
+    ...(pagination as unknown as Partial<Payload>),
     ...(initialSorter as unknown as Partial<Payload>),
     ...(initialSearch.searchString && initialSearch)
   } as Payload
