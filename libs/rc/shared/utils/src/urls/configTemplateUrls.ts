@@ -26,6 +26,11 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/wifiNetworks/:networkId',
     newApi: true
   },
+  deleteNetworkTemplate: {
+    method: 'delete',
+    url: '/templates/wifiNetworks/:templateId',
+    newApi: true
+  },
   getNetworkTemplateList: {
     method: 'post',
     url: '/templates/wifiNetworks/query',
@@ -39,6 +44,11 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getAAAPolicyTemplate: {
     method: 'get',
     url: '/templates/radiusServerProfiles/:policyId',
+    newApi: true
+  },
+  deleteAAAPolicyTemplate: {
+    method: 'delete',
+    url: '/templates/radiusServerProfiles/:templateId',
     newApi: true
   },
   updateAAAPolicyTemplate: {
