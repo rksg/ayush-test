@@ -236,8 +236,6 @@ describe('NetworkVenuesTab', () => {
       route: { params, path: '/:tenantId/t/:networkId' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
     mockServer.use(
       rest.get(
         WifiUrlsInfo.getNetwork.url,
@@ -264,8 +262,6 @@ describe('NetworkVenuesTab', () => {
     fireEvent.click(await screen.findByRole('row', { name: /My-Venue/i }))
     const activateButton = screen.getByRole('button', { name: 'Activate' })
     fireEvent.click(activateButton)
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
@@ -335,8 +331,6 @@ describe('NetworkVenuesTab', () => {
       route: { params, path: '/:tenantId/t/:networkId' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
     mockServer.use(
       rest.get(
         WifiUrlsInfo.getNetwork.url,
@@ -362,8 +356,6 @@ describe('NetworkVenuesTab', () => {
     await userEvent.click(await screen.findByRole('row', { name: /network-venue-1/i }))
     const deactivateButton = screen.getByRole('button', { name: 'Deactivate' })
     await userEvent.click(deactivateButton)
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
