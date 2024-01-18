@@ -1,13 +1,15 @@
 import { useEffect } from 'react'
 
-import { Col, Form, Input, Row, Switch } from 'antd'
-import { useIntl }                       from 'react-intl'
-import { useParams }                     from 'react-router-dom'
+import { Select,Col, Form, Input, Row, Switch } from 'antd'
+import { useIntl }                              from 'react-intl'
+import { useParams }                            from 'react-router-dom'
 
-import { Select, StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
-import { InformationSolid }                               from '@acx-ui/icons'
-import { SpaceWrapper }                                   from '@acx-ui/rc/components'
+import { StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
+import { useIsSplitOn, Features }                 from '@acx-ui/feature-toggle'
+import { InformationSolid }                       from '@acx-ui/icons'
+import { SpaceWrapper }                           from '@acx-ui/rc/components'
 import {
+  useGetEdgeLagListQuery,
   useGetEdgeListQuery,
   useGetEdgeSdLanP2ViewDataListQuery,
   useGetPortConfigQuery,
@@ -16,7 +18,6 @@ import {
 import {
   EdgeSdLanSettingP2,
   EdgeStatusEnum,
-  getEdgePortDisplayName,
   servicePolicyNameRegExp
 } from '@acx-ui/rc/utils'
 
@@ -28,8 +29,8 @@ import * as UI from './styledComponents'
 export const SettingsForm = () => {
   const { $t } = useIntl()
   const params = useParams()
+  const isEdgeLagEnabled = useIsSplitOn(Features.EDGE_LAG)
   const { form, editMode } = useStepFormContext<EdgeSdLanSettingP2>()
-
   const venueId = Form.useWatch('venueId', form)
   const edgeId = Form.useWatch('edgeId', form)
 
@@ -110,6 +111,21 @@ export const SettingsForm = () => {
     }
   })
 
+  const { lagsConfig } = useGetEdgeLagListQuery({
+    params: { serialNumber: edgeId },
+    payload: {
+      page: 1,
+      pageSize: 10
+    }
+  },{
+    skip: !isEdgeLagEnabled || !edgeId,
+    selectFromResult ({ data }) {
+      return {
+        lagsConfig: data?.data
+      }
+    }
+  })
+
   // prepare venue info
   useEffect(() => {
     form.setFieldValue('venueName', venueOptions?.filter(i => i.value === venueId)[0]?.label)
@@ -119,18 +135,22 @@ export const SettingsForm = () => {
   useEffect(() => {
     if (portsConfig) {
     // find corePort
-      let corePortKey, corePortName
+      let corePortKey
       portsConfig?.forEach((port) => {
         if (port.corePortEnabled) {
-          corePortKey = port.id
-          corePortName = getEdgePortDisplayName(port)
+          corePortKey = port.interfaceName
+        }
+      })
+      lagsConfig?.forEach((lag) => {
+        if (lag.corePortEnabled && lag.lagEnabled) {
+          corePortKey = lag.id
+          form.setFieldValue('isLagCorePort', true)
         }
       })
 
       form.setFieldValue('corePortKey', corePortKey)
-      form.setFieldValue('corePortName', corePortName)
     }
-  }, [portsConfig])
+  }, [portsConfig, lagsConfig])
 
   const onVenueChange = () => {
     form.setFieldValue('edgeId', undefined)

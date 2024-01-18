@@ -99,6 +99,7 @@ export const TunnelScopeForm = () => {
     form.setFieldValue('tunnelProfileName',
       tunnelProfileOptions?.filter(i => i.value === val)[0]?.label)
   }
+
   const onDmzTunnelChange = (val: string) => {
     form.setFieldValue('guestTunnelProfileName',
       tunnelProfileOptions?.filter(i => i.value === val)[0]?.label)

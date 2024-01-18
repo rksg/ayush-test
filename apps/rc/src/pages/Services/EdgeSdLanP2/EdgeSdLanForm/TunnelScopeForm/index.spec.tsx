@@ -1,13 +1,13 @@
 /* eslint-disable max-len */
-import { act, renderHook, waitFor, within } from '@testing-library/react'
-import userEvent                            from '@testing-library/user-event'
-import { Form }                             from 'antd'
-import { rest }                             from 'msw'
+import { act, renderHook, waitFor, waitForElementToBeRemoved, within } from '@testing-library/react'
+import userEvent                                                       from '@testing-library/user-event'
+import { Form }                                                        from 'antd'
+import { rest }                                                        from 'msw'
 
-import { StepsForm }       from '@acx-ui/components'
-import { networkApi }      from '@acx-ui/rc/services'
-import { CommonUrlsInfo }  from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+import { StepsForm }                                                    from '@acx-ui/components'
+import { networkApi, tunnelProfileApi }                                 from '@acx-ui/rc/services'
+import { CommonUrlsInfo, EdgeTunnelProfileFixtures, TunnelProfileUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                                              from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -16,10 +16,42 @@ import {
 
 import { mockDeepNetworkList, mockNetworkSaveData } from '../../__tests__/fixtures'
 
-import { ScopeForm } from '.'
+import { TunnelScopeForm } from '.'
+
+jest.mock('antd', () => {
+  const components = jest.requireActual('antd')
+  const Select = ({
+    children,
+    options,
+    loading,
+    ...props
+  }: React.PropsWithChildren<{
+    options: Array<{ label: string, value: unknown }>,
+    loading: boolean,
+    onChange?: (value: string) => void }>) => {
+    return (loading
+      ? <div role='img' data-testid='loadingIcon'>Loading</div>
+      : <select {...props}
+        onChange={(e) => {
+          props.onChange?.(e.target.value)}
+        }>
+        {/* Additional <option> to ensure it is possible to reset value to empty */}
+        <option value={undefined}></option>
+        {children}
+        {options?.map((option, index) => (
+          <option key={`option-${index}`} value={option.value as string}>{option.label}</option>
+        ))}
+      </select>)
+  }
+  Select.Option = 'option'
+  return { ...components, Select }
+})
 
 const mockedSetFieldValue = jest.fn()
 const { click } = userEvent
+const {
+  mockedTunnelProfileViewData
+} = EdgeTunnelProfileFixtures
 const useMockedFormHook = () => {
   const [ form ] = Form.useForm()
   form.setFieldValue('venueId', 'venue_00002')
@@ -27,25 +59,31 @@ const useMockedFormHook = () => {
   return form
 }
 
-describe('Scope Form', () => {
+describe('Tunnel Scope Form', () => {
   const mockedGetNetworkDeepList = jest.fn()
 
   beforeEach(() => {
     mockedSetFieldValue.mockReset()
     mockedGetNetworkDeepList.mockReset()
+
+    store.dispatch(tunnelProfileApi.util.resetApiState())
     store.dispatch(networkApi.util.resetApiState())
 
     mockServer.use(
       rest.post(
         CommonUrlsInfo.networkActivations.url,
-        (req, res, ctx) => res(ctx.json(mockNetworkSaveData))
+        (_req, res, ctx) => res(ctx.json(mockNetworkSaveData))
       ),
       rest.post(
         CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => {
+        (_req, res, ctx) => {
           mockedGetNetworkDeepList()
           return res(ctx.json(mockDeepNetworkList))
         }
+      ),
+      rest.post(
+        TunnelProfileUrls.getTunnelProfileViewDataList.url,
+        (_, res, ctx) => res(ctx.json(mockedTunnelProfileViewData))
       )
     )
   })
@@ -56,14 +94,17 @@ describe('Scope Form', () => {
     render(
       <Provider>
         <StepsForm form={stepFormRef.current} editMode={true}>
-          <ScopeForm />
+          <TunnelScopeForm />
         </StepsForm>
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
-    expect(await screen.findByText('Scope')).toBeVisible()
+    expect(await screen.findByText('Tunnel & Network Settings')).toBeVisible()
     await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
-    const title = await screen.findByText(/Activate networks for the SD-LAN service on the venue/i)
-    expect(title.textContent).toBe('Activate networks for the SD-LAN service on the venue (airport):')
+    await userEvent.selectOptions(
+      await screen.findByRole('combobox', { name: 'Tunnel Profile (AP- Cluster tunnel)' }),
+      'tunnelProfileId2')
+
+    await screen.findByText(/Enable the networks that will tunnel the traffic to the selected cluster/i)
     const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
     expect(rows.length).toBe(3)
     expect(stepFormRef.current.getFieldValue('activatedNetworks')).toStrictEqual([])
@@ -86,14 +127,13 @@ describe('Scope Form', () => {
             networkIds: mockedNetworkIds
           }}
         >
-          <ScopeForm />
+          <TunnelScopeForm />
         </StepsForm>
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
-    expect(await screen.findByText('Scope')).toBeVisible()
+    expect(await screen.findByText('Tunnel & Network Settings')).toBeVisible()
     await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
-    const title = await screen.findByText(/Activate networks for the SD-LAN service on the venue/i)
-    expect(title.textContent).toBe('Activate networks for the SD-LAN service on the venue (airport):')
+    await screen.findByText(/Enable the networks that will tunnel the traffic to the selected cluster/i)
     const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
     expect(rows.length).toBe(3)
     await waitFor(() =>
@@ -115,15 +155,16 @@ describe('Scope Form', () => {
     render(
       <Provider>
         <StepsForm form={stepFormRef.current}>
-          <ScopeForm />
+          <TunnelScopeForm />
         </StepsForm>
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
-    expect(await screen.findByText('Scope')).toBeVisible()
+    expect(await screen.findByText('Tunnel & Network Settings')).toBeVisible()
     await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
     expect(rows.length).toBe(3)
-    expect(stepFormRef.current.getFieldValue('activatedNetworks')).toStrictEqual([])
+    expect(stepFormRef.current.getFieldValue('activatedNetworks')).toStrictEqual()
 
     await click(
       within(await screen.findByRole('row', { name: /MockedNetwork 2/i })).getByRole('switch'))
@@ -146,11 +187,11 @@ describe('Scope Form', () => {
     render(
       <Provider>
         <StepsForm form={stepFormRef.current}>
-          <ScopeForm />
+          <TunnelScopeForm />
         </StepsForm>
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
-    expect(await screen.findByText('Scope')).toBeVisible()
+    expect(await screen.findByText('Tunnel & Network Settings')).toBeVisible()
     await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
     const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
     expect(rows.length).toBe(3)
@@ -171,11 +212,11 @@ describe('Scope Form', () => {
     render(
       <Provider>
         <StepsForm form={stepFormRef.current}>
-          <ScopeForm />
+          <TunnelScopeForm />
         </StepsForm>
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
-    expect(await screen.findByText('Scope')).toBeVisible()
+    expect(await screen.findByText('Tunnel & Network Settings')).toBeVisible()
     await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
     const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
     expect(rows.length).toBe(3)
