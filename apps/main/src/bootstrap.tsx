@@ -88,39 +88,36 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
       const openDialog = browserLang !== DEFAULT_SYS_LANG && browserLang !== lang
       if (openDialog) {
         const userPreflang = showBrowserLangDialog()
-        if (userPreflang) {
-          userPreflang.then((dialogResult) => {
-            // update user profile - 'yes' language change
-            if (dialogResult.lang !== '') {
-              setLanguage(dialogResult.lang)
-              const data:PartialUserData = {
-                detailLevel: userProfile?.detailLevel,
-                dateFormat: userProfile?.dateFormat,
-                preferredLanguage: dialogResult.lang
-              }
-              try {
-                updateUserProfile({
-                  payload: data,
-                  params: { tenantId }
-                }).unwrap()
-                setLangLoading(false)
-              } catch (error) {
-                console.log(error) // eslint-disable-line no-console
-              } finally {
-                setLangLoading(false)
-              }
+        userPreflang.then((dialogResult) => {
+          // update user profile - 'yes' language change
+          if (dialogResult.lang !== '') {
+            setLanguage(dialogResult.lang)
+            const data:PartialUserData = {
+              detailLevel: userProfile?.detailLevel,
+              dateFormat: userProfile?.dateFormat,
+              preferredLanguage: dialogResult.lang
             }
-          }).catch(() => {
-            // user selected 'no' language change
-            setLanguage(userProfile?.preferredLanguage?? defaultLang)
-            setLangLoading(false)
-          })
-        } else {
+            try {
+              updateUserProfile({
+                payload: data,
+                params: { tenantId }
+              }).unwrap()
+              setLangLoading(false)
+            } catch (error) {
+              console.log(error) // eslint-disable-line no-console
+            } finally {
+              setLangLoading(false)
+            }
+          }
+        }).catch(() => {
+          // user selected 'no' language change
           setLanguage(userProfile?.preferredLanguage?? defaultLang)
           setLangLoading(false)
-        }
+        })
+      } else {
+        setLanguage(userProfile?.preferredLanguage?? defaultLang)
+        setLangLoading(false)
       }
-
     }
   }, [ userProfile, defaultLang, tenantId, updateUserProfile ])
 
