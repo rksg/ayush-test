@@ -16,9 +16,7 @@ export const usePersonaListQuery = (props: UsePersonaListQueryProps) => {
   const { personaGroupId } = props
   const { tenantId } = useParams()
   const isNewConfigFlow = useIsSplitOn(Features.DPSK_NEW_CONFIG_FLOW_TOGGLE)
-  const [isPersonaPayloadReady,setIsPersonaPayloadReady] = useState(false)
   const [dataSource, setDataSource] = useState<Persona[]>([])
-  const [isLoading, setIsLoading] = useState(true)
   const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
   const personaGroupQuery = useGetPersonaGroupByIdQuery(
@@ -30,7 +28,7 @@ export const usePersonaListQuery = (props: UsePersonaListQueryProps) => {
     defaultPayload: {
       keyword: '',
       groupId: ''
-    },option: { skip: !isPersonaPayloadReady }
+    }
   })
   const [getDpskDevices] = useLazyGetDpskPassphraseDevicesQuery()
   const { data, ...rest } = personaListTableQuery
@@ -44,13 +42,7 @@ export const usePersonaListQuery = (props: UsePersonaListQueryProps) => {
   }, [personaGroupId])
 
   useEffect(() => {
-    if(personaListTableQuery?.payload?.groupId) {
-      setIsPersonaPayloadReady(true)
-    }
-  }, [personaListTableQuery.payload.groupId])
-
-  useEffect(() => {
-    if (!personaGroupQuery?.data || !personaListTableQuery?.data) return
+    if (!personaGroupQuery.data || !personaListTableQuery.data) return
 
     const serviceId = personaGroupQuery.data?.dpskPoolId
     if (!serviceId) return
@@ -81,17 +73,17 @@ export const usePersonaListQuery = (props: UsePersonaListQueryProps) => {
         deviceCount: (item.deviceCount ?? 0) + (dpskDeviceCounts[item.dpskGuid ?? ''] ?? 0)
       }))
       setDataSource(result as Persona[])
-      setIsLoading(false)
     })
 
   }, [personaListTableQuery.isLoading, personaGroupQuery.isLoading])
 
   return {
-    data: {
-      ...data,
-      data: dataSource
-    },
-    ...rest,
-    isLoading
+    data: dataSource.length === 0 ?
+      data :
+      {
+        ...data,
+        data: dataSource
+      },
+    ...rest
   }
 }
