@@ -154,12 +154,10 @@ export function useApEolFirmware () {
     sortedTargetVersions.forEach(targetVersion => {
       const targetABFInfo = releasedABFList.find(abf => abf.id === targetVersion)
 
-      if (!targetABFInfo) return
+      if (!targetABFInfo?.supportedApModels) return
 
       const supportedApModels = targetABFInfo.supportedApModels.filter(apModel => {
-        const originLength = allApModels.length
-        _.pull(allApModels, apModel)
-        return originLength !== allApModels.length
+        return _.remove(allApModels, (currentModel) => currentModel === apModel).length > 0
       })
 
       const existingData = upgradableApModelAndFamilies[targetABFInfo.abf]

@@ -130,7 +130,7 @@ export interface ABFVersion {
   category: FirmwareCategory;
   releaseDate: string;
   onboardDate: string;
-  supportedApModels: string[];
+  supportedApModels?: string[];
 }
 
 export interface ApModelFamily {
