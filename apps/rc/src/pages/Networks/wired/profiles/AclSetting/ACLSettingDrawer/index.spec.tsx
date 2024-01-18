@@ -59,9 +59,9 @@ describe('ACLSettingDrawer', () => {
       /></Provider>
     )
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Add Rule' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add Rule' }))
     const dialog = await screen.findAllByRole('dialog')
-    fireEvent.click(await within(dialog[1]).findByRole('button', { name: 'Cancel' }))
+    await userEvent.click(await within(dialog[1]).findByRole('button', { name: 'Cancel' }))
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
 
