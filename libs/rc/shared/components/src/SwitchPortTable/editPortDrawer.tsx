@@ -922,14 +922,14 @@ export function EditPortDrawer ({
                   name='voiceVlan'
                   noStyle
                   children={
-                    <>
+                    <Space data-testid='voice-vlan' size={4}>
                       <span> {$t({ defaultMessage: 'Set as Voice VLAN:' })} </span>
                       {
                         voiceVlan
                           ? $t({ defaultMessage: 'Yes (VLAN-ID: {voiceVlan})' }, { voiceVlan })
                           : $t({ defaultMessage: 'No' })
                       }
-                    </>
+                    </Space>
                   }
                 />
               </UI.VoiceVlan> :
