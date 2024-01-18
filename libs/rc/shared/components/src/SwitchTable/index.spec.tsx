@@ -215,7 +215,7 @@ describe('SwitchTable', () => {
     expect(await within(tbody).findByText('stack-member (Member)')).toBeVisible()
   })
 
-  it('should render correctly when feature flag is on', async () => {
+  it('should render correctly when feature flag is on: button', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider><SwitchTable showAllColumns={true} searchable={true}/></Provider>, {
       route: { params, path: '/:tenantId/t' }
@@ -243,6 +243,29 @@ describe('SwitchTable', () => {
     await userEvent.click(await within(row1).findByRole('checkbox'))
 
     await screen.findByText(/2 selected/)
+    expect(matchButton).not.toBeDisabled()
+  })
+
+  it('should render correctly when feature flag is on: dialog', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider><SwitchTable showAllColumns={true} searchable={true}/></Provider>, {
+      route: { params, path: '/:tenantId/t' }
+    })
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
+    expect(tbody).toBeVisible()
+    const rows = await within(tbody).findAllByRole('row')
+    expect(rows).toHaveLength(switchList.data.length)
+
+    const row = await screen.findByRole('row', { name: /FEK3224R0AG/i })
+    await userEvent.click(await within(row).findByRole('checkbox'))
+
+    const row1 = await screen.findByRole('row', { name: /FEK3224R1AG/i })
+    await userEvent.click(await within(row1).findByRole('checkbox'))
+
+    await screen.findByText(/2 selected/)
+    const matchButton = await screen.findByRole('button', { name: 'Match Admin Password to Venue' })
     expect(matchButton).not.toBeDisabled()
 
     await userEvent.click(matchButton)
