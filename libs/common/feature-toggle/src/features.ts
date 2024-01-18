@@ -150,7 +150,8 @@ export enum Features {
   WISPR_ENCRYPT_MAC_IP = 'acx-ui-wispr-encrypt-mac-ip-toggle',
   WPA3_80211R = 'wifi-eda-wpa3-80211r-toggle',
   ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
-  EDGE_HA_TOGGLE = 'edge-ha-toggle'
+  EDGE_HA_TOGGLE = 'edge-ha-toggle',
+  WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE = 'wifi-eda-branch-level-supported-models-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

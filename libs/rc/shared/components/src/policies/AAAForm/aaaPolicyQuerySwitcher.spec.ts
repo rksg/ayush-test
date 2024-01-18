@@ -14,22 +14,18 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useParams: () => mockedUseParams()
 }))
 
-const mockedUseGetAAAPolicyTemplateListQuery = jest.fn()
-const mockedUseLazyGetAAAPolicyTemplateQuery = jest.fn()
-jest.mock('@acx-ui/msp/services', () => ({
-  ...jest.requireActual('@acx-ui/msp/services'),
-  // eslint-disable-next-line max-len, @typescript-eslint/no-explicit-any
-  useGetAAAPolicyTemplateListQuery: (...args: any[]) => mockedUseGetAAAPolicyTemplateListQuery(...args),
-  useLazyGetAAAPolicyTemplateQuery: () => mockedUseLazyGetAAAPolicyTemplateQuery()
-}))
-
 const mockedUseGetAAAPolicyViewModelListQuery = jest.fn()
 const mockedUseLazyAaaPolicyQuery = jest.fn()
+const mockedUseGetAAAPolicyTemplateListQuery = jest.fn()
+const mockedUseLazyGetAAAPolicyTemplateQuery = jest.fn()
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual(''),
   // eslint-disable-next-line max-len, @typescript-eslint/no-explicit-any
   useGetAAAPolicyViewModelListQuery: (...args: any[]) => mockedUseGetAAAPolicyViewModelListQuery(...args),
-  useLazyAaaPolicyQuery: () => mockedUseLazyAaaPolicyQuery()
+  useLazyAaaPolicyQuery: () => mockedUseLazyAaaPolicyQuery(),
+  // eslint-disable-next-line max-len, @typescript-eslint/no-explicit-any
+  useGetAAAPolicyTemplateListQuery: (...args: any[]) => mockedUseGetAAAPolicyTemplateListQuery(...args),
+  useLazyGetAAAPolicyTemplateQuery: () => mockedUseLazyGetAAAPolicyTemplateQuery()
 }))
 
 describe('useGetAAAPolicyInstanceList', () => {
