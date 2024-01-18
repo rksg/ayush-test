@@ -7,6 +7,7 @@ import { useParams }                     from 'react-router-dom'
 
 
 import {
+  Button,
   Loader,
   showActionModal,
   Table,
@@ -19,7 +20,6 @@ import {
   useUpdateAdminGroupsMutation
 } from '@acx-ui/rc/services'
 import { AdminGroup, sortProp, defaultSort }                    from '@acx-ui/rc/utils'
-import { Link }                                                 from '@acx-ui/react-router-dom'
 import { RolesEnum }                                            from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, roleStringMap } from '@acx-ui/user'
 import { AccountType }                                          from '@acx-ui/utils'
@@ -88,19 +88,16 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
       title: $t({ defaultMessage: 'Group Name' }),
       key: 'name',
       dataIndex: 'name',
-      onCell: (data) => {
-        return {
-          onClick: () => {
-            setMemberGroupId(data.groupId as string)
+      render: (_, row) => {
+        return <Button
+          size='small'
+          type='link'
+          onClick={() => {
+            setMemberGroupId(row.groupId as string)
             setMembersDrawerVisible(true)
-          }
-        }
-      },
-      render: function (_, row) {
-        return (
-          <Link to=''>{row.name}</Link>
-
-        )
+          }}
+          children={(row.name ?? '')}
+        />
       }
     },
     {

@@ -35,10 +35,7 @@ export const ShowMembersDrawer = (props: ShowMembersDrawerProps) => {
       title: $t({ defaultMessage: 'Email' }),
       dataIndex: 'email',
       key: 'email',
-      searchable: true,
-      render: function (_, row) {
-        return (row.email)
-      }
+      searchable: true
     },
     {
       title: $t({ defaultMessage: 'Last Log-In' }),
@@ -56,7 +53,6 @@ export const ShowMembersDrawer = (props: ShowMembersDrawerProps) => {
         <Table
           columns={columnsRecentLogin}
           dataSource={adminLastLogins?.lastLoginList}
-          style={{ width: '350px' }}
           rowKey='email'
           type={'form'}
         />
