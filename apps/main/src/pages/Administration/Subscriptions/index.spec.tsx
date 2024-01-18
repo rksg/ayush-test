@@ -4,8 +4,9 @@ import { rest }   from 'msw'
 import { showToast }                                    from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }     from '@acx-ui/feature-toggle'
 import { MspUrlsInfo }                                  from '@acx-ui/msp/utils'
+import { administrationApi }                            from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo }                       from '@acx-ui/rc/utils'
-import { Provider }                                     from '@acx-ui/store'
+import { Provider, store, userApi }                     from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within  } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                                 from '@acx-ui/user'
 import { isDelegationMode }                             from '@acx-ui/utils'
@@ -41,6 +42,9 @@ describe('Subscriptions', () => {
     params = {
       tenantId: '3061bd56e37445a8993ac834c01e2710'
     }
+
+    store.dispatch(administrationApi.util.resetApiState())
+    store.dispatch(userApi.util.resetApiState())
 
     mockServer.use(
       rest.get(

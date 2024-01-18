@@ -33,7 +33,8 @@ export enum TenantAuthenticationType {
   saml = 'SAML',
   oauth2_client = 'OAUTH2_CLIENT_CREDENTIALS',
   oauth2_oidc = 'OAUTH2_OIDC',
-  ldap = 'LDAP'
+  ldap = 'LDAP',
+  google_workspace = 'GOOGLE_WORKSPACE'
 }
 
 export enum SamlFileType {

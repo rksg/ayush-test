@@ -32,7 +32,7 @@ const networkImpactData = { incident: {
     data: [
       { key: 'airtimeBusy', name: 'airtimeBusy', value: 0.5 },
       { key: 'airtimeRx', name: 'airtimeRx', value: 0.3 },
-      { key: 'airtimeTx', name: 'airtimTex', value: 0.1 },
+      { key: 'airtimeTx', name: 'airtimeTx', value: 0.1 },
       { key: 'airtimeIdle', name: 'airtimeIdle', value: 0.1 }
     ]
   },
@@ -58,6 +58,18 @@ describe('transformData', () => {
     expect(result).toEqual([
       { color: '#66B1E8', key: 'ssid1', name: 'ssid1', value: 2 },
       { color: '#EC7100', key: 'ssid2', name: 'ssid2', value: 1 }
+    ])
+  })
+  it('should return correct result for airtime', async () => {
+    const result = transformData(
+      networkImpactChartConfigs[NetworkImpactChartTypes.AirtimeBusy],
+      networkImpactData.incident[NetworkImpactChartTypes.AirtimeBusy]
+    )
+    expect(result).toEqual([
+      { color: '#66B1E8', key: 'airtimeBusy', name: 'Avg Airtime Busy', value: 0.5 },
+      { color: '#EC7100', key: 'airtimeRx', name: 'Avg Airtime Rx', value: 0.3 },
+      { color: '#F9C34B', key: 'airtimeTx', name: 'Avg Airtime Tx', value: 0.1 },
+      { color: '#F095FF', key: 'airtimeIdle', name: 'Avg Airtime Idle', value: 0.1 }
     ])
   })
 })
@@ -140,6 +152,12 @@ describe('NetworkImpact', () => {
       query: NetworkImpactQueryTypes.Distribution,
       type: 'airtimeClientsByAP',
       dimension: 'summary'
+    },
+    { // config disabled, chart not disabled
+      chart: NetworkImpactChartTypes.AirtimeClientsByAP,
+      query: NetworkImpactQueryTypes.Distribution,
+      type: 'airtimeClientsByAP',
+      dimension: 'summary'
     }]
   }
   it('should match snapshot', async () => {
@@ -175,6 +193,46 @@ describe('NetworkImpact', () => {
     }
     const data = {
       incident: {
+        [NetworkImpactChartTypes.RxPhyErrByAP]: {
+          count: 10,
+          total: 10,
+          data: [{ key: '00:00:00:00:00:00', value: 10 }]
+        }
+      }
+    }
+    mockGraphqlQuery(dataApiURL, 'NetworkImpactCharts', { data })
+    const { asFragment } = render(<NetworkImpact {...newProps} />, { wrapper: Provider })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const fragment = asFragment()
+    fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
+      .forEach((node:Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))
+    expect(fragment).toMatchSnapshot()
+  })
+
+  it('handles charts data disabled', async () => {
+    store.dispatch(networkImpactChartsApi.util.resetApiState())
+    const newProps: NetworkImpactProps = {
+      ...props,
+      charts: [{
+        chart: NetworkImpactChartTypes.RogueAPByChannel,
+        query: NetworkImpactQueryTypes.TopN,
+        type: 'rogueAp',
+        dimension: 'rogueChannel'
+      },
+      {
+        chart: NetworkImpactChartTypes.RxPhyErrByAP,
+        query: NetworkImpactQueryTypes.TopN,
+        type: 'apAirtime',
+        dimension: 'phyError'
+      }]
+    }
+    const data = {
+      incident: {
+        [NetworkImpactChartTypes.RogueAPByChannel]: {
+          count: 10,
+          total: 10,
+          data: [{ key: '00:00:00:00:00:00', value: 10 }]
+        },
         [NetworkImpactChartTypes.RxPhyErrByAP]: {
           count: 10,
           total: 10,
