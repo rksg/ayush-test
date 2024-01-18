@@ -1,11 +1,11 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
-import { act }   from 'react-dom/test-utils'
 
 import { clientApi, networkApi }                                      from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiUrlsInfo, getGuestDictionaryByLangCode } from '@acx-ui/rc/utils'
 import { store, Provider }                                            from '@acx-ui/store'
 import {
+  act,
   fireEvent,
   mockServer,
   render,
