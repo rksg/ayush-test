@@ -426,10 +426,10 @@ export function ApForm () {
 
     const aps = apList?.data
 
-    let apInfo = {} as APExtended | undefined
+    let apInfo: APExtended | undefined
 
 
-    if (aps) {
+    if (aps && aps.length > 0) {
       apInfo = find(aps, (ap) => ap.serialNumber === apDetails?.serialNumber)
     }
 
