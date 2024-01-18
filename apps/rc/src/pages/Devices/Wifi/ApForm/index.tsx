@@ -452,7 +452,7 @@ export function ApForm () {
       return false
     }
 
-    return isVenueSameCountry
+    return true
   }
 
   const handleUpdateContext = () => {
@@ -568,7 +568,7 @@ export function ApForm () {
                 />}
               />
               { getVenueInfos(venueFwVersion) }
-              { displayAFCGeolocation() &&
+              { displayAFCGeolocation() && isVenueSameCountry &&
                   <Alert message={
                     'Moving this device to a new venue will reset AFC geolocation.\
                   6GHz operation will remain in low power mode \
