@@ -65,7 +65,8 @@ import { compareVersions, validationMessages } from '@acx-ui/utils'
 
 import { ApEditContext } from '../ApEdit/index'
 
-import * as UI from './styledComponents'
+import * as UI                from './styledComponents'
+import { VersionChangeAlert } from './VersionChangeAlert'
 
 const defaultPayload = {
   fields: ['name', 'country', 'countryCode', 'latitude', 'longitude', 'dhcp', 'id'],
@@ -152,8 +153,8 @@ export function ApForm () {
     }
   }
 
-  const venueInfos = (venueFwVersion: string) => {
-    const contentInfo = <><br/><br/>{$t({
+  const getVenueInfos = (venueFwVersion: string) => {
+    const contentInfo = $t({
       defaultMessage: 'If you are adding an <b>{apModels} or {lastApModel}</b> AP, ' +
         'please update the firmware in this venue to <b>{baseVersion}</b> or greater. ' +
         'This can be accomplished in the Administration\'s {fwManagementLink} section.' }, {
@@ -161,23 +162,24 @@ export function ApForm () {
       apModels: triApModels.length > 1 ? triApModels.slice(0, -1).join(',') : 'R560',
       lastApModel: triApModels.length > 1 ? triApModels[triApModels.length - 1] : 'R760',
       baseVersion: BASE_VERSION,
-      fwManagementLink: (<TenantLink
-        to={'/administration/fwVersionMgmt'}>{
-          $t({ defaultMessage: 'Firmware Management' })
-        }</TenantLink>)
-    })}</>
+      fwManagementLink: (<TenantLink to={'/administration/fwVersionMgmt'}>
+        { $t({ defaultMessage: 'Firmware Management' }) }
+      </TenantLink>)
+    })
 
-    return <span>
+    return <Space direction='vertical' style={{ margin: '8px 0' }}>
       {$t({ defaultMessage: 'Venue Firmware Version: {fwVersion}' }, {
         fwVersion: venueFwVersion
       })}
-      {
-        checkBelowFwVersion(venueFwVersion) ? contentInfo : ''
-      }
-    </span>
+      { checkTriApModelsAndBaseFwVersion(venueFwVersion) ? <span>{contentInfo}</span> : null }
+      { isEditMode && apDetails && <VersionChangeAlert
+        targetVenueVersion={venueFwVersion}
+        apFirmwareVersion={apDetails.firmware}
+      /> }
+    </Space>
   }
 
-  const checkBelowFwVersion = (version: string) => {
+  const checkTriApModelsAndBaseFwVersion = (version: string) => {
     if (version === '-') return false
     if (isEditMode && apDetails) {
       if (!triApModels.includes(apDetails.model)) return false
@@ -561,14 +563,7 @@ export function ApForm () {
                   onChange={async (value) => await handleVenueChange(value)}
                 />}
               />
-              <Form.Item
-                name='venueInfos'
-                style={{
-                  marginBottom: '0px'
-                }}
-              >
-                {venueInfos(venueFwVersion)}
-              </Form.Item>
+              { getVenueInfos(venueFwVersion) }
               { displayAFCGeolocation() &&
                   <Alert message={
                     'Moving this device to a new venue will reset AFC geolocation.\
