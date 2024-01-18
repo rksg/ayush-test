@@ -27,14 +27,14 @@ export const usePersonaListQuery = (props: UsePersonaListQueryProps) => {
     useQuery: useSearchPersonaListQuery,
     defaultPayload: {
       keyword: '',
-      groupId: ''
+      groupId: personaGroupId
     }
   })
   const [getDpskDevices] = useLazyGetDpskPassphraseDevicesQuery()
   const { data, ...rest } = personaListTableQuery
 
   useEffect(() => {
-    if(!personaGroupId) return
+    if(!personaGroupId || personaListTableQuery.payload.groupId) return
     personaListTableQuery.setPayload({
       keyword: '',
       groupId: personaGroupId
@@ -43,6 +43,7 @@ export const usePersonaListQuery = (props: UsePersonaListQueryProps) => {
 
   useEffect(() => {
     if (!personaGroupQuery.data || !personaListTableQuery.data) return
+    if (personaListTableQuery.isLoading || personaListTableQuery.isFetching) return
 
     const serviceId = personaGroupQuery.data?.dpskPoolId
     if (!serviceId) return
@@ -78,7 +79,8 @@ export const usePersonaListQuery = (props: UsePersonaListQueryProps) => {
   }, [
     personaListTableQuery.isLoading,
     personaListTableQuery.isFetching,
-    personaGroupQuery.isLoading]
+    personaGroupQuery.isLoading
+  ]
   )
 
   return {
