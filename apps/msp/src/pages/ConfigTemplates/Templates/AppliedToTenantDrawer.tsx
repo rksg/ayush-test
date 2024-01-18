@@ -15,11 +15,11 @@ import {
   useMspCustomerListQuery
 } from '@acx-ui/msp/services'
 import {
-  ConfigTemplate,
   MspEc
 } from '@acx-ui/msp/utils'
 import {
-  useTableQuery
+  useTableQuery,
+  ConfigTemplate
 } from '@acx-ui/rc/utils'
 import { RolesEnum }                       from '@acx-ui/types'
 import { hasRoles, useUserProfileContext } from '@acx-ui/user'

@@ -24,7 +24,7 @@ describe('CrrmValuesExtra', () => {
   it('should render correctly for full crrm', async () => {
     const crrmDetails = transformDetailsResponse({
       ...mockedRecommendationCRRM,
-      metadata: { algorithmData: { isFullOptimized: true } }
+      metadata: { algorithmData: { isCrrmFullOptimization: true } }
     } as RecommendationDetails)
     render(<CrrmValuesExtra details={crrmDetails} />, { wrapper: Provider })
     expect(await screen
@@ -36,7 +36,7 @@ describe('CrrmValuesExtra', () => {
   it('should render correctly for partial optimized crrm', async () => {
     const crrmDetails = transformDetailsResponse({
       ...mockedRecommendationCRRM,
-      metadata: { algorithmData: { isFullOptimized: false } }
+      metadata: { algorithmData: { isCrrmFullOptimization: false } }
     } as RecommendationDetails)
     render(<CrrmValuesExtra details={crrmDetails} />, { wrapper: Provider })
     expect(await screen

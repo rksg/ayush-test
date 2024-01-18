@@ -2,8 +2,9 @@
 import _        from 'lodash'
 import { rest } from 'msw'
 
+import { administrationApi }      from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider  }              from '@acx-ui/store'
+import { Provider, store  }       from '@acx-ui/store'
 import {
   render,
   mockServer,
@@ -313,6 +314,8 @@ describe('Access Support Form Item - Msp Delegate EC', () => {
     } as UserProfileContextProps
 
     const getTenantDelegationFn = jest.fn()
+
+    store.dispatch(administrationApi.util.resetApiState())
 
     mockServer.use(
       rest.get(

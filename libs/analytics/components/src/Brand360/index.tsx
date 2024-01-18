@@ -7,23 +7,49 @@ import { useGetTenantSettingsQuery }                         from '@acx-ui/analy
 import type { Settings }                                     from '@acx-ui/analytics/utils'
 import { PageHeader, RangePicker, GridRow, GridCol, Loader } from '@acx-ui/components'
 import {
+  useMspCustomerListDropdownQuery
+} from '@acx-ui/msp/services'
+import {
   DateFilter,
   DateRange,
   getDateRangeFilter,
   getDatePickerValues
 } from '@acx-ui/utils'
+import { getJwtTokenPayload } from '@acx-ui/utils'
 
-import { ChartKey, computePastRange } from './helpers'
+import { useIncidentToggles } from '../useIncidentToggles'
+
+import {
+  ChartKey,
+  computePastRange,
+  transformLookupAndMappingData,
+  transformVenuesData
+} from './helpers'
 import {
   Response,
+  useFetchBrandTimeseriesQuery,
   useFetchBrandPropertiesQuery,
-  useFetchBrandTimeseriesQuery
+  BrandVenuesSLA
 } from './services'
 import { SlaSliders }   from './SlaSliders'
 import { SlaTile }      from './SlaTile'
 import { BrandTable }   from './Table'
 import { useSliceType } from './useSliceType'
 
+const rcApiPayload = {
+  searchString: '',
+  filters: {
+    tenantType: ['MSP_INTEGRATOR', 'MSP_REC'],
+    status: ['Active']
+  },
+  fields: ['id', 'name', 'tenantType', 'status'],
+  page: 1,
+  pageSize: 10000,
+  defaultPageSize: 10000,
+  total: 0,
+  sortField: 'name',
+  sortOrder: 'ASC'
+}
 
 export function Brand360 () {
   const settingsQuery = useGetTenantSettingsQuery()
@@ -31,21 +57,32 @@ export function Brand360 () {
   const { sliceType, SliceTypeDropdown } = useSliceType()
   const [settings, setSettings] = useState<Partial<Settings>>({})
   const [dateFilterState, setDateFilterState] = useState<DateFilter>(
-    getDateRangeFilter(DateRange.last8Hours)
+    getDateRangeFilter(DateRange.last24Hours)
   )
   const { data } = settingsQuery
   useEffect(() => { data && setSettings(data) }, [data])
   const { startDate, endDate, range } = getDatePickerValues(dateFilterState)
-  const tableResults = useFetchBrandPropertiesQuery({})
+  const ssid = data?.['brand-ssid-compliance-matcher']!
+  const ssidSkip = !Boolean(ssid)
   const chartPayload = {
     start: startDate,
     end: endDate,
-    ssidRegex: settings['brand-ssid-compliance-matcher']!
+    ssidRegex: ssid,
+    toggles: useIncidentToggles()
   }
+  const mspPropertiesData = useMspCustomerListDropdownQuery(
+    { params: { tenantId: getJwtTokenPayload().tenantId },payload: rcApiPayload })
+  const lookupAndMappingData = mspPropertiesData?.data
+    ? transformLookupAndMappingData(mspPropertiesData.data)
+    : {}
+  const venuesData = useFetchBrandPropertiesQuery(chartPayload, { skip: ssidSkip })
+  const tableResults = venuesData.data && lookupAndMappingData
+    ? transformVenuesData(venuesData as { data : BrandVenuesSLA[] }, lookupAndMappingData)
+    : []
   const {
     data: chartData,
     ...chartResults
-  } = useFetchBrandTimeseriesQuery(chartPayload)
+  } = useFetchBrandTimeseriesQuery(chartPayload, { skip: ssidSkip })
   const [pastStart, pastEnd] = computePastRange(startDate, endDate)
   const {
     data: prevData,
@@ -54,13 +91,14 @@ export function Brand360 () {
     ...chartPayload,
     start: pastStart,
     end: pastEnd,
-    granularity: 'all' })
+    granularity: 'all' },
+  { skip: ssidSkip })
   const {
     data: currData,
     ...currResults
-  } = useFetchBrandTimeseriesQuery({ ...chartPayload, granularity: 'all' })
+  } = useFetchBrandTimeseriesQuery({ ...chartPayload, granularity: 'all' }, { skip: ssidSkip })
   const chartMap: ChartKey[] = ['incident', 'experience', 'compliance']
-  return <Loader states={[settingsQuery, tableResults]}>
+  return <Loader states={[settingsQuery, mspPropertiesData, venuesData]}>
     <PageHeader
       title={$t({ defaultMessage: 'Brand 360' })}
       extra={[
@@ -72,7 +110,6 @@ export function Brand360 () {
             onDateApply={setDateFilterState as CallableFunction}
             showTimePicker
             selectionType={range}
-            showLast8hours
           />
         </>
       ]}
@@ -84,7 +121,7 @@ export function Brand360 () {
           <SlaTile
             chartKey={val}
             sliceType={sliceType}
-            tableData={tableResults.data as Response[]}
+            tableData={tableResults as Response[]}
             chartData={chartData}
             prevData={prevData}
             currData={currData}
@@ -97,9 +134,10 @@ export function Brand360 () {
       </GridCol>
       <GridCol col={{ span: 24 }}>
         <BrandTable
+          key={`${ssid}`}
           sliceType={sliceType}
           slaThreshold={settings}
-          data={tableResults.data as Response[]}
+          data={tableResults as Response[]}
         />
       </GridCol>
     </GridRow>

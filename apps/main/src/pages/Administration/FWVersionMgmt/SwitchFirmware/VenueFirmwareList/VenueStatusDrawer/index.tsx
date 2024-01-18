@@ -9,15 +9,14 @@ import {
   Drawer,
   showToast
 } from '@acx-ui/components'
-import { useSwitchActions }                        from '@acx-ui/rc/components'
-import { useLazyGetSwitchFirmwareStatusListQuery } from '@acx-ui/rc/services'
+import { useSwitchActions, useSwitchFirmwareUtils } from '@acx-ui/rc/components'
+import { useLazyGetSwitchFirmwareStatusListQuery }  from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenue,
   SwitchFirmwareStatus,
   SwitchFwStatusEnum,
   SwitchStatusEnum,
   defaultSort,
-  parseSwitchVersion,
   sortProp
 } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
@@ -33,6 +32,8 @@ export interface VenueStatusDrawerProps {
 
 export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
   const { $t } = useIntl()
+  const { parseSwitchVersion } = useSwitchFirmwareUtils()
+
   const params = useParams()
   const switchAction = useSwitchActions()
 
@@ -95,7 +96,7 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
             [SwitchFwStatusEnum.FW_UPD_FAIL]:
               $t({ defaultMessage: 'Firmware Update - Failed' }),
             [SwitchFwStatusEnum.FW_UPD_WAITING_RESPONSE]:
-              $t({ defaultMessage: 'Firmware Upgrade - Waiting for Switch Response' }),
+              $t({ defaultMessage: 'Firmware Update - Awaiting Response from Switch' }),
             [SwitchStatusEnum.DISCONNECTED]:
               $t({ defaultMessage: 'Disconnected from cloud' })
           }
