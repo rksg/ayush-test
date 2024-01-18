@@ -20,6 +20,7 @@ export interface EdgeSdLanFormModelP2 extends EdgeSdLanSettingP2 {
   tunnelProfileName?: string;
   corePortName?: string;
   activatedNetworks: EdgeSdLanActivatedNetwork[];
+  activatedGuestNetworks: EdgeSdLanActivatedNetwork[];
 }
 
 interface EdgeSdLanFormStep {

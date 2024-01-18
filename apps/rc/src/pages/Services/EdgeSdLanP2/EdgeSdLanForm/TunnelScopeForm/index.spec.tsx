@@ -16,7 +16,7 @@ import {
 
 import { mockDeepNetworkList, mockNetworkSaveData } from '../../__tests__/fixtures'
 
-import { ScopeForm } from '.'
+import { TunnelScopeForm } from '.'
 
 const mockedSetFieldValue = jest.fn()
 const { click } = userEvent
@@ -56,7 +56,7 @@ describe('Scope Form', () => {
     render(
       <Provider>
         <StepsForm form={stepFormRef.current} editMode={true}>
-          <ScopeForm />
+          <TunnelScopeForm />
         </StepsForm>
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
@@ -86,7 +86,7 @@ describe('Scope Form', () => {
             networkIds: mockedNetworkIds
           }}
         >
-          <ScopeForm />
+          <TunnelScopeForm />
         </StepsForm>
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
@@ -115,7 +115,7 @@ describe('Scope Form', () => {
     render(
       <Provider>
         <StepsForm form={stepFormRef.current}>
-          <ScopeForm />
+          <TunnelScopeForm />
         </StepsForm>
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
@@ -146,7 +146,7 @@ describe('Scope Form', () => {
     render(
       <Provider>
         <StepsForm form={stepFormRef.current}>
-          <ScopeForm />
+          <TunnelScopeForm />
         </StepsForm>
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
@@ -171,7 +171,7 @@ describe('Scope Form', () => {
     render(
       <Provider>
         <StepsForm form={stepFormRef.current}>
-          <ScopeForm />
+          <TunnelScopeForm />
         </StepsForm>
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 

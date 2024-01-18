@@ -39,6 +39,7 @@ export interface EdgeSdLanSettingP2 extends Omit<EdgeSdLanSetting, 'corePortMac'
   isGuestTunnelEnabled: boolean;
   guestEdgeId: string;
   guestTunnelProfileId: string;
+  guestNetworkIds: string[];
 }
 
 export interface EdgeSdLanViewDataP2 extends Omit<EdgeSdLanViewData, 'corePortMac'> {
@@ -46,6 +47,11 @@ export interface EdgeSdLanViewDataP2 extends Omit<EdgeSdLanViewData, 'corePortMa
   isGuestTunnelEnabled: boolean
   guestEdgeId: string
   guestTunnelProfileId: string
+  guestNetworkIds: string[]
   guestEdgeName?: string
   guestTunnelProfileName?: string
+  guestNetworkInfos?: {
+    networkId: string
+    networkName: string
+    }[]
 }

@@ -15,7 +15,7 @@ import { TunnelProfileFormItem }    from './TunnelProfileFormItem'
 export type EdgeSdLanActivatedNetwork = Pick<NetworkSaveData, 'id' | 'name'>
 type NetworksTableProps = Omit<ActivatedNetworksTableP2Props, 'activated' | 'activatedGuest'> & {
   isGuestTunnelEnabled: boolean,
-  data: EdgeSdLanActivatedNetwork[],
+  data?: EdgeSdLanActivatedNetwork[],
   guestData?: EdgeSdLanActivatedNetwork[]
 }
 
