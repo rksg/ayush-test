@@ -13,8 +13,10 @@ const info = defineMessage({
   defaultMessage: `"Invite 3rd Party" allows you to invite a user who does not
   belong to your organisation into this RUCKUS AI account.
   {br}
+  {br}
   "Add internal User" allows you to include a user who belongs to your
   organisation into this RUCKUS AI account.
+  {br}
   {br}
   In all cases, please note that the invitee needs to have an existing
   Ruckus Support account.`
@@ -28,7 +30,9 @@ export default function Users () {
     <PageHeader
       title={<>
         {$t(title,{ usersCount })} ({usersCount})
-        <Tooltip.Info title={$t(info, { br: <br/> })} />
+        <Tooltip.Info
+          data-html={true}
+          title={$t(info, { br: <br/> })} />
       </>}
     />
     <UsersTable data={usersQuery.data} />
