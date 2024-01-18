@@ -31,6 +31,7 @@ import { SettingsForm } from '.'
 const { mockedSdLanDataList } = EdgeSdLanFixtures
 const { mockEdgeList } = EdgeGeneralFixtures
 const { mockEdgePortConfig } = EdgePortConfigFixtures
+
 jest.mock('antd', () => {
   const components = jest.requireActual('antd')
   const Select = ({
