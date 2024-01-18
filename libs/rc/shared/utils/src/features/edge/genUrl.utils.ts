@@ -11,7 +11,7 @@ export enum Device {
   EdgeCluster = 'edge/cluster'
 }
 
-type allFeatures = Device
+type AllFeatures = Device
 
 export enum CommonOperation {
   List = 'list',
@@ -31,9 +31,9 @@ const pathConfig = {
   [CommonOperation.Detail]: [ID, CommonOperation.Detail]
 }
 
-type urlRequest = {
+type UrlRequest = {
   category?: CommonCategory
-  feature: allFeatures
+  feature: AllFeatures
   oper: CommonOperation
   idKey?: string // change id name
   before?: string[] // add path before
@@ -45,7 +45,7 @@ const defaultCategoryFeatureMapping = {
   [CommonCategory.Device]: Object.values(Device)
 }
 
-const getFeatureBasePath = (feature: allFeatures, category?: CommonCategory): string[] => {
+const getFeatureBasePath = (feature: AllFeatures, category?: CommonCategory): string[] => {
   if(category) {
     return [category, feature]
   } else {
@@ -58,7 +58,7 @@ const getFeatureBasePath = (feature: allFeatures, category?: CommonCategory): st
   }
 }
 
-export const getUrl = (req: urlRequest) => {
+export const getUrl = (req: UrlRequest) => {
   const { category, feature, oper, idKey, before, after, params } = req
   let result = getFeatureBasePath(feature, category)
   result = result.concat(pathConfig[oper])
