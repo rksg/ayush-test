@@ -75,7 +75,11 @@ export const usePersonaListQuery = (props: UsePersonaListQueryProps) => {
       setDataSource(result as Persona[])
     })
 
-  }, [personaListTableQuery.isLoading, personaGroupQuery.isLoading])
+  }, [
+    personaListTableQuery.isLoading,
+    personaListTableQuery.isFetching,
+    personaGroupQuery.isLoading]
+  )
 
   return {
     data: dataSource.length === 0 ?
