@@ -53,7 +53,6 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
   const [editData, setEditData] = useState<AdminGroup>({} as AdminGroup)
   const [membersGroupId, setMemberGroupId] = useState('')
   const [membersDrawerVisible, setMembersDrawerVisible] = useState(false)
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
   const { data: userProfileData } = useUserProfileContext()
   const MAX_ADMIN_GROUPS = 10
 
@@ -66,15 +65,6 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
 
   const handleOpenDialog = () => {
     setShowDialog(true)
-  }
-
-  const clearSelection = () => {
-    setSelectedRowKeys([])
-  }
-
-  const setMembersDrawer = () => {
-    setMembersDrawerVisible(false)
-    clearSelection()
   }
 
   const handleClickAdd = () => {
@@ -92,7 +82,8 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
         return <Button
           size='small'
           type='link'
-          onClick={() => {
+          onClick={(e) => {
+            e.stopPropagation()
             setMemberGroupId(row.groupId as string)
             setMembersDrawerVisible(true)
           }}
@@ -104,14 +95,6 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
       title: $t({ defaultMessage: 'Group ID' }),
       key: 'groupId',
       dataIndex: 'groupId'
-    },
-    {
-      title: $t({ defaultMessage: 'Processing Priority' }),
-      key: 'processingPriority',
-      dataIndex: 'processingPriority',
-      defaultSortOrder: 'ascend',
-      show: false,
-      sorter: { compare: sortProp('processingPriority', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Logged Members' }),
@@ -126,6 +109,13 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
       render: function (_, row) {
         return row.role ? $t(roleStringMap[row.role]) : ''
       }
+    },
+    {
+      title: $t({ defaultMessage: 'Processing Priority' }),
+      key: 'processingPriority',
+      dataIndex: 'processingPriority',
+      defaultSortOrder: 'ascend',
+      sorter: { compare: sortProp('processingPriority', defaultSort) }
     },
     {
       dataIndex: 'sort',
@@ -264,9 +254,7 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
             ? filterByAccess(rowActions)
             : undefined}
           rowSelection={isPrimeAdminUser ? {
-            selectedRowKeys,
-            type: 'checkbox'//,
-          // onSelect: handleRowSelectChange
+            type: 'checkbox'
           } : undefined}
           actions={filterByAccess(tableActions)}
           components={{
@@ -284,7 +272,7 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
       />}
       {membersDrawerVisible && <ShowMembersDrawer
         visible={membersDrawerVisible}
-        setVisible={setMembersDrawer}
+        setVisible={setMembersDrawerVisible}
         membersGroupId={membersGroupId}
       />}
     </Loader>
