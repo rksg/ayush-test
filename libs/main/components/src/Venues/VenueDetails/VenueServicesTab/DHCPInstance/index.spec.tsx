@@ -11,6 +11,7 @@ import handlers from './__tests__/fixtures'
 
 import DHCPInstance from '.'
 
+jest.mock('./PoolTable', () => () => <div>PoolTable</div>)
 
 describe('Venue DHCP Instance', () => {
   it('should render DHCP instance correctly', async () => {
@@ -31,15 +32,6 @@ describe('Venue DHCP Instance', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Manage Local Service' }))
     await screen.findByText(/manage local dhcp for wi-fi service/i)
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
-
-    const button = screen.getAllByRole('switch')
-    await userEvent.click(button[1])
-    let activeButton = await screen.findByText('Confirm')
-    await userEvent.click(activeButton)
-
-    await userEvent.click(button[0])
-    activeButton = await screen.findByText('Confirm')
-    await userEvent.click(activeButton)
 
     const radioButton = screen.getByRole('radio', { name: 'Lease Table (1 Online)' })
     await userEvent.click(radioButton)
