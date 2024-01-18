@@ -29,10 +29,10 @@ import {
 } from '@acx-ui/utils'
 import type { PendoParameters } from '@acx-ui/utils'
 
-import AllRoutes                                                                   from './AllRoutes'
-import { showBrowserLangDialog, detectBrowserLang, isNonProdEnv, PartialUserData } from './BrowserDialog/BrowserDialog'
-import { errorMiddleware }                                                         from './errorMiddleware'
-import { refreshTokenMiddleware }                                                  from './refreshTokenMiddleware'
+import AllRoutes                                                     from './AllRoutes'
+import { showBrowserLangDialog, detectBrowserLang, PartialUserData } from './BrowserDialog/BrowserDialog'
+import { errorMiddleware }                                           from './errorMiddleware'
+import { refreshTokenMiddleware }                                    from './refreshTokenMiddleware'
 
 import '@acx-ui/theme'
 
@@ -86,7 +86,7 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
       const lang = userProfile?.preferredLanguage
       const browserLang = detectBrowserLang()
       const openDialog = browserLang !== DEFAULT_SYS_LANG && browserLang !== lang
-      if (openDialog && isNonProdEnv()) {
+      if (openDialog) {
         const userPreflang = showBrowserLangDialog()
         userPreflang.then((dialogResult) => {
           // update user profile - 'yes' language change

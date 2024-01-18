@@ -7,9 +7,7 @@ import {
 } from '@acx-ui/user'
 import { UserUrlsInfo } from '@acx-ui/user'
 
-import { detectBrowserLang,
-  showBrowserLangDialog,
-  isNonProdEnv } from './BrowserDialog'
+import { detectBrowserLang, showBrowserLangDialog } from './BrowserDialog'
 
 jest.mock('@acx-ui/utils', () => ({
   getIntl: jest.fn(() => ({
@@ -104,28 +102,5 @@ describe('detectBrowserLang', () => {
 
     const result = detectBrowserLang()
     expect(result).toEqual('en-US')
-  })
-})
-
-describe('isNonProdEnv', () => {
-  it('should return true for non-production environments', () => {
-    window = Object.create(window)
-    const hname = 'localhost'
-    Object.defineProperty(window, 'location', {
-      value: {
-        hostname: hname
-      },
-      writable: true
-    })
-    expect(isNonProdEnv()).toBe(true)
-
-    const hname2 = 'eu.ruckus.cloud'
-    Object.defineProperty(window, 'location', {
-      value: {
-        hostname: hname2
-      },
-      writable: true
-    })
-    expect(isNonProdEnv()).toBe(false)
   })
 })
