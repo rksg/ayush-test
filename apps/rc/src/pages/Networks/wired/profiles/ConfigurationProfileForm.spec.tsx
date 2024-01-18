@@ -91,10 +91,6 @@ describe('Wired', () => {
     const profileDescInput = await screen.findByLabelText('Profile Description')
     fireEvent.change(profileDescInput, { target: { value: 'profiledesc' } })
     fireEvent.blur(profileNameInput)
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
-    })
-
     expect(await screen.findByRole('img', { name: 'check-circle' })).toBeVisible()
   })
 
@@ -264,6 +260,8 @@ describe('Wired', () => {
 
     const profileNameInput = await screen.findByLabelText('Profile Name')
     fireEvent.change(profileNameInput, { target: { value: 'profiletest' } })
+    fireEvent.blur(profileNameInput)
+    expect(await screen.findByRole('img', { name: 'check-circle' })).toBeVisible()
 
     await userEvent.click(await screen.findByText('VLANs'))
     await screen.findByRole('heading', { level: 3, name: /VLANs/i })
@@ -297,6 +295,8 @@ describe('Wired', () => {
 
     const profileNameInput = await screen.findByLabelText('Profile Name')
     fireEvent.change(profileNameInput, { target: { value: 'profiletest' } })
+    fireEvent.blur(profileNameInput)
+    expect(await screen.findByRole('img', { name: 'check-circle' })).toBeVisible()
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
     await screen.findByRole('heading', { level: 3, name: /VLANs/i })
@@ -547,6 +547,8 @@ describe('Wired', () => {
 
     const profileNameInput = await screen.findByLabelText('Profile Name')
     fireEvent.change(profileNameInput, { target: { value: 'profiletest' } })
+    fireEvent.blur(profileNameInput)
+    expect(await screen.findByRole('img', { name: 'check-circle' })).toBeVisible()
 
     await userEvent.click(await screen.findByText('VLANs'))
     await screen.findByRole('heading', { level: 3, name: /VLANs/i })
