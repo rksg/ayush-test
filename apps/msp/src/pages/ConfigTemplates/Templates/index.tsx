@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 import { MenuProps } from 'antd'
 import moment        from 'moment'
@@ -8,7 +8,7 @@ import { useIntl }   from 'react-intl'
 import {
   Table,
   TableProps,
-  Loader
+  Loader, Button
 } from '@acx-ui/components'
 import { DateFormatEnum, userDateTimeFormat }                                            from '@acx-ui/formatter'
 import { ConfigTemplateLink, PolicyConfigTemplateLink, renderConfigTemplateDetailsLink } from '@acx-ui/msp/components'
@@ -23,13 +23,15 @@ import {
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 import { getIntl }                   from '@acx-ui/utils'
 
-import { ApplyTemplateDrawer } from './ApplyTemplateDrawer'
-import * as UI                 from './styledComponents'
+import { AppliedToTenantDrawer } from './AppliedToTenantDrawer'
+import { ApplyTemplateDrawer }   from './ApplyTemplateDrawer'
+import * as UI                   from './styledComponents'
 
 
 export function ConfigTemplateList () {
   const { $t } = useIntl()
   const [ applyTemplateDrawerVisible, setApplyTemplateDrawerVisible ] = useState(false)
+  const [ appliedToTenantDrawerVisible, setAppliedToTenantDrawerVisible ] = useState(false)
   const [ selectedTemplates, setSelectedTemplates ] = useState<ConfigTemplate[]>([])
 
   const tableQuery = useTableQuery({
@@ -61,7 +63,9 @@ export function ConfigTemplateList () {
     <>
       <Loader states={[tableQuery]}>
         <Table<ConfigTemplate>
-          columns={useColumns()}
+          columns={useColumns({
+            setAppliedToTenantDrawerVisible, setSelectedTemplates
+          })}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           actions={filterByAccess(actions)}
@@ -78,12 +82,23 @@ export function ConfigTemplateList () {
         setVisible={setApplyTemplateDrawerVisible}
         selectedTemplates={selectedTemplates}
       />}
+      {appliedToTenantDrawerVisible &&
+      <AppliedToTenantDrawer
+        setVisible={setAppliedToTenantDrawerVisible}
+        selectedTemplates={selectedTemplates}
+      />}
     </>
   )
 }
 
-function useColumns () {
+interface templateColumnProps {
+  setAppliedToTenantDrawerVisible: (visible: boolean) => void,
+  setSelectedTemplates: (row: ConfigTemplate[]) => void
+}
+
+function useColumns (props: templateColumnProps) {
   const { $t } = useIntl()
+  const { setAppliedToTenantDrawerVisible, setSelectedTemplates } = props
   const dateFormat = userDateTimeFormat(DateFormatEnum.DateTimeFormatWithSeconds)
 
   const columns: TableProps<ConfigTemplate>['columns'] = [
@@ -110,7 +125,15 @@ function useColumns () {
       sorter: true,
       align: 'center',
       render: function (_, row) {
-        return row.ecTenants.length
+        if (!row.ecTenants.length) return row.ecTenants.length
+        return <Button
+          type='link'
+          onClick={() => {
+            setSelectedTemplates([row])
+            setAppliedToTenantDrawerVisible(true)
+          }}>
+          {row.ecTenants.length}
+        </Button>
       }
     },
     {
