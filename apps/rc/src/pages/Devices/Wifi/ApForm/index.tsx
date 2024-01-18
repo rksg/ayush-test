@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 
-import { Col, Form, Input, Row, Select, Space } from 'antd'
-import { DefaultOptionType }                    from 'antd/lib/select'
-import { isEqual, omit, pick, isEmpty, omitBy } from 'lodash'
-import { FormattedMessage, useIntl }            from 'react-intl'
+import { Col, Form, Input, Row, Select, Space }       from 'antd'
+import { DefaultOptionType }                          from 'antd/lib/select'
+import { isEqual, omit, pick, isEmpty, omitBy, find } from 'lodash'
+import { FormattedMessage, useIntl }                  from 'react-intl'
 
 import {
   Button,
@@ -35,6 +35,7 @@ import {
   useLazyApViewModelQuery
 } from '@acx-ui/rc/services'
 import {
+  APExtended,
   ApDeep,
   ApDhcpRoleEnum,
   ApErrorHandlingMessages,
@@ -425,22 +426,25 @@ export function ApForm () {
       return false
     }
 
-    // Get ap info separately in case apStatusData is undefined and have no check
-    const apInfo = apList?.data?.[0]
+    const aps = apList?.data
+
+    let apInfo: APExtended | undefined
+
+
+    if (aps && aps.length > 0) {
+      apInfo = find(aps, (ap) => ap.serialNumber === apDetails?.serialNumber)
+    }
 
     if (!apInfo) {
       return false
     }
 
     const afcInfo = apInfo.apStatusData?.afcInfo
+
     const requiredStatus = [AFCStatus.AFC_NOT_REQUIRED, AFCStatus.WAIT_FOR_LOCATION]
 
-    // AFC info possibly does not exist.
-    if (!afcInfo) {
-      return false
-    }
-    // Also does Geo-location
-    if (afcInfo.geoLocation === undefined) {
+    // AFC info and Geo-location possibly does not exist.
+    if (!afcInfo || afcInfo.geoLocation === undefined) {
       return false
     }
     // Same, and if Status is in requires status, then false.
@@ -448,7 +452,7 @@ export function ApForm () {
       return false
     }
 
-    return isVenueSameCountry
+    return true
   }
 
   const handleUpdateContext = () => {
@@ -564,7 +568,7 @@ export function ApForm () {
                 />}
               />
               { getVenueInfos(venueFwVersion) }
-              { displayAFCGeolocation() &&
+              { displayAFCGeolocation() && isVenueSameCountry &&
                   <Alert message={
                     'Moving this device to a new venue will reset AFC geolocation.\
                   6GHz operation will remain in low power mode \
