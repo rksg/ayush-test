@@ -51,7 +51,7 @@ export function DpskForm (props: DpskFormProps) {
   const { editMode = false, modalMode = false, modalCallBack } = props
 
   const idAfterCreatedRef = useRef<string>()
-  const { data: dpskList } = useGetDpskListQuery({ skip: !isModalMode() })
+  const { data: dpskList } = useGetDpskListQuery({}, { skip: !isModalMode() })
   const [ createDpsk ] = useCreateDpskMutation()
   const [ updateDpsk ] = useUpdateDpskMutation()
   const {

@@ -80,7 +80,7 @@ const mDnsProxyMutationUseCases = [
   'DeactivateMulticastDnsProxyServiceProfileAps'
 ]
 
-const defaultHeaders = {
+const defaultDpskVersioningHeaders = {
   'Content-Type': 'application/vnd.ruckus.v2+json',
   'Accept': 'application/vnd.ruckus.v2+json'
 }
@@ -534,7 +534,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         const createDpskReq = createDpskHttpRequest(DpskUrls.addDpsk, params)
         return {
           ...createDpskReq,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Dpsk', id: 'LIST' }]
@@ -544,7 +544,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         const updateDpskReq = createDpskHttpRequest(DpskUrls.updateDpsk, params)
         return {
           ...updateDpskReq,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Dpsk', id: 'LIST' }]
@@ -555,7 +555,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           apiInfo: DpskUrls.getDpskList,
           params,
           payload: (payload as TableChangePayload) ?? defaultNewTablePaginationParams,
-          headers: defaultHeaders
+          headers: defaultDpskVersioningHeaders
         })
 
         return {
@@ -610,7 +610,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         const getDpskReq = createDpskHttpRequest(DpskUrls.getDpsk, params)
         return {
           ...getDpskReq,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'Dpsk', id: 'DETAIL' }]
@@ -620,7 +620,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         const req = createDpskHttpRequest(DpskUrls.deleteDpsk, params)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Dpsk', id: 'LIST' }]
