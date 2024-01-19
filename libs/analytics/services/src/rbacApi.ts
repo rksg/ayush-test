@@ -2,7 +2,7 @@ import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/dist/q
 import { QueryReturnValue }                        from '@rtk-query/graphql-request-base-query/dist/GraphqlBaseQueryTypes'
 import { groupBy }                                 from 'lodash'
 
-import { Settings, ManagedUser }               from '@acx-ui/analytics/utils'
+import { Settings, ManagedUser }  from '@acx-ui/analytics/utils'
 import { get }                    from '@acx-ui/config'
 import { rbacApi as baseRbacApi } from '@acx-ui/store'
 
@@ -84,8 +84,33 @@ export const rbacApi = baseRbacApi.injectEndpoints({
         method: 'get',
         credentials: 'include'
       }),
-      providesTags: [{ type: 'RBAC', id: 'GET_USERS' }],
-    })
+      providesTags: [{ type: 'RBAC', id: 'GET_USERS' }]
+    }),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    getResourceGroups: build.query<any[], void>({
+      query: () => ({
+        url: '/resourceGroups',
+        method: 'get',
+        credentials: 'include'
+      }),
+      providesTags: [{ type: 'RBAC', id: 'GET_RESOURCE_GROUPS' }]
+    }),
+    updateUserRoleAndResourceGroup: build.mutation<
+    string, { resourceGroupId: string, role: string, userId: string }
+ >({
+   query: ({ userId, resourceGroupId, role }) => {
+     return {
+       url: `/users/${userId}`,
+       method: 'put',
+       credentials: 'include',
+       headers: {
+         'x-mlisa-user-id': userId
+       },
+       body: { resourceGroupId, role },
+       responseHandler: 'text'
+     }
+   }
+ })
   })
 })
 
@@ -94,7 +119,9 @@ export const {
   useGetTenantSettingsQuery,
   useUpdateTenantSettingsMutation,
   useUpdateInvitationMutation,
-  useGetUsersQuery
+  useGetUsersQuery,
+  useGetResourceGroupsQuery,
+  useUpdateUserRoleAndResourceGroupMutation
 } = rbacApi
 
 export function useSystems () {

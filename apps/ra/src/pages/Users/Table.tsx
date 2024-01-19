@@ -1,9 +1,15 @@
 import { IntlShape, useIntl } from 'react-intl'
 
 import { defaultSort, getUserProfile, ManagedUser, sortProp } from '@acx-ui/analytics/utils'
-import { Table, TableProps }                                  from '@acx-ui/components'
-import { noDataDisplay }                                      from '@acx-ui/utils'
+import { Table, TableProps, Tooltip }                         from '@acx-ui/components'
+import {
+  EditOutlined,
+  DeleteOutlined,
+  Reload
+} from '@acx-ui/icons'
+import { noDataDisplay } from '@acx-ui/utils'
 
+import * as UI from './styledComponents'
 export type DisplayUser = Omit<ManagedUser, 'role'> & {
   invitationState: string,
   invitor: string,
@@ -55,11 +61,69 @@ const transformUsers = (
   }))
 }
 
-export const UsersTable = ({ data }: { data?: ManagedUser[] }) => {
+export const UsersTable = (
+  { data, toggleDrawer, setSelectedRow }:
+  { data?: ManagedUser[], toggleDrawer: CallableFunction, setSelectedRow: CallableFunction }) => {
   const { $t } = useIntl()
   const user = getUserProfile()
   const { franchisor } = user.selectedTenant.settings
   const users = transformUsers(data, $t, franchisor)
+  const UserActions = (props: { selectedRow: ManagedUser }) => {
+    const actionButtons = [
+      {
+        type: 'refresh',
+        action: () => {},
+        icon: (
+          <Tooltip
+            placement='top'
+            arrowPointAtCenter
+            title={$t({ defaultMessage: 'Refresh' })}>
+            <UI.IconWrapper $disabled={false}>
+              <Reload style={{ height: '24px', width: '24px' }} />
+            </UI.IconWrapper>
+          </Tooltip>
+        )
+      },
+      {
+        type: 'edit',
+        action: () => {},
+        icon: (
+          <Tooltip
+            placement='top'
+            arrowPointAtCenter
+            title={$t({ defaultMessage: 'Edit' })}>
+            <UI.IconWrapper $disabled={false}>
+              <EditOutlined
+                onClick={() => {
+                  setSelectedRow(props.selectedRow)
+                  toggleDrawer(true)
+                }}
+                style={{ height: '24px', width: '24px' }}
+              />
+            </UI.IconWrapper>
+          </Tooltip>
+        )
+      },
+      {
+        type: 'delete',
+        action: () => {},
+        icon: (
+          <Tooltip
+            placement='top'
+            arrowPointAtCenter
+            title={$t({ defaultMessage: 'Delete' })}>
+            <UI.IconWrapper $disabled={false}>
+              <DeleteOutlined style={{ height: '24px', width: '24px' }} />
+            </UI.IconWrapper>
+          </Tooltip>
+        )
+      }
+    ]
+    return <UI.Actions>
+      {actionButtons.map((config, i) => <span key={i}>{config.icon}</span>)}
+    </UI.Actions>
+  }
+
   const columns: TableProps<DisplayUser>['columns'] = [
     {
       title: $t({ defaultMessage: 'Email' }),
@@ -119,6 +183,15 @@ export const UsersTable = ({ data }: { data?: ManagedUser[] }) => {
       dataIndex: 'invitationState',
       key: 'invitationState',
       sorter: { compare: sortProp('invitationState', defaultSort) }
+    },
+    {
+      title: $t({ defaultMessage: 'Actions' }),
+      key: 'id',
+      dataIndex: 'id',
+      width: 100,
+      fixed: 'right',
+      className: 'actions-column',
+      render: (_, row) => <UserActions selectedRow={row as ManagedUser} />
     }
   ]
   return <Table<DisplayUser>
