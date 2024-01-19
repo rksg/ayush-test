@@ -2,11 +2,18 @@ import { useState } from 'react'
 
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
-import { act }   from 'react-dom/test-utils'
 
 import { EdgePortConfigFixtures, EdgeSubInterfaceFixtures, EdgeSubInterface, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                                         from '@acx-ui/store'
-import { fireEvent, mockServer, render, renderHook, screen, waitFor }                       from '@acx-ui/test-utils'
+import {
+  act,
+  fireEvent,
+  mockServer,
+  render,
+  renderHook,
+  screen,
+  waitFor
+} from '@acx-ui/test-utils'
 
 import SubInterfaceDrawer from './SubInterfaceDrawer'
 
