@@ -6,8 +6,9 @@ import  userEvent                            from '@testing-library/user-event'
 import { rest }                              from 'msw'
 
 import { MspUrlsInfo }                        from '@acx-ui/msp/utils'
+import { administrationApi }                  from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo, TenantType } from '@acx-ui/rc/utils'
-import { Provider }                           from '@acx-ui/store'
+import { Provider, store }                    from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -108,6 +109,7 @@ jest.mock('react-router-dom', () => ({
 
 describe('Convert NonVAR MSP Button', () => {
   beforeEach(() => {
+    store.dispatch(administrationApi.util.resetApiState())
     mockedTenantFn.mockClear()
     mockedMSPEcProfileFn.mockClear()
     mockedSaveFn.mockClear()
