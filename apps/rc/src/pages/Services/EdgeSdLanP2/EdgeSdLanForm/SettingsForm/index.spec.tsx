@@ -15,6 +15,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
+  act,
   mockServer,
   render,
   renderHook,

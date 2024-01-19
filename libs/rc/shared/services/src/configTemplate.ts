@@ -26,7 +26,11 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'AddRadiusServerProfileTemplateRecord',
+            'UpdateRadiusServerProfileTemplateRecord',
+            'DeleteRadiusServerProfileTemplateRecord',
             'AddWifiNetworkTemplateRecord',
+            'UpdateWifiNetworkTemplateRecord',
+            'DeleteWifiNetworkTemplateRecord',
             'ApplyTemplate'
           ]
           onActivityMessageReceived(msg, activities, () => {
@@ -68,7 +72,8 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'AddWifiNetworkTemplateRecord',
-            'AddWifiNetworkTemplate'
+            'UpdateWifiNetworkTemplateRecord',
+            'DeleteWifiNetworkTemplateRecord'
           ]
           onActivityMessageReceived(msg, activities, () => {
             // eslint-disable-next-line max-len
@@ -102,7 +107,8 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'AddRadiusServerProfileTemplateRecord',
-            'AddRadiusServerProfileTemplate'
+            'UpdateRadiusServerProfileTemplateRecord',
+            'DeleteRadiusServerProfileTemplateRecord'
           ]
           onActivityMessageReceived(msg, activities, () => {
             // eslint-disable-next-line max-len
