@@ -54,7 +54,6 @@ export const LagDrawer = (props: LagDrawerProps) => {
   const portTypeOptions = getEdgePortTypeOptions($t)
     .filter(item => item.value !== EdgePortTypeEnum.UNCONFIGURED)
   const [form] = Form.useForm()
-  // const [enabledPorts, setEnabledPorts] = useState<string[]>() // tmp state
   const lagEnabled = Form.useWatch('lagEnabled', form) as boolean
 
   const [addEdgeLag] = useAddEdgeLagMutation()
