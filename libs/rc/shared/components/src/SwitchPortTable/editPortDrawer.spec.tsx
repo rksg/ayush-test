@@ -207,18 +207,6 @@ describe('EditPortDrawer', () => {
       expect(poeClassCombobox).toBeDisabled()
       await userEvent.click(await screen.findByTestId('ipsg-checkbox'))
 
-      // Port VLANs
-      // await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
-      // let dialog = await screen.findAllByRole('dialog')
-      // await screen.findByText('Select Port VLANs')
-      // await userEvent.click(await within(dialog[1]).findByRole('button', { name: 'Cancel' }))
-
-      // LLDP QoS
-      // await userEvent.click(await screen.findByRole('button', { name: 'Create' }))
-      // dialog = await screen.findAllByRole('dialog')
-      // await screen.findByText('Add LLDP QoS')
-      // await userEvent.click(await within(dialog[1]).findByRole('button', { name: 'Cancel' }))
-
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       expect(mockedSavePortsSetting).toHaveBeenLastCalledWith(
         transformSubmitValue({
@@ -466,7 +454,7 @@ describe('EditPortDrawer', () => {
   })
 
   describe('multiple edit', () => {
-    it('should render consistent LLDP data correctly', async () => { ////
+    it('should render consistent LLDP data correctly', async () => {
       mockServer.use(
         rest.post(SwitchUrlsInfo.getPortsSetting.url,
           (_, res, ctx) => res(ctx.json({
