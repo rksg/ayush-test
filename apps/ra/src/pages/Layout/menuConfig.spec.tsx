@@ -229,4 +229,40 @@ describe('useMenuConfig', () => {
     const { result } = renderHook(() => useMenuConfig())
     expect(result.current).toMatchSnapshot()
   })
+  it('should return users page if ruckus-ai-users-toggle is enabled', () => {
+    const mockUseUserProfileContext = getUserProfile as jest.Mock
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const mockUserProfile = {
+      accountId: 'accountId',
+      selectedTenant: { permissions: defaultMockPermissions },
+      tenants: [
+        {
+          id: 'accountId',
+          permissions: defaultMockPermissions
+        }
+      ]
+    }
+
+    mockUseUserProfileContext.mockReturnValue(mockUserProfile)
+    const { result } = renderHook(() => useMenuConfig())
+    expect(result.current).toMatchSnapshot()
+  })
+  it('should not return users page if ruckus-ai-users-toggle is disabled', () => {
+    const mockUseUserProfileContext = getUserProfile as jest.Mock
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    const mockUserProfile = {
+      accountId: 'accountId',
+      selectedTenant: { permissions: defaultMockPermissions },
+      tenants: [
+        {
+          id: 'accountId',
+          permissions: defaultMockPermissions
+        }
+      ]
+    }
+
+    mockUseUserProfileContext.mockReturnValue(mockUserProfile)
+    const { result } = renderHook(() => useMenuConfig())
+    expect(result.current).toMatchSnapshot()
+  })
 })
