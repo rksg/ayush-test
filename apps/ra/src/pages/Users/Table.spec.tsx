@@ -4,6 +4,7 @@ import { findTBody, render, screen, within } from '@acx-ui/test-utils'
 
 import { mockMangedUsers } from './__tests__/fixtures'
 import { UsersTable }      from './Table'
+import { noDataDisplay } from '@acx-ui/utils'
 
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
@@ -21,6 +22,13 @@ describe('UsersTable', () => {
     expect(await screen.findByText('FisrtName 1062')).toBeVisible()
     expect(await screen.findByText('FisrtName 12')).toBeVisible()
     expect(await screen.findByText('FisrtName rej')).toBeVisible()
+    expect(await screen.findAllByText(noDataDisplay)).toHaveLength(2)
+    expect(await screen.findByText('Pending')).toBeVisible()
+    expect(await screen.findByText('Accepted')).toBeVisible()
+    expect(await screen.findByText('Rejected')).toBeVisible()
+    expect(await screen.findByText('userFirst userSecond')).toBeVisible()
+    expect(await screen.findByText('userThird userFourth')).toBeVisible()
+    expect(await screen.findByText('userRej userRej')).toBeVisible()
   })
   it('should render undefined data table correctly', async () => {
     render(<UsersTable data={undefined} />, { wrapper: Provider })
