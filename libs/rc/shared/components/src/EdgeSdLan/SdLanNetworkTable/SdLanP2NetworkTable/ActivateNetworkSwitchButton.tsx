@@ -23,7 +23,6 @@ export const ActivateNetworkSwitchButtonP2 = (props: ActivateNetworkSwitchButton
   let newSelected = rows.filter(item => activated.includes(item.id!))
 
   return <Switch
-    aria-label={`activate-btn-${row.id}`}
     checked={isActivated !== -1}
     disabled={!!disabled}
     onChange={(checked: boolean) => {

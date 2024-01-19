@@ -107,7 +107,8 @@ export const EdgeSdLanP2ActivatedNetworksTable = forwardRef(
       width: 80,
       render: (_: unknown, row: NetworkSaveData) => {
         const isDataTrifficActivated = activated?.includes(row.id!) ?? false
-        return row.type === NetworkTypeEnum.CAPTIVEPORTAL && isDataTrifficActivated
+        // eslint-disable-next-line max-len
+        return ((row.type === NetworkTypeEnum.CAPTIVEPORTAL || row.type === NetworkTypeEnum.OPEN) && isDataTrifficActivated)
           ? <ActivateNetworkSwitchButtonP2
             fieldName='activatedGuestNetworks'
             row={row}

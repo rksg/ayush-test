@@ -87,13 +87,17 @@ export const TunnelScopeForm = () => {
   const dmzTunnelProfileOptions = tunnelProfileData?.filter(
     item => item.mtuType === MtuTypeEnum.MANUAL)
 
-  const handleActivateChange = (fieldName: string, data: NetworkSaveData, checked: boolean) => {
-    const activatedNetworks = form.getFieldValue(fieldName) as EdgeSdLanActivatedNetwork[]
-    const newSelected = toggleItemFromSelected(checked, data, activatedNetworks)
+  const handleActivateChange = (
+    fieldName: string,
+    data: NetworkSaveData,
+    checked: boolean,
+    activated: NetworkSaveData[]
+  ) => {
+    const newSelected = activated.map(item => _.pick(item, ['id', 'name']))
 
     if (isGuestTunnelEnabled
       && fieldName === 'activatedNetworks'
-      && data.type === NetworkTypeEnum.CAPTIVEPORTAL ) {
+      && (data.type === NetworkTypeEnum.CAPTIVEPORTAL || data.type === NetworkTypeEnum.OPEN) ) {
       // eslint-disable-next-line max-len
       const activatedGuestNetworks = form.getFieldValue('activatedGuestNetworks') as EdgeSdLanActivatedNetwork[]
       const newSelectedGuestNetworks = toggleItemFromSelected(checked, data, activatedGuestNetworks)

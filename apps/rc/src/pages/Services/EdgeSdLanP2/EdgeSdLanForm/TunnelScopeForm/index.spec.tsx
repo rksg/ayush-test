@@ -255,7 +255,7 @@ describe('Tunnel Scope Form', () => {
       })
     })
 
-    it('guest tunnel network should default true when is captivePortal', async () => {
+    it('guest tunnel network should default true when is captivePortal network', async () => {
       const { result: stepFormRef } = renderHook(() => useMockedFormHook({
         isGuestTunnelEnabled: true
       }))
@@ -286,6 +286,41 @@ describe('Tunnel Scope Form', () => {
         ],
         activatedGuestNetworks: [
           { name: 'MockedNetwork 4', id: 'network_4' }
+        ]
+      })
+    })
+
+    it('guest tunnel network should default true when is open network', async () => {
+      const { result: stepFormRef } = renderHook(() => useMockedFormHook({
+        isGuestTunnelEnabled: true
+      }))
+      jest.spyOn(stepFormRef.current, 'setFieldsValue').mockImplementation(mockedSetFieldValue)
+
+      render(<MockedTargetComponent
+        form={stepFormRef.current}
+      />, { route: { params: { tenantId: 't-id' } } })
+
+      expect(await screen.findByText('Tunnel & Network Settings')).toBeVisible()
+      await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
+      const dmzTunnelSelector = await screen.findByRole('combobox', { name: 'Tunnel Profile (Cluster- DMZ Cluster tunnel)' })
+      const opts = await within(dmzTunnelSelector).findAllByRole('option')
+      expect(opts.length).toBe(1)
+
+      const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
+      expect(rows.length).toBe(4)
+
+      // when turn on DC captive portal network DMZ network should be ON by default
+      const targetRow = screen.getByRole('row', { name: /MockedNetwork 3/i })
+      const switchBtn = within(targetRow).getByRole('switch')
+      expect(switchBtn).not.toBeChecked()
+      await click(switchBtn)
+
+      expect(mockedSetFieldValue).toBeCalledWith({
+        activatedNetworks: [
+          { name: 'MockedNetwork 3', id: 'network_3' }
+        ],
+        activatedGuestNetworks: [
+          { name: 'MockedNetwork 3', id: 'network_3' }
         ]
       })
     })

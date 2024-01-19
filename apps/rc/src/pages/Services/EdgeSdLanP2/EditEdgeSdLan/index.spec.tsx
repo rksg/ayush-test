@@ -2,7 +2,14 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { EdgeSdLanFixtures, EdgeSdLanUrls, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import {
+  EdgeGeneralFixtures,
+  EdgeSdLanSettingP2,
+  EdgeSdLanUrls,
+  EdgeUrlsInfo,
+  getServiceRoutePath,
+  ServiceOperation,
+  ServiceType } from '@acx-ui/rc/utils'
 import {
   Provider
 } from '@acx-ui/store'
@@ -16,7 +23,7 @@ import {
 
 import EditEdgeSdLan from '.'
 
-const { mockedSdLanServiceP2 } = EdgeSdLanFixtures
+const { mockEdgeList } = EdgeGeneralFixtures
 
 const { click } = userEvent
 
@@ -33,12 +40,14 @@ jest.mock('../EdgeSdLanForm', () => ({
   __esModule: true,
   ...jest.requireActual('../EdgeSdLanForm'),
   default: (props: {
+    editData: EdgeSdLanSettingP2 | undefined,
     onFinish: (values: unknown) => Promise<boolean | void>
   }) => {
     const submitData = mockedSubmitDataGen()
     return <div
       data-testid='rc-EdgeSdLanForm'
     >
+      <div data-testid='rc-EdgeSdLanForm-venue-id'>{props.editData?.venueId}</div>
       <button onClick={() => {
         props.onFinish(submitData)
       }}>Submit</button>
@@ -56,13 +65,22 @@ describe('Edit SD-LAN service', () => {
     mockedSetFieldFn.mockReset()
     mockedNavigate.mockReset()
     mockedGetSdLanReq.mockReset()
+    const edgeList = {
+      ...mockEdgeList,
+      total: 1,
+      data: [mockEdgeList.data[0]]
+    }
 
     mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (_, res, ctx) => res(ctx.json(edgeList))
+      ),
       rest.get(
         EdgeSdLanUrls.getEdgeSdLan.url,
         (_, res, ctx) => {
           mockedGetSdLanReq()
-          return res(ctx.json(mockedSdLanServiceP2))
+          return res(ctx.json({ data: {} }))
         }
       ),
       rest.patch(
@@ -101,6 +119,10 @@ describe('Edit SD-LAN service', () => {
     })
 
     await waitFor(() => expect(mockedGetSdLanReq).toBeCalled())
+    await waitFor(async () =>
+      expect(await screen.findByTestId('rc-EdgeSdLanForm-venue-id'))
+        .toHaveTextContent('cd572eda8d494a79aa2331fdc26086d9'))
+
     expect(await screen.findByTestId('rc-EdgeSdLanForm')).toBeVisible()
     await click(screen.getByRole('button', { name: 'Submit' }))
     await waitFor(() => {
@@ -153,6 +175,10 @@ describe('Edit SD-LAN service', () => {
     })
 
     await waitFor(() => expect(mockedGetSdLanReq).toBeCalled())
+    await waitFor(async () =>
+      expect(await screen.findByTestId('rc-EdgeSdLanForm-venue-id'))
+        .toHaveTextContent('cd572eda8d494a79aa2331fdc26086d9'))
+
     expect(await screen.findByTestId('rc-EdgeSdLanForm')).toBeVisible()
     await click(screen.getByRole('button', { name: 'Submit' }))
     await waitFor(() => {
