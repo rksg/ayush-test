@@ -1,69 +1,171 @@
-import { useState } from 'react'
+
+import React, { useState } from 'react'
 
 import { Menu }                   from 'antd'
+import { Button, Col, Form, Row } from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { useGetUsersQuery, useGetAvailableUsersQuery }          from '@acx-ui/analytics/services'
-import { Loader, PageHeader, Button, Dropdown, Drawer, Select } from '@acx-ui/components'
+import {
+  useGetUsersQuery,
+  useUpdateUserRoleAndResourceGroupMutation
+} from '@acx-ui/analytics/services'
+import { ManagedUser }                                           from '@acx-ui/analytics/utils'
+import { Drawer, PageHeader, Loader, StepsFormLegacy, Dropdown } from '@acx-ui/components'
 
-import { UsersTable } from './Table'
+import { drawerContentConfig } from './config'
+import { UsersTable }          from './Table'
 
 const title = defineMessage({
   defaultMessage: '{usersCount, plural, one {User} other {Users}}'
 })
 
-export default function Users () {
+type FormItemProps = {
+  name: string,
+  labelKey: string,
+  component: React.ReactNode,
+}
+
+const FormItem: React.FC<FormItemProps> = ({ name, labelKey, component }) => (
+  <Row gutter={20}>
+    <Col span={8}>
+      <Form.Item name={name} label={labelKey}>
+        {component}
+      </Form.Item>
+    </Col>
+  </Row>
+)
+
+type DrawerContentProps = {
+  selectedRow: ManagedUser | null;
+  onRoleChange: (value: string) => void;
+  onResourceGroupChange: (value: string) => void;
+  updatedValues: {
+    updatedRole: string | null;
+    updatedResourceGroup: string | null;
+  };
+  type: 'edit' | 'create';
+  onChange: CallableFunction
+}
+
+const DrawerContent: React.FC<DrawerContentProps> = ({
+  selectedRow,
+  onRoleChange,
+  onResourceGroupChange,
+  updatedValues,
+  type,
+  onChange
+}) => {
   const { $t } = useIntl()
+  const { updatedRole, updatedResourceGroup } = updatedValues
+  return (
+    <StepsFormLegacy.StepForm>
+      {drawerContentConfig[type as 'edit' | 'create'].map((item) => (
+        <FormItem
+          key={item.name}
+          name={item.name}
+          labelKey={$t(item.labelKey)}
+          component={
+            <item.component
+              {...item.componentProps({
+                selectedRow,
+                updatedResourceGroup,
+                updatedRole,
+                onRoleChange,
+                onResourceGroupChange,
+                onChange
+              })}
+            />
+          }
+        />
+      ))}
+    </StepsFormLegacy.StepForm>
+  )
+}
+const Users: React.FC = () => {
+  const { $t } = useIntl()
+  const [openDrawer, setOpenDrawer] = useState(false)
+  const [drawerType, setDrawerType] = useState<'edit' | 'create'>('edit')
+  const [selectedRow, setSelectedRow] = useState<ManagedUser | null>(null)
+  const [updatedRole, setUpdatedRole] = useState<string | null>(null)
+  const [updatedResourceGroup, setUpdatedResourceGroup] = useState<string | null>(null)
   const usersQuery = useGetUsersQuery()
-  const availableUsersQuery = useGetAvailableUsersQuery({} as unknown as void, {
-    selectFromResult: ({ data, isLoading }) => ({
-      data: data?.map(({ swuId, userName }) => ({ value: swuId, label: userName })),
-      isLoading
+  const { data, refetch } = usersQuery
+  const [updateUserRoleAndResourceGroup] = useUpdateUserRoleAndResourceGroupMutation()
+  const usersCount = data?.length || 0
+  const handleSaveClick = () => {
+    updateUserRoleAndResourceGroup({
+      resourceGroupId: updatedResourceGroup ?? selectedRow?.resourceGroupId!,
+      userId: selectedRow?.id!,
+      role: updatedRole ?? selectedRow?.role!
     })
-  })
-  const usersCount = usersQuery.data?.length || 0
-  const [visible, setVisible] = useState(false)
+    setOpenDrawer(false)
+    refetch()
+  }
+
+  const handleCancelClick = () => {
+    setOpenDrawer(false)
+    setUpdatedResourceGroup(null)
+    setUpdatedRole(null)
+  }
+
+  const drawerFooter = (
+    <div>
+      <Button
+        onClick={handleSaveClick}
+        disabled={!Boolean(updatedRole || updatedResourceGroup)}
+        type='primary'>
+        {$t({ defaultMessage: 'Save' })}
+      </Button>
+      <Button onClick={handleCancelClick}>
+        {$t({ defaultMessage: 'Cancel' })}
+      </Button>
+    </div>
+  )
   const addMenu = <Menu
     items={[{
       key: 'add-internal-user',
-      label: <span onClick={()=>setVisible(!visible)}>{$t({ defaultMessage: 'Internal' })}</span>
+      label: <span onClick={()=> {
+        setDrawerType('create')
+        setOpenDrawer(!openDrawer)}
+      }>
+        {$t({ defaultMessage: 'Internal' })}</span>
     }]
     }
   />
-  return <Loader states={[usersQuery]}>
-    <PageHeader
-      title={<>{$t(title,{ usersCount })} ({usersCount})</>}
-      extra={[
-        <Dropdown overlay={addMenu} placement={'bottomRight'}>{() =>
-          <Button type='primary'>{ $t({ defaultMessage: 'Add User...' }) }</Button>
-        }</Dropdown>
-      ]}
-    />
-    <Drawer
-      width={500}
-      title={$t({ defaultMessage: 'Add User' })}
-      visible={visible}
-      onClose={() => setVisible(false)}
-    >
-      <Loader states={[availableUsersQuery]}>
-        <Select
-          showSearch
-          style={{ width: 200 }}
-          placeholder='Search to Select'
-          optionFilterProp='children'
-          filterOption={(input, option) =>
-            ((option?.label as string).toLocaleLowerCase() ?? '')
-              .includes(input.toLocaleLowerCase())}
-          filterSort={(optionA, optionB) =>
-            ((optionA?.label as string) ?? '')
-              .toLowerCase()
-              .localeCompare(((optionB?.label as string) ?? '')
-                .toLowerCase())
-          }
-          options={availableUsersQuery?.data as unknown as { label: string, value: string }[]}
+  return (
+    <Loader states={[usersQuery]}>
+      <PageHeader
+        title={<>{$t(title, { usersCount })} ({usersCount})</>}
+        extra={[
+          <Dropdown overlay={addMenu} placement={'bottomRight'}>{() =>
+            <Button type='primary'>{ $t({ defaultMessage: 'Add User...' }) }</Button>
+          }</Dropdown>
+        ]}
+      />
+      <UsersTable
+        data={usersQuery.data}
+        toggleDrawer={setOpenDrawer}
+        setSelectedRow={setSelectedRow} />
+      <Drawer
+        visible={openDrawer}
+        title={$t({ defaultMessage: 'Edit User' })}
+        onClose={() => setOpenDrawer(false)}
+        footer={drawerFooter}
+        width={400}
+      >
+        <DrawerContent
+          selectedRow={selectedRow}
+          onRoleChange={setUpdatedRole}
+          onResourceGroupChange={setUpdatedResourceGroup}
+          updatedValues={{ updatedRole, updatedResourceGroup }}
+          type={drawerType}
+          onChange={(value : { value: string, label: string }) =>
+            // eslint-disable-next-line no-console
+            console.log(value)}
         />
-      </Loader>
-    </Drawer>
-    <UsersTable data={usersQuery.data} />
-  </Loader>
+      </Drawer>
+    </Loader>
+  )
 }
+
+export default Users
