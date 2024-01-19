@@ -195,6 +195,22 @@ export function useApEolFirmware () {
   }
 }
 
+export function getRemainingApModels (
+  currentAbfName: string,
+  initialApModels: string[],
+  upgradableApModelsAndFamilies?: UpgradableApModelsAndFamilies
+): string[] {
+  let remainingModels = [...initialApModels]
+
+  Object.keys(upgradableApModelsAndFamilies ?? {}).forEach(existingAbfName => {
+    if (existingAbfName !== currentAbfName) {
+      _.pull(remainingModels , ...upgradableApModelsAndFamilies![existingAbfName].apModels)
+    }
+  })
+
+  return remainingModels
+}
+
 // eslint-disable-next-line max-len
 function canABFVersionDisplay (maxEolABFVersionEntity: MaxABFVersionEntity, abfVersion: string): boolean {
   const comparedResult = compareVersions(abfVersion, maxEolABFVersionEntity.maxVersion)
