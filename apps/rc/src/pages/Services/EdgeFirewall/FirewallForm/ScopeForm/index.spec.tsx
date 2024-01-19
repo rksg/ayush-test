@@ -80,8 +80,8 @@ describe('Scope Form', () => {
     ])
 
     await waitFor(() => {
-      screen.queryAllByRole('checkbox').forEach(item =>
-        expect(item).not.toBeChecked()
+      rows.forEach(row =>
+        expect(within(row).getByRole('checkbox')).not.toBeChecked()
       )
     })
   })
@@ -150,8 +150,8 @@ describe('Scope Form', () => {
     ])
 
     await waitFor(() => {
-      screen.queryAllByRole('checkbox').forEach(item =>
-        expect(item).not.toBeChecked()
+      rows.forEach(row =>
+        expect(within(row).getByRole('checkbox')).not.toBeChecked()
       )
     })
   })
