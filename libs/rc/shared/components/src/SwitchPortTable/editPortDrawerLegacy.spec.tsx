@@ -140,7 +140,7 @@ describe('EditPortDrawerLegacy', () => {
         }
       })
 
-      await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+      await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loader' }))
       await screen.findByText('Edit Port')
       await screen.findByText('Selected Port')
 
@@ -570,6 +570,7 @@ describe('EditPortDrawerLegacy', () => {
       fireEvent.change(dscpInput, { target: { value: '2' } })
 
       await userEvent.click(await within(dialog[1]).findByRole('button', { name: 'Save' }))
+      await waitFor(() => expect(dialog[1]).not.toBeVisible())
       expect(await screen.findAllByRole('row')).toHaveLength(2)
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     })
@@ -616,6 +617,7 @@ describe('EditPortDrawerLegacy', () => {
       await userEvent.click(await screen.findByRole('combobox', { name: 'Application Type' }))
       await userEvent.click(await screen.findByText('Video-conferencing'))
       await userEvent.click(await within(dialog[1]).findByRole('button', { name: 'Save' }))
+      await waitFor(() => expect(dialog[1]).not.toBeVisible())
       expect(await screen.findAllByRole('row')).toHaveLength(3)
     })
 
@@ -665,6 +667,7 @@ describe('EditPortDrawerLegacy', () => {
 
       expect(await within(dialog[1]).findByRole('button', { name: 'Save' })).not.toBeDisabled()
       await userEvent.click(await within(dialog[1]).findByRole('button', { name: 'Save' }))
+      await waitFor(() => expect(dialog[1]).not.toBeVisible())
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     })
   })

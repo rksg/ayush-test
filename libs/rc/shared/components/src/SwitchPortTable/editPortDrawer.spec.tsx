@@ -193,7 +193,7 @@ describe('EditPortDrawer', () => {
         }
       })
 
-      await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+      await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loader' }))
       await screen.findByText('Edit Port')
       await screen.findByText('Selected Port')
 
@@ -786,6 +786,7 @@ describe('EditPortDrawer', () => {
 
       expect(await within(dialog[1]).findByRole('button', { name: 'Save' })).not.toBeDisabled()
       await userEvent.click(await within(dialog[1]).findByRole('button', { name: 'Save' }))
+      await waitFor(() => expect(dialog[1]).not.toBeVisible())
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     })
   })
@@ -987,7 +988,7 @@ describe('EditPortDrawer', () => {
           path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/overview/ports'
         }
       })
-      await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+      await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loader' }))
       /**
         Port VLANs
 
