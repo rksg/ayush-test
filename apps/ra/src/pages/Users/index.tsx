@@ -145,10 +145,15 @@ const Users: React.FC = () => {
       <UsersTable
         data={usersQuery.data}
         toggleDrawer={setOpenDrawer}
-        setSelectedRow={setSelectedRow} />
+        setSelectedRow={setSelectedRow}
+        setDrawerType={setDrawerType}
+      />
       <Drawer
         visible={openDrawer}
-        title={$t({ defaultMessage: 'Edit User' })}
+        title={$t(
+          { defaultMessage: '{type} User' },
+          { type: drawerType === 'edit' ? 'Edit' : 'Create' }
+        )}
         onClose={() => setOpenDrawer(false)}
         footer={drawerFooter}
         width={400}

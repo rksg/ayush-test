@@ -20,16 +20,16 @@ export const AvailableUsersSelection = ({
     <Loader states={[availableUsersQuery]}>
       <Select
         showSearch
-        style={{ width: 200 }}
+        style={{ width: 300 }}
         placeholder={$t({ defaultMessage: 'Search to Select' })}
         optionFilterProp='children'
         filterOption={(input, option) =>
-          ((option?.label as string).toLocaleLowerCase() ?? '')
+          ((option?.label as string).toLocaleLowerCase())
             .includes(input.toLocaleLowerCase())}
         filterSort={(optionA, optionB) =>
-          ((optionA?.label as string) ?? '')
+          ((optionA?.label as string))
             .toLowerCase()
-            .localeCompare(((optionB?.label as string) ?? '')
+            .localeCompare(((optionB?.label as string))
               .toLowerCase())
         }
         options={availableUsersQuery?.data as unknown as { label: string, value: string }[]}

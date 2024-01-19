@@ -62,8 +62,11 @@ const transformUsers = (
 }
 
 export const UsersTable = (
-  { data, toggleDrawer, setSelectedRow }:
-  { data?: ManagedUser[], toggleDrawer: CallableFunction, setSelectedRow: CallableFunction }) => {
+  { data, toggleDrawer, setSelectedRow, setDrawerType }:
+  {
+    data?: ManagedUser[], toggleDrawer: CallableFunction,
+    setSelectedRow: CallableFunction, setDrawerType: CallableFunction
+  }) => {
   const { $t } = useIntl()
   const user = getUserProfile()
   const { franchisor } = user.selectedTenant.settings
@@ -96,6 +99,7 @@ export const UsersTable = (
               <EditOutlined
                 onClick={() => {
                   setSelectedRow(props.selectedRow)
+                  setDrawerType('edit')
                   toggleDrawer(true)
                 }}
                 style={{ height: '24px', width: '24px' }}
