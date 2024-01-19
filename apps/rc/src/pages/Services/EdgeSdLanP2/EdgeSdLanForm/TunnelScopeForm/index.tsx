@@ -2,12 +2,19 @@ import { Col, Form, Row, Typography } from 'antd'
 import _                              from 'lodash'
 import { useIntl }                    from 'react-intl'
 
-import { StepsForm, useStepFormContext }                                                                                      from '@acx-ui/components'
-import { ActivatedNetworksTableP2Props, EdgeSdLanP2ActivatedNetworksTable }                                                   from '@acx-ui/rc/components'
-import { useGetTunnelProfileViewDataListQuery }                                                                               from '@acx-ui/rc/services'
-import { EdgeSdLanSettingP2, getTunnelProfileOptsWithDefault, MtuTypeEnum, NetworkSaveData, NetworkTypeEnum, TunnelTypeEnum } from '@acx-ui/rc/utils'
+import { StepsForm, useStepFormContext }                                    from '@acx-ui/components'
+import { ActivatedNetworksTableP2Props, EdgeSdLanP2ActivatedNetworksTable } from '@acx-ui/rc/components'
+import { useGetTunnelProfileViewDataListQuery }                             from '@acx-ui/rc/services'
+import {
+  getTunnelProfileOptsWithDefault,
+  MtuTypeEnum,
+  NetworkSaveData,
+  NetworkTypeEnum,
+  TunnelTypeEnum
+} from '@acx-ui/rc/utils'
 
-import { messageMappings } from '../messageMappings'
+import { EdgeSdLanFormModelP2 } from '..'
+import { messageMappings }      from '../messageMappings'
 
 import { DmzTunnelProfileFormItem } from './DmzTunnelProfileFormItem'
 import { TunnelProfileFormItem }    from './TunnelProfileFormItem'
@@ -42,7 +49,7 @@ const tunnelProfileDefaultPayload = {
 const toggleItemFromSelected = (
   checked: boolean,
   data: NetworkSaveData,
-  selectedNetworks: EdgeSdLanActivatedNetwork[]
+  selectedNetworks: EdgeSdLanActivatedNetwork[] | undefined
 ) => {
   let newSelected
   if (checked) {
@@ -57,7 +64,7 @@ const toggleItemFromSelected = (
 
 export const TunnelScopeForm = () => {
   const { $t } = useIntl()
-  const { form } = useStepFormContext<EdgeSdLanSettingP2>()
+  const { form } = useStepFormContext<EdgeSdLanFormModelP2>()
   const venueId = form.getFieldValue('venueId')
   const isGuestTunnelEnabled = form.getFieldValue('isGuestTunnelEnabled')
 
@@ -83,7 +90,6 @@ export const TunnelScopeForm = () => {
   const handleActivateChange = (fieldName: string, data: NetworkSaveData, checked: boolean) => {
     const activatedNetworks = form.getFieldValue(fieldName) as EdgeSdLanActivatedNetwork[]
     const newSelected = toggleItemFromSelected(checked, data, activatedNetworks)
-    form.setFieldValue(fieldName, newSelected)
 
     if (isGuestTunnelEnabled
       && fieldName === 'activatedNetworks'
@@ -91,7 +97,12 @@ export const TunnelScopeForm = () => {
       // eslint-disable-next-line max-len
       const activatedGuestNetworks = form.getFieldValue('activatedGuestNetworks') as EdgeSdLanActivatedNetwork[]
       const newSelectedGuestNetworks = toggleItemFromSelected(checked, data, activatedGuestNetworks)
-      form.setFieldValue('activatedGuestNetworks', newSelectedGuestNetworks)
+      form.setFieldsValue({
+        [fieldName]: newSelected,
+        activatedGuestNetworks: newSelectedGuestNetworks
+      })
+    } else {
+      form.setFieldValue(fieldName, newSelected)
     }
   }
 

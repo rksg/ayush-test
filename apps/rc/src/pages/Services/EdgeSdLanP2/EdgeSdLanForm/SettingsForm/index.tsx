@@ -4,10 +4,10 @@ import { Select,Col, Form, Input, Row, Switch } from 'antd'
 import { useIntl }                              from 'react-intl'
 import { useParams }                            from 'react-router-dom'
 
-import { StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
-import { useIsSplitOn, Features }                 from '@acx-ui/feature-toggle'
-import { InformationSolid }                       from '@acx-ui/icons'
-import { SpaceWrapper }                           from '@acx-ui/rc/components'
+import {  StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
+import { useIsSplitOn, Features }                  from '@acx-ui/feature-toggle'
+import { InformationSolid }                        from '@acx-ui/icons'
+import { SpaceWrapper }                            from '@acx-ui/rc/components'
 import {
   useGetEdgeLagListQuery,
   useGetEdgeListQuery,
@@ -16,23 +16,24 @@ import {
   useVenuesListQuery
 } from '@acx-ui/rc/services'
 import {
-  EdgeSdLanSettingP2,
   EdgeStatusEnum,
   servicePolicyNameRegExp
 } from '@acx-ui/rc/utils'
 
-import diagram             from '../../../../../assets/images/edge-sd-lan-diagrams/edge-sd-lan-early-access.png'
-import { messageMappings } from '../messageMappings'
+import { EdgeSdLanFormModelP2 } from '..'
+import { messageMappings }      from '../messageMappings'
 
-import * as UI from './styledComponents'
+import * as UI             from './styledComponents'
+import { TopologyDiagram } from './TopologyDiagram'
 
 export const SettingsForm = () => {
   const { $t } = useIntl()
   const params = useParams()
   const isEdgeLagEnabled = useIsSplitOn(Features.EDGE_LAG)
-  const { form, editMode } = useStepFormContext<EdgeSdLanSettingP2>()
+  const { form, editMode } = useStepFormContext<EdgeSdLanFormModelP2>()
   const venueId = Form.useWatch('venueId', form)
   const edgeId = Form.useWatch('edgeId', form)
+  const guestEdgeId = Form.useWatch('guestEdgeId', form)
 
   const { sdLanBoundEdges, isSdLanBoundEdgesLoading } = useGetEdgeSdLanP2ViewDataListQuery(
     { payload: {
@@ -79,7 +80,7 @@ export const SettingsForm = () => {
       ],
       filters: {
         venueId: [venueId],
-        ...(editMode && { serialNumber: [edgeId] }),
+        ...(editMode && { serialNumber: [edgeId, ...(guestEdgeId ? [guestEdgeId] : [])] }),
         deviceStatus: Object.values(EdgeStatusEnum)
           .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD)
       } } },
@@ -320,13 +321,10 @@ export const SettingsForm = () => {
           dependencies={['isGuestTunnelEnabled']}
         >
           {({ getFieldValue }) => {
-            return getFieldValue('isGuestTunnelEnabled')
-              ? <UI.Diagram src={diagram} alt={$t({ defaultMessage: 'SD-LAN with DMZ' })} />
-              : <UI.Diagram src={diagram} alt={$t({ defaultMessage: 'SD-LAN' })} />
+            return <TopologyDiagram isGuestTunnelEnabled={getFieldValue('isGuestTunnelEnabled')} />
           }}
         </Form.Item>
       </Col>
     </Row>
-
   )
 }

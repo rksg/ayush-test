@@ -65,7 +65,7 @@ const mockedSetFieldValue = jest.fn()
 const mockedReqVenuesList = jest.fn()
 const mockedReqEdgesList = jest.fn()
 
-describe('Edge centrailized forwarding form: settings', () => {
+describe('Edge SD-LAN form: settings', () => {
   beforeEach(() => {
     mockedSetFieldValue.mockClear()
     mockedReqVenuesList.mockClear()
