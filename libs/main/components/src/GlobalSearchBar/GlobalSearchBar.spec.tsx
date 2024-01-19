@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom'
 import { useState } from 'react'
 
 import { useIsSplitOn }              from '@acx-ui/feature-toggle'

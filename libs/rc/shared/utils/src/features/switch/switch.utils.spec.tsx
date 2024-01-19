@@ -1,4 +1,6 @@
 /* eslint-disable max-len */
+import '@testing-library/jest-dom'
+
 import { Input } from 'antd'
 
 import { DeviceConnectionStatus }                                                         from '../../constants'

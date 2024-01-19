@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
 import { useIsSplitOn, useIsTierAllowed }        from '@acx-ui/feature-toggle'

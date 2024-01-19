@@ -1,3 +1,5 @@
+import '@testing-library/jest-dom'
+
 import { Form }     from 'antd'
 import { debounce } from 'lodash'
 import { rest }     from 'msw'

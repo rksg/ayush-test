@@ -1,3 +1,5 @@
+import '@testing-library/jest-dom'
+
 import userEvent from '@testing-library/user-event'
 
 import * as config      from '@acx-ui/config'

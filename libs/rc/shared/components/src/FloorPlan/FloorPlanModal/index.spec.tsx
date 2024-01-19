@@ -1,3 +1,5 @@
+import '@testing-library/jest-dom'
+
 import { renderHook } from '@testing-library/react'
 import { Form }       from 'antd'
 

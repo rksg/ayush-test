@@ -1,3 +1,5 @@
+import '@testing-library/jest-dom'
+
 import { initialize }                           from '@googlemaps/jest-mocks'
 import { userEvent, waitForElementToBeRemoved } from '@storybook/testing-library'
 import { rest }                                 from 'msw'

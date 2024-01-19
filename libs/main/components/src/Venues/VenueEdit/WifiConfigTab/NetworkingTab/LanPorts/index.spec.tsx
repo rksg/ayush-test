@@ -1,20 +1,12 @@
+import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { venueApi }                     from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }              from '@acx-ui/store'
-import {
-  act,
-  fireEvent,
-  mockServer,
-  render,
-  screen,
-  within,
-  waitFor,
-  waitForElementToBeRemoved
-} from '@acx-ui/test-utils'
+import { venueApi }                                                                               from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiUrlsInfo }                                                           from '@acx-ui/rc/utils'
+import { Provider, store }                                                                        from '@acx-ui/store'
+import { act, fireEvent, mockServer, render, screen, within, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {
   venueData,
@@ -103,7 +95,8 @@ describe('LanPortsForm', () => {
     fireEvent.mouseDown(within(tabPanel2).getByLabelText(/Port type/))
     await userEvent.click(await screen.getAllByText('GENERAL')[1])
     expect(within(tabPanel2).getByLabelText(/VLAN member/)).not.toBeDisabled()
-    act(() => {
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(() => {
       fireEvent.change(within(tabPanel2).getByLabelText(/VLAN member/), { target: { value: '2' } })
     })
     expect(within(tabPanel2).getByLabelText(/VLAN member/)).toHaveValue('2')

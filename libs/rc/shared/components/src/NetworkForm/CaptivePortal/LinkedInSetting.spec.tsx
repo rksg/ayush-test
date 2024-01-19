@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
 import { StepsFormLegacy }           from '@acx-ui/components'

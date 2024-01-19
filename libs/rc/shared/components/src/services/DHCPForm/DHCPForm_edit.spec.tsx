@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom'
 import { waitFor } from '@testing-library/react'
 import userEvent   from '@testing-library/user-event'
 import { rest }    from 'msw'
@@ -6,8 +7,7 @@ import { DHCPUrls, DHCPConfigTypeEnum, DHCPSaveData, DHCPOption, DHCPPool, DHCPU
 import { Provider }                                                                    from '@acx-ui/store'
 import {
   mockServer,
-  render,
-  screen
+  render, screen
 } from '@acx-ui/test-utils'
 import { UserUrlsInfo } from '@acx-ui/user'
 

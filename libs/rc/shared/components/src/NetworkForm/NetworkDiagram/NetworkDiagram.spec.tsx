@@ -1,3 +1,5 @@
+import '@testing-library/jest-dom'
+
 import { rest } from 'msw'
 
 import { CloudpathDeploymentTypeEnum, CommonUrlsInfo, GuestNetworkTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'

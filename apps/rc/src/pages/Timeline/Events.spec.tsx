@@ -1,3 +1,5 @@
+import '@testing-library/jest-dom'
+
 import { CommonUrlsInfo }                   from '@acx-ui/rc/utils'
 import { Provider }                         from '@acx-ui/store'
 import { mockRestApiQuery, render, screen } from '@acx-ui/test-utils'

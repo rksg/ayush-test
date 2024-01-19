@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
@@ -27,8 +29,7 @@ import {
 import { VenueNetworksTab } from './index'
 
 // isMapEnabled = false && SD-LAN not enabled
-jest.mocked(useIsSplitOn).mockImplementation(
-  ff => ff !== Features.G_MAP && ff !== Features.EDGES_SD_LAN_TOGGLE)
+jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP && ff !== Features.EDGES_SD_LAN_TOGGLE)
 
 type MockDialogProps = React.PropsWithChildren<{
   visible: boolean

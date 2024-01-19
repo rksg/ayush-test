@@ -1,3 +1,5 @@
+import '@testing-library/jest-dom'
+
 import { timelineApi }                           from '@acx-ui/rc/services'
 import { CommonUrlsInfo }                        from '@acx-ui/rc/utils'
 import { Provider, store }                       from '@acx-ui/store'

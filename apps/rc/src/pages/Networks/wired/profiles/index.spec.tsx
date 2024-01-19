@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
@@ -6,6 +7,8 @@ import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { ProfilesTab } from '.'
+
+
 
 const profilesList = {
   data: [

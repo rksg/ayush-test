@@ -1,5 +1,7 @@
 import React from 'react'
 
+import '@testing-library/jest-dom'
+
 import userEvent from '@testing-library/user-event'
 
 import { act, render, screen, cleanup, waitFor } from '@acx-ui/test-utils'

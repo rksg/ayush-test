@@ -1,3 +1,5 @@
+import '@testing-library/jest-dom'
+
 import * as config        from '@acx-ui/config'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'

@@ -1,5 +1,6 @@
 import React from 'react'
 
+import '@testing-library/jest-dom'
 import userEvent                                from '@testing-library/user-event'
 import { Form, Input, Radio, RadioChangeEvent } from 'antd'
 

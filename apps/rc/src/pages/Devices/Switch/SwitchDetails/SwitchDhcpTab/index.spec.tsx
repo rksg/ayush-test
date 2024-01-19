@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
 import * as CommonComponent                                                          from '@acx-ui/components'

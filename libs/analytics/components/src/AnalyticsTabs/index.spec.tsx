@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom'
 import * as router from 'react-router-dom'
 
 import { Provider }                  from '@acx-ui/store'

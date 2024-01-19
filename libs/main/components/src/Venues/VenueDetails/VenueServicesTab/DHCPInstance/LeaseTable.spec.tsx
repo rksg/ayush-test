@@ -1,3 +1,5 @@
+import '@testing-library/jest-dom'
+
 import { Provider } from '@acx-ui/store'
 import {
   mockServer,

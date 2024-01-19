@@ -1,17 +1,13 @@
+import '@testing-library/jest-dom'
+import React from 'react'
+
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import {
-  AaaUrls,
-  CommonUrlsInfo,
-  EdgeSdLanUrls,
-  ExpirationType,
-  MacRegListUrlsInfo,
-  RulesManagementUrlsInfo,
-  WifiUrlsInfo
-} from '@acx-ui/rc/utils'
+import { useIsSplitOn, useIsTierAllowed }                     from '@acx-ui/feature-toggle'
+import { AaaUrls, CommonUrlsInfo, ExpirationType,
+  MacRegListUrlsInfo, RulesManagementUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                                  from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                                                              from '@acx-ui/user'
@@ -161,10 +157,6 @@ describe('NetworkForm', () => {
       rest.get(
         RulesManagementUrlsInfo.getPolicySets.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(policySetList))
-      ),
-      rest.post(
-        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-        (_, res, ctx) => res(ctx.json({ data: [] }))
       ),
       rest.get(
         WifiUrlsInfo.getVlanPools.url,

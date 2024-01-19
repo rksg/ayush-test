@@ -1,3 +1,5 @@
+import '@testing-library/jest-dom'
+
 import { defineMessage } from 'react-intl'
 
 import { cssStr }                    from '@acx-ui/components'

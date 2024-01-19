@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom'
 import { Form } from 'antd'
 
 import { SyslogContextType } from '@acx-ui/rc/utils'

@@ -1,20 +1,15 @@
-import { rest } from 'msw'
-
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useIsSplitOn }                  from '@acx-ui/feature-toggle'
 import {
-  ApDetails,
-  ApDeviceStatusEnum,
-  ApPosition,
-  CommonUrlsInfo,
-  FloorPlanDto,
-  NetworkDeviceType,
-  SwitchStatusEnum,
-  TypeWiseNetworkDevices,
-  WifiUrlsInfo
-} from '@acx-ui/rc/utils'
+  ApDetails, ApDeviceStatusEnum, ApPosition, CommonUrlsInfo,
+  FloorPlanDto, NetworkDeviceType, SwitchStatusEnum,
+  TypeWiseNetworkDevices, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                       from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
+import '@testing-library/jest-dom'
+
+// eslint-disable-next-line import/order
+import { rest }        from 'msw'
 import { ApFloorplan } from '.'
 
 

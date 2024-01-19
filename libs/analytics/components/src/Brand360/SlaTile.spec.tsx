@@ -6,6 +6,7 @@ import {
   fireEvent
 } from '@acx-ui/test-utils'
 
+import '@testing-library/jest-dom'
 import {
   fetchBrandProperties,
   mockBrandTimeseries,

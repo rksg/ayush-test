@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom'
 import _        from 'lodash'
 import { rest } from 'msw'
 

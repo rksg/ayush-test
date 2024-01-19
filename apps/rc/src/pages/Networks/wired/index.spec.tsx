@@ -1,3 +1,5 @@
+import '@testing-library/jest-dom'
+
 import { rest } from 'msw'
 
 import { switchApi }                  from '@acx-ui/rc/services'
@@ -15,6 +17,7 @@ jest.mock('./onDemandCli', () => ({
   ...jest.requireActual('./onDemandCli'),
   OnDemandCliTab: () => <div data-testid={'onDemandCli-id'} id='onDemandCli-id' />
 }))
+
 
 describe('Wired', () => {
 

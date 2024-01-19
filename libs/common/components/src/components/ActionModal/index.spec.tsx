@@ -1,3 +1,5 @@
+import '@testing-library/jest-dom'
+
 import { screen, fireEvent, waitForElementToBeRemoved, waitFor, within } from '@testing-library/react'
 import userEvent                                                         from '@testing-library/user-event'
 import { Modal }                                                         from 'antd'

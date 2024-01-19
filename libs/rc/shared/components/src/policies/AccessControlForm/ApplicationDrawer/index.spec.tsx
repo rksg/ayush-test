@@ -1,3 +1,5 @@
+import '@testing-library/jest-dom'
+
 import React from 'react'
 
 import { fireEvent, waitFor } from '@testing-library/react'

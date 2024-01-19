@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom'
 import { BrowserRouter } from 'react-router-dom'
 
 import { IncidentFilter }              from '@acx-ui/analytics/utils'

@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom'
 import moment from 'moment-timezone'
 
 import { fakeIncident, Incident } from '@acx-ui/analytics/utils'

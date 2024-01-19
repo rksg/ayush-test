@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom'
 import { ApDeviceStatusEnum, ConnectionStatus, DeviceStatus, SwitchStatusEnum } from '@acx-ui/rc/utils'
 
 import { getDeviceColor, getPathColor, switchStatus } from './utils'

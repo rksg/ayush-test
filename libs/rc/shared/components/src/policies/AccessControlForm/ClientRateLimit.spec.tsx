@@ -1,3 +1,5 @@
+import '@testing-library/jest-dom'
+
 import React from 'react'
 
 import { userEvent }         from '@storybook/testing-library'

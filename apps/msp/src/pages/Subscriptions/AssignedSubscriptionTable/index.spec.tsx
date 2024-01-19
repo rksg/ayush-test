@@ -1,3 +1,5 @@
+import '@testing-library/jest-dom'
+
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { Provider }               from '@acx-ui/store'
 import { render, screen  }        from '@acx-ui/test-utils'

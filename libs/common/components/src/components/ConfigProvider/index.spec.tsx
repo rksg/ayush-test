@@ -1,3 +1,5 @@
+import '@testing-library/jest-dom'
+
 import { default as AntConfigProvider } from 'antd/lib/config-provider'
 import { rest }                         from 'msw'
 

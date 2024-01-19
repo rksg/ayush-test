@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
 import { DHCP_OPTION_TYPE, SwitchDhcpOption, SwitchUrlsInfo }     from '@acx-ui/rc/utils'

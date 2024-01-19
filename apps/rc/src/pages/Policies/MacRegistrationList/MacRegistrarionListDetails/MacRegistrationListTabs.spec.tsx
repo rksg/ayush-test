@@ -1,3 +1,5 @@
+import '@testing-library/jest-dom'
+
 import { rest } from 'msw'
 
 import { MacRegListUrlsInfo }                    from '@acx-ui/rc/utils'

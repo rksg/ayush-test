@@ -1,12 +1,6 @@
-import {
-  ApDeviceStatusEnum,
-  FloorplanContext,
-  NetworkDeviceResponse,
-  NetworkDeviceType,
-  RogueCategory,
-  RogueDeviceCategoryType,
-  SwitchStatusEnum
-} from '@acx-ui/rc/utils'
+import '@testing-library/jest-dom'
+
+import { ApDeviceStatusEnum, FloorplanContext, NetworkDeviceResponse, NetworkDeviceType, RogueCategory, RogueDeviceCategoryType, SwitchStatusEnum } from '@acx-ui/rc/utils'
 
 import { apStatusTransform, calculateDeviceColor } from './utils'
 

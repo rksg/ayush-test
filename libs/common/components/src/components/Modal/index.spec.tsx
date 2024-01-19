@@ -1,3 +1,5 @@
+import '@testing-library/jest-dom'
+
 import { Col, Form, Input, Row } from 'antd'
 
 import { render, screen, fireEvent, waitFor } from '@acx-ui/test-utils'

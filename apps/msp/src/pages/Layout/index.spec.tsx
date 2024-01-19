@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
 import { CommonUrlsInfo, FirmwareUrlsInfo }    from '@acx-ui/rc/utils'

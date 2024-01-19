@@ -1,3 +1,5 @@
+import '@testing-library/jest-dom'
+
 import { dataApiURL,Provider, store }       from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'

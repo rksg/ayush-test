@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom'
 import { Upload } from 'antd'
 import { rest }   from 'msw'
 
