@@ -4,10 +4,11 @@ import { defaultSort, getUserProfile, ManagedUser, sortProp } from '@acx-ui/anal
 import { Table, TableProps }                                  from '@acx-ui/components'
 import { noDataDisplay }                                      from '@acx-ui/utils'
 
-export type DisplayUser = Omit<ManagedUser, 'role'> & {
-  invitationState: string,
-  invitor: string,
-  role: string
+export type DisplayUser = ManagedUser & {
+  displayInvitationState: string
+  displayInvitor: string
+  displayRole: string
+  displayType: string
 }
 
 const getDisplayRole = (role: ManagedUser['role'], $t: IntlShape['$t']) => {
@@ -46,11 +47,11 @@ const transformUsers = (
   if (!users) return []
   return users.map(user => ({
     ...user,
-    role: getDisplayRole(user.role, $t),
-    type: getDisplayType(user.type, $t, franchisor),
-    invitationState: getDisplayState(user.invitation?.state, $t),
-    invitor: user.invitation
-      ? [user.invitation.inviterUser.firstName, ' ', user.invitation.inviterUser.lastName].join(' ')
+    displayRole: getDisplayRole(user.role, $t),
+    displayType: getDisplayType(user.type, $t, franchisor),
+    displayInvitationState: getDisplayState(user.invitation?.state, $t),
+    displayInvitor: user.invitation
+      ? [user.invitation.inviterUser.firstName, '', user.invitation.inviterUser.lastName].join(' ')
       : noDataDisplay
   }))
 }
@@ -85,14 +86,14 @@ export const UsersTable = ({ data }: { data?: ManagedUser[] }) => {
     },
     {
       title: $t({ defaultMessage: 'Type' }),
-      dataIndex: 'type',
-      key: 'type',
+      dataIndex: 'displayType',
+      key: 'displayType',
       sorter: { compare: sortProp('type', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Role' }),
-      dataIndex: 'role',
-      key: 'role',
+      dataIndex: 'displayRole',
+      key: 'displayRole',
       sorter: { compare: sortProp('role', defaultSort) }
     },
     {
@@ -110,15 +111,15 @@ export const UsersTable = ({ data }: { data?: ManagedUser[] }) => {
     },
     {
       title: $t({ defaultMessage: 'Invited by' }),
-      dataIndex: 'invitor',
-      key: 'invitor',
-      sorter: { compare: sortProp('invitor', defaultSort) }
+      dataIndex: 'displayInvitor',
+      key: 'displayInvitor',
+      sorter: { compare: sortProp('displayInvitor', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Invitation Status' }),
-      dataIndex: 'invitationState',
-      key: 'invitationState',
-      sorter: { compare: sortProp('invitationState', defaultSort) }
+      dataIndex: 'displayInvitationState',
+      key: 'displayInvitationState',
+      sorter: { compare: sortProp('displayInvitationState', defaultSort) }
     }
   ]
   return <Table<DisplayUser>
