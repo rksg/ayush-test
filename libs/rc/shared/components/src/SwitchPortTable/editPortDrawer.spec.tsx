@@ -193,9 +193,7 @@ describe('EditPortDrawer', () => {
         }
       })
 
-      await waitFor(() => {
-        expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
-      })
+      await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
       await screen.findByText('Edit Port')
       await screen.findByText('Selected Port')
 
@@ -701,6 +699,7 @@ describe('EditPortDrawer', () => {
       fireEvent.change(dscpInput, { target: { value: '2' } })
 
       await userEvent.click(await within(dialog[1]).findByRole('button', { name: 'Save' }))
+      await waitFor(() => expect(dialog[1]).not.toBeVisible())
       expect(await screen.findAllByRole('row')).toHaveLength(2)
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     })
@@ -747,6 +746,7 @@ describe('EditPortDrawer', () => {
       await userEvent.click(await screen.findByRole('combobox', { name: 'Application Type' }))
       await userEvent.click(await screen.findByText('Video-conferencing'))
       await userEvent.click(await within(dialog[1]).findByRole('button', { name: 'Save' }))
+      await waitFor(() => expect(dialog[1]).not.toBeVisible())
       expect(await screen.findAllByRole('row')).toHaveLength(3)
     })
 

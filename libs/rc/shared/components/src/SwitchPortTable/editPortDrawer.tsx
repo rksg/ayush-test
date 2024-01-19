@@ -331,8 +331,8 @@ export function EditPortDrawer ({
 
     setEditPortData(portSetting)
     setDisablePoeCapability(getPoeCapabilityDisabled([portSetting]))
-    setUseVenueSettings(portSetting.revert)
-    setLldpQosList(portSetting.lldpQos || [])
+    setUseVenueSettings(portSetting?.revert)
+    setLldpQosList(portSetting?.lldpQos || [])
 
     setInitPortVlans(getInitPortVlans( [portSetting], defaultVlan ))
     setPortEditStatus(

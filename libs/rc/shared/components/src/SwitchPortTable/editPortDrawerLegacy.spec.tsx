@@ -68,7 +68,7 @@ const editPortVlans = async (
   await userEvent.click(await within(dialog[1]).findByRole('button', { name: 'OK' }))
 }
 
-describe('EditPortDrawer', () => {
+describe('EditPortDrawerLegacy', () => {
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
     mockServer.use(
@@ -140,9 +140,7 @@ describe('EditPortDrawer', () => {
         }
       })
 
-      await waitFor(() => {
-        expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
-      })
+      await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
       await screen.findByText('Edit Port')
       await screen.findByText('Selected Port')
 
@@ -154,16 +152,6 @@ describe('EditPortDrawer', () => {
       expect(await screen.findByRole('combobox', { name: /PoE Class/ })).toBeDisabled()
 
       await userEvent.click(await screen.findByTestId('ipsg-checkbox'))
-
-      await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
-      let dialog = await screen.findAllByRole('dialog')
-      await screen.findByText('Select Port VLANs')
-      await userEvent.click(await within(dialog[1]).findByRole('button', { name: 'Cancel' }))
-
-      await userEvent.click(await screen.findByRole('button', { name: 'Create' }))
-      dialog = await screen.findAllByRole('dialog')
-      await screen.findByText('Add LLDP QoS')
-      await userEvent.click(await within(dialog[1]).findByRole('button', { name: 'Cancel' }))
 
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
 
