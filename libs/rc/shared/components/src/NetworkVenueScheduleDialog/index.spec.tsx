@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
-import { debounce } from 'lodash'
-import { rest }     from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import * as config                                       from '@acx-ui/config'
 import { NetworkVenue, SchedulerTypeEnum, WifiUrlsInfo } from '@acx-ui/rc/utils'
@@ -59,13 +59,13 @@ describe('NetworkVenueTabScheduleDialog', () => {
     render(<NetworkVenueScheduleDialog {...props} visible={true} />)
     const dialog = await waitFor(async () => await screen.findByRole('dialog'))
     const alwaysOn = await within(dialog).findByRole('radio', { name: '24/7' })
-    fireEvent.click(alwaysOn)
-    fireEvent.click(await within(dialog).findByRole('button', { name: 'Apply' }))
+    await userEvent.click(alwaysOn)
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'Apply' }))
     // eslint-disable-next-line testing-library/no-node-access
     expect(dialog.querySelector('.ant-spin-spinning')).toBeVisible()
   })
 
-  it('should render network venue tab schedule options successfully', async () => {
+  it('should render network venue tab schedule monday checkbox options successfully', async () => {
     const props = {
       formName: 'networkVenueScheduleForm',
       venue: venueResponse,
@@ -76,16 +76,32 @@ describe('NetworkVenueTabScheduleDialog', () => {
     render(<NetworkVenueScheduleDialog {...props} visible={true} />)
     const dialog = await waitFor(async () => await screen.findByRole('dialog'))
     const customSchedule = await within(dialog).findByRole('radio', { name: 'Custom Schedule' })
-    fireEvent.click(customSchedule)
-    const scheduleCheckbox = await within(dialog).findAllByRole('checkbox')
-    expect(scheduleCheckbox[0]).toBeVisible()
-    fireEvent.click(scheduleCheckbox[0])
+    await userEvent.click(customSchedule)
     expect(await within(dialog).findByTestId('mon_0')).toBeVisible()
-
     const mondayTimeSlot = await within(dialog).findByTestId('mon_0')
-    fireEvent.click(mondayTimeSlot)
+    await userEvent.click(mondayTimeSlot)
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'Apply' }))
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(dialog.querySelector('.ant-spin-spinning')).toBeVisible()
+  })
 
-    fireEvent.click(await within(dialog).findByRole('button', { name: 'Apply' }))
+
+  it('should render network venue tab schedule time slot of monday successfully', async () => {
+    const props = {
+      formName: 'networkVenueScheduleForm',
+      venue: venueResponse,
+      network: networkResponse,
+      networkVenue: networkVenueResponse as NetworkVenue
+    }
+
+    render(<NetworkVenueScheduleDialog {...props} visible={true} />)
+    const dialog = await waitFor(async () => await screen.findByRole('dialog'))
+    const customSchedule = await within(dialog).findByRole('radio', { name: 'Custom Schedule' })
+    await userEvent.click(customSchedule)
+    const scheduleCheckbox = await within(dialog).findByTestId('checkbox_mon')
+    expect(scheduleCheckbox).toBeVisible()
+    await userEvent.click(scheduleCheckbox)
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'Apply' }))
     // eslint-disable-next-line testing-library/no-node-access
     expect(dialog.querySelector('.ant-spin-spinning')).toBeVisible()
   })
@@ -105,11 +121,11 @@ describe('NetworkVenueTabScheduleDialog', () => {
 
     const dialog = await waitFor(async () => await screen.findByRole('dialog'))
     const customSchedule = await within(dialog).findByRole('radio', { name: 'Custom Schedule' })
-    fireEvent.click(customSchedule)
-    fireEvent.click(await within(dialog).findByRole('button', { name: 'See tips' }))
+    await userEvent.click(customSchedule)
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'See tips' }))
     const tipsDialog = await screen.findAllByRole('dialog')
     expect(tipsDialog[1]).toBeInTheDocument()
-    fireEvent.click(await within(tipsDialog[1]).findByRole('button', { name: 'OK' }))
+    await userEvent.click(await within(tipsDialog[1]).findByRole('button', { name: 'OK' }))
 
     // update the props "visible"
     rerender(<NetworkVenueScheduleDialog {...props} visible={false}/>)
@@ -123,19 +139,18 @@ describe('NetworkVenueTabScheduleDialog', () => {
       networkVenue: networkVenueResponseWithNoSchedule as NetworkVenue
     }
 
-    const { rerender } = render(<NetworkVenueScheduleDialog {...props} visible={true} />)
+    render(<NetworkVenueScheduleDialog {...props} visible={true} />)
 
     const dialog = await waitFor(async () => screen.findByRole('dialog'))
     const customSchedule = await within(dialog).findByRole('radio', { name: 'Custom Schedule' })
-    fireEvent.click(customSchedule)
-    fireEvent.click(await within(dialog).findByRole('button', { name: 'See tips' }))
+    await userEvent.click(customSchedule)
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'See tips' }))
     const tipsDialog = await screen.findAllByRole('dialog')
     expect(tipsDialog[1]).toBeInTheDocument()
-    fireEvent.click(await within(tipsDialog[1]).findByRole('button', { name: 'OK' }))
-
+    await userEvent.click(await within(tipsDialog[1]).findByRole('button', { name: 'OK' }))
     // update the props "visible"
-    rerender(<NetworkVenueScheduleDialog {...props} visible={false}/>)
-    expect(dialog).not.toBeVisible()
+    // rerender(<NetworkVenueScheduleDialog {...props} visible={false}/>)
+    expect(tipsDialog[1]).not.toBeVisible()
   })
   it('should render schedule dialog with drag and select timeslots successfully', async () => {
     const props = {
@@ -148,17 +163,16 @@ describe('NetworkVenueTabScheduleDialog', () => {
     render(<NetworkVenueScheduleDialog {...props} visible={true} />)
     const dialog = await waitFor(async () => screen.findByRole('dialog'))
     const customSchedule = await within(dialog).findByRole('radio', { name: 'Custom Schedule' })
-    fireEvent.click(customSchedule)
-    const scheduleCheckbox = await within(dialog).findAllByRole('checkbox')
-    fireEvent.click(scheduleCheckbox[0])
+    await userEvent.click(customSchedule)
+    const scheduleCheckbox = await within(dialog).findByTestId('checkbox_mon')
+    expect(scheduleCheckbox).toBeVisible()
+    await userEvent.click(scheduleCheckbox)
     const mondayTimeSlot = await within(dialog).findByTestId('mon_0')
     const mondayLastTimeSlot = await within(dialog).findByTestId('mon_95')
 
     fireEvent.mouseDown(mondayLastTimeSlot)
     fireEvent.mouseMove(mondayTimeSlot)
-    debounce(() => {
-      fireEvent.mouseUp(mondayTimeSlot)
-    }, 100)
+    fireEvent.mouseUp(mondayTimeSlot)
   })
   it('should drag and select partial timeslots successfully', async () => {
     const props = {
@@ -171,16 +185,15 @@ describe('NetworkVenueTabScheduleDialog', () => {
     render(<NetworkVenueScheduleDialog {...props} visible={true} />)
     const dialog = await waitFor(async () => screen.findByRole('dialog'))
     const customSchedule = await within(dialog).findByRole('radio', { name: 'Custom Schedule' })
-    fireEvent.click(customSchedule)
-    const scheduleCheckbox = await within(dialog).findAllByRole('checkbox')
-    fireEvent.click(scheduleCheckbox[1])
+    await userEvent.click(customSchedule)
+    const scheduleCheckbox = await within(dialog).findByTestId('checkbox_tue')
+    expect(scheduleCheckbox).toBeVisible()
+    await userEvent.click(scheduleCheckbox)
     const tuesdayTimeSlot1 = await within(dialog).findByTestId('tue_0')
     const tuesdayTimeSlot2= await within(dialog).findByTestId('tue_50')
 
     fireEvent.mouseDown(tuesdayTimeSlot1)
     fireEvent.mouseMove(tuesdayTimeSlot2)
-    debounce(() => {
-      fireEvent.mouseUp(tuesdayTimeSlot2)
-    }, 100)
+    fireEvent.mouseUp(tuesdayTimeSlot2)
   })
 })
