@@ -1,11 +1,10 @@
 import '@testing-library/jest-dom'
 import userEvent       from '@testing-library/user-event'
 import { Form, Modal } from 'antd'
-import { act }         from 'react-dom/test-utils'
 
-import { SwitchConfigurationProfile }        from '@acx-ui/rc/utils'
-import { Provider }                          from '@acx-ui/store'
-import { fireEvent, render, screen, within } from '@acx-ui/test-utils'
+import { SwitchConfigurationProfile }             from '@acx-ui/rc/utils'
+import { Provider }                               from '@acx-ui/store'
+import { act, fireEvent, render, screen, within } from '@acx-ui/test-utils'
 
 import { ConfigurationProfileFormContext, ConfigurationProfileType } from '../ConfigurationProfileFormContext'
 
