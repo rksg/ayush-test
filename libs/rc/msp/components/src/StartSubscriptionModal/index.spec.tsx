@@ -1,5 +1,3 @@
-import '@testing-library/jest-dom'
-
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
 import { StartSubscriptionModal } from '.'

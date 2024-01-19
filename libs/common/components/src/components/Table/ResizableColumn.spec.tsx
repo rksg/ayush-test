@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom'
 import { render } from '@acx-ui/test-utils'
 
 import { ResizableColumn } from './ResizableColumn'

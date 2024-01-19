@@ -1,13 +1,17 @@
-import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { venueApi }                                                                                                               from '@acx-ui/rc/services'
-import { CommonUrlsInfo, ConnectionStates, ConnectionStatus, DeviceStates, DeviceTypes, ShowTopologyFloorplanOn, SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                                        from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved }                                                       from '@acx-ui/test-utils'
+import { venueApi } from '@acx-ui/rc/services'
+import { CommonUrlsInfo,
+  ConnectionStates,
+  ConnectionStatus,
+  DeviceStates,
+  DeviceTypes,
+  ShowTopologyFloorplanOn,
+  SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                  from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { TopologyGraph } from '.'
-
 
 jest.mock('@acx-ui/analytics/components', () => ({
   useIncidentToggles: () => ({}),

@@ -1,5 +1,3 @@
-import '@testing-library/jest-dom'
-
 import { SwitchViewModel } from '@acx-ui/rc/utils'
 import { Provider }        from '@acx-ui/store'
 import { render }          from '@acx-ui/test-utils'

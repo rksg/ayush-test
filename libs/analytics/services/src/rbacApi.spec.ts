@@ -1,5 +1,3 @@
-import '@testing-library/jest-dom'
-
 import { groupBy } from 'lodash'
 import { rest }    from 'msw'
 

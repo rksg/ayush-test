@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
 import { CommonUrlsInfo, SwitchUrlsInfo }        from '@acx-ui/rc/utils'

@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
@@ -17,7 +16,7 @@ import {
   portalList,
   externalProviders
 } from '../__tests__/fixtures'
-import NetworkForm from '../NetworkForm'
+import { NetworkForm } from '../NetworkForm'
 
 async function fillInBeforeSettings (networkName: string) {
   const insertInput = await screen.findByLabelText(/Network Name/)

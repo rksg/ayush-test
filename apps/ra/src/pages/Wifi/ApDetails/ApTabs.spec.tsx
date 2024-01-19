@@ -1,5 +1,3 @@
-import '@testing-library/jest-dom'
-
 import { Provider }                           from '@acx-ui/store'
 import { render, screen, waitFor, fireEvent } from '@acx-ui/test-utils'
 

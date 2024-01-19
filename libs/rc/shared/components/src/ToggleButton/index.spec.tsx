@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom'
 import { useState } from 'react'
 
 import { render, screen, fireEvent } from '@testing-library/react'

@@ -1,5 +1,3 @@
-import '@testing-library/jest-dom'
-
 import userEvent from '@testing-library/user-event'
 
 import { Provider, dataApiURL }                                        from '@acx-ui/store'

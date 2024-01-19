@@ -1,5 +1,3 @@
-import '@testing-library/jest-dom'
-
 import { Form } from 'antd'
 
 import { WlanSecurityEnum, PassphraseFormatEnum, PassphraseExpirationEnum } from '@acx-ui/rc/utils'

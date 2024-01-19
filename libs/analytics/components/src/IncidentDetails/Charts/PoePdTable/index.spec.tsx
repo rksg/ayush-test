@@ -1,5 +1,3 @@
-import '@testing-library/jest-dom'
-
 import { fakeIncidentPoePd }                from '@acx-ui/analytics/utils'
 import { useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import { dataApiURL, Provider, store }      from '@acx-ui/store'

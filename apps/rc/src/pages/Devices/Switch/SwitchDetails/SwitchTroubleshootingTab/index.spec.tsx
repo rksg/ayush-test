@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
 import { SWITCH_TYPE }    from '@acx-ui/rc/utils'

@@ -1,6 +1,4 @@
 /* eslint-disable max-len */
-import '@testing-library/jest-dom'
-
 import { defaultNetworkPath }                                              from '@acx-ui/analytics/utils'
 import { recommendationUrl, store, Provider }                              from '@acx-ui/store'
 import { mockGraphqlQuery, mockGraphqlMutation, act, renderHook, waitFor } from '@acx-ui/test-utils'

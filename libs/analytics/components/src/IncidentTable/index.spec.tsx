@@ -1,5 +1,3 @@
-import '@testing-library/jest-dom'
-
 import userEvent from '@testing-library/user-event'
 
 import { IncidentFilter }              from '@acx-ui/analytics/utils'

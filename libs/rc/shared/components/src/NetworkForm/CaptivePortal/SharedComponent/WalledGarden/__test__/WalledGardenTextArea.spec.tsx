@@ -1,12 +1,8 @@
-import '@testing-library/jest-dom'
-
-
 import { StepsFormLegacy }                    from '@acx-ui/components'
 import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { GuestNetworkTypeEnum }               from '@acx-ui/rc/utils'
 import { Provider }                           from '@acx-ui/store'
 import { render, screen, cleanup, fireEvent } from '@acx-ui/test-utils'
-
 
 import NetworkFormContext                          from '../../../../NetworkFormContext'
 import { defaultWalledGarden }                     from '../DefaultWalledGarden'

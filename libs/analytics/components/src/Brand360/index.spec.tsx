@@ -1,5 +1,3 @@
-import '@testing-library/jest-dom'
-
 import { rest } from 'msw'
 
 import type { Settings }                                                                      from '@acx-ui/analytics/utils'

@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
 import { store, Provider, userApi } from '@acx-ui/store'

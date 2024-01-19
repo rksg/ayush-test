@@ -1,6 +1,5 @@
 import React from 'react'
 
-import '@testing-library/jest-dom'
 import { act, fireEvent } from '@testing-library/react'
 import userEvent          from '@testing-library/user-event'
 import { rest }           from 'msw'

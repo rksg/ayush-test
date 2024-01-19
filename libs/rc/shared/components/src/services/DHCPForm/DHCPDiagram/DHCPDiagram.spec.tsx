@@ -1,5 +1,3 @@
-import '@testing-library/jest-dom'
-
 import { DHCPConfigTypeEnum } from '@acx-ui/rc/utils'
 import { render, screen }     from '@acx-ui/test-utils'
 

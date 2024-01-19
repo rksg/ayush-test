@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom'
 import { AnyAction, Dispatch, MiddlewareAPI } from '@reduxjs/toolkit'
 import { rest }                               from 'msw'
 import { createRoot }                         from 'react-dom/client'

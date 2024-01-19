@@ -1,5 +1,3 @@
-import '@testing-library/jest-dom'
-
 import { TrendTypeEnum } from '@acx-ui/analytics/utils'
 import { render }        from '@acx-ui/test-utils'
 

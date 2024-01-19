@@ -1,6 +1,3 @@
-/* eslint-disable max-len */
-import '@testing-library/jest-dom'
-
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
@@ -113,6 +110,7 @@ describe('SwitchConfigBackupTable', () => {
         <SwitchConfigBackupTable />
       </SwitchDetailsContext.Provider>
     </Provider>, {
+      // eslint-disable-next-line max-len
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab' }
     })
 
@@ -153,6 +151,7 @@ describe('SwitchConfigBackupTable', () => {
         <SwitchConfigBackupTable />
       </SwitchDetailsContext.Provider>
     </Provider>, {
+      // eslint-disable-next-line max-len
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab' }
     })
 
@@ -187,6 +186,7 @@ describe('SwitchConfigBackupTable', () => {
         <SwitchConfigBackupTable />
       </SwitchDetailsContext.Provider>
     </Provider>, {
+      // eslint-disable-next-line max-len
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab' }
     })
 
@@ -264,6 +264,7 @@ describe('SwitchConfigBackupTable', () => {
         <SwitchConfigBackupTable />
       </SwitchDetailsContext.Provider>
     </Provider>, {
+      // eslint-disable-next-line max-len
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab' }
     })
 
@@ -301,6 +302,7 @@ describe('SwitchConfigBackupTable', () => {
         <SwitchConfigBackupTable />
       </SwitchDetailsContext.Provider>
     </Provider>, {
+      // eslint-disable-next-line max-len
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab' }
     })
 
@@ -363,6 +365,7 @@ describe('SwitchConfigBackupTable', () => {
         <SwitchConfigBackupTable />
       </SwitchDetailsContext.Provider>
     </Provider>, {
+      // eslint-disable-next-line max-len
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab' }
     })
 

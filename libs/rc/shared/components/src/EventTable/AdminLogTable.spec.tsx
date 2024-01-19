@@ -1,5 +1,3 @@
-import '@testing-library/jest-dom'
-
 import userEvent from '@testing-library/user-event'
 
 import { AdminLog, TableQuery } from '@acx-ui/rc/utils'

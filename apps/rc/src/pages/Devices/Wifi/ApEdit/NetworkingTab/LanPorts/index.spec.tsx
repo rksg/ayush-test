@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom'
 import { waitForElementToBeRemoved } from '@testing-library/react'
 import userEvent                     from '@testing-library/user-event'
 import { rest }                      from 'msw'

@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom'
 import { BrowserRouter }                       from '@acx-ui/react-router-dom'
 import { renderHook, render, screen, waitFor } from '@acx-ui/test-utils'
 

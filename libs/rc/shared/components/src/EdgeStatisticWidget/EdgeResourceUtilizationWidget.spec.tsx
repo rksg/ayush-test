@@ -1,7 +1,3 @@
-import '@testing-library/react'
-import '@testing-library/jest-dom'
-
-
 import { rest } from 'msw'
 
 import { edgeApi }                                                         from '@acx-ui/rc/services'
@@ -12,7 +8,6 @@ import { mockServer, render, screen, waitFor,  waitForElementToBeRemoved } from 
 import * as EdgeTestCase from './__test__/fixture'
 
 import { EdgeResourceUtilizationWidget } from './'
-
 
 const params = {
   serialNumber: '962604D7DCEEE011ED9715000C2949F53E'

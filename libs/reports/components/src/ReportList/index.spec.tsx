@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
 import { render, screen, within } from '@acx-ui/test-utils'

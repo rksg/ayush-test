@@ -1,5 +1,3 @@
-import '@testing-library/jest-dom'
-
 import userEvent from '@testing-library/user-event'
 
 import { timelineApi }                      from '@acx-ui/rc/services'

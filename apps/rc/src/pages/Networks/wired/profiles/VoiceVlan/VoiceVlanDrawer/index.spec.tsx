@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom'
 import userEvent       from '@testing-library/user-event'
 import { Form, Modal } from 'antd'
 
@@ -9,7 +8,6 @@ import { render, screen, waitFor, within } from '@acx-ui/test-utils'
 import { ConfigurationProfileFormContext, ConfigurationProfileType } from '../../ConfigurationProfileFormContext'
 
 import { VoiceVlanDrawer } from '.'
-
 
 const currentData = {
   name: 'test-profile',

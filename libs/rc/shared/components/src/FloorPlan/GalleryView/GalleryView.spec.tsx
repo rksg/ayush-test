@@ -1,5 +1,3 @@
-import '@testing-library/jest-dom'
-
 import { rest }         from 'msw'
 import { DndProvider }  from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
@@ -10,8 +8,6 @@ import { fireEvent, mockServer, render, screen, waitFor }                       
 import { NetworkDeviceContext } from '..'
 
 import GalleryView from './GalleryView'
-
-
 
 const list: FloorPlanDto[] = [
   {

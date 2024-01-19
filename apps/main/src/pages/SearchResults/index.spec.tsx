@@ -1,5 +1,3 @@
-import '@testing-library/jest-dom'
-
 import { ClientUrlsInfo, CommonUrlsInfo, SwitchUrlsInfo }              from '@acx-ui/rc/utils'
 import { Provider }                                                    from '@acx-ui/store'
 import { mockRestApiQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'

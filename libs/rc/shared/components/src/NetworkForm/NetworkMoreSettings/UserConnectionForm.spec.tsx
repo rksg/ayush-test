@@ -1,8 +1,4 @@
-import '@testing-library/jest-dom'
-
-
 import userEvent from '@testing-library/user-event'
-
 
 import { StepsFormLegacy } from '@acx-ui/components'
 import { Provider }        from '@acx-ui/store'
@@ -16,8 +12,6 @@ import {
 import NetworkFormContext from '../NetworkFormContext'
 
 import { UserConnectionForm } from './UserConnectionForm'
-
-
 
 describe('UserConnectionForm', () => {
   it('should render user connection form successfully', async () => {

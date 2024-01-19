@@ -1,7 +1,3 @@
-import '@testing-library/react'
-import '@testing-library/jest-dom'
-
-
 import { rest } from 'msw'
 
 import { edgeApi }                                                         from '@acx-ui/rc/services'

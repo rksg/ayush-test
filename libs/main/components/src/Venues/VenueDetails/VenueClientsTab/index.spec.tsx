@@ -1,5 +1,3 @@
-import '@testing-library/jest-dom'
-
 import { waitFor } from '@testing-library/react'
 import { rest }    from 'msw'
 

@@ -18,9 +18,6 @@ import {
 import { Provider, store }                     from '@acx-ui/store'
 import { cleanup, mockServer, render, screen } from '@acx-ui/test-utils'
 
-import '@testing-library/jest-dom'
-
-
 import { ApDataContext, ApEditContext } from '../..'
 import {
   apDeviceRadio,

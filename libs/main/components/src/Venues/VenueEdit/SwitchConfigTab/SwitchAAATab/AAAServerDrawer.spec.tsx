@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
 import { venueApi }                                       from '@acx-ui/rc/services'

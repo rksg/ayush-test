@@ -1,5 +1,3 @@
-import '@testing-library/jest-dom'
-
 import { store, Provider, r1VideoCallQoeURL, dataApiSearchURL }            from '@acx-ui/store'
 import { act, mockGraphqlMutation, mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
 

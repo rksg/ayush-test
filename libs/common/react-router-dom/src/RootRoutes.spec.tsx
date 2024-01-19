@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom'
 import { render, screen }      from '@testing-library/react'
 import { createMemoryHistory } from 'history'
 import { Router, Route }       from 'react-router-dom'

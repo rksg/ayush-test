@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom'
 import { useEffect } from 'react'
 
 import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'

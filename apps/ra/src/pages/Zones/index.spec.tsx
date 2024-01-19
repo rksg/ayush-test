@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom'
 import { Provider, dataApiURL }                                        from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 

@@ -1,5 +1,3 @@
-import '@testing-library/jest-dom'
-
 import { Form } from 'antd'
 
 import { RogueAPDetectionContextType } from '@acx-ui/rc/utils'

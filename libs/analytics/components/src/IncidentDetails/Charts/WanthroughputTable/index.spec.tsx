@@ -1,5 +1,3 @@
-import '@testing-library/jest-dom'
-
 import { fakeIncidentApInfraWanthroughput, Incident } from '@acx-ui/analytics/utils'
 import { dataApiURL, Provider, store }                from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen }           from '@acx-ui/test-utils'

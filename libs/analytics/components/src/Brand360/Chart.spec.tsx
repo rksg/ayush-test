@@ -4,7 +4,6 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import '@testing-library/jest-dom'
 import { mockBrandTimeseries }  from './__tests__/fixtures'
 import { SlaChart }             from './Chart'
 import { FranchisorTimeseries } from './services'

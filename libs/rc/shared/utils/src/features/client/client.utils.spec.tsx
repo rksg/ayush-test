@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom'
 import { useIntl } from 'react-intl'
 
 import {

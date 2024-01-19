@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom'
 import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { VenueDetailHeader }                  from '@acx-ui/rc/utils'
 import { Provider }                           from '@acx-ui/store'
