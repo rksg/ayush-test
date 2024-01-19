@@ -2,7 +2,7 @@ import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/dist/q
 import { QueryReturnValue }                        from '@rtk-query/graphql-request-base-query/dist/GraphqlBaseQueryTypes'
 import { groupBy }                                 from 'lodash'
 
-import { Settings, ManagedUser }               from '@acx-ui/analytics/utils'
+import { Settings, ManagedUser }                from '@acx-ui/analytics/utils'
 import { get }                    from '@acx-ui/config'
 import { rbacApi as baseRbacApi } from '@acx-ui/store'
 
@@ -16,6 +16,11 @@ export type SystemMap = Record<string, System[]>
 type SettingRow = {
   key: string
   value: string
+}
+
+export type AvailableUser = {
+  swuId: string
+  userName: string
 }
 
 export const getDefaultSettings = (): Partial<Settings> => ({
@@ -84,7 +89,15 @@ export const rbacApi = baseRbacApi.injectEndpoints({
         method: 'get',
         credentials: 'include'
       }),
-      providesTags: [{ type: 'RBAC', id: 'GET_USERS' }],
+      providesTags: [{ type: 'RBAC', id: 'GET_USERS' }]
+    }),
+    getAvailableUsers: build.query<AvailableUser[], void>({
+      query: () => ({
+        url: '/users/available',
+        method: 'get',
+        credentials: 'include'
+      }),
+      providesTags: [{ type: 'RBAC', id: 'GET_AVAILABLE_USERS' }]
     })
   })
 })
@@ -94,7 +107,8 @@ export const {
   useGetTenantSettingsQuery,
   useUpdateTenantSettingsMutation,
   useUpdateInvitationMutation,
-  useGetUsersQuery
+  useGetUsersQuery,
+  useGetAvailableUsersQuery
 } = rbacApi
 
 export function useSystems () {
