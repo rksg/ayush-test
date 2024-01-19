@@ -22,7 +22,7 @@ export async function lanPortsubnetValidator (
   return Promise.resolve()
 }
 
-export const getEnabledCorePortKey = (portsData: EdgePort[], lagData: EdgeLag[]) : {
+export const getEnabledCorePortInfo = (portsData: EdgePort[], lagData: EdgeLag[]) : {
     key: string | undefined,
     isLag: boolean,
     physicalPortId: string | undefined,

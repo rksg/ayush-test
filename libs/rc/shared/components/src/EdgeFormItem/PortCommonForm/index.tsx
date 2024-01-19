@@ -17,7 +17,7 @@ import {
   subnetMaskIpRegExp
 } from '@acx-ui/rc/utils'
 
-import { getEnabledCorePortKey, getInnerPortFormID, isWANPortExist, lanPortsubnetValidator } from '../EdgePortsGeneral/utils'
+import { getEnabledCorePortInfo, getInnerPortFormID, isWANPortExist, lanPortsubnetValidator } from '../EdgePortsGeneral/utils'
 
 import * as UI from './styledComponents'
 
@@ -75,7 +75,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   const lagId = form.getFieldValue(getFieldFullPath('id'))
   const physicalPortIfName = form.getFieldValue(getFieldFullPath('interfaceName'))
 
-  const corePortInfo = getEnabledCorePortKey(portsData, lagData || [])
+  const corePortInfo = getEnabledCorePortInfo(portsData, lagData || [])
   const hasCorePortEnabled = !!corePortInfo.key
   const isCurrentPortCorePortEnabled = (hasCorePortEnabled && (corePortInfo.isLag
     ? corePortInfo.key === (lagId + '')
