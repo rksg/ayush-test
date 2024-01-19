@@ -1,7 +1,6 @@
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
-import { act }   from 'react-dom/test-utils'
 
 import { StepsForm }    from '@acx-ui/components'
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
@@ -19,6 +18,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
+  act,
   mockServer,
   render,
   renderHook,
