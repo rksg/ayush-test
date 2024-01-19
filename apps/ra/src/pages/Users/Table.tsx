@@ -52,7 +52,7 @@ const transformUsers = (
   if (!users) return []
   return users.map(user => ({
     ...user,
-    role: getDisplayRole(user.role, $t),
+    role: user.role,
     type: getDisplayType(user.type, $t, franchisor),
     invitationState: getDisplayState(user.invitation?.state, $t),
     invitor: user.invitation
@@ -157,7 +157,8 @@ export const UsersTable = (
       title: $t({ defaultMessage: 'Role' }),
       dataIndex: 'role',
       key: 'role',
-      sorter: { compare: sortProp('role', defaultSort) }
+      sorter: { compare: sortProp('role', defaultSort) },
+      render: (_, row) => getDisplayRole((row as ManagedUser).role, $t)
     },
     {
       title: $t({ defaultMessage: 'Resource Group' }),
