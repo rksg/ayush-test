@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
-import { act }   from 'react-dom/test-utils'
 
 import { healthApi }                   from '@acx-ui/analytics/services'
 import { dataApiURL, Provider, store } from '@acx-ui/store'
 import {
+  act,
   mockGraphqlQuery,
   mockGraphqlMutation,
   render,

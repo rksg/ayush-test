@@ -4,7 +4,6 @@ import React from 'react'
 import { renderHook } from '@testing-library/react'
 import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
-import { act }        from 'react-dom/test-utils'
 
 import {
   AdministrationUrlsInfo,
@@ -14,6 +13,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
+  act,
   mockServer,
   render,
   screen,

@@ -5,10 +5,13 @@ import TextArea                                from 'antd/lib/input/TextArea'
 import _                                       from 'lodash'
 import { useIntl }                             from 'react-intl'
 
-import { Button, StepsFormLegacy, Tooltip, cssStr }                    from '@acx-ui/components'
-import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
-import { useLazyGetNetworkTemplateListQuery }                          from '@acx-ui/msp/services'
-import { useLazyGetVenueNetworkApGroupQuery, useLazyNetworkListQuery } from '@acx-ui/rc/services'
+import { Button, StepsFormLegacy, Tooltip, cssStr } from '@acx-ui/components'
+import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import {
+  useLazyGetVenueNetworkApGroupQuery,
+  useLazyNetworkListQuery,
+  useLazyGetNetworkTemplateListQuery
+} from '@acx-ui/rc/services'
 import {
   ssidBackendNameRegExp,
   NetworkTypeEnum,
