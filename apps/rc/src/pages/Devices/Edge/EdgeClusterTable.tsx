@@ -1,11 +1,11 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }                                                                             from '@acx-ui/components'
-import { EdgeStatusLight, useEdgeClusterActions }                                                                from '@acx-ui/rc/components'
-import { useGetEdgeClusterListForTableQuery }                                                                    from '@acx-ui/rc/services'
-import { EdgeClusterTableDataType, allowRebootForStatus, usePollingTableQuery, getUrl, Device, CommonOperation } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useTenantLink }                                                                from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                                                        from '@acx-ui/user'
+import { Loader, Table, TableProps }                                                                                        from '@acx-ui/components'
+import { EdgeStatusLight, useEdgeClusterActions }                                                                           from '@acx-ui/rc/components'
+import { useGetEdgeClusterListForTableQuery }                                                                               from '@acx-ui/rc/services'
+import { EdgeClusterTableDataType, allowRebootForStatus, usePollingTableQuery, getUrl, Device, CommonOperation, activeTab } from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useTenantLink }                                                                           from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                                                                   from '@acx-ui/user'
 
 const defaultPayload = {
   fields: [
@@ -135,17 +135,24 @@ export const EdgeClusterTable = () => {
             `${basePath.pathname}${getUrl({
               feature: Device.EdgeCluster,
               oper: CommonOperation.Edit,
-              params: { id: selectedRows[0].clusterId } })}/cluster-details`
+              after: [activeTab],
+              params: {
+                id: selectedRows[0].clusterId,
+                activeTab: 'cluster-details'
+              } })}`
           })
         } else {
           navigate({
             ...basePath,
             pathname:
-            // eslint-disable-next-line max-len
             `${basePath.pathname}${getUrl({
               feature: Device.Edge,
               oper: CommonOperation.Edit,
-              params: { id: selectedRows[0].serialNumber } })}/general-settings`
+              after: [activeTab],
+              params: {
+                id: selectedRows[0].serialNumber,
+                activeTab: 'general-settings'
+              } })}`
           })
         }
       }
