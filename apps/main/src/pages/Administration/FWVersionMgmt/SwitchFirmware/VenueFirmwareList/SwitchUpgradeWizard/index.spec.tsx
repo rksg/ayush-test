@@ -152,7 +152,7 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
     expect(await screen.findByText(/When do you want the update to run/i)).toBeInTheDocument()
   })
 
-  it('render SwitchUpgradeWizard - update now - Validate', async () => {
+  it('render SwitchUpgradeWizard - update now - Validate required venue', async () => {
     render(
       <Provider>
         <SwitchUpgradeWizard
@@ -170,6 +170,23 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
     expect(await screen.findByText('Please select at least 1 item')).toBeInTheDocument()
+  })
+
+  it('render SwitchUpgradeWizard - update now - Validate reqired version', async () => {
+    render(
+      <Provider>
+        <SwitchUpgradeWizard
+          wizardType={SwitchFirmwareWizardType.update}
+          visible={true}
+          setVisible={mockedCancel}
+          onSubmit={() => { }}
+          data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
+      })
+
+    const stepsFormSteps = await screen.findByTestId('steps-form-steps')
+    expect(stepsFormSteps).toBeInTheDocument()
 
     const myVenue = await screen.findByRole('row', { name: /My-Venue/i })
     await userEvent.click(within(myVenue).getByRole('checkbox'))
