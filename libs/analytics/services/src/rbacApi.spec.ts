@@ -62,4 +62,13 @@ describe('RBAC API', () => {
     ) as { data: string }
     expect(data).toEqual('Created')
   })
+  it('fetch users api should work', async () => {
+    mockServer.use(
+      rest.get(`${rbacApiURL}/users`, (_req, res, ctx) => res(ctx.json([{ id: 'user1' }])))
+    )
+    const { data } = await store.dispatch(
+      rbacApi.endpoints.getUsers.initiate()
+    )
+    expect(data).toStrictEqual([{ id: 'user1' }])
+  })
 })

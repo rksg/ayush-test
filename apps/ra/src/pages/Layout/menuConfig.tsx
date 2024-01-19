@@ -271,8 +271,7 @@ export function useMenuConfig () {
               },
               {
                 uri: '/analytics/admin/users',
-                label: $t({ defaultMessage: 'Users' }),
-                openNewTab: true
+                label: $t({ defaultMessage: 'Users' })
               }
             ] : []),
             ...(hasManageLabelPermission ? [
