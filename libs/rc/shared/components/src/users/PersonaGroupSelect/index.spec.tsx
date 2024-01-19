@@ -1,10 +1,9 @@
-import { screen } from '@testing-library/react'
-import userEvent  from '@testing-library/user-event'
-import { rest }   from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { NewPersonaBaseUrl }  from '@acx-ui/rc/utils'
-import { Provider }           from '@acx-ui/store'
-import { mockServer, render } from '@acx-ui/test-utils'
+import { NewPersonaBaseUrl }          from '@acx-ui/rc/utils'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { personaGroupList } from './__tests__/fixtures'
 

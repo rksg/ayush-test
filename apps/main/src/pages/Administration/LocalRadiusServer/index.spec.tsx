@@ -1,12 +1,18 @@
-import { userEvent }         from '@storybook/testing-library'
-import { fireEvent, within } from '@testing-library/react'
-import { rest }              from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 
-import { useIsSplitOn }                                          from '@acx-ui/feature-toggle'
-import { RadiusClientConfigUrlsInfo }                            from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { useIsSplitOn }               from '@acx-ui/feature-toggle'
+import { RadiusClientConfigUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                   from '@acx-ui/store'
+import {
+  fireEvent,
+  mockServer,
+  render,
+  screen,
+  within,
+  waitForElementToBeRemoved
+} from '@acx-ui/test-utils'
 
 import LocalRadiusServer from './index'
 

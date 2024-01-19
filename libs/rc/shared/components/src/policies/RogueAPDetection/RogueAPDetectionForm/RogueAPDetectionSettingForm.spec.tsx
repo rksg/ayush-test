@@ -1,13 +1,12 @@
 import React from 'react'
 
-import { act }  from '@testing-library/react'
 import { Form } from 'antd'
 import { rest } from 'msw'
 
 import { policyApi }                                                         from '@acx-ui/rc/services'
 import { RogueAPDetectionContextType, RogueApUrls, RogueAPRule, RogueVenue } from '@acx-ui/rc/utils'
 import { Provider, store }                                                   from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }                               from '@acx-ui/test-utils'
+import { act, mockServer, render, screen, waitFor }                          from '@acx-ui/test-utils'
 
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 

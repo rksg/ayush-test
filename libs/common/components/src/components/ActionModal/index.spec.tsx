@@ -1,8 +1,9 @@
 import '@testing-library/jest-dom'
 
-import { screen, fireEvent, waitForElementToBeRemoved, waitFor, within } from '@testing-library/react'
-import userEvent                                                         from '@testing-library/user-event'
-import { Modal }                                                         from 'antd'
+import userEvent from '@testing-library/user-event'
+import { Modal } from 'antd'
+
+import { screen, fireEvent, waitForElementToBeRemoved, waitFor, within } from '@acx-ui/test-utils'
 
 import { showActionModal, convertToJSON, isErrorWithMessage } from '.'
 

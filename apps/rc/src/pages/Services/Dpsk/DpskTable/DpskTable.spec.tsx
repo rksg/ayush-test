@@ -1,6 +1,5 @@
-import { waitForElementToBeRemoved } from '@testing-library/react'
-import userEvent                     from '@testing-library/user-event'
-import { rest }                      from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { networkApi, serviceApi } from '@acx-ui/rc/services'
 import {
@@ -18,6 +17,7 @@ import {
   render,
   screen,
   waitFor,
+  waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
 import { RolesEnum }                      from '@acx-ui/types'

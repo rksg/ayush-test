@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 
-import { renderHook, render } from '@testing-library/react'
-import { MemoryRouter }       from 'react-router-dom'
+import { MemoryRouter } from 'react-router-dom'
 
-import { BrowserRouter } from '@acx-ui/react-router-dom'
+import { BrowserRouter }      from '@acx-ui/react-router-dom'
+import { renderHook, render } from '@acx-ui/test-utils'
 
 import { useDashboardFilter }      from './dashboardFilter'
 import { resetRanges }             from './dateUtil'

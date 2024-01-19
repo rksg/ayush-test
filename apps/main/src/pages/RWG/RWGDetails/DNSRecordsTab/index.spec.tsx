@@ -1,11 +1,18 @@
 import '@testing-library/jest-dom'
 
-import { userEvent, waitFor } from '@storybook/testing-library'
-import { rest }               from 'msw'
+import  userEvent from '@testing-library/user-event'
+import { rest }   from 'msw'
 
-import { CommonUrlsInfo }                                                           from '@acx-ui/rc/utils'
-import { Provider }                                                                 from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }       from '@acx-ui/store'
+import {
+  fireEvent,
+  mockServer,
+  render,
+  screen,
+  waitFor,
+  waitForElementToBeRemoved,
+  within } from '@acx-ui/test-utils'
 
 import { DNSRecordsTab } from '.'
 

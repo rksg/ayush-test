@@ -1,9 +1,8 @@
 /* eslint-disable max-len */
 import React from 'react'
 
-import { waitForElementToBeRemoved, within } from '@testing-library/react'
-import  userEvent                            from '@testing-library/user-event'
-import { rest }                              from 'msw'
+import  userEvent from '@testing-library/user-event'
+import { rest }   from 'msw'
 
 import { MspUrlsInfo }                        from '@acx-ui/msp/utils'
 import { administrationApi }                  from '@acx-ui/rc/services'
@@ -13,7 +12,9 @@ import {
   mockServer,
   render,
   screen,
-  waitFor
+  waitFor,
+  waitForElementToBeRemoved,
+  within
 } from '@acx-ui/test-utils'
 import { DetailLevel, setUserProfile, UserProfile, UserProfileContext, UserProfileContextProps, UserUrlsInfo } from '@acx-ui/user'
 

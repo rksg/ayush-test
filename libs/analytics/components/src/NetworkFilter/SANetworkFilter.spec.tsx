@@ -1,7 +1,7 @@
-import { render, screen } from '@testing-library/react'
-import { IntlProvider }   from 'react-intl'
+import { IntlProvider } from 'react-intl'
 
 import { defaultNetworkPath } from '@acx-ui/analytics/utils'
+import { render, screen }     from '@acx-ui/test-utils'
 import { DateRange }          from '@acx-ui/utils'
 
 import { SANetworkFilter }          from './SANetworkFilter'

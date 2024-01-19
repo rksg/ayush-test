@@ -1,14 +1,14 @@
 import '@testing-library/jest-dom'
 
-import { initialize }                           from '@googlemaps/jest-mocks'
-import { userEvent, waitForElementToBeRemoved } from '@storybook/testing-library'
-import { rest }                                 from 'msw'
+import { initialize } from '@googlemaps/jest-mocks'
+import  userEvent     from '@testing-library/user-event'
+import { rest }       from 'msw'
 
-import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
-import { rwgApi }                              from '@acx-ui/rc/services'
-import { CommonUrlsInfo }                      from '@acx-ui/rc/utils'
-import { Provider, store }                     from '@acx-ui/store'
-import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
+import { rwgApi }                                                         from '@acx-ui/rc/services'
+import { CommonUrlsInfo }                                                 from '@acx-ui/rc/utils'
+import { Provider, store }                                                from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { DNSRecordDrawer } from '.'
 

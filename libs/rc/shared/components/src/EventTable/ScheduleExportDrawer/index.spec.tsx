@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
-import { userEvent, waitFor, waitForElementToBeRemoved } from '@storybook/testing-library'
-import { rest }                                          from 'msw'
-import { defineMessage }                                 from 'react-intl'
+import userEvent         from '@testing-library/user-event'
+import { rest }          from 'msw'
+import { defineMessage } from 'react-intl'
 
 import { useIsSplitOn }                           from '@acx-ui/feature-toggle'
 import { AdministrationUrlsInfo, CommonUrlsInfo } from '@acx-ui/rc/utils'
@@ -9,7 +9,9 @@ import { Provider  }                              from '@acx-ui/store'
 import {
   render,
   screen,
-  mockServer
+  mockServer,
+  waitFor,
+  waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
 

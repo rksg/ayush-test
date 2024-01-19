@@ -1,11 +1,10 @@
-import { act, fireEvent } from '@testing-library/react'
-import { Form }           from 'antd'
-import { rest }           from 'msw'
+import { Form } from 'antd'
+import { rest } from 'msw'
 
-import { serviceApi }                             from '@acx-ui/rc/services'
-import { EPDG, QosPriorityEnum, WifiCallingUrls } from '@acx-ui/rc/utils'
-import { Provider, store }                        from '@acx-ui/store'
-import { mockServer, render, screen }             from '@acx-ui/test-utils'
+import { serviceApi }                                 from '@acx-ui/rc/services'
+import { EPDG, QosPriorityEnum, WifiCallingUrls }     from '@acx-ui/rc/utils'
+import { Provider, store }                            from '@acx-ui/store'
+import { act, fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import WifiCallingFormContext from '../WifiCallingFormContext'
 

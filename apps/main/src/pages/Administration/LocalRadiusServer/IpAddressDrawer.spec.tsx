@@ -1,10 +1,16 @@
-import { fireEvent, waitFor, waitForElementToBeRemoved } from '@testing-library/react'
-import userEvent                                         from '@testing-library/user-event'
-import { rest }                                          from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { RadiusClientConfigUrlsInfo }      from '@acx-ui/rc/utils'
-import { Provider }                        from '@acx-ui/store'
-import { act, mockServer, render, screen } from '@acx-ui/test-utils'
+import { RadiusClientConfigUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                   from '@acx-ui/store'
+import {
+  act,
+  fireEvent,
+  mockServer,
+  render,
+  waitFor,
+  waitForElementToBeRemoved,
+  screen } from '@acx-ui/test-utils'
 
 import { IpAddressDrawer } from './IpAddressDrawer'
 

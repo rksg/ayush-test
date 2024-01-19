@@ -1,7 +1,6 @@
 import React from 'react'
 
-import { act, fireEvent, within } from '@testing-library/react'
-import { rest }                   from 'msw'
+import { rest } from 'msw'
 
 import { policyApi } from '@acx-ui/rc/services'
 import {
@@ -9,8 +8,8 @@ import {
   SyslogUrls,
   SyslogVenue
 } from '@acx-ui/rc/utils'
-import { Provider, store }            from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { Provider, store }                                   from '@acx-ui/store'
+import { act, fireEvent,mockServer, render, screen, within } from '@acx-ui/test-utils'
 
 import SyslogContext from '../SyslogContext'
 

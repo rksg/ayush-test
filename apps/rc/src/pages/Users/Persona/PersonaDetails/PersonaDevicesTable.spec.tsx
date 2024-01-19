@@ -1,11 +1,10 @@
-import { waitFor, within } from '@testing-library/react'
-import userEvent           from '@testing-library/user-event'
-import { rest }            from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { useIsSplitOn, useIsTierAllowed }        from '@acx-ui/feature-toggle'
-import { ClientUrlsInfo, DpskUrls, PersonaUrls } from '@acx-ui/rc/utils'
-import { Provider }                              from '@acx-ui/store'
-import { mockServer, render, screen }            from '@acx-ui/test-utils'
+import { useIsSplitOn, useIsTierAllowed }              from '@acx-ui/feature-toggle'
+import { ClientUrlsInfo, DpskUrls, PersonaUrls }       from '@acx-ui/rc/utils'
+import { Provider }                                    from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { mockedDpskPassphraseDevices, mockPersona } from '../__tests__/fixtures'
 

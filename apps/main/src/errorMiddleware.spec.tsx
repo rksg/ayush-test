@@ -1,9 +1,9 @@
-import { createAsyncThunk }             from '@reduxjs/toolkit'
-import { screen, act, waitFor, render } from '@testing-library/react'
-import userEvent                        from '@testing-library/user-event'
-import { Modal }                        from 'antd'
+import { createAsyncThunk } from '@reduxjs/toolkit'
+import userEvent            from '@testing-library/user-event'
+import { Modal }            from 'antd'
 
-import * as utils from '@acx-ui/utils'
+import { screen, act, waitFor, render } from '@acx-ui/test-utils'
+import * as utils                       from '@acx-ui/utils'
 
 import {
   ErrorAction,

@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom'
 
-import { renderHook } from '@testing-library/react'
-import userEvent      from '@testing-library/user-event'
+import userEvent from '@testing-library/user-event'
 
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
@@ -11,8 +10,8 @@ import {
   getServiceRoutePath,
   ServiceOperation
 } from '@acx-ui/rc/utils'
-import { Path, To, useTenantLink } from '@acx-ui/react-router-dom'
-import { render, screen }          from '@acx-ui/test-utils'
+import { Path, To, useTenantLink }   from '@acx-ui/react-router-dom'
+import { render,renderHook, screen } from '@acx-ui/test-utils'
 
 import SelectServiceForm from '.'
 

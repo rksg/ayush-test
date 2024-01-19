@@ -1,9 +1,8 @@
-import { waitFor } from '@testing-library/react'
-import { rest }    from 'msw'
+import { rest } from 'msw'
 
-import { ClientUrlsInfo, PersonaUrls }                   from '@acx-ui/rc/utils'
-import { Provider }                                      from '@acx-ui/store'
-import { render, screen, fireEvent, within, mockServer } from '@acx-ui/test-utils'
+import { ClientUrlsInfo, PersonaUrls }                             from '@acx-ui/rc/utils'
+import { Provider }                                                from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent, within, waitFor  } from '@acx-ui/test-utils'
 
 import { mockPersona } from '../__tests__/fixtures'
 

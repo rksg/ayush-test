@@ -1,5 +1,3 @@
-import { screen } from '@testing-library/react'
-
 import {
   DpskDetailsTabKey,
   getPolicyDetailsLink,
@@ -10,7 +8,7 @@ import {
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
-import { render } from '@acx-ui/test-utils'
+import { render,screen } from '@acx-ui/test-utils'
 
 import {
   ConnectionMeteringLink,

@@ -1,10 +1,11 @@
-import { within } from '@testing-library/react'
-import userEvent  from '@testing-library/user-event'
+import userEvent from '@testing-library/user-event'
 
 import { ACLDirection, StatefulAclRule } from '@acx-ui/rc/utils'
 import {
   render,
-  screen } from '@acx-ui/test-utils'
+  screen,
+  within
+} from '@acx-ui/test-utils'
 
 import { StatefulACLRuleDialog, portNumberOrRangeCheck, portRangeCheck } from './'
 

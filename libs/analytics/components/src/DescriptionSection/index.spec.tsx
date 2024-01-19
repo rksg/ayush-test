@@ -1,4 +1,4 @@
-import { screen, render, fireEvent } from '@testing-library/react'
+import { screen, render, fireEvent } from '@acx-ui/test-utils'
 
 import { DescriptionRow, DescriptionSection } from '.'
 

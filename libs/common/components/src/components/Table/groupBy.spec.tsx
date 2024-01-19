@@ -1,7 +1,8 @@
 import { useState } from 'react'
 
-import { fireEvent, render, renderHook, screen } from '@testing-library/react'
-import { IntlShape }                             from 'react-intl'
+import { IntlShape } from 'react-intl'
+
+import { fireEvent, render, renderHook, screen } from '@acx-ui/test-utils'
 
 import { GroupSelect, useGroupBy } from './groupBy'
 import { groupByColumns }          from './stories/GroupTable'

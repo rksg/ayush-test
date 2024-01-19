@@ -1,10 +1,9 @@
-import { waitForElementToBeRemoved } from '@testing-library/react'
-import { rest }                      from 'msw'
+import { rest } from 'msw'
 
-import { useIsSplitOn }               from '@acx-ui/feature-toggle'
-import { EdgeDhcpUrls }               from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import { EdgeDhcpUrls }                                          from '@acx-ui/rc/utils'
+import { Provider }                                              from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { mockedEdgeDhcpData, mockEdgeDhcpHostStats } from './__tests__/fixtures'
 

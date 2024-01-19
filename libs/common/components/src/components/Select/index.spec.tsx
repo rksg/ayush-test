@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
-import { render }       from '@testing-library/react'
 import { IntlProvider } from 'react-intl'
+
+import { render } from '@acx-ui/test-utils'
 
 import { Select } from '.'
 

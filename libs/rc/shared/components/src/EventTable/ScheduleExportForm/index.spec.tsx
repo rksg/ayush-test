@@ -1,11 +1,17 @@
 /* eslint-disable max-len */
-import { userEvent } from '@storybook/testing-library'
-import { Form }      from 'antd'
-import { rest }      from 'msw'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                                                                from '@acx-ui/feature-toggle'
-import { AdministrationUrlsInfo, EventExportSchedule, EventScheduleFrequency, eventSeverityMapping, eventTypeMapping } from '@acx-ui/rc/utils'
-import { Provider  }                                                                                                   from '@acx-ui/store'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  AdministrationUrlsInfo,
+  EventExportSchedule,
+  EventScheduleFrequency,
+  eventSeverityMapping,
+  eventTypeMapping } from
+  '@acx-ui/rc/utils'
+import { Provider  } from '@acx-ui/store'
 import {
   render,
   screen,

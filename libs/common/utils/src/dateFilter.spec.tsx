@@ -1,7 +1,5 @@
-import { renderHook, render } from '@testing-library/react'
-
-import { BrowserRouter } from '@acx-ui/react-router-dom'
-
+import { BrowserRouter }      from '@acx-ui/react-router-dom'
+import { renderHook, render } from '@acx-ui/test-utils'
 
 import { useDateFilter }                                             from './dateFilter'
 import { defaultRanges, DateRange, getDateRangeFilter, resetRanges } from './dateUtil'

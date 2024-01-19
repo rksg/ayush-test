@@ -1,10 +1,7 @@
 import { Provider }                  from '@acx-ui/store'
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
-
-import '@testing-library/react'
 import ZoneDetails from '.'
-
 
 jest.mock('@acx-ui/analytics/components', () => {
   const sets = Object.keys(jest.requireActual('@acx-ui/analytics/components'))

@@ -1,6 +1,4 @@
-import { fireEvent } from '@testing-library/react'
-
-import { render, screen } from '@acx-ui/test-utils'
+import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
 import { SwitchCliSession } from './index'
 

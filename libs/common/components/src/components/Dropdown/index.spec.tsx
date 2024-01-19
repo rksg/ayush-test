@@ -1,7 +1,8 @@
 import '@testing-library/jest-dom'
-import { render, screen } from '@testing-library/react'
-import userEvent          from '@testing-library/user-event'
-import { Menu }           from 'antd'
+import userEvent from '@testing-library/user-event'
+import { Menu }  from 'antd'
+
+import { render, screen } from '@acx-ui/test-utils'
 
 import { regionMenu } from './stories'
 

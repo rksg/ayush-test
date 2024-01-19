@@ -1,10 +1,9 @@
 import { useReducer, useState } from 'react'
 
-import { userEvent }                      from '@storybook/testing-library'
-import { fireEvent, renderHook, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 
-import { EPDG, QosPriorityEnum } from '@acx-ui/rc/utils'
-import { render, screen }        from '@acx-ui/test-utils'
+import { EPDG, QosPriorityEnum }                          from '@acx-ui/rc/utils'
+import { fireEvent, render, renderHook, screen, waitFor } from '@acx-ui/test-utils'
 
 import WifiCallingFormContext, { mainReducer } from '../WifiCallingFormContext'
 

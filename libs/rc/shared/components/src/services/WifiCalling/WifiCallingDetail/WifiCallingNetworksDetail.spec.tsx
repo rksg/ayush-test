@@ -1,12 +1,9 @@
-import React from 'react'
-
-import { act }  from '@testing-library/react'
 import { rest } from 'msw'
 
 import { networkApi }                                                    from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiCallingDetailContextType, WifiCallingUrls } from '@acx-ui/rc/utils'
 import { Provider, store }                                               from '@acx-ui/store'
-import { mockServer, render, screen }                                    from '@acx-ui/test-utils'
+import { act, mockServer, render, screen }                               from '@acx-ui/test-utils'
 
 import { WifiCallingDetailContext } from './WifiCallingDetailView'
 import WifiCallingNetworksDetail    from './WifiCallingNetworksDetail'

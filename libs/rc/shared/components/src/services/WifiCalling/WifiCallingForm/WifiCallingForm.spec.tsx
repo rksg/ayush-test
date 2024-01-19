@@ -1,16 +1,14 @@
-import { fireEvent } from '@testing-library/react'
-import userEvent     from '@testing-library/user-event'
-import { rest }      from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { CommonUrlsInfo, QosPriorityEnum, WifiCallingUrls } from '@acx-ui/rc/utils'
 import { Provider }                                         from '@acx-ui/store'
-import { mockServer, render, screen }                       from '@acx-ui/test-utils'
+import { fireEvent, mockServer, render, screen }            from '@acx-ui/test-utils'
 
 import { mockNetworkResult }  from '../__tests__/fixtures'
 import WifiCallingFormContext from '../WifiCallingFormContext'
 
 import { WifiCallingForm } from './WifiCallingForm'
-
 
 const wifiCallingServiceResponse = {
   id: 'wifiCallingProfileId1',

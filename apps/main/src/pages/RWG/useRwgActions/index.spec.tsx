@@ -1,8 +1,4 @@
-import {
-  screen,
-  within,
-  waitFor
-} from '@testing-library/react'
+import userEvent   from '@testing-library/user-event'
 import { message } from 'antd'
 import { rest }    from 'msw'
 import '@testing-library/jest-dom'
@@ -11,13 +7,16 @@ import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider }               from '@acx-ui/store'
-import { mockServer, renderHook } from '@acx-ui/test-utils'
+import { Provider } from '@acx-ui/store'
+import {
+  mockServer,
+  renderHook,
+  screen,
+  within,
+  waitFor
+} from '@acx-ui/test-utils'
 
 import { useRwgActions } from '.'
-
-// eslint-disable-next-line import/order
-import { userEvent } from '@storybook/testing-library'
 
 const tenantId = ':tenantId'
 
@@ -49,7 +48,6 @@ const rwgList = {
     new: false
   }]
 }
-
 
 describe('Test useRwgActions', () => {
 

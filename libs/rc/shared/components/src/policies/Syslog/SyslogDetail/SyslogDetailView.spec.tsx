@@ -1,12 +1,11 @@
 import React from 'react'
 
-import { act }  from '@testing-library/react'
 import { rest } from 'msw'
 
-import { policyApi }                  from '@acx-ui/rc/services'
-import { SyslogUrls }                 from '@acx-ui/rc/utils'
-import { Provider, store }            from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { policyApi }                       from '@acx-ui/rc/services'
+import { SyslogUrls }                      from '@acx-ui/rc/utils'
+import { Provider, store }                 from '@acx-ui/store'
+import { act, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { SyslogDetailView } from './SyslogDetailView'
 import SyslogVenueDetail    from './SyslogVenueDetail'

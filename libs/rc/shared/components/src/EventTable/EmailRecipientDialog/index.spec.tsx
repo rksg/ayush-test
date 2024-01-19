@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
-import { userEvent } from '@storybook/testing-library'
-import { rest }      from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider  }              from '@acx-ui/store'

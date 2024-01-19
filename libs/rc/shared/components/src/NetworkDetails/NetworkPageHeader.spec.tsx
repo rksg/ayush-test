@@ -1,4 +1,3 @@
-import '@testing-library/react'
 import { rest } from 'msw'
 
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
@@ -7,8 +6,6 @@ import { mockServer, render, screen }   from '@acx-ui/test-utils'
 
 import { networkDetailHeaderData } from './__tests__/fixtures'
 import NetworkPageHeader           from './NetworkPageHeader'
-
-
 
 const mockedUseConfigTemplate = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({

@@ -1,7 +1,8 @@
 import '@testing-library/jest-dom'
-import { render, screen, fireEvent, within } from '@testing-library/react'
-import userEvent                             from '@testing-library/user-event'
-import { IntlProvider }                      from 'react-intl'
+import userEvent        from '@testing-library/user-event'
+import { IntlProvider } from 'react-intl'
+
+import { render, screen, fireEvent, within } from '@acx-ui/test-utils'
 
 import { VlanSettingDrawer } from '.'
 
