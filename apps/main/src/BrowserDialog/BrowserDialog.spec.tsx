@@ -1,7 +1,6 @@
 import { rest } from 'msw'
-import { act }  from 'react-dom/test-utils'
 
-import { mockServer }            from '@acx-ui/test-utils'
+import { act, mockServer }       from '@acx-ui/test-utils'
 import {
   useUpdateUserProfileMutation
 } from '@acx-ui/user'

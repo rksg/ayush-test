@@ -2,7 +2,6 @@ import userEvent    from '@testing-library/user-event'
 import { Modal }    from 'antd'
 import { debounce } from 'lodash'
 import { rest }     from 'msw'
-import { act }      from 'react-dom/test-utils'
 
 import { useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { apApi, switchApi, venueApi } from '@acx-ui/rc/services'
@@ -12,6 +11,7 @@ import { CommonUrlsInfo,
   SwitchFirmwareFixtures } from '@acx-ui/rc/utils'
 import { Provider, store }    from '@acx-ui/store'
 import {
+  act,
   mockServer,
   render,
   screen,
