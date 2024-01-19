@@ -57,7 +57,7 @@ const EditEdgeCluster = () => {
           </Tabs>
         }
       />
-      {tabs[activeTab as keyof typeof tabs].content}
+      {tabs[activeTab as keyof typeof tabs]?.content}
     </>
   )
 }
