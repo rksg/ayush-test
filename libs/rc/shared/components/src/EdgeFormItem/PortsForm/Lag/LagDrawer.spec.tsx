@@ -115,7 +115,6 @@ describe('EditEdge ports - LAG Drawer', () => {
       </Provider>)
 
     const lagEnabled = screen.getByRole('switch', { name: /lag enabled/i })
-    await userEvent.click(lagEnabled)
     await waitFor(() => expect(lagEnabled).toBeChecked())
     await userEvent.click(await screen.findByRole('checkbox', { name: 'Port1' }))
     await userEvent.click(await screen.findByRole('checkbox', { name: 'Port2' }))
@@ -139,7 +138,6 @@ describe('EditEdge ports - LAG Drawer', () => {
       </Provider>)
 
     const lagEnabled = screen.getByRole('switch', { name: /lag enabled/i })
-    await userEvent.click(lagEnabled)
     await waitFor(() => expect(lagEnabled).toBeChecked())
     await userEvent.click(lagEnabled)
     const warningStr = await screen.findByText('Warning')

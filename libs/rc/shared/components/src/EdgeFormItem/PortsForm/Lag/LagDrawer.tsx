@@ -41,7 +41,7 @@ const defaultFormValues = {
   corePortEnabled: false,
   ipMode: EdgeIpModeEnum.DHCP,
   natEnabled: false,
-  lagEnabled: false
+  lagEnabled: true
 } as Partial<EdgeLag>
 
 export const LagDrawer = (props: LagDrawerProps) => {
@@ -328,6 +328,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
                         children={<Switch
                           checked={enabledPorts?.includes(item.id)}
                           onChange={(checked) => handlePortEnabled(item.id, checked)}
+                          disabled={!lagEnabled}
                         />}
                         noStyle
                       />

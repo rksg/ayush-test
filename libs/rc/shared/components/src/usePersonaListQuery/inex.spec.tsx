@@ -1,8 +1,9 @@
 import { rest } from 'msw'
 
 import { useIsSplitOn }                    from '@acx-ui/feature-toggle'
+import { personaApi, serviceApi }          from '@acx-ui/rc/services'
 import { DpskUrls, PersonaUrls }           from '@acx-ui/rc/utils'
-import { Provider }                        from '@acx-ui/store'
+import { Provider, store }                 from '@acx-ui/store'
 import { mockServer, renderHook, waitFor } from '@acx-ui/test-utils'
 
 import { mockedDpskDeviceList, mockedIdentityGroupList, mockedIdentityList } from './__tests__/fixtures'
@@ -12,6 +13,8 @@ import { usePersonaListQuery } from '.'
 describe('useEdgeClusterActions', () => {
   jest.mocked(useIsSplitOn).mockReturnValue(true)
   beforeEach(() => {
+    store.dispatch(personaApi.util.resetApiState())
+    store.dispatch(serviceApi.util.resetApiState())
     mockServer.use(
       rest.get(
         PersonaUrls.getPersonaGroupById.url,
