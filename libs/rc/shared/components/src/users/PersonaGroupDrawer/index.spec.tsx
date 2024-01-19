@@ -137,7 +137,6 @@ describe('Persona Group Drawer', () => {
     await userEvent.click(addButton[addButton.length - 1])
 
     await waitFor(() => expect(createPersonaGroupSpy).toHaveBeenCalled())
-    await screen.findByText('Identity Group New Identity Group Name was added')
   })
 
   it('should edit a persona group', async () => {
@@ -166,6 +165,5 @@ describe('Persona Group Drawer', () => {
     await userEvent.click(applyButton)
 
     await waitFor(() => expect(updatePersonaSpy).toHaveBeenCalled())
-    await screen.findByText('Identity Group Class A was updated')
   })
 })

@@ -1,13 +1,11 @@
 import { useState } from 'react'
 
 import userEvent from '@testing-library/user-event'
-import { act }   from 'react-dom/test-utils'
 
-import { switchApi } from '@acx-ui/rc/services'
-import {
-  Acl } from '@acx-ui/rc/utils'
-import { Provider, store }                               from '@acx-ui/store'
-import { fireEvent, render, renderHook, screen, within } from '@acx-ui/test-utils'
+import { switchApi }                                          from '@acx-ui/rc/services'
+import { Acl }                                                from '@acx-ui/rc/utils'
+import { Provider, store }                                    from '@acx-ui/store'
+import { act, fireEvent, render, renderHook, screen, within } from '@acx-ui/test-utils'
 
 import { ACLSettingDrawer } from '.'
 

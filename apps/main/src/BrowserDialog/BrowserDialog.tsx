@@ -14,15 +14,6 @@ export interface PartialUserData {
   preferredLanguage: string
 }
 
-export const isNonProdEnv = () => {
-  return window.location.hostname === 'localhost' ||
-    window.location.hostname === 'dev.ruckus.cloud' ||
-    window.location.hostname === 'qa.ruckus.cloud' ||
-    window.location.hostname === 'scale.ruckus.cloud' ||
-    window.location.hostname === 'int.ruckus.cloud' ||
-    window.location.hostname === 'stage.ruckus.cloud'
-}
-
 export const detectBrowserLang = () => {
   const locales = navigator.languages
   const locale = locales.find(locale =>

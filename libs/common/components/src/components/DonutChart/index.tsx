@@ -29,7 +29,7 @@ import type { EChartsReactProps } from 'echarts-for-react'
 export type DonutChartData = {
   value: number,
   name: string,
-  color: string,
+  color: string
 }
 
 interface DonutChartOptionalProps {

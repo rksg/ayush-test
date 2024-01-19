@@ -20,6 +20,7 @@ export enum Features {
   BETA_FLAG = 'acx-ui-beta-flag-toggle',
   CCD_TOGGLE = 'ap-ops-client-connection-diagnosis-toggle',
   CLOUDMOTE_SERVICE = 'cloudmote-service-enabled',
+  CLOUDPATH_ASYNC_API_TOGGLE = 'acx-ui-cloudpath-async-api-toggle',
   CLOUDPATH_BETA = 'BETA-CP',
   CONFIG_CHANGE = 'acx-ui-config-change-toggle',
   CONFIG_TEMPLATE = 'acx-ui-config-template',
@@ -150,7 +151,7 @@ export enum Features {
   WPA3_80211R = 'wifi-eda-wpa3-80211r-toggle',
   ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
   EDGE_HA_TOGGLE = 'edge-ha-toggle',
-  CLOUDPATH_ASYNC_API_TOGGLE = 'acx-ui-cloudpath-async-api-toggle'
+  WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE = 'wifi-eda-branch-level-supported-models-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
