@@ -1,10 +1,10 @@
 import '@testing-library/react'
 import { Provider }                          from '@acx-ui/store'
 import { findTBody, render, screen, within } from '@acx-ui/test-utils'
+import { noDataDisplay }                     from '@acx-ui/utils'
 
 import { mockMangedUsers } from './__tests__/fixtures'
 import { UsersTable }      from './Table'
-import { noDataDisplay } from '@acx-ui/utils'
 
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
