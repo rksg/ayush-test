@@ -13,7 +13,7 @@ import {
 } from '@acx-ui/test-utils'
 
 
-import { mockMangedUsers } from './__fixtures__'
+import { mockMangedUsers } from './__tests__/fixtures'
 
 import Users from '.'
 
