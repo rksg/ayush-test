@@ -118,7 +118,6 @@ describe('updateBrowserCached', () => {
     Storage.prototype.setItem = jest.fn()
     updateBrowserCached('en-US')
     expect(localStorage.setItem).toHaveBeenCalledWith('browserLang', 'en-US')
-    expect(localStorage.setItem).toHaveBeenCalledWith('isBrowserDialog', 'true')
   })
 })
 
