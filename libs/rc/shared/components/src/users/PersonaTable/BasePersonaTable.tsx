@@ -5,7 +5,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }             from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
 import { DownloadOutlined }                                                   from '@acx-ui/icons'
 import {
   useSearchPersonaListQuery,
@@ -36,9 +36,6 @@ import {
   CsvSize,
   ImportFileDrawerType,
   ImportFileDrawer } from '../../ImportFileDrawer'
-import {
-  useDpskNewConfigFlowParams
-} from '../../services/useDpskNewConfigFlowParams'
 import { PersonaDrawer } from '../PersonaDrawer'
 import {
   PersonaGroupSelect } from '../PersonaGroupSelect'
@@ -199,7 +196,6 @@ export function BasePersonaTable (props: PersonaTableProps) {
   const { personaGroupId, colProps } = props
   const { tenantId } = useParams()
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isNewConfigFlow = useIsSplitOn(Features.DPSK_NEW_CONFIG_FLOW_TOGGLE)
   const [venueId, setVenueId] = useState('')
   const [unitPool, setUnitPool] = useState(new Map())
   const [dpskDeviceCount, setDpskDeviceCount] = useState(new Map<string, number>())
@@ -219,7 +215,6 @@ export function BasePersonaTable (props: PersonaTableProps) {
   )
   const [getUnitById] = useLazyGetPropertyUnitByIdQuery()
   const { setIdentitiesCount } = useContext(IdentitiesContext)
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
   const { customHeaders } = usePersonaAsyncHeaders()
 
   const personaListQuery = useTableQuery<Persona>({
@@ -268,14 +263,12 @@ export function BasePersonaTable (props: PersonaTableProps) {
       if (!passphraseId) return
 
       getDpskDevices({
-        params: { tenantId, passphraseId, serviceId, ...dpskNewConfigFlowParams }
+        params: { tenantId, passphraseId, serviceId }
       })
         .then(result => {
           if (result.data) {
             const count = result.data.filter(d =>
-              isNewConfigFlow
-                ? d.deviceConnectivity === 'CONNECTED'
-                : d.online
+              d.deviceConnectivity === 'CONNECTED'
             ).length
             setDpskDeviceCount(prev => new Map(prev.set(passphraseId, count)))
           }
