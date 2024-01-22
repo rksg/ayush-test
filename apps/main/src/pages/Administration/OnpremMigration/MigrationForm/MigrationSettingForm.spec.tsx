@@ -3,9 +3,9 @@ import userEvent      from '@testing-library/user-event'
 import { Form }       from 'antd'
 import { rest }       from 'msw'
 
-import { useIsSplitOn }                                          from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, getUrlForTest, AdministrationUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
+import { useIsSplitOn }                           from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, AdministrationUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                               from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -52,12 +52,10 @@ describe('Venues Form', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
     mockServer.use(
-      rest.post(
-        getUrlForTest(CommonUrlsInfo.getVenuesList),
+      rest.post(CommonUrlsInfo.getVenuesList.url,
         (req, res, ctx) => res(ctx.json(venuelist))
       ),
-      rest.get(
-        getUrlForTest(CommonUrlsInfo.getVenue),
+      rest.get(CommonUrlsInfo.getVenue.url,
         (req, res, ctx) => res(ctx.json(venueResponse))
       ),
       rest.get(
