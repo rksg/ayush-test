@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }               from '@acx-ui/feature-toggle'
+import { useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import {
-  FirmwareUrlsInfo, SigPackUrlsInfo
+  FirmwareUrlsInfo, SigPackUrlsInfo, SwitchFirmwareFixtures
 } from '@acx-ui/rc/utils'
 import {
   Provider
@@ -19,12 +19,14 @@ import { UserProfileContext, UserProfileContextProps } from '@acx-ui/user'
 import {
   availableVersions, versionLatest,
   switchLatest, switchVenue,
-  venue, version, preference
+  venue, version, preference, mockedApModelFamilies
 } from './__tests__/fixtures'
 
 import FWVersionMgmt from '.'
 
+const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
 const mockedUsedNavigate = jest.fn()
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
@@ -37,6 +39,13 @@ jest.mock('./SwitchFirmware/VenueFirmwareList', () => ({
 jest.mock('./ApFirmware/VenueFirmwareList', () => ({
   ...jest.requireActual('./ApFirmware/VenueFirmwareList'),
   VenueFirmwareList: () => <div data-testid='mocked-ApFirmware-table'></div>
+}))
+
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetSwitchCurrentVersionsQuery: () => ({
+    data: mockSwitchCurrentVersions
+  })
 }))
 
 describe('Firmware Version Management', () => {
@@ -74,6 +83,10 @@ describe('Firmware Version Management', () => {
       rest.get(
         SigPackUrlsInfo.getSigPack.url.replace('?changesIncluded=:changesIncluded', ''),
         (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        FirmwareUrlsInfo.getApModelFamilies.url,
+        (req, res, ctx) => res(ctx.json(mockedApModelFamilies))
       )
     )
     params = {

@@ -39,10 +39,3 @@ export function getPassphraseStatus (passphrase: NewDpskPassphrase, isCloudpathE
   }
   return $t(dpskPassphraseStatusTextMapping[DpskPassphraseStatusEnum.ACTIVE])
 }
-
-// eslint-disable-next-line max-len
-export function isActivePassphrase (passphrase: NewDpskPassphrase, isCloudpathEnabled = false): boolean {
-  const { $t } = getIntl()
-  // eslint-disable-next-line max-len
-  return getPassphraseStatus(passphrase, isCloudpathEnabled) === $t(dpskPassphraseStatusTextMapping[DpskPassphraseStatusEnum.ACTIVE])
-}

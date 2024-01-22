@@ -1,7 +1,7 @@
 import { Badge, Button, Divider, Space } from 'antd'
 import { useIntl }                       from 'react-intl'
 
-import { IncidentsBySeverityData, useIncidentsBySeverityQuery }                                     from '@acx-ui/analytics/components'
+import { IncidentsBySeverityData, useIncidentToggles, useIncidentsBySeverityQuery }                 from '@acx-ui/analytics/components'
 import { Card, Descriptions, Loader, Subtitle }                                                     from '@acx-ui/components'
 import { DateFormatEnum, formatter }                                                                from '@acx-ui/formatter'
 import { CloseSymbol }                                                                              from '@acx-ui/icons'
@@ -22,6 +22,7 @@ export function APDetailsCard (props: {
   }) {
   const { apDetail, isLoading, onClose } = props
   const { $t } = useIntl()
+  const toggles = useIncidentToggles()
 
   const { dateFilter } = useDateFilter()
   const navigate = useNavigate()
@@ -37,7 +38,7 @@ export function APDetailsCard (props: {
     }
   } as AnalyticsFilter
 
-  const incidentData = useIncidentsBySeverityQuery(filters, {
+  const incidentData = useIncidentsBySeverityQuery({ ...filters, toggles }, {
     selectFromResult: ({ data, ...rest }) => ({
       data: { ...data } as IncidentsBySeverityData,
       ...rest

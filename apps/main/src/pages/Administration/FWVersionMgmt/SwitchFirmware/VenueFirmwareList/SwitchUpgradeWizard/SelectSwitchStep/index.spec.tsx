@@ -2,12 +2,14 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
+import { firmwareApi }     from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenue,
-  FirmwareUrlsInfo
+  FirmwareUrlsInfo,
+  SwitchFirmwareFixtures
 } from '@acx-ui/rc/utils'
 import {
-  Provider
+  Provider, store
 } from '@acx-ui/store'
 import {
   mockServer,
@@ -20,12 +22,15 @@ import {
   switchVenue,
   preference,
   switchRelease,
-  switchCurrentVersions,
   switchLatest,
   upgradeSwitchViewList
 } from '../../__test__/fixtures'
 
 import { SwitchFirmwareWizardType, SwitchUpgradeWizard } from './../'
+
+const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
+const mockedCancel = jest.fn()
+const switchFwRequestSpy = jest.fn()
 
 jest.mock('../../../../PreferencesDialog', () => ({
   ...jest.requireActual('../../../../PreferencesDialog'),
@@ -41,13 +46,11 @@ jest.mock('./../VenueStatusDrawer', () => ({
   }
 }))
 
-const mockedCancel = jest.fn()
-const switchFwRequestSpy = jest.fn()
-
 describe('SwitchFirmware - SwitchUpgradeWizard', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
     Modal.destroyAll()
+    store.dispatch(firmwareApi.util.resetApiState())
     mockServer.use(
       rest.post(
         FirmwareUrlsInfo.getSwitchVenueVersionList.url,
@@ -69,7 +72,7 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
       ),
       rest.get(
         FirmwareUrlsInfo.getSwitchCurrentVersions.url,
-        (req, res, ctx) => res(ctx.json(switchCurrentVersions))
+        (req, res, ctx) => res(ctx.json(mockSwitchCurrentVersions))
       ),
       rest.post(
         FirmwareUrlsInfo.updateSwitchVenueSchedules.url,
@@ -142,7 +145,7 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
     expect(await screen.findByText('Skip This Update?')).toBeInTheDocument()
   })
 
-  it('render SwitchUpgradeWizard - select switch step - venue', async () => {
+  it('render SwitchUpgradeWizard - select switch step - venue - select one', async () => {
     render(
       <Provider>
         <SwitchUpgradeWizard
@@ -165,6 +168,23 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
     //deselect 1 item
     await userEvent.click(within(myVenue).getByRole('checkbox'))
     expect(within(myVenue).getByRole('checkbox')).not.toBeChecked()
+  })
+
+  it('render SwitchUpgradeWizard - select switch step - venue - select all', async () => {
+    render(
+      <Provider>
+        <SwitchUpgradeWizard
+          wizardType={SwitchFirmwareWizardType.skip}
+          visible={true}
+          setVisible={mockedCancel}
+          onSubmit={() => { }}
+          data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
+      })
+
+    const stepsFormSteps = screen.getByText(/skip updates/i)
+    expect(stepsFormSteps).toBeInTheDocument()
 
     //select all
     const selectAll = screen.getByRole('row', {
@@ -216,13 +236,6 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
 
-    const checkboxes = screen.getAllByRole('checkbox')
-    checkboxes.forEach((checkbox) => {
-      if ((checkbox as HTMLInputElement).checked) {
-        userEvent.click(checkbox)
-      }
-    })
-
     const stepsFormSteps = screen.getByText(/skip updates/i)
     expect(stepsFormSteps).toBeInTheDocument()
 
@@ -241,26 +254,6 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
     const FEK3224R0AGCheckbox = within(FEK3224R0AG).getByRole('checkbox')
     await userEvent.click(FEK3224R0AGCheckbox)
     expect(FEK3224R0AGCheckbox).toBeChecked()
-
-    const selectAllRow = screen.getByRole('row', {
-      name: /switch model current firmware available firmware scheduling/i
-    })
-    const selectAllCheckbox = within(selectAllRow).getByRole('checkbox')
-    expect(selectAllCheckbox).toBeInTheDocument()
-
-    //Flaky test
-    // await userEvent.click(selectAllCheckbox)
-    // expect(selectAllCheckbox).toBeChecked()
-
-    // await userEvent.click(selectAllCheckbox)
-    // expect(selectAllCheckbox).not.toBeChecked()
-
-    // await userEvent.click(selectAllCheckbox)
-    // expect(selectAllCheckbox).toBeChecked()
-    // expect(FEK3224R0AGCheckbox).toBeChecked()
-
-    // await userEvent.click(FEK3224R0AGCheckbox)
-    // expect(FEK3224R0AGCheckbox).not.toBeChecked()
   })
 
 })

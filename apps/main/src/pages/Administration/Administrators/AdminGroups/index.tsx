@@ -7,6 +7,7 @@ import { useParams }                     from 'react-router-dom'
 
 
 import {
+  Button,
   Loader,
   showActionModal,
   Table,
@@ -23,7 +24,8 @@ import { RolesEnum }                                            from '@acx-ui/ty
 import { filterByAccess, useUserProfileContext, roleStringMap } from '@acx-ui/user'
 import { AccountType }                                          from '@acx-ui/utils'
 
-import { AddGroupDrawer } from './AddGroupDrawer'
+import { AddGroupDrawer }    from './AddGroupDrawer'
+import { ShowMembersDrawer } from './ShowMembersDrawer'
 
 interface AdminGroupsTableProps {
   isPrimeAdminUser: boolean;
@@ -49,11 +51,14 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
   const [showDialog, setShowDialog] = useState(false)
   const [editMode, setEditMode] = useState(false)
   const [editData, setEditData] = useState<AdminGroup>({} as AdminGroup)
+  const [membersGroupId, setMemberGroupId] = useState('')
+  const [membersDrawerVisible, setMembersDrawerVisible] = useState(false)
   const { data: userProfileData } = useUserProfileContext()
   const MAX_ADMIN_GROUPS = 10
 
   const { data: adminList, isLoading, isFetching } = useGetAdminGroupsQuery({ params })
   const shouldAddGroupEnabled = (adminList?.length && adminList.length < MAX_ADMIN_GROUPS ) || false
+  const maxAllowedGroupReached = Boolean(adminList?.length) && !shouldAddGroupEnabled
 
   const [deleteAdminGroup, { isLoading: isDeleteAdminUpdating }] = useDeleteAdminGroupsMutation()
   const [updateAdminGroup] = useUpdateAdminGroupsMutation()
@@ -72,20 +77,24 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
     {
       title: $t({ defaultMessage: 'Group Name' }),
       key: 'name',
-      dataIndex: 'name'
+      dataIndex: 'name',
+      render: (_, row) => {
+        return <Button
+          size='small'
+          type='link'
+          onClick={(e) => {
+            e.stopPropagation()
+            setMemberGroupId(row.groupId as string)
+            setMembersDrawerVisible(true)
+          }}
+          children={(row.name ?? '')}
+        />
+      }
     },
     {
       title: $t({ defaultMessage: 'Group ID' }),
       key: 'groupId',
       dataIndex: 'groupId'
-    },
-    {
-      title: $t({ defaultMessage: 'Processing Priority' }),
-      key: 'processingPriority',
-      dataIndex: 'processingPriority',
-      defaultSortOrder: 'ascend',
-      show: false,
-      sorter: { compare: sortProp('processingPriority', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Logged Members' }),
@@ -100,6 +109,13 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
       render: function (_, row) {
         return row.role ? $t(roleStringMap[row.role]) : ''
       }
+    },
+    {
+      title: $t({ defaultMessage: 'Processing Priority' }),
+      key: 'processingPriority',
+      dataIndex: 'processingPriority',
+      defaultSortOrder: 'ascend',
+      sorter: { compare: sortProp('processingPriority', defaultSort) }
     },
     {
       dataIndex: 'sort',
@@ -170,7 +186,7 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
   if (isPrimeAdminUser && tenantType !== AccountType.MSP_REC) {
     tableActions.push({
       label: $t({ defaultMessage: 'Add Group' }),
-      disabled: !shouldAddGroupEnabled,
+      disabled: maxAllowedGroupReached,
       onClick: handleClickAdd
     })
   }
@@ -238,8 +254,7 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
             ? filterByAccess(rowActions)
             : undefined}
           rowSelection={isPrimeAdminUser ? {
-            type: 'checkbox'//,
-          // onSelect: handleRowSelectChange
+            type: 'checkbox'
           } : undefined}
           actions={filterByAccess(tableActions)}
           components={{
@@ -247,6 +262,7 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
               row: DraggableRow
             }
           }}
+          data-testid='AdminGroupTable'
         />
       </DndProvider>
       {showDialog && <AddGroupDrawer
@@ -254,6 +270,11 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
         setVisible={setShowDialog}
         isEditMode={editMode}
         editData={editMode ? editData : undefined}
+      />}
+      {membersDrawerVisible && <ShowMembersDrawer
+        visible={membersDrawerVisible}
+        setVisible={setMembersDrawerVisible}
+        membersGroupId={membersGroupId}
       />}
     </Loader>
   )

@@ -38,7 +38,7 @@ export type RecommendationDetails = {
   updatedAt: string;
   dataEndTime: string;
   preferences?: {
-    fullOptimization: boolean;
+    crrmFullOptimization: boolean;
   }
 } & Partial<RecommendationKpi>
 

@@ -114,7 +114,7 @@ function EnableR1Beta (props: EnableR1BetaProps) {
       />
     }
 
-    {
+    { showShowBetaFeaturesDrawer &&
       <BetaFeaturesDrawer
         visible={showShowBetaFeaturesDrawer}
         setVisible={() => setShowBetaFeaturesDrawer(false)}

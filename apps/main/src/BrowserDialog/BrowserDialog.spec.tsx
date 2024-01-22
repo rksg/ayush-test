@@ -1,16 +1,12 @@
 import { rest } from 'msw'
-import { act }  from 'react-dom/test-utils'
 
-import { mockServer }            from '@acx-ui/test-utils'
+import { act, mockServer }       from '@acx-ui/test-utils'
 import {
   useUpdateUserProfileMutation
 } from '@acx-ui/user'
 import { UserUrlsInfo } from '@acx-ui/user'
 
-import { detectBrowserLang,
-  updateBrowserCached,
-  showBrowserLangDialog,
-  isNonProdEnv } from './BrowserDialog'
+import { detectBrowserLang, showBrowserLangDialog, isNonProdEnv } from './BrowserDialog'
 
 jest.mock('@acx-ui/utils', () => ({
   getIntl: jest.fn(() => ({
@@ -92,21 +88,6 @@ describe('showBrowserLangDialog', () => {
     const result = await showBrowserLangDialog()
     await Promise.resolve()
     expect(result).toStrictEqual({ lang: 'fr-FR', isLoading: false })
-  })
-})
-
-describe('updateBrowserCached', () => {
-  beforeEach(() => {
-    localStorage.clear()
-  })
-
-  it('should update localStorage with the correct values', async () => {
-    const lang = 'en-US'
-    updateBrowserCached(lang)
-    Storage.prototype.setItem = jest.fn()
-    updateBrowserCached('en-US')
-    expect(localStorage.setItem).toHaveBeenCalledWith('browserLang', 'en-US')
-    expect(localStorage.setItem).toHaveBeenCalledWith('isBrowserDialog', 'true')
   })
 })
 

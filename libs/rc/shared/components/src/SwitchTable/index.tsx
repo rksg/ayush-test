@@ -59,6 +59,7 @@ import {
   getGroupableConfig
 } from './config'
 import { SwitchTabContext } from './context'
+import * as UI              from './styledComponents'
 import { useExportCsv }     from './useExportCsv'
 
 export const SwitchStatus = (
@@ -162,7 +163,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const tableData = tableQuery.data?.data ?? []
 
   const statusFilterOptions = seriesSwitchStatusMapping().map(({ key, name, color }) => ({
-    key, value: name, label: <Badge color={color} text={name} />
+    key, value: name, label: <UI.FilterBadge color={color} text={name} />
   }))
 
   const switchType = () => [
@@ -300,11 +301,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       dataIndex: 'firmware',
       sorter: true
     },
-    // { TODO: Health scope
-    //   key: 'incidents',
-    //   title: $t({ defaultMessage: 'Incidents' }),
-    //   dataIndex: 'incidents',
-    // },
     ...(params.venueId ? [] : [{
       key: 'venueName',
       title: $t({ defaultMessage: 'Venue' }),

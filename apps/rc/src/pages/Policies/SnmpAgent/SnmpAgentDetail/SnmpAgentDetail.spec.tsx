@@ -74,7 +74,7 @@ describe('SnmpAgentForm', () => {
     const venueLink = await screen.findByRole('link', { name: new RegExp(targetVenue.venueName) })
     expect(venueLink).toBeVisible()
 
-    userEvent.click(venueLink)
+    await userEvent.click(venueLink)
   })
 
   it('should render breadcrumb correctly', async () => {

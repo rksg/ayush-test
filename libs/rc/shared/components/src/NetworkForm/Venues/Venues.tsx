@@ -31,10 +31,11 @@ import {
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
-import { NetworkApGroupDialog }                               from '../../NetworkApGroupDialog'
-import { NetworkVenueScheduleDialog }                         from '../../NetworkVenueScheduleDialog'
-import { transformAps, transformRadios, transformScheduling } from '../../pipes/apGroupPipes'
-import NetworkFormContext                                     from '../NetworkFormContext'
+import { NetworkApGroupDialog }                                                 from '../../NetworkApGroupDialog'
+import { NetworkVenueScheduleDialog }                                           from '../../NetworkVenueScheduleDialog'
+import { transformAps, transformRadios, transformScheduling }                   from '../../pipes/apGroupPipes'
+import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues } from '../../useEdgeActions'
+import NetworkFormContext                                                       from '../NetworkFormContext'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
@@ -112,6 +113,7 @@ export function Venues (props: VenuesProps) {
     visible: false
   })
   const isDefaultVenueSetted = useRef(false)
+  const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(params.networkId)
 
   useEffect(() => {
     if(isDefaultVenueSetted.current) return
@@ -188,7 +190,11 @@ export function Venues (props: VenuesProps) {
         return !enabled
       },
       onClick: (rows) => {
-        handleActivateVenue(false, rows)
+        checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues,
+          rows.map(item => item.id),
+          () => {
+            handleActivateVenue(false, rows)
+          })
       }
     }
   ]
@@ -314,7 +320,15 @@ export function Venues (props: VenuesProps) {
             checked={Boolean(row.activated?.isActivated)}
             onClick={(checked, event) => {
               event.stopPropagation()
-              handleActivateVenue(checked, [row])
+              if (!checked) {
+                checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues,
+                  [row.id],
+                  () => {
+                    handleActivateVenue(false, [row])
+                  })
+              } else {
+                handleActivateVenue(checked, [row])
+              }
             }}
           /></Tooltip>
 

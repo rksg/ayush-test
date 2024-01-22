@@ -11,9 +11,9 @@ import {
   MacRegistrationPoolLink,
   NetworkSegmentationLink,
   IdentityGroupLink,
-  useDpskNewConfigFlowParams,
   VenueLink,
-  PersonaGroupDrawer
+  PersonaGroupDrawer,
+  usePersonaAsyncHeaders
 } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
@@ -50,9 +50,8 @@ function useColumns (
 ) {
   const { $t } = useIntl()
   const networkSegmentationEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
-  const { data: dpskPool } = useGetDpskListQuery({ params: dpskNewConfigFlowParams })
+  const { data: dpskPool } = useGetDpskListQuery({})
   const { data: macList } = useMacRegListsQuery({
     payload: { sortField: 'name', sortOrder: 'ASC', page: 1, pageSize: 10000 }
   })
@@ -174,7 +173,7 @@ export function PersonaGroupTable () {
     data: {} as PersonaGroup | undefined
   })
   const { setIdentityGroupCount } = useContext(IdentityGroupContext)
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
+  const { isAsync, customHeaders } = usePersonaAsyncHeaders()
 
   const [getVenues] = useLazyVenuesListQuery()
   const [getDpskById] = useLazyGetDpskQuery()
@@ -222,7 +221,7 @@ export function PersonaGroupTable () {
       }
 
       if (dpskPoolId) {
-        getDpskById({ params: { serviceId: dpskPoolId, ...dpskNewConfigFlowParams } })
+        getDpskById({ params: { serviceId: dpskPoolId } })
           .then(result => {
             if (result.data) {
               dpskPools.set(dpskPoolId, result.data.name)
@@ -266,7 +265,7 @@ export function PersonaGroupTable () {
     doProfileDelete(
       [selectedRow],
       $t({ defaultMessage: 'Identity Group' }),
-      selectedRow.name,
+      name,
       [
         {
           fieldName: 'personalIdentityNetworkId',
@@ -274,12 +273,14 @@ export function PersonaGroupTable () {
         },
         { fieldName: 'propertyId', fieldText: $t({ defaultMessage: 'Venue' }) }
       ],
-      async () => deletePersonaGroup({ params: { groupId: id } })
+      async () => deletePersonaGroup({ params: { groupId: id }, customHeaders })
         .then(() => {
-          showToast({
-            type: 'success',
-            content: $t({ defaultMessage: 'Identity Group {name} was deleted' }, { name })
-          })
+          if (!isAsync) {
+            showToast({
+              type: 'success',
+              content: $t({ defaultMessage: 'Identity Group {name} was deleted' }, { name })
+            })
+          }
           callback()
         })
     )

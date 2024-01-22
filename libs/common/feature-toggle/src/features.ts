@@ -20,6 +20,7 @@ export enum Features {
   BETA_FLAG = 'acx-ui-beta-flag-toggle',
   CCD_TOGGLE = 'ap-ops-client-connection-diagnosis-toggle',
   CLOUDMOTE_SERVICE = 'cloudmote-service-enabled',
+  CLOUDPATH_ASYNC_API_TOGGLE = 'acx-ui-cloudpath-async-api-toggle',
   CLOUDPATH_BETA = 'BETA-CP',
   CONFIG_CHANGE = 'acx-ui-config-change-toggle',
   CONFIG_TEMPLATE = 'acx-ui-config-template',
@@ -30,7 +31,6 @@ export enum Features {
   DELETE_SOLO = 'ap-delete-with-solo-image-toggle',
   DEVICE_AGNOSTIC = 'entitlement-device-agnostic-sku-toggle',
   DIRECTED_MULTICAST = 'wifi-consumer-directed-multicast-toggle',
-  DPSK_NEW_CONFIG_FLOW_TOGGLE = 'dpsk-new-auth-flow-toggle',
   DPSK_PER_BOUND_PASSPHRASE_ALLOWED_DEVICE_INCREASED_LIMIT = 'dpsk-per-bound-passphrase-allowed-device-increased-limit',
   EDGE_LAG = 'acx-ui-edges-lag-toggle',
   EDGES_DHCP_CSV_TOGGLE = 'acx-ui-edges-dhcp-csv-toggle',
@@ -56,6 +56,7 @@ export enum Features {
   IDM_APPLICATION_KEY_TOGGLE = 'ptenant-application-key-toggle',
   IDM_DECOUPLING = 'ptenant-admin-authentication-enabled',
   INCIDENTS_EMAIL_NOTIFICATION_TOGGLE = 'acx-ui-incidents-notification-toggle',
+  INCIDENTS_AIRTIME_TOGGLE = 'acx-ui-incidents-airtime-toggle',
   LICENSE_BANNER = 'acx-ui-license-banner',
   LINKEDIN_OIDC_TOGGLE = 'guest-linkedin-openid-connect-toggle',
   LIST_OF_CLIENTS_PER_WLAN = 'acx-ui-list-of-clients-per-wlan-toggle',
@@ -87,6 +88,7 @@ export enum Features {
   RUCKUS_AI_CHATBOT_TOGGLE = 'ruckus-ai-chatbot-toggle',
   RUCKUS_AI_CRRM_PARTIAL = 'ruckus-ai-recommendations-crrm-partial-toggle',
   RUCKUS_AI_INCIDENT_SUMMARY_TOGGLE = 'ruckus-ai-incident-summary-toggle',
+  RUCKUS_AI_INCIDENTS_AIRTIME_TOGGLE = 'ruckus-ai-incidents-airtime-toggle',
   RUCKUS_AI_ZONES_LIST = 'ruckus-ai-zones-toggle',
   RUCKUS_WAN_GATEWAY_UI_SHOW = 'ruckus-wan-gateway-ui-show',
   SERVICES = 'acx-ui-services',
@@ -147,7 +149,8 @@ export enum Features {
   WISPR_ENCRYPT_MAC_IP = 'acx-ui-wispr-encrypt-mac-ip-toggle',
   WPA3_80211R = 'wifi-eda-wpa3-80211r-toggle',
   ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
-  EDGE_HA_TOGGLE = 'edge-ha-toggle'
+  EDGE_HA_TOGGLE = 'edge-ha-toggle',
+  WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE = 'wifi-eda-branch-level-supported-models-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
