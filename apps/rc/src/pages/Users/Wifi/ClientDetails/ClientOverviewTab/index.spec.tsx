@@ -8,7 +8,6 @@ import {
   WifiUrlsInfo,
   Client,
   ClientStatistic,
-  getUrlForTest,
   DpskUrls
 } from '@acx-ui/rc/utils'
 import { Provider, dataApi, dataApiURL, store } from '@acx-ui/store'
@@ -250,7 +249,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
             (_, res, ctx) => res(ctx.json(null))),
           rest.get(WifiUrlsInfo.getNetwork.url,
             (_, res, ctx) => res(ctx.json(null))),
-          rest.get(getUrlForTest(CommonUrlsInfo.getVenue),
+          rest.get(CommonUrlsInfo.getVenue.url,
             (_, res, ctx) => res(ctx.json(null)))
         )
 
@@ -281,7 +280,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
               ...clientApList[0],
               name: null
             }))),
-          rest.get(getUrlForTest(CommonUrlsInfo.getVenue),
+          rest.get(CommonUrlsInfo.getVenue.url,
             (_, res, ctx) => res(ctx.json({
               ...clientVenueList[0],
               name: null
@@ -425,7 +424,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
             (_, res, ctx) => res(ctx.json(null))),
           rest.get(WifiUrlsInfo.getNetwork.url,
             (_, res, ctx) => res(ctx.json(null))),
-          rest.get(getUrlForTest(CommonUrlsInfo.getVenue),
+          rest.get(CommonUrlsInfo.getVenue.url,
             (_, res, ctx) => res(ctx.json(null)))
         )
         render(<Provider>
@@ -457,7 +456,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
               ...clientApList[0],
               name: null
             }))),
-          rest.get(getUrlForTest(CommonUrlsInfo.getVenue),
+          rest.get(CommonUrlsInfo.getVenue.url,
             (_, res, ctx) => res(ctx.json({
               ...clientVenueList[0],
               name: null

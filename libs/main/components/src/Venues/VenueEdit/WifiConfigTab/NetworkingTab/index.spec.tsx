@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 
 import { useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
 import { venueApi }                                                       from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo, getUrlForTest }                    from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, WifiUrlsInfo }                                   from '@acx-ui/rc/utils'
 import { Provider, store }                                                from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -55,18 +55,15 @@ describe('NetworkingTab', () => {
       rest.put(
         CommonUrlsInfo.updateVenueLanPorts.url,
         (_, res, ctx) => res(ctx.json({}))),
-      rest.post(
-        CommonUrlsInfo.getApsList.url,
+      rest.post(CommonUrlsInfo.getApsList.url,
         (_, res, ctx) => {
           mockGetApsList()
           return res(ctx.json(venueApsList))
         }),
-      rest.get(
-        getUrlForTest(WifiUrlsInfo.getVenueDirectedMulticast),
+      rest.get(WifiUrlsInfo.getVenueDirectedMulticast.url,
         (_, res, ctx) => res(ctx.json(mockDirectedMulticast))
       ),
-      rest.put(
-        getUrlForTest(WifiUrlsInfo.updateApDirectedMulticast),
+      rest.put(WifiUrlsInfo.updateApDirectedMulticast.url,
         (_req, res, ctx) => res(ctx.status(200))
       ),
       rest.get(

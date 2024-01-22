@@ -262,6 +262,7 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
               row: DraggableRow
             }
           }}
+          data-testid='AdminGroupTable'
         />
       </DndProvider>
       {showDialog && <AddGroupDrawer
