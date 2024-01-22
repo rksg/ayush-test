@@ -313,7 +313,7 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   }, [editMode])
 
   useEffect(() => {
-    if (contentForm && appPolicyInfo && 
+    if (contentForm && appPolicyInfo &&
       (isViewMode() || editMode.isEdit || localEditMode.isEdit)) {
       contentForm.setFieldValue('policyName', appPolicyInfo.name)
       contentForm.setFieldValue('description', appPolicyInfo.description)
