@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom'
 import userEvent       from '@testing-library/user-event'
 import { Form, Modal } from 'antd'
-import { act }         from 'react-dom/test-utils'
 
 import { SwitchConfigurationProfile }        from '@acx-ui/rc/utils'
 import { Provider }                          from '@acx-ui/store'
@@ -95,10 +94,8 @@ describe('Wired - VlanSetting', () => {
     expect(await screen.findByTestId('addVlanDrawer')).toBeVisible()
     const row2 = await within(drawer).findByRole('row', { name: /ICX7550-24P/i })
     const radio2 = await within(row2).findByRole('radio')
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(() => {
-      fireEvent.click(radio2)
-    })
+    await userEvent.click(radio2)
+    expect(radio2).toBeChecked()
     // const deleteButton = await within(drawer).findByRole('button', { name: /Delete/i })
     // fireEvent.click(deleteButton)
     // const deleteModel = await screen.findByRole('button', { name: /Delete Model/i })

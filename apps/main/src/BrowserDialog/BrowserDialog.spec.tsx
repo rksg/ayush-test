@@ -1,7 +1,6 @@
 import { rest } from 'msw'
-import { act }  from 'react-dom/test-utils'
 
-import { mockServer }            from '@acx-ui/test-utils'
+import { act, mockServer }       from '@acx-ui/test-utils'
 import {
   useUpdateUserProfileMutation
 } from '@acx-ui/user'
@@ -9,7 +8,8 @@ import { UserUrlsInfo } from '@acx-ui/user'
 
 import { detectBrowserLang,
   showBrowserLangDialog,
-  isNonProdEnv } from './BrowserDialog'
+  isNonProdEnv,
+  updateBrowserCached } from './BrowserDialog'
 
 jest.mock('@acx-ui/utils', () => ({
   getIntl: jest.fn(() => ({
@@ -107,6 +107,20 @@ describe('detectBrowserLang', () => {
   })
 })
 
+describe('updateBrowserCached', () => {
+  beforeEach(() => {
+    localStorage.clear()
+  })
+
+  it('should update localStorage with the correct values', async () => {
+    const lang = 'en-US'
+    updateBrowserCached(lang)
+    Storage.prototype.setItem = jest.fn()
+    updateBrowserCached('en-US')
+    expect(localStorage.setItem).toHaveBeenCalledWith('browserLang', 'en-US')
+  })
+})
+
 describe('isNonProdEnv', () => {
   it('should return true for non-production environments', () => {
     window = Object.create(window)
@@ -129,3 +143,4 @@ describe('isNonProdEnv', () => {
     expect(isNonProdEnv()).toBe(false)
   })
 })
+
