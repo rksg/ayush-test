@@ -7,10 +7,24 @@ import _                                       from 'lodash'
 import { useIntl }                             from 'react-intl'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
-import { Loader, StepsFormLegacy, StepsFormLegacyInstance, Transfer }                                                                                         from '@acx-ui/components'
-import { useAddApGroupMutation, useGetApGroupQuery, useLazyApGroupsListQuery, useLazyVenueDefaultApGroupQuery, useUpdateApGroupMutation, useVenuesListQuery } from '@acx-ui/rc/services'
-import { AddApGroup, ApDeep, checkObjectNotExists, trailingNorLeadingSpaces }                                                                                 from '@acx-ui/rc/utils'
-import { useTenantLink }                                                                                                                                      from '@acx-ui/react-router-dom'
+import { Loader, StepsFormLegacy, StepsFormLegacyInstance, Transfer } from '@acx-ui/components'
+import {
+  useAddApGroupMutation,
+  useGetApGroupQuery,
+  useLazyApGroupsListQuery,
+  useLazyVenueDefaultApGroupQuery,
+  useUpdateApGroupMutation,
+  useVenuesListQuery
+} from '@acx-ui/rc/services'
+import {
+  AddApGroup,
+  ApDeep,
+  apNameRegExp,
+  checkObjectNotExists,
+  hasGraveAccentAndDollarSign,
+  trailingNorLeadingSpaces
+}                                      from '@acx-ui/rc/utils'
+import { useTenantLink } from '@acx-ui/react-router-dom'
 
 import { ApGroupEditContext } from '..'
 
@@ -236,12 +250,13 @@ export function ApGroupGeneralTab () {
                   { required: true },
                   { min: 2, transform: (value) => value.trim() },
                   { max: 64, transform: (value) => value.trim() },
+                  { validator: (_, value) => hasGraveAccentAndDollarSign(value) },
+                  { validator: (_, value) => apNameRegExp(value) },
                   { validator: (_, value) => nameValidator(value) }
                 ]}
                 validateFirst
                 hasFeedback
                 children={<Input disabled={apGroupData?.isDefault} />}
-                validateTrigger={'onBlur'}
               />
               <Form.Item
                 name='venueId'
