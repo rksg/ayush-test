@@ -124,6 +124,23 @@ export function domainsNameRegExp (value: string[], required: boolean) {
   return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.domains))
 }
 
+export function domainNameDuplicationValidation (domainArray: string[]) {
+  const { $t } = getIntl()
+
+  let isValid = true
+
+  // Empty Guard
+  if(isEmpty(domainArray)) {return Promise.reject($t(validationMessages.domains))}
+
+  const uniqDomainArray = uniq(domainArray)
+
+  if(uniqDomainArray.length !== domainArray.length) {
+    isValid = false
+  }
+
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.domainDuplication))
+}
+
 export function walledGardensRegExp (value:string) {
   const { $t } = getIntl()
   if (!value) {

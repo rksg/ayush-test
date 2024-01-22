@@ -38,6 +38,10 @@ export const validationMessages = {
     defaultMessage: 'Please enter valid domain(s)',
     description: 'Validation - domains checks'
   }),
+  domainDuplication: defineMessage({
+    defaultMessage: 'Domain(s) must not be duplicated.',
+    description: 'Validation - Domain duplication checks'
+  }),
   sameEmailDomain: defineMessage({
     defaultMessage: 'Please enter same email domain(s)',
     description: 'Validation - same email domains checks'

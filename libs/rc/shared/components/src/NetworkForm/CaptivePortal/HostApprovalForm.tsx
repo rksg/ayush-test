@@ -24,7 +24,8 @@ import {
   emailsRegExp,
   emailsSameDomainValidation,
   emailDuplicationValidation,
-  emailMaxCountValidation
+  emailMaxCountValidation,
+  domainNameDuplicationValidation
 } from '@acx-ui/rc/utils'
 import { validationMessages } from '@acx-ui/utils'
 
@@ -119,7 +120,9 @@ export function HostApprovalForm () {
                 { required: true, message: $t(validationMessages.domains) },
                 { validator: (_, value) => domainsNameRegExp(
                   (Array.isArray(value)? value : value.split(',')), true)
-                }]
+                },
+                { validator: (rule, value) => domainNameDuplicationValidation((Array.isArray(value)? value : value.split(','))) }
+              ]
               }
               validateFirst
               hasFeedback
