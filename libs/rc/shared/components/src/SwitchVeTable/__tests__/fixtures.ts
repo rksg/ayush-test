@@ -4,6 +4,7 @@ export const routedList = {
   data: [
     {
       defaultVlan: false,
+      connectedVe: false,
       deviceStatus: 'ONLINE',
       dhcpRelayAgent: '1.1.1.1',
       egressAclName: '14',
@@ -23,6 +24,7 @@ export const routedList = {
     },
     {
       defaultVlan: false,
+      connectedVe: false,
       deviceStatus: 'ONLINE',
       id: 'e0f64874e6cb4cc7aa13ac6c6d48ffe9',
       ipAddress: '2.2.2.2',
@@ -37,6 +39,7 @@ export const routedList = {
     },
     {
       defaultVlan: true,
+      connectedVe: true,
       deviceStatus: 'ONLINE',
       id: 'f064570d8dbc4329a69dd6df53fffdc6',
       ipAddress: '10.206.10.37',

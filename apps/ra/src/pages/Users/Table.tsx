@@ -1,4 +1,4 @@
-import { IntlShape, useIntl } from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import { defaultSort, getUserProfile, ManagedUser, sortProp } from '@acx-ui/analytics/utils'
 import { Table, TableProps, Tooltip }                         from '@acx-ui/components'
@@ -7,16 +7,19 @@ import {
   DeleteOutlined,
   Reload
 } from '@acx-ui/icons'
-import { noDataDisplay } from '@acx-ui/utils'
+import { noDataDisplay, getIntl } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
-export type DisplayUser = Omit<ManagedUser, 'role'> & {
-  invitationState: string,
-  invitor: string,
-  role: string
+
+export type DisplayUser = ManagedUser & {
+  displayInvitationState: string
+  displayInvitor: string
+  displayRole: string
+  displayType: string
 }
 
-const getDisplayRole = (role: ManagedUser['role'], $t: IntlShape['$t']) => {
+const getDisplayRole = (role: ManagedUser['role']) => {
+  const { $t } = getIntl()
   switch (role) {
     case 'admin': return $t({ defaultMessage: 'Admin' })
     case 'report-only': return $t({ defaultMessage: 'Report Only' })
@@ -24,7 +27,8 @@ const getDisplayRole = (role: ManagedUser['role'], $t: IntlShape['$t']) => {
   }
 }
 
-const getDisplayType = (type: ManagedUser['type'], $t: IntlShape['$t'], franchisor: string) => {
+const getDisplayType = (type: ManagedUser['type'], franchisor: string) => {
+  const { $t } = getIntl()
   switch (type) {
     case 'tenant': return $t({ defaultMessage: '3rd Party' })
     case 'super-tenant': return franchisor
@@ -33,9 +37,9 @@ const getDisplayType = (type: ManagedUser['type'], $t: IntlShape['$t'], franchis
 }
 
 const getDisplayState = (
-  state: NonNullable<ManagedUser['invitation']>['state'] | undefined,
-  $t: IntlShape['$t']
+  state: NonNullable<ManagedUser['invitation']>['state'] | undefined
 ) => {
+  const { $t } = getIntl()
   switch (state) {
     case 'accepted': return $t({ defaultMessage: 'Accepted' })
     case 'rejected': return $t({ defaultMessage: 'Rejected' })
@@ -46,17 +50,16 @@ const getDisplayState = (
 
 const transformUsers = (
   users: ManagedUser[] | undefined,
-  $t: IntlShape['$t'],
   franchisor: string
 ): DisplayUser[] => {
   if (!users) return []
   return users.map(user => ({
     ...user,
-    role: user.role,
-    type: getDisplayType(user.type, $t, franchisor),
-    invitationState: getDisplayState(user.invitation?.state, $t),
-    invitor: user.invitation
-      ? [user.invitation.inviterUser.firstName, ' ', user.invitation.inviterUser.lastName].join(' ')
+    displayRole: getDisplayRole(user.role),
+    displayType: getDisplayType(user.type, franchisor),
+    displayInvitationState: getDisplayState(user.invitation?.state),
+    displayInvitor: user.invitation
+      ? [user.invitation.inviterUser.firstName, '', user.invitation.inviterUser.lastName].join(' ')
       : noDataDisplay
   }))
 }
@@ -71,7 +74,7 @@ export const UsersTable = (
   const { $t } = useIntl()
   const user = getUserProfile()
   const { franchisor } = user.selectedTenant.settings
-  const users = transformUsers(data, $t, franchisor)
+  const users = transformUsers(data, franchisor)
   const UserActions = (props: { selectedRow: ManagedUser }) => {
     const actionButtons = [
       {
@@ -164,16 +167,15 @@ export const UsersTable = (
     },
     {
       title: $t({ defaultMessage: 'Type' }),
-      dataIndex: 'type',
-      key: 'type',
+      dataIndex: 'displayType',
+      key: 'displayType',
       sorter: { compare: sortProp('type', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Role' }),
-      dataIndex: 'role',
-      key: 'role',
-      sorter: { compare: sortProp('role', defaultSort) },
-      render: (_, row) => getDisplayRole((row as ManagedUser).role, $t)
+      dataIndex: 'displayRole',
+      key: 'displayRole',
+      sorter: { compare: sortProp('role', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Resource Group' }),
@@ -190,15 +192,15 @@ export const UsersTable = (
     },
     {
       title: $t({ defaultMessage: 'Invited by' }),
-      dataIndex: 'invitor',
-      key: 'invitor',
-      sorter: { compare: sortProp('invitor', defaultSort) }
+      dataIndex: 'displayInvitor',
+      key: 'displayInvitor',
+      sorter: { compare: sortProp('displayInvitor', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Invitation Status' }),
-      dataIndex: 'invitationState',
-      key: 'invitationState',
-      sorter: { compare: sortProp('invitationState', defaultSort) }
+      dataIndex: 'displayInvitationState',
+      key: 'displayInvitationState',
+      sorter: { compare: sortProp('displayInvitationState', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Actions' }),

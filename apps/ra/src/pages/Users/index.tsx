@@ -10,8 +10,8 @@ import {
   useDeleteUserResourceGroupMutation,
   useDeleteInvitationMutation
 } from '@acx-ui/analytics/services'
-import { ManagedUser }                                 from '@acx-ui/analytics/utils'
-import { Drawer, PageHeader, Loader, StepsFormLegacy } from '@acx-ui/components'
+import { ManagedUser }                                          from '@acx-ui/analytics/utils'
+import { Drawer, PageHeader, Loader, StepsFormLegacy, Tooltip } from '@acx-ui/components'
 
 import { drawerContentConfig } from './config'
 import { UsersTable }          from './Table'
@@ -25,6 +25,19 @@ type FormItemProps = {
   labelKey: string,
   component: React.ReactNode,
 }
+const info = defineMessage({
+  defaultMessage: `"Invite 3rd Party" allows you to invite a user who does not
+  belong to your organisation into this RUCKUS AI account.
+  {br}
+  {br}
+  "Add Internal User" allows you to include a user who belongs to your
+  organisation into this RUCKUS AI account.
+  {br}
+  {br}
+  In all cases, please note that the invitee needs to have an existing
+  Ruckus Support account.`
+})
+
 
 const FormItem: React.FC<FormItemProps> = ({ name, labelKey, component }) => (
   <Row gutter={20}>
@@ -161,7 +174,14 @@ const Users: React.FC = () => {
 
   return (
     <Loader states={[usersQuery]}>
-      <PageHeader title={<>{$t(title, { usersCount })} ({usersCount})</>} />
+      <PageHeader
+        title={<>
+          {$t(title,{ usersCount })} ({usersCount})
+          <Tooltip.Info
+            data-html
+            title={$t(info, { br: <br/> })} />
+        </>}
+      />
       <UsersTable
         data={usersQuery.data}
         toggleDrawer={setOpenDrawer}
