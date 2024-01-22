@@ -6,9 +6,8 @@ import _                            from 'lodash'
 import { useIntl }                  from 'react-intl'
 
 import { Modal }                 from '@acx-ui/components'
-import { MessageType, Template } from '@acx-ui/rc/utils'
+import { MsgCategory, TemplateGroup } from '@acx-ui/rc/utils'
 
-import { templateNames }   from './msgTemplateLocalizedMessages'
 import { TemplatePreview } from './TemplatePreview'
 
 interface OnChangeHandler {
@@ -19,8 +18,8 @@ interface OnChangeHandler {
 export interface TemplateSelectorProps {
   value?: string,
   onChange?: OnChangeHandler,
-  templateType: MessageType | undefined,
-  templates: Template[] | undefined
+  templateGroups: TemplateGroup[] | undefined
+  msgCategory: MsgCategory | undefined
   placeholder?: string,
   options: DefaultOptionType[]
 }
@@ -31,19 +30,19 @@ export function TemplateSelect (props: TemplateSelectorProps) {
   const {
     value,
     onChange,
-    templateType,
-    templates,
+    templateGroups,
+    msgCategory,
     placeholder,
     options
   } = props
 
   // Preview Modal Management ///////////////////////
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [previewTemplate, setPreviewTemplate] = useState<Template | undefined>(undefined)
+  const [previewTemplateGroup, setPreviewTemplateGroup] = useState<TemplateGroup | undefined>(undefined)
 
   const showModal = () => {
-    let previewTemplate = templates?.find(t => t.id === value)
-    setPreviewTemplate(previewTemplate)
+    let previewGroup = templateGroups?.find(g => g.id === value)
+    setPreviewTemplateGroup(previewGroup)
     setIsModalOpen(true)
   }
 
@@ -52,12 +51,9 @@ export function TemplateSelect (props: TemplateSelectorProps) {
   }
 
   const getTemplatePreviewTitle = () => {
-    if(previewTemplate) {
-      if(previewTemplate.userProvidedName) {
-        return $t({ defaultMessage: 'Preview: {name}' }, { name: previewTemplate.userProvidedName })
-      } else if(_.get(templateNames, previewTemplate.nameLocalizationKey)) {
-        return $t({ defaultMessage: 'Preview: {name}' },
-          { name: $t(_.get(templateNames, previewTemplate.nameLocalizationKey)) })
+    if(msgCategory) {
+      if(msgCategory?.name) {
+        return msgCategory?.name 
       } else {
         return $t({ defaultMessage: 'Template Preview' })
       }
@@ -87,8 +83,9 @@ export function TemplateSelect (props: TemplateSelectorProps) {
           onOk={handleModalClose}
           onCancel={handleModalClose}>
           <TemplatePreview
-            templateType={templateType}
-            template={previewTemplate} />
+            emailTemplateScopeId={msgCategory?.emailTemplateScopeId}
+            smsTemplateScopeId={msgCategory?.smsTemplateScopeId}
+            templateGroup={previewTemplateGroup} />
         </Modal>
       </Col>
     </Row>
