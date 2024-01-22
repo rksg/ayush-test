@@ -1,6 +1,3 @@
-import { useMemo } from 'react'
-
-import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
 import {
@@ -10,7 +7,6 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useMspCustomerListQuery
 } from '@acx-ui/msp/services'
@@ -21,9 +17,8 @@ import {
   useTableQuery,
   ConfigTemplate
 } from '@acx-ui/rc/utils'
-import { RolesEnum }                       from '@acx-ui/types'
-import { hasRoles, useUserProfileContext } from '@acx-ui/user'
-import { AccountType, isDelegationMode }   from '@acx-ui/utils'
+
+import { useEcFilters } from './templateUtils'
 
 
 interface ApplyTemplateDrawerProps {
@@ -36,7 +31,7 @@ export const AppliedToTenantDrawer = (props: ApplyTemplateDrawerProps) => {
   const { setVisible, selectedTemplates } = props
   const ecFilters = useEcFilters()
 
-  const mspPayload = {
+  const mspEcTenantsPayload = {
     filters: {
       ...ecFilters,
       id: [...selectedTemplates[0].ecTenants]
@@ -53,7 +48,7 @@ export const AppliedToTenantDrawer = (props: ApplyTemplateDrawerProps) => {
 
   const tableQuery = useTableQuery({
     useQuery: useMspCustomerListQuery,
-    defaultPayload: mspPayload,
+    defaultPayload: mspEcTenantsPayload,
     search: {
       searchTargetFields: ['name'],
       searchString: ''
@@ -81,15 +76,13 @@ export const AppliedToTenantDrawer = (props: ApplyTemplateDrawerProps) => {
     }
   ]
 
-  const content = <Space direction='vertical'>
-    <Loader states={[tableQuery]}>
-      <Table<MspEc>
-        columns={columns}
-        dataSource={tableQuery.data?.data}
-        rowKey='id'
-      />
-    </Loader>
-  </Space>
+  const content = <Loader states={[tableQuery]}>
+    <Table<MspEc>
+      columns={columns}
+      dataSource={tableQuery.data?.data}
+      rowKey='id'
+    />
+  </Loader>
 
   const footer = <div>
     <Button onClick={() => onClose()}>
@@ -109,19 +102,4 @@ export const AppliedToTenantDrawer = (props: ApplyTemplateDrawerProps) => {
       {content}
     </Drawer>
   )
-}
-
-function useEcFilters () {
-  const { data: userProfile } = useUserProfileContext()
-  const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
-  const isSupportToMspDashboardAllowed =
-    useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
-
-  const ecFilters = useMemo(() => {
-    return isPrimeAdmin || isSupportToMspDashboardAllowed
-      ? { tenantType: [AccountType.MSP_EC] }
-      : { mspAdmins: [userProfile?.adminId], tenantType: [AccountType.MSP_EC] }
-  }, [isPrimeAdmin, isSupportToMspDashboardAllowed])
-
-  return ecFilters
 }
