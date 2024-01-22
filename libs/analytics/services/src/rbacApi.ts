@@ -78,6 +78,21 @@ export const rbacApi = baseRbacApi.injectEndpoints({
         }
       }
     }),
+    deleteInvitation: build.mutation<
+    string, { resourceGroupId: string, userId: string }
+ >({
+   query: ({ userId, resourceGroupId }) => {
+     return {
+       url: '/invitations',
+       method: 'delete',
+       credentials: 'include',
+       headers: {
+         'x-mlisa-user-id': userId
+       },
+       body: { resourceGroupId, invitedUserId: userId }
+     }
+   }
+ }),
     getUsers: build.query<ManagedUser[], void>({
       query: () => ({
         url: '/users',
@@ -110,7 +125,35 @@ export const rbacApi = baseRbacApi.injectEndpoints({
        responseHandler: 'text'
      }
    }
- })
+ }),
+    refreshUserDetails: build.mutation<
+ string, { userId: string }
+>({
+  query: ({ userId }) => {
+    return {
+      url: `/users/refresh/${userId}`,
+      method: 'put',
+      credentials: 'include',
+      headers: {
+        'x-mlisa-user-id': userId
+      },
+      responseHandler: 'text'
+    }
+  }
+}),
+    deleteUserResourceGroup: build.mutation<
+string, { userId: string }
+>({
+  query: ({ userId }) => {
+    return {
+      url: '/users/resourceGroup',
+      method: 'delete',
+      credentials: 'include',
+      body: { users: [userId] },
+      responseHandler: 'text'
+    }
+  }
+})
   })
 })
 
@@ -121,7 +164,10 @@ export const {
   useUpdateInvitationMutation,
   useGetUsersQuery,
   useGetResourceGroupsQuery,
-  useUpdateUserRoleAndResourceGroupMutation
+  useUpdateUserRoleAndResourceGroupMutation,
+  useRefreshUserDetailsMutation,
+  useDeleteUserResourceGroupMutation,
+  useDeleteInvitationMutation
 } = rbacApi
 
 export function useSystems () {

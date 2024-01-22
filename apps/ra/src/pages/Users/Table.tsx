@@ -62,8 +62,12 @@ const transformUsers = (
 }
 
 export const UsersTable = (
-  { data, toggleDrawer, setSelectedRow }:
-  { data?: ManagedUser[], toggleDrawer: CallableFunction, setSelectedRow: CallableFunction }) => {
+  { data, toggleDrawer, setSelectedRow, getLatestUserDetails, handleDeleteUser }:
+  { data?: ManagedUser[],
+    toggleDrawer: CallableFunction,
+    setSelectedRow: CallableFunction,
+    getLatestUserDetails: CallableFunction,
+    handleDeleteUser: CallableFunction }) => {
   const { $t } = useIntl()
   const user = getUserProfile()
   const { franchisor } = user.selectedTenant.settings
@@ -79,7 +83,13 @@ export const UsersTable = (
             arrowPointAtCenter
             title={$t({ defaultMessage: 'Refresh' })}>
             <UI.IconWrapper $disabled={false}>
-              <Reload style={{ height: '24px', width: '24px' }} />
+              <Reload
+                onClick={() => {
+                  setSelectedRow(props.selectedRow)
+                  getLatestUserDetails()
+                }}
+                style={{ height: '24px', width: '24px' }}
+              />
             </UI.IconWrapper>
           </Tooltip>
         )
@@ -92,7 +102,7 @@ export const UsersTable = (
             placement='top'
             arrowPointAtCenter
             title={$t({ defaultMessage: 'Edit' })}>
-            <UI.IconWrapper $disabled={false}>
+            <UI.IconWrapper $disabled={Boolean(props.selectedRow.type === null)}>
               <EditOutlined
                 onClick={() => {
                   setSelectedRow(props.selectedRow)
@@ -113,7 +123,12 @@ export const UsersTable = (
             arrowPointAtCenter
             title={$t({ defaultMessage: 'Delete' })}>
             <UI.IconWrapper $disabled={false}>
-              <DeleteOutlined style={{ height: '24px', width: '24px' }} />
+              <DeleteOutlined
+                onClick={() => {
+                  setSelectedRow(props.selectedRow)
+                  handleDeleteUser()
+                }}
+                style={{ height: '24px', width: '24px' }} />
             </UI.IconWrapper>
           </Tooltip>
         )

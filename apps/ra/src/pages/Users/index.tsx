@@ -1,11 +1,17 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Button, Col, Form, Row } from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { useGetUsersQuery, useUpdateUserRoleAndResourceGroupMutation } from '@acx-ui/analytics/services'
-import { ManagedUser }                                                 from '@acx-ui/analytics/utils'
-import { Drawer, PageHeader, Loader, StepsFormLegacy }                 from '@acx-ui/components'
+import {
+  useGetUsersQuery,
+  useRefreshUserDetailsMutation,
+  useUpdateUserRoleAndResourceGroupMutation,
+  useDeleteUserResourceGroupMutation,
+  useDeleteInvitationMutation
+} from '@acx-ui/analytics/services'
+import { ManagedUser }                                 from '@acx-ui/analytics/utils'
+import { Drawer, PageHeader, Loader, StepsFormLegacy } from '@acx-ui/components'
 
 import { drawerContentConfig } from './config'
 import { UsersTable }          from './Table'
@@ -77,13 +83,20 @@ const Users: React.FC = () => {
   const { $t } = useIntl()
   const [openDrawer, setOpenDrawer] = useState(false)
   const [selectedRow, setSelectedRow] = useState<ManagedUser | null>(null)
+  const [retrieveUserDetails, setRetrieveUserDetails] = useState<boolean>(false)
+  const [deleteUser, setDeleteUser] = useState<boolean>(false)
+
   const [updatedRole, setUpdatedRole] = useState<string | null>(null)
   const [updatedResourceGroup, setUpdatedResourceGroup] = useState<string | null>(null)
+  const [refreshUserDetails] = useRefreshUserDetailsMutation()
+  const [deleteUserResourceGroup] = useDeleteUserResourceGroupMutation()
+  const [deleteInvitation] = useDeleteInvitationMutation()
+
   const usersQuery = useGetUsersQuery()
   const { data, refetch } = usersQuery
   const [updateUserRoleAndResourceGroup] = useUpdateUserRoleAndResourceGroupMutation()
   const usersCount = data?.length || 0
-
+  console.log(selectedRow)
   const handleSaveClick = () => {
     updateUserRoleAndResourceGroup({
       resourceGroupId: updatedResourceGroup ?? selectedRow?.resourceGroupId!,
@@ -99,7 +112,39 @@ const Users: React.FC = () => {
     setUpdatedResourceGroup(null)
     setUpdatedRole(null)
   }
+  useEffect(()=> {
+    if(retrieveUserDetails && selectedRow)
+    {
+      refreshUserDetails({
+        userId: selectedRow?.id!
+      }).then(() => refetch()
+      ).then(() => setRetrieveUserDetails(false))
 
+    }
+  }, [retrieveUserDetails, selectedRow, refreshUserDetails, refetch])
+  const handleRefreshClick = () => {
+    setRetrieveUserDetails(true)
+  }
+  useEffect(()=>{
+    if(deleteUser && selectedRow)
+    {
+      if(selectedRow.invitation?.state === 'accepted')
+        deleteUserResourceGroup({
+          userId: selectedRow?.id!
+        }).then(() => refetch()
+        ).then(() => setDeleteUser(false))
+      else{
+        deleteInvitation({
+          resourceGroupId: updatedResourceGroup ?? selectedRow?.resourceGroupId!,
+          userId: selectedRow?.id!
+        }).then(() => refetch()
+        ).then(() => setDeleteUser(false))
+      }
+    }
+  },[selectedRow, deleteUser, deleteUserResourceGroup, refetch, deleteInvitation])
+  const handleDeleteUser = () => {
+    setDeleteUser(true)
+  }
   const drawerFooter = (
     <div>
       <Button
@@ -120,7 +165,10 @@ const Users: React.FC = () => {
       <UsersTable
         data={usersQuery.data}
         toggleDrawer={setOpenDrawer}
-        setSelectedRow={setSelectedRow} />
+        setSelectedRow={setSelectedRow}
+        getLatestUserDetails={handleRefreshClick}
+        handleDeleteUser={handleDeleteUser}
+      />
       <Drawer
         visible={openDrawer}
         title={$t({ defaultMessage: 'Edit User' })}
