@@ -88,6 +88,8 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
   const [formData, setFormData] = useState<FormData>()
   const [file, setFile] = useState<UploadFile>()
   const [metadata, setMetadata] = useState<string>()
+  const [metadataChanged, setMetadataChanged] = useState(false)
+  const [fileSelected, setFileSelected] = useState(false)
 
   const [uploadFile, setUploadFile] = useState(false)
   const [selectedAuth, setSelectedAuth] = useState('')
@@ -152,7 +154,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     const newFile = file as unknown as UploadFile
     newFile.url = URL.createObjectURL(file)
     setFile(newFile)
-    // setFileName(file.name)
+    setFileSelected(true)
     setFormData(newFormData)
     setFileDescription(<Typography.Text><FileTextOutlined /> {file.name} </Typography.Text>)
 
@@ -160,6 +162,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
   }
 
   const onMetadataChange = (value: string) => {
+    setMetadataChanged(true)
     setMetadata(value)
     const newFormData = new FormData()
     // TODO: validate xml format
@@ -201,9 +204,8 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
         directUrlPath = metadata
         fileType = SamlFileType.direct_url
       } else {
-        fileURL = uploadFile && file ? await getFileUploadURL(file)
-          : !uploadFile ? await getFileUploadURL(metadataFile)
-            : undefined
+        fileURL = uploadFile && fileSelected && file ? await getFileUploadURL(file)
+          : await getFileUploadURL(metadataFile)
         if (!fileURL) {
           throw 'Error uploading file'
         }
@@ -212,11 +214,13 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
       const allowedDomains =
         isGroupBasedLoginEnabled ? form.getFieldValue('domains')?.split(',') : undefined
       if(isEditMode) {
+        const needAuthUpdate = (uploadFile && fileSelected) || (!uploadFile && metadataChanged)
         const ssoEditData: TenantAuthentications = {
           name: metadataFile.name,
           authenticationType: TenantAuthenticationType.saml,
-          samlFileType: fileType,
-          samlFileURL: fileType === SamlFileType.file ? fileURL?.data.fileId : directUrlPath,
+          samlFileType: needAuthUpdate ? fileType : undefined,
+          samlFileURL: needAuthUpdate
+            ? (fileType === SamlFileType.file ? fileURL?.data.fileId : directUrlPath) : undefined,
           domains: allowedDomains
         }
         await updateSso({ params: { authenticationId: editData?.id },
