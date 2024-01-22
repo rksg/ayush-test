@@ -152,7 +152,7 @@ export enum Features {
   ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
   EDGE_HA_TOGGLE = 'edge-ha-toggle',
   WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE = 'wifi-eda-branch-level-supported-models-toggle',
-  RUCKUS_AI_USERS = 'ruckus-ai-sso-toggle'
+  RUCKUS_AI_USERS_TOGGLE = 'ruckus-ai-sso-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
