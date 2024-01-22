@@ -74,24 +74,6 @@ describe('TunnelProfileDetail', () => {
     await checkNetworkTable()
   })
 
-  // it('should render breadcrumb correctly', async () => {
-  //   render(
-  //     <Provider>
-  //       <TunnelProfileDetail />
-  //     </Provider>, {
-  //       route: { params, path: detailPath }
-  //     })
-  //   await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-  //   await waitFor(() => expect(mockedGetVMNetworksList).toBeCalled())
-  //   expect(await screen.findByText('Network Control')).toBeVisible()
-  //   expect(screen.getByRole('link', {
-  //     name: 'Policies & Profiles'
-  //   })).toBeVisible()
-  //   expect(screen.getByRole('link', {
-  //     name: 'Tunnel Profile'
-  //   })).toBeVisible()
-  // })
-
   it('Should disable Configure button in Default Tunnel Profile', async () => {
     mockServer.use(
       rest.post(

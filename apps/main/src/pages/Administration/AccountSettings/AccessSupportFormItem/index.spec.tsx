@@ -30,13 +30,13 @@ const userProfileContextValues = {
   hasAccess: () => true
 } as UserProfileContextProps
 
-const mockedEnableddReq = jest.fn()
-const mockedDisabledReq = jest.fn()
 describe('Access Support Form Item', () => {
+  const mockedDisabledReq = jest.fn()
+
   beforeEach(async () => {
     setUserProfile({ profile: fakeUserProfile, allowedOperations: ['POST:/api/tenant/{tenantId}/delegation/support'] })
     mockedDisabledReq.mockClear()
-    mockedEnableddReq.mockClear()
+    store.dispatch(administrationApi.util.resetApiState())
 
     mockServer.use(
       rest.get(
@@ -45,15 +45,16 @@ describe('Access Support Form Item', () => {
       ),
       rest.delete(
         AdministrationUrlsInfo.disableAccessSupport.url,
-        (_req, res, ctx) => {
+        (req, res, ctx) => {
           mockedDisabledReq()
-          return res(ctx.status(202))
+          return res(ctx.json({}))
         })
     )
   })
 
   it('should be able to enable access support', async () => {
     const getTenantDelegationFn = jest.fn()
+    const mockedEnableAccessSupport = jest.fn()
 
     mockServer.use(
       rest.get(
@@ -65,9 +66,12 @@ describe('Access Support Form Item', () => {
       ),
       rest.post(
         AdministrationUrlsInfo.enableAccessSupport.url,
-        (_req, res, ctx) => {
-          mockedEnableddReq()
-          return res(ctx.status(202), ctx.json({ response: {} }))
+        (req, res, ctx) => {
+          mockedEnableAccessSupport()
+          return res(ctx.json({
+            requestId: 'test-request',
+            response: {}
+          }))
         }
       )
     )
@@ -86,15 +90,21 @@ describe('Access Support Form Item', () => {
         route: { params }
       })
 
+    screen.getByRole('checkbox', {
+      name: /enable access to ruckus support/i
+    })
+
     const formItem = screen.getByRole('checkbox', { name: 'Enable access to Ruckus Support' })
     await waitFor(() => {
       expect(getTenantDelegationFn).toBeCalledWith('?type=SUPPORT')
     })
 
     await waitFor(() => expect(formItem).not.toBeDisabled())
+
     expect(formItem).not.toBeChecked()
     await userEvent.click(formItem)
-    await waitFor(() => expect(mockedEnableddReq).toBeCalled())
+    expect(mockedEnableAccessSupport).toBeCalled()
+    expect(getTenantDelegationFn).toBeCalled()
   })
 
   it('should correctly display create date', async () => {
@@ -125,6 +135,8 @@ describe('Access Support Form Item', () => {
     const infoText = await screen.findByText(/- Administrator-level access was granted on .*/)
     expect(infoText.innerHTML).toBe('- Administrator-level access was granted on 01/10/2023 - 11:26 UTC. Expires on 01/12/2023.')
   })
+
+
 
   it('should display revoke count down and datetime string by tooltip if it is enabled', async () => {
     mockServer.use(
@@ -248,7 +260,6 @@ describe('Access Support Form Item', () => {
 
     await waitFor(() => expect(mockedReqFn).toBeCalled())
     const infoText = await screen.findByText(/- Administrator-level access was granted on .*/)
-    await screen.findByText(/on 12\/21\/2022 .*/)
     expect(infoText.innerHTML).toBe('- Administrator-level access was granted on 12/21/2022 - 12:33 UTC. Expires on 01/11/2023.')
     expect(mockedDisabledReq).toBeCalledTimes(1)
   })
@@ -261,7 +272,7 @@ describe('Access Support Form Item', () => {
     testRevokeExpire[0].expiryDate = '2023-01-11T12:33:50.101+00:00'
 
     const mockedGetFn = jest.fn()
-    const mockedDisabledFailedReq = jest.fn()
+    const mockedDisabledReq = jest.fn()
     mockServer.use(
       rest.get(
         AdministrationUrlsInfo.getTenantDelegation.url.split('?')[0],
@@ -271,8 +282,8 @@ describe('Access Support Form Item', () => {
         }),
       rest.delete(
         AdministrationUrlsInfo.disableAccessSupport.url,
-        (_req, res, ctx) => {
-          mockedDisabledFailedReq()
+        (req, res, ctx) => {
+          mockedDisabledReq()
           return res(ctx.status(500), ctx.json(null))
         }
       )
@@ -295,13 +306,13 @@ describe('Access Support Form Item', () => {
     await waitFor(() => expect(mockedGetFn).toBeCalled())
     const infoText = await screen.findByText(/- Administrator-level access was granted on .*/)
     expect(infoText.innerHTML).toBe('- Administrator-level access was granted on 12/21/2022 - 12:33 UTC. Expires on 01/11/2023.')
-    expect(mockedDisabledFailedReq).toBeCalled()
+    expect(mockedDisabledReq).toBeCalled()
 
     await waitFor(() => {
       expect(spyConsole).toBeCalled()
     })
 
-    expect(mockedDisabledFailedReq).toBeCalledTimes(1)
+    expect(mockedDisabledReq).toBeCalledTimes(1)
   })
 })
 
@@ -328,7 +339,7 @@ describe('Access Support Form Item - Msp Delegate EC', () => {
       ),
       rest.post(
         AdministrationUrlsInfo.enableAccessSupport.url,
-        (_req, res, ctx) => res(ctx.status(500), ctx.json(null))
+        (req, res, ctx) => res(ctx.status(500), ctx.json(null))
       )
     )
 
@@ -346,11 +357,12 @@ describe('Access Support Form Item - Msp Delegate EC', () => {
         route: { params }
       })
 
+    const formItem = screen.getByRole('checkbox', { name: 'Enable access to Ruckus Support' })
+
     await waitFor(() => {
       expect(getTenantDelegationFn).toBeCalledWith('?type=SUPPORT_EC')
     })
-    const formItem = await screen.findByRole('checkbox', { name: 'Enable access to Ruckus Support' })
-    await waitFor(() => expect(formItem).not.toBeDisabled())
+    expect(formItem).not.toBeDisabled()
     expect(screen.getByRole('checkbox', { name: 'Enable access to Ruckus Support' })).not.toBeChecked()
     await userEvent.click(formItem)
     // FIXME: might need to fix when general error handler behavior changed.

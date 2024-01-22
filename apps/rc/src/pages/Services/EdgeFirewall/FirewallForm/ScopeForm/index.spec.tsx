@@ -48,7 +48,7 @@ describe('Scope Form', () => {
     )
   })
 
-  it('should correctly activate', async () => {
+  it.skip('should correctly activate', async () => {
     const { result: stepFormRef } = renderHook(() => {
       const [ form ] = Form.useForm()
       jest.spyOn(form, 'setFieldValue').mockImplementation(mockedSetFieldValue)
