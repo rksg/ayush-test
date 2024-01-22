@@ -1,4 +1,12 @@
-import { SwitchViewModel, SwitchStatusEnum, SWITCH_TYPE, DHCP_OPTION_TYPE, SwitchDhcp, Switch } from '@acx-ui/rc/utils'
+import {
+  DHCP_OPTION_TYPE,
+  SwitchViewModel,
+  SwitchStatusEnum,
+  SWITCH_TYPE,
+  SwitchDhcp,
+  Switch
+} from '@acx-ui/rc/utils'
+import { UseQueryResult } from '@acx-ui/types'
 
 export const switchDetailData: SwitchViewModel = {
   type: 'device',
@@ -137,12 +145,19 @@ export const jwtToken = {
 }
 
 export const switchDetailsContextData = {
-  switchName: '',
-  currentSwitchOperational: true,
+  switchData: {
+    id: 'id',
+    venueId: 'venue-id',
+    name: 'Switch - FEK3230S0C5',
+    stackMembers: []
+  } as Switch,
+  switchQuery: {
+    refetch: jest.fn()
+  } as unknown as UseQueryResult<Switch>,
   switchDetailHeader: {
     cliApplied: false,
     configReady: true,
-    name: 'test',
+    name: 'Switch - FEK3230S0C5',
     isStack: false,
     switchMac: '58:fb:96:0e:bc:f8',
     switchName: 'ICX7150-C12 Router',
@@ -153,14 +168,14 @@ export const switchDetailsContextData = {
     stackMembers: [],
     syncedSwitchConfig: true,
     switchType: SWITCH_TYPE.ROUTER,
-    activeSerial: 'FEK3230S0C5'
+    activeSerial: 'FEK3230S0C5',
+    unitId: 1
   },
-  switchData: {
-    id: 'id',
-    venueId: 'venueId',
-    name: 'name',
-    stackMembers: []
-  } as Switch
+  switchDetailViewModelQuery: {
+    refetch: jest.fn()
+  } as unknown as UseQueryResult<SwitchViewModel>,
+  currentSwitchOperational: true,
+  switchName: ''
 }
 
 export const networkApGroup = {
