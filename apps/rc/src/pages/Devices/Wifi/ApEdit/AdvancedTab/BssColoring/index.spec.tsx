@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { apApi, venueApi }                                                from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo, getUrlForTest }                    from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, WifiUrlsInfo }                                   from '@acx-ui/rc/utils'
 import { Provider, store }                                                from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -34,14 +34,11 @@ describe('AP BSS Coloring', () => {
     store.dispatch(apApi.util.resetApiState())
 
     mockServer.use(
-      rest.get(
-        getUrlForTest(CommonUrlsInfo.getVenue),
+      rest.get(CommonUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(venueData))),
-      rest.get(
-        getUrlForTest(CommonUrlsInfo.getVenueBssColoring),
+      rest.get(CommonUrlsInfo.getVenueBssColoring.url,
         (_, res, ctx) => res(ctx.json(mockVenueBssColoringSettings))),
-      rest.get(
-        getUrlForTest(WifiUrlsInfo.getApBssColoring),
+      rest.get(WifiUrlsInfo.getApBssColoring.url,
         (_, res, ctx) => res(ctx.json(mockApBssColoringSettings)))
     )
   })
