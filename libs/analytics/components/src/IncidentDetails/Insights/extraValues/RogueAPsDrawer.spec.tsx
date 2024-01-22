@@ -3,6 +3,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
 import { Incident }                                  from '@acx-ui/analytics/utils'
+import * as config                                   from '@acx-ui/config'
 import { dataApiURL, Provider, store }               from '@acx-ui/store'
 import { render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 import { mockGraphqlQuery }                          from '@acx-ui/test-utils'
@@ -11,6 +12,9 @@ import { mockRogueAPs } from '../__tests__/fixtures'
 
 import { RogueAPsDrawer, RogueAPsDrawerLink } from './RogueAPsDrawer'
 import { drawerApi }                          from './services'
+
+jest.mock('@acx-ui/config')
+const get = jest.mocked(config.get)
 
 beforeAll(() => jest.spyOn(console, 'error').mockImplementation(() => {}))
 afterAll(() => jest.resetAllMocks())
@@ -48,7 +52,28 @@ describe('RogueAPsDrawer', () => {
     expect(screen.getAllByRole('link')[0].textContent).toBe(mockRogueAPs[0].apName)
     const links: HTMLAnchorElement[] = screen.getAllByRole('link')
     expect(links[0].href).toBe(
-      'http://localhost/undefined/t/devices/wifi/70:CA:97:01:9D:F0/details/ai')
+      'http://localhost/undefined/t/devices/wifi/70:CA:97:01:9D:F0/details/overview')
+  })
+  it('should render correct url for RAI', async () => {
+    get.mockReturnValue('true')
+    mockGraphqlQuery(dataApiURL, 'rogueAPs', {
+      data: { incident: { rogueAPs: mockRogueAPs, rogueAPCount: mockRogueAPs.length } } })
+    render(<Provider><RogueAPsDrawer {...props}/></Provider>, { route: true })
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+
+    screen.getByText('4 Rogue APs')
+    screen.getByPlaceholderText('Search for...')
+    screen.getByText(mockRogueAPs[0].rogueApMac)
+    screen.getAllByText(mockRogueAPs[0].rogueType)
+    screen.getByText(mockRogueAPs[0].apName)
+    screen.getByText(mockRogueAPs[0].apMac)
+    screen.getByText(`${mockRogueAPs[0].rogueSSID} (2)`)
+    screen.getByText(`${mockRogueAPs[0].maxRogueSNR} dB (2)`)
+
+    expect(screen.getAllByRole('link')[0].textContent).toBe(mockRogueAPs[0].apName)
+    const links: HTMLAnchorElement[] = screen.getAllByRole('link')
+    expect(links[0].href).toBe(
+      'http://localhost/ai/devices/wifi/70:CA:97:01:9D:F0/details/ai')
   })
   it('should render error', async () => {
     mockGraphqlQuery(dataApiURL, 'rogueAPs', { error: new Error('something went wrong!') })

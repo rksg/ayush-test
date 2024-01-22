@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom'
 
+import * as config                                   from '@acx-ui/config'
 import { dataApiURL, Provider, store }               from '@acx-ui/store'
 import { render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 import { mockGraphqlQuery }                          from '@acx-ui/test-utils'
@@ -11,6 +12,9 @@ import {
   AggregatedImpactedAP
 }                 from './ImpactedDrawer'
 import { impactedApi, ImpactedAP, ImpactedClient } from './services'
+
+jest.mock('@acx-ui/config')
+const get = jest.mocked(config.get)
 
 describe('Drawer', () => {
   beforeAll(() => jest.spyOn(console, 'error').mockImplementation(() => {}))
@@ -42,7 +46,25 @@ describe('Drawer', () => {
       screen.getByText('1 Impacted AP')
       const links: HTMLAnchorElement[] = screen.getAllByRole('link')
       expect(links[0].href).toBe(
-        'http://localhost/undefined/t/devices/wifi/mac/details/ai'
+        'http://localhost/undefined/t/devices/wifi/mac/details/overview'
+      )
+    })
+    it('should render correct url for RAI', async () => {
+      get.mockReturnValue('true')
+      mockGraphqlQuery(dataApiURL, 'ImpactedAPs', {
+        data: { incident: { impactedAPs: sample } } })
+      render(<Provider><ImpactedAPsDrawer {...props}/></Provider>, { route: true })
+      await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+      screen.getByPlaceholderText('Search for...')
+      expect(screen.getByRole('link').textContent)
+        .toEqual(`${sample[0].name}${sample[1].name}`)
+      screen.getByText(sample[0].mac)
+      screen.getByText(`${sample[0].model} (2)`)
+      screen.getByText(`${sample[0].version} (2)`)
+      screen.getByText('1 Impacted AP')
+      const links: HTMLAnchorElement[] = screen.getAllByRole('link')
+      expect(links[0].href).toBe(
+        'http://localhost/ai/devices/wifi/mac/details/ai'
       )
     })
     it('should render error', async () => {

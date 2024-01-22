@@ -6,6 +6,7 @@ import { aggregateDataBy }                        from '@acx-ui/analytics/utils'
 import type { Incident }                          from '@acx-ui/analytics/utils'
 import { Drawer, Loader, Table, SearchBar  }      from '@acx-ui/components'
 import type { TableColumn, ColumnType }           from '@acx-ui/components'
+import { get }                                    from '@acx-ui/config'
 import { TenantLink }                             from '@acx-ui/react-router-dom'
 import { encodeParameter, DateFilter, DateRange } from '@acx-ui/utils'
 
@@ -152,7 +153,9 @@ export const ImpactedAPsDrawer: React.FC<ImpactedDrawerProps> = (props) => {
     column('name', {
       title: $t({ defaultMessage: 'AP Name' }),
       render: (_, { name, mac }) =>
-        <TenantLink to={`devices/wifi/${mac}/details/ai`}>{name}</TenantLink>
+        <TenantLink to={`devices/wifi/${mac}/details/${get('IS_MLISA_SA') ? 'ai': 'overview'}`}>
+          {name}
+        </TenantLink>
     }),
     column('model', { title: $t({ defaultMessage: 'Model' }) }),
     column('mac', { title: $t({ defaultMessage: 'MAC Address' }) }),

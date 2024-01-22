@@ -5,6 +5,7 @@ import { useIntl } from 'react-intl'
 
 import { Incident, aggregateDataBy }                     from '@acx-ui/analytics/utils'
 import { Drawer, Loader, SearchBar, Table, TableColumn } from '@acx-ui/components'
+import { get }                                           from '@acx-ui/config'
 import { formatter }                                     from '@acx-ui/formatter'
 import { TenantLink }                                    from '@acx-ui/react-router-dom'
 
@@ -57,7 +58,9 @@ export const RogueAPsDrawer: React.FC<ImpactedDrawerProps> = (props) => {
     column('apName', {
       title: $t({ defaultMessage: 'Detected by AP Name' }),
       render: (_, { apName, apMac }) =>
-        <TenantLink to={`devices/wifi/${apMac}/details/ai`}>{apName}</TenantLink>,
+        <TenantLink to={`devices/wifi/${apMac}/details/${get('IS_MLISA_SA') ? 'ai': 'overview'}`}>
+          {apName}
+        </TenantLink>,
       width: 160
     }),
     column('apMac', { title: $t({ defaultMessage: 'Detected by AP MAC' }), width: 160 })

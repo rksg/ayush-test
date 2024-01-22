@@ -37,7 +37,7 @@ export const drawerApi = dataApi.injectEndpoints({
           ) {
             incident(id: $id, impactedStart: $impactedStart, impactedEnd: $impactedEnd) {
               rogueAPCount
-              rogueAPs: rogueAPs(n: $n, search: $search) {
+              rogueAPs(n: $n, search: $search) {
                 rogueApMac rogueSSID rogueType maxRogueSNR apName apMac
               }
             }
