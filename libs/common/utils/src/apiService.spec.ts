@@ -3,14 +3,11 @@ import { MaybePromise }                                       from '@reduxjs/too
 import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 
 import {
-  enableNewApi,
-  isDev, isIntEnv,
-  isLocalHost, isQA,
-  isScale, isStage, isProdEnv,
+  isDev,
+  isLocalHost,
   isIgnoreErrorModal, isShowApiError,
   createHttpRequest,
   getFilters,
-  getUrlForTest,
   batchApi
 } from './apiService'
 
@@ -24,13 +21,7 @@ describe('ApiInfo', () => {
   it('Check the envrionment', async () => {
     expect(isLocalHost()).toBe(true)
     expect(isDev()).toBe(false)
-    expect(isQA()).toBe(false)
-    expect(isScale()).toBe(false)
-    expect(isIntEnv()).toBe(false)
-    expect(isStage()).toBe(false)
-    expect(isProdEnv()).toBe(false)
   })
-
   it('Check the error modal flag', async () => {
     expect(isIgnoreErrorModal()).toBe(false)
     expect(isShowApiError()).toBe(false)
@@ -49,21 +40,18 @@ describe('ApiInfo', () => {
       networkId: ['networkId'],
       venueId: ['venueId']
     })
+    expect(getFilters({
+      apGroupId: 'apGroupId'
+    })).toStrictEqual({
+      deviceGroupId: ['apGroupId']
+    })
   })
 
   it('Check enable new API', async () => {
     const apiInfo1 = {
       method: 'post',
-      url: '/venues/aaaServers/query',
-      oldUrl: '/api/switch/tenant/:tenantId/aaaServer/query',
-      newApi: true
-    }
-
-    const apiInfo2 = {
-      method: 'post',
       url: '/venues/aaaServers/query'
     }
-
     const httpRequest = {
       credentials: 'include',
       headers: {
@@ -74,12 +62,8 @@ describe('ApiInfo', () => {
       url: 'http://localhost/venues/aaaServers/query'
     }
 
-    expect(enableNewApi(apiInfo1)).toBe(true)
-    expect(enableNewApi(apiInfo2)).toBe(false)
     expect(createHttpRequest(apiInfo1)).toStrictEqual(httpRequest)
-    expect(createHttpRequest(apiInfo2)).toStrictEqual(httpRequest)
-    expect(getUrlForTest(apiInfo1)).toBe('/venues/aaaServers/query')
-    expect(getUrlForTest(apiInfo2)).toBe('/venues/aaaServers/query')
+    expect(apiInfo1.url).toBe('/venues/aaaServers/query')
   })
 
   it('batchApi: success', async () => {
