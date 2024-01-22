@@ -272,3 +272,12 @@ export interface CustomRole {
   updatedDate?: string
 }
 
+export interface AdminGroupLastLogins {
+  count?: number,
+  lastLoginList?: groupMembers[]
+}
+
+export interface groupMembers {
+  email?: string,
+  lastLoginDate?: string
+}
