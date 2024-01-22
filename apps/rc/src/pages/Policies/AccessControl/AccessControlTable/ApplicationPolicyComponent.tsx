@@ -113,12 +113,14 @@ const ApplicationPolicyComponent = () => {
   const rowActions: TableProps<ApplicationPolicy>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
+      visible: (selectedItems => selectedItems.length > 0),
       onClick: (rows, clearSelection) => {
         doDelete(rows, clearSelection)
       }
     },
     {
       label: $t({ defaultMessage: 'Edit' }),
+      visible: (selectedItems => selectedItems.length === 1),
       onClick: ([{ id }]) => {
         setEditMode({ id: id, isEdit: true })
       }

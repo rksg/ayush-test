@@ -282,7 +282,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
   // use policyName to find corresponding id before API return profile id
   useEffect(() => {
     if (form && requestId && queryPolicyName) {
-      layer3SelectOptions.map(option => {
+      layer3SelectOptions.forEach(option => {
         if (option.props.children === queryPolicyName) {
           if (!onlyAddMode.enable) {
             form.setFieldValue([...inputName, 'l3AclPolicyId'], option.key)
