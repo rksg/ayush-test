@@ -13,7 +13,6 @@ import {
   NetworkSegmentationLink,
   IdentityGroupLink,
   PropertyUnitLink,
-  useDpskNewConfigFlowParams,
   PassphraseViewer,
   PersonaDrawer,
   usePersonaAsyncHeaders
@@ -66,7 +65,6 @@ function PersonaDetails () {
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
   const [vniRetryable, setVniRetryable] = useState<boolean>(false)
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
   const { customHeaders } = usePersonaAsyncHeaders()
 
   useEffect(() => {
@@ -103,7 +101,7 @@ function PersonaDetails () {
     if (personaGroupData.dpskPoolId) {
       let name: string | undefined
       getDpskPoolById({
-        params: { serviceId: personaGroupData.dpskPoolId, ...dpskNewConfigFlowParams }
+        params: { serviceId: personaGroupData.dpskPoolId }
       })
         .then(result => name = result.data?.name)
         .finally(() => setDpskPoolData({ id: personaGroupData.dpskPoolId, name }))

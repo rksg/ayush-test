@@ -298,12 +298,17 @@ export interface NewAPITableResult<T>{
 interface CreateNewTableHttpRequestProps {
   apiInfo: ApiInfo
   params?: Params<string>
-  payload?: TableChangePayload
+  payload?: TableChangePayload,
+  headers?: Record<string,unknown>
 }
 
 export function createNewTableHttpRequest (props: CreateNewTableHttpRequestProps) {
-  const { apiInfo, params = {}, payload } = props
-  return createHttpRequest(apiInfo, { ...params, ...transferToNewTablePaginationParams(payload) })
+  const { apiInfo, params = {}, payload, headers = {} } = props
+  return createHttpRequest(
+    apiInfo,
+    { ...params, ...transferToNewTablePaginationParams(payload) },
+    headers
+  )
 }
 
 export function transferToTableResult<T> (newResult: NewTableResult<T>): TableResult<T> {
