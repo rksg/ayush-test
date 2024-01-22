@@ -69,11 +69,13 @@ export function PortalSummaryForm (props: {
             label={$t({ defaultMessage: 'Host Contacts:' })}
           >
             {hostDomains && <>
-              {hostDomains.map((domain, index)=> {
-                return <div key={domain}>
-                  {(index === 0 ) && `${domain} (Entire Domain)`}
-                  {(index !== 0 ) && `${domain}`}
-                </div>
+              {$t({ defaultMessage: 'Entire Domain(s)' }) + ` (${hostDomains.length})`}
+              {hostDomains.map((domain)=> {
+                return (
+                  <div style={{ color: '#808284', fontSize: '12px' }} key={domain}>
+                    {domain}
+                  </div>
+                )
               })}
             </>}
             {hostEmails && <>
@@ -82,8 +84,8 @@ export function PortalSummaryForm (props: {
                 {
                   hostEmails.map((email) => {
                     return (
-                      <div style={{ color: '#808284', fontSize: '12px' }} key={email}>{
-                        email}
+                      <div style={{ color: '#808284', fontSize: '12px' }} key={email}>
+                        {email}
                       </div>)
                   })
                 }
