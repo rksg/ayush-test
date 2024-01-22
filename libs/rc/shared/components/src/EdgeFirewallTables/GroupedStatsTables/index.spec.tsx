@@ -61,29 +61,29 @@ describe('Edge firewall service grouped rule tables with stats', () => {
       venueId: 't-venue'
     }
 
+    mockedGetDDoSDataFn.mockReset()
+    mockedGetACLDataFn.mockReset()
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
     mockServer.use(
       rest.post(
         EdgeFirewallUrls.getEdgeFirewallDDoSStats.url,
-        (req, res, ctx) => {
+        (_req, res, ctx) => {
           mockedGetDDoSDataFn()
           return res(ctx.json(mockFirewallDDoSStats))
         }
       ),
       rest.post(
         EdgeFirewallUrls.getEdgeFirewallACLStats.url,
-        (req, res, ctx) => {
+        (_req, res, ctx) => {
           mockedGetACLDataFn()
           return res(ctx.json(mockFirewallACLStats))
         }
       )
     )
-
-    mockedGetDDoSDataFn.mockReset()
-    mockedGetACLDataFn.mockReset()
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
 
-  it('should correctly render', async () => {
+  it('should correctly render DDoS rules', async () => {
     render(
       <Provider>
         <GroupedStatsTables
@@ -104,18 +104,29 @@ describe('Edge firewall service grouped rule tables with stats', () => {
     expect(ddosRows.length).toBe(4) // 2 + 2(header)
     expect(within(ddosPane).queryByRole('row', { name: /ICMP 200 12 20/ })).toBeValid()
     expect(within(ddosPane).queryByRole('row', { name: /NTP Reflection 120 9 21/ })).toBeValid()
+  })
+
+  it('should correctly display stateful ACL rules', async () => {
+    render(
+      <Provider>
+        <GroupedStatsTables
+          edgeData={mockedEdgeStatus as EdgeStatus}
+          edgeFirewallData={mockFirewall as EdgeFirewallSetting}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    await userEvent.click(screen.getByRole('tab', { name: 'Stateful ACL' }))
 
     // display stateful ACL rules
-    await userEvent.click(screen.getByRole('tab', { name: 'Stateful ACL' }))
-    await waitFor(() => {
-      expect(mockedGetACLDataFn).toBeCalled()
-    })
+    const aclPane = screen.getByRole('tabpanel', { hidden: false })
+    await waitFor(() => expect(mockedGetACLDataFn).toBeCalled())
     await waitFor(async () => {
       expect(await screen.findByText('Src Port')).toBeVisible()
     })
 
     // check inbound data
-    const aclPane = screen.getByRole('tabpanel', { hidden: false })
     const aclInRows = await within(aclPane).findAllByRole('row')
     expect(aclInRows.length).toBe(4) // 1 + 1(header) + 2 rows in info table
 
