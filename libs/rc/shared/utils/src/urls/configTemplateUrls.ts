@@ -60,5 +60,15 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/templates/radiusServerProfiles/query',
     newApi: true
+  },
+  addVenueTemplate: {
+    method: 'post',
+    url: '/templates/venues',
+    newApi: true
+  },
+  deleteVenueTemplate: {
+    method: 'delete',
+    url: '/templates/venues/:templateId',
+    newApi: true
   }
 }

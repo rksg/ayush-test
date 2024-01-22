@@ -117,6 +117,16 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         })
       },
       extraOptions: { maxRetries: 5 }
+    }),
+    addVenueTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(ConfigTemplateUrlsInfo.addVenueTemplate),
+      // eslint-disable-next-line max-len
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'VenueTemplate', id: 'LIST' }]
+    }),
+    deleteVenueTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(ConfigTemplateUrlsInfo.deleteVenueTemplate),
+      // eslint-disable-next-line max-len
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'VenueTemplate', id: 'LIST' }]
     })
   })
 })
@@ -133,7 +143,9 @@ export const {
   useDeleteAAAPolicyTemplateMutation,
   useLazyGetAAAPolicyTemplateQuery,
   useUpdateAAAPolicyTemplateMutation,
-  useGetAAAPolicyTemplateListQuery
+  useGetAAAPolicyTemplateListQuery,
+  useAddVenueTemplateMutation,
+  useDeleteVenueTemplateMutation
 } = configTemplateApi
 
 const requestMethodWithPayload = ['post', 'put', 'PATCH']

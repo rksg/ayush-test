@@ -26,7 +26,10 @@ import {
   Address,
   VenueExtended,
   checkObjectNotExists,
+  generatePageHeaderTitle,
   redirectPreviousPage,
+  useBreadcrumb,
+  useConfigTemplate,
   whitespaceOnlyRegExp
 } from '@acx-ui/rc/utils'
 import {
@@ -151,6 +154,18 @@ export function VenuesForm () {
   const { tenantId, venueId, action } = useParams()
   const { data } = useGetVenueQuery({ params: { tenantId, venueId } }, { skip: !venueId })
   const { previousPath } = useContext(VenueEditContext)
+
+  // Config Template related states
+  const { isTemplate } = useConfigTemplate()
+  const breadcrumb = useBreadcrumb([
+    { text: intl.$t({ defaultMessage: 'Venues' }), link: '/venues' }
+  ])
+  const pageTitle = generatePageHeaderTitle({
+    isEdit: action === 'edit',
+    isTemplate,
+    instanceLabel: intl.$t({ defaultMessage: 'Venue' }),
+    addLabel: intl.$t({ defaultMessage: 'Add New' })
+  })
 
   useEffect(() => {
     if (data) {
@@ -287,10 +302,8 @@ export function VenuesForm () {
   return (
     <>
       {action !== 'edit' && <PageHeader
-        title={intl.$t({ defaultMessage: 'Add New Venue' })}
-        breadcrumb={[
-          { text: intl.$t({ defaultMessage: 'Venues' }), link: '/venues' }
-        ]}
+        title={pageTitle}
+        breadcrumb={breadcrumb}
       />}
       <StepsFormLegacy
         formRef={formRef}

@@ -16,6 +16,7 @@ import { ConfigTemplateLink, PolicyConfigTemplateLink, renderConfigTemplateDetai
 import {
   useDeleteAAAPolicyTemplateMutation,
   useDeleteNetworkTemplateMutation,
+  useDeleteVenueTemplateMutation,
   useGetConfigTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -193,10 +194,12 @@ function useColumns () {
 function useDeleteMutation () {
   const [ deleteNetworkTemplate ] = useDeleteNetworkTemplateMutation()
   const [ deleteAaaTemplate ] = useDeleteAAAPolicyTemplateMutation()
+  const [ deleteVenueTemplate ] = useDeleteVenueTemplateMutation()
 
   return {
     [ConfigTemplateType.NETWORK]: deleteNetworkTemplate,
-    [ConfigTemplateType.RADIUS]: deleteAaaTemplate
+    [ConfigTemplateType.RADIUS]: deleteAaaTemplate,
+    [ConfigTemplateType.VENUE]: deleteVenueTemplate
   }
 }
 
@@ -205,20 +208,27 @@ function getAddTemplateMenuProps (): Omit<MenuProps, 'placement'> {
 
   return {
     expandIcon: <UI.MenuExpandArrow />,
-    items: [{
-      key: 'add-wifi-network',
-      label: <ConfigTemplateLink to='networks/wireless/add'>
-        {$t({ defaultMessage: 'Wi-Fi Network' })}
-      </ConfigTemplateLink>
-    }, {
-      key: 'add-policy',
-      label: $t({ defaultMessage: 'Policies' }),
-      children: [{
-        key: 'add-aaa',
-        label: <PolicyConfigTemplateLink type={PolicyType.AAA} oper={PolicyOperation.CREATE}>
-          {$t(policyTypeLabelMapping[PolicyType.AAA])}
-        </PolicyConfigTemplateLink>
-      }]
-    }]
+    items: [
+      {
+        key: 'add-wifi-network',
+        label: <ConfigTemplateLink to='networks/wireless/add'>
+          {$t({ defaultMessage: 'Wi-Fi Network' })}
+        </ConfigTemplateLink>
+      }, {
+        key: 'add-venue',
+        label: <ConfigTemplateLink to='venues/add'>
+          {$t({ defaultMessage: 'Venue' })}
+        </ConfigTemplateLink>
+      }, {
+        key: 'add-policy',
+        label: $t({ defaultMessage: 'Policies' }),
+        children: [{
+          key: 'add-aaa',
+          label: <PolicyConfigTemplateLink type={PolicyType.AAA} oper={PolicyOperation.CREATE}>
+            {$t(policyTypeLabelMapping[PolicyType.AAA])}
+          </PolicyConfigTemplateLink>
+        }]
+      }
+    ]
   }
 }

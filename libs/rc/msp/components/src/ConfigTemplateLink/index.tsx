@@ -68,5 +68,9 @@ export function renderConfigTemplateDetailsLink (type: ConfigTemplateType, id: s
     case ConfigTemplateType.NETWORK:
       // eslint-disable-next-line max-len
       return <ConfigTemplateLink to={`networks/wireless/${id}/network-details/venues`} children={name} />
+    case ConfigTemplateType.VENUE:
+      // TODO: Need to add the parameters for activeTab and activeSubTab
+      // eslint-disable-next-line max-len
+      return <ConfigTemplateLink to={`venues/${id}/venue-details/services`} children={name} />
   }
 }

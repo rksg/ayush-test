@@ -1,6 +1,7 @@
 export enum ConfigTemplateType {
   NETWORK = 'NETWORK',
-  RADIUS = 'RADIUS'
+  RADIUS = 'RADIUS',
+  VENUE = 'VENUE'
 }
 
 export interface ConfigTemplate {
