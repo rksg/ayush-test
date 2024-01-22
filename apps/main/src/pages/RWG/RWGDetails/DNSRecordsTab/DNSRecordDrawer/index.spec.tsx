@@ -11,6 +11,7 @@ import { Provider, store }                                                from '
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { DNSRecordDrawer } from '.'
+import { ToastProps, showToast } from '@acx-ui/components'
 
 
 
@@ -27,7 +28,10 @@ const dnsRecord = {
 
 const mockFn = jest.fn()
 const mockedReqFn =jest.fn()
-
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
+  showToast: jest.fn()
+}))
 
 describe('RWGDetails DNS Records Drawer', () => {
   let params: { tenantId: string, gatewayId: string }
@@ -85,8 +89,7 @@ describe('RWGDetails DNS Records Drawer', () => {
     await userEvent.click(saveButton)
 
     await waitFor(() => expect(mockedReqFn).toBeCalled())
-
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loading' }))
+    await waitFor(() => expect(onCloseFn).toBeCalled())
   })
 
   it('should draw drawer for DNS Record add correctly', async () => {
