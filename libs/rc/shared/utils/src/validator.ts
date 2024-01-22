@@ -6,7 +6,6 @@ import {
   remove,
   split,
   isEmpty,
-  difference,
   uniq
 }                from 'lodash'
 

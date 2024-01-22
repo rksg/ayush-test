@@ -1,7 +1,5 @@
-import { useState } from 'react'
-
-import { Form, Button } from 'antd'
-import { useIntl }      from 'react-intl'
+import { Form }    from 'antd'
+import { useIntl } from 'react-intl'
 
 import { PasswordInput }                                                                     from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
@@ -10,15 +8,6 @@ import { NetworkSaveData, Demo, PortalLanguageEnum, GuestNetworkTypeEnum, WlanSe
 import { getLanguage }          from '../../services/PortalDemo'
 import { AuthAccServerSummary } from '../CaptivePortal/AuthAccServerSummary'
 import * as UI                  from '../styledComponents'
-
-const extractDomainFromEmails = (emails: string[]) : string => {
-  if(emails.length === 0) {return ''}
-
-  const firstEmailAddress = emails[0]
-  // Split the email address at the @ symbol and get the domain
-  const parts = firstEmailAddress.split('@')
-  return parts[1]
-}
 
 export function PortalSummaryForm (props: {
   summaryData: NetworkSaveData;
