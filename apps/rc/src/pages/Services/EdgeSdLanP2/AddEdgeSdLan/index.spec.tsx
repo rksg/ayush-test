@@ -62,7 +62,7 @@ describe('Add SD-LAN service', () => {
     const mockedFormData = {
       name: 'testAddSdLanService',
       edgeId: '0000000001',
-      corePortKey: 't-coreport-key',
+      corePortMac: 't-coreport-key',
       tunnelProfileId: 't-tunnelProfile-id',
       activatedNetworks: [{
         id: 'network_1',
@@ -92,7 +92,7 @@ describe('Add SD-LAN service', () => {
       expect(mockedAddFn).toBeCalledWith({
         name: mockedFormData.name,
         edgeId: mockedFormData.edgeId,
-        corePortKey: mockedFormData.corePortKey,
+        corePortMac: mockedFormData.corePortMac,
         tunnelProfileId: mockedFormData.tunnelProfileId,
         networkIds: mockedFormData.activatedNetworks.map(item => item.id),
         isGuestTunnelEnabled: mockedFormData.isGuestTunnelEnabled
@@ -110,7 +110,7 @@ describe('Add SD-LAN service', () => {
     const mockeFormData = {
       name: 'testAddSdLanService2',
       edgeId: '0000000002',
-      corePortKey: 't-coreport2-key',
+      corePortMac: 't-coreport2-key',
       tunnelProfileId: 't-tunnelProfile2-id',
       activatedNetworks: [],
       isGuestTunnelEnabled: false
@@ -132,7 +132,7 @@ describe('Add SD-LAN service', () => {
       expect(mockedAddFn).toBeCalledWith({
         name: mockeFormData.name,
         edgeId: mockeFormData.edgeId,
-        corePortKey: mockeFormData.corePortKey,
+        corePortMac: mockeFormData.corePortMac,
         tunnelProfileId: mockeFormData.tunnelProfileId,
         networkIds: mockeFormData.activatedNetworks.map(item => item.id),
         isGuestTunnelEnabled: mockeFormData.isGuestTunnelEnabled
@@ -148,7 +148,7 @@ describe('Add SD-LAN service', () => {
     const mockedDmzData = {
       name: 'testAddDMZSdLanService',
       edgeId: '0000000002',
-      corePortKey: 't-coreport2-key',
+      corePortMac: 't-coreport2-key',
       activatedNetworks: [{
         id: 'network_4',
         name: 'Network4'
@@ -184,7 +184,7 @@ describe('Add SD-LAN service', () => {
       expect(mockedAddFn).toBeCalledWith({
         name: mockedDmzData.name,
         edgeId: mockedDmzData.edgeId,
-        corePortKey: mockedDmzData.corePortKey,
+        corePortMac: mockedDmzData.corePortMac,
         tunnelProfileId: mockedDmzData.tunnelProfileId,
         networkIds: mockedDmzData.activatedNetworks.map(item => item.id),
         isGuestTunnelEnabled: mockedDmzData.isGuestTunnelEnabled,

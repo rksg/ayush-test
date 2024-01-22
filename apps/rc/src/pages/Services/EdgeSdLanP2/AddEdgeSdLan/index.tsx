@@ -52,7 +52,7 @@ const AddEdgeSdLanP2 = () => {
       const payload = {
         name: formData.name,
         edgeId: formData.edgeId,
-        corePortKey: formData.corePortKey,
+        corePortMac: formData.corePortMac,
         networkIds: formData.activatedNetworks.map(network => network.id),
         tunnelProfileId: formData.tunnelProfileId,
         isGuestTunnelEnabled: formData.isGuestTunnelEnabled

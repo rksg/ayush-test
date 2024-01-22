@@ -191,7 +191,7 @@ describe('Edge SD-LAN form: settings', () => {
     })
 
     await waitFor(() => {
-      expect(mockedSetFieldValue).toBeCalledWith('corePortKey', 'port2')
+      expect(mockedSetFieldValue).toBeCalledWith('corePortMac', 'port2')
     })
   })
 
@@ -292,6 +292,6 @@ const checkBasicSettings = async () => {
   // ensure related data to set into form
   expect(mockedSetFieldValue).toBeCalledWith('edgeName', 'Smart Edge 2')
   await waitFor(() => {
-    expect(mockedSetFieldValue).toBeCalledWith('corePortKey', 'port2')
+    expect(mockedSetFieldValue).toBeCalledWith('corePortMac', 'port2')
   })
 }

@@ -232,7 +232,7 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
             edgeId: '965F472F5BB50911EE875D000C290DDC7A',
             networkIds: ['670a1316306242049cf41e350138cb36', '3c44c926a1324955b6de70fd19368213'],
             tunnelProfileId: '3885120d5c7140afbb22842f87fdd1ea',
-            corePortKey: 'port1',
+            corePortMac: 'port1',
             isGuestTunnelEnabled: true,
             guestEdgeId: '961346F1DF760D11E8A08C000C29E61518',
             guestTunnelProfileId: '7426fd7f8ed549baa326f0e6616fc294',

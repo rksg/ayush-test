@@ -65,7 +65,6 @@ export const mockedSdLanService = {
 
 export const mockedSdLanServiceP2 = {
   ...mockedSdLanService,
-  corePortKey: mockedSdLanService.corePortMac,
   isGuestTunnelEnabled: false,
   guestEdgeId: '',
   guestTunnelProfileId: '',

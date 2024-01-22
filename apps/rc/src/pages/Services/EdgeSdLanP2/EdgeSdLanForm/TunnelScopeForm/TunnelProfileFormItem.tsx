@@ -1,7 +1,6 @@
-import { Col, Form, Row } from 'antd'
-import { useIntl }        from 'react-intl'
+import { Col, Form, Row, Select } from 'antd'
+import { useIntl }                from 'react-intl'
 
-import { Select }                                from '@acx-ui/components'
 import { TunnelProfileAddModal }                 from '@acx-ui/rc/components'
 import { TunnelProfileFormType, TunnelTypeEnum } from '@acx-ui/rc/utils'
 
@@ -32,6 +31,7 @@ export const TunnelProfileFormItem = (props: TunnelProfileFormItemProps) => {
         <Select
           loading={isLoading}
           options={options}
+          placeholder={$t({ defaultMessage: 'Select ...' })}
           onChange={onChange}
         />
       </Form.Item>

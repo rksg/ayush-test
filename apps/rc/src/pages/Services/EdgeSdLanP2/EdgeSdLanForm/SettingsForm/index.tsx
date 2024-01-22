@@ -137,20 +137,20 @@ export const SettingsForm = () => {
     if (!portsConfig) return
 
     // find corePort
-    let corePortKey
+    let corePortMac
     portsConfig?.forEach((port) => {
       if (port.corePortEnabled) {
-        corePortKey = port.interfaceName
+        corePortMac = port.interfaceName
       }
     })
     lagsConfig?.forEach((lag) => {
       if (lag.corePortEnabled && lag.lagEnabled) {
-        corePortKey = lag.id
+        corePortMac = lag.id
         form.setFieldValue('isLagCorePort', true)
       }
     })
 
-    form.setFieldValue('corePortKey', corePortKey)
+    form.setFieldValue('corePortMac', corePortMac)
   }, [portsConfig, lagsConfig])
 
   const onVenueChange = () => {
@@ -184,6 +184,7 @@ export const SettingsForm = () => {
                   { min: 2, max: 32 },
                   { validator: (_, value) => servicePolicyNameRegExp(value) }
                 ]}
+                validateFirst
                 children={<Input />}
               />
             </Col>
@@ -207,6 +208,7 @@ export const SettingsForm = () => {
                     <Select
                       loading={isVenueOptionsLoading}
                       options={venueOptions}
+                      placeholder={$t({ defaultMessage: 'Select ...' })}
                       disabled={editMode}
                       onChange={onVenueChange}
                     />
@@ -232,6 +234,7 @@ export const SettingsForm = () => {
                     <Select
                       loading={isEdgeOptionsLoading || isSdLanBoundEdgesLoading}
                       options={edgeOptions}
+                      placeholder={$t({ defaultMessage: 'Select ...' })}
                       disabled={editMode}
                       onChange={onEdgeChange}
                     />
@@ -294,6 +297,7 @@ export const SettingsForm = () => {
                         <Select
                           loading={isEdgeOptionsLoading || isSdLanBoundEdgesLoading}
                           options={edgeOptions?.filter(item => item.value !== edgeId)}
+                          placeholder={$t({ defaultMessage: 'Select ...' })}
                           disabled={editMode}
                           onChange={onDmzEdgeChange}
                         />
