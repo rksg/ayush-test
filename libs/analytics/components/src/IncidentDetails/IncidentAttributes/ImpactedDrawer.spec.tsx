@@ -1,9 +1,14 @@
 import '@testing-library/jest-dom'
 
-import * as config                                   from '@acx-ui/config'
-import { dataApiURL, Provider, store }               from '@acx-ui/store'
-import { render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
-import { mockGraphqlQuery }                          from '@acx-ui/test-utils'
+import * as config                     from '@acx-ui/config'
+import { dataApiURL, Provider, store } from '@acx-ui/store'
+import {
+  render,
+  screen,
+  waitForElementToBeRemoved,
+  mockGraphqlQuery
+} from '@acx-ui/test-utils'
+import { setUpIntl } from '@acx-ui/utils'
 
 import {
   ImpactedAPsDrawer,
@@ -13,6 +18,7 @@ import {
 }                 from './ImpactedDrawer'
 import { impactedApi, ImpactedAP, ImpactedClient } from './services'
 
+setUpIntl({ locale: 'en-US', messages: {} })
 jest.mock('@acx-ui/config')
 const get = jest.mocked(config.get)
 
@@ -37,9 +43,9 @@ describe('Drawer', () => {
         data: { incident: { impactedAPs: sample } } })
       render(<Provider><ImpactedAPsDrawer {...props}/></Provider>, { route: true })
       await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
-      screen.getByPlaceholderText('Search for...')
+      screen.getByPlaceholderText(/Search AP/)
       expect(screen.getByRole('link').textContent)
-        .toEqual(`${sample[0].name}${sample[1].name}`)
+        .toEqual(`${sample[0].name} (2)`)
       screen.getByText(sample[0].mac)
       screen.getByText(`${sample[0].model} (2)`)
       screen.getByText(`${sample[0].version} (2)`)
@@ -55,9 +61,9 @@ describe('Drawer', () => {
         data: { incident: { impactedAPs: sample } } })
       render(<Provider><ImpactedAPsDrawer {...props}/></Provider>, { route: true })
       await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
-      screen.getByPlaceholderText('Search for...')
+      screen.getByPlaceholderText(/Search AP/)
       expect(screen.getByRole('link').textContent)
-        .toEqual(`${sample[0].name}${sample[1].name}`)
+        .toEqual(`${sample[0].name} (2)`)
       screen.getByText(sample[0].mac)
       screen.getByText(`${sample[0].model} (2)`)
       screen.getByText(`${sample[0].version} (2)`)
@@ -110,7 +116,7 @@ describe('Drawer', () => {
         <ImpactedClientsDrawer {...props} startTime='start' endTime='end' />
       </Provider>, { route: true })
       await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
-      screen.getByPlaceholderText('Search for...')
+      screen.getByPlaceholderText(/Search MAC/)
       screen.getByText(sample[0].mac)
       screen.getByText(`${sample[0].manufacturer} (2)`)
       screen.getByText(`${sample[0].osType} (2)`)

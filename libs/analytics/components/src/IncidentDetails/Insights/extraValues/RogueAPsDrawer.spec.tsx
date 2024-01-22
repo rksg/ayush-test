@@ -41,7 +41,7 @@ describe('RogueAPsDrawer', () => {
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
 
     screen.getByText('4 Rogue APs')
-    screen.getByPlaceholderText('Search for...')
+    screen.getByPlaceholderText(/Search Rogue/)
     screen.getByText(mockRogueAPs[0].rogueApMac)
     screen.getAllByText(mockRogueAPs[0].rogueType)
     screen.getByText(mockRogueAPs[0].apName)
@@ -62,7 +62,7 @@ describe('RogueAPsDrawer', () => {
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
 
     screen.getByText('4 Rogue APs')
-    screen.getByPlaceholderText('Search for...')
+    screen.getByPlaceholderText(/Search Rogue/)
     screen.getByText(mockRogueAPs[0].rogueApMac)
     screen.getAllByText(mockRogueAPs[0].rogueType)
     screen.getByText(mockRogueAPs[0].apName)

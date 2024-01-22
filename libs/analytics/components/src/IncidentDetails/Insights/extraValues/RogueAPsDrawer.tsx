@@ -3,11 +3,11 @@ import { useMemo, useState } from 'react'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Incident, aggregateDataBy }                     from '@acx-ui/analytics/utils'
-import { Drawer, Loader, SearchBar, Table, TableColumn } from '@acx-ui/components'
-import { get }                                           from '@acx-ui/config'
-import { formatter }                                     from '@acx-ui/formatter'
-import { TenantLink }                                    from '@acx-ui/react-router-dom'
+import { Incident, aggregateDataBy }          from '@acx-ui/analytics/utils'
+import { Drawer, Loader, Table, TableColumn } from '@acx-ui/components'
+import { get }                                from '@acx-ui/config'
+import { formatter }                          from '@acx-ui/formatter'
+import { TenantLink }                         from '@acx-ui/react-router-dom'
 
 import { column }            from '../../IncidentAttributes/ImpactedDrawer'
 import { DrawerTextContent } from '../styledComponents'
@@ -30,7 +30,7 @@ export interface ImpactedDrawerProps extends
 }
 
 export const RogueAPsDrawer: React.FC<ImpactedDrawerProps> = (props) => {
-  const { $t } = useIntl()
+  const { $t, formatList } = useIntl()
   const [ search, setSearch ] = useState('')
   const queryResults = useRogueAPsQuery({
     id: props.id,
@@ -51,35 +51,61 @@ export const RogueAPsDrawer: React.FC<ImpactedDrawerProps> = (props) => {
   }) })
 
   const columns = useMemo(() => [
-    column('rogueApMac', { title: $t({ defaultMessage: 'Rogue AP MAC' }) }),
-    column('rogueSSID', { title: $t({ defaultMessage: 'Rogue SSID' }) }),
-    column('rogueType', { title: $t({ defaultMessage: 'Rogue Type' }) }),
+    column('rogueApMac', {
+      title: $t({ defaultMessage: 'Rogue AP MAC' }),
+      searchable: true
+    }),
+    column('rogueSSID', {
+      title: $t({ defaultMessage: 'Rogue SSID' }),
+      searchable: true
+    }),
+    column('rogueType', {
+      title: $t({ defaultMessage: 'Rogue Type' }),
+      searchable: true
+    }),
     column('maxRogueSNR', { title: $t({ defaultMessage: 'Max Rogue SNR' }) }),
     column('apName', {
       title: $t({ defaultMessage: 'Detected by AP Name' }),
-      render: (_, { apName, apMac }) =>
-        <TenantLink to={`devices/wifi/${apMac}/details/${get('IS_MLISA_SA') ? 'ai': 'overview'}`}>
-          {apName}
+      searchable: true,
+      render: (_, { apName, apMac }, __, highlightFn) =>
+        <TenantLink
+          to={`devices/wifi/${apMac}/details/${get('IS_MLISA_SA') ? 'ai': 'overview'}`}
+          title={formatList(apName, { style: 'narrow', type: 'conjunction' })}
+        >{highlightFn($t(
+            {
+              defaultMessage: '{name}{count, plural, one {} other { ({count})}}',
+              description: 'Translation strings - nil)'
+            },
+            { name: apName[0], count: apName.length }
+          ))}
         </TenantLink>,
       width: 160
     }),
-    column('apMac', { title: $t({ defaultMessage: 'Detected by AP MAC' }), width: 160 })
-  ] as TableColumn<AggregatedRogueAP>[], [$t])
+    column('apMac', {
+      searchable: true,
+      title: $t({ defaultMessage: 'Detected by AP MAC' }),
+      width: 160
+    })
+  ] as TableColumn<AggregatedRogueAP>[], [$t, formatList])
 
-  // TODO: use search from table component
   return <Drawer
     width={'900px'}
     title={$t(
-      { defaultMessage: '{count} Rogue {count, plural, one {AP} other {APs}}' },
+      {
+        defaultMessage: '{count} Rogue {count, plural, one {AP} other {APs}}',
+        description: 'Translation strings - Rogue, AP, APs)'
+      },
       { count: queryResults.data.rogueAPCount }
     )}
     visible={props.visible}
     onClose={props.onClose}
     children={<Loader states={[queryResults]}>
-      <SearchBar onChange={setSearch}/>
       <Table<AggregatedRogueAP>
         rowKey={(row: AggregatedRogueAP) => `${row.rogueApMac}-${row.apMac}`}
         columns={columns}
+        searchableWidth={680}
+        onFilterChange={(_, { searchString }) => setSearch(searchString || '')}
+        enableApiFilter
         dataSource={queryResults.data.aggregatedRogueAP}/>
     </Loader>}
   />
