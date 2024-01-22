@@ -156,7 +156,7 @@ export const TunnelScopeForm = () => {
         </Col>
       </Row>
       <Row >
-        <Col span={18}>
+        <Col span={24}>
           <Form.Item
             noStyle
             shouldUpdate={(prev, cur) => {

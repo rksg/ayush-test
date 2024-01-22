@@ -28,7 +28,7 @@ const lineMap = [
 export const TopologyDiagram = (props: { isGuestTunnelEnabled: boolean }) => {
   const { $t } = useIntl()
   const { isGuestTunnelEnabled } = props
-  const lines = lineMap.filter(item => isGuestTunnelEnabled ? true : item.id !== 'se_dmz')
+  const lines = lineMap.filter(item => isGuestTunnelEnabled || item.id !== 'se_dmz')
 
   return <Row gutter={[0, 30]}>
     <Col span={24}>

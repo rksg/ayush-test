@@ -134,23 +134,23 @@ export const SettingsForm = () => {
 
   // prepare corePort info
   useEffect(() => {
-    if (portsConfig) {
-    // find corePort
-      let corePortKey
-      portsConfig?.forEach((port) => {
-        if (port.corePortEnabled) {
-          corePortKey = port.interfaceName
-        }
-      })
-      lagsConfig?.forEach((lag) => {
-        if (lag.corePortEnabled && lag.lagEnabled) {
-          corePortKey = lag.id
-          form.setFieldValue('isLagCorePort', true)
-        }
-      })
+    if (!portsConfig) return
 
-      form.setFieldValue('corePortKey', corePortKey)
-    }
+    // find corePort
+    let corePortKey
+    portsConfig?.forEach((port) => {
+      if (port.corePortEnabled) {
+        corePortKey = port.interfaceName
+      }
+    })
+    lagsConfig?.forEach((lag) => {
+      if (lag.corePortEnabled && lag.lagEnabled) {
+        corePortKey = lag.id
+        form.setFieldValue('isLagCorePort', true)
+      }
+    })
+
+    form.setFieldValue('corePortKey', corePortKey)
   }, [portsConfig, lagsConfig])
 
   const onVenueChange = () => {
