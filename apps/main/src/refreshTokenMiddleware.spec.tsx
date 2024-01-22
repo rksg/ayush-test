@@ -2,9 +2,22 @@ import { isFulfilled } from '@reduxjs/toolkit'
 
 import { act } from '@acx-ui/test-utils'
 
-import { isDev, refreshTokenMiddleware } from './refreshTokenMiddleware'
+import { refreshTokenMiddleware } from './refreshTokenMiddleware'
 
 describe('refreshTokenMiddleware', () => {
+  const { location } = window
+  const mockReload = jest.fn()
+  beforeEach(() => Object.defineProperty(window, 'location', {
+    configurable: true,
+    enumerable: true,
+    value: { reload: mockReload }
+  }))
+  afterEach(() => {
+    Object.defineProperty(window, 'location', {
+      configurable: true, enumerable: true, value: location
+    })
+    mockReload.mockReset()
+  })
   it('should refresh jwt token', async () => {
     const action = {
       meta: {
@@ -18,15 +31,14 @@ describe('refreshTokenMiddleware', () => {
 
     sessionStorage.setItem('jwt', 'test-jwt')
     sessionStorage.setItem('sessionJwt', 'test-session-jwt')
-    const isDev = false
-    const result = isFulfilled(action) && !isDev
+    const result = isFulfilled(action)
     expect(result).toBe(false)
     const loginToken = action?.meta?.baseQueryMeta?.response?.headers.get('login-token')
     expect(loginToken).toBe('test-token')
     sessionStorage.removeItem('sessionJwt')
   })
 
-  it('refreshes the token when action is fulfilled and isDev is true', () => {
+  it('refreshes the token when action is fulfilled is true', () => {
     const next = jest.fn()
     window.location.hostname = 'dev.ruckus.cloud'
     sessionStorage.setItem('jwt', 'newToken')
@@ -50,20 +62,5 @@ describe('refreshTokenMiddleware', () => {
     act(() => { refreshTokenMiddleware({ dispatch: Object({}), getState: jest.fn() })(next)({}) })
 
     expect(sessionStorage.getItem('jwt')).toBe('oldToken')
-  })
-
-  it('does not refresh the token when isDev is false', () => {
-    const next = jest.fn()
-    window.location.hostname = 'example.com'
-    sessionStorage.setItem('jwt', 'oldToken')
-
-    act(() => { refreshTokenMiddleware({ dispatch: Object({}), getState: jest.fn() })(next)({}) })
-
-    expect(sessionStorage.getItem('jwt')).toBe('oldToken')
-  })
-
-  it('returns true when hostname includes dev.ruckus.cloud', () => {
-    window.location.hostname = 'dev.ruckus.cloud'
-    expect(isDev()).toBe(true)
   })
 })
