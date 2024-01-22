@@ -105,7 +105,10 @@ export const UsersTable = (
             placement='top'
             arrowPointAtCenter
             title={$t({ defaultMessage: 'Edit' })}>
-            <UI.IconWrapper $disabled={Boolean(props.selectedRow.type === null)}>
+            <UI.IconWrapper $disabled={
+              !(props.selectedRow.type === null) ||
+              (user.userId === props.selectedRow.id)
+            }>
               <EditOutlined
                 onClick={() => {
                   setSelectedRow(props.selectedRow)
@@ -125,7 +128,9 @@ export const UsersTable = (
             placement='top'
             arrowPointAtCenter
             title={$t({ defaultMessage: 'Delete' })}>
-            <UI.IconWrapper $disabled={false}>
+            <UI.IconWrapper $disabled={
+              (user.userId === props.selectedRow.id)
+            }>
               <DeleteOutlined
                 onClick={() => {
                   setSelectedRow(props.selectedRow)
