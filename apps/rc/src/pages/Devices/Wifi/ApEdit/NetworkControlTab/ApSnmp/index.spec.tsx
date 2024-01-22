@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { venueApi }                                                                  from '@acx-ui/rc/services'
-import { ApSnmpUrls, CommonUrlsInfo, getUrlForTest }                                 from '@acx-ui/rc/utils'
+import { ApSnmpUrls, CommonUrlsInfo }                                                from '@acx-ui/rc/utils'
 import { Provider, store }                                                           from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -42,8 +42,7 @@ describe('Ap Snmp', () => {
       rest.post(ApSnmpUrls.updateVenueApSnmpSettings.url, (req, res, ctx) => {
         return res(ctx.json(resultOfUpdateApSnmpAgentSettings))
       }),
-      rest.get(
-        getUrlForTest(CommonUrlsInfo.getVenue),
+      rest.get(CommonUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(venueData)))
     )
   })
