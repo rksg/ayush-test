@@ -15,10 +15,10 @@ import {
 
 import { findMaxActiveABFVersion, findMaxEolABFVersions, getActiveApModels, getVersionLabel, isBetaFirmware, MaxABFVersionMap } from '../../FirmwareUtils'
 
-import * as UI                                                                 from './styledComponents'
-import { SupportedAPModelsList }                                               from './SupportedAPModelsList'
-import { firmwareNote1, firmwareNote2 }                                        from './UpdateNowDialog'
-import { EolApFirmwareGroup, UpgradableApModelsAndFamilies, useApEolFirmware } from './useApEolFirmware'
+import * as UI                                                                                       from './styledComponents'
+import { SupportedAPModelsList }                                                                     from './SupportedAPModelsList'
+import { firmwareNote1, firmwareNote2 }                                                              from './UpdateNowDialog'
+import { EolApFirmwareGroup, getRemainingApModels, UpgradableApModelsAndFamilies, useApEolFirmware } from './useApEolFirmware'
 
 const abfLabelMessage = defineMessage({ defaultMessage: 'Available firmware' })
 // eslint-disable-next-line max-len
@@ -166,10 +166,11 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
                 otherVersions={eolABFOtherVersion[eol.name] ? eolABFOtherVersion[eol.name] : []}
                 update={updateSelectedABF}
               />
-              : <><div>{// eslint-disable-next-line max-len
-                intl.$t({ defaultMessage: 'There are one or more legacy devices in selected venues ({eolApModels}).' }, { eolApModels: eol.apModels.join(', ') })}
-              </div>
-              <div>{intl.$t({ defaultMessage: 'No available firmware.' })}</div></>
+              : <EolABFUpgradeWarning
+                abfName={eol.name}
+                apModels={eol.apModels}
+                upgradableApModelsAndFamilies={upgradableApModelsAndFamilies}
+              />
             }
           </UI.Section>
         })
@@ -295,4 +296,26 @@ function ABFSelector (props: ABFSelectorProps) {
       </Radio.Group>
     </UI.ValueContainer>
   </>)
+}
+
+interface EolABFUpgradeWarningProp {
+  abfName: string
+  apModels: string[]
+  upgradableApModelsAndFamilies?: UpgradableApModelsAndFamilies
+}
+export function EolABFUpgradeWarning (props: EolABFUpgradeWarningProp) {
+  const { abfName, apModels, upgradableApModelsAndFamilies } = props
+  const { $t } = useIntl()
+  const remainingApModels = getRemainingApModels(abfName, apModels, upgradableApModelsAndFamilies)
+
+  if (remainingApModels.length === 0) return null
+
+  return <>
+    <div>{
+      $t({
+        defaultMessage: 'There are one or more legacy devices in selected venues ({eolApModels}).'
+      }, { eolApModels: remainingApModels.join(', ') })
+    }</div>
+    <div>{$t({ defaultMessage: 'No available firmware.' })}</div>
+  </>
 }
