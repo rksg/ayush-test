@@ -33,7 +33,10 @@ export const AvailableUsersSelection = ({
               .toLowerCase())
         }
         options={availableUsersQuery?.data as unknown as { label: string, value: string }[]}
-        onChange={selectedUser => onChange(selectedUser)}
+        onChange={(_, option) => {
+          const { label, value } = option as { label: string, value: string }
+          onChange({ id: value, email: label })
+        }}
       />
     </Loader>
   )

@@ -1,13 +1,14 @@
 
 import React, { useState } from 'react'
 
-import { Menu }                   from 'antd'
-import { Button, Col, Form, Row } from 'antd'
-import { defineMessage, useIntl } from 'react-intl'
+import { Menu, Button, Col, Form, Row } from 'antd'
+import { isEqual, pick, isEmpty }       from 'lodash'
+import { defineMessage, useIntl }       from 'react-intl'
 
 import {
   useGetUsersQuery,
-  useUpdateUserRoleAndResourceGroupMutation
+  useUpdateUserMutation,
+  useAddUserMutation
 } from '@acx-ui/analytics/services'
 import { ManagedUser }                                           from '@acx-ui/analytics/utils'
 import { Drawer, PageHeader, Loader, StepsFormLegacy, Dropdown } from '@acx-ui/components'
@@ -35,29 +36,74 @@ const FormItem: React.FC<FormItemProps> = ({ name, labelKey, component }) => (
   </Row>
 )
 
-type DrawerContentProps = {
-  selectedRow: ManagedUser | null;
-  onRoleChange: (value: string) => void;
-  onResourceGroupChange: (value: string) => void;
-  updatedValues: {
-    updatedRole: string | null;
-    updatedResourceGroup: string | null;
-  };
-  type: 'edit' | 'create';
-  onChange: CallableFunction
+type UserDrawerProps = {
+  opened: boolean
+  selectedRow: ManagedUser | null
+  type: 'edit' | 'create'
+  toggleDrawer: CallableFunction
 }
 
-const DrawerContent: React.FC<DrawerContentProps> = ({
+const UserDrawer: React.FC<UserDrawerProps> = ({
+  opened,
   selectedRow,
-  onRoleChange,
-  onResourceGroupChange,
-  updatedValues,
   type,
-  onChange
+  toggleDrawer
 }) => {
   const { $t } = useIntl()
-  const { updatedRole, updatedResourceGroup } = updatedValues
-  return (
+  const selectedUser = pick(selectedRow,['id', 'email', 'resourceGroupId', 'role'])
+  const [ updatedUser, setUpdatedUser ] = useState(selectedUser)
+  const [updateUser] = useUpdateUserMutation()
+  const [addUser] = useAddUserMutation()
+  const handleSaveClick = () => {
+    if (type === 'edit') {
+      updateUser({
+        resourceGroupId: updatedUser.resourceGroupId!,
+        userId: updatedUser.id!,
+        role: updatedUser.role!
+      })
+    } else {
+      addUser({
+        resourceGroupId: updatedUser.resourceGroupId!,
+        swuId: updatedUser.id!,
+        role: updatedUser.role!
+      })
+    }
+    toggleDrawer(false)
+  }
+  const isUserDataValid = () => {
+    if (type === 'create') {
+      return Boolean(updatedUser.email && updatedUser.resourceGroupId && updatedUser.id)
+    } else {
+      return !isEmpty(updatedUser) && !isEqual(selectedUser, updatedUser)
+    }
+  }
+  const handleCancelClick = () => {
+    toggleDrawer(false)
+    setUpdatedUser({})
+  }
+  const drawerFooter = (
+    <div>
+      <Button
+        onClick={handleSaveClick}
+        disabled={!isUserDataValid()}
+        type='primary'>
+        {$t({ defaultMessage: 'Save' })}
+      </Button>
+      <Button onClick={handleCancelClick}>
+        {$t({ defaultMessage: 'Cancel' })}
+      </Button>
+    </div>
+  )
+  return <Drawer
+    visible={opened}
+    title={$t(
+      { defaultMessage: '{type} User' },
+      { type: type === 'edit' ? 'Edit' : 'Create' }
+    )}
+    onClose={() => toggleDrawer(false)}
+    footer={drawerFooter}
+    width={400}
+  >
     <StepsFormLegacy.StepForm>
       {drawerContentConfig[type as 'edit' | 'create'].map((item) => (
         <FormItem
@@ -67,60 +113,29 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
           component={
             <item.component
               {...item.componentProps({
-                selectedRow,
-                updatedResourceGroup,
-                updatedRole,
-                onRoleChange,
-                onResourceGroupChange,
-                onChange
+                selectedUser,
+                updatedUser,
+                onChange: (updatedValue: object) => setUpdatedUser(
+                  { ...updatedUser, ...updatedValue }
+                )
               })}
             />
           }
         />
       ))}
     </StepsFormLegacy.StepForm>
-  )
+  </Drawer>
 }
 const Users: React.FC = () => {
   const { $t } = useIntl()
   const [openDrawer, setOpenDrawer] = useState(false)
   const [drawerType, setDrawerType] = useState<'edit' | 'create'>('edit')
   const [selectedRow, setSelectedRow] = useState<ManagedUser | null>(null)
-  const [updatedRole, setUpdatedRole] = useState<string | null>(null)
-  const [updatedResourceGroup, setUpdatedResourceGroup] = useState<string | null>(null)
+
   const usersQuery = useGetUsersQuery()
-  const { data, refetch } = usersQuery
-  const [updateUserRoleAndResourceGroup] = useUpdateUserRoleAndResourceGroupMutation()
+  const { data } = usersQuery
+
   const usersCount = data?.length || 0
-  const handleSaveClick = () => {
-    updateUserRoleAndResourceGroup({
-      resourceGroupId: updatedResourceGroup ?? selectedRow?.resourceGroupId!,
-      userId: selectedRow?.id!,
-      role: updatedRole ?? selectedRow?.role!
-    })
-    setOpenDrawer(false)
-    refetch()
-  }
-
-  const handleCancelClick = () => {
-    setOpenDrawer(false)
-    setUpdatedResourceGroup(null)
-    setUpdatedRole(null)
-  }
-
-  const drawerFooter = (
-    <div>
-      <Button
-        onClick={handleSaveClick}
-        disabled={!Boolean(updatedRole || updatedResourceGroup)}
-        type='primary'>
-        {$t({ defaultMessage: 'Save' })}
-      </Button>
-      <Button onClick={handleCancelClick}>
-        {$t({ defaultMessage: 'Cancel' })}
-      </Button>
-    </div>
-  )
   const addMenu = <Menu
     items={[{
       key: 'add-internal-user',
@@ -132,6 +147,7 @@ const Users: React.FC = () => {
     }]
     }
   />
+
   return (
     <Loader states={[usersQuery]}>
       <PageHeader
@@ -148,27 +164,12 @@ const Users: React.FC = () => {
         setSelectedRow={setSelectedRow}
         setDrawerType={setDrawerType}
       />
-      <Drawer
-        visible={openDrawer}
-        title={$t(
-          { defaultMessage: '{type} User' },
-          { type: drawerType === 'edit' ? 'Edit' : 'Create' }
-        )}
-        onClose={() => setOpenDrawer(false)}
-        footer={drawerFooter}
-        width={400}
-      >
-        <DrawerContent
-          selectedRow={selectedRow}
-          onRoleChange={setUpdatedRole}
-          onResourceGroupChange={setUpdatedResourceGroup}
-          updatedValues={{ updatedRole, updatedResourceGroup }}
-          type={drawerType}
-          onChange={(value : { value: string, label: string }) =>
-            // eslint-disable-next-line no-console
-            console.log(value)}
-        />
-      </Drawer>
+      <UserDrawer
+        opened={openDrawer}
+        toggleDrawer={setOpenDrawer}
+        type={drawerType}
+        selectedRow={selectedRow}
+      />
     </Loader>
   )
 }

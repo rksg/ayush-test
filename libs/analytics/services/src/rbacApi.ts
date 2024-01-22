@@ -108,22 +108,38 @@ export const rbacApi = baseRbacApi.injectEndpoints({
       }),
       providesTags: [{ type: 'RBAC', id: 'GET_RESOURCE_GROUPS' }]
     }),
-    updateUserRoleAndResourceGroup: build.mutation<
-    string, { resourceGroupId: string, role: string, userId: string }
- >({
-   query: ({ userId, resourceGroupId, role }) => {
-     return {
-       url: `/users/${userId}`,
-       method: 'put',
-       credentials: 'include',
-       headers: {
-         'x-mlisa-user-id': userId
-       },
-       body: { resourceGroupId, role },
-       responseHandler: 'text'
-     }
-   }
- })
+    updateUser: build.mutation<string, {
+      resourceGroupId: string, role: string, userId: string }>({
+        query: ({ userId, resourceGroupId, role }) => {
+          return {
+            url: `/users/${userId}`,
+            method: 'put',
+            credentials: 'include',
+            // headers: {
+            //   'x-mlisa-user-id': userId
+            // },
+            body: { resourceGroupId, role },
+            responseHandler: 'text'
+          }
+        },
+        invalidatesTags: [{ type: 'RBAC', id: 'GET_USERS' }]
+      }),
+    addUser: build.mutation<string, {
+        resourceGroupId: string, role: string, swuId: string }>({
+          query: ({ swuId, resourceGroupId, role }) => {
+            return {
+              url: '/users',
+              method: 'post',
+              credentials: 'include',
+              // headers: {
+              //   'x-mlisa-user-id': userId
+              // },
+              body: { swuId, resourceGroupId, role },
+              responseHandler: 'text'
+            }
+          },
+          invalidatesTags: [{ type: 'RBAC', id: 'GET_USERS' }]
+        })
   })
 })
 
@@ -135,7 +151,8 @@ export const {
   useGetUsersQuery,
   useGetAvailableUsersQuery,
   useGetResourceGroupsQuery,
-  useUpdateUserRoleAndResourceGroupMutation
+  useUpdateUserMutation,
+  useAddUserMutation
 } = rbacApi
 
 export function useSystems () {

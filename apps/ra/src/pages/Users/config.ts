@@ -7,11 +7,8 @@ import { AvailableUsersSelection } from './AvailableUsersSelection'
 import { ResourceGroupSelection }  from './ResourceGroupSelection'
 import { RoleSelection }           from './RoleSelection'
 interface componentProps {
-    selectedRow: ManagedUser | null;
-    updatedRole: string | null;
-    updatedResourceGroup: string | null;
-    onRoleChange: (value: string) => void;
-    onResourceGroupChange: (value: string) => void;
+    selectedUser: Partial<ManagedUser> | null;
+    updatedUser: Partial<ManagedUser> | null;
     onChange: CallableFunction
   }
 
@@ -32,28 +29,28 @@ export const drawerContentConfig: DrawerContentConfig = {
       name: 'email',
       labelKey: defineMessage({ defaultMessage: 'Email' }),
       component: Label,
-      componentProps: ({ selectedRow }) => ({ children: selectedRow?.email })
+      componentProps: ({ selectedUser }) => ({ children: selectedUser?.email })
     },
     {
       name: 'resourceGroup',
       labelKey: defineMessage({ defaultMessage: 'Resource Group' }),
       component: ResourceGroupSelection,
       componentProps: ({
-        selectedRow,
-        updatedResourceGroup,
-        onResourceGroupChange
+        selectedUser,
+        updatedUser,
+        onChange
       }) => ({
-        selectedValue: updatedResourceGroup ?? selectedRow?.resourceGroupId,
-        onChange: onResourceGroupChange
+        selectedValue: updatedUser?.resourceGroupId || selectedUser?.resourceGroupId,
+        onChange: (value: string) => onChange({ ...selectedUser, resourceGroupId: value })
       })
     },
     {
       name: 'role',
       labelKey: defineMessage({ defaultMessage: 'Role' }),
       component: RoleSelection,
-      componentProps: ({ selectedRow, updatedRole, onRoleChange }) => ({
-        selectedValue: updatedRole ?? selectedRow?.role,
-        onChange: onRoleChange
+      componentProps: ({ selectedUser, updatedUser, onChange }) => ({
+        selectedValue: updatedUser?.role ?? selectedUser?.role,
+        onChange: (value: string) => onChange({ ...selectedUser, role: value })
       })
     }
   ],
@@ -62,29 +59,23 @@ export const drawerContentConfig: DrawerContentConfig = {
       name: 'email',
       labelKey: defineMessage({ defaultMessage: 'Email' }),
       component: AvailableUsersSelection,
-      componentProps: ({ onChange }: { onChange: CallableFunction }) => ({ onChange })
+      componentProps: ({ onChange }) => ({ onChange: (value: object) => onChange({ ...value }) })
     },
     {
       name: 'resourceGroup',
       labelKey: defineMessage({ defaultMessage: 'Resource Group' }),
       component: ResourceGroupSelection,
-      componentProps: ({
-        selectedRow,
-        updatedResourceGroup,
-        onResourceGroupChange
-      }) => ({
-        selectedValue: updatedResourceGroup ?? selectedRow?.resourceGroupId,
-        onChange: onResourceGroupChange
-      })
+      componentProps: ({ onChange }) => (
+        { onChange: (value: string) => onChange({ resourceGroupId: value }) }
+      )
     },
     {
       name: 'role',
       labelKey: defineMessage({ defaultMessage: 'Role' }),
       component: RoleSelection,
-      componentProps: ({ selectedRow, updatedRole, onRoleChange }) => ({
-        selectedValue: updatedRole ?? selectedRow?.role,
-        onChange: onRoleChange
-      })
+      componentProps: ({ onChange }) => (
+        { onChange: (value: string) => onChange({ role: value }) }
+      )
     }
   ]
 }
