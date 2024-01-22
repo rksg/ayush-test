@@ -349,7 +349,10 @@ export function AddRecCustomer () {
   return (
     <>
       <PageHeader
-        title={intl.$t({ defaultMessage: 'Add RUCKUS End Customer Account' })}
+        title={!isEditMode ?
+          intl.$t({ defaultMessage: 'Add RUCKUS End Customer Account' }) :
+          intl.$t({ defaultMessage: 'RUCKUS End Customer Account' })
+        }
         breadcrumb={[
           { text: intl.$t({ defaultMessage: 'My Customers' }) },
           {
