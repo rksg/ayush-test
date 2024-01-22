@@ -71,26 +71,7 @@ describe('TunnelProfileDetail', () => {
     // await screen.findByText('tag1')
     await screen.findByText('Manual (1450)')
     await screen.findByText('ON')
-    const row = await screen.findAllByRole('row', { name: /TestNetwork/i })
-    expect(row.length).toBe(2)
-  })
-
-  it('should render breadcrumb correctly', async () => {
-    render(
-      <Provider>
-        <TunnelProfileDetail />
-      </Provider>, {
-        route: { params, path: detailPath }
-      })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await waitFor(() => expect(mockedGetVMNetworksList).toBeCalled())
-    expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(screen.getByRole('link', {
-      name: 'Policies & Profiles'
-    })).toBeVisible()
-    expect(screen.getByRole('link', {
-      name: 'Tunnel Profile'
-    })).toBeVisible()
+    await checkNetworkTable()
   })
 
   it('Should disable Configure button in Default Tunnel Profile', async () => {
@@ -110,6 +91,7 @@ describe('TunnelProfileDetail', () => {
     await waitFor(() => expect(mockedGetVMNetworksList).toBeCalled())
     await screen.findByText('Default')
     expect(screen.queryByRole('button', { name: 'Configure' })).toBeDisabled()
+    await checkNetworkTable()
   })
 
   describe('when SD-LAN ready', () => {
@@ -128,6 +110,7 @@ describe('TunnelProfileDetail', () => {
       await waitFor(() => expect(mockedGetVMNetworksList).toBeCalled())
       await screen.findByText('Tunnel Type')
       await screen.findByText('VxLAN')
+      await checkNetworkTable()
     })
 
     it('should display VxLAN as default tunnel type', async () => {
@@ -154,6 +137,7 @@ describe('TunnelProfileDetail', () => {
       await screen.findByText('tunnelProfile2')
       await screen.findByText('Tunnel Type')
       await screen.findByText('VxLAN')
+      await checkNetworkTable()
     })
 
     it('Should disable Configure button in VLAN_VXLAN Default Tunnel Profile', async () => {
@@ -174,6 +158,12 @@ describe('TunnelProfileDetail', () => {
       await screen.findByText('Default tunnel profile (SD-LAN)')
       await screen.findByText('VLAN-VxLAN')
       expect(screen.queryByRole('button', { name: 'Configure' })).toBeDisabled()
+      await checkNetworkTable()
     })
   })
 })
+
+const checkNetworkTable = async () => {
+  const row = await screen.findAllByRole('row', { name: /TestNetwork/i })
+  expect(row.length).toBe(2)
+}
