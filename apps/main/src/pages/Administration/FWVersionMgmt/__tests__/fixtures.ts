@@ -520,6 +520,7 @@ export const mockedFirmwareVersionIdList = availableABFList.filter(abf => abf.ab
 export const mockedApModelFamilies = [
   {
     name: 'AC_WAVE1',
+    displayName: '11ac wave 1',
     apModels: [
       'R600',
       'R500',
@@ -533,6 +534,7 @@ export const mockedApModelFamilies = [
   },
   {
     name: 'AC_WAVE2',
+    displayName: '11ac wave 2',
     apModels: [
       'R720',
       'R710',
@@ -555,6 +557,7 @@ export const mockedApModelFamilies = [
   },
   {
     name: 'WIFI_6',
+    displayName: 'Wi-Fi 6',
     apModels: [
       'R850',
       'R750',
@@ -572,6 +575,7 @@ export const mockedApModelFamilies = [
   },
   {
     name: 'WIFI_6E',
+    displayName: 'Wi-Fi 6e',
     apModels: [
       'R560',
       'R760'
@@ -579,6 +583,7 @@ export const mockedApModelFamilies = [
   },
   {
     name: 'WIFI_7',
+    displayName: 'Wi-Fi 7',
     apModels: [
       'R770',
       'R670',

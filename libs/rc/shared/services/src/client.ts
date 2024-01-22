@@ -1,6 +1,6 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 
-import { convertEpochToRelativeTime, formatter }    from '@acx-ui/formatter'
+import { convertEpochToRelativeTime, formatter } from '@acx-ui/formatter'
 import {
   Client,
   ClientList,
@@ -19,7 +19,7 @@ import {
   downloadFile,
   transformByte,
   WifiUrlsInfo,
-  RequestFormData, enableNewApi, ClientStatusEnum
+  RequestFormData, ClientStatusEnum
 } from '@acx-ui/rc/utils'
 import { baseClientApi }                       from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -72,11 +72,9 @@ export const clientApi = baseClientApi.injectEndpoints({
     disconnectClient: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(ClientUrlsInfo.disconnectClient, params)
-        if (enableNewApi(ClientUrlsInfo.disconnectClient)) {
-          payload = {
-            action: 'disconnect',
-            clients: payload
-          }
+        payload = {
+          action: 'disconnect',
+          clients: payload
         }
         return {
           ...req,
@@ -87,11 +85,9 @@ export const clientApi = baseClientApi.injectEndpoints({
     revokeClient: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(ClientUrlsInfo.disconnectClient, params)
-        if (enableNewApi(ClientUrlsInfo.disconnectClient)) {
-          payload = {
-            action: 'revoke',
-            clients: payload
-          }
+        payload = {
+          action: 'revoke',
+          clients: payload
         }
         return {
           ...req,
