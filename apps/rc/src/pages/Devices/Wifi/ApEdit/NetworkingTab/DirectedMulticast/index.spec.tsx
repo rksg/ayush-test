@@ -2,10 +2,10 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                from '@acx-ui/feature-toggle'
-import { apApi, venueApi }                             from '@acx-ui/rc/services'
-import { CommonUrlsInfo, getUrlForTest, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                             from '@acx-ui/store'
+import { useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { apApi, venueApi }              from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }              from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -49,20 +49,15 @@ describe('AP Directed Multicast', () => {
     store.dispatch(apApi.util.resetApiState())
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
-      rest.get(
-        getUrlForTest(CommonUrlsInfo.getVenue),
+      rest.get(CommonUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(venueData))),
-      rest.get(
-        getUrlForTest(WifiUrlsInfo.getVenueDirectedMulticast),
+      rest.get(WifiUrlsInfo.getVenueDirectedMulticast.url,
         (_, res, ctx) => res(ctx.json(mockVenueDirectedMulticast))),
-      rest.get(
-        getUrlForTest(WifiUrlsInfo.getApDirectedMulticast),
+      rest.get(WifiUrlsInfo.getApDirectedMulticast.url,
         (_, res, ctx) => res(ctx.json(mockApDirectedMulticast))),
-      rest.delete(
-        getUrlForTest(WifiUrlsInfo.resetApDirectedMulticast),
+      rest.delete(WifiUrlsInfo.resetApDirectedMulticast.url,
         (req, res, ctx) => res(ctx.status(202))),
-      rest.put(
-        getUrlForTest(WifiUrlsInfo.updateApDirectedMulticast),
+      rest.put(WifiUrlsInfo.updateApDirectedMulticast.url,
         (req, res, ctx) => res(ctx.status(202)))
     )
   })
