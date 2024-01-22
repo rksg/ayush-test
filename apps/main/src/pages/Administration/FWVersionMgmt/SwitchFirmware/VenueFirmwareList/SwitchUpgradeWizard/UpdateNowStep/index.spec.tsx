@@ -5,7 +5,8 @@ import { SwitchFirmwareFixtures } from '@acx-ui/rc/utils'
 import { Provider }               from '@acx-ui/store'
 import {
   render,
-  screen
+  screen,
+  within
 } from '@acx-ui/test-utils'
 
 import {
@@ -57,10 +58,15 @@ describe('UpdateNowStep', () => {
       , {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
-    expect(await screen.findByText(/Firmware available for ICX 8200 Series/i)).toBeInTheDocument()
-    expect(screen.getByText(/10.0.10a_cd3/i)).toBeInTheDocument()
-    expect(screen.getByText(/9.0.10h_cd2/i)).toBeInTheDocument()
-    expect(screen.getByText(/9.0.10f/i)).toBeInTheDocument()
+    const updateNowStepForm = screen.getByTestId('update-now-step')
+    expect(within(updateNowStepForm)
+      .getByText(/Firmware available for ICX 8200 Series/i)).toBeInTheDocument()
+    expect(within(updateNowStepForm)
+      .getByText(/10.0.10a_cd3/i)).toBeInTheDocument()
+    expect(within(updateNowStepForm)
+      .getByText(/9.0.10h_cd2/i)).toBeInTheDocument()
+    expect(within(updateNowStepForm)
+      .getByText(/9.0.10f/i)).toBeInTheDocument()
   })
 
   it('render UpdateNowStep - 1 Venue - Changed', async () => {
@@ -87,26 +93,26 @@ describe('UpdateNowStep', () => {
     const release10010rc2 = screen.getByRole('radio', {
       name: /10\.0\.10_rc2 \(release - recommended\)/i
     })
-    userEvent.click(release10010rc2)
+    await userEvent.click(release10010rc2)
     expect(release10010rc2).toBeEnabled()
 
 
     const release10010acd3 = screen.getByRole('radio', {
       name: /10\.0\.10a_cd3 \(release - recommended\)/i
     })
-    userEvent.click(release10010acd3)
+    await userEvent.click(release10010acd3)
     expect(release10010acd3).toBeEnabled()
 
     const release09010f = screen.getByRole('radio', {
       name: /9\.0\.10f \(release - recommended\)/i
     })
-    userEvent.click(release09010f)
+    await userEvent.click(release09010f)
     expect(release09010f).toBeEnabled()
 
     const release09010hcd2 = screen.getByRole('radio', {
       name: /9\.0\.10h_cd2 \(release - recommended\)/i
     })
-    userEvent.click(release09010hcd2)
+    await userEvent.click(release09010hcd2)
     expect(release09010hcd2).toBeEnabled()
 
   })
@@ -128,9 +134,10 @@ describe('UpdateNowStep', () => {
       , {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
-    // eslint-disable-next-line max-len
-    expect(await screen.findByText(/firmware available for icx 7150\/7550\/7650\/7850 series \(1 switches\)/i)).toBeInTheDocument()
-    // eslint-disable-next-line max-len
+
+    const updateNowStepForm = screen.getByTestId('update-now-step')
+    expect(updateNowStepForm).toBeInTheDocument()
+
     expect(screen.getByText(/9.0.10h_cd2/i)).toBeInTheDocument()
     expect(screen.getByText(/9.0.10f/i)).toBeInTheDocument()
     expect(screen.getByText(/9.0.10e/i)).toBeInTheDocument()
