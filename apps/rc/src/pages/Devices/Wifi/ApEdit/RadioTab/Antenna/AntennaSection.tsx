@@ -161,7 +161,7 @@ export function AntennaSection () {
       isUseVenueSettings={isUseVenueSettings}
       handleVenueSetting={handleVenueSetting} />
     <Row gutter={20}>
-      <Col span={8}>
+      <Col span={4}>
         <ApAntennaTypeSelector selectedApAntennaType={antennaType}
           readOnly={isUseVenueSettings}
           onAntennaTypeChanged={handleAntennaTypesChanged}

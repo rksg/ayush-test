@@ -3,9 +3,8 @@ import { useEffect } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
+import { Select }                                                               from '@acx-ui/components'
 import { ApAntennaTypeEnum, ApAntennaTypeSettings, VeuneApAntennaTypeSettings } from '@acx-ui/rc/utils'
-
-import { ReadOnlySelect } from './styledComponents'
 
 
 export type ApAntennaTypeSelectorProps = {
@@ -15,8 +14,7 @@ export type ApAntennaTypeSelectorProps = {
   onAntennaTypeChanged?: (antennaTypeModels: VeuneApAntennaTypeSettings | ApAntennaTypeEnum) => void
 }
 
-
-export function ApAntennaTypeSelector (props: ApAntennaTypeSelectorProps) {
+export const ApAntennaTypeSelector = (props: ApAntennaTypeSelectorProps) => {
   const { $t } = useIntl()
   const antennaTypeOptions = [
     { label: $t({ defaultMessage: 'Sector' }), value: ApAntennaTypeEnum.SECTOR },
@@ -48,7 +46,7 @@ export function ApAntennaTypeSelector (props: ApAntennaTypeSelectorProps) {
         form.setFieldsValue(modelData)
       }
     }
-  }, [selectedApAntennaType])
+  }, [form, model, selectedApAntennaType])
 
   const handleAntTypeChanged = (value: ApAntennaTypeEnum) => {
     const modelData = model? {
@@ -63,9 +61,10 @@ export function ApAntennaTypeSelector (props: ApAntennaTypeSelectorProps) {
     <Form.Item
       label={$t({ defaultMessage: 'Antenna Type' })}
       name={fieldName}>
-      <ReadOnlySelect options={antennaTypeOptions}
+      <Select options={antennaTypeOptions}
         bordered={!readOnly}
         showArrow={!readOnly}
+        style={readOnly? { pointerEvents: 'none' } : {}}
         className={readOnly? 'readOnly' : undefined}
         onChange={handleAntTypeChanged} />
     </Form.Item>

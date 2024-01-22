@@ -125,8 +125,8 @@ describe('AP Antenna Type Section', () => {
       </Provider>, { route: { params } })
 
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    await screen.findByText(/Test-Venue/)
-    await screen.findByText(/Customize/)
+    expect(await screen.findByText(/Test-Venue/)).toBeVisible()
+    expect(await screen.findByText(/Customize/)).toBeVisible()
 
     expect(await screen.findByText('Narrow')).toBeVisible()
   })
@@ -160,11 +160,17 @@ describe('AP Antenna Type Section', () => {
     await userEvent.click(await screen.findByRole('button', { name: /Customize/ } ))
 
     const antTypeCombobox = await screen.findByRole('combobox', { name: /Antenna Type/ })
-    //await waitFor(()=> expect(antTypeCombobox).toBeVisible())
+    expect(antTypeCombobox).toBeInTheDocument()
+
+    const narrow = screen.queryByText('Narrow')
+    expect(narrow).toBeVisible()
+    const sector = screen.queryByText('Sector')
+    expect(sector).not.toBeInTheDocument()
 
     await userEvent.click(antTypeCombobox)
     await userEvent.click(await screen.findByText('Sector'))
-    //expect(await screen.findByText('Sector')).toBeVisible()
+
+    await userEvent.click(await screen.findByRole('button', { name: /Use Venue Settings/ } ))
   })
 
 })
