@@ -131,9 +131,13 @@ export const poolData: SwitchDhcp = {
   subnetAddress: '10.1.2.0',
   subnetMask: '255.255.255.0',
   dhcpOptions: [{
-    seq: 4,
+    seq: 4, // Time Server
     type: DHCP_OPTION_TYPE.IP,
     value: '1.2.3.4'
+  }, {
+    seq: 122, // CCC
+    type: DHCP_OPTION_TYPE.HEX,
+    value: 'abc'
   }]
 }
 

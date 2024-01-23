@@ -85,7 +85,7 @@ export function DhcpOptionModal (props: {
   }, [props.currrentRecords, props.editRecord])
 
   useEffect(()=>{
-    form.resetFields()
+    props.open && form.resetFields()
     setOptionState(undefined)
     setValueValidator(undefined)
     setDirty(false)
@@ -122,6 +122,7 @@ export function DhcpOptionModal (props: {
 
   return (
     <Modal
+      data-testid='dhcp-option-modal'
       visible={props.open}
       maskClosable={false}
       onOk={()=>form.submit()}
