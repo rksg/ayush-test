@@ -108,7 +108,6 @@ describe('Edge venue firmware list', () => {
   })
 
   it('should update the firmware of selected venues', async () => {
-    const user = userEvent.setup()
     render(
       <Provider>
         <VenueFirmwareList />
@@ -117,14 +116,14 @@ describe('Edge venue firmware list', () => {
       })
 
     const row = await screen.findByRole('row', { name: /My-Venue1/i })
-    await user.click(within(row).getByRole('checkbox'))
+    await userEvent.click(within(row).getByRole('checkbox'))
 
     const updateButton = await screen.findByRole('button', { name: /Update Now/i })
-    await user.click(updateButton)
+    await userEvent.click(updateButton)
 
     const updateDialog = await screen.findByRole('dialog')
     const updateVenueButton = await within(updateDialog).findByText('Run Update')
-    await user.click(updateVenueButton)
+    await userEvent.click(updateVenueButton)
     await waitFor(() => expect(updateDialog).not.toBeVisible())
     await waitFor(() => expect(mockedUpdateNow).toBeCalledTimes(1))
   })
@@ -158,12 +157,12 @@ describe('Edge venue firmware list', () => {
     const row = await screen.findByRole('row', { name: /My-Venue1/i })
     await user.click(within(row).getByRole('checkbox'))
 
-    const updateButton = await screen.findByRole('button', { name: /Update Now/i })
+    const updateButton = screen.getByRole('button', { name: /Update Now/i })
     await user.click(updateButton)
 
     await screen.findByText('Active Device')
     const updateDialog = await screen.findByRole('dialog')
-    const cancelButton = await within(updateDialog).findByRole('button', { name: 'Cancel' })
+    const cancelButton = within(updateDialog).getByRole('button', { name: 'Cancel' })
     await user.click(cancelButton)
     await waitFor(() => expect(updateDialog).not.toBeVisible())
   })
@@ -180,7 +179,7 @@ describe('Edge venue firmware list', () => {
     const row = await screen.findByRole('row', { name: /My-Venue1/i })
     await user.click(within(row).getByRole('checkbox'))
 
-    const updateButton = await screen.findByRole('button', { name: /Change Update Schedule/i })
+    const updateButton = screen.getByRole('button', { name: /Change Update Schedule/i })
     await user.click(updateButton)
 
     const updateDialog = await screen.findByRole('dialog')
@@ -206,7 +205,7 @@ describe('Edge venue firmware list', () => {
     await user.click(updateButton)
 
     const updateDialog = await screen.findByRole('dialog')
-    const cancelButton = await within(updateDialog).findByRole('button', { name: 'Cancel' })
+    const cancelButton = within(updateDialog).getByRole('button', { name: 'Cancel' })
     await user.click(cancelButton)
     await waitFor(() => expect(updateDialog).not.toBeVisible())
   })
@@ -245,11 +244,11 @@ describe('Edge venue firmware list', () => {
     const row = await screen.findByRole('row', { name: /My-Venue1/i })
     await user.click(within(row).getByRole('checkbox'))
 
-    const skipButton = await screen.findByRole('button', { name: /Skip Update/i })
+    const skipButton = screen.getByRole('button', { name: /Skip Update/i })
     await user.click(skipButton)
 
     const skipDialog = await screen.findByRole('dialog')
-    const cancelButton = await within(skipDialog).findByRole('button', { name: 'Cancel' })
+    const cancelButton = within(skipDialog).getByRole('button', { name: 'Cancel' })
     await user.click(cancelButton)
     await waitFor(() => expect(skipDialog).not.toBeVisible())
   })
@@ -290,7 +289,7 @@ describe('Edge venue firmware list', () => {
     await user.click(await screen.findByRole('button', { name: /Preferences/i }))
 
     const preferenceDialog = await screen.findByRole('dialog')
-    const cancelButton = await within(preferenceDialog).findByRole('button', { name: 'Cancel' })
+    const cancelButton = within(preferenceDialog).getByRole('button', { name: 'Cancel' })
     await user.click(cancelButton)
     await waitFor(() => expect(preferenceDialog).not.toBeVisible())
   })
