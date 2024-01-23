@@ -12,7 +12,7 @@ export const AvailableUsersSelection = ({
   const { $t } = useIntl()
   const availableUsersQuery = useGetAvailableUsersQuery({} as unknown as void, {
     selectFromResult: ({ data, isLoading }) => ({
-      data: data?.map(({ swuId, userName }) => ({ value: swuId, label: userName })),
+      data: data?.map(({ swuId, userName }) => ({ value: swuId, label: userName, key: swuId })),
       isLoading
     })
   })
@@ -20,19 +20,17 @@ export const AvailableUsersSelection = ({
     <Loader states={[availableUsersQuery]}>
       <Select
         showSearch
-        style={{ width: 300 }}
+        style={{ width: 350 }}
         placeholder={$t({ defaultMessage: 'Search to Select' })}
-        optionFilterProp='children'
         filterOption={(input, option) =>
           ((option?.label as string).toLocaleLowerCase())
             .includes(input.toLocaleLowerCase())}
         filterSort={(optionA, optionB) =>
           ((optionA?.label as string))
             .toLowerCase()
-            .localeCompare(((optionB?.label as string))
-              .toLowerCase())
+            .localeCompare(((optionB?.label as string)).toLowerCase())
         }
-        options={availableUsersQuery?.data as unknown as { label: string, value: string }[]}
+        options={availableUsersQuery?.data as { label: string, value: string, key: string }[]}
         onChange={(_, option) => {
           const { label, value } = option as { label: string, value: string }
           onChange({ id: value, email: label })

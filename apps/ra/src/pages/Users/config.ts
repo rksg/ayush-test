@@ -37,10 +37,9 @@ export const drawerContentConfig: DrawerContentConfig = {
       component: ResourceGroupSelection,
       componentProps: ({
         selectedUser,
-        updatedUser,
         onChange
       }) => ({
-        selectedValue: updatedUser?.resourceGroupId || selectedUser?.resourceGroupId,
+        selectedValue: selectedUser?.resourceGroupId,
         onChange: (value: string) => onChange({ ...selectedUser, resourceGroupId: value })
       })
     },
@@ -48,8 +47,8 @@ export const drawerContentConfig: DrawerContentConfig = {
       name: 'role',
       labelKey: defineMessage({ defaultMessage: 'Role' }),
       component: RoleSelection,
-      componentProps: ({ selectedUser, updatedUser, onChange }) => ({
-        selectedValue: updatedUser?.role ?? selectedUser?.role,
+      componentProps: ({ selectedUser, onChange }) => ({
+        selectedValue: selectedUser?.role,
         onChange: (value: string) => onChange({ ...selectedUser, role: value })
       })
     }

@@ -16,7 +16,7 @@ export const RoleSelection = ({
   }
   return (
     <Select
-      style={{ width: 300 }}
+      style={{ width: 350 }}
       options={Object.keys(RaiRoles).map((role, i) => ({
         label: RaiRoles[role as keyof typeof RaiRoles],
         value: role,

@@ -10,8 +10,8 @@ import {
   useUpdateUserMutation,
   useAddUserMutation
 } from '@acx-ui/analytics/services'
-import { ManagedUser }                                           from '@acx-ui/analytics/utils'
-import { Drawer, PageHeader, Loader, StepsFormLegacy, Dropdown } from '@acx-ui/components'
+import { ManagedUser }                                                      from '@acx-ui/analytics/utils'
+import { Drawer, PageHeader, Loader, StepsFormLegacy, Dropdown, showToast } from '@acx-ui/components'
 
 import { drawerContentConfig } from './config'
 import { UsersTable }          from './Table'
@@ -52,23 +52,62 @@ const UserDrawer: React.FC<UserDrawerProps> = ({
   const { $t } = useIntl()
   const selectedUser = pick(selectedRow,['id', 'email', 'resourceGroupId', 'role'])
   const [ updatedUser, setUpdatedUser ] = useState(selectedUser)
+  const [ isLoading, setIsloading ] = useState(false)
   const [updateUser] = useUpdateUserMutation()
   const [addUser] = useAddUserMutation()
-  const handleSaveClick = () => {
+  const handleSaveClick = async () => {
+    setIsloading(true)
     if (type === 'edit') {
-      updateUser({
+      await updateUser({
         resourceGroupId: updatedUser.resourceGroupId!,
         userId: updatedUser.id!,
         role: updatedUser.role!
       })
+        .unwrap()
+        .then(() => {
+          setIsloading(false)
+          setUpdatedUser({})
+          toggleDrawer(false)
+          showToast({
+            type: 'success',
+            content: $t({ defaultMessage: 'User edited successfully' })
+          })
+        })
+        .catch((error) => {
+          setIsloading(false)
+          setUpdatedUser({})
+          toggleDrawer(false)
+          showToast({
+            type: 'error',
+            content: $t({ defaultMessage: 'Error: {error}' }, { error: error.data })
+          })
+        })
     } else {
-      addUser({
+      await addUser({
         resourceGroupId: updatedUser.resourceGroupId!,
         swuId: updatedUser.id!,
         role: updatedUser.role!
       })
+        .unwrap()
+        .then(() => {
+          setIsloading(false)
+          setUpdatedUser({})
+          toggleDrawer(false)
+          showToast({
+            type: 'success',
+            content: $t({ defaultMessage: 'User added successfully' })
+          })
+        })
+        .catch((error) => {
+          setIsloading(false)
+          setUpdatedUser({})
+          toggleDrawer(false)
+          showToast({
+            type: 'error',
+            content: $t({ defaultMessage: 'Error: {error}' }, { error: error.data })
+          })
+        })
     }
-    toggleDrawer(false)
   }
   const isUserDataValid = () => {
     if (type === 'create') {
@@ -79,8 +118,8 @@ const UserDrawer: React.FC<UserDrawerProps> = ({
   }
   const handleCancelClick = () => {
     toggleDrawer(false)
-    setUpdatedUser({})
   }
+
   const drawerFooter = (
     <div>
       <Button
@@ -100,30 +139,31 @@ const UserDrawer: React.FC<UserDrawerProps> = ({
       { defaultMessage: '{type} User' },
       { type: type === 'edit' ? 'Edit' : 'Create' }
     )}
-    onClose={() => toggleDrawer(false)}
+    onClose={handleCancelClick}
     footer={drawerFooter}
     width={400}
-  >
-    <StepsFormLegacy.StepForm>
-      {drawerContentConfig[type as 'edit' | 'create'].map((item) => (
-        <FormItem
-          key={item.name}
-          name={item.name}
-          labelKey={$t(item.labelKey)}
-          component={
-            <item.component
-              {...item.componentProps({
-                selectedUser,
-                updatedUser,
-                onChange: (updatedValue: object) => setUpdatedUser(
-                  { ...updatedUser, ...updatedValue }
-                )
-              })}
-            />
-          }
-        />
-      ))}
-    </StepsFormLegacy.StepForm>
+  ><Loader states={[{ isLoading }]}>
+      <StepsFormLegacy.StepForm>
+        {drawerContentConfig[type as 'edit' | 'create'].map((item) => (
+          <FormItem
+            key={item.name}
+            name={item.name}
+            labelKey={$t(item.labelKey)}
+            component={
+              <item.component
+                {...item.componentProps({
+                  selectedUser,
+                  updatedUser,
+                  onChange: (updatedValue: object) => setUpdatedUser(
+                    { ...updatedUser, ...updatedValue }
+                  )
+                })}
+              />
+            }
+          />
+        ))}
+      </StepsFormLegacy.StepForm>
+    </Loader>
   </Drawer>
 }
 const Users: React.FC = () => {

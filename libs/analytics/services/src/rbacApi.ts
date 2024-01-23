@@ -115,9 +115,6 @@ export const rbacApi = baseRbacApi.injectEndpoints({
             url: `/users/${userId}`,
             method: 'put',
             credentials: 'include',
-            // headers: {
-            //   'x-mlisa-user-id': userId
-            // },
             body: { resourceGroupId, role },
             responseHandler: 'text'
           }
@@ -131,14 +128,14 @@ export const rbacApi = baseRbacApi.injectEndpoints({
               url: '/users',
               method: 'post',
               credentials: 'include',
-              // headers: {
-              //   'x-mlisa-user-id': userId
-              // },
               body: { swuId, resourceGroupId, role },
               responseHandler: 'text'
             }
           },
-          invalidatesTags: [{ type: 'RBAC', id: 'GET_USERS' }]
+          invalidatesTags: [
+            { type: 'RBAC', id: 'GET_USERS' },
+            { type: 'RBAC', id: 'GET_AVAILABLE_USERS' }
+          ]
         })
   })
 })
