@@ -122,7 +122,10 @@ export function RadioSettingsForm (props:{
   return (
     <>
       { AFC_Featureflag && ApRadioTypeEnum.Radio6G === radioType &&
-        <FieldLabel width='180px' style={(context === 'ap' && LPIButtonText?.isAPOutdoor) ? { display: 'hidden' } : { display: 'flex' }}>
+        <FieldLabel width='180px'
+          // Hide the label when afcEnable is false or ap is outdoor under ap context
+          style={(context === 'ap' && LPIButtonText?.isAPOutdoor) || ((context === 'ap' && props.isAFCEnabled === false)) ?
+            { display: 'hidden' } : { display: 'flex' }}>
           <div style={{ float: 'left' }}>
             <p style={{ width: '180px' }}>{$t({ defaultMessage: 'Enable AFC:' })}</p>
           </div>
