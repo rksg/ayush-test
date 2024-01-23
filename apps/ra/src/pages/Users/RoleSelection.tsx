@@ -9,7 +9,7 @@ export const RoleSelection = ({
   onChange: (value: string) => void;
 }) => {
   const { $t } = useIntl()
-  const RaiRoles = {
+  const raiRoles = {
     'admin': $t({ defaultMessage: 'Admin' }),
     'report-only': $t({ defaultMessage: 'Report Only' }),
     'network-admin': $t({ defaultMessage: 'Network Admin' })
@@ -17,8 +17,8 @@ export const RoleSelection = ({
   return (
     <Select
       style={{ width: 350 }}
-      options={Object.keys(RaiRoles).map((role, i) => ({
-        label: RaiRoles[role as keyof typeof RaiRoles],
+      options={Object.keys(raiRoles).map((role, i) => ({
+        label: raiRoles[role as keyof typeof raiRoles],
         value: role,
         key: i
       }))}

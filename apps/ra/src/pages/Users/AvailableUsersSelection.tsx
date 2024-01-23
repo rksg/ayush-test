@@ -10,18 +10,13 @@ export const AvailableUsersSelection = ({
   onChange: CallableFunction
 }) => {
   const { $t } = useIntl()
-  const availableUsersQuery = useGetAvailableUsersQuery({} as unknown as void, {
-    selectFromResult: ({ data, isLoading }) => ({
-      data: data?.map(({ swuId, userName }) => ({ value: swuId, label: userName, key: swuId })),
-      isLoading
-    })
-  })
+  const availableUsersQuery = useGetAvailableUsersQuery()
   return (
     <Loader states={[availableUsersQuery]}>
       <Select
         showSearch
         style={{ width: 350 }}
-        placeholder={$t({ defaultMessage: 'Search to Select' })}
+        placeholder={$t({ defaultMessage: 'Search to select' })}
         filterOption={(input, option) =>
           ((option?.label as string).toLocaleLowerCase())
             .includes(input.toLocaleLowerCase())}
@@ -30,7 +25,9 @@ export const AvailableUsersSelection = ({
             .toLowerCase()
             .localeCompare(((optionB?.label as string)).toLowerCase())
         }
-        options={availableUsersQuery?.data as { label: string, value: string, key: string }[]}
+        options={availableUsersQuery.data
+          ?.map(({ swuId, userName }) => ({ value: swuId, label: userName, key: swuId }))
+        }
         onChange={(_, option) => {
           const { label, value } = option as { label: string, value: string }
           onChange({ id: value, email: label })
