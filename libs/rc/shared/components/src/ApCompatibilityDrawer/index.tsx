@@ -27,7 +27,8 @@ export enum InCompatibilityFeatures {
   AP_70 = 'WIFI7 302MHz',
   BETA_DPSK3 = 'DSAE',
   AP_NEIGHBORS = 'AP Neighbors',
-  BSS_COLORING = 'BSS Coloring'
+  BSS_COLORING = 'BSS Coloring',
+  QOS_MIRRORING = 'Qos Mirroring'
 }
 
 export enum ApCompatibilityQueryTypes {
@@ -48,7 +49,7 @@ export type ApCompatibilityToolTipProps = {
 }
 
 export function retrievedCompatibilitiesOptions (response?: ApCompatibilityResponse) {
-  const data = response?.compatibilities as ApCompatibility[]
+  const data = response?.apCompatibilities as ApCompatibility[]
   const compatibilitiesFilterOptions: { key: string; value: string; label: string; }[] = []
   if (data?.[0]) {
     const { incompatibleFeatures, incompatible } = data[0]
@@ -87,7 +88,7 @@ export function ApCompatibilityToolTip (props: ApCompatibilityToolTipProps) {
     title={
       <FormattedMessage
         defaultMessage={
-          '{title}<compatibilityToolTip></compatibilityToolTip>'
+          '{title}  <compatibilityToolTip></compatibilityToolTip>'
         }
         values={{
           title,
@@ -103,7 +104,7 @@ export function ApCompatibilityToolTip (props: ApCompatibilityToolTipProps) {
     }
     placement='right'>
     <QuestionMarkCircleOutlined
-      style={{ height: '18px', marginBottom: -3 }}
+      style={{ height: '16px', width: '16px', marginBottom: -3 }}
     />
   </Tooltip>)
 }
@@ -287,11 +288,16 @@ export function ApCompatibilityDrawer (props: ApCompatibilityDrawerProps) {
               incompatible: 0,
               total: 0
             } as ApCompatibility
-            return { compatibilities: [apCompatibility] } as ApCompatibilityResponse
+            return { apCompatibilities: [apCompatibility] } as ApCompatibilityResponse
           }
 
-          const apCompatibilitiesResponse = await getApCompatibilities()
-          setApCompatibilities(apCompatibilitiesResponse?.compatibilities)
+          try {
+            const apCompatibilitiesResponse = await getApCompatibilities()
+            setApCompatibilities(apCompatibilitiesResponse?.apCompatibilities)
+          } catch (e) {
+            // eslint-disable-next-line no-console
+            console.error('ApCompatibilityDrawer api error:', e)
+          }
           setIsInitializing(false)
         } catch (error) {
           console.log(error) // eslint-disable-line no-console

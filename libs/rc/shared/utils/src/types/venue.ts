@@ -914,7 +914,7 @@ export interface ApCompatibilityFeatureResponse {
 }
 
 export interface ApCompatibilityResponse {
-  compatibilities: ApCompatibility[]
+  apCompatibilities: ApCompatibility[]
 }
 
 export interface ApCompatibility {

@@ -1,7 +1,7 @@
 import { ApCompatibilityResponse, ApFeatureSet } from '@acx-ui/rc/utils'
 
 export const mockApCompatibilitiesVenue: ApCompatibilityResponse = {
-  compatibilities: [{
+  apCompatibilities: [{
     id: '8caa8f5e01494b5499fa156a6c565138',
     incompatibleFeatures: [ {
       featureName: 'EXAMPLE-FEATURE-1',
@@ -35,7 +35,7 @@ export const mockApCompatibilitiesVenue: ApCompatibilityResponse = {
 }
 
 export const mockApCompatibilitiesNetwork: ApCompatibilityResponse = {
-  compatibilities: [
+  apCompatibilities: [
     {
       id: 'c9d5f4c771c34ad2898f7078cebbb191',
       incompatibleFeatures: [ {

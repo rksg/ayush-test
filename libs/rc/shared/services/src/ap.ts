@@ -979,7 +979,7 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     getApFeatureSets: build.query<ApFeatureSet, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApFeatureSets, params)
+        const req = createHttpRequest(WifiUrlsInfo.getApFeatureSets, params, { ...ignoreErrorModal })
         return{
           ...req
         }

@@ -185,7 +185,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       const result:React.SetStateAction<APExtended[]> = []
       const apIdsToIncompatible:{ [key:string]: number } = {}
       if (tableQuery.data?.data) {
-        let apCompatibilitiesResponse:ApCompatibilityResponse = { compatibilities: [] }
+        let apCompatibilitiesResponse:ApCompatibilityResponse = { apCompatibilities: [] }
         let apCompatibilities:ApCompatibility[] = []
         let apIds:string[] = []
         if (enableApCompatibleCheck && showFeatureCompatibilitiy) {
@@ -204,7 +204,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
               }).unwrap()
             }
           }
-          apCompatibilities = apCompatibilitiesResponse.compatibilities
+          apCompatibilities = apCompatibilitiesResponse.apCompatibilities
         }
 
         if (apCompatibilities.length > 0) {

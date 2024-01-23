@@ -133,7 +133,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           }))
           venueIds.forEach((id:string, index:number) => {
             const allApCompatibilitiesResponse = allApCompatibilitiesQuery[index]?.data as ApCompatibilityResponse
-            const allApCompatibilitiesData = allApCompatibilitiesResponse?.compatibilities as ApCompatibility[]
+            const allApCompatibilitiesData = allApCompatibilitiesResponse?.apCompatibilities as ApCompatibility[]
             venueIdsToIncompatible[id] = allApCompatibilitiesData[0]?.incompatible ?? 0
           })
         } catch (e) {
@@ -456,7 +456,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     getApCompatibilitiesVenue: build.query<ApCompatibilityResponse, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApCompatibilitiesVenue, params)
+        const req = createHttpRequest(WifiUrlsInfo.getApCompatibilitiesVenue, params, { ...ignoreErrorModal })
         return{
           ...req,
           body: payload

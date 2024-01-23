@@ -70,7 +70,7 @@ export const list = {
 }
 
 export const networkVenueApCompatibilities = {
-  compatibilities: [
+  apCompatibilities: [
     {
       id: 'd7b1a9a350634115a92ee7b0f11c7e75',
       incompatibleFeatures: [ {

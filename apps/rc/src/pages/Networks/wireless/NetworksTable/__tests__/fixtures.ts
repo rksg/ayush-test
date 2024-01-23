@@ -140,7 +140,7 @@ export const networklist = {
 }
 
 export const networksApCompatibilities = {
-  compatibilities: [
+  apCompatibilities: [
     {
       id: 'c9d5f4c771c34ad2898f7078cebbb191',
       incompatibleFeatures: [ {

@@ -21,9 +21,10 @@ import {
   ApCompatibility,
   ApCompatibilityResponse
 } from '@acx-ui/rc/utils'
-import { baseNetworkApi }    from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { baseNetworkApi }                      from '@acx-ui/store'
+import { RequestPayload }                      from '@acx-ui/types'
+import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -75,7 +76,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           }))
           networkIds.forEach((id:string, index:number) => {
             const allApCompatibilitiesResponse = allApCompatibilitiesQuery[index]?.data as ApCompatibilityResponse
-            const allApCompatibilitiesData = allApCompatibilitiesResponse?.compatibilities as ApCompatibility[]
+            const allApCompatibilitiesData = allApCompatibilitiesResponse?.apCompatibilities as ApCompatibility[]
             networkIdsToIncompatible[id] = allApCompatibilitiesData[0]?.incompatible ?? 0
           })
         } catch (e) {
@@ -335,7 +336,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           }
           const apCompatibilitiesQuery = await fetchWithBQ(apCompatibilitiesReq)
           const apCompatibilitiesResponse = apCompatibilitiesQuery.data as ApCompatibilityResponse
-          const apCompatibilities = apCompatibilitiesResponse.compatibilities as ApCompatibility[]
+          const apCompatibilities = apCompatibilitiesResponse.apCompatibilities as ApCompatibility[]
           apCompatibilities.forEach((item:ApCompatibility) => {
             venueIdsToIncompatible[item.id] = item.incompatible
           })
@@ -393,7 +394,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           }
           const apCompatibilitiesQuery = await fetchWithBQ(apCompatibilitiesReq)
           const apCompatibilitiesResponse = apCompatibilitiesQuery.data as ApCompatibilityResponse
-          const apCompatibilities = apCompatibilitiesResponse.compatibilities as ApCompatibility[]
+          const apCompatibilities = apCompatibilitiesResponse.apCompatibilities as ApCompatibility[]
           apCompatibilities.forEach((item:ApCompatibility) => {
             networkIdsToIncompatible[item.id] = item.incompatible
           })
@@ -414,7 +415,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     getApCompatibilitiesNetwork: build.query<ApCompatibilityResponse, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApCompatibilitiesNetwork, params)
+        const req = createHttpRequest(WifiUrlsInfo.getApCompatibilitiesNetwork, params, { ...ignoreErrorModal })
         return{
           ...req,
           body: payload

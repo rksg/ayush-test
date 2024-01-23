@@ -71,7 +71,7 @@ export const venueDetailHeaderData = {
 }
 
 export const venueApCompatibilitiesData = {
-  compatibilities: [
+  apCompatibilities: [
     {
       id: '8caa8f5e01494b5499fa156a6c565138',
       incompatibleFeatures: [ {
@@ -617,7 +617,7 @@ export const venueNetworkList = {
 }
 
 export const venueNetworkApCompatibilitiesData = {
-  compatibilities: [
+  apCompatibilities: [
     {
       id: 'd556bb683e4248b7a911fdb40c307aa5',
       incompatibleFeatures: [ {
@@ -645,7 +645,7 @@ export const venueNetworkApCompatibilitiesData = {
 
 
 export const venuesApCompatibilitiesData = {
-  compatibilities: [
+  apCompatibilities: [
     {
       id: 'd556bb683e4248b7a911fdb40c307aa5',
       incompatibleFeatures: [ {
