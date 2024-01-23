@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useSearchPersonaListQuery }                                                               from '@acx-ui/rc/services'
+import { personaApi, useSearchPersonaListQuery }                                                   from '@acx-ui/rc/services'
 import { getServiceRoutePath, Persona, PersonaUrls, ServiceOperation, ServiceType, useTableQuery } from '@acx-ui/rc/utils'
-import { Provider }                                                                                from '@acx-ui/store'
+import { Provider, store }                                                                         from '@acx-ui/store'
 import { mockServer, render, renderHook, screen, waitFor, within }                                 from '@acx-ui/test-utils'
 import { RequestPayload }                                                                          from '@acx-ui/types'
 
@@ -25,6 +25,7 @@ describe('NetworkSegmentationDetailTableGroup - AssignedSegmentsTable', () => {
     oper: ServiceOperation.DETAIL
   })
   beforeEach(() => {
+    store.dispatch(personaApi.util.resetApiState())
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       serviceId: 'testServiceId'

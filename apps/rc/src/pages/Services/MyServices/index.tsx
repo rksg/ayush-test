@@ -2,7 +2,6 @@ import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, RadioCardCategory } from '@acx-ui/components'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }  from '@acx-ui/feature-toggle'
-import { useDpskNewConfigFlowParams }                              from '@acx-ui/rc/components'
 import {
   useGetDHCPProfileListViewModelQuery,
   useGetDhcpStatsQuery,
@@ -37,7 +36,6 @@ export default function MyServices () {
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
   const services = [
     {
@@ -93,7 +91,7 @@ export default function MyServices () {
     {
       type: ServiceType.DPSK,
       categories: [RadioCardCategory.WIFI],
-      tableQuery: useGetDpskListQuery({ params: dpskNewConfigFlowParams })
+      tableQuery: useGetDpskListQuery({})
     },
     {
       type: ServiceType.WIFI_CALLING,
