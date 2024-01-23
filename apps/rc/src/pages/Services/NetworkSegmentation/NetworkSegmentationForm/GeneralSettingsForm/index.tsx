@@ -37,18 +37,13 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
   const venueId = Form.useWatch('venueId', form)
   const {
     venueOptions = [],
-    venueMap = {} as { [key: string]: { switchCount: number } },
     isVenueOptionsLoading
   } = useVenuesListQuery(
     { payload: venueOptionsDefaultPayload }, {
       selectFromResult: ({ data, isLoading }) => {
         return {
           venueOptions: data?.data.map(item => ({ label: item.name, value: item.id })),
-          isVenueOptionsLoading: isLoading,
-          venueMap: data?.data.reduce((a, item) => ({
-            ...a,
-            [item.id]: { switchCount: item.switches ?? 0 }
-          }), {}) as { [key: string]: { switchCount: number } }
+          isVenueOptionsLoading: isLoading
         }
       }
     })
@@ -164,7 +159,7 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
       </Col>
       <PersonalIdentityPreparationListDrawer open={openDrawer}
         onClose={()=>setOpenDrawer(false)}
-        venueInfo={venueMap[venueId]} />
+      />
     </Row>
   )
 }

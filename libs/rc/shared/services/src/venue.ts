@@ -69,7 +69,8 @@ import {
   VenueClientAdmissionControl,
   RogueApLocation,
   ApManagementVlan,
-  ApCompatibility
+  ApCompatibility,
+  VeuneApAntennaTypeSettings
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -1343,6 +1344,33 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getVenueAntennaType: build.query< VeuneApAntennaTypeSettings[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getVenueAntennaType, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'ExternalAntenna', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg,
+            ['UpdateVenueAntennaType'], () => {
+              api.dispatch(venueApi.util.invalidateTags([{ type: 'ExternalAntenna', id: 'LIST' }]))
+            })
+        })
+      }
+    }),
+    updateVenueAntennaType: build.mutation< CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateVenueAntennaType, params)
+        return{
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'ExternalAntenna', id: 'LIST' }]
     })
   })
 })
@@ -1464,7 +1492,10 @@ export const {
   useUpdateVenueClientAdmissionControlMutation,
   useGetVenueApManagementVlanQuery,
   useLazyGetVenueApManagementVlanQuery,
-  useUpdateVenueApManagementVlanMutation
+  useUpdateVenueApManagementVlanMutation,
+  useGetVenueAntennaTypeQuery,
+  useLazyGetVenueAntennaTypeQuery,
+  useUpdateVenueAntennaTypeMutation
 } = venueApi
 
 

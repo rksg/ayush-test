@@ -9,13 +9,16 @@ import {
   Modal
 } from '@acx-ui/components'
 import {
+  EolApFirmware,
   FirmwareVenue,
   FirmwareVersion,
   UpdateNowRequest
 } from '@acx-ui/rc/utils'
 
 import {
-  getVersionLabel, isBetaFirmware
+  getApSequence,
+  getVersionLabel,
+  isBetaFirmware
 } from '../../FirmwareUtils'
 
 import * as UI from './styledComponents'
@@ -24,14 +27,13 @@ export interface DowngradeDialogProps {
   onCancel: () => void,
   onSubmit: (data: UpdateNowRequest[]) => void,
   data?: FirmwareVenue[],
-  venueAbf?: string,
   availableVersions?: FirmwareVersion[]
 }
 
 export function DowngradeDialog (props: DowngradeDialogProps) {
   const intl = useIntl()
   const [form] = useForm()
-  const { onSubmit, onCancel, data, venueAbf, availableVersions } = props
+  const { onSubmit, onCancel, data, availableVersions } = props
   const [selectedVersion, setSelectedVersion] = useState<string>('')
   const [selectedFirmware, setSelectedFirmware] = useState<FirmwareVersion>()
   const [unSupportedModels, setUnSupportedModels] = useState<string[]>()
@@ -81,20 +83,19 @@ export function DowngradeDialog (props: DowngradeDialogProps) {
     if (fw && fw.length > 0) {
       setSelectedFirmware(fw[0])
       let unSupportedModels: string[] = []
-      if (venueAbf === 'active') {
-        if (data && data[0] && data[0].apModels) {
-          for (let model of data[0].apModels) {
-            if (!fw[0].supportedApModels?.includes(model)) {
-              unSupportedModels.push(model)
-            }
+      if (data && data[0] && data[0].apModels) {
+        for (let model of data[0].apModels) {
+          if (!fw[0].supportedApModels?.includes(model)) {
+            unSupportedModels.push(model)
           }
         }
-      } else {
-        if (data && data[0] && data[0].eolApFirmwares) {
-          const venueActive = data[0].eolApFirmwares.find((fw) => fw.name === venueAbf)
-          if (venueActive) {
-            for (let model of venueActive.apModels) {
-              if (!fw[0].supportedApModels?.includes(model)) {
+      }
+      if (data && data[0] && data[0].eolApFirmwares) {
+        const downgradeEolFirmwares = getDowngradeEolFirmware(data[0])
+        if (downgradeEolFirmwares && downgradeEolFirmwares.length > 0) {
+          for (let eolFirmware of downgradeEolFirmwares) {
+            for (let model of eolFirmware.apModels) {
+              if (!fw[0].supportedApModels?.includes(model) && !unSupportedModels.includes(model)) {
                 unSupportedModels.push(model)
               }
             }
@@ -228,3 +229,10 @@ export function DowngradeDialog (props: DowngradeDialogProps) {
     </Modal>
   )
 }
+
+function getDowngradeEolFirmware (venue: FirmwareVenue): EolApFirmware[] {
+  const eolApFirmwares = venue.eolApFirmwares || []
+  const currentSequence = getApSequence(venue) ?? 0
+  return eolApFirmwares.filter(eol => eol.sequence as number >= currentSequence)
+}
+

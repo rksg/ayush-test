@@ -8,6 +8,7 @@ import {
   WanConnectionEnum
 } from '../constants'
 import {
+  ApAntennaTypeEnum,
   BandBalancing,
   BandModeEnum,
   DenialOfServiceProtection,
@@ -251,6 +252,11 @@ export interface VenueLed {
 export interface VenueApModelBandModeSettings {
 	model: string,
 	bandMode: BandModeEnum
+}
+
+export type VeuneApAntennaTypeSettings = {
+	model: string
+	antennaType: ApAntennaTypeEnum
 }
 
 export interface VenueBssColoring {
