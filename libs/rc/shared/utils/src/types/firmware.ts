@@ -146,6 +146,7 @@ export interface EolApFirmware {
   apCount: string;
   apModels: string[];
   isAbfGreaterThanVenueCurrentAbf: boolean;
+  sequence?: number;
 }
 
 export interface FirmwareVenue {
@@ -167,6 +168,7 @@ export interface FirmwareVenueVersion {
   version: string;
   category?: FirmwareCategory;
   type: FirmwareType;
+  sequence?: number;
 }
 
 export interface Schedule {
