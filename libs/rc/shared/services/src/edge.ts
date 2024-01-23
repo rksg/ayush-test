@@ -815,5 +815,9 @@ export const {
   useGetEdgeClusterListForTableQuery,
   useGetEdgeClusterListQuery,
   useAddEdgeClusterMutation,
-  useDeleteEdgeClusterMutation
+  useDeleteEdgeClusterMutation,
+  useLazyGetEdgePortsStatusListQuery,
+  useLazyGetEdgeSubInterfacesStatusListQuery,
+  useLazyGetEdgeLagsStatusListQuery,
+  useLazyGetEdgeLagSubInterfacesStatusListQuery
 } = edgeApi

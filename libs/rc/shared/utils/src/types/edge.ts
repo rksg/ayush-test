@@ -127,6 +127,7 @@ export interface EdgePortStatus {
   vlan: string
   subnet: string
   interfaceName?: string
+  serialNumber?: string
 }
 
 export interface EdgeStatusSeverityStatistic {

@@ -1,9 +1,12 @@
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { PageHeader, Tabs }                from '@acx-ui/components'
-import { CommonOperation, Device, getUrl } from '@acx-ui/rc/utils'
-import { useTenantLink }                   from '@acx-ui/react-router-dom'
+import { PageHeader, Tabs }                   from '@acx-ui/components'
+import { useGetEdgeClusterListForTableQuery } from '@acx-ui/rc/services'
+import { CommonOperation, Device, getUrl }    from '@acx-ui/rc/utils'
+import { useTenantLink }                      from '@acx-ui/react-router-dom'
+
+import { VirtualIp } from './VirtualIp'
 
 const EditEdgeCluster = () => {
   const { $t } = useIntl()
@@ -14,6 +17,15 @@ const EditEdgeCluster = () => {
     oper: CommonOperation.Edit,
     params: { id: clusterId }
   }))
+  const { currentCluster } = useGetEdgeClusterListForTableQuery({ payload: {
+    filters: { clusterId: [clusterId], isCluster: [true] }
+  } },{
+    selectFromResult: ({ data }) => {
+      return {
+        currentCluster: data?.data[0]
+      }
+    }
+  })
 
   const tabs = {
     'cluster-details': {
@@ -22,7 +34,7 @@ const EditEdgeCluster = () => {
     },
     'virtual-ip': {
       title: $t({ defaultMessage: 'Virtual IP' }),
-      content: <div children={'virtual-ip'} />
+      content: <VirtualIp currentCluster={currentCluster} />
     },
     'cluster-interface': {
       title: $t({ defaultMessage: 'Cluster Interface' }),
@@ -44,7 +56,7 @@ const EditEdgeCluster = () => {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Configure {name}' }, { name: '' })}
+        title={$t({ defaultMessage: 'Configure {name}' }, { name: currentCluster?.name })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices/edge' }
         ]}
