@@ -217,7 +217,7 @@ describe('RecommendationActions', () => {
     const inputs = await screen.findAllByPlaceholderText('Select date')
     expect(inputs[0]).toHaveValue('2023-11-17')
   })
-  it('should future schedule when first revert', async () => {
+  it('shows future schedule for first revert', async () => {
     const metadata = {
       scheduledAt: '2023-11-17T11:15:00.000Z'
     }
