@@ -4,7 +4,7 @@ import { defaultSort, getUserProfile, ManagedUser, sortProp } from '@acx-ui/anal
 import { Table, TableProps }                                  from '@acx-ui/components'
 import { getIntl, noDataDisplay }                             from '@acx-ui/utils'
 
-export type DisplayUser = ManagedUser & {
+type DisplayUser = ManagedUser & {
   displayInvitationState: string
   displayInvitor: string
   displayRole: string
@@ -125,6 +125,7 @@ export const UsersTable = ({ data }: { data?: ManagedUser[] }) => {
   ]
   return <Table<DisplayUser>
     rowKey={'id'}
+    settingsId='users-table'
     columns={columns}
     dataSource={users}
   />
