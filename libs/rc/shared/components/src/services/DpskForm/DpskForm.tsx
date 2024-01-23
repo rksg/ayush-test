@@ -9,7 +9,6 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useCreateDpskMutation,
   useGetDpskListQuery,
@@ -34,8 +33,6 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { useDpskNewConfigFlowParams } from '../useDpskNewConfigFlowParams'
-
 import DpskSettingsForm                                               from './DpskSettingsForm'
 import { transferFormFieldsToSaveData, transferSaveDataToFormFields } from './parser'
 
@@ -54,17 +51,14 @@ export function DpskForm (props: DpskFormProps) {
   const { editMode = false, modalMode = false, modalCallBack } = props
 
   const idAfterCreatedRef = useRef<string>()
-  const isNewConfigFlow = useIsSplitOn(Features.DPSK_NEW_CONFIG_FLOW_TOGGLE)
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
-  const { data: dpskList } = useGetDpskListQuery({ params: dpskNewConfigFlowParams },
-    { skip: !isModalModeForNewConfigFlow() })
+  const { data: dpskList } = useGetDpskListQuery({}, { skip: !isModalMode() })
   const [ createDpsk ] = useCreateDpskMutation()
   const [ updateDpsk ] = useUpdateDpskMutation()
   const {
     data: dataFromServer,
     isLoading,
     isFetching
-  } = useGetDpskQuery({ params: { ...params, ...dpskNewConfigFlowParams } }, { skip: !editMode })
+  } = useGetDpskQuery({ params: { ...params } }, { skip: !editMode })
   const formRef = useRef<StepsFormLegacyInstance<CreateDpskFormFields>>()
   const initialValues: Partial<CreateDpskFormFields> = {
     passphraseFormat: PassphraseFormatEnum.MOST_SECURED,
@@ -72,8 +66,8 @@ export function DpskForm (props: DpskFormProps) {
     deviceNumberType: DeviceNumberType.UNLIMITED
   }
 
-  function isModalModeForNewConfigFlow (): boolean {
-    return modalMode && isNewConfigFlow && !editMode
+  function isModalMode (): boolean {
+    return modalMode && !editMode
   }
 
   useEffect(() => {
@@ -101,22 +95,17 @@ export function DpskForm (props: DpskFormProps) {
     try {
       if (editMode) {
         result = await updateDpsk({
-          params: { ...params, ...dpskNewConfigFlowParams },
+          params: { ...params },
           payload: _.omit(dpskSaveData, 'id')
         }).unwrap()
       } else {
         result = await createDpsk({
-          params: dpskNewConfigFlowParams,
           payload: dpskSaveData
         }).unwrap()
       }
 
       if (modalMode) {
-        if (isNewConfigFlow) {
-          idAfterCreatedRef.current = (result as DpskNewFlowMutationResult).id
-        } else {
-          modalCallBack?.(result as DpskSaveData)
-        }
+        idAfterCreatedRef.current = (result as DpskNewFlowMutationResult).id
       } else {
         navigate(linkToServices, { replace: true })
       }

@@ -10,7 +10,6 @@ import {
   MacRegistrationPoolLink,
   NetworkSegmentationLink,
   VenueLink,
-  useDpskNewConfigFlowParams,
   PersonaGroupDrawer,
   BasePersonaTable
 } from '@acx-ui/rc/components'
@@ -77,7 +76,6 @@ function PersonaGroupDetails () {
   const detailsQuery = useGetPersonaGroupByIdQuery({
     params: { groupId: personaGroupId }
   })
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
   useEffect(() => {
     if (detailsQuery.isLoading) return
@@ -95,7 +93,7 @@ function PersonaGroupDetails () {
     }
 
     if (dpskPoolId) {
-      getDpskPoolById({ params: { serviceId: dpskPoolId, ...dpskNewConfigFlowParams } })
+      getDpskPoolById({ params: { serviceId: dpskPoolId } })
         .then(result => {
           if (result.data) {
             setDpskPoolDisplay({ id: dpskPoolId, name: result.data.name })

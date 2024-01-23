@@ -646,7 +646,7 @@ export function RadioSettings () {
       return
     }
 
-    console.info('[RadioSettings] currentApBandModeData = ', currentApBandModeData) // eslint-disable-line no-console
+    //console.info('[RadioSettings] currentApBandModeData = ', currentApBandModeData) // eslint-disable-line no-console
 
     if (isSupportDual5GAp) {
       const isDual5gEnabled = (getCurrentBandMode() === BandModeEnum.DUAL)
