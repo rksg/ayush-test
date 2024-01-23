@@ -16,15 +16,13 @@ export function ExternalAntennaForm (props:{
   apiSelectedApExternalAntenna: ExternalAntenna
   selectedApExternalAntenna: ExternalAntenna
   readOnly: boolean
+  onExternalAntennaChanged: (apModels: { [index: string]: ExternalAntenna }) => void
 }
 ) {
   const { $t } = useIntl()
   const ANTENNA_TOOLTIP = $t({ defaultMessage: 'Please input in as specified in your antenna data sheet' })
-  const { model, selectedApExternalAntenna, apiSelectedApExternalAntenna, readOnly } = props
-  const { editContextData,
-    setEditContextData,
-    editRadioContextData,
-    setEditRadioContextData } = useContext(VenueEditContext)
+  const { model, selectedApExternalAntenna, apiSelectedApExternalAntenna, readOnly, onExternalAntennaChanged } = props
+  const { editRadioContextData } = useContext(VenueEditContext)
   const form = Form.useFormInstance()
   const [
     coupled,
@@ -76,27 +74,11 @@ export function ExternalAntennaForm (props:{
   }, [selectedApExternalAntenna])
 
   const onChangeGain = (field:string, value: number) => {
-    const updateState= {
+    const currentExtAnt= {
       ...formSettings.currentExtAnt,
       [field]: value
     }
-    setFormSettings({
-      ...formSettings,
-      currentExtAnt: updateState
-    })
-    setEditRadioContextData({
-      ...editRadioContextData,
-      apModels: {
-        ...editRadioContextData.apModels,
-        [model]: updateState
-      }
-    })
-    setEditContextData({
-      ...editContextData,
-      unsavedTabKey: 'radio',
-      tabTitle: $t({ defaultMessage: 'Radio' }),
-      isDirty: true
-    })
+    updateExternalAntennaData(currentExtAnt)
   }
 
   const checkIsSingleToggleAndEnable = (extAnt: ExternalAntenna) => {
@@ -132,8 +114,10 @@ export function ExternalAntennaForm (props:{
   }
 
   const changeEnable = (channel: string, checked: boolean) => {
+    //if (!apiSelectedApExternalAntenna || !selectedApExternalAntenna) return
+
     const controlName = []
-    const currentExtAnt = { ...formSettings.currentExtAnt }
+    let currentExtAnt = { ...formSettings.currentExtAnt }
     switch (channel) {
       case '24G' :
         controlName.push('enable24G')
@@ -158,71 +142,54 @@ export function ExternalAntennaForm (props:{
     }
 
     if (!checked) {
-      resetCurrentExternalAntennaGain(channel, currentExtAnt)
-    } else {
-      setFormSettings({
-        ...formSettings,
-        currentExtAnt
-      })
-      setEditRadioContextData({
-        ...editRadioContextData,
-        apModels: {
-          ...editRadioContextData.apModels,
-          [model]: currentExtAnt
-        }
-      })
-      setEditContextData({
-        ...editContextData,
-        unsavedTabKey: 'radio',
-        tabTitle: $t({ defaultMessage: 'Radio' }),
-        isDirty: true
-      })
+      currentExtAnt = resetCurrentExternalAntennaGain(channel, currentExtAnt)
     }
+
+    updateExternalAntennaData(currentExtAnt)
   }
 
   const resetCurrentExternalAntennaGain = (channel: string, tempCurrentExtAnt:ExternalAntenna) => {
     const currentExtAnt = { ...tempCurrentExtAnt }
+    const { gain24G, gain50G } = apiSelectedApExternalAntenna!
+
     switch (channel) {
       case '24G' :
-        form.setFieldValue(['external', 'apModel', model, 'gain24G'], apiSelectedApExternalAntenna.gain24G)
-        if (apiSelectedApExternalAntenna.gain24G !== null) { // valid
-          currentExtAnt.gain24G = apiSelectedApExternalAntenna.gain24G
+        form.setFieldValue(['external', 'apModel', model, 'gain24G'], gain24G)
+        if (gain24G !== null) { // valid
+          currentExtAnt.gain24G = gain24G
         }
         break
       case '50G':
-        form.setFieldValue(['external', 'apModel', model, 'gain50G'], apiSelectedApExternalAntenna.gain50G)
-        if (apiSelectedApExternalAntenna.gain50G !== null) {
-          currentExtAnt.gain50G = apiSelectedApExternalAntenna.gain50G
+        form.setFieldValue(['external', 'apModel', model, 'gain50G'], gain50G)
+        if (gain50G !== null) {
+          currentExtAnt.gain50G = gain50G
         }
         break
       case 'both':
-        if (selectedApExternalAntenna.gain24G !== undefined) {
-          form.setFieldValue(['external', 'apModel', model, 'gain24G'], apiSelectedApExternalAntenna.gain24G)
-          currentExtAnt.gain24G = apiSelectedApExternalAntenna.gain24G
+        if (selectedApExternalAntenna!.gain24G !== undefined) {
+          form.setFieldValue(['external', 'apModel', model, 'gain24G'], gain24G)
+          currentExtAnt.gain24G = gain24G
         }
-        if (selectedApExternalAntenna.gain50G !== undefined) {
-          form.setFieldValue(['external', 'apModel', model, 'gain50G'], apiSelectedApExternalAntenna.gain50G)
-          currentExtAnt.gain50G = apiSelectedApExternalAntenna.gain50G
+        if (selectedApExternalAntenna!.gain50G !== undefined) {
+          form.setFieldValue(['external', 'apModel', model, 'gain50G'], gain50G)
+          currentExtAnt.gain50G = gain50G
         }
         break
     }
+    return currentExtAnt
+  }
+
+  const updateExternalAntennaData = (currentExtAnt: ExternalAntenna) => {
     setFormSettings({
       ...formSettings,
       currentExtAnt
     })
-    setEditRadioContextData({
-      ...editRadioContextData,
-      apModels: {
-        ...editRadioContextData.apModels,
-        [model]: currentExtAnt
-      }
-    })
-    setEditContextData({
-      ...editContextData,
-      unsavedTabKey: 'radio',
-      tabTitle: $t({ defaultMessage: 'Radio' }),
-      isDirty: true
-    })
+
+    const apModels = {
+      ...editRadioContextData.apModels,
+      [model]: currentExtAnt
+    }
+    onExternalAntennaChanged?.(apModels)
   }
 
   return (
