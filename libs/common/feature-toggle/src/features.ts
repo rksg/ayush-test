@@ -168,7 +168,9 @@ interface BetaList {
 // This is Mandatory for Beta features list...
 // When every we add a TierFeatures enum value above we need it's related
 // description details and status value - true/false to show/hide
-// from displaying in UI drawer component BetaFeaturesDrawer
+// from displaying in UI drawer component BetaFeaturesDrawer.
+// If we don't have a description blurb and 
+// don't want it to be displayed then add status = false
 export const BetaListDetails:BetaList[] = [
   { key: TierFeatures.BETA_DPSK3, description: defineMessage({ defaultMessage: 'DPSK3: Dynamic Preshared Keys working with WPA3-DSAE. Users connect their devices to a WPA2/WPA3 network with DPSK and are automatically moved to the WPA3 WLAN, allowing DPSK operation with WiFi 6e or WiFi7. DPSK3 allows the customer to take advantage of the flexibility of DPSK with the security of WPA3.' }), status: true },
   { key: TierFeatures.AP_70, description: defineMessage({ defaultMessage: 'AP-70: Wi-Fi 7 - Wi-Fi 7 UI configuration available for early adopters and customers provided with advance units of the R770. Contact your reseller for more information on availability of the new R770!' }), status: true },
