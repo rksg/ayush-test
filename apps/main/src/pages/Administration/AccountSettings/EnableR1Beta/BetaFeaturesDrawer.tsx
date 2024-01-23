@@ -29,10 +29,8 @@ function BetaFeaturesDrawer (
   const showBetaList = betaListFeatureIds.length > 0
   if (showBetaList && betaList) {
     Object.keys(betaList).forEach(k => {
-      if (betaList[Number(k)].status) {
-        betaList[Number(k)].status =
-          (betaListFeatureIds.includes(betaList[Number(k)].key))? true : false
-      }
+      betaList[Number(k)].status = betaList[Number(k)].status &&
+          betaListFeatureIds.includes(betaList[Number(k)].key)
     })
   }
 
