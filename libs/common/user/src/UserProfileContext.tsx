@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react'
 
-import { RolesEnum }                     from '@acx-ui/types'
-import { useTenantId, useLocaleContext } from '@acx-ui/utils'
+import { RolesEnum }   from '@acx-ui/types'
+import { getTenantId } from '@acx-ui/utils'
 
 import {
   useAllowedOperationsQuery,
@@ -14,6 +14,7 @@ import { setUserProfile, hasRoles, hasAccess } from './userProfile'
 
 export interface UserProfileContextProps {
   data: UserProfile | undefined
+  isUserProfileLoading: boolean
   allowedOperations: string[]
   hasRole: typeof hasRoles
   hasAccess: typeof hasAccess
@@ -30,19 +31,23 @@ export const UserProfileContext = createContext<UserProfileContextProps>({} as U
 export const useUserProfileContext = () => useContext(UserProfileContext)
 
 export function UserProfileProvider (props: React.PropsWithChildren) {
-  const locale = useLocaleContext()
-  const tenantId = useTenantId()
-  const { data: profile } = useGetUserProfileQuery({ params: { tenantId } }, {
+  // const locale = useLocaleContext()
+  const tenantId = getTenantId()
+  const {
+    data: profile,
+    isLoading: isUserProfileLoading,
+    isFetching: isUserProfileFetching
+  } = useGetUserProfileQuery({ params: { tenantId } }, {
     // 401 will show error on UI, so locale needs to be loaded first
-    skip: !Boolean(locale.messages)
+    // skip: !Boolean(locale.messages)
   })
   const { data: allowedOperations } = useAllowedOperationsQuery(tenantId!,
     { skip: !Boolean(profile) })
   const { data: beta } = useGetBetaStatusQuery({ params: { tenantId } },
-    { skip: !Boolean(locale.messages) })
+    { skip: !Boolean(profile) })
   const betaEnabled = (beta?.enabled === 'true')? true : false
   const { data: accTierResponse } = useGetAccountTierQuery({ params: { tenantId } },
-    { skip: !Boolean(locale.messages) })
+    { skip: !Boolean(profile) })
   const accountTier = accTierResponse?.acx_account_tier
   if (allowedOperations && accountTier) setUserProfile({ profile: profile!,
     allowedOperations, accountTier, betaEnabled })
@@ -50,6 +55,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   return <UserProfileContext.Provider
     value={{
       data: profile,
+      isUserProfileLoading: isUserProfileLoading || isUserProfileFetching,
       allowedOperations: allowedOperations || [],
       hasRole,
       isPrimeAdmin,
