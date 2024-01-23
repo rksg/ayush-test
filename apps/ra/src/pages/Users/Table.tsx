@@ -109,7 +109,6 @@ export const UsersTable = (
     const actionButtons = [
       {
         type: 'refresh',
-        action: () => {},
         icon: (
           <Tooltip
             placement='top'
@@ -129,7 +128,6 @@ export const UsersTable = (
       },
       {
         type: 'edit',
-        action: () => {},
         icon: (
           <Tooltip
             placement='top'
@@ -161,7 +159,6 @@ export const UsersTable = (
       },
       {
         type: 'delete',
-        action: () => {},
         icon: (
           <Tooltip
             placement='top'

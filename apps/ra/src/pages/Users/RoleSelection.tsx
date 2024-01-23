@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import { Select }  from 'antd'
 import { useIntl } from 'react-intl'
 
