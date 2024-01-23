@@ -1,14 +1,13 @@
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Form, Select, Space } from 'antd'
-import { useForm, useWatch }   from 'antd/lib/form/Form'
 import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
 
 import { Loader, Table, TableProps }                                from '@acx-ui/components'
 import { AddEdgeDhcpServiceModal }                                  from '@acx-ui/rc/components'
-import { useGetEdgeDhcpListQuery, usePatchEdgeDhcpServiceMutation } from '@acx-ui/rc/services'
+import { useGetEdgeDhcpListQuery } from '@acx-ui/rc/services'
 import { EdgeDhcpPool, EdgeDhcpSetting }                            from '@acx-ui/rc/utils'
 
 interface EdgeDhcpSelectionFormProps {
@@ -20,8 +19,8 @@ export const EdgeDhcpSelectionForm = (props: EdgeDhcpSelectionFormProps) => {
 
   const { hasNsg } = props
   const { $t } = useIntl()
-  const [form] = useForm()
-  const dhcpId = useWatch('dhcpId', form)
+
+  const [dhcpId, setDhcpId] = useState<string | null>(props.inUseService)
   const params = useParams()
   const {
     data: edgeDhcpData,
@@ -41,11 +40,14 @@ export const EdgeDhcpSelectionForm = (props: EdgeDhcpSelectionFormProps) => {
         }
       }
     })
-  const [patchEdgeDhcpService] = usePatchEdgeDhcpServiceMutation()
 
   useEffect(() => {
-    form.setFieldValue('dhcpId', props.inUseService)
+    setDhcpId(props.inUseService)
   }, [props.inUseService])
+
+  const handleDhcpServiceChange = (value: string | null) => {
+    setDhcpId(value)
+  }
 
   const columns: TableProps<EdgeDhcpPool>['columns'] = [
     {
@@ -73,62 +75,48 @@ export const EdgeDhcpSelectionForm = (props: EdgeDhcpSelectionFormProps) => {
     }
   ]
 
-  const handleFinish = async () => {
-    const pathParams = { id: dhcpId }
-    const payload = { edgeIds: [...edgeDhcpData[dhcpId].edgeIds, params.serialNumber] }
-    await patchEdgeDhcpService({ params: pathParams, payload }).unwrap()
-  }
-
   const content = <>
-    <Form
-      form={form}
-      onFinish={handleFinish}
-      layout='vertical'
-    >
-      <Form.Item label={$t({ defaultMessage: 'DHCP Service' })}>
-        <Space>
-          <Form.Item
-            name='dhcpId'
-            rules={[
-              {
-                required: true,
-                message: $t({ defaultMessage: 'Please select a DHCP Service' })
-              }
+    <Form.Item label={$t({ defaultMessage: 'DHCP Service' })}>
+      <Space>
+        <Form.Item
+          name='dhcpId'
+          rules={[
+            {
+              required: true,
+              message: $t({ defaultMessage: 'Please select a DHCP Service' })
+            }
+          ]}
+          noStyle
+          initialValue={null}
+        >
+          <Select
+            style={{ width: '200px' }}
+            options={[
+              { label: $t({ defaultMessage: 'Select...' }), value: null },
+              ...(edgeDhcpOptions || [])
             ]}
-            noStyle
-            initialValue={null}
-          >
-            <Select
-              style={{ width: '200px' }}
-              options={[
-                { label: $t({ defaultMessage: 'Select...' }), value: null },
-                ...(edgeDhcpOptions || [])
-              ]}
-              loading={isEdgeDhcpDataFetching}
-              disabled={hasNsg}
-            />
-          </Form.Item>
-          <AddEdgeDhcpServiceModal />
-        </Space>
-      </Form.Item>
-    </Form>
+            loading={isEdgeDhcpDataFetching}
+            disabled={hasNsg}
+            onChange={handleDhcpServiceChange}
+          />
+        </Form.Item>
+        <AddEdgeDhcpServiceModal />
+      </Space>
+    </Form.Item>
     <Loader states={[
       { isFetching: isEdgeDhcpDataFetching, isLoading: false }
     ]}>
+      {dhcpId &&
       <Table
         rowKey='id'
         type='form'
         columns={columns}
         dataSource={edgeDhcpData && edgeDhcpData[dhcpId]?.dhcpPools}
-      />
+      />}
     </Loader>
   </>
 
-  return (
-    <>
-    {content}
-    </>
-  )
+  return content
 }
 
 export default EdgeDhcpSelectionForm

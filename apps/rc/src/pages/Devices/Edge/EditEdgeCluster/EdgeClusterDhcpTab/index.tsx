@@ -64,9 +64,10 @@ const EdgeClusterDhcpTab = () => {
 
   const handleApplyDhcp = async () => {
     console.log('selected dhcp id=' + form.getFieldValue('dhcpId'))
-    // const pathParams = { id: poolTableQuery.data?.data[0]?.dhcpId || null }
-    // const payload = { edgeIds: [...edgeDhcpData[dhcpId].edgeIds, clusterId] }
-    // await patchEdgeDhcpService({ params: pathParams, payload }).unwrap()
+    const dhcpId = form.getFieldValue('dhcpId') || null
+    const pathParams = { id: dhcpId }
+    const payload = { edgeIds: [...edgeDhcpData[dhcpId].edgeIds, clusterId] }
+    await patchEdgeDhcpService({ params: pathParams, payload }).unwrap()
   }
 
   const handleActiveSwitch = (checked: boolean) => {

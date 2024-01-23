@@ -384,8 +384,7 @@ export function EmbeddedReport (props: ReportProps) {
         hideTitle: hideHeader ?? true
       },
       // debug: true, // Enable this for debugging
-      authToken: jwtToken ? `Bearer ${jwtToken}` : undefined,
-      locale // i18n locale from R1
+      authToken: jwtToken ? `Bearer ${jwtToken}` : undefined
     })
     embeddedObj.then(async (embObj) => {
       timer = setInterval(async () => {
