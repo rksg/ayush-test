@@ -9,8 +9,9 @@ import { QuestionMarkCircleOutlined }             from '@acx-ui/icons'
 import { redirectPreviousPage }                   from '@acx-ui/rc/utils'
 import { useTenantLink }                          from '@acx-ui/react-router-dom'
 
-import { ApEditContext } from '..'
+import { ApDataContext, ApEditContext } from '..'
 
+import { AntennaSection }                 from './Antenna/AntennaSection'
 import { ClientAdmissionControlSettings } from './ClientAdmissionControlSettings/ClientAdmissionControlSettings'
 import { RadioSettings }                  from './RadioSettings/RadioSettings'
 
@@ -23,6 +24,10 @@ export interface ApRadioContext {
 
   updateExternalAntenna?: (data?: unknown) => void | Promise<void>
   discardExternalAntennaChanges?: (data?: unknown) => void | Promise<void>
+
+  updateApAntennaType?: (data?: unknown) => void | Promise<void>
+  discardApAntennaTypeChanges?: (data?: unknown) => void | Promise<void>
+
 }
 
 export function RadioTab () {
@@ -39,16 +44,18 @@ export function RadioTab () {
     setEditRadioContextData
   } = useContext(ApEditContext)
 
+  const { apCapabilities } = useContext(ApDataContext)
 
+  const isAntTypeAP = (apCapabilities?.supportAntennaType) === true
   // waiting for the feature is implemented and useing feature flag to control
   const supportClientAdmissionControl = useIsSplitOn(Features.WIFI_FR_6029_FG6_2_TOGGLE)
-
-  const supportExternalAntenna = false
+  const supportAntTypeSelection = useIsSplitOn(Features.WIFI_ANTENNA_TYPE_TOGGLE) && isAntTypeAP
+  const supportAntenna = supportAntTypeSelection
 
   const wifiRadioLink = $t({ defaultMessage: 'Wi-Fi Radio' })
   const wifiRadioTitle = $t({ defaultMessage: 'Wi-Fi Radio Settings' })
   const clientAdmissionCtlTitle = $t({ defaultMessage: 'Client Admission Control' })
-  const externalTitle = $t({ defaultMessage: 'External Antenna' })
+  const antennaTitle = $t({ defaultMessage: 'Antenna' })
 
   const anchorItems = [{
     title: wifiRadioLink,
@@ -81,16 +88,16 @@ export function RadioTab () {
       </>
     )
   }]: []),
-  ...(supportExternalAntenna? [{
-    title: externalTitle,
+  ...(supportAntenna? [{
+    title: antennaTitle,
     content: (
       <>
-        <StepsFormLegacy.SectionTitle id='external-antenna'>
-          { externalTitle }
+        <StepsFormLegacy.SectionTitle id='antenna'>
+          { antennaTitle }
         </StepsFormLegacy.SectionTitle>
-        {/*
-          <ExternalAntennaSection />
-        */}
+        {
+          <AntennaSection />
+        }
       </>
     )
   }]: [])
@@ -110,7 +117,9 @@ export function RadioTab () {
       delete newData.updateClientAdmissionControl
       delete newData.discardClientAdmissionControlChanges
       delete newData.updateExternalAntenna
-      delete newData.discardWifiRadioChanges
+      delete newData.discardExternalAntennaChanges
+      delete newData.updateApAntennaType
+      delete newData.discardApAntennaTypeChanges
 
       setEditRadioContextData(newData)
     }
@@ -121,6 +130,7 @@ export function RadioTab () {
       await editRadioContextData.updateWifiRadio?.()
       await editRadioContextData.updateClientAdmissionControl?.()
       await editRadioContextData.updateExternalAntenna?.()
+      await editRadioContextData.updateApAntennaType?.()
 
       resetEditContextData()
 
@@ -139,6 +149,8 @@ export function RadioTab () {
     try {
       await editRadioContextData.discardWifiRadioChanges?.()
       await editRadioContextData.discardClientAdmissionControlChanges?.()
+      await editRadioContextData.discardExternalAntennaChanges?.()
+      await editRadioContextData.discardApAntennaTypeChanges?.()
 
       resetEditContextData()
 

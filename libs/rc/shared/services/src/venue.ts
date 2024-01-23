@@ -69,7 +69,8 @@ import {
   VenueClientAdmissionControl,
   RogueApLocation,
   ApManagementVlan,
-  ApCompatibility
+  ApCompatibility,
+  VeuneApAntennaTypeSettings
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -1349,12 +1350,39 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const req = createHttpRequest(
           PropertyUrlsInfo.bulkUpdateUnitProfile,
           params)
-        return {
+        return{
           ...req,
           body: payload
         }
       },
       invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
+    }),
+    getVenueAntennaType: build.query< VeuneApAntennaTypeSettings[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getVenueAntennaType, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'ExternalAntenna', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg,
+            ['UpdateVenueAntennaType'], () => {
+              api.dispatch(venueApi.util.invalidateTags([{ type: 'ExternalAntenna', id: 'LIST' }]))
+            })
+        })
+      }
+    }),
+    updateVenueAntennaType: build.mutation< CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateVenueAntennaType, params)
+        return{
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'ExternalAntenna', id: 'LIST' }]
     })
   })
 })
@@ -1475,9 +1503,12 @@ export const {
   useLazyGetVenueClientAdmissionControlQuery,
   useUpdateVenueClientAdmissionControlMutation,
   useGetVenueApManagementVlanQuery,
-  useUpdateVenueApManagementVlanMutation,
   useBulkUpdateUnitProfileMutation,
-  useLazyGetVenueApManagementVlanQuery
+  useLazyGetVenueApManagementVlanQuery,
+  useUpdateVenueApManagementVlanMutation,
+  useGetVenueAntennaTypeQuery,
+  useLazyGetVenueAntennaTypeQuery,
+  useUpdateVenueAntennaTypeMutation
 } = venueApi
 
 
