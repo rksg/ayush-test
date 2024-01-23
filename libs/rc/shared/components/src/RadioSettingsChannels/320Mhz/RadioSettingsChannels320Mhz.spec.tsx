@@ -50,7 +50,7 @@ describe('RadioSettingsChannels320Mhz', () => {
     expect(screen.queryByTestId('160-checkbox-111')).not.toBeInTheDocument()
     expect(screen.queryByTestId('160-checkbox-143')).not.toBeInTheDocument()
     expect(screen.queryByTestId('160-checkbox-175')).not.toBeInTheDocument()
-    expect(screen.queryByTestId('160-checkbox-205')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('160-checkbox-207')).not.toBeInTheDocument()
   })
 
   it('should render correctly with correctly click 320 channel group', async () => {
