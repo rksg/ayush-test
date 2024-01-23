@@ -125,6 +125,7 @@ export const UsersTable = ({ data }: { data?: ManagedUser[] }) => {
   ]
   return <Table<DisplayUser>
     rowKey={'id'}
+    settingsId='users-table'
     columns={columns}
     dataSource={users}
   />
