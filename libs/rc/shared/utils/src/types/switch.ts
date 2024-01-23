@@ -148,6 +148,7 @@ export interface VeViewModel {
   ingressAclName?: string
   egressAclName?: string
   name?: string
+  connectedVe?: boolean
   dhcpRelayAgent?: string
   defaultVlan: boolean
   deviceStatus: SwitchStatusEnum

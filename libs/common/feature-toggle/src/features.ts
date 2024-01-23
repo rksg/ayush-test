@@ -31,7 +31,6 @@ export enum Features {
   DELETE_SOLO = 'ap-delete-with-solo-image-toggle',
   DEVICE_AGNOSTIC = 'entitlement-device-agnostic-sku-toggle',
   DIRECTED_MULTICAST = 'wifi-consumer-directed-multicast-toggle',
-  DPSK_NEW_CONFIG_FLOW_TOGGLE = 'dpsk-new-auth-flow-toggle',
   DPSK_PER_BOUND_PASSPHRASE_ALLOWED_DEVICE_INCREASED_LIMIT = 'dpsk-per-bound-passphrase-allowed-device-increased-limit',
   EDGE_LAG = 'acx-ui-edges-lag-toggle',
   EDGES_DHCP_CSV_TOGGLE = 'acx-ui-edges-dhcp-csv-toggle',
@@ -151,7 +150,8 @@ export enum Features {
   WPA3_80211R = 'wifi-eda-wpa3-80211r-toggle',
   ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
   EDGE_HA_TOGGLE = 'edge-ha-toggle',
-  WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE = 'wifi-eda-branch-level-supported-models-toggle'
+  WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE = 'wifi-eda-branch-level-supported-models-toggle',
+  RUCKUS_AI_USERS_TOGGLE = 'ruckus-ai-sso-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

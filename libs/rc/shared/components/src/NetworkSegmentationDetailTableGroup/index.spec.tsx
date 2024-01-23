@@ -1,11 +1,17 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { apApi, nsgApi, personaApi }                            from '@acx-ui/rc/services'
 import { CommonUrlsInfo, NetworkSegmentationUrls, PersonaUrls } from '@acx-ui/rc/utils'
-import { Provider }                                             from '@acx-ui/store'
+import { Provider, store }                                      from '@acx-ui/store'
 import { mockServer, render, screen }                           from '@acx-ui/test-utils'
 
-import { mockedApList, mockedNsgData, mockedNsgStatsList, mockedNsgSwitchInfoData, mockedPersonaList, replacePagination } from './__tests__/fixtures'
+import { mockedApList,
+  mockedNsgData,
+  mockedNsgStatsList,
+  mockedNsgSwitchInfoData,
+  mockedPersonaList,
+  replacePagination } from './__tests__/fixtures'
 
 import { NetworkSegmentationDetailTableGroup } from '.'
 
@@ -25,6 +31,10 @@ jest.mock('./AccessSwitchTable', () => ({
 describe('NetworkSegmentationDetailTableGroup', () => {
 
   beforeEach(() => {
+    store.dispatch(nsgApi.util.resetApiState())
+    store.dispatch(personaApi.util.resetApiState())
+    store.dispatch(apApi.util.resetApiState())
+
     mockServer.use(
       rest.get(
         NetworkSegmentationUrls.getNetworkSegmentationGroupById.url,

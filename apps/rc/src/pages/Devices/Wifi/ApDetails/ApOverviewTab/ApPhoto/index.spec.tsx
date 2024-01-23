@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom'
+import userEvent  from '@testing-library/user-event'
 import { Upload } from 'antd'
 import { rest }   from 'msw'
 
@@ -86,30 +87,30 @@ describe('ApPhoto', () => {
     render(<Provider><ApPhoto /></Provider>)
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const dot1 = await screen.findByTestId('dot1')
-    fireEvent.click(dot1)
+    await userEvent.click(dot1)
     const image1 = await screen.findByTestId('image1')
     fireEvent.doubleClick(image1)
     const zoomIn = await screen.findByTestId('image-zoom-in')
-    fireEvent.click(zoomIn)
+    await userEvent.click(zoomIn)
     const zoomOut = await screen.findByTestId('image-zoom-out')
-    fireEvent.click(zoomOut)
+    await userEvent.click(zoomOut)
     const zoomSlider = await screen.findByRole('slider')
     zoomSlider.focus()
     fireEvent.keyPress(zoomSlider, { key: 'Right', code: 39, charCode: 39 })
     const applyButton = await screen.findByRole('button', { name: 'Apply' })
     expect(applyButton).toBeVisible()
-    fireEvent.click(applyButton)
+    await userEvent.click(applyButton)
   })
   it('should delete image correctly', async () => {
     apViewModel.data[0].model = ''
     render(<Provider><ApPhoto /></Provider>)
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const dot1 = await screen.findByTestId('dot1')
-    fireEvent.click(dot1)
+    await userEvent.click(dot1)
     const image1 = await screen.findByTestId('image1')
     fireEvent.doubleClick(image1)
     const deleteBtn = await screen.findByTestId('delete')
-    fireEvent.click(deleteBtn)
+    await userEvent.click(deleteBtn)
   })
   it('should render default image correctly', async () => {
     apViewModel.data[0].model = 'R650'
@@ -122,7 +123,7 @@ describe('ApPhoto', () => {
     render(<Provider><ApPhoto /></Provider>)
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const gallery = await screen.findByTestId('gallery')
-    fireEvent.click(gallery)
+    await userEvent.click(gallery)
   })
   it('should upload photo correctly', async () => {
     const { asFragment } = render(<Provider><ApPhoto /></Provider>)

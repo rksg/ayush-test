@@ -34,12 +34,6 @@ jest.mock('@acx-ui/utils', () => ({
   />,
   useLocaleContext: () => ({ messages: { 'en-US': { lang: 'Language' } } })
 }))
-jest.mock('./BrowserDialog/BrowserDialog', () => ({
-  detectBrowserLang: jest.fn(),
-  isNonProdEnv: jest.fn(),
-  showBrowserLangDialog: jest.fn(),
-  updateUserProfile: jest.fn()
-}))
 
 const renderPendo = jest.mocked(require('@acx-ui/utils').renderPendo)
 

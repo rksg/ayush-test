@@ -13,16 +13,13 @@ import {
   transformAdvancedDpskExpirationText
 } from '@acx-ui/rc/utils'
 
-import { useDpskNewConfigFlowParams } from '../../services/useDpskNewConfigFlowParams'
-
 export function DpskSummaryForm (props: {
   summaryData: NetworkSaveData;
 }) {
   const { summaryData } = props
   const intl = useIntl()
   const $t = intl.$t
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
-  const { data: dpskList } = useGetDpskListQuery({ params: dpskNewConfigFlowParams })
+  const { data: dpskList } = useGetDpskListQuery({})
   const [ selectedDpsk, setSelectedDpsk ] = useState<DpskSaveData>()
 
   useEffect(() => {

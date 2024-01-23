@@ -1,11 +1,12 @@
 /* eslint-disable max-len */
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { administrationApi }      from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }               from '@acx-ui/store'
+import { Provider, store }        from '@acx-ui/store'
 import {
-  fireEvent,
   mockServer,
   render,
   screen,
@@ -39,13 +40,7 @@ jest.mock('./RecipientDialog', () => ({
   }
 }))
 const services = require('@acx-ui/msp/services')
-jest.mock('@acx-ui/msp/services', () => ({
-  ...jest.requireActual('@acx-ui/msp/services')
-}))
 const mspUtils = require('@acx-ui/msp/utils')
-jest.mock('@acx-ui/msp/utils', () => ({
-  ...jest.requireActual('@acx-ui/msp/utils')
-}))
 
 jest.mock('./AINotificationDrawer', () => ({
   AINotificationDrawer: () => <div data-testid='AIDrawer'>AI Notification Drawer</div>
@@ -60,6 +55,8 @@ describe('Notification List', () => {
     }
     services.useGetMspProfileQuery = jest.fn().mockReturnValue({ data: {} })
     services.useGetMspAggregationsQuery = jest.fn().mockReturnValue({ data: {} })
+
+    store.dispatch(administrationApi.util.resetApiState())
 
     mockServer.use(
       rest.get(
@@ -96,8 +93,8 @@ describe('Notification List', () => {
         route: { params }
       })
     const row = await screen.findByRole('row', { name: /testUser 1/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
-    fireEvent.click(screen.getByRole('button', { name: 'Edit' }))
+    await userEvent.click(within(row).getByRole('checkbox'))
+    await userEvent.click(screen.getByRole('button', { name: 'Edit' }))
     expect(await screen.findByTestId('rc-RecipientDialog')).toBeVisible()
   })
 
@@ -109,7 +106,7 @@ describe('Notification List', () => {
         route: { params }
       })
 
-    fireEvent.click(screen.getByRole('button', { name: 'Add Recipient' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add Recipient' }))
     expect(await screen.findByTestId('rc-RecipientDialog')).toBeVisible()
   })
 
@@ -121,8 +118,8 @@ describe('Notification List', () => {
         route: { params }
       })
     const row = await screen.findAllByRole('row', { name: /testUser/i })
-    fireEvent.click(within(row[0]).getByRole('checkbox'))
-    fireEvent.click(within(row[1]).getByRole('checkbox'))
+    await userEvent.click(within(row[0]).getByRole('checkbox'))
+    await userEvent.click(within(row[1]).getByRole('checkbox'))
     expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
   })
 
@@ -134,11 +131,11 @@ describe('Notification List', () => {
         route: { params }
       })
     const row = await screen.findByRole('row', { name: /testUser 1/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
-    fireEvent.click(screen.getByRole('button', { name: 'Delete' }))
+    await userEvent.click(within(row).getByRole('checkbox'))
+    await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
     await screen.findByText('Delete "testUser 1"?')
     const okBtn = screen.getByRole('button', { name: 'Delete Recipients' })
-    fireEvent.click(okBtn)
+    await userEvent.click(okBtn)
     await waitFor(() => {
       expect(okBtn).not.toBeVisible()
     })
@@ -154,12 +151,12 @@ describe('Notification List', () => {
 
     const row1 = await screen.findByRole('row', { name: /testUser 1/i })
     const row2 = await screen.findByRole('row', { name: /testUser 2/i })
-    fireEvent.click(within(row1).getByRole('checkbox'))
-    fireEvent.click(within(row2).getByRole('checkbox'))
-    fireEvent.click(screen.getByRole('button', { name: 'Delete' }))
+    await userEvent.click(within(row1).getByRole('checkbox'))
+    await userEvent.click(within(row2).getByRole('checkbox'))
+    await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
     await screen.findByText('Delete "2 Recipients"?')
     const okBtn = screen.getByRole('button', { name: 'Delete Recipients' })
-    fireEvent.click(okBtn)
+    await userEvent.click(okBtn)
     await waitFor(() => {
       expect(okBtn).not.toBeVisible()
     })
@@ -194,7 +191,7 @@ describe('Notification List', () => {
     await waitFor(() => {
       expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
     })
-    fireEvent.click(screen.getByRole('button', { name: 'Preference' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Preference' }))
     expect(await screen.findByRole('dialog')).toBeVisible()
   })
 
@@ -210,7 +207,7 @@ describe('Notification List', () => {
     await waitFor(() => {
       expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
     })
-    fireEvent.click(screen.getByRole('button', { name: 'AI Notifications' }))
+    await userEvent.click(screen.getByRole('button', { name: 'AI Notifications' }))
     expect(await screen.findByTestId('AIDrawer')).toBeVisible()
   })
 })

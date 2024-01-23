@@ -284,8 +284,8 @@ describe('Firmware Venues Table', () => {
     const updateNowDialog = await screen.findByRole('dialog')
 
     // Verify that the active ABF's AP models displayed are accurate
-    expect(await within(updateNowDialog)
-      .findByText(/available firmware for Wi-Fi 6 AP \(R550\)/i)).toBeVisible()
+    // eslint-disable-next-line max-len
+    expect(await within(updateNowDialog).findByText(/available firmware for Wi-Fi 6 AP \(R550\)/i)).toBeVisible()
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Update Now' })).toBeNull())

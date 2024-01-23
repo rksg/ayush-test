@@ -218,7 +218,7 @@ export function NetworkDetailForm () {
           children={<TextArea rows={4} maxLength={64} />}
         />
         <Form.Item>
-          {( !editMode && !cloneMode && !modalMode ) &&
+          {( !editMode && !cloneMode && (!modalMode || (modalMode && !createType)) ) &&
             <Form.Item
               name='type'
               label={intl.$t({ defaultMessage: 'Network Type' })}
@@ -246,7 +246,7 @@ export function NetworkDetailForm () {
               </>
             </Form.Item>
           }
-          {modalMode &&
+          {modalMode && createType &&
             <Form.Item name='type' label='Network Type'>
               <>
                 <h4 className='ant-typography'>

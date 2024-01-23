@@ -10,7 +10,7 @@ import {
   TableColumn
 } from '@acx-ui/components'
 import { Features, useIsTierAllowed }                                                               from '@acx-ui/feature-toggle'
-import { SimpleListTooltip, useDpskNewConfigFlowParams }                                            from '@acx-ui/rc/components'
+import { SimpleListTooltip }                                                                        from '@acx-ui/rc/components'
 import { doProfileDelete, useDeleteDpskMutation, useGetEnhancedDpskListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -46,13 +46,12 @@ export default function DpskTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteDpsk ] = useDeleteDpskMutation()
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedDpskListQuery,
     defaultPayload,
     search: defaultSearch,
-    apiParams: dpskNewConfigFlowParams
+    apiParams: {}
   })
 
   const doDelete = (selectedRow: DpskSaveData, callback: () => void) => {
@@ -65,7 +64,7 @@ export default function DpskTable () {
         { fieldName: 'networkIds', fieldText: intl.$t({ defaultMessage: 'Network' }) }
       ],
       async () => deleteDpsk({
-        params: { serviceId: selectedRow.id, ...dpskNewConfigFlowParams }
+        params: { serviceId: selectedRow.id }
       }).then(callback)
     )
   }

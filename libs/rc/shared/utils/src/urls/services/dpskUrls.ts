@@ -22,9 +22,6 @@ export const NewDpskPassphraseBaseUrlWithId = NewDpskPassphraseBaseUrl + '/:pass
 
 export const NewDpskPassphraseDevices = NewDpskPassphraseBaseUrlWithId + '/devices'
 
-const DpskNewFlowPassphraseDevicesUrl = '/v2' + NewDpskPassphraseDevices
-
-
 const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
 
 export const DpskUrls: { [key: string]: ApiInfo } = {
@@ -90,8 +87,8 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
   },
   uploadPassphrases: {
     method: 'post',
-    url: NewDpskPassphraseBaseUrl,
-    oldUrl: DpskPassphraseBaseUrl,
+    url: NewDpskPassphraseBaseUrl + '/csvFiles',
+    oldUrl: DpskPassphraseBaseUrl + '/csvFiles',
     newApi: true
   },
   deletePassphrase: {
@@ -108,7 +105,7 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
   },
   exportNewFlowPassphrases: {
     method: 'post',
-    url: '/v2' + NewDpskPassphraseBaseUrl + '?timezone=:timezone&date-format=:dateFormat',
+    url: NewDpskPassphraseBaseUrl + '/query/csvFiles?timezone=:timezone&date-format=:dateFormat',
     newApi: true
   },
   revokePassphrases: {
@@ -118,51 +115,26 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getPassphraseClient: {
-    method: 'post',
-    url: '/dpskpassphrases/client',
-    newApi: true
-  },
-  getNewFlowPassphraseClient: {
     method: 'get',
-    url: '/v2/dpskServices/client?mac=:mac&networkId=:networkId',
+    url: NewDpskBaseUrl + '/client?mac=:mac&networkId=:networkId',
     newApi: true
   },
   getPassphraseDevices: {
     method: 'get',
-    url: NewDpskPassphraseDevices + '?tenantId=:tenantId',
-    oldUrl: DpskPassphraseDevices + '?tenantId=:tenantId',
+    url: NewDpskPassphraseDevices,
+    oldUrl: DpskPassphraseDevices,
     newApi: true
   },
   updatePassphraseDevices: {
-    method: 'PATCH',
-    url: NewDpskPassphraseDevices + '?tenantId=:tenantId',
-    oldUrl: DpskPassphraseDevices + '?tenantId=:tenantId',
+    method: 'post',
+    url: NewDpskPassphraseDevices,
+    oldUrl: DpskPassphraseDevices,
     newApi: true
   },
   deletePassphraseDevices: {
     method: 'delete',
-    url: NewDpskPassphraseDevices + '?tenantId=:tenantId',
-    oldUrl: DpskPassphraseDevices + '?tenantId=:tenantId',
-    newApi: true
-  },
-  getNewFlowPassphraseDevices: {
-    method: 'get',
-    url: DpskNewFlowPassphraseDevicesUrl,
-    newApi: true
-  },
-  updateNewFlowPassphraseDevices: {
-    method: 'post',
-    url: DpskNewFlowPassphraseDevicesUrl,
-    newApi: true
-  },
-  deleteNewFlowPassphraseDevices: {
-    method: 'delete',
-    url: DpskNewFlowPassphraseDevicesUrl,
+    url: NewDpskPassphraseDevices,
+    oldUrl: DpskPassphraseDevices,
     newApi: true
   }
-}
-
-
-export function convertDpskNewFlowUrl (url: string): string {
-  return '/v2' + url
 }

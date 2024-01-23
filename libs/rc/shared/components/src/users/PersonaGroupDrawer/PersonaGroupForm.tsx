@@ -8,9 +8,8 @@ import { Button, Modal, ModalType, Subtitle }                                   
 import { useGetDpskListQuery, useLazySearchPersonaGroupListQuery, useMacRegListsQuery } from '@acx-ui/rc/services'
 import { DpskSaveData, PersonaGroup, checkObjectNotExists, trailingNorLeadingSpaces }   from '@acx-ui/rc/utils'
 
-import { MacRegistrationListForm }    from '../../policies/MacRegistrationListForm'
-import { useDpskNewConfigFlowParams } from '../../services'
-import { DpskForm }                   from '../../services/DpskForm/DpskForm'
+import { MacRegistrationListForm } from '../../policies/MacRegistrationListForm'
+import { DpskForm }                from '../../services/DpskForm/DpskForm'
 
 export function PersonaGroupForm (props: {
   form: FormInstance,
@@ -20,11 +19,10 @@ export function PersonaGroupForm (props: {
   const { form, defaultValue } = props
   const [macModalVisible, setMacModalVisible] = useState(false)
   const [dpskModalVisible, setDpskModalVisible] = useState(false)
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
   const onMacModalClose = () => setMacModalVisible(false)
   const onDpskModalClose = () => setDpskModalVisible(false)
 
-  const dpskPoolList = useGetDpskListQuery({ params: dpskNewConfigFlowParams })
+  const dpskPoolList = useGetDpskListQuery({})
 
   const { data: macRegistrationPoolList } = useMacRegListsQuery({
     payload: { sortField: 'name', sortOrder: 'ASC', page: 1, pageSize: 10000 }

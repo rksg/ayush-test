@@ -37,6 +37,7 @@ import Edges                                        from './pages/Devices/Edge'
 import AddEdge                                      from './pages/Devices/Edge/AddEdge'
 import EdgeDetails                                  from './pages/Devices/Edge/EdgeDetails'
 import EditEdge                                     from './pages/Devices/Edge/EdgeDetails/EditEdge'
+import EditEdgeCluster                              from './pages/Devices/Edge/EditEdgeCluster'
 import { SwitchList, SwitchTabsEnum }               from './pages/Devices/Switch'
 import { StackForm }                                from './pages/Devices/Switch/StackForm'
 import SwitchDetails                                from './pages/Devices/Switch/SwitchDetails'
@@ -104,6 +105,7 @@ import EdgeSdLanDetail                      from './pages/Services/EdgeSdLan/Edg
 import EdgeSdLanTable                       from './pages/Services/EdgeSdLan/EdgeSdLanTable'
 import EditEdgeSdLan                        from './pages/Services/EdgeSdLan/EditEdgeSdLan'
 import AddEdgeSdLanP2                       from './pages/Services/EdgeSdLanP2/AddEdgeSdLan'
+import EditEdgeSdLanP2                      from './pages/Services/EdgeSdLanP2/EditEdgeSdLan'
 import MdnsProxyDetail                      from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm                        from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import MdnsProxyTable                       from './pages/Services/MdnsProxy/MdnsProxyTable/MdnsProxyTable'
@@ -204,6 +206,8 @@ function DeviceRoutes () {
         element={<EdgeDetails />} />
       <Route path='devices/edge/:serialNumber/details/:activeTab/:activeSubTab'
         element={<EdgeDetails />} />
+      <Route path='devices/edge/cluster/:clusterId/edit/:activeTab'
+        element={<EditEdgeCluster />} />
       <Route path='devices/switch' element={<SwitchList tab={SwitchTabsEnum.LIST} />} />
       <Route path='devices/switch/reports/wired'
         element={<SwitchList tab={SwitchTabsEnum.WIRED_REPORT} />} />
@@ -292,11 +296,17 @@ const edgeSdLanRoutes = () => {
 }
 
 const edgeSdLanPhase2Routes = () => {
-  return <Route
+  return <><Route
     path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN_P2,
       oper: ServiceOperation.CREATE })}
     element={<AddEdgeSdLanP2 />}
   />
+  <Route
+    path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN_P2,
+      oper: ServiceOperation.EDIT })}
+    element={<EditEdgeSdLanP2 />}
+  />
+  </>
 }
 
 

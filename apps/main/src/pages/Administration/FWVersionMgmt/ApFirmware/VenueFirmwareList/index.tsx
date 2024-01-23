@@ -216,6 +216,7 @@ const VenueFirmwareTable = () => {
   const [upgradeVersions, setUpgradeVersions] = useState<FirmwareVersion[]>([])
   const [changeUpgradeVersions, setChangeUpgradeVersions] = useState<FirmwareVersion[]>([])
   const [revertVersions, setRevertVersions] = useState<FirmwareVersion[]>([])
+  const [venueActiveAbf, setVenueActiveAbf] = useState('')
   const [venueActiveSeq, setVenueActiveSeq] = useState(0)
   const { canUpdateEolApFirmware } = useApEolFirmware()
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
@@ -444,9 +445,11 @@ const VenueFirmwareTable = () => {
           })
           if (downgradeVersions) {
             let isLegacy = false
+            let venueAbf = ''
             let venueSequence = 0
             for (let i = 0; i < downgradeVersions.length; i++) {
               if (compareVersions(downgradeVersions[i].id, version) === 0) {
+                venueAbf = downgradeVersions[i].abf
                 venueSequence = downgradeVersions[i].sequence as number
               }
               if (compareVersions(downgradeVersions[i].id, version) < 0) {
@@ -474,6 +477,7 @@ const VenueFirmwareTable = () => {
             } else {
               filterVersions = tmpVersions
             }
+            setVenueActiveAbf(venueAbf)
             setVenueActiveSeq(venueSequence)
           }
         } else {
@@ -525,6 +529,7 @@ const VenueFirmwareTable = () => {
       />}
       {revertModelVisible && <RevertDialogSwitcher
         data={venues}
+        venueAbf={venueActiveAbf}
         availableVersions={revertVersions}
         onCancel={handleRevertModalCancel}
         onSubmit={handleDowngradeModalSubmit}
@@ -581,6 +586,7 @@ interface RevertDialogSwitcherProps {
   onCancel: () => void,
   onSubmit: (data: UpdateNowRequest[]) => void,
   data?: FirmwareVenue[],
+  venueAbf?: string,
   availableVersions?: FirmwareVersion[]
 }
 

@@ -24,13 +24,14 @@ export interface DowngradeDialogProps {
   onCancel: () => void,
   onSubmit: (data: UpdateNowRequest[]) => void,
   data?: FirmwareVenue[],
+  venueAbf?: string,
   availableVersions?: FirmwareVersion[]
 }
 
 export function DowngradeDialog (props: DowngradeDialogProps) {
   const intl = useIntl()
   const [form] = useForm()
-  const { onSubmit, onCancel, data, availableVersions } = props
+  const { onSubmit, onCancel, data, venueAbf, availableVersions } = props
   const [selectedVersion, setSelectedVersion] = useState<string>('')
   const [selectedFirmware, setSelectedFirmware] = useState<FirmwareVersion>()
   const [unSupportedModels, setUnSupportedModels] = useState<string[]>()
@@ -79,15 +80,28 @@ export function DowngradeDialog (props: DowngradeDialogProps) {
     const fw = availableVersions?.filter((abfVersion: FirmwareVersion) => abfVersion.id === selectedVersion)
     if (fw && fw.length > 0) {
       setSelectedFirmware(fw[0])
-      if (data && data[0] && data[0].apModels) {
-        let unSupportedModels: string[] = []
-        for (let model of data[0].apModels) {
-          if (!fw[0].supportedApModels?.includes(model)) {
-            unSupportedModels.push(model)
+      let unSupportedModels: string[] = []
+      if (venueAbf === 'active') {
+        if (data && data[0] && data[0].apModels) {
+          for (let model of data[0].apModels) {
+            if (!fw[0].supportedApModels?.includes(model)) {
+              unSupportedModels.push(model)
+            }
           }
         }
-        setUnSupportedModels(unSupportedModels)
+      } else {
+        if (data && data[0] && data[0].eolApFirmwares) {
+          const venueActive = data[0].eolApFirmwares.find((fw) => fw.name === venueAbf)
+          if (venueActive) {
+            for (let model of venueActive.apModels) {
+              if (!fw[0].supportedApModels?.includes(model)) {
+                unSupportedModels.push(model)
+              }
+            }
+          }
+        }
       }
+      setUnSupportedModels(unSupportedModels)
     }
     setStep(2)
   }
