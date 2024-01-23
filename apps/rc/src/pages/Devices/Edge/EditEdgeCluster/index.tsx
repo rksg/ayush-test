@@ -5,6 +5,8 @@ import { PageHeader, Tabs }                from '@acx-ui/components'
 import { CommonOperation, Device, getUrl } from '@acx-ui/rc/utils'
 import { useTenantLink }                   from '@acx-ui/react-router-dom'
 
+import EdgeClusterDhcpTab from './EdgeClusterDhcpTab'
+
 const EditEdgeCluster = () => {
   const { $t } = useIntl()
   const { activeTab, clusterId } = useParams()
@@ -30,7 +32,7 @@ const EditEdgeCluster = () => {
     },
     'dhcp': {
       title: $t({ defaultMessage: 'DHCP' }),
-      content: <div children={'dhcp'} />
+      content: <EdgeClusterDhcpTab />
     }
   }
 

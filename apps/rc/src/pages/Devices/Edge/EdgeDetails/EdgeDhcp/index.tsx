@@ -109,25 +109,28 @@ export const EdgeDhcp = () => {
 
   const handleActiveSwitch = (checked: boolean) => {
     if(checked) {
-      setDrawerVisible(true)
+      //setDrawerVisible(true)
+      setIsDhcpServiceActive(true)
     } else {
-      showActionModal({
-        type: 'confirm',
-        title: $t({ defaultMessage: 'Deactive DHCP Service' }),
-        content: $t({ defaultMessage: 'Are you sure you want to deactive DHCP service?' }),
-        onOk: () => {
-          if((poolTableQuery.data?.totalCount || 0) > 0) {
-            const params = { id: poolTableQuery.data?.data[0].dhcpId }
-            const edgeIds = [poolTableQuery.data?.data[0].edgeId]
-            const payload = {
-              edgeIds: [
-                ...edgeIds.filter(id => id !== serialNumber)
-              ]
+      if ((poolTableQuery.data?.totalCount || 0) > 0) {
+        showActionModal({
+          type: 'confirm',
+          title: $t({ defaultMessage: 'Deactive DHCP Service' }),
+          content: $t({ defaultMessage: 'Are you sure you want to deactive DHCP service?' }),
+          onOk: () => {
+            if((poolTableQuery.data?.totalCount || 0) > 0) {
+              const params = { id: poolTableQuery.data?.data[0].dhcpId }
+              const edgeIds = [poolTableQuery.data?.data[0].edgeId]
+              const payload = {
+                edgeIds: [
+                  ...edgeIds.filter(id => id !== serialNumber)
+                ]
+              }
+              updateEdgeDhcpService({ params, payload })
             }
-            updateEdgeDhcpService({ params, payload })
           }
-        }
-      })
+        })
+      }
     }
   }
 
