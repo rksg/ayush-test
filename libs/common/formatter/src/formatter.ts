@@ -217,7 +217,9 @@ export const formats = {
 const enabledFormat: MessageDescriptor = defineMessage({
   defaultMessage: '{value, select, true {Enabled} other {Disabled}}'
 })
-
+const onOffFormat: MessageDescriptor = defineMessage({
+  defaultMessage: '{value, select, true {On} other {Off}}'
+})
 const countFormat: MessageDescriptor = defineMessage({
   defaultMessage: '{value, number, ::K .##/@##r}'
 })
@@ -233,6 +235,7 @@ const scaleFormatRound: MessageDescriptor = defineMessage({
 
 export const intlFormats = {
   enabledFormat,
+  onOffFormat,
   countFormat,
   percentFormat,
   percentFormatRound,
