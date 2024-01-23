@@ -198,6 +198,7 @@ export function renderFilter <RecordType> (
       setFilterValues(filters)
     }}
     filterOption={filterOption}
+    dropdownMatchSelectWidth={false}
     placeholder={column.filterPlaceholder ?? column.title as string}
     showArrow
     allowClear

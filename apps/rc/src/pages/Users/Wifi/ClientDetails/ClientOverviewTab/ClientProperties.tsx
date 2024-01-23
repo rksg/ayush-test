@@ -4,10 +4,10 @@ import { Divider, List, Space } from 'antd'
 import moment                   from 'moment-timezone'
 import { useIntl }              from 'react-intl'
 
-import { Card, Loader, Subtitle, Tooltip, Descriptions }                                       from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                                                           from '@acx-ui/formatter'
-import { PassphraseViewer, WifiSignal, useDpskNewConfigFlowParams, networkDisplayTransformer } from '@acx-ui/rc/components'
+import { Card, Loader, Subtitle, Tooltip, Descriptions }           from '@acx-ui/components'
+import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                               from '@acx-ui/formatter'
+import { PassphraseViewer, WifiSignal, networkDisplayTransformer } from '@acx-ui/rc/components'
 import {
   useGetPassphraseClientQuery,
   useLazyGetApQuery,
@@ -626,9 +626,7 @@ function GuestDetails ({ guestDetail, clientMac }: {
 function DpskPassphraseDetails (props: { networkId: string, clientMac: string, username?: string }) {
   const { networkId, clientMac, username } = props
   const intl = getIntl()
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
   const { passphraseClient } = useGetPassphraseClientQuery({
-    params: dpskNewConfigFlowParams,
     payload: { networkId, mac: clientMac, username: username ?? '' }
   }, {
     selectFromResult: ({ data }) => {

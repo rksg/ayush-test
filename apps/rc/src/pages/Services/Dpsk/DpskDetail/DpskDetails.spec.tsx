@@ -82,7 +82,7 @@ describe('DpskDetails', () => {
     )
 
     // eslint-disable-next-line max-len
-    expect(await screen.findByRole('tabpanel', { name: 'Passphrases (1 Active)' })).toBeInTheDocument()
+    expect(await screen.findByRole('tab', { name: 'Passphrases (4 Active)' })).toBeInTheDocument()
   })
 
   it('should render breadcrumb correctly', async () => {
@@ -129,7 +129,7 @@ describe('DpskDetails', () => {
       }
     )
 
-    await userEvent.click(await screen.findByRole('tab', { name: 'Passphrases (1 Active)' }))
+    await userEvent.click(await screen.findByRole('tab', { name: 'Passphrases (4 Active)' }))
     expect(mockedUseNavigate).toHaveBeenCalledWith(passphraseTabPath.current)
   })
 

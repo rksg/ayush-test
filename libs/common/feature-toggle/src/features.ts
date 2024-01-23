@@ -31,7 +31,6 @@ export enum Features {
   DELETE_SOLO = 'ap-delete-with-solo-image-toggle',
   DEVICE_AGNOSTIC = 'entitlement-device-agnostic-sku-toggle',
   DIRECTED_MULTICAST = 'wifi-consumer-directed-multicast-toggle',
-  DPSK_NEW_CONFIG_FLOW_TOGGLE = 'dpsk-new-auth-flow-toggle',
   DPSK_PER_BOUND_PASSPHRASE_ALLOWED_DEVICE_INCREASED_LIMIT = 'dpsk-per-bound-passphrase-allowed-device-increased-limit',
   EDGE_LAG = 'acx-ui-edges-lag-toggle',
   EDGES_DHCP_CSV_TOGGLE = 'acx-ui-edges-dhcp-csv-toggle',
@@ -145,12 +144,14 @@ export enum Features {
   WIFI_FR_6029_FG6_2_TOGGLE = 'wifi-fr-6029-fg6-2-toggle',
   WIFI_FR_HOTSPOT20_R1_TOGGLE = 'wifi-fr-hotspot20-r1-toggle',
   WIFI_SWITCHABLE_RF_TOGGLE = 'wifi-switchable-rf-toggle',
+  WIFI_ANTENNA_TYPE_TOGGLE = 'wifi-antenna-type-selection-toggle',
   WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE = 'wifi-trunk-port-untagged-vlan-toggle',
   WIFI_VENUE_BSS_COLORING_TOGGLE = 'wifi-fr-6029-fg1-toggle',
   WISPR_ENCRYPT_MAC_IP = 'acx-ui-wispr-encrypt-mac-ip-toggle',
   WPA3_80211R = 'wifi-eda-wpa3-80211r-toggle',
   ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
-  EDGE_HA_TOGGLE = 'edge-ha-toggle'
+  EDGE_HA_TOGGLE = 'edge-ha-toggle',
+  WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE = 'wifi-eda-branch-level-supported-models-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

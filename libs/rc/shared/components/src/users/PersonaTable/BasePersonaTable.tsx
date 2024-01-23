@@ -31,14 +31,12 @@ import {
 } from '../../CommonLinkHelper'
 import {
   CsvSize,
-  ImportFileDrawer,
-  ImportFileDrawerType
-} from '../../ImportFileDrawer'
+  ImportFileDrawerType,
+  ImportFileDrawer } from '../../ImportFileDrawer'
 import { usePersonaListQuery } from '../../usePersonaListQuery'
 import { PersonaDrawer }       from '../PersonaDrawer'
 import {
-  PersonaGroupSelect
-} from '../PersonaGroupSelect'
+  PersonaGroupSelect } from '../PersonaGroupSelect'
 import { PersonaBlockedIcon }     from '../styledComponents'
 import { usePersonaAsyncHeaders } from '../usePersonaAsyncHeaders'
 
