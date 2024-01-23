@@ -4,95 +4,50 @@ import { useState, useEffect } from 'react'
 
 import { Col, Row, Modal } from 'antd'
 import { useIntl }         from 'react-intl'
+import styled              from 'styled-components/macro'
 
-import { Button, cssStr }                         from '@acx-ui/components'
-import { Android, Apple }                         from '@acx-ui/icons'
-import { LowPowerAPQuantity, AFCStatus, AFCInfo } from '@acx-ui/rc/utils'
+import { Button, cssStr, Alert } from '@acx-ui/components'
+import { Android, Apple }        from '@acx-ui/icons'
+import { AFCStatus, AFCInfo }    from '@acx-ui/rc/utils'
 
-interface LowerPowerBannerSetting {
-  bannerColSpan: number,
-  colStyle: {
-    backgroundColor: string,
-    padding: string,
-    color: string,
-    lineHeight?: string
-    paddingTop: string,
-    paddingBottom: string
-  },
-  buttonStyle: {
-    color?: string
-  }
-}
+const StyledAlert = styled(Alert)`
+  line-height: 20px;
+`
 
-type settings = {
-  [key: string] : LowerPowerBannerSetting
-}
 
 export function LowPowerBannerAndModal (props: {
-    parent: string,
-    lowPowerAPs?: LowPowerAPQuantity
     afcInfo?: AFCInfo
 }) {
 
-  const { lowPowerAPs, parent, afcInfo } = props
-
+  const { afcInfo } = props
 
   const { $t } = useIntl()
 
-  const lowPowerBannerSettings : settings = {
-    venue: {
-      bannerColSpan: 16,
-      colStyle: {
-        backgroundColor: cssStr('--acx-accents-orange-30'),
-        padding: '5px',
-        color: 'white',
-        paddingTop: '10px',
-        paddingBottom: '10px'
-      },
-      buttonStyle: { color: cssStr('--acx-accents-blue-20') }
-    },
-    ap: {
-      bannerColSpan: 22,
-      colStyle: {
-        backgroundColor: '#FEF4DE',
-        padding: '5px',
-        color: 'black',
-        lineHeight: '16px',
-        paddingTop: '10px',
-        paddingBottom: '10px'
-      },
-      buttonStyle: {}
-    }
-  }
-
   const [displayLowPowerModeModal, setDisplayLowPowerModeModal] = useState(false)
-  const [bannerSettings, setBannerSettings] = useState(lowPowerBannerSettings['venue'])
   const [bannerText, setBannerText] = useState('')
 
 
   useEffect(()=> {
-    setBannerSettings(lowPowerBannerSettings[parent])
-    const VenueWarningMessage = `${lowPowerAPs?.lowPowerAPCount} ${$t({ defaultMessage: 'out of' })} ${lowPowerAPs?.allAPCount} \
-    ${$t({ defaultMessage: 'Access points that support 6 GHz are currently operating in low power mode' })}`
 
-    let APWarningMessage = $t({ defaultMessage: 'Degraded - AP in low power mode' })
+    let APWarningMessage = $t({ defaultMessage: '6 GHz radio operating in low power mode' })
 
     if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
       APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '(Geo Location not set)' })
     }
     if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
-      APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '(FCC DB replies that there is no channel available)' })
+      APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '(No channels available)' })
     }
     if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
-      APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '(Wait for AFC server response)' })
+      APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '(Pending response from the AFC server)' })
+    }
+    if (afcInfo?.afcStatus === AFCStatus.PASSED) {
+      APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '(AP is working on LPI channel)' })
+    }
+    if (afcInfo?.afcStatus === AFCStatus.AFC_SERVER_FAILURE) {
+      APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '(AFC Server failure)' })
     }
 
-
-    if(parent === 'venue') {
-      setBannerText(VenueWarningMessage)
-    } else {
-      setBannerText(APWarningMessage)
-    }
+    setBannerText(APWarningMessage)
   }, [])
 
   return (<>
@@ -106,21 +61,24 @@ export function LowPowerBannerAndModal (props: {
         marginTop: '10px',
         marginBottom: '10px'
       }}>
-      <Col span={bannerSettings.bannerColSpan}
-        style={bannerSettings.colStyle}>
-        {bannerText}
-      </Col>
-      <Col span={2}
-        style={bannerSettings.colStyle}>
-        <Button type='link'
-          data-testid='how-to-fix-this-button'
-          onClick={() => {
-            setDisplayLowPowerModeModal(true)
-          }}>
-          <span style={bannerSettings.buttonStyle}>
-            {$t({ defaultMessage: 'How to fix this' })}
-          </span>
-        </Button>
+      <Col span={24}>
+        <StyledAlert showIcon={true}
+          style={{ verticalAlign: 'middle' }}
+          message={<>
+            {bannerText}
+            <Button type='link'
+              data-testid='how-to-fix-this-button'
+              onClick={() => {
+                setDisplayLowPowerModeModal(true)
+              }}>
+              <span style={{
+                marginLeft: '50px',
+                fontSize: '12px'
+              }}>
+                {$t({ defaultMessage: 'More information' })}
+              </span>
+            </Button>
+          </>} />
       </Col>
     </Row>
   </>)

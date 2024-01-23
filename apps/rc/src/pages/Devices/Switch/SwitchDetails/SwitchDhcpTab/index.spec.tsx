@@ -7,7 +7,8 @@ import { IP_ADDRESS_TYPE, SwitchUrlsInfo }                                      
 import { Provider, store }                                                           from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { switchDetailData } from '../__tests__/fixtures'
+import { SwitchDetailsContext }                       from '../'
+import { switchDetailData, switchDetailsContextData } from '../__tests__/fixtures'
 
 import { SwitchDhcpTab } from '.'
 
@@ -27,6 +28,7 @@ jest.spyOn(CommonComponent, 'showActionModal').mockImplementation(
 )
 
 describe('SwitchDhcpTab', () => {
+  const mockedGetSwitch = jest.fn()
   const params = {
     tenantId: ':tenantId',
     switchId: ':switchId',
@@ -39,11 +41,14 @@ describe('SwitchDhcpTab', () => {
     store.dispatch(switchApi.util.resetApiState())
     mockServer.use(
       rest.get( SwitchUrlsInfo.getSwitch.url,
-        (_, res, ctx) => res(ctx.json({
-          dhcpClientEnabled: true,
-          dhcpServerEnabled: false,
-          ipAddressType: IP_ADDRESS_TYPE.DYNAMIC
-        }))),
+        (_, res, ctx) => {
+          mockedGetSwitch()
+          return res(ctx.json({
+            dhcpClientEnabled: true,
+            dhcpServerEnabled: false,
+            ipAddressType: IP_ADDRESS_TYPE.DYNAMIC
+          }))
+        }),
       rest.get( SwitchUrlsInfo.getSwitchDetailHeader.url,
         (_, res, ctx) => res(ctx.json(switchDetailData))),
       rest.post( SwitchUrlsInfo.getDhcpPools.url,
@@ -59,7 +64,14 @@ describe('SwitchDhcpTab', () => {
   })
 
   it('should render correctly', async () => {
-    render(<Provider><SwitchDhcpTab /></Provider>, {
+    render(<Provider>
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData,
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchDhcpTab />
+      </SwitchDetailsContext.Provider>
+    </Provider>, {
       route: { params,
         path: '/:tenantId/t/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
       }
@@ -67,6 +79,8 @@ describe('SwitchDhcpTab', () => {
 
     const poolTab = await screen.findByRole('tab', { name: 'Pools' })
     expect(poolTab.getAttribute('aria-selected')).toBeTruthy()
+    expect(mockedGetSwitch).toBeCalledTimes(1)
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loading' }))
 
     const leaseTab = await screen.findByRole('tab', { name: 'Leases' })
     fireEvent.click(leaseTab)
@@ -76,11 +90,13 @@ describe('SwitchDhcpTab', () => {
       hash: '',
       search: ''
     })
+
     const statusBtn = await screen.findByRole('switch')
     await waitFor(() => expect(statusBtn).toBeEnabled())
 
-    fireEvent.click(await screen.findByRole('switch'))
+    fireEvent.click(statusBtn)
     expect(mockedShowActionModal).toBeCalledTimes(1)
+
     // await screen.findByRole('dialog')
     // expect(await screen.findByRole('dialog')).toHaveTextContent('Configure static IP address')
     // fireEvent.click(screen.getByRole('button', { name: 'OK' }))
@@ -96,7 +112,14 @@ describe('SwitchDhcpTab', () => {
         })))
     )
 
-    render(<Provider><SwitchDhcpTab /></Provider>, {
+    render(<Provider>
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData,
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchDhcpTab />
+      </SwitchDetailsContext.Provider>
+    </Provider>, {
       route: { params: { ...params, activeSubTab: 'lease' },
         path: '/:tenantId/t/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
       }

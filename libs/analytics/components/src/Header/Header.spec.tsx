@@ -13,7 +13,8 @@ jest.mock('../NetworkFilter/SANetworkFilter', () => ({
 }))
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
-  RangePicker: () => <div data-testid='RangePicker' />
+  RangePicker: () => <div data-testid='RangePicker' />,
+  TimeRangeDropDown: () => <div data-testid='TimeRangeDropDown' />
 }))
 
 describe('Analytics header', () => {
@@ -36,6 +37,19 @@ describe('Analytics header', () => {
     render(<BrowserRouter><Provider><Component/></Provider></BrowserRouter>)
     expect(await screen.findByTestId('NetworkFilter')).toBeVisible()
     expect(await screen.findByTestId('RangePicker')).toBeVisible()
+  })
+  it('should render header extra with TimeRangeDropDown correctly', async () => {
+    const Component = () => {
+      const component = useHeaderExtra({
+        shouldQuerySwitch: true,
+        withIncidents: true,
+        datepicker: 'dropdown'
+      })
+      return <span>{component}</span>
+    }
+    render(<BrowserRouter><Provider><Component/></Provider></BrowserRouter>)
+    expect(await screen.findByTestId('NetworkFilter')).toBeVisible()
+    expect(await screen.findByTestId('TimeRangeDropDown')).toBeVisible()
   })
   it('should not render network filter', async () => {
     const Component = () => {

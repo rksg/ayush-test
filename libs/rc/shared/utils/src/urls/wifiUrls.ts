@@ -412,6 +412,21 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/aps/:serialNumber/ledSettings',
     newApi: true
   },
+  getApBandModeSettings: {
+    method: 'get',
+    url: '/venues/:venueId/aps/:serialNumber/bandModeSettings',
+    newApi: true
+  },
+  updateApBandModeSettings: {
+    method: 'put',
+    url: '/venues/:venueId/aps/:serialNumber/bandModeSettings',
+    newApi: true
+  },
+  resetApBandModeSettings: {
+    method: 'delete',
+    url: '/venues/:venueId/aps/:serialNumber/bandModeSettings',
+    newApi: true
+  },
   getApBssColoring: {
     method: 'get',
     url: '/venues/aps/:serialNumber/bssColoringSettings',
@@ -589,5 +604,36 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/venues/:venueId/aps/managementTrafficVlanSettings',
     newApi: true
+  },
+  getApManagementVlan: {
+    method: 'get',
+    url: '/venues/aps/:serialNumber/managementTrafficVlanSettings',
+    newApi: true
+  },
+  updateApManagementVlan: {
+    method: 'put',
+    url: '/venues/aps/:serialNumber/managementTrafficVlanSettings',
+    newApi: true
+  },
+  deleteApManagementVlan: {
+    method: 'delete',
+    url: '/venues/aps/:serialNumber/managementTrafficVlanSettings',
+    newApi: true
+  },
+  getApFeatureSets: {
+    method: 'get',
+    url: '/venues/aps/featureSets?featureName={featureName}',
+    newApi: true
+  },
+  getApCompatibilitiesVenue: {
+    method: 'post',
+    url: '/venues/:venueId/aps/compatibilities/query',
+    newApi: true
+  },
+  getApCompatibilitiesNetwork: {
+    method: 'post',
+    url: '/wifiNetworks/:networkId/aps/compatibilities/query',
+    newApi: true
   }
+
 }

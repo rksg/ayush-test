@@ -15,7 +15,7 @@ import {
 import { GroupTable }                           from './stories/GroupTable'
 import { defaultColumnWidth, settingsKeyWidth } from './useColumnsState'
 
-import { Table, TableProps } from '.'
+import { Table, TableProps, NestedTableExpandableDefaultConfig } from '.'
 
 const { type, clear } = userEvent
 
@@ -152,6 +152,59 @@ describe('Table component', () => {
       dataSource={testData}
     /></div>)
     expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('renders nested table', async () => {
+    const expandedRowRender = () => {
+      const columns: TableProps<typeof data[0]>['columns'] = [
+        { title: 'Date', dataIndex: 'date', key: 'date' },
+        { title: 'Name', dataIndex: 'name', key: 'name' },
+        { title: 'Upgrade Status', dataIndex: 'upgradeNum', key: 'upgradeNum' }
+      ]
+
+      const data = [{
+        key: '1',
+        date: '2014-12-24 23:12:00',
+        name: 'This is production name',
+        upgradeNum: 'Upgraded: 56'
+      }, {
+        key: '2',
+        date: '2014-12-24 23:18:00',
+        name: 'This is production name',
+        upgradeNum: 'Upgraded: 57'
+      }, {
+        key: '3',
+        date: '2014-12-24 23:25:00',
+        name: 'This is production name',
+        upgradeNum: 'Upgraded: 58'
+      }]
+
+      return <Table columns={columns} dataSource={data} stickyHeaders={false} />
+    }
+
+    const { asFragment } = render(<div id='root'>
+      <Table
+        columns={testColumns}
+        expandable={{
+          ...NestedTableExpandableDefaultConfig,
+          expandedRowRender,
+          defaultExpandedRowKeys: ['1']
+        }}
+        dataSource={testData}
+        pagination={false}
+      />
+    </div>)
+
+    expect(asFragment()).toMatchSnapshot()
+    expect(await screen.findAllByTestId('MinusSquareOutlined')).toHaveLength(1)
+    expect(await screen.findAllByTestId('PlusSquareOutlined')).toHaveLength(2)
+
+    const row1 = await screen.findByRole('row', { name: /Jane/i })
+    await userEvent.click(await within(row1).findByTestId('PlusSquareOutlined'))
+    expect(await screen.findAllByTestId('PlusSquareOutlined')).toHaveLength(1)
+
+    await userEvent.click(await within(row1).findByTestId('MinusSquareOutlined'))
+    expect(await screen.findAllByTestId('PlusSquareOutlined')).toHaveLength(2)
   })
 
   it('shows search/filter when no selected bar and row selected', async () => {
@@ -1300,6 +1353,7 @@ describe('Table component', () => {
       const targetElems = await screen.findAllByText('Members: 2')
       expect(targetElems).toHaveLength(1)
 
+      jest.runOnlyPendingTimers()
       jest.useRealTimers()
     })
   })

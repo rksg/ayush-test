@@ -7,6 +7,7 @@ import {
   LayoutUI
 } from '@acx-ui/components'
 import { Features, SplitProvider, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { AdminSolid }                            from '@acx-ui/icons'
 import { HomeSolid }                             from '@acx-ui/icons'
 import {
   ActivityButton,
@@ -19,15 +20,13 @@ import {
   HeaderContext,
   RegionButton
 } from '@acx-ui/main/components'
-import {
-  useMspEntitlementListQuery,
-  useGetTenantDetailQuery
-} from '@acx-ui/msp/services'
-import { CloudMessageBanner }                                           from '@acx-ui/rc/components'
-import { Outlet, useParams, useNavigate, useTenantLink, TenantNavLink } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                    from '@acx-ui/types'
-import { hasRoles, useUserProfileContext }                              from '@acx-ui/user'
-import { PverName, getJwtTokenPayload, isDelegationMode }               from '@acx-ui/utils'
+import { useGetTenantDetailQuery, useMspEntitlementListQuery }                      from '@acx-ui/msp/services'
+import { CloudMessageBanner }                                                       from '@acx-ui/rc/components'
+import { ConfigTemplateContext }                                                    from '@acx-ui/rc/utils'
+import { Outlet, useParams, useNavigate, useTenantLink, TenantNavLink, TenantLink } from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                from '@acx-ui/types'
+import { hasRoles, useUserProfileContext }                                          from '@acx-ui/user'
+import { PverName, getJwtTokenPayload, isDelegationMode, AccountType }              from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 import * as UI           from './styledComponents'
@@ -43,6 +42,7 @@ function Layout () {
   const dpskBasePath = useTenantLink('/users/dpskAdmin')
   const navigate = useNavigate()
   const params = useParams()
+  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
 
   const { data } = useGetTenantDetailQuery({ params: { tenantId } })
   const { data: userProfile } = useUserProfileContext()
@@ -54,6 +54,8 @@ function Layout () {
   const { data: mspEntitlement } = useMspEntitlementListQuery({ params })
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
+  const nonVarDelegation = useIsSplitOn(Features.ANY_3RDPARTY_INVITE_TOGGLE)
+
   const showSupportHomeButton = isSupportToMspDashboardAllowed && isDelegationMode()
   const isBackToRC = (PverName.ACX === getJwtTokenPayload().pver ||
     PverName.ACX_HYBRID === getJwtTokenPayload().pver)
@@ -75,12 +77,14 @@ function Layout () {
 
   useEffect(() => {
     if (data && userProfile) {
-      if (!isSupportToMspDashboardAllowed && (userProfile?.support || userProfile?.dogfood)) {
+      const isRecDelegation = nonVarDelegation && data.tenantType === AccountType.REC
+      if (!isSupportToMspDashboardAllowed &&
+        (userProfile?.support || userProfile?.dogfood || isRecDelegation)) {
         setTenantType('SUPPORT')
       } else {
         setTenantType(data.tenantType)
       }
-      setDogfood(userProfile?.dogfood && !userProfile?.support)
+      setDogfood((userProfile?.dogfood && !userProfile?.support) || isRecDelegation)
     }
     if (mspEntitlement?.length && mspEntitlement?.length > 0) {
       setHasLicense(true)
@@ -98,6 +102,11 @@ function Layout () {
         </>
       }
       leftHeaderContent={<>
+        {isHspSupportEnabled && <TenantLink to='/dashboard'>
+          <UI.Home>
+            <LayoutUI.Icon children={<AdminSolid />} />
+            {$t({ defaultMessage: 'My Account' })}
+          </UI.Home></TenantLink>}
         { showSupportHomeButton && (isBackToRC ?
           <a href={`/api/ui/v/${getJwtTokenPayload().tenantId}`}>
             <UI.Home>
@@ -139,3 +148,9 @@ function LayoutWithSplitProvider () {
 }
 
 export default LayoutWithSplitProvider
+
+export function LayoutWithConfigTemplateContext () {
+  return <ConfigTemplateContext.Provider value={{ isTemplate: true }}>
+    <Outlet />
+  </ConfigTemplateContext.Provider>
+}

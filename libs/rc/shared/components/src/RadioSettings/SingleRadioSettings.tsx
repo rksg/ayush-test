@@ -8,8 +8,7 @@ import { useIntl }                from 'react-intl'
 
 import { Button, cssStr }                                         from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
-import { LowPowerAPQuantity }                                     from '@acx-ui/rc/utils'
-
+import { AFCProps }                                               from '@acx-ui/rc/utils'
 
 import { RadioSettingsChannels }       from '../RadioSettingsChannels'
 import { findIsolatedGroupByChannel }  from '../RadioSettingsChannels/320Mhz/ChannelComponentStates'
@@ -19,7 +18,6 @@ import {
 } from '../RadioSettingsChannels/320Mhz/RadioSettingsChannelsManual320Mhz'
 
 import { ChannelBarControlPopover } from './ChannelBarControlPopover'
-import { LowPowerBannerAndModal }   from './LowPowerBannerAndModal'
 import {
   ApRadioTypeDataKeyMap,
   ApRadioTypeEnum, ChannelBars,
@@ -66,9 +64,8 @@ export function SingleRadioSettings (props:{
   testId?: string,
   isUseVenueSettings?: boolean,
   supportDfsChannels?: any,
-  lowPowerAPs?: LowPowerAPQuantity,
-  isAFCEnabled? : boolean,
-  LPIButtonText?: LPIButtonText
+  LPIButtonText?: LPIButtonText,
+  afcProps?: AFCProps
 }) {
 
   const { $t } = useIntl()
@@ -79,8 +76,8 @@ export function SingleRadioSettings (props:{
     context = 'venue',
     isUseVenueSettings = false,
     testId,
-    lowPowerAPs,
-    isAFCEnabled
+    LPIButtonText,
+    afcProps
   } = props
 
   const {
@@ -347,6 +344,7 @@ export function SingleRadioSettings (props:{
                 channelList={channelList}
                 disabled={inherit5G || disable || isUseVenueSettings}
                 handleChanged={handleChanged}
+                afcProps={afcProps}
               />
             </Col>
           </Row>
@@ -361,6 +359,7 @@ export function SingleRadioSettings (props:{
               channelList={channelList}
               disabled={inherit5G || disable || isUseVenueSettings}
               handleChanged={handleChanged}
+              afcProps={afcProps}
             />
           </Col>
         </Row>
@@ -377,6 +376,7 @@ export function SingleRadioSettings (props:{
               channelBars={channelBars}
               disabled={inherit5G || disable || isUseVenueSettings}
               handleChanged={handleChanged}
+              afcProps={afcProps}
             />
           </Col>
         </Row>
@@ -389,12 +389,6 @@ export function SingleRadioSettings (props:{
       {
         isSupportRadio &&
       <>
-        {
-          (lowPowerAPs && lowPowerAPs?.lowPowerAPCount > 0 && context === 'venue') &&
-            <LowPowerBannerAndModal
-              parent={'venue'}
-              lowPowerAPs={lowPowerAPs} />
-        }
         <Row style={{ marginTop: '10px' }} gutter={20} data-testid={testId}>
           <Col span={8}>
             <RadioSettingsForm
@@ -405,8 +399,8 @@ export function SingleRadioSettings (props:{
               context={context}
               isUseVenueSettings={isUseVenueSettings}
               onGUIChanged={handleSettingGUIChanged}
-              isAFCEnabled={isAFCEnabled}
-              LPIButtonText={props.LPIButtonText}
+              isAFCEnabled={afcProps?.isAFCEnabled}
+              LPIButtonText={LPIButtonText}
             />
           </Col>
           { context === 'venue' && !inherit5G && !disable &&
@@ -494,6 +488,7 @@ export function SingleRadioSettings (props:{
                 channelBars={indoorChannelBars}
                 disabled={inherit5G || disable}
                 handleChanged={handleChanged}
+                afcProps={afcProps}
               />
             </Col>
           </Row>
@@ -523,6 +518,7 @@ export function SingleRadioSettings (props:{
                 channelBars={outdoorChannelBars}
                 disabled={inherit5G || disable}
                 handleChanged={handleChanged}
+                afcProps={afcProps}
               />
             </Col>
           </Row>
@@ -552,6 +548,7 @@ export function SingleRadioSettings (props:{
                 channelBars={indoorChannelBars}
                 disabled={inherit5G || disable}
                 handleChanged={handleChanged}
+                afcProps={afcProps}
               />
             </Col>
           </Row>

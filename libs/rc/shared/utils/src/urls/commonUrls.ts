@@ -101,7 +101,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/viewmodel/:tenantId/aps/grouped'
   },
-  getApGroupList: {
+  getApGroupListByVenue: {
     method: 'get',
     url: '/venues/:venueId/apGroups',
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/ap-group',
@@ -283,6 +283,16 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/led',
     newApi: true
   },
+  getVenueApModelBandModeSettings: {
+    method: 'get',
+    url: '/venues/:venueId/apModelBandModeSettings',
+    newApi: true
+  },
+  updateVenueApModelBandModeSettings: {
+    method: 'put',
+    url: '/venues/:venueId/apModelBandModeSettings',
+    newApi: true
+  },
   getVenueBssColoring: {
     method: 'get',
     url: '/venues/:venueId/bssColoringSettings',
@@ -426,22 +436,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader',
     newApi: true
   },
-  getClientSessionHistory: {
-    method: 'post',
-    url: '/reports/clients/sessionHistories',
-    oldUrl: '/api/reporting/tenant/:tenantId/report/clientSessionHistory',
-    newApi: true
-  },
   getHistoricalClientList: {
     method: 'post',
     url: '/historicalClients/query',
     oldUrl: '/api/eventalarmapi/:tenantId/event/hist_client_list',
-    newApi: true
-  },
-  getHistoricalStatisticsReportsV2: {
-    method: 'post',
-    url: '/reports/clients/statistics',
-    oldUrl: '/api/reporting/tenant/:tenantId/report/clientStats/v2',
     newApi: true
   },
   getGuestsList: {
@@ -460,6 +458,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/aps/:serialNumber/networks/query',
     oldUrl: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/networks',
+    newApi: true
+  },
+  getApGroupNetworkList: {
+    method: 'post',
+    url: '/apGroups/:apGroupId/networks/query',
     newApi: true
   },
   getExternalProviders: {
@@ -581,6 +584,21 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   addUpdateDnsRecord: {
     method: 'post',
     url: '/rwgs/:gatewayId/dnsrecords',
+    newApi: true
+  },
+  addExportSchedules: {
+    method: 'post',
+    url: '/reports/exportSchedules',
+    newApi: true
+  },
+  updateExportSchedules: {
+    method: 'put',
+    url: '/reports/exportSchedules',
+    newApi: true
+  },
+  getExportSchedules: {
+    method: 'get',
+    url: '/reports/exportSchedules',
     newApi: true
   }
 }

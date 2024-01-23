@@ -1,29 +1,15 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }     from '@acx-ui/store'
-import {
-  mockServer,
-  render,
-  screen
-} from '@acx-ui/test-utils'
+import { EdgeEditContext, EdgePortTabEnum }                          from '@acx-ui/rc/components'
+import { edgeApi }                                                   from '@acx-ui/rc/services'
+import { EdgeGeneralFixtures, EdgePortConfigFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                           from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved }     from '@acx-ui/test-utils'
 
-import { EdgeEditContext }                        from '..'
-import { mockEdgePortConfig, mockEdgePortStatus } from '../../../__tests__/fixtures'
+import Ports from './index'
 
-import Ports from '.'
-
-jest.mock('@acx-ui/utils', () => {
-  const reactIntl = jest.requireActual('react-intl')
-  const intl = reactIntl.createIntl({
-    locale: 'en'
-  })
-  return {
-    ...jest.requireActual('@acx-ui/utils'),
-    getIntl: () => intl
-  }
-})
+const { mockEdgeData, mockEdgeList } = EdgeGeneralFixtures
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -31,14 +17,10 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-jest.mock('./SubInterface', () => ({
-  ...jest.requireActual('./SubInterface'),
-  default: () => <div data-testid='rc-edge-subInterface'></div>
-}))
-
+const { mockEdgePortConfig, mockEdgePortStatus } = EdgePortConfigFixtures
 const defaultContextData = {
   activeSubTab: {
-    key: 'ports-general',
+    key: EdgePortTabEnum.PORTS_GENERAL,
     title: 'Ports General'
   },
   formControl: {
@@ -49,17 +31,26 @@ const defaultContextData = {
   setActiveSubTab: jest.fn(),
   setFormControl: jest.fn()
 }
+describe('EditEdge - Ports', () => {
+  let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab:string }
 
-describe('EditEdge ports', () => {
-  let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
   beforeEach(() => {
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      serialNumber: '000000000000',
-      activeTab: 'ports'
+      serialNumber: '0000000030',
+      activeTab: 'ports',
+      activeSubTab: EdgePortTabEnum.PORTS_GENERAL
     }
-
+    store.dispatch(edgeApi.util.resetApiState())
     mockServer.use(
+      rest.get(
+        EdgeUrlsInfo.getEdge.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeData))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeList))
+      ),
       rest.get(
         EdgeUrlsInfo.getPortConfig.url,
         (req, res, ctx) => res(ctx.json(mockEdgePortConfig))
@@ -71,96 +62,57 @@ describe('EditEdge ports', () => {
     )
   })
 
-  it('should active ports general successfully', async () => {
-    params.activeSubTab = 'ports-general'
+  it('should navigate to edge list when cancel', async () => {
     render(
       <Provider>
-        <EdgeEditContext.Provider
+        <EdgeEditContext.EditContext.Provider
           value={defaultContextData}
         >
           <Ports />
-        </EdgeEditContext.Provider>
+        </EdgeEditContext.EditContext.Provider>
       </Provider>, {
         route: {
           params,
           path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
-    await screen.findByRole('tab', {
-      name: 'Ports General', selected: true
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText(/IP Address: 10.206.78.152/)).toBeVisible()
+
+    expect(await screen.findByRole('tab', { name: 'Ports General', selected: true })).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/${params.tenantId}/t/devices/edge`,
+      hash: '',
+      search: ''
     })
-  })
-
-  it('should active sub-interface successfully', async () => {
-    params.activeSubTab = 'sub-interface'
-    render(
-      <Provider>
-        <EdgeEditContext.Provider
-          value={defaultContextData}
-        >
-          <Ports />
-        </EdgeEditContext.Provider>
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
-        }
-      })
-    await screen.findByRole('tab', {
-      name: 'Sub-Interface', selected: true
-    })
-  })
-
-  it ('IP status on each port tab should be displayed correctly', async () => {
-    const user = userEvent.setup()
-    params.activeSubTab = 'ports-general'
-    render(
-      <Provider>
-        <EdgeEditContext.Provider
-          value={defaultContextData}
-        >
-          <Ports />
-        </EdgeEditContext.Provider>
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
-        }
-      })
-
-    for (let i = 0; i < mockEdgePortConfig.ports.length; ++i) {
-      await user.click(await screen.findByRole('tab', { name: 'Port ' + (i + 1) }))
-      const expectedIp = mockEdgePortStatus[i]?.ip || 'N/A'
-      await screen.findByText(
-        'IP Address: ' + expectedIp + ' | ' +
-          'MAC Address: ' + mockEdgePortConfig.ports[i].mac)
-
-    }
   })
 
   it('switch tab', async () => {
-    params.activeSubTab = 'ports-general'
-    const user = userEvent.setup()
     render(
       <Provider>
-        <EdgeEditContext.Provider
+        <EdgeEditContext.EditContext.Provider
           value={defaultContextData}
         >
           <Ports />
-        </EdgeEditContext.Provider>
+        </EdgeEditContext.EditContext.Provider>
       </Provider>, {
         route: {
           params,
           path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
-    await user.click(screen.getByRole('tab', { name: 'Sub-Interface' }))
-    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText(/IP Address: 10.206.78.152/)).toBeVisible()
+
+    await userEvent.click(await screen.findByRole('tab', { name: 'Sub-Interface' }))
+    expect(mockedUsedNavigate).toBeCalledWith({
       // eslint-disable-next-line max-len
       pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/edit/ports/sub-interface`,
       hash: '',
       search: ''
     })
   })
-
 })

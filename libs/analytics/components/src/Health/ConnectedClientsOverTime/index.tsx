@@ -14,8 +14,7 @@ const ConnectedClientsOverTime = (props: { filters : AnalyticsFilter }) => {
     endDate,
     range,
     timeWindow,
-    setTimeWindow,
-    apCount
+    setTimeWindow
   } = useContext(HealthPageContext)
   const { filters: healthPageFilters } = props
   const filters = { ...healthPageFilters, startDate, endDate, range }
@@ -34,7 +33,6 @@ const ConnectedClientsOverTime = (props: { filters : AnalyticsFilter }) => {
       type='no-border'
       hideTitle
       hideIncidents
-      apCount={apCount}
     />
   )}
 

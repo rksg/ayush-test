@@ -63,7 +63,13 @@ describe('UserProfileContext', () => {
       rest.get(UserUrlsInfo.guestAllowedOperations.url.replace('?service=guest', ''),
         (req, res, ctx) => res(ctx.json([]))),
       rest.get(UserUrlsInfo.upgradeAllowedOperations.url.replace('?service=upgradeConfig', ''),
-        (req, res, ctx) => res(ctx.json([])))
+        (req, res, ctx) => res(ctx.json([]))),
+      rest.get(UserUrlsInfo.getAccountTier.url as string,
+        (req, res, ctx) => { return res(ctx.json({ acx_account_tier: 'Gold' }))}),
+      rest.get(UserUrlsInfo.getBetaStatus.url,(_req, res, ctx) =>
+        res(ctx.status(200))),
+      rest.put(UserUrlsInfo.toggleBetaStatus.url,
+        (_req, res, ctx) => res(ctx.json({})))
     )
   })
 
@@ -131,5 +137,7 @@ describe('UserProfileContext', () => {
       expect(result.current.data?.fullName).toBe('')
     })
     expect(result.current.data?.initials).toBe(undefined)
+    expect(result.current.accountTier).toBe('Gold')
+    expect(result.current.betaEnabled).toBe(false)
   })
 })

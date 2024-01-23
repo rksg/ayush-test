@@ -173,6 +173,7 @@ const apDetailWithNullTraffic = {
 const sample = { P1: 1, P2: 2, P3: 3, P4: 4 }
 
 jest.mock('@acx-ui/analytics/components', () => ({
+  useIncidentToggles: () => ({}),
   useIncidentsBySeverityQuery: () => sample
 }))
 

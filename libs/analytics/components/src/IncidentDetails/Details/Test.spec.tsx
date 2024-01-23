@@ -12,13 +12,18 @@ import {
   fakeIncidentChannelDist,
   fakeIncidentNetTime,
   fakeIncidentNetSzNetLatency,
-  fakeIncidentLoadSzCpuLoad
+  fakeIncidentLoadSzCpuLoad,
+  fakeIncidentAirtimeB,
+  IncidentCode
 }                         from '@acx-ui/analytics/utils'
 import { useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
 import * as fixtures               from './__tests__/fixtures'
+import { AirtimeB }                from './AirtimeB'
+import { AirtimeRx }               from './AirtimeRx'
+import { AirtimeTx }               from './AirtimeTx'
 import { ApinfraPoeLow }           from './ApinfraPoeLow'
 import { ApinfraWanthroughputLow } from './ApinfraWanthroughputLow'
 import { ApservContinuousReboots } from './ApservContinuousReboots'
@@ -176,14 +181,15 @@ describe('Test', () => {
       },
       {
         component: ChannelDist,
-        fakeIncident: fakeIncidentChannelDist, //5g
+        fakeIncident: fakeIncidentChannelDist, // 5g
         hasNetworkImpact: false,
         hasTimeSeries: true,
         charts: []
       },
       {
         component: ChannelDist,
-        fakeIncident: { ...fakeIncidentChannelDist, code: 'p-channeldist-suboptimal-plan-24g' }, //2.4g
+        fakeIncident: { ...fakeIncidentChannelDist,
+          code: 'p-channeldist-suboptimal-plan-24g' as IncidentCode }, // 2.4g
         hasNetworkImpact: false,
         hasTimeSeries: true,
         charts: []
@@ -207,6 +213,69 @@ describe('Test', () => {
         fakeIncident: fakeIncidentLoadSzCpuLoad,
         hasNetworkImpact: false,
         hasTimeSeries: false,
+        charts: []
+      },
+      {
+        component: AirtimeB,
+        fakeIncident: fakeIncidentAirtimeB,
+        hasNetworkImpact: true,
+        hasTimeSeries: true,
+        charts: []
+      },
+      {
+        component: AirtimeB,
+        fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-b-5g-high' as IncidentCode },
+        hasNetworkImpact: true,
+        hasTimeSeries: true,
+        charts: []
+      },
+      {
+        component: AirtimeB,
+        fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-b-6(5)g-high' as IncidentCode },
+        hasNetworkImpact: true,
+        hasTimeSeries: true,
+        charts: []
+      },
+      {
+        component: AirtimeRx,
+        fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-rx-24g-high' as IncidentCode },
+        hasNetworkImpact: true,
+        hasTimeSeries: true,
+        charts: []
+      },
+      {
+        component: AirtimeRx,
+        fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-rx-5g-high' as IncidentCode },
+        hasNetworkImpact: true,
+        hasTimeSeries: true,
+        charts: []
+      },
+      {
+        component: AirtimeRx,
+        fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-rx-6(5)g-high' as IncidentCode },
+        hasNetworkImpact: true,
+        hasTimeSeries: true,
+        charts: []
+      },
+      {
+        component: AirtimeTx,
+        fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-tx-24g-high' as IncidentCode },
+        hasNetworkImpact: true,
+        hasTimeSeries: true,
+        charts: []
+      },
+      {
+        component: AirtimeTx,
+        fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-tx-5g-high' as IncidentCode },
+        hasNetworkImpact: true,
+        hasTimeSeries: true,
+        charts: []
+      },
+      {
+        component: AirtimeTx,
+        fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-tx-6(5)g-high' as IncidentCode },
+        hasNetworkImpact: true,
+        hasTimeSeries: true,
         charts: []
       }
     ].forEach((test) => {

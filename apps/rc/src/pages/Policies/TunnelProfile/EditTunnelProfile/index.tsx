@@ -1,53 +1,72 @@
-
-import { useEffect } from 'react'
-
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader }                                         from '@acx-ui/components'
-import { TunnelProfileFormType, useTunnelProfileActions } from '@acx-ui/rc/components'
-import { useGetTunnelProfileByIdQuery }                   from '@acx-ui/rc/services'
-import { useParams }                                      from '@acx-ui/react-router-dom'
+import { Loader }                                                                                                        from '@acx-ui/components'
+import { Features }                                                                                                      from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady, useTunnelProfileActions }                                                                from '@acx-ui/rc/components'
+import { useGetEdgeSdLanViewDataListQuery, useGetNetworkSegmentationViewDataListQuery, useGetTunnelProfileByIdQuery }    from '@acx-ui/rc/services'
+import { getTunnelProfileFormDefaultValues, isDefaultTunnelProfile as getIsDefaultTunnelProfile, TunnelProfileFormType } from '@acx-ui/rc/utils'
+import { useParams }                                                                                                     from '@acx-ui/react-router-dom'
 
-import { TunnelProfileForm }     from '../TunnelProfileForm'
-import { ageTimeUnitConversion } from '../util'
+import { TunnelProfileForm } from '../TunnelProfileForm'
 
 const EditTunnelProfile = () => {
-
   const { $t } = useIntl()
-  const params = useParams()
+  const { policyId } = useParams()
   const [form] = Form.useForm()
+  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const { data: tunnelProfileData, isLoading } = useGetTunnelProfileByIdQuery(
-    { params: { id: params.policyId } }
+    { params: { id: policyId } }
   )
   const { updateTunnelProfile } = useTunnelProfileActions()
 
-  const isDefaultTunnelProfile = params.tenantId === tunnelProfileData?.id
+  const { edgeSdLanData, isSdLanLoading } = useGetEdgeSdLanViewDataListQuery(
+    { payload: {
+      filters: { tunnelProfileId: [policyId] }
+    } },
+    {
+      skip: !isEdgeSdLanReady,
+      selectFromResult: ({ data, isLoading }) => ({
+        edgeSdLanData: data?.data?.[0],
+        isSdLanLoading: isLoading
+      })
+    }
+  )
 
-  useEffect(() => {
-    const ageTime = tunnelProfileData?.ageTimeMinutes || 20
-    const result = ageTimeUnitConversion(ageTime)
-    form.setFieldsValue({
-      name: tunnelProfileData?.name,
-      mtuSize: tunnelProfileData?.mtuSize,
-      mtuType: tunnelProfileData?.mtuType,
-      forceFragmentation: tunnelProfileData?.forceFragmentation,
-      ageTimeMinutes: result?.value,
-      ageTimeUnit: result?.unit
-    })
-  }, [form, tunnelProfileData])
+  const {
+    nsgId,
+    isNSGLoading
+  } = useGetNetworkSegmentationViewDataListQuery({
+    payload: {
+      filters: { vxlanTunnelProfileId: [policyId] }
+    }
+  }, {
+    skip: !isEdgeSdLanReady,
+    selectFromResult: ({ data, isLoading }) => {
+      return {
+        nsgId: data?.data[0]?.id,
+        isNSGLoading: isLoading
+      }
+    }
+  })
 
   const handelUpdate = (data: TunnelProfileFormType) =>
-    updateTunnelProfile(params.policyId || '', data)
+    updateTunnelProfile(policyId || '', data)
+
+  const isDefaultTunnelProfile = getIsDefaultTunnelProfile(tunnelProfileData)
+  const formInitValues = getTunnelProfileFormDefaultValues(tunnelProfileData)
+  if (nsgId || edgeSdLanData)
+    formInitValues.disabledFields = ['type']
 
   return (
-    <Loader states={[{ isLoading }]}>
+    <Loader states={[{ isLoading: isLoading || isSdLanLoading || isNSGLoading }]}>
       <TunnelProfileForm
         form={form}
         title={$t({ defaultMessage: 'Edit Tunnel Profile' })}
         submitButtonLabel={$t({ defaultMessage: 'Apply' })}
         onFinish={handelUpdate}
         isDefaultTunnel={isDefaultTunnelProfile}
+        initialValues={formInitValues}
       />
     </Loader>
   )

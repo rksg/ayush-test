@@ -1,5 +1,6 @@
 import { Fragment } from 'react'
 
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Card, GridCol, GridRow } from '@acx-ui/components'
@@ -19,7 +20,8 @@ export const CrrmValues = ({ details }: { details: EnhancedRecommendation }) => 
     appliedOnce, status, original, current, recommended
   } = getValues(details)
   const applied = appliedOnce && status !== 'reverted'
-  const recommendationText = getRecommendationsText(details)
+  const isFullOptimization = !!_.get(details, 'metadata.algorithmData.isCrrmFullOptimization', true)
+  const recommendationText = getRecommendationsText(details, isFullOptimization)
 
   const fields = [
     {
@@ -32,7 +34,9 @@ export const CrrmValues = ({ details }: { details: EnhancedRecommendation }) => 
       label: applied
         ? $t({ defaultMessage: 'Current Configuration' })
         : $t({ defaultMessage: 'Recommended Configuration' }),
-      value: applied ? current : recommended
+      value: isFullOptimization
+        ? (applied ? current : recommended)
+        : $t({ defaultMessage: 'AI-Driven RRM for channel plan' })
     }
   ]
 

@@ -59,6 +59,7 @@ import {
   getGroupableConfig
 } from './config'
 import { SwitchTabContext } from './context'
+import * as UI              from './styledComponents'
 import { useExportCsv }     from './useExportCsv'
 
 export const SwitchStatus = (
@@ -92,7 +93,7 @@ const handleStatusColor = (status: DeviceConnectionStatus) => {
 const PasswordTooltip = {
   SYNCING: defineMessage({ defaultMessage: 'We are not able to determine the password before completing data synchronization.' }),
   SYNCED: defineMessage({ defaultMessage: 'To change the admin password in venue setting, please go to Venue > Venue Configuration > Switch Configuration > AAA' }),
-  CUSTOM: defineMessage({ defaultMessage: 'For security reasons, R1 is not able to show custom passwords that are set on the switch.' })
+  CUSTOM: defineMessage({ defaultMessage: 'For security reasons, RUCKUS One is not able to show custom passwords that are set on the switch.' })
 }
 
 export const defaultSwitchPayload = {
@@ -162,7 +163,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const tableData = tableQuery.data?.data ?? []
 
   const statusFilterOptions = seriesSwitchStatusMapping().map(({ key, name, color }) => ({
-    key, value: name, label: <Badge color={color} text={name} />
+    key, value: name, label: <UI.FilterBadge color={color} text={name} />
   }))
 
   const switchType = () => [
@@ -300,11 +301,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       dataIndex: 'firmware',
       sorter: true
     },
-    // { TODO: Health scope
-    //   key: 'incidents',
-    //   title: $t({ defaultMessage: 'Incidents' }),
-    //   dataIndex: 'incidents',
-    // },
     ...(params.venueId ? [] : [{
       key: 'venueName',
       title: $t({ defaultMessage: 'Venue' }),
@@ -481,7 +477,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       enableApiFilter={true}
       searchableWidth={220}
       filterableWidth={140}
-      rowKey={(record)=> record.isGroup || record.serialNumber + (!record.isFirstLevel ? 'stack-member' : '')}
+      rowKey={(record)=> record.isGroup || record.serialNumber + (!record.isFirstLevel ? record.switchMac + 'stack-member' : '')}
       rowActions={filterByAccess(rowActions)}
       rowSelection={searchable !== false ? {
         type: 'checkbox',

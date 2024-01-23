@@ -31,6 +31,7 @@ import { filterByAccess, hasRoles } from '@acx-ui/user'
 import * as UI from '../styledComponents'
 
 import DelegationInviteDialog from './DelegationInviteDialog'
+import DelegationInviteDrawer from './DelegationInviteDrawer'
 
 
 export interface AdministrationDelegationsTableProps {
@@ -42,12 +43,15 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
   const { $t } = useIntl()
   const params = useParams()
   const [showDialog, setShowDialog] = useState(false)
+  const [showDrawer, setShowDrawer] = useState(false)
   const [isTenantLocked, setIsTenantLocked] = useState(false)
   const [revokeInvitation] = useRevokeInvitationMutation()
   const hasRevokeInvitationPermmision = hasRoles([RolesEnum.PRIME_ADMIN])
   const hasInvite3rdPartyPermmision = hasRoles([RolesEnum.PRIME_ADMIN])
   const isMultipleVarEnabled = useIsSplitOn(Features.MULTIPLE_VAR_INVITATION_TOGGLE)
+  const is3PartyVarEnabled = useIsSplitOn(Features.ANY_3RDPARTY_INVITE_TOGGLE)
   const MAX_VAR_INVITATIONS = 10
+  const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
 
   const { data, isLoading, isFetching }= useGetDelegationsQuery({ params })
 
@@ -57,7 +61,7 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
   const maxInvitationReached = Boolean(data?.length) && !shouldInvite3rdPartyEnabled
 
   const handleClickInviteDelegation = () => {
-    setShowDialog(true)
+    is3PartyVarEnabled ? setShowDrawer(true) : setShowDialog(true)
   }
 
   const delegationRevokeInvitation= (rowData: Delegation) => {
@@ -104,7 +108,8 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
 
   const columns: TableProps<Delegation>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Partner Name' }),
+      title: is3PartyVarEnabled ? $t({ defaultMessage: 'Admin Name' })
+        : $t({ defaultMessage: 'Partner Name' }),
       key: 'delegatedToName',
       dataIndex: 'delegatedToName',
       sorter: { compare: sortProp('delegatedToName', defaultSort) },
@@ -145,7 +150,7 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
           return (_b - _a) as SortResult
         }) },
       render: (_, row) => {
-        return <Button
+        return <Button type={is3PartyVarEnabled ? 'link' : 'default'}
           onClick={handleClickRevokeInvitation(row)}
           disabled={isTenantLocked}
         >
@@ -159,15 +164,68 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
     })
   }
 
-
   const tableActions = []
   if (!isSupport && hasInvite3rdPartyPermmision) {
     tableActions.push({
-      label: $t({ defaultMessage: 'Invite 3rd Party Administrator' }),
+      label: isGroupBasedLoginEnabled ? $t({ defaultMessage: 'Add Delegated Admin' })
+        : (is3PartyVarEnabled
+          ? $t({ defaultMessage: 'Invite 3rd Party Admin' })
+          : $t({ defaultMessage: 'Invite 3rd Party Administrator' })),
       disabled: maxInvitationReached,
       onClick: handleClickInviteDelegation
     })
   }
+
+  const rowActions: TableProps<Delegation>['rowActions'] = [
+    {
+      label: $t({ defaultMessage: 'Revoke access' }),
+      visible: (selectedRows) => {
+        if(selectedRows[0] &&
+          (selectedRows[0].status === AdministrationDelegationStatus.ACCEPTED )) {
+          return true
+        }
+        return false
+      },
+      onClick: (rows) => {
+        showActionModal({
+          type: 'confirm',
+          title: $t({ defaultMessage: 'Revoke Access' }),
+          content:
+            $t({ defaultMessage: 'Are you sure you want to revoke access of partner {name}?' },
+              { name: rows[0].delegatedToName }),
+          okText: $t({ defaultMessage: 'Yes, revoke access' }),
+          cancelText: $t({ defaultMessage: 'No, keep access grant' }),
+          onOk: () => {
+            delegationRevokeInvitation(rows[0])
+          }
+        })
+      }
+    },
+    {
+      label: $t({ defaultMessage: 'Cancel invitation' }),
+      visible: (selectedRows) => {
+        if(selectedRows[0] &&
+          (selectedRows[0].status !== AdministrationDelegationStatus.ACCEPTED)) {
+          return true
+        }
+        return false
+      },
+      onClick: (rows) => {
+        showActionModal({
+          type: 'confirm',
+          title: $t({ defaultMessage: 'Cancel invitation?' }),
+          content:
+          // eslint-disable-next-line max-len
+            $t({ defaultMessage: 'Are you sure you want to cancel the invitation of 3rd party administrator {name}?' }, { name: rows[0].delegatedToName }),
+          okText: $t({ defaultMessage: 'Cancel Invitation' }),
+          cancelText: $t({ defaultMessage: 'Keep invitation' }),
+          onOk: () => {
+            delegationRevokeInvitation(rows[0])
+          }
+        })
+      }
+    }
+  ]
 
   return (
     <Loader states={[
@@ -175,16 +233,19 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
         isFetching: isFetching
       }
     ]}>
-      <UI.TableTitleWrapper direction='vertical'>
+      {!isGroupBasedLoginEnabled && <UI.TableTitleWrapper direction='vertical'>
         <Subtitle level={4}>
-          {$t({ defaultMessage: '3rd Party Administrator' })}
+          {is3PartyVarEnabled
+            ? $t({ defaultMessage: '3rd Party Administrators' })
+            : $t({ defaultMessage: '3rd Party Administrator' })}
         </Subtitle>
         <Subtitle level={5}>
-          {$t({ defaultMessage: 'You can delegate access rights to a 3rd party administrator.' }) }
+          {!is3PartyVarEnabled &&
+            $t({ defaultMessage: 'You can delegate access rights to a 3rd party administrator.' }) }
         </Subtitle>
-      </UI.TableTitleWrapper>
+      </UI.TableTitleWrapper>}
 
-      <Table
+      {is3PartyVarEnabled ? <Table
         columns={columns}
         dataSource={data}
         rowKey='id'
@@ -193,12 +254,29 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
           emptyText: <Empty description={$t({ defaultMessage: 'No 3rd Party Administrator Invited' })} />
         }}
         actions={filterByAccess(tableActions)}
-      />
+        rowActions={rowActions}
+        rowSelection={{ type: 'radio' }}
+      /> :
+        <Table
+          columns={columns}
+          dataSource={data}
+          rowKey='id'
+          locale={{
+          // eslint-disable-next-line max-len
+            emptyText: <Empty description={$t({ defaultMessage: 'No 3rd Party Administrator Invited' })} />
+          }}
+          actions={filterByAccess(tableActions)}
+        />}
 
-      <DelegationInviteDialog
-        visible={showDialog}
-        setVisible={setShowDialog}
-      />
+      {is3PartyVarEnabled
+        ? <DelegationInviteDrawer
+          visible={showDrawer}
+          setVisible={setShowDrawer}
+        />
+        : <DelegationInviteDialog
+          visible={showDialog}
+          setVisible={setShowDialog}
+        />}
     </Loader>
   )
 }

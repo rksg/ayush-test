@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { LayoutProps }                              from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { LayoutProps }                                            from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   AIOutlined,
   AISolid,
@@ -41,7 +41,7 @@ export function useMenuConfig () {
   const isAnltAdvTier = useIsTierAllowed('ANLT-ADV')
   const showVideoCallQoe = useIsSplitOn(Features.VIDEO_CALL_QOE)
   const showConfigChange = useIsSplitOn(Features.CONFIG_CHANGE)
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isServiceEnabled = useIsSplitOn(Features.SERVICES)
   const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
@@ -51,7 +51,9 @@ export function useMenuConfig () {
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
   const isAdministratorAccessible = hasAdministratorTab(userProfileData, tenantID)
   const recommendationsEnabled = useIsSplitOn(Features.AI_RECOMMENDATIONS)
+  const crrmEnabled = useIsSplitOn(Features.AI_CRRM)
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
+  const showApGroupTable = useIsSplitOn(Features.AP_GROUP_TOGGLE)
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -73,10 +75,11 @@ export function useMenuConfig () {
               uri: '/analytics/incidents',
               label: $t({ defaultMessage: 'Incidents' })
             },
-            ...(recommendationsEnabled ? [{
+            ...(crrmEnabled ? [{
               uri: '/analytics/recommendations/crrm',
               label: $t({ defaultMessage: 'AI-Driven RRM' })
-            }, {
+            }] : []),
+            ...(recommendationsEnabled ? [{
               uri: '/analytics/recommendations/aiOps',
               label: $t({ defaultMessage: 'AI Operations' })
             }] : [])
@@ -172,12 +175,16 @@ export function useMenuConfig () {
           children: [
             {
               uri: '/devices/wifi',
-              label: $t({ defaultMessage: 'Access Points List' }),
-              isActiveCheck: new RegExp('^/devices/wifi(?!(/reports))')
+              label: $t({ defaultMessage: 'AP List' }),
+              isActiveCheck: new RegExp('^/devices/wifi(?!(/[reports|apgroup]))')
             },
+            ...(showApGroupTable? [{
+              uri: '/devices/wifi/apgroups',
+              label: $t({ defaultMessage: 'AP Group List' })
+            }] : []),
             {
               uri: '/devices/wifi/reports/aps',
-              label: $t({ defaultMessage: 'Access Points Report' })
+              label: $t({ defaultMessage: 'AP Report' })
             },
             {
               uri: '/devices/wifi/reports/airtime',

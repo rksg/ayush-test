@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { useIsSplitOn  }                  from '@acx-ui/feature-toggle'
 import { ClientUrlsInfo, CommonUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                       from '@acx-ui/store'
 import {
@@ -41,11 +42,17 @@ describe('Connected Clients Table', () => {
       ),
       rest.post(
         CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json({ data: [] })))
+        (_, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVMNetworksList.url,
+        (req, res, ctx) => res(ctx.json({ data: [] }))
+      )
     )
   })
 
   it('should render table: all columns', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(
       <Provider>
         <ConnectedClientsTable
@@ -60,6 +67,7 @@ describe('Connected Clients Table', () => {
 
     await screen.findByText('MBP')
     await screen.findByText('iphone')
+    expect((await screen.findAllByText('Network Type')).length).toBeGreaterThan(1)
   })
 
 })

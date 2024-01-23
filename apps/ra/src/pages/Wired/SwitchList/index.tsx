@@ -5,6 +5,7 @@ import { useIntl } from 'react-intl'
 import { useSwitchtListQuery, Switch }                     from '@acx-ui/analytics/services'
 import { defaultSort, sortProp  }                          from '@acx-ui/analytics/utils'
 import { Filter, Loader, Table, TableProps, useDateRange } from '@acx-ui/components'
+import { formatter }                                       from '@acx-ui/formatter'
 import { TenantLink }                                      from '@acx-ui/react-router-dom'
 
 const pagination = { pageSize: 10, defaultPageSize: 10 }
@@ -19,7 +20,7 @@ export function SwitchList ({ searchVal = '' }: { searchVal?: string }) {
     end: timeRange[1].format(),
     limit: 100,
     query: searchString,
-    metric: 'traffic'
+    metric: 'totalTraffic'
   })
 
   const updateSearchString = (_: Filter, search: { searchString?: string }) => {
@@ -35,7 +36,7 @@ export function SwitchList ({ searchVal = '' }: { searchVal?: string }) {
       searchable: true,
       sorter: { compare: sortProp('switchName', defaultSort) },
       render: (_, row : Switch, __, highlightFn) => (
-        <TenantLink to={`/devices/switch/${row.switchMac}/serial/details/overview`}>
+        <TenantLink to={`/devices/switch/${row.switchMac}/serial/details/incidents`}>
           {highlightFn(row.switchName)}</TenantLink>
       )
     },
@@ -59,6 +60,15 @@ export function SwitchList ({ searchVal = '' }: { searchVal?: string }) {
       key: 'switchVersion',
       searchable: true,
       sorter: { compare: sortProp('switchVersion', defaultSort) }
+    },
+    {
+      title: $t({ defaultMessage: 'Traffic (Total)' }),
+      dataIndex: 'traffic',
+      key: 'traffic',
+      render: (_, { traffic }) => {
+        return formatter('bytesFormat')(traffic)
+      },
+      sorter: { compare: sortProp('traffic', defaultSort) }
     }
   ]
   return <Loader states={[results]}>
@@ -68,6 +78,7 @@ export function SwitchList ({ searchVal = '' }: { searchVal?: string }) {
       pagination={pagination}
       settingsId='switches-list-table'
       onFilterChange={updateSearchString}
+      rowKey='switchMac'
     />
   </Loader>
 }

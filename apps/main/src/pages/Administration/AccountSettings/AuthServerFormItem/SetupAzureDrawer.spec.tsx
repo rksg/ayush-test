@@ -200,6 +200,19 @@ describe('Setup Azure Drawer', () => {
     // Assert jpeg file is not added to be uploaded
     expect(screen.queryByText('image.jpeg')).toBeNull()
     expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled()
+
+    // Upload normal file (to prevent errors from updated state for apply button)
+    const xmlFile = new File(['(⌐□_□)'], 'saml.xml', { type: 'text/xml' })
+    // eslint-disable-next-line testing-library/no-node-access
+    const fileInput2 = document.querySelector('input[type=file]')! as Element
+    fireEvent.change(fileInput2, { target: { files: [xmlFile] } })
+    // Assert file added to be uploaded
+    expect(await screen.findByText('saml.xml' )).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Apply' })).toBeEnabled()
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+    await waitFor(() => {
+      expect(mockedCloseDrawer).toHaveBeenLastCalledWith(false)
+    })
   })
   it('should validate file size correctly', async () => {
     const mockedCloseDrawer = jest.fn()
@@ -238,6 +251,19 @@ describe('Setup Azure Drawer', () => {
     // Assert xml file is not added to be uploaded
     expect(screen.queryByText('saml.xml')).toBeNull()
     expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled()
+
+    // Upload normal file (to prevent errors from updated state for apply button)
+    const xmlFile = new File(['(⌐□_□)'], 'saml.xml', { type: 'text/xml' })
+    // eslint-disable-next-line testing-library/no-node-access
+    const fileInput2 = document.querySelector('input[type=file]')! as Element
+    fireEvent.change(fileInput2, { target: { files: [xmlFile] } })
+    // Assert file added to be uploaded
+    expect(await screen.findByText('saml.xml' )).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Apply' })).toBeEnabled()
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+    await waitFor(() => {
+      expect(mockedCloseDrawer).toHaveBeenLastCalledWith(false)
+    })
   })
   it('should close drawer when cancel button clicked', async () => {
     const mockedCloseDrawer = jest.fn()
@@ -324,19 +350,20 @@ describe('Setup Azure Drawer', () => {
     fireEvent.change(metadataInput, { target: { value: metadataText } })
 
     await waitFor(() => {
-      expect(button).toBeEnabled()
+      expect(screen.getByRole('button', { name: 'Apply' })).toBeEnabled()
     })
-    await userEvent.click(button)
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
 
     const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
       data: { requestId: '123' },
       status: 'fulfilled'
     })]
 
-    await waitFor(()=>
-      expect(services.useAddTenantAuthenticationsMutation).toHaveLastReturnedWith(value))
     await waitFor(() => {
       expect(mockedCloseDrawer).toHaveBeenLastCalledWith(false)
+    })
+    await waitFor(() => {
+      expect(services.useAddTenantAuthenticationsMutation).toHaveLastReturnedWith(value)
     })
   })
   it('should save new metadata url correctly', async () => {
@@ -363,19 +390,20 @@ describe('Setup Azure Drawer', () => {
     fireEvent.change(metadataInput, { target: { value: 'https://test.com' } })
 
     await waitFor(() => {
-      expect(button).toBeEnabled()
+      expect(screen.getByRole('button', { name: 'Apply' })).toBeEnabled()
     })
-    await userEvent.click(button)
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
 
     const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
       data: { requestId: '123' },
       status: 'fulfilled'
     })]
 
-    await waitFor(()=>
-      expect(services.useAddTenantAuthenticationsMutation).toHaveLastReturnedWith(value))
     await waitFor(() => {
       expect(mockedCloseDrawer).toHaveBeenLastCalledWith(false)
+    })
+    await waitFor(() => {
+      expect(services.useAddTenantAuthenticationsMutation).toHaveLastReturnedWith(value)
     })
   })
   it('should save edited metadata url correctly', async () => {
@@ -405,20 +433,57 @@ describe('Setup Azure Drawer', () => {
     fireEvent.change(metadataInput, { target: { value: 'https://test.com' } })
 
     await waitFor(() => {
-      expect(button).toBeEnabled()
+      expect(screen.getByRole('button', { name: 'Apply' })).toBeEnabled()
     })
-    await userEvent.click(button)
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
 
     const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
       data: { requestId: '456' },
       status: 'fulfilled'
     })]
 
-    await waitFor(()=>
-      expect(services.useUpdateTenantAuthenticationsMutation).toHaveLastReturnedWith(value))
     await waitFor(() => {
       expect(mockedCloseDrawer).toHaveBeenLastCalledWith(false)
     })
+    await waitFor(() => {
+      expect(services.useUpdateTenantAuthenticationsMutation).toHaveLastReturnedWith(value)
+    })
+  })
+  it('should validate domain correctly', async () => {
+    const mockedCloseDrawer = jest.fn()
+    render(
+      <Provider>
+        <SetupAzureDrawer
+          title={'Edit SSO with 3rd Party Provider'}
+          visible={true}
+          isEditMode={true}
+          setEditMode={jest.fn()}
+          editData={tenantAuthenticationData}
+          setVisible={mockedCloseDrawer}
+          maxSize={CsvSize['5MB']}
+          maxEntries={512}
+          acceptType={['xml']}
+          isGroupBasedLoginEnabled={true} />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('Edit SSO with 3rd Party Provider')).toBeVisible()
+    expect(screen.getByText('IdP Metadata')).toBeVisible()
+    expect(screen.getByText('test123.xml')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Change File' })).toBeVisible()
+    expect(screen.getByText('Allowed Domains')).toBeVisible()
+
+    const input = screen.getByRole('textbox')
+    fireEvent.change(input, { target: { value: 'commscope.c' } } )
+    expect(await screen.findByText('Please enter domains separated by comma')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled()
+    fireEvent.change(input, { target: { value: 'commscope.com' } } )
+    await waitFor(() => {
+      expect(screen.queryByText('Please enter domains separated by comma')).toBeNull()
+    })
+    expect(screen.getByRole('button', { name: 'Apply' })).toBeEnabled()
   })
   it('should not save when error uploading file', async () => {
     const mockedCloseDrawer = jest.fn()
@@ -453,18 +518,93 @@ describe('Setup Azure Drawer', () => {
     fireEvent.change(metadataInput, { target: { value: metadataText } })
 
     await waitFor(() => {
-      expect(button).toBeEnabled()
+      expect(screen.getByRole('button', { name: 'Apply' })).toBeEnabled()
     })
-    await userEvent.click(button)
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
 
     const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
       isUninitialized: true
     })]
 
-    await waitFor(()=>
-      expect(services.useUpdateTenantAuthenticationsMutation).toHaveLastReturnedWith(value))
     await waitFor(() => {
       expect(mockedCloseDrawer).toHaveBeenLastCalledWith(false)
     })
+    await waitFor(() => {
+      expect(services.useUpdateTenantAuthenticationsMutation).toHaveLastReturnedWith(value)
+    })
+  })
+  it('should render correctly for selected auth type', async () => {
+    const mockedCloseDrawer = jest.fn()
+    render(
+      <Provider>
+        <SetupAzureDrawer
+          title={'Set Up SSO with 3rd Party Provider'}
+          visible={true}
+          isEditMode={false}
+          setEditMode={jest.fn()}
+          setVisible={mockedCloseDrawer}
+          maxSize={CsvSize['5MB']}
+          maxEntries={512}
+          acceptType={['xml']}
+          isGroupBasedLoginEnabled={true}
+          isGoogleWorkspaceEnabled={true} />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('Set Up SSO with 3rd Party Provider')).toBeVisible()
+    expect(screen.getByText('SAML')).toBeVisible()
+    expect(screen.getByText('Google Workspace')).toBeVisible()
+    expect(screen.getAllByRole('radio')).toHaveLength(2)
+    expect(screen.getByText('IdP Metadata')).toBeVisible()
+    expect(screen.queryByText('Client ID')).toBeNull()
+    expect(screen.queryByText('Client secret')).toBeNull()
+    expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled()
+    expect(screen.getByText('Allowed Domains')).toBeVisible()
+
+    await userEvent.click(screen.getAllByRole('radio')[1])
+    expect(screen.getByText('Client ID')).toBeVisible()
+    expect(screen.getByText('Client secret')).toBeVisible()
+    expect(screen.queryByText('IdP Metadata')).toBeNull()
+
+    await userEvent.click(screen.getAllByRole('radio')[0])
+    expect(screen.getByText('IdP Metadata')).toBeVisible()
+    expect(screen.queryByText('Client ID')).toBeNull()
+    expect(screen.queryByText('Client secret')).toBeNull()
+  })
+  it('should not allow edit for auth type', async () => {
+    const mockedCloseDrawer = jest.fn()
+    render(
+      <Provider>
+        <SetupAzureDrawer
+          title={'Edit SSO with 3rd Party Provider'}
+          visible={true}
+          isEditMode={true}
+          setEditMode={jest.fn()}
+          editData={tenantAuthenticationData}
+          setVisible={mockedCloseDrawer}
+          maxSize={CsvSize['5MB']}
+          maxEntries={512}
+          acceptType={['xml']}
+          isGroupBasedLoginEnabled={true}
+          isGoogleWorkspaceEnabled={true} />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('Edit SSO with 3rd Party Provider')).toBeVisible()
+    expect(screen.getByText('SAML')).toBeVisible()
+    expect(screen.queryByText('Google Workspace')).toBeNull()
+    expect(screen.queryByRole('radio')).toBeNull()
+    expect(screen.getByText('IdP Metadata')).toBeVisible()
+    expect(screen.queryByText('Client ID')).toBeNull()
+    expect(screen.queryByText('Client secret')).toBeNull()
+    expect(screen.getByText('test123.xml')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Change File' })).toBeVisible()
+    expect(screen.getByText('Allowed Domains')).toBeVisible()
+    expect(screen.queryByText('Please enter domains separated by comma')).toBeNull()
+    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+
   })
 })

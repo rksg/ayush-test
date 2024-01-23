@@ -11,8 +11,7 @@ import {
   Radio,
   Row,
   Space,
-  Spin,
-  Select
+  Spin
 } from 'antd'
 import _             from 'lodash'
 import { useIntl }   from 'react-intl'
@@ -20,6 +19,7 @@ import { useParams } from 'react-router-dom'
 
 import {
   Modal,
+  Select,
   Tooltip
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
@@ -36,7 +36,8 @@ import {
   getVlanString,
   NetworkVenue,
   NetworkSaveData,
-  IsNetworkSupport6g
+  IsNetworkSupport6g,
+  WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -163,6 +164,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
       <Select
         {...props}
         mode='multiple'
+        showArrow
         style={{ width: '220px' }}
       >
         <Select.Option value={RadioTypeEnum._2_4_GHz} title=''>{radioTypeEnumToString(RadioTypeEnum._2_4_GHz)}</Select.Option>
@@ -277,6 +279,18 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
       })
   }
 
+  function validateRadioBandForDsaeNetwork (radios: string[]) {
+    if (wlan?.wlanSecurity
+         && wlan?.wlanSecurity === WlanSecurityEnum.WPA23Mixed
+         && radios.length
+         && radios.length === 1
+         && radios.includes(RadioTypeEnum._6_GHz)) {
+      return Promise.reject($t({ defaultMessage:
+        'Configure a Venue using only 6 GHz, in WPA2/WPA3 Mixed Mode DPSK Network, requires a combination of other Radio Bands. To use 6 GHz, other radios must be added.' }))
+    }
+    return Promise.resolve()
+  }
+
   return (
     <Modal
       {...props}
@@ -325,7 +339,10 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
                     </Form.Item>
                     <Form.Item name='allApGroupsRadioTypes'
                       label={$t({ defaultMessage: 'Radio Band' })}
-                      rules={[{ required: true }]}
+                      rules={[{ required: true },
+                        {
+                          validator: (_, value) => validateRadioBandForDsaeNetwork(value)
+                        }]}
                       labelCol={{ span: 5 }}>
                       <RadioSelect />
                     </Form.Item>

@@ -78,7 +78,7 @@ export function ClientAdmissionControlSettings () {
   const [venue, setVenue] = useState({} as VenueExtended)
 
   useEffect(() => {
-    if(apDetails) {
+    if(apDetails && !getApClientAdmissionControl.isLoading) {
       const venueId = apDetails.venueId
       const setData = async () => {
         const apVenue = (await getVenue({ params: { tenantId, venueId } }, true).unwrap())

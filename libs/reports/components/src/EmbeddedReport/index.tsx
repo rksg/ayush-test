@@ -3,27 +3,27 @@ import { useEffect, useState } from 'react'
 import { embedDashboard, EmbeddedDashboard } from '@superset-ui/embedded-sdk'
 import moment                                from 'moment'
 
-import { System, useSystems }                 from '@acx-ui/analytics/services'
-import { getUserProfile as getUserProfileRA } from '@acx-ui/analytics/utils'
-import { useAnalyticsFilter }                 from '@acx-ui/analytics/utils'
-import { RadioBand, Loader, showActionModal } from '@acx-ui/components'
-import { get }                                from '@acx-ui/config'
-import { useIsSplitOn, Features }             from '@acx-ui/feature-toggle'
-import { useParams }                          from '@acx-ui/react-router-dom'
+import { SystemMap, useSystems }                                  from '@acx-ui/analytics/services'
+import { getUserProfile as getUserProfileRA, useAnalyticsFilter } from '@acx-ui/analytics/utils'
+import type { UserProfile as UserProfileRA }                      from '@acx-ui/analytics/utils'
+import { RadioBand, Loader, showActionModal }                     from '@acx-ui/components'
+import { get }                                                    from '@acx-ui/config'
+import { useIsSplitOn, Features }                                 from '@acx-ui/feature-toggle'
 import {
   useGuestTokenMutation,
   useEmbeddedIdMutation
 } from '@acx-ui/reports/services'
 import { useReportsFilter }                                                   from '@acx-ui/reports/utils'
 import { REPORT_BASE_RELATIVE_URL }                                           from '@acx-ui/store'
-import { getUserProfile as getUserProfileR1 }                                 from '@acx-ui/user'
+import { getUserProfile as getUserProfileR1, UserProfile as UserProfileR1 }   from '@acx-ui/user'
 import { useDateFilter, getJwtToken, NetworkPath, getIntl, useLocaleContext } from '@acx-ui/utils'
 
 import {
   bandDisabledReports,
   ReportType,
   reportTypeDataStudioMapping,
-  reportModeMapping
+  reportTypeMapping,
+  networkFilterDisabledReports
 } from '../mapping/reportsMapping'
 
 interface ReportProps {
@@ -32,20 +32,26 @@ interface ReportProps {
   hideHeader?: boolean;
 }
 
+type CommonUserProfile = Pick<UserProfileRA,
+  'firstName' | 'lastName' | 'email' | 'userId' | 'selectedTenant'>
+  & Pick<UserProfileR1, 'externalId' | 'tenantId'>
+
 export function convertDateTimeToSqlFormat (dateTime: string): string {
   return moment.utc(dateTime).format('YYYY-MM-DD HH:mm:ss')
 }
 
 const getReportType = (reportName: ReportType) => {
-  const mode = reportModeMapping[reportName]
+  const mode = reportTypeMapping[reportName]
   const isApReport = ['ap', 'both'].includes(mode)
   const isSwitchReport = ['switch', 'both'].includes(mode)
   const isRadioBandDisabled = bandDisabledReports.includes(reportName)
+  const isNetworkFilterDisabled = networkFilterDisabledReports.includes(reportName)
 
   return {
     isApReport,
     isSwitchReport,
-    isRadioBandDisabled
+    isRadioBandDisabled,
+    isNetworkFilterDisabled
   }
 }
 
@@ -64,11 +70,18 @@ export const getSupersetRlsClause = (
   paths?: NetworkPath[],
   radioBands?: RadioBand[]
 ) => {
-  const { isApReport, isSwitchReport, isRadioBandDisabled } = getReportType(reportName)
+  const { isApReport,
+    isSwitchReport,
+    isRadioBandDisabled,
+    isNetworkFilterDisabled } = getReportType(reportName)
   const clause = {
     radioBandClause: '',
     networkClause: ''
   }
+
+  // If networkFilter is not shown, do not read it from URL
+  // Reports like Overview and WLAN does not support network filter
+  if (isNetworkFilterDisabled) return clause
 
   if (radioBands?.length && isApReport && !isRadioBandDisabled) {
     const radioBandClause = ` "band" in (${radioBands
@@ -141,13 +154,18 @@ export const getSupersetRlsClause = (
 
 export const getRLSClauseForSA = (
   paths: NetworkPath,
-  system: System[] | undefined,
+  systemMap: SystemMap | undefined,
   reportName: ReportType
 ) => {
 
-  const { isApReport, isSwitchReport } = getReportType(reportName)
-  const switchReportKeys = ['system', 'domain', 'switchGroup', 'switchSubGroup', 'switch']
-  const apReportKeys = ['system', 'domain', 'zone', 'apGroup', 'AP']
+  const { isNetworkFilterDisabled } = getReportType(reportName)
+
+  // If networkFilter is not shown, do not read it from URL
+  // Reports like Overview and WLAN does not support network filter
+  if (isNetworkFilterDisabled) return {
+    radioBandClause: '',
+    networkClause: ''
+  }
 
   // Initialize an empty object to group conditions by type
   const sqlConditionsByType: Record<string, string[]> = {}
@@ -163,26 +181,27 @@ export const getRLSClauseForSA = (
       sqlConditionsByType[type] = []
     }
 
-    const { list } = item as unknown as { list: string[] }
-    if (list && list.length) {
-      if (isApReport && type.toUpperCase() === 'AP') {
-        sqlConditionsByType[type].push(`"apMac" IN ('${list.join("', '")}')`)
-      }
-      if (isSwitchReport && type === 'switch') {
-        sqlConditionsByType[type].push(`"switchId" IN ('${list.join("', '")}')`)
-      }
-    } else {
-      if (type === 'system') {
-        const systemId = system?.find(s => s.deviceName === name)?.deviceId
-        if (systemId) {
-          sqlConditionsByType[type].push(`"${type}" = '${systemId}'`)
+    switch (type) {
+      case 'system':
+        const systems = systemMap?.[name]
+        if (systems) {
+          systems.forEach(({ deviceId }) => {
+            sqlConditionsByType[type].push(`"${type}" = '${deviceId}'`)
+          })
         }
-      } else {
-        if ((isApReport && apReportKeys.includes(type)) ||
-          (isSwitchReport && switchReportKeys.includes(type))) {
-          sqlConditionsByType[type].push(`"${type}" = '${name}'`)
-        }
-      }
+        break
+      case 'domain':
+        sqlConditionsByType[type].push(`"domains" like '%${name}%'`)
+        break
+      case 'AP':
+        sqlConditionsByType[type].push(`"apMac" = '${name}'`)
+        break
+      case 'switch':
+        sqlConditionsByType[type].push(`"switchId" = '${name}'`)
+        break
+      default:
+        sqlConditionsByType[type].push(`"${type}" = '${name}'`)
+        break
     }
   })
 
@@ -193,7 +212,9 @@ export const getRLSClauseForSA = (
   for (const type in sqlConditionsByType) {
     if (sqlConditionsByType.hasOwnProperty(type)) {
       const conditions = sqlConditionsByType[type]
-      sqlConditions.push(`${conditions.join(' OR ')}`)
+      let joinedConditions = conditions.join(' OR ')
+      if (conditions.length > 1) joinedConditions = `(${joinedConditions})`
+      sqlConditions.push(joinedConditions)
     }
   }
 
@@ -202,12 +223,9 @@ export const getRLSClauseForSA = (
     networkClause: sqlConditions.filter(Boolean)
       .join(' AND ')
       .replace(/\bzone\b/g, 'zoneName')
-      .replace(/\bdomain\b/g, 'domains')
       .replace(/\bapGroup\b/g, 'apGroupName')
       .replace(/\bswitchGroup\b/g, 'switchGroupLevelOneName')
-      .replace(/\bswitchSubGroup\b/g, 'switchGroupLevelTwoName')
-      .replace(/\bap\b/g, 'apMac')
-      .replace(/\bswitch\b/g, 'switchId'),
+      .replace(/\bswitchSubGroup\b/g, 'switchGroupLevelTwoName'),
     radioBandClause: null
   }
 }
@@ -217,8 +235,6 @@ export function EmbeddedReport (props: ReportProps) {
 
   const isRA = get('IS_MLISA_SA')
   const embedDashboardName = reportTypeDataStudioMapping[reportName]
-
-  const params = useParams()
   const systems = useSystems()
 
   const [ guestToken ] = useGuestTokenMutation()
@@ -227,11 +243,12 @@ export function EmbeddedReport (props: ReportProps) {
   const { pathFilters: { path } } = useAnalyticsFilter()
   const { filters: { paths, bands } } = useReportsFilter()
 
-  const [dashboardEmbeddedId, setDashboardEmbeddedId] = useState('')
+  const [dashboardEmbeddedId, setDashboardEmbeddedId] = useState<string|null>(null)
 
-  const { firstName, lastName, email } = isRA
-    ? getUserProfileRA()
-    : getUserProfileR1().profile
+  const { firstName, lastName, email, externalId,
+    tenantId, userId, selectedTenant } = isRA
+    ? getUserProfileRA() as unknown as CommonUserProfile
+    : getUserProfileR1().profile as unknown as CommonUserProfile
 
   const defaultLocale = 'en'
   const localeContext = useLocaleContext()
@@ -284,7 +301,7 @@ export function EmbeddedReport (props: ReportProps) {
     const { networkClause, radioBandClause } = isRA
       ? getRLSClauseForSA(
         path,
-        systems.data?.networkNodes,
+        systems.data,
         reportName
       )
       : getSupersetRlsClause(
@@ -293,13 +310,6 @@ export function EmbeddedReport (props: ReportProps) {
         bands as RadioBand[]
       )
 
-    // eslint-disable-next-line no-console
-    console.log(
-      '%c[%s][EmbeddedReport] -> Refreshing guest token for [%s]',
-      'color: cyan',
-      new Date().toLocaleString(),
-      embedDashboardName
-    )
     const guestTokenPayload = {
       user: {
         firstName,
@@ -322,7 +332,13 @@ export function EmbeddedReport (props: ReportProps) {
             '"__time"',
             '<',
             `'${convertDateTimeToSqlFormat(endDate)}'`,
-            ...(params?.tenantId ? ['AND', `'${params?.tenantId}' = '${params?.tenantId}'`] : [])
+            ...(
+              isRA
+                ? ['AND', `'${userId}' = '${userId}'`, 'AND',
+                  `'${selectedTenant.id}' = '${selectedTenant.id}'`] // For RAI, selectedTenant id to cover supertenant use case
+                : ['AND', `'${tenantId}' = '${tenantId}'`,
+                  'AND', `'${externalId}' = '${externalId}'` ] // For R1, externalId is userId
+            )
           ].join(' ')
         },
         ...(rlsClause || networkClause || radioBandClause
@@ -339,6 +355,13 @@ export function EmbeddedReport (props: ReportProps) {
           : [])
       ]
     }
+    // eslint-disable-next-line no-console
+    console.log(
+      '%c[%s][EmbeddedReport] -> Refreshing guest token for [%s]',
+      'color: green',
+      new Date().toLocaleString(),
+      embedDashboardName
+    )
     return await guestToken({ payload: guestTokenPayload }).unwrap()
   }
 
@@ -353,14 +376,14 @@ export function EmbeddedReport (props: ReportProps) {
       id: dashboardEmbeddedId,
       supersetDomain: `${HOST_NAME}${REPORT_BASE_RELATIVE_URL}`,
       mountPoint: document.getElementById(
-        `acx-report-${embedDashboardName}`
+        `acx-report-${dashboardEmbeddedId}`
       )!,
       fetchGuestToken: () => fetchGuestTokenFromBackend(),
       dashboardUiConfig: {
         hideChartControls: true,
         hideTitle: hideHeader ?? true
       },
-      // debug: true
+      // debug: true, // Enable this for debugging
       authToken: jwtToken ? `Bearer ${jwtToken}` : undefined,
       locale // i18n locale from R1
     })
@@ -369,7 +392,7 @@ export function EmbeddedReport (props: ReportProps) {
         const { height } = await embObj.getScrollSize()
         if (height > 0) {
           const iframeElement = document.querySelector(
-            `div[id="acx-report-${embedDashboardName}"] > iframe`
+            `div[id="acx-report-${dashboardEmbeddedId}"] > iframe`
           )
           if (iframeElement) {
             iframeElement.setAttribute(
@@ -382,13 +405,23 @@ export function EmbeddedReport (props: ReportProps) {
     })
     return () => {
       if (timer) clearTimeout(timer)
+      if (embeddedObj) embeddedObj.then((embObj) => {
+        // eslint-disable-next-line no-console
+        console.log(
+          '%c[%s][EmbeddedReport] -> Unmounting dashboard [%s]',
+          'color: yellow',
+          new Date().toLocaleString(),
+          embedDashboardName
+        )
+        embObj.unmount()
+      })
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startDate, endDate, paths, bands, path, dashboardEmbeddedId, systems.status, locale])
 
   return (
     <Loader>
-      <div id={`acx-report-${embedDashboardName}`} className='acx-report' />
+      <div id={`acx-report-${dashboardEmbeddedId}`} className='acx-report' />
     </Loader>
   )
 }

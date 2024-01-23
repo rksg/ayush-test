@@ -110,7 +110,8 @@ export function SwitchForm () {
   const [disableIpSetting, setDisableIpSetting] = useState(false)
   const dataFetchedRef = useRef(false)
   const [previousPath, setPreviousPath] = useState('')
-  const [currentFW, setCurrentFw] = useState('')
+  const [currentFW, setCurrentFW] = useState('')
+  const [currentAboveTenFW, setCurrentAboveTenFW] = useState('')
 
   const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
 
@@ -184,8 +185,11 @@ export function SwitchForm () {
     setVenueId(value)
     if (venuesList && venuesList.data) {
       // eslint-disable-next-line max-len
-      const venueFw = venuesList.data?.data?.find(venue => venue.id === value)?.switchFirmwareVersion?.id
-      setCurrentFw(venueFw || '')
+      const venueFW = venuesList.data?.data?.find(venue => venue.id === value)?.switchFirmwareVersion?.id
+      // eslint-disable-next-line max-len
+      const venueAboveTenFW = venuesList.data?.data?.find(venue => venue.id === value)?.switchFirmwareVersionAboveTen?.id
+      setCurrentFW(venueFW || '')
+      setCurrentAboveTenFW(venueAboveTenFW || '')
     }
 
     const vlansByVenue = value ?
@@ -455,6 +459,8 @@ export function SwitchForm () {
                   <SwitchUpgradeNotification
                     isDisplay={!_.isEmpty(switchModel)}
                     isDisplayHeader={true}
+                    venueFirmware={currentFW}
+                    venueAboveTenFirmware={currentAboveTenFW}
                     type={switchRole === MEMEBER_TYPE.STANDALONE ?
                       SWITCH_UPGRADE_NOTIFICATION_TYPE.SWITCH :
                       SWITCH_UPGRADE_NOTIFICATION_TYPE.STACK}
@@ -583,7 +589,7 @@ export function SwitchForm () {
                   </>}
                   children={
                     <Select
-                      disabled={dhcpClientOption.length < 1}
+                      disabled={dhcpClientOption?.length < 1}
                       options={[
                         { label: $t({ defaultMessage: 'Select VLAN...' }), value: null },
                         ...dhcpClientOption

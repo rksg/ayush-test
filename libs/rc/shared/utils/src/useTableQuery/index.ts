@@ -42,7 +42,7 @@ export interface TABLE_QUERY <
   defaultPayload: Partial<Payload>
   useQuery: UseQuery<
     TableResult<ResultType, ResultExtra>,
-    { params: Params<string>, payload: Payload }
+    { params: Params<string>, payload: Payload, customHeaders?: Record<string,unknown> }
   >
   apiParams?: Record<string, string>
   pagination?: Partial<PAGINATION>
@@ -51,6 +51,7 @@ export interface TABLE_QUERY <
   rowKey?: string
   option?: UseQueryOptions
   enableSelectAllPagesData?: string[] // query fields for all data
+  customHeaders?: Record<string,unknown> // api versioning
 }
 export type PAGINATION = {
   page: number,
@@ -159,7 +160,8 @@ export function useTableQuery <
   const params = useParams()
   const api = option.useQuery({
     params: { ...params, ...option.apiParams },
-    payload: payload
+    payload: payload,
+    customHeaders: option?.customHeaders
   }, option.option)
 
   const getAllDataApi = option.enableSelectAllPagesData && option.useQuery({
@@ -169,7 +171,8 @@ export function useTableQuery <
       fields: option.enableSelectAllPagesData,
       page: 1,
       pageSize: TABLE_MAX_PAGE_SIZE
-    }
+    },
+    customHeaders: option?.customHeaders
   }, option.option)
 
   useEffect(() => {
@@ -295,12 +298,17 @@ export interface NewAPITableResult<T>{
 interface CreateNewTableHttpRequestProps {
   apiInfo: ApiInfo
   params?: Params<string>
-  payload?: TableChangePayload
+  payload?: TableChangePayload,
+  headers?: Record<string,unknown>
 }
 
 export function createNewTableHttpRequest (props: CreateNewTableHttpRequestProps) {
-  const { apiInfo, params = {}, payload } = props
-  return createHttpRequest(apiInfo, { ...params, ...transferToNewTablePaginationParams(payload) })
+  const { apiInfo, params = {}, payload, headers = {} } = props
+  return createHttpRequest(
+    apiInfo,
+    { ...params, ...transferToNewTablePaginationParams(payload) },
+    headers
+  )
 }
 
 export function transferToTableResult<T> (newResult: NewTableResult<T>): TableResult<T> {

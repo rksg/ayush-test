@@ -1,15 +1,17 @@
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, PageHeader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { Button, Loader, PageHeader, showActionModal, Table, TableColumn, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
 import {
   useDeleteTunnelProfileMutation,
+  useGetEdgeSdLanViewDataListQuery,
   useGetNetworkSegmentationViewDataListQuery,
   useGetTunnelProfileViewDataListQuery,
   useNetworkListQuery
 }                                    from '@acx-ui/rc/services'
-import { getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, MtuTypeEnum, PolicyOperation, PolicyType, TunnelProfileViewData, useTableQuery } from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useTenantLink, useParams }                                                                                          from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                                                                                                                        from '@acx-ui/user'
+import { getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, isDefaultTunnelProfile, MtuTypeEnum, PolicyOperation, PolicyType, TunnelProfileViewData, useTableQuery } from '@acx-ui/rc/utils'
+import { Path, TenantLink, useNavigate, useTenantLink }                                                                                                                             from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess }                                                                                                                                                from '@acx-ui/user'
 const defaultTunnelProfileTablePayload = {}
 
 const TunnelProfileTable = () => {
@@ -17,7 +19,7 @@ const TunnelProfileTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath: Path = useTenantLink('')
-  const params = useParams()
+  const isSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
   const tableQuery = useTableQuery({
     useQuery: useGetTunnelProfileViewDataListQuery,
     defaultPayload: defaultTunnelProfileTablePayload,
@@ -57,6 +59,23 @@ const TunnelProfileTable = () => {
         : []
     })
   })
+
+  const { sdLanOptions } = useGetEdgeSdLanViewDataListQuery({
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC',
+      pageSize: 10000
+    }
+  }, {
+    skip: !isSdLanReady,
+    selectFromResult: ({ data }) => ({
+      sdLanOptions: data?.data
+        ? data.data.map(item => ({ key: item.id, value: item.name }))
+        : []
+    })
+  })
+
   const [deleteTunnelProfile] = useDeleteTunnelProfileMutation()
 
   const columns: TableProps<TunnelProfileViewData>['columns'] = [
@@ -110,6 +129,18 @@ const TunnelProfileTable = () => {
       sorter: true,
       render: (_, row) => row.personalIdentityNetworkIds?.length || 0
     },
+    ...(isSdLanReady
+      ? [{
+        title: $t({ defaultMessage: 'SD-LAN' }),
+        key: 'sdLanIds',
+        dataIndex: 'sdLanIds',
+        align: 'center',
+        filterable: sdLanOptions,
+        sorter: true,
+        render: (_, row) => row.sdLanIds?.length || 0
+      }] as TableColumn<TunnelProfileViewData, 'text'>[]
+      : []
+    ),
     {
       title: $t({ defaultMessage: 'Networks' }),
       key: 'networkIds',
@@ -132,8 +163,9 @@ const TunnelProfileTable = () => {
 
   const rowActions: TableProps<TunnelProfileViewData>['rowActions'] = [
     {
+      // Default Tunnel profile cannot Edit
       visible: (selectedRows) => selectedRows.length === 1
-        && selectedRows[0].id !== params.tenantId, // Default Tunnel profile cannot Edit
+            && !isDefaultTunnelProfile(selectedRows[0]),
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
         navigate({

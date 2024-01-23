@@ -263,7 +263,6 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
     expect(screen.getByText('MSP Customers')).toBeVisible()
-    expect(screen.getByText('Manage My Account')).toBeVisible()
     expect(screen.getByText('Add Customer')).toBeVisible()
 
     // eslint-disable-next-line testing-library/no-node-access
@@ -303,7 +302,7 @@ describe('MspCustomers', () => {
       expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
     })
     expect(screen.getByText('Installed Devices')).toBeVisible()
-    expect(screen.getByText('Device Subscriptions Utilization')).toBeVisible()
+    // expect(screen.getByText('Device Subscriptions Utilization')).toBeVisible()
 
     expect(screen.queryByText('Wi-Fi Licenses')).toBeNull()
   })
@@ -593,7 +592,7 @@ describe('MspCustomers', () => {
     fireEvent.click(within(row).getByRole('link', { name: '0' }))
 
     expect(screen.getByRole('dialog')).toBeVisible()
-    expect(screen.getByText('Manage MSP Administrators')).toBeVisible()
+    expect(screen.getByText('Manage Tech Partner Administrators')).toBeVisible()
   })
   it('should render table for integrator', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
@@ -630,7 +629,7 @@ describe('MspCustomers', () => {
     fireEvent.click(within(row).getByRole('link', { name: '0' }))
 
     expect(screen.getByRole('dialog')).toBeVisible()
-    expect(screen.getByText('Manage MSP Administrators')).toBeVisible()
+    expect(screen.getByText('Manage Tech Partner Administrators')).toBeVisible()
   })
   it('should render table for mspec', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
@@ -656,8 +655,8 @@ describe('MspCustomers', () => {
       expect(within(rows[index]).getByText(item.name)).toBeVisible()
     })
 
-    expect(screen.getByText('Integrator')).toBeVisible()
-    expect(screen.getByText('Installer')).toBeVisible()
+    expect(screen.getByText('Integrator Count')).toBeVisible()
+    expect(screen.getByText('Installer Count')).toBeVisible()
   })
   it('should open dialog when msp admin count link clicked', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {

@@ -23,7 +23,7 @@ jest.mock('@acx-ui/user', () => ({
     {...props}
     data-testid='user-profile-provider'
   />,
-  useUserProfileContext: () => ({ allowedOperations: ['some-operation'] })
+  useUserProfileContext: () => ({ allowedOperations: ['some-operation'], accountTier: 'Gold' })
 }))
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
@@ -34,6 +34,7 @@ jest.mock('@acx-ui/utils', () => ({
   />,
   useLocaleContext: () => ({ messages: { 'en-US': { lang: 'Language' } } })
 }))
+
 const renderPendo = jest.mocked(require('@acx-ui/utils').renderPendo)
 
 describe('bootstrap.init', () => {
@@ -53,6 +54,12 @@ describe('bootstrap.init', () => {
     email: 'email1',
     companyName: 'companyName1'
   }
+  const tenantData = {
+    id: '9c2718296e134c628c0c8949b1f87f3b',
+    externalId: '0012h00000oNjOXAA0',
+    name: 'msp.demo'
+  }
+
   beforeEach(() => {
     mockServer.use(
       rest.get(
@@ -62,11 +69,26 @@ describe('bootstrap.init', () => {
         } }))
       ),
       rest.get(
+        AdministrationUrlsInfo.getTenantDetails.url,
+        (_req, res, ctx) => res(ctx.json({
+          ...tenantData
+        }))
+      ),
+      rest.get(
         UserUrlsInfo.getUserProfile.url,
         (_req, res, ctx) => res(ctx.json({
           ...data,
           preferredLanguage: 'en-US'
         }))
+      ),
+      rest.get(UserUrlsInfo.getAccountTier.url as string,
+        (req, res, ctx) => {
+          return res(ctx.json({ acx_account_tier: 'Gold' }))
+        }
+      ),
+      rest.get(
+        UserUrlsInfo.getBetaStatus.url,
+        (_req, res, ctx) => res(ctx.status(200))
       )
     )
   })
@@ -87,7 +109,7 @@ describe('bootstrap.init', () => {
         id: '9c2718296e134c628c0c8949b1f87f3b',
         name: 'companyName1',
         productName: 'RuckusOne',
-        sfdcId: '0032h00000gXuBNAA0'
+        sfdcId: '0012h00000oNjOXAA0'
       },
       visitor: {
         delegated: false,

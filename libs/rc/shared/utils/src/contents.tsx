@@ -3,7 +3,7 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 import {
   DHCPConfigTypeEnum
 } from './constants'
-import { BridgeServiceEnum } from './models'
+import { BridgeServiceEnum } from './models/BridgeServiceEnum'
 
 export enum PskWlanSecurityEnum {
   WPA2Personal = 'WPA2 (Recommended)',
@@ -11,6 +11,11 @@ export enum PskWlanSecurityEnum {
   WPA23Mixed = 'WPA2/WPA3 mixed mode',
   WPAPersonal = 'WPA',
   WEP = 'WEP'
+}
+
+export enum AAAWlanSecurityEnum {
+  WPA2Enterprise = 'WPA2 (Recommended)',
+  WPA3 = 'WPA3'
 }
 
 export enum SecurityOptionsDescription {

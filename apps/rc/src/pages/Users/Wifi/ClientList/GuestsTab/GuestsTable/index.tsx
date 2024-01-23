@@ -16,9 +16,9 @@ import {
   Table,
   TableProps,
   Loader } from '@acx-ui/components'
-import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                       from '@acx-ui/formatter'
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                    from '@acx-ui/formatter'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType, NetworkForm } from '@acx-ui/rc/components'
 import {
   useGetGuestsListQuery,
   useNetworkListQuery,
@@ -41,7 +41,6 @@ import { RolesEnum, RequestPayload }                          from '@acx-ui/type
 import { filterByAccess, GuestErrorRes, hasAccess, hasRoles } from '@acx-ui/user'
 import { getIntl  }                                           from '@acx-ui/utils'
 
-import NetworkForm                           from '../../../../../Networks/wireless/NetworkForm/NetworkForm'
 import { defaultGuestPayload, GuestsDetail } from '../GuestsDetail'
 import { GenerateNewPasswordModal }          from '../GuestsDetail/generateNewPasswordModal'
 import { useGuestActions }                   from '../GuestsDetail/guestActions'
@@ -77,6 +76,7 @@ export const GuestsTable = () => {
     includeExpired: ['true']
   }
   const { setGuestCount } = useContext(GuestTabContext)
+
 
   const queryOptions = {
     defaultPayload: {
@@ -127,11 +127,13 @@ export const GuestsTable = () => {
   const [currentGuest, setCurrentGuest] = useState({} as Guest)
   const [guestDetail, setGuestDetail] = useState({} as Guest)
   const [allowedNetworkList, setAllowedNetworkList] = useState<Network[]>([])
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
 
   const [importVisible, setImportVisible] = useState(false)
   const [importCsv, importResult] = useImportGuestPassMutation()
 
   const { handleGuestPassResponse } = useHandleGuestPassResponse({ tenantId: params.tenantId! })
+  const HAEmailList_FeatureFlag = useIsSplitOn(Features.HOST_APPROVAL_EMAIL_LIST_TOGGLE)
 
   const guestTypeFilterOptions = Object.values(GuestTypesEnum)
     .filter(gtype => gtype!==GuestTypesEnum.HOST_GUEST)
@@ -281,11 +283,22 @@ export const GuestsTable = () => {
           ? <span style={{ color: cssStr('--acx-semantics-red-50') }}>{guestStatus}</span>
           : guestStatus
       }
-    }
+    },
+    ...( HAEmailList_FeatureFlag ? [
+      {
+        key: 'Approver',
+        title: $t({ defaultMessage: 'Approver' }),
+        dataIndex: 'hostApprovalEmail'
+      }
+    ]: [])
   ]
 
   const onClose = () => {
     setVisible(false)
+  }
+
+  const clearSelection = () => {
+    setSelectedRowKeys([])
   }
 
   const rowActions: TableProps<Guest>['rowActions'] = isReadOnly ? [
@@ -299,7 +312,7 @@ export const GuestsTable = () => {
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows) => {
-        guestAction.showDeleteGuest(selectedRows, params.tenantId)
+        guestAction.showDeleteGuest(selectedRows, params.tenantId, clearSelection)
       }
     },
     {
@@ -315,8 +328,9 @@ export const GuestsTable = () => {
         const guestDetail = selectedRows[0]
         const flag = (guestDetail.guestStatus?.indexOf(GuestStatusEnum.ONLINE) !== -1) ||
         ((guestDetail.guestStatus === GuestStatusEnum.OFFLINE) &&
-          guestDetail.networkId && !guestDetail.socialLogin)
-
+          guestDetail.networkId &&
+          guestDetail.guestType !== GuestTypesEnum.SELF_SIGN_IN &&
+          guestDetail.guestType !== GuestTypesEnum.HOST_GUEST)
         return Boolean(flag)
       },
       onClick: (selectedRows) => {
@@ -378,6 +392,7 @@ export const GuestsTable = () => {
         rowKey='id'
         rowActions={rowActions}
         rowSelection={{
+          selectedRowKeys,
           type: 'checkbox'
         }}
         actions={filterByAccess([{

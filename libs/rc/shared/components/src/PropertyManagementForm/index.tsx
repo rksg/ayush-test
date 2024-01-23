@@ -25,10 +25,9 @@ import {
   ResidentPortalType
 } from '@acx-ui/rc/utils'
 
-import { IdentityGroupLink, ResidentPortalLink } from '../CommonLinkHelper'
-import { PersonaGroupDrawer }                    from '../PersonaGroupDrawer'
-import { PersonaGroupSelect }                    from '../PersonaGroupSelect'
-import { TemplateSelector }                      from '../TemplateSelector'
+import { IdentityGroupLink, ResidentPortalLink }  from '../CommonLinkHelper'
+import { TemplateSelector }                       from '../TemplateSelector'
+import { PersonaGroupSelect, PersonaGroupDrawer } from '../users'
 
 import { AddResidentPortalModal }            from './AddResidentPortalModal'
 import { showDeletePropertyManagementModal } from './DeletePropertyManagementModal'
@@ -103,7 +102,7 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
   const { data: venueData } = useGetVenueQuery({ params: { tenantId, venueId } })
   const propertyConfigsQuery = useGetPropertyConfigsQuery(
     { params: { venueId } },
-    { skip: !!!venueId }
+    { skip: !venueId }
   )
   const propertyNotFound = useMemo(() =>
     (propertyConfigsQuery?.error as FetchBaseQueryError)?.status === 404,
@@ -119,7 +118,7 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
       sortOrder: 'ASC'
     }
   },{
-    skip: !!!venueId,
+    skip: !venueId,
     selectFromResult: ({ data }) => {
       return {
         hasUnits: (data?.totalCount ?? -1) > 0
@@ -128,7 +127,7 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
   })
   const { data: personaGroup } = useGetPersonaGroupByIdQuery(
     { params: { groupId: propertyConfigs?.personaGroupId } },
-    { skip: !!!propertyConfigs?.personaGroupId }
+    { skip: !propertyConfigs?.personaGroupId }
   )
   const { data: residentPortalList } = useGetResidentPortalListQuery({
     payload: { page: 1, pageSize: 10000, sortField: 'name', sortOrder: 'ASC' }
@@ -375,7 +374,8 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
                   rules={[{ required: true }]}
                   children={
                     <Select
-                      disabled={hasUnits}
+                      disabled={hasUnits
+                        && initialValues.residentPortalType !== ResidentPortalType.NO_PORTAL}
                       options={residentPortalTypeOptions}
                     />
                   }
@@ -389,6 +389,7 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
                       rules={[{ required: true }]}
                       children={
                         hasUnits
+                        && initialValues.residentPortalType === ResidentPortalType.RUCKUS_PORTAL
                           ? <ResidentPortalLink
                             id={residentPortalId}
                             name={residentPortalList?.data
@@ -406,7 +407,8 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
                     />
                     <Form.Item
                       noStyle
-                      hidden={hasUnits}
+                      hidden={hasUnits
+                        && initialValues.residentPortalType === ResidentPortalType.RUCKUS_PORTAL}
                     >
                       <Button
                         type={'link'}

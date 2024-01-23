@@ -25,12 +25,6 @@ export const AaaUrls: { [key: string]: ApiInfo } = {
     url: '/radiusServerProfiles/:policyId',
     newApi: true
   },
-  getAAAPolicyList: {
-    method: 'get',
-    oldUrl: '/api/tenant/:tenantId/wifi/radius',
-    url: '/radiusServerProfiles',
-    newApi: true
-  },
   getAAAPolicyViewModelList: {
     method: 'post',
     oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedRadiusServerProfiles/query',

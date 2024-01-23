@@ -13,7 +13,6 @@ import {
   within
 } from '@acx-ui/test-utils'
 import { getUserProfile, setUserProfile } from '@acx-ui/user'
-import { DateRange }                      from '@acx-ui/utils'
 
 import {
   AllowedNetworkList,
@@ -32,15 +31,6 @@ describe.skip('Guest Table', () => {
   let params: { tenantId: string }
   global.URL.createObjectURL = jest.fn()
   HTMLAnchorElement.prototype.click = jest.fn()
-
-  const mockDateFilter = {
-    range: DateRange.allTime,
-    setRange: () => { },
-    startDate: '',
-    setStartDate: () => { },
-    endDate: '',
-    setEndDate: () => { }
-  }
 
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -75,12 +65,13 @@ describe.skip('Guest Table', () => {
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable dateFilter={mockDateFilter} />
+          <GuestsTable />
         </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
     await screen.findByText('test1')
+    jest.runOnlyPendingTimers()
     jest.useRealTimers()
   })
 
@@ -89,7 +80,7 @@ describe.skip('Guest Table', () => {
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable dateFilter={mockDateFilter} />
+          <GuestsTable />
         </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
@@ -104,7 +95,7 @@ describe.skip('Guest Table', () => {
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable dateFilter={mockDateFilter} />
+          <GuestsTable />
         </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
@@ -122,7 +113,7 @@ describe.skip('Guest Table', () => {
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable dateFilter={mockDateFilter} />
+          <GuestsTable />
         </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
@@ -140,7 +131,7 @@ describe.skip('Guest Table', () => {
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable dateFilter={mockDateFilter} />
+          <GuestsTable />
         </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
@@ -156,7 +147,7 @@ describe.skip('Guest Table', () => {
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable dateFilter={mockDateFilter} />
+          <GuestsTable />
         </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
@@ -173,7 +164,7 @@ describe.skip('Guest Table', () => {
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable dateFilter={mockDateFilter} />
+          <GuestsTable />
         </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
@@ -190,7 +181,7 @@ describe.skip('Guest Table', () => {
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable dateFilter={mockDateFilter} />
+          <GuestsTable />
         </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' },
@@ -211,7 +202,7 @@ describe.skip('Guest Table', () => {
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable dateFilter={mockDateFilter} />
+          <GuestsTable />
         </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
@@ -274,7 +265,7 @@ describe.skip('Guest Table', () => {
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable dateFilter={mockDateFilter} />
+          <GuestsTable />
         </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
@@ -327,7 +318,7 @@ describe.skip('Guest Table', () => {
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable dateFilter={mockDateFilter} />
+          <GuestsTable />
         </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
@@ -349,7 +340,7 @@ describe.skip('Guest Table', () => {
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable dateFilter={mockDateFilter} />
+          <GuestsTable />
         </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
@@ -366,7 +357,7 @@ describe.skip('Guest Table', () => {
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable dateFilter={mockDateFilter} />
+          <GuestsTable />
         </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
@@ -393,7 +384,7 @@ describe.skip('Guest Table', () => {
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable dateFilter={mockDateFilter} />
+          <GuestsTable />
         </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
@@ -432,7 +423,7 @@ describe.skip('Guest Table', () => {
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable dateFilter={mockDateFilter} />
+          <GuestsTable />
         </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }

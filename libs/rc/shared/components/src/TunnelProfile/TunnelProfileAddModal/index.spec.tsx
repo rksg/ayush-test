@@ -1,12 +1,18 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { TunnelProfileUrls }                           from '@acx-ui/rc/utils'
-import { Provider }                                    from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
+import { TunnelProfileFormType, TunnelProfileUrls, TunnelTypeEnum } from '@acx-ui/rc/utils'
+import { Provider }                                                 from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within }              from '@acx-ui/test-utils'
+
+import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 
 import { TunnelProfileAddModal } from './'
 
+jest.mock('../../useEdgeActions', () => ({
+  ...jest.requireActual('../../useEdgeActions'),
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
 describe('NetworkSegmentation - WirelessNetworkForm > TunnelProfileAddModal', () => {
 
   beforeEach(() => {
@@ -49,5 +55,44 @@ describe('NetworkSegmentation - WirelessNetworkForm > TunnelProfileAddModal', ()
     const cancelButtons = within(tunnelDialog).getAllByRole('button', { name: 'Cancel' })
     await user.click(cancelButtons[0])
     await waitFor(() => expect(tunnelDialog).not.toBeVisible())
+  })
+
+  describe('when SD-LAN is ready', () => {
+    beforeEach(() => {
+      jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
+    })
+
+    it('should be able to set values via initialValues', async () => {
+      const user = userEvent.setup()
+      render(
+        <Provider>
+          <TunnelProfileAddModal
+            initialValues={{ type: TunnelTypeEnum.VLAN_VXLAN } as TunnelProfileFormType} />
+        </Provider>
+      )
+
+      await user.click(screen.getByRole('button', { name: 'Add' }))
+      const tunnelDialog = await screen.findByRole('dialog')
+      const typeField = within(tunnelDialog).getByRole('combobox', { name: 'Tunnel Type' })
+      expect(typeField).not.toBeDisabled()
+      expect(within(tunnelDialog).getByText('VLAN-VxLAN')).toBeVisible()
+      expect(within(tunnelDialog).getByText('VLAN-VxLAN').classList)
+        .toContain('ant-select-selection-item')
+    })
+
+    it('should lock form fields when it is set in disabledFields', async () => {
+      const user = userEvent.setup()
+      render(
+        <Provider>
+          <TunnelProfileAddModal
+            initialValues={{ disabledFields: ['type'] } as TunnelProfileFormType} />
+        </Provider>
+      )
+
+      await user.click(screen.getByRole('button', { name: 'Add' }))
+      const tunnelDialog = await screen.findByRole('dialog')
+      const typeField = within(tunnelDialog).getByRole('combobox', { name: 'Tunnel Type' })
+      expect(typeField).toBeDisabled()
+    })
   })
 })

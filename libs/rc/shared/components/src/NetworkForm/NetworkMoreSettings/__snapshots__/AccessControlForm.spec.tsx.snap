@@ -1,0 +1,129 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AccessControlForm should render Access Control form successfully 1`] = `
+<DocumentFragment>
+  <form
+    class="ant-form ant-form-horizontal"
+  >
+    <div
+      style="margin-bottom: 30px;"
+    >
+      <span
+        style="display: grid; grid-template-columns: 165px 140px 300px; align-items: baseline; margin: 20px 0px;"
+      >
+        <h4
+          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-1jfjsg1-7 fPbHyn euZnjV"
+        >
+          Access Control
+        </h4>
+        <button
+          class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 kBDiup"
+          type="button"
+        >
+          <span>
+            Select separate profiles
+          </span>
+        </button>
+      </span>
+      <div
+        class="styledComponents__FieldLabel-sc-1jfjsg1-0 dOGJsk"
+        width="175px"
+      >
+        Access Control
+        <div
+          class="ant-form-item"
+          style="margin-bottom: 10px;"
+        >
+          <div
+            class="ant-row ant-form-item-row"
+          >
+            <div
+              class="ant-col ant-form-item-control"
+            >
+              <div
+                class="ant-form-item-control-input"
+              >
+                <div
+                  class="ant-form-item-control-input-content"
+                >
+                  <button
+                    aria-checked="false"
+                    class="ant-switch"
+                    id="accessControlProfileEnable"
+                    role="switch"
+                    type="button"
+                  >
+                    <div
+                      class="ant-switch-handle"
+                    />
+                    <span
+                      class="ant-switch-inner"
+                    />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="styledComponents__FieldLabel-sc-1jfjsg1-0 dOGJsk"
+        style="font-weight: 700;"
+        width="175px"
+      >
+        <span>
+          Access Policy
+        </span>
+        <span>
+          Policy Details
+        </span>
+      </div>
+      <div
+        class="styledComponents__FieldLabel-sc-1jfjsg1-0 dOGJsk"
+        width="175px"
+      >
+        Layer 2
+        <span>
+          --
+        </span>
+      </div>
+      <div
+        class="styledComponents__FieldLabel-sc-1jfjsg1-0 dOGJsk"
+        width="175px"
+      >
+        Layer 3
+        <span>
+          --
+        </span>
+      </div>
+      <div
+        class="styledComponents__FieldLabel-sc-1jfjsg1-0 dOGJsk"
+        width="175px"
+      >
+        Device & OS
+        <span>
+          --
+        </span>
+      </div>
+      <div
+        class="styledComponents__FieldLabel-sc-1jfjsg1-0 dOGJsk"
+        width="175px"
+      >
+        Applications
+        <span>
+          --
+        </span>
+      </div>
+      <div
+        class="styledComponents__FieldLabel-sc-1jfjsg1-0 dOGJsk"
+        width="175px"
+      >
+        Client Rate Limit
+        <span>
+          --
+        </span>
+      </div>
+    </div>
+  </form>
+</DocumentFragment>
+`;

@@ -38,7 +38,8 @@ const typePathMapping: Record<ServiceType, string> = {
   [ServiceType.DHCP]: 'dhcp',
   [ServiceType.EDGE_DHCP]: 'edgeDhcp',
   [ServiceType.EDGE_FIREWALL]: 'edgeFirewall',
-  [ServiceType.EDGE_CENTRALIZED_FORWARDING]: 'edgeCentralizedForwarding',
+  [ServiceType.EDGE_SD_LAN]: 'edgeSdLan',
+  [ServiceType.EDGE_SD_LAN_P2]: 'edgeSdLanP2', // temporary type before SD-LAN GA2 dev done.
   [ServiceType.WIFI_CALLING]: 'wifiCalling',
   [ServiceType.MDNS_PROXY]: 'mdnsProxy',
   [ServiceType.DPSK]: 'dpsk',

@@ -8,16 +8,21 @@ import { CheckboxValueType }                       from 'antd/lib/checkbox/Group
 import { useIntl }                                 from 'react-intl'
 import { useParams }                               from 'react-router-dom'
 
-import { Loader, StepsForm, useStepFormContext }                                                                                     from '@acx-ui/components'
+import { Button, Loader, StepsForm, useStepFormContext }                                                                             from '@acx-ui/components'
 import { TunnelProfileAddModal }                                                                                                     from '@acx-ui/rc/components'
 import { useGetNetworkSegmentationViewDataListQuery, useGetTunnelProfileViewDataListQuery, useVenueNetworkActivationsDataListQuery } from '@acx-ui/rc/services'
+import { getTunnelProfileOptsWithDefault, isDsaeOnboardingNetwork, TunnelProfileFormType, TunnelTypeEnum }                           from '@acx-ui/rc/utils'
 
 import { NetworkSegmentationGroupFormData } from '..'
 
-import * as UI from './styledComponents'
+import { AddDpskModal } from './AddDpskModal'
+import * as UI          from './styledComponents'
 
 const tunnelProfileDefaultPayload = {
-  fields: ['name', 'id'],
+  fields: ['name', 'id', 'type'],
+  filters: {
+    type: [TunnelTypeEnum.VXLAN]
+  },
   pageSize: 10000,
   sortField: 'name',
   sortOrder: 'ASC'
@@ -31,26 +36,20 @@ export const WirelessNetworkForm = () => {
   const [unusedNetworkOptions, setUnusedNetworkOptions] =
   useState<{ label: string; value: string; }[]|undefined>(undefined)
   const [isFilterNetworksLoading, setIsFilterNetworksLoading] = useState(true)
+  const [dpskModalVisible, setDpskModalVisible] = useState(false)
   const venueId = form.getFieldValue('venueId')
   const venueName = form.getFieldValue('venueName')
 
-  const { tunnelProfileList , isTunnelLoading } = useGetTunnelProfileViewDataListQuery({
+  const { tunnelProfileOptions , isTunnelLoading } = useGetTunnelProfileViewDataListQuery({
     payload: tunnelProfileDefaultPayload
   }, {
     selectFromResult: ({ data, isLoading }) => {
       return {
-        tunnelProfileList: data,
+        tunnelProfileOptions: getTunnelProfileOptsWithDefault(data?.data, TunnelTypeEnum.VXLAN),
         isTunnelLoading: isLoading
       }
     }
   })
-
-  const hasDefaultProfile = tunnelProfileList?.data.some(item => item.id === params.tenantId )
-  const tunnelProfileOptions = tunnelProfileList?.data
-    .map(item => ({ label: item.name, value: item.id }))
-  if (!hasDefaultProfile) {
-    tunnelProfileOptions?.unshift({ label: 'Default', value: params.tenantId as string })
-  }
 
   const onTunnelProfileChange = (value: string) => {
     form.setFieldValue('tunnelProfileName',
@@ -74,7 +73,8 @@ export const WirelessNetworkForm = () => {
       }
     }
   })
-  const networkOptions = networkList?.filter(item => item.type === 'dpsk')
+  const networkOptions = networkList?.filter(item =>
+    item.type === 'dpsk' && !isDsaeOnboardingNetwork(item))
     .map(item => ({ label: item.name as string, value: item.id as string }))
   const networkIds = networkList?.map(item => (item.id))
 
@@ -113,6 +113,15 @@ export const WirelessNetworkForm = () => {
       .filter(item => !!item))
   }
 
+  const openDpskModal = () => {
+    setDpskModalVisible(true)
+  }
+
+  const formInitValues ={
+    type: TunnelTypeEnum.VXLAN,
+    disabledFields: ['type']
+  }
+
   return(
     <>
       <StepsForm.Title>{$t({ defaultMessage: 'Wireless Network Settings' })}</StepsForm.Title>
@@ -131,7 +140,7 @@ export const WirelessNetworkForm = () => {
             }
           />
         </Col>
-        <TunnelProfileAddModal />
+        <TunnelProfileAddModal initialValues={formInitValues as TunnelProfileFormType} />
       </Row>
       <Row gutter={20}>
         <Col>
@@ -176,6 +185,15 @@ export const WirelessNetworkForm = () => {
                 }
               />
             </Loader>
+            <Button
+              type='link'
+              onClick={openDpskModal}
+              children={$t({ defaultMessage: 'Add DPSK Network' })}
+            />
+            <AddDpskModal
+              visible={dpskModalVisible}
+              setVisible={setDpskModalVisible}
+            />
           </Space>
         </Col>
       </Row>

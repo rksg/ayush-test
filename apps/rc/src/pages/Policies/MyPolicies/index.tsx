@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }             from '@acx-ui/feature-toggle'
 import {
   useGetEnhancedAccessControlProfileListQuery,
   useGetAAAPolicyViewModelListQuery,
@@ -20,7 +20,8 @@ import {
   getPolicyRoutePath,
   getSelectPolicyRoutePath,
   PolicyType,
-  PolicyOperation
+  PolicyOperation,
+  policyTypeLabelMapping
 } from '@acx-ui/rc/utils'
 import {
   Path,
@@ -32,8 +33,7 @@ import {
 import { filterByAccess } from '@acx-ui/user'
 
 import {
-  policyTypeDescMapping,
-  policyTypeLabelMapping
+  policyTypeDescMapping
 } from '../contentsMap'
 
 interface CardDataProps {
@@ -97,7 +97,7 @@ function useCardData (): CardDataProps[] {
   const params = useParams()
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
   const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)

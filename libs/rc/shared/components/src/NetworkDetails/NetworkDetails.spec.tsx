@@ -1,0 +1,176 @@
+import '@testing-library/jest-dom'
+import { rest } from 'msw'
+
+import { useIsSplitOn }                                 from '@acx-ui/feature-toggle'
+import { ClientUrlsInfo, CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                     from '@acx-ui/store'
+import { mockServer, render, screen }                   from '@acx-ui/test-utils'
+import { RolesEnum }                                    from '@acx-ui/types'
+import { getUserProfile, setUserProfile }               from '@acx-ui/user'
+
+import { venuesResponse } from '../NetworkForm/__tests__/fixtures'
+
+import { networkDetailHeaderData } from './__tests__/fixtures'
+import { NetworkDetails }          from './NetworkDetails'
+
+const mockedUseConfigTemplate = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useConfigTemplate: () => mockedUseConfigTemplate()
+}))
+
+beforeEach(() => {
+  mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+})
+
+afterEach(() => {
+  mockedUseConfigTemplate.mockRestore()
+})
+
+jest.mock('./NetworkIncidentsTab', () => ({
+  NetworkIncidentsTab: () => <div data-testid='rc-NetworkIncidentsTab'>incidents</div>
+}))
+jest.mock('./NetworkOverviewTab', () => ({ NetworkOverviewTab: () => <div>overview</div> }))
+
+const network = {
+  type: 'aaa',
+  tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+  venues: [
+    {
+      venueId: 'd7b1a9a350634115a92ee7b0f11c7e75',
+      dual5gEnabled: true,
+      tripleBandEnabled: false,
+      networkId: '373377b0cb6e46ea8982b1c80aabe1fa',
+      allApGroupsRadio: 'Both',
+      isAllApGroups: true,
+      allApGroupsRadioTypes: ['2.4-GHz', '5-GHz'],
+      id: '7a97953dc55f4645b3cdbf1527f3d7cb'
+    }
+  ],
+  name: 'testNetwork',
+  enableAuthProxy: false,
+  enableAccountingProxy: false,
+  id: '373377b0cb6e46ea8982b1c80aabe1fa'
+}
+
+jest.mock('socket.io-client')
+
+const mockedVenuesResult = {
+  totalCount: 1,
+  page: 1,
+  data: [{
+    id: 'v1',
+    name: 'My Venue'
+  }]
+}
+
+describe('NetworkDetails', () => {
+  beforeEach(() => {
+    mockServer.use(
+      rest.get(
+        WifiUrlsInfo.getNetwork.url,
+        (_, res, ctx) => res(ctx.json(network))
+      ),
+      rest.get(
+        CommonUrlsInfo.getNetworksDetailHeader.url,
+        (_, res, ctx) => res(ctx.json(networkDetailHeaderData))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenues.url,
+        (req, res, ctx) => res(ctx.json(mockedVenuesResult))
+      ),
+      rest.post(
+        ClientUrlsInfo.getClientList.url,
+        (req, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(
+        ClientUrlsInfo.getClientMeta.url,
+        (req, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))),
+      rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
+        (_, res, ctx) => res(ctx.json(venuesResponse))),
+      rest.post(
+        CommonUrlsInfo.getVenueCityList.url,
+        (req, res, ctx) => res(ctx.json([]))
+      )
+    )
+  })
+
+  it('renders a tab', async () => {
+    const params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      networkId: '373377b0cb6e46ea8982b1c80aabe1fa',
+      activeTab: 'overview'
+    }
+    render(<Provider><NetworkDetails /></Provider>, {
+      route: { params, path: '/:tenantId/:networkId/:activeTab' }
+    })
+
+    expect(await screen.findByText('overview')).toBeVisible()
+    expect(screen.getAllByRole('tab')).toHaveLength(5)
+  })
+
+  it('renders a tab with MSP account', async () => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+
+    const params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      networkId: '373377b0cb6e46ea8982b1c80aabe1fa',
+      activeTab: 'venues'
+    }
+    render(<Provider><NetworkDetails /></Provider>, {
+      route: { params, path: '/:tenantId/:networkId/:activeTab' }
+    })
+
+    expect(await screen.findByText('Configuration Templates')).toBeVisible()
+    expect(screen.getAllByRole('tab')).toHaveLength(1)
+  })
+
+  it('renders another tab', async () => {
+    const params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      networkId: '373377b0cb6e46ea8982b1c80aabe1fa',
+      activeTab: 'incidents'
+    }
+    render(<Provider><NetworkDetails /></Provider>, {
+      route: { params, path: '/:tenantId/:networkId/:activeTab' }
+    })
+
+    expect(await screen.findByText('incidents')).toBeVisible()
+    expect(screen.getAllByRole('tab')).toHaveLength(5)
+  })
+
+  it('should hide incidents when role is READ_ONLY', async () => {
+    setUserProfile({
+      allowedOperations: [],
+      profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
+    })
+    const params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      networkId: '373377b0cb6e46ea8982b1c80aabe1fa',
+      activeTab: 'incidents'
+    }
+    render(<Provider><NetworkDetails /></Provider>, {
+      route: { params, path: '/:tenantId/:networkId/:activeTab' }
+    })
+    expect(screen.queryByTestId('rc-NetworkIncidentsTab')).toBeNull()
+  })
+
+  it('renders clients tab', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      networkId: '373377b0cb6e46ea8982b1c80aabe1fa',
+      activeTab: 'clients'
+    }
+    render(<Provider><NetworkDetails /></Provider>, {
+      route: { params, path: '/:tenantId/:networkId/:activeTab' }
+    })
+
+    expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
+      .toEqual('Clients (1)')
+  })
+})

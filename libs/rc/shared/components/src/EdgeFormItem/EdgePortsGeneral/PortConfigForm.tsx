@@ -1,45 +1,34 @@
 import { useCallback, useLayoutEffect } from 'react'
 
-import { Col, Form, Input, Radio, Row, Select, Space, Switch } from 'antd'
-import TextArea                                                from 'antd/lib/input/TextArea'
-import _                                                       from 'lodash'
-import { useIntl }                                             from 'react-intl'
+import {
+  Col,
+  Form,
+  Row } from 'antd'
+import TextArea    from 'antd/lib/input/TextArea'
+import _           from 'lodash'
+import { useIntl } from 'react-intl'
 
-import { StepsFormLegacy }                                                                                                                       from '@acx-ui/components'
-import { EdgeIpModeEnum, EdgePortWithStatus, EdgePortTypeEnum, isSubnetOverlap, serverIpAddressRegExp, subnetMaskIpRegExp, edgePortIpValidator } from '@acx-ui/rc/utils'
 
-import * as UI from './styledComponents'
+import { EdgeLag } from '@acx-ui/rc/utils'
+
+import { EdgePortCommonForm } from '../PortCommonForm'
+
+import * as UI                from './styledComponents'
+import { getInnerPortFormID } from './utils'
 
 import { EdgePortConfigFormType } from '.'
 
 interface ConfigFormProps {
   formListKey: number
-  index: number
-}
-
-export async function lanPortsubnetValidator (
-  currentSubnet: { ip: string, subnetMask: string },
-  allSubnetWithoutCurrent: { ip: string, subnetMask: string } []
-) {
-  if(!!!currentSubnet.ip || !!!currentSubnet.subnetMask) {
-    return
-  }
-
-  for(let item of allSubnetWithoutCurrent) {
-    try {
-      await isSubnetOverlap(currentSubnet.ip, currentSubnet.subnetMask,
-        item.ip, item.subnetMask)
-    } catch (error) {
-      return Promise.reject(error)
-    }
-  }
-  return Promise.resolve()
+  id: string
+  isEdgeSdLanRun: boolean
+  lagData?: EdgeLag[]
 }
 
 const { useWatch, useFormInstance } = Form
 
 export const PortConfigForm = (props: ConfigFormProps) => {
-  const { index, formListKey } = props
+  const { id, formListKey, isEdgeSdLanRun, lagData } = props
   const { $t } = useIntl()
   const form = useFormInstance<EdgePortConfigFormType>()
 
@@ -48,8 +37,8 @@ export const PortConfigForm = (props: ConfigFormProps) => {
   [formListKey])
 
   const getFieldFullPath = useCallback((fieldName: string) =>
-    [`port_${index}`, ...getFieldPath(fieldName)],
-  [index, getFieldPath])
+    [getInnerPortFormID(id), ...getFieldPath(fieldName)],
+  [id, getFieldPath])
 
   const statusIp = useWatch(getFieldFullPath('statusIp'), form)
   const mac = useWatch(getFieldFullPath('mac'), form)
@@ -58,148 +47,6 @@ export const PortConfigForm = (props: ConfigFormProps) => {
     form.validateFields()
   }, [mac, form])
 
-  const portTypeOptions = [
-    {
-      label: $t({ defaultMessage: 'Select port type..' }),
-      value: EdgePortTypeEnum.UNCONFIGURED
-    },
-    {
-      label: $t({ defaultMessage: 'WAN' }),
-      value: EdgePortTypeEnum.WAN
-    },
-    {
-      label: $t({ defaultMessage: 'LAN' }),
-      value: EdgePortTypeEnum.LAN
-    }
-  ]
-
-  const getCurrentSubnetInfo = () => {
-    return {
-      ip: form.getFieldValue(getFieldFullPath('ip')),
-      subnetMask: form.getFieldValue(getFieldFullPath('subnet'))
-    }
-  }
-
-  const getSubnetInfoWithoutCurrent = () => {
-    return Object.entries<EdgePortWithStatus[]>(form.getFieldsValue(true))
-      .filter(item => item[0] !== `port_${index}`
-        && _.get(item[1], getFieldPath('enabled'))
-        && !!_.get(item[1], getFieldPath('ip'))
-        && !!_.get(item[1], getFieldPath('subnet')))
-      .map(item => ({
-        ip: _.get(item[1], getFieldPath('ip')),
-        subnetMask: _.get(item[1], getFieldPath('subnet'))
-      }))
-  }
-
-  const getFieldsByPortType = (portType: EdgePortTypeEnum, ipMode: EdgeIpModeEnum) => {
-    if(portType === EdgePortTypeEnum.LAN) {
-      return (
-        <>
-          <Form.Item
-            name={getFieldPath('ip')}
-            label={$t({ defaultMessage: 'IP Address' })}
-            validateFirst
-            rules={[
-              { required: true },
-              { validator: (_, value) =>
-                edgePortIpValidator(value, getCurrentSubnetInfo().subnetMask)
-              },
-              {
-                validator: () =>
-                  lanPortsubnetValidator(getCurrentSubnetInfo(), getSubnetInfoWithoutCurrent())
-              }
-            ]}
-            children={<Input />}
-          />
-          <Form.Item
-            name={getFieldPath('subnet')}
-            label={$t({ defaultMessage: 'Subnet Mask' })}
-            validateFirst
-            rules={[
-              { required: true },
-              { validator: (_, value) => subnetMaskIpRegExp(value) }
-            ]}
-            children={<Input />}
-          />
-        </>
-      )
-    } else if(portType === EdgePortTypeEnum.WAN) {
-      return (
-        <>
-          <Form.Item
-            name={getFieldPath('ipMode')}
-            label={$t({ defaultMessage: 'IP Assignment' })}
-            validateFirst
-            rules={[{
-              required: true
-            }]}
-            children={
-              <Radio.Group>
-                <Space direction='vertical'>
-                  <Radio value={EdgeIpModeEnum.DHCP}>
-                    {$t({ defaultMessage: 'DHCP' })}
-                  </Radio>
-                  <Radio value={EdgeIpModeEnum.STATIC}>
-                    {$t({ defaultMessage: 'Static/Manual' })}
-                  </Radio>
-                </Space>
-              </Radio.Group>
-            }
-          />
-          {ipMode === EdgeIpModeEnum.STATIC &&
-            <>
-              <Form.Item
-                name={getFieldPath('ip')}
-                label={$t({ defaultMessage: 'IP Address' })}
-                validateFirst
-                rules={[
-                  { required: true },
-                  { validator: (_, value) =>
-                    edgePortIpValidator(value, getCurrentSubnetInfo().subnetMask)
-                  },
-                  {
-                    validator: () =>
-                      lanPortsubnetValidator(getCurrentSubnetInfo(), getSubnetInfoWithoutCurrent())
-                  }
-                ]}
-                children={<Input />}
-              />
-              <Form.Item
-                name={getFieldPath('subnet')}
-                label={$t({ defaultMessage: 'Subnet Mask' })}
-                validateFirst
-                rules={[
-                  { required: true },
-                  { validator: (_, value) => subnetMaskIpRegExp(value) }
-                ]}
-                children={<Input />}
-              />
-              <Form.Item
-                name={getFieldPath('gateway')}
-                label={$t({ defaultMessage: 'Gateway' })}
-                validateFirst
-                rules={[
-                  { required: true },
-                  { validator: (_, value) => serverIpAddressRegExp(value) }
-                ]}
-                children={<Input />}
-              />
-            </>
-          }
-          <StepsFormLegacy.FieldLabel width='120px'>
-            {$t({ defaultMessage: 'Use NAT Service' })}
-            <Form.Item
-              name={getFieldPath('natEnabled')}
-              valuePropName='checked'
-              children={<Switch />}
-            />
-          </StepsFormLegacy.FieldLabel>
-        </>
-      )
-    }
-    return null
-  }
 
   return (
     <>
@@ -212,7 +59,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
         }
       </UI.IpAndMac>
       <Row gutter={20}>
-        <Col span={5}>
+        <Col span={6}>
           <Form.Item
             name={getFieldPath('name')}
             label={$t({ defaultMessage: 'Description' })}
@@ -222,39 +69,23 @@ export const PortConfigForm = (props: ConfigFormProps) => {
             children={<TextArea />}
           />
           <Form.Item
-            name={getFieldPath('portType')}
-            label={$t({ defaultMessage: 'Port Type' })}
-            children={
-              <Select
-                options={portTypeOptions}
-              />
-            }
-          />
-          <Form.Item
             noStyle
             shouldUpdate={(prev, cur) => {
-              return _.get(prev, getFieldFullPath('portType'))
-                !== _.get(cur, getFieldFullPath('portType'))
-                || _.get(prev, getFieldFullPath('ipMode'))
-                !== _.get(cur, getFieldFullPath('ipMode'))
+              return _.get(prev, getFieldFullPath('corePortEnabled'))
+                !== _.get(cur, getFieldFullPath('corePortEnabled'))
             }}
           >
-            {({ getFieldValue }) => {
-              const _portType = getFieldValue(getFieldFullPath('portType'))
-              const _ipMode = getFieldValue(getFieldFullPath('ipMode'))
-              return (_portType === EdgePortTypeEnum.LAN || _portType === EdgePortTypeEnum.WAN) ? (
-                <>
-                  <StepsFormLegacy.FieldLabel width='120px'>
-                    {$t({ defaultMessage: 'Port Enabled' })}
-                    <Form.Item
-                      name={getFieldPath('enabled')}
-                      valuePropName='checked'
-                      children={<Switch />}
-                    />
-                  </StepsFormLegacy.FieldLabel>
-                  <StepsFormLegacy.Title children={$t({ defaultMessage: 'IP Settings' })} />
-                  {getFieldsByPortType(_portType, _ipMode)}
-                </>): null
+            {() => {
+              const allValues = form.getFieldsValue(true) as EdgePortConfigFormType
+
+              return <EdgePortCommonForm
+                formRef={form}
+                portsData={_.flatten(Object.values(allValues))}
+                lagData={lagData}
+                isEdgeSdLanRun={isEdgeSdLanRun}
+                formListItemKey={formListKey}
+                formListID={id}
+              />
             }}
           </Form.Item>
         </Col>

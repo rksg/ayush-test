@@ -1,18 +1,20 @@
 
 import { gql } from 'graphql-request'
 
-import { dataApiSearch } from '@acx-ui/store'
-import { NetworkPath }   from '@acx-ui/utils'
+import { dataApiSearch, dataApi }   from '@acx-ui/store'
+import { NetworkPath, NodesFilter } from '@acx-ui/utils'
 
 export interface RequestPayload {
   start: string
   end: string
   query: string
-  limit: number
+  limit: number,
+  isReportOnly?: boolean
 }
 
 export interface ListPayload extends RequestPayload {
-  metric: string
+  metric?: string
+  filter?: NodesFilter
 }
 
 export interface Client {
@@ -67,6 +69,7 @@ export interface AP {
   ipAddress: string
   version: string
   apZone: string
+  traffic: number
   networkPath: NetworkPath
 }
 
@@ -75,6 +78,21 @@ export interface Switch {
   switchMac: string
   switchModel: string
   switchVersion: string
+  traffic: number
+}
+
+export interface ClientByTraffic {
+  hostname: string
+  username: string
+  mac: string
+  osType: string
+  ipAddress: string
+  lastSeen: string
+  traffic: number
+}
+
+export interface ClientList {
+  clientsByTraffic: ClientByTraffic[]
 }
 
 export const searchApi = dataApiSearch.injectEndpoints({
@@ -89,23 +107,6 @@ export const searchApi = dataApiSearch.injectEndpoints({
           $limit: Int
         ) {
           search(start: $start, end: $end, query: $query, limit: $limit) {
-            clients {
-              hostname
-              username
-              mac
-              osType
-              ipAddress
-              lastActiveTime
-              manufacturer
-            },
-            networkHierarchy {
-              name
-              root
-              type
-              apCount
-              networkPath {name type}
-              switchCount
-            },
             aps {
               apName,
               macAddress,
@@ -115,6 +116,27 @@ export const searchApi = dataApiSearch.injectEndpoints({
               apZone
               networkPath {name type}
             },
+            networkHierarchy {
+              name
+              root
+              type
+              apCount
+              networkPath {name type}
+              switchCount
+            },
+            clients {
+              hostname
+              username
+              mac
+              osType
+              ipAddress
+              lastActiveTime
+              manufacturer
+            }
+            ${payload.isReportOnly
+          ? ''
+          : `
+            ,
             switches {
               switchName
               switchMac: switchId
@@ -130,6 +152,7 @@ export const searchApi = dataApiSearch.injectEndpoints({
               rxBytes
               txBytes
             }
+              `}
           }
         }
         `,
@@ -137,33 +160,6 @@ export const searchApi = dataApiSearch.injectEndpoints({
       }),
       providesTags: [{ type: 'Monitoring', id: 'GLOBAL_SEARCH_CLIENTS' }],
       transformResponse: (response: { search: SearchResponse }) => response.search
-    }),
-    apList: build.query<APListResponse, ListPayload>({
-      query: (payload) => ({
-        document: gql`
-        query Search(
-          $start: DateTime,
-          $end: DateTime,
-          $metric: String,
-          $limit: Int
-        ) {
-          search(start: $start, end: $end, metric: $metric, limit: $limit) {
-            aps {
-              apName,
-              macAddress,
-              apModel,
-              ipAddress,
-              version,
-              apZone
-              networkPath {name type}
-            }
-          }
-        }
-        `,
-        variables: payload
-      }),
-      providesTags: [{ type: 'Monitoring', id: 'AP_LIST' }],
-      transformResponse: (response: { search: APListResponse }) => response.search
     }),
     switchtList: build.query<SwitchListResponse, ListPayload>({
       query: (payload) => ({
@@ -181,6 +177,7 @@ export const searchApi = dataApiSearch.injectEndpoints({
               switchMac: switchId
               switchModel
               switchVersion: switchFirmware
+              traffic
             }
           }
         }
@@ -189,26 +186,69 @@ export const searchApi = dataApiSearch.injectEndpoints({
       }),
       providesTags: [{ type: 'Monitoring', id: 'SWITCH_LIST' }],
       transformResponse: (response: { search: SwitchListResponse }) => response.search
+    })
+  })
+})
+export const networkSearchApi = dataApi.injectEndpoints({
+  endpoints: (build) => ({
+    apList: build.query<APListResponse, ListPayload>({
+      query: (payload) => ({
+        document: gql`
+        query Network(
+          $start: DateTime
+          $end: DateTime
+          $query: String
+          $limit: Int
+          $filter: FilterInput
+          $metric: String
+        ) {
+          network(start: $start, end: $end, filter: $filter) {
+            search(start: $start, end: $end, query: $query, limit: $limit, metric: $metric) {
+              aps {
+                apName
+                macAddress
+                apModel
+                ipAddress
+                version
+                apZone
+                traffic
+                networkPath {
+                  name
+                  type
+                }
+              }
+            }
+          }
+        }
+        `,
+        variables: payload
+      }),
+      providesTags: [{ type: 'Monitoring', id: 'AP_LIST' }],
+      transformResponse: (response: { network: { search: APListResponse } }) =>
+        response.network.search
     }),
     networkList: build.query<NetworkListReponse, ListPayload>({
       query: (payload) => ({
         document: gql`
-        query Search(
+        query Network(
           $start: DateTime
           $end: DateTime
           $query: String
-          $metric: String
           $limit: Int
+          $filter: FilterInput
+          $metric: String
         ) {
-          search(start: $start, end: $end, query: $query, metric: $metric, limit: $limit) {
-            wifiNetworks {
-              name
-              apCount
-              clientCount
-              zoneCount
-              traffic
-              rxBytes
-              txBytes
+          network(start: $start, end: $end, filter: $filter) {
+            search(start: $start, end: $end, query: $query, limit: $limit, metric: $metric) {
+              wifiNetworks {
+                name
+                apCount
+                clientCount
+                zoneCount
+                traffic
+                rxBytes
+                txBytes
+              }
             }
           }
         }
@@ -216,14 +256,49 @@ export const searchApi = dataApiSearch.injectEndpoints({
         variables: payload
       }),
       providesTags: [{ type: 'Monitoring', id: 'NETWORK_LIST' }],
-      transformResponse: (response: { search: NetworkListReponse }) => response.search
+      transformResponse: (response: { network: { search: NetworkListReponse } }) =>
+        response.network.search
+    }),
+    networkClientList: build.query<ClientList, ListPayload>({
+      query: (payload) => ({
+        document: gql`
+          query Network(
+            $start: DateTime
+            $end: DateTime
+            $query: String
+            $limit: Int
+            $filter: FilterInput
+          ) {
+            network(start: $start, end: $end, filter: $filter) {
+              search(start: $start, end: $end, query: $query, limit: $limit) {
+                clientsByTraffic {
+                  hostname
+                  username
+                  mac
+                  osType
+                  ipAddress
+                  lastSeen
+                  manufacturer
+                  traffic
+                }
+              }
+            }
+          }
+        `,
+        variables: payload
+      }),
+      providesTags: [{ type: 'Monitoring', id: 'ZONES_CLIENT_LIST' }],
+      transformResponse: (response: { network: { search: ClientList } }) => response.network.search
     })
   })
 })
 
 export const {
   useSearchQuery,
-  useApListQuery,
-  useSwitchtListQuery,
-  useNetworkListQuery
+  useSwitchtListQuery
 } = searchApi
+export const {
+  useApListQuery,
+  useNetworkListQuery,
+  useNetworkClientListQuery
+} = networkSearchApi

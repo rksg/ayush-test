@@ -30,6 +30,7 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
   const basePath = useTenantLink('/administration')
   const navigate = useNavigate()
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
+  const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
 
   const defaultPayload = {
     filters: venueId ? { venueId: [venueId] } :
@@ -68,7 +69,8 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
       <Tabs.TabPane tab={$t({ defaultMessage: 'Settings' })} key='accountSettings' />
       { hasAdministratorTab &&
       ( <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Administrators ({adminCount})' }, { adminCount })}
+        tab={isGroupBasedLoginEnabled ? $t({ defaultMessage: 'Administrators' })
+          : $t({ defaultMessage: 'Administrators ({adminCount})' }, { adminCount })}
         key='administrators' /> )
       }
       <Tabs.TabPane

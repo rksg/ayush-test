@@ -2,6 +2,7 @@ import { Space }   from 'antd'
 import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
+import { useNetworkClientListQuery } from '@acx-ui/analytics/services'
 import {
   PageHeader,
   RangePicker
@@ -11,7 +12,6 @@ import {
 } from '@acx-ui/react-router-dom'
 import { useDateFilter } from '@acx-ui/utils'
 
-import { useClientListQuery } from '../Clients/ClientsList/services'
 
 import ClientDetailTabs  from './ClientDetailTabs'
 import { HostnameSpace } from './styledComponents'
@@ -26,12 +26,13 @@ export const ClientDetailPageHeader = () => {
     showTimePicker
     selectionType={range}
   />
-  const hostname = useClientListQuery({
+  const hostname = useNetworkClientListQuery({
     start: startDate,
     end: endDate,
     limit: 1,
-    query: clientId as string
-  })?.data?.clients?.[0]?.hostname
+    query: clientId as string,
+    filter: {}
+  })?.data?.clientsByTraffic?.[0]?.hostname
   return (
     <PageHeader
       title={<Space size={4}>{`${clientId} ${hostname ? `(${hostname})` : ''}`}

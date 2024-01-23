@@ -11,6 +11,9 @@ import {
   PERMISSION_MANAGE_LABEL
 } from '@acx-ui/analytics/utils'
 import { LayoutProps } from '@acx-ui/components'
+import { Features,
+  useIsSplitOn
+} from '@acx-ui/feature-toggle'
 import {
   AIOutlined,
   AISolid,
@@ -20,6 +23,8 @@ import {
   AdminSolid,
   BulbOutlined,
   BulbSolid,
+  LocationOutlined,
+  LocationSolid,
   RocketOutlined,
   RocketSolid,
   SpeedIndicatorOutlined,
@@ -31,6 +36,7 @@ import {
 export function useMenuConfig () {
   const { $t } = useIntl()
   const userProfile = getUserProfile()
+  const isZonesPageEnabled = useIsSplitOn(Features.RUCKUS_AI_ZONES_LIST)
   const currentAccountPermissions = userProfile.selectedTenant.permissions
   const hasViewAnalyticsPermissions =
     currentAccountPermissions?.[PERMISSION_VIEW_ANALYTICS]
@@ -121,28 +127,37 @@ export function useMenuConfig () {
         ]
       }
     ] : []),
-    ...(hasViewAnalyticsPermissions
-      ? [{
-        label: $t({ defaultMessage: 'Clients' }),
-        inactiveIcon: AccountCircleOutlined,
-        activeIcon: AccountCircleSolid,
-        children: [
-          {
-            type: 'group' as const,
-            label: $t({ defaultMessage: 'Wireless' }),
-            children: [
-              {
-                uri: '/users/wifi/clients',
-                label: $t({ defaultMessage: 'Wireless Clients List' })
-              },
-              {
-                uri: '/users/wifi/reports',
-                label: $t({ defaultMessage: 'Wireless Clients Report' })
-              }
-            ]
-          }
-        ]
-      }] : []),
+    ...(hasViewAnalyticsPermissions && isZonesPageEnabled
+      ? [
+        {
+          uri: '/zones',
+          label: $t({ defaultMessage: 'Zones' }),
+          inactiveIcon: LocationOutlined,
+          activeIcon: LocationSolid
+        }
+      ]
+      : []),
+    {
+      label: $t({ defaultMessage: 'Clients' }),
+      inactiveIcon: AccountCircleOutlined,
+      activeIcon: AccountCircleSolid,
+      children: [
+        {
+          type: 'group' as const,
+          label: $t({ defaultMessage: 'Wireless' }),
+          children: [
+            {
+              uri: '/users/wifi/clients',
+              label: $t({ defaultMessage: 'Wireless Clients List' })
+            },
+            {
+              uri: '/users/wifi/reports',
+              label: $t({ defaultMessage: 'Wireless Clients Report' })
+            }
+          ]
+        }
+      ]
+    },
     ...(hasViewAnalyticsPermissions ? [
       {
         label: $t({ defaultMessage: 'Wi-Fi' }),

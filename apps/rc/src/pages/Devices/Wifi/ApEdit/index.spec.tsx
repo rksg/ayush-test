@@ -87,7 +87,7 @@ describe('ApEdit', () => {
         (_, res, ctx) => res(ctx.json(venuelist))),
       rest.get(WifiUrlsInfo.getApCapabilities.url,
         (_, res, ctx) => res(ctx.json(venueCaps))),
-      rest.get(CommonUrlsInfo.getApGroupList.url,
+      rest.get(CommonUrlsInfo.getApGroupListByVenue.url,
         (_, res, ctx) => res(ctx.json(apGrouplist))),
       rest.post(WifiUrlsInfo.addAp.url,
         (_, res, ctx) => res(ctx.json(successResponse))),
@@ -242,11 +242,13 @@ describe('ApEdit', () => {
 
     it.skip('should handle invalid changes', async () => {
       mockServer.use(
+        rest.post(CommonUrlsInfo.getApsList.url,
+          (_, res, ctx) => res(ctx.json(deviceAps))),
         rest.get(WifiUrlsInfo.getWifiCapabilities.url,
           (_, res, ctx) => res(ctx.json({}))),
         rest.post(WifiUrlsInfo.getDhcpAp.url,
           (_, res, ctx) => res(ctx.json({}))),
-        rest.get(CommonUrlsInfo.getApGroupList.url,
+        rest.get(CommonUrlsInfo.getApGroupListByVenue.url,
           (_, res, ctx) => res(ctx.json({})))
       )
       render(<Provider><ApEdit /></Provider>, {
@@ -273,6 +275,8 @@ describe('ApEdit', () => {
 
     it.skip('should disable venue select when editing mesh AP', async () => {
       mockServer.use(
+        rest.post(CommonUrlsInfo.getApsList.url,
+          (_, res, ctx) => res(ctx.json(deviceAps))),
         rest.post(WifiUrlsInfo.getDhcpAp.url,
           (_, res, ctx) => res(ctx.json(dhcpAp[1]))),
         rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
@@ -297,6 +301,8 @@ describe('ApEdit', () => {
     it.skip('should handle error occurred', async () => {
       jest.mocked(useIsSplitOn).mockReturnValue(false)
       mockServer.use(
+        rest.post(CommonUrlsInfo.getApsList.url,
+          (_, res, ctx) => res(ctx.json(deviceAps))),
         rest.put(WifiUrlsInfo.updateAp.url,
           (_, res, ctx) => {
             return res(ctx.status(400), ctx.json({ errors: [{ code: 'WIFI-xxxxx' }] }))
@@ -386,6 +392,8 @@ describe('ApEdit', () => {
 
     it('should handle customized setting removed', async () => {
       mockServer.use(
+        rest.post(CommonUrlsInfo.getApsList.url,
+          (_, res, ctx) => res(ctx.json(deviceAps))),
         rest.get(WifiUrlsInfo.getApLanPorts.url,
           (_, res, ctx) => res(ctx.json({
             ...apLanPorts[0],
@@ -419,6 +427,8 @@ describe('ApEdit', () => {
 
     it('should open invalid changes modal', async () => {
       mockServer.use(
+        rest.post(CommonUrlsInfo.getApsList.url,
+          (_, res, ctx) => res(ctx.json(deviceAps))),
         rest.get(WifiUrlsInfo.getApLanPorts.url,
           (_, res, ctx) => res(ctx.json({
             ...apLanPorts[0],

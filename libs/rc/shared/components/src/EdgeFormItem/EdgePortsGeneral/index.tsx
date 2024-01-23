@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useRef, useState } from 'react'
+import { ReactNode, useContext, useEffect, useRef, useState } from 'react'
 
 import { Form, FormInstance }  from 'antd'
 import { StoreValue }          from 'antd/lib/form/interface'
@@ -6,12 +6,16 @@ import { flatMap, isEqual }    from 'lodash'
 import { ValidateErrorEntity } from 'rc-field-form/es/interface'
 import { useIntl }             from 'react-intl'
 
-import { Loader, NoData, StepsForm, Tabs }                      from '@acx-ui/components'
-import { useUpdatePortConfigMutation }                          from '@acx-ui/rc/services'
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgePortWithStatus } from '@acx-ui/rc/utils'
-import { useParams }                                            from '@acx-ui/react-router-dom'
+import { Loader, NoData, StepsForm, Tabs, Tooltip }                                                                         from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                           from '@acx-ui/feature-toggle'
+import { useGetEdgeSdLanViewDataListQuery, useUpdatePortConfigMutation }                                                    from '@acx-ui/rc/services'
+import { convertEdgePortsConfigToApiPayload, EdgeIpModeEnum, EdgePortTypeEnum, EdgePortWithStatus, getEdgePortDisplayName } from '@acx-ui/rc/utils'
+import { useParams }                                                                                                        from '@acx-ui/react-router-dom'
 
-import { PortConfigForm } from './PortConfigForm'
+import { EdgePortsDataContext } from '../PortsForm/PortDataProvider'
+
+import { PortConfigForm }     from './PortConfigForm'
+import { getInnerPortFormID } from './utils'
 
 export interface EdgePortConfigFormType {
   [portId: string]: EdgePortWithStatus[]
@@ -21,6 +25,7 @@ interface TabData {
   label: string
   value: string
   content: ReactNode
+  isLagPort?: boolean
 }
 
 interface PortsGeneralProps {
@@ -40,28 +45,57 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
   const { data, onValuesChange, onFinish, onCancel, buttonLabel, edgeId } = props
   const { $t } = useIntl()
   const params = useParams()
+  const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
   const [form] = Form.useForm(props.form)
-  const [currentTab, setCurrentTab] = useState<string>('port_0')
+  const [currentTab, setCurrentTab] = useState<string>('')
+  const portsData = useContext(EdgePortsDataContext)
+  const lagData = portsData.lagData
   const [updatePortConfig, { isLoading: isPortConfigUpdating }] = useUpdatePortConfigMutation()
   const dataRef = useRef<EdgePortWithStatus[] | undefined>(undefined)
+  const edgeSN = edgeId ?? params.serialNumber
 
+  const getEdgeSdLanPayload = {
+    filters: { edgeId: [edgeSN] },
+    fields: ['id', 'edgeId', 'corePortMac']
+  }
+  const { edgeSdLanData, isLoading: isEdgeSdLanLoading }
+    = useGetEdgeSdLanViewDataListQuery(
+      { payload: getEdgeSdLanPayload },
+      {
+        skip: !isEdgeSdLanReady,
+        selectFromResult: ({ data, isLoading }) => ({
+          edgeSdLanData: data?.data?.[0],
+          isLoading
+        })
+      }
+    )
+  const isEdgeSdLanRun = !!edgeSdLanData
+
+  let unLagPort = ''
   let tabs = [] as TabData[]
   let formData = {} as EdgePortConfigFormType
-  data.forEach((item, index) => {
+  data.forEach((item) => {
+    const innerPortFormID = getInnerPortFormID(item.id)
     tabs.push({
-      label: $t({ defaultMessage: 'Port {index}' }, { index: index + 1 }),
-      value: `port_${index}`,
-      content: <Form.List name={`port_${index}`}>
+      label: getEdgePortDisplayName(item),
+      value: innerPortFormID,
+      content: <Form.List name={innerPortFormID}>
         {(fields) => fields.map(
           ({ key }) => <PortConfigForm
             formListKey={key}
-            key={`port_${index}_${key}`}
-            index={index}
+            key={`${innerPortFormID}_${key}`}
+            id={item.id}
+            isEdgeSdLanRun={isEdgeSdLanRun}
+            lagData={lagData}
           />
         )}
-      </Form.List>
+      </Form.List>,
+      isLagPort: item.isLagPort
     })
-    formData[`port_${index}`] = [item]
+    if(!unLagPort && !item.isLagPort) {
+      unLagPort = innerPortFormID
+    }
+    formData[innerPortFormID] = [item]
   })
 
   useEffect(() => {
@@ -75,6 +109,10 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
     }
   }, [data])
 
+  useEffect(() => {
+    setCurrentTab(unLagPort)
+  }, [unLagPort])
+
   const handleTabChange = (value: string) => {
     setCurrentTab(value)
   }
@@ -82,10 +120,10 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
   const handleFormChange = async (changedValues: Object) => {
     const changedField = Object.values(changedValues)?.[0]?.[0]
     if(changedField) {
+      const changedPortName = Object.keys(changedValues)?.[0]
+      const id = changedPortName.toString().split('_')[1]
       if (changedField['portType']) {
-        const changedPortName = Object.keys(changedValues)?.[0]
-        const index = Number(changedPortName.toString().split('_')[1])
-        handlePortTypeChange(changedPortName, changedField['portType'], index)
+        handlePortTypeChange(changedPortName, changedField['portType'], id)
       }
 
       let hasError = false
@@ -96,24 +134,41 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
     }
   }
 
-  const handlePortTypeChange = (changedPortName: string, changedValue: StoreValue,
-    index: number) => {
+  const getFieldFullPath = (id: string, fieldName: string) =>
+    [getInnerPortFormID(id), 0, fieldName]
+
+
+  const handlePortTypeChange = (_: string, changedValue: StoreValue,
+    id: string) => {
+    // TODO: need to confirm if we should display this whenever user change port type
+    // if (isEdgeSdLanReady && isEdgeSdLanRun) {
+    //   showActionModal({
+    //     type: 'info',
+    //     content: $t({ defaultMessage: `
+    //   Please make sure that you are choosing the correct port type.
+    //   Wrong port type change may impact the network connection.` })
+    //   })
+    // }
+
     if (changedValue === EdgePortTypeEnum.LAN) {
-      form.setFieldValue([changedPortName, 0, 'ipMode'], EdgeIpModeEnum.STATIC)
+      form.setFieldValue(getFieldFullPath(id, 'ipMode'), EdgeIpModeEnum.STATIC)
     } else if (changedValue === EdgePortTypeEnum.WAN) {
-      const initialPortType = data[index]?.portType
+      const initialPortType = data.find(port => port.id === id)?.portType
       if (initialPortType !== EdgePortTypeEnum.WAN) {
-        form.setFieldValue([changedPortName, 0, 'natEnabled'], true)
+        form.setFieldValue(getFieldFullPath(id, 'natEnabled'), true)
       }
     }
   }
 
   const handleFinish = async () => {
-    const formData = flatMap(form.getFieldsValue(true))
+    const formData = flatMap(form.getFieldsValue(true)) as EdgePortWithStatus[]
+    formData.forEach((item, idx) => {
+      formData[idx] = convertEdgePortsConfigToApiPayload(item) as EdgePortWithStatus
+    })
 
     try {
       await updatePortConfig({
-        params: { serialNumber: edgeId ?? params.serialNumber },
+        params: { serialNumber: edgeSN },
         payload: { ports: formData } }).unwrap()
       onFinish?.()
     } catch (error) {
@@ -131,7 +186,7 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
   return (
     data.length > 0 ?
       <Loader states={[{
-        isLoading: false,
+        isLoading: isEdgeSdLanLoading,
         isFetching: isPortConfigUpdating
       }]}>
         <StepsForm
@@ -147,9 +202,17 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
               {
                 tabs.map(item =>
                   <Tabs.TabPane
-                    tab={item.label}
+                    tab={
+                      item.isLagPort ?
+                        <Tooltip title={$t({ defaultMessage: `This port is a LAG member 
+                          and cannot be configured independently.` })}>
+                          {item.label}
+                        </Tooltip> :
+                        item.label
+                    }
                     key={item.value}
-                    children={item.content} />
+                    children={item.content}
+                    disabled={item.isLagPort} />
                 )
               }
             </Tabs>

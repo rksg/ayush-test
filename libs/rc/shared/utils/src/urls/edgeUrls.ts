@@ -198,5 +198,75 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/edges/:serialNumber/ports/:mac/subInterfaces',
     newApi: true
+  },
+  getEdgeLagStatusList: {
+    method: 'post',
+    url: '/edges/:serialNumber/linkAggregationGroups/query',
+    newApi: true
+  },
+  getEdgeLagList: {
+    method: 'get',
+    url: '/edges/:serialNumber/linkAggregationGroups',
+    newApi: true
+  },
+  addEdgeLag: {
+    method: 'post',
+    url: '/edges/:serialNumber/linkAggregationGroups',
+    newApi: true
+  },
+  updateEdgeLag: {
+    method: 'put',
+    url: '/edges/:serialNumber/linkAggregationGroups/:lagId',
+    newApi: true
+  },
+  deleteEdgeLag: {
+    method: 'delete',
+    url: '/edges/:serialNumber/linkAggregationGroups/:lagId',
+    newApi: true
+  },
+  getLagSubInterfaces: {
+    method: 'get',
+    url: '/edges/:serialNumber/linkAggregationGroups/:lagId/subInterfaces',
+    newApi: true
+  },
+  addLagSubInterfaces: {
+    method: 'post',
+    url: '/edges/:serialNumber/linkAggregationGroups/:lagId/subInterfaces',
+    newApi: true
+  },
+  updateLagSubInterfaces: {
+    method: 'PATCH',
+    url: '/edges/:serialNumber/linkAggregationGroups/:lagId/subInterfaces/:subInterfaceId',
+    newApi: true
+  },
+  deleteLagSubInterfaces: {
+    method: 'delete',
+    url: '/edges/:serialNumber/linkAggregationGroups/:lagId/subInterfaces/:subInterfaceId',
+    newApi: true
+  },
+  importLagSubInterfacesCSV: {
+    method: 'post',
+    url: '/edges/:serialNumber/linkAggregationGroups/:lagId/subInterfaces',
+    newApi: true
+  },
+  getLagSubInterfacesStatus: {
+    method: 'post',
+    url: '/edges/:serialNumber/linkAggregationGroups/query?isSubInterface=true',
+    newApi: true
+  },
+  getEdgeClusterStatusList: {
+    method: 'post',
+    url: '/edgeClusterProfiles/query',
+    newApi: true
+  },
+  addEdgeCluster: {
+    method: 'post',
+    url: '/venues/:venueId/edgeClusters',
+    newApi: true
+  },
+  deleteEdgeCluster: {
+    method: 'delete',
+    url: '/venues/:venueId/edgeClusters/:clusterId',
+    newApi: true
   }
 }
