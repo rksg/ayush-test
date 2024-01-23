@@ -21,11 +21,10 @@ import {
   transformAdvancedDpskExpirationText
 } from '@acx-ui/rc/utils'
 
-import { DpskForm }                   from '../../services/DpskForm/DpskForm'
-import { useDpskNewConfigFlowParams } from '../../services/useDpskNewConfigFlowParams'
-import { NetworkDiagram }             from '../NetworkDiagram/NetworkDiagram'
-import { MLOContext }                 from '../NetworkForm'
-import NetworkFormContext             from '../NetworkFormContext'
+import { DpskForm }       from '../../services/DpskForm/DpskForm'
+import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
+import { MLOContext }     from '../NetworkForm'
+import NetworkFormContext from '../NetworkFormContext'
 
 import { NetworkMoreSettingsForm } from './../NetworkMoreSettings/NetworkMoreSettingsForm'
 import { CloudpathServerForm }     from './CloudpathServerForm'
@@ -173,8 +172,7 @@ function DpskServiceSelector () {
   const [ dpskOptions, setDpskOptions ] = useState<DefaultOptionType[]>([])
   const [ selectedDpsk, setSelectedDpsk ] = useState<DpskSaveData>()
   const [dpskModalVisible, setDpskModalVisible] = useState(false)
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
-  const { data: dpskList } = useGetDpskListQuery({ params: dpskNewConfigFlowParams })
+  const { data: dpskList } = useGetDpskListQuery({})
   const dpskServiceProfileId = useWatch('dpskServiceProfileId')
 
   const findService = (serviceId: string) => {

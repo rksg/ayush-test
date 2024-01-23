@@ -137,7 +137,7 @@ describe('ScheduleStep', () => {
     const preDownloadSwitch = screen.getByRole('switch')
     userEvent.click(preDownloadSwitch)
     expect(preDownloadSwitch).toBeEnabled()
-
+    jest.runOnlyPendingTimers()
     jest.useRealTimers()
   })
 

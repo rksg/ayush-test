@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
-import _        from 'lodash'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import _         from 'lodash'
+import { rest }  from 'msw'
 
 import { administrationApi }      from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
@@ -35,6 +36,7 @@ describe('Access Support Form Item', () => {
   beforeEach(async () => {
     setUserProfile({ profile: fakeUserProfile, allowedOperations: ['POST:/api/tenant/{tenantId}/delegation/support'] })
     mockedDisabledReq.mockClear()
+    store.dispatch(administrationApi.util.resetApiState())
 
     mockServer.use(
       rest.get(
@@ -52,6 +54,7 @@ describe('Access Support Form Item', () => {
 
   it('should be able to enable access support', async () => {
     const getTenantDelegationFn = jest.fn()
+    const mockedEnableAccessSupport = jest.fn()
 
     mockServer.use(
       rest.get(
@@ -63,10 +66,13 @@ describe('Access Support Form Item', () => {
       ),
       rest.post(
         AdministrationUrlsInfo.enableAccessSupport.url,
-        (req, res, ctx) => res(ctx.json({
-          requestId: 'test-request',
-          response: {}
-        }))
+        (req, res, ctx) => {
+          mockedEnableAccessSupport()
+          return res(ctx.json({
+            requestId: 'test-request',
+            response: {}
+          }))
+        }
       )
     )
 
@@ -84,6 +90,10 @@ describe('Access Support Form Item', () => {
         route: { params }
       })
 
+    screen.getByRole('checkbox', {
+      name: /enable access to ruckus support/i
+    })
+
     const formItem = screen.getByRole('checkbox', { name: 'Enable access to Ruckus Support' })
     await waitFor(() => {
       expect(getTenantDelegationFn).toBeCalledWith('?type=SUPPORT')
@@ -92,7 +102,9 @@ describe('Access Support Form Item', () => {
     await waitFor(() => expect(formItem).not.toBeDisabled())
 
     expect(formItem).not.toBeChecked()
-    fireEvent.click(formItem)
+    await userEvent.click(formItem)
+    expect(mockedEnableAccessSupport).toBeCalled()
+    expect(getTenantDelegationFn).toBeCalled()
   })
 
   it('should correctly display create date', async () => {
@@ -148,7 +160,7 @@ describe('Access Support Form Item', () => {
         route: { params }
       })
 
-    const infoText = await screen.findByText('- Administrator-level access was granted on 01/10/2023 - 11:26 UTC. Expires on 01/12/2023.')
+    const infoText = await screen.findByText('- Administrator-level access was granted on 01/10/2023 - 11:26 UTC. Expires on 01/30/2023.')
     expect(infoText).toBeInTheDocument()
 
     const formItem = screen.getByRole('checkbox', { name: 'Enable access to Ruckus Support' })
@@ -352,7 +364,7 @@ describe('Access Support Form Item - Msp Delegate EC', () => {
     })
     expect(formItem).not.toBeDisabled()
     expect(screen.getByRole('checkbox', { name: 'Enable access to Ruckus Support' })).not.toBeChecked()
-    fireEvent.click(formItem)
+    await userEvent.click(formItem)
     // FIXME: might need to fix when general error handler behavior changed.
     await waitFor(() => {
       expect(spyConsole).toBeCalled()
