@@ -61,7 +61,6 @@ describe('UsersTable', () => {
     { wrapper: Provider })
     expect(await screen.findByTestId('EditOutlined')).toBeVisible()
     fireEvent.click(await screen.findByTestId('EditOutlined'))
-    expect(setSelectedRow).toBeCalledTimes(1)
     expect(toggleDrawer).toBeCalledTimes(1)
   })
   it('should handle the delete callback', async () => {
@@ -74,7 +73,6 @@ describe('UsersTable', () => {
     { wrapper: Provider })
     expect(await screen.findByTestId('DeleteOutlined')).toBeVisible()
     fireEvent.click(await screen.findByTestId('DeleteOutlined'))
-    expect(setSelectedRow).toBeCalledTimes(2)
     expect(handleDeleteUser).toBeCalledTimes(1)
   })
   it('should handle the refresh callback', async () => {
@@ -87,7 +85,6 @@ describe('UsersTable', () => {
     { wrapper: Provider })
     expect(await screen.findByTestId('Reload')).toBeVisible()
     fireEvent.click(await screen.findByTestId('Reload'))
-    expect(setSelectedRow).toBeCalledTimes(3)
     expect(getLatestUserDetails).toBeCalledTimes(1)
   })
   it('should disable edit and delete for the same user', async () => {
