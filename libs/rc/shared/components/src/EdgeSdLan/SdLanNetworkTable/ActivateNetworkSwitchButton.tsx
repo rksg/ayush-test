@@ -3,7 +3,7 @@ import _          from 'lodash'
 
 import { NetworkSaveData } from '@acx-ui/rc/utils'
 
-interface ActivateNetworkSwitchButtonProps {
+export interface ActivateNetworkSwitchButtonProps {
   row: NetworkSaveData,
   rows: NetworkSaveData[],
   activated: string[],
