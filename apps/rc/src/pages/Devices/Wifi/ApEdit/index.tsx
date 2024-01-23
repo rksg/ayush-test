@@ -152,6 +152,7 @@ const processApEditSettings = (props: ApEditSettingsProps) => {
       editRadioContextData.updateWifiRadio?.()
       editRadioContextData.updateClientAdmissionControl?.()
       editRadioContextData.updateExternalAntenna?.()
+      editRadioContextData.updateApAntennaType?.()
       break
     case 'networking':
       editNetworkingContextData.updateIpSettings?.()
@@ -187,6 +188,7 @@ const discardApEditSettings = (props: ApEditSettingsProps) => {
       editRadioContextData.discardWifiRadioChanges?.()
       editRadioContextData.discardClientAdmissionControlChanges?.()
       editRadioContextData.discardExternalAntennaChanges?.()
+      editRadioContextData.discardApAntennaTypeChanges?.()
       break
     case 'networking':
       editNetworkingContextData.discardIpSettingsChanges?.()
@@ -240,6 +242,7 @@ const resetApEditContextData = (props: ApEditContextProps) => {
       delete newRadioContextData.updateClientAdmissionControl
       delete newRadioContextData.discardClientAdmissionControlChanges
       delete newRadioContextData.updateExternalAntenna
+      delete newRadioContextData.updateApAntennaType
       delete newRadioContextData.discardWifiRadioChanges
 
       setEditRadioContextData(newRadioContextData)
