@@ -1,34 +1,35 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { PageHeader }              from '@acx-ui/components'
-import { useAddEdgeSdLanMutation } from '@acx-ui/rc/services'
+import { Loader, PageHeader }         from '@acx-ui/components'
+import {
+  useGetEdgeSdLanP2Query,
+  useUpdateEdgeSdLanPartialMutation
+} from '@acx-ui/rc/services'
 import {
   EdgeSdLanSettingP2,
   getServiceListRoutePath,
   getServiceRoutePath,
   ServiceOperation,
-  ServiceType }
-  from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+  ServiceType
+} from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import EdgeSdLanFormP2, { EdgeSdLanFormModelP2 } from '../EdgeSdLanForm'
-import { SettingsForm }                          from '../EdgeSdLanForm/SettingsForm'
-import { SummaryForm }                           from '../EdgeSdLanForm/SummaryForm'
-import { TunnelScopeForm }                       from '../EdgeSdLanForm/TunnelScopeForm'
+import EdgeSdLanForm, { EdgeSdLanFormModelP2 } from '../EdgeSdLanForm'
+import { SettingsForm }                        from '../EdgeSdLanForm/SettingsForm'
+import { TunnelScopeForm }                     from '../EdgeSdLanForm/TunnelScopeForm'
 
-
-const AddEdgeSdLanP2 = () => {
+const EditEdgeSdLan = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-
+  const params = useParams()
   const cfListRoute = getServiceRoutePath({
     type: ServiceType.EDGE_SD_LAN_P2,
     oper: ServiceOperation.LIST
   })
-
   const linkToServiceList = useTenantLink(cfListRoute)
-  const [addEdgeSdLan] = useAddEdgeSdLanMutation()
+  const [updateEdgeSdLan] = useUpdateEdgeSdLanPartialMutation()
+  const { data, isLoading } = useGetEdgeSdLanP2Query({ params })
   const [form] = Form.useForm()
 
   const steps = [
@@ -37,35 +38,26 @@ const AddEdgeSdLanP2 = () => {
       content: <SettingsForm />
     },
     {
-      title: $t({ defaultMessage: 'Tunnel & Network' }),
+      title: $t({ defaultMessage: 'Scope' }),
       content: <TunnelScopeForm />
-    },
-    {
-      title: $t({ defaultMessage: 'Summary' }),
-      content: <SummaryForm />
     }
   ]
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleFinish = async (formData: EdgeSdLanFormModelP2) => {
     try {
       const payload = {
         name: formData.name,
-        edgeId: formData.edgeId,
-        corePortMac: formData.corePortMac,
         networkIds: formData.activatedNetworks.map(network => network.id),
-        tunnelProfileId: formData.tunnelProfileId,
-        isGuestTunnelEnabled: formData.isGuestTunnelEnabled
+        tunnelProfileId: formData.tunnelProfileId
       } as EdgeSdLanSettingP2
 
+      // TODO: can change `isGuestEnabled` & `guestEdgeId`?
       if (formData.isGuestTunnelEnabled) {
-        payload.isGuestTunnelEnabled = formData.isGuestTunnelEnabled
-        payload.guestEdgeId = formData.guestEdgeId
         payload.guestTunnelProfileId = formData.guestTunnelProfileId
         payload.guestNetworkIds = formData.activatedGuestNetworks.map(network => network.id!)
       }
 
-      await addEdgeSdLan({ payload }).unwrap()
+      await updateEdgeSdLan({ params, payload }).unwrap()
       navigate(linkToServiceList, { replace: true })
     } catch(err) {
       // eslint-disable-next-line no-console
@@ -76,20 +68,23 @@ const AddEdgeSdLanP2 = () => {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Add SD-LAN Service' })}
+        title={$t({ defaultMessage: 'Edit SD-LAN' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
           { text: $t({ defaultMessage: 'SD-LAN' }), link: cfListRoute }
         ]}
       />
-      <EdgeSdLanFormP2
-        form={form}
-        steps={steps}
-        onFinish={handleFinish}
-      />
+      <Loader states={[{ isLoading }]}>
+        <EdgeSdLanForm
+          form={form}
+          steps={steps}
+          onFinish={handleFinish}
+          editData={data}
+        />
+      </Loader>
     </>
   )
 }
 
-export default AddEdgeSdLanP2
+export default EditEdgeSdLan

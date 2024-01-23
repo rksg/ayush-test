@@ -12,6 +12,7 @@ import {
   render,
   renderHook,
   screen,
+  waitFor,
   within
 } from '@acx-ui/test-utils'
 
@@ -79,6 +80,12 @@ describe('Scope Form', () => {
       { name: 'Smart Edge 1', serialNumber: '0000000001' },
       { name: 'Smart Edge 3', serialNumber: '0000000003' }
     ])
+
+    await waitFor(() => {
+      rows.forEach(row =>
+        expect(within(row).getByRole('checkbox')).not.toBeChecked()
+      )
+    })
   })
 
   it('should correctly activate by switcher', async () => {
@@ -143,6 +150,12 @@ describe('Scope Form', () => {
     expect(mockedSetFieldValue).toBeCalledWith('selectedEdges', [
       { name: 'Smart Edge 3', serialNumber: '0000000003' }
     ])
+
+    await waitFor(() => {
+      rows.forEach(row =>
+        expect(within(row).getByRole('checkbox')).not.toBeChecked()
+      )
+    })
   })
 
   it('should correctly deactivate by switch', async () => {

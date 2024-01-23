@@ -5,9 +5,8 @@ import  userEvent from '@testing-library/user-event'
 import { rest }   from 'msw'
 
 import { MspUrlsInfo }                        from '@acx-ui/msp/utils'
-import { administrationApi }                  from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo, TenantType } from '@acx-ui/rc/utils'
-import { Provider, store }                    from '@acx-ui/store'
+import { Provider }                           from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -103,6 +102,7 @@ const mockedMSPEcProfileFn = jest.fn()
 const mockedTenantFn = jest.fn()
 const mockedSaveFn = jest.fn()
 const mockedUsedNavigate = jest.fn()
+const mockedGetDelegationFn = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
@@ -110,36 +110,39 @@ jest.mock('react-router-dom', () => ({
 
 describe('Convert NonVAR MSP Button', () => {
   beforeEach(() => {
-    store.dispatch(administrationApi.util.resetApiState())
     mockedTenantFn.mockClear()
     mockedMSPEcProfileFn.mockClear()
     mockedSaveFn.mockClear()
     mockedUsedNavigate.mockClear()
+    mockedGetDelegationFn.mockClear()
 
     setUserProfile({ profile: fakeUserProfile, allowedOperations: [] })
 
     mockServer.use(
       rest.get(
         MspUrlsInfo.getMspEcProfile.url,
-        (req, res, ctx) => {
+        (_req, res, ctx) => {
           mockedMSPEcProfileFn()
           return res(ctx.json(fakeNonMspEcProfile))
         }
       ),
       rest.get(
         AdministrationUrlsInfo.getTenantDetails.url,
-        (req, res, ctx) => {
+        (_req, res, ctx) => {
           mockedTenantFn()
           return res(ctx.json(fakeTenantDetails))
         }
       ),
       rest.get(
         AdministrationUrlsInfo.getDelegations.url.split('?type=')[0],
-        (req, res, ctx) => res(ctx.json([]))
+        (_req, res, ctx) => {
+          mockedGetDelegationFn()
+          return res(ctx.json([]))
+        }
       ),
       rest.get(
         UserUrlsInfo.getAllUserSettings.url,
-        (req, res, ctx) => res(ctx.json({}))
+        (_req, res, ctx) => res(ctx.json({}))
       ),
       rest.put(
         UserUrlsInfo.saveUserSettings.url,
@@ -153,7 +156,7 @@ describe('Convert NonVAR MSP Button', () => {
       ),
       rest.post(
         AdministrationUrlsInfo.convertNonVARToMSP.url,
-        (req, res, ctx) => res(ctx.status(202))
+        (_req, res, ctx) => res(ctx.status(202))
       )
     )
   })
@@ -170,10 +173,9 @@ describe('Convert NonVAR MSP Button', () => {
         route: { params }
       })
 
-    await waitFor(() => {
-      expect(mockedTenantFn).toBeCalled()
-    })
+    await waitFor(() => expect(mockedTenantFn).toBeCalled())
     const btn = await screen.findByRole('button', { name: 'Go to MSP Subscriptions' })
+    await waitFor(() => expect(mockedGetDelegationFn).toBeCalled())
     await userEvent.click(btn)
     await waitFor(async () => {
       expect(await screen.findByText('MSP Licenses Detected')).toBeVisible()
@@ -198,7 +200,7 @@ describe('Convert NonVAR MSP Button', () => {
     mockServer.use(
       rest.get(
         UserUrlsInfo.getAllUserSettings.url,
-        (req, res, ctx) => res(ctx.json({ COMMON: JSON.stringify({
+        (_req, res, ctx) => res(ctx.json({ COMMON: JSON.stringify({
           other: true,
           MSP: { mspEcNameChanged: false }
         }) }))
@@ -216,10 +218,10 @@ describe('Convert NonVAR MSP Button', () => {
         route: { params }
       })
 
-    await waitFor(() => {
-      expect(mockedTenantFn).toBeCalled()
-    })
+    await waitFor(() => expect(mockedTenantFn).toBeCalled())
     const btn = await screen.findByRole('button', { name: 'Go to MSP Subscriptions' })
+    await waitFor(() => expect(mockedGetDelegationFn).toBeCalled())
+
     await userEvent.click(btn)
     await waitFor(async () => {
       expect(await screen.findByText('MSP Licenses Detected')).toBeVisible()
@@ -248,7 +250,7 @@ describe('Convert NonVAR MSP Button', () => {
     mockServer.use(
       rest.get(
         AdministrationUrlsInfo.getDelegations.url.split('?type=')[0],
-        (req, res, ctx) => {
+        (_req, res, ctx) => {
           mockedFn()
           return res(ctx.json(fakeDelegationList))
         }
@@ -266,9 +268,7 @@ describe('Convert NonVAR MSP Button', () => {
         route: { params }
       })
 
-    await waitFor(() => {
-      expect(mockedFn).toBeCalled()
-    })
+    await waitFor(() => expect(mockedFn).toBeCalled())
     const btn = await screen.findByRole('button', { name: 'Go to MSP Subscriptions' })
     await userEvent.click(btn)
     const dialog = await screen.findByRole('dialog')
@@ -282,7 +282,7 @@ describe('Convert NonVAR MSP Button', () => {
     mockServer.use(
       rest.post(
         AdministrationUrlsInfo.convertNonVARToMSP.url,
-        (req, res, ctx) => {
+        (_req, res, ctx) => {
           mockedFn()
           return res(ctx.status(404))
         }
@@ -300,10 +300,10 @@ describe('Convert NonVAR MSP Button', () => {
         route: { params }
       })
 
-    await waitFor(() => {
-      expect(mockedTenantFn).toBeCalledWith()
-    })
+    await waitFor(() => expect(mockedTenantFn).toBeCalledWith())
     const btn = await screen.findByRole('button', { name: 'Go to MSP Subscriptions' })
+    await waitFor(() => expect(mockedGetDelegationFn).toBeCalled())
+
     await userEvent.click(btn)
     const dialog = await screen.findByRole('dialog')
     await screen.findByText('Checking MSP Licenses')
@@ -321,7 +321,7 @@ describe('Convert NonVAR MSP Button', () => {
     mockServer.use(
       rest.post(
         AdministrationUrlsInfo.convertNonVARToMSP.url,
-        (req, res, ctx) => {
+        (_req, res, ctx) => {
           return res(ctx.status(500))
         }
       )
@@ -338,10 +338,10 @@ describe('Convert NonVAR MSP Button', () => {
         route: { params }
       })
 
-    await waitFor(() => {
-      expect(mockedTenantFn).toBeCalledWith()
-    })
+    await waitFor(() => expect(mockedTenantFn).toBeCalledWith())
     const btn = await screen.findByRole('button', { name: 'Go to MSP Subscriptions' })
+    await waitFor(() => expect(mockedGetDelegationFn).toBeCalled())
+
     await userEvent.click(btn)
     const dialog = await screen.findByRole('dialog')
     await screen.findByText('Checking MSP Licenses')
@@ -361,7 +361,7 @@ describe('Convert NonVAR MSP Button', () => {
       mockServer.use(
         rest.get(
           MspUrlsInfo.getMspEcProfile.url,
-          (req, res, ctx) => {
+          (_req, res, ctx) => {
             mockedmspFn()
             return res(ctx.json(fakeMspEcProfile))
           }
@@ -378,9 +378,7 @@ describe('Convert NonVAR MSP Button', () => {
           route: { params }
         })
 
-      await waitFor(() => {
-        expect(mockedmspFn).toBeCalled()
-      })
+      await waitFor(() => expect(mockedmspFn).toBeCalled())
       expect(screen.queryByRole('button', { name: 'Go to MSP Subscriptions' })).not.toBeInTheDocument()
     })
 
@@ -396,9 +394,7 @@ describe('Convert NonVAR MSP Button', () => {
           route: { params }
         })
 
-      await waitFor(() => {
-        expect(mockedMSPEcProfileFn).toBeCalled()
-      })
+      await waitFor(() => expect(mockedMSPEcProfileFn).toBeCalled())
       expect(screen.queryByRole('button', { name: 'Go to MSP Subscriptions' })).not.toBeInTheDocument()
     })
 
@@ -414,9 +410,7 @@ describe('Convert NonVAR MSP Button', () => {
           route: { params }
         })
 
-      await waitFor(() => {
-        expect(mockedMSPEcProfileFn).toBeCalled()
-      })
+      await waitFor(() => expect(mockedMSPEcProfileFn).toBeCalled())
       expect(screen.queryByRole('button', { name: 'Go to MSP Subscriptions' })).not.toBeInTheDocument()
     })
 
@@ -432,9 +426,7 @@ describe('Convert NonVAR MSP Button', () => {
           route: { params }
         })
 
-      await waitFor(() => {
-        expect(mockedMSPEcProfileFn).toBeCalled()
-      })
+      await waitFor(() => expect(mockedMSPEcProfileFn).toBeCalled())
       expect(screen.queryByRole('button', { name: 'Go to MSP Subscriptions' })).not.toBeInTheDocument()
     })
 
@@ -445,7 +437,7 @@ describe('Convert NonVAR MSP Button', () => {
       mockServer.use(
         rest.get(
           AdministrationUrlsInfo.getTenantDetails.url,
-          (req, res, ctx) => {
+          (_req, res, ctx) => {
             mockedFn()
             return res(ctx.json(fakeNonVARMSPTenantDetails))
           }
@@ -463,9 +455,7 @@ describe('Convert NonVAR MSP Button', () => {
           route: { params }
         })
 
-      await waitFor(() => {
-        expect(mockedFn).toBeCalled()
-      })
+      await waitFor(() => expect(mockedFn).toBeCalled())
       expect(screen.queryByRole('button', { name: 'Go to MSP Subscriptions' })).not.toBeInTheDocument()
     })
   })
