@@ -217,6 +217,18 @@ describe('RecommendationActions', () => {
     const inputs = await screen.findAllByPlaceholderText('Select date')
     expect(inputs[0]).toHaveValue('2023-11-17')
   })
+  it('should future schedule when first revert', async () => {
+    const metadata = {
+      scheduledAt: '2023-11-17T11:15:00.000Z'
+    }
+    render(
+      <RecommendationActions recommendation={
+        { ...mockedCrrm, metadata, statusEnum: 'applied' } as unknown as RecommendationListItem} />,
+      { wrapper: Provider }
+    )
+    const inputs = await screen.findAllByPlaceholderText('Select date')
+    expect(inputs[0]).toHaveValue('2023-07-15')
+  })
   it('should handle cancel mutation correctly', async () => {
     const resp = { cancel: { success: true, errorMsg: '' , errorCode: '' } }
     mockGraphqlMutation(recommendationUrl, 'CancelRecommendation', { data: resp })

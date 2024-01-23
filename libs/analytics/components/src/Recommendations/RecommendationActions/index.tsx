@@ -56,7 +56,7 @@ type ActionButtonProps = RecommendationListItem & {
   type: keyof typeof actionTooltip
 }
 
-function ApplyCalendar ({ disabled, type, id, code, metadata }: ActionButtonProps) {
+function ApplyCalendar ({ disabled, type, id, code, metadata, statusEnum }: ActionButtonProps) {
   const { $t } = useIntl()
   const [scheduleRecommendation] = useScheduleRecommendationMutation()
   const onApply = (date: Moment) => {
@@ -118,7 +118,9 @@ function ApplyCalendar ({ disabled, type, id, code, metadata }: ActionButtonProp
     title={$t(actionTooltip[type].text)}
     icon={<UI.IconWrapper $disabled={disabled}>{actionTooltip[type].icon}</UI.IconWrapper>}
     disabled={disabled}
-    initialDate={metadata.scheduledAt ? scheduledAt : futureDate}
+    initialDate={statusEnum === 'applied'
+      ? futureDate
+      : (metadata.scheduledAt ? scheduledAt : futureDate)}
     onApply={onApply}
     applyFooterMsg={footerMsg}
     disabledDateTime={disabledDateTime}
