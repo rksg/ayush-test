@@ -6,7 +6,8 @@ import {
   EditOutlined,
   DeleteOutlined,
   Reload,
-  EditOutlinedDisabledIcon
+  EditOutlinedDisabledIcon,
+  DeleteOutlinedDisabledIcon
 } from '@acx-ui/icons'
 import { noDataDisplay, getIntl } from '@acx-ui/utils'
 
@@ -171,7 +172,7 @@ export const UsersTable = (
             <UI.IconWrapper $disabled={
               (user.userId === props.selectedRow.id)
             }>{user.userId === props.selectedRow.id
-                ? <UI.DeleteOutlinedDisabledIcon/>
+                ? <DeleteOutlinedDisabledIcon/>
                 : <DeleteOutlined
                   onClick={() => {
                     setSelectedRow(props.selectedRow)

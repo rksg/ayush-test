@@ -75,5 +75,20 @@ export const mockMangedUsers: ManagedUser[] = [
         lastName: 'userRej'
       }
     }
+  },
+  {
+    id: '111',
+    firstName: 'firstName dog111',
+    lastName: 'lastName dog111',
+    email: 'dog111@ruckuswireless.com.uat',
+    accountId: '0015000000GlI7SAAV',
+    accountName: 'RUCKUS NETWORKS, INC',
+    role: 'admin' as const,
+    tenantId: '0015000000GlI7SAAV',
+    resourceGroupId: '087b6de8-953f-405e-b2c2-000000000000',
+    resourceGroupName: 'default',
+    updatedAt: '2023-09-22T07:31:11.844Z',
+    type: null,
+    invitation: null
   }
 ]

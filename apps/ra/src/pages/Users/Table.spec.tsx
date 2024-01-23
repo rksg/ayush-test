@@ -9,7 +9,8 @@ import { UsersTable }      from './Table'
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
   getUserProfile: jest.fn().mockImplementation(() => ({
-    selectedTenant: { settings: { franchisor: 'testFranchisor' } }
+    selectedTenant: { settings: { franchisor: 'testFranchisor' } },
+    userId: '111'
   }))
 }))
 const toggleDrawer = jest.fn()
@@ -26,12 +27,12 @@ describe('UsersTable', () => {
       data={mockMangedUsers} />,
     { wrapper: Provider })
     const tbody = await findTBody()
-    expect(await within(tbody).findAllByRole('row')).toHaveLength(4)
+    expect(await within(tbody).findAllByRole('row')).toHaveLength(5)
     expect(await screen.findByText('firstName dog1')).toBeVisible()
     expect(await screen.findByText('FisrtName 1062')).toBeVisible()
     expect(await screen.findByText('FisrtName 12')).toBeVisible()
     expect(await screen.findByText('FisrtName rej')).toBeVisible()
-    expect(await screen.findAllByText(noDataDisplay)).toHaveLength(2)
+    expect(await screen.findAllByText(noDataDisplay)).toHaveLength(4)
     expect(await screen.findByText('Pending')).toBeVisible()
     expect(await screen.findByText('Accepted')).toBeVisible()
     expect(await screen.findByText('Rejected')).toBeVisible()
@@ -58,8 +59,8 @@ describe('UsersTable', () => {
       handleDeleteUser={handleDeleteUser}
       data={[mockMangedUsers[0]]} />,
     { wrapper: Provider })
-    expect(await screen.findByTestId('Reload')).toBeVisible()
-    fireEvent.click(await screen.findByTestId('Reload'))
+    expect(await screen.findByTestId('EditOutlined')).toBeVisible()
+    fireEvent.click(await screen.findByTestId('EditOutlined'))
     expect(setSelectedRow).toBeCalledTimes(1)
     expect(toggleDrawer).toBeCalledTimes(1)
   })
@@ -71,9 +72,9 @@ describe('UsersTable', () => {
       handleDeleteUser={handleDeleteUser}
       data={[mockMangedUsers[0]]} />,
     { wrapper: Provider })
-    expect(await screen.findByTestId('EditOutlined')).toBeVisible()
-    fireEvent.click(await screen.findByTestId('Reload'))
-    expect(setSelectedRow).toBeCalledTimes(1)
+    expect(await screen.findByTestId('DeleteOutlined')).toBeVisible()
+    fireEvent.click(await screen.findByTestId('DeleteOutlined'))
+    expect(setSelectedRow).toBeCalledTimes(2)
     expect(handleDeleteUser).toBeCalledTimes(1)
   })
   it('should handle the refresh callback', async () => {
@@ -84,9 +85,20 @@ describe('UsersTable', () => {
       handleDeleteUser={handleDeleteUser}
       data={[mockMangedUsers[0]]} />,
     { wrapper: Provider })
-    expect(await screen.findByTestId('DeleteOutlined')).toBeVisible()
+    expect(await screen.findByTestId('Reload')).toBeVisible()
     fireEvent.click(await screen.findByTestId('Reload'))
-    expect(setSelectedRow).toBeCalledTimes(1)
+    expect(setSelectedRow).toBeCalledTimes(3)
     expect(getLatestUserDetails).toBeCalledTimes(1)
+  })
+  it('should disable edit and delete for the same user', async () => {
+    render(<UsersTable
+      toggleDrawer={toggleDrawer}
+      setSelectedRow={setSelectedRow}
+      getLatestUserDetails={getLatestUserDetails}
+      handleDeleteUser={handleDeleteUser}
+      data={mockMangedUsers} />,
+    { wrapper: Provider })
+    expect((await screen.findAllByTestId('EditOutlinedDisabledIcon')).length).toEqual(4)
+    expect((await screen.findAllByTestId('DeleteOutlinedDisabledIcon')).length).toEqual(1)
   })
 })
