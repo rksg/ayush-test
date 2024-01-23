@@ -5,7 +5,15 @@ import { rest }  from 'msw'
 
 import { EdgePortConfigFixtures, EdgeSubInterfaceFixtures, EdgeSubInterface, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                                         from '@acx-ui/store'
-import { act, fireEvent, mockServer, render, renderHook, screen, waitFor }                  from '@acx-ui/test-utils'
+import {
+  act,
+  fireEvent,
+  mockServer,
+  render,
+  renderHook,
+  screen,
+  waitFor
+} from '@acx-ui/test-utils'
 
 import SubInterfaceDrawer from './SubInterfaceDrawer'
 

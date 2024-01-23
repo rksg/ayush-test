@@ -14,7 +14,7 @@ import {
   venueData,
   venueSetting,
   venueLanPorts,
-  //mockCellularSettings,
+  mockCellularSettings,
   mockRadiusOptions,
   mockDirectedMulticast
 } from '../../../__tests__/fixtures'
@@ -73,11 +73,11 @@ describe('NetworkingTab', () => {
       rest.put(
         CommonUrlsInfo.updateVenueRadiusOptions.url,
         (_req, res, ctx) => res(ctx.status(200))
-      )/*,
+      ),
       rest.get(
         WifiUrlsInfo.getVenueApModelCellular.url,
         (_req, res, ctx) => res(ctx.json(mockCellularSettings))
-      ) */
+      )
     )
   })
 

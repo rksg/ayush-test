@@ -11,7 +11,9 @@ import {
   EdgeSdLanSetting,
   EdgeSdLanViewData,
   EdgeUrlsInfo,
-  EdgeStatus
+  EdgeStatus,
+  EdgeSdLanViewDataP2,
+  EdgeSdLanSettingP2
 } from '@acx-ui/rc/utils'
 import { baseEdgeSdLanApi }  from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -165,6 +167,80 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
 
       },
       invalidatesTags: [{ type: 'EdgeSdLan', id: 'LIST' }]
+    }),
+    getEdgeSdLanP2ViewDataList:
+      build.query<TableResult<EdgeSdLanViewDataP2>, RequestPayload>({
+        query: ({ payload }) => {
+          const req = createHttpRequest(EdgeSdLanUrls.getEdgeSdLanViewDataList)
+          return {
+            ...req,
+            body: payload
+          }
+        },
+        providesTags: [{ type: 'EdgeSdLan', id: 'LIST_P2' }],
+        async onCacheEntryAdded (requestArgs, api) {
+          await onSocketActivityChanged(requestArgs, api, (msg) => {
+            onActivityMessageReceived(msg, [
+              'Add SD-LAN',
+              'Update SD-LAN',
+              'Delete SD-LAN'
+            ], () => {
+              api.dispatch(serviceApi.util.invalidateTags([
+                { type: 'Service', id: 'LIST' }
+              ]))
+              api.dispatch(edgeSdLanApi.util.invalidateTags([
+                { type: 'EdgeSdLan', id: 'LIST_P2' }
+              ]))
+            })
+          })
+        },
+        extraOptions: { maxRetries: 5 }
+      }),
+    getEdgeSdLanP2: build.query<EdgeSdLanSettingP2, RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const cfRequest = createHttpRequest(
+          EdgeSdLanUrls.getEdgeSdLan, arg.params)
+        const cfQuery = await fetchWithBQ(cfRequest)
+        const cfConfig = cfQuery.data as EdgeSdLanSettingP2
+
+        const edgeRequest = createHttpRequest(EdgeUrlsInfo.getEdgeList)
+        const edgeQuery = await fetchWithBQ({
+          ...edgeRequest,
+          body: {
+            fields: [
+              'name',
+              'serialNumber',
+              'venueId',
+              'venueName'
+            ],
+            filters: {
+              serialNumber: [cfConfig.edgeId]
+            }
+          }
+        })
+
+        const edgeInfo = edgeQuery.data as TableResult<EdgeStatus>
+        cfConfig.venueId = edgeInfo.data[0].venueId
+        cfConfig.venueName = edgeInfo.data[0].venueName
+
+        return cfQuery.data
+          ? { data: {
+            id: 'mocked_sdLan_id',
+            name: 'mockedSdLanData',
+            venueId: 'cd572eda8d494a79aa2331fdc26086d9',
+            venueName: 'AMY_VENUE',
+            edgeId: '965F472F5BB50911EE875D000C290DDC7A',
+            networkIds: ['670a1316306242049cf41e350138cb36', '3c44c926a1324955b6de70fd19368213'],
+            tunnelProfileId: '3885120d5c7140afbb22842f87fdd1ea',
+            corePortMac: 'port1',
+            isGuestTunnelEnabled: true,
+            guestEdgeId: '961346F1DF760D11E8A08C000C29E61518',
+            guestTunnelProfileId: '7426fd7f8ed549baa326f0e6616fc294',
+            guestNetworkIds: ['3c44c926a1324955b6de70fd19368213']
+          } }
+          : { error: cfQuery.error as FetchBaseQueryError }
+      },
+      providesTags: [{ type: 'EdgeSdLan', id: 'DETAIL_P2' }]
     })
   })
 })
@@ -176,5 +252,7 @@ export const {
   useAddEdgeSdLanMutation,
   useUpdateEdgeSdLanMutation,
   useUpdateEdgeSdLanPartialMutation,
-  useDeleteEdgeSdLanMutation
+  useDeleteEdgeSdLanMutation,
+  useGetEdgeSdLanP2ViewDataListQuery,
+  useGetEdgeSdLanP2Query
 } = edgeSdLanApi
