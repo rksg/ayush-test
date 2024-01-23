@@ -29,7 +29,7 @@ describe('useEdgeClusterActions', () => {
         }
       ),
       rest.get(
-        DpskUrls.getNewFlowPassphraseDevices.url,
+        DpskUrls.getPassphraseDevices.url,
         (req, res, ctx) => {
           return res(ctx.json(mockedDpskDeviceList))
         }
