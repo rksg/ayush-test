@@ -65,9 +65,7 @@ export const fakeMspEcProfile = {
 }
 
 export const fakeRecoveryPassphrase = {
-  psk: '3577576417249799',
-  tenantId: '8c36a0a9ab9d4806b060e112205add6f',
-  obsolete: false
+  passphrase: '3577576417249799'
 }
 
 export const fakePreference = {
