@@ -11,7 +11,7 @@ export const ChannelGroup160MHzModel = [
   { value: '111', selected: true },
   { value: '143', selected: true },
   { value: '175', selected: true },
-  { value: '205', selected: true }
+  { value: '207', selected: true }
 ]
 
 export const filterUnselectedChannels = (channels: RadioChannel[]) : string [] => {
@@ -151,7 +151,7 @@ export const defaultStates : ChannelGroupType = {
     },
     191: {
       channels: ['161', '165', '169', '173', '177', '181', '185', '189', '193', '197', '201', '205', '209', '213', '217', '221'],
-      channel160Groups: ['175', '205'],
+      channel160Groups: ['175', '207'],
       group: ChannelGroup320MhzEnum.Group2,
       display: ButtonDisplayStatusEnum.Display
     }
@@ -187,14 +187,14 @@ export const defaultStates : ChannelGroupType = {
       isolated: false,
       display: ButtonDisplayStatusEnum.Display
     },
-    205: {
+    207: {
       channels: [ '193', '197', '201', '205', '209', '213', '217', '221'],
       isolated: false,
       display: ButtonDisplayStatusEnum.Display
     }
   },
   // Control RadioSettingsChannels320Mhz checkbox displaying
-  enabledCheckbox: ['15','47','79','111','143','175','205'],
+  enabledCheckbox: ['15','47','79','111','143','175','207'],
   getEnabledChannels () : CheckboxValueType[] {
     let enabledChannels = [] as CheckboxValueType[]
     _.forIn(this.ChannelGroup_160MHz, (value, key) => {
