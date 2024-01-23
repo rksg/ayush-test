@@ -1,6 +1,7 @@
 import { Space } from 'antd'
 import styled    from 'styled-components'
 
+import { DeleteOutlined } from '@acx-ui/icons'
 export const Actions = styled(Space)`
   .ant-picker-suffix {
     margin: 0 !important;
@@ -11,12 +12,9 @@ export const IconWrapper = styled.span<{ $disabled?: boolean }>`
     props.$disabled
       ? `
       cursor: not-allowed;
-      pointer-events: none;
-      color: var(--acx-neutrals-50);
     `
       : `
       cursor: pointer;
-      color: var(--acx-primary-black);
     `}
 `
 export const FormContainer = styled.div`
@@ -24,4 +22,9 @@ export const FormContainer = styled.div`
   flex-direction: column;
   width: 500px;
   padding: 20px;
+`
+export const DeleteOutlinedDisabledIcon = styled(DeleteOutlined)`
+  path {
+    stroke: var(--acx-neutrals-40) !important;
+  }
 `

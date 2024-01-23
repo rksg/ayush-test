@@ -1,11 +1,12 @@
-import { useIntl } from 'react-intl'
+import { defineMessage, useIntl } from 'react-intl'
 
 import { defaultSort, getUserProfile, ManagedUser, sortProp } from '@acx-ui/analytics/utils'
 import { Table, TableProps, Tooltip }                         from '@acx-ui/components'
 import {
   EditOutlined,
   DeleteOutlined,
-  Reload
+  Reload,
+  EditOutlinedDisabledIcon
 } from '@acx-ui/icons'
 import { noDataDisplay, getIntl } from '@acx-ui/utils'
 
@@ -18,21 +19,46 @@ export type DisplayUser = ManagedUser & {
   displayType: string
 }
 
+export const disabledDeleteText = defineMessage({
+  // eslint-disable-next-line max-len
+  defaultMessage: 'You are not allowed to delete yourself.Or, if you are an invited 3rd party user, you are not allowed to delete users in the host account.'
+})
+export const disabledEditText = defineMessage({
+  // eslint-disable-next-line max-len
+  defaultMessage: 'You are not allowed to edit yourself or invited users. If you are an invited 3rd party user, you are not allowed to edit users in the host account.'
+})
+export const refreshText = defineMessage({
+  defaultMessage:
+    'Retrieve latest email, first name, last name from Ruckus Support Portal.'
+})
+
+export const editText = defineMessage({
+  defaultMessage: 'Edit'
+})
+export const deleteText = defineMessage({
+  defaultMessage: 'Delete'
+})
 const getDisplayRole = (role: ManagedUser['role']) => {
   const { $t } = getIntl()
   switch (role) {
-    case 'admin': return $t({ defaultMessage: 'Admin' })
-    case 'report-only': return $t({ defaultMessage: 'Report Only' })
-    case 'network-admin': return $t({ defaultMessage: 'Network Admin' })
+    case 'admin':
+      return $t({ defaultMessage: 'Admin' })
+    case 'report-only':
+      return $t({ defaultMessage: 'Report Only' })
+    case 'network-admin':
+      return $t({ defaultMessage: 'Network Admin' })
   }
 }
 
 const getDisplayType = (type: ManagedUser['type'], franchisor: string) => {
   const { $t } = getIntl()
   switch (type) {
-    case 'tenant': return $t({ defaultMessage: '3rd Party' })
-    case 'super-tenant': return franchisor
-    default: return $t({ defaultMessage: 'Internal' })
+    case 'tenant':
+      return $t({ defaultMessage: '3rd Party' })
+    case 'super-tenant':
+      return franchisor
+    default:
+      return $t({ defaultMessage: 'Internal' })
   }
 }
 
@@ -41,10 +67,14 @@ const getDisplayState = (
 ) => {
   const { $t } = getIntl()
   switch (state) {
-    case 'accepted': return $t({ defaultMessage: 'Accepted' })
-    case 'rejected': return $t({ defaultMessage: 'Rejected' })
-    case 'pending': return $t({ defaultMessage: 'Pending' })
-    default: return noDataDisplay
+    case 'accepted':
+      return $t({ defaultMessage: 'Accepted' })
+    case 'rejected':
+      return $t({ defaultMessage: 'Rejected' })
+    case 'pending':
+      return $t({ defaultMessage: 'Pending' })
+    default:
+      return noDataDisplay
   }
 }
 
@@ -84,7 +114,7 @@ export const UsersTable = (
           <Tooltip
             placement='top'
             arrowPointAtCenter
-            title={$t({ defaultMessage: 'Refresh' })}>
+            title={$t(refreshText)}>
             <UI.IconWrapper $disabled={false}>
               <Reload
                 onClick={() => {
@@ -104,18 +134,27 @@ export const UsersTable = (
           <Tooltip
             placement='top'
             arrowPointAtCenter
-            title={$t({ defaultMessage: 'Edit' })}>
+            title={$t(
+              (!(props.selectedRow.type === null) ||
+              user.userId === props.selectedRow.id)
+                ? disabledEditText
+                : editText
+            )}>
             <UI.IconWrapper $disabled={
               !(props.selectedRow.type === null) ||
               (user.userId === props.selectedRow.id)
             }>
-              <EditOutlined
-                onClick={() => {
-                  setSelectedRow(props.selectedRow)
-                  toggleDrawer(true)
-                }}
-                style={{ height: '24px', width: '24px' }}
-              />
+              { !(props.selectedRow.type === null) ||
+              (user.userId === props.selectedRow.id)
+                ? <EditOutlinedDisabledIcon />
+                : <EditOutlined
+                  onClick={() => {
+                    setSelectedRow(props.selectedRow)
+                    toggleDrawer(true)
+                  }}
+                  style={{ height: '24px', width: '24px' }}
+                />
+              }
             </UI.IconWrapper>
           </Tooltip>
         )
@@ -127,16 +166,22 @@ export const UsersTable = (
           <Tooltip
             placement='top'
             arrowPointAtCenter
-            title={$t({ defaultMessage: 'Delete' })}>
+            title={$t(
+              (user.userId === props.selectedRow.id)
+                ? disabledDeleteText
+                : deleteText
+            )}>
             <UI.IconWrapper $disabled={
               (user.userId === props.selectedRow.id)
-            }>
-              <DeleteOutlined
-                onClick={() => {
-                  setSelectedRow(props.selectedRow)
-                  handleDeleteUser()
-                }}
-                style={{ height: '24px', width: '24px' }} />
+            }>{user.userId === props.selectedRow.id
+                ? <UI.DeleteOutlinedDisabledIcon/>
+                : <DeleteOutlined
+                  onClick={() => {
+                    setSelectedRow(props.selectedRow)
+                    handleDeleteUser()
+                  }}
+                  style={{ height: '24px', width: '24px' }} />
+              }
             </UI.IconWrapper>
           </Tooltip>
         )

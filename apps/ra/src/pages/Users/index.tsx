@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { Button, Col, Form, Row } from 'antd'
+import { Button, Col, Row, Form } from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
 import {
@@ -10,34 +10,48 @@ import {
   useDeleteUserResourceGroupMutation,
   useDeleteInvitationMutation
 } from '@acx-ui/analytics/services'
-import { ManagedUser }                                          from '@acx-ui/analytics/utils'
-import { Drawer, PageHeader, Loader, StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import { ManagedUser }                                                                      from '@acx-ui/analytics/utils'
+import { Drawer, PageHeader, Loader, StepsFormLegacy, Tooltip, showToast, showActionModal } from '@acx-ui/components'
 
 import { drawerContentConfig } from './config'
 import { UsersTable }          from './Table'
 
-const title = defineMessage({
-  defaultMessage: '{usersCount, plural, one {User} other {Users}}'
-})
 
 type FormItemProps = {
   name: string,
   labelKey: string,
   component: React.ReactNode,
 }
-const info = defineMessage({
-  defaultMessage: `"Invite 3rd Party" allows you to invite a user who does not
-  belong to your organisation into this RUCKUS AI account.
-  {br}
-  {br}
-  "Add Internal User" allows you to include a user who belongs to your
-  organisation into this RUCKUS AI account.
-  {br}
-  {br}
-  In all cases, please note that the invitee needs to have an existing
-  Ruckus Support account.`
-})
-
+const messages = {
+  title: defineMessage({
+    defaultMessage: '{usersCount, plural, one {User} other {Users}}'
+  }),
+  info: defineMessage({
+    defaultMessage: `"Invite 3rd Party" allows you to invite a user who does not
+    belong to your organisation into this RUCKUS AI account.
+    {br}
+    {br}
+    "Add Internal User" allows you to include a user who belongs to your
+    organisation into this RUCKUS AI account.
+    {br}
+    {br}
+    In all cases, please note that the invitee needs to have an existing
+    Ruckus Support account.`
+  }),
+  editUser: defineMessage({ defaultMessage: 'Edit User' }),
+  save: defineMessage({ defaultMessage: 'Save' }),
+  cancel: defineMessage({ defaultMessage: 'Cancel' }),
+  refreshSuccessful: defineMessage({ defaultMessage: 'Refreshed user details successfully' }),
+  refreshFailure: defineMessage({ defaultMessage: 'Refresh user details is unsuccessful' }),
+  deleteSuccessful: defineMessage({ defaultMessage: 'Deleted user details successfully' }),
+  deleteFailure: defineMessage({ defaultMessage: 'Delete user details is unsuccessful' }),
+  editUserSuccess: defineMessage({ defaultMessage: 'Updated user details successfully' }),
+  editUserFailure: defineMessage({ defaultMessage: 'Update user details is unsuccessful' }),
+  deleteModalContent: defineMessage({
+    defaultMessage: 'Do you really want to remove {firstName} {lastName}?'
+  }),
+  deleteModalTitle: defineMessage({ defaultMessage: 'Delete user' })
+}
 
 const FormItem: React.FC<FormItemProps> = ({ name, labelKey, component }) => (
   <Row gutter={20}>
@@ -69,129 +83,165 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
 }) => {
   const { $t } = useIntl()
   const { updatedRole, updatedResourceGroup } = updatedValues
+
   return (
     <StepsFormLegacy.StepForm>
-      {drawerContentConfig[type as 'edit'].map((item) => (
-        <FormItem
-          key={item.name}
-          name={item.name}
-          labelKey={$t(item.labelKey)}
-          component={
-            <item.component
-              {...item.componentProps({
-                selectedRow,
-                updatedResourceGroup,
-                updatedRole,
-                onRoleChange,
-                onResourceGroupChange
-              })}
-            />
-          }
-        />
-      ))}
+      {drawerContentConfig[type as keyof typeof drawerContentConfig].map(
+        (item) => (
+          <FormItem
+            key={item.name}
+            name={item.name}
+            labelKey={$t(item.labelKey)}
+            component={
+              <item.component
+                {...item.componentProps({
+                  selectedRow,
+                  updatedResourceGroup,
+                  updatedRole,
+                  onRoleChange,
+                  onResourceGroupChange
+                })}
+              />
+            }
+          />
+        )
+      )}
     </StepsFormLegacy.StepForm>
   )
 }
-const Users: React.FC = () => {
+const Users = () => {
   const { $t } = useIntl()
   const [openDrawer, setOpenDrawer] = useState(false)
   const [selectedRow, setSelectedRow] = useState<ManagedUser | null>(null)
-  const [retrieveUserDetails, setRetrieveUserDetails] = useState<boolean>(false)
-  const [deleteUser, setDeleteUser] = useState<boolean>(false)
-
+  const [retrieveUserDetails, setRetrieveUserDetails] = useState(false)
+  const [deleteUser, setDeleteUser] = useState({ deleteUser: false, showModal: false })
   const [updatedRole, setUpdatedRole] = useState<string | null>(null)
   const [updatedResourceGroup, setUpdatedResourceGroup] = useState<string | null>(null)
+  const usersQuery = useGetUsersQuery()
   const [refreshUserDetails] = useRefreshUserDetailsMutation()
+  const [updateUserRoleAndResourceGroup] = useUpdateUserRoleAndResourceGroupMutation()
   const [deleteUserResourceGroup] = useDeleteUserResourceGroupMutation()
   const [deleteInvitation] = useDeleteInvitationMutation()
 
-  const usersQuery = useGetUsersQuery()
-  const { data, refetch } = usersQuery
-  const [updateUserRoleAndResourceGroup] = useUpdateUserRoleAndResourceGroupMutation()
-  const usersCount = data?.length || 0
-  console.log(selectedRow)
+  const usersCount = usersQuery.data?.length || 0
+  useEffect(() => {
+    if (retrieveUserDetails && selectedRow) {
+      refreshUserDetails({ userId: selectedRow.id })
+        .then((response) => {
+          usersQuery.refetch()
+            .then( () => {
+              const isSuccess = (response as { data: string })?.data
+              showToast({
+                type: isSuccess ? 'success' : 'error',
+                content: $t(isSuccess ? messages.refreshSuccessful: messages.refreshFailure)
+              })
+            }
+            )
+        }).finally(() => setRetrieveUserDetails(false))
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [retrieveUserDetails])
+
+  useEffect(() => {
+    if(deleteUser.showModal && selectedRow){
+      showActionModal({
+        type: 'confirm',
+        title: $t(messages.deleteModalTitle) ,
+        content: $t(messages.deleteModalContent, {
+          firstName: selectedRow?.firstName, lastName: selectedRow?.lastName
+        }),
+        onOk: () => {
+          setDeleteUser({ deleteUser: true, showModal: false })
+        }
+      })
+    }
+    if (deleteUser.deleteUser && selectedRow) {
+      const deleteUserAction = selectedRow.invitation?.state === 'accepted'
+        ? deleteUserResourceGroup({ userId: selectedRow.id })
+        : deleteInvitation(
+          { resourceGroupId: updatedResourceGroup || selectedRow.resourceGroupId,
+            userId: selectedRow.id
+          })
+      deleteUserAction
+        .then((response) => {
+          usersQuery.refetch()
+            .then(() => {
+              const isSuccess = !(response as { error: string })?.error
+              showToast({
+                type: isSuccess ? 'success' : 'error',
+                content: $t(isSuccess ? messages.deleteSuccessful: messages.deleteFailure)
+              })
+            }
+            )
+        })
+        .finally(() => setDeleteUser({ showModal: false ,deleteUser: false }))
+    }
+  },
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  [selectedRow,deleteUser])
+
   const handleSaveClick = () => {
     updateUserRoleAndResourceGroup({
       resourceGroupId: updatedResourceGroup ?? selectedRow?.resourceGroupId!,
       userId: selectedRow?.id!,
       role: updatedRole ?? selectedRow?.role!
+    }).then((response) => {
+      setOpenDrawer(false)
+      const isSuccess = (response as { data: string })?.data
+      showToast({
+        type: isSuccess ? 'success' : 'error',
+        content: $t(isSuccess ? messages.editUserSuccess: messages.editUserFailure)
+      })
     })
-    setOpenDrawer(false)
-    refetch()
   }
-
   const handleCancelClick = () => {
     setOpenDrawer(false)
-    setUpdatedResourceGroup(null)
     setUpdatedRole(null)
+    setUpdatedResourceGroup(null)
   }
-  useEffect(()=> {
-    if(retrieveUserDetails && selectedRow)
-    {
-      refreshUserDetails({
-        userId: selectedRow?.id!
-      }).then(() => refetch()
-      ).then(() => setRetrieveUserDetails(false))
 
-    }
-  }, [retrieveUserDetails, selectedRow, refreshUserDetails, refetch])
-  const handleRefreshClick = () => {
-    setRetrieveUserDetails(true)
-  }
-  useEffect(()=>{
-    if(deleteUser && selectedRow)
-    {
-      if(selectedRow.invitation?.state === 'accepted')
-        deleteUserResourceGroup({
-          userId: selectedRow?.id!
-        }).then(() => refetch()
-        ).then(() => setDeleteUser(false))
-      else{
-        deleteInvitation({
-          resourceGroupId: updatedResourceGroup ?? selectedRow?.resourceGroupId!,
-          userId: selectedRow?.id!
-        }).then(() => refetch()
-        ).then(() => setDeleteUser(false))
-      }
-    }
-  },[selectedRow, deleteUser, deleteUserResourceGroup, refetch, deleteInvitation])
-  const handleDeleteUser = () => {
-    setDeleteUser(true)
-  }
   const drawerFooter = (
     <div>
       <Button
         onClick={handleSaveClick}
-        disabled={!Boolean(updatedRole || updatedResourceGroup)}
-        type='primary'>
-        {$t({ defaultMessage: 'Save' })}
+        disabled={!updatedRole && !updatedResourceGroup}
+        type='primary'
+      >
+        {$t(messages.save)}
       </Button>
       <Button onClick={handleCancelClick}>
-        {$t({ defaultMessage: 'Cancel' })}
+        {$t(messages.cancel)}
       </Button>
     </div>
   )
 
   return (
-    <Loader states={[usersQuery]}>
+    <Loader states={[
+      {
+        isLoading: false || usersQuery.isLoading,
+        isFetching: retrieveUserDetails || deleteUser.deleteUser || usersQuery.isFetching
+      }]}>
       <PageHeader
-        title={<>
-          {$t(title,{ usersCount })} ({usersCount})
-          <Tooltip.Info
-            data-html
-            title={$t(info, { br: <br/> })} />
-        </>}
+        title={
+          <>
+            {$t(messages.title, { usersCount })} ({usersCount})
+            <Tooltip.Info
+              data-html
+              title={$t(messages.info, { br: <br/> })}
+            />
+          </>
+        }
       />
       <UsersTable
         data={usersQuery.data}
         toggleDrawer={setOpenDrawer}
         setSelectedRow={setSelectedRow}
-        getLatestUserDetails={handleRefreshClick}
-        handleDeleteUser={handleDeleteUser}
+        getLatestUserDetails={() => setRetrieveUserDetails(true)}
+        handleDeleteUser={() => setDeleteUser({ ...deleteUser, showModal: true })}
       />
       <Drawer
         visible={openDrawer}
-        title={$t({ defaultMessage: 'Edit User' })}
+        title={$t(messages.editUser)}
         onClose={() => setOpenDrawer(false)}
         footer={drawerFooter}
         width={400}
