@@ -22,7 +22,7 @@ import { PropertyUnitBulkDrawer } from './index'
 
 
 
-const closeFn = jest.fn()
+
 const params = {
   tenantId: '15a04f095a8f4a96acaf17e921e8a6df',
   venueId: 'has-nsg-venue-id',
@@ -30,7 +30,7 @@ const params = {
   noNsgVenueId: 'no-nsg-venue-id'
 }
 
-const current = moment(new Date('11/22/2023')).format('MM/DD/YYYY')
+const current = moment(new Date('11/22/2023')).toISOString()
 const data: PropertyUnit[] = [{
   id: 'unit-id-1',
   name: 'unit-1',
@@ -66,9 +66,12 @@ const userProfile = {
 
 
 jest.mocked(useIsSplitOn).mockReturnValue(true)
+const applyFn = jest.fn()
+const closeFn = jest.fn()
 describe('Property Unit Bulk Drawer', () => {
   beforeEach(() => {
     closeFn.mockClear()
+    applyFn.mockClear()
     mockServer.use(
       rest.patch(
         PropertyUrlsInfo.updatePropertyUnit.url,
@@ -77,6 +80,13 @@ describe('Property Unit Bulk Drawer', () => {
       rest.get(
         replacePagination(ConnectionMeteringUrls.getConnectionMeteringList.url),
         (_, res, ctx) => res(ctx.json(mockConnectionMeteringTableResult))
+      ),
+      rest.put(
+        PropertyUrlsInfo.bulkUpdateUnitProfile.url,
+        (_, res, ctx) => {
+          applyFn()
+          return res(ctx.json({}))
+        }
       )
     )
   })
@@ -121,7 +131,7 @@ describe('Property Unit Bulk Drawer', () => {
   })
 
 
-  it.skip('should apply correctly', async () => {
+  it('should apply correctly', async () => {
     window.HTMLElement.prototype.scrollIntoView = function () {}
     render(<Provider>
       <UserProfileContext.Provider
@@ -138,8 +148,12 @@ describe('Property Unit Bulk Drawer', () => {
     await screen.findByLabelText('Data Usage Metering')
     await screen.findByText('Data consumption')
     await screen.findByText('Expiration Date of Data Consumption')
-    await screen.findByRole('button', { name: 'Apply' })
+    const apply = await screen.findByRole('button', { name: 'Apply' })
     await screen.findByRole('button', { name: 'Cancel' })
+
+    await userEvent.click(apply)
+    await waitFor(() => expect(applyFn).toHaveBeenCalled())
+    await waitFor(() => expect(closeFn).toHaveBeenCalled())
   })
 
   it('should not render setting form', async () => {
