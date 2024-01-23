@@ -36,8 +36,9 @@ for (let i = 1; i <= 30; i++) {
 
 export function TableNoStickyPagination () {
   return (<>
-    Table without StickyPagination
+    Table Pagination with StickyPagination=false
     <Table
+      settingsId='storybook-table-paging'
       columns={basicColumns}
       dataSource={basicData}
       stickyPagination={false}
