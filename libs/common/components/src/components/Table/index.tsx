@@ -686,6 +686,7 @@ function Table <RecordType extends Record<string, any>> ({
 
 Table.SubTitle = UI.SubTitle
 Table.Highlighter = UI.Highlighter
+Table.SearchInput = UI.SearchInput
 
 export { Table }
 
