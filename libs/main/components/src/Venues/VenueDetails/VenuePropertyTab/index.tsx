@@ -337,7 +337,8 @@ export function VenuePropertyTab () {
   const rowActions: TableProps<PropertyUnit>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
-      visible: (selectedItems => selectedItems.length <= 1 || (isConnectionMeteringEnabled && selectedItems.length > 1)),
+      visible: (selectedItems => selectedItems.length <= 1 ||
+        (isConnectionMeteringEnabled && selectedItems.length > 1)),
       onClick: (units, clearSelection) => {
         setDrawerState({ units: units.map(u=> {return {
           ...u,
