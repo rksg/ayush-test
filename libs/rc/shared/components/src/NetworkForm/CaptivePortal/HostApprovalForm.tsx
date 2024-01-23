@@ -22,7 +22,11 @@ import {
   NetworkTypeEnum,
   domainsNameRegExp,
   emailsRegExp,
-  emailsSameDomainValidation } from '@acx-ui/rc/utils'
+  emailsSameDomainValidation,
+  emailDuplicationValidation,
+  emailMaxCountValidation,
+  domainNameDuplicationValidation
+} from '@acx-ui/rc/utils'
 import { validationMessages } from '@acx-ui/utils'
 
 import { captivePasswordExpiration } from '../contentsMap'
@@ -116,7 +120,9 @@ export function HostApprovalForm () {
                 { required: true, message: $t(validationMessages.domains) },
                 { validator: (_, value) => domainsNameRegExp(
                   (Array.isArray(value)? value : value.split(',')), true)
-                }]
+                },
+                { validator: (rule, value) => domainNameDuplicationValidation((Array.isArray(value)? value : value.split(','))) }
+              ]
               }
               validateFirst
               hasFeedback
@@ -142,7 +148,9 @@ export function HostApprovalForm () {
               rules={[
                 { required: true },
                 { validator: (rule, value) => emailsRegExp((Array.isArray(value)? value : value.split(','))) },
-                { validator: (rule, value) => emailsSameDomainValidation((Array.isArray(value)? value : value.split(','))) }
+                { validator: (rule, value) => emailsSameDomainValidation((Array.isArray(value)? value : value.split(','))) },
+                { validator: (rule, value) => emailDuplicationValidation((Array.isArray(value)? value : value.split(','))) },
+                { validator: (rule, value) => emailMaxCountValidation((Array.isArray(value)? value : value.split(',')), 100) }
               ]
               }
               normalize={(value: string) => value.split(',').map((text: string)=>text.replace(/\n/, '').trim())}
