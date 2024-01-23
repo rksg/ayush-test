@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import _          from 'lodash'
 import { Params } from 'react-router-dom'
 
@@ -57,8 +58,8 @@ import {
   ApGroupViewModel,
   ApManagementVlan,
   ApIncompatibleFeature,
-  ApCompatibility
-
+  ApCompatibility,
+  ApAntennaTypeSettings
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -533,6 +534,15 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'PHOTO' }]
     }),
+    startPacketCapture: build.mutation<PacketCaptureOperationResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.startPacketCapture, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     stopPacketCapture: build.mutation<PingAp, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.stopPacketCapture, params)
@@ -615,6 +625,45 @@ export const apApi = baseApApi.injectEndpoints({
       query: ({ params }) => createHttpRequest(WifiUrlsInfo.resetApBandModeSettings, params),
       invalidatesTags: [{ type: 'Ap', id: 'BandModeSettings' }]
     }),
+    getApAntennaTypeSettings: build.query<ApAntennaTypeSettings, RequestPayload<void>>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApAntennaTypeSettings, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'ANTENNA' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateApAntennaTypeSettings',
+            'ResetApAntennaTypeSettings'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'ANTENNA' }]))
+          })
+        })
+      }
+    }),
+    updateApAntennaTypeSettings: build.mutation<CommonResult, RequestPayload<ApAntennaTypeSettings>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateApAntennaTypeSettings, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'ANTENNA' }]
+    }),
+    resetApAntennaTypeSettings: build.mutation<CommonResult, RequestPayload<void>>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.resetApAntennaTypeSettings, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'ANTENNA' }]
+    }),
     getApBssColoring: build.query<ApBssColoringSettings, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.getApBssColoring, params)
@@ -663,15 +712,6 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
-    }),
-    startPacketCapture: build.mutation<PacketCaptureOperationResponse, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.startPacketCapture, params)
-        return {
-          ...req,
-          body: payload
-        }
-      }
     }),
     getApValidChannel: build.query<VenueDefaultRegulatoryChannels, RequestPayload>({
       query: ({ params }) => {
@@ -1011,6 +1051,10 @@ export const {
   useGetApBandModeSettingsQuery,
   useUpdateApBandModeSettingsMutation,
   useResetApBandModeSettingsMutation,
+  useGetApAntennaTypeSettingsQuery,
+  useLazyGetApAntennaTypeSettingsQuery,
+  useUpdateApAntennaTypeSettingsMutation,
+  useResetApAntennaTypeSettingsMutation,
   useGetApBssColoringQuery,
   useUpdateApBssColoringMutation,
   useGetApCapabilitiesQuery,

@@ -3,8 +3,9 @@ import userEvent   from '@testing-library/user-event'
 import { rest }    from 'msw'
 
 import { useIsTierAllowed }                                              from '@acx-ui/feature-toggle'
+import { personaApi }                                                    from '@acx-ui/rc/services'
 import { PersonaUrls, PropertyUrlsInfo }                                 from '@acx-ui/rc/utils'
-import { Provider }                                                      from '@acx-ui/store'
+import { Provider, store }                                               from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import {
@@ -35,6 +36,7 @@ describe('Persona Table', () => {
   let params: { tenantId: string, personaGroupId?: string }
 
   beforeEach( () => {
+    store.dispatch(personaApi.util.resetApiState())
     mockServer.use(
       rest.post(
         replacePagination(PersonaUrls.searchPersonaList.url),
