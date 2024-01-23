@@ -77,9 +77,15 @@ export const transformEvents = (
   selectedRadios: string[]
 ) =>
   events.reduce((acc, data, index) => {
-    const { event, state, timestamp, mac, ttc, radio, code, failedMsgId, ssid } = data
-    if (code === EAP && failedMsgId && EAPOLMessageIds.includes(failedMsgId)) {
-      data = { ...data, code: EAPOL }
+    const { event, state, timestamp, mac, ttc, radio, code, messageIds, failedMsgId, ssid } = data
+    if (code === EAP && failedMsgId && messageIds) {
+      const failedMsgIdIndex = messageIds.indexOf(failedMsgId)
+      const targetIndex = failedMsgIdIndex - 2
+      const numberOfElements = 2
+      const targetMessageIds = messageIds.splice(targetIndex, numberOfElements)
+      if (targetMessageIds.every(item => EAPOLMessageIds.includes(item))) {
+        data = { ...data, code: EAPOL }
+      }
     }
 
     const category = categorizeEvent(event, ttc)
