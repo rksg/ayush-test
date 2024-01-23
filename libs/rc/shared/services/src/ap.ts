@@ -57,8 +57,7 @@ import {
   AFCStatus,
   ApGroupViewModel,
   ApManagementVlan,
-  ApIncompatibleFeature,
-  ApCompatibility,
+  ApFeatureSet,
   ApAntennaTypeSettings
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
@@ -978,7 +977,7 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'ApManagementVlan' }]
     }),
-    getApFeatureSets: build.query<ApIncompatibleFeature[], RequestPayload>({
+    getApFeatureSets: build.query<ApFeatureSet, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getApFeatureSets, params)
         return{
@@ -986,16 +985,6 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Ap', id: 'ApFeatureSets' }]
-    }),
-    getApCompatibilities: build.query<ApCompatibility[], RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApCompatibilities, params)
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      providesTags: [{ type: 'Ap', id: 'ApCompatibilities' }]
     })
   })
 })
@@ -1091,8 +1080,7 @@ export const {
   useLazyGetApManagementVlanQuery,
   useUpdateApManagementVlanMutation,
   useDeleteApManagementVlanMutation,
-  useLazyGetApFeatureSetsQuery,
-  useLazyGetApCompatibilitiesQuery
+  useLazyGetApFeatureSetsQuery
 } = apApi
 
 

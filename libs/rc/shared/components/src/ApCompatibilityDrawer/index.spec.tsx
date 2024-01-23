@@ -146,7 +146,7 @@ describe('ApCompatibilityToolTip > ApFeatureCompatibility > ApCompatibilityDrawe
             <ApCompatibilityDrawer
               isMultiple
               visible={true}
-              data={mockApCompatibilitiesVenue}
+              data={mockApCompatibilitiesVenue.compatibilities}
               onClose={mockedCloseDrawer}
             /></Form>
         </Provider>, {

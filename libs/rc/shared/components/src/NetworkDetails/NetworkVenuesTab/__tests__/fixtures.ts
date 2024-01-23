@@ -69,40 +69,42 @@ export const list = {
   ]
 }
 
-export const networkVenueApCompatibilities = [
-  {
-    id: 'd7b1a9a350634115a92ee7b0f11c7e75',
-    incompatibleFeatures: [ {
-      featureName: 'EXAMPLE-FEATURE-1',
-      requiredFw: '7.0.0.0.123',
-      requiredModel: '11be',
-      incompatibleDevices: [{
-        firmware: '6.2.3.103.233',
-        model: 'R550',
-        count: 1
+export const networkVenueApCompatibilities = {
+  compatibilities: [
+    {
+      id: 'd7b1a9a350634115a92ee7b0f11c7e75',
+      incompatibleFeatures: [ {
+        featureName: 'EXAMPLE-FEATURE-1',
+        requiredFw: '7.0.0.0.123',
+        requiredModel: ['11be'],
+        incompatibleDevices: [{
+          firmware: '6.2.3.103.233',
+          model: 'R550',
+          count: 1
+        }
+        ]
       }
-      ]
-    }
-    ],
-    total: 1,
-    incompatible: 1
-  },{
-    id: '02e2ddbc88e1428987666d31edbc3d9a',
-    incompatibleFeatures: [ {
-      name: 'EXAMPLE-FEATURE-3',
-      requiredFw: '6.2.3.103.250',
-      incompatibleDevices: [{
-        firmware: '6.2.3.103.233',
-        model: 'R550',
-        count: 1
+      ],
+      total: 1,
+      incompatible: 1
+    },{
+      id: '02e2ddbc88e1428987666d31edbc3d9a',
+      incompatibleFeatures: [ {
+        name: 'EXAMPLE-FEATURE-3',
+        requiredFw: '6.2.3.103.250',
+        incompatibleDevices: [{
+          firmware: '6.2.3.103.233',
+          model: 'R550',
+          count: 1
+        }
+        ]
       }
-      ]
+      ],
+      total: 1,
+      incompatible: 1
     }
-    ],
-    total: 1,
-    incompatible: 1
-  }
-]
+  ]
+}
 
 export const networkVenue_allAps = {
   venueId: 'd7b1a9a350634115a92ee7b0f11c7e75',

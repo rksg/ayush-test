@@ -50,7 +50,8 @@ import {
   ImportErrorRes,
   FILTER,
   SEARCH,
-  ApCompatibility
+  ApCompatibility,
+  ApCompatibilityResponse
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                                 from '@acx-ui/types'
@@ -184,6 +185,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       const result:React.SetStateAction<APExtended[]> = []
       const apIdsToIncompatible:{ [key:string]: number } = {}
       if (tableQuery.data?.data) {
+        let apCompatibilitiesResponse:ApCompatibilityResponse = { compatibilities: [] }
         let apCompatibilities:ApCompatibility[] = []
         let apIds:string[] = []
         if (enableApCompatibleCheck && showFeatureCompatibilitiy) {
@@ -191,17 +193,18 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
           apIds = retriedApIds(aps, !!hasGroupBy)
           if (apIds.length > 0) {
             if (params.venueId) {
-              apCompatibilities = await getApCompatibilitiesVenue({
+              apCompatibilitiesResponse = await getApCompatibilitiesVenue({
                 params: { venueId: params.venueId },
-                payload: { filters: { apIds }, queryType: ApCompatibilityQueryTypes.CHECK_VENUE_WITH_APS }
+                payload: { filters: { apIds } }
               }).unwrap()
             } else if (params.networkId) {
-              apCompatibilities = await getApCompatibilitiesNetwork({
+              apCompatibilitiesResponse = await getApCompatibilitiesNetwork({
                 params: { networkId: params.networkId },
-                payload: { filters: { apIds }, queryType: ApCompatibilityQueryTypes.CHECK_NETWORK_WITH_APS }
+                payload: { filters: { apIds } }
               }).unwrap()
             }
           }
+          apCompatibilities = apCompatibilitiesResponse.compatibilities
         }
 
         if (apCompatibilities.length > 0) {

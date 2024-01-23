@@ -18,7 +18,8 @@ import {
   RadiusValidate,
   WifiUrlsInfo,
   ExternalProviders,
-  ApCompatibility
+  ApCompatibility,
+  ApCompatibilityResponse
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }    from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -63,18 +64,24 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         const networkList = networkListQuery.data as TableResult<Network>
         const networkIds = networkList?.data?.map(n => n.id) || []
         const networkIdsToIncompatible:{ [key:string]: number } = {}
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const allApCompatibilitiesQuery:any = await Promise.all(networkIds.map(id => {
-          const apCompatibilitiesReq = {
-            ...createHttpRequest(WifiUrlsInfo.getApCompatibilitiesNetwork, { networkId: id }),
-            body: { filters: {}, queryType: 'CHECK_NETWORK' }
-          }
-          return fetchWithBQ(apCompatibilitiesReq)
-        }))
-        networkIds.forEach((id:string, index:number) => {
-          const allApCompatibilitiesData = allApCompatibilitiesQuery[index]?.data as ApCompatibility[]
-          networkIdsToIncompatible[id] = allApCompatibilitiesData[0]?.incompatible ?? 0
-        })
+        try {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const allApCompatibilitiesQuery:any = await Promise.all(networkIds.map(id => {
+            const apCompatibilitiesReq = {
+              ...createHttpRequest(WifiUrlsInfo.getApCompatibilitiesNetwork, { networkId: id }),
+              body: { filters: {} }
+            }
+            return fetchWithBQ(apCompatibilitiesReq)
+          }))
+          networkIds.forEach((id:string, index:number) => {
+            const allApCompatibilitiesResponse = allApCompatibilitiesQuery[index]?.data as ApCompatibilityResponse
+            const allApCompatibilitiesData = allApCompatibilitiesResponse?.compatibilities as ApCompatibility[]
+            networkIdsToIncompatible[id] = allApCompatibilitiesData[0]?.incompatible ?? 0
+          })
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.error('networkTable getApCompatibilitiesNetwork error:', e)
+        }
         const aggregatedList = aggregatedNetworkCompatibilitiesData(
           networkList, networkIdsToIncompatible)
 
@@ -320,20 +327,22 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           venueIds
         } = await fetchNetworkVenueList(arg, fetchWithBQ)
 
-        const apCompatibilitiesReq = {
-          ...createHttpRequest(WifiUrlsInfo.getApCompatibilitiesNetwork, arg.params),
-          body: { filters: { venueIds }, queryType: 'CHECK_VENUES_OF_NETWORK' }
-        }
-        const apCompatibilitiesQuery = await fetchWithBQ(apCompatibilitiesReq)
-
-        const apCompatibilities = apCompatibilitiesQuery.data as ApCompatibility[]
-
         const venueIdsToIncompatible:{ [key:string]: number } = {}
-
-        apCompatibilities.forEach((item:ApCompatibility) => {
-          venueIdsToIncompatible[item.id] = item.incompatible
-        })
-
+        try {
+          const apCompatibilitiesReq = {
+            ...createHttpRequest(WifiUrlsInfo.getApCompatibilitiesNetwork, arg.params),
+            body: { filters: { venueIds } }
+          }
+          const apCompatibilitiesQuery = await fetchWithBQ(apCompatibilitiesReq)
+          const apCompatibilitiesResponse = apCompatibilitiesQuery.data as ApCompatibilityResponse
+          const apCompatibilities = apCompatibilitiesResponse.compatibilities as ApCompatibility[]
+          apCompatibilities.forEach((item:ApCompatibility) => {
+            venueIdsToIncompatible[item.id] = item.incompatible
+          })
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.error('networkVenueTable getApCompatibilitiesNetwork error:', e)
+        }
         const aggregatedList = aggregatedNetworksVenueData(
           networkVenuesList, networkVenuesApGroupList, networkDeep, venueIdsToIncompatible)
 
@@ -376,19 +385,22 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           networkDeepListList,
           networkIds } = await fetchVenueNetworkList(arg, fetchWithBQ)
 
-        const apCompatibilitiesReq = {
-          ...createHttpRequest(WifiUrlsInfo.getApCompatibilitiesVenue, arg.params),
-          body: { filters: { networkIds }, queryType: 'CHECK_NETWORKS_OF_VENUE' }
-        }
-        const apCompatibilitiesQuery = await fetchWithBQ(apCompatibilitiesReq)
-
-        const apCompatibilities = apCompatibilitiesQuery.data as ApCompatibility[]
-
         const networkIdsToIncompatible:{ [key:string]: number } = {}
-
-        apCompatibilities.forEach((item:ApCompatibility) => {
-          networkIdsToIncompatible[item.id] = item.incompatible
-        })
+        try {
+          const apCompatibilitiesReq = {
+            ...createHttpRequest(WifiUrlsInfo.getApCompatibilitiesVenue, arg.params),
+            body: { filters: { networkIds } }
+          }
+          const apCompatibilitiesQuery = await fetchWithBQ(apCompatibilitiesReq)
+          const apCompatibilitiesResponse = apCompatibilitiesQuery.data as ApCompatibilityResponse
+          const apCompatibilities = apCompatibilitiesResponse.compatibilities as ApCompatibility[]
+          apCompatibilities.forEach((item:ApCompatibility) => {
+            networkIdsToIncompatible[item.id] = item.incompatible
+          })
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.error('venueNetworkTable getApCompatibilitiesVenue error:', e)
+        }
 
         const aggregatedList = aggregatedVenueNetworksData(
           networkList, venueNetworkApGroupList, networkDeepListList, networkIdsToIncompatible)
@@ -400,7 +412,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       providesTags: [{ type: 'Network', id: 'DETAIL' }],
       extraOptions: { maxRetries: 5 }
     }),
-    getApCompatibilitiesNetwork: build.query<ApCompatibility[], RequestPayload>({
+    getApCompatibilitiesNetwork: build.query<ApCompatibilityResponse, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.getApCompatibilitiesNetwork, params)
         return{

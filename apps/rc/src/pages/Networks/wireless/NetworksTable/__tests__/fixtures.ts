@@ -139,67 +139,69 @@ export const networklist = {
   ]
 }
 
-export const networksApCompatibilities = [
-  {
-    id: 'c9d5f4c771c34ad2898f7078cebbb191',
-    incompatibleFeatures: [ {
-      name: 'EXAMPLE-FEATURE-1',
-      requiredFw: '7.0.0.0.123',
-      requiredModel: '11be',
-      incompatibleDevices: [{
-        firmware: '6.2.3.103.233',
-        model: 'R550',
-        count: 1
+export const networksApCompatibilities = {
+  compatibilities: [
+    {
+      id: 'c9d5f4c771c34ad2898f7078cebbb191',
+      incompatibleFeatures: [ {
+        name: 'EXAMPLE-FEATURE-1',
+        requiredFw: '7.0.0.0.123',
+        requiredModel: ['11be'],
+        incompatibleDevices: [{
+          firmware: '6.2.3.103.233',
+          model: 'R550',
+          count: 1
+        }
+        ]
       }
-      ]
-    }
-    ],
-    total: 1,
-    incompatible: 1
-  },{
-    id: 'ad850ca8595d4f2f9e7f208664cd8798',
-    incompatibleFeatures: [ {
-      name: 'EXAMPLE-FEATURE-3',
-      requiredFw: '6.2.3.103.250',
-      incompatibleDevices: [{
-        firmware: '6.2.3.103.233',
-        model: 'R550',
-        count: 1
+      ],
+      total: 1,
+      incompatible: 1
+    },{
+      id: 'ad850ca8595d4f2f9e7f208664cd8798',
+      incompatibleFeatures: [ {
+        name: 'EXAMPLE-FEATURE-3',
+        requiredFw: '6.2.3.103.250',
+        incompatibleDevices: [{
+          firmware: '6.2.3.103.233',
+          model: 'R550',
+          count: 1
+        }
+        ]
       }
-      ]
+      ],
+      total: 1,
+      incompatible: 1
+    },{
+      id: '373377b0cb6e46ea8982b1c80aabe1fa',
+      incompatibleFeatures: [],
+      total: 1,
+      incompatible: 0
+    },{
+      id: 'ad850ca8595d4f2f9e7f208664cd8898',
+      incompatibleFeatures: [],
+      total: 1,
+      incompatible: 0
+    },{
+      id: '373377b0cb6e46ea8982b1c80aabe2fa',
+      incompatibleFeatures: [],
+      total: 1,
+      incompatible: 0
+    },{
+      id: 'ad850ca8595d4f2f9e7f208664cd8998',
+      incompatibleFeatures: [],
+      total: 1,
+      incompatible: 0
+    },{
+      id: 'ad850ca8595d4f2f9e7f208664cd9098',
+      incompatibleFeatures: [],
+      total: 1,
+      incompatible: 0
+    },{
+      id: 'ad850ca8595d4f2f9e7f208664cd9198',
+      incompatibleFeatures: [],
+      total: 1,
+      incompatible: 0
     }
-    ],
-    total: 1,
-    incompatible: 1
-  },{
-    id: '373377b0cb6e46ea8982b1c80aabe1fa',
-    incompatibleFeatures: [],
-    total: 1,
-    incompatible: 0
-  },{
-    id: 'ad850ca8595d4f2f9e7f208664cd8898',
-    incompatibleFeatures: [],
-    total: 1,
-    incompatible: 0
-  },{
-    id: '373377b0cb6e46ea8982b1c80aabe2fa',
-    incompatibleFeatures: [],
-    total: 1,
-    incompatible: 0
-  },{
-    id: 'ad850ca8595d4f2f9e7f208664cd8998',
-    incompatibleFeatures: [],
-    total: 1,
-    incompatible: 0
-  },{
-    id: 'ad850ca8595d4f2f9e7f208664cd9098',
-    incompatibleFeatures: [],
-    total: 1,
-    incompatible: 0
-  },{
-    id: 'ad850ca8595d4f2f9e7f208664cd9198',
-    incompatibleFeatures: [],
-    total: 1,
-    incompatible: 0
-  }
-]
+  ]
+}

@@ -11,8 +11,8 @@ import {
   useLazyGetApCompatibilitiesNetworkQuery,
   useLazyGetApFeatureSetsQuery
 }   from '@acx-ui/rc/services'
-import { ApCompatibility, ApIncompatibleFeature, ApIncompatibleDevice } from '@acx-ui/rc/utils'
-import { TenantLink }                                                   from '@acx-ui/react-router-dom'
+import { ApCompatibility, ApCompatibilityResponse, ApIncompatibleFeature, ApIncompatibleDevice } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                            from '@acx-ui/react-router-dom'
 
 
 import { StyledWrapper, CheckMarkCircleSolidIcon, WarningTriangleSolidIcon, UnknownIcon } from './styledComponents'
@@ -26,7 +26,8 @@ export enum ApCompatibilityType {
 export enum InCompatibilityFeatures {
   AP_70 = 'WIFI7 302MHz',
   BETA_DPSK3 = 'DSAE',
-  AP_NEIGHBORS = 'AP Neighbors'
+  AP_NEIGHBORS = 'AP Neighbors',
+  BSS_COLORING = 'BSS Coloring'
 }
 
 export enum ApCompatibilityQueryTypes {
@@ -46,7 +47,8 @@ export type ApCompatibilityToolTipProps = {
   onClick: () => void
 }
 
-export function retrievedCompatibilitiesOptions (data?: ApCompatibility[]) {
+export function retrievedCompatibilitiesOptions (response?: ApCompatibilityResponse) {
+  const data = response?.compatibilities as ApCompatibility[]
   const compatibilitiesFilterOptions: { key: string; value: string; label: string; }[] = []
   if (data?.[0]) {
     const { incompatibleFeatures, incompatible } = data[0]
@@ -210,7 +212,7 @@ Sample 2: Display data on drawer
 export function ApCompatibilityDrawer (props: ApCompatibilityDrawerProps) {
   const { $t } = useIntl()
   const [form] = Form.useForm()
-  const { visible, type=ApCompatibilityType.VENUE, isMultiple=false, venueId, venueName, networkId, featureName, apName, apIds=[], networkIds=[], venueIds=[], queryType, data=[] } = props
+  const { visible, type=ApCompatibilityType.VENUE, isMultiple=false, venueId, venueName, networkId, featureName='', apName, apIds=[], networkIds=[], venueIds=[], data=[] } = props
   const [ isInitializing, setIsInitializing ] = useState(data.length === 0)
   const [ apCompatibilities, setApCompatibilities ] = useState<ApCompatibility[]>(data)
   const [ getApCompatibilitiesVenue ] = useLazyGetApCompatibilitiesVenueQuery()
@@ -267,27 +269,29 @@ export function ApCompatibilityDrawer (props: ApCompatibilityDrawerProps) {
             if (ApCompatibilityType.NETWORK === type) {
               return getApCompatibilitiesNetwork({
                 params: { networkId },
-                payload: { filters: { apIds, venueIds }, feature: featureName, queryType }
+                payload: { filters: { apIds, venueIds }, feature: featureName }
               }).unwrap()
             } else if (ApCompatibilityType.VENUE === type) {
               return getApCompatibilitiesVenue({
                 params: { venueId },
-                payload: { filters: { apIds, networkIds }, feature: featureName, queryType }
+                payload: { filters: { apIds, networkIds }, feature: featureName }
               }).unwrap()
             }
             const apFeatureSets = await getApFeatureSets({
-              params: { featureName: queryType }
+              params: { featureName: encodeURI(featureName) }
             }).unwrap()
+            const apIncompatibleFeature = { ...apFeatureSets, incompatibleDevices: [] } as ApIncompatibleFeature
             const apCompatibility = {
               id: 'ApFeatureSet',
-              incompatibleFeatures: apFeatureSets,
+              incompatibleFeatures: [apIncompatibleFeature],
               incompatible: 0,
               total: 0
             } as ApCompatibility
-            return [apCompatibility]
+            return { compatibilities: [apCompatibility] } as ApCompatibilityResponse
           }
 
-          setApCompatibilities(await getApCompatibilities())
+          const apCompatibilitiesResponse = await getApCompatibilities()
+          setApCompatibilities(apCompatibilitiesResponse?.compatibilities)
           setIsInitializing(false)
         } catch (error) {
           console.log(error) // eslint-disable-line no-console
