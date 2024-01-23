@@ -89,8 +89,7 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
       const userLang = userProfile?.preferredLanguage
       const browserLang = detectBrowserLang()
       const browserCacheLang = localStorage.getItem('browserLang')
-      const openDialog = browserLang !== DEFAULT_SYS_LANG
-        && browserLang !== userLang
+      const openDialog = browserLang !== userLang
         && browserLang !== browserCacheLang
 
       if (openDialog && isNonProdEnv()) {
