@@ -1,29 +1,25 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
-import { Form }      from 'antd'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { Form }    from 'antd'
+import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }             from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
 import { DownloadOutlined }                                                   from '@acx-ui/icons'
 import {
-  useSearchPersonaListQuery,
-  useGetPersonaGroupListQuery,
-  useLazyDownloadPersonasQuery,
-  useImportPersonasMutation,
   useDeletePersonasMutation,
-  useLazyGetPropertyUnitByIdQuery,
   useGetPersonaGroupByIdQuery,
-  useLazyGetDpskPassphraseDevicesQuery
+  useGetPersonaGroupListQuery,
+  useImportPersonasMutation,
+  useLazyDownloadPersonasQuery,
+  useLazyGetPropertyUnitByIdQuery
 } from '@acx-ui/rc/services'
 import {
   FILTER,
   Persona,
   PersonaErrorResponse,
   PersonaGroup,
-  SEARCH,
-  useTableQuery
+  SEARCH
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 import { exportMessageMapping }      from '@acx-ui/utils'
@@ -31,15 +27,14 @@ import { exportMessageMapping }      from '@acx-ui/utils'
 import {
   IdentityDetailsLink,
   IdentityGroupLink,
-  PropertyUnitLink } from '../../CommonLinkHelper'
+  PropertyUnitLink
+} from '../../CommonLinkHelper'
 import {
   CsvSize,
   ImportFileDrawerType,
   ImportFileDrawer } from '../../ImportFileDrawer'
-import {
-  useDpskNewConfigFlowParams
-} from '../../services/useDpskNewConfigFlowParams'
-import { PersonaDrawer } from '../PersonaDrawer'
+import { usePersonaListQuery } from '../../usePersonaListQuery'
+import { PersonaDrawer }       from '../PersonaDrawer'
 import {
   PersonaGroupSelect } from '../PersonaGroupSelect'
 import { PersonaBlockedIcon }     from '../styledComponents'
@@ -52,8 +47,7 @@ const IdentitiesContext = createContext({} as {
 function useColumns (
   props: PersonaTableColProps,
   unitPool: Map<string, string>,
-  venueId: string,
-  dpskDeviceCount: Map<string, number>
+  venueId: string
 ) {
   const { $t } = useIntl()
   const networkSegmentationEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
@@ -109,11 +103,6 @@ function useColumns (
         dataIndex: 'deviceCount',
         title: $t({ defaultMessage: 'Devices' }),
         align: 'center',
-        render: (_, row) => {
-          const dpskGuid = row.dpskGuid
-          const count = dpskDeviceCount.get(dpskGuid ?? '') ?? 0
-          return (row?.deviceCount ?? 0) + count
-        },
         ...props.deviceCount
       } as TableColumn<Persona>],
     ...(props.identityId?.disable)
@@ -197,13 +186,10 @@ export interface PersonaTableProps {
 export function BasePersonaTable (props: PersonaTableProps) {
   const { $t } = useIntl()
   const { personaGroupId, colProps } = props
-  const { tenantId } = useParams()
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isNewConfigFlow = useIsSplitOn(Features.DPSK_NEW_CONFIG_FLOW_TOGGLE)
   const [venueId, setVenueId] = useState('')
   const [unitPool, setUnitPool] = useState(new Map())
-  const [dpskDeviceCount, setDpskDeviceCount] = useState(new Map<string, number>())
-  const columns = useColumns(colProps, unitPool, venueId, dpskDeviceCount)
+  const columns = useColumns(colProps, unitPool, venueId)
   const [uploadCsvDrawerVisible, setUploadCsvDrawerVisible] = useState(false)
   const [drawerState, setDrawerState] = useState({
     isEdit: false,
@@ -219,18 +205,9 @@ export function BasePersonaTable (props: PersonaTableProps) {
   )
   const [getUnitById] = useLazyGetPropertyUnitByIdQuery()
   const { setIdentitiesCount } = useContext(IdentitiesContext)
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
   const { customHeaders } = usePersonaAsyncHeaders()
 
-  const personaListQuery = useTableQuery<Persona>({
-    useQuery: useSearchPersonaListQuery,
-    defaultPayload: {
-      keyword: '',
-      groupId: personaGroupId
-    }
-  })
-
-  const [getDpskDevices] = useLazyGetDpskPassphraseDevicesQuery()
+  const personaListQuery = usePersonaListQuery({ personaGroupId })
 
   useEffect(() => {
     if (!propertyEnabled || personaListQuery.isLoading || personaGroupQuery.isLoading) return
@@ -253,35 +230,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
 
     setVenueId(venueId)
     setUnitPool(pool)
-  }, [personaListQuery.data, personaGroupQuery.data])
-
-  useEffect(() => {
-    if (!personaGroupId) return
-    if (personaGroupQuery.isLoading || personaListQuery.isLoading) return
-    if (!personaGroupQuery.data || !personaListQuery.data) return
-
-    const serviceId = personaGroupQuery.data?.dpskPoolId
-    if (!serviceId) return
-
-    personaListQuery.data.data.forEach(persona => {
-      const passphraseId = persona.dpskGuid
-      if (!passphraseId) return
-
-      getDpskDevices({
-        params: { tenantId, passphraseId, serviceId, ...dpskNewConfigFlowParams }
-      })
-        .then(result => {
-          if (result.data) {
-            const count = result.data.filter(d =>
-              isNewConfigFlow
-                ? d.deviceConnectivity === 'CONNECTED'
-                : d.online
-            ).length
-            setDpskDeviceCount(prev => new Map(prev.set(passphraseId, count)))
-          }
-        })
-    })
-  }, [personaListQuery.isLoading, personaGroupQuery.isLoading])
+  }, [personaListQuery.isLoading, personaGroupQuery.data])
 
   const toastDetailErrorMessage = (error: PersonaErrorResponse) => {
     const hasSubMessages = error.data?.subErrors

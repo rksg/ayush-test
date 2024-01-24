@@ -107,10 +107,7 @@ describe('Add switch form', () => {
       await screen.findByLabelText(/description/i), { target: { value: 'Description' } })
     fireEvent.mouseDown(await screen.findByLabelText(/standalone switch/i))
     const addButton = await screen.findByRole('button', { name: /add/i })
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      fireEvent.click(addButton)
-    })
+    await userEvent.click(addButton)
     expect(await screen.findByRole('heading', { name: /switch/i } )).toBeVisible()
   })
 
@@ -172,10 +169,7 @@ describe('Add switch form', () => {
     await screen.findByText('7150stack')
 
     const addButton = await screen.findByRole('button', { name: /add/i })
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      fireEvent.click(addButton)
-    })
+    await userEvent.click(addButton)
     expect(await screen.findByRole('heading', { name: /switch/i } )).toBeVisible()
   })
 
@@ -225,10 +219,7 @@ describe('Add switch form', () => {
       await screen.findByLabelText(/description/i), { target: { value: 'Description' } })
     fireEvent.mouseDown(await screen.findByLabelText(/standalone switch/i))
     const addButton = await screen.findByRole('button', { name: /add/i })
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      fireEvent.click(addButton)
-    })
+    await userEvent.click(addButton)
     expect(await screen.findByRole('heading', { name: /switch/i } )).toBeVisible()
   })
 
@@ -267,10 +258,7 @@ describe('Add switch form', () => {
     await screen.findByText('7150stack')
 
     const addButton = await screen.findByRole('button', { name: /add/i })
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      fireEvent.click(addButton)
-    })
+    await userEvent.click(addButton)
     expect(await screen.findByRole('heading', { name: /switch/i } )).toBeVisible()
   })
 })
@@ -335,9 +323,9 @@ describe('Edit switch form', () => {
     })
 
     const settingsTab = await screen.findByRole('tab', { name: 'Settings' })
-    fireEvent.click(settingsTab)
+    await userEvent.click(settingsTab)
     const ipModeRadio = await screen.findByRole('radio', { name: 'Static/Manual' })
-    fireEvent.click(ipModeRadio)
+    await userEvent.click(ipModeRadio)
 
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => {
@@ -348,16 +336,13 @@ describe('Edit switch form', () => {
       fireEvent.change(
         await screen.findByLabelText('Default Gateway'), { target: { value: '192.168.1.1' } })
     })
-    fireEvent.click(
+    await userEvent.click(
       await screen.findByRole('switch'))
     const jumboOkBtn = await screen.findByRole('button', { name: /ok/i })
-    fireEvent.click(jumboOkBtn)
+    await userEvent.click(jumboOkBtn)
     const applyButton = await screen.findByRole('button', { name: /apply/i })
 
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      fireEvent.click(applyButton)
-    })
+    await userEvent.click(applyButton)
   })
 
   it('should submit edit switch form with dynamic ip mode correctly', async () => {
@@ -371,10 +356,7 @@ describe('Edit switch form', () => {
     await userEvent.click(ipModeRadio)
     await waitFor(() => expect(screen.getByLabelText('Subnet Mask')).toBeDisabled())
     const applyButton = screen.getByRole('button', { name: /apply/i })
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      fireEvent.click(applyButton)
-    })
+    await userEvent.click(applyButton)
   })
 })
 

@@ -137,9 +137,9 @@ describe('Admin Groups Table', () => {
     await waitFor(() => {
       expect(mockReqAdminsData).toBeCalled()
     })
-    await screen.findByRole('row', { name: /IT_Admins/i })
-    const rows = await screen.findAllByRole('row', { name: /@corporate.com/i })
-    expect(rows.length).toBe(1)
+    const table = await screen.findByTestId('AdminGroupTable')
+    expect(table).toHaveTextContent(/IT_Admins/i)
+    expect(table).toHaveTextContent(/@corporate.com/i)
     expect(await screen.findByRole('button', { name: 'Add Group' })).toBeInTheDocument()
     await userEvent.click(await screen.findByRole('button', { name: 'Add Group' }))
     expect(await screen.findByText('Add Admins Group')).toBeInTheDocument()

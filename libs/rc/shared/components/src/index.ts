@@ -12,6 +12,7 @@ export type { ApTableRefType } from './ApTable'
 export { ApsTabContext } from './ApTable/context'
 export { groupedFields } from './ApTable/config'
 export { CountAndNamesTooltip } from './CountAndNamesTooltip'
+export { ApAntennaTypeSelector } from './ApAntennaTypeSelector'
 export { ApGroupTable, defaultApGroupPayload } from './ApGroupTable'
 export { ApGroupsTabContext } from './ApGroupTable/context'
 export { ClientTabContext } from './ClientDualTable/context'
@@ -172,8 +173,14 @@ export {
 } from './AdaptivePolicySettingForm/RadiusAttributeGroupSelectDrawer'
 export {
   EdgeSdLanActivatedNetworksTable,
-  ActivateNetworkSwitchButton } from './EdgeSdLan/SdLanNetworkTable'
+  ActivateNetworkSwitchButton
+} from './EdgeSdLan/SdLanNetworkTable'
 export type { ActivatedNetworksTableProps } from './EdgeSdLan/SdLanNetworkTable'
+export {
+  EdgeSdLanP2ActivatedNetworksTable
+} from './EdgeSdLan/SdLanNetworkTable/SdLanP2NetworkTable'
+export type { ActivatedNetworksTableP2Props }
+  from './EdgeSdLan/SdLanNetworkTable/SdLanP2NetworkTable'
 export {
   ApCompatibilityType,
   ApCompatibilityQueryTypes,
@@ -184,6 +191,7 @@ export {
   ApCompatibilityDrawer } from './ApCompatibilityDrawer'
 export { EdgeClusterCommonForm } from './EdgeFormItem/EdgeClusterCommonForm'
 export { useEdgeClusterActions } from './useEdgeClusterActions'
+export { usePersonaListQuery } from './usePersonaListQuery'
 
 export * from './services'
 export * from './policies'

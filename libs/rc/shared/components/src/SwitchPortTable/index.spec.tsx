@@ -1,11 +1,13 @@
 import '@testing-library/jest-dom'
+import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { switchApi }                                     from '@acx-ui/rc/services'
-import { SwitchUrlsInfo }                                from '@acx-ui/rc/utils'
-import { Provider, store }                               from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, within } from '@acx-ui/test-utils'
+import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { switchApi }                          from '@acx-ui/rc/services'
+import { SwitchUrlsInfo }                     from '@acx-ui/rc/utils'
+import { Provider, store }                    from '@acx-ui/store'
+import { mockServer, render, screen, within } from '@acx-ui/test-utils'
 
 import { SwitchPortTable } from '.'
 
@@ -341,17 +343,23 @@ jest.mock('./SwitchLagDrawer', () => ({
 }))
 
 jest.mock('./editPortDrawerLegacy', () => ({
+  EditPortDrawer: () => <div data-testid='editPortDrawerLegacy' />
+}))
+
+jest.mock('./editPortDrawer', () => ({
   EditPortDrawer: () => <div data-testid='editPortDrawer' />
 }))
 
 
 describe('SwitchPortTable', () => {
+  beforeEach(() => {
+    store.dispatch(switchApi.util.resetApiState())
+  })
   afterEach(() => {
     Modal.destroyAll()
   })
 
   it('should render ports of switch ICX7650 correctly', async () => {
-    store.dispatch(switchApi.util.resetApiState())
     mockServer.use(
       rest.post(
         SwitchUrlsInfo.getSwitchPortlist.url,
@@ -372,13 +380,12 @@ describe('SwitchPortTable', () => {
     await screen.findByRole('button', { name: 'Manage LAG' })
 
     const row = await screen.findAllByRole('row')
-    fireEvent.click(await within(row[1]).findByRole('checkbox'))
-    fireEvent.click(await screen.findByRole('button', { name: 'Edit' }))
-    expect(await screen.findByTestId('editPortDrawer')).toBeVisible()
+    await userEvent.click(await within(row[1]).findByRole('checkbox'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+    expect(await screen.findByTestId('editPortDrawerLegacy')).toBeVisible()
   })
 
   it('should render ports of switch ICX7150 correctly', async () => {
-    store.dispatch(switchApi.util.resetApiState())
     mockServer.use(
       rest.post(
         SwitchUrlsInfo.getSwitchPortlist.url,
@@ -400,7 +407,6 @@ describe('SwitchPortTable', () => {
   })
 
   it('should render Lag Drawer correctly', async () => {
-    store.dispatch(switchApi.util.resetApiState())
     mockServer.use(
       rest.post(
         SwitchUrlsInfo.getSwitchPortlist.url,
@@ -420,12 +426,11 @@ describe('SwitchPortTable', () => {
     await screen.findAllByText('1/1/1')
     await screen.findByRole('button', { name: 'Manage LAG' })
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Manage LAG' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Manage LAG' }))
     expect(await screen.findByTestId('SwitchLagDrawer')).toBeVisible()
   })
 
   it('should disable the stacking port checkbox', async () => {
-    store.dispatch(switchApi.util.resetApiState())
     mockServer.use(
       rest.post(
         SwitchUrlsInfo.getSwitchPortlist.url,
@@ -447,4 +452,32 @@ describe('SwitchPortTable', () => {
     expect(row.length).toBe(3)
     expect(within(row[2]).queryByRole('checkbox')).toBeDisabled()
   })
+
+  it('should render new edit port drawer correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockServer.use(
+      rest.post(
+        SwitchUrlsInfo.getSwitchPortlist.url,
+        (req, res, ctx) => res(ctx.json(portlistData_7650))
+      ),
+      rest.get(
+        SwitchUrlsInfo.getSwitchVlanUnion.url,
+        (req, res, ctx) => res(ctx.json({}))
+      )
+    )
+    render(<Provider>
+      <SwitchPortTable isVenueLevel={false} />
+    </Provider>, {
+      route: { params, path: '/:tenantId/:switchId' }
+    })
+
+    await screen.findAllByText('1/1/1')
+    await screen.findByRole('button', { name: 'Manage LAG' })
+
+    const row = await screen.findAllByRole('row')
+    await userEvent.click(await within(row[1]).findByRole('checkbox'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+    expect(await screen.findByTestId('editPortDrawer')).toBeVisible()
+  })
+
 })

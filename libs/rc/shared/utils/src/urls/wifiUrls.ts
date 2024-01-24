@@ -77,22 +77,32 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/network-venue',
     newApi: true
   },
-  getVenueExternalAntenna: {
-    method: 'get',
-    url: '/venues/:venueId/externalAntennaSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/externalAntenna',
-    newApi: true
-  },
   getVenueApCapabilities: {
     method: 'get',
     url: '/venues/:venueId/aps/capabilities',
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/capabilities',
     newApi: true
   },
+  getVenueExternalAntenna: {
+    method: 'get',
+    url: '/venues/:venueId/externalAntennaSettings',
+    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/externalAntenna',
+    newApi: true
+  },
   updateVenueExternalAntenna: {
     method: 'put',
     url: '/venues/:venueId/externalAntennaSettings',
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/externalAntenna',
+    newApi: true
+  },
+  getVenueAntennaType: {
+    method: 'get',
+    url: '/venues/:venueId/apModelAntennaTypeSettings',
+    newApi: true
+  },
+  updateVenueAntennaType: {
+    method: 'put',
+    url: '/venues/:venueId/apModelAntennaTypeSettings',
     newApi: true
   },
   getVenueDefaultRegulatoryChannels: {
@@ -427,6 +437,21 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/bandModeSettings',
     newApi: true
   },
+  getApAntennaTypeSettings: {
+    method: 'get',
+    url: '/venues/:venueId/aps/:serialNumber/antennaTypeSettings',
+    newApi: true
+  },
+  updateApAntennaTypeSettings: {
+    method: 'put',
+    url: '/venues/:venueId/aps/:serialNumber/antennaTypeSettings',
+    newApi: true
+  },
+  resetApAntennaTypeSettings: {
+    method: 'delete',
+    url: '/venues/:venueId/aps/:serialNumber/antennaTypeSettings',
+    newApi: true
+  },
   getApBssColoring: {
     method: 'get',
     url: '/venues/aps/:serialNumber/bssColoringSettings',
@@ -622,17 +647,17 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getApFeatureSets: {
     method: 'get',
-    url: '/venues/aps/featureSets?featureName={featureName}',
+    url: '/wifiFeatureSets/:featureName',
     newApi: true
   },
   getApCompatibilitiesVenue: {
     method: 'post',
-    url: '/venues/:venueId/aps/compatibilities/query',
+    url: '/venues/:venueId/apCompatibilities/query',
     newApi: true
   },
   getApCompatibilitiesNetwork: {
     method: 'post',
-    url: '/wifiNetworks/:networkId/aps/compatibilities/query',
+    url: '/wifiNetworks/:networkId/apCompatibilities/query',
     newApi: true
   }
 

@@ -16,23 +16,23 @@ import { EdgeSdLanActivatedNetworksTable } from '.'
 
 const mockedSetFieldValue = jest.fn()
 const mockedOnChangeFn = jest.fn()
+const mockedGetNetworkDeepList = jest.fn()
 const { click } = userEvent
 
 describe('Edge SD-LAN ActivatedNetworksTable', () => {
-  const mockedGetNetworkDeepList = jest.fn()
-
   beforeEach(() => {
     mockedSetFieldValue.mockReset()
+    mockedOnChangeFn.mockReset()
     mockedGetNetworkDeepList.mockReset()
 
     mockServer.use(
       rest.post(
         CommonUrlsInfo.networkActivations.url,
-        (req, res, ctx) => res(ctx.json(mockNetworkSaveData))
+        (_req, res, ctx) => res(ctx.json(mockNetworkSaveData))
       ),
       rest.post(
         CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => {
+        (_req, res, ctx) => {
           mockedGetNetworkDeepList()
           return res(ctx.json(mockDeepNetworkList))
         }
@@ -49,9 +49,7 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
         />
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
-    await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
-    const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
-    expect(rows.length).toBe(3)
+    const rows = await checkPageLoaded()
     rows.forEach(row => {
       expect(within(row).getByRole('switch')).not.toBeChecked()
     })
@@ -66,10 +64,7 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
         />
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
-    await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
-    const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
-    expect(rows.length).toBe(3)
-
+    await checkPageLoaded()
     const switchBtn1 = within(await screen.findByRole('row', { name: /MockedNetwork 1/i }))
       .getByRole('switch')
     expect(switchBtn1).not.toBeChecked()
@@ -97,10 +92,7 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
         />
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
-    await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
-    const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
-    expect(rows.length).toBe(3)
-
+    await checkPageLoaded()
     await click(
       within(await screen.findByRole('row', { name: /MockedNetwork 2/i })).getByRole('switch'))
     expect(mockedOnChangeFn).toBeCalledWith({
@@ -116,3 +108,10 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
     }])
   })
 })
+
+const checkPageLoaded = async (): Promise<HTMLElement[]> => {
+  await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
+  const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
+  expect(rows.length).toBe(4)
+  return rows
+}

@@ -28,8 +28,7 @@ import {
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { getIntl }                    from '@acx-ui/utils'
 
-import { ExpirationDateSelector }     from '../../ExpirationDateSelector'
-import { useDpskNewConfigFlowParams } from '../useDpskNewConfigFlowParams'
+import { ExpirationDateSelector } from '../../ExpirationDateSelector'
 
 import { FieldSpace } from './styledComponents'
 
@@ -44,12 +43,11 @@ export default function DpskSettingsForm (props: DpskSettingsFormProps) {
   const passphraseFormat = Form.useWatch<PassphraseFormatEnum>('passphraseFormat', form)
   const id = Form.useWatch<string>('id', form)
   const { Option } = Select
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
   const [ dpskList ] = useLazyGetDpskListQuery()
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   const nameValidator = async (value: string) => {
-    const list = (await dpskList({ params: dpskNewConfigFlowParams }).unwrap()).data
+    const list = (await dpskList({}).unwrap()).data
       .filter(n => n.id !== id)
       .map(n => ({ name: n.name }))
     return checkObjectNotExists(list, { name: value } , intl.$t({ defaultMessage: 'DPSK service' }))

@@ -2,9 +2,9 @@ import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
 
-import { useIsSplitOn }                                                                  from '@acx-ui/feature-toggle'
-import { AdministrationUrlsInfo, CommonUrlsInfo, ConfigTemplateUrlsInfo, getUrlForTest } from '@acx-ui/rc/utils'
-import { Provider }                                                                      from '@acx-ui/store'
+import { useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
+import { AdministrationUrlsInfo, CommonUrlsInfo, ConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                       from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -61,24 +61,19 @@ describe('Venues Form', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
     mockServer.use(
-      rest.post(
-        getUrlForTest(CommonUrlsInfo.addVenue),
+      rest.post(CommonUrlsInfo.addVenue.url,
         (req, res, ctx) => res(ctx.json(successResponse))
       ),
-      rest.post(
-        getUrlForTest(CommonUrlsInfo.getVenuesList),
+      rest.post(CommonUrlsInfo.getVenuesList.url,
         (req, res, ctx) => res(ctx.json(venuelist))
       ),
-      rest.get(
-        getUrlForTest(CommonUrlsInfo.getVenue),
+      rest.get(CommonUrlsInfo.getVenue.url,
         (req, res, ctx) => res(ctx.json(venueResponse))
       ),
-      rest.put(
-        getUrlForTest(CommonUrlsInfo.updateVenue),
+      rest.put(CommonUrlsInfo.updateVenue.url,
         (req, res, ctx) => res(ctx.json(successResponse))
       ),
-      rest.get(
-        'https://maps.googleapis.com/maps/api/timezone/*',
+      rest.get('https://maps.googleapis.com/maps/api/timezone/*',
         (req, res, ctx) => res(ctx.json(timezoneResult))
       ),
       rest.get(
