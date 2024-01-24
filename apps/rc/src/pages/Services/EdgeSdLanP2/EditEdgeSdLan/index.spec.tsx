@@ -20,6 +20,9 @@ import {
   screen,
   waitFor
 } from '@acx-ui/test-utils'
+import { RequestPayload } from '@acx-ui/types'
+
+import { sdLanFormDefaultValues } from '../EdgeSdLanForm'
 
 import EditEdgeSdLan from '.'
 
@@ -54,10 +57,47 @@ jest.mock('../EdgeSdLanForm', () => ({
     </div>
   }
 }))
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  useEdgeSdLanActions: () => {
+    return { editEdgeSdLan: (_originData: EdgeSdLanSettingP2, req: RequestPayload) => {
+      mockedEditFn(req.payload)
+      return new Promise((resolve) => {
+        resolve(true)
+        setTimeout(() => {
+          (req.callback as Function)()
+        }, 300)
+      })
+    } }
+  }
+}))
 
 const { result } = renderHook(() => Form.useForm())
 jest.spyOn(Form, 'useForm').mockImplementation(() => result.current)
 result.current[0].setFieldValue = mockedSetFieldFn
+
+const mockedCdId = 't-cf-id'
+const mockedDmzData = {
+  ...sdLanFormDefaultValues,
+  name: 'testEditDMZSdLanService',
+  venueId: 'mock_venue_id',
+  edgeId: 'mock_edge_id',
+  networkIds: ['network_1'],
+  activatedNetworks: [{
+    id: 'network_1',
+    name: 'Network1'
+  }],
+  tunnelProfileId: 't-tunnelProfile-id',
+  isGuestTunnelEnabled: true,
+  guestEdgeId: 'mock_edge_id_2',
+  guestTunnelProfileId: 't-tunnelProfile-id-2',
+  guestNetworkIds: ['network_4'],
+  activatedGuestNetworks: [{
+    id: 'network_4',
+    name: 'Network4'
+  }]
+}
+
 describe('Edit SD-LAN service', () => {
   beforeEach(() => {
     mockedEditFn.mockReset()
@@ -94,15 +134,11 @@ describe('Edit SD-LAN service', () => {
   })
 
   it('should correctly edit service', async () => {
-    mockedSubmitDataGen.mockReturnValue({
-      name: 'testEditSdLanService',
-      networkIds: ['network_1'],  // the origin profile data
-      activatedNetworks: [{
-        id: 'network_1',
-        name: 'Network1'
-      }],
-      tunnelProfileId: 't-tunnelProfile-id'
-    })
+    const mockedDCData = {
+      ...mockedDmzData,
+      isGuestTunnelEnabled: false
+    }
+    mockedSubmitDataGen.mockReturnValue(mockedDCData)
 
     const targetPath = getServiceRoutePath({
       type: ServiceType.EDGE_SD_LAN_P2,
@@ -113,23 +149,28 @@ describe('Edit SD-LAN service', () => {
       <EditEdgeSdLan />
     </Provider>, {
       route: {
-        params: { tenantId: 't-id', serviceId: 't-cf-id' },
+        params: { tenantId: 't-id', serviceId: mockedCdId },
         path: '/:tenantId/services/edgeEdgeSdLanP2/:serviceId/edit'
       }
     })
 
-    await waitFor(() => expect(mockedGetSdLanReq).toBeCalled())
     await waitFor(async () =>
       expect(await screen.findByTestId('rc-EdgeSdLanForm-venue-id'))
         .toHaveTextContent('cd572eda8d494a79aa2331fdc26086d9'))
 
-    expect(await screen.findByTestId('rc-EdgeSdLanForm')).toBeVisible()
+    expect(screen.getByTestId('rc-EdgeSdLanForm')).toBeVisible()
     await click(screen.getByRole('button', { name: 'Submit' }))
     await waitFor(() => {
       expect(mockedEditFn).toBeCalledWith({
-        name: 'testEditSdLanService',
-        networkIds: ['network_1'],
-        tunnelProfileId: 't-tunnelProfile-id'
+        id: mockedCdId,
+        venueId: mockedDCData.venueId,
+        name: mockedDCData.name,
+        networkIds: mockedDCData.activatedNetworks.map(network => network.id),
+        tunnelProfileId: mockedDCData.tunnelProfileId,
+        isGuestTunnelEnabled: mockedDCData.isGuestTunnelEnabled,
+        guestEdgeId: mockedDCData.guestEdgeId,
+        guestTunnelProfileId: mockedDCData.guestTunnelProfileId,
+        guestNetworkIds: mockedDCData.activatedGuestNetworks.map(network => network.id!)
       })
     })
     expect(mockedEditFn).toBeCalledTimes(1)
@@ -144,15 +185,20 @@ describe('Edit SD-LAN service', () => {
 
   it('should correctly handle guest network enabled case', async () => {
     const mockedDmzData = {
+      ...sdLanFormDefaultValues,
       name: 'testEditDMZSdLanService',
-      networkIds: ['network_1'], // the origin profile data
+      venueId: 'mock_venue_id',
+      edgeId: 'mock_edge_id',
+      networkIds: ['network_1'],
       activatedNetworks: [{
-        id: 'network_4',
-        name: 'Network4'
+        id: 'network_1',
+        name: 'Network1'
       }],
       tunnelProfileId: 't-tunnelProfile-id',
       isGuestTunnelEnabled: true,
+      guestEdgeId: 'mock_edge_id_2',
       guestTunnelProfileId: 't-tunnelProfile-id-2',
+      guestNetworkIds: ['network_4'],
       activatedGuestNetworks: [{
         id: 'network_4',
         name: 'Network4'
@@ -169,25 +215,28 @@ describe('Edit SD-LAN service', () => {
       <EditEdgeSdLan />
     </Provider>, {
       route: {
-        params: { tenantId: 't-id', serviceId: 't-cf-id' },
+        params: { tenantId: 't-id', serviceId: mockedCdId },
         path: '/:tenantId/services/edgeEdgeSdLanP2/:serviceId/edit'
       }
     })
 
-    await waitFor(() => expect(mockedGetSdLanReq).toBeCalled())
     await waitFor(async () =>
       expect(await screen.findByTestId('rc-EdgeSdLanForm-venue-id'))
         .toHaveTextContent('cd572eda8d494a79aa2331fdc26086d9'))
 
-    expect(await screen.findByTestId('rc-EdgeSdLanForm')).toBeVisible()
+    expect(screen.getByTestId('rc-EdgeSdLanForm')).toBeVisible()
     await click(screen.getByRole('button', { name: 'Submit' }))
     await waitFor(() => {
       expect(mockedEditFn).toBeCalledWith({
+        id: mockedCdId,
+        venueId: mockedDmzData.venueId,
         name: mockedDmzData.name,
-        networkIds: mockedDmzData.activatedNetworks.map(item => item.id),
+        networkIds: mockedDmzData.activatedNetworks.map(network => network.id),
         tunnelProfileId: mockedDmzData.tunnelProfileId,
-        guestNetworkIds: mockedDmzData.activatedGuestNetworks.map(item => item.id),
-        guestTunnelProfileId: mockedDmzData.guestTunnelProfileId
+        isGuestTunnelEnabled: mockedDmzData.isGuestTunnelEnabled,
+        guestEdgeId: mockedDmzData.guestEdgeId,
+        guestTunnelProfileId: mockedDmzData.guestTunnelProfileId,
+        guestNetworkIds: mockedDmzData.activatedGuestNetworks.map(network => network.id!)
       })
     })
     expect(mockedEditFn).toBeCalledTimes(1)

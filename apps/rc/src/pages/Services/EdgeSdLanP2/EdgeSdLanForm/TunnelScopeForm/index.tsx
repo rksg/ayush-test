@@ -96,15 +96,26 @@ export const TunnelScopeForm = () => {
     const newSelected = activated.map(item => _.pick(item, ['id', 'name']))
 
     if (isGuestTunnelEnabled
-      && fieldName === 'activatedNetworks'
-      && (data.type === NetworkTypeEnum.CAPTIVEPORTAL || data.type === NetworkTypeEnum.OPEN) ) {
-      // eslint-disable-next-line max-len
-      const activatedGuestNetworks = form.getFieldValue('activatedGuestNetworks') as EdgeSdLanActivatedNetwork[]
-      const newSelectedGuestNetworks = toggleItemFromSelected(checked, data, activatedGuestNetworks)
-      form.setFieldsValue({
-        [fieldName]: newSelected,
-        activatedGuestNetworks: newSelectedGuestNetworks
-      })
+      && (fieldName === 'activatedNetworks' || (fieldName === 'activatedGuestNetworks' && checked))
+      && data.type === NetworkTypeEnum.CAPTIVEPORTAL ) {
+      if (fieldName === 'activatedNetworks') {
+        // eslint-disable-next-line max-len
+        const activatedGuestNetworks = form.getFieldValue('activatedGuestNetworks') as EdgeSdLanActivatedNetwork[]
+        // eslint-disable-next-line max-len
+        const newSelectedGuestNetworks = toggleItemFromSelected(checked, data, activatedGuestNetworks)
+        form.setFieldsValue({
+          [fieldName]: newSelected,
+          activatedGuestNetworks: newSelectedGuestNetworks
+        })
+      } else {
+        // eslint-disable-next-line max-len
+        const activatedNetworks = form.getFieldValue('activatedNetworks') as EdgeSdLanActivatedNetwork[]
+        const newSelectedNetworks = toggleItemFromSelected(checked, data, activatedNetworks)
+        form.setFieldsValue({
+          [fieldName]: newSelected,
+          activatedNetworks: newSelectedNetworks
+        })
+      }
     } else {
       form.setFieldValue(fieldName, newSelected)
     }

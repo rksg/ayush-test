@@ -276,9 +276,11 @@ describe('Tunnel Scope Form', () => {
 
       // when turn on DC captive portal network DMZ network should be ON by default
       const targetRow = screen.getByRole('row', { name: /MockedNetwork 4/i })
-      const switchBtn = within(targetRow).getByRole('switch')
-      expect(switchBtn).not.toBeChecked()
-      await click(switchBtn)
+      const switchBtns = within(targetRow).getAllByRole('switch')
+      switchBtns.forEach((switchBtn) => {
+        expect(switchBtn).not.toBeChecked()
+      })
+      await click(switchBtns[0])
 
       expect(mockedSetFieldValue).toBeCalledWith({
         activatedNetworks: [
@@ -290,7 +292,7 @@ describe('Tunnel Scope Form', () => {
       })
     })
 
-    it('guest tunnel network should default true when is open network', async () => {
+    it('data network should be true when enable guest captivePortal network', async () => {
       const { result: stepFormRef } = renderHook(() => useMockedFormHook({
         isGuestTunnelEnabled: true
       }))
@@ -310,17 +312,19 @@ describe('Tunnel Scope Form', () => {
       expect(rows.length).toBe(4)
 
       // when turn on DC captive portal network DMZ network should be ON by default
-      const targetRow = screen.getByRole('row', { name: /MockedNetwork 3/i })
-      const switchBtn = within(targetRow).getByRole('switch')
-      expect(switchBtn).not.toBeChecked()
-      await click(switchBtn)
+      const targetRow = screen.getByRole('row', { name: /MockedNetwork 4/i })
+      const switchBtns = within(targetRow).getAllByRole('switch')
+      switchBtns.forEach((switchBtn) => {
+        expect(switchBtn).not.toBeChecked()
+      })
+      await click(switchBtns[1])
 
       expect(mockedSetFieldValue).toBeCalledWith({
         activatedNetworks: [
-          { name: 'MockedNetwork 3', id: 'network_3' }
+          { name: 'MockedNetwork 4', id: 'network_4' }
         ],
         activatedGuestNetworks: [
-          { name: 'MockedNetwork 3', id: 'network_3' }
+          { name: 'MockedNetwork 4', id: 'network_4' }
         ]
       })
     })

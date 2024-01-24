@@ -13,7 +13,8 @@ import {
   EdgeUrlsInfo,
   EdgeStatus,
   EdgeSdLanViewDataP2,
-  EdgeSdLanSettingP2
+  EdgeSdLanSettingP2,
+  EdgeSdLanActivateNetworkPayload
 } from '@acx-ui/rc/utils'
 import { baseEdgeSdLanApi }  from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -164,7 +165,6 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
         return {
           ...req
         }
-
       },
       invalidatesTags: [{ type: 'EdgeSdLan', id: 'LIST' }]
     }),
@@ -241,6 +241,86 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
           : { error: cfQuery.error as FetchBaseQueryError }
       },
       providesTags: [{ type: 'EdgeSdLan', id: 'DETAIL_P2' }]
+    }),
+    addEdgeSdLanP2: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeSdLanUrls.addEdgeSdLan, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'EdgeSdLan', id: 'LIST_P2' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          try {
+            const response = await api.cacheDataLoaded
+
+            if (response && msg.useCase === 'Add SD-LAN'
+                && msg.steps?.find((step) =>
+                  (step.id === 'Add SD-LAN'))?.status !== 'IN_PROGRESS') {
+              (requestArgs.callback as Function)(response.data)
+            }
+          } catch {
+          }
+        })
+      }
+    }),
+    updateEdgeSdLanPartialP2: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeSdLanUrls.updateEdgeSdLanPartial, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'EdgeSdLan', id: 'LIST_P2' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          try {
+            const response = await api.cacheDataLoaded
+            if (response && msg.useCase === 'Update SD-LAN'
+                && msg.steps?.find((step) =>
+                  (step.id === 'Update SD-LAN'))?.status !== 'IN_PROGRESS') {
+              (requestArgs.callback as Function)(response.data)
+            }
+          } catch {
+          }
+        })
+      }
+    }),
+    activateEdgeSdLanDmzCluster: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return { ...createHttpRequest(EdgeSdLanUrls.activateEdgeSdLanDmzCluster, params) }
+      }
+    }),
+    deactivateEdgeSdLanDmzCluster: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return { ...createHttpRequest(EdgeSdLanUrls.deactivateEdgeSdLanDmzCluster, params) }
+      }
+    }),
+    activateEdgeSdLanDmzTunnelProfile: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return { ...createHttpRequest(EdgeSdLanUrls.activateEdgeSdLanDmzTunnelProfile, params) }
+      }
+    }),
+    deactivateEdgeSdLanDmzTunnelProfile: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return { ...createHttpRequest(EdgeSdLanUrls.deactivateEdgeSdLanDmzTunnelProfile, params) }
+      }
+    }),
+    // eslint-disable-next-line max-len
+    activateEdgeSdLanNetwork: build.mutation<CommonResult, RequestPayload<EdgeSdLanActivateNetworkPayload>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeSdLanUrls.activateEdgeSdLanNetwork, params)
+        return { ...req, body: payload }
+      }
+    }),
+    deactivateEdgeSdLanNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeSdLanUrls.deactivateEdgeSdLanNetwork, params)
+        return { ...req, body: payload }
+      }
     })
   })
 })
@@ -254,5 +334,13 @@ export const {
   useUpdateEdgeSdLanPartialMutation,
   useDeleteEdgeSdLanMutation,
   useGetEdgeSdLanP2ViewDataListQuery,
-  useGetEdgeSdLanP2Query
+  useGetEdgeSdLanP2Query,
+  useAddEdgeSdLanP2Mutation,
+  useUpdateEdgeSdLanPartialP2Mutation,
+  useActivateEdgeSdLanDmzClusterMutation,
+  useDeactivateEdgeSdLanDmzClusterMutation,
+  useActivateEdgeSdLanDmzTunnelProfileMutation,
+  useDeactivateEdgeSdLanDmzTunnelProfileMutation,
+  useActivateEdgeSdLanNetworkMutation,
+  useDeactivateEdgeSdLanNetworkMutation
 } = edgeSdLanApi

@@ -41,7 +41,9 @@ export const SettingsForm = () => {
     } },
     {
       selectFromResult: ({ data, isLoading }) => ({
-        sdLanBoundEdges: data?.data?.map(item => item.edgeId) ?? [],
+        sdLanBoundEdges: (data?.data
+          ?.flatMap(item => [item.edgeId, item.guestEdgeId])
+          .filter(val => !!val)) ?? [],
         isSdLanBoundEdgesLoading: isLoading
       })
     }
@@ -263,7 +265,6 @@ export const SettingsForm = () => {
               <Form.Item
                 name='isGuestTunnelEnabled'
                 valuePropName='checked'
-                initialValue={false}
                 noStyle
               >
                 <Switch aria-label='dmzEnabled' />
