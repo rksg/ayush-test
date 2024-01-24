@@ -123,19 +123,19 @@ export const rbacApi = baseRbacApi.injectEndpoints({
       }),
     addUser: build.mutation<string, {
       resourceGroupId: string, role: string, swuId: string }>({
-          query: ({ swuId, resourceGroupId, role }) => {
-            return {
-              url: '/users',
-              method: 'post',
-              credentials: 'include',
-              body: { swuId, resourceGroupId, role },
-              responseHandler: 'text'
-            }
-          },
-          invalidatesTags: [
-            { type: 'RBAC', id: 'GET_USERS' },
-            { type: 'RBAC', id: 'GET_AVAILABLE_USERS' }
-          ]
+        query: ({ swuId, resourceGroupId, role }) => {
+          return {
+            url: '/users',
+            method: 'post',
+            credentials: 'include',
+            body: { swuId, resourceGroupId, role },
+            responseHandler: 'text'
+          }
+        },
+        invalidatesTags: [
+          { type: 'RBAC', id: 'GET_USERS' },
+          { type: 'RBAC', id: 'GET_AVAILABLE_USERS' }
+        ]
       })
   })
 })

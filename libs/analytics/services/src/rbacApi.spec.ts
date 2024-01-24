@@ -71,4 +71,48 @@ describe('RBAC API', () => {
     )
     expect(data).toStrictEqual([{ id: 'user1' }])
   })
+  it('fetch available users api should work', async () => {
+    mockServer.use(
+      rest.get(
+        `${rbacApiURL}/users/available`,
+        (_req, res, ctx) => res(ctx.json([{ swuId: '1', userName: 'a' }]))
+      )
+    )
+    const { data } = await store.dispatch(
+      rbacApi.endpoints.getAvailableUsers.initiate()
+    )
+    expect(data).toStrictEqual([{ swuId: '1', userName: 'a' }])
+  })
+  it('add internal users api should work', async () => {
+    mockServer.use(
+      rest.post(
+        `${rbacApiURL}/users`,
+        (_req, res, ctx) => res(ctx.text('Created'))
+      )
+    )
+    const { data } = await store.dispatch(
+      rbacApi.endpoints.addUser.initiate({
+        resourceGroupId: '1',
+        swuId: 'u1',
+        role: 'admin'
+      })
+    ) as { data: string }
+    expect(data).toStrictEqual('Created')
+  })
+  it('update users api should work', async () => {
+    mockServer.use(
+      rest.put(
+        `${rbacApiURL}/users/u1`,
+        (_req, res, ctx) => res(ctx.text('Updated'))
+      )
+    )
+    const { data } = await store.dispatch(
+      rbacApi.endpoints.updateUser.initiate({
+        resourceGroupId: '1',
+        userId: 'u1',
+        role: 'admin'
+      })
+    ) as { data: string }
+    expect(data).toStrictEqual('Updated')
+  })
 })

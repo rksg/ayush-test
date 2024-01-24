@@ -1,5 +1,6 @@
 import '@testing-library/react'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { rbacApi }                     from '@acx-ui/analytics/services'
 import { ManagedUser }                 from '@acx-ui/analytics/utils'
@@ -19,6 +20,9 @@ import Users from '.'
 
 jest.mock('./Table', () => ({
   UsersTable: () => <div data-testid='usersTable'>UsersTable</div>
+}))
+jest.mock('./UserDrawer', () => ({
+  UserDrawer: ({ type }: { type: string }) => <div data-testid='userDrawer'>{`${type}`}</div>
 }))
 
 const mockRbacUserResponse = (data: ManagedUser[] | undefined) => {
@@ -62,5 +66,16 @@ describe('Users Page', () => {
       screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Users (0)')).toBeVisible()
     expect(await screen.findByTestId('usersTable')).toBeVisible()
+  })
+  it('should open user drawer for add internal user correctly', async () => {
+    mockRbacUserResponse([])
+    render(<Users />, { wrapper: Provider })
+    await waitForElementToBeRemoved(() =>
+      screen.queryAllByRole('img', { name: 'loader' }))
+    const userBtn = await screen.findByText('Add User...')
+    expect(userBtn).toBeVisible()
+    await userEvent.click(userBtn)
+    await userEvent.click(await screen.findByText('Internal'))
+    expect(await screen.findByTestId('userDrawer')).toHaveTextContent('create')
   })
 })

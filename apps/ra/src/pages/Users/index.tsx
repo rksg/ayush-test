@@ -41,11 +41,11 @@ export default function Users () {
   const addMenu = <Menu
     items={[{
       key: 'add-internal-user',
-      label: <span onClick={()=> {
+      label: <div onClick={()=> {
         setDrawerType('create')
         setOpenDrawer(!openDrawer)}
       }>
-        {$t({ defaultMessage: 'Internal' })}</span>
+        {$t({ defaultMessage: 'Internal' })}</div>
     }]
     }
   />
