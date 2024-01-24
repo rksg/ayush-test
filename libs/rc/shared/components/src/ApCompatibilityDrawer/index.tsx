@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 
 import { Form, Typography }          from 'antd'
+import { TooltipPlacement }          from 'antd/lib/tooltip'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Tooltip, Drawer, Button, Loader, cssStr } from '@acx-ui/components'
@@ -28,7 +29,7 @@ export enum InCompatibilityFeatures {
   BETA_DPSK3 = 'DSAE',
   AP_NEIGHBORS = 'AP Neighbors',
   BSS_COLORING = 'BSS Coloring',
-  QOS_MIRRORING = 'Qos Mirroring'
+  QOS_MIRRORING = 'QoS Mirroring'
 }
 
 export enum ApCompatibilityQueryTypes {
@@ -45,7 +46,8 @@ export enum ApCompatibilityQueryTypes {
 export type ApCompatibilityToolTipProps = {
   visible: boolean,
   title: string,
-  onClick: () => void
+  onClick: () => void,
+  placement?: TooltipPlacement
 }
 
 export function retrievedCompatibilitiesOptions (response?: ApCompatibilityResponse) {
@@ -77,7 +79,7 @@ Sample:
 */
 export function ApCompatibilityToolTip (props: ApCompatibilityToolTipProps) {
   const { $t } = useIntl()
-  const { visible, title, onClick } = props
+  const { visible, title, onClick, placement } = props
 
   const compatibilityToolTipInfo = $t({
     defaultMessage:
@@ -102,7 +104,7 @@ export function ApCompatibilityToolTip (props: ApCompatibilityToolTipProps) {
         }}
       />
     }
-    placement='right'>
+    placement={placement ?? 'right'}>
     <QuestionMarkCircleOutlined
       style={{ height: '16px', width: '16px', marginBottom: -3 }}
     />
