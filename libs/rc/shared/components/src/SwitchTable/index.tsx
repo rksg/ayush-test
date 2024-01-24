@@ -465,6 +465,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   }
 
   return <Loader states={[tableQuery]}>
+    <div data-testid='switch-table'>
     <Table<SwitchRow>
       {...props}
       settingsId='switch-table'
@@ -553,5 +554,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       }}
       onClose={() => setImportVisible(false)}
     />
+    </div>
   </Loader>
 })
