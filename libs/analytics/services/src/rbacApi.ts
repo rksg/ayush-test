@@ -2,7 +2,7 @@ import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/dist/q
 import { QueryReturnValue }                        from '@rtk-query/graphql-request-base-query/dist/GraphqlBaseQueryTypes'
 import { groupBy }                                 from 'lodash'
 
-import { Settings, ManagedUser }  from '@acx-ui/analytics/utils'
+import type { Settings, ManagedUser }  from '@acx-ui/analytics/utils'
 import { get }                    from '@acx-ui/config'
 import { rbacApi as baseRbacApi } from '@acx-ui/store'
 

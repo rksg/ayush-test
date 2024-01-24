@@ -12,6 +12,7 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
+import { useUpdateTenantSettingsMutation } from '@acx-ui/analytics/services'
 import {
   Button,
   DrawerProps
@@ -22,7 +23,7 @@ import * as UI from './styledcomponents'
 
 interface ImportSSOFileDrawerProps extends DrawerProps {
   maxSize: number
-  formDataName?: string
+  isEditMode: boolean | undefined
   setVisible: (visible: boolean) => void
 }
 
@@ -47,17 +48,13 @@ const isValidXml = (rawXml: string) => {
 }
 
 export const ImportSSOFileDrawer = (props: ImportSSOFileDrawerProps) => {
-  const {
-    title,
-    visible,
-    setVisible,
-    maxSize
-  } = props
+  const { title, visible, setVisible, maxSize, isEditMode } = props
   const { $t } = useIntl()
   const [form] = Form.useForm()
-  const [localFileContents, setLocalFileContents] = useState<string>()
+  const [localFileContents, setLocalFileContents] = useState<string | undefined>()
   const [fileDescription, setFileDescription] = useState<ReactNode>('')
   const bytesFormatter = formatter('bytesFormat')
+  const [updateTenantSettings] = useUpdateTenantSettingsMutation()
 
   useEffect(() => {
     form.resetFields()
@@ -103,9 +100,23 @@ export const ImportSSOFileDrawer = (props: ImportSSOFileDrawerProps) => {
 
   const okHandler = async () => {
     try {
-      // TODO: link services to save SSO in tenantSettings
+      await updateTenantSettings({
+        sso: JSON.stringify({
+          type: 'saml2',
+          metadata: localFileContents
+        })
+      })
+    } catch (error) {} finally {
       setVisible(false)
-    } catch (error) {
+    }
+  }
+
+  const deleteHandler = async () => {
+    try {
+      await updateTenantSettings({
+        sso: JSON.stringify({})
+      })
+    } catch (error) {} finally {
       setVisible(false)
     }
   }
@@ -115,8 +126,18 @@ export const ImportSSOFileDrawer = (props: ImportSSOFileDrawerProps) => {
       <Button
         disabled={!Boolean(localFileContents)}
         onClick={() => okHandler()}
-        type={'primary'} >
+        type='primary'>
         {$t({ defaultMessage: 'Apply' })}
+      </Button>
+    )
+  }
+
+  const DeleteButton = () => {
+    return (
+      <Button
+        onClick={() => deleteHandler()}
+        type='primary'>
+        {$t({ defaultMessage: 'Delete' })}
       </Button>
     )
   }
@@ -128,11 +149,10 @@ export const ImportSSOFileDrawer = (props: ImportSSOFileDrawerProps) => {
     destroyOnClose
     footer={<div>
       <ApplyButton />
-      <Button onClick={() => {
-        setVisible(false)
-      }}>
+      <Button onClick={() => onClose()}>
         {$t({ defaultMessage: 'Cancel' })}
       </Button>
+      {isEditMode && <DeleteButton />}
     </div>}
   >
     <Form layout='vertical' form={form}>

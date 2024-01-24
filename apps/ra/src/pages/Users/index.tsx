@@ -2,11 +2,13 @@ import { useState } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
-import { useGetUsersQuery }                    from '@acx-ui/analytics/services'
-import { Button, Loader, PageHeader, Tooltip } from '@acx-ui/components'
+import { useGetTenantSettingsQuery, useGetUsersQuery } from '@acx-ui/analytics/services'
+import type { Settings }                               from '@acx-ui/analytics/utils'
+import { Button, Loader, PageHeader, Tooltip }         from '@acx-ui/components'
 
 import { ImportSSOFileDrawer } from './ImportSSOFileDrawer'
 import { UsersTable }          from './Table'
+
 
 const CsvSize = {
   '1MB': 1024*1*1024,
@@ -36,13 +38,24 @@ const ssoDisclaimer = defineMessage({
   defaultMessage: 'At this time, only Azure AD is officially supported'
 })
 
+const isValidSSO = (settings: Partial<Settings> | undefined) => {
+  if (!settings || !settings.sso) return false
+  try {
+    const ssoConfig = JSON.parse(settings.sso)
+    return Boolean(ssoConfig?.metadata)
+  } catch (e) {
+    return false
+  }
+}
+
 export default function Users () {
   const { $t } = useIntl()
   const usersQuery = useGetUsersQuery()
   const usersCount = usersQuery.data?.length || 0
   const [visible, setVisible] = useState(false)
-  // TODO: fetch sso from tenantSettings in rbac
-  return <Loader states={[usersQuery]}>
+  const settingsQuery = useGetTenantSettingsQuery()
+  const isEditMode = isValidSSO(settingsQuery.data)
+  return <Loader states={[usersQuery, settingsQuery]}>
     <PageHeader
       title={<>
         {$t(title,{ usersCount })} ({usersCount})
@@ -50,20 +63,26 @@ export default function Users () {
           data-html
           title={$t(info, { br: <br/> })} />
       </>}
-      extra={[<Tooltip
-        title={$t(ssoDisclaimer)}
-        placement='left'>
-        <Button
-          type='default'
-          onClick={() => setVisible(true)}>
-          {$t({ defaultMessage: 'Setup SSO' })}
-        </Button>
-      </Tooltip>]}
+      extra={[
+        <Loader states={[settingsQuery]}><Tooltip
+          title={$t(ssoDisclaimer)}
+          placement='left'>
+          <Button
+            type={isEditMode ? 'primary' : 'default'}
+            onClick={() => setVisible(true)}>
+            {isEditMode
+              ? $t({ defaultMessage: 'Update SSO' })
+              : $t({ defaultMessage: 'Setup SSO' })}
+          </Button>
+        </Tooltip></Loader>]}
     />
     <UsersTable data={usersQuery.data} />
     {visible && <ImportSSOFileDrawer
-      title={$t({ defaultMessage: 'Set Up SSO with 3rd Party Provider' })}
+      title={isEditMode
+        ? $t({ defaultMessage: 'Update SSO with 3rd Party Provider' })
+        : $t({ defaultMessage: 'Set Up SSO with 3rd Party Provider' })}
       visible={visible}
+      isEditMode={isEditMode}
       setVisible={setVisible}
       maxSize={CsvSize['5MB']}
     />}
