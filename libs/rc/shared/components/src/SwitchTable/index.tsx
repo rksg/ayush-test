@@ -76,7 +76,7 @@ export const SwitchStatus = (
       switchStatusString = $t({ defaultMessage: 'Online' })
     }
     return (
-      <span>
+      <span data-testid='switch-status'>
         <Badge color={handleStatusColor(switchStatus.deviceStatus)}
           text={showText ? switchStatusString : ''}
         />
