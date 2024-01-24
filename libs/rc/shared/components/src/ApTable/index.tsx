@@ -58,7 +58,7 @@ import { RequestPayload }                                                 from '
 import { filterByAccess }                                                 from '@acx-ui/user'
 import { exportMessageMapping }                                           from '@acx-ui/utils'
 
-import { ApFeatureCompatibility, ApCompatibilityQueryTypes, ApCompatibilityDrawer } from '../ApCompatibilityDrawer'
+import { ApFeatureCompatibility, ApCompatibilityQueryTypes, ApCompatibilityType, ApCompatibilityDrawer } from '../ApCompatibilityDrawer'
 import { seriesMappingAP }                                                          from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                          from '../ImportFileDrawer'
 import { useApActions }                                                             from '../useApActions'
@@ -210,7 +210,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
         if (apCompatibilities.length > 0) {
           apIds.forEach((id:string) => {
             const apIncompatible = _.find(apCompatibilities, ap => id===ap.id)
-            apIdsToIncompatible[id] = apIncompatible?.incompatible ?? 0
+            apIdsToIncompatible[id] = apIncompatible?.incompatibleFeatures?.length ?? apIncompatible?.incompatible ?? 0
           })
         }
         if (hasGroupBy) {
@@ -748,6 +748,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
         onClose={() => setImportVisible(false)}/>
       <ApCompatibilityDrawer
         visible={compatibilitiesDrawerVisible}
+        type={params.venueId?ApCompatibilityType.VENUE:ApCompatibilityType.NETWORK}
         venueId={params.venueId}
         networkId={params.networkId}
         queryType={params.venueId ?
