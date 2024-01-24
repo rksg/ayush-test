@@ -265,7 +265,6 @@ describe('MspEcDropdownList', () => {
     })
     const installerTenantDetail = { ...fakeTenantDetail }
     installerTenantDetail.tenantType = AccountType.MSP_REC
-    installerTenantDetail.mspEc.parentMspId = ''
     utils.getJwtTokenPayload = jest.fn().mockImplementation(() => {
       return {
         tenantType: AccountType.MSP_INSTALLER
