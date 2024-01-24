@@ -24,23 +24,15 @@ export interface DashboardMetadata {
 
 const createHttpRequest = (
   apiInfo: ApiInfo,
-  paramValues?: Params<string>,
-  customHeaders?: Record<string, unknown>,
-  ignoreDelegation?: boolean
+  paramValues?: Params<string>
 ) => {
   const headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
-    ...customHeaders,
-    ...getJwtHeaders({ ignoreDelegation })
+    ...getJwtHeaders()
   }
-  const tmpParamValues = {
-    ...paramValues
-  }
-  if(paramValues && paramValues.hasOwnProperty('tenantId') && !paramValues.tenantId){
-    tmpParamValues.tenantId = ''
-  }
-  const url = generatePath(`${apiInfo.url}`, tmpParamValues)
+
+  const url = generatePath(`${apiInfo.url}`, paramValues)
   const method = apiInfo.method
   return {
     headers,
