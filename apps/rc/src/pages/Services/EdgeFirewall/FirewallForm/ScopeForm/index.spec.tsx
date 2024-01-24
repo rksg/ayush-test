@@ -68,10 +68,8 @@ describe('Scope Form', () => {
     const rows = await screen.findAllByRole('row', { name: /Smart Edge/i })
     expect(rows.length).toBe(5)
 
-    await click(
-      within(await screen.findByRole('row', { name: /Smart Edge 1/i })).getByRole('checkbox'))
-    await click(
-      within(await screen.findByRole('row', { name: /Smart Edge 3/i })).getByRole('checkbox'))
+    await click(within(rows[0]).getByRole('checkbox'))
+    await click(within(rows[2]).getByRole('checkbox'))
     await click(await screen.findByRole('button', { name: 'Activate' }))
 
     expect(mockedSetFieldValue).toBeCalledWith('selectedEdges', [
@@ -100,8 +98,7 @@ describe('Scope Form', () => {
     const rows = await screen.findAllByRole('row', { name: /Smart Edge/i })
     expect(rows.length).toBe(5)
 
-    await click(
-      within(await screen.findByRole('row', { name: /Smart Edge 2/i })).getByRole('switch'))
+    await click(within(rows[1]).getByRole('switch'))
 
     expect(mockedSetFieldValue).toBeCalledWith('selectedEdges', [
       { name: 'Smart Edge 2', serialNumber: '0000000002' }
@@ -133,10 +130,9 @@ describe('Scope Form', () => {
     const rows = await screen.findAllByRole('row', { name: /Smart Edge/i })
     expect(rows.length).toBe(5)
 
-    expect(within(await screen.findByRole('row', { name: /Smart Edge 1/i })).getByRole('switch')).toBeChecked()
-    expect(within(await screen.findByRole('row', { name: /Smart Edge 3/i })).getByRole('switch')).toBeChecked()
-    await click(
-      within(await screen.findByRole('row', { name: /Smart Edge 1/i })).getByRole('checkbox'))
+    expect(within(rows[0]).getByRole('switch')).toBeChecked()
+    expect(within(rows[2]).getByRole('switch')).toBeChecked()
+    await click(within(rows[0]).getByRole('checkbox'))
     await click(await screen.findByRole('button', { name: 'Deactivate' }))
 
     expect(mockedSetFieldValue).toBeCalledWith('selectedEdges', [
@@ -169,7 +165,7 @@ describe('Scope Form', () => {
     const rows = await screen.findAllByRole('row', { name: /Smart Edge/i })
     expect(rows.length).toBe(5)
 
-    const switchBtn = within(await screen.findByRole('row', { name: /Smart Edge 1/i })).getByRole('switch')
+    const switchBtn = within(rows[0]).getByRole('switch')
     expect(switchBtn).toBeChecked()
     await click(switchBtn)
 
