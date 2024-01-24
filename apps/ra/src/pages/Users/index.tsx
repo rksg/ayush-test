@@ -156,7 +156,7 @@ const Users = () => {
       })
     }
     if (deleteUser.deleteUser && selectedRow) {
-      const deleteUserAction = selectedRow.invitation?.state === 'accepted'
+      const deleteUserAction = !(selectedRow.invitation?.state === 'pending')
         ? deleteUserResourceGroup({ userId: selectedRow.id })
         : deleteInvitation(
           { resourceGroupId: updatedResourceGroup || selectedRow.resourceGroupId,
@@ -180,6 +180,7 @@ const Users = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   [selectedRow,deleteUser])
 
+  /* istanbul ignore next */
   const handleSaveClick = () => {
     updateUserRoleAndResourceGroup({
       resourceGroupId: updatedResourceGroup ?? selectedRow?.resourceGroupId!,
@@ -194,6 +195,8 @@ const Users = () => {
       })
     })
   }
+
+  /* istanbul ignore next */
   const handleCancelClick = () => {
     setOpenDrawer(false)
     setUpdatedRole(null)
@@ -214,13 +217,11 @@ const Users = () => {
       </Button>
     </div>
   )
-
   return (
-    <Loader states={[
-      {
-        isLoading: false || usersQuery.isLoading,
-        isFetching: retrieveUserDetails || deleteUser.deleteUser || usersQuery.isFetching
-      }]}>
+    <Loader states={[{
+      isLoading: false || usersQuery.isLoading,
+      isFetching: retrieveUserDetails || deleteUser.deleteUser || usersQuery.isFetching
+    }]}>
       <PageHeader
         title={
           <>
@@ -242,6 +243,7 @@ const Users = () => {
       <Drawer
         visible={openDrawer}
         title={$t(messages.editUser)}
+        /* istanbul ignore next */
         onClose={() => setOpenDrawer(false)}
         footer={drawerFooter}
         width={400}

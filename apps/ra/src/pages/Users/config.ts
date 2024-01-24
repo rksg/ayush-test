@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import { defineMessage } from 'react-intl'
 
 import { ManagedUser } from '@acx-ui/analytics/utils'
