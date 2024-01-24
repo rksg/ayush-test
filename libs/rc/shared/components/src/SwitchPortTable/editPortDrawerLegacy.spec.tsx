@@ -7,7 +7,6 @@ import { switchApi }                           from '@acx-ui/rc/services'
 import { SwitchPortViewModel, SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                     from '@acx-ui/store'
 import {
-  act,
   fireEvent,
   mockServer,
   render,
@@ -42,9 +41,10 @@ const params = {
   serialNumber: 'serial-number'
 }
 
-// eslint-disable-next-line max-len
-const editPortVlans = async (inputTagged: string, inputUntagged: string, currentStatus?: string) => {
-  fireEvent.click(await screen.findByRole('button', {
+const editPortVlans = async (
+  inputTagged: string, inputUntagged: string, currentStatus?: string
+) => {
+  await userEvent.click(await screen.findByRole('button', {
     name: currentStatus !== 'port' ? 'Customize' : 'Edit'
   }))
   const dialog = await screen.findAllByRole('dialog')
@@ -55,23 +55,20 @@ const editPortVlans = async (inputTagged: string, inputUntagged: string, current
     const taggedInput = await within(taggedTabPanel).findByTestId('tagged-input')
     fireEvent.change(taggedInput, { target: { value: inputTagged } })
     expect(within(taggedTabPanel).queryByText(/VLAN-ID-55/)).not.toBeInTheDocument()
-    fireEvent.click(await within(taggedTabPanel).findByText(inputTagged, { exact: true }))
+    await userEvent.click(await within(taggedTabPanel).findByText(inputTagged, { exact: true }))
   }
 
   if (inputUntagged) {
-    fireEvent.click(await screen.findByRole('tab', { name: 'Untagged VLANs' }))
+    await userEvent.click(await screen.findByRole('tab', { name: 'Untagged VLANs' }))
     const untaggedTabPanel = screen.getByRole('tabpanel', { hidden: false })
     const untaggedInput = await within(untaggedTabPanel).findByTestId('untagged-input')
     fireEvent.change(untaggedInput, { target: { value: inputUntagged } })
-    fireEvent.click(await within(untaggedTabPanel).findByText(/VLAN-ID-22/))
+    await userEvent.click(await within(untaggedTabPanel).findByText(/VLAN-ID-22/))
   }
-  // eslint-disable-next-line testing-library/no-unnecessary-act
-  await act(async () => {
-    fireEvent.click(await within(dialog[1]).findByRole('button', { name: 'OK' }))
-  })
+  await userEvent.click(await within(dialog[1]).findByRole('button', { name: 'OK' }))
 }
 
-describe('EditPortDrawer', () => {
+describe('EditPortDrawerLegacy', () => {
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
     mockServer.use(
@@ -127,7 +124,6 @@ describe('EditPortDrawer', () => {
 
   describe('single edit', () => {
     it('should apply edit data correctly', async () => {
-      const user = userEvent.setup()
       render(<Provider>
         <EditPortDrawer
           visible={true}
@@ -144,38 +140,24 @@ describe('EditPortDrawer', () => {
         }
       })
 
-      await waitFor(() => {
-        expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
-      })
+      await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loader' }))
       await screen.findByText('Edit Port')
       await screen.findByText('Selected Port')
 
-      await user.click(await screen.findByRole('combobox', { name: /PoE Class/ }))
-      await user.click(await screen.findByText('Negotiate'))
+      await userEvent.click(await screen.findByRole('combobox', { name: /PoE Class/ }))
+      await userEvent.click(await screen.findByText('Negotiate'))
       const budgetInput = await screen.findByTestId('poe-budget-input')
       expect(budgetInput).not.toBeDisabled()
-      // eslint-disable-next-line testing-library/no-unnecessary-act
-      await act(() => {
-        fireEvent.change(budgetInput, { target: { value: '1000' } })
-      })
+      fireEvent.change(budgetInput, { target: { value: '1000' } })
       expect(await screen.findByRole('combobox', { name: /PoE Class/ })).toBeDisabled()
 
-      fireEvent.click(await screen.findByTestId('ipsg-checkbox'))
-      fireEvent.click(await screen.findByRole('button', { name: 'Edit' }))
-      let dialog = await screen.findAllByRole('dialog')
-      await screen.findByText('Select Port VLANs')
-      fireEvent.click(await within(dialog[1]).findByRole('button', { name: 'Cancel' }))
+      await userEvent.click(await screen.findByTestId('ipsg-checkbox'))
 
-      fireEvent.click(await screen.findByRole('button', { name: 'Create' }))
-      dialog = await screen.findAllByRole('dialog')
-      await screen.findByText('Add LLDP QoS')
-      fireEvent.click(await within(dialog[1]).findByRole('button', { name: 'Cancel' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
 
-      fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     })
 
     it('should customized VLAN correctly', async () => {
-      const user = userEvent.setup()
       render(<Provider>
         <EditPortDrawer
           visible={true}
@@ -197,12 +179,12 @@ describe('EditPortDrawer', () => {
       await screen.findByText('Selected Port')
       await screen.findByText('Port level override')
 
-      await user.click(await screen.findByRole('combobox', { name: /PoE Class/ }))
-      await user.click(await screen.findByText('2 (802.3af 7.0 W)'))
+      await userEvent.click(await screen.findByRole('combobox', { name: /PoE Class/ }))
+      await userEvent.click(await screen.findByText('2 (802.3af 7.0 W)'))
       expect(await screen.findByTestId('poe-budget-input')).toBeDisabled()
       await editPortVlans('VLAN-ID-66', 'VLAN-ID-', 'port')
 
-      fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     })
 
     it('should close Drawer correctly', async () => {
@@ -223,8 +205,8 @@ describe('EditPortDrawer', () => {
       })
 
       await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
-      fireEvent.click(await screen.findByRole('button', { name: 'Use Venue settings' }))
-      fireEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Use Venue settings' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     })
 
     it('should close Drawer and execute onBackClick function correctly', async () => {
@@ -247,7 +229,7 @@ describe('EditPortDrawer', () => {
       })
 
       await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
-      fireEvent.click(await screen.findByRole('button', { name: 'Back' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Back' }))
       expect(onBackClickAction).toHaveBeenCalled()
     })
 
@@ -297,13 +279,13 @@ describe('EditPortDrawer', () => {
       // TODO: check voice vlan value
       // expect(await screen.findByTestId('voice-vlan-select')).toHaveValue('')
 
-      fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       await screen.findByText('Modify Uplink Port?')
       const dialog = await screen.findAllByRole('dialog')
       expect(dialog).toHaveLength(2)
       const modal = dialog[1]
 
-      fireEvent.click(await screen.findByRole('button', { name: 'Apply Changes' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Apply Changes' }))
       await waitFor(()=>{
         expect(modal).not.toBeVisible()
       })
@@ -344,7 +326,7 @@ describe('EditPortDrawer', () => {
       await screen.findByText('Selected Port')
       await screen.findByText('Applied at venue')
       await editPortVlans('VLAN-ID-66', '', 'venue')
-      fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       // await screen.findByText('Server Error')
     })
 
@@ -380,7 +362,7 @@ describe('EditPortDrawer', () => {
       await screen.findByText('Edit Port')
       await screen.findByText('Selected Port')
       await screen.findByText('Applied at venue')
-      fireEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     })
   })
 
@@ -418,12 +400,9 @@ describe('EditPortDrawer', () => {
       await screen.findByText('Selected Port')
       const checkboxs = await screen.findAllByRole('checkbox')
 
-      // eslint-disable-next-line testing-library/no-unnecessary-act
-      act(() => {
-        fireEvent.click(checkboxs[0]) // Port Enable
-      })
+      await userEvent.click(checkboxs[0]) // Port Enable
 
-      fireEvent.click(await screen.findByRole('button', { name: 'Close' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Close' }))
     })
 
     it('should apply edit data correctly', async () => {
@@ -453,31 +432,25 @@ describe('EditPortDrawer', () => {
       await screen.findByText('Selected Port')
       const checkboxs = await screen.findAllByRole('checkbox')
 
-      // eslint-disable-next-line testing-library/no-unnecessary-act
-      act(() => {
-        fireEvent.click(checkboxs[0]) // Port Enable
-        fireEvent.click(checkboxs[1]) // Poe Enable
-        fireEvent.click(checkboxs[5]) // Port VLANs
-      })
+      await userEvent.click(checkboxs[0]) // Port Enable
+      await userEvent.click(checkboxs[1]) // Poe Enable
+      await userEvent.click(checkboxs[5]) // Port VLANs
 
       // Edit Port VLANs
-      fireEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
       let dialog = await screen.findAllByRole('dialog')
       await screen.findByText('Select Port VLANs')
       const taggedTabPanel = screen.getByRole('tabpanel', { hidden: false })
-      fireEvent.click(await within(taggedTabPanel).findByText(/VLAN-ID-6/))
+      await userEvent.click(await within(taggedTabPanel).findByText(/VLAN-ID-6/))
 
-      fireEvent.click(await screen.findByRole('tab', { name: 'Untagged VLANs' }))
+      await userEvent.click(await screen.findByRole('tab', { name: 'Untagged VLANs' }))
       const untaggedTabPanel = screen.getByRole('tabpanel', { hidden: false })
-      fireEvent.click(await within(untaggedTabPanel).findByText(/VLAN-ID-2/))
+      await userEvent.click(await within(untaggedTabPanel).findByText(/VLAN-ID-2/))
 
-      // eslint-disable-next-line testing-library/no-unnecessary-act
-      await act(async () => {
-        fireEvent.click(await within(dialog[1]).findByRole('button', { name: 'OK' }))
-      })
+      await userEvent.click(await within(dialog[1]).findByRole('button', { name: 'OK' }))
 
-      fireEvent.click(await screen.findByRole('button', { name: 'Use Venue settings' }))
-      fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Use Venue settings' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     })
   })
 
@@ -516,10 +489,10 @@ describe('EditPortDrawer', () => {
       await screen.findByText('Edit Port')
       await screen.findByText('Selected Port')
 
-      fireEvent.click(await screen.findByRole('button', { name: 'Create' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Create' }))
       const dialog = await screen.findAllByRole('dialog')
       await screen.findByText('Add LLDP QoS')
-      fireEvent.click(await within(dialog[1]).findByRole('button', { name: 'Cancel' }))
+      await userEvent.click(await within(dialog[1]).findByRole('button', { name: 'Cancel' }))
     })
 
     it('should delete LLDP correctly', async () => {
@@ -549,16 +522,12 @@ describe('EditPortDrawer', () => {
       await screen.findByText('Selected Port')
 
       const row = await screen.findByRole('row', { name: /Guest-voice/ })
-      fireEvent.click(await within(row).findByRole('radio'))
-      // eslint-disable-next-line testing-library/no-unnecessary-act
-      await act(async () => {
-        fireEvent.click(await screen.findByRole('button', { name: 'Delete' }) )
-      })
+      await userEvent.click(await within(row).findByRole('radio'))
+      await userEvent.click(await screen.findByRole('button', { name: 'Delete' }) )
       expect(screen.queryByRole('row', { name: /Guest-voice/ })).not.toBeInTheDocument()
     })
 
     it('should create LLDP correctly', async () => {
-      const user = userEvent.setup()
       mockServer.use(
         rest.post(SwitchUrlsInfo.getPortSetting.url,
           (_, res, ctx) => res(ctx.json({
@@ -587,27 +556,27 @@ describe('EditPortDrawer', () => {
       await screen.findByText('Edit Port')
       await screen.findByText('Selected Port')
 
-      fireEvent.click(await screen.findByRole('button', { name: 'Create' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Create' }))
       const dialog = await screen.findAllByRole('dialog')
       await screen.findByText('Add LLDP QoS')
 
-      await user.click(await screen.findByRole('combobox', { name: 'QoS VLAN Type' }))
-      await user.click(await screen.findByText('Tagged'))
-      await user.click(await screen.findByRole('combobox', { name: 'VLAN ID' }))
-      await user.click(await screen.findByText('VLAN-2'))
+      await userEvent.click(await screen.findByRole('combobox', { name: 'QoS VLAN Type' }))
+      await userEvent.click(await screen.findByText('Tagged'))
+      await userEvent.click(await screen.findByRole('combobox', { name: 'VLAN ID' }))
+      await userEvent.click(await screen.findByText('VLAN-2'))
       const priorityInput = await within(dialog[1]).findByLabelText('Priority')
       fireEvent.change(priorityInput, { target: { value: '1' } })
       const dscpInput = await within(dialog[1]).findByLabelText(/DSCP/)
       fireEvent.change(dscpInput, { target: { value: '2' } })
 
-      user.click(await within(dialog[1]).findByRole('button', { name: 'Save' }))
+      await userEvent.click(await within(dialog[1]).findByRole('button', { name: 'Save' }))
+      await waitFor(() => expect(dialog[1]).not.toBeVisible())
       expect(await screen.findAllByRole('row')).toHaveLength(2)
-      user.click(await screen.findByRole('button', { name: 'Apply' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     })
 
     // eslint-disable-next-line max-len
     it('should show an error message when creating with duplicate LLDP QoS application type', async () => {
-      const user = userEvent.setup()
       mockServer.use(
         rest.post(SwitchUrlsInfo.getPortSetting.url,
           (_, res, ctx) => res(ctx.json(portSetting[1]))
@@ -634,7 +603,7 @@ describe('EditPortDrawer', () => {
       await screen.findByText('Selected Port')
 
       // create first
-      fireEvent.click(await screen.findByRole('button', { name: 'Create' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Create' }))
       let dialog = await screen.findAllByRole('dialog')
       await screen.findByText('Add LLDP QoS')
 
@@ -642,20 +611,17 @@ describe('EditPortDrawer', () => {
       fireEvent.change(priorityInput, { target: { value: '1' } })
       const dscpInput = await within(dialog[1]).findByLabelText(/DSCP/)
       fireEvent.change(dscpInput, { target: { value: '2' } })
-      fireEvent.click(await within(dialog[1]).findByRole('button', { name: 'Save' }))
+      await userEvent.click(await within(dialog[1]).findByRole('button', { name: 'Save' }))
       await screen.findByText('LLDP QoS Application Type can not duplicate')
 
-      await user.click(await screen.findByRole('combobox', { name: 'Application Type' }))
-      await user.click(await screen.findByText('Video-conferencing'))
-      // eslint-disable-next-line testing-library/no-unnecessary-act
-      await act(async () => {
-        fireEvent.click(await within(dialog[1]).findByRole('button', { name: 'Save' }))
-      })
+      await userEvent.click(await screen.findByRole('combobox', { name: 'Application Type' }))
+      await userEvent.click(await screen.findByText('Video-conferencing'))
+      await userEvent.click(await within(dialog[1]).findByRole('button', { name: 'Save' }))
+      await waitFor(() => expect(dialog[1]).not.toBeVisible())
       expect(await screen.findAllByRole('row')).toHaveLength(3)
     })
 
     it('should edit LLDP correctly', async () => {
-      const user = userEvent.setup()
       mockServer.use(
         rest.post(SwitchUrlsInfo.getPortSetting.url,
           (_, res, ctx) => res(ctx.json(portSetting[1]))
@@ -682,33 +648,27 @@ describe('EditPortDrawer', () => {
       await screen.findByText('Selected Port')
 
       const row = await screen.findByRole('row', { name: /Guest-voice/ })
-      fireEvent.click(await within(row).findByRole('radio'))
-      fireEvent.click(await screen.findByRole('button', { name: 'Edit' }) )
+      await userEvent.click(await within(row).findByRole('radio'))
+      await userEvent.click(await screen.findByRole('button', { name: 'Edit' }) )
 
       await screen.findByText(/Edit LLDP QoS/)
       let dialog = await screen.findAllByRole('dialog')
       expect(await within(dialog[1]).findByRole('button', { name: 'Save' })).toBeDisabled()
 
-      await user.click(await screen.findByRole('combobox', { name: 'QoS VLAN Type' }))
-      await user.click(await screen.findByText('Untagged'))
-      await user.click(await screen.findByRole('combobox', { name: 'QoS VLAN Type' }))
+      await userEvent.click(await screen.findByRole('combobox', { name: 'QoS VLAN Type' }))
+      await userEvent.click(await screen.findByText('Untagged'))
+      await userEvent.click(await screen.findByRole('combobox', { name: 'QoS VLAN Type' }))
       const priorityTagged = await screen.findAllByText('Priority-tagged')
-      await user.click(priorityTagged[2])
+      await userEvent.click(priorityTagged[2])
 
       let priorityInput = await within(dialog[1]).findByLabelText('Priority')
       priorityInput = await within(dialog[1]).findByLabelText('Priority')
-      // eslint-disable-next-line testing-library/no-unnecessary-act
-      await act(async () => {
-        await fireEvent.change(priorityInput, { target: { value: '3' } })
-      })
+      await fireEvent.change(priorityInput, { target: { value: '3' } })
 
       expect(await within(dialog[1]).findByRole('button', { name: 'Save' })).not.toBeDisabled()
-      // eslint-disable-next-line testing-library/no-unnecessary-act
-      await act(async () => {
-        fireEvent.click(await within(dialog[1]).findByRole('button', { name: 'Save' }))
-      })
-
-      fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+      await userEvent.click(await within(dialog[1]).findByRole('button', { name: 'Save' }))
+      await waitFor(() => expect(dialog[1]).not.toBeVisible())
+      await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     })
   })
 
@@ -734,7 +694,7 @@ describe('EditPortDrawer', () => {
       await screen.findByText('Edit Port')
       await screen.findByText('Port VLANs')
       await screen.findByText('Port level override')
-      fireEvent.click(await screen.findByRole('button', { name: 'Use Venue settings' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Use Venue settings' }))
       await screen.findByText('VLAN-ID: 1 (Default VLAN)')
     })
 
@@ -767,7 +727,7 @@ describe('EditPortDrawer', () => {
       await screen.findByText('Edit Port')
       await screen.findByText('Port VLANs')
       await screen.findByText('Default')
-      fireEvent.click(await screen.findByRole('button', { name: 'Customize' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Customize' }))
       await editPortVlans('VLAN-ID-66', '', 'default')
       await screen.findByText('VLAN-ID: 1 (Default VLAN)')
       await screen.findByText('VLAN-ID: 66')
@@ -809,13 +769,10 @@ describe('EditPortDrawer', () => {
       expect(await screen.findByTestId('untagged-multi-text')).toBeVisible()
 
       const checkboxs = await screen.findAllByRole('checkbox')
-      // eslint-disable-next-line testing-library/no-unnecessary-act
-      act(() => {
-        fireEvent.click(checkboxs[0]) // Port VLANs
-      })
+      await userEvent.click(checkboxs[0]) // Port VLANs
 
       expect(await screen.findByText('Edit')).toBeVisible()
-      fireEvent.click(await screen.findByRole('button', { name: 'Use Venue settings' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Use Venue settings' }))
       // TODO: check edit port status and VLANs
     })
     // TODO: check other status
