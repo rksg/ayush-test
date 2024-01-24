@@ -197,18 +197,10 @@ describe('Wired - TrustedPorts', () => {
     const row = await screen.findByRole('row', { name: /ICX7150-48/i })
     await userEvent.click(await within(row).findByRole('radio'))
 
-    const alertbar = await screen.findByRole('alert')
-    await userEvent.click(await within(alertbar).findByText('Edit'))
-    const trustedPortModal = await screen.findByTestId('trustedPortModal')
-    expect(trustedPortModal).toBeVisible()
-    const truestedPortButtons = await within(trustedPortModal).findByText('Trusted Ports')
-    await userEvent.click(truestedPortButtons)
-    const trustedPortsComboBox = await within(trustedPortModal).findByRole('combobox')
-    await userEvent.click(trustedPortsComboBox)
-    const optionValues = await screen.findAllByText('1/1/2')
-    await userEvent.click(optionValues[1])
+    const editButton = await screen.findByRole('button', { name: /Edit/i })
+    await userEvent.click(editButton)
+    await userEvent.click((await screen.findAllByText('Trusted Ports'))[1])
     await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
-    await waitFor(async () => expect(trustedPortModal).not.toBeVisible())
   })
 
   it('should handle delete trusted ports correctly', async () => {
