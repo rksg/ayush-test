@@ -243,8 +243,9 @@ const Users = () => {
       <Drawer
         visible={openDrawer}
         title={$t(messages.editUser)}
-        /* istanbul ignore next */
-        onClose={() => setOpenDrawer(false)}
+        onClose={
+          /* istanbul ignore next */
+          () => setOpenDrawer(false)}
         footer={drawerFooter}
         width={400}
       >
