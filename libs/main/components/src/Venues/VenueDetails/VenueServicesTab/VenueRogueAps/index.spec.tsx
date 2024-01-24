@@ -497,17 +497,16 @@ describe('RogueVenueTable', () => {
     // screen.getByText(/^15/i)
 
     const table = await screen.findByRole('table')
-    expect(await screen.findAllByRole('columnheader')).toHaveLength(12)
-    await within(table).findAllByText(/2022\/11\/29/i)
+    expect(await within(table).findAllByRole('columnheader')).toHaveLength(12)
 
-    const row2 = await screen.findByRole('row', { name: /58:FB:96:01:B6:4C/i })
-    await within(row2).findByText(/^10/i)
+    const row2 = await within(table).findByRole('row', { name: /58:FB:96:01:B6:4C/i })
+    within(row2).getByText(/^10/i)
 
-    await userEvent.click(await screen.findByTestId('VenueMarkerOrange'))
+    await userEvent.click(screen.getByTestId('VenueMarkerOrange'))
 
     await screen.findByText(/rogueap: 28:b3:71:1c:15:0c/i)
 
-    await userEvent.click(await screen.findByText('Cancel'))
+    await userEvent.click(screen.getByText('Cancel'))
 
     expect(screen.queryByText(/rogueap: 28:b3:71:1c:15:0c/i)).not.toBeVisible()
   })

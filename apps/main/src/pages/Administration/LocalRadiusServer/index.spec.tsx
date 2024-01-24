@@ -3,8 +3,9 @@ import { rest }  from 'msw'
 
 
 import { useIsSplitOn }               from '@acx-ui/feature-toggle'
+import { administrationApi }          from '@acx-ui/rc/services'
 import { RadiusClientConfigUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
+import { Provider, store }            from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -25,6 +26,7 @@ describe('RadiusServerTab', () => {
 
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    store.dispatch(administrationApi.util.resetApiState())
 
     mockServer.use(
       rest.get(
@@ -54,10 +56,10 @@ describe('RadiusServerTab', () => {
     const eyeButton = await screen.findByTestId('EyeOpenSolid')
     expect(eyeButton).toBeTruthy()
 
-    expect(await screen.findByText(config.ipAddress[0])).toBeVisible()
-    expect(await screen.findByText(radiusSetting.host)).toBeVisible()
-    expect(await screen.findByText(radiusSetting.authenticationPort)).toBeVisible()
-    expect(await screen.findByText(radiusSetting.accountingPort)).toBeVisible()
+    expect(screen.getByText(config.ipAddress[0])).toBeVisible()
+    expect(screen.getByText(radiusSetting.host)).toBeVisible()
+    expect(screen.getByText(radiusSetting.authenticationPort)).toBeVisible()
+    expect(screen.getByText(radiusSetting.accountingPort)).toBeVisible()
   })
 
   it('should change secret correctly', async () => {

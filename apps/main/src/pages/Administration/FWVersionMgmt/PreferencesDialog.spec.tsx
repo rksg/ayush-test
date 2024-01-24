@@ -95,7 +95,7 @@ describe('Firmware Venues Table', () => {
     expect(updateVenueButton).toBeDisabled()
     const manuallyRadio = within(dialog).getByRole('radio', { name: /schedule manually/i })
     await userEvent.click(manuallyRadio)
-    await expect(updateVenueButton).toBeEnabled()
+    await expect(updateVenueButton).not.toBeDisabled()
     await userEvent.click(updateVenueButton)
     expect(updatePreferencesRequestSpy).toBeCalled()
     expect(dialog).not.toBeVisible()
