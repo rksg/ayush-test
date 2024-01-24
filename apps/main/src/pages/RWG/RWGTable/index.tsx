@@ -96,6 +96,7 @@ export function RWGTable () {
   const navigate = useNavigate()
   const { tenantId } = useParams()
   const rwgActions = useRwgActions()
+  const settingsId = 'rgw-table'
 
   const rwgPayload = {
     fields: [
@@ -116,7 +117,8 @@ export function RWGTable () {
     search: {
       searchTargetFields: rwgPayload.searchTargetFields as string[]
     },
-    enableSelectAllPagesData: ['id', 'name']
+    enableSelectAllPagesData: ['id', 'name'],
+    pagination: { settingsId }
   })
 
 
@@ -177,7 +179,7 @@ export function RWGTable () {
         tableQuery
       ]}>
         <Table
-          settingsId='rgw-table'
+          settingsId={settingsId}
           columns={columns}
           dataSource={tableQuery?.data?.data}
           onFilterChange={handleFilterChange}

@@ -57,6 +57,7 @@ const EdgeSdLanTable = () => {
   const navigate = useNavigate()
   const basePath: Path = useTenantLink('')
 
+  const settingsId = 'services-edge-sd-lan-table'
   const tableQuery = useTableQuery({
     useQuery: useGetEdgeSdLanViewDataListQuery,
     defaultPayload: {},
@@ -66,7 +67,8 @@ const EdgeSdLanTable = () => {
     },
     search: {
       searchTargetFields: ['name']
-    }
+    },
+    pagination: { settingsId }
   })
 
   const [deleteSdLan, { isLoading: isDeleting }] = useDeleteEdgeSdLanMutation()
@@ -293,7 +295,7 @@ const EdgeSdLanTable = () => {
         ]}
       >
         <Table
-          settingsId='services-edge-sd-lan-table'
+          settingsId={settingsId}
           rowKey='id'
           columns={columns}
           rowSelection={hasAccess() && { type: 'checkbox' }}

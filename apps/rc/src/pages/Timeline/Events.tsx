@@ -1,11 +1,12 @@
 import { EventTable, useEventsTableQuery } from '@acx-ui/rc/components'
 
 const Events = () => {
+  const settingsId = 'timeline-event-table'
   const tableQuery = useEventsTableQuery(
     undefined,
     undefined,
-    { settingsId: 'timeline-event-table' }
+    { settingsId }
   )
-  return <EventTable settingsId='timeline-event-table' tableQuery={tableQuery}/>
+  return <EventTable settingsId={settingsId} tableQuery={tableQuery}/>
 }
 export { Events }

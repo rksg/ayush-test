@@ -231,14 +231,15 @@ export const useDefaultVenuePayload = (): RequestPayload => {
 }
 
 type VenueTableProps = {
+  settingsId?: string,
   tableQuery: TableQuery<Venue, RequestPayload<unknown>, unknown>,
   rowSelection?: TableProps<Venue>['rowSelection'],
   searchable?: boolean
   filterables?: { [key: string]: ColumnType['filterable'] }
 }
 
-export const VenueTable = (
-  { tableQuery, rowSelection, searchable, filterables }: VenueTableProps) => {
+export const VenueTable = ({ settingsId = 'venues-table',
+  tableQuery, rowSelection, searchable, filterables }: VenueTableProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const { tenantId } = useParams()
@@ -285,7 +286,7 @@ export const VenueTable = (
       { isLoading: false, isFetching: isDeleteVenueUpdating }
     ]}>
       <Table
-        settingsId='venues-table'
+        settingsId={settingsId}
         columns={columns}
         getAllPagesData={tableQuery.getAllPagesData}
         dataSource={tableQuery.data?.data}
@@ -306,6 +307,7 @@ export function VenuesTable () {
   const venuePayload = useDefaultVenuePayload()
   const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
 
+  const settingsId = 'venues-table'
   const tableQuery = usePollingTableQuery<Venue>({
     useQuery: isApCompatibleCheckEnabled ? useVenuesTableQuery: useVenuesListQuery,
     defaultPayload: venuePayload,
@@ -313,9 +315,7 @@ export function VenuesTable () {
       searchTargetFields: venuePayload.searchTargetFields as string[]
     },
     enableSelectAllPagesData: ['id', 'name'],
-    pagination: {
-      settingsId: 'venues-table'
-    }
+    pagination: { settingsId }
   })
 
   const { cityFilterOptions } = useGetVenueCityListQuery({ params: useParams() }, {
@@ -339,7 +339,8 @@ export function VenuesTable () {
           </TenantLink>
         ])}
       />
-      <VenueTable tableQuery={tableQuery}
+      <VenueTable settingsId={settingsId}
+        tableQuery={tableQuery}
         rowSelection={{ type: 'checkbox' }}
         searchable={true}
         filterables={{ city: cityFilterOptions }} />

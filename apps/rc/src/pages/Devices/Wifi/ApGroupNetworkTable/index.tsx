@@ -44,10 +44,12 @@ export default function ApGroupNetworksTable (props: ApGroupNetworksTableProps) 
 
   const [tableData, setTableData] = useState(defaultArray)
 
+  const settingsId = 'apgroup-network-table'
   const tableQuery = useTableQuery({
     useQuery: useApGroupNetworkListQuery,
     apiParams: { venueId: venueId || '' },
-    defaultPayload: defaultApGroupNetworkPayload
+    defaultPayload: defaultApGroupNetworkPayload,
+    pagination: { settingsId }
   })
 
   useEffect(()=>{
@@ -79,7 +81,7 @@ export default function ApGroupNetworksTable (props: ApGroupNetworksTableProps) 
     <Loader states={[ tableQuery ]}>
       <Table
         rowKey='id'
-        settingsId='apgroup-network-table'
+        settingsId={settingsId}
         columns={columns}
         dataSource={tableData}
         pagination={tableQuery.pagination}

@@ -15,13 +15,14 @@ import { useTenantLink } from '@acx-ui/react-router-dom'
 
 const Events = () => {
   const { serialNumber } = useParams()
+  const settingsId = 'switch-event-table'
   const tableQuery = useEventsTableQuery(
     { serialNumber: [serialNumber] },
     undefined,
-    { settingsId: 'switch-event-table' }
+    { settingsId }
   )
   return <EventTable
-    settingsId='switch-event-table'
+    settingsId={settingsId}
     tableQuery={tableQuery}
     filterables={['severity']}
     columnState={{ defaultValue: { ...eventTableColumnState, product: false } }}
@@ -30,13 +31,14 @@ const Events = () => {
 
 const Activities = () => {
   const { serialNumber } = useParams()
+  const settingsId = 'switch-activity-table'
   const tableQuery = useActivityTableQuery(
     { entityType: 'SWITCH', entityId: serialNumber! },
-    { settingsId: 'switch-activity-table' }
+    { settingsId }
   )
 
   return <ActivityTable
-    settingsId='switch-activity-table'
+    settingsId={settingsId}
     tableQuery={tableQuery}
     filterables={['status']}
     columnState={activityTableColumnState}

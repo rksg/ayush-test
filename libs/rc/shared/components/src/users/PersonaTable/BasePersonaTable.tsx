@@ -217,12 +217,14 @@ export function BasePersonaTable (props: PersonaTableProps) {
   const { setIdentitiesCount } = useContext(IdentitiesContext)
   const { customHeaders } = usePersonaAsyncHeaders()
 
+  const settingsId = 'base-persona-table'
   const personaListQuery = useTableQuery<Persona>({
     useQuery: useSearchPersonaListQuery,
     defaultPayload: {
       keyword: '',
       groupId: personaGroupId
-    }
+    },
+    pagination: { settingsId }
   })
 
   const [getDpskDevices] = useLazyGetDpskPassphraseDevicesQuery()
@@ -421,7 +423,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
     >
       <Table<Persona>
         enableApiFilter
-        settingsId='base-persona-table'
+        settingsId={settingsId}
         columns={columns}
         dataSource={personaListQuery.data?.data}
         pagination={personaListQuery.pagination}

@@ -4,12 +4,13 @@ import {
 }   from '@acx-ui/rc/components'
 
 const Activities = () => {
+  const settingsId = 'timeline-activity-table'
   const tableQuery = useActivityTableQuery(
     undefined,
-    { settingsId: 'timeline-activity-table' }
+    { settingsId }
   )
 
-  return <ActivityTable settingsId='timeline-activity-table' tableQuery={tableQuery} />
+  return <ActivityTable settingsId={settingsId} tableQuery={tableQuery} />
 }
 
 export { Activities }

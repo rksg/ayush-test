@@ -175,9 +175,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
     option: { skip: Boolean(props.tableQuery) },
     enableSelectAllPagesData: ['id', 'name', 'serialNumber', 'deviceGroupName', 'deviceGroupId',
       'deviceStatus', 'fwVersion'],
-    pagination: {
-      settingsId
-    }
+    pagination: { settingsId }
   })
   const tableQuery = props.tableQuery || apListTableQuery
 

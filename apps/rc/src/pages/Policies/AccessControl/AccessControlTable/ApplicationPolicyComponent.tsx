@@ -57,9 +57,11 @@ const ApplicationPolicyComponent = () => {
     id: '', isEdit: false
   })
 
+  const settingsId = 'policies-access-control-application-policy-table'
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedApplicationProfileListQuery,
-    defaultPayload
+    defaultPayload,
+    pagination: { settingsId }
   })
 
   useEffect(() => {
@@ -131,7 +133,7 @@ const ApplicationPolicyComponent = () => {
         onlyAddMode={addModeStatus}
       />
       <Table<ApplicationPolicy>
-        settingsId='policies-access-control-application-policy-table'
+        settingsId={settingsId}
         columns={useColumns(networkFilterOptions, editMode, setEditMode)}
         enableApiFilter={true}
         dataSource={tableQuery.data?.data}

@@ -250,6 +250,7 @@ export function MspEcDropdownList () {
     }
   ]
 
+  const settingsIdMspEc = 'msp-ec-dropdown-table'
   const tableQueryMspEc = useTableQuery({
     useQuery: useMspCustomerListDropdownQuery,
     apiParams: { tenantId: getJwtTokenPayload().tenantId },
@@ -257,9 +258,13 @@ export function MspEcDropdownList () {
     search: {
       searchTargetFields: mspEcPayload.searchTargetFields as string[]
     },
-    option: { skip: delegationType !== DelegationType.MSP_EC }
+    option: { skip: delegationType !== DelegationType.MSP_EC },
+    pagination: {
+      settingsId: settingsIdMspEc
+    }
   })
 
+  const settingsIdMspRec = 'msp-rec-dropdown-table'
   const tableQueryMspRec = useTableQuery({
     useQuery: useMspCustomerListDropdownQuery,
     apiParams: { tenantId: getJwtTokenPayload().tenantId },
@@ -267,9 +272,13 @@ export function MspEcDropdownList () {
     search: {
       searchTargetFields: mspRecPayload.searchTargetFields as string[]
     },
-    option: { skip: delegationType !== DelegationType.MSP_REC }
+    option: { skip: delegationType !== DelegationType.MSP_REC },
+    pagination: {
+      settingsId: settingsIdMspRec
+    }
   })
 
+  const settingsIdIntegratorMspEc = 'integrator-mspec-dropdown-table'
   const tableQueryIntegratorMspEc = useTableQuery({
     useQuery: useIntegratorCustomerListDropdownQuery,
     apiParams: { tenantId: getJwtTokenPayload().tenantId },
@@ -277,7 +286,10 @@ export function MspEcDropdownList () {
     search: {
       searchTargetFields: integratorMspEcPayload.searchTargetFields as string[]
     },
-    option: { skip: delegationType !== DelegationType.INTEGRATER_MSPEC }
+    option: { skip: delegationType !== DelegationType.INTEGRATER_MSPEC },
+    pagination: {
+      settingsId: settingsIdIntegratorMspEc
+    }
   })
 
   useEffect(()=>{
@@ -293,6 +305,7 @@ export function MspEcDropdownList () {
     }
   },[tenantDetail])
 
+  const settingsIdIntegrator = 'integrator-dropdown-table'
   const tableQueryIntegrator = useTableQuery({
     useQuery: useMspCustomerListDropdownQuery,
     apiParams: { tenantId: getJwtTokenPayload().tenantId },
@@ -300,9 +313,13 @@ export function MspEcDropdownList () {
     search: {
       searchTargetFields: integratorPayload.searchTargetFields as string[]
     },
-    option: { skip: delegationType !== DelegationType.MSP_INTEGRATOR }
+    option: { skip: delegationType !== DelegationType.MSP_INTEGRATOR },
+    pagination: {
+      settingsId: settingsIdIntegrator
+    }
   })
 
+  const settingsIdVarRec = 'var-dropdown-table'
   const tableQueryVarRec = useTableQuery({
     useQuery: useVarCustomerListDropdownQuery,
     apiParams: { tenantId: getJwtTokenPayload().tenantId },
@@ -310,9 +327,13 @@ export function MspEcDropdownList () {
     search: {
       searchTargetFields: varPayload.searchTargetFields as string[]
     },
-    option: { skip: delegationType !== DelegationType.VAR_REC }
+    option: { skip: delegationType !== DelegationType.VAR_REC },
+    pagination: {
+      settingsId: settingsIdVarRec
+    }
   })
 
+  const settingsIdSupportEc = 'support-ec-dropdown-table'
   const tableQuerySupportEc = useTableQuery({
     useQuery: useSupportCustomerListDropdownQuery,
     apiParams: { tenantId: getJwtTokenPayload().tenantId },
@@ -320,7 +341,10 @@ export function MspEcDropdownList () {
     search: {
       searchTargetFields: supportEcPayload.searchTargetFields as string[]
     },
-    option: { skip: delegationType !== DelegationType.SUPPORT_MSP_EC }
+    option: { skip: delegationType !== DelegationType.SUPPORT_MSP_EC },
+    pagination: {
+      settingsId: settingsIdSupportEc
+    }
   })
 
   const tableQuerySupport = useTableQuery({
@@ -339,9 +363,8 @@ export function MspEcDropdownList () {
 
   const ContentMspEc = () => {
     return <Loader states={[tableQueryMspEc]}>
-
       <Table
-        settingsId='msp-ec-dropdown-table'
+        settingsId={settingsIdMspEc}
         columns={customerColumns}
         dataSource={tableQueryMspEc.data?.data.filter(mspEc => mspEc.id !== params.tenantId)}
         pagination={tableQueryMspEc.pagination}
@@ -354,9 +377,8 @@ export function MspEcDropdownList () {
 
   const ContentMspRec = () => {
     return <Loader states={[tableQueryMspRec]}>
-
       <Table
-        settingsId='msp-rec-dropdown-table'
+        settingsId={settingsIdMspRec}
         columns={customerColumns}
         dataSource={tableQueryMspRec.data?.data.filter(mspRec => mspRec.id !== params.tenantId)}
         pagination={tableQueryMspRec.pagination}
@@ -369,9 +391,8 @@ export function MspEcDropdownList () {
 
   const ContentIntegratorMspEc = () => {
     return <Loader states={[tableQueryIntegratorMspEc]}>
-
       <Table
-        settingsId='integrator-mspec-dropdown-table'
+        settingsId={settingsIdIntegratorMspEc}
         columns={customerColumns}
         dataSource={tableQueryIntegratorMspEc.data?.data.filter(mspEc =>
           mspEc.id !== params.tenantId)}
@@ -385,9 +406,8 @@ export function MspEcDropdownList () {
 
   const ContentIntegrator = () => {
     return <Loader states={[tableQueryIntegrator]}>
-
       <Table
-        settingsId='integrator-dropdown-table'
+        settingsId={settingsIdIntegrator}
         columns={customerColumns}
         dataSource={tableQueryIntegrator.data?.data.filter(mspEc => mspEc.id !== params.tenantId)}
         pagination={tableQueryIntegrator.pagination}
@@ -400,9 +420,8 @@ export function MspEcDropdownList () {
 
   const ContentVar = () => {
     return <Loader states={[tableQueryVarRec]}>
-
       <Table
-        settingsId='var-dropdown-table'
+        settingsId={settingsIdVarRec}
         columns={supportColumns}
         dataSource={tableQueryVarRec.data?.data.filter(cus => cus.tenantId !== params.tenantId)}
         pagination={tableQueryVarRec.pagination}
@@ -429,9 +448,8 @@ export function MspEcDropdownList () {
 
   const ContentSupportEc = () => {
     return <Loader states={[tableQuerySupportEc]}>
-
       <Table
-        settingsId='support-ec-dropdown-table'
+        settingsId={settingsIdSupportEc}
         columns={customerColumns}
         dataSource={tableQuerySupportEc.data?.data.filter(mspEc => mspEc.id !== params.tenantId)}
         pagination={tableQuerySupportEc.pagination}
