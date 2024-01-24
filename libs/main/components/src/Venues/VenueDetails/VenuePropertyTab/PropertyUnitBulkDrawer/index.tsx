@@ -45,12 +45,13 @@ function EnableSettingsCheckbox (props: {
   const [checked, setChecked] = useState(false)
   useEffect(()=>{onChange(checked)}, [checked])
   return(
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: 'flex', marginBottom: '4px' }}>
       <div style={{ display: 'flex' }}>
         <Checkbox checked={checked}
           onChange={(e)=>setChecked(e.target.checked)}/>
       </div>
-      {!checked && <div style={{ display: 'flex', marginLeft: '4px', fontSize: '12px' }}>
+      {!checked && <div
+        style={{ display: 'flex', marginLeft: '4px', fontSize: '12px', marginTop: '2px' }}>
         {$t({ defaultMessage: 'Multiple values' })}
       </div>
       }
