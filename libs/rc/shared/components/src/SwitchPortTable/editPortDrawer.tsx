@@ -471,7 +471,9 @@ export function EditPortDrawer ({
         name={`${field}Checkbox`}
         valuePropName='checked'
         initialValue={false}
-        children={<Checkbox disabled={getOverrideDisabled(field)} />}
+        children={<Checkbox
+          data-testid={`${field}-override-checkbox`}
+          disabled={getOverrideDisabled(field)} />}
       />}
       { extraLabel && <UI.ExtraLabel>{ labelName }</UI.ExtraLabel> }
       { content }
@@ -816,7 +818,7 @@ export function EditPortDrawer ({
               name='portVlansCheckbox'
               valuePropName='checked'
               initialValue={false}
-              children={<Checkbox />}
+              children={<Checkbox data-testid='portVlans-override-checkbox' />}
             />
           </Space>}
           <div style={{ marginBottom: isMultipleEdit ? '0' : '30px' }}>
@@ -993,6 +995,7 @@ export function EditPortDrawer ({
                       initialValue={false}
                     >
                       <Switch
+                        data-testid='port-enable-checkbox'
                         disabled={getFieldDisabled('portEnable')}
                         className={
                           getToggleClassName('portEnable', isMultipleEdit, hasMultipleValue)
