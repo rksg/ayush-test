@@ -1,10 +1,11 @@
 
+import { generatePath, Params } from 'react-router-dom'
+
 import {
   reportsApi as reportsBaseApi,
   REPORT_BASE_RELATIVE_URL as BASE_RELATIVE_URL } from '@acx-ui/store'
-import { RequestPayload }             from '@acx-ui/types'
-import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
-
+import { RequestPayload }         from '@acx-ui/types'
+import { ApiInfo, getJwtHeaders } from '@acx-ui/utils'
 
 export interface GuestToken {
   token: string
@@ -18,6 +19,34 @@ export interface DashboardMetadata {
     uuid: string,
     dashboard_id: string,
     allowed_domains: string[]
+  }
+}
+
+const createHttpRequest = (
+  apiInfo: ApiInfo,
+  paramValues?: Params<string>,
+  customHeaders?: Record<string, unknown>,
+  ignoreDelegation?: boolean
+) => {
+  const headers = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    ...customHeaders,
+    ...getJwtHeaders({ ignoreDelegation })
+  }
+  const tmpParamValues = {
+    ...paramValues
+  }
+  if(paramValues && paramValues.hasOwnProperty('tenantId') && !paramValues.tenantId){
+    tmpParamValues.tenantId = ''
+  }
+  const url = generatePath(`${apiInfo.url}`, tmpParamValues)
+  const method = apiInfo.method
+  return {
+    headers,
+    credentials: 'include' as RequestCredentials,
+    method: method,
+    url: `${window.location.origin}${url}`
   }
 }
 
