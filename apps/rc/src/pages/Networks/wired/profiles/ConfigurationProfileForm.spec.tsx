@@ -638,7 +638,7 @@ describe('Wired', () => {
     expect(await screen.findByRole('button', { name: 'Voice VLAN' })).toBeInTheDocument()
     await userEvent.click(await screen.findByRole('button', { name: 'Voice VLAN' }))
     const tab = await screen.findByTestId('voice-vlan')
-    await within(tab).getByRole('heading', { level: 3, name: 'Voice VLAN' })
+    within(tab).getByRole('heading', { level: 3, name: 'Voice VLAN' })
 
     await userEvent.click(await within(tab).findByRole('button', { name: 'Set Voice VLAN' }))
     expect(await screen.findByRole('dialog')).toBeInTheDocument()

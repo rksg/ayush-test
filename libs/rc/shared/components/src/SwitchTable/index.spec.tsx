@@ -236,7 +236,8 @@ describe('SwitchTable', () => {
     await userEvent.click(await within(row).findByRole('checkbox'))
 
     await within(table).findByText(/1 selected/)
-    const matchButton = await within(table).findByRole('button', { name: 'Match Admin Password to Venue' })
+    const matchButton = await within(table)
+      .findByRole('button', { name: 'Match Admin Password to Venue' })
     expect(matchButton).toBeVisible()
     expect(matchButton).toBeDisabled()
 
@@ -245,7 +246,7 @@ describe('SwitchTable', () => {
 
     await within(table).findByText(/2 selected/)
     expect(matchButton).not.toBeDisabled()
-    
+
     await userEvent.click(matchButton)
     await screen.findByText(/The switch admin password will be set same as the venue setting/)
     const dialog = await screen.findByRole('dialog')
