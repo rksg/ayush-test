@@ -110,14 +110,7 @@ function ConfigTemplatesRoutes () {
           element={<NetworkDetails />}
         />
         <Route path='venues/add' element={<VenuesForm />} />
-        <Route
-          path='venues/:venueId/venue-details/:activeTab/:activeSubTab'
-          element={<div>VenueDetails</div>}
-        />
-        <Route
-          path='venues/:venueId/venue-details/:activeTab/:activeSubTab/:categoryTab'
-          element={<div>VenueDetails</div>}
-        />
+        <Route path='venues/:venueId/:action/:activeTab' element={<div>Venue Edit</div>} />
       </Route>
     </Route>
   ) : null

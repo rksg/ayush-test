@@ -10,7 +10,9 @@ import {
   transformNetworkListResponse,
   Network,
   ConfigTemplate,
-  ConfigTemplateUrlsInfo
+  ConfigTemplateUrlsInfo,
+  VenueExtended,
+  Venue
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi }      from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
@@ -118,15 +120,43 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    addVenueTemplate: build.mutation<CommonResult, RequestPayload>({
+    addVenueTemplate: build.mutation<VenueExtended, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.addVenueTemplate),
       // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'VenueTemplate', id: 'LIST' }]
     }),
-    deleteVenueTemplate: build.mutation<CommonResult, RequestPayload>({
+    deleteVenueTemplate: build.mutation<Venue, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.deleteVenueTemplate),
       // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'VenueTemplate', id: 'LIST' }]
+    }),
+    updateVenueTemplate: build.mutation<VenueExtended, RequestPayload>({
+      query: commonQueryFn(ConfigTemplateUrlsInfo.updateVenueTemplate),
+      // eslint-disable-next-line max-len
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'VenueTemplate', id: 'LIST' }]
+    }),
+    getVenueTemplate: build.query<VenueExtended, RequestPayload>({
+      query: commonQueryFn(ConfigTemplateUrlsInfo.getVenueTemplate),
+      providesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
+    }),
+    getVenuesTemplateList: build.query<TableResult<Venue>, RequestPayload>({
+      query: commonQueryFn(ConfigTemplateUrlsInfo.getVenuesTemplateList),
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'VenueTemplate', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'AddVenueTemplateRecord',
+            'UpdateVenueTemplateRecord',
+            'DeleteVenueTemplateRecord'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            // eslint-disable-next-line max-len
+            api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'VenueTemplate', id: 'LIST' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
     })
   })
 })
@@ -145,7 +175,10 @@ export const {
   useUpdateAAAPolicyTemplateMutation,
   useGetAAAPolicyTemplateListQuery,
   useAddVenueTemplateMutation,
-  useDeleteVenueTemplateMutation
+  useDeleteVenueTemplateMutation,
+  useUpdateVenueTemplateMutation,
+  useGetVenueTemplateQuery,
+  useLazyGetVenuesTemplateListQuery
 } = configTemplateApi
 
 const requestMethodWithPayload = ['post', 'put', 'PATCH']

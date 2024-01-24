@@ -70,5 +70,20 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/templates/venues/:templateId',
     newApi: true
+  },
+  updateVenueTemplate: {
+    method: 'put',
+    url: '/templates/venues/:venueId',
+    newApi: true
+  },
+  getVenueTemplate: {
+    method: 'get',
+    url: '/templates/venues/:venueId',
+    newApi: true
+  },
+  getVenuesTemplateList: {
+    method: 'post',
+    url: '/templates/venues/query',
+    newApi: true
   }
 }
