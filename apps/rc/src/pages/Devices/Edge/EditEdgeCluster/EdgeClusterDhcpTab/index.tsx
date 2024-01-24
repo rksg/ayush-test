@@ -17,6 +17,7 @@ const EdgeClusterDhcpTab = () => {
   const linkToEdgeList = useTenantLink('/devices/edge')
   const [form] = Form.useForm()
   const [isDhcpServiceActive, setIsDhcpServiceActive] = useState(false)
+  const [dhcpId, setDhcpId] = useState<string | null>(null)
   const [patchEdgeDhcpService] = usePatchEdgeDhcpServiceMutation()
   const { $t } = useIntl()
 
@@ -60,6 +61,9 @@ const EdgeClusterDhcpTab = () => {
 
   useEffect(() => {
     setIsDhcpServiceActive((poolTableQuery.data?.totalCount || 0) > 0)
+    console.log(JSON.stringify(poolTableQuery.data?.data[0].dhcpId))
+    //setDhcpId(poolTableQuery.data?.data[0].dhcpId || null)
+    form.setFieldValue('dhcpId', poolTableQuery.data?.data[0].dhcpId)
   }, [poolTableQuery.data?.totalCount])
 
   const handleApplyDhcp = async () => {
@@ -89,7 +93,7 @@ const EdgeClusterDhcpTab = () => {
           }
         />
         <Form.Item hidden={!isDhcpServiceActive}>
-          <EdgeDhcpSelectionForm inUseService='' hasNsg={false} />
+          <EdgeDhcpSelectionForm form={form} hasNsg={false} />
         </Form.Item>
       </StepsForm.StepForm>
     </StepsForm>
