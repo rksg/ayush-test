@@ -59,9 +59,9 @@ import { filterByAccess }                                                 from '
 import { exportMessageMapping }                                           from '@acx-ui/utils'
 
 import { ApFeatureCompatibility, ApCompatibilityQueryTypes, ApCompatibilityType, ApCompatibilityDrawer } from '../ApCompatibilityDrawer'
-import { seriesMappingAP }                                                          from '../DevicesWidget/helper'
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                          from '../ImportFileDrawer'
-import { useApActions }                                                             from '../useApActions'
+import { seriesMappingAP }                                                                               from '../DevicesWidget/helper'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                                               from '../ImportFileDrawer'
+import { useApActions }                                                                                  from '../useApActions'
 
 import {
   getGroupableConfig, groupedFields
