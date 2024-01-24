@@ -1,16 +1,14 @@
 import { useState } from 'react'
 
 import { Space }   from 'antd'
-import _           from 'lodash'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { TimeSeriesDataType, TrendTypeEnum, aggregateDataBy, getSeriesData } from '@acx-ui/analytics/utils'
 import { Loader, PageHeader, Table, TableProps, Tooltip,
-  cssStr,  Card, GridCol, GridRow,
-  MultiLineTimeSeriesChart,NoData, Alert, TrendPill,
-  Drawer, SearchBar }                from '@acx-ui/components'
+  cssStr, Card, GridCol, GridRow, MultiLineTimeSeriesChart,
+  NoData, Alert, TrendPill, Drawer } from '@acx-ui/components'
 import { get }                       from '@acx-ui/config'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
@@ -422,16 +420,6 @@ export function VideoCallQoeDetails (){
               onSave={onSelectClientMac}
             />}
           >
-            <SearchBar
-              placeHolder='Search by MAC, username or hostname'
-              onChange={(q) => q?.trim().length>=0 && _.debounce(
-                (search) => {
-                  setSearch(search)
-                  setSelectedMac(null)
-                }
-                ,1000
-              )(q.trim())}
-            />
             <Loader states={[searchQueryResults]}>
               <Table
                 rowKey='mac'
@@ -450,6 +438,8 @@ export function VideoCallQoeDetails (){
                   {
                     dataIndex: 'mac',
                     key: 'mac',
+                    title: 'MAC, Username, Hostname',
+                    searchable: true,
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     render: (_, row: any)=>{
                       return <>
@@ -470,6 +460,12 @@ export function VideoCallQoeDetails (){
                     }
                   }
                 ]}
+                searchableWidth={230}
+                onFilterChange={(_, { searchString }) => {
+                  setSearch(searchString || '')
+                  setSelectedMac(null)
+                }}
+                enableApiFilter
                 dataSource={searchQueryResults.data}
                 pagination={{
                   pageSize: TABLE_DEFAULT_PAGE_SIZE,

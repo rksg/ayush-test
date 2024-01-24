@@ -11,10 +11,7 @@ import * as UI                     from './styledComponents'
 
 export function PersonalIdentityPreparationListDrawer (props: {
   open: boolean;
-  onClose?: () => void;
-  venueInfo: {
-    switchCount: number
-  }
+  onClose?: () => void
 }) {
   const { $t } = useIntl()
   useParams()
@@ -70,7 +67,7 @@ export function PersonalIdentityPreparationListDrawer (props: {
           {MessageMapping.pin_preparation_list_diagram_desc}
         </dl>
       </UI.List>
-      <PersonalIdentityDiagram venueInfo={props.venueInfo} />
+      <PersonalIdentityDiagram />
     </Drawer>
   )
 }
