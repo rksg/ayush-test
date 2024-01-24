@@ -18,8 +18,6 @@ describe('SLA', () => {
   it('should render',async () => {
     mockGraphqlQuery(dataApiURL, 'GetKpiThresholds', {
       data: {} })
-    mockGraphqlQuery(dataApiURL, 'APCountForNode', {
-      data: { network: { node: { apCount: 0 } } } })
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
       data: { network: { histogram: { data: [] } } } })
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {

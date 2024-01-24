@@ -5,11 +5,20 @@ export type UserProfile = {
   email: string
   accountId: string
   userId: string
-  invitations: Tenant[]
+  invitations: Invitation[]
   tenants: Tenant[]
   selectedTenant: Tenant
+  accountTier?: string
+  betaEnabled?: boolean
 }
-
+export type Invitation = {
+  accountName: string
+  role: string
+  type: string
+  resourceGroupId: string
+  firstName: string
+  lastName: string
+}
 export type Tenant = {
   id: string
   name: string

@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps } from '@acx-ui/components'
-import { defaultNetworkPayload }     from '@acx-ui/rc/components'
+import { Loader, Table, TableProps }                                                            from '@acx-ui/components'
+import { ApplicationDrawer, defaultNetworkPayload, DeviceOSDrawer, Layer2Drawer, Layer3Drawer } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteAccessControlProfilesMutation,
@@ -21,11 +21,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useTenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }                               from '@acx-ui/user'
-
-import ApplicationDrawer from '../AccessControlForm/ApplicationDrawer'
-import DeviceOSDrawer    from '../AccessControlForm/DeviceOSDrawer'
-import Layer2Drawer      from '../AccessControlForm/Layer2Drawer'
-import Layer3Drawer      from '../AccessControlForm/Layer3Drawer'
 
 
 const defaultPayload = {
@@ -126,6 +121,7 @@ const AccessControlSet = () => {
     },
     {
       label: $t({ defaultMessage: 'Edit' }),
+      visible: (selectedItems => selectedItems.length === 1),
       onClick: ([{ id }]) => {
         navigate({
           ...tenantBasePath,
@@ -253,9 +249,9 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       }
     },
     {
-      key: 'networkCount',
+      key: 'networkIds',
       title: $t({ defaultMessage: 'Networks' }),
-      dataIndex: 'networkCount',
+      dataIndex: 'networkIds',
       align: 'center',
       filterable: networkFilterOptions,
       sorter: true,

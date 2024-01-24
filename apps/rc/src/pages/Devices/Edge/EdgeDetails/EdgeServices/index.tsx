@@ -3,11 +3,11 @@ import { useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, Loader, Table, TableProps, showActionModal }        from '@acx-ui/components'
-import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
-import { DownloadOutlined }                                          from '@acx-ui/icons'
-import { EdgeServiceStatusLight, useEdgeExportCsv }                  from '@acx-ui/rc/components'
-import { useDeleteEdgeServicesMutation, useGetEdgeServiceListQuery } from '@acx-ui/rc/services'
+import { Button, Loader, Table, TableProps, showActionModal }                                         from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                     from '@acx-ui/feature-toggle'
+import { DownloadOutlined }                                                                           from '@acx-ui/icons'
+import { EdgeServiceStatusLight, useEdgeExportCsv }                                                   from '@acx-ui/rc/components'
+import { useDeleteEdgeServicesMutation, useGetEdgeServiceListQuery, usePatchEdgeDhcpServiceMutation } from '@acx-ui/rc/services'
 import {
   EdgeService,
   EdgeServiceTypeEnum,
@@ -42,6 +42,7 @@ export const EdgeServices = () => {
     tableQuery as unknown as TableQuery<EdgeService, RequestPayload<unknown>, unknown>
   )
   const [removeServices] = useDeleteEdgeServicesMutation()
+  const [restartServices] = usePatchEdgeDhcpServiceMutation()
 
   const showServiceDetailsDrawer = (data: EdgeService) => {
     setCurrentData(data)
@@ -123,6 +124,14 @@ export const EdgeServices = () => {
     return isDhcpSelected ? isNsgSelected ? false : isNsgExist : false
   }
 
+  const isRestartBtnDisable = (selectedRows: EdgeService[]) => {
+    let isDhcpSelected = selectedRows
+      .filter(EdgeService => EdgeService.serviceType === EdgeServiceTypeEnum.DHCP)
+      .length > 0
+
+    return !(isDhcpSelected && selectedRows.length === 1)
+  }
+
   const rowActions: TableProps<EdgeService>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Remove' }),
@@ -166,6 +175,52 @@ export const EdgeServices = () => {
                         serviceType: item.serviceType
                       }))
                     }
+                  }).then(clearSelection)
+                }
+              }
+            ]
+          }
+        })
+      }
+    },
+    {
+      label: $t({ defaultMessage: 'Restart' }),
+      disabled: isRestartBtnDisable,
+      tooltip: (selectedRows) => isRestartBtnDisable(selectedRows)
+        // eslint-disable-next-line max-len
+        ? $t({ defaultMessage: 'Only DHCP can be restarted' }
+        ) : undefined,
+      onClick: (selectedRows, clearSelection) => {
+        showActionModal({
+          type: 'confirm',
+          title: $t({
+            defaultMessage: `Restart "{count, plural,
+              one {{entityValue}}
+              other {{count} Services}
+            }"?`
+          }, { count: selectedRows.length, entityValue: selectedRows[0].serviceName }),
+          content: $t({
+            defaultMessage: `Are you sure you want to restart {count, plural,
+              one {this service}
+              other {these services}
+            }?`
+          }, { count: selectedRows.length }),
+          customContent: {
+            action: 'CUSTOM_BUTTONS',
+            buttons: [
+              {
+                text: $t({ defaultMessage: 'Cancel' }),
+                type: 'default',
+                key: 'cancel'
+              }, {
+                text: $t({ defaultMessage: 'Restart' }),
+                type: 'primary',
+                key: 'ok',
+                closeAfterAction: true,
+                handler: () => {
+                  restartServices({
+                    params: { id: selectedRows[0].serviceId },
+                    payload: { action: 'RESTART_NOW', restartEdgeIds: [selectedRows[0].edgeId] }
                   }).then(clearSelection)
                 }
               }

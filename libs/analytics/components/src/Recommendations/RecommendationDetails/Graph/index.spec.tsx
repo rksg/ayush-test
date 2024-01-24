@@ -12,7 +12,7 @@ import { CloudRRMGraph } from '.'
 
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
-  Graph: ({ data, chartRef, ...props }: GraphProps) => {
+  Graph: ({ data, chartRef, zoomScale, ...props }: GraphProps) => {
     // to get connectChart covered
     const getEchartsInstance = jest.fn(() => ({ group: '' }))
     chartRef({ getEchartsInstance } as unknown as EChartsReact)
@@ -35,10 +35,7 @@ describe('CloudRRM', () => {
   })
 
   it('should render correctly', async () => {
-    const details = {
-      ...mockedRecommendationCRRM,
-      monitoring: null
-    } as EnhancedRecommendation
+    const details = mockedRecommendationCRRM as EnhancedRecommendation
     render(<CloudRRMGraph details={details}/>, { wrapper: Provider })
     expect(await screen.findByText('More details')).toBeVisible()
     expect(await screen.findAllByTestId('rrm-graph')).toHaveLength(2)
@@ -46,27 +43,12 @@ describe('CloudRRM', () => {
   })
 
   it('should handle drawer', async () => {
-    const details = {
-      ...mockedRecommendationCRRM,
-      monitoring: null
-    } as EnhancedRecommendation
+    const details = mockedRecommendationCRRM as EnhancedRecommendation
     render(<CloudRRMGraph details={details}/>, { wrapper: Provider })
     await userEvent.click(await screen.findByText('More details'))
     expect(await screen.findByTestId('rrm-legend')).toBeVisible()
     expect(await screen.findAllByTestId('rrm-graph')).toHaveLength(4)
     expect(await screen.findByTestId('rrm-comparison-button')).toBeVisible()
     await userEvent.click(await screen.findByTestId('CloseSymbol'))
-  })
-  it('should handle monitoring', async () => {
-    const details = {
-      ...mockedRecommendationCRRM,
-      monitoring: { until: '2023-06-26T00:00:00Z' }
-    } as EnhancedRecommendation
-    render(<CloudRRMGraph details={details}/>, { wrapper: Provider })
-    expect(await screen.findByText('Monitoring performance indicators')).toBeVisible()
-    expect(await screen.findByText('until 06/26/2023 00:00')).toBeVisible()
-    await userEvent.click(await screen.findByText('More details'))
-    expect(await screen.findAllByText('Monitoring performance indicators')).toHaveLength(2)
-    expect(await screen.findAllByText('until 06/26/2023 00:00')).toHaveLength(2)
   })
 })

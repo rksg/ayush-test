@@ -13,6 +13,7 @@ type PropertyUrlType =
   'getPropertyUnitList' |
   'updatePropertyUnit' |
   'deletePropertyUnits' |
+  'notifyPropertyUnits' |
   'getResidentPortalList' |
   'getResidentPortalsQuery' |
   'addResidentPortal' |
@@ -81,6 +82,11 @@ export const PropertyUrlsInfo: { [key in PropertyUrlType]: ApiInfo } = {
     method: 'delete',
     newApi: true,
     url: '/venues/:venueId/units'
+  },
+  notifyPropertyUnits: {
+    method: 'post',
+    newApi: true,
+    url: '/venues/:venueId/units/notifications'
   },
   getResidentPortalList: {
     method: 'get',

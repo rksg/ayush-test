@@ -1,10 +1,11 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
-import { act }   from 'react-dom/test-utils'
 
+import { clientApi, networkApi }                                      from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiUrlsInfo, getGuestDictionaryByLangCode } from '@acx-ui/rc/utils'
-import { Provider }                                                   from '@acx-ui/store'
+import { store, Provider }                                            from '@acx-ui/store'
 import {
+  act,
   fireEvent,
   mockServer,
   render,
@@ -20,9 +21,7 @@ import {
   wifiNetworkDetail,
   AddGuestPassErrorResponse,
   AllowedNetworkSingleList,
-  AddGuestPassWihtoutExpirationResponse,
-  network,
-  userProfile
+  AddGuestPassWihtoutExpirationResponse
 } from '../../../__tests__/fixtures'
 
 import {
@@ -68,17 +67,12 @@ describe('Add Guest Drawer', () => {
   let params: { tenantId: string, networkId: string }
 
   beforeEach(() => {
+    store.dispatch(clientApi.util.resetApiState())
+    store.dispatch(networkApi.util.resetApiState())
+
     mockServer.use(
-      rest.get(
-        WifiUrlsInfo.getNetwork.url,
-        (req, res, ctx) => res(ctx.json(network))
-      ),
       rest.post(CommonUrlsInfo.getGuestsList.url, (req, res, ctx) =>
         res(ctx.json(GuestClient))
-      ),
-      rest.get(
-        UserUrlsInfo.getUserProfile.url,
-        (req, res, ctx) => res(ctx.json(userProfile))
       ),
       rest.post(CommonUrlsInfo.getVMNetworksList.url, (req, res, ctx) =>
         res(ctx.json(AllowedNetworkList))
@@ -315,6 +309,8 @@ describe('Add Guest Drawer', () => {
       </Provider>, { route: { params } }
     )
 
+    const drawer = await screen.findByRole('dialog')
+    expect(drawer).toBeVisible()
     await userEvent.click(await screen.findByTestId('cancelBtn'))
   })
   it('should validate duration correctly', async () => {

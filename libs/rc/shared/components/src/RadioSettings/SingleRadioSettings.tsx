@@ -6,9 +6,9 @@ import { Col, Row, Form, Switch } from 'antd'
 import { isEmpty }                from 'lodash'
 import { useIntl }                from 'react-intl'
 
-import { Button, cssStr }         from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { LowPowerAPQuantity }     from '@acx-ui/rc/utils'
+import { Button, cssStr }                                         from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
+import { AFCProps }                                               from '@acx-ui/rc/utils'
 
 import { RadioSettingsChannels }       from '../RadioSettingsChannels'
 import { findIsolatedGroupByChannel }  from '../RadioSettingsChannels/320Mhz/ChannelComponentStates'
@@ -18,14 +18,14 @@ import {
 } from '../RadioSettingsChannels/320Mhz/RadioSettingsChannelsManual320Mhz'
 
 import { ChannelBarControlPopover } from './ChannelBarControlPopover'
-import { LowPowerBannerAndModal }   from './LowPowerBannerAndModal'
 import {
   ApRadioTypeDataKeyMap,
   ApRadioTypeEnum, ChannelBars,
   RadioChannel,
   SelectItemOption,
   split5GChannels,
-  VenueRadioTypeDataKeyMap
+  VenueRadioTypeDataKeyMap,
+  LPIButtonText
 } from './RadioSettingsContents'
 import { RadioSettingsForm } from './RadioSettingsForm'
 
@@ -64,7 +64,8 @@ export function SingleRadioSettings (props:{
   testId?: string,
   isUseVenueSettings?: boolean,
   supportDfsChannels?: any,
-  lowPowerAPs?: LowPowerAPQuantity
+  LPIButtonText?: LPIButtonText,
+  afcProps?: AFCProps
 }) {
 
   const { $t } = useIntl()
@@ -75,7 +76,8 @@ export function SingleRadioSettings (props:{
     context = 'venue',
     isUseVenueSettings = false,
     testId,
-    lowPowerAPs
+    LPIButtonText,
+    afcProps
   } = props
 
   const {
@@ -123,6 +125,8 @@ export function SingleRadioSettings (props:{
 
   const allowIndoorForOutdoorFeatureFlag = useIsSplitOn(Features.ALLOW_INDOOR_CHANNEL_TOGGLE)
   const wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
+  const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
+
 
   if (context === 'venue') {
     const { indoor, outdoor, indoorForOutdoorAp } = supportChannels
@@ -329,7 +333,7 @@ export function SingleRadioSettings (props:{
   }
 
   const selectRadioChannelSelectionType = () => {
-    if(channelBandwidth === '320MHz' && wifi7_320Mhz_FeatureFlag) {
+    if(channelBandwidth === '320MHz' && (wifi7_320Mhz_FeatureFlag && enableAP70)) {
       if (channelMethod === 'MANUAL' && context === 'ap') {
         return (
           <Row gutter={20}>
@@ -340,6 +344,7 @@ export function SingleRadioSettings (props:{
                 channelList={channelList}
                 disabled={inherit5G || disable || isUseVenueSettings}
                 handleChanged={handleChanged}
+                afcProps={afcProps}
               />
             </Col>
           </Row>
@@ -354,6 +359,7 @@ export function SingleRadioSettings (props:{
               channelList={channelList}
               disabled={inherit5G || disable || isUseVenueSettings}
               handleChanged={handleChanged}
+              afcProps={afcProps}
             />
           </Col>
         </Row>
@@ -370,6 +376,7 @@ export function SingleRadioSettings (props:{
               channelBars={channelBars}
               disabled={inherit5G || disable || isUseVenueSettings}
               handleChanged={handleChanged}
+              afcProps={afcProps}
             />
           </Col>
         </Row>
@@ -382,13 +389,7 @@ export function SingleRadioSettings (props:{
       {
         isSupportRadio &&
       <>
-        {
-          (lowPowerAPs && lowPowerAPs?.lowPowerAPCount > 0 && context === 'venue') &&
-            <LowPowerBannerAndModal
-              parent={'venue'}
-              lowPowerAPs={lowPowerAPs} />
-        }
-        <Row gutter={20} data-testid={testId}>
+        <Row style={{ marginTop: '10px' }} gutter={20} data-testid={testId}>
           <Col span={8}>
             <RadioSettingsForm
               radioType={radioType}
@@ -398,6 +399,8 @@ export function SingleRadioSettings (props:{
               context={context}
               isUseVenueSettings={isUseVenueSettings}
               onGUIChanged={handleSettingGUIChanged}
+              isAFCEnabled={afcProps?.isAFCEnabled}
+              LPIButtonText={LPIButtonText}
             />
           </Col>
           { context === 'venue' && !inherit5G && !disable &&
@@ -485,6 +488,7 @@ export function SingleRadioSettings (props:{
                 channelBars={indoorChannelBars}
                 disabled={inherit5G || disable}
                 handleChanged={handleChanged}
+                afcProps={afcProps}
               />
             </Col>
           </Row>
@@ -514,6 +518,7 @@ export function SingleRadioSettings (props:{
                 channelBars={outdoorChannelBars}
                 disabled={inherit5G || disable}
                 handleChanged={handleChanged}
+                afcProps={afcProps}
               />
             </Col>
           </Row>
@@ -543,6 +548,7 @@ export function SingleRadioSettings (props:{
                 channelBars={indoorChannelBars}
                 disabled={inherit5G || disable}
                 handleChanged={handleChanged}
+                afcProps={afcProps}
               />
             </Col>
           </Row>

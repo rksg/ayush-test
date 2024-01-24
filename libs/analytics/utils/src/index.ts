@@ -12,7 +12,12 @@ export * from './incidentInformation'
 export { default as incidentSeverities } from './incidentSeverities.json'
 export * from './kpiHelper'
 export { disconnectClientEvents } from './mapping/clientDisconnectEventsMap'
-export { getRootCauseAndRecommendations, codeToFailureTypeMap } from './rootCauseRecommendation'
+export {
+  getRootCauseAndRecommendations,
+  codeToFailureTypeMap,
+  htmlValues
+} from './rootCauseRecommendation'
+export type { FormatMessageValue } from './rootCauseRecommendation'
 export {
   clientEventDescription,
   mapDisconnectCode,
@@ -30,3 +35,6 @@ export * from './types/timeseries'
 export * from './types/trendType'
 export * from './user/types'
 export * from './user/userProfile'
+export * from './types/zoneWiseQueryParams'
+export { ccdReasonCodes } from './mapping/ccdReasonCodeMap'
+export * from './encodeFilterPath'

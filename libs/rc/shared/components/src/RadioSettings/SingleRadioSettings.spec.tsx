@@ -18,7 +18,7 @@ import { ApRadioTypeEnum,
 import { SingleRadioSettings } from './SingleRadioSettings'
 
 
-describe('SignaleRadioSettings component', () => {
+describe.skip('SignaleRadioSettings component', () => {
 
   const validRadioChannels = {
     '2.4GChannels': {

@@ -1,9 +1,9 @@
 /* eslint-disable max-len */
 import { rest } from 'msw'
 
-import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { AdministrationUrlsInfo }         from '@acx-ui/rc/utils'
-import { Provider  }                      from '@acx-ui/store'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { AdministrationUrlsInfo }                   from '@acx-ui/rc/utils'
+import { Provider  }                                from '@acx-ui/store'
 import {
   render,
   screen,
@@ -85,6 +85,8 @@ describe('Administration page', () => {
   let params: { tenantId: string, activeTab: string } =
   { tenantId: fakeUserProfile.tenantId, activeTab: 'accountSettings' }
   jest.mocked(useIsSplitOn).mockReturnValue(true)
+  jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RADIUS_CLIENT_CONFIG)
+  jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.GROUP_BASED_LOGIN_TOGGLE)
   jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
   beforeEach(() => {
@@ -302,7 +304,8 @@ describe('Administration page', () => {
   })
 
   it('should render administrator title with count', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RADIUS_CLIENT_CONFIG)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.GROUP_BASED_LOGIN_TOGGLE)
     params.activeTab = 'administrators'
 
     render(

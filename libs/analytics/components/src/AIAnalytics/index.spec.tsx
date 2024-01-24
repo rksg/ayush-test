@@ -1,5 +1,6 @@
 import userEvent from '@testing-library/user-event'
 
+import { getUserProfile }          from '@acx-ui/analytics/utils'
 import { get }                     from '@acx-ui/config'
 import { useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { Provider }                from '@acx-ui/store'
@@ -18,6 +19,12 @@ jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
 }))
 
+const mockGetUserProfile = getUserProfile as jest.Mock
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  getUserProfile: jest.fn()
+}))
+
 jest.mock('../Header', () => ({
   ...jest.requireActual('../Header'),
   useHeaderExtra: () => [ <div data-testid='HeaderExtra' /> ]
@@ -34,6 +41,14 @@ jest.mock('../Recommendations', () => ({
 }))
 
 describe('NetworkAssurance', () => {
+  beforeEach(() => {
+    mockGetUserProfile.mockReturnValue({
+      selectedTenant: { permissions: { 'manage-config-recommendation': true } }
+    })
+  })
+  afterEach(() => {
+    jest.resetAllMocks()
+  })
   it('should render incidents', async () => {
     render(<AIAnalytics tab={AIAnalyticsTabEnum.INCIDENTS}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
@@ -60,6 +75,18 @@ describe('NetworkAssurance', () => {
     expect(await screen.findByText('AI Analytics')).toBeVisible()
     expect(await screen.findByTestId('Recommendations')).toBeVisible()
     expect(await screen.findByTestId('HeaderExtra')).toBeVisible()
+  })
+  it('should not render config recommendation tabs for RA SA when not admin', async () => {
+    jest.mocked(mockGet).mockReturnValue(true)
+    mockGetUserProfile.mockReturnValue({
+      selectedTenant: { permissions: { 'manage-config-recommendation': false } }
+    })
+    render(<AIAnalytics tab={AIAnalyticsTabEnum.CRRM}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(await screen.findByText('AI Assurance')).toBeVisible()
+    expect(screen.getByText('AI Analytics')).toBeVisible()
+    expect(screen.queryByTestId('HeaderExtra')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('Recommendations')).not.toBeInTheDocument()
   })
   it('should render config recommendation tab for R1 when feature flag is ON', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)

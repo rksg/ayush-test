@@ -4,7 +4,9 @@ import {
   isEqual,
   includes,
   remove,
-  split
+  split,
+  isEmpty,
+  uniq
 }                from 'lodash'
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
@@ -119,6 +121,23 @@ export function domainsNameRegExp (value: string[], required: boolean) {
   })
 
   return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.domains))
+}
+
+export function domainNameDuplicationValidation (domainArray: string[]) {
+  const { $t } = getIntl()
+
+  let isValid = true
+
+  // Empty Guard
+  if(isEmpty(domainArray)) {return Promise.reject($t(validationMessages.domains))}
+
+  const uniqDomainArray = uniq(domainArray)
+
+  if(uniqDomainArray.length !== domainArray.length) {
+    isValid = false
+  }
+
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.domainDuplication))
 }
 
 export function walledGardensRegExp (value:string) {
@@ -437,6 +456,15 @@ export function apNameRegExp (value: string) {
   return Promise.resolve()
 }
 
+export function ssidBackendNameRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/(?=^((?!(`|\$\())([\u0020-\u007E\u00A0-\uFFFF])){2,32}$)^(\S([\u0020-\u007E\u00A0-\uFFFF])*\S)$/)
+  if (value!=='' && !re.test(value)) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+  return Promise.resolve()
+}
+
 export function gpsRegExp (lat: string, lng: string) {
   const { $t } = getIntl()
   const latitudeRe = new RegExp('^$|^(-?(?:90(?:\\.0{1,6})?|(?:[1-8]?\\d(?:\\.\\d{1,6})?)))$')
@@ -543,6 +571,88 @@ export function emailRegExp (value: string) {
     return Promise.reject($t(validationMessages.emailAddress))
   }
   return Promise.resolve()
+}
+
+export function sfdcEmailRegExp (value: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp (/^(([^<>()\[\]\\.,;:+\s@"]+(\.[^<>()\[\]\\.,;:+\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.emailAddress))
+  }
+  return Promise.resolve()
+}
+
+export function emailsRegExp (value: string[]) {
+
+  const { $t } = getIntl()
+
+  // Empty Guard
+  if(isEmpty(value)) {return Promise.reject($t(validationMessages.emailAddress))}
+  // eslint-disable-next-line max-len
+  const re = new RegExp (/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
+  const isValid = value.every((email) => {
+    return re.test(email.replace(/\n/, '').trim())
+  })
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.emailAddress))
+}
+
+export function emailDuplicationValidation (emailArray: string[]) {
+
+  const { $t } = getIntl()
+
+  let isValid = true
+
+  // Empty Guard
+  if(isEmpty(emailArray)) {return Promise.reject($t(validationMessages.emailAddress))}
+
+  const uniqEmailArray = uniq(emailArray)
+
+  if(uniqEmailArray.length !== emailArray.length) {
+    isValid = false
+  }
+
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.emailDuplication))
+}
+
+export function emailMaxCountValidation (emailArray: string[], maxCount: number){
+
+  const { $t } = getIntl()
+
+  let isValid = true
+
+  // Empty Guard
+  if(isEmpty(emailArray)) {return Promise.reject($t(validationMessages.emailAddress))}
+
+  if (emailArray.length > maxCount) {
+    isValid = false
+  }
+
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.emailMaxCount, { maxCount }))
+
+}
+
+export function emailsSameDomainValidation (emailArray: string[]) {
+
+  const { $t } = getIntl()
+
+  // Empty Guard
+  if(isEmpty(emailArray)) {return Promise.reject($t(validationMessages.emailAddress))}
+
+  let isValid = true
+
+  const firstEmail = emailArray[0]
+  const firstDomain = firstEmail.split('@')[1]
+
+  emailArray.forEach((currentEmail) => {
+    const currentDomain = currentEmail.split('@')[1]
+    // Compare the domain with the first domain
+    if (currentDomain !== firstDomain) {
+      isValid = false
+    }
+  })
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.sameEmailDomain))
 }
 
 export function phoneRegExp (value: string) {

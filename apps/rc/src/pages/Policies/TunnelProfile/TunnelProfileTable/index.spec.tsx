@@ -1,8 +1,12 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
+import { networkApi, nsgApi, tunnelProfileApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
+  EdgeSdLanUrls,
+  EdgeTunnelProfileFixtures,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
@@ -11,13 +15,17 @@ import {
   PolicyType,
   TunnelProfileUrls
 } from '@acx-ui/rc/utils'
-import { Provider }                                    from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
+import { Provider, store }                                                        from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
-import { mockedNetworkOptions, mockedNsgOptions, mockedTunnelProfileViewData } from '../__tests__/fixtures'
+import { mockedNetworkOptions, mockedNsgOptions } from '../__tests__/fixtures'
 
 import TunnelProfileTable from '.'
-
+const {
+  mockedTunnelProfileViewData,
+  mockedDefaultVlanVxlanTunnelProfileViewData
+} = EdgeTunnelProfileFixtures
+const tenantId = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 const mockedUsedNavigate = jest.fn()
 const mockUseLocationValue = {
   pathname: getPolicyListRoutePath(),
@@ -25,11 +33,21 @@ const mockUseLocationValue = {
   hash: '',
   state: null
 }
+const mockedSdLanDataList = {
+  totalCount: 1,
+  data: [{ id: 'testSDLAN' }]
+}
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate,
   useLocation: jest.fn().mockImplementation(() => mockUseLocationValue)
 }))
+
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  getTenantId: jest.fn().mockReturnValue(tenantId)
+}))
+
 const mockedSingleDeleteApi = jest.fn()
 const mockedBulkDeleteApi = jest.fn()
 
@@ -41,8 +59,11 @@ describe('TunnelProfileList', () => {
   })
   beforeEach(() => {
     params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+      tenantId: tenantId
     }
+    store.dispatch(tunnelProfileApi.util.resetApiState())
+    store.dispatch(nsgApi.util.resetApiState())
+    store.dispatch(networkApi.util.resetApiState())
 
     mockServer.use(
       rest.post(
@@ -70,6 +91,10 @@ describe('TunnelProfileList', () => {
           mockedSingleDeleteApi()
           return res(ctx.status(202))
         }
+      ),
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataList }))
       )
     )
   })
@@ -207,5 +232,67 @@ describe('TunnelProfileList', () => {
     const row = await screen.findAllByRole('row', { name: /Default/i })
     await user.click(within(row[0]).getByRole('checkbox'))
     expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
+  })
+
+  describe('when SD-LAN is ready', () => {
+    const mockedSdLanReq = jest.fn()
+    const mockedSdLanDataList = {
+      totalCount: 1,
+      data: [{ id: 'mocked_sdlan_id', name: 'testSDLAN' }]
+    }
+
+    beforeEach(() => {
+      jest.mocked(useIsSplitOn).mockImplementation((flag: string) => {
+        if (flag === Features.EDGES_SD_LAN_TOGGLE) return true
+        return false
+      })
+
+      mockServer.use(
+        rest.post(
+          TunnelProfileUrls.getTunnelProfileViewDataList.url,
+          (req, res, ctx) => res(ctx.json(mockedDefaultVlanVxlanTunnelProfileViewData))
+        ),
+        rest.post(
+          EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+          (_, res, ctx) => {
+            mockedSdLanReq()
+            return res(ctx.json(mockedSdLanDataList))
+          }
+        )
+      )
+    })
+
+    it('should display SD-LAN column', async () => {
+      render(
+        <Provider>
+          <TunnelProfileTable />
+        </Provider>, {
+          route: { params, path: tablePath }
+        })
+
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      await screen.findAllByRole('row', { name: /Default/i })
+      await screen.findByRole('columnheader', { name: 'SD-LAN' })
+      const dropdowns = await screen.findAllByTestId('options-selector')
+      await waitFor(() => {
+        expect(dropdowns.length).toBe(3)
+      })
+      expect(mockedSdLanReq).toBeCalled()
+    })
+
+    it('edit button will remove when select VLAN_VxLAN Default Tunnel Profile', async () => {
+      const user = userEvent.setup()
+      render(
+        <Provider>
+          <TunnelProfileTable />
+        </Provider>, {
+          route: { params, path: tablePath }
+        })
+
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      const row = await screen.findAllByRole('row', { name: /Default tunnel profile \(SD-LAN\)/i })
+      await user.click(within(row[0]).getByRole('checkbox'))
+      expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
+    })
   })
 })

@@ -21,14 +21,14 @@ import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
 import { EnhancedRecommendation } from '../services'
 
-import { DownloadRRMComparison }                                                   from './DownloadRRMComparison'
-import { Legend }                                                                  from './Legend'
-import { useCRRMQuery }                                                            from './services'
-import { Wrapper, GraphWrapper, DrawerGraphWrapper, ClickableWrapper, Monitoring } from './styledComponents'
+import { DownloadRRMComparison }                                       from './DownloadRRMComparison'
+import { Legend }                                                      from './Legend'
+import { useCRRMQuery }                                                from './services'
+import { Wrapper, GraphWrapper, DrawerGraphWrapper, ClickableWrapper } from './styledComponents'
 
 function useGraph (
   graphs: ProcessedCloudRRMGraph[],
-  monitoring: EnhancedRecommendation['monitoring'],
+  recommendation: EnhancedRecommendation,
   legend: string[],
   zoomScale: ScalePower<number, number, never>
 ) {
@@ -48,21 +48,18 @@ function useGraph (
         style={{ width, height }}
         chartRef={connectChart}
         title={$t({ defaultMessage: 'Before' })}
+        subtext={$t({ defaultMessage: 'As at {dateTime}' }, {
+          dateTime: formatter(DateFormatEnum.DateTimeFormat)(recommendation.dataEndTime)
+        })}
         data={graphs[0]}
         zoomScale={zoomScale}
       />}</AutoSizer></div>,
-      !monitoring
-        ? <div key='crrm-graph-after'><AutoSizer>{({ height, width }) => <BasicGraph
-          style={{ width, height }}
-          chartRef={connectChart}
-          title={$t({ defaultMessage: 'Recommended' })}
-          data={graphs[1]}
-          zoomScale={zoomScale}/>}</AutoSizer></div>
-        : <Monitoring key='crrm-graph-monitoring' >
-          <div>{$t({ defaultMessage: 'Monitoring performance indicators' })}</div>
-          <div>{$t({ defaultMessage: 'until {dateTime}' },
-            { dateTime: formatter(DateFormatEnum.DateTimeFormat)(monitoring.until) })}</div>
-        </Monitoring>,
+      <div key='crrm-graph-after'><AutoSizer>{({ height, width }) => <BasicGraph
+        style={{ width, height }}
+        chartRef={connectChart}
+        title={$t({ defaultMessage: 'Recommended' })}
+        data={graphs[1]}
+        zoomScale={zoomScale}/>}</AutoSizer></div>,
       ...(legend?.length ? [<Legend key='crrm-graph-legend' bandwidths={legend}/>] : [])
     ]
     : null
@@ -98,7 +95,7 @@ export const CloudRRMGraph = ({ details }: { details: EnhancedRecommendation }) 
           onActionClick: showDrawer
         }}
         children={<GraphWrapper>{
-          useGraph(queryResult.data, details.monitoring!, [], detailsZoomScale)
+          useGraph(queryResult.data, details, [], detailsZoomScale)
         }</GraphWrapper>} />
       <Drawer
         key={key}
@@ -111,7 +108,7 @@ export const CloudRRMGraph = ({ details }: { details: EnhancedRecommendation }) 
           <DrawerGraphWrapper>
             {useGraph(
               queryResult.data,
-              details.monitoring,
+              details,
               bandwidthMapping[band],
               drawerZoomScale
             )}

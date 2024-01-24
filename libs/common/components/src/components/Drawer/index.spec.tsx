@@ -55,8 +55,8 @@ describe('Drawer', () => {
 
   it('should render custom drawer correctly', async () => {
     const footer = [
-      <button onClick={onClose} >Save</button>,
-      <button onClick={resetFields}>Reset</button>
+      <button key='saveBtn' onClick={onClose} >Save</button>,
+      <button key='resetBtn' onClick={resetFields}>Reset</button>
     ]
     const handleBackClick = jest.fn()
     render(<Drawer

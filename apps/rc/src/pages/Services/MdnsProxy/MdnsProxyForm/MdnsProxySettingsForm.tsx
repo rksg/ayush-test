@@ -73,18 +73,20 @@ export function MdnsProxySettingsForm () {
             $t({ defaultMessage: 'Forwarding Rules ({count})' }, { count: rules?.length ?? 0 })
           }
         >
-          <UI.TableSubLabel>
-            {$t({
-              defaultMessage: 'Up to {maxCount} rules may be added'
-            }, {
-              maxCount: RULES_MAX_COUNT
-            })}
-          </UI.TableSubLabel>
-          <MdnsProxyForwardingRulesTable
-            readonly={false}
-            rules={rules}
-            setRules={handleSetRules}
-          />
+          <>
+            <UI.TableSubLabel>
+              {$t({
+                defaultMessage: 'Up to {maxCount} rules may be added'
+              }, {
+                maxCount: RULES_MAX_COUNT
+              })}
+            </UI.TableSubLabel>
+            <MdnsProxyForwardingRulesTable
+              readonly={false}
+              rules={rules}
+              setRules={handleSetRules}
+            />
+          </>
         </Form.Item>
       </Col>
     </Row>

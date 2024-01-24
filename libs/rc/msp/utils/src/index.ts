@@ -1,16 +1,20 @@
+import moment from 'moment'
+
+import { DateFormatEnum, formatter }    from '@acx-ui/formatter'
 import { EntitlementNetworkDeviceType } from '@acx-ui/rc/utils'
+import { AccountType }                  from '@acx-ui/utils'
 
 import {
   DelegationEntitlementRecord,
   MspEcAlarmList,
   MspEc,
   MspEcProfile,
-  MspProfile
+  MspProfile,
+  MspRecCustomer
 } from './types'
 
 export * from './types'
 export * from './urls'
-
 export const MSP_USER_SETTING = 'COMMON$MSP'
 
 export const MSPUtils = () => {
@@ -32,6 +36,7 @@ export const MSPUtils = () => {
   }
 
   const transformInstalledDevice = (entitlements: DelegationEntitlementRecord[]) => {
+    entitlements = entitlements ?? []
     let installedDevices = 0
     const apswEntitlement = entitlements.filter((en:DelegationEntitlementRecord) =>
       en.entitlementDeviceType === EntitlementNetworkDeviceType.APSW)
@@ -45,6 +50,7 @@ export const MSPUtils = () => {
   }
 
   const transformDeviceEntitlement = (entitlements: DelegationEntitlementRecord[]) => {
+    entitlements = entitlements ?? []
     let assignedDevices = 0
     const apswEntitlement = entitlements.filter((en:DelegationEntitlementRecord) =>
       en.entitlementDeviceType === EntitlementNetworkDeviceType.APSW)
@@ -58,6 +64,7 @@ export const MSPUtils = () => {
   }
 
   const transformDeviceUtilization = (entitlements: DelegationEntitlementRecord[]) => {
+    entitlements = entitlements ?? []
     let consumed = 0
     let quantity = 0
     const apswEntitlement = entitlements.filter((en:DelegationEntitlementRecord) =>
@@ -77,10 +84,121 @@ export const MSPUtils = () => {
     }
   }
 
-  const transformAlarmCount = (row: MspEc, alarmCountData: MspEcAlarmList) => {
+  const transformOutOfComplianceDevices = (entitlements: DelegationEntitlementRecord[]) => {
+    return entitlements && entitlements.length > 0
+      ? (entitlements[0].outOfComplianceDevices || 0) : 0
+  }
+
+  const futureOfComplianceDays = (futureOfComplianceDate?: number) => {
+    if (!futureOfComplianceDate || isNaN(futureOfComplianceDate)) {
+      return '--'
+    }
+    const Epoch = futureOfComplianceDate - (futureOfComplianceDate % 1000)
+    const expirationDate = formatter(DateFormatEnum.DateFormat)(Epoch)
+    const newDate = new Date(expirationDate)
+    const daysLeft = moment(newDate).diff(moment(), 'days')
+    return daysLeft
+  }
+
+  const transformFutureOutOfComplianceDevices = (entitlements: DelegationEntitlementRecord[]) => {
+    return entitlements && entitlements.length > 0
+      ? `${(entitlements[0].futureOutOfComplianceDevices || 0)}
+        / ${futureOfComplianceDays(entitlements[0].futureOfComplianceDate)}` : '0 / --'
+  }
+
+  const getStatus = (row: MspEc) => {
+    const isTrial = row.accountType === 'TRIAL'
+    const value = row.status === 'Active' ? (isTrial ? 'Trial' : row.status) : 'Inactive'
+    return value
+  }
+
+  const transformApEntitlement = (row: MspEc) => {
+    return row.wifiLicenses ? row.wifiLicenses : 0
+  }
+
+  const transformSwitchEntitlement = (row: MspEc) => {
+    return row.switchLicenses ? row.switchLicenses : 0
+  }
+
+  const transformUtilization = (row: MspEc, deviceType: EntitlementNetworkDeviceType) => {
+    const entitlement = row.entitlements.filter((en:DelegationEntitlementRecord) =>
+      en.entitlementDeviceType === deviceType)
+    if (entitlement.length > 0) {
+      const apEntitlement = entitlement[0]
+      const quantity = parseInt(apEntitlement.quantity, 10)
+      const consumed = parseInt(apEntitlement.consumed, 10)
+      if (quantity > 0) {
+        const value =
+        (Math.round(((consumed / quantity) * 10000)) / 100) + '%'
+        return value
+      }
+    }
+    return '0%'
+  }
+
+  const transformCreationDate = (row: MspEc) => {
+    const creationDate = row.creationDate
+    if (!creationDate || isNaN(creationDate)) {
+      return ''
+    }
+    const Epoch = creationDate - (creationDate % 1000)
+    const activeDate = formatter(DateFormatEnum.DateFormat)(Epoch)
+    return activeDate
+  }
+
+  const transformExpirationDate = (row: MspEc) => {
+    let expirationDate = '--'
+    const apswEntitlement = row.entitlements.filter((en:DelegationEntitlementRecord) =>
+      en.entitlementDeviceType === EntitlementNetworkDeviceType.APSW)
+
+    const entitlements = apswEntitlement.length > 0 ? apswEntitlement : row.entitlements
+    let target: DelegationEntitlementRecord
+    entitlements.forEach((entitlement:DelegationEntitlementRecord) => {
+      const consumed = parseInt(entitlement.consumed, 10)
+      const quantity = parseInt(entitlement.quantity, 10)
+      if (consumed > 0 || quantity > 0) {
+        if (!target || moment(entitlement.expirationDate).isBefore(target.expirationDate)) {
+          target = entitlement
+        }
+      }
+      expirationDate = target ? target.expirationDate : '--'
+    })
+    return expirationDate
+  }
+
+  const transformAlarmCount = (row: MspEc, alarmCountData?: MspEcAlarmList) => {
     const count = alarmCountData?.mspEcAlarmCountList?.find(item =>
       item.tenantId === row.id)?.alarmCount
     return (count || 0)
+  }
+
+  const transformMspRecAddress = (data: MspRecCustomer) => {
+    const address =
+    `${data.billing_street}, ${data.billing_city}, ${data.billing_state},
+    ${data.billing_postal_code}, ${data.billing_country}`
+    return address
+  }
+
+  const transformTechPartner = (id: string, techParnersData: MspEc[]) => {
+    const rec = techParnersData.find(e => e.id === id)
+    return rec?.name ? rec.name : id
+  }
+
+  const transformTechPartnerCount = (count?: number) => {
+    return count ?? 0
+  }
+
+  const transformAdminCount = (data: MspEc, type?: string) => {
+    return type === AccountType.MSP_INSTALLER
+      ? data.mspInstallerAdminCount || 0 : (type === AccountType.MSP_INTEGRATOR
+        ? data.mspIntegratorAdminCount || 0 : data.mspAdminCount || 0)
+  }
+
+  const transformAdminCountHeader = (type?: string) => {
+    return type === AccountType.MSP_INSTALLER
+      ? 'Installer Admin Count'
+      : (type === AccountType.MSP_INTEGRATOR
+        ? 'Integrator Admin Count' : 'MSP Admin Count')
   }
 
   return {
@@ -89,6 +207,19 @@ export const MSPUtils = () => {
     transformInstalledDevice,
     transformDeviceEntitlement,
     transformDeviceUtilization,
-    transformAlarmCount
+    transformOutOfComplianceDevices,
+    transformFutureOutOfComplianceDevices,
+    getStatus,
+    transformApEntitlement,
+    transformUtilization,
+    transformSwitchEntitlement,
+    transformCreationDate,
+    transformExpirationDate,
+    transformAlarmCount,
+    transformMspRecAddress,
+    transformTechPartner,
+    transformTechPartnerCount,
+    transformAdminCount,
+    transformAdminCountHeader
   }
 }

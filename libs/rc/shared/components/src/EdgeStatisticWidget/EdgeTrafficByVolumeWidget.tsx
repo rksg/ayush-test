@@ -44,17 +44,17 @@ const emptyData = {
 const transformTimeSeriesChartData = (data: EdgeAllPortTrafficData): TimeSeriesChartData[] => {
   return data.timeSeries.ports.map((traffic, index) => {
     return {
-      key: `Port ${index + 1}`,
-      name: `Port ${index + 1}`,
+      key: traffic.portName || `unknown_port ${index}`,
+      name: _.capitalize(traffic.portName),
       data: _.zip(data.timeSeries.time, traffic.total) as [TimeStamp, number | null][]
     }
   })
 }
 
 const transformTrafficSeriesFragment = (data: EdgeAllPortTrafficData): TrafficSeriesFragment[] => {
-  return data.timeSeries.ports.map((traffic, index) => {
+  return data.timeSeries.ports.map((traffic) => {
     return {
-      key: `Port ${index + 1}`,
+      key: _.capitalize(traffic.portName),
       // eslint-disable-next-line max-len
       fragment: _.zipWith(traffic.total, traffic.rx, traffic.tx, data.timeSeries.time, (total, rx, tx, time) => {
         return {
@@ -101,12 +101,12 @@ export function EdgeTrafficByVolumeWidget () {
             <ul>
               {!_.isEmpty(queryResults.timeSeries.time) &&
                 transformTrafficSeriesFragment(queryResults)
-                  .map((traffic: TrafficSeriesFragment)=> {
+                  .map((traffic: TrafficSeriesFragment, index)=> {
                     // eslint-disable-next-line max-len
                     const color = graphParameters.find(p => p.seriesName === traffic.key)?.color || ''
                     const fragment = traffic.fragment[graphDataIndex]
                     return (
-                      <li key={traffic.key}>
+                      <li key={traffic.key || `unknown_port ${index}`}>
                         <Badge
                           className='acx-chart-tooltip'
                           color={(color) as string}

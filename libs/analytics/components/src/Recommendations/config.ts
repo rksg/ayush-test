@@ -2,6 +2,7 @@
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import { compareVersion } from '@acx-ui/analytics/utils'
+import { get }            from '@acx-ui/config'
 import { formatter }      from '@acx-ui/formatter'
 
 import { crrmText } from './utils'
@@ -10,9 +11,30 @@ export type IconValue = { order: number, label: MessageDescriptor }
 
 export type StatusTrail = Array<{ status: Lowercase<StateType>, createdAt?: string }>
 
-export const crrmStates: Record<'optimized' | 'nonOptimized', IconValue> = {
-  optimized: { order: 0, label: defineMessage({ defaultMessage: 'Optimized' }) },
-  nonOptimized: { order: 1, label: defineMessage({ defaultMessage: 'Non-Optimized' }) }
+export enum CRRMStates {
+  optimized = 'optimized',
+  nonOptimized = 'nonOptimized',
+  verified = 'verified',
+  insufficientLicenses = 'insufficientLicenses',
+  unqualifiedZone = 'unqualifiedZone',
+  noAps = 'noAps',
+  verificationError = 'verificationError'
+}
+
+export type ConfigurationValue =
+  string |
+  Array<{ channelMode: string, channelWidth: string, radio: string }> |
+  boolean |
+  null
+
+export const crrmStates: Record<CRRMStates, IconValue> = {
+  [CRRMStates.optimized]: { order: 0, label: defineMessage({ defaultMessage: 'Optimized' }) },
+  [CRRMStates.nonOptimized]: { order: 1, label: defineMessage({ defaultMessage: 'Non-Optimized' }) },
+  [CRRMStates.verified]: { order: 0, label: defineMessage({ defaultMessage: 'Verified' }) },
+  [CRRMStates.insufficientLicenses]: { order: 2, label: defineMessage({ defaultMessage: 'Insufficient Licenses' }) },
+  [CRRMStates.unqualifiedZone]: { order: 2, label: defineMessage({ defaultMessage: 'Unqualified Zone' }) },
+  [CRRMStates.noAps]: { order: 2, label: defineMessage({ defaultMessage: 'No APs' }) },
+  [CRRMStates.verificationError]: { order: 2, label: defineMessage({ defaultMessage: 'Verification Error' }) }
 }
 
 export const priorities: Record<'low' | 'medium' | 'high', IconValue> = {
@@ -24,6 +46,7 @@ export const priorities: Record<'low' | 'medium' | 'high', IconValue> = {
 type CodeInfo = {
   category: MessageDescriptor,
   summary: MessageDescriptor,
+  partialOptimizedSummary?: MessageDescriptor,
   priority: IconValue
 }
 
@@ -47,7 +70,12 @@ type RecommendationConfig = {
   appliedReasonText?: MessageDescriptor;
   kpis: RecommendationKPIConfig[]
   recommendedValueTooltipContent?:
-    string | ((status: StateType, currentValue: string, recommendedValue: string) => MessageDescriptor);
+    string |
+    ((status: StateType, currentValue: ConfigurationValue, recommendedValue: string) =>
+      MessageDescriptor);
+  partialOptimizedActionText?: MessageDescriptor;
+  partialOptimizationAppliedReasonText?: MessageDescriptor;
+  partialOptimizedTradeoffText?: MessageDescriptor;
 }
 
 const categories = {
@@ -55,7 +83,12 @@ const categories = {
   'Security': defineMessage({ defaultMessage: 'Security' }),
   'Infrastructure': defineMessage({ defaultMessage: 'Infrastructure' }),
   'AP Performance': defineMessage({ defaultMessage: 'AP Performance' }),
-  'AI-Driven Cloud RRM': defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' })
+  'AI-Driven Cloud RRM': defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
+  'Insufficient Licenses': crrmStates[CRRMStates.insufficientLicenses].label,
+  'Verification Error': crrmStates[CRRMStates.verificationError].label,
+  'Verified': crrmStates[CRRMStates.verified].label,
+  'Unqualified Zone': crrmStates[CRRMStates.unqualifiedZone].label,
+  'No APs': crrmStates[CRRMStates.noAps].label
 }
 
 const bandbalancingEnable: RecommendationConfig = {
@@ -126,6 +159,26 @@ export const states = {
   deleted: {
     text: defineMessage({ defaultMessage: 'Deleted' }),
     tooltip: defineMessage({ defaultMessage: 'Deleted' })
+  },
+  unqualifiedZone: {
+    text: crrmStates[CRRMStates.unqualifiedZone].label,
+    tooltip: crrmStates[CRRMStates.unqualifiedZone].label
+  },
+  noAps: {
+    text: crrmStates[CRRMStates.noAps].label,
+    tooltip: crrmStates[CRRMStates.noAps].label
+  },
+  insufficientLicenses: {
+    text: crrmStates[CRRMStates.insufficientLicenses].label,
+    tooltip: crrmStates[CRRMStates.insufficientLicenses].label
+  },
+  verificationError: {
+    text: crrmStates[CRRMStates.verificationError].label,
+    tooltip: crrmStates[CRRMStates.verificationError].label
+  },
+  verified: {
+    text: crrmStates[CRRMStates.verified].label,
+    tooltip: crrmStates[CRRMStates.verified].label
   }
 }
 
@@ -138,7 +191,9 @@ export const codes = {
     priority: priorities.medium,
     valueFormatter: formatter('enabledFormat'),
     valueText: defineMessage({ defaultMessage: 'Background Scan (2.4 GHz)' }),
-    actionText: defineMessage({ defaultMessage: '2.4 GHz radio setting for {scope} has "Auto Channel Selection" set as "{channelSelectionMode}", however "Background Scan" feature is disabled for this Zone. To effectively use "{channelSelectionMode}" as channel selection algorithm, it recommended to enable "Background Scan" feature with default scan timer as 20 seconds.' }),
+    actionText: get('IS_MLISA_SA')
+      ? defineMessage({ defaultMessage: '2.4 GHz radio setting for {scope} has "Auto Channel Selection" set as "{channelSelectionMode}", however "Background Scan" feature is disabled for this Zone. To effectively use "{channelSelectionMode}" as channel selection algorithm, it recommended to enable "Background Scan" feature with default scan timer as 20 seconds.' })
+      : defineMessage({ defaultMessage: '2.4 GHz radio setting for {scope} has "Auto Channel Selection" set as "{channelSelectionMode}", however "Background Scan" feature is disabled for this Venue. To effectively use "{channelSelectionMode}" as channel selection algorithm, it recommended to enable "Background Scan" feature with default scan timer as 20 seconds.' }),
     reasonText: defineMessage({ defaultMessage: 'Auto Channel Selection feature works well only when RUCKUS APs can perform background scan of the available channels in the network. This helps in building the RF neighborhood. APs can then select an optimum channel for their operation. Hence it is recommended to enable Background Scan feature.' }),
     tradeoffText: defineMessage({ defaultMessage: 'Enabling background scan feature would cause RUCKUS Radio to send additional beacons on the shared wireless medium. However the size of these beacons are very small and would cause negligible effect on the network capacity and would outweigh the benefits of using the optimized and non-interfering radio channels.' }),
     kpis: []
@@ -149,7 +204,9 @@ export const codes = {
     priority: priorities.medium,
     valueFormatter: formatter('enabledFormat'),
     valueText: defineMessage({ defaultMessage: 'Background Scan (5 GHz)' }),
-    actionText: defineMessage({ defaultMessage: '5 GHz radio setting for {scope} has "Auto Channel Selection" set as "{channelSelectionMode}", however "Background Scan" feature is disabled for this Zone. To effectively use "{channelSelectionMode}" as channel selection algorithm, it recommended to enable "Background Scan" feature with default scan timer as 20 seconds.' }),
+    actionText: get('IS_MLISA_SA')
+      ? defineMessage({ defaultMessage: '5 GHz radio setting for {scope} has "Auto Channel Selection" set as "{channelSelectionMode}", however "Background Scan" feature is disabled for this Zone. To effectively use "{channelSelectionMode}" as channel selection algorithm, it recommended to enable "Background Scan" feature with default scan timer as 20 seconds.' })
+      : defineMessage({ defaultMessage: '5 GHz radio setting for {scope} has "Auto Channel Selection" set as "{channelSelectionMode}", however "Background Scan" feature is disabled for this Venue. To effectively use "{channelSelectionMode}" as channel selection algorithm, it recommended to enable "Background Scan" feature with default scan timer as 20 seconds.' }),
     reasonText: defineMessage({ defaultMessage: 'Auto Channel Selection feature works well only when RUCKUS APs can perform background scan of the available channels in the network. This helps in building the RF neighborhood. APs can then select an optimum channel for their operation. Hence it is recommended to enable Background Scan feature.' }),
     tradeoffText: defineMessage({ defaultMessage: 'Enabling background scan feature would cause RUCKUS Radio to send additional beacons on the shared wireless medium. However the size of these beacons are very small and would cause negligible effect on the network capacity and would outweigh the benefits of using the optimized and non-interfering radio channels.' }),
     kpis: []
@@ -258,7 +315,9 @@ export const codes = {
     priority: priorities.low,
     valueFormatter: formatter('enabledFormat'),
     valueText: defineMessage({ defaultMessage: 'DFS Channels' }),
-    actionText: defineMessage({ defaultMessage: 'There is a significant high detection of DFS Radar signals in the {scope}, it is recommended to disable DFS Channels on this zone.' }),
+    actionText: get('IS_MLISA_SA')
+      ? defineMessage({ defaultMessage: 'There is a significant high detection of DFS Radar signals in the {scope}, it is recommended to disable DFS Channels on this Zone.' })
+      : defineMessage({ defaultMessage: 'There is a significant high detection of DFS Radar signals in the {scope}, it is recommended to disable DFS Channels on this Venue.' }),
     reasonText: defineMessage({ defaultMessage: 'If AP is placed in an area where there are genuine and consistent DFS Radar signals, then the AP need not try to operate on the DFS channel.' }),
     tradeoffText: defineMessage({ defaultMessage: 'Disabling DFS Channels will reduce number of available channels for the AP. In a deployment, if there are less available channels and more APs, AP may pick overlapping channels and may cause channel interference and hence inferior user experience.' }),
     kpis: [{
@@ -307,7 +366,7 @@ export const codes = {
     priority: priorities.low,
     valueFormatter: formatter('enabledFormat'),
     valueText: defineMessage({ defaultMessage: 'Client Load Balancing' }),
-    actionText: defineMessage({ defaultMessage: 'Client Load Balancing for this {scope} is disabled. For proper distribution of Clients across APs, it is recommended to enable Client Load Balancing with default method as "Based on Client Count". Note that for Smartzones 6.0 and below Client Load Balancing will be enabled on 5ghz only.' }),
+    actionText: defineMessage({ defaultMessage: 'Client Load Balancing for this {scope} is disabled. For proper distribution of Clients across APs, it is recommended to enable Client Load Balancing with default method as "Based on Client Count". Note that for Smartzones 6.0 and below Client Load Balancing will be enabled on 5 GHz only.' }),
     reasonText: defineMessage({ defaultMessage: 'Client Load Balancing allows equal distribution of clients by allowing heavily loaded APs to move clients to less loaded neighboring APs, This shall result in better radio utilization resulting in better Wi-Fi experience to the user.' }),
     tradeoffText: defineMessage({ defaultMessage: 'Client may not have implemented BTM properly, leading to connectivity issues.' }),
     kpis: [{
@@ -328,7 +387,11 @@ export const codes = {
     priority: priorities.medium,
     valueFormatter: formatter('noFormat'),
     valueText: defineMessage({ defaultMessage: 'AP Firmware Version' }),
-    recommendedValueTooltipContent: (status: StateType, currentValue: string | null, recommendedValue: string) =>
+    recommendedValueTooltipContent: (
+      status: StateType,
+      currentValue: ConfigurationValue,
+      recommendedValue: string
+    ) =>
       (![
         'applied',
         'afterapplyinterrupted',
@@ -336,7 +399,9 @@ export const codes = {
         'revertscheduled',
         'revertscheduleinprogress',
         'revertfailed'
-      ].includes(status) && currentValue && compareVersion(currentValue, recommendedValue) > -1)
+      ].includes(status) &&
+        currentValue &&
+        compareVersion(currentValue as string, recommendedValue) > -1)
         ? defineMessage({ defaultMessage: 'Zone was upgraded manually to recommended AP firmware version. Manually check whether this recommendation is still valid.' })
         : defineMessage({ defaultMessage: 'Latest available AP firmware version will be used when this recommendation is applied.' }),
     actionText: defineMessage({ defaultMessage: '{scope} is running with older AP firmware version {currentValue}. It is recommended to upgrade zone to the latest available AP firmware version.' }),
@@ -380,13 +445,21 @@ export const codes = {
   'c-crrm-channel24g-auto': {
     category: categories['AI-Driven Cloud RRM'],
     summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx Power found for 2.4 GHz radio' }),
+    partialOptimizedSummary: defineMessage({ defaultMessage: 'Optimal channel plan found for 2.4 GHz radio' }),
     priority: priorities.high,
     valueFormatter: crrmText,
     valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
     actionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 2.4 GHz band due to suboptimal channel planning. The channel plan, and potentially channel bandwidth and AP transmit power can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.' }),
+    partialOptimizedActionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 2.4 GHz band due to suboptimal channel planning. The channel plan can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.' }),
     reasonText: defineMessage({ defaultMessage: 'Based on our AI Analytics, enabling AI-Driven Cloud RRM will decrease the number of interfering links from {before} to {after}.' }),
     appliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan, bandwidth and AP transmit power when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
-    tradeoffText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' }),
+    partialOptimizationAppliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
+    tradeoffText: get('IS_MLISA_SA')
+      ? defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' })
+      : defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the venue level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten.' }),
+    partialOptimizedTradeoffText: get('IS_MLISA_SA')
+      ? defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel and Auto Channel Selection will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' })
+      : defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the venue level, and all configurations (including static configurations) for channel and Auto Channel Selection will potentially be overwritten.' }),
     kpis: [{
       key: 'number-of-interfering-links',
       label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
@@ -397,13 +470,21 @@ export const codes = {
   'c-crrm-channel5g-auto': {
     category: categories['AI-Driven Cloud RRM'],
     summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx Power found for 5 GHz radio' }),
+    partialOptimizedSummary: defineMessage({ defaultMessage: 'Optimal channel plan found for 5 GHz radio' }),
     priority: priorities.high,
     valueFormatter: crrmText,
     valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
     actionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 5 GHz band due to suboptimal channel planning. The channel plan, and potentially channel bandwidth and AP transmit power can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.' }),
+    partialOptimizedActionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 5 GHz band due to suboptimal channel planning. The channel plan can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.' }),
     reasonText: defineMessage({ defaultMessage: 'Based on our AI Analytics, enabling AI-Driven Cloud RRM will decrease the number of interfering links from {before} to {after}.' }),
     appliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan, bandwidth and AP transmit power when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
-    tradeoffText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. DFS channels with excessive radar events will also be automatically restricted from usage. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' }),
+    partialOptimizationAppliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
+    tradeoffText: get('IS_MLISA_SA')
+      ? defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. DFS channels with excessive radar events will also be automatically restricted from usage. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' })
+      : defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the venue level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. DFS channels with excessive radar events will also be automatically restricted from usage.' }),
+    partialOptimizedTradeoffText: get('IS_MLISA_SA')
+      ? defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel and Auto Channel Selection will potentially be overwritten. DFS channels with excessive radar events will also be automatically restricted from usage. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' })
+      : defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the venue level, and all configurations (including static configurations) for channel and Auto Channel Selection will potentially be overwritten. DFS channels with excessive radar events will also be automatically restricted from usage.' }),
     kpis: [{
       key: 'number-of-interfering-links',
       label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
@@ -414,19 +495,56 @@ export const codes = {
   'c-crrm-channel6g-auto': {
     category: categories['AI-Driven Cloud RRM'],
     summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx Power found for 6 GHz radio' }),
+    partialOptimizedSummary: defineMessage({ defaultMessage: 'Optimal channel plan found for 6 GHz radio' }),
     priority: priorities.high,
     valueFormatter: crrmText,
     valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
     actionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 6 GHz band due to suboptimal channel planning. The channel plan, and potentially channel bandwidth and AP transmit power can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.' }),
+    partialOptimizedActionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 6 GHz band due to suboptimal channel planning. The channel plan can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.' }),
     reasonText: defineMessage({ defaultMessage: 'Based on our AI Analytics, enabling AI-Driven Cloud RRM will decrease the number of interfering links from {before} to {after}.' }),
     appliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan, bandwidth and AP transmit power when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
-    tradeoffText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' }),
+    partialOptimizationAppliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
+    tradeoffText: get('IS_MLISA_SA')
+      ? defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' })
+      : defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the venue level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten.' }),
+    partialOptimizedTradeoffText: get('IS_MLISA_SA')
+      ? defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel and Auto Channel Selection will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' })
+      : defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the venue level, and all configurations (including static configurations) for channel and Auto Channel Selection will potentially be overwritten.' }),
     kpis: [{
       key: 'number-of-interfering-links',
       label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
       format: formatter('countFormat'),
       deltaSign: '-'
     }]
+  },
+  'unqualifiedZone': {
+    category: crrmStates[CRRMStates.unqualifiedZone].label,
+    summary: get('IS_MLISA_SA')
+      ? defineMessage({ defaultMessage: 'No RRM recommendation as zone is unqualified' })
+      : defineMessage({ defaultMessage: 'No RRM recommendation as venue is unqualified' }),
+    priority: priorities.low
+  },
+  'noAps': {
+    category: crrmStates[CRRMStates.noAps].label,
+    summary: get('IS_MLISA_SA')
+      ? defineMessage({ defaultMessage: 'No RRM recommendation as zone has no APs' })
+      : defineMessage({ defaultMessage: 'No RRM recommendation as venue has no APs' }),
+    priority: priorities.low
+  },
+  'insufficientLicenses': {
+    category: crrmStates[CRRMStates.insufficientLicenses].label,
+    summary: defineMessage({ defaultMessage: 'No RRM recommendation due to incomplete license compliance' }),
+    priority: priorities.low
+  },
+  'verificationError': {
+    category: crrmStates[CRRMStates.verificationError].label,
+    summary: defineMessage({ defaultMessage: 'No RRM recommendation due to verification error' }),
+    priority: priorities.low
+  },
+  'verified': {
+    category: crrmStates[CRRMStates.verified].label,
+    summary: defineMessage({ defaultMessage: 'AI verified and in optimal state' }),
+    priority: priorities.low
   }
 } as unknown as Record<string, RecommendationConfig & CodeInfo>
 

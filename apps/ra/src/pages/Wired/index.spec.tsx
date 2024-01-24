@@ -22,7 +22,7 @@ describe('Clients', () => {
   it('should render switches list tab', async () => {
     render(<Wired tab={AISwitchTabsEnum.SWITCH_LIST}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    expect(await screen.findByText('Switch List')).toBeVisible()
+    expect(await screen.findByText('Switch List (Top 100 by traffic)')).toBeVisible()
     expect(await screen.findByText('Switch list content')).toBeVisible()
     expect(await screen.findByText('Last 24 Hours')).toBeVisible()
   })

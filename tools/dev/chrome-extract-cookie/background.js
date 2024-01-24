@@ -65,12 +65,15 @@ function open_localhost(tab) {
     return;
   }
 
-  let tenantId;
+  let redirectUrl;
 
   const matchedIds = tab.url.match(/[a-f0-9]{32}/)
+  const matchedMspIds = tab.url.match(/[a-f0-9]{32}\/v\//)
 
   if (matchedIds) {
-    tenantId = matchedIds[0];
+    redirectUrl = matchedMspIds
+      ? `http://localhost:3000/${matchedIds[0]}/v/dashboard/mspCustomers`
+      : `http://localhost:3000/${matchedIds[0]}/t`
   } else {
     console.log('Tenant id not found in url');
     return;
@@ -79,7 +82,7 @@ function open_localhost(tab) {
   chrome.tabs.create({
     active: true,
     index: tab.index + 1,
-    url: `http://localhost:3000/${tenantId}/t`
+    url: redirectUrl
   }, (tab) => {
     console.log('tab opened');
   });

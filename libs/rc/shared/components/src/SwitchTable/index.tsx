@@ -59,6 +59,7 @@ import {
   getGroupableConfig
 } from './config'
 import { SwitchTabContext } from './context'
+import * as UI              from './styledComponents'
 import { useExportCsv }     from './useExportCsv'
 
 export const SwitchStatus = (
@@ -75,7 +76,7 @@ export const SwitchStatus = (
       switchStatusString = $t({ defaultMessage: 'Online' })
     }
     return (
-      <span>
+      <span data-testid='switch-status'>
         <Badge color={handleStatusColor(switchStatus.deviceStatus)}
           text={showText ? switchStatusString : ''}
         />
@@ -92,7 +93,7 @@ const handleStatusColor = (status: DeviceConnectionStatus) => {
 const PasswordTooltip = {
   SYNCING: defineMessage({ defaultMessage: 'We are not able to determine the password before completing data synchronization.' }),
   SYNCED: defineMessage({ defaultMessage: 'To change the admin password in venue setting, please go to Venue > Venue Configuration > Switch Configuration > AAA' }),
-  CUSTOM: defineMessage({ defaultMessage: 'For security reasons, R1 is not able to show custom passwords that are set on the switch.' })
+  CUSTOM: defineMessage({ defaultMessage: 'For security reasons, RUCKUS One is not able to show custom passwords that are set on the switch.' })
 }
 
 export const defaultSwitchPayload = {
@@ -162,7 +163,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const tableData = tableQuery.data?.data ?? []
 
   const statusFilterOptions = seriesSwitchStatusMapping().map(({ key, name, color }) => ({
-    key, value: name, label: <Badge color={color} text={name} />
+    key, value: name, label: <UI.FilterBadge color={color} text={name} />
   }))
 
   const switchType = () => [
@@ -300,11 +301,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       dataIndex: 'firmware',
       sorter: true
     },
-    // { TODO: Health scope
-    //   key: 'incidents',
-    //   title: $t({ defaultMessage: 'Incidents' }),
-    //   dataIndex: 'incidents',
-    // },
     ...(params.venueId ? [] : [{
       key: 'venueName',
       title: $t({ defaultMessage: 'Venue' }),
@@ -369,7 +365,9 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     disabled: (rows) => {
       const row = rows[0]
-      return row.deviceStatus !== SwitchStatusEnum.OPERATIONAL
+      const isUpgradeFail = row.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
+      const isOperational = row.deviceStatus === SwitchStatusEnum.OPERATIONAL
+      return !(isOperational || isUpgradeFail)
     },
     onClick: async (rows) => {
       const row = rows[0]
@@ -396,7 +394,8 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     disabled: (rows: SwitchRow[]) => {
       return rows.filter((row:SwitchRow) => {
         const isConfigSynced = row?.configReady && row?.syncedSwitchConfig
-        const isOperational = row?.deviceStatus === SwitchStatusEnum.OPERATIONAL
+        const isOperational = row?.deviceStatus === SwitchStatusEnum.OPERATIONAL ||
+          row?.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
         return !row?.syncedAdminPassword && isConfigSynced && isOperational
       }).length === 0
     },
@@ -478,7 +477,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       enableApiFilter={true}
       searchableWidth={220}
       filterableWidth={140}
-      rowKey={(record)=> record.isGroup || record.serialNumber + (!record.isFirstLevel ? 'stack-member' : '')}
+      rowKey={(record)=> record.isGroup || record.serialNumber + (!record.isFirstLevel ? record.switchMac + 'stack-member' : '')}
       rowActions={filterByAccess(rowActions)}
       rowSelection={searchable !== false ? {
         type: 'checkbox',

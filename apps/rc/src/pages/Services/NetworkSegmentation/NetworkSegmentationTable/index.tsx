@@ -36,8 +36,11 @@ const getNetworkSegmentationPayload = {
     'name',
     'tags',
     'networkIds',
+    'venueInfoIds',
     'venueInfos',
+    'edgeInfoIds',
     'edgeInfos',
+    'distributionSwitchInfoIds',
     'distributionSwitchInfos',
     'accessSwitchInfos',
     'edgeAlarmSummary'

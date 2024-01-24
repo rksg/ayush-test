@@ -22,8 +22,10 @@ import {
 import {
   MspEcDropdownList
 } from '@acx-ui/msp/components'
+import { useInviteCustomerListQuery }                                               from '@acx-ui/msp/services'
 import { CloudMessageBanner }                                                       from '@acx-ui/rc/components'
 import { useGetTenantDetailsQuery }                                                 from '@acx-ui/rc/services'
+import { useTableQuery }                                                            from '@acx-ui/rc/utils'
 import { Outlet, useNavigate, useTenantLink, TenantNavLink, MspTenantLink }         from '@acx-ui/react-router-dom'
 import { useParams }                                                                from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                                from '@acx-ui/types'
@@ -49,7 +51,28 @@ function Layout () {
 
   const companyName = userProfile?.companyName
   const tenantType = tenantDetails?.tenantType
-  const showHomeButton =
+
+  const invitationPayload = {
+    searchString: '',
+    fields: ['tenantName', 'tenantEmail'],
+    filters: {
+      status: ['DELEGATION_STATUS_INVITED', 'DELEGATION_STATUS_ACCEPTED'],
+      delegationType: ['DELEGATION_TYPE_VAR'],
+      isValid: [true]
+    }
+  }
+  const invitationTableQuery = useTableQuery({
+    useQuery: useInviteCustomerListQuery,
+    defaultPayload: invitationPayload,
+    option: {
+      skip: tenantType === AccountType.REC
+    }
+  })
+  const delegationCount = invitationTableQuery.data?.totalCount ?? 0
+  const nonVarDelegation =
+    useIsSplitOn(Features.ANY_3RDPARTY_INVITE_TOGGLE) && delegationCount > 0
+
+  const showHomeButton = nonVarDelegation ||
     isDelegationMode() || userProfile?.var || tenantType === AccountType.MSP_NON_VAR ||
     tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
   const isBackToRC = (PverName.ACX === getJwtTokenPayload().pver ||

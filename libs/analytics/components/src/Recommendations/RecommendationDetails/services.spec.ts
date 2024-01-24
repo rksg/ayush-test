@@ -83,6 +83,7 @@ describe('recommendation services', () => {
       sliceType: 'zone',
       sliceValue: '39-IND-BDC-D39-Mayank-Ofc-Z2',
       status: 'new',
+      updatedAt: '2023-06-12T07:05:14.106Z',
       statusTrail: [{
         createdAt: '2023-06-12T07:05:14.106Z',
         status: 'new'
@@ -123,6 +124,7 @@ describe('recommendation services', () => {
         { name: '21_US_Beta_Samsung', type: 'domain' },
         { name: '21_US_Beta_Samsung', type: 'zone' }
       ],
+      updatedAt: '06/26/2023 06:04',
       recommendedValue: 'crrm',
       sliceType: 'zone',
       sliceValue: '21_US_Beta_Samsung',
@@ -134,7 +136,7 @@ describe('recommendation services', () => {
       },
       statusTrail: mockedRecommendationCRRM.statusTrail,
       crrmOptimizedState: crrmStates.optimized,
-      crrmInterferingLinksText: '2 interfering links will be optimized to 0'
+      crrmInterferingLinksText: 'From 2 to 0 interfering links'
     } as unknown as EnhancedRecommendation)
   })
 

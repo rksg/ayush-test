@@ -104,7 +104,7 @@ export const SummaryForm = () => {
       <Col flex={1}>
         <Form.Item label={$t({ defaultMessage: 'Wireless Networks ({num})' },
           { num: networkNames?.length??0 })}
-        children={networkNames?.length??0 == 0 ? '0' : networkNames?.map((item, index) => (
+        children={(networkNames?.length ?? 0) === 0 ? '0' : networkNames?.map((item, index) => (
           <Row key={`networkNames-${index}`}>
             {item}
           </Row>

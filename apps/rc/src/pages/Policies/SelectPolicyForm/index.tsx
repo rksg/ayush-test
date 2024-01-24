@@ -2,17 +2,19 @@ import { Form, Radio } from 'antd'
 import { useIntl }     from 'react-intl'
 
 import { GridCol, GridRow, PageHeader, RadioCard, StepsFormLegacy, RadioCardCategory } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                    from '@acx-ui/feature-toggle'
-import { useGetApSnmpViewModelQuery }                                                  from '@acx-ui/rc/services'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
+import { useGetApSnmpViewModelQuery, useGetEnhancedIdentityProviderListQuery }         from '@acx-ui/rc/services'
 import {
   PolicyType,
   getPolicyListRoutePath,
   getPolicyRoutePath,
-  PolicyOperation
+  PolicyOperation,
+  policyTypeLabelMapping
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { policyTypeDescMapping, policyTypeLabelMapping } from '../contentsMap'
+import { policyTypeDescMapping }                            from '../contentsMap'
+import { PROFILE_MAX_COUNT as IDENTITY_PROVIDER_MAX_COUNT } from '../IdentityProvider/constants'
 
 interface policyOption {
   type: PolicyType,
@@ -27,14 +29,21 @@ export default function SelectPolicyForm () {
   const policiesTablePath: Path = useTenantLink(getPolicyListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const macRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const ApSnmpPolicyTotalCount = useGetApSnmpViewModelQuery({
     params,
     payload: {
       fields: ['id']
     }
-  }).data?.totalCount || 0
+  }, { skip: !supportApSnmp }).data?.totalCount || 0
+  const IdentityProviderTotalCount = useGetEnhancedIdentityProviderListQuery({
+    params,
+    payload: {
+      fields: ['id']
+    }
+  }, { skip: !supportHotspot20R1 }).data?.totalCount || 0
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
 
@@ -67,6 +76,15 @@ export default function SelectPolicyForm () {
       disabled: (ApSnmpPolicyTotalCount >= 64)
     })
   }
+
+  if (supportHotspot20R1) {
+    sets.push({
+      type: PolicyType.IDENTITY_PROVIDER,
+      categories: [RadioCardCategory.WIFI],
+      disabled: (IdentityProviderTotalCount >= IDENTITY_PROVIDER_MAX_COUNT)
+    })
+  }
+
   if (isEdgeEnabled && isEdgeReady) {
     sets.push({
       type: PolicyType.TUNNEL_PROFILE, categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE]

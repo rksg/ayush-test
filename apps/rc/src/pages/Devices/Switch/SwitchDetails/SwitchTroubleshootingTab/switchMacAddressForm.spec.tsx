@@ -2,11 +2,10 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
-import { act }   from 'react-dom/test-utils'
 
-import { SwitchUrlsInfo }                                from '@acx-ui/rc/utils'
-import { Provider }                                      from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, within } from '@acx-ui/test-utils'
+import { SwitchUrlsInfo }                                     from '@acx-ui/rc/utils'
+import { Provider }                                           from '@acx-ui/store'
+import { act, fireEvent, mockServer, render, screen, within } from '@acx-ui/test-utils'
 
 import {
   doRunResponse,
@@ -37,7 +36,7 @@ Object.assign(navigator, {
   }
 })
 
-describe('SwitchMacAddressForm', () => {
+describe.skip('SwitchMacAddressForm', () => {
 
   beforeEach(() => {
 

@@ -1,9 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { useHeaderExtra }                                                  from '@acx-ui/analytics/components'
 import { PageHeader, Tabs, TimeRangeDropDown, TimeRangeDropDownProvider  } from '@acx-ui/components'
 import { useNavigate, useTenantLink }                                      from '@acx-ui/react-router-dom'
-import { EmbeddedReport, ReportType }                                      from '@acx-ui/reports/components'
+import { EmbeddedReport, ReportType, usePageHeaderExtra }                  from '@acx-ui/reports/components'
 import { DateRange }                                                       from '@acx-ui/utils'
 
 import { ClientsList } from './ClientsList'
@@ -24,8 +23,9 @@ const useTabs = () : Tab[] => {
   const { $t } = useIntl()
   const clientsTab = {
     key: AIClientsTabEnum.CLIENTS,
-    title: $t({ defaultMessage: 'Clients List' }),
-    component: <ClientsList/>
+    title: $t({ defaultMessage: 'Clients List (Top 100 by traffic)' }),
+    component: <ClientsList/>,
+    headerExtra: [<TimeRangeDropDown/>]
   }
   const reportsTab = {
     key: AIClientsTabEnum.REPORTS,
@@ -34,7 +34,7 @@ const useTabs = () : Tab[] => {
       reportName={ReportType.CLIENT}
       hideHeader={false}
     />,
-    headerExtra: useHeaderExtra({ excludeNetworkFilter: true })
+    headerExtra: usePageHeaderExtra(ReportType.CLIENT)
   }
   return [clientsTab, reportsTab]
 }
@@ -64,7 +64,7 @@ export function AIClients ({ tab }:{ tab?: AIClientsTabEnum }) {
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}
         </Tabs>
       }
-      extra={[<TimeRangeDropDown/>]}
+      extra={tabs.find(({ key }) => key === tab)?.headerExtra}
     />
     {TabComp}
   </TimeRangeDropDownProvider>

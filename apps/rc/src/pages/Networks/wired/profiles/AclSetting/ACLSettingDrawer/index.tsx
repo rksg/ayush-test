@@ -319,14 +319,14 @@ function ACLSettingForm (props: ACLSettingFormProps) {
         }}
         dataSource={ruleList || undefined}
       />
-      <ACLRuleModal
+      {openModal && <ACLRuleModal
         open={openModal}
         aclType={aclType}
         editRecord={selected}
         currrentRecords={ruleList}
         onCancel={() => setOpenModal(false)}
         onSave={onSaveRule}
-      />
+      />}
     </>
   )
 }

@@ -156,7 +156,7 @@ function useColumns (
     {
       key: 'lldpClass',
       dataIndex: 'lldpClass',
-      render: (_, row, __, highlightFn) => apNeighborValueRender(row.lldpDeviceType, highlightFn)
+      render: (_, row, __, highlightFn) => apNeighborValueRender(row.lldpClass, highlightFn)
     },
     {
       key: 'lldpPDReqPowerVal',

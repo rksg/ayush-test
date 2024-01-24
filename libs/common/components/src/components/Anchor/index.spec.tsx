@@ -44,7 +44,7 @@ describe('Anchor', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it.skip('should scroll to anchor correctly', async () => {
+  it('should scroll to anchor correctly', async () => {
     jest.useFakeTimers()
     render(
       <MemoryRouter initialEntries={[{
@@ -58,6 +58,8 @@ describe('Anchor', () => {
       jest.runAllTimers() // trigger setTimeout
     })
     expect(await screen.findByText('Content 3')).toBeVisible()
+    jest.runOnlyPendingTimers()
+    jest.useRealTimers()
   })
 })
 

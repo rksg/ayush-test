@@ -1,9 +1,10 @@
 import _                                from 'lodash'
-import { IntlShape, useIntl }           from 'react-intl'
+import { useIntl }                      from 'react-intl'
 import { Path, useNavigate, useParams } from 'react-router-dom'
 
-import { Button, ColumnType, Loader, PageHeader, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
-import { useDeleteApSnmpPolicyMutation, useGetApSnmpViewModelQuery }                           from '@acx-ui/rc/services'
+import { Button, ColumnType, Loader, PageHeader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { CountAndNamesTooltip }                                                       from '@acx-ui/rc/components'
+import { useDeleteApSnmpPolicyMutation, useGetApSnmpViewModelQuery }                  from '@acx-ui/rc/services'
 import {
   ApSnmpViewModelData,
   getPolicyDetailsLink,
@@ -11,7 +12,6 @@ import {
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
-  SnmpColumnData,
   useTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
@@ -162,26 +162,6 @@ export default function SnmpAgentTable () {
   )
 }
 
-export function renderToListTooltip ({ $t }: IntlShape, data: SnmpColumnData, maxShow = 25) {
-  const { count, names } = data || {}
-  const namesLen = (names && names.length) || 0
-
-  if (namesLen > 0) {
-    const truncateData = names.slice(0, maxShow-1)
-
-    if (namesLen > maxShow) {
-      truncateData.push(
-        $t({ defaultMessage: 'And {total} more...' },
-          { total: namesLen - maxShow })
-      )
-    }
-    const tootipTitle = truncateData.map(n => <div>{n}</div>)
-    return <Tooltip title={tootipTitle} placement='bottom'>{count}</Tooltip>
-  }
-
-  return count
-}
-
 function useColumns (
   searchable?: boolean,
   filterables?: { [key: string]: ColumnType['filterable'] }) {
@@ -215,9 +195,9 @@ function useColumns (
       dataIndex: 'v2Agents',
       align: 'center',
       sorter: true,
-      render: function (_, row) {
-        return renderToListTooltip(intl, row.v2Agents)
-      }
+      render: (_, row) => (
+        <CountAndNamesTooltip data={row.v2Agents} maxShow={25}/>
+      )
     },
     {
       key: 'v3Agents',
@@ -225,9 +205,9 @@ function useColumns (
       dataIndex: 'v3Agents',
       align: 'center',
       sorter: true,
-      render: function (_, row) {
-        return renderToListTooltip(intl, row.v3Agents)
-      }
+      render: (_, row) => (
+        <CountAndNamesTooltip data={row.v3Agents} maxShow={25}/>
+      )
     },
     {
       key: 'venues',
@@ -237,9 +217,9 @@ function useColumns (
       sorter: true,
       filterKey: 'venues.name.keyword',
       filterable: filterables ? filterables['venues'] : false,
-      render: function (_, row) {
-        return renderToListTooltip(intl, row.venues)
-      }
+      render: (_, row) => (
+        <CountAndNamesTooltip data={row.venues} maxShow={25}/>
+      )
     },
     {
       key: 'aps',
@@ -247,9 +227,9 @@ function useColumns (
       dataIndex: 'aps',
       align: 'center',
       sorter: true,
-      render: function (_, row) {
-        return renderToListTooltip(intl, row.aps)
-      }
+      render: (_, row) => (
+        <CountAndNamesTooltip data={row.aps} maxShow={25}/>
+      )
     }/*,
     {
       key: 'tags',

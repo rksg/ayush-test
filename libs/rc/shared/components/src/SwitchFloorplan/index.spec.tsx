@@ -39,7 +39,8 @@ const switchDetail: SwitchViewModel = {
   ],
   uptime: '7 days, 7:36:21.00',
   formStacking: false,
-  floorplanId: '94bed28abef24175ab58a3800d01e24a'
+  floorplanId: '94bed28abef24175ab58a3800d01e24a',
+  unitId: 1
 }
 
 

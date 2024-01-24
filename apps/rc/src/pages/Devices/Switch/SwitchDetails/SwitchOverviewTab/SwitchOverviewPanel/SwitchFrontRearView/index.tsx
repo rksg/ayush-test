@@ -111,7 +111,8 @@ export function SwitchFrontRearView (props:{
           <Unit member={member}
             index={index}
             isStack={slotMember.isStack}
-            isOnline={member.deviceStatus === SwitchStatusEnum.OPERATIONAL}/>
+            isOnline={member.deviceStatus === SwitchStatusEnum.OPERATIONAL ||
+              member.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL} />
         </UI.SwitchFrontRearViewWrapper>
       ))
     }

@@ -3,24 +3,18 @@ import {
   ServiceStatus,
   ServiceType,
   ApDeviceStatusEnum,
-  GuestNetworkTypeEnum,
-  WlanSecurityEnum,
-  NetworkTypeEnum,
   QosPriorityEnum
 } from '../constants'
-import { EdgeStatusSeverityEnum }        from '../models'
-import { AAAWlanAdvancedCustomization }  from '../models/AAAWlanAdvancedCustomization'
-import { DpskWlanAdvancedCustomization } from '../models/DpskWlanAdvancedCustomization'
-import { NetworkVenue }                  from '../models/NetworkVenue'
-import { OpenWlanAdvancedCustomization } from '../models/OpenWlanAdvancedCustomization'
-import { PskWlanAdvancedCustomization }  from '../models/PskWlanAdvancedCustomization'
-import { TrustedCAChain }                from '../models/TrustedCAChain'
+import { EdgeStatusSeverityEnum } from '../models'
+import { NetworkVenue }           from '../models/NetworkVenue'
+import { TrustedCAChain }         from '../models/TrustedCAChain'
 
 import { ApModel }                     from './ap'
 import { EdgeStatusSeverityStatistic } from './edge'
 import { EPDG }                        from './services'
 import { SwitchStatusEnum }            from './switch'
 
+export * from './common'
 export * from './ap'
 export * from './venue'
 export * from './network'
@@ -43,9 +37,18 @@ export * from './msgTemplate'
 export * from './property'
 export * from './googleMaps'
 export * from './applicationPolicy'
+export * from './configTemplate'
+
 export interface CommonResult {
   requestId: string
-  response?:{}
+  response?: {
+    id?: string
+  }
+}
+
+export interface CommonResultWithEntityResponse<EntityType> {
+  requestId: string
+  response: EntityType
 }
 
 export interface CommonErrorsResult<T> {
@@ -56,51 +59,9 @@ export interface CommonErrorsResult<T> {
   status: number;
 }
 
-export interface Network {
-  id: string
-  name: string
-  description: string
-  nwSubType: string
-  ssid: string
-  vlan: number
-  aps: number
-  clients: number
-  venues: { count: number, names: string[], ids: string[] }
-  captiveType: GuestNetworkTypeEnum
-  deepNetwork?: NetworkDetail
-  vlanPool?: { name: string }
-  activated: {
-     isActivated: boolean,
-     isDisabled?: boolean,
-      errors?: string[]
-    }
-  allApDisabled?: boolean
-  children?: Network[]
-  dsaeOnboardNetwork?: Network
-  securityProtocol?: string
-  isOnBoarded?: boolean
-  isOweMaster?: boolean
-  owePairNetworkId?: string
-}
-
-export interface NetworkDetail {
-  type: NetworkTypeEnum
-  tenantId: string
-  name: string
-  venues: NetworkVenue[]
-  id: string
-  wlan: {
-    wlanSecurity: WlanSecurityEnum,
-    ssid?: string;
-    vlanId?: number;
-    enable?: boolean;
-    advancedCustomization?:
-      OpenWlanAdvancedCustomization |
-      AAAWlanAdvancedCustomization |
-      DpskWlanAdvancedCustomization |
-      PskWlanAdvancedCustomization;
-  }
-  isOweMaster?: boolean
+export interface KeyValue<K, V> {
+  key: K;
+  value: V;
 }
 
 export interface Venue {
@@ -139,7 +100,8 @@ export interface Venue {
   activatedApsId?: string[]
   dhcp?: { enabled: boolean }
   clients?: number
-  edges?: number
+  edges?: number,
+  incompatible?: number
 }
 
 export interface AlarmBase {
@@ -341,6 +303,7 @@ export interface NetworkDetailHeader {
   network: {
     name: string
     id: string
+    clients: number
   }
 }
 

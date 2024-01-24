@@ -203,10 +203,13 @@ describe('SubscriptionUsageReportDialog', () => {
     // Select previous month option in dropdown
     const today = new Date()
     fireEvent.mouseDown(screen.getByRole('combobox'))
-    await userEvent.click(screen.getByText(months.at(today.getMonth() - 1) + ' ' + today.getFullYear().toString()))
+    const month = today.getMonth() === 0 ? 11 : today.getMonth() - 1
+    // If previous month is December, decrement year
+    const year = month === 11 ? (today.getFullYear() - 1).toString() : today.getFullYear().toString()
+    await userEvent.click(screen.getByText(months.at(month) + ' ' + year))
     await userEvent.click(screen.getByRole('button', { name: 'Generate' }))
 
-    const payload = `${url}?month=${today.getMonth()}&year=${today.getFullYear()}&deviceDetails=${deviceDetails}&page=${page}&dailyReportsPerPage=${dailyReportsPerPage}`
+    const payload = `${url}?month=${(month + 1).toString()}&year=${year}&deviceDetails=${deviceDetails}&page=${page}&dailyReportsPerPage=${dailyReportsPerPage}`
     expect(services.useGetGenerateLicenseUsageRptQuery).toHaveBeenLastCalledWith({ params, payload, selectedFormat: 'csv' }, { skip: false })
   })
   it('when last 24 hours radio checked, query called with correct url payload', async () => {

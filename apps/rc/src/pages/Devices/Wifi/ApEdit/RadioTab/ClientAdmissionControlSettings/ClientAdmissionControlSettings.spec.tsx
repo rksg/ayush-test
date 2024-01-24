@@ -86,7 +86,10 @@ describe('Ap Client Admission Control', () => {
       </Provider>, {
         route: { params }
       })
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    await screen.findByText(/Test-Venue/)
+    await screen.findByText(/Customize/)
+
     expect(await screen.findByTestId('client-admission-control-enable-read-only-24g'))
       .toHaveTextContent('Off')
     expect(await screen.findByTestId('client-admission-control-enable-read-only-50g'))
@@ -124,18 +127,18 @@ describe('Ap Client Admission Control', () => {
       </Provider>, {
         route: { params }
       })
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByTestId('client-admission-control-enable-24g')).toBeVisible()
     expect(await screen.findByTestId('client-admission-control-enable-50g')).toBeVisible()
     expect(screen.queryByTestId('client-admission-control-min-client-count-24g'))
       .not.toBeInTheDocument()
-    expect(screen.queryByTestId('client-admission-control-max-client-load-24g'))
+    expect(screen.queryByTestId('client-admission-control-max-radio-load-24g'))
       .not.toBeInTheDocument()
     expect(screen.queryByTestId('client-admission-control-min-client-throughput-24g'))
       .not.toBeInTheDocument()
     expect(screen.queryByTestId('client-admission-control-min-client-count-50g'))
       .not.toBeInTheDocument()
-    expect(screen.queryByTestId('client-admission-control-max-client-load-50g'))
+    expect(screen.queryByTestId('client-admission-control-max-radio-load-50g'))
       .not.toBeInTheDocument()
     expect(screen.queryByTestId('client-admission-control-min-client-throughput-50g'))
       .not.toBeInTheDocument()

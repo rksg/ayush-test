@@ -145,7 +145,6 @@ describe('ActionModal', () => {
         title: 'This is a confirm message',
         content: 'Some confirm descriptions',
         okText: 'Confirm',
-        cancelText: 'Cancel',
         onOk
       })
 
@@ -169,7 +168,7 @@ describe('ActionModal', () => {
         title: 'This is a confirm message',
         content: 'Some confirm descriptions',
         okText: 'Confirm',
-        cancelText: 'Cancel',
+        cancelText: 'Close',
         onCancel
       })
 
@@ -181,7 +180,7 @@ describe('ActionModal', () => {
         ]
       })
       await assertButtonClicked({
-        label: 'Cancel',
+        label: 'Close',
         handler: onCancel,
         shouldClose: true
       })

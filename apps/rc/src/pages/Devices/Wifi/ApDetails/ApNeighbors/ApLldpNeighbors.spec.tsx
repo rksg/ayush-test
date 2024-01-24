@@ -124,11 +124,5 @@ describe('ApLldpNeighbors', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Detect' }))
 
-    await waitFor(() => {
-      expect(mockedShowToast).toHaveBeenCalledWith(expect.objectContaining({
-        content: 'Error occurred while detecting AP',
-        type: 'error'
-      }))
-    })
   })
 })

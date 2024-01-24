@@ -2,6 +2,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { PageHeader, GridRow, GridCol, Button, Tabs } from '@acx-ui/components'
+import { PoolTable }                                  from '@acx-ui/rc/components'
 import {
   useGetDHCPProfileQuery,
   useVenuesListQuery
@@ -16,8 +17,6 @@ import {
 import { DHCPUsage }      from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
-
-import { PoolTable } from '../DHCPForm/DHCPPool/PoolTable'
 
 import DHCPInstancesTable from './DHCPInstancesTable'
 import DHCPOverview       from './DHCPOverview'

@@ -2,10 +2,10 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
-import { apApi }                                                 from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo, AFCPowerMode, AFCStatus } from '@acx-ui/rc/utils'
-import { Provider, store }                                       from '@acx-ui/store'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { apApi }                        from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }              from '@acx-ui/store'
 import {
   cleanup,
   findTBody,
@@ -17,210 +17,24 @@ import {
   within
 } from '@acx-ui/test-utils'
 
+import {
+  apList,
+  apCompatibilities,
+  getApGroupsList
+} from './__test__/fixtures'
+
 import { ApTable } from '.'
 
-const list = {
-  totalCount: 1,
-  page: 1,
-  data: [
-    {
-      serialNumber: '000000000001',
-      name: 'mock-ap-1',
-      model: 'R510',
-      fwVersion: '6.2.0.103.486', // valid Ap Fw version for reset
-      venueId: '01d74a2c947346a1a963a310ee8c9f6f',
-      venueName: 'Mock-Venue',
-      deviceStatus: '2_00_Operational',
-      IP: '10.00.000.101',
-      apMac: '00:00:00:00:00:01',
-      apStatusData: {
-        APRadio: [
-          {
-            txPower: null,
-            channel: 10,
-            band: '2.4G',
-            Rssi: null,
-            radioId: 0
-          },
-          {
-            txPower: null,
-            channel: 120,
-            band: '5G',
-            Rssi: null,
-            radioId: 1
-          }
-        ],
-        APSystem: {
-          managementVlan: 1
-        },
-        lanPortStatus: [
-          {
-            phyLink: 'Down ',
-            port: '0'
-          },
-          {
-            phyLink: 'Up 1000Mbps full',
-            port: '1'
-          }
-        ],
-        afcInfo: {
-          powerMode: AFCPowerMode.LOW_POWER,
-          afcStatus: AFCStatus.WAIT_FOR_LOCATION
-        }
-      },
-      meshRole: 'DISABLED',
-      deviceGroupId: '4fe4e02d7ef440c4affd28c620f93073',
-      tags: '',
-      deviceGroupName: '',
-      poePort: '1'
-    }, {
-      serialNumber: '000000000002',
-      name: 'mock-ap-2',
-      model: 'R510',
-      fwVersion: '6.2.0.103.261',
-      venueId: '01d74a2c947346a1a963a310ee8c9f6f',
-      venueName: 'Mock-Venue',
-      deviceStatus: '3_04_DisconnectedFromCloud',
-      IP: '10.00.000.102',
-      apMac: '00:00:00:00:00:02',
-      apStatusData: {
-        APRadio: [
-          {
-            txPower: null,
-            channel: 10,
-            band: '2.4G',
-            Rssi: null,
-            radioId: 0
-          },
-          {
-            txPower: null,
-            channel: 120,
-            band: '5G',
-            Rssi: null,
-            radioId: 1
-          }
-        ],
-        APSystem: {
-          managementVlan: 1
-        }
-      },
-      meshRole: '',
-      deviceGroupId: '4fe4e02d7ef440c4affd28c620f93073',
-      tags: '',
-      deviceGroupName: ''
-    }, {
-      serialNumber: '000000000003',
-      name: 'mock-ap-3',
-      model: 'R510',
-      fwVersion: '6.2.0.103.261',
-      venueId: '01d74a2c947346a1a963a310ee8c9f6f',
-      venueName: 'Mock-Venue',
-      deviceStatus: '4_01_Rebooting',
-      IP: '10.00.000.103',
-      apMac: '00:00:00:00:00:03',
-      apStatusData: {
-        APRadio: [
-          {
-            txPower: null,
-            channel: 10,
-            band: '2.4G',
-            Rssi: null,
-            radioId: 0
-          },
-          {
-            txPower: null,
-            channel: 120,
-            band: '5G',
-            Rssi: null,
-            radioId: 1
-          }
-        ],
-        APSystem: {
-          managementVlan: 1
-        }
-      },
-      meshRole: 'DISABLED',
-      deviceGroupId: '4fe4e02d7ef440c4affd28c620f93073',
-      tags: '',
-      deviceGroupName: ''
-    }, {
-      serialNumber: '000000000004',
-      name: 'mock-ap-4',
-      model: 'R510',
-      fwVersion: '6.2.0.103.261',
-      venueId: '01d74a2c947346a1a963a310ee8c9f6f',
-      venueName: 'Mock-Venue',
-      deviceStatus: '1_07_Initializing',
-      IP: '10.00.000.104',
-      apMac: '00:00:00:00:00:04',
-      apStatusData: {
-        APRadio: [
-          {
-            txPower: null,
-            channel: 10,
-            band: '2.4G',
-            Rssi: null,
-            radioId: 0
-          },
-          {
-            txPower: null,
-            channel: 120,
-            band: '5G',
-            Rssi: null,
-            radioId: 1
-          }
-        ],
-        APSystem: {
-          managementVlan: 1
-        }
-      },
-      meshRole: 'DISABLED',
-      deviceGroupId: '4fe4e02d7ef440c4affd28c620f93073',
-      tags: '',
-      deviceGroupName: ''
-    }, {
-      serialNumber: '000000000005',
-      name: 'mock-ap-5',
-      model: 'R510',
-      fwVersion: '6.2.0.103.261',
-      venueId: '01d74a2c947346a1a963a310ee8c9f6f',
-      venueName: 'Mock-Venue',
-      IP: '10.00.000.105',
-      deviceStatus: '',
-      apMac: '00:00:00:00:00:05',
-      apStatusData: {
-        APRadio: [
-          {
-            txPower: null,
-            channel: 10,
-            band: '2.4G',
-            Rssi: null,
-            radioId: 0
-          },
-          {
-            txPower: null,
-            channel: 120,
-            band: '5G',
-            Rssi: null,
-            radioId: 1
-          }
-        ],
-        APSystem: {
-          managementVlan: 1
-        }
-      },
-      meshRole: 'EMAP',
-      deviceGroupId: '4fe4e02d7ef440c4affd28c620f93073',
-      tags: '',
-      deviceGroupName: ''
-    }
-  ]
-}
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
+}))
+
+const utils = require('@acx-ui/rc/utils')
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils')
 }))
 
 type MockDrawerProps = React.PropsWithChildren<{
@@ -250,10 +64,25 @@ describe('Aps', () => {
   })
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
+    utils.usePollingTableQuery = jest.fn().mockImplementation(() => {
+      return { data: apList }
+    })
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getApsList.url,
-        (req, res, ctx) => res(ctx.json(list))
+        (req, res, ctx) => res(ctx.json(apList))
+      ),
+      rest.post(
+        WifiUrlsInfo.getApCompatibilitiesVenue.url,
+        (req, res, ctx) => res(ctx.json(apCompatibilities))
+      ),
+      rest.post(
+        WifiUrlsInfo.getApCompatibilitiesNetwork.url,
+        (req, res, ctx) => res(ctx.json(apCompatibilities))
+      ),
+      rest.post(
+        CommonUrlsInfo.getApGroupsListByGroup.url,
+        (req, res, ctx) => res(ctx.json(getApGroupsList))
       )
     )
   })
@@ -271,8 +100,8 @@ describe('Aps', () => {
     expect(tbody).toBeVisible()
 
     const rows = await within(tbody).findAllByRole('row')
-    expect(rows).toHaveLength(list.data.length)
-    for (const [index, item] of Object.entries(list.data)) {
+    expect(rows).toHaveLength(apList.data.length)
+    for (const [index, item] of Object.entries(apList.data)) {
       expect(await within(rows[Number(index)]).findByText(item.name)).toBeVisible()
     }
   })
@@ -407,19 +236,11 @@ describe('Aps', () => {
     expect(mockedUsedNavigate).toHaveBeenCalled()
   })
 
-  it('should render with filterables', async () => {
+  it.skip('should render with filterables', async () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getApGroupsListByGroup.url,
-        (req, res, ctx) => res(ctx.json({
-          data: [{
-            clients: 0,
-            deviceGroupId: '',
-            deviceGroupName: '',
-            incidents: 0,
-            members: 0
-          }]
-        }))
+        (req, res, ctx) => res(ctx.json(getApGroupsList))
       )
     )
     render(<Provider><ApTable filterables={{

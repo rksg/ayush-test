@@ -4,9 +4,9 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Drawer }              from '@acx-ui/components'
+import { RadiusAttributeForm } from '@acx-ui/rc/components'
 import { AttributeAssignment } from '@acx-ui/rc/utils'
 
-import { RadiusAttributeForm } from './RadiusAttributeForm'
 
 interface RadiusAttributeDrawerProps {
   visible: boolean

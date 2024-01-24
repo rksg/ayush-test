@@ -131,7 +131,7 @@ export function ApEdit () {
   </ApEditContext.Provider>
 }
 
-interface apEditSettingsProps {
+interface ApEditSettingsProps {
   editContextData: ApEditContextType
   editRadioContextData: ApRadioContext
   editNetworkingContextData: ApNetworkingContext
@@ -139,7 +139,7 @@ interface apEditSettingsProps {
   editAdvancedContextData: ApAdvancedContext
 }
 
-const processApEditSettings = (props: apEditSettingsProps) => {
+const processApEditSettings = (props: ApEditSettingsProps) => {
   const { editContextData,
     editRadioContextData,
     editNetworkingContextData,
@@ -152,6 +152,7 @@ const processApEditSettings = (props: apEditSettingsProps) => {
       editRadioContextData.updateWifiRadio?.()
       editRadioContextData.updateClientAdmissionControl?.()
       editRadioContextData.updateExternalAntenna?.()
+      editRadioContextData.updateApAntennaType?.()
       break
     case 'networking':
       editNetworkingContextData.updateIpSettings?.()
@@ -166,6 +167,7 @@ const processApEditSettings = (props: apEditSettingsProps) => {
     case 'advanced':
       editAdvancedContextData.updateApLed?.()
       editAdvancedContextData.updateBssColoring?.()
+      editAdvancedContextData.updateApManagementVlan?.()
       break
     default: // General
       editContextData?.updateChanges?.()
@@ -173,7 +175,7 @@ const processApEditSettings = (props: apEditSettingsProps) => {
   }
 }
 
-const discardApEditSettings = (props: apEditSettingsProps) => {
+const discardApEditSettings = (props: ApEditSettingsProps) => {
   const { editContextData,
     editRadioContextData,
     editNetworkingContextData,
@@ -186,6 +188,7 @@ const discardApEditSettings = (props: apEditSettingsProps) => {
       editRadioContextData.discardWifiRadioChanges?.()
       editRadioContextData.discardClientAdmissionControlChanges?.()
       editRadioContextData.discardExternalAntennaChanges?.()
+      editRadioContextData.discardApAntennaTypeChanges?.()
       break
     case 'networking':
       editNetworkingContextData.discardIpSettingsChanges?.()
@@ -200,6 +203,7 @@ const discardApEditSettings = (props: apEditSettingsProps) => {
     case 'advanced':
       editAdvancedContextData.discardApLedChanges?.()
       editAdvancedContextData.discardBssColoringChanges?.()
+      editAdvancedContextData.discardApManagementVlan?.()
       break
     default: // General
       editContextData?.discardChanges?.()
@@ -238,6 +242,7 @@ const resetApEditContextData = (props: ApEditContextProps) => {
       delete newRadioContextData.updateClientAdmissionControl
       delete newRadioContextData.discardClientAdmissionControlChanges
       delete newRadioContextData.updateExternalAntenna
+      delete newRadioContextData.updateApAntennaType
       delete newRadioContextData.discardWifiRadioChanges
 
       setEditRadioContextData(newRadioContextData)
@@ -270,6 +275,8 @@ const resetApEditContextData = (props: ApEditContextProps) => {
       delete newAdvancedContextData.discardApLedChanges
       delete newAdvancedContextData.updateBssColoring
       delete newAdvancedContextData.discardBssColoringChanges
+      delete newAdvancedContextData.updateApManagementVlan
+      delete newAdvancedContextData.discardApManagementVlan
 
       setEditAdvancedContextData(newAdvancedContextData)
       break

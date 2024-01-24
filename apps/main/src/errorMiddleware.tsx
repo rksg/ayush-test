@@ -48,6 +48,10 @@ const ignoreEndpointList = [
   'clientInfo'
 ]
 
+const isIntDevMode =
+  window.location.hostname.includes('int.ruckus.cloud') &&
+  window.location.search.includes('devMode=true')
+
 export const errorMessage = {
   SERVER_ERROR: {
     title: defineMessage({ defaultMessage: 'Server Error' }),
@@ -163,7 +167,9 @@ export const getErrorContent = (action: ErrorAction) => {
     case 'FETCH_ERROR' as unknown as number: // no connection
       errorMsg = errorMessage.CHECK_YOUR_CONNECTION
       type = 'info'
-      callback = () => window.location.reload()
+      if (!isIntDevMode) {
+        callback = () => window.location.reload()
+      }
       break
     case 422:
       const countryInvalid // TODO: check error format
@@ -187,7 +193,7 @@ export const getErrorContent = (action: ErrorAction) => {
     }
     else if ('errors' in errors) { // CatchErrorDetails
       const errorsMessageList = errors.errors.map(err=>err.message)
-      content = <>{errorsMessageList.map(msg=><p>{msg}</p>)}</>
+      content = <>{errorsMessageList.map(msg=><p key={msg}>{msg}</p>)}</>
     }
   }
 
@@ -249,7 +255,7 @@ export const errorMiddleware: Middleware = () => (next) => (action: ErrorAction)
     if (!shouldIgnoreErrorModal(action)) {
       showErrorModal(details)
     }
-    if (needLogout && !isDevModeOn) {
+    if (needLogout && !isDevModeOn && !isIntDevMode) {
       userLogout()
     }
   }

@@ -8,6 +8,7 @@ import {
   render,
   screen,
   within,
+  waitFor,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
@@ -117,8 +118,10 @@ describe('PoliciesTable', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /delete/i }))
 
+    const dialog = await screen.findByRole('dialog')
     await screen.findByText('Delete "' + selectedPolicyName + '"?')
     await userEvent.click(await screen.findByRole('button', { name: /Delete Policy/i }))
+    await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
   it('should not delete default profile successfully', async () => {

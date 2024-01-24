@@ -1,7 +1,11 @@
-import React from 'react'
+import { get } from 'lodash'
 
-import { Loader } from '@acx-ui/components'
+import { Loader }    from '@acx-ui/components'
+import { useParams } from '@acx-ui/react-router-dom'
 
+import { AirtimeB }                from './Details/AirtimeB'
+import { AirtimeRx }               from './Details/AirtimeRx'
+import { AirtimeTx }               from './Details/AirtimeTx'
 import { ApinfraPoeLow }           from './Details/ApinfraPoeLow'
 import { ApinfraWanthroughputLow } from './Details/ApinfraWanthroughputLow'
 import { ApservContinuousReboots } from './Details/ApservContinuousReboots'
@@ -21,7 +25,10 @@ import { SwitchMemoryHigh }        from './Details/SwitchMemoryHigh'
 import { SwitchPoePd }             from './Details/SwitchPoePd'
 import { SwitchVlanMismatch }      from './Details/SwitchVlanMismatch'
 import { Ttc }                     from './Details/Ttc'
-import { useIncident }             from './services'
+import {
+  useIncidentCodeQuery,
+  useIncidentDetailsQuery
+} from './services'
 
 export const incidentDetailsMap = {
   'radius-failure': RadiusFailure,
@@ -45,17 +52,31 @@ export const incidentDetailsMap = {
   'i-net-time-future': NetTime,
   'i-net-time-past': NetTime,
   'i-net-sz-net-latency': NetSzNetLatency,
-  'p-load-sz-cpu-load': LoadSzCpuLoad
+  'p-load-sz-cpu-load': LoadSzCpuLoad,
+  'p-airtime-b-24g-high': AirtimeB,
+  'p-airtime-b-5g-high': AirtimeB,
+  'p-airtime-b-6(5)g-high': AirtimeB,
+  'p-airtime-rx-24g-high': AirtimeRx,
+  'p-airtime-rx-5g-high': AirtimeRx,
+  'p-airtime-rx-6(5)g-high': AirtimeRx,
+  'p-airtime-tx-24g-high': AirtimeTx,
+  'p-airtime-tx-5g-high': AirtimeTx,
+  'p-airtime-tx-6(5)g-high': AirtimeTx
 }
 
 export function IncidentDetails () {
-  const queryResults = useIncident()
-  const code = queryResults.data?.code as keyof typeof incidentDetailsMap
+  const params = useParams()
+  const id = get(params, 'incidentId', undefined) as string
+  const codeQuery = useIncidentCodeQuery({ id })
+  const detailsQuery = useIncidentDetailsQuery(
+    codeQuery.data!,
+    { skip: !Boolean(codeQuery.data) }
+  )
+  const code = codeQuery.data?.code
   const IncidentDetails = code ? incidentDetailsMap[code] : null
   return (
-    <Loader states={[queryResults]}>
-      {IncidentDetails && <IncidentDetails {...queryResults.data!} />}
+    <Loader states={[codeQuery, detailsQuery]}>
+      {IncidentDetails && <IncidentDetails {...detailsQuery.data!} />}
     </Loader>
   )
 }
-

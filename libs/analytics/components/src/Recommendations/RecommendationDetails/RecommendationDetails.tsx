@@ -2,6 +2,7 @@ import { get }                    from 'lodash'
 import { useIntl, defineMessage } from 'react-intl'
 
 import { GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
+import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { useParams }                            from '@acx-ui/react-router-dom'
 
 import { FixedAutoSizer } from '../../DescriptionSection/styledComponents'
@@ -23,9 +24,13 @@ export const RecommendationDetails = () => {
   const params = useParams()
   const id = get(params, 'id', undefined) as string
   const link = 'analytics/recommendations/aiOps'
+  const isCrrmPartialEnabled = [
+    useIsSplitOn(Features.RUCKUS_AI_CRRM_PARTIAL),
+    useIsSplitOn(Features.CRRM_PARTIAL)
+  ].some(Boolean)
   const codeQuery = useRecommendationCodeQuery({ id }, { skip: !Boolean(id) })
   const detailsQuery = useRecommendationDetailsQuery(
-    codeQuery.data!,
+    { ...codeQuery.data!, isCrrmPartialEnabled },
     { skip: !Boolean(codeQuery.data?.code) }
   )
   const details = detailsQuery.data!

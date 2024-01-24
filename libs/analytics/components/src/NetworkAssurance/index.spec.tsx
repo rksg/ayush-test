@@ -41,6 +41,7 @@ jest.mock('../VideoCallQoe', () => ({
 }))
 
 jest.mock('../ConfigChange', () => ({
+  ...jest.requireActual('../ConfigChange'),
   ConfigChange: () => <div data-testid='ConfigChange' />
 }))
 

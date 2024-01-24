@@ -1,11 +1,12 @@
 import { Badge, Button, Divider, Space } from 'antd'
 import { useIntl }                       from 'react-intl'
 
-import { IncidentsBySeverityData, useIncidentsBySeverityQuery }                                     from '@acx-ui/analytics/components'
+import { IncidentsBySeverityData, useIncidentToggles, useIncidentsBySeverityQuery }                 from '@acx-ui/analytics/components'
 import { Card, Descriptions, Loader, Subtitle }                                                     from '@acx-ui/components'
 import { DateFormatEnum, formatter }                                                                from '@acx-ui/formatter'
 import { CloseSymbol }                                                                              from '@acx-ui/icons'
 import { ApDeviceStatusEnum, APMeshRole, APView, ApViewModel, SwitchStatusEnum, transformApStatus } from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                                                               from '@acx-ui/react-router-dom'
 import { noDataDisplay, useDateFilter }                                                             from '@acx-ui/utils'
 import type { AnalyticsFilter }                                                                     from '@acx-ui/utils'
 
@@ -21,8 +22,11 @@ export function APDetailsCard (props: {
   }) {
   const { apDetail, isLoading, onClose } = props
   const { $t } = useIntl()
+  const toggles = useIncidentToggles()
 
   const { dateFilter } = useDateFilter()
+  const navigate = useNavigate()
+  const basePath = useTenantLink('/devices/wifi')
 
   const filters = {
     ...dateFilter,
@@ -34,7 +38,7 @@ export function APDetailsCard (props: {
     }
   } as AnalyticsFilter
 
-  const incidentData = useIncidentsBySeverityQuery(filters, {
+  const incidentData = useIncidentsBySeverityQuery({ ...filters, toggles }, {
     selectFromResult: ({ data, ...rest }) => ({
       data: { ...data } as IncidentsBySeverityData,
       ...rest
@@ -49,6 +53,13 @@ export function APDetailsCard (props: {
           padding: 0
         }}
         size='small'
+        onClick={
+          () =>{
+            navigate({
+              pathname: `${basePath.pathname}/${apDetail?.apMac}/details/overview`
+            })
+          }}
+        disabled={!(apDetail?.apMac)}
         type='link'>
         {apDetail?.name
         || apDetail?.apMac

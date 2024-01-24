@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
 import { useIsSplitOn }                          from '@acx-ui/feature-toggle'
-import { venueApi }                              from '@acx-ui/rc/services'
+import { rwgApi }                                from '@acx-ui/rc/services'
 import { CommonUrlsInfo }                        from '@acx-ui/rc/utils'
 import { Provider, store }                       from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
@@ -59,12 +59,22 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate
 }))
 
+const dnsRecord = {
+  response: {
+    id: '2',
+    name: 'wi.fi',
+    host: 'test.com',
+    ttl: 60,
+    dataType: 'AAAA',
+    data: 'any-data'
+  }
+}
 
 describe('RWGDetails', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
-    store.dispatch(venueApi.util.resetApiState())
+    store.dispatch(rwgApi.util.resetApiState())
   })
 
   it('should render correctly', async () => {
@@ -74,6 +84,12 @@ describe('RWGDetails', () => {
       activeTab: 'overview'
     }
     mockServer.use(
+      rest.get(
+        CommonUrlsInfo.getDNSRecords.url,
+        (req, res, ctx) => {
+          return res(ctx.json(dnsRecord))
+        }
+      ),
       rest.get(
         CommonUrlsInfo.getGateway.url,
         (req, res, ctx) => res(ctx.json(gatewayResponse))
@@ -100,6 +116,12 @@ describe('RWGDetails', () => {
     }
     mockServer.use(
       rest.get(
+        CommonUrlsInfo.getDNSRecords.url,
+        (req, res, ctx) => {
+          return res(ctx.json(dnsRecord))
+        }
+      ),
+      rest.get(
         CommonUrlsInfo.getGateway.url,
         (req, res, ctx) => res(ctx.json(gatewayResponse1))
       )
@@ -120,6 +142,12 @@ describe('RWGDetails', () => {
       activeTab: 'overview'
     }
     mockServer.use(
+      rest.get(
+        CommonUrlsInfo.getDNSRecords.url,
+        (req, res, ctx) => {
+          return res(ctx.json(dnsRecord))
+        }
+      ),
       rest.get(
         CommonUrlsInfo.getGateway.url,
         (req, res, ctx) => res(ctx.json(gatewayResponse))

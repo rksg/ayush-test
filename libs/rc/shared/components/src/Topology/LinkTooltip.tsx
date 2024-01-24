@@ -1,10 +1,11 @@
 import { Button, Space, Typography } from 'antd'
 import { useIntl }                   from 'react-intl'
 
-import { Card, Descriptions, GridCol, GridRow } from '@acx-ui/components'
-import { BiDirectionalArrow, CloseSymbol }      from '@acx-ui/icons'
-import { Link, Node, vlanPortsParser }          from '@acx-ui/rc/utils'
-import { noDataDisplay }                        from '@acx-ui/utils'
+import { Card, Descriptions, GridCol, GridRow }     from '@acx-ui/components'
+import { BiDirectionalArrow, CloseSymbol }          from '@acx-ui/icons'
+import { DeviceTypes, Link, Node, vlanPortsParser } from '@acx-ui/rc/utils'
+import { useTenantLink }                            from '@acx-ui/react-router-dom'
+import { noDataDisplay }                            from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -20,6 +21,22 @@ onClose: () => void
 
   const { tooltipPosition, tooltipSourceNode, tooltipTargetNode, tooltipEdge, onClose } = props
   const { $t } = useIntl()
+  const wifiBasePath = useTenantLink('/devices/wifi')
+  const switchBasePath = useTenantLink('/devices/switch')
+
+  const handleLink = (node: Node) => {
+    let link
+    if(node && node.type &&
+      [DeviceTypes.Ap, DeviceTypes.ApMesh, DeviceTypes.ApMeshRoot, DeviceTypes.ApWired]
+        .includes(node.type)) {
+      link = `${wifiBasePath.pathname}/${node?.mac}/details/overview`
+    } else if (node && node.type &&
+      [DeviceTypes.Switch, DeviceTypes.SwitchStack].includes(node.type)) {
+      // eslint-disable-next-line max-len
+      link = `${switchBasePath.pathname}/${node?.id || node?.serial}/${node?.serial}/details/overview`
+    }
+    return link
+  }
 
   function VlansTrunked (props: {
     title: string
@@ -81,7 +98,8 @@ onClose: () => void
               style={{
                 width: '156px'
               }}
-              ellipsis={true}>
+              ellipsis={true}
+              href={handleLink(tooltipSourceNode)}>
               {tooltipSourceNode?.name || tooltipSourceNode?.mac || tooltipSourceNode?.id}
             </Typography.Link>
           } />
@@ -93,7 +111,8 @@ onClose: () => void
               style={{
                 width: '156px'
               }}
-              ellipsis={true}>
+              ellipsis={true}
+              href={handleLink(tooltipTargetNode)}>
               {tooltipTargetNode?.name || tooltipTargetNode?.mac || tooltipTargetNode?.id}
             </Typography.Link>
           } />

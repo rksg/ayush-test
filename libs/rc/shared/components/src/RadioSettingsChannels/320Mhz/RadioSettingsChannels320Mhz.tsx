@@ -4,8 +4,9 @@ import { Col, Row, Form, Checkbox } from 'antd'
 import _                            from 'lodash'
 import { useIntl }                  from 'react-intl'
 
-
-import { Tooltip } from '@acx-ui/components'
+import { Tooltip }                 from '@acx-ui/components'
+import { AFCProps }                from '@acx-ui/rc/utils'
+import { ChannelButtonTextRender } from '@acx-ui/rc/utils'
 
 import { RadioChannel }                        from '../../RadioSettings/RadioSettingsContents'
 import { BarButton6G, CheckboxGroupFor320Mhz } from '../styledComponents'
@@ -26,10 +27,12 @@ export function RadioSettingsChannels320Mhz (props: {
     formName: string[],
     channelList: RadioChannel[],
     disabled?: boolean,
-    handleChanged?: () => void
+    handleChanged?: () => void,
+    afcProps?: AFCProps
 }) {
+  const intl = useIntl()
 
-  let { disabled = false, channelList, handleChanged } = props
+  let { disabled = false, channelList, handleChanged, afcProps } = props
 
   const form = Form.useFormInstance()
 
@@ -184,18 +187,16 @@ export function RadioSettingsChannels320Mhz (props: {
     availability: boolean
   }) {
 
-    const { $t } = useIntl()
     const { channelGroupNumber, availability } = props
+    const channels = complexGroupChannelState.ChannelGroup_160MHz[channelGroupNumber].channels
+    let message = ChannelButtonTextRender(intl, channels.map(Number), availability, afcProps)
 
-    const message = availability ?
-      $t({ defaultMessage: 'Disable this channel' }) :
-      $t({ defaultMessage: 'Enable this channel' })
     /* eslint-disable max-len */
     return (
       <Tooltip
         title={
           <div style={{ textAlign: 'center' }}>
-            <p>{buildTooltipMessage(message, complexGroupChannelState.ChannelGroup_160MHz[channelGroupNumber].channels)}</p>
+            <p>{buildTooltipMessage(message, channels)}</p>
           </div>
         }
       >
@@ -252,7 +253,7 @@ export function RadioSettingsChannels320Mhz (props: {
   }
 
   return (<>
-    <Form.Item name={props.formName} hidden/>
+    <Form.Item name={props.formName} hidden children={<></>} />
     <CheckboxGroupFor320Mhz
       style={{ width: '100%' }}
       disabled={disabled}

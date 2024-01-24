@@ -1,0 +1,184 @@
+import { Col, Form, Row, Typography } from 'antd'
+import _                              from 'lodash'
+import { useIntl }                    from 'react-intl'
+
+import { StepsForm, useStepFormContext }                                    from '@acx-ui/components'
+import { ActivatedNetworksTableP2Props, EdgeSdLanP2ActivatedNetworksTable } from '@acx-ui/rc/components'
+import { useGetTunnelProfileViewDataListQuery }                             from '@acx-ui/rc/services'
+import {
+  getTunnelProfileOptsWithDefault,
+  MtuTypeEnum,
+  NetworkSaveData,
+  NetworkTypeEnum,
+  TunnelTypeEnum
+} from '@acx-ui/rc/utils'
+
+import { EdgeSdLanFormModelP2 } from '..'
+import { messageMappings }      from '../messageMappings'
+
+import { DmzTunnelProfileFormItem } from './DmzTunnelProfileFormItem'
+import { TunnelProfileFormItem }    from './TunnelProfileFormItem'
+
+export type EdgeSdLanActivatedNetwork = Pick<NetworkSaveData, 'id' | 'name'>
+type NetworksTableProps = Omit<ActivatedNetworksTableP2Props, 'activated' | 'activatedGuest'> & {
+  isGuestTunnelEnabled: boolean,
+  data?: EdgeSdLanActivatedNetwork[],
+  guestData?: EdgeSdLanActivatedNetwork[]
+}
+
+const NetworksTable = (props: NetworksTableProps) => {
+  const { data, guestData, ...others } = props
+
+  return <EdgeSdLanP2ActivatedNetworksTable
+    {...others}
+    activated={data?.map(i => i.id!) ?? []}
+    activatedGuest={guestData?.map(i => i.id!) ?? []}
+  />
+}
+
+const tunnelProfileDefaultPayload = {
+  fields: ['name', 'id', 'mtuType'],
+  filters: {
+    type: [TunnelTypeEnum.VLAN_VXLAN]
+  },
+  pageSize: 10000,
+  sortField: 'name',
+  sortOrder: 'ASC'
+}
+
+const toggleItemFromSelected = (
+  checked: boolean,
+  data: NetworkSaveData,
+  selectedNetworks: EdgeSdLanActivatedNetwork[] | undefined
+) => {
+  let newSelected
+  if (checked) {
+    newSelected = _.unionBy(selectedNetworks,
+      [_.pick(data, ['id', 'name'])], 'id')
+  } else {
+    newSelected = [...selectedNetworks!]
+    _.remove(newSelected, item => item.id === data.id)
+  }
+  return newSelected
+}
+
+export const TunnelScopeForm = () => {
+  const { $t } = useIntl()
+  const { form } = useStepFormContext<EdgeSdLanFormModelP2>()
+  const venueId = form.getFieldValue('venueId')
+  const isGuestTunnelEnabled = form.getFieldValue('isGuestTunnelEnabled')
+
+  const {
+    tunnelProfileData,
+    isTunnelOptionsLoading
+  } = useGetTunnelProfileViewDataListQuery({
+    payload: tunnelProfileDefaultPayload
+  }, {
+    selectFromResult: ({ data, isLoading }) => {
+      return {
+        tunnelProfileData: data?.data,
+        isTunnelOptionsLoading: isLoading
+      }
+    }
+  })
+
+  // eslint-disable-next-line max-len
+  const tunnelProfileOptions = getTunnelProfileOptsWithDefault(tunnelProfileData, TunnelTypeEnum.VLAN_VXLAN)
+  const dmzTunnelProfileOptions = tunnelProfileData?.filter(
+    item => item.mtuType === MtuTypeEnum.MANUAL)
+
+  const handleActivateChange = (
+    fieldName: string,
+    data: NetworkSaveData,
+    checked: boolean,
+    activated: NetworkSaveData[]
+  ) => {
+    const newSelected = activated.map(item => _.pick(item, ['id', 'name']))
+
+    if (isGuestTunnelEnabled
+      && fieldName === 'activatedNetworks'
+      && (data.type === NetworkTypeEnum.CAPTIVEPORTAL || data.type === NetworkTypeEnum.OPEN) ) {
+      // eslint-disable-next-line max-len
+      const activatedGuestNetworks = form.getFieldValue('activatedGuestNetworks') as EdgeSdLanActivatedNetwork[]
+      const newSelectedGuestNetworks = toggleItemFromSelected(checked, data, activatedGuestNetworks)
+      form.setFieldsValue({
+        [fieldName]: newSelected,
+        activatedGuestNetworks: newSelectedGuestNetworks
+      })
+    } else {
+      form.setFieldValue(fieldName, newSelected)
+    }
+  }
+
+  const onTunnelChange = (val: string) => {
+    form.setFieldValue('tunnelProfileName',
+      tunnelProfileOptions?.filter(i => i.value === val)[0]?.label)
+  }
+
+  const onDmzTunnelChange = (val: string) => {
+    form.setFieldValue('guestTunnelProfileName',
+      tunnelProfileOptions?.filter(i => i.value === val)[0]?.label)
+  }
+
+  return (
+    <>
+      <Row>
+        <Col span={24}>
+          <StepsForm.Title>{$t({ defaultMessage: 'Tunnel & Network Settings' })}</StepsForm.Title>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={24}>
+          <TunnelProfileFormItem
+            options={tunnelProfileOptions}
+            isLoading={isTunnelOptionsLoading}
+            onChange={onTunnelChange}
+          />
+        </Col>
+      </Row>
+      {isGuestTunnelEnabled &&
+        <Row>
+          <Col span={24}>
+            <DmzTunnelProfileFormItem
+              options={dmzTunnelProfileOptions
+                ?.map(item => ({ label: item.name!, value: item.id! })) ?? []}
+              isLoading={isTunnelOptionsLoading}
+              onChange={onDmzTunnelChange}
+            />
+          </Col>
+        </Row>
+      }
+      <Row >
+        <Col span={24}>
+          <Typography.Text>
+            {$t(messageMappings.scope_network_table_description)}
+          </Typography.Text>
+        </Col>
+      </Row>
+      <Row >
+        <Col span={24}>
+          <Form.Item
+            noStyle
+            shouldUpdate={(prev, cur) => {
+              return _.get(prev, 'activatedNetworks') !== _.get(cur, 'activatedNetworks')
+                  || _.get(prev, 'activatedGuestNetworks') !== _.get(cur, 'activatedGuestNetworks')
+            }}
+          >
+            {({ getFieldValue }) => {
+              const activatedNetworks = getFieldValue('activatedNetworks')
+              const activatedGuestNetworks = getFieldValue('activatedGuestNetworks')
+
+              return <NetworksTable
+                venueId={venueId}
+                isGuestTunnelEnabled={isGuestTunnelEnabled}
+                data={activatedNetworks}
+                guestData={activatedGuestNetworks}
+                onActivateChange={handleActivateChange}
+              />
+            }}
+          </Form.Item>
+        </Col>
+      </Row>
+    </>
+  )
+}

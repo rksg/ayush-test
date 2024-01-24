@@ -38,7 +38,9 @@ import {
   baseEdgeFirewallApi as edgeFirewallApi,
   baseSigPackApi as sigPackApi,
   baseRWGApi as rwgApi,
-  notificationApi
+  notificationApi,
+  baseEdgeSdLanApi,
+  baseConfigTemplateApi
 } from './baseApi'
 
 const isDev = process.env['NODE_ENV'] === 'development'
@@ -80,7 +82,9 @@ export const store = configureStore({
     [sigPackApi.reducerPath]: sigPackApi.reducer,
     [residentPortalApi.reducerPath]: residentPortalApi.reducer,
     [rwgApi.reducerPath]: rwgApi.reducer,
-    [notificationApi.reducerPath]: notificationApi.reducer
+    [notificationApi.reducerPath]: notificationApi.reducer,
+    [baseEdgeSdLanApi.reducerPath]: baseEdgeSdLanApi.reducer,
+    [baseConfigTemplateApi.reducerPath]: baseConfigTemplateApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -99,6 +103,7 @@ export const store = configureStore({
       dataApiSearch.middleware,
       apApi.middleware,
       rbacApi.middleware,
+      reportsApi.middleware,
       userApi.middleware,
       dhcpApi.middleware,
       serviceApi.middleware,
@@ -123,7 +128,9 @@ export const store = configureStore({
       sigPackApi.middleware,
       residentPortalApi.middleware,
       rwgApi.middleware,
-      notificationApi.middleware
+      notificationApi.middleware,
+      baseEdgeSdLanApi.middleware,
+      baseConfigTemplateApi.middleware
     ])
   },
 

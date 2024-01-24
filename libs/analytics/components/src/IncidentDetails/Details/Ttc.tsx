@@ -8,13 +8,13 @@ import {
 } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
 
-import { FixedAutoSizer }                    from '../../DescriptionSection/styledComponents'
-import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
-import { Insights }                          from '../Insights'
-import { NetworkImpact, NetworkImpactProps } from '../NetworkImpact'
-import { NetworkImpactChartTypes }           from '../NetworkImpact/config'
-import { TimeSeries }                        from '../TimeSeries'
-import { TimeSeriesChartTypes }              from '../TimeSeries/config'
+import { FixedAutoSizer }                                   from '../../DescriptionSection/styledComponents'
+import { IncidentAttributes, Attributes }                   from '../IncidentAttributes'
+import { Insights }                                         from '../Insights'
+import { NetworkImpact, NetworkImpactProps }                from '../NetworkImpact'
+import { NetworkImpactChartTypes, NetworkImpactQueryTypes } from '../NetworkImpact/config'
+import { TimeSeries }                                       from '../TimeSeries'
+import { TimeSeriesChartTypes }                             from '../TimeSeries/config'
 
 import MuteIncident from './MuteIncident'
 
@@ -32,14 +32,17 @@ export const Ttc = (incident: Incident) => {
   ]
   const networkImpactCharts: NetworkImpactProps['charts'] = [{
     chart: NetworkImpactChartTypes.WLAN,
+    query: NetworkImpactQueryTypes.TopN,
     type: 'client',
     dimension: 'ssids'
   }, {
     chart: NetworkImpactChartTypes.ClientManufacturer,
+    query: NetworkImpactQueryTypes.TopN,
     type: 'client',
     dimension: 'manufacturer'
   }, {
     chart: NetworkImpactChartTypes.Radio,
+    query: NetworkImpactQueryTypes.TopN,
     type: 'client',
     dimension: 'radios'
   }]

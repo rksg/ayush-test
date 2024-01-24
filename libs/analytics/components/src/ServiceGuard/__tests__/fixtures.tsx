@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { Form, Input } from 'antd'
 import flat            from 'flat'
 
-import { defaultNetworkPath }                 from '@acx-ui/analytics/utils'
 import { createStepsFormContext }             from '@acx-ui/components'
 import { Provider }                           from '@acx-ui/store'
 import { render, screen, within, renderHook } from '@acx-ui/test-utils'
@@ -49,6 +48,22 @@ export const fetchServiceGuardSpec = {
         ]] as NetworkPaths
       }
     }]
+  }
+}
+
+export const fetchServiceGuardSpecRA = {
+  serviceGuardSpec: {
+    ...fetchServiceGuardSpec.serviceGuardSpec,
+    configs: fetchServiceGuardSpec.serviceGuardSpec.configs
+      .map(config => ({
+        ...config,
+        networkPaths: {
+          networkNodes: [[
+            { type: 'system', name: '00000000-0000-0000-0000-000000000001' },
+            { type: 'apMac', list: ['00:00:00:00:00:00'] }
+          ]] as NetworkPaths
+        }
+      }))
   }
 }
 
@@ -119,52 +134,37 @@ export const fetchServiceGuardRelatedTests = {
 
 export const mockNetworkHierarchy = {
   network: {
-    hierarchyNode: {
-      name: 'Network',
-      type: 'network',
-      path: defaultNetworkPath,
-      children: [{
-        id: 'id1',
-        type: 'zone',
-        name: 'Venue 1',
-        path: [...defaultNetworkPath, { type: 'zone', name: 'Venue 1' }],
-        aps: [
-          { name: 'AP 1', mac: '00:00:00:00:00:01', model: 'R350', firmware: '6.2.1.103.2538', serial: '431802006001' },
-          { name: 'AP 2', mac: '00:00:00:00:00:02', model: 'R350', firmware: '6.2.1.103.2538', serial: '431802006002' }
-        ]
-      }, {
-        id: 'id2',
-        type: 'zone',
-        name: 'Venue 2',
-        path: [...defaultNetworkPath, { type: 'zone', name: 'Venue 2' }],
-        aps: [
-          { name: 'AP 3', mac: '00:00:00:00:00:03', model: 'R350', firmware: '6.2.1.103.2538', serial: '431802006003' },
-          { name: 'AP 4', mac: '00:00:00:00:00:04', model: 'R350', firmware: '6.2.1.103.2538', serial: '431802006004' },
-          { name: 'AP 5', mac: '00:00:00:00:00:05', model: 'R350', firmware: '6.2.1.103.2538', serial: '431802006005' }
-        ]
-      }]
-    }
+    venueHierarchy: [{
+      id: 'id1',
+      name: 'Venue 1',
+      aps: [
+        { name: 'AP 1', mac: '00:00:00:00:00:01', model: 'R350', firmware: '6.2.1.103.2538', serial: '431802006001' },
+        { name: 'AP 2', mac: '00:00:00:00:00:02', model: 'R350', firmware: '6.2.1.103.2538', serial: '431802006002' }
+      ]
+    }, {
+      id: 'id2',
+      name: 'Venue 2',
+      aps: [
+        { name: 'AP 3', mac: '00:00:00:00:00:03', model: 'R350', firmware: '6.2.1.103.2538', serial: '431802006003' },
+        { name: 'AP 4', mac: '00:00:00:00:00:04', model: 'R350', firmware: '6.2.1.103.2538', serial: '431802006004' },
+        { name: 'AP 5', mac: '00:00:00:00:00:05', model: 'R350', firmware: '6.2.1.103.2538', serial: '431802006005' }
+      ]
+    }]
   }
 }
 
 export const mockHiddenAPs = {
   network: {
-    hierarchyNode: {
-      name: 'Network',
-      type: 'network',
-      path: defaultNetworkPath,
-      children: [{
-        id: 'id1',
-        type: 'zone',
-        name: 'Venue 1',
-        path: [...defaultNetworkPath, { type: 'zone', name: 'Venue 1' }],
-        aps: [
-          { name: 'AP 1', mac: '00:00:00:00:00:01', model: 'R500', firmware: '6.2.1.103.253', serial: '431802006001' },
-          { name: 'AP 2', mac: '00:00:00:00:00:02', model: 'R760', firmware: '6.0.0.0.0', serial: '431802006002' },
-          { name: 'AP 3', mac: '00:00:00:00:00:03', model: 'R350', firmware: '6.2.1.103.253', serial: '431802006003' }
-        ]
-      }]
-    }
+    venueHierarchy: [{
+      id: 'id1',
+      name: 'Venue 1',
+      aps: [
+        { name: 'AP 1', mac: '00:00:00:00:00:01', model: 'R500', firmware: '6.2.1.103.253', serial: '431802006001' },
+        { name: 'AP 2', mac: '00:00:00:00:00:02', model: 'R760', firmware: '6.0.0.0.0', serial: '431802006002' },
+        { name: 'AP 3', mac: '00:00:00:00:00:03', model: 'R350', firmware: '6.2.1.103.253', serial: '431802006003' },
+        { name: 'AP 3', mac: '00:00:00:00:00:03', model: 'R350', firmware: '6.2.1.103.253', serial: null }
+      ]
+    }]
   }
 }
 
@@ -532,22 +532,32 @@ export const mockApHierarchy = {
           children: [{ name: 'zone 2', type: 'zone',
             children: [{ name: 'group 2', type: 'apGroup',
               children: [
-                { name: 'ap 1', type: 'ap', mac: '00:00:00:00:00:01' },
-                { name: 'ap 2', type: 'ap', mac: '00:00:00:00:00:02' }
+                { name: 'ap 1', type: 'ap', mac: '00:00:00:00:00:01', model: 'R350', firmware: '6.2.1.103.253' },
+                { name: 'ap 2', type: 'ap', mac: '00:00:00:00:00:02', model: 'R350', firmware: '6.2.1.103.253' },
+                { name: 'ap 3', type: 'ap', mac: '00:00:00:00:00:03', model: 'R500', firmware: '6.2.1.103.253' },
+                { name: 'ap 4', type: 'ap', mac: '00:00:00:00:00:04', model: 'R760', firmware: '6.0.0.0.0' },
+                { name: 'ap 5', type: 'ap', mac: '00:00:00:00:00:05', model: 'R350', firmware: '6.2.1.103.253' },
+                { name: 'ap 6', type: 'ap', mac: 'Unknown', model: 'Unknown', firmware: 'Unknown' }
               ] },
             { name: 'group 4', type: 'apGroup' }
             ]
           }]
         }]
-    }]
-  }
+    },
+    { name: 'system 2', type: 'system', children: [] },
+    { name: 'system 3', type: 'system', children: [{ name: 'zone 1', type: 'zone' }] },
+    { name: 'system 4', type: 'system', children: [] },
+    { name: 'system 5', type: 'system', children: [{ name: 'zone 1', type: 'zone' }] }
+    ] }
 }
 
 export const mockSystems = {
-  networkNodes: [{
-    deviceId: 'some device id',
-    deviceName: 'system 1',
-    onboarded: true,
-    controllerVersion: 'some version'
-  }]
+  networkNodes: [
+    { deviceId: '00000000-0000-0000-0000-000000000001', deviceName: 'system 1', onboarded: true, controllerVersion: '6.0' },
+    { deviceId: '00000000-0000-0000-0000-000000000011', deviceName: 'system 1', onboarded: true, controllerVersion: '6.0' },
+    { deviceId: '00000000-0000-0000-0000-000000000002', deviceName: 'system 2', onboarded: true, controllerVersion: '6.0' },
+    { deviceId: '00000000-0000-0000-0000-000000000003', deviceName: 'system 3', onboarded: false, controllerVersion: '6.0' },
+    { deviceId: '00000000-0000-0000-0000-000000000004', deviceName: 'system 4', onboarded: false, controllerVersion: '6.0' },
+    { deviceId: '00000000-0000-0000-0000-000000000005', deviceName: 'system 5', onboarded: true, controllerVersion: '4.0' }
+  ]
 }

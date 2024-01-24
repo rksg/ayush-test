@@ -10,8 +10,11 @@ export enum AccountTier {
 
 export enum AccountVertical {
   DEFAULT = 'Default',
-  HOSPITALITY = 'Hospitality',
   EDU = 'Education',
+  GOVERNMENT = 'Government',
+  HOSPITALITY = 'Hospitality',
+  NONPROFIT = 'Non Profit',
+  UNKNOWN = 'Unknown'
 }
 
 export enum AccountRegion {
@@ -25,6 +28,7 @@ export enum AccountType {
   MSP = 'MSP',
   VAR = 'VAR',
   MSP_EC = 'MSP_EC',
+  MSP_REC = 'MSP_REC',
   MSP_NON_VAR = 'MSP_NON_VAR',
   MSP_INTEGRATOR = 'MSP_INTEGRATOR',
   MSP_INSTALLER = 'MSP_INSTALLER'
@@ -91,21 +95,25 @@ export function getJwtTokenPayload () {
 
   if (cache.has(jwt)) return cache.get(jwt)!
 
-  try {
-    const token = jwtDecode(jwt) as JwtToken
-
-    cache.clear()
-    cache.set(jwt, token)
-    return token
-  } catch {
-    throw new Error('Unable to parse JWT Token')
-  }
+  return updateJwtCache(jwt)
 }
 
 export function getJwtHeaders ({ ignoreDelegation = false }: { ignoreDelegation?: boolean } = {}) {
   return {
     ...(getJwtToken() && { Authorization: `Bearer ${getJwtToken()}` }),
     ...(!ignoreDelegation && isDelegationMode() && { 'x-rks-tenantid': getTenantId() })
+  }
+}
+
+export function updateJwtCache (newJwt: string) {
+  try {
+    const token = jwtDecode(newJwt) as JwtToken
+
+    cache.clear()
+    cache.set(newJwt, token)
+    return token
+  } catch {
+    throw new Error('Unable to parse JWT Token')
   }
 }
 

@@ -1,13 +1,10 @@
 import { rest } from 'msw'
-import { act }  from 'react-dom/test-utils'
 
-import { TunnelProfileUrls }               from '@acx-ui/rc/utils'
-import { Provider }                        from '@acx-ui/store'
-import { mockServer, renderHook, waitFor } from '@acx-ui/test-utils'
+import { TunnelProfileFormType, TunnelProfileUrls } from '@acx-ui/rc/utils'
+import { Provider }                                 from '@acx-ui/store'
+import { act, mockServer, renderHook, waitFor }     from '@acx-ui/test-utils'
 
 import { useTunnelProfileActions } from './useTunnelProfileActions'
-
-import { TunnelProfileFormType } from '.'
 
 const mockedCreateTunnelApi = jest.fn()
 const mockedUpdateTunnelApi = jest.fn()

@@ -4,8 +4,8 @@ import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, Table, TableProps } from '@acx-ui/components'
-import { defaultNetworkPayload }     from '@acx-ui/rc/components'
+import { Loader, Table, TableProps }                         from '@acx-ui/components'
+import { AddModeProps, defaultNetworkPayload, Layer2Drawer } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDelL2AclPoliciesMutation,
@@ -15,8 +15,6 @@ import {
 import { AclOptionType, L2AclPolicy, Network, useTableQuery } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess }                          from '@acx-ui/user'
 
-import { AddModeProps }                    from '../AccessControlForm/AccessControlForm'
-import Layer2Drawer                        from '../AccessControlForm/Layer2Drawer'
 import { PROFILE_MAX_COUNT_LAYER2_POLICY } from '../constants'
 
 const defaultPayload = {
@@ -192,9 +190,9 @@ function useColumns (
       sortDirections: ['descend', 'ascend', 'descend']
     },
     {
-      key: 'networkCount',
+      key: 'networkIds',
       title: $t({ defaultMessage: 'Networks' }),
-      dataIndex: 'networkCount',
+      dataIndex: 'networkIds',
       filterable: networkFilterOptions,
       align: 'center',
       sorter: true,

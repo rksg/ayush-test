@@ -33,3 +33,5 @@ export const deviceRequirements = {
     excludedTargetAPs: []
   }
 }
+
+export type DeviceRequirementsType = typeof deviceRequirements[keyof typeof deviceRequirements]

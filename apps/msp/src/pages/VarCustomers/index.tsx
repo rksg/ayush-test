@@ -85,6 +85,7 @@ export function VarCustomers () {
   const { tenantId } = useParams()
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
+  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
   const mspUtils = MSPUtils()
@@ -245,7 +246,7 @@ export function VarCustomers () {
         key: 'apswLicenseInstalled',
         sorter: true,
         render: function (data: React.ReactNode, row: VarCustomer) {
-          return mspUtils.transformInstalledDevice(row.entitlements ?? [])
+          return mspUtils.transformInstalledDevice(row.entitlements)
         }
       },
       {
@@ -254,7 +255,7 @@ export function VarCustomers () {
         key: 'apswLicense',
         sorter: true,
         render: function (data: React.ReactNode, row: VarCustomer) {
-          return mspUtils.transformDeviceEntitlement(row.entitlements ?? [])
+          return mspUtils.transformDeviceEntitlement(row.entitlements)
         }
       },
       {
@@ -263,7 +264,7 @@ export function VarCustomers () {
         key: 'apswLicensesUtilization',
         sorter: true,
         render: function (data: React.ReactNode, row: VarCustomer) {
-          return mspUtils.transformDeviceUtilization(row.entitlements ?? [])
+          return mspUtils.transformDeviceUtilization(row.entitlements)
         }
       }
     ] : [
@@ -366,7 +367,7 @@ export function VarCustomers () {
       <PageHeader
         title={title}
         breadcrumb={[{ text: $t({ defaultMessage: 'My Customers' }) }]}
-        extra={
+        extra={!isHspSupportEnabled &&
           <TenantLink to='/dashboard' key='add'>
             <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
           </TenantLink>

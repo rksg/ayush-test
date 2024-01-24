@@ -35,7 +35,7 @@ Object {
     "i-apserv-downtime-high",
   ],
   "end": "2022-10-05T08:57:00.000Z",
-  "granularity": "PT180S",
+  "granularity": "PT1H",
   "path": Array [
     Object {
       "name": "Default Zone",

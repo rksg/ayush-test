@@ -602,3 +602,53 @@ export const fakeIncidentLoadSzCpuLoad = fakeIncident({
   vlanCount: 0,
   connectedPowerDeviceCount: 0
 })
+
+export const fakeIncidentAirtimeB = fakeIncident({
+  severity: 0.75,
+  startTime: '2023-11-08T00:00:00.000Z',
+  endTime: '2023-11-09T00:00:00.000Z',
+  code: 'p-airtime-b-24g-high',
+  sliceType: 'zone',
+  sliceValue: '19-US-CA-D19-Andre-Home',
+  id: '704be7ee-cefd-4064-bdc6-00b6fbc92066',
+  path: [
+    {
+      type: 'system',
+      name: 'vsz34'
+    },
+    {
+      type: 'domain',
+      name: '19-US-CA-D19-Andre-Home'
+    },
+    {
+      type: 'zone',
+      name: '19-US-CA-D19-Andre-Home'
+    }
+  ],
+  metadata: {
+    rootCauseChecks: {
+      checks: [
+        {
+          isRogueDetectionEnabled: false
+        },
+        {
+          isCRRMRaised: false
+        }
+      ],
+      params: {}
+    },
+    avgAnomalousAirtime: 54.620060790273556
+  },
+  clientCount: 10,
+  impactedClientCount: 1,
+  isMuted: false,
+  mutedBy: null,
+  mutedAt: null,
+  slaThreshold: null,
+  currentSlaThreshold: null,
+  apCount: -1,
+  impactedApCount: -1,
+  switchCount: -1,
+  vlanCount: -1,
+  connectedPowerDeviceCount: -1
+})

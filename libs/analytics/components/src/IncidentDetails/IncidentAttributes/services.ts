@@ -22,6 +22,8 @@ export interface RequestPayload {
   id: string
   search: string
   n: number
+  impactedStart?: string
+  impactedEnd?: string
 }
 
 interface Response <T> {
@@ -30,13 +32,17 @@ interface Response <T> {
 
 export const impactedApi = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    impactedAPs: build.query<
-      ImpactedAP[], RequestPayload
-    >({
+    impactedAPs: build.query<ImpactedAP[], RequestPayload>({
       query: (payload) => ({
         document: gql`
-          query ImpactedAPs($id: String, $n: Int, $search: String) {
-            incident(id: $id) {
+          query ImpactedAPs(
+            $id: String,
+            $n: Int,
+            $search: String,
+            $impactedStart: DateTime,
+            $impactedEnd: DateTime
+          ) {
+            incident(id: $id, impactedStart: $impactedStart, impactedEnd: $impactedEnd) {
               impactedAPs: getImpactedAPs(n: $n, search: $search) {
                 name
                 mac
@@ -51,13 +57,17 @@ export const impactedApi = dataApi.injectEndpoints({
       transformResponse: (response: Response<{ impactedAPs: ImpactedAP[] }>) =>
         response.incident.impactedAPs
     }),
-    impactedClients: build.query<
-      ImpactedClient[], RequestPayload
-    >({
+    impactedClients: build.query<ImpactedClient[], RequestPayload>({
       query: (payload) => ({
         document: gql`
-          query ImpactedClients($id: String, $n: Int, $search: String) {
-            incident(id: $id) {
+          query ImpactedClients(
+            $id: String,
+            $n: Int,
+            $search: String,
+            $impactedStart: DateTime,
+            $impactedEnd: DateTime
+          ) {
+            incident(id: $id, impactedStart: $impactedStart, impactedEnd: $impactedEnd) {
               impactedClients: getImpactedClients(n: $n, search: $search) {
                 mac
                 manufacturer

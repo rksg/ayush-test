@@ -1,4 +1,4 @@
-import { AccessSwitch, DistributionSwitch, LeaseTimeUnit, NewTablePageable } from '@acx-ui/rc/utils'
+import { AccessSwitch, DistributionSwitch, LeaseTimeUnit, NewTablePageable, PersonaGroup } from '@acx-ui/rc/utils'
 
 const paginationPattern = '?size=:pageSize&page=:page&sort=:sort'
 export const replacePagination = (url: string) => url.replace(paginationPattern, '')
@@ -412,21 +412,23 @@ export const mockPropertyConfigs = {
   personaGroupId: 'testPersonaId'
 }
 
-export const mockPersonaGroup = {
+export const mockPersonaGroup: PersonaGroup = {
   id: 'testPersonaId',
   name: 'TestPersona',
-  personaCount: 2,
+  identityCount: 2,
   dpskPoolId: 'testDpskId',
-  personas: [
+  identities: [
     {
       id: 'c677cbb0-8520-421c-99b6-59b3cef5ebc1',
       groupId: 'e5247c1c-630a-46f1-a715-1974e49ec867',
-      name: 'mock-persona1'
+      name: 'mock-persona1',
+      revoked: false
     },
     {
       id: '1e7f81ab-9bb7-4db7-ae20-315743f83183',
       groupId: 'e5247c1c-630a-46f1-a715-1974e49ec867',
-      name: 'mock-persona2'
+      name: 'mock-persona2',
+      revoked: false
     }
   ]
 }

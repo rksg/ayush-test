@@ -80,7 +80,7 @@ function useColumns (venueMap: Map<string, string>, propertyMap: Map<string, Pro
       sorter: true,
       align: 'center',
       render: (_, row) => {
-        const tooltipItems = row.personas?.filter(v=>v.identityId && v.primary).map(v=>v.name)
+        const tooltipItems = row.identities?.filter(v=>v.identityId && v.primary).map(v=>v.name)
         return <SimpleListTooltip items={tooltipItems ?? []} displayText={row.unitCount ?? 0} />
       }
     },
@@ -91,7 +91,7 @@ function useColumns (venueMap: Map<string, string>, propertyMap: Map<string, Pro
       sorter: true,
       align: 'center',
       render: (_, row) => {
-        const groupIds = new Set(row.personas?.map(v=>v.groupId))
+        const groupIds = new Set(row.identities?.map(v=>v.groupId))
         const venues: string[] = []
         groupIds.forEach(id => {
           const venueName = propertyMap.get(id)?.venueName

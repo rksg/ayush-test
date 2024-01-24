@@ -128,6 +128,7 @@ export enum DateFormatEnum {
   DateTimeFormat = 'dateTimeFormat',
   DateTimeFormatWithTimezone = 'dateTimeFormatWithTimezone',
   DateTimeFormatWithSeconds = 'dateTimeFormatWithSeconds',
+  DateTimeFormatWith12HourSystem = 'dateTimeFormatWith12HourSystem',
   OnlyTime = 'onlyTime'
 }
 
@@ -136,6 +137,7 @@ const dateTimeFormats = {
   dateTimeFormat: 'HH:mm',
   dateTimeFormatWithTimezone: '- HH:mm z',
   dateTimeFormatWithSeconds: 'HH:mm:ss',
+  dateTimeFormatWith12HourSystem: 'hh:mm A',
   onlyTime: 'HH:mm'
 }
 
@@ -215,7 +217,9 @@ export const formats = {
 const enabledFormat: MessageDescriptor = defineMessage({
   defaultMessage: '{value, select, true {Enabled} other {Disabled}}'
 })
-
+const onOffFormat: MessageDescriptor = defineMessage({
+  defaultMessage: '{value, select, true {On} other {Off}}'
+})
 const countFormat: MessageDescriptor = defineMessage({
   defaultMessage: '{value, number, ::K .##/@##r}'
 })
@@ -231,6 +235,7 @@ const scaleFormatRound: MessageDescriptor = defineMessage({
 
 export const intlFormats = {
   enabledFormat,
+  onOffFormat,
   countFormat,
   percentFormat,
   percentFormatRound,

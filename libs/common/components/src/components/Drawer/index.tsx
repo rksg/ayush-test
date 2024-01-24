@@ -14,7 +14,7 @@ import type { CheckboxProps } from 'antd/lib/checkbox'
 
 interface DrawerHeaderProps {
   drawerType?: UI.DrawerTypes,
-  title: string,
+  title: string | React.ReactNode,
   icon?: React.ReactNode,
   subTitle?: string,
   onBackClick?: () => void

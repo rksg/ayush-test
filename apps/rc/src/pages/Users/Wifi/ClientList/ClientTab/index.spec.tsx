@@ -2,8 +2,8 @@ import userEvent                                         from '@testing-library/
 import { History, Action }                               from 'history'
 import { UNSAFE_NavigationContext as NavigationContext } from 'react-router-dom'
 
-import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { render, screen }                 from '@acx-ui/test-utils'
+import { useIsSplitOn }   from '@acx-ui/feature-toggle'
+import { render, screen } from '@acx-ui/test-utils'
 
 import { ClientTab } from '.'
 
@@ -48,7 +48,6 @@ describe('ClientTab', () => {
 
   it('should show the ContentSwitcher when the CCD feature flag is turned ON', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     render(
       <NavigationContext.Provider value={{ navigator: mockNavigator }}>

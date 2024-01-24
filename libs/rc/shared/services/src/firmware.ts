@@ -13,10 +13,14 @@ import {
   onActivityMessageReceived,
   LatestEdgeFirmwareVersion,
   EdgeVenueFirmware,
-  EdgeFirmwareVersion
+  EdgeFirmwareVersion,
+  SwitchFirmwareStatus,
+  SwitchFirmware,
+  ApModelFamily
 } from '@acx-ui/rc/utils'
 import { baseFirmwareApi }   from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
+import { CloudVersion }      from '@acx-ui/user'
 import { createHttpRequest } from '@acx-ui/utils'
 
 export const firmwareApi = baseFirmwareApi.injectEndpoints({
@@ -83,7 +87,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, ['UpdateNow'], () => {
+          onActivityMessageReceived(msg, ['UpdateNow', 'DowngradeVenueAbf'], () => {
             api.dispatch(firmwareApi.util.invalidateTags([
               { type: 'Firmware', id: 'LIST' }
             ]))
@@ -120,6 +124,14 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       providesTags: [{ type: 'ABF', id: 'LIST' }]
     }),
+    getApModelFamilies: build.query<ApModelFamily[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getApModelFamilies, params)
+        return {
+          ...req
+        }
+      }
+    }),
     getFirmwareVersionIdList: build.query<string[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(FirmwareUrlsInfo.getFirmwareVersionIdList, params)
@@ -155,6 +167,15 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         return {
           ...req,
           body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Firmware', id: 'LIST' }]
+    }),
+    updateDowngrade: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.updateDowngrade, params)
+        return {
+          ...req
         }
       },
       invalidatesTags: [{ type: 'Firmware', id: 'LIST' }]
@@ -249,6 +270,36 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
+    }),
+    getSwitchFirmwareStatusList: build.query<TableResult<SwitchFirmwareStatus>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getSwitchFirmwareStatusList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }],
+      transformResponse (result: { upgradeStatusDetailsViewList: SwitchFirmwareStatus[] }) {
+        return {
+          data: result.upgradeStatusDetailsViewList
+        } as unknown as TableResult<SwitchFirmwareStatus>
+      }
+    }),
+    getSwitchFirmwareList: build.query<TableResult<SwitchFirmware>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getSwitchFirmwareList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }],
+      transformResponse (result: { upgradeSwitchViewList: FirmwareSwitchVenue[] }) {
+        return {
+          data: result.upgradeSwitchViewList
+        } as unknown as TableResult<SwitchFirmware>
+      }
     }),
     getSwitchFirmwarePredownload: build.query<PreDownload, RequestPayload>({
       query: ({ params }) => {
@@ -357,6 +408,9 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'EdgeFirmware', id: 'LIST' }]
+    }),
+    getScheduledFirmware: build.query<CloudVersion, RequestPayload>({
+      query: ({ params }) => createHttpRequest(FirmwareUrlsInfo.getScheduledFirmware, params)
     })
   })
 })
@@ -370,10 +424,12 @@ export const {
   useGetLatestFirmwareListQuery,
   useGetAvailableFirmwareListQuery,
   useGetAvailableABFListQuery,
+  useGetApModelFamiliesQuery,
   useGetFirmwareVersionIdListQuery,
   useSkipVenueUpgradeSchedulesMutation,
   useUpdateVenueSchedulesMutation,
   useUpdateNowMutation,
+  useUpdateDowngradeMutation,
   useSkipSwitchUpgradeSchedulesMutation,
   useUpdateSwitchVenueSchedulesMutation,
   useGetSwitchLatestFirmwareListQuery,
@@ -392,5 +448,11 @@ export const {
   useUpdateEdgeUpgradePreferencesMutation,
   useSkipEdgeUpgradeSchedulesMutation,
   useUpdateEdgeVenueSchedulesMutation,
-  useLazyGetVenueEdgeFirmwareListQuery
+  useLazyGetVenueEdgeFirmwareListQuery,
+  useGetSwitchFirmwareListQuery,
+  useLazyGetSwitchFirmwareListQuery,
+  useGetSwitchFirmwareStatusListQuery,
+  useLazyGetSwitchFirmwareStatusListQuery,
+  useGetScheduledFirmwareQuery,
+  useLazyGetScheduledFirmwareQuery
 } = firmwareApi

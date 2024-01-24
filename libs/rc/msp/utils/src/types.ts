@@ -37,6 +37,9 @@ export interface DelegationEntitlementRecord {
   type: string;
   subTypeText?: string;
   percentageUsage?: string;
+  outOfComplianceDevices?: number;
+  futureOutOfComplianceDevices?: number;
+  futureOfComplianceDate?: number;
 }
 
 export interface MspEc {
@@ -54,6 +57,8 @@ export interface MspEc {
   mspIntegratorAdminCount?: number;
   integrator?: string,
   installer?: string,
+  integratorCount?: number,
+  installerCount?: number,
   expirationDate: string;
   wifiLicenses: string;
   switchLicenses: string;
@@ -90,6 +95,8 @@ export interface MspEcData {
   delegations?: MspIntegratorDelegated[];
   admin_delegations?: MspEcDelegatedAdmins[];
   number_of_days?: string;
+  isManageAllEcs?: boolean;
+  tier?: MspEcTierEnum;
 }
 
 export interface VarCustomer {
@@ -171,6 +178,7 @@ export interface MspEntitlementSummary {
   expirationDate: string;
   remainingDays: number;
   remainingLicenses: number;
+  trial: boolean;
 }
 
 export interface NewMspEntitlementSummary {
@@ -231,6 +239,7 @@ export interface MspIntegratorDelegated {
   delegation_type: string;
   delegation_id?: string;
   number_of_days?: string;
+  isManageAllEcs?: boolean;
 }
 
 export interface EcInvitation {
@@ -406,4 +415,39 @@ export interface UpgradeFirmwareVer {
   name: string,
   defaultApFirmware: string,
   branches: string[]
+}
+
+export interface MspRecData {
+  account_id?: string;
+  delegations?: MspIntegratorDelegated[];
+  admin_delegations?: MspEcDelegatedAdmins[];
+}
+
+export interface AvailableMspRecCustomers {
+  parent_account_name: string,
+  parent_account_id?: string,
+  child_accounts?: MspRecCustomer[]
+  totalPages?: number,
+  totalElements: number,
+  number: number,
+  content: MspRecCustomer[]
+}
+
+export interface MspRecCustomer {
+  account_name: string,
+  account_id?: string,
+  billing_street?: string,
+  billing_city?: string,
+  billing_state?: string,
+  billing_postal_code?: string,
+  billing_country?: string,
+  kumo?: boolean,
+  flexera_llm_account_id?: string,
+  acx_trial_in_progress?: boolean,
+  email_id?: string
+}
+
+export enum MspEcTierEnum {
+  Essential = 'Gold',
+  Professional = 'Platinum'
 }

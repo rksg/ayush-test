@@ -1,4 +1,5 @@
-import moment from 'moment-timezone'
+import { waitFor } from '@storybook/testing-library'
+import moment      from 'moment-timezone'
 
 import { Event, TableQuery } from '@acx-ui/rc/utils'
 import { renderHook }        from '@acx-ui/test-utils'
@@ -52,7 +53,7 @@ describe('useExportCsv', () => {
     const { result } = renderHook(() => useExportCsv(tableQuery))
     expect(result.current.disabled).toBe(true)
   })
-  it('should call downloadCsv with correct payload', () => {
+  it('should call downloadCsv with correct payload', async () => {
     const tableQuery = {
       data: { data: [] as Event[] },
       payload: {
@@ -70,7 +71,7 @@ describe('useExportCsv', () => {
       sorter: { sortField: 'event_datetime', sortOrder: 'DESC' }
     } as unknown as TableQuery<Event, RequestPayload<unknown>, unknown>
     const { result } = renderHook(() => useExportCsv(tableQuery))
-    result.current.exportCsv()
+    await waitFor(() => result.current.exportCsv())
     expect(mockDownloadCsv).toBeCalled()
     expect(mockDownloadCsv).toBeCalledWith({
       clientDateFormat: 'MM/dd/yyyy',

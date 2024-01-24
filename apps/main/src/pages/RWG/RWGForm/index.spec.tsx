@@ -185,8 +185,6 @@ describe('Gateway Form', () => {
         route: { params }
       })
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-
     await waitFor(() => expect(mockFn).toBeCalled())
 
     const venueInput = await screen.findByLabelText('Gateway Name')
@@ -274,8 +272,6 @@ describe('Gateway Form', () => {
         // eslint-disable-next-line max-len
         route: { params }
       })
-
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
     await waitFor(() => expect(mockFn).toBeCalled())
 

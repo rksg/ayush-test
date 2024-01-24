@@ -7,6 +7,7 @@ import { rest }  from 'msw'
 import { StepsForm }  from '@acx-ui/components'
 import {
   CommonUrlsInfo,
+  EdgeTunnelProfileFixtures,
   NetworkSegmentationUrls,
   TunnelProfileUrls
 } from '@acx-ui/rc/utils'
@@ -19,20 +20,28 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
-import { mockedTunnelProfileViewData } from '../../../../Policies/TunnelProfile/__tests__/fixtures'
 import {
   mockDeepNetworkList,
   mockNetworkGroup, mockNetworkSaveData,
   mockNsgStatsList
 } from '../../__tests__/fixtures'
 
-
 import { WirelessNetworkForm } from '.'
 
+const {
+  mockedTunnelProfileViewData
+} = EdgeTunnelProfileFixtures
+
+const tenantId = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
+}))
+
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  getTenantId: jest.fn().mockReturnValue(tenantId)
 }))
 
 type MockSelectProps = React.PropsWithChildren<{
@@ -66,7 +75,7 @@ describe('NetworkSegmentation - WirelessNetworkForm', () => {
   beforeEach(() => {
     mockedGetNetworkDeepList.mockReset()
     params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      tenantId: tenantId,
       serviceId: 'testServiceId'
     }
 

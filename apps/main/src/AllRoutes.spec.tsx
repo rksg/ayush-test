@@ -1,6 +1,7 @@
 import { rest } from 'msw'
 
 import { useIsSplitOn, useIsTierAllowed }      from '@acx-ui/feature-toggle'
+import { MspUrlsInfo }                         from '@acx-ui/msp/utils'
 import { Provider }                            from '@acx-ui/store'
 import { render, screen, cleanup, mockServer } from '@acx-ui/test-utils'
 import { RolesEnum }                           from '@acx-ui/types'
@@ -60,7 +61,8 @@ jest.mock('@rc/Routes', () => () => {
     </>
   )
 },{ virtual: true })
-jest.mock('./pages/Venues/VenuesTable', () => ({
+jest.mock('./pages/Venues', () => ({
+  ...jest.requireActual('./pages/Venues'),
   VenuesTable: () => {
     return <div data-testid='venues' />
   }
@@ -86,7 +88,11 @@ describe('AllRoutes', () => {
     mockServer.use(
       rest.get('mspCustomers/', (req, res, ctx) => {
         return res(ctx.json({}))
-      })
+      }),
+      rest.post(
+        MspUrlsInfo.getVarDelegations.url,
+        (req, res, ctx) => res(ctx.json([]))
+      )
     )
   })
 
@@ -252,7 +258,9 @@ describe('AllRoutes', () => {
       profile: {
         ...getUserProfile().profile,
         roles: [RolesEnum.READ_ONLY]
-      }
+      },
+      accountTier: 'Gold',
+      betaEnabled: false
     })
 
     rerender(<AllRoutes />)

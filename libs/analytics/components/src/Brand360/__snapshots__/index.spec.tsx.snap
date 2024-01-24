@@ -1,0 +1,464 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Brand360 resets SLAs 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+  >
+    <div
+      class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
+    >
+      <div
+        class="ant-page-header ant-page-header-ghost"
+      >
+        <div
+          class="ant-page-header-heading"
+        >
+          <div
+            class="ant-page-header-heading-left"
+          >
+            <span
+              class="ant-page-header-heading-title"
+            >
+              <h1
+                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+              >
+                Brand 360
+              </h1>
+            </span>
+          </div>
+          <span
+            class="ant-page-header-heading-extra"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center"
+            >
+              <div
+                class="ant-space-item"
+                style="margin-right: 8px;"
+              >
+                <button
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kBDiup ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
+                  type="button"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center"
+                  >
+                    <div
+                      class="ant-space-item"
+                      style="margin-right: 8px;"
+                    >
+                      LSP
+                    </div>
+                    <div
+                      class="ant-space-item"
+                    >
+                      <svg
+                        class="styledComponents__CaretDownSolidIcon-sc-1k1l2q9-4 fHsEza"
+                        data-testid="CaretDownSolid"
+                      />
+                    </div>
+                  </div>
+                </button>
+              </div>
+              <div
+                class="ant-space-item"
+              >
+                <div
+                  class="styledComponents__Wrapper-sc-8afdnk-0 styledComponents__RangePickerWrapper-sc-8afdnk-1 jndHDU flbuMf"
+                >
+                  <div
+                    class="ant-picker ant-picker-range"
+                  >
+                    <div
+                      class="ant-picker-input ant-picker-input-active"
+                    >
+                      <input
+                        autocomplete="off"
+                        placeholder="Start date"
+                        readonly=""
+                        size="17"
+                        value="Last 24 Hours"
+                      />
+                    </div>
+                    <div
+                      class="ant-picker-range-separator"
+                    >
+                      <span
+                        aria-label="to"
+                        class="ant-picker-separator"
+                      >
+                        <span
+                          aria-label="swap-right"
+                          class="anticon anticon-swap-right"
+                          role="img"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            data-icon="swap-right"
+                            fill="currentColor"
+                            focusable="false"
+                            height="1em"
+                            viewBox="0 0 1024 1024"
+                            width="1em"
+                          >
+                            <path
+                              d="M873.1 596.2l-164-208A32 32 0 00684 376h-64.8c-6.7 0-10.4 7.7-6.3 13l144.3 183H152c-4.4 0-8 3.6-8 8v60c0 4.4 3.6 8 8 8h695.9c26.8 0 41.7-30.8 25.2-51.8z"
+                            />
+                          </svg>
+                        </span>
+                      </span>
+                    </div>
+                    <div
+                      class="ant-picker-input"
+                    >
+                      <input
+                        autocomplete="off"
+                        placeholder="End date"
+                        readonly=""
+                        size="17"
+                        value="Last 24 Hours"
+                      />
+                    </div>
+                    <div
+                      class="ant-picker-active-bar"
+                      style="left: 0px; width: 1280px; position: absolute;"
+                    />
+                    <span
+                      class="ant-picker-suffix"
+                    >
+                      <svg
+                        data-testid="ClockOutlined"
+                      />
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-row Grid__GridRow-sc-5irhjd-2"
+      style="margin: -10px -10px -10px -10px;"
+    >
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+          >
+            <div
+              data-testid="brand360Tile"
+            >
+              {"chartKey":"incident","sliceType":"lsp","chartData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"prevData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"currData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"settings":{"brand-ssid-compliance-matcher":"^[a-zA-Z0-9]{5}_GUEST$","sla-p1-incidents-count":"1","sla-guest-experience":"2","sla-brand-ssid-compliance":"3"}}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+          >
+            <div
+              data-testid="brand360Tile"
+            >
+              {"chartKey":"experience","sliceType":"lsp","chartData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"prevData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"currData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"settings":{"brand-ssid-compliance-matcher":"^[a-zA-Z0-9]{5}_GUEST$","sla-p1-incidents-count":"1","sla-guest-experience":"2","sla-brand-ssid-compliance":"3"}}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+          >
+            <div
+              data-testid="brand360Tile"
+            >
+              {"chartKey":"compliance","sliceType":"lsp","chartData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"prevData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"currData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"settings":{"brand-ssid-compliance-matcher":"^[a-zA-Z0-9]{5}_GUEST$","sla-p1-incidents-count":"1","sla-guest-experience":"2","sla-brand-ssid-compliance":"3"}}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            class="styledComponents__SliderWrapper-sc-i3rlsn-12 eawbTj"
+          >
+            <div
+              class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+            >
+              <div
+                class="styledComponents__Wrapper-sc-13w5wfx-4 kasAXB"
+                type="default"
+              >
+                <div
+                  class="ant-card"
+                >
+                  <div
+                    class="ant-card-head"
+                  >
+                    <div
+                      class="ant-card-head-wrapper"
+                    >
+                      <div
+                        class="ant-card-head-title"
+                      >
+                        <div
+                          class="ant-space ant-space-horizontal ant-space-align-center"
+                        >
+                          <div
+                            class="ant-space-item"
+                          >
+                            <div
+                              class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                            >
+                              Service Level Agreements
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-card-extra"
+                      >
+                        <div
+                          class="ant-space ant-space-horizontal ant-space-align-center"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-card-body"
+                  >
+                    <div
+                      class="styledComponents__SliderLabel-sc-i3rlsn-2 cuGoCf"
+                    >
+                      P1 Incidents
+                    </div>
+                    <div
+                      class="ant-slider ant-slider-horizontal ant-slider-with-marks"
+                    >
+                      <div
+                        class="ant-slider-rail"
+                      />
+                      <div
+                        class="ant-slider-track"
+                        style="left: 0%; width: 1%;"
+                      />
+                      <div
+                        class="ant-slider-step"
+                      >
+                        <span
+                          class="ant-slider-dot ant-slider-dot-active"
+                          style="left: 0%; transform: translateX(-50%);"
+                        />
+                        <span
+                          class="ant-slider-dot"
+                          style="left: 100%; transform: translateX(-50%);"
+                        />
+                      </div>
+                      <div
+                        aria-disabled="false"
+                        aria-valuemax="100"
+                        aria-valuemin="0"
+                        aria-valuenow="1"
+                        class="ant-slider-handle"
+                        role="slider"
+                        style="left: 1%; transform: translateX(-50%);"
+                        tabindex="0"
+                      />
+                      <div
+                        class="ant-slider-mark"
+                      >
+                        <span
+                          class="ant-slider-mark-text ant-slider-mark-text-active"
+                          style="left: 0%; transform: translateX(-50%);"
+                        >
+                          0
+                        </span>
+                        <span
+                          class="ant-slider-mark-text"
+                          style="left: 100%; transform: translateX(-50%);"
+                        >
+                          100
+                        </span>
+                      </div>
+                    </div>
+                    <div
+                      class="styledComponents__SliderLabel-sc-i3rlsn-2 cuGoCf"
+                    >
+                      Guest Experience
+                    </div>
+                    <div
+                      class="ant-slider ant-slider-horizontal ant-slider-with-marks"
+                    >
+                      <div
+                        class="ant-slider-rail"
+                      />
+                      <div
+                        class="ant-slider-track"
+                        style="left: 0%; width: 2%;"
+                      />
+                      <div
+                        class="ant-slider-step"
+                      >
+                        <span
+                          class="ant-slider-dot ant-slider-dot-active"
+                          style="left: 0%; transform: translateX(-50%);"
+                        />
+                        <span
+                          class="ant-slider-dot"
+                          style="left: 100%; transform: translateX(-50%);"
+                        />
+                      </div>
+                      <div
+                        aria-disabled="false"
+                        aria-valuemax="100"
+                        aria-valuemin="0"
+                        aria-valuenow="2"
+                        class="ant-slider-handle"
+                        role="slider"
+                        style="left: 2%; transform: translateX(-50%);"
+                        tabindex="0"
+                      />
+                      <div
+                        class="ant-slider-mark"
+                      >
+                        <span
+                          class="ant-slider-mark-text ant-slider-mark-text-active"
+                          style="left: 0%; transform: translateX(-50%);"
+                        >
+                          0 %
+                        </span>
+                        <span
+                          class="ant-slider-mark-text"
+                          style="left: 100%; transform: translateX(-50%);"
+                        >
+                          100 %
+                        </span>
+                      </div>
+                    </div>
+                    <div
+                      class="styledComponents__SliderLabel-sc-i3rlsn-2 cuGoCf"
+                    >
+                      SSID Compliance
+                    </div>
+                    <div
+                      class="ant-slider ant-slider-horizontal ant-slider-with-marks"
+                    >
+                      <div
+                        class="ant-slider-rail"
+                      />
+                      <div
+                        class="ant-slider-track"
+                        style="left: 0%; width: 3%;"
+                      />
+                      <div
+                        class="ant-slider-step"
+                      >
+                        <span
+                          class="ant-slider-dot ant-slider-dot-active"
+                          style="left: 0%; transform: translateX(-50%);"
+                        />
+                        <span
+                          class="ant-slider-dot"
+                          style="left: 100%; transform: translateX(-50%);"
+                        />
+                      </div>
+                      <div
+                        aria-disabled="false"
+                        aria-valuemax="100"
+                        aria-valuemin="0"
+                        aria-valuenow="3"
+                        class="ant-slider-handle"
+                        role="slider"
+                        style="left: 3%; transform: translateX(-50%);"
+                        tabindex="0"
+                      />
+                      <div
+                        class="ant-slider-mark"
+                      >
+                        <span
+                          class="ant-slider-mark-text ant-slider-mark-text-active"
+                          style="left: 0%; transform: translateX(-50%);"
+                        >
+                          0 %
+                        </span>
+                        <span
+                          class="ant-slider-mark-text"
+                          style="left: 100%; transform: translateX(-50%);"
+                        >
+                          100 %
+                        </span>
+                      </div>
+                    </div>
+                    <div
+                      class="styledComponents__Buttons-sc-i3rlsn-3 vQTsO"
+                    >
+                      <button
+                        class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup"
+                        disabled=""
+                        type="button"
+                      >
+                        <span>
+                          Apply
+                        </span>
+                      </button>
+                      <button
+                        ant-click-animating-without-extra-node="false"
+                        class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup"
+                        disabled=""
+                        type="button"
+                      >
+                        <span>
+                          Reset
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            data-testid="brand360Table"
+          >
+            lsp {"brand-ssid-compliance-matcher":"^[a-zA-Z0-9]{5}_GUEST$","sla-p1-incidents-count":"1","sla-guest-experience":"2","sla-brand-ssid-compliance":"3"}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

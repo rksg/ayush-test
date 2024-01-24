@@ -69,7 +69,8 @@ export const defaultGuestPayload = {
     'ssid',
     'socialLogin',
     'expiryDate',
-    'cog'
+    'cog',
+    'hostApprovalEmail'
   ]
 }
 

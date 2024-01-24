@@ -5,6 +5,7 @@ import { useIntl }               from 'react-intl'
 
 
 import { Button, Card, showActionModal, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { CsvSize }                                from '@acx-ui/rc/components'
 import {
   useGetAdminListQuery,
@@ -37,6 +38,8 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
   const [authenticationData, setAuthenticationData] = useState<TenantAuthentications>()
   const navigate = useNavigate()
   const linkToAdministrators = useTenantLink('/administration/administrators')
+  const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
+  const isGoogleWorkspaceEnabled = useIsSplitOn(Features.GOOGLE_WORKSPACE_SSO_TOGGLE)
 
   const { data: adminList } = useGetAdminListQuery({ params })
 
@@ -50,7 +53,8 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
   }
 
   const ssoData = tenantAuthenticationData?.filter(n =>
-    n.authenticationType === TenantAuthenticationType.saml)
+    n.authenticationType === TenantAuthenticationType.saml ||
+    n.authenticationType === TenantAuthenticationType.google_workspace)
   useEffect(() => {
     if (ssoData && ssoData.length > 0) {
       setSsoConfigured(true)
@@ -130,13 +134,30 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
           }
         />
 
-        {hasSsoConfigured && <Col style={{ width: '190px', paddingLeft: 0 }}>
+        {hasSsoConfigured && <Col style={{ width: '296px', paddingLeft: 0 }}>
           <Card type='solid-bg' >
+            {isGoogleWorkspaceEnabled && <div>
+              <Form.Item
+                colon={false}
+                label={$t({ defaultMessage: 'Type' })} />
+              <h3 style={{ marginTop: '-15px' }}>
+                {authenticationData?.authenticationType === TenantAuthenticationType.saml
+                  ? $t({ defaultMessage: 'SAML' })
+                  : $t({ defaultMessage: 'Google Workspace' })
+                }</h3>
+            </div>}
+            {isGroupBasedLoginEnabled && <div>
+              <Form.Item
+                colon={false}
+                label={$t({ defaultMessage: 'Allowed Domains' })} />
+              <h3 style={{ marginTop: '-15px' }}>
+                {authenticationData?.domains?.toString()}</h3>
+            </div>}
             <Form.Item
               colon={false}
               label={$t({ defaultMessage: 'IdP Metadata' })}
             />
-            <div style={{ marginTop: '-10px' }}><Button type='link'
+            <div style={{ marginTop: '-15px' }}><Button type='link'
               key='viewxml'
               onClick={async () => {
                 const isDirectUrl = authenticationData?.samlFileType === SamlFileType.direct_url
@@ -184,6 +205,8 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
       maxSize={CsvSize['5MB']}
       maxEntries={512}
       acceptType={['xml']}
+      isGroupBasedLoginEnabled={isGroupBasedLoginEnabled}
+      isGoogleWorkspaceEnabled={isGoogleWorkspaceEnabled}
     />}
     {modalVisible && <ViewXmlModal
       visible={modalVisible}

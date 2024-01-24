@@ -5,6 +5,7 @@ import { FormattedMessage, MessageDescriptor } from 'react-intl'
 import { mapCodeToReason }                     from '@acx-ui/analytics/utils'
 import { TableProps, cssStr, Tooltip }         from '@acx-ui/components'
 import type { TableColumn }                    from '@acx-ui/components'
+import { get }                                 from '@acx-ui/config'
 import { formatter }                           from '@acx-ui/formatter'
 import { TenantLink }                          from '@acx-ui/react-router-dom'
 import { getIntl, NetworkPath, noDataDisplay } from '@acx-ui/utils'
@@ -148,7 +149,6 @@ export const getTableColumns = ({
       render: function (_, row: TestResultByAP, index: number) {
         const failure = getClientFailureInfo(row)[key]
         const failureCode = failure?.event
-        const intl = getIntl()
         const error = row?.error
         const noFailureText =
           contents.noFailureDetailsMap[failureCode as keyof typeof contents.noFailureDetailsMap]
@@ -162,7 +162,7 @@ export const getTableColumns = ({
               defineMessage({
                 defaultMessage: 'Failure reason: {reason}'
               }),
-              { reason: mapCodeToReason(failureCode as string, intl) }
+              { reason: mapCodeToReason(failureCode as string) }
             )
         const wrappedContent = getToolTipText({ error, toolTipText, wlanAuthSettings, clientType })
         const type = row[key] as TrendType
@@ -227,7 +227,7 @@ export const getTableColumns = ({
         const { apMac } = row
         return (
           <TenantLink
-            to={`devices/wifi/${apMac}/details/overview`}
+            to={`devices/wifi/${apMac}/details/${get('IS_MLISA_SA') ? 'ai' : 'overview'}`}
             title={isWirelessClient ? $t(targetApDetailsText) : $t(apDetails)}
           >{row.apName}</TenantLink>
         )

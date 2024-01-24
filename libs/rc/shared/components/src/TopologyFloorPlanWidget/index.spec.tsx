@@ -40,7 +40,7 @@ const currentSwitchDevice = {
   childCount: 3
 } as NetworkDevice
 
-describe.skip('TopologyFloorPlanWidget', () => {
+describe('TopologyFloorPlanWidget', () => {
   it('should render correctly', () => {
     const { asFragment } = render(<Provider><TopologyFloorPlanWidget
       showTopologyFloorplanOn={ShowTopologyFloorplanOn.VENUE_OVERVIEW} /></Provider>)

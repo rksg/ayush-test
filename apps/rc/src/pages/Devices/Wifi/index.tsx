@@ -1,14 +1,17 @@
 import { useIntl } from 'react-intl'
 
 import { PageHeader, Tabs }                               from '@acx-ui/components'
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import { useNavigate, useTenantLink }                     from '@acx-ui/react-router-dom'
 import { EmbeddedReport, ReportType, usePageHeaderExtra } from '@acx-ui/reports/components'
 import { filterByAccess }                                 from '@acx-ui/user'
 
-import useApsTable from './ApsTable'
+import useApGroupsTable from './ApGroupsTable'
+import useApsTable      from './ApsTable'
 
 export enum WifiTabsEnum {
   LIST = 'wifi',
+  AP_GROUP = 'wifi/apgroups',
   AP_REPORT = 'wifi/reports/aps',
   AIRTIME_REPORT = 'wifi/reports/airtime'
 }
@@ -27,6 +30,8 @@ function isElementArray (data: JSX.Element | JSX.Element[]
 }
 
 const useTabs = () : WifiTab[] => {
+  const showApGroupTable = useIsSplitOn(Features.AP_GROUP_TOGGLE)
+
   const { $t } = useIntl()
   const listTab = {
     key: WifiTabsEnum.LIST,
@@ -50,6 +55,16 @@ const useTabs = () : WifiTab[] => {
     />,
     headerExtra: usePageHeaderExtra(ReportType.AIRTIME_UTILIZATION)
   }
+
+  const apGroupTab = {
+    key: WifiTabsEnum.AP_GROUP,
+    ...useApGroupsTable()
+  }
+
+  if (showApGroupTable) {
+    return [listTab, apGroupTab, apReportTab, airtimeReportTab]
+  }
+
   return [listTab, apReportTab, airtimeReportTab]
 }
 

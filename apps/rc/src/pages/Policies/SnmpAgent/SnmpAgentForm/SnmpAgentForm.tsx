@@ -3,10 +3,10 @@ import { useEffect, useRef, useState } from 'react'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { PageHeader, showActionModal, StepsFormLegacy, StepsFormLegacyInstance }                 from '@acx-ui/components'
-import { useAddApSnmpPolicyMutation, useGetApSnmpPolicyQuery, useUpdateApSnmpPolicyMutation }    from '@acx-ui/rc/services'
-import { ApSnmpPolicy, getPolicyListRoutePath, getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
-import { useTenantLink }                                                                         from '@acx-ui/react-router-dom'
+import { PageHeader, showActionModal, StepsFormLegacy, StepsFormLegacyInstance }                                             from '@acx-ui/components'
+import { useAddApSnmpPolicyMutation, useGetApSnmpPolicyQuery, useUpdateApSnmpPolicyMutation }                                from '@acx-ui/rc/services'
+import { ApSnmpPolicy, generatePolicyPageHeaderTitle, getPolicyRoutePath, PolicyOperation, PolicyType, usePolicyBreadcrumb } from '@acx-ui/rc/utils'
+import { useTenantLink }                                                                                                     from '@acx-ui/react-router-dom'
 
 import SnmpAgentSettingForm from './SnmpAgentSettingForm'
 import * as UI              from './styledComponents'
@@ -38,6 +38,8 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
   const updateSaveData = (saveData: Partial<ApSnmpPolicy>) => {
     updateSaveState({ ...saveState, ...saveData })
   }
+
+  const breadcrumb = usePolicyBreadcrumb(PolicyType.SNMP_AGENT, PolicyOperation.LIST)
 
   useEffect(() => {
     if (data) {
@@ -92,22 +94,17 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
   return (
     <>
       <PageHeader
-        title={editMode
-          ? $t({ defaultMessage: 'Edit SNMP Agent' })
-          : $t({ defaultMessage: 'Add SNMP Agent' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          { text: $t({ defaultMessage: 'SNMP Agent' }), link: tablePath }
-        ]}
+        title={generatePolicyPageHeaderTitle(editMode, false, PolicyType.SNMP_AGENT)}
+        breadcrumb={breadcrumb}
       />
       <StepsFormLegacy<ApSnmpPolicy>
         formRef={formRef}
+        editMode={editMode}
         onCancel={handleCancel}
         onFinish={async (data) => { return handleSaveApSnmpAgentPolicy(data) }}
+        buttonLabel={{
+          submit: (editMode)? $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' })
+        }}
       >
         <UI.OverwriteStepsForm
           name='settings'

@@ -32,5 +32,6 @@ export const messageMapping = {
   ZOOM_CALL_PARTICIPANT_QOS_EMPTY: defineMessage({
     defaultMessage: 'Zoom returned Null data for call participants'
   }),
-  SYSTEM_ERROR: defineMessage({ defaultMessage: 'System Error' })
+  SYSTEM_ERROR: defineMessage({ defaultMessage: 'System Error' }),
+  null: defineMessage({ defaultMessage: 'Reason not known' })
 }

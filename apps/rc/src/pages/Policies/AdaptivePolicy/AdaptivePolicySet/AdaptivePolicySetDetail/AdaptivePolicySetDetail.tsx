@@ -1,15 +1,15 @@
+import { useEffect, useState } from 'react'
+
 import { Form,Space, Typography } from 'antd'
 import { useIntl }                from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
 import { Button, Card, GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
 import { Features, useIsTierAllowed }                         from '@acx-ui/feature-toggle'
-import { useDpskNewConfigFlowParams }                         from '@acx-ui/rc/components'
 import {
   useGetAdaptivePolicySetQuery,
-  useGetDpskListQuery,
-  useGetPrioritizedPoliciesQuery,
-  useSearchMacRegListsQuery
+  useGetPrioritizedPoliciesQuery, useLazyGetDpskListQuery,
+  useLazySearchMacRegListsQuery
 } from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
@@ -31,6 +31,8 @@ export default function AdaptivePolicySetDetail () {
     { type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST })
 
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const [networkIdsInMacList, setNetworkIdsInMacList] = useState([] as string [])
+  const [networkIdsInDpskList, setNetworkIdsInDpskList] = useState([] as string [])
 
   // eslint-disable-next-line max-len
   const { data: policySetData, isLoading: isGetAdaptivePolicySetLoading }= useGetAdaptivePolicySetQuery({ params: { policySetId: policyId } })
@@ -38,33 +40,34 @@ export default function AdaptivePolicySetDetail () {
   // eslint-disable-next-line max-len
   const { data: prioritizedPolicies } = useGetPrioritizedPoliciesQuery({ params: { policySetId: policyId } })
 
-  // eslint-disable-next-line max-len
-  const { networkIdsInMacList } = useSearchMacRegListsQuery({ params: { tenantId, size: '100000', page: '1', sort: 'name,desc' },
-    payload: {
+  const [ macRegList ] = useLazySearchMacRegListsQuery()
+
+  const [ dpskList ] = useLazyGetDpskListQuery()
+
+  useEffect(() => {
+    if(isGetAdaptivePolicySetLoading) return
+    // eslint-disable-next-line max-len
+    macRegList({ params: { tenantId, size: '100000', page: '1', sort: 'name,desc' }, payload: {
       dataOption: 'all',
       searchCriteriaList: [
         { filterKey: 'policySetId', operation: 'eq', value: policyId }
       ]
-    } }, {
-    selectFromResult ({ data }) {
-      return {
-        networkIdsInMacList: data?.data.map(pool => pool.networkIds ?? []).flat() ?? []
-      }
-    } })
-
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
-  const { networkIdsInDpsk } = useGetDpskListQuery({
-    params: { size: '100000', page: '0', sort: 'name,desc', ...dpskNewConfigFlowParams }
-  },
-  {
-    skip: !isCloudpathEnabled,
-    selectFromResult ({ data }) {
-      return {
+    } }).then(result => {
+      if (result.data) {
         // eslint-disable-next-line max-len
-        networkIdsInDpsk: data?.data.filter(pool => pool.policySetId === policyId).map(pool => pool.networkIds ?? []).flat() ?? []
+        setNetworkIdsInMacList(result.data?.data.map(pool => pool.networkIds ?? []).flat() ?? [])
       }
-    } }
-  )
+    })
+    if(isCloudpathEnabled) {
+      // eslint-disable-next-line max-len
+      dpskList({ params: { size: '100000', page: '0', sort: 'name,desc' } }).then(result => {
+        if (result.data) {
+          // eslint-disable-next-line max-len
+          setNetworkIdsInDpskList(result.data?.data.filter(pool => pool.policySetId === policyId).map(pool => pool.networkIds ?? []).flat() ?? [])
+        }
+      })
+    }
+  }, [isGetAdaptivePolicySetLoading])
 
   return (
     <>
@@ -114,7 +117,7 @@ export default function AdaptivePolicySetDetail () {
             </Form>
           </Loader>
         </Card>
-        <NetworkTable networkIds={[...new Set([...networkIdsInMacList, ...networkIdsInDpsk])]}/>
+        <NetworkTable networkIds={[...new Set([...networkIdsInMacList, ...networkIdsInDpskList])]}/>
       </Space>
     </>
   )

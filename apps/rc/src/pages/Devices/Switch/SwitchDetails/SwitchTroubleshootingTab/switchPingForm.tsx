@@ -14,6 +14,12 @@ import { useGetTroubleshootingQuery,
 import { targetHostRegExp,
   TroubleshootingType,
   WifiTroubleshootingMessages } from '@acx-ui/rc/utils'
+import { getIntl } from '@acx-ui/utils'
+
+export const parseResult = function (response: string) {
+  const { $t } = getIntl()
+  return response === 'EMPTY_RESULT' ? $t({ defaultMessage: 'No data to display.' }) : response
+}
 
 export function SwitchPingForm () {
   const { $t } = useIntl()
@@ -41,11 +47,6 @@ export function SwitchPingForm () {
     setTimeout(() => {
       getTroubleshooting.refetch()
     }, 3000)
-  }
-
-
-  const parseResult = function (response: string) {
-    return response === 'EMPTY_RESULT' ? $t({ defaultMessage: 'No data to display.' }) : response
   }
 
   useEffect(() => {

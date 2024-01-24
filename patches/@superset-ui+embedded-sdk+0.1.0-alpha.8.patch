@@ -23,10 +23,10 @@ index b8bf5ad..bcdf90c 100644
 -export declare function embedDashboard({ id, supersetDomain, mountPoint, fetchGuestToken, dashboardUiConfig, debug }: EmbedDashboardParams): Promise<EmbeddedDashboard>;
 +export declare function embedDashboard({ id, supersetDomain, mountPoint, fetchGuestToken, dashboardUiConfig, debug, authToken }: EmbedDashboardParams): Promise<EmbeddedDashboard>;
 diff --git a/node_modules/@superset-ui/embedded-sdk/lib/index.js b/node_modules/@superset-ui/embedded-sdk/lib/index.js
-index 5c8591d..9e2ef28 100644
+index 5c8591d..f86f958 100644
 --- a/node_modules/@superset-ui/embedded-sdk/lib/index.js
 +++ b/node_modules/@superset-ui/embedded-sdk/lib/index.js
-@@ -41,7 +41,9 @@ async function embedDashboard(_ref) {
+@@ -41,9 +41,13 @@ async function embedDashboard(_ref) {
      mountPoint,
      fetchGuestToken,
      dashboardUiConfig,
@@ -36,8 +36,12 @@ index 5c8591d..9e2ef28 100644
 +    locale
    } = _ref;
  
++  let refreshTokenTimeoutId = -1;
++
    function log() {
-@@ -83,6 +85,12 @@ async function embedDashboard(_ref) {
+     if (debug) {
+       for (var _len = arguments.length, info = new Array(_len), _key = 0; _key < _len; _key++) {
+@@ -83,6 +87,12 @@ async function embedDashboard(_ref) {
        const filterConfig = dashboardUiConfig?.filters || {};
        const filterConfigKeys = Object.keys(filterConfig);
        const filterConfigUrlParams = filterConfigKeys.length > 0 ? "&" + filterConfigKeys.map(key => _const.DASHBOARD_UI_FILTER_CONFIG_URL_PARAM_KEY[key] + '=' + filterConfig[key]).join('&') : ""; // set up the iframe's sandbox configuration
@@ -50,7 +54,7 @@ index 5c8591d..9e2ef28 100644
  
        iframe.sandbox.add("allow-same-origin"); // needed for postMessage to work
  
-@@ -120,22 +128,29 @@ async function embedDashboard(_ref) {
+@@ -120,30 +130,38 @@ async function embedDashboard(_ref) {
            debug
          }));
        });
@@ -82,5 +86,16 @@ index 5c8591d..9e2ef28 100644
 +      guestToken: newGuestToken,
 +      authToken
      });
-     setTimeout(refreshGuestToken, (0, _guestTokenRefresh.getGuestTokenRefreshTiming)(newGuestToken));
+-    setTimeout(refreshGuestToken, (0, _guestTokenRefresh.getGuestTokenRefreshTiming)(newGuestToken));
++    refreshTokenTimeoutId = setTimeout(refreshGuestToken, (0, _guestTokenRefresh.getGuestTokenRefreshTiming)(newGuestToken));
    }
+ 
+-  setTimeout(refreshGuestToken, (0, _guestTokenRefresh.getGuestTokenRefreshTiming)(guestToken));
++  refreshTokenTimeoutId = setTimeout(refreshGuestToken, (0, _guestTokenRefresh.getGuestTokenRefreshTiming)(guestToken));
+ 
+   function unmount() {
+     log('unmounting');
++    clearTimeout(refreshTokenTimeoutId);
+     mountPoint.replaceChildren();
+   }
+ 

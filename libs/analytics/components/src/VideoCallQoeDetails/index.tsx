@@ -1,23 +1,22 @@
 import { useState } from 'react'
 
 import { Space }   from 'antd'
-import _           from 'lodash'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { TimeSeriesDataType, TrendTypeEnum, aggregateDataBy, getSeriesData } from '@acx-ui/analytics/utils'
 import { Loader, PageHeader, Table, TableProps, Tooltip,
-  cssStr,  Card, GridCol, GridRow,
-  MultiLineTimeSeriesChart,NoData, Alert, TrendPill,
-  Drawer, SearchBar }                from '@acx-ui/components'
+  cssStr, Card, GridCol, GridRow, MultiLineTimeSeriesChart,
+  NoData, Alert, TrendPill, Drawer } from '@acx-ui/components'
+import { get }                       from '@acx-ui/config'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   EditOutlinedIcon,
   EditOutlinedDisabledIcon
 } from '@acx-ui/icons'
-import { TenantLink, useParams }   from '@acx-ui/react-router-dom'
-import { TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
+import { TenantLink, useParams }                                           from '@acx-ui/react-router-dom'
+import { DateFilter, DateRange, TABLE_DEFAULT_PAGE_SIZE, encodeParameter } from '@acx-ui/utils'
 
 import { zoomStatsThresholds }                                                                         from '../VideoCallQoe/constants'
 import { useSearchClientsQuery, useUpdateCallQoeParticipantMutation, useVideoCallQoeTestDetailsQuery } from '../VideoCallQoe/services'
@@ -64,15 +63,36 @@ export function VideoCallQoeDetails (){
   }) })
 
   const formatValue = (value: unknown, row: Participants) => {
-    if (!value)
+    if (!value) {
       return '-'
-    let apID = row.apDetails?.apSerial
-    if ( apID === 'Unknown') {
-      apID = row.apDetails?.apMac?.toUpperCase()
     }
-    return <TenantLink
-      to={`/devices/wifi/${apID}/details/overview`}>
-      {value as string}</TenantLink>
+
+    const isRA = get('IS_MLISA_SA')
+    const apMac = row.apDetails?.apMac?.toUpperCase()
+    let apID = isRA ? apMac : row.apDetails?.apSerial
+    if (apID === 'Unknown') {
+      apID = apMac
+    }
+
+    const { joinTime, leaveTime } = row
+    const startDate = moment(joinTime).format()
+    const endDate = moment(leaveTime).format()
+    const callPeriod = encodeParameter<DateFilter>({
+      startDate,
+      endDate,
+      range: DateRange.custom
+    })
+
+    const linkType = isRA ? 'ai' : 'overview'
+    const link = `/devices/wifi/${apID}/details/${linkType}?period=${callPeriod}`
+
+    return (
+      <Tooltip title={$t({ defaultMessage: 'AP Details' })}>
+        <TenantLink to={link}>
+          {value as string}
+        </TenantLink>
+      </Tooltip>
+    )
   }
 
   const columnHeaders: TableProps<Participants>['columns'] = [
@@ -80,35 +100,61 @@ export function VideoCallQoeDetails (){
       title: $t({ defaultMessage: 'Client MAC' }),
       dataIndex: 'macAddress',
       key: 'macAddress',
-      render: (_, row)=>{
-        if(row.networkType.toLowerCase() === 'wifi'){
-          return <Space>
-            {row.macAddress ? <span>{row.macAddress.toUpperCase()}</span>
-              : <div style={{ width: '100px' }}>-</div>}
-            <Tooltip title={$t({ defaultMessage: 'Select Client MAC' })}>
-              <EditOutlinedIcon style={{ height: '16px', width: '16px', cursor: 'pointer' }}
-                onClick={()=>{
-                  setParticipantId(row.id)
-                  setIsDrawerOpen(true)
-                  setSelectedMac(null)
-                }}/>
+      width: 150,
+      fixed: 'left',
+      render: (_, row: Participants) => {
+        const { macAddress, networkType, joinTime, leaveTime } = row
+        const callPeriod = encodeParameter<DateFilter>({
+          startDate: moment(joinTime).format(),
+          endDate: moment(leaveTime).format(),
+          range: DateRange.custom
+        })
+
+        if (networkType.toLowerCase() === 'wifi') {
+          const link =
+            `/users/wifi/clients/${macAddress}/details/troubleshooting?period=${callPeriod}`
+          return (
+            <Space>
+              {
+                row.macAddress
+                  ? (<Tooltip title={$t({ defaultMessage: 'Client Troubleshooting' })}>
+                    <TenantLink to={link}>
+                      {macAddress.toUpperCase()}
+                    </TenantLink>
+                  </Tooltip>)
+                  : (
+                    <div style={{ width: '100px' }}>-</div>
+                  )}
+              <Tooltip title={$t({ defaultMessage: 'Select Client MAC' })}>
+                <EditOutlinedIcon
+                  style={{ height: '16px', width: '16px', cursor: 'pointer' }}
+                  onClick={() => {
+                    setParticipantId(row.id)
+                    setIsDrawerOpen(true)
+                    setSelectedMac(null)
+                  }}
+                />
+              </Tooltip>
+            </Space>
+          )
+        }
+
+        return (
+          <Space>
+            <div style={{ width: '100px' }}>-</div>
+            <Tooltip title={$t({ defaultMessage: 'Not allowed as participant not on Wi-Fi' })}>
+              <EditOutlinedDisabledIcon
+                style={{ height: '16px', width: '16px', cursor: 'not-allowed' }}
+              />
             </Tooltip>
           </Space>
-        }
-        return <Space>
-          <div style={{ width: '100px' }}>-</div>
-          <Tooltip title={$t({ defaultMessage: 'Not allowed as participant not on Wi-Fi' })}>
-            <EditOutlinedDisabledIcon
-              style={{ height: '16px', width: '16px', cursor: 'not-allowed' }} />
-          </Tooltip>
-        </Space>
+        )
       }
     },
     {
       title: $t({ defaultMessage: 'Participant' }),
       dataIndex: 'userName',
-      key: 'userName',
-      width: 200
+      key: 'userName'
     },
     {
       title: $t({ defaultMessage: 'IP Address' }),
@@ -119,28 +165,26 @@ export function VideoCallQoeDetails (){
       title: $t({ defaultMessage: 'Network Type' }),
       dataIndex: 'networkType',
       key: 'networkType',
-      width: 100,
-      render: (_, { networkType })=>{
+      render: (_, { networkType }) => {
         return networkType.toLowerCase() === 'wifi' ? 'Wi-Fi' : networkType
       }
     },
     {
-      title: $t({ defaultMessage: 'AP' }),
+      title: $t({ defaultMessage: 'AP Name' }),
       dataIndex: ['apDetails','apName'],
-      key: 'apName',
-      render: (_, row)=>formatValue(row.apDetails?.apName, row)
+      key: 'apName'
     },
     {
       title: $t({ defaultMessage: 'AP MAC' }),
       dataIndex: ['apDetails','apMac'],
       key: 'apMac',
-      render: (_, row)=>formatValue(row.apDetails?.apMac, row)
+      render: (_, row) => formatValue(row.apDetails?.apMac, row)
     },
     {
       title: $t({ defaultMessage: 'SSID' }),
       dataIndex: ['apDetails','ssid'],
       key: 'ssid',
-      render: (_, { apDetails })=>{
+      render: (_, { apDetails }) => {
         if(!apDetails?.ssid)
           return '-'
         return apDetails.ssid
@@ -150,7 +194,7 @@ export function VideoCallQoeDetails (){
       title: $t({ defaultMessage: 'Radio' }),
       dataIndex: ['apDetails','radio'],
       key: 'radio',
-      render: (_, { apDetails })=>{
+      render: (_, { apDetails }) => {
         if(!apDetails?.radio)
           return '-'
         return `${apDetails.radio} Ghz`
@@ -160,8 +204,6 @@ export function VideoCallQoeDetails (){
       title: $t({ defaultMessage: 'Join Time' }),
       dataIndex: 'joinTime',
       key: 'joinTime',
-      align: 'center',
-      width: 50,
       render: (_, { joinTime })=>{
         return formatter(DateFormatEnum.OnlyTime)(joinTime)
       }
@@ -170,8 +212,6 @@ export function VideoCallQoeDetails (){
       title: $t({ defaultMessage: 'Leave Time' }),
       dataIndex: 'leaveTime',
       key: 'leaveTime',
-      align: 'center',
-      width: 50,
       render: (_, row)=>{
         return <Tooltip title={row.leaveReason.replace('<br>','\n')}>
           {formatter(DateFormatEnum.OnlyTime)(row.leaveTime)}</Tooltip>
@@ -183,7 +223,7 @@ export function VideoCallQoeDetails (){
       key: 'quality',
       align: 'center',
       width: 150,
-      render: (_, row)=>{
+      render: (_, row) => {
         if(row.networkType.toLowerCase() !== 'wifi'){
           return $t({ defaultMessage: 'NA' })
         }
@@ -327,8 +367,14 @@ export function VideoCallQoeDetails (){
             <div style={{ paddingTop: '4px' }}>{getPill(currentMeeting.mos)}</div>
           ]}
           breadcrumb={[
-            { text: $t({ defaultMessage: 'AI Assurance' }) },
-            { text: $t({ defaultMessage: 'Network Assurance' }) },
+            ...(get('IS_MLISA_SA')
+              ? [
+                { text: $t({ defaultMessage: 'App Experience' }) }
+              ]
+              :[
+                { text: $t({ defaultMessage: 'AI Assurance' }) },
+                { text: $t({ defaultMessage: 'Network Assurance' }) }
+              ]),
             {
               text: $t({ defaultMessage: 'Video Call QoE' }),
               link: '/analytics/videoCallQoe'
@@ -356,6 +402,7 @@ export function VideoCallQoeDetails (){
           rowKey='id'
           columns={columnHeaders}
           dataSource={participants}
+          settingsId='videoCallQoe-table'
         />
       </Loader>
       { isDrawerOpen &&
@@ -373,16 +420,6 @@ export function VideoCallQoeDetails (){
               onSave={onSelectClientMac}
             />}
           >
-            <SearchBar
-              placeHolder='Search by MAC, username or hostname'
-              onChange={(q) => q?.trim().length>=0 && _.debounce(
-                (search) => {
-                  setSearch(search)
-                  setSelectedMac(null)
-                }
-                ,1000
-              )(q.trim())}
-            />
             <Loader states={[searchQueryResults]}>
               <Table
                 rowKey='mac'
@@ -401,6 +438,8 @@ export function VideoCallQoeDetails (){
                   {
                     dataIndex: 'mac',
                     key: 'mac',
+                    title: 'MAC, Username, Hostname',
+                    searchable: true,
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     render: (_, row: any)=>{
                       return <>
@@ -421,6 +460,12 @@ export function VideoCallQoeDetails (){
                     }
                   }
                 ]}
+                searchableWidth={230}
+                onFilterChange={(_, { searchString }) => {
+                  setSearch(searchString || '')
+                  setSelectedMac(null)
+                }}
+                enableApiFilter
                 dataSource={searchQueryResults.data}
                 pagination={{
                   pageSize: TABLE_DEFAULT_PAGE_SIZE,

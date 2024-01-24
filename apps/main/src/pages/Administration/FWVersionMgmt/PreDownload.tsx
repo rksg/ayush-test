@@ -26,7 +26,7 @@ export function PreDownload (props: PreDownloadProps) {
         </Subtitle>
       </Col>
       <Col span={8}>
-        <Switch checked={checked} onChange={setChecked} />
+        <Switch checked={checked} onChange={setChecked} data-testid='PreDownload' />
       </Col>
       <Col>
         <UI.TitleActive>

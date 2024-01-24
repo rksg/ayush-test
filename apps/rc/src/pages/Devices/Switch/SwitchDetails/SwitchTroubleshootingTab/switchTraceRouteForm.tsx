@@ -19,6 +19,8 @@ import {
   WifiTroubleshootingMessages
 } from '@acx-ui/rc/utils'
 
+import { parseResult } from './switchPingForm'
+
 export function SwitchTraceRouteForm () {
   const { $t } = useIntl()
   const { tenantId, switchId } = useParams()
@@ -45,10 +47,6 @@ export function SwitchTraceRouteForm () {
     setTimeout(() => {
       getTroubleshooting.refetch()
     }, 3000)
-  }
-
-  const parseResult = function (response: string) {
-    return response === 'EMPTY_RESULT' ? $t({ defaultMessage: 'No data to display.' }) : response
   }
 
   useEffect(() => {

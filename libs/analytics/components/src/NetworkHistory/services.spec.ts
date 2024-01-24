@@ -61,7 +61,7 @@ describe('networkHistoryWidgetApi', () => {
       output: 'PT30M'
     }, {
       input: { start: '2022-01-01T00:00:00+08:00', end: '2022-02-02T00:00:00+08:00' },
-      output: 'PT1H'
+      output: 'PT72H'
     }, {
       input: { start: '2022-01-01T00:00:00+08:00', end: '2022-01-01T00:10:00+08:00' },
       output: 'PT180S'

@@ -7,6 +7,8 @@ import { intlFormats }                                                          
 import { formatter }                                                             from '@acx-ui/formatter'
 import { NavigateFunction, Path, useNavigate, useNavigateToPath, useTenantLink } from '@acx-ui/react-router-dom'
 
+import { useIncidentToggles } from '../useIncidentToggles'
+
 import {
   IncidentsBySeverityDataKey,
   useIncidentsBySeverityDashboardQuery,
@@ -58,11 +60,12 @@ export const onAxisLabelClick = (
 
 export function IncidentsDashboard ({ filters }: { filters: IncidentFilter }) {
   const { $t } = useIntl()
+  const toggles = useIncidentToggles()
   const navigate = useNavigate()
   const basePath = useTenantLink('/analytics/incidents/')
   const onArrowClick = useNavigateToPath('/analytics/incidents/')
 
-  const response = useIncidentsBySeverityDashboardQuery(filters)
+  const response = useIncidentsBySeverityDashboardQuery({ ...filters, toggles })
   const { data: severities } = response
   const headers: Header[] = []
   const barCharts = [

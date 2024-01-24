@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 import { fakeIncident1 }               from '@acx-ui/analytics/utils'
 import { dataApiURL, Provider, store } from '@acx-ui/store'
 import {
@@ -27,11 +29,25 @@ jest.mock('./TimeSeries', () => ({
 describe('incident details', () => {
   beforeEach(() => store.dispatch(api.util.resetApiState()))
 
-  it('should render Incident Details Page correctly', async () => {
+  it('should render incident details correctly', async () => {
+    mockGraphqlQuery(dataApiURL, 'IncidentCode',
+      { data: { incident: _.pick(fakeIncident1, ['code', 'startTime', 'endTime']) } } )
     mockGraphqlQuery(dataApiURL, 'IncidentDetails', { data: { incident: fakeIncident1 } } )
-    const params = {
-      incidentId: fakeIncident1.id
-    }
+    const params = { incidentId: fakeIncident1.id }
+    const { asFragment } = render(<Provider>
+      <IncidentDetails />
+    </Provider>, { route: { params } })
+
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('should render incident details correctly when there is impacted range', async () => {
+    const fakeIncident2 = { ...fakeIncident1, code: 'p-airtime-b-24g-high' }
+    mockGraphqlQuery(dataApiURL, 'IncidentCode',
+      { data: { incident: _.pick(fakeIncident2, ['code', 'startTime', 'endTime']) } } )
+    mockGraphqlQuery(dataApiURL, 'IncidentDetails', { data: { incident: fakeIncident2 } } )
+    const params = { incidentId: fakeIncident2.id }
     const { asFragment } = render(<Provider>
       <IncidentDetails />
     </Provider>, { route: { params } })

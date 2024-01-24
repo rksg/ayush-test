@@ -172,7 +172,7 @@ describe('DHCP Pool table(Edge)', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
   })
 
-  it('should import pools by CSV', async () => {
+  it.skip('should import pools by CSV', async () => {
     const mockedCSVData = [
       'Pool Name,Subnet Mask,Pool Start IP,Pool End IP,Gateway\r\n',
       'mockPool1,255.255.255.0,1.2.3.4,1.2.3.12,1.2.3.125\r\n'

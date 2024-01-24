@@ -16,6 +16,7 @@ interface MspSubscriptionUtilizationWidgetProps {
   total: number;
   barColors?: string[];
   tooltip?: string;
+  trial?: boolean;
 }
 
 export const MspSubscriptionUtilizationWidget = (props: MspSubscriptionUtilizationWidgetProps) => {
@@ -26,7 +27,8 @@ export const MspSubscriptionUtilizationWidget = (props: MspSubscriptionUtilizati
     used,
     assigned,
     total,
-    tooltip
+    tooltip,
+    trial
   } = props
 
   const isZeroQuantity = total <= 0
@@ -65,21 +67,28 @@ export const MspSubscriptionUtilizationWidget = (props: MspSubscriptionUtilizati
       />
       {tooltip ?
         <Tooltip
-          title={tooltip}
+          title={trial ? '' : tooltip}
           placement={'top'}
-        >Total: {total}</Tooltip>
+        >{trial ? $t({ defaultMessage: 'Total Trial: {total}' }, { total })
+            : $t({ defaultMessage: 'Total Paid: {total}' }, { total })}
+        </Tooltip>
         : <Typography.Text>
           {used} / {total}
         </Typography.Text>}
     </SpaceWrapper>
-    <div style={{ marginTop: '15px' }}>
+    {trial ? <div style={{ marginTop: '15px' }}>
+      <UI.LegendDot style={{ marginLeft: '45px', backgroundColor: usedBarColors[1] }} />
+      <span >{$t({ defaultMessage: 'MSP Assigned' })} ({assigned})</span>
+      <UI.LegendDot style={{ marginLeft: '15px', backgroundColor: usedBarColors[2] }} />
+      <span >{$t({ defaultMessage: 'Available' })} ({total - assigned})</span>
+    </div> : <div style={{ marginTop: '15px' }}>
       <UI.LegendDot style={{ marginLeft: '15px', backgroundColor: usedBarColors[0] }} />
       <span >{$t({ defaultMessage: 'MSP EC' })} ({used})</span>
       <UI.LegendDot style={{ marginLeft: '15px', backgroundColor: usedBarColors[1] }} />
       <span >{$t({ defaultMessage: 'MSP Assigned' })} ({assigned})</span>
       <UI.LegendDot style={{ marginLeft: '15px', backgroundColor: usedBarColors[2] }} />
-      <span >{$t({ defaultMessage: 'Pending' })} ({total - used - assigned})</span>
-    </div>
+      <span >{$t({ defaultMessage: 'Available' })} ({total - used - assigned})</span>
+    </div>}
 
   </>
 }

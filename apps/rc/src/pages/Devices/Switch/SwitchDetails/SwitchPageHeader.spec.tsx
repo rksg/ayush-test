@@ -3,16 +3,31 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { FirmwareUrlsInfo, SwitchStatusEnum, SwitchUrlsInfo, SWITCH_TYPE } from '@acx-ui/rc/utils'
-import { Provider }                                                        from '@acx-ui/store'
-import { render, screen, mockServer }                                      from '@acx-ui/test-utils'
+import { firmwareApi, switchApi } from '@acx-ui/rc/services'
+import {
+  FirmwareUrlsInfo,
+  Switch,
+  SwitchStatusEnum,
+  SwitchUrlsInfo,
+  SwitchViewModel,
+  SWITCH_TYPE
+} from '@acx-ui/rc/utils'
+import { Provider, store }                     from '@acx-ui/store'
+import { render, screen, mockServer, waitFor } from '@acx-ui/test-utils'
+import { UseQueryResult }                      from '@acx-ui/types'
 
 import { switchFirmwareVenue } from '../__tests__/fixtures'
 
-import { jwtToken }     from './__tests__/fixtures'
-import SwitchPageHeader from './SwitchPageHeader'
+import { jwtToken, switchDetailsContextData } from './__tests__/fixtures'
+import SwitchPageHeader                       from './SwitchPageHeader'
 
 import { SwitchDetailsContext } from '.'
+
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  SwitchCliSession: ({ modalState }: { modalState: boolean }) =>
+    modalState && <div data-testid='switch-cli-session'></div>
+}))
 
 const params = {
   tenantId: 'tenantId',
@@ -20,31 +35,19 @@ const params = {
   serialNumber: 'serialNumber'
 }
 
-const switchDetailsContextData = {
-  switchName: '',
-  currentSwitchOperational: true,
-  switchDetailHeader: {
-    configReady: true,
-    name: 'test',
-    isStack: false,
-    switchMac: '58:fb:96:0e:bc:f8',
-    switchName: 'ICX7150-C12 Router',
-    serialNumber: 'FEK3230S0C5',
-    deviceStatus: SwitchStatusEnum.OPERATIONAL,
+const stackDetailsContextData = {
+  switchData: {
     id: 'id',
     venueId: 'venue-id',
-    stackMembers: [],
-    syncedSwitchConfig: true,
-    switchType: SWITCH_TYPE.ROUTER
-  }
-}
-
-const stackDetailsContextData = {
-  switchName: '',
-  currentSwitchOperational: true,
+    name: 'Switch - FEK3230S0C5',
+    stackMembers: []
+  },
+  switchQuery: {
+    refetch: jest.fn()
+  } as unknown as UseQueryResult<Switch>,
   switchDetailHeader: {
     configReady: true,
-    name: 'test',
+    name: 'Switch - FEK3230S0C5',
     isStack: true,
     switchMac: '58:fb:96:0e:bc:f8',
     switchName: 'ICX7150-C12 Router',
@@ -54,8 +57,14 @@ const stackDetailsContextData = {
     venueId: 'venue-id',
     stackMembers: [],
     syncedSwitchConfig: true,
-    switchType: SWITCH_TYPE.ROUTER
-  }
+    switchType: SWITCH_TYPE.ROUTER,
+    unitId: 1
+  },
+  switchDetailViewModelQuery: {
+    refetch: jest.fn()
+  } as unknown as UseQueryResult<SwitchViewModel>,
+  currentSwitchOperational: true,
+  switchName: ''
 }
 
 const switchOnlineData = {
@@ -88,20 +97,39 @@ const switchLoadingData = {
   ]
 }
 
+const mockReboot = jest.fn()
+const mockDeleteSwitch = jest.fn()
+
 describe('SwitchPageHeader', () => {
   beforeEach(() => {
+    store.dispatch(firmwareApi.util.resetApiState())
+    store.dispatch(switchApi.util.resetApiState())
+    mockReboot.mockClear()
+    mockDeleteSwitch.mockClear()
     mockServer.use(
       rest.get( SwitchUrlsInfo.getJwtToken.url,
         (_, res, ctx) => res(ctx.json(jwtToken))),
       rest.post( SwitchUrlsInfo.getSwitchList.url,
         (_, res, ctx) => res(ctx.json(switchOnlineData))),
-      rest.post (SwitchUrlsInfo.reboot.url,
-        (_, res, ctx) => res(ctx.json({}))),
-      rest.post(FirmwareUrlsInfo.getSwitchVenueVersionList.url,
-        (_, res, ctx) => res(ctx.json(switchFirmwareVenue)))
+      rest.post(
+        SwitchUrlsInfo.reboot.url,
+        (_, res, ctx) => {
+          mockReboot()
+          return res(ctx.json({}))
+        }),
+      rest.post(
+        FirmwareUrlsInfo.getSwitchVenueVersionList.url,
+        (_, res, ctx) => res(ctx.json(switchFirmwareVenue))),
+      rest.delete(
+        SwitchUrlsInfo.deleteSwitches.url,
+        (_, res, ctx) => {
+          mockDeleteSwitch()
+          return res(ctx.json({ requestId: '123' }))
+        }
+      )
     )
   })
-  it.skip('should render switch correctly', async () => {
+  it('should render switch correctly', async () => {
     render(<Provider>
       <SwitchDetailsContext.Provider value={{
         switchDetailsContextData,
@@ -110,7 +138,12 @@ describe('SwitchPageHeader', () => {
         <SwitchPageHeader />
       </SwitchDetailsContext.Provider>
     </Provider>, { route: { params } })
+
+    expect(await screen.findByText(/Switch - FEK3230S0C5/)).toBeVisible()
+    expect(await screen.findByTestId('switch-status')).toBeVisible()
+
     await userEvent.click(await screen.findByText('More Actions'))
+    expect(await screen.findAllByRole('menuitem')).toHaveLength(4)
     await screen.findByText('Reboot Switch')
   })
 
@@ -123,6 +156,10 @@ describe('SwitchPageHeader', () => {
         <SwitchPageHeader />
       </SwitchDetailsContext.Provider>
     </Provider>, { route: { params } })
+
+    expect(await screen.findByText(/Switch - FEK3230S0C5/)).toBeVisible()
+    expect(await screen.findByTestId('switch-status')).toBeVisible()
+
     expect(await screen.findByText('Wired')).toBeVisible()
     expect(await screen.findByText('Switches')).toBeVisible()
     expect(screen.getByRole('link', {
@@ -130,7 +167,7 @@ describe('SwitchPageHeader', () => {
     })).toBeTruthy()
   })
 
-  it.skip('should click switch reboot correctly', async () => {
+  it('should click switch reboot correctly', async () => {
     render(<Provider>
       <SwitchDetailsContext.Provider value={{
         switchDetailsContextData,
@@ -139,14 +176,21 @@ describe('SwitchPageHeader', () => {
         <SwitchPageHeader />
       </SwitchDetailsContext.Provider>
     </Provider>, { route: { params } })
+
+    expect(await screen.findByText(/Switch - FEK3230S0C5/)).toBeVisible()
+    expect(await screen.findByTestId('switch-status')).toBeVisible()
+
     await userEvent.click(await screen.findByText('More Actions'))
+    expect(await screen.findAllByRole('menuitem')).toHaveLength(4)
     await userEvent.click(await screen.findByText('Reboot Switch'))
-    await userEvent.click(await screen.findByRole('button', {
-      name: /reboot/i
-    }))
+
+    const dialog = await screen.findByRole('dialog')
+    await userEvent.click(await screen.findByRole('button', { name: /reboot/i }))
+    await waitFor(() => expect(dialog).not.toBeVisible())
+    expect(mockReboot).toBeCalledTimes(1)
   })
 
-  it.skip('should click delete switch correctly', async () => {
+  it('should click delete switch correctly', async () => {
     render(<Provider>
       <SwitchDetailsContext.Provider value={{
         switchDetailsContextData,
@@ -155,14 +199,22 @@ describe('SwitchPageHeader', () => {
         <SwitchPageHeader />
       </SwitchDetailsContext.Provider>
     </Provider>, { route: { params } })
+
+    expect(await screen.findByText(/Switch - FEK3230S0C5/)).toBeVisible()
+    expect(await screen.findByTestId('switch-status')).toBeVisible()
+
     await userEvent.click(await screen.findByText('More Actions'))
     await userEvent.click(await screen.findByText('Delete Switch'))
+
+    const dialog = await screen.findByRole('dialog')
     await userEvent.click(await screen.findByRole('button', {
       name: /delete switch/i
     }))
+    await waitFor(() => expect(dialog).not.toBeVisible())
+    expect(mockDeleteSwitch).toBeCalledTimes(1)
   })
 
-  it.skip('should click switch CLI session correctly', async () => {
+  it('should click switch CLI session correctly', async () => {
     render(<Provider>
       <SwitchDetailsContext.Provider value={{
         switchDetailsContextData,
@@ -171,8 +223,13 @@ describe('SwitchPageHeader', () => {
         <SwitchPageHeader />
       </SwitchDetailsContext.Provider>
     </Provider>, { route: { params } })
+
+    expect(await screen.findByText(/Switch - FEK3230S0C5/)).toBeVisible()
+    expect(await screen.findByTestId('switch-status')).toBeVisible()
+
     await userEvent.click(await screen.findByText('More Actions'))
     await userEvent.click(await screen.findByText('CLI Session'))
+    expect(await screen.findByTestId('switch-cli-session')).toBeVisible()
   })
 
   it.skip('should click sync data correctly', async () => {
@@ -184,6 +241,10 @@ describe('SwitchPageHeader', () => {
         <SwitchPageHeader />
       </SwitchDetailsContext.Provider>
     </Provider>, { route: { params } })
+
+    expect(await screen.findByText(/Switch - FEK3230S0C5/)).toBeVisible()
+    expect(await screen.findByTestId('switch-status')).toBeVisible()
+
     await userEvent.click(await screen.findByText('More Actions'))
     await userEvent.click(await screen.findByText('Sync Data'))
   })
@@ -201,10 +262,14 @@ describe('SwitchPageHeader', () => {
         <SwitchPageHeader />
       </SwitchDetailsContext.Provider>
     </Provider>, { route: { params } })
+
+    expect(await screen.findByText(/Switch - FEK3230S0C5/)).toBeVisible()
+    expect(await screen.findByTestId('switch-status')).toBeVisible()
+
     await userEvent.click(await screen.findByText('More Actions'))
   })
 
-  it.skip('should render stack correctly', async () => {
+  it('should render stack correctly', async () => {
     render(<Provider>
       <SwitchDetailsContext.Provider value={{
         switchDetailsContextData: stackDetailsContextData,
@@ -213,6 +278,11 @@ describe('SwitchPageHeader', () => {
         <SwitchPageHeader />
       </SwitchDetailsContext.Provider>
     </Provider>, { route: { params } })
+
+    expect(await screen.findByText(/Switch - FEK3230S0C5/)).toBeVisible()
+    expect(await screen.findByTestId('switch-status')).toBeVisible()
+
     await userEvent.click(await screen.findByText('More Actions'))
+    expect(await screen.findAllByRole('menuitem')).toHaveLength(5)
   })
 })

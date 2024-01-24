@@ -1,6 +1,21 @@
-import { PageNotFound }                                                                                                            from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                                                                from '@acx-ui/feature-toggle'
-import { RogueAPDetectionDetailView, RogueAPDetectionForm, RogueAPDetectionTable, ConnectionMeteringFormMode, ResidentPortalForm } from '@acx-ui/rc/components'
+import { PageNotFound }                             from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import {
+  RogueAPDetectionDetailView,
+  RogueAPDetectionForm,
+  RogueAPDetectionTable,
+  ConnectionMeteringFormMode,
+  ResidentPortalForm,
+  DpskForm,
+  AdaptivePolicySetForm,
+  MacRegistrationListForm,
+  AccessControlForm,
+  AAAForm, AAAPolicyDetail,
+  VLANPoolForm,
+  WifiCallingForm, WifiCallingConfigureForm, WifiCallingDetailView,
+  SyslogDetailView, SyslogForm, DHCPForm, PortalForm, ClientIsolationForm,
+  NetworkForm
+} from '@acx-ui/rc/components'
 import {
   getPolicyListRoutePath,
   getPolicyRoutePath,
@@ -22,6 +37,7 @@ import Edges                                        from './pages/Devices/Edge'
 import AddEdge                                      from './pages/Devices/Edge/AddEdge'
 import EdgeDetails                                  from './pages/Devices/Edge/EdgeDetails'
 import EditEdge                                     from './pages/Devices/Edge/EdgeDetails/EditEdge'
+import EditEdgeCluster                              from './pages/Devices/Edge/EditEdgeCluster'
 import { SwitchList, SwitchTabsEnum }               from './pages/Devices/Switch'
 import { StackForm }                                from './pages/Devices/Switch/StackForm'
 import SwitchDetails                                from './pages/Devices/Switch/SwitchDetails'
@@ -31,25 +47,21 @@ import { AccessPointList, WifiTabsEnum }            from './pages/Devices/Wifi'
 import ApDetails                                    from './pages/Devices/Wifi/ApDetails'
 import { ApEdit }                                   from './pages/Devices/Wifi/ApEdit'
 import { ApForm }                                   from './pages/Devices/Wifi/ApForm'
-import { ApGroupForm }                              from './pages/Devices/Wifi/ApGroupForm'
+import ApGroupDetails                               from './pages/Devices/Wifi/ApGroupDetails'
+import { ApGroupEdit }                              from './pages/Devices/Wifi/ApGroupEdit'
 import Wired                                        from './pages/Networks/wired'
 import CliTemplateForm                              from './pages/Networks/wired/onDemandCli/CliTemplateForm'
 import CliProfileForm                               from './pages/Networks/wired/profiles/CliProfileForm'
 import { ConfigurationProfileForm }                 from './pages/Networks/wired/profiles/ConfigurationProfileForm'
 import { NetworksList, NetworkTabsEnum }            from './pages/Networks/wireless'
-import NetworkDetails                               from './pages/Networks/wireless/NetworkDetails/NetworkDetails'
-import NetworkForm                                  from './pages/Networks/wireless/NetworkForm/NetworkForm'
-import AAAPolicyDetail                              from './pages/Policies/AAA/AAADetail'
-import AAAForm                                      from './pages/Policies/AAA/AAAForm/AAAForm'
+import NetworkDetails                               from './pages/Networks/wireless/NetworkDetails'
 import AAATable                                     from './pages/Policies/AAA/AAATable/AAATable'
 import AccessControlDetail                          from './pages/Policies/AccessControl/AccessControlDetail'
-import AccessControlForm                            from './pages/Policies/AccessControl/AccessControlForm/AccessControlForm'
 import AccessControlTable                           from './pages/Policies/AccessControl/AccessControlTable/AccessControlTable'
 import AdaptivePolicyList, { AdaptivePolicyTabKey } from './pages/Policies/AdaptivePolicy'
 import AdaptivePolicyDetail                         from './pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyDetail/AdaptivePolicyDetail'
 import AdaptivePolicyForm                           from './pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyForm/AdaptivePolicyForm'
 import AdaptivePolicySetDetail                      from './pages/Policies/AdaptivePolicy/AdaptivePolicySet/AdaptivePolicySetDetail/AdaptivePolicySetDetail'
-import AdaptivePolicySetForm                        from './pages/Policies/AdaptivePolicy/AdaptivePolicySet/AdaptivePolicySetFom/AdaptivePolicySetForm'
 import RadiusAttributeGroupDetail
   // eslint-disable-next-line max-len
   from './pages/Policies/AdaptivePolicy/RadiusAttributeGroup/RadiusAttributeGroupDetail/RadiusAttributeGroupDetail'
@@ -57,45 +69,43 @@ import RadiusAttributeGroupForm
   // eslint-disable-next-line max-len
   from './pages/Policies/AdaptivePolicy/RadiusAttributeGroup/RadiusAttributeGroupForm/RadiusAttributeGroupForm'
 import ClientIsolationDetail                from './pages/Policies/ClientIsolation/ClientIsolationDetail/ClientIsolationDetail'
-import ClientIsolationForm                  from './pages/Policies/ClientIsolation/ClientIsolationForm/ClientIsolationForm'
 import ClientIsolationTable                 from './pages/Policies/ClientIsolation/ClientIsolationTable/ClientIsolationTable'
 import ConnectionMeteringDetail             from './pages/Policies/ConnectionMetering/ConnectionMeteringDetail'
 import ConnectionMeteringPageForm           from './pages/Policies/ConnectionMetering/ConnectionMeteringPageForm'
 import ConnectionMeteringTable              from './pages/Policies/ConnectionMetering/ConnectionMeteringTable'
+import IdentityProviderTable                from './pages/Policies/IdentityProvider/IdentityProviderTable/IdentityProviderTable'
 import MacRegistrationListDetails           from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
 import MacRegistrationListsTable            from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
-import MacRegistrationListForm              from './pages/Policies/MacRegistrationList/MacRegistrationListForm/MacRegistrationListForm'
 import MyPolicies                           from './pages/Policies/MyPolicies'
 import SelectPolicyForm                     from './pages/Policies/SelectPolicyForm'
 import SnmpAgentDetail                      from './pages/Policies/SnmpAgent/SnmpAgentDetail/SnmpAgentDetail'
 import SnmpAgentForm                        from './pages/Policies/SnmpAgent/SnmpAgentForm/SnmpAgentForm'
 import SnmpAgentTable                       from './pages/Policies/SnmpAgent/SnmpAgentTable/SnmpAgentTable'
-import SyslogDetailView                     from './pages/Policies/Syslog/SyslogDetail/SyslogDetailView'
-import SyslogForm                           from './pages/Policies/Syslog/SyslogForm/SyslogForm'
 import SyslogTable                          from './pages/Policies/Syslog/SyslogTable/SyslogTable'
 import AddTunnelProfile                     from './pages/Policies/TunnelProfile/AddTunnelProfile'
 import EditTunnelProfile                    from './pages/Policies/TunnelProfile/EditTunnelProfile'
 import TunnelProfileDetail                  from './pages/Policies/TunnelProfile/TunnelProfileDetail'
 import TunnelProfileTable                   from './pages/Policies/TunnelProfile/TunnelProfileTable'
 import VLANPoolDetail                       from './pages/Policies/VLANPool/VLANPoolDetail'
-import VLANPoolForm                         from './pages/Policies/VLANPool/VLANPoolForm/VLANPoolForm'
 import VLANPoolTable                        from './pages/Policies/VLANPool/VLANPoolTable/VLANPoolTable'
 import DHCPDetail                           from './pages/Services/DHCP/DHCPDetail'
-import DHCPForm                             from './pages/Services/DHCP/DHCPForm/DHCPForm'
 import DHCPTable                            from './pages/Services/DHCP/DHCPTable/DHCPTable'
 import AddDHCP                              from './pages/Services/DHCP/Edge/AddDHCP'
 import EdgeDHCPDetail                       from './pages/Services/DHCP/Edge/DHCPDetail'
 import EdgeDhcpTable                        from './pages/Services/DHCP/Edge/DHCPTable'
 import EditDhcp                             from './pages/Services/DHCP/Edge/EditDHCP'
 import DpskDetails                          from './pages/Services/Dpsk/DpskDetail/DpskDetails'
-import DpskForm                             from './pages/Services/Dpsk/DpskForm/DpskForm'
 import DpskTable                            from './pages/Services/Dpsk/DpskTable/DpskTable'
-import AddCentralizedForwarding             from './pages/Services/EdgeCentralizedForwarding/AddCentralizedForwarding'
-import EditCentralizedForwarding            from './pages/Services/EdgeCentralizedForwarding/EditCentralizedForwarding'
 import AddFirewall                          from './pages/Services/EdgeFirewall/AddFirewall'
 import EditFirewall                         from './pages/Services/EdgeFirewall/EditFirewall'
 import FirewallDetail                       from './pages/Services/EdgeFirewall/FirewallDetail'
 import FirewallTable                        from './pages/Services/EdgeFirewall/FirewallTable'
+import AddEdgeSdLan                         from './pages/Services/EdgeSdLan/AddEdgeSdLan'
+import EdgeSdLanDetail                      from './pages/Services/EdgeSdLan/EdgeSdLanDetail'
+import EdgeSdLanTable                       from './pages/Services/EdgeSdLan/EdgeSdLanTable'
+import EditEdgeSdLan                        from './pages/Services/EdgeSdLan/EditEdgeSdLan'
+import AddEdgeSdLanP2                       from './pages/Services/EdgeSdLanP2/AddEdgeSdLan'
+import EditEdgeSdLanP2                      from './pages/Services/EdgeSdLanP2/EditEdgeSdLan'
 import MdnsProxyDetail                      from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm                        from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import MdnsProxyTable                       from './pages/Services/MdnsProxy/MdnsProxyTable/MdnsProxyTable'
@@ -108,15 +118,11 @@ import NetworkSegAuthDetail                 from './pages/Services/NetworkSegWeb
 import NetworkSegAuthForm                   from './pages/Services/NetworkSegWebAuth/NetworkSegAuthForm'
 import NetworkSegAuthTable                  from './pages/Services/NetworkSegWebAuth/NetworkSegAuthTable'
 import PortalServiceDetail                  from './pages/Services/Portal/PortalDetail'
-import PortalForm                           from './pages/Services/Portal/PortalForm/PortalForm'
 import PortalTable                          from './pages/Services/Portal/PortalTable'
 import ResidentPortalDetail                 from './pages/Services/ResidentPortal/ResidentPortalDetail/ResidentPortalDetail'
 import ResidentPortalTable                  from './pages/Services/ResidentPortal/ResidentPortalTable/ResidentPortalTable'
 import SelectServiceForm                    from './pages/Services/SelectServiceForm'
 import ServiceCatalog                       from './pages/Services/ServiceCatalog'
-import WifiCallingDetailView                from './pages/Services/WifiCalling/WifiCallingDetail/WifiCallingDetailView'
-import WifiCallingConfigureForm             from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingConfigureForm'
-import WifiCallingForm                      from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingForm'
 import WifiCallingTable                     from './pages/Services/WifiCalling/WifiCallingTable/WifiCallingTable'
 import Timeline                             from './pages/Timeline'
 import PersonaPortal                        from './pages/Users/Persona'
@@ -150,6 +156,9 @@ function DeviceRoutes () {
       <Route path='devices' element={<TenantNavigate replace to='/devices/wifi' />} />
       <Route path='devices/wifi' element={<AccessPointList tab={WifiTabsEnum.LIST} />} />
       <Route
+        path='devices/wifi/apgroups'
+        element={<AccessPointList tab={WifiTabsEnum.AP_GROUP}/>} />
+      <Route
         path='devices/wifi/reports/aps'
         element={<AccessPointList tab={WifiTabsEnum.AP_REPORT} />} />
       <Route
@@ -161,8 +170,10 @@ function DeviceRoutes () {
         path='devices/wifi/:serialNumber/:action/:activeTab/:activeSubTab'
         element={<ApEdit />}
       />
-      <Route path='devices/apgroups/:apGroupId/:action' element={<ApGroupForm />} />
-      <Route path='devices/apgroups/:action' element={<ApGroupForm />} />
+      <Route path='devices/apgroups/:apGroupId/details/:activeTab' element={<ApGroupDetails />}/>
+      <Route path='devices/apgroups/:apGroupId/:action/:activeTab' element={<ApGroupEdit />} />
+      <Route path='devices/apgroups/:apGroupId/:action' element={<ApGroupEdit />} />
+      <Route path='devices/apgroups/:action' element={<ApGroupEdit />} />
       <Route
         path='devices/wifi/:apId/details/:activeTab'
         element={<ApDetails />} />
@@ -195,6 +206,8 @@ function DeviceRoutes () {
         element={<EdgeDetails />} />
       <Route path='devices/edge/:serialNumber/details/:activeTab/:activeSubTab'
         element={<EdgeDetails />} />
+      <Route path='devices/edge/cluster/:clusterId/edit/:activeTab'
+        element={<EditEdgeCluster />} />
       <Route path='devices/switch' element={<SwitchList tab={SwitchTabsEnum.LIST} />} />
       <Route path='devices/switch/reports/wired'
         element={<SwitchList tab={SwitchTabsEnum.WIRED_REPORT} />} />
@@ -257,23 +270,50 @@ function NetworkRoutes () {
   )
 }
 
-const centralizeForwardingRoutes = () => {
+const edgeSdLanRoutes = () => {
   return <>
-    <Route path='*' element={<PageNotFound />} />
     <Route
-      path={getServiceRoutePath({ type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
-        oper: ServiceOperation.CREATE })}
-      element={<AddCentralizedForwarding />}
+      path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
+        oper: ServiceOperation.LIST })}
+      element={<EdgeSdLanTable />}
     />
     <Route
-      path={getServiceRoutePath({ type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
+      path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
+        oper: ServiceOperation.CREATE })}
+      element={<AddEdgeSdLan />}
+    />
+    <Route
+      path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
         oper: ServiceOperation.EDIT })}
-      element={<EditCentralizedForwarding />}
+      element={<EditEdgeSdLan />}
+    />
+    <Route
+      path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
+        oper: ServiceOperation.DETAIL })}
+      element={<EdgeSdLanDetail />}
     />
   </>
 }
 
+const edgeSdLanPhase2Routes = () => {
+  return <><Route
+    path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN_P2,
+      oper: ServiceOperation.CREATE })}
+    element={<AddEdgeSdLanP2 />}
+  />
+  <Route
+    path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN_P2,
+      oper: ServiceOperation.EDIT })}
+    element={<EditEdgeSdLanP2 />}
+  />
+  </>
+}
+
+
 function ServiceRoutes () {
+  const isEdgeSdLanEnabled = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanPhase2Enabled = useIsSplitOn(Features.EDGES_SD_LAN_PHASE2_TOGGLE)
+
   return rootRoutes(
     <Route path=':tenantId/t'>
       <Route path='*' element={<PageNotFound />} />
@@ -467,7 +507,8 @@ function ServiceRoutes () {
         element={<EditFirewall />}
       />
 
-      {centralizeForwardingRoutes()}
+      {isEdgeSdLanEnabled && edgeSdLanRoutes()}
+      {isEdgeSdLanPhase2Enabled && edgeSdLanPhase2Routes()}
     </Route>
   )
 }
@@ -502,17 +543,14 @@ function PolicyRoutes () {
         element={<RogueAPDetectionTable />}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
         element={<AAAForm edit={false}/>}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.EDIT })}
         element={<AAAForm edit={true}/>}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.DETAIL })}
         element={<AAAPolicyDetail/>}
       />
@@ -521,12 +559,10 @@ function PolicyRoutes () {
         element={<AAATable />}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.CREATE })}
         element={<SyslogForm edit={false}/>}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.EDIT })}
         element={<SyslogForm edit={true}/>}
       />
@@ -534,7 +570,6 @@ function PolicyRoutes () {
         path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.LIST })}
         element={<SyslogTable />} />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.DETAIL })}
         element={<SyslogDetailView />}
       />
@@ -557,17 +592,14 @@ function PolicyRoutes () {
           element={<MacRegistrationListForm editMode={true} />}
         /> </> : <></> }
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.CREATE })}
         element={<VLANPoolForm edit={false}/>}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.EDIT })}
         element={<VLANPoolForm edit={true}/>}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.DETAIL })}
         element={<VLANPoolDetail/>}
       />
@@ -580,12 +612,10 @@ function PolicyRoutes () {
         element={<AccessControlForm editMode={false}/>}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT })}
         element={<AccessControlForm editMode={true}/>}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.DETAIL })}
         element={<AccessControlDetail />}
       />
@@ -614,11 +644,14 @@ function PolicyRoutes () {
       />
       <Route
         // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.LIST })}
+        element={<IdentityProviderTable />}
+      />
+      <Route
         path={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE })}
         element={<SnmpAgentForm editMode={false}/>}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.EDIT })}
         element={<SnmpAgentForm editMode={true}/>}
       />
@@ -627,7 +660,6 @@ function PolicyRoutes () {
         element={<SnmpAgentTable />}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.DETAIL })}
         element={<SnmpAgentDetail />}
       />

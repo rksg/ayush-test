@@ -1,10 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
-import { act }   from 'react-dom/test-utils'
 import { Path }  from 'react-router-dom'
 
-
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useIsSplitOn }                    from '@acx-ui/feature-toggle'
+import { connectionMeteringApi, venueApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   ConnectionMetering,
@@ -20,8 +19,8 @@ import {
   PolicyOperation,
   PolicyType
 } from '@acx-ui/rc/utils'
-import { Provider }                                                                          from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { Provider, store }                                                        from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import ConnectionMeteringTable from './index'
 
@@ -168,6 +167,8 @@ describe('ConnectionMeteringTable', () => {
 
   beforeEach(async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    store.dispatch(connectionMeteringApi.util.resetApiState())
+    store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.post(
         replacePagination(ConnectionMeteringUrls.searchConnectionMeteringList.url),
@@ -220,13 +221,11 @@ describe('ConnectionMeteringTable', () => {
     })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await screen.findByRole('link', { name: connectionMeterings[0].name })
+
     const addButton = await screen.findByRole('button', { name: 'Add Data Usage Metering Profile' })
-
-
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(()=> {
-      fireEvent.click(addButton)
-    })
+    await userEvent.click(addButton)
+    //TODO: should fix warning: No routes matched location
   })
 
   it('should show error when tring to delete in used profile', async () => {
@@ -238,19 +237,13 @@ describe('ConnectionMeteringTable', () => {
 
     const row = await screen.findByRole('row', { name: /profile1/i })
     // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(()=> {
-      fireEvent.click(within(row).getByRole('radio'))
-      fireEvent.click(screen.getByRole('button', { name: /Delete/i }))
-    })
-
+    await userEvent.click(within(row).getByRole('radio'))
+    await userEvent.click(screen.getByRole('button', { name: /Delete/i }))
 
     await screen.findByText(/You are unable to delete .*/)
 
     const okButton = await screen.findByRole('button', { name: /OK/i })
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(()=> {
-      fireEvent.click(okButton)
-    })
+    await userEvent.click(okButton)
     await waitForElementToBeRemoved(() => screen.queryByRole('dialog'))
   })
 
@@ -262,16 +255,11 @@ describe('ConnectionMeteringTable', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const row = await screen.findByRole('row', { name: /profile1/ })
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(()=> {
-      fireEvent.click(within(row).getByRole('radio'))
-    })
+    await userEvent.click(within(row).getByRole('radio'))
 
     const editButton = await screen.findByRole('button', { name: /Edit/i })
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(()=> {
-      fireEvent.click(editButton)
-    })
+    await userEvent.click(editButton)
+    //
   })
 
   it('should delete selected row', async () => {
@@ -284,18 +272,14 @@ describe('ConnectionMeteringTable', () => {
     const row = await screen.findByRole('row', { name: /profile2/i })
 
     // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(()=> {
-      fireEvent.click(within(row).getByRole('radio'))
-      fireEvent.click(screen.getByRole('button', { name: /Delete/i }))
-    })
+    await userEvent.click(within(row).getByRole('radio'))
+    await userEvent.click(screen.getByRole('button', { name: /Delete/i }))
 
     await screen.findByText('Delete "profile2"?')
 
     const deleteButton = await screen.findByText('Delete Profile')
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(()=> {
-      fireEvent.click(deleteButton)
-    })
+    await userEvent.click(deleteButton)
+
     await waitFor(() => {
       expect(deleteFn).toHaveBeenCalled()
     })

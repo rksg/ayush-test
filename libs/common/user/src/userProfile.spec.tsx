@@ -11,7 +11,9 @@ function setRole (role: RolesEnum) {
       ...profile.profile,
       roles: [role]
     },
-    allowedOperations: ['GET:/networks']
+    allowedOperations: ['GET:/networks'],
+    accountTier: '',
+    betaEnabled: false
   })
 }
 

@@ -8,7 +8,8 @@ import {
   fireEvent,
   mockServer,
   render,
-  screen
+  screen,
+  within
 } from '@acx-ui/test-utils'
 
 import { apDetailData } from './__tests__/fixtures'
@@ -57,8 +58,11 @@ describe('ApPageHeader', () => {
     render(<ApPageHeader />, { route: { params }, wrapper: Provider })
 
     await userEvent.click(await screen.findByText('More Actions'))
-
     await userEvent.click(await screen.findByText('Reboot'))
+
+    const dialog = await screen.findByRole('dialog')
+    expect(await within(dialog).findByText(/Reboot Access Point/)).toBeVisible()
+
   })
 
   it('should render correct breadcrumb', async () => {

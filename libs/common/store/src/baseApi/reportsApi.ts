@@ -10,5 +10,6 @@ export const reportsApi = createApi({
   }),
   reducerPath: 'reportsApi',
   refetchOnMountOrArgChange: true,
+  tagTypes: ['REPORTS', 'DATA_STUDIO'],
   endpoints: () => ({ })
 })

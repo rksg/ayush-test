@@ -1,8 +1,43 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`getRLSClauseForSA should handle systems with same name: rlsClauseOverviewForSA 1`] = `
+Object {
+  "networkClause": "(\\"system\\" = 'd6c06b5f-ece3-4435-94a2-aa401da0faf1' OR \\"system\\" = '00000000-0000-0000-0000-000000000000') AND \\"domains\\" like '%SQA Sunnyvale%' AND \\"zoneName\\" = 'Sky High Properties' AND \\"apGroupName\\" = '2Chambers-Roam' AND \\"apMac\\" = '1C:3A:60:31:8D:A0'",
+  "radioBandClause": null,
+}
+`;
+
+exports[`getRLSClauseForSA should return RLS clause based on report type - AP: rlsClauseAPForSA 1`] = `
+Object {
+  "networkClause": "\\"system\\" = 'd6c06b5f-ece3-4435-94a2-aa401da0faf1' AND \\"domains\\" like '%SQA Sunnyvale%' AND \\"zoneName\\" = 'Sky High Properties' AND \\"apGroupName\\" = '2Chambers-Roam' AND \\"apMac\\" = '1C:3A:60:31:8D:A0'",
+  "radioBandClause": null,
+}
+`;
+
+exports[`getRLSClauseForSA should return RLS clause based on report type - SWITCH: rlsClauseSwitchForSA 1`] = `
+Object {
+  "networkClause": "\\"system\\" = 'e68b9f11-2266-40a5-8dc0-efd89f59bd0f' AND \\"switchGroupLevelOneName\\" = 'AISH-7.0-SWITCH_7750' AND \\"switchId\\" = '60:9C:9F:1F:5F:00'",
+  "radioBandClause": null,
+}
+`;
+
+exports[`getRLSClauseForSA should return empty RLS clause for Overview: rlsClauseOverviewForSA 1`] = `
+Object {
+  "networkClause": "",
+  "radioBandClause": "",
+}
+`;
+
 exports[`getSupersetRlsClause should return RLS clause based network filters and report type: rlsClauseApplicationReport 1`] = `
 Object {
   "networkClause": " (\\"zoneName\\" in ('Sindhuja-Venue') OR \\"apMac\\" in ('00:0C:29:1E:9F:E4', '38:FF:36:13:DB:D0'))",
+  "radioBandClause": "",
+}
+`;
+
+exports[`getSupersetRlsClause should return RLS clause based network filters and report type: rlsClauseOverviewReport 1`] = `
+Object {
+  "networkClause": "",
   "radioBandClause": "",
 }
 `;

@@ -91,6 +91,8 @@ export const showActionModal = (props: ModalProps) => {
 
 const transformProps = (props: ModalProps, modal: ModalRef) => {
   const { $t } = getIntl()
+  const okText = $t({ defaultMessage: 'OK' })
+  const cancelText = $t({ defaultMessage: 'Cancel' })
   switch (props.customContent?.action) {
     case 'DELETE':
       const {
@@ -148,6 +150,8 @@ const transformProps = (props: ModalProps, modal: ModalRef) => {
       }
       break
   }
+  props.okText = props.okText?? okText
+  props.cancelText = props.cancelText?? cancelText
   return props
 }
 

@@ -5,7 +5,7 @@ import { isEmpty }                from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { Loader, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import { AnchorContext, Loader, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
 import {
   useGetApDirectedMulticastQuery,
   useLazyGetVenueDirectedMulticastQuery,
@@ -36,6 +36,7 @@ export function DirectedMulticast () {
   } = useContext(ApEditContext)
 
   const { apData: apDetails } = useContext(ApDataContext)
+  const { setReadyToScroll } = useContext(AnchorContext)
 
   const directedMulticast = useGetApDirectedMulticastQuery({ params: { serialNumber } })
   const [updateApDirectedMulticast, { isLoading: isUpdatingApDirectedMulticast }] =
@@ -94,6 +95,8 @@ export function DirectedMulticast () {
         if (formInitializing) {
           setInitData(directedMulticastData)
           setFormInitializing(false)
+
+          setReadyToScroll?.(r => [...(new Set(r.concat('Directed-Multicast')))])
         } else {
           formRef?.current?.setFieldsValue(directedMulticastData)
         }

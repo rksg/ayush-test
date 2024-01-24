@@ -198,6 +198,11 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/tenants/authentications',
     newApi: true
   },
+  patchTenantAuthentications: {
+    method: 'PATCH',
+    url: '/tenants/authentications/:authenticationId',
+    newApi: true
+  },
   updateTenantAuthentications: {
     method: 'put',
     url: '/tenants/authentications/:authenticationId',
@@ -207,9 +212,34 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/tenants/authentications/:authenticationId',
     newApi: true
-  }
+  },
   // acceptRejectInvitation: {
   //   method: 'put',
   //   url: '/api/tenant/:tenantId/delegation/:delegationId'
   // }
+  getAdminGroups: {
+    method: 'get',
+    url: '/groups',
+    newApi: true
+  },
+  addAdminGroups: {
+    method: 'post',
+    url: '/groups',
+    newApi: true
+  },
+  updateAdminGroups: {
+    method: 'PATCH',
+    url: '/groups/:groupId',
+    newApi: true
+  },
+  deleteAdminGroups: {
+    method: 'delete',
+    url: '/groups',
+    newApi: true
+  },
+  getAdminGroupLastLogins: {
+    method: 'get',
+    url: '/events/adminGroups/:adminGroupId/latestLogins',
+    newApi: true
+  }
 }

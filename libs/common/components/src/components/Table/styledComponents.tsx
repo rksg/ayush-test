@@ -138,6 +138,7 @@ type StyledTable = {
   $type: 'tall' | 'compact' | 'tooltip' | 'form' | 'compactBordered'
   $stickyHeaders?: boolean
   $stickyPagination?: boolean
+  children?: React.ReactNode[]
 }
 
 export const ResizableHover = styled.div``
@@ -265,6 +266,44 @@ const tallStyle = css<StyledTable>`
       padding: 16px 0;
       margin: unset;
     }
+
+    ${({ children }) =>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    children?.find((child: any) => child?.props?.expandable?.type === 'default') && css`
+      .ant-table-expanded-row-fixed {
+        margin: -18px -8px !important;
+        padding: 12px 8px !important;
+      }
+      .ant-table-row-expand-icon-cell {
+        padding: 0 !important;
+        svg {
+          display: block;
+          width: 16px;
+          height: 16px;
+          cursor: pointer;
+          path {
+            stroke: var(--acx-accents-blue-50);
+          }
+        }      
+      }
+  
+      .ant-pro-table {
+        margin: -8px !important;
+        .ant-table {
+          &-thead > tr th {
+            background: var(--acx-neutrals-30)
+          }
+          &-thead > tr th:first-child,
+          &-tbody > tr td:first-child {
+            padding-left: 46px;
+          }
+          &-tbody > tr:last-child > td {
+            border-bottom: 0;
+          }
+        }
+      }
+    `}
+
   }
 `
 

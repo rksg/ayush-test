@@ -123,14 +123,14 @@ export function transformNetworkEncryption (type: WlanSecurityEnum | undefined) 
     [WlanSecurityEnum.WPA2Personal]: 'WPA2',
     [WlanSecurityEnum.WEP]: 'WEP',
     [WlanSecurityEnum.WPAPersonal]: 'WPA',
-    [WlanSecurityEnum.WPA23Mixed]: 'WPA3/WPA2 mixed mode'
+    [WlanSecurityEnum.WPA23Mixed]: 'WPA2/WPA3 mixed mode'
   }
   return type ? map[type] : ''
 }
 
 export const networkTypes: Record<NetworkTypeEnum, MessageDescriptor> = {
   [NetworkTypeEnum.OPEN]: defineMessage({ defaultMessage: 'Open Network' }),
-  [NetworkTypeEnum.PSK]: defineMessage({ defaultMessage: 'Pre-Shared Key (PSK)' }),
+  [NetworkTypeEnum.PSK]: defineMessage({ defaultMessage: 'Passphrase (PSK/SAE)' }),
   [NetworkTypeEnum.DPSK]: defineMessage({ defaultMessage: 'Dynamic Pre-Shared Key (DPSK)' }),
   [NetworkTypeEnum.AAA]: defineMessage({ defaultMessage: 'Enterprise AAA (802.1X)' }),
   [NetworkTypeEnum.CAPTIVEPORTAL]: defineMessage({ defaultMessage: 'Captive Portal' })
@@ -166,8 +166,8 @@ export const wlanSecurity: Record<WlanSecurityEnum, MessageDescriptor> = {
     description: 'WLAN security type - WEP'
   }),
   [WlanSecurityEnum.WPA23Mixed]: defineMessage({
-    defaultMessage: 'WPA3/WPA2 Mixed',
-    description: 'WLAN security type - WPA3/WPA2 Mixed'
+    defaultMessage: 'WPA2/WPA3 Mixed',
+    description: 'WLAN security type - WPA2/WPA3 Mixed'
   }),
   [WlanSecurityEnum.WPA3]: defineMessage({
     defaultMessage: 'WPA3',

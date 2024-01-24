@@ -23,7 +23,9 @@ import {
   EntitlementSummary,
   Entitlement,
   NewEntitlementSummary,
-  TenantAuthentications
+  TenantAuthentications,
+  AdminGroup,
+  AdminGroupLastLogins
 } from '@acx-ui/rc/utils'
 import { baseAdministrationApi }                        from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -568,6 +570,15 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         }
       }
     }),
+    patchTenantAuthentications: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.patchTenantAuthentications, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     updateTenantAuthentications: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(AdministrationUrlsInfo.updateTenantAuthentications, params)
@@ -576,7 +587,69 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getAdminGroups: build.query<AdminGroup[], RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getAdminGroups, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Administration', id: 'ADMINGROUP_LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'addGroup',
+            'patchGroup',
+            'deleteGroups'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'Administration', id: 'ADMINGROUP_LIST' }
+            ]))
+          })
+        })
+      }
+
+    }),
+    deleteAdminGroups: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.deleteAdminGroups, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    addAdminGroups: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.addAdminGroups, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    updateAdminGroups: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.updateAdminGroups, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getAdminGroupLastLogins: build.query<AdminGroupLastLogins, RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getAdminGroupLastLogins, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Administration', id: 'ADMINGROUP_LIST' }]
     })
+
   })
 })
 
@@ -631,5 +704,11 @@ export const {
   useGetTenantAuthenticationsQuery,
   useDeleteTenantAuthenticationsMutation,
   useAddTenantAuthenticationsMutation,
-  useUpdateTenantAuthenticationsMutation
+  usePatchTenantAuthenticationsMutation,
+  useUpdateTenantAuthenticationsMutation,
+  useGetAdminGroupsQuery,
+  useDeleteAdminGroupsMutation,
+  useAddAdminGroupsMutation,
+  useUpdateAdminGroupsMutation,
+  useGetAdminGroupLastLoginsQuery
 } = administrationApi

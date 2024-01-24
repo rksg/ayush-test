@@ -92,6 +92,27 @@ export const searchFixture = {
           }
         ],
         switchCount: null
+      },
+      {
+        name: '7450-zone',
+        root: 'AISH-vSZ',
+        type: 'Switch Group',
+        apCount: null,
+        networkPath: [
+          {
+            name: 'Network',
+            type: 'network'
+          },
+          {
+            name: 'AISH-vSZ',
+            type: 'system'
+          },
+          {
+            name: '7450-zone',
+            type: 'switchGroup'
+          }
+        ],
+        switchCount: 1
       }
     ],
     aps: [

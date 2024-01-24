@@ -4,8 +4,7 @@ import { rest }  from 'msw'
 
 import { StepsForm } from '@acx-ui/components'
 import {
-  DpskUrls, PersonaUrls,
-  PropertyUrlsInfo
+  CommonUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -15,18 +14,10 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  mockAvailablePropertyConfigs,
-  mockDpsk, mockPersonaGroup,
-  mockPropertyConfigs
+  mockVenueData
 } from '../../__tests__/fixtures'
 
 import { GeneralSettingsForm } from '.'
-
-const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
-}))
 
 type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void
@@ -48,7 +39,12 @@ jest.mock('antd', () => {
   return { ...components, Select }
 })
 
-const mockedFinishFn = jest.fn()
+jest.mock('./PersonalIdentityPreparationListDrawer', () => ({
+  PersonalIdentityPreparationListDrawer: () => <div data-testid='PersonalIdentityPreparationListDrawer' />
+}))
+jest.mock('./PropertyManagementInfo', () => ({
+  PropertyManagementInfo: () => <div data-testid='PropertyManagementInfo' />
+}))
 
 const createNsgPath = '/:tenantId/services/personalIdentityNetwork/create'
 
@@ -62,59 +58,57 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
 
     mockServer.use(
       rest.post(
-        PropertyUrlsInfo.getPropertyConfigsQuery.url,
-        (req, res, ctx) => res(ctx.json(mockAvailablePropertyConfigs))
-      ),
-      rest.get(
-        PropertyUrlsInfo.getPropertyConfigs.url,
-        (req, res, ctx) => res(ctx.json(mockPropertyConfigs))
-      ),
-      rest.get(
-        PersonaUrls.getPersonaGroupById.url,
-        (req, res, ctx) => res(ctx.json(mockPersonaGroup))
-      ),
-      rest.get(
-        DpskUrls.getDpsk.url,
-        (req, res, ctx) => res(ctx.json(mockDpsk))
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json(mockVenueData))
       )
     )
   })
 
-  it('Step1 - General setting success', async () => {
-    const user = userEvent.setup()
+  it('Step1 - Shuould render general setting successfully', async () => {
     render(
       <Provider>
-        <StepsForm onFinish={mockedFinishFn}>
+        <StepsForm>
           <StepsForm.StepForm>
             <GeneralSettingsForm />
           </StepsForm.StepForm>
         </StepsForm>
       </Provider>,
       { route: { params, path: createNsgPath } })
-    const serviceNameInput = await screen.findByRole('textbox', { name: 'Service Name' })
-    await user.type(serviceNameInput, 'TestService')
-    await screen.findByRole('combobox', { name: 'Venue with the property management enabled' })
-    await user.selectOptions(
+    expect(await screen.findByRole('textbox', { name: 'Service Name' })).toBeVisible()
+    expect(await screen.findByRole('combobox', { name: 'Venue with the property management enabled' })).toBeVisible()
+    expect(await screen.findByTestId('PersonalIdentityPreparationListDrawer')).toBeVisible()
+  })
+
+  it('Step1 - Shuould show property config when the venue has been selected', async () => {
+    render(
+      <Provider>
+        <StepsForm>
+          <StepsForm.StepForm>
+            <GeneralSettingsForm />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </Provider>,
+      { route: { params, path: createNsgPath } })
+    expect(screen.queryByTestId('PropertyManagementInfo')).not.toBeInTheDocument()
+    await userEvent.selectOptions(
       await screen.findByRole('combobox', { name: 'Venue with the property management enabled' }),
       await screen.findByRole('option', { name: 'Mock Venue 1' })
     )
-    expect(await screen.findByRole('table')).toBeVisible()
-    await user.click(await screen.findByRole('button', { name: 'Add' }))
+    await screen.findByTestId('PropertyManagementInfo')
   })
 
   it('Step1 - General setting will be block by mandatory validation', async () => {
-    const user = userEvent.setup()
     render(
       <Provider>
-        <StepsForm onFinish={mockedFinishFn}>
+        <StepsForm>
           <StepsForm.StepForm>
             <GeneralSettingsForm />
           </StepsForm.StepForm>
         </StepsForm>
       </Provider>,
       { route: { params, path: createNsgPath } })
-    await user.click(await screen.findByRole('button', { name: 'Add' }))
-    await screen.findByText('Please enter Service Name')
-    await screen.findByText('Please select a Venue')
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+    expect(await screen.findByText('Please enter Service Name')).toBeVisible()
+    expect(await screen.findByText('Please select a Venue')).toBeVisible()
   })
 })

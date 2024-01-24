@@ -27,7 +27,8 @@ export function getPendoConfig (): PendoParameters {
       productName: 'RuckusAI',
       id: tenant.id,
       name: tenant.name,
-      isTrial: tenant.isTrial
+      isTrial: tenant.isTrial,
+      sfdcId: tenant.id
     }
   }
 }

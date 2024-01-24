@@ -157,6 +157,8 @@ npx nx affected:lint --fix
 
 ```sh
 npx nx run common-components:storybook
+
+npx nx run rc-components:storybook
 ```
 
 ### Other Nx commands

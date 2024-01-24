@@ -49,7 +49,8 @@ const defaultPayload = {
     'transactionId',
     'name',
     'ipAddress',
-    'detailedDescription'
+    'detailedDescription',
+    'Persona-ID'
   ]
 }
 

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import _          from 'lodash'
 import { Params } from 'react-router-dom'
 
@@ -23,6 +24,7 @@ import {
   WifiApSetting,
   ApLanPort,
   ApLedSettings,
+  ApBandModeSettings,
   ApBssColoringSettings,
   APPhoto,
   ApViewModel,
@@ -52,7 +54,11 @@ import {
   ApClientAdmissionControl,
   AFCInfo,
   AFCPowerMode,
-  AFCStatus
+  AFCStatus,
+  ApGroupViewModel,
+  ApManagementVlan,
+  ApFeatureSet,
+  ApAntennaTypeSettings
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -107,21 +113,36 @@ export const apApi = baseApApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    apGroupList: build.query<ApGroup[], RequestPayload>({
+    apGroupListByVenue: build.query<ApGroup[], RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getApGroupList, params)
+        const req = createHttpRequest(CommonUrlsInfo.getApGroupListByVenue, params)
         return {
           ...req
         }
       }
     }),
-    apGroupsList: build.query<TableResult<ApGroup>, RequestPayload>({
+    apGroupsList: build.query<TableResult<ApGroupViewModel>, RequestPayload>({
       query: ({ params, payload }) => {
         const venueListReq = createHttpRequest(WifiUrlsInfo.getApGroupsList, params)
         return {
           ...venueListReq,
           body: payload
         }
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'ApGroup', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'AddApGroup',
+            'UpdateApGroup',
+            'DeleteApGroups',
+            'AddApGroupLegacy'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(apApi.util.invalidateTags([{ type: 'ApGroup', id: 'LIST' }]))
+          })
+        })
       }
     }),
     getApGroup: build.query<ApGroup, RequestPayload>({
@@ -132,7 +153,17 @@ export const apApi = baseApApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Ap', id: 'LIST' }]
+      providesTags: [{ type: 'ApGroup', id: 'LIST' }, { type: 'Ap', id: 'LIST' }]
+    }),
+    addApGroup: build.mutation<AddApGroup, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.addApGroup, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'ApGroup', id: 'LIST' }, { type: 'Ap', id: 'LIST' }]
     }),
     updateApGroup: build.mutation<ApGroup, RequestPayload>({
       query: ({ params, payload }) => {
@@ -142,7 +173,7 @@ export const apApi = baseApApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
+      invalidatesTags: [{ type: 'ApGroup', id: 'LIST' }, { type: 'Ap', id: 'LIST' }]
     }),
     deleteApGroups: build.mutation<ApGroup[], RequestPayload>({
       query: ({ params, payload }) => {
@@ -152,7 +183,18 @@ export const apApi = baseApApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
+      invalidatesTags: [{ type: 'ApGroup', id: 'LIST' }, { type: 'Ap', id: 'LIST' }]
+    }),
+    venueDefaultApGroup: build.query<VenueDefaultApGroup[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getVenueDefaultApGroup, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse (result: VenueDefaultApGroup) {
+        return Array.isArray(result) ? result : [result]
+      }
     }),
     addAp: build.mutation<ApDeep, RequestPayload>({
       query: ({ params, payload }) => {
@@ -215,7 +257,8 @@ export const apApi = baseApApi.injectEndpoints({
         return {
           ...req
         }
-      }
+      },
+      keepUnusedDataFor: 0
     }),
     getAp: build.query<ApDeep, RequestPayload>({
       query: ({ params, payload }) => {
@@ -283,26 +326,6 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
-    }),
-    addApGroup: build.mutation<AddApGroup, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.addApGroup, params)
-        return {
-          ...req,
-          body: payload
-        }
-      }
-    }),
-    venueDefaultApGroup: build.query<VenueDefaultApGroup[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getVenueDefaultApGroup, params)
-        return {
-          ...req
-        }
-      },
-      transformResponse (result: VenueDefaultApGroup) {
-        return Array.isArray(result) ? result : [result]
-      }
     }),
     wifiCapabilities: build.query<Capabilities, RequestPayload>({
       query: ({ params }) => {
@@ -510,6 +533,15 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'PHOTO' }]
     }),
+    startPacketCapture: build.mutation<PacketCaptureOperationResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.startPacketCapture, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     stopPacketCapture: build.mutation<PingAp, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.stopPacketCapture, params)
@@ -577,6 +609,60 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'Led' }]
     }),
+    getApBandModeSettings: build.query<ApBandModeSettings, RequestPayload<void>>({
+      query: ({ params }) => createHttpRequest(WifiUrlsInfo.getApBandModeSettings, params),
+      providesTags: [{ type: 'Ap', id: 'BandModeSettings' }]
+    }),
+    updateApBandModeSettings: build.mutation<CommonResult, RequestPayload<ApBandModeSettings>>({
+      query: ({ params, payload }) => ({
+        ...createHttpRequest(WifiUrlsInfo.updateApBandModeSettings, params),
+        body: payload
+      }),
+      invalidatesTags: [{ type: 'Ap', id: 'BandModeSettings' }]
+    }),
+    resetApBandModeSettings: build.mutation<CommonResult, RequestPayload<void>>({
+      query: ({ params }) => createHttpRequest(WifiUrlsInfo.resetApBandModeSettings, params),
+      invalidatesTags: [{ type: 'Ap', id: 'BandModeSettings' }]
+    }),
+    getApAntennaTypeSettings: build.query<ApAntennaTypeSettings, RequestPayload<void>>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApAntennaTypeSettings, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'ANTENNA' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateApAntennaTypeSettings',
+            'ResetApAntennaTypeSettings'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'ANTENNA' }]))
+          })
+        })
+      }
+    }),
+    updateApAntennaTypeSettings: build.mutation<CommonResult, RequestPayload<ApAntennaTypeSettings>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateApAntennaTypeSettings, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'ANTENNA' }]
+    }),
+    resetApAntennaTypeSettings: build.mutation<CommonResult, RequestPayload<void>>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.resetApAntennaTypeSettings, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'ANTENNA' }]
+    }),
     getApBssColoring: build.query<ApBssColoringSettings, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.getApBssColoring, params)
@@ -625,15 +711,6 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
-    }),
-    startPacketCapture: build.mutation<PacketCaptureOperationResponse, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.startPacketCapture, params)
-        return {
-          ...req,
-          body: payload
-        }
-      }
     }),
     getApValidChannel: build.query<VenueDefaultRegulatoryChannels, RequestPayload>({
       query: ({ params }) => {
@@ -860,6 +937,54 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'ClientAdmissionControl' }]
+    }),
+    getApManagementVlan: build.query<ApManagementVlan, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApManagementVlan, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'ApManagementVlan' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateApManagementVlanSettings',
+            'ResetApManagementVlanSettings'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'ApManagementVlan' }]))
+          })
+        })
+      }
+    }),
+    updateApManagementVlan: build.mutation<ApManagementVlan, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateApManagementVlan, params)
+        return{
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'ApManagementVlan' }]
+    }),
+    deleteApManagementVlan: build.mutation<ApManagementVlan, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.deleteApManagementVlan, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'ApManagementVlan' }]
+    }),
+    getApFeatureSets: build.query<ApFeatureSet, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApFeatureSets, params, { ...ignoreErrorModal })
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'ApFeatureSets' }]
     })
   })
 })
@@ -869,6 +994,7 @@ export const {
   useLazyApListQuery,
   useApDetailHeaderQuery,
   useApViewModelQuery,
+  useLazyApViewModelQuery,
   useApDetailsQuery,
   useApLanPortsQuery,
   useAddApMutation,
@@ -879,8 +1005,8 @@ export const {
   useLazyGetApQuery,
   useUpdateApMutation,
   useAddApGroupMutation,
-  useApGroupListQuery,
-  useLazyApGroupListQuery,
+  useApGroupListByVenueQuery,
+  useLazyApGroupListByVenueQuery,
   useApGroupsListQuery,
   useLazyApGroupsListQuery,
   useWifiCapabilitiesQuery,
@@ -911,6 +1037,13 @@ export const {
   useGetApLedQuery,
   useUpdateApLedMutation,
   useResetApLedMutation,
+  useGetApBandModeSettingsQuery,
+  useUpdateApBandModeSettingsMutation,
+  useResetApBandModeSettingsMutation,
+  useGetApAntennaTypeSettingsQuery,
+  useLazyGetApAntennaTypeSettingsQuery,
+  useUpdateApAntennaTypeSettingsMutation,
+  useResetApAntennaTypeSettingsMutation,
   useGetApBssColoringQuery,
   useUpdateApBssColoringMutation,
   useGetApCapabilitiesQuery,
@@ -942,7 +1075,12 @@ export const {
   useRunCcdMutation,
   useGetApClientAdmissionControlQuery,
   useUpdateApClientAdmissionControlMutation,
-  useDeleteApClientAdmissionControlMutation
+  useDeleteApClientAdmissionControlMutation,
+  useGetApManagementVlanQuery,
+  useLazyGetApManagementVlanQuery,
+  useUpdateApManagementVlanMutation,
+  useDeleteApManagementVlanMutation,
+  useLazyGetApFeatureSetsQuery
 } = apApi
 
 

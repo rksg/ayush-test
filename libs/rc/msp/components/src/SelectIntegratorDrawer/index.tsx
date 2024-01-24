@@ -11,10 +11,12 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import {
   useAssignMspEcToIntegratorMutation,
   useMspCustomerListQuery,
-  useLazyGetAssignedMspEcToIntegratorQuery
+  useLazyGetAssignedMspEcToIntegratorQuery,
+  useAssignMspEcToMultiIntegratorsMutation
 } from '@acx-ui/msp/services'
 import {
   MspEc
@@ -23,6 +25,13 @@ import { useTableQuery } from '@acx-ui/rc/utils'
 import {
   AccountType
 } from '@acx-ui/utils'
+
+interface SelIntegrator {
+  delegation_id?: string,
+  delegation_type?: string,
+  number_of_days?: string,
+  mspec_id: string
+}
 
 interface IntegratorDrawerProps {
   visible: boolean
@@ -40,6 +49,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
   const [original, setOriginal] = useState({} as MspEc)
   const [form] = Form.useForm()
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([])
+  const techPartnerAssignEcsEnabled = useIsSplitOn(Features.TECH_PARTNER_ASSIGN_ECS)
 
   const [getAssignedEc] = useLazyGetAssignedMspEcToIntegratorQuery()
 
@@ -54,6 +64,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
   }
 
   const [ assignMspCustomers ] = useAssignMspEcToIntegratorMutation()
+  const [ assignMspCustomerToMutipleIntegrator ] = useAssignMspEcToMultiIntegratorsMutation()
 
   const handleSave = async () => {
     const selectedRows = form.getFieldsValue(['integrator'])
@@ -105,6 +116,36 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
             resetFields()
           })
       }
+    } else {
+      setSelected(tenantType as string, selectedRows.integrator)
+    }
+    setVisible(false)
+  }
+
+  const handleSaveMultiIntegrator = async () => {
+    const selectedRows = form.getFieldsValue(['integrator'])
+    if (tenantId && tenantType) {
+      let integratorList = [] as SelIntegrator[]
+      selectedRows.integrator.map((integrator: { id: string }) =>
+        integratorList.push({
+          delegation_id: integrator.id,
+          delegation_type: tenantType,
+          number_of_days: '',
+          mspec_id: tenantId
+        })
+      )
+      if (integratorList.length === 0) {
+        integratorList.push({ mspec_id: tenantId, delegation_type: tenantType })
+      }
+
+      let payload = {
+        AssignDelegatedRequest: integratorList
+      }
+      assignMspCustomerToMutipleIntegrator({ payload })
+        .then(() => {
+          setVisible(false)
+          resetFields()
+        })
     } else {
       setSelected(tenantType as string, selectedRows.integrator)
     }
@@ -174,7 +215,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
           type='form'
           rowKey='id'
           rowSelection={{
-            type: 'radio',
+            type: techPartnerAssignEcsEnabled ? 'checkbox' : 'radio',
             selectedRowKeys: selectedKeys,
             onChange (selectedRowKeys, selectedRows) {
               form.setFieldValue('integrator', selectedRows)
@@ -196,7 +237,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
   const footer =
     <Drawer.FormFooter
       onCancel={resetFields}
-      onSave={async () => handleSave()}
+      onSave={async () => techPartnerAssignEcsEnabled ? handleSaveMultiIntegrator() : handleSave()}
     />
 
   const title = tenantType === AccountType.MSP_INTEGRATOR

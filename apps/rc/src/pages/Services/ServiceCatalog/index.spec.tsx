@@ -26,6 +26,7 @@ describe('ServiceCatalog', () => {
 
     expect(screen.queryByText('Personal Identity Network')).toBeNull()
     expect(screen.queryByText('Firewall')).toBeNull()
+    expect(screen.queryByText('SD-LAN')).toBeNull()
   })
 
   it('should render service catalog with feature flag ON', async () => {
@@ -41,5 +42,6 @@ describe('ServiceCatalog', () => {
     expect(await screen.findByText('Personal Identity Network')).toBeVisible()
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(await screen.findByText('Firewall')).toBeVisible()
+    await screen.findAllByText('SD-LAN')
   })
 })

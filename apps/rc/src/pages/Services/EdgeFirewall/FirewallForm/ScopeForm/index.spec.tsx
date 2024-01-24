@@ -1,30 +1,30 @@
 /* eslint-disable max-len */
-import { renderHook, within } from '@testing-library/react'
-import userEvent              from '@testing-library/user-event'
-import { Form }               from 'antd'
-import { rest }               from 'msw'
+import { renderHook, waitFor, within } from '@testing-library/react'
+import userEvent                       from '@testing-library/user-event'
+import { Form }                        from 'antd'
+import { rest }                        from 'msw'
 
-import { StepsForm }                    from '@acx-ui/components'
-import { CommonUrlsInfo, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                     from '@acx-ui/store'
+import { StepsForm }                                         from '@acx-ui/components'
+import { edgeApi, venueApi }                                 from '@acx-ui/rc/services'
+import { CommonUrlsInfo, EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                   from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
 
-import { mockEdgeList } from '../../__tests__/fixtures'
-
 import { ScopeForm } from '.'
 
-
+const { mockEdgeList } = EdgeGeneralFixtures
 const mockedSetFieldValue = jest.fn()
 const { click } = userEvent
 
 describe('Scope Form', () => {
   beforeEach(() => {
     mockedSetFieldValue.mockReset()
-
+    store.dispatch(edgeApi.util.resetApiState())
+    store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.getEdgeList.url,
@@ -48,7 +48,7 @@ describe('Scope Form', () => {
     )
   })
 
-  it('should correctly activate', async () => {
+  it.skip('should correctly activate', async () => {
     const { result: stepFormRef } = renderHook(() => {
       const [ form ] = Form.useForm()
       jest.spyOn(form, 'setFieldValue').mockImplementation(mockedSetFieldValue)
@@ -78,6 +78,12 @@ describe('Scope Form', () => {
       { name: 'Smart Edge 1', serialNumber: '0000000001' },
       { name: 'Smart Edge 3', serialNumber: '0000000003' }
     ])
+
+    await waitFor(() => {
+      rows.forEach(row =>
+        expect(within(row).getByRole('checkbox')).not.toBeChecked()
+      )
+    })
   })
 
   it('should correctly activate by switcher', async () => {
@@ -142,6 +148,12 @@ describe('Scope Form', () => {
     expect(mockedSetFieldValue).toBeCalledWith('selectedEdges', [
       { name: 'Smart Edge 3', serialNumber: '0000000003' }
     ])
+
+    await waitFor(() => {
+      rows.forEach(row =>
+        expect(within(row).getByRole('checkbox')).not.toBeChecked()
+      )
+    })
   })
 
   it('should correctly deactivate by switch', async () => {

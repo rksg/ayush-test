@@ -123,7 +123,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
       setArpInspection(vlan.arpInspection || false)
       setIpv4DhcpSnooping(vlan.ipv4DhcpSnooping || false)
     }
-  }, [form, vlan])
+  }, [])
 
   const columns: TableProps<SwitchModelPortData>['columns'] = [
     {

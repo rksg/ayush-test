@@ -1,10 +1,11 @@
+import { useContext } from 'react'
+
 import { Form, Switch } from 'antd'
 import { useIntl }      from 'react-intl'
 
 import { showActionModal, Tabs, Tooltip } from '@acx-ui/components'
 import {
   useGetSwitchQuery,
-  useSwitchDetailHeaderQuery,
   useUpdateDhcpServerStateMutation
 } from '@acx-ui/rc/services'
 import {
@@ -13,6 +14,8 @@ import {
   VenueMessages
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+
+import { SwitchDetailsContext } from '..'
 
 import { SwitchDhcpLeaseTable } from './SwitchDhcpLeaseTable'
 import { SwitchDhcpPoolTable }  from './SwitchDhcpPoolTable'
@@ -23,9 +26,10 @@ export function SwitchDhcpTab () {
   const { activeTab, activeSubTab, serialNumber, switchId, tenantId } = useParams()
   const basePath = useTenantLink(`/devices/switch/${switchId}/${serialNumber}/details/${activeTab}`)
 
+  const { switchDetailsContextData } = useContext(SwitchDetailsContext)
+  const { switchDetailHeader: switchDetail } = switchDetailsContextData
+
   const { data: switchData, isLoading } = useGetSwitchQuery({ params: { switchId, tenantId } })
-  const { data: switchDetail, isLoading: isDetailLoading }
-    = useSwitchDetailHeaderQuery({ params: { switchId, tenantId } })
   const [ updateDhcpServerState ] = useUpdateDhcpServerStateMutation()
 
   const isOperational = switchDetail?.deviceStatus ?
@@ -73,7 +77,7 @@ export function SwitchDhcpTab () {
       <Tooltip title={tooltip}>
         <Switch onChange={onDhcpStatusChange}
           checked={switchData?.dhcpServerEnabled}
-          loading={isLoading || isDetailLoading}
+          loading={isLoading}
           disabled={!isOperational || !!switchDetail?.cliApplied} />
       </Tooltip>
     </Form.Item>

@@ -130,7 +130,8 @@ export default function ActivityButton () {
               <UI.ActivityMeta
                 title={getActivityDescription(
                   activity.descriptionTemplate,
-                  activity.descriptionData
+                  activity.descriptionData,
+                  activity?.linkData
                 )}
                 avatar={<StatusIcon status={activity.status as Activity['status']}/>}
                 description={
@@ -170,7 +171,8 @@ export default function ActivityButton () {
       title: defineMessage({ defaultMessage: 'Description' }),
       value: getActivityDescription(
         data.descriptionTemplate,
-        data.descriptionData
+        data.descriptionData,
+        data?.linkData
       )
     }
   ]

@@ -139,10 +139,13 @@ describe('Kpi Section', () => {
         wrapRoutes: false
       }
     })
-    const button = await screen.findByRole('button', { name: 'Apply' })
-    expect(button).toBeDisabled()
+    const viewMore = await screen.findByRole('button', { name: 'View more' })
+    await userEvent.click(viewMore)
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const buttons = await screen.findAllByRole('button', { name: 'Apply' })
+    expect(buttons[0]).toBeDisabled()
     // eslint-disable-next-line testing-library/no-node-access
-    await userEvent.hover(button.parentElement!)
+    await userEvent.hover(buttons[0].parentElement!)
     // eslint-disable-next-line max-len
     expect(await screen.findByText('You don\'t have permission to set threshold for selected network node.')).toBeInTheDocument()
   }, 60000)
@@ -188,6 +191,9 @@ describe('Kpi Section', () => {
       }
     })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const viewMore = await screen.findByRole('button', { name: 'View more' })
+    await userEvent.click(viewMore)
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const buttons = await screen.findAllByRole('button', { name: 'Apply' })
     expect(buttons).toHaveLength(4)
     expect(buttons[0]).not.toBeDisabled()
@@ -228,7 +234,9 @@ describe('Kpi Section', () => {
         />
       </HealthPageContext.Provider>
     </Provider></Router>)
-
+    const viewMore = await screen.findByRole('button', { name: 'View more' })
+    await userEvent.click(viewMore)
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText(/Time to Connect/i)).toBeInTheDocument()
   })
 })

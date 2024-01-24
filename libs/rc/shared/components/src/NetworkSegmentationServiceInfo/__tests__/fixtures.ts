@@ -277,7 +277,7 @@ export const mockedNsgData = {
 export const mockedPersonaGroup = {
   id: 'testPersonaId',
   name: 'TestPersona',
-  personaCount: 2,
+  identityCount: 2,
   dpskPoolId: 'testDpskId',
   personas: [
     {

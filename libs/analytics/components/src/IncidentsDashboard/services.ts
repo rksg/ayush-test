@@ -5,8 +5,9 @@ import {
   getFilterPayload,
   IncidentFilter,
   incidentSeverities,
-  incidentCodes,
-  categoryCodeMap
+  categoryCodeMap,
+  IncidentsToggleFilter,
+  incidentsToggle
 } from '@acx-ui/analytics/utils'
 import { dataApi } from '@acx-ui/store'
 
@@ -55,7 +56,7 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     incidentsBySeverityDashboard: build.query<
       SeverityData,
-      IncidentFilter
+      IncidentFilter & IncidentsToggleFilter
     >({
       query: (payload) => ({
         document: gql`
@@ -89,10 +90,10 @@ export const api = dataApi.injectEndpoints({
         variables: {
           start: payload.startDate,
           end: payload.endDate,
-          code: incidentCodes,
-          connectionCodes: categoryCodeMap.connection.codes,
-          performanceCodes: categoryCodeMap.performance.codes,
-          infrastructureCodes: categoryCodeMap.infrastructure.codes,
+          code: incidentsToggle(payload),
+          connectionCodes: incidentsToggle({ code: categoryCodeMap.connection.codes }, 'connection'),
+          performanceCodes: incidentsToggle({ code: categoryCodeMap.performance.codes }, 'performance'),
+          infrastructureCodes: incidentsToggle({ code: categoryCodeMap.infrastructure.codes }, 'infrastructure'),
           granularity: 'all',
           ...getFilterPayload(payload)
         }

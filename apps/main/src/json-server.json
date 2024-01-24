@@ -1,0 +1,31 @@
+{
+  "enhancedHotspot20IdentityProviders-query": {
+    "totalCount": 3,
+    "page": 1,
+    "data": [{
+      "id": "6dc2b568c41a4a4581ab9c81d1c9b554",
+      "name": "Identity-1",
+      "naiRealms": [{ "name": "abc.com" }, { "name": "abc_abc.com" }],
+      "authRadiusId": "b6257d19e269495e9f60f3e2fda62af3",
+      "tenantId": "a4c2fc6a9dff40e7a745901921e83477"
+    }, {
+      "id": "a5e7669eec82418cacc0939fc4bcd39f",
+      "name": "Identity-2",
+      "naiRealms": [{ "name": "123.com" }],
+      "roamingConsortiumOIs": [{ "name": "ABC", "organizationId": "112233" }],
+      "authRadiusId": "b6257d19e269495e9f60f3e2fda62af3",
+      "accountingRadiusId": "4e96a5c738bf4fdb85e95a57a2ef2093",
+      "tenantId": "a4c2fc6a9dff40e7a745901921e83477"
+    }, {
+      "id": "f0d4232b695544bdbea160a0f50122e5",
+      "name": "Identity-3",
+      "naiRealms": [{ "name": "xyz.com" }],
+      "plmns": [{ "mcc": 625, "mnc": 12 }],
+      "authRadiusId": "b6257d19e269495e9f60f3e2fda62af3",
+      "accountingRadiusId": "4e96a5c738bf4fdb85e95a57a2ef2093",
+      "networkIds": ["d98c87d16a3342ef8b52d4cb1451d7dd"],
+      "venueIds": ["5c31226d73c242c7bac6a7caa566b0a1"],
+      "tenantId": "a4c2fc6a9dff40e7a745901921e83477"
+    }]
+  }
+}

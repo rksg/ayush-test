@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
 import { ConfigurationBackupStatus, PortLabelType, PortTaggedEnum, TrustedPortTypeEnum } from '../constants'
-import { NetworkVenue }                                                                  from '../models'
 import { PortSettingModel }                                                              from '../models/PortSetting'
 
 import { ProfileTypeEnum }                               from './../constants'
@@ -149,6 +148,7 @@ export interface VeViewModel {
   ingressAclName?: string
   egressAclName?: string
   name?: string
+  connectedVe?: boolean
   dhcpRelayAgent?: string
   defaultVlan: boolean
   deviceStatus: SwitchStatusEnum
@@ -200,7 +200,7 @@ export class SwitchViewModel extends Switch {
   type?: string
   configReady = false
   syncedSwitchConfig = false
-  unitId = 1
+  unitId?: number
   isStack?: boolean
   deviceStatus?: SwitchStatusEnum
   model?: string
@@ -435,8 +435,9 @@ export interface SwitchPortViewModel extends GridDataRow {
   unitState: SwitchStatusEnum; // stack unit status (Online/Offline)
   SwitchPortStackingPortField: boolean;
   mediaType?: string;
-  portnumber?: string
-  usedInUplink?: boolean
+  portnumber?: string;
+  usedInUplink?: boolean;
+  id?: string;
 }
 
 export interface SwitchPortStatus extends SwitchPortViewModel {
@@ -813,15 +814,6 @@ export interface Lag {
   untaggedVlan: string
 }
 
-export interface SchedulingModalState {
-  visible: boolean,
-  networkVenue?: NetworkVenue,
-  venue?: {
-    latitude: string,
-    longitude: string,
-    name: string
-  }
-}
 export interface AclStandardRule {
   sequence: number
   action: string

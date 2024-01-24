@@ -66,7 +66,7 @@ exports[`TopApplicationsByTrafficWidget should render for empty data: NoData 1`]
                 style="text-align: center;"
               >
                 <div
-                  class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
+                  class="styledComponents__Wrapper-sc-c4vpsp-0 esXyCO"
                 >
                   <div
                     class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
@@ -114,10 +114,10 @@ exports[`TopApplicationsByTrafficWidget should render for empty data: NoData 1`]
                 </div>
               </div>
               <div
-                class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                class="styledComponents__NoDataWrapper-sc-m7jeli-0 bZEmQl"
               >
                 <div
-                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 izicZw cMdQDn"
                 >
                   <div
                     class="ant-space-item"
@@ -154,7 +154,7 @@ exports[`TopApplicationsByTrafficWidget should render table with sparkline svg: 
   style="text-align: center;"
 >
   <div
-    class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
+    class="styledComponents__Wrapper-sc-c4vpsp-0 esXyCO"
   >
     <div
       class="ant-radio-group ant-radio-group-outline ant-radio-group-small"

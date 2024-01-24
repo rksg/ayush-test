@@ -1,5 +1,6 @@
 import { Incident } from '@acx-ui/analytics/utils'
 
+import airtimeUtilizationChart            from './Charts/AirtimeUtilizationChart'
 import apDisconnectionCountChart          from './Charts/ApDisconnectionCountChart'
 import apPoeImpactChart                   from './Charts/ApPoeImpactChart'
 import apRebootBySystemChart              from './Charts/ApRebootBySystemChart'
@@ -36,7 +37,8 @@ export enum TimeSeriesChartTypes {
   RebootedApsCountChart,
   ApPoeImpactChart,
   ApWanThroughputImpactChart,
-  ChannelChangeCount
+  ChannelChangeCount,
+  AirtimeUtilizationChart
 }
 
 export const timeSeriesCharts: Readonly<Record<TimeSeriesChartTypes, TimeSeriesChart>> = {
@@ -53,5 +55,6 @@ export const timeSeriesCharts: Readonly<Record<TimeSeriesChartTypes, TimeSeriesC
   [TimeSeriesChartTypes.RebootedApsCountChart]: rebootedAPsCountChart,
   [TimeSeriesChartTypes.ApPoeImpactChart]: apPoeImpactChart,
   [TimeSeriesChartTypes.ApWanThroughputImpactChart]: apWanthroughputImpactChart,
-  [TimeSeriesChartTypes.ChannelChangeCount]: channelChangeCount
+  [TimeSeriesChartTypes.ChannelChangeCount]: channelChangeCount,
+  [TimeSeriesChartTypes.AirtimeUtilizationChart]: airtimeUtilizationChart
 }

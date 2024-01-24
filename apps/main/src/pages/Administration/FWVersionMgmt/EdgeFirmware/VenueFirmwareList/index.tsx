@@ -10,6 +10,7 @@ import {
   showActionModal
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { useSwitchFirmwareUtils }       from '@acx-ui/rc/components'
 import {
   useGetAvailableEdgeFirmwareVersionsQuery,
   useGetEdgeUpgradePreferencesQuery,
@@ -33,11 +34,11 @@ import {
   sortProp
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { noDataDisplay }             from '@acx-ui/utils'
 
 import {
   compareVersions,
   getNextScheduleTpl,
-  getSwitchNextScheduleTplTooltip,
   isSwitchNextScheduleTooltipDisabled,
   toUserDate
 } from '../../FirmwareUtils'
@@ -63,6 +64,7 @@ export function VenueFirmwareList () {
   const [updateModalVisible, setUpdateModalVisible] = useState(false)
   const [preferenceModalVisible, setPreferenceModalVisible] = useState(false)
   const [changeScheduleModal, setChangeScheduleModal] = useState(false)
+  const { getSwitchNextScheduleTplTooltip } = useSwitchFirmwareUtils()
   const {
     data: venueFirmwareList,
     isLoading: isVenueFirmwareListLoading
@@ -126,8 +128,7 @@ export function VenueFirmwareList () {
       dataIndex: 'updatedDate',
       sorter: { compare: sortProp('updatedDate', dateSort) },
       render: function (_, row) {
-        if (!row.updatedDate) return '--'
-        return toUserDate(row.updatedDate)
+        return toUserDate(row.updatedDate || noDataDisplay)
       }
     },
     ...(

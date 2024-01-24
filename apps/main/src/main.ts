@@ -18,7 +18,7 @@ async function initialize () {
 
   root.render(React.createElement(SuspenseBoundary.DefaultFallback, { absoluteCenter: true }))
 
-  await config.initialize()
+  await config.initialize('r1')
 
   const bootstrap = await import('./bootstrap')
   await bootstrap.init(root)

@@ -183,7 +183,7 @@ export function PortalSettings () {
   }, [provider, mspLabel])
 
   function mspLabelRegExp (value: string) {
-    const re = new RegExp (/^[a-zA-Z][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]$/)
+    const re = new RegExp (/^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]$/)
 
     if (value && !re.test(value)) {
       return Promise.reject(intl.$t({ defaultMessage: 'Please enter a valid domain name' }))
@@ -192,7 +192,7 @@ export function PortalSettings () {
   }
   function urlRegExp (value: string) {
   // eslint-disable-next-line max-len
-    const re = new RegExp (/^(http|https):\/\/[a-zA-Z][a-zA-Z0-9-]{0,61}[a-zA-Z0-9](\.[a-zA-Z][a-zA-Z0-9-]{0,61}[a-zA-Z0-9])+(:[1-9][0-9]{1,4})?((\/?)|(\/([a-zA-Z0-9~_.-]|(%[0-9]{2}))*)*)((\?|#).*)?$/)
+    const re = new RegExp (/^(http|https):\/\/[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9](\.[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9])+(:[1-9][0-9]{1,4})?((\/?)|(\/([a-zA-Z0-9~_.-]|(%[0-9]{2}))*)*)((\?|#).*)?$/)
 
     if (value && !re.test(value)) {
       return Promise.reject(intl.$t({ defaultMessage: 'Please enter a valid URL' }))

@@ -7,6 +7,7 @@ import { useParams }                 from 'react-router-dom'
 import { v4 as uuidv4 }              from 'uuid'
 
 import { Button, Descriptions, GridCol, GridRow, Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { AccessConditionDrawer, RadiusAttributeGroupSelectDrawer }                            from '@acx-ui/rc/components'
 import {
   useLazyAdaptivePolicyListByQueryQuery,
   useLazyGetRadiusAttributeGroupQuery,
@@ -20,9 +21,6 @@ import {
   RadiusAttributeGroup, sortProp, trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
-
-import { AccessConditionDrawer }            from './AccessConditionDrawer'
-import { RadiusAttributeGroupSelectDrawer } from './RadiusAttributeGroupSelectDrawer'
 
 interface AdaptivePolicySettingFormProps {
   editMode?: boolean,

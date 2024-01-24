@@ -94,6 +94,7 @@ describe('User Profile', () => {
         id: '1',
         isTrial: false,
         name: '1',
+        sfdcId: '1',
         productName: 'RuckusAI'
       },
       visitor: {

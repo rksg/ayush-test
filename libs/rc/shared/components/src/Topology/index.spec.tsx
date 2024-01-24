@@ -8,7 +8,9 @@ import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved }     
 
 import { TopologyGraph } from '.'
 
+
 jest.mock('@acx-ui/analytics/components', () => ({
+  useIncidentToggles: () => ({}),
   useIncidentsBySeverityQuery: () => ([])
 }))
 
@@ -351,7 +353,7 @@ describe('Topology', () => {
         (_, res, ctx) => res(ctx.json({ data: [{ apMac: '11:22:33:44:55:66' }], totalCount: 0 })))
     )
 
-    const { asFragment } = await render(<Provider>
+    const { asFragment } = render(<Provider>
       <TopologyGraph showTopologyOn={ShowTopologyFloorplanOn.VENUE_OVERVIEW}/></Provider>,{
       route: { params }
     })

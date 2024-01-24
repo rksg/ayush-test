@@ -3,6 +3,7 @@ import moment from 'moment-timezone'
 import { fakeIncident }                                                 from '@acx-ui/analytics/utils'
 import { dataApiURL, Provider, store }                                  from '@acx-ui/store'
 import { act, fireEvent, mockGraphqlQuery, render, renderHook, screen } from '@acx-ui/test-utils'
+import { NodeType }                                                     from '@acx-ui/utils'
 
 import { ImpactedAP, impactedApi, ImpactedClient } from './services'
 
@@ -76,7 +77,7 @@ describe('IncidentAttributes', () => {
     path: [
       { type: 'zone', name: 'Edu2-611-Mesh' },
       { type: 'apGroup', name: '255_Edu2-611-group' },
-      { type: 'ap', name: '70:CA:97:01:A0:C0' }
+      { type: 'ap' as NodeType, name: '70:CA:97:01:A0:C0' }
     ],
     startTime: '2022-07-19T05:15:00.000Z',
     endTime: '2022-07-20T02:42:00.000Z',
@@ -129,7 +130,34 @@ describe('IncidentAttributes', () => {
       path: [
         { type: 'zone', name: 'Edu2-611-Mesh' },
         { type: 'apGroup', name: '255_Edu2-611-group' },
-        { type: 'ap', name: '70:CA:97:01:A0:C0' }
+        { type: 'ap' as NodeType, name: '70:CA:97:01:A0:C0' }
+      ],
+      startTime: '2022-07-19T05:15:00.000Z',
+      endTime: '2022-07-20T02:42:00.000Z',
+      sliceValue: 'RuckusAP'
+    })
+    render(<Provider>
+      <IncidentAttributes incident={incident} visibleFields={attributeList} />
+    </Provider>)
+    const clientImpactTrigger = (await screen.findAllByText('--'))[0]
+    fireEvent.click(clientImpactTrigger) // trigger onOpen
+    expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
+    const apImpactTrigger = (await screen.findAllByText('--'))[1]
+    fireEvent.click(apImpactTrigger) // trigger onOpen
+    expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
+  })
+  it('should not trigger onOpen/onClose if there are no clients/APs', async () => {
+    const incident = fakeIncident({
+      id: 'id',
+      code: 'eap-failure',
+      apCount: -1,
+      impactedApCount: 0,
+      clientCount: -1,
+      impactedClientCount: 0,
+      path: [
+        { type: 'zone', name: 'Edu2-611-Mesh' },
+        { type: 'apGroup', name: '255_Edu2-611-group' },
+        { type: 'ap' as NodeType, name: '70:CA:97:01:A0:C0' }
       ],
       startTime: '2022-07-19T05:15:00.000Z',
       endTime: '2022-07-20T02:42:00.000Z',

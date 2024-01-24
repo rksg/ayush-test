@@ -1,4 +1,5 @@
 import { getUserProfile } from '@acx-ui/analytics/utils'
+import { useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { renderHook }     from '@acx-ui/test-utils'
 
 
@@ -184,6 +185,42 @@ describe('useMenuConfig', () => {
         {
           id: 'accountId',
           permissions: mockPermissions
+        }
+      ]
+    }
+
+    mockUseUserProfileContext.mockReturnValue(mockUserProfile)
+    const { result } = renderHook(() => useMenuConfig())
+    expect(result.current).toMatchSnapshot()
+  })
+  it('should not return zones menu items if ruckus-ai-zones-toggle is not enabled', () => {
+    const mockUseUserProfileContext = getUserProfile as jest.Mock
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    const mockUserProfile = {
+      accountId: 'accountId',
+      selectedTenant: { permissions: defaultMockPermissions },
+      tenants: [
+        {
+          id: 'accountId',
+          permissions: defaultMockPermissions
+        }
+      ]
+    }
+
+    mockUseUserProfileContext.mockReturnValue(mockUserProfile)
+    const { result } = renderHook(() => useMenuConfig())
+    expect(result.current).toMatchSnapshot()
+  })
+  it('should return zones menu items if ruckus-ai-zones-toggle is enabled', () => {
+    const mockUseUserProfileContext = getUserProfile as jest.Mock
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const mockUserProfile = {
+      accountId: 'accountId',
+      selectedTenant: { permissions: defaultMockPermissions },
+      tenants: [
+        {
+          id: 'accountId',
+          permissions: defaultMockPermissions
         }
       ]
     }

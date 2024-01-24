@@ -89,6 +89,30 @@ describe('Test useSwitchActions', () => {
   })
 
   it('showDeleteSwitches', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+
+    const { result } = renderHook(() => useSwitchActions(), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+
+    const { showDeleteSwitches } = result.current
+    const callback = jest.fn()
+
+    act(() => {
+      showDeleteSwitches(switchList.data, tenantId, callback)
+    })
+    const dialog = await screen.findByRole('dialog')
+
+    const deleteBtn = within(dialog).getByRole('button', { name: 'Delete Switches' })
+
+    fireEvent.click(deleteBtn)
+
+    await waitFor(async () => expect(callback).toBeCalled())
+
+    expect(dialog).not.toBeVisible()
+  })
+
+  it('showDeleteSwitches: patch API', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     const { result } = renderHook(() => useSwitchActions(), {

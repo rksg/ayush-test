@@ -42,4 +42,25 @@ describe('NetworkSegmentationDetailTableGroup - ApsTable', () => {
     expect((cells[3] as HTMLTableCellElement).innerHTML).toBe('3')
 
   })
+
+  it('Empty data in the page', async () => {
+
+    const { result } = renderHook(
+      () => useTableQuery<APExtended, RequestPayload<unknown>, unknown>({
+        useQuery: useApListQuery,
+        defaultPayload: {
+          ...defaultApPayload
+        }
+      }),{ wrapper: ({ children }) => <Provider>{children}</Provider>, route: { params } }
+    )
+
+    await waitFor(() => expect(result.current.isLoading).toBeFalsy())
+    render(
+      <Provider>
+        <ApsTable tableQuery={[]} />
+      </Provider>
+    )
+
+    expect(await screen.findByText(/ap name/i)).toBeVisible()
+  })
 })

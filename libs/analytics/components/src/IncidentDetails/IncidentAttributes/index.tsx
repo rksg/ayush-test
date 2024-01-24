@@ -50,7 +50,8 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
       getValue: (incident: Incident) => ({
         label: intl.$t({ defaultMessage: 'Client Impact Count' }),
         children: impactValues('client', incident).clientImpactDescription,
-        ...(incident.impactedClientCount || -1 > 0 ? { onClick: () => onOpen('client') } : {})
+        ...((incident.impactedClientCount! > 0 && incident.clientCount! > 0 )
+          ? { onClick: () => onOpen('client') } : {})
       })
     },
     [Attributes.ApImpactCount]: {
@@ -58,7 +59,8 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
       getValue: (incident: Incident) => ({
         label: intl.$t({ defaultMessage: 'AP Impact Count' }),
         children: impactValues('ap', incident).apImpactDescription,
-        ...(incident.impactedApCount || -1 > 0 ? { onClick: () => onOpen('ap') } : {})
+        ...((incident.impactedApCount! > 0 && incident.apCount! > 0 )
+          ? { onClick: () => onOpen('ap') } : {})
       })
     },
     [Attributes.IncidentCategory]: {
@@ -131,6 +133,8 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
       onClose={onClose}
       id={incident.id}
       impactedCount={incident.impactedApCount as number}
+      impactedStart={incident.impactedStart}
+      impactedEnd={incident.impactedEnd}
     /> }
     { visible==='client' && <ImpactedClientsDrawer
       visible={visible==='client'}
@@ -139,6 +143,8 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
       startTime={incident.startTime}
       endTime={incident.endTime}
       impactedCount={incident.impactedClientCount as number}
+      impactedStart={incident.impactedStart}
+      impactedEnd={incident.impactedEnd}
     /> }
   </>
 }

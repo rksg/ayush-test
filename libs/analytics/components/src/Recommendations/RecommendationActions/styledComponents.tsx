@@ -1,8 +1,15 @@
-import styled from 'styled-components'
+import { Space } from 'antd'
+import styled    from 'styled-components'
 
 import { Reload } from '@acx-ui/icons'
 
-export const ActionWrapper = styled.span<{ $disabled?: boolean }>`
+export const Actions = styled(Space)`
+  .ant-picker-suffix {
+    margin: 0 !important;
+  }
+`
+
+export const IconWrapper = styled.span<{ $disabled?: boolean }>`
   ${props => props.$disabled
     ? `
       cursor: not-allowed;

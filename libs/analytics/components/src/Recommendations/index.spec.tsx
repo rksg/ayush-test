@@ -2,20 +2,24 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { useAnalyticsFilter, defaultNetworkPath } from '@acx-ui/analytics/utils'
-import { get }                                    from '@acx-ui/config'
-import { BrowserRouter as Router, Link }          from '@acx-ui/react-router-dom'
-import { recommendationUrl, Provider, store }     from '@acx-ui/store'
+import { useAnalyticsFilter, defaultNetworkPath }             from '@acx-ui/analytics/utils'
+import { defaultTimeRangeDropDownContextValue, useDateRange } from '@acx-ui/components'
+import { get }                                                from '@acx-ui/config'
+import { useIsSplitOn }                                       from '@acx-ui/feature-toggle'
+import { BrowserRouter as Router, Link }                      from '@acx-ui/react-router-dom'
+import { recommendationUrl, Provider, store }                 from '@acx-ui/store'
 import {
+  findTBody,
   mockGraphqlQuery,
   render,
   screen,
-  waitForElementToBeRemoved
+  waitForElementToBeRemoved,
+  within
 } from '@acx-ui/test-utils'
 import { setUpIntl, DateRange, NetworkPath } from '@acx-ui/utils'
 
-import { recommendationListResult }           from './__tests__/fixtures'
-import { api, useMuteRecommendationMutation } from './services'
+import { recommendationListResult }                                     from './__tests__/fixtures'
+import { api, useMuteRecommendationMutation, useSetPreferenceMutation } from './services'
 
 import { RecommendationTabContent } from './index'
 
@@ -24,14 +28,21 @@ jest.mock('@acx-ui/analytics/utils', () => ({
   useAnalyticsFilter: jest.fn()
 }))
 
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
+  useDateRange: jest.fn()
+}))
+
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
 }))
 
 const mockedMuteRecommendation = jest.fn()
+const mockedSetPreference = jest.fn()
 jest.mock('./services', () => ({
   ...jest.requireActual('./services'),
-  useMuteRecommendationMutation: jest.fn()
+  useMuteRecommendationMutation: jest.fn(),
+  useSetPreferenceMutation: jest.fn()
 }))
 
 describe('RecommendationTabContent', () => {
@@ -57,26 +68,42 @@ describe('RecommendationTabContent', () => {
       raw: []
     })
 
+    jest.mocked(useDateRange).mockReturnValue(defaultTimeRangeDropDownContextValue)
+
     jest.mocked(get).mockReturnValue('') // get('IS_MLISA_SA')
 
     jest.mocked(useMuteRecommendationMutation).mockImplementation(() => [
       mockedMuteRecommendation,
       { reset: jest.fn() }
     ])
+
+    jest.mocked(useSetPreferenceMutation).mockImplementation(() => [
+      mockedSetPreference,
+      { reset: jest.fn() }
+    ])
+
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
 
-  it('should render loader', () => {
+  it('should render loader and empty table', async () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: { recommendations: [] }
     })
     render(<Router><Provider><RecommendationTabContent /></Provider></Router>)
-    expect(screen.getAllByRole('img', { name: 'loader' })).toBeTruthy()
+
+    const loader = screen.queryByRole('img', { name: 'loader' })
+    expect(loader).toBeVisible()
+
+    await waitForElementToBeRemoved(loader)
+
+    const tbody = await findTBody()
+    expect(await within(tbody).findAllByRole('row')).toHaveLength(1)
   })
 
   it('should render crrm table for R1', async () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: { recommendations: recommendationListResult.recommendations
-        .filter(r => r.code.includes('crrm')) }
+        .filter(r => r.code.includes('crrm') || r.code === 'unknown') }
     })
     render(<RecommendationTabContent/>, {
       route: { params: { activeTab: 'crrm' } },
@@ -84,16 +111,16 @@ describe('RecommendationTabContent', () => {
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-
     const text = await screen.findAllByText('Optimized')
     expect(text).toHaveLength(1)
     expect(screen.getByText('Venue')).toBeVisible()
+    expect(useDateRange).toBeCalled()
   })
 
   it('should render crrm table for RA', async () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: { recommendations: recommendationListResult.recommendations
-        .filter(r => r.code.includes('crrm')) }
+        .filter(r => r.code.includes('crrm') || r.code === 'unknown') }
     })
     jest.mocked(get).mockReturnValue('true')
     render(<RecommendationTabContent/>, {
@@ -106,6 +133,7 @@ describe('RecommendationTabContent', () => {
     const text = await screen.findAllByText('Optimized')
     expect(text).toHaveLength(1)
     expect(screen.getByText('Zone')).toBeVisible()
+    expect(useDateRange).toBeCalled()
   })
 
   it('should render aiops table for R1', async () => {
@@ -123,6 +151,7 @@ describe('RecommendationTabContent', () => {
     const text = await screen.findAllByText('Medium')
     expect(text).toHaveLength(1)
     expect(screen.getByText('Venue')).toBeVisible()
+    expect(useDateRange).toBeCalled()
   })
 
   it('should render aiops table for RA', async () => {
@@ -141,6 +170,7 @@ describe('RecommendationTabContent', () => {
     const text = await screen.findAllByText('Medium')
     expect(text).toHaveLength(1)
     expect(screen.getByText('Zone')).toBeVisible()
+    expect(useDateRange).toBeCalled()
   })
 
   it('renders no data for switch path', async () => {
@@ -215,9 +245,8 @@ describe('RecommendationTabContent', () => {
     const afterShowMuted = await screen.findAllByRole('radio', { hidden: false, checked: false })
     expect(afterShowMuted).toHaveLength(2)
 
-    // check the action says unmute:
-    await userEvent.click(afterShowMuted[0])
-    await screen.findByRole('button', { name: 'Mute' })
+    await userEvent.click(afterShowMuted[1])
+    await screen.findByRole('button', { name: 'Unmute' })
 
     await userEvent.click(settingsButton)
     const resetButton = await screen.findByText('Reset to default')
@@ -257,5 +286,85 @@ describe('RecommendationTabContent', () => {
     expect(mockedMuteRecommendation).toHaveBeenCalledTimes(0)
     await userEvent.click(mute)
     expect(mockedMuteRecommendation).toHaveBeenCalledTimes(1)
+  })
+
+  it('should handle toggle of full/partial crrm correctly', async () => {
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
+      data: { recommendations: recommendationListResult.recommendations
+        .filter(r => r.code.includes('crrm') || r.code === 'unknown') }
+    })
+    render(<RecommendationTabContent/>, {
+      route: { params: { activeTab: 'crrm' } },
+      wrapper: Provider
+    })
+    mockedSetPreference.mockImplementation(() => ({
+      unwrap: () => Promise.resolve({
+        setPreference: { success: true, errorCode: '', errorMsg: '' }
+      })
+    }))
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    const row = screen.getByRole('row', {
+      // eslint-disable-next-line max-len
+      name: /Non-Optimized 06\/16\/2023 06:05 Optimal channel plan found for 2\.4 GHz radio zone-1 New/i
+    })
+    await userEvent.click(within(row).getByRole('switch'))
+    expect(mockedSetPreference).toBeCalled()
+  })
+
+  it('should not allow toggle of full/partial crrm', async () => {
+    const appliedRecommendation = recommendationListResult.recommendations
+      .find(r => r.code.includes('crrm') && r.status === 'applied')
+    const newRecommendation = recommendationListResult.recommendations
+      .find(r => r.code.includes('crrm') && r.status === 'new')
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', { data: { recommendations: [
+      appliedRecommendation,
+      {
+        ...newRecommendation,
+        metadata: { algorithmData: { isCrrmFullOptimization: true } },
+        preferences: { crrmFullOptimization: false },
+        isMuted: true
+      }
+    ] } })
+    render(<RecommendationTabContent/>, {
+      route: { params: { activeTab: 'crrm' } },
+      wrapper: Provider
+    })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    await userEvent.click(await screen.findByTestId('SettingsOutlined'))
+    await userEvent.click(await screen.findByText('Show Muted Recommendations'))
+    const appliedRow = screen.getByRole('row', {
+      // eslint-disable-next-line max-len
+      name: /Optimized 06\/16\/2023 06:05 Optimal Ch\/Width and Tx Power found for 5 GHz radio zone-1 Applied/i
+    })
+    const newRow = screen.getByRole('row', {
+      // eslint-disable-next-line max-len
+      name: /Non-Optimized 06\/16\/2023 06:05 Optimal Ch\/Width and Tx Power found for 2.4 GHz radio zone-1 New/i
+    })
+    expect(within(appliedRow).getByRole('switch')).toBeDisabled()
+    expect(within(newRow).getByRole('switch')).toBeDisabled()
+  })
+
+  it('should not have mismatch tooltip for unknown zone', async () => {
+    const unknownRecommendation = recommendationListResult.recommendations
+      .find(r => r.code === 'unknown')
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', { data: { recommendations: [
+      {
+        ...unknownRecommendation,
+        preferences: { crrmFullOptimization: false }
+      }
+    ] } })
+    render(<RecommendationTabContent/>, {
+      route: { params: { activeTab: 'crrm' } },
+      wrapper: Provider
+    })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    const row = screen.getByRole('row', {
+      // eslint-disable-next-line max-len
+      name: /Insufficient Licenses 11\/12\/2023 06:05 No RRM recommendation due to incomplete license compliance 01-Alethea-WiCheck Test Insufficient Licenses/
+    })
+    expect(row.classList.contains('crrm-optimization-mismatch')).toBeFalsy()
   })
 })

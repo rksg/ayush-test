@@ -46,10 +46,18 @@ export const getAPStatusDisplayName = (label: ApVenueStatusEnum, showSeverity: b
 
 const switchStatusMap = {
   [SwitchStatusEnum.OPERATIONAL]: defineMessage({ defaultMessage: 'Operational' }),
-  [SwitchStatusEnum.DISCONNECTED]: defineMessage({ defaultMessage: 'Requires Attention' }),
+  [SwitchStatusEnum.DISCONNECTED]: defineMessage({ defaultMessage: 'Alerting' }),
   [SwitchStatusEnum.NEVER_CONTACTED_CLOUD]: defineMessage({ defaultMessage: 'In Setup Phase' }),
   [SwitchStatusEnum.INITIALIZING]: defineMessage({ defaultMessage: 'In Setup Phase' }),
-  [SwitchStatusEnum.APPLYING_FIRMWARE]: defineMessage({ defaultMessage: 'In Setup Phase' }),
+  [SwitchStatusEnum.STACK_MEMBER_NEVER_CONTACTED]: defineMessage({ defaultMessage: 'In Setup Phase' }),
+  [SwitchStatusEnum.APPLYING_FIRMWARE]: defineMessage({ defaultMessage: 'Requires Attention' }),
+  [SwitchStatusEnum.FIRMWARE_UPD_START]: defineMessage({ defaultMessage: 'Requires Attention' }),
+  [SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_PARAMETERS]: defineMessage({ defaultMessage: 'Requires Attention' }),
+  [SwitchStatusEnum.FIRMWARE_UPD_DOWNLOADING]: defineMessage({ defaultMessage: 'Requires Attention' }),
+  [SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_IMAGE]: defineMessage({ defaultMessage: 'Requires Attention' }),
+  [SwitchStatusEnum.FIRMWARE_UPD_SYNCING_TO_REMOTE]: defineMessage({ defaultMessage: 'Requires Attention' }),
+  [SwitchStatusEnum.FIRMWARE_UPD_WRITING_TO_FLASH]: defineMessage({ defaultMessage: 'Requires Attention' }),
+  [SwitchStatusEnum.FIRMWARE_UPD_FAIL]: defineMessage({ defaultMessage: 'Alerting' }),
   default: defineMessage({ defaultMessage: 'In Setup Phase' })
 }
 

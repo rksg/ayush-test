@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { policyApi }                                      from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
   getPolicyRoutePath,
@@ -7,7 +8,7 @@ import {
   PolicyType,
   RadiusAttributeGroupUrlsInfo, RulesManagementUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
+import { Provider, store }            from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { mockGroup, policyList, policySetList, prioritizedPolicies, templateList } from './__tests__/fixtures'
@@ -19,6 +20,7 @@ describe('RadiusAttributeGroupDetail', () => {
     policyId: mockGroup.id
   }
   beforeEach(() => {
+    store.dispatch(policyApi.util.resetApiState())
     mockServer.use(
       rest.get(
         RadiusAttributeGroupUrlsInfo.getAttributeGroup.url,

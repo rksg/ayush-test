@@ -19,7 +19,7 @@ export const EdgeDhcpPoolTable = (props: EdgeDhcpPoolTableProps) => {
   const { $t } = useIntl()
 
   const getDhcpPoolStatsPayload = {
-    filters: { edgeIds: [props.edgeId] },
+    filters: { edgeId: [props.edgeId] },
     sortField: 'name',
     sortOrder: 'ASC'
   }
@@ -34,7 +34,7 @@ export const EdgeDhcpPoolTable = (props: EdgeDhcpPoolTableProps) => {
     if(props.edgeId) {
       localQuery.setPayload({
         ...localQuery.payload,
-        filters: { edgeIds: [props.edgeId] }
+        filters: { edgeId: [props.edgeId] }
       })
     }
   }, [props.edgeId])
@@ -67,12 +67,12 @@ export const EdgeDhcpPoolTable = (props: EdgeDhcpPoolTableProps) => {
       title: $t({ defaultMessage: 'Utilization' }),
       key: 'utilization',
       dataIndex: 'utilization',
-      render () {
+      render (data, row) {
         return <Progress
           style={{ width: 100 }}
           strokeLinecap='butt'
           strokeColor='var(--acx-semantics-green-50)'
-          percent={0}
+          percent={row.utilization}
           showInfo={false}
           strokeWidth={20}
         />

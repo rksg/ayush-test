@@ -8,8 +8,8 @@ import {
 } from '@acx-ui/test-utils'
 import { NetworkPath, PathFilter, DateRange } from '@acx-ui/utils'
 
-import { aiOpsListResult } from '../Recommendations/__tests__/fixtures'
-import { api }             from '../Recommendations/services'
+import { aiOpsListResult, aiOpsNonNewListResult } from '../Recommendations/__tests__/fixtures'
+import { api }                                    from '../Recommendations/services'
 
 import { AIOperations } from '.'
 
@@ -41,6 +41,24 @@ describe('AIOperations dashboard', () => {
     expect(await screen.findByText('07/06/2023')).toBeVisible()
   })
 
+  it('renders non new recommendations', async () => {
+    mockGraphqlQuery(recommendationUrl, 'AiOpsList', {
+      data: aiOpsNonNewListResult
+    })
+    render(<AIOperations pathFilters={pathFilters} />, {
+      route: true,
+      wrapper: Provider
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    expect(await screen.findByText('AI Operations')).toBeVisible()
+    expect(await screen.findByText('2')).toBeVisible()
+    expect(await screen.findAllByText('Wi-Fi Client Experience')).toHaveLength(2)
+    expect(await screen.findByText('Applied on 06/16/2023')).toBeVisible()
+    expect(await screen.findByText('Reverted on 07/06/2023')).toBeVisible()
+  })
+
   it('renders no data for switch path', async () => {
     const switchPathFilters = {
       ...pathFilters,
@@ -54,8 +72,8 @@ describe('AIOperations dashboard', () => {
       route: true,
       wrapper: Provider
     })
-
-    expect(await screen.findByText('No recommendations')).toBeVisible()
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('Your network is already running in an optimal configuration and we don’t have any AI Operations to recommend currently.')).toBeVisible()
   })
 
   it('handles no data', async () => {
@@ -69,7 +87,7 @@ describe('AIOperations dashboard', () => {
       route: true,
       wrapper: Provider
     })
-
-    expect(await screen.findByText('No recommendations')).toBeVisible()
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('Your network is already running in an optimal configuration and we don’t have any AI Operations to recommend currently.')).toBeVisible()
   })
 })

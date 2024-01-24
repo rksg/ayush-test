@@ -69,7 +69,7 @@ export function normalizeNodeType (nodeType: SliceType): NodeType {
   }
 }
 
-export function nodeTypes (nodeType: NodeType): string {
+export function nodeTypes (nodeType: NodeType|SliceType): string {
   const { $t } = getIntl()
   const isMLISA = get('IS_MLISA_SA')
   switch (normalizeNodeType(nodeType)) {
@@ -239,4 +239,14 @@ export const impactValues = <Type extends 'ap' | 'client'> (
       description: 'E.g. 1 of 10 clients (10%)'
     }, { formattedCount, formattedTotal, formattedType, formattedRatio })
   } as ReturnType<typeof impactValues>
+}
+
+export const longDescription = (incident: Incident) => {
+  const { clientImpactRatio, clientImpactRatioFormatted } = impactValues('client', incident)
+  return (clientImpactRatio === null)
+    ? shortDescription(incident)
+    : getIntl().$t(incident.longDescription, {
+      scope: incidentScope(incident),
+      impact: clientImpactRatioFormatted
+    })
 }

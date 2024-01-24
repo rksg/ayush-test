@@ -1,13 +1,14 @@
 import { Badge, Button, Space } from 'antd'
 import { useIntl }              from 'react-intl'
 
-import { IncidentsBySeverityData, useIncidentsBySeverityQuery } from '@acx-ui/analytics/components'
-import { Card, Descriptions, Loader }                           from '@acx-ui/components'
-import { DateFormatEnum, formatter }                            from '@acx-ui/formatter'
-import { CloseSymbol }                                          from '@acx-ui/icons'
-import { SwitchStatusEnum, SwitchViewModel }                    from '@acx-ui/rc/utils'
-import { noDataDisplay, useDateFilter }                         from '@acx-ui/utils'
-import type { AnalyticsFilter }                                 from '@acx-ui/utils'
+import { IncidentsBySeverityData, useIncidentToggles, useIncidentsBySeverityQuery } from '@acx-ui/analytics/components'
+import { Card, Descriptions, Loader }                                               from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                                from '@acx-ui/formatter'
+import { CloseSymbol }                                                              from '@acx-ui/icons'
+import { SwitchStatusEnum, SwitchViewModel }                                        from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                                               from '@acx-ui/react-router-dom'
+import { noDataDisplay, useDateFilter }                                             from '@acx-ui/utils'
+import type { AnalyticsFilter }                                                     from '@acx-ui/utils'
 
 import IncidentStackedBar               from './IncidentStackedBar'
 import * as UI                          from './styledComponents'
@@ -21,7 +22,10 @@ export function SwitchDetailsCard (props: {
   }) {
   const { switchDetail, isLoading, onClose } = props
   const { $t } = useIntl()
+  const toggles = useIncidentToggles()
   const { dateFilter } = useDateFilter()
+  const navigate = useNavigate()
+  const basePath = useTenantLink('/devices/switch')
 
   const filters = {
     ...dateFilter,
@@ -31,7 +35,7 @@ export function SwitchDetailsCard (props: {
     }
   } as AnalyticsFilter
 
-  const incidentData = useIncidentsBySeverityQuery(filters, {
+  const incidentData = useIncidentsBySeverityQuery({ ...filters, toggles }, {
     selectFromResult: ({ data, ...rest }) => ({
       data: { ...data } as IncidentsBySeverityData,
       ...rest
@@ -45,6 +49,13 @@ export function SwitchDetailsCard (props: {
         style={{
           padding: 0
         }}
+        onClick={
+          () =>{
+            navigate({
+              // eslint-disable-next-line max-len
+              pathname: `${basePath.pathname}/${switchDetail?.id || switchDetail?.serialNumber}/${switchDetail?.serialNumber}/details/overview`
+            })
+          }}
         size='small'
         type='link'>
         {switchDetail?.name

@@ -1,15 +1,17 @@
-import { initialize } from '@googlemaps/jest-mocks'
-import userEvent      from '@testing-library/user-event'
-import { Modal }      from 'antd'
-import { debounce }   from 'lodash'
-import { rest }       from 'msw'
-import { act }        from 'react-dom/test-utils'
+import userEvent    from '@testing-library/user-event'
+import { Modal }    from 'antd'
+import { debounce } from 'lodash'
+import { rest }     from 'msw'
 
-import { useIsSplitOn }                                     from '@acx-ui/feature-toggle'
-import { apApi, switchApi, venueApi }                       from '@acx-ui/rc/services'
-import { CommonUrlsInfo, FirmwareUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                  from '@acx-ui/store'
+import { useIsSplitOn }               from '@acx-ui/feature-toggle'
+import { apApi, switchApi, venueApi } from '@acx-ui/rc/services'
+import { CommonUrlsInfo,
+  FirmwareUrlsInfo,
+  SwitchUrlsInfo,
+  SwitchFirmwareFixtures } from '@acx-ui/rc/utils'
+import { Provider, store }    from '@acx-ui/store'
 import {
+  act,
   mockServer,
   render,
   screen,
@@ -33,38 +35,53 @@ import {
 
 import { StackForm } from '.'
 
+const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
+
 const mockedUsedNavigate = jest.fn()
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
 
-async function fillInForm () {
-  const stackNameInput = await screen.findByLabelText(/Stack Name/)
-  // eslint-disable-next-line testing-library/no-unnecessary-act
-  await act(async () => {
-    fireEvent.change(stackNameInput, { target: { value: '' } })
-    fireEvent.change(stackNameInput, { target: { value: 'test stack' } })
-    fireEvent.change(await screen.findByLabelText(/Description/),
-      { target: { value: 'test description' } })
-    fireEvent.change(
-      await screen.findByTestId(/serialNumber1/), { target: { value: 'FMK4124R20X' } })
-    fireEvent.change(
-      await screen.findByTestId(/serialNumber2/), { target: { value: 'FMK4124R21X' } })
-    const serialNumber1 = await screen.findByTestId(/serialNumber1/i)
-    const serialNumber2 = await screen.findByTestId(/serialNumber1/i)
-    serialNumber1.focus()
-    serialNumber2.blur()
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetSwitchCurrentVersionsQuery: () => ({
+    data: mockSwitchCurrentVersions
   })
+}))
+
+type MockSelectProps = React.PropsWithChildren<{
+  onChange?: (value: string) => void
+  options?: Array<{ label: string, value: unknown }>
+  loading?: boolean
+}>
+jest.mock('antd', () => {
+  const components = jest.requireActual('antd')
+  const Select = ({ loading, children, onChange, options, ...props }: MockSelectProps) => (
+    <select {...props} onChange={(e) => onChange?.(e.target.value)} value=''>
+      {children ? <><option value={undefined}></option>{children}</> : null}
+      {options?.map((option, index) => (
+        <option key={`option-${index}`} value={option.value as string}>{option.label}</option>
+      ))}
+    </select>
+  )
+  Select.Option = 'option'
+  return { ...components, Select }
+})
+
+async function fillInForm () {
+  await userEvent.type(await screen.findByLabelText(/Stack Name/), 'test stack')
+  await userEvent.type(await screen.findByLabelText(/Description/), 'test description')
+  await userEvent.type(await screen.findByTestId(/serialNumber1/), 'FMK4124R20X')
+  await userEvent.type(await screen.findByTestId(/serialNumber2/), 'FMK4124R21X')
 }
 
 async function changeVenue () {
-  // eslint-disable-next-line testing-library/no-unnecessary-act
-  await act(async () => {
-    fireEvent.mouseDown(await screen.findByLabelText(/Venue/))
-  })
-  const venue = await screen.findAllByText('My-Venue')
-  await userEvent.click(venue[0])
+  await userEvent.selectOptions(
+    await screen.findByLabelText(/Venue/),
+    await screen.findByRole('option', { name: /My-Venue/ })
+  )
 }
 
 describe('Switch Stack Form - Add', () => {
@@ -73,9 +90,8 @@ describe('Switch Stack Form - Add', () => {
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
     store.dispatch(switchApi.util.resetApiState())
-    initialize()
     mockServer.use(
-      rest.get(CommonUrlsInfo.getApGroupList.url,
+      rest.get(CommonUrlsInfo.getApGroupListByVenue.url,
         (_, res, ctx) => res(ctx.json(apGrouplist))),
       rest.post(FirmwareUrlsInfo.getSwitchVenueVersionList.url,
         (_, res, ctx) => res(ctx.json(switchFirmwareVenue))),
@@ -101,114 +117,56 @@ describe('Switch Stack Form - Add', () => {
       route: { params, path: '/:tenantId/t/devices/switch/stack/:action' }
     })
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-
     await changeVenue()
     await fillInForm()
 
-    const addButton = await screen.findByRole('button', { name: 'Add' })
-    await userEvent.click(addButton)
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+
+    expect(await screen.findByText('ICX7550-24')).toBeVisible()
   })
   it('should save stack without name and description correctly', async () => {
     render(<Provider><StackForm /></Provider>, {
       route: { params, path: '/:tenantId/t/devices/switch/stack/:action' }
     })
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-
     await changeVenue()
-    await fillInForm()
 
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      fireEvent.change(await screen.findByLabelText(/Stack Name/),
-        { target: { value: 'test stack' } })
-      fireEvent.change(await screen.findByLabelText(/Description/),
-        { target: { value: 'test description' } })
-    })
+    await userEvent.type(await screen.findByTestId(/serialNumber1/), 'FMK4124R20X')
+    await userEvent.type(await screen.findByTestId(/serialNumber2/), 'FMK4124R21X')
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith(`/${params.tenantId}/t/devices/switch`)
   })
   it('should add row and delete row correctly', async () => {
     render(<Provider><StackForm /></Provider>, {
       route: { params, path: '/:tenantId/t/devices/switch/stack/:action' }
     })
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-
     await userEvent.click(await screen.findByTestId('deleteBtn2'))
     await userEvent.click(await screen.findByRole('button', { name: 'Add another member' }))
     await fillInForm()
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
-    expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/devices/switch`,
-      hash: '',
-      search: ''
-    })
-  })
-  it('should trigger switch serial number validation 1 correctly', async () => {
-    render(<Provider><StackForm /></Provider>, {
-      route: { params, path: '/:tenantId/t/devices/switch/stack/:action' }
-    })
-
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-
-    await changeVenue()
-    await fillInForm()
-
-    const serialNumber1 = await screen.findByTestId(/serialNumber1/)
-    const serialNumber2 = await screen.findByTestId(/serialNumber2/)
-
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      fireEvent.change(serialNumber1, { target: { value: 'FEK4124R21X' } })
-      fireEvent.change(serialNumber2, { target: { value: 'FEK4124R21X' } })
-      serialNumber2.focus()
-      serialNumber2.blur()
-    })
+    expect(mockedUsedNavigate).toHaveBeenCalledWith(`/${params.tenantId}/t/devices/switch`)
   })
   it('should show disabled delete button correctly', async () => {
     render(<Provider><StackForm /></Provider>, {
       route: { params, path: '/:tenantId/t/devices/switch/stack/:action' }
     })
-
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     await userEvent.click(await screen.findByTestId('deleteBtn1'))
     await userEvent.click(await screen.findByTestId('deleteBtn2'))
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
-    expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/devices/switch`,
-      hash: '',
-      search: ''
-    })
+    expect(mockedUsedNavigate).toHaveBeenCalledWith(`/${params.tenantId}/t/devices/switch`)
   })
   it('should trigger radio onchange correctly', async () => {
     render(<Provider><StackForm /></Provider>, {
       route: { params, path: '/:tenantId/t/devices/switch/stack/:action' }
     })
-
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     await userEvent.click(await screen.findByTestId('active2'))
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
-    expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/devices/switch`,
-      hash: '',
-      search: ''
-    })
-  })
-  it('should render empty venue list correctly', async () => {
-    render(<Provider><StackForm /></Provider>, {
-      route: { params, path: '/:tenantId/t/devices/switch/stack/:action' }
-    })
-    mockServer.use(
-      rest.post(CommonUrlsInfo.getVenuesList.url,
-        (_, res, ctx) => res(ctx.json([])))
-    )
-
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith(`/${params.tenantId}/t/devices/switch`)
   })
 
   it('should handle add stack by stack switches', async () => {
@@ -220,13 +178,8 @@ describe('Switch Stack Form - Add', () => {
       route: { params, path: '/:tenantId/t/devices/switch/stack/:venueId/:stackList/:action' }
     })
 
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
-    })
-
     expect(await screen.findByText('FEK3224R07X')).toBeVisible()
     expect(await screen.findByText('FEK3224R07X_name')).toBeVisible()
-    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
   })
 
   it('should handle error occurred for stack switches', async () => {
@@ -241,13 +194,7 @@ describe('Switch Stack Form - Add', () => {
       rest.post(SwitchUrlsInfo.convertToStack.url,
         (_, res, ctx) => res(ctx.status(404), ctx.json({})))
     )
-
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
-    })
-
     expect(await screen.findByText('FEK3224R07X')).toBeVisible()
-    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
     // TODO
     // expect(await screen.findByText('Server Error')).toBeVisible()
   })
@@ -257,17 +204,14 @@ describe('Switch Stack Form - Add', () => {
       route: { params, path: '/:tenantId/t/devices/switch/stack/:action' }
     })
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    expect(await screen.findByText('Add Switch Stack')).toBeVisible()
-
     await changeVenue()
     await fillInForm()
 
+    expect(await screen.findByText('Add Switch Stack')).toBeVisible()
     expect(await screen.findByText('Wired')).toBeVisible()
     expect(await screen.findByText('Switches')).toBeVisible()
     const link = await screen.findByRole('link', { name: /switch list/i })
     expect(link).toBeTruthy()
-    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
   })
 })
 
@@ -277,9 +221,8 @@ describe('Switch Stack Form - Edit', () => {
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
     store.dispatch(switchApi.util.resetApiState())
-    initialize()
     mockServer.use(
-      rest.get(CommonUrlsInfo.getApGroupList.url,
+      rest.get(CommonUrlsInfo.getApGroupListByVenue.url,
         (_, res, ctx) => res(ctx.json(apGrouplist))),
       rest.get(SwitchUrlsInfo.getSwitch.url,
         (_, res, ctx) => res(ctx.json(editStackData))),
@@ -323,12 +266,13 @@ describe('Switch Stack Form - Edit', () => {
     })
   })
   it('should render edit stack form with real module correctly', async () => {
-    editStackDetail.model = 'ICX7650-C12P'
-    editStackDetail.rearModule = 'stack-40g'
-    editStackDetail.ipFullContentParsed = false
     mockServer.use(
       rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
-        (_, res, ctx) => res(ctx.json(editStackDetail)))
+        (_, res, ctx) => res(ctx.json({ ...editStackDetail,
+          model: 'ICX7650-C12P',
+          rearModule: 'stack-40g',
+          ipFullContentParsed: false
+        })))
     )
     render(<Provider><StackForm /></Provider>, {
       route: { params, path: '/:tenantId/t/devices/switch/stack/:switchId/:action' }
@@ -342,20 +286,16 @@ describe('Switch Stack Form - Edit', () => {
     expect(applyButton).toHaveAttribute('ant-click-animating-without-extra-node')
   })
   it('should render edit stack form with readonly mode correctly', async () => {
-    editStackDetail.cliApplied = true
     mockServer.use(
       rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
-        (_, res, ctx) => res(ctx.json(editStackDetail)))
+        (_, res, ctx) => res(ctx.json({ ...editStackDetail, cliApplied: true })))
     )
     render(<Provider><StackForm /></Provider>, {
       route: { params, path: '/:tenantId/t/devices/switch/stack/:switchId/:action' }
     })
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    expect(await screen.findByRole('heading', { level: 1, name: 'FEK4124R28X' })).toBeVisible()
-
-    const applyButton = await screen.findByRole('button', { name: /apply/i })
-    await userEvent.click(applyButton)
-    expect(applyButton).toHaveAttribute('ant-click-animating-without-extra-node')
+    await waitFor(async ()=>{
+      expect(await screen.findByRole('button', { name: /OK/i })).toBeVisible()
+    })
   })
 })

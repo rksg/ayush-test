@@ -35,7 +35,6 @@ function MacRegistrationListPageHeader () {
         }
       ]}
       extra={filterByAccess([
-        // eslint-disable-next-line max-len
         <TenantLink
           to={getPolicyDetailsLink({
             type: PolicyType.MAC_REGISTRATION_LIST,

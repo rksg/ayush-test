@@ -1,0 +1,120 @@
+/* eslint-disable max-len */
+import { useState } from 'react'
+
+import { Form, Select, Space, Switch } from 'antd'
+import { useWatch }                    from 'antd/lib/form/Form'
+import { get }                         from 'lodash'
+import { useIntl }                     from 'react-intl'
+
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { NetworkSaveData }        from '@acx-ui/rc/utils'
+import { useParams }              from '@acx-ui/react-router-dom'
+
+
+import { ApCompatibilityToolTip, ApCompatibilityDrawer, ApCompatibilityType, InCompatibilityFeatures } from '../../../../ApCompatibilityDrawer'
+import * as UI                                                                                         from '../../../NetworkMoreSettings/styledComponents'
+
+export enum QoSMirroringScope {
+    MSCS_REQUESTS_ONLY = 'MSCS_REQUESTS_ONLY',
+    ALL_CLIENTS = 'ALL_CLIENTS'
+}
+
+function QoSMirroring ({ wlanData }: { wlanData: NetworkSaveData | null }) {
+  const { $t } = useIntl()
+  const params = useParams()
+  const qoSMirroringScopeOptions: {
+        type: QoSMirroringScope
+        label: string
+        value: 'MSCS_REQUESTS_ONLY' | 'ALL_CLIENTS'
+        key: 'MSCS_REQUESTS_ONLY' | 'ALL_CLIENTS'
+        message: string
+    }[] = [
+      {
+        type: QoSMirroringScope.MSCS_REQUESTS_ONLY,
+        label: $t({ defaultMessage: 'MSCS requests only' }),
+        value: 'MSCS_REQUESTS_ONLY',
+        key: 'MSCS_REQUESTS_ONLY',
+        message: $t({ defaultMessage: `Mirroring for clients sending MSCS
+                    (Mirrored Stream Classification Service) requests` })
+      },
+      {
+        type: QoSMirroringScope.ALL_CLIENTS,
+        label: $t({ defaultMessage: 'All clients' }),
+        value: 'ALL_CLIENTS',
+        key: 'ALL_CLIENTS',
+        message: $t({ defaultMessage: 'Mirroring for all clients connected to this Wi-Fi network.' })
+      }
+    ]
+  /* eslint-disable-next-line max-len */
+  const tooltipInfo = $t({ defaultMessage: `QoS mirroring duplicates network traffic to ensure
+  quality of service for specific multimedia clients or all clients on your Wi-Fi network.
+  Ensure that APs meet the minimum required version 7.0` })
+  const supportApCompatibleCheck = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
+
+  const [ drawerVisible, setDrawerVisible ] = useState(false)
+  const [
+    qosMirroringEnabled,
+    qosMirroringScope
+  ] = [
+    useWatch<boolean>(['wlan', 'advancedCustomization', 'qosMirroringEnabled']),
+    useWatch<string>(['wlan', 'advancedCustomization', 'qosMirroringScope'])
+  ]
+
+  const initQosMirroringEnabled =
+            get(wlanData, ['wlan', 'advancedCustomization', 'qosMirroringEnabled'], true)
+  const initQosMirroringScope =
+            get(wlanData, ['wlan', 'advancedCustomization', 'qosMirroringScope'],
+              QoSMirroringScope.MSCS_REQUESTS_ONLY)
+
+  return (
+    <>
+      <UI.FieldLabel width='250px'>
+        <Space>
+          {$t({ defaultMessage: 'QoS Mirroring' })}
+          <ApCompatibilityToolTip
+            title={tooltipInfo}
+            visible={supportApCompatibleCheck}
+            onClick={() => setDrawerVisible(true)}
+          />
+        </Space>
+        <Form.Item
+          name={['wlan', 'advancedCustomization', 'qosMirroringEnabled']}
+          style={{ marginBottom: '10px', width: '300px' }}
+          valuePropName='checked'
+          initialValue={initQosMirroringEnabled}
+          children={<Switch />}
+        />
+      </UI.FieldLabel>
+      { qosMirroringEnabled &&
+              <Form.Item
+                label={$t({ defaultMessage: 'QoS Mirroring Scope' })}
+                extra={
+                  <div style={{ width: '250px' }}>
+                    { qoSMirroringScopeOptions.find(option =>
+                      option.value === qosMirroringScope)?.message }
+                  </div>
+                }
+                name={['wlan', 'advancedCustomization', 'qosMirroringScope']}
+                initialValue={initQosMirroringScope}
+                children={
+                  <Select
+                    style={{ width: '280px', height: '30px', fontSize: '11px' }}
+                    options={qoSMirroringScopeOptions}
+                  />
+                }
+              />
+      }
+      {supportApCompatibleCheck &&
+        <ApCompatibilityDrawer
+          visible={drawerVisible}
+          type={params.networkId?ApCompatibilityType.NETWORK:ApCompatibilityType.ALONE}
+          networkId={params.networkId}
+          featureName={InCompatibilityFeatures.QOS_MIRRORING}
+          onClose={() => setDrawerVisible(false)}
+        />
+      }
+    </>
+  )
+}
+
+export default QoSMirroring

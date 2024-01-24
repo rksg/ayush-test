@@ -1,11 +1,17 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, NetworkSegmentationUrls, PersonaUrls } from '@acx-ui/rc/utils'
-import { Provider }                                             from '@acx-ui/store'
-import { mockServer, render, screen }                           from '@acx-ui/test-utils'
+import { apApi, nsgApi, personaApi }                             from '@acx-ui/rc/services'
+import { CommonUrlsInfo, NetworkSegmentationUrls, PersonaUrls }  from '@acx-ui/rc/utils'
+import { Provider, store }                                       from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { mockedApList, mockedNsgData, mockedNsgStatsList, mockedNsgSwitchInfoData, mockedPersonaList, replacePagination } from './__tests__/fixtures'
+import { mockedApList,
+  mockedNsgData,
+  mockedNsgStatsList,
+  mockedNsgSwitchInfoData,
+  mockedPersonaList,
+  replacePagination } from './__tests__/fixtures'
 
 import { NetworkSegmentationDetailTableGroup } from '.'
 
@@ -22,9 +28,13 @@ jest.mock('./AccessSwitchTable', () => ({
   AccessSwitchTable: () => <div data-testid='AccessSwitchTable' />
 }))
 
-describe.skip('NetworkSegmentationDetailTableGroup', () => {
+describe('NetworkSegmentationDetailTableGroup', () => {
 
   beforeEach(() => {
+    store.dispatch(nsgApi.util.resetApiState())
+    store.dispatch(personaApi.util.resetApiState())
+    store.dispatch(apApi.util.resetApiState())
+
     mockServer.use(
       rest.get(
         NetworkSegmentationUrls.getNetworkSegmentationGroupById.url,
@@ -57,6 +67,7 @@ describe.skip('NetworkSegmentationDetailTableGroup', () => {
       </Provider>
     )
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await screen.findByTestId('ApsTable')
     await user.click(await screen.findByRole('tab', { name: /Dist. Switches/i }))
     await screen.findByTestId('DistSwitchesTable')
@@ -64,5 +75,9 @@ describe.skip('NetworkSegmentationDetailTableGroup', () => {
     await screen.findByTestId('AccessSwitchTable')
     await user.click(await screen.findByRole('tab', { name: /Assigned Segments/i }))
     await screen.findByTestId('AssignedSegmentsTable')
+
+    expect(screen.getByRole('tab', {
+      name: /aps \(2\)/i
+    })).toBeVisible()
   })
 })

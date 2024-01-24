@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { policyApi }             from '@acx-ui/rc/services'
 import {
   getPolicyRoutePath,
   PolicyOperation,
@@ -8,7 +9,7 @@ import {
   RadiusAttributeGroupUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Path, To, useTenantLink } from '@acx-ui/react-router-dom'
-import { Provider }                from '@acx-ui/store'
+import { Provider, store }         from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -19,8 +20,6 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { mockedTenantId } from '../../../../Services/MdnsProxy/MdnsProxyForm/__tests__/fixtures'
-
 import {
   attributeGroup,
   attributeGroupReturnByQuery,
@@ -29,6 +28,8 @@ import {
   vendorList
 } from './__tests__/fixtures'
 import RadiusAttributeGroupForm from './RadiusAttributeGroupForm'
+
+export const mockedTenantId = '6de6a5239a1441cfb9c7fde93aa613fe'
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
@@ -52,6 +53,7 @@ describe('RadiusAttributeGroupForm', () => {
   const editPath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.EDIT })
 
   beforeEach(async () => {
+    store.dispatch(policyApi.util.resetApiState())
     mockServer.use(
       rest.get(
         RadiusAttributeGroupUrlsInfo.getAttributeGroups.url.split('?')[0],
@@ -121,6 +123,9 @@ describe('RadiusAttributeGroupForm', () => {
 
     const validating = await screen.findByRole('img', { name: 'loading' })
     await waitForElementToBeRemoved(validating)
+    await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
+
+    await screen.findByText('Group testGroup was added')
   })
 
   it('should render breadcrumb correctly', async () => {
@@ -198,6 +203,8 @@ describe('RadiusAttributeGroupForm', () => {
 
     const validating = await screen.findByRole('img', { name: 'loading' })
     await waitForElementToBeRemoved(validating)
+
+    await screen.findByText('Group ' + attributeGroup.name + ' was updated')
   })
 
   it('should navigate to the Select service page when clicking Cancel button', async () => {

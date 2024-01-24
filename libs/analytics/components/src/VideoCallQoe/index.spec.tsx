@@ -32,7 +32,7 @@ describe('VideoCallQoe', () => {
         return <span>{title}</span>
       }
       render(<Component/>, { wrapper: Provider, route: {} })
-      expect(await screen.findByText('Video Call QoE (3)')).toBeVisible()
+      expect(await screen.findByText('Video Call QoE (4)')).toBeVisible()
     })
     it('should render extra header correctly', async () => {
       const Component = () => {
@@ -59,7 +59,7 @@ describe('VideoCallQoe', () => {
         return <>{title}{component}</>
       }
       render(<Component/>, { wrapper: Provider, route: {} })
-      expect(await screen.findByText('Video Call QoE (3)')).toBeVisible()
+      expect(await screen.findByText('Video Call QoE (4)')).toBeVisible()
       const input = await screen.findByPlaceholderText('Search Test Call Name')
       await userEvent.type(input, 'anything')
       expect(await screen.findByText('Video Call QoE (0)')).toBeVisible()
@@ -69,7 +69,7 @@ describe('VideoCallQoe', () => {
   describe('VideoCallQoe page', () => {
     it('should render page correctly', async () => {
       render(<VideoCallQoe />, { wrapper: Provider, route: { params } })
-      expect(await screen.findByText('Video Call QoE (3)')).toBeVisible()
+      expect(await screen.findByText('Video Call QoE (4)')).toBeVisible()
       expect(await screen.findByText('Create Test Call')).toBeVisible()
       expect(await screen.findByText('Test Call Name')).toBeVisible()
     })

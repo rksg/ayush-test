@@ -60,6 +60,7 @@ export function Subscriptions () {
   const [isAssignedActive, setActiveTab] = useState(false)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const isMspSelfAssignmentEnabled = useIsSplitOn(Features.MSP_SELF_ASSIGNMENT)
+  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
 
   const { tenantId } = useParams()
   const subscriptionDeviceTypeList = getEntitlementDeviceTypes()
@@ -201,12 +202,16 @@ export function Subscriptions () {
       assigned: number;
       courtesy: number;
       tooltip: string;
+      trial: boolean;
     } }
 
     deviceTypeList.forEach(item => {
-      const deviceType = item.value
-      const summaryData = data.filter(n => n.deviceType === deviceType)
-      const assignedData = assignedSummary.filter(n => n.deviceType === deviceType)
+      const isApswTrial = item.value === EntitlementDeviceType.MSP_APSW_TEMP
+      const deviceType = !isApswTrial ? item.value : EntitlementDeviceType.MSP_APSW
+      const summaryData =
+        data.filter(n => n.deviceType === deviceType && n.trial === isApswTrial)
+      const assignedData =
+        assignedSummary.filter(n => n.deviceType === deviceType && n.trial === isApswTrial)
       let quantity = 0
       let used = 0
       let courtesy = 0
@@ -225,12 +230,13 @@ export function Subscriptions () {
         })
 
         // including to display 0 quantity.
-        result[deviceType] = {
+        result[item.value] = {
           total: quantity,
           used: used,
           assigned: assigned,
           courtesy: courtesy,
-          tooltip: getCourtesyTooltip(quantity, courtesy)
+          tooltip: getCourtesyTooltip(quantity, courtesy),
+          trial: isApswTrial
         }
       }
     })
@@ -271,13 +277,16 @@ export function Subscriptions () {
             {
               subscriptionDeviceTypeList.map((item) => {
                 const summary = summaryData[item.value]
-                return summary ? <MspSubscriptionUtilizationWidget
+                const showUtilBar = summary &&
+                  (item.value !== EntitlementDeviceType.MSP_APSW_TEMP || isAssignedActive)
+                return showUtilBar ? <MspSubscriptionUtilizationWidget
                   key={item.value}
                   deviceType={item.value}
                   title={item.label}
                   total={summary.total}
                   assigned={summary.assigned}
                   used={summary.used}
+                  trial={summary.trial}
                   tooltip={summary.tooltip}
                 /> : ''
               })
@@ -350,9 +359,9 @@ export function Subscriptions () {
               hidden={!isAssignedActive || !isMspSelfAssignmentEnabled}
               type='primary'>{$t({ defaultMessage: 'Assign MSP Subscriptions' })}</Button>
           </MspTenantLink>,
-          <TenantLink to='/dashboard'>
+          !isHspSupportEnabled ? <TenantLink to='/dashboard'>
             <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
-          </TenantLink>
+          </TenantLink> : null
         ]}
       />
       {isMspSelfAssignmentEnabled && <Tabs

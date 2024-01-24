@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 
 import {
-  DatePicker,
   Form,
   Input,
   Radio,
@@ -17,15 +16,16 @@ import { useIntl } from 'react-intl'
 
 import {
   Button,
+  DatePicker,
   PageHeader,
   showToast,
   StepsFormLegacy,
   StepsFormLegacyInstance,
   Subtitle
 } from '@acx-ui/components'
-import { useIsSplitOn, useIsTierAllowed, Features } from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                from '@acx-ui/formatter'
-import { SearchOutlined }                           from '@acx-ui/icons'
+import { useIsSplitOn, useIsTierAllowed, Features, TierFeatures } from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                              from '@acx-ui/formatter'
+import { SearchOutlined }                                         from '@acx-ui/icons'
 import {
 } from '@acx-ui/msp/services'
 import {
@@ -52,7 +52,8 @@ import {
   MspAssignmentSummary,
   MspEcDelegatedAdmins,
   MspIntegratorDelegated,
-  AssignActionEnum
+  AssignActionEnum,
+  MspEcTierEnum
 } from '@acx-ui/msp/utils'
 import { GoogleMapWithPreference, usePlacesAutocomplete } from '@acx-ui/rc/components'
 import {
@@ -89,15 +90,16 @@ interface AddressComponent {
 interface EcFormData {
     name: string,
     address: Address,
-    service_effective_date: string,
-    service_expiration_date: string,
+    service_effective_date: moment.Moment,
+    service_expiration_date: moment.Moment,
     admin_email: string,
     admin_firstname: string,
     admin_lastname: string,
     admin_role: RolesEnum,
     wifiLicense: number,
     switchLicense: number,
-    apswLicense: number
+    apswLicense: number,
+    tier: MspEcTierEnum
 }
 
 export const retrieveCityState = (addressComponents: Array<AddressComponent>, country: string) => {
@@ -164,8 +166,9 @@ export function ManageCustomer () {
   const intl = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const optionalAdminFF = useIsSplitOn(Features.MSPEC_OPTIONAL_ADMIN)
-  const edgeEnabled = useIsTierAllowed(Features.EDGES)
+  const edgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
+  const createEcWithTierEnabled = useIsSplitOn(Features.MSP_EC_CREATE_WITH_TIER)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
@@ -187,6 +190,7 @@ export function ManageCustomer () {
   const [assignedWifiLicense, setWifiLicense] = useState(0)
   const [assignedSwitchLicense, setSwitchLicense] = useState(0)
   const [assignedApswLicense, setApswLicense] = useState(0)
+  const [assignedApswTrialLicense, setApswTrialLicense] = useState(0)
   const [customDate, setCustomeDate] = useState(true)
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
@@ -265,18 +269,26 @@ export function ManageCustomer () {
           en.deviceType === EntitlementDeviceType.MSP_SWITCH && en.status === 'VALID')
         const sLic = sw.length > 0 ? sw.reduce((acc, cur) => cur.quantity + acc, 0) : 0
         const apsw = assigned.filter(en =>
-          en.deviceType === EntitlementDeviceType.MSP_APSW && en.status === 'VALID')
+          en.deviceType === EntitlementDeviceType.MSP_APSW
+          && en.status === 'VALID' && en.trialAssignment === false)
         const apswLic = apsw.length > 0 ? apsw.reduce((acc, cur) => cur.quantity + acc, 0) : 0
+        const apswTrial = assigned.filter(en =>
+          en.deviceType === EntitlementDeviceType.MSP_APSW
+          && en.status === 'VALID' && en.trialAssignment === true)
+        const apswTrialLic = apswTrial.length > 0 ?
+          apswTrial.reduce((acc, cur) => cur.quantity + acc, 0) : 0
+
         isTrialEditMode ? checkAvailableLicense(licenseSummary)
           : checkAvailableLicense(licenseSummary, wLic, sLic, apswLic)
 
         formRef.current?.setFieldsValue({
           name: data?.name,
-          service_effective_date: data?.service_effective_date,
+          service_effective_date: moment(data?.service_effective_date),
           wifiLicense: wLic,
           switchLicense: sLic,
-          apswLicense: apswLic
-        // service_expiration_date: data?.service_expiration_date
+          apswLicense: apswLic,
+          service_expiration_date: moment(data?.service_expiration_date),
+          tier: data?.tier ?? MspEcTierEnum.Professional
         })
         formRef.current?.setFieldValue(['address', 'addressLine'], data?.street_address)
         data?.is_active === 'true' ? setTrialActive(true) : setTrialActive(false)
@@ -287,6 +299,7 @@ export function ManageCustomer () {
         setSubscriptionOrigEndDate(moment(data?.service_expiration_date))
         if (isDeviceAgnosticEnabled) {
           setApswLicense(apswLic)
+          setApswTrialLicense(apswTrialLic)
         } else {
           setWifiLicense(wLic)
           setSwitchLicense(sLic)
@@ -358,7 +371,8 @@ export function ManageCustomer () {
   const fieldValidator = async (value: string, remainingDevices: number) => {
     if(parseInt(value, 10) > remainingDevices || parseInt(value, 10) < 0) {
       return Promise.reject(
-        `${intl.$t({ defaultMessage: 'Invalid number' })} `
+        intl.$t({ defaultMessage: 'Number should be between 0 and {value}' },
+          { value: remainingDevices })
       )
     }
     return Promise.resolve()
@@ -416,7 +430,8 @@ export function ManageCustomer () {
     try {
       const ecFormData = { ...values }
       const today = EntitlementUtil.getServiceStartDate()
-      const expirationDate = EntitlementUtil.getServiceEndDate(subscriptionEndDate)
+      const expirationDate =
+        EntitlementUtil.getServiceEndDate(ecFormData.service_expiration_date ?? subscriptionEndDate)
       const quantityWifi = _.isString(ecFormData.wifiLicense)
         ? parseInt(ecFormData.wifiLicense, 10) : ecFormData.wifiLicense
       const quantitySwitch = _.isString(ecFormData.switchLicense)
@@ -460,7 +475,8 @@ export function ManageCustomer () {
         service_effective_date: today,
         service_expiration_date: expirationDate,
         admin_delegations: delegations,
-        licenses: assignLicense
+        licenses: assignLicense,
+        tier: createEcWithTierEnabled ? ecFormData.tier : undefined
       }
       if (ecFormData.admin_email) {
         customer.admin_email = ecFormData.admin_email
@@ -469,18 +485,18 @@ export function ManageCustomer () {
         customer.admin_role = ecFormData.admin_role
       }
       const ecDelegations=[] as MspIntegratorDelegated[]
-      if (mspIntegrator.length > 0) {
+      mspIntegrator.forEach((integrator: MspEc) => {
         ecDelegations.push({
           delegation_type: AccountType.MSP_INTEGRATOR,
-          delegation_id: mspIntegrator[0].id
+          delegation_id: integrator.id
         })
-      }
-      if (mspInstaller.length > 0) {
+      })
+      mspInstaller.forEach((installer: MspEc) => {
         ecDelegations.push({
           delegation_type: AccountType.MSP_INSTALLER,
-          delegation_id: mspInstaller[0].id
+          delegation_id: installer.id
         })
-      }
+      })
       if (ecDelegations.length > 0) {
         customer.delegations = ecDelegations
       }
@@ -502,7 +518,7 @@ export function ManageCustomer () {
     try {
       const ecFormData = { ...values }
       const today = EntitlementUtil.getServiceStartDate()
-      const expirationDate = EntitlementUtil.getServiceEndDate(subscriptionEndDate)
+      const expirationDate = EntitlementUtil.getServiceEndDate(ecFormData.service_expiration_date)
       const expirationDateOrig = EntitlementUtil.getServiceEndDate(subscriptionOrigEndDate)
       const needUpdateLicense = expirationDate !== expirationDateOrig
 
@@ -564,7 +580,7 @@ export function ManageCustomer () {
 
         if (isDeviceAgnosticEnabled ) {
           if (_.isString(ecFormData.apswLicense) || needUpdateLicense) {
-            const apswAssignId = getAssignmentId(EntitlementDeviceType.MSP_APSW)
+            const apswAssignId = getDeviceAssignmentId(EntitlementDeviceType.MSP_APSW, false)
             const quantityApsw = _.isString(ecFormData.apswLicense)
               ? parseInt(ecFormData.apswLicense, 10) : ecFormData.apswLicense
             const actionApsw = apswAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY
@@ -585,7 +601,8 @@ export function ManageCustomer () {
         city: address.city,
         country: address.country,
         service_effective_date: today,
-        service_expiration_date: expirationDate
+        service_expiration_date: expirationDate,
+        tier: createEcWithTierEnabled ? ecFormData.tier : undefined
       }
       if (!isTrialMode && licAssignment.length > 0) {
         let assignLicense = {
@@ -626,13 +643,27 @@ export function ManageCustomer () {
   }
 
   const displayIntegrator = () => {
-    const value = !mspIntegrator || mspIntegrator.length === 0 ? '--' : mspIntegrator[0].name
-    return value
+    if (!mspIntegrator || mspIntegrator.length === 0)
+      return '--'
+    return <>
+      {mspIntegrator.map(integrator =>
+        <UI.AdminList key={integrator.id}>
+          {integrator.name}
+        </UI.AdminList>
+      )}
+    </>
   }
 
   const displayInstaller = () => {
-    const value = !mspInstaller || mspInstaller.length === 0 ? '--' : mspInstaller[0].name
-    return value
+    if (!mspInstaller || mspInstaller.length === 0)
+      return '--'
+    return <>
+      {mspInstaller.map(installer =>
+        <UI.AdminList key={installer.id}>
+          {installer.name}
+        </UI.AdminList>
+      )}
+    </>
   }
 
   const displayCustomerAdmins = () => {
@@ -690,8 +721,8 @@ export function ManageCustomer () {
     swLic ? setAvailableSwitchLicense(remainingSwitch+swLic)
       : setAvailableSwitchLicense(remainingSwitch)
 
-    const apswLicenses = entitlements.filter(p =>
-      p.remainingDevices > 0 && p.deviceType === EntitlementDeviceType.MSP_APSW)
+    const apswLicenses = entitlements.filter(p => p.remainingDevices > 0 &&
+      p.deviceType === EntitlementDeviceType.MSP_APSW && p.trial === false)
     let remainingApsw = 0
     apswLicenses.forEach( (lic: MspAssignmentSummary) => {
       remainingApsw += lic.remainingDevices
@@ -703,6 +734,12 @@ export function ManageCustomer () {
   const getAssignmentId = (deviceType: string) => {
     const license =
     assignedLicense.filter(en => en.deviceType === deviceType && en.status === 'VALID')
+    return license.length > 0 ? license[0].id : 0
+  }
+
+  const getDeviceAssignmentId = (deviceType: string, trialAssignment: boolean) => {
+    const license = assignedLicense.filter(en => en.deviceType === deviceType
+     && en.trialAssignment === trialAssignment && en.status === 'VALID')
     return license.length > 0 ? license[0].id : 0
   }
 
@@ -737,6 +774,28 @@ export function ManageCustomer () {
         />}
       </UI.FieldLabelAdmins>
     </>
+  }
+
+  const EcTierForm = () => {
+    return <Form.Item
+      name='tier'
+      label={intl.$t({ defaultMessage: 'Tier' })}
+      style={{ width: '300px' }}
+      rules={[{ required: true }]}
+      initialValue={MspEcTierEnum.Professional}
+      children={
+        <Select>
+          {
+            Object.entries(MspEcTierEnum).map(([label, value]) => (
+              <Option
+                key={value}
+                value={value}>{intl.$t({ defaultMessage: '{tier}' }, { tier: label })}
+              </Option>
+            ))
+          }
+        </Select>
+      }
+    />
   }
 
   const CustomerAdminsForm = () => {
@@ -874,6 +933,11 @@ export function ManageCustomer () {
         <label>
           {intl.$t({ defaultMessage: 'devices out of {availableApswLicense} available' }, {
             availableApswLicense: availableApswLicense })}
+          {assignedApswTrialLicense > 0 &&
+          <span style={{ marginLeft: 10 }}>
+            {intl.$t({ defaultMessage: '(active trial license : {apswTrial})' },
+              { apswTrial: assignedApswTrialLicense })}
+          </span>}
         </label>
       </UI.FieldLabelSubs>
     </div>
@@ -895,28 +959,27 @@ export function ManageCustomer () {
     </>
   }
 
-  function expirationDateOnChange (props: unknown, expirationDate: string) {
-    setSubscriptionEndDate(moment(expirationDate))
-  }
-
   const onSelectChange = (value: string) => {
     if (value === DateSelectionEnum.CUSTOME_DATE) {
-      // setSubscriptionEndDate('')
       setCustomeDate(true)
     } else {
+      let expirationDate = moment().add(30,'days')
       if (value === DateSelectionEnum.THIRTY_DAYS) {
-        setSubscriptionEndDate(moment().add(30,'days'))
+        expirationDate = moment().add(30,'days')
       } else if (value === DateSelectionEnum.SIXTY_DAYS) {
-        setSubscriptionEndDate(moment().add(60,'days'))
+        expirationDate = moment().add(60,'days')
       } else if (value === DateSelectionEnum.NINETY_DAYS) {
-        setSubscriptionEndDate(moment().add(90,'days'))
+        expirationDate = moment().add(90,'days')
       } else if (value === DateSelectionEnum.ONE_YEAR) {
-        setSubscriptionEndDate(moment().add(1,'years'))
+        expirationDate = moment().add(1,'years')
       } else if (value === DateSelectionEnum.THREE_YEARS) {
-        setSubscriptionEndDate(moment().add(3,'years'))
+        expirationDate = moment().add(3,'years')
       } else if (value === DateSelectionEnum.FIVE_YEARS) {
-        setSubscriptionEndDate(moment().add(5,'years'))
+        expirationDate = moment().add(5,'years')
       }
+      formRef.current?.setFieldsValue({
+        service_expiration_date: expirationDate
+      })
       setCustomeDate(false)
     }
   }
@@ -991,16 +1054,24 @@ export function ManageCustomer () {
               </Select>
             }
           />
-          <DatePicker
-            format={formatter(DateFormatEnum.DateFormat)}
-            allowClear={false}
-            disabled={!customDate}
-            defaultValue={moment(subscriptionEndDate)}
-            onChange={expirationDateOnChange}
-            disabledDate={(current) => {
-              return current && current < moment().endOf('day')
-            }}
-            style={{ marginLeft: '4px' }}
+          <Form.Item
+            name='service_expiration_date'
+            label=''
+            rules={[
+              { required: true,
+                message: intl.$t({ defaultMessage: 'Please select expiration date' })
+              }
+            ]}
+            children={
+              <DatePicker
+                allowClear={false}
+                disabled={!customDate}
+                disabledDate={(current) => {
+                  return current && current < moment().endOf('day')
+                }}
+                style={{ marginLeft: '4px' }}
+              />
+            }
           />
         </UI.FieldLabeServiceDate>
       </div>}
@@ -1099,16 +1170,24 @@ export function ManageCustomer () {
               </Select>
             }
           />
-          <DatePicker
-            format={formatter(DateFormatEnum.DateFormat)}
-            allowClear={false}
-            disabled={!customDate}
-            defaultValue={moment(formatter(DateFormatEnum.DateFormat)(subscriptionEndDate))}
-            onChange={expirationDateOnChange}
-            disabledDate={(current) => {
-              return current && current < moment().endOf('day')
-            }}
-            style={{ marginLeft: '4px' }}
+          <Form.Item
+            name='service_expiration_date'
+            label=''
+            rules={[
+              { required: true,
+                message: intl.$t({ defaultMessage: 'Please select expiration date' })
+              }
+            ]}
+            children={
+              <DatePicker
+                allowClear={false}
+                disabled={!customDate}
+                disabledDate={(current) => {
+                  return current && current < moment().endOf('day')
+                }}
+                style={{ marginLeft: '4px' }}
+              />
+            }
           />
         </UI.FieldLabeServiceDate></div>}
     </>
@@ -1195,7 +1274,9 @@ export function ManageCustomer () {
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Service Expiration Date' })}
         >
-          <Paragraph>{formatter(DateFormatEnum.DateFormat)(subscriptionEndDate)}</Paragraph>
+          <Paragraph>
+            {formatter(DateFormatEnum.DateFormat)(formData.service_expiration_date)}
+          </Paragraph>
         </Form.Item></>
     )
   }
@@ -1286,6 +1367,7 @@ export function ManageCustomer () {
           </Form.Item >
 
           <MspAdminsForm></MspAdminsForm>
+          {createEcWithTierEnabled && <EcTierForm />}
           <Subtitle level={3}>
             { intl.$t({ defaultMessage: 'Customer Administrator' }) }</Subtitle>
           <Form.Item children={displayCustomerAdmins()} />
@@ -1344,6 +1426,7 @@ export function ManageCustomer () {
             </Form.Item>
 
             <MspAdminsForm></MspAdminsForm>
+            {createEcWithTierEnabled && <EcTierForm />}
             <CustomerAdminsForm></CustomerAdminsForm>
           </StepsFormLegacy.StepForm>
 

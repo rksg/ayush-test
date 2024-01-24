@@ -26,7 +26,7 @@ import {
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { categoryCodeMap, IncidentCode } from '@acx-ui/analytics/utils'
+import { categoryCodeMap, IncidentCode, incidentsToggle, IncidentsToggleFilter } from '@acx-ui/analytics/utils'
 import {
   xAxisOptions,
   ResetButton,
@@ -40,6 +40,8 @@ import { get }                        from '@acx-ui/config'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import type { TimeStampRange }        from '@acx-ui/types'
 import { hasAccess }                  from '@acx-ui/user'
+
+import { useIncidentToggles } from '../useIncidentToggles'
 
 import {
   eventColorByCategory,
@@ -56,7 +58,6 @@ import {
 } from './config'
 import * as UI                             from './styledComponents'
 import { getQualityColor, labelFormatter } from './util'
-
 
 import type { EChartsReactProps } from 'echarts-for-react'
 
@@ -87,7 +88,8 @@ export interface TimelineChartProps extends Omit<EChartsReactProps, 'option' | '
 export const getSeriesData = (
   data: (Event | LabelledQuality | IncidentDetails | RoamingTimeSeriesData)[],
   key: string,
-  series: string
+  series: string,
+  toggles?: IncidentsToggleFilter['toggles']
 ) => {
   if (series === EVENTS)
     return data
@@ -108,12 +110,11 @@ export const getSeriesData = (
         moment(record.end).valueOf(),
         { ...record, icon: '' }
       ])
+    const category = key as keyof typeof categoryCodeMap
+    const code = categoryCodeMap[category].codes
     return data
-      .filter((record) =>
-        categoryCodeMap[key as keyof typeof categoryCodeMap]?.codes.includes(
-          (record as IncidentDetails)?.code as IncidentCode
-        )
-      )
+      .filter((record) => incidentsToggle({ code, toggles }, category)
+        .includes((record as IncidentDetails)?.code as IncidentCode))
       .map((record) => [record.start, key, moment(record.end).valueOf(), { ...record, icon: '' }])
   }
   if (series === ROAMING) {
@@ -325,6 +326,7 @@ export function TimelineChart ({
   const eChartsRef = useRef<ReactECharts>(null)
   const navigate = useNavigate()
   const currentPath = useTenantLink('/')
+  const toggles = useIncidentToggles()
   const basePath = currentPath.pathname
   useImperativeHandle(chartRef, () => eChartsRef.current!)
   const chartPadding = 10
@@ -355,7 +357,7 @@ export function TimelineChart ({
           symbol: 'circle',
           symbolSize: 8,
           animation: false,
-          data: getSeriesData(data, key, series),
+          data: getSeriesData(data, key, series, toggles),
           itemStyle: {
             color: getSeriesItemColor
           },
@@ -370,7 +372,7 @@ export function TimelineChart ({
             color: getBarColor as unknown as string
           },
           animation: false,
-          data: getSeriesData(data, key, series),
+          data: getSeriesData(data, key, series, toggles),
           clip: true,
           cursor: (key === 'incidents') ? 'pointer' : 'crosshair'
         })

@@ -1,10 +1,11 @@
 import { useCallback, useMemo, useRef } from 'react'
 
-import { Row, Col }               from 'antd'
+import _                          from 'lodash'
 import moment, { Moment }         from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { DateTimePicker, Tooltip } from '@acx-ui/components'
+import { DateTimePicker, Tooltip, showToast } from '@acx-ui/components'
+import { DateFormatEnum, formatter }          from '@acx-ui/formatter'
 import {
   CalendarOutlined,
   CancelCircleOutlined,
@@ -13,12 +14,13 @@ import {
 } from '@acx-ui/icons'
 
 import {
+  Recommendation,
   RecommendationListItem,
   useCancelRecommendationMutation,
   useScheduleRecommendationMutation
 } from '../services'
 
-import { ActionWrapper, RevertIcon } from './styledComponents'
+import * as UI from './styledComponents'
 
 
 // eslint-disable-next-line max-len
@@ -31,7 +33,7 @@ const actionTooltip = {
   },
   Revert: {
     text: defineMessage({ defaultMessage: 'Revert' }),
-    icon: <RevertIcon />
+    icon: <UI.RevertIcon />
   },
   ApplyScheduled: {
     text: defineMessage({ defaultMessage: 'Edit schedule' }),
@@ -54,12 +56,23 @@ type ActionButtonProps = RecommendationListItem & {
   type: keyof typeof actionTooltip
 }
 
-function ApplyCalender ({ disabled, type, id, code }: ActionButtonProps) {
+function ApplyCalendar ({ disabled, type, id, code, metadata }: ActionButtonProps) {
   const { $t } = useIntl()
   const [scheduleRecommendation] = useScheduleRecommendationMutation()
   const onApply = (date: Moment) => {
-    scheduleRecommendation({ id, scheduledAt: date.toISOString() })
+    const futureTime = getFutureTime(moment().seconds(0).milliseconds(0))
+    if (futureTime <= date){
+      scheduleRecommendation({ id, scheduledAt: date.toISOString() })
+    } else {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'Scheduled time cannot be before {futureTime}' }, {
+          futureTime: formatter(DateFormatEnum.DateTimeFormat)(futureTime)
+        })
+      })
+    }
   }
+  const scheduledAt = useRef(moment(metadata.scheduledAt))
   const futureDate = useRef(getFutureTime(moment().seconds(0).milliseconds(0)))
   const footerMsg = code.startsWith('c-crrm') && type === 'Apply'
     ? $t(applyFooterMsg)
@@ -103,9 +116,9 @@ function ApplyCalender ({ disabled, type, id, code }: ActionButtonProps) {
   return <DateTimePicker
     key={`apply-${id}`}
     title={$t(actionTooltip[type].text)}
-    icon={<ActionWrapper $disabled={disabled}>{actionTooltip[type].icon}</ActionWrapper>}
+    icon={<UI.IconWrapper $disabled={disabled}>{actionTooltip[type].icon}</UI.IconWrapper>}
     disabled={disabled}
-    initialDate={futureDate}
+    initialDate={metadata.scheduledAt ? scheduledAt : futureDate}
     onApply={onApply}
     applyFooterMsg={footerMsg}
     disabledDateTime={disabledDateTime}
@@ -115,7 +128,7 @@ function ApplyCalender ({ disabled, type, id, code }: ActionButtonProps) {
 function CancelCalendar ({ disabled, id }: Omit<ActionButtonProps, 'type'>) {
   const { $t } = useIntl()
   const [cancelRecommendation] = useCancelRecommendationMutation()
-  return <ActionWrapper key={`cancel-${id}`} $disabled={disabled}>
+  return <UI.IconWrapper key={`cancel-${id}`} $disabled={disabled}>
     { disabled
       ? <CancelCircleSolid />
       : <Tooltip
@@ -126,16 +139,21 @@ function CancelCalendar ({ disabled, id }: Omit<ActionButtonProps, 'type'>) {
         <CancelCircleOutlined
           onClick={async () => { await cancelRecommendation({ id }).unwrap() }} />
       </Tooltip>}
-  </ActionWrapper>
+  </UI.IconWrapper>
 }
 
 const actions = {
-  schedule: (props: ActionButtonProps) => <ApplyCalender {...props} />,
+  schedule: (props: ActionButtonProps) => <ApplyCalendar {...props} />,
   cancel: (props: Omit<ActionButtonProps, 'type'>) => <CancelCalendar {...props} />
 }
 
+export const isCrrmOptimizationMatched = (
+  metadata: Recommendation['metadata'], preferences: Recommendation['preferences']
+) => _.get(metadata, 'audit') || _.get(metadata, 'algorithmData.isCrrmFullOptimization', true)
+  === _.get(preferences, 'crrmFullOptimization', true)
+
 const getAvailableActions = (recommendation: RecommendationListItem) => {
-  const { isMuted, statusEnum } = recommendation
+  const { isMuted, statusEnum, metadata, preferences } = recommendation
   const props = { ...recommendation }
   if (isMuted) {
     return [
@@ -143,18 +161,24 @@ const getAvailableActions = (recommendation: RecommendationListItem) => {
       { icon: actions.schedule({ ...props, disabled: true, type: 'Revert' }) }
     ]
   }
+
   switch (statusEnum) {
     case 'new':
       return [
-        { icon: actions.schedule({ ...props, disabled: false, type: 'Apply' }) },
+        { icon: actions.schedule({
+          ...props,
+          disabled: !isCrrmOptimizationMatched(metadata, preferences),
+          type: 'Apply' })
+        },
         { icon: actions.schedule({ ...props, disabled: true, type: 'Revert' }) }
       ]
     case 'applyscheduled':
       return [
         { icon: actions.schedule({ ...props, disabled: false, type: 'ApplyScheduled' }) },
-        { icon: actions.cancel({ ...props, disabled: false }) },
+        recommendation?.statusTrail?.filter(trail => trail.status === 'applied').length === 0
+          && { icon: actions.cancel({ ...props, disabled: false }) },
         { icon: actions.schedule({ ...props, disabled: true, type: 'Revert' }) }
-      ]
+      ].filter(Boolean) as { icon: JSX.Element }[]
     case 'applied':
     case 'applywarning':
     case 'revertfailed':
@@ -185,13 +209,7 @@ const getAvailableActions = (recommendation: RecommendationListItem) => {
 export const RecommendationActions = (props: { recommendation: RecommendationListItem }) => {
   const { recommendation } = props
   const actionButtons = getAvailableActions(recommendation)
-  return <Row gutter={[0, 0]} align='middle' justify='start'>
-    {actionButtons.map((config, ind) => <Col
-      key={ind}
-      span={8}
-      push={ind === 1 && actionButtons.length > 2 ? 1 : undefined}
-    >
-      {config.icon}
-    </Col>)}
-  </Row>
+  return <UI.Actions>
+    {actionButtons.map((config, i) => <span key={i}>{config.icon}</span>)}
+  </UI.Actions>
 }

@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { MacRegListUrlsInfo }         from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
@@ -168,5 +169,35 @@ describe('MacAddressDrawer', () => {
     await userEvent.click(saveButton)
 
     await screen.findByText('MAC Address 3A-B8-A9-29-35-D5 was updated')
+  })
+
+  it('should submit the drawer successfully async', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <MacAddressDrawer
+          visible={true}
+          setVisible={jest.fn()}
+          isEdit={false}
+          editData={undefined}
+          expirationOfPool='Never expires'/>
+      </Provider>,
+      {
+        route: { params: {
+          tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+          policyId: '1b5c434b-1d28-4ac1-9fe6-cdbee9f934e3'
+        }, path: '/:tenantId/t/:policyId' }
+      }
+    )
+    let saveButton = screen.getByText('Add')
+    expect(saveButton).toBeInTheDocument()
+    let cancelButton = screen.getByText('Cancel')
+    expect(cancelButton).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('radio', { name: 'Never expires (Same as list)' }))
+    // eslint-disable-next-line max-len
+    await userEvent.type(await screen.findByRole('textbox', { name: 'MAC Address' }), '11:22:33:44:55:77')
+    await userEvent.click(saveButton)
+
+    jest.mocked(useIsSplitOn).mockReset()
   })
 })

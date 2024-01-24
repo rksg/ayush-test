@@ -128,7 +128,7 @@ export const apViewModel = {
 }
 
 export const currentAP = {
-  serialNumber: '',
+  serialNumber: '892838227723',
   lastUpdTime: '2022-11-14T07:37:21.976Z',
   lastSeenTime: '11/14/2022 17:55:55',
   name: 'UI team ONLY',

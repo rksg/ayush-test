@@ -1,17 +1,18 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                     from '@acx-ui/store'
+import { CommonUrlsInfo, EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                          from '@acx-ui/store'
 import {
   fireEvent, mockServer, render,
   screen
 } from '@acx-ui/test-utils'
 
-import { mockEdgeData, mockVenueData } from '../../../__tests__/fixtures'
+import { mockVenueData } from '../../../__tests__/fixtures'
 
 import GeneralSettings from './index'
 
+const { mockEdgeData } = EdgeGeneralFixtures
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),

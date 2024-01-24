@@ -7,12 +7,12 @@ import {
   TableProps,
   showToast
 } from '@acx-ui/components'
-import { get }                                      from '@acx-ui/config'
-import { useIsTierAllowed, Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                from '@acx-ui/formatter'
-import { useGetMspProfileQuery }                    from '@acx-ui/msp/services'
-import { MSPUtils }                                 from '@acx-ui/msp/utils'
-import { SpaceWrapper }                             from '@acx-ui/rc/components'
+import { get }                                                    from '@acx-ui/config'
+import { useIsTierAllowed, Features, TierFeatures, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                              from '@acx-ui/formatter'
+import { useGetMspProfileQuery }                                  from '@acx-ui/msp/services'
+import { MSPUtils }                                               from '@acx-ui/msp/utils'
+import { SpaceWrapper }                                           from '@acx-ui/rc/components'
 import {
   useGetEntitlementsListQuery,
   useRefreshEntitlementsMutation,
@@ -72,7 +72,7 @@ const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
 const SubscriptionTable = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
 
   const queryResults = useGetEntitlementsListQuery({ params })
@@ -144,7 +144,7 @@ const SubscriptionTable = () => {
         sorter: { compare: sortProp('assignedLicense', defaultSort) },
         render: function (data: React.ReactNode, row: Entitlement) {
           return row.assignedLicense
-            ? $t({ defaultMessage: 'Assigned' }) : $t({ defaultMessage: 'Purchased' })
+            ? $t({ defaultMessage: 'Assigned' }) : $t({ defaultMessage: 'Paid' })
         }
       }] : []),
     {

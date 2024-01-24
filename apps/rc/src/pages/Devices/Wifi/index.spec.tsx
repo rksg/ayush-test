@@ -28,6 +28,16 @@ jest.mock('./ApsTable', () => ({
   })
 }))
 
+jest.mock('./ApGroupsTable', () => ({
+  ...jest.requireActual('./ApGroupsTable'),
+  __esModule: true,
+  default: () => ({
+    title: 'ApGroupsTable',
+    headerExtra: [],
+    component: <div data-testid='ApGroupsTable' />
+  })
+}))
+
 jest.mock('@acx-ui/analytics/components', () => ({
   ...jest.requireActual('@acx-ui/analytics/components'),
   NetworkFilter: () => <div data-testid='NetworkFilter' />
@@ -45,6 +55,11 @@ describe('AccessPointList with feature toggle', () => {
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     expect(await screen.findByTestId('ApsTable')).toBeVisible()
   })
+  it('should render ap groups table tab', async () => {
+    render(<AccessPointList tab={WifiTabsEnum.AP_GROUP}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(await screen.findByTestId('ApGroupsTable')).toBeVisible()
+  })
   it('should render ap report tab', async () => {
     render(<AccessPointList tab={WifiTabsEnum.AP_REPORT}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
@@ -59,9 +74,10 @@ describe('AccessPointList with feature toggle', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<AccessPointList tab={WifiTabsEnum.AP_REPORT}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    userEvent.click(await screen.findByText('Airtime Utilization Report'))
+    await userEvent.click(await screen.findByRole('tab', { name: 'Airtime Utilization Report' }))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: '/tenant-id/t/devices/wifi/reports/airtime', hash: '', search: ''
     }))
   })
 })
+

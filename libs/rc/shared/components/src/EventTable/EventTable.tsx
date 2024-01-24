@@ -1,15 +1,21 @@
 import { useState, useEffect } from 'react'
 
-import { omit }                   from 'lodash'
+import {
+  Loading3QuartersOutlined
+} from '@ant-design/icons'
+import { get, omit }              from 'lodash'
+import moment                     from 'moment'
 import { defineMessage, useIntl } from 'react-intl'
+import { useParams }              from 'react-router-dom'
 
-import { Loader, Table, TableProps, Button }        from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                from '@acx-ui/formatter'
-import { DownloadOutlined }                         from '@acx-ui/icons'
-import { Event, TableQuery }                        from '@acx-ui/rc/utils'
-import { RequestPayload }                           from '@acx-ui/types'
-import { exportMessageMapping }                     from '@acx-ui/utils'
+import { Loader, Table, TableProps, Button, showToast, Filter }           from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }         from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                      from '@acx-ui/formatter'
+import { DownloadOutlined }                                               from '@acx-ui/icons'
+import { useAddExportSchedulesMutation }                                  from '@acx-ui/rc/services'
+import { Event, EventExportSchedule, EventScheduleFrequency, TableQuery } from '@acx-ui/rc/utils'
+import { RequestPayload }                                                 from '@acx-ui/types'
+import { computeRangeFilter, DateRangeFilter, exportMessageMapping }      from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
@@ -20,7 +26,8 @@ import {
   productMapping,
   typeMapping
 } from './mapping'
-import { useExportCsv } from './useExportCsv'
+import { ScheduleExportDrawer } from './ScheduleExportDrawer'
+import { useExportCsv }         from './useExportCsv'
 
 export const defaultColumnState = {
   event_datetime: true,
@@ -52,13 +59,84 @@ export const EventTable = ({
   omitColumns
 }: EventTableProps) => {
   const { $t } = useIntl()
+  const { tenantId } = useParams()
   const [visible, setVisible] = useState(false)
+  const [exportDrawerVisible, setExportDrawerVisible] = useState(false)
   const [current, setCurrent] = useState<Event>()
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isRogueEventsFilterEnabled = useIsSplitOn(Features.ROGUE_EVENTS_FILTER)
   const { exportCsv, disabled } = useExportCsv<Event>(tableQuery)
+  const [addExportSchedules] = useAddExportSchedulesMutation()
 
+  const isExportEventsEnabled = useIsSplitOn(Features.EXPORT_EVENTS_TOGGLE)
   useEffect(() => { setVisible(false) },[tableQuery.data?.data])
+
+  const openEventScheduler = () => {
+    setExportDrawerVisible(true)
+  }
+
+  const exportCsvImmediately = () => {
+    const filters = get(tableQuery?.payload, 'filters', {}) as { dateFilter: DateRangeFilter }
+    const eventsPeriodForExport = computeRangeFilter(
+      { dateFilter: filters.dateFilter },
+      ['from', 'to']
+    ) as { from: string, to: string }
+    const payload: EventExportSchedule = {
+      type: 'Event',
+      clientTimeZone: moment.tz.guess(),
+      reportSchedule: {
+        type: EventScheduleFrequency.Immediate
+      },
+      period: eventsPeriodForExport,
+      context: {
+        searchString: tableQuery.payload?.searchString as string[],
+        ...omit(tableQuery?.payload?.filters as Filter, ['dateFilter'])
+      },
+      isSupport: true, // direct export needs to set isSupport true
+      sortField: tableQuery.sorter?.sortField,
+      sortOrder: tableQuery.sorter?.sortOrder,
+      tenantId: tenantId,
+      enable: true,
+      recipients: []
+    }
+
+    showToast({
+      type: 'info',
+      duration: 10,
+      closable: false,
+      extraContent: <div style={{ width: '60px' }}>
+        <Loading3QuartersOutlined spin
+          style={{ margin: 0, fontSize: '18px' }}/>
+      </div>,
+      content: $t(
+        { defaultMessage: 'The event export is being generated. ' +
+            'This is taking some time…' }
+      )
+    })
+
+    addExportSchedules(payload)
+  }
+
+  const tableIconButtonConfig = isExportEventsEnabled ? {
+    icon: <DownloadOutlined />,
+    dropdownMenu: {
+      items: [
+        { key: 'exportNow',
+          label: $t({ defaultMessage: 'Export Now' }),
+          disabled: !((tableQuery.data?.data ?? []).length > 0),
+          tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
+          onClick: exportCsvImmediately },
+        { key: 'scheduleExport', label: $t({ defaultMessage: 'Schedule Export' }),
+          onClick: openEventScheduler }
+      ]
+    }
+  }
+    : {
+      icon: <DownloadOutlined />,
+      disabled,
+      tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
+      onClick: exportCsv
+    }
 
   const excludeEventType = [
     ...(!isEdgeEnabled ? ['EDGE'] : []),
@@ -181,12 +259,7 @@ export const EventTable = ({
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
-      iconButton={{
-        icon: <DownloadOutlined />,
-        disabled,
-        tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
-        onClick: exportCsv
-      }}
+      iconButton={tableIconButtonConfig}
     />
     {current && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Event Details' })}
@@ -194,5 +267,13 @@ export const EventTable = ({
       onClose={() => setVisible(false)}
       data={getDrawerData(current!)}
     />}
+    {isExportEventsEnabled && exportDrawerVisible
+      && <ScheduleExportDrawer
+        title={defineMessage({ defaultMessage: 'Schedule Event Export' })}
+        visible={exportDrawerVisible}
+        onClose={() => setExportDrawerVisible(false)}
+        onSubmit={() => setExportDrawerVisible(false)}
+      />
+    }
   </Loader>
 }

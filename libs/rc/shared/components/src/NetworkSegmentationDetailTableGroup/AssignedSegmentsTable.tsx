@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps } from '@acx-ui/components'
+import { Loader, Table, TableProps, Tooltip } from '@acx-ui/components'
 import {
   defaultSort,
   AccessSwitch,
@@ -8,6 +8,8 @@ import {
   TableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
+
+import * as UI from './styledComponents'
 
 export interface PersonaTableProps extends Omit<TableProps<Persona>, 'columns'>{
   tableQuery: TableQuery<Persona,
@@ -72,7 +74,20 @@ export const AssignedSegmentsTable = (props: PersonaTableProps) => {
       }
     },
     {
-      title: $t({ defaultMessage: 'Assigned Port' }),
+      title: () => (
+        <>
+          <span className='text-align'>{$t({ defaultMessage: 'Assigned Port' })}</span>
+          <Tooltip.Question
+            title={$t(
+              { defaultMessage: 'To assign AP ports for a specific unit/persona, '
+                + 'please go to the {navigateToVenues} and configure a unit.' },
+              { navigateToVenues: <TenantLink to='venues'>
+                {$t({ defaultMessage: 'Venue/Property Units' })}</TenantLink> }
+            )}
+            placement='bottom'
+            iconStyle={UI.QuestionIconStyle}/>
+        </>
+      ),
       key: 'ethernetPorts[0].portIndex',
       dataIndex: 'ethernetPorts[0].portIndex',
       render: (_, row) => {

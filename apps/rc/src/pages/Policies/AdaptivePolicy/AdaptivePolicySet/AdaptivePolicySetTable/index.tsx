@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, showToast, Table, TableProps }          from '@acx-ui/components'
-import { Features, useIsTierAllowed }                    from '@acx-ui/feature-toggle'
-import { SimpleListTooltip, useDpskNewConfigFlowParams } from '@acx-ui/rc/components'
+import { Loader, showToast, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsTierAllowed }           from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }                    from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useAdaptivePolicySetLisByQueryQuery,
@@ -48,10 +48,8 @@ export default function AdaptivePolicySetTable () {
       }, skip: !isCloudpathEnabled
     })
 
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
   const { dpskList, getDpsksLoading } = useGetDpskListQuery(
     {
-      params: dpskNewConfigFlowParams,
       payload: { pageSize: 10000 }
     }, {
       selectFromResult: ({ data, isLoading }) => {

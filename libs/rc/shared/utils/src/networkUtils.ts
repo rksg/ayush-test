@@ -1,11 +1,35 @@
-import { WlanSecurityEnum } from './constants'
+import { WlanSecurityEnum }                        from './constants'
+import { Network, NetworkDetail, NetworkSaveData } from './types/network'
+import { TableResult }                             from './useTableQuery'
 
 const SupportRadio6gSecurityList = [
   WlanSecurityEnum.WPA3,
-  WlanSecurityEnum.WPA23Mixed,
-  WlanSecurityEnum.OWE
+  WlanSecurityEnum.OWE,
+  WlanSecurityEnum.WPA23Mixed // support with AP firmware 7.0+
 ]
 
 export const IsSecuritySupport6g = (wlanSecurity?: WlanSecurityEnum) => {
   return !!(wlanSecurity && SupportRadio6gSecurityList.includes(wlanSecurity))
+}
+
+export const IsNetworkSupport6g = (networkDetail?: NetworkDetail | NetworkSaveData | null) => {
+  const { wlan } = networkDetail || {}
+  const { wlanSecurity } = wlan || {}
+
+  if (!wlanSecurity) return false
+
+  return IsSecuritySupport6g(wlanSecurity)
+}
+
+export const transformNetworkListResponse = (result: TableResult<Network>) => {
+  result.data = result.data.map(item => ({
+    ...item,
+    activated: item.activated ?? { isActivated: false },
+    ...(item?.dsaeOnboardNetwork &&
+      { children: [{ ...item?.dsaeOnboardNetwork,
+        isOnBoarded: true,
+        id: item?.name + 'onboard' } as Network] })
+  })) as Network[]
+
+  return result
 }

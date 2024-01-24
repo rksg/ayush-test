@@ -5,7 +5,9 @@ import { Radio }          from 'antd'
 import _                  from 'lodash'
 import { useIntl }        from 'react-intl'
 
-import { Tooltip } from '@acx-ui/components'
+import { Tooltip }                 from '@acx-ui/components'
+import { AFCProps }                from '@acx-ui/rc/utils'
+import { ChannelButtonTextRender } from '@acx-ui/rc/utils'
 
 import { RadioChannel }  from '../../RadioSettings/RadioSettingsContents'
 import { CheckboxGroup } from '../styledComponents'
@@ -39,16 +41,16 @@ export function RadioSettingsChannelsManual320Mhz (props: {
   channelList: RadioChannel[],
   disabled?: boolean
   handleChanged?: () => void,
-  channelMethod?: string
+  channelMethod?: string,
+  afcProps?: AFCProps
 }) {
-
-  const { $t } = useIntl()
+  const intl = useIntl()
   const form = Form.useFormInstance()
   const [checkedGroup, setCheckGroup] = useState('320MHz-1')
   const [checkedChannel, setCheckedChannel] = useState([] as CheckboxValueType[])
   const [manualGroupChannelState, setManualGroupChannelState] = useState(ChannelGroup_320MHz_Manual)
 
-  let { disabled = false, handleChanged } = props
+  let { disabled = false, handleChanged, afcProps } = props
 
   const handleClickGroupChannels = (event: RadioChangeEvent) => {
     const selected320MhzGroup = event.target.value
@@ -131,12 +133,8 @@ export function RadioSettingsChannelsManual320Mhz (props: {
                 label:
                 <Tooltip
                   key={value}
-                  title={disabled
-                    ? ''
-                    : (checkedChannel.includes(value)
-                      ? $t({ defaultMessage: 'Disable this channel' })
-                      : $t({ defaultMessage: 'Enable this channel' }))
-                  }
+                  // eslint-disable-next-line
+                  title={disabled ? '' : ChannelButtonTextRender(intl, Array.of(Number(value)), checkedChannel.includes(value), afcProps)}
                 >
                   {value}
                 </Tooltip>,
@@ -161,12 +159,8 @@ export function RadioSettingsChannelsManual320Mhz (props: {
                 label:
                 <Tooltip
                   key={value}
-                  title={disabled
-                    ? ''
-                    : (checkedChannel.includes(value)
-                      ? $t({ defaultMessage: 'Disable this channel' })
-                      : $t({ defaultMessage: 'Enable this channel' }))
-                  }
+                  // eslint-disable-next-line
+                  title={disabled ? '' : ChannelButtonTextRender(intl, Array.of(Number(value)), checkedChannel.includes(value), afcProps)}
                 >
                   {value}
                 </Tooltip>,
@@ -177,8 +171,8 @@ export function RadioSettingsChannelsManual320Mhz (props: {
         </Col>
       </Row>}
     </Radio.Group>
-    <Form.Item name={props.channelBandwidth320MhzGroupFieldName} hidden/>
-    <Form.Item name={props.formName} hidden/>
+    <Form.Item name={props.channelBandwidth320MhzGroupFieldName} hidden children={<></>}/>
+    <Form.Item name={props.formName} hidden children={<></>}/>
   </>
   )
 }

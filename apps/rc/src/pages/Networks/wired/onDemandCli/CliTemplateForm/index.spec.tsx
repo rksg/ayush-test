@@ -625,6 +625,7 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
     })
 
     it('should handle error occurred', async () => {
+      const spyLog = jest.spyOn(console, 'log')
       mockServer.use(
         rest.put(SwitchUrlsInfo.updateCliTemplate.url,
           (_, res, ctx) => res(ctx.status(404), ctx.json({ errors: [{ code: 'xxxx' }] }))
@@ -644,7 +645,10 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
       await screen.findByRole('heading', { level: 3, name: 'CLI Configuration' })
       await screen.findByText('CLI commands')
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
-      // await screen.findByText('Server Error')
+
+      await waitFor(() => {
+        expect(spyLog).toBeCalledTimes(1)
+      })
     })
 
     it('should redirect to list table after clicking cancel button', async () => {

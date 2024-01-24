@@ -8,6 +8,7 @@ describe('SelectionControl', () => {
     const onChange = jest.fn()
     render(<SelectionControl
       onChange={onChange}
+      noPadding
       options={[{
         label: 'l1',
         value: 'v1',

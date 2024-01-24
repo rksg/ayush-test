@@ -1,14 +1,23 @@
 import { Key } from 'react'
 
-import { APMeshRole, ApDeviceStatusEnum, CellularNetworkSelectionEnum, LteBandRegionEnum, WanConnectionEnum } from '../constants'
-import { BandBalancing }                                                                                      from '../models/BandBalancing'
-import { DenialOfServiceProtection }                                                                          from '../models/DenialOfServiceProtection'
-import { Mesh }                                                                                               from '../models/Mesh'
-import { VenueDhcpServiceSetting }                                                                            from '../models/VenueDhcpServiceSetting'
-import { VenueRadioCustomization }                                                                            from '../models/VenueRadioCustomization'
-import { VenueRogueAp }                                                                                       from '../models/VenueRogueAp'
-import { VenueSyslog }                                                                                        from '../models/VenueSyslog'
-
+import {
+  APMeshRole,
+  ApDeviceStatusEnum,
+  CellularNetworkSelectionEnum,
+  LteBandRegionEnum,
+  WanConnectionEnum
+} from '../constants'
+import {
+  ApAntennaTypeEnum,
+  BandBalancing,
+  BandModeEnum,
+  DenialOfServiceProtection,
+  Mesh,
+  VenueDhcpServiceSetting,
+  VenueRadioCustomization,
+  VenueRogueAp,
+  VenueSyslog
+} from '../models'
 
 import { ApStatusDetails, LanPort }                  from './ap'
 import { RogueCategory }                             from './policies'
@@ -240,6 +249,16 @@ export interface VenueLed {
 	manual?: boolean
 }
 
+export interface VenueApModelBandModeSettings {
+	model: string,
+	bandMode: BandModeEnum
+}
+
+export type VeuneApAntennaTypeSettings = {
+	model: string
+	antennaType: ApAntennaTypeEnum
+}
+
 export interface VenueBssColoring {
 	bssColoringEnabled: boolean
 }
@@ -461,7 +480,8 @@ export interface VenueDefaultRegulatoryChannels {
   },
   '6GChannels': {
     [key: string]: string[]
-  }
+  },
+  'afcEnabled': boolean
 }
 
 export interface VenueDefaultRegulatoryChannelsForm {
@@ -723,9 +743,10 @@ export interface VenueBssColoring {
 	bssColoringEnabled: boolean
 }
 
-export type ApManagementVlan = {
-	vlanOverrideEnabled: boolean,
+export interface ApManagementVlan {
+	vlanOverrideEnabled: boolean
 	vlanId: number
+	useVenueSettings: boolean
 }
 
 export interface Node {
@@ -885,4 +906,38 @@ export enum SignalStrengthLevel {
   GOOD,
   LOW,
   POOR
+}
+
+export interface ApFeatureSet {
+  featureName: string,
+  requiredFw?: string,
+  requiredModel?: string[]
+}
+
+export interface ApCompatibilityFeatureResponse {
+  feature: ApFeatureSet,
+  incompatibleDevices: ApIncompatibleFeature[],
+  total: number,
+  incompatible: number
+}
+
+export interface ApCompatibilityResponse {
+  apCompatibilities: ApCompatibility[]
+}
+
+export interface ApCompatibility {
+  id: string,
+  incompatibleFeatures?: ApIncompatibleFeature[]
+  total: number,
+  incompatible: number
+}
+
+export interface ApIncompatibleFeature extends ApFeatureSet{
+  incompatibleDevices: ApIncompatibleDevice[]
+}
+
+export interface ApIncompatibleDevice {
+	firmware: string,
+	model: string,
+	count: number
 }

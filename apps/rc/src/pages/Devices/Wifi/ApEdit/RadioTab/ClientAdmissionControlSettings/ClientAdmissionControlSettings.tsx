@@ -6,7 +6,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 import styled        from 'styled-components/macro'
 
-import { Loader }                   from '@acx-ui/components'
+import { AnchorContext, Loader }    from '@acx-ui/components'
 import {
   ClientAdmissionControlForm,
   ClientAdmissionControlTypeEnum,
@@ -60,6 +60,8 @@ export function ClientAdmissionControlSettings () {
   } = useContext(ApEditContext)
 
   const { apData: apDetails } = useContext(ApDataContext)
+  const { setReadyToScroll } = useContext(AnchorContext)
+
   const [getVenue] = useLazyGetVenueQuery()
   const [getVenueClientAdmissionCtrl] = useLazyGetVenueClientAdmissionControlQuery()
   const getApClientAdmissionControl =
@@ -76,7 +78,7 @@ export function ClientAdmissionControlSettings () {
   const [venue, setVenue] = useState({} as VenueExtended)
 
   useEffect(() => {
-    if(apDetails) {
+    if(apDetails && !getApClientAdmissionControl.isLoading) {
       const venueId = apDetails.venueId
       const setData = async () => {
         const apVenue = (await getVenue({ params: { tenantId, venueId } }, true).unwrap())
@@ -93,6 +95,8 @@ export function ClientAdmissionControlSettings () {
         venueRef.current = venueClientAdmissionCtrl
       }
       setData()
+
+      setReadyToScroll?.(r => [...(new Set(r.concat('Client-Admission-Control')))])
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, getApClientAdmissionControl?.data, apDetails])

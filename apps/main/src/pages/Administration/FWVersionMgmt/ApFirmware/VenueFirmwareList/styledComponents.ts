@@ -30,7 +30,6 @@ export const PreferencesSection = styled.div`
 export const TitleActive = styled.div`
   color: #333333;
   font-weight: 600;
-  margin: 12px 0 0 0;
   .empty {
     color: var(--acx-neutrals-50);
     font-style: italic;
@@ -93,5 +92,15 @@ export const ValueContainer = styled.div`
   margin: 12px 12px 4px 0;
   .ant-radio-group {
     font-size: unset;
+  }
+`
+export const LabelWithHint = styled.div`
+  display: flex;
+  align-items: center;
+  svg {
+    height: 18px;
+    width: 18px;
+    margin-left: 5px;
+    color: var(--acx-accents-orange-50);
   }
 `

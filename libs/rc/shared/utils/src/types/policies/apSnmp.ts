@@ -1,3 +1,5 @@
+import { CountAndNames } from '../..'
+
 export enum SnmpNotificationTypeEnum {
   Trap = 'Trap',
   Inform = 'Inform'
@@ -58,17 +60,12 @@ export interface ApSnmpApUsage {
   venueName: string
 }
 
-export interface SnmpColumnData {
-  count: number,
-  names: string[]
-}
-
 export interface ApSnmpViewModelData {
   id: string,
   name: string,
-  v2Agents: SnmpColumnData,
-  v3Agents: SnmpColumnData,
-  venues: SnmpColumnData,
-  aps: SnmpColumnData,
+  v2Agents: CountAndNames,
+  v3Agents: CountAndNames,
+  venues: CountAndNames,
+  aps: CountAndNames,
   tags?: string[]
 }

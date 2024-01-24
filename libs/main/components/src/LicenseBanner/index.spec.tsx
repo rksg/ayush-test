@@ -143,7 +143,7 @@ describe('License Single Component', () => {
         route: { params, path: '/:tenantId/dashboard' }
       })
     expect(
-      await screen.findByText('Subscription for 40 Wi-Fi will expire in 53 days')
+      await screen.findByText('Your RUCKUS One subscription for 40 Wi-Fi expires in 53 days')
     ).toBeVisible()
 
   })

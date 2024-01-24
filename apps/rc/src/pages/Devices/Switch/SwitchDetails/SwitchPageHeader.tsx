@@ -2,6 +2,7 @@
 import { useContext, useEffect, useState } from 'react'
 
 import { Menu, MenuProps, Space } from 'antd'
+import { ItemType }               from 'antd/lib/menu/hooks/useItems'
 import _                          from 'lodash'
 import moment                     from 'moment-timezone'
 import { useIntl }                from 'react-intl'
@@ -12,7 +13,6 @@ import { SwitchCliSession, SwitchStatus, useSwitchActions }                     
 import {
   useGetJwtTokenQuery,
   useLazyGetSwitchListQuery,
-  useSwitchDetailHeaderQuery,
   useLazyGetSwitchVenueVersionListQuery
 }                         from '@acx-ui/rc/services'
 import {
@@ -52,7 +52,7 @@ function SwitchPageHeader () {
   const {
     switchDetailsContextData
   } = useContext(SwitchDetailsContext)
-  const { switchDetailHeader, currentSwitchOperational } = switchDetailsContextData
+  const { switchData, switchDetailHeader, currentSwitchOperational } = switchDetailsContextData
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -72,10 +72,8 @@ function SwitchPageHeader () {
   const [venueAboveTenFw, setVenueAboveTenFw] = useState('')
   const [maxMembers, setMaxMembers] = useState(12)
 
-  const { data: switchDetail } =
-    useSwitchDetailHeaderQuery({ params: { tenantId, switchId } })
-
-  const isOperational = switchDetailHeader?.deviceStatus === SwitchStatusEnum.OPERATIONAL
+  const isOperational = switchDetailHeader?.deviceStatus === SwitchStatusEnum.OPERATIONAL ||
+    switchDetailHeader?.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
   const isStack = switchDetailHeader?.isStack || false
   const isSyncedSwitchConfig = switchDetailHeader?.syncedSwitchConfig
 
@@ -179,15 +177,16 @@ function SwitchPageHeader () {
   }, [switchDetailHeader])
 
   useEffect(() => {
-    if(switchDetail?.stackMembers){
-      const switchModel = switchDetail?.model || ''
-      const currentFW = switchDetail?.firmwareVersion || venueFW || ''
-      const currentAboveTenFW = switchDetail?.firmwareVersion || venueAboveTenFw || ''
+    if(switchDetailHeader?.stackMembers){
+      const switchModel = switchDetailHeader?.model || ''
+      const syncedStackMemberCount = switchData?.stackMembers?.length || 0
+      const currentFW = switchDetailHeader?.firmwareVersion || venueFW || ''
+      const currentAboveTenFW = switchDetailHeader?.firmwareVersion || venueAboveTenFw || ''
       const maxUnits = getStackUnitsMinLimitation(switchModel, currentFW, currentAboveTenFW)
 
-      setMaxMembers(maxUnits - switchDetail?.stackMembers.length)
+      setMaxMembers(maxUnits - syncedStackMemberCount)
     }
-  }, [switchDetail, venueFW, venueAboveTenFw])
+  }, [switchDetailHeader, switchData, venueFW, venueAboveTenFw])
 
   useEffect(() => {
     if (switchDetailHeader?.switchMac) {
@@ -202,56 +201,63 @@ function SwitchPageHeader () {
   }
 
   const menu = (
-    <Menu onClick={handleMenuClick} >
-      {isSyncedSwitchConfig &&
-        <>
-          <Menu.Item
-            key={MoreActions.SYNC_DATA}
-            disabled={isSyncing || !isOperational}>
-            <Tooltip placement='bottomRight' title={syncDataEndTime}>
-              {$t({ defaultMessage: 'Sync Data' })}
-            </Tooltip>
-          </Menu.Item>
-          <Menu.Divider />
-        </>}
-      {isOperational &&
-        <>
-          <Menu.Item
-            key={MoreActions.REBOOT} >
+    <Menu
+      onClick={handleMenuClick}
+      items={[
+        ...(isSyncedSwitchConfig ? [{
+          key: MoreActions.SYNC_DATA,
+          disabled: isSyncing || !isOperational,
+          label: <Tooltip placement='bottomRight' title={syncDataEndTime}>
+            {$t({ defaultMessage: 'Sync Data' })}
+          </Tooltip>
+        }, {
+          type: 'divider'
+        }] : []),
+
+        ...(isOperational ? [{
+          key: MoreActions.REBOOT,
+          label: isStack
+            ? $t({ defaultMessage: 'Reboot Stack' })
+            : $t({ defaultMessage: 'Reboot Switch' })
+        }, {
+          key: MoreActions.CLI_SESSION,
+          label: $t({ defaultMessage: 'CLI Session' })
+        }, {
+          type: 'divider'
+        }] : []),
+
+        ...(isStack && (maxMembers > 0) ? [{
+          key: MoreActions.ADD_MEMBER,
+          disabled: maxMembers === 0,
+          label: $t({ defaultMessage: 'Add Member' })
+        }] : []),
+
+        {
+          key: MoreActions.DELETE,
+          label: <Tooltip placement='bottomRight' title={syncDataEndTime}>
             {isStack ?
-              $t({ defaultMessage: 'Reboot Stack' }) : $t({ defaultMessage: 'Reboot Switch' })}
-          </Menu.Item>
-          <Menu.Item
-            key={MoreActions.CLI_SESSION}>
-            {$t({ defaultMessage: 'CLI Session' })}
-          </Menu.Item>
-          <Menu.Divider />
-        </>
-      }
-      {isStack && (maxMembers > 0) &&
-      <Menu.Item
-        key={MoreActions.ADD_MEMBER}
-        disabled={maxMembers === 0}
-      >
-        {$t({ defaultMessage: 'Add Member' })}
-      </Menu.Item>
-      }
-      <Menu.Item
-        key={MoreActions.DELETE}>
-        <Tooltip placement='bottomRight' title={syncDataEndTime}>
-          {isStack ?
-            $t({ defaultMessage: 'Delete Stack' }) : $t({ defaultMessage: 'Delete Switch' })}
-        </Tooltip>
-      </Menu.Item>
-    </Menu>
+              $t({ defaultMessage: 'Delete Stack' }) : $t({ defaultMessage: 'Delete Switch' })}
+          </Tooltip>
+        }
+      ] as ItemType[]}
+    />
   )
 
   return (
     <>
       <PageHeader
-        title={switchDetailHeader?.name || switchDetailHeader?.switchName || switchDetailHeader?.serialNumber || ''}
+        title={
+          switchDetailHeader?.name
+          || switchDetailHeader?.switchName
+          || switchDetailHeader?.serialNumber
+          || ''
+        }
         titleExtra={
-          <SwitchStatus row={switchDetailHeader as unknown as SwitchRow} showText={!currentSwitchOperational} />}
+          <SwitchStatus
+            row={switchDetailHeader as unknown as SwitchRow}
+            showText={!currentSwitchOperational ||
+              (switchDetailHeader.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL)}
+          />}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Wired' }) },
           { text: $t({ defaultMessage: 'Switches' }) },

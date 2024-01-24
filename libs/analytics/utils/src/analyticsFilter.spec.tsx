@@ -12,7 +12,8 @@ import {
   getSelectedNodePath,
   pathToFilter,
   defaultNetworkPath,
-  isSwitchPath
+  isSwitchPath,
+  isApPath
 } from './analyticsFilter'
 
 const network = { type: 'network', name: 'Network' }
@@ -209,6 +210,28 @@ describe('useAnalyticsFilter', () => {
     )
     expect(asFragment()).toMatchSnapshot()
   })
+  it('should set path to default when path is wired report and selected node is ap for RAI', () => {
+    const filter = {
+      path: [
+        { type: 'apGroup', name: 'apGroup' }
+      ],
+      raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
+    }
+    const path = fixedEncodeURIComponent(JSON.stringify(filter))
+    function Component () {
+      const { filters, pathFilters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)} | {JSON.stringify(pathFilters)}</div>
+    }
+    const { asFragment } = render(
+      <MemoryRouter initialEntries={[{
+        pathname: '/ai/reports/wired',
+        search: `?analyticsNetworkFilter=${path}`
+      }]}>
+        <Component />
+      </MemoryRouter>
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
   it('should set filters correctly path is health and selected node is zone', () => {
     const filter = {
       path: [
@@ -322,8 +345,8 @@ describe('pathToFilter', () => {
     expect(pathToFilter(
       [{ type: 'zone', name: 'z1' }, { type: 'apGroup', name: 'a1' }]
     )).toEqual({
-      networkNodes: [[{ type: 'zone', name: 'z1' }]], // TODO , { type: 'apGroup', name: 'a1' }
-      switchNodes: [[{ type: 'zone', name: 'z1' }]] // TODO , { type: 'apGroup', name: 'a1' }
+      networkNodes: [[{ type: 'zone', name: 'z1' }, { type: 'apGroup', name: 'a1' }]],
+      switchNodes: [[{ type: 'zone', name: 'z1' }, { type: 'apGroup', name: 'a1' }]]
     })
   })
   it('returns correct filter for mlisa app', () => {
@@ -355,5 +378,21 @@ describe('isSwitchPath', () => {
   it('returns false if not switch path', () => {
     const path = [{ type: 'network', name: 'Network' }] as NetworkPath
     expect(isSwitchPath(path)).toBe(false)
+  })
+})
+describe('isApPath', () => {
+  it('returns true if is ap path', () => {
+    const path = [
+      { type: 'network', name: 'Network' },
+      { type: 'system', name: 's1' },
+      { type: 'zone', name: 'z1' },
+      { type: 'apGroup', name: 'a1' },
+      { type: 'AP', name: 'm1' }
+    ] as NetworkPath
+    expect(isApPath(path)).toBe(true)
+  })
+  it('returns false if not ap path', () => {
+    const path = [{ type: 'network', name: 'Network' }] as NetworkPath
+    expect(isApPath(path)).toBe(false)
   })
 })

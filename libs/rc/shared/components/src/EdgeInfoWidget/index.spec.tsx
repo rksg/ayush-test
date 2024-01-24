@@ -1,16 +1,17 @@
 import { rest } from 'msw'
 
-import { EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider  }    from '@acx-ui/store'
+import { EdgePortConfigFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider  }                            from '@acx-ui/store'
 import { render,
   screen,
   fireEvent,
   mockServer
 } from '@acx-ui/test-utils'
 
-import { tenantID, currentEdge, edgePortsSetting, edgeDnsServers } from './__tests__/fixtures'
+import { tenantID, currentEdge, edgeDnsServers } from './__tests__/fixtures'
 
 import { EdgeInfoWidget } from '.'
+const { edgePortsSetting } = EdgePortConfigFixtures
 
 jest.mock('./EdgeAlarmWidget', () => ({
   EdgeAlarmWidget: () => <div data-testid='rc-EdgeAlarmWidget' />

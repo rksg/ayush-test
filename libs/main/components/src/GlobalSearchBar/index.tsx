@@ -61,6 +61,7 @@ export function GlobalSearchBar () {
         onChange={({ target: { value } }) => setSearchText(value)}
         onKeyDown={onKeyDown}
         data-testid='search-input'
+        maxLength={64}
         placeholder={placeholder}
       />
       <UI.SendSearch onClick={handleSearch} data-testid='search-send'/>

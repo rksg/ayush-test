@@ -3,6 +3,7 @@ export * from './rogueApDetectionPolicy'
 export * from './aaaPolicy'
 export * from './vlanPoolPolicy'
 export * from './clientIsolationPolicy'
+export * from './identityProvider'
 export * from './syslogPolicy'
 export * from './accessControl'
 export * from './apSnmp'
@@ -21,6 +22,7 @@ export enum PolicyType {
   SYSLOG = 'Syslog',
   AAA = 'RADIUS Server',
   CLIENT_ISOLATION = 'Client Isolation',
+  IDENTITY_PROVIDER = 'Identity Provider',
   MAC_REGISTRATION_LIST = 'MAC Registration List',
   LAYER_2_POLICY = 'Layer 2 Policy',
   LAYER_3_POLICY = 'Layer 3 Policy',

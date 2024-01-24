@@ -3,9 +3,9 @@ import { Fragment } from 'react'
 import { chain, snakeCase } from 'lodash'
 import { useIntl }          from 'react-intl'
 
-import { impactedArea, nodeTypes }         from '@acx-ui/analytics/utils'
-import { Card, GridCol, GridRow, Tooltip } from '@acx-ui/components'
-import { NodeType, getIntl }               from '@acx-ui/utils'
+import { impactedArea, nodeTypes }          from '@acx-ui/analytics/utils'
+import { Card, GridCol, GridRow, Tooltip }  from '@acx-ui/components'
+import { NodeType, getIntl, noDataDisplay } from '@acx-ui/utils'
 
 import { codes }              from '../config'
 import { extractBeforeAfter } from '../services'
@@ -28,16 +28,18 @@ export const getValues = (details: EnhancedRecommendation) => {
     currentValue,
     recommendedValue,
     code,
-    appliedOnce
+    appliedOnce,
+    preferences
   } = details
   const { valueFormatter, recommendedValueTooltipContent } = codes[code]
   return {
     status,
     code,
     appliedOnce,
+    preferences,
     heading: codes[code].valueText,
     original: valueFormatter(originalValue),
-    current: currentValue ? valueFormatter(currentValue) : null,
+    current: valueFormatter(currentValue),
     recommended: valueFormatter(recommendedValue),
     tooltipContent: typeof recommendedValueTooltipContent === 'function'
       ? recommendedValueTooltipContent(status, currentValue, recommendedValue)
@@ -67,7 +69,10 @@ export const translateMetadataValue = (value: string) => {
   }
 }
 
-export const getRecommendationsText = (details: EnhancedRecommendation) => {
+export const getRecommendationsText = (
+  details: EnhancedRecommendation,
+  isFullOptimization = true
+) => {
   const { $t } = getIntl()
   const {
     path,
@@ -92,7 +97,10 @@ export const getRecommendationsText = (details: EnhancedRecommendation) => {
     valueFormatter,
     actionText,
     reasonText,
-    tradeoffText
+    tradeoffText,
+    partialOptimizedActionText,
+    partialOptimizationAppliedReasonText,
+    partialOptimizedTradeoffText
   } = recommendationInfo
 
   let parameters: Record<string, string | JSX.Element> = {
@@ -110,11 +118,18 @@ export const getRecommendationsText = (details: EnhancedRecommendation) => {
     }
   }
   return {
-    actionText: $t(actionText, parameters),
+    actionText: isFullOptimization
+      ? $t(actionText, parameters)
+      : $t(partialOptimizedActionText!, parameters),
     reasonText: appliedOnce && appliedReasonText
-      ? $t(appliedReasonText, parameters)
+      ? (isFullOptimization
+        ? $t(appliedReasonText, parameters)
+        : $t(partialOptimizationAppliedReasonText!, parameters)
+      )
       : $t(reasonText, parameters),
-    tradeoffText: $t(tradeoffText, parameters)
+    tradeoffText: isFullOptimization
+      ? $t(tradeoffText, parameters)
+      : $t(partialOptimizedTradeoffText!, parameters)
   }
 }
 
@@ -160,7 +175,8 @@ export const Values = ({ details }: { details: EnhancedRecommendation }) => {
       <Card type='solid-bg' title={$t(heading)}>
         <GridRow>
           {fields
-            .filter(({ value }) => value !== null)
+            .filter(({ value }) => [null, noDataDisplay as string]
+              .includes(value as unknown as string | null) === false)
             .map(({ label, value }, ind) => <Fragment key={ind}>
               <GridCol col={{ span: 8 }}>{label}</GridCol>
               <GridCol col={{ span: 16 }}><ValueDetails>{value}</ValueDetails></GridCol>

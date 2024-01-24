@@ -140,11 +140,15 @@ export const ICX_MODELS_MODULES = {
 }
 
 export const isOperationalSwitch = (status: SwitchStatusEnum, syncedSwitchConfig: boolean) => {
-  return status === SwitchStatusEnum.OPERATIONAL && syncedSwitchConfig
+  const isOperational = status === SwitchStatusEnum.OPERATIONAL && syncedSwitchConfig
+  const isUpgradeFail = status === SwitchStatusEnum.FIRMWARE_UPD_FAIL
+  return isOperational || isUpgradeFail
 }
 
 export const isStrictOperationalSwitch = (status: SwitchStatusEnum, configReady: boolean, syncedSwitchConfig: boolean) => {
-  return status === SwitchStatusEnum.OPERATIONAL && syncedSwitchConfig && configReady
+  const isStrictOperational = status === SwitchStatusEnum.OPERATIONAL && syncedSwitchConfig && configReady
+  const isUpgradeFail = status === SwitchStatusEnum.FIRMWARE_UPD_FAIL
+  return isStrictOperational || isUpgradeFail
 }
 
 export const getSwitchModel = (serial: string) => {

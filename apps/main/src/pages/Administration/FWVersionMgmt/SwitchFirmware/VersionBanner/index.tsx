@@ -1,17 +1,21 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
+import { useSwitchFirmwareUtils }       from '@acx-ui/rc/components'
 import {
   useGetSwitchLatestFirmwareListQuery
 } from '@acx-ui/rc/services'
 
-import { FirmwareBanner }                         from '../../FirmwareBanner'
-import { getReleaseFirmware, parseSwitchVersion } from '../../FirmwareUtils'
+import { FirmwareBanner }     from '../../FirmwareBanner'
+import { getReleaseFirmware } from '../../FirmwareUtils'
 
 export const VersionBanner = () => {
-  const { $t } = useIntl()
   const params = useParams()
+
+  const { $t } = useIntl()
   const { data: latestReleaseVersions } = useGetSwitchLatestFirmwareListQuery({ params })
+  const { parseSwitchVersion } = useSwitchFirmwareUtils()
+
   const versions = getReleaseFirmware(latestReleaseVersions)
   const firmware = versions.filter(v => v.id.startsWith('090'))[0]
   const rodanFirmware = versions.filter(v => v.id.startsWith('100'))[0]
@@ -48,3 +52,4 @@ export const VersionBanner = () => {
 }
 
 export default VersionBanner
+

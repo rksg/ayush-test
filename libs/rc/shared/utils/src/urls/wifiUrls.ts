@@ -60,6 +60,11 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/network-venue/:networkVenueId?quickAck=true',
     newApi: true
   },
+  updateNetworkVenues: {
+    method: 'put',
+    url: '/networkActivations/mappings',
+    newApi: true
+  },
   deleteNetworkVenue: {
     method: 'delete',
     url: '/networkActivations/:networkVenueId',
@@ -72,22 +77,32 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/network-venue',
     newApi: true
   },
-  getVenueExternalAntenna: {
-    method: 'get',
-    url: '/venues/:venueId/externalAntennaSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/externalAntenna',
-    newApi: true
-  },
   getVenueApCapabilities: {
     method: 'get',
     url: '/venues/:venueId/aps/capabilities',
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/capabilities',
     newApi: true
   },
+  getVenueExternalAntenna: {
+    method: 'get',
+    url: '/venues/:venueId/externalAntennaSettings',
+    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/externalAntenna',
+    newApi: true
+  },
   updateVenueExternalAntenna: {
     method: 'put',
     url: '/venues/:venueId/externalAntennaSettings',
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/externalAntenna',
+    newApi: true
+  },
+  getVenueAntennaType: {
+    method: 'get',
+    url: '/venues/:venueId/apModelAntennaTypeSettings',
+    newApi: true
+  },
+  updateVenueAntennaType: {
+    method: 'put',
+    url: '/venues/:venueId/apModelAntennaTypeSettings',
     newApi: true
   },
   getVenueDefaultRegulatoryChannels: {
@@ -98,7 +113,7 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getDefaultRadioCustomization: {
     method: 'get',
-    url: '/venues/:venueId/radioSettings',
+    url: '/venues/:venueId/radioSettings?defaultOnly=true',
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/radio/default',
     newApi: true
   },
@@ -407,6 +422,36 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/aps/:serialNumber/ledSettings',
     newApi: true
   },
+  getApBandModeSettings: {
+    method: 'get',
+    url: '/venues/:venueId/aps/:serialNumber/bandModeSettings',
+    newApi: true
+  },
+  updateApBandModeSettings: {
+    method: 'put',
+    url: '/venues/:venueId/aps/:serialNumber/bandModeSettings',
+    newApi: true
+  },
+  resetApBandModeSettings: {
+    method: 'delete',
+    url: '/venues/:venueId/aps/:serialNumber/bandModeSettings',
+    newApi: true
+  },
+  getApAntennaTypeSettings: {
+    method: 'get',
+    url: '/venues/:venueId/aps/:serialNumber/antennaTypeSettings',
+    newApi: true
+  },
+  updateApAntennaTypeSettings: {
+    method: 'put',
+    url: '/venues/:venueId/aps/:serialNumber/antennaTypeSettings',
+    newApi: true
+  },
+  resetApAntennaTypeSettings: {
+    method: 'delete',
+    url: '/venues/:venueId/aps/:serialNumber/antennaTypeSettings',
+    newApi: true
+  },
   getApBssColoring: {
     method: 'get',
     url: '/venues/aps/:serialNumber/bssColoringSettings',
@@ -584,5 +629,36 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/venues/:venueId/aps/managementTrafficVlanSettings',
     newApi: true
+  },
+  getApManagementVlan: {
+    method: 'get',
+    url: '/venues/aps/:serialNumber/managementTrafficVlanSettings',
+    newApi: true
+  },
+  updateApManagementVlan: {
+    method: 'put',
+    url: '/venues/aps/:serialNumber/managementTrafficVlanSettings',
+    newApi: true
+  },
+  deleteApManagementVlan: {
+    method: 'delete',
+    url: '/venues/aps/:serialNumber/managementTrafficVlanSettings',
+    newApi: true
+  },
+  getApFeatureSets: {
+    method: 'get',
+    url: '/wifiFeatureSets/:featureName',
+    newApi: true
+  },
+  getApCompatibilitiesVenue: {
+    method: 'post',
+    url: '/venues/:venueId/apCompatibilities/query',
+    newApi: true
+  },
+  getApCompatibilitiesNetwork: {
+    method: 'post',
+    url: '/wifiNetworks/:networkId/apCompatibilities/query',
+    newApi: true
   }
+
 }

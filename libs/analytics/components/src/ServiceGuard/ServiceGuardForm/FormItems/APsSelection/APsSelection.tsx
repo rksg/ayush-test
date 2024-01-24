@@ -1,23 +1,23 @@
 import { useMemo } from 'react'
 
 import { Form }                                     from 'antd'
-import _, { omit }                                  from 'lodash'
+import _                                            from 'lodash'
 import moment                                       from 'moment-timezone'
 import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
 
-import { System, useSystems }                                     from '@acx-ui/analytics/services'
+import { System, SystemMap, useSystems }                          from '@acx-ui/analytics/services'
 import { defaultNetworkPath, meetVersionRequirements, nodeTypes } from '@acx-ui/analytics/utils'
 import { CascaderOption, Loader, StepsForm, useStepFormContext }  from '@acx-ui/components'
 import { get }                                                    from '@acx-ui/config'
 import { FilterListNode, DateRange, PathNode }                    from '@acx-ui/utils'
 
-import { getNetworkFilterData }                                                                            from '../../../../NetworkFilter'
-import { useRecentNetworkFilterQuery, Child as HierarchyNodeChild, useNetworkHierarchyQuery, NetworkNode } from '../../../../NetworkFilter/services'
-import { isAPListNodes, isNetworkNodes, ClientType as ClientTypeEnum }                                     from '../../../types'
-import { ClientType }                                                                                      from '../ClientType'
+import { getNetworkFilterData }                                                                        from '../../../../NetworkFilter'
+import { useVenuesHierarchyQuery, Child as HierarchyNodeChild, useNetworkHierarchyQuery, NetworkNode } from '../../../../NetworkFilter/services'
+import { isAPListNodes, isNetworkNodes, ClientType as ClientTypeEnum }                                 from '../../../types'
+import { ClientType }                                                                                  from '../ClientType'
 
-import { APsSelectionInput }  from './APsSelectionInput'
-import { deviceRequirements } from './deviceRequirements'
+import { APsSelectionInput }                          from './APsSelectionInput'
+import { DeviceRequirementsType, deviceRequirements } from './deviceRequirements'
 
 import type { ServiceGuardFormDto, NetworkNodes, NetworkPaths } from '../../../types'
 import type { NamePath }                                        from 'antd/lib/form/interface'
@@ -25,24 +25,64 @@ import type { NamePath }                                        from 'antd/lib/f
 const name = ['configs', 0, 'networkPaths', 'networkNodes'] as const
 const label = defineMessage({ defaultMessage: 'APs Selection' })
 
+function checkSystem (
+  node: NetworkNode,
+  systemMap: SystemMap,
+  requirements: DeviceRequirementsType
+) {
+  const matchedSystems = systemMap[node.name]
+  const checkRequirement = (system: System) =>
+    (system.onboarded || !_.isEmpty(node.children)) &&
+    meetVersionRequirements(requirements.requiredSZVersion, system.controllerVersion)
+  return (matchedSystems.length > 0 && matchedSystems.some(system => checkRequirement(system)))
+    ? { type: node.type, name: node.name } : false
+}
+
+function checkAP (
+  node: NetworkNode,
+  requirements: DeviceRequirementsType
+) {
+  if (!(/^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$/.test(node.mac!))) return false
+  if (requirements.excludedTargetAPs.find(a => a.model === node.model &&
+      !meetVersionRequirements(a.requiredAPFirmware, node.firmware))) return false
+  return meetVersionRequirements(requirements.requiredAPFirmware, node.firmware)
+    ? { type: 'AP', name: node.name, mac: node.mac } : false
+}
+
 function transformSANetworkHierarchy (
-  nodes: NetworkNode[], parentPath: PathNode[] , systems: System[]
+  nodes: NetworkNode[], parentPath: PathNode[]
 ) : CascaderOption[] {
   return nodes.map(node => {
-    const formattedNode = (node.type as string === 'ap')
-      ? { type: 'AP', name: node.mac }
-      : (node.type === 'system')
-        ? { type: node.type, name: systems.find(sys => sys.deviceName === node.name)?.deviceId }
-        : { type: node.type, name: node.name }
-    const path = [...parentPath, formattedNode] as PathNode[]
-    return ({
-      label: `${node.name} (${nodeTypes(node.type)})`,
+    const path = [
+      ...parentPath, { type: node.type, name: node.mac ?? node.name }
+    ] as PathNode[]
+    return{
+      label: `${node.name} (${nodeTypes(node.type)})` as string,
       value: JSON.stringify(path),
       ...(node.children && {
-        children: transformSANetworkHierarchy(node.children, path, systems)
+        children: transformSANetworkHierarchy(node.children, path)
       })
-    })
+    }
   })
+}
+
+function filterSANetworkHierarchy (
+  nodes: NetworkNode[], systemMap: SystemMap, requirements: DeviceRequirementsType
+) {
+  return _.sortBy(nodes.reduce((agg, node) => {
+    const formattedNode = (node.type as string === 'ap')
+      ? checkAP(node, requirements)
+      : (node.type === 'system')
+        ? checkSystem(node, systemMap, requirements)
+        : { type: node.type, name: node.name }
+    formattedNode && agg.push({
+      ...formattedNode,
+      ...(node.children && {
+        children: filterSANetworkHierarchy(node.children, systemMap, requirements)
+      })
+    } as NetworkNode)
+    return agg
+  }, [] as NetworkNode[]), node => node.name!.toString().toLocaleLowerCase())
 }
 
 function useSANetworkHierarchy () {
@@ -51,28 +91,41 @@ function useSANetworkHierarchy () {
     endDate: moment().format(),
     range: DateRange.last24Hours
   }), [])
-  const response = useNetworkHierarchyQuery(
-    { ...filter, shouldQuerySwitch: false }, { skip: !get('IS_MLISA_SA') })
+  const { form } = useStepFormContext<ServiceGuardFormDto>()
   const systems = useSystems()
-  // todo: need to filter aps based on device requirements
+  const response = useNetworkHierarchyQuery(
+    { ...filter, shouldQueryAp: true, shouldQuerySwitch: false }, {
+      skip: !get('IS_MLISA_SA') || !systems.data,
+      selectFromResult: ({ data, ...rest }) => ({
+        ...rest,
+        data: { ...defaultNetworkPath[0], children: filterSANetworkHierarchy(
+          data?.children ?? [],
+          systems.data!,
+          deviceRequirements[
+            form.getFieldValue(ClientType.fieldName) as keyof typeof deviceRequirements
+          ] as DeviceRequirementsType)
+        }
+      })
+    })
+
   return {
     ...response,
-    options: transformSANetworkHierarchy(
-      response.data?.children ?? [], defaultNetworkPath, systems.data?.networkNodes ?? [])
+    options: transformSANetworkHierarchy(response.data?.children, defaultNetworkPath)
   }
 }
 
 function useR1NetworkHierarchy () {
   const filter = useMemo(() => ({
+    shouldQueryAp: true,
     startDate: moment().subtract(1, 'day').format(),
     endDate: moment().format(),
     range: DateRange.last24Hours
   }), [])
   const { form } = useStepFormContext<ServiceGuardFormDto>()
-  const response = useRecentNetworkFilterQuery(filter, { skip: !!get('IS_MLISA_SA') })
+  const response = useVenuesHierarchyQuery(filter, { skip: !!get('IS_MLISA_SA') })
   return { ...response, options: getNetworkFilterData(
     filterAPwithDeviceRequirements(response.data ?? [], form.getFieldValue(ClientType.fieldName)),
-    {}, 'ap', false
+    {}, false
   ) }
 }
 
@@ -84,24 +137,28 @@ function useOptions () {
 
 function filterAPwithDeviceRequirements (data: HierarchyNodeChild[], clientType: ClientTypeEnum ) {
   const { requiredAPFirmware, excludedTargetAPs } = deviceRequirements[clientType]
-  return data.map(({ aps, ...rest }) => ({
-    ...rest,
-    aps: aps?.filter(ap => ap.serial)
-      .filter(ap => {
-        if (excludedTargetAPs.find(a =>
-          _.get(a, 'model') === ap.model &&
-            !meetVersionRequirements(_.get(a, 'requiredAPFirmware'), ap.firmware)
-        )) return false
-        return meetVersionRequirements(requiredAPFirmware, ap.firmware)
-      })
-  }))
+  return data.reduce((venues, { aps, ...rest }) => {
+    const validAPs = aps!.filter(ap => {
+      if (!ap.serial) return false
+      if (excludedTargetAPs.find(a =>
+        _.get(a, 'model') === ap.model &&
+          !meetVersionRequirements(_.get(a, 'requiredAPFirmware'), ap.firmware)
+      )) return false
+      return meetVersionRequirements(requiredAPFirmware, ap.firmware)
+    })
+    validAPs.length && venues.push({ ...rest, aps: validAPs })
+    return venues
+  }, [] as HierarchyNodeChild[])
 }
 
 export function APsSelection () {
   const { $t } = useIntl()
   const response = useOptions()
 
-  return <Loader states={[omit(response, ['options'])]} style={{ height: 'auto', minHeight: 346 }}>
+  return <Loader
+    states={[_.omit(response, ['options'])]}
+    style={{ height: 'auto', minHeight: 346 }}
+  >
     <Form.Item
       name={name as unknown as NamePath}
       rules={[{
@@ -125,15 +182,8 @@ APsSelection.label = label
 APsSelection.FieldSummary = function APsSelectionFieldSummary () {
   const { $t } = useIntl()
   const response = useOptions()
-  const systems = useSystems()
   const convert = (value: unknown) => {
-    const paths = (value as NetworkPaths).map(path =>
-      path.map(node => node.type === 'system'
-        ? { ...node,
-          name: (systems.data?.networkNodes ?? [])
-            .find(sys => sys.deviceId === node.name)?.deviceName
-        } : node)) as NetworkPaths
-
+    const paths = value as NetworkPaths
     const nodes = paths
       .filter(isNetworkNodes)
       .map(path => get('IS_MLISA_SA')
@@ -150,7 +200,7 @@ APsSelection.FieldSummary = function APsSelectionFieldSummary () {
     const list = nodes.filter(Boolean)
       .concat(aps)
       .map(item => <FormattedMessage
-        key={item!.name}
+        key={`${item!.name}-${item!.count}`}
         defaultMessage='{name} — {count} {count, plural, one {AP} other {APs}}{br}'
         description='Translation strings - AP, APs'
         values={{ ...item, br: <br/> }}
@@ -175,7 +225,7 @@ APsSelection.FieldSummary = function APsSelectionFieldSummary () {
     if(subPath.length === 0) {
       return {
         name: hierarchyName(path, true),
-        count: getSAAPCount(hierarchies) //.children?.length || 0
+        count: getSAAPCount(hierarchies)
       }
     }
     const [ target, ...rest ] = subPath
@@ -185,7 +235,7 @@ APsSelection.FieldSummary = function APsSelectionFieldSummary () {
   }
 
   function getSAAPCount (hierarchies: NetworkNode) : number {
-    if(hierarchies.type as string === 'ap') return 1
+    if(hierarchies.type === 'AP') return 1
     if(hierarchies.children && hierarchies.children.length > 0) {
       return hierarchies.children.map(getSAAPCount).reduce((sum, count) => {
         sum = sum + count
@@ -199,9 +249,7 @@ APsSelection.FieldSummary = function APsSelectionFieldSummary () {
     path: NetworkNodes,
     hierarchies: HierarchyNodeChild[]
   ) {
-    const matched = hierarchies
-      .find(item => item.path.slice(1).some((node, i) => _.isEqual(path[i], node)))
-
+    const matched = hierarchies.find(({ name }) => path.some(p => name === p.name)) // TODO should be using ID as renaming venues breaks edit
     return {
       name: hierarchyName(path),
       count: matched!.aps!.length

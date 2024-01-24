@@ -210,10 +210,11 @@ export const DateTimePicker = ({
   const [open, setOpen] = useState(false)
   useClosePreviousDateTimePicker(() => setOpen(false), Boolean(open))
   return <Tooltip placement='right' title={title}>
+    <UI.HiddenDateInputGlobalOverride />
     <UI.HiddenDateInput ref={wrapperRef}>
       <AntDatePicker
-        className='datepicker'
-        dropdownClassName='datepicker-popover'
+        className='hidden-date-input'
+        dropdownClassName='hidden-date-input-popover'
         picker='date'
         disabled={disabled}
         value={date}
@@ -227,7 +228,7 @@ export const DateTimePicker = ({
         allowClear={false}
         suffixIcon={icon ? icon : <ClockOutlined />}
         disabledDate={disabledDate}
-        getPopupContainer={(node) => node}
+        getPopupContainer={() => document.body}
         onChange={value => setDate(value!)}
         renderExtraFooter={() =>
           <DateTimePickerFooter

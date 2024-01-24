@@ -6,8 +6,8 @@ import { MessageDescriptor } from 'react-intl'
 import { recommendationApi } from '@acx-ui/store'
 import { NetworkPath }       from '@acx-ui/utils'
 
-import { StateType, codes, IconValue, StatusTrail }           from '../config'
-import { getCrrmOptimizedState, getCrrmInterferingLinksText } from '../services'
+import { StateType, codes, IconValue, StatusTrail, ConfigurationValue } from '../config'
+import { getCrrmOptimizedState, getCrrmInterferingLinksText }           from '../services'
 
 
 export type BasicRecommendation = {
@@ -27,14 +27,19 @@ export type RecommendationDetails = {
   status: StateType;
   isMuted: boolean;
   appliedTime: string;
-  originalValue: string | Array<{ channelMode: string, channelWidth: string, radio: string }>;
-  currentValue: string;
+  originalValue: ConfigurationValue;
+  currentValue: ConfigurationValue;
   recommendedValue: string;
   metadata: object;
   sliceType: string;
   sliceValue: string;
   path: NetworkPath;
   statusTrail: StatusTrail;
+  updatedAt: string;
+  dataEndTime: string;
+  preferences?: {
+    crrmFullOptimization: boolean;
+  }
 } & Partial<RecommendationKpi>
 
 export type EnhancedRecommendation = RecommendationDetails & {
@@ -134,14 +139,18 @@ export const api = recommendationApi.injectEndpoints({
         response.recommendation,
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_CODE' }]
     }),
-    recommendationDetails: build.query<EnhancedRecommendation, BasicRecommendation>({
-      query: ({ id, code }) => ({
+    recommendationDetails: build.query<
+      EnhancedRecommendation,
+      BasicRecommendation & { isCrrmPartialEnabled: boolean }
+    >({
+      query: ({ id, code, isCrrmPartialEnabled }) => ({
         document: gql`
           query ConfigRecommendationDetails($id: String) {
             recommendation(id: $id) {
               id code status appliedTime isMuted
               originalValue currentValue recommendedValue metadata
-              sliceType sliceValue
+              sliceType sliceValue updatedAt dataEndTime
+              ${isCrrmPartialEnabled ? 'preferences' : ''}
               path { type name }
               statusTrail { status createdAt }
               ${kpiHelper(code!)}

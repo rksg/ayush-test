@@ -36,7 +36,34 @@ const seriesMappingSwitch = () => [
     color: cssStr('--acx-neutrals-50') },
   { key: SwitchStatusEnum.OPERATIONAL,
     name: getSwitchStatusDisplayName(SwitchStatusEnum.OPERATIONAL),
-    color: cssStr('--acx-semantics-green-50') }
+    color: cssStr('--acx-semantics-green-50') },
+  { key: SwitchStatusEnum.APPLYING_FIRMWARE,
+    name: getSwitchStatusDisplayName(SwitchStatusEnum.APPLYING_FIRMWARE),
+    color: cssStr('--acx-semantics-yellow-40') },
+  { key: SwitchStatusEnum.STACK_MEMBER_NEVER_CONTACTED,
+    name: getSwitchStatusDisplayName(SwitchStatusEnum.STACK_MEMBER_NEVER_CONTACTED),
+    color: cssStr('--acx-neutrals-50') },
+  { key: SwitchStatusEnum.FIRMWARE_UPD_START,
+    name: getSwitchStatusDisplayName(SwitchStatusEnum.FIRMWARE_UPD_START),
+    color: cssStr('--acx-semantics-yellow-40') },
+  { key: SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_PARAMETERS,
+    name: getSwitchStatusDisplayName(SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_PARAMETERS),
+    color: cssStr('--acx-semantics-yellow-40') },
+  { key: SwitchStatusEnum.FIRMWARE_UPD_DOWNLOADING,
+    name: getSwitchStatusDisplayName(SwitchStatusEnum.FIRMWARE_UPD_DOWNLOADING),
+    color: cssStr('--acx-semantics-yellow-40') },
+  { key: SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_IMAGE,
+    name: getSwitchStatusDisplayName(SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_IMAGE),
+    color: cssStr('--acx-semantics-yellow-40') },
+  { key: SwitchStatusEnum.FIRMWARE_UPD_SYNCING_TO_REMOTE,
+    name: getSwitchStatusDisplayName(SwitchStatusEnum.FIRMWARE_UPD_SYNCING_TO_REMOTE),
+    color: cssStr('--acx-semantics-yellow-40') },
+  { key: SwitchStatusEnum.FIRMWARE_UPD_WRITING_TO_FLASH,
+    name: getSwitchStatusDisplayName(SwitchStatusEnum.FIRMWARE_UPD_WRITING_TO_FLASH),
+    color: cssStr('--acx-semantics-yellow-40') },
+  { key: SwitchStatusEnum.FIRMWARE_UPD_FAIL,
+    name: getSwitchStatusDisplayName(SwitchStatusEnum.FIRMWARE_UPD_FAIL),
+    color: cssStr('--acx-semantics-yellow-40') }
 ] as Array<{ key: string, name: string, color: string }>
 
 export const seriesSwitchStatusMapping = () => [
@@ -67,60 +94,65 @@ export const seriesSwitchStatusMapping = () => [
 ] as Array<{ key: string, name: string, color: string }>
 
 export const getSwitchDonutChartData = (overviewData: Dashboard | undefined): DonutChartData[] => {
-  const chartData: DonutChartData[] = []
+  const chartData: { [name: string]: DonutChartData } = {}
   const switchesSummary = overviewData?.summary?.switches?.summary
+
   if (switchesSummary) {
     seriesMappingSwitch().forEach(({ key, name, color }) => {
       // ES response has different case (dev is upper case, qa is lower case)
       // eslint-disable-next-line max-len
       const count = switchesSummary[key as SwitchStatusEnum]! || _.get(switchesSummary, key.toLowerCase())
       const value = parseInt(count, 10)
-      if(key === SwitchStatusEnum.INITIALIZING && value) {
-        const neverContactedCloud = find(chartData, {
-          name: getSwitchStatusDisplayName(SwitchStatusEnum.NEVER_CONTACTED_CLOUD) })
-        if (neverContactedCloud) {
-          const currentValue: number = neverContactedCloud.value
-          neverContactedCloud.value = currentValue + value
+
+      if (value) {
+        if (chartData[name]) {
+          // If the name already exists, aggregate the value
+          chartData[name].value += value
         } else {
-          chartData.push({ name, value, color })
+          // If the name doesn't exist, create a new entry
+          chartData[name] = { name, value, color }
         }
-      } else if (value) {
-        chartData.push({ name, value, color })
       }
     })
   }
-  return chartData
+
+  // Convert the aggregated data back to an array
+  return Object.values(chartData)
 }
 
 export const getSwitchStackedBarChartData = (overviewData: Dashboard | undefined): ChartData[] => {
   const series = getSwitchDonutChartData(overviewData)
+
   const statusList = [
-    SwitchStatusEnum.OPERATIONAL,
-    SwitchStatusEnum.DISCONNECTED,
-    SwitchStatusEnum.INITIALIZING
+    'Operational',
+    'Alerting',
+    'In Setup Phase',
+    'Requires Attention'
   ]
-  const finalSeries=seriesMappingSwitch()
-    .filter(status=>statusList.includes(status.key as SwitchStatusEnum)).map(status=>{
-      const matched=series.filter(item=>item.name===status.name)
-      let value=0
-      if(matched.length){
-        value=matched[0].value
-      }
-      /*
-      We need to add weightage to maintain the color order on stackbar chart
-      */
-      switch(status.key){
-        case SwitchStatusEnum.OPERATIONAL:
-          return { name: `<3>${status.name}`, value }
-        case SwitchStatusEnum.DISCONNECTED:
-          return { name: `<2>${status.name}`, value }
-        case SwitchStatusEnum.INITIALIZING:
-          return { name: `<0>${status.name}`, value }
-        default:
-          return { name: `<4>${status.name}`, value }
-      }
-    })
-  finalSeries.push({ name: '<1>Unknown', value: 0 })
+
+  const finalSeries = statusList.map(status=>{
+    const matched=series.filter(item=>item.name===status)
+    let value=0
+    if(matched.length){
+      value=matched[0].value
+    }
+    /*
+    We need to add weightage to maintain the color order on stackbar chart
+    */
+    switch(status){
+      case 'Operational':
+        return { name: `<3>${status}`, value }
+      case 'Requires Attention':
+        return { name: `<2>${status}`, value }
+      case 'Alerting':
+        return { name: `<1>${status}`, value }
+      case 'In Setup Phase':
+        return { name: `<0>${status}`, value }
+      default:
+        return { name: `<0>${status}`, value }
+    }
+  })
+
   return [{
     category: '',
     series: finalSeries.sort(sortByName)

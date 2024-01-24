@@ -139,17 +139,9 @@ export function SelectVlanModal (props: {
   }
 
   useEffect(() => {
-    const untaggedVlanOptions = getUntaggedVlanOptions(taggedVlans)
-    const taggedVlanOptions = getTaggedVlanOptions(untaggedVlan)
-
     setSelectUntaggedVlan(Number(untaggedVlan))
     setSelectTaggedVlans(taggedVlans)
-    setTaggedVlanOptions(taggedVlanOptions)
-    setDisplayTaggedVlan(taggedVlanOptions)
-    setUntaggedVlanOptions(untaggedVlanOptions)
-    setDisplayUntaggedVlan(untaggedVlanOptions)
-
-  }, [switchVlans])
+  }, [])
 
   useEffect(() => {
     const untaggedVlanOptions = getUntaggedVlanOptions(selectTaggedVlans)
@@ -158,7 +150,8 @@ export function SelectVlanModal (props: {
     setDisplayTaggedVlan(taggedVlanOptions)
     setUntaggedVlanOptions(untaggedVlanOptions)
     setDisplayUntaggedVlan(untaggedVlanOptions)
-  }, [voiceVlanTmp])
+
+  }, [switchVlans, voiceVlanTmp])
 
   useEffect(() => {
     const isTaggedVlansChanged

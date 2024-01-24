@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { Checkbox, Col, Form, Input, Row, Select, Space, Switch } from 'antd'
-import { DefaultOptionType }                                      from 'antd/lib/select'
-import _                                                          from 'lodash'
+import { Checkbox, Form, Input, Select, Space, Switch } from 'antd'
+import { DefaultOptionType }                            from 'antd/lib/select'
+import _                                                from 'lodash'
 
 import {
   Alert,
@@ -203,7 +203,7 @@ export function EditPortDrawer ({
   const [getAclUnion] = useLazyGetAclUnionQuery()
   const [savePortsSetting, { isLoading: isPortsSettingUpdating }] = useSavePortsSettingMutation()
 
-  const { data: switchDetail }
+  const { data: switchDetail, isLoading: isSwitchDetailLoading }
     = useSwitchDetailHeaderQuery({ params: { tenantId, switchId, serialNumber } })
 
   const { data: switchesDefaultVlan }
@@ -309,13 +309,13 @@ export function EditPortDrawer ({
       setLoading(false)
     }
 
-    if (switchesDefaultVlan && switchDetail) {
+    if (switchesDefaultVlan && !isSwitchDetailLoading) {
       resetFields()
       setData()
     }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedPorts, switchDetail, switchesDefaultVlan, visible])
+  }, [selectedPorts, isSwitchDetailLoading, switchesDefaultVlan, visible])
 
   const getSinglePortValue = async (portSpeed: string[], defaultVlan: string,
     vlansByVenue: Vlan[]) => {
@@ -331,8 +331,8 @@ export function EditPortDrawer ({
 
     setEditPortData(portSetting)
     setDisablePoeCapability(getPoeCapabilityDisabled([portSetting]))
-    setUseVenueSettings(portSetting.revert)
-    setLldpQosList(portSetting.lldpQos || [])
+    setUseVenueSettings(portSetting?.revert)
+    setLldpQosList(portSetting?.lldpQos || [])
 
     setInitPortVlans(getInitPortVlans( [portSetting], defaultVlan ))
     setPortEditStatus(
@@ -782,20 +782,16 @@ export function EditPortDrawer ({
         labelAlign='left'
         onValuesChange={onValuesChange}
       >
-        <Row style={{ height: '80px' }}>
-          <Col flex='auto'>
-            <Form layout='vertical'>
-              <Form.Item
-                label={$t({ defaultMessage: 'Selected Port' })}
-                children={<Space style={{ fontSize: '16px' }}>
-                  {selectedPorts?.map(p => p.portIdentifier)?.join(', ')}
-                </Space>
-                }
-              />
-            </Form>
-          </Col>
-          { !isMultipleEdit && <Col flex='250px'>
-            <UI.FormItem>
+        <UI.HorizontalFormItemLayout>
+          <Form.Item
+            label={$t({ defaultMessage: 'Selected Port' })}
+            labelCol={{ span: 24 }}
+            children={<Space style={{ fontSize: '16px' }}>
+              {selectedPorts?.map(p => p.portIdentifier)?.join(', ')}
+            </Space>
+            }
+          />
+          { !isMultipleEdit &&
               <Form.Item name='name'
                 label={$t({ defaultMessage: 'Port Name' })}
                 rules={[
@@ -804,9 +800,8 @@ export function EditPortDrawer ({
                 initialValue=''
                 children={<Input />}
               />
-            </UI.FormItem>
-          </Col>}
-        </Row>
+          }
+        </UI.HorizontalFormItemLayout>
 
         <UI.ContentDivider />
 
@@ -875,6 +870,7 @@ export function EditPortDrawer ({
                 <Form.Item
                   name='profileName'
                   hidden
+                  children={<></>}
                 />
               </UI.PortStatus>
             }
@@ -926,14 +922,14 @@ export function EditPortDrawer ({
                   name='voiceVlan'
                   noStyle
                   children={
-                    <>
+                    <Space data-testid='voice-vlan' size={4}>
                       <span> {$t({ defaultMessage: 'Set as Voice VLAN:' })} </span>
                       {
                         voiceVlan
                           ? $t({ defaultMessage: 'Yes (VLAN-ID: {voiceVlan})' }, { voiceVlan })
                           : $t({ defaultMessage: 'No' })
                       }
-                    </>
+                    </Space>
                   }
                 />
               </UI.VoiceVlan> :
@@ -1284,7 +1280,7 @@ export function EditPortDrawer ({
           'lldpQos', $t({ defaultMessage: 'LLDP QoS' }), true
         )}
 
-        <Space style={{ marginBottom: '20px' }}>
+        <div style={{ marginBottom: '20px' }}>
           <LldpQOSTable
             editable={!isMultipleEdit || lldpQosCheckbox}
             setLldpModalvisible={setLldpModalvisible}
@@ -1293,7 +1289,7 @@ export function EditPortDrawer ({
             setLldpQosList={setLldpQosList}
             vlansOptions={vlansOptions}
           />
-        </Space>
+        </div>
 
         <ACLSettingDrawer
           visible={drawerAclVisible}

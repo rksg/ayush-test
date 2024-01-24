@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import { HelpButton, UserButton }                    from '@acx-ui/analytics/components'
-import { getUserProfile, PERMISSION_VIEW_ANALYTICS } from '@acx-ui/analytics/utils'
+import { HelpButton, UserButton, MelissaBot } from '@acx-ui/analytics/components'
+import { getUserProfile }                     from '@acx-ui/analytics/utils'
 import {
   Layout as LayoutComponent,
   LayoutUI
@@ -21,7 +21,6 @@ import { useMenuConfig }  from './menuConfig'
 function Layout () {
   const params = useParams()
   const userProfile = getUserProfile()
-  const hasAnalytics = userProfile.selectedTenant.permissions[PERMISSION_VIEW_ANALYTICS]
   const searchFromUrl = params.searchVal || ''
   const [searchExpanded, setSearchExpanded] = useState<boolean>(searchFromUrl !== '')
   const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
@@ -33,15 +32,16 @@ function Layout () {
       rightHeaderContent={<>
         <HeaderContext.Provider value={{
           searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
-          {hasAnalytics && <GlobalSearchBar />}
+          <GlobalSearchBar />
         </HeaderContext.Provider>
         <LayoutUI.Divider />
-        { userProfile.tenants.length > 1
+        { userProfile.tenants.length > 1 || userProfile.invitations.length > 0
           ? <AccountsDrawer user={userProfile} />
           : <LayoutUI.CompanyName>{userProfile?.selectedTenant.name}</LayoutUI.CompanyName>
         }
         <HelpButton/>
         <UserButton/>
+        <MelissaBot/>
       </>}
     />
   )

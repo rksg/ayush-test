@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Loader, showToast, Table, TableProps }            from '@acx-ui/components'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
@@ -11,12 +12,19 @@ import {
   useUpdateMacRegistrationMutation,
   useUploadMacRegistrationMutation
 } from '@acx-ui/rc/services'
-import { FILTER, MacRegistration, MacRegistrationPool, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
-import { useParams }                                                           from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                                           from '@acx-ui/user'
+import {
+  FILTER,
+  MacRegistration,
+  MacRegistrationPool,
+  returnExpirationString,
+  SEARCH,
+  toDateTimeString,
+  useTableQuery
+} from '@acx-ui/rc/utils'
+import { useParams }                 from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
-import { MacAddressDrawer }                         from '../../MacRegistrationListForm/MacRegistrationListMacAddresses/MacAddressDrawer'
-import { returnExpirationString, toDateTimeString } from '../../MacRegistrationListUtils'
+import { MacAddressDrawer } from '../../MacRegistrationListForm/MacRegistrationListMacAddresses/MacAddressDrawer'
 
 export function MacRegistrationsTab () {
   const { $t } = useIntl()
@@ -28,6 +36,8 @@ export function MacRegistrationsTab () {
   const [ uploadCsv, uploadCsvResult ] = useUploadMacRegistrationMutation()
 
   const macRegistrationListQuery = useGetMacRegListQuery({ params: { policyId } })
+  const isAsync = useIsSplitOn(Features.CLOUDPATH_ASYNC_API_TOGGLE)
+  const customHeaders = (isAsync) ? { Accept: 'application/vnd.ruckus.v2+json' } : undefined
 
   const sorter = {
     sortField: 'macAddress',
@@ -86,25 +96,27 @@ export function MacRegistrationsTab () {
           { fieldName: 'identityId', fieldText: $t({ defaultMessage: 'Identity' }) }
         ],
         // eslint-disable-next-line max-len
-        async () => deleteMacRegistrations({ params: { policyId, registrationId: selectedRows[0].id }, payload: selectedRows.map(p => p.id) })
+        async () => deleteMacRegistrations({ params: { policyId, registrationId: selectedRows[0].id }, payload: selectedRows.map(p => p.id), customHeaders })
           .then(() => {
             const macAddress = selectedRows.map(row => row.macAddress).join(', ')
-            if(selectedRows.length > 1) {
-              showToast({
-                type: 'success',
-                content: $t(
-                  { defaultMessage: 'MAC Address {macAddress} were deleted' },
-                  { macAddress }
-                )
-              })
-            } else {
-              showToast({
-                type: 'success',
-                content: $t(
-                  { defaultMessage: 'MAC Address {macAddress} was deleted' },
-                  { macAddress }
-                )
-              })
+            if (!isAsync) {
+              if(selectedRows.length > 1) {
+                showToast({
+                  type: 'success',
+                  content: $t(
+                    { defaultMessage: 'MAC Address {macAddress} were deleted' },
+                    { macAddress }
+                  )
+                })
+              } else {
+                showToast({
+                  type: 'success',
+                  content: $t(
+                    { defaultMessage: 'MAC Address {macAddress} was deleted' },
+                    { macAddress }
+                  )
+                })
+              }
             }
             clearSelection()
           }).catch((error) => {
@@ -120,7 +132,8 @@ export function MacRegistrationsTab () {
       editMacRegistration(
         {
           params: { policyId, registrationId: rows[0].id },
-          payload: { revoked: true }
+          payload: { revoked: true },
+          customHeaders
         }).then(clearSelection)
     }
   },
@@ -131,7 +144,8 @@ export function MacRegistrationsTab () {
       editMacRegistration(
         {
           params: { policyId, registrationId: rows[0].id },
-          payload: { revoked: false }
+          payload: { revoked: false },
+          customHeaders
         }).then(clearSelection)
     }
   }]
@@ -229,7 +243,8 @@ export function MacRegistrationsTab () {
         isLoading={uploadCsvResult.isLoading}
         importRequest={async (formData) => {
           try {
-            await uploadCsv({ params: { policyId }, payload: formData }).unwrap()
+            // eslint-disable-next-line max-len
+            await uploadCsv({ params: { policyId }, payload: formData, customHeaders: { ...customHeaders, 'Content-Type': undefined } }).unwrap()
             setUploadCsvDrawerVisible(false)
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (error) {

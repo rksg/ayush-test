@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 
 import { defaultNetworkPath, getUserProfile } from '@acx-ui/analytics/utils'
+import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { BrowserRouter }                      from '@acx-ui/react-router-dom'
 import { act, render, renderHook, screen }    from '@acx-ui/test-utils'
 import { DateRange }                          from '@acx-ui/utils'
@@ -107,6 +108,21 @@ describe('Dashboard', () => {
     expect(screen.queryByTestId('AIOperations')).toBeNull()
   })
 
+  it('renders correct component when appInsight FF is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const mockUseUserProfileContext = getUserProfile as jest.Mock
+    mockUseUserProfileContext.mockReturnValue(defaultMockUserProfile)
+    render(<Dashboard />, { route: true })
+
+    expect(await screen.findByTestId('DidYouKnow')).toBeVisible()
+    expect(await screen.findByTestId('AppInsights')).toBeVisible()
+    expect(await screen.findByTestId('SLA')).toBeVisible()
+    expect(await screen.findByTestId('ReportTile')).toBeVisible()
+    expect(await screen.findByTestId('SANetworkFilter')).toBeVisible()
+    expect(await screen.findByTestId('AIDrivenRRM')).toBeVisible()
+    expect(await screen.findByTestId('AIOperations')).toBeVisible()
+  })
+
   describe('useMonitorHeight', () => {
     it('update height', async () => {
       const { result } = renderHook(() => useMonitorHeight(100))
@@ -174,8 +190,8 @@ describe('Dashboard', () => {
       })
       expect(result).toEqual({
         path: defaultNetworkPath,
-        range: 'Last 24 Hours',
-        startDate: '2021-12-31T00:01:00+00:00',
+        range: 'Last 7 Days',
+        startDate: '2021-12-25T00:01:00+00:00',
         endDate: '2022-01-01T00:01:00+00:00'
       })
     })
@@ -183,12 +199,12 @@ describe('Dashboard', () => {
       const result = getFiltersForRecommendationWidgets({
         startDate: 'startDate',
         endDate: 'endDate',
-        range: DateRange.last24Hours,
+        range: DateRange.last30Days,
         path: defaultNetworkPath
       })
       expect(result).toEqual({
         path: defaultNetworkPath,
-        range: 'Last 24 Hours',
+        range: 'Last 30 Days',
         startDate: 'startDate',
         endDate: 'endDate'
       })

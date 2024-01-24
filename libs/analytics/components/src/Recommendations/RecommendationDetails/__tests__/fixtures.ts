@@ -108,6 +108,7 @@ export const mockedRecommendationPowerMonitoring = {
   metadata: {},
   sliceType: 'zone',
   sliceValue: '12-US-CA-D12-Guru-Home',
+  updatedAt: '06/26/2023 06:04',
   path: [
     {
       type: 'system',
@@ -161,7 +162,7 @@ export const mockRecommendationNoKPI = {
   originalValue: null,
   currentValue: null,
   recommendedValue: true,
-  metadata: {},
+  metadata: { channelSelectionMode: 'BACKGROUND_SCANNING' },
   sliceType: 'system',
   sliceValue: 'ruckus-62',
   statusTrail: [
@@ -175,6 +176,7 @@ export const mockedRecommendationCRRM = {
   code: 'c-crrm-channel24g-auto',
   status: 'applyscheduled',
   appliedTime: '2023-06-25T00:00:25.772Z',
+  updatedAt: '06/26/2023 06:04',
   originalValue: [
     {
       channelMode: 'CHANNEL_FLY',
@@ -598,6 +600,7 @@ export const mockedRecommendationFirmware = {
   metadata: {},
   sliceType: 'zone',
   sliceValue: '39-IND-BDC-D39-Mayank-Ofc-Z2',
+  updatedAt: '2023-06-12T07:05:14.106Z',
   path: [
     {
       type: 'system',

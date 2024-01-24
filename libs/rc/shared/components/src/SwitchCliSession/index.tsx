@@ -66,6 +66,7 @@ export function SwitchCliSession (props: {
     <UIModal
       title={
         <div
+          data-testid='switchCliSessionModalDiv'
           style={{
             padding: '0px',
             width: '100%',
@@ -93,7 +94,7 @@ export function SwitchCliSession (props: {
           bounds={bounds}
           onStart={(event, uiData) => onDragStart(event, uiData)}
         >
-          <div ref={draggleRef}>{modal}</div>
+          <div data-testid='switchCliSessionDraggableRef' ref={draggleRef}>{modal}</div>
         </UIDraggable>
       )}
       width={width}
@@ -106,6 +107,7 @@ export function SwitchCliSession (props: {
       >
         <div
           className='dialog-wrapper'
+          data-testid='switchCliSessionDialogWrapper'
           style={{ width: width, height: height }}
           onMouseOver={() => {
             setDisabled(true)

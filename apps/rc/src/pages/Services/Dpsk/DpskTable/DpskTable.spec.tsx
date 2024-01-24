@@ -1,6 +1,8 @@
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import { waitForElementToBeRemoved } from '@testing-library/react'
+import userEvent                     from '@testing-library/user-event'
+import { rest }                      from 'msw'
 
+import { networkApi, serviceApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   DpskUrls,
@@ -9,8 +11,8 @@ import {
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
-import { Path }     from '@acx-ui/react-router-dom'
-import { Provider } from '@acx-ui/store'
+import { Path }            from '@acx-ui/react-router-dom'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -70,6 +72,8 @@ describe('DpskTable', () => {
   const tablePath = '/:tenantId/t/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })
 
   beforeEach(async () => {
+    store.dispatch(serviceApi.util.resetApiState())
+    store.dispatch(networkApi.util.resetApiState())
     mockServer.use(
       rest.post(
         DpskUrls.getEnhancedDpskList.url,
@@ -89,7 +93,7 @@ describe('DpskTable', () => {
         route: { params, path: tablePath }
       }
     )
-
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const targetDpsk = mockedDpskList.data[0]
     expect(await screen.findByRole('button', { name: /Add DPSK Service/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: new RegExp(targetDpsk.name) })).toBeVisible()
@@ -103,6 +107,8 @@ describe('DpskTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    await screen.findByRole('row', { name: new RegExp(mockedDpskList.data[0].name) })
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'My Services'
@@ -129,7 +135,7 @@ describe('DpskTable', () => {
         route: { params, path: tablePath }
       }
     )
-
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const targetDpsk = mockedDpskList.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(targetDpsk.name) })
     await userEvent.click(within(row).getByRole('radio'))
@@ -152,6 +158,7 @@ describe('DpskTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const targetDpsk = mockedDpskList.data[3]
     const targetRow = await screen.findByRole('row', { name: new RegExp(targetDpsk.name) })
@@ -175,6 +182,7 @@ describe('DpskTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const targetDpsk = mockedDpskList.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(targetDpsk.name) })
@@ -202,6 +210,7 @@ describe('DpskTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     setRole(RolesEnum.DPSK_ADMIN)
 

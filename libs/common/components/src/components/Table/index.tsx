@@ -7,8 +7,8 @@ import _                                                              from 'loda
 import Highlighter                                                    from 'react-highlight-words'
 import { useIntl }                                                    from 'react-intl'
 
-import { SettingsOutlined }        from '@acx-ui/icons'
-import { TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
+import { MinusSquareOutlined, PlusSquareOutlined, SettingsOutlined } from '@acx-ui/icons'
+import { TABLE_DEFAULT_PAGE_SIZE }                                   from '@acx-ui/utils'
 
 import { Button, DisabledButton, ButtonProps } from '../Button'
 import { Dropdown }                            from '../Dropdown'
@@ -44,13 +44,14 @@ import type {
   TableProps as AntTableProps,
   TablePaginationConfig
 } from 'antd'
-import type { RowSelectMethod } from 'antd/lib/table/interface'
+import type { ExpandableConfig, RowSelectMethod } from 'antd/lib/table/interface'
 
 export type {
   ColumnType,
   ColumnGroupType,
   RecordWithChildren,
-  TableColumn
+  TableColumn,
+  ColumnState
 } from './types'
 
 export interface TableProps <RecordType>
@@ -83,6 +84,7 @@ export interface TableProps <RecordType>
     searchableWidth?: number,
     stickyHeaders?: boolean,
     stickyPagination?: boolean,
+    enableResizableColumn?: boolean,
     onDisplayRowChange?: (displayRows: RecordType[]) => void,
     getAllPagesData?: () => RecordType[]
   }
@@ -93,6 +95,18 @@ export interface TableHighlightFnArgs {
     formatFn?: (keyword: string) => React.ReactNode
   ): string | React.ReactNode
 }
+
+export const NestedTableExpandableDefaultConfig = {
+  type: 'default',
+  columnWidth: '12px',
+  fixed: 'left',
+  expandIcon: ({ expanded, onExpand, record }) => {
+    const ExpandedIcon = expanded ? MinusSquareOutlined : PlusSquareOutlined
+    return <ExpandedIcon onClick={(e) =>
+      onExpand(record, e as unknown as React.MouseEvent<HTMLElement>)
+    } />
+  }
+} as ExpandableConfig<Record<string, unknown>>
 
 const defaultPagination = {
   mini: true,
@@ -132,7 +146,7 @@ function useSelectedRowKeys <RecordType> (
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Table <RecordType extends Record<string, any>> ({
   type = 'tall', columnState, enableApiFilter, iconButton, onFilterChange, settingsId,
-  onDisplayRowChange, stickyHeaders, stickyPagination, ...props
+  enableResizableColumn = true, onDisplayRowChange, stickyHeaders, stickyPagination, ...props
 }: TableProps<RecordType>) {
   const { dataSource, filterableWidth, searchableWidth, style } = props
   const wrapperRef = useRef<HTMLDivElement>(null)
@@ -418,7 +432,7 @@ function Table <RecordType extends Record<string, any>> ({
 
   const components = _.merge({},
     props.components || {},
-    type === 'tall' ? { header: { cell: ResizableColumn } } : {}
+    type === 'tall' && enableResizableColumn ? { header: { cell: ResizableColumn } } : {}
   ) as TableProps<RecordType>['components']
 
   const onRow: TableProps<RecordType>['onRow'] = function (record) {
@@ -442,7 +456,7 @@ function Table <RecordType extends Record<string, any>> ({
         onHeaderCell: (column: TableColumn<RecordType, 'text'>) => ({
           onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width }),
           width: colWidth[column.key],
-          definedWidth: col.width
+          ...(enableResizableColumn ? { definedWidth: col.width } : {})
         })
       })
       : col
@@ -489,7 +503,7 @@ function Table <RecordType extends Record<string, any>> ({
         {filterables.map((column, i) =>
           renderFilter<RecordType>(
             column, i, dataSource, filterValues,
-            setFilterValues, !!enableApiFilter, filterWidth)
+            setFilterValues, !!enableApiFilter, column.filterableWidth ?? filterWidth)
         )}
         {Boolean(groupable.length) && <GroupSelect<RecordType>
           $t={$t}
@@ -596,7 +610,7 @@ function Table <RecordType extends Record<string, any>> ({
       onRow={onRow}
       showSorterTooltip={false}
       tableAlertOptionRender={false}
-      expandable={expandable}
+      expandable={props?.expandable || expandable}
       onExpand={isGroupByActive ? onExpand : undefined}
       rowClassName={props.rowClassName
         ? props.rowClassName
@@ -672,6 +686,7 @@ function Table <RecordType extends Record<string, any>> ({
 
 Table.SubTitle = UI.SubTitle
 Table.Highlighter = UI.Highlighter
+Table.SearchInput = UI.SearchInput
 
 export { Table }
 

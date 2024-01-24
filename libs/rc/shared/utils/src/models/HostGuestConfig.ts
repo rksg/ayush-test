@@ -5,11 +5,15 @@ export class HostGuestConfig {
   // List of choices of guest access duration for host to select from, Measured in hours. If set to 0, the duration is indefinite
   hostDurationChoices: number[]
 
+  hostEmails: string[]
+
   constructor () {
     //@Size(  min = 1  )
     this.hostDomains = []
 
     //@Size(  min = 1  , max = 5 )
     this.hostDurationChoices = []
+
+    this.hostEmails = []
   }
 }
