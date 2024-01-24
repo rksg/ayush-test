@@ -23,20 +23,23 @@ interface Option {
   disabled: boolean
 }
 
-export const getInitMloOptions =
-        (mloOption: MultiLinkOperationOptions | undefined) : MultiLinkOperationOptions => {
-          if (mloOption &&
-          Object.values(mloOption).filter(value =>
-            isUndefined(value)).length === 0) {
-            return {
-              enable24G: mloOption.enable24G,
-              enable50G: mloOption.enable50G,
-              enable6G: mloOption.enable6G
-            } as MultiLinkOperationOptions
-          }
+interface securityParameters {
+  wlanSecurity?: WlanSecurityEnum,
+  aaaWlanSecurity? : WlanSecurityEnum,
+  dpskWlanSecurity? : WlanSecurityEnum,
+  wisprWlanSecurity?: WlanSecurityEnum
+}
 
-          return getDefaultMloOptions()
-        }
+export const getInitMloOptions = (mloOption?: MultiLinkOperationOptions) : MultiLinkOperationOptions => {
+  if (mloOption && Object.values(mloOption).filter(value => isUndefined(value)).length === 0) {
+    return {
+      enable24G: mloOption.enable24G,
+      enable50G: mloOption.enable50G,
+      enable6G: mloOption.enable6G
+    } as MultiLinkOperationOptions
+  }
+  return getDefaultMloOptions()
+}
 
 export const sortOptions = (options: Option[]) => options.sort((a, b) => a.index - b.index)
 
@@ -48,28 +51,29 @@ export const covertToMultiLinkOperationOptions = (options: Option[]): MultiLinkO
   }
 }
 
-export const isEnableOptionOf6GHz = (wlanData: NetworkSaveData | null,
-  security?: {
-    wlanSecurity?: WlanSecurityEnum,
-    aaaWlanSecurity? : WlanSecurityEnum,
-    dpskWlanSecurity? : WlanSecurityEnum,
-    wisprWlanSecurity?: WlanSecurityEnum
- }
-) => {
+export const isEnableOptionOf6GHz = (wlanData: NetworkSaveData | null, security?: securityParameters) => {
 
   // add Network mode
   const { wlanSecurity, aaaWlanSecurity, dpskWlanSecurity, wisprWlanSecurity } = security || {}
-  if (dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed) return true
-  if (IsSecuritySupport6g(wlanSecurity) || IsSecuritySupport6g(aaaWlanSecurity) || IsSecuritySupport6g(wisprWlanSecurity)) return true
-  if (getIsOwe(wlanData)) return true
 
-  // edit network mode
-  return IsNetworkSupport6g(wlanData)
+  const result = [
+    dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed,
+    get(wlanData, ['enableOwe']),
+    get(wlanData, ['networkSecurity']) === WlanSecurityEnum.OWE, // For WISPR
+    IsSecuritySupport6g(wlanSecurity),
+    IsSecuritySupport6g(aaaWlanSecurity),
+    IsSecuritySupport6g(wisprWlanSecurity),
+    IsNetworkSupport6g(wlanData)
+  ].some(Boolean)
+
+  return result
 }
 
-export const inverseTargetValue =
-        (target: Option, options: Option[]): Option[] => options.map(option =>
-          option.name === target.name ? { ...option, value: !target.value } : option)
+export const inverseTargetValue = (target: Option, options: Option[]): Option[] => {
+  return options.map((option) => {
+    return option.name === target.name ? { ...option, value: !target.value } : option
+  })
+}
 
 
 export const disabledOption = (option: Option) => ({ ...option, disabled: true, value: false })
@@ -105,58 +109,43 @@ export const getDefaultMloOptions = (): MultiLinkOperationOptions => ({
   enable6G: false
 })
 
-export const getInitialOptions = (mloOptions: MultiLinkOperationOptions, labels: {
-  labelOf24G: string,
-  labelOf50G: string,
-  labelOf60G: string,
-}): Option[] => {
-  const initOptions: Option[] = [
-    {
-      index: 0,
-      name: 'enable24G',
-      value: isUndefined(mloOptions.enable24G) ? true: mloOptions.enable24G,
-      label: labels.labelOf24G,
-      disabled: false
-    },
-    {
-      index: 1,
-      name: 'enable50G',
-      value: isUndefined(mloOptions.enable50G) ? true: mloOptions.enable50G,
-      label: labels.labelOf50G,
-      disabled: false
-    },
-    {
-      index: 2,
-      name: 'enable6G',
-      value: isUndefined(mloOptions.enable6G) ? false: mloOptions.enable6G,
-      label: labels.labelOf60G,
-      disabled: false
-    }
-  ]
-
-  return handleDisabledOfOptions(initOptions)
-}
-
-export const getIsOwe = (wlanData : NetworkSaveData | null) => {
-  return get(wlanData, ['enableOwe']) ||
-         get(wlanData, ['networkSecurity']) === WlanSecurityEnum.OWE // WISPr network
-}
-
 const { useWatch } = Form
 
 const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
 
-  const labels = {
-    labelOf24G: $t({ defaultMessage: '2.4 GHz' }),
-    labelOf50G: $t({ defaultMessage: '5 GHz' }),
-    labelOf60G: $t({ defaultMessage: '6 GHz' })
+  const getInitialOptions = (mloOptions: MultiLinkOperationOptions): Option[] => {
+    const initOptions: Option[] = [
+      {
+        index: 0,
+        name: 'enable24G',
+        value: isUndefined(mloOptions.enable24G) ? true: mloOptions.enable24G,
+        label: $t({ defaultMessage: '2.4 GHz' }),
+        disabled: false
+      },
+      {
+        index: 1,
+        name: 'enable50G',
+        value: isUndefined(mloOptions.enable50G) ? true: mloOptions.enable50G,
+        label: $t({ defaultMessage: '5 GHz' }),
+        disabled: false
+      },
+      {
+        index: 2,
+        name: 'enable6G',
+        value: isUndefined(mloOptions.enable6G) ? false: mloOptions.enable6G,
+        label: $t({ defaultMessage: '6 GHz' }),
+        disabled: false
+      }
+    ]
+
+    return handleDisabledOfOptions(initOptions)
   }
-  const dataMloOptions =
-          wlanData?.wlan?.advancedCustomization?.multiLinkOperationOptions
+
+  const dataMloOptions = wlanData?.wlan?.advancedCustomization?.multiLinkOperationOptions
   const mloOptions = getInitMloOptions(dataMloOptions)
-  const initOptions = getInitialOptions(mloOptions, labels)
+  const initOptions = getInitialOptions(mloOptions)
   const [options, setOptions] = useState<Option[]>(initOptions)
 
   const wlanSecurity = useWatch(['wlan', 'wlanSecurity']) // for PSK network
@@ -181,7 +170,7 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
       form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationOptions'],
         defaultMloOptions)
 
-      const initOptions = getInitialOptions(defaultMloOptions, labels)
+      const initOptions = getInitialOptions(defaultMloOptions)
       const updatedOptions = disabledUnCheckOption(initOptions)
       setOptions(updatedOptions)
     }
@@ -209,14 +198,11 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
       style={{ marginBottom: '15px', width: '300px' }}
       rules={[
         { validator: () => {
-          const MUST_SELECTED = 2
-          const numberOfSelected = options.map(option => option.value)
-            .filter(value => value === true)
-            .length
-          if (numberOfSelected < MUST_SELECTED) {
+          const minCount = 2
+          const selectedRadios = options.filter(option => option.value === true).length
+          if (selectedRadios < minCount) {
             return Promise.reject($t({ defaultMessage: 'Please select two radios' }))
           }
-
           return Promise.resolve()}
         }
       ]}
