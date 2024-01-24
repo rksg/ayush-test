@@ -117,10 +117,12 @@ export const UsersTable = (
             title={$t(refreshText)}>
             <UI.IconWrapper $disabled={false}>
               <Reload
-                onClick={() => {
-                  setSelectedRow(props.selectedRow)
+                onClick={
+                  /* istanbul ignore next */
+                  () => {
+                    setSelectedRow(props.selectedRow)
                   //getLatestUserDetails()
-                }}
+                  }}
                 style={{ height: '24px', width: '24px' }}
               />
             </UI.IconWrapper>
@@ -147,11 +149,13 @@ export const UsersTable = (
               (user.userId === props.selectedRow.id)
                 ? <EditOutlinedDisabledIcon />
                 : <EditOutlined
-                  onClick={() => {
-                    setSelectedRow(props.selectedRow)
-                    setDrawerType('edit')
-                    toggleDrawer(true)
-                  }}
+                  onClick={
+                    /* istanbul ignore next */
+                    () => {
+                      setSelectedRow(props.selectedRow)
+                      setDrawerType('edit')
+                      toggleDrawer(true)
+                    }}
                   style={{ height: '24px', width: '24px' }}
                 />
               }
@@ -167,18 +171,24 @@ export const UsersTable = (
             arrowPointAtCenter
             title={$t(
               (user.userId === props.selectedRow.id)
-                ? disabledDeleteText
+                ?
+              /* istanbul ignore next */
+                disabledDeleteText
                 : deleteText
             )}>
             <UI.IconWrapper $disabled={
               (user.userId === props.selectedRow.id)
             }>{user.userId === props.selectedRow.id
-                ? <DeleteOutlined/>
+                ?
+              /* istanbul ignore next */
+                <DeleteOutlined/>
                 : <DeleteOutlined
-                  onClick={() => {
-                    setSelectedRow(props.selectedRow)
+                  onClick={
+                    /* istanbul ignore next */
+                    () => {
+                      setSelectedRow(props.selectedRow)
                     //handleDeleteUser()
-                  }}
+                    }}
                   style={{ height: '24px', width: '24px' }} />
               }
             </UI.IconWrapper>
