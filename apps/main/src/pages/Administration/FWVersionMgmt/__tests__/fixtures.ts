@@ -41,6 +41,7 @@ export const venue = [
       {
         version: '6.2.1.103.1580',
         type: 'AP_FIRMWARE_UPGRADE',
+        sequence: 2,
         category: 'RECOMMENDED'
       }
     ]
@@ -55,6 +56,7 @@ export const venue = [
       {
         version: '6.2.1.103.1580',
         type: 'AP_FIRMWARE_UPGRADE',
+        sequence: 2,
         category: 'RECOMMENDED'
       }
     ],
@@ -65,6 +67,7 @@ export const venue = [
         latestEolVersion: '6.1.0.10.453',
         apCount: 1,
         apModels: ['T300'],
+        sequence: 1,
         isAbfGreaterThanVenueCurrentAbf: false
       }
     ],
@@ -78,6 +81,7 @@ export const venue = [
       {
         version: '6.2.1.103.1580',
         type: 'AP_FIRMWARE_UPGRADE',
+        sequence: 2,
         category: 'RECOMMENDED'
       }
     ],
@@ -88,6 +92,7 @@ export const venue = [
         latestEolVersion: '6.1.0.10.453',
         apCount: 1,
         apModels: ['T300'],
+        sequence: 1,
         isAbfGreaterThanVenueCurrentAbf: false
       },
       {
@@ -96,6 +101,7 @@ export const venue = [
         latestEolVersion: '6.2.0.103.533',
         apCount: 1,
         apModels: ['R550'],
+        sequence: 1,
         isAbfGreaterThanVenueCurrentAbf: false
       },
       {
@@ -104,6 +110,7 @@ export const venue = [
         latestEolVersion: '6.2.3.103.200',
         apCount: 1,
         apModels: ['H550'],
+        sequence: 2,
         isAbfGreaterThanVenueCurrentAbf: true
       }
     ]
@@ -117,6 +124,7 @@ export const venue = [
       {
         version: '6.1.0.10.433',
         type: 'AP_FIRMWARE_UPGRADE',
+        sequence: 1,
         category: 'RECOMMENDED'
       }
     ],
@@ -127,6 +135,7 @@ export const venue = [
         latestEolVersion: '6.2.0.103.533',
         apCount: 1,
         apModels: ['T300'],
+        sequence: 1,
         isAbfGreaterThanVenueCurrentAbf: true
       }
     ]
@@ -140,6 +149,7 @@ export const venue = [
       {
         version: '7.0.0.103.288',
         type: 'AP_FIRMWARE_UPGRADE',
+        sequence: 3,
         category: 'RECOMMENDED'
       }
     ]
