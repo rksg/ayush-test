@@ -1,32 +1,24 @@
 
-import { useEffect, useState } from 'react'
-
 import { Form, Select, Space } from 'antd'
 import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
 
-import { Loader, Table, TableProps, useStepFormContext }                                from '@acx-ui/components'
-import { AddEdgeDhcpServiceModal }                                  from '@acx-ui/rc/components'
-import { useGetEdgeDhcpListQuery } from '@acx-ui/rc/services'
-import { EdgeDhcpPool, EdgeDhcpSetting }                            from '@acx-ui/rc/utils'
-import { FormInstance } from 'antd/es/form/Form'
-import useFormInstance from 'antd/lib/form/hooks/useFormInstance'
+import { Loader, Table, TableProps }      from '@acx-ui/components'
+import { AddEdgeDhcpServiceModal }        from '@acx-ui/rc/components'
+import { useGetEdgeDhcpListQuery }        from '@acx-ui/rc/services'
+import { EdgeDhcpPool, EdgeDhcpSetting }  from '@acx-ui/rc/utils'
+import { FormInstance }         from 'antd/es/form/Form'
 
 interface EdgeDhcpSelectionFormProps {
-  //inUseService: string | null
-  form: FormInstance
   hasNsg?: boolean
 }
 
 export const EdgeDhcpSelectionForm = (props: EdgeDhcpSelectionFormProps) => {
 
+  const params = useParams()
   const { hasNsg } = props
   const { $t } = useIntl()
-  const form = useStepFormContext()
-  console.log('form=' + form.form.getFieldsValue())
-
-  //const [dhcpId, setDhcpId] = useState<string | null>(props.inUseService)
-  const params = useParams()
+  
   const {
     data: edgeDhcpData,
     edgeDhcpOptions,
@@ -46,15 +38,6 @@ export const EdgeDhcpSelectionForm = (props: EdgeDhcpSelectionFormProps) => {
       }
     })
 
-  // useEffect(() => {
-  //   //console.log('in use service: ' + props.inUseService)
-  //   //setDhcpId(props.inUseService)
-  // }, [props.inUseService])
-
-  const handleDhcpServiceChange = (value: string | null) => {
-    //setDhcpId(value)
-  }
-
   const columns: TableProps<EdgeDhcpPool>['columns'] = [
     {
       title: $t({ defaultMessage: 'Pool Name' }),
@@ -70,7 +53,7 @@ export const EdgeDhcpSelectionForm = (props: EdgeDhcpSelectionFormProps) => {
       title: $t({ defaultMessage: 'Pool Range' }),
       key: 'poolStartIp',
       dataIndex: 'poolStartIp',
-      render (data, item) {
+      render (_, item) {
         return `${item.poolStartIp} - ${item.poolEndIp}`
       }
     },
@@ -103,7 +86,6 @@ export const EdgeDhcpSelectionForm = (props: EdgeDhcpSelectionFormProps) => {
             ]}
             loading={isEdgeDhcpDataFetching}
             disabled={hasNsg}
-            onChange={handleDhcpServiceChange}
           />
         </Form.Item>
         <AddEdgeDhcpServiceModal />
@@ -112,13 +94,24 @@ export const EdgeDhcpSelectionForm = (props: EdgeDhcpSelectionFormProps) => {
     <Loader states={[
       { isFetching: isEdgeDhcpDataFetching, isLoading: false }
     ]}>
-      {props.form.getFieldValue('dhcpId') &&
-      <Table
-        rowKey='id'
-        type='form'
-        columns={columns}
-        dataSource={edgeDhcpData && edgeDhcpData[props.form.getFieldValue('dhcpId')]?.dhcpPools}
-      />}
+      <Form.Item
+        noStyle
+        shouldUpdate={(prevValues, currentValues) => {
+          return prevValues.dhcpId !== currentValues.dhcpId
+        }}
+      >
+        {({ getFieldValue }) => {
+            const dhcpId = getFieldValue('dhcpId')
+
+            return (dhcpId &&
+              <Table
+                rowKey='id'
+                type='form'
+                columns={columns}
+                dataSource={edgeDhcpData && edgeDhcpData[dhcpId]?.dhcpPools}
+              />)
+          }}
+      </Form.Item>
     </Loader>
   </>
 
