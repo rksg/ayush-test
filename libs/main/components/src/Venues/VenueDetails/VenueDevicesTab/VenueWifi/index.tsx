@@ -5,11 +5,11 @@ import { List }    from 'antd'
 import { useIntl } from 'react-intl'
 
 
-import { Table, TableProps, Loader, Tooltip, Tabs, Button, cssStr }                                                 from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                   from '@acx-ui/feature-toggle'
-import { DevicesOutlined, LineChartOutline, ListSolid, MeshSolid }                                                  from '@acx-ui/icons'
-import { ApGroupTable, ApTable, ApCompatibilityDrawer, ApCompatibilityQueryTypes, retrievedCompatibilitiesOptions } from '@acx-ui/rc/components'
-import { useApGroupsListQuery, useGetVenueSettingsQuery, useMeshApsQuery, useGetApCompatibilitiesVenueQuery }       from '@acx-ui/rc/services'
+import { Table, TableProps, Loader, Tooltip, Tabs, Button, cssStr }                                           from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                             from '@acx-ui/feature-toggle'
+import { DevicesOutlined, LineChartOutline, ListSolid, MeshSolid }                                            from '@acx-ui/icons'
+import { ApGroupTable, ApTable, ApCompatibilityDrawer, retrievedCompatibilitiesOptions }                      from '@acx-ui/rc/components'
+import { useApGroupsListQuery, useGetVenueSettingsQuery, useMeshApsQuery, useGetApCompatibilitiesVenueQuery } from '@acx-ui/rc/services'
 import {
   useTableQuery,
   APMesh,
@@ -215,7 +215,7 @@ export function VenueWifi () {
   const { compatibilitiesFilterOptions, apCompatibilities, incompatible } = useGetApCompatibilitiesVenueQuery(
     {
       params: { venueId: params.venueId },
-      payload: { filters: {}, queryType: ApCompatibilityQueryTypes.CHECK_VENUE }
+      payload: { filters: {} }
     },
     {
       skip: !isApCompatibleCheckEnabled,
@@ -326,7 +326,6 @@ export function VenueWifi () {
             isMultiple
             visible={drawerVisible}
             data={apCompatibilities}
-            queryType={ApCompatibilityQueryTypes.CHECK_VENUE}
             onClose={() => setDrawerVisible(false)}
           />
         }

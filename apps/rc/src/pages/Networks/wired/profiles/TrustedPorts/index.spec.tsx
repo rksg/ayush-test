@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 import userEvent       from '@testing-library/user-event'
 import { Form, Modal } from 'antd'
 
-import { SwitchConfigurationProfile }        from '@acx-ui/rc/utils'
-import { Provider }                          from '@acx-ui/store'
-import { fireEvent, render, screen, within } from '@acx-ui/test-utils'
+import { SwitchConfigurationProfile }                 from '@acx-ui/rc/utils'
+import { Provider }                                   from '@acx-ui/store'
+import { fireEvent, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { ConfigurationProfileFormContext, ConfigurationProfileType } from '../ConfigurationProfileFormContext'
 
@@ -73,7 +73,106 @@ describe('Wired - TrustedPorts', () => {
     const saveTrustPortButton = await within(dialog).findAllByRole('button', { name: 'Add' })
     await userEvent.click(saveTrustPortButton[0])
   })
+  it('should handle add trusted ports with ICX-7550 48F correctly', async () => {
+    render(
+      <Provider>
+        <ConfigurationProfileFormContext.Provider value={configureProfileContextValues}>
+          <Form>
+            <TrustedPorts />
+          </Form>
+        </ConfigurationProfileFormContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/networks/wired/profiles/add' }
+      })
 
+    await screen.findByRole('heading', { level: 3, name: /Trusted Ports/ })
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Add Model' }))
+    const dialog = await screen.findByTestId('trustedPortModal')
+    const family = await within(dialog).findByTestId('ICX7550')
+    await userEvent.click(family)
+    const model = await within(dialog).findByTestId('48F')
+    await userEvent.click(model)
+    await waitFor(async () => {
+      expect(await screen.findByText('Select Modules')).toBeInTheDocument()
+    })
+    const module3Checkbox = await within(dialog).findByText(/Module 3/i)
+    await userEvent.click(module3Checkbox)
+    const nextTrustPortButton = await within(dialog).findByRole('button', { name: 'Next' })
+    await userEvent.click(nextTrustPortButton)
+
+    fireEvent.change(await within(dialog).findByRole('combobox'), {
+      target: { value: '1/1/1' }
+    })
+    const saveTrustPortButton = await within(dialog).findAllByRole('button', { name: 'Add' })
+    await userEvent.click(saveTrustPortButton[0])
+  })
+  it('should handle add trusted ports with ICX-7650 48ZP correctly', async () => {
+    render(
+      <Provider>
+        <ConfigurationProfileFormContext.Provider value={configureProfileContextValues}>
+          <Form>
+            <TrustedPorts />
+          </Form>
+        </ConfigurationProfileFormContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/networks/wired/profiles/add' }
+      })
+
+    await screen.findByRole('heading', { level: 3, name: /Trusted Ports/ })
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Add Model' }))
+    const dialog = await screen.findByTestId('trustedPortModal')
+    const family = await within(dialog).findByTestId('ICX7650')
+    await userEvent.click(family)
+    const model = await within(dialog).findByTestId('48ZP')
+    await userEvent.click(model)
+    await waitFor(async () => {
+      expect(await screen.findByText('Select Modules')).toBeInTheDocument()
+    })
+    const module2Checkbox = await within(dialog).findByText(/Module 2/i)
+    const module3Checkbox = await within(dialog).findByText(/Module 3/i)
+    await userEvent.click(module2Checkbox)
+    await userEvent.click(module3Checkbox)
+    const nextTrustPortButton = await within(dialog).findByRole('button', { name: 'Next' })
+    await userEvent.click(nextTrustPortButton)
+
+    fireEvent.change(await within(dialog).findByRole('combobox'), {
+      target: { value: '1/1/1' }
+    })
+    const saveTrustPortButton = await within(dialog).findAllByRole('button', { name: 'Add' })
+    await userEvent.click(saveTrustPortButton[0])
+  })
+
+  it('should handle add trusted ports with ICX-7850 48FS correctly', async () => {
+    render(
+      <Provider>
+        <ConfigurationProfileFormContext.Provider value={configureProfileContextValues}>
+          <Form>
+            <TrustedPorts />
+          </Form>
+        </ConfigurationProfileFormContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/networks/wired/profiles/add' }
+      })
+
+    await screen.findByRole('heading', { level: 3, name: /Trusted Ports/ })
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Add Model' }))
+    const dialog = await screen.findByTestId('trustedPortModal')
+    const family = await within(dialog).findByTestId('ICX7850')
+    await userEvent.click(family)
+    const model = await within(dialog).findByTestId('48FS')
+    await userEvent.click(model)
+    const nextTrustPortButton = await within(dialog).findByRole('button', { name: 'Next' })
+    await userEvent.click(nextTrustPortButton)
+
+    fireEvent.change(await within(dialog).findByRole('combobox'), {
+      target: { value: '1/1/1' }
+    })
+    const saveTrustPortButton = await within(dialog).findAllByRole('button', { name: 'Add' })
+    await userEvent.click(saveTrustPortButton[0])
+  })
   it('should handle edit trusted ports correctly', async () => {
     render(
       <Provider>
@@ -96,10 +195,10 @@ describe('Wired - TrustedPorts', () => {
     await screen.findByRole('heading', { level: 3, name: /Trusted Ports/ })
 
     const row = await screen.findByRole('row', { name: /ICX7150-48/i })
-    fireEvent.click(await within(row).findByRole('radio'))
+    await userEvent.click(await within(row).findByRole('radio'))
 
     const editButton = await screen.findByRole('button', { name: /Edit/i })
-    fireEvent.click(editButton)
+    await userEvent.click(editButton)
     await userEvent.click((await screen.findAllByText('Trusted Ports'))[1])
     await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
   })
@@ -130,11 +229,11 @@ describe('Wired - TrustedPorts', () => {
     await screen.findByRole('heading', { level: 3, name: /Trusted Ports/ })
 
     const row = await screen.findByRole('row', { name: /ICX7150-48/i })
-    fireEvent.click(await within(row).findByRole('radio'))
+    await userEvent.click(await within(row).findByRole('radio'))
 
-    fireEvent.click(await screen.findByRole('button', { name: /Delete/i }))
+    await userEvent.click(await screen.findByRole('button', { name: /Delete/i }))
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
-    fireEvent.click(await screen.findByRole('button', { name: /Delete/i }))
+    await userEvent.click(await screen.findByRole('button', { name: /Delete/i }))
     await userEvent.click(await screen.findByRole('button', { name: 'Delete Trust Port' }))
   })
 })

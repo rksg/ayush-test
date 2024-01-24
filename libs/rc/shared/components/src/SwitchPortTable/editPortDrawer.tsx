@@ -331,8 +331,8 @@ export function EditPortDrawer ({
 
     setEditPortData(portSetting)
     setDisablePoeCapability(getPoeCapabilityDisabled([portSetting]))
-    setUseVenueSettings(portSetting.revert)
-    setLldpQosList(portSetting.lldpQos || [])
+    setUseVenueSettings(portSetting?.revert)
+    setLldpQosList(portSetting?.lldpQos || [])
 
     setInitPortVlans(getInitPortVlans( [portSetting], defaultVlan ))
     setPortEditStatus(
@@ -922,14 +922,14 @@ export function EditPortDrawer ({
                   name='voiceVlan'
                   noStyle
                   children={
-                    <>
+                    <Space data-testid='voice-vlan' size={4}>
                       <span> {$t({ defaultMessage: 'Set as Voice VLAN:' })} </span>
                       {
                         voiceVlan
                           ? $t({ defaultMessage: 'Yes (VLAN-ID: {voiceVlan})' }, { voiceVlan })
                           : $t({ defaultMessage: 'No' })
                       }
-                    </>
+                    </Space>
                   }
                 />
               </UI.VoiceVlan> :

@@ -49,11 +49,11 @@ export function SwitchVeTable ( { isVenueLevel } : {
       'id',
       'switchId',
       'clientVlan',
+      'connectedVe',
       'venueId',
       'deviceStatus',
       'veId',
       'syncedSwitchConfig',
-      'defaultVlan',
       'veId',
       'vlanId',
       'name',
@@ -143,14 +143,14 @@ export function SwitchVeTable ( { isVenueLevel } : {
     setDisabledDelete(false)
 
 
-    const defaultVlanVeList = rows.filter(row => row.defaultVlan === true)
+    const connectedVeList = rows.filter(row => row.connectedVe === true)
 
-    const defaultVlanVe = _.map(defaultVlanVeList, 'veId')
-    const tooltip = defaultVlanVeList.length > 0 ?
-      `VE ${defaultVlanVe} ${$t({
+    const connectedVeId = _.map(connectedVeList, 'veId')
+    const tooltip = connectedVeList.length > 0 ?
+      `VE ${connectedVeId} ${$t({
         defaultMessage: 'is member of default VLAN that cannot be deleted.'
       })}` : ''
-    setDisabledDelete(defaultVlanVeList.length > 0)
+    setDisabledDelete(connectedVeList.length > 0)
     setDeleteButtonTooltip(tooltip)
 
   }

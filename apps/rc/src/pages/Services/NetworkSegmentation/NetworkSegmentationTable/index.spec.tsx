@@ -13,13 +13,17 @@ import {
   ServiceType,
   SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider, store }                    from '@acx-ui/store'
+import { Provider, store }                             from '@acx-ui/store'
 import {
   mockServer, render,
-  screen, waitForElementToBeRemoved, within
+  screen, waitFor, waitForElementToBeRemoved, within
 } from '@acx-ui/test-utils'
 
-import { mockEdgeData, mockedNetworkOptions, mockedSwitchOptions, mockNsgStatsList, mockVenueData } from '../__tests__/fixtures'
+import { mockEdgeData,
+  mockedNetworkOptions,
+  mockedSwitchOptions,
+  mockNsgStatsList,
+  mockVenueData } from '../__tests__/fixtures'
 
 import NetworkSegmentationTable from '.'
 
@@ -44,15 +48,16 @@ describe('NetworkSegmentationList', () => {
     type: ServiceType.NETWORK_SEGMENTATION,
     oper: ServiceOperation.LIST
   })
+  const mockedDeleteNetworkSegmentationGroup = jest.fn()
   beforeEach(() => {
-    store.dispatch(edgeApi.util.resetApiState())
-    store.dispatch(networkApi.util.resetApiState())
-    store.dispatch(nsgApi.util.resetApiState())
-    store.dispatch(switchApi.util.resetApiState())
-    store.dispatch(venueApi.util.resetApiState())
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
+    store.dispatch(venueApi.util.resetApiState())
+    store.dispatch(edgeApi.util.resetApiState())
+    store.dispatch(nsgApi.util.resetApiState())
+    store.dispatch(networkApi.util.resetApiState())
+    store.dispatch(switchApi.util.resetApiState())
 
     mockServer.use(
       rest.post(
@@ -69,7 +74,9 @@ describe('NetworkSegmentationList', () => {
       ),
       rest.delete(
         NetworkSegmentationUrls.deleteNetworkSegmentationGroup.url,
-        (req, res, ctx) => res(ctx.status(202))
+        (req, res, ctx) => {
+          mockedDeleteNetworkSegmentationGroup()
+          return res(ctx.status(202))}
       ),
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
@@ -232,5 +239,8 @@ describe('NetworkSegmentationList', () => {
     await user.click(screen.getByRole('button', { name: 'Delete' }))
     await screen.findByText('Delete "nsg1"?')
     await user.click((await screen.findAllByRole('button', { name: 'Delete' }))[1])
+    await waitFor(() => {
+      expect(mockedDeleteNetworkSegmentationGroup).toBeCalled()
+    })
   })
 })

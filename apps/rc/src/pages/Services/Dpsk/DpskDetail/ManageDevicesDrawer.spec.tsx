@@ -54,7 +54,7 @@ describe('ManageDevicesDrawer', () => {
         }
       ),
       rest.get(
-        DpskUrls.getNewFlowPassphraseDevices.url,
+        DpskUrls.getPassphraseDevices.url,
         (req, res, ctx) => res(ctx.json(mockedDevices))
       ),
       rest.post(

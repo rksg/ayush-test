@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 
 import { useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
 import { venueApi }                                                                  from '@acx-ui/rc/services'
-import { ApSnmpUrls, CommonUrlsInfo, getUrlForTest, SyslogUrls }                     from '@acx-ui/rc/utils'
+import { ApSnmpUrls, CommonUrlsInfo, SyslogUrls }                                    from '@acx-ui/rc/utils'
 import { Provider, store }                                                           from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -52,11 +52,9 @@ describe('ServerTab', () => {
       rest.get(
         SyslogUrls.getSyslogPolicyList.url,
         (_, res, ctx) => res(ctx.json(syslogServerProfiles))),
-      rest.get(
-        getUrlForTest(CommonUrlsInfo.getVenueMdnsFencingPolicy),
+      rest.get(CommonUrlsInfo.getVenueMdnsFencingPolicy.url,
         (_, res, ctx) => res(ctx.json({}))),
-      rest.post(
-        getUrlForTest(CommonUrlsInfo.updateVenueMdnsFencingPolicy),
+      rest.post(CommonUrlsInfo.updateVenueMdnsFencingPolicy.url,
         (_, res, ctx) => res(ctx.json({}))),
       rest.post(
         CommonUrlsInfo.getApsList.url,

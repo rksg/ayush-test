@@ -12,13 +12,12 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                                                   from '@acx-ui/feature-toggle'
-import { CsvSize, ImportFileDrawer, PassphraseViewer, ImportFileDrawerType, useDpskNewConfigFlowParams, NetworkForm } from '@acx-ui/rc/components'
+import { Features, useIsTierAllowed }                                                     from '@acx-ui/feature-toggle'
+import { CsvSize, ImportFileDrawer, PassphraseViewer, ImportFileDrawerType, NetworkForm } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteDpskPassphraseListMutation,
   useLazyDownloadNewFlowPassphrasesQuery,
-  useDownloadPassphrasesMutation,
   useGetEnhancedDpskPassphraseListQuery,
   useRevokeDpskPassphraseListMutation,
   useUploadPassphrasesMutation,
@@ -74,11 +73,8 @@ export default function DpskPassphraseManagement () {
     passphrasesDrawerEditMode,
     setPassphrasesDrawerEditMode
   ] = useState<DpskPassphraseEditMode>({ isEdit: false })
-  const isNewConfigFlow = useIsSplitOn(Features.DPSK_NEW_CONFIG_FLOW_TOGGLE)
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
   const [ deletePassphrases ] = useDeleteDpskPassphraseListMutation()
   const [ uploadCsv, uploadCsvResult ] = useUploadPassphrasesMutation()
-  const [ downloadCsv ] = useDownloadPassphrasesMutation()
   const [ downloadNewFlowCsv ] = useLazyDownloadNewFlowPassphrasesQuery()
   const [ revokePassphrases ] = useRevokeDpskPassphraseListMutation()
   const [ uploadCsvDrawerVisible, setUploadCsvDrawerVisible ] = useState(false)
@@ -91,24 +87,17 @@ export default function DpskPassphraseManagement () {
     sorter: defaultSorter,
     defaultPayload,
     search: defaultSearch,
-    enableSelectAllPagesData: ['id'],
-    apiParams: dpskNewConfigFlowParams
+    enableSelectAllPagesData: ['id']
   })
 
   const downloadPassphrases = async () => {
-    const apiParams = { ...params, ...dpskNewConfigFlowParams }
-
     try {
-      if (isNewConfigFlow) {
-        const payload = {
-          page: 1,
-          pageSize: MAX_PASSPHRASES_PER_TENANT,
-          ...tableQuery.search
-        }
-        downloadNewFlowCsv({ params: apiParams, payload }).unwrap()
-      } else {
-        downloadCsv({ params: apiParams }).unwrap()
+      const payload = {
+        page: 1,
+        pageSize: MAX_PASSPHRASES_PER_TENANT,
+        ...tableQuery.search
       }
+      downloadNewFlowCsv({ params, payload }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -157,7 +146,6 @@ export default function DpskPassphraseManagement () {
       key: 'devices',
       title: $t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'devices',
-      sorter: true,
       searchable: true,
       render: function (_, { devices }) {
         return devices?.map(device => device.mac).join(', ')
@@ -223,7 +211,7 @@ export default function DpskPassphraseManagement () {
       selectedRows[0].username,
       [{ fieldName: 'identityId', fieldText: intl.$t({ defaultMessage: 'Identity' }) }],
       async () => deletePassphrases({
-        params: { ...params, ...dpskNewConfigFlowParams },
+        params: { ...params },
         payload: selectedRows.map(p => p.id)
       }).then(callback)
     )
@@ -250,16 +238,7 @@ export default function DpskPassphraseManagement () {
   }
 
   const allowManageDevices = (selectedRows: NewDpskPassphrase[]) => {
-    if (isNewConfigFlow) {
-      return isCloudpathEnabled && selectedRows.length === 1
-    }
-
-    if (!isCloudpathEnabled || selectedRows.length !== 1) return false
-
-    const row = selectedRows[0]
-    if (row && row.hasOwnProperty('numberOfDevices')) return row.numberOfDevices! > 1
-
-    return false
+    return isCloudpathEnabled && selectedRows.length === 1
   }
 
   const rowActions: TableProps<NewDpskPassphrase>['rowActions'] = [
@@ -291,7 +270,7 @@ export default function DpskPassphraseManagement () {
             selectedRows[0].username ?? '',
             async (revocationReason: string) => {
               await revokePassphrases({
-                params: { ...params, ...dpskNewConfigFlowParams },
+                params: { ...params },
                 payload: {
                   ids: selectedRows.map(p => p.id),
                   changes: { revocationReason }
@@ -309,7 +288,7 @@ export default function DpskPassphraseManagement () {
       onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
         canRevoke('unrevoke', selectedRows, () => {
           revokePassphrases({
-            params: { ...params, ...dpskNewConfigFlowParams },
+            params: { ...params },
             payload: {
               ids: selectedRows.map(p => p.id),
               changes: { revocationReason: null }
@@ -375,7 +354,7 @@ export default function DpskPassphraseManagement () {
         }
         try {
           await uploadCsv({
-            params: { ...params, ...dpskNewConfigFlowParams },
+            params: { ...params },
             payload: formData
           }).unwrap()
           setUploadCsvDrawerVisible(false)

@@ -62,3 +62,11 @@ export const mockedSdLanService = {
   networkIds: ['32e06116667b4749855ffbb991d8ac4b'],
   tunnelProfileId: 'f93802759efc49628c572df8af0718b8'
 }
+
+export const mockedSdLanServiceP2 = {
+  ...mockedSdLanService,
+  isGuestTunnelEnabled: false,
+  guestEdgeId: '',
+  guestTunnelProfileId: '',
+  guestNetworkIds: []
+}

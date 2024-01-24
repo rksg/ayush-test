@@ -10,7 +10,6 @@ import {
   policyApi
 } from '@acx-ui/rc/services'
 import {
-  getUrlForTest,
   CommonUrlsInfo,
   MigrationContextType,
   MigrationUrlsInfo,
@@ -80,12 +79,10 @@ describe('MigrationForm', () => {
   it('should render MigrationForm successfully', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
 
-    mockServer.use(rest.post(
-      getUrlForTest(CommonUrlsInfo.getVenuesList),
+    mockServer.use(rest.post(CommonUrlsInfo.getVenuesList.url,
       (req, res, ctx) => res(ctx.json(venuelist))
     ),
-    rest.get(
-      getUrlForTest(CommonUrlsInfo.getVenue),
+    rest.get(CommonUrlsInfo.getVenue.url,
       (req, res, ctx) => res(ctx.json(venueResponse))
     ), rest.post(
       MigrationUrlsInfo.uploadZdConfig.url,

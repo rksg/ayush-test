@@ -19,7 +19,7 @@ import { UserProfileContext, UserProfileContextProps } from '@acx-ui/user'
 import {
   availableVersions, versionLatest,
   switchLatest, switchVenue,
-  venue, version, preference
+  venue, version, preference, mockedApModelFamilies
 } from './__tests__/fixtures'
 
 import FWVersionMgmt from '.'
@@ -83,6 +83,10 @@ describe('Firmware Version Management', () => {
       rest.get(
         SigPackUrlsInfo.getSigPack.url.replace('?changesIncluded=:changesIncluded', ''),
         (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        FirmwareUrlsInfo.getApModelFamilies.url,
+        (req, res, ctx) => res(ctx.json(mockedApModelFamilies))
       )
     )
     params = {

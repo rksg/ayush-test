@@ -236,5 +236,10 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/groups',
     newApi: true
+  },
+  getAdminGroupLastLogins: {
+    method: 'get',
+    url: '/events/adminGroups/:adminGroupId/latestLogins',
+    newApi: true
   }
 }

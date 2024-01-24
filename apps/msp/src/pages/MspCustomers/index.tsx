@@ -346,7 +346,6 @@ export function MspCustomers () {
           title: $t({ defaultMessage: 'Installed Devices' }),
           dataIndex: 'apswLicenseInstalled',
           key: 'apswLicenseInstalled',
-          sorter: true,
           render: function (_: React.ReactNode, row: MspEc) {
             return <div style={{ textAlign: 'center' }}>
               {mspUtils.transformInstalledDevice(row.entitlements)}</div>
@@ -370,7 +369,6 @@ export function MspCustomers () {
             <div>{$t({ defaultMessage: 'Utilization' })}</div></div>,
           dataIndex: 'apswLicensesUtilization',
           key: 'apswLicensesUtilization',
-          sorter: true,
           render: function (_: React.ReactNode, row: MspEc) {
             return <div style={{ textAlign: 'center' }}>
               {mspUtils.transformDeviceUtilization(row.entitlements)}</div>
