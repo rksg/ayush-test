@@ -9,7 +9,8 @@ import {
   connectionEvents,
   qualityDataObj,
   incidentDataObj,
-  roamingDataObj
+  roamingDataObj,
+  eapolEvent
 } from './__tests__/fixtures'
 import {
   SUCCESS,
@@ -181,7 +182,7 @@ describe('util', () => {
             name: 'No group (inherit from Venue)'
           },
           {
-            type: 'ap',
+            type: 'AP',
             name: '94:B3:4F:3D:15:B0'
           }
         ],
@@ -198,10 +199,11 @@ describe('util', () => {
       {
         apName: 'R750-11-112',
         category: 'failure',
-        code: 'eapol',
+        code: 'eap',
         end: 1668407704571,
         event: 'CCD_REASON_MIC_FAILURE',
         failedMsgId: '22',
+        messageIds: ['4', '22', '22'],
         key: '166840770457194:B3:4F:3D:15:B0FAILURE6',
         mac: '94:B3:4F:3D:15:B0',
         path: [
@@ -215,7 +217,7 @@ describe('util', () => {
           },
           {
             name: '94:B3:4F:3D:15:B0',
-            type: 'ap'
+            type: 'AP'
           }
         ],
         radio: '5',
@@ -241,7 +243,7 @@ describe('util', () => {
             name: 'No group (inherit from Venue)'
           },
           {
-            type: 'ap',
+            type: 'AP',
             name: '94:B3:4F:3D:15:B0'
           }
         ],
@@ -271,7 +273,7 @@ describe('util', () => {
             name: 'No group (inherit from Venue)'
           },
           {
-            type: 'ap',
+            type: 'AP',
             name: '94:B3:4F:3D:15:B0'
           }
         ],
@@ -347,6 +349,75 @@ describe('util', () => {
       data.forEach(({ event, desc }) => {
         expect(formatEventDesc(event as DisplayEvent, getIntl())).toEqual(desc)
       })
+    })
+
+    it('should handle eapol text correctly', () => {
+      const expectedEapolEvent = [
+        {
+          apName: 'R750-11-112',
+          category: 'failure',
+          code: 'eapol',
+          end: 1668407704571,
+          event: 'CCD_REASON_MIC_FAILURE',
+          failedMsgId: '5',
+          messageIds: ['21', '22', '5', '4'],
+          key: '166840770457194:B3:4F:3D:15:B0FAILURE0',
+          mac: '94:B3:4F:3D:15:B0',
+          path: [
+            {
+              name: 'cliexp4',
+              type: 'zone'
+            },
+            {
+              name: 'No group (inherit from Venue)',
+              type: 'apGroup'
+            },
+            {
+              name: '94:B3:4F:3D:15:B0',
+              type: 'AP'
+            }
+          ],
+          radio: '5',
+          start: 1668407704571,
+          state: 'normal',
+          timestamp: '2022-11-14T06:35:04.571Z',
+          ttc: null,
+          type: 'connectionEvents'
+        },
+        {
+          apName: 'R750-11-112',
+          category: 'failure',
+          code: 'eap',
+          end: 1668407704571,
+          event: 'CCD_REASON_MIC_FAILURE',
+          failedMsgId: '5',
+          messageIds: ['3', '21', '5', '22', '22'],
+          key: '166840770457194:B3:4F:3D:15:B0FAILURE1',
+          mac: '94:B3:4F:3D:15:B0',
+          path: [
+            {
+              name: 'cliexp4',
+              type: 'zone'
+            },
+            {
+              name: 'No group (inherit from Venue)',
+              type: 'apGroup'
+            },
+            {
+              name: '94:B3:4F:3D:15:B0',
+              type: 'AP'
+            }
+          ],
+          radio: '5',
+          start: 1668407704571,
+          state: 'normal',
+          timestamp: '2022-11-14T06:35:04.571Z',
+          ttc: null,
+          type: 'connectionEvents'
+        }
+      ]
+      expect(transformEvents(eapolEvent, [], [])).toEqual(expectedEapolEvent)
+
     })
 
     describe('transformConnectionQualities', () => {
@@ -666,7 +737,7 @@ describe('util', () => {
           path: [
             { name: 'cliexp4', type: 'zone' },
             { name: 'No group (inherit from Venue)', type: 'apGroup' },
-            { name: '94:B3:4F:3D:15:B0', type: 'ap' }
+            { name: '94:B3:4F:3D:15:B0', type: 'AP' }
           ],
           radio: '5',
           seriesKey: 'all',

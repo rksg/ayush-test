@@ -79,11 +79,12 @@ export const transformEvents = (
   events.reduce((acc, data, index) => {
     const { event, state, timestamp, mac, ttc, radio, code, messageIds, failedMsgId, ssid } = data
     if (code === EAP && failedMsgId && messageIds) {
-      const failedMsgIdIndex = messageIds.indexOf(failedMsgId)
+      const failedMsgIdIndex = messageIds.lastIndexOf(failedMsgId)
       const targetIndex = failedMsgIdIndex - 2
       const numberOfElements = 2
-      const targetMessageIds = messageIds.splice(targetIndex, numberOfElements)
-      if (targetMessageIds.every(item => EAPOLMessageIds.includes(item))) {
+      const targetMessageIds = messageIds.map(id => id).splice(targetIndex, numberOfElements)
+      if (targetMessageIds.length === 2 &&
+        targetMessageIds.every(item => EAPOLMessageIds.includes(item))) {
         data = { ...data, code: EAPOL }
       }
     }
