@@ -41,7 +41,8 @@ export const fakeTenantDetail = {
   status: 'active',
   tenantType: 'MSP_EC',
   updatedDate: '2022-12-24T01:06:05.021+00:00',
-  upgradeGroup: 'production'
+  upgradeGroup: 'production',
+  mspEc: { parentMspId: '2242a683a755623896385cfef1fe4442' }
 }
 
 const list = {
@@ -104,6 +105,7 @@ const user = require('@acx-ui/user')
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user')
 }))
+const utils = require('@acx-ui/utils')
 
 describe('MspEcDropdownList', () => {
   let params: { tenantId: string }
@@ -203,6 +205,108 @@ describe('MspEcDropdownList', () => {
     })
     const installerTenantDetail = { ...fakeTenantDetail }
     installerTenantDetail.tenantType = AccountType.MSP_INSTALLER
+    rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
+      return { data: installerTenantDetail }
+    })
+    render(
+      <Provider>
+        <MspEcDropdownList />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard' }
+      })
+
+    await screen.findByText('Din Tai Fung')
+    await userEvent.click(screen.getByTestId('CaretDownSolid'))
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
+    expect(tbody).toBeVisible()
+
+    const rows = await within(tbody).findAllByRole('row')
+    expect(rows).toHaveLength(list.data.length)
+    list.data.forEach((item, index) => {
+      expect(within(rows[index]).getByText(item.name)).toBeVisible()
+    })
+  })
+  it('should render table MSP REC', async () => {
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: fakeUserProfile }
+    })
+    const installerTenantDetail = { ...fakeTenantDetail }
+    installerTenantDetail.tenantType = AccountType.MSP_REC
+
+    rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
+      return { data: installerTenantDetail }
+    })
+    render(
+      <Provider>
+        <MspEcDropdownList />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard' }
+      })
+
+    await screen.findByText('Din Tai Fung')
+    await userEvent.click(screen.getByTestId('CaretDownSolid'))
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
+    expect(tbody).toBeVisible()
+
+    const rows = await within(tbody).findAllByRole('row')
+    expect(rows).toHaveLength(list.data.length)
+    list.data.forEach((item, index) => {
+      expect(within(rows[index]).getByText(item.name)).toBeVisible()
+    })
+  })
+
+  it('should render table for integrator/installer delegate to MSP REC', async () => {
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: fakeUserProfile }
+    })
+    const installerTenantDetail = { ...fakeTenantDetail }
+    installerTenantDetail.tenantType = AccountType.MSP_REC
+    installerTenantDetail.mspEc.parentMspId = ''
+    utils.getJwtTokenPayload = jest.fn().mockImplementation(() => {
+      return {
+        tenantType: AccountType.MSP_INSTALLER
+      }
+    })
+
+    rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
+      return { data: installerTenantDetail }
+    })
+    render(
+      <Provider>
+        <MspEcDropdownList />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard' }
+      })
+
+    await screen.findByText('Din Tai Fung')
+    await userEvent.click(screen.getByTestId('CaretDownSolid'))
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
+    expect(tbody).toBeVisible()
+
+    const rows = await within(tbody).findAllByRole('row')
+    expect(rows).toHaveLength(list.data.length)
+    list.data.forEach((item, index) => {
+      expect(within(rows[index]).getByText(item.name)).toBeVisible()
+    })
+  })
+  it('should render table for integrator/installer delegate to MSP EC', async () => {
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: fakeUserProfile }
+    })
+    const installerTenantDetail = { ...fakeTenantDetail }
+    installerTenantDetail.tenantType = AccountType.MSP_EC
+    utils.getJwtTokenPayload = jest.fn().mockImplementation(() => {
+      return {
+        tenantType: AccountType.MSP_INSTALLER
+      }
+    })
+
     rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
       return { data: installerTenantDetail }
     })
