@@ -19,10 +19,10 @@ import {
 import {
   AddApGroup,
   ApDeep,
-  apNameRegExp,
   checkObjectNotExists,
   hasGraveAccentAndDollarSign,
-  trailingNorLeadingSpaces
+  trailingNorLeadingSpaces,
+  validateByteLength
 }                                      from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -113,8 +113,6 @@ export function ApGroupGeneralTab () {
     } else if (venueIdFromNavigate) {
       formRef?.current?.setFieldValue('venueId', venueIdFromNavigate)
       handleVenueChange(venueIdFromNavigate)
-
-
     }
   }, [isEditMode, apGroupData, isApGroupDataLoading])
 
@@ -251,7 +249,7 @@ export function ApGroupGeneralTab () {
                   { min: 2, transform: (value) => value.trim() },
                   { max: 64, transform: (value) => value.trim() },
                   { validator: (_, value) => hasGraveAccentAndDollarSign(value) },
-                  { validator: (_, value) => apNameRegExp(value) },
+                  { validator: (_, value) => validateByteLength(value, 64) },
                   { validator: (_, value) => nameValidator(value) }
                 ]}
                 validateFirst
