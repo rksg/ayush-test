@@ -20,7 +20,7 @@ import {
 
 import EdgeSdLanForm from '.'
 
-const { mockedSdLanService } = EdgeSdLanFixtures
+const { mockedSdLanServiceP2 } = EdgeSdLanFixtures
 
 const { click } = userEvent
 
@@ -54,7 +54,7 @@ const addSteps = [{
 const mockedFinishFn = jest.fn()
 const { result } = renderHook(() => Form.useForm())
 
-describe('SD-LAN form', () => {
+describe('SD-LAN P2 form', () => {
   beforeEach(() => {
     mockedFinishFn.mockClear()
   })
@@ -73,7 +73,7 @@ describe('SD-LAN form', () => {
     })
 
     const targetPath = getServiceRoutePath({
-      type: ServiceType.EDGE_SD_LAN,
+      type: ServiceType.EDGE_SD_LAN_P2,
       oper: ServiceOperation.LIST
     })
 
@@ -119,7 +119,12 @@ describe('SD-LAN form', () => {
       await click(actions.getByRole('button', { name: 'Add' }))
 
       await waitFor(() => {
-        expect(mockedFinishFn).toBeCalledWith({ name: 'mockedServiceName' })
+        expect(mockedFinishFn).toBeCalledWith({
+          name: 'mockedServiceName',
+          activatedNetworks: [],
+          activatedGuestNetworks: [],
+          isGuestTunnelEnabled: false
+        })
       })
     })
   })
@@ -143,7 +148,7 @@ describe('SD-LAN form', () => {
         form={formRef}
         steps={editSteps}
         onFinish={mockedFinishFn}
-        editData={mockedSdLanService}
+        editData={mockedSdLanServiceP2}
       />, {
         wrapper: Provider,
         route: { params: { tenantId: 't-id', serviceId: 'mock-id' } }
@@ -157,8 +162,9 @@ describe('SD-LAN form', () => {
 
       await waitFor(() => {
         expect(mockedFinishFn).toBeCalledWith({
-          ...mockedSdLanService,
-          activatedNetworks: mockedSdLanService.networkIds.map(id => ({ id }))
+          ...mockedSdLanServiceP2,
+          activatedNetworks: mockedSdLanServiceP2.networkIds.map(id => ({ id })),
+          activatedGuestNetworks: mockedSdLanServiceP2.guestNetworkIds.map(id => ({ id }))
         })
       })
     })

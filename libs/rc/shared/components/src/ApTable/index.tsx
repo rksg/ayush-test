@@ -50,17 +50,18 @@ import {
   ImportErrorRes,
   FILTER,
   SEARCH,
-  ApCompatibility
+  ApCompatibility,
+  ApCompatibilityResponse
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                                 from '@acx-ui/types'
 import { filterByAccess }                                                 from '@acx-ui/user'
 import { exportMessageMapping }                                           from '@acx-ui/utils'
 
-import { ApFeatureCompatibility, ApCompatibilityQueryTypes, ApCompatibilityDrawer } from '../ApCompatibilityDrawer'
-import { seriesMappingAP }                                                          from '../DevicesWidget/helper'
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                          from '../ImportFileDrawer'
-import { useApActions }                                                             from '../useApActions'
+import { ApFeatureCompatibility, ApCompatibilityQueryTypes, ApCompatibilityType, ApCompatibilityDrawer } from '../ApCompatibilityDrawer'
+import { seriesMappingAP }                                                                               from '../DevicesWidget/helper'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                                               from '../ImportFileDrawer'
+import { useApActions }                                                                                  from '../useApActions'
 
 import {
   getGroupableConfig, groupedFields
@@ -184,6 +185,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       const result:React.SetStateAction<APExtended[]> = []
       const apIdsToIncompatible:{ [key:string]: number } = {}
       if (tableQuery.data?.data) {
+        let apCompatibilitiesResponse:ApCompatibilityResponse = { apCompatibilities: [] }
         let apCompatibilities:ApCompatibility[] = []
         let apIds:string[] = []
         if (enableApCompatibleCheck && showFeatureCompatibilitiy) {
@@ -191,23 +193,24 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
           apIds = retriedApIds(aps, !!hasGroupBy)
           if (apIds.length > 0) {
             if (params.venueId) {
-              apCompatibilities = await getApCompatibilitiesVenue({
+              apCompatibilitiesResponse = await getApCompatibilitiesVenue({
                 params: { venueId: params.venueId },
-                payload: { filters: { apIds }, queryType: ApCompatibilityQueryTypes.CHECK_VENUE_WITH_APS }
+                payload: { filters: { apIds } }
               }).unwrap()
             } else if (params.networkId) {
-              apCompatibilities = await getApCompatibilitiesNetwork({
+              apCompatibilitiesResponse = await getApCompatibilitiesNetwork({
                 params: { networkId: params.networkId },
-                payload: { filters: { apIds }, queryType: ApCompatibilityQueryTypes.CHECK_NETWORK_WITH_APS }
+                payload: { filters: { apIds } }
               }).unwrap()
             }
           }
+          apCompatibilities = apCompatibilitiesResponse.apCompatibilities
         }
 
         if (apCompatibilities.length > 0) {
           apIds.forEach((id:string) => {
             const apIncompatible = _.find(apCompatibilities, ap => id===ap.id)
-            apIdsToIncompatible[id] = apIncompatible?.incompatible ?? 0
+            apIdsToIncompatible[id] = apIncompatible?.incompatibleFeatures?.length ?? apIncompatible?.incompatible ?? 0
           })
         }
         if (hasGroupBy) {
@@ -745,6 +748,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
         onClose={() => setImportVisible(false)}/>
       <ApCompatibilityDrawer
         visible={compatibilitiesDrawerVisible}
+        type={params.venueId?ApCompatibilityType.VENUE:ApCompatibilityType.NETWORK}
         venueId={params.venueId}
         networkId={params.networkId}
         queryType={params.venueId ?

@@ -1,25 +1,18 @@
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import WithApAndSwitchDiagram from '../../../../../assets/images/personal-identity-diagrams/personal-identity-with-ap-and-switch.png'
-import ApOnlyDiagram          from '../../../../../assets/images/personal-identity-diagrams/personal-identity-with-ap-only.png'
+import PinDiagram from '../../../../../assets/images/personal-identity-diagrams/personal-identity-all.png'
 
 import { Diagram } from './styledComponents'
 
-interface PersonalIdentityDiagramProps {
-  venueInfo: {
-    switchCount: number
-  }
-}
-
-export const PersonalIdentityDiagram = (props: PersonalIdentityDiagramProps) => {
+export const PersonalIdentityDiagram = () => {
 
   const { $t } = useIntl()
-  const diagram = getDiagram(props)
+  const diagram = getDiagram()
 
   return (
     <Row >
-      <Col offset={3} >
+      <Col offset={2} >
         <Diagram>
           {
             diagram &&
@@ -34,10 +27,6 @@ export const PersonalIdentityDiagram = (props: PersonalIdentityDiagramProps) => 
   )
 }
 
-const getDiagram = (props: PersonalIdentityDiagramProps) => {
-  let diagram = ApOnlyDiagram
-  if((props.venueInfo?.switchCount ?? 0) > 0) {
-    diagram = WithApAndSwitchDiagram
-  }
-  return diagram
+const getDiagram = () => {
+  return PinDiagram
 }

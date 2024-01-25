@@ -12,13 +12,15 @@ export const StyledWrapper = styled.div`
   }
 `
 export const CheckMarkCircleSolidIcon = styled(CheckMarkCircleSolid)`
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
+  margin-bottom: -3px;
 `
 
 export const WarningTriangleSolidIcon = styled(WarningTriangleSolid)`
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
+  margin-bottom: -3px;
   path:nth-child(1) {
     fill: var(--acx-semantics-yellow-50)
   }
@@ -28,7 +30,7 @@ export const WarningTriangleSolidIcon = styled(WarningTriangleSolid)`
 `
 
 export const UnknownIcon = styled(Unknown)`
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   margin-bottom: -3px;
 `
