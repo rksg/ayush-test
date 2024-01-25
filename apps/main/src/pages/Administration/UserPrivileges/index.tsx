@@ -22,6 +22,7 @@ import DelegationsTable from '../Administrators/DelegationsTable'
 
 
 
+import CustomRoles      from './CustomRoles'
 import PriviledgeGroups from './PrivilegeGroups'
 import SsoGroups        from './SsoGroups'
 import UsersTable       from './UsersTable'
@@ -112,7 +113,15 @@ const UserPrivileges = () => {
         isPrimeAdminUser={isPrimeAdminUser}
         tenantType={tenantType}
       />,
-      visible: isSsoConfigured ? true : false
+      visible: true
+    },
+    customRoles: {
+      title: $t({ defaultMessage: 'Roles ({adminGroupCount})' }, { adminGroupCount }),
+      content: <CustomRoles
+        isPrimeAdminUser={isPrimeAdminUser}
+        tenantType={tenantType}
+      />,
+      visible: true
     }
   }
 
