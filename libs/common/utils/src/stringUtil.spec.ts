@@ -10,10 +10,12 @@ describe('StringUtils', () => {
     const utf8Characters = 'אבגדהוזחטיכלמנסע'
     const utf8CharactersChinese = '我愛你一枝花' // utf8: 3 byte per Chinese character
     const utf8CharactersJapen='ユランはパンテーンを使' // utf8: 3 byte per Japen character
+    const emptyString = ''
     //Byte counter should show the difference between the UTF8 Characters and regular Characters
     expect(byteCounter(utf8Characters)).toBe(32)
     expect(byteCounter(regularCharacters)).toBe(16)
     expect(byteCounter(utf8CharactersChinese)).toBe(18)
     expect(byteCounter(utf8CharactersJapen)).toBe(33)
+    expect(byteCounter(emptyString)).toBe(0)
   })
 })
