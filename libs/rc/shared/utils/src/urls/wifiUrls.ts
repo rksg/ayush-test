@@ -647,17 +647,17 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getApFeatureSets: {
     method: 'get',
-    url: '/venues/aps/featureSets?featureName={featureName}',
+    url: '/wifiFeatureSets/:featureName',
     newApi: true
   },
   getApCompatibilitiesVenue: {
     method: 'post',
-    url: '/venues/:venueId/aps/compatibilities/query',
+    url: '/venues/:venueId/apCompatibilities/query',
     newApi: true
   },
   getApCompatibilitiesNetwork: {
     method: 'post',
-    url: '/wifiNetworks/:networkId/aps/compatibilities/query',
+    url: '/wifiNetworks/:networkId/apCompatibilities/query',
     newApi: true
   }
 

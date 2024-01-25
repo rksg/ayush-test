@@ -27,6 +27,7 @@ enum DelegationType {
   SUPPORT_MSP_EC = 'SUPPORT_MSP_EC',
   MSP_INTEGRATOR = 'MSP_INTEGRATOR',
   INTEGRATER_MSPEC = 'INTEGRATER_MSPEC',
+  INTEGRATER_MSP_REC = 'INTEGRATER_MSP_REC',
   MSP_REC = 'MSP_REC'
 }
 
@@ -71,7 +72,11 @@ export function MspEcDropdownList () {
           setDelegationType(DelegationType.MSP_EC)
       }
       else if (tenantType === AccountType.MSP_REC) {
-        setDelegationType(DelegationType.MSP_REC)
+        if (getJwtTokenPayload().tenantType === AccountType.MSP_INTEGRATOR ||
+            getJwtTokenPayload().tenantType === AccountType.MSP_INSTALLER)
+          setDelegationType(DelegationType.INTEGRATER_MSP_REC)
+        else
+          setDelegationType(DelegationType.MSP_REC)
       }
       else if ( tenantType === AccountType.MSP_INSTALLER ||
                 tenantType === AccountType.MSP_INTEGRATOR)
@@ -114,9 +119,23 @@ export function MspEcDropdownList () {
   const integratorMspEcPayload = {
     searchString: '',
     filters: {
-      // mspAdmins: [userProfile.adminId],
       mspTenantId: [''],
-      tenantType: [AccountType.MSP_INSTALLER, AccountType.MSP_INTEGRATOR] },
+      tenantType: [AccountType.MSP_EC] },
+    fields: [
+      'id',
+      'name',
+      'tenantType',
+      'status',
+      'streetAddress'
+    ],
+    searchTargetFields: ['name']
+  }
+
+  const integratorMspRecPayload = {
+    searchString: '',
+    filters: {
+      mspTenantId: [''],
+      tenantType: [AccountType.MSP_REC] },
     fields: [
       'id',
       'name',
@@ -299,7 +318,30 @@ export function MspEcDropdownList () {
         filters: {
           // mspAdmins: [userProfile.adminId],
           ...{ mspTenantId: [ tenantDetail?.mspEc?.parentMspId ] },
-          tenantType: [AccountType.MSP_INSTALLER, AccountType.MSP_INTEGRATOR]
+          tenantType: [AccountType.MSP_EC]
+        }
+      })
+    }
+  },[tenantDetail])
+
+  const tableQueryIntegratorMspRec = useTableQuery({
+    useQuery: useIntegratorCustomerListDropdownQuery,
+    apiParams: { tenantId: getJwtTokenPayload().tenantId },
+    defaultPayload: integratorMspRecPayload,
+    search: {
+      searchTargetFields: integratorMspRecPayload.searchTargetFields as string[]
+    },
+    option: { skip: delegationType !== DelegationType.INTEGRATER_MSP_REC }
+  })
+
+  useEffect(()=>{
+    if (tenantDetail?.mspEc?.parentMspId) {
+      tableQueryIntegratorMspRec.setPayload({
+        ...tableQueryIntegratorMspRec.payload,
+        filters: {
+          // mspAdmins: [userProfile.adminId],
+          ...{ mspTenantId: [ tenantDetail?.mspEc?.parentMspId ] },
+          tenantType: [AccountType.MSP_REC]
         }
       })
     }
@@ -404,6 +446,22 @@ export function MspEcDropdownList () {
     </Loader>
   }
 
+  const ContentIntegratorMspRec = () => {
+    return <Loader states={[tableQueryIntegratorMspRec]}>
+
+      <Table
+        settingsId='integrator-mspec-dropdown-table'
+        columns={customerColumns}
+        dataSource={tableQueryIntegratorMspRec.data?.data.filter(mspEc =>
+          mspEc.id !== params.tenantId)}
+        pagination={tableQueryIntegratorMspRec.pagination}
+        onChange={tableQueryIntegratorMspRec.handleTableChange}
+        onFilterChange={tableQueryIntegratorMspRec.handleFilterChange}
+        rowKey='id'
+      />
+    </Loader>
+  }
+
   const ContentIntegrator = () => {
     return <Loader states={[tableQueryIntegrator]}>
       <Table
@@ -474,6 +532,8 @@ export function MspEcDropdownList () {
     contentx = ContentIntegrator()
   } else if (delegationType === DelegationType.INTEGRATER_MSPEC) {
     contentx = ContentIntegratorMspEc()
+  } else if (delegationType === DelegationType.INTEGRATER_MSP_REC) {
+    contentx = ContentIntegratorMspRec()
   } else if (delegationType === DelegationType.MSP_REC) {
     contentx = ContentMspRec()
   }
