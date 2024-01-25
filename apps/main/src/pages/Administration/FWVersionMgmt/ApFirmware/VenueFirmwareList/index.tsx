@@ -421,7 +421,8 @@ const VenueFirmwareTable = () => {
         })
       }
     },
-    label: $t({ defaultMessage: 'Revert Now' }),
+    // eslint-disable-next-line max-len
+    label: isWifiDowngradeVenueABF ? $t({ defaultMessage: 'Downgrade' }) : $t({ defaultMessage: 'Revert Now' }),
     onClick: (selectedRows) => {
       setVenues(selectedRows)
       let filterVersions: FirmwareVersion[] = []

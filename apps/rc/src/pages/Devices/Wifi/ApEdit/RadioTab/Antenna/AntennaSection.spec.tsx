@@ -155,7 +155,7 @@ describe('AP Antenna Type Section', () => {
         </ApEditContext.Provider>
       </Provider>, { route: { params } })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    //await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     await userEvent.click(await screen.findByRole('button', { name: /Customize/ } ))
 
@@ -171,6 +171,7 @@ describe('AP Antenna Type Section', () => {
     await userEvent.click(await screen.findByText('Sector'))
 
     await userEvent.click(await screen.findByRole('button', { name: /Use Venue Settings/ } ))
+    expect(await screen.findByRole('button', { name: /Customize/ } )).toBeVisible()
   })
 
 })
