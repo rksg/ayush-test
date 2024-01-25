@@ -7,7 +7,6 @@ import { Loader, Table, TableProps }      from '@acx-ui/components'
 import { AddEdgeDhcpServiceModal }        from '@acx-ui/rc/components'
 import { useGetEdgeDhcpListQuery }        from '@acx-ui/rc/services'
 import { EdgeDhcpPool, EdgeDhcpSetting }  from '@acx-ui/rc/utils'
-import { FormInstance }         from 'antd/es/form/Form'
 
 interface EdgeDhcpSelectionFormProps {
   hasNsg?: boolean

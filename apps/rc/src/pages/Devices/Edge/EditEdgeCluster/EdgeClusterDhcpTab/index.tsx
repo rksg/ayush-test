@@ -17,6 +17,7 @@ const EdgeClusterDhcpTab = () => {
   const linkToEdgeList = useTenantLink('/devices/edge')
   const [form] = Form.useForm()
   const [isDhcpServiceActive, setIsDhcpServiceActive] = useState(false)
+  const [currentDhcpId, setCurrentDhcpId] = useState('')
   const [patchEdgeDhcpService] = usePatchEdgeDhcpServiceMutation()
   const { $t } = useIntl()
 
@@ -59,19 +60,42 @@ const EdgeClusterDhcpTab = () => {
   })
 
   useEffect(() => {
-    setIsDhcpServiceActive((poolTableQuery.data?.totalCount || 0) > 0)
-    form.setFieldValue('dhcpId', poolTableQuery.data?.data[0].dhcpId)
+    const isActive = (poolTableQuery.data?.totalCount || 0) > 0;
+    setIsDhcpServiceActive(isActive)
+
+    const dhcpId = poolTableQuery.data?.data[0]?.dhcpId
+    if (dhcpId) {
+      setCurrentDhcpId(dhcpId)
+      form.setFieldValue('dhcpId', dhcpId)
+    }
   }, [poolTableQuery.data?.totalCount])
 
   const handleApplyDhcp = async () => {
-    const dhcpId = form.getFieldValue('dhcpId') || null
-    const pathParams = { id: dhcpId }
-    const payload = { edgeIds: [...edgeDhcpData[dhcpId].edgeIds, clusterId] }
-    await patchEdgeDhcpService({ params: pathParams, payload }).unwrap()
+    const selectedDhcpId = form.getFieldValue('dhcpId') || null
+
+    if (!isDhcpServiceActive) {
+      await removeDhcpService()
+    } else if (selectedDhcpId) {
+      await applyDhcpService(selectedDhcpId)
+    }
   }
 
-  const handleActiveSwitch = (checked: boolean) => {
-    setIsDhcpServiceActive(checked)
+  const applyDhcpService = async (dhcpId: string) => {
+    const pathParams = { id: dhcpId }
+    const payload = {
+      edgeIds: [...new Set([...edgeDhcpData[dhcpId].edgeIds, clusterId])]
+    }
+    patchEdgeDhcpService({ params: pathParams, payload }).unwrap()
+    setCurrentDhcpId(dhcpId)
+  }
+
+  const removeDhcpService = async () => {
+    const pathParams = { id: currentDhcpId }
+    const payload = {
+      edgeIds: edgeDhcpData[currentDhcpId].edgeIds.filter(id => id !== clusterId)
+    }
+    patchEdgeDhcpService({ params: pathParams, payload }).unwrap()
+    setCurrentDhcpId('')
   }
 
   return (
@@ -85,12 +109,13 @@ const EdgeClusterDhcpTab = () => {
         <Form.Item
           label={$t({ defaultMessage: 'Enable DHCP Service' })}
           children={
-            <Switch checked={isDhcpServiceActive} onChange={handleActiveSwitch} />
+            <Switch checked={isDhcpServiceActive} onChange={setIsDhcpServiceActive} />
           }
         />
-        <Form.Item hidden={!isDhcpServiceActive}>
+        {isDhcpServiceActive &&
+        <Form.Item>
           <EdgeDhcpSelectionForm hasNsg={false} />
-        </Form.Item>
+        </Form.Item>}
       </StepsForm.StepForm>
     </StepsForm>
   )
