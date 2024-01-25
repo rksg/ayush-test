@@ -69,7 +69,9 @@ import {
   VenueClientAdmissionControl,
   RogueApLocation,
   ApManagementVlan,
-  ApCompatibility
+  ApCompatibility,
+  ApCompatibilityResponse,
+  VeuneApAntennaTypeSettings
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -120,18 +122,24 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const venueList = venueListQuery.data as TableResult<Venue>
         const venueIds = venueList?.data?.map(v => v.id) || []
         const venueIdsToIncompatible:{ [key:string]: number } = {}
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const allApCompatibilitiesQuery:any = await Promise.all(venueIds.map(id => {
-          const apCompatibilitiesReq = {
-            ...createHttpRequest(WifiUrlsInfo.getApCompatibilitiesVenue, { venueId: id }),
-            body: { filters: {}, queryType: 'CHECK_VENUE' }
-          }
-          return fetchWithBQ(apCompatibilitiesReq)
-        }))
-        venueIds.forEach((id:string, index:number) => {
-          const allApCompatibilitiesData = allApCompatibilitiesQuery[index]?.data as ApCompatibility[]
-          venueIdsToIncompatible[id] = allApCompatibilitiesData[0]?.incompatible ?? 0
-        })
+        try {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const allApCompatibilitiesQuery:any = await Promise.all(venueIds.map(id => {
+            const apCompatibilitiesReq = {
+              ...createHttpRequest(WifiUrlsInfo.getApCompatibilitiesVenue, { venueId: id }),
+              body: { filters: {} }
+            }
+            return fetchWithBQ(apCompatibilitiesReq)
+          }))
+          venueIds.forEach((id:string, index:number) => {
+            const allApCompatibilitiesResponse = allApCompatibilitiesQuery[index]?.data as ApCompatibilityResponse
+            const allApCompatibilitiesData = allApCompatibilitiesResponse?.apCompatibilities as ApCompatibility[]
+            venueIdsToIncompatible[id] = allApCompatibilitiesData[0]?.incompatible ?? 0
+          })
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.error('venuesTable getApCompatibilitiesVenue error:', e)
+        }
         const aggregatedList = aggregatedVenueCompatibilitiesData(
           venueList, venueIdsToIncompatible)
 
@@ -446,9 +454,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
-    getApCompatibilitiesVenue: build.query<ApCompatibility[], RequestPayload>({
+    getApCompatibilitiesVenue: build.query<ApCompatibilityResponse, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApCompatibilitiesVenue, params)
+        const req = createHttpRequest(WifiUrlsInfo.getApCompatibilitiesVenue, params, { ...ignoreErrorModal })
         return{
           ...req,
           body: payload
@@ -1343,6 +1351,33 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getVenueAntennaType: build.query< VeuneApAntennaTypeSettings[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getVenueAntennaType, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'ExternalAntenna', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg,
+            ['UpdateVenueAntennaType'], () => {
+              api.dispatch(venueApi.util.invalidateTags([{ type: 'ExternalAntenna', id: 'LIST' }]))
+            })
+        })
+      }
+    }),
+    updateVenueAntennaType: build.mutation< CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateVenueAntennaType, params)
+        return{
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'ExternalAntenna', id: 'LIST' }]
     })
   })
 })
@@ -1464,7 +1499,10 @@ export const {
   useUpdateVenueClientAdmissionControlMutation,
   useGetVenueApManagementVlanQuery,
   useLazyGetVenueApManagementVlanQuery,
-  useUpdateVenueApManagementVlanMutation
+  useUpdateVenueApManagementVlanMutation,
+  useGetVenueAntennaTypeQuery,
+  useLazyGetVenueAntennaTypeQuery,
+  useUpdateVenueAntennaTypeMutation
 } = venueApi
 
 
