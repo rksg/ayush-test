@@ -31,7 +31,6 @@ export enum Features {
   DELETE_SOLO = 'ap-delete-with-solo-image-toggle',
   DEVICE_AGNOSTIC = 'entitlement-device-agnostic-sku-toggle',
   DIRECTED_MULTICAST = 'wifi-consumer-directed-multicast-toggle',
-  DPSK_NEW_CONFIG_FLOW_TOGGLE = 'dpsk-new-auth-flow-toggle',
   DPSK_PER_BOUND_PASSPHRASE_ALLOWED_DEVICE_INCREASED_LIMIT = 'dpsk-per-bound-passphrase-allowed-device-increased-limit',
   EDGE_LAG = 'acx-ui-edges-lag-toggle',
   EDGES_DHCP_CSV_TOGGLE = 'acx-ui-edges-dhcp-csv-toggle',
@@ -145,6 +144,7 @@ export enum Features {
   WIFI_FR_6029_FG6_2_TOGGLE = 'wifi-fr-6029-fg6-2-toggle',
   WIFI_FR_HOTSPOT20_R1_TOGGLE = 'wifi-fr-hotspot20-r1-toggle',
   WIFI_SWITCHABLE_RF_TOGGLE = 'wifi-switchable-rf-toggle',
+  WIFI_ANTENNA_TYPE_TOGGLE = 'wifi-antenna-type-selection-toggle',
   WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE = 'wifi-trunk-port-untagged-vlan-toggle',
   WIFI_VENUE_BSS_COLORING_TOGGLE = 'wifi-fr-6029-fg1-toggle',
   WISPR_ENCRYPT_MAC_IP = 'acx-ui-wispr-encrypt-mac-ip-toggle',
@@ -170,9 +170,11 @@ interface BetaList {
 // This is Mandatory for Beta features list...
 // When every we add a TierFeatures enum value above we need it's related
 // description details and status value - true/false to show/hide
-// from displaying in UI drawer component BetaFeaturesDrawer
+// from displaying in UI drawer component BetaFeaturesDrawer.
+// If we don't have a description blurb and
+// don't want it to be displayed then add status = false
 export const BetaListDetails:BetaList[] = [
   { key: TierFeatures.BETA_DPSK3, description: defineMessage({ defaultMessage: 'DPSK3: Dynamic Preshared Keys working with WPA3-DSAE. Users connect their devices to a WPA2/WPA3 network with DPSK and are automatically moved to the WPA3 WLAN, allowing DPSK operation with WiFi 6e or WiFi7. DPSK3 allows the customer to take advantage of the flexibility of DPSK with the security of WPA3.' }), status: true },
   { key: TierFeatures.AP_70, description: defineMessage({ defaultMessage: 'AP-70: Wi-Fi 7 - Wi-Fi 7 UI configuration available for early adopters and customers provided with advance units of the R770. Contact your reseller for more information on availability of the new R770!' }), status: true },
-  { key: TierFeatures.SMART_EDGES, description: defineMessage({ defaultMessage: 'PLCY-EDGE' }), status: false }
+  { key: TierFeatures.SMART_EDGES, description: defineMessage({ defaultMessage: 'SmartEdge: RUCKUS SmartEdge is a platfrom to run RUCKUS services on. Network administrators can utilize SD-LAN service or Personal Identity Networking service on a SmartEdge. SD-LAN provides WLAN tunnelling using VXLAN. This will provide end users a seamless roaming experience across a network. The Personal Identity Networking service provides individual networks for users which is typically used in a multi-dwelling facility.' }), status: true }
 ]

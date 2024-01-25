@@ -13,7 +13,7 @@ import { noDataDisplay, getIntl } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
-export type DisplayUser = ManagedUser & {
+type DisplayUser = ManagedUser & {
   displayInvitationState: string
   displayInvitor: string
   displayRole: string
@@ -283,6 +283,7 @@ export const UsersTable = (
   ]
   return <Table<DisplayUser>
     rowKey={'id'}
+    settingsId='users-table'
     columns={columns}
     dataSource={users}
   />

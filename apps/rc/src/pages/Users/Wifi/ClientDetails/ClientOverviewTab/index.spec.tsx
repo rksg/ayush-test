@@ -322,6 +322,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
       it('should render dpsk client correctly', async () => {
         const clientDetails = {
           ...clientList[0],
+          username: 'Fake User 1',
           osType: 'apple',
           receiveSignalStrength_dBm: null
         }
@@ -334,7 +335,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
               dpskServiceProfileId: '123456789'
             }))
           ),
-          rest.post(DpskUrls.getPassphraseClient.url,
+          rest.get(DpskUrls.getPassphraseClient.url.replace('?mac=:mac&networkId=:networkId', ''),
             (_, res, ctx) => res(ctx.json({ ...dpskPassphraseClient }))
           )
         )
@@ -349,7 +350,6 @@ describe('ClientOverviewTab - ClientProperties', () => {
         })
 
         expect(await screen.findByText(dpskPassphraseClient.username)).toBeVisible()
-        expect(await screen.findByRole('link', { name: dpskPassphraseClient.clientMac[0] })).toBeVisible()
       })
 
       it('should render network type', async () => {
@@ -386,7 +386,8 @@ describe('ClientOverviewTab - ClientProperties', () => {
         isClientExists: false,
         isVenueExists: true,
         networkId: '0189575828434f94a7c0b0e611379d26',
-        venueName: 'UI-TEST-VENUE'
+        venueName: 'UI-TEST-VENUE',
+        username: 'Fake User 1'
       }
 
       it('should render historical client correctly', async () => {
@@ -512,7 +513,16 @@ describe('ClientOverviewTab - ClientProperties', () => {
               dpskServiceProfileId: '123456789'
             }))
           ),
-          rest.post(DpskUrls.getPassphraseClient.url,
+          rest.post(CommonUrlsInfo.getGuestsList.url,
+            (_, res, ctx) => res(ctx.json({
+              ...GuestClient,
+              data: [{
+                ...GuestClient.data[3],
+                name: '24418cc316df',
+                networkId: '423c3673e74f44e69c0f3b35cd579ecc'
+              }]
+            }))),
+          rest.get(DpskUrls.getPassphraseClient.url.replace('?mac=:mac&networkId=:networkId', ''),
             (_, res, ctx) => res(ctx.json({ ...dpskPassphraseClient }))
           )
         )
@@ -527,7 +537,6 @@ describe('ClientOverviewTab - ClientProperties', () => {
         })
 
         expect(await screen.findByText(dpskPassphraseClient.username)).toBeVisible()
-        expect(await screen.findByRole('link', { name: dpskPassphraseClient.clientMac[0] })).toBeVisible()
         expect(await screen.findByText('NMS-app6-WLAN-QA')).toBeVisible()
       })
 

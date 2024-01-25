@@ -333,13 +333,13 @@ export function EditPortDrawer ({
     const taggedVlansByVenue = await getTaggedVlansByVenue({ params }, true).unwrap()
     const untaggedVlansByVenue = await getUntaggedVlansByVenue({ params }, true).unwrap()
 
-    const tagged = taggedVlansByVenue.map(taggedVlans => taggedVlans.vlanId).toString()
-    const untagged = untaggedVlansByVenue.map(untaggedVlan => untaggedVlan.vlanId).toString()
+    const tagged = taggedVlansByVenue?.map(taggedVlans => taggedVlans.vlanId)?.toString()
+    const untagged = untaggedVlansByVenue?.map(untaggedVlan => untaggedVlan.vlanId)?.toString()
 
     setEditPortData(portSetting)
     setDisablePoeCapability(getPoeCapabilityDisabled([portSetting]))
-    setUseVenueSettings(portSetting.revert)
-    setLldpQosList(portSetting.lldpQos || [])
+    setUseVenueSettings(portSetting?.revert)
+    setLldpQosList(portSetting?.lldpQos || [])
     setVenueTaggedVlans(taggedVlansByVenue.map(taggedVlans => taggedVlans.vlanId).toString())
     setVenueUntaggedVlan(untaggedVlansByVenue.map(untaggedVlan => untaggedVlan.vlanId).toString())
     setInitPortVlans(getInitPortVlans( [portSetting], defaultVlan ))
