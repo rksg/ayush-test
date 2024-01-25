@@ -42,7 +42,8 @@ export const PortalUrlsInfo: { [key: string]: ApiInfo } = {
   getPortalLang: {
     // [New API] no mapping found
     method: 'get',
-    url: '/g/ui/tenant/:tenantId/locales/:messageName'
+    url: '/g/ui/tenant/:tenantId/locales/:messageName',
+    useDefaultHostname: true
   },
   getEnhancedPortalProfileList: {
     method: 'post',

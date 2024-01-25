@@ -13,6 +13,7 @@ export interface ApiInfo {
   url: string;
   method: string;
   newApi?: boolean;
+  useDefaultHostname?: boolean,
   oldUrl?: string;
   oldMethod?: string;
 }
@@ -61,7 +62,7 @@ export const createHttpRequest = (
   const origin = window.location.origin
   const newApiHostName = origin.replace(
     window.location.hostname, get('NEW_API_DOMAIN_NAME'))
-  const domain = !isLocalHost() ? newApiHostName : origin
+  const domain = (!isLocalHost() && !apiInfo.useDefaultHostname) ? newApiHostName : origin
   const tmpParamValues = {
     ...paramValues
   }
