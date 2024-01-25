@@ -22,6 +22,10 @@ export const isNonProdEnv = () => {
   return (window.location.hostname === 'localhost' || domains.includes(subdomain))
 }
 
+export const updateBrowserCached = (lang: LangKey) => {
+  localStorage.setItem('browserLang', lang)
+}
+
 export const detectBrowserLang = () => {
   const locales = navigator.languages
   const locale = locales.find(locale =>
@@ -61,6 +65,7 @@ export const showBrowserLangDialog = ():Promise<BrowserDialogResult> => {
           closeAfterAction: true,
           handler: () => {
             const result = { lang: '', isLoading: false }
+            updateBrowserCached(browserLang)
             reject(result)
           }
         }, {
@@ -70,6 +75,7 @@ export const showBrowserLangDialog = ():Promise<BrowserDialogResult> => {
           closeAfterAction: true,
           handler: () => {
             const result = { lang: browserLang, isLoading: false }
+            updateBrowserCached(browserLang)
             resolve(result)
           }
         }]

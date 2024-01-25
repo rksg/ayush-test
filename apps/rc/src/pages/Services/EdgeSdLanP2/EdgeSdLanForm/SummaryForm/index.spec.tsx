@@ -7,7 +7,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { EdgeSdLanFormModel } from '..'
+import { EdgeSdLanFormModelP2 } from '..'
 
 import { SummaryForm } from '.'
 
@@ -24,12 +24,11 @@ describe('Summary form', () => {
       networkIds: ['network_1'],
       tunnelProfileId: 'tunnelProfileId2',
       tunnelProfileName: 'tunnelProfile2',
-      corePortName: 'Port2',
       activatedNetworks: [{
         name: 'MockedNetwork 1',
         id: 'network_1'
       }]
-    } as EdgeSdLanFormModel
+    } as EdgeSdLanFormModelP2
 
     const { result: stepFormRef } = renderHook(() => {
       const [ form ] = Form.useForm()
@@ -44,6 +43,7 @@ describe('Summary form', () => {
     await screen.findByRole('cell', { name: /airport/i })
     await screen.findByRole('cell', { name: /Smart Edge 2/i })
     await screen.findByRole('cell', { name: /tunnelProfile2/i })
+    await screen.findByText('Off')
     expect(screen.getByText('Networks (1)')).not.toBeNull()
   })
 
@@ -59,7 +59,6 @@ describe('Summary form', () => {
       networkIds: ['network_1'],
       tunnelProfileId: 'tunnelProfileId1',
       tunnelProfileName: 'tunnelProfile1',
-      corePortName: 'Port3',
       activatedNetworks: undefined
     }
 
@@ -76,6 +75,57 @@ describe('Summary form', () => {
     await screen.findByRole('cell', { name: /airport/i })
     await screen.findByRole('cell', { name: /Smart Edge 2/i })
     await screen.findByRole('cell', { name: /tunnelProfile1/i })
+    await screen.findByText('Off')
     expect(screen.getByText('Networks (0)')).not.toBeNull()
+  })
+
+  it('should correctly display when DMZ enabled', async () => {
+    const mockedDMZData = {
+      name: 'testSdLanDmzData',
+      venueId: 'venue_00003',
+      venueName: 'campus',
+      edgeId: '0000000003',
+      edgeName: 'Smart Edge 3',
+      corePortMac: 'port1',
+      tunnelProfileId: 'tunnelProfileId2',
+      tunnelProfileName: 'tunnelProfile2',
+      activatedNetworks: [{
+        name: 'MockedNetwork 2',
+        id: 'network_2'
+      }, {
+        name: 'MockedNetwork 4',
+        id: 'network_4'
+      }],
+      isGuestTunnelEnabled: true,
+      guestEdgeId: '0000000005',
+      guestEdgeName: 'Smart Edge 5',
+      guestTunnelProfileId: 'tunnelProfileId1',
+      guestTunnelProfileName: 'tunnelProfile1',
+      activatedGuestNetworks: [{
+        name: 'MockedNetwork 4',
+        id: 'network_4'
+      }]
+    }
+
+    const { result: stepFormRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      form.setFieldsValue(mockedDMZData)
+      return form
+    })
+
+    render(<StepsForm form={stepFormRef.current}>
+      <SummaryForm />
+    </StepsForm>)
+
+    await screen.findByRole('cell', { name: /testSdLanDmzData/i })
+    await screen.findByRole('cell', { name: /campus/i })
+    await screen.findByRole('cell', { name: /Smart Edge 3/i })
+    await screen.findByRole('cell', { name: /tunnelProfile2/i })
+    await screen.findByText('On')
+    await screen.findByText('DMZ Cluster')
+    await screen.findByRole('cell', { name: /Smart Edge 5/i })
+    await screen.findByText('Tunnel Profile (Cluster- DMZ Cluster tunnel)')
+    await screen.findByRole('cell', { name: /tunnelProfile1/i })
+    expect(screen.getByText('Networks (2)')).not.toBeNull()
   })
 })
