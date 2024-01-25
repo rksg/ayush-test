@@ -421,7 +421,7 @@ const VenueFirmwareTable = () => {
         })
       }
     },
-    label: $t({ defaultMessage: 'Revert Now' }),
+    label: $t({ defaultMessage: 'Downgrade' }),
     onClick: (selectedRows) => {
       setVenues(selectedRows)
       let filterVersions: FirmwareVersion[] = []

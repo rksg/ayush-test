@@ -20,6 +20,7 @@ export const CheckMarkCircleSolidIcon = styled(CheckMarkCircleSolid)`
 export const WarningTriangleSolidIcon = styled(WarningTriangleSolid)`
   width: 16px;
   height: 16px;
+  margin-bottom: -3px;
   path:nth-child(1) {
     fill: var(--acx-semantics-yellow-50)
   }

@@ -84,7 +84,7 @@ describe('Firmware Venues Table', () => {
     const row = await screen.findByRole('row', { name: /Latest-Venue/i })
     await userEvent.click(within(row).getByRole('checkbox'))
 
-    const updateButton = screen.getByRole('button', { name: /Revert Now/i })
+    const updateButton = screen.getByRole('button', { name: /Downgrade/i })
     await userEvent.click(updateButton)
 
     const confirmDialog = await screen.findByRole('dialog')
