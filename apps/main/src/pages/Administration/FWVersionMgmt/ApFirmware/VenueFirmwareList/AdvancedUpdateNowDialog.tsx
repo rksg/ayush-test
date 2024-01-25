@@ -46,7 +46,7 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
   const eolABFOtherVersion = getEolABFOtherVersionsOptions(venuesData)
   const [disableSave, setDisableSave] = useState(false)
   const [updateNowRequestPayload, setUpdateNowRequestPayload] = useState<
-    { [key: string]: UpdateNowRequestWithoutVenues }
+    { [abfName: string]: UpdateNowRequestWithoutVenues }
   >()
 
   // eslint-disable-next-line max-len
@@ -76,20 +76,16 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
   }, [updateNowRequestPayload])
 
   useEffect(() => {
-    const targetVersions: string[] = []
-    const selectedAbfVersions = updateNowRequestPayload ?? {}
+    if (!updateNowRequestPayload || !maxABFVersions) return
 
-    Object.keys(selectedAbfVersions).forEach(abfId => {
-      const selectedUpdateNowAbf = selectedAbfVersions[abfId]
-      if (selectedUpdateNowAbf?.firmwareVersion) {
-        targetVersions.push(selectedUpdateNowAbf.firmwareVersion)
-      } else if (maxABFVersions[abfId]) {
-        targetVersions.push(maxABFVersions[abfId].maxVersion)
-      }
+    const targetVersions: string[] = []
+    Object.keys(maxABFVersions).forEach(abfId => {
+      // eslint-disable-next-line max-len
+      targetVersions.push(updateNowRequestPayload?.[abfId]?.firmwareVersion ?? maxABFVersions[abfId].maxVersion)
     })
 
     setUpgradableApModelsAndFamilies(findUpgradableApModelsAndFamilies(targetVersions, venuesData))
-  }, [updateNowRequestPayload])
+  }, [updateNowRequestPayload, maxABFVersions])
 
   const otherActiveVersionOptions = otherActiveVersions.map((version) => {
     return {
