@@ -1,6 +1,7 @@
 import { Brand360 }                                              from '@acx-ui/analytics/components'
 import { ConfigProvider, PageNotFound }                          from '@acx-ui/components'
 import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
+import { VenueDetails }                                          from '@acx-ui/main/components'
 import { ManageCustomer, ManageIntegrator, PortalSettings }      from '@acx-ui/msp/components'
 import { AAAForm, AAAPolicyDetail, NetworkDetails, NetworkForm } from '@acx-ui/rc/components'
 import {
@@ -80,7 +81,6 @@ function CustomersRoutes () {
 
 function ConfigTemplatesRoutes () {
   const isConfigTemplateEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE)
-
   return isConfigTemplateEnabled ? rootRoutes(
     <Route path=':tenantId/v/'>
       <Route path={getConfigTemplatePath()}
@@ -108,6 +108,7 @@ function ConfigTemplatesRoutes () {
           path='networks/wireless/:networkId/network-details/:activeTab'
           element={<NetworkDetails />}
         />
+        <Route path='venues/:venueId/venue-details/:activeTab' element={<VenueDetails />} />
       </Route>
     </Route>
   ) : null

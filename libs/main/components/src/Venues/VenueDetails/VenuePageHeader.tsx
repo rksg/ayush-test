@@ -1,14 +1,15 @@
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, RangePicker } from '@acx-ui/components'
-import { useVenueDetailsHeaderQuery }      from '@acx-ui/rc/services'
-import { VenueDetailHeader }               from '@acx-ui/rc/utils'
+import { Button, PageHeader, RangePicker }                                        from '@acx-ui/components'
+import { useVenueDetailsHeaderQuery }                                             from '@acx-ui/rc/services'
+import { generateConfigTemplateBreadcrumb, useConfigTemplate, VenueDetailHeader } from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
   useTenantLink,
-  useParams
+  useParams,
+  TenantType
 } from '@acx-ui/react-router-dom'
 import { filterByAccess, getShowWithoutRbacCheckKey } from '@acx-ui/user'
 import { useDateFilter }                              from '@acx-ui/utils'
@@ -39,12 +40,22 @@ function VenuePageHeader () {
   const location = useLocation()
   const basePath = useTenantLink(`/venues/${venueId}`)
 
+  const GenBreadcrumb = () => {
+    const { isTemplate } = useConfigTemplate()
+    if (isTemplate) {
+      return generateConfigTemplateBreadcrumb()
+    }
+
+    return [
+      { text: $t({ defaultMessage: 'Venues' }), link: '/venues' }
+    ] as { text: string, link?: string, tenantType?: TenantType }[]
+  }
+  const breadcrumb = GenBreadcrumb()
+
   return (
     <PageHeader
       title={data?.venue?.name || ''}
-      breadcrumb={[
-        { text: $t({ defaultMessage: 'Venues' }), link: '/venues' }
-      ]}
+      breadcrumb={breadcrumb}
       extra={[
         enableTimeFilter() ? <DatePicker key={getShowWithoutRbacCheckKey('date-filter')} /> : <></>,
         ...filterByAccess([<Button
