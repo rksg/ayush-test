@@ -25,7 +25,8 @@ export const AirtimeRx = (incident: Incident) => {
     Attributes.Scope,
     Attributes.Duration,
     Attributes.EventStartTime,
-    Attributes.EventEndTime
+    ...((incident.startTime === incident.impactedStart)
+      ? [Attributes.EventEndTime] : [Attributes.DataStartTime, Attributes.DataEndTime])
   ]
 
   const networkImpactCharts: NetworkImpactProps['charts'] = [

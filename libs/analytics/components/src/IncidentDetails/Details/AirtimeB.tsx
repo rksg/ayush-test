@@ -26,7 +26,8 @@ export const AirtimeB = (incident: Incident) => {
     Attributes.Scope,
     Attributes.Duration,
     Attributes.EventStartTime,
-    Attributes.EventEndTime
+    ...((incident.startTime === incident.impactedStart)
+      ? [Attributes.EventEndTime] : [Attributes.DataStartTime, Attributes.DataEndTime])
   ]
   const rogueEnabled = incident.metadata.rootCauseChecks?.checks
     .some(check => check.isRogueDetectionEnabled)
