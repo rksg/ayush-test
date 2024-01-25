@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { Features, useIsSplitOn, useIsTierAllowed }       from '@acx-ui/feature-toggle'
-import { venueApi, networkApi, apApi }                    from '@acx-ui/rc/services'
+import { venueApi, apApi }                                from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiUrlsInfo }                   from '@acx-ui/rc/utils'
 import { Provider, store }                                from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'

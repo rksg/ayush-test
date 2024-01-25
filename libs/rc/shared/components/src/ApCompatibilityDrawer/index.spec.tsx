@@ -1,12 +1,12 @@
 
-import { Form } from 'antd'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
 
-import { venueApi, networkApi, apApi }                from '@acx-ui/rc/services'
-import { WifiUrlsInfo, CommonUrlsInfo }               from '@acx-ui/rc/utils'
-import { Provider, store }                            from '@acx-ui/store'
-import { act, mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
-
+import { venueApi, networkApi, apApi }     from '@acx-ui/rc/services'
+import { WifiUrlsInfo, CommonUrlsInfo }    from '@acx-ui/rc/utils'
+import { Provider, store }                 from '@acx-ui/store'
+import { act, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import {
   mockApCompatibilitiesVenue,
@@ -164,7 +164,7 @@ describe('ApCompatibilityToolTip > ApFeatureCompatibility > ApCompatibilityDrawe
       expect(await screen.findByText('7.0.0.0.123')).toBeInTheDocument()
       const icon = await screen.findByTestId('CloseSymbol')
       expect(icon).toBeVisible()
-      fireEvent.click(icon)
+      await userEvent.click(icon)
       expect(mockedCloseDrawer).toBeCalledTimes(1)
     })
   })

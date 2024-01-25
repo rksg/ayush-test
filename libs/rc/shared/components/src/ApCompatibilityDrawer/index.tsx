@@ -16,7 +16,6 @@ import {
 import { ApCompatibility, ApCompatibilityResponse, ApIncompatibleFeature, ApIncompatibleDevice } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                                                                 from '@acx-ui/react-router-dom'
 
-
 import { StyledWrapper, CheckMarkCircleSolidIcon, WarningTriangleSolidIcon, UnknownIcon } from './styledComponents'
 
 export enum ApCompatibilityType {
