@@ -16,7 +16,6 @@ import { Drawer, PageHeader, Loader, StepsFormLegacy, Tooltip, showToast, showAc
 import { drawerContentConfig } from './config'
 import { UsersTable }          from './Table'
 
-
 type FormItemProps = {
   name: string,
   labelKey: string,

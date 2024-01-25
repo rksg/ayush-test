@@ -19,26 +19,29 @@ export type DisplayUser = ManagedUser & {
   displayRole: string
   displayType: string
 }
+const messages = {
+  disabledDeleteText: defineMessage({
+    defaultMessage:
+    // eslint-disable-next-line max-len
+      'You are not allowed to delete yourself.Or, if you are an invited 3rd party user, you are not allowed to delete users in the host account.'
+  }),
+  disabledEditText: defineMessage({
+    // eslint-disable-next-line max-len
+    defaultMessage:
+    // eslint-disable-next-line max-len
+      'You are not allowed to edit yourself or invited users. If you are an invited 3rd party user, you are not allowed to edit users in the host account.'
+  }),
+  refreshText: defineMessage({
+    defaultMessage: 'Retrieve latest email, first name, last name from Ruckus Support Portal.'
+  }),
+  editText: defineMessage({
+    defaultMessage: 'Edit'
+  }),
+  deleteText: defineMessage({
+    defaultMessage: 'Delete'
+  })
+}
 
-export const disabledDeleteText = defineMessage({
-  // eslint-disable-next-line max-len
-  defaultMessage: 'You are not allowed to delete yourself.Or, if you are an invited 3rd party user, you are not allowed to delete users in the host account.'
-})
-export const disabledEditText = defineMessage({
-  // eslint-disable-next-line max-len
-  defaultMessage: 'You are not allowed to edit yourself or invited users. If you are an invited 3rd party user, you are not allowed to edit users in the host account.'
-})
-export const refreshText = defineMessage({
-  defaultMessage:
-    'Retrieve latest email, first name, last name from Ruckus Support Portal.'
-})
-
-export const editText = defineMessage({
-  defaultMessage: 'Edit'
-})
-export const deleteText = defineMessage({
-  defaultMessage: 'Delete'
-})
 const getDisplayRole = (role: ManagedUser['role']) => {
   const { $t } = getIntl()
   switch (role) {
@@ -50,7 +53,6 @@ const getDisplayRole = (role: ManagedUser['role']) => {
       return $t({ defaultMessage: 'Network Admin' })
   }
 }
-
 const getDisplayType = (type: ManagedUser['type'], franchisor: string) => {
   const { $t } = getIntl()
   switch (type) {
@@ -94,6 +96,105 @@ const transformUsers = (
       : noDataDisplay
   }))
 }
+const getUserActions = (
+  selectedRow: ManagedUser,
+  { setSelectedRow, getLatestUserDetails, toggleDrawer, handleDeleteUser }: {
+    setSelectedRow: CallableFunction,
+    getLatestUserDetails: CallableFunction,
+    toggleDrawer: CallableFunction,
+    handleDeleteUser: CallableFunction
+  }) => {
+  const { $t } = getIntl()
+  const user = getUserProfile()
+  const { refreshText, disabledDeleteText, disabledEditText, editText,deleteText } = messages
+  const { id: tenantId } = user.selectedTenant
+  const { accountId } = user
+
+  const isEditDisabled = (!(selectedRow.type === null) ||
+    user.userId === selectedRow.id ||
+    (tenantId !== accountId && selectedRow.accountId !== accountId))
+
+  const isDeleteDisbaled = (user.userId === selectedRow.id ||
+      (tenantId !== accountId && selectedRow.accountId !== accountId))
+  const actionButtons = [
+    {
+      type: 'refresh',
+      icon: (
+        <Tooltip
+          placement='top'
+          arrowPointAtCenter
+          title={$t(refreshText)}>
+          <UI.IconWrapper $disabled={false}>
+            <Reload
+              onClick={() => {
+                setSelectedRow(selectedRow)
+                getLatestUserDetails()
+              }}
+              style={{ height: '24px', width: '24px' }}
+            />
+          </UI.IconWrapper>
+        </Tooltip>
+      )
+    },
+    {
+      type: 'edit',
+      icon: (
+        <Tooltip
+          placement='top'
+          arrowPointAtCenter
+          title={$t(
+            isEditDisabled
+              ? disabledEditText
+              : editText
+          )}>
+          <UI.IconWrapper $disabled={isEditDisabled}>
+            { isEditDisabled
+              ? <EditOutlinedDisabledIcon />
+              : <EditOutlined
+                onClick={() => {
+                  setSelectedRow(selectedRow)
+                  toggleDrawer(true)
+                }}
+                style={{ height: '24px', width: '24px' }}
+              />
+            }
+          </UI.IconWrapper>
+        </Tooltip>
+      )
+    },
+    {
+      type: 'delete',
+      icon: (
+        <Tooltip
+          placement='top'
+          arrowPointAtCenter
+          title={$t(
+            isDeleteDisbaled
+              ? disabledDeleteText
+              : deleteText
+          )}>
+          <UI.IconWrapper $disabled={isDeleteDisbaled}>
+            {isDeleteDisbaled
+              ? <DeleteOutlinedDisabledIcon/>
+              : <DeleteOutlined
+                onClick={() => {
+                  setSelectedRow(selectedRow)
+                  handleDeleteUser()
+                }}
+                style={{ height: '24px', width: '24px' }} />
+            }
+          </UI.IconWrapper>
+        </Tooltip>
+      )
+    }
+  ]
+
+  return (
+    <UI.Actions>
+      {actionButtons.map((config, i) => <span key={i}>{config.icon}</span>)}
+    </UI.Actions>
+  )
+}
 
 export const UsersTable = (
   { data, toggleDrawer, setSelectedRow, getLatestUserDetails, handleDeleteUser }:
@@ -106,89 +207,6 @@ export const UsersTable = (
   const user = getUserProfile()
   const { franchisor } = user.selectedTenant.settings
   const users = transformUsers(data, franchisor)
-  const UserActions = (props: { selectedRow: ManagedUser }) => {
-    const actionButtons = [
-      {
-        type: 'refresh',
-        icon: (
-          <Tooltip
-            placement='top'
-            arrowPointAtCenter
-            title={$t(refreshText)}>
-            <UI.IconWrapper $disabled={false}>
-              <Reload
-                onClick={() => {
-                  setSelectedRow(props.selectedRow)
-                  getLatestUserDetails()
-                }}
-                style={{ height: '24px', width: '24px' }}
-              />
-            </UI.IconWrapper>
-          </Tooltip>
-        )
-      },
-      {
-        type: 'edit',
-        icon: (
-          <Tooltip
-            placement='top'
-            arrowPointAtCenter
-            title={$t(
-              (!(props.selectedRow.type === null) ||
-              user.userId === props.selectedRow.id)
-                ? disabledEditText
-                : editText
-            )}>
-            <UI.IconWrapper $disabled={
-              !(props.selectedRow.type === null) ||
-              (user.userId === props.selectedRow.id)
-            }>
-              { !(props.selectedRow.type === null) ||
-              (user.userId === props.selectedRow.id)
-                ? <EditOutlinedDisabledIcon />
-                : <EditOutlined
-                  onClick={() => {
-                    setSelectedRow(props.selectedRow)
-                    toggleDrawer(true)
-                  }}
-                  style={{ height: '24px', width: '24px' }}
-                />
-              }
-            </UI.IconWrapper>
-          </Tooltip>
-        )
-      },
-      {
-        type: 'delete',
-        icon: (
-          <Tooltip
-            placement='top'
-            arrowPointAtCenter
-            title={$t(
-              (user.userId === props.selectedRow.id)
-                ? disabledDeleteText
-                : deleteText
-            )}>
-            <UI.IconWrapper $disabled={
-              (user.userId === props.selectedRow.id)
-            }>{user.userId === props.selectedRow.id
-                ? <DeleteOutlinedDisabledIcon/>
-                : <DeleteOutlined
-                  onClick={() => {
-                    setSelectedRow(props.selectedRow)
-                    handleDeleteUser()
-                  }}
-                  style={{ height: '24px', width: '24px' }} />
-              }
-            </UI.IconWrapper>
-          </Tooltip>
-        )
-      }
-    ]
-    return <UI.Actions>
-      {actionButtons.map((config, i) => <span key={i}>{config.icon}</span>)}
-    </UI.Actions>
-  }
 
   const columns: TableProps<DisplayUser>['columns'] = [
     {
@@ -257,7 +275,10 @@ export const UsersTable = (
       width: 100,
       fixed: 'right',
       className: 'actions-column',
-      render: (_, row) => <UserActions selectedRow={row as ManagedUser} />
+      render: (_, row) => getUserActions(
+        row as ManagedUser,
+        { setSelectedRow, getLatestUserDetails, toggleDrawer, handleDeleteUser }
+      )
     }
   ]
   return <Table<DisplayUser>
