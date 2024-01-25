@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode, useEffect, useRef, useState } from 'react'
 
 import {
   FileTextOutlined,
@@ -320,6 +320,12 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
   }
 
   const SamlContent = () => {
+    const metadataReference = useRef<HTMLInputElement>(null)
+
+    useEffect(() => {
+      metadataReference.current?.focus()
+    }, [metadata])
+
     return <> <Form style={{ marginTop: 10 }} layout='vertical' form={form}>
       {isGroupBasedLoginEnabled && <Form.Item
         name='domains'
@@ -348,8 +354,13 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     </Button>}
     {!uploadFile && <Form.Item>
       <TextArea
+        ref={metadataReference}
         value={metadata}
         onChange={e => onMetadataChange(e.target.value)}
+        onFocus={(e) =>
+          e.currentTarget.setSelectionRange(e.currentTarget.value.length,
+            e.currentTarget.value.length)
+        }
         placeholder='Paste the IDP metadata code or link here...'
         style={{
           fontSize: '12px',
