@@ -1,13 +1,15 @@
 import { Select }  from 'antd'
 import { useIntl } from 'react-intl'
 
-import { useGetAvailableUsersQuery } from '@acx-ui/analytics/services'
-import { Loader }                    from '@acx-ui/components'
+import { AvailableUser, useGetAvailableUsersQuery } from '@acx-ui/analytics/services'
+import { Loader }                                   from '@acx-ui/components'
 
 export const AvailableUsersSelection = ({
-  onChange
+  onChange,
+  selectedValue
 }: {
   onChange: CallableFunction
+  selectedValue?: string
 }) => {
   const { $t } = useIntl()
   const availableUsersQuery = useGetAvailableUsersQuery()
@@ -26,12 +28,15 @@ export const AvailableUsersSelection = ({
             .localeCompare(((optionB?.label as string)).toLowerCase())
         }
         options={availableUsersQuery.data
-          ?.map(({ swuId, userName }) => ({ value: swuId, label: userName, key: swuId }))
+          ?.map(({ swuId, userName }: AvailableUser) => ({
+            value: swuId, label: userName, key: swuId
+          }))
         }
         onChange={(_, option) => {
           const { label, value } = option as { label: string, value: string }
           onChange({ id: value, email: label })
         }}
+        value={selectedValue}
       />
     </Loader>
   )
