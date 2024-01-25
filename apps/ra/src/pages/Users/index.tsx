@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import { Menu, Button }           from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
