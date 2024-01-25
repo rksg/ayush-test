@@ -115,12 +115,14 @@ const Layer2Component = () => {
   const rowActions: TableProps<L2AclPolicy>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
+      visible: (selectedItems => selectedItems.length > 0),
       onClick: (rows, clearSelection) => {
         doDelete(rows, clearSelection)
       }
     },
     {
       label: $t({ defaultMessage: 'Edit' }),
+      visible: (selectedItems => selectedItems.length === 1),
       onClick: ([{ id }]) => {
         setEditMode({ id: id, isEdit: true })
       }
