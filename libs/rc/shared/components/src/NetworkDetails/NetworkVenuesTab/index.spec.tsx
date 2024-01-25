@@ -235,10 +235,6 @@ describe('NetworkVenuesTab', () => {
 
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
-    })
-
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
     await waitFor(() => rows.forEach(row => expect(row).not.toBeChecked()))
