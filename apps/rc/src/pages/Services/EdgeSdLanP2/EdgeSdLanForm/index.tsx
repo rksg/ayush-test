@@ -28,7 +28,8 @@ export const getSdLanFormDefaultValues
       ...(profileData
         ? {
           activatedNetworks: profileData.networkIds.map(id => ({ id })),
-          activatedGuestNetworks: profileData.guestNetworkIds.map(id => ({ id }))
+          // TODO: [] should be removed after Phase 2 viewmodel ready
+          activatedGuestNetworks: profileData.guestNetworkIds?.map(id => ({ id })) ?? []
         }
         : {}
       )

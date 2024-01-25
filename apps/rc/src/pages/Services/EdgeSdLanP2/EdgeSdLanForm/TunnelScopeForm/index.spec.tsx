@@ -4,10 +4,10 @@ import userEvent                                                  from '@testing
 import { Form }                                                   from 'antd'
 import { rest }                                                   from 'msw'
 
-import { StepsForm, StepsFormProps }                                    from '@acx-ui/components'
-import { networkApi, tunnelProfileApi }                                 from '@acx-ui/rc/services'
-import { CommonUrlsInfo, EdgeTunnelProfileFixtures, TunnelProfileUrls } from '@acx-ui/rc/utils'
-import { Provider, store }                                              from '@acx-ui/store'
+import { StepsForm, StepsFormProps }                                                    from '@acx-ui/components'
+import { networkApi, tunnelProfileApi }                                                 from '@acx-ui/rc/services'
+import { CommonUrlsInfo, EdgeTunnelProfileFixtures, TunnelProfileUrls, TunnelTypeEnum } from '@acx-ui/rc/utils'
+import { Provider, store }                                                              from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -50,10 +50,28 @@ jest.mock('@acx-ui/utils', () => ({
 }))
 const mockedSetFieldValue = jest.fn()
 const { click } = userEvent
-const {
-  mockedTunnelProfileViewData
-} = EdgeTunnelProfileFixtures
 
+const mockedTunnelProfileViewDataNoDefault = {
+  data: EdgeTunnelProfileFixtures.mockedTunnelProfileViewData.data.filter(item =>
+    item.id !== 'SLecc2d7cf9d2342fdb31ae0e24958fcac')
+}
+const mockedTunnelProfileViewData = {
+  data: EdgeTunnelProfileFixtures.mockedTunnelProfileViewData.data.concat([
+    {
+      id: 'tunnelProfileId3',
+      name: 'tunnelProfile3',
+      tags: ['tag2'],
+      mtuType: 'AUTO',
+      mtuSize: 0,
+      ageTimeMinutes: 30,
+      forceFragmentation: false,
+      personalIdentityNetworkIds: [],
+      networkIds: ['network2'],
+      sdLanIds: ['sdlan1', 'sdlan2'],
+      type: TunnelTypeEnum.VLAN_VXLAN
+    }
+  ])
+}
 const useMockedFormHook = (initData: Record<string, unknown>) => {
   const [ form ] = Form.useForm()
   form.setFieldsValue({
@@ -112,11 +130,35 @@ describe('Tunnel Scope Form', () => {
     await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
     await userEvent.selectOptions(
       await screen.findByRole('combobox', { name: 'Tunnel Profile (AP- Cluster tunnel)' }),
-      'tunnelProfileId2')
+      'tunnelProfile3')
 
     await screen.findByText(/Enable the networks that will tunnel the traffic to the selected cluster/i)
     const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
     expect(rows.length).toBe(4)
+    expect(stepFormRef.current.getFieldValue('activatedNetworks')).toStrictEqual(undefined)
+  })
+
+  it('should correctly render when default tunnel not exist', async () => {
+    mockServer.use(
+      rest.post(
+        TunnelProfileUrls.getTunnelProfileViewDataList.url,
+        (_, res, ctx) => res(ctx.json(mockedTunnelProfileViewDataNoDefault))
+      )
+    )
+    const { result: stepFormRef } = renderHook(useMockedFormHook)
+    render(<MockedTargetComponent
+      form={stepFormRef.current}
+      editMode={true}
+    />, { route: { params: { tenantId: 't-id' } } })
+
+    expect(await screen.findByText('Tunnel & Network Settings')).toBeVisible()
+    await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
+    await userEvent.selectOptions(
+      await screen.findByRole('combobox', { name: 'Tunnel Profile (AP- Cluster tunnel)' }),
+      'Default tunnel profile (SD-LAN)')
+
+    await screen.findByText(/Enable the networks that will tunnel the traffic to the selected cluster/i)
+    await screen.findByRole('row', { name: /MockedNetwork 4/i })
     expect(stepFormRef.current.getFieldValue('activatedNetworks')).toStrictEqual(undefined)
   })
 

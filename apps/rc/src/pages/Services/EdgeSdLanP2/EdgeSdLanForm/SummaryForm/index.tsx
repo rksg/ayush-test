@@ -20,6 +20,8 @@ export const SummaryForm = () => {
   const { isGuestTunnelEnabled } = formValues
   const activatedNetworks = formValues.activatedNetworks ?? []
   const networkCount = activatedNetworks.length
+  const activatedGuestNetworks = formValues.activatedGuestNetworks ?? []
+  const guestNetworkCount = activatedGuestNetworks.length
 
   return (
     <Row gutter={[10, 30]}>
@@ -92,18 +94,41 @@ export const SummaryForm = () => {
       </Col>
 
       <Col span={24}>
-        <Subtitle level={4}>
-          { $t({ defaultMessage: 'Networks ({networkCount})' }, { networkCount }) }
-        </Subtitle>
-        <Descriptions>
-          <Descriptions.NoLabel>
-            <SpaceWrapper direction='vertical' size='small'>
-              {activatedNetworks.map((item: { name: string }) => <React.Fragment key={item.name}>
-                {item.name}
-              </React.Fragment>)}
-            </SpaceWrapper>
-          </Descriptions.NoLabel>
-        </Descriptions>
+        <Space direction='horizontal' align='start'>
+          <div>
+            <Subtitle level={4}>
+              { $t({ defaultMessage: 'Networks ({networkCount})' }, { networkCount }) }
+            </Subtitle>
+            <Descriptions>
+              <Descriptions.NoLabel>
+                <SpaceWrapper direction='vertical' size='small'>
+                  {activatedNetworks
+                    .map((item: { name: string }) => <React.Fragment key={item.name}>
+                      {item.name}
+                    </React.Fragment>)}
+                </SpaceWrapper>
+              </Descriptions.NoLabel>
+            </Descriptions>
+          </div>
+          { isGuestTunnelEnabled &&
+            <div>
+              <Subtitle level={4}>
+                { $t({ defaultMessage: 'Networks tunneling to DMZ ({guestNetworkCount})' },
+                  { guestNetworkCount }) }
+              </Subtitle>
+              <Descriptions>
+                <Descriptions.NoLabel>
+                  <SpaceWrapper direction='vertical' size='small'>
+                    {activatedGuestNetworks
+                      .map((item: { name: string }) => <React.Fragment key={item.name}>
+                        {item.name}
+                      </React.Fragment>)}
+                  </SpaceWrapper>
+                </Descriptions.NoLabel>
+              </Descriptions>
+            </div>
+          }
+        </Space>
       </Col>
     </Row>
   )

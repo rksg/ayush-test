@@ -7,6 +7,8 @@ import { ActivatedNetworksTableP2Props, EdgeSdLanP2ActivatedNetworksTable } from
 import { useGetTunnelProfileViewDataListQuery }                             from '@acx-ui/rc/services'
 import {
   getTunnelProfileOptsWithDefault,
+  getVlanVxlanDefaultTunnelProfileOpt,
+  isVlanVxlanDefaultTunnelProfile,
   MtuTypeEnum,
   NetworkSaveData,
   NetworkTypeEnum,
@@ -37,10 +39,7 @@ const NetworksTable = (props: NetworksTableProps) => {
 }
 
 const tunnelProfileDefaultPayload = {
-  fields: ['name', 'id', 'mtuType'],
-  filters: {
-    type: [TunnelTypeEnum.VLAN_VXLAN]
-  },
+  fields: ['name', 'id', 'type', 'mtuType'],
   pageSize: 10000,
   sortField: 'name',
   sortOrder: 'ASC'
@@ -76,7 +75,7 @@ export const TunnelScopeForm = () => {
   }, {
     selectFromResult: ({ data, isLoading }) => {
       return {
-        tunnelProfileData: data?.data,
+        tunnelProfileData: data?.data.filter(tt => !isVlanVxlanDefaultTunnelProfile(tt.id)),
         isTunnelOptionsLoading: isLoading
       }
     }
@@ -84,8 +83,19 @@ export const TunnelScopeForm = () => {
 
   // eslint-disable-next-line max-len
   const tunnelProfileOptions = getTunnelProfileOptsWithDefault(tunnelProfileData, TunnelTypeEnum.VLAN_VXLAN)
-  const dmzTunnelProfileOptions = tunnelProfileData?.filter(
-    item => item.mtuType === MtuTypeEnum.MANUAL)
+  const dcTunnelProfileOptions = (tunnelProfileData
+    ?.filter(item => item.type === TunnelTypeEnum.VLAN_VXLAN)
+    ?.map(item => ({ label: item.name!, value: item.id! }))) ?? []
+  const isSdLanDefaultExist = dcTunnelProfileOptions
+    .filter(item => isVlanVxlanDefaultTunnelProfile(item.value)).length > 0
+  if (!isSdLanDefaultExist) {
+    const vlanVxLanDefault = getVlanVxlanDefaultTunnelProfileOpt()
+    dcTunnelProfileOptions.push(vlanVxLanDefault)
+  }
+
+  const dmzTunnelProfileOptions = (tunnelProfileData
+    ?.filter(item => item.mtuType === MtuTypeEnum.MANUAL)
+    ?.map(item => ({ label: item.name!, value: item.id! }))) ?? []
 
   const handleActivateChange = (
     fieldName: string,
@@ -141,7 +151,7 @@ export const TunnelScopeForm = () => {
       <Row>
         <Col span={24}>
           <TunnelProfileFormItem
-            options={tunnelProfileOptions}
+            options={dcTunnelProfileOptions}
             isLoading={isTunnelOptionsLoading}
             onChange={onTunnelChange}
           />
@@ -151,8 +161,7 @@ export const TunnelScopeForm = () => {
         <Row>
           <Col span={24}>
             <DmzTunnelProfileFormItem
-              options={dmzTunnelProfileOptions
-                ?.map(item => ({ label: item.name!, value: item.id! })) ?? []}
+              options={dmzTunnelProfileOptions}
               isLoading={isTunnelOptionsLoading}
               onChange={onDmzTunnelChange}
             />

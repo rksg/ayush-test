@@ -1,10 +1,10 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader, PageHeader }  from '@acx-ui/components'
-import { useEdgeSdLanActions } from '@acx-ui/rc/components'
+import { Loader, PageHeader }          from '@acx-ui/components'
+import { useEdgeSdLanActions }         from '@acx-ui/rc/components'
 import {
-  useGetEdgeSdLanP2Query
+  useGetEdgeSdLanP2ViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
   EdgeSdLanSettingP2,
@@ -29,7 +29,18 @@ const EditEdgeSdLan = () => {
   })
   const linkToServiceList = useTenantLink(cfListRoute)
   const { editEdgeSdLan } = useEdgeSdLanActions()
-  const { data, isLoading } = useGetEdgeSdLanP2Query({ params })
+  const { data, isLoading } = useGetEdgeSdLanP2ViewDataListQuery(
+    { payload: {
+      filters: { id: [params.serviceId] }
+    } },
+    {
+      selectFromResult: ({ data, isLoading }) => ({
+        data: data?.data?.[0],
+        isLoading
+      })
+    }
+  )
+
   const [form] = Form.useForm()
 
   const steps = [
@@ -57,7 +68,7 @@ const EditEdgeSdLan = () => {
         guestNetworkIds: formData.activatedGuestNetworks.map(network => network.id!)
       } as EdgeSdLanSettingP2
 
-      await editEdgeSdLan(data!, {
+      await editEdgeSdLan(data! as EdgeSdLanSettingP2, {
         payload,
         callback: () => {
           navigate(linkToServiceList, { replace: true })
@@ -84,7 +95,7 @@ const EditEdgeSdLan = () => {
           form={form}
           steps={steps}
           onFinish={handleFinish}
-          editData={data}
+          editData={data as EdgeSdLanSettingP2}
         />
       </Loader>
     </>

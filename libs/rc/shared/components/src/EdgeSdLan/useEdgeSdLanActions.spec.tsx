@@ -132,7 +132,7 @@ describe('useEdgeSdLanActions', () => {
     expect(mockedActivateNetworkReq).toBeCalledWith({
       wifiNetworkId: 'network_1',
       serviceId: 'mocked_service_id'
-    }, { isGuestEnabled: true })
+    }, { isGuestTunnelUtilized: true })
   })
 
   it('should not trigger guest settings when it not enabled', async () => {
@@ -210,7 +210,7 @@ describe('useEdgeSdLanActions', () => {
     expect(mockedActivateNetworkReq).toBeCalledWith({
       wifiNetworkId: 'network_5',
       serviceId: 'mocked_service_id'
-    }, { isGuestEnabled: true })
+    }, { isGuestTunnelUtilized: true })
   })
 
   it('should deactivate dmz cluster when guest tunnel disabled', async () => {
@@ -261,7 +261,7 @@ describe('useEdgeSdLanActions', () => {
       expect(mockedActivateNetworkReq).toBeCalledWith({
         wifiNetworkId: network,
         serviceId: 'mocked_service_id_2'
-      }, { isGuestEnabled: true })
+      }, { isGuestTunnelUtilized: true })
     })
   })
 

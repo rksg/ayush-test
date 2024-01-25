@@ -4,6 +4,7 @@ import { rest }  from 'msw'
 
 import {
   EdgeGeneralFixtures,
+  EdgeSdLanFixtures,
   EdgeSdLanSettingP2,
   EdgeSdLanUrls,
   EdgeUrlsInfo,
@@ -27,6 +28,7 @@ import { sdLanFormDefaultValues } from '../EdgeSdLanForm'
 import EditEdgeSdLan from '.'
 
 const { mockEdgeList } = EdgeGeneralFixtures
+const { mockedSdLanDataList } = EdgeSdLanFixtures
 
 const { click } = userEvent
 
@@ -116,12 +118,9 @@ describe('Edit SD-LAN service', () => {
         EdgeUrlsInfo.getEdgeList.url,
         (_, res, ctx) => res(ctx.json(edgeList))
       ),
-      rest.get(
-        EdgeSdLanUrls.getEdgeSdLan.url,
-        (_, res, ctx) => {
-          mockedGetSdLanReq()
-          return res(ctx.json({ data: {} }))
-        }
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataList }))
       ),
       rest.patch(
         EdgeSdLanUrls.updateEdgeSdLanPartial.url,
@@ -156,7 +155,7 @@ describe('Edit SD-LAN service', () => {
 
     await waitFor(async () =>
       expect(await screen.findByTestId('rc-EdgeSdLanForm-venue-id'))
-        .toHaveTextContent('cd572eda8d494a79aa2331fdc26086d9'))
+        .toHaveTextContent('a307d7077410456f8f1a4fc41d861567'))
 
     expect(screen.getByTestId('rc-EdgeSdLanForm')).toBeVisible()
     await click(screen.getByRole('button', { name: 'Submit' }))
@@ -222,7 +221,7 @@ describe('Edit SD-LAN service', () => {
 
     await waitFor(async () =>
       expect(await screen.findByTestId('rc-EdgeSdLanForm-venue-id'))
-        .toHaveTextContent('cd572eda8d494a79aa2331fdc26086d9'))
+        .toHaveTextContent('a307d7077410456f8f1a4fc41d861567'))
 
     expect(screen.getByTestId('rc-EdgeSdLanForm')).toBeVisible()
     await click(screen.getByRole('button', { name: 'Submit' }))

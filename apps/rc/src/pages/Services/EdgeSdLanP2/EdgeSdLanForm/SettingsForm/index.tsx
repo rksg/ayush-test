@@ -148,7 +148,6 @@ export const SettingsForm = () => {
     lagsConfig?.forEach((lag) => {
       if (lag.corePortEnabled && lag.lagEnabled) {
         corePortMac = lag.id
-        form.setFieldValue('isLagCorePort', true)
       }
     })
 

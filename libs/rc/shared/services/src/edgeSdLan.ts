@@ -177,7 +177,7 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
             body: payload
           }
         },
-        providesTags: [{ type: 'EdgeSdLan', id: 'LIST_P2' }],
+        providesTags: [{ type: 'EdgeSdLanP2', id: 'LIST' }],
         async onCacheEntryAdded (requestArgs, api) {
           await onSocketActivityChanged(requestArgs, api, (msg) => {
             onActivityMessageReceived(msg, [
@@ -189,7 +189,7 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
                 { type: 'Service', id: 'LIST' }
               ]))
               api.dispatch(edgeSdLanApi.util.invalidateTags([
-                { type: 'EdgeSdLan', id: 'LIST_P2' }
+                { type: 'EdgeSdLanP2', id: 'LIST' }
               ]))
             })
           })
@@ -224,23 +224,10 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
         cfConfig.venueName = edgeInfo.data[0].venueName
 
         return cfQuery.data
-          ? { data: {
-            id: 'mocked_sdLan_id',
-            name: 'mockedSdLanData',
-            venueId: 'cd572eda8d494a79aa2331fdc26086d9',
-            venueName: 'AMY_VENUE',
-            edgeId: '965F472F5BB50911EE875D000C290DDC7A',
-            networkIds: ['670a1316306242049cf41e350138cb36', '3c44c926a1324955b6de70fd19368213'],
-            tunnelProfileId: '3885120d5c7140afbb22842f87fdd1ea',
-            corePortMac: 'port1',
-            isGuestTunnelEnabled: true,
-            guestEdgeId: '961346F1DF760D11E8A08C000C29E61518',
-            guestTunnelProfileId: '7426fd7f8ed549baa326f0e6616fc294',
-            guestNetworkIds: ['3c44c926a1324955b6de70fd19368213']
-          } }
+          ? { data: cfConfig }
           : { error: cfQuery.error as FetchBaseQueryError }
       },
-      providesTags: [{ type: 'EdgeSdLan', id: 'DETAIL_P2' }]
+      providesTags: [{ type: 'EdgeSdLanP2', id: 'DETAIL' }]
     }),
     addEdgeSdLanP2: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -250,7 +237,7 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'EdgeSdLan', id: 'LIST_P2' }],
+      invalidatesTags: [{ type: 'EdgeSdLanP2', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
           try {
@@ -274,7 +261,7 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'EdgeSdLan', id: 'LIST_P2' }],
+      invalidatesTags: [{ type: 'EdgeSdLanP2', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
           try {

@@ -52,7 +52,7 @@ export const useEdgeSdLanActions = () => {
                 wifiNetworkId: item
               },
               payload: {
-                isGuestEnabled: true
+                isGuestTunnelUtilized: true
               }
             }).unwrap()
           })]
@@ -118,7 +118,7 @@ export const useEdgeSdLanActions = () => {
             wifiNetworkId: item
           },
           payload: {
-            isGuestEnabled: true
+            isGuestTunnelUtilized: true
           }
         }).unwrap()))
         actions.push(...deactivateItems.map((item) => deactivateNetwork({ params: {
