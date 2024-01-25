@@ -737,7 +737,7 @@ describe('util', () => {
           path: [
             { name: 'cliexp4', type: 'zone' },
             { name: 'No group (inherit from Venue)', type: 'apGroup' },
-            { name: '94:B3:4F:3D:15:B0', type: 'AP' }
+            { name: '94:B3:4F:3D:15:B0', type: 'ap' }
           ],
           radio: '5',
           seriesKey: 'all',

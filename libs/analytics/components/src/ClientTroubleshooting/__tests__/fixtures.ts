@@ -51,7 +51,7 @@ export const connectionEvents: ConnectionEvent[] = [
         name: 'No group (inherit from Venue)'
       },
       {
-        type: 'AP',
+        type: 'ap',
         name: '94:B3:4F:3D:15:B0'
       }
     ],
@@ -77,7 +77,7 @@ export const connectionEvents: ConnectionEvent[] = [
         name: 'No group (inherit from Venue)'
       },
       {
-        type: 'AP',
+        type: 'ap',
         name: '94:B3:4F:3D:15:B0'
       }
     ],
@@ -103,7 +103,7 @@ export const connectionEvents: ConnectionEvent[] = [
         name: 'No group (inherit from Venue)'
       },
       {
-        type: 'AP',
+        type: 'ap',
         name: '94:B3:4F:3D:15:B0'
       }
     ],
@@ -129,7 +129,7 @@ export const connectionEvents: ConnectionEvent[] = [
         name: 'No group (inherit from Venue)'
       },
       {
-        type: 'AP',
+        type: 'ap',
         name: '94:B3:4F:3D:15:B0'
       }
     ],
@@ -155,7 +155,7 @@ export const connectionEvents: ConnectionEvent[] = [
         name: 'No group (inherit from Venue)'
       },
       {
-        type: 'AP',
+        type: 'ap',
         name: '94:B3:4F:3D:15:B0'
       }
     ],
@@ -181,7 +181,7 @@ export const connectionEvents: ConnectionEvent[] = [
         name: 'No group (inherit from Venue)'
       },
       {
-        type: 'AP',
+        type: 'ap',
         name: '94:B3:4F:3D:15:B0'
       }
     ],
@@ -207,7 +207,7 @@ export const connectionEvents: ConnectionEvent[] = [
         name: 'No group (inherit from Venue)'
       },
       {
-        type: 'AP',
+        type: 'ap',
         name: '94:B3:4F:3D:15:B0'
       }
     ],
@@ -234,7 +234,7 @@ export const connectionEvents: ConnectionEvent[] = [
         name: 'No group (inherit from Venue)'
       },
       {
-        type: 'AP',
+        type: 'ap',
         name: '94:B3:4F:3D:15:B0'
       }
     ],
@@ -260,7 +260,7 @@ export const connectionEvents: ConnectionEvent[] = [
         name: 'No group (inherit from Venue)'
       },
       {
-        type: 'AP',
+        type: 'ap',
         name: '94:B3:4F:3D:15:B0'
       }
     ],
@@ -286,7 +286,7 @@ export const connectionEvents: ConnectionEvent[] = [
         name: 'No group (inherit from Venue)'
       },
       {
-        type: 'AP',
+        type: 'ap',
         name: '94:B3:4F:3D:15:B0'
       }
     ],
@@ -314,7 +314,7 @@ export const eapolEvent: ConnectionEvent[] = [
         name: 'No group (inherit from Venue)'
       },
       {
-        type: 'AP',
+        type: 'ap',
         name: '94:B3:4F:3D:15:B0'
       }
     ],
@@ -341,7 +341,7 @@ export const eapolEvent: ConnectionEvent[] = [
         name: 'No group (inherit from Venue)'
       },
       {
-        type: 'AP',
+        type: 'ap',
         name: '94:B3:4F:3D:15:B0'
       }
     ],
