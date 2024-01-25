@@ -1,3 +1,5 @@
+import { maxVariableCount } from '../CliStepConfiguration'
+
 export const venues = [
   { id: 'a98653366d2240b9ae370e48fab3a9a1', name: 'My-Venue', operationalSwitches: 2 },
   { id: 'f8da55210928402fa5a470642d80de53', name: 'test1', operationalSwitches: 0 },
@@ -90,4 +92,11 @@ export const cliTemplate = {
     switches: ['58:fb:96:0e:bc:f8'],
     venueId: '9417693931ab409ca41ecf9b36f516be'
   }]
+}
+
+export const cliTemplateWith200Variables = {
+  ...cliTemplate,
+  variables: Array.from({ length: maxVariableCount }, (_, i) => {
+    return { name: `v${i+1}`, type: 'STRING', value: 'aaaa' }
+  })
 }
