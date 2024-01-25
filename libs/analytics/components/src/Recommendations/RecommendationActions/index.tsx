@@ -118,7 +118,7 @@ function ApplyCalendar ({ disabled, type, id, code, metadata, statusEnum }: Acti
     title={$t(actionTooltip[type].text)}
     icon={<UI.IconWrapper $disabled={disabled}>{actionTooltip[type].icon}</UI.IconWrapper>}
     disabled={disabled}
-    initialDate={statusEnum === 'applied'
+    initialDate={['applied', 'revertfailed'].includes(statusEnum)
       ? futureDate
       : (metadata.scheduledAt ? scheduledAt : futureDate)}
     onApply={onApply}
