@@ -14,6 +14,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
+  act,
   findTBody,
   fireEvent,
   mockServer,
@@ -77,9 +78,11 @@ const mockedApplyFn = jest.fn()
 const mockedGetSdLanFn = jest.fn()
 describe('NetworkVenuesTab', () => {
   beforeEach(() => {
-    store.dispatch(networkApi.util.resetApiState())
-    store.dispatch(venueApi.util.resetApiState())
-    mockedGetSdLanFn.mockClear()
+    act(() => {
+      store.dispatch(networkApi.util.resetApiState())
+      store.dispatch(venueApi.util.resetApiState())
+      mockedGetSdLanFn.mockClear()
+    })
 
     mockServer.use(
       rest.post(
@@ -229,6 +232,8 @@ describe('NetworkVenuesTab', () => {
 
     const toogleButton = await screen.findByRole('switch', { checked: true })
     fireEvent.click(toogleButton)
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     await waitFor(() => {
       expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
@@ -381,8 +386,11 @@ describe('NetworkVenuesTab', () => {
 
 describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
   beforeEach(() => {
-    store.dispatch(networkApi.util.resetApiState())
-    store.dispatch(venueApi.util.resetApiState())
+    act(() => {
+      store.dispatch(networkApi.util.resetApiState())
+      store.dispatch(venueApi.util.resetApiState())
+    })
+
     jest.mocked(useIsSplitOn).mockImplementation((ff) => {
       return ff === Features.EDGES_SD_LAN_TOGGLE || ff === Features.G_MAP ? false : true
     })

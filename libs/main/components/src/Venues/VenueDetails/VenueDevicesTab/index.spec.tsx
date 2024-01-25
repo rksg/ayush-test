@@ -3,8 +3,9 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { Features, useIsSplitOn, useIsTierAllowed }       from '@acx-ui/feature-toggle'
+import { venueApi, networkApi, apApi }                    from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiUrlsInfo }                   from '@acx-ui/rc/utils'
-import { Provider }                                       from '@acx-ui/store'
+import { Provider, store }                                from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { venueSetting, venueApCompatibilitiesData, apCompatibilitiesFilterData } from '../../__tests__/fixtures'
@@ -114,6 +115,9 @@ describe('VenueWifi', () => {
     jest.mocked(useIsTierAllowed).mockImplementation((feature: string) => {
       return feature === Features.EDGES ? false: true
     })
+
+    store.dispatch(venueApi.util.resetApiState())
+    store.dispatch(apApi.util.resetApiState())
 
     mockServer.use(
       rest.post(

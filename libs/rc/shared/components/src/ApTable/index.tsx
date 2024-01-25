@@ -153,7 +153,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
   const [ compatibilitiesDrawerVisible, setCompatibilitiesDrawerVisible ] = useState(false)
   const [ selectedApSN, setSelectedApSN ] = useState('')
   const [ selectedApName, setSelectedApName ] = useState('')
-  const [ tableData, setTableData ] = useState([] as APExtended[])
+  const [ tableData, setTableData ] = useState([] as (APExtended|APExtendedGrouped)[])
   const [ hasGroupBy, setHasGroupBy ] = useState(false)
   const [ showFeatureCompatibilitiy, setShowFeatureCompatibilitiy ] = useState(false)
   const secureBootFlag = useIsSplitOn(Features.WIFI_EDA_SECURE_BOOT_TOGGLE)
@@ -182,7 +182,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
 
   useEffect(() => {
     const fetchApCompatibilitiesAndSetData = async () => {
-      const result:React.SetStateAction<APExtended[]> = []
+      const result:React.SetStateAction<(APExtended|APExtendedGrouped)[]> = []
       const apIdsToIncompatible:{ [key:string]: number } = {}
       if (tableQuery.data?.data) {
         let apCompatibilitiesResponse:ApCompatibilityResponse = { apCompatibilities: [] }
@@ -215,8 +215,8 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
         }
         if (hasGroupBy) {
           tableQuery.data.data?.forEach(item => {
-            (item as unknown as { aps: APExtended[] }).aps?.map(ap => ({ ...ap, incompatible: apIdsToIncompatible[ap.serialNumber] }))
-            result.push({ ...item })
+            const children = (item as unknown as { aps: APExtended[] }).aps?.map(ap => ({ ...ap, incompatible: apIdsToIncompatible[ap.serialNumber] }))
+            result.push({ ...item, aps: children, children })
           })
         } else {
           tableQuery.data.data?.forEach(ap => (result.push({ ...ap, incompatible: apIdsToIncompatible[ap.serialNumber] })))
@@ -505,7 +505,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
     }
     ]: []),
     ...(enableApCompatibleCheck ? [{
-      key: 'featureIncompatible',
+      key: 'incompatible',
       tooltip: $t({ defaultMessage: 'Check for the venue’s Wi-Fi features not supported by earlier versions or AP models.' }),
       title: $t({ defaultMessage: 'Feature Compatibility' }),
       filterPlaceholder: $t({ defaultMessage: 'Feature Compatibility' }),
@@ -518,7 +518,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       filterMultiple: false,
       show: false,
       sorter: false,
-      render: (data: React.ReactNode, row: APExtended) => {
+      render: (_: React.ReactNode, row: APExtended) => {
         return (<ApFeatureCompatibility
           count={row?.incompatible}
           onClick={() => {
@@ -663,8 +663,8 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
 
   const handleColumnStateChange = (state: ColumnState) => {
     if (enableApCompatibleCheck) {
-      if (showFeatureCompatibilitiy !== state['featureIncompatible']) {
-        setShowFeatureCompatibilitiy(state['featureIncompatible'])
+      if (showFeatureCompatibilitiy !== state['incompatible']) {
+        setShowFeatureCompatibilitiy(state['incompatible'])
       }
     }
   }
