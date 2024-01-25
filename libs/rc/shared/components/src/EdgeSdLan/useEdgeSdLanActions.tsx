@@ -1,6 +1,4 @@
-import { SerializedError }     from '@reduxjs/toolkit'
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
-import _                       from 'lodash'
+import _ from 'lodash'
 
 import {
   useActivateEdgeSdLanDmzClusterMutation,
@@ -12,7 +10,7 @@ import {
   useDeactivateEdgeSdLanNetworkMutation,
   useUpdateEdgeSdLanPartialP2Mutation
 } from '@acx-ui/rc/services'
-import { CommonResult, EdgeSdLanSettingP2 } from '@acx-ui/rc/utils'
+import { CatchErrorDetails, CommonErrorsResult, CommonResult, EdgeSdLanSettingP2 } from '@acx-ui/rc/utils'
 
 export const useEdgeSdLanActions = () => {
   const [addEdgeSdLan] = useAddEdgeSdLanP2Mutation()
@@ -28,12 +26,12 @@ export const useEdgeSdLanActions = () => {
 
   const addSdLan = async (req: {
     payload: EdgeSdLanSettingP2,
-    callback?: (res: ({ data: CommonResult; }
-      | { error: FetchBaseQueryError | SerializedError; })[]) => void
+    callback?: (res: (CommonResult[]
+      | CommonErrorsResult<CatchErrorDetails>)) => void
   }) => {
     const { payload, callback } = req
 
-    await addEdgeSdLan({
+    return await addEdgeSdLan({
       payload,
       callback: async (response: CommonResult) => {
         const serviceId = response.response?.id
@@ -42,11 +40,11 @@ export const useEdgeSdLanActions = () => {
             serviceId,
             venueId: payload.venueId,
             edgeClusterId: payload.guestEdgeId
-          } }),
+          } }).unwrap(),
           activateDmzTunnel({ params: {
             serviceId,
             tunnelProfileId: payload.guestTunnelProfileId
-          } }),
+          } }).unwrap(),
           ...payload.guestNetworkIds.map((item) => {
             return activateNetwork({
               params: {
@@ -56,25 +54,29 @@ export const useEdgeSdLanActions = () => {
               payload: {
                 isGuestEnabled: true
               }
-            })
+            }).unwrap()
           })]
           : []
 
-        const relationActs = await Promise.all(actions)
-        callback?.(relationActs)
+        try {
+          const relationActs = await Promise.all(actions)
+          callback?.(relationActs)
+        } catch(error) {
+          callback?.(error as CommonErrorsResult<CatchErrorDetails>)
+        }
       }
     }).unwrap()
   }
 
   const editSdLan = async (originData: EdgeSdLanSettingP2, req: {
     payload: EdgeSdLanSettingP2,
-    callback?: (res: ({ data: CommonResult; }
-      | { error: FetchBaseQueryError | SerializedError; })[]) => void
+    callback?: (res: (CommonResult[]
+      | CommonErrorsResult<CatchErrorDetails>)) => void
   }) => {
     const { payload, callback } = req
     const { id: serviceId, ...submitPayload } = payload
 
-    await updateEdgeSdLan({
+    return await updateEdgeSdLan({
       payload: submitPayload,
       params: { serviceId },
       callback: async () => {
@@ -87,7 +89,7 @@ export const useEdgeSdLanActions = () => {
             serviceId,
             venueId: payload.venueId,
             edgeClusterId: payload.guestEdgeId
-          } }))
+          } }).unwrap())
         }
 
         // diff `originData` vs `req.payload`
@@ -96,14 +98,14 @@ export const useEdgeSdLanActions = () => {
             actions.push(deactivateDmzTunnel({ params: {
               serviceId,
               tunnelProfileId: originData.guestTunnelProfileId
-            } }))
+            } }).unwrap())
           }
 
           if (payload.guestTunnelProfileId) {
             actions.push(activateDmzTunnel({ params: {
               serviceId,
               tunnelProfileId: payload.guestTunnelProfileId
-            } }))
+            } }).unwrap())
           }
         }
 
@@ -118,14 +120,18 @@ export const useEdgeSdLanActions = () => {
           payload: {
             isGuestEnabled: true
           }
-        })))
+        }).unwrap()))
         actions.push(...deactivateItems.map((item) => deactivateNetwork({ params: {
           serviceId,
           wifiNetworkId: item
-        } })))
+        } }).unwrap()))
 
-        const relationActs = await Promise.all(actions)
-        callback?.(relationActs)
+        try {
+          const relationActs = await Promise.all(actions)
+          callback?.(relationActs)
+        } catch(error) {
+          callback?.(error as CommonErrorsResult<CatchErrorDetails>)
+        }
       }
     }).unwrap()
   }

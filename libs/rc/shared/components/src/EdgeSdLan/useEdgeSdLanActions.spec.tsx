@@ -1,9 +1,9 @@
 import { rest } from 'msw'
 
-import { EdgeSdLanUrls, EdgeSdLanSettingP2 } from '@acx-ui/rc/utils'
-import { Provider }                          from '@acx-ui/store'
-import { mockServer, renderHook, waitFor }   from '@acx-ui/test-utils'
-import { RequestPayload }                    from '@acx-ui/types'
+import { EdgeSdLanUrls, EdgeSdLanSettingP2, CommonErrorsResult, CatchErrorDetails } from '@acx-ui/rc/utils'
+import { Provider }                                                                 from '@acx-ui/store'
+import { mockServer, renderHook, waitFor }                                          from '@acx-ui/test-utils'
+import { RequestPayload }                                                           from '@acx-ui/types'
 
 import { useEdgeSdLanActions } from '..'
 
@@ -315,10 +315,21 @@ describe('useEdgeSdLanActions', () => {
         EdgeSdLanUrls.activateEdgeSdLanDmzCluster.url,
         (req, res, ctx) => {
           mockedReq(req.params)
-          return res(ctx.status(403))
+          return res(ctx.status(403), ctx.json({
+            requestId: 'failed_req_id',
+            errors: [{
+              code: 'EDGE-00000',
+              message: 'test failed'
+            }]
+          }))
         }
       ))
+
+    const mockedCallbackInnerFn = jest.fn()
     const mockedCallback = jest.fn()
+      .mockImplementation((response: CommonErrorsResult<CatchErrorDetails>) => {
+        mockedCallbackInnerFn(response.data.errors[0].code)
+      })
     const mockedEditData = {
       id: 'mocked_service_id_2',
       name: 'testEditDMZSdLanService2',
@@ -352,6 +363,7 @@ describe('useEdgeSdLanActions', () => {
       })
 
     await waitFor(() => expect(mockedCallback).toBeCalledTimes(1))
+    expect(mockedCallbackInnerFn).toBeCalledWith('EDGE-00000')
     expect(mockedReq).toBeCalledWith({
       edgeClusterId: '0000000003',
       serviceId: 'mocked_service_id_2',

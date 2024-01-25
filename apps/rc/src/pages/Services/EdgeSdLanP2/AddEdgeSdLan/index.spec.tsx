@@ -41,8 +41,9 @@ jest.mock('../EdgeSdLanForm', () => ({
   }
 }))
 
+const originRcComponents = jest.requireActual('@acx-ui/rc/components')
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
+  ...originRcComponents,
   useEdgeSdLanActions: () => {
     return { addEdgeSdLan: (req: RequestPayload) => {
       mockedAddFn(req.payload)
