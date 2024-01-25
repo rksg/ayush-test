@@ -151,15 +151,13 @@ describe('Wired - VlanSetting', () => {
         route: { params, path: '/:tenantId/networks/wired/profiles/add' }
       })
 
-    await screen.findByRole('heading', { level: 3, name: /VLANs/ })
-
     const row = await screen.findByRole('row', { name: /vlan-02/i })
-    await userEvent.click(await within(row).findByRole('radio'))
+    await userEvent.click(row)
     await userEvent.click(await screen.findByRole('button', { name: /Edit/i }))
 
     const drawer = await screen.findByRole('dialog')
     const row2 = await within(drawer).findByRole('row', { name: /ICX7550-24P/i })
-    await userEvent.click(await within(row2).findByRole('radio'))
+    await userEvent.click(row2)
     await userEvent.click(await within(drawer).findByRole('button', { name: /Edit/i }))
 
     const dialog = await screen.findByTestId('vlanSettingModal')
