@@ -277,12 +277,12 @@ export function VenueWifi () {
                 height: '16px',
                 width: '16px',
                 marginBottom: '-3px',
-                color: cssStr('--acx-semantics-yellow-50')
+                color: cssStr('--acx-accents-orange-50')
               }} />
             <span style={{ lineHeight: '28px' }}>
               {$t({
                 defaultMessage:
-          '  {total} access points are not compatible with certain Wi-Fi features.' },
+          '  {total}  access points are not compatible with certain Wi-Fi features.' },
               { total: incompatible })}
             </span>
             <Button
