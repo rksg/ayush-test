@@ -22,13 +22,13 @@ type DisplayUser = ManagedUser & {
 const messages = {
   disabledDeleteText: defineMessage({
     defaultMessage:
-    // eslint-disable-next-line max-len
+      // eslint-disable-next-line max-len
       'You are not allowed to delete yourself.Or, if you are an invited 3rd party user, you are not allowed to delete users in the host account.'
   }),
   disabledEditText: defineMessage({
     // eslint-disable-next-line max-len
     defaultMessage:
-    // eslint-disable-next-line max-len
+      // eslint-disable-next-line max-len
       'You are not allowed to edit yourself or invited users. If you are an invited 3rd party user, you are not allowed to edit users in the host account.'
   }),
   refreshText: defineMessage({

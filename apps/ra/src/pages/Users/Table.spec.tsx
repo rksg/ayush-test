@@ -10,7 +10,8 @@ jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
   getUserProfile: jest.fn().mockImplementation(() => ({
     selectedTenant: { settings: { franchisor: 'testFranchisor' } },
-    userId: '111'
+    userId: '111',
+    accountId: '12345'
   }))
 }))
 const toggleDrawer = jest.fn()
@@ -96,6 +97,40 @@ describe('UsersTable', () => {
       data={mockMangedUsers} />,
     { wrapper: Provider })
     expect((await screen.findAllByTestId('EditOutlinedDisabledIcon')).length).toEqual(4)
+    expect((await screen.findAllByTestId('DeleteOutlinedDisabledIcon')).length).toEqual(4)
+  })
+  it('should disable edit and delete for non host user', async () => {
+    jest.mock('@acx-ui/analytics/utils', () => ({
+      ...jest.requireActual('@acx-ui/analytics/utils'),
+      getUserProfile: jest.fn().mockImplementation(() => ({
+        selectedTenant: { settings: { franchisor: 'testFranchisor' } },
+        userId: '111',
+        accountId: '12345'
+      }))
+    }))
+    const user = {
+      id: '1',
+      firstName: 'firstName dog1',
+      lastName: 'lastName dog1',
+      email: 'dog1@ruckuswireless.com.uat',
+      accountId: '1234',
+      accountName: 'RUCKUS NETWORKS, INC',
+      role: 'admin' as const,
+      tenantId: '0015000000GlI7SAAV',
+      resourceGroupId: '087b6de8-953f-405e-b2c2-000000000000',
+      resourceGroupName: 'default',
+      updatedAt: '2023-09-22T07:31:11.844Z',
+      type: null,
+      invitation: null
+    }
+    render(<UsersTable
+      toggleDrawer={toggleDrawer}
+      setSelectedRow={setSelectedRow}
+      getLatestUserDetails={getLatestUserDetails}
+      handleDeleteUser={handleDeleteUser}
+      data={[user]} />,
+    { wrapper: Provider })
+    expect((await screen.findAllByTestId('EditOutlinedDisabledIcon')).length).toEqual(1)
     expect((await screen.findAllByTestId('DeleteOutlinedDisabledIcon')).length).toEqual(1)
   })
 })

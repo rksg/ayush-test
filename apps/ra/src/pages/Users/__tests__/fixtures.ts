@@ -6,7 +6,7 @@ export const mockMangedUsers: ManagedUser[] = [
     firstName: 'firstName dog1',
     lastName: 'lastName dog1',
     email: 'dog1@ruckuswireless.com.uat',
-    accountId: '0015000000GlI7SAAV',
+    accountId: '12345',
     accountName: 'RUCKUS NETWORKS, INC',
     role: 'admin' as const,
     tenantId: '0015000000GlI7SAAV',
