@@ -46,6 +46,13 @@ export default function Users () {
         setOpenDrawer(!openDrawer)}
       }>
         {$t({ defaultMessage: 'Internal' })}</div>
+    }, {
+      key: 'third-party-user',
+      label: <div onClick={()=> {
+        setDrawerType('create')
+        setOpenDrawer(!openDrawer)}
+      }>
+        {$t({ defaultMessage: '3rd Party' })}</div>
     }]
     }
   />
