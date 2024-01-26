@@ -160,7 +160,7 @@ describe('VideoCallQoe Details Page', () => {
       })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await userEvent.click(screen.getByTestId('EditOutlinedIcon'))
-    const searchInput = await screen.findByPlaceholderText(/search by mac, username or hostname/i)
+    const searchInput = await screen.findByPlaceholderText(/search mac, username, hostname/i)
     await userEvent.type(searchInput, 'DPSK_User_8709')
     await waitFor(() => {
       expect(screen.queryByRole('img', { name: 'loader' })).toBeVisible()

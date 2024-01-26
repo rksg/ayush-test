@@ -194,6 +194,7 @@ export {
   ApCompatibilityDrawer } from './ApCompatibilityDrawer'
 export { EdgeClusterCommonForm } from './EdgeFormItem/EdgeClusterCommonForm'
 export { useEdgeClusterActions } from './useEdgeClusterActions'
+export { usePersonaListQuery } from './usePersonaListQuery'
 
 export * from './services'
 export * from './policies'
