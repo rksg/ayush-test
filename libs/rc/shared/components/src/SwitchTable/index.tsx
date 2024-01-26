@@ -466,93 +466,95 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   }
 
   return <Loader states={[tableQuery]}>
-    <Table<SwitchRow>
-      {...props}
-      settingsId={settingsId}
-      columns={columns}
-      dataSource={tableData}
-      getAllPagesData={tableQuery.getAllPagesData}
-      pagination={tableQuery.pagination}
-      onChange={tableQuery.handleTableChange}
-      onFilterChange={handleFilterChange}
-      enableApiFilter={true}
-      searchableWidth={220}
-      filterableWidth={140}
-      rowKey={(record)=> record.isGroup || record.serialNumber + (!record.isFirstLevel ? record.switchMac + 'stack-member' : '')}
-      rowActions={filterByAccess(rowActions)}
-      rowSelection={searchable !== false ? {
-        type: 'checkbox',
-        renderCell: (checked, record, index, originNode) => {
-          return record.isFirstLevel
-            ? originNode
-            : null
-        },
-        getCheckboxProps: (record) => ({
-          disabled: !record.isFirstLevel
-        }),
-        onChange (selectedRowKeys, selectedRows) {
-          const { hasStack, notOperational, invalid } = checkSelectedRowsStatus(selectedRows)
+    <div data-testid='switch-table'>
+      <Table<SwitchRow>
+        {...props}
+        settingsId={settingsId}
+        columns={columns}
+        dataSource={tableData}
+        getAllPagesData={tableQuery.getAllPagesData}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        onFilterChange={handleFilterChange}
+        enableApiFilter={true}
+        searchableWidth={220}
+        filterableWidth={140}
+        rowKey={(record)=> record.isGroup || record.serialNumber + (!record.isFirstLevel ? record.switchMac + 'stack-member' : '')}
+        rowActions={filterByAccess(rowActions)}
+        rowSelection={searchable !== false ? {
+          type: 'checkbox',
+          renderCell: (checked, record, index, originNode) => {
+            return record.isFirstLevel
+              ? originNode
+              : null
+          },
+          getCheckboxProps: (record) => ({
+            disabled: !record.isFirstLevel
+          }),
+          onChange (selectedRowKeys, selectedRows) {
+            const { hasStack, notOperational, invalid } = checkSelectedRowsStatus(selectedRows)
 
-          setStackTooltip('')
-          if(!!hasStack) {
-            setStackTooltip($t({ defaultMessage: 'Switches should be standalone' }))
-          } else if(!!notOperational) {
-            setStackTooltip($t({ defaultMessage: 'Switch must be operational before you can stack switches' }))
-          } else if(!!invalid) {
-            setStackTooltip($t({ defaultMessage: 'Switches should belong to the same model family and venue' }))
+            setStackTooltip('')
+            if(!!hasStack) {
+              setStackTooltip($t({ defaultMessage: 'Switches should be standalone' }))
+            } else if(!!notOperational) {
+              setStackTooltip($t({ defaultMessage: 'Switch must be operational before you can stack switches' }))
+            } else if(!!invalid) {
+              setStackTooltip($t({ defaultMessage: 'Switches should belong to the same model family and venue' }))
+            }
+          }
+        } : undefined}
+        actions={filterByAccess(props.enableActions ? [{
+          label: $t({ defaultMessage: 'Add Switch' }),
+          onClick: () => {
+            navigate(`${linkToEditSwitch.pathname}/add`)
+          }
+        }, {
+          label: $t({ defaultMessage: 'Add Stack' }),
+          onClick: () => {
+            navigate(`${linkToEditSwitch.pathname}/stack/add`)
+          }
+        }, {
+          label: $t({ defaultMessage: 'Import from file' }),
+          onClick: () => {
+            setImportVisible(true)
           }
         }
-      } : undefined}
-      actions={filterByAccess(props.enableActions ? [{
-        label: $t({ defaultMessage: 'Add Switch' }),
-        onClick: () => {
-          navigate(`${linkToEditSwitch.pathname}/add`)
-        }
-      }, {
-        label: $t({ defaultMessage: 'Add Stack' }),
-        onClick: () => {
-          navigate(`${linkToEditSwitch.pathname}/stack/add`)
-        }
-      }, {
-        label: $t({ defaultMessage: 'Import from file' }),
-        onClick: () => {
-          setImportVisible(true)
-        }
-      }
-      ] : [])}
-      iconButton={exportDevice ? {
-        icon: <DownloadOutlined />,
-        disabled,
-        tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
-        onClick: exportCsv
-      } : undefined}
-    />
-    <SwitchCliSession
-      modalState={cliModalState}
-      setIsModalOpen={setCliModalOpen}
-      serialNumber={cliData.serialNumber}
-      jwtToken={cliData.token}
-      switchName={cliData.switchName}
-    />
-    <ImportFileDrawer
-      type={ImportFileDrawerType.Switch}
-      title={$t({ defaultMessage: 'Import from file' })}
-      maxSize={CsvSize['5MB']}
-      maxEntries={50}
-      acceptType={['csv']}
-      templateLink={importTemplateLink}
-      visible={importVisible}
-      isLoading={importResult.isLoading}
-      importError={importResult.error as FetchBaseQueryError}
-      importRequest={async (formData) => {
-        await importCsv({ params, payload: formData }
-        ).unwrap().then(() => {
-          setImportVisible(false)
-        }).catch((error) => {
-          console.log(error) // eslint-disable-line no-console
-        })
-      }}
-      onClose={() => setImportVisible(false)}
-    />
+        ] : [])}
+        iconButton={exportDevice ? {
+          icon: <DownloadOutlined />,
+          disabled,
+          tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
+          onClick: exportCsv
+        } : undefined}
+      />
+      <SwitchCliSession
+        modalState={cliModalState}
+        setIsModalOpen={setCliModalOpen}
+        serialNumber={cliData.serialNumber}
+        jwtToken={cliData.token}
+        switchName={cliData.switchName}
+      />
+      <ImportFileDrawer
+        type={ImportFileDrawerType.Switch}
+        title={$t({ defaultMessage: 'Import from file' })}
+        maxSize={CsvSize['5MB']}
+        maxEntries={50}
+        acceptType={['csv']}
+        templateLink={importTemplateLink}
+        visible={importVisible}
+        isLoading={importResult.isLoading}
+        importError={importResult.error as FetchBaseQueryError}
+        importRequest={async (formData) => {
+          await importCsv({ params, payload: formData }
+          ).unwrap().then(() => {
+            setImportVisible(false)
+          }).catch((error) => {
+            console.log(error) // eslint-disable-line no-console
+          })
+        }}
+        onClose={() => setImportVisible(false)}
+      />
+    </div>
   </Loader>
 })
