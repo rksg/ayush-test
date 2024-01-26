@@ -58,22 +58,31 @@ export const drawerContentConfig: DrawerContentConfig = {
       name: 'email',
       labelKey: defineMessage({ defaultMessage: 'Email' }),
       component: AvailableUsersSelection,
-      componentProps: ({ onChange }) => ({ onChange: (value: object) => onChange({ ...value }) })
+      componentProps: ({ onChange, updatedUser }) => ({
+        selectedValue: updatedUser?.id,
+        onChange: (value: object) => onChange({ ...value })
+      })
     },
     {
       name: 'resourceGroup',
       labelKey: defineMessage({ defaultMessage: 'Resource Group' }),
       component: ResourceGroupSelection,
-      componentProps: ({ onChange }) => (
-        { onChange: (value: string) => onChange({ resourceGroupId: value }) }
+      componentProps: ({ onChange, updatedUser }) => (
+        {
+          selectedValue: updatedUser?.resourceGroupId,
+          onChange: (value: string) => onChange({ resourceGroupId: value })
+        }
       )
     },
     {
       name: 'role',
       labelKey: defineMessage({ defaultMessage: 'Role' }),
       component: RoleSelection,
-      componentProps: ({ onChange }) => (
-        { onChange: (value: string) => onChange({ role: value }) }
+      componentProps: ({ onChange, updatedUser }) => (
+        {
+          selectedValue: updatedUser?.role,
+          onChange: (value: string) => onChange({ role: value })
+        }
       )
     }
   ]

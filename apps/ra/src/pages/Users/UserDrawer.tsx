@@ -106,12 +106,18 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
   }
   const isUserDataValid = () => {
     if (type === 'create') {
-      return Boolean(updatedUser.email && updatedUser.resourceGroupId && updatedUser.id)
+      return Boolean(
+        updatedUser.id &&
+        updatedUser.email &&
+        updatedUser.resourceGroupId &&
+        updatedUser.role
+      )
     } else {
       return !isEmpty(updatedUser) && !isEqual(selectedUser, updatedUser)
     }
   }
   const handleCancelClick = () => {
+    setUpdatedUser({})
     toggleDrawer(false)
   }
 

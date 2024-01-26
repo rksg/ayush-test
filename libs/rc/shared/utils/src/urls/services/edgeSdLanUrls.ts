@@ -40,5 +40,35 @@ export const EdgeSdLanUrls: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/edgeSdLanServices',
     newApi: true
+  },
+  activateEdgeSdLanDmzCluster: {
+    method: 'put',
+    url: '/edgeSdLanServices/:serviceId/guestSettings/venues/:venueId/edgeClusters/:edgeClusterId',
+    newApi: true
+  },
+  deactivateEdgeSdLanDmzCluster: {
+    method: 'delete',
+    url: '/edgeSdLanServices/:serviceId/guestSettings/venues/:venueId/edgeClusters/:edgeClusterId',
+    newApi: true
+  },
+  activateEdgeSdLanDmzTunnelProfile: {
+    method: 'put',
+    url: '/edgeSdLanServices/:serviceId/guestSettings/tunnelProfiles/:tunnelProfileId',
+    newApi: true
+  },
+  deactivateEdgeSdLanDmzTunnelProfile: {
+    method: 'delete',
+    url: '/edgeSdLanServices/:serviceId/guestSettings/tunnelProfiles/:tunnelProfileId',
+    newApi: true
+  },
+  activateEdgeSdLanNetwork: {
+    method: 'put',
+    url: '/edgeSdLanServices/:serviceId/wifiNetworks/:wifiNetworkId',
+    newApi: true
+  },
+  deactivateEdgeSdLanNetwork: {
+    method: 'delete',
+    url: '/edgeSdLanServices/:serviceId/wifiNetworks/:wifiNetworkId',
+    newApi: true
   }
 }
