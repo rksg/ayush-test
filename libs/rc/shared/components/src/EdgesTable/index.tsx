@@ -176,7 +176,8 @@ export const EdgesTable = (props: EdgesTableProps) => {
       title: $t({ defaultMessage: 'Ports' }),
       key: 'ports',
       dataIndex: 'ports',
-      sorter: true
+      sorter: true,
+      align: 'center'
     },
     {
       title: $t({ defaultMessage: 'Venue' }),
