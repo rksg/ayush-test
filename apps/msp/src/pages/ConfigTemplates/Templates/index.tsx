@@ -13,7 +13,7 @@ import {
   Button
 } from '@acx-ui/components'
 import { DateFormatEnum, userDateTimeFormat }                                            from '@acx-ui/formatter'
-import { ConfigTemplateLink, PolicyConfigTemplateLink, renderConfigTemplateDetailsLink } from '@acx-ui/msp/components'
+import { ConfigTemplateLink, PolicyConfigTemplateLink, renderConfigTemplateDetailsLink } from '@acx-ui/rc/components'
 import {
   useDeleteAAAPolicyTemplateMutation,
   useDeleteNetworkTemplateMutation,
