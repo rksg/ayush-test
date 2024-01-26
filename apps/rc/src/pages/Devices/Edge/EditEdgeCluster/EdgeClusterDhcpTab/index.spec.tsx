@@ -1,11 +1,12 @@
-import { rest }  from 'msw'
+import { rest } from 'msw'
 
-import { useIsSplitOn }                                 from '@acx-ui/feature-toggle'
-import { EdgeDhcpUrls }                                 from '@acx-ui/rc/utils'
-import { Provider }                                     from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }          from '@acx-ui/test-utils'
+import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
+import { EdgeDhcpUrls }                        from '@acx-ui/rc/utils'
+import { Provider }                            from '@acx-ui/store'
+import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { mockDhcpPoolStatsData, mockEdgeDhcpDataList } from '../../../../Services/DHCP/Edge/__tests__/fixtures'
+
 import EdgeClusterDhcpTab from '.'
 
 const mockedUsedNavigate = jest.fn()
@@ -59,9 +60,9 @@ describe('Edge Cluster DHCP Tab', () => {
           params,
           path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
         }
-      }) 
-      expect(screen.getByRole('switch')).not.toBeChecked()
-    })
+      })
+    expect(screen.getByRole('switch')).not.toBeChecked()
+  })
 
   it('toggle should be ON when pools returned', async () => {
     render(
@@ -72,9 +73,9 @@ describe('Edge Cluster DHCP Tab', () => {
           params,
           path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
         }
-      })    
+      })
 
-    
+
     await waitFor(() => {
       expect(screen.getByRole('switch')).toBeChecked()
     })

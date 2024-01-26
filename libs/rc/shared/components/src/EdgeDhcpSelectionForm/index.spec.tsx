@@ -1,14 +1,14 @@
-import { rest }  from 'msw'
+import { Form } from 'antd'
+import { rest } from 'msw'
 
-import { StepsForm }                  from '@acx-ui/components'
-import { EdgeDhcpUrls }               from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
+import { StepsForm }                              from '@acx-ui/components'
+import { EdgeDhcpUrls }                           from '@acx-ui/rc/utils'
+import { Provider }                               from '@acx-ui/store'
 import { mockServer, render, renderHook, screen } from '@acx-ui/test-utils'
 
 import { mockEdgeDhcpList } from './__tests__/fixtures'
 
 import { EdgeDhcpSelectionForm } from './index'
-import { Form } from 'antd'
 
 type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void
@@ -70,7 +70,7 @@ describe('EdgeDhcpSelectionForm', () => {
       </Provider>, { route: { params } }
     )
     expect(await screen.findByText('Select...')).toBeVisible()
-    expect(screen.queryByText('Pool Name')).toBeNull();
+    expect(screen.queryByText('Pool Name')).toBeNull()
   })
 
   it('should show DHCP profile name and pools when dhcpId is given', async () => {
