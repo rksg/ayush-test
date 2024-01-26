@@ -19,7 +19,7 @@ import {
 } from '@acx-ui/components'
 import { formatter } from '@acx-ui/formatter'
 
-import * as UI from './styledcomponents'
+import * as UI from './styledComponents'
 
 interface ImportSSOFileDrawerProps extends DrawerProps {
   maxSize: number
@@ -147,13 +147,13 @@ export const ImportSSOFileDrawer = (props: ImportSSOFileDrawerProps) => {
     visible={visible}
     onClose={() => onClose()}
     destroyOnClose
-    footer={<div>
+    footer={<><div>
       <ApplyButton />
       <Button onClick={() => onClose()}>
         {$t({ defaultMessage: 'Cancel' })}
       </Button>
-      {isEditMode && <DeleteButton />}
-    </div>}
+      </div>
+      {isEditMode && <DeleteButton />}</>}
   >
     <Form layout='vertical' form={form}>
       <label>
