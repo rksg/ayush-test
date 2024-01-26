@@ -266,22 +266,24 @@ export const SettingsForm = () => {
                       const isLagCorePort = getFieldValue('isLagCorePort')
                       const edgeName = getFieldValue('edgeName')
 
-                      return <Form.Item
-                        name='corePortMac'
-                        noStyle
-                        rules={[{
-                          required: true
-                        }]}
-                      >
-                        <CorePortFormItem
-                          data={corePort}
-                          name={corePortName}
-                          isLagCorePort={isLagCorePort}
-                          edgeId={edgeId}
-                          edgeName={edgeName}
-                          portsData={portsConfig}
-                        />
-                      </Form.Item>
+                      return edgeId
+                        ? <Form.Item
+                          name='corePortMac'
+                          noStyle
+                          rules={[{
+                            required: true
+                          }]}
+                        >
+                          <CorePortFormItem
+                            data={corePort}
+                            name={corePortName}
+                            isLagCorePort={isLagCorePort}
+                            edgeId={edgeId}
+                            edgeName={edgeName}
+                            portsData={portsConfig}
+                          />
+                        </Form.Item>
+                        : null
                     }}
                   </Form.Item>
                 </Col>
