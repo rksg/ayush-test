@@ -99,8 +99,8 @@ describe('Firmware Venues Table', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const row = await screen.findByRole('row', { name: /My-Venue/i })
-    await userEvent.click(within(row).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    await userEvent.click(within(rows[3]).getByRole('checkbox'))
 
     const updateButton = screen.getByRole('button', { name: /Update Now/i })
     await userEvent.click(updateButton)
@@ -122,11 +122,9 @@ describe('Firmware Venues Table', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const row = await screen.findByRole('row', { name: /My-Venue/i })
-    await userEvent.click(within(row).getByRole('checkbox'))
-
-    const row2 = await screen.findByRole('row', { name: /Peter-Venue/i })
-    await userEvent.click(within(row2).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    await userEvent.click(within(rows[3]).getByRole('checkbox')) //My-Venue
+    await userEvent.click(within(rows[4]).getByRole('checkbox')) //Peter-Venue
 
     const updateButton = screen.getByRole('button', { name: /Update Now/i })
     await userEvent.click(updateButton)
@@ -224,11 +222,9 @@ describe('Firmware Venues Table', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const rowWithLegacyAp = await screen.findByRole('row', { name: /Ben-Venue-US/ })
-    expect(within(rowWithLegacyAp).getByRole('cell', { name: '6.1.0.10.413' })).toBeVisible()
-
-    const rowWithoutLegacyAp = await screen.findByRole('row', { name: /Legacy-Venue/ })
-    expect(within(rowWithoutLegacyAp).queryByRole('cell', { name: '6.2.0.103.513' })).toBeNull()
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: '6.1.0.10.413' })).toBeVisible() //Ben-Venue-US/
+    expect(within(rows[2]).queryByRole('cell', { name: '6.2.0.103.513' })).toBeNull() //Legacy-Venue
   })
 
   it('should show a message in the Update Now dialog when AP Models is empty', async () => {

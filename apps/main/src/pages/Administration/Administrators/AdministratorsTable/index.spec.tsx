@@ -222,12 +222,11 @@ describe('Administrators Table', () => {
         route: { params }
       })
 
-    const row = await screen.findByRole('row', { name: /abc.cheng@email.com/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
-    expect(within(row).getByRole('checkbox')).toBeChecked()
-    const row2 = await screen.findByRole('row', { name: /erp.cheng@email.com/i })
-    fireEvent.click(within(row2).getByRole('checkbox'))
-    expect(within(row2).getByRole('checkbox')).toBeChecked()
+    const rows = await screen.findAllByRole('row', { name: /@email.com/i })
+    fireEvent.click(within(rows[0]).getByRole('checkbox')) //abc.cheng@email.com
+    expect(within(rows[0]).getByRole('checkbox')).toBeChecked()
+    fireEvent.click(within(rows[1]).getByRole('checkbox')) //erp.cheng@email.com
+    expect(within(rows[1]).getByRole('checkbox')).toBeChecked()
     expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
   })
 
@@ -273,10 +272,9 @@ describe('Administrators Table', () => {
         route: { params }
       })
 
-    const row = await screen.findByRole('row', { name: /abc.cheng@email.com/i })
-    await userEvent.click(within(row).getByRole('checkbox'))
-    const row2 = await screen.findByRole('row', { name: /erp.cheng@email.com/i })
-    await userEvent.click(within(row2).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row', { name: /@email.com/i })
+    await userEvent.click(within(rows[0]).getByRole('checkbox')) //abc.cheng@email.com
+    await userEvent.click(within(rows[1]).getByRole('checkbox')) //erp.cheng@email.com
     await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
     await screen.findByText('Delete "2 Administrators"?')
     const submitBtn = screen.getByRole('button', { name: 'Delete Administrators' })
