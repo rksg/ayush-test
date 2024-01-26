@@ -52,14 +52,14 @@ const addSteps = [{
 }]
 
 const mockedFinishFn = jest.fn()
-const { result } = renderHook(() => Form.useForm())
 
 describe('SD-LAN form', () => {
   beforeEach(() => {
-    mockedFinishFn.mockClear()
+    mockedFinishFn.mockReset()
   })
 
   it('should navigate to service list when click cancel', async () => {
+    const { result } = renderHook(() => Form.useForm())
     render(<EdgeSdLanForm
       form={result.current[0]}
       steps={addSteps}
@@ -91,6 +91,8 @@ describe('SD-LAN form', () => {
   })
 
   describe('Add', () => {
+    const { result } = renderHook(() => Form.useForm())
+
     it('should submit with correct data', async () => {
       render(<EdgeSdLanForm
         form={result.current[0]}
@@ -119,7 +121,12 @@ describe('SD-LAN form', () => {
       await click(actions.getByRole('button', { name: 'Add' }))
 
       await waitFor(() => {
-        expect(mockedFinishFn).toBeCalledWith({ name: 'mockedServiceName' })
+        expect(mockedFinishFn).toBeCalledWith({
+          name: 'mockedServiceName',
+          activatedNetworks: [],
+          tunnelProfileId: '',
+          tunnelProfileName: 'Default tunnel profile (SD-LAN)'
+        })
       })
     })
   })
@@ -129,7 +136,6 @@ describe('SD-LAN form', () => {
       <Form.Item name='name'>
         <Input />
       </Form.Item>
-      <div onClick={() => {}}>Apply</div>
     </div>
     const editSteps = addSteps.slice(1, 2)
     editSteps.unshift({
@@ -138,6 +144,7 @@ describe('SD-LAN form', () => {
     })
 
     it('should correctly edit profile', async () => {
+      const { result } = renderHook(() => Form.useForm())
       const formRef = result.current[0]
       render(<EdgeSdLanForm
         form={formRef}
@@ -153,6 +160,9 @@ describe('SD-LAN form', () => {
       const body = within(form.getByTestId('steps-form-body'))
       const actions = within(form.getByTestId('steps-form-actions'))
       expect(await body.findByTestId('rc-SettingsForm')).toBeVisible()
+      await waitFor(async () => {
+        expect(await body.findByRole('textbox')).toHaveAttribute('value', mockedSdLanService.name)
+      })
       await click(actions.getByRole('button', { name: 'Apply' }))
 
       await waitFor(() => {
