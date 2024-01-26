@@ -39,9 +39,11 @@ export default function IdentityProviderTable () {
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDeleteIdentityProviderListMutation()
 
+  const settingsId = 'policies-identity-provider-table'
   const tableQuery = useTableQuery<IdentityProviderViewModel>({
     useQuery: useGetEnhancedIdentityProviderListQuery,
-    defaultPayload
+    defaultPayload,
+    pagination: { settingsId }
   })
 
   const doDelete = (selectedRows: IdentityProviderViewModel[], callback: () => void) => {
@@ -101,7 +103,7 @@ export default function IdentityProviderTable () {
       />
       <Loader states={[tableQuery]}>
         <Table<IdentityProviderViewModel>
-          settingsId='policies-identity-provider-table'
+          settingsId={settingsId}
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

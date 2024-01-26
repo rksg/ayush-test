@@ -33,9 +33,11 @@ export default function ClientIsolationTable () {
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDeleteClientIsolationListMutation()
 
+  const settingsId = 'policies-client-isolation-table'
   const tableQuery = useTableQuery<ClientIsolationViewModel>({
     useQuery: useGetEnhancedClientIsolationListQuery,
-    defaultPayload
+    defaultPayload,
+    pagination: { settingsId }
   })
 
   const doDelete = (selectedRows: ClientIsolationViewModel[], callback: () => void) => {
@@ -91,7 +93,7 @@ export default function ClientIsolationTable () {
       />
       <Loader states={[tableQuery]}>
         <Table<ClientIsolationViewModel>
-          settingsId='policies-client-isolation-table'
+          settingsId={settingsId}
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
