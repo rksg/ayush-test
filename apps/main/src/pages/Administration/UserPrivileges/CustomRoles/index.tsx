@@ -39,13 +39,13 @@ const CustomRoles = (props: CustomRolesTableProps) => {
 
   const [deleteAdminGroup, { isLoading: isDeleteAdminUpdating }] = useDeleteAdminGroupsMutation()
   //   const [updateAdminGroup] = useUpdateAdminGroupsMutation()
-  const linkAddPriviledgePath =
+  const linkAddCustomRolePath =
     useTenantLink('/administration/userPrivileges/customRoles', 't')
 
   const handleClickAdd = () => {
     navigate({
-      ...linkAddPriviledgePath,
-      pathname: `${linkAddPriviledgePath.pathname}/create`
+      ...linkAddCustomRolePath,
+      pathname: `${linkAddCustomRolePath.pathname}/create`
     })
   }
 
@@ -87,8 +87,8 @@ const CustomRoles = (props: CustomRolesTableProps) => {
         // setEditData(selectedRows[0])
         // setEditMode(true)
         navigate({
-          ...linkAddPriviledgePath,
-          pathname: `${linkAddPriviledgePath.pathname}/edit/${selectedRows[0].id}`
+          ...linkAddCustomRolePath,
+          pathname: `${linkAddCustomRolePath.pathname}/edit/${selectedRows[0].id}`
         })
       }
     },
