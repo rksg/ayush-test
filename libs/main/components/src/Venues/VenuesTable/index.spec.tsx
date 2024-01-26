@@ -1,4 +1,5 @@
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { useIsTierAllowed, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, WifiUrlsInfo }   from '@acx-ui/rc/utils'
@@ -29,6 +30,7 @@ jest.mock('react-router-dom', () => ({
 
 describe('Venues Table', () => {
   let params: { tenantId: string }
+  const mockedDeleteReq = jest.fn()
   beforeEach(async () => {
     mockServer.use(
       rest.post(
@@ -45,7 +47,10 @@ describe('Venues Table', () => {
       ),
       rest.delete(
         CommonUrlsInfo.deleteVenue.url,
-        (req, res, ctx) => res(ctx.json({ requestId: 'f638e92c-9d6f-45b2-a680-20047741ef2c' }))
+        (req, res, ctx) => {
+          mockedDeleteReq()
+          return res(ctx.json({ requestId: 'f638e92c-9d6f-45b2-a680-20047741ef2c' }))
+        }
       )
     )
     params = {
@@ -54,7 +59,7 @@ describe('Venues Table', () => {
   })
 
   it('should render table', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <VenuesTable />
       </Provider>, {
@@ -62,9 +67,8 @@ describe('Venues Table', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByText('Add Venue')
-    await screen.findByText('My-Venue')
-    expect(asFragment().querySelector('div[class="ant-space-item"]')).not.toBeNull()
+    expect(await screen.findByText('My-Venue')).toBeVisible()
+    expect(await screen.findByText('Add Venue')).toBeVisible()
   })
 
   it('should navigate to edit page', async () => {
@@ -77,17 +81,17 @@ describe('Venues Table', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const row1 = await screen.findByRole('row', { name: /My-Venue/i })
-    fireEvent.click(within(row1).getByRole('checkbox'))
+    await userEvent.click(within(row1).getByRole('checkbox'))
 
     const editButton = screen.getByRole('button', { name: /edit/i })
-    fireEvent.click(editButton)
+    await userEvent.click(editButton)
     expect(mockedUsedNavigate).toHaveBeenCalledWith(
       `${venuelist?.data?.[0].id}/edit/details`,
       { replace: false }
     )
   })
 
-  it.skip('should delete selected row', async () => {
+  it('should delete selected row', async () => {
     render(
       <Provider>
         <VenuesTable />
@@ -98,14 +102,18 @@ describe('Venues Table', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const row = await screen.findByRole('row', { name: /My-Venue/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
+    await userEvent.click(within(row).getByRole('checkbox'))
 
     const deleteButton = screen.getByRole('button', { name: /delete/i })
-    fireEvent.click(deleteButton)
+    await userEvent.click(deleteButton)
 
-    await screen.findByText('Delete "My-Venue"?')
-    const deleteVenueButton = await screen.findByText('Delete Venues')
-    fireEvent.click(deleteVenueButton)
+    const dialog = await screen.findByRole('dialog')
+    const confirmInput
+      = await within(dialog).findByRole('textbox', { name: 'Type the word "Delete" to confirm:' })
+    expect(await within(dialog).findByText('Delete "My-Venue"?')).toBeVisible()
+    fireEvent.change(confirmInput, { target: { value: 'Delete' } })
+    await userEvent.click(await within(dialog).findByRole('button', { name: /Delete Venue/i }))
+    expect(mockedDeleteReq).toBeCalledTimes(1)
   })
 
   it('should have edge column when feature flag on', async () => {
@@ -118,8 +126,9 @@ describe('Venues Table', () => {
         route: { params, path: '/:tenantId/venues' }
       })
 
-    await screen.findByText('My-Venue')
-    screen.getByRole('columnheader', { name: 'SmartEdges' })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText('My-Venue')).toBeVisible()
+    expect(await screen.findByRole('columnheader', { name: 'SmartEdges' })).toBeVisible()
   })
 
   it('should not have edge column when feature flag off', async () => {
@@ -132,7 +141,8 @@ describe('Venues Table', () => {
         route: { params, path: '/:tenantId/venues' }
       })
 
-    await screen.findByText('My-Venue')
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText('My-Venue')).toBeVisible()
     expect(screen.queryByRole('columnheader', { name: 'SmartEdges' })).toBeFalsy()
   })
 
@@ -158,9 +168,11 @@ describe('Venues Table', () => {
         route: { params, path: '/:tenantId/venues' }
       })
 
-    await screen.findByText('Venues (0)')
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText('My-Venue')).toBeVisible()
+    await screen.findByText('Venues (2)')
     expect(screen.getByRole('heading', {
-      name: /venues \(0\)/i
+      name: /venues \(2\)/i
     })).toBeTruthy()
   })
 

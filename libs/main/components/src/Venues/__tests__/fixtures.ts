@@ -28,7 +28,7 @@ export const successResponse = {
 }
 
 export const venuelist = {
-  totalCount: 10,
+  totalCount: 2,
   page: 1,
   data: [
     {
