@@ -1,6 +1,6 @@
 import { BrowserRouter } from 'react-router-dom'
 
-import { fakeIncidentAirtimeB1 }            from '@acx-ui/analytics/utils'
+import { fakeIncidentAirtimeBWithSameTime } from '@acx-ui/analytics/utils'
 import { dataApiURL, store }                from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
@@ -44,7 +44,7 @@ describe('AirtimeUtilizationChart', () => {
       <BrowserRouter>
         <AirtimeUtilizationChart
           chartRef={()=>{}}
-          incident={fakeIncidentAirtimeB1}
+          incident={fakeIncidentAirtimeBWithSameTime}
           data={expectedResult}
           buffer={noBuffer}
         />
@@ -59,7 +59,7 @@ describe('AirtimeUtilizationChart', () => {
       <BrowserRouter>
         <AirtimeUtilizationChart
           chartRef={()=>{}}
-          incident={{ ...fakeIncidentAirtimeB1, code: 'p-airtime-b-5g-high' }}
+          incident={{ ...fakeIncidentAirtimeBWithSameTime, code: 'p-airtime-b-5g-high' }}
           data={expectedResult}
           buffer={noBuffer}
         />
@@ -74,7 +74,7 @@ describe('AirtimeUtilizationChart', () => {
       <BrowserRouter>
         <AirtimeUtilizationChart
           chartRef={()=>{}}
-          incident={{ ...fakeIncidentAirtimeB1, code: 'p-airtime-b-6(5)g-high' }}
+          incident={{ ...fakeIncidentAirtimeBWithSameTime, code: 'p-airtime-b-6(5)g-high' }}
           data={expectedResult}
           buffer={noBuffer}
         />
@@ -109,7 +109,7 @@ describe('AirtimeUtilizationChart', () => {
       <BrowserRouter>
         <AirtimeUtilizationChart
           chartRef={()=>{}}
-          incident={fakeIncidentAirtimeB1}
+          incident={fakeIncidentAirtimeBWithSameTime}
           data={noDataResult}
           buffer={noBuffer}
         />
@@ -126,7 +126,7 @@ describe('airtimeUtilizationChartQuery', () => {
     }, true)
     const { status, data, error } = await store.dispatch(
       Api.endpoints.Charts.initiate({
-        incident: fakeIncidentAirtimeB1,
+        incident: fakeIncidentAirtimeBWithSameTime,
         charts: [TimeSeriesChartTypes.AirtimeUtilizationChart],
         minGranularity: 'PT15M',
         buffer: noBuffer
