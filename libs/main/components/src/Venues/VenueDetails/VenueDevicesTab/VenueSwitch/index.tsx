@@ -6,10 +6,7 @@ import { LineChartOutline, ListSolid, PortSolid } from '@acx-ui/icons'
 import { SwitchPortTable, SwitchTable }           from '@acx-ui/rc/components'
 import { useGetSwitchModelListQuery }             from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink }  from '@acx-ui/react-router-dom'
-import { EmbeddedReport }                         from '@acx-ui/reports/components'
-import {
-  ReportType
-} from '@acx-ui/reports/components'
+import { EmbeddedReport,ReportType }              from '@acx-ui/reports/components'
 
 import { IconThirdTab } from '../VenueWifi/styledComponents'
 

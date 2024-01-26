@@ -18,10 +18,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { TenantLink }                            from '@acx-ui/react-router-dom'
-import { EmbeddedReport }                        from '@acx-ui/reports/components'
-import {
-  ReportType
-} from '@acx-ui/reports/components'
+import { EmbeddedReport, ReportType }            from '@acx-ui/reports/components'
 
 
 import {

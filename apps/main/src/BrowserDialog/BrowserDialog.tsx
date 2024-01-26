@@ -2,11 +2,14 @@ import { IntlShape } from 'react-intl'
 
 import { showActionModal }                from '@acx-ui/components'
 import { browserSupportedLocales as bsl } from '@acx-ui/types'
+import { DetailLevel }                    from '@acx-ui/user'
 import {
-  DetailLevel
-} from '@acx-ui/user'
-import { LangKey, DEFAULT_SYS_LANG }          from '@acx-ui/utils'
-import { getIntl, setUpIntl, IntlSetUpError } from '@acx-ui/utils'
+  LangKey,
+  DEFAULT_SYS_LANG,
+  getIntl,
+  setUpIntl,
+  IntlSetUpError
+}          from '@acx-ui/utils'
 
 export interface PartialUserData {
   detailLevel: DetailLevel,

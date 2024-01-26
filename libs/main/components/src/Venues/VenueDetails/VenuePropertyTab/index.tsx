@@ -53,10 +53,10 @@ import {
   PropertyUnitStatus,
   SEARCH,
   SwitchViewModel,
-  useTableQuery
-} from '@acx-ui/rc/utils'
-import {
-  getPolicyDetailsLink, PolicyOperation, PolicyType
+  useTableQuery,
+  getPolicyDetailsLink,
+  PolicyOperation,
+  PolicyType
 } from '@acx-ui/rc/utils'
 import {
   TenantLink

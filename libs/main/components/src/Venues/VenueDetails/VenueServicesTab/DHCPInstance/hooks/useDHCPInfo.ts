@@ -2,8 +2,7 @@ import _             from 'lodash'
 import { useParams } from 'react-router-dom'
 
 import { useGetDHCPProfileQuery, useVenueDHCPProfileQuery, useApListQuery } from '@acx-ui/rc/services'
-import { DHCPConfigTypeMessages }                                           from '@acx-ui/rc/utils'
-import {  DHCPProfileAps }                                                  from '@acx-ui/rc/utils'
+import { DHCPConfigTypeMessages, DHCPProfileAps }                           from '@acx-ui/rc/utils'
 
 const defaultApPayload = {
   fields: ['serialNumber', 'name', 'venueId'],

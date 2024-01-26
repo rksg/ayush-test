@@ -2,9 +2,8 @@ import { useState, useEffect, useCallback } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import {  Drawer }     from '@acx-ui/components'
-import { Button }      from '@acx-ui/components'
-import { useLocation } from '@acx-ui/react-router-dom'
+import { Button, Drawer } from '@acx-ui/components'
+import { useLocation }    from '@acx-ui/react-router-dom'
 
 
 import { EmptyDescription } from './styledComponents'
