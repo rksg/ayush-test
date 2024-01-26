@@ -69,6 +69,7 @@ export function SwitchConfigBackupTable () {
     setCompareVisible(false)
   }
 
+  const settingsId = 'switch-config-backup-table'
   const tableQuery = usePollingTableQuery({
     useQuery: useGetSwitchConfigBackupListQuery,
     defaultPayload: {},
@@ -76,6 +77,7 @@ export function SwitchConfigBackupTable () {
       sortField: 'createdDate',
       sortOrder: 'DESC'
     },
+    pagination: { settingsId },
     option: { pollingInterval: 60_000 }
   })
 
@@ -243,7 +245,7 @@ export function SwitchConfigBackupTable () {
   return <>
     <Loader states={[tableQuery]}>
       <Table
-        settingsId='switch-config-backup-table'
+        settingsId={settingsId}
         rowKey='id'
         columns={columns}
         dataSource={tableData}

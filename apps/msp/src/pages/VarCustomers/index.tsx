@@ -173,9 +173,11 @@ export function VarCustomers () {
     }
 
     const PendingInvitation = () => {
+      const settingsId = 'var-invitation-table'
       const tableQuery = useTableQuery({
         useQuery: useInviteCustomerListQuery,
-        defaultPayload: invitationPayload
+        defaultPayload: invitationPayload,
+        pagination: { settingsId }
       })
       useEffect(() => {
         setInviteCount(tableQuery.data?.totalCount as number)
@@ -184,7 +186,7 @@ export function VarCustomers () {
       return (
         <Loader states={[tableQuery]}>
           <Table
-            settingsId='var-invitation-table'
+            settingsId={settingsId}
             columns={columnsPendingInvitation}
             dataSource={tableQuery.data?.data}
             pagination={tableQuery.pagination}
@@ -333,6 +335,7 @@ export function VarCustomers () {
   }
 
   const VarCustomerTable = () => {
+    const settingsId = 'var-customers-table'
     const tableQuery = useTableQuery({
       useQuery: useVarCustomerListQuery,
       defaultPayload: varCustomerPayload,
@@ -342,13 +345,14 @@ export function VarCustomers () {
       },
       search: {
         searchTargetFields: varCustomerPayload.searchTargetFields as string[]
-      }
+      },
+      pagination: { settingsId }
     })
 
     return (
       <Loader states={[tableQuery]}>
         <Table
-          settingsId='var-customers-table'
+          settingsId={settingsId}
           columns={customerColumns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

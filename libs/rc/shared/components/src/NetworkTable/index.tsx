@@ -299,11 +299,14 @@ const getDeleteMessage = (messageKey: string) => {
 /* eslint-enable max-len */
 
 interface NetworkTableProps {
+  settingsId?: string
   tableQuery: TableQuery<Network, RequestPayload<unknown>, unknown>,
   selectable?: boolean
 }
 
-export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
+export function NetworkTable ({
+  settingsId = 'network-table', tableQuery, selectable
+}: NetworkTableProps) {
   const isServicesEnabled = useIsSplitOn(Features.SERVICES)
   const isWpaDsae3Toggle = useIsSplitOn(Features.WIFI_EDA_WPA3_DSAE_TOGGLE)
   const isBetaDPSK3FeatureEnabled = useIsTierAllowed(TierFeatures.BETA_DPSK3)
@@ -422,7 +425,7 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
       { isLoading: false, isFetching: isDeleteNetworkUpdating }
     ]}>
       <Table
-        settingsId='network-table'
+        settingsId={settingsId}
         columns={getCols(intl,
           supportOweTransition,
           listOfClientsPerWlanFlag,

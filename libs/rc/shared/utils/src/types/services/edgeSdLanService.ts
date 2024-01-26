@@ -53,3 +53,7 @@ export interface EdgeSdLanViewDataP2 extends EdgeSdLanViewData {
     networkName: string
     }[]
 }
+
+export interface EdgeSdLanActivateNetworkPayload {
+  isGuestTunnelUtilized: boolean
+}

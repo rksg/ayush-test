@@ -29,6 +29,10 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedNavigate
 }))
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  getTenantId: jest.fn().mockReturnValue('t-id')
+}))
 
 const MockedStep1 = () => <div data-testid='rc-SettingsForm'>
   <Form.Item name='name' initialValue={'mockedServiceName'}>
@@ -52,7 +56,6 @@ const addSteps = [{
 }]
 
 const mockedFinishFn = jest.fn()
-const { result } = renderHook(() => Form.useForm())
 
 describe('SD-LAN P2 form', () => {
   beforeEach(() => {
@@ -60,6 +63,7 @@ describe('SD-LAN P2 form', () => {
   })
 
   it('should navigate to service list when click cancel', async () => {
+    const { result } = renderHook(() => Form.useForm())
     render(<EdgeSdLanForm
       form={result.current[0]}
       steps={addSteps}
@@ -91,6 +95,8 @@ describe('SD-LAN P2 form', () => {
   })
 
   describe('Add', () => {
+    const { result } = renderHook(() => Form.useForm())
+
     it('should submit with correct data', async () => {
       render(<EdgeSdLanForm
         form={result.current[0]}
@@ -121,6 +127,8 @@ describe('SD-LAN P2 form', () => {
       await waitFor(() => {
         expect(mockedFinishFn).toBeCalledWith({
           name: 'mockedServiceName',
+          tunnelProfileId: 'SLt-id',
+          tunnelProfileName: 'Default tunnel profile (SD-LAN)',
           activatedNetworks: [],
           activatedGuestNetworks: [],
           isGuestTunnelEnabled: false
@@ -130,6 +138,8 @@ describe('SD-LAN P2 form', () => {
   })
 
   describe('Edit', () => {
+    const { result } = renderHook(() => Form.useForm())
+
     const MockedEditFormStep1 = () => <div data-testid='rc-SettingsForm'>
       <Form.Item name='name'>
         <Input />
