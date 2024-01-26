@@ -122,7 +122,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const { showAllColumns, searchable, filterableKeys } = props
+  const { showAllColumns, searchable, filterableKeys, settingsId = 'switch-table' } = props
   const linkToEditSwitch = useTenantLink('/devices/switch/')
 
   const { setSwitchCount } = useContext(SwitchTabContext)
@@ -147,7 +147,8 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     },
     option: { skip: Boolean(props.tableQuery) },
     enableSelectAllPagesData: ['id', 'serialNumber', 'isStack', 'formStacking', 'deviceStatus', 'switchName', 'name',
-      'model', 'venueId', 'configReady', 'syncedSwitchConfig', 'syncedAdminPassword', 'adminPassword' ]
+      'model', 'venueId', 'configReady', 'syncedSwitchConfig', 'syncedAdminPassword', 'adminPassword' ],
+    pagination: { settingsId }
   })
   const tableQuery = props.tableQuery || inlineTableQuery
 
@@ -468,7 +469,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     <div data-testid='switch-table'>
       <Table<SwitchRow>
         {...props}
-        settingsId='switch-table'
+        settingsId={settingsId}
         columns={columns}
         dataSource={tableData}
         getAllPagesData={tableQuery.getAllPagesData}

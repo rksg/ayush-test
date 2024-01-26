@@ -82,12 +82,14 @@ export default function DpskPassphraseManagement () {
   const params = useParams()
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
+  const settingsId = 'dpsk-passphrase-table'
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedDpskPassphraseListQuery,
     sorter: defaultSorter,
     defaultPayload,
     search: defaultSearch,
-    enableSelectAllPagesData: ['id']
+    enableSelectAllPagesData: ['id'],
+    pagination: { settingsId }
   })
 
   const downloadPassphrases = async () => {
@@ -391,7 +393,7 @@ export default function DpskPassphraseManagement () {
     />
     <Loader states={[tableQuery]}>
       <Table<NewDpskPassphrase>
-        settingsId='dpsk-passphrase-table'
+        settingsId={settingsId}
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}

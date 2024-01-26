@@ -180,12 +180,13 @@ type PersonaTableColProps = {
 }
 export interface PersonaTableProps {
   personaGroupId?: string,
-  colProps: PersonaTableColProps
+  colProps: PersonaTableColProps,
+  settingsId?: string
 }
 
 export function BasePersonaTable (props: PersonaTableProps) {
   const { $t } = useIntl()
-  const { personaGroupId, colProps } = props
+  const { personaGroupId, colProps, settingsId = 'base-persona-table' } = props
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const [venueId, setVenueId] = useState('')
   const [unitPool, setUnitPool] = useState(new Map())
@@ -207,7 +208,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
   const { setIdentitiesCount } = useContext(IdentitiesContext)
   const { customHeaders } = usePersonaAsyncHeaders()
 
-  const personaListQuery = usePersonaListQuery({ personaGroupId })
+  const personaListQuery = usePersonaListQuery({ personaGroupId, settingsId })
 
   useEffect(() => {
     if (!propertyEnabled || personaListQuery.isLoading || personaGroupQuery.isLoading) return
@@ -377,7 +378,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
     >
       <Table<Persona>
         enableApiFilter
-        settingsId='base-persona-table'
+        settingsId={settingsId}
         columns={columns}
         dataSource={personaListQuery.data?.data}
         pagination={personaListQuery.pagination}
