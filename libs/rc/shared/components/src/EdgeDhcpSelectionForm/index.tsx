@@ -64,7 +64,7 @@ export const EdgeDhcpSelectionForm = (props: EdgeDhcpSelectionFormProps) => {
   ]
 
   const content = <>
-    <Form.Item label={$t({ defaultMessage: 'DHCP Service' })}>
+    <Form.Item label={$t({ defaultMessage: 'DHCP Service' })} data-testid="edge-cluster-dhcp-select-form-label">
       <Space>
         <Form.Item
           name='dhcpId'

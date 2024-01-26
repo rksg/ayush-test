@@ -1,4 +1,3 @@
-import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { StepsForm }                  from '@acx-ui/components'
@@ -6,7 +5,6 @@ import { EdgeDhcpUrls }               from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, renderHook, screen } from '@acx-ui/test-utils'
 
-//import { mockVenueData } from './__tests__/fixtures'
 import { mockEdgeDhcpList } from './__tests__/fixtures'
 
 import { EdgeDhcpSelectionForm } from './index'
@@ -41,7 +39,7 @@ describe('EdgeDhcpSelectionForm', () => {
     }
 
     mockServer.use(
-      rest.post(
+      rest.get(
         EdgeDhcpUrls.getDhcpList.url,
         (req, res, ctx) => res(ctx.json(mockEdgeDhcpList))
       )
@@ -53,7 +51,7 @@ describe('EdgeDhcpSelectionForm', () => {
       <Provider>
         <StepsForm>
           <StepsForm.StepForm>
-            <EdgeDhcpSelectionForm inUseService={null} hasNsg={false} />
+            <EdgeDhcpSelectionForm hasNsg={false} />
           </StepsForm.StepForm>
         </StepsForm>
       </Provider>, { route: { params } }
@@ -61,20 +59,21 @@ describe('EdgeDhcpSelectionForm', () => {
     expect(await screen.findByText('DHCP Service')).toBeVisible()
   })
 
-  it('should show "Select" in dropdown when dhcpId is not given', async () => {
+  it('should show "Select" in drop-down when dhcpId is not given', async () => {
     render(
       <Provider>
         <StepsForm>
           <StepsForm.StepForm>
-            <EdgeDhcpSelectionForm inUseService={null} hasNsg={false} />
+            <EdgeDhcpSelectionForm hasNsg={false} />
           </StepsForm.StepForm>
         </StepsForm>
       </Provider>, { route: { params } }
     )
     expect(await screen.findByText('Select...')).toBeVisible()
+    expect(screen.queryByText('Pool Name')).toBeNull();
   })
 
-  it('should show DHCP profile name when dhcpId is given', async () => {
+  it('should show DHCP profile name and pools when dhcpId is given', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
       return form
@@ -85,30 +84,12 @@ describe('EdgeDhcpSelectionForm', () => {
       <Provider>
         <StepsForm form={formRef.current}>
           <StepsForm.StepForm>
-            <EdgeDhcpSelectionForm inUseService='1' hasNsg={false} />
+            <EdgeDhcpSelectionForm hasNsg={false} />
           </StepsForm.StepForm>
         </StepsForm>
       </Provider>, { route: { params } }
     )
-    expect(await screen.findByText('Select...')).toBeVisible()
-  })
-
-  it('should show error when length of v-edge sn is more then 34', async () => {
-    const user = userEvent.setup()
-    render(
-      <Provider>
-        <StepsForm>
-          <StepsForm.StepForm>
-            <EdgeDhcpSelectionForm inUseService={null} hasNsg={false} />
-          </StepsForm.StepForm>
-        </StepsForm>
-      </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/add' }
-      })
-    const serialNumberInput = await screen.findByRole('textbox',
-      { name: 'Serial Number' })
-    await user.type(serialNumberInput, '967107237F423711EE948762BC9B5F795AB')
-    await user.click(screen.getByRole('button', { name: 'Add' }))
-    expect(await screen.findByText('Field must be exactly 34 characters')).toBeVisible()
+    expect(await screen.findByText('Mock DHCP service')).toBeVisible()
+    expect(await screen.findByText('RelayOffPoolTest1')).toBeVisible()
   })
 })
