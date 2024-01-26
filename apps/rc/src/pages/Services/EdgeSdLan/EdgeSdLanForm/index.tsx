@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from 'react'
+import { ReactNode } from 'react'
 
 import { FormInstance } from 'antd'
 
@@ -6,6 +6,7 @@ import { StepsForm } from '@acx-ui/components'
 import {
   EdgeSdLanSetting,
   getServiceRoutePath,
+  getVlanVxlanDefaultTunnelProfileOpt,
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
@@ -33,9 +34,25 @@ interface EdgeSdLanFormProps {
   onFinish: (values: EdgeSdLanFormModel) => Promise<boolean | void>
 }
 
+export const getSdLanFormDefaultValues
+  = (profileData?: EdgeSdLanSetting): EdgeSdLanFormModel => {
+    return {
+      ...profileData,
+      ...(profileData
+        ? {
+          activatedNetworks: profileData.networkIds.map(id => ({ id }))
+        }
+        : {
+          activatedNetworks: []
+        }
+      )
+    } as EdgeSdLanFormModel
+  }
+
 const EdgeSdLanForm = (props: EdgeSdLanFormProps) => {
   const { form, steps, editData, onFinish } = props
   const navigate = useNavigate()
+  const isEditMode = Boolean(editData)
 
   const linkToServiceList = useTenantLink(getServiceRoutePath({
     type: ServiceType.EDGE_SD_LAN,
@@ -46,20 +63,19 @@ const EdgeSdLanForm = (props: EdgeSdLanFormProps) => {
     onFinish(formData)
   }
 
-  useEffect(() => {
-    if(form && editData) {
-      form.resetFields()
-      form.setFieldValue('activatedNetworks', editData.networkIds
-        .map(id => ({ id })))
-    }
-  }, [form, editData])
+  const initFormValues = getSdLanFormDefaultValues(editData)
+  const defaultSdLanTunnelProfile = getVlanVxlanDefaultTunnelProfileOpt()
+  if (!isEditMode) {
+    initFormValues.tunnelProfileId = defaultSdLanTunnelProfile.value
+    initFormValues.tunnelProfileName = defaultSdLanTunnelProfile.label
+  }
 
   return (<StepsForm
     form={form}
     onCancel={() => navigate(linkToServiceList)}
     onFinish={handleFinish}
-    editMode={Boolean(editData)}
-    initialValues={editData}
+    editMode={isEditMode}
+    initialValues={initFormValues}
   >
     {
       steps.map((item, index) =>
