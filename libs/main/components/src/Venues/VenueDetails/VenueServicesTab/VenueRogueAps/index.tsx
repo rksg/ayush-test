@@ -207,9 +207,11 @@ export function VenueRogueAps () {
   }
 
   const VenueRogueApsTable = () => {
+    const settingsId = 'venue-rogue-aps-table'
     const tableQuery = useTableQuery({
       useQuery: useGetOldVenueRogueApQuery,
-      defaultPayload
+      defaultPayload,
+      pagination: { settingsId }
     })
 
     return (
@@ -217,7 +219,7 @@ export function VenueRogueAps () {
         tableQuery
       ]}>
         <Table
-          settingsId='venue-rogue-aps-table'
+          settingsId={settingsId}
           enableApiFilter={true}
           columns={getCols(useIntl())}
           dataSource={transformData(tableQuery?.data?.data || [])}

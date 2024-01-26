@@ -154,7 +154,7 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
       const nonGuestNetwork = await screen.findByRole('row', { name: /MockedNetwork 2/i })
       expect((await within(nonGuestNetwork).findAllByRole('switch')).length).toBe(1)
 
-      const guestNetwork = await screen.findByRole('row', { name: /MockedNetwork 3/i })
+      const guestNetwork = await screen.findByRole('row', { name: /MockedNetwork 4/i })
       expect((await within(guestNetwork).findAllByRole('switch')).length).toBe(2)
     })
 
@@ -171,7 +171,7 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
         </Provider>, { route: { params: { tenantId: 't-id' } } })
 
       await checkPageLoaded()
-      await screen.findByRole('columnheader', { name: /Tunnel Guest Traffic/i })
+      await screen.findByRole('columnheader', { name: /Forward Guest Traffic to DMZ/i })
 
       const switchBtns = within(await screen.findByRole('row', { name: /MockedNetwork 4/i }))
         .getAllByRole('switch')

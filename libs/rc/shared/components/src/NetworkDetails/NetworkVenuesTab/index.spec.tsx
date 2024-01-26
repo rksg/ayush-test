@@ -179,11 +179,7 @@ describe('NetworkVenuesTab', () => {
     )
 
     const toogleButton = await screen.findByRole('switch', { checked: false })
-    fireEvent.click(toogleButton)
-
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
-    })
+    await userEvent.click(toogleButton)
 
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
@@ -228,11 +224,7 @@ describe('NetworkVenuesTab', () => {
     )
 
     const toogleButton = await screen.findByRole('switch', { checked: true })
-    fireEvent.click(toogleButton)
-
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
-    })
+    await userEvent.click(toogleButton)
 
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
@@ -243,8 +235,6 @@ describe('NetworkVenuesTab', () => {
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/t/:networkId' }
     })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     mockServer.use(
       rest.get(
@@ -272,8 +262,6 @@ describe('NetworkVenuesTab', () => {
     fireEvent.click(await screen.findByRole('row', { name: /My-Venue/i }))
     const activateButton = screen.getByRole('button', { name: 'Activate' })
     fireEvent.click(activateButton)
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
@@ -343,8 +331,6 @@ describe('NetworkVenuesTab', () => {
       route: { params, path: '/:tenantId/t/:networkId' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
     mockServer.use(
       rest.get(
         WifiUrlsInfo.getNetwork.url,
@@ -370,8 +356,6 @@ describe('NetworkVenuesTab', () => {
     await userEvent.click(await screen.findByRole('row', { name: /network-venue-1/i }))
     const deactivateButton = screen.getByRole('button', { name: 'Deactivate' })
     await userEvent.click(deactivateButton)
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)

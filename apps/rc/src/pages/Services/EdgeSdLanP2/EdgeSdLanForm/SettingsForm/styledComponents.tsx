@@ -10,7 +10,7 @@ export const FieldText = styled.div`
   font-size: var(--acx-body-4-font-size);
 `
 export const ClusterSelectorHelper = styled(FieldText)`
-  color: var(--acx-neutrals-50);
+  color: var(--acx-neutrals-60);
   margin-top: -4px;
   & svg {
     vertical-align: sub;

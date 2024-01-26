@@ -63,9 +63,11 @@ const Layer3Component = () => {
     id: '', isEdit: false
   })
 
+  const settingsId = 'policies-access-control-layer3-table'
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedL3AclProfileListQuery,
-    defaultPayload
+    defaultPayload,
+    pagination: { settingsId }
   })
 
   useEffect(() => {
@@ -139,7 +141,7 @@ const Layer3Component = () => {
         onlyAddMode={addModeStatus}
       />
       <Table<L3AclPolicy>
-        settingsId='policies-access-control-layer3-table'
+        settingsId={settingsId}
         columns={useColumns(networkFilterOptions, editMode, setEditMode)}
         enableApiFilter={true}
         dataSource={tableQuery.data?.data}
