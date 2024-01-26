@@ -3,6 +3,7 @@
 import { Select }  from 'antd'
 import { useIntl } from 'react-intl'
 
+import { messages } from './'
 export const RoleSelection = ({
   onChange,
   selectedValue
@@ -11,16 +12,11 @@ export const RoleSelection = ({
   onChange: (value: string) => void;
 }) => {
   const { $t } = useIntl()
-  const RaiRoles = {
-    'admin': $t({ defaultMessage: 'Admin' }),
-    'report-only': $t({ defaultMessage: 'Report Only' }),
-    'network-admin': $t({ defaultMessage: 'Network Admin' })
-  }
   return (
     <Select
       style={{ width: 300 }}
-      options={Object.keys(RaiRoles).map((role, i) => ({
-        label: RaiRoles[role as keyof typeof RaiRoles],
+      options={['admin','report-only','network-admin' ].map((role, i) => ({
+        label: $t(messages[role as keyof typeof messages]),
         value: role,
         key: i
       }))}

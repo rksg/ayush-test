@@ -1,4 +1,4 @@
-import { defineMessage, useIntl } from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import { defaultSort, getUserProfile, ManagedUser, sortProp } from '@acx-ui/analytics/utils'
 import { Table, TableProps, Tooltip }                         from '@acx-ui/components'
@@ -13,46 +13,15 @@ import { noDataDisplay, getIntl } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
+import { messages } from './'
+
 type DisplayUser = ManagedUser & {
   displayInvitationState: string
   displayInvitor: string
   displayRole: string
   displayType: string
 }
-const messages = {
-  disabledDeleteText: defineMessage({
-    defaultMessage:
-      // eslint-disable-next-line max-len
-      'You are not allowed to delete yourself.Or, if you are an invited 3rd party user, you are not allowed to delete users in the host account.'
-  }),
-  disabledEditText: defineMessage({
-    // eslint-disable-next-line max-len
-    defaultMessage:
-      // eslint-disable-next-line max-len
-      'You are not allowed to edit yourself or invited users. If you are an invited 3rd party user, you are not allowed to edit users in the host account.'
-  }),
-  refreshText: defineMessage({
-    defaultMessage: 'Retrieve latest email, first name, last name from Ruckus Support Portal.'
-  }),
-  editText: defineMessage({
-    defaultMessage: 'Edit'
-  }),
-  deleteText: defineMessage({
-    defaultMessage: 'Delete'
-  })
-}
 
-const getDisplayRole = (role: ManagedUser['role']) => {
-  const { $t } = getIntl()
-  switch (role) {
-    case 'admin':
-      return $t({ defaultMessage: 'Admin' })
-    case 'report-only':
-      return $t({ defaultMessage: 'Report Only' })
-    case 'network-admin':
-      return $t({ defaultMessage: 'Network Admin' })
-  }
-}
 const getDisplayType = (type: ManagedUser['type'], franchisor: string) => {
   const { $t } = getIntl()
   switch (type) {
@@ -85,10 +54,11 @@ const transformUsers = (
   users: ManagedUser[] | undefined,
   franchisor: string
 ): DisplayUser[] => {
+  const { $t } = getIntl()
   if (!users) return []
   return users.map(user => ({
     ...user,
-    displayRole: getDisplayRole(user.role),
+    displayRole: $t(messages[user.role as keyof typeof messages]),
     displayType: getDisplayType(user.type, franchisor),
     displayInvitationState: getDisplayState(user.invitation?.state),
     displayInvitor: user.invitation
@@ -123,7 +93,7 @@ const getUserActions = (
         <Tooltip
           placement='top'
           arrowPointAtCenter
-          title={$t(refreshText)}>
+          title={$t(refreshText, { br: <br/> })}>
           <UI.IconWrapper $disabled={false}>
             <Reload
               onClick={() => {

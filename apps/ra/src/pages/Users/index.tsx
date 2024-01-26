@@ -21,11 +21,11 @@ type FormItemProps = {
   labelKey: string,
   component: React.ReactNode,
 }
-const messages = {
-  title: defineMessage({
+export const messages = {
+  'title': defineMessage({
     defaultMessage: '{usersCount, plural, one {User} other {Users}}'
   }),
-  info: defineMessage({
+  'info': defineMessage({
     defaultMessage: `"Invite 3rd Party" allows you to invite a user who does not
     belong to your organisation into this RUCKUS AI account.
     {br}
@@ -37,19 +37,42 @@ const messages = {
     In all cases, please note that the invitee needs to have an existing
     Ruckus Support account.`
   }),
-  editUser: defineMessage({ defaultMessage: 'Edit User' }),
-  save: defineMessage({ defaultMessage: 'Save' }),
-  cancel: defineMessage({ defaultMessage: 'Cancel' }),
-  refreshSuccessful: defineMessage({ defaultMessage: 'Refreshed user details successfully' }),
-  refreshFailure: defineMessage({ defaultMessage: 'Refresh user details is unsuccessful' }),
-  deleteSuccessful: defineMessage({ defaultMessage: 'Deleted user details successfully' }),
-  deleteFailure: defineMessage({ defaultMessage: 'Delete user details is unsuccessful' }),
-  editUserSuccess: defineMessage({ defaultMessage: 'Updated user details successfully' }),
-  editUserFailure: defineMessage({ defaultMessage: 'Update user details is unsuccessful' }),
-  deleteModalContent: defineMessage({
+  'editUser': defineMessage({ defaultMessage: 'Edit User' }),
+  'save': defineMessage({ defaultMessage: 'Save' }),
+  'cancel': defineMessage({ defaultMessage: 'Cancel' }),
+  'refreshSuccessful': defineMessage({ defaultMessage: 'Refreshed user details successfully' }),
+  'refreshFailure': defineMessage({ defaultMessage: 'Refresh user details is unsuccessful' }),
+  'deleteSuccessful': defineMessage({ defaultMessage: 'Deleted user details successfully' }),
+  'deleteFailure': defineMessage({ defaultMessage: 'Delete user details is unsuccessful' }),
+  'editUserSuccess': defineMessage({ defaultMessage: 'Updated user details successfully' }),
+  'editUserFailure': defineMessage({ defaultMessage: 'Update user details is unsuccessful' }),
+  'deleteModalContent': defineMessage({
     defaultMessage: 'Do you really want to remove {firstName} {lastName}?'
   }),
-  deleteModalTitle: defineMessage({ defaultMessage: 'Delete user' })
+  'deleteModalTitle': defineMessage({ defaultMessage: 'Delete user' }),
+  'admin': defineMessage({ defaultMessage: 'Admin' }),
+  'report-only': defineMessage({ defaultMessage: 'Report Only' }),
+  'network-admin': defineMessage({ defaultMessage: 'Network Admin' }),
+  'disabledDeleteText': defineMessage({
+    defaultMessage:
+      // eslint-disable-next-line max-len
+      'You are not allowed to delete yourself.Or, if you are an invited 3rd party user, you are not allowed to delete users in the host account.'
+  }),
+  'disabledEditText': defineMessage({
+    // eslint-disable-next-line max-len
+    defaultMessage:
+      // eslint-disable-next-line max-len
+      'You are not allowed to edit yourself or invited users. If you are an invited 3rd party user, you are not allowed to edit users in the host account.'
+  }),
+  'refreshText': defineMessage({
+    defaultMessage: 'Retrieve latest email, first name, {br}last name from Ruckus Support Portal.'
+  }),
+  'editText': defineMessage({
+    defaultMessage: 'Edit'
+  }),
+  'deleteText': defineMessage({
+    defaultMessage: 'Delete'
+  })
 }
 
 const FormItem: React.FC<FormItemProps> = ({ name, labelKey, component }) => (
