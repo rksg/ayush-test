@@ -1,16 +1,10 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { PageHeader }              from '@acx-ui/components'
-import { useAddEdgeSdLanMutation } from '@acx-ui/rc/services'
-import {
-  EdgeSdLanSettingP2,
-  getServiceListRoutePath,
-  getServiceRoutePath,
-  ServiceOperation,
-  ServiceType }
-  from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { PageHeader }                                                                                      from '@acx-ui/components'
+import { useEdgeSdLanActions }                                                                             from '@acx-ui/rc/components'
+import { EdgeSdLanSettingP2, getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                                                                      from '@acx-ui/react-router-dom'
 
 import EdgeSdLanFormP2, { EdgeSdLanFormModelP2 } from '../EdgeSdLanForm'
 import { SettingsForm }                          from '../EdgeSdLanForm/SettingsForm'
@@ -28,7 +22,8 @@ const AddEdgeSdLanP2 = () => {
   })
 
   const linkToServiceList = useTenantLink(cfListRoute)
-  const [addEdgeSdLan] = useAddEdgeSdLanMutation()
+  const { addEdgeSdLan } = useEdgeSdLanActions()
+
   const [form] = Form.useForm()
 
   const steps = [
@@ -51,6 +46,7 @@ const AddEdgeSdLanP2 = () => {
     try {
       const payload = {
         name: formData.name,
+        venueId: formData.venueId,
         edgeId: formData.edgeId,
         corePortMac: formData.corePortMac,
         networkIds: formData.activatedNetworks.map(network => network.id),
@@ -59,14 +55,17 @@ const AddEdgeSdLanP2 = () => {
       } as EdgeSdLanSettingP2
 
       if (formData.isGuestTunnelEnabled) {
-        payload.isGuestTunnelEnabled = formData.isGuestTunnelEnabled
         payload.guestEdgeId = formData.guestEdgeId
         payload.guestTunnelProfileId = formData.guestTunnelProfileId
         payload.guestNetworkIds = formData.activatedGuestNetworks.map(network => network.id!)
       }
 
-      await addEdgeSdLan({ payload }).unwrap()
-      navigate(linkToServiceList, { replace: true })
+      await addEdgeSdLan({
+        payload,
+        callback: () => {
+          navigate(linkToServiceList, { replace: true })
+        }
+      })
     } catch(err) {
       // eslint-disable-next-line no-console
       console.log(err)

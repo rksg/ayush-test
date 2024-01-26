@@ -127,7 +127,6 @@ const EdgeSdLanTable = () => {
       title: $t({ defaultMessage: 'Venue' }),
       key: 'venueId',
       dataIndex: 'venueId',
-      align: 'center',
       sorter: true,
       filterable: venueOptions,
       render: (__, row) => {
@@ -142,7 +141,6 @@ const EdgeSdLanTable = () => {
       title: $t({ defaultMessage: 'SmartEdge' }),
       key: 'edgeId',
       dataIndex: 'edgeId',
-      align: 'center',
       sorter: true,
       filterable: edgeOptions,
       render: (__, row) => {
@@ -157,7 +155,6 @@ const EdgeSdLanTable = () => {
       title: $t({ defaultMessage: 'Tunnel Profile' }),
       key: 'tunnelProfileId',
       dataIndex: 'tunnelProfileId',
-      align: 'center',
       sorter: true,
       render: (__, row) => {
         return <TenantLink
@@ -197,7 +194,7 @@ const EdgeSdLanTable = () => {
       title: $t({ defaultMessage: 'Health' }),
       key: 'edgeAlarmSummary',
       dataIndex: 'edgeAlarmSummary',
-      align: 'center',
+      width: 80,
       render: (__, row) =>
         <Row justify='center'>
           <EdgeServiceStatusLight
