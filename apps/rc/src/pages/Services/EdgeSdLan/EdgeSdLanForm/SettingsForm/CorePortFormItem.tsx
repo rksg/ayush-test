@@ -163,8 +163,9 @@ export const CorePortFormItem = (props: {
           ? null
           : <><Typography.Text>
             {$t({
-              defaultMessage: `To use SD-LAN on the venue,
-         you must go to {editPortLink} and select a port as the Core Port/LAG`
+              defaultMessage: `To use SD-LAN on the venue, 
+              you must select a port as the Core Port/LAG on the {editPortLink}.
+              Core port is the port used to connect SmartEdge to the core network for SDLAN service`
             },
             { editPortLink:
               <UI.LinkButton type='link' onClick={handleClick}>
