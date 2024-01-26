@@ -1,3 +1,5 @@
+import { Params } from 'react-router-dom'
+
 import {
   PersonaUrls,
   PersonaGroup,
@@ -12,16 +14,31 @@ import {
   onSocketActivityChanged,
   onActivityMessageReceived
 } from '@acx-ui/rc/utils'
-import { basePersonaApi }                      from '@acx-ui/store'
-import { RequestPayload }                      from '@acx-ui/types'
-import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+import { basePersonaApi }                               from '@acx-ui/store'
+import { RequestPayload }                               from '@acx-ui/types'
+import { ApiInfo, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+
+const defaultPersonaVersioningHeaders = {
+  'Content-Type': 'application/vnd.ruckus.v1+json',
+  'Accept': 'application/vnd.ruckus.v1+json'
+}
+
+const createPersonaHttpRequest = (
+  apiInfo: ApiInfo,
+  paramValues?: Params<string>,
+  customHeaders?: Record<string, unknown>,
+  ignoreDelegation?: boolean
+) => {
+  const headers = { ...defaultPersonaVersioningHeaders, ...customHeaders }
+  return createHttpRequest(apiInfo, paramValues, headers, ignoreDelegation)
+}
 
 export const personaApi = basePersonaApi.injectEndpoints({
   endpoints: build => ({
     // PersonaGroup
     addPersonaGroup: build.mutation<PersonaGroup, RequestPayload>({
       query: ({ params, payload, customHeaders }) => {
-        const req = createHttpRequest(PersonaUrls.addPersonaGroup, params, customHeaders)
+        const req = createPersonaHttpRequest(PersonaUrls.addPersonaGroup, params, customHeaders)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -34,7 +51,8 @@ export const personaApi = basePersonaApi.injectEndpoints({
         const req = createNewTableHttpRequest({
           apiInfo: PersonaUrls.getPersonaGroupList,
           params,
-          payload: payload as TableChangePayload
+          payload: payload as TableChangePayload,
+          headers: defaultPersonaVersioningHeaders
         })
         return {
           ...req
@@ -64,11 +82,12 @@ export const personaApi = basePersonaApi.injectEndpoints({
         const req = createNewTableHttpRequest({
           apiInfo: PersonaUrls.searchPersonaGroupList,
           params,
-          payload: payload as TableChangePayload
+          payload: payload as TableChangePayload,
+          headers: defaultPersonaVersioningHeaders
         })
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       transformResponse (result: NewTableResult<PersonaGroup>) {
@@ -94,7 +113,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
     }),
     getPersonaGroupById: build.query<PersonaGroup, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(PersonaUrls.getPersonaGroupById, params)
+        const req = createPersonaHttpRequest(PersonaUrls.getPersonaGroupById, params)
         return {
           ...req
         }
@@ -107,7 +126,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
     }),
     updatePersonaGroup: build.mutation<PersonaGroup, RequestPayload>({
       query: ({ params, payload, customHeaders }) => {
-        const req = createHttpRequest(PersonaUrls.updatePersonaGroup, params, customHeaders)
+        const req = createPersonaHttpRequest(PersonaUrls.updatePersonaGroup, params, customHeaders)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -117,7 +136,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
     }),
     deletePersonaGroup: build.mutation({
       query: ({ params, customHeaders }) => {
-        const req = createHttpRequest(PersonaUrls.deletePersonaGroup, params, customHeaders)
+        const req = createPersonaHttpRequest(PersonaUrls.deletePersonaGroup, params, customHeaders)
         return {
           ...req
         }
@@ -126,7 +145,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
     }),
     downloadPersonaGroups: build.query<Blob, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(PersonaUrls.exportPersonaGroup, {
+        const req = createPersonaHttpRequest(PersonaUrls.exportPersonaGroup, {
           ...{ pageSize: '2147483647', page: '0', sort: 'name,asc' },
           timezone: params?.timezone ?? 'UTC',
           dateFormat: params?.dateFormat ?? 'dd/MM/yyyy HH:mm'
@@ -136,7 +155,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
 
         return {
           ...req,
-          body: payload,
+          body: JSON.stringify(payload),
           responseHandler: async (response) => {
             const headerContent = response.headers.get('content-disposition')
             const fileName = headerContent
@@ -151,7 +170,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
     // Persona
     addPersona: build.mutation<Persona, RequestPayload>({
       query: ( { params, payload, customHeaders }) => {
-        const req = createHttpRequest(PersonaUrls.addPersona, params, customHeaders)
+        const req = createPersonaHttpRequest(PersonaUrls.addPersona, params, customHeaders)
 
         return {
           ...req,
@@ -162,7 +181,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
     }),
     importPersonas: build.mutation<{}, RequestPayload>({
       query: ({ params, payload, customHeaders }) => {
-        const req = createHttpRequest(PersonaUrls.importPersonas, params, {
+        const req = createPersonaHttpRequest(PersonaUrls.importPersonas, params, {
           ...ignoreErrorModal,
           ...customHeaders,
           'Content-Type': undefined
@@ -176,7 +195,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
     }),
     getPersonaById: build.query<Persona, RequestPayload<{ groupId: string, id: string }>>({
       query: ({ params }) => {
-        const req = createHttpRequest(PersonaUrls.getPersonaById, params)
+        const req = createPersonaHttpRequest(PersonaUrls.getPersonaById, params)
         return {
           ...req
         }
@@ -198,7 +217,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
     }),
     listPersonaByGroupId: build.query<TableResult<Persona>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(PersonaUrls.listPersonaByGroupId, params)
+        const req = createPersonaHttpRequest(PersonaUrls.listPersonaByGroupId, params)
         return {
           ...req,
           params,
@@ -222,7 +241,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
         })
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       transformResponse (result: NewTableResult<Persona>) {
@@ -253,7 +272,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
     }),
     updatePersona: build.mutation<Persona, RequestPayload>({
       query: ({ params, payload, customHeaders }) => {
-        const req = createHttpRequest(PersonaUrls.updatePersona, params, customHeaders)
+        const req = createPersonaHttpRequest(PersonaUrls.updatePersona, params, customHeaders)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -265,7 +284,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
     }),
     deletePersona: build.mutation({
       query: ({ params, customHeaders }) => {
-        const req = createHttpRequest(PersonaUrls.deletePersona, params, customHeaders)
+        const req = createPersonaHttpRequest(PersonaUrls.deletePersona, params, customHeaders)
         return {
           ...req
         }
@@ -274,7 +293,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
     }),
     deletePersonas: build.mutation({
       query: ({ params, payload, customHeaders }) => {
-        const req = createHttpRequest(PersonaUrls.deletePersonas, params, customHeaders)
+        const req = createPersonaHttpRequest(PersonaUrls.deletePersonas, params, customHeaders)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -284,7 +303,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
     }),
     addPersonaDevices: build.mutation<PersonaDevice, RequestPayload>({
       query: ({ params, payload, customHeaders }) => {
-        const req = createHttpRequest(PersonaUrls.addPersonaDevices, params, {
+        const req = createPersonaHttpRequest(PersonaUrls.addPersonaDevices, params, {
           ...ignoreErrorModal, ...customHeaders
         })
         return {
@@ -296,16 +315,15 @@ export const personaApi = basePersonaApi.injectEndpoints({
     }),
     deletePersonaDevices: build.mutation<PersonaDevice, RequestPayload>({
       query: ({ params, customHeaders }) => {
-        const req = createHttpRequest(PersonaUrls.deletePersonaDevices, params, customHeaders)
         return {
-          ...req
+          ...createPersonaHttpRequest(PersonaUrls.deletePersonaDevices, params, customHeaders)
         }
       },
       invalidatesTags: [{ type: 'Persona' }]
     }),
     downloadPersonas: build.query<Blob, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(PersonaUrls.exportPersona, {
+        const req = createPersonaHttpRequest(PersonaUrls.exportPersona, {
           ...{ pageSize: '2147483647', page: '0', sort: 'name,asc' },
           timezone: params?.timezone ?? 'UTC',
           dateFormat: params?.dateFormat ?? 'dd/MM/yyyy HH:mm'
@@ -315,7 +333,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
 
         return {
           ...req,
-          body: payload,
+          body: JSON.stringify(payload),
           responseHandler: async (response) => {
             const headerContent = response.headers.get('content-disposition')
             const fileName = headerContent
@@ -329,7 +347,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
     allocatePersonaVni: build.mutation({
       query: ({ params }) => {
         return {
-          ...createHttpRequest(PersonaUrls.allocateVni, params)
+          ...createPersonaHttpRequest(PersonaUrls.allocateVni, params)
         }
       },
       invalidatesTags: [{ type: 'Persona', id: 'ID' }]
