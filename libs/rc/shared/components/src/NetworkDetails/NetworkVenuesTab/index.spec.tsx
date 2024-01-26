@@ -233,7 +233,7 @@ describe('NetworkVenuesTab', () => {
     const toogleButton = await screen.findByRole('switch', { checked: true })
     fireEvent.click(toogleButton)
 
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)

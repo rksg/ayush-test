@@ -283,7 +283,7 @@ export function VenueWifi () {
             <span style={{ lineHeight: '28px' }}>
               {$t({
                 defaultMessage:
-          '  {total}access points are not compatible with certain Wi-Fi features.' },
+          '{total} access points are not compatible with certain Wi-Fi features.' },
               { total: incompatible })}
             </span>
             <Button

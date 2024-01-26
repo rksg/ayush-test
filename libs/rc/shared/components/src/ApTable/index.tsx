@@ -191,18 +191,23 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
         if (enableApCompatibleCheck && showFeatureCompatibilitiy) {
           const aps = tableQuery.data as TableResult<APExtended | APExtendedGrouped, ApExtraParams>
           apIds = retriedApIds(aps, !!hasGroupBy)
-          if (apIds.length > 0) {
-            if (params.venueId) {
-              apCompatibilitiesResponse = await getApCompatibilitiesVenue({
-                params: { venueId: params.venueId },
-                payload: { filters: { apIds } }
-              }).unwrap()
-            } else if (params.networkId) {
-              apCompatibilitiesResponse = await getApCompatibilitiesNetwork({
-                params: { networkId: params.networkId },
-                payload: { filters: { apIds } }
-              }).unwrap()
+          try {
+            if (apIds.length > 0) {
+              if (params.venueId) {
+                apCompatibilitiesResponse = await getApCompatibilitiesVenue({
+                  params: { venueId: params.venueId },
+                  payload: { filters: { apIds } }
+                }).unwrap()
+              } else if (params.networkId) {
+                apCompatibilitiesResponse = await getApCompatibilitiesNetwork({
+                  params: { networkId: params.networkId },
+                  payload: { filters: { apIds } }
+                }).unwrap()
+              }
             }
+          } catch (e) {
+            // eslint-disable-next-line no-console
+            console.error('fetchApCompatibilitiesAndSetData error:', e)
           }
           apCompatibilities = apCompatibilitiesResponse.apCompatibilities
         }
@@ -212,25 +217,31 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
             const apIncompatible = _.find(apCompatibilities, ap => id===ap.id)
             apIdsToIncompatible[id] = apIncompatible?.incompatibleFeatures?.length ?? apIncompatible?.incompatible ?? 0
           })
-        }
-        if (hasGroupBy) {
-          tableQuery.data.data?.forEach(item => {
-            const children = (item as unknown as { aps: APExtended[] }).aps?.map(ap => ({ ...ap, incompatible: apIdsToIncompatible[ap.serialNumber] }))
-            result.push({ ...item, aps: children, children })
-          })
+          if (hasGroupBy) {
+            tableQuery.data.data?.forEach(item => {
+              const children = (item as unknown as { aps: APExtended[] }).aps?.map(ap => ({ ...ap, incompatible: apIdsToIncompatible[ap.serialNumber] }))
+              result.push({ ...item, aps: children, children })
+            })
+          } else {
+            tableQuery.data.data?.forEach(ap => (result.push({ ...ap, incompatible: apIdsToIncompatible[ap.serialNumber] })))
+          }
+          setTableData(result)
         } else {
-          tableQuery.data.data?.forEach(ap => (result.push({ ...ap, incompatible: apIdsToIncompatible[ap.serialNumber] })))
+          setTableData(tableQuery.data?.data)
         }
       }
-      setTableData(result)
     }
     if (tableQuery.data) {
-      fetchApCompatibilitiesAndSetData()
+      if (enableApCompatibleCheck && showFeatureCompatibilitiy) {
+        fetchApCompatibilitiesAndSetData()
+      } else {
+        setTableData(tableQuery.data.data)
+      }
     }
     const totalCount = tableQuery.data?.totalCount || 0
     setApsCount?.(totalCount)
 
-  }, [tableQuery.data])
+  }, [tableQuery.data, showFeatureCompatibilitiy])
 
   const apAction = useApActions()
   const statusFilterOptions = seriesMappingAP().map(({ key, name, color }) => ({

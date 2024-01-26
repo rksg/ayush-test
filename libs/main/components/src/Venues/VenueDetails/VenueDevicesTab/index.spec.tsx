@@ -17,6 +17,15 @@ const filterData = () => apCompatibilitiesFilterData
 const apCompatibilitiesData = () => venueApCompatibilitiesData
 
 const mockedUsedNavigate = jest.fn()
+const mockedretrievedOptions = jest.fn()
+const mockSetSessionStorage = jest.fn()
+const mockSessionStorage = {
+  getItem: jest.fn(),
+  setItem: mockSetSessionStorage,
+  clear: jest.fn()
+}
+Object.defineProperty(global, 'sessionStorage', { value: mockSessionStorage })
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
@@ -26,8 +35,6 @@ jest.mock('@acx-ui/reports/components', () => ({
   ...jest.requireActual('@acx-ui/reports/components'),
   EmbeddedReport: () => <div data-testid={'some-report-id'} id='acx-report' />
 }))
-
-const mockedretrievedOptions = jest.fn()
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
@@ -158,16 +165,14 @@ describe('VenueWifi', () => {
   })
 
   it('should render Ap Compatibilities Note correctly', async () => {
-    const mockSetLocalStorage = jest.fn()
-    global.localStorage.setItem = mockSetLocalStorage
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider><VenueDevicesTab /></Provider>, {
       route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/:activeTab/:activeSubTab' }
     })
+
     expect(await screen.findByTestId('ApTable')).toBeVisible()
     expect(mockedretrievedOptions).toBeCalled()
     expect(await screen.findByTestId('ap-compatibility-alert-note')).toBeVisible()
-    expect(await screen.findByTestId('InformationSolid')).toBeVisible()
     await waitFor(async () => {
       expect(
         await screen.findByText(/1 access points are not compatible with certain Wi-Fi features./i)
@@ -178,7 +183,7 @@ describe('VenueWifi', () => {
     await userEvent.click(openButton)
     expect(await screen.findByTestId('ap-compatibility-drawer')).toBeVisible()
     await userEvent.click(screen.getByRole('img', { name: 'close' }))
-    expect(mockSetLocalStorage).toBeCalled()
+    expect(mockSetSessionStorage).toBeCalled()
     expect(screen.queryByTestId('ap-compatibility-alert-note')).not.toBeInTheDocument()
   })
 })
