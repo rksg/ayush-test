@@ -68,8 +68,8 @@ describe('Scope Form', () => {
     const rows = await screen.findAllByRole('row', { name: /Smart Edge/i })
     expect(rows.length).toBe(5)
 
-    await click(within(rows[0]).getByRole('checkbox'))
-    await click(within(rows[2]).getByRole('checkbox'))
+    await click(within(rows[0]).getByRole('checkbox')) //Smart Edge 1
+    await click(within(rows[2]).getByRole('checkbox')) //Smart Edge 3
     await click(await screen.findByRole('button', { name: 'Activate' }))
 
     expect(mockedSetFieldValue).toBeCalledWith('selectedEdges', [
