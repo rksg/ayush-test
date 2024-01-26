@@ -13,9 +13,11 @@ export default function useNetworksTable () {
   const { $t } = useIntl()
   const [ networkCount, setNetworkCount ] = useState(0)
   const supportApCompatibleCheck = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
+  const settingsId = 'network-table'
   const tableQuery = usePollingTableQuery<Network>({
     useQuery: supportApCompatibleCheck ? useNetworkTableQuery : useNetworkListQuery,
-    defaultPayload: defaultNetworkPayload
+    defaultPayload: defaultNetworkPayload,
+    pagination: { settingsId }
   })
 
   useEffect(() => {
@@ -34,7 +36,7 @@ export default function useNetworksTable () {
   ]
 
   const component = <NetworkTabContext.Provider value={{ setNetworkCount }}>
-    <NetworkTable tableQuery={tableQuery} selectable={true} />
+    <NetworkTable tableQuery={tableQuery} selectable={true} settingsId={settingsId} />
   </NetworkTabContext.Provider>
 
   return {

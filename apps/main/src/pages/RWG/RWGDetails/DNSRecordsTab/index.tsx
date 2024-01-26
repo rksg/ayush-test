@@ -26,6 +26,7 @@ import { DNSRecordDrawer } from './DNSRecordDrawer'
 export function DNSRecordsTab () {
   const { $t } = useIntl()
 
+  const settingsId = 'dns-table'
   const { gatewayId } = useParams()
 
   const [drawerState, setDrawerState] = useState<{
@@ -57,7 +58,8 @@ export function DNSRecordsTab () {
     defaultPayload: rwgPayload,
     search: {
       searchTargetFields: rwgPayload.searchTargetFields as string[]
-    }
+    },
+    pagination: { settingsId }
   })
 
   const [deleteDnsRecords] = useDeleteDnsRecordMutation()
@@ -150,7 +152,7 @@ export function DNSRecordsTab () {
     >
       <Table
         rowKey='id'
-        settingsId='dns-table'
+        settingsId={settingsId}
         columns={columns}
         onFilterChange={handleFilterChange}
         dataSource={tableQuery.data?.data}
