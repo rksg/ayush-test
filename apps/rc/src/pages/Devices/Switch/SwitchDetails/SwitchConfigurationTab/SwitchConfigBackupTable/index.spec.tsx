@@ -374,14 +374,11 @@ describe('SwitchConfigBackupTable', () => {
     const rows = await within(tbody).findAllByRole('row')
     expect(rows).toHaveLength(inRestoreProgressList.data.length)
 
-    const row1 = await screen.findByRole('row', { name: /Manual_20230111181247/i })
-    await userEvent.click(await within(row1).findByRole('checkbox'))
+    await userEvent.click(await within(rows[0]).findByRole('checkbox')) //Manual_20230111181247
 
-    const row2 = await screen.findByRole('row', { name: /SCHEDULED_1/i })
-    await userEvent.click(await within(row2).findByRole('checkbox'))
+    await userEvent.click(await within(rows[1]).findByRole('checkbox')) //SCHEDULED_1
 
-    const row3 = await screen.findByRole('row', { name: /testBackup/i })
-    await userEvent.click(await within(row3).findByRole('checkbox'))
+    await userEvent.click(await within(rows[2]).findByRole('checkbox')) //testBackup
     expect(await screen.findByRole('button', { name: 'Restore' })).toBeDisabled()
   })
 

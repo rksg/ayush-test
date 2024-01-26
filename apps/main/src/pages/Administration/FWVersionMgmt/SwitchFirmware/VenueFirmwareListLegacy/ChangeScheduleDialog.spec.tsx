@@ -192,11 +192,9 @@ describe('Firmware Venues Table', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const row = await screen.findByRole('row', { name: /My-Venue/i })
-    await userEvent.click(within(row).getByRole('checkbox'))
-
-    const row2 = await screen.findByRole('row', { name: /v2/i })
-    await userEvent.click(within(row2).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    await userEvent.click(within(rows[1]).getByRole('checkbox')) ///My-Venue
+    await userEvent.click(within(rows[0]).getByRole('checkbox')) //v2
 
     const changeButton = screen.getByRole('button', { name: /Change Update Schedule/i })
     await userEvent.click(changeButton)
