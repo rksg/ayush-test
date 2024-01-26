@@ -52,7 +52,6 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
   // eslint-disable-next-line max-len
   const defaultActiveVersion: FirmwareVersion | undefined = getDefaultActiveVersion(availableVersions)
   const otherActiveVersions: FirmwareVersion[] = filteredOtherActiveVersions(availableVersions)
-  const activeApModels = getActiveApModels(venuesData)
 
   // eslint-disable-next-line max-len
   const [upgradableApModelsAndFamilies, setUpgradableApModelsAndFamilies] = useState<UpgradableApModelsAndFamilies>()
@@ -128,8 +127,9 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
       okButtonProps={{ disabled: disableSave }}
       destroyOnClose={true}
     >
-      { defaultActiveVersion
-        ? <UI.Section>
+      <UI.Section key='active'>{
+        defaultActiveVersion
+          ?
           <ABFSelector
             abfName={'active'}
             upgradableApModelsAndFamilies={upgradableApModelsAndFamilies}
@@ -139,16 +139,14 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
             otherVersions={otherActiveVersionOptions}
             update={updateSelectedABF}
           />
-        </UI.Section>
-        : (activeApModels.length > 0 && <UI.Section>
-          <div>{
-            intl.$t({
-              defaultMessage: 'There are one or more devices in selected venues ({apModels}).'
-            }, { apModels: activeApModels.join(', ') })}
-          </div>
-          <div>{intl.$t({ defaultMessage: 'No available firmware.' })}</div>
-        </UI.Section>)
+          : <ABFUpgradeWarning
+            abfName={'active'}
+            apModels={getActiveApModels(venuesData)}
+            upgradableApModelsAndFamilies={upgradableApModelsAndFamilies}
+            isLegacyABF={false}
+          />
       }
+      </UI.Section>
       { eolApFirmwareGroups.length > 0
         ? eolApFirmwareGroups.map((eol: EolApFirmwareGroup) => {
           return <UI.Section key={eol.name}>
@@ -162,10 +160,11 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
                 otherVersions={eolABFOtherVersion[eol.name] ? eolABFOtherVersion[eol.name] : []}
                 update={updateSelectedABF}
               />
-              : <EolABFUpgradeWarning
+              : <ABFUpgradeWarning
                 abfName={eol.name}
                 apModels={eol.apModels}
                 upgradableApModelsAndFamilies={upgradableApModelsAndFamilies}
+                isLegacyABF={true}
               />
             }
           </UI.Section>
@@ -294,23 +293,30 @@ function ABFSelector (props: ABFSelectorProps) {
   </>)
 }
 
-interface EolABFUpgradeWarningProp {
+interface ABFUpgradeWarningProp {
   abfName: string
   apModels: string[]
   upgradableApModelsAndFamilies?: UpgradableApModelsAndFamilies
+  isLegacyABF: boolean
 }
-export function EolABFUpgradeWarning (props: EolABFUpgradeWarningProp) {
-  const { abfName, apModels, upgradableApModelsAndFamilies } = props
+export function ABFUpgradeWarning (props: ABFUpgradeWarningProp) {
+  const { abfName, apModels, upgradableApModelsAndFamilies, isLegacyABF } = props
   const { $t } = useIntl()
   const remainingApModels = getRemainingApModels(abfName, apModels, upgradableApModelsAndFamilies)
 
   if (remainingApModels.length === 0) return null
 
+  // eslint-disable-next-line max-len
+  const legacyDevicesMessage = defineMessage({ defaultMessage: 'There are one or more legacy devices in selected venues ({apModels}).' })
+  // eslint-disable-next-line max-len
+  const activeDevicesMessage = defineMessage({ defaultMessage: 'There are one or more devices in selected venues ({apModels}).' })
+
   return <>
     <div>{
-      $t({
-        defaultMessage: 'There are one or more legacy devices in selected venues ({eolApModels}).'
-      }, { eolApModels: remainingApModels.join(', ') })
+      $t(isLegacyABF
+        ? legacyDevicesMessage
+        : activeDevicesMessage,
+      { apModels: remainingApModels.join(', ') })
     }</div>
     <div>{$t({ defaultMessage: 'No available firmware.' })}</div>
   </>
