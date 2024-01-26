@@ -65,8 +65,7 @@ export interface TenantDelegationResponse {
 }
 
 export interface RecoveryPassphrase {
-  tenantId: string
-  psk: string
+  passphrase: string
 }
 
 export interface TenantPreferenceSettingValue {

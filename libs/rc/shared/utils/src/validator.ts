@@ -9,7 +9,7 @@ import {
   uniq
 }                from 'lodash'
 
-import { getIntl, validationMessages } from '@acx-ui/utils'
+import { byteCounter, getIntl, validationMessages } from '@acx-ui/utils'
 
 import { AclTypeEnum }                from './constants'
 import { IpUtilsService }             from './ipUtilsService'
@@ -1131,6 +1131,18 @@ export function servicePolicyNameRegExp (value: string) {
   if (value && !re.test(value)) {
     return Promise.reject($t(validationMessages.servicePolicyNameInvalid))
   }
+  return Promise.resolve()
+}
+
+export function validateByteLength (value: string, maxLength: number) {
+  const { $t } = getIntl()
+  const numOfByte = byteCounter(value)
+  if (numOfByte > maxLength) {
+    return Promise.reject($t(
+      { defaultMessage: 'Field exceeds {max} bytes' },
+      { max: maxLength } ))
+  }
+
   return Promise.resolve()
 }
 

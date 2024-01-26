@@ -18,6 +18,7 @@ import {
   within
 } from '@acx-ui/test-utils'
 
+import { getSdLanFormDefaultValues }                from '..'
 import { mockDeepNetworkList, mockNetworkSaveData } from '../../__tests__/fixtures'
 
 import { ScopeForm } from '.'
@@ -26,8 +27,12 @@ const mockedSetFieldValue = jest.fn()
 const { click } = userEvent
 const useMockedFormHook = () => {
   const [ form ] = Form.useForm()
-  form.setFieldValue('venueId', 'venue_00002')
-  form.setFieldValue('venueName', 'airport')
+  const defaultVals = getSdLanFormDefaultValues()
+  form.setFieldsValue({
+    ...defaultVals,
+    venueId: 'venue_00002',
+    venueName: 'airport'
+  })
   return form
 }
 
@@ -51,10 +56,12 @@ describe('Scope Form', () => {
 
   it('should correctly render', async () => {
     const { result: stepFormRef } = renderHook(useMockedFormHook)
-
     render(
       <Provider>
-        <StepsForm form={stepFormRef.current} editMode={true}>
+        <StepsForm
+          form={stepFormRef.current}
+          editMode={true}
+        >
           <ScopeForm />
         </StepsForm>
       </Provider>, { route: { params: { tenantId: 't-id' } } })

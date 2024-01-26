@@ -29,7 +29,8 @@ export const tunnelProfileApi = baseTunnelProfileApi.injectEndpoints({
           const activities = [
             'AddTunnelServiceProfile',
             'UpdateTunnelServiceProfile',
-            'DeleteTunnelServiceProfile'
+            'DeleteTunnelServiceProfile',
+            'DeleteTunnelServiceProfiles'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(
