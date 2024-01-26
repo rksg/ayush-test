@@ -13,7 +13,12 @@ import {
   fakeIncidentNetTime,
   fakeIncidentNetSzNetLatency,
   fakeIncidentLoadSzCpuLoad,
-  fakeIncidentAirtimeB,
+  fakeIncidentAirtimeB1,
+  fakeIncidentAirtimeB2,
+  fakeIncidentAirtimeRx1,
+  fakeIncidentAirtimeRx2,
+  fakeIncidentAirtimeTx1,
+  fakeIncidentAirtimeTx2,
   IncidentCode
 }                         from '@acx-ui/analytics/utils'
 import { useIsSplitOn }   from '@acx-ui/feature-toggle'
@@ -217,63 +222,65 @@ describe('Test', () => {
       },
       {
         component: AirtimeB,
-        fakeIncident: fakeIncidentAirtimeB,
+        fakeIncident: fakeIncidentAirtimeB1,
         hasNetworkImpact: true,
         hasTimeSeries: true,
         charts: []
       },
       {
         component: AirtimeB,
-        fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-b-5g-high' as IncidentCode },
+        fakeIncident: { ...fakeIncidentAirtimeB1, code: 'p-airtime-b-5g-high' as IncidentCode },
         hasNetworkImpact: true,
         hasTimeSeries: true,
         charts: []
       },
       {
         component: AirtimeB,
-        fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-b-6(5)g-high' as IncidentCode },
+        fakeIncident: { ...fakeIncidentAirtimeB2, code: 'p-airtime-b-6(5)g-high' as IncidentCode },
         hasNetworkImpact: true,
         hasTimeSeries: true,
         charts: []
       },
       {
         component: AirtimeRx,
-        fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-rx-24g-high' as IncidentCode },
+        fakeIncident: { ...fakeIncidentAirtimeRx1, code: 'p-airtime-rx-24g-high' as IncidentCode },
         hasNetworkImpact: true,
         hasTimeSeries: true,
         charts: []
       },
       {
         component: AirtimeRx,
-        fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-rx-5g-high' as IncidentCode },
+        fakeIncident: { ...fakeIncidentAirtimeRx1, code: 'p-airtime-rx-5g-high' as IncidentCode },
         hasNetworkImpact: true,
         hasTimeSeries: true,
         charts: []
       },
       {
         component: AirtimeRx,
-        fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-rx-6(5)g-high' as IncidentCode },
+        fakeIncident: {
+          ...fakeIncidentAirtimeRx2, code: 'p-airtime-rx-6(5)g-high' as IncidentCode },
         hasNetworkImpact: true,
         hasTimeSeries: true,
         charts: []
       },
       {
         component: AirtimeTx,
-        fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-tx-24g-high' as IncidentCode },
+        fakeIncident: { ...fakeIncidentAirtimeTx1, code: 'p-airtime-tx-24g-high' as IncidentCode },
         hasNetworkImpact: true,
         hasTimeSeries: true,
         charts: []
       },
       {
         component: AirtimeTx,
-        fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-tx-5g-high' as IncidentCode },
+        fakeIncident: { ...fakeIncidentAirtimeTx1, code: 'p-airtime-tx-5g-high' as IncidentCode },
         hasNetworkImpact: true,
         hasTimeSeries: true,
         charts: []
       },
       {
         component: AirtimeTx,
-        fakeIncident: { ...fakeIncidentAirtimeB, code: 'p-airtime-tx-6(5)g-high' as IncidentCode },
+        fakeIncident: {
+          ...fakeIncidentAirtimeTx2, code: 'p-airtime-tx-6(5)g-high' as IncidentCode },
         hasNetworkImpact: true,
         hasTimeSeries: true,
         charts: []

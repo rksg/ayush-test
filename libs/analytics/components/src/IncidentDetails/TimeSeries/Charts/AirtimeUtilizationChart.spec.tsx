@@ -1,6 +1,6 @@
 import { BrowserRouter } from 'react-router-dom'
 
-import { fakeIncidentAirtimeB }             from '@acx-ui/analytics/utils'
+import { fakeIncidentAirtimeB1 }            from '@acx-ui/analytics/utils'
 import { dataApiURL, store }                from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
@@ -44,7 +44,7 @@ describe('AirtimeUtilizationChart', () => {
       <BrowserRouter>
         <AirtimeUtilizationChart
           chartRef={()=>{}}
-          incident={fakeIncidentAirtimeB}
+          incident={fakeIncidentAirtimeB1}
           data={expectedResult}
           buffer={noBuffer}
         />
@@ -59,7 +59,7 @@ describe('AirtimeUtilizationChart', () => {
       <BrowserRouter>
         <AirtimeUtilizationChart
           chartRef={()=>{}}
-          incident={{ ...fakeIncidentAirtimeB, code: 'p-airtime-b-5g-high' }}
+          incident={{ ...fakeIncidentAirtimeB1, code: 'p-airtime-b-5g-high' }}
           data={expectedResult}
           buffer={noBuffer}
         />
@@ -74,7 +74,7 @@ describe('AirtimeUtilizationChart', () => {
       <BrowserRouter>
         <AirtimeUtilizationChart
           chartRef={()=>{}}
-          incident={{ ...fakeIncidentAirtimeB, code: 'p-airtime-b-6(5)g-high' }}
+          incident={{ ...fakeIncidentAirtimeB1, code: 'p-airtime-b-6(5)g-high' }}
           data={expectedResult}
           buffer={noBuffer}
         />
@@ -109,7 +109,7 @@ describe('AirtimeUtilizationChart', () => {
       <BrowserRouter>
         <AirtimeUtilizationChart
           chartRef={()=>{}}
-          incident={fakeIncidentAirtimeB}
+          incident={fakeIncidentAirtimeB1}
           data={noDataResult}
           buffer={noBuffer}
         />
@@ -126,7 +126,7 @@ describe('airtimeUtilizationChartQuery', () => {
     }, true)
     const { status, data, error } = await store.dispatch(
       Api.endpoints.Charts.initiate({
-        incident: fakeIncidentAirtimeB,
+        incident: fakeIncidentAirtimeB1,
         charts: [TimeSeriesChartTypes.AirtimeUtilizationChart],
         minGranularity: 'PT15M',
         buffer: noBuffer
