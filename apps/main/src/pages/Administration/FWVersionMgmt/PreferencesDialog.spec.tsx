@@ -93,9 +93,12 @@ describe('Firmware Venues Table', () => {
     within(dialog).getByText('Choose update schedule method:')
     const updateVenueButton = within(dialog).getByRole('button', { name: /Save Preferences/i })
     expect(updateVenueButton).toBeDisabled()
+
     const manuallyRadio = within(dialog).getByRole('radio', { name: /schedule manually/i })
     await userEvent.click(manuallyRadio)
-    await expect(updateVenueButton).not.toBeDisabled()
+    await expect(manuallyRadio).toBeChecked()
+    expect(updateVenueButton).not.toBeDisabled()
+
     await userEvent.click(updateVenueButton)
     expect(updatePreferencesRequestSpy).toBeCalled()
     expect(dialog).not.toBeVisible()
