@@ -18,7 +18,7 @@ import { drawerContentConfig } from './config'
 type FormItemProps = {
   name: string,
   labelKey: string,
-  component: React.ReactNode,
+  component: React.ReactNode
 }
 
 const FormItem: React.FC<FormItemProps> = ({ name, labelKey, component }) => (
@@ -30,14 +30,20 @@ const FormItem: React.FC<FormItemProps> = ({ name, labelKey, component }) => (
     </Col>
   </Row>
 )
-
+export type UserType = 'edit' | 'create' | 'createExternal'
 type UserDrawerProps = {
   opened: boolean
   selectedRow: ManagedUser | null
-  type: 'edit' | 'create'
+  type: UserType
   toggleDrawer: CallableFunction
 }
-
+const drawerTitle = (type: string) : string => {
+  switch(type) {
+    case 'create': return 'Create User'
+    case 'createExternal': return 'Invite 3RD Party'
+    default: return 'Edit User'
+  }
+}
 export const UserDrawer: React.FC<UserDrawerProps> = ({
   opened,
   selectedRow,
@@ -51,6 +57,8 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
   const [updateUser] = useUpdateUserMutation()
   const [addUser] = useAddUserMutation()
   const handleSaveClick = async () => {
+    console.log('updated user', updatedUser)
+    return
     setIsloading(true)
     if (type === 'edit') {
       await updateUser({
@@ -137,15 +145,15 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
   return <Drawer
     visible={opened}
     title={$t(
-      { defaultMessage: '{type} User' },
-      { type: type === 'edit' ? 'Edit' : 'Create' }
+      { defaultMessage: '{title}' },
+      { title: drawerTitle(type) }
     )}
     onClose={handleCancelClick}
     footer={drawerFooter}
     width={400}
   ><Loader states={[{ isLoading }]}>
       <StepsFormLegacy.StepForm>
-        {drawerContentConfig[type as 'edit' | 'create'].map((item) => (
+        {drawerContentConfig[type as UserType].map((item) => (
           <FormItem
             key={item.name}
             name={item.name}

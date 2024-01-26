@@ -8,8 +8,8 @@ import { useGetUsersQuery }                      from '@acx-ui/analytics/service
 import { ManagedUser }                           from '@acx-ui/analytics/utils'
 import { Loader, PageHeader, Tooltip, Dropdown } from '@acx-ui/components'
 
-import { UsersTable } from './Table'
-import { UserDrawer } from './UserDrawer'
+import { UsersTable }           from './Table'
+import { UserDrawer, UserType } from './UserDrawer'
 
 const title = defineMessage({
   defaultMessage: '{usersCount, plural, one {User} other {Users}}'
@@ -31,7 +31,7 @@ const info = defineMessage({
 export default function Users () {
   const { $t } = useIntl()
   const [openDrawer, setOpenDrawer] = useState(false)
-  const [drawerType, setDrawerType] = useState<'edit' | 'create'>('edit')
+  const [drawerType, setDrawerType] = useState<UserType>('edit')
   const [selectedRow, setSelectedRow] = useState<ManagedUser | null>(null)
 
   const usersQuery = useGetUsersQuery()
@@ -49,7 +49,7 @@ export default function Users () {
     }, {
       key: 'third-party-user',
       label: <div onClick={()=> {
-        setDrawerType('create')
+        setDrawerType('createExternal')
         setOpenDrawer(!openDrawer)}
       }>
         {$t({ defaultMessage: '3rd Party' })}</div>
