@@ -50,6 +50,7 @@ export function MacRegistrationsTab () {
     value: ''
   }
 
+  const settingsId = 'mac-regs-table'
   const tableQuery = useTableQuery({
     useQuery: useSearchMacRegistrationsQuery,
     sorter,
@@ -59,7 +60,8 @@ export function MacRegistrationsTab () {
       searchCriteriaList: [
         { ...filter }
       ]
-    }
+    },
+    pagination: { settingsId }
   })
 
   useEffect(()=>{
@@ -254,7 +256,7 @@ export function MacRegistrationsTab () {
         onClose={() => setUploadCsvDrawerVisible(false)} />
       <Table
         enableApiFilter
-        settingsId='mac-regs-table'
+        settingsId={settingsId}
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}

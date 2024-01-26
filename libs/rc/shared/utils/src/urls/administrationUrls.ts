@@ -51,14 +51,14 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getRecoveryPassphrase: {
     method: 'get',
-    url: '/recoveryPskSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/recovery',
+    url: '/wifiNetworks/recoveryPassphraseSettings',
+    oldUrl: '/recoveryPskSettings',
     newApi: true
   },
   updateRecoveryPassphrase: {
     method: 'put',
-    url: '/recoveryPskSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/recovery',
+    url: '/wifiNetworks/recoveryPassphraseSettings',
+    oldUrl: '/recoveryPskSettings',
     newApi: true
   },
   getDelegations: {

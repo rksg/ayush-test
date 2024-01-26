@@ -83,9 +83,11 @@ interface schedule {
 export function VenueNetworksTab () {
   const { $t } = useIntl()
   const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
+  const settingsId = 'venue-networks-table'
   const tableQuery = useTableQuery({
     useQuery: isApCompatibleCheckEnabled ? useVenueNetworkTableQuery: useVenueNetworkListQuery,
-    defaultPayload
+    defaultPayload,
+    pagination: { settingsId }
   })
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
@@ -407,7 +409,7 @@ export function VenueNetworksTab () {
       { isLoading: false, isFetching: isDeleteNetworkUpdating }
     ]}>
       <Table
-        settingsId='venue-networks-table'
+        settingsId={settingsId}
         rowKey='id'
         actions={filterByAccess(actions)}
         // rowSelection={{
