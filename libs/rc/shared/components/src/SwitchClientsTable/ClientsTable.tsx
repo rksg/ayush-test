@@ -46,12 +46,13 @@ export const defaultSwitchClientPayload = {
 }
 
 export function ClientsTable (props: {
+  settingsId?: string
   tableQuery?: TableQuery<SwitchClient, RequestPayload<unknown>, unknown>
   searchable?: boolean
   filterableKeys?: { [key: string]: ColumnType['filterable'] }
 }) {
   const params = useParams()
-  const { searchable, filterableKeys } = props
+  const { searchable, filterableKeys, settingsId = 'switch-clients-table' } = props
   const { setSwitchCount, setTableQueryFilters } = useContext(SwitchClientContext)
   const isDhcpClientsEnabled = useIsSplitOn(Features.SWITCH_DHCP_CLIENTS)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
@@ -69,7 +70,8 @@ export function ClientsTable (props: {
     search: {
       searchTargetFields: defaultSwitchClientPayload.searchTargetFields
     },
-    option: { skip: !!props.tableQuery }
+    option: { skip: !!props.tableQuery },
+    pagination: { settingsId }
   })
   const tableQuery = props.tableQuery || inlineTableQuery
   useEffect(() => {
@@ -253,7 +255,7 @@ export function ClientsTable (props: {
         tableQuery
       ]}>
         <Table
-          settingsId='switch-clients-table'
+          settingsId={settingsId}
           columns={getCols(useIntl())}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

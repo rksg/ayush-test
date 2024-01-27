@@ -66,7 +66,7 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
   const location = useLocation()
   const params = useParams()
   const filters = getFilters(params) as FILTER
-  const { searchable, filterables } = props
+  const { searchable, filterables, settingsId = 'ap-group-table' } = props
   const { setApGroupsCount } = useContext(ApGroupsTabContext)
   const apGroupListTableQuery = usePollingTableQuery({
     useQuery: useApGroupsListQuery,
@@ -82,7 +82,8 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
       sortOrder: defaultApGroupPayload.sortOrder
     },
     option: { skip: Boolean(props.tableQuery) },
-    enableSelectAllPagesData: ['id', 'name']
+    enableSelectAllPagesData: ['id', 'name'],
+    pagination: { settingsId }
   })
 
   const tableQuery = props.tableQuery || apGroupListTableQuery
@@ -263,7 +264,7 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
     <Loader states={[tableQuery]}>
       <Table<ApGroupViewModel>
         {...props}
-        settingsId='ap-group-table'
+        settingsId={settingsId}
         columns={columns}
         dataSource={tableData}
         getAllPagesData={tableQuery.getAllPagesData}

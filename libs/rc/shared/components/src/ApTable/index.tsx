@@ -148,7 +148,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
   const location = useLocation()
   const params = useParams()
   const filters = getFilters(params) as FILTER
-  const { searchable, filterables, enableGroups=true, enableApCompatibleCheck=false } = props
+  const { searchable, filterables, enableGroups=true, enableApCompatibleCheck=false, settingsId = 'ap-table' } = props
   const { setApsCount } = useContext(ApsTabContext)
   const [ compatibilitiesDrawerVisible, setCompatibilitiesDrawerVisible ] = useState(false)
   const [ selectedApSN, setSelectedApSN ] = useState('')
@@ -175,7 +175,8 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
     },
     option: { skip: Boolean(props.tableQuery) },
     enableSelectAllPagesData: ['id', 'name', 'serialNumber', 'deviceGroupName', 'deviceGroupId',
-      'deviceStatus', 'fwVersion']
+      'deviceStatus', 'fwVersion'],
+    pagination: { settingsId }
   })
   const tableQuery = props.tableQuery || apListTableQuery
 
@@ -673,7 +674,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
     <Loader states={[tableQuery]}>
       <Table<APExtended | APExtendedGrouped>
         {...props}
-        settingsId='ap-table'
+        settingsId={settingsId}
         columns={columns}
         columnState={enableApCompatibleCheck?{ onChange: handleColumnStateChange } : {}}
         dataSource={tableData}

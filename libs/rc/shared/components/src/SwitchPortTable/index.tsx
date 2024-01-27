@@ -80,6 +80,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
     'crcErr', 'inDiscard', 'usedInFormingStack', 'mediaType', 'poeUsage'
   ]
 
+  const settingsId = 'switch-port-table'
   const tableQuery = usePollingTableQuery({
     useQuery: useSwitchPortlistQuery,
     defaultPayload: {
@@ -94,7 +95,8 @@ export function SwitchPortTable ({ isVenueLevel }: {
       sortField: 'portIdentifierFormatted',
       sortOrder: 'ASC'
     },
-    enableSelectAllPagesData: queryFields
+    enableSelectAllPagesData: queryFields,
+    pagination: { settingsId }
   })
 
   const columns: TableProps<SwitchPortViewModel>['columns'] = [{
@@ -292,7 +294,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
 
   return <Loader states={[tableQuery]}>
     <Table
-      settingsId='switch-port-table'
+      settingsId={settingsId}
       columns={getColumns()}
       dataSource={transformData(tableQuery.data?.data)}
       getAllPagesData={getAllPagesData}
