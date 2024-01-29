@@ -24,10 +24,12 @@ export default function RadiusAttributeGroupTable () {
   const tenantBasePath: Path = useTenantLink('')
 
   const RadiusAttributeGroupTable = () => {
+    const settingsId = 'radius-attribute-group-list-table'
     const tableQuery = useTableQuery({
       useQuery: useRadiusAttributeGroupListByQueryQuery,
       apiParams: { sort: 'name,ASC', excludeContent: 'false' },
-      defaultPayload: {}
+      defaultPayload: {},
+      pagination: { settingsId }
     })
 
     const { policyListMap, getPolicyIsLoading } = useAdaptivePolicyListQuery(
@@ -148,7 +150,7 @@ export default function RadiusAttributeGroupTable () {
       ]}>
         <Table
           enableApiFilter
-          settingsId='radius-attribute-group-list-table'
+          settingsId={settingsId}
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

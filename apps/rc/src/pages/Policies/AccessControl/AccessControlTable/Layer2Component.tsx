@@ -59,9 +59,11 @@ const Layer2Component = () => {
     id: '', isEdit: false
   })
 
+  const settingsId = 'policies-access-control-layer2-table'
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedL2AclProfileListQuery,
-    defaultPayload
+    defaultPayload,
+    pagination: { settingsId }
   })
 
   useEffect(() => {
@@ -115,12 +117,14 @@ const Layer2Component = () => {
   const rowActions: TableProps<L2AclPolicy>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
+      visible: (selectedItems => selectedItems.length > 0),
       onClick: (rows, clearSelection) => {
         doDelete(rows, clearSelection)
       }
     },
     {
       label: $t({ defaultMessage: 'Edit' }),
+      visible: (selectedItems => selectedItems.length === 1),
       onClick: ([{ id }]) => {
         setEditMode({ id: id, isEdit: true })
       }
@@ -133,7 +137,7 @@ const Layer2Component = () => {
         onlyAddMode={addModeStatus}
       />
       <Table<L2AclPolicy>
-        settingsId='policies-access-control-layer2-table'
+        settingsId={settingsId}
         columns={useColumns(networkFilterOptions, editMode, setEditMode)}
         enableApiFilter={true}
         dataSource={tableQuery.data?.data}

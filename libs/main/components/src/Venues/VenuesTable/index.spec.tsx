@@ -1,9 +1,11 @@
 import { rest } from 'msw'
 
 import { useIsTierAllowed, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { venueApi }                       from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiUrlsInfo }   from '@acx-ui/rc/utils'
-import { Provider }                       from '@acx-ui/store'
+import { Provider, store }                from '@acx-ui/store'
 import {
+  act,
   mockServer,
   render,
   screen,
@@ -30,6 +32,10 @@ jest.mock('react-router-dom', () => ({
 describe('Venues Table', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
+    act(() => {
+      store.dispatch(venueApi.util.resetApiState())
+    })
+
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVenuesList.url,

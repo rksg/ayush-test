@@ -25,10 +25,12 @@ const defaultPayload = {
 export function ApNetworksTab () {
   const { $t } = useIntl()
   const apiParams = useApContext() as Record<string, string>
+  const settingsId = 'ap-networks-table'
   const tableQuery = useTableQuery({
     useQuery: useApNetworkListQuery,
     defaultPayload,
-    apiParams
+    apiParams,
+    pagination: { settingsId }
   })
 
   const columns: TableProps<Network>['columns'] = React.useMemo(() => {
@@ -87,7 +89,7 @@ export function ApNetworksTab () {
   return (
     <Loader states={[tableQuery]}>
       <Table
-        settingsId='ap-networks-table'
+        settingsId={settingsId}
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
