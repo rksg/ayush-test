@@ -90,7 +90,6 @@ describe('Stateful ACL config drawer', () => {
 
     expect(await screen.findByText('Stateful ACL Settings')).toBeVisible()
 
-    const rows = await screen.findAllByRole('row')
     // check rules
     await screen.findByRole('row', { name: /Custom/ })
     const igmpRow = await screen.findByRole('row', { name: /IGMP/ })
