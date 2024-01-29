@@ -60,7 +60,7 @@ const EdgeClusterDhcpTab = () => {
   })
 
   useEffect(() => {
-    const isActive = (poolTableQuery.data?.totalCount || 0) > 0;
+    const isActive = (poolTableQuery.data?.totalCount || 0) > 0
     setIsDhcpServiceActive(isActive)
 
     const dhcpId = poolTableQuery.data?.data[0]?.dhcpId

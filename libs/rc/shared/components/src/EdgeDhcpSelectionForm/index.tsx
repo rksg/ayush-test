@@ -3,10 +3,11 @@ import { Form, Select, Space } from 'antd'
 import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
 
-import { Loader, Table, TableProps }      from '@acx-ui/components'
-import { AddEdgeDhcpServiceModal }        from '@acx-ui/rc/components'
-import { useGetEdgeDhcpListQuery }        from '@acx-ui/rc/services'
-import { EdgeDhcpPool, EdgeDhcpSetting }  from '@acx-ui/rc/utils'
+import { Loader, Table, TableProps }     from '@acx-ui/components'
+import { useGetEdgeDhcpListQuery }       from '@acx-ui/rc/services'
+import { EdgeDhcpPool, EdgeDhcpSetting } from '@acx-ui/rc/utils'
+
+import { AddEdgeDhcpServiceModal } from '../AddEdgeDhcpServiceModal'
 
 interface EdgeDhcpSelectionFormProps {
   hasNsg?: boolean
@@ -17,7 +18,7 @@ export const EdgeDhcpSelectionForm = (props: EdgeDhcpSelectionFormProps) => {
   const params = useParams()
   const { hasNsg } = props
   const { $t } = useIntl()
-  
+
   const {
     data: edgeDhcpData,
     edgeDhcpOptions,
@@ -64,7 +65,7 @@ export const EdgeDhcpSelectionForm = (props: EdgeDhcpSelectionFormProps) => {
   ]
 
   const content = <>
-    <Form.Item label={$t({ defaultMessage: 'DHCP Service' })} data-testid="edge-cluster-dhcp-select-form-label">
+    <Form.Item label={$t({ defaultMessage: 'DHCP Service' })} data-testid='edge-cluster-dhcp-select-form-label'>
       <Space>
         <Form.Item
           name='dhcpId'
@@ -100,16 +101,16 @@ export const EdgeDhcpSelectionForm = (props: EdgeDhcpSelectionFormProps) => {
         }}
       >
         {({ getFieldValue }) => {
-            const dhcpId = getFieldValue('dhcpId')
+          const dhcpId = getFieldValue('dhcpId')
 
-            return (dhcpId &&
+          return (dhcpId &&
               <Table
                 rowKey='id'
                 type='form'
                 columns={columns}
                 dataSource={edgeDhcpData && edgeDhcpData[dhcpId]?.dhcpPools}
               />)
-          }}
+        }}
       </Form.Item>
     </Loader>
   </>
