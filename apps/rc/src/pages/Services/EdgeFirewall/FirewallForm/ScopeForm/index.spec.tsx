@@ -104,6 +104,7 @@ describe('Scope Form', () => {
     const rows = await screen.findAllByRole('row', { name: /Smart Edge/i })
     expect(rows.length).toBe(5)
 
+    expect(within(rows[1]).getByRole('cell', { name: /Smart Edge 2/i })).toBeVisible()
     await click(within(rows[1]).getByRole('switch'))
 
     expect(mockedSetFieldValue).toBeCalledWith('selectedEdges', [
@@ -136,7 +137,9 @@ describe('Scope Form', () => {
     const rows = await screen.findAllByRole('row', { name: /Smart Edge/i })
     expect(rows.length).toBe(5)
 
+    expect(within(rows[0]).getByRole('cell', { name: /Smart Edge 1/i })).toBeVisible()
     expect(within(rows[0]).getByRole('switch')).toBeChecked()
+    expect(within(rows[2]).getByRole('cell', { name: /Smart Edge 3/i })).toBeVisible()
     expect(within(rows[2]).getByRole('switch')).toBeChecked()
     await click(within(rows[0]).getByRole('checkbox'))
     await click(await screen.findByRole('button', { name: 'Deactivate' }))
@@ -177,6 +180,7 @@ describe('Scope Form', () => {
     const rows = await screen.findAllByRole('row', { name: /Smart Edge/i })
     expect(rows.length).toBe(5)
 
+    expect(within(rows[0]).getByRole('cell', { name: /Smart Edge 1/i })).toBeVisible()
     const switchBtn = within(rows[0]).getByRole('switch')
     expect(switchBtn).toBeChecked()
     await click(switchBtn)

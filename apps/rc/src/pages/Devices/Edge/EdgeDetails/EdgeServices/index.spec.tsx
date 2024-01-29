@@ -49,8 +49,9 @@ describe('Edge Detail Services Tab', () => {
         route: { params }
       })
 
-    expect(await screen.findByRole('row', { name: /DHCP-1/i })).toBeVisible()
-    expect(await screen.findByRole('row', { name: /NSG-1/i })).toBeVisible()
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /DHCP-1/i })).toBeVisible()
+    expect(within(rows[2]).getByRole('cell', { name: /NSG-1/i })).toBeVisible()
   })
 
   it('should render service detail drawer when click service name', async () => {
@@ -94,7 +95,9 @@ describe('Edge Detail Services Tab', () => {
         route: { params }
       })
     const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /DHCP-1/i })).toBeVisible()
     await user.click(within(rows[1]).getByRole('checkbox')) //DHCP-1
+    expect(within(rows[2]).getByRole('cell', { name: /NSG-1/i })).toBeVisible()
     await user.click(within(rows[2]).getByRole('checkbox')) //NSG-1
     await user.click(screen.getByRole('button', { name: 'Remove' }))
     const removeDialog = await screen.findByRole('dialog')
@@ -123,8 +126,9 @@ describe('Edge Detail Services Tab', () => {
         route: { params }
       })
 
-    const row1 = await screen.findByRole('row', { name: /DHCP-1/i })
-    await user.click(within(row1).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /DHCP-1/i })).toBeVisible()
+    await user.click(within(rows[1]).getByRole('checkbox'))
 
     const removeBtn = await screen.findByRole('button', { name: 'Remove' })
     expect(removeBtn).toBeDisabled()
@@ -143,8 +147,9 @@ describe('Edge Detail Services Tab', () => {
         route: { params }
       })
 
-    const row1 = await screen.findByRole('row', { name: /NSG-1/i })
-    await user.click(within(row1).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[2]).getByRole('cell', { name: /NSG-1/i })).toBeVisible()
+    await user.click(within(rows[2]).getByRole('checkbox'))
 
     const restartBtn = await screen.findByRole('button', { name: 'Restart' })
     expect(restartBtn).toBeDisabled()
@@ -164,11 +169,13 @@ describe('Edge Detail Services Tab', () => {
       })
 
     const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /DHCP-1/i })).toBeVisible()
     await user.click(within(rows[1]).getByRole('checkbox')) //DHCP-1
 
     let restartBtn = await screen.findByRole('button', { name: 'Restart' })
     expect(restartBtn).toBeEnabled()
 
+    expect(within(rows[2]).getByRole('cell', { name: /NSG-1/i })).toBeVisible()
     await user.click(within(rows[3]).getByRole('checkbox')) //NSG-1
 
     restartBtn = await screen.findByRole('button', { name: 'Restart' })

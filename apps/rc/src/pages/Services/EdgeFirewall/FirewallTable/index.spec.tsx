@@ -164,9 +164,12 @@ describe('Firewall Table', () => {
     )
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
-    const rows = await screen.findAllByRole('row', { name: /TestFirewall/i })
-    await user.click(within(rows[1]).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+
+    expect(within(rows[2]).getByRole('cell', { name: /TestFirewall2/i })).toBeVisible()
     await user.click(within(rows[2]).getByRole('checkbox'))
+    expect(within(rows[3]).getByRole('cell', { name: /TestFirewall3/i })).toBeVisible()
+    await user.click(within(rows[3]).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Delete' }))
     const dialogTitle = await screen.findByText('Delete "2 Firewall"?')
     await user.click(screen.getByRole('button', { name: 'Delete Firewall' }))
@@ -185,7 +188,9 @@ describe('Firewall Table', () => {
     )
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const rows = await screen.findAllByRole('row', { name: /TestFirewall/i })
+    expect(within(rows[0]).getByRole('cell', { name: /TestFirewall1/i })).toBeVisible()
     await user.click(within(rows[0]).getByRole('checkbox'))
+    expect(within(rows[1]).getByRole('cell', { name: /TestFirewall2/i })).toBeVisible()
     await user.click(within(rows[1]).getByRole('checkbox'))
 
     const deleteBtn = await screen.findByRole('button', { name: 'Delete' })

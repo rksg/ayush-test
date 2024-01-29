@@ -150,7 +150,9 @@ describe('Notification List', () => {
       })
 
     const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /testUser 1/i })).toBeVisible()
     await userEvent.click(within(rows[1]).getByRole('checkbox')) //testUser 1
+    expect(within(rows[2]).getByRole('cell', { name: /testUser 2/i })).toBeVisible()
     await userEvent.click(within(rows[2]).getByRole('checkbox')) //testUser 2
     await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
     await screen.findByText('Delete "2 Recipients"?')

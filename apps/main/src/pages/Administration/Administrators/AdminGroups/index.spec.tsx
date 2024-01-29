@@ -183,10 +183,13 @@ describe('Admin Groups Table', () => {
       })
 
     const rows = await screen.findAllByRole('row')
-    fireEvent.click(within(rows[0]).getByRole('checkbox')) //IT_Admins
-    expect(within(rows[0]).getByRole('checkbox')).toBeChecked()
+    expect(within(rows[3]).getByRole('cell', { name: 'IT_Admins' })).toBeVisible()
+    fireEvent.click(within(rows[3]).getByRole('checkbox')) //IT_Admins
+    expect(within(rows[3]).getByRole('checkbox')).toBeChecked()
+    expect(within(rows[2]).getByRole('cell', { name: 'test group 1' })).toBeVisible()
     fireEvent.click(within(rows[2]).getByRole('checkbox')) //test group 1
-    expect(within(rows[1]).getByRole('checkbox')).toBeChecked()
+    expect(within(rows[2]).getByRole('checkbox')).toBeChecked()
+
     expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
   })
 

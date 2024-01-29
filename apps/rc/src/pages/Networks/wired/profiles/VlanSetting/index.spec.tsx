@@ -151,8 +151,9 @@ describe('Wired - VlanSetting', () => {
         route: { params, path: '/:tenantId/networks/wired/profiles/add' }
       })
 
-    const row = await screen.findByRole('row', { name: /vlan-02/i })
-    await userEvent.click(row)
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[2]).getByRole('cell', { name: /vlan-02/i })).toBeVisible()
+    await userEvent.click(rows[2])
     await userEvent.click(await screen.findByRole('button', { name: /Edit/i }))
 
     const drawer = await screen.findByRole('dialog')
@@ -194,9 +195,9 @@ describe('Wired - VlanSetting', () => {
         route: { params, path: '/:tenantId/networks/wired/profiles/add' }
       })
 
-    await screen.findByRole('heading', { level: 3, name: /VLANs/ })
-    const row = await screen.findByRole('row', { name: /vlan-01/i })
-    const radio = await within(row).findByRole('radio')
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /vlan-01/i })).toBeVisible()
+    const radio = await within(rows[1]).findByRole('radio')
     await userEvent.click(radio)
     const deleteButton1 = await screen.findByRole('button', { name: /Delete/i })
     await userEvent.click(deleteButton1)

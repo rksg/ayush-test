@@ -190,8 +190,8 @@ describe('Administrators Table', () => {
     await waitFor(() => {
       expect(mockReqAdminsData).toBeCalled()
     })
-    await screen.findByRole('row', { name: /dog1551@email.com/i })
     const rows = await screen.findAllByRole('row', { name: /@email.com/i })
+    expect(within(rows[2]).getByRole('cell', { name: /dog1551@email.com/ })).toBeVisible()
     expect(rows.length).toBe(3)
     expect(await screen.findByRole('button', { name: 'Add Administrator' })).toBeInTheDocument()
     await userEvent.click(await screen.findByRole('button', { name: 'Add Administrator' }))
@@ -222,11 +222,13 @@ describe('Administrators Table', () => {
         route: { params }
       })
 
-    const rows = await screen.findAllByRole('row', { name: /@email.com/i })
-    fireEvent.click(within(rows[0]).getByRole('checkbox')) //abc.cheng@email.com
-    expect(within(rows[0]).getByRole('checkbox')).toBeChecked()
-    fireEvent.click(within(rows[1]).getByRole('checkbox')) //erp.cheng@email.com
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: 'abc.cheng@email.com' })).toBeVisible()
+    fireEvent.click(within(rows[1]).getByRole('checkbox')) //abc.cheng@email.com
     expect(within(rows[1]).getByRole('checkbox')).toBeChecked()
+    expect(within(rows[2]).getByRole('cell', { name: 'erp.cheng@email.com' })).toBeVisible()
+    fireEvent.click(within(rows[2]).getByRole('checkbox')) //erp.cheng@email.com
+    expect(within(rows[2]).getByRole('checkbox')).toBeChecked()
     expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
   })
 
@@ -272,9 +274,11 @@ describe('Administrators Table', () => {
         route: { params }
       })
 
-    const rows = await screen.findAllByRole('row', { name: /@email.com/i })
-    await userEvent.click(within(rows[0]).getByRole('checkbox')) //abc.cheng@email.com
-    await userEvent.click(within(rows[1]).getByRole('checkbox')) //erp.cheng@email.com
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: 'abc.cheng@email.com' })).toBeVisible()
+    await userEvent.click(within(rows[1]).getByRole('checkbox')) //abc.cheng@email.com
+    expect(within(rows[2]).getByRole('cell', { name: 'erp.cheng@email.com' })).toBeVisible()
+    await userEvent.click(within(rows[2]).getByRole('checkbox')) //erp.cheng@email.com
     await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
     await screen.findByText('Delete "2 Administrators"?')
     const submitBtn = screen.getByRole('button', { name: 'Delete Administrators' })

@@ -100,7 +100,8 @@ describe('Firmware Venues Table', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const rows = await screen.findAllByRole('row')
-    await userEvent.click(within(rows[3]).getByRole('checkbox'))
+    expect(within(rows[4]).getByRole('cell', { name: /My-Venue/ })).toBeVisible()
+    await userEvent.click(within(rows[4]).getByRole('checkbox')) //My-Venue
 
     const updateButton = screen.getByRole('button', { name: /Update Now/i })
     await userEvent.click(updateButton)
@@ -123,8 +124,10 @@ describe('Firmware Venues Table', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const rows = await screen.findAllByRole('row')
-    await userEvent.click(within(rows[3]).getByRole('checkbox')) //My-Venue
-    await userEvent.click(within(rows[4]).getByRole('checkbox')) //Peter-Venue
+    expect(within(rows[4]).getByRole('cell', { name: /My-Venue/ })).toBeVisible()
+    await userEvent.click(within(rows[4]).getByRole('checkbox')) //My-Venue
+    expect(within(rows[5]).getByRole('cell', { name: /Peter-Venue/ })).toBeVisible()
+    await userEvent.click(within(rows[5]).getByRole('checkbox')) //Peter-Venue
 
     const updateButton = screen.getByRole('button', { name: /Update Now/i })
     await userEvent.click(updateButton)
@@ -223,7 +226,9 @@ describe('Firmware Venues Table', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const rows = await screen.findAllByRole('row')
-    expect(within(rows[1]).getByRole('cell', { name: '6.1.0.10.413' })).toBeVisible() //Ben-Venue-US/
+    expect(within(rows[1]).getByRole('cell', { name: 'Ben-Venue-US' })).toBeVisible() //Ben-Venue-US
+    expect(within(rows[1]).getByRole('cell', { name: '6.1.0.10.413' })).toBeVisible() //Ben-Venue-US
+    expect(within(rows[2]).queryByRole('cell', { name: 'Legacy-Venue' })).toBeNull() //Legacy-Venue
     expect(within(rows[2]).queryByRole('cell', { name: '6.2.0.103.513' })).toBeNull() //Legacy-Venue
   })
 

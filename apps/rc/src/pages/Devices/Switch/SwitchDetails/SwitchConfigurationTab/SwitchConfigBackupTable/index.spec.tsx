@@ -373,11 +373,13 @@ describe('SwitchConfigBackupTable', () => {
     expect(tbody).toBeVisible()
     const rows = await within(tbody).findAllByRole('row')
     expect(rows).toHaveLength(inRestoreProgressList.data.length)
-
+    expect(within(rows[0]).getByRole('cell', { name: /Manual_20230111181247/i })).toBeVisible()
     await userEvent.click(await within(rows[0]).findByRole('checkbox')) //Manual_20230111181247
 
+    expect(within(rows[1]).getByRole('cell', { name: /SCHEDULED_1/i })).toBeVisible()
     await userEvent.click(await within(rows[1]).findByRole('checkbox')) //SCHEDULED_1
 
+    expect(within(rows[2]).getByRole('cell', { name: /testBackup/i })).toBeVisible()
     await userEvent.click(await within(rows[2]).findByRole('checkbox')) //testBackup
     expect(await screen.findByRole('button', { name: 'Restore' })).toBeDisabled()
   })

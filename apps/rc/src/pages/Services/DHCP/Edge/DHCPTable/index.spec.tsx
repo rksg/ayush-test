@@ -115,8 +115,9 @@ describe('EdgeDhcpTable', () => {
         route: { params, path: tablePath }
       })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    const row = await screen.findByRole('row', { name: /TestDHCP-1/i })
-    await user.click(within(row).getByRole('radio'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /TestDHCP-1/i })).toBeVisible()
+    await user.click(within(rows[1]).getByRole('radio'))
     await user.click(screen.getByRole('button', { name: 'Edit' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/${getServiceDetailsLink({
@@ -152,8 +153,9 @@ describe('EdgeDhcpTable', () => {
         route: { params, path: tablePath }
       })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    const row = await screen.findByRole('row', { name: /TestDHCP-1/i })
-    await user.click(within(row).getByRole('radio'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /TestDHCP-1/i })).toBeVisible()
+    await user.click(within(rows[1]).getByRole('radio'))
     await user.click(screen.getByRole('button', { name: 'Delete' }))
     await screen.findByText('Delete "TestDHCP-1"?')
     const dialog = screen.queryByRole('dialog')
@@ -189,8 +191,9 @@ describe('EdgeDhcpTable', () => {
         route: { params, path: tablePath }
       })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    const row = await screen.findByRole('row', { name: /DHCP-1/i })
-    await user.click(within(row).getByRole('radio'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /DHCP-1/i })).toBeVisible()
+    await user.click(within(rows[1]).getByRole('radio'))
     await user.click(screen.getByRole('button', { name: 'Update Now' }))
     const dialog = await screen.findByRole('dialog')
     screen.getByText('Service Update')
@@ -226,15 +229,17 @@ describe('EdgeDhcpTable', () => {
       </Provider>, {
         route: { params, path: tablePath }
       })
+
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    const row = await screen.findByRole('row', { name: /TestDHCP-1/i })
-    expect(await within(row).findByText('Yes')).toBeValid()
-    const row1 = await screen.findByRole('row', { name: /TestDHCP-2/i })
-    expect(await within(row1).findByText('Yes')).toBeValid()
-    expect(await within(row1).findByText('1.0.1, 1.0.2')).toBeValid()
-    const row2 = await screen.findByRole('row', { name: /TestDHCP-3/i })
-    expect(await within(row2).findByText('No')).toBeValid()
-    const row3 = await screen.findByRole('row', { name: /TestDHCP-4/i })
-    expect(await within(row3).findByText('No')).toBeValid()
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /TestDHCP-1/i })).toBeVisible()
+    expect(await within(rows[1]).findByText('Yes')).toBeValid() //TestDHCP-1
+    expect(within(rows[2]).getByRole('cell', { name: /TestDHCP-2/i })).toBeVisible()
+    expect(await within(rows[2]).findByText('Yes')).toBeValid() //TestDHCP-2
+    expect(await within(rows[2]).findByText('1.0.1, 1.0.2')).toBeValid() //TestDHCP-2
+    expect(within(rows[3]).getByRole('cell', { name: /TestDHCP-3/i })).toBeVisible()
+    expect(await within(rows[3]).findByText('No')).toBeValid() //TestDHCP-3
+    expect(within(rows[4]).getByRole('cell', { name: /TestDHCP-4/i })).toBeVisible()
+    expect(await within(rows[4]).findByText('No')).toBeValid() //TestDHCP-4
   })
 })

@@ -446,18 +446,25 @@ describe('DpskPassphraseManagement', () => {
       }
     )
 
+    const rows = await screen.findAllByRole('row')
     const revokedRecord = mockedDpskPassphraseList.data.find(p => p.revocationDate)!
-    const revokedRow = await screen.findByRole('row', { name: new RegExp(revokedRecord.username) })
+    expect(within(rows[3]).getByRole('cell',
+      { name: new RegExp(revokedRecord.username) })).toBeVisible()
+    const revokedRow = rows[3]
 
     const activeRecord = mockedDpskPassphraseList.data.find(p => !p.expirationDate)!
-    const activeRow = await screen.findByRole('row', { name: new RegExp(activeRecord.username) })
+    expect(within(rows[4]).getByRole('cell',
+      { name: new RegExp(activeRecord.username) })).toBeVisible()
+    const activeRow = rows[4]
 
     const expiredRecord = mockedDpskPassphraseList.data.find(p => p.expirationDate)!
-    const expiredRow = await screen.findByRole('row', { name: new RegExp(expiredRecord.username) })
+    expect(within(rows[1]).getByRole('cell',
+      { name: new RegExp(expiredRecord.username) })).toBeVisible()
+    const expiredRow = rows[1]
 
-    expect(await within(revokedRow).findByText('Revoked (2022-12-24 08:00 AM)')).toBeVisible()
-    expect(await within(activeRow).findByText('Active')).toBeVisible()
-    expect(await within(expiredRow).findByText('Expired')).toBeVisible()
+    expect(within(revokedRow).getByText('Revoked (2022-12-24 08:00 AM)')).toBeVisible()
+    expect(within(activeRow).getByText('Active')).toBeVisible()
+    expect(within(expiredRow).getByText('Expired')).toBeVisible()
   })
 
   it('should not be edited when it is mapped to Identity', async () => {
