@@ -1,16 +1,15 @@
 import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
 
-import { EdgeSdLanUrls, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 import {
   Provider
 } from '@acx-ui/store'
 import {
-  mockServer,
   render,
   screen,
   waitFor
 } from '@acx-ui/test-utils'
+import { RequestPayload } from '@acx-ui/types'
 
 import { EdgeSdLanFormModelP2 } from '../EdgeSdLanForm'
 
@@ -42,20 +41,27 @@ jest.mock('../EdgeSdLanForm', () => ({
   }
 }))
 
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  useEdgeSdLanActions: () => {
+    return { addEdgeSdLan: (req: RequestPayload) => {
+      mockedAddFn(req.payload)
+      return new Promise((resolve) => {
+        resolve(true)
+        setTimeout(() => {
+          (req.callback as Function)({
+            response: { id: 'mocked_service_id' }
+          })
+        }, 300)
+      })
+    } }
+  }
+}))
+
 describe('Add SD-LAN service', () => {
   beforeEach(() => {
     mockedAddFn.mockReset()
     mockedSubmitDataGen.mockReset()
-
-    mockServer.use(
-      rest.post(
-        EdgeSdLanUrls.addEdgeSdLan.url,
-        (req, res, ctx) => {
-          mockedAddFn(req.body)
-          return res(ctx.status(202))
-        }
-      )
-    )
   })
 
   it('should correctly add service', async () => {

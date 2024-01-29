@@ -182,6 +182,9 @@ export {
 export type { ActivatedNetworksTableP2Props }
   from './EdgeSdLan/SdLanNetworkTable/SdLanP2NetworkTable'
 export {
+  useEdgeSdLanActions
+} from './EdgeSdLan/useEdgeSdLanActions'
+export {
   ApCompatibilityType,
   ApCompatibilityQueryTypes,
   InCompatibilityFeatures,
@@ -207,3 +210,4 @@ export * from './ZoomWidget'
 export * from './NetworkForm'
 export * from './NetworkDetails'
 export * from './users'
+export * from './configTemplates'
