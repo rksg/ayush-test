@@ -47,9 +47,11 @@ export default function SyslogTable () {
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDelSyslogPoliciesMutation()
 
+  const settingsId = 'policies-syslog-table'
   const tableQuery = useTableQuery({
     useQuery: useSyslogPolicyListQuery,
-    defaultPayload
+    defaultPayload,
+    pagination: { settingsId }
   })
 
   const doDelete = (selectedRows: SyslogPolicyListType[], callback: () => void) => {
@@ -111,7 +113,7 @@ export default function SyslogTable () {
       />
       <Loader states={[tableQuery]}>
         <Table<SyslogPolicyListType>
-          settingsId='policies-syslog-table'
+          settingsId={settingsId}
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

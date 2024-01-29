@@ -165,14 +165,15 @@ const FirewallEdgesTable = (props: { data?: FirewallFormEdge[] }) => {
       wanPortEnabled: ['TRUE']
     }
   }
+  const settingsId = 'edgefirewall-edge-table'
 
   return (
     <EdgesTable
-      settingsId='edgefirewall-edge-table'
+      settingsId={settingsId}
       columns={columns}
       rowSelection={{ type: 'checkbox' }}
       rowActions={rowActions}
-      tableQuery={{ defaultPayload: edgeOptionsDefaultPayload }}
+      tableQuery={{ defaultPayload: edgeOptionsDefaultPayload, pagination: { settingsId } }}
     />
   )}
 

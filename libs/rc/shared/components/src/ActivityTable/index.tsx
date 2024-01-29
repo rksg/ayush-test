@@ -51,13 +51,17 @@ const defaultPayload = {
   ]
 }
 
-export function useActivityTableQuery (baseFilters: Record<string, string> = {}) {
+export function useActivityTableQuery (
+  baseFilters: Record<string, string> = {},
+  pagination?: Record<string, unknown>
+) {
   const { dateFilter } = useDateFilter()
   const filters = { ...baseFilters, dateFilter }
 
   const tableQuery = useTableQuery<Activity>({
     useQuery: useActivitiesQuery,
     defaultPayload: { ...defaultPayload, filters },
+    pagination,
     sorter: defaultSorter,
     option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
   })

@@ -48,7 +48,8 @@ export function VenueSwitch () {
         tab={<Tooltip title={$t({ defaultMessage: 'Device List' })}>
           <ListSolid />
         </Tooltip>}>
-        <SwitchTable searchable={true}
+        <SwitchTable settingsId='venue-switch-table'
+          searchable={true}
           enableActions={true}
           filterableKeys={{ model: getSwitchModelList }} />
       </Tabs.TabPane>
