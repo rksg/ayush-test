@@ -59,9 +59,10 @@ export const drawerContentConfig: DrawerContentConfig = {
       component: ResourceGroupSelection,
       componentProps: ({
         selectedUser,
-        onChange
+        onChange,
+        updatedUser
       }) => ({
-        selectedValue: selectedUser?.resourceGroupId,
+        selectedValue: updatedUser?.resourceGroupId || selectedUser?.resourceGroupId,
         onChange: (value: string) => onChange({ ...selectedUser, resourceGroupId: value })
       })
     },
@@ -69,8 +70,8 @@ export const drawerContentConfig: DrawerContentConfig = {
       name: 'role',
       labelKey: defineMessage({ defaultMessage: 'Role' }),
       component: RoleSelection,
-      componentProps: ({ selectedUser, onChange }) => ({
-        selectedValue: selectedUser?.role,
+      componentProps: ({ selectedUser, onChange, updatedUser }) => ({
+        selectedValue: updatedUser?.role || selectedUser?.role,
         onChange: (value: string) => onChange({ ...selectedUser, role: value })
       })
     }
@@ -120,7 +121,7 @@ export const drawerContentConfig: DrawerContentConfig = {
           type: 'email',
           value: updatedUser?.email || '',
           onChange: ({ target: { value } } : { target: { value: string } }) => onChange(
-            { email: value }
+            { invitedEmail: value }
           ),
           placeholder: $t({ defaultMessage: 'Email Id of the invited user' })
         }

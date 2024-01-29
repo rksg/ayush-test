@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import { Button, Col, Form, Row } from 'antd'
 import { isEqual, pick, isEmpty } from 'lodash'
@@ -9,10 +9,11 @@ import {
   useUpdateUserMutation,
   useAddUserMutation,
   AddUserPayload,
-  UpdateUserPayload
+  UpdateUserPayload,
+  useFindUserQuery
 } from '@acx-ui/analytics/services'
-import { ManagedUser }                                         from '@acx-ui/analytics/utils'
-import { Drawer, Loader, StepsFormLegacy, Tooltip, showToast } from '@acx-ui/components'
+import { ManagedUser }                        from '@acx-ui/analytics/utils'
+import { Drawer, Loader, Tooltip, showToast } from '@acx-ui/components'
 
 import { drawerContentConfig } from './config'
 
@@ -85,6 +86,11 @@ const drawerTitle = (type: string) : string => {
     default: return 'Edit User'
   }
 }
+type UpdatedUser = Partial<ManagedUser> & {
+  disclaimerChecked?: boolean
+  invitedEmail?: string
+  invitedUserId?: string
+}
 export const UserDrawer: React.FC<UserDrawerProps> = ({
   opened,
   selectedRow,
@@ -93,11 +99,24 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
 }) => {
   const { $t } = useIntl()
   const selectedUser = pick(selectedRow,['id', 'email', 'resourceGroupId', 'role'])
-  const [ updatedUser, setUpdatedUser ] = useState(selectedUser)
+  const [ updatedUser, setUpdatedUser ] = useState<UpdatedUser>(selectedUser)
   const [ isLoading, setIsloading ] = useState(false)
+  const [ findUser, setFindUser ] = useState(false)
   const [updateUser] = useUpdateUserMutation()
   const [addUser] = useAddUserMutation()
   const [form] = Form.useForm()
+  const cleanUp = () => {
+    setIsloading(false)
+    setUpdatedUser({})
+    form.resetFields()
+    toggleDrawer(false)
+  }
+  const { data, isFetching: findingUser, error } = useFindUserQuery({
+    username: updatedUser?.invitedEmail!
+  }, {
+    skip: !findUser
+  })
+
   const handleSaveClick = async () => {
     setIsloading(true)
     const mutation = type === 'edit' ? updateUser : addUser
@@ -115,9 +134,6 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
     await mutation(payload as AddUserPayload & UpdateUserPayload)
       .unwrap()
       .then(() => {
-        setIsloading(false)
-        setUpdatedUser({})
-        toggleDrawer(false)
         showToast({
           type: 'success',
           content: $t(
@@ -125,90 +141,50 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
             { action: type === 'edit' ? 'Edited' : 'Added' }
           )
         })
+        cleanUp()
       })
       .catch((error) => {
-        setIsloading(false)
-        setUpdatedUser({})
-        toggleDrawer(false)
         showToast({
           type: 'error',
           content: $t({ defaultMessage: 'Error: {error}' }, { error: error.data })
         })
+        cleanUp()
       })
-    // if (type === 'edit') {
-    //   await updateUser({
-    //     resourceGroupId: updatedUser.resourceGroupId!,
-    //     userId: updatedUser.id!,
-    //     role: updatedUser.role!
-    //   })
-    //     .unwrap()
-    //     .then(() => {
-    //       setIsloading(false)
-    //       setUpdatedUser({})
-    //       toggleDrawer(false)
-    //       showToast({
-    //         type: 'success',
-    //         content: $t({ defaultMessage: 'User edited successfully' })
-    //       })
-    //     })
-    //     .catch((error) => {
-    //       setIsloading(false)
-    //       setUpdatedUser({})
-    //       toggleDrawer(false)
-    //       showToast({
-    //         type: 'error',
-    //         content: $t({ defaultMessage: 'Error: {error}' }, { error: error.data })
-    //       })
-    //     })
-    // } else {
-    //   await addUser({
-    //     resourceGroupId: updatedUser.resourceGroupId!,
-    //     swuId: updatedUser.id!,
-    //     role: updatedUser.role!
-    //   })
-    //     .unwrap()
-    //     .then(() => {
-    //       setIsloading(false)
-    //       setUpdatedUser({})
-    //       toggleDrawer(false)
-    //       showToast({
-    //         type: 'success',
-    //         content: $t({ defaultMessage: 'User added successfully' })
-    //       })
-    //     })
-    //     .catch((error) => {
-    //       setIsloading(false)
-    //       setUpdatedUser({})
-    //       toggleDrawer(false)
-    //       showToast({
-    //         type: 'error',
-    //         content: $t({ defaultMessage: 'Error: {error}' }, { error: error.data })
-    //       })
-    //     })
-    // }
   }
+  const handleInviteClick = async () => {
+    setFindUser(true)
+  }
+  useEffect(() => {
+    setFindUser(false)
+    if (data?.userId && updatedUser?.invitedUserId !== data?.userId) {
+      setUpdatedUser({ ...updatedUser, invitedUserId: data?.userId })
+      console.log(updatedUser)
+    }
+  }, [data, updatedUser])
   const isUserDataValid = () => {
-    if (type === 'create') {
-      return Boolean(
-        updatedUser.id &&
-        updatedUser.email &&
+    switch(type) {
+      case 'create':
+        return Boolean(
+          updatedUser.id &&
+          updatedUser.email &&
+          updatedUser.resourceGroupId &&
+          updatedUser.role
+        )
+      case 'edit':
+        return !isEmpty(updatedUser) && !isEqual(selectedUser, updatedUser)
+      default: // external
+        return !form.getFieldError('invitedEmail').length &&
         updatedUser.resourceGroupId &&
-        updatedUser.role
-      )
-    } else {
-      return !isEmpty(updatedUser) && !isEqual(selectedUser, updatedUser)
+        updatedUser.role &&
+        updatedUser?.disclaimerChecked
     }
   }
-  const handleCancelClick = () => {
-    setUpdatedUser({})
-    //form.resetFields()
-    toggleDrawer(false)
-  }
+  const handleCancelClick = () => cleanUp()
 
   const drawerFooter = (
     <div>
       <Button
-        onClick={handleSaveClick}
+        onClick={type === 'createExternal' ? handleInviteClick : handleSaveClick}
         disabled={!isUserDataValid()}
         type='primary'>
         {$t(
@@ -230,7 +206,7 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
     onClose={handleCancelClick}
     footer={drawerFooter}
     width={400}
-  ><Loader states={[{ isLoading }]}>
+  ><Loader states={[{ isLoading: isLoading || findingUser }]}>
       <Form layout='vertical' form={form}>
         {drawerContentConfig[type as UserType].map((item) => (
           <FormItem

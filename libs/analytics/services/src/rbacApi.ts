@@ -144,6 +144,16 @@ export const rbacApi = baseRbacApi.injectEndpoints({
         { type: 'RBAC', id: 'GET_USERS' },
         { type: 'RBAC', id: 'GET_AVAILABLE_USERS' }
       ]
+    }),
+    findUser: build.query<{ userId: string }, { username: string }>({
+      query: ({ username }) => {
+        return {
+          url: '/users/find',
+          method: 'get',
+          credentials: 'include',
+          params: { username }
+        }
+      }
     })
   })
 })
@@ -157,7 +167,8 @@ export const {
   useGetAvailableUsersQuery,
   useGetResourceGroupsQuery,
   useUpdateUserMutation,
-  useAddUserMutation
+  useAddUserMutation,
+  useFindUserQuery
 } = rbacApi
 
 export function useSystems () {
