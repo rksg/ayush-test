@@ -6,9 +6,9 @@ import { useGetEdgeClusterListForTableQuery, useGetEdgeClusterQuery } from '@acx
 import { CommonOperation, Device, getUrl }                            from '@acx-ui/rc/utils'
 import { useTenantLink }                                              from '@acx-ui/react-router-dom'
 
-import { VirtualIp } from './VirtualIp'
-
 import EdgeClusterDhcpTab from './EdgeClusterDhcpTab'
+import { VirtualIp }      from './VirtualIp'
+
 
 const EditEdgeCluster = () => {
   const { $t } = useIntl()
