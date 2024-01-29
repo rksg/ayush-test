@@ -1,15 +1,21 @@
 import React from 'react'
 
 import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { venueApi }              from '@acx-ui/rc/services'
+import { venueApi } from '@acx-ui/rc/services'
 import {
-  CommonUrlsInfo, WifiUrlsInfo
+  CommonUrlsInfo,
+  WifiUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider, store }                                               from '@acx-ui/store'
-import { mockServer, render, screen, within, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { Provider, store }    from '@acx-ui/store'
+import {
+  mockServer,
+  render,
+  screen,
+  within,
+  waitForElementToBeRemoved
+} from '@acx-ui/test-utils'
 
 import { VenueRogueAps } from './index'
 
@@ -408,14 +414,6 @@ const apsList = {
   ]
 }
 
-const wrapper = ({ children }: { children: React.ReactElement }) => {
-  return <Provider>
-    <Form>
-      {children}
-    </Form>
-  </Provider>
-}
-
 describe('RogueVenueTable', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
@@ -442,15 +440,14 @@ describe('RogueVenueTable', () => {
   })
 
   it('should render VenueRogueAps successfully', async () => {
-    render(
+
+    render(<Provider>
       <VenueRogueAps />
-      , {
-        wrapper: wrapper,
-        route: {
-          params: { venueId: 'venueId1', tenantId: 'tenantId1' }
-        }
+    </Provider>, {
+      route: {
+        params: { venueId: 'venueId1', tenantId: 'tenantId1' }
       }
-    )
+    })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
@@ -500,11 +497,11 @@ describe('RogueVenueTable', () => {
     expect(await within(table).findAllByRole('columnheader')).toHaveLength(12)
 
     const row2 = await within(table).findByRole('row', { name: /58:FB:96:01:B6:4C/i })
-    within(row2).getByText(/^10/i)
+    expect(within(row2).getByText(/^10/i)).toBeInTheDocument()
 
     await userEvent.click(screen.getByTestId('VenueMarkerOrange'))
 
-    await screen.findByText(/rogueap: 28:b3:71:1c:15:0c/i)
+    expect(await screen.findByText(/rogueap: 28:b3:71:1c:15:0c/i)).toBeInTheDocument()
 
     await userEvent.click(screen.getByText('Cancel'))
 
