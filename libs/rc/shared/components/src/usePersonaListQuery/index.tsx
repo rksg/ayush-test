@@ -8,10 +8,11 @@ import { DPSKDeviceInfo, Persona, useTableQuery }                               
 
 interface UsePersonaListQueryProps {
   personaGroupId?: string
+  settingsId?: string
 }
 
 export const usePersonaListQuery = (props: UsePersonaListQueryProps) => {
-  const { personaGroupId } = props
+  const { personaGroupId, settingsId } = props
   const { tenantId } = useParams()
   const [dataSource, setDataSource] = useState<Persona[]>([])
 
@@ -24,7 +25,8 @@ export const usePersonaListQuery = (props: UsePersonaListQueryProps) => {
     defaultPayload: {
       keyword: '',
       groupId: personaGroupId
-    }
+    },
+    pagination: { settingsId }
   })
   const [getDpskDevices] = useLazyGetDpskPassphraseDevicesQuery()
   const { data, ...rest } = personaListTableQuery

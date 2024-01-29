@@ -5,8 +5,8 @@ import { Incident }          from '@acx-ui/analytics/utils'
 import { showToast }         from '@acx-ui/components'
 import { TenantLink }        from '@acx-ui/react-router-dom'
 
+import DetailsActions               from '../../DetailsActions'
 import { useMuteIncidentsMutation } from '../../IncidentTable/services'
-import ToggleMute                   from '../../MuteToggle'
 
 type MuteIncidentResponse = {
   toggleMute: { success: boolean; errorCode: string; errorMsg: string; }
@@ -15,7 +15,7 @@ function MuteIncident ({ incident } : { incident: Incident }) {
   const { $t } = useIntl()
   const [ muteIncident ] = useMuteIncidentsMutation()
 
-  return <ToggleMute
+  return <DetailsActions
     toggleCallback={async (checked: boolean) => {
       const { id, code, severity } = incident
       const { toggleMute } = await muteIncident(

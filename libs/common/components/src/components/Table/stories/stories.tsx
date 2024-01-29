@@ -35,5 +35,5 @@ storiesOf('Table', module)
   .add('Nested Table', NestedTable)
   .add('Table With Icon Button', TableWithIconButton)
   .add('Two Tables with stickyPagination', TwoTablesStickyPaging)
-  .add('Table Without stickyPagination', TableNoStickyPagination)
+  .add('Table Pagination', TableNoStickyPagination)
 export {}

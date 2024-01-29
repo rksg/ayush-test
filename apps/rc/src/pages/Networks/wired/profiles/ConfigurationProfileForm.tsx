@@ -290,7 +290,9 @@ export function ConfigurationProfileForm () {
               title={$t({ defaultMessage: 'Voice VLAN' })}
               onFinish={updateCurrentData}
             >
-              <VoiceVlan />
+              <div data-testid='voice-vlan'>
+                <VoiceVlan />
+              </div>
             </StepsForm.StepForm>
           }
 

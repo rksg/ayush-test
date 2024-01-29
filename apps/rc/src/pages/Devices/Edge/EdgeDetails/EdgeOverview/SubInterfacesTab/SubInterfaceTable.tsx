@@ -5,12 +5,13 @@ import { EdgeLagStatus, EdgePortStatus, getEdgePortIpModeString, TableQuery } fr
 import { RequestPayload }                                                     from '@acx-ui/types'
 
 interface SubInterfaceTableProps {
+  settingsId?: string
   tableQuery: TableQuery<EdgePortStatus | EdgeLagStatus, RequestPayload<unknown>, unknown>
 }
 
 export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
 
-  const { tableQuery } = props
+  const { tableQuery, settingsId = 'edge-sub-interfaces-table' } = props
   const { $t } = useIntl()
 
   const columns: TableProps<EdgePortStatus | EdgeLagStatus>['columns'] = [
@@ -65,7 +66,7 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
 
   return (
     <Table
-      settingsId='edge-sub-interfaces-table'
+      settingsId={settingsId}
       rowKey={(row: EdgePortStatus | EdgeLagStatus) => `${row.mac}-${row.vlan}`}
       columns={columns}
       dataSource={tableQuery.data?.data}
