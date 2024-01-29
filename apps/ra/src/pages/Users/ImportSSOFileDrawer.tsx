@@ -22,33 +22,23 @@ import { formatter } from '@acx-ui/formatter'
 import * as UI from './styledComponents'
 
 interface ImportSSOFileDrawerProps extends DrawerProps {
-  maxSize: number
-  isEditMode: boolean | undefined
+  isEditMode: boolean
   setVisible: (visible: boolean) => void
 }
 
 const { Dragger } = Upload
 
 const acceptType = ['xml']
-
-const getFileExtension = function (fileName: string) {
-  const extensionsRegex: RegExp = /(xml)$/i
-  const matched = extensionsRegex.exec(fileName)
-  if (matched) {
-    return matched[0]
-  } else {
-    return ''
-  }
-}
+const FiveMBSize = 1024 * 5 * 1024
 
 const isValidXml = (rawXml: string) => {
   const parser = new DOMParser()
   const doc = parser.parseFromString(rawXml, 'text/xml')
-  return !Boolean(doc.querySelector('parsererror'))
+  return doc.querySelector('parsererror') == null
 }
 
 export const ImportSSOFileDrawer = (props: ImportSSOFileDrawerProps) => {
-  const { title, visible, setVisible, maxSize, isEditMode } = props
+  const { title, visible, setVisible, isEditMode } = props
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const [localFileContents, setLocalFileContents] = useState<string | undefined>()
@@ -67,35 +57,30 @@ export const ImportSSOFileDrawer = (props: ImportSSOFileDrawerProps) => {
     setVisible(false)
   }
 
-  const beforeUpload = async (file: File) => {
-    let errorMsg = ''
-    if (!getFileExtension(file.name)) {
-      errorMsg = $t({ defaultMessage: 'Invalid file type.' })
-    }
-    if (file.size > maxSize) {
-      errorMsg = $t({ defaultMessage: 'File size ({fileSize}) is too big.' }, {
-        fileSize: bytesFormatter(file.size)
-      })
-    }
-
-    const fileContents = await file.text()
-
-    if (!isValidXml(fileContents)) {
-      errorMsg = $t({ defaultMessage: 'File has invalid XML structure.' })
-    }
-
-    if (errorMsg) {
-      setFileDescription(
-        <Typography.Text type='danger'>
-          <WarningOutlined /> {errorMsg}
-        </Typography.Text>
-      )
-      return Promise.reject(Upload.LIST_IGNORE)
-    }
-
-    setLocalFileContents(fileContents)
-    setFileDescription(<Typography.Text><FileTextOutlined /> {file.name} </Typography.Text>)
-    return false
+  const beforeUpload = (file: File) => {
+    return new Promise<false | typeof Upload.LIST_IGNORE>(async (resolve) => {
+      let errorMsg = ''
+      if (file.size > FiveMBSize) {
+        errorMsg = $t({ defaultMessage: 'File size ({fileSize}) is too big.' }, {
+          fileSize: bytesFormatter(file.size)
+        })
+      }
+      const fileContents = await file.text()
+      if (!isValidXml(fileContents)) {
+        errorMsg = $t({ defaultMessage: 'File has invalid XML structure.' })
+      }
+      if (errorMsg) {
+        setFileDescription(
+          <Typography.Text type='danger'>
+            <WarningOutlined /> {errorMsg}
+          </Typography.Text>
+        )
+        return resolve(Upload.LIST_IGNORE)
+      }
+      setLocalFileContents(fileContents)
+      setFileDescription(<Typography.Text><FileTextOutlined /> {file.name} </Typography.Text>)
+      return resolve(false)
+    })
   }
 
   const okHandler = async () => {
@@ -152,30 +137,35 @@ export const ImportSSOFileDrawer = (props: ImportSSOFileDrawerProps) => {
       <Button onClick={() => onClose()}>
         {$t({ defaultMessage: 'Cancel' })}
       </Button>
-      </div>
-      {isEditMode && <DeleteButton />}</>}
+    </div>
+    {isEditMode && <DeleteButton />}</>}
   >
     <Form layout='vertical' form={form}>
-      <label>
-        {$t({ defaultMessage: 'IdP Metadata' })}
-      </label>
-      <UI.Spacer />
-      <Dragger
-        name='file'
-        accept={acceptType.map(type => `.${type}`).join(', ')}
-        maxCount={1}
-        showUploadList={false}
-        beforeUpload={beforeUpload}>
-        <Space>
-          {fileDescription
-            ? fileDescription
-            : $t({ defaultMessage: 'Drag & Drop file here or' })}
-          <Button type='primary'>{fileDescription
-            ? $t({ defaultMessage: 'Change File' })
-            : $t({ defaultMessage: 'Browse' })}
-          </Button>
-        </Space>
-      </Dragger>
+      <Form.Item
+        id='uploadFile'
+        htmlFor='uploadFile'
+        label={
+          <label>
+            {$t({ defaultMessage: 'IdP Metadata' })}
+          </label>}>
+        <Dragger
+          id='uploadFile'
+          name='file'
+          accept={acceptType.map(type => `.${type}`).join(', ')}
+          maxCount={1}
+          showUploadList={false}
+          beforeUpload={beforeUpload}>
+          <Space>
+            {fileDescription
+              ? fileDescription
+              : $t({ defaultMessage: 'Drag & Drop file here or' })}
+            <Button type='primary'>{fileDescription
+              ? $t({ defaultMessage: 'Change File' })
+              : $t({ defaultMessage: 'Browse' })}
+            </Button>
+          </Space>
+        </Dragger>
+      </Form.Item>
     </Form>
   </UI.ImportFileDrawer>
 }

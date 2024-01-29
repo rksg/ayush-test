@@ -10,13 +10,6 @@ import { ImportSSOFileDrawer } from './ImportSSOFileDrawer'
 import { UsersTable }          from './Table'
 
 
-const CsvSize = {
-  '1MB': 1024*1*1024,
-  '2MB': 1024*2*1024,
-  '5MB': 1024*5*1024,
-  '20MB': 1024*20*1024
-}
-
 const title = defineMessage({
   defaultMessage: '{usersCount, plural, one {User} other {Users}}'
 })
@@ -40,12 +33,8 @@ const ssoDisclaimer = defineMessage({
 
 const isValidSSO = (settings: Partial<Settings> | undefined) => {
   if (!settings || !settings.sso) return false
-  try {
-    const ssoConfig = JSON.parse(settings.sso)
-    return Boolean(ssoConfig?.metadata)
-  } catch (e) {
-    return false
-  }
+  const ssoConfig = JSON.parse(settings.sso)
+  return typeof ssoConfig?.metadata === 'string'
 }
 
 export default function Users () {
@@ -84,7 +73,6 @@ export default function Users () {
       visible={visible}
       isEditMode={isEditMode}
       setVisible={setVisible}
-      maxSize={CsvSize['5MB']}
     />}
   </Loader>
 }
