@@ -1,8 +1,9 @@
 import { rest } from 'msw'
 
 import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
+import { edgeApi }                             from '@acx-ui/rc/services'
 import { EdgeDhcpUrls }                        from '@acx-ui/rc/utils'
-import { Provider }                            from '@acx-ui/store'
+import { Provider, store }                     from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { mockDhcpPoolStatsData, mockEdgeDhcpDataList } from '../../../../Services/DHCP/Edge/__tests__/fixtures'
@@ -20,6 +21,8 @@ describe('Edge Cluster DHCP Tab', () => {
 
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    store.dispatch(edgeApi.util.resetApiState())
 
     params = {
       tenantId: '1ecc2d7cf9d2342fdb31ae0e24958fcac',

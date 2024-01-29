@@ -2,8 +2,9 @@ import { Form } from 'antd'
 import { rest } from 'msw'
 
 import { StepsForm }                              from '@acx-ui/components'
+import { edgeApi }                                from '@acx-ui/rc/services'
 import { EdgeDhcpUrls }                           from '@acx-ui/rc/utils'
-import { Provider }                               from '@acx-ui/store'
+import { Provider, store }                        from '@acx-ui/store'
 import { mockServer, render, renderHook, screen } from '@acx-ui/test-utils'
 
 import { mockEdgeDhcpList } from './__tests__/fixtures'
@@ -37,6 +38,8 @@ describe('EdgeDhcpSelectionForm', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       clusterId: '736bc471-a520-4382-a5c5-560c1791ac11'
     }
+
+    store.dispatch(edgeApi.util.resetApiState())
 
     mockServer.use(
       rest.get(
