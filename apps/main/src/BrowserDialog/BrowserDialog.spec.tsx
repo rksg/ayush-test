@@ -71,7 +71,7 @@ describe('showBrowserLangDialog', () => {
   }
   it('should show action modal and handle confirm button click', async () => {
     await act(async () => {
-      showBrowserLangDialog()
+      showBrowserLangDialog('en-US')
     })
 
     expect(require('@acx-ui/components').showActionModal).toHaveBeenCalled()
@@ -87,7 +87,7 @@ describe('showBrowserLangDialog', () => {
     jest.spyOn(require('./BrowserDialog'),
       'showBrowserLangDialog').mockImplementation(mockBrowserDialog)
     await Promise.resolve()
-    const result = await showBrowserLangDialog()
+    const result = await showBrowserLangDialog('en-US')
     await Promise.resolve()
     expect(result).toStrictEqual({ lang: 'fr-FR', isLoading: false })
   })

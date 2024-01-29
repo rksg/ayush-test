@@ -92,7 +92,7 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
         && browserLang !== browserCacheLang
 
       if (openDialog) {
-        const userPreflang = showBrowserLangDialog()
+        const userPreflang = showBrowserLangDialog(userLang as LangKey)
         userPreflang.then((dialogResult) => {
           // update user profile - 'yes' language change
           if (dialogResult.lang !== '') {
