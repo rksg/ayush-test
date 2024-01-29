@@ -26,8 +26,8 @@ function DetailsActions (
       {extraOverlay && <>
         <Dropdown.OverlayTitle>{extraOverlay.title}</Dropdown.OverlayTitle>
         {extraOverlay.content}
+        <Divider />
       </>}
-      <Divider />
       <Dropdown.OverlayTitle>{overlay.title}</Dropdown.OverlayTitle>
       <Switch
         checked={isMuted}
