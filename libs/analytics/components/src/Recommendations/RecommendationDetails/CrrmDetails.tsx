@@ -6,13 +6,14 @@ import { GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
 import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { useParams }                            from '@acx-ui/react-router-dom'
 
-import { FixedAutoSizer } from '../../DescriptionSection/styledComponents'
+import { FixedAutoSizer }        from '../../DescriptionSection/styledComponents'
+import { RecommendationActions } from '../RecommendationActions'
 
 import { CrrmValues }             from './CrrmValues'
 import { CrrmValuesExtra }        from './CrrmValuesExtra'
 import { CloudRRMGraph }          from './Graph'
-import MuteRecommendation         from './MuteRecommendation'
 import { Overview }               from './Overview'
+import RecommendationSetting      from './RecommendationSetting'
 import {
   useRecommendationCodeQuery,
   useRecommendationDetailsQuery
@@ -36,6 +37,7 @@ export const CrrmDetails = () => {
     { skip: !Boolean(codeQuery.data?.code) }
   )
   const details = detailsQuery.data!
+
   return <Loader states={[codeQuery, detailsQuery]}>
     {details && <PageHeader
       title={impactedArea(details.path, details.sliceValue)}
@@ -44,11 +46,17 @@ export const CrrmDetails = () => {
         { text: $t({ defaultMessage: 'AI Analytics' }) },
         { text: $t(crrm), link }
       ]}
-      extra={[<MuteRecommendation {...{
+      extra={[<RecommendationSetting {...{
         id: details.id,
         isMuted: details.isMuted,
         link,
-        type: $t(crrm)
+        type: $t(crrm),
+        actions: <RecommendationActions recommendation={
+          {
+            ...details,
+            statusEnum: details.status
+          }
+        } />
       }} />]}
     />}
     <GridRow>
