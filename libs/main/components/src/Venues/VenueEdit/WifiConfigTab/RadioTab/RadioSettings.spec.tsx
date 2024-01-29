@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
@@ -30,7 +31,6 @@ import {
 } from '../../../__tests__/fixtures'
 
 import { RadioSettings } from './RadioSettings'
-import { Form } from 'antd'
 
 
 
