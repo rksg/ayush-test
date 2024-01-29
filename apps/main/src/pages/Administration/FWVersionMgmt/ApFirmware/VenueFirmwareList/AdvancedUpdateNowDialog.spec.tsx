@@ -1,11 +1,15 @@
 import { screen, render } from '@acx-ui/test-utils'
 
-import { EolABFUpgradeWarning } from './AdvancedUpdateNowDialog'
+import { ABFUpgradeWarning } from './AdvancedUpdateNowDialog'
 
 describe('EolABFUpgradeWarning Component', () => {
   it('renders null when no AP models are present', async () => {
     const { container } = render(
-      <EolABFUpgradeWarning abfName='ABF2-3R' apModels={[]} upgradableApModelsAndFamilies={{}} />
+      <ABFUpgradeWarning
+        abfName='ABF2-3R'
+        apModels={[]}
+        upgradableApModelsAndFamilies={{}}
+        isLegacyABF={true} />
     )
     expect(container.firstChild).toBeNull()
   })
@@ -15,12 +19,14 @@ describe('EolABFUpgradeWarning Component', () => {
     const apModelsWithLegacy = ['R350', 'R760']
 
     const { container } = render(
-      <EolABFUpgradeWarning
+      <ABFUpgradeWarning
         abfName='ABF2-3R'
         apModels={apModelsWithLegacy}
         upgradableApModelsAndFamilies={{
-          active: { apModels: apModelsWithLegacy, familyNames: ['WiFi 6'] }
+          'active': { apModels: apModelsWithLegacy, familyNames: ['Wi-Fi 6'], sequence: 3 },
+          'ABF2-3R': { apModels: apModelsWithLegacy, familyNames: ['Wi-Fi 6'], sequence: 2 }
         }}
+        isLegacyABF={true}
       />
     )
 
@@ -31,10 +37,11 @@ describe('EolABFUpgradeWarning Component', () => {
     const apModelsWithLegacy = ['R350', 'R760']
 
     const { rerender } = render(
-      <EolABFUpgradeWarning
+      <ABFUpgradeWarning
         abfName='ABF2-3R'
         apModels={apModelsWithLegacy}
         upgradableApModelsAndFamilies={{}}
+        isLegacyABF={true}
       />
     )
 
@@ -42,16 +49,36 @@ describe('EolABFUpgradeWarning Component', () => {
     expect(screen.getByText('There are one or more legacy devices in selected venues (R350, R760).')).toBeInTheDocument()
 
     rerender(
-      <EolABFUpgradeWarning
+      <ABFUpgradeWarning
         abfName='ABF2-3R'
         apModels={apModelsWithLegacy}
         upgradableApModelsAndFamilies={{
-          active: { apModels: ['R350'], familyNames: ['WiFi 6'] }
+          'active': { apModels: ['R350'], familyNames: ['Wi-Fi 6'], sequence: 3 },
+          'ABF2-3R': { apModels: apModelsWithLegacy, familyNames: ['Wi-Fi 6'], sequence: 2 }
         }}
+        isLegacyABF={true}
       />
     )
 
     // eslint-disable-next-line max-len
     expect(screen.getByText('There are one or more legacy devices in selected venues (R760).')).toBeInTheDocument()
+  })
+
+  it('renders warning messages for active ABF when AP models are present', async () => {
+    render(
+      <ABFUpgradeWarning
+        abfName='active'
+        apModels={['R770']}
+        upgradableApModelsAndFamilies={{
+          // eslint-disable-next-line max-len
+          'active': { apModels: ['R770', 'R760'], familyNames: ['Wi-Fi 7', 'Wi-Fi 6'], sequence: 3 },
+          'ABF2-3R': { apModels: ['R760'], familyNames: ['Wi-Fi 6'], sequence: 2 }
+        }}
+        isLegacyABF={false}
+      />
+    )
+
+    // eslint-disable-next-line max-len
+    expect(screen.getByText('There are one or more devices in selected venues (R770).')).toBeInTheDocument()
   })
 })
