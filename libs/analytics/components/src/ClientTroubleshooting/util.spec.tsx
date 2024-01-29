@@ -199,7 +199,7 @@ describe('util', () => {
       {
         apName: 'R750-11-112',
         category: 'failure',
-        code: 'eap',
+        code: 'eapol',
         end: 1668407704571,
         event: 'CCD_REASON_MIC_FAILURE',
         failedMsgId: '22',
