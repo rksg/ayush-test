@@ -183,6 +183,9 @@ export {
 export type { ActivatedNetworksTableP2Props }
   from './EdgeSdLan/SdLanNetworkTable/SdLanP2NetworkTable'
 export {
+  useEdgeSdLanActions
+} from './EdgeSdLan/useEdgeSdLanActions'
+export {
   ApCompatibilityType,
   ApCompatibilityQueryTypes,
   InCompatibilityFeatures,
@@ -192,6 +195,7 @@ export {
   ApCompatibilityDrawer } from './ApCompatibilityDrawer'
 export { EdgeClusterCommonForm } from './EdgeFormItem/EdgeClusterCommonForm'
 export { useEdgeClusterActions } from './useEdgeClusterActions'
+export { usePersonaListQuery } from './usePersonaListQuery'
 
 export * from './services'
 export * from './policies'

@@ -1,6 +1,7 @@
 export * from './apiService'
 export * from './dateFilter'
 export * from './locales'
+export * from './stringUtil'
 export * from './dateUtil'
 export * from './validationMessages'
 export * from './intlUtil'

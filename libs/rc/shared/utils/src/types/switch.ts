@@ -200,7 +200,7 @@ export class SwitchViewModel extends Switch {
   type?: string
   configReady = false
   syncedSwitchConfig = false
-  unitId = 1
+  unitId?: number
   isStack?: boolean
   deviceStatus?: SwitchStatusEnum
   model?: string
