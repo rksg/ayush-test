@@ -3,7 +3,10 @@
 import { Select }  from 'antd'
 import { useIntl } from 'react-intl'
 
+import { roles } from '@acx-ui/analytics/utils'
+
 import { messages } from './'
+
 export const RoleSelection = ({
   onChange,
   selectedValue
@@ -15,7 +18,7 @@ export const RoleSelection = ({
   return (
     <Select
       style={{ width: 300 }}
-      options={['admin','report-only','network-admin' ].map((role, i) => ({
+      options={roles.map((role, i) => ({
         label: $t(messages[role as keyof typeof messages]),
         value: role,
         key: i
