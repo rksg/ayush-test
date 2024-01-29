@@ -25,10 +25,12 @@ export default function AdaptivePolicySetTable () {
   const tenantBasePath: Path = useTenantLink('')
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
+  const settingsId = 'adaptive-policy-set-list-table'
   const tableQuery = useTableQuery({
     useQuery: useAdaptivePolicySetLisByQueryQuery,
     apiParams: { sort: 'name,ASC', excludeContent: 'false' },
-    defaultPayload: {}
+    defaultPayload: {},
+    pagination: { settingsId }
   })
 
   const [
@@ -193,7 +195,7 @@ export default function AdaptivePolicySetTable () {
     ]}>
       <Table
         enableApiFilter
-        settingsId='adaptive-policy-set-list-table'
+        settingsId={settingsId}
         columns={useColumns()}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}

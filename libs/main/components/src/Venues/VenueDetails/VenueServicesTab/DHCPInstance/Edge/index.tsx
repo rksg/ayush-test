@@ -68,7 +68,8 @@ const EdgeDhcpTab = () => {
       value: 'pools',
       children: (
         <GridCol col={{ span: 24 }}>
-          <EdgeDhcpPoolTable edgeId={edgeData?.serialNumber} />
+          <EdgeDhcpPoolTable edgeId={edgeData?.serialNumber}
+            settingsId={'venue-edge-dhcp-pools-table'} />
         </GridCol>
       )
     },
