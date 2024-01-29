@@ -28,9 +28,9 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
             'AddRadiusServerProfileTemplateRecord',
             'UpdateRadiusServerProfileTemplateRecord',
             'DeleteRadiusServerProfileTemplateRecord',
-            'AddWifiNetworkTemplateRecord',
-            'UpdateWifiNetworkTemplateRecord',
-            'DeleteWifiNetworkTemplateRecord',
+            'AddNetworkTemplateRecord',
+            'UpdateNetworkTemplateRecord',
+            'DeleteNetworkTemplateRecord',
             'ApplyTemplate'
           ]
           onActivityMessageReceived(msg, activities, () => {
@@ -71,9 +71,9 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'AddWifiNetworkTemplateRecord',
-            'UpdateWifiNetworkTemplateRecord',
-            'DeleteWifiNetworkTemplateRecord'
+            'AddNetworkTemplateRecord',
+            'UpdateNetworkTemplateRecord',
+            'DeleteNetworkTemplateRecord'
           ]
           onActivityMessageReceived(msg, activities, () => {
             // eslint-disable-next-line max-len

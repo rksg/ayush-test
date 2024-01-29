@@ -9,7 +9,7 @@ export interface ConfigTemplate {
   createdBy: string,
   createdOn: number,
   ecTenants: string[],
-  templateType: ConfigTemplateType,
+  type: ConfigTemplateType,
   lastModified: number,
   lastApplied: number
 }
