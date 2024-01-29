@@ -19,10 +19,6 @@ import { mockMangedUsers } from './__tests__/fixtures'
 
 import Users from '.'
 
-jest.mock('./Table', () => ({
-  UsersTable: () => <div data-testid='usersTable'>UsersTable</div>
-}))
-
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
   getUserProfile: jest.fn().mockImplementation(() => ({
@@ -77,7 +73,6 @@ describe('Users Page', () => {
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Users (5)')).toBeVisible()
-    expect(await screen.findByTestId('usersTable')).toBeVisible()
     const info = await screen.findByTestId('InformationOutlined')
     const tbody = await findTBody()
     expect(await within(tbody).findAllByRole('row')).toHaveLength(5)
