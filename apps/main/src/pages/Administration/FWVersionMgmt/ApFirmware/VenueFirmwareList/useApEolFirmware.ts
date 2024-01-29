@@ -7,7 +7,7 @@ import { useGetApModelFamiliesQuery, useGetAvailableABFListQuery }              
 import { ABFVersion, ApModelFamilyType, EolApFirmware, FirmwareVenue, defaultApModelFamilyDisplayNames } from '@acx-ui/rc/utils'
 import { getIntl }                                                                                       from '@acx-ui/utils'
 
-import { MaxABFVersionEntity, compactEolApFirmwares, compareVersions, findMaxEolABFVersions, getActiveApModels, getVersionLabel, isBetaFirmware } from '../../FirmwareUtils'
+import { MaxABFVersionEntity, compactEolApFirmwares, compareABFSequence, compareVersions, findMaxEolABFVersions, getActiveApModels, getVersionLabel, isBetaFirmware } from '../../FirmwareUtils'
 
 export type EolApFirmwareGroup = {
   name: string,
@@ -19,7 +19,8 @@ export type EolApFirmwareGroup = {
 export type UpgradableApModelsAndFamilies = {
   [abfName: string]: {
     familyNames: string[],
-    apModels: string[]
+    apModels: string[],
+    sequence?: number
   }
 }
 
@@ -171,7 +172,8 @@ export function useApEolFirmware () {
       } else {
         upgradableApModelAndFamilies[targetABFInfo.abf] = {
           familyNames: [],
-          apModels: supportedApModels
+          apModels: supportedApModels,
+          sequence: targetABFInfo.sequence
         }
       }
     })
@@ -200,11 +202,17 @@ export function getRemainingApModels (
   initialApModels: string[],
   upgradableApModelsAndFamilies?: UpgradableApModelsAndFamilies
 ): string[] {
+  if (!upgradableApModelsAndFamilies) return initialApModels
+
+  const currentAbfSequence = upgradableApModelsAndFamilies[currentAbfName]?.sequence
   let remainingModels = [...initialApModels]
 
-  Object.keys(upgradableApModelsAndFamilies ?? {}).forEach(existingAbfName => {
-    if (existingAbfName !== currentAbfName) {
-      _.pull(remainingModels , ...upgradableApModelsAndFamilies![existingAbfName].apModels)
+  Object.keys(upgradableApModelsAndFamilies).forEach(existingAbfName => {
+    const existingAbf = upgradableApModelsAndFamilies[existingAbfName]
+
+    // eslint-disable-next-line max-len
+    if (compareABFSequence(existingAbf.sequence, currentAbfSequence) > 0 && existingAbfName !== currentAbfName) {
+      _.pull(remainingModels , ...existingAbf.apModels)
     }
   })
 
