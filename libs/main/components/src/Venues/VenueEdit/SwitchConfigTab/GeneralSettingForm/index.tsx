@@ -5,6 +5,7 @@ import { isEqual }                                           from 'lodash'
 
 import { Button, Loader, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
 import { ConfigurationOutlined }                                    from '@acx-ui/icons'
+import { usePathBasedOnConfigTemplate }                             from '@acx-ui/rc/components'
 import {
   useConfigProfilesQuery,
   useVenueSwitchSettingQuery,
@@ -16,9 +17,9 @@ import {
   VenueSwitchConfiguration,
   redirectPreviousPage
 } from '@acx-ui/rc/utils'
-import { VenueMessages }                         from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
-import { getIntl }                               from '@acx-ui/utils'
+import { VenueMessages }          from '@acx-ui/rc/utils'
+import { useNavigate, useParams } from '@acx-ui/react-router-dom'
+import { getIntl }                from '@acx-ui/utils'
 
 import { VenueEditContext, EditContext } from '../../index'
 
@@ -57,7 +58,7 @@ export function GeneralSettingForm () {
   const { $t } = getIntl()
   const navigate = useNavigate()
   const { tenantId, venueId, activeSubTab } = useParams()
-  const basePath = useTenantLink('/venues/')
+  const basePath = usePathBasedOnConfigTemplate('/venues/')
   const { editContextData, setEditContextData, previousPath } = useContext(VenueEditContext)
 
   const formRef = useRef<StepsFormLegacyInstance<VenueSwitchConfiguration>>()

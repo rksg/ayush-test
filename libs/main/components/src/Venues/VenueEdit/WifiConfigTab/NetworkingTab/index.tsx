@@ -7,9 +7,10 @@ import { useIntl }       from 'react-intl'
 import { AnchorLayout, StepsFormLegacy, Tooltip }             from '@acx-ui/components'
 import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                         from '@acx-ui/icons'
+import { usePathBasedOnConfigTemplate }                       from '@acx-ui/rc/components'
 import { useGetVenueApCapabilitiesQuery, useLazyApListQuery } from '@acx-ui/rc/services'
 import { VenueApModelCellular, redirectPreviousPage }         from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }              from '@acx-ui/react-router-dom'
+import { useNavigate, useParams }                             from '@acx-ui/react-router-dom'
 import { directedMulticastInfo }                              from '@acx-ui/utils'
 
 import { VenueEditContext } from '../../index'
@@ -34,7 +35,7 @@ export interface NetworkingSettingContext {
 export function NetworkingTab () {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const basePath = useTenantLink('/venues/')
+  const basePath = usePathBasedOnConfigTemplate('/venues/')
   const { tenantId, venueId } = useParams()
 
   const supportDirectedMulticast = useIsSplitOn(Features.DIRECTED_MULTICAST)

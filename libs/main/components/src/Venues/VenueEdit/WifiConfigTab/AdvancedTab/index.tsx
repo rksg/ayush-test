@@ -2,10 +2,11 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { StepsFormLegacy }            from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
-import { redirectPreviousPage }       from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { StepsFormLegacy }              from '@acx-ui/components'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
+import { redirectPreviousPage }         from '@acx-ui/rc/utils'
+import { useNavigate }                  from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../index'
 
@@ -28,7 +29,7 @@ export interface AdvanceSettingContext {
 export function AdvancedTab () {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const basePath = useTenantLink('/venues/')
+  const basePath = usePathBasedOnConfigTemplate('/venues/')
 
   const {
     editContextData,

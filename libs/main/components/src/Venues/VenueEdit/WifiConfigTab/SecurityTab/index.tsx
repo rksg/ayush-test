@@ -5,15 +5,15 @@ import _                                                   from 'lodash'
 import { FormattedMessage, useIntl }                       from 'react-intl'
 
 import { Button, Fieldset, Loader, StepsFormLegacy, StepsFormLegacyInstance, Tooltip } from '@acx-ui/components'
-import { RogueApModal }                                                                from '@acx-ui/rc/components'
+import { RogueApModal, usePathBasedOnConfigTemplate }                                  from '@acx-ui/rc/components'
 import {
   useGetDenialOfServiceProtectionQuery,
   useUpdateDenialOfServiceProtectionMutation,
   useGetVenueRogueApQuery,
   useUpdateVenueRogueApMutation, useGetRoguePolicyListQuery
 } from '@acx-ui/rc/services'
-import { VenueMessages, redirectPreviousPage }   from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { VenueMessages, redirectPreviousPage } from '@acx-ui/rc/utils'
+import { useNavigate, useParams }              from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../..'
 
@@ -40,7 +40,7 @@ export function SecurityTab () {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const basePath = useTenantLink('/venues/')
+  const basePath = usePathBasedOnConfigTemplate('/venues/')
 
   const DEFAULT_POLICY_ID = 'c1fe63007a5d4a71858d487d066eee6d'
   const DEFAULT_PROFILE_NAME = 'Default profile'
