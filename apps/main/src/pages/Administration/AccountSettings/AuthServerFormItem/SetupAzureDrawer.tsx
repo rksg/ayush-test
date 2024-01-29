@@ -89,6 +89,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
   const [file, setFile] = useState<UploadFile>()
   const [metadata, setMetadata] = useState<string>()
   const [metadataChanged, setMetadataChanged] = useState(false)
+  const [cursor, setCursor] = useState<number>()
   const [fileSelected, setFileSelected] = useState(false)
 
   const [uploadFile, setUploadFile] = useState(false)
@@ -161,13 +162,14 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     return false
   }
 
-  const onMetadataChange = (value: string) => {
+  const onMetadataChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMetadataChanged(true)
-    setMetadata(value)
+    setMetadata(e.target.value)
     const newFormData = new FormData()
     // TODO: validate xml format
-    newFormData.append('metadata', value)
+    newFormData.append('metadata', e.target.value)
     setFormData(newFormData)
+    setCursor(e.target.selectionStart)
   }
 
   const getFileUploadURL = async function (file: UploadFile) {
@@ -356,10 +358,11 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
       <TextArea
         ref={metadataReference}
         value={metadata}
-        onChange={e => onMetadataChange(e.target.value)}
-        onFocus={(e) =>
-          e.currentTarget.setSelectionRange(e.currentTarget.value.length,
-            e.currentTarget.value.length)
+        onChange={onMetadataChange}
+        onFocus={(e) => {
+          if(cursor) {
+            e.currentTarget.setSelectionRange(cursor, cursor)
+          }}
         }
         placeholder='Paste the IDP metadata code or link here...'
         style={{
