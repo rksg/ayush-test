@@ -29,7 +29,7 @@ import { GuestsTable } from '.'
 const mockedDeleteReq = jest.fn()
 const mockedDownloadReq = jest.fn()
 const mockedGetNetworkReq = jest.fn()
-const mockedPacthReq = jest.fn()
+const mockedPatchReq = jest.fn()
 const mockedDownloadFileReq = jest.fn()
 jest.mock('socket.io-client')
 jest.spyOn(window, 'print').mockImplementation(jest.fn())
@@ -60,7 +60,7 @@ describe('Guest Table', () => {
     mockedDeleteReq.mockClear()
     mockedDownloadReq.mockClear()
     mockedGetNetworkReq.mockClear()
-    mockedPacthReq.mockClear()
+    mockedPatchReq.mockClear()
     mockedDownloadFileReq.mockClear()
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
@@ -83,7 +83,7 @@ describe('Guest Table', () => {
         ClientUrlsInfo.generateGuestPassword.url,
         (req, res, ctx) => {
           // enable guest, disable guest, generate password
-          mockedPacthReq()
+          mockedPatchReq()
           return res(ctx.json(RegenerateGuestPassword))
         }
       ),
@@ -167,7 +167,7 @@ describe('Guest Table', () => {
     await userEvent.click(await within(table).findByText('+12015550123'))
     await userEvent.click( await screen.findByRole('button', { name: 'Disable' }))
 
-    expect(mockedPacthReq).toBeCalledTimes(1)
+    expect(mockedPatchReq).toBeCalledTimes(1)
   })
 
   it('should enable guest correctly from the action bar', async () => {
@@ -184,7 +184,7 @@ describe('Guest Table', () => {
     await userEvent.click(await within(table).findByText('Disabled'))
     await userEvent.click( await screen.findByRole('button', { name: 'Enable' }))
 
-    expect(mockedPacthReq).toBeCalledTimes(1)
+    expect(mockedPatchReq).toBeCalledTimes(1)
   })
 
   it('should render detail by click name', async () => {
@@ -276,7 +276,7 @@ describe('Guest Table', () => {
     expect(await within(drawer).findByTestId('guest-status')).toHaveTextContent('Disable')
     await userEvent.click(await within(drawer).findByText(/actions/i))
     await userEvent.click(await screen.findByText(/enable guest/i))
-    expect(mockedPacthReq).toBeCalledTimes(1)
+    expect(mockedPatchReq).toBeCalledTimes(1)
   })
 
   it('should click "disable guest" correctly', async () => {
@@ -297,7 +297,7 @@ describe('Guest Table', () => {
     expect(await within(drawer).findByTestId('guest-status')).toHaveTextContent('Offline')
     await userEvent.click(await within(drawer).findByText(/actions/i))
     await userEvent.click(await screen.findByText(/disable guest/i))
-    expect(mockedPacthReq).toBeCalledTimes(1)
+    expect(mockedPatchReq).toBeCalledTimes(1)
   })
 
   it('should click "generate new password" with mail and phone number', async () => {
@@ -351,7 +351,7 @@ describe('Guest Table', () => {
     const generateButton = screen.getByRole('button', { name: 'Generate' })
     await userEvent.click(generateButton)
     await waitFor(() => expect(mockedGetNetworkReq).toBeCalledTimes(1))
-    expect(mockedPacthReq).toBeCalledTimes(1)
+    expect(mockedPatchReq).toBeCalledTimes(1)
   })
 
   it('should click "generate new password" validation 1', async () => {
@@ -383,7 +383,7 @@ describe('Guest Table', () => {
       rest.patch(
         ClientUrlsInfo.generateGuestPassword.url,
         (req, res, ctx) => {
-          mockedPacthReq()
+          mockedPatchReq()
           return res(ctx.json(json))
         }
       )
@@ -406,7 +406,7 @@ describe('Guest Table', () => {
     const generateButton = screen.getByRole('button', { name: 'Generate' })
     await userEvent.click(generateButton)
     await waitFor(() => expect(mockedGetNetworkReq).toBeCalledTimes(1))
-    expect(mockedPacthReq).toBeCalledTimes(1)
+    expect(mockedPatchReq).toBeCalledTimes(1)
   })
 
   it('should click "generate new password" validation 2', async () => {
@@ -438,7 +438,7 @@ describe('Guest Table', () => {
       rest.patch(
         ClientUrlsInfo.generateGuestPassword.url,
         (req, res, ctx) => {
-          mockedPacthReq()
+          mockedPatchReq()
           return res(ctx.json(json))
         }
       )
@@ -461,7 +461,7 @@ describe('Guest Table', () => {
     const generateButton = screen.getByRole('button', { name: 'Generate' })
     await userEvent.click(generateButton)
     await waitFor(() => expect(mockedGetNetworkReq).toBeCalledTimes(1))
-    expect(mockedPacthReq).toBeCalledTimes(1)
+    expect(mockedPatchReq).toBeCalledTimes(1)
   })
 
   it.skip('should click "download" correctly', async () => {
