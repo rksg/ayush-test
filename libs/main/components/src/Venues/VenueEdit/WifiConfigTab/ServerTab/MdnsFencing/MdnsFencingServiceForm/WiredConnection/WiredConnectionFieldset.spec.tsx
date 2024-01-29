@@ -11,7 +11,7 @@ import { MdnsFencingServiceContext } from '../../MdnsFencingServiceTable'
 import { WiredConnectionFieldset } from './WiredConnectionFieldset'
 
 
-describe.skip('WiredConnectionFieldset Component', () => {
+describe('WiredConnectionFieldset Component', () => {
   const serviceRef = { current: {} } as React.MutableRefObject<MdnsFencingService | undefined>
   const otherServices = [] as MdnsFencingService[]
 

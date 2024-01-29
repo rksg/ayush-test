@@ -32,9 +32,6 @@ import {
 
 import { RadioSettings } from './RadioSettings'
 
-
-
-
 const params = {
   tenantId: 'tenant-id',
   venueId: 'venue-id',
@@ -42,7 +39,7 @@ const params = {
   activeSubTab: 'radio'
 }
 
-describe.skip('Venue Radio Settings', () => {
+describe('Venue Radio Settings', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(

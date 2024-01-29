@@ -6,7 +6,7 @@ import { render, screen, within } from '@acx-ui/test-utils'
 
 import { CustomMappingFieldset } from './CustomMappingFieldset'
 
-describe.skip('CustomMappingFieldset Component', () => {
+describe('CustomMappingFieldset Component', () => {
   it ('should render correctly', async () => {
     render(
       <Form>
