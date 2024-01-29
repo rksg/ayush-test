@@ -74,9 +74,9 @@ const EdgeClusterDhcpTab = () => {
     const selectedDhcpId = form.getFieldValue('dhcpId') || null
 
     if (!isDhcpServiceActive) {
-      await removeDhcpService()
+      removeDhcpService()
     } else if (selectedDhcpId) {
-      await applyDhcpService(selectedDhcpId)
+      applyDhcpService(selectedDhcpId)
     }
   }
 
@@ -85,8 +85,12 @@ const EdgeClusterDhcpTab = () => {
     const payload = {
       edgeIds: [...new Set([...edgeDhcpData[dhcpId].edgeIds, clusterId])]
     }
-    patchEdgeDhcpService({ params: pathParams, payload }).unwrap()
-    setCurrentDhcpId(dhcpId)
+    try {
+      await patchEdgeDhcpService({ params: pathParams, payload }).unwrap()
+      setCurrentDhcpId(dhcpId)
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
   }
 
   const removeDhcpService = async () => {
@@ -94,8 +98,12 @@ const EdgeClusterDhcpTab = () => {
     const payload = {
       edgeIds: edgeDhcpData[currentDhcpId].edgeIds.filter(id => id !== clusterId)
     }
-    patchEdgeDhcpService({ params: pathParams, payload }).unwrap()
-    setCurrentDhcpId('')
+    try {
+      await patchEdgeDhcpService({ params: pathParams, payload }).unwrap()
+      setCurrentDhcpId('')
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
   }
 
   return (
