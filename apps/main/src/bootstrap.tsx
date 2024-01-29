@@ -85,7 +85,7 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   const [ updateUserProfile ] = useUpdateUserProfileMutation()
 
   useEffect(() => {
-    if (userProfile && isNonProdEnv()) {
+    if (userProfile) {
       const userLang = userProfile?.preferredLanguage
       const browserLang = detectBrowserLang()
       const browserCacheLang = localStorage.getItem('browserLang')
