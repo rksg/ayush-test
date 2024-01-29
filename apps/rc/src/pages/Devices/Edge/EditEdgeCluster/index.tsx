@@ -1,10 +1,10 @@
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { PageHeader, Tabs }                   from '@acx-ui/components'
-import { useGetEdgeClusterListForTableQuery } from '@acx-ui/rc/services'
-import { CommonOperation, Device, getUrl }    from '@acx-ui/rc/utils'
-import { useTenantLink }                      from '@acx-ui/react-router-dom'
+import { PageHeader, Tabs }                                           from '@acx-ui/components'
+import { useGetEdgeClusterListForTableQuery, useGetEdgeClusterQuery } from '@acx-ui/rc/services'
+import { CommonOperation, Device, getUrl }                            from '@acx-ui/rc/utils'
+import { useTenantLink }                                              from '@acx-ui/react-router-dom'
 
 import { VirtualIp } from './VirtualIp'
 
@@ -17,14 +17,22 @@ const EditEdgeCluster = () => {
     oper: CommonOperation.Edit,
     params: { id: clusterId }
   }))
-  const { currentCluster } = useGetEdgeClusterListForTableQuery({ payload: {
+  const { currentClusterStatus } = useGetEdgeClusterListForTableQuery({ payload: {
     filters: { clusterId: [clusterId], isCluster: [true] }
   } },{
     selectFromResult: ({ data }) => {
       return {
-        currentCluster: data?.data[0]
+        currentClusterStatus: data?.data[0]
       }
     }
+  })
+  const { data: currentCluster } = useGetEdgeClusterQuery({
+    params: {
+      venueId: currentClusterStatus?.venueId,
+      clusterId: clusterId
+    }
+  }, {
+    skip: !currentClusterStatus?.venueId
   })
 
   const tabs = {
@@ -34,7 +42,10 @@ const EditEdgeCluster = () => {
     },
     'virtual-ip': {
       title: $t({ defaultMessage: 'Virtual IP' }),
-      content: <VirtualIp currentCluster={currentCluster} />
+      content: <VirtualIp
+        currentCluster={currentClusterStatus}
+        currentVipConfig={currentCluster?.virtualIpSettings}
+      />
     },
     'cluster-interface': {
       title: $t({ defaultMessage: 'Cluster Interface' }),
@@ -56,7 +67,7 @@ const EditEdgeCluster = () => {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Configure {name}' }, { name: currentCluster?.name })}
+        title={$t({ defaultMessage: 'Configure {name}' }, { name: currentClusterStatus?.name })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices/edge' }
         ]}

@@ -346,6 +346,25 @@ export interface EdgeLag {
     lagEnabled: boolean
 }
 
+export interface EdgeCluster {
+  id: string
+  name: string
+  smartEdges: {
+    serialNumber: string
+    name: string
+  }[]
+  virtualIpSettings: {
+      virtualIps: {
+        virtualIp: string
+        ports: {
+          serialNumber: string
+          portName: string
+        }[]
+        timeoutSeconds: number
+      }[]
+  }
+}
+
 export interface EdgeClusterStatus {
   tenantId?: string
   clusterId?: string
@@ -362,4 +381,11 @@ export interface EdgeClusterTableDataType extends EdgeStatus,
 Omit<EdgeClusterStatus, 'tenantId' | 'name' | 'venueId' | 'venueName'> {
   isFirstLevel?: boolean
   children?: EdgeStatus[]
+}
+
+export interface EdgePortInfo {
+  serialNumber: string
+  portName: string
+  ip: string
+  subnet: string
 }
