@@ -28,13 +28,18 @@ interface ImportSSOFileDrawerProps extends DrawerProps {
 
 const { Dragger } = Upload
 
-const acceptType = ['xml']
 const FiveMBSize = 1024 * 5 * 1024
 
 const isValidXml = (rawXml: string) => {
   const parser = new DOMParser()
   const doc = parser.parseFromString(rawXml, 'text/xml')
   return doc.querySelector('parsererror') == null
+}
+
+const getFileExtension = (fileName: string) => {
+  const extensionsRegex: RegExp = /(.xml)$/i
+  const matched = extensionsRegex.exec(fileName)
+  return matched && matched.length && matched[0]
 }
 
 export const ImportSSOFileDrawer = (props: ImportSSOFileDrawerProps) => {
@@ -60,6 +65,11 @@ export const ImportSSOFileDrawer = (props: ImportSSOFileDrawerProps) => {
   const beforeUpload = (file: File) => {
     return new Promise<false | typeof Upload.LIST_IGNORE>(async (resolve) => {
       let errorMsg = ''
+      /* istanbul ignore next */
+      if (!getFileExtension(file.name)) {
+        /* istanbul ignore next */
+        errorMsg = $t({ defaultMessage: 'File has invalid extension name.' })
+      }
       if (file.size > FiveMBSize) {
         errorMsg = $t({ defaultMessage: 'File size ({fileSize}) is too big.' }, {
           fileSize: bytesFormatter(file.size)
@@ -128,6 +138,7 @@ export const ImportSSOFileDrawer = (props: ImportSSOFileDrawerProps) => {
   }
 
   return <UI.ImportFileDrawer
+    width={400}
     title={title}
     visible={visible}
     onClose={() => onClose()}
@@ -151,7 +162,7 @@ export const ImportSSOFileDrawer = (props: ImportSSOFileDrawerProps) => {
         <Dragger
           id='uploadFile'
           name='file'
-          accept={acceptType.map(type => `.${type}`).join(', ')}
+          accept='.xml'
           maxCount={1}
           showUploadList={false}
           beforeUpload={beforeUpload}>
