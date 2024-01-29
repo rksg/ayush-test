@@ -81,7 +81,7 @@ export function VideoCallQoeTable () {
           }
 
           return (
-            <Button type='link' onClick={handleClick}>
+            <Button type='link' onClick={handleClick} size='small'>
               {row.name}
             </Button>
           )

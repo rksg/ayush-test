@@ -24,13 +24,15 @@ export const EdgeDhcpLeaseTable = (props: EdgeDhcpLeaseTableProps) => {
     sortOrder: 'ASC',
     searchTargetFields: ['hostName', 'hostIpAddr', 'hostMac']
   }
+  const settingsId = 'edge-dhcp-leases-table'
   const hostTableQuery = useTableQuery<DhcpHostStats, RequestPayload<unknown>, unknown>({
     useQuery: useGetDhcpHostStatsQuery,
     defaultPayload: getDhcpHostStatsPayload,
     option: { skip: !!!props.edgeId || !isEdgeReady },
     search: {
       searchTargetFields: ['hostName', 'hostIpAddr', 'hostMac']
-    }
+    },
+    pagination: { settingsId }
   })
 
   const { dhcpPoolOptions } = useGetDhcpByEdgeIdQuery(
@@ -121,7 +123,7 @@ export const EdgeDhcpLeaseTable = (props: EdgeDhcpLeaseTableProps) => {
   return (
     <Loader states={[hostTableQuery]}>
       <Table
-        settingsId='edge-dhcp-leases-table'
+        settingsId={settingsId}
         rowKey='hostMac'
         columns={columns}
         dataSource={hostTableQuery?.data?.data}
