@@ -7,10 +7,12 @@ import { useIntl }                from 'react-intl'
 
 import {
   useUpdateUserMutation,
-  useAddUserMutation
+  useAddUserMutation,
+  AddUserPayload,
+  UpdateUserPayload
 } from '@acx-ui/analytics/services'
-import { ManagedUser }                                from '@acx-ui/analytics/utils'
-import { Drawer, Loader, StepsFormLegacy, showToast } from '@acx-ui/components'
+import { ManagedUser }                                         from '@acx-ui/analytics/utils'
+import { Drawer, Loader, StepsFormLegacy, Tooltip, showToast } from '@acx-ui/components'
 
 import { drawerContentConfig } from './config'
 
@@ -20,16 +22,55 @@ type FormItemProps = {
   labelKey: string,
   component: React.ReactNode
 }
+export function isValidEmail (value: string) {
+  // eslint-disable-next-line max-len
+  const re = new RegExp (/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
 
-const FormItem: React.FC<FormItemProps> = ({ name, labelKey, component }) => (
-  <Row gutter={20}>
+  if (value && !re.test(value)) {
+    return false
+  }
+  return true
+}
+
+const FormItem: React.FC<FormItemProps> = ({ name, labelKey, component }) => {
+  const { $t } = useIntl()
+  const Item = name === 'invitedEmail'
+    ? <Form.Item
+      name={name}
+      label={<>
+        {labelKey}
+        <Tooltip.Info
+          title={$t(
+            { defaultMessage:
+                `Invite a 3rd Party user who does not belong to your organisation
+                into this RUCKUS AI account. Please note
+                that the invitee needs to have an existing
+                Ruckus Support account.` })}
+          placement='top' />
+      </>}
+      rules={[{
+        required: true,
+        message: $t({ defaultMessage: 'Email is required!' })
+      },
+      {
+        validator (_, value) {
+          const check = isValidEmail(value)
+          return check ? Promise.resolve() : Promise.reject()
+        },
+        message: $t({ defaultMessage: 'Input is not a valid email id' })
+      }]}
+      children={component}
+    />
+    : <Form.Item name={name} label={labelKey}>
+      {component}
+    </Form.Item>
+
+  return <Row gutter={20}>
     <Col span={8}>
-      <Form.Item name={name} label={labelKey}>
-        {component}
-      </Form.Item>
+      {Item}
     </Col>
   </Row>
-)
+}
 export type UserType = 'edit' | 'create' | 'createExternal'
 type UserDrawerProps = {
   opened: boolean
@@ -56,61 +97,95 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
   const [ isLoading, setIsloading ] = useState(false)
   const [updateUser] = useUpdateUserMutation()
   const [addUser] = useAddUserMutation()
+  const [form] = Form.useForm()
   const handleSaveClick = async () => {
-    console.log('updated user', updatedUser)
-    return
     setIsloading(true)
-    if (type === 'edit') {
-      await updateUser({
+    const mutation = type === 'edit' ? updateUser : addUser
+    const payload = type === 'edit'
+      ? {
         resourceGroupId: updatedUser.resourceGroupId!,
         userId: updatedUser.id!,
         role: updatedUser.role!
-      })
-        .unwrap()
-        .then(() => {
-          setIsloading(false)
-          setUpdatedUser({})
-          toggleDrawer(false)
-          showToast({
-            type: 'success',
-            content: $t({ defaultMessage: 'User edited successfully' })
-          })
-        })
-        .catch((error) => {
-          setIsloading(false)
-          setUpdatedUser({})
-          toggleDrawer(false)
-          showToast({
-            type: 'error',
-            content: $t({ defaultMessage: 'Error: {error}' }, { error: error.data })
-          })
-        })
-    } else {
-      await addUser({
+      } as UpdateUserPayload
+      : {
         resourceGroupId: updatedUser.resourceGroupId!,
         swuId: updatedUser.id!,
         role: updatedUser.role!
+      } as AddUserPayload
+    await mutation(payload as AddUserPayload & UpdateUserPayload)
+      .unwrap()
+      .then(() => {
+        setIsloading(false)
+        setUpdatedUser({})
+        toggleDrawer(false)
+        showToast({
+          type: 'success',
+          content: $t(
+            { defaultMessage: 'User {action} successfully' },
+            { action: type === 'edit' ? 'Edited' : 'Added' }
+          )
+        })
       })
-        .unwrap()
-        .then(() => {
-          setIsloading(false)
-          setUpdatedUser({})
-          toggleDrawer(false)
-          showToast({
-            type: 'success',
-            content: $t({ defaultMessage: 'User added successfully' })
-          })
+      .catch((error) => {
+        setIsloading(false)
+        setUpdatedUser({})
+        toggleDrawer(false)
+        showToast({
+          type: 'error',
+          content: $t({ defaultMessage: 'Error: {error}' }, { error: error.data })
         })
-        .catch((error) => {
-          setIsloading(false)
-          setUpdatedUser({})
-          toggleDrawer(false)
-          showToast({
-            type: 'error',
-            content: $t({ defaultMessage: 'Error: {error}' }, { error: error.data })
-          })
-        })
-    }
+      })
+    // if (type === 'edit') {
+    //   await updateUser({
+    //     resourceGroupId: updatedUser.resourceGroupId!,
+    //     userId: updatedUser.id!,
+    //     role: updatedUser.role!
+    //   })
+    //     .unwrap()
+    //     .then(() => {
+    //       setIsloading(false)
+    //       setUpdatedUser({})
+    //       toggleDrawer(false)
+    //       showToast({
+    //         type: 'success',
+    //         content: $t({ defaultMessage: 'User edited successfully' })
+    //       })
+    //     })
+    //     .catch((error) => {
+    //       setIsloading(false)
+    //       setUpdatedUser({})
+    //       toggleDrawer(false)
+    //       showToast({
+    //         type: 'error',
+    //         content: $t({ defaultMessage: 'Error: {error}' }, { error: error.data })
+    //       })
+    //     })
+    // } else {
+    //   await addUser({
+    //     resourceGroupId: updatedUser.resourceGroupId!,
+    //     swuId: updatedUser.id!,
+    //     role: updatedUser.role!
+    //   })
+    //     .unwrap()
+    //     .then(() => {
+    //       setIsloading(false)
+    //       setUpdatedUser({})
+    //       toggleDrawer(false)
+    //       showToast({
+    //         type: 'success',
+    //         content: $t({ defaultMessage: 'User added successfully' })
+    //       })
+    //     })
+    //     .catch((error) => {
+    //       setIsloading(false)
+    //       setUpdatedUser({})
+    //       toggleDrawer(false)
+    //       showToast({
+    //         type: 'error',
+    //         content: $t({ defaultMessage: 'Error: {error}' }, { error: error.data })
+    //       })
+    //     })
+    // }
   }
   const isUserDataValid = () => {
     if (type === 'create') {
@@ -126,6 +201,7 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
   }
   const handleCancelClick = () => {
     setUpdatedUser({})
+    //form.resetFields()
     toggleDrawer(false)
   }
 
@@ -135,7 +211,10 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
         onClick={handleSaveClick}
         disabled={!isUserDataValid()}
         type='primary'>
-        {$t({ defaultMessage: 'Save' })}
+        {$t(
+          { defaultMessage: '{label}' },
+          { label: type === 'createExternal' ? 'Invite' : 'Save' }
+        )}
       </Button>
       <Button onClick={handleCancelClick}>
         {$t({ defaultMessage: 'Cancel' })}
@@ -152,7 +231,7 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
     footer={drawerFooter}
     width={400}
   ><Loader states={[{ isLoading }]}>
-      <StepsFormLegacy.StepForm>
+      <Form layout='vertical' form={form}>
         {drawerContentConfig[type as UserType].map((item) => (
           <FormItem
             key={item.name}
@@ -171,7 +250,7 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
             }
           />
         ))}
-      </StepsFormLegacy.StepForm>
+      </Form>
     </Loader>
   </Drawer>
 }

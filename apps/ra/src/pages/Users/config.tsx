@@ -1,3 +1,4 @@
+
 import { Checkbox, Typography } from 'antd'
 import input                    from 'antd/lib/input'
 import { defineMessage }        from 'react-intl'
@@ -14,11 +15,22 @@ import { RoleSelection }           from './RoleSelection'
 import type { CheckboxProps } from 'antd'
 
 
+const Disclaimer = (props: object) => {
+  const { $t } = getIntl()
+  const { Paragraph } = Typography
+  /* eslint-disable max-len */
+  return (<><Paragraph {...props}>
+    {$t({ defaultMessage: 'By inviting a 3rd party user, you are explicitly granting access to someone outside of your organization into this RUCKUS Analytics service account. Please ensure that you have the necessary authorization to do so.' })}
+  </Paragraph><Paragraph {...props}>
+    {$t({ defaultMessage: 'Do note that if the Admin role is granted, this 3rd party user will also be able to invite other users into your account. If this is not desired, you may want to grant the 3rd party user a Network Admin or Report Only role.' })}
+  </Paragraph></>)
+  /* eslint-enable max-len */
+}
 interface componentProps {
-    selectedUser: Partial<ManagedUser> | null;
-    updatedUser: Partial<ManagedUser> | null;
-    onChange: CallableFunction
-  }
+  selectedUser: Partial<ManagedUser> | null;
+  updatedUser: Partial<ManagedUser> | null;
+  onChange: CallableFunction
+}
 
 interface FormItemConfig {
     name: string;
@@ -27,11 +39,11 @@ interface FormItemConfig {
     component: React.ComponentType<any>
     componentProps: (props: componentProps) => object;
 }
-  interface DrawerContentConfig {
-    edit: FormItemConfig[]
-    create: FormItemConfig[]
-    createExternal: FormItemConfig[]
-  }
+interface DrawerContentConfig {
+  edit: FormItemConfig[]
+  create: FormItemConfig[]
+  createExternal: FormItemConfig[]
+}
 
 export const drawerContentConfig: DrawerContentConfig = {
   edit: [
@@ -98,7 +110,7 @@ export const drawerContentConfig: DrawerContentConfig = {
   ],
   createExternal: [
     {
-      name: 'email',
+      name: 'invitedEmail',
       labelKey: defineMessage({ defaultMessage: 'Email' }),
       component: input,
       componentProps: ({ onChange, updatedUser }) => {
@@ -106,7 +118,7 @@ export const drawerContentConfig: DrawerContentConfig = {
         return {
           style: { width: '350px' },
           type: 'email',
-          value: updatedUser?.email,
+          value: updatedUser?.email || '',
           onChange: ({ target: { value } } : { target: { value: string } }) => onChange(
             { email: value }
           ),
@@ -139,25 +151,16 @@ export const drawerContentConfig: DrawerContentConfig = {
     {
       name: 'disclaimerMsg',
       labelKey: defineMessage({ defaultMessage: '3rd Party User' }),
-      component: Typography.Paragraph,
-      /* eslint-disable max-len */
-      componentProps: () => {
-        const { $t } = getIntl()
-        return {
-          className: 'description greyText',
-          style: {
-            width: '350px',
-            display: 'flex',
-            lineHeight: 'var(--acx-subtitle-4-line-height)',
-            fontSize: 'var(--acx-body-4-font-size)'
-          },
-          children: $t({
-            defaultMessage: `By inviting a 3rd party user, you are explicitly granting access to someone outside of your organization into this RUCKUS Analytics service account. Please ensure that you have the necessary authorization to do so.
-        \nDo note that if the Admin role is granted, this 3rd party user will also be able to invite other users into your account. If this is not desired, you may want to grant the 3rd party user a Network Admin or Report Only role.`
-          })
-        /* eslint-enable max-len */
+      component: Disclaimer,
+      componentProps: () => ({
+        className: 'description greyText',
+        style: {
+          width: '350px',
+          display: 'flex',
+          lineHeight: 'var(--acx-subtitle-4-line-height)',
+          fontSize: 'var(--acx-body-4-font-size)'
         }
-      }
+      })
     },
     {
       name: 'disclaimerCheck',

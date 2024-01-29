@@ -23,6 +23,16 @@ export type AvailableUser = {
   userName: string
 }
 
+export type UpdateUserPayload = {
+  resourceGroupId: string
+  role: string
+  userId: string
+}
+export type AddUserPayload = {
+  resourceGroupId: string
+  role: string
+  swuId: string
+}
 export const getDefaultSettings = (): Partial<Settings> => ({
   'brand-ssid-compliance-matcher': '^[a-zA-Z0-9]{5}_GUEST$',
   'sla-p1-incidents-count': '0',
@@ -108,35 +118,33 @@ export const rbacApi = baseRbacApi.injectEndpoints({
       }),
       providesTags: [{ type: 'RBAC', id: 'GET_RESOURCE_GROUPS' }]
     }),
-    updateUser: build.mutation<string, {
-      resourceGroupId: string, role: string, userId: string }>({
-        query: ({ userId, resourceGroupId, role }) => {
-          return {
-            url: `/users/${userId}`,
-            method: 'put',
-            credentials: 'include',
-            body: { resourceGroupId, role },
-            responseHandler: 'text'
-          }
-        },
-        invalidatesTags: [{ type: 'RBAC', id: 'GET_USERS' }]
-      }),
-    addUser: build.mutation<string, {
-      resourceGroupId: string, role: string, swuId: string }>({
-        query: ({ swuId, resourceGroupId, role }) => {
-          return {
-            url: '/users',
-            method: 'post',
-            credentials: 'include',
-            body: { swuId, resourceGroupId, role },
-            responseHandler: 'text'
-          }
-        },
-        invalidatesTags: [
-          { type: 'RBAC', id: 'GET_USERS' },
-          { type: 'RBAC', id: 'GET_AVAILABLE_USERS' }
-        ]
-      })
+    updateUser: build.mutation<string, UpdateUserPayload>({
+      query: ({ userId, resourceGroupId, role }) => {
+        return {
+          url: `/users/${userId}`,
+          method: 'put',
+          credentials: 'include',
+          body: { resourceGroupId, role },
+          responseHandler: 'text'
+        }
+      },
+      invalidatesTags: [{ type: 'RBAC', id: 'GET_USERS' }]
+    }),
+    addUser: build.mutation<string, AddUserPayload>({
+      query: ({ swuId, resourceGroupId, role }) => {
+        return {
+          url: '/users',
+          method: 'post',
+          credentials: 'include',
+          body: { swuId, resourceGroupId, role },
+          responseHandler: 'text'
+        }
+      },
+      invalidatesTags: [
+        { type: 'RBAC', id: 'GET_USERS' },
+        { type: 'RBAC', id: 'GET_AVAILABLE_USERS' }
+      ]
+    })
   })
 })
 
