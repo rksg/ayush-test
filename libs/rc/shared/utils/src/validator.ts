@@ -5,10 +5,11 @@ import {
   includes,
   remove,
   split,
-  isEmpty
+  isEmpty,
+  uniq
 }                from 'lodash'
 
-import { getIntl, validationMessages } from '@acx-ui/utils'
+import { byteCounter, getIntl, validationMessages } from '@acx-ui/utils'
 
 import { AclTypeEnum }                from './constants'
 import { IpUtilsService }             from './ipUtilsService'
@@ -120,6 +121,23 @@ export function domainsNameRegExp (value: string[], required: boolean) {
   })
 
   return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.domains))
+}
+
+export function domainNameDuplicationValidation (domainArray: string[]) {
+  const { $t } = getIntl()
+
+  let isValid = true
+
+  // Empty Guard
+  if(isEmpty(domainArray)) {return Promise.reject($t(validationMessages.domains))}
+
+  const uniqDomainArray = uniq(domainArray)
+
+  if(uniqDomainArray.length !== domainArray.length) {
+    isValid = false
+  }
+
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.domainDuplication))
 }
 
 export function walledGardensRegExp (value:string) {
@@ -578,6 +596,41 @@ export function emailsRegExp (value: string[]) {
     return re.test(email.replace(/\n/, '').trim())
   })
   return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.emailAddress))
+}
+
+export function emailDuplicationValidation (emailArray: string[]) {
+
+  const { $t } = getIntl()
+
+  let isValid = true
+
+  // Empty Guard
+  if(isEmpty(emailArray)) {return Promise.reject($t(validationMessages.emailAddress))}
+
+  const uniqEmailArray = uniq(emailArray)
+
+  if(uniqEmailArray.length !== emailArray.length) {
+    isValid = false
+  }
+
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.emailDuplication))
+}
+
+export function emailMaxCountValidation (emailArray: string[], maxCount: number){
+
+  const { $t } = getIntl()
+
+  let isValid = true
+
+  // Empty Guard
+  if(isEmpty(emailArray)) {return Promise.reject($t(validationMessages.emailAddress))}
+
+  if (emailArray.length > maxCount) {
+    isValid = false
+  }
+
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.emailMaxCount, { maxCount }))
+
 }
 
 export function emailsSameDomainValidation (emailArray: string[]) {
@@ -1078,6 +1131,18 @@ export function servicePolicyNameRegExp (value: string) {
   if (value && !re.test(value)) {
     return Promise.reject($t(validationMessages.servicePolicyNameInvalid))
   }
+  return Promise.resolve()
+}
+
+export function validateByteLength (value: string, maxLength: number) {
+  const { $t } = getIntl()
+  const numOfByte = byteCounter(value)
+  if (numOfByte > maxLength) {
+    return Promise.reject($t(
+      { defaultMessage: 'Field exceeds {max} bytes' },
+      { max: maxLength } ))
+  }
+
   return Promise.resolve()
 }
 

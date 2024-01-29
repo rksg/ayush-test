@@ -50,17 +50,18 @@ import {
   ImportErrorRes,
   FILTER,
   SEARCH,
-  ApCompatibility
+  ApCompatibility,
+  ApCompatibilityResponse
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                                 from '@acx-ui/types'
 import { filterByAccess }                                                 from '@acx-ui/user'
 import { exportMessageMapping }                                           from '@acx-ui/utils'
 
-import { ApFeatureCompatibility, ApCompatibilityQueryTypes, ApCompatibilityDrawer } from '../ApCompatibilityDrawer'
-import { seriesMappingAP }                                                          from '../DevicesWidget/helper'
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                          from '../ImportFileDrawer'
-import { useApActions }                                                             from '../useApActions'
+import { ApFeatureCompatibility, ApCompatibilityQueryTypes, ApCompatibilityType, ApCompatibilityDrawer } from '../ApCompatibilityDrawer'
+import { seriesMappingAP }                                                                               from '../DevicesWidget/helper'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                                               from '../ImportFileDrawer'
+import { useApActions }                                                                                  from '../useApActions'
 
 import {
   getGroupableConfig, groupedFields
@@ -147,12 +148,12 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
   const location = useLocation()
   const params = useParams()
   const filters = getFilters(params) as FILTER
-  const { searchable, filterables, enableGroups=true, enableApCompatibleCheck=false } = props
+  const { searchable, filterables, enableGroups=true, enableApCompatibleCheck=false, settingsId = 'ap-table' } = props
   const { setApsCount } = useContext(ApsTabContext)
   const [ compatibilitiesDrawerVisible, setCompatibilitiesDrawerVisible ] = useState(false)
   const [ selectedApSN, setSelectedApSN ] = useState('')
   const [ selectedApName, setSelectedApName ] = useState('')
-  const [ tableData, setTableData ] = useState([] as APExtended[])
+  const [ tableData, setTableData ] = useState([] as (APExtended|APExtendedGrouped)[])
   const [ hasGroupBy, setHasGroupBy ] = useState(false)
   const [ showFeatureCompatibilitiy, setShowFeatureCompatibilitiy ] = useState(false)
   const secureBootFlag = useIsSplitOn(Features.WIFI_EDA_SECURE_BOOT_TOGGLE)
@@ -174,60 +175,74 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
     },
     option: { skip: Boolean(props.tableQuery) },
     enableSelectAllPagesData: ['id', 'name', 'serialNumber', 'deviceGroupName', 'deviceGroupId',
-      'deviceStatus', 'fwVersion']
+      'deviceStatus', 'fwVersion'],
+    pagination: { settingsId }
   })
   const tableQuery = props.tableQuery || apListTableQuery
 
 
   useEffect(() => {
     const fetchApCompatibilitiesAndSetData = async () => {
-      const result:React.SetStateAction<APExtended[]> = []
+      const result:React.SetStateAction<(APExtended|APExtendedGrouped)[]> = []
       const apIdsToIncompatible:{ [key:string]: number } = {}
       if (tableQuery.data?.data) {
+        let apCompatibilitiesResponse:ApCompatibilityResponse = { apCompatibilities: [] }
         let apCompatibilities:ApCompatibility[] = []
         let apIds:string[] = []
         if (enableApCompatibleCheck && showFeatureCompatibilitiy) {
           const aps = tableQuery.data as TableResult<APExtended | APExtendedGrouped, ApExtraParams>
           apIds = retriedApIds(aps, !!hasGroupBy)
-          if (apIds.length > 0) {
-            if (params.venueId) {
-              apCompatibilities = await getApCompatibilitiesVenue({
-                params: { venueId: params.venueId },
-                payload: { filters: { apIds }, queryType: ApCompatibilityQueryTypes.CHECK_VENUE_WITH_APS }
-              }).unwrap()
-            } else if (params.networkId) {
-              apCompatibilities = await getApCompatibilitiesNetwork({
-                params: { networkId: params.networkId },
-                payload: { filters: { apIds }, queryType: ApCompatibilityQueryTypes.CHECK_NETWORK_WITH_APS }
-              }).unwrap()
+          try {
+            if (apIds.length > 0) {
+              if (params.venueId) {
+                apCompatibilitiesResponse = await getApCompatibilitiesVenue({
+                  params: { venueId: params.venueId },
+                  payload: { filters: { apIds } }
+                }).unwrap()
+              } else if (params.networkId) {
+                apCompatibilitiesResponse = await getApCompatibilitiesNetwork({
+                  params: { networkId: params.networkId },
+                  payload: { filters: { apIds } }
+                }).unwrap()
+              }
             }
+          } catch (e) {
+            // eslint-disable-next-line no-console
+            console.error('fetchApCompatibilitiesAndSetData error:', e)
           }
+          apCompatibilities = apCompatibilitiesResponse.apCompatibilities
         }
 
         if (apCompatibilities.length > 0) {
           apIds.forEach((id:string) => {
             const apIncompatible = _.find(apCompatibilities, ap => id===ap.id)
-            apIdsToIncompatible[id] = apIncompatible?.incompatible ?? 0
+            apIdsToIncompatible[id] = apIncompatible?.incompatibleFeatures?.length ?? apIncompatible?.incompatible ?? 0
           })
-        }
-        if (hasGroupBy) {
-          tableQuery.data.data?.forEach(item => {
-            (item as unknown as { aps: APExtended[] }).aps?.map(ap => ({ ...ap, incompatible: apIdsToIncompatible[ap.serialNumber] }))
-            result.push({ ...item })
-          })
+          if (hasGroupBy) {
+            tableQuery.data.data?.forEach(item => {
+              const children = (item as unknown as { aps: APExtended[] }).aps?.map(ap => ({ ...ap, incompatible: apIdsToIncompatible[ap.serialNumber] }))
+              result.push({ ...item, aps: children, children })
+            })
+          } else {
+            tableQuery.data.data?.forEach(ap => (result.push({ ...ap, incompatible: apIdsToIncompatible[ap.serialNumber] })))
+          }
+          setTableData(result)
         } else {
-          tableQuery.data.data?.forEach(ap => (result.push({ ...ap, incompatible: apIdsToIncompatible[ap.serialNumber] })))
+          setTableData(tableQuery.data?.data)
         }
       }
-      setTableData(result)
     }
     if (tableQuery.data) {
-      fetchApCompatibilitiesAndSetData()
+      if (enableApCompatibleCheck && showFeatureCompatibilitiy) {
+        fetchApCompatibilitiesAndSetData()
+      } else {
+        setTableData(tableQuery.data.data)
+      }
     }
     const totalCount = tableQuery.data?.totalCount || 0
     setApsCount?.(totalCount)
 
-  }, [tableQuery.data])
+  }, [tableQuery.data, showFeatureCompatibilitiy])
 
   const apAction = useApActions()
   const statusFilterOptions = seriesMappingAP().map(({ key, name, color }) => ({
@@ -502,7 +517,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
     }
     ]: []),
     ...(enableApCompatibleCheck ? [{
-      key: 'featureIncompatible',
+      key: 'incompatible',
       tooltip: $t({ defaultMessage: 'Check for the venue’s Wi-Fi features not supported by earlier versions or AP models.' }),
       title: $t({ defaultMessage: 'Feature Compatibility' }),
       filterPlaceholder: $t({ defaultMessage: 'Feature Compatibility' }),
@@ -515,7 +530,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       filterMultiple: false,
       show: false,
       sorter: false,
-      render: (data: React.ReactNode, row: APExtended) => {
+      render: (_: React.ReactNode, row: APExtended) => {
         return (<ApFeatureCompatibility
           count={row?.incompatible}
           onClick={() => {
@@ -660,8 +675,8 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
 
   const handleColumnStateChange = (state: ColumnState) => {
     if (enableApCompatibleCheck) {
-      if (showFeatureCompatibilitiy !== state['featureIncompatible']) {
-        setShowFeatureCompatibilitiy(state['featureIncompatible'])
+      if (showFeatureCompatibilitiy !== state['incompatible']) {
+        setShowFeatureCompatibilitiy(state['incompatible'])
       }
     }
   }
@@ -670,7 +685,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
     <Loader states={[tableQuery]}>
       <Table<APExtended | APExtendedGrouped>
         {...props}
-        settingsId='ap-table'
+        settingsId={settingsId}
         columns={columns}
         columnState={enableApCompatibleCheck?{ onChange: handleColumnStateChange } : {}}
         dataSource={tableData}
@@ -745,6 +760,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
         onClose={() => setImportVisible(false)}/>
       <ApCompatibilityDrawer
         visible={compatibilitiesDrawerVisible}
+        type={params.venueId?ApCompatibilityType.VENUE:ApCompatibilityType.NETWORK}
         venueId={params.venueId}
         networkId={params.networkId}
         queryType={params.venueId ?

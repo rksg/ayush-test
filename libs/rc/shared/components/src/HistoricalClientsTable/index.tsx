@@ -134,9 +134,11 @@ export function HistoricalClientsTable
             defaultFilters
 
   const HistoricalClientsTable = () => {
+    const settingsId = 'historical-clients-table'
     const tableQuery = useTableQuery({
       useQuery: useGetHistoricalClientListQuery,
-      defaultPayload: defaultHistoricalClientPayload
+      defaultPayload: defaultHistoricalClientPayload,
+      pagination: { settingsId }
     })
 
     useEffect(() => {
@@ -154,7 +156,7 @@ export function HistoricalClientsTable
             {$t({ defaultMessage: 'Historical Clients' })}
           </Subtitle>
           <Table
-            settingsId='historical-clients-table'
+            settingsId={settingsId}
             columns={GetCols(useIntl())}
             dataSource={tableQuery.data?.data}
             pagination={tableQuery.pagination}

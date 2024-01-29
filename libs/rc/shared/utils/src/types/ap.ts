@@ -1,5 +1,6 @@
 import { APMeshRole, ApDeviceStatusEnum } from '../constants'
 import {
+  ApAntennaTypeEnum,
   ApDeep,
   ApPacketCaptureStateEnum,
   ApPosition,
@@ -333,6 +334,9 @@ export interface ApModel {
   supportMesh?: boolean,
   version?: string,
   support11AX?: boolean,
+  supportAntennaType?: boolean,
+  antennaTypeCapabilities?: ApAntennaTypeEnum[],
+  defaultAntennaType?: ApAntennaTypeEnum,
   supportBandCombination?: boolean,
   bandCombinationCapabilities?: BandModeEnum[],
   defaultBandCombination?: BandModeEnum
@@ -378,6 +382,11 @@ export interface ApLedSettings {
 
 export interface ApBandModeSettings {
   bandMode: BandModeEnum,
+  useVenueSettings: boolean
+}
+
+export type ApAntennaTypeSettings = {
+  antennaType: ApAntennaTypeEnum,
   useVenueSettings: boolean
 }
 
