@@ -4,8 +4,8 @@ import { useParams } from 'react-router-dom'
 import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
 import { useApGroupsListQuery, useGetApCompatibilitiesNetworkQuery } from '@acx-ui/rc/services'
 
-import { ApCompatibilityQueryTypes, retrievedCompatibilitiesOptions } from '../../ApCompatibilityDrawer'
-import { ApTable }                                                    from '../../ApTable'
+import { retrievedCompatibilitiesOptions } from '../../ApCompatibilityDrawer'
+import { ApTable }                         from '../../ApTable'
 
 
 
@@ -15,7 +15,7 @@ export function NetworkApsTab () {
   const { compatibilitiesFilterOptions } = useGetApCompatibilitiesNetworkQuery(
     {
       params: { networkId },
-      payload: { filters: {}, queryType: ApCompatibilityQueryTypes.CHECK_NETWORK }
+      payload: { filters: {} }
     },
     {
       skip: !isApCompatibleCheckEnabled,
@@ -41,7 +41,7 @@ export function NetworkApsTab () {
   )
 
   return (
-    <ApTable
+    <ApTable settingsId='network-ap-table'
       searchable={true}
       enableGroups={false}
       enableApCompatibleCheck={isApCompatibleCheckEnabled}

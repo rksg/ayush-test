@@ -221,8 +221,9 @@ describe('SwitchTable', () => {
       route: { params, path: '/:tenantId/t' }
     })
 
+    const table = await screen.findByTestId('switch-table')
     // eslint-disable-next-line testing-library/no-node-access
-    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
+    const tbody = (await within(table).findByRole('table')).querySelector('tbody')!
     expect(tbody).toBeVisible()
     const rows = await within(tbody).findAllByRole('row')
     expect(rows).toHaveLength(switchList.data.length)
@@ -231,24 +232,25 @@ describe('SwitchTable', () => {
       expect(await within(rows[Number(index)]).findByText(item.model)).toBeVisible()
     }
 
-    const row = await screen.findByRole('row', { name: /FEK3224R0AG/i })
+    const row = await within(table).findByRole('row', { name: /FEK3224R0AG/i })
     await userEvent.click(await within(row).findByRole('checkbox'))
 
-    await screen.findByText(/1 selected/)
-    const matchButton = await screen.findByRole('button', { name: 'Match Admin Password to Venue' })
+    await within(table).findByText(/1 selected/)
+    const matchButton = await within(table)
+      .findByRole('button', { name: 'Match Admin Password to Venue' })
     expect(matchButton).toBeVisible()
     expect(matchButton).toBeDisabled()
 
-    const row1 = await screen.findByRole('row', { name: /FEK3224R1AG/i })
+    const row1 = await within(table).findByRole('row', { name: /FEK3224R1AG/i })
     await userEvent.click(await within(row1).findByRole('checkbox'))
 
-    await screen.findByText(/2 selected/)
+    await within(table).findByText(/2 selected/)
     expect(matchButton).not.toBeDisabled()
 
     await userEvent.click(matchButton)
     await screen.findByText(/The switch admin password will be set same as the venue setting/)
     const dialog = await screen.findByRole('dialog')
-    await userEvent.click(await screen.findByRole('button', { name: 'Match Password' }))
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'Match Password' }))
     await waitFor(() => expect(dialog).not.toBeVisible())
   })
 

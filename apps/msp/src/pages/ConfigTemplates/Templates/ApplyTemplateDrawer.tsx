@@ -10,7 +10,6 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import { useMspCustomerListQuery } from '@acx-ui/msp/services'
 import {
   MSPUtils,
@@ -21,11 +20,10 @@ import {
   ConfigTemplate,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { RolesEnum }                                  from '@acx-ui/types'
-import { hasAccess, hasRoles, useUserProfileContext } from '@acx-ui/user'
-import { AccountType, isDelegationMode }              from '@acx-ui/utils'
+import { hasAccess } from '@acx-ui/user'
 
-import * as UI from './styledComponents'
+import * as UI          from './styledComponents'
+import { useEcFilters } from './templateUtils'
 
 
 interface ApplyTemplateDrawerProps {
@@ -213,19 +211,4 @@ function ApplyTemplateConfirmationDrawer (props: ApplyTemplateConfirmationDrawer
       {content}
     </Drawer>
   )
-}
-
-function useEcFilters () {
-  const { data: userProfile } = useUserProfileContext()
-  const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
-  const isSupportToMspDashboardAllowed =
-    useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
-
-  const ecFilters = useMemo(() => {
-    return isPrimeAdmin || isSupportToMspDashboardAllowed
-      ? { tenantType: [AccountType.MSP_EC] }
-      : { mspAdmins: [userProfile?.adminId], tenantType: [AccountType.MSP_EC] }
-  }, [isPrimeAdmin, isSupportToMspDashboardAllowed])
-
-  return ecFilters
 }

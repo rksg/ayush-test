@@ -2,18 +2,19 @@
 import { useState, useEffect } from 'react'
 
 import { Form, Typography }          from 'antd'
+import { TooltipPlacement }          from 'antd/lib/tooltip'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Tooltip, Drawer, Button, Loader, cssStr } from '@acx-ui/components'
 import { QuestionMarkCircleOutlined }              from '@acx-ui/icons'
 import {
+  useGetVenueQuery,
   useLazyGetApCompatibilitiesVenueQuery,
   useLazyGetApCompatibilitiesNetworkQuery,
   useLazyGetApFeatureSetsQuery
 }   from '@acx-ui/rc/services'
-import { ApCompatibility, ApIncompatibleFeature, ApIncompatibleDevice } from '@acx-ui/rc/utils'
-import { TenantLink }                                                   from '@acx-ui/react-router-dom'
-
+import { ApCompatibility, ApCompatibilityResponse, ApIncompatibleFeature, ApIncompatibleDevice } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                                                 from '@acx-ui/react-router-dom'
 
 import { StyledWrapper, CheckMarkCircleSolidIcon, WarningTriangleSolidIcon, UnknownIcon } from './styledComponents'
 
@@ -26,7 +27,9 @@ export enum ApCompatibilityType {
 export enum InCompatibilityFeatures {
   AP_70 = 'WIFI7 302MHz',
   BETA_DPSK3 = 'DSAE',
-  AP_NEIGHBORS = 'AP Neighbors'
+  AP_NEIGHBORS = 'AP Neighbors',
+  BSS_COLORING = 'BSS Coloring',
+  QOS_MIRRORING = 'QoS Mirroring'
 }
 
 export enum ApCompatibilityQueryTypes {
@@ -43,10 +46,12 @@ export enum ApCompatibilityQueryTypes {
 export type ApCompatibilityToolTipProps = {
   visible: boolean,
   title: string,
-  onClick: () => void
+  onClick: () => void,
+  placement?: TooltipPlacement
 }
 
-export function retrievedCompatibilitiesOptions (data?: ApCompatibility[]) {
+export function retrievedCompatibilitiesOptions (response?: ApCompatibilityResponse) {
+  const data = response?.apCompatibilities as ApCompatibility[]
   const compatibilitiesFilterOptions: { key: string; value: string; label: string; }[] = []
   if (data?.[0]) {
     const { incompatibleFeatures, incompatible } = data[0]
@@ -74,7 +79,7 @@ Sample:
 */
 export function ApCompatibilityToolTip (props: ApCompatibilityToolTipProps) {
   const { $t } = useIntl()
-  const { visible, title, onClick } = props
+  const { visible, title, onClick, placement } = props
 
   const compatibilityToolTipInfo = $t({
     defaultMessage:
@@ -85,7 +90,7 @@ export function ApCompatibilityToolTip (props: ApCompatibilityToolTipProps) {
     title={
       <FormattedMessage
         defaultMessage={
-          '{title}<compatibilityToolTip></compatibilityToolTip>'
+          '{title}  <compatibilityToolTip></compatibilityToolTip>'
         }
         values={{
           title,
@@ -99,9 +104,9 @@ export function ApCompatibilityToolTip (props: ApCompatibilityToolTipProps) {
         }}
       />
     }
-    placement='right'>
+    placement={placement ?? 'right'}>
     <QuestionMarkCircleOutlined
-      style={{ height: '18px', marginBottom: -3 }}
+      style={{ height: '16px', width: '16px', marginBottom: -3 }}
     />
   </Tooltip>)
 }
@@ -210,9 +215,11 @@ Sample 2: Display data on drawer
 export function ApCompatibilityDrawer (props: ApCompatibilityDrawerProps) {
   const { $t } = useIntl()
   const [form] = Form.useForm()
-  const { visible, type=ApCompatibilityType.VENUE, isMultiple=false, venueId, venueName, networkId, featureName, apName, apIds=[], networkIds=[], venueIds=[], queryType, data=[] } = props
-  const [ isInitializing, setIsInitializing ] = useState(data.length === 0)
+  const { tenantId } = useParams()
+  const { visible, type=ApCompatibilityType.VENUE, isMultiple=false, venueId, venueName, networkId, featureName='', apName, apIds=[], networkIds=[], venueIds=[], data=[] } = props
+  const [ isInitializing, setIsInitializing ] = useState(data?.length === 0)
   const [ apCompatibilities, setApCompatibilities ] = useState<ApCompatibility[]>(data)
+  const { data: venueData } = useGetVenueQuery({ params: { tenantId, venueId } }, { skip: !venueId })
   const [ getApCompatibilitiesVenue ] = useLazyGetApCompatibilitiesVenueQuery()
   const [ getApCompatibilitiesNetwork ] = useLazyGetApCompatibilitiesNetworkQuery()
   const [ getApFeatureSets ] = useLazyGetApFeatureSetsQuery()
@@ -251,7 +258,7 @@ export function ApCompatibilityDrawer (props: ApCompatibilityDrawerProps) {
               'To utilize the {featureName}, ensure that the access points on the venue ' +
               '({venueName}) meet the minimum required version and AP model support list below. You may upgrade your firmware from '
     },
-    { featureName: featureName?.valueOf() ?? '', venueName })
+    { featureName: featureName?.valueOf() ?? '', venueName: venueData?.name ?? venueName })
 
   const multipleTitle = (apName) ? multipleFromAp : multipleFromFeature
   const singleTitle = (ApCompatibilityType.VENUE === type)
@@ -260,34 +267,41 @@ export function ApCompatibilityDrawer (props: ApCompatibilityDrawerProps) {
   const contentTxt = isMultiple ? multipleTitle : singleTitle
 
   useEffect(() => {
-    if (visible && data.length === 0 && apCompatibilities?.length === 0) {
+    if (visible && data?.length === 0 && apCompatibilities?.length === 0) {
       const fetchApCompatibilities = async () => {
         try {
           const getApCompatibilities = async () => {
             if (ApCompatibilityType.NETWORK === type) {
               return getApCompatibilitiesNetwork({
                 params: { networkId },
-                payload: { filters: { apIds, venueIds }, feature: featureName, queryType }
+                payload: { filters: { apIds, venueIds }, feature: featureName }
               }).unwrap()
             } else if (ApCompatibilityType.VENUE === type) {
               return getApCompatibilitiesVenue({
                 params: { venueId },
-                payload: { filters: { apIds, networkIds }, feature: featureName, queryType }
+                payload: { filters: { apIds, networkIds }, feature: featureName }
               }).unwrap()
             }
             const apFeatureSets = await getApFeatureSets({
-              params: { featureName: queryType }
+              params: { featureName: encodeURI(featureName) }
             }).unwrap()
+            const apIncompatibleFeature = { ...apFeatureSets, incompatibleDevices: [] } as ApIncompatibleFeature
             const apCompatibility = {
               id: 'ApFeatureSet',
-              incompatibleFeatures: apFeatureSets,
+              incompatibleFeatures: [apIncompatibleFeature],
               incompatible: 0,
               total: 0
             } as ApCompatibility
-            return [apCompatibility]
+            return { apCompatibilities: [apCompatibility] } as ApCompatibilityResponse
           }
 
-          setApCompatibilities(await getApCompatibilities())
+          try {
+            const apCompatibilitiesResponse = await getApCompatibilities()
+            setApCompatibilities(apCompatibilitiesResponse?.apCompatibilities)
+          } catch (e) {
+            // eslint-disable-next-line no-console
+            console.error('ApCompatibilityDrawer api error:', e)
+          }
           setIsInitializing(false)
         } catch (error) {
           console.log(error) // eslint-disable-line no-console
@@ -297,6 +311,12 @@ export function ApCompatibilityDrawer (props: ApCompatibilityDrawerProps) {
     }
   }, [visible, apCompatibilities])
 
+  useEffect(() => {
+    if (isInitializing && data?.length !== 0) {
+      setIsInitializing(false)
+      setApCompatibilities(data)
+    }
+  }, [data])
 
   const getItems = (items: ApCompatibility[]) => items?.map((item: ApCompatibility, index) => {
     const { incompatibleFeatures } = item
@@ -328,10 +348,10 @@ export function ApCompatibilityDrawer (props: ApCompatibilityDrawerProps) {
             style={detailStyle}
             className='ApCompatibilityDrawerFormItem'
           >
-            {itemDetail?.requiredModel}
+            {itemDetail?.requiredModel?.join(',')}
           </Form.Item>
         }
-        {!apName &&
+        {!apName && type !== ApCompatibilityType.ALONE &&
           <Form.Item
             key={`total_${index}`}
             label={$t({

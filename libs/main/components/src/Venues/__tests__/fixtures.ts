@@ -70,25 +70,27 @@ export const venueDetailHeaderData = {
   }
 }
 
-export const venueApCompatibilitiesData = [
-  {
-    id: '8caa8f5e01494b5499fa156a6c565138',
-    incompatibleFeatures: [ {
-      featureName: 'EXAMPLE-FEATURE-1',
-      requiredFw: '7.0.0.0.123',
-      requiredModel: '11be',
-      incompatibleDevices: [{
-        firmware: '6.2.3.103.233',
-        model: 'R550',
-        count: 1
+export const venueApCompatibilitiesData = {
+  apCompatibilities: [
+    {
+      id: '8caa8f5e01494b5499fa156a6c565138',
+      incompatibleFeatures: [ {
+        featureName: 'EXAMPLE-FEATURE-1',
+        requiredFw: '7.0.0.0.123',
+        requiredModel: ['11be'],
+        incompatibleDevices: [{
+          firmware: '6.2.3.103.233',
+          model: 'R550',
+          count: 1
+        }
+        ]
       }
-      ]
+      ],
+      total: 1,
+      incompatible: 1
     }
-    ],
-    total: 1,
-    incompatible: 1
-  }
-]
+  ]
+}
 
 export const apCompatibilitiesFilterData = [
   {
@@ -614,55 +616,61 @@ export const venueNetworkList = {
   ]
 }
 
-export const venueNetworkApCompatibilitiesData = [
-  {
-    id: 'd556bb683e4248b7a911fdb40c307aa5',
-    incompatibleFeatures: [ {
-      featureName: 'EXAMPLE-FEATURE-1',
-      requiredFw: '7.0.0.0.123',
-      requiredModel: '11be',
-      incompatibleDevices: [{
-        firmware: '6.2.3.103.233',
-        model: 'R550',
-        count: 1
+export const venueNetworkApCompatibilitiesData = {
+  apCompatibilities: [
+    {
+      id: 'd556bb683e4248b7a911fdb40c307aa5',
+      incompatibleFeatures: [ {
+        featureName: 'EXAMPLE-FEATURE-1',
+        requiredFw: '7.0.0.0.123',
+        requiredModel: ['11be'],
+        incompatibleDevices: [{
+          firmware: '6.2.3.103.233',
+          model: 'R550',
+          count: 1
+        }
+        ]
       }
-      ]
+      ],
+      total: 1,
+      incompatible: 1
+    },{
+      id: 'cd922ec00f744a16b4b784f3305ec0aa',
+      incompatibleFeatures: [],
+      total: 1,
+      incompatible: 0
     }
-    ],
-    total: 1,
-    incompatible: 1
-  },{
-    id: 'cd922ec00f744a16b4b784f3305ec0aa',
-    incompatibleFeatures: [],
-    total: 1,
-    incompatible: 0
-  }
-]
+  ]
+}
 
-export const venuesApCompatibilitiesData = [
-  {
-    id: 'd556bb683e4248b7a911fdb40c307aa5',
-    incompatibleFeatures: [ {
-      featureName: 'EXAMPLE-FEATURE-1',
-      requiredFw: '7.0.0.0.123',
-      requiredModel: '11be',
-      incompatibleDevices: [{
-        firmware: '6.2.3.103.233',
-        model: 'R550',
-        count: 1
+
+export const venuesApCompatibilitiesData = {
+  apCompatibilities: [
+    {
+      id: 'd556bb683e4248b7a911fdb40c307aa5',
+      incompatibleFeatures: [ {
+        featureName: 'EXAMPLE-FEATURE-1',
+        requiredFw: '7.0.0.0.123',
+        requiredModel: ['11be'],
+        incompatibleDevices: [{
+          firmware: '6.2.3.103.233',
+          model: 'R550',
+          count: 1
+        }
+        ]
       }
-      ]
+      ],
+      total: 1,
+      incompatible: 1
+    },{
+      id: 'cd922ec00f744a16b4b784f3305ec0aa',
+      incompatibleFeatures: [],
+      total: 1,
+      incompatible: 0
     }
-    ],
-    total: 1,
-    incompatible: 1
-  },{
-    id: 'cd922ec00f744a16b4b784f3305ec0aa',
-    incompatibleFeatures: [],
-    total: 1,
-    incompatible: 0
-  }
-]
+  ]
+}
+
 
 export const venueNetworkApGroup = {
   response: [
@@ -3376,6 +3384,25 @@ export const mockPersonaGroupList: NewTableResult<PersonaGroup> = {
     {
       id: 'persona-group-id-1',
       name: 'persona-group-name-1'
+    }
+  ]
+}
+
+export const mockVenueConfigTemplates = {
+  fields: [
+    'name',
+    'id'
+  ],
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      id: '069c06765c9841fcaf35bb5dbd2319eb',
+      name: 'My1stVenueTemplate1'
+    },
+    {
+      id: 'eb9555414ea444aa984d5399f0c1c892',
+      name: 'My1stVenueTemplate2'
     }
   ]
 }

@@ -1,8 +1,8 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { clientApi, networkApi, serviceApi }        from '@acx-ui/rc/services'
+import { useIsSplitOn, useIsTierAllowed }    from '@acx-ui/feature-toggle'
+import { clientApi, networkApi, serviceApi } from '@acx-ui/rc/services'
 import {
   ServiceType,
   DpskDetailsTabKey,
@@ -10,7 +10,6 @@ import {
   ServiceOperation,
   DpskUrls,
   CommonUrlsInfo,
-  convertDpskNewFlowUrl,
   ClientUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
@@ -62,10 +61,6 @@ describe('DpskPassphraseManagement', () => {
     mockServer.use(
       rest.post(
         DpskUrls.getEnhancedPassphraseList.url,
-        (req, res, ctx) => res(ctx.json({ ...mockedDpskPassphraseList }))
-      ),
-      rest.post(
-        convertDpskNewFlowUrl(DpskUrls.getEnhancedPassphraseList.url),
         (req, res, ctx) => res(ctx.json({ ...mockedDpskPassphraseList }))
       ),
       rest.delete(
@@ -227,7 +222,7 @@ describe('DpskPassphraseManagement', () => {
       unwrap: () => Promise.resolve()
     }))
 
-    const { rerender } = render(
+    render(
       <Provider>
         <DpskPassphraseManagement />
       </Provider>, {
@@ -235,16 +230,6 @@ describe('DpskPassphraseManagement', () => {
       }
     )
 
-    await userEvent.click(await screen.findByRole('button', { name: /Export To File/ }))
-
-    await waitFor(() => expect(mockedDownloadCsv).toHaveBeenCalledTimes(1))
-
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.DPSK_NEW_CONFIG_FLOW_TOGGLE)
-    rerender(
-      <Provider>
-        <DpskPassphraseManagement />
-      </Provider>
-    )
     await userEvent.click(await screen.findByRole('button', { name: /Export To File/ }))
     await waitFor(() => expect(mockedDownloadNewFlowCsv).toHaveBeenCalledTimes(1))
 

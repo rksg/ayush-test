@@ -163,12 +163,14 @@ export function Integrators () {
     const [selTenantId, setSelTenantId] = useState('')
     const navigate = useNavigate()
     const basePath = useTenantLink('/integrators/edit', 'v')
+    const settingsId = 'msp-integrators-table'
     const tableQuery = useTableQuery({
       useQuery: useMspCustomerListQuery,
       defaultPayload,
       search: {
         searchTargetFields: defaultPayload.searchTargetFields as string[]
-      }
+      },
+      pagination: { settingsId }
     })
     const [
       deleteMspEc,
@@ -216,7 +218,7 @@ export function Integrators () {
         tableQuery,
         { isLoading: false, isFetching: isDeleteEcUpdating }]}>
         <Table
-          settingsId='msp-integrators-table'
+          settingsId={settingsId}
           columns={columns}
           rowActions={filterByAccess(rowActions)}
           dataSource={tableQuery.data?.data}

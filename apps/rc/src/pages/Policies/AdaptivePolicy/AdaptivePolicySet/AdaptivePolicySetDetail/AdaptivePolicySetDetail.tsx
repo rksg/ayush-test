@@ -6,7 +6,6 @@ import { useParams }              from 'react-router-dom'
 
 import { Button, Card, GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
 import { Features, useIsTierAllowed }                         from '@acx-ui/feature-toggle'
-import { useDpskNewConfigFlowParams }                         from '@acx-ui/rc/components'
 import {
   useGetAdaptivePolicySetQuery,
   useGetPrioritizedPoliciesQuery, useLazyGetDpskListQuery,
@@ -44,7 +43,6 @@ export default function AdaptivePolicySetDetail () {
   const [ macRegList ] = useLazySearchMacRegListsQuery()
 
   const [ dpskList ] = useLazyGetDpskListQuery()
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
   useEffect(() => {
     if(isGetAdaptivePolicySetLoading) return
@@ -62,7 +60,7 @@ export default function AdaptivePolicySetDetail () {
     })
     if(isCloudpathEnabled) {
       // eslint-disable-next-line max-len
-      dpskList({ params: { size: '100000', page: '0', sort: 'name,desc', ...dpskNewConfigFlowParams } }).then(result => {
+      dpskList({ params: { size: '100000', page: '0', sort: 'name,desc' } }).then(result => {
         if (result.data) {
           // eslint-disable-next-line max-len
           setNetworkIdsInDpskList(result.data?.data.filter(pool => pool.policySetId === policyId).map(pool => pool.networkIds ?? []).flat() ?? [])

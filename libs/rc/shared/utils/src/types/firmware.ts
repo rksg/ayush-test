@@ -92,7 +92,7 @@ export enum ApModelFamilyType {
   WIFI_7 = 'WIFI_7'
 }
 
-export const apModelFamilyTypeLabels: { [key in ApModelFamilyType]: string } = {
+export const defaultApModelFamilyDisplayNames: { [key in ApModelFamilyType]: string } = {
   [ApModelFamilyType.WIFI_11AC_1]: '11ac',
   [ApModelFamilyType.WIFI_11AC_2]: '11ac wave2',
   [ApModelFamilyType.WIFI_6]: 'Wi-Fi 6',
@@ -130,11 +130,12 @@ export interface ABFVersion {
   category: FirmwareCategory;
   releaseDate: string;
   onboardDate: string;
-  supportedApModels: string[];
+  supportedApModels?: string[];
 }
 
 export interface ApModelFamily {
   name: ApModelFamilyType;
+  displayName: string;
   apModels: string[]
 }
 
@@ -145,6 +146,7 @@ export interface EolApFirmware {
   apCount: string;
   apModels: string[];
   isAbfGreaterThanVenueCurrentAbf: boolean;
+  sequence?: number;
 }
 
 export interface FirmwareVenue {
@@ -166,6 +168,7 @@ export interface FirmwareVenueVersion {
   version: string;
   category?: FirmwareCategory;
   type: FirmwareType;
+  sequence?: number;
 }
 
 export interface Schedule {

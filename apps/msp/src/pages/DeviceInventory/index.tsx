@@ -258,19 +258,21 @@ export function DeviceInventory () {
   }
 
   const DeviceTable = () => {
+    const settingsId = 'device-inventory-table'
     const tableQuery = useTableQuery({
       useQuery: useDeviceInventoryListQuery,
       apiParams: { tenantId: isIntegrator ? (parentTenantId as string) : (tenantId as string) },
       defaultPayload,
       search: {
         searchTargetFields: defaultPayload.searchTargetFields as string[]
-      }
+      },
+      pagination: { settingsId }
     })
 
     return (
       <Loader states={[tableQuery]}>
         <Table
-          settingsId='device-inventory-table'
+          settingsId={settingsId}
           columns={columns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

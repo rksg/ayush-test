@@ -14,6 +14,18 @@ export interface PartialUserData {
   preferredLanguage: string
 }
 
+export const isNonProdEnv = () => {
+  const domains = ['localhost', 'int', 'dev', 'qa', 'scale', 'stage']
+  // Subdomain
+  const len = window.location.hostname.split('.').length - 3
+  const subdomain = window.location.hostname.split('.')[len]
+  return (window.location.hostname === 'localhost' || domains.includes(subdomain))
+}
+
+export const updateBrowserCached = (lang: LangKey) => {
+  localStorage.setItem('browserLang', lang)
+}
+
 export const detectBrowserLang = () => {
   const locales = navigator.languages
   const locale = locales.find(locale =>
@@ -53,6 +65,7 @@ export const showBrowserLangDialog = ():Promise<BrowserDialogResult> => {
           closeAfterAction: true,
           handler: () => {
             const result = { lang: '', isLoading: false }
+            updateBrowserCached(browserLang)
             reject(result)
           }
         }, {
@@ -62,6 +75,7 @@ export const showBrowserLangDialog = ():Promise<BrowserDialogResult> => {
           closeAfterAction: true,
           handler: () => {
             const result = { lang: browserLang, isLoading: false }
+            updateBrowserCached(browserLang)
             resolve(result)
           }
         }]

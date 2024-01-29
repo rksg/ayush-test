@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useMemo } from 'react'
 
 import {
   Box,
@@ -345,6 +345,10 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
   }
 
   let selectedItems: string[] = []
+  const memoUniqSchedule = useMemo(() => (schedule: string[], selectedItems: string[], daykey: string) => {
+    return _.uniq(_.xor(schedule, selectedItems.filter((item: string) => item.indexOf(daykey) > -1))) || []
+  }, [])
+
   const { DragSelection } = useSelectionContainer({
     shouldStartSelecting: (target) => {
       if (target instanceof HTMLElement) {
@@ -387,10 +391,8 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
       selectedItems = _.uniq(selectedItems)
       for (let daykey in dayIndex) {
         const schedule = form.getFieldValue(['scheduler', daykey]) || []
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        if(selectedItems.filter((item: any) => item.indexOf(daykey) > -1)){
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          let uniqSchedule = _.uniq(_.xor(schedule, selectedItems.filter((item: any) => item.indexOf(daykey) > -1)))
+        if(selectedItems.filter((item: string) => item.indexOf(daykey) > -1)){
+          let uniqSchedule = memoUniqSchedule(schedule, selectedItems, daykey)
 
           form.setFieldValue(['scheduler', daykey], uniqSchedule)
           if(uniqSchedule && uniqSchedule.length === 96){

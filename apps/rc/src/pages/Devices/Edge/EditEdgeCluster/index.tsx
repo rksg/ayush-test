@@ -8,6 +8,8 @@ import { useTenantLink }                                              from '@acx
 
 import { VirtualIp } from './VirtualIp'
 
+import EdgeClusterDhcpTab from './EdgeClusterDhcpTab'
+
 const EditEdgeCluster = () => {
   const { $t } = useIntl()
   const { activeTab, clusterId } = useParams()
@@ -53,7 +55,7 @@ const EditEdgeCluster = () => {
     },
     'dhcp': {
       title: $t({ defaultMessage: 'DHCP' }),
-      content: <div children={'dhcp'} />
+      content: <EdgeClusterDhcpTab />
     }
   }
 

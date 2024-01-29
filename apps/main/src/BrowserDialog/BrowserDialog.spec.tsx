@@ -6,7 +6,10 @@ import {
 } from '@acx-ui/user'
 import { UserUrlsInfo } from '@acx-ui/user'
 
-import { detectBrowserLang, showBrowserLangDialog } from './BrowserDialog'
+import { detectBrowserLang,
+  showBrowserLangDialog,
+  isNonProdEnv,
+  updateBrowserCached } from './BrowserDialog'
 
 jest.mock('@acx-ui/utils', () => ({
   getIntl: jest.fn(() => ({
@@ -103,3 +106,41 @@ describe('detectBrowserLang', () => {
     expect(result).toEqual('en-US')
   })
 })
+
+describe('updateBrowserCached', () => {
+  beforeEach(() => {
+    localStorage.clear()
+  })
+
+  it('should update localStorage with the correct values', async () => {
+    const lang = 'en-US'
+    updateBrowserCached(lang)
+    Storage.prototype.setItem = jest.fn()
+    updateBrowserCached('en-US')
+    expect(localStorage.setItem).toHaveBeenCalledWith('browserLang', 'en-US')
+  })
+})
+
+describe('isNonProdEnv', () => {
+  it('should return true for non-production environments', () => {
+    window = Object.create(window)
+    const hname = 'localhost'
+    Object.defineProperty(window, 'location', {
+      value: {
+        hostname: hname
+      },
+      writable: true
+    })
+    expect(isNonProdEnv()).toBe(true)
+
+    const hname2 = 'eu.ruckus.cloud'
+    Object.defineProperty(window, 'location', {
+      value: {
+        hostname: hname2
+      },
+      writable: true
+    })
+    expect(isNonProdEnv()).toBe(false)
+  })
+})
+

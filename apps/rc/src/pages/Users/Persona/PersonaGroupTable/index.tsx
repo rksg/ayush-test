@@ -11,7 +11,6 @@ import {
   MacRegistrationPoolLink,
   NetworkSegmentationLink,
   IdentityGroupLink,
-  useDpskNewConfigFlowParams,
   VenueLink,
   PersonaGroupDrawer,
   usePersonaAsyncHeaders
@@ -51,9 +50,8 @@ function useColumns (
 ) {
   const { $t } = useIntl()
   const networkSegmentationEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
-  const { data: dpskPool } = useGetDpskListQuery({ params: dpskNewConfigFlowParams })
+  const { data: dpskPool } = useGetDpskListQuery({})
   const { data: macList } = useMacRegListsQuery({
     payload: { sortField: 'name', sortOrder: 'ASC', page: 1, pageSize: 10000 }
   })
@@ -175,7 +173,6 @@ export function PersonaGroupTable () {
     data: {} as PersonaGroup | undefined
   })
   const { setIdentityGroupCount } = useContext(IdentityGroupContext)
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
   const { isAsync, customHeaders } = usePersonaAsyncHeaders()
 
   const [getVenues] = useLazyVenuesListQuery()
@@ -188,10 +185,12 @@ export function PersonaGroupTable () {
     { isLoading: isDeletePersonaGroupUpdating }
   ] = useDeletePersonaGroupMutation()
 
+  const settingsId = 'persona-group-table'
   const tableQuery = useTableQuery( {
     useQuery: useSearchPersonaGroupListQuery,
     apiParams: { sort: 'name,ASC' },
-    defaultPayload: { keyword: '' }
+    defaultPayload: { keyword: '' },
+    pagination: { settingsId }
   })
 
   useEffect(() => {
@@ -224,7 +223,7 @@ export function PersonaGroupTable () {
       }
 
       if (dpskPoolId) {
-        getDpskById({ params: { serviceId: dpskPoolId, ...dpskNewConfigFlowParams } })
+        getDpskById({ params: { serviceId: dpskPoolId } })
           .then(result => {
             if (result.data) {
               dpskPools.set(dpskPoolId, result.data.name)
@@ -345,7 +344,7 @@ export function PersonaGroupTable () {
     >
       <Table<PersonaGroup>
         enableApiFilter
-        settingsId='persona-group-table'
+        settingsId={settingsId}
         columns={useColumns(macRegistrationPoolMap, dpskPoolMap, venueMap, nsgPoolMap)}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
