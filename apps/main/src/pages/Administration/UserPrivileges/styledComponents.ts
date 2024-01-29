@@ -18,3 +18,22 @@ export const TableTitleWrapper = styled(Space)`
     font-size: var(--acx-subtitle-6-font-size);
   }
 `
+
+export const FieldLabelPermission = styled.div<{ width: string }>`
+  font-size: var(--acx-body-4-font-size);
+  display: grid;
+  grid-template-columns: 425px 48px 48px 48px 48px 48px;
+  align-items: baseline;
+  padding: 0 10px 10px 10px;
+  // margin: 2px;
+  background-color: #F2F2F2;
+`
+export const FieldLabelAttributes = styled.div<{ width: string }>`
+  font-size: var(--acx-body-4-font-size);
+  display: grid;
+  grid-template-columns: 420px 48px 48px 48px 48px 48px;
+  align-items: baseline;
+  padding: 10px;
+  margin: 2px;
+  background-color: var(--acx-neutrals-30);
+`

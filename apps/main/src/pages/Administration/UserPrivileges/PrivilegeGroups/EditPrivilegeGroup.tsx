@@ -60,7 +60,7 @@ export function EditPrivilegeGroup () {
   const linkToPrivilegeGroups = useTenantLink('/administration/userPrivileges/privilegeGroups', 't')
   const [form] = Form.useForm()
 
-  const handleAssignLicense = async () => {
+  const handleUpdatePrivilegeGroup = async () => {
     // try {
     //   const ecFormData = { ...values }
 
@@ -70,7 +70,7 @@ export function EditPrivilegeGroup () {
   const PrivilegeGroupForm = () => {
     return <StepsForm
       form={form}
-      onFinish={handleAssignLicense}
+      onFinish={handleUpdatePrivilegeGroup}
       onCancel={() => navigate(linkToPrivilegeGroups)}
     >
       <StepsForm.StepForm>
