@@ -11,18 +11,18 @@ type Overlay = {
   title: string
   content: string | React.ReactNode
 }
-interface DropdownContainerProps {
+interface DetailsActionsProps {
   toggleCallback: CallableFunction
   muted: boolean
   overlay: Overlay
   extraOverlay?: Overlay
 }
-function DropdownContainer (
-  { toggleCallback, muted, overlay, extraOverlay } : DropdownContainerProps) {
+function DetailsActions (
+  { toggleCallback, muted, overlay, extraOverlay } : DetailsActionsProps) {
   const [ isMuted, setIsMuted ] = useState(muted)
 
   return <Dropdown
-    overlay={<UI.DropdownContainer>
+    overlay={<UI.DetailsActions>
       {extraOverlay && <>
         <Dropdown.OverlayTitle>{extraOverlay.title}</Dropdown.OverlayTitle>
         {extraOverlay.content}
@@ -37,9 +37,9 @@ function DropdownContainer (
         }}
       />
       <p>{overlay.content}</p>
-    </UI.DropdownContainer>}
+    </UI.DetailsActions>}
   >
     {() => <Button icon={<ConfigurationOutlined />} />}
   </Dropdown>
 }
-export default DropdownContainer
+export default DetailsActions

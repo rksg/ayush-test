@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 import { showToast }  from '@acx-ui/components'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
-import DropdownContainer                 from '../../DropdownContainer'
+import DetailsActions                    from '../../DetailsActions'
 import { useMuteRecommendationMutation } from '../services'
 
 import type { RecommendationDetails } from './services'
@@ -20,7 +20,7 @@ function RecommendationSetting ({ ...props }: Props) {
   const { $t } = useIntl()
   const [ muteRecommendation ] = useMuteRecommendationMutation()
 
-  return <DropdownContainer
+  return <DetailsActions
     toggleCallback={async (checked: boolean) => {
       const { toggleMute } = await muteRecommendation({ id, mute: checked }).unwrap()
       if (toggleMute.success) {
