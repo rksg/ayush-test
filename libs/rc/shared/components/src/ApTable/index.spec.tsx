@@ -3,10 +3,11 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
-import { apApi }                        from '@acx-ui/rc/services'
+import { apApi, venueApi, networkApi }  from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }              from '@acx-ui/store'
 import {
+  act,
   cleanup,
   findTBody,
   mockServer,
@@ -63,7 +64,12 @@ describe('Aps', () => {
     cleanup()
   })
   beforeEach(() => {
-    store.dispatch(apApi.util.resetApiState())
+    act(() => {
+      store.dispatch(apApi.util.resetApiState())
+      store.dispatch(venueApi.util.resetApiState())
+      store.dispatch(networkApi.util.resetApiState())
+    })
+
     utils.usePollingTableQuery = jest.fn().mockImplementation(() => {
       return { data: apList }
     })

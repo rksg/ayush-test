@@ -2,9 +2,11 @@ import { Modal } from 'antd'
 import { rest }  from 'msw'
 
 import { useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { networkApi, venueApi }         from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                     from '@acx-ui/store'
+import { Provider, store }              from '@acx-ui/store'
 import {
+  act,
   mockServer,
   render,
   screen,
@@ -20,6 +22,11 @@ jest.mock('socket.io-client')
 
 describe('Networks Table', () => {
   beforeEach(() => {
+    act(() => {
+      store.dispatch(networkApi.util.resetApiState())
+      store.dispatch(venueApi.util.resetApiState())
+    })
+
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,

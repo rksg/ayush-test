@@ -3387,3 +3387,22 @@ export const mockPersonaGroupList: NewTableResult<PersonaGroup> = {
     }
   ]
 }
+
+export const mockVenueConfigTemplates = {
+  fields: [
+    'name',
+    'id'
+  ],
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      id: '069c06765c9841fcaf35bb5dbd2319eb',
+      name: 'My1stVenueTemplate1'
+    },
+    {
+      id: 'eb9555414ea444aa984d5399f0c1c892',
+      name: 'My1stVenueTemplate2'
+    }
+  ]
+}
