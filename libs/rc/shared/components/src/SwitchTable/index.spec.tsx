@@ -185,7 +185,10 @@ describe('SwitchTable', () => {
       ),
       rest.post(
         SwitchUrlsInfo.syncSwitchesData.url,
-        (req, res, ctx) => res(ctx.json({}))
+        (req, res, ctx) => {
+          mockedSyncReq()
+          return res(ctx.json({}))
+        }
       )
     )
   })
@@ -379,7 +382,7 @@ describe('SwitchTable', () => {
 
   }, 60000)
 
-  it('should sync pasword with venue correctly', async () => {
+  it('should sync password with venue correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.post(
@@ -411,6 +414,10 @@ describe('SwitchTable', () => {
     await userEvent.click(await within(dialog).findByRole('button', { name: 'Match Password' }))
     await waitFor(() => expect(dialog).not.toBeVisible())
     expect(mockedSyncReq).toBeCalledTimes(1)
+    await waitFor(async () =>
+      expect(await screen.findByText(/Start admin password sync/)).toBeVisible()
+    )
+
   })
 
   it('should search correctly', async () => {
