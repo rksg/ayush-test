@@ -313,22 +313,23 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   }, [editMode])
 
   useEffect(() => {
-    if (appPolicyInfo && (isViewMode() || editMode.isEdit || localEditMode.isEdit)) {
+    if (contentForm && appPolicyInfo &&
+      (isViewMode() || editMode.isEdit || localEditMode.isEdit)) {
       contentForm.setFieldValue('policyName', appPolicyInfo.name)
       contentForm.setFieldValue('description', appPolicyInfo.description)
       setApplicationsRuleList([...transformToApplicationRule(
         drawerForm, appPolicyInfo
       )] as ApplicationsRule[])
     }
-  }, [appPolicyInfo, queryPolicyId])
+  }, [contentForm, appPolicyInfo, queryPolicyId])
 
   // use policyName to find corresponding id before API return profile id
   useEffect(() => {
-    if (requestId && queryPolicyName) {
-      appSelectOptions.map(option => {
+    if (form && requestId && queryPolicyName) {
+      appSelectOptions.forEach(option => {
         if (option.props.children === queryPolicyName) {
           if (!onlyAddMode.enable) {
-            form.setFieldValue('applicationPolicyId', option.key)
+            form.setFieldValue([...inputName, 'applicationPolicyId'], option.key)
           }
           setQueryPolicyId(option.key as string)
           setQueryPolicyName('')
@@ -336,7 +337,7 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         }
       })
     }
-  }, [appSelectOptions, requestId, policyName])
+  }, [form, appSelectOptions, requestId, policyName])
 
   useEffect(() => {
     if (onlyAddMode.enable && onlyAddMode.visible) {

@@ -7,17 +7,27 @@ import { TimelineTypes }                                                        
 import { useTenantLink }                                                         from '@acx-ui/react-router-dom'
 
 const Events = () => {
+  const settingsId = 'venue-event-table'
   return <EventTable
-    settingsId='venue-event-table'
-    tableQuery={useEventsTableQuery({ venueId: [useParams().venueId] })}
+    settingsId={settingsId}
+    tableQuery={useEventsTableQuery(
+      { venueId: [useParams().venueId] },
+      undefined,
+      { settingsId }
+    )}
   />
 }
 
 const Activities = () => {
   const { venueId } = useParams()
-  const tableQuery = useActivityTableQuery({ entityType: 'VENUE', entityId: venueId! })
+  const settingsId = 'venue-activity-table'
+  const tableQuery = useActivityTableQuery(
+    { entityType: 'VENUE', entityId: venueId! },
+    { settingsId }
+  )
 
   return <ActivityTable
+    settingsId={settingsId}
     tableQuery={tableQuery}
     filterables={['status', 'product']}
   />
