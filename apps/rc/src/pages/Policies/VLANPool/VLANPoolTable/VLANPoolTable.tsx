@@ -23,6 +23,7 @@ export default function VLANPoolTable () {
   const params = useParams()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDelVLANPoolPolicyMutation()
+  const settingsId = 'policies-vlan-pool-table'
   const tableQuery = useTableQuery({
     useQuery: useGetVLANPoolPolicyViewModelListQuery,
     defaultPayload: {
@@ -38,7 +39,8 @@ export default function VLANPoolTable () {
     search: {
       searchString: '',
       searchTargetFields: ['name']
-    }
+    },
+    pagination: { settingsId }
   })
 
   const rowActions: TableProps<VLANPoolViewModelType>['rowActions'] = [
@@ -102,7 +104,7 @@ export default function VLANPoolTable () {
       />
       <Loader states={[tableQuery]}>
         <Table<VLANPoolViewModelType>
-          settingsId='policies-vlan-pool-table'
+          settingsId={settingsId}
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

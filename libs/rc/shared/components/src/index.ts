@@ -36,6 +36,7 @@ export { SpaceWrapper } from './SpaceWrapper/index'
 export { EdgeInfoWidget }  from './EdgeInfoWidget'
 export { EdgePortsTable }  from './EdgeInfoWidget/EdgePortsTable'
 export { EdgeDhcpSettingForm } from './EdgeDhcpSetting/EdgeDhcpSettingForm'
+export { EdgeDhcpSelectionForm } from './EdgeDhcpSelectionForm'
 export { useEdgeDhcpActions } from './EdgeDhcpSetting/useEdgeDhcpActions'
 export { AddEdgeDhcpServiceModal } from './AddEdgeDhcpServiceModal'
 export { PoolDrawer } from './EdgeDhcpSetting/DhcpPool/PoolDrawer'
@@ -182,6 +183,9 @@ export {
 export type { ActivatedNetworksTableP2Props }
   from './EdgeSdLan/SdLanNetworkTable/SdLanP2NetworkTable'
 export {
+  useEdgeSdLanActions
+} from './EdgeSdLan/useEdgeSdLanActions'
+export {
   ApCompatibilityType,
   ApCompatibilityQueryTypes,
   InCompatibilityFeatures,
@@ -207,3 +211,4 @@ export * from './ZoomWidget'
 export * from './NetworkForm'
 export * from './NetworkDetails'
 export * from './users'
+export * from './configTemplates'

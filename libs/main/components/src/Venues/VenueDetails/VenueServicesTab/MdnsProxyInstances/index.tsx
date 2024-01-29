@@ -31,9 +31,11 @@ export default function MdnsProxyInstances () {
   const [ selectedApIds, setSelectedApIds ] = useState<string[]>([])
   const [ selectedServiceId, setSelectedServiceId ] = useState<string>()
 
+  const settingsId = 'venue-mdns-proxy-table'
   const tableQuery = useTableQuery({
     useQuery: useGetMdnsProxyApsQuery,
-    defaultPayload: {}
+    defaultPayload: {},
+    pagination: { settingsId }
   })
 
   const handleAddAction = () => {
@@ -137,7 +139,7 @@ export default function MdnsProxyInstances () {
       </UI.TableTitle>
       <Loader states={[tableQuery]}>
         <Table<MdnsProxyAp>
-          settingsId='venue-mdns-proxy-table'
+          settingsId={settingsId}
           columns={columns}
           dataSource={tableQuery.data?.data}
           actions={filterByAccess([{

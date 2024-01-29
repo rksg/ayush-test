@@ -96,12 +96,14 @@ interface schedule {
 export function NetworkVenuesTab () {
   const { $t } = useIntl()
   const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
+  const settingsId = 'network-venues-table'
   const tableQuery = useTableQuery({
     useQuery: isApCompatibleCheckEnabled ? useNetworkVenueTableQuery : useNetworkVenueListQuery,
     defaultPayload,
     search: {
       searchTargetFields: defaultPayload.searchTargetFields as string[]
-    }
+    },
+    pagination: { settingsId }
   })
 
   const { cityFilterOptions } = useGetVenueCityListQuery({ params: useParams() }, {
@@ -531,7 +533,7 @@ export function NetworkVenuesTab () {
         <Alert message={$t(notificationMessage)} type='info' showIcon closable />
       }
       <Table
-        settingsId='network-venues-table'
+        settingsId={settingsId}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         rowSelection={hasAccess() && !systemNetwork && {
