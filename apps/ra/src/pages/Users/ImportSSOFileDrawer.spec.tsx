@@ -113,7 +113,7 @@ describe('ImportSSOFileDrawer', () => {
   it('should reject large files correctly', async () => {
     (Blob.prototype.text as jest.Mock).mockImplementation(() =>
       Promise.resolve(validContent))
-    const value  = 1024 * 5 * 1024 + 1
+    const value = 1024 * 5 * 1024 + 1
     const updateSettingsMock = jest.fn()
     mockMutationHook.mockImplementation(() => [updateSettingsMock])
     render(<ImportSSOFileDrawer
