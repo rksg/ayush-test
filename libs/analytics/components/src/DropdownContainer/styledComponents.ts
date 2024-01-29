@@ -8,12 +8,3 @@ export const DropdownContainer = styled(Dropdown.OverlayContainer)`
     margin: 10px 0 0 0 !important;
   }
 `
-
-export const ExtraContainer = styled.div`
-  border-bottom: 1px solid var(--acx-neutrals-30);
-  padding-bottom: 10px;
-`
-
-export const MuteTitle = styled(Dropdown.OverlayTitle)`
-  padding-top: 10px;
-`

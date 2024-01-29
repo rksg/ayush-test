@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { Switch } from 'antd'
+import { Divider, Switch } from 'antd'
 
 import { Dropdown, Button }      from '@acx-ui/components'
 import { ConfigurationOutlined } from '@acx-ui/icons'
@@ -25,11 +25,10 @@ function DropdownContainer (
     overlay={<UI.DropdownContainer>
       {extraOverlay && <>
         <Dropdown.OverlayTitle>{extraOverlay.title}</Dropdown.OverlayTitle>
-        <UI.ExtraContainer>
-          {extraOverlay.content}
-        </UI.ExtraContainer>
+        {extraOverlay.content}
       </>}
-      <UI.MuteTitle>{overlay.title}</UI.MuteTitle>
+      <Divider />
+      <Dropdown.OverlayTitle>{overlay.title}</Dropdown.OverlayTitle>
       <Switch
         checked={isMuted}
         onChange={async (checked) => {
