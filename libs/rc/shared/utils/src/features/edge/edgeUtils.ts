@@ -85,6 +85,10 @@ export const getEdgePortTypeOptions = ($t: IntlShape['$t']) => ([
   {
     label: $t({ defaultMessage: 'LAN' }),
     value: EdgePortTypeEnum.LAN
+  },
+  {
+    label: $t({ defaultMessage: 'Cluster' }),
+    value: EdgePortTypeEnum.CLUSTER
   }
 ])
 

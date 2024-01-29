@@ -227,7 +227,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
   }
 
   const handlePortTypeChange = (changedValue: EdgePortTypeEnum | undefined) => {
-    if (changedValue === EdgePortTypeEnum.LAN) {
+    if (changedValue === EdgePortTypeEnum.LAN || changedValue === EdgePortTypeEnum.CLUSTER) {
       form.setFieldValue('ipMode', EdgeIpModeEnum.STATIC)
     }
   }
