@@ -42,6 +42,7 @@ const EdgeDhcpTable = () => {
       'edgeAlarmSummary'
     ]
   }
+  const settingsId = 'services-edge-dhcp-table'
   const tableQuery = useTableQuery({
     useQuery: useGetDhcpStatsQuery,
     defaultPayload: getDhcpStatsPayload,
@@ -51,7 +52,8 @@ const EdgeDhcpTable = () => {
     },
     search: {
       searchTargetFields: ['serviceName']
-    }
+    },
+    pagination: { settingsId }
   })
   const edgeOptionsDefaultPayload = {
     fields: ['name', 'serialNumber'],
@@ -254,7 +256,7 @@ const EdgeDhcpTable = () => {
         { isLoading: false, isFetching: isDeleteDhcpUpdating || isPatchDhcpUpdating }
       ]}>
         <Table
-          settingsId='services-edge-dhcp-table'
+          settingsId={settingsId}
           rowKey='id'
           columns={columns}
           rowSelection={hasAccess() && { type: 'radio' }}

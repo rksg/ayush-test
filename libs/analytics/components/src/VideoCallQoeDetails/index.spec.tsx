@@ -121,7 +121,7 @@ describe('VideoCallQoe Details Page', () => {
     await userEvent.click(radioButtons[2])
     await screen.findByText('1 selected')
     await userEvent.click(screen.getByText('Select'))
-    await waitForElementToBeRemoved(() => screen.queryByText('Select'))
+    await waitFor(() => { expect(screen.queryByText('Select')).not.toBeInTheDocument() })
   })
   it('should close client mac search drawer while click on cancel button', async () => {
     mockGraphqlQuery(r1VideoCallQoeURL, 'CallQoeTestDetails',
