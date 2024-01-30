@@ -1,12 +1,16 @@
-import { waitForElementToBeRemoved } from '@testing-library/react'
-import userEvent                     from '@testing-library/user-event'
-import { rest }                      from 'msw'
-import { Path }                      from 'react-router-dom'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
+import { Path }  from 'react-router-dom'
 
 import { policyApi }                                                   from '@acx-ui/rc/services'
 import { ApSnmpUrls, getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
 import { Provider, store }                                             from '@acx-ui/store'
-import { mockServer, render, screen, within }                          from '@acx-ui/test-utils'
+import {
+  mockServer,
+  render,
+  screen,
+  waitForElementToBeRemoved,
+  within }                          from '@acx-ui/test-utils'
 
 import SnmpAgentTable from './SnmpAgentTable'
 

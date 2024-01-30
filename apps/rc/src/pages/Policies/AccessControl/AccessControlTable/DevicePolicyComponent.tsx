@@ -61,9 +61,11 @@ const DevicePolicyComponent = () => {
     id: '', isEdit: false
   })
 
+  const settingsId = 'policies-access-control-device-policy-table'
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedDeviceProfileListQuery,
-    defaultPayload
+    defaultPayload,
+    pagination: { settingsId }
   })
 
   useEffect(() => {
@@ -137,7 +139,7 @@ const DevicePolicyComponent = () => {
         onlyAddMode={addModeStatus}
       />
       <Table<DevicePolicy>
-        settingsId='policies-access-control-device-policy-table'
+        settingsId={settingsId}
         columns={useColumns(networkFilterOptions, editMode, setEditMode)}
         enableApiFilter={true}
         dataSource={tableQuery.data?.data}

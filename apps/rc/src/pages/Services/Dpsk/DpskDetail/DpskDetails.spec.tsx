@@ -1,7 +1,8 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useIsTierAllowed }       from '@acx-ui/feature-toggle'
+import { networkApi, serviceApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   DpskUrls,
@@ -11,13 +12,15 @@ import {
   getServiceRoutePath,
   ServiceOperation
 } from '@acx-ui/rc/utils'
-import { To, useTenantLink } from '@acx-ui/react-router-dom'
-import { Provider }          from '@acx-ui/store'
+import { To, useTenantLink }  from '@acx-ui/react-router-dom'
+import { Provider, store }    from '@acx-ui/store'
 import {
   mockServer,
   render,
   renderHook,
-  screen
+  screen,
+  within,
+  waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
 import {
@@ -48,6 +51,8 @@ describe('DpskDetails', () => {
   const detailPath = '/:tenantId/t/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })
 
   beforeEach(() => {
+    store.dispatch(networkApi.util.resetApiState())
+    store.dispatch(serviceApi.util.resetApiState())
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
@@ -81,6 +86,9 @@ describe('DpskDetails', () => {
       }
     )
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const table = await screen.findByRole('table')
+    expect(await within(table).findByRole('row', { name: /DPSK_USER_1/ })).toBeVisible()
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('tab', { name: 'Passphrases (4 Active)' })).toBeInTheDocument()
   })
@@ -101,6 +109,10 @@ describe('DpskDetails', () => {
         }
       }
     )
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const table = await screen.findByRole('table')
+    expect(await within(table).findByRole('row', { name: /DPSK_USER_1/ })).toBeVisible()
 
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
@@ -129,6 +141,10 @@ describe('DpskDetails', () => {
       }
     )
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const table = await screen.findByRole('table')
+    expect(await within(table).findByRole('row', { name: /JJac/ })).toBeVisible()
+
     await userEvent.click(await screen.findByRole('tab', { name: 'Passphrases (4 Active)' }))
     expect(mockedUseNavigate).toHaveBeenCalledWith(passphraseTabPath.current)
   })
@@ -147,6 +163,10 @@ describe('DpskDetails', () => {
         route: { params: paramsForOverviewTab, path: detailPath }
       }
     )
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const table = await screen.findByRole('table')
+    expect(await within(table).findByRole('row', { name: /JJac/ })).toBeVisible()
 
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('link', { name: 'Configure' })).toHaveAttribute('href', editLink)
@@ -172,6 +192,10 @@ describe('DpskDetails', () => {
         }
       }
     )
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const table = await screen.findByRole('table')
+    expect(await within(table).findByRole('row', { name: /JJac/ })).toBeVisible()
 
     expect(await screen.findByText('ACCEPT')).toBeVisible()
   })

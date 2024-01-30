@@ -18,9 +18,14 @@ import { useTenantLink }               from '@acx-ui/react-router-dom'
 
 const Events = () => {
   const { serialNumber } = useApContext()
-  const tableQuery = useEventsTableQuery({ serialNumber: [serialNumber] })
+  const settingsId = 'ap-activity-table'
+  const tableQuery = useEventsTableQuery(
+    { serialNumber: [serialNumber] },
+    undefined,
+    { settingsId }
+  )
   return <EventTable
-    settingsId='ap-event-table'
+    settingsId={settingsId}
     tableQuery={tableQuery}
     filterables={['severity', 'entity_type']}
     eventTypeMap={omit(eventTypeMapping, ['SWITCH', 'EDGE'])}
@@ -30,10 +35,14 @@ const Events = () => {
 
 const Activities = () => {
   const { serialNumber } = useApContext()
-  const tableQuery = useActivityTableQuery({ entityType: 'AP', entityId: serialNumber! })
+  const settingsId = 'ap-activity-table'
+  const tableQuery = useActivityTableQuery(
+    { entityType: 'AP', entityId: serialNumber! },
+    { settingsId }
+  )
 
   return <ActivityTable
-    settingsId='ap-activity-table'
+    settingsId={settingsId}
     tableQuery={tableQuery}
     filterables={['status']}
     columnState={activityTableColumnState}

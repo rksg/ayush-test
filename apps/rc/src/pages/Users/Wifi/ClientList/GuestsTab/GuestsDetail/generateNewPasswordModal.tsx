@@ -113,6 +113,8 @@ export function GenerateNewPasswordModal (props: {
         guestExpiresDate = guest.expirationDate
       } else {
         if (guest.expiration.unit === 'Hour') {
+          // TODO: fix warn
+          // Deprecation warning: moment().add(period, number) is deprecated. Please use moment().add(number, period). See http://momentjs.com/guides/#/warnings/add-inverted-param/ for more info.
           guestExpiresDate = currentMoment.clone().add('hours', guest.expiration.duration)
         } else {
           guestExpiresDate = currentMoment.clone().add('days', guest.expiration.duration)
@@ -139,6 +141,7 @@ export function GenerateNewPasswordModal (props: {
   const hasEmailAddress = Boolean(props.guestDetail.emailAddress)
   const hasMobilePhoneNumber = Boolean(props.guestDetail.mobilePhoneNumber)
   return (<Modal
+    data-testid='generate-password-modal'
     title={$t({ defaultMessage: 'Generate New Password' })}
     visible={props.generateModalVisible}
     okButtonProps={{ disabled: buttonDisabled }}

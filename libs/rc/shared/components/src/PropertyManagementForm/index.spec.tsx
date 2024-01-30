@@ -1,8 +1,7 @@
 
-import { waitFor, within } from '@testing-library/react'
-import userEvent           from '@testing-library/user-event'
-import { rest }            from 'msw'
-import { useNavigate }     from 'react-router-dom'
+import userEvent       from '@testing-library/user-event'
+import { rest }        from 'msw'
+import { useNavigate } from 'react-router-dom'
 
 import { useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
@@ -14,8 +13,16 @@ import {
   PersonaUrls,
   PropertyUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider }                                                          from '@acx-ui/store'
-import { mockServer, render, renderHook, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { Provider } from '@acx-ui/store'
+import {
+  mockServer,
+  render,
+  renderHook,
+  screen,
+  waitForElementToBeRemoved,
+  waitFor,
+  within
+} from '@acx-ui/test-utils'
 
 import {
   mockDpskList,

@@ -1669,7 +1669,7 @@ exports[`Test Details should render AirtimeB correctly 3`] = `
                           <span
                             class="ant-descriptions-item-label"
                           >
-                            Event End Time
+                            Data Start Time
                           </span>
                         </div>
                       </th>
@@ -1690,7 +1690,47 @@ exports[`Test Details should render AirtimeB correctly 3`] = `
                             <span
                               class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
-                              11/09/2023 00:00
+                              11/08/2023 01:00
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Data End Time
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                            >
+                              11/10/2023 00:00
                             </span>
                           </span>
                         </div>
@@ -1900,7 +1940,7 @@ exports[`Test Details should render AirtimeRx correctly 1`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          Airtime Busy is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
+          Airtime Tx is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
         </span>
       </div>
     </div>
@@ -2245,7 +2285,7 @@ exports[`Test Details should render AirtimeRx correctly 1`] = `
                             <span
                               class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
-                              11/08/2023 00:00
+                              01/24/2024 00:00
                             </span>
                           </span>
                         </div>
@@ -2285,7 +2325,7 @@ exports[`Test Details should render AirtimeRx correctly 1`] = `
                             <span
                               class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
-                              11/09/2023 00:00
+                              01/25/2024 00:00
                             </span>
                           </span>
                         </div>
@@ -2490,7 +2530,7 @@ exports[`Test Details should render AirtimeRx correctly 2`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          Airtime Busy is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
+          Airtime Tx is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
         </span>
       </div>
     </div>
@@ -2835,7 +2875,7 @@ exports[`Test Details should render AirtimeRx correctly 2`] = `
                             <span
                               class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
-                              11/08/2023 00:00
+                              01/24/2024 00:00
                             </span>
                           </span>
                         </div>
@@ -2875,7 +2915,7 @@ exports[`Test Details should render AirtimeRx correctly 2`] = `
                             <span
                               class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
-                              11/09/2023 00:00
+                              01/25/2024 00:00
                             </span>
                           </span>
                         </div>
@@ -3080,7 +3120,7 @@ exports[`Test Details should render AirtimeRx correctly 3`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          Airtime Busy is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
+          Airtime Tx is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
         </span>
       </div>
     </div>
@@ -3425,7 +3465,7 @@ exports[`Test Details should render AirtimeRx correctly 3`] = `
                             <span
                               class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
-                              11/08/2023 00:00
+                              01/24/2024 00:00
                             </span>
                           </span>
                         </div>
@@ -3444,7 +3484,7 @@ exports[`Test Details should render AirtimeRx correctly 3`] = `
                           <span
                             class="ant-descriptions-item-label"
                           >
-                            Event End Time
+                            Data Start Time
                           </span>
                         </div>
                       </th>
@@ -3465,7 +3505,47 @@ exports[`Test Details should render AirtimeRx correctly 3`] = `
                             <span
                               class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
-                              11/09/2023 00:00
+                              01/24/2024 01:00
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Data End Time
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                            >
+                              01/25/2024 16:00
                             </span>
                           </span>
                         </div>
@@ -3670,7 +3750,7 @@ exports[`Test Details should render AirtimeTx correctly 1`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          Airtime Busy is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
+          Airtime Rx is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
         </span>
       </div>
     </div>
@@ -4015,7 +4095,7 @@ exports[`Test Details should render AirtimeTx correctly 1`] = `
                             <span
                               class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
-                              11/08/2023 00:00
+                              01/24/2024 00:00
                             </span>
                           </span>
                         </div>
@@ -4055,7 +4135,7 @@ exports[`Test Details should render AirtimeTx correctly 1`] = `
                             <span
                               class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
-                              11/09/2023 00:00
+                              01/25/2024 00:00
                             </span>
                           </span>
                         </div>
@@ -4265,7 +4345,7 @@ exports[`Test Details should render AirtimeTx correctly 2`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          Airtime Busy is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
+          Airtime Rx is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
         </span>
       </div>
     </div>
@@ -4610,7 +4690,7 @@ exports[`Test Details should render AirtimeTx correctly 2`] = `
                             <span
                               class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
-                              11/08/2023 00:00
+                              01/24/2024 00:00
                             </span>
                           </span>
                         </div>
@@ -4650,7 +4730,7 @@ exports[`Test Details should render AirtimeTx correctly 2`] = `
                             <span
                               class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
-                              11/09/2023 00:00
+                              01/25/2024 00:00
                             </span>
                           </span>
                         </div>
@@ -4860,7 +4940,7 @@ exports[`Test Details should render AirtimeTx correctly 3`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          Airtime Busy is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
+          Airtime Rx is unusually high in 2.4 GHz in Venue: 19-US-CA-D19-Andre-Home
         </span>
       </div>
     </div>
@@ -5205,7 +5285,7 @@ exports[`Test Details should render AirtimeTx correctly 3`] = `
                             <span
                               class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
-                              11/08/2023 00:00
+                              01/24/2024 00:00
                             </span>
                           </span>
                         </div>
@@ -5224,7 +5304,7 @@ exports[`Test Details should render AirtimeTx correctly 3`] = `
                           <span
                             class="ant-descriptions-item-label"
                           >
-                            Event End Time
+                            Data Start Time
                           </span>
                         </div>
                       </th>
@@ -5245,7 +5325,47 @@ exports[`Test Details should render AirtimeTx correctly 3`] = `
                             <span
                               class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
-                              11/09/2023 00:00
+                              01/24/2024 01:00
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Data End Time
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                            >
+                              01/25/2024 16:00
                             </span>
                           </span>
                         </div>

@@ -150,7 +150,7 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
     //   })
     // }
 
-    if (changedValue === EdgePortTypeEnum.LAN) {
+    if (changedValue === EdgePortTypeEnum.LAN || changedValue === EdgePortTypeEnum.CLUSTER) {
       form.setFieldValue(getFieldFullPath(id, 'ipMode'), EdgeIpModeEnum.STATIC)
     } else if (changedValue === EdgePortTypeEnum.WAN) {
       const initialPortType = data.find(port => port.id === id)?.portType
