@@ -26,6 +26,21 @@ jest.mock('@acx-ui/analytics/utils', () => ({
     userId: '111'
   }))
 }))
+const mockRGResponse = () => {
+  mockServer.use(
+    rest.get(`${rbacApiURL}/resourceGroups`,
+      (_, res, ctx) => res(ctx.json([{
+        id: 1,
+        tenantId: 'resourceGroupTenant',
+        filter: {},
+        name: 'default',
+        isDefault: false,
+        description: 'test',
+        updatedAt: '01-01-2024'
+      }]))
+    )
+  )
+}
 const mockRbacUserResponse = (data: ManagedUser[] | undefined) => {
   mockServer.use(
     rest.get(`${rbacApiURL}/users`,
@@ -146,6 +161,7 @@ describe('Users Page', () => {
   })
   it('should open drawer to edit user', async () => {
     mockRbacUserResponse([mockMangedUsers[0]])
+    mockRGResponse()
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByTestId('EditOutlined')).toBeVisible()
