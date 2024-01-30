@@ -2,15 +2,14 @@ import '@testing-library/jest-dom'
 
 import React from 'react'
 
-import { fireEvent }         from '@testing-library/react'
 import userEvent             from '@testing-library/user-event'
 import { Form }              from 'antd'
 import { SliderSingleProps } from 'antd/lib/slider'
 import { rest }              from 'msw'
 
-import { AccessControlUrls }          from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { AccessControlUrls }                     from '@acx-ui/rc/utils'
+import { Provider }                              from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { avcApp, avcCat, queryApplication } from '../__tests__/fixtures'
 

@@ -147,7 +147,7 @@ describe('ConfigTemplateList component', () => {
 
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
-    const targetTemplate = mockedConfigTemplateList.data.find(t => t.templateType === 'NETWORK')!
+    const targetTemplate = mockedConfigTemplateList.data.find(t => t.type === 'NETWORK')!
     const row = await screen.findByRole('row', { name: new RegExp(targetTemplate.name) })
     await userEvent.click(within(row).getByRole('radio'))
 
@@ -172,7 +172,7 @@ describe('ConfigTemplateList component', () => {
 
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
-    const targetTemplate = mockedConfigTemplateList.data.find(t => t.templateType === 'NETWORK')!
+    const targetTemplate = mockedConfigTemplateList.data.find(t => t.type === 'NETWORK')!
     const row = await screen.findByRole('row', { name: new RegExp(targetTemplate.name) })
     await userEvent.click(within(row).getByRole('radio'))
 
