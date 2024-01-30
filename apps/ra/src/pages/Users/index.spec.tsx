@@ -9,8 +9,7 @@ import {
   mockServer,
   render,
   waitForElementToBeRemoved,
-  screen,
-  fireEvent
+  screen
 } from '@acx-ui/test-utils'
 
 
@@ -44,12 +43,6 @@ describe('Users Page', () => {
       screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Users (4)')).toBeVisible()
     expect(await screen.findByTestId('usersTable')).toBeVisible()
-    const info = await screen.findByTestId('InformationOutlined')
-    fireEvent.mouseOver(info)
-    expect(await screen.findByText((content, element) => {
-      return element?.tagName.toLowerCase() === 'div'
-        && content.startsWith('"Invite 3rd Party"')
-    })).toBeInTheDocument()
   })
   it('should render empty array correctly', async () => {
     mockRbacUserResponse([])
@@ -77,5 +70,16 @@ describe('Users Page', () => {
     await userEvent.click(userBtn)
     await userEvent.click(await screen.findByText('Internal'))
     expect(await screen.findByTestId('userDrawer')).toHaveTextContent('create')
+  })
+  it('should open user drawer for 3rd party user correctly', async () => {
+    mockRbacUserResponse([])
+    render(<Users />, { wrapper: Provider })
+    await waitForElementToBeRemoved(() =>
+      screen.queryAllByRole('img', { name: 'loader' }))
+    const userBtn = await screen.findByText('Add User...')
+    expect(userBtn).toBeVisible()
+    await userEvent.click(userBtn)
+    await userEvent.click(await screen.findByText('3rd Party'))
+    expect(await screen.findByTestId('userDrawer')).toHaveTextContent('invite3rdParty')
   })
 })

@@ -115,4 +115,33 @@ describe('RBAC API', () => {
     ) as { data: string }
     expect(data).toStrictEqual('Updated')
   })
+  it('invite 3rd party user api should work', async () => {
+    mockServer.use(
+      rest.post(
+        `${rbacApiURL}/invitations`,
+        (_req, res, ctx) => res(ctx.text('Created'))
+      )
+    )
+    const { data } = await store.dispatch(
+      rbacApi.endpoints.inviteUser.initiate({
+        resourceGroupId: '1',
+        invitedUserId: 'u1',
+        role: 'admin',
+        type: 'tenant'
+      })
+    ) as { data: string }
+    expect(data).toStrictEqual('Created')
+  })
+  it('find user api should work', async () => {
+    mockServer.use(
+      rest.get(
+        `${rbacApiURL}/users/find`,
+        (_req, res, ctx) => res(ctx.json({ userId: '123' }))
+      )
+    )
+    const { data } = await store.dispatch(
+      rbacApi.endpoints.findUser.initiate({ username: 'abc%40email.com' })
+    )
+    expect(data).toStrictEqual({ userId: '123' })
+  })
 })

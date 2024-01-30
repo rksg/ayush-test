@@ -15,53 +15,11 @@ import {
 } from '@acx-ui/analytics/services'
 import { ManagedUser }                        from '@acx-ui/analytics/utils'
 import { Drawer, Loader, Tooltip, showToast } from '@acx-ui/components'
-import { emailRegExp }                        from '@acx-ui/rc/utils'
 
 import { drawerContentConfig } from './config'
 
 
-type FormItemProps = {
-  name: string,
-  labelKey: string,
-  component: React.ReactNode
-}
-
-const FormItem: React.FC<FormItemProps> = ({ name, labelKey, component }) => {
-  const { $t } = useIntl()
-  const Item = name === 'invitedEmail'
-    ? <Form.Item
-      name={name}
-      label={<>
-        {labelKey}
-        <Tooltip.Info
-          title={$t(
-            { defaultMessage:
-                `Invite a 3rd Party user who does not belong to your organisation
-                into this RUCKUS AI account. Please note
-                that the invitee needs to have an existing
-                Ruckus Support account.` })}
-          placement='top' />
-      </>}
-      rules={[{
-        required: true,
-        message: $t({ defaultMessage: 'Email is required!' })
-      },
-      {
-        validator: (_, value) => emailRegExp(value)
-      }]}
-      children={component}
-    />
-    : <Form.Item name={name} label={labelKey}>
-      {component}
-    </Form.Item>
-
-  return <Row gutter={20}>
-    <Col span={24}>
-      {Item}
-    </Col>
-  </Row>
-}
-export type UserType = 'edit' | 'create' | 'createExternal'
+export type UserType = 'edit' | 'create' | 'invite3rdParty'
 type UserDrawerProps = {
   opened: boolean
   selectedRow: ManagedUser | null
@@ -70,8 +28,8 @@ type UserDrawerProps = {
 }
 const drawerTitle = (type: string) : string => {
   switch(type) {
-    case 'create': return 'Create User'
-    case 'createExternal': return 'Invite 3RD Party'
+    case 'create': return 'Add Internal'
+    case 'invite3rdParty': return 'Invite 3RD Party'
     default: return 'Edit User'
   }
 }
@@ -123,7 +81,7 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
           type: 'success',
           content: $t(
             { defaultMessage: 'User {action} successfully' },
-            { action: type === 'edit' ? 'Edited' : 'Added' }
+            { action: type === 'edit' ? 'edited' : 'added' }
           )
         })
         cleanUp()
@@ -137,6 +95,11 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
       })
   }
   const handleInviteClick = async () => {
+    try {
+      await form.validateFields()
+    } catch {
+      return
+    }
     setIsloading(true)
     await findQuery({
       username: updatedUser?.invitedEmail!
@@ -188,7 +151,7 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
       case 'edit':
         return !isEmpty(updatedUser) && !isEqual(selectedUser, updatedUser)
       default: // external
-        return !form.getFieldError('invitedEmail').length &&
+        return updatedUser.invitedEmail &&
         updatedUser.resourceGroupId &&
         updatedUser.role &&
         updatedUser?.disclaimerChecked
@@ -199,12 +162,12 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
   const drawerFooter = (
     <div>
       <Button
-        onClick={type === 'createExternal' ? handleInviteClick : handleSaveClick}
+        onClick={type === 'invite3rdParty' ? handleInviteClick : handleSaveClick}
         disabled={!isUserDataValid()}
         type='primary'>
         {$t(
           { defaultMessage: '{label}' },
-          { label: type === 'createExternal' ? 'Invite' : 'Save' }
+          { label: type === 'invite3rdParty' ? 'Invite' : 'Save' }
         )}
       </Button>
       <Button onClick={handleCancelClick}>
@@ -223,24 +186,34 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
     width={400}
   ><Loader states={[{ isLoading: isLoading }]}>
       <Form layout='vertical' form={form}>
-        {drawerContentConfig[type as UserType].map((item) => (
-          <FormItem
-            key={item.name}
-            name={item.name}
-            labelKey={$t(item.labelKey)}
-            component={
-              <item.component
-                {...item.componentProps({
-                  selectedUser,
-                  updatedUser,
-                  onChange: (updatedValue: object) => setUpdatedUser(
-                    { ...updatedUser, ...updatedValue }
-                  )
-                })}
-              />
-            }
-          />
-        ))}
+        {drawerContentConfig[type as UserType].map(
+          ({ labelKey, tooltip, componentProps, component: Cmp, ...props }, index) => (
+            <Row key={index} gutter={20}>
+              <Col span={24}>
+                <Form.Item
+                  label={tooltip
+                    ? <>
+                      {$t(labelKey)}
+                      <Tooltip.Info
+                        title={$t(tooltip)}
+                        placement='top' />
+                    </>
+                    : $t(labelKey)
+                  }
+                  children={<Cmp
+                    {...componentProps({
+                      selectedUser,
+                      updatedUser,
+                      onChange: (updatedValue: object) => setUpdatedUser(
+                        { ...updatedUser, ...updatedValue }
+                      )
+                    })}
+                  />}
+                  {...props}
+                />
+              </Col>
+            </Row>
+          ))}
       </Form>
     </Loader>
   </Drawer>

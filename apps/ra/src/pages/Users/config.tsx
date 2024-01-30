@@ -1,11 +1,13 @@
 
 import { Checkbox, Typography } from 'antd'
+import { Rule }                 from 'antd/lib/form'
 import input                    from 'antd/lib/input'
 import { defineMessage }        from 'react-intl'
 
 
 import { ManagedUser } from '@acx-ui/analytics/utils'
 import { Label }       from '@acx-ui/rc/components'
+import { emailRegExp } from '@acx-ui/rc/utils'
 import { getIntl }     from '@acx-ui/utils'
 
 import { AvailableUsersSelection } from './AvailableUsersSelection'
@@ -31,18 +33,24 @@ interface componentProps {
   updatedUser: Partial<ManagedUser> | null;
   onChange: CallableFunction
 }
-
+export type ValidationRule = Omit<Rule, 'message'> & {
+  message: ReturnType<typeof defineMessage>
+  required?: boolean
+}
 interface FormItemConfig {
     name: string;
     labelKey: ReturnType<typeof defineMessage>
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     component: React.ComponentType<any>
-    componentProps: (props: componentProps) => object;
+    componentProps: (props: componentProps) => object
+    rules?: Rule []
+    tooltip?: ReturnType<typeof defineMessage>
+    valuePropName?: string
 }
 interface DrawerContentConfig {
   edit: FormItemConfig[]
   create: FormItemConfig[]
-  createExternal: FormItemConfig[]
+  invite3rdParty: FormItemConfig[]
 }
 
 export const drawerContentConfig: DrawerContentConfig = {
@@ -51,7 +59,10 @@ export const drawerContentConfig: DrawerContentConfig = {
       name: 'email',
       labelKey: defineMessage({ defaultMessage: 'Email' }),
       component: Label,
-      componentProps: ({ selectedUser }) => ({ children: selectedUser?.email })
+      componentProps: ({ selectedUser }) => ({ children: selectedUser?.email }),
+      rules: [{
+        required: true
+      }]
     },
     {
       name: 'resourceGroup',
@@ -64,7 +75,10 @@ export const drawerContentConfig: DrawerContentConfig = {
       }) => ({
         selectedValue: updatedUser?.resourceGroupId || selectedUser?.resourceGroupId,
         onChange: (value: string) => onChange({ ...selectedUser, resourceGroupId: value })
-      })
+      }),
+      rules: [{
+        required: true
+      }]
     },
     {
       name: 'role',
@@ -73,18 +87,27 @@ export const drawerContentConfig: DrawerContentConfig = {
       componentProps: ({ selectedUser, onChange, updatedUser }) => ({
         selectedValue: updatedUser?.role || selectedUser?.role,
         onChange: (value: string) => onChange({ ...selectedUser, role: value })
-      })
+      }),
+      rules: [{
+        required: true
+      }]
     }
   ],
   create: [
     {
       name: 'email',
       labelKey: defineMessage({ defaultMessage: 'Email' }),
+      tooltip: defineMessage({ defaultMessage:
+        `Add Internal user who belongs to your organisation into this RUCKUS AI account. Please note
+        that the invitee needs to have an existing Ruckus Support account.` }),
       component: AvailableUsersSelection,
       componentProps: ({ onChange, updatedUser }) => ({
         selectedValue: updatedUser?.id,
         onChange: (value: object) => onChange({ ...value })
-      })
+      }),
+      rules: [{
+        required: true
+      }]
     },
     {
       name: 'resourceGroup',
@@ -95,7 +118,10 @@ export const drawerContentConfig: DrawerContentConfig = {
           selectedValue: updatedUser?.resourceGroupId,
           onChange: (value: string) => onChange({ resourceGroupId: value })
         }
-      )
+      ),
+      rules: [{
+        required: true
+      }]
     },
     {
       name: 'role',
@@ -106,13 +132,21 @@ export const drawerContentConfig: DrawerContentConfig = {
           selectedValue: updatedUser?.role,
           onChange: (value: string) => onChange({ role: value })
         }
-      )
+      ),
+      rules: [{
+        required: true
+      }]
     }
   ],
-  createExternal: [
+  invite3rdParty: [
     {
-      name: 'invitedEmail',
+      name: 'email',
       labelKey: defineMessage({ defaultMessage: 'Email' }),
+      tooltip: defineMessage({ defaultMessage:
+        `Invite a 3rd Party user who does not belong to your organisation
+        into this RUCKUS AI account. Please note
+        that the invitee needs to have an existing
+        Ruckus Support account.` }),
       component: input,
       componentProps: ({ onChange, updatedUser }) => {
         const { $t } = getIntl()
@@ -125,7 +159,13 @@ export const drawerContentConfig: DrawerContentConfig = {
           ),
           placeholder: $t({ defaultMessage: 'Email Id of the invited user' })
         }
-      }
+      },
+      rules: [{
+        required: true
+      },
+      {
+        validator: (_: unknown, value: string) => emailRegExp(value)
+      }]
     },
     {
       name: 'resourceGroup',
@@ -136,7 +176,10 @@ export const drawerContentConfig: DrawerContentConfig = {
           selectedValue: updatedUser?.resourceGroupId,
           onChange: (value: string) => onChange({ resourceGroupId: value })
         }
-      )
+      ),
+      rules: [{
+        required: true
+      }]
     },
     {
       name: 'role',
@@ -147,7 +190,10 @@ export const drawerContentConfig: DrawerContentConfig = {
           selectedValue: updatedUser?.role,
           onChange: (value: string) => onChange({ role: value })
         }
-      )
+      ),
+      rules: [{
+        required: true
+      }]
     },
     {
       name: 'disclaimerMsg',
@@ -182,9 +228,18 @@ export const drawerContentConfig: DrawerContentConfig = {
           onChange: (e: { target: { checked: boolean } }) : CheckboxProps['onChange'] => onChange(
             { disclaimerChecked: e.target.checked }
           ),
-          checked: (updatedUser as invitedUser).disclaimerChecked
+          checked: Boolean((updatedUser as invitedUser).disclaimerChecked)
         }
-      }
+      },
+      rules: [{
+        validator: (_, value) => {
+          const { $t } = getIntl()
+          return value
+            ? Promise.resolve()
+            : Promise.reject(new Error($t({ defaultMessage: 'Should accept agreement' })))
+        }
+      }],
+      valuePropName: 'checked'
     }
   ]
 }

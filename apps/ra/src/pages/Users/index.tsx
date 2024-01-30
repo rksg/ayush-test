@@ -4,28 +4,15 @@ import { useState } from 'react'
 import { Menu, Button }           from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { useGetUsersQuery }                      from '@acx-ui/analytics/services'
-import { ManagedUser }                           from '@acx-ui/analytics/utils'
-import { Loader, PageHeader, Tooltip, Dropdown } from '@acx-ui/components'
+import { useGetUsersQuery }             from '@acx-ui/analytics/services'
+import { ManagedUser }                  from '@acx-ui/analytics/utils'
+import { Loader, PageHeader, Dropdown } from '@acx-ui/components'
 
 import { UsersTable }           from './Table'
 import { UserDrawer, UserType } from './UserDrawer'
 
 const title = defineMessage({
   defaultMessage: '{usersCount, plural, one {User} other {Users}}'
-})
-
-const info = defineMessage({
-  defaultMessage: `"Invite 3rd Party" allows you to invite a user who does not
-  belong to your organisation into this RUCKUS AI account.
-  {br}
-  {br}
-  "Add Internal User" allows you to include a user who belongs to your
-  organisation into this RUCKUS AI account.
-  {br}
-  {br}
-  In all cases, please note that the invitee needs to have an existing
-  Ruckus Support account.`
 })
 
 export default function Users () {
@@ -49,7 +36,7 @@ export default function Users () {
     }, {
       key: 'third-party-user',
       label: <div onClick={()=> {
-        setDrawerType('createExternal')
+        setDrawerType('invite3rdParty')
         setOpenDrawer(!openDrawer)}
       }>
         {$t({ defaultMessage: '3rd Party' })}</div>
@@ -58,12 +45,7 @@ export default function Users () {
   />
   return <Loader states={[usersQuery]}>
     <PageHeader
-      title={<>
-        {$t(title,{ usersCount })} ({usersCount})
-        <Tooltip.Info
-          data-html
-          title={$t(info, { br: <br/> })} />
-      </>}
+      title={<>{$t(title,{ usersCount })} ({usersCount})</>}
       extra={[
         <Dropdown overlay={addMenu} placement={'bottomRight'}>{() =>
           <Button type='primary'>{ $t({ defaultMessage: 'Add User...' }) }</Button>

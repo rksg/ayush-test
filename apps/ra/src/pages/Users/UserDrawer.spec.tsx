@@ -4,30 +4,38 @@ import {
   useGetAvailableUsersQuery,
   useGetResourceGroupsQuery,
   useUpdateUserMutation,
-  useAddUserMutation
+  useAddUserMutation,
+  useLazyFindUserQuery,
+  useInviteUserMutation
 } from '@acx-ui/analytics/services'
-import { ManagedUser }    from '@acx-ui/analytics/utils'
-import { showToast }      from '@acx-ui/components'
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { ManagedUser }               from '@acx-ui/analytics/utils'
+import { showToast }                 from '@acx-ui/components'
+import { Provider }                  from '@acx-ui/store'
+import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
 
 import { UserDrawer } from './UserDrawer'
 
 const mockedUserQuery = useGetAvailableUsersQuery as jest.Mock
 const mockedRGQuery = useGetResourceGroupsQuery as jest.Mock
+const mockedLazyFindUserQuery = useLazyFindUserQuery as jest.Mock
 const mockedToggleDrawer = jest.fn()
 const mockedAddUserMutation = useAddUserMutation as jest.Mock
 const mockedEditUserMutation = useUpdateUserMutation as jest.Mock
+const mockedInviteUserMutation = useInviteUserMutation as jest.Mock
 const mockedAddUser = jest.fn()
 const mockedUpdateUser = jest.fn()
+const mockedInviteUser = jest.fn()
+const mockedFindUser = jest.fn()
 
 jest.mock('@acx-ui/analytics/services', () => ({
   ...jest.requireActual('@acx-ui/analytics/services'),
   useGetAvailableUsersQuery: jest.fn(),
   useGetResourceGroupsQuery: jest.fn(),
   useAddUserMutation: jest.fn(),
-  useUpdateUserMutation: jest.fn()
+  useUpdateUserMutation: jest.fn(),
+  useLazyFindUserQuery: jest.fn(),
+  useInviteUserMutation: jest.fn()
 }))
 
 jest.mock('@acx-ui/components', () => ({
@@ -35,7 +43,7 @@ jest.mock('@acx-ui/components', () => ({
   showToast: jest.fn()
 }))
 
-describe('Available Users Selection', () => {
+describe('User Drawer', () => {
   beforeEach(() => {
     mockedUserQuery.mockImplementation(() => ({
       isLoading: false,
@@ -59,6 +67,8 @@ describe('Available Users Selection', () => {
     }))
     mockedAddUserMutation.mockImplementation(() => [mockedAddUser])
     mockedEditUserMutation.mockImplementation(() => [mockedUpdateUser])
+    mockedInviteUserMutation.mockImplementation(() => [mockedInviteUser])
+    mockedLazyFindUserQuery.mockImplementation(() => [mockedFindUser])
   })
   afterEach(() => {
     mockedUserQuery.mockClear()
@@ -66,8 +76,12 @@ describe('Available Users Selection', () => {
     mockedToggleDrawer.mockClear()
     mockedAddUserMutation.mockClear()
     mockedEditUserMutation.mockClear()
+    mockedInviteUserMutation.mockClear()
+    mockedLazyFindUserQuery.mockClear()
+    mockedFindUser.mockClear()
+    mockedInviteUser.mockClear()
   })
-  it('should work correctly for create flow', async () => {
+  it('should work correctly for add flow', async () => {
     const props = {
       opened: true,
       selectedRow: null,
@@ -80,8 +94,14 @@ describe('Available Users Selection', () => {
       <Provider><UserDrawer {...props} type='create' /></Provider>,
       { route: {} }
     )
-    expect(await screen.findByText('Create User')).toBeVisible()
+    expect(await screen.findByText('Add Internal')).toBeVisible()
     const dropDowns = screen.getAllByRole('combobox')
+    const info = await screen.findByTestId('InformationOutlined')
+    fireEvent.mouseOver(info)
+    expect(await screen.findByText((content, element) => {
+      return element?.tagName.toLowerCase() === 'div'
+        && content.startsWith('Add Internal user')
+    })).toBeInTheDocument()
     await userEvent.click(dropDowns[0]) // email
     await userEvent.click(screen.getByTitle('xyz@email.com'))
     await userEvent.click(dropDowns[1]) //RG
@@ -110,7 +130,7 @@ describe('Available Users Selection', () => {
       <Provider><UserDrawer {...props} type='create' /></Provider>,
       { route: {} }
     )
-    expect(await screen.findByText('Create User')).toBeVisible()
+    expect(await screen.findByText('Add Internal')).toBeVisible()
     const dropDowns = screen.getAllByRole('combobox')
     await userEvent.click(dropDowns[0]) // email
     await userEvent.click(screen.getByTitle('xyz@email.com'))
@@ -203,5 +223,160 @@ describe('Available Users Selection', () => {
     expect(cancelBtn).toBeEnabled()
     await userEvent.click(cancelBtn)
     expect(mockedToggleDrawer).toBeCalledWith(false)
+  })
+  it('should invite 3rd party user', async () => {
+    const props = {
+      opened: true,
+      selectedRow: null,
+      toggleDrawer: mockedToggleDrawer
+    }
+    mockedInviteUser.mockImplementation(() => ({
+      unwrap: () => Promise.resolve({})
+    }))
+    mockedFindUser.mockImplementation(() => ({
+      unwrap: () => Promise.resolve({ userId: '123' })
+    }))
+    render(
+      <Provider><UserDrawer {...props} type='invite3rdParty' /></Provider>,
+      { route: {} }
+    )
+    expect(await screen.findByText('Invite 3RD Party')).toBeVisible()
+    const info = await screen.findByTestId('InformationOutlined')
+    fireEvent.mouseOver(info)
+    expect(await screen.findByText((content, element) => {
+      return element?.tagName.toLowerCase() === 'div'
+        && content.startsWith('Invite a 3rd Party user')
+    })).toBeInTheDocument()
+    const emailInput = await screen.findByPlaceholderText('Email Id of the invited user')
+    await(userEvent.type(emailInput, 'dog@email.com'))
+    const dropDowns = screen.getAllByRole('combobox')
+    await userEvent.click(dropDowns[0]) //RG
+    await userEvent.click(screen.getByTitle('abc'))
+    await userEvent.click(dropDowns[1]) //Role
+    await userEvent.click(screen.getByTitle('Network Admin'))
+    const chkBox = await screen.findByLabelText('I understand and agree')
+    userEvent.click(chkBox)
+    const saveBtn = screen.getByText('Invite')
+    expect(saveBtn).toBeEnabled()
+    await userEvent.click(saveBtn)
+    expect(mockedToggleDrawer).toBeCalledWith(false)
+    expect(showToast).toHaveBeenCalledWith({
+      type: 'success',
+      content: 'User invited successfully'
+    })
+  })
+  it('should handle error in find 3rd party user', async () => {
+    const props = {
+      opened: true,
+      selectedRow: null,
+      toggleDrawer: mockedToggleDrawer
+    }
+    mockedFindUser.mockImplementationOnce(() => ({
+      unwrap: () => Promise.reject({ data: { error: 'user not found' } })
+    }))
+    render(
+      <Provider><UserDrawer {...props} type='invite3rdParty' /></Provider>,
+      { route: {} }
+    )
+    expect(await screen.findByText('Invite 3RD Party')).toBeVisible()
+    const info = await screen.findByTestId('InformationOutlined')
+    fireEvent.mouseOver(info)
+    expect(await screen.findByText((content, element) => {
+      return element?.tagName.toLowerCase() === 'div'
+        && content.startsWith('Invite a 3rd Party user')
+    })).toBeInTheDocument()
+    const emailInput = await screen.findByPlaceholderText('Email Id of the invited user')
+    await(userEvent.type(emailInput, 'dog@email.com'))
+    const dropDowns = screen.getAllByRole('combobox')
+    await userEvent.click(dropDowns[0]) //RG
+    await userEvent.click(screen.getByTitle('abc'))
+    await userEvent.click(dropDowns[1]) //Role
+    await userEvent.click(screen.getByTitle('Network Admin'))
+    const chkBox = await screen.findByLabelText('I understand and agree')
+    userEvent.click(chkBox)
+    const saveBtn = screen.getByText('Invite')
+    expect(saveBtn).toBeEnabled()
+    await userEvent.click(saveBtn)
+    expect(showToast).toHaveBeenCalledWith({
+      type: 'error',
+      content: 'Error: user not found'
+    })
+    expect(mockedInviteUser).not.toHaveBeenCalled()
+    expect(mockedToggleDrawer).not.toHaveBeenCalled()
+  })
+  it('should handle error in invite 3rd party user', async () => {
+    const props = {
+      opened: true,
+      selectedRow: null,
+      toggleDrawer: mockedToggleDrawer
+    }
+    mockedInviteUser.mockImplementationOnce(() => ({
+      unwrap: () => Promise.reject({ data: JSON.stringify({ error: 'user already exists' }) })
+    }))
+    mockedFindUser.mockImplementationOnce(() => ({
+      unwrap: () => Promise.resolve({ userId: '123' })
+    }))
+    render(
+      <Provider><UserDrawer {...props} type='invite3rdParty' /></Provider>,
+      { route: {} }
+    )
+    expect(await screen.findByText('Invite 3RD Party')).toBeVisible()
+    const info = await screen.findByTestId('InformationOutlined')
+    fireEvent.mouseOver(info)
+    expect(await screen.findByText((content, element) => {
+      return element?.tagName.toLowerCase() === 'div'
+        && content.startsWith('Invite a 3rd Party user')
+    })).toBeInTheDocument()
+    const emailInput = await screen.findByPlaceholderText('Email Id of the invited user')
+    await(userEvent.type(emailInput, 'dog@email.com'))
+    const dropDowns = screen.getAllByRole('combobox')
+    await userEvent.click(dropDowns[0]) //RG
+    await userEvent.click(screen.getByTitle('abc'))
+    await userEvent.click(dropDowns[1]) //Role
+    await userEvent.click(screen.getByTitle('Network Admin'))
+    const chkBox = await screen.findByLabelText('I understand and agree')
+    userEvent.click(chkBox)
+    const saveBtn = screen.getByText('Invite')
+    expect(saveBtn).toBeEnabled()
+    await userEvent.click(saveBtn)
+    expect(showToast).toHaveBeenCalledWith({
+      type: 'error',
+      content: 'Error: user already exists'
+    })
+    expect(mockedToggleDrawer).not.toHaveBeenCalled()
+  })
+  it('should handle validations for invite 3rd party user', async () => {
+    const props = {
+      opened: true,
+      selectedRow: null,
+      toggleDrawer: mockedToggleDrawer
+    }
+    render(
+      <Provider><UserDrawer {...props} type='invite3rdParty' /></Provider>,
+      { route: {} }
+    )
+    expect(await screen.findByText('Invite 3RD Party')).toBeVisible()
+    const info = await screen.findByTestId('InformationOutlined')
+    fireEvent.mouseOver(info)
+    expect(await screen.findByText((content, element) => {
+      return element?.tagName.toLowerCase() === 'div'
+        && content.startsWith('Invite a 3rd Party user')
+    })).toBeInTheDocument()
+    const emailInput = await screen.findByPlaceholderText('Email Id of the invited user')
+    await(userEvent.type(emailInput, 'ddd')) //invalid email
+    const dropDowns = screen.getAllByRole('combobox')
+    await userEvent.click(dropDowns[0]) //RG
+    await userEvent.click(screen.getByTitle('abc'))
+    await userEvent.click(dropDowns[1]) //Role
+    await userEvent.click(screen.getByTitle('Network Admin'))
+    const chkBox = await screen.findByLabelText('I understand and agree')
+    userEvent.click(chkBox)
+    const saveBtn = screen.getByText('Invite')
+    expect(saveBtn).toBeEnabled()
+    await userEvent.click(saveBtn)
+    expect(mockedFindUser).not.toHaveBeenCalled()
+    expect(mockedToggleDrawer).not.toHaveBeenCalled()
+    userEvent.click(chkBox) // uncheck
+    expect(await screen.findByText('Should accept agreement')).toBeVisible()
   })
 })
