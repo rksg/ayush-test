@@ -50,7 +50,7 @@ describe('Scope Form', () => {
     )
   })
 
-  it.skip('should correctly activate', async () => {
+  it('should correctly activate', async () => {
     const { result: stepFormRef } = renderHook(() => {
       const [ form ] = Form.useForm()
       jest.spyOn(form, 'setFieldValue').mockImplementation(mockedSetFieldValue)
@@ -67,10 +67,14 @@ describe('Scope Form', () => {
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
     expect(await screen.findByText('Scope')).toBeVisible()
-    const rows = await screen.findAllByRole('row', { name: /Smart Edge/i })
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
+    const rows = await within(tbody).findAllByRole('row')
     expect(rows.length).toBe(5)
 
+    expect(within(rows[0]).getByRole('cell', { name: /Smart Edge 1/ })).toBeVisible()
     await click(within(rows[0]).getByRole('checkbox')) //Smart Edge 1
+    expect(within(rows[2]).getByRole('cell', { name: /Smart Edge 3/ })).toBeVisible()
     await click(within(rows[2]).getByRole('checkbox')) //Smart Edge 3
     await click(await screen.findByRole('button', { name: 'Activate' }))
 
@@ -103,7 +107,9 @@ describe('Scope Form', () => {
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
     expect(await screen.findByText('Scope')).toBeVisible()
-    const rows = await screen.findAllByRole('row', { name: /Smart Edge/i })
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
+    const rows = await within(tbody).findAllByRole('row')
     expect(rows.length).toBe(5)
 
     expect(within(rows[1]).getByRole('cell', { name: /Smart Edge 2/i })).toBeVisible()
@@ -136,7 +142,9 @@ describe('Scope Form', () => {
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
     expect(await screen.findByText('Scope')).toBeVisible()
-    const rows = await screen.findAllByRole('row', { name: /Smart Edge/i })
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
+    const rows = await within(tbody).findAllByRole('row')
     expect(rows.length).toBe(5)
 
     expect(within(rows[0]).getByRole('cell', { name: /Smart Edge 1/i })).toBeVisible()
@@ -179,7 +187,9 @@ describe('Scope Form', () => {
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
     expect(await screen.findByText('Scope')).toBeVisible()
-    const rows = await screen.findAllByRole('row', { name: /Smart Edge/i })
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
+    const rows = await within(tbody).findAllByRole('row')
     expect(rows.length).toBe(5)
 
     expect(within(rows[0]).getByRole('cell', { name: /Smart Edge 1/i })).toBeVisible()
