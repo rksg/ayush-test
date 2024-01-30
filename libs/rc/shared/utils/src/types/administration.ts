@@ -280,3 +280,13 @@ export interface groupMembers {
   email?: string,
   lastLoginDate?: string
 }
+
+export interface PriviliegeGroup {
+  id?: string,
+  name?: string,
+  type?: string,
+  description?: string,
+  role?: CustomRole,
+  scope?: string,
+  members?: number
+}

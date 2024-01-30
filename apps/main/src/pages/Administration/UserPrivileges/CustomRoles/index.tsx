@@ -15,10 +15,12 @@ import {
   useDeleteAdminGroupsMutation
 //   useUpdateAdminGroupsMutation
 } from '@acx-ui/rc/services'
-import { AdminGroup, sortProp, defaultSort }                    from '@acx-ui/rc/utils'
-import { useTenantLink }                                        from '@acx-ui/react-router-dom'
-import { filterByAccess, useUserProfileContext, roleStringMap } from '@acx-ui/user'
-import { AccountType }                                          from '@acx-ui/utils'
+import { sortProp, defaultSort, CustomRole }     from '@acx-ui/rc/utils'
+import { useTenantLink }                         from '@acx-ui/react-router-dom'
+import { filterByAccess, useUserProfileContext } from '@acx-ui/user'
+import { AccountType }                           from '@acx-ui/utils'
+
+import { fakedCustomRoleList } from '../__tests__/fixtures'
 
 interface CustomRolesTableProps {
   isPrimeAdminUser: boolean;
@@ -49,13 +51,13 @@ const CustomRoles = (props: CustomRolesTableProps) => {
     })
   }
 
-  const columns:TableProps<AdminGroup>['columns'] = [
+  const columns:TableProps<CustomRole>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
       key: 'name',
       dataIndex: 'name',
       defaultSortOrder: 'ascend',
-      sorter: { compare: sortProp('groupType', defaultSort) }
+      sorter: { compare: sortProp('name', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Description' }),
@@ -64,15 +66,12 @@ const CustomRoles = (props: CustomRolesTableProps) => {
     },
     {
       title: $t({ defaultMessage: 'Role Type' }),
-      key: 'role',
-      dataIndex: 'role',
-      render: function (_, row) {
-        return row.role ? $t(roleStringMap[row.role]) : ''
-      }
+      key: 'roleType',
+      dataIndex: 'roleType'
     }
   ]
 
-  const rowActions: TableProps<AdminGroup>['rowActions'] = [
+  const rowActions: TableProps<CustomRole>['rowActions'] = [
     {
       visible: (selectedRows) => {
         if (selectedRows.length === 1) {
@@ -101,7 +100,7 @@ const CustomRoles = (props: CustomRolesTableProps) => {
             action: 'DELETE',
             entityName: $t({ defaultMessage: 'Group' }),
             entityValue: rows.length === 1
-              ? rows[0].name !== ' ' ? rows[0].name : rows[0].groupId
+              ? rows[0].name
               : undefined,
             numOfEntities: rows.length
           },
@@ -130,7 +129,7 @@ const CustomRoles = (props: CustomRolesTableProps) => {
     ]}>
       <Table
         columns={columns}
-        dataSource={adminList}
+        dataSource={fakedCustomRoleList as CustomRole[]}
         rowKey='id'
         rowActions={isPrimeAdminUser
           ? filterByAccess(rowActions)

@@ -15,10 +15,12 @@ import {
   useDeleteAdminGroupsMutation
 //   useUpdateAdminGroupsMutation
 } from '@acx-ui/rc/services'
-import { AdminGroup, sortProp, defaultSort }                    from '@acx-ui/rc/utils'
-import { useTenantLink }                                        from '@acx-ui/react-router-dom'
-import { filterByAccess, useUserProfileContext, roleStringMap } from '@acx-ui/user'
-import { AccountType }                                          from '@acx-ui/utils'
+import { sortProp, defaultSort, PriviliegeGroup } from '@acx-ui/rc/utils'
+import { useTenantLink }                          from '@acx-ui/react-router-dom'
+import { filterByAccess, useUserProfileContext }  from '@acx-ui/user'
+import { AccountType }                            from '@acx-ui/utils'
+
+import { fakedPriviliegeGroupList } from '../__tests__/fixtures'
 
 interface PrivilegeGroupsTableProps {
   isPrimeAdminUser: boolean;
@@ -49,13 +51,13 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
     })
   }
 
-  const columns:TableProps<AdminGroup>['columns'] = [
+  const columns:TableProps<PriviliegeGroup>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
       key: 'name',
       dataIndex: 'name',
       defaultSortOrder: 'ascend',
-      sorter: { compare: sortProp('groupType', defaultSort) }
+      sorter: { compare: sortProp('name', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Description' }),
@@ -66,10 +68,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
       title: $t({ defaultMessage: 'Role' }),
       key: 'role',
       dataIndex: 'role',
-      filterable: true,
-      render: function (_, row) {
-        return row.role ? $t(roleStringMap[row.role]) : ''
-      }
+      filterable: true
     },
     {
       title: $t({ defaultMessage: 'Scope' }),
@@ -78,8 +77,8 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
     },
     {
       title: $t({ defaultMessage: 'Group Type' }),
-      key: 'groupType',
-      dataIndex: 'groupType',
+      key: 'type',
+      dataIndex: 'type',
       filterable: true
     },
     {
@@ -89,7 +88,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
     }
   ]
 
-  const rowActions: TableProps<AdminGroup>['rowActions'] = [
+  const rowActions: TableProps<PriviliegeGroup>['rowActions'] = [
     {
       visible: (selectedRows) => {
         if (selectedRows.length === 1) {
@@ -118,7 +117,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
             action: 'DELETE',
             entityName: $t({ defaultMessage: 'Group' }),
             entityValue: rows.length === 1
-              ? rows[0].name !== ' ' ? rows[0].name : rows[0].groupId
+              ? rows[0].name
               : undefined,
             numOfEntities: rows.length
           },
@@ -147,7 +146,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
     ]}>
       <Table
         columns={columns}
-        dataSource={adminList}
+        dataSource={fakedPriviliegeGroupList as PriviliegeGroup[]}
         rowKey='id'
         rowActions={isPrimeAdminUser
           ? filterByAccess(rowActions)

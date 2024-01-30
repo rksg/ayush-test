@@ -20,12 +20,13 @@ import { useUserProfileContext }                from '@acx-ui/user'
 
 import DelegationsTable from '../Administrators/DelegationsTable'
 
+import { fakedCustomRoleList }      from './__tests__/fixtures'
+import { fakedPriviliegeGroupList } from './__tests__/fixtures'
+import CustomRoles                  from './CustomRoles'
+import PriviledgeGroups             from './PrivilegeGroups'
+import SsoGroups                    from './SsoGroups'
+import UsersTable                   from './UsersTable'
 
-
-import CustomRoles      from './CustomRoles'
-import PriviledgeGroups from './PrivilegeGroups'
-import SsoGroups        from './SsoGroups'
-import UsersTable       from './UsersTable'
 
 const UserPrivileges = () => {
   const { $t } = useIntl()
@@ -42,15 +43,18 @@ const UserPrivileges = () => {
   const mspEcProfileData = useGetMspEcProfileQuery({ params })
   const adminList = useGetAdminListQuery(
     { params }, { skip: !isGroupBasedLoginEnabled })
-  const adminGroupList = useGetAdminGroupsQuery(
+  const ssoGroupList = useGetAdminGroupsQuery(
     { params }, { skip: !isGroupBasedLoginEnabled })
   const thirdPartyAdminList = useGetDelegationsQuery(
     { params }, { skip: !isGroupBasedLoginEnabled }
   )
 
   const adminCount = adminList?.data?.length! || 0
-  const adminGroupCount = adminGroupList?.data?.length! || 0
+  const ssoGroupCount = ssoGroupList?.data?.length! || 0
   const delegatedAdminCount = thirdPartyAdminList.data?.length! || 0
+  // TO DO (new API)
+  const priviliegeGroupCount = fakedPriviliegeGroupList.length! || 0
+  const customRoleCount = fakedCustomRoleList.length! || 0
 
   const isVAR = userProfileData?.var && !userProfileData?.support
   const tenantType = tenantDetailsData.data?.tenantType
@@ -92,7 +96,7 @@ const UserPrivileges = () => {
       visible: true
     },
     ssoGroups: {
-      title: $t({ defaultMessage: 'SSO Groups ({adminGroupCount})' }, { adminGroupCount }),
+      title: $t({ defaultMessage: 'SSO Groups ({ssoGroupCount})' }, { ssoGroupCount }),
       content: <SsoGroups
         isPrimeAdminUser={isPrimeAdminUser}
         tenantType={tenantType}
@@ -108,7 +112,8 @@ const UserPrivileges = () => {
       visible: isDelegationReady ? true : false
     },
     privilegeGroups: {
-      title: $t({ defaultMessage: 'Privilege Groups ({adminGroupCount})' }, { adminGroupCount }),
+      title: $t({ defaultMessage: 'Privilege Groups ({priviliegeGroupCount})' },
+        { priviliegeGroupCount }),
       content: <PriviledgeGroups
         isPrimeAdminUser={isPrimeAdminUser}
         tenantType={tenantType}
@@ -116,7 +121,7 @@ const UserPrivileges = () => {
       visible: true
     },
     customRoles: {
-      title: $t({ defaultMessage: 'Roles ({adminGroupCount})' }, { adminGroupCount }),
+      title: $t({ defaultMessage: 'Roles ({customRoleCount})' }, { customRoleCount }),
       content: <CustomRoles
         isPrimeAdminUser={isPrimeAdminUser}
         tenantType={tenantType}
