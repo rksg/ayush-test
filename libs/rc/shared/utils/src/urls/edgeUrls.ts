@@ -268,5 +268,15 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/venues/:venueId/edgeClusters/:clusterId',
     newApi: true
+  },
+  patchEdgeCluster: {
+    method: 'PATCH',
+    url: '/venues/:venueId/edgeClusters/:clusterId',
+    newApi: true
+  },
+  getEdgeCluster: {
+    method: 'get',
+    url: '/venues/:venueId/edgeClusters/:clusterId',
+    newApi: true
   }
 }
