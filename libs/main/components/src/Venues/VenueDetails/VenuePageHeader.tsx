@@ -1,9 +1,14 @@
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, RangePicker }                                        from '@acx-ui/components'
-import { useVenueDetailsHeaderQuery }                                             from '@acx-ui/rc/services'
-import { generateConfigTemplateBreadcrumb, useConfigTemplate, VenueDetailHeader } from '@acx-ui/rc/utils'
+import { Button, PageHeader, RangePicker } from '@acx-ui/components'
+import { useVenueDetailsHeaderQuery }      from '@acx-ui/rc/services'
+import {
+  generateConfigTemplateBreadcrumb,
+  getConfigTemplatePath,
+  useConfigTemplate,
+  VenueDetailHeader
+} from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
@@ -31,6 +36,7 @@ function DatePicker () {
 
 function VenuePageHeader () {
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
   const { tenantId, venueId, activeTab } = useParams()
   const enableTimeFilter = () => !['networks', 'services', 'units'].includes(activeTab as string)
 
@@ -39,6 +45,7 @@ function VenuePageHeader () {
   const navigate = useNavigate()
   const location = useLocation()
   const basePath = useTenantLink(`/venues/${venueId}`)
+  const templateBasePath = useTenantLink(getConfigTemplatePath(`venues/${venueId}`), 'v')
 
   const GenBreadcrumb = () => {
     const { isTemplate } = useConfigTemplate()
@@ -63,7 +70,7 @@ function VenuePageHeader () {
           onClick={() =>
             navigate({
               ...basePath,
-              pathname: `${basePath.pathname}/edit/details`
+              pathname: `${isTemplate ? templateBasePath.pathname : basePath.pathname}/edit/details`
             }, {
               state: {
                 from: location
