@@ -1,7 +1,7 @@
 // import { useState } from 'react'
 
-import { useIntl }                from 'react-intl'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useIntl }     from 'react-intl'
+import { useNavigate } from 'react-router-dom'
 
 
 import {
@@ -10,11 +10,11 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import {
-  useGetAdminGroupsQuery,
-  useDeleteAdminGroupsMutation
+// import {
+//   useGetAdminGroupsQuery,
+//   useDeleteAdminGroupsMutation
 //   useUpdateAdminGroupsMutation
-} from '@acx-ui/rc/services'
+// } from '@acx-ui/rc/services'
 import { sortProp, defaultSort, CustomRole }     from '@acx-ui/rc/utils'
 import { useTenantLink }                         from '@acx-ui/react-router-dom'
 import { filterByAccess, useUserProfileContext } from '@acx-ui/user'
@@ -30,16 +30,16 @@ interface CustomRolesTableProps {
 const CustomRoles = (props: CustomRolesTableProps) => {
   const { $t } = useIntl()
   const { isPrimeAdminUser, tenantType } = props
-  const params = useParams()
+  // const params = useParams()
   const navigate = useNavigate()
   //   const [showDialog, setShowDialog] = useState(false)
   //   const [editMode, setEditMode] = useState(false)
   //   const [editData, setEditData] = useState<AdminGroup>({} as AdminGroup)
   const { data: userProfileData } = useUserProfileContext()
 
-  const { data: adminList, isLoading, isFetching } = useGetAdminGroupsQuery({ params })
+  // const { data: adminList, isLoading, isFetching } = useGetAdminGroupsQuery({ params })
 
-  const [deleteAdminGroup, { isLoading: isDeleteAdminUpdating }] = useDeleteAdminGroupsMutation()
+  // const [deleteAdminGroup, { isLoading: isDeleteAdminUpdating }] = useDeleteAdminGroupsMutation()
   //   const [updateAdminGroup] = useUpdateAdminGroupsMutation()
   const linkAddCustomRolePath =
     useTenantLink('/administration/userPrivileges/customRoles', 't')
@@ -98,15 +98,16 @@ const CustomRoles = (props: CustomRolesTableProps) => {
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Group' }),
+            entityName: $t({ defaultMessage: 'Role' }),
             entityValue: rows.length === 1
               ? rows[0].name
               : undefined,
             numOfEntities: rows.length
           },
           onOk: () => {
-            deleteAdminGroup({ params, payload: rows.map(item => item.id) })
-              .then(clearSelection)
+            // deleteAdminGroup({ params, payload: rows.map(item => item.id) })
+            //   .then(clearSelection)
+            clearSelection()
           }
         })
       }
@@ -123,8 +124,8 @@ const CustomRoles = (props: CustomRolesTableProps) => {
 
   return (
     <Loader states={[
-      { isLoading: isLoading || !userProfileData,
-        isFetching: isFetching || isDeleteAdminUpdating
+      { isLoading: !userProfileData
+        // isFetching: isFetching || isDeleteAdminUpdating
       }
     ]}>
       <Table
