@@ -56,12 +56,14 @@ const mockRbacUserResponse = (data: ManagedUser[] | undefined) => {
   )
 }
 
-const mockSSOResponse = (fileContents: string | object) => {
+const mockSSOResponse = (fileContents?: string) => {
   mockServer.use(
     rest.get(`${rbacApiURL}/tenantSettings`,
       (_, res, ctx) => res(ctx.json([{
         key: 'sso',
-        value: JSON.stringify({ type: 'saml2', metadata: fileContents })
+        value: fileContents
+          ? JSON.stringify({ type: 'saml2', metadata: fileContents })
+          : JSON.stringify({})
       }]))
     )
   )
@@ -85,7 +87,7 @@ describe('Users Page', () => {
   })
   it('should render correctly', async () => {
     mockRbacUserResponse(mockMangedUsers)
-    mockSSOResponse({})
+    mockSSOResponse()
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Users (5)')).toBeVisible()
@@ -101,7 +103,7 @@ describe('Users Page', () => {
   })
   it('should render empty array correctly', async () => {
     mockRbacUserResponse([])
-    mockSSOResponse({})
+    mockSSOResponse()
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Users (0)')).toBeVisible()
@@ -110,7 +112,7 @@ describe('Users Page', () => {
   })
   it('should render undefined correctly', async () => {
     mockRbacUserResponse(undefined)
-    mockSSOResponse({})
+    mockSSOResponse()
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Users (0)')).toBeVisible()
@@ -120,7 +122,7 @@ describe('Users Page', () => {
   it('should handle refresh user details correctly', async () => {
     mockRbacUserResponse([mockMangedUsers[0]])
     mockRefreshUserResponse({ userId: '1111' })
-    mockSSOResponse({})
+    mockSSOResponse()
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByTestId('Reload')).toBeVisible()
@@ -132,7 +134,7 @@ describe('Users Page', () => {
   it('should handle refresh user details failure correctly', async () => {
     mockRbacUserResponse([mockMangedUsers[0]])
     mockRefreshUserResponse()
-    mockSSOResponse({})
+    mockSSOResponse()
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByTestId('Reload')).toBeVisible()
@@ -143,7 +145,7 @@ describe('Users Page', () => {
   it('should handle delete user details correctly for internal user', async () => {
     mockRbacUserResponse([mockMangedUsers[0]])
     mockDeleteUserDetailsResponse({ data: 'ok' })
-    mockSSOResponse({})
+    mockSSOResponse()
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByTestId('DeleteOutlined')).toBeVisible()
@@ -157,7 +159,7 @@ describe('Users Page', () => {
   })
   it('should handle delete user details failure correctly for internal user', async () => {
     mockRbacUserResponse([mockMangedUsers[0]])
-    mockSSOResponse({})
+    mockSSOResponse()
     mockServer.use(
       rest.delete(`${rbacApiURL}/users/resourceGroup`, (_, res, ctx) => res(ctx.status(404)))
     )
@@ -175,7 +177,7 @@ describe('Users Page', () => {
   it('should handle delete invitation correctly for external user', async () => {
     mockRbacUserResponse([mockMangedUsers[2]])
     mockDeleteInvitationResponse({ data: 'ok' })
-    mockSSOResponse({})
+    mockSSOResponse()
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByTestId('DeleteOutlined')).toBeVisible()
@@ -189,7 +191,7 @@ describe('Users Page', () => {
   })
   it('should open drawer to edit user', async () => {
     mockRbacUserResponse([mockMangedUsers[0]])
-    mockSSOResponse({})
+    mockSSOResponse()
     mockRGResponse()
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))

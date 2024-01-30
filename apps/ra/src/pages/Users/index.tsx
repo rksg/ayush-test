@@ -138,8 +138,6 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
   )
 }
 
-
-
 const isValidSSO = (settings: Partial<Settings> | undefined) => {
   if (!settings || !settings.sso) return false
   const ssoConfig = JSON.parse(settings.sso)
@@ -308,14 +306,14 @@ const Users = () => {
           type='edit'
         />
       </Drawer>
-      {visible && <ImportSSOFileDrawer
+      <ImportSSOFileDrawer
         title={isEditMode
           ? $t({ defaultMessage: 'Update SSO with 3rd Party Provider' })
           : $t({ defaultMessage: 'Set Up SSO with 3rd Party Provider' })}
         visible={visible}
         isEditMode={isEditMode}
         setVisible={setVisible}
-      />}
+      />
     </Loader>
   )
 }
