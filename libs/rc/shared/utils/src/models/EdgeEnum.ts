@@ -1,7 +1,8 @@
 export enum EdgePortTypeEnum {
   UNCONFIGURED = 'UNCONFIGURED',
   WAN = 'WAN',
-  LAN = 'LAN'
+  LAN = 'LAN',
+  CLUSTER = 'CLUSTER'
 }
 
 export enum EdgeIpModeEnum {

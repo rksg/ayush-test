@@ -16,7 +16,11 @@ import { PolicyOperation, getPolicyListRoutePath, getPolicyRoutePath } from './p
 // eslint-disable-next-line max-len
 export function generatePolicyPageHeaderTitle (isEdit: boolean, isTemplate: boolean, policyType: PolicyType) {
   const { $t } = getIntl()
-  return generatePageHeaderTitle(isEdit, isTemplate, $t(policyTypeLabelMapping[policyType]))
+  return generatePageHeaderTitle({
+    isEdit,
+    isTemplate,
+    instanceLabel: $t(policyTypeLabelMapping[policyType])
+  })
 }
 
 export function usePolicyBreadcrumb (type: PolicyType, oper: PolicyOperation) {

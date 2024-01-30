@@ -127,7 +127,7 @@ describe('SwitchFirmware - VenueFirmwareList', () => {
 
     const row = await screen.findByRole('row', { name: /My-Venue/i })
     await userEvent.click(within(row).getByRole('checkbox'))
-    await userEvent.click(await screen.findByRole('button', { name: 'Update Now' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Update Now' }))
     expect(await screen.findByTestId('test-SwitchUpgradeWizard')).toBeInTheDocument()
   })
 
@@ -141,7 +141,7 @@ describe('SwitchFirmware - VenueFirmwareList', () => {
 
     const row = await screen.findByRole('row', { name: /My-Venue/i })
     await userEvent.click(within(row).getByRole('checkbox'))
-    await userEvent.click(await screen.findByRole('button', { name: /Change Update Schedule/i }))
+    await userEvent.click(screen.getByRole('button', { name: /Change Update Schedule/i }))
     expect(await screen.findByTestId('test-SwitchUpgradeWizard')).toBeInTheDocument()
   })
 
@@ -168,7 +168,6 @@ describe('SwitchFirmware - VenueFirmwareList', () => {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
     const checkStatusButton = await screen.findByRole('button', { name: 'Check Status' })
-    expect(checkStatusButton).toBeInTheDocument()
     await userEvent.click(checkStatusButton)
     expect(await screen.findByTestId('test-VenueStatusDrawer')).toBeInTheDocument()
   })

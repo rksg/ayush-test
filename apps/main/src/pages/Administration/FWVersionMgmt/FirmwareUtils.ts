@@ -281,3 +281,7 @@ export function getActiveApModels (selectedRows: FirmwareVenue[]): string[] {
 
   return [...new Set(activeApModels)]
 }
+
+export function compareABFSequence (seq1: number = 0, seq2: number = 0): number {
+  return seq1 - seq2
+}

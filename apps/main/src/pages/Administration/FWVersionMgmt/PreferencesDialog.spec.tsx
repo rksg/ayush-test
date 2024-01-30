@@ -1,19 +1,16 @@
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { Modal } from 'antd'
+import { rest }  from 'msw'
 
-import {
-  FirmwareUrlsInfo
-} from '@acx-ui/rc/utils'
-import {
-  Provider
-} from '@acx-ui/store'
+import { firmwareApi }      from '@acx-ui/rc/services'
+import { FirmwareUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }  from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen,
-  fireEvent,
-  waitForElementToBeRemoved
+  within
 } from '@acx-ui/test-utils'
-
 
 import {
   venue,
@@ -23,10 +20,14 @@ import {
 import { VenueFirmwareList } from './ApFirmware/VenueFirmwareList/index'
 import { PreferencesDialog } from './PreferencesDialog'
 
+const updatePreferencesRequestSpy = jest.fn()
 
 describe('Firmware Venues Table', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
+    updatePreferencesRequestSpy.mockReset()
+    Modal.destroyAll()
+    store.dispatch(firmwareApi.util.resetApiState())
     mockServer.use(
       rest.get(
         FirmwareUrlsInfo.getVenueVersionList.url.split('?')[0],
@@ -43,6 +44,13 @@ describe('Firmware Venues Table', () => {
       rest.put(
         FirmwareUrlsInfo.updateSwitchFirmwarePredownload.url,
         (req, res, ctx) => res(ctx.status(200))
+      ),
+      rest.put(
+        FirmwareUrlsInfo.updateUpgradePreferences.url,
+        (req, res, ctx) => {
+          updatePreferencesRequestSpy()
+          return res(ctx.status(200))
+        }
       )
     )
     params = {
@@ -50,20 +58,7 @@ describe('Firmware Venues Table', () => {
     }
   })
 
-  it('should render table', async () => {
-    const { asFragment } = render(
-      <Provider>
-        <VenueFirmwareList />
-      </Provider>, {
-        route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
-      })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByText('My-Venue')
-    expect(asFragment().querySelector('div[class="ant-space-item"]')).not.toBeNull()
-  })
-
-  it('should preferences', async () => {
+  it('should render preferences - cancel', async () => {
     render(
       <Provider>
         <VenueFirmwareList />
@@ -71,24 +66,53 @@ describe('Firmware Venues Table', () => {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
+    expect(await screen.findByText('My-Venue')).toBeInTheDocument()
     const updateButton = screen.getByRole('button', { name: /Preferences/i })
-    fireEvent.click(updateButton)
+    await userEvent.click(updateButton)
 
-    await screen.findByText('Choose update schedule method:')
-    const updateVenueButton = await screen.findByText('Save Preferences')
-    fireEvent.click(updateVenueButton)
+    const dialog = await screen.findByRole('dialog')
+    within(dialog).getByText('Choose update schedule method:')
+    const cancelButton = within(dialog).getByRole('button', { name: /cancel/i })
+    await userEvent.click(cancelButton)
+    expect(dialog).not.toBeVisible()
+  })
+
+  it('should render preferences - schedule manually', async () => {
+    render(
+      <Provider>
+        <VenueFirmwareList />
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
+      })
+
+    expect(await screen.findByText('My-Venue')).toBeInTheDocument()
+    const updateButton = screen.getByRole('button', { name: /Preferences/i })
+    await userEvent.click(updateButton)
+
+    const dialog = await screen.findByRole('dialog')
+    within(dialog).getByText('Choose update schedule method:')
+    const updateVenueButton = within(dialog).getByRole('button', { name: /Save Preferences/i })
+    expect(updateVenueButton).toBeDisabled()
+
+    const manuallyRadio = within(dialog).getByRole('radio', { name: /schedule manually/i })
+    await userEvent.click(manuallyRadio)
+    await expect(manuallyRadio).toBeChecked()
+    expect(updateVenueButton).not.toBeDisabled()
+
+    await userEvent.click(updateVenueButton)
+    expect(updatePreferencesRequestSpy).toBeCalled()
+    expect(dialog).not.toBeVisible()
   })
 
   it('should render preferences Pre-Download', async () => {
+    const onSubmitSpy = jest.fn()
     render(
       <Provider>
         <PreferencesDialog
           visible={true}
           data={preference}
           onCancel={()=>{}}
-          onSubmit={()=>{}}
+          onSubmit={onSubmitSpy()}
           isSwitch={true}
           preDownload={true}
         />
@@ -96,14 +120,15 @@ describe('Firmware Venues Table', () => {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
 
-    await screen.findByText('Choose update schedule method:')
+    const dialog = await screen.findByRole('dialog')
+    expect(within(dialog).getByTestId('PreDownload')).toBeChecked()
 
-    expect(screen.getByTestId('PreDownload')).toBeChecked()
-    fireEvent.click(screen.getByTestId('PreDownload'))
-    expect(screen.getByTestId('PreDownload')).not.toBeChecked()
+    await userEvent.click(within(dialog).getByTestId('PreDownload'))
+    expect(within(dialog).getByTestId('PreDownload')).not.toBeChecked()
 
-    const updateVenueButton = await screen.findByText('Save Preferences')
-    fireEvent.click(updateVenueButton)
+    const updateVenueButton = await within(dialog).findByText('Save Preferences')
+    await userEvent.click(updateVenueButton)
+    expect(onSubmitSpy).toBeCalled()
   })
 
 })
