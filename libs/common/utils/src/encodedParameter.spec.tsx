@@ -1,5 +1,5 @@
-import { renderHook }                  from '@testing-library/react'
-import { BrowserRouter, MemoryRouter } from 'react-router-dom'
+import { BrowserRouter, MemoryRouter } from '@acx-ui/react-router-dom'
+import { renderHook }                  from '@acx-ui/test-utils'
 
 import { fixedEncodeURIComponent, useEncodedParameter, encodeParameter } from './encodedParameter'
 
