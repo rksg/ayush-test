@@ -107,8 +107,8 @@ describe('Firmware Venues Table', () => {
     await userEvent.click(updateButton)
 
     const confirmDialog = await screen.findByRole('dialog')
-    await screen.findByText('Active Device')
-    const updateVenueButton = await screen.findByText('Run Update')
+    within(confirmDialog).getByText('Active Device')
+    const updateVenueButton = within(confirmDialog).getByText('Run Update')
     await userEvent.click(updateVenueButton)
     await waitFor(() => expect(confirmDialog).not.toBeVisible())
   })
@@ -288,7 +288,7 @@ describe('Firmware Venues Table', () => {
     // eslint-disable-next-line max-len
     expect(await within(updateNowDialog).findByText(/available firmware for Wi-Fi 6 AP \(R550\)/i)).toBeVisible()
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+    await userEvent.click(within(updateNowDialog).getByRole('button', { name: 'Cancel' }))
     await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Update Now' })).toBeNull())
   })
 })

@@ -81,7 +81,13 @@ describe('RadioTab', () => {
         (_, res, ctx) => res(ctx.json(mockVenueClientAdmissionControl))),
       rest.put(
         WifiUrlsInfo.updateVenueClientAdmissionControl.url,
-        (_, res, ctx) => res(ctx.json({})))
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.get(
+        CommonUrlsInfo.getVenueApModelBandModeSettings.url,
+        (_, res, ctx) => res(ctx.json([]))),
+      rest.get(
+        WifiUrlsInfo.getVenueAntennaType.url,
+        (_, res, ctx) => res(ctx.json([])))
     )
   })
 
