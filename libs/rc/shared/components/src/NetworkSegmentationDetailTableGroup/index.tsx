@@ -2,13 +2,14 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Tabs }                                                                                                                   from '@acx-ui/components'
-import { useApListQuery, useGetNetworkSegmentationGroupByIdQuery, useGetNetworkSegmentationViewDataListQuery, useSearchPersonaListQuery } from '@acx-ui/rc/services'
-import { useTableQuery }                                                                                                                  from '@acx-ui/rc/utils'
+import { Loader, Tabs }                                                                                        from '@acx-ui/components'
+import { useApListQuery, useGetNetworkSegmentationGroupByIdQuery, useGetNetworkSegmentationViewDataListQuery } from '@acx-ui/rc/services'
+import { Persona, TableQuery, useTableQuery }                                                                  from '@acx-ui/rc/utils'
+
+import { usePersonaListQuery } from '../usePersonaListQuery'
 
 import { AccessSwitchTable, AccessSwitchTableDataType } from './AccessSwitchTable'
-import { defaultApPayload }                             from './ApsTable'
-import { ApsTable }                                     from './ApsTable'
+import { ApsTable, defaultApPayload }                   from './ApsTable'
 import { AssignedSegmentsTable }                        from './AssignedSegmentsTable'
 import { DistSwitchesTable }                            from './DistSwitchesTable'
 
@@ -23,7 +24,6 @@ export const NetworkSegmentationDetailTableGroup = (
   const { nsgId } = props
   const { $t } = useIntl()
   const [isApPayloadReady,setIsApPayloadReady] = useState(false)
-  const [isPersonaPayloadReady,setIsPersonaPayloadReady] = useState(false)
   const [accessSwitchData, setAccessSwitchData] = useState<AccessSwitchTableDataType[]>([])
   const {
     data: nsgData,
@@ -53,13 +53,9 @@ export const NetworkSegmentationDetailTableGroup = (
       filters: { venueId: [''] }
     },option: { skip: !isApPayloadReady }
   })
-  const personaListTableQuery = useTableQuery({
-    useQuery: useSearchPersonaListQuery,
-    defaultPayload: {
-      keyword: '',
-      groupId: ''
-    },option: { skip: !isPersonaPayloadReady }
-  })
+  const personaListTableQuery = usePersonaListQuery({
+    personaGroupId: nsgViewData?.venueInfos[0]?.personaGroupId
+  }) as TableQuery<Persona, { keyword: string, groupId: string }, unknown>
 
   useEffect(() => {
     if(nsgData) {
@@ -76,10 +72,6 @@ export const NetworkSegmentationDetailTableGroup = (
       ...defaultApPayload,
       filters: { venueId: [nsgViewData?.venueInfos[0]?.venueId??''] }
     })
-    personaListTableQuery.setPayload({
-      keyword: '',
-      groupId: nsgViewData?.venueInfos[0]?.personaGroupId??''
-    })
   }, [nsgViewData])
 
   useEffect(() => {
@@ -87,12 +79,6 @@ export const NetworkSegmentationDetailTableGroup = (
       setIsApPayloadReady(true)
     }
   }, [apListTableQuery.payload.filters])
-
-  useEffect(() => {
-    if(personaListTableQuery?.payload?.groupId) {
-      setIsPersonaPayloadReady(true)
-    }
-  }, [personaListTableQuery.payload.groupId])
 
   const tabs = {
     aps: {

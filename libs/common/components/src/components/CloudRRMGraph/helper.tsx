@@ -138,13 +138,13 @@ export function deriveInterfering (
     .map(node => {
       const aggregate = node.channelWidth.map((channelWidth, index) => {
         const map = channelGroupMapping[band].find(map =>
-          channelWidth !== 'NaN' && map.channelWidth === channelWidth.toString())?.channelGroups
+          map.channelWidth === String(channelWidth))?.channelGroups
         // get group based on current node channel
         const group = map && map.find(group => group.channel === node.channel[index])?.group
         // get all channels in the same group
         const channelList = map
           ? map.filter(row => row.group === group).map(row => row.channel)
-          : channelWidth === 'NaN' ? [] : [node.channel[index]]
+          : channelWidth ? [node.channel[index]] : []
         return {
           channelWidth,
           channel: node.channel[index],
@@ -171,7 +171,7 @@ export function deriveInterfering (
     const highlighted = graph.interferingLinks
       ? graph.interferingLinks.map(link => link.split('-')).flat().includes(node.apMac)
       : processed.some(set => set.highlighted)
-    const channelWidthList = node.channelWidth.filter(v => v !== 'NaN') as number[]
+    const channelWidthList = node.channelWidth.filter(v => v) as number[]
     const sizeType = channelWidthList.length > 0
       ? Math.max(...channelWidthList)
       : 'Unknown'

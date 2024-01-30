@@ -1,6 +1,5 @@
-import { waitForElementToBeRemoved } from '@testing-library/react'
-import userEvent                     from '@testing-library/user-event'
-import { rest }                      from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { edgeApi, edgeDhcpApi }   from '@acx-ui/rc/services'
 import {
@@ -11,8 +10,15 @@ import {
   getServiceRoutePath,
   ServiceOperation, ServiceType
 } from '@acx-ui/rc/utils'
-import { Provider, store }                             from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
+import { Provider, store } from '@acx-ui/store'
+import {
+  mockServer,
+  render,
+  screen,
+  waitFor,
+  waitForElementToBeRemoved,
+  within
+} from '@acx-ui/test-utils'
 
 import { mockDhcpStatsData } from '../__tests__/fixtures'
 
