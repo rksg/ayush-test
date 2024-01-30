@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 
-import { renderHook, render } from '@testing-library/react'
-import { MemoryRouter }       from 'react-router-dom'
+import { MemoryRouter } from 'react-router-dom'
 
+import { renderHook, render }                   from '@acx-ui/test-utils'
 import { resetRanges, fixedEncodeURIComponent } from '@acx-ui/utils'
 
 import { useReportsFilter } from './useReportsFilter'

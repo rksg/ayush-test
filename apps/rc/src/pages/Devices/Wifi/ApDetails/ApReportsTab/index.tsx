@@ -1,8 +1,5 @@
-import { useApContext }   from '@acx-ui/rc/utils'
-import { EmbeddedReport } from '@acx-ui/reports/components'
-import {
-  ReportType
-} from '@acx-ui/reports/components'
+import { useApContext }               from '@acx-ui/rc/utils'
+import { EmbeddedReport, ReportType } from '@acx-ui/reports/components'
 
 
 export function ApReportsTab () {

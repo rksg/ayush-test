@@ -144,6 +144,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
 
   return (
     <div
+      data-testid='schedule-step'
       style={{
         minHeight: '50vh',
         marginBottom: '30px'
