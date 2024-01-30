@@ -24,10 +24,12 @@ export default function AdaptivePolicyTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
 
+  const settingsId = 'adaptive-policy-list-table'
   const tableQuery = useTableQuery({
     useQuery: useAdaptivePolicyListByQueryQuery,
     apiParams: { sort: 'name,ASC', excludeContent: 'false' },
-    defaultPayload: {}
+    defaultPayload: {},
+    pagination: { settingsId }
   })
 
   // eslint-disable-next-line max-len
@@ -155,7 +157,7 @@ export default function AdaptivePolicyTable () {
     ]}>
       <Table
         enableApiFilter
-        settingsId='adaptive-policy-list-table'
+        settingsId={settingsId}
         columns={useColumns()}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}

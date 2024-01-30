@@ -5,7 +5,7 @@ import { rest }  from 'msw'
 
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { useSdLanScopedNetworks }       from '@acx-ui/rc/components'
-import { networkApi }                   from '@acx-ui/rc/services'
+import { networkApi, venueApi }         from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }              from '@acx-ui/store'
 import {
@@ -66,6 +66,7 @@ describe('VenueNetworksTab', () => {
   beforeEach(() => {
     act(() => {
       store.dispatch(networkApi.util.resetApiState())
+      store.dispatch(venueApi.util.resetApiState())
     })
 
     mockServer.use(

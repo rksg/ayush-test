@@ -17,9 +17,11 @@ import { TenantLink } from '@acx-ui/react-router-dom'
 export default function ClientIsolationAllowList () {
   const { $t } = useIntl()
 
+  const settingsId = 'venue-client-isolation-allow-list-table'
   const tableQuery = useTableQuery({
     useQuery: useGetClientIsolationUsageByVenueQuery,
-    defaultPayload: {}
+    defaultPayload: {},
+    pagination: { settingsId }
   })
 
   const columns: TableProps<ClientIsolationListUsageByVenue>['columns'] = [
@@ -59,7 +61,7 @@ export default function ClientIsolationAllowList () {
   return (
     <Loader states={[tableQuery]}>
       <Table<ClientIsolationListUsageByVenue>
-        settingsId='venue-client-isolation-allow-list-table'
+        settingsId={settingsId}
         columns={columns}
         dataSource={tableQuery.data?.data}
         onChange={tableQuery.handleTableChange}
