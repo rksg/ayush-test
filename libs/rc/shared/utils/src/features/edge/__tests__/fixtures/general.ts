@@ -243,3 +243,50 @@ export const mockEdgeClusterList = {
     }
   ]
 }
+
+export const mockEdgeCluster = {
+  id: 'clusterId_1',
+  name: 'Edge Cluster 1',
+  smartEdges: [
+    {
+      serialNumber: 'serialNumber-1',
+      name: 'Smart Edge 1'
+    },
+    {
+      serialNumber: 'serialNumber-2',
+      name: 'Smart Edge 2'
+    }
+  ],
+  virtualIpSettings: {
+    virtualIps: [
+      {
+        virtualIp: '192.168.13.1',
+        ports: [
+          {
+            serialNumber: 'serialNumber-1',
+            portName: 'port2'
+          },
+          {
+            serialNumber: 'serialNumber-2',
+            portName: 'port2'
+          }
+        ],
+        timeoutSeconds: 6
+      },
+      {
+        virtualIp: '192.168.14.1',
+        ports: [
+          {
+            serialNumber: 'serialNumber-1',
+            portName: 'port3'
+          },
+          {
+            serialNumber: 'serialNumber-2',
+            portName: 'port3'
+          }
+        ],
+        timeoutSeconds: 6
+      }
+    ]
+  }
+}

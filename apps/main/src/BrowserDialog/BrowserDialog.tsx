@@ -17,14 +17,6 @@ export interface PartialUserData {
   preferredLanguage: string
 }
 
-export const isNonProdEnv = () => {
-  const domains = ['localhost', 'int', 'dev', 'qa', 'scale', 'stage']
-  // Subdomain
-  const len = window.location.hostname.split('.').length - 3
-  const subdomain = window.location.hostname.split('.')[len]
-  return (window.location.hostname === 'localhost' || domains.includes(subdomain))
-}
-
 export const updateBrowserCached = (lang: LangKey) => {
   localStorage.setItem('browserLang', lang)
 }
@@ -41,11 +33,13 @@ interface BrowserDialogResult {
   isLoading: boolean
 }
 
-export const showBrowserLangDialog = ():Promise<BrowserDialogResult> => {
+export const showBrowserLangDialog = (userLang: LangKey):Promise<BrowserDialogResult> => {
   const browserLang = detectBrowserLang()
   const bLang = browserLang.slice(0, 2)
+  const uLang = userLang.slice(0, 2)
   const browserLangDisplay = new Intl.DisplayNames(['en'], { type: 'language' })
   const bLangDisplay = browserLangDisplay.of(bLang)
+  const uLangDisplay = browserLangDisplay.of(uLang)
   let intl: IntlShape
   try {
     intl = getIntl()
@@ -62,7 +56,7 @@ export const showBrowserLangDialog = ():Promise<BrowserDialogResult> => {
       customContent: {
         action: 'CUSTOM_BUTTONS',
         buttons: [{
-          text: $t({ defaultMessage: 'Cancel' }),
+          text: $t({ defaultMessage: 'Keep {uLangDisplay}' }, { uLangDisplay }),
           type: 'default',
           key: 'cancel',
           closeAfterAction: true,
