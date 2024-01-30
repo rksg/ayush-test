@@ -80,15 +80,14 @@ describe('Edge Table', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/t/devices/edge' }
       })
-    const row = await screen.findAllByRole('row', { name: /Smart Edge/i })
-    expect(row.length).toBe(12)
+    const rows = await screen.findAllByRole('row', { name: /Smart Edge/ })
+    expect(rows.length).toBe(12)
 
     const expectedStatus = ['Initializing', 'Never contacted cloud', 'Offline',
       'Needs port config', 'Operational', 'Applying firmware', 'Applying configuration',
       'Firmware update failed', 'Configuration update failed', 'Disconnected from cloud',
       'Rebooting', 'Resetting and recovering']
 
-    const rows = await screen.findAllByRole('row', { name: /Smart Edge/ })
     expectedStatus.forEach((status, index) => {
       expect(rows[Number(index)]).toHaveTextContent(`Smart Edge ${index+1}`)
       expect(rows[Number(index)]).toHaveTextContent(status)
