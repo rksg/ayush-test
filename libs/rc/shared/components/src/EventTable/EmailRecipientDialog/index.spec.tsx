@@ -1,9 +1,10 @@
 /* eslint-disable max-len */
-import { userEvent } from '@storybook/testing-library'
-import { rest }      from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
+import { administrationApi }      from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider  }              from '@acx-ui/store'
+import { Provider, store  }       from '@acx-ui/store'
 import {
   render,
   screen,
@@ -37,6 +38,7 @@ const params = { tenantId: 'tenant-id' }
 describe('Email recipents dialog', () => {
 
   beforeEach(() => {
+    store.dispatch(administrationApi.util.resetApiState())
     mockServer.use(
       rest.get(
         AdministrationUrlsInfo.getNotificationRecipients.url,
@@ -58,7 +60,7 @@ describe('Email recipents dialog', () => {
 
     expect(await screen.findByText('efg.cheng@email.com')).toBeInTheDocument()
 
-    userEvent.click(await screen.findByRole('button', { name: 'Select' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Select' }))
 
     expect(submitFn).toBeCalled()
 

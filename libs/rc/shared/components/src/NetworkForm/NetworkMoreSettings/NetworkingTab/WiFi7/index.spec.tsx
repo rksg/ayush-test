@@ -1,13 +1,12 @@
 /* eslint-disable max-len */
 
-import { userEvent } from '@storybook/testing-library'
-import { within }    from '@testing-library/react'
-import { Form }      from 'antd'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
 
 import { useIsSplitOn, useIsTierAllowed }    from '@acx-ui/feature-toggle'
 import { NetworkSaveData, WlanSecurityEnum } from '@acx-ui/rc/utils'
 import { Provider }                          from '@acx-ui/store'
-import { fireEvent, render, screen }         from '@acx-ui/test-utils'
+import { fireEvent, render, screen,within }  from '@acx-ui/test-utils'
 
 import WiFi7, {
   isEnableOptionOf6GHz

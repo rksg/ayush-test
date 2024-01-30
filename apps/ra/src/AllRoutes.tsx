@@ -25,6 +25,7 @@ import Incidents                             from './pages/Incidents'
 import Layout                                from './pages/Layout'
 import Recommendations                       from './pages/Recommendations'
 import SearchResults                         from './pages/SearchResults'
+import Users                                 from './pages/Users'
 import { WiFiPage, WifiTabsEnum }            from './pages/Wifi'
 import ApDetails                             from './pages/Wifi/ApDetails'
 import { WiFiNetworksPage, NetworkTabsEnum } from './pages/WifiNetworks'
@@ -139,7 +140,9 @@ function AllRoutes () {
       </Route>
       <Route path='occupancy' element={<div>Occupancy</div>} />
       <Route path='search/:searchVal' element={<SearchResults />} />
-      <Route path='admin/*' element={<div>Admin</div>} />
+      <Route path='admin'>
+        <Route path='users' element={<Users/>} />
+      </Route>
       <Route path='health'>
         <Route index={true} element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />} />
         <Route index={false}

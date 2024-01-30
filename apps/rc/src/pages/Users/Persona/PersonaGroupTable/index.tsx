@@ -185,10 +185,12 @@ export function PersonaGroupTable () {
     { isLoading: isDeletePersonaGroupUpdating }
   ] = useDeletePersonaGroupMutation()
 
+  const settingsId = 'persona-group-table'
   const tableQuery = useTableQuery( {
     useQuery: useSearchPersonaGroupListQuery,
     apiParams: { sort: 'name,ASC' },
-    defaultPayload: { keyword: '' }
+    defaultPayload: { keyword: '' },
+    pagination: { settingsId }
   })
 
   useEffect(() => {
@@ -342,7 +344,7 @@ export function PersonaGroupTable () {
     >
       <Table<PersonaGroup>
         enableApiFilter
-        settingsId='persona-group-table'
+        settingsId={settingsId}
         columns={useColumns(macRegistrationPoolMap, dpskPoolMap, venueMap, nsgPoolMap)}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}

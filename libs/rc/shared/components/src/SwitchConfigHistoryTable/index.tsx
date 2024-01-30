@@ -72,6 +72,7 @@ export function SwitchConfigHistoryTable (props: {
     setFilterType('ALL')
   }
 
+  const settingsId = 'switch-config-history-table'
   const tableQuery = useTableQuery({
     useQuery: isVenueLevel ? useGetVenueConfigHistoryQuery : useGetSwitchConfigHistoryQuery,
     defaultPayload: {
@@ -79,7 +80,8 @@ export function SwitchConfigHistoryTable (props: {
     sorter: {
       sortField: 'startTime',
       sortOrder: 'DESC'
-    }
+    },
+    pagination: { settingsId }
   })
 
   const configTypeFilterOptions = Object.values(ConfigTypeEnum).map(ctype=>({
@@ -181,7 +183,7 @@ export function SwitchConfigHistoryTable (props: {
   return <>
     <Loader states={[tableQuery]}>
       <Table
-        settingsId='switch-config-history-table'
+        settingsId={settingsId}
         rowKey={(record) => record.transactionId + record.configType}
         columns={getCols()}
         dataSource={tableQuery.data?.data ?? []}

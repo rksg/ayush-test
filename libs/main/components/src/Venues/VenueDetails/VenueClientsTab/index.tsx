@@ -9,10 +9,7 @@ import {
   useGetQueriablePropertyConfigsQuery
 } from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { EmbeddedReport }                        from '@acx-ui/reports/components'
-import {
-  ReportType
-} from '@acx-ui/reports/components'
+import { EmbeddedReport, ReportType }            from '@acx-ui/reports/components'
 
 import { IconThirdTab } from '../VenueDevicesTab/VenueWifi/styledComponents'
 

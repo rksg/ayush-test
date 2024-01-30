@@ -1,13 +1,14 @@
 
-import { waitForElementToBeRemoved, within } from '@testing-library/react'
-import userEvent                             from '@testing-library/user-event'
-import _                                     from 'lodash'
+import userEvent from '@testing-library/user-event'
+import _         from 'lodash'
 
 import { ACLDirection, StatefulAcl } from '@acx-ui/rc/utils'
 import { Provider }                  from '@acx-ui/store'
 import {
   render,
-  screen } from '@acx-ui/test-utils'
+  screen,
+  waitForElementToBeRemoved,
+  within } from '@acx-ui/test-utils'
 
 import { mockedDefaultValue }         from '../../../__tests__/fixtures'
 import { StatefulACLRuleDialogProps } from '../StatefulACLRuleDialog'

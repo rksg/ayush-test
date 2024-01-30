@@ -1,4 +1,4 @@
-import { render, screen, act } from '@testing-library/react'
+import { render, screen, act } from '@acx-ui/test-utils'
 
 import { Card } from '.'
 

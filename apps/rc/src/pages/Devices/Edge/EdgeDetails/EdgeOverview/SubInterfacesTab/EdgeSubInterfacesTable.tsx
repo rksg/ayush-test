@@ -7,7 +7,7 @@ import { SubInterfaceTable } from './SubInterfaceTable'
 
 export const EdgeSubInterfacesTable = ({ serialNumber, portMac }:
    { serialNumber: string, portMac: string }) => {
-
+  const settingsId = 'edge-sub-interfaces-table'
   const defaultPayload = {
     fields: [
       'sortIdx',
@@ -34,12 +34,13 @@ export const EdgeSubInterfacesTable = ({ serialNumber, portMac }:
     sorter: {
       sortField: 'sortIdx',
       sortOrder: 'ASC'
-    }
+    },
+    pagination: { settingsId }
   })
 
   return (
     <Loader states={[tableQuery]}>
-      <SubInterfaceTable tableQuery={tableQuery} />
+      <SubInterfaceTable tableQuery={tableQuery} settingsId={settingsId} />
     </Loader>
   )
 }
