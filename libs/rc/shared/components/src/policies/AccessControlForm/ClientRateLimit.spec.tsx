@@ -2,13 +2,12 @@ import '@testing-library/jest-dom'
 
 import React from 'react'
 
-import { userEvent }         from '@storybook/testing-library'
-import { fireEvent }         from '@testing-library/react'
+import userEvent             from '@testing-library/user-event'
 import { Form }              from 'antd'
 import { SliderSingleProps } from 'antd/lib/slider'
 
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { Provider }                  from '@acx-ui/store'
+import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
 import { ClientRateLimit } from './ClientRateLimit'
 
