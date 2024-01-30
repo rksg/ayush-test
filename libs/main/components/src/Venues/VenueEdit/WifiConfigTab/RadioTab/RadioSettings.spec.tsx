@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
@@ -30,9 +31,6 @@ import {
 } from '../../../__tests__/fixtures'
 
 import { RadioSettings } from './RadioSettings'
-
-
-
 
 const params = {
   tenantId: 'tenant-id',
@@ -198,7 +196,9 @@ describe('Venue Radio Settings', () => {
           setEditContextData: jest.fn(),
           setEditRadioContextData: jest.fn()
         }}>
-          <RadioSettings />
+          <Form>
+            <RadioSettings />
+          </Form>
         </VenueEditContext.Provider>
       </Provider>, { route: { params } })
 
