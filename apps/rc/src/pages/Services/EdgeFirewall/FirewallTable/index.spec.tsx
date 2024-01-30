@@ -60,9 +60,10 @@ describe('Firewall Table', () => {
     const row = await screen.findAllByRole('row', { name: /TestFirewall/i })
     expect(row.length).toBe(3)
     // eslint-disable-next-line max-len
-    await screen.findByRole('row', { name: 'TestFirewall1 2 Inbound: 2 Outbound: 2 3 Poor No 1.0.0.100, 1.0.0.210' })
-    await screen.findByRole('row', { name: 'TestFirewall2 -- -- 0 -- No --' })
-    await screen.findByRole('row', { name: 'TestFirewall3 -- -- 0 -- No --' })
+    expect(row[0]).toHaveTextContent('TestFirewall12Inbound: 2Outbound: 23PoorNo1.0.0.100, 1.0.0.210')
+    expect(row[1]).toHaveTextContent('TestFirewall2----0--No--')
+    expect(row[2]).toHaveTextContent('TestFirewall3----0--No--')
+
     const ddosInfo = await screen.findByTestId('ddos-info-1')
     await user.hover(ddosInfo)
     await screen.findByText('All: 220')
