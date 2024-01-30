@@ -22,7 +22,7 @@ function NetworkTabs () {
   const { data } = useNetworkDetailHeaderQuery({ params: { tenantId, networkId } })
 
   const [apsCount, venuesCount] = [
-    data?.aps.totalApCount ?? 0,
+    data?.aps?.totalApCount ?? 0,
     data?.activeVenueCount ?? 0
   ]
 
