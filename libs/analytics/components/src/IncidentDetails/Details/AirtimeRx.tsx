@@ -1,5 +1,5 @@
-import { unitOfTime } from 'moment-timezone'
-import { useIntl }    from 'react-intl'
+import moment, { unitOfTime } from 'moment-timezone'
+import { useIntl }            from 'react-intl'
 
 import { calculateSeverity, Incident, shortDescription } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol }    from '@acx-ui/components'
@@ -25,7 +25,8 @@ export const AirtimeRx = (incident: Incident) => {
     Attributes.Scope,
     Attributes.Duration,
     Attributes.EventStartTime,
-    Attributes.EventEndTime
+    ...((moment(incident.startTime).isSame(incident.impactedStart))
+      ? [Attributes.EventEndTime] : [Attributes.DataStartTime, Attributes.DataEndTime])
   ]
 
   const networkImpactCharts: NetworkImpactProps['charts'] = [
