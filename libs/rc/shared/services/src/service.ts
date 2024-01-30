@@ -50,9 +50,7 @@ import {
   DpskDownloadNewFlowPassphrasesPayload,
   DpskDownloadPassphrasesPayload,
   DpskPassphrasesClientPayload,
-  DpskNewFlowPassphraseClient
-} from '@acx-ui/rc/utils'
-import {
+  DpskNewFlowPassphraseClient,
   CloudpathServer,
   ApplicationPolicy
 } from '@acx-ui/rc/utils'
