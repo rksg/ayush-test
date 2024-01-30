@@ -162,12 +162,15 @@ const actions = {
 }
 
 export const isCrrmOptimizationMatched = (
-  metadata: Recommendation['metadata'], preferences: Recommendation['preferences']
-) => _.get(metadata, 'audit') || _.get(metadata, 'algorithmData.isCrrmFullOptimization', true)
-  === _.get(preferences, 'crrmFullOptimization', true)
+  code: Recommendation['code'],
+  metadata: Recommendation['metadata'],
+  preferences: Recommendation['preferences']
+) => !code.startsWith('c-crrm') || _.get(metadata, 'audit') ||
+  _.get(metadata, 'algorithmData.isCrrmFullOptimization', true)
+    === _.get(preferences, 'crrmFullOptimization', true)
 
 const getAvailableActions = (recommendation: RecommendationActionType) => {
-  const { isMuted, statusEnum, metadata, preferences } = recommendation
+  const { isMuted, statusEnum, code, metadata, preferences } = recommendation
   const props = { ...recommendation }
   if (isMuted) {
     return [
@@ -190,7 +193,7 @@ const getAvailableActions = (recommendation: RecommendationActionType) => {
         {
           icon: actions.schedule({
             ...props,
-            disabled: !isCrrmOptimizationMatched(metadata, preferences),
+            disabled: !isCrrmOptimizationMatched(code, metadata, preferences),
             type: 'Apply',
             initialDate: 'futureDate'
           })

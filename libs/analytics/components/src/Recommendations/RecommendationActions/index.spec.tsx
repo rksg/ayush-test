@@ -293,24 +293,34 @@ describe('RecommendationActions', () => {
 describe('isCrrmOptimizationMatched', () => {
   it('should return correct value', () => {
     expect(isCrrmOptimizationMatched(
+      'c-crrm-channel24g-auto',
       { algorithmData: { isCrrmFullOptimization: true } } as unknown as Recommendation['metadata'],
       { crrmFullOptimization: true } as unknown as Recommendation['preferences']
     )).toBe(true)
     expect(isCrrmOptimizationMatched(
+      'c-crrm-channel24g-auto',
       { algorithmData: { isCrrmFullOptimization: false } } as unknown as Recommendation['metadata'],
       { crrmFullOptimization: false } as unknown as Recommendation['preferences']
     )).toBe(true)
     expect(isCrrmOptimizationMatched(
+      'c-crrm-channel24g-auto',
       { algorithmData: { isCrrmFullOptimization: true } } as unknown as Recommendation['metadata'],
       { crrmFullOptimization: false } as unknown as Recommendation['preferences']
     )).toBe(false)
     expect(isCrrmOptimizationMatched(
+      'c-crrm-channel24g-auto',
       { algorithmData: { isCrrmFullOptimization: false } } as unknown as Recommendation['metadata'],
       { crrmFullOptimization: true } as unknown as Recommendation['preferences']
     )).toBe(false)
     expect(isCrrmOptimizationMatched(
+      'c-crrm-channel24g-auto',
       {} as unknown as Recommendation['metadata'],
       null as unknown as Recommendation['preferences']
+    )).toBe(true)
+    expect(isCrrmOptimizationMatched(
+      'i-zonefirmware-upgrade',
+      {} as unknown as Recommendation['metadata'],
+      { crrmFullOptimization: false } as unknown as Recommendation['preferences']
     )).toBe(true)
   })
 })
