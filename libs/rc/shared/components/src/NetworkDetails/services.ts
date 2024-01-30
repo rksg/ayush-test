@@ -1,9 +1,15 @@
-import { useGetNetworkQuery } from '@acx-ui/rc/services'
-import { useParams }          from '@acx-ui/react-router-dom'
+import { useGetNetworkQuery, useGetNetworkTemplateQuery } from '@acx-ui/rc/services'
+import { useConfigTemplate }                              from '@acx-ui/rc/utils'
+import { useParams }                                      from '@acx-ui/react-router-dom'
 
 export function useGetNetwork () {
+  const { isTemplate } = useConfigTemplate()
   const { tenantId, networkId } = useParams()
-  return useGetNetworkQuery({ params: { tenantId, networkId } })
+  // eslint-disable-next-line max-len
+  const networkResult = useGetNetworkQuery({ params: { tenantId, networkId } }, { skip: isTemplate })
+  // eslint-disable-next-line max-len
+  const networkTemplateResult = useGetNetworkTemplateQuery({ params: { tenantId, networkId } }, { skip: !isTemplate })
+  return isTemplate ? networkTemplateResult : networkResult
 }
 
 export function extractSSIDFilter (network: ReturnType<typeof useGetNetworkQuery>) {
