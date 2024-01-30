@@ -22,7 +22,7 @@ COPY .eslintignore \
   babel.config.json \
   jest.config.ts \
   jest.preset.ts \
-  jest.setup.js \
+  jest.build.setup.js \
   nx.json \
   webpack.config.base.js \
   tsconfig.base.json \
@@ -72,6 +72,7 @@ RUN node ./node_modules/.bin/nx run-many --target=build --projects=main
 
 ###############################################################
 FROM build-base as acx-ui-base-test
+ENV CICD_BUILD=true
 ENV NODE_OPTIONS=--max-old-space-size=10240
 
 # Force dependency with lint & build stages
