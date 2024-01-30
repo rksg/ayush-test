@@ -8,9 +8,7 @@ import {
   FirmwareUrlsInfo,
   SwitchFirmwareFixtures
 } from '@acx-ui/rc/utils'
-import {
-  Provider, store
-} from '@acx-ui/store'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -94,7 +92,6 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
   })
-
 
   it('render SwitchUpgradeWizard - schedule', async () => {
     render(

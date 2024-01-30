@@ -6,7 +6,7 @@ import {
   FirmwareUrlsInfo, SigPackUrlsInfo, SwitchFirmwareFixtures
 } from '@acx-ui/rc/utils'
 import {
-  Provider
+  Provider, store
 } from '@acx-ui/store'
 import {
   mockServer,
@@ -23,6 +23,7 @@ import {
 } from './__tests__/fixtures'
 
 import FWVersionMgmt from '.'
+import { firmwareApi } from '@acx-ui/rc/services'
 
 const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
 const mockedUsedNavigate = jest.fn()
@@ -51,6 +52,7 @@ jest.mock('@acx-ui/rc/services', () => ({
 describe('Firmware Version Management', () => {
   let params: { tenantId: string, activeTab: string, activeSubTab: string }
   beforeEach(async () => {
+    store.dispatch(firmwareApi.util.resetApiState())
     mockServer.use(
       rest.get(
         FirmwareUrlsInfo.getUpgradePreferences.url,
