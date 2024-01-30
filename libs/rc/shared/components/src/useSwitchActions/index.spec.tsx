@@ -1,10 +1,3 @@
-import {
-  screen,
-  fireEvent,
-  act,
-  within,
-  waitFor
-} from '@testing-library/react'
 import { message, Modal } from 'antd'
 import { rest }           from 'msw'
 import '@testing-library/jest-dom'
@@ -14,8 +7,15 @@ import {
   SwitchStatusEnum,
   SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider }               from '@acx-ui/store'
-import { mockServer, renderHook } from '@acx-ui/test-utils'
+import { Provider } from '@acx-ui/store'
+import {
+  act,
+  fireEvent,
+  mockServer,
+  renderHook,
+  screen,
+  within,
+  waitFor } from '@acx-ui/test-utils'
 
 import { useSwitchActions } from '.'
 

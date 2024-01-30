@@ -1,8 +1,7 @@
 import { useState } from 'react'
 
-import { Input, Modal }      from 'antd'
-import { useIntl }           from 'react-intl'
-import { MessageDescriptor } from 'react-intl'
+import { Input, Modal }              from 'antd'
+import { useIntl,MessageDescriptor } from 'react-intl'
 
 import { Button, Collapse }                 from '@acx-ui/components'
 import { ExpandSquareDown, ExpandSquareUp } from '@acx-ui/icons'

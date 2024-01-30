@@ -1,8 +1,8 @@
-import { cleanup } from '@testing-library/react'
-import { Form }    from 'antd'
+import { Form } from 'antd'
 
 import { Provider } from '@acx-ui/store'
 import {
+  cleanup,
   render,
   screen
 } from '@acx-ui/test-utils'
