@@ -30,8 +30,10 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
       sortField: 'name',
       sortOrder: 'ASC'
     }
-  }, { skip: !enableProperty })
-  const propertyConfig = useGetPropertyConfigsQuery({ params }, { skip: !enableProperty })
+  }, { skip: !enableProperty || isTemplate })
+  const propertyConfig = useGetPropertyConfigsQuery({ params }, {
+    skip: !enableProperty || isTemplate
+  })
 
   const onTabChange = (tab: string) => {
     if (isTemplate) {
