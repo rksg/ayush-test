@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 import { Button, Col, Form, Row } from 'antd'
 import { isEqual, pick, isEmpty } from 'lodash'
@@ -10,10 +10,12 @@ import {
   useAddUserMutation,
   AddUserPayload,
   UpdateUserPayload,
-  useFindUserQuery
+  useLazyFindUserQuery,
+  useInviteUserMutation
 } from '@acx-ui/analytics/services'
 import { ManagedUser }                        from '@acx-ui/analytics/utils'
 import { Drawer, Loader, Tooltip, showToast } from '@acx-ui/components'
+import { emailRegExp }                        from '@acx-ui/rc/utils'
 
 import { drawerContentConfig } from './config'
 
@@ -22,15 +24,6 @@ type FormItemProps = {
   name: string,
   labelKey: string,
   component: React.ReactNode
-}
-export function isValidEmail (value: string) {
-  // eslint-disable-next-line max-len
-  const re = new RegExp (/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
-
-  if (value && !re.test(value)) {
-    return false
-  }
-  return true
 }
 
 const FormItem: React.FC<FormItemProps> = ({ name, labelKey, component }) => {
@@ -54,11 +47,7 @@ const FormItem: React.FC<FormItemProps> = ({ name, labelKey, component }) => {
         message: $t({ defaultMessage: 'Email is required!' })
       },
       {
-        validator (_, value) {
-          const check = isValidEmail(value)
-          return check ? Promise.resolve() : Promise.reject()
-        },
-        message: $t({ defaultMessage: 'Input is not a valid email id' })
+        validator: (_, value) => emailRegExp(value)
       }]}
       children={component}
     />
@@ -67,7 +56,7 @@ const FormItem: React.FC<FormItemProps> = ({ name, labelKey, component }) => {
     </Form.Item>
 
   return <Row gutter={20}>
-    <Col span={8}>
+    <Col span={24}>
       {Item}
     </Col>
   </Row>
@@ -101,9 +90,9 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
   const selectedUser = pick(selectedRow,['id', 'email', 'resourceGroupId', 'role'])
   const [ updatedUser, setUpdatedUser ] = useState<UpdatedUser>(selectedUser)
   const [ isLoading, setIsloading ] = useState(false)
-  const [ findUser, setFindUser ] = useState(false)
   const [updateUser] = useUpdateUserMutation()
   const [addUser] = useAddUserMutation()
+  const [inviteUser] = useInviteUserMutation()
   const [form] = Form.useForm()
   const cleanUp = () => {
     setIsloading(false)
@@ -111,11 +100,7 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
     form.resetFields()
     toggleDrawer(false)
   }
-  const { data, isFetching: findingUser, error } = useFindUserQuery({
-    username: updatedUser?.invitedEmail!
-  }, {
-    skip: !findUser
-  })
+  const [findQuery] = useLazyFindUserQuery()
 
   const handleSaveClick = async () => {
     setIsloading(true)
@@ -152,15 +137,45 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
       })
   }
   const handleInviteClick = async () => {
-    setFindUser(true)
+    setIsloading(true)
+    await findQuery({
+      username: updatedUser?.invitedEmail!
+    })
+      .unwrap()
+      .then(async (result) => {
+        const invitedUserId = result.userId
+        const { resourceGroupId, role } = updatedUser
+        await inviteUser({
+          invitedUserId,
+          resourceGroupId,
+          role,
+          type: 'tenant' // todo accept as prop when invite brand
+        })
+          .unwrap()
+          .then(() => {
+            setIsloading(false)
+            showToast({
+              type: 'success',
+              content: $t({ defaultMessage: 'User invited successfully' })
+            })
+            cleanUp()
+          })
+          .catch(({ data }) => {
+            setIsloading(false)
+            showToast({
+              type: 'error',
+              content: $t({ defaultMessage: 'Error: {error}' }, { error: JSON.parse(data).error })
+            })
+          })
+      })
+      .catch(({ data }) => {
+        setIsloading(false)
+        showToast({
+          type: 'error',
+          content: $t({ defaultMessage: 'Error: {error}' }, { error: data.error })
+        })
+      })
   }
-  useEffect(() => {
-    setFindUser(false)
-    if (data?.userId && updatedUser?.invitedUserId !== data?.userId) {
-      setUpdatedUser({ ...updatedUser, invitedUserId: data?.userId })
-      console.log(updatedUser)
-    }
-  }, [data, updatedUser])
   const isUserDataValid = () => {
     switch(type) {
       case 'create':
@@ -206,7 +221,7 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
     onClose={handleCancelClick}
     footer={drawerFooter}
     width={400}
-  ><Loader states={[{ isLoading: isLoading || findingUser }]}>
+  ><Loader states={[{ isLoading: isLoading }]}>
       <Form layout='vertical' form={form}>
         {drawerContentConfig[type as UserType].map((item) => (
           <FormItem

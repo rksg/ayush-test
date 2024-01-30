@@ -33,6 +33,12 @@ export type AddUserPayload = {
   role: string
   swuId: string
 }
+type InviteUserPayload = {
+  invitedUserId: string,
+  resourceGroupId?: string,
+  role?: string,
+  type: string
+}
 export const getDefaultSettings = (): Partial<Settings> => ({
   'brand-ssid-compliance-matcher': '^[a-zA-Z0-9]{5}_GUEST$',
   'sla-p1-incidents-count': '0',
@@ -154,6 +160,21 @@ export const rbacApi = baseRbacApi.injectEndpoints({
           params: { username }
         }
       }
+    }),
+    inviteUser: build.mutation<string, InviteUserPayload>({
+      query: ({ invitedUserId, resourceGroupId, role, type }) => {
+        return {
+          url: '/invitations',
+          method: 'post',
+          credentials: 'include',
+          body: { invitedUserId, resourceGroupId, role, type },
+          responseHandler: 'text'
+        }
+      },
+      invalidatesTags: [
+        { type: 'RBAC', id: 'GET_USERS' },
+        { type: 'RBAC', id: 'GET_AVAILABLE_USERS' }
+      ]
     })
   })
 })
@@ -168,7 +189,8 @@ export const {
   useGetResourceGroupsQuery,
   useUpdateUserMutation,
   useAddUserMutation,
-  useFindUserQuery
+  useLazyFindUserQuery,
+  useInviteUserMutation
 } = rbacApi
 
 export function useSystems () {
