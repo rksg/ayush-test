@@ -1,8 +1,8 @@
-import { render, screen, fireEvent } from '@testing-library/react'
-import { IntlProvider }              from 'react-intl'
+import { IntlProvider } from 'react-intl'
 
-import { Provider }  from '@acx-ui/store'
-import { DateRange } from '@acx-ui/utils'
+import { Provider }                  from '@acx-ui/store'
+import { render, screen, fireEvent } from '@acx-ui/test-utils'
+import { DateRange }                 from '@acx-ui/utils'
 
 import {
   TimeRangeDropDownProvider,

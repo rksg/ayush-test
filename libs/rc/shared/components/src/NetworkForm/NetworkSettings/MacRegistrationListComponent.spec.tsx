@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { userEvent } from '@storybook/testing-library'
-import { Form }      from 'antd'
-import { rest }      from 'msw'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
 
 import { useIsSplitOn, useIsTierAllowed }              from '@acx-ui/feature-toggle'
 import { MacRegListUrlsInfo, RulesManagementUrlsInfo } from '@acx-ui/rc/utils'

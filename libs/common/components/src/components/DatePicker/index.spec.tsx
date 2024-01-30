@@ -1,12 +1,12 @@
 import '@testing-library/jest-dom'
 import { useRef } from 'react'
 
-import { render, screen } from '@testing-library/react'
 import userEvent          from '@testing-library/user-event'
 import moment, { Moment } from 'moment-timezone'
 import { IntlProvider }   from 'react-intl'
 
 import { formatter, DateFormatEnum } from '@acx-ui/formatter'
+import { render, screen }            from '@acx-ui/test-utils'
 import {
   DateRange,
   useDateFilter,
