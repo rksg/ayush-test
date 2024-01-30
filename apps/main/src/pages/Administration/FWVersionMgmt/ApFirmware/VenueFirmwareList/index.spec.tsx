@@ -163,11 +163,12 @@ describe('Firmware Venues Table', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const row = await screen.findByRole('row', { name: /My-Venue/i })
-    await userEvent.click(within(row).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[4]).getByRole('cell', { name: /My-Venue/i })).toBeVisible()
+    await userEvent.click(within(rows[4]).getByRole('checkbox'))
 
-    const row2 = await screen.findByRole('row', { name: /Ben-Venue-US/i })
-    await userEvent.click(within(row2).getByRole('checkbox'))
+    expect(within(rows[1]).getByRole('cell', { name: /Ben-Venue-US/i })).toBeVisible()
+    await userEvent.click(within(rows[1]).getByRole('checkbox'))
 
     await userEvent.click(screen.getByRole('button', { name: /Update Now/i }))
     const updateNowDialog = await screen.findByRole('dialog')
@@ -246,8 +247,9 @@ describe('Firmware Venues Table', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const row = await screen.findByRole('row', { name: /My-Venue/i })
-    await userEvent.click(within(row).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[4]).getByRole('cell', { name: /My-Venue/i })).toBeVisible()
+    await userEvent.click(within(rows[4]).getByRole('checkbox'))
 
     await userEvent.click(screen.getByRole('button', { name: /Update Now/i }))
 
@@ -278,8 +280,9 @@ describe('Firmware Venues Table', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const row = await screen.findByRole('row', { name: /My-Venue/i })
-    await userEvent.click(within(row).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[4]).getByRole('cell', { name: /My-Venue/i })).toBeVisible()
+    await userEvent.click(within(rows[4]).getByRole('checkbox'))
 
     await userEvent.click(screen.getByRole('button', { name: /Update Now/i }))
     const updateNowDialog = await screen.findByRole('dialog')
