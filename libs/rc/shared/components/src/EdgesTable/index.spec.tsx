@@ -1,8 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { edgeApi, venueApi }            from '@acx-ui/rc/services'
 import { CommonUrlsInfo, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                     from '@acx-ui/store'
+import { Provider, store }              from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -33,6 +34,8 @@ describe('Edge Table', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
 
+    store.dispatch(edgeApi.util.resetApiState())
+    store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.getEdgeList.url,
@@ -83,7 +86,7 @@ describe('Edge Table', () => {
     const row = await screen.findAllByRole('row', { name: /Smart Edge/i })
     expect(row.length).toBe(12)
 
-    // TODO: should add the test for EdgeStatusLight
+    // TODO: should add extra test for EdgeStatusLight
     // const expectedStatus = ['Initializing', 'Never contacted cloud', 'Offline',
     //   'Needs port config', 'Operational', 'Applying firmware', 'Applying configuration',
     //   'Firmware update failed', 'Configuration update failed', 'Disconnected from cloud',
@@ -124,6 +127,15 @@ describe('Edge Table', () => {
   })
 
   it('should go edit page', async () => {
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (req, res, ctx) => res(ctx.json({
+          ...mockEdgeList,
+          data: mockEdgeList.data.slice(0,2)
+        }))
+      )
+    )
     const user = userEvent.setup()
     render(
       <Provider>
@@ -142,6 +154,15 @@ describe('Edge Table', () => {
   })
 
   it('edit button will remove when select above 1 row', async () => {
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (req, res, ctx) => res(ctx.json({
+          ...mockEdgeList,
+          data: mockEdgeList.data.slice(0,3)
+        }))
+      )
+    )
     const user = userEvent.setup()
     render(
       <Provider>
@@ -156,6 +177,15 @@ describe('Edge Table', () => {
   })
 
   it('should delete selected row', async () => {
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (req, res, ctx) => res(ctx.json({
+          ...mockEdgeList,
+          data: mockEdgeList.data.slice(1,2)
+        }))
+      )
+    )
     const user = userEvent.setup()
     render(
       <Provider>
@@ -163,18 +193,17 @@ describe('Edge Table', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/t/devices/edge' }
       })
-    const row = await screen.findByRole('row', { name: /Smart Edge 2/i })
+
+    const table = await screen.findByRole('table')
+    const row = await within(table).findByRole('row', { name: /Smart Edge 2/i })
     await user.click(within(row).getByRole('checkbox'))
-    await user.click(screen.getAllByRole('button', { name: 'Delete' })[0])
+
+    await user.click(await screen.findByRole('button', { name: 'Delete' }))
     const dialog = await screen.findByRole('dialog')
     within(dialog).getByText('Delete "Smart Edge 2"?')
     await user.click(within(dialog).getByRole('button', { name: 'Delete' }))
-    await waitFor(() => {
-      expect(mockedDeleteApi).toBeCalledTimes(1)
-    })
-    await waitFor(() => {
-      expect(dialog).not.toBeVisible()
-    })
+    await waitFor(() => expect(mockedDeleteApi).toBeCalledTimes(1))
+    await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
   it('should send OTP sucessfully', async () => {
@@ -213,6 +242,15 @@ describe('Edge Table', () => {
   })
 
   it('should delete selected row(multiple)', async () => {
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (req, res, ctx) => res(ctx.json({
+          ...mockEdgeList,
+          data: mockEdgeList.data.slice(0,3)
+        }))
+      )
+    )
     const user = userEvent.setup()
     render(
       <Provider>
@@ -220,20 +258,21 @@ describe('Edge Table', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/t/devices/edge' }
       })
-    const row2 = await screen.findByRole('row', { name: /Smart Edge 2/i })
-    const row3 = screen.getByRole('row', { name: /Smart Edge 3/i })
+
+    const table = await screen.findByRole('table')
+    const row2 = await within(table).findByRole('row', { name: /Smart Edge 2/i })
+    const row3 = within(table).getByRole('row', { name: /Smart Edge 3/i })
     await user.click(within(row2).getByRole('checkbox'))
     await user.click(within(row3).getByRole('checkbox'))
-    await user.click(screen.getAllByRole('button', { name: 'Delete' })[0])
+    expect(await screen.findByText('2 selected')).toBeVisible()
+
+    await user.click(await screen.findByRole('button', { name: 'Delete' }))
     const dialog = await screen.findByRole('dialog')
-    within(dialog).getByText('Delete "2 SmartEdges"?')
+    expect(within(dialog).getByText('Delete "2 SmartEdges"?')).toBeVisible()
+
     await user.click(within(dialog).getByRole('button', { name: 'Delete' }))
-    await waitFor(() => {
-      expect(mockedBulkDeleteApi).toBeCalledTimes(1)
-    })
-    await waitFor(() => {
-      expect(dialog).not.toBeVisible()
-    })
+    await waitFor(() => expect(mockedBulkDeleteApi).toBeCalledTimes(1))
+    await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
   it('should reboot the selected SmartEdge', async () => {
