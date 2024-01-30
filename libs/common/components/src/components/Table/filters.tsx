@@ -145,7 +145,11 @@ export function renderFilter <RecordType> (
 
   const filterTypeComp = {
     checkbox: renderCheckbox(column),
-    rangepicker: <RangePickerComp filterValues={filterValues} setFilterValues={setFilterValues} />
+    rangepicker: <RangePickerComp
+      key='range-picker'
+      filterValues={filterValues}
+      setFilterValues={setFilterValues}
+    />
   }
   type Type = keyof typeof filterTypeComp
 
