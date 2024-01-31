@@ -224,7 +224,7 @@ export function RecommendationTable (
         ? <UnknownLink value={value as RecommendationWithUpdatedMetadata} />
         : <DateLink
           value={value}
-          disabled={!isCrrmOptimizationMatched(value.metadata, value.preferences)}
+          disabled={!isCrrmOptimizationMatched(value.code, value.metadata, value.preferences)}
         />,
       sorter: { compare: sortProp('updatedAt', dateSort) },
       fixed: 'left'
@@ -364,7 +364,7 @@ export function RecommendationTable (
           const classNames = []
           if (record.isMuted)
             classNames.push('table-row-disabled')
-          if (!isCrrmOptimizationMatched(record.metadata, record.preferences))
+          if (!isCrrmOptimizationMatched(record.code, record.metadata, record.preferences))
             classNames.push('table-row-disabled', 'crrm-optimization-mismatch')
           return classNames.length > 0
             ? Array.from(new Set(classNames)).join(' ')
