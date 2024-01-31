@@ -1,11 +1,7 @@
-
-
 import React, { useEffect, useState } from 'react'
 
 import { Menu, Button }           from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
-
-
 
 import {
   useGetUsersQuery,
