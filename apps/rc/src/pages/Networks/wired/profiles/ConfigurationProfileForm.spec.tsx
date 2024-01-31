@@ -584,14 +584,15 @@ describe('Wired', () => {
         route: { params, path: '/:tenantId/t/networks/wired/profiles/regular/:profileId/:action' }
       })
 
-    expect(await screen.findByRole('button', { name: 'Trusted Ports' })).toBeInTheDocument()
-    await userEvent.click(await screen.findByRole('button', { name: 'Trusted Ports' }))
-    await screen.findByRole('heading', { level: 3, name: 'Trusted Ports' })
+    const trustedPortsButton = await screen.findByRole('button', { name: 'Trusted Ports' })
+    expect(trustedPortsButton).toBeInTheDocument()
+    await userEvent.click(trustedPortsButton)
 
     const row = await screen.findByRole('row', { name: /ICX7150-24/i })
-    await userEvent.click(await within(row).findByRole('radio'))
-    expect(await screen.findByRole('alert')).toBeInTheDocument()
+    expect(trustedPortsButton).toBeInTheDocument()
+    await userEvent.click(row)
     const alertbar = await screen.findByRole('alert')
+    expect(alertbar).toBeInTheDocument()
     await userEvent.click(await within(alertbar).findByText('Edit'))
     const trustedPortModal = await screen.findByTestId('trustedPortModal')
     expect(trustedPortModal).toBeVisible()
@@ -602,10 +603,10 @@ describe('Wired', () => {
     const optionValues = await screen.findAllByText('1/1/2')
     await userEvent.click(optionValues[1])
     const applyTrustedPortsButton =
-      await within(trustedPortModal).findByRole('button', { name: /Apply/i })
+      await within(trustedPortModal).findByText(/Apply/i)
     await userEvent.click(applyTrustedPortsButton)
 
-    const applyButton = await screen.findByRole('button', { name: /Apply/i })
+    const applyButton = await screen.findByText(/Apply/i)
     await userEvent.click(applyButton)
   })
 

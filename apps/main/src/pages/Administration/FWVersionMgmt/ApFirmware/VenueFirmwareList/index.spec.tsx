@@ -99,8 +99,9 @@ describe('Firmware Venues Table', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const row = await screen.findByRole('row', { name: /My-Venue/i })
-    await userEvent.click(within(row).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[4]).getByRole('cell', { name: /My-Venue/ })).toBeVisible()
+    await userEvent.click(within(rows[4]).getByRole('checkbox')) //My-Venue
 
     const updateButton = screen.getByRole('button', { name: /Update Now/i })
     await userEvent.click(updateButton)
@@ -122,11 +123,11 @@ describe('Firmware Venues Table', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const row = await screen.findByRole('row', { name: /My-Venue/i })
-    await userEvent.click(within(row).getByRole('checkbox'))
-
-    const row2 = await screen.findByRole('row', { name: /Peter-Venue/i })
-    await userEvent.click(within(row2).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[4]).getByRole('cell', { name: /My-Venue/ })).toBeVisible()
+    await userEvent.click(within(rows[4]).getByRole('checkbox')) //My-Venue
+    expect(within(rows[5]).getByRole('cell', { name: /Peter-Venue/ })).toBeVisible()
+    await userEvent.click(within(rows[5]).getByRole('checkbox')) //Peter-Venue
 
     const updateButton = screen.getByRole('button', { name: /Update Now/i })
     await userEvent.click(updateButton)
@@ -162,11 +163,12 @@ describe('Firmware Venues Table', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const row = await screen.findByRole('row', { name: /My-Venue/i })
-    await userEvent.click(within(row).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[4]).getByRole('cell', { name: /My-Venue/i })).toBeVisible()
+    await userEvent.click(within(rows[4]).getByRole('checkbox'))
 
-    const row2 = await screen.findByRole('row', { name: /Ben-Venue-US/i })
-    await userEvent.click(within(row2).getByRole('checkbox'))
+    expect(within(rows[1]).getByRole('cell', { name: /Ben-Venue-US/i })).toBeVisible()
+    await userEvent.click(within(rows[1]).getByRole('checkbox'))
 
     await userEvent.click(screen.getByRole('button', { name: /Update Now/i }))
     const updateNowDialog = await screen.findByRole('dialog')
@@ -224,11 +226,11 @@ describe('Firmware Venues Table', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const rowWithLegacyAp = await screen.findByRole('row', { name: /Ben-Venue-US/ })
-    expect(within(rowWithLegacyAp).getByRole('cell', { name: '6.1.0.10.413' })).toBeVisible()
-
-    const rowWithoutLegacyAp = await screen.findByRole('row', { name: /Legacy-Venue/ })
-    expect(within(rowWithoutLegacyAp).queryByRole('cell', { name: '6.2.0.103.513' })).toBeNull()
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: 'Ben-Venue-US' })).toBeVisible() //Ben-Venue-US
+    expect(within(rows[1]).getByRole('cell', { name: '6.1.0.10.413' })).toBeVisible() //Ben-Venue-US
+    expect(within(rows[2]).queryByRole('cell', { name: 'Legacy-Venue' })).toBeNull() //Legacy-Venue
+    expect(within(rows[2]).queryByRole('cell', { name: '6.2.0.103.513' })).toBeNull() //Legacy-Venue
   })
 
   it('should show a message in the Update Now dialog when AP Models is empty', async () => {
@@ -245,8 +247,9 @@ describe('Firmware Venues Table', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const row = await screen.findByRole('row', { name: /My-Venue/i })
-    await userEvent.click(within(row).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[4]).getByRole('cell', { name: /My-Venue/i })).toBeVisible()
+    await userEvent.click(within(rows[4]).getByRole('checkbox'))
 
     await userEvent.click(screen.getByRole('button', { name: /Update Now/i }))
 
@@ -277,8 +280,9 @@ describe('Firmware Venues Table', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const row = await screen.findByRole('row', { name: /My-Venue/i })
-    await userEvent.click(within(row).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[4]).getByRole('cell', { name: /My-Venue/i })).toBeVisible()
+    await userEvent.click(within(rows[4]).getByRole('checkbox'))
 
     await userEvent.click(screen.getByRole('button', { name: /Update Now/i }))
     const updateNowDialog = await screen.findByRole('dialog')

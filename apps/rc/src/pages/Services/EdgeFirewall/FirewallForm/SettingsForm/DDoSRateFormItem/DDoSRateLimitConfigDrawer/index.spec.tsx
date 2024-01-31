@@ -68,18 +68,21 @@ describe('DDos rate limit config drawer', () => {
 
     expect(await screen.findByText('DDoS Rate-limiting Settings')).toBeVisible()
     const drawer = screen.getByRole('dialog')
-    const icmpRow = await screen.findByRole('row', { name: /ICMP/ })
-    const dnsRow = await screen.findByRole('row', { name: /DNS Response/ })
+    const rows = await within(drawer).findAllByRole('row')
+    expect(within(rows[2]).getByRole('cell', { name: /ICMP/ })).toBeVisible()
+    const icmpRow = rows[2]
+    expect(within(rows[1]).getByRole('cell', { name: /DNS Response/ })).toBeVisible()
+    const dnsRow = rows[1]
 
     // edit ICMP rule
-    await click(await within(icmpRow).findByRole('checkbox'))
+    await click(within(icmpRow).getByRole('checkbox'))
     await click(await screen.findByRole('button', { name: 'Edit' }))
     const dialog = await screen.findByTestId('rc-DDoSRuleDialog')
     await click(await within(dialog).findByText('Submit'))
-    await click(await within(icmpRow).findByRole('checkbox'))
+    await click(within(icmpRow).getByRole('checkbox'))
 
     // delete DNS Response rule
-    await click(await within(dnsRow).findByRole('checkbox'))
+    await click(within(dnsRow).getByRole('checkbox'))
     await click(await screen.findByRole('button', { name: 'Delete' }))
     await screen.findByText('Delete "DNS Response"?')
     await click(await screen.findByRole('button', { name: 'Delete Rule' }))
@@ -116,10 +119,13 @@ describe('DDos rate limit config drawer', () => {
       </Provider>)
 
     expect(await screen.findByText('DDoS Rate-limiting Settings')).toBeVisible()
-    const tcpSynRow = await screen.findByRole('row', { name: /TCP SYN/ })
-    const icmpRow = await screen.findByRole('row', { name: /ICMP/ })
-    await click(await within(tcpSynRow).findByRole('checkbox'))
-    await click(await within(icmpRow).findByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[3]).getByRole('cell', { name: /TCP SYN/ })).toBeVisible()
+    const tcpSynRow = rows[3]
+    expect(within(rows[2]).getByRole('cell', { name: /ICMP/ })).toBeVisible()
+    const icmpRow = rows[2]
+    await click(within(tcpSynRow).getByRole('checkbox'))
+    await click(within(icmpRow).getByRole('checkbox'))
     await click(await screen.findByRole('button', { name: 'Delete' }))
     await screen.findByText('Delete "2 Rules"?')
     await click(await screen.findByRole('button', { name: 'Delete Rules' }))
