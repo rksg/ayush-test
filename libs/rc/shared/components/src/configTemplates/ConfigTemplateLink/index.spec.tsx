@@ -1,17 +1,19 @@
 import {
-  PolicyDetailsLinkProps,
-  PolicyOperation,
-  PolicyType,
+  ConfigTemplateType,
   getConfigTemplatePath,
   getPolicyDetailsLink,
-  getPolicyRoutePath
+  getPolicyRoutePath,
+  PolicyDetailsLinkProps,
+  PolicyOperation,
+  PolicyType
 } from '@acx-ui/rc/utils'
-import { render, screen } from '@acx-ui/test-utils'
+import {render, screen} from '@acx-ui/test-utils'
 
 import {
   ConfigTemplateLink,
   PolicyConfigTemplateDetailsLink,
-  PolicyConfigTemplateLink
+  PolicyConfigTemplateLink,
+  renderConfigTemplateDetailsLink
 } from '.'
 
 const mockedMspTenantLinkStateFn = jest.fn()
@@ -63,6 +65,27 @@ describe('ConfigTemplateLink', () => {
     )
 
     const targetPath = getConfigTemplatePath(getPolicyDetailsLink(targetPolicyParams))
+    expect(screen.getByText(targetPath)).toBeInTheDocument()
+  })
+
+  it('renderConfigTemplateDetailsLink for venue with default activeTab', () => {
+    render(
+      renderConfigTemplateDetailsLink(ConfigTemplateType.VENUE, 'venue_id', 'venue_name')
+    )
+
+    // default activeTab : networks
+    const targetPath = getConfigTemplatePath('venues/venue_id/venue-details/networks')
+    expect(screen.getByText(targetPath)).toBeInTheDocument()
+  })
+
+  it('renderConfigTemplateDetailsLink for venue with services activeTab', () => {
+    render(
+      renderConfigTemplateDetailsLink(ConfigTemplateType.VENUE, 'venue_id', 'venue_name', {
+        [ConfigTemplateType.VENUE]: { "activeTab": 'services' }
+      })
+    )
+
+    const targetPath = getConfigTemplatePath('venues/venue_id/venue-details/services')
     expect(screen.getByText(targetPath)).toBeInTheDocument()
   })
 })
