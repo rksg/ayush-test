@@ -164,7 +164,7 @@ describe('Users Page', () => {
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByTestId('EditOutlined')).toBeVisible()
     fireEvent.click(await screen.findByTestId('EditOutlined'))
-    expect(await screen.findByText('Edit User')).toBeVisible()
+    expect(await screen.findByTestId('userDrawer')).toHaveTextContent('edit')
   })
   it('should open user drawer for add internal user correctly', async () => {
     mockRbacUserResponse([])
@@ -175,7 +175,7 @@ describe('Users Page', () => {
     expect(userBtn).toBeVisible()
     await userEvent.click(userBtn)
     await userEvent.click(await screen.findByText('Internal'))
-    expect(await screen.findByTestId('userDrawer')).toHaveTextContent('create')
+    expect(await screen.findByTestId('userDrawer')).toHaveTextContent('addInternal')
   })
   it('should open user drawer for 3rd party user correctly', async () => {
     mockRbacUserResponse([])

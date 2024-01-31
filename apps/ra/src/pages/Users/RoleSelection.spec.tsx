@@ -8,7 +8,7 @@ import { RoleSelection } from './RoleSelection'
 
 const mockedOnchange = jest.fn()
 
-describe('Available Users Selection', () => {
+describe('Role Selection', () => {
   afterEach(() => {
     mockedOnchange.mockClear()
   })
@@ -26,7 +26,7 @@ describe('Available Users Selection', () => {
     await userEvent.click(screen.getByTitle('Network Admin'))
     expect(mockedOnchange).toBeCalledWith(
       'network-admin',
-      { value: 'network-admin', label: 'Network Admin', key: 2 }
+      { value: 'network-admin', label: 'Network Admin', key: 1 }
     )
   })
 })

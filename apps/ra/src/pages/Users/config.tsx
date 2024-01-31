@@ -49,7 +49,7 @@ interface FormItemConfig {
 }
 interface DrawerContentConfig {
   edit: FormItemConfig[]
-  create: FormItemConfig[]
+  addInternal: FormItemConfig[]
   invite3rdParty: FormItemConfig[]
 }
 
@@ -93,13 +93,13 @@ export const drawerContentConfig: DrawerContentConfig = {
       }]
     }
   ],
-  create: [
+  addInternal: [
     {
       name: 'email',
       labelKey: defineMessage({ defaultMessage: 'Email' }),
       tooltip: defineMessage({ defaultMessage:
         `Add Internal user who belongs to your organisation into this RUCKUS AI account. Please note
-        that the invitee needs to have an existing Ruckus Support account.` }),
+        that the user needs to have an existing Ruckus Support account.` }),
       component: AvailableUsersSelection,
       componentProps: ({ onChange, updatedUser }) => ({
         selectedValue: updatedUser?.id,
@@ -144,8 +144,7 @@ export const drawerContentConfig: DrawerContentConfig = {
       labelKey: defineMessage({ defaultMessage: 'Email' }),
       tooltip: defineMessage({ defaultMessage:
         `Invite a 3rd Party user who does not belong to your organisation
-        into this RUCKUS AI account. Please note
-        that the invitee needs to have an existing
+        into this RUCKUS AI account. Please note that the invitee needs to have an existing
         Ruckus Support account.` }),
       component: input,
       componentProps: ({ onChange, updatedUser }) => {

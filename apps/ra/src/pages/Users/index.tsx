@@ -13,27 +13,15 @@ import {
   useDeleteUserResourceGroupMutation,
   useDeleteInvitationMutation
 } from '@acx-ui/analytics/services'
-import { ManagedUser }                                                       from '@acx-ui/analytics/utils'
-import { PageHeader, Loader, Tooltip, showToast, showActionModal, Dropdown } from '@acx-ui/components'
+import { ManagedUser }                                              from '@acx-ui/analytics/utils'
+import { PageHeader, Loader, showToast, showActionModal, Dropdown } from '@acx-ui/components'
 
-import { UsersTable }           from './Table'
-import { UserDrawer, UserType } from './UserDrawer'
+import { UsersTable }             from './Table'
+import { UserDrawer, DrawerType } from './UserDrawer'
 
 export const messages = {
   'title': defineMessage({
     defaultMessage: '{usersCount, plural, one {User} other {Users}}'
-  }),
-  'info': defineMessage({
-    defaultMessage: `"Invite 3rd Party" allows you to invite a user who does not
-    belong to your organisation into this RUCKUS AI account.
-    {br}
-    {br}
-    "Add Internal User" allows you to include a user who belongs to your
-    organisation into this RUCKUS AI account.
-    {br}
-    {br}
-    In all cases, please note that the invitee needs to have an existing
-    Ruckus Support account.`
   }),
   'editUser': defineMessage({ defaultMessage: 'Edit User' }),
   'save': defineMessage({ defaultMessage: 'Save' }),
@@ -76,7 +64,7 @@ export const messages = {
 const Users = () => {
   const { $t } = useIntl()
   const [openDrawer, setOpenDrawer] = useState(false)
-  const [drawerType, setDrawerType] = useState<UserType>('edit')
+  const [drawerType, setDrawerType] = useState<DrawerType>('edit')
   const [selectedRow, setSelectedRow] = useState<ManagedUser | null>(null)
   const [retrieveUserDetails, setRetrieveUserDetails] = useState(false)
   const [deleteUser, setDeleteUser] = useState({ deleteUser: false, showModal: false })
@@ -146,7 +134,7 @@ const Users = () => {
     items={[{
       key: 'add-internal-user',
       label: <div onClick={()=> {
-        setDrawerType('create')
+        setDrawerType('addInternal')
         setOpenDrawer(!openDrawer)}
       }>
         {$t({ defaultMessage: 'Internal' })}</div>
@@ -166,15 +154,7 @@ const Users = () => {
       isFetching: retrieveUserDetails || deleteUser.deleteUser || usersQuery.isFetching
     }]}>
       <PageHeader
-        title={
-          <>
-            {$t(messages.title, { usersCount })} ({usersCount})
-            <Tooltip.Info
-              data-html
-              title={$t(messages.info, { br: <br/> })}
-            />
-          </>
-        }
+        title={<>{$t(messages.title, { usersCount })} ({usersCount})</>}
         extra={[
           <Dropdown overlay={addMenu} placement={'bottomRight'}>{() =>
             <Button type='primary'>{ $t({ defaultMessage: 'Add User...' }) }</Button>
@@ -187,6 +167,7 @@ const Users = () => {
         setSelectedRow={setSelectedRow}
         getLatestUserDetails={() => setRetrieveUserDetails(true)}
         handleDeleteUser={() => setDeleteUser({ ...deleteUser, showModal: true })}
+        setDrawerType={setDrawerType}
       />
       <UserDrawer
         opened={openDrawer}

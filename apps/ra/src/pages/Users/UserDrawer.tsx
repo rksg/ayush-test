@@ -19,16 +19,16 @@ import { Drawer, Loader, Tooltip, showToast } from '@acx-ui/components'
 import { drawerContentConfig } from './config'
 
 
-export type UserType = 'edit' | 'create' | 'invite3rdParty'
+export type DrawerType = 'edit' | 'addInternal' | 'invite3rdParty'
 type UserDrawerProps = {
   opened: boolean
   selectedRow: ManagedUser | null
-  type: UserType
+  type: DrawerType
   toggleDrawer: CallableFunction
 }
 const drawerTitle = (type: string) : string => {
   switch(type) {
-    case 'create': return 'Add Internal'
+    case 'addInternal': return 'Add Internal'
     case 'invite3rdParty': return 'Invite 3RD Party'
     default: return 'Edit User'
   }
@@ -141,7 +141,7 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
   }
   const isUserDataValid = () => {
     switch(type) {
-      case 'create':
+      case 'addInternal':
         return Boolean(
           updatedUser.id &&
           updatedUser.email &&
@@ -186,7 +186,7 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
     width={400}
   ><Loader states={[{ isLoading: isLoading }]}>
       <Form layout='vertical' form={form}>
-        {drawerContentConfig[type as UserType].map(
+        {drawerContentConfig[type as DrawerType].map(
           ({ labelKey, tooltip, componentProps, component: Cmp, ...props }, index) => (
             <Row key={index} gutter={20}>
               <Col span={24}>

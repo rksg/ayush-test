@@ -91,7 +91,7 @@ describe('User Drawer', () => {
       unwrap: () => Promise.resolve({})
     }))
     render(
-      <Provider><UserDrawer {...props} type='create' /></Provider>,
+      <Provider><UserDrawer {...props} type='addInternal' /></Provider>,
       { route: {} }
     )
     expect(await screen.findByText('Add Internal')).toBeVisible()
@@ -127,7 +127,7 @@ describe('User Drawer', () => {
       unwrap: () => Promise.reject({ data: 'error' })
     }))
     render(
-      <Provider><UserDrawer {...props} type='create' /></Provider>,
+      <Provider><UserDrawer {...props} type='addInternal' /></Provider>,
       { route: {} }
     )
     expect(await screen.findByText('Add Internal')).toBeVisible()
