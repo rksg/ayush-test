@@ -31,7 +31,7 @@ export const FieldLabelPermission = styled.div<{ width: string }>`
 export const FieldLabelAttributes = styled.div<{ width: string }>`
   font-size: var(--acx-body-4-font-size);
   display: grid;
-  grid-template-columns: 420px 48px 48px 48px 48px 48px;
+  grid-template-columns: 320px 320px 48px 48px 48px 48px;
   align-items: baseline;
   padding: 10px;
   margin: 2px;
