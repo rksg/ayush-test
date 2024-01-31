@@ -325,11 +325,12 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
     <Descriptions>
       <Descriptions.Item
         label={$t({ defaultMessage: 'Status' })}
-        children={renderStatus(guestDetail)} />
+        children={<Space data-testid='guest-status'>{renderStatus(guestDetail)}</Space>} />
     </Descriptions>
 
     {guestDetail.clients &&
       <Table
+        rowKey='clientMac'
         columns={columns}
         dataSource={guestDetail.clients}
       />}

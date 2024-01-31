@@ -171,3 +171,5 @@ export const PERMISSION_MANAGE_LABEL = 'manage-label'
 export const PERMISSION_MANAGE_TENANT_SETTINGS = 'manage-tenant-settings'
 
 export const PERMISSION_FRANCHISOR = 'franchisor'
+
+export const roles = ['admin', 'network-admin', 'report-only']
