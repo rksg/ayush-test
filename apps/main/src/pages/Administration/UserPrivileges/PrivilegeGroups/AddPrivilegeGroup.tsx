@@ -12,8 +12,11 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
+import { PriviliegeGroup } from '@acx-ui/rc/utils'
 import {
+  useLocation,
   useNavigate,
+  useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
 
@@ -23,14 +26,22 @@ export function AddPrivilegeGroup () {
   const intl = useIntl()
 
   const navigate = useNavigate()
+  const { action } = useParams()
+  const location = useLocation().state as PriviliegeGroup
   const linkToPrivilegeGroups = useTenantLink('/administration/userPrivileges/privilegeGroups', 't')
   const [form] = Form.useForm()
+
+  const isEditMode = action === 'view' || action === 'edit'
 
   const handleAddPrivilegeGroup = async () => {
     // try {
     //   const ecFormData = { ...values }
-
     // }
+  }
+
+  if (isEditMode || action === 'clone') {
+    form.setFieldValue('name', location?.name)
+    form.setFieldValue('description', location?.description)
   }
 
   const PrivilegeGroupForm = () => {

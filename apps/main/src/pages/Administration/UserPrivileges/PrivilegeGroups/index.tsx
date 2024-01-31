@@ -1,5 +1,7 @@
 // import { useState } from 'react'
 
+import { useEffect, useState } from 'react'
+
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -19,7 +21,7 @@ import { useTenantLink }                          from '@acx-ui/react-router-dom
 import { filterByAccess, useUserProfileContext }  from '@acx-ui/user'
 import { AccountType }                            from '@acx-ui/utils'
 
-// import { fakedPriviliegeGroupList } from '../__tests__/fixtures'
+import { fakedPriviliegeGroupList } from '../__tests__/fixtures'
 
 interface PrivilegeGroupsTableProps {
   isPrimeAdminUser: boolean;
@@ -31,9 +33,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
   const { isPrimeAdminUser, tenantType } = props
   const params = useParams()
   const navigate = useNavigate()
-  //   const [showDialog, setShowDialog] = useState(false)
-  //   const [editMode, setEditMode] = useState(false)
-  //   const [editData, setEditData] = useState<AdminGroup>({} as AdminGroup)
+  const [priviliegeGroupData, setPriviliegeGroupData] = useState([] as PriviliegeGroup[])
   const { data: userProfileData } = useUserProfileContext()
 
   const { data: priviliegeGroupList, isLoading, isFetching }
@@ -43,6 +43,14 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
     = useDeletePrivilegeGroupMutation()
   const linkAddPriviledgePath =
     useTenantLink('/administration/userPrivileges/privilegeGroups', 't')
+
+  useEffect(() => {
+    if (priviliegeGroupList) {
+      const priviliegeGroup =
+        priviliegeGroupList.length > 0 ? priviliegeGroupList : fakedPriviliegeGroupList
+      setPriviliegeGroupData(priviliegeGroup as PriviliegeGroup[])
+    }
+  }, [priviliegeGroupList])
 
   const handleClickAdd = () => {
     navigate({
@@ -98,7 +106,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
         navigate({
           ...linkAddPriviledgePath,
           pathname: `${linkAddPriviledgePath.pathname}/view/${selectedRows[0].id}`
-        })
+        }, { state: selectedRows[0] })
       }
     },
     {
@@ -113,7 +121,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
         navigate({
           ...linkAddPriviledgePath,
           pathname: `${linkAddPriviledgePath.pathname}/edit/${selectedRows[0].id}`
-        })
+        }, { state: selectedRows[0] })
       }
     },
     {
@@ -125,7 +133,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
         navigate({
           ...linkAddPriviledgePath,
           pathname: `${linkAddPriviledgePath.pathname}/clone/${selectedRows[0].id}`
-        })
+        }, { state: selectedRows[0] })
       }
     },
     {
@@ -168,8 +176,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
     ]}>
       <Table
         columns={columns}
-        // dataSource={fakedPriviliegeGroupList as PriviliegeGroup[]}
-        dataSource={priviliegeGroupList}
+        dataSource={priviliegeGroupData}
         rowKey='id'
         rowActions={isPrimeAdminUser
           ? filterByAccess(rowActions)

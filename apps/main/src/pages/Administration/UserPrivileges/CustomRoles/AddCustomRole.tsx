@@ -12,8 +12,9 @@ import {
   StepsForm,
   Subtitle
 } from '@acx-ui/components'
-import { getRoles } from '@acx-ui/rc/utils'
+import { CustomRole, getRoles } from '@acx-ui/rc/utils'
 import {
+  useLocation,
   useNavigate,
   useParams,
   useTenantLink
@@ -26,6 +27,8 @@ export function AddCustomRole () {
   const intl = useIntl()
   const navigate = useNavigate()
   const { action } = useParams()
+  const location = useLocation().state as CustomRole
+
   const linkToCustomRoles = useTenantLink('/administration/userPrivileges/customRoles', 't')
   const [form] = Form.useForm()
 
@@ -36,9 +39,15 @@ export function AddCustomRole () {
     // }
   }
 
+  if (isEditMode || action === 'clone') {
+    form.setFieldValue('name', location?.name)
+    form.setFieldValue('description', location?.description)
+  }
+
   const CustomRoleForm = () => {
     return <StepsForm
       form={form}
+      editMode={isEditMode}
       onFinish={handleAddRole}
       onCancel={() => navigate(linkToCustomRoles)}
     >

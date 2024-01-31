@@ -1,8 +1,7 @@
-// import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
-
 
 import {
   Loader,
@@ -19,7 +18,7 @@ import { useTenantLink }                         from '@acx-ui/react-router-dom'
 import { filterByAccess, useUserProfileContext } from '@acx-ui/user'
 import { AccountType }                           from '@acx-ui/utils'
 
-// import { fakedCustomRoleList } from '../__tests__/fixtures'
+import { fakedCustomRoleList } from '../__tests__/fixtures'
 
 interface CustomRolesTableProps {
   isPrimeAdminUser: boolean;
@@ -31,15 +30,20 @@ const CustomRoles = (props: CustomRolesTableProps) => {
   const { isPrimeAdminUser, tenantType } = props
   const params = useParams()
   const navigate = useNavigate()
-  //   const [showDialog, setShowDialog] = useState(false)
-  //   const [editMode, setEditMode] = useState(false)
-  //   const [editData, setEditData] = useState<AdminGroup>({} as AdminGroup)
+  const [customRoleData, setCustomRoleData] = useState([] as CustomRole[])
   const { data: userProfileData } = useUserProfileContext()
 
   const { data: roleList, isLoading, isFetching } = useGetCustomRolesQuery({ params })
   const [deleteCustomRole, { isLoading: isDeleteRoleUpdating }] = useDeleteCustomRoleMutation()
   const linkAddCustomRolePath =
     useTenantLink('/administration/userPrivileges/customRoles', 't')
+
+  useEffect(() => {
+    if (roleList) {
+      const roleData = roleList.length > 0 ? roleList : fakedCustomRoleList
+      setCustomRoleData(roleData as CustomRole[])
+    }
+  }, [roleList])
 
   const handleClickAdd = () => {
     navigate({
@@ -78,7 +82,7 @@ const CustomRoles = (props: CustomRolesTableProps) => {
         navigate({
           ...linkAddCustomRolePath,
           pathname: `${linkAddCustomRolePath.pathname}/view/${selectedRows[0].id}`
-        })
+        }, { state: selectedRows[0] })
       }
     },
     {
@@ -93,7 +97,7 @@ const CustomRoles = (props: CustomRolesTableProps) => {
         navigate({
           ...linkAddCustomRolePath,
           pathname: `${linkAddCustomRolePath.pathname}/edit/${selectedRows[0].id}`
-        })
+        }, { state: selectedRows[0] })
       }
     },
     {
@@ -105,7 +109,7 @@ const CustomRoles = (props: CustomRolesTableProps) => {
         navigate({
           ...linkAddCustomRolePath,
           pathname: `${linkAddCustomRolePath.pathname}/clone/${selectedRows[0].id}`
-        })
+        }, { state: selectedRows[0] })
       }
     },
     {
@@ -150,8 +154,7 @@ const CustomRoles = (props: CustomRolesTableProps) => {
     ]}>
       <Table
         columns={columns}
-        // dataSource={fakedCustomRoleList as CustomRole[]}
-        dataSource={roleList}
+        dataSource={customRoleData}
         rowKey='id'
         rowActions={isPrimeAdminUser
           ? filterByAccess(rowActions)

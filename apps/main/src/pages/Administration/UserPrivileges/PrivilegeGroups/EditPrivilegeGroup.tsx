@@ -13,7 +13,9 @@ import {
   StepsForm,
   Tabs
 } from '@acx-ui/components'
+import { PriviliegeGroup } from '@acx-ui/rc/utils'
 import {
+  useLocation,
   useNavigate,
   useParams,
   useTenantLink
@@ -56,22 +58,31 @@ export function EditPrivilegeGroup () {
   const intl = useIntl()
 
   const navigate = useNavigate()
+  const { action } = useParams()
+  const location = useLocation().state as PriviliegeGroup
   //   const { activeTab } = useParams()
   const linkToPrivilegeGroups = useTenantLink('/administration/userPrivileges/privilegeGroups', 't')
   const [form] = Form.useForm()
 
+  const isEditMode = action === 'view' || action === 'edit'
+
   const handleUpdatePrivilegeGroup = async () => {
     // try {
     //   const ecFormData = { ...values }
-
     // }
   }
+
+  form.setFieldValue('name', location.name)
+  form.setFieldValue('description', location?.description)
 
   const PrivilegeGroupForm = () => {
     return <StepsForm
       form={form}
       onFinish={handleUpdatePrivilegeGroup}
       onCancel={() => navigate(linkToPrivilegeGroups)}
+      buttonLabel={{ submit: isEditMode
+        ? intl.$t({ defaultMessage: 'Save' })
+        : intl.$t({ defaultMessage: 'Add' }) }}
     >
       <StepsForm.StepForm>
         <Row gutter={12}>
