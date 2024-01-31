@@ -359,6 +359,7 @@ export function CliStepConfiguration () {
               >
                 <Space>
                   <Button type='link'
+                    data-testid='add-variable-btn'
                     size='small'
                     disabled={variableList?.length >= maxVariableCount}
                     onClick={() => {
