@@ -73,7 +73,6 @@ RUN node ./node_modules/.bin/nx run-many --target=build --projects=main
 
 ###############################################################
 FROM build-base as acx-ui-base-test
-ENV CICD_BUILD=true
 ENV NODE_OPTIONS=--max-old-space-size=10240
 
 # Force dependency with lint & build stages
@@ -84,23 +83,25 @@ FROM acx-ui-base-test as acx-ui-group1-test
 ARG PRECOMMIT
 ARG GIT_COMMIT_BRANCH
 
+ENV NX_RUN_OPTIONS="--coverage --maxWorkers=30% --noStackTrace --bail --e CICD_BUILD=true"
+
 RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
-        node ./node_modules/.bin/nx run rc:test --coverage --maxWorkers=30% --noStackTrace --bail; \
+        node ./node_modules/.bin/nx run rc:test $NX_RUN_OPTIONS; \
     fi
 RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
-        node ./node_modules/.bin/nx run rc-components:test --coverage --maxWorkers=30%  --noStackTrace --bail; \
+        node ./node_modules/.bin/nx run rc-components:test $NX_RUN_OPTIONS; \
     fi
 RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
-        node ./node_modules/.bin/nx run-many --target=test --projects=main,main-components --coverage --maxWorkers=30%  --noStackTrace --bail; \
+        node ./node_modules/.bin/nx run-many --target=test --projects=main,main-components $NX_RUN_OPTIONS; \
     fi
 RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
-        node ./node_modules/.bin/nx run analytics-components:test --coverage --maxWorkers=30%  --noStackTrace --bail; \
+        node ./node_modules/.bin/nx run analytics-components:test $NX_RUN_OPTIONS; \
     fi
 RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
-        node ./node_modules/.bin/nx run-many --target=test --projects=msp,msp-components --coverage --maxWorkers=30%  --noStackTrace --bail; \
+        node ./node_modules/.bin/nx run-many --target=test --projects=msp,msp-components $NX_RUN_OPTIONS; \
     fi
 RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
-        node ./node_modules/.bin/nx run-many --target=test --all --exclude=rc,rc-components,main,analytics-components,msp,msp-components,main-components --coverage --maxWorkers=30%  --noStackTrace --bail; \
+        node ./node_modules/.bin/nx run-many --target=test --all --exclude=rc,rc-components,main,analytics-components,msp,msp-components,main-components $NX_RUN_OPTIONS; \
     fi
 
 RUN mkdir -p /app/coverage
