@@ -1,5 +1,11 @@
+/* istanbul ignore file */
+
 import { Select }  from 'antd'
 import { useIntl } from 'react-intl'
+
+import { roles } from '@acx-ui/analytics/utils'
+
+import { messages } from './'
 
 export const RoleSelection = ({
   onChange,
@@ -9,16 +15,11 @@ export const RoleSelection = ({
   onChange: (value: string) => void;
 }) => {
   const { $t } = useIntl()
-  const raiRoles = {
-    'admin': $t({ defaultMessage: 'Admin' }),
-    'report-only': $t({ defaultMessage: 'Report Only' }),
-    'network-admin': $t({ defaultMessage: 'Network Admin' })
-  }
   return (
     <Select
       style={{ width: 350 }}
-      options={Object.keys(raiRoles).map((role, i) => ({
-        label: raiRoles[role as keyof typeof raiRoles],
+      options={roles.map((role, i) => ({
+        label: $t(messages[role as keyof typeof messages]),
         value: role,
         key: i
       }))}

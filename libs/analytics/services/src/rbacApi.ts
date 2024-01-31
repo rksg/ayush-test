@@ -17,6 +17,15 @@ type SettingRow = {
   key: string
   value: string
 }
+type ResourceGroup = {
+  id: string,
+  tenantId: string,
+  filter: Object
+  name: string
+  isDefault: false,
+  description: string,
+  updatedAt: string
+}
 
 export type AvailableUser = {
   swuId: string
@@ -84,7 +93,8 @@ export const rbacApi = baseRbacApi.injectEndpoints({
       invalidatesTags: [{ type: 'RBAC', id: 'GET_TENANT_SETTINGS' }]
     }),
     updateInvitation: build.mutation<
-       string, { resourceGroupId: string, state: string, userId: string }
+      string,
+      { resourceGroupId: string; state: string; userId: string }
     >({
       query: ({ userId, resourceGroupId, state }) => {
         return {
@@ -96,6 +106,22 @@ export const rbacApi = baseRbacApi.injectEndpoints({
           },
           body: { resourceGroupId, state },
           responseHandler: 'text'
+        }
+      }
+    }),
+    deleteInvitation: build.mutation<
+      string,
+      { resourceGroupId: string; userId: string }
+    >({
+      query: ({ userId, resourceGroupId }) => {
+        return {
+          url: '/invitations',
+          method: 'delete',
+          credentials: 'include',
+          headers: {
+            'x-mlisa-user-id': userId
+          },
+          body: { resourceGroupId, invitedUserId: userId }
         }
       }
     }),
@@ -115,8 +141,7 @@ export const rbacApi = baseRbacApi.injectEndpoints({
       }),
       providesTags: [{ type: 'RBAC', id: 'GET_AVAILABLE_USERS' }]
     }),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    getResourceGroups: build.query<any[], void>({
+    getResourceGroups: build.query<ResourceGroup[], void>({
       query: () => ({
         url: '/resourceGroups',
         method: 'get',
@@ -130,6 +155,9 @@ export const rbacApi = baseRbacApi.injectEndpoints({
           url: `/users/${userId}`,
           method: 'put',
           credentials: 'include',
+          headers: {
+            'x-mlisa-user-id': userId
+          },
           body: { resourceGroupId, role },
           responseHandler: 'text'
         }
@@ -172,9 +200,32 @@ export const rbacApi = baseRbacApi.injectEndpoints({
         }
       },
       invalidatesTags: [
-        { type: 'RBAC', id: 'GET_USERS' },
-        { type: 'RBAC', id: 'GET_AVAILABLE_USERS' }
+        { type: 'RBAC', id: 'GET_USERS' }
       ]
+    }),
+    refreshUserDetails: build.mutation<string, { userId: string }>({
+      query: ({ userId }) => {
+        return {
+          url: `/users/refresh/${userId}`,
+          method: 'put',
+          credentials: 'include',
+          headers: {
+            'x-mlisa-user-id': userId
+          },
+          responseHandler: 'text'
+        }
+      }
+    }),
+    deleteUserResourceGroup: build.mutation<string, { userId: string }>({
+      query: ({ userId }) => {
+        return {
+          url: '/users/resourceGroup',
+          method: 'delete',
+          credentials: 'include',
+          body: { users: [userId] },
+          responseHandler: 'text'
+        }
+      }
     })
   })
 })
@@ -190,7 +241,10 @@ export const {
   useUpdateUserMutation,
   useAddUserMutation,
   useLazyFindUserQuery,
-  useInviteUserMutation
+  useInviteUserMutation,
+  useRefreshUserDetailsMutation,
+  useDeleteUserResourceGroupMutation,
+  useDeleteInvitationMutation
 } = rbacApi
 
 export function useSystems () {

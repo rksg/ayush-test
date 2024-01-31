@@ -144,4 +144,57 @@ describe('RBAC API', () => {
     )
     expect(data).toStrictEqual({ userId: '123' })
   })
+
+  it('fetch resourceGroups api should work', async () => {
+    const mockResponsObj = {
+      id: '7c9ef863-8eba-4045-82d3-7ab662a97afb',
+      tenantId: '0015000000GlI7SAAV',
+      filter: {},
+      name: 'Darshan-FT-Zoom',
+      isDefault: false,
+      description: null,
+      updatedAt: '2021-10-18T10:18:27.931Z'
+    }
+    mockServer.use(
+      rest.get(`${rbacApiURL}/resourceGroups`, (_req, res, ctx) => res(ctx.json([mockResponsObj])))
+    )
+    const { data } = await store.dispatch(
+      rbacApi.endpoints.getResourceGroups.initiate()
+    )
+    expect(data).toStrictEqual([mockResponsObj])
+  })
+  it('refreshUserDetails api should work', async () => {
+    mockServer.use(
+      rest.put(`${rbacApiURL}/users/refresh/1`, (_req, res, ctx) => res(ctx.status(200)))
+    )
+    const { data } = await store.dispatch(
+      rbacApi.endpoints.refreshUserDetails.initiate({
+        userId: '1'
+      })
+    ) as { data: string }
+    expect(data).toEqual('')
+  })
+  it('deleteUserResourceGroup api should work', async () => {
+    mockServer.use(
+      rest.delete(`${rbacApiURL}/users/resourceGroup`, (_req, res, ctx) => res(ctx.status(204)))
+    )
+    const { data } = await store.dispatch(
+      rbacApi.endpoints.deleteUserResourceGroup.initiate({
+        userId: '1'
+      })
+    ) as { data: string }
+    expect(data).toEqual('')
+  })
+  it('deleteInvitation api should work', async () => {
+    mockServer.use(
+      rest.delete(`${rbacApiURL}/invitations`, (_req, res, ctx) => res(ctx.status(204)))
+    )
+    const { data } = await store.dispatch(
+      rbacApi.endpoints.deleteInvitation.initiate({
+        userId: '1',
+        resourceGroupId: 'rg1'
+      })
+    ) as { data: string }
+    expect(data).toEqual(null)
+  })
 })

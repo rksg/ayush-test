@@ -9,15 +9,8 @@ export const Actions = styled(Space)`
 export const IconWrapper = styled.span<{ $disabled?: boolean }>`
   ${(props) =>
     props.$disabled
-      ? `
-      cursor: not-allowed;
-      pointer-events: none;
-      color: var(--acx-neutrals-50);
-    `
-      : `
-      cursor: pointer;
-      color: var(--acx-primary-black);
-    `}
+      ? 'cursor: not-allowed;'
+      : 'cursor: pointer;'}
 `
 export const FormContainer = styled.div`
   display: flex;

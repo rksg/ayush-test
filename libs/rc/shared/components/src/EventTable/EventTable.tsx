@@ -47,6 +47,7 @@ interface EventTableProps {
   eventTypeMap?: Partial<typeof eventTypeMapping>
   columnState?: TableProps<Event>['columnState']
   omitColumns?: string[]
+  showScheduleExport?: boolean
 }
 
 export const EventTable = ({
@@ -56,7 +57,8 @@ export const EventTable = ({
   filterables = true,
   eventTypeMap = eventTypeMapping,
   columnState,
-  omitColumns
+  omitColumns,
+  showScheduleExport = false
 }: EventTableProps) => {
   const { $t } = useIntl()
   const { tenantId } = useParams()
@@ -75,8 +77,19 @@ export const EventTable = ({
     setExportDrawerVisible(true)
   }
 
+  const excludeEventType = [
+    ...(!isEdgeEnabled ? ['EDGE'] : []),
+    ...(!isRogueEventsFilterEnabled ? ['SECURITY'] : [])
+  ]
+
+  const supportedEventTypes =
+    filtersFrom(omit(eventTypeMap, excludeEventType), filterables, 'entity_type')
+
+  const allEventTypes = filtersFrom(typeMapping, true)
+
   const exportCsvImmediately = () => {
-    const filters = get(tableQuery?.payload, 'filters', {}) as { dateFilter: DateRangeFilter }
+    const filters = get(tableQuery?.payload, 'filters', {}) as {
+      dateFilter: DateRangeFilter, entity_type: string[] }
     const eventsPeriodForExport = computeRangeFilter(
       { dateFilter: filters.dateFilter },
       ['from', 'to']
@@ -89,7 +102,11 @@ export const EventTable = ({
       },
       period: eventsPeriodForExport,
       context: {
-        searchString: tableQuery.payload?.searchString as string[],
+        searchString: [tableQuery.payload?.searchString || ''] as string[],
+        event_entity_type_all: (supportedEventTypes && supportedEventTypes?.map(obj => obj['key']))
+        // if no set of required entity_types available then pass all entity_types
+        // this case is when we get Events table in global search result where we dont have event type filter
+         || filters.entity_type || (allEventTypes && allEventTypes?.map(obj => obj['key'])),
         ...omit(tableQuery?.payload?.filters as Filter, ['dateFilter'])
       },
       isSupport: true, // direct export needs to set isSupport true
@@ -126,8 +143,9 @@ export const EventTable = ({
           disabled: !((tableQuery.data?.data ?? []).length > 0),
           tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
           onClick: exportCsvImmediately },
-        { key: 'scheduleExport', label: $t({ defaultMessage: 'Schedule Export' }),
-          onClick: openEventScheduler }
+        (showScheduleExport ?
+          { key: 'scheduleExport', label: $t({ defaultMessage: 'Schedule Export' }),
+            onClick: openEventScheduler } : {})
       ]
     }
   }
@@ -137,11 +155,6 @@ export const EventTable = ({
       tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
       onClick: exportCsv
     }
-
-  const excludeEventType = [
-    ...(!isEdgeEnabled ? ['EDGE'] : []),
-    ...(!isRogueEventsFilterEnabled ? ['SECURITY'] : [])
-  ]
 
   const excludeProduct = [
     ...(!isEdgeEnabled ? ['EDGE'] : [])
@@ -267,7 +280,7 @@ export const EventTable = ({
       onClose={() => setVisible(false)}
       data={getDrawerData(current!)}
     />}
-    {isExportEventsEnabled && exportDrawerVisible
+    {showScheduleExport && isExportEventsEnabled && exportDrawerVisible
       && <ScheduleExportDrawer
         title={defineMessage({ defaultMessage: 'Schedule Event Export' })}
         visible={exportDrawerVisible}
