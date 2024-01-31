@@ -10,7 +10,7 @@ import { fireEvent, render, screen,within }  from '@acx-ui/test-utils'
 
 import WiFi7, {
   disabledUnCheckOption,
-  enableAllRadioCheckboxes,
+  enableAllRadioCheckboxes, getIsOwe,
   getInitMloOptions,
   inverseTargetValue,
   isEnableOptionOf6GHz
@@ -498,5 +498,38 @@ describe('test getUpdatedStateOfOptionsOnChange func', () => {
     ]
     const actual = inverseTargetValue(target, options)
     expect(actual).toEqual(expected)
+  })
+})
+
+describe('test getIsOwe func', () => {
+  it('should return true when enableOwe is true', function () {
+    const mockWlanData = {
+      name: 'test',
+      enableOwe: true
+    } as NetworkSaveData
+
+    const actual = getIsOwe(mockWlanData)
+    expect(actual).toBe(true)
+  })
+
+  it('should return false when enableOwe is false', function () {
+    const mockWlanData = {
+      name: 'test',
+      enableOwe: false
+    } as NetworkSaveData
+
+    const actual = getIsOwe(mockWlanData)
+    expect(actual).toBe(false)
+  })
+
+  it('should return true when enableOwe is undefined and wlanSecurity is OWE', function () {
+    const mockWlanData = {
+      name: 'test',
+      enableOwe: undefined,
+      networkSecurity: WlanSecurityEnum.OWE
+    } as NetworkSaveData
+
+    const actual = getIsOwe(mockWlanData)
+    expect(actual).toBe(true)
   })
 })
