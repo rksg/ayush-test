@@ -241,10 +241,6 @@ export function NetworkForm (props:{
           ...data
         }
         let settingCaptiveSaveData = tranferSettingsToSave(settingCaptiveData, editMode)
-        if (!editMode) {
-          // eslint-disable-next-line max-len
-          settingCaptiveSaveData = transferMoreSettingsToSave(data, settingCaptiveSaveData, networkVxLanTunnelProfileInfo)
-        }
         updateSaveData(settingCaptiveSaveData)
       }
     }
@@ -257,7 +253,12 @@ export function NetworkForm (props:{
     if(saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.Cloudpath){
       delete data.guestPortal.wisprPage
     }
-    const dataMore = handleGuestMoreSetting(data)
+    let dataMore = handleGuestMoreSetting(data)
+
+    if (!editMode) {
+      // eslint-disable-next-line max-len
+      dataMore = transferMoreSettingsToSave(dataMore, saveState, networkVxLanTunnelProfileInfo)
+    }
     handlePortalWebPage(dataMore)
     return true
   }
