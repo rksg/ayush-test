@@ -562,7 +562,7 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         name='description'
         label={$t({ defaultMessage: 'Description' })}
         rules={[
-          { max: 255 }
+          { max: 64 }
         ]}
         children={<TextArea disabled={isViewMode()} />}
       />
