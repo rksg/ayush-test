@@ -17,6 +17,15 @@ type SettingRow = {
   key: string
   value: string
 }
+type ResourceGroup = {
+  id: string,
+  tenantId: string,
+  filter: Object
+  name: string
+  isDefault: false,
+  description: string,
+  updatedAt: string
+}
 
 export const getDefaultSettings = (): Partial<Settings> => ({
   'brand-ssid-compliance-matcher': '^[a-zA-Z0-9]{5}_GUEST$',
@@ -63,7 +72,8 @@ export const rbacApi = baseRbacApi.injectEndpoints({
       invalidatesTags: [{ type: 'RBAC', id: 'GET_TENANT_SETTINGS' }]
     }),
     updateInvitation: build.mutation<
-       string, { resourceGroupId: string, state: string, userId: string }
+      string,
+      { resourceGroupId: string; state: string; userId: string }
     >({
       query: ({ userId, resourceGroupId, state }) => {
         return {
@@ -78,6 +88,22 @@ export const rbacApi = baseRbacApi.injectEndpoints({
         }
       }
     }),
+    deleteInvitation: build.mutation<
+      string,
+      { resourceGroupId: string; userId: string }
+    >({
+      query: ({ userId, resourceGroupId }) => {
+        return {
+          url: '/invitations',
+          method: 'delete',
+          credentials: 'include',
+          headers: {
+            'x-mlisa-user-id': userId
+          },
+          body: { resourceGroupId, invitedUserId: userId }
+        }
+      }
+    }),
     getUsers: build.query<ManagedUser[], void>({
       query: () => ({
         url: '/users',
@@ -85,6 +111,56 @@ export const rbacApi = baseRbacApi.injectEndpoints({
         credentials: 'include'
       }),
       providesTags: [{ type: 'RBAC', id: 'GET_USERS' }]
+    }),
+    getResourceGroups: build.query<ResourceGroup[], void>({
+      query: () => ({
+        url: '/resourceGroups',
+        method: 'get',
+        credentials: 'include'
+      }),
+      providesTags: [{ type: 'RBAC', id: 'GET_RESOURCE_GROUPS' }]
+    }),
+    updateUserRoleAndResourceGroup: build.mutation<
+      string,
+      { resourceGroupId: string; role: string; userId: string }
+    >({
+      query: ({ userId, resourceGroupId, role }) => {
+        return {
+          url: `/users/${userId}`,
+          method: 'put',
+          credentials: 'include',
+          headers: {
+            'x-mlisa-user-id': userId
+          },
+          body: { resourceGroupId, role },
+          responseHandler: 'text'
+        }
+      },
+      invalidatesTags: [{ type: 'RBAC', id: 'GET_USERS' }]
+    }),
+    refreshUserDetails: build.mutation<string, { userId: string }>({
+      query: ({ userId }) => {
+        return {
+          url: `/users/refresh/${userId}`,
+          method: 'put',
+          credentials: 'include',
+          headers: {
+            'x-mlisa-user-id': userId
+          },
+          responseHandler: 'text'
+        }
+      }
+    }),
+    deleteUserResourceGroup: build.mutation<string, { userId: string }>({
+      query: ({ userId }) => {
+        return {
+          url: '/users/resourceGroup',
+          method: 'delete',
+          credentials: 'include',
+          body: { users: [userId] },
+          responseHandler: 'text'
+        }
+      }
     })
   })
 })
@@ -94,7 +170,12 @@ export const {
   useGetTenantSettingsQuery,
   useUpdateTenantSettingsMutation,
   useUpdateInvitationMutation,
-  useGetUsersQuery
+  useGetUsersQuery,
+  useGetResourceGroupsQuery,
+  useUpdateUserRoleAndResourceGroupMutation,
+  useRefreshUserDetailsMutation,
+  useDeleteUserResourceGroupMutation,
+  useDeleteInvitationMutation
 } = rbacApi
 
 export function useSystems () {
