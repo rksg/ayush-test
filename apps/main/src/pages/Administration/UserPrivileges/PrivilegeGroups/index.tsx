@@ -1,7 +1,7 @@
 // import { useState } from 'react'
 
-import { useIntl }     from 'react-intl'
-import { useNavigate } from 'react-router-dom'
+import { useIntl }                from 'react-intl'
+import { useNavigate, useParams } from 'react-router-dom'
 
 
 import {
@@ -10,17 +10,16 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-// import {
-//   useGetAdminGroupsQuery,
-//   useDeleteAdminGroupsMutation
-//   useUpdateAdminGroupsMutation
-// } from '@acx-ui/rc/services'
+import {
+  useGetPrivilegeGroupsQuery,
+  useDeletePrivilegeGroupMutation
+} from '@acx-ui/rc/services'
 import { sortProp, defaultSort, PriviliegeGroup } from '@acx-ui/rc/utils'
 import { useTenantLink }                          from '@acx-ui/react-router-dom'
 import { filterByAccess, useUserProfileContext }  from '@acx-ui/user'
 import { AccountType }                            from '@acx-ui/utils'
 
-import { fakedPriviliegeGroupList } from '../__tests__/fixtures'
+// import { fakedPriviliegeGroupList } from '../__tests__/fixtures'
 
 interface PrivilegeGroupsTableProps {
   isPrimeAdminUser: boolean;
@@ -30,17 +29,18 @@ interface PrivilegeGroupsTableProps {
 const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
   const { $t } = useIntl()
   const { isPrimeAdminUser, tenantType } = props
-  // const params = useParams()
+  const params = useParams()
   const navigate = useNavigate()
   //   const [showDialog, setShowDialog] = useState(false)
   //   const [editMode, setEditMode] = useState(false)
   //   const [editData, setEditData] = useState<AdminGroup>({} as AdminGroup)
   const { data: userProfileData } = useUserProfileContext()
 
-  // const { data: adminList, isLoading, isFetching } = useGetAdminGroupsQuery({ params })
+  const { data: priviliegeGroupList, isLoading, isFetching }
+    = useGetPrivilegeGroupsQuery({ params })
 
-  // const [deleteAdminGroup, { isLoading: isDeleteAdminUpdating }] = useDeleteAdminGroupsMutation()
-  //   const [updateAdminGroup] = useUpdateAdminGroupsMutation()
+  const [deletePriviliegeGroup, { isLoading: isDeletePriviliegeGroupUpdating }]
+    = useDeletePrivilegeGroupMutation()
   const linkAddPriviledgePath =
     useTenantLink('/administration/userPrivileges/privilegeGroups', 't')
 
@@ -90,14 +90,22 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
 
   const rowActions: TableProps<PriviliegeGroup>['rowActions'] = [
     {
-      visible: (selectedRows) => {
-        if (selectedRows.length === 1) {
-          return true
-        } else {
-          return false
-        }
-      },
       label: $t({ defaultMessage: 'View' }),
+      visible: (selectedRows) => {
+        return selectedRows.length === 1
+      },
+      onClick: (selectedRows) => {
+        navigate({
+          ...linkAddPriviledgePath,
+          pathname: `${linkAddPriviledgePath.pathname}/view/${selectedRows[0].id}`
+        })
+      }
+    },
+    {
+      label: $t({ defaultMessage: 'Edit' }),
+      visible: (selectedRows) => {
+        return (selectedRows.length === 1 && selectedRows[0].type !== 'System')
+      },
       onClick: (selectedRows) => {
         // show edit dialog
         // setEditData(selectedRows[0])
@@ -109,7 +117,22 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
       }
     },
     {
+      label: $t({ defaultMessage: 'Clone' }),
+      visible: (selectedRows) => {
+        return selectedRows.length === 1
+      },
+      onClick: (selectedRows) => {
+        navigate({
+          ...linkAddPriviledgePath,
+          pathname: `${linkAddPriviledgePath.pathname}/clone/${selectedRows[0].id}`
+        })
+      }
+    },
+    {
       label: $t({ defaultMessage: 'Delete' }),
+      visible: (selectedRows) => {
+        return (selectedRows.length === 1 && selectedRows[0].type !== 'System')
+      },
       onClick: (rows, clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -117,14 +140,12 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
             action: 'DELETE',
             entityName: $t({ defaultMessage: 'Group' }),
             entityValue: rows.length === 1
-              ? rows[0].name
-              : undefined,
+              ? rows[0].name : undefined,
             numOfEntities: rows.length
           },
           onOk: () => {
-            // deleteAdminGroup({ params, payload: rows.map(item => item.id) })
-            //   .then(clearSelection)
-            clearSelection()
+            deletePriviliegeGroup({ params, payload: rows.map(item => item.id) })
+              .then(clearSelection)
           }
         })
       }
@@ -141,13 +162,14 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
 
   return (
     <Loader states={[
-      { isLoading: !userProfileData
-        // isFetching: isFetching || isDeleteAdminUpdating
+      { isLoading: isLoading || !userProfileData,
+        isFetching: isFetching || isDeletePriviliegeGroupUpdating
       }
     ]}>
       <Table
         columns={columns}
-        dataSource={fakedPriviliegeGroupList as PriviliegeGroup[]}
+        // dataSource={fakedPriviliegeGroupList as PriviliegeGroup[]}
+        dataSource={priviliegeGroupList}
         rowKey='id'
         rowActions={isPrimeAdminUser
           ? filterByAccess(rowActions)

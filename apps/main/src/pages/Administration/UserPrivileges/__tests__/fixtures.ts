@@ -333,7 +333,7 @@ export const fakedPriviliegeGroupList = [
       frameworkRO: false
     },
     scope: 'All Customers',
-    type: 'system',
+    type: 'System',
     members: 3
   },
   {
@@ -353,7 +353,7 @@ export const fakedPriviliegeGroupList = [
       frameworkRO: false
     },
     scope: 'All Customers',
-    type: 'system',
+    type: 'System',
     members: 2
   }
 ]

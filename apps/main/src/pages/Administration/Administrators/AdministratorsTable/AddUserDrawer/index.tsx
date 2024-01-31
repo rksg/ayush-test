@@ -7,6 +7,7 @@ import {
 import { useIntl } from 'react-intl'
 
 import { Drawer, Select, showActionModal, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import {
   useAddAdminMutation,
   useGetTenantAuthenticationsQuery
@@ -59,6 +60,7 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
   const [isSsoConfigured, setSsoConfigured] = useState(false)
   const [selectedAuth, setSelectedAuth] = useState('')
   const [authenticationData, setAuthenticationData] = useState<TenantAuthentications>()
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
 
   const tenantAuthenticationData =
     useGetTenantAuthenticationsQuery({ params })
@@ -236,19 +238,33 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
             </Form.Item>
           </div>}
 
-        <Form.Item
-          name='role'
-          style={{ marginTop: '13px' }}
-          label={$t({ defaultMessage: 'Privilege Group' })}
-          rules={[
-            { required: true }
-          ]}
-        >
-          <Select
-            options={rolesList}
-            placeholder={$t({ defaultMessage: 'Select...' })}
-          />
-        </Form.Item>
+        {isAbacToggleEnabled
+          ? <Form.Item
+            name='role'
+            style={{ marginTop: '13px' }}
+            label={$t({ defaultMessage: 'Privilege Group' })}
+            rules={[
+              { required: true }
+            ]}
+          >
+            <Select
+              options={rolesList}
+              placeholder={$t({ defaultMessage: 'Select...' })}
+            />
+          </Form.Item>
+          : <Form.Item
+            name='role'
+            style={{ marginTop: '13px' }}
+            label={$t({ defaultMessage: 'Role' })}
+            rules={[
+              { required: true }
+            ]}
+          >
+            <Select
+              options={rolesList}
+              placeholder={$t({ defaultMessage: 'Select...' })}
+            />
+          </Form.Item> }
 
         { isOnboardedMsp === true && <MspCustomerSelector /> }
       </Form>

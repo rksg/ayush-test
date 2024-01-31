@@ -241,5 +241,40 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/events/adminGroups/:adminGroupId/latestLogins',
     newApi: true
+  },
+  getCustomRoles: {
+    method: 'get',
+    url: '/roleAuthentications/customRoles',
+    newApi: true
+  },
+  addCustomRole: {
+    method: 'post',
+    url: '/roleAuthentications/customRoles',
+    newApi: true
+  },
+  updateCustomRole: {
+    method: 'put',
+    url: '/roleAuthentications/customRoles/:customRoleId',
+    newApi: true
+  },
+  getPrivilegeGroups: {
+    method: 'get',
+    url: '/roleAuthentications/privilegeGroups',
+    newApi: true
+  },
+  addPrivilegeGroup: {
+    method: 'post',
+    url: '/roleAuthentications/privilegeGroups',
+    newApi: true
+  },
+  updatePrivilegeGroup: {
+    method: 'put',
+    url: '/roleAuthentications/privilegeGroups/:privilegeGroupId',
+    newApi: true
+  },
+  deletePrivilegeGroup: {
+    method: 'delete',
+    url: '/roleAuthentications/privilegeGroups/:privilegeGroupId',
+    newApi: true
   }
 }

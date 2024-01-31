@@ -14,6 +14,7 @@ import {
 } from '@acx-ui/components'
 import {
   useNavigate,
+  useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
 
@@ -21,6 +22,7 @@ import * as UI from '../styledComponents'
 
 export function AddCustomRole () {
   const intl = useIntl()
+  const { action } = useParams()
 
   const navigate = useNavigate()
   const linkToCustomRoles = useTenantLink('/administration/userPrivileges/customRoles', 't')
@@ -200,7 +202,7 @@ export function AddCustomRole () {
             <Descriptions labelWidthPercent={15}>
               <Descriptions.Item
                 label={intl.$t({ defaultMessage: 'Wi-Fi' })}
-                labelStyle={{ fontWeight: 800 }}
+                labelStyle={{ fontWeight: 800, overflow: 'hidden', width: '200' }}
                 children={'Create, Update, Delete, Read'} />
 
               <Descriptions.Item
@@ -243,7 +245,10 @@ export function AddCustomRole () {
 
   return (<>
     <PageHeader
-      title={intl.$t({ defaultMessage: 'Add Admin Roles' })}
+      title={(action === 'edit' || action === 'view')
+        ? intl.$t({ defaultMessage: 'Edit Admin Role' })
+        : intl.$t({ defaultMessage: 'Add Admin Role' })
+      }
       breadcrumb={[
         { text: intl.$t({ defaultMessage: 'Administration' }) },
         { text: intl.$t({ defaultMessage: 'Users & Privileges' }) },
