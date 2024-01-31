@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { useIsSplitOn }                                       from '@acx-ui/feature-toggle'
+import { firmwareApi }                                        from '@acx-ui/rc/services'
 import {
   FirmwareUrlsInfo, SigPackUrlsInfo, SwitchFirmwareFixtures
 } from '@acx-ui/rc/utils'
@@ -23,7 +24,6 @@ import {
 } from './__tests__/fixtures'
 
 import FWVersionMgmt from '.'
-import { firmwareApi } from '@acx-ui/rc/services'
 
 const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
 const mockedUsedNavigate = jest.fn()
