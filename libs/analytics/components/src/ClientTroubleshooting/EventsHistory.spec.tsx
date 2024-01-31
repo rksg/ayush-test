@@ -120,7 +120,7 @@ describe('EventsHistory', () => {
     expect(screen.getByText('11/14/2022 06:33:31')).toBeVisible()
     expect(screen.getByText('Connection (Time To Connect)')).toBeVisible()
     expect(screen.queryByRole('link')).toBeValid()
-    expect(screen.getAllByTestId('DownloadOutlined')).toHaveLength(4)
+    expect(screen.getAllByTestId('DownloadOutlined')).toHaveLength(6)
   })
   it('should render with data and filters', async () => {
     const data = {
@@ -245,9 +245,9 @@ describe('EventsHistory', () => {
     const firstEvent = events[0]
     // eslint-disable-next-line testing-library/no-unnecessary-act
     act(() => { fireEvent.click(firstEvent) })
-    expect(onPanelCallback).toBeCalledTimes(5)
+    expect(onPanelCallback).toBeCalledTimes(7)
     expect(onClick).toBeCalledTimes(1)
-    expect(scrollIntoView).toBeCalledTimes(4)
+    expect(scrollIntoView).toBeCalledTimes(6)
     HTMLElement.prototype.scrollIntoView = ogView
   })
   it('should hide link when role is READ_ONLY', async () => {
