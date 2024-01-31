@@ -98,10 +98,11 @@ describe('NetworkSegmentationList', () => {
       })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
-    const row = await screen.findAllByRole('row', { name: /nsg/i })
-    expect(row.length).toBe(2)
-    await screen.findByRole('row', { name: 'nsg1 MockVenue1 SmartEdge1 1 0 Poor No' })
-    await screen.findByRole('row', { name: 'nsg2 1 0 Unknown No' })
+    const rows = await screen.findAllByRole('row', { name: /nsg/i })
+    expect(rows.length).toBe(2)
+
+    expect(rows[0]).toHaveTextContent(/sg1\s*MockVenue1\s*SmartEdge1\s*1\s*0\s*Poor\s*No/)
+    expect(rows[1]).toHaveTextContent(/nsg2\s*1\s*0\s*Unknown\s*No/)
   })
 
 

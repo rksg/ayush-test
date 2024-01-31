@@ -132,6 +132,7 @@ export type EventExportSchedule = {
     product?: [typeof eventProductMapping],
     severity?: [typeof eventSeverityMapping],
     searchString?: string[] | null // API support string array with only one string.
+    event_entity_type_all?: string[]
   },
   tenantId?: string,
   period?: {
