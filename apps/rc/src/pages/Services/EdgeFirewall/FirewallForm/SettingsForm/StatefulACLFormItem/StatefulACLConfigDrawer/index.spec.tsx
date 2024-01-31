@@ -246,8 +246,10 @@ describe('Stateful ACL config drawer', () => {
       expect(await screen.findByText('Stateful ACL Settings')).toBeVisible()
 
       // check rules
-      const icmpRow = await screen.findByRole('row', { name: /ICMP/ })
-      await click(await within(icmpRow).findByRole('checkbox'))
+      const rows = await screen.findAllByRole('row')
+      expect(within(rows[4]).getByRole('cell', { name: /ICMP/ })).toBeVisible()
+      const icmpRow = rows[4]
+      await click(within(icmpRow).getByRole('checkbox'))
 
       // edit ICMP rule
       await click(await screen.findByRole('button', { name: 'Edit' }))
@@ -342,7 +344,7 @@ describe('Stateful ACL config drawer', () => {
 
       expect(await screen.findByText('Stateful ACL Settings')).toBeVisible()
       const icmpRow = await screen.findByRole('row', { name: /IGMP/ })
-      await click(await within(icmpRow).findByRole('checkbox'))
+      await click(within(icmpRow).getByRole('checkbox'))
 
       // edit ICMP rule
       await click(await screen.findByRole('button', { name: 'Edit' }))

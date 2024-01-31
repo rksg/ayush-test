@@ -92,8 +92,9 @@ describe('Firmware Venues Table', () => {
         route: { params, path: '/:tenantId/t/administration/fwVersionMgmt' }
       })
 
-    const row = await screen.findByRole('row', { name: /My-Venue/i })
-    await userEvent.click(within(row).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[4]).getByRole('cell', { name: /My-Venue/i })).toBeVisible()
+    await userEvent.click(within(rows[4]).getByRole('checkbox'))
 
     const changeButton = await screen.findByRole('button', { name: /Change Update Schedule/i })
     await userEvent.click(changeButton)

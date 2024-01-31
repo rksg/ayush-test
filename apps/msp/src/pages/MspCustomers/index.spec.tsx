@@ -343,8 +343,9 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
-    const row = await screen.findByRole('row', { name: /ec 222/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[2]).getByRole('cell', { name: /ec 222/i })).toBeVisible()
+    fireEvent.click(within(rows[2]).getByRole('checkbox')) //ec 222
 
     const editButton = screen.getByRole('button', { name: 'Edit' })
     fireEvent.click(editButton)
@@ -367,8 +368,9 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
-    const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /ec 111/i })).toBeVisible()
+    fireEvent.click(within(rows[1]).getByRole('checkbox')) //ec 111
 
     const editButton = screen.getByRole('button', { name: 'Edit' })
     fireEvent.click(editButton)
@@ -391,8 +393,9 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
-    const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /ec 111/i })).toBeVisible()
+    fireEvent.click(within(rows[1]).getByRole('checkbox')) //ec 111
 
     const resendInviteButton = screen.getByRole('button', { name: 'Resend Invitation Email' })
     fireEvent.click(resendInviteButton)
@@ -410,8 +413,9 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
-    const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /ec 111/i })).toBeVisible()
+    fireEvent.click(within(rows[1]).getByRole('checkbox')) //ec 111
 
     fireEvent.click(screen.getByRole('button', { name: 'Deactivate' }))
 
@@ -443,8 +447,9 @@ describe('MspCustomers', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
-    const row = await screen.findByRole('row', { name: /ec 333/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[3]).getByRole('cell', { name: /ec 333/i })).toBeVisible()
+    fireEvent.click(within(rows[3]).getByRole('checkbox')) //ec 333
 
     fireEvent.click(screen.getByRole('button', { name: 'Reactivate' }))
 
@@ -478,8 +483,9 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
-    const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /ec 111/i })).toBeVisible()
+    fireEvent.click(within(rows[1]).getByRole('checkbox')) //ec 111
 
     const deleteButton = screen.getByRole('button', { name: 'Delete' })
     fireEvent.click(deleteButton)
@@ -515,10 +521,11 @@ describe('MspCustomers', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
-    const row1 = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row1).getByRole('checkbox'))
-    const row2 = await screen.findByRole('row', { name: /ec 333/i })
-    fireEvent.click(within(row2).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /ec 111/i })).toBeVisible()
+    fireEvent.click(within(rows[1]).getByRole('checkbox')) //ec 111
+    expect(within(rows[3]).getByRole('cell', { name: /ec 333/i })).toBeVisible()
+    fireEvent.click(within(rows[3]).getByRole('checkbox')) //ec 333
 
     expect(screen.getByText('2 selected')).toBeVisible()
     expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
@@ -588,8 +595,8 @@ describe('MspCustomers', () => {
     expect(screen.queryByText('Integrator')).toBeNull()
 
     // Assert MSP Admin Count link works
-    const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('link', { name: '0' }))
+    expect(within(rows[0]).getByRole('cell', { name: /ec 111/i })).toBeVisible()
+    fireEvent.click(within(rows[0]).getByRole('link', { name: '0' }))
 
     expect(screen.getByRole('dialog')).toBeVisible()
     expect(screen.getByText('Manage Tech Partner Administrators')).toBeVisible()
@@ -625,8 +632,8 @@ describe('MspCustomers', () => {
     expect(screen.queryByText('Integrator')).toBeNull()
 
     // Assert MSP Admin Count link works
-    const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('link', { name: '0' }))
+    expect(within(rows[0]).getByRole('cell', { name: /ec 111/i })).toBeVisible()
+    fireEvent.click(within(rows[0]).getByRole('link', { name: '0' }))
 
     expect(screen.getByRole('dialog')).toBeVisible()
     expect(screen.getByText('Manage Tech Partner Administrators')).toBeVisible()
@@ -672,8 +679,9 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
-    const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('link', { name: '1' }))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /ec 111/i })).toBeVisible()
+    fireEvent.click(within(rows[1]).getByRole('link', { name: '1' })) //ec 111
 
     expect(screen.getByRole('dialog')).toBeVisible()
     expect(screen.getByText('Manage MSP Administrators')).toBeVisible()
@@ -692,8 +700,9 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
-    const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('link', { name: '675dc01dc28846c383219b00d2f28f48' }))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /ec 111/i })).toBeVisible()
+    fireEvent.click(within(rows[1]).getByRole('link', { name: '675dc01dc28846c383219b00d2f28f48' })) //ec 111
 
     expect(screen.getByRole('dialog')).toBeVisible()
   })
@@ -711,8 +720,9 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
-    const row = await screen.findByRole('row', { name: /ec 222/i })
-    fireEvent.click(within(row).getByRole('link', { name: '675dc01dc28846c383219b00d2f28f48' }))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[2]).getByRole('cell', { name: /ec 222/i })).toBeVisible()
+    fireEvent.click(within(rows[2]).getByRole('link', { name: '675dc01dc28846c383219b00d2f28f48' })) //ec 222
 
     expect(screen.getByRole('dialog')).toBeVisible()
   })
@@ -730,12 +740,13 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
-    const row1 = await screen.findByRole('row', { name: /ec 111/i })
-    expect(within(row1).queryByRole('link', { name: '675dc01dc28846c383219b00d2f28f48' }))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /ec 111/i })).toBeVisible()
+    expect(within(rows[1]).queryByRole('link', { name: '675dc01dc28846c383219b00d2f28f48' })) //ec 111
       .toBeNull()
 
-    const row2 = await screen.findByRole('row', { name: /ec 222/i })
-    expect(within(row2).queryByRole('link', { name: '675dc01dc28846c383219b00d2f28f48' }))
+    expect(within(rows[2]).getByRole('cell', { name: /ec 222/i })).toBeVisible()
+    expect(within(rows[2]).queryByRole('link', { name: '675dc01dc28846c383219b00d2f28f48' })) //ec 222
       .toBeNull()
   })
   it('should navigate correctly for non-support var user', async () => {
