@@ -8,7 +8,7 @@ export const mockedConfigTemplateList = {
       createdOn: 1690598400000,
       createdBy: 'Author 1',
       ecTenants: ['t1', 't2'],
-      templateType: 'NETWORK',
+      type: 'NETWORK',
       lastModified: 1690598400000,
       lastApplied: 1690598405000
     },
@@ -18,7 +18,7 @@ export const mockedConfigTemplateList = {
       createdOn: 1690598500000,
       createdBy: 'Author 2',
       ecTenants: [],
-      templateType: 'NETWORK',
+      type: 'NETWORK',
       lastModified: 1690598500000,
       lastApplied: 1690598505000
     },

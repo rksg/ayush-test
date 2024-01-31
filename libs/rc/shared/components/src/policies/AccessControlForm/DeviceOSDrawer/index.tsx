@@ -521,7 +521,7 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         name='description'
         label={$t({ defaultMessage: 'Description' })}
         rules={[
-          { max: 255 }
+          { max: 180 }
         ]}
         children={<TextArea disabled={isViewMode()} />}
       />
