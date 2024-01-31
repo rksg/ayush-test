@@ -7,7 +7,7 @@ import {
   PolicyOperation,
   PolicyType
 } from '@acx-ui/rc/utils'
-import {render, screen} from '@acx-ui/test-utils'
+import { render, screen } from '@acx-ui/test-utils'
 
 import {
   ConfigTemplateLink,
@@ -81,7 +81,7 @@ describe('ConfigTemplateLink', () => {
   it('renderConfigTemplateDetailsLink for venue with services activeTab', () => {
     render(
       renderConfigTemplateDetailsLink(ConfigTemplateType.VENUE, 'venue_id', 'venue_name', {
-        [ConfigTemplateType.VENUE]: { "activeTab": 'services' }
+        [ConfigTemplateType.VENUE]: { activeTab: 'services' }
       })
     )
 
