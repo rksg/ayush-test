@@ -123,7 +123,7 @@ export function transformQosPriorityType (type: QosPriorityEnum) {
 export const AFCMaxPowerRender = (model: string, afcInfo?: AFCInfo, apRadioDeploy?: string) => {
 
   // eslint-disable-next-line
-  return (afcInfo?.maxPowerDbm && apRadioDeploy === '2-5-6' || model === 'R770') ? `${afcInfo?.maxPowerDbm} dBm` : '--'
+  return (afcInfo?.maxPowerDbm && apRadioDeploy === '2-5-6' && model === 'R770') ? `${afcInfo?.maxPowerDbm} dBm` : '--'
 }
 
 // eslint-disable-next-line
