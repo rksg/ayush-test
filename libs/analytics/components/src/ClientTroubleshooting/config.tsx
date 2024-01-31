@@ -3,7 +3,8 @@ import { ReactNode } from 'react'
 import { defineMessage } from 'react-intl'
 
 import { ClientEventEnum, categoryOptions, disconnectClientEventsMap } from '@acx-ui/analytics/utils'
-import { NetworkPath }                                                 from '@acx-ui/utils'
+
+import { ConnectionEvent } from './services'
 
 export const SUCCESS = 'success'
 export const SLOW = 'slow'
@@ -64,7 +65,7 @@ export type OnDatazoomEvent = {
   end?: number
 }
 
-export type DisplayEvent = {
+export type DisplayEvent = ConnectionEvent & {
   start: number;
   end: number;
   code: string | null;
@@ -74,14 +75,6 @@ export type DisplayEvent = {
   state: string;
   event: string;
   category: string;
-  path: NetworkPath;
-  timestamp: string,
-  ttc: number | null,
-  failedMsgId: string | null,
-  ssid?: string | null,
-  messageIds?: Array<string>,
-  key?: string,
-  pcapFilename?: string
 }
 
 export type ChartMapping = { key: string; label: string; chartType: string; series: string }

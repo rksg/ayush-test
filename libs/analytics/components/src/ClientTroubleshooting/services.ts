@@ -2,9 +2,7 @@ import { gql } from 'graphql-request'
 
 import { Incident, IncidentsToggleFilter, incidentsToggle  } from '@acx-ui/analytics/utils'
 import { dataApi }                                           from '@acx-ui/store'
-import { DateFilter, NetworkPath, NodeType }                 from '@acx-ui/utils'
-
-export type ConnectionEventNodeType = Exclude<NodeType, 'AP'> | 'ap'
+import { DateFilter, NetworkPath }                           from '@acx-ui/utils'
 
 export type ConnectionEvent = {
   event: string,
@@ -16,7 +14,7 @@ export type ConnectionEvent = {
   failedMsgId: string | null,
   code: string| null,
   apName: string,
-  path: NetworkPath<ConnectionEventNodeType>,
+  path: NetworkPath,
   ssid?: string | null,
   messageIds?: Array<string>,
   key?: string,

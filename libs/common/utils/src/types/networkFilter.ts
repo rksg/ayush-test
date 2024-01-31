@@ -7,11 +7,11 @@ export type NodeType = 'network'
   | 'apGroup'
   | 'switch' | 'AP'
 
-export type PathNode<CustomNodeType = NodeType> = {
-  type: CustomNodeType
+export type PathNode = {
+  type: NodeType
   name: string
 }
-export type NetworkPath<CustomNodeType = NodeType> = PathNode<CustomNodeType>[]
+export type NetworkPath = PathNode[]
 
 // filter sent to data api (xNodes + SSIDs), uses resource group format
 export type FilterNameNode = {
