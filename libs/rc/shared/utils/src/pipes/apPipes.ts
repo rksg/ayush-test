@@ -120,18 +120,20 @@ export function transformQosPriorityType (type: QosPriorityEnum) {
   return transform
 }
 
-export const AFCMaxPowerRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) => {
-  return (afcInfo?.maxPowerDbm && apRadioDeploy === '2-5-6') ? `${afcInfo?.maxPowerDbm} dBm` : '--'
+export const AFCMaxPowerRender = (model: string, afcInfo?: AFCInfo, apRadioDeploy?: string) => {
+
+  // eslint-disable-next-line
+  return (afcInfo?.maxPowerDbm && apRadioDeploy === '2-5-6' || model === 'R770') ? `${afcInfo?.maxPowerDbm} dBm` : '--'
 }
 
 // eslint-disable-next-line
-export const AFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) : { columnText : string, tooltipText?: string} => {
+export const AFCPowerStateRender = (model: string, afcInfo?: AFCInfo, apRadioDeploy?: string) : { columnText : string, tooltipText?: string} => {
 
   const { $t } = useIntl()
 
   const powerMode = afcInfo?.powerMode
 
-  if(!powerMode || apRadioDeploy !== '2-5-6') {
+  if(!powerMode || apRadioDeploy !== '2-5-6' || model !== 'R770') {
     return { columnText: '--', tooltipText: undefined }
   }
 
@@ -222,8 +224,13 @@ export const APPropertiesAFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy
   return (displayList.length === 0) ? '--' : displayList.join(' ')
 }
 
+export const APPropertiesAFCMaxPowerRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) => {
+  // eslint-disable-next-line
+  return (afcInfo?.maxPowerDbm && apRadioDeploy === '2-5-6') ? `${afcInfo?.maxPowerDbm} dBm` : '--'
+}
+
 // eslint-disable-next-line
-export const AFCStatusRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) => {
+export const AFCStatusRender = (model: string, afcInfo?: AFCInfo, apRadioDeploy?: string) => {
 
   const { $t } = useIntl()
 
@@ -231,7 +238,7 @@ export const AFCStatusRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) => {
 
   const displayList = []
 
-  if(!powerMode || apRadioDeploy !== '2-5-6') {
+  if(!powerMode || apRadioDeploy !== '2-5-6' || model !== 'R770') {
     return '--'
   }
 
