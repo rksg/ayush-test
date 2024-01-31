@@ -1,9 +1,9 @@
 /* eslint-disable max-len */
-import { useEffect, useContext, useReducer } from 'react'
+import { useEffect, useState, useContext } from 'react'
 
 import { Form, Space, Switch } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox/Checkbox'
-import _, { get, isUndefined } from 'lodash'
+import { get, isUndefined }    from 'lodash'
 import { useIntl }             from 'react-intl'
 
 
@@ -15,26 +15,12 @@ import { NetworkSaveData, WlanSecurityEnum, MultiLinkOperationOptions, IsNetwork
 import { MLOContext } from '../../../NetworkForm'
 import * as UI        from '../../../NetworkMoreSettings/styledComponents'
 
-const RADIO_COUNT_LIMIT = 2
-
-enum MLOCheckboxAction {
-  Init,
-  UseDefault,
-  Change
-}
-
 interface Option {
   index: number
   name: string
   value: boolean
   label: string
   disabled: boolean
-}
-
-interface MLOState {
-  action: MLOCheckboxAction
-  checkboxOptions: Option[],
-  flipOptionName?: string
 }
 
 interface securityParameters {
@@ -52,7 +38,7 @@ export const getInitMloOptions = (mloOption?: MultiLinkOperationOptions) : Multi
       enable6G: mloOption.enable6G
     } as MultiLinkOperationOptions
   }
-  return new MultiLinkOperationOptions()
+  return getDefaultMloOptions()
 }
 
 export const sortOptions = (options: Option[]) => options.sort((a, b) => a.index - b.index)
@@ -110,143 +96,24 @@ export const enableAllRadioCheckboxes = (options: Option[]) => {
 }
 
 export const handleDisabledOfOptions = (options: Option[]) => {
-  const selectedRadio = options.filter(option => option.value).length
-  return (selectedRadio === RADIO_COUNT_LIMIT) ? disabledUnCheckOption(options) : enableAllRadioCheckboxes(options)
+  const MAX_SELECTED_LIMIT = 2
+  const numberOfSelected = options.filter(option => option.value).length
+
+  return (numberOfSelected === MAX_SELECTED_LIMIT) ?
+    disabledUnCheckOption(options) : enableAllRadioCheckboxes(options)
 }
 
-const flipCheckboxOptionsValue = (incomingState: MLOState): MLOState => {
-  const flipOptions = incomingState.checkboxOptions.map((option) => {
-    if(incomingState.flipOptionName && incomingState.flipOptionName === option.name) {
-      // Flip the value
-      return { ...option, value: !option.value }
-    }
-    // return origin option if no change
-    return option
-  })
-
-  const cloneState = _.cloneDeep(incomingState)
-  _.set(cloneState, ['checkboxOptions'], flipOptions)
-
-  return cloneState
-}
-
-const setOptionsAvailability = (incomingState: MLOState): MLOState => {
-  // find all selected checkbox
-  const selectedOptionsCount = incomingState.checkboxOptions.filter((opt) => opt.value === true).length
-  const cloneState = _.cloneDeep(incomingState)
-  // if it didn't reach the limit, all checkbox should be enable
-  if (selectedOptionsCount < RADIO_COUNT_LIMIT) {
-    cloneState.checkboxOptions = cloneState.checkboxOptions.map((option) => { return { ...option, disabled: false }})
-  }
-  // if it reach the limit, only "unselected" checkbox will be disabled.
-  else {
-    cloneState.checkboxOptions = cloneState.checkboxOptions.map((option) => {
-      // disable the unselected checkbox
-      if (!option.value) {
-        return { ...option, disabled: true }
-      }
-      // the rest keep the same
-      return option
-    })
-  }
-  console.log(cloneState)
-  return cloneState
-}
-
-const setOptionsValueFromSaveData = (wlanData: NetworkSaveData | null, incomingState: MLOState) : MLOState => {
-
-  // Null-Check Guard
-  if (wlanData === null) return incomingState
-
-  const savedOption = wlanData?.wlan?.advancedCustomization?.multiLinkOperationOptions
-
-  // Undefined-Check Guard
-  if (!savedOption) return incomingState
-
-  // Crosscheck, assign value from saved options
-  if (Object.values(savedOption).filter(value => isUndefined(value)).length === 0){
-    const cloneState = _.cloneDeep(incomingState)
-    _.forIn(savedOption, function (value, key) {
-      cloneState.checkboxOptions.forEach((option) => {
-        if(option.name === key) {
-          _.set(option, 'value', value)
-        }
-      })
-    })
-
-    return cloneState
-  }
-
-  return incomingState
-}
-
-const transformCheckboxOptionsToFormValue = (incomingState: MLOState) => {
-  const optionNames = incomingState.checkboxOptions.map((opt) => opt.name)
-  const optionValues = incomingState.checkboxOptions.map((opt) => opt.value)
-  return _.zipObject(optionNames, optionValues)
-}
-
+export const getDefaultMloOptions = (): MultiLinkOperationOptions => ({
+  enable24G: true,
+  enable50G: true,
+  enable6G: false
+})
 
 const { useWatch } = Form
-
-
 
 const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-
-  const defaultOptions: Option[] = [
-    {
-      index: 0,
-      name: 'enable24G',
-      value: true,
-      label: $t({ defaultMessage: '2.4 GHz' }),
-      disabled: false
-    },
-    {
-      index: 1,
-      name: 'enable50G',
-      value: true,
-      label: $t({ defaultMessage: '5 GHz' }),
-      disabled: false
-    },
-    {
-      index: 2,
-      name: 'enable6G',
-      value: false,
-      label: $t({ defaultMessage: '6 GHz' }),
-      disabled: true
-    }
-  ]
-
-  const initialState: MLOState = {
-    action: MLOCheckboxAction.UseDefault,
-    checkboxOptions: defaultOptions,
-    flipOptionName: ''
-  }
-
-
-  const actionRunner = (currentState: MLOState, incomingState: MLOState) => {
-    switch(incomingState.action) {
-      case MLOCheckboxAction.Init:
-        // setOptions(incomingState.checkboxOptions)
-        return setOptionsAvailability(setOptionsValueFromSaveData(wlanData, incomingState))
-      case MLOCheckboxAction.UseDefault:
-        form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationOptions'], new MultiLinkOperationOptions())
-        return initialState
-      case MLOCheckboxAction.Change:
-        const flipState = setOptionsAvailability(flipCheckboxOptionsValue(incomingState))
-        // setOptions(incomingState.checkboxOptions)
-        form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationOptions'], transformCheckboxOptionsToFormValue(flipState))
-        return flipState
-      default:
-        /* eslint-disable no-console */
-        console.log(`Invalid action:${incomingState}`)
-        return incomingState
-    }
-
-  }
-
 
   const getInitialOptions = (mloOptions: MultiLinkOperationOptions): Option[] => {
     const initOptions: Option[] = [
@@ -277,53 +144,50 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
   }
 
   const dataMloOptions = wlanData?.wlan?.advancedCustomization?.multiLinkOperationOptions
-  // const mloOptions = getInitMloOptions(dataMloOptions)
-  // const initOptions = getInitialOptions(mloOptions)
-  // const [options, setOptions] = useState<Option[]>(initOptions)
+  const mloOptions = getInitMloOptions(dataMloOptions)
+  const initOptions = getInitialOptions(mloOptions)
+  const [options, setOptions] = useState<Option[]>(initOptions)
 
   const wlanSecurity = useWatch(['wlan', 'wlanSecurity']) // for PSK network
   const aaaWlanSecurity = useWatch('wlanSecurity') // for AAA network
   const dpskWlanSecurity = useWatch('dpskWlanSecurity') // for DPSK network
   const wisprWlanSecurity = useWatch('pskProtocol') // for WISPr network
-  const [state, dispatch] = useReducer(actionRunner, initialState)
+
   const isEnabled6GHz = isEnableOptionOf6GHz(wlanData, { wlanSecurity, aaaWlanSecurity, dpskWlanSecurity, wisprWlanSecurity })
 
-  // useEffect(() => {
-  // const updateMloOptions = () => {
-  //   const mloOptions = covertToMultiLinkOperationOptions(options)
-  //   form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationOptions'], mloOptions)
-  // }
+  useEffect(() => {
+    const updateMloOptions = () => {
+      const mloOptions = covertToMultiLinkOperationOptions(options)
+      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationOptions'], mloOptions)
+    }
 
-  // updateMloOptions()
-  // }, [options])
+    updateMloOptions()
+  }, [options])
 
-  // useEffect(() => {
-  //   const resetCheckboxGroup = () => {
-  //     const defaultMloOptions = new MultiLinkOperationOptions()
-  //     form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationOptions'], defaultMloOptions)
+  useEffect(() => {
+    const resetCheckboxGroup = () => {
+      const defaultMloOptions = getDefaultMloOptions()
+      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationOptions'],
+        defaultMloOptions)
 
-  //     // const initOptions = getInitialOptions(defaultMloOptions)
-  //     // const updatedOptions = disabledUnCheckOption(initOptions)
-  //     // setOptions(updatedOptions)
-  //   }
+      const initOptions = getInitialOptions(defaultMloOptions)
+      const updatedOptions = disabledUnCheckOption(initOptions)
+      setOptions(updatedOptions)
+    }
 
-  //   if (!isEnabled6GHz) {
-  //     resetCheckboxGroup()
-  //   }
-  // }, [isEnabled6GHz])
+    if (!isEnabled6GHz) {
+      resetCheckboxGroup()
+    }
+  }, [isEnabled6GHz])
 
   const handleChange = (event: CheckboxChangeEvent) => {
-    // console.log(event)
-    // const targetOption = options.find(option => event.target.name === option.name)
-    // const updatedOptions = targetOption ?
-    //   inverseTargetValue(targetOption, options) : options
-    // const finalOptions = handleDisabledOfOptions(updatedOptions)
-    // setOptions(finalOptions)
-    // // after onChange, validate the value
-    // form.validateFields([['wlan', 'advancedCustomization', 'multiLinkOperationOptions']])
-
-    console.log(event.target.name)
-    dispatch({ ...state, action: MLOCheckboxAction.Change, flipOptionName: event.target.name })
+    const targetOption = options.find(option => event.target.name === option.name)
+    const updatedOptions = targetOption ?
+      inverseTargetValue(targetOption, options) : options
+    const finalOptions = handleDisabledOfOptions(updatedOptions)
+    setOptions(finalOptions)
+    // after onChange, validate the value
+    form.validateFields([['wlan', 'advancedCustomization', 'multiLinkOperationOptions']])
   }
 
   return (
@@ -334,8 +198,9 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
       style={{ marginBottom: '15px', width: '300px' }}
       rules={[
         { validator: () => {
-          const selectedRadios = state.checkboxOptions.filter(option => option.value === true).length
-          if (selectedRadios < RADIO_COUNT_LIMIT) {
+          const minCount = 2
+          const selectedRadios = options.filter(option => option.value === true).length
+          if (selectedRadios < minCount) {
             return Promise.reject($t({ defaultMessage: 'Please select two radios' }))
           }
           return Promise.resolve()}
@@ -343,7 +208,7 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
       ]}
       children={
         <div style={{ display: 'flex' }}>
-          { state.checkboxOptions.map((option, key) => {
+          { sortOptions(options).map((option, key) => {
             if (option.name === 'enable6G' && !isEnabled6GHz) {
               return (
                 <Tooltip
