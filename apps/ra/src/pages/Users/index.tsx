@@ -196,7 +196,7 @@ const Users = () => {
             }
             )
         })
-        .finally(() => setDeleteUser({ showModal: false ,deleteUser: false }))
+        .finally(() => setDeleteUser({ showModal: false, deleteUser: false }))
     }
   },
   // eslint-disable-next-line react-hooks/exhaustive-deps
