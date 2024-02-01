@@ -1,18 +1,16 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { firmwareApi }                                       from '@acx-ui/rc/services'
 import {
   FirmwareUrlsInfo, SwitchFirmwareFixtures, SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
-import {
-  Provider
-} from '@acx-ui/store'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
-
 
 import { VenueFirmwareList } from '..'
 import {
@@ -41,10 +39,10 @@ jest.mock('@acx-ui/rc/services', () => ({
   })
 }))
 
-
 describe('SwitchFirmware - VenueStatusDrawer', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
+    store.dispatch(firmwareApi.util.resetApiState())
     mockServer.use(
       rest.post(
         FirmwareUrlsInfo.getSwitchVenueVersionList.url,
@@ -97,9 +95,10 @@ describe('SwitchFirmware - VenueStatusDrawer', () => {
       })
 
     expect(await screen.findByText('My-Venue')).toBeInTheDocument()
-    await userEvent.click(await screen.findByRole('button', { name: /Check Status/i }))
-    expect(await screen.findByText('Firmware update status')).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: /Check Status/i }))
+
     expect(await screen.findByText('DEV-EZD3317P008')).toBeInTheDocument()
+    expect(screen.getByText('Firmware update status')).toBeInTheDocument()
   })
 
 
@@ -113,9 +112,9 @@ describe('SwitchFirmware - VenueStatusDrawer', () => {
 
     expect(await screen.findByText('My-Venue')).toBeInTheDocument()
     await userEvent.click(await screen.findByRole('button', { name: /Check Status/i }))
-    expect(await screen.findByText('Firmware update status')).toBeInTheDocument()
     expect(await screen.findByText('DEV-EZD3317P008')).toBeInTheDocument()
-    await userEvent.click(await screen.findByRole('button', { name: /Retry/i }))
+    expect(screen.getByText('Firmware update status')).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: /Retry/i }))
     expect(retryRequestSpy).toBeCalledTimes(1)
   })
 })

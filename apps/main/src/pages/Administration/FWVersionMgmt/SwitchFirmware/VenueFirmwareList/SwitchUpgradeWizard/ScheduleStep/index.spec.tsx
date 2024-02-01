@@ -6,15 +6,12 @@ import {
   SwitchFirmware,
   SwitchFirmwareFixtures
 } from '@acx-ui/rc/utils'
-import {
-  Provider
-} from '@acx-ui/store'
+import { Provider } from '@acx-ui/store'
 import {
   render,
   screen,
   within
 } from '@acx-ui/test-utils'
-
 
 import {
   switchVenue,

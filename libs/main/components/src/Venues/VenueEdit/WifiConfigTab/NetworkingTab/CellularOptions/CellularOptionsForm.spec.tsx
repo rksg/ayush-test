@@ -1,7 +1,5 @@
 import '@testing-library/jest-dom'
 
-
-import { Form } from 'antd'
 import { rest } from 'msw'
 
 import { venueApi }                                                                                         from '@acx-ui/rc/services'
@@ -81,9 +79,7 @@ describe('CellularOptionsForm', () => {
 
     render(
       <Provider>
-        <Form>
-          <CellularOptionsForm />
-        </Form>
+        <CellularOptionsForm />
       </Provider>, {
         route: { params }
       })
