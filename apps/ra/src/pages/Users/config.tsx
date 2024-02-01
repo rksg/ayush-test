@@ -156,7 +156,7 @@ export const drawerContentConfig: DrawerContentConfig = {
           onChange: ({ target: { value } } : { target: { value: string } }) => onChange(
             { invitedEmail: value }
           ),
-          placeholder: $t({ defaultMessage: 'Email Id of the invited user' })
+          placeholder: $t({ defaultMessage: 'Email' })
         }
       },
       rules: [{

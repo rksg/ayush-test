@@ -240,14 +240,14 @@ describe('User Drawer', () => {
       <Provider><UserDrawer {...props} type='invite3rdParty' /></Provider>,
       { route: {} }
     )
-    expect(await screen.findByText('Invite 3RD Party')).toBeVisible()
+    expect(await screen.findByText('Invite 3rd Party')).toBeVisible()
     const info = await screen.findByTestId('InformationOutlined')
     fireEvent.mouseOver(info)
     expect(await screen.findByText((content, element) => {
       return element?.tagName.toLowerCase() === 'div'
         && content.startsWith('Invite a 3rd Party user')
     })).toBeInTheDocument()
-    const emailInput = await screen.findByPlaceholderText('Email Id of the invited user')
+    const emailInput = await screen.findByPlaceholderText('Email')
     await(userEvent.type(emailInput, 'dog@email.com'))
     const dropDowns = screen.getAllByRole('combobox')
     await userEvent.click(dropDowns[0]) //RG
@@ -278,14 +278,14 @@ describe('User Drawer', () => {
       <Provider><UserDrawer {...props} type='invite3rdParty' /></Provider>,
       { route: {} }
     )
-    expect(await screen.findByText('Invite 3RD Party')).toBeVisible()
+    expect(await screen.findByText('Invite 3rd Party')).toBeVisible()
     const info = await screen.findByTestId('InformationOutlined')
     fireEvent.mouseOver(info)
     expect(await screen.findByText((content, element) => {
       return element?.tagName.toLowerCase() === 'div'
         && content.startsWith('Invite a 3rd Party user')
     })).toBeInTheDocument()
-    const emailInput = await screen.findByPlaceholderText('Email Id of the invited user')
+    const emailInput = await screen.findByPlaceholderText('Email')
     await(userEvent.type(emailInput, 'dog@email.com'))
     const dropDowns = screen.getAllByRole('combobox')
     await userEvent.click(dropDowns[0]) //RG
@@ -320,14 +320,14 @@ describe('User Drawer', () => {
       <Provider><UserDrawer {...props} type='invite3rdParty' /></Provider>,
       { route: {} }
     )
-    expect(await screen.findByText('Invite 3RD Party')).toBeVisible()
+    expect(await screen.findByText('Invite 3rd Party')).toBeVisible()
     const info = await screen.findByTestId('InformationOutlined')
     fireEvent.mouseOver(info)
     expect(await screen.findByText((content, element) => {
       return element?.tagName.toLowerCase() === 'div'
         && content.startsWith('Invite a 3rd Party user')
     })).toBeInTheDocument()
-    const emailInput = await screen.findByPlaceholderText('Email Id of the invited user')
+    const emailInput = await screen.findByPlaceholderText('Email')
     await(userEvent.type(emailInput, 'dog@email.com'))
     const dropDowns = screen.getAllByRole('combobox')
     await userEvent.click(dropDowns[0]) //RG
@@ -355,14 +355,14 @@ describe('User Drawer', () => {
       <Provider><UserDrawer {...props} type='invite3rdParty' /></Provider>,
       { route: {} }
     )
-    expect(await screen.findByText('Invite 3RD Party')).toBeVisible()
+    expect(await screen.findByText('Invite 3rd Party')).toBeVisible()
     const info = await screen.findByTestId('InformationOutlined')
     fireEvent.mouseOver(info)
     expect(await screen.findByText((content, element) => {
       return element?.tagName.toLowerCase() === 'div'
         && content.startsWith('Invite a 3rd Party user')
     })).toBeInTheDocument()
-    const emailInput = await screen.findByPlaceholderText('Email Id of the invited user')
+    const emailInput = await screen.findByPlaceholderText('Email')
     await(userEvent.type(emailInput, 'ddd')) //invalid email
     const dropDowns = screen.getAllByRole('combobox')
     await userEvent.click(dropDowns[0]) //RG
