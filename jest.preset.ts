@@ -36,5 +36,8 @@ module.exports = {
     '!<rootDir>/src/setupProxy.js',
     '!<rootDir>/src/theme/modify-vars.js'
   ],
-  setupFilesAfterEnv: [`${__dirname}/jest.setup.js`, 'jest-canvas-mock']
+  setupFilesAfterEnv: [
+    process.env.CICD_BUILD ? `${__dirname}/jest.setup.js` : `${__dirname}/jest.build.setup.js`,
+    'jest-canvas-mock'
+  ]
 }
