@@ -12,7 +12,10 @@ export const AvailableUsersSelection = ({
   selectedValue?: string
 }) => {
   const { $t } = useIntl()
-  const availableUsersQuery = useGetAvailableUsersQuery()
+  const availableUsersQuery = useGetAvailableUsersQuery(
+    {} as unknown as void,
+    { refetchOnMountOrArgChange: 60 }
+  )
   return (
     <Loader states={[availableUsersQuery]}>
       <Select

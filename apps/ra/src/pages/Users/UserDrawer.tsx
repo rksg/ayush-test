@@ -29,7 +29,7 @@ type UserDrawerProps = {
 const drawerTitle = (type: string) : string => {
   switch(type) {
     case 'addInternal': return 'Add Internal'
-    case 'invite3rdParty': return 'Invite 3RD Party'
+    case 'invite3rdParty': return 'Invite 3rd Party'
     default: return 'Edit User'
   }
 }
@@ -55,7 +55,7 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
   const cleanUp = () => {
     setIsloading(false)
     setUpdatedUser({})
-    form.resetFields()
+    form.resetFields(['inviteEmail', 'disclaimerCheck'])
     toggleDrawer(false)
   }
   const [findQuery] = useLazyFindUserQuery()

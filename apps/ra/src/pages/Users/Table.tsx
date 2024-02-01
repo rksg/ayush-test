@@ -15,7 +15,7 @@ import * as UI from './styledComponents'
 
 import { messages } from './'
 
-export type DisplayUser = ManagedUser & {
+type DisplayUser = ManagedUser & {
   displayInvitationState: string
   displayInvitor: string
   displayRole: string

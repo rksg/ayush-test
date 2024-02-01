@@ -56,7 +56,7 @@ interface DrawerContentConfig {
 export const drawerContentConfig: DrawerContentConfig = {
   edit: [
     {
-      name: 'email',
+      name: 'editEmail',
       labelKey: defineMessage({ defaultMessage: 'Email' }),
       component: Label,
       componentProps: ({ selectedUser }) => ({ children: selectedUser?.email }),
@@ -95,7 +95,7 @@ export const drawerContentConfig: DrawerContentConfig = {
   ],
   addInternal: [
     {
-      name: 'email',
+      name: 'addEmail',
       labelKey: defineMessage({ defaultMessage: 'Email' }),
       tooltip: defineMessage({ defaultMessage:
         `Add Internal user who belongs to your organisation into this RUCKUS AI account. Please note
@@ -140,7 +140,7 @@ export const drawerContentConfig: DrawerContentConfig = {
   ],
   invite3rdParty: [
     {
-      name: 'email',
+      name: 'inviteEmail',
       labelKey: defineMessage({ defaultMessage: 'Email' }),
       tooltip: defineMessage({ defaultMessage:
         `Invite a 3rd Party user who does not belong to your organisation
