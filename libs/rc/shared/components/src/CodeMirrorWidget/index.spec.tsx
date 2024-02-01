@@ -12,7 +12,7 @@ const mockFromTextArea = jest.fn().mockReturnValue({
   setValue: jest.fn(),
   refresh: jest.fn(),
   focus: jest.fn(),
-  getWrapperElement: () => ({style:{fontSize: '12px'}})
+  getWrapperElement: () => ({ style: { fontSize: '12px' } })
 })
 const mockCodeMirrorMergeViewInit = jest.fn()
 jest.mock('codemirror', () => ({
@@ -94,8 +94,8 @@ describe('CodeMirror Widget', () => {
     }
     const cliCodeMirrorEl = React.createRef()
     render(<Provider>
-      <CodeMirrorWidget 
-        type='cli' 
+      <CodeMirrorWidget
+        type='cli'
         containerId='previewContainerId'
         skipDecode={true}
         ref={cliCodeMirrorEl}
@@ -104,7 +104,7 @@ describe('CodeMirror Widget', () => {
           configOptions: {
             readOnly: true
           }
-        }} 
+        }}
       />
     </Provider>,
     { route: { params } })
