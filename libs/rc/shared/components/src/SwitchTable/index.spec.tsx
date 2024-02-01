@@ -229,12 +229,14 @@ describe('SwitchTable', () => {
       expect(await within(rows[Number(index)]).findByText(item.model)).toBeVisible()
     }
 
-    const row1 = await screen.findByRole('row', { name: /FEK4224R19X/i })
-    expect(await within(row1).findByRole('button', { expanded: false })).toBeVisible()
-    await userEvent.click(await within(row1).findByRole('button'))
+    const switchRow = within(rows[0]).getAllByRole('cell', { name: /FEK4224R19X/i })
+    expect(switchRow[0]).toBeVisible()
+
+    expect(await within(rows[0]).findByRole('button', { expanded: false })).toBeVisible()
+    await userEvent.click(await within(rows[0]).findByRole('button'))
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    expect(await within(row1).findByRole('button', { expanded: true })).toBeVisible()
+    expect(await within(rows[0]).findByRole('button', { expanded: true })).toBeVisible()
     expect(await within(tbody).findByText('stack-member (Member)')).toBeVisible()
   })
 
@@ -355,8 +357,10 @@ describe('SwitchTable', () => {
       )
     )
 
-    const row1 = await screen.findByRole('row', { name: /FEK4224R19X/i }) // select ap 1: operational
-    await userEvent.click(row1)
+    const tbody = await findTBody()
+    const rows = await within(tbody).findAllByRole('row')
+    expect(within(rows[0]).getByRole('cell', { name: 'FEK4224R19X' })).toBeVisible() // select ap 1: operational
+    await userEvent.click(rows[0])
 
     await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
 
@@ -365,15 +369,14 @@ describe('SwitchTable', () => {
 
     await waitFor(async () => expect(dialog).not.toBeVisible())
 
-    await userEvent.click(row1) // unselect ap 1
-    expect(await within(row1).findByRole('checkbox')).not.toBeChecked()
+    await userEvent.click(rows[0]) // unselect ap 1
+    expect(await within(rows[0]).findByRole('checkbox')).not.toBeChecked()
 
-    const row2 = await screen.findByRole('row', { name: /FMF2249Q0JT/i })
-    await userEvent.click(row2) // select ap 2: DisconnectedFromCloud
+    expect(within(rows[1]).getByRole('cell', { name: /FMF2249Q0JT/i })).toBeVisible()
+    await userEvent.click(rows[1]) // select ap 2: DisconnectedFromCloud
 
-    const tbody = await findTBody()
-    const rows = await within(tbody).findAllByRole('checkbox', { checked: true })
-    expect(rows).toHaveLength(1)
+    const checkboxes = await within(tbody).findAllByRole('checkbox', { checked: true })
+    expect(checkboxes).toHaveLength(1)
 
     await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
     const dialog2 = await screen.findByRole('dialog')

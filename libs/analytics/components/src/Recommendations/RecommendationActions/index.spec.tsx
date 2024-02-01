@@ -1,8 +1,8 @@
 import userEvent       from '@testing-library/user-event'
 import { MomentInput } from 'moment-timezone'
 
-import { Provider, recommendationUrl }                  from '@acx-ui/store'
-import { mockGraphqlMutation, render, screen, cleanup } from '@acx-ui/test-utils'
+import { Provider, recommendationUrl }                          from '@acx-ui/store'
+import { mockGraphqlMutation, render, screen, cleanup, within } from '@acx-ui/test-utils'
 
 import { recommendationListResult }               from '../__tests__/fixtures'
 import { Recommendation, RecommendationListItem } from '../services'
@@ -205,17 +205,55 @@ describe('RecommendationActions', () => {
     await user.click((await screen.findAllByText('Apply'))[0])
     expect(inputs[0]).toHaveValue('2023-07-16')
   })
-  it('shows current schedule', async () => {
-    const metadata = {
-      scheduledAt: '2023-11-17T11:15:00.000Z'
-    }
-    render(
-      <RecommendationActions recommendation={
-        { ...mockedCrrm, metadata } as unknown as RecommendationListItem} />,
-      { wrapper: Provider }
-    )
-    const inputs = await screen.findAllByPlaceholderText('Select date')
-    expect(inputs[0]).toHaveValue('2023-11-17')
+  it('shows future date when user can schedule apply or revert', async () => {
+    ['new', 'applied', 'applywarning', 'revertfailed'].forEach(async (statusEnum) => {
+      const recommendation = { ...mockedCrrm, statusEnum } as unknown as RecommendationListItem
+      const div = document.createElement('div')
+      const { container } = render(
+        <RecommendationActions {...{ recommendation }} />,
+        { wrapper: Provider, container: div }
+      )
+      const inputs = await within(container).findAllByPlaceholderText('Select date')
+      const input = inputs.find(input => input.getAttribute('disabled') === null)
+      expect(input).toHaveValue('2023-07-15')
+    })
+  })
+  it('shows scheduled at when user can edit schedule', async () => {
+    ['applyscheduled', 'revertscheduled'].forEach(async (statusEnum) => {
+      const recommendation = {
+        ...mockedCrrm,
+        statusEnum,
+        metadata: { scheduledAt: '2023-11-17T11:15:00.000Z' }
+      } as unknown as RecommendationListItem
+      const div = document.createElement('div')
+      const { container } = render(
+        <RecommendationActions {...{ recommendation }} />,
+        { wrapper: Provider, container: div }
+      )
+      const inputs = await within(container).findAllByPlaceholderText('Select date')
+      const input = inputs.find(input => input.getAttribute('disabled') === null)
+      expect(input).toHaveValue('2023-11-17')
+    })
+  })
+  it('does not allow scheduling', async () => {
+    [
+      'applyfailed',
+      'beforeapplyinterrupted',
+      'afterapplyinterrupted',
+      'reverted',
+      'applyscheduleinprogress',
+      'revertscheduleinprogress'
+    ].forEach(async (statusEnum) => {
+      const recommendation = { ...mockedCrrm, statusEnum } as unknown as RecommendationListItem
+      const div = document.createElement('div')
+      const { container } = render(
+        <RecommendationActions {...{ recommendation }} />,
+        { wrapper: Provider, container: div }
+      )
+      const inputs = await within(container).findAllByPlaceholderText('Select date')
+      const input = inputs.find(input => input.getAttribute('disabled') === null)
+      expect(input).toBeUndefined()
+    })
   })
   it('should handle cancel mutation correctly', async () => {
     const resp = { cancel: { success: true, errorMsg: '' , errorCode: '' } }
@@ -255,24 +293,34 @@ describe('RecommendationActions', () => {
 describe('isCrrmOptimizationMatched', () => {
   it('should return correct value', () => {
     expect(isCrrmOptimizationMatched(
+      'c-crrm-channel24g-auto',
       { algorithmData: { isCrrmFullOptimization: true } } as unknown as Recommendation['metadata'],
       { crrmFullOptimization: true } as unknown as Recommendation['preferences']
     )).toBe(true)
     expect(isCrrmOptimizationMatched(
+      'c-crrm-channel24g-auto',
       { algorithmData: { isCrrmFullOptimization: false } } as unknown as Recommendation['metadata'],
       { crrmFullOptimization: false } as unknown as Recommendation['preferences']
     )).toBe(true)
     expect(isCrrmOptimizationMatched(
+      'c-crrm-channel24g-auto',
       { algorithmData: { isCrrmFullOptimization: true } } as unknown as Recommendation['metadata'],
       { crrmFullOptimization: false } as unknown as Recommendation['preferences']
     )).toBe(false)
     expect(isCrrmOptimizationMatched(
+      'c-crrm-channel24g-auto',
       { algorithmData: { isCrrmFullOptimization: false } } as unknown as Recommendation['metadata'],
       { crrmFullOptimization: true } as unknown as Recommendation['preferences']
     )).toBe(false)
     expect(isCrrmOptimizationMatched(
+      'c-crrm-channel24g-auto',
       {} as unknown as Recommendation['metadata'],
       null as unknown as Recommendation['preferences']
+    )).toBe(true)
+    expect(isCrrmOptimizationMatched(
+      'i-zonefirmware-upgrade',
+      {} as unknown as Recommendation['metadata'],
+      { crrmFullOptimization: false } as unknown as Recommendation['preferences']
     )).toBe(true)
   })
 })
