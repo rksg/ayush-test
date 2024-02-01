@@ -373,15 +373,14 @@ describe('SwitchConfigBackupTable', () => {
     expect(tbody).toBeVisible()
     const rows = await within(tbody).findAllByRole('row')
     expect(rows).toHaveLength(inRestoreProgressList.data.length)
+    expect(within(rows[0]).getByRole('cell', { name: /Manual_20230111181247/i })).toBeVisible()
+    await userEvent.click(await within(rows[0]).findByRole('checkbox')) //Manual_20230111181247
 
-    const row1 = await screen.findByRole('row', { name: /Manual_20230111181247/i })
-    await userEvent.click(await within(row1).findByRole('checkbox'))
+    expect(within(rows[1]).getByRole('cell', { name: /SCHEDULED_1/i })).toBeVisible()
+    await userEvent.click(await within(rows[1]).findByRole('checkbox')) //SCHEDULED_1
 
-    const row2 = await screen.findByRole('row', { name: /SCHEDULED_1/i })
-    await userEvent.click(await within(row2).findByRole('checkbox'))
-
-    const row3 = await screen.findByRole('row', { name: /testBackup/i })
-    await userEvent.click(await within(row3).findByRole('checkbox'))
+    expect(within(rows[2]).getByRole('cell', { name: /testBackup/i })).toBeVisible()
+    await userEvent.click(await within(rows[2]).findByRole('checkbox')) //testBackup
     expect(await screen.findByRole('button', { name: 'Restore' })).toBeDisabled()
   })
 

@@ -127,7 +127,8 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
           visible={true}
           setVisible={mockedCancel}
           onSubmit={() => { }}
-          data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+          data={switchVenue.upgradeVenueViewList.filter(
+            item => item.name === 'My-Venue') as FirmwareSwitchVenue[]} />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
@@ -153,7 +154,8 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
           visible={true}
           setVisible={mockedCancel}
           onSubmit={() => { }}
-          data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+          data={switchVenue.upgradeVenueViewList.filter(
+            item => item.name === 'My-Venue') as FirmwareSwitchVenue[]} />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
@@ -208,7 +210,8 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
           visible={true}
           setVisible={mockedCancel}
           onSubmit={() => { }}
-          data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+          data={switchVenue.upgradeVenueViewList.filter(
+            item => item.name === 'Karen-Venue1') as FirmwareSwitchVenue[]} />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
@@ -236,12 +239,15 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
 
-    const stepsFormSteps = screen.getByText(/skip updates/i)
+    const dialog = screen.getByRole('dialog')
+
+    const stepsFormSteps = within(dialog).getByText(/skip updates/i)
     expect(stepsFormSteps).toBeInTheDocument()
 
-    const searchBox = screen.getByRole('textbox')
+    const searchBox = within(dialog).getByRole('textbox')
     expect(searchBox).toBeInTheDocument()
     await userEvent.type(searchBox, 'mock')
+
     expect(screen.getByDisplayValue(/mock/i)).toBeInTheDocument()
     expect(await screen.findByTestId('switch-search-table')).toBeInTheDocument()
 

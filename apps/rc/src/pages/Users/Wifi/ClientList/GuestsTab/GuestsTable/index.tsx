@@ -219,6 +219,9 @@ export const GuestsTable = () => {
       sorter: true,
       defaultSortOrder: 'ascend',
       render: (_, row, __, highlightFn) =>
+      // TODO: fix warn
+      // Warning: A future version of React will block javascript: URLs as a security precaution.
+
         // eslint-disable-next-line jsx-a11y/anchor-is-valid
         <a
           // eslint-disable-next-line no-script-url

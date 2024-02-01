@@ -67,13 +67,14 @@ export function NetworkControlTab (props: { wlanData: NetworkSaveData | null }) 
 
   useEffect(() => {
     if (data) {
-      if (data.wlan?.advancedCustomization?.dnsProxy?.dnsProxyRules) {
-        setDnsProxyList(
-          data.wlan.advancedCustomization.dnsProxy.dnsProxyRules
-        )
-        form.setFieldsValue({
-          dnsProxyRules: data.wlan.advancedCustomization.dnsProxy.dnsProxyRules
-        })
+      const dnsProxyRulesData = data.wlan?.advancedCustomization?.dnsProxy?.dnsProxyRules
+      if (dnsProxyRulesData) {
+        const dnsProxyRules = dnsProxyRulesData.map( rule => ({
+          ...rule,
+          key: rule.domainName
+        }))
+        setDnsProxyList(dnsProxyRules)
+        form.setFieldsValue({ dnsProxyRules })
       }
     }
   }, [data])

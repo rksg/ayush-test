@@ -1,6 +1,12 @@
-import { render, screen } from '@testing-library/react'
-
-import { PolicyDetailsLinkProps, PolicyOperation, PolicyType, getConfigTemplatePath, getPolicyDetailsLink, getPolicyRoutePath } from '@acx-ui/rc/utils'
+import {
+  PolicyDetailsLinkProps,
+  PolicyOperation,
+  PolicyType,
+  getConfigTemplatePath,
+  getPolicyDetailsLink,
+  getPolicyRoutePath
+} from '@acx-ui/rc/utils'
+import { render, screen } from '@acx-ui/test-utils'
 
 import {
   ConfigTemplateLink,
