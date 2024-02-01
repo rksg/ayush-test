@@ -9,7 +9,8 @@ import {
   connectionEvents,
   qualityDataObj,
   incidentDataObj,
-  roamingDataObj
+  roamingDataObj,
+  eapolEvent
 } from './__tests__/fixtures'
 import {
   SUCCESS,
@@ -202,7 +203,70 @@ describe('util', () => {
         end: 1668407704571,
         event: 'CCD_REASON_MIC_FAILURE',
         failedMsgId: '22',
+        messageIds: ['4', '22', '22'],
         key: '166840770457194:B3:4F:3D:15:B0FAILURE6',
+        mac: '94:B3:4F:3D:15:B0',
+        path: [
+          {
+            name: 'cliexp4',
+            type: 'zone'
+          },
+          {
+            name: 'No group (inherit from Venue)',
+            type: 'apGroup'
+          },
+          {
+            name: '94:B3:4F:3D:15:B0',
+            type: 'ap'
+          }
+        ],
+        radio: '5',
+        start: 1668407704571,
+        state: 'normal',
+        timestamp: '2022-11-14T06:35:04.571Z',
+        ttc: null,
+        type: 'connectionEvents'
+      },
+      {
+        apName: 'R750-11-112',
+        category: 'failure',
+        code: 'eapol',
+        end: 1668407704571,
+        event: 'CCD_REASON_MIC_FAILURE',
+        failedMsgId: '5',
+        messageIds: ['8', '21', '22', '5'],
+        key: '166840770457194:B3:4F:3D:15:B0FAILURE7',
+        mac: '94:B3:4F:3D:15:B0',
+        path: [
+          {
+            name: 'cliexp4',
+            type: 'zone'
+          },
+          {
+            name: 'No group (inherit from Venue)',
+            type: 'apGroup'
+          },
+          {
+            name: '94:B3:4F:3D:15:B0',
+            type: 'ap'
+          }
+        ],
+        radio: '5',
+        start: 1668407704571,
+        state: 'normal',
+        timestamp: '2022-11-14T06:35:04.571Z',
+        ttc: null,
+        type: 'connectionEvents'
+      },
+      {
+        apName: 'R750-11-112',
+        category: 'failure',
+        code: 'eapol',
+        end: 1668407704571,
+        event: 'CCD_REASON_MIC_FAILURE',
+        failedMsgId: '5',
+        messageIds: ['21', '22', '21', '5', '5'],
+        key: '166840770457194:B3:4F:3D:15:B0FAILURE8',
         mac: '94:B3:4F:3D:15:B0',
         path: [
           {
@@ -250,7 +314,7 @@ describe('util', () => {
         failedMsgId: '3',
         radio: '5',
         type: 'connectionEvents',
-        key: '166840770744194:B3:4F:3D:15:B0EVENT_CLIENT_DISCONNECT7',
+        key: '166840770744194:B3:4F:3D:15:B0EVENT_CLIENT_DISCONNECT9',
         start: 1668407707441,
         end: 1668407707441,
         category: 'disconnect'
@@ -280,7 +344,7 @@ describe('util', () => {
         failedMsgId: null,
         radio: '5',
         type: 'connectionEvents',
-        key: '166840770764194:B3:4F:3D:15:B0EVENT_CLIENT_BLOCKED9',
+        key: '166840770764194:B3:4F:3D:15:B0EVENT_CLIENT_BLOCKED11',
         start: 1668407707641,
         end: 1668407707641,
         category: 'disconnect'
@@ -347,6 +411,75 @@ describe('util', () => {
       data.forEach(({ event, desc }) => {
         expect(formatEventDesc(event as DisplayEvent, getIntl())).toEqual(desc)
       })
+    })
+
+    it('should handle eapol text correctly', () => {
+      const expectedEapolEvent = [
+        {
+          apName: 'R750-11-112',
+          category: 'failure',
+          code: 'eapol',
+          end: 1668407704571,
+          event: 'CCD_REASON_MIC_FAILURE',
+          failedMsgId: '5',
+          messageIds: ['21', '22', '5', '4'],
+          key: '166840770457194:B3:4F:3D:15:B0FAILURE0',
+          mac: '94:B3:4F:3D:15:B0',
+          path: [
+            {
+              name: 'cliexp4',
+              type: 'zone'
+            },
+            {
+              name: 'No group (inherit from Venue)',
+              type: 'apGroup'
+            },
+            {
+              name: '94:B3:4F:3D:15:B0',
+              type: 'ap'
+            }
+          ],
+          radio: '5',
+          start: 1668407704571,
+          state: 'normal',
+          timestamp: '2022-11-14T06:35:04.571Z',
+          ttc: null,
+          type: 'connectionEvents'
+        },
+        {
+          apName: 'R750-11-112',
+          category: 'failure',
+          code: 'eap',
+          end: 1668407704571,
+          event: 'CCD_REASON_MIC_FAILURE',
+          failedMsgId: '5',
+          messageIds: ['3', '21', '5', '22', '22'],
+          key: '166840770457194:B3:4F:3D:15:B0FAILURE1',
+          mac: '94:B3:4F:3D:15:B0',
+          path: [
+            {
+              name: 'cliexp4',
+              type: 'zone'
+            },
+            {
+              name: 'No group (inherit from Venue)',
+              type: 'apGroup'
+            },
+            {
+              name: '94:B3:4F:3D:15:B0',
+              type: 'ap'
+            }
+          ],
+          radio: '5',
+          start: 1668407704571,
+          state: 'normal',
+          timestamp: '2022-11-14T06:35:04.571Z',
+          ttc: null,
+          type: 'connectionEvents'
+        }
+      ]
+      expect(transformEvents(eapolEvent, [], [])).toEqual(expectedEapolEvent)
+
     })
 
     describe('transformConnectionQualities', () => {
