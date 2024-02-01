@@ -55,13 +55,6 @@ export function NetworkMoreSettingsForm (props: {
         bssMinimumPhyRate: get(data,
           'wlan.advancedCustomization.radioCustomization.bssMinimumPhyRate')
       })
-      // When security protocal is WPA23Mixed MLO should be deactivated.
-      // Please note that you will find the similar code in PSK/DPSK, but this fragment is necessary
-      // It's because under edit mode, user may click more settings instead of click step by step,
-      // and the behavior will cause MLO still be active coz the code in PSK and DPSK didn't execute.
-      if(data.wlan?.wlanSecurity === WlanSecurityEnum.WPA23Mixed) {
-        form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
-      }
     }
   }, [data, editMode, cloneMode])
   const { $t } = useIntl()

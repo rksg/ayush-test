@@ -6,11 +6,19 @@ import { CheckboxChangeEvent } from 'antd/lib/checkbox/Checkbox'
 import { get, isUndefined }    from 'lodash'
 import { useIntl }             from 'react-intl'
 
-
-import { Tooltip }                                                                                               from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                from '@acx-ui/feature-toggle'
-import { InformationSolid }                                                                                      from '@acx-ui/icons'
-import { NetworkSaveData, WlanSecurityEnum, MultiLinkOperationOptions, IsNetworkSupport6g, IsSecuritySupport6g } from '@acx-ui/rc/utils'
+import { Tooltip }                                                from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { InformationSolid }                                       from '@acx-ui/icons'
+import {
+  NetworkSaveData,
+  WlanSecurityEnum,
+  MultiLinkOperationOptions,
+  IsNetworkSupport6g,
+  IsSecuritySupport6g,
+  NetworkTypeEnum,
+  GuestNetworkTypeEnum
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { MLOContext } from '../../../NetworkForm'
 import * as UI        from '../../../NetworkMoreSettings/styledComponents'
@@ -275,7 +283,9 @@ function WiFi7 ({ wlanData } : { wlanData : NetworkSaveData | null }) {
   const wifi7MloFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_TOGGLE)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
   const form = Form.useFormInstance()
-  const { isDisableMLO } = useContext(MLOContext)
+  const params = useParams()
+  const editMode = params.action === 'edit'
+  const { isDisableMLO, disableMLO } = useContext(MLOContext)
   const initWifi7Enabled = get(wlanData, ['wlan', 'advancedCustomization', 'wifi7Enabled'], true)
   const [
     wifi7Enabled,
@@ -295,6 +305,29 @@ function WiFi7 ({ wlanData } : { wlanData : NetworkSaveData | null }) {
     }
   }, [wifi7Enabled])
 
+  /* eslint-disable */
+  useEffect(()=>{
+    if(editMode && wlanData !== null){
+      const MLOEffectiveCondition = [
+        (wlanData.type === NetworkTypeEnum.PSK && wlanData.wlan?.wlanSecurity === WlanSecurityEnum.WPA23Mixed),
+        (wlanData.type === NetworkTypeEnum.PSK && wlanData.wlan?.wlanSecurity === WlanSecurityEnum.WPA3),
+        (wlanData.type === NetworkTypeEnum.AAA && wlanData.wlan?.wlanSecurity === WlanSecurityEnum.WPA3),
+        (wlanData.type === NetworkTypeEnum.OPEN && wlanData.enableOwe === true),
+        (wlanData.type === NetworkTypeEnum.CAPTIVEPORTAL && 
+          wlanData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.GuestPass &&
+          wlanData.enableOwe === true),
+        (wlanData.type === NetworkTypeEnum.CAPTIVEPORTAL && 
+          wlanData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr &&
+          wlanData.wlan?.wlanSecurity === WlanSecurityEnum.OWE),
+
+      ].some(Boolean)
+      if (MLOEffectiveCondition) {
+        const enableMLOSwitch = !MLOEffectiveCondition
+        disableMLO(enableMLOSwitch)
+      }
+    }
+  }, [])
+  /* eslint-enable */
   return (
     <>
       <UI.Subtitle>

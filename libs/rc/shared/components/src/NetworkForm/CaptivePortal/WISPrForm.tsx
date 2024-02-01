@@ -45,6 +45,7 @@ import {
 import { validationMessages } from '@acx-ui/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
+import { MLOContext }              from '../NetworkForm'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
@@ -65,6 +66,7 @@ export function WISPrForm () {
     cloneMode,
     setData
   } = useContext(NetworkFormContext)
+  const { disableMLO } = useContext(MLOContext)
   const enableWISPREncryptMacIP = useIsSplitOn(Features.WISPR_ENCRYPT_MAC_IP)
   const enableWISPRAlwaysAccept = useIsSplitOn(Features.WIFI_EDA_WISPR_ALWAYS_ACCEPT_TOGGLE)
   const enableOweEncryption = useIsSplitOn(Features.WIFI_EDA_OWE_TOGGLE)
@@ -461,23 +463,32 @@ export function WISPrForm () {
               options={networkSecurityOptions}
               onChange={(selected: string) => {
                 let security = data?.wlan?.wlanSecurity
+                /* eslint-disable */
                 switch(WisprSecurityEnum[selected as keyof typeof WisprSecurityEnum]) {
                   case WisprSecurityEnum.PSK:
                     setEnablePreShared(true)
+                    disableMLO(true)
                     security = WlanSecurityEnum.WPA2Personal
+                    form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
                     break
                   case WisprSecurityEnum.OWE:
                     setEnablePreShared(false)
+                    disableMLO(false)
                     security = WlanSecurityEnum.OWE
                     break
                   case WisprSecurityEnum.NONE:
                     // disable secure network
                     setEnablePreShared(false)
+                    disableMLO(true)
+                    form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
                     security = WlanSecurityEnum.None
                     break
                   default:
+                    disableMLO(true)
+                    form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
                     return
                 }
+                /* eslint-enable */
                 onProtocolChange(security)
               }}
             />}
