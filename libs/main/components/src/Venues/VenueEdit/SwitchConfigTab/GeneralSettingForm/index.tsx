@@ -15,9 +15,9 @@ import {
   ProfileTypeEnum,
   networkWifiIpRegExp,
   VenueSwitchConfiguration,
+  VenueMessages,
   redirectPreviousPage
 } from '@acx-ui/rc/utils'
-import { VenueMessages }          from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 import { getIntl }                from '@acx-ui/utils'
 

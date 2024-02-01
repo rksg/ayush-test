@@ -1,9 +1,8 @@
 /* eslint-disable max-len */
 import React from 'react'
 
-import { renderHook } from '@testing-library/react'
-import userEvent      from '@testing-library/user-event'
-import { rest }       from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import {
   AdministrationUrlsInfo,
@@ -16,6 +15,7 @@ import {
   act,
   mockServer,
   render,
+  renderHook,
   screen,
   waitFor
 } from '@acx-ui/test-utils'

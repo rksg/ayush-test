@@ -52,6 +52,7 @@ const params = {
 
 describe('RWG Dashboard statistics', () => {
   beforeEach(() => {
+    store.dispatch(venueApi.util.resetApiState())
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.get(
@@ -59,8 +60,6 @@ describe('RWG Dashboard statistics', () => {
         (req, res, ctx) => res(ctx.json({ response: topProcess }))
       )
     )
-
-    store.dispatch(venueApi.util.resetApiState())
   })
 
   it('should correctly render donut', async () => {

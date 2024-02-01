@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
-import { userEvent, waitFor, waitForElementToBeRemoved } from '@storybook/testing-library'
-import { rest }                                          from 'msw'
-import { defineMessage }                                 from 'react-intl'
+import userEvent         from '@testing-library/user-event'
+import { rest }          from 'msw'
+import { defineMessage } from 'react-intl'
 
 import { useIsSplitOn }                           from '@acx-ui/feature-toggle'
 import { AdministrationUrlsInfo, CommonUrlsInfo } from '@acx-ui/rc/utils'
@@ -9,12 +9,12 @@ import { Provider  }                              from '@acx-ui/store'
 import {
   render,
   screen,
-  mockServer
+  mockServer,
+  waitFor,
+  waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-
 import { ScheduleExportDrawer } from '.'
-
 
 const adminList = [{
   id: '01b35c76411544999550f038304f18f8',
@@ -176,15 +176,15 @@ describe('ScheduleExportDrawer', () => {
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
-    userEvent.click(await screen.findByRole('combobox', { name: 'Product' }))
-    userEvent.click(await screen.findByRole('option', { name: 'General' }))
+    await userEvent.click(await screen.findByRole('combobox', { name: 'Product' }))
+    await userEvent.click(await screen.findByRole('option', { name: 'General' }))
 
     await userEvent.click(await screen.findByRole('combobox', { name: 'Severity' }))
-    userEvent.click(await screen.findByText('Warning'))
+    await userEvent.click(await screen.findByText('Warning'))
 
     await userEvent.click(await screen.findByRole('combobox', { name: 'Event Type' }))
-    userEvent.click(await screen.findByRole('option', { name: 'AP' }))
-    userEvent.click(await screen.findByRole('option', { name: 'Security' }))
+    await userEvent.click(await screen.findByRole('option', { name: 'AP' }))
+    await userEvent.click(await screen.findByRole('option', { name: 'Security' }))
 
     const saveButton = await screen.findByRole('button', { name: 'Apply' })
     await userEvent.click(saveButton)
