@@ -1,17 +1,21 @@
 /* eslint-disable max-len */
-import { act, renderHook, waitFor, waitForElementToBeRemoved, within } from '@testing-library/react'
-import userEvent                                                       from '@testing-library/user-event'
-import { Form }                                                        from 'antd'
-import { rest }                                                        from 'msw'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
 
 import { StepsForm }       from '@acx-ui/components'
 import { networkApi }      from '@acx-ui/rc/services'
 import { CommonUrlsInfo }  from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
+  act,
   mockServer,
   render,
-  screen
+  renderHook,
+  screen,
+  waitFor,
+  waitForElementToBeRemoved,
+  within
 } from '@acx-ui/test-utils'
 
 import { getSdLanFormDefaultValues }                from '..'
@@ -104,8 +108,10 @@ describe('Scope Form', () => {
         { id: 'network_2' }
       ]))
 
-    const switchBtn = within(await screen.findByRole('row', { name: /MockedNetwork 1/i })).getByRole('switch')
-    const switchBtn2 = within(await screen.findByRole('row', { name: /MockedNetwork 2/i })).getByRole('switch')
+    expect(within(rows[0]).getByRole('cell', { name: /MockedNetwork 1/i })).toBeVisible()
+    const switchBtn = within(rows[0]).getByRole('switch')
+    expect(within(rows[1]).getByRole('cell', { name: /MockedNetwork 2/i })).toBeVisible()
+    const switchBtn2 = within(rows[1]).getByRole('switch')
     expect(switchBtn).toBeChecked()
     expect(switchBtn2).toBeChecked()
   })
@@ -126,8 +132,8 @@ describe('Scope Form', () => {
     const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
     expect(rows.length).toBe(3)
     expect(stepFormRef.current.getFieldValue('activatedNetworks')).toStrictEqual([])
-    await click(
-      within(await screen.findByRole('row', { name: /MockedNetwork 2/i })).getByRole('switch'))
+    expect(within(rows[1]).getByRole('cell', { name: /MockedNetwork 2/i })).toBeVisible()
+    await click(within(rows[1]).getByRole('switch'))
 
     expect(mockedSetFieldValue).toBeCalledWith('activatedNetworks', [
       { name: 'MockedNetwork 2', id: 'network_2' }
@@ -155,7 +161,8 @@ describe('Scope Form', () => {
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
     expect(rows.length).toBe(3)
-    const switchBtn = within(await screen.findByRole('row', { name: /MockedNetwork 1/i })).getByRole('switch')
+    expect(within(rows[0]).getByRole('cell', { name: /MockedNetwork 1/i })).toBeVisible()
+    const switchBtn = within(rows[0]).getByRole('switch')
     expect(switchBtn).toBeChecked()
     await click(switchBtn)
 

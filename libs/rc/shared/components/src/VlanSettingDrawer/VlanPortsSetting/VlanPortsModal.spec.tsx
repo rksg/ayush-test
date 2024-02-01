@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom'
-import { render, screen, fireEvent } from '@testing-library/react'
-import userEvent                     from '@testing-library/user-event'
-import { debounce }                  from 'lodash'
-import { IntlProvider }              from 'react-intl'
+import userEvent        from '@testing-library/user-event'
+import { debounce }     from 'lodash'
+import { IntlProvider } from 'react-intl'
 
-import { StepsForm } from '@acx-ui/components'
+import { StepsForm }                 from '@acx-ui/components'
+import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
 import { SelectModelStep }   from './SelectModelStep'
 import { TaggedPortsStep }   from './TaggedPortsStep'

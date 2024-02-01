@@ -1,7 +1,6 @@
 
-import { waitFor, within } from '@testing-library/react'
-import userEvent           from '@testing-library/user-event'
-import { rest }            from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
@@ -13,8 +12,15 @@ import {
   PersonaUrls,
   PropertyUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { Provider } from '@acx-ui/store'
+import {
+  mockServer,
+  render,
+  screen,
+  waitFor,
+  waitForElementToBeRemoved,
+  within
+} from '@acx-ui/test-utils'
 
 import {
   mockDpskList,

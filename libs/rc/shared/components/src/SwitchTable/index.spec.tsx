@@ -134,6 +134,8 @@ const stackMemberList = {
   ]
 }
 
+const mockedSyncReq = jest.fn()
+const mockedRetryReq = jest.fn()
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -162,12 +164,14 @@ jest.mock('../ImportFileDrawer', () => ({
 
 jest.mock('../SwitchCliSession', () => ({
   SwitchCliSession: ({ modalState }: { modalState: boolean }) =>
-    modalState && <div data-testid={'SwitchCliSession'}></div>
+    modalState && <div data-testid='SwitchCliSession'></div>
 }))
 
 describe('SwitchTable', () => {
   afterEach(() => {
     mockedUsedNavigate.mockClear()
+    mockedSyncReq.mockClear()
+    mockedRetryReq.mockClear()
     cleanup()
   })
   beforeEach(() => {
@@ -183,7 +187,26 @@ describe('SwitchTable', () => {
       ),
       rest.post(
         SwitchUrlsInfo.syncSwitchesData.url,
-        (req, res, ctx) => res(ctx.json({}))
+        (req, res, ctx) => {
+          mockedSyncReq()
+          return res(ctx.json({}))
+        }
+      ),
+      rest.post(
+        SwitchUrlsInfo.retryFirmwareUpdate.url,
+        (req, res, ctx) => {
+          mockedRetryReq()
+          return res(ctx.json({}))
+        }
+      ),
+      rest.get(
+        SwitchUrlsInfo.getJwtToken.url,
+        (_, res, ctx) => res(ctx.json({
+          access_token: 'access_token',
+          expires_in: '604800',
+          id_token: 'id_token',
+          type: 'JWT'
+        }))
       )
     )
   })
@@ -206,52 +229,41 @@ describe('SwitchTable', () => {
       expect(await within(rows[Number(index)]).findByText(item.model)).toBeVisible()
     }
 
-    const row1 = await screen.findByRole('row', { name: /FEK4224R19X/i })
-    expect(await within(row1).findByRole('button', { expanded: false })).toBeVisible()
-    await userEvent.click(await within(row1).findByRole('button'))
+    const switchRow = within(rows[0]).getAllByRole('cell', { name: /FEK4224R19X/i })
+    expect(switchRow[0]).toBeVisible()
+
+    expect(await within(rows[0]).findByRole('button', { expanded: false })).toBeVisible()
+    await userEvent.click(await within(rows[0]).findByRole('button'))
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    expect(await within(row1).findByRole('button', { expanded: true })).toBeVisible()
+    expect(await within(rows[0]).findByRole('button', { expanded: true })).toBeVisible()
     expect(await within(tbody).findByText('stack-member (Member)')).toBeVisible()
   })
 
   it('should render correctly when feature flag is on', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockServer.use(
+      rest.post(
+        SwitchUrlsInfo.getSwitchList.url,
+        (req, res, ctx) => res(ctx.json({
+          ...switchList,
+          data: switchList.data.slice(3, 4)
+        }))
+      )
+    )
     render(<Provider><SwitchTable showAllColumns={true} searchable={true}/></Provider>, {
       route: { params, path: '/:tenantId/t' }
     })
 
     const table = await screen.findByTestId('switch-table')
-    // eslint-disable-next-line testing-library/no-node-access
-    const tbody = (await within(table).findByRole('table')).querySelector('tbody')!
-    expect(tbody).toBeVisible()
-    const rows = await within(tbody).findAllByRole('row')
-    expect(rows).toHaveLength(switchList.data.length)
-
-    for (const [index, item] of Object.entries(switchList.data)) {
-      expect(await within(rows[Number(index)]).findByText(item.model)).toBeVisible()
-    }
-
-    const row = await within(table).findByRole('row', { name: /FEK3224R0AG/i })
+    const row = await within(table).findByRole('row', { name: /FEK3224R1AG/i })
     await userEvent.click(await within(row).findByRole('checkbox'))
 
     await within(table).findByText(/1 selected/)
     const matchButton = await within(table)
       .findByRole('button', { name: 'Match Admin Password to Venue' })
     expect(matchButton).toBeVisible()
-    expect(matchButton).toBeDisabled()
-
-    const row1 = await within(table).findByRole('row', { name: /FEK3224R1AG/i })
-    await userEvent.click(await within(row1).findByRole('checkbox'))
-
-    await within(table).findByText(/2 selected/)
     expect(matchButton).not.toBeDisabled()
-
-    await userEvent.click(matchButton)
-    await screen.findByText(/The switch admin password will be set same as the venue setting/)
-    const dialog = await screen.findByRole('dialog')
-    await userEvent.click(await within(dialog).findByRole('button', { name: 'Match Password' }))
-    await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
   it('should clicks add switch correctly', async () => {
@@ -276,14 +288,6 @@ describe('SwitchTable', () => {
     expect(await screen.findByText('Add Switch')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Add Switch' }))
     expect(mockedUsedNavigate).toBeCalledWith('/tenant-Id/t/devices/switch/add')
-    mockedUsedNavigate.mockClear()
-
-    const row = await screen.findByRole('row', { name: /FMF2249Q0JT/i })
-    await userEvent.click(await within(row).findByRole('checkbox'))
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
-    // eslint-disable-next-line max-len
-    expect(mockedUsedNavigate).toBeCalledWith('/tenant-Id/t/devices/switch/FMF2249Q0JT/FMF2249Q0JT/edit', { replace: false })
   })
 
   it('should clicks Import correctly', async () => {
@@ -336,14 +340,6 @@ describe('SwitchTable', () => {
     expect(await screen.findByText('Add Stack')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Add Stack' }))
     expect(mockedUsedNavigate).toBeCalledWith('/tenant-Id/t/devices/switch/stack/add')
-    mockedUsedNavigate.mockClear()
-
-    const row = await screen.findByRole('row', { name: /FMF2249Q0JT/i })
-    await userEvent.click(await within(row).findByRole('checkbox'))
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
-    // eslint-disable-next-line max-len
-    expect(mockedUsedNavigate).toBeCalledWith('/tenant-Id/t/devices/switch/FMF2249Q0JT/FMF2249Q0JT/edit', { replace: false })
   })
 
   it('Table action bar Delete', async () => {
@@ -361,8 +357,10 @@ describe('SwitchTable', () => {
       )
     )
 
-    const row1 = await screen.findByRole('row', { name: /FEK4224R19X/i }) // select ap 1: operational
-    await userEvent.click(row1)
+    const tbody = await findTBody()
+    const rows = await within(tbody).findAllByRole('row')
+    expect(within(rows[0]).getByRole('cell', { name: 'FEK4224R19X' })).toBeVisible() // select ap 1: operational
+    await userEvent.click(rows[0])
 
     await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
 
@@ -371,15 +369,14 @@ describe('SwitchTable', () => {
 
     await waitFor(async () => expect(dialog).not.toBeVisible())
 
-    await userEvent.click(row1) // unselect ap 1
-    expect(await within(row1).findByRole('checkbox')).not.toBeChecked()
+    await userEvent.click(rows[0]) // unselect ap 1
+    expect(await within(rows[0]).findByRole('checkbox')).not.toBeChecked()
 
-    const row2 = await screen.findByRole('row', { name: /FMF2249Q0JT/i })
-    await userEvent.click(row2) // select ap 2: DisconnectedFromCloud
+    expect(within(rows[1]).getByRole('cell', { name: /FMF2249Q0JT/i })).toBeVisible()
+    await userEvent.click(rows[1]) // select ap 2: DisconnectedFromCloud
 
-    const tbody = await findTBody()
-    const rows = await within(tbody).findAllByRole('checkbox', { checked: true })
-    expect(rows).toHaveLength(1)
+    const checkboxes = await within(tbody).findAllByRole('checkbox', { checked: true })
+    expect(checkboxes).toHaveLength(1)
 
     await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
     const dialog2 = await screen.findByRole('dialog')
@@ -389,6 +386,168 @@ describe('SwitchTable', () => {
     await waitFor(async () => expect(dialog2).not.toBeVisible())
 
   }, 60000)
+
+  it('should redirect to edit switch page correctly', async () => {
+    const switchData = switchList.data.slice(3, 4)?.[0]
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockServer.use(
+      rest.post(
+        SwitchUrlsInfo.getSwitchList.url,
+        (req, res, ctx) => res(ctx.json({
+          ...switchList,
+          data: [switchData]
+        }))
+      )
+    )
+    render(<Provider><SwitchTable showAllColumns={true} searchable={true}/></Provider>, {
+      route: { params, path: '/:tenantId/t' }
+    })
+
+    const table = await screen.findByTestId('switch-table')
+    const row = await within(table).findByRole('row', { name: /FEK3224R1AG/i })
+    await userEvent.click(await within(row).findByRole('checkbox'))
+
+    await within(table).findByText(/1 selected/)
+    await userEvent.click(
+      await within(table).findByRole('button', { name: 'Edit' })
+    )
+    expect(mockedUsedNavigate).toBeCalledWith(
+      // eslint-disable-next-line max-len
+      `/tenant-Id/t/devices/switch/${switchData.id}/${switchData.serialNumber}/edit`, { replace: false })
+  })
+
+  it('should redirect to edit stack page correctly', async () => {
+    const switchData = switchList.data.slice(3, 4)?.[0]
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockServer.use(
+      rest.post(
+        SwitchUrlsInfo.getSwitchList.url,
+        (req, res, ctx) => res(ctx.json({
+          ...switchList,
+          data: [{
+            ...switchData,
+            isStack: true
+          }]
+        }))
+      )
+    )
+    render(<Provider><SwitchTable showAllColumns={true} searchable={true}/></Provider>, {
+      route: { params, path: '/:tenantId/t' }
+    })
+
+    const table = await screen.findByTestId('switch-table')
+    const row = await within(table).findByRole('row', { name: /FEK3224R1AG/i })
+    await userEvent.click(await within(row).findByRole('checkbox'))
+
+    await within(table).findByText(/1 selected/)
+    await userEvent.click(
+      await within(table).findByRole('button', { name: 'Edit' })
+    )
+    expect(mockedUsedNavigate).toBeCalledWith(
+      // eslint-disable-next-line max-len
+      `/tenant-Id/t/devices/switch/${switchData.id}/${switchData.serialNumber}/stack/edit`, { replace: false })
+  })
+
+  it('should open CLI session modal correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockServer.use(
+      rest.post(
+        SwitchUrlsInfo.getSwitchList.url,
+        (req, res, ctx) => res(ctx.json({
+          ...switchList,
+          data: switchList.data.slice(3, 4)
+        }))
+      )
+    )
+    render(<Provider><SwitchTable showAllColumns={true} searchable={true}/></Provider>, {
+      route: { params, path: '/:tenantId/t' }
+    })
+
+    const table = await screen.findByTestId('switch-table')
+    const row = await within(table).findByRole('row', { name: /FEK3224R1AG/i })
+    await userEvent.click(await within(row).findByRole('checkbox'))
+
+    await within(table).findByText(/1 selected/)
+    const cliButton = await within(table)
+      .findByRole('button', { name: 'CLI Session' })
+    expect(cliButton).toBeVisible()
+    expect(cliButton).not.toBeDisabled()
+
+    await userEvent.click(cliButton)
+    expect(await screen.findByTestId('SwitchCliSession')).toBeVisible()
+  })
+
+  it('should sync password with venue correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockServer.use(
+      rest.post(
+        SwitchUrlsInfo.getSwitchList.url,
+        (req, res, ctx) => res(ctx.json({
+          ...switchList,
+          data: switchList.data.slice(2)
+        }))
+      )
+    )
+    render(<Provider><SwitchTable showAllColumns={true} searchable={true}/></Provider>, {
+      route: { params, path: '/:tenantId/t' }
+    })
+
+    const table = await screen.findByTestId('switch-table')
+    const rows = await within(table).findAllByRole('row')
+    await userEvent.click(await within(rows[1]).findByRole('checkbox'))
+    await userEvent.click(await within(rows[2]).findByRole('checkbox'))
+
+    const matchButton = await within(table)
+      .findByRole('button', { name: 'Match Admin Password to Venue' })
+    await within(table).findByText(/2 selected/)
+    expect(matchButton).not.toBeDisabled()
+
+    await userEvent.click(matchButton)
+    await screen.findByText(/The switch admin password will be set same as the venue setting/)
+
+    const dialog = await screen.findByRole('dialog')
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'Match Password' }))
+    await waitFor(() => expect(dialog).not.toBeVisible())
+    expect(mockedSyncReq).toBeCalledTimes(1)
+    await waitFor(async () =>
+      expect(await screen.findByText(/Start admin password sync/)).toBeVisible()
+    )
+
+  })
+
+  it('should retry firmware update correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockServer.use(
+      rest.post(
+        SwitchUrlsInfo.getSwitchList.url,
+        (req, res, ctx) => res(ctx.json({
+          ...switchList,
+          data: [{
+            ...(switchList.data.slice(3, 4)?.[0]),
+            deviceStatus: 'FIRMWARE_UPD_FAIL'
+          }]
+        }))
+      )
+    )
+    render(<Provider><SwitchTable showAllColumns={true} searchable={true}/></Provider>, {
+      route: { params, path: '/:tenantId/t' }
+    })
+
+    const table = await screen.findByTestId('switch-table')
+    const row = await within(table).findByRole('row', { name: /FEK3224R1AG/i })
+    await userEvent.click(await within(row).findByRole('checkbox'))
+
+    await within(table).findByText(/1 selected/)
+    const retryButton = await within(table)
+      .findByRole('button', { name: 'Retry firmware update' })
+    expect(retryButton).toBeVisible()
+
+    await userEvent.click(retryButton)
+    expect(mockedRetryReq).toBeCalledTimes(1)
+    await waitFor(async () =>
+      expect(await screen.findByText(/Start firmware upgrade retry/)).toBeVisible()
+    )
+  })
 
   it('should search correctly', async () => {
     jest.mocked(useIsSplitOn).mockImplementation((ff) => {
