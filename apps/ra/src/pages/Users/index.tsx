@@ -145,7 +145,11 @@ const Users = () => {
   const [deleteUserResourceGroup] = useDeleteUserResourceGroupMutation()
   const [deleteInvitation] = useDeleteInvitationMutation()
 
-  const usersCount = usersQuery.data?.length || 0
+  const [usersCount, setUsersCount] = useState(0)
+  useEffect(() => {
+    usersQuery.data && setUsersCount(usersQuery.data.length)
+  }, [usersQuery.data])
+
   useEffect(() => {
     if (retrieveUserDetails && selectedRow) {
       refreshUserDetails({ userId: selectedRow.id })
@@ -261,6 +265,7 @@ const Users = () => {
         setSelectedRow={setSelectedRow}
         getLatestUserDetails={() => setRetrieveUserDetails(true)}
         handleDeleteUser={() => setDeleteUser({ ...deleteUser, showModal: true })}
+        setUsersCount={setUsersCount}
       />
       <Drawer
         visible={openDrawer}
