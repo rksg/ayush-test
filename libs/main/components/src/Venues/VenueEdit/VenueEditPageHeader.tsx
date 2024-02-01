@@ -8,7 +8,7 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { useGetVenueInstance } from '../venueConfigTemplateUtils'
+import { useGetVenueInstance } from '../venueConfigTemplateApiSwitcher'
 
 import VenueEditTabs from './VenueEditTabs'
 

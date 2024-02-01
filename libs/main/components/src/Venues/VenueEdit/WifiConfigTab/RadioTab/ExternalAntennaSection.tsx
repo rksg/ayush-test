@@ -12,14 +12,17 @@ import {
   useGetVenueAntennaTypeQuery,
   useGetVenueApCapabilitiesQuery,
   useGetVenueExternalAntennaQuery,
+  useGetVenueTemplateApCapabilitiesQuery,
+  useGetVenueTemplateExternalAntennaQuery,
   useUpdateVenueAntennaTypeMutation,
   useUpdateVenueExternalAntennaMutation
 } from '@acx-ui/rc/services'
-import { ApAntennaTypeEnum, CapabilitiesApModel, ExternalAntenna, VeuneApAntennaTypeSettings } from '@acx-ui/rc/utils'
-import { useParams }                                                                           from '@acx-ui/react-router-dom'
+import { ApAntennaTypeEnum, CapabilitiesApModel, ExternalAntenna, VeuneApAntennaTypeSettings, useConfigTemplate } from '@acx-ui/rc/utils'
+import { useParams }                                                                                              from '@acx-ui/react-router-dom'
 
-import { VenueEditContext } from '../..'
-import ApModelPlaceholder   from '../../../assets/images/aps/ap-model-placeholder.png'
+import { VenueEditContext }                      from '../..'
+import ApModelPlaceholder                        from '../../../assets/images/aps/ap-model-placeholder.png'
+import { useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
 
 import { ExternalAntennaForm } from './ExternalAntennaForm'
 
@@ -46,15 +49,14 @@ export function ExternalAntennaSection () {
   const [antennaTypeModels, setAntennaTypeModels] = useState([] as VeuneApAntennaTypeSettings[])
   const [selectedApAntennaType, setSelectedApAntennaType] = useState(null as VeuneApAntennaTypeSettings | null)
 
-  const { allApModelCapabilities, isLoadingCapabilities } = useGetVenueApCapabilitiesQuery({ params }, {
-    selectFromResult ({ data, isLoading }) {
-      return {
-        allApModelCapabilities: data?.apModels,
-        isLoadingCapabilities: isLoading
-      }
-    }
-  })
-  const { data: allApExternalAntennas, isLoading: isLoadingExternalAntenna } = useGetVenueExternalAntennaQuery({ params })
+  const { allApModelCapabilities, isLoadingCapabilities } = useGetVenueApCapabilitiesQueryFnSwitcher()
+
+  const { data: allApExternalAntennas, isLoading: isLoadingExternalAntenna } =
+    useVenueConfigTemplateQueryFnSwitcher<ExternalAntenna[]>(
+      useGetVenueExternalAntennaQuery,
+      useGetVenueTemplateExternalAntennaQuery
+    )
+
   const [updateVenueExternalAntenna, { isLoading: isUpdatingExternalAntenna }] = useUpdateVenueExternalAntennaMutation()
 
   const { data: antennaTypeSettings } = useGetVenueAntennaTypeQuery({ params }, { skip: !supportAntennaTypeSelection })
@@ -250,4 +252,29 @@ export function ExternalAntennaSection () {
       </Row>
     </Loader>
   )
+}
+
+function useGetVenueApCapabilitiesQueryFnSwitcher () {
+  const { isTemplate } = useConfigTemplate()
+  const params = useParams()
+
+  const result = useGetVenueApCapabilitiesQuery({ params }, {
+    skip: isTemplate,
+    selectFromResult: selectApModelCapabilitiesFromResult
+  })
+  const templateResult = useGetVenueTemplateApCapabilitiesQuery({ params }, {
+    skip: !isTemplate,
+    selectFromResult: selectApModelCapabilitiesFromResult
+  })
+
+  return isTemplate ? templateResult : result
+}
+
+function selectApModelCapabilitiesFromResult (
+  { data, isLoading }: { data?: { version: string, apModels:CapabilitiesApModel[] }, isLoading: boolean }
+) {
+  return {
+    allApModelCapabilities: data?.apModels,
+    isLoadingCapabilities: isLoading
+  }
 }

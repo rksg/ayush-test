@@ -45,7 +45,7 @@ import { RequestPayload }     from '@acx-ui/types'
 import { validationMessages } from '@acx-ui/utils'
 
 import { MessageMapping }      from '../MessageMapping'
-import { useGetVenueInstance } from '../venueConfigTemplateUtils'
+import { useGetVenueInstance } from '../venueConfigTemplateApiSwitcher'
 import { VenueEditContext }    from '../VenueEdit'
 
 interface AddressComponent {

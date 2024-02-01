@@ -4,16 +4,17 @@ import { Button, Space } from 'antd'
 import { isEmpty }       from 'lodash'
 import { useIntl }       from 'react-intl'
 
-import { AnchorLayout, StepsFormLegacy, Tooltip }             from '@acx-ui/components'
-import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                         from '@acx-ui/icons'
-import { usePathBasedOnConfigTemplate }                       from '@acx-ui/rc/components'
-import { useGetVenueApCapabilitiesQuery, useLazyApListQuery } from '@acx-ui/rc/services'
-import { VenueApModelCellular, redirectPreviousPage }         from '@acx-ui/rc/utils'
-import { useNavigate, useParams }                             from '@acx-ui/react-router-dom'
-import { directedMulticastInfo }                              from '@acx-ui/utils'
+import { AnchorLayout, StepsFormLegacy, Tooltip }                                                     from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                     from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                                                                 from '@acx-ui/icons'
+import { usePathBasedOnConfigTemplate }                                                               from '@acx-ui/rc/components'
+import { useGetVenueApCapabilitiesQuery, useGetVenueTemplateApCapabilitiesQuery, useLazyApListQuery } from '@acx-ui/rc/services'
+import { CapabilitiesApModel, VenueApModelCellular, redirectPreviousPage }                            from '@acx-ui/rc/utils'
+import { useNavigate, useParams }                                                                     from '@acx-ui/react-router-dom'
+import { directedMulticastInfo }                                                                      from '@acx-ui/utils'
 
-import { VenueEditContext } from '../../index'
+import { useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
+import { VenueEditContext }                      from '../../index'
 
 import { CellularOptionsForm } from './CellularOptions/CellularOptionsForm'
 import { DirectedMulticast }   from './DirectedMulticast'
@@ -44,7 +45,12 @@ export function NetworkingTab () {
   const [cellularApModels, setCellularApModels] = useState<string[]>([])
   const [hasCellularAps, setHasCellularAps] = useState(false)
 
-  const { data: venueCaps } = useGetVenueApCapabilitiesQuery({ params: { tenantId, venueId } })
+  // eslint-disable-next-line max-len
+  const { data: venueCaps } = useVenueConfigTemplateQueryFnSwitcher<{ version: string, apModels:CapabilitiesApModel[] }>(
+    useGetVenueApCapabilitiesQuery,
+    useGetVenueTemplateApCapabilitiesQuery
+  )
+
   const [ getApList ] = useLazyApListQuery()
 
   useEffect(() => {

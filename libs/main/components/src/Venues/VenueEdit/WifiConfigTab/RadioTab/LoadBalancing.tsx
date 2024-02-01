@@ -5,14 +5,18 @@ import { Col, InputNumber, Form, Radio, Row, Slider, Space, Switch } from 'antd'
 import { defineMessage, useIntl }                                    from 'react-intl'
 import { useParams }                                                 from 'react-router-dom'
 
-import { AnchorContext, Loader, Tooltip }                                     from '@acx-ui/components'
-import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                                         from '@acx-ui/icons'
-import { useGetVenueLoadBalancingQuery, useUpdateVenueLoadBalancingMutation } from '@acx-ui/rc/services'
-import { LoadBalancingMethodEnum, SteeringModeEnum }                          from '@acx-ui/rc/utils'
+import { AnchorContext, Loader, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }     from '@acx-ui/icons'
+import {
+  useGetVenueLoadBalancingQuery, useGetVenueTemplateLoadBalancingQuery,
+  useUpdateVenueLoadBalancingMutation
+} from '@acx-ui/rc/services'
+import { LoadBalancingMethodEnum, SteeringModeEnum, VenueLoadBalancing } from '@acx-ui/rc/utils'
 
-import { VenueEditContext }             from '../..'
-import { FieldLabel, RadioDescription } from '../styledComponents'
+import { VenueEditContext }                      from '../..'
+import { useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
+import { FieldLabel, RadioDescription }          from '../styledComponents'
 
 const { useWatch } = Form
 
@@ -39,7 +43,11 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
   const { setReadyToScroll } = useContext(AnchorContext)
 
   const { setIsLoadOrBandBalaningEnabled } = props
-  const getLoadBalancing = useGetVenueLoadBalancingQuery({ params: { venueId } })
+  const getLoadBalancing = useVenueConfigTemplateQueryFnSwitcher<VenueLoadBalancing>(
+    useGetVenueLoadBalancingQuery,
+    useGetVenueTemplateLoadBalancingQuery
+  )
+
   const [updateVenueLoadBalancing, { isLoading: isUpdatingVenueLoadBalancing }] =
     useUpdateVenueLoadBalancingMutation()
 

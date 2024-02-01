@@ -11,19 +11,26 @@ import { LanPortPoeSettings, LanPortSettings, ConvertPoeOutToFormData }
 import {
   useGetVenueSettingsQuery,
   useGetVenueLanPortsQuery,
-  useUpdateVenueLanPortsMutation, useGetVenueApCapabilitiesQuery
+  useUpdateVenueLanPortsMutation,
+  useGetVenueApCapabilitiesQuery,
+  useGetVenueTemplateSettingsQuery,
+  useGetVenueTemplateLanPortsQuery,
+  useGetVenueTemplateApCapabilitiesQuery
 } from '@acx-ui/rc/services'
 import {
   ApModel,
+  CapabilitiesApModel,
   LanPort,
-  VenueLanPorts
+  VenueLanPorts,
+  VenueSettings
 } from '@acx-ui/rc/utils'
 import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import DefaultApModelDiagram from '../../../../assets/images/aps/ap-model-placeholder.png'
-import { VenueEditContext }  from '../../../index'
+import DefaultApModelDiagram                     from '../../../../assets/images/aps/ap-model-placeholder.png'
+import { useVenueConfigTemplateQueryFnSwitcher } from '../../../../venueConfigTemplateApiSwitcher'
+import { VenueEditContext }                      from '../../../index'
 
 
 const { useWatch } = Form
@@ -42,9 +49,22 @@ export function LanPorts () {
 
   const customGuiChagedRef = useRef(false)
 
-  const venueSettings = useGetVenueSettingsQuery({ params: { tenantId, venueId } })
-  const venueLanPorts = useGetVenueLanPortsQuery({ params: { tenantId, venueId } })
-  const venueCaps = useGetVenueApCapabilitiesQuery({ params: { tenantId, venueId } })
+  const venueSettings = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>(
+    useGetVenueSettingsQuery,
+    useGetVenueTemplateSettingsQuery
+  )
+
+  const venueLanPorts = useVenueConfigTemplateQueryFnSwitcher<VenueLanPorts[]>(
+    useGetVenueLanPortsQuery,
+    useGetVenueTemplateLanPortsQuery
+  )
+
+  // eslint-disable-next-line max-len
+  const venueCaps = useVenueConfigTemplateQueryFnSwitcher<{ version: string, apModels:CapabilitiesApModel[] }>(
+    useGetVenueApCapabilitiesQuery,
+    useGetVenueTemplateApCapabilitiesQuery
+  )
+
   const [updateVenueLanPorts, {
     isLoading: isUpdatingVenueLanPorts }] = useUpdateVenueLanPortsMutation()
 

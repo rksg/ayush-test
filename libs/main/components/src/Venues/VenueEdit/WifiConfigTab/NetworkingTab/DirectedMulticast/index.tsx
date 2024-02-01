@@ -7,16 +7,18 @@ import { useParams }              from 'react-router-dom'
 import { AnchorContext, Loader }            from '@acx-ui/components'
 import {
   useGetVenueDirectedMulticastQuery,
+  useGetVenueTemplateDirectedMulticastQuery,
   useUpdateVenueDirectedMulticastMutation
 } from '@acx-ui/rc/services'
+import { VenueDirectedMulticast } from '@acx-ui/rc/utils'
 
-
-import { VenueEditContext } from '../../../index'
-import { FieldLabel }       from '../../styledComponents'
+import { useVenueConfigTemplateQueryFnSwitcher } from '../../../../venueConfigTemplateApiSwitcher'
+import { VenueEditContext }                      from '../../../index'
+import { FieldLabel }                            from '../../styledComponents'
 
 export function DirectedMulticast () {
   const { $t } = useIntl()
-  const { tenantId, venueId } = useParams()
+  const { venueId } = useParams()
 
   const {
     editContextData,
@@ -26,7 +28,11 @@ export function DirectedMulticast () {
   } = useContext(VenueEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
 
-  const directedMulticast = useGetVenueDirectedMulticastQuery({ params: { tenantId, venueId } })
+  const directedMulticast = useVenueConfigTemplateQueryFnSwitcher<VenueDirectedMulticast>(
+    useGetVenueDirectedMulticastQuery,
+    useGetVenueTemplateDirectedMulticastQuery
+  )
+
   const [updateVenueDirectedMulticast, { isLoading: isUpdatingVenueDirectedMulticast }] =
     useUpdateVenueDirectedMulticastMutation()
 

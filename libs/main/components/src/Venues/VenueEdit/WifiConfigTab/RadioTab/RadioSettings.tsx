@@ -39,11 +39,16 @@ import {
   useVenueDefaultRegulatoryChannelsQuery,
   useGetVenueRadioCustomizationQuery,
   useUpdateVenueRadioCustomizationMutation,
-  useGetVenueTripleBandRadioSettingsQuery,
   useUpdateVenueTripleBandRadioSettingsMutation,
   useGetVenueApCapabilitiesQuery,
   useGetVenueApModelBandModeSettingsQuery,
-  useUpdateVenueApModelBandModeSettingsMutation
+  useUpdateVenueApModelBandModeSettingsMutation,
+  useGetVenueTemplateApCapabilitiesQuery,
+  useGetVenueTemplateTripleBandRadioSettingsQuery,
+  useGetVenueTripleBandRadioSettingsQuery,
+  useGetVenueTemplateDefaultRegulatoryChannelsQuery,
+  useGetVenueTemplateDefaultRadioCustomizationQuery,
+  useGetVenueTemplateRadioCustomizationQuery
 } from '@acx-ui/rc/services'
 import {
   APExtended,
@@ -51,11 +56,15 @@ import {
   ChannelBandwidth6GEnum,
   AFCProps,
   BandModeEnum,
-  VenueApModelBandModeSettings
+  VenueApModelBandModeSettings,
+  TriBandSettings,
+  CapabilitiesApModel,
+  VenueDefaultRegulatoryChannels
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { VenueEditContext } from '../..'
+import { VenueEditContext }                      from '../..'
+import { useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
 
 import { VenueBandManagement } from './VenueBandManagement'
 
@@ -146,24 +155,37 @@ export function RadioSettings () {
   const [initVenueBandModeData, setInitVenueBandModeData] = useState([] as VenueApModelBandModeSettings[])
 
   const { data: venueCaps, isLoading: isLoadingVenueCaps } =
-    useGetVenueApCapabilitiesQuery({ params: { tenantId, venueId } })
+    useVenueConfigTemplateQueryFnSwitcher<{ version: string, apModels:CapabilitiesApModel[] }>(
+      useGetVenueApCapabilitiesQuery,
+      useGetVenueTemplateApCapabilitiesQuery
+    )
 
   const { data: tripleBandRadioSettingsData, isLoading: isLoadingTripleBandRadioSettingsData } =
-    useGetVenueTripleBandRadioSettingsQuery({ params: { tenantId, venueId } })
+    useVenueConfigTemplateQueryFnSwitcher<TriBandSettings>(
+      useGetVenueTripleBandRadioSettingsQuery,
+      useGetVenueTemplateTripleBandRadioSettingsQuery
+    )
 
   // available channels from this venue country code
   const { data: supportChannelsData, isLoading: isLoadingSupportChannelsData } =
-    useVenueDefaultRegulatoryChannelsQuery({ params: { tenantId, venueId } })
+    useVenueConfigTemplateQueryFnSwitcher<VenueDefaultRegulatoryChannels>(
+      useVenueDefaultRegulatoryChannelsQuery,
+      useGetVenueTemplateDefaultRegulatoryChannelsQuery
+    )
 
   // default radio data
   const { data: defaultRadioSettingsData, isLoading: isLoadingDefaultRadioSettingsData } =
-    useGetDefaultRadioCustomizationQuery({
-      params: { tenantId, venueId }
-    })
+    useVenueConfigTemplateQueryFnSwitcher<VenueRadioCustomization>(
+      useGetDefaultRadioCustomizationQuery,
+      useGetVenueTemplateDefaultRadioCustomizationQuery
+    )
 
   // Custom radio data
   const { data: venueSavedChannelsData, isLoading: isLoadingVenueData } =
-    useGetVenueRadioCustomizationQuery({ params: { tenantId, venueId } })
+    useVenueConfigTemplateQueryFnSwitcher<VenueRadioCustomization>(
+      useGetVenueRadioCustomizationQuery,
+      useGetVenueTemplateRadioCustomizationQuery
+    )
 
   const [ updateVenueRadioCustomization, { isLoading: isUpdatingVenueRadio } ] =
     useUpdateVenueRadioCustomizationMutation()

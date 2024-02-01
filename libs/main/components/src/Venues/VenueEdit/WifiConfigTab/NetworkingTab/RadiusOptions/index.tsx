@@ -4,12 +4,13 @@ import { Form, Switch } from 'antd'
 import { useIntl }      from 'react-intl'
 import { useParams }    from 'react-router-dom'
 
-import { AnchorContext, Loader, StepsForm }                                   from '@acx-ui/components'
-import { RadiusOptionsForm }                                                  from '@acx-ui/rc/components'
-import { useGetVenueRadiusOptionsQuery, useUpdateVenueRadiusOptionsMutation } from '@acx-ui/rc/services'
-import { VenueRadiusOptions }                                                 from '@acx-ui/rc/utils'
+import { AnchorContext, Loader, StepsForm }                                                                          from '@acx-ui/components'
+import { RadiusOptionsForm }                                                                                         from '@acx-ui/rc/components'
+import { useGetVenueRadiusOptionsQuery, useGetVenueTemplateRadiusOptionsQuery, useUpdateVenueRadiusOptionsMutation } from '@acx-ui/rc/services'
+import { VenueRadiusOptions }                                                                                        from '@acx-ui/rc/utils'
 
-import { VenueEditContext } from '../../..'
+import { VenueEditContext }                      from '../../..'
+import { useVenueConfigTemplateQueryFnSwitcher } from '../../../../venueConfigTemplateApiSwitcher'
 
 const { useWatch } = Form
 
@@ -26,7 +27,11 @@ export function RadiusOptions () {
   const { setReadyToScroll } = useContext(AnchorContext)
 
   const form = Form.useFormInstance()
-  const getVenueRadiusOptions = useGetVenueRadiusOptionsQuery({ params: { venueId } })
+  const getVenueRadiusOptions = useVenueConfigTemplateQueryFnSwitcher<VenueRadiusOptions>(
+    useGetVenueRadiusOptionsQuery,
+    useGetVenueTemplateRadiusOptionsQuery
+  )
+
   const [updateVenueRadiusOptions, { isLoading: isUpdatingVenueRadiusOptions }] =
   useUpdateVenueRadiusOptionsMutation()
 

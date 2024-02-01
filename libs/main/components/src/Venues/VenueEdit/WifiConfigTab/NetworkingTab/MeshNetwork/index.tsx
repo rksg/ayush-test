@@ -10,12 +10,14 @@ import { Features, useIsSplitOn }                                           from
 import {
   useLazyApListQuery,
   useGetVenueSettingsQuery,
-  useUpdateVenueMeshMutation
+  useUpdateVenueMeshMutation,
+  useGetVenueTemplateSettingsQuery
 } from '@acx-ui/rc/services'
-import { APMeshRole, Mesh, generateAlphanumericString } from '@acx-ui/rc/utils'
-import { validationMessages }                           from '@acx-ui/utils'
+import { APMeshRole, Mesh, VenueSettings, generateAlphanumericString } from '@acx-ui/rc/utils'
+import { validationMessages }                                          from '@acx-ui/utils'
 
-import { VenueEditContext } from '../../../index'
+import { useVenueConfigTemplateQueryFnSwitcher } from '../../../../venueConfigTemplateApiSwitcher'
+import { VenueEditContext }                      from '../../../index'
 
 import { ErrorMessageDiv, MeshInfoBlock, MeshPassphraseDiv, MeshSsidDiv, ZeroTouchMeshDiv } from './styledComponents'
 
@@ -72,7 +74,10 @@ export function MeshNetwork () {
 
   const [meshToolTipDisabledText, setMeshToolTipDisabledText] = useState(defaultToolTip)
 
-  const { data } = useGetVenueSettingsQuery({ params })
+  const { data } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>(
+    useGetVenueSettingsQuery,
+    useGetVenueTemplateSettingsQuery
+  )
 
   useEffect(() => {
     if (data) {
