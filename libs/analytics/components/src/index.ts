@@ -23,7 +23,6 @@ export {
 export type { IncidentsBySeverityData } from './IncidentBySeverity/services'
 export * from './Incidents'
 export { IncidentTable } from './IncidentTable'
-export { IncidentsDashboard } from './IncidentsDashboard'
 export { IncidentsDashboardv2 } from './IncidentsDashboardv2'
 export { KpiWidget } from './KpiWidget'
 export { NetworkFilter, getNetworkFilterData } from './NetworkFilter'
