@@ -34,7 +34,7 @@ export const ResourceGroupSelection = ({
           value: rg.id,
           key: rg.id
         }))}
-        placeholder={$t({ defaultMessage: 'Search to select' })}
+        placeholder={$t({ defaultMessage: 'Select a resource group' })}
         value={selectedValue}
         onChange={onChange}
       />

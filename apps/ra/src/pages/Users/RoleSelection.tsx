@@ -23,7 +23,7 @@ export const RoleSelection = ({
         value: role,
         key: i
       }))}
-      placeholder={$t({ defaultMessage: 'Select a resource group' })}
+      placeholder={$t({ defaultMessage: 'Select a role' })}
       value={selectedValue}
       onChange={onChange}
     />
