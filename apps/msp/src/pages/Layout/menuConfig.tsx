@@ -26,7 +26,7 @@ import { AccountType  }                                   from '@acx-ui/utils'
 
 export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfood?: boolean) {
   const { $t } = useIntl()
-  const isHspPlmFeatureOn = true//useIsTierAllowed(Features.MSP_HSP_PLM_FF)
+  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
   const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
   const isBrand360 = useIsSplitOn(Features.MSP_BRAND_360)
 
