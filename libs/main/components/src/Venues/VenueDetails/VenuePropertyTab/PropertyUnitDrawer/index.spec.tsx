@@ -3,8 +3,9 @@ import moment    from 'moment-timezone'
 import { rest }  from 'msw'
 
 import { useIsSplitOn }                                                                   from '@acx-ui/feature-toggle'
+import { apApi, venueApi }                                                                from '@acx-ui/rc/services'
 import { CommonUrlsInfo, ConnectionMeteringUrls, Persona, PersonaUrls, PropertyUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                                       from '@acx-ui/store'
+import { Provider, store }                                                                from '@acx-ui/store'
 import {  mockServer, render, screen,  waitForElementToBeRemoved }                        from '@acx-ui/test-utils'
 import { RolesEnum }                                                                      from '@acx-ui/types'
 import {
@@ -28,8 +29,6 @@ import {
 } from '../../../__tests__/fixtures'
 
 import { PropertyUnitDrawer } from './index'
-
-
 
 const closeFn = jest.fn()
 const params = {
@@ -70,6 +69,8 @@ jest.mocked(useIsSplitOn).mockReturnValue(true)
 describe('Property Unit Drawer', () => {
   beforeEach(() => {
     closeFn.mockClear()
+    store.dispatch(venueApi.util.resetApiState())
+    store.dispatch(apApi.util.resetApiState())
     mockServer.use(
       rest.get(
         PropertyUrlsInfo.getPropertyConfigs.url,
