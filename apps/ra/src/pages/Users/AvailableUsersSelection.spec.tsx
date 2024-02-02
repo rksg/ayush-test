@@ -37,7 +37,7 @@ describe('Available Users Selection', () => {
       <Provider><AvailableUsersSelection onChange={mockedOnchange} /></Provider>,
       { route: {} }
     )
-    expect(await screen.findByText('Search to select')).toBeVisible()
+    expect(await screen.findByText('Select a user')).toBeVisible()
     const ddWithSearch = screen.getByRole('combobox')
     await userEvent.click(ddWithSearch)
     expect(screen.getByTitle('abc')).toBeInTheDocument()

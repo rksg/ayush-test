@@ -21,7 +21,7 @@ export const AvailableUsersSelection = ({
       <Select
         showSearch
         style={{ width: 350 }}
-        placeholder={$t({ defaultMessage: 'Search to select' })}
+        placeholder={$t({ defaultMessage: 'Select a user' })}
         filterOption={(input, option) =>
           ((option?.label as string).toLocaleLowerCase())
             .includes(input.toLocaleLowerCase())}

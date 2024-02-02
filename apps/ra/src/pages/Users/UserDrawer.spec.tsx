@@ -247,7 +247,7 @@ describe('User Drawer', () => {
       return element?.tagName.toLowerCase() === 'div'
         && content.startsWith('Invite a 3rd Party user')
     })).toBeInTheDocument()
-    const emailInput = await screen.findByPlaceholderText('Email')
+    const emailInput = await screen.findByPlaceholderText('Enter an email')
     await(userEvent.type(emailInput, 'dog@email.com'))
     const dropDowns = screen.getAllByRole('combobox')
     await userEvent.click(dropDowns[0]) //RG
@@ -285,7 +285,7 @@ describe('User Drawer', () => {
       return element?.tagName.toLowerCase() === 'div'
         && content.startsWith('Invite a 3rd Party user')
     })).toBeInTheDocument()
-    const emailInput = await screen.findByPlaceholderText('Email')
+    const emailInput = await screen.findByPlaceholderText('Enter an email')
     await(userEvent.type(emailInput, 'dog@email.com'))
     const dropDowns = screen.getAllByRole('combobox')
     await userEvent.click(dropDowns[0]) //RG
@@ -327,7 +327,7 @@ describe('User Drawer', () => {
       return element?.tagName.toLowerCase() === 'div'
         && content.startsWith('Invite a 3rd Party user')
     })).toBeInTheDocument()
-    const emailInput = await screen.findByPlaceholderText('Email')
+    const emailInput = await screen.findByPlaceholderText('Enter an email')
     await(userEvent.type(emailInput, 'dog@email.com'))
     const dropDowns = screen.getAllByRole('combobox')
     await userEvent.click(dropDowns[0]) //RG
@@ -362,7 +362,7 @@ describe('User Drawer', () => {
       return element?.tagName.toLowerCase() === 'div'
         && content.startsWith('Invite a 3rd Party user')
     })).toBeInTheDocument()
-    const emailInput = await screen.findByPlaceholderText('Email')
+    const emailInput = await screen.findByPlaceholderText('Enter an email')
     await(userEvent.type(emailInput, 'ddd')) //invalid email
     const dropDowns = screen.getAllByRole('combobox')
     await userEvent.click(dropDowns[0]) //RG
