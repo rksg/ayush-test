@@ -8,9 +8,8 @@ import { useIntl }                       from 'react-intl'
 import { Alert, Loader, useStepFormContext }              from '@acx-ui/components'
 import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import { useGetEdgeClusterListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
-import { EdgeGeneralSetting, PRODUCT_CODE_VIRTUAL_EDGE }  from '@acx-ui/rc/utils'
+import { EdgeGeneralSetting, edgeSerialNumberValidator }  from '@acx-ui/rc/utils'
 import { useParams }                                      from '@acx-ui/react-router-dom'
-import { getIntl, validationMessages }                    from '@acx-ui/utils'
 
 
 interface EdgeSettingFormProps {
@@ -37,30 +36,6 @@ const clusterOptionsDefaultPayload = {
   sortField: 'name',
   sortOrder: 'ASC',
   pageSize: 10000
-}
-
-async function edgeSerialNumberValidator (value: string) {
-  const { $t } = getIntl()
-  if (value.startsWith(PRODUCT_CODE_VIRTUAL_EDGE)) {
-    return validateVirtualEdgeSerialNumber(value)
-  }
-  return Promise.reject($t(validationMessages.invalid))
-}
-
-function validateVirtualEdgeSerialNumber (value: string) {
-  const { $t } = getIntl()
-
-  if (!new RegExp(/^[0-9a-z]+$/i).test(value)) {
-    return Promise.reject($t(validationMessages.invalid))
-  }
-
-  if (value.length !== 34) {
-    return Promise.reject($t({
-      defaultMessage: 'Field must be exactly 34 characters'
-    }))
-  }
-
-  return Promise.resolve()
 }
 
 export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
