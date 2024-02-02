@@ -10,7 +10,7 @@ import { DhcpPoolStats, EdgeDhcpSetting, useTableQuery }                        
 import { useNavigate, useParams, useTenantLink }                                              from '@acx-ui/react-router-dom'
 import { RequestPayload }                                                                     from '@acx-ui/types'
 
-const EdgeClusterDhcpTab = () => {
+export const EdgeClusterDhcp = () => {
   const navigate = useNavigate()
   const params = useParams()
   const { clusterId } = params
@@ -128,5 +128,3 @@ const EdgeClusterDhcpTab = () => {
     </StepsForm>
   )
 }
-
-export default EdgeClusterDhcpTab
