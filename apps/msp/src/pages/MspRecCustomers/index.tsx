@@ -53,7 +53,8 @@ export function MspRecCustomers () {
   const isAssignMultipleEcEnabled = useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS)
      && isPrimeAdmin
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
-  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
+  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
+  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
   const MAX_ALLOWED_SELECTED_EC = 200
 
   const [ecTenantId, setTenantId] = useState('')
