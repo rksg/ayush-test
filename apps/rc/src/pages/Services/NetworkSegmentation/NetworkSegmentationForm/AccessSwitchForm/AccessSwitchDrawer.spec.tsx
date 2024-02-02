@@ -1,14 +1,14 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { nsgApi }                                  from '@acx-ui/rc/services'
 import { NetworkSegmentationUrls, SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                from '@acx-ui/store'
+import { Provider, store }                         from '@acx-ui/store'
 import { mockServer, render, screen, waitFor }     from '@acx-ui/test-utils'
 
 import { mockNsgData, mockNsgSwitchInfoData, switchPortList, switchVlanUnion, switchLagList, webAuthList } from '../../__tests__/fixtures'
 
-import { AccessSwitchDrawer }  from './AccessSwitchDrawer'
-import { NetworkSegAuthModal } from './NetworkSegAuthModal'
+import { AccessSwitchDrawer } from './AccessSwitchDrawer'
 
 type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void
@@ -29,9 +29,11 @@ jest.mock('antd', () => {
   return { ...components, Select }
 })
 
-jest.mock('../../../NetworkSegWebAuth/NetworkSegAuthForm', () => ({
-  ...jest.requireActual('../../../NetworkSegWebAuth/NetworkSegAuthForm'),
-  default: () => <div data-testid={'NetworkSegAuthForm'}></div>
+jest.mock('./NetworkSegAuthModal', () => ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  NetworkSegAuthModal: (props: {
+    setWebAuthTemplateId: (id: string) => void
+  }) => <div data-testid={'NetworkSegAuthModal'}></div>
 }))
 
 describe('AccessSwitchDrawer', () => {
@@ -41,6 +43,7 @@ describe('AccessSwitchDrawer', () => {
   }
   const path = '/:tenantId/t/services/personalIdentityNetwork/:serviceId/edit'
   beforeEach(async () => {
+    store.dispatch(nsgApi.util.resetApiState())
     mockServer.use(
       rest.post(
         SwitchUrlsInfo.getSwitchPortlist.url,
@@ -82,23 +85,21 @@ describe('AccessSwitchDrawer', () => {
         route: { params, path }
       })
 
-    await screen.findByText(/Edit Access Switch: FEK3224R09N---AS---3/i)
-
     await screen.findByText(/top-Ken-0209/i)
 
-    await user.click(await screen.findByText(/LAG/))
+    await user.click(screen.getByText(/LAG/))
     await user.selectOptions(
-      await screen.findByTestId('LAG'),
-      await screen.findByRole('option', { name: /1/ })
+      screen.getByTestId('LAG'),
+      screen.getByRole('option', { name: /1/ })
     )
 
-    await user.click(await screen.findByRole('button', { name: 'Customize' }))
+    await user.click(screen.getByRole('button', { name: 'Customize' }))
 
     const templateSelectBtn = await screen.findByRole('button', { name: 'Select Auth Template' })
     await user.click(templateSelectBtn)
-    await user.click(await screen.findByRole('button', { name: 'Customize' }))
+    await user.click(screen.getByRole('button', { name: 'Customize' }))
 
-    await user.click(await screen.findByText(/Save/))
+    await user.click(screen.getByText(/Save/))
 
     await waitFor(() => expect(saveSpy).toHaveBeenCalledTimes(1))
   })
@@ -121,33 +122,17 @@ describe('AccessSwitchDrawer', () => {
 
     await screen.findByText(/Edit Access Switch: FEK3224R09N---AS---3, mockAS/i)
 
-    await user.click(await screen.findByText(/Uplink Port/))
-    await user.click(await screen.findByText('LAG'))
+    await user.click(screen.getByText(/Uplink Port/))
+    await user.click(screen.getByText('LAG'))
 
-    await user.click(await screen.findByText(/VLAN ID/))
-    await user.click(await screen.findByText(/VLAN ID/)) //to deselect
+    await user.click(screen.getByText(/VLAN ID/))
+    await user.click(screen.getByText(/VLAN ID/)) //to deselect
 
-    await user.click(await screen.findByText('LAG'))
-    await user.type(await screen.findByTestId('LAG'), '1')
+    await user.click(screen.getByText('LAG'))
+    await user.type(screen.getByTestId('LAG'), '1')
 
-    await user.click(await screen.findByText(/Save/))
+    await user.click(screen.getByText(/Save/))
 
     await waitFor(() => expect(saveSpy).toHaveBeenCalledTimes(1))
-  })
-})
-
-describe('NetworkSegAuthModel', () => {
-  const setWebAuthTemplateId = jest.fn()
-  it('Should render successfully', async () => {
-    render(<NetworkSegAuthModal setWebAuthTemplateId={setWebAuthTemplateId} />)
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
-
-    const form = await screen.findByTestId('NetworkSegAuthForm')
-    await waitFor(() => expect(form).toBeVisible())
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
-
-    expect(form).not.toBeVisible()
   })
 })

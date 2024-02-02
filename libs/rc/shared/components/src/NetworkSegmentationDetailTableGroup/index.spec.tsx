@@ -40,6 +40,10 @@ describe('NetworkSegmentationDetailTableGroup', () => {
         NetworkSegmentationUrls.getNetworkSegmentationGroupById.url,
         (req, res, ctx) => res(ctx.json(mockedNsgData))
       ),
+      rest.get(
+        PersonaUrls.getPersonaGroupById.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
       rest.post(
         NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
         (req, res, ctx) => res(ctx.json(mockedNsgStatsList))
