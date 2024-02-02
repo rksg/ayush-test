@@ -27,7 +27,9 @@ import {
   useDeleteNetworkVenueMutation,
   useVenueNetworkListQuery,
   useVenueNetworkTableQuery,
-  useVenueDetailsHeaderQuery
+  useVenueDetailsHeaderQuery,
+  useVenueNetworkTableV2Query,
+  useVenueNetworkListV2Query
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -83,9 +85,11 @@ interface schedule {
 export function VenueNetworksTab () {
   const { $t } = useIntl()
   const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
+  const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
   const settingsId = 'venue-networks-table'
   const tableQuery = useTableQuery({
-    useQuery: isApCompatibleCheckEnabled ? useVenueNetworkTableQuery: useVenueNetworkListQuery,
+    useQuery: isUseWifiApiV2? (isApCompatibleCheckEnabled ? useVenueNetworkTableV2Query: useVenueNetworkListV2Query)
+      : (isApCompatibleCheckEnabled ? useVenueNetworkTableQuery: useVenueNetworkListQuery),
     defaultPayload,
     pagination: { settingsId }
   })
