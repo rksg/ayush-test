@@ -20,3 +20,8 @@ export const EditOutlinedDisabledIcon = styled(EditOutlined)`
     stroke: var(--acx-neutrals-40) !important;
   }
 `
+export const DeleteOutlinedDisabledIcon = styled(DeleteOutlined)`
+  path {
+    stroke: var(--acx-neutrals-40) !important;
+  }
+`
