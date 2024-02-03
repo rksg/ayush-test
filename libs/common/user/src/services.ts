@@ -102,8 +102,7 @@ export const UserUrlsInfo = {
   },
   getMfaAdminDetails: {
     method: 'get',
-    url: '/mfa/admin/:userId',
-    useDefaultHostname: true
+    url: '/mfa/admin/:userId'
   },
   mfaRegisterAdmin: {
     method: 'post',
