@@ -141,6 +141,8 @@ export interface NetworkSaveData {
   totalDownlinkLimited? : boolean
   accessControlProfileEnable?: boolean
   enableOwe?: boolean
+  isDsaeServiceNetwork?: boolean
+  dsaeNetworkPairId?: string
 }
 
 export enum MaxRateEnum {

@@ -346,7 +346,6 @@ export function MspCustomers () {
           title: $t({ defaultMessage: 'Installed Devices' }),
           dataIndex: 'apswLicenseInstalled',
           key: 'apswLicenseInstalled',
-          sorter: true,
           render: function (_: React.ReactNode, row: MspEc) {
             return <div style={{ textAlign: 'center' }}>
               {mspUtils.transformInstalledDevice(row.entitlements)}</div>
@@ -370,7 +369,6 @@ export function MspCustomers () {
             <div>{$t({ defaultMessage: 'Utilization' })}</div></div>,
           dataIndex: 'apswLicensesUtilization',
           key: 'apswLicensesUtilization',
-          sorter: true,
           render: function (_: React.ReactNode, row: MspEc) {
             return <div style={{ textAlign: 'center' }}>
               {mspUtils.transformDeviceUtilization(row.entitlements)}</div>
@@ -467,12 +465,14 @@ export function MspCustomers () {
     const [mspEcTenantList, setMspEcTenantList] = useState([] as string[])
     const [mspEcAlarmList, setEcAlarmData] = useState({} as MspEcAlarmList)
     const basePath = useTenantLink('/dashboard/mspcustomers/edit', 'v')
+    const settingsId = 'msp-customers-table'
     const tableQuery = useTableQuery({
       useQuery: useMspCustomerListQuery,
       defaultPayload: mspPayload,
       search: {
         searchTargetFields: mspPayload.searchTargetFields as string[]
-      }
+      },
+      pagination: { settingsId }
     })
 
     const alarmList = useGetMspEcAlarmListQuery(
@@ -624,7 +624,7 @@ export function MspCustomers () {
         tableQuery,
         { isLoading: false, isFetching: isDeleteEcUpdating }]}>
         <Table
-          settingsId='msp-customers-table'
+          settingsId={settingsId}
           columns={columns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -660,12 +660,14 @@ export function MspCustomers () {
     const [mspEcAlarmList, setEcAlarmData] = useState({} as MspEcAlarmList)
     const [drawerScheduleFirmwareVisible, setDrawerScheduleFirmwareVisible] = useState(false)
 
+    const settingsId = 'integrator-customers-table'
     const tableQuery = useTableQuery({
       useQuery: useIntegratorCustomerListQuery,
       defaultPayload: integratorPayload,
       search: {
         searchTargetFields: integratorPayload.searchTargetFields as string[]
-      }
+      },
+      pagination: { settingsId }
     })
 
     const alarmList = useGetMspEcAlarmListQuery(
@@ -705,7 +707,7 @@ export function MspCustomers () {
         tableQuery,
         { isLoading: false }]}>
         <Table
-          settingsId='integrator-customers-table'
+          settingsId={settingsId}
           columns={columns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -727,12 +729,14 @@ export function MspCustomers () {
   const SupportEcTable = () => {
     const [mspEcTenantList, setMspEcTenantList] = useState([] as string[])
     const [mspEcAlarmList, setEcAlarmData] = useState({} as MspEcAlarmList)
+    const settingsId = 'support-ec-table'
     const tableQuery = useTableQuery({
       useQuery: useSupportMspCustomerListQuery,
       defaultPayload: supportPayload,
       search: {
         searchTargetFields: supportPayload.searchTargetFields as string[]
-      }
+      },
+      pagination: { settingsId }
     })
 
     const alarmList = useGetMspEcAlarmListQuery(
@@ -756,7 +760,7 @@ export function MspCustomers () {
         tableQuery,
         { isLoading: false }]}>
         <Table
-          settingsId='support-ec-table'
+          settingsId={settingsId}
           columns={columns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

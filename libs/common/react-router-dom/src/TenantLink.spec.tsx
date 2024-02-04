@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import { ReactNode } from 'react'
 
-import { render, screen } from '@testing-library/react'
+import { render, screen } from '@acx-ui/test-utils'
 
 import { MspTenantLink, TenantLink } from './TenantLink'
 

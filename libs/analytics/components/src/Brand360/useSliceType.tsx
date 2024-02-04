@@ -7,13 +7,13 @@ import { Dropdown, Button, CaretDownSolidIcon } from '@acx-ui/components'
 
 export type SliceType = 'property' | 'lsp'
 const slices: Record<SliceType, MessageDescriptor> = {
-  property: defineMessage({ defaultMessage: 'Property' }),
-  lsp: defineMessage({ defaultMessage: 'LSP' })
+  lsp: defineMessage({ defaultMessage: 'LSP' }),
+  property: defineMessage({ defaultMessage: 'Property' })
 }
 
 export const useSliceType = () => {
   const { $t } = useIntl()
-  const [sliceType, setSliceType] = useState<SliceType>('property')
+  const [sliceType, setSliceType] = useState<SliceType>('lsp')
   return {
     sliceType,
     SliceTypeDropdown: () => <Dropdown

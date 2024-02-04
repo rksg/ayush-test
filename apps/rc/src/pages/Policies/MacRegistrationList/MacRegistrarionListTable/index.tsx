@@ -10,8 +10,8 @@ import {
   TableProps,
   showToast
 } from '@acx-ui/components'
-import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }          from '@acx-ui/rc/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }                        from '@acx-ui/rc/components'
 import {
   doProfileDelete, useAdaptivePolicySetListQuery,
   useDeleteMacRegListMutation,
@@ -42,6 +42,8 @@ export default function MacRegistrationListsTable () {
   const params = useParams()
 
   const policyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isAsync = useIsSplitOn(Features.CLOUDPATH_ASYNC_API_TOGGLE)
+  const customHeaders = (isAsync) ? { Accept: 'application/vnd.ruckus.v2+json' } : undefined
 
   const filter = {
     filterKey: 'name',
@@ -49,6 +51,7 @@ export default function MacRegistrationListsTable () {
     value: ''
   }
 
+  const settingsId = 'mac-reg-list-table'
   const tableQuery = useTableQuery({
     useQuery: useSearchMacRegListsQuery,
     defaultPayload: {
@@ -56,7 +59,8 @@ export default function MacRegistrationListsTable () {
       searchCriteriaList: [
         { ...filter }
       ]
-    }
+    },
+    pagination: { settingsId }
   })
 
   const [
@@ -209,13 +213,16 @@ export default function MacRegistrationListsTable () {
           { fieldName: 'associationIds', fieldText: $t({ defaultMessage: 'Identity' }) },
           { fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }
         ],
-        async () => deleteMacRegList({ params: { policyId: selectedRow.id } })
+        async () => deleteMacRegList({ params: { policyId: selectedRow.id }, customHeaders })
           .unwrap()
           .then(() => {
-            showToast({
-              type: 'success',
-              content: $t({ defaultMessage: 'List {name} was deleted' }, { name: selectedRow.name })
-            })
+            if (!isAsync) {
+              showToast({
+                type: 'success',
+                content: $t({ defaultMessage: 'List {name} was deleted' },
+                  { name: selectedRow.name })
+              })
+            }
             clearSelection()
           }).catch((error) => {
             console.log(error) // eslint-disable-line no-console
@@ -257,7 +264,7 @@ export default function MacRegistrationListsTable () {
       ]}>
         <Table<MacRegistrationPool>
           enableApiFilter
-          settingsId='mac-reg-list-table'
+          settingsId={settingsId}
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { apApi, venueApi }                                                from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo, getUrlForTest }                    from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, WifiUrlsInfo }                                   from '@acx-ui/rc/utils'
 import { Provider, store }                                                from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -37,14 +37,11 @@ describe('AP Led', () => {
 
     resetApLedSpy.mockClear()
     mockServer.use(
-      rest.get(
-        getUrlForTest(CommonUrlsInfo.getVenue),
+      rest.get(CommonUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(venueData))),
-      rest.get(
-        getUrlForTest(CommonUrlsInfo.getVenueLedOn),
+      rest.get(CommonUrlsInfo.getVenueLedOn.url,
         (_, res, ctx) => res(ctx.json(mockVenueLed))),
-      rest.get(
-        getUrlForTest(WifiUrlsInfo.getApLed),
+      rest.get(WifiUrlsInfo.getApLed.url,
         (_, res, ctx) => res(ctx.json(mockApLedSettings))),
       rest.delete(WifiUrlsInfo.resetApLed.url,
         (_, res, ctx)=>{

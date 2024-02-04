@@ -13,17 +13,10 @@ export type MiddlewareAction = {
   }
 }
 
-export const isDev = () => {
-  return window.location.hostname.includes('dev.ruckus.cloud')
-    || window.location.hostname.includes('devalto.ruckuswireless.com')
-    || window.location.hostname.includes('localhost')
-}
-
 export const refreshTokenMiddleware: Middleware = () => (next) => (action: MiddlewareAction) => {
   // JWT refresh flow support in UI
-  // TODO: isDev flag is used for initial testing by QA purpose, will be cleaned up once testing is done by QA
   // TODO: temporary logs below will be cleanup once this is tested by QA & before moving the code to higher envs
-  if ((isFulfilled(action)) && isDev()) {
+  if (isFulfilled(action)) {
     const jwt = sessionStorage.getItem('jwt') ?? 'null'
     const loginToken = action?.meta?.baseQueryMeta?.response?.headers.get('login-token')
     if (loginToken) {

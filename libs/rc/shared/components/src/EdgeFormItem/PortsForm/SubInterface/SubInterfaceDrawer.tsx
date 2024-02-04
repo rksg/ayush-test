@@ -63,8 +63,13 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
 
   const handleFinish = async () => {
     const formData = formRef.getFieldsValue(true)
+    const { ip, subnet, ...rest } = formData
     const payload = {
-      ...formData,
+      ...rest,
+      ...(
+        rest.ipMode === EdgeIpModeEnum.STATIC ?
+          { ip, subnet } : {}
+      ),
       name: data?.name || '',
       mac: mac,
       enabled: true

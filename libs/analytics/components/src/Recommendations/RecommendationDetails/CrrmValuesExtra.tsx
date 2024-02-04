@@ -7,8 +7,8 @@ import { getRecommendationsText } from './Values'
 
 export const CrrmValuesExtra = ({ details }: { details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
-  const isFullOptimized = !!_.get(details, 'metadata.algorithmData.isFullOptimized', true)
-  const recommendationText = getRecommendationsText(details, isFullOptimized)
+  const isFullOptimization = !!_.get(details, 'metadata.algorithmData.isCrrmFullOptimization', true)
+  const recommendationText = getRecommendationsText(details, isFullOptimization)
   return <>
     <Title>{$t({ defaultMessage: 'Why this recommendation?' })}</Title>
     {recommendationText.reasonText}

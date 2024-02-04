@@ -45,9 +45,11 @@ export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
   // eslint-disable-next-line max-len
   [ServiceType.EDGE_FIREWALL]: defineMessage({ defaultMessage: 'Provides DDoS and ACL to protect your devices' }),
   [ServiceType.EDGE_SD_LAN]: defineMessage({
-    defaultMessage: 'SD-LAN' }),
+    // eslint-disable-next-line max-len
+    defaultMessage: 'Simplify network management with centralized control, enhanced automation, and improved programmability for local networks.' }),
   [ServiceType.EDGE_SD_LAN_P2]: defineMessage({
-    defaultMessage: 'SD-LAN P2' }),
+    // eslint-disable-next-line max-len
+    defaultMessage: 'Simplify network management with centralized control, enhanced automation, and improved programmability for local networks.' }),
   // eslint-disable-next-line max-len
   [ServiceType.WIFI_CALLING]: defineMessage({ defaultMessage: 'Identify clients using Wi-Fi calling and provide enhanced QoS' }),
   // eslint-disable-next-line max-len

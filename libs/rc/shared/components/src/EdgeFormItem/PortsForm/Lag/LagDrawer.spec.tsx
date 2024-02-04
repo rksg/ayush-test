@@ -11,6 +11,7 @@ import { LagDrawer } from './LagDrawer'
 
 const { mockEdgePortConfig } = EdgePortConfigFixtures
 const { mockedEdgeLagList } = EdgeLagFixtures
+const noCoreLagList = mockedEdgeLagList.content.map(item => ({ ...item, corePortEnabled: false }))
 
 type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void
@@ -34,7 +35,7 @@ jest.mock('antd', () => {
 
 const defaultPortsContextdata = {
   portData: [],
-  lagData: mockedEdgeLagList.content as EdgeLag[],
+  lagData: noCoreLagList as EdgeLag[],
   isLoading: false,
   isFetching: false
 }
@@ -94,7 +95,57 @@ describe('EditEdge ports - LAG Drawer', () => {
     await userEvent.click(screen.getByRole('checkbox', { name: 'Port1' }))
     await userEvent.click(screen.getByRole('switch', { name: 'Port Enabled' }))
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
-    await userEvent.click(await screen.findByRole('button', { name: 'Replace with LAG settings' }))
+    const okBtn = await screen.findByRole('button', { name: 'Replace with LAG settings' })
+    await userEvent.click(okBtn)
     await waitFor(() => expect(mockedSetVisible).toBeCalled())
+    await waitFor(() => expect(okBtn).not.toBeVisible())
+  })
+
+  it('Should enable port when enabling LAG', async () => {
+    render(
+      <Provider>
+        <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+          <LagDrawer
+            serialNumber={mockedEdgeID}
+            visible={true}
+            setVisible={mockedSetVisible}
+            portList={mockEdgePortConfig.ports}
+          />
+        </EdgePortsDataContext.Provider>
+      </Provider>)
+
+    const lagEnabled = screen.getByRole('switch', { name: /lag enabled/i })
+    await waitFor(() => expect(lagEnabled).toBeChecked())
+    await userEvent.click(await screen.findByRole('checkbox', { name: 'Port1' }))
+    await userEvent.click(await screen.findByRole('checkbox', { name: 'Port2' }))
+    const portEnableds = await screen.findAllByRole('switch', { name: 'Port Enabled' })
+    for(let portEnabled of portEnableds) {
+      await waitFor(() => expect(portEnabled).toBeChecked())
+    }
+  })
+
+  it('Should pop up a dialog when disabling LAG', async () => {
+    render(
+      <Provider>
+        <EdgePortsDataContext.Provider value={defaultPortsContextdata}>
+          <LagDrawer
+            serialNumber={mockedEdgeID}
+            visible={true}
+            setVisible={mockedSetVisible}
+            portList={mockEdgePortConfig.ports}
+          />
+        </EdgePortsDataContext.Provider>
+      </Provider>)
+
+    const lagEnabled = screen.getByRole('switch', { name: /lag enabled/i })
+    await waitFor(() => expect(lagEnabled).toBeChecked())
+    await userEvent.click(lagEnabled)
+    const warningStr = await screen.findByText('Warning')
+    expect(warningStr).toBeVisible()
+    const disableButton = screen.getByRole('button', { name: 'Disable' })
+    await userEvent.click(disableButton)
+    await waitFor(() => expect(warningStr).not.toBeVisible())
+    await waitFor(() => expect(disableButton).not.toBeVisible())
+    await waitFor(() => expect(lagEnabled).not.toBeChecked())
   })
 })

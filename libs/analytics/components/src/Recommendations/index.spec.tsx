@@ -103,25 +103,14 @@ describe('RecommendationTabContent', () => {
   it('should render crrm table for R1', async () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: { recommendations: recommendationListResult.recommendations
-        .filter(r => r.code.includes('crrm') || r.code.includes('unknown')) }
+        .filter(r => r.code.includes('crrm') || r.code === 'unknown') }
     })
     render(<RecommendationTabContent/>, {
       route: { params: { activeTab: 'crrm' } },
       wrapper: Provider
     })
-    mockedSetPreference.mockImplementation(() => ({
-      unwrap: () => Promise.resolve({
-        setPreference: { success: true, errorCode: '', errorMsg: '' }
-      })
-    }))
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    const row = screen.getByRole('row', {
-      // eslint-disable-next-line max-len
-      name: /non-optimized 06\/16\/2023 06:05 optimal channel plan found for 2\.4 ghz radio zone-1 new/i
-    })
-    const nonOptimizedSwitch = within(row).getByRole('switch')
-    await userEvent.click(nonOptimizedSwitch)
     const text = await screen.findAllByText('Optimized')
     expect(text).toHaveLength(1)
     expect(screen.getByText('Venue')).toBeVisible()
@@ -131,7 +120,7 @@ describe('RecommendationTabContent', () => {
   it('should render crrm table for RA', async () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: { recommendations: recommendationListResult.recommendations
-        .filter(r => r.code.includes('crrm') || r.code.includes('unknown')) }
+        .filter(r => r.code.includes('crrm') || r.code === 'unknown') }
     })
     jest.mocked(get).mockReturnValue('true')
     render(<RecommendationTabContent/>, {
@@ -256,9 +245,8 @@ describe('RecommendationTabContent', () => {
     const afterShowMuted = await screen.findAllByRole('radio', { hidden: false, checked: false })
     expect(afterShowMuted).toHaveLength(2)
 
-    // check the action says unmute:
-    await userEvent.click(afterShowMuted[0])
-    await screen.findByRole('button', { name: 'Mute' })
+    await userEvent.click(afterShowMuted[1])
+    await screen.findByRole('button', { name: 'Unmute' })
 
     await userEvent.click(settingsButton)
     const resetButton = await screen.findByText('Reset to default')
@@ -298,5 +286,85 @@ describe('RecommendationTabContent', () => {
     expect(mockedMuteRecommendation).toHaveBeenCalledTimes(0)
     await userEvent.click(mute)
     expect(mockedMuteRecommendation).toHaveBeenCalledTimes(1)
+  })
+
+  it('should handle toggle of full/partial crrm correctly', async () => {
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
+      data: { recommendations: recommendationListResult.recommendations
+        .filter(r => r.code.includes('crrm') || r.code === 'unknown') }
+    })
+    render(<RecommendationTabContent/>, {
+      route: { params: { activeTab: 'crrm' } },
+      wrapper: Provider
+    })
+    mockedSetPreference.mockImplementation(() => ({
+      unwrap: () => Promise.resolve({
+        setPreference: { success: true, errorCode: '', errorMsg: '' }
+      })
+    }))
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    const row = screen.getByRole('row', {
+      // eslint-disable-next-line max-len
+      name: /Non-Optimized 06\/16\/2023 06:05 Optimal channel plan found for 2\.4 GHz radio zone-1 New/i
+    })
+    await userEvent.click(within(row).getByRole('switch'))
+    expect(mockedSetPreference).toBeCalled()
+  })
+
+  it('should not allow toggle of full/partial crrm', async () => {
+    const appliedRecommendation = recommendationListResult.recommendations
+      .find(r => r.code.includes('crrm') && r.status === 'applied')
+    const newRecommendation = recommendationListResult.recommendations
+      .find(r => r.code.includes('crrm') && r.status === 'new')
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', { data: { recommendations: [
+      appliedRecommendation,
+      {
+        ...newRecommendation,
+        metadata: { algorithmData: { isCrrmFullOptimization: true } },
+        preferences: { crrmFullOptimization: false },
+        isMuted: true
+      }
+    ] } })
+    render(<RecommendationTabContent/>, {
+      route: { params: { activeTab: 'crrm' } },
+      wrapper: Provider
+    })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    await userEvent.click(await screen.findByTestId('SettingsOutlined'))
+    await userEvent.click(await screen.findByText('Show Muted Recommendations'))
+    const appliedRow = screen.getByRole('row', {
+      // eslint-disable-next-line max-len
+      name: /Optimized 06\/16\/2023 06:05 Optimal Ch\/Width and Tx Power found for 5 GHz radio zone-1 Applied/i
+    })
+    const newRow = screen.getByRole('row', {
+      // eslint-disable-next-line max-len
+      name: /Non-Optimized 06\/16\/2023 06:05 Optimal Ch\/Width and Tx Power found for 2.4 GHz radio zone-1 New/i
+    })
+    expect(within(appliedRow).getByRole('switch')).toBeDisabled()
+    expect(within(newRow).getByRole('switch')).toBeDisabled()
+  })
+
+  it('should not have mismatch tooltip for unknown zone', async () => {
+    const unknownRecommendation = recommendationListResult.recommendations
+      .find(r => r.code === 'unknown')
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', { data: { recommendations: [
+      {
+        ...unknownRecommendation,
+        preferences: { crrmFullOptimization: false }
+      }
+    ] } })
+    render(<RecommendationTabContent/>, {
+      route: { params: { activeTab: 'crrm' } },
+      wrapper: Provider
+    })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    const row = screen.getByRole('row', {
+      // eslint-disable-next-line max-len
+      name: /Insufficient Licenses 11\/12\/2023 06:05 No RRM recommendation due to incomplete license compliance 01-Alethea-WiCheck Test Insufficient Licenses/
+    })
+    expect(row.classList.contains('crrm-optimization-mismatch')).toBeFalsy()
   })
 })

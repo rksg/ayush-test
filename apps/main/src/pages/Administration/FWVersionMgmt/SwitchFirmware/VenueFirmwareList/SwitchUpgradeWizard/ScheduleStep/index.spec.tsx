@@ -3,16 +3,15 @@ import { Form, Modal } from 'antd'
 
 import {
   FirmwareSwitchVenue,
-  SwitchFirmware
+  SwitchFirmware,
+  SwitchFirmwareFixtures
 } from '@acx-ui/rc/utils'
-import {
-  Provider
-} from '@acx-ui/store'
+import { Provider } from '@acx-ui/store'
 import {
   render,
-  screen
+  screen,
+  within
 } from '@acx-ui/test-utils'
-
 
 import {
   switchVenue,
@@ -23,6 +22,7 @@ import {
 
 import { ScheduleStep } from '.'
 
+const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
 
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
@@ -32,6 +32,13 @@ jest.mock('@acx-ui/components', () => ({
       setFieldValue: jest.fn(),
       validateFields: jest.fn()
     }
+  })
+}))
+
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetSwitchCurrentVersionsQuery: () => ({
+    data: mockSwitchCurrentVersions
   })
 }))
 
@@ -61,10 +68,10 @@ describe('ScheduleStep', () => {
       , {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
-    expect(await screen.findByText(/Firmware available for ICX 8200 Series/i)).toBeInTheDocument()
-    expect(screen.getByText(/10.0.10a_cd3/i)).toBeInTheDocument()
-    expect(screen.getByText(/9.0.10h_cd2/i)).toBeInTheDocument()
-    expect(screen.getByText(/9.0.10f/i)).toBeInTheDocument()
+    const form = screen.getByTestId('schedule-step')
+    expect(within(form).getByText(/10.0.10a_cd3/i)).toBeInTheDocument()
+    expect(within(form).getByText(/9.0.10h_cd2/i)).toBeInTheDocument()
+    expect(within(form).getByText(/9.0.10f/i)).toBeInTheDocument()
   })
 
   it('render ScheduleStep - 1 Venue - Changed', async () => {
@@ -80,54 +87,54 @@ describe('ScheduleStep', () => {
             nonIcx8200Count={2}
             icx8200Count={0}
             hasVenue={true}
-            // eslint-disable-next-line max-len
-            upgradeVenueList={switchVenue.upgradeVenueViewList.filter(v => v.name === 'Karen-Venue1') as FirmwareSwitchVenue[]}
+            upgradeVenueList={
+              switchVenue.upgradeVenueViewList.filter(
+                v => v.name === 'Karen-Venue1') as FirmwareSwitchVenue[]}
             upgradeSwitchList={[]}
             data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
         </Form>
-      </Provider>
-      , {
+      </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
 
-    expect(await screen.findByText(/Firmware available for ICX 8200 Series/i)).toBeInTheDocument()
-    expect(screen.getByText(/9.0.10f/i)).toBeInTheDocument()
+    const form = screen.getByTestId('schedule-step')
+    expect(within(form).getByText(/Firmware available for ICX 8200 Series/i)).toBeInTheDocument()
+    expect(within(form).getByText(/9.0.10f/i)).toBeInTheDocument()
 
-    const release10010rc2 = screen.getByRole('radio', {
+    const release10010rc2 = within(form).getByRole('radio', {
       name: /10\.0\.10_rc2 \(release - recommended\)/i
     })
-
-    userEvent.click(release10010rc2)
+    await userEvent.click(release10010rc2, { delay: null })
     expect(release10010rc2).toBeEnabled()
 
-    const release09010f = screen.getByRole('radio', {
+    const release09010f = within(form).getByRole('radio', {
       name: /9\.0\.10f \(release - recommended\)/i
     })
-    userEvent.click(release09010f)
+    await userEvent.click(release09010f, { delay: null })
     expect(release09010f).toBeEnabled()
 
-    const calendar = screen.getByRole('textbox', {
+    const calendar = within(form).getByRole('textbox', {
       name: /update date/i
     })
-    userEvent.click(calendar)
+    await userEvent.click(calendar, { delay: null })
     const calendarDate = await screen.findByRole('cell', {
       name: /2023-11-16/i
     })
     expect(calendarDate).toBeInTheDocument()
 
-    userEvent.click(calendarDate)
+    await userEvent.click(calendarDate, { delay: null })
     expect(await screen.findByDisplayValue(/2023-11-16/i)).toBeInTheDocument()
 
-    const selectedTime = await screen.findByRole('radio', {
+    const selectedTime = await within(form).findByRole('radio', {
       name: /12 am - 02 am/i
     })
-    userEvent.click(selectedTime)
+    await userEvent.click(selectedTime, { delay: null })
     expect(selectedTime).toBeEnabled()
 
-    const preDownloadSwitch = screen.getByRole('switch')
-    userEvent.click(preDownloadSwitch)
+    const preDownloadSwitch = within(form).getByRole('switch')
+    await userEvent.click(preDownloadSwitch, { delay: null })
     expect(preDownloadSwitch).toBeEnabled()
-
+    jest.runOnlyPendingTimers()
     jest.useRealTimers()
   })
 
@@ -151,14 +158,14 @@ describe('ScheduleStep', () => {
       , {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
-    // eslint-disable-next-line max-len
-    expect(await screen.findByText(/firmware available for icx 7150\/7550\/7650\/7850 series \(1 switches\)/i)).toBeInTheDocument()
-    // eslint-disable-next-line max-len
-    expect(screen.getByText(/9.0.10h_cd2/i)).toBeInTheDocument()
-    expect(screen.getByText(/9.0.10f/i)).toBeInTheDocument()
-    expect(screen.getByText(/9.0.10e/i)).toBeInTheDocument()
-    expect(screen.queryByText(/Firmware available for ICX 8200 Series/i)).toBeNull()
+    const form = screen.getByTestId('schedule-step')
+    expect(within(form).getByText(
+      /firmware available for icx 7150\/7550\/7650\/7850 series \(1 switches\)/i))
+      .toBeInTheDocument()
+    expect(within(form).getByText(/9.0.10h_cd2/i)).toBeInTheDocument()
+    expect(within(form).getByText(/9.0.10f/i)).toBeInTheDocument()
+    expect(within(form).getByText(/9.0.10e/i)).toBeInTheDocument()
+    expect(within(form).queryByText(/Firmware available for ICX 8200 Series/i)).toBeNull()
   })
-
 
 })

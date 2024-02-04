@@ -1,7 +1,6 @@
 export * from './MdnsProxySelector'
 export * from './MdnsProxyForwardingRulesTable'
 export * from './MdnsProxyForwardingRuleDrawer'
-export * from './useDpskNewConfigFlowParams'
 export * from './DHCPForm'
 export { DpskForm } from './DpskForm/DpskForm'
 export * from './WifiCalling'

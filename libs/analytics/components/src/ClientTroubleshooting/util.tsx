@@ -14,7 +14,9 @@ import {
   categoryCodeMap,
   IncidentCode,
   ClientEventEnum,
-  disconnectClientEventsMap
+  disconnectClientEventsMap,
+  IncidentsToggleFilter,
+  incidentsToggle
 } from '@acx-ui/analytics/utils'
 import {
   formatter,
@@ -75,9 +77,20 @@ export const transformEvents = (
   selectedRadios: string[]
 ) =>
   events.reduce((acc, data, index) => {
-    const { event, state, timestamp, mac, ttc, radio, code, failedMsgId, ssid } = data
-    if (code === EAP && failedMsgId && EAPOLMessageIds.includes(failedMsgId)) {
-      data = { ...data, code: EAPOL }
+    const { event, state, timestamp, mac, ttc, radio, code, messageIds, failedMsgId, ssid } = data
+    if (code === EAP && failedMsgId) {
+      if (EAPOLMessageIds.includes(failedMsgId)) {
+        data = { ...data, code: EAPOL }
+      } else if (messageIds) {
+        const numberOfElements = 2
+        const failedMsgIdIndex = messageIds.lastIndexOf(failedMsgId)
+        const targetIndex = failedMsgIdIndex - numberOfElements
+        const targetMessageIds = messageIds.map(id => id).splice(targetIndex, numberOfElements)
+        if (targetMessageIds.length === numberOfElements &&
+          targetMessageIds.every(item => EAPOLMessageIds.includes(item))) {
+          data = { ...data, code: EAPOL }
+        }
+      }
     }
 
     const category = categorizeEvent(event, ttc)
@@ -482,7 +495,11 @@ export const transformIncidents = (
 
 // General Util for the chart's data, tooltip formatter
 
-export const getTimelineData = (events: Event[], incidents: IncidentDetails[]) => {
+export const getTimelineData = (
+  events: Event[],
+  incidents: IncidentDetails[],
+  toggles?: IncidentsToggleFilter['toggles']
+) => {
   const categorisedEvents = events.reduce(
     (acc, event) => {
       if (event?.type === TYPES.CONNECTION_EVENTS) {
@@ -534,25 +551,23 @@ export const getTimelineData = (events: Event[], incidents: IncidentDetails[]) =
   )
   const categorisedIncidents = incidents.reduce(
     (acc, incident) => {
-      acc[TYPES.NETWORK_INCIDENTS as NetworkIncidentsKey][ALL] = [
-        ...acc[TYPES.NETWORK_INCIDENTS as NetworkIncidentsKey][ALL],
-        incident
+      const [map, code, key] = [
+        categoryCodeMap,
+        incident.code as IncidentCode,
+        TYPES.NETWORK_INCIDENTS as NetworkIncidentsKey
       ]
-      if (categoryCodeMap[connection]?.codes.includes(incident.code as IncidentCode))
-        acc[TYPES.NETWORK_INCIDENTS as NetworkIncidentsKey][connection] = [
-          ...acc[TYPES.NETWORK_INCIDENTS as NetworkIncidentsKey][connection],
-          incident
-        ]
-      if (categoryCodeMap[performance]?.codes.includes(incident.code as IncidentCode))
-        acc[TYPES.NETWORK_INCIDENTS as NetworkIncidentsKey][performance] = [
-          ...acc[TYPES.NETWORK_INCIDENTS as NetworkIncidentsKey][performance],
-          incident
-        ]
-      if (categoryCodeMap[infrastructure]?.codes.includes(incident.code as IncidentCode))
-        acc[TYPES.NETWORK_INCIDENTS as NetworkIncidentsKey][infrastructure] = [
-          ...acc[TYPES.NETWORK_INCIDENTS as NetworkIncidentsKey][infrastructure],
-          incident
-        ]
+      const categories = {
+        connection: incidentsToggle({ toggles, code: map.connection.codes }, connection),
+        performance: incidentsToggle({ toggles, code: map.performance.codes }, performance),
+        infrastructure: incidentsToggle({ toggles, code: map.infrastructure.codes }, infrastructure)
+      }
+      acc[key][ALL] = [...acc[key][ALL], incident]
+      if (categories.connection.includes(code))
+        acc[key][connection] = [...acc[key][connection], incident]
+      if (categories.performance.includes(code))
+        acc[key][performance] = [...acc[key][performance], incident]
+      if (categories.infrastructure.includes(code))
+        acc[key][infrastructure] = [...acc[key][infrastructure], incident]
       return acc
     },
     {

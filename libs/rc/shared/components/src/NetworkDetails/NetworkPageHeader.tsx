@@ -3,11 +3,13 @@ import { useEffect, useState } from 'react'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, RangePicker }                    from '@acx-ui/components'
-import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
-import { useLocation, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
-import { filterByAccess }                                     from '@acx-ui/user'
-import { useDateFilter }                                      from '@acx-ui/utils'
+import { Button, PageHeader, RangePicker }                     from '@acx-ui/components'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { generateConfigTemplateBreadcrumb, useConfigTemplate } from '@acx-ui/rc/utils'
+import { TenantType }                                          from '@acx-ui/react-router-dom'
+import { useLocation, useNavigate, useTenantLink, useParams }  from '@acx-ui/react-router-dom'
+import { filterByAccess }                                      from '@acx-ui/user'
+import { useDateFilter }                                       from '@acx-ui/utils'
 
 import { ActiveVenueFilter } from './ActiveVenueFilter'
 import NetworkTabs           from './NetworkTabs'
@@ -31,6 +33,20 @@ function NetworkPageHeader ({
   const enableTimeFilter = () => !['aps', 'venues'].includes(activeTab as string)
   const [ disableConfigure, setDisableConfigure ] = useState(false)
 
+  const GenBreadcrumb = () => {
+    const { isTemplate } = useConfigTemplate()
+    if (isTemplate) {
+      return generateConfigTemplateBreadcrumb()
+    }
+
+    return [
+      { text: $t({ defaultMessage: 'Wi-Fi' }), link: '' },
+      { text: $t({ defaultMessage: 'Wi-Fi Networks' }), link: '' },
+      { text: $t({ defaultMessage: 'Network List' }), link: '/networks' }
+    ] as { text: string, link?: string, tenantType?: TenantType }[]
+  }
+  const breadcrumb = GenBreadcrumb()
+
   useEffect(() => {
     if ((supportOweTransition && !isLoading)) {
       setDisableConfigure(
@@ -42,11 +58,7 @@ function NetworkPageHeader ({
   return (
     <PageHeader
       title={networkData?.name || ''}
-      breadcrumb={[
-        { text: $t({ defaultMessage: 'Wi-Fi' }), link: '' },
-        { text: $t({ defaultMessage: 'Wi-Fi Networks' }), link: '' },
-        { text: $t({ defaultMessage: 'Network List' }), link: '/networks' }
-      ]}
+      breadcrumb={breadcrumb}
       extra={[
         ...(setSelectedVenues && selectedVenues)
           ? [

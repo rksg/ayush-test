@@ -2,7 +2,12 @@ export const profilesExistResponse = {
   fields: ['name', 'id'],
   totalCount: 0,
   page: 1,
-  data: []
+  data: [{
+    id: 'testid',
+    name: '111',
+    description: '',
+    acls: []
+  }]
 }
 
 export const venues = {
@@ -202,6 +207,91 @@ export const profilewithtp = {
         },
         {
           slotNumber: 2,
+          enable: true
+        }
+      ]
+    }
+  ],
+  profileType: 'Regular',
+  venueCount: 0
+}
+
+export const profileWithVoiceVlan = {
+  id: 'd4e1e55cd0c44b5bb2d64d8aa0eeb3a1',
+  name: 'test1',
+  vlans: [
+    {
+      id: '35cb867d12664e5fa61c970cac129f18',
+      vlanId: 123,
+      ipv4DhcpSnooping: true,
+      arpInspection: true,
+      igmpSnooping: 'none',
+      spanningTreeProtocol: 'none',
+      spanningTreePriority: 32768,
+      switchFamilyModels: [
+        {
+          id: 'd23e89c131f8464aa4cf5b1f8b5c2528',
+          model: 'ICX7150-24',
+          taggedPorts: '1/1/13,1/1/14,1/1/15,1/1/16,1/1/17,1/1/18,1/1/19,1/1/20',
+          untaggedPorts: '1/1/5,1/1/6,1/1/7,1/1/8,1/1/9,1/1/10,1/1/11,1/1/12',
+          voicePorts: '1/1/13,1/1/14',
+          slots: [
+            {
+              slotNumber: 3,
+              enable: true,
+              option: '4X1/10G'
+            },
+            {
+              slotNumber: 1,
+              enable: true
+            },
+            {
+              slotNumber: 2,
+              enable: true,
+              option: '2X1G'
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  voiceVlanConfigs: [
+    {
+      model: 'ICX7150-24',
+      voiceVlans: [
+        {
+          vlanId: 123,
+          taggedPorts: [
+            '1/1/13',
+            '1/1/14'
+          ]
+        }
+      ]
+    }
+  ],
+  trustedPorts: [
+    {
+      id: 'e4b71e3e66e145209af6d44c98ec0d3a',
+      trustedPortType: 'all',
+      model: 'ICX7150-24',
+      vlanDemand: true,
+      trustPorts: [
+        '1/1/1',
+        '1/1/3',
+        '1/1/2',
+        '1/1/4'
+      ],
+      slots: [
+        {
+          slotNumber: 2,
+          enable: true
+        },
+        {
+          slotNumber: 1,
+          enable: true
+        },
+        {
+          slotNumber: 3,
           enable: true
         }
       ]

@@ -3,17 +3,19 @@ import { useState } from 'react'
 import {
   meanBy,
   mean,
-  sortBy,
+  orderBy,
   sumBy,
   groupBy,
   reduce,
-  toPairs
+  toPairs,
+  isNaN
 } from 'lodash'
 import { useIntl } from 'react-intl'
 
 import type { Settings }      from '@acx-ui/analytics/utils'
 import { Card }               from '@acx-ui/components'
 import { UpArrow, DownArrow } from '@acx-ui/icons'
+import { noDataDisplay }      from '@acx-ui/utils'
 
 import { SlaChart }                                                   from './Chart'
 import { ComplianceSetting }                                          from './ComplianceSetting'
@@ -96,7 +98,7 @@ const getListData = (
   groupedData: Record<string, (Lsp | Property)[]>,
   chartKey: ChartKey
 ): Array<[string, number]> => {
-  const { dataKey, avg } = slaKpiConfig[chartKey]
+  const { dataKey, avg, order } = slaKpiConfig[chartKey]
   const res = reduce(groupedData, (
     result: Record<string, number>,
     val: (Lsp | Property)[],
@@ -105,7 +107,7 @@ const getListData = (
     result[key] = curr + (avg ? meanBy(val, dataKey) : sumBy(val, dataKey))
     return result
   }, {} as Record<string, number>)
-  return sortBy(toPairs(res), val => val[1])
+  return orderBy(toPairs(res), val =>isNaN(val[1]) ? -1 : val[1],[order as 'asc' | 'desc'])
 }
 
 const SwitcherIcon = ({ order }: { order: boolean }) => {
@@ -122,16 +124,24 @@ const SwitcherIcon = ({ order }: { order: boolean }) => {
 const TopElementsSwitcher = ({ data, chartKey }:
 { data: Array<[string, number]>, chartKey: ChartKey }) => {
   const [isAsc, setIsAsc] = useState(true)
-  const start = isAsc ? 0 : -4
-  const end = isAsc ? 3 : -1
   const indexData = data.map((val, ind) => [...val, ind + 1])
-  const slice = indexData.slice(start, end)
+  const topSortedItems = isAsc ? indexData.slice(0, 3) : indexData.slice(-3)
   const { formatter } = slaKpiConfig[chartKey]
-  return <UI.ListWrapper onClick={() => setIsAsc(asc => !asc)}>
+  const enableSort = data.length > 3
+  return <UI.ListWrapper
+    $showCursor={enableSort}
+    onClick={
+      () => {
+        if (enableSort) {
+          setIsAsc(asc => !asc)
+        }
+      }
+    }>
     <div>
-      {slice.map(([key, val, ind]) => <li key={key}>{ind}. {key} ({formatter(val)})</li>)}
+      {topSortedItems.map(([key, val, ind]) =>
+        <li key={key}>{ind}. {key} ({!isNaN(val as number) ? formatter(val) : noDataDisplay})</li>)}
     </div>
-    <SwitcherIcon order={isAsc} />
+    {enableSort && <SwitcherIcon order={isAsc} /> }
   </UI.ListWrapper>
 }
 

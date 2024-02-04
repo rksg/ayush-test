@@ -57,6 +57,7 @@ const EdgeSdLanTable = () => {
   const navigate = useNavigate()
   const basePath: Path = useTenantLink('')
 
+  const settingsId = 'services-edge-sd-lan-table'
   const tableQuery = useTableQuery({
     useQuery: useGetEdgeSdLanViewDataListQuery,
     defaultPayload: {},
@@ -66,7 +67,8 @@ const EdgeSdLanTable = () => {
     },
     search: {
       searchTargetFields: ['name']
-    }
+    },
+    pagination: { settingsId }
   })
 
   const [deleteSdLan, { isLoading: isDeleting }] = useDeleteEdgeSdLanMutation()
@@ -125,7 +127,6 @@ const EdgeSdLanTable = () => {
       title: $t({ defaultMessage: 'Venue' }),
       key: 'venueId',
       dataIndex: 'venueId',
-      align: 'center',
       sorter: true,
       filterable: venueOptions,
       render: (__, row) => {
@@ -140,7 +141,6 @@ const EdgeSdLanTable = () => {
       title: $t({ defaultMessage: 'SmartEdge' }),
       key: 'edgeId',
       dataIndex: 'edgeId',
-      align: 'center',
       sorter: true,
       filterable: edgeOptions,
       render: (__, row) => {
@@ -155,7 +155,6 @@ const EdgeSdLanTable = () => {
       title: $t({ defaultMessage: 'Tunnel Profile' }),
       key: 'tunnelProfileId',
       dataIndex: 'tunnelProfileId',
-      align: 'center',
       sorter: true,
       render: (__, row) => {
         return <TenantLink
@@ -195,7 +194,7 @@ const EdgeSdLanTable = () => {
       title: $t({ defaultMessage: 'Health' }),
       key: 'edgeAlarmSummary',
       dataIndex: 'edgeAlarmSummary',
-      align: 'center',
+      width: 80,
       render: (__, row) =>
         <Row justify='center'>
           <EdgeServiceStatusLight
@@ -225,6 +224,7 @@ const EdgeSdLanTable = () => {
   const rowActions: TableProps<EdgeSdLanViewData>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
+      visible: (selectedRows) => selectedRows.length === 1,
       onClick: (selectedRows) => {
         navigate({
           ...basePath,
@@ -292,7 +292,7 @@ const EdgeSdLanTable = () => {
         ]}
       >
         <Table
-          settingsId='services-edge-sd-lan-table'
+          settingsId={settingsId}
           rowKey='id'
           columns={columns}
           rowSelection={hasAccess() && { type: 'checkbox' }}

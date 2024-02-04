@@ -1,16 +1,14 @@
 import { rest } from 'msw'
-import { act }  from 'react-dom/test-utils'
 
-import { mockServer }            from '@acx-ui/test-utils'
+import { act, mockServer }       from '@acx-ui/test-utils'
 import {
   useUpdateUserProfileMutation
 } from '@acx-ui/user'
 import { UserUrlsInfo } from '@acx-ui/user'
 
 import { detectBrowserLang,
-  updateBrowserCached,
   showBrowserLangDialog,
-  isNonProdEnv } from './BrowserDialog'
+  updateBrowserCached } from './BrowserDialog'
 
 jest.mock('@acx-ui/utils', () => ({
   getIntl: jest.fn(() => ({
@@ -73,7 +71,7 @@ describe('showBrowserLangDialog', () => {
   }
   it('should show action modal and handle confirm button click', async () => {
     await act(async () => {
-      showBrowserLangDialog()
+      showBrowserLangDialog('en-US')
     })
 
     expect(require('@acx-ui/components').showActionModal).toHaveBeenCalled()
@@ -89,24 +87,9 @@ describe('showBrowserLangDialog', () => {
     jest.spyOn(require('./BrowserDialog'),
       'showBrowserLangDialog').mockImplementation(mockBrowserDialog)
     await Promise.resolve()
-    const result = await showBrowserLangDialog()
+    const result = await showBrowserLangDialog('en-US')
     await Promise.resolve()
     expect(result).toStrictEqual({ lang: 'fr-FR', isLoading: false })
-  })
-})
-
-describe('updateBrowserCached', () => {
-  beforeEach(() => {
-    localStorage.clear()
-  })
-
-  it('should update localStorage with the correct values', async () => {
-    const lang = 'en-US'
-    updateBrowserCached(lang)
-    Storage.prototype.setItem = jest.fn()
-    updateBrowserCached('en-US')
-    expect(localStorage.setItem).toHaveBeenCalledWith('browserLang', 'en-US')
-    expect(localStorage.setItem).toHaveBeenCalledWith('isBrowserDialog', 'true')
   })
 })
 
@@ -123,25 +106,17 @@ describe('detectBrowserLang', () => {
   })
 })
 
-describe('isNonProdEnv', () => {
-  it('should return true for non-production environments', () => {
-    window = Object.create(window)
-    const hname = 'localhost'
-    Object.defineProperty(window, 'location', {
-      value: {
-        hostname: hname
-      },
-      writable: true
-    })
-    expect(isNonProdEnv()).toBe(true)
+describe('updateBrowserCached', () => {
+  beforeEach(() => {
+    localStorage.clear()
+  })
 
-    const hname2 = 'eu.ruckus.cloud'
-    Object.defineProperty(window, 'location', {
-      value: {
-        hostname: hname2
-      },
-      writable: true
-    })
-    expect(isNonProdEnv()).toBe(false)
+  it('should update localStorage with the correct values', async () => {
+    const lang = 'en-US'
+    updateBrowserCached(lang)
+    Storage.prototype.setItem = jest.fn()
+    updateBrowserCached('en-US')
+    expect(localStorage.setItem).toHaveBeenCalledWith('browserLang', 'en-US')
   })
 })
+

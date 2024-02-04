@@ -1,9 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
-import { act }   from 'react-dom/test-utils'
 
-import { StepsForm }          from '@acx-ui/components'
+import { StepsForm }                                         from '@acx-ui/components'
+import { useIsSplitOn }                                      from '@acx-ui/feature-toggle'
+import { edgeApi, edgeSdLanApi, tunnelProfileApi, venueApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   EdgeGeneralFixtures,
@@ -13,10 +14,12 @@ import {
   EdgeStatusEnum,
   EdgeUrlsInfo,
   TunnelProfileUrls,
-  EdgeTunnelProfileFixtures
+  EdgeTunnelProfileFixtures,
+  EdgeLagFixtures
 } from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
+import { Provider, store } from '@acx-ui/store'
 import {
+  act,
   mockServer,
   render,
   renderHook,
@@ -32,10 +35,12 @@ import { SettingsForm } from '.'
 
 const { mockedSdLanDataList } = EdgeSdLanFixtures
 const { mockEdgeList } = EdgeGeneralFixtures
-const { mockEdgePortConfig } = EdgePortConfigFixtures
+const { mockEdgePortConfig, mockEdgeOnlyLanPortConfigWithoutCorePort } = EdgePortConfigFixtures
 const {
   mockedTunnelProfileViewData
 } = EdgeTunnelProfileFixtures
+
+const { mockedEdgeLagList } = EdgeLagFixtures
 
 jest.mock('antd', () => {
   const components = jest.requireActual('antd')
@@ -81,6 +86,11 @@ describe('Edge centrailized forwarding form: settings', () => {
     mockedSetFieldValue.mockClear()
     mockedReqVenuesList.mockClear()
     mockedReqEdgesList.mockClear()
+
+    store.dispatch(edgeApi.util.resetApiState())
+    store.dispatch(venueApi.util.resetApiState())
+    store.dispatch(tunnelProfileApi.util.resetApiState())
+    store.dispatch(edgeSdLanApi.util.resetApiState())
 
     mockServer.use(
       rest.post(
@@ -128,33 +138,7 @@ describe('Edge centrailized forwarding form: settings', () => {
     </Provider>)
 
     const formBody = await screen.findByTestId('steps-form-body')
-    const icons = await within(formBody).findAllByTestId('loadingIcon')
-    await waitForElementToBeRemoved(icons)
-
-    const venueDropdown = await within(formBody).findByRole('combobox', { name: 'Venue' })
-
-    await userEvent.selectOptions(
-      venueDropdown,
-      'venue_00002')
-
-    await waitForElementToBeRemoved(await within(formBody)
-      .findAllByTestId('loadingIcon'))
-
-    expect(mockedSetFieldValue).toBeCalledWith('venueName', 'airport')
-    expect(mockedSetFieldValue).toBeCalledWith('edgeId', undefined)
-
-    await userEvent.selectOptions(
-      await within(formBody).findByRole('combobox', { name: 'SmartEdge' }),
-      '0000000002')
-
-    expect(mockedSetFieldValue).toBeCalledWith('edgeName', 'Smart Edge 2')
-    expect(within(formBody).queryByTestId('rc-CorePortFormItem')).toBeValid()
-
-    await waitFor(() => {
-      expect(mockedSetFieldValue).toBeCalledWith('corePortMac', 'port2')
-    })
-    expect(mockedSetFieldValue).toBeCalledWith('corePortName', 'Port2')
-
+    await checkBasicAddSettings()
     await userEvent.selectOptions(
       await within(formBody).findByRole('combobox', { name: 'Tunnel Profile' }),
       'tunnelProfileId2')
@@ -185,7 +169,6 @@ describe('Edge centrailized forwarding form: settings', () => {
     const formBody = await screen.findByTestId('steps-form-body')
     const icons = await within(formBody).findAllByTestId('loadingIcon')
     await waitForElementToBeRemoved(icons)
-
     const venueDropdown = await within(formBody).findByRole('combobox', { name: 'Venue' })
     expect(venueDropdown).toBeDisabled()
     expect(mockedReqVenuesList).toBeCalledWith({
@@ -209,11 +192,13 @@ describe('Edge centrailized forwarding form: settings', () => {
       expect(mockedSetFieldValue).toBeCalledWith('corePortName', 'Port2')
     })
     expect(mockedSetFieldValue).toBeCalledWith('corePortMac', 'port2')
+    await within(formBody).findByRole('option', { name: 'tunnelProfile2' })
   })
 
   it('Input invalid service name should show error message', async () => {
     const { result: stepFormRef } = renderHook(() => {
       const [ form ] = Form.useForm()
+      jest.spyOn(form, 'setFieldValue').mockImplementation(mockedSetFieldValue)
       return form
     })
 
@@ -223,11 +208,15 @@ describe('Edge centrailized forwarding form: settings', () => {
       </StepsForm>
     </Provider>)
 
+    const formBody = await screen.findByTestId('steps-form-body')
+    await checkBasicAddSettings()
+    await within(formBody).findByRole('option', { name: 'tunnelProfile2' })
     const nameField = screen.getByRole('textbox', { name: 'Service Name' })
     await userEvent.type(nameField, '``')
     // eslint-disable-next-line max-len
     expect(await screen.findByText('Avoid spaces at the beginning/end, and do not use "`" or "$(" characters.'))
       .toBeVisible()
+
   })
 
   // eslint-disable-next-line max-len
@@ -274,5 +263,93 @@ describe('Edge centrailized forwarding form: settings', () => {
       })
     })
     expect(screen.queryByRole('option', { name: 'Smart Edge 5' })).toBeNull()
+    await within(formBody).findByRole('option', { name: 'tunnelProfile2' })
+  })
+
+  describe('LAG enabled', () => {
+    beforeEach(() => {
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+      mockServer.use(
+        rest.get(
+          EdgeUrlsInfo.getPortConfig.url,
+          (_, res, ctx) => {
+            return res(ctx.json(mockEdgeOnlyLanPortConfigWithoutCorePort))
+          }
+        ),
+        rest.get(
+          EdgeUrlsInfo.getEdgeLagList.url,
+          (_, res, ctx) => res(ctx.json(mockedEdgeLagList))
+        )
+      )
+    })
+
+    it('should render correctly handle LAG core port', async () => {
+      const { result: stepFormRef } = renderHook(() => {
+        const [ form ] = Form.useForm()
+        jest.spyOn(form, 'setFieldValue').mockImplementation(mockedSetFieldValue)
+        return form
+      })
+
+      render(<Provider>
+        <StepsForm form={stepFormRef.current}>
+          <SettingsForm />
+        </StepsForm>
+      </Provider>)
+
+      const formBody = await screen.findByTestId('steps-form-body')
+      const venueDropdown = await within(formBody).findByRole('combobox', { name: 'Venue' })
+      await userEvent.selectOptions(
+        venueDropdown,
+        'venue_00002')
+
+      expect(mockedSetFieldValue).toBeCalledWith('venueName', 'airport')
+      expect(mockedSetFieldValue).toBeCalledWith('edgeId', undefined)
+      expect(within(formBody).queryByTestId('rc-CorePortFormItem')).toBeNull()
+
+      await userEvent.selectOptions(
+        await within(formBody).findByRole('combobox', { name: 'SmartEdge' }),
+        '0000000002')
+
+      expect(mockedSetFieldValue).toBeCalledWith('edgeName', 'Smart Edge 2')
+      expect(within(formBody).queryByTestId('rc-CorePortFormItem')).toBeValid()
+
+      await waitFor(() => {
+        expect(mockedSetFieldValue).toBeCalledWith('isLagCorePort', true)
+      })
+      expect(mockedSetFieldValue).toBeCalledWith('corePortMac', 1)
+      expect(mockedSetFieldValue).toBeCalledWith('corePortName', 'LAG 1')
+      await within(formBody).findByRole('option', { name: 'tunnelProfile2' })
+    })
   })
 })
+
+const checkBasicAddSettings = async () => {
+  const formBody = await screen.findByTestId('steps-form-body')
+  const icons = await within(formBody).findAllByTestId('loadingIcon')
+  await waitForElementToBeRemoved(icons)
+  // select venue
+  const venueDropdown = await within(formBody).findByRole('combobox', { name: 'Venue' })
+  await userEvent.selectOptions(
+    venueDropdown,
+    'venue_00002')
+
+  // wait edge options loaded
+  await waitForElementToBeRemoved(await within(formBody)
+    .findAllByTestId('loadingIcon'))
+
+  expect(mockedSetFieldValue).toBeCalledWith('venueName', 'airport')
+  expect(mockedSetFieldValue).toBeCalledWith('edgeId', undefined)
+
+  // select edge
+  await userEvent.selectOptions(
+    await within(formBody).findByRole('combobox', { name: 'SmartEdge' }),
+    '0000000002')
+
+  // ensure related data to set into form
+  expect(mockedSetFieldValue).toBeCalledWith('edgeName', 'Smart Edge 2')
+  await waitFor(() => {
+    expect(mockedSetFieldValue).toBeCalledWith('corePortMac', 'port2')
+  })
+  expect(mockedSetFieldValue).toBeCalledWith('corePortName', 'Port2')
+}

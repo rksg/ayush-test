@@ -12,7 +12,6 @@ import {
   ApRadioParams50G,
   ApRadioParams6G,
   CommonUrlsInfo,
-  getUrlForTest,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store }                     from '@acx-ui/store'
@@ -67,8 +66,7 @@ describe('RadioSettingsTab', ()=> {
         rest.get(
           CommonUrlsInfo.getVenuesList.url,
           (_, res, ctx) => res(ctx.json(venuelist))),
-        rest.get(
-          getUrlForTest(CommonUrlsInfo.getVenue),
+        rest.get(CommonUrlsInfo.getVenue.url,
           (_, res, ctx) => res(ctx.json(venueRadioDetail))),
         rest.get(
           WifiUrlsInfo.getApRadioCustomization.url,
@@ -504,8 +502,7 @@ describe('RadioSettingsTab', ()=> {
         rest.get(
           CommonUrlsInfo.getVenuesList.url,
           (_, res, ctx) => res(ctx.json(venuelist))),
-        rest.get(
-          getUrlForTest(CommonUrlsInfo.getVenue),
+        rest.get(CommonUrlsInfo.getVenue.url,
           (_, res, ctx) => res(ctx.json(venueRadioDetail))),
         //rest.get(
         //  WifiUrlsInfo.getAp.url,
@@ -698,52 +695,6 @@ describe('test getRadioTypeDisplayName func', () => {
 })
 
 describe('test isCurrentTabUseVenueSettings func', () => {
-  it('should return value of isUseVenueSettings when isEnablePerApRadioCustomizationFlag is false', function () {
-    const stateA: StateOfIsUseVenueSettings = {
-      isUseVenueSettings24G: false,
-      isUseVenueSettings5G: false,
-      isUseVenueSettings6G: false,
-      isUseVenueSettingsLower5G: true,
-      isUseVenueSettingsUpper5G: true,
-      isUseVenueSettings: false
-    }
-    const stateB: StateOfIsUseVenueSettings = {
-      isUseVenueSettings24G: false,
-      isUseVenueSettings5G: false,
-      isUseVenueSettings6G: false,
-      isUseVenueSettingsLower5G: true,
-      isUseVenueSettingsUpper5G: true,
-      isUseVenueSettings: true
-    }
-    const typeNormal24GHz = RadioType.Normal24GHz
-    const typeNormal5GHz = RadioType.Normal5GHz
-    const typeNormal6GHz = RadioType.Normal6GHz
-    const typeLower5GHz = RadioType.Lower5GHz
-    const typeUpper5GHz = RadioType.Upper5GHz
-    const isEnablePerApRadioCustomizationFlag = false
-
-    const actualAA = isCurrentTabUseVenueSettings(stateA, typeNormal24GHz, isEnablePerApRadioCustomizationFlag)
-    const actualAB = isCurrentTabUseVenueSettings(stateA, typeNormal5GHz, isEnablePerApRadioCustomizationFlag)
-    const actualAC = isCurrentTabUseVenueSettings(stateA, typeNormal6GHz, isEnablePerApRadioCustomizationFlag)
-    const actualAD = isCurrentTabUseVenueSettings(stateA, typeLower5GHz, isEnablePerApRadioCustomizationFlag)
-    const actualAE = isCurrentTabUseVenueSettings(stateA, typeUpper5GHz, isEnablePerApRadioCustomizationFlag)
-    const actualBA = isCurrentTabUseVenueSettings(stateB, typeNormal24GHz, isEnablePerApRadioCustomizationFlag)
-    const actualBB = isCurrentTabUseVenueSettings(stateB, typeNormal5GHz, isEnablePerApRadioCustomizationFlag)
-    const actualBC = isCurrentTabUseVenueSettings(stateB, typeNormal6GHz, isEnablePerApRadioCustomizationFlag)
-    const actualBD = isCurrentTabUseVenueSettings(stateB, typeLower5GHz, isEnablePerApRadioCustomizationFlag)
-    const actualBE = isCurrentTabUseVenueSettings(stateB, typeUpper5GHz, isEnablePerApRadioCustomizationFlag)
-
-    expect(actualAA).toBe(stateA.isUseVenueSettings)
-    expect(actualAB).toBe(stateA.isUseVenueSettings)
-    expect(actualAC).toBe(stateA.isUseVenueSettings)
-    expect(actualAD).toBe(stateA.isUseVenueSettings)
-    expect(actualAE).toBe(stateA.isUseVenueSettings)
-    expect(actualBA).toBe(stateB.isUseVenueSettings)
-    expect(actualBB).toBe(stateB.isUseVenueSettings)
-    expect(actualBC).toBe(stateB.isUseVenueSettings)
-    expect(actualBD).toBe(stateB.isUseVenueSettings)
-    expect(actualBE).toBe(stateB.isUseVenueSettings)
-  })
   it('should return value of isUseVenueSettings24G when isEnablePerApRadioCustomizationFlag is true', function () {
     const stateA: StateOfIsUseVenueSettings = {
       isUseVenueSettings24G: false,
@@ -878,34 +829,6 @@ describe('test isCurrentTabUseVenueSettings func', () => {
 
 describe('test isUseVenueSettings func', () => {
   describe('test isUseVenueSettings func', function () {
-    it('should return correctly when isEnablePerApRadioCustomizationFlag is false', function () {
-      const isEnablePerApRadioCustomizationFlag = false
-      const settings: ApRadioCustomization = {
-        enable24G: true,
-        enable50G: true,
-        enable6G: true,
-        useVenueSettings: false,
-        apRadioParams24G: { ...new ApRadioParams24G(), useVenueSettings: true },
-        apRadioParams50G: { ...new ApRadioParams50G(), useVenueSettings: true },
-        apRadioParams6G: { ...new ApRadioParams6G(), useVenueSettings: true },
-        apRadioParamsDual5G: { enabled: true, lower5gEnabled: true, upper5gEnabled: true,
-          radioParamsLower5G: { ...new ApRadioParams50G(), useVenueSettings: true },
-          radioParamsUpper5G: { ...new ApRadioParams50G(), useVenueSettings: true }
-        }
-      }
-
-      const actualA = isUseVenueSettings(settings, RadioType.Normal24GHz, isEnablePerApRadioCustomizationFlag)
-      const actualB = isUseVenueSettings(settings, RadioType.Normal5GHz, isEnablePerApRadioCustomizationFlag)
-      const actualC = isUseVenueSettings(settings, RadioType.Normal6GHz, isEnablePerApRadioCustomizationFlag)
-      const actualD = isUseVenueSettings(settings, RadioType.Lower5GHz, isEnablePerApRadioCustomizationFlag)
-      const actualE = isUseVenueSettings(settings, RadioType.Upper5GHz, isEnablePerApRadioCustomizationFlag)
-
-      expect(actualA).toEqual(settings.useVenueSettings)
-      expect(actualB).toEqual(settings.useVenueSettings)
-      expect(actualC).toEqual(settings.useVenueSettings)
-      expect(actualD).toEqual(settings.useVenueSettings)
-      expect(actualE).toEqual(settings.useVenueSettings)
-    })
     it('should return correctly when isEnablePerApRadioCustomizationFlag is true', function () {
       const isEnablePerApRadioCustomizationFlag = true
       const settings: ApRadioCustomization = {
@@ -1044,56 +967,49 @@ describe('test extractStateOfIsUseVenueSettings func', () => {
       isUseVenueSettings5G: true,
       isUseVenueSettings6G: true,
       isUseVenueSettingsLower5G: true,
-      isUseVenueSettingsUpper5G: true,
-      isUseVenueSettings: true
+      isUseVenueSettingsUpper5G: true
     }
     const expectedB: StateOfIsUseVenueSettings = {
       isUseVenueSettings24G: false,
       isUseVenueSettings5G: true,
       isUseVenueSettings6G: true,
       isUseVenueSettingsLower5G: true,
-      isUseVenueSettingsUpper5G: true,
-      isUseVenueSettings: true
+      isUseVenueSettingsUpper5G: true
     }
     const expectedC: StateOfIsUseVenueSettings = {
       isUseVenueSettings24G: true,
       isUseVenueSettings5G: false,
       isUseVenueSettings6G: true,
       isUseVenueSettingsLower5G: true,
-      isUseVenueSettingsUpper5G: true,
-      isUseVenueSettings: true
+      isUseVenueSettingsUpper5G: true
     }
     const expectedD: StateOfIsUseVenueSettings = {
       isUseVenueSettings24G: true,
       isUseVenueSettings5G: true,
       isUseVenueSettings6G: false,
       isUseVenueSettingsLower5G: true,
-      isUseVenueSettingsUpper5G: true,
-      isUseVenueSettings: true
+      isUseVenueSettingsUpper5G: true
     }
     const expectedE: StateOfIsUseVenueSettings = {
       isUseVenueSettings24G: true,
       isUseVenueSettings5G: true,
       isUseVenueSettings6G: true,
       isUseVenueSettingsLower5G: false,
-      isUseVenueSettingsUpper5G: true,
-      isUseVenueSettings: true
+      isUseVenueSettingsUpper5G: true
     }
     const expectedF: StateOfIsUseVenueSettings = {
       isUseVenueSettings24G: true,
       isUseVenueSettings5G: true,
       isUseVenueSettings6G: true,
       isUseVenueSettingsLower5G: true,
-      isUseVenueSettingsUpper5G: false,
-      isUseVenueSettings: true
+      isUseVenueSettingsUpper5G: false
     }
     const expectedG: StateOfIsUseVenueSettings = {
       isUseVenueSettings24G: true,
       isUseVenueSettings5G: true,
       isUseVenueSettings6G: true,
       isUseVenueSettingsLower5G: true,
-      isUseVenueSettingsUpper5G: true,
-      isUseVenueSettings: false
+      isUseVenueSettingsUpper5G: true
     }
 
     expect(actualA).toEqual(expectedA)
@@ -1166,339 +1082,9 @@ describe('test summarizedStateOfIsUseVenueSettings func', () => {
     expect(actualAD.isUseVenueSettings).toBe(stateA.isUseVenueSettings)
     expect(actualBD.isUseVenueSettings).toBe(stateB.isUseVenueSettings)
   })
-  it('should return correctly when only support 24G and isEnablePerApRadioCustomizationFlag is true', function () {
-    const isHasRadio5GA = false
-    const isHasRadio6GA = false
-    const isHasRadioDual5GA = false
-    const isEnablePerApRadioCustomizationFlag = true
-
-    const stateA: StateOfIsUseVenueSettings = {
-      isUseVenueSettings24G: false,
-      isUseVenueSettings5G: false,
-      isUseVenueSettings6G: false,
-      isUseVenueSettingsLower5G: false,
-      isUseVenueSettingsUpper5G: false,
-      isUseVenueSettings: undefined
-    }
-    const actualA = summarizedStateOfIsUseVenueSettings(stateA, isHasRadio5GA, isHasRadio6GA, isHasRadioDual5GA, isEnablePerApRadioCustomizationFlag)
-    expect(actualA.isUseVenueSettings).toBe(false)
-
-    const stateB: StateOfIsUseVenueSettings = {
-      isUseVenueSettings24G: true,
-      isUseVenueSettings5G: false,
-      isUseVenueSettings6G: false,
-      isUseVenueSettingsLower5G: false,
-      isUseVenueSettingsUpper5G: false,
-      isUseVenueSettings: undefined
-    }
-    const actualB = summarizedStateOfIsUseVenueSettings(stateB, isHasRadio5GA, isHasRadio6GA, isHasRadioDual5GA, isEnablePerApRadioCustomizationFlag)
-    expect(actualB.isUseVenueSettings).toBe(true)
-
-    const stateC: StateOfIsUseVenueSettings = {
-      isUseVenueSettings24G: true,
-      isUseVenueSettings5G: true,
-      isUseVenueSettings6G: false,
-      isUseVenueSettingsLower5G: false,
-      isUseVenueSettingsUpper5G: false,
-      isUseVenueSettings: undefined
-    }
-    const actualC = summarizedStateOfIsUseVenueSettings(stateC, isHasRadio5GA, isHasRadio6GA, isHasRadioDual5GA, isEnablePerApRadioCustomizationFlag)
-    expect(actualC.isUseVenueSettings).toBe(true)
-
-    const stateD: StateOfIsUseVenueSettings = {
-      isUseVenueSettings24G: true,
-      isUseVenueSettings5G: true,
-      isUseVenueSettings6G: true,
-      isUseVenueSettingsLower5G: false,
-      isUseVenueSettingsUpper5G: false,
-      isUseVenueSettings: undefined
-    }
-    const actualD = summarizedStateOfIsUseVenueSettings(stateD, isHasRadio5GA, isHasRadio6GA, isHasRadioDual5GA, isEnablePerApRadioCustomizationFlag)
-    expect(actualD.isUseVenueSettings).toBe(true)
-
-    const stateE: StateOfIsUseVenueSettings = {
-      isUseVenueSettings24G: true,
-      isUseVenueSettings5G: true,
-      isUseVenueSettings6G: true,
-      isUseVenueSettingsLower5G: true,
-      isUseVenueSettingsUpper5G: false,
-      isUseVenueSettings: undefined
-    }
-    const actualE = summarizedStateOfIsUseVenueSettings(stateE, isHasRadio5GA, isHasRadio6GA, isHasRadioDual5GA, isEnablePerApRadioCustomizationFlag)
-    expect(actualE.isUseVenueSettings).toBe(true)
-
-    const stateF: StateOfIsUseVenueSettings = {
-      isUseVenueSettings24G: true,
-      isUseVenueSettings5G: true,
-      isUseVenueSettings6G: true,
-      isUseVenueSettingsLower5G: true,
-      isUseVenueSettingsUpper5G: true,
-      isUseVenueSettings: undefined
-    }
-    const actualF = summarizedStateOfIsUseVenueSettings(stateF, isHasRadio5GA, isHasRadio6GA, isHasRadioDual5GA, isEnablePerApRadioCustomizationFlag)
-    expect(actualF.isUseVenueSettings).toBe(true)
-  })
-  it('should return correctly when only support 5G and isEnablePerApRadioCustomizationFlag is true', function () {
-    const isHasRadio5GA = true
-    const isHasRadio6GA = false
-    const isHasRadioDual5GA = false
-    const isEnablePerApRadioCustomizationFlag = true
-
-    const stateA: StateOfIsUseVenueSettings = {
-      isUseVenueSettings24G: false,
-      isUseVenueSettings5G: false,
-      isUseVenueSettings6G: false,
-      isUseVenueSettingsLower5G: false,
-      isUseVenueSettingsUpper5G: false,
-      isUseVenueSettings: undefined
-    }
-    const actualA = summarizedStateOfIsUseVenueSettings(stateA, isHasRadio5GA, isHasRadio6GA, isHasRadioDual5GA, isEnablePerApRadioCustomizationFlag)
-    expect(actualA.isUseVenueSettings).toBe(false)
-
-    const stateB: StateOfIsUseVenueSettings = {
-      isUseVenueSettings24G: true,
-      isUseVenueSettings5G: false,
-      isUseVenueSettings6G: false,
-      isUseVenueSettingsLower5G: false,
-      isUseVenueSettingsUpper5G: false,
-      isUseVenueSettings: undefined
-    }
-    const actualB = summarizedStateOfIsUseVenueSettings(stateB, isHasRadio5GA, isHasRadio6GA, isHasRadioDual5GA, isEnablePerApRadioCustomizationFlag)
-    expect(actualB.isUseVenueSettings).toBe(false)
-
-    const stateC: StateOfIsUseVenueSettings = {
-      isUseVenueSettings24G: true,
-      isUseVenueSettings5G: true,
-      isUseVenueSettings6G: false,
-      isUseVenueSettingsLower5G: false,
-      isUseVenueSettingsUpper5G: false,
-      isUseVenueSettings: undefined
-    }
-    const actualC = summarizedStateOfIsUseVenueSettings(stateC, isHasRadio5GA, isHasRadio6GA, isHasRadioDual5GA, isEnablePerApRadioCustomizationFlag)
-    expect(actualC.isUseVenueSettings).toBe(true)
-
-    const stateD: StateOfIsUseVenueSettings = {
-      isUseVenueSettings24G: true,
-      isUseVenueSettings5G: true,
-      isUseVenueSettings6G: true,
-      isUseVenueSettingsLower5G: false,
-      isUseVenueSettingsUpper5G: false,
-      isUseVenueSettings: undefined
-    }
-    const actualD = summarizedStateOfIsUseVenueSettings(stateD, isHasRadio5GA, isHasRadio6GA, isHasRadioDual5GA, isEnablePerApRadioCustomizationFlag)
-    expect(actualD.isUseVenueSettings).toBe(true)
-
-    const stateE: StateOfIsUseVenueSettings = {
-      isUseVenueSettings24G: true,
-      isUseVenueSettings5G: true,
-      isUseVenueSettings6G: true,
-      isUseVenueSettingsLower5G: true,
-      isUseVenueSettingsUpper5G: false,
-      isUseVenueSettings: undefined
-    }
-    const actualE = summarizedStateOfIsUseVenueSettings(stateE, isHasRadio5GA, isHasRadio6GA, isHasRadioDual5GA, isEnablePerApRadioCustomizationFlag)
-    expect(actualE.isUseVenueSettings).toBe(true)
-
-    const stateF: StateOfIsUseVenueSettings = {
-      isUseVenueSettings24G: true,
-      isUseVenueSettings5G: true,
-      isUseVenueSettings6G: true,
-      isUseVenueSettingsLower5G: true,
-      isUseVenueSettingsUpper5G: true,
-      isUseVenueSettings: undefined
-    }
-    const actualF = summarizedStateOfIsUseVenueSettings(stateF, isHasRadio5GA, isHasRadio6GA, isHasRadioDual5GA, isEnablePerApRadioCustomizationFlag)
-    expect(actualF.isUseVenueSettings).toBe(true)
-  })
-  it('should return correctly when only support 6G and isEnablePerApRadioCustomizationFlag is true', function () {
-    const isHasRadio5GA = true
-    const isHasRadio6GA = true
-    const isHasRadioDual5GA = false
-    const isEnablePerApRadioCustomizationFlag = true
-
-    const stateA: StateOfIsUseVenueSettings = {
-      isUseVenueSettings24G: false,
-      isUseVenueSettings5G: false,
-      isUseVenueSettings6G: false,
-      isUseVenueSettingsLower5G: false,
-      isUseVenueSettingsUpper5G: false,
-      isUseVenueSettings: undefined
-    }
-    const actualA = summarizedStateOfIsUseVenueSettings(stateA, isHasRadio5GA, isHasRadio6GA, isHasRadioDual5GA, isEnablePerApRadioCustomizationFlag)
-    expect(actualA.isUseVenueSettings).toBe(false)
-
-    const stateB: StateOfIsUseVenueSettings = {
-      isUseVenueSettings24G: true,
-      isUseVenueSettings5G: false,
-      isUseVenueSettings6G: false,
-      isUseVenueSettingsLower5G: false,
-      isUseVenueSettingsUpper5G: false,
-      isUseVenueSettings: undefined
-    }
-    const actualB = summarizedStateOfIsUseVenueSettings(stateB, isHasRadio5GA, isHasRadio6GA, isHasRadioDual5GA, isEnablePerApRadioCustomizationFlag)
-    expect(actualB.isUseVenueSettings).toBe(false)
-
-    const stateC: StateOfIsUseVenueSettings = {
-      isUseVenueSettings24G: true,
-      isUseVenueSettings5G: true,
-      isUseVenueSettings6G: false,
-      isUseVenueSettingsLower5G: false,
-      isUseVenueSettingsUpper5G: false,
-      isUseVenueSettings: undefined
-    }
-    const actualC = summarizedStateOfIsUseVenueSettings(stateC, isHasRadio5GA, isHasRadio6GA, isHasRadioDual5GA, isEnablePerApRadioCustomizationFlag)
-    expect(actualC.isUseVenueSettings).toBe(false)
-
-    const stateD: StateOfIsUseVenueSettings = {
-      isUseVenueSettings24G: true,
-      isUseVenueSettings5G: true,
-      isUseVenueSettings6G: true,
-      isUseVenueSettingsLower5G: false,
-      isUseVenueSettingsUpper5G: false,
-      isUseVenueSettings: undefined
-    }
-    const actualD = summarizedStateOfIsUseVenueSettings(stateD, isHasRadio5GA, isHasRadio6GA, isHasRadioDual5GA, isEnablePerApRadioCustomizationFlag)
-    expect(actualD.isUseVenueSettings).toBe(true)
-
-    const stateE: StateOfIsUseVenueSettings = {
-      isUseVenueSettings24G: true,
-      isUseVenueSettings5G: true,
-      isUseVenueSettings6G: true,
-      isUseVenueSettingsLower5G: true,
-      isUseVenueSettingsUpper5G: false,
-      isUseVenueSettings: undefined
-    }
-    const actualE = summarizedStateOfIsUseVenueSettings(stateE, isHasRadio5GA, isHasRadio6GA, isHasRadioDual5GA, isEnablePerApRadioCustomizationFlag)
-    expect(actualE.isUseVenueSettings).toBe(true)
-
-    const stateF: StateOfIsUseVenueSettings = {
-      isUseVenueSettings24G: true,
-      isUseVenueSettings5G: true,
-      isUseVenueSettings6G: true,
-      isUseVenueSettingsLower5G: true,
-      isUseVenueSettingsUpper5G: true,
-      isUseVenueSettings: undefined
-    }
-    const actualF = summarizedStateOfIsUseVenueSettings(stateF, isHasRadio5GA, isHasRadio6GA, isHasRadioDual5GA, isEnablePerApRadioCustomizationFlag)
-    expect(actualF.isUseVenueSettings).toBe(true)
-  })
-  it('should return correctly when only support Dual5G and isEnablePerApRadioCustomizationFlag is true', function () {
-    const isHasRadio5GA = true
-    const isHasRadio6GA = true
-    const isHasRadioDual5GA = true
-    const isEnablePerApRadioCustomizationFlag = true
-
-    const stateA: StateOfIsUseVenueSettings = {
-      isUseVenueSettings24G: false,
-      isUseVenueSettings5G: false,
-      isUseVenueSettings6G: false,
-      isUseVenueSettingsLower5G: false,
-      isUseVenueSettingsUpper5G: false,
-      isUseVenueSettings: undefined
-    }
-    const actualA = summarizedStateOfIsUseVenueSettings(stateA, isHasRadio5GA, isHasRadio6GA, isHasRadioDual5GA, isEnablePerApRadioCustomizationFlag)
-    expect(actualA.isUseVenueSettings).toBe(false)
-
-    const stateB: StateOfIsUseVenueSettings = {
-      isUseVenueSettings24G: true,
-      isUseVenueSettings5G: false,
-      isUseVenueSettings6G: false,
-      isUseVenueSettingsLower5G: false,
-      isUseVenueSettingsUpper5G: false,
-      isUseVenueSettings: undefined
-    }
-    const actualB = summarizedStateOfIsUseVenueSettings(stateB, isHasRadio5GA, isHasRadio6GA, isHasRadioDual5GA, isEnablePerApRadioCustomizationFlag)
-    expect(actualB.isUseVenueSettings).toBe(false)
-
-    const stateC: StateOfIsUseVenueSettings = {
-      isUseVenueSettings24G: true,
-      isUseVenueSettings5G: true,
-      isUseVenueSettings6G: false,
-      isUseVenueSettingsLower5G: false,
-      isUseVenueSettingsUpper5G: false,
-      isUseVenueSettings: undefined
-    }
-    const actualC = summarizedStateOfIsUseVenueSettings(stateC, isHasRadio5GA, isHasRadio6GA, isHasRadioDual5GA, isEnablePerApRadioCustomizationFlag)
-    expect(actualC.isUseVenueSettings).toBe(false)
-
-    const stateD: StateOfIsUseVenueSettings = {
-      isUseVenueSettings24G: true,
-      isUseVenueSettings5G: true,
-      isUseVenueSettings6G: true,
-      isUseVenueSettingsLower5G: false,
-      isUseVenueSettingsUpper5G: false,
-      isUseVenueSettings: undefined
-    }
-    const actualD = summarizedStateOfIsUseVenueSettings(stateD, isHasRadio5GA, isHasRadio6GA, isHasRadioDual5GA, isEnablePerApRadioCustomizationFlag)
-    expect(actualD.isUseVenueSettings).toBe(false)
-
-    const stateE: StateOfIsUseVenueSettings = {
-      isUseVenueSettings24G: true,
-      isUseVenueSettings5G: true,
-      isUseVenueSettings6G: true,
-      isUseVenueSettingsLower5G: true,
-      isUseVenueSettingsUpper5G: false,
-      isUseVenueSettings: undefined
-    }
-    const actualE = summarizedStateOfIsUseVenueSettings(stateE, isHasRadio5GA, isHasRadio6GA, isHasRadioDual5GA, isEnablePerApRadioCustomizationFlag)
-    expect(actualE.isUseVenueSettings).toBe(false)
-
-    const stateF: StateOfIsUseVenueSettings = {
-      isUseVenueSettings24G: true,
-      isUseVenueSettings5G: true,
-      isUseVenueSettings6G: true,
-      isUseVenueSettingsLower5G: true,
-      isUseVenueSettingsUpper5G: true,
-      isUseVenueSettings: undefined
-    }
-    const actualF = summarizedStateOfIsUseVenueSettings(stateF, isHasRadio5GA, isHasRadio6GA, isHasRadioDual5GA, isEnablePerApRadioCustomizationFlag)
-    expect(actualF.isUseVenueSettings).toBe(true)
-  })
 })
 
 describe('test toggleState func', () => {
-  it('should toggle StateOfIsUseVenueSetting correctly when isEnablePerApRadioCustomizationFlag is false', function () {
-    const isEnablePerApRadioCustomizationFlag = false
-
-    const stateF: StateOfIsUseVenueSettings = {
-      isUseVenueSettings24G: undefined,
-      isUseVenueSettings5G: undefined,
-      isUseVenueSettings6G: undefined,
-      isUseVenueSettingsLower5G: undefined,
-      isUseVenueSettingsUpper5G: undefined,
-      isUseVenueSettings: false
-    }
-    const stateT: StateOfIsUseVenueSettings = {
-      isUseVenueSettings24G: undefined,
-      isUseVenueSettings5G: undefined,
-      isUseVenueSettings6G: undefined,
-      isUseVenueSettingsLower5G: undefined,
-      isUseVenueSettingsUpper5G: undefined,
-      isUseVenueSettings: false
-    }
-
-    const actualA = toggleState(stateF, RadioType.Normal24GHz, isEnablePerApRadioCustomizationFlag)
-    const actualB = toggleState(stateT, RadioType.Normal24GHz, isEnablePerApRadioCustomizationFlag)
-    const actualC = toggleState(stateF, RadioType.Normal5GHz, isEnablePerApRadioCustomizationFlag)
-    const actualD = toggleState(stateT, RadioType.Normal5GHz, isEnablePerApRadioCustomizationFlag)
-    const actualE = toggleState(stateF, RadioType.Normal6GHz, isEnablePerApRadioCustomizationFlag)
-    const actualF = toggleState(stateT, RadioType.Normal6GHz, isEnablePerApRadioCustomizationFlag)
-    const actualG = toggleState(stateF, RadioType.Lower5GHz, isEnablePerApRadioCustomizationFlag)
-    const actualH = toggleState(stateT, RadioType.Lower5GHz, isEnablePerApRadioCustomizationFlag)
-    const actualI = toggleState(stateF, RadioType.Upper5GHz, isEnablePerApRadioCustomizationFlag)
-    const actualJ = toggleState(stateT, RadioType.Upper5GHz, isEnablePerApRadioCustomizationFlag)
-
-    expect(actualA.isUseVenueSettings).toBe(!stateF.isUseVenueSettings)
-    expect(actualB.isUseVenueSettings).toBe(!stateT.isUseVenueSettings)
-    expect(actualC.isUseVenueSettings).toBe(!stateF.isUseVenueSettings)
-    expect(actualD.isUseVenueSettings).toBe(!stateT.isUseVenueSettings)
-    expect(actualE.isUseVenueSettings).toBe(!stateF.isUseVenueSettings)
-    expect(actualF.isUseVenueSettings).toBe(!stateT.isUseVenueSettings)
-    expect(actualG.isUseVenueSettings).toBe(!stateF.isUseVenueSettings)
-    expect(actualH.isUseVenueSettings).toBe(!stateT.isUseVenueSettings)
-    expect(actualI.isUseVenueSettings).toBe(!stateF.isUseVenueSettings)
-    expect(actualJ.isUseVenueSettings).toBe(!stateT.isUseVenueSettings)
-  })
   it('should toggle StateOfIsUseVenueSetting correctly when isEnablePerApRadioCustomizationFlag is true', function () {
     const isEnablePerApRadioCustomizationFlag = true
 
@@ -1910,14 +1496,12 @@ describe('test applyState func', () => {
       isUseVenueSettings5G: true,
       isUseVenueSettings6G: true,
       isUseVenueSettingsLower5G: true,
-      isUseVenueSettingsUpper5G: true,
-      isUseVenueSettings: false
+      isUseVenueSettingsUpper5G: true
     }
     const settings: ApRadioCustomization = {
       enable24G: true,
       enable50G: true,
       enable6G: true,
-      useVenueSettings: true,
       apRadioParams24G: { ...new ApRadioParams24G(), useVenueSettings: false },
       apRadioParams50G: { ...new ApRadioParams50G(), useVenueSettings: false },
       apRadioParams6G: { ...new ApRadioParams6G(), useVenueSettings: false },
@@ -1932,7 +1516,6 @@ describe('test applyState func', () => {
       enable24G: true,
       enable50G: true,
       enable6G: true,
-      useVenueSettings: false,
       apRadioParams24G: { ...new ApRadioParams24G(), useVenueSettings: true },
       apRadioParams50G: { ...new ApRadioParams50G(), useVenueSettings: true },
       apRadioParams6G: { ...new ApRadioParams6G(), useVenueSettings: true },
@@ -1949,14 +1532,12 @@ describe('test applyState func', () => {
       isUseVenueSettings5G: true,
       isUseVenueSettings6G: true,
       isUseVenueSettingsLower5G: true,
-      isUseVenueSettingsUpper5G: true,
-      isUseVenueSettings: false
+      isUseVenueSettingsUpper5G: true
     }
     const settings: ApRadioCustomization = {
       enable24G: true,
       enable50G: true,
       enable6G: true,
-      useVenueSettings: true,
       apRadioParams24G: { ...new ApRadioParams24G(), useVenueSettings: false },
       apRadioParams50G: undefined,
       apRadioParams6G: { ...new ApRadioParams6G(), useVenueSettings: false },
@@ -1971,7 +1552,6 @@ describe('test applyState func', () => {
       enable24G: true,
       enable50G: true,
       enable6G: true,
-      useVenueSettings: false,
       apRadioParams24G: { ...new ApRadioParams24G(), useVenueSettings: true },
       apRadioParams50G: undefined,
       apRadioParams6G: { ...new ApRadioParams6G(), useVenueSettings: true },

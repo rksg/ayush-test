@@ -1,11 +1,19 @@
-import { cleanup, screen, waitFor, waitForElementToBeRemoved, within } from '@testing-library/react'
-import userEvent                                                       from '@testing-library/user-event'
-import { rest }                                                        from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { apApi }                         from '@acx-ui/rc/services'
-import { WifiUrlsInfo }                  from '@acx-ui/rc/utils'
-import { Provider, store }               from '@acx-ui/store'
-import { findTBody, mockServer, render } from '@acx-ui/test-utils'
+import { apApi }           from '@acx-ui/rc/services'
+import { WifiUrlsInfo }    from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
+import {
+  cleanup,
+  findTBody,
+  mockServer,
+  render,
+  screen,
+  waitFor,
+  waitForElementToBeRemoved,
+  within
+} from '@acx-ui/test-utils'
 
 import { ApGroupTable } from '.'
 

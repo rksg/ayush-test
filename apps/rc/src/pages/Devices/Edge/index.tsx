@@ -3,6 +3,7 @@ import { useIntl } from 'react-intl'
 
 import { Button, Dropdown, PageHeader }                           from '@acx-ui/components'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { CommonOperation, Device, getUrl }                        from '@acx-ui/rc/utils'
 import { TenantLink }                                             from '@acx-ui/react-router-dom'
 import { filterByAccess }                                         from '@acx-ui/user'
 
@@ -36,13 +37,19 @@ const AddMenu = () => {
   const menuItems = [
     {
       key: 'add-edge',
-      label: <TenantLink to='/devices/edge/add'>
+      label: <TenantLink to={getUrl({
+        feature: Device.Edge,
+        oper: CommonOperation.Add
+      })}>
         {$t({ defaultMessage: 'SmartEdge' })}
       </TenantLink>
     },
     {
       key: 'add-cluster',
-      label: <TenantLink to='/devices/edge/cluster/add'>
+      label: <TenantLink to={getUrl({
+        feature: Device.EdgeCluster,
+        oper: CommonOperation.Add
+      })}>
         {$t({ defaultMessage: 'Cluster' })}
       </TenantLink>
     }

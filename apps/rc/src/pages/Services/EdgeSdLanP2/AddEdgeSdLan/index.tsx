@@ -1,15 +1,15 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { PageHeader }                                                                  from '@acx-ui/components'
-import { useAddEdgeSdLanMutation }                                                     from '@acx-ui/rc/services'
-import { getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                                                  from '@acx-ui/react-router-dom'
+import { PageHeader }                                                                                      from '@acx-ui/components'
+import { useEdgeSdLanActions }                                                                             from '@acx-ui/rc/components'
+import { EdgeSdLanSettingP2, getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                                                                      from '@acx-ui/react-router-dom'
 
-import EdgeSdLanFormP2, { EdgeSdLanFormModel } from '../EdgeSdLanForm'
-import { ScopeForm }                           from '../EdgeSdLanForm/ScopeForm'
-import { SettingsForm }                        from '../EdgeSdLanForm/SettingsForm'
-import { SummaryForm }                         from '../EdgeSdLanForm/SummaryForm'
+import EdgeSdLanFormP2, { EdgeSdLanFormModelP2 } from '../EdgeSdLanForm'
+import { SettingsForm }                          from '../EdgeSdLanForm/SettingsForm'
+import { SummaryForm }                           from '../EdgeSdLanForm/SummaryForm'
+import { TunnelScopeForm }                       from '../EdgeSdLanForm/TunnelScopeForm'
 
 
 const AddEdgeSdLanP2 = () => {
@@ -17,12 +17,13 @@ const AddEdgeSdLanP2 = () => {
   const navigate = useNavigate()
 
   const cfListRoute = getServiceRoutePath({
-    type: ServiceType.EDGE_SD_LAN,
+    type: ServiceType.EDGE_SD_LAN_P2,
     oper: ServiceOperation.LIST
   })
 
   const linkToServiceList = useTenantLink(cfListRoute)
-  const [addEdgeSdLan] = useAddEdgeSdLanMutation()
+  const { addEdgeSdLan } = useEdgeSdLanActions()
+
   const [form] = Form.useForm()
 
   const steps = [
@@ -31,8 +32,8 @@ const AddEdgeSdLanP2 = () => {
       content: <SettingsForm />
     },
     {
-      title: $t({ defaultMessage: 'Scope' }),
-      content: <ScopeForm />
+      title: $t({ defaultMessage: 'Tunnel & Network' }),
+      content: <TunnelScopeForm />
     },
     {
       title: $t({ defaultMessage: 'Summary' }),
@@ -41,17 +42,30 @@ const AddEdgeSdLanP2 = () => {
   ]
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleFinish = async (formData: EdgeSdLanFormModel) => {
+  const handleFinish = async (formData: EdgeSdLanFormModelP2) => {
     try {
       const payload = {
         name: formData.name,
+        venueId: formData.venueId,
         edgeId: formData.edgeId,
         corePortMac: formData.corePortMac,
         networkIds: formData.activatedNetworks.map(network => network.id),
-        tunnelProfileId: formData.tunnelProfileId
+        tunnelProfileId: formData.tunnelProfileId,
+        isGuestTunnelEnabled: formData.isGuestTunnelEnabled
+      } as EdgeSdLanSettingP2
+
+      if (formData.isGuestTunnelEnabled) {
+        payload.guestEdgeId = formData.guestEdgeId
+        payload.guestTunnelProfileId = formData.guestTunnelProfileId
+        payload.guestNetworkIds = formData.activatedGuestNetworks.map(network => network.id!)
       }
-      await addEdgeSdLan({ payload }).unwrap()
-      navigate(linkToServiceList, { replace: true })
+
+      await addEdgeSdLan({
+        payload,
+        callback: () => {
+          navigate(linkToServiceList, { replace: true })
+        }
+      })
     } catch(err) {
       // eslint-disable-next-line no-console
       console.log(err)
@@ -61,7 +75,7 @@ const AddEdgeSdLanP2 = () => {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Add SD-LAN Phase 2' })}
+        title={$t({ defaultMessage: 'Add SD-LAN Service' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },

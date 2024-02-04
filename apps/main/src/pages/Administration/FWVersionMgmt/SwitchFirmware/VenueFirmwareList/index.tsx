@@ -10,6 +10,7 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
+import { useSwitchFirmwareUtils }        from '@acx-ui/rc/components'
 import {
   useGetSwitchUpgradePreferencesQuery,
   useUpdateSwitchUpgradePreferencesMutation,
@@ -26,8 +27,7 @@ import {
   sortProp,
   defaultSort,
   usePollingTableQuery,
-  SwitchFirmwareStatusType,
-  parseSwitchVersion
+  SwitchFirmwareStatusType
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
@@ -35,16 +35,14 @@ import { noDataDisplay }  from '@acx-ui/utils'
 
 import {
   getNextScheduleTpl,
-  getSwitchNextScheduleTplTooltip,
   toUserDate
 } from '../../FirmwareUtils'
 import { PreferencesDialog } from '../../PreferencesDialog'
 
-import * as UI                                                                              from './styledComponents'
-import { getSwitchFirmwareList, getSwitchVenueAvailableVersions, sortAvailableVersionProp } from './switch.upgrade.util'
-import { SwitchScheduleDrawer }                                                             from './SwitchScheduleDrawer'
-import { SwitchFirmwareWizardType, SwitchUpgradeWizard }                                    from './SwitchUpgradeWizard'
-import { VenueStatusDrawer }                                                                from './VenueStatusDrawer'
+import * as UI                                           from './styledComponents'
+import { SwitchScheduleDrawer }                          from './SwitchScheduleDrawer'
+import { SwitchFirmwareWizardType, SwitchUpgradeWizard } from './SwitchUpgradeWizard'
+import { VenueStatusDrawer }                             from './VenueStatusDrawer'
 
 export const useDefaultVenuePayload = (): RequestPayload => {
   return {
@@ -66,6 +64,12 @@ export const VenueFirmwareTable = (
   const { $t } = useIntl()
   const intl = useIntl()
   const params = useParams()
+  const {
+    getSwitchNextScheduleTplTooltip,
+    getSwitchFirmwareList,
+    getSwitchVenueAvailableVersions,
+    sortAvailableVersionProp
+  } = useSwitchFirmwareUtils()
   const { data: availableVersions } = useGetSwitchAvailableFirmwareListQuery({ params })
   const [modelVisible, setModelVisible] = useState(false)
   const [updateNowWizardVisible, setUpdateNowWizardVisible] = useState(false)
@@ -315,6 +319,7 @@ export const VenueFirmwareTable = (
 
 export function VenueFirmwareList () {
   const venuePayload = useDefaultVenuePayload()
+  const { parseSwitchVersion } = useSwitchFirmwareUtils()
 
   const tableQuery = usePollingTableQuery<FirmwareSwitchVenue>({
     useQuery: useGetSwitchVenueVersionListQuery,

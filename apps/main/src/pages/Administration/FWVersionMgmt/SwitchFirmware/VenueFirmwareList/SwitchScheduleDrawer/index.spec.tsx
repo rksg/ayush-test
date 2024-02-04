@@ -1,33 +1,31 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { firmwareApi }     from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenue,
-  FirmwareUrlsInfo
+  FirmwareUrlsInfo,
+  SwitchFirmwareFixtures
 } from '@acx-ui/rc/utils'
-import {
-  Provider
-} from '@acx-ui/store'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
 
-
 import { VenueFirmwareList }          from '..'
 import {
   switchVenue,
   preference,
   switchRelease,
-  switchCurrentVersions,
   switchLatest,
   upgradeSwitchViewList_KittoVenue1
 } from '../__test__/fixtures'
 
 import { SwitchScheduleDrawer } from '.'
 
-
+const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
 
 jest.mock('./SwitchUpgradeWizard', () => ({
   ...jest.requireActual('./SwitchUpgradeWizard'),
@@ -39,6 +37,7 @@ jest.mock('./SwitchUpgradeWizard', () => ({
 describe('SwitchFirmware - SwitchScheduleDrawer', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
+    store.dispatch(firmwareApi.util.resetApiState())
     mockServer.use(
       rest.post(
         FirmwareUrlsInfo.getSwitchVenueVersionList.url,
@@ -60,7 +59,7 @@ describe('SwitchFirmware - SwitchScheduleDrawer', () => {
       ),
       rest.get(
         FirmwareUrlsInfo.getSwitchCurrentVersions.url,
-        (req, res, ctx) => res(ctx.json(switchCurrentVersions))
+        (req, res, ctx) => res(ctx.json(mockSwitchCurrentVersions))
       ),
       rest.post(
         FirmwareUrlsInfo.updateSwitchVenueSchedules.url,

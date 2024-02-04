@@ -12,6 +12,7 @@ export type { ApTableRefType } from './ApTable'
 export { ApsTabContext } from './ApTable/context'
 export { groupedFields } from './ApTable/config'
 export { CountAndNamesTooltip } from './CountAndNamesTooltip'
+export { ApAntennaTypeSelector } from './ApAntennaTypeSelector'
 export { ApGroupTable, defaultApGroupPayload } from './ApGroupTable'
 export { ApGroupsTabContext } from './ApGroupTable/context'
 export { ClientTabContext } from './ClientDualTable/context'
@@ -35,6 +36,7 @@ export { SpaceWrapper } from './SpaceWrapper/index'
 export { EdgeInfoWidget }  from './EdgeInfoWidget'
 export { EdgePortsTable }  from './EdgeInfoWidget/EdgePortsTable'
 export { EdgeDhcpSettingForm } from './EdgeDhcpSetting/EdgeDhcpSettingForm'
+export { EdgeDhcpSelectionForm } from './EdgeDhcpSelectionForm'
 export { useEdgeDhcpActions } from './EdgeDhcpSetting/useEdgeDhcpActions'
 export { AddEdgeDhcpServiceModal } from './AddEdgeDhcpServiceModal'
 export { PoolDrawer } from './EdgeDhcpSetting/DhcpPool/PoolDrawer'
@@ -91,6 +93,7 @@ export { ToggleButton } from './ToggleButton'
 export { TopologyFloorPlanWidget } from './TopologyFloorPlanWidget'
 export { useApActions } from './useApActions'
 export { useSwitchActions } from './useSwitchActions'
+export { useSwitchFirmwareUtils } from './useSwitchFirmwareUtils'
 export { VenueDevicesWidget } from './VenueDevicesWidget'
 export { VenueAlarmWidget } from './VenueAlarmWidget'
 export { VenuesDashboardWidget, VenuesDashboardWidgetV2 } from './VenuesDashboardWidget'
@@ -153,7 +156,13 @@ export { DistSwitchesTable } from './NetworkSegmentationDetailTableGroup/DistSwi
 export type {
   AccessSwitchTableDataType
 } from './NetworkSegmentationDetailTableGroup/AccessSwitchTable'
-export { useEdgeActions, useIsEdgeFeatureReady } from './useEdgeActions'
+export {
+  useEdgeActions,
+  useIsEdgeFeatureReady,
+  useSdLanScopedNetworks,
+  useSdLanScopedNetworkVenues,
+  checkSdLanScopedNetworkDeactivateAction
+} from './useEdgeActions'
 export { EdgeServiceStatusLight } from './EdgeServiceStatusLight'
 export { PropertyManagementForm } from './PropertyManagementForm'
 export { AdaptivePolicySetForm } from './AdaptivePolicySetForm'
@@ -165,8 +174,17 @@ export {
 } from './AdaptivePolicySettingForm/RadiusAttributeGroupSelectDrawer'
 export {
   EdgeSdLanActivatedNetworksTable,
-  ActivateNetworkSwitchButton } from './EdgeSdLan/SdLanNetworkTable'
+  ActivateNetworkSwitchButton
+} from './EdgeSdLan/SdLanNetworkTable'
 export type { ActivatedNetworksTableProps } from './EdgeSdLan/SdLanNetworkTable'
+export {
+  EdgeSdLanP2ActivatedNetworksTable
+} from './EdgeSdLan/SdLanNetworkTable/SdLanP2NetworkTable'
+export type { ActivatedNetworksTableP2Props }
+  from './EdgeSdLan/SdLanNetworkTable/SdLanP2NetworkTable'
+export {
+  useEdgeSdLanActions
+} from './EdgeSdLan/useEdgeSdLanActions'
 export {
   ApCompatibilityType,
   ApCompatibilityQueryTypes,
@@ -177,6 +195,9 @@ export {
   ApCompatibilityDrawer } from './ApCompatibilityDrawer'
 export { EdgeClusterCommonForm } from './EdgeFormItem/EdgeClusterCommonForm'
 export { useEdgeClusterActions } from './useEdgeClusterActions'
+export { usePersonaListQuery } from './usePersonaListQuery'
+export { EdgeClusterSettingForm } from './EdgeFormItem/EdgeClusterSettingForm'
+export type { EdgeClusterSettingFormType } from './EdgeFormItem/EdgeClusterSettingForm'
 
 export * from './services'
 export * from './policies'
@@ -192,3 +213,4 @@ export * from './ZoomWidget'
 export * from './NetworkForm'
 export * from './NetworkDetails'
 export * from './users'
+export * from './configTemplates'

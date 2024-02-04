@@ -37,6 +37,7 @@ export function useMenuConfig () {
   const { $t } = useIntl()
   const userProfile = getUserProfile()
   const isZonesPageEnabled = useIsSplitOn(Features.RUCKUS_AI_ZONES_LIST)
+  const isUsersPageEnabled = useIsSplitOn(Features.RUCKUS_AI_USERS_TOGGLE)
   const currentAccountPermissions = userProfile.selectedTenant.permissions
   const hasViewAnalyticsPermissions =
     currentAccountPermissions?.[PERMISSION_VIEW_ANALYTICS]
@@ -272,7 +273,7 @@ export function useMenuConfig () {
               {
                 uri: '/analytics/admin/users',
                 label: $t({ defaultMessage: 'Users' }),
-                openNewTab: true
+                openNewTab: !isUsersPageEnabled
               }
             ] : []),
             ...(hasManageLabelPermission ? [

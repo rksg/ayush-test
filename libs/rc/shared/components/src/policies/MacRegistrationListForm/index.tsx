@@ -4,7 +4,7 @@ import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
 import { Loader, PageHeader, showToast, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                                              from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                                from '@acx-ui/feature-toggle'
 import {
   useAddMacRegListMutation,
   useGetMacRegListQuery,
@@ -45,6 +45,8 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
   const [updateMacRegList, { isLoading: isUpdating }] = useUpdateMacRegListMutation()
 
   const policyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isAsync = useIsSplitOn(Features.CLOUDPATH_ASYNC_API_TOGGLE)
+  const customHeaders = (isAsync) ? { Accept: 'application/vnd.ruckus.v2+json' } : undefined
 
   useEffect(() => {
     if (data && editMode) {
@@ -72,15 +74,18 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
         defaultAccess: data.defaultAccess ?? 'ACCEPT',
         policySetId: data.policySetId
       }
-      const result = await addMacRegList({ payload: saveData }).unwrap() as MacRegistrationPool
+      // eslint-disable-next-line max-len
+      const result = await addMacRegList({ payload: saveData, customHeaders }).unwrap() as MacRegistrationPool
 
-      showToast({
-        type: 'success',
-        content: intl.$t(
-          { defaultMessage: 'List {name} was added' },
-          { name: saveData.name }
-        )
-      })
+      if (!isAsync) {
+        showToast({
+          type: 'success',
+          content: intl.$t(
+            { defaultMessage: 'List {name} was added' },
+            { name: saveData.name }
+          )
+        })
+      }
 
       modalMode ? modalCallBack?.(result) : navigate(linkToList, { replace: true })
     } catch (error) {
@@ -99,16 +104,19 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
       }
       await updateMacRegList({
         params: { policyId },
-        payload: saveData
+        payload: saveData,
+        customHeaders
       }).unwrap()
 
-      showToast({
-        type: 'success',
-        content: intl.$t(
-          { defaultMessage: 'List {name} was updated' },
-          { name: saveData.name }
-        )
-      })
+      if (!isAsync) {
+        showToast({
+          type: 'success',
+          content: intl.$t(
+            { defaultMessage: 'List {name} was updated' },
+            { name: saveData.name }
+          )
+        })
+      }
 
       modalMode ? modalCallBack?.() : navigate(linkToList, { replace: true })
     } catch (error) {

@@ -15,7 +15,8 @@ import {
   EdgeVenueFirmware,
   EdgeFirmwareVersion,
   SwitchFirmwareStatus,
-  SwitchFirmware
+  SwitchFirmware,
+  ApModelFamily
 } from '@acx-ui/rc/utils'
 import { baseFirmwareApi }   from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -86,7 +87,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, ['UpdateNow'], () => {
+          onActivityMessageReceived(msg, ['UpdateNow', 'DowngradeVenueAbf'], () => {
             api.dispatch(firmwareApi.util.invalidateTags([
               { type: 'Firmware', id: 'LIST' }
             ]))
@@ -122,6 +123,14 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'ABF', id: 'LIST' }]
+    }),
+    getApModelFamilies: build.query<ApModelFamily[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getApModelFamilies, params)
+        return {
+          ...req
+        }
+      }
     }),
     getFirmwareVersionIdList: build.query<string[], RequestPayload>({
       query: ({ params }) => {
@@ -415,6 +424,7 @@ export const {
   useGetLatestFirmwareListQuery,
   useGetAvailableFirmwareListQuery,
   useGetAvailableABFListQuery,
+  useGetApModelFamiliesQuery,
   useGetFirmwareVersionIdListQuery,
   useSkipVenueUpgradeSchedulesMutation,
   useUpdateVenueSchedulesMutation,

@@ -5,7 +5,8 @@ import { MessageDescriptor } from 'react-intl'
 import {
   getFilterPayload,
   IncidentFilter,
-  incidentCodes,
+  IncidentsToggleFilter,
+  incidentsToggle,
   Incident,
   transformIncidentQueryResult,
   shortDescription,
@@ -105,7 +106,7 @@ export interface MutationResponse {
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    incidentsList: build.query<IncidentNodeData, IncidentFilter & {
+    incidentsList: build.query<IncidentNodeData, IncidentFilter & IncidentsToggleFilter & {
       includeMuted?: boolean
     }>({
       query: (payload) => ({
@@ -139,7 +140,7 @@ export const api = dataApi.injectEndpoints({
         variables: {
           start: payload.startDate,
           end: payload.endDate,
-          code: payload.code ?? incidentCodes,
+          code: incidentsToggle(payload),
           includeMuted: payload.includeMuted ?? true,
           severity: [{ gt: 0, lte: 1 }],
           ...getFilterPayload(payload)

@@ -4,7 +4,8 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
-import { networkApi }                   from '@acx-ui/rc/services'
+import { useSdLanScopedNetworks }       from '@acx-ui/rc/components'
+import { networkApi, venueApi }         from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }              from '@acx-ui/store'
 import {
@@ -27,7 +28,8 @@ import {
 
 import { VenueNetworksTab } from './index'
 
-jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP) // isMapEnabled = false
+// isMapEnabled = false && SD-LAN not enabled
+jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP && ff !== Features.EDGES_SD_LAN_TOGGLE)
 
 type MockDialogProps = React.PropsWithChildren<{
   visible: boolean
@@ -45,7 +47,8 @@ jest.mock('@acx-ui/rc/components', () => ({
     visible && <div data-testid={'NetworkVenueScheduleDialog'}>
       <button onClick={(e)=>{e.preventDefault();onOk()}}>Apply</button>
       <button onClick={(e)=>{e.preventDefault();onCancel()}}>Cancel</button>
-    </div>
+    </div>,
+  useSdLanScopedNetworks: jest.fn().mockReturnValue([])
 }))
 
 const params = {
@@ -63,6 +66,7 @@ describe('VenueNetworksTab', () => {
   beforeEach(() => {
     act(() => {
       store.dispatch(networkApi.util.resetApiState())
+      store.dispatch(venueApi.util.resetApiState())
     })
 
     mockServer.use(
@@ -206,5 +210,20 @@ describe('VenueNetworksTab', () => {
 
     const icon = await within(row).findByTestId('InformationSolid')
     expect(icon).toBeVisible()
+  })
+
+  it('confirm deactivate when SD-LAN is scoped in the selected network', async () => {
+    jest.mocked(useSdLanScopedNetworks).mockReturnValue(['d556bb683e4248b7a911fdb40c307aa5'])
+
+    render(<Provider><VenueNetworksTab /></Provider>, {
+      route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
+    })
+
+    const activatedRow = await screen.findByRole('row', { name: /test_1/i })
+    await userEvent.click(await within(activatedRow).findByRole('switch'))
+    const popup = await screen.findByRole('dialog')
+    await screen.findByText(/This network is running the SD-LAN service on this venue/i)
+    await userEvent.click( await within(popup).findByRole('button', { name: 'Cancel' }))
+    await waitFor(() => expect(popup).not.toBeVisible())
   })
 })

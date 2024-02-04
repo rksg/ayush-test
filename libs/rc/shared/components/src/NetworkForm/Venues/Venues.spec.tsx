@@ -3,7 +3,8 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { networkApi }     from '@acx-ui/rc/services'
+import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { networkApi }                     from '@acx-ui/rc/services'
 import {
   BasicServiceSetPriorityEnum,
   CommonUrlsInfo,
@@ -16,6 +17,7 @@ import {
 import { Provider, store }                                                        from '@acx-ui/store'
 import { act, findTBody, fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
+import { useSdLanScopedNetworkVenues }                              from '../../useEdgeActions'
 import { list, network, networkVenue_allAps, networkVenue_apgroup } from '../__tests__/fixtures'
 import NetworkFormContext                                           from '../NetworkFormContext'
 
@@ -44,7 +46,10 @@ jest.mock('../../NetworkVenueScheduleDialog', () => ({
       <button onClick={(e)=>{e.preventDefault();onCancel()}}>Cancel</button>
     </div>
 }))
-
+jest.mock('../../useEdgeActions', () => ({
+  ...jest.requireActual('../../useEdgeActions'),
+  useSdLanScopedNetworkVenues: jest.fn().mockReturnValue([])
+}))
 
 function wrapper ({ children }: { children: React.ReactElement }) {
   return <Provider>
@@ -295,5 +300,26 @@ describe('Create Network: Venues Step', () => {
     expect(rows).toHaveLength(2)
     const toogleButton = rows[0]
     await waitFor(() => expect(toogleButton).toBeChecked())
+  })
+
+  it('confirm deactivate when SD-LAN is scoped in the selected network', async () => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useSdLanScopedNetworkVenues).mockReturnValue(['02e2ddbc88e1428987666d31edbc3d9a'])
+
+    render(<Venues defaultActiveVenues={[list.data[0].id]} />, {
+      wrapper,
+      route: { params, path: '/:tenantId/:networkId' }
+    })
+
+    const tbody = await findTBody()
+    const activatedRow = await within(tbody).findByRole('row', { name: /My-Venue/ })
+    await userEvent.click(await within(activatedRow).findByRole('checkbox'))
+    const deactivateButton = screen.getByRole('button', { name: 'Deactivate' })
+    await userEvent.click(deactivateButton)
+    const popup = await screen.findByRole('dialog')
+    await screen.findByText(/This network is running the SD-LAN service on this venue/i)
+    await userEvent.click( await within(popup).findByRole('button', { name: 'Cancel' }))
+    await waitFor(() => expect(popup).not.toBeVisible())
   })
 })

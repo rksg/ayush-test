@@ -53,10 +53,10 @@ import {
   PropertyUnitStatus,
   SEARCH,
   SwitchViewModel,
-  useTableQuery
-} from '@acx-ui/rc/utils'
-import {
-  getPolicyDetailsLink, PolicyOperation, PolicyType
+  useTableQuery,
+  getPolicyDetailsLink,
+  PolicyOperation,
+  PolicyType
 } from '@acx-ui/rc/utils'
 import {
   TenantLink
@@ -163,11 +163,13 @@ export function VenuePropertyTab () {
   const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
   const hasResidentPortalAssignment = !!propertyConfigsQuery?.data?.residentPortalId
 
+  const settingsId = 'property-units-table'
   const queryUnitList = useTableQuery({
     useQuery: useGetPropertyUnitListQuery,
     defaultPayload: {} as {
       filters: { name: string|undefined }
-    }
+    },
+    pagination: { settingsId }
   })
 
   const importUnits = async (formData: FormData) => {
@@ -554,7 +556,7 @@ export function VenuePropertyTab () {
     >
       <Table
         rowKey='name'
-        settingsId='property-units-table'
+        settingsId={settingsId}
         columns={columns}
         enableApiFilter
         onFilterChange={handleFilterChange}

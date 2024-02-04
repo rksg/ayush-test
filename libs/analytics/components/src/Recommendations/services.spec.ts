@@ -204,7 +204,8 @@ describe('Recommendation services', () => {
         crrmOptimizedState: {
           ...crrmStates.optimized,
           text: 'Optimized'
-        }
+        },
+        toggles: { crrmFullOptimization: false }
       },
       {
         ...recommendationListResult.recommendations[1],
@@ -223,7 +224,8 @@ describe('Recommendation services', () => {
         crrmOptimizedState: {
           ...crrmStates.nonOptimized,
           text: 'Non-Optimized'
-        }
+        },
+        toggles: { crrmFullOptimization: false }
       },
       {
         ...recommendationListResult.recommendations[2],
@@ -258,6 +260,7 @@ describe('Recommendation services', () => {
       },
       {
         ...recommendationListResult.recommendations[4],
+        id: '1', // _.uniqueId()
         scope: `vsz34 (SZ Cluster)
 > 01-US-CA-D1-Test-Home (Domain)
 > 01-Alethea-WiCheck Test (Venue)`,
@@ -267,17 +270,19 @@ describe('Recommendation services', () => {
           text: 'Low'
         },
         category: 'Insufficient Licenses',
-        summary: 'Insufficient Licenses',
+        summary: 'No RRM recommendation due to incomplete license compliance',
         status: 'Insufficient Licenses',
         statusTooltip: 'Insufficient Licenses',
         statusEnum: 'insufficientLicenses',
         crrmOptimizedState: {
           ...crrmStates.insufficientLicenses,
           text: 'Insufficient Licenses'
-        }
+        },
+        toggles: { crrmFullOptimization: true }
       },
       {
         ...recommendationListResult.recommendations[5],
+        id: '2', // _.uniqueId()
         scope: `vsz34 (SZ Cluster)
 > 22-US-CA-D22-Aaron-Home (Domain)
 > 22-US-CA-Z22-Aaron-Home (Venue)`,
@@ -287,17 +292,19 @@ describe('Recommendation services', () => {
           text: 'Low'
         },
         category: 'Verification Error',
-        summary: 'Verification Error',
+        summary: 'No RRM recommendation due to verification error',
         status: 'Verification Error',
         statusTooltip: 'Verification Error',
         statusEnum: 'verificationError',
         crrmOptimizedState: {
           ...crrmStates.verificationError,
           text: 'Verification Error'
-        }
+        },
+        toggles: { crrmFullOptimization: true }
       },
       {
         ...recommendationListResult.recommendations[6],
+        id: '3', // _.uniqueId()
         scope: `vsz34 (SZ Cluster)
 > 01-US-CA-D1-Test-Home (Domain)
 > 01-US-CA-D1-Ruckus-HQ-QA-interop (Venue)`,
@@ -307,17 +314,62 @@ describe('Recommendation services', () => {
           text: 'Low'
         },
         category: 'Verified',
-        summary: 'Verified',
+        summary: 'AI verified and in optimal state',
         status: 'Verified',
         statusTooltip: 'Verified',
         statusEnum: 'verified',
         crrmOptimizedState: {
           ...crrmStates.verified,
           text: 'Verified'
-        }
+        },
+        toggles: { crrmFullOptimization: true }
       },
       {
         ...recommendationListResult.recommendations[7],
+        id: '4', // _.uniqueId()
+        scope: `vsz34 (SZ Cluster)
+> 23-IND-BNG-D23-Keshav-Home (Domain)
+> 23-IND-BNG-D23-Keshav-Home (Venue)`,
+        type: 'Venue',
+        priority: {
+          ...priorities.low,
+          text: 'Low'
+        },
+        category: 'Unqualified Zone',
+        summary: 'No RRM recommendation as venue is unqualified',
+        status: 'Unqualified Zone',
+        statusTooltip: 'Unqualified Zone',
+        statusEnum: 'unqualifiedZone',
+        crrmOptimizedState: {
+          ...crrmStates.unqualifiedZone,
+          text: 'Unqualified Zone'
+        },
+        toggles: { crrmFullOptimization: true }
+      },
+      {
+        ...recommendationListResult.recommendations[8],
+        id: '5', // _.uniqueId()
+        scope: `vsz34 (SZ Cluster)
+> 25-US-CA-D25-SandeepKour-home (Domain)
+> 25-US-CA-D25-SandeepKour-home (Venue)`,
+        type: 'Venue',
+        priority: {
+          ...priorities.low,
+          text: 'Low'
+        },
+        category: 'No APs',
+        summary: 'No RRM recommendation as venue has no APs',
+        status: 'No APs',
+        statusTooltip: 'No APs',
+        statusEnum: 'noAps',
+        crrmOptimizedState: {
+          ...crrmStates.noAps,
+          text: 'No APs'
+        },
+        toggles: { crrmFullOptimization: true }
+      },
+      {
+        ...recommendationListResult.recommendations[9],
         scope: `vsz612 (SZ Cluster)
 > EDU-MeshZone_S12348 (Venue)`,
         type: 'Venue',
@@ -333,7 +385,8 @@ describe('Recommendation services', () => {
         crrmOptimizedState: {
           ...crrmStates.nonOptimized,
           text: 'Non-Optimized'
-        }
+        },
+        toggles: { crrmFullOptimization: true }
       }
     ]
     expect(error).toBe(undefined)
@@ -423,7 +476,7 @@ describe('Recommendation services', () => {
       { wrapper: Provider }
     )
     act(() => {
-      result.current[0]({ code: 'test', path: idPath, preferences: { fullOptimization: false } })
+      result.current[0]({ path: idPath, preferences: { crrmFullOptimization: false } })
     })
     await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
     expect(result.current[1].data)

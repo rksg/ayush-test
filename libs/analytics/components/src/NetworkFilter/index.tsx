@@ -15,6 +15,7 @@ import { useReportsFilter }            from '@acx-ui/reports/utils'
 import { NetworkPath, getIntl }        from '@acx-ui/utils'
 
 import { useIncidentsListQuery } from '../IncidentTable/services'
+import { useIncidentToggles }    from '../useIncidentToggles'
 
 import { useVenuesHierarchyQuery } from './services'
 import { SeverityCircles }         from './SeverityCircles'
@@ -198,13 +199,14 @@ function ConnectedNetworkFilter (
     radioBandDisabledReason } : ConnectedNetworkFilterProps
 ) {
   const { $t } = useIntl()
+  const toggles = useIncidentToggles()
   const [ open, setOpen ] = useState(false)
   const { setNetworkPath, filters, raw } = useAnalyticsFilter()
   const { setNetworkPath: setReportsNetworkPath,
     raw: reportsRaw, filters: reportsFilter } = useReportsFilter()
   let { bands: selectedBands } = reportsFilter
   const incidentsList = useIncidentsListQuery(
-    { ...filters, includeMuted: false, filter: {} },
+    { ...filters, toggles, includeMuted: false, filter: {} },
     {
       skip: !Boolean(withIncidents),
       selectFromResult: ({ data }) => ({

@@ -185,6 +185,7 @@ describe('Test apGroupPipes.utils', () => {
 
     expect(screen.getByText('24/7')).toBeDefined()
 
+    jest.runOnlyPendingTimers()
     jest.useRealTimers()
   })
 })

@@ -1,11 +1,11 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }                                            from '@acx-ui/components'
-import { EdgeStatusLight, useEdgeClusterActions }                               from '@acx-ui/rc/components'
-import { useGetEdgeClusterListForTableQuery }                                   from '@acx-ui/rc/services'
-import { EdgeClusterTableDataType, allowRebootForStatus, usePollingTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useTenantLink }                               from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                       from '@acx-ui/user'
+import { Loader, Table, TableProps }                                                                                        from '@acx-ui/components'
+import { EdgeStatusLight, useEdgeClusterActions }                                                                           from '@acx-ui/rc/components'
+import { useGetEdgeClusterListForTableQuery }                                                                               from '@acx-ui/rc/services'
+import { EdgeClusterTableDataType, allowRebootForStatus, usePollingTableQuery, getUrl, Device, CommonOperation, activeTab } from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useTenantLink }                                                                           from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                                                                   from '@acx-ui/user'
 
 const defaultPayload = {
   fields: [
@@ -50,7 +50,10 @@ export const EdgeClusterTable = () => {
       render: (_, row) => {
         return row.isFirstLevel ?
           row.name :
-          <TenantLink to={`/devices/edge/${row.serialNumber}/details/overview`}>
+          <TenantLink to={`${getUrl({
+            feature: Device.Edge,
+            oper: CommonOperation.Detail,
+            params: { id: row.serialNumber } })}/overview`}>
             {row.name}
           </TenantLink>
       }
@@ -129,15 +132,27 @@ export const EdgeClusterTable = () => {
           navigate({
             ...basePath,
             pathname:
-            // eslint-disable-next-line max-len
-            `${basePath.pathname}/devices/edge/cluster/${selectedRows[0].clusterId}/edit/cluster-details`
+            `${basePath.pathname}${getUrl({
+              feature: Device.EdgeCluster,
+              oper: CommonOperation.Edit,
+              after: [activeTab],
+              params: {
+                id: selectedRows[0].clusterId,
+                activeTab: 'cluster-details'
+              } })}`
           })
         } else {
           navigate({
             ...basePath,
             pathname:
-            // eslint-disable-next-line max-len
-            `${basePath.pathname}/devices/edge/${selectedRows[0].serialNumber}/edit/general-settings`
+            `${basePath.pathname}${getUrl({
+              feature: Device.Edge,
+              oper: CommonOperation.Edit,
+              after: [activeTab],
+              params: {
+                id: selectedRows[0].serialNumber,
+                activeTab: 'general-settings'
+              } })}`
           })
         }
       }
@@ -174,7 +189,7 @@ export const EdgeClusterTable = () => {
   return (
     <Loader states={[tableQuery]}>
       <Table
-        rowKey='name'
+        rowKey={(row: EdgeClusterTableDataType) => (row.serialNumber ?? row.clusterId)}
         rowSelection={{ type: 'checkbox' }}
         rowActions={filterByAccess(rowActions)}
         columns={columns}

@@ -26,6 +26,8 @@ import {
 import { TenantLink, useNavigateToPath }                               from '@acx-ui/react-router-dom'
 import { exportMessageMapping, noDataDisplay, handleBlobDownloadFile } from '@acx-ui/utils'
 
+import { useIncidentToggles } from '../useIncidentToggles'
+
 import {
   useIncidentsListQuery,
   useMuteIncidentsMutation,
@@ -119,8 +121,9 @@ const DateLink = ({ value }: { value: IncidentTableRow }) => {
 export function IncidentTable ({ filters }: {
    filters: IncidentFilter }) {
   const intl = useIntl()
+  const toggles = useIncidentToggles()
   const { $t } = intl
-  const queryResults = useIncidentsListQuery(filters)
+  const queryResults = useIncidentsListQuery({ ...filters, toggles })
   const [ drawerSelection, setDrawerSelection ] = useState<Incident | null>(null)
   const [ showMuted, setShowMuted ] = useState<boolean>(false)
   const onDrawerClose = () => setDrawerSelection(null)

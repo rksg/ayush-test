@@ -9,13 +9,12 @@ import { useIntl }                              from 'react-intl'
 import {
   Subtitle, useStepFormContext
 } from '@acx-ui/components'
+import { useSwitchFirmwareUtils } from '@acx-ui/rc/components'
 import {
   FirmwareVersion
 } from '@acx-ui/rc/utils'
 
-
-import * as UI                   from '../../styledComponents'
-import { getSwitchVersionLabel } from '../../switch.upgrade.util'
+import * as UI from '../../styledComponents'
 
 export interface UpdateNowStepProps {
   visible: boolean,
@@ -32,6 +31,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
   const { form, current } = useStepFormContext()
   const { availableVersions,hasVenue,
     nonIcx8200Count, icx8200Count, setShowSubTitle } = props
+  const { getSwitchVersionLabel } = useSwitchFirmwareUtils()
   const [selectedVersion, setSelectedVersion] = useState<string>('')
   const [selectedAboveTenVersion, setSelectedAboveTenVersion] = useState<string>('')
   const [disableSave, setDisableSave] = useState(true)
@@ -67,6 +67,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
 
   return (
     <div
+      data-testid='update-now-step'
       style={{
         minHeight: '50vh',
         marginBottom: '30px'

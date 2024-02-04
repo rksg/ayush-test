@@ -1,14 +1,10 @@
 import { rest } from 'msw'
 
-import { AaaUrls }  from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
-import {
-  mockServer,
-  render,
-  screen,
-  waitFor,
-  within
-} from '@acx-ui/test-utils'
+import { AaaUrls, ConfigTemplateUrlsInfo }             from '@acx-ui/rc/utils'
+import { Provider }                                    from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
+
+import { mockAAAPolicyTemplateListResponse, mockAAAPolicyTemplateResponse } from '../../NetworkForm/__tests__/fixtures'
 
 import { AAAPolicyDetail } from '.'
 
@@ -70,7 +66,47 @@ params = {
   tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
   policyId: '373377b0cb6e46ea8982b1c80aabe1fa'
 }
+
+const mockedUseConfigTemplate = jest.fn()
+const mockedUsePolicyBreadcrumb = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useConfigTemplate: () => mockedUseConfigTemplate(),
+  usePolicyBreadcrumb: () => mockedUsePolicyBreadcrumb()
+}))
+
 describe('AAA Detail Page', () => {
+  beforeEach(() => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+  })
+
+  afterEach(() => {
+    mockedUseConfigTemplate.mockRestore()
+  })
+  it('should render breadcrumb correctly with MSP account', async () => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+
+    mockServer.use(
+      rest.post(
+        AaaUrls.getAAANetworkInstances.url,
+        (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.post(
+        ConfigTemplateUrlsInfo.getAAAPolicyTemplateList.url,
+        (_, res, ctx) => res(ctx.json(mockAAAPolicyTemplateListResponse))
+      ),
+      rest.get(
+        ConfigTemplateUrlsInfo.getAAAPolicyTemplate.url,
+        (_, res, ctx) => res(ctx.json(mockAAAPolicyTemplateResponse))
+      )
+    )
+    render(<Provider><AAAPolicyDetail /></Provider>, {
+      route: { params, path: '/:tenantId/policies/aaa/:policyId/detail' }
+    })
+
+    expect(mockedUsePolicyBreadcrumb).toHaveBeenCalled()
+  })
+
   it('should render aaa detail page', async () => {
     mockServer.use(
       rest.post(
@@ -92,29 +128,5 @@ describe('AAA Detail Page', () => {
       name: (_, element) => element.classList.contains('ant-table-tbody')
     })
     await waitFor(() => expect(within(body).getAllByRole('row')).toHaveLength(4))
-  })
-
-  it('should render breadcrumb correctly', async () => {
-    mockServer.use(
-      rest.post(
-        AaaUrls.getAAANetworkInstances.url,
-        (req, res, ctx) => res(ctx.json(list))
-      ),
-      rest.get(
-        AaaUrls.getAAAProfileDetail.url,
-        (req, res, ctx) => res(ctx.json({ ...detailResult, type: 'AUTHENTICATION',
-          networkIds: ['1','2'] }))
-      )
-    )
-    render(<Provider><AAAPolicyDetail /></Provider>, {
-      route: { params, path: '/:tenantId/policies/aaa/:policyId/detail' }
-    })
-    expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(screen.getByRole('link', {
-      name: 'Policies & Profiles'
-    })).toBeVisible()
-    expect(screen.getByRole('link', {
-      name: 'RADIUS Server'
-    })).toBeVisible()
   })
 })

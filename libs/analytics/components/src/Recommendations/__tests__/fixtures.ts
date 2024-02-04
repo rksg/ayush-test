@@ -261,7 +261,7 @@ export const aiOpsNonNewListResult = {
 }
 
 export const insufficientLicenses = {
-  id: '5',
+  id: 'unknown',
   code: 'unknown',
   status: 'insufficientLicenses',
   createdAt: '2023-11-09T07:05:14.900Z',
@@ -298,7 +298,7 @@ export const insufficientLicenses = {
 }
 
 export const verificationError = {
-  id: '6',
+  id: 'unknown',
   code: 'unknown',
   status: 'verificationError',
   createdAt: '2023-11-09T07:05:14.900Z',
@@ -335,7 +335,7 @@ export const verificationError = {
 }
 
 export const verified = {
-  id: '7',
+  id: 'unknown',
   code: 'unknown',
   status: 'verified',
   createdAt: '2023-11-09T07:05:14.900Z',
@@ -393,10 +393,68 @@ export const verified = {
   preferences: null
 }
 
+export const unqualifiedZone = {
+  id: 'unknown',
+  code: 'unknown',
+  status: 'unqualifiedZone',
+  createdAt: '2023-11-09T07:05:14.900Z',
+  updatedAt: '2023-11-14T06:05:21.004Z',
+  sliceType: 'zone',
+  sliceValue: '23A-IND-BNG-D23-Keshav-Home',
+  metadata: { audit: [ { code: 'global', stage: 'filter', failure: { mesh: false } } ] },
+  isMuted: false,
+  mutedBy: '',
+  mutedAt: null,
+  path: [
+    {
+      type: 'system',
+      name: 'vsz34'
+    },
+    {
+      type: 'domain',
+      name: '23-IND-BNG-D23-Keshav-Home'
+    },
+    {
+      type: 'zone',
+      name: '23-IND-BNG-D23-Keshav-Home'
+    }
+  ] as NetworkPath,
+  preferences: null
+}
+
+export const noAps = {
+  id: 'unknown',
+  code: 'unknown',
+  status: 'noAps',
+  createdAt: '2023-11-09T07:05:14.900Z',
+  updatedAt: '2023-11-14T06:05:21.004Z',
+  sliceType: 'zone',
+  sliceValue: '25-US-CA-D25-SandeepKour-home',
+  metadata: { audit: [ { code: 'global', stage: 'filter', failure: { 'no-aps': false } } ] },
+  isMuted: false,
+  mutedBy: '',
+  mutedAt: null,
+  path: [
+    {
+      type: 'system',
+      name: 'vsz34'
+    },
+    {
+      type: 'domain',
+      name: '25-US-CA-D25-SandeepKour-home'
+    },
+    {
+      type: 'zone',
+      name: '25-US-CA-D25-SandeepKour-home'
+    }
+  ] as NetworkPath,
+  preferences: null
+}
+
 export const recommendationListResult = {
   recommendations: [
     {
-      id: '1',
+      id: '11',
       code: 'c-crrm-channel5g-auto',
       status: 'applied',
       createdAt: '2023-06-13T07:05:08.638Z',
@@ -421,12 +479,10 @@ export const recommendationListResult = {
         { status: 'applyscheduleinprogress' },
         { status: 'applied' }
       ],
-      preferences: {
-        fullOptimization: true
-      }
+      preferences: { crrmFullOptimization: true }
     },
     {
-      id: '2',
+      id: '12',
       code: 'c-crrm-channel5g-auto',
       status: 'revertscheduled',
       createdAt: '2023-06-13T07:05:08.638Z',
@@ -461,7 +517,7 @@ export const recommendationListResult = {
       preferences: null
     },
     {
-      id: '3',
+      id: '13',
       code: 'c-txpower-same',
       status: 'revertfailed',
       createdAt: '2023-06-13T07:05:08.638Z',
@@ -488,7 +544,7 @@ export const recommendationListResult = {
       preferences: null
     },
     {
-      id: '4',
+      id: '14',
       code: 'c-bandbalancing-enable',
       status: 'new',
       createdAt: '2023-06-12T07:05:14.900Z',
@@ -521,15 +577,17 @@ export const recommendationListResult = {
     insufficientLicenses,
     verificationError,
     verified,
+    unqualifiedZone,
+    noAps,
     {
-      id: '8',
+      id: '15',
       code: 'c-crrm-channel24g-auto',
       status: 'new',
       createdAt: '2023-06-13T07:05:08.638Z',
       updatedAt: '2023-06-16T06:05:02.839Z',
       sliceType: 'zone',
       sliceValue: 'zone-1',
-      metadata: { algorithmData: { isFullOptimized: false } },
+      metadata: { algorithmData: { isCrrmFullOptimization: false } },
       isMuted: false,
       mutedAt: null,
       mutedBy: '',
@@ -541,9 +599,7 @@ export const recommendationListResult = {
         { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c8' },
         { type: 'zone', name: 'EDU-MeshZone_S12348' }
       ] as NetworkPath,
-      preferences: {
-        fullOptimization: true
-      }
+      preferences: { crrmFullOptimization: true }
     }
   ]
 }

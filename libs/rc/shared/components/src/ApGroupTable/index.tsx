@@ -5,7 +5,7 @@ import _                                       from 'lodash'
 import { useIntl }                             from 'react-intl'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
-import { IncidentsBySeverityData, useLazyIncidentsListBySeverityQuery }                                        from '@acx-ui/analytics/components'
+import { IncidentsBySeverityData, useIncidentToggles, useLazyIncidentsListBySeverityQuery }                    from '@acx-ui/analytics/components'
 import { ColumnType, Loader, StackedBarChart, Table, TableProps, cssStr, deviceStatusColors, showActionModal } from '@acx-ui/components'
 import { useApGroupsListQuery, useDeleteApGroupsMutation }                                                     from '@acx-ui/rc/services'
 import { ApGroupViewModel, FILTER, TableQuery, getFilters, transformDisplayNumber, usePollingTableQuery }      from '@acx-ui/rc/utils'
@@ -61,11 +61,12 @@ const defaultTableData: ApGroupViewModel[] = []
 
 export const ApGroupTable = (props : ApGroupTableProps) => {
   const { $t } = useIntl()
+  const toggles = useIncidentToggles()
   const navigate = useNavigate()
   const location = useLocation()
   const params = useParams()
   const filters = getFilters(params) as FILTER
-  const { searchable, filterables } = props
+  const { searchable, filterables, settingsId = 'ap-group-table' } = props
   const { setApGroupsCount } = useContext(ApGroupsTabContext)
   const apGroupListTableQuery = usePollingTableQuery({
     useQuery: useApGroupsListQuery,
@@ -81,7 +82,8 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
       sortOrder: defaultApGroupPayload.sortOrder
     },
     option: { skip: Boolean(props.tableQuery) },
-    enableSelectAllPagesData: ['id', 'name']
+    enableSelectAllPagesData: ['id', 'name'],
+    pagination: { settingsId }
   })
 
   const tableQuery = props.tableQuery || apGroupListTableQuery
@@ -96,7 +98,7 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
     setApGroupsCount?.(totalCount)
 
     const addIncidentsData = async () => {
-      const incidentsPayload = genIncidentsPayload(apGroupsData)
+      const incidentsPayload = { ...genIncidentsPayload(apGroupsData), toggles }
       const { data: incidentsData } = await getIncidentsList(incidentsPayload, true)
 
       const newTableData = _.cloneDeep(apGroupsData)
@@ -262,7 +264,7 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
     <Loader states={[tableQuery]}>
       <Table<ApGroupViewModel>
         {...props}
-        settingsId='ap-group-table'
+        settingsId={settingsId}
         columns={columns}
         dataSource={tableData}
         getAllPagesData={tableQuery.getAllPagesData}

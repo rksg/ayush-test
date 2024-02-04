@@ -1,18 +1,16 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { firmwareApi }                                       from '@acx-ui/rc/services'
 import {
-  FirmwareUrlsInfo, SwitchUrlsInfo
+  FirmwareUrlsInfo, SwitchFirmwareFixtures, SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
-import {
-  Provider
-} from '@acx-ui/store'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
-
 
 import { VenueFirmwareList } from '..'
 import {
@@ -20,10 +18,12 @@ import {
   preference,
   switchRelease,
   switchUpgradeStatusDetails_KittoVenue1,
-  switchCurrentVersions,
   switchLatest
 } from '../__test__/fixtures'
 
+const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
+
+const retryRequestSpy = jest.fn()
 
 jest.mock('./SwitchUpgradeWizard', () => ({
   ...jest.requireActual('./SwitchUpgradeWizard'),
@@ -32,11 +32,17 @@ jest.mock('./SwitchUpgradeWizard', () => ({
   }
 }))
 
-const retryRequestSpy = jest.fn()
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetSwitchCurrentVersionsQuery: () => ({
+    data: mockSwitchCurrentVersions
+  })
+}))
 
 describe('SwitchFirmware - VenueStatusDrawer', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
+    store.dispatch(firmwareApi.util.resetApiState())
     mockServer.use(
       rest.post(
         FirmwareUrlsInfo.getSwitchVenueVersionList.url,
@@ -55,10 +61,6 @@ describe('SwitchFirmware - VenueStatusDrawer', () => {
         (req, res, ctx) => res(ctx.json({
           preDownload: false
         }))
-      ),
-      rest.get(
-        FirmwareUrlsInfo.getSwitchCurrentVersions.url,
-        (req, res, ctx) => res(ctx.json(switchCurrentVersions))
       ),
       rest.post(
         FirmwareUrlsInfo.updateSwitchVenueSchedules.url,
@@ -93,9 +95,10 @@ describe('SwitchFirmware - VenueStatusDrawer', () => {
       })
 
     expect(await screen.findByText('My-Venue')).toBeInTheDocument()
-    await userEvent.click(await screen.findByRole('button', { name: /Check Status/i }))
-    expect(await screen.findByText('Firmware update status')).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: /Check Status/i }))
+
     expect(await screen.findByText('DEV-EZD3317P008')).toBeInTheDocument()
+    expect(screen.getByText('Firmware update status')).toBeInTheDocument()
   })
 
 
@@ -109,9 +112,9 @@ describe('SwitchFirmware - VenueStatusDrawer', () => {
 
     expect(await screen.findByText('My-Venue')).toBeInTheDocument()
     await userEvent.click(await screen.findByRole('button', { name: /Check Status/i }))
-    expect(await screen.findByText('Firmware update status')).toBeInTheDocument()
     expect(await screen.findByText('DEV-EZD3317P008')).toBeInTheDocument()
-    await userEvent.click(await screen.findByRole('button', { name: /Retry/i }))
+    expect(screen.getByText('Firmware update status')).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: /Retry/i }))
     expect(retryRequestSpy).toBeCalledTimes(1)
   })
 })

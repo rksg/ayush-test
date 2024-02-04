@@ -37,6 +37,8 @@ export * from './msgTemplate'
 export * from './property'
 export * from './googleMaps'
 export * from './applicationPolicy'
+export * from './configTemplate'
+
 export interface CommonResult {
   requestId: string
   response?: {

@@ -10,12 +10,14 @@ import {
   DonutChart
 } from '@acx-ui/components'
 
+import { useIncidentToggles }                                   from '../../useIncidentToggles'
 import { IncidentsBySeverityData, useIncidentsBySeverityQuery } from '../services'
 
 export function IncidentBySeverityDonutChart ({ filters, type }:
   { filters: IncidentFilter, type?:string }) {
   const { $t } = useIntl()
-  const queryResult = useIncidentsBySeverityQuery(filters, {
+  const toggles = useIncidentToggles()
+  const queryResult = useIncidentsBySeverityQuery({ ...filters, toggles }, {
     selectFromResult: ({ data, ...rest }) => ({
       data: { ...data } as IncidentsBySeverityData,
       ...rest
@@ -40,35 +42,25 @@ export function IncidentBySeverityDonutChart ({ filters, type }:
   const data = getChartData(queryResult.data)
 
   const getContent = (size?: { width: number, height: number }) => {
-    return(
-      <>
-        {
-          size
-            ? <>
-              {
-                data && data.length > 0
-                  ? <DonutChart
-                    title={$t({ defaultMessage: 'Incidents' })}
-                    style={{ width: size.width, height: size.height }}
-                    legend='name-value'
-                    data={data}
-                  />
-                  : <NoActiveContent text={$t({ defaultMessage: 'No reported incidents' })} />
-              }
-            </>
-            : <AutoSizer>
-              {({ width, height }) => (
-                data && data.length > 0
-                  ? <DonutChart
-                    style={{ width, height }}
-                    legend='name-value'
-                    data={data}/>
-                  : <NoActiveData text={$t({ defaultMessage: 'No reported incidents' })} />
-              )}
-            </AutoSizer>
-        }
-      </>
-    )
+    return size
+      ? data && data.length > 0
+        ? <DonutChart
+          title={$t({ defaultMessage: 'Incidents' })}
+          style={{ width: size.width, height: size.height }}
+          legend='name-value'
+          data={data}
+        />
+        : <NoActiveContent text={$t({ defaultMessage: 'No reported incidents' })} />
+      : <AutoSizer>
+        {({ width, height }) => (
+          data && data.length > 0
+            ? <DonutChart
+              style={{ width, height }}
+              legend='name-value'
+              data={data}/>
+            : <NoActiveData text={$t({ defaultMessage: 'No reported incidents' })} />
+        )}
+      </AutoSizer>
   }
 
   return <Loader states={[queryResult]}>

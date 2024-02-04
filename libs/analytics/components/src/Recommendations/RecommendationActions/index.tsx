@@ -22,7 +22,6 @@ import {
 
 import * as UI from './styledComponents'
 
-
 // eslint-disable-next-line max-len
 const applyFooterMsg = defineMessage({ defaultMessage: 'This recommendation will be applied at the chosen time whenever there is a need to change the channel plan. Schedule a time during off-hours when the number of WiFi clients is at the minimum.' })
 
@@ -51,12 +50,24 @@ function getFutureTime (value: Moment) {
   return bufferedTime.clone().add(remainder, 'minutes')
 }
 
-type ActionButtonProps = RecommendationListItem & {
+type RecommendationActionType = Pick<
+  // eslint-disable-next-line max-len
+  RecommendationListItem, 'id' | 'code' | 'statusEnum' | 'metadata' | 'isMuted' | 'statusTrail' | 'preferences'>
+
+type ActionButtonProps = RecommendationActionType & {
   disabled: boolean
   type: keyof typeof actionTooltip
+  initialDate: 'scheduledAt' | 'futureDate'
 }
 
-function ApplyCalendar ({ disabled, type, id, code, metadata }: ActionButtonProps) {
+function ApplyCalendar ({
+  disabled,
+  type,
+  id,
+  code,
+  metadata,
+  initialDate
+}: ActionButtonProps) {
   const { $t } = useIntl()
   const [scheduleRecommendation] = useScheduleRecommendationMutation()
   const onApply = (date: Moment) => {
@@ -72,8 +83,11 @@ function ApplyCalendar ({ disabled, type, id, code, metadata }: ActionButtonProp
       })
     }
   }
-  const scheduledAt = useRef(moment(metadata.scheduledAt))
-  const futureDate = useRef(getFutureTime(moment().seconds(0).milliseconds(0)))
+  const initialDateOptions = {
+    scheduledAt: useRef(moment(metadata.scheduledAt)),
+    futureDate: useRef(getFutureTime(moment().seconds(0).milliseconds(0)))
+  }
+  const futureDate = initialDateOptions.futureDate
   const footerMsg = code.startsWith('c-crrm') && type === 'Apply'
     ? $t(applyFooterMsg)
     : undefined
@@ -118,14 +132,14 @@ function ApplyCalendar ({ disabled, type, id, code, metadata }: ActionButtonProp
     title={$t(actionTooltip[type].text)}
     icon={<UI.IconWrapper $disabled={disabled}>{actionTooltip[type].icon}</UI.IconWrapper>}
     disabled={disabled}
-    initialDate={metadata.scheduledAt ? scheduledAt : futureDate}
+    initialDate={initialDateOptions[initialDate]}
     onApply={onApply}
     applyFooterMsg={footerMsg}
     disabledDateTime={disabledDateTime}
   />
 }
 
-function CancelCalendar ({ disabled, id }: Omit<ActionButtonProps, 'type'>) {
+function CancelCalendar ({ disabled, id }: Omit<ActionButtonProps, 'type' | 'initialDate'>) {
   const { $t } = useIntl()
   const [cancelRecommendation] = useCancelRecommendationMutation()
   return <UI.IconWrapper key={`cancel-${id}`} $disabled={disabled}>
@@ -144,53 +158,95 @@ function CancelCalendar ({ disabled, id }: Omit<ActionButtonProps, 'type'>) {
 
 const actions = {
   schedule: (props: ActionButtonProps) => <ApplyCalendar {...props} />,
-  cancel: (props: Omit<ActionButtonProps, 'type'>) => <CancelCalendar {...props} />
+  cancel: (props: Omit<ActionButtonProps, 'type' | 'initialDate'>) => <CancelCalendar {...props} />
 }
 
 export const isCrrmOptimizationMatched = (
-  metadata: Recommendation['metadata'], preferences: Recommendation['preferences']
-) => _.get(metadata, 'algorithmData.isFullOptimized', true) ===
-      _.get(preferences, 'fullOptimization', true)
+  code: Recommendation['code'],
+  metadata: Recommendation['metadata'],
+  preferences: Recommendation['preferences']
+) => !code.startsWith('c-crrm') || _.get(metadata, 'audit') ||
+  _.get(metadata, 'algorithmData.isCrrmFullOptimization', true)
+    === _.get(preferences, 'crrmFullOptimization', true)
 
-const getAvailableActions = (recommendation: RecommendationListItem) => {
-  const { isMuted, statusEnum, metadata, preferences } = recommendation
+const getAvailableActions = (recommendation: RecommendationActionType) => {
+  const { isMuted, statusEnum, code, metadata, preferences } = recommendation
   const props = { ...recommendation }
   if (isMuted) {
     return [
-      { icon: actions.schedule({ ...props, disabled: true, type: 'Apply' }) },
-      { icon: actions.schedule({ ...props, disabled: true, type: 'Revert' }) }
+      {
+        icon: actions.schedule({
+          ...props, disabled: true, type: 'Apply', initialDate: 'futureDate'
+        })
+      },
+      {
+        icon: actions.schedule({
+          ...props, disabled: true, type: 'Revert', initialDate: 'futureDate'
+        })
+      }
     ]
   }
 
   switch (statusEnum) {
     case 'new':
       return [
-        { icon: actions.schedule({
-          ...props,
-          disabled: !isCrrmOptimizationMatched(metadata, preferences),
-          type: 'Apply' })
+        {
+          icon: actions.schedule({
+            ...props,
+            disabled: !isCrrmOptimizationMatched(code, metadata, preferences),
+            type: 'Apply',
+            initialDate: 'futureDate'
+          })
         },
-        { icon: actions.schedule({ ...props, disabled: true, type: 'Revert' }) }
+        {
+          icon: actions.schedule({
+            ...props, disabled: true, type: 'Revert', initialDate: 'futureDate'
+          })
+        }
       ]
     case 'applyscheduled':
       return [
-        { icon: actions.schedule({ ...props, disabled: false, type: 'ApplyScheduled' }) },
+        {
+          icon: actions.schedule({
+            ...props, disabled: false, type: 'ApplyScheduled', initialDate: 'scheduledAt'
+          })
+        },
         recommendation?.statusTrail?.filter(trail => trail.status === 'applied').length === 0
           && { icon: actions.cancel({ ...props, disabled: false }) },
-        { icon: actions.schedule({ ...props, disabled: true, type: 'Revert' }) }
+        {
+          icon: actions.schedule({
+            ...props, disabled: true, type: 'Revert', initialDate: 'futureDate'
+          })
+        }
       ].filter(Boolean) as { icon: JSX.Element }[]
     case 'applied':
     case 'applywarning':
     case 'revertfailed':
       return [
-        { icon: actions.schedule({ ...props, disabled: true, type: 'Apply' }) },
-        { icon: actions.schedule({ ...props, disabled: false, type: 'Revert' }) }
+        {
+          icon: actions.schedule({
+            ...props, disabled: true, type: 'Apply', initialDate: 'futureDate'
+          })
+        },
+        {
+          icon: actions.schedule({
+            ...props, disabled: false, type: 'Revert', initialDate: 'futureDate'
+          })
+        }
       ]
     case 'revertscheduled':
       return [
-        { icon: actions.schedule({ ...props, disabled: true, type: 'Apply' }) },
+        {
+          icon: actions.schedule({
+            ...props, disabled: true, type: 'Apply', initialDate: 'futureDate'
+          })
+        },
         { icon: actions.cancel({ ...props, disabled: false }) },
-        { icon: actions.schedule({ ...props, disabled: false, type: 'RevertScheduled' }) }
+        {
+          icon: actions.schedule({
+            ...props, disabled: false, type: 'RevertScheduled', initialDate: 'scheduledAt'
+          })
+        }
       ]
     case 'applyfailed':
     case 'beforeapplyinterrupted':
@@ -199,14 +255,22 @@ const getAvailableActions = (recommendation: RecommendationListItem) => {
     case 'applyscheduleinprogress':
     case 'revertscheduleinprogress':
       return [
-        { icon: actions.schedule({ ...props, disabled: true, type: 'Apply' }) },
-        { icon: actions.schedule({ ...props, disabled: true, type: 'Revert' }) }
+        {
+          icon: actions.schedule({
+            ...props, disabled: true, type: 'Apply', initialDate: 'futureDate'
+          })
+        },
+        {
+          icon: actions.schedule({
+            ...props, disabled: true, type: 'Revert', initialDate: 'futureDate'
+          })
+        }
       ]
     default: return []
   }
 }
 
-export const RecommendationActions = (props: { recommendation: RecommendationListItem }) => {
+export const RecommendationActions = (props: { recommendation: RecommendationActionType }) => {
   const { recommendation } = props
   const actionButtons = getAvailableActions(recommendation)
   return <UI.Actions>

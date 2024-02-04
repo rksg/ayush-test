@@ -60,9 +60,11 @@ export const EdgeDhcp = () => {
     sortField: 'name',
     sortOrder: 'ASC'
   }
+  const settingsId = 'edge-dhcp-pools-table'
   const poolTableQuery = useTableQuery<DhcpPoolStats, RequestPayload<unknown>, unknown>({
     useQuery: useGetDhcpPoolStatsQuery,
-    defaultPayload: getDhcpPoolStatsPayload
+    defaultPayload: getDhcpPoolStatsPayload,
+    pagination: { settingsId }
   })
 
   const getDhcpHostStatsPayload = {
@@ -96,7 +98,7 @@ export const EdgeDhcp = () => {
   const tabs = {
     pools: {
       title: $t({ defaultMessage: 'Pools' }),
-      content: <EdgeDhcpPoolTable tableQuery={poolTableQuery} />
+      content: <EdgeDhcpPoolTable tableQuery={poolTableQuery} settingsId={settingsId} />
     },
     leases: {
       title: $t(

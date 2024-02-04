@@ -16,6 +16,7 @@ export const VenueEdge = () => {
   const { $t } = useIntl()
   const params = useParams()
 
+  const settingsId = 'venue-edges-table'
   const tableQuery: EdgesTableQueryProps = {
     defaultPayload: {
       fields: [
@@ -30,7 +31,8 @@ export const VenueEdge = () => {
         'firmwareVersion'
       ],
       filters: { venueId: [params.venueId] }
-    }
+    },
+    pagination: { settingsId }
   }
 
   return (<>
@@ -40,6 +42,6 @@ export const VenueEdge = () => {
       </TenantLink>
     </SpaceWrapper>
 
-    <EdgesTable tableQuery={tableQuery} filterColumns={['venue']}/>
+    <EdgesTable tableQuery={tableQuery} filterColumns={['venue']} settingsId={settingsId} />
   </>)
 }

@@ -2,11 +2,18 @@ import { useState } from 'react'
 
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
-import { act }   from 'react-dom/test-utils'
 
 import { EdgePortConfigFixtures, EdgeSubInterfaceFixtures, EdgeSubInterface, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                                         from '@acx-ui/store'
-import { fireEvent, mockServer, render, renderHook, screen, waitFor }                       from '@acx-ui/test-utils'
+import {
+  act,
+  fireEvent,
+  mockServer,
+  render,
+  renderHook,
+  screen,
+  waitFor
+} from '@acx-ui/test-utils'
 
 import SubInterfaceDrawer from './SubInterfaceDrawer'
 
@@ -153,13 +160,11 @@ describe('EditEdge ports - sub-interface', () => {
         enabled: true,
         gateway: '',
         id: 'fa663fd2-3057-44d9-ba25-9b45c93069cd',
-        ip: '',
         ipMode: 'DHCP',
         mac: '00:0c:29:b6:ad:04',
         name: 'local0',
         natEnabled: false,
         portType: 'LAN',
-        subnet: '',
         vlan: 999
       })
     })

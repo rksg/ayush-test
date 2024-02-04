@@ -59,6 +59,7 @@ import {
   getGroupableConfig
 } from './config'
 import { SwitchTabContext } from './context'
+import * as UI              from './styledComponents'
 import { useExportCsv }     from './useExportCsv'
 
 export const SwitchStatus = (
@@ -75,7 +76,7 @@ export const SwitchStatus = (
       switchStatusString = $t({ defaultMessage: 'Online' })
     }
     return (
-      <span>
+      <span data-testid='switch-status'>
         <Badge color={handleStatusColor(switchStatus.deviceStatus)}
           text={showText ? switchStatusString : ''}
         />
@@ -121,7 +122,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const { showAllColumns, searchable, filterableKeys } = props
+  const { showAllColumns, searchable, filterableKeys, settingsId = 'switch-table' } = props
   const linkToEditSwitch = useTenantLink('/devices/switch/')
 
   const { setSwitchCount } = useContext(SwitchTabContext)
@@ -146,7 +147,8 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     },
     option: { skip: Boolean(props.tableQuery) },
     enableSelectAllPagesData: ['id', 'serialNumber', 'isStack', 'formStacking', 'deviceStatus', 'switchName', 'name',
-      'model', 'venueId', 'configReady', 'syncedSwitchConfig', 'syncedAdminPassword', 'adminPassword' ]
+      'model', 'venueId', 'configReady', 'syncedSwitchConfig', 'syncedAdminPassword', 'adminPassword' ],
+    pagination: { settingsId }
   })
   const tableQuery = props.tableQuery || inlineTableQuery
 
@@ -162,7 +164,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const tableData = tableQuery.data?.data ?? []
 
   const statusFilterOptions = seriesSwitchStatusMapping().map(({ key, name, color }) => ({
-    key, value: name, label: <Badge color={color} text={name} />
+    key, value: name, label: <UI.FilterBadge color={color} text={name} />
   }))
 
   const switchType = () => [
@@ -300,11 +302,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       dataIndex: 'firmware',
       sorter: true
     },
-    // { TODO: Health scope
-    //   key: 'incidents',
-    //   title: $t({ defaultMessage: 'Incidents' }),
-    //   dataIndex: 'incidents',
-    // },
     ...(params.venueId ? [] : [{
       key: 'venueName',
       title: $t({ defaultMessage: 'Venue' }),
@@ -469,93 +466,95 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   }
 
   return <Loader states={[tableQuery]}>
-    <Table<SwitchRow>
-      {...props}
-      settingsId='switch-table'
-      columns={columns}
-      dataSource={tableData}
-      getAllPagesData={tableQuery.getAllPagesData}
-      pagination={tableQuery.pagination}
-      onChange={tableQuery.handleTableChange}
-      onFilterChange={handleFilterChange}
-      enableApiFilter={true}
-      searchableWidth={220}
-      filterableWidth={140}
-      rowKey={(record)=> record.isGroup || record.serialNumber + (!record.isFirstLevel ? record.switchMac + 'stack-member' : '')}
-      rowActions={filterByAccess(rowActions)}
-      rowSelection={searchable !== false ? {
-        type: 'checkbox',
-        renderCell: (checked, record, index, originNode) => {
-          return record.isFirstLevel
-            ? originNode
-            : null
-        },
-        getCheckboxProps: (record) => ({
-          disabled: !record.isFirstLevel
-        }),
-        onChange (selectedRowKeys, selectedRows) {
-          const { hasStack, notOperational, invalid } = checkSelectedRowsStatus(selectedRows)
+    <div data-testid='switch-table'>
+      <Table<SwitchRow>
+        {...props}
+        settingsId={settingsId}
+        columns={columns}
+        dataSource={tableData}
+        getAllPagesData={tableQuery.getAllPagesData}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        onFilterChange={handleFilterChange}
+        enableApiFilter={true}
+        searchableWidth={220}
+        filterableWidth={140}
+        rowKey={(record)=> record.isGroup || record.serialNumber + (!record.isFirstLevel ? record.switchMac + 'stack-member' : '')}
+        rowActions={filterByAccess(rowActions)}
+        rowSelection={searchable !== false ? {
+          type: 'checkbox',
+          renderCell: (checked, record, index, originNode) => {
+            return record.isFirstLevel
+              ? originNode
+              : null
+          },
+          getCheckboxProps: (record) => ({
+            disabled: !record.isFirstLevel
+          }),
+          onChange (selectedRowKeys, selectedRows) {
+            const { hasStack, notOperational, invalid } = checkSelectedRowsStatus(selectedRows)
 
-          setStackTooltip('')
-          if(!!hasStack) {
-            setStackTooltip($t({ defaultMessage: 'Switches should be standalone' }))
-          } else if(!!notOperational) {
-            setStackTooltip($t({ defaultMessage: 'Switch must be operational before you can stack switches' }))
-          } else if(!!invalid) {
-            setStackTooltip($t({ defaultMessage: 'Switches should belong to the same model family and venue' }))
+            setStackTooltip('')
+            if(!!hasStack) {
+              setStackTooltip($t({ defaultMessage: 'Switches should be standalone' }))
+            } else if(!!notOperational) {
+              setStackTooltip($t({ defaultMessage: 'Switch must be operational before you can stack switches' }))
+            } else if(!!invalid) {
+              setStackTooltip($t({ defaultMessage: 'Switches should belong to the same model family and venue' }))
+            }
+          }
+        } : undefined}
+        actions={filterByAccess(props.enableActions ? [{
+          label: $t({ defaultMessage: 'Add Switch' }),
+          onClick: () => {
+            navigate(`${linkToEditSwitch.pathname}/add`)
+          }
+        }, {
+          label: $t({ defaultMessage: 'Add Stack' }),
+          onClick: () => {
+            navigate(`${linkToEditSwitch.pathname}/stack/add`)
+          }
+        }, {
+          label: $t({ defaultMessage: 'Import from file' }),
+          onClick: () => {
+            setImportVisible(true)
           }
         }
-      } : undefined}
-      actions={filterByAccess(props.enableActions ? [{
-        label: $t({ defaultMessage: 'Add Switch' }),
-        onClick: () => {
-          navigate(`${linkToEditSwitch.pathname}/add`)
-        }
-      }, {
-        label: $t({ defaultMessage: 'Add Stack' }),
-        onClick: () => {
-          navigate(`${linkToEditSwitch.pathname}/stack/add`)
-        }
-      }, {
-        label: $t({ defaultMessage: 'Import from file' }),
-        onClick: () => {
-          setImportVisible(true)
-        }
-      }
-      ] : [])}
-      iconButton={exportDevice ? {
-        icon: <DownloadOutlined />,
-        disabled,
-        tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
-        onClick: exportCsv
-      } : undefined}
-    />
-    <SwitchCliSession
-      modalState={cliModalState}
-      setIsModalOpen={setCliModalOpen}
-      serialNumber={cliData.serialNumber}
-      jwtToken={cliData.token}
-      switchName={cliData.switchName}
-    />
-    <ImportFileDrawer
-      type={ImportFileDrawerType.Switch}
-      title={$t({ defaultMessage: 'Import from file' })}
-      maxSize={CsvSize['5MB']}
-      maxEntries={50}
-      acceptType={['csv']}
-      templateLink={importTemplateLink}
-      visible={importVisible}
-      isLoading={importResult.isLoading}
-      importError={importResult.error as FetchBaseQueryError}
-      importRequest={async (formData) => {
-        await importCsv({ params, payload: formData }
-        ).unwrap().then(() => {
-          setImportVisible(false)
-        }).catch((error) => {
-          console.log(error) // eslint-disable-line no-console
-        })
-      }}
-      onClose={() => setImportVisible(false)}
-    />
+        ] : [])}
+        iconButton={exportDevice ? {
+          icon: <DownloadOutlined />,
+          disabled,
+          tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
+          onClick: exportCsv
+        } : undefined}
+      />
+      <SwitchCliSession
+        modalState={cliModalState}
+        setIsModalOpen={setCliModalOpen}
+        serialNumber={cliData.serialNumber}
+        jwtToken={cliData.token}
+        switchName={cliData.switchName}
+      />
+      <ImportFileDrawer
+        type={ImportFileDrawerType.Switch}
+        title={$t({ defaultMessage: 'Import from file' })}
+        maxSize={CsvSize['5MB']}
+        maxEntries={50}
+        acceptType={['csv']}
+        templateLink={importTemplateLink}
+        visible={importVisible}
+        isLoading={importResult.isLoading}
+        importError={importResult.error as FetchBaseQueryError}
+        importRequest={async (formData) => {
+          await importCsv({ params, payload: formData }
+          ).unwrap().then(() => {
+            setImportVisible(false)
+          }).catch((error) => {
+            console.log(error) // eslint-disable-line no-console
+          })
+        }}
+        onClose={() => setImportVisible(false)}
+      />
+    </div>
   </Loader>
 })

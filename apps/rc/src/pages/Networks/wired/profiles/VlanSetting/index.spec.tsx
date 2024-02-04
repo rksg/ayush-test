@@ -1,11 +1,10 @@
 import '@testing-library/jest-dom'
 import userEvent       from '@testing-library/user-event'
 import { Form, Modal } from 'antd'
-import { act }         from 'react-dom/test-utils'
 
-import { SwitchConfigurationProfile }        from '@acx-ui/rc/utils'
-import { Provider }                          from '@acx-ui/store'
-import { fireEvent, render, screen, within } from '@acx-ui/test-utils'
+import { SwitchConfigurationProfile }             from '@acx-ui/rc/utils'
+import { Provider }                               from '@acx-ui/store'
+import { act, fireEvent, render, screen, within } from '@acx-ui/test-utils'
 
 import { ConfigurationProfileFormContext, ConfigurationProfileType } from '../ConfigurationProfileFormContext'
 
@@ -111,44 +110,22 @@ describe('Wired - VlanSetting', () => {
       })
 
     await screen.findByRole('heading', { level: 3, name: /VLANs/ })
-
     const row = await screen.findByRole('row', { name: /vlan-02/i })
-
     const radio = await within(row).findByRole('radio')
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      fireEvent.click(radio)
-    })
-
+    await userEvent.click(radio)
     const editButton = await screen.findByRole('button', { name: /Edit/i })
-
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      fireEvent.click(editButton)
-    })
+    await userEvent.click(editButton)
     const IGMPSnooping = await screen.findByLabelText('IGMP Snooping')
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      fireEvent.mouseDown(IGMPSnooping)
-    })
+    await userEvent.click(IGMPSnooping)
     const active = await screen.findByText('Active')
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      fireEvent.click(active)
-      fireEvent.mouseDown(IGMPSnooping)
-    })
+    await userEvent.click(active)
+    await userEvent.click(IGMPSnooping)
     const passive = await screen.findByText('Passive')
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      fireEvent.click(passive)
-      fireEvent.mouseDown(IGMPSnooping)
-    })
+    await userEvent.click(passive)
+    await userEvent.click(IGMPSnooping)
     const none = await screen.findByLabelText('NONE')
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      fireEvent.click(none)
-      fireEvent.click(await screen.findByRole('button', { name: /Save/i }))
-    })
+    await userEvent.click(none)
+    await userEvent.click(await screen.findByRole('button', { name: /Save/i }))
   })
 
   it('should handle edit VLAN ports correctly', async () => {
@@ -174,16 +151,15 @@ describe('Wired - VlanSetting', () => {
         route: { params, path: '/:tenantId/networks/wired/profiles/add' }
       })
 
-    await screen.findByRole('heading', { level: 3, name: /VLANs/ })
-
-    const row = await screen.findByRole('row', { name: /vlan-02/i })
-    fireEvent.click(await within(row).findByRole('radio'))
-    fireEvent.click(await screen.findByRole('button', { name: /Edit/i }))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[2]).getByRole('cell', { name: /vlan-02/i })).toBeVisible()
+    await userEvent.click(rows[2])
+    await userEvent.click(await screen.findByRole('button', { name: /Edit/i }))
 
     const drawer = await screen.findByRole('dialog')
     const row2 = await within(drawer).findByRole('row', { name: /ICX7550-24P/i })
-    fireEvent.click(await within(row2).findByRole('radio'))
-    fireEvent.click(await within(drawer).findByRole('button', { name: /Edit/i }))
+    await userEvent.click(row2)
+    await userEvent.click(await within(drawer).findByRole('button', { name: /Edit/i }))
 
     const dialog = await screen.findByTestId('vlanSettingModal')
     await userEvent.click(await within(dialog).findByText('Untagged Ports'))
@@ -219,23 +195,15 @@ describe('Wired - VlanSetting', () => {
         route: { params, path: '/:tenantId/networks/wired/profiles/add' }
       })
 
-    await screen.findByRole('heading', { level: 3, name: /VLANs/ })
-
-    const row = await screen.findByRole('row', { name: /vlan-01/i })
-    const radio = await within(row).findByRole('radio')
-    fireEvent.click(radio)
-
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /vlan-01/i })).toBeVisible()
+    const radio = await within(rows[1]).findByRole('radio')
+    await userEvent.click(radio)
     const deleteButton1 = await screen.findByRole('button', { name: /Delete/i })
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(() => {
-      fireEvent.click(deleteButton1)
-    })
+    await userEvent.click(deleteButton1)
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     const deleteButton2 = await screen.findByRole('button', { name: /Delete/i })
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(() => {
-      fireEvent.click(deleteButton2)
-    })
+    await userEvent.click(deleteButton2)
     await userEvent.click(await screen.findByRole('button', { name: 'Delete Vlan' }))
   })
 })

@@ -18,11 +18,11 @@ import {
   SpeedIndicatorSolid,
   SpeedIndicatorOutlined
 } from '@acx-ui/icons'
-import { CONFIG_TEMPLATE_PATH_PREFIX, hasConfigTemplateAccess } from '@acx-ui/rc/utils'
-import { TenantType }                                           from '@acx-ui/react-router-dom'
-import { RolesEnum }                                            from '@acx-ui/types'
-import { hasRoles  }                                            from '@acx-ui/user'
-import { AccountType  }                                         from '@acx-ui/utils'
+import { getConfigTemplatePath, hasConfigTemplateAccess } from '@acx-ui/rc/utils'
+import { TenantType }                                     from '@acx-ui/react-router-dom'
+import { RolesEnum }                                      from '@acx-ui/types'
+import { hasRoles  }                                      from '@acx-ui/user'
+import { AccountType  }                                   from '@acx-ui/utils'
 
 export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfood?: boolean) {
   const { $t } = useIntl()
@@ -94,7 +94,7 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfoo
     }]),
     ...(isConfigTemplateEnabled
       ? [{
-        uri: `/${CONFIG_TEMPLATE_PATH_PREFIX}`,
+        uri: '/' + getConfigTemplatePath(),
         label: $t({ defaultMessage: 'Config Templates' }),
         tenantType: 'v' as TenantType,
         inactiveIcon: CopyOutlined,

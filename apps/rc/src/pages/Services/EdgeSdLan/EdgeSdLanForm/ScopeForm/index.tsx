@@ -1,5 +1,4 @@
 import { Col, Form, Row, Typography } from 'antd'
-import _                              from 'lodash'
 import { useIntl }                    from 'react-intl'
 
 import { StepsForm, useStepFormContext }                                from '@acx-ui/components'
@@ -15,7 +14,7 @@ const NetworksTable = (props: NetworksTableProps) => {
   const { data, ...others } = props
   return <EdgeSdLanActivatedNetworksTable
     {...others}
-    activated={data?.map(i => i.id!) ?? []}
+    activated={data?.map(i => i.id!)}
   />
 }
 export const ScopeForm = () => {
@@ -24,16 +23,9 @@ export const ScopeForm = () => {
   const venueId = form.getFieldValue('venueId')
   const venueName = form.getFieldValue('venueName')
 
-  const handleActivateChange = (data: NetworkSaveData, checked: boolean) => {
-    const activatedNetworks = form.getFieldValue('activatedNetworks') as EdgeSdLanActivatedNetwork[]
-    let newSelected
-    if (checked) {
-      newSelected = _.unionBy(activatedNetworks,
-        [_.pick(data, ['id', 'name'])], 'id')
-    } else {
-      newSelected = [...activatedNetworks!]
-      _.remove(newSelected, item => item.id === data.id)
-    }
+  // eslint-disable-next-line max-len
+  const handleActivateChange = (_row: NetworkSaveData, _checked: boolean, activated: NetworkSaveData[]) => {
+    const newSelected = activated.map(item => ({ id: item.id, name: item.name }))
     form.setFieldValue('activatedNetworks', newSelected)
   }
 
@@ -63,7 +55,6 @@ export const ScopeForm = () => {
             name='activatedNetworks'
             valuePropName='data'
             noStyle
-            initialValue={[]}
           >
             <NetworksTable
               venueId={venueId}

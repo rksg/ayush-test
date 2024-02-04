@@ -81,7 +81,13 @@ describe('RadioTab', () => {
         (_, res, ctx) => res(ctx.json(mockVenueClientAdmissionControl))),
       rest.put(
         WifiUrlsInfo.updateVenueClientAdmissionControl.url,
-        (_, res, ctx) => res(ctx.json({})))
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.get(
+        CommonUrlsInfo.getVenueApModelBandModeSettings.url,
+        (_, res, ctx) => res(ctx.json([]))),
+      rest.get(
+        WifiUrlsInfo.getVenueAntennaType.url,
+        (_, res, ctx) => res(ctx.json([])))
     )
   })
 
@@ -202,7 +208,7 @@ describe('RadioTab', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
   })
 
-  it('should render Load balabcing correctly', async () => {
+  it('should render Load balancing correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider>
       <VenueEditContext.Provider value={{
@@ -216,7 +222,7 @@ describe('RadioTab', () => {
     </Provider>, { route: { params } })
 
     // this would only be visible when loader removed
-    await waitFor(() => screen.findByText('Use Load Balancing'))
+    await waitFor(async () => expect(await screen.findByText('Use Load Balancing')).toBeVisible())
 
     const loadBalancingEnable = await screen.findByTestId('load-balancing-enabled')
     await userEvent.click(loadBalancingEnable)

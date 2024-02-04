@@ -14,6 +14,7 @@ import {
   useGetVenueEdgeFirmwareListQuery,
   useGetVenueVersionListQuery
 } from '@acx-ui/rc/services'
+import { compareSwitchVersion }                  from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import ApplicationPolicyMgmt from '../ApplicationPolicyMgmt'
@@ -21,7 +22,6 @@ import ApplicationPolicyMgmt from '../ApplicationPolicyMgmt'
 import ApFirmware      from './ApFirmware'
 import EdgeFirmware    from './EdgeFirmware'
 import {
-  compareSwitchVersion,
   compareVersions,
   getApVersion,
   getReleaseFirmware

@@ -2,13 +2,15 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { EdgeDhcpUrls } from '@acx-ui/rc/utils'
-import { Provider }     from '@acx-ui/store'
+import { edgeDhcpApi }        from '@acx-ui/rc/services'
+import { EdgeDhcpUrls }       from '@acx-ui/rc/utils'
+import { Provider, store }    from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen,
-  waitFor
+  waitFor,
+  waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
 import { mockEdgeDhcpData } from '../__tests__/fixtures'
@@ -34,6 +36,7 @@ describe('EditEdgeDhcp', () => {
       serviceId: 'test'
     }
 
+    store.dispatch(edgeDhcpApi.util.resetApiState())
     mockedGetReq.mockClear()
     mockedUpdateReq.mockClear()
 
@@ -112,6 +115,7 @@ describe('EditEdgeDhcp', () => {
       </Provider>, {
         route: { params, path: editPagePath }
       })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await waitFor(() => expect(mockedGetReq).toBeCalled())
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {

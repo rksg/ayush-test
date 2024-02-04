@@ -1,6 +1,5 @@
-import { useMemo } from 'react'
+import { useMemo, useRef, useState } from 'react'
 
-import _             from 'lodash'
 import { AlignType } from 'rc-table/lib/interface'
 import { useIntl }   from 'react-intl'
 
@@ -26,26 +25,31 @@ export const NetworkTable = (props: EdgeSdLanServiceProps) => {
   const { $t } = useIntl()
   const { venueId } = useParams()
   const { serviceId, activatedNetworkIds } = props
+  const [isActivateUpdating, setIsActivateUpdating] = useState<boolean>(false)
+  const activtaedNetworkTableRef = useRef<{
+    dataSource: NetworkSaveData[]
+  }>(null)
   const [
     updateEdgeSdLan,
-    { isLoading: isActivateUpdating }
+    { isLoading: isActivateRequesting }
   ] = useUpdateEdgeSdLanPartialMutation()
 
-  const handleActivateChange = async (data: NetworkSaveData, checked: boolean) => {
+  // eslint-disable-next-line max-len
+  const handleActivateChange = async (_data: NetworkSaveData, _checked: boolean, activated: NetworkSaveData[]) => {
     try {
-      let newNetworkIds
-      if (checked) {
-        newNetworkIds = _.union(activatedNetworkIds, [data.id])
-      } else {
-        newNetworkIds = [...activatedNetworkIds]
-        _.remove(newNetworkIds, (i) => i === data.id)
-      }
-
+      const newNetworkIds = activated.map(item => item.id)
       const payload = {
         networkIds: newNetworkIds
       }
 
-      await updateEdgeSdLan({ params: { serviceId }, payload }).unwrap()
+      setIsActivateUpdating(true)
+      await updateEdgeSdLan({
+        params: { serviceId },
+        payload,
+        callback: () => {
+          setIsActivateUpdating(false)
+        } }).unwrap()
+
     } catch(err) {
       // eslint-disable-next-line no-console
       console.log(err)
@@ -71,8 +75,7 @@ export const NetworkTable = (props: EdgeSdLanServiceProps) => {
     render: (_, row) => {
       return $t(networkTypes[row.type!])
     }
-  },
-  ...(hasAccess() ? [{
+  }, {
     title: $t({ defaultMessage: 'Active' }),
     key: 'action',
     dataIndex: 'action',
@@ -81,19 +84,20 @@ export const NetworkTable = (props: EdgeSdLanServiceProps) => {
     render: (_: unknown, row: NetworkSaveData) => {
       return <ActivateNetworkSwitchButton
         row={row}
+        rows={activtaedNetworkTableRef.current?.dataSource ?? []}
         activated={activatedNetworkIds}
+        disabled={hasAccess() === false}
         onChange={handleActivateChange}
       />
     }
-  }] : [])
-  ]), [$t, activatedNetworkIds])
+  }]), [$t, activatedNetworkIds])
 
   return (
     <EdgeSdLanActivatedNetworksTable
+      ref={activtaedNetworkTableRef}
       venueId={venueId!}
       columns={columns}
-      activated={activatedNetworkIds}
-      isUpdating={isActivateUpdating}
+      isUpdating={isActivateUpdating || isActivateRequesting}
     />
   )
 }
