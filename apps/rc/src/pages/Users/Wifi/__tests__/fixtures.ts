@@ -93,6 +93,21 @@ export const GuestClient = {
       guestStatus: 'Disabled',
       notes: '',
       maxNumberOfClients: 3
+    },
+    {
+      name: 'test5',
+      id: '37a626e9-5d97-4349-b7a5-8822c62d3bf5',
+      creationDate: '2022-11-28T08:15:14.690Z',
+      expiryDate: '2022-12-28T08:15:14.695Z',
+      mobilePhoneNumber: '+12015550321',
+      emailAddress: '',
+      guestType: 'GuestPass',
+      ssid: 'guest pass wlan',
+      networkId: 'tenant-id',
+      passDurationHours: 720,
+      guestStatus: 'Offline',
+      notes: '',
+      maxNumberOfClients: 3
     }
   ]
 }

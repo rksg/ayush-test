@@ -329,11 +329,12 @@ export const GuestsTable = () => {
       visible: (selectedRows) => {
         if (selectedRows.length !== 1) { return false }
         const guestDetail = selectedRows[0]
-        const flag = (guestDetail.guestStatus?.indexOf(GuestStatusEnum.ONLINE) !== -1) ||
+        const flag =
+        guestDetail.guestType !== GuestTypesEnum.SELF_SIGN_IN &&
+          guestDetail.guestType !== GuestTypesEnum.HOST_GUEST &&
+        ((guestDetail.guestStatus?.indexOf(GuestStatusEnum.ONLINE) !== -1) ||
         ((guestDetail.guestStatus === GuestStatusEnum.OFFLINE) &&
-          guestDetail.networkId &&
-          guestDetail.guestType !== GuestTypesEnum.SELF_SIGN_IN &&
-          guestDetail.guestType !== GuestTypesEnum.HOST_GUEST)
+          guestDetail.networkId ))
         return Boolean(flag)
       },
       onClick: (selectedRows) => {
