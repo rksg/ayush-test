@@ -2,6 +2,7 @@ import '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 import { useUpdateTenantSettingsMutation } from '@acx-ui/analytics/services'
+import { showToast }                       from '@acx-ui/components'
 import { Provider }                        from '@acx-ui/store'
 import {
   render,
@@ -16,6 +17,12 @@ jest.mock('@acx-ui/analytics/services', () => ({
   useUpdateTenantSettingsMutation: jest.fn(() => [jest.fn()])
 }))
 
+const mockShowToast = showToast as jest.Mock
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
+  showToast: jest.fn()
+}))
+
 const setVisible = jest.fn()
 const drawerProps = {
   title: 'SSO Drawer',
@@ -23,7 +30,8 @@ const drawerProps = {
   setVisible
 }
 
-let blobText = Blob.prototype.text
+let actualBlobText = Blob.prototype.text
+const mockBlobText = jest.fn()
 
 const validContent = '<a/>'
 const invalidContent = ''
@@ -31,19 +39,22 @@ const invalidContent = ''
 describe('ImportSSOFileDrawer', () => {
   beforeEach(() => {
     mockMutationHook.mockClear()
-    Blob.prototype.text = jest.fn()
+    setVisible.mockClear()
+    mockShowToast.mockClear()
+    Blob.prototype.text = mockBlobText
   })
   afterEach(() => {
     jest.clearAllMocks()
-    Blob.prototype.text = blobText
+    Blob.prototype.text = actualBlobText
   })
   afterAll(() => {
     jest.restoreAllMocks()
   })
   it('should handle upload correctly', async () => {
-    (Blob.prototype.text as jest.Mock).mockImplementation(() =>
-      Promise.resolve(validContent))
-    const updateSettingsMock = jest.fn()
+    mockBlobText.mockImplementation(() => Promise.resolve(validContent))
+    const updateSettingsMock = jest.fn(() => ({
+      unwrap: async () => Promise.resolve('success')
+    }))
     mockMutationHook.mockImplementation(() => [updateSettingsMock])
     render(<ImportSSOFileDrawer
       {...drawerProps}
@@ -67,12 +78,88 @@ describe('ImportSSOFileDrawer', () => {
         metadata: '<a/>'
       })
     })
+    expect(mockShowToast).toHaveBeenCalledWith({
+      type: 'success',
+      content: 'SAML file added successfully'
+    })
+    expect(setVisible).toHaveBeenCalledWith(false)
+  })
+  it('should handle upload errors correctly', async () => {
+    mockBlobText.mockImplementation(() => Promise.resolve(validContent))
+    const updateSettingsMock = jest.fn(() => ({
+      unwrap: async () => {
+        // eslint-disable-next-line no-throw-literal
+        throw { data: 'Internal Server Error.' } }
+    }))
+    mockMutationHook.mockImplementation(() => [updateSettingsMock])
+    render(<ImportSSOFileDrawer
+      {...drawerProps}
+      title='SSO Drawer'
+      visible />,
+    { wrapper: Provider })
+    expect(await screen.findByText('SSO Drawer')).toBeVisible()
+    await userEvent.click(screen.getByRole('button', { name: 'Browse' }))
+    const uploadInput = await screen.findByLabelText('IdP Metadata')
+    expect(uploadInput).toBeInTheDocument()
+    expect(await screen.findByRole('button', { name: 'Apply' })).toBeDisabled()
+    const validFile = new File([validContent], 'saml.xml', { type: 'text/xml' })
+    await userEvent.upload(uploadInput, validFile)
+    expect((uploadInput as HTMLInputElement)?.files).toHaveLength(1)
+    expect((uploadInput as HTMLInputElement)?.files![0]).toStrictEqual(validFile)
+    expect(await screen.findByRole('button', { name: 'Apply' })).toBeEnabled()
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+    expect(updateSettingsMock).toHaveBeenCalledWith({
+      sso: JSON.stringify({
+        type: 'saml2',
+        metadata: '<a/>'
+      })
+    })
+    expect(mockShowToast).toHaveBeenCalledWith({
+      type: 'error',
+      content: 'Error: Internal Server Error., please try again later'
+    })
+    expect(setVisible).toHaveBeenCalledWith(false)
+  })
+  it('should handle upload correctly for isEditMode = true', async () => {
+    mockBlobText.mockImplementation(() => Promise.resolve(validContent))
+    const updateSettingsMock = jest.fn(() => ({
+      unwrap: async () => Promise.resolve('success')
+    }))
+    mockMutationHook.mockImplementation(() => [updateSettingsMock])
+    render(<ImportSSOFileDrawer
+      {...drawerProps}
+      isEditMode
+      title='SSO Drawer'
+      visible />,
+    { wrapper: Provider })
+    expect(await screen.findByText('SSO Drawer')).toBeVisible()
+    await userEvent.click(screen.getByRole('button', { name: 'Browse' }))
+    const uploadInput = await screen.findByLabelText('IdP Metadata')
+    expect(uploadInput).toBeInTheDocument()
+    expect(await screen.findByRole('button', { name: 'Apply' })).toBeDisabled()
+    const validFile = new File([validContent], 'saml.xml', { type: 'text/xml' })
+    await userEvent.upload(uploadInput, validFile)
+    expect((uploadInput as HTMLInputElement)?.files).toHaveLength(1)
+    expect((uploadInput as HTMLInputElement)?.files![0]).toStrictEqual(validFile)
+    expect(await screen.findByRole('button', { name: 'Apply' })).toBeEnabled()
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+    expect(updateSettingsMock).toHaveBeenCalledWith({
+      sso: JSON.stringify({
+        type: 'saml2',
+        metadata: '<a/>'
+      })
+    })
+    expect(mockShowToast).toHaveBeenCalledWith({
+      type: 'success',
+      content: 'SAML file updated successfully'
+    })
     expect(setVisible).toHaveBeenCalledWith(false)
   })
   it('should reject incorrect file content upload', async () => {
-    (Blob.prototype.text as jest.Mock).mockImplementation(() =>
-      Promise.resolve(invalidContent))
-    const updateSettingsMock = jest.fn()
+    mockBlobText.mockImplementation(() => Promise.resolve(invalidContent))
+    const updateSettingsMock = jest.fn().mockResolvedValue({
+      unwrap: jest.fn().mockResolvedValue('success')
+    })
     mockMutationHook.mockImplementation(() => [updateSettingsMock])
     render(<ImportSSOFileDrawer
       {...drawerProps}
@@ -90,10 +177,11 @@ describe('ImportSSOFileDrawer', () => {
     expect(await screen.findByText('File has invalid XML structure.')).toBeVisible()
   })
   it('should reject large files correctly', async () => {
-    (Blob.prototype.text as jest.Mock).mockImplementation(() =>
-      Promise.resolve(validContent))
+    mockBlobText.mockImplementation(() => Promise.resolve(validContent))
     const value = 1024 * 5 * 1024 + 1
-    const updateSettingsMock = jest.fn()
+    const updateSettingsMock = jest.fn().mockResolvedValue({
+      unwrap: jest.fn().mockResolvedValue('success')
+    })
     mockMutationHook.mockImplementation(() => [updateSettingsMock])
     render(<ImportSSOFileDrawer
       {...drawerProps}
@@ -132,7 +220,9 @@ describe('ImportSSOFileDrawer', () => {
     expect(setVisible).toHaveBeenCalledWith(false)
   })
   it('should handle delete when isEditMode = true correctly', async () => {
-    const updateSettingsMock = jest.fn()
+    const updateSettingsMock = jest.fn(() => ({
+      unwrap: async () => Promise.resolve('success')
+    }))
     mockMutationHook.mockImplementation(() => [updateSettingsMock])
     render(<ImportSSOFileDrawer
       {...drawerProps}
@@ -144,5 +234,31 @@ describe('ImportSSOFileDrawer', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
     expect(updateSettingsMock).toHaveBeenCalledWith({ sso: JSON.stringify({}) })
     expect(setVisible).toHaveBeenCalledWith(false)
+    expect(mockShowToast).toHaveBeenCalledWith({
+      type: 'success',
+      content: 'SAML file deleted successfully'
+    })
+  })
+  it('should handle delete errors when isEditMode = true', async () => {
+    const updateSettingsMock = jest.fn(() => ({
+      unwrap: async () => {
+        // eslint-disable-next-line no-throw-literal
+        throw { data: 'Internal Server Error.' } }
+    }))
+    mockMutationHook.mockImplementation(() => [updateSettingsMock])
+    render(<ImportSSOFileDrawer
+      {...drawerProps}
+      isEditMode
+      title='SSO Drawer'
+      visible />,
+    { wrapper: Provider })
+    expect(await screen.findByText('SSO Drawer')).toBeVisible()
+    await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
+    expect(updateSettingsMock).toHaveBeenCalledWith({ sso: JSON.stringify({}) })
+    expect(setVisible).toHaveBeenCalledWith(false)
+    expect(mockShowToast).toHaveBeenCalledWith({
+      type: 'error',
+      content: 'Error: Internal Server Error., please try again later'
+    })
   })
 })

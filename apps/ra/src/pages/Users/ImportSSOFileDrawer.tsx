@@ -14,8 +14,10 @@ import { useIntl } from 'react-intl'
 
 import { useUpdateTenantSettingsMutation } from '@acx-ui/analytics/services'
 import {
+  Loader,
   Button,
-  DrawerProps
+  DrawerProps,
+  showToast
 } from '@acx-ui/components'
 import { formatter } from '@acx-ui/formatter'
 
@@ -46,19 +48,24 @@ export const ImportSSOFileDrawer = (props: ImportSSOFileDrawerProps) => {
   const { title, visible, setVisible, isEditMode } = props
   const { $t } = useIntl()
   const [form] = Form.useForm()
+  const [isLoading, setIsLoading] = useState(false)
   const [localFileContents, setLocalFileContents] = useState<string | undefined>()
   const [fileDescription, setFileDescription] = useState<ReactNode>('')
   const bytesFormatter = formatter('bytesFormat')
   const [updateTenantSettings] = useUpdateTenantSettingsMutation()
-
-  useEffect(() => {
+  const resetFields = () => {
     form.resetFields()
     setFileDescription('')
     setLocalFileContents('')
+    setIsLoading(false)
+  }
+
+  useEffect(() => {
+    resetFields()
   }, [form, props.visible])
 
   const onClose = () => {
-    form.resetFields()
+    resetFields()
     setVisible(false)
   }
 
@@ -94,26 +101,61 @@ export const ImportSSOFileDrawer = (props: ImportSSOFileDrawerProps) => {
   }
 
   const okHandler = async () => {
-    try {
-      await updateTenantSettings({
-        sso: JSON.stringify({
-          type: 'saml2',
-          metadata: localFileContents
+    setIsLoading(true)
+    await updateTenantSettings({
+      sso: JSON.stringify({
+        type: 'saml2',
+        metadata: localFileContents
+      })
+    })
+      .unwrap()
+      .then(() => {
+        showToast({
+          type: 'success',
+          content: $t(
+            { defaultMessage: 'SAML file {action} successfully' },
+            { action: isEditMode ? 'updated' : 'added' }
+          )
         })
       })
-    } catch (error) {} finally {
-      setVisible(false)
-    }
+      .catch(error => {
+        showToast({
+          type: 'error',
+          content: $t(
+            { defaultMessage: 'Error: {error}, please try again later' },
+            { error: error.data })
+        })
+      })
+      .finally(() => {
+        resetFields()
+        setVisible(false)
+      })
   }
 
   const deleteHandler = async () => {
-    try {
-      await updateTenantSettings({
-        sso: JSON.stringify({})
+    setIsLoading(true)
+    await updateTenantSettings({
+      sso: JSON.stringify({})
+    })
+      .unwrap()
+      .then(() => {
+        showToast({
+          type: 'success',
+          content: $t({ defaultMessage: 'SAML file deleted successfully' })
+        })
       })
-    } catch (error) {} finally {
-      setVisible(false)
-    }
+      .catch(error => {
+        showToast({
+          type: 'error',
+          content: $t(
+            { defaultMessage: 'Error: {error}, please try again later' },
+            { error: error.data })
+        })
+      })
+      .finally(() => {
+        resetFields()
+        setVisible(false)
+      })
   }
 
   const ApplyButton = () => {
@@ -151,32 +193,34 @@ export const ImportSSOFileDrawer = (props: ImportSSOFileDrawerProps) => {
     </div>
     {isEditMode && <DeleteButton />}</>}
   >
-    <Form layout='vertical' form={form}>
-      <Form.Item
-        id='uploadFile'
-        htmlFor='uploadFile'
-        label={
-          <label>
-            {$t({ defaultMessage: 'IdP Metadata' })}
-          </label>}>
-        <Dragger
+    <Loader states={[{ isLoading }]}>
+      <Form layout='vertical' form={form}>
+        <Form.Item
           id='uploadFile'
-          name='file'
-          accept='.xml'
-          maxCount={1}
-          showUploadList={false}
-          beforeUpload={beforeUpload}>
-          <Space>
-            {fileDescription
-              ? fileDescription
-              : $t({ defaultMessage: 'Drag & Drop file here or' })}
-            <Button type='primary'>{fileDescription
-              ? $t({ defaultMessage: 'Change File' })
-              : $t({ defaultMessage: 'Browse' })}
-            </Button>
-          </Space>
-        </Dragger>
-      </Form.Item>
-    </Form>
+          htmlFor='uploadFile'
+          label={
+            <label>
+              {$t({ defaultMessage: 'IdP Metadata' })}
+            </label>}>
+          <Dragger
+            id='uploadFile'
+            name='file'
+            accept='.xml'
+            maxCount={1}
+            showUploadList={false}
+            beforeUpload={beforeUpload}>
+            <Space>
+              {fileDescription
+                ? fileDescription
+                : $t({ defaultMessage: 'Drag & Drop file here or' })}
+              <Button type='primary'>{fileDescription
+                ? $t({ defaultMessage: 'Change File' })
+                : $t({ defaultMessage: 'Browse' })}
+              </Button>
+            </Space>
+          </Dragger>
+        </Form.Item>
+      </Form>
+    </Loader>
   </UI.ImportFileDrawer>
 }
