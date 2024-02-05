@@ -482,7 +482,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       show: false,
       sorter: false,
       render: (data: React.ReactNode, row: APExtended) => {
-        return AFCStatusRender(row.model, row.apStatusData?.afcInfo, row.apRadioDeploy)
+        return AFCStatusRender(row.apStatusData?.afcInfo, row.apRadioDeploy)
       }
     },
     {
@@ -492,7 +492,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       show: false,
       sorter: false,
       render: (data: React.ReactNode, row: APExtended) => {
-        const status = AFCPowerStateRender(row.model, row.apStatusData?.afcInfo, row.apRadioDeploy)
+        const status = AFCPowerStateRender(row.apStatusData?.afcInfo, row.apRadioDeploy)
         return (
           <>
             {status.columnText}
@@ -512,7 +512,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       show: false,
       sorter: false,
       render: (data: React.ReactNode, row: APExtended) => {
-        return AFCMaxPowerRender(row.model, row.apStatusData?.afcInfo, row.apRadioDeploy)
+        return AFCMaxPowerRender(row.apStatusData?.afcInfo, row.apRadioDeploy)
       }
     }
     ]: []),
