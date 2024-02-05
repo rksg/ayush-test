@@ -8,9 +8,7 @@ import {
   FirmwareUrlsInfo,
   SwitchFirmwareFixtures
 } from '@acx-ui/rc/utils'
-import {
-  Provider, store
-} from '@acx-ui/store'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -95,7 +93,6 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
     }
   })
 
-
   it('render SwitchUpgradeWizard - schedule', async () => {
     render(
       <Provider>
@@ -127,7 +124,8 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
           visible={true}
           setVisible={mockedCancel}
           onSubmit={() => { }}
-          data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+          data={switchVenue.upgradeVenueViewList.filter(
+            item => item.name === 'My-Venue') as FirmwareSwitchVenue[]} />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
@@ -153,7 +151,8 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
           visible={true}
           setVisible={mockedCancel}
           onSubmit={() => { }}
-          data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+          data={switchVenue.upgradeVenueViewList.filter(
+            item => item.name === 'My-Venue') as FirmwareSwitchVenue[]} />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
@@ -208,7 +207,8 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
           visible={true}
           setVisible={mockedCancel}
           onSubmit={() => { }}
-          data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+          data={switchVenue.upgradeVenueViewList.filter(
+            item => item.name === 'Karen-Venue1') as FirmwareSwitchVenue[]} />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })

@@ -8,7 +8,7 @@ import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { mockDhcpPoolStatsData, mockEdgeDhcpDataList } from '../../../../Services/DHCP/Edge/__tests__/fixtures'
 
-import EdgeClusterDhcpTab from '.'
+import { EdgeClusterDhcp } from '.'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -57,7 +57,7 @@ describe('Edge Cluster DHCP Tab', () => {
 
     render(
       <Provider>
-        <EdgeClusterDhcpTab />
+        <EdgeClusterDhcp />
       </Provider>, {
         route: {
           params,
@@ -70,7 +70,7 @@ describe('Edge Cluster DHCP Tab', () => {
   it('toggle should be ON when pools returned', async () => {
     render(
       <Provider>
-        <EdgeClusterDhcpTab />
+        <EdgeClusterDhcp />
       </Provider>, {
         route: {
           params,
@@ -88,7 +88,7 @@ describe('Edge Cluster DHCP Tab', () => {
   it('should show DHCP selection form when switch is toggled on', async () => {
     render(
       <Provider>
-        <EdgeClusterDhcpTab />
+        <EdgeClusterDhcp />
       </Provider>, {
         route: {
           params,

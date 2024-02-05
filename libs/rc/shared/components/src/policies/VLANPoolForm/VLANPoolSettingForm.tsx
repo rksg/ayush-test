@@ -63,7 +63,7 @@ const VLANPoolSettingForm = (props: VLANPoolSettingFormProps) => {
           name='description'
           label={$t({ defaultMessage: 'Description' })}
           rules={[
-            { max: 255 }
+            { max: 64 }
           ]}
           initialValue={''}
           children={<Input/>}
