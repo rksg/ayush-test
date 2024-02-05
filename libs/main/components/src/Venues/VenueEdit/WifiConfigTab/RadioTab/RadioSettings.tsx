@@ -155,7 +155,7 @@ export function RadioSettings () {
   const [initVenueBandModeData, setInitVenueBandModeData] = useState([] as VenueApModelBandModeSettings[])
 
   const { data: venueCaps, isLoading: isLoadingVenueCaps } =
-    useVenueConfigTemplateQueryFnSwitcher<{ version: string, apModels:CapabilitiesApModel[] }>(
+    useVenueConfigTemplateQueryFnSwitcher<{ version: string, apModels: CapabilitiesApModel[] }>(
       useGetVenueApCapabilitiesQuery,
       useGetVenueTemplateApCapabilitiesQuery
     )

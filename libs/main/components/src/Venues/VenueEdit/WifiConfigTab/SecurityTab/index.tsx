@@ -4,18 +4,19 @@ import { Form, FormItemProps, InputNumber, Select, Space } from 'antd'
 import _                                                   from 'lodash'
 import { FormattedMessage, useIntl }                       from 'react-intl'
 
-import { Button, Fieldset, Loader, StepsFormLegacy, StepsFormLegacyInstance, Tooltip } from '@acx-ui/components'
-import { RogueApModal, usePathBasedOnConfigTemplate }                                  from '@acx-ui/rc/components'
+import { Button, Fieldset, Loader, StepsFormLegacy, StepsFormLegacyInstance, Tooltip }                from '@acx-ui/components'
+import { RogueApModal, usePathBasedOnConfigTemplate }                                                 from '@acx-ui/rc/components'
 import {
   useGetDenialOfServiceProtectionQuery,
   useUpdateDenialOfServiceProtectionMutation,
   useGetVenueRogueApQuery,
-  useUpdateVenueRogueApMutation, useGetRoguePolicyListQuery
+  useUpdateVenueRogueApMutation, useGetRoguePolicyListQuery, useGetVenueTemplateDoSProtectionQuery
 } from '@acx-ui/rc/services'
-import { VenueMessages, redirectPreviousPage } from '@acx-ui/rc/utils'
-import { useNavigate, useParams }              from '@acx-ui/react-router-dom'
+import { VenueDosProtection, VenueMessages, redirectPreviousPage, useConfigTemplate } from '@acx-ui/rc/utils'
+import { useNavigate, useParams }                                                     from '@acx-ui/react-router-dom'
 
-import { VenueEditContext } from '../..'
+import { VenueEditContext }                      from '../..'
+import { useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
 
 import RogueApDrawer from './RogueApDrawer'
 
@@ -41,6 +42,7 @@ export function SecurityTab () {
   const params = useParams()
   const navigate = useNavigate()
   const basePath = usePathBasedOnConfigTemplate('/venues/')
+  const { isTemplate } = useConfigTemplate()
 
   const DEFAULT_POLICY_ID = 'c1fe63007a5d4a71858d487d066eee6d'
   const DEFAULT_PROFILE_NAME = 'Default profile'
@@ -63,8 +65,12 @@ export function SecurityTab () {
   const [updateVenueRogueAp, {
     isLoading: isUpdatingVenueRogueAp }] = useUpdateVenueRogueApMutation()
 
-  const { data: dosProctectionData } = useGetDenialOfServiceProtectionQuery({ params })
-  const { data: venueRogueApData } = useGetVenueRogueApQuery({ params })
+  const { data: dosProctectionData } = useVenueConfigTemplateQueryFnSwitcher<VenueDosProtection>(
+    useGetDenialOfServiceProtectionQuery,
+    useGetVenueTemplateDoSProtectionQuery
+  )
+
+  const { data: venueRogueApData } = useGetVenueRogueApQuery({ params }, { skip: isTemplate })
 
   const [roguePolicyIdValue, setRoguePolicyIdValue] = useState('')
   const [triggerDoSProtection, setTriggerDoSProtection] = useState(false)
@@ -276,7 +282,9 @@ export function SecurityTab () {
             label={$t({ defaultMessage: 'Rogue AP Detection:' })}
             initialValue={false}
             switchStyle={{}}
-            triggerDirtyFunc={setTriggerRogueAPDetection}>
+            triggerDirtyFunc={setTriggerRogueAPDetection}
+            hidden={isTemplate}
+          >
             <Form.Item
               label={<>
                 {$t({ defaultMessage: 'Report SNR Threshold:' })}

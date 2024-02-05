@@ -2,11 +2,11 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { AnchorLayout, StepsFormLegacy } from '@acx-ui/components'
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
-import { usePathBasedOnConfigTemplate }  from '@acx-ui/rc/components'
-import { redirectPreviousPage }          from '@acx-ui/rc/utils'
-import { useNavigate }                   from '@acx-ui/react-router-dom'
+import { AnchorLayout, StepsFormLegacy }           from '@acx-ui/components'
+import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
+import { usePathBasedOnConfigTemplate }            from '@acx-ui/rc/components'
+import { redirectPreviousPage, useConfigTemplate } from '@acx-ui/rc/utils'
+import { useNavigate }                             from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../..'
 
@@ -27,6 +27,7 @@ export function ServerTab () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = usePathBasedOnConfigTemplate('/venues/')
+  const { isTemplate } = useConfigTemplate()
 
   const {
     previousPath,
@@ -38,15 +39,19 @@ export function ServerTab () {
   const supportMdnsFencing = useIsSplitOn(Features.MDNS_FENCING)
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
 
-  const items = [{
-    title: $t({ defaultMessage: 'Syslog Server' }),
-    content: <>
-      <StepsFormLegacy.SectionTitle id='syslog-server'>
-        { $t({ defaultMessage: 'Syslog Server' }) }
-      </StepsFormLegacy.SectionTitle>
-      <Syslog />
-    </>
-  }]
+  const items = []
+
+  if (!isTemplate) {
+    items.push({
+      title: $t({ defaultMessage: 'Syslog Server' }),
+      content: <>
+        <StepsFormLegacy.SectionTitle id='syslog-server'>
+          { $t({ defaultMessage: 'Syslog Server' }) }
+        </StepsFormLegacy.SectionTitle>
+        <Syslog />
+      </>
+    })
+  }
 
   if (supportMdnsFencing) {
     items.push({
@@ -60,7 +65,7 @@ export function ServerTab () {
     })
   }
 
-  if (supportApSnmp) {
+  if (supportApSnmp && !isTemplate) {
     items.push({
       title: $t({ defaultMessage: 'AP SNMP' }),
       content: <>

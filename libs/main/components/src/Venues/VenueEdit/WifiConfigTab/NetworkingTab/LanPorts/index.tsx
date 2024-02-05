@@ -60,7 +60,7 @@ export function LanPorts () {
   )
 
   // eslint-disable-next-line max-len
-  const venueCaps = useVenueConfigTemplateQueryFnSwitcher<{ version: string, apModels:CapabilitiesApModel[] }>(
+  const venueCaps = useVenueConfigTemplateQueryFnSwitcher<{ version: string, apModels: CapabilitiesApModel[] }>(
     useGetVenueApCapabilitiesQuery,
     useGetVenueTemplateApCapabilitiesQuery
   )

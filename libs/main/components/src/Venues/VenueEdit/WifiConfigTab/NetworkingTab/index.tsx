@@ -46,7 +46,7 @@ export function NetworkingTab () {
   const [hasCellularAps, setHasCellularAps] = useState(false)
 
   // eslint-disable-next-line max-len
-  const { data: venueCaps } = useVenueConfigTemplateQueryFnSwitcher<{ version: string, apModels:CapabilitiesApModel[] }>(
+  const { data: venueCaps } = useVenueConfigTemplateQueryFnSwitcher<{ version: string, apModels: CapabilitiesApModel[] }>(
     useGetVenueApCapabilitiesQuery,
     useGetVenueTemplateApCapabilitiesQuery
   )

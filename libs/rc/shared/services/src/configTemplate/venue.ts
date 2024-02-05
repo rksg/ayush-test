@@ -1,9 +1,11 @@
 import {
   CapabilitiesApModel, ExternalAntenna, TriBandSettings,
+  VenueBssColoring,
   VenueClientAdmissionControl, VenueConfigTemplateUrlsInfo,
-  VenueDefaultRegulatoryChannels, VenueDirectedMulticast, VenueLanPorts, VenueLoadBalancing,
-  VenueRadioCustomization, VenueRadiusOptions, VenueSettings, onActivityMessageReceived,
-  onSocketActivityChanged
+  VenueDefaultRegulatoryChannels, VenueDirectedMulticast,
+  VenueDosProtection, VenueLanPorts, VenueLoadBalancing,
+  VenueRadioCustomization, VenueRadiusOptions, VenueSettings,
+  onActivityMessageReceived, onSocketActivityChanged
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
@@ -106,6 +108,12 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
           })
         })
       }
+    }),
+    getVenueTemplateDoSProtection: build.query<VenueDosProtection, RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getDenialOfServiceProtection)
+    }),
+    getVenueTemplateBssColoring: build.query<VenueBssColoring, RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueBssColoring)
     })
   })
 })
@@ -122,5 +130,7 @@ export const {
   useGetVenueTemplateSettingsQuery,
   useGetVenueTemplateLanPortsQuery,
   useGetVenueTemplateDirectedMulticastQuery,
-  useGetVenueTemplateRadiusOptionsQuery
+  useGetVenueTemplateRadiusOptionsQuery,
+  useGetVenueTemplateDoSProtectionQuery,
+  useGetVenueTemplateBssColoringQuery
 } = venueConfigTemplateApi

@@ -85,5 +85,15 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/templates/venues/:venueId/radiusOptions',
     newApi: true
+  },
+  getDenialOfServiceProtection: {
+    method: 'get',
+    url: '/templates/venues/:venueId/dosProtectionSettings',
+    newApi: true
+  },
+  getVenueBssColoring: {
+    method: 'get',
+    url: '/templates/venues/:venueId/bssColoringSettings',
+    newApi: true
   }
 }

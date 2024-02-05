@@ -271,7 +271,7 @@ function useGetVenueApCapabilitiesQueryFnSwitcher () {
 }
 
 function selectApModelCapabilitiesFromResult (
-  { data, isLoading }: { data?: { version: string, apModels:CapabilitiesApModel[] }, isLoading: boolean }
+  { data, isLoading }: { data?: { version: string, apModels: CapabilitiesApModel[] }, isLoading: boolean }
 ) {
   return {
     allApModelCapabilities: data?.apModels,

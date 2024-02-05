@@ -727,7 +727,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     getVenueApCapabilities: build.query<{
       version: string,
-      apModels:CapabilitiesApModel[] }, RequestPayload>({
+      apModels: CapabilitiesApModel[] }, RequestPayload>({
         query: ({ params }) => {
           const req = createHttpRequest(WifiUrlsInfo.getVenueApCapabilities, params)
           return {
