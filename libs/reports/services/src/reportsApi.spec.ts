@@ -5,7 +5,7 @@ import { mockServer } from '@acx-ui/test-utils'
 
 import {  ReportUrlsInfo, reportsApi, UrlInfo } from '.'
 
-import type { GuestToken, DashboardMetadata } from '.'
+import type { GuestToken, EmbeddedResponse } from '.'
 
 const guestTokenReponse = {
   token: 'some token'
@@ -21,7 +21,7 @@ const getEmbeddedReponse = {
     dashboard_id: '6',
     uuid: 'ac940866-a6f3-4113-81c1-ffb82983ce51'
   }
-} as DashboardMetadata
+} as EmbeddedResponse
 
 const AuthenticateResponse = {
   redirect_url: '/api/a4rc/explorer/'

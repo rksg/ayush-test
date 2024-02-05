@@ -5,7 +5,7 @@ import { showActionModal }                    from '@acx-ui/components'
 import * as config                            from '@acx-ui/config'
 import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import {  ReportUrlsInfo, reportsApi }        from '@acx-ui/reports/services'
-import type { GuestToken, DashboardMetadata } from '@acx-ui/reports/services'
+import type { GuestToken, EmbeddedResponse } from '@acx-ui/reports/services'
 import { Provider, store, rbacApiURL }        from '@acx-ui/store'
 import { render, mockServer, act, waitFor }   from '@acx-ui/test-utils'
 import { NetworkPath, useLocaleContext }      from '@acx-ui/utils'
@@ -70,7 +70,7 @@ const getEmbeddedReponse = {
     dashboard_id: '6',
     uuid: 'ac940866-a6f3-4113-81c1-ffb82983ce51'
   }
-} as DashboardMetadata
+} as EmbeddedResponse
 
 describe('convertDateTimeToSqlFormat', () => {
   it('should convert date to sqlDateTimeFormat', () => {
