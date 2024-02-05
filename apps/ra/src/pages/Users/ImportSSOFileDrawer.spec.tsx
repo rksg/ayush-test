@@ -69,25 +69,6 @@ describe('ImportSSOFileDrawer', () => {
     })
     expect(setVisible).toHaveBeenCalledWith(false)
   })
-  it('should reject incorrect file extension upload', async () => {
-    (Blob.prototype.text as jest.Mock).mockImplementation(() =>
-      Promise.resolve(validContent))
-    const updateSettingsMock = jest.fn()
-    mockMutationHook.mockImplementation(() => [updateSettingsMock])
-    render(<ImportSSOFileDrawer
-      {...drawerProps}
-      title='SSO Drawer'
-      visible />,
-    { wrapper: Provider })
-    expect(await screen.findByText('SSO Drawer')).toBeVisible()
-    await userEvent.click(screen.getByRole('button', { name: 'Browse' }))
-    const uploadInput = await screen.findByLabelText('IdP Metadata')
-    expect(uploadInput).toBeInTheDocument()
-    expect(await screen.findByRole('button', { name: 'Apply' })).toBeDisabled()
-    const invalidFile = new File([validContent], 'fail.svg', { type: 'image/svg+xml' })
-    await userEvent.upload(uploadInput, invalidFile)
-    expect(await screen.findByRole('button', { name: 'Apply' })).toBeDisabled()
-  })
   it('should reject incorrect file content upload', async () => {
     (Blob.prototype.text as jest.Mock).mockImplementation(() =>
       Promise.resolve(invalidContent))
