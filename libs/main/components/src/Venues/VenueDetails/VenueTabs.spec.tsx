@@ -31,6 +31,10 @@ describe('VenueTabs', () => {
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
   })
 
+  afterEach(() => {
+    mockedUseConfigTemplate.mockRestore()
+  })
+
   it('should render correctly', async () => {
     render(<Provider>
       <VenueTabs venueDetail={venueDetailHeaderData as unknown as VenueDetailHeader} />

@@ -4,8 +4,7 @@ import { useIntl } from 'react-intl'
 import { Button, PageHeader, RangePicker } from '@acx-ui/components'
 import { useVenueDetailsHeaderQuery }      from '@acx-ui/rc/services'
 import {
-  generateConfigTemplateBreadcrumb,
-  getConfigTemplatePath,
+  getConfigTemplatePath, useBreadcrumb,
   useConfigTemplate,
   VenueDetailHeader
 } from '@acx-ui/rc/utils'
@@ -13,8 +12,7 @@ import {
   useLocation,
   useNavigate,
   useTenantLink,
-  useParams,
-  TenantType
+  useParams
 } from '@acx-ui/react-router-dom'
 import { filterByAccess, getShowWithoutRbacCheckKey } from '@acx-ui/user'
 import { useDateFilter }                              from '@acx-ui/utils'
@@ -47,17 +45,9 @@ function VenuePageHeader () {
   const basePath = useTenantLink(`/venues/${venueId}`)
   const templateBasePath = useTenantLink(getConfigTemplatePath(`venues/${venueId}`), 'v')
 
-  const GenBreadcrumb = () => {
-    const { isTemplate } = useConfigTemplate()
-    if (isTemplate) {
-      return generateConfigTemplateBreadcrumb()
-    }
-
-    return [
-      { text: $t({ defaultMessage: 'Venues' }), link: '/venues' }
-    ] as { text: string, link?: string, tenantType?: TenantType }[]
-  }
-  const breadcrumb = GenBreadcrumb()
+  const breadcrumb = useBreadcrumb([
+    { text: $t({ defaultMessage: 'Venues' }), link: '/venues' }
+  ])
 
   return (
     <PageHeader

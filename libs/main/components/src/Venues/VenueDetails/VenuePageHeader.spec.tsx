@@ -36,6 +36,10 @@ describe('VenuePageHeader', () => {
     )
   })
 
+  afterEach(() => {
+    mockedUseConfigTemplate.mockRestore()
+  })
+
   it('navigate to edit when configure clicked', async () => {
     const params = { tenantId: 't1', venueId: 'v1' }
     render(<VenuePageHeader />, { route: { params }, wrapper: Provider })

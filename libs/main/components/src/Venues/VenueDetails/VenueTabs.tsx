@@ -4,6 +4,7 @@ import { Tabs }                                                    from '@acx-ui
 import { Features, useIsSplitOn, useIsTierAllowed }                from '@acx-ui/feature-toggle'
 import { useGetPropertyConfigsQuery, useGetPropertyUnitListQuery } from '@acx-ui/rc/services'
 import {
+  getConfigTemplatePath,
   PropertyConfigStatus,
   useConfigTemplate,
   VenueDetailHeader
@@ -16,7 +17,7 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const params = useParams()
   const basePath = useTenantLink(`/venues/${params.venueId}/venue-details/`)
   const templateBasePath = useTenantLink(
-    `/configTemplates/venues/${params.venueId}/venue-details/`, 'v'
+    getConfigTemplatePath(`venues/${params.venueId}/venue-details/`), 'v'
   )
   const navigate = useNavigate()
   const { isTemplate } = useConfigTemplate()
