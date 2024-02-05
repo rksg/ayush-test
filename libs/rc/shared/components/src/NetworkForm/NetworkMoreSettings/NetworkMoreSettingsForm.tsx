@@ -8,7 +8,7 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import { Button, Tabs }                                           from '@acx-ui/components'
 import { useIsSplitOn, Features, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
-import { NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum }     from '@acx-ui/rc/utils'
+import { NetworkSaveData, NetworkTypeEnum }                       from '@acx-ui/rc/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
 
