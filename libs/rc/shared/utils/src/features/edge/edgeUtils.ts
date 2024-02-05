@@ -3,10 +3,10 @@ import { IntlShape } from 'react-intl'
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
-import { IpUtilsService }                                                                                     from '../../ipUtilsService'
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum }                            from '../../models/EdgeEnum'
-import { EdgeAlarmSummary, EdgeLag, EdgeLagStatus, EdgePort, EdgePortStatus, EdgePortWithStatus, EdgeStatus } from '../../types'
-import { networkWifiIpRegExp, subnetMaskIpRegExp }                                                            from '../../validator'
+import { IpUtilsService }                                                                                                                from '../../ipUtilsService'
+import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum }                                                       from '../../models/EdgeEnum'
+import { EdgeAlarmSummary, EdgeLag, EdgeLagStatus, EdgePort, EdgePortStatus, EdgePortWithStatus, EdgeStatus, PRODUCT_CODE_VIRTUAL_EDGE } from '../../types'
+import { networkWifiIpRegExp, subnetMaskIpRegExp }                                                                                       from '../../validator'
 
 const Netmask = require('netmask').Netmask
 
@@ -164,12 +164,38 @@ export const isEdgeConfigurable = (data: EdgeStatus | undefined):boolean => {
 
 export const getIpWithBitMask = (ipAddress?: string, subnetMask?: string) => {
   if(!ipAddress || !subnetMask) return ''
+  if(ipAddress.includes('/')) return ipAddress
   const subnetInfo = new Netmask(ipAddress + '/' + subnetMask)
   return `${ipAddress}/ ${subnetInfo.bitmask}`
 }
 
 export const getSuggestedIpRange = (ipAddress?: string, subnetMask?: string) => {
   if(!ipAddress || !subnetMask) return ''
+  if(ipAddress.includes('/')) return ipAddress
   const subnetInfo = new Netmask(ipAddress + '/' + subnetMask)
   return `${subnetInfo.base}/ ${subnetInfo.bitmask}`
+}
+
+export const edgeSerialNumberValidator = async (value: string) => {
+  const { $t } = getIntl()
+  if (value.startsWith(PRODUCT_CODE_VIRTUAL_EDGE)) {
+    return validateVirtualEdgeSerialNumber(value)
+  }
+  return Promise.reject($t(validationMessages.invalid))
+}
+
+const validateVirtualEdgeSerialNumber = (value: string) => {
+  const { $t } = getIntl()
+
+  if (!new RegExp(/^[0-9a-z]+$/i).test(value)) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+
+  if (value.length !== 34) {
+    return Promise.reject($t({
+      defaultMessage: 'Field must be exactly 34 characters'
+    }))
+  }
+
+  return Promise.resolve()
 }
