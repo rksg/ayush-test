@@ -274,6 +274,6 @@ describe('VenueDetails', () => {
     render(<Provider><VenueDetails /></Provider>, {
       route: { params, path: '/:tenantId/v/:venueId/venue-details/:activeTab' }
     })
-    expect(await screen.findByRole('link', { name: /configuration templates/i })).toBeVisible()
+    expect(screen.getAllByRole('tab')).toHaveLength(1)
   })
 })

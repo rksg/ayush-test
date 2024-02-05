@@ -1,9 +1,12 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }               from '@acx-ui/feature-toggle'
-import { venueApi }                   from '@acx-ui/rc/services'
-import { CommonUrlsInfo }             from '@acx-ui/rc/utils'
+import { useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { venueApi }           from '@acx-ui/rc/services'
+import {
+  CommonUrlsInfo,
+  CONFIG_TEMPLATE_LIST_PATH
+} from '@acx-ui/rc/utils'
 import { Provider, store }            from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
@@ -18,9 +21,11 @@ jest.mock('react-router-dom', () => ({
 }))
 
 const mockedUseConfigTemplate = jest.fn()
+const mockedUseBreadcrumb = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
-  useConfigTemplate: () => mockedUseConfigTemplate()
+  useConfigTemplate: () => mockedUseConfigTemplate(),
+  useBreadcrumb: () => mockedUseBreadcrumb()
 }))
 
 describe('VenuePageHeader', () => {
@@ -63,10 +68,19 @@ describe('VenuePageHeader', () => {
   it('render correctly with isTemplate equal to true', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+    mockedUseBreadcrumb.mockReturnValue([
+      {
+        text: 'Configuration Templates',
+        link: CONFIG_TEMPLATE_LIST_PATH,
+        tenantType: 'v'
+      }
+    ])
 
     const params = { tenantId: 't1', venueId: 'v1', activeTab: 'networks' }
     render(<VenuePageHeader />, { route: { params }, wrapper: Provider })
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('link', { name: /configuration templates/i })).toBeInTheDocument()
+
+    mockedUseBreadcrumb.mockRestore()
   })
 })
