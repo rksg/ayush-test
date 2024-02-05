@@ -1,5 +1,6 @@
 import '@testing-library/react'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { rbacApi }                     from '@acx-ui/analytics/services'
 import { ManagedUser }                 from '@acx-ui/analytics/utils'
@@ -30,6 +31,10 @@ jest.mock('@acx-ui/analytics/utils', () => ({
 jest.mock('./ImportSSOFileDrawer', () => ({
   ImportSSOFileDrawer: () =>
     <div data-testid='importSSOFileDrawer'>ImportSSOFileDrawer</div>
+}))
+
+jest.mock('./UserDrawer', () => ({
+  UserDrawer: ({ type }: { type: string }) => <div data-testid='userDrawer'>{`${type}`}</div>
 }))
 
 const mockRGResponse = () => {
@@ -91,15 +96,8 @@ describe('Users Page', () => {
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Users (5)')).toBeVisible()
-    const info = await screen.findByTestId('InformationOutlined')
     const tbody = await findTBody()
     expect(await within(tbody).findAllByRole('row')).toHaveLength(5)
-    fireEvent.mouseOver(info)
-    expect(
-      await screen.findByText((content, element) => {
-        return element?.tagName.toLowerCase() === 'div' && content.startsWith('"Invite 3rd Party"')
-      })
-    ).toBeInTheDocument()
   })
   it('should render empty array correctly', async () => {
     mockRbacUserResponse([])
@@ -197,7 +195,31 @@ describe('Users Page', () => {
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByTestId('EditOutlined')).toBeVisible()
     fireEvent.click(await screen.findByTestId('EditOutlined'))
-    expect(await screen.findByText('Edit User')).toBeVisible()
+    expect(await screen.findByTestId('userDrawer')).toHaveTextContent('edit')
+  })
+  it('should open user drawer for add internal user correctly', async () => {
+    mockRbacUserResponse([])
+    mockSSOResponse('samlFile')
+    render(<Users />, { wrapper: Provider })
+    await waitForElementToBeRemoved(() =>
+      screen.queryAllByRole('img', { name: 'loader' }))
+    const userBtn = await screen.findByText('Add User...')
+    expect(userBtn).toBeVisible()
+    await userEvent.click(userBtn)
+    await userEvent.click(await screen.findByText('Internal'))
+    expect(await screen.findByTestId('userDrawer')).toHaveTextContent('addInternal')
+  })
+  it('should open user drawer for 3rd party user correctly', async () => {
+    mockRbacUserResponse([])
+    mockSSOResponse('samlFile')
+    render(<Users />, { wrapper: Provider })
+    await waitForElementToBeRemoved(() =>
+      screen.queryAllByRole('img', { name: 'loader' }))
+    const userBtn = await screen.findByText('Add User...')
+    expect(userBtn).toBeVisible()
+    await userEvent.click(userBtn)
+    await userEvent.click(await screen.findByText('3rd Party'))
+    expect(await screen.findByTestId('userDrawer')).toHaveTextContent('invite3rdParty')
   })
   it('should show update sso button correctly', async () => {
     mockRbacUserResponse(mockMangedUsers)

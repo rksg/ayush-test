@@ -68,11 +68,12 @@ const transformUsers = (
 }
 const getUserActions = (
   selectedRow: ManagedUser,
-  { setSelectedRow, getLatestUserDetails, toggleDrawer, handleDeleteUser }: {
+  { setSelectedRow, getLatestUserDetails, toggleDrawer, handleDeleteUser, setDrawerType }: {
     setSelectedRow: CallableFunction,
     getLatestUserDetails: CallableFunction,
     toggleDrawer: CallableFunction,
-    handleDeleteUser: CallableFunction
+    handleDeleteUser: CallableFunction,
+    setDrawerType: CallableFunction
   }) => {
   const { $t } = getIntl()
   const user = getUserProfile()
@@ -123,6 +124,7 @@ const getUserActions = (
               : <EditOutlined
                 onClick={() => {
                   setSelectedRow(selectedRow)
+                  setDrawerType('edit')
                   toggleDrawer(true)
                 }}
                 style={{ height: '24px', width: '24px' }}
@@ -167,12 +169,13 @@ const getUserActions = (
 }
 
 export const UsersTable = (
-  { data, toggleDrawer, setSelectedRow, getLatestUserDetails, handleDeleteUser }:
+  { data, toggleDrawer, setSelectedRow, getLatestUserDetails, handleDeleteUser, setDrawerType }:
   { data?: ManagedUser[],
     toggleDrawer: CallableFunction,
     setSelectedRow: CallableFunction,
     getLatestUserDetails: CallableFunction,
-    handleDeleteUser: CallableFunction }) => {
+    handleDeleteUser: CallableFunction,
+    setDrawerType: CallableFunction }) => {
   const { $t } = useIntl()
   const user = getUserProfile()
   const { franchisor } = user.selectedTenant.settings
@@ -247,13 +250,12 @@ export const UsersTable = (
       className: 'actions-column',
       render: (_, row) => getUserActions(
         row as ManagedUser,
-        { setSelectedRow, getLatestUserDetails, toggleDrawer, handleDeleteUser }
+        { setSelectedRow, getLatestUserDetails, toggleDrawer, handleDeleteUser, setDrawerType }
       )
     }
   ]
   return <Table<DisplayUser>
     rowKey={'id'}
-    settingsId='users-table'
     columns={columns}
     dataSource={users}
   />

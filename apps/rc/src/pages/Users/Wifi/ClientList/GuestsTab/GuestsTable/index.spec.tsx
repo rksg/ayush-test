@@ -311,8 +311,8 @@ describe('Guest Table', () => {
         wrapper: Provider
       })
 
-    await openGuestDetailsAndClickAction('test3')
-    await userEvent.click(await screen.findByText(/generate new password/i))
+    await openGuestDetailsAndClickAction('test5')
+    await userEvent.click(await screen.findByRole('menuitem', { name: /generate new password/i }))
 
     const dialog = await screen.findByTestId('generate-password-modal')
     expect(await within(dialog).findByText('Generate New Password')).toBeVisible()
@@ -475,7 +475,7 @@ describe('Guest Table', () => {
       })
 
     // TODO: fix Error encountered handling the endpoint getGuests
-    await openGuestDetailsAndClickAction('test3')
+    await openGuestDetailsAndClickAction('test5')
     await userEvent.click(await screen.findByRole('menuitem', { name: /download information/i }))
     await waitFor(() => expect(mockedDownloadReq).toBeCalledTimes(1))
     // expect(mockedDownloadFileReq).toBeCalledTimes(1)
