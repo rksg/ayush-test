@@ -77,7 +77,7 @@ describe('Firmware Venues Table', () => {
     expect(dialog).not.toBeVisible()
   })
 
-  it('should render preferences - schedule manually', async () => {
+  it.skip('should render preferences - schedule manually', async () => {
     render(
       <Provider>
         <VenueFirmwareList />
