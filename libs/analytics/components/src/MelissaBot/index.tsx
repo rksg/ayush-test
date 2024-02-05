@@ -121,7 +121,8 @@ export function MelissaBot (){
   }
   const subTitleText = $t({ defaultMessage: 'with Generative AI' })
   const askAnything = $t({ defaultMessage: 'Ask Anything' })
-  const title = <><Title>{BOT_NAME}</Title><SubTitle>{subTitleText}</SubTitle></>
+  const betaSuperScriptText = 'ᴮᴱᵀᴬ'
+  const title = <><Title>{BOT_NAME}</Title><SubTitle>{subTitleText} {betaSuperScriptText}</SubTitle></>
   const askMelissa = (body:AskMelissaBody) => {
     isMelissaBotEnabled && queryAskMelissa(body).then(async (json)=>{
       isSummaryLatest.current = false

@@ -1,6 +1,5 @@
 process.env.TZ = 'UTC'
 const nxPreset = require('@nrwl/jest/preset')
-
 const esModules = [
   'd3',
   'd3-array',
@@ -37,7 +36,7 @@ module.exports = {
     '!<rootDir>/src/theme/modify-vars.js'
   ],
   setupFilesAfterEnv: [
-    process.env.CICD_BUILD ? `${__dirname}/jest.setup.js` : `${__dirname}/jest.build.setup.js`,
+    process.env.CICD_BUILD ? `${__dirname}/jest.build.setup.js` : `${__dirname}/jest.setup.js`,
     'jest-canvas-mock'
   ]
 }

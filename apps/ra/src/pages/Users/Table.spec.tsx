@@ -15,9 +15,10 @@ jest.mock('@acx-ui/analytics/utils', () => ({
   }))
 }))
 const toggleDrawer = jest.fn()
-const setSelectedRow= jest.fn()
-const getLatestUserDetails= jest.fn()
-const handleDeleteUser= jest.fn()
+const setSelectedRow = jest.fn()
+const getLatestUserDetails = jest.fn()
+const handleDeleteUser = jest.fn()
+const setDrawerType = jest.fn()
 const setUsersCount = jest.fn()
 describe('UsersTable', () => {
   it('should render table correctly', async () => {
@@ -26,8 +27,9 @@ describe('UsersTable', () => {
       setSelectedRow={setSelectedRow}
       getLatestUserDetails={getLatestUserDetails}
       handleDeleteUser={handleDeleteUser}
-      data={mockMangedUsers}
-      setUsersCount={setUsersCount} />,
+      setUsersCount={setUsersCount}
+      setDrawerType={setDrawerType}
+      data={mockMangedUsers} />,
     { wrapper: Provider })
     const tbody = await findTBody()
     expect(await within(tbody).findAllByRole('row')).toHaveLength(5)
@@ -51,7 +53,8 @@ describe('UsersTable', () => {
       getLatestUserDetails={getLatestUserDetails}
       handleDeleteUser={handleDeleteUser}
       data={undefined}
-      setUsersCount={setUsersCount} />,
+      setUsersCount={setUsersCount}
+      setDrawerType={setDrawerType} />,
     { wrapper: Provider })
     const tbody = await findTBody()
     expect(await within(tbody).findAllByRole('row')).toHaveLength(1)
@@ -64,10 +67,12 @@ describe('UsersTable', () => {
       getLatestUserDetails={getLatestUserDetails}
       handleDeleteUser={handleDeleteUser}
       data={[mockMangedUsers[0]]}
-      setUsersCount={setUsersCount} />,
+      setUsersCount={setUsersCount}
+      setDrawerType={setDrawerType}/>,
     { wrapper: Provider })
     expect(await screen.findByTestId('EditOutlined')).toBeVisible()
     fireEvent.click(await screen.findByTestId('EditOutlined'))
+    expect(setDrawerType).toHaveBeenCalledWith('edit')
     expect(toggleDrawer).toBeCalledTimes(1)
     expect(setUsersCount).toHaveBeenCalledWith(1)
   })
@@ -78,7 +83,8 @@ describe('UsersTable', () => {
       getLatestUserDetails={getLatestUserDetails}
       handleDeleteUser={handleDeleteUser}
       data={[mockMangedUsers[0]]}
-      setUsersCount={setUsersCount} />,
+      setUsersCount={setUsersCount}
+      setDrawerType={setDrawerType}/>,
     { wrapper: Provider })
     expect(await screen.findByTestId('DeleteOutlined')).toBeVisible()
     fireEvent.click(await screen.findByTestId('DeleteOutlined'))
@@ -92,7 +98,8 @@ describe('UsersTable', () => {
       getLatestUserDetails={getLatestUserDetails}
       handleDeleteUser={handleDeleteUser}
       data={[mockMangedUsers[0]]}
-      setUsersCount={setUsersCount} />,
+      setUsersCount={setUsersCount}
+      setDrawerType={setDrawerType} />,
     { wrapper: Provider })
     expect(await screen.findByTestId('Reload')).toBeVisible()
     fireEvent.click(await screen.findByTestId('Reload'))
@@ -106,7 +113,8 @@ describe('UsersTable', () => {
       getLatestUserDetails={getLatestUserDetails}
       handleDeleteUser={handleDeleteUser}
       data={mockMangedUsers}
-      setUsersCount={setUsersCount} />,
+      setUsersCount={setUsersCount}
+      setDrawerType={setDrawerType} />,
     { wrapper: Provider })
     expect((await screen.findAllByTestId('EditOutlinedDisabledIcon')).length).toEqual(4)
     expect((await screen.findAllByTestId('DeleteOutlinedDisabledIcon')).length).toEqual(4)
@@ -142,7 +150,8 @@ describe('UsersTable', () => {
       getLatestUserDetails={getLatestUserDetails}
       handleDeleteUser={handleDeleteUser}
       data={[user]}
-      setUsersCount={setUsersCount} />,
+      setUsersCount={setUsersCount}
+      setDrawerType={setDrawerType} />,
     { wrapper: Provider })
     expect((await screen.findAllByTestId('EditOutlinedDisabledIcon')).length).toEqual(1)
     expect((await screen.findAllByTestId('DeleteOutlinedDisabledIcon')).length).toEqual(1)

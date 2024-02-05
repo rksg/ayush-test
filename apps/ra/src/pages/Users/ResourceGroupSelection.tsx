@@ -18,13 +18,23 @@ export const ResourceGroupSelection = ({
   return (
     <Loader states={[resourceGroups]}>
       <Select
-        style={{ width: 300 }}
+        showSearch
+        style={{ width: 350 }}
+        filterOption={(input, option) =>
+          ((option?.label as string).toLocaleLowerCase())
+            .includes(input.toLocaleLowerCase())}
+        filterSort={(optionA, optionB) =>
+          ((optionA?.label as string))
+            .toLowerCase()
+            .localeCompare(((optionB?.label as string))
+              .toLowerCase())
+        }
         options={resourceGroups?.data?.map((rg) => ({
           label: rg.name,
           value: rg.id,
           key: rg.id
         }))}
-        placeholder={$t({ defaultMessage: 'Select Resource Group' })}
+        placeholder={$t({ defaultMessage: 'Select a resource group' })}
         value={selectedValue}
         onChange={onChange}
       />
