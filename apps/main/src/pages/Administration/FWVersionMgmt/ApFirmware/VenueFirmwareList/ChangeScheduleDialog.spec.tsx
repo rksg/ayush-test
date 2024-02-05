@@ -1,12 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import {
-  FirmwareUrlsInfo
-} from '@acx-ui/rc/utils'
-import {
-  Provider
-} from '@acx-ui/store'
+import { firmwareApi }      from '@acx-ui/rc/services'
+import { FirmwareUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }  from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -14,7 +11,6 @@ import {
   waitFor,
   within
 } from '@acx-ui/test-utils'
-
 
 import {
   venue,
@@ -25,10 +21,10 @@ import {
 
 import { VenueFirmwareList } from '.'
 
-
 describe('Firmware Venues Table', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
+    store.dispatch(firmwareApi.util.resetApiState())
     mockServer.use(
       rest.get(
         FirmwareUrlsInfo.getVenueVersionList.url.split('?')[0],
@@ -92,8 +88,9 @@ describe('Firmware Venues Table', () => {
         route: { params, path: '/:tenantId/t/administration/fwVersionMgmt' }
       })
 
-    const row = await screen.findByRole('row', { name: /My-Venue/i })
-    await userEvent.click(within(row).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[4]).getByRole('cell', { name: /My-Venue/i })).toBeVisible()
+    await userEvent.click(within(rows[4]).getByRole('checkbox'))
 
     const changeButton = await screen.findByRole('button', { name: /Change Update Schedule/i })
     await userEvent.click(changeButton)

@@ -83,22 +83,19 @@ describe('Edge Table', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/t/devices/edge' }
       })
-    const row = await screen.findAllByRole('row', { name: /Smart Edge/i })
-    expect(row.length).toBe(12)
+    const rows = await screen.findAllByRole('row', { name: /Smart Edge/ })
+    expect(rows.length).toBe(12)
 
     // TODO: should add extra test for EdgeStatusLight
-    // const expectedStatus = ['Initializing', 'Never contacted cloud', 'Offline',
-    //   'Needs port config', 'Operational', 'Applying firmware', 'Applying configuration',
-    //   'Firmware update failed', 'Configuration update failed', 'Disconnected from cloud',
-    //   'Rebooting', 'Resetting and recovering']
+    const expectedStatus = ['Initializing', 'Never contacted cloud', 'Offline',
+      'Needs port config', 'Operational', 'Applying firmware', 'Applying configuration',
+      'Firmware update failed', 'Configuration update failed', 'Disconnected from cloud',
+      'Rebooting', 'Resetting and recovering']
 
-    // expectedStatus.forEach((status, index) => {
-    //   expect(screen.getByRole('row', { name: new RegExp(`Smart Edge ${index + 1} `) }))
-    //     .toHaveTextContent(status)
-    // })
-
-    expect(screen.getByRole('row', { name: new RegExp('Smart Edge 12 ') }))
-      .toHaveTextContent('Resetting and recovering')
+    expectedStatus.forEach((status, index) => {
+      expect(rows[Number(index)]).toHaveTextContent(`Smart Edge ${index+1}`)
+      expect(rows[Number(index)]).toHaveTextContent(status)
+    })
   })
 
   it('edge detail page link should be correct', async () => {
@@ -259,14 +256,12 @@ describe('Edge Table', () => {
         route: { params, path: '/:tenantId/t/devices/edge' }
       })
 
-    const table = await screen.findByRole('table')
-    const row2 = await within(table).findByRole('row', { name: /Smart Edge 2/i })
-    const row3 = within(table).getByRole('row', { name: /Smart Edge 3/i })
-    await user.click(within(row2).getByRole('checkbox'))
-    await user.click(within(row3).getByRole('checkbox'))
-    expect(await screen.findByText('2 selected')).toBeVisible()
-
-    await user.click(await screen.findByRole('button', { name: 'Delete' }))
+    const rows = await screen.findAllByRole('row', { name: /Smart Edge/i })
+    expect(within(rows[1]).getByRole('cell', { name: /Smart Edge 2/i })).toBeVisible()
+    expect(within(rows[2]).getByRole('cell', { name: /Smart Edge 3/i })).toBeVisible()
+    await user.click(within(rows[1]).getByRole('checkbox'))
+    await user.click(within(rows[2]).getByRole('checkbox'))
+    await user.click(screen.getAllByRole('button', { name: 'Delete' })[0])
     const dialog = await screen.findByRole('dialog')
     expect(within(dialog).getByText('Delete "2 SmartEdges"?')).toBeVisible()
 

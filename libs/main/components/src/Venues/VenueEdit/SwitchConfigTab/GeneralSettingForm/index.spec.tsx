@@ -83,6 +83,7 @@ describe('GeneralSettingForm', () => {
     expect(within(dialog).getByText('ACLs (1)')).toBeVisible()
     expect(within(dialog).getByText('test-acl')).toBeVisible()
     await userEvent.click(within(dialog).getByRole('button', { name: 'OK' }))
+    await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
   it('should handle regular profile change', async () => {

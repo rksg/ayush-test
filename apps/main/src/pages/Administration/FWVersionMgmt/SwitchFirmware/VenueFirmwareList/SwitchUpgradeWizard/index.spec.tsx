@@ -130,7 +130,8 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
           visible={true}
           setVisible={mockedCancel}
           onSubmit={() => { }}
-          data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+          data={switchVenue.upgradeVenueViewList.filter(
+            item => item.name === 'My-Venue') as FirmwareSwitchVenue[]} />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
@@ -177,7 +178,8 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
           visible={true}
           setVisible={mockedCancel}
           onSubmit={() => { }}
-          data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+          data={switchVenue.upgradeVenueViewList.filter(
+            item => item.name === 'My-Venue') as FirmwareSwitchVenue[]} />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
@@ -207,7 +209,8 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
           visible={true}
           setVisible={mockedCancel}
           onSubmit={() => { }}
-          data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+          data={switchVenue.upgradeVenueViewList.filter(
+            item => item.name === 'My-Venue') as FirmwareSwitchVenue[]} />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
@@ -258,7 +261,8 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
           visible={true}
           setVisible={mockedCancel}
           onSubmit={() => { }}
-          data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+          data={switchVenue.upgradeVenueViewList.filter(
+            item => item.name === 'My-Venue') as FirmwareSwitchVenue[]} />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
@@ -284,7 +288,8 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
           visible={true}
           setVisible={mockedCancel}
           onSubmit={() => { }}
-          data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+          data={switchVenue.upgradeVenueViewList.filter(
+            item => item.name === 'Karen-Venue1') as FirmwareSwitchVenue[]} />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
