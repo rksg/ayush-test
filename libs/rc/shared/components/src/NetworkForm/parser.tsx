@@ -266,6 +266,8 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     advancedCustomization.dnsProxy = { dnsProxyRules: get(data, 'dnsProxyRules') }
   }
 
+
+
   // radioCustomization
   advancedCustomization.radioCustomization = {
     ...advancedCustomization.radioCustomization,
@@ -413,6 +415,9 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
   if(data.guestPortal){
     saveData = {
       ...saveData,
+      wlan: {
+        passphrase: data.wlan?.passphrase
+      },
       guestPortal: {
         ...originalData.guestPortal,
         ...data.guestPortal
