@@ -5,8 +5,8 @@ import { RequestPayload }                               from '@acx-ui/types'
 
 import { SubInterfaceTable } from './SubInterfaceTable'
 
-export const EdgeSubInterfacesTable = ({ serialNumber, portMac }:
-   { serialNumber: string, portMac: string }) => {
+export const EdgeSubInterfacesTable = ({ serialNumber, ifName }:
+   { serialNumber: string, ifName?: string }) => {
   const settingsId = 'edge-sub-interfaces-table'
   const defaultPayload = {
     fields: [
@@ -22,7 +22,9 @@ export const EdgeSubInterfacesTable = ({ serialNumber, portMac }:
       'ipMode',
       'interfaceName'
     ],
-    filters: { serialNumber: [serialNumber], mac: [portMac] },
+    filters: { serialNumber: [serialNumber] },
+    searchTargetFields: ['interfaceName'],
+    searchString: `${ifName}.`,
     sortField: 'sortIdx',
     sortOrder: 'ASC'
   }
