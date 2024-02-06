@@ -97,12 +97,10 @@ export function PropertyUnitBulkDrawer (props: PropertyUnitBulkDrawerProps) {
   }, [connectionMeteringListQuery.data, connectionMeteringListQuery.isLoading])
 
   useEffect(()=>{
-    if (!formVisible) {
-      setAppliable(false)
-    } else if (!profileId || !expirationDate) {
-      setAppliable(false)
-    } else {
+    if (formVisible && profileId && expirationDate) {
       setAppliable(true)
+    } else {
+      setAppliable(false)
     }
   }, [formVisible, profileId, expirationDate])
 
