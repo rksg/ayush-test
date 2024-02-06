@@ -15,9 +15,11 @@ jest.mock('@acx-ui/analytics/utils', () => ({
   }))
 }))
 const toggleDrawer = jest.fn()
-const setSelectedRow= jest.fn()
-const getLatestUserDetails= jest.fn()
-const handleDeleteUser= jest.fn()
+const setSelectedRow = jest.fn()
+const getLatestUserDetails = jest.fn()
+const handleDeleteUser = jest.fn()
+const setDrawerType = jest.fn()
+const setUsersCount = jest.fn()
 describe('UsersTable', () => {
   it('should render table correctly', async () => {
     render(<UsersTable
@@ -25,6 +27,8 @@ describe('UsersTable', () => {
       setSelectedRow={setSelectedRow}
       getLatestUserDetails={getLatestUserDetails}
       handleDeleteUser={handleDeleteUser}
+      setUsersCount={setUsersCount}
+      setDrawerType={setDrawerType}
       data={mockMangedUsers} />,
     { wrapper: Provider })
     const tbody = await findTBody()
@@ -40,6 +44,7 @@ describe('UsersTable', () => {
     expect(await screen.findByText('userFirst userSecond')).toBeVisible()
     expect(await screen.findByText('userThird userFourth')).toBeVisible()
     expect(await screen.findByText('userRej userRej')).toBeVisible()
+    expect(setUsersCount).toHaveBeenCalledWith(5)
   })
   it('should render undefined data table correctly', async () => {
     render(<UsersTable
@@ -47,10 +52,13 @@ describe('UsersTable', () => {
       setSelectedRow={setSelectedRow}
       getLatestUserDetails={getLatestUserDetails}
       handleDeleteUser={handleDeleteUser}
-      data={undefined} />,
+      data={undefined}
+      setUsersCount={setUsersCount}
+      setDrawerType={setDrawerType} />,
     { wrapper: Provider })
     const tbody = await findTBody()
     expect(await within(tbody).findAllByRole('row')).toHaveLength(1)
+    expect(setUsersCount).toHaveBeenCalledWith(0)
   })
   it('should handle the edit callback', async () => {
     render(<UsersTable
@@ -58,11 +66,15 @@ describe('UsersTable', () => {
       setSelectedRow={setSelectedRow}
       getLatestUserDetails={getLatestUserDetails}
       handleDeleteUser={handleDeleteUser}
-      data={[mockMangedUsers[0]]} />,
+      data={[mockMangedUsers[0]]}
+      setUsersCount={setUsersCount}
+      setDrawerType={setDrawerType}/>,
     { wrapper: Provider })
     expect(await screen.findByTestId('EditOutlined')).toBeVisible()
     fireEvent.click(await screen.findByTestId('EditOutlined'))
+    expect(setDrawerType).toHaveBeenCalledWith('edit')
     expect(toggleDrawer).toBeCalledTimes(1)
+    expect(setUsersCount).toHaveBeenCalledWith(1)
   })
   it('should handle the delete callback', async () => {
     render(<UsersTable
@@ -70,11 +82,14 @@ describe('UsersTable', () => {
       setSelectedRow={setSelectedRow}
       getLatestUserDetails={getLatestUserDetails}
       handleDeleteUser={handleDeleteUser}
-      data={[mockMangedUsers[0]]} />,
+      data={[mockMangedUsers[0]]}
+      setUsersCount={setUsersCount}
+      setDrawerType={setDrawerType}/>,
     { wrapper: Provider })
     expect(await screen.findByTestId('DeleteOutlined')).toBeVisible()
     fireEvent.click(await screen.findByTestId('DeleteOutlined'))
     expect(handleDeleteUser).toBeCalledTimes(1)
+    expect(setUsersCount).toHaveBeenCalledWith(1)
   })
   it('should handle the refresh callback', async () => {
     render(<UsersTable
@@ -82,11 +97,14 @@ describe('UsersTable', () => {
       setSelectedRow={setSelectedRow}
       getLatestUserDetails={getLatestUserDetails}
       handleDeleteUser={handleDeleteUser}
-      data={[mockMangedUsers[0]]} />,
+      data={[mockMangedUsers[0]]}
+      setUsersCount={setUsersCount}
+      setDrawerType={setDrawerType} />,
     { wrapper: Provider })
     expect(await screen.findByTestId('Reload')).toBeVisible()
     fireEvent.click(await screen.findByTestId('Reload'))
     expect(getLatestUserDetails).toBeCalledTimes(1)
+    expect(setUsersCount).toHaveBeenCalledWith(1)
   })
   it('should disable edit and delete for the same user', async () => {
     render(<UsersTable
@@ -94,10 +112,13 @@ describe('UsersTable', () => {
       setSelectedRow={setSelectedRow}
       getLatestUserDetails={getLatestUserDetails}
       handleDeleteUser={handleDeleteUser}
-      data={mockMangedUsers} />,
+      data={mockMangedUsers}
+      setUsersCount={setUsersCount}
+      setDrawerType={setDrawerType} />,
     { wrapper: Provider })
     expect((await screen.findAllByTestId('EditOutlinedDisabledIcon')).length).toEqual(4)
     expect((await screen.findAllByTestId('DeleteOutlinedDisabledIcon')).length).toEqual(4)
+    expect(setUsersCount).toHaveBeenCalledWith(5)
   })
   it('should disable edit and delete for non host user', async () => {
     jest.mock('@acx-ui/analytics/utils', () => ({
@@ -128,9 +149,12 @@ describe('UsersTable', () => {
       setSelectedRow={setSelectedRow}
       getLatestUserDetails={getLatestUserDetails}
       handleDeleteUser={handleDeleteUser}
-      data={[user]} />,
+      data={[user]}
+      setUsersCount={setUsersCount}
+      setDrawerType={setDrawerType} />,
     { wrapper: Provider })
     expect((await screen.findAllByTestId('EditOutlinedDisabledIcon')).length).toEqual(1)
     expect((await screen.findAllByTestId('DeleteOutlinedDisabledIcon')).length).toEqual(1)
+    expect(setUsersCount).toHaveBeenCalledWith(1)
   })
 })

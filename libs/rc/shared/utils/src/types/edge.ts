@@ -349,6 +349,7 @@ export interface EdgeLag {
 export interface EdgeCluster {
   id: string
   name: string
+  description?: string
   smartEdges: {
     serialNumber: string
     name: string
