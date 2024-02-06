@@ -24,8 +24,8 @@ import {
   AnchorContext, Loader, showActionModal, StepsFormLegacy,
   StepsFormLegacyInstance, Tabs, Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                             from '@acx-ui/icons'
+import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures }  from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                              from '@acx-ui/icons'
 import {
 
   SingleRadioSettings, channelBandwidth24GOptions,
@@ -48,7 +48,9 @@ import {
   useGetVenueTripleBandRadioSettingsQuery,
   useGetVenueTemplateDefaultRegulatoryChannelsQuery,
   useGetVenueTemplateDefaultRadioCustomizationQuery,
-  useGetVenueTemplateRadioCustomizationQuery
+  useGetVenueTemplateRadioCustomizationQuery,
+  useUpdateVenueTemplateRadioCustomizationMutation,
+  useUpdateVenueTemplateTripleBandRadioSettingsMutation
 } from '@acx-ui/rc/services'
 import {
   APExtended,
@@ -63,8 +65,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { VenueEditContext }                      from '../..'
-import { useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
+import { VenueEditContext }                                                                from '../..'
+import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
 
 import { VenueBandManagement } from './VenueBandManagement'
 
@@ -187,10 +189,15 @@ export function RadioSettings () {
       useGetVenueTemplateRadioCustomizationQuery
     )
 
-  const [ updateVenueRadioCustomization, { isLoading: isUpdatingVenueRadio } ] =
-    useUpdateVenueRadioCustomizationMutation()
+  const [ updateVenueRadioCustomization, { isLoading: isUpdatingVenueRadio } ] = useVenueConfigTemplateMutationFnSwitcher(
+    useUpdateVenueRadioCustomizationMutation,
+    useUpdateVenueTemplateRadioCustomizationMutation
+  )
 
-  const [ updateVenueTripleBandRadioSettings ] = useUpdateVenueTripleBandRadioSettingsMutation()
+  const [ updateVenueTripleBandRadioSettings ] = useVenueConfigTemplateMutationFnSwitcher(
+    useUpdateVenueTripleBandRadioSettingsMutation,
+    useUpdateVenueTemplateTripleBandRadioSettingsMutation
+  )
 
   const { data: venueBandModeSavedData, isLoading: isLoadingVenueBandModeData } =
     useGetVenueApModelBandModeSettingsQuery({ params: { venueId: venueId } }, { skip: !isWifiSwitchableRfEnabled })

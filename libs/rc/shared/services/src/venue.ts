@@ -77,6 +77,8 @@ import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
+import { handleCallbackWhenActivitySuccess } from './utils'
+
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
 }
@@ -254,7 +256,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         })
       }
     }),
-    updateVenueMesh: build.mutation<VenueLed[], RequestPayload>({
+    updateVenueMesh: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.updateVenueMesh, params)
         return {
@@ -997,20 +999,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'Venue', id: 'LOAD_BALANCING' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
-          try {
-            const response = await api.cacheDataLoaded
-            if (response &&
-              requestArgs.callback &&
-              msg.useCase === 'UpdateVenueLoadBalancing'
-            && ((msg.steps?.find((step) => {
-              return step.id === 'UpdateVenueLoadBalancing'
-            })?.status !== 'IN_PROGRESS'))) {
-              (requestArgs.callback as Function)()
-            }
-          } catch (error) {
-            /* eslint-disable no-console */
-            console.error(error)
-          }
+          await handleCallbackWhenActivitySuccess(requestArgs, api, msg, 'UpdateVenueLoadBalancing')
         })
       }
     }),
@@ -1318,20 +1307,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'Venue', id: 'ClientAdmissionControl' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
-          try {
-            const response = await api.cacheDataLoaded
-            if (response &&
-              requestArgs.callback &&
-              msg.useCase === 'UpdateVenueClientAdmissionControlSettings' &&
-              ((msg.steps?.find((step) => {
-                return step.id === 'UpdateVenueClientAdmissionControlSettings'
-              })?.status !== 'IN_PROGRESS'))) {
-              (requestArgs.callback as Function)()
-            }
-          } catch (error) {
-            /* eslint-disable no-console */
-            console.error(error)
-          }
+          await handleCallbackWhenActivitySuccess(requestArgs, api, msg, 'UpdateVenueClientAdmissionControlSettings')
         })
       }
     }),

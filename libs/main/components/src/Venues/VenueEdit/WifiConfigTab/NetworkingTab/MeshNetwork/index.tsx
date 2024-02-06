@@ -11,13 +11,14 @@ import {
   useLazyApListQuery,
   useGetVenueSettingsQuery,
   useUpdateVenueMeshMutation,
-  useGetVenueTemplateSettingsQuery
+  useGetVenueTemplateSettingsQuery,
+  useUpdateVenueTemplateMeshMutation
 } from '@acx-ui/rc/services'
 import { APMeshRole, Mesh, VenueSettings, generateAlphanumericString } from '@acx-ui/rc/utils'
 import { validationMessages }                                          from '@acx-ui/utils'
 
-import { useVenueConfigTemplateQueryFnSwitcher } from '../../../../venueConfigTemplateApiSwitcher'
-import { VenueEditContext }                      from '../../../index'
+import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../../venueConfigTemplateApiSwitcher'
+import { VenueEditContext }                                                                from '../../../index'
 
 import { ErrorMessageDiv, MeshInfoBlock, MeshPassphraseDiv, MeshSsidDiv, ZeroTouchMeshDiv } from './styledComponents'
 
@@ -50,7 +51,10 @@ export function MeshNetwork () {
   const supportZeroTouchMesh = useIsSplitOn(Features.ZERO_TOUCH_MESH)
 
   const [apList] = useLazyApListQuery()
-  const [updateVenueMesh, { isLoading: isUpdatingVenueMesh }] = useUpdateVenueMeshMutation()
+  const [updateVenueMesh, { isLoading: isUpdatingVenueMesh }] = useVenueConfigTemplateMutationFnSwitcher(
+    useUpdateVenueMeshMutation,
+    useUpdateVenueTemplateMeshMutation
+  )
 
   const defaultToolTip = $t({ defaultMessage: 'Not available' })
   const [isAllowEnableMesh, setIsAllowEnableMesh] = useState(true)

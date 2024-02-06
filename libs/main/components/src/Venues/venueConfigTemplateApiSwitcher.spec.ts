@@ -1,7 +1,7 @@
 import { renderHook }     from '@acx-ui/test-utils'
 import { UseQueryResult } from '@acx-ui/types'
 
-import { useVenueConfigTemplateQueryFnSwitcher } from './venueConfigTemplateApiSwitcher'
+import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from './venueConfigTemplateApiSwitcher'
 
 const mockedUseConfigTemplate = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
@@ -64,5 +64,35 @@ describe('useVenueConfigTemplateQueryFnSwitcher', () => {
     expect(result.current).toEqual(expect.objectContaining({ data: 'regular data' }))
     expect(mockedTemplateQueryFn).toHaveBeenCalledWith({ params: mockedParams }, { skip: true })
     expect(mockedRegularQueryFn).toHaveBeenCalledWith({ params: mockedParams }, { skip: false })
+  })
+
+  it('should return template mutation result when isTemplate is true', () => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+    const mutationFn = jest.fn().mockReturnValue('regular')
+    const templateMutationFn = jest.fn().mockReturnValue('template')
+
+    const { result } = renderHook(() => useVenueConfigTemplateMutationFnSwitcher(
+      mutationFn,
+      templateMutationFn
+    ))
+
+    expect(result.current).toEqual('template')
+    expect(mutationFn).toHaveBeenCalled()
+    expect(templateMutationFn).toHaveBeenCalled()
+  })
+
+  it('should return regular mutation result when isTemplate is false', () => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+    const mutationFn = jest.fn().mockReturnValue('regular')
+    const templateMutationFn = jest.fn().mockReturnValue('template')
+
+    const { result } = renderHook(() => useVenueConfigTemplateMutationFnSwitcher(
+      mutationFn,
+      templateMutationFn
+    ))
+
+    expect(result.current).toEqual('regular')
+    expect(mutationFn).toHaveBeenCalled()
+    expect(templateMutationFn).toHaveBeenCalled()
   })
 })

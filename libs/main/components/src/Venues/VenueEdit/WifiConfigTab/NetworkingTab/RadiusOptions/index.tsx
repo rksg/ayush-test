@@ -4,13 +4,16 @@ import { Form, Switch } from 'antd'
 import { useIntl }      from 'react-intl'
 import { useParams }    from 'react-router-dom'
 
-import { AnchorContext, Loader, StepsForm }                                                                          from '@acx-ui/components'
-import { RadiusOptionsForm }                                                                                         from '@acx-ui/rc/components'
-import { useGetVenueRadiusOptionsQuery, useGetVenueTemplateRadiusOptionsQuery, useUpdateVenueRadiusOptionsMutation } from '@acx-ui/rc/services'
-import { VenueRadiusOptions }                                                                                        from '@acx-ui/rc/utils'
+import { AnchorContext, Loader, StepsForm }                                           from '@acx-ui/components'
+import { RadiusOptionsForm }                                                          from '@acx-ui/rc/components'
+import {
+  useGetVenueRadiusOptionsQuery, useGetVenueTemplateRadiusOptionsQuery,
+  useUpdateVenueRadiusOptionsMutation, useUpdateVenueTemplateRadiusOptionsMutation
+} from '@acx-ui/rc/services'
+import { VenueRadiusOptions } from '@acx-ui/rc/utils'
 
-import { VenueEditContext }                      from '../../..'
-import { useVenueConfigTemplateQueryFnSwitcher } from '../../../../venueConfigTemplateApiSwitcher'
+import { VenueEditContext }                                                                from '../../..'
+import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../../venueConfigTemplateApiSwitcher'
 
 const { useWatch } = Form
 
@@ -33,7 +36,10 @@ export function RadiusOptions () {
   )
 
   const [updateVenueRadiusOptions, { isLoading: isUpdatingVenueRadiusOptions }] =
-  useUpdateVenueRadiusOptionsMutation()
+    useVenueConfigTemplateMutationFnSwitcher(
+      useUpdateVenueRadiusOptionsMutation,
+      useUpdateVenueTemplateRadiusOptionsMutation
+    )
 
   const overrideEnabled = useWatch<boolean>('overrideEnabled')
 

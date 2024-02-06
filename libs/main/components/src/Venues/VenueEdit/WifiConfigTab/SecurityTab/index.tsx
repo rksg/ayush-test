@@ -4,19 +4,20 @@ import { Form, FormItemProps, InputNumber, Select, Space } from 'antd'
 import _                                                   from 'lodash'
 import { FormattedMessage, useIntl }                       from 'react-intl'
 
-import { Button, Fieldset, Loader, StepsFormLegacy, StepsFormLegacyInstance, Tooltip }                from '@acx-ui/components'
-import { RogueApModal, usePathBasedOnConfigTemplate }                                                 from '@acx-ui/rc/components'
+import { Button, Fieldset, Loader, StepsFormLegacy, StepsFormLegacyInstance, Tooltip }  from '@acx-ui/components'
+import { RogueApModal, usePathBasedOnConfigTemplate }                                   from '@acx-ui/rc/components'
 import {
   useGetDenialOfServiceProtectionQuery,
   useUpdateDenialOfServiceProtectionMutation,
   useGetVenueRogueApQuery,
-  useUpdateVenueRogueApMutation, useGetRoguePolicyListQuery, useGetVenueTemplateDoSProtectionQuery
+  useUpdateVenueRogueApMutation, useGetRoguePolicyListQuery,
+  useGetVenueTemplateDoSProtectionQuery, useUpdateVenueTemplateDoSProtectionMutation
 } from '@acx-ui/rc/services'
 import { VenueDosProtection, VenueMessages, redirectPreviousPage, useConfigTemplate } from '@acx-ui/rc/utils'
 import { useNavigate, useParams }                                                     from '@acx-ui/react-router-dom'
 
-import { VenueEditContext }                      from '../..'
-import { useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
+import { VenueEditContext }                                                                from '../..'
+import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
 
 import RogueApDrawer from './RogueApDrawer'
 
@@ -60,8 +61,12 @@ export function SecurityTab () {
     setEditSecurityContextData
   } = useContext(VenueEditContext)
 
-  const [updateDenialOfServiceProtection, { isLoading:
-    isUpdatingDenialOfServiceProtection }] = useUpdateDenialOfServiceProtectionMutation()
+  const [updateDenialOfServiceProtection, { isLoading: isUpdatingDenialOfServiceProtection }] =
+    useVenueConfigTemplateMutationFnSwitcher(
+      useUpdateDenialOfServiceProtectionMutation,
+      useUpdateVenueTemplateDoSProtectionMutation
+    )
+
   const [updateVenueRogueAp, {
     isLoading: isUpdatingVenueRogueAp }] = useUpdateVenueRogueApMutation()
 
@@ -108,35 +113,29 @@ export function SecurityTab () {
   }, [selectOptions, selected])
 
   useEffect(() => {
-    if(dosProctectionData && venueRogueApData){
-      const {
-        enabled: dosProtectionEnabled,
-        blockingPeriod,
-        checkPeriod,
-        failThreshold
-      } = dosProctectionData
+    if (!dosProctectionData) return
 
-      const {
-        enabled: rogueApEnabled,
-        reportThreshold,
-        roguePolicyId
-      } = venueRogueApData
+    formRef?.current?.setFieldsValue({
+      dosProtectionEnabled: dosProctectionData.enabled,
+      blockingPeriod: dosProctectionData.blockingPeriod,
+      checkPeriod: dosProctectionData.checkPeriod,
+      failThreshold: dosProctectionData.failThreshold
+    })
+  }, [dosProctectionData])
 
-      formRef?.current?.setFieldsValue({
-        dosProtectionEnabled,
-        blockingPeriod,
-        checkPeriod,
-        failThreshold,
-        rogueApEnabled,
-        reportThreshold,
-        roguePolicyId
-      })
-    }
+  useEffect(() => {
+    if (!venueRogueApData) return
 
-    if (venueRogueApData?.roguePolicyId) {
+    formRef?.current?.setFieldsValue({
+      rogueApEnabled: venueRogueApData.enabled,
+      reportThreshold: venueRogueApData.reportThreshold,
+      roguePolicyId: venueRogueApData.roguePolicyId
+    })
+
+    if (venueRogueApData.roguePolicyId) {
       setRoguePolicyIdValue(venueRogueApData.roguePolicyId)
     }
-  }, [dosProctectionData, venueRogueApData])
+  }, [venueRogueApData])
 
   const handleUpdateSecuritySettings = async (data?: SecuritySetting) => {
     try {

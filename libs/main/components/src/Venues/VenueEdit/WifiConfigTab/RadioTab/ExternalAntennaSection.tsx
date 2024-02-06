@@ -5,9 +5,9 @@ import { Col, Form, Row, Select } from 'antd'
 import { get, uniqBy }            from 'lodash'
 import { useIntl }                from 'react-intl'
 
-import { AnchorContext, Loader }          from '@acx-ui/components'
-import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
-import { ApAntennaTypeSelector }          from '@acx-ui/rc/components'
+import { AnchorContext, Loader }                   from '@acx-ui/components'
+import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
+import { ApAntennaTypeSelector }                   from '@acx-ui/rc/components'
 import {
   useGetVenueAntennaTypeQuery,
   useGetVenueApCapabilitiesQuery,
@@ -15,14 +15,15 @@ import {
   useGetVenueTemplateApCapabilitiesQuery,
   useGetVenueTemplateExternalAntennaQuery,
   useUpdateVenueAntennaTypeMutation,
-  useUpdateVenueExternalAntennaMutation
+  useUpdateVenueExternalAntennaMutation,
+  useUpdateVenueTemplateExternalAntennaMutation
 } from '@acx-ui/rc/services'
 import { ApAntennaTypeEnum, CapabilitiesApModel, ExternalAntenna, VeuneApAntennaTypeSettings, useConfigTemplate } from '@acx-ui/rc/utils'
 import { useParams }                                                                                              from '@acx-ui/react-router-dom'
 
-import { VenueEditContext }                      from '../..'
-import ApModelPlaceholder                        from '../../../assets/images/aps/ap-model-placeholder.png'
-import { useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
+import { VenueEditContext }                                                                from '../..'
+import ApModelPlaceholder                                                                  from '../../../assets/images/aps/ap-model-placeholder.png'
+import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
 
 import { ExternalAntennaForm } from './ExternalAntennaForm'
 
@@ -57,7 +58,11 @@ export function ExternalAntennaSection () {
       useGetVenueTemplateExternalAntennaQuery
     )
 
-  const [updateVenueExternalAntenna, { isLoading: isUpdatingExternalAntenna }] = useUpdateVenueExternalAntennaMutation()
+  const [updateVenueExternalAntenna, { isLoading: isUpdatingExternalAntenna }] =
+    useVenueConfigTemplateMutationFnSwitcher(
+      useUpdateVenueExternalAntennaMutation,
+      useUpdateVenueTemplateExternalAntennaMutation
+    )
 
   const { data: antennaTypeSettings } = useGetVenueAntennaTypeQuery({ params }, { skip: !supportAntennaTypeSelection })
   const [updateVenueAntennaType, { isLoading: isUpdateAntennaType }] = useUpdateVenueAntennaTypeMutation()

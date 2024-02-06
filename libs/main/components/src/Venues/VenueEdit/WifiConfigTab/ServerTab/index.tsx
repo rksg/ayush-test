@@ -8,7 +8,7 @@ import { usePathBasedOnConfigTemplate }            from '@acx-ui/rc/components'
 import { redirectPreviousPage, useConfigTemplate } from '@acx-ui/rc/utils'
 import { useNavigate }                             from '@acx-ui/react-router-dom'
 
-import { VenueEditContext } from '../..'
+import { VenueEditContext, createAnchorSectionItem } from '../..'
 
 import { ApSnmp }      from './ApSnmp'
 import { MdnsFencing } from './MdnsFencing/MdnsFencing'
@@ -42,39 +42,17 @@ export function ServerTab () {
   const items = []
 
   if (!isTemplate) {
-    items.push({
-      title: $t({ defaultMessage: 'Syslog Server' }),
-      content: <>
-        <StepsFormLegacy.SectionTitle id='syslog-server'>
-          { $t({ defaultMessage: 'Syslog Server' }) }
-        </StepsFormLegacy.SectionTitle>
-        <Syslog />
-      </>
-    })
+    // eslint-disable-next-line max-len
+    items.push(createAnchorSectionItem($t({ defaultMessage: 'Syslog Server' }), 'syslog-server', <Syslog />))
   }
 
   if (supportMdnsFencing) {
-    items.push({
-      title: $t({ defaultMessage: 'mDNS Fencing' }),
-      content: <>
-        <StepsFormLegacy.SectionTitle id='mdns-fencing'>
-          { $t({ defaultMessage: 'mDNS Fencing' }) }
-        </StepsFormLegacy.SectionTitle>
-        <MdnsFencing />
-      </>
-    })
+    // eslint-disable-next-line max-len
+    items.push(createAnchorSectionItem($t({ defaultMessage: 'mDNS Fencing' }), 'mdns-fencing', <MdnsFencing />))
   }
 
   if (supportApSnmp && !isTemplate) {
-    items.push({
-      title: $t({ defaultMessage: 'AP SNMP' }),
-      content: <>
-        <StepsFormLegacy.SectionTitle id='ap-snmp'>
-          { $t({ defaultMessage: 'AP SNMP' }) }
-        </StepsFormLegacy.SectionTitle>
-        <ApSnmp/>
-      </>
-    })
+    items.push(createAnchorSectionItem($t({ defaultMessage: 'AP SNMP' }), 'ap-snmp', <ApSnmp />))
   }
 
 

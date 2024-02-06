@@ -4,7 +4,7 @@ import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { AnchorContext, Loader }    from '@acx-ui/components'
+import { AnchorContext, Loader }     from '@acx-ui/components'
 import {
   ClientAdmissionControlForm,
   ClientAdmissionControlTypeEnum,
@@ -13,12 +13,13 @@ import {
 import {
   useGetVenueClientAdmissionControlQuery,
   useGetVenueTemplateClientAdmissionControlQuery,
-  useUpdateVenueClientAdmissionControlMutation
+  useUpdateVenueClientAdmissionControlMutation,
+  useUpdateVenueTemplateClientAdmissionControlMutation
 } from '@acx-ui/rc/services'
 import { VenueClientAdmissionControl } from '@acx-ui/rc/utils'
 
-import { VenueEditContext }                      from '../..'
-import { useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
+import { VenueEditContext }                                                                from '../..'
+import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
 
 
 
@@ -59,7 +60,10 @@ export function ClientAdmissionControlSettings (props: { isLoadOrBandBalaningEna
     useGetVenueTemplateClientAdmissionControlQuery
   )
   const [ updateClientAdmissionControl, { isLoading: isUpdatingClientAdmissionControl }] =
-    useUpdateVenueClientAdmissionControlMutation()
+    useVenueConfigTemplateMutationFnSwitcher(
+      useUpdateVenueClientAdmissionControlMutation,
+      useUpdateVenueTemplateClientAdmissionControlMutation
+    )
 
   useEffect(() => {
     const clientAdmissionControlData = getClientAdmissionControl?.data

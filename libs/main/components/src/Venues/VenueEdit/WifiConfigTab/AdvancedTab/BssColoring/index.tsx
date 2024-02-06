@@ -4,14 +4,17 @@ import { Space, Switch } from 'antd'
 import { useIntl }       from 'react-intl'
 import { useParams }     from 'react-router-dom'
 
-import { Loader, StepsFormLegacy }                                                                             from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                              from '@acx-ui/feature-toggle'
-import { ApCompatibilityToolTip, ApCompatibilityDrawer, ApCompatibilityType, InCompatibilityFeatures }         from '@acx-ui/rc/components'
-import { useGetVenueBssColoringQuery, useGetVenueTemplateBssColoringQuery, useUpdateVenueBssColoringMutation } from '@acx-ui/rc/services'
-import { VenueBssColoring }                                                                                    from '@acx-ui/rc/utils'
+import { Loader, StepsFormLegacy }                                                                     from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
+import { ApCompatibilityToolTip, ApCompatibilityDrawer, ApCompatibilityType, InCompatibilityFeatures } from '@acx-ui/rc/components'
+import {
+  useGetVenueBssColoringQuery, useGetVenueTemplateBssColoringQuery,
+  useUpdateVenueBssColoringMutation, useUpdateVenueTemplateBssColoringMutation
+} from '@acx-ui/rc/services'
+import { VenueBssColoring } from '@acx-ui/rc/utils'
 
-import { useVenueConfigTemplateQueryFnSwitcher } from '../../../../venueConfigTemplateApiSwitcher'
-import { VenueEditContext }                      from '../../../index'
+import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../../venueConfigTemplateApiSwitcher'
+import { VenueEditContext }                                                                from '../../../index'
 
 export function BssColoring () {
   const { $t } = useIntl()
@@ -34,7 +37,10 @@ export function BssColoring () {
     useGetVenueTemplateBssColoringQuery
   )
   const [updateVenueBssColoring, { isLoading: isUpdatingVenueBssColoring }] =
-    useUpdateVenueBssColoringMutation()
+    useVenueConfigTemplateMutationFnSwitcher(
+      useUpdateVenueBssColoringMutation,
+      useUpdateVenueTemplateBssColoringMutation
+    )
 
   useEffect(() => {
     const { data } = getVenueBssColoring

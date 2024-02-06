@@ -15,7 +15,8 @@ import {
   useGetVenueApCapabilitiesQuery,
   useGetVenueTemplateSettingsQuery,
   useGetVenueTemplateLanPortsQuery,
-  useGetVenueTemplateApCapabilitiesQuery
+  useGetVenueTemplateApCapabilitiesQuery,
+  useUpdateVenueTemplateLanPortsMutation
 } from '@acx-ui/rc/services'
 import {
   ApModel,
@@ -28,9 +29,9 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import DefaultApModelDiagram                     from '../../../../assets/images/aps/ap-model-placeholder.png'
-import { useVenueConfigTemplateQueryFnSwitcher } from '../../../../venueConfigTemplateApiSwitcher'
-import { VenueEditContext }                      from '../../../index'
+import DefaultApModelDiagram                                                               from '../../../../assets/images/aps/ap-model-placeholder.png'
+import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../../venueConfigTemplateApiSwitcher'
+import { VenueEditContext }                                                                from '../../../index'
 
 
 const { useWatch } = Form
@@ -65,8 +66,11 @@ export function LanPorts () {
     useGetVenueTemplateApCapabilitiesQuery
   )
 
-  const [updateVenueLanPorts, {
-    isLoading: isUpdatingVenueLanPorts }] = useUpdateVenueLanPortsMutation()
+  // eslint-disable-next-line max-len
+  const [updateVenueLanPorts, { isLoading: isUpdatingVenueLanPorts }] = useVenueConfigTemplateMutationFnSwitcher(
+    useUpdateVenueLanPortsMutation,
+    useUpdateVenueTemplateLanPortsMutation
+  )
 
   const apModelsOptions = venueLanPorts?.data?.map(m => ({ label: m.model, value: m.model })) ?? []
   const [isDhcpEnabled, setIsDhcpEnabled] = useState(false)

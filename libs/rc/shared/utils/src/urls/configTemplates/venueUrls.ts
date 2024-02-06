@@ -71,8 +71,18 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/venues/:venueId/wifiSettings',
     newApi: true
   },
+  updateVenueMesh: {
+    method: 'put',
+    url: '/templates/venues/:venueId/meshSettings',
+    newApi: true
+  },
   getVenueLanPorts: {
     method: 'get',
+    url: '/templates/venues/:venueId/lanPortSettings',
+    newApi: true
+  },
+  updateVenueLanPorts: {
+    method: 'put',
     url: '/templates/venues/:venueId/lanPortSettings',
     newApi: true
   },
@@ -81,8 +91,18 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/venues/:venueId/directedMulticastSettings',
     newApi: true
   },
+  updateVenueDirectedMulticast: {
+    method: 'put',
+    url: '/templates/venues/:venueId/directedMulticastSettings',
+    newApi: true
+  },
   getVenueRadiusOptions: {
     method: 'get',
+    url: '/templates/venues/:venueId/radiusOptions',
+    newApi: true
+  },
+  updateVenueRadiusOptions: {
+    method: 'put',
     url: '/templates/venues/:venueId/radiusOptions',
     newApi: true
   },
@@ -91,8 +111,28 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/venues/:venueId/dosProtectionSettings',
     newApi: true
   },
+  updateDenialOfServiceProtection: {
+    method: 'put',
+    url: '/templates/venues/:venueId/dosProtectionSettings',
+    newApi: true
+  },
+  getVenueMdnsFencingPolicy: {
+    method: 'get',
+    url: '/templates/venues/:venueId/mDnsFencingSettings',
+    newApi: true
+  },
+  updateVenueMdnsFencingPolicy: {
+    method: 'put',
+    url: '/templates/venues/:venueId/mDnsFencingSettings',
+    newApi: true
+  },
   getVenueBssColoring: {
     method: 'get',
+    url: '/templates/venues/:venueId/bssColoringSettings',
+    newApi: true
+  },
+  updateVenueBssColoring: {
+    method: 'put',
     url: '/templates/venues/:venueId/bssColoringSettings',
     newApi: true
   }
