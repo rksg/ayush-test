@@ -3,7 +3,7 @@ import { useEffect, useState, useContext } from 'react'
 
 import { Form, Space, Switch } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox/Checkbox'
-import { get, isUndefined }    from 'lodash'
+import _, { get, isUndefined } from 'lodash'
 import { useIntl }             from 'react-intl'
 
 import { Tooltip }                                                from '@acx-ui/components'
@@ -20,8 +20,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { MLOContext } from '../../../NetworkForm'
-import * as UI        from '../../../NetworkMoreSettings/styledComponents'
+import { MLOContext }     from '../../../NetworkForm'
+import NetworkFormContext from '../../../NetworkFormContext'
+import * as UI            from '../../../NetworkMoreSettings/styledComponents'
 
 interface Option {
   index: number
@@ -278,9 +279,10 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
   )
 }
 
-function WiFi7 ({ wlanData } : { wlanData : NetworkSaveData | null }) {
+function WiFi7 () {
   const { $t } = useIntl()
   const wifi7MloFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_TOGGLE)
+  const { setData, data: wlanData } = useContext(NetworkFormContext)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
   const form = Form.useFormInstance()
   const params = useParams()
@@ -324,6 +326,10 @@ function WiFi7 ({ wlanData } : { wlanData : NetworkSaveData | null }) {
       if (MLOEffectiveCondition) {
         const enableMLOSwitch = !MLOEffectiveCondition
         disableMLO(enableMLOSwitch)
+      } else {
+        const cloneData = _.cloneDeep(wlanData)
+        _.set(cloneData, 'wlan.advancedCustomization.multiLinkOperationEnabled', false)
+        setData && setData(cloneData)
       }
     }
   }, [])
