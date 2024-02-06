@@ -1,12 +1,20 @@
 import { find } from 'lodash'
 
-import { getUserProfile } from '@acx-ui/analytics/utils'
-import { LayoutProps }    from '@acx-ui/components'
-import { useIsSplitOn }   from '@acx-ui/feature-toggle'
-import { renderHook }     from '@acx-ui/test-utils'
+import { getUserProfile }  from '@acx-ui/analytics/utils'
+import { LayoutProps }     from '@acx-ui/components'
+import { useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { useSearchParams } from '@acx-ui/react-router-dom'
+import { renderHook }      from '@acx-ui/test-utils'
 
 
 import { useMenuConfig } from './menuConfig'
+
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useSearchParams: jest.fn(() => [{ get: jest.fn() }])
+}))
+
+const mockSearchGet = jest.fn()
 
 jest.mock('react-intl', () => {
   const mockDefineMessage = jest.fn((options) => options.defaultMessage)
@@ -81,13 +89,18 @@ describe('useMenuConfig', () => {
   it('should return an array of menu items based on user permissions', () => {
     const mockUseUserProfileContext = getUserProfile as jest.Mock
     mockUseUserProfileContext.mockReturnValue(defaultMockUserProfile)
-    const { result } = renderHook(() => useMenuConfig())
+    const mockSearchHook = useSearchParams as jest.Mock
+    mockSearchGet.mockReturnValueOnce('WyIwMDE1MDAwMDAwR2xJN1NBQVYiXQ%3D%3D')
+    mockSearchHook.mockReturnValue([{
+      get: mockSearchGet
+    }])
+    const { result } = renderHook(() => useMenuConfig(), { route: true })
     expect(result.current).toMatchSnapshot()
   })
   it('should return nothing for empty/no user permission', () => {
     const mockUseUserProfileContext = getUserProfile as jest.Mock
     mockUseUserProfileContext.mockReturnValue(defaultMockUserProfile)
-    const { result } = renderHook(() => useMenuConfig())
+    const { result } = renderHook(() => useMenuConfig(), { route: true })
     expect(result.current).toMatchSnapshot()
   })
   it('should not return Analytics-related menu items', () => {
@@ -108,7 +121,7 @@ describe('useMenuConfig', () => {
     }
 
     mockUseUserProfileContext.mockReturnValue(mockUserProfile)
-    const { result } = renderHook(() => useMenuConfig())
+    const { result } = renderHook(() => useMenuConfig(), { route: true })
     expect(result.current).toMatchSnapshot()
   })
   it('should not return Data Explorerer', () => {
@@ -129,7 +142,7 @@ describe('useMenuConfig', () => {
     }
 
     mockUseUserProfileContext.mockReturnValue(mockUserProfile)
-    const { result } = renderHook(() => useMenuConfig())
+    const { result } = renderHook(() => useMenuConfig(), { route: true })
     const routes = [
       { uri: '/dataStudio' },
       { uri: '/reports' },
@@ -158,7 +171,7 @@ describe('useMenuConfig', () => {
     }
 
     mockUseUserProfileContext.mockReturnValue(mockUserProfile)
-    const { result } = renderHook(() => useMenuConfig())
+    const { result } = renderHook(() => useMenuConfig(), { route: true })
     const routes = [
       { uri: '/serviceValidation' },
       { uri: '/videoCallQoe' }
@@ -186,7 +199,7 @@ describe('useMenuConfig', () => {
     }
 
     mockUseUserProfileContext.mockReturnValue(mockUserProfile)
-    const { result } = renderHook(() => useMenuConfig())
+    const { result } = renderHook(() => useMenuConfig(), { route: true })
     const configs = flattenConfig(result.current)
     const adminRoutes = [
       ...manageMlisaRoutes,
@@ -211,7 +224,7 @@ describe('useMenuConfig', () => {
       ]
     }
     mockUseUserProfileContext.mockReturnValue(mockUserProfile)
-    const { result } = renderHook(() => useMenuConfig())
+    const { result } = renderHook(() => useMenuConfig(), { route: true })
     const configs = flattenConfig(result.current)
     manageMlisaRoutes.forEach(route => expect(find(configs, route)).toBeUndefined())
   })
@@ -233,7 +246,7 @@ describe('useMenuConfig', () => {
     }
 
     mockUseUserProfileContext.mockReturnValue(mockUserProfile)
-    const { result } = renderHook(() => useMenuConfig())
+    const { result } = renderHook(() => useMenuConfig(), { route: true })
     expect(result.current).toMatchSnapshot()
     const target = { uri: '/analytics/admin/labels', openNewTab: true }
     const match = find(flattenConfig(result.current), target)
@@ -253,7 +266,7 @@ describe('useMenuConfig', () => {
       ]
     }
     mockUseUserProfileContext.mockReturnValue(mockUserProfile)
-    const { result } = renderHook(() => useMenuConfig())
+    const { result } = renderHook(() => useMenuConfig(), { route: true })
     const target = {
       uri: '/zones'
     }
@@ -274,7 +287,7 @@ describe('useMenuConfig', () => {
       ]
     }
     mockUseUserProfileContext.mockReturnValue(mockUserProfile)
-    const { result } = renderHook(() => useMenuConfig())
+    const { result } = renderHook(() => useMenuConfig(), { route: true })
     const target = {
       uri: '/zones'
     }
@@ -295,7 +308,7 @@ describe('useMenuConfig', () => {
       ]
     }
     mockUseUserProfileContext.mockReturnValue(mockUserProfile)
-    const { result } = renderHook(() => useMenuConfig())
+    const { result } = renderHook(() => useMenuConfig(), { route: true })
     const target = {
       openNewTab: false,
       uri: '/analytics/admin/users'
@@ -317,7 +330,7 @@ describe('useMenuConfig', () => {
       ]
     }
     mockUseUserProfileContext.mockReturnValue(mockUserProfile)
-    const { result } = renderHook(() => useMenuConfig())
+    const { result } = renderHook(() => useMenuConfig(), { route: true })
     const target = {
       openNewTab: true,
       uri: '/analytics/admin/users'
