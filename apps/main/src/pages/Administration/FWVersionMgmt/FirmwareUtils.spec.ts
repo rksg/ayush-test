@@ -8,7 +8,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
-import { compareVersions, getApVersion, getVersionLabel } from './FirmwareUtils'
+import { compareABFSequence, compareVersions, getApVersion, getVersionLabel } from './FirmwareUtils'
 
 
 describe('FirmwareUtils parser', () => {
@@ -58,4 +58,12 @@ describe('FirmwareUtils parser', () => {
     expect(getVersionLabel(getIntl(), mockedFirmwareVersion, false)).toBe('test ')
   })
 
+  it('should compare the ABF sequence', () => {
+    expect(compareABFSequence(3, 2)).toBeGreaterThan(0)
+    expect(compareABFSequence(5)).toBeGreaterThan(0)
+    expect(compareABFSequence(undefined, 5)).toBeLessThan(0)
+    expect(compareABFSequence(2, 3)).toBeLessThan(0)
+    expect(compareABFSequence(2, 2)).toBe(0)
+    expect(compareABFSequence(undefined, undefined)).toBe(0)
+  })
 })

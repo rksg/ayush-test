@@ -9,6 +9,7 @@ import * as EdgePortConfigFixtures    from './portsConfig'
 import * as EdgeSdLanFixtures         from './sdLan'
 import * as EdgeSubInterfaceFixtures  from './subInterface'
 import * as EdgeTunnelProfileFixtures from './tunnelProfile'
+import * as VenueFixtures             from './venue'
 
 export {
   EdgePortConfigFixtures,
@@ -21,5 +22,6 @@ export {
   EdgeNSGFixtures,
   EdgeDHCPFixtures,
   EdgeErrorsFixtures,
-  EdgeTunnelProfileFixtures
+  EdgeTunnelProfileFixtures,
+  VenueFixtures
 }

@@ -7,11 +7,12 @@ import { useDashboardOverviewQuery, useDashboardV2OverviewQuery } from '@acx-ui/
 import {  useAlarmsListQuery }                                    from '@acx-ui/rc/services'
 import {
   Alarm,
-  EventTypeEnum,
+  AlaramSeverity,
+  CommonUrlsInfo,
   Dashboard,
-  AlaramSeverity
+  EventTypeEnum,
+  useTableQuery
 } from '@acx-ui/rc/utils'
-import { CommonUrlsInfo, useTableQuery }         from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { useDashboardFilter }                    from '@acx-ui/utils'
 

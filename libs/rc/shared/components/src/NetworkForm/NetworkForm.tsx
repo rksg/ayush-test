@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, createContext } from 'react'
+import { useEffect, useRef, useState, createContext } from 'react'
 
 import { Form }                   from 'antd'
 import _                          from 'lodash'
@@ -19,7 +19,7 @@ import {
 import {
   AuthRadiusEnum,
   Demo,
-  generateConfigTemplateBreadcrumb,
+  generatePageHeaderTitle,
   GuestNetworkTypeEnum,
   GuestPortal,
   LocationExtended,
@@ -28,11 +28,11 @@ import {
   NetworkTypeEnum,
   NetworkVenue,
   redirectPreviousPage,
+  useBreadcrumb,
   useConfigTemplate,
   WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { getIntl }                                            from '@acx-ui/utils'
 
 import { CloudpathForm }           from './CaptivePortal/CloudpathForm'
 import { GuestPassForm }           from './CaptivePortal/GuestPassForm'
@@ -156,7 +156,17 @@ export function NetworkForm (props:{
 
   // Config Template related states
   const { isTemplate } = useConfigTemplate()
-  const breadcrumb = useBreadcrumb()
+  const breadcrumb = useBreadcrumb([
+    { text: intl.$t({ defaultMessage: 'Wi-Fi' }) },
+    { text: intl.$t({ defaultMessage: 'Wi-Fi Networks' }) },
+    { text: intl.$t({ defaultMessage: 'Network List' }), link: '/networks' }
+  ])
+  const pageTitle = generatePageHeaderTitle({
+    isEdit: editMode,
+    isTemplate,
+    instanceLabel: intl.$t({ defaultMessage: 'Network' }),
+    addLabel: intl.$t({ defaultMessage: 'Create New' })
+  })
 
   useEffect(() => {
     if(saveState){
@@ -231,10 +241,6 @@ export function NetworkForm (props:{
           ...data
         }
         let settingCaptiveSaveData = tranferSettingsToSave(settingCaptiveData, editMode)
-        if (!editMode) {
-          // eslint-disable-next-line max-len
-          settingCaptiveSaveData = transferMoreSettingsToSave(data, settingCaptiveSaveData, networkVxLanTunnelProfileInfo)
-        }
         updateSaveData(settingCaptiveSaveData)
       }
     }
@@ -247,7 +253,12 @@ export function NetworkForm (props:{
     if(saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.Cloudpath){
       delete data.guestPortal.wisprPage
     }
-    const dataMore = handleGuestMoreSetting(data)
+    let dataMore = handleGuestMoreSetting(data)
+
+    if (!editMode) {
+      // eslint-disable-next-line max-len
+      dataMore = transferMoreSettingsToSave(dataMore, saveState, networkVxLanTunnelProfileInfo)
+    }
     handlePortalWebPage(dataMore)
     return true
   }
@@ -527,7 +538,7 @@ export function NetworkForm (props:{
   return (
     <>
       {!modalMode && <PageHeader
-        title={generatePageHeaderTitle(editMode, isTemplate)}
+        title={pageTitle}
         breadcrumb={breadcrumb}
       />}
       {(!editMode || cloneMode) &&
@@ -737,31 +748,6 @@ function pickOneCaptivePortalForm (saveState: NetworkSaveData) {
       console.error(`Unknown Network Type: ${saveState?.guestPortal?.guestNetworkType}`)
       return <OnboardingForm />
   }
-}
-
-function generatePageHeaderTitle (isEdit: boolean, isTemplate: boolean): string {
-  const { $t } = getIntl()
-
-  return $t({ defaultMessage: '{action} Network {templateText}' }, {
-    action: isEdit ? $t({ defaultMessage: 'Edit' }) : $t({ defaultMessage: 'Create New' }),
-    templateText: isTemplate ? $t({ defaultMessage: 'Template' }) : ''
-  })
-}
-
-function useBreadcrumb () {
-  const { isTemplate } = useConfigTemplate()
-  const { $t } = useIntl()
-  const breadcrumb = useMemo(() => {
-    return isTemplate
-      ? generateConfigTemplateBreadcrumb()
-      : [
-        { text: $t({ defaultMessage: 'Wi-Fi' }) },
-        { text: $t({ defaultMessage: 'Wi-Fi Networks' }) },
-        { text: $t({ defaultMessage: 'Network List' }), link: '/networks' }
-      ]
-  }, [isTemplate])
-
-  return breadcrumb
 }
 
 function useAddInstance () {

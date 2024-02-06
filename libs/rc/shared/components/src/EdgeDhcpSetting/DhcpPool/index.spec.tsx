@@ -1,6 +1,5 @@
-import { waitFor } from '@testing-library/react'
-import userEvent   from '@testing-library/user-event'
-import { Form }    from 'antd'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
 
 import { StepsForm }    from '@acx-ui/components'
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
@@ -9,6 +8,7 @@ import {
   render,
   renderHook,
   screen,
+  waitFor,
   within
 } from '@acx-ui/test-utils'
 

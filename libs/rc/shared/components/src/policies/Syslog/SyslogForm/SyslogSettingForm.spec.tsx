@@ -1,6 +1,5 @@
 import React from 'react'
 
-import { act }  from '@testing-library/react'
 import { Form } from 'antd'
 import { rest } from 'msw'
 
@@ -14,8 +13,8 @@ import {
   SyslogUrls,
   SyslogVenue
 } from '@acx-ui/rc/utils'
-import { Provider, store }            from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { Provider, store }                 from '@acx-ui/store'
+import { act, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import SyslogContext from '../SyslogContext'
 

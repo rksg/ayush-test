@@ -30,7 +30,7 @@ export type RecommendationDetails = {
   originalValue: ConfigurationValue;
   currentValue: ConfigurationValue;
   recommendedValue: string;
-  metadata: object;
+  metadata: object & { scheduledAt: string };
   sliceType: string;
   sliceValue: string;
   path: NetworkPath;

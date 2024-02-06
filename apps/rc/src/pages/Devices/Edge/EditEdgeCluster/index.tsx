@@ -1,9 +1,15 @@
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { PageHeader, Tabs }                from '@acx-ui/components'
-import { CommonOperation, Device, getUrl } from '@acx-ui/rc/utils'
-import { useTenantLink }                   from '@acx-ui/react-router-dom'
+import { Loader, PageHeader, Tabs }                                   from '@acx-ui/components'
+import { useGetEdgeClusterListForTableQuery, useGetEdgeClusterQuery } from '@acx-ui/rc/services'
+import { CommonOperation, Device, getUrl }                            from '@acx-ui/rc/utils'
+import { useTenantLink }                                              from '@acx-ui/react-router-dom'
+
+import { ClusterDetails }  from './ClusterDetails'
+import { EdgeClusterDhcp } from './EdgeClusterDhcp'
+import { VirtualIp }       from './VirtualIp'
+
 
 const EditEdgeCluster = () => {
   const { $t } = useIntl()
@@ -14,15 +20,41 @@ const EditEdgeCluster = () => {
     oper: CommonOperation.Edit,
     params: { id: clusterId }
   }))
+  const {
+    currentClusterStatus,
+    isClusterStatusLoading
+  } = useGetEdgeClusterListForTableQuery({ payload: {
+    filters: { clusterId: [clusterId], isCluster: [true] }
+  } },{
+    selectFromResult: ({ data, isLoading }) => {
+      return {
+        currentClusterStatus: data?.data[0],
+        isClusterStatusLoading: isLoading
+      }
+    }
+  })
+  const { data: currentCluster, isLoading: isClusterLoading } = useGetEdgeClusterQuery({
+    params: {
+      venueId: currentClusterStatus?.venueId,
+      clusterId: clusterId
+    }
+  }, {
+    skip: !currentClusterStatus?.venueId
+  })
 
   const tabs = {
     'cluster-details': {
       title: $t({ defaultMessage: 'Cluster Details' }),
-      content: <div children={'cluster-details'} />
+      content: <ClusterDetails
+        currentClusterStatus={currentClusterStatus}
+      />
     },
     'virtual-ip': {
       title: $t({ defaultMessage: 'Virtual IP' }),
-      content: <div children={'virtual-ip'} />
+      content: <VirtualIp
+        currentCluster={currentClusterStatus}
+        currentVipConfig={currentCluster?.virtualIpSettings}
+      />
     },
     'cluster-interface': {
       title: $t({ defaultMessage: 'Cluster Interface' }),
@@ -30,7 +62,7 @@ const EditEdgeCluster = () => {
     },
     'dhcp': {
       title: $t({ defaultMessage: 'DHCP' }),
-      content: <div children={'dhcp'} />
+      content: <EdgeClusterDhcp />
     }
   }
 
@@ -42,9 +74,9 @@ const EditEdgeCluster = () => {
   }
 
   return (
-    <>
+    <Loader states={[{ isLoading: isClusterStatusLoading || isClusterLoading }]}>
       <PageHeader
-        title={$t({ defaultMessage: 'Configure {name}' }, { name: '' })}
+        title={$t({ defaultMessage: 'Configure {name}' }, { name: currentClusterStatus?.name })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices/edge' }
         ]}
@@ -58,7 +90,7 @@ const EditEdgeCluster = () => {
         }
       />
       {tabs[activeTab as keyof typeof tabs]?.content}
-    </>
+    </Loader>
   )
 }
 

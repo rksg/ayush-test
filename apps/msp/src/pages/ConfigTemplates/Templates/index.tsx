@@ -13,10 +13,11 @@ import {
   Button
 } from '@acx-ui/components'
 import { DateFormatEnum, userDateTimeFormat }                                            from '@acx-ui/formatter'
-import { ConfigTemplateLink, PolicyConfigTemplateLink, renderConfigTemplateDetailsLink } from '@acx-ui/msp/components'
+import { ConfigTemplateLink, PolicyConfigTemplateLink, renderConfigTemplateDetailsLink } from '@acx-ui/rc/components'
 import {
   useDeleteAAAPolicyTemplateMutation,
   useDeleteNetworkTemplateMutation,
+  useDeleteVenueTemplateMutation,
   useGetConfigTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -59,7 +60,7 @@ export function ConfigTemplateList () {
     {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([ selectedRow ]) => {
-        const editPath = getConfigTemplateEditPath(selectedRow.templateType, selectedRow.id!)
+        const editPath = getConfigTemplateEditPath(selectedRow.type, selectedRow.id!)
         navigate(`${mspTenantLink.pathname}/${editPath}`, { state: { from: location } })
       }
     },
@@ -84,7 +85,7 @@ export function ConfigTemplateList () {
             numOfEntities: selectedRows.length
           },
           onOk: async () => {
-            const deleteFn = deleteMutationMap[selectedRow.templateType]
+            const deleteFn = deleteMutationMap[selectedRow.type]
             deleteFn({ params: { templateId: selectedRow.id! } }).then(clearSelection)
           }
         })
@@ -149,13 +150,13 @@ function useColumns (props: templateColumnProps) {
       sorter: true,
       searchable: true,
       render: (_, row) => {
-        return renderConfigTemplateDetailsLink(row.templateType, row.id!, row.name)
+        return renderConfigTemplateDetailsLink(row.type, row.id!, row.name)
       }
     },
     {
-      key: 'templateType',
+      key: 'type',
       title: $t({ defaultMessage: 'Type' }),
-      dataIndex: 'templateType',
+      dataIndex: 'type',
       sorter: true
     },
     {
@@ -165,6 +166,7 @@ function useColumns (props: templateColumnProps) {
       sorter: true,
       align: 'center',
       render: function (_, row) {
+        if (!row.ecTenants) return 0
         if (!row.ecTenants.length) return row.ecTenants.length
         return <Button
           type='link'
@@ -217,10 +219,12 @@ function useColumns (props: templateColumnProps) {
 function useDeleteMutation () {
   const [ deleteNetworkTemplate ] = useDeleteNetworkTemplateMutation()
   const [ deleteAaaTemplate ] = useDeleteAAAPolicyTemplateMutation()
+  const [ deleteVenueTemplate ] = useDeleteVenueTemplateMutation()
 
   return {
     [ConfigTemplateType.NETWORK]: deleteNetworkTemplate,
-    [ConfigTemplateType.RADIUS]: deleteAaaTemplate
+    [ConfigTemplateType.RADIUS]: deleteAaaTemplate,
+    [ConfigTemplateType.VENUE]: deleteVenueTemplate
   }
 }
 
@@ -229,20 +233,27 @@ function getAddTemplateMenuProps (): Omit<MenuProps, 'placement'> {
 
   return {
     expandIcon: <UI.MenuExpandArrow />,
-    items: [{
-      key: 'add-wifi-network',
-      label: <ConfigTemplateLink to='networks/wireless/add'>
-        {$t({ defaultMessage: 'Wi-Fi Network' })}
-      </ConfigTemplateLink>
-    }, {
-      key: 'add-policy',
-      label: $t({ defaultMessage: 'Policies' }),
-      children: [{
-        key: 'add-aaa',
-        label: <PolicyConfigTemplateLink type={PolicyType.AAA} oper={PolicyOperation.CREATE}>
-          {$t(policyTypeLabelMapping[PolicyType.AAA])}
-        </PolicyConfigTemplateLink>
-      }]
-    }]
+    items: [
+      {
+        key: 'add-wifi-network',
+        label: <ConfigTemplateLink to='networks/wireless/add'>
+          {$t({ defaultMessage: 'Wi-Fi Network' })}
+        </ConfigTemplateLink>
+      }, {
+        key: 'add-venue',
+        label: <ConfigTemplateLink to='venues/add'>
+          {$t({ defaultMessage: 'Venue' })}
+        </ConfigTemplateLink>
+      }, {
+        key: 'add-policy',
+        label: $t({ defaultMessage: 'Policies' }),
+        children: [{
+          key: 'add-aaa',
+          label: <PolicyConfigTemplateLink type={PolicyType.AAA} oper={PolicyOperation.CREATE}>
+            {$t(policyTypeLabelMapping[PolicyType.AAA])}
+          </PolicyConfigTemplateLink>
+        }]
+      }
+    ]
   }
 }

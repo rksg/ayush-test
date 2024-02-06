@@ -215,6 +215,7 @@ export function SelectVlanModal (props: {
 
   return <>
     <Modal
+      data-testid='select-port-vlans'
       title={$t({ defaultMessage: 'Select Port VLANs' })}
       visible={selectModalvisible}
       width={500}
