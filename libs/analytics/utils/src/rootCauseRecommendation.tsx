@@ -159,7 +159,7 @@ const getAirtimeBusyRootCauses = () => {
   }
 }
 export const getAirtimeBusyRecommendations = (
-  checks: Array<AirtimeBusyChecks>, params: AirtimeParams, extraValues: Record<string, Function>
+  checks: Array<AirtimeBusyChecks>, params: AirtimeParams, extraValues: FormatMessageValues
 ) => {
   const checkTrue = checkTrueParams(checks)
   const recommendationId = params.recommendationId
