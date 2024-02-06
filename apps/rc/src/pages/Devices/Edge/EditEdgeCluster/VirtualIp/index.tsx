@@ -242,11 +242,9 @@ export const VirtualIp = (props: VirtualIpProps) => {
   )
 }
 
-const VipCard = ({
-  field, index, remove, vipConfig, currentCluster, openDrawer
-}: {
-  field: FormListFieldData,
-  index: number,
+interface VipCardProps {
+  field: FormListFieldData
+  index: number
   remove: (index: number | number[]) => void
   vipConfig: {
     [key: number]: {
@@ -255,10 +253,13 @@ const VipCard = ({
       }
       vip: string
     }
-  },
-  currentCluster?: EdgeClusterTableDataType,
+  }
+  currentCluster?: EdgeClusterTableDataType
   openDrawer: (index: number) => void
-}) => {
+}
+
+const VipCard = (props: VipCardProps) => {
+  const { field, index, remove, vipConfig, currentCluster, openDrawer } = props
   const { $t } = useIntl()
 
   return (

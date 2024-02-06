@@ -14,6 +14,12 @@ import {
 } from '@acx-ui/rc/utils'
 import { LinkProps, MspTenantLink, Path, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
 
+type OptionProps = {
+  [key in ConfigTemplateType]?: {
+    [subKey: string]: string
+  }
+}
+
 interface ConfigTemplateLinkProps extends Omit<LinkProps, 'to'> {
   to: string
   attachCurrentPathToState?: boolean
@@ -61,16 +67,20 @@ export function PolicyConfigTemplateDetailsLink (props: PolicyConfigTemplateDeta
 }
 
 // eslint-disable-next-line max-len
-export function renderConfigTemplateDetailsLink (type: ConfigTemplateType, id: string, name: string) {
+export function renderConfigTemplateDetailsLink (type: ConfigTemplateType, id: string, name: string, option: OptionProps = {}) {
+  let activeTab = ''
   switch (type) {
     case ConfigTemplateType.RADIUS:
       // eslint-disable-next-line max-len
       return <PolicyConfigTemplateDetailsLink type={PolicyType.AAA} oper={PolicyOperation.DETAIL} policyId={id} children={name} />
     case ConfigTemplateType.NETWORK:
+      activeTab = option[ConfigTemplateType.NETWORK]?.activeTab || 'venues'
       // eslint-disable-next-line max-len
-      return <ConfigTemplateLink to={`networks/wireless/${id}/network-details/venues`} children={name} />
+      return <ConfigTemplateLink to={`networks/wireless/${id}/network-details/${activeTab}`} children={name} />
     case ConfigTemplateType.VENUE:
-      return <ConfigTemplateLink to={`venues/${id}/venue-details/services`} children={name} />
+      activeTab = option[ConfigTemplateType.VENUE]?.activeTab || 'networks'
+      // eslint-disable-next-line max-len
+      return <ConfigTemplateLink to={`venues/${id}/venue-details/${activeTab}`} children={name} />
   }
 }
 

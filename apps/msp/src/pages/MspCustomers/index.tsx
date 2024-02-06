@@ -64,7 +64,8 @@ export function MspCustomers () {
     useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS) && isPrimeAdmin && !isDelegationMode()
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const MAX_ALLOWED_SELECTED_EC = 200
-  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
+  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
+  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
   const isUpgradeMultipleEcEnabled =
     useIsSplitOn(Features.MSP_UPGRADE_MULTI_EC_FIRMWARE) && isPrimeAdmin && !isDelegationMode()
   const isSupportToMspDashboardAllowed =

@@ -1,10 +1,14 @@
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { useIsSplitOn }                          from '@acx-ui/feature-toggle'
-import { venueApi }                              from '@acx-ui/rc/services'
-import { CommonUrlsInfo }                        from '@acx-ui/rc/utils'
-import { Provider, store }                       from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
+import { useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { venueApi }           from '@acx-ui/rc/services'
+import {
+  CommonUrlsInfo,
+  CONFIG_TEMPLATE_LIST_PATH
+} from '@acx-ui/rc/utils'
+import { Provider, store }            from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { venueDetailHeaderData } from '../__tests__/fixtures'
 
@@ -16,10 +20,18 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate
 }))
 
-describe('VenuePageHeader', () => {
-  beforeEach(() => store.dispatch(venueApi.util.resetApiState()))
+const mockedUseConfigTemplate = jest.fn()
+const mockedUseBreadcrumb = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useConfigTemplate: () => mockedUseConfigTemplate(),
+  useBreadcrumb: () => mockedUseBreadcrumb()
+}))
 
-  it('navigate to edit when configure clicked', async () => {
+describe('VenuePageHeader', () => {
+  beforeEach(() => {
+    store.dispatch(venueApi.util.resetApiState())
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
 
     mockServer.use(
       rest.get(
@@ -27,10 +39,17 @@ describe('VenuePageHeader', () => {
         (_, res, ctx) => res(ctx.json(venueDetailHeaderData))
       )
     )
+  })
+
+  afterEach(() => {
+    mockedUseConfigTemplate.mockRestore()
+  })
+
+  it('navigate to edit when configure clicked', async () => {
     const params = { tenantId: 't1', venueId: 'v1' }
     render(<VenuePageHeader />, { route: { params }, wrapper: Provider })
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Configure' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Configure' }))
     // expect(mockNavigate).toBeCalledWith(expect.objectContaining({
     //   pathname: '/t/t1/venues/v1/edit/details'
     // }))
@@ -39,15 +58,29 @@ describe('VenuePageHeader', () => {
 
   it('render correctly with valid toggle', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    mockServer.use(
-      rest.get(
-        CommonUrlsInfo.getVenueDetailsHeader.url,
-        (_, res, ctx) => res(ctx.json(venueDetailHeaderData))
-      )
-    )
+
     const params = { tenantId: 't1', venueId: 'v1', activeTab: 'overview' }
     render(<VenuePageHeader />, { route: { params }, wrapper: Provider })
     const dateFilter = await screen.findByPlaceholderText('Start date')
     expect(dateFilter).toBeInTheDocument()
+  })
+
+  it('render correctly with isTemplate equal to true', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+    mockedUseBreadcrumb.mockReturnValue([
+      {
+        text: 'Configuration Templates',
+        link: CONFIG_TEMPLATE_LIST_PATH,
+        tenantType: 'v'
+      }
+    ])
+
+    const params = { tenantId: 't1', venueId: 'v1', activeTab: 'networks' }
+    render(<VenuePageHeader />, { route: { params }, wrapper: Provider })
+    // eslint-disable-next-line max-len
+    expect(await screen.findByRole('link', { name: /configuration templates/i })).toBeInTheDocument()
+
+    mockedUseBreadcrumb.mockRestore()
   })
 })

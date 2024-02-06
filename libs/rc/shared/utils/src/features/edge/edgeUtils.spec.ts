@@ -1,7 +1,7 @@
 import { EdgeServiceStatusEnum, EdgeStatusEnum } from '../../models/EdgeEnum'
 
-import { EdgeAlarmFixtures }                                               from './__tests__/fixtures'
-import { allowRebootForStatus, allowResetForStatus, getEdgeServiceHealth } from './edgeUtils'
+import { EdgeAlarmFixtures }                                                                                                                 from './__tests__/fixtures'
+import { allowRebootForStatus, allowResetForStatus, edgeSerialNumberValidator, getEdgeServiceHealth, getIpWithBitMask, getSuggestedIpRange } from './edgeUtils'
 
 const { requireAttentionAlarmSummary, poorAlarmSummary } = EdgeAlarmFixtures
 describe('Edge utils', () => {
@@ -38,5 +38,42 @@ describe('Edge utils', () => {
         status === EdgeStatusEnum.CONFIGURATION_UPDATE_FAILED ||
         status === EdgeStatusEnum.FIRMWARE_UPDATE_FAILED)
     })
+  })
+
+  it('should getIpWithBitMask correctly', () => {
+    const result = getIpWithBitMask('192.168.1.2', '255.255.255.0')
+    expect(result).toBe('192.168.1.2/ 24')
+  })
+
+  it('should getSuggestedIpRange correctly', () => {
+    const result = getSuggestedIpRange('192.168.1.2', '255.255.255.0')
+    expect(result).toBe('192.168.1.0/ 24')
+  })
+
+  it('Test validate serial number success', async () => {
+    const result = await edgeSerialNumberValidator('9612345678901234567890111123456110')
+    expect(result).toBeUndefined()
+  })
+
+  it('Test validate serial number failed', async () => {
+    let error
+    try {
+      await edgeSerialNumberValidator('9612345')
+    } catch (ex) {
+      error = ex
+    }
+    expect(error).toBe('Field must be exactly 34 characters')
+    try {
+      await edgeSerialNumberValidator('123')
+    } catch (ex) {
+      error = ex
+    }
+    expect(error).toBe('This field is invalid')
+    try {
+      await edgeSerialNumberValidator('AB12345678901234567890111123456110')
+    } catch (ex) {
+      error = ex
+    }
+    expect(error).toBe('This field is invalid')
   })
 })
