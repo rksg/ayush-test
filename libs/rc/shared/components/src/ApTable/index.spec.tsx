@@ -187,8 +187,9 @@ describe('Aps', () => {
       )
     )
 
-    const row1 = await screen.findByRole('row', { name: /mock-ap-1/i }) // select ap 1: operational
-    await userEvent.click(row1)
+    const apRows = await screen.findAllByRole('row', { name: /mock-ap-/i })
+    expect(within(apRows[0]).getByRole('cell', { name: /mock-ap-1/i })).toBeVisible()
+    await userEvent.click(apRows[0]) // select ap 1: operational
 
     await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
 
@@ -198,11 +199,11 @@ describe('Aps', () => {
 
     await waitFor(async () => expect(dialog).not.toBeVisible())
 
-    await userEvent.click(row1) // unselect ap 1
-    expect(await within(row1).findByRole('checkbox')).not.toBeChecked()
+    await userEvent.click(apRows[0]) // unselect ap 1
+    expect(await within(apRows[0]).findByRole('checkbox')).not.toBeChecked()
 
-    const row2 = await screen.findByRole('row', { name: /mock-ap-2/i })
-    await userEvent.click(row2) // select ap 2: DisconnectedFromCloud
+    expect(within(apRows[1]).getByRole('cell', { name: /mock-ap-2/i })).toBeVisible()
+    await userEvent.click(apRows[1]) // select ap 2: DisconnectedFromCloud
 
     const tbody = await findTBody()
     const rows = await within(tbody).findAllByRole('checkbox', { checked: true })
@@ -210,13 +211,14 @@ describe('Aps', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
     const dialog2 = await screen.findByRole('dialog')
-    expect(await within(dialog2).findByRole('button', { name: 'Delete' })).not.toBeDisabled()
+    const dialog2DeleteButton = await within(dialog2).findByRole('button', { name: 'Delete' })
+    expect(dialog2DeleteButton).not.toBeDisabled()
 
-    await userEvent.click(await within(dialog2).findByRole('button', { name: 'Delete' }))
+    await userEvent.click(dialog2DeleteButton)
 
     expect(deleteSpy).toHaveBeenCalled()
     await waitFor(async () => expect(dialog2).not.toBeVisible())
-  }, 60000)
+  })
 
   it('Table action bar Edit', async () => {
     jest.mocked(useIsSplitOn).mockImplementation((ff) => {
@@ -234,7 +236,7 @@ describe('Aps', () => {
     const row = await screen.findByRole('row', { name: /mock-ap-1/i })
     await within(row).findByRole('checkbox', { checked: false })
 
-    await userEvent.click(await screen.findByRole('row', { name: /mock-ap-1/i }))
+    await userEvent.click(row)
 
     const toolbar = await screen.findByRole('alert')
     await userEvent.click(await within(toolbar).findByRole('button', { name: 'Edit' }))

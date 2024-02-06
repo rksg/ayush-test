@@ -239,7 +239,7 @@ describe('EventTable', () => {
       )
     )
     render(
-      <EventTable tableQuery={tableQuery} />,
+      <EventTable tableQuery={tableQuery} showScheduleExport={true}/>,
       { route: { params }, wrapper: Provider }
     )
     await userEvent.click(screen.getByTestId('DownloadOutlined'))

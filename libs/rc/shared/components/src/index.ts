@@ -196,6 +196,8 @@ export {
 export { EdgeClusterCommonForm } from './EdgeFormItem/EdgeClusterCommonForm'
 export { useEdgeClusterActions } from './useEdgeClusterActions'
 export { usePersonaListQuery } from './usePersonaListQuery'
+export { EdgeClusterSettingForm } from './EdgeFormItem/EdgeClusterSettingForm'
+export type { EdgeClusterSettingFormType } from './EdgeFormItem/EdgeClusterSettingForm'
 
 export * from './services'
 export * from './policies'

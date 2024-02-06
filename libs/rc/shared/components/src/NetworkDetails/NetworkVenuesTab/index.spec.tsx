@@ -192,8 +192,7 @@ describe('NetworkVenuesTab', () => {
     const icon = await within(row2).findByTestId('InformationSolid')
     expect(icon).toBeVisible()
 
-    await screen.findByRole('row', { name: /VLAN Pool/i })
-
+    expect(row2).toHaveTextContent(/VLAN Pool/i)
     expect(row2).toHaveTextContent('VLAN Pool: pool1 (Custom)')
     expect(row2).toHaveTextContent('Unassigned APs')
     expect(row2).toHaveTextContent('24/7')
@@ -492,14 +491,15 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const row1 = await screen.findByRole('row', { name: /network-venue-1/i })
-    const row2 = await screen.findByRole('row', { name: /My-Venue/i })
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /network-venue-1/i })).toBeVisible()
+    expect(within(rows[2]).getByRole('cell', { name: /My-Venue/i })).toBeVisible()
 
-    expect(row2).toHaveTextContent('2 AP Groups')
-    expect(row2).toHaveTextContent('Per AP Group')
+    expect(rows[2]).toHaveTextContent('2 AP Groups')
+    expect(rows[2]).toHaveTextContent('Per AP Group')
 
-    expect(row1).toHaveTextContent('ON now') // { day: 'Thu', timeIndex: 5 }
-    expect(row2).toHaveTextContent('OFF now')  // { day: 'Wed', timeIndex: 45 }
+    expect(rows[1]).toHaveTextContent('ON now') // { day: 'Thu', timeIndex: 5 }
+    expect(rows[2]).toHaveTextContent('OFF now')  // { day: 'Wed', timeIndex: 45 }
 
     jest.runOnlyPendingTimers()
     jest.useRealTimers()

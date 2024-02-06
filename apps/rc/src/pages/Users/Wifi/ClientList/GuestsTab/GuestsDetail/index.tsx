@@ -24,6 +24,7 @@ import {
   Guest,
   GuestClient,
   GuestStatusEnum,
+  GuestTypesEnum,
   transformDisplayText,
   useTableQuery
 } from '@acx-ui/rc/utils'
@@ -256,9 +257,11 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
         }
 
         if (item.key === 'generatePassword') {
-          return(guestDetail.guestStatus?.indexOf(GuestStatusEnum.ONLINE) !== -1) ||
-            ((guestDetail.guestStatus === GuestStatusEnum.OFFLINE) &&
-              guestDetail.networkId && !guestDetail.socialLogin)
+          return guestDetail.guestType !== GuestTypesEnum.SELF_SIGN_IN &&
+          guestDetail.guestType !== GuestTypesEnum.HOST_GUEST &&
+        ((guestDetail.guestStatus?.indexOf(GuestStatusEnum.ONLINE) !== -1) ||
+        ((guestDetail.guestStatus === GuestStatusEnum.OFFLINE) &&
+          guestDetail.networkId ))
         }
 
         return true
@@ -325,11 +328,12 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
     <Descriptions>
       <Descriptions.Item
         label={$t({ defaultMessage: 'Status' })}
-        children={renderStatus(guestDetail)} />
+        children={<Space data-testid='guest-status'>{renderStatus(guestDetail)}</Space>} />
     </Descriptions>
 
     {guestDetail.clients &&
       <Table
+        rowKey='clientMac'
         columns={columns}
         dataSource={guestDetail.clients}
       />}
