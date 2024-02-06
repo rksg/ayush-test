@@ -168,14 +168,25 @@ const getUserActions = (
   )
 }
 
-export const UsersTable = (
-  { data, toggleDrawer, setSelectedRow, getLatestUserDetails, handleDeleteUser, setDrawerType }:
-  { data?: ManagedUser[],
-    toggleDrawer: CallableFunction,
-    setSelectedRow: CallableFunction,
-    getLatestUserDetails: CallableFunction,
-    handleDeleteUser: CallableFunction,
-    setDrawerType: CallableFunction }) => {
+interface UsersTableProps {
+  data?: ManagedUser[]
+  toggleDrawer: CallableFunction
+  setSelectedRow: CallableFunction
+  getLatestUserDetails: CallableFunction
+  handleDeleteUser: CallableFunction
+  setUsersCount: CallableFunction
+  setDrawerType: CallableFunction
+}
+
+export const UsersTable = ({
+  data,
+  toggleDrawer,
+  setSelectedRow,
+  getLatestUserDetails,
+  handleDeleteUser,
+  setUsersCount,
+  setDrawerType
+}: UsersTableProps) => {
   const { $t } = useIntl()
   const user = getUserProfile()
   const { franchisor } = user.selectedTenant.settings
@@ -256,7 +267,9 @@ export const UsersTable = (
   ]
   return <Table<DisplayUser>
     rowKey={'id'}
+    settingsId='users-table'
     columns={columns}
     dataSource={users}
+    onDisplayRowChange={data => setUsersCount(data.length)}
   />
 }
