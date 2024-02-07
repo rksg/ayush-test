@@ -69,7 +69,6 @@ const ChangeIcon = ({ chartKey, prevData, currData }
     .map(k => currData[k as keyof typeof currData])
     .flat()
     .filter(v => v !== null)
-  console.log(prevValues, currValues)
   const curr = mean(currValues.length ? currValues : [0])
   const change = curr - prev
   if (change === 0) return null
@@ -88,7 +87,7 @@ const useOverallData = (chartKey: ChartKey, currData: FranchisorTimeseries | und
     .map(k => currData[k as keyof typeof currData])
     .flat()
     .filter(v => v !== null)
-  return mean(currValues)
+  return mean(currValues.length ? currValues : [0])
 }
 
 const groupBySliceType = (type: SliceType, data?: Response[]) => {

@@ -1,4 +1,5 @@
 import { sample } from 'lodash'
+
 import { FranchisorTimeseries } from '../services'
 export const fetchBrandProperties = () => {
   const properties = [

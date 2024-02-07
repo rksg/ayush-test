@@ -47,7 +47,7 @@ describe('SlaTile', () => {
     ...franchisorTimeseries,
     timeToConnectSLA: franchisorTimeseries.time.map(() => null),
     connectionSuccessSLA: franchisorTimeseries.time.map(() => null),
-    clientThroughputSLA: franchisorTimeseries.time.map(() => null),
+    clientThroughputSLA: franchisorTimeseries.time.map(() => null)
   } as unknown as FranchisorTimeseries
 
   const baseProps = {
@@ -96,7 +96,6 @@ describe('SlaTile', () => {
         currData: zeroCurrTimeseries,
         sliceType: 'property' as const
       }
-      console.log(props)
       return () => <SlaTile {...props} />
     })
     const Test = () => {
