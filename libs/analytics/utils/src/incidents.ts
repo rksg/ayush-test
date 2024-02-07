@@ -170,7 +170,7 @@ export function incidentScope (incident: Incident) {
 export const getThreshold = (incident: Incident) => {
   const { code } = incident
   if (code === 'ttc') {
-    return kpiConfig.timeToConnect.histogram.initialThreshold
+    return incident.slaThreshold ?? kpiConfig.timeToConnect.histogram.initialThreshold
   } else {
     return undefined
   }
