@@ -7,13 +7,18 @@ import { useGetTenantSettingsQuery }                         from '@acx-ui/analy
 import type { Settings }                                     from '@acx-ui/analytics/utils'
 import { PageHeader, RangePicker, GridRow, GridCol, Loader } from '@acx-ui/components'
 import {
-  useMspCustomerListDropdownQuery
+  useMspCustomerListDropdownQuery,
+  useIntegratorCustomerListDropdownQuery
 } from '@acx-ui/msp/services'
+import {
+  useGetTenantDetailsQuery
+} from '@acx-ui/rc/services'
 import {
   DateFilter,
   DateRange,
   getDateRangeFilter,
-  getDatePickerValues
+  getDatePickerValues,
+  AccountType
 } from '@acx-ui/utils'
 import { getJwtTokenPayload } from '@acx-ui/utils'
 
@@ -36,10 +41,10 @@ import { SlaTile }      from './SlaTile'
 import { BrandTable }   from './Table'
 import { useSliceType } from './useSliceType'
 
-const rcApiPayload = {
+const mspPayload = {
   searchString: '',
   filters: {
-    tenantType: ['MSP_INTEGRATOR', 'MSP_REC'],
+    tenantType: [AccountType.MSP_REC, AccountType.MSP_INTEGRATOR],
     status: ['Active']
   },
   fields: ['id', 'name', 'tenantType', 'status'],
@@ -51,11 +56,21 @@ const rcApiPayload = {
   sortOrder: 'ASC'
 }
 
+const getlspPayload = (parentTenantId: string | undefined) => ({
+  ...mspPayload,
+  filters: {
+    mspTenantId: [parentTenantId],
+    tenantType: [AccountType.MSP_REC],
+    status: ['Active']
+  }
+})
+
 export function Brand360 () {
   const settingsQuery = useGetTenantSettingsQuery()
   const { $t } = useIntl()
-  const isLSP = getJwtTokenPayload().tenantType === 'MSP_INTEGRATOR'
-  || getJwtTokenPayload().tenantType === 'MSP_INSTALLER'
+  const { tenantId, tenantType } = getJwtTokenPayload()
+  const isLSP = tenantType === AccountType.MSP_INTEGRATOR
+    || tenantType === AccountType.MSP_INSTALLER
   const { sliceType, SliceTypeDropdown } = useSliceType({ isLSP })
   const [settings, setSettings] = useState<Partial<Settings>>({})
   const [dateFilterState, setDateFilterState] = useState<DateFilter>(
@@ -72,10 +87,19 @@ export function Brand360 () {
     ssidRegex: ssid,
     toggles: useIncidentToggles()
   }
+
+  const tenantDetails = useGetTenantDetailsQuery({ tenantId })
+  const parentTenantid = tenantDetails.data?.mspEc?.parentMspId
+
   const mspPropertiesData = useMspCustomerListDropdownQuery(
-    { params: { tenantId: getJwtTokenPayload().tenantId },payload: rcApiPayload })
-  const lookupAndMappingData = mspPropertiesData?.data
-    ? transformLookupAndMappingData(mspPropertiesData.data)
+    { params: { tenantId }, payload: mspPayload }, { skip: isLSP })
+  const lspPropertiesData = useIntegratorCustomerListDropdownQuery(
+    { params: { tenantId }, payload: getlspPayload(parentTenantid) }, { skip: !isLSP
+      && !Boolean(parentTenantid) })
+  const propertiesData = isLSP ? lspPropertiesData : mspPropertiesData
+
+  const lookupAndMappingData = propertiesData?.data
+    ? transformLookupAndMappingData(propertiesData.data)
     : {}
   const venuesData = useFetchBrandPropertiesQuery(chartPayload, { skip: ssidSkip })
   const tableResults = venuesData.data && lookupAndMappingData
@@ -100,7 +124,7 @@ export function Brand360 () {
     ...currResults
   } = useFetchBrandTimeseriesQuery({ ...chartPayload, granularity: 'all' }, { skip: ssidSkip })
   const chartMap: ChartKey[] = ['incident', 'experience', 'compliance']
-  return <Loader states={[settingsQuery, mspPropertiesData, venuesData]}>
+  return <Loader states={[settingsQuery, propertiesData, venuesData]}>
     <PageHeader
       title={$t({ defaultMessage: 'Brand 360' })}
       extra={[
