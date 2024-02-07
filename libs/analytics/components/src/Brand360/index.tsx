@@ -54,7 +54,8 @@ const rcApiPayload = {
 export function Brand360 () {
   const settingsQuery = useGetTenantSettingsQuery()
   const { $t } = useIntl()
-  const { sliceType, SliceTypeDropdown } = useSliceType()
+  const isLSP = getJwtTokenPayload().tenantType === 'MSP_INTEGRATOR'
+  const { sliceType, SliceTypeDropdown } = useSliceType({ isLSP })
   const [settings, setSettings] = useState<Partial<Settings>>({})
   const [dateFilterState, setDateFilterState] = useState<DateFilter>(
     getDateRangeFilter(DateRange.last24Hours)
@@ -138,6 +139,7 @@ export function Brand360 () {
           sliceType={sliceType}
           slaThreshold={settings}
           data={tableResults as Response[]}
+          isLSP={isLSP}
         />
       </GridCol>
     </GridRow>

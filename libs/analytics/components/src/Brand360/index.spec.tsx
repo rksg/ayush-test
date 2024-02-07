@@ -6,11 +6,15 @@ import type { Settings }                                                        
 import { useIsSplitOn }                                                                       from '@acx-ui/feature-toggle'
 import { dataApiURL, Provider, rbacApiURL }                                                   from '@acx-ui/store'
 import { render, screen, mockServer, fireEvent, mockGraphqlQuery, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { AccountType }                                                                        from '@acx-ui/utils'
 
 import { mockBrandTimeseries, prevTimeseries, currTimeseries, propertiesMappingData, franchisorZones } from './__tests__/fixtures'
 import { FranchisorTimeseries }                                                                        from './services'
 
 import { Brand360 } from '.'
+
+const services = require('@acx-ui/msp/services')
+const utils = require('@acx-ui/utils')
 
 jest.mock('./Table', () => ({
   BrandTable: ({ sliceType, slaThreshold }: { sliceType: string, slaThreshold: Settings }) =>
@@ -18,7 +22,6 @@ jest.mock('./Table', () => ({
       {sliceType} {JSON.stringify(slaThreshold)}
     </div>
 }))
-const services = require('@acx-ui/msp/services')
 jest.mock('@acx-ui/msp/services', () => ({
   ...jest.requireActual('@acx-ui/msp/services')
 }))
@@ -152,5 +155,25 @@ describe('Brand360', () => {
     fireEvent.mouseUp(sliders[0])
     fireEvent.click(await screen.findByText('Reset'))
     expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('should show only property option for LSP account', async () => {
+    utils.getJwtTokenPayload = jest.fn().mockImplementation(() => {
+      return {
+        acx_account_tier: 'Platinum',
+        acx_account_vertical: 'Default',
+        isBetaFlag: false,
+        tenantType: AccountType.MSP_INTEGRATOR
+      }
+    })
+    mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', mockBrandTimeseries)
+    mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', wrapData(prevTimeseries))
+    mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', wrapData(currTimeseries))
+    render(<Provider><Brand360 /></Provider>)
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    expect((await screen.findAllByText('Property')).length).toEqual(1)
+    fireEvent.click(await screen.findByTestId('CaretDownSolid'))
+    expect(screen.queryByText('LSP')).toBeNull()
+    expect((await screen.findAllByText('Property')).length).toEqual(2)
   })
 })
