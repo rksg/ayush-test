@@ -11,7 +11,9 @@ import {
   fetchBrandProperties,
   mockBrandTimeseries,
   prevTimeseries,
-  currTimeseries
+  currTimeseries,
+  zeroPrevTimeseries,
+  zeroCurrTimeseries
 }         from './__tests__/fixtures'
 import { SlaTile } from './SlaTile'
 
@@ -40,6 +42,13 @@ describe('SlaTile', () => {
   ]
 
   const { data: { franchisorTimeseries } } = mockBrandTimeseries
+
+  const zeroFranchisorTimeseries = {
+    ...franchisorTimeseries,
+    timeToConnectSLA: franchisorTimeseries.time.map(() => null),
+    connectionSuccessSLA: franchisorTimeseries.time.map(() => null),
+    clientThroughputSLA: franchisorTimeseries.time.map(() => null)
+  } as unknown as FranchisorTimeseries
 
   const baseProps = {
     tableData: fetchBrandProperties() as unknown as Response[],
@@ -77,6 +86,30 @@ describe('SlaTile', () => {
     expect(await screen.findByText('20')).toBeVisible()
   })
 
+  it('should render null changes correctly', async () => {
+    const tiles = chartKeys.map(chartKey => {
+      const props = {
+        ...baseProps,
+        chartData: zeroFranchisorTimeseries,
+        chartKey,
+        prevData: zeroPrevTimeseries,
+        currData: zeroCurrTimeseries,
+        sliceType: 'property' as const
+      }
+      return () => <SlaTile {...props} />
+    })
+    const Test = () => {
+      return <div>
+        {tiles.map((Tile, i) => <Tile key={i} />)}
+      </div>
+    }
+    render(<Test />, { wrapper: Provider })
+    expect(await screen.findByText('Properties health')).toBeVisible()
+    expect(await screen.findByText('Guest Experience')).toBeVisible()
+    expect(await screen.findByText('Brand SSID Compliance')).toBeVisible()
+    const graphs = await screen.findAllByTestId('slaChart')
+    expect(graphs).toHaveLength(3)
+  })
   it('should render correctly by property', async () => {
     const tiles = chartKeys.map(chartKey => {
       const props = {
@@ -98,7 +131,6 @@ describe('SlaTile', () => {
     const graphs = await screen.findAllByTestId('slaChart')
     expect(graphs).toHaveLength(3)
   })
-
   it('should render empty data by lsp', async () => {
     const tiles = chartKeys.map(chartKey => {
       const props = {
