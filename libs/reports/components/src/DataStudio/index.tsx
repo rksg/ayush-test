@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
 
-import { getUserProfile }                     from '@acx-ui/analytics/utils'
-import { IFrame, showActionModal }            from '@acx-ui/components'
-import { get }                                from '@acx-ui/config'
-import { useIsSplitOn, Features }             from '@acx-ui/feature-toggle'
-import { useAuthenticateMutation }            from '@acx-ui/reports/services'
-import { getUserProfile as getUserProfileR1 } from '@acx-ui/user'
-import { useLocaleContext, getIntl }          from '@acx-ui/utils'
+import { getUserProfile }                              from '@acx-ui/analytics/utils'
+import { IFrame, showActionModal }                     from '@acx-ui/components'
+import { get }                                         from '@acx-ui/config'
+import { useIsSplitOn, Features }                      from '@acx-ui/feature-toggle'
+import { useAuthenticateMutation, DataStudioResponse } from '@acx-ui/reports/services'
+import { getUserProfile as getUserProfileR1 }          from '@acx-ui/user'
+import { useLocaleContext, getIntl }                   from '@acx-ui/utils'
 
 export const getHostName = (origin: string) => {
   if (process.env['NODE_ENV'] === 'development') {
@@ -71,8 +71,9 @@ export function DataStudio () {
       }
     })
       .unwrap()
-      .then(url => {
-        setUrl(url)
+      .then((resp: DataStudioResponse) => {
+        sessionStorage.setItem('user_info', JSON.stringify(resp.user_info))
+        setUrl(resp.redirect_url)
       })
   }, [authenticate, locale])
 
