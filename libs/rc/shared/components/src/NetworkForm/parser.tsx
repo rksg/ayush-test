@@ -407,17 +407,16 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     ...data,
     wlan: {
       ...originalData?.wlan,
+      ...data.wlan,
       vlanId,
       advancedCustomization
+
     }
   }
 
   if(data.guestPortal){
     saveData = {
       ...saveData,
-      wlan: {
-        passphrase: data?.wlan?.passphrase
-      },
       guestPortal: {
         ...originalData.guestPortal,
         ...data.guestPortal
