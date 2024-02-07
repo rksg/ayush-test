@@ -46,10 +46,18 @@ export const getChartDataKey = (chartKey: ChartKey): string[] => {
 
 const Subtitle = ({ sliceType }: { sliceType: SliceType }) => {
   const { $t } = useIntl()
-  return <UI.SubtitleWrapper>{sliceType === 'lsp'
-    ? $t({ defaultMessage: '# of LSPs with P1 Incident' })
-    : $t({ defaultMessage: '# of Properties with P1 Incident' })}
+  return <UI.SubtitleWrapper>{sliceType === 'lsp' // TODO get the actual lsp/property count
+    ? $t({ defaultMessage: '# of P1 Incident' })
+    : $t({ defaultMessage: '# of P1 Incident' })}
   </UI.SubtitleWrapper>
+}
+
+function calculateMean (keys: string[], data: FranchisorTimeseries) {
+  const values = keys
+    .map(k => data[k as keyof typeof data])
+    .flat()
+    .filter(v => v !== null)
+  return mean(values.length ? values : [0])
 }
 
 const ChangeIcon = ({ chartKey, prevData, currData }
@@ -60,14 +68,8 @@ const ChangeIcon = ({ chartKey, prevData, currData }
 }) => {
   if (!prevData || !currData) return null
   const keys = getChartDataKey(chartKey)
-  const prevValues = keys
-    .map(k => prevData[k as keyof typeof prevData])
-    .flat()
-  const prev = mean(prevValues)
-  const currValues = keys
-    .map(k => currData[k as keyof typeof currData])
-    .flat()
-  const curr = mean(currValues)
+  const prev = calculateMean(keys, prevData)
+  const curr = calculateMean(keys, currData)
   const change = curr - prev
   if (change === 0) return null
   const { formatter, direction } = slaKpiConfig[chartKey]
@@ -81,10 +83,7 @@ const ChangeIcon = ({ chartKey, prevData, currData }
 const useOverallData = (chartKey: ChartKey, currData: FranchisorTimeseries | undefined) => {
   if (!currData) return null
   const keys = getChartDataKey(chartKey)
-  const currValues = keys
-    .map(k => currData[k as keyof typeof currData])
-    .flat()
-  return mean(currValues)
+  return calculateMean(keys, currData)
 }
 
 const groupBySliceType = (type: SliceType, data?: Response[]) => {
