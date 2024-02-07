@@ -15,10 +15,6 @@ const slices: Slices = {
 }
 export const useSliceType = ({ isLSP }: { isLSP: boolean }) => {
   const { $t } = useIntl()
-  // Remove lsp option in case of LSP account
-  if (isLSP) {
-    delete slices.lsp
-  }
   const [sliceType, setSliceType] = useState<SliceType>(isLSP ? 'property' : 'lsp')
   return {
     sliceType,

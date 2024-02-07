@@ -105,7 +105,7 @@ export function Brand360 () {
       title={$t({ defaultMessage: 'Brand 360' })}
       extra={[
         <>
-          <SliceTypeDropdown />
+          { !isLSP ? <SliceTypeDropdown /> : null }
           <RangePicker
             key='range-picker'
             selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
