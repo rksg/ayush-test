@@ -67,6 +67,7 @@ const ChangeIcon = ({ chartKey, prevData, currData }
   const currValues = keys
     .map(k => currData[k as keyof typeof currData])
     .flat()
+    .filter(v => v !== null)
   const curr = mean(currValues)
   const change = curr - prev
   if (change === 0) return null
@@ -84,6 +85,7 @@ const useOverallData = (chartKey: ChartKey, currData: FranchisorTimeseries | und
   const currValues = keys
     .map(k => currData[k as keyof typeof currData])
     .flat()
+    .filter(v => v !== null)
   return mean(currValues)
 }
 
