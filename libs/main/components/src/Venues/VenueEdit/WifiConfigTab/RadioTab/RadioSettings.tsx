@@ -24,8 +24,8 @@ import {
   AnchorContext, Loader, showActionModal, StepsFormLegacy,
   StepsFormLegacyInstance, Tabs, Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures }  from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                              from '@acx-ui/icons'
+import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                             from '@acx-ui/icons'
 import {
 
   SingleRadioSettings, channelBandwidth24GOptions,

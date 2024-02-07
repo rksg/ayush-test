@@ -4,7 +4,7 @@ import { Col, Form, Row, Switch } from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { AnchorContext, Loader }                     from '@acx-ui/components'
+import { AnchorContext, Loader }                    from '@acx-ui/components'
 import {
   useGetVenueDirectedMulticastQuery,
   useGetVenueTemplateDirectedMulticastQuery,

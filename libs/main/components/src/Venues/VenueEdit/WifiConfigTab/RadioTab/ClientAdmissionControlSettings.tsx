@@ -4,7 +4,7 @@ import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { AnchorContext, Loader }     from '@acx-ui/components'
+import { AnchorContext, Loader }    from '@acx-ui/components'
 import {
   ClientAdmissionControlForm,
   ClientAdmissionControlTypeEnum,
