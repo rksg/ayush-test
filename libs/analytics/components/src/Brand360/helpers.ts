@@ -130,8 +130,7 @@ export const transformToLspView = (properties: Response[]): Lsp[] => {
   })
 }
 export const transformToPropertyView = (data: Response[]): Property[] =>
-{
-  return data.map((property: Response) => {
+  data.map((property: Response) => {
     const avgConnSuccess = !noDataCheck(property.avgConnSuccess[1])
         ? calcSLA(property.avgConnSuccess)
         : null,
@@ -153,7 +152,7 @@ export const transformToPropertyView = (data: Response[]): Property[] =>
       guestExp: calGuestExp(avgConnSuccess, avgClientThroughput, avgTTC)
     } as Property
   })
-}
+
 export function computePastRange (
   startDate: string, endDate: string
 ): [string, string] {
