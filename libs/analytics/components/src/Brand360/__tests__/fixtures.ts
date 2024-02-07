@@ -1,4 +1,5 @@
 import { sample } from 'lodash'
+import { FranchisorTimeseries } from '../services'
 export const fetchBrandProperties = () => {
   const properties = [
     'AC Hotels', 'Courtyard', 'Fairfield', 'Element' , 'Potea Hotels',
@@ -153,6 +154,50 @@ export const currTimeseries = {
   ],
   errors: []
 }
+
+export const zeroPrevTimeseries = {
+  time: [
+    '2023-12-11T22:00:00.000Z'
+  ],
+  incidentCount: [
+    20
+  ],
+  ssidComplianceSLA: [
+    0.5
+  ],
+  timeToConnectSLA: [
+    null
+  ],
+  clientThroughputSLA: [
+    null
+  ],
+  connectionSuccessSLA: [
+    null
+  ],
+  errors: []
+} as unknown as FranchisorTimeseries
+
+export const zeroCurrTimeseries = {
+  time: [
+    '2023-12-11T22:00:00.000Z'
+  ],
+  incidentCount: [
+    20
+  ],
+  ssidComplianceSLA: [
+    0.4
+  ],
+  timeToConnectSLA: [
+    null
+  ],
+  clientThroughputSLA: [
+    null
+  ],
+  connectionSuccessSLA: [
+    null
+  ],
+  errors: []
+} as unknown as FranchisorTimeseries
 
 export const propertiesMappingData = [
   {
