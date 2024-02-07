@@ -999,7 +999,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'Venue', id: 'LOAD_BALANCING' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
-          await handleCallbackWhenActivitySuccess(requestArgs, api, msg, 'UpdateVenueLoadBalancing')
+          await handleCallbackWhenActivitySuccess(api, msg, 'UpdateVenueLoadBalancing', requestArgs.callback)
         })
       }
     }),
@@ -1307,7 +1307,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'Venue', id: 'ClientAdmissionControl' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
-          await handleCallbackWhenActivitySuccess(requestArgs, api, msg, 'UpdateVenueClientAdmissionControlSettings')
+          await handleCallbackWhenActivitySuccess(api, msg, 'UpdateVenueClientAdmissionControlSettings', requestArgs.callback)
         })
       }
     }),
