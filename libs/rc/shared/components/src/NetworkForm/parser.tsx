@@ -416,7 +416,7 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     saveData = {
       ...saveData,
       wlan: {
-        passphrase: data.wlan?.passphrase
+        passphrase: data?.wlan?.passphrase
       },
       guestPortal: {
         ...originalData.guestPortal,
