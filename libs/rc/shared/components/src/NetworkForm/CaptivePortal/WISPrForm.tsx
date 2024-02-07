@@ -78,6 +78,7 @@ export function WISPrForm () {
   const form = Form.useFormInstance()
   const wlanSecurity = useWatch('pskProtocol')
   const externalProviderRegion = useWatch(['guestPortal','wisprPage','externalProviderRegion'])
+  const networkSecurity = useWatch(['networkSecurity'])
   const providerData = useExternalProvidersQuery({ params })
   const [enablePreShared, setEnablePreShared ] = useState(false)
   const [externalProviders, setExternalProviders]=useState<Providers[]>()
@@ -145,6 +146,25 @@ export function WISPrForm () {
     }
   },[mspEcProfileData])
 
+  /* eslint-disable */
+  useEffect(()=> {
+    console.log(`PSK or OWE: ${networkSecurity}, protocol: ${wlanSecurity}, `)
+    const transNetworkSecurity = WisprSecurityEnum[networkSecurity as keyof typeof WisprSecurityEnum]
+    const transWlanSecurity = PskWlanSecurityEnum[wlanSecurity as keyof typeof PskWlanSecurityEnum]
+    const MLOEffectiveCondition = [
+      (transNetworkSecurity === WisprSecurityEnum.PSK && transWlanSecurity === PskWlanSecurityEnum.WPA23Mixed),
+      (transNetworkSecurity === WisprSecurityEnum.PSK && transWlanSecurity === PskWlanSecurityEnum.WPA3),
+      (transNetworkSecurity === WisprSecurityEnum.OWE)
+    ].some(Boolean)
+    
+    disableMLO(!MLOEffectiveCondition)
+
+    if (!MLOEffectiveCondition) {
+      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
+    }
+    console.log(`MLOEffectiveCondition: ${MLOEffectiveCondition}`)
+  }, [wlanSecurity, networkSecurity])
+  /* eslint-enable */
   useEffect(()=>{
     if(providerData.data){
       const providers = providerData.data.providers

@@ -323,10 +323,10 @@ function WiFi7 () {
           wlanData.wlan?.wlanSecurity === WlanSecurityEnum.OWE),
 
       ].some(Boolean)
-      if (MLOEffectiveCondition) {
-        const enableMLOSwitch = !MLOEffectiveCondition
-        disableMLO(enableMLOSwitch)
-      } else {
+
+      disableMLO(!MLOEffectiveCondition)
+
+      if (!MLOEffectiveCondition) {
         const cloneData = _.cloneDeep(wlanData)
         _.set(cloneData, 'wlan.advancedCustomization.multiLinkOperationEnabled', false)
         setData && setData(cloneData)
