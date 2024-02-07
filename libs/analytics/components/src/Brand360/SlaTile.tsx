@@ -52,6 +52,14 @@ const Subtitle = ({ sliceType }: { sliceType: SliceType }) => {
   </UI.SubtitleWrapper>
 }
 
+function calculateMean (keys: string[], data: FranchisorTimeseries) {
+  const values = keys
+    .map(k => data[k as keyof typeof data])
+    .flat()
+    .filter(v => v !== null)
+  return mean(values.length ? values : [0])
+}
+
 const ChangeIcon = ({ chartKey, prevData, currData }
 : {
   chartKey: ChartKey,
@@ -60,16 +68,8 @@ const ChangeIcon = ({ chartKey, prevData, currData }
 }) => {
   if (!prevData || !currData) return null
   const keys = getChartDataKey(chartKey)
-  const prevValues = keys
-    .map(k => prevData[k as keyof typeof prevData])
-    .flat()
-    .filter(v => v !== null)
-  const prev = mean(prevValues.length ? prevValues : [0])
-  const currValues = keys
-    .map(k => currData[k as keyof typeof currData])
-    .flat()
-    .filter(v => v !== null)
-  const curr = mean(currValues.length ? currValues : [0])
+  const prev = calculateMean(keys, prevData)
+  const curr = calculateMean(keys, currData)
   const change = curr - prev
   if (change === 0) return null
   const { formatter, direction } = slaKpiConfig[chartKey]
@@ -83,11 +83,7 @@ const ChangeIcon = ({ chartKey, prevData, currData }
 const useOverallData = (chartKey: ChartKey, currData: FranchisorTimeseries | undefined) => {
   if (!currData) return null
   const keys = getChartDataKey(chartKey)
-  const currValues = keys
-    .map(k => currData[k as keyof typeof currData])
-    .flat()
-    .filter(v => v !== null)
-  return mean(currValues.length ? currValues : [0])
+  return calculateMean(keys, currData)
 }
 
 const groupBySliceType = (type: SliceType, data?: Response[]) => {
