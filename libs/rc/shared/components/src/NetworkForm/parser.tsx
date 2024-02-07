@@ -410,7 +410,6 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
       ...data.wlan,
       vlanId,
       advancedCustomization
-
     }
   }
 
