@@ -47,8 +47,8 @@ export const getChartDataKey = (chartKey: ChartKey): string[] => {
 const Subtitle = ({ sliceType }: { sliceType: SliceType }) => {
   const { $t } = useIntl()
   return <UI.SubtitleWrapper>{sliceType === 'lsp' // TODO get the actual lsp/property count
-    ? $t({ defaultMessage: '# of P1 Incident' })
-    : $t({ defaultMessage: '# of P1 Incident' })}
+    ? $t({ defaultMessage: '# of P1 Incidents' })
+    : $t({ defaultMessage: '# of P1 Incidents' })}
   </UI.SubtitleWrapper>
 }
 

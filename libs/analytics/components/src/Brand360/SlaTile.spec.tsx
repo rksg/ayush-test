@@ -236,7 +236,7 @@ describe('SlaTile', () => {
       sliceType: 'property' as const
     }
     render(<SlaTile {...props}/>, { wrapper: Provider })
-    expect(await screen.findByText('# of P1 Incident'))
+    expect(await screen.findByText('# of P1 Incidents'))
       .toBeVisible()
     const downIcon = await screen.findByTestId('DownArrow')
     const prevItems = await screen.findAllByRole('listitem')
@@ -257,7 +257,7 @@ describe('SlaTile', () => {
       sliceType: 'property' as const
     }
     render(<SlaTile {...props}/>, { wrapper: Provider })
-    expect(await screen.findByText('# of P1 Incident'))
+    expect(await screen.findByText('# of P1 Incidents'))
       .toBeVisible()
     const downIcon = screen.queryByTestId('DownArrow')
     expect(downIcon).toBeNull()
