@@ -19,7 +19,7 @@ interface UserInfo {
 
 export interface DataStudioResponse {
   redirect_url: string,
-  user_info: UserInfo
+  user_info?: UserInfo
 }
 
 export interface EmbeddedResponse {
@@ -28,7 +28,7 @@ export interface EmbeddedResponse {
     dashboard_id: string,
     allowed_domains: string[]
   },
-  user_info: UserInfo
+  user_info?: UserInfo
 }
 
 const createHttpRequest = (
