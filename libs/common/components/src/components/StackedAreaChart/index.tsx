@@ -69,11 +69,17 @@ export function getSeriesTotal <DataType extends TimeSeriesChartData> (
     name: tooltipTotalTitle,
     show: false,
     data: series[0].data.map((point, index)=>{
+      let length = 0
       const total = sumBy(series, (datum) => {
         const value = datum.data[index][1]
-        return typeof value === 'number' ? value : 0
+        if (typeof value === 'number') {
+          length++
+          return value
+        } else {
+          return 0
+        }
       })
-      return [ point[0], mean ? total / series.length : total ]
+      return [ point[0], mean ? total / length : total ]
     })
   } as DataType
 }
