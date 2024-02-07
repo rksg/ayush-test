@@ -55,6 +55,7 @@ export function Brand360 () {
   const settingsQuery = useGetTenantSettingsQuery()
   const { $t } = useIntl()
   const isLSP = getJwtTokenPayload().tenantType === 'MSP_INTEGRATOR'
+  || getJwtTokenPayload().tenantType === 'MSP_INSTALLER'
   const { sliceType, SliceTypeDropdown } = useSliceType({ isLSP })
   const [settings, setSettings] = useState<Partial<Settings>>({})
   const [dateFilterState, setDateFilterState] = useState<DateFilter>(
