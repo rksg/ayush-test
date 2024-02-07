@@ -108,7 +108,7 @@ function formattedNodeName (
 ): string | undefined {
   const { $t } = getIntl()
   const type = node.type.toLocaleLowerCase()
-  const isComplexName = ['ap', 'switch'].includes(type) && sliceValue !== node.name
+  const isComplexName = ['ap', 'controller', 'switch'].includes(type) && sliceValue !== node.name
   return $t({
     defaultMessage: `{isComplexName, select,
       true {{name} ({nodeName})}
