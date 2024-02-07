@@ -15,7 +15,7 @@ export type FormatMessageValue = React.ReactNode
   | PrimitiveType
   | FormatXMLElementFn<React.ReactNode, React.ReactNode>
 
-type FormatMessageValues = Record<string, FormatMessageValue>
+export type FormatMessageValues = Record<string, FormatMessageValue>
 
 type RootCauseChecks = Exclude<IncidentMetadata['rootCauseChecks'], undefined>
 type RootCausesResult = {
@@ -159,7 +159,7 @@ const getAirtimeBusyRootCauses = () => {
   }
 }
 export const getAirtimeBusyRecommendations = (
-  checks: Array<AirtimeBusyChecks>, params: AirtimeParams, extraValues: Record<string, Function>
+  checks: Array<AirtimeBusyChecks>, params: AirtimeParams, extraValues: FormatMessageValues
 ) => {
   const checkTrue = checkTrueParams(checks)
   const recommendationId = params.recommendationId
