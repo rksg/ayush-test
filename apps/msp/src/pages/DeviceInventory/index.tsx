@@ -9,7 +9,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useDeviceInventoryListQuery,
   useExportDeviceInventoryMutation
@@ -87,7 +87,8 @@ export function DeviceInventory () {
   const intl = useIntl()
   const { $t } = intl
   const { tenantId } = useParams()
-  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
+  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
+  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
 
   const [ downloadCsv ] = useExportDeviceInventoryMutation()
   const tenantDetailsData = useGetTenantDetailsQuery({ params: { tenantId } })
