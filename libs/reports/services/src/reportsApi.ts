@@ -11,7 +11,7 @@ export interface GuestToken {
   token: string
 }
 
-interface UserInfo {
+export interface UserInfo {
   tenant_id: string,
   is_franchisor: boolean,
   tenant_ids: string[]
