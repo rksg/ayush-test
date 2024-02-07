@@ -20,6 +20,7 @@ import {
   Features, TierFeatures,
   useIsSplitOn, useIsTierAllowed
 } from '@acx-ui/feature-toggle'
+import { formatter } from '@acx-ui/formatter'
 import {
   CheckMark,
   DownloadOutlined
@@ -410,6 +411,16 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
         return acc
       }, [] as TableProps<APExtended | APExtendedGrouped>['columns'])
     }, {
+      key: 'uptime',
+      title: $t({ defaultMessage: 'Up Time' }),
+      dataIndex: 'uptime',
+      sorter: true,
+      render: (data: React.ReactNode, row: APExtended) => {
+        const uptime = row.apStatusData?.APSystem?.uptime
+        return (uptime ? formatter('longDurationFormat')(uptime * 1000) : null)
+      }
+    }
+    , {
       key: 'tags',
       title: $t({ defaultMessage: 'Tags' }),
       dataIndex: 'tags',
