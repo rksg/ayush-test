@@ -69,7 +69,11 @@ const Users = () => {
   const [deleteUserResourceGroup] = useDeleteUserResourceGroupMutation()
   const [deleteInvitation] = useDeleteInvitationMutation()
 
-  const usersCount = usersQuery.data?.length || 0
+  const [usersCount, setUsersCount] = useState(0)
+  useEffect(() => {
+    usersQuery.data && setUsersCount(usersQuery.data.length)
+  }, [usersQuery.data])
+
   useEffect(() => {
     if (retrieveUserDetails && selectedRow) {
       refreshUserDetails({ userId: selectedRow.id })
@@ -120,7 +124,7 @@ const Users = () => {
             }
             )
         })
-        .finally(() => setDeleteUser({ showModal: false ,deleteUser: false }))
+        .finally(() => setDeleteUser({ showModal: false, deleteUser: false }))
     }
   },
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -163,6 +167,7 @@ const Users = () => {
         setSelectedRow={setSelectedRow}
         getLatestUserDetails={() => setRetrieveUserDetails(true)}
         handleDeleteUser={() => setDeleteUser({ ...deleteUser, showModal: true })}
+        setUsersCount={setUsersCount}
         setDrawerType={setDrawerType}
       />
       <UserDrawer

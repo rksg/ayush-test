@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import { MspUrlsInfo }                          from '@acx-ui/msp/utils'
 import { ApDeviceStatusEnum, SwitchStatusEnum } from '@acx-ui/rc/utils'
 import { Provider }                             from '@acx-ui/store'
@@ -231,6 +232,7 @@ describe('Device Inventory Table', () => {
     expect(screen.getByText('Manage My Account')).toBeVisible()
   })
   it('should render table', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     utils.useTableQuery = jest.fn().mockImplementation(() => {
       return { data: list }
     })
