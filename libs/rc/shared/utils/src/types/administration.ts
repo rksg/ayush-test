@@ -281,7 +281,7 @@ export interface groupMembers {
   lastLoginDate?: string
 }
 
-export interface PriviliegeGroup {
+export interface PrivilegeGroup {
   id?: string,
   name?: string,
   type?: string,

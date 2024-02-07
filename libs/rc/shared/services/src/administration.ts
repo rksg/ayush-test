@@ -27,7 +27,7 @@ import {
   AdminGroup,
   AdminGroupLastLogins,
   CustomRole,
-  PriviliegeGroup
+  PrivilegeGroup
 } from '@acx-ui/rc/utils'
 import { baseAdministrationApi }                        from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -688,7 +688,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         }
       }
     }),
-    getPrivilegeGroups: build.query<PriviliegeGroup[], RequestPayload>({
+    getPrivilegeGroups: build.query<PrivilegeGroup[], RequestPayload>({
       query: ({ params }) => {
         const req =
           createHttpRequest(AdministrationUrlsInfo.getPrivilegeGroups, params)

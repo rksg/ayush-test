@@ -13,7 +13,8 @@ import {
   StepsForm,
   Tabs
 } from '@acx-ui/components'
-import { PriviliegeGroup } from '@acx-ui/rc/utils'
+import { useUpdatePrivilegeGroupMutation } from '@acx-ui/rc/services'
+import { PrivilegeGroup }                  from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
@@ -53,23 +54,41 @@ const AdministrationTabs = () => {
 //   groupSettings: GroupSettings,
 //   members: Members
 // }
+interface PrivilegeGroupData {
+  name?: string,
+  description?: string,
+  roleName?: string
+}
 
 export function EditPrivilegeGroup () {
   const intl = useIntl()
 
   const navigate = useNavigate()
-  const { action } = useParams()
-  const location = useLocation().state as PriviliegeGroup
-  //   const { activeTab } = useParams()
+  const { action, groupId } = useParams()
+  const location = useLocation().state as PrivilegeGroup
   const linkToPrivilegeGroups = useTenantLink('/administration/userPrivileges/privilegeGroups', 't')
   const [form] = Form.useForm()
+  const [updatePrivilegeGroup] = useUpdatePrivilegeGroupMutation()
 
   const isEditMode = action === 'view' || action === 'edit'
 
   const handleUpdatePrivilegeGroup = async () => {
-    // try {
-    //   const ecFormData = { ...values }
-    // }
+    const formValues = form.getFieldsValue(true)
+
+    try {
+      await form.validateFields()
+      const privilegeGroupData: PrivilegeGroupData = {
+        name: formValues.name,
+        description: formValues.description,
+        roleName: formValues.role
+      }
+      await updatePrivilegeGroup({ params: { privilegeGroupId: groupId },
+        payload: privilegeGroupData }).unwrap()
+
+      navigate(linkToPrivilegeGroups)
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
   }
 
   form.setFieldValue('name', location.name)

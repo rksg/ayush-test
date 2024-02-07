@@ -12,7 +12,8 @@ import {
   StepsForm,
   Subtitle
 } from '@acx-ui/components'
-import { CustomRole, getRoles } from '@acx-ui/rc/utils'
+import { useAddCustomRoleMutation, useUpdateCustomRoleMutation } from '@acx-ui/rc/services'
+import { CustomRole, getRoles }                                  from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
@@ -23,20 +24,43 @@ import { RolesEnum } from '@acx-ui/types'
 
 import * as UI from '../styledComponents'
 
+interface CustomRoleData {
+  name?: string,
+  description?: string
+}
+
 export function AddCustomRole () {
   const intl = useIntl()
   const navigate = useNavigate()
-  const { action } = useParams()
+  const { action, customRoleId } = useParams()
   const location = useLocation().state as CustomRole
 
   const linkToCustomRoles = useTenantLink('/administration/userPrivileges/customRoles', 't')
   const [form] = Form.useForm()
+  const [addCustomRole] = useAddCustomRoleMutation()
+  const [updateCustomRole] = useUpdateCustomRoleMutation()
 
   const isEditMode = action === 'view' || action === 'edit'
   const handleAddRole = async () => {
-    // try {
-    //   const ecFormData = { ...values }
-    // }
+    const name = form.getFieldValue('name')
+    const description = form.getFieldValue('description')
+    try {
+      await form.validateFields()
+      const roleData: CustomRoleData = {
+        name: name,
+        description: description
+      }
+      if(isEditMode) {
+        await updateCustomRole({ params: { customRoleId: customRoleId },
+          payload: roleData }).unwrap()
+      } else {
+        await addCustomRole({ payload: roleData }).unwrap()
+      }
+
+      navigate(linkToCustomRoles)
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
   }
 
   if (isEditMode || action === 'clone') {

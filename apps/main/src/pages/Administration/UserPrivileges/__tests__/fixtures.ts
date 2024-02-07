@@ -293,7 +293,7 @@ export const fakedAdminGroupList = [
   }
 ]
 
-export const fakedPriviliegeGroupList = [
+export const fakedPrivilegeGroupList = [
   {
     id: '9eb59863e3474e7296ff01eb7ca59de4',
     createdDate: '2023-12-13T22:03:21.681+00:00',

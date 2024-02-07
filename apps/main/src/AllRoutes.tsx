@@ -129,7 +129,7 @@ function AdministrationRoutes () {
         path='userPrivileges/privilegeGroups/:action/:groupId'
         element={<EditPrivilegeGroup />} />
       <Route path='userPrivileges/customRoles/create' element={<AddCustomRole />} />
-      <Route path='userPrivileges/customRoles/:action/:groupId' element={<AddCustomRole />} />
+      <Route path='userPrivileges/customRoles/:action/:customRoleId' element={<AddCustomRole />} />
       <Route path='onpremMigration/add' element={<MigrationForm />} />
       <Route path='onpremMigration/:taskId/summary' element={<MigrationSummary />} />
     </Route>

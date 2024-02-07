@@ -20,12 +20,12 @@ import { useUserProfileContext }                from '@acx-ui/user'
 
 import DelegationsTable from '../Administrators/DelegationsTable'
 
-import { fakedCustomRoleList }      from './__tests__/fixtures'
-import { fakedPriviliegeGroupList } from './__tests__/fixtures'
-import CustomRoles                  from './CustomRoles'
-import PriviledgeGroups             from './PrivilegeGroups'
-import SsoGroups                    from './SsoGroups'
-import UsersTable                   from './UsersTable'
+import { fakedCustomRoleList }     from './__tests__/fixtures'
+import { fakedPrivilegeGroupList } from './__tests__/fixtures'
+import CustomRoles                 from './CustomRoles'
+import PriviledgeGroups            from './PrivilegeGroups'
+import SsoGroups                   from './SsoGroups'
+import UsersTable                  from './UsersTable'
 
 
 const UserPrivileges = () => {
@@ -53,7 +53,7 @@ const UserPrivileges = () => {
   const ssoGroupCount = ssoGroupList?.data?.length! || 0
   const delegatedAdminCount = thirdPartyAdminList.data?.length! || 0
   // TO DO (new API)
-  const priviliegeGroupCount = fakedPriviliegeGroupList.length! || 0
+  const privilegeGroupCount = fakedPrivilegeGroupList.length! || 0
   const customRoleCount = fakedCustomRoleList.length! || 0
 
   const isVAR = userProfileData?.var && !userProfileData?.support
@@ -112,8 +112,8 @@ const UserPrivileges = () => {
       visible: isDelegationReady ? true : false
     },
     privilegeGroups: {
-      title: $t({ defaultMessage: 'Privilege Groups ({priviliegeGroupCount})' },
-        { priviliegeGroupCount }),
+      title: $t({ defaultMessage: 'Privilege Groups ({privilegeGroupCount})' },
+        { privilegeGroupCount }),
       content: <PriviledgeGroups
         isPrimeAdminUser={isPrimeAdminUser}
         tenantType={tenantType}

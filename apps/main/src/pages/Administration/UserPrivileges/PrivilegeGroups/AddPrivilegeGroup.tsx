@@ -12,7 +12,8 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
-import { PriviliegeGroup } from '@acx-ui/rc/utils'
+import { useAddPrivilegeGroupMutation } from '@acx-ui/rc/services'
+import { PrivilegeGroup }               from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
@@ -22,21 +23,40 @@ import {
 
 import RoleSelector from '../../Administrators/AdministratorsTable/AddAdministratorDialog/RoleSelector'
 
+interface PrivilegeGroupData {
+  name?: string,
+  description?: string,
+  roleName?: string
+}
+
 export function AddPrivilegeGroup () {
   const intl = useIntl()
 
   const navigate = useNavigate()
   const { action } = useParams()
-  const location = useLocation().state as PriviliegeGroup
+  const location = useLocation().state as PrivilegeGroup
   const linkToPrivilegeGroups = useTenantLink('/administration/userPrivileges/privilegeGroups', 't')
   const [form] = Form.useForm()
+  const [addPrivilegeGroup] = useAddPrivilegeGroupMutation()
 
   const isEditMode = action === 'view' || action === 'edit'
 
   const handleAddPrivilegeGroup = async () => {
-    // try {
-    //   const ecFormData = { ...values }
-    // }
+    const formValues = form.getFieldsValue(true)
+
+    try {
+      await form.validateFields()
+      const privilegeGroupData: PrivilegeGroupData = {
+        name: formValues.name,
+        description: formValues.description,
+        roleName: formValues.role
+      }
+      await addPrivilegeGroup({ payload: privilegeGroupData }).unwrap()
+
+      navigate(linkToPrivilegeGroups)
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
   }
 
   if (isEditMode || action === 'clone') {
