@@ -79,7 +79,10 @@ export function getSeriesTotal <DataType extends TimeSeriesChartData> (
           return 0
         }
       })
-      return [ point[0], mean ? total / length : total ]
+      return [ point[0], mean
+        ? (length ? total / length : 0)
+        : total
+      ]
     })
   } as DataType
 }
