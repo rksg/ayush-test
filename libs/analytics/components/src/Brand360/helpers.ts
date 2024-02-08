@@ -165,8 +165,8 @@ export function computePastRange (
 export const slaKpiConfig = {
   incident: {
     getTitle: (sliceType: SliceType) => sliceType === 'lsp'
-      ? defineMessage({ defaultMessage: 'LSPs health' })
-      : defineMessage({ defaultMessage: 'Properties health' }),
+      ? defineMessage({ defaultMessage: 'LSP health' })
+      : defineMessage({ defaultMessage: 'Property health' }),
     dataKey: 'p1Incidents',
     avg: false,
     formatter: formatter('countFormat'),
