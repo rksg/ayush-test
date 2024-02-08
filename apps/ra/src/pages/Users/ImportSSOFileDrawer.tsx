@@ -197,6 +197,7 @@ export const ImportSSOFileDrawer = (props: ImportSSOFileDrawerProps) => {
     visible={visible}
     onClose={() => onClose()}
     destroyOnClose
+    forceRender
     footer={<><div>
       <ApplyButton />
       <Button onClick={() => onClose()}>
