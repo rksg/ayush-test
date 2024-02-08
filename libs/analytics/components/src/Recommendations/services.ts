@@ -19,10 +19,10 @@ import {
   StatusTrail,
   IconValue,
   StateType,
-  crrmStates
+  crrmStates,
+  CRRMStates
 } from './config'
 import { kpiHelper, RecommendationKpi } from './RecommendationDetails/services'
-import { CRRMStates }                   from './states'
 
 export type CrrmListItem = {
   id: string

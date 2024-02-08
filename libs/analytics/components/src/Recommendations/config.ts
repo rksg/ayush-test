@@ -5,12 +5,21 @@ import { compareVersion } from '@acx-ui/analytics/utils'
 import { get }            from '@acx-ui/config'
 import { formatter }      from '@acx-ui/formatter'
 
-import { CRRMStates } from './states'
-import { crrmText }   from './utils'
+import { crrmText } from './utils'
 
 export type IconValue = { order: number, label: MessageDescriptor }
 
 export type StatusTrail = Array<{ status: Lowercase<StateType>, createdAt?: string }>
+
+export enum CRRMStates {
+  optimized = 'optimized',
+  nonOptimized = 'nonOptimized',
+  verified = 'verified',
+  insufficientLicenses = 'insufficientLicenses',
+  unqualifiedZone = 'unqualifiedZone',
+  noAps = 'noAps',
+  verificationError = 'verificationError'
+}
 
 export type ConfigurationValue =
   string |
