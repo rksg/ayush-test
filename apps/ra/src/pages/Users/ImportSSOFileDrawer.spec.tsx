@@ -232,6 +232,7 @@ describe('ImportSSOFileDrawer', () => {
     { wrapper: Provider })
     expect(await screen.findByText('SSO Drawer')).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'OK' }))
     expect(updateSettingsMock).toHaveBeenCalledWith({ sso: JSON.stringify({}) })
     expect(setVisible).toHaveBeenCalledWith(false)
     expect(mockShowToast).toHaveBeenCalledWith({
@@ -254,6 +255,7 @@ describe('ImportSSOFileDrawer', () => {
     { wrapper: Provider })
     expect(await screen.findByText('SSO Drawer')).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'OK' }))
     expect(updateSettingsMock).toHaveBeenCalledWith({ sso: JSON.stringify({}) })
     expect(setVisible).toHaveBeenCalledWith(false)
     expect(mockShowToast).toHaveBeenCalledWith({

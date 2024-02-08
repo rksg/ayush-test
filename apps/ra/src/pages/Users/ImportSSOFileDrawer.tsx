@@ -17,7 +17,8 @@ import {
   Loader,
   Button,
   DrawerProps,
-  showToast
+  showToast,
+  showActionModal
 } from '@acx-ui/components'
 import { formatter } from '@acx-ui/formatter'
 
@@ -132,8 +133,7 @@ export const ImportSSOFileDrawer = (props: ImportSSOFileDrawerProps) => {
       })
   }
 
-  const deleteHandler = async () => {
-    setIsLoading(true)
+  const onDelete = async () => {
     await updateTenantSettings({
       sso: JSON.stringify({})
     })
@@ -156,6 +156,17 @@ export const ImportSSOFileDrawer = (props: ImportSSOFileDrawerProps) => {
         resetFields()
         setVisible(false)
       })
+
+  }
+
+  const deleteHandler = async () => {
+    showActionModal({
+      type: 'confirm',
+      title: $t({ defaultMessage: 'Delete SSO SAML File' }),
+      content: $t({
+        defaultMessage: 'Users added via SSO will no longer be able to log in. Are you sure?' }),
+      onOk: async () => await onDelete()
+    })
   }
 
   const ApplyButton = () => {
