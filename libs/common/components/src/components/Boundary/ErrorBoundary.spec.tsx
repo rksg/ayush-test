@@ -1,6 +1,6 @@
 /* eslint-disable no-unreachable, no-throw-literal */
 import '@testing-library/jest-dom'
-import { render, screen } from '@testing-library/react'
+import { render, screen } from '@acx-ui/test-utils'
 
 import { ErrorBoundary } from './ErrorBoundary'
 

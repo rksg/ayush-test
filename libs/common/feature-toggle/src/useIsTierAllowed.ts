@@ -1,6 +1,7 @@
 import { useDebugValue, useMemo } from 'react'
 
 import { useTreatments } from '@splitsoftware/splitio-react'
+import _                 from 'lodash'
 
 import { useUserProfileContext }                            from '@acx-ui/user'
 import { AccountType, AccountVertical, getJwtTokenPayload } from '@acx-ui/utils'
@@ -18,7 +19,10 @@ export const defaultConfig: Partial<Record<TierKey, string[]>> = {
 }
 /* eslint-enable */
 
-export function useFFList (): { featureList?: string[], betaList?: string[],
+export function useFFList (): {
+  featureList?: string[],
+  betaList?: string[],
+  featureDrawerBetaList?: string[],
   alphaList?: string[] } {
   const { data: userProfile, accountTier, betaEnabled } = useUserProfileContext()
   const jwtPayload = getJwtTokenPayload()
@@ -59,7 +63,7 @@ export function useFFList (): { featureList?: string[], betaList?: string[],
 
   const userFFConfig = useMemo(() => {
     if (treatment?.treatment === 'control') return defaultConfig
-    return JSON.parse(String(treatment?.config))
+    return treatment?.config ? JSON.parse(String(treatment.config)) : {}
   }, [treatment])
 
   const featureKey = [
@@ -68,9 +72,17 @@ export function useFFList (): { featureList?: string[], betaList?: string[],
     accountVertical
   ].join('-') as keyof typeof defaultConfig
 
+  const featureDefaultKey = [
+    'feature',
+    tenantType,
+    'Default'
+  ].join('-') as keyof typeof defaultConfig
+
   return {
-    featureList: userFFConfig[featureKey],
+    featureList: (accountVertical === AccountVertical.DEFAULT)?
+      userFFConfig[featureKey] : _.union(userFFConfig[featureKey], userFFConfig[featureDefaultKey]),
     betaList: betaEnabled? userFFConfig['betaList'] : [],
+    featureDrawerBetaList: userFFConfig['betaList'],
     alphaList: (betaEnabled && userProfile?.dogfood) ? userFFConfig['alphaList'] : []
   }
 }
@@ -87,4 +99,8 @@ export function useIsTierAllowed (featureId: string): boolean {
   useDebugValue(`PLM CONFIG: featureList: ${featureList}, betaList: ${betaList},
   alphaList: ${alphaList}, ${featureId}: ${enabled}`)
   return enabled
+}
+
+export const useGetBetaList = (): string[] => {
+  return useFFList().featureDrawerBetaList?? []
 }

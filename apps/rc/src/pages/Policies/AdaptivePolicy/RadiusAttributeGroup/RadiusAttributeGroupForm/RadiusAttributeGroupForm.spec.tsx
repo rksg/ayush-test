@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { policyApi }             from '@acx-ui/rc/services'
 import {
   getPolicyRoutePath,
   PolicyOperation,
@@ -8,7 +9,7 @@ import {
   RadiusAttributeGroupUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Path, To, useTenantLink } from '@acx-ui/react-router-dom'
-import { Provider }                from '@acx-ui/store'
+import { Provider, store }         from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -52,6 +53,7 @@ describe('RadiusAttributeGroupForm', () => {
   const editPath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.EDIT })
 
   beforeEach(async () => {
+    store.dispatch(policyApi.util.resetApiState())
     mockServer.use(
       rest.get(
         RadiusAttributeGroupUrlsInfo.getAttributeGroups.url.split('?')[0],
@@ -121,7 +123,6 @@ describe('RadiusAttributeGroupForm', () => {
 
     const validating = await screen.findByRole('img', { name: 'loading' })
     await waitForElementToBeRemoved(validating)
-    await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
 
     await screen.findByText('Group testGroup was added')
   })
@@ -178,8 +179,8 @@ describe('RadiusAttributeGroupForm', () => {
 
     await screen.findByRole('heading', { level: 1, name: 'Configure ' + attributeGroup.name })
 
-    const row = await screen.findByRole('row', { name: /Annex-CLI-Filter/ })
-    await userEvent.click(within(row).getByRole('radio'))
+    const rows = await screen.findAllByRole('row', { name: /Annex-CLI/ })
+    await userEvent.click(within(rows[0]).getByRole('radio')) //Annex-CLI-Filter
 
     await userEvent.click(screen.getByRole('button', { name: /Edit/i }))
     await screen.findByText('Attribute Type')
@@ -190,8 +191,7 @@ describe('RadiusAttributeGroupForm', () => {
 
     await userEvent.click(await screen.findByText('Done'))
 
-    const row1 = await screen.findByRole('row', { name: /Annex-CLI-Command/ })
-    fireEvent.click(within(row1).getByRole('radio'))
+    fireEvent.click(within(rows[1]).getByRole('radio')) //Annex-CLI-Command
     await userEvent.click(screen.getByRole('button', { name: /Delete/i }))
 
     const nameInput = await screen.findAllByRole('textbox', { name: 'Group Name' })

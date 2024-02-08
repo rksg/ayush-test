@@ -24,7 +24,8 @@ import {
   Entitlement,
   NewEntitlementSummary,
   TenantAuthentications,
-  AdminGroup
+  AdminGroup,
+  AdminGroupLastLogins
 } from '@acx-ui/rc/utils'
 import { baseAdministrationApi }                        from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -637,6 +638,16 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getAdminGroupLastLogins: build.query<AdminGroupLastLogins, RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getAdminGroupLastLogins, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Administration', id: 'ADMINGROUP_LIST' }]
     })
 
   })
@@ -698,5 +709,6 @@ export const {
   useGetAdminGroupsQuery,
   useDeleteAdminGroupsMutation,
   useAddAdminGroupsMutation,
-  useUpdateAdminGroupsMutation
+  useUpdateAdminGroupsMutation,
+  useGetAdminGroupLastLoginsQuery
 } = administrationApi

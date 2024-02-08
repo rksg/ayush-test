@@ -11,7 +11,7 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   AssignEcDrawer,
   ResendInviteModal,
@@ -59,7 +59,9 @@ export function Integrators () {
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const params = useParams()
-  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
+  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
+  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
+
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
 
@@ -163,12 +165,14 @@ export function Integrators () {
     const [selTenantId, setSelTenantId] = useState('')
     const navigate = useNavigate()
     const basePath = useTenantLink('/integrators/edit', 'v')
+    const settingsId = 'msp-integrators-table'
     const tableQuery = useTableQuery({
       useQuery: useMspCustomerListQuery,
       defaultPayload,
       search: {
         searchTargetFields: defaultPayload.searchTargetFields as string[]
-      }
+      },
+      pagination: { settingsId }
     })
     const [
       deleteMspEc,
@@ -216,7 +220,7 @@ export function Integrators () {
         tableQuery,
         { isLoading: false, isFetching: isDeleteEcUpdating }]}>
         <Table
-          settingsId='msp-integrators-table'
+          settingsId={settingsId}
           columns={columns}
           rowActions={filterByAccess(rowActions)}
           dataSource={tableQuery.data?.data}

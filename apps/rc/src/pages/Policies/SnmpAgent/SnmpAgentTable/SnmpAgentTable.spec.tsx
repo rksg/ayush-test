@@ -1,11 +1,16 @@
-import { waitForElementToBeRemoved } from '@testing-library/react'
-import userEvent                     from '@testing-library/user-event'
-import { rest }                      from 'msw'
-import { Path }                      from 'react-router-dom'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
+import { Path }  from 'react-router-dom'
 
+import { policyApi }                                                   from '@acx-ui/rc/services'
 import { ApSnmpUrls, getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
-import { Provider }                                                    from '@acx-ui/store'
-import { mockServer, render, screen, within }                          from '@acx-ui/test-utils'
+import { Provider, store }                                             from '@acx-ui/store'
+import {
+  mockServer,
+  render,
+  screen,
+  waitForElementToBeRemoved,
+  within }                          from '@acx-ui/test-utils'
 
 import SnmpAgentTable from './SnmpAgentTable'
 
@@ -52,6 +57,7 @@ describe('SnmpAgentTable', () => {
   const tablePath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST })
 
   beforeEach(async () => {
+    store.dispatch(policyApi.util.resetApiState())
     mockServer.use(
       rest.post(
         ApSnmpUrls.getApSnmpFromViewModel.url,
@@ -83,6 +89,7 @@ describe('SnmpAgentTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'Policies & Profiles'

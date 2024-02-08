@@ -1,12 +1,13 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useIsSplitOn }                      from '@acx-ui/feature-toggle'
+import { firmwareApi }                       from '@acx-ui/rc/services'
 import {
-  FirmwareUrlsInfo
+  FirmwareUrlsInfo, SwitchFirmwareFixtures
 } from '@acx-ui/rc/utils'
 import {
-  Provider
+  Provider, store
 } from '@acx-ui/store'
 import {
   mockServer,
@@ -21,16 +22,17 @@ import {
   switchVenue,
   preference,
   switchRelease,
-  switchCurrentVersions,
   switchLatest
 } from '../../__tests__/fixtures'
 
 import { VenueFirmwareListLegacy } from '.'
 
+const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
 
 describe('Firmware Venues Table', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
+    store.dispatch(firmwareApi.util.resetApiState())
     mockServer.use(
       rest.get(
         FirmwareUrlsInfo.getSwitchFirmwarePredownload.url,
@@ -60,7 +62,7 @@ describe('Firmware Venues Table', () => {
       ),
       rest.get(
         FirmwareUrlsInfo.getSwitchCurrentVersions.url,
-        (req, res, ctx) => res(ctx.json(switchCurrentVersions))
+        (req, res, ctx) => res(ctx.json(mockSwitchCurrentVersions))
       ),
       rest.get(
         FirmwareUrlsInfo.getSwitchAvailableFirmwareList.url,
@@ -190,11 +192,11 @@ describe('Firmware Venues Table', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const row = await screen.findByRole('row', { name: /My-Venue/i })
-    await userEvent.click(within(row).getByRole('checkbox'))
-
-    const row2 = await screen.findByRole('row', { name: /v2/i })
-    await userEvent.click(within(row2).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /My-Venue/i })).toBeVisible()
+    await userEvent.click(within(rows[1]).getByRole('checkbox')) ///My-Venue
+    expect(within(rows[2]).getByRole('cell', { name: /v2/i })).toBeVisible()
+    await userEvent.click(within(rows[2]).getByRole('checkbox')) //v2
 
     const changeButton = screen.getByRole('button', { name: /Change Update Schedule/i })
     await userEvent.click(changeButton)

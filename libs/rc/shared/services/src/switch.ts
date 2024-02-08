@@ -53,7 +53,6 @@ import {
   SwitchRearView,
   Lag,
   SwitchVlan,
-  enableNewApi,
   downloadFile,
   SEARCH,
   SORTER
@@ -371,7 +370,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const req = createHttpRequest(SwitchUrlsInfo.addSwitch, params)
         return {
           ...req,
-          body: enableNewApi(SwitchUrlsInfo.addSwitch) ? [payload] : payload
+          body: [payload]
         }
       }
     }),
@@ -387,7 +386,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     getPortSetting: build.query<PortSettingModel, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getPortSetting, params)
-        return enableNewApi(SwitchUrlsInfo.getPortSetting) ? { ...req, body: payload } : { ...req }
+        return { ...req, body: payload }
       },
       transformResponse: (result: PortsSetting | PortSettingModel) => {
         const res = _.get(result, 'response')
@@ -416,9 +415,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           SwitchUrlsInfo.getDefaultVlan,
           params
         )
-        if (enableNewApi(SwitchUrlsInfo.getDefaultVlan)) {
-          payload = { isDefault: true, switchIds: payload }
-        }
+        payload = { isDefault: true, switchIds: payload }
         return {
           ...req,
           body: payload
@@ -468,15 +465,13 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     getTaggedVlansByVenue: build.query<SwitchVlans[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getTaggedVlansByVenue, params)
-        return enableNewApi(SwitchUrlsInfo.getTaggedVlansByVenue) ?
-          { ...req, body: params } : { ...req }
+        return { ...req, body: params }
       }
     }),
     getUntaggedVlansByVenue: build.query<SwitchVlans[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getUntaggedVlansByVenue, params)
-        return enableNewApi(SwitchUrlsInfo.getUntaggedVlansByVenue) ?
-          { ...req, body: params } : { ...req }
+        return { ...req, body: params }
       }
     }),
     getSwitchConfigurationProfileByVenue: build.query<SwitchProfile[], RequestPayload>({
@@ -677,7 +672,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const req = createHttpRequest(SwitchUrlsInfo.addSwitch, params)
         return {
           ...req,
-          body: enableNewApi(SwitchUrlsInfo.addSwitch) ? [payload] : payload
+          body: [payload]
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
@@ -736,7 +731,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const req = createHttpRequest(SwitchUrlsInfo.addVePort, params)
         return {
           ...req,
-          body: enableNewApi(SwitchUrlsInfo.addVePort) ? [payload] : payload
+          body: [payload]
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'VE' }]
@@ -793,7 +788,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const req = createHttpRequest(SwitchUrlsInfo.addStaticRoute, params)
         return {
           ...req,
-          body: enableNewApi(SwitchUrlsInfo.addStaticRoute) ? [payload] : payload
+          body: [payload]
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'ROUTES' }]
@@ -860,23 +855,18 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     getSwitchClientDetails: build.query<SwitchClient, RequestPayload>({
       query: ({ params }) => {
         const clientListReq = createHttpRequest(SwitchUrlsInfo.getSwitchClientDetail, params)
-        if (enableNewApi(SwitchUrlsInfo.getSwitchClientDetail)) {
-          const payload = {
-            fields: ['switchId','clientVlan','venueId','switchSerialNumber','clientMac',
-              'clientName','clientDesc','clientType','switchPort','vlanName',
-              'switchName', 'venueName' ,'cog','id', 'clientIpv4Addr', 'clientIpv6Addr',
-              'dhcpClientOsVendorName', 'dhcpClientHostName',
-              'dhcpClientDeviceTypeName', 'dhcpClientModelName'],
-            filters: {
-              id: [_.get(params, 'clientId')]
-            }
-          }
-          return {
-            ...clientListReq, body: payload
+        const payload = {
+          fields: ['switchId','clientVlan','venueId','switchSerialNumber','clientMac',
+            'clientName','clientDesc','clientType','switchPort','vlanName',
+            'switchName', 'venueName' ,'cog','id', 'clientIpv4Addr', 'clientIpv6Addr',
+            'dhcpClientOsVendorName', 'dhcpClientHostName',
+            'dhcpClientDeviceTypeName', 'dhcpClientModelName'],
+          filters: {
+            id: [_.get(params, 'clientId')]
           }
         }
         return {
-          ...clientListReq
+          ...clientListReq, body: payload
         }
       },
       transformResponse: (result: SwitchClient | TableResult<SwitchClient>) => {
@@ -972,7 +962,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const req = createHttpRequest(SwitchUrlsInfo.addLag, params)
         return {
           ...req,
-          body: enableNewApi(SwitchUrlsInfo.addLag) ? [payload] : payload
+          body: [payload]
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'LAG' }]

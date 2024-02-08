@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { LayoutProps }            from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { LayoutProps }                              from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   ConfigurationOutlined,
   ConfigurationSolid,
@@ -18,15 +18,16 @@ import {
   SpeedIndicatorSolid,
   SpeedIndicatorOutlined
 } from '@acx-ui/icons'
-import { CONFIG_TEMPLATE_PATH_PREFIX, hasConfigTemplateAccess } from '@acx-ui/rc/utils'
-import { TenantType }                                           from '@acx-ui/react-router-dom'
-import { RolesEnum }                                            from '@acx-ui/types'
-import { hasRoles  }                                            from '@acx-ui/user'
-import { AccountType  }                                         from '@acx-ui/utils'
+import { getConfigTemplatePath, hasConfigTemplateAccess } from '@acx-ui/rc/utils'
+import { TenantType }                                     from '@acx-ui/react-router-dom'
+import { RolesEnum }                                      from '@acx-ui/types'
+import { hasRoles  }                                      from '@acx-ui/user'
+import { AccountType  }                                   from '@acx-ui/utils'
 
 export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfood?: boolean) {
   const { $t } = useIntl()
-  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
+  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
+  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
   const isBrand360 = useIsSplitOn(Features.MSP_BRAND_360)
 
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
@@ -94,7 +95,7 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfoo
     }]),
     ...(isConfigTemplateEnabled
       ? [{
-        uri: `/${CONFIG_TEMPLATE_PATH_PREFIX}`,
+        uri: '/' + getConfigTemplatePath(),
         label: $t({ defaultMessage: 'Config Templates' }),
         tenantType: 'v' as TenantType,
         inactiveIcon: CopyOutlined,

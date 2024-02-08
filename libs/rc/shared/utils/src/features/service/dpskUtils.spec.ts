@@ -1,4 +1,4 @@
-import { displayDeviceCountLimit, getPassphraseStatus, isActivePassphrase } from './dpskUtils'
+import { displayDeviceCountLimit, getPassphraseStatus } from './dpskUtils'
 
 const mockedBaseDpskPassphrase = {
   id: '__PASSPHRASE_ID_3__',
@@ -33,18 +33,5 @@ describe('DPSK utils', () => {
       ...mockedBaseDpskPassphrase
     }, true)
     expect(active).toBe('Active')
-  })
-
-  it('check is active passphrase', () => {
-    const revoked = isActivePassphrase({
-      ...mockedBaseDpskPassphrase,
-      revocationDate: '2022-12-24T08:00:00.000+0000'
-    }, true)
-    expect(revoked).toBe(false)
-
-    const active = isActivePassphrase({
-      ...mockedBaseDpskPassphrase
-    }, true)
-    expect(active).toBe(true)
   })
 })

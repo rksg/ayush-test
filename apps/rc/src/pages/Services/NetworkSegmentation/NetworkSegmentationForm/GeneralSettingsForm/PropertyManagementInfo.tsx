@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react'
 import { Form, Input }               from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Button, Loader, StepsForm }                     from '@acx-ui/components'
-import { IdentityGroupLink, useDpskNewConfigFlowParams } from '@acx-ui/rc/components'
+import { Button, Loader, StepsForm } from '@acx-ui/components'
+import { IdentityGroupLink }         from '@acx-ui/rc/components'
 import {
   useGetDpskQuery,
   useGetPersonaGroupByIdQuery,
@@ -29,7 +29,6 @@ export const PropertyManagementInfo = (props: PersonaGroupTableProps) => {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const [propertyManagementModalVisible, setPropertyManagementModalVisible] = useState(false)
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
   const {
     personaGroupId,
@@ -67,7 +66,7 @@ export const PropertyManagementInfo = (props: PersonaGroupTableProps) => {
     dpskData,
     isDpskLoading
   } = useGetDpskQuery(
-    { params: { serviceId: personaGroupData?.dpskPoolId, ...dpskNewConfigFlowParams } },
+    { params: { serviceId: personaGroupData?.dpskPoolId } },
     {
       skip: !!!personaGroupData?.dpskPoolId,
       selectFromResult: ({ data, isLoading, isFetching }) => {

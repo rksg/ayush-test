@@ -1,9 +1,11 @@
 import '@testing-library/jest-dom'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { MspUrlsInfo }                                                                       from '@acx-ui/msp/utils'
-import { Provider }                                                                          from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
+import { MspUrlsInfo }                                                            from '@acx-ui/msp/utils'
+import { Provider }                                                               from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import { VarCustomers } from '.'
 
@@ -122,21 +124,13 @@ const userProfile = {
   varTenantId: '3061bd56e37445a8993ac834c01e2710'
 }
 
-const services = require('@acx-ui/msp/services')
-jest.mock('@acx-ui/msp/services', () => ({
-  ...jest.requireActual('@acx-ui/msp/services')
-}))
 const user = require('@acx-ui/user')
-jest.mock('@acx-ui/user', () => ({
-  ...jest.requireActual('@acx-ui/user')
-}))
+const mockedReqFn = jest.fn()
 
 describe('VarCustomers', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
-    jest.spyOn(services, 'useVarCustomerListQuery')
-    jest.spyOn(services, 'useInviteCustomerListQuery')
-    jest.spyOn(services, 'useAcceptRejectInvitationMutation')
+    mockedReqFn.mockClear()
     mockServer.use(
       rest.post(
         MspUrlsInfo.getVarDelegations.url,
@@ -144,7 +138,10 @@ describe('VarCustomers', () => {
       ),
       rest.put(
         MspUrlsInfo.acceptRejectInvitation.url,
-        (req, res, ctx) => res(ctx.json({ requestId: '123' }))
+        (req, res, ctx) => {
+          mockedReqFn()
+          return res(ctx.json({ requestId: '123' }))
+        }
       )
     )
     params = {
@@ -152,6 +149,7 @@ describe('VarCustomers', () => {
     }
   })
   it.skip('should render correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
@@ -186,7 +184,6 @@ describe('VarCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/varCustomers' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('My Customers')).toBeVisible()
   })
   it('should handle accept row', async () => {
@@ -205,18 +202,8 @@ describe('VarCustomers', () => {
     expect(await screen.findByText(`Pending Invitations (${varlist.totalCount})`)).toBeVisible()
     const acceptButtons = screen.getAllByRole('button', { name: 'Accept' })
     expect(acceptButtons).toHaveLength(5)
-    fireEvent.click(acceptButtons.at(0)!)
-
-    const value: [Function, Object] = [
-      expect.any(Function),
-      expect.objectContaining({
-        data: { requestId: '123' },
-        status: 'fulfilled'
-      })
-    ]
-
-    await waitFor(() =>
-      expect(services.useAcceptRejectInvitationMutation).toHaveLastReturnedWith(value))
+    await userEvent.click(acceptButtons.at(0)!)
+    await waitFor(() => expect(mockedReqFn).toBeCalled())
   })
   it('should handle reject row', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
@@ -234,21 +221,14 @@ describe('VarCustomers', () => {
     expect(await screen.findByText(`Pending Invitations (${varlist.totalCount})`)).toBeVisible()
     const rejectButtons = screen.getAllByRole('button', { name: 'Reject' })
     expect(rejectButtons).toHaveLength(5)
-    fireEvent.click(rejectButtons.at(0)!)
-
-    expect(await screen.findByText('Reject Request?')).toBeVisible()
-    fireEvent.click(screen.getByRole('button', { name: 'Yes' }))
-
-    const value: [Function, Object] = [
-      expect.any(Function),
-      expect.objectContaining({
-        data: { requestId: '123' },
-        status: 'fulfilled'
-      })
-    ]
-
-    await waitFor(() =>
-      expect(services.useAcceptRejectInvitationMutation).toHaveLastReturnedWith(value))
+    await userEvent.click(rejectButtons.at(0)!)
+    const dialog = await screen.findByRole('dialog')
+    await waitFor(async () => {
+      expect(await screen.findByText('Reject Request?')).toBeVisible()
+    })
+    await userEvent.click(await screen.findByRole('button', { name: 'Yes' }))
+    await waitFor(async () => expect(dialog).not.toBeVisible())
+    await waitFor(() => expect(mockedReqFn).toBeCalled())
   })
   it('should render correctly for support user', async () => {
     const supportUserProfile = { ...userProfile }

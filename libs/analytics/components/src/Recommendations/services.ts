@@ -19,10 +19,10 @@ import {
   StatusTrail,
   IconValue,
   StateType,
-  crrmStates,
-  CRRMStates
+  crrmStates
 } from './config'
 import { kpiHelper, RecommendationKpi } from './RecommendationDetails/services'
+import { CRRMStates }                   from './states'
 
 export type CrrmListItem = {
   id: string
@@ -76,7 +76,7 @@ export type Recommendation = {
   updatedAt: string
   sliceType: string
   sliceValue: string
-  metadata: { scheduledAt: string }
+  metadata: object & { scheduledAt: string }
   isMuted: boolean
   mutedBy: string
   mutedAt: string | null
@@ -194,13 +194,19 @@ const getStatusTooltip = (code: string, state: StateType, metadata: Metadata) =>
   })
 }
 
-const optimizedStates = ['applied', 'applyscheduleinprogress', 'applyscheduled']
-export const unknownStates = [ 'insufficientLicenses', 'verificationError', 'verified' ]
+const optimizedStates = [ 'applied', 'applyscheduleinprogress', 'applyscheduled']
+export const unknownStates = [
+  CRRMStates.insufficientLicenses,
+  CRRMStates.verificationError,
+  CRRMStates.verified,
+  CRRMStates.unqualifiedZone,
+  CRRMStates.noAps
+]
 
 export const getCrrmOptimizedState = (state: StateType) => {
   return optimizedStates.includes(state)
     ? crrmStates.optimized
-    : unknownStates.includes(state)
+    : unknownStates.includes(state as CRRMStates)
       ? crrmStates[state as CRRMStates]
       : crrmStates.nonOptimized
 }

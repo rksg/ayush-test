@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 
-import { renderHook, render } from '@testing-library/react'
-import { MemoryRouter }       from 'react-router-dom'
+import { MemoryRouter } from 'react-router-dom'
 
 import { get }                                               from '@acx-ui/config'
+import { renderHook, render }                                from '@acx-ui/test-utils'
 import { resetRanges, fixedEncodeURIComponent, NetworkPath } from '@acx-ui/utils'
 
 import {

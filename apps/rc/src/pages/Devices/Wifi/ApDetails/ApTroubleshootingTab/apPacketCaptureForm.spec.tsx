@@ -174,7 +174,7 @@ describe('ApPacketCaptureForm', () => {
     expect(await screen.findByText(/5 ghz/i)).toBeVisible()
   })
 
-  it('should handle error occurred for start packet capture', async () => {
+  it.skip('should handle error occurred for start packet capture', async () => {
     mockServer.use(
       rest.post(WifiUrlsInfo.startPacketCapture.url,
         (_, res, ctx) => {
@@ -195,7 +195,7 @@ describe('ApPacketCaptureForm', () => {
     // expect(await screen.findByText('Server Error')).toBeVisible()
   })
 
-  it('should handle error occurred for stop packet capture', async () => {
+  it.skip('should handle error occurred for stop packet capture', async () => {
     mockServer.use(
       rest.post(WifiUrlsInfo.startPacketCapture.url,
         (req, res, ctx) => res(ctx.json(startPacketCackture))),

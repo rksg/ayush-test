@@ -6,6 +6,7 @@ import _                                                    from 'lodash'
 import { useIntl }                                          from 'react-intl'
 
 import { Subtitle, useStepFormContext } from '@acx-ui/components'
+import { useSwitchFirmwareUtils }       from '@acx-ui/rc/components'
 import {
   AVAILABLE_SLOTS,
   FirmwareCategory,
@@ -15,8 +16,7 @@ import {
   switchSchedule
 } from '@acx-ui/rc/utils'
 
-import * as UI                   from '../../styledComponents'
-import { getSwitchVersionLabel } from '../../switch.upgrade.util'
+import * as UI from '../../styledComponents'
 
 import { PreDownload } from './PreDownload'
 
@@ -42,6 +42,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
 
   const intl = useIntl()
   const { form, current } = useStepFormContext()
+  const { getSwitchVersionLabel } = useSwitchFirmwareUtils()
   const [selectedVersion, setSelectedVersion] = useState('')
   const [selectedAboveTenVersion, setSelectedAboveTenVersion] = useState<string>('')
   const [hasSelectedDate, setHasSelectedDate] = useState<boolean>(false)
@@ -143,6 +144,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
 
   return (
     <div
+      data-testid='schedule-step'
       style={{
         minHeight: '50vh',
         marginBottom: '30px'

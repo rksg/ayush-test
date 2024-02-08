@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
+import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, FirmwareUrlsInfo }    from '@acx-ui/rc/utils'
 import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
@@ -143,6 +144,7 @@ jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   hasConfigTemplateAccess: () => mockedHasConfigTemplateAccess
 }))
+jest.mocked(useIsSplitOn).mockReturnValue(true)
 
 describe('Layout', () => {
   let params: { tenantId: string }

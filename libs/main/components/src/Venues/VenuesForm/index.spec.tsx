@@ -2,22 +2,24 @@ import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
 
-import { useIsSplitOn }                                          from '@acx-ui/feature-toggle'
-import { AdministrationUrlsInfo, CommonUrlsInfo, getUrlForTest } from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
+import { useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
+import { AdministrationUrlsInfo, CommonUrlsInfo, ConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                       from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen,
   fireEvent,
-  waitForElementToBeRemoved
+  waitForElementToBeRemoved,
+  waitFor
 } from '@acx-ui/test-utils'
 
 import {
   venuelist,
   autocompleteResult,
   timezoneResult,
-  successResponse
+  successResponse,
+  mockVenueConfigTemplates
 } from '../__tests__/fixtures'
 
 import { VenuesForm, addressParser } from '.'
@@ -39,9 +41,17 @@ const venueResponse = {
 }
 
 const mockedUsedNavigate = jest.fn()
+const mockedUseLocation = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
+  useNavigate: () => mockedUsedNavigate,
+  useLocation: () => mockedUseLocation()
+}))
+
+const mockedUseConfigTemplate = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useConfigTemplate: () => mockedUseConfigTemplate()
 }))
 
 describe('Venues Form', () => {
@@ -51,24 +61,19 @@ describe('Venues Form', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
     mockServer.use(
-      rest.post(
-        getUrlForTest(CommonUrlsInfo.addVenue),
+      rest.post(CommonUrlsInfo.addVenue.url,
         (req, res, ctx) => res(ctx.json(successResponse))
       ),
-      rest.post(
-        getUrlForTest(CommonUrlsInfo.getVenuesList),
+      rest.post(CommonUrlsInfo.getVenuesList.url,
         (req, res, ctx) => res(ctx.json(venuelist))
       ),
-      rest.get(
-        getUrlForTest(CommonUrlsInfo.getVenue),
+      rest.get(CommonUrlsInfo.getVenue.url,
         (req, res, ctx) => res(ctx.json(venueResponse))
       ),
-      rest.put(
-        getUrlForTest(CommonUrlsInfo.updateVenue),
+      rest.put(CommonUrlsInfo.updateVenue.url,
         (req, res, ctx) => res(ctx.json(successResponse))
       ),
-      rest.get(
-        'https://maps.googleapis.com/maps/api/timezone/*',
+      rest.get('https://maps.googleapis.com/maps/api/timezone/*',
         (req, res, ctx) => res(ctx.json(timezoneResult))
       ),
       rest.get(
@@ -82,9 +87,18 @@ describe('Venues Form', () => {
     initialize()
   })
 
-  it('should render venues form', async () => {
+  beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+    mockedUseLocation.mockReturnValue({ pathname: '', search: '', hash: '', state: {}, key: '' })
+  })
 
+  afterEach(() => {
+    jest.clearAllMocks()
+    jest.restoreAllMocks()
+  })
+
+  it('should render venues form', async () => {
     render(
       <Provider>
         <VenuesForm />
@@ -110,8 +124,6 @@ describe('Venues Form', () => {
   })
 
   it('venue name not allow white space only', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-
     render(
       <Provider>
         <VenuesForm />
@@ -141,7 +153,6 @@ describe('Venues Form', () => {
     expect(address).toEqual(addressResult)
   })
   it('google map is enabled', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(
       <Provider>
         <VenuesForm />
@@ -164,7 +175,6 @@ describe('Venues Form', () => {
     expect(await screen.findByText('Map is not enabled')).toBeVisible()
   })
   it('should back to venues list', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(
       <Provider>
         <VenuesForm />
@@ -180,8 +190,6 @@ describe('Venues Form', () => {
     })
   })
   it('should edit venue successfully', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-
     const params = {
       venueId: '2c16284692364ab6a01f4c60f5941836',
       tenantId: 'tenant-id',
@@ -203,5 +211,52 @@ describe('Venues Form', () => {
 
     const saveButton = screen.getByText('Save')
     await userEvent.click(saveButton)
+  })
+
+  it('should render venue config template form', async () => {
+    const mockedPreviousPath = '/configTemplates'
+    mockedUseLocation.mockReturnValue({ state: { from: { pathname: mockedPreviousPath } } })
+
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+
+    const addTemplateFn = jest.fn()
+    mockServer.use(
+      rest.post(
+        ConfigTemplateUrlsInfo.addVenueTemplate.url,
+        (_, res, ctx) => {
+          addTemplateFn()
+          return res(ctx.json(successResponse))
+        }
+      ),
+      rest.post(
+        ConfigTemplateUrlsInfo.getVenuesTemplateList.url,
+        (_, res, ctx) => res(ctx.json(mockVenueConfigTemplates))
+      )
+    )
+
+    render(
+      <Provider>
+        <VenuesForm />
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/venues/add' }
+      })
+
+    const venueInput = await screen.findByLabelText('Venue Name')
+    await userEvent.type(venueInput, 'test-venue-template')
+    fireEvent.blur(venueInput)
+
+    // Field validation indicator
+    await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
+
+    const descriptionInput = screen.getByLabelText('Description')
+    await userEvent.type(descriptionInput, 'My First Venue Template')
+
+    await userEvent.click(screen.getByRole('button', { name: /Add/ }))
+
+    await waitFor(() => expect(addTemplateFn).toHaveBeenCalled())
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalledWith(mockedPreviousPath)
+    })
   })
 })

@@ -65,14 +65,11 @@ describe('UserProfileContext', () => {
       rest.get(UserUrlsInfo.upgradeAllowedOperations.url.replace('?service=upgradeConfig', ''),
         (req, res, ctx) => res(ctx.json([]))),
       rest.get(UserUrlsInfo.getAccountTier.url as string,
-        (req, res, ctx) => {
-          return res(ctx.json({ acx_account_tier: 'Gold' }))
-        }
-      ),
-      rest.get(
-        UserUrlsInfo.getBetaStatus.url,
-        (_req, res, ctx) => res(ctx.status(200))
-      )
+        (req, res, ctx) => { return res(ctx.json({ acx_account_tier: 'Gold' }))}),
+      rest.get(UserUrlsInfo.getBetaStatus.url,(_req, res, ctx) =>
+        res(ctx.status(200))),
+      rest.put(UserUrlsInfo.toggleBetaStatus.url,
+        (_req, res, ctx) => res(ctx.json({})))
     )
   })
 

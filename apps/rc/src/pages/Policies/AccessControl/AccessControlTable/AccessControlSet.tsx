@@ -53,9 +53,11 @@ const AccessControlSet = () => {
   const [networkFilterOptions, setNetworkFilterOptions] = useState([] as AclOptionType[])
   const [networkIds, setNetworkIds] = useState([] as string[])
 
+  const settingsId = 'policies-access-control-set-table'
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedAccessControlProfileListQuery,
-    defaultPayload
+    defaultPayload,
+    pagination: { settingsId }
   })
 
   const networkTableQuery = useTableQuery<Network>({
@@ -137,7 +139,7 @@ const AccessControlSet = () => {
 
   return <Loader states={[tableQuery]}>
     <Table<EnhancedAccessControlInfoType>
-      settingsId='policies-access-control-set-table'
+      settingsId={settingsId}
       enableApiFilter={true}
       columns={useColumns(networkFilterOptions)}
       dataSource={tableQuery?.data?.data}

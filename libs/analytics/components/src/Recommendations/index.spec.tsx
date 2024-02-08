@@ -363,7 +363,7 @@ describe('RecommendationTabContent', () => {
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     const row = screen.getByRole('row', {
       // eslint-disable-next-line max-len
-      name: /Insufficient Licenses 11\/12\/2023 06:05 Insufficient Licenses 01-Alethea-WiCheck Test Insufficient Licenses/
+      name: /Insufficient Licenses 11\/12\/2023 06:05 No RRM recommendation due to incomplete license compliance 01-Alethea-WiCheck Test Insufficient Licenses/
     })
     expect(row.classList.contains('crrm-optimization-mismatch')).toBeFalsy()
   })

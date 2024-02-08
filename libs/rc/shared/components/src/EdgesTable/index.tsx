@@ -77,6 +77,7 @@ const venueOptionsDefaultPayload = {
 
 export const EdgesTable = (props: EdgesTableProps) => {
   const {
+    settingsId = 'edges-table',
     tableQuery: customTableQuery,
     columns,
     filterColumns,
@@ -96,6 +97,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
     search: {
       searchTargetFields: ['name', 'serialNumber', 'ip']
     },
+    pagination: { settingsId },
     ...customTableQuery
   })
   const statusFilterOptions = seriesMappingAP().map(({ key, name, color }) => ({
@@ -176,7 +178,8 @@ export const EdgesTable = (props: EdgesTableProps) => {
       title: $t({ defaultMessage: 'Ports' }),
       key: 'ports',
       dataIndex: 'ports',
-      sorter: true
+      sorter: true,
+      align: 'center'
     },
     {
       title: $t({ defaultMessage: 'Venue' }),
@@ -264,7 +267,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
   return (
     <Loader states={[tableQuery]}>
       <Table
-        settingsId='edges-table'
+        settingsId={settingsId}
         rowKey='serialNumber'
         rowActions={filterByAccess(rowActions)}
         columns={columns ?? defaultColumns}

@@ -25,7 +25,9 @@ export enum Attributes {
   Scope,
   Duration,
   EventStartTime,
-  EventEndTime
+  EventEndTime,
+  DataStartTime,
+  DataEndTime
 }
 
 export const durationOf = (start: string, end: string) =>
@@ -120,6 +122,20 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
       getValue: (incident: Incident) => ({
         label: intl.$t({ defaultMessage: 'Event End Time' }),
         children: formatter(DateFormatEnum.DateTimeFormat)(incident.endTime)
+      })
+    },
+    [Attributes.DataStartTime]: {
+      key: 'dataStartTime',
+      getValue: (incident: Incident) => ({
+        label: intl.$t({ defaultMessage: 'Data Start Time' }),
+        children: formatter(DateFormatEnum.DateTimeFormat)(incident.impactedStart)
+      })
+    },
+    [Attributes.DataEndTime]: {
+      key: 'dataEndTime',
+      getValue: (incident: Incident) => ({
+        label: intl.$t({ defaultMessage: 'Data End Time' }),
+        children: formatter(DateFormatEnum.DateTimeFormat)(incident.impactedEnd)
       })
     }
   }

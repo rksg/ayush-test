@@ -331,8 +331,8 @@ export function EditPortDrawer ({
 
     setEditPortData(portSetting)
     setDisablePoeCapability(getPoeCapabilityDisabled([portSetting]))
-    setUseVenueSettings(portSetting.revert)
-    setLldpQosList(portSetting.lldpQos || [])
+    setUseVenueSettings(portSetting?.revert)
+    setLldpQosList(portSetting?.lldpQos || [])
 
     setInitPortVlans(getInitPortVlans( [portSetting], defaultVlan ))
     setPortEditStatus(
@@ -471,7 +471,9 @@ export function EditPortDrawer ({
         name={`${field}Checkbox`}
         valuePropName='checked'
         initialValue={false}
-        children={<Checkbox disabled={getOverrideDisabled(field)} />}
+        children={<Checkbox
+          data-testid={`${field}-override-checkbox`}
+          disabled={getOverrideDisabled(field)} />}
       />}
       { extraLabel && <UI.ExtraLabel>{ labelName }</UI.ExtraLabel> }
       { content }
@@ -816,7 +818,7 @@ export function EditPortDrawer ({
               name='portVlansCheckbox'
               valuePropName='checked'
               initialValue={false}
-              children={<Checkbox />}
+              children={<Checkbox data-testid='portVlans-override-checkbox' />}
             />
           </Space>}
           <div style={{ marginBottom: isMultipleEdit ? '0' : '30px' }}>
@@ -922,14 +924,14 @@ export function EditPortDrawer ({
                   name='voiceVlan'
                   noStyle
                   children={
-                    <>
+                    <Space data-testid='voice-vlan' size={4}>
                       <span> {$t({ defaultMessage: 'Set as Voice VLAN:' })} </span>
                       {
                         voiceVlan
                           ? $t({ defaultMessage: 'Yes (VLAN-ID: {voiceVlan})' }, { voiceVlan })
                           : $t({ defaultMessage: 'No' })
                       }
-                    </>
+                    </Space>
                   }
                 />
               </UI.VoiceVlan> :
@@ -993,6 +995,7 @@ export function EditPortDrawer ({
                       initialValue={false}
                     >
                       <Switch
+                        data-testid='port-enable-checkbox'
                         disabled={getFieldDisabled('portEnable')}
                         className={
                           getToggleClassName('portEnable', isMultipleEdit, hasMultipleValue)

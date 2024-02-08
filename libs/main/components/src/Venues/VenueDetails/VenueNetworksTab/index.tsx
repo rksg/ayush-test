@@ -11,11 +11,17 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
-import { transformVLAN,
+import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
+import {
+  transformVLAN,
   transformAps,
   transformRadios,
-  transformScheduling, NetworkApGroupDialog, NetworkVenueScheduleDialog } from '@acx-ui/rc/components'
+  transformScheduling,
+  NetworkApGroupDialog,
+  NetworkVenueScheduleDialog,
+  useSdLanScopedNetworks,
+  checkSdLanScopedNetworkDeactivateAction, renderConfigTemplateDetailsLink
+} from '@acx-ui/rc/components'
 import {
   useAddNetworkVenueMutation,
   useUpdateNetworkVenueMutation,
@@ -37,7 +43,7 @@ import {
   ApGroupModalState,
   NetworkExtended,
   SchedulerTypeEnum,
-  SchedulingModalState
+  SchedulingModalState, ConfigTemplateType, useConfigTemplate, getConfigTemplatePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                    from '@acx-ui/user'
@@ -77,10 +83,13 @@ interface schedule {
 
 export function VenueNetworksTab () {
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
   const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
+  const settingsId = 'venue-networks-table'
   const tableQuery = useTableQuery({
     useQuery: isApCompatibleCheckEnabled ? useVenueNetworkTableQuery: useVenueNetworkListQuery,
-    defaultPayload
+    defaultPayload,
+    pagination: { settingsId }
   })
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
@@ -107,6 +116,7 @@ export function VenueNetworksTab () {
     deleteNetworkVenue,
     { isLoading: isDeleteNetworkUpdating }
   ] = useDeleteNetworkVenueMutation()
+  const sdLanScopedNetworks = useSdLanScopedNetworks(tableQuery.data?.data.map(item => item.id))
 
   useEffect(()=>{
     if (tableQuery.data) {
@@ -134,6 +144,7 @@ export function VenueNetworksTab () {
 
   const scheduleSlotIndexMap = useScheduleSlotIndexMap(tableData, isMapEnabled)
   const linkToAddNetwork = useTenantLink('/networks/wireless/add')
+  const linkToAddNetworkTemplate = useTenantLink(getConfigTemplatePath('networks/wireless/add'), 'v')
 
   const activateNetwork = async (checked: boolean, row: Network) => {
     if (row.allApDisabled) {
@@ -175,6 +186,14 @@ export function VenueNetworksTab () {
     return supportOweTransition && row?.isOweMaster === false && row?.owePairNetworkId !== undefined
   }
 
+  const getTenantLink = (row: Network) => {
+    return isTemplate
+      // eslint-disable-next-line max-len
+      ? renderConfigTemplateDetailsLink(ConfigTemplateType.NETWORK, row.id, row.name)
+      // eslint-disable-next-line max-len
+      : <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>{row.name}</TenantLink>
+  }
+
   // TODO: Waiting for API support
   // const actions: TableProps<Network>['actions'] = [
   //   {
@@ -193,7 +212,7 @@ export function VenueNetworksTab () {
     {
       label: $t({ defaultMessage: 'Add Network' }),
       onClick: () => {
-        navigate(`${linkToAddNetwork.pathname}`)
+        navigate(`${isTemplate ? linkToAddNetworkTemplate.pathname : linkToAddNetwork.pathname}`)
       }
     }
   ]
@@ -207,10 +226,7 @@ export function VenueNetworksTab () {
       defaultSortOrder: 'ascend',
       fixed: 'left',
       render: function (_, row) {
-        return (!!row?.isOnBoarded ?
-          <span>{row.name}</span>
-          : <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>{row.name}</TenantLink>
-        )
+        return !!row?.isOnBoarded ? <span>{row.name}</span> : getTenantLink(row)
       }
     },
     {
@@ -243,10 +259,10 @@ export function VenueNetworksTab () {
         } else if (row?.isOnBoarded) {
           disabled = true
           title = $t({ defaultMessage: 'This is a Onboarding network for WPA3-DPSK3 for DPSK, so its activation on this venue is tied to the Service network exclusively.' })
-        }else if (isSystemCreatedNetwork(row)) {
+        } else if (isSystemCreatedNetwork(row)) {
           disabled = true
           title = $t({ defaultMessage: 'Activating the OWE network also enables the read-only OWE transition network.' })
-        }else{
+        } else {
           title = ''
         }
         return <Tooltip
@@ -255,7 +271,14 @@ export function VenueNetworksTab () {
             checked={Boolean(row.activated?.isActivated)}
             disabled={disabled}
             onClick={(checked, event) => {
-              activateNetwork(checked, row)
+              if (!checked) {
+                checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworks, [row.id], () => {
+                  activateNetwork(checked, row)
+                })
+              } else {
+                activateNetwork(checked, row)
+              }
+
               event.stopPropagation()
             }}
           /></Tooltip>
@@ -394,7 +417,7 @@ export function VenueNetworksTab () {
       { isLoading: false, isFetching: isDeleteNetworkUpdating }
     ]}>
       <Table
-        settingsId='venue-networks-table'
+        settingsId={settingsId}
         rowKey='id'
         actions={filterByAccess(actions)}
         // rowSelection={{

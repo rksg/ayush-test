@@ -314,7 +314,7 @@ export const apSpecificKeyMap = [
   { id: 309, value: 'initialState.CcmApSpecifics.radio_configs.radio5gUpper.radio.wlan_service_enabled', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 310, value: 'initialState.CcmApSpecifics.radio_configs.radio5gUpper.secondary_channel', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 311, value: 'initialState.CcmApSpecifics.radio_configs.radio6g.channel2_enable', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
-  { id: 312, value: 'initialState.CcmApSpecifics.radio_configs.radio6g.low_power_indoor_mode_enable', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
+  { id: 312, value: 'initialState.CcmApSpecifics.radio_configs.radio6g.low_power_indoor_mode_enable', text: defineMessage({ defaultMessage: 'AFC Enable' }), textAlto: defineMessage({ defaultMessage: 'AFC Enable' }), enumType: '', incidents: {}, kpis: { connectionSuccess: 1, timeToConnect: 1, userAuthentication: 1, association: 1, clientThroughput: 1, rss: 1 } },
   { id: 313, value: 'initialState.CcmApSpecifics.radio_configs.radio6g.radio.adj_threshold', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 314, value: 'initialState.CcmApSpecifics.radio_configs.radio6g.radio.auto_cell_sizing', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 315, value: 'initialState.CcmApSpecifics.radio_configs.radio6g.radio.bg_scan', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },

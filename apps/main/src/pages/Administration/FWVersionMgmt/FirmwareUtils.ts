@@ -1,3 +1,4 @@
+import _             from 'lodash'
 import moment        from 'moment-timezone'
 import { IntlShape } from 'react-intl'
 
@@ -12,7 +13,7 @@ import {
   FirmwareType,
   Schedule,
   LatestEdgeFirmwareVersion,
-  parseSwitchVersion
+  EolApFirmware
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -52,6 +53,15 @@ export const AVAILABLE_SLOTS: Array<{ value: string, label: string }> = [
 export const SCHEDULE_START_TIME_FORMAT = 'dddd, MMM. DD, hh A'
 export const SCHEDULE_END_TIME_FORMAT = 'hh A'
 
+export type MaxABFVersionEntity = {
+  maxVersion: string,
+  isAllTheSame: boolean,
+  latestVersion: string,
+}
+export type MaxABFVersionMap = {
+  [abfName: string]: MaxABFVersionEntity
+}
+
 export const compareVersions = (a?: string, b?: string): number => {
   const v1 = (a || '').split('.')
   const v2 = (b || '').split('.')
@@ -68,39 +78,15 @@ export const isBetaFirmware = (category: FirmwareCategory): boolean => {
   return category.toUpperCase() === FirmwareCategory.BETA.toUpperCase()
 }
 
-export const compareSwitchVersion = (a: string, b: string): number => {
-  // eslint-disable-next-line max-len
-  const switchVersionReg = /^(?:[A-Z]{3,})?(?<major>\d{4,})(?<minor>[a-z]*)(?:_cd(?<candidate>\d+))?(?:_rc(?<rcbuild>\d+))?(?:_b(?<build>\d+))?$/
-  const group1 = a?.match(switchVersionReg)?.groups
-  const group2 = b?.match(switchVersionReg)?.groups
-  if (group1 && group2) {
-    let res = 0
-    const keys = ['major', 'minor', 'candidate', 'rcbuild', 'build']
-    keys.every(key=>{
-      const initValue = (key === 'candidate') ? '0' : (key === 'build') ? '999' : ''
-      const aValue = group1[key] || initValue
-      const bValue = group2[key] || initValue
-      res = aValue.localeCompare(bValue, 'en-u-kn-true') // sort by charCode and numeric
-
-      if (key === 'rcbuild' && (
-        (aValue && bValue === '' && !group2['build']) ||
-        (aValue === '' && !group1['build'] && bValue)
-      )) { // '10010' == '10010_rc2'
-        res = 0
-        return false
-      }
-      return res === 0 // false to break every loop
-    })
-    return res
-  }
-  return 0
-}
-
 // eslint-disable-next-line max-len
 const typeIsApFunc = (value: FirmwareVenueVersion) => value && value.type && value.type === FirmwareType.AP_FIRMWARE_UPGRADE
 
 export const getApVersion = (venue: FirmwareVenue): string | undefined => {
   return getApFieldInVersions(venue, 'version')
+}
+
+export const getApSequence = (venue: FirmwareVenue): number | undefined => {
+  return getApFieldInVersions(venue, 'sequence')
 }
 
 // eslint-disable-next-line max-len
@@ -140,19 +126,6 @@ export const getVersionLabel = (intl: IntlShape, version: VersionLabelType, show
 
   // eslint-disable-next-line max-len
   return `${versionName}${showType ? ` (${versionType}) ` : ' '}${versionDate ? '- ' + versionDate : ''}`
-}
-
-export const getSwitchVersionLabel = (intl: IntlShape, version: FirmwareVersion): string => {
-  const transform = firmwareTypeTrans(intl.$t)
-  const versionName = parseSwitchVersion(version?.name)
-  const versionType = transform(version?.category)
-
-  let displayVersion = `${versionName} (${versionType})`
-  if(version.inUse){
-    // eslint-disable-next-line max-len
-    displayVersion = `${displayVersion} - ${intl.$t({ defaultMessage: 'Selected Venues are already on this release' })}`
-  }
-  return displayVersion
 }
 
 export const toUserDate = (date: string): string => {
@@ -242,22 +215,73 @@ export const isSwitchNextScheduleTooltipDisabled = (venue: FirmwareSwitchVenue) 
   return venue.nextSchedule
 }
 
-export const getSwitchNextScheduleTplTooltip = (venue: FirmwareSwitchVenue): string | undefined => {
-  if (venue.nextSchedule) {
-    const versionName = venue.nextSchedule.version?.name
-    const versionAboveTenName = venue.nextSchedule.versionAboveTen?.name
-    let names = []
 
-    if (versionName) {
-      names.push(parseSwitchVersion(versionName))
-    }
+export function findMaxActiveABFVersion (selectedRows: FirmwareVenue[]): {
+  maxVersion: string
+  isAllTheSame: boolean
+} {
+  let selectedMaxVersion: string | undefined
+  let isSameVersion = true
 
-    if (versionAboveTenName) {
-      names.push(parseSwitchVersion(versionAboveTenName))
+  selectedRows.forEach((row: FirmwareVenue) => {
+    const version = getApVersion(row)
+    if (selectedMaxVersion && compareVersions(version, selectedMaxVersion) !== 0) {
+      isSameVersion = false
     }
-    return names.join(', ')
+    if (!selectedMaxVersion || compareVersions(version, selectedMaxVersion) > 0) {
+      selectedMaxVersion = version
+    }
+  })
+
+  return {
+    maxVersion: selectedMaxVersion!,
+    isAllTheSame: isSameVersion
   }
-  return ''
 }
 
+export function compactEolApFirmwares (selectedRows: FirmwareVenue[]): EolApFirmware[] {
+  return _.compact(selectedRows.map(row => row.eolApFirmwares)).flat()
+}
 
+export function findMaxEolABFVersions (selectedRows: FirmwareVenue[]): MaxABFVersionMap {
+  const eolFirmwares = compactEolApFirmwares(selectedRows)
+  let result: MaxABFVersionMap = {}
+
+  eolFirmwares.forEach((eol: EolApFirmware) => {
+    if (result.hasOwnProperty(eol.name)) {
+      const current = result[eol.name]
+      const comparedResult = compareVersions(current.maxVersion, eol.currentEolVersion)
+
+      result[eol.name] = {
+        maxVersion: comparedResult >= 0 ? current.maxVersion : eol.currentEolVersion,
+        isAllTheSame: current.isAllTheSame && comparedResult === 0,
+        latestVersion: eol.latestEolVersion
+      }
+    } else {
+      result[eol.name] = {
+        maxVersion: eol.currentEolVersion,
+        isAllTheSame: true,
+        latestVersion: eol.latestEolVersion
+      }
+    }
+  })
+
+  return result
+}
+
+function extractActiveApModels (venue: FirmwareVenue): string[] {
+  if (!venue.apModels) return []
+
+  const unsupportedApModels = venue.currentVenueUnsupportedApModels ?? []
+  return _.difference(venue.apModels, unsupportedApModels) // filter out the unsupported AP models, ACX-44848
+}
+
+export function getActiveApModels (selectedRows: FirmwareVenue[]): string[] {
+  const activeApModels = selectedRows.flatMap(venue => extractActiveApModels(venue))
+
+  return [...new Set(activeApModels)]
+}
+
+export function compareABFSequence (seq1: number = 0, seq2: number = 0): number {
+  return seq1 - seq2
+}

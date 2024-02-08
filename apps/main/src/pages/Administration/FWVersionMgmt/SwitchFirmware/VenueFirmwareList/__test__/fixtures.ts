@@ -378,17 +378,6 @@ export const switchRelease = [
   }
 ]
 
-export const switchCurrentVersions = {
-  currentVersions: [
-    '09010e_b392',
-    '09010f_b19'
-  ],
-  currentVersionsAboveTen: [
-    '10010_b176',
-    '10010_rc3'
-  ]
-}
-
 export const switchUpgradeStatusDetails_KittoVenue1 = {
   upgradeStatusDetailsViewList: [
     {

@@ -97,6 +97,7 @@ describe('ApRfNeighbors', () => {
       expect(screen.queryByText('The AP is not reachable')).toBeVisible()
     })
 
+    jest.runOnlyPendingTimers()
     jest.useRealTimers()
 
     await userEvent.click(screen.getByRole('img', { name: 'close' }))
@@ -175,6 +176,7 @@ describe('ApRfNeighbors', () => {
     const targetApName = new RegExp(mockedApRfNeighbors.neighbors[0].deviceName)
     expect(await screen.findByRole('row', { name: targetApName })).toBeVisible()
 
+    jest.runOnlyPendingTimers()
     jest.useRealTimers()
   })
 })

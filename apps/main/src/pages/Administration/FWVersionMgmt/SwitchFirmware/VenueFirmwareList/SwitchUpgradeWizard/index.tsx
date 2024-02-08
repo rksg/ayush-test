@@ -10,13 +10,13 @@ import {
   Modal, ModalType, StepsForm, showActionModal
 } from '@acx-ui/components'
 import { WarningCircleOutlined }          from '@acx-ui/icons'
+import { useSwitchFirmwareUtils }         from '@acx-ui/rc/components'
 import {
   useGetSwitchAvailableFirmwareListQuery,
   useGetSwitchLatestFirmwareListQuery,
   useSkipSwitchUpgradeSchedulesMutation,
   useUpdateSwitchVenueSchedulesMutation } from '@acx-ui/rc/services'
 import {
-  DefaultSwitchVersion,
   FirmwareCategory,
   FirmwareSwitchVenue,
   FirmwareVersion,
@@ -52,6 +52,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
   const { $t } = useIntl()
   const params = useParams()
   const { wizardType } = props
+  const { checkCurrentVersions } = useSwitchFirmwareUtils()
   const [updateVenueSchedules] = useUpdateSwitchVenueSchedulesMutation()
 
   const [upgradeVersions, setUpgradeVersions] = useState<FirmwareVersion[]>([])
@@ -322,24 +323,4 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
   />
 }
 
-function checkCurrentVersions (version: string,
-  rodanVersion: string,
-  filterVersions: FirmwareVersion[]): FirmwareVersion[] {
-  let inUseVersions = [] as FirmwareVersion[]
-  const getParseVersion = function (version: string) {
-    if (DefaultSwitchVersion.includes(version)) {
-      return version.replace(/_[^_]*$/, '')
-    }
-    return version
-  }
-
-  filterVersions.forEach((v: FirmwareVersion) => {
-    if (getParseVersion(v.id) === getParseVersion(version) ||
-      getParseVersion(v.id) === getParseVersion(rodanVersion)) {
-      v = { ...v, inUse: true }
-    }
-    inUseVersions.push(v)
-  })
-  return inUseVersions
-}
 

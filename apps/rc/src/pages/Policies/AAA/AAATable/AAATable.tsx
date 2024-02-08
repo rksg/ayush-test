@@ -28,6 +28,7 @@ export default function AAATable () {
   const { tenantId } = useParams()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDeleteAAAPolicyListMutation()
+  const settingsId = 'policies-aaa-table'
   const tableQuery = useTableQuery({
     useQuery: useGetAAAPolicyViewModelListQuery,
     defaultPayload: {
@@ -36,7 +37,8 @@ export default function AAATable () {
     search: {
       searchString: '',
       searchTargetFields: ['name']
-    }
+    },
+    pagination: { settingsId }
   })
 
   const doDelete = (selectedRows: AAAViewModalType[], callback: () => void) => {
@@ -102,7 +104,7 @@ export default function AAATable () {
       />
       <Loader states={[tableQuery]}>
         <Table<AAAViewModalType>
-          settingsId='policies-aaa-table'
+          settingsId={settingsId}
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

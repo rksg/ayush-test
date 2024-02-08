@@ -22,17 +22,30 @@ export async function lanPortsubnetValidator (
   return Promise.resolve()
 }
 
-export const getEnabledCorePortKey = (portsData: EdgePort[], lagData: EdgeLag[]) : {
+export const getEnabledCorePortInfo = (portsData: EdgePort[], lagData: EdgeLag[]) : {
     key: string | undefined,
-    isLag: boolean
+    isLag: boolean,
+    physicalPortId: string | undefined,
+    isExistingCorePortInLagMember: boolean
   } => {
   const physicalCorePort = portsData.filter(item => item.corePortEnabled && item.enabled)
   const lagCorePort = lagData.filter(item => item.corePortEnabled && item.lagEnabled)
+  const lagCorePortEnabled = lagCorePort[0]?.id !== undefined
   const corePortKey = physicalCorePort[0]?.interfaceName || lagCorePort[0]?.id
+  const isLag = physicalCorePort[0]?.interfaceName ? false : lagCorePort[0]?.id !== undefined
+  const physicalCorePortId = isLag ? undefined : physicalCorePort[0]?.id
+
+  const isExistingCorePortInLagMember = lagData?.some(lag => lag.lagMembers
+    ? lag.lagMembers.filter(member => member?.portId === physicalCorePortId).length > 0
+    : false) ?? false
 
   return {
-    key: corePortKey !== undefined ? (corePortKey+'') : corePortKey,
-    isLag: physicalCorePort[0]?.interfaceName ? false : lagCorePort[0]?.id !== undefined
+    key: isExistingCorePortInLagMember
+      ? (lagCorePortEnabled ? (lagCorePort[0].id + '') : undefined)
+      : (corePortKey !== undefined ? (corePortKey+'') : corePortKey),
+    isLag: isExistingCorePortInLagMember ? lagCorePortEnabled : isLag,
+    physicalPortId: isExistingCorePortInLagMember ? undefined : physicalCorePortId,
+    isExistingCorePortInLagMember
   }
 }
 
