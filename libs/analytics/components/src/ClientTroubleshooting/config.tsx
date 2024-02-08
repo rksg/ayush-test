@@ -5,6 +5,7 @@ import { defineMessage } from 'react-intl'
 import { ClientEventEnum, categoryOptions, disconnectClientEventsMap } from '@acx-ui/analytics/utils'
 
 import { ConnectionEvent } from './services'
+
 export const SUCCESS = 'success'
 export const SLOW = 'slow'
 export const DISCONNECT = 'disconnect'
@@ -75,6 +76,7 @@ export type DisplayEvent = ConnectionEvent & {
   event: string;
   category: string;
 }
+
 export type ChartMapping = { key: string; label: string; chartType: string; series: string }
 
 export const eventColorByCategory = {

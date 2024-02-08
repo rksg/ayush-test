@@ -137,7 +137,7 @@ describe('AssignEcDrawer', () => {
     expect(await screen.findByRole('dialog')).toBeVisible()
 
     // Assert Access Periods are correct
-    expect(screen.getByText('Not Limited')).toBeVisible()
+    expect(screen.getByText('Not Limited (Integrator)')).toBeVisible()
 
     // Assert Header Fields are correct
     expect(screen.getAllByRole('columnheader', { name: 'Customer caret-up' })).toHaveLength(1)

@@ -43,8 +43,6 @@ import { RequestPayload }                                from '@acx-ui/types'
 import { UserUrlsInfo, UserProfile }                     from '@acx-ui/user'
 import { createHttpRequest, ignoreErrorModal, PverName } from '@acx-ui/utils'
 
-export * from './configTemplate'
-
 export function useCheckDelegateAdmin () {
   const { $t } = useIntl()
   const [getDelegatedAdmins] = useLazyGetMspEcDelegatedAdminsQuery()

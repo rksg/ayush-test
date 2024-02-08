@@ -8,16 +8,17 @@ interface PortSubInterfaceTableProps {
   currentTab: string
   ip: string
   mac: string
+  portId: string
 }
 
 export const PortSubInterfaceTable = (props: PortSubInterfaceTableProps) => {
 
-  const { serialNumber, mac } = props
+  const { serialNumber, portId } = props
 
   const tableQuery = useTableQuery<EdgeSubInterface>({
     useQuery: useGetSubInterfacesQuery,
     defaultPayload: {},
-    apiParams: { serialNumber, mac }
+    apiParams: { serialNumber, portId }
   })
   const [addSubInterface] = useAddSubInterfacesMutation()
   const [updateSubInterface] = useUpdateSubInterfacesMutation()
@@ -26,7 +27,7 @@ export const PortSubInterfaceTable = (props: PortSubInterfaceTableProps) => {
 
   const handleAdd = async (data: EdgeSubInterface) => {
     const requestPayload = {
-      params: { serialNumber, mac, subInterfaceId: data?.id },
+      params: { serialNumber, portId, subInterfaceId: data?.id },
       payload: data
     }
     await addSubInterface(requestPayload).unwrap()
@@ -34,7 +35,7 @@ export const PortSubInterfaceTable = (props: PortSubInterfaceTableProps) => {
 
   const handleUpdate = async (data: EdgeSubInterface) => {
     const requestPayload = {
-      params: { serialNumber, mac, subInterfaceId: data?.id },
+      params: { serialNumber, portId, subInterfaceId: data?.id },
       payload: data
     }
     await updateSubInterface(requestPayload).unwrap()
@@ -44,14 +45,14 @@ export const PortSubInterfaceTable = (props: PortSubInterfaceTableProps) => {
     return await deleteSubInterfaces({
       params: {
         serialNumber,
-        mac,
+        portId,
         subInterfaceId: data?.id }
     }).unwrap()
   }
 
   const handleUpload = async (formData: FormData) => {
     await uploadCSV({
-      params: { serialNumber , mac },
+      params: { serialNumber , portId },
       payload: formData
     }).unwrap()
   }

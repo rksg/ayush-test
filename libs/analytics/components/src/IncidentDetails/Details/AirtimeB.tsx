@@ -1,5 +1,5 @@
-import { unitOfTime } from 'moment-timezone'
-import { useIntl }    from 'react-intl'
+import moment, { unitOfTime } from 'moment-timezone'
+import { useIntl }            from 'react-intl'
 
 import { calculateSeverity, Incident, shortDescription } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol }    from '@acx-ui/components'
@@ -7,6 +7,7 @@ import { PageHeader, SeverityPill, GridRow, GridCol }    from '@acx-ui/component
 import { FixedAutoSizer }                                   from '../../DescriptionSection/styledComponents'
 import { IncidentAttributes, Attributes }                   from '../IncidentAttributes'
 import { Insights }                                         from '../Insights'
+import { extraValues }                                      from '../Insights/extraValues/config'
 import { NetworkImpact, NetworkImpactProps }                from '../NetworkImpact'
 import { NetworkImpactChartTypes, NetworkImpactQueryTypes } from '../NetworkImpact/config'
 import { TimeSeries }                                       from '../TimeSeries'
@@ -25,7 +26,8 @@ export const AirtimeB = (incident: Incident) => {
     Attributes.Scope,
     Attributes.Duration,
     Attributes.EventStartTime,
-    Attributes.EventEndTime
+    ...((moment(incident.startTime).isSame(incident.impactedStart))
+      ? [Attributes.EventEndTime] : [Attributes.DataStartTime, Attributes.DataEndTime])
   ]
   const rogueEnabled = incident.metadata.rootCauseChecks?.checks
     .some(check => check.isRogueDetectionEnabled)
@@ -62,6 +64,10 @@ export const AirtimeB = (incident: Incident) => {
     TimeSeriesChartTypes.AirtimeUtilizationChart
   ]
 
+  const insightExtraValues = {
+    rogueapdrawer: extraValues.RogueAPsDrawerLink(incident)
+  }
+
   const buffer = {
     front: { value: 0, unit: 'hours' as unitOfTime.Base },
     back: { value: 0, unit: 'hours' as unitOfTime.Base }
@@ -89,7 +95,7 @@ export const AirtimeB = (incident: Incident) => {
           </FixedAutoSizer>
         </GridCol>
         <GridCol col={{ span: 20 }}>
-          <Insights incident={incident} />
+          <Insights incident={incident} extraValues={insightExtraValues} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '228px' }}>
           <NetworkImpact incident={incident} charts={networkImpactCharts} />

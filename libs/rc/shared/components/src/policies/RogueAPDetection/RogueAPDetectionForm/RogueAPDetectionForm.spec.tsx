@@ -1,9 +1,7 @@
 import React from 'react'
 
-import { fireEvent } from '@testing-library/react'
-import userEvent     from '@testing-library/user-event'
-import { rest }      from 'msw'
-import { Path }      from 'react-router-dom'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import {
   RogueAPDetectionContextType,
@@ -13,8 +11,9 @@ import {
   RogueRuleType,
   RogueVenue
 } from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { Path }                                  from '@acx-ui/react-router-dom'
+import { Provider }                              from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 

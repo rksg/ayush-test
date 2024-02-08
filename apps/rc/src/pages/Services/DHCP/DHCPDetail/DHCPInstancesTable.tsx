@@ -1,6 +1,5 @@
 
-import React         from 'react'
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 
 import _             from 'lodash'
 import { useIntl }   from 'react-intl'
@@ -8,9 +7,7 @@ import { useParams } from 'react-router-dom'
 
 import { Table, TableProps, Card, Loader }            from '@acx-ui/components'
 import { useVenuesListQuery, useGetDHCPProfileQuery } from '@acx-ui/rc/services'
-import { Venue }                                      from '@acx-ui/rc/utils'
-import { useTableQuery }                              from '@acx-ui/rc/utils'
-import { DHCPUsage }                                  from '@acx-ui/rc/utils'
+import { Venue, useTableQuery, DHCPUsage }            from '@acx-ui/rc/utils'
 import { TenantLink }                                 from '@acx-ui/react-router-dom'
 
 

@@ -8,29 +8,45 @@ import { useIntl }   from 'react-intl'
 import {
   Table,
   TableProps,
-  Loader
+  Loader,
+  showActionModal,
+  Button
 } from '@acx-ui/components'
 import { DateFormatEnum, userDateTimeFormat }                                            from '@acx-ui/formatter'
-import { ConfigTemplateLink, PolicyConfigTemplateLink, renderConfigTemplateDetailsLink } from '@acx-ui/msp/components'
-import { useGetConfigTemplateListQuery }                                                 from '@acx-ui/msp/services'
-import { ConfigTemplate }                                                                from '@acx-ui/msp/utils'
+import { ConfigTemplateLink, PolicyConfigTemplateLink, renderConfigTemplateDetailsLink } from '@acx-ui/rc/components'
+import {
+  useDeleteAAAPolicyTemplateMutation,
+  useDeleteNetworkTemplateMutation,
+  useDeleteVenueTemplateMutation,
+  useGetConfigTemplateListQuery
+} from '@acx-ui/rc/services'
 import {
   PolicyOperation,
   PolicyType,
   policyTypeLabelMapping,
-  useTableQuery
+  useTableQuery,
+  ConfigTemplate,
+  ConfigTemplateType,
+  getConfigTemplateEditPath
 } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
-import { getIntl }                   from '@acx-ui/utils'
+import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess }               from '@acx-ui/user'
+import { getIntl }                                 from '@acx-ui/utils'
 
-import { ApplyTemplateDrawer } from './ApplyTemplateDrawer'
-import * as UI                 from './styledComponents'
+import { AppliedToTenantDrawer } from './AppliedToTenantDrawer'
+import { ApplyTemplateDrawer }   from './ApplyTemplateDrawer'
+import * as UI                   from './styledComponents'
 
 
 export function ConfigTemplateList () {
   const { $t } = useIntl()
+  const navigate = useNavigate()
+  const location = useLocation()
   const [ applyTemplateDrawerVisible, setApplyTemplateDrawerVisible ] = useState(false)
+  const [ appliedToTenantDrawerVisible, setAppliedToTenantDrawerVisible ] = useState(false)
   const [ selectedTemplates, setSelectedTemplates ] = useState<ConfigTemplate[]>([])
+  const deleteMutationMap = useDeleteMutation()
+  const mspTenantLink = useTenantLink('', 'v')
 
   const tableQuery = useTableQuery({
     useQuery: useGetConfigTemplateListQuery,
@@ -42,10 +58,37 @@ export function ConfigTemplateList () {
 
   const rowActions: TableProps<ConfigTemplate>['rowActions'] = [
     {
+      label: $t({ defaultMessage: 'Edit' }),
+      onClick: ([ selectedRow ]) => {
+        const editPath = getConfigTemplateEditPath(selectedRow.type, selectedRow.id!)
+        navigate(`${mspTenantLink.pathname}/${editPath}`, { state: { from: location } })
+      }
+    },
+    {
       label: $t({ defaultMessage: 'Apply Template' }),
       onClick: (rows: ConfigTemplate[]) => {
         setSelectedTemplates(rows)
         setApplyTemplateDrawerVisible(true)
+      }
+    },
+    {
+      label: $t({ defaultMessage: 'Delete' }),
+      onClick: (selectedRows, clearSelection) => {
+        const selectedRow = selectedRows[0]
+
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: $t({ defaultMessage: 'Config Template' }),
+            entityValue: selectedRow.name,
+            numOfEntities: selectedRows.length
+          },
+          onOk: async () => {
+            const deleteFn = deleteMutationMap[selectedRow.type]
+            deleteFn({ params: { templateId: selectedRow.id! } }).then(clearSelection)
+          }
+        })
       }
     }
   ]
@@ -61,7 +104,9 @@ export function ConfigTemplateList () {
     <>
       <Loader states={[tableQuery]}>
         <Table<ConfigTemplate>
-          columns={useColumns()}
+          columns={useColumns({
+            setAppliedToTenantDrawerVisible, setSelectedTemplates
+          })}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           actions={filterByAccess(actions)}
@@ -78,12 +123,23 @@ export function ConfigTemplateList () {
         setVisible={setApplyTemplateDrawerVisible}
         selectedTemplates={selectedTemplates}
       />}
+      {appliedToTenantDrawerVisible &&
+      <AppliedToTenantDrawer
+        setVisible={setAppliedToTenantDrawerVisible}
+        selectedTemplates={selectedTemplates}
+      />}
     </>
   )
 }
 
-function useColumns () {
+interface templateColumnProps {
+  setAppliedToTenantDrawerVisible: (visible: boolean) => void,
+  setSelectedTemplates: (row: ConfigTemplate[]) => void
+}
+
+function useColumns (props: templateColumnProps) {
   const { $t } = useIntl()
+  const { setAppliedToTenantDrawerVisible, setSelectedTemplates } = props
   const dateFormat = userDateTimeFormat(DateFormatEnum.DateTimeFormatWithSeconds)
 
   const columns: TableProps<ConfigTemplate>['columns'] = [
@@ -94,13 +150,13 @@ function useColumns () {
       sorter: true,
       searchable: true,
       render: (_, row) => {
-        return renderConfigTemplateDetailsLink(row.templateType, row.id!, row.name)
+        return renderConfigTemplateDetailsLink(row.type, row.id!, row.name)
       }
     },
     {
-      key: 'templateType',
+      key: 'type',
       title: $t({ defaultMessage: 'Type' }),
-      dataIndex: 'templateType',
+      dataIndex: 'type',
       sorter: true
     },
     {
@@ -110,7 +166,16 @@ function useColumns () {
       sorter: true,
       align: 'center',
       render: function (_, row) {
-        return row.ecTenants.length
+        if (!row.ecTenants) return 0
+        if (!row.ecTenants.length) return row.ecTenants.length
+        return <Button
+          type='link'
+          onClick={() => {
+            setSelectedTemplates([row])
+            setAppliedToTenantDrawerVisible(true)
+          }}>
+          {row.ecTenants.length}
+        </Button>
       }
     },
     {
@@ -151,25 +216,44 @@ function useColumns () {
   return columns
 }
 
+function useDeleteMutation () {
+  const [ deleteNetworkTemplate ] = useDeleteNetworkTemplateMutation()
+  const [ deleteAaaTemplate ] = useDeleteAAAPolicyTemplateMutation()
+  const [ deleteVenueTemplate ] = useDeleteVenueTemplateMutation()
+
+  return {
+    [ConfigTemplateType.NETWORK]: deleteNetworkTemplate,
+    [ConfigTemplateType.RADIUS]: deleteAaaTemplate,
+    [ConfigTemplateType.VENUE]: deleteVenueTemplate
+  }
+}
+
 function getAddTemplateMenuProps (): Omit<MenuProps, 'placement'> {
   const { $t } = getIntl()
 
   return {
     expandIcon: <UI.MenuExpandArrow />,
-    items: [{
-      key: 'add-wifi-network',
-      label: <ConfigTemplateLink to='networks/wireless/add'>
-        {$t({ defaultMessage: 'Wi-Fi Network' })}
-      </ConfigTemplateLink>
-    }, {
-      key: 'add-policy',
-      label: $t({ defaultMessage: 'Policies' }),
-      children: [{
-        key: 'add-aaa',
-        label: <PolicyConfigTemplateLink type={PolicyType.AAA} oper={PolicyOperation.CREATE}>
-          {$t(policyTypeLabelMapping[PolicyType.AAA])}
-        </PolicyConfigTemplateLink>
-      }]
-    }]
+    items: [
+      {
+        key: 'add-wifi-network',
+        label: <ConfigTemplateLink to='networks/wireless/add'>
+          {$t({ defaultMessage: 'Wi-Fi Network' })}
+        </ConfigTemplateLink>
+      }, {
+        key: 'add-venue',
+        label: <ConfigTemplateLink to='venues/add'>
+          {$t({ defaultMessage: 'Venue' })}
+        </ConfigTemplateLink>
+      }, {
+        key: 'add-policy',
+        label: $t({ defaultMessage: 'Policies' }),
+        children: [{
+          key: 'add-aaa',
+          label: <PolicyConfigTemplateLink type={PolicyType.AAA} oper={PolicyOperation.CREATE}>
+            {$t(policyTypeLabelMapping[PolicyType.AAA])}
+          </PolicyConfigTemplateLink>
+        }]
+      }
+    ]
   }
 }

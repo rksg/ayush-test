@@ -65,8 +65,7 @@ export interface TenantDelegationResponse {
 }
 
 export interface RecoveryPassphrase {
-  tenantId: string
-  psk: string
+  passphrase: string
 }
 
 export interface TenantPreferenceSettingValue {
@@ -272,3 +271,12 @@ export interface CustomRole {
   updatedDate?: string
 }
 
+export interface AdminGroupLastLogins {
+  count?: number,
+  lastLoginList?: groupMembers[]
+}
+
+export interface groupMembers {
+  email?: string,
+  lastLoginDate?: string
+}

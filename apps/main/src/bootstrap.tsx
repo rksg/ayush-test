@@ -29,10 +29,12 @@ import {
 } from '@acx-ui/utils'
 import type { PendoParameters } from '@acx-ui/utils'
 
-import AllRoutes                                                                   from './AllRoutes'
-import { showBrowserLangDialog, detectBrowserLang, isNonProdEnv, PartialUserData } from './BrowserDialog/BrowserDialog'
-import { errorMiddleware }                                                         from './errorMiddleware'
-import { refreshTokenMiddleware }                                                  from './refreshTokenMiddleware'
+import AllRoutes    from './AllRoutes'
+import { showBrowserLangDialog,
+  detectBrowserLang,
+  PartialUserData } from './BrowserDialog/BrowserDialog'
+import { errorMiddleware }        from './errorMiddleware'
+import { refreshTokenMiddleware } from './refreshTokenMiddleware'
 
 import '@acx-ui/theme'
 
@@ -83,11 +85,14 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
 
   useEffect(() => {
     if (userProfile) {
-      const lang = userProfile?.preferredLanguage
+      const userLang = userProfile?.preferredLanguage
       const browserLang = detectBrowserLang()
-      const openDialog = browserLang !== DEFAULT_SYS_LANG && browserLang !== lang
-      if (openDialog && isNonProdEnv()) {
-        const userPreflang = showBrowserLangDialog()
+      const browserCacheLang = localStorage.getItem('browserLang')
+      const openDialog = browserLang !== userLang
+        && browserLang !== browserCacheLang
+
+      if (openDialog) {
+        const userPreflang = showBrowserLangDialog(userLang as LangKey)
         userPreflang.then((dialogResult) => {
           // update user profile - 'yes' language change
           if (dialogResult.lang !== '') {

@@ -78,9 +78,11 @@ export function RogueAPDetectionTable () {
   const DEFAULT_PROFILE = 'Default profile'
   const [ deleteFn ] = useDelRoguePoliciesMutation()
 
+  const settingsId = 'policies-rogue-ap-detection-table'
   const tableQuery = useTableQuery({
     useQuery: useEnhancedRoguePoliciesQuery,
-    defaultPayload
+    defaultPayload,
+    pagination: { settingsId }
   })
 
   const [venueIds, setVenueIds] = useState([] as string[])
@@ -161,7 +163,7 @@ export function RogueAPDetectionTable () {
       />
       <Loader states={[tableQuery]}>
         <Table<EnhancedRoguePolicyType>
-          settingsId='policies-rogue-ap-detection-table'
+          settingsId={settingsId}
           columns={useColumns(venueIds)}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

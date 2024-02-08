@@ -2,10 +2,9 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { ConfigTemplateUrlsInfo }              from '@acx-ui/msp/utils'
-import { CommonUrlsInfo,  AaaUrls }            from '@acx-ui/rc/utils'
-import { Provider }                            from '@acx-ui/store'
-import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { CommonUrlsInfo,  AaaUrls, ConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                         from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }              from '@acx-ui/test-utils'
 
 import {
   mockAAAPolicyListResponse,

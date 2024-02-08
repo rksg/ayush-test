@@ -1,11 +1,12 @@
 
-import { Form } from 'antd'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
 
-import { venueApi }                              from '@acx-ui/rc/services'
-import { WifiUrlsInfo }                          from '@acx-ui/rc/utils'
-import { Provider, store }                       from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
+import { venueApi, networkApi, apApi }     from '@acx-ui/rc/services'
+import { WifiUrlsInfo, CommonUrlsInfo }    from '@acx-ui/rc/utils'
+import { Provider, store }                 from '@acx-ui/store'
+import { act, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import {
   mockApCompatibilitiesVenue,
@@ -67,7 +68,12 @@ describe('ApCompatibilityToolTip > ApFeatureCompatibility > ApCompatibilityDrawe
     const mockedCloseDrawer = jest.fn()
 
     beforeEach(() => {
-      store.dispatch(venueApi.util.resetApiState())
+      act(() => {
+        store.dispatch(venueApi.util.resetApiState())
+        store.dispatch(networkApi.util.resetApiState())
+        store.dispatch(apApi.util.resetApiState())
+      })
+
       mockServer.use(
         rest.post(
           WifiUrlsInfo.getApCompatibilitiesVenue.url,
@@ -77,7 +83,10 @@ describe('ApCompatibilityToolTip > ApFeatureCompatibility > ApCompatibilityDrawe
           (_, res, ctx) => res(ctx.json(mockApCompatibilitiesNetwork))),
         rest.get(
           WifiUrlsInfo.getApFeatureSets.url.split('?')[0],
-          (_, res, ctx) => res(ctx.json(mockFeatureCompatibilities)))
+          (_, res, ctx) => res(ctx.json(mockFeatureCompatibilities))),
+        rest.get(
+          CommonUrlsInfo.getVenue.url.split('?')[0],
+          (_, res, ctx) => res(ctx.json({ name: venueName })))
       )
     })
     it('should fetch and display render venue correctly', async () => {
@@ -146,7 +155,7 @@ describe('ApCompatibilityToolTip > ApFeatureCompatibility > ApCompatibilityDrawe
             <ApCompatibilityDrawer
               isMultiple
               visible={true}
-              data={mockApCompatibilitiesVenue}
+              data={mockApCompatibilitiesVenue.apCompatibilities}
               onClose={mockedCloseDrawer}
             /></Form>
         </Provider>, {
@@ -155,7 +164,7 @@ describe('ApCompatibilityToolTip > ApFeatureCompatibility > ApCompatibilityDrawe
       expect(await screen.findByText('7.0.0.0.123')).toBeInTheDocument()
       const icon = await screen.findByTestId('CloseSymbol')
       expect(icon).toBeVisible()
-      fireEvent.click(icon)
+      await userEvent.click(icon)
       expect(mockedCloseDrawer).toBeCalledTimes(1)
     })
   })

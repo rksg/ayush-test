@@ -12,7 +12,6 @@ import {
   ApRadioParams50G,
   ApRadioParams6G,
   CommonUrlsInfo,
-  getUrlForTest,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store }                     from '@acx-ui/store'
@@ -67,8 +66,7 @@ describe('RadioSettingsTab', ()=> {
         rest.get(
           CommonUrlsInfo.getVenuesList.url,
           (_, res, ctx) => res(ctx.json(venuelist))),
-        rest.get(
-          getUrlForTest(CommonUrlsInfo.getVenue),
+        rest.get(CommonUrlsInfo.getVenue.url,
           (_, res, ctx) => res(ctx.json(venueRadioDetail))),
         rest.get(
           WifiUrlsInfo.getApRadioCustomization.url,
@@ -504,8 +502,7 @@ describe('RadioSettingsTab', ()=> {
         rest.get(
           CommonUrlsInfo.getVenuesList.url,
           (_, res, ctx) => res(ctx.json(venuelist))),
-        rest.get(
-          getUrlForTest(CommonUrlsInfo.getVenue),
+        rest.get(CommonUrlsInfo.getVenue.url,
           (_, res, ctx) => res(ctx.json(venueRadioDetail))),
         //rest.get(
         //  WifiUrlsInfo.getAp.url,

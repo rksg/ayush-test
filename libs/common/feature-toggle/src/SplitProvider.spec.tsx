@@ -3,7 +3,6 @@ import { rest } from 'msw'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 import { renderHook }                 from '@acx-ui/test-utils'
 import { UserUrlsInfo }               from '@acx-ui/user'
-import { isDelegationMode }           from '@acx-ui/utils'
 
 import { useIsSplitOn }     from './useIsSplitOn'
 import { useIsTierAllowed } from './useIsTierAllowed'
@@ -161,31 +160,14 @@ describe('useIsTierAllowed', () => {
     )
   })
 
-  it.skip('returns true for allowed feature', () => {
-    jest.mock('./useIsTierAllowed', () => ({
-      useFFList: jest.fn(() => JSON.stringify({
-        featureList: ['ADMN-ESNTLS', 'CNFG-ESNTLS'],
-        betaList: ['PLCY-EDGE', 'BETA-CP']
-
-      }))
-    }))
-    jest.mocked(isDelegationMode).mockReturnValue(true)
-    services.useGetAccountTierQuery = jest.fn().mockImplementation(() => {
-      return { data: tenantAccountTierMock }
-    })
-    const { result } = renderHook(() => useIsTierAllowed('ADMN-ESNTLS'))
-
-    expect(result.current).toBe(true)
-  })
-
-  it.skip('returns false for disallowed feature', () => {
+  it('returns false for disallowed feature', () => {
     jest.mock('./useIsTierAllowed', () => ({
       useFFList: jest.fn(() => ({
         featureList: ['ADMN-ESNTLS', 'CNFG-ESNTLS'],
         betaList: ['PLCY-EDGE', 'BETA-CP']
       }))
     }))
-    jest.mocked(isDelegationMode).mockReturnValue(true)
+
     services.useGetAccountTierQuery = jest.fn().mockImplementation(() => {
       return { data: tenantAccountTierMock }
     })

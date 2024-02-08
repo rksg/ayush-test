@@ -1,9 +1,8 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { PageHeader, Button, GridRow, Loader, GridCol } from '@acx-ui/components'
-import { useGetAAAPolicyTemplateQuery }                 from '@acx-ui/msp/services'
-import { useGetAAAProfileDetailQuery }                  from '@acx-ui/rc/services'
+import { PageHeader, Button, GridRow, Loader, GridCol }              from '@acx-ui/components'
+import { useGetAAAProfileDetailQuery, useGetAAAPolicyTemplateQuery } from '@acx-ui/rc/services'
 import {
   AAAPolicyType,
   getPolicyDetailsLink,

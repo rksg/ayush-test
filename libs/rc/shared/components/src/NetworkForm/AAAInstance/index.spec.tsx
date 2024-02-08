@@ -3,9 +3,8 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { ConfigTemplateUrlsInfo }  from '@acx-ui/msp/utils'
-import { AaaUrls, CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                from '@acx-ui/store'
+import { AaaUrls, CommonUrlsInfo, ConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                        from '@acx-ui/store'
 import {
   mockServer,
   render,

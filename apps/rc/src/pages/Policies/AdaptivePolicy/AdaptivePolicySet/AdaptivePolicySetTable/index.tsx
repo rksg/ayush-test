@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, showToast, Table, TableProps }          from '@acx-ui/components'
-import { Features, useIsTierAllowed }                    from '@acx-ui/feature-toggle'
-import { SimpleListTooltip, useDpskNewConfigFlowParams } from '@acx-ui/rc/components'
+import { Loader, showToast, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsTierAllowed }           from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }                    from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useAdaptivePolicySetLisByQueryQuery,
@@ -25,10 +25,12 @@ export default function AdaptivePolicySetTable () {
   const tenantBasePath: Path = useTenantLink('')
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
+  const settingsId = 'adaptive-policy-set-list-table'
   const tableQuery = useTableQuery({
     useQuery: useAdaptivePolicySetLisByQueryQuery,
     apiParams: { sort: 'name,ASC', excludeContent: 'false' },
-    defaultPayload: {}
+    defaultPayload: {},
+    pagination: { settingsId }
   })
 
   const [
@@ -48,10 +50,8 @@ export default function AdaptivePolicySetTable () {
       }, skip: !isCloudpathEnabled
     })
 
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
   const { dpskList, getDpsksLoading } = useGetDpskListQuery(
     {
-      params: dpskNewConfigFlowParams,
       payload: { pageSize: 10000 }
     }, {
       selectFromResult: ({ data, isLoading }) => {
@@ -195,7 +195,7 @@ export default function AdaptivePolicySetTable () {
     ]}>
       <Table
         enableApiFilter
-        settingsId='adaptive-policy-set-list-table'
+        settingsId={settingsId}
         columns={useColumns()}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}

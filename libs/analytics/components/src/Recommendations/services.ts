@@ -19,10 +19,10 @@ import {
   StatusTrail,
   IconValue,
   StateType,
-  crrmStates,
-  CRRMStates
+  crrmStates
 } from './config'
 import { kpiHelper, RecommendationKpi } from './RecommendationDetails/services'
+import { CRRMStates }                   from './states'
 
 export type CrrmListItem = {
   id: string
@@ -76,7 +76,7 @@ export type Recommendation = {
   updatedAt: string
   sliceType: string
   sliceValue: string
-  metadata: { scheduledAt: string }
+  metadata: object & { scheduledAt: string }
   isMuted: boolean
   mutedBy: string
   mutedAt: string | null

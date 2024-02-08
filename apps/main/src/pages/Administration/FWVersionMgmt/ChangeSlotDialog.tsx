@@ -13,7 +13,7 @@ import {
 
 import * as UI from './styledComponents'
 
-import type { SelectProps  } from 'antd'
+import type { SelectProps } from 'antd'
 
 interface ChangeSlotDialogProps {
   onCancel: () => void,

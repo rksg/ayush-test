@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect } from 'react'
 
 import { Checkbox, Form, Select, Space, Switch } from 'antd'
 import TextArea                                  from 'antd/lib/input/TextArea'
@@ -41,7 +41,8 @@ const defaultFormValues = {
   corePortEnabled: false,
   ipMode: EdgeIpModeEnum.DHCP,
   natEnabled: false,
-  lagEnabled: false
+  lagEnabled: true,
+  lagMembers: []
 } as Partial<EdgeLag>
 
 export const LagDrawer = (props: LagDrawerProps) => {
@@ -53,9 +54,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
   const portTypeOptions = getEdgePortTypeOptions($t)
     .filter(item => item.value !== EdgePortTypeEnum.UNCONFIGURED)
   const [form] = Form.useForm()
-  const [enabledPorts, setEnabledPorts] = useState<string[]>()
-  const lagMembers = Form.useWatch('lagMembers', form) as string[]
-  const lagEnabled = Form.useWatch('lagEnabled', form) as string[]
+  const lagEnabled = Form.useWatch('lagEnabled', form) as boolean
 
   const [addEdgeLag] = useAddEdgeLagMutation()
   const [updateEdgeLag] = useUpdateEdgeLagMutation()
@@ -85,11 +84,8 @@ export const LagDrawer = (props: LagDrawerProps) => {
       form.resetFields()
       form.setFieldsValue({
         ...defaultFormValues,
-        ...data,
-        lagMembers: data?.lagMembers.map(item => item.portId)
+        ...data
       })
-      setEnabledPorts(data?.lagMembers.filter(item => item.portEnabled)
-        .map(item => item.portId))
     }
   }, [visible, form, data])
 
@@ -149,11 +145,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
       // exclude id first, then add it when need
       const { id, ...otherFormData } = formData
       const payload = {
-        ...convertEdgePortsConfigToApiPayload(otherFormData),
-        lagMembers: formData.lagMembers?.map((item: string) => ({
-          portId: item,
-          portEnabled: enabledPorts?.includes(item) ?? false
-        })) ?? []
+        ...convertEdgePortsConfigToApiPayload(otherFormData)
       }
 
       const requestPayload = {
@@ -167,7 +159,11 @@ export const LagDrawer = (props: LagDrawerProps) => {
       } else {
         requestPayload.payload.id = id
 
-        const portConfig = portList?.find(item => formData.lagMembers?.includes(item.id))
+        const portConfig = formData.lagMembers.length > 0
+          ? portList?.find(item => (formData.lagMembers as EdgeLag['lagMembers'])
+            .filter(member => member.portId === item.id))
+          : undefined
+
         if(portConfig?.portType === EdgePortTypeEnum.WAN ||
           portConfig?.portType === EdgePortTypeEnum.LAN) {
           showActionModal({
@@ -199,9 +195,14 @@ export const LagDrawer = (props: LagDrawerProps) => {
   const handleFormChange = async (changedValues: Partial<EdgeLag>) => {
     if (changedValues.portType) {
       handlePortTypeChange(changedValues['portType'])
-    }else if(changedValues.lagEnabled !== undefined) {
+    } else if(changedValues.lagEnabled !== undefined) {
+      const currentMembers = form.getFieldValue('lagMembers') as EdgeLag['lagMembers'] ?? []
+
       if(changedValues.lagEnabled) {
-        setEnabledPorts(lagMembers)
+        form.setFieldValue('lagMembers', currentMembers.map(item => ({
+          ...item,
+          portEnabled: true
+        })))
       } else {
         showActionModal({
           type: 'confirm',
@@ -212,32 +213,46 @@ export const LagDrawer = (props: LagDrawerProps) => {
           }),
           okText: $t({ defaultMessage: 'Disable' }),
           onOk: () => {
-            setEnabledPorts([])
+            form.setFieldValue('lagMembers', currentMembers.map(item => ({
+              ...item,
+              portEnabled: false
+            })))
           },
           onCancel: () => {
             form.setFieldValue('lagEnabled', true)
           }
         })
       }
-    } else if (changedValues.lagMembers) {
-      if(lagEnabled) {
-        setEnabledPorts(changedValues.lagMembers as unknown as string[])
-      }
     }
   }
 
   const handlePortTypeChange = (changedValue: EdgePortTypeEnum | undefined) => {
-    if (changedValue === EdgePortTypeEnum.LAN) {
+    if (changedValue === EdgePortTypeEnum.LAN || changedValue === EdgePortTypeEnum.CLUSTER) {
       form.setFieldValue('ipMode', EdgeIpModeEnum.STATIC)
     }
   }
 
-  const handlePortEnabled = (portId: string, enabled: boolean) => {
+  const handleLagMemberChange = (portId: string, enabled: boolean) => {
+    const currentMembers = form.getFieldValue('lagMembers') as EdgeLag['lagMembers'] ?? []
+    let updated = _.cloneDeep(currentMembers)
+
     if(enabled) {
-      setEnabledPorts([...(enabledPorts ?? []), portId])
+      updated.push({ portId, portEnabled: lagEnabled })
     } else {
-      setEnabledPorts(enabledPorts?.filter(item => item !== portId))
+      _.remove(updated, item => item.portId === portId)
     }
+
+    form.setFieldValue('lagMembers', updated)
+  }
+
+  const handlePortEnabled = (portId: string, enabled: boolean) => {
+    const currentMembers = form.getFieldValue('lagMembers') as EdgeLag['lagMembers'] ?? []
+    const updated = _.cloneDeep(currentMembers)
+    updated.forEach(item => {
+      if (item.portId === portId)
+        item.portEnabled = enabled
+    })
+    form.setFieldValue('lagMembers', updated)
   }
 
   const getUseableLagOptions = (existedLagList?: EdgeLag[]) => {
@@ -306,28 +321,36 @@ export const LagDrawer = (props: LagDrawerProps) => {
       children={<Select options={timeoutOptions} />}
     />
     <Form.Item
-      name='lagMembers'
       label={$t({ defaultMessage: 'Select LAG members:' })}
-      children={<Checkbox.Group>
-        {
+      shouldUpdate={(prev, cur) => {
+        return prev.lagMembers !== cur.lagMembers
+      }}
+    >
+      {({ getFieldValue }) => {
+        const lagMembers = getFieldValue('lagMembers') as EdgeLag['lagMembers']
+
+        return <Checkbox.Group value={lagMembers?.map(item => item.portId)}>
           <Space direction='vertical'>
             {
-              getUseableLagMembers(portList)?.map((item) =>
+              getUseableLagMembers(portList)?.map((item: EdgePort) =>
                 (
                   <Space key={`${item.id}_space`} size={30}>
                     <Checkbox
                       key={`${item.id}_checkbox`}
                       value={item.id}
                       children={getEdgePortDisplayName(item)}
+                      onChange={(e) => handleLagMemberChange(item.id, e.target.checked)}
                     />
                     {
-                      lagMembers?.some(id => id === item.id) &&
+                      lagMembers?.some(id => id.portId === item.id) &&
                     <StepsForm.FieldLabel width='100px'>
                       <div style={{ margin: 'auto' }}>{$t({ defaultMessage: 'Port Enabled' })}</div>
                       <Form.Item
                         children={<Switch
-                          checked={enabledPorts?.includes(item.id)}
+                          // eslint-disable-next-line max-len
+                          checked={lagMembers.find(member => member.portId === item.id)?.portEnabled ?? false}
                           onChange={(checked) => handlePortEnabled(item.id, checked)}
+                          disabled={!lagEnabled}
                         />}
                         noStyle
                       />
@@ -337,9 +360,10 @@ export const LagDrawer = (props: LagDrawerProps) => {
                 ))
             }
           </Space>
-        }
-      </Checkbox.Group>}
-    />
+        </Checkbox.Group>
+      }}
+    </Form.Item>
+
 
     <Form.Item
       noStyle
@@ -395,6 +419,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
 const forceUpdateCondition = (prev:unknown, cur: unknown) => {
   return _.get(prev, 'corePortEnabled') !== _.get(cur, 'corePortEnabled')
         || _.get(prev, 'portType') !== _.get(cur, 'portType')
+        || _.get(prev, 'lagMembers') !== _.get(cur, 'lagMembers')
         || _.get(prev, 'lagEnabled') !== _.get(cur, 'lagEnabled')
         || _.get(prev, 'ipMode') !== _.get(cur, 'ipMode')
 }

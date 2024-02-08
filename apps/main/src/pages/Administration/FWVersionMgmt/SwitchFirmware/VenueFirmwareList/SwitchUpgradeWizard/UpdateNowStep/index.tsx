@@ -67,6 +67,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
 
   return (
     <div
+      data-testid='update-now-step'
       style={{
         minHeight: '50vh',
         marginBottom: '30px'

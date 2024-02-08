@@ -28,6 +28,7 @@ export const EdgeServices = () => {
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
   const [currentData, setCurrentData] = useState({} as EdgeService)
   const [drawerVisible, setDrawerVisible] = useState(false)
+  const settingsId = 'edge-services-table'
   const tableQuery = useTableQuery({
     useQuery: useGetEdgeServiceListQuery,
     defaultPayload: {
@@ -36,7 +37,8 @@ export const EdgeServices = () => {
     sorter: {
       sortField: 'serviceName',
       sortOrder: 'ASC'
-    }
+    },
+    pagination: { settingsId }
   })
   const { exportCsv, disabled } = useEdgeExportCsv<EdgeService>(
     tableQuery as unknown as TableQuery<EdgeService, RequestPayload<unknown>, unknown>
@@ -236,7 +238,7 @@ export const EdgeServices = () => {
       tableQuery
     ]}>
       <Table
-        settingsId='edge-services-table'
+        settingsId={settingsId}
         rowKey='serviceId'
         rowSelection={hasAccess() && { type: 'checkbox' }}
         rowActions={filterByAccess(rowActions)}
