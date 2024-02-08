@@ -1,4 +1,4 @@
-import { groupBy, mean } from 'lodash'
+import { groupBy }       from 'lodash'
 import moment            from 'moment-timezone'
 import { defineMessage } from 'react-intl'
 
@@ -43,6 +43,7 @@ export interface TransformedMap {
 }
 
 export const calcSLA = (sla: SLARecord) => (sla[1] !== 0 ? sla[0] / sla[1] : 0)
+export const noDataCheck = (val:number | null) => val === 0 || val === null ? true : false
 export const checkNaN = (val: number) => (!isNaN(val) ? val : 0)
 function checkPropertiesForNaN (
   properties : Response[],
@@ -55,7 +56,15 @@ function checkPropertiesForNaN (
     : NaN
 }
 
-const calGuestExp = (cS: number, ttc: number, cT: number) => mean([cS, ttc, cT])
+const calGuestExp = (cS: number | null, ttc: number | null, cT: number | null) => {
+  const validValues = [cS, ttc, cT].filter((value) => value !== null)
+  if (validValues.length > 0) {
+    const sum = validValues?.reduce((acc, value) =>(acc as number) + (value as number), 0)
+    return (sum as number) / validValues.length
+  } else {
+    return 0
+  }
+}
 export const transformToLspView = (properties: Response[]): Lsp[] => {
   const lsps = groupBy(properties, (p) => p.lsp)
   return Object.entries(lsps).map(([lsp, properties], ind) => {
@@ -122,10 +131,18 @@ export const transformToLspView = (properties: Response[]): Lsp[] => {
 }
 export const transformToPropertyView = (data: Response[]): Property[] =>
   data.map((property: Response) => {
-    const avgConnSuccess = calcSLA(property.avgConnSuccess),
-      avgClientThroughput = calcSLA(property.avgClientThroughput),
-      avgTTC = calcSLA(property.avgTTC),
-      ssidCompliance = calcSLA(property.ssidCompliance)
+    const avgConnSuccess = !noDataCheck(property.avgConnSuccess[1])
+        ? calcSLA(property.avgConnSuccess)
+        : null,
+      avgClientThroughput = !noDataCheck(property.avgClientThroughput[1])
+        ? calcSLA(property.avgClientThroughput)
+        : null,
+      avgTTC = !noDataCheck(property.avgTTC[1])
+        ? calcSLA(property.avgTTC)
+        : null,
+      ssidCompliance = !noDataCheck(property.ssidCompliance[1])
+        ? calcSLA(property.ssidCompliance)
+        : null
     return {
       ...property,
       ssidCompliance,
@@ -148,8 +165,8 @@ export function computePastRange (
 export const slaKpiConfig = {
   incident: {
     getTitle: (sliceType: SliceType) => sliceType === 'lsp'
-      ? defineMessage({ defaultMessage: 'Distressed LSPs' })
-      : defineMessage({ defaultMessage: 'Distressed Properties' }),
+      ? defineMessage({ defaultMessage: 'LSPs health' })
+      : defineMessage({ defaultMessage: 'Properties health' }),
     dataKey: 'p1Incidents',
     avg: false,
     formatter: formatter('countFormat'),

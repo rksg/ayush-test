@@ -69,26 +69,26 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getSubInterfaces: {
     method: 'get',
-    url: '/edges/:serialNumber/ports/:mac/subInterfaces',
-    oldUrl: '/api/edges/:serialNumber/port/:mac/subInterfaces',
+    url: '/edges/:serialNumber/ports/:portId/subInterfaces',
+    oldUrl: '/api/edges/:serialNumber/port/:portId/subInterfaces',
     newApi: true
   },
   addSubInterfaces: {
     method: 'post',
-    url: '/edges/:serialNumber/ports/:mac/subInterfaces',
-    oldUrl: '/api/edges/:serialNumber/port/:mac/subInterfaces',
+    url: '/edges/:serialNumber/ports/:portId/subInterfaces',
+    oldUrl: '/api/edges/:serialNumber/port/:portId/subInterfaces',
     newApi: true
   },
   updateSubInterfaces: {
     method: 'PATCH',
-    url: '/edges/:serialNumber/ports/:mac/subInterfaces/:subInterfaceId',
-    oldUrl: '/api/edges/:serialNumber/port/:mac/subInterfaces/:subInterfaceId',
+    url: '/edges/:serialNumber/ports/:portId/subInterfaces/:subInterfaceId',
+    oldUrl: '/api/edges/:serialNumber/port/:portId/subInterfaces/:subInterfaceId',
     newApi: true
   },
   deleteSubInterfaces: {
     method: 'delete',
-    url: '/edges/:serialNumber/ports/:mac/subInterfaces/:subInterfaceId',
-    oldUrl: '/api/edges/:serialNumber/port/:mac/subInterfaces/:subInterfaceId',
+    url: '/edges/:serialNumber/ports/:portId/subInterfaces/:subInterfaceId',
+    oldUrl: '/api/edges/:serialNumber/port/:portId/subInterfaces/:subInterfaceId',
     newApi: true
   },
   getStaticRoutes: {
@@ -196,7 +196,7 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   },
   importSubInterfacesCSV: {
     method: 'post',
-    url: '/edges/:serialNumber/ports/:mac/subInterfaces',
+    url: '/edges/:serialNumber/ports/:portId/subInterfaces',
     newApi: true
   },
   getEdgeLagStatusList: {
