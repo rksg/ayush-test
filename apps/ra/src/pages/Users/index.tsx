@@ -178,7 +178,7 @@ const Users = () => {
               type={isEditMode ? 'primary' : 'default'}
               onClick={() => setVisible(true)}>
               {isEditMode
-                ? $t({ defaultMessage: 'Update SSO' })
+                ? $t({ defaultMessage: 'Configure SSO' })
                 : $t({ defaultMessage: 'Setup SSO' })}
             </Button>
           </Tooltip></Loader>,
@@ -203,7 +203,7 @@ const Users = () => {
       />
       <ImportSSOFileDrawer
         title={isEditMode
-          ? $t({ defaultMessage: 'Update SSO with 3rd Party Provider' })
+          ? $t({ defaultMessage: 'Configure SSO with 3rd Party Provider' })
           : $t({ defaultMessage: 'Set Up SSO with 3rd Party Provider' })}
         visible={visible}
         isEditMode={isEditMode}

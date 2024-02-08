@@ -227,7 +227,7 @@ describe('Users Page', () => {
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() =>
       screen.queryAllByRole('img', { name: 'loader' }))
-    const updateSSOBtn = await screen.findByText('Update SSO')
+    const updateSSOBtn = await screen.findByText('Configure SSO')
     expect(updateSSOBtn).toBeVisible()
     fireEvent.click(updateSSOBtn)
     expect(await screen.findByTestId('importSSOFileDrawer')).toBeVisible()

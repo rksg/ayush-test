@@ -80,7 +80,7 @@ describe('ImportSSOFileDrawer', () => {
     })
     expect(mockShowToast).toHaveBeenCalledWith({
       type: 'success',
-      content: 'SAML file added successfully'
+      content: 'SSO configured successfully'
     })
     expect(setVisible).toHaveBeenCalledWith(false)
   })
@@ -151,7 +151,7 @@ describe('ImportSSOFileDrawer', () => {
     })
     expect(mockShowToast).toHaveBeenCalledWith({
       type: 'success',
-      content: 'SAML file updated successfully'
+      content: 'SSO configured successfully'
     })
     expect(setVisible).toHaveBeenCalledWith(false)
   })
@@ -237,7 +237,7 @@ describe('ImportSSOFileDrawer', () => {
     expect(setVisible).toHaveBeenCalledWith(false)
     expect(mockShowToast).toHaveBeenCalledWith({
       type: 'success',
-      content: 'SAML file deleted successfully'
+      content: 'SSO removed successfully'
     })
   })
   it('should handle delete errors when isEditMode = true', async () => {

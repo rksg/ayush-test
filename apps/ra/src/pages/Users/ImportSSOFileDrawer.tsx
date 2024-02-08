@@ -1,4 +1,4 @@
-import { ReactNode, useState, useEffect } from 'react'
+import { ReactNode, useState } from 'react'
 
 import {
   FileTextOutlined,
@@ -62,13 +62,9 @@ export const ImportSSOFileDrawer = (props: ImportSSOFileDrawerProps) => {
     setIsLoading(false)
   }
 
-  useEffect(() => {
-    resetFields()
-  }, [form, props.visible])
-
   const onClose = () => {
-    resetFields()
     setVisible(false)
+    resetFields()
   }
 
   const beforeUpload = (file: File) => {
@@ -102,22 +98,15 @@ export const ImportSSOFileDrawer = (props: ImportSSOFileDrawerProps) => {
     })
   }
 
-  const okHandler = async () => {
-    setIsLoading(true)
+  const setTenantSettings = async (payload: object, successMsg: string) => {
     await updateTenantSettings({
-      sso: JSON.stringify({
-        type: 'saml2',
-        metadata: localFileContents
-      })
+      sso: JSON.stringify(payload)
     })
       .unwrap()
       .then(() => {
         showToast({
           type: 'success',
-          content: $t(
-            { defaultMessage: 'SAML file {action} successfully' },
-            { action: isEditMode ? 'updated' : 'added' }
-          )
+          content: successMsg
         })
       })
       .catch(error => {
@@ -134,39 +123,26 @@ export const ImportSSOFileDrawer = (props: ImportSSOFileDrawerProps) => {
       })
   }
 
-  const onDelete = async () => {
-    await updateTenantSettings({
-      sso: JSON.stringify({})
-    })
-      .unwrap()
-      .then(() => {
-        showToast({
-          type: 'success',
-          content: $t({ defaultMessage: 'SAML file deleted successfully' })
-        })
-      })
-      .catch(error => {
-        showToast({
-          type: 'error',
-          content: $t(
-            { defaultMessage: 'Error: {error}, please try again later' },
-            { error: error.data })
-        })
-      })
-      .finally(() => {
-        resetFields()
-        setVisible(false)
-      })
-
+  const okHandler = async () => {
+    setIsLoading(true)
+    setTenantSettings(
+      {
+        type: 'saml2',
+        metadata: localFileContents
+      },
+      $t({ defaultMessage: 'SSO configured successfully' })
+    )
   }
 
   const deleteHandler = async () => {
     showActionModal({
       type: 'confirm',
-      title: $t({ defaultMessage: 'Delete SSO SAML File' }),
+      title: $t({ defaultMessage: 'Delete SSO Configuration' }),
       content: $t({
         defaultMessage: 'Users added via SSO will no longer be able to log in. Are you sure?' }),
-      onOk: async () => await onDelete()
+      onOk: async () => await setTenantSettings(
+        {},
+        $t({ defaultMessage: 'SSO removed successfully' }))
     })
   }
 
@@ -213,14 +189,14 @@ export const ImportSSOFileDrawer = (props: ImportSSOFileDrawerProps) => {
           htmlFor='uploadFile'
           label={
             <>
-            <label>
-              {$t({ defaultMessage: 'IdP Metadata' })}
-            </label>
-            <Tooltip.Question
-              placement='top'
-              title={$t({
-                defaultMessage: 'SAML file size must not exceed {filesize}'
-              }, { filesize: bytesFormatter(FiveMBSize) })} />
+              <label>
+                {$t({ defaultMessage: 'IdP Metadata' })}
+              </label>
+              <Tooltip.Question
+                placement='top'
+                title={$t({
+                  defaultMessage: 'SAML file size must not exceed {filesize}'
+                }, { filesize: bytesFormatter(FiveMBSize) })} />
             </>
           }>
           <Dragger
