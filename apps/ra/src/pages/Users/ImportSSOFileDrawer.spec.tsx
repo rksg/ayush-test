@@ -25,6 +25,7 @@ jest.mock('@acx-ui/components', () => ({
 
 const setVisible = jest.fn()
 const drawerProps = {
+  samlFileName: undefined,
   title: 'SSO Drawer',
   isEditMode: false,
   setVisible
@@ -59,10 +60,12 @@ describe('ImportSSOFileDrawer', () => {
     render(<ImportSSOFileDrawer
       {...drawerProps}
       title='SSO Drawer'
+      samlFileName='defaultFile.xml'
       visible />,
     { wrapper: Provider })
     expect(await screen.findByText('SSO Drawer')).toBeVisible()
-    await userEvent.click(screen.getByRole('button', { name: 'Browse' }))
+    expect(await screen.findByText('defaultFile.xml')).toBeVisible()
+    await userEvent.click(screen.getByRole('button', { name: 'Change File' }))
     const uploadInput = await screen.findByLabelText('IdP Metadata')
     expect(uploadInput).toBeInTheDocument()
     expect(await screen.findByRole('button', { name: 'Apply' })).toBeDisabled()
@@ -75,7 +78,8 @@ describe('ImportSSOFileDrawer', () => {
     expect(updateSettingsMock).toHaveBeenCalledWith({
       sso: JSON.stringify({
         type: 'saml2',
-        metadata: '<a/>'
+        metadata: '<a/>',
+        fileName: 'saml.xml'
       })
     })
     expect(mockShowToast).toHaveBeenCalledWith({
@@ -111,7 +115,8 @@ describe('ImportSSOFileDrawer', () => {
     expect(updateSettingsMock).toHaveBeenCalledWith({
       sso: JSON.stringify({
         type: 'saml2',
-        metadata: '<a/>'
+        metadata: '<a/>',
+        fileName: 'saml.xml'
       })
     })
     expect(mockShowToast).toHaveBeenCalledWith({
@@ -130,10 +135,12 @@ describe('ImportSSOFileDrawer', () => {
       {...drawerProps}
       isEditMode
       title='SSO Drawer'
+      samlFileName='saml.xml'
       visible />,
     { wrapper: Provider })
     expect(await screen.findByText('SSO Drawer')).toBeVisible()
-    await userEvent.click(screen.getByRole('button', { name: 'Browse' }))
+    expect(await screen.findByText('saml.xml')).toBeVisible()
+    await userEvent.click(screen.getByRole('button', { name: 'Change File' }))
     const uploadInput = await screen.findByLabelText('IdP Metadata')
     expect(uploadInput).toBeInTheDocument()
     expect(await screen.findByRole('button', { name: 'Apply' })).toBeDisabled()
@@ -146,7 +153,8 @@ describe('ImportSSOFileDrawer', () => {
     expect(updateSettingsMock).toHaveBeenCalledWith({
       sso: JSON.stringify({
         type: 'saml2',
-        metadata: '<a/>'
+        metadata: '<a/>',
+        fileName: 'saml.xml'
       })
     })
     expect(mockShowToast).toHaveBeenCalledWith({

@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react'
+import { ReactNode, useState, useEffect } from 'react'
 
 import {
   FileTextOutlined,
@@ -27,7 +27,8 @@ import * as UI from './styledComponents'
 
 interface ImportSSOFileDrawerProps extends DrawerProps {
   isEditMode: boolean
-  setVisible: (visible: boolean) => void
+  setVisible: (visible: boolean) => void,
+  samlFileName: string | undefined
 }
 
 const { Dragger } = Upload
@@ -46,15 +47,28 @@ const getFileExtension = (fileName: string) => {
   return matched && matched.length && matched[0]
 }
 
+const wrapFileName = (fileName: string | undefined) => fileName
+  ? <Typography.Text ellipsis>
+    <FileTextOutlined />
+    {fileName}
+  </Typography.Text>
+  : null
+
 export const ImportSSOFileDrawer = (props: ImportSSOFileDrawerProps) => {
-  const { title, visible, setVisible, isEditMode } = props
+  const { title, visible, setVisible, isEditMode, samlFileName } = props
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const [isLoading, setIsLoading] = useState(false)
-  const [localFileContents, setLocalFileContents] = useState<string | undefined>()
+  const [localFileName, setLocalFileName] = useState<string>()
+  const [localFileContents, setLocalFileContents] = useState<string>()
   const [fileDescription, setFileDescription] = useState<ReactNode>('')
   const bytesFormatter = formatter('bytesFormat')
   const [updateTenantSettings] = useUpdateTenantSettingsMutation()
+
+  useEffect(() => {
+    setFileDescription(wrapFileName(samlFileName))
+  }, [samlFileName, visible])
+
   const resetFields = () => {
     form.resetFields()
     setFileDescription('')
@@ -93,7 +107,8 @@ export const ImportSSOFileDrawer = (props: ImportSSOFileDrawerProps) => {
         return resolve(Upload.LIST_IGNORE)
       }
       setLocalFileContents(fileContents)
-      setFileDescription(<Typography.Text><FileTextOutlined /> {file.name} </Typography.Text>)
+      setFileDescription(wrapFileName(file.name))
+      setLocalFileName(file.name)
       return resolve(false)
     })
   }
@@ -128,7 +143,8 @@ export const ImportSSOFileDrawer = (props: ImportSSOFileDrawerProps) => {
     setTenantSettings(
       {
         type: 'saml2',
-        metadata: localFileContents
+        metadata: localFileContents,
+        fileName: localFileName
       },
       $t({ defaultMessage: 'SSO configured successfully' })
     )

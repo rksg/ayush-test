@@ -60,13 +60,17 @@ export const messages = {
   'ssoDisclaimer': defineMessage({
     defaultMessage: 'At this time, only Azure AD is officially supported'
   })
-
 }
 
-const isValidSSO = (settings: Partial<Settings> | undefined) => {
-  if (!settings || !settings.sso) return false
-  const ssoConfig = JSON.parse(settings.sso)
-  return typeof ssoConfig?.metadata === 'string'
+interface SSOValue {
+  type: 'saml2'
+  metadata: string
+  fileName: string
+}
+
+const getSSOsettings = (settings: Partial<Settings> | undefined): SSOValue | null => {
+  if (!settings || !settings.sso) return null
+  return JSON.parse(settings.sso)
 }
 
 const Users = () => {
@@ -83,7 +87,8 @@ const Users = () => {
 
   const [visible, setVisible] = useState(false)
   const settingsQuery = useGetTenantSettingsQuery()
-  const isEditMode = isValidSSO(settingsQuery.data)
+  const ssoConfig = getSSOsettings(settingsQuery.data)
+  const isEditMode = typeof ssoConfig?.metadata === 'string'
   const [usersCount, setUsersCount] = useState(0)
   useEffect(() => {
     usersQuery.data && setUsersCount(usersQuery.data.length)
@@ -208,6 +213,7 @@ const Users = () => {
         visible={visible}
         isEditMode={isEditMode}
         setVisible={setVisible}
+        samlFileName={ssoConfig?.fileName}
       />
     </Loader>
   )
