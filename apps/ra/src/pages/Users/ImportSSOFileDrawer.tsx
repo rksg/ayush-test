@@ -18,7 +18,8 @@ import {
   Button,
   DrawerProps,
   showToast,
-  showActionModal
+  showActionModal,
+  Tooltip
 } from '@acx-ui/components'
 import { formatter } from '@acx-ui/formatter'
 
@@ -210,9 +211,17 @@ export const ImportSSOFileDrawer = (props: ImportSSOFileDrawerProps) => {
           id='uploadFile'
           htmlFor='uploadFile'
           label={
+            <>
             <label>
               {$t({ defaultMessage: 'IdP Metadata' })}
-            </label>}>
+            </label>
+            <Tooltip.Question
+              placement='top'
+              title={$t({
+                defaultMessage: 'SAML file size must not exceed {filesize}'
+              }, { filesize: bytesFormatter(FiveMBSize) })} />
+            </>
+          }>
           <Dragger
             id='uploadFile'
             name='file'
