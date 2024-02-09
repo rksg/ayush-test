@@ -177,6 +177,11 @@ describe('impactedArea', () => {
     const sliceValue = 'AP'
     expect(impactedArea(apPath, sliceValue)).toEqual(`${sliceValue} (IP)`)
   })
+  it('return correct value for controller incident', () => {
+    const apPath = [...path, { type: 'controller', name: 'MAC_ADDRESS' }] as NetworkPath
+    const sliceValue = 'Controller Name'
+    expect(impactedArea(apPath, sliceValue)).toEqual(`${sliceValue} (MAC_ADDRESS)`)
+  })
   it('returns sliceValue when node name same as sliceValue', () => {
     const sameNamePath = [...path, { type: 'ap', name: 'AP' }] as NetworkPath
     const sliceValue = 'AP'
