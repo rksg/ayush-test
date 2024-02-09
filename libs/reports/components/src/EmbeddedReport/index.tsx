@@ -11,7 +11,8 @@ import { get }                                                    from '@acx-ui/
 import { useIsSplitOn, Features }                                 from '@acx-ui/feature-toggle'
 import {
   useGuestTokenMutation,
-  useEmbeddedIdMutation
+  useEmbeddedIdMutation,
+  EmbeddedResponse
 } from '@acx-ui/reports/services'
 import { useReportsFilter }                                                   from '@acx-ui/reports/utils'
 import { REPORT_BASE_RELATIVE_URL }                                           from '@acx-ui/store'
@@ -292,7 +293,10 @@ export function EmbeddedReport (props: ReportProps) {
     }
     embeddedId({ payload: embeddedData })
       .unwrap()
-      .then((uuid) => setDashboardEmbeddedId(uuid))
+      .then((resp: EmbeddedResponse) => {
+        sessionStorage.setItem('user_info', JSON.stringify(resp.user_info))
+        setDashboardEmbeddedId(resp.dashboard_metadata.uuid)
+      })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [embedDashboardName])
 

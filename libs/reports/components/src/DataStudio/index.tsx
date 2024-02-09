@@ -5,6 +5,7 @@ import { IFrame, showActionModal }            from '@acx-ui/components'
 import { get }                                from '@acx-ui/config'
 import { useIsSplitOn, Features }             from '@acx-ui/feature-toggle'
 import { useAuthenticateMutation }            from '@acx-ui/reports/services'
+import type { DataStudioResponse, UserInfo }  from '@acx-ui/reports/services'
 import { getUserProfile as getUserProfileR1 } from '@acx-ui/user'
 import { useLocaleContext, getIntl }          from '@acx-ui/utils'
 
@@ -71,8 +72,19 @@ export function DataStudio () {
       }
     })
       .unwrap()
-      .then(url => {
-        setUrl(url)
+      .then((resp: DataStudioResponse) => {
+        const userInfo = resp.user_info as UserInfo
+        sessionStorage.setItem('user_info', JSON.stringify(userInfo))
+
+        // Lets also set the params for the iframe
+        const searchParams = new URLSearchParams()
+        searchParams.append('mlisa_own_tenant_id', userInfo.tenant_id)
+        searchParams.append('mlisa_tenant_ids', userInfo.tenant_ids.join(','))
+        searchParams.append('is_franchisor', userInfo.is_franchisor.toString())
+
+        // eslint-disable-next-line no-console
+        console.log('Navigating to URL: ', `${resp.redirect_url}?${searchParams.toString()}`)
+        setUrl(`${resp.redirect_url}?${searchParams.toString()}`)
       })
   }, [authenticate, locale])
 

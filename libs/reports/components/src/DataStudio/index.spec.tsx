@@ -4,7 +4,7 @@ import { showActionModal }                          from '@acx-ui/components'
 import * as config                                  from '@acx-ui/config'
 import { useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import { ReportUrlsInfo, reportsApi }               from '@acx-ui/reports/services'
-import type { UrlInfo }                             from '@acx-ui/reports/services'
+import type { DataStudioResponse }                  from '@acx-ui/reports/services'
 import { Provider, store }                          from '@acx-ui/store'
 import { render, screen, waitFor, mockServer, act } from '@acx-ui/test-utils'
 import { useLocaleContext }                         from '@acx-ui/utils'
@@ -12,8 +12,15 @@ import { useLocaleContext }                         from '@acx-ui/utils'
 import { DataStudio, getHostName } from '.'
 
 const response = {
-  redirect_url: '/api/a4rc/explorer/'
-} as UrlInfo
+  redirect_url: '/api/a4rc/explorer/',
+  user_info: {
+    tenant_id: '1234',
+    is_franchisor: 'false',
+    tenant_ids: [
+      '1235'
+    ]
+  }
+} as DataStudioResponse
 
 jest.mock('@acx-ui/utils', () => ({
   __esModule: true,
@@ -64,7 +71,8 @@ describe('DataStudio', () => {
     })
 
     const iframe = screen.getByTitle('data-studio') as HTMLIFrameElement
-    expect(iframe.src).toBe('http://localhost/api/a4rc/explorer/')
+    // eslint-disable-next-line max-len
+    expect(iframe.src).toBe('http://localhost/api/a4rc/explorer/?mlisa_own_tenant_id=1234&mlisa_tenant_ids=1235&is_franchisor=false')
   })
 
   it('should render the data studio for MLISA SA', async () => {
@@ -85,7 +93,8 @@ describe('DataStudio', () => {
     })
 
     const iframe = screen.getByTitle('data-studio') as HTMLIFrameElement
-    expect(iframe.src).toBe('http://localhost/api/a4rc/explorer/')
+    // eslint-disable-next-line max-len
+    expect(iframe.src).toBe('http://localhost/api/a4rc/explorer/?mlisa_own_tenant_id=1234&mlisa_tenant_ids=1235&is_franchisor=false')
   })
 
   describe('dev env', () => {
