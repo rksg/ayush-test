@@ -3,25 +3,16 @@ import { rest } from 'msw'
 import { store }      from '@acx-ui/store'
 import { mockServer } from '@acx-ui/test-utils'
 
-import {  ReportUrlsInfo, reportsApi } from '.'
+import {  ReportUrlsInfo, reportsApi, UrlInfo } from '.'
 
-import type { GuestToken, EmbeddedResponse, DataStudioResponse, UserInfo } from '.'
+import type { GuestToken, DashboardMetadata } from '.'
 
 const guestTokenReponse = {
   token: 'some token'
 } as GuestToken
 
-
-const userInfo = {
-  tenant_id: 'ac940866-a6f3-4113-81c1-ffb82983ce51',
-  is_franchisor: false,
-  tenant_ids: [
-    'ac940866-a6f3-4113-81c1-ffb82983ce51'
-  ]
-} as UserInfo
-
 const getEmbeddedReponse = {
-  dashboard_metadata: {
+  result: {
     allowed_domains: [
       'localhost:8088'
     ],
@@ -29,14 +20,12 @@ const getEmbeddedReponse = {
     changed_on: '2022-12-06T05:57:51.442545',
     dashboard_id: '6',
     uuid: 'ac940866-a6f3-4113-81c1-ffb82983ce51'
-  },
-  user_info: userInfo
-} as EmbeddedResponse
+  }
+} as DashboardMetadata
 
 const AuthenticateResponse = {
-  redirect_url: '/api/a4rc/explorer/',
-  user_info: userInfo
-} as DataStudioResponse
+  redirect_url: '/api/a4rc/explorer/'
+} as UrlInfo
 
 describe('reportsApi', () => {
   beforeEach(() => {
@@ -62,8 +51,7 @@ describe('reportsApi', () => {
     const response = await store.dispatch(reportsApi.endpoints.embeddedId.initiate({
       payload: { dashboard_title: 'some dashboard' }
     })).unwrap()
-    expect(response.dashboard_metadata.uuid).toEqual(getEmbeddedReponse.dashboard_metadata.uuid)
-    expect(response.user_info).toEqual(getEmbeddedReponse.user_info)
+    expect(response).toEqual(getEmbeddedReponse.result.uuid)
   })
   it('should return guest token', async () => {
     const response = await store.dispatch(reportsApi.endpoints.guestToken.initiate({
@@ -71,7 +59,7 @@ describe('reportsApi', () => {
         user: {},
         resources: [{
           type: 'dashboard',
-          id: getEmbeddedReponse.dashboard_metadata.uuid
+          id: getEmbeddedReponse.result.uuid
         }],
         rls: []
       }
@@ -85,7 +73,6 @@ describe('reportsApi', () => {
           locale: 'en'
         }
       })).unwrap()
-    expect(response.redirect_url).toEqual(AuthenticateResponse.redirect_url)
-    expect(response.user_info).toEqual(AuthenticateResponse.user_info)
+    expect(response).toEqual(AuthenticateResponse.redirect_url)
   })
 })
