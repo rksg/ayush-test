@@ -78,7 +78,7 @@ describe('SlaTile', () => {
       </div>
     }
     render(<Test />, { wrapper: Provider })
-    expect(await screen.findByText('LSPs health')).toBeVisible()
+    expect(await screen.findByText('LSP health')).toBeVisible()
     expect(await screen.findByText('Guest Experience')).toBeVisible()
     expect(await screen.findByText('Brand SSID Compliance')).toBeVisible()
     const graphs = await screen.findAllByTestId('slaChart')
@@ -104,7 +104,7 @@ describe('SlaTile', () => {
       </div>
     }
     render(<Test />, { wrapper: Provider })
-    expect(await screen.findByText('Properties health')).toBeVisible()
+    expect(await screen.findByText('Property health')).toBeVisible()
     expect(await screen.findByText('Guest Experience')).toBeVisible()
     expect(await screen.findByText('Brand SSID Compliance')).toBeVisible()
     const graphs = await screen.findAllByTestId('slaChart')
@@ -125,7 +125,7 @@ describe('SlaTile', () => {
       </div>
     }
     render(<Test />, { wrapper: Provider })
-    expect(await screen.findByText('Properties health')).toBeVisible()
+    expect(await screen.findByText('Property health')).toBeVisible()
     expect(await screen.findByText('Guest Experience')).toBeVisible()
     expect(await screen.findByText('Brand SSID Compliance')).toBeVisible()
     const graphs = await screen.findAllByTestId('slaChart')
@@ -155,7 +155,7 @@ describe('SlaTile', () => {
       </div>
     }
     render(<Test />, { wrapper: Provider })
-    expect(await screen.findByText('LSPs health')).toBeVisible()
+    expect(await screen.findByText('LSP health')).toBeVisible()
     expect(await screen.findByText('Guest Experience')).toBeVisible()
     expect(await screen.findByText('Brand SSID Compliance')).toBeVisible()
     const graphs = await screen.findAllByTestId('slaChart')
@@ -187,7 +187,7 @@ describe('SlaTile', () => {
       </div>
     }
     render(<Test />, { wrapper: Provider })
-    expect(await screen.findByText('LSPs health')).toBeVisible()
+    expect(await screen.findByText('LSP health')).toBeVisible()
     expect(await screen.findByText('Guest Experience')).toBeVisible()
     expect(await screen.findByText('Brand SSID Compliance')).toBeVisible()
     const graphs = await screen.findAllByTestId('slaChart')
@@ -220,7 +220,7 @@ describe('SlaTile', () => {
       </div>
     }
     render(<Test />, { wrapper: Provider })
-    expect(await screen.findByText('Properties health')).toBeVisible()
+    expect(await screen.findByText('Property health')).toBeVisible()
     expect(await screen.findByText('Guest Experience')).toBeVisible()
     expect(await screen.findByText('Brand SSID Compliance')).toBeVisible()
     const graphs = await screen.findAllByTestId('slaChart')

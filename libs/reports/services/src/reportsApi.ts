@@ -10,25 +10,16 @@ import { ApiInfo, getJwtHeaders } from '@acx-ui/utils'
 export interface GuestToken {
   token: string
 }
-
-export interface UserInfo {
-  tenant_id: string,
-  is_franchisor: boolean,
-  tenant_ids: string[]
+export interface UrlInfo {
+  redirect_url: string
 }
 
-export interface DataStudioResponse {
-  redirect_url: string,
-  user_info?: UserInfo
-}
-
-export interface EmbeddedResponse {
-  dashboard_metadata: {
+export interface DashboardMetadata {
+  result: {
     uuid: string,
     dashboard_id: string,
     allowed_domains: string[]
-  },
-  user_info?: UserInfo
+  }
 }
 
 const createHttpRequest = (
@@ -84,7 +75,7 @@ export const reportsApi = reportsBaseApi.injectEndpoints({
         return response.token
       }
     }),
-    embeddedId: build.mutation<EmbeddedResponse, RequestPayload>({
+    embeddedId: build.mutation<string, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(ReportUrlsInfo.getEmbeddedDashboardMeta, params)
         return {
@@ -92,11 +83,11 @@ export const reportsApi = reportsBaseApi.injectEndpoints({
           body: payload
         }
       },
-      transformResponse: (response : EmbeddedResponse) => {
-        return response
+      transformResponse: (response : DashboardMetadata) => {
+        return response.result.uuid
       }
     }),
-    authenticate: build.mutation<DataStudioResponse, RequestPayload>({
+    authenticate: build.mutation<string, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(ReportUrlsInfo.authenticate, params)
         return {
@@ -104,8 +95,8 @@ export const reportsApi = reportsBaseApi.injectEndpoints({
           body: payload
         }
       },
-      transformResponse: (response : DataStudioResponse) => {
-        return response
+      transformResponse: (response : UrlInfo) => {
+        return response.redirect_url
       }
     })
   })

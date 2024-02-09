@@ -71,6 +71,7 @@ export interface AP {
   apZone: string
   traffic: number
   networkPath: NetworkPath
+  rowId?: number
 }
 
 export interface Switch {
@@ -79,6 +80,7 @@ export interface Switch {
   switchModel: string
   switchVersion: string
   traffic: number
+  rowId?: number
 }
 
 export interface ClientByTraffic {
