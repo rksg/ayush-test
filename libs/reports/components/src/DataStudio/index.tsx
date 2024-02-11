@@ -80,11 +80,13 @@ export function DataStudio () {
         const searchParams = new URLSearchParams()
         searchParams.append('mlisa_own_tenant_id', userInfo.tenant_id)
         searchParams.append('mlisa_tenant_ids', userInfo.tenant_ids.join(','))
-        searchParams.append('is_franchisor', userInfo.is_franchisor.toString())
+        searchParams.append('is_franchisor', userInfo.is_franchisor)
 
+        const url = `${resp.redirect_url}?${searchParams.toString()}`
         // eslint-disable-next-line no-console
-        console.log('Navigating to URL: ', `${resp.redirect_url}?${searchParams.toString()}`)
-        setUrl(`${resp.redirect_url}?${searchParams.toString()}`)
+        console.log('Navigating to URL: ', url)
+
+        setUrl(url)
       })
   }, [authenticate, locale])
 
