@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 
 import { ToastProps }                                                                        from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
-import { MspAdministrator, MspEcData, MspEcDelegatedAdmins, MspUrlsInfo, SupportDelegation } from '@acx-ui/msp/utils'
+import { MspAdministrator, MspEcData, MspEcDelegatedAdmins, MspEcTierEnum, MspUrlsInfo, SupportDelegation } from '@acx-ui/msp/utils'
 import { AdministrationUrlsInfo }                                                            from '@acx-ui/rc/utils'
 import { Provider }                                                                          from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved, waitFor }         from '@acx-ui/test-utils'
@@ -672,6 +672,25 @@ describe('ManageCustomer', () => {
     expect(screen.queryByRole('heading', { name: 'Account Details' })).toBeNull()
     expect(screen.queryByRole('heading', { name: 'Summary' })).toBeNull()
 
+  })
+
+  it('should show dialog on service tier radio option change', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_EC_CREATE_WITH_TIER)
+    render(
+      <Provider>
+        <ManageCustomer />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByRole('radio', { name: 'Professional' })).toBeEnabled()
+    const radioBtn = screen.getByRole('radio', { name: 'Essential' })
+    await userEvent.click(radioBtn)
+    const dialog = await screen.findByRole('dialog')
+    expect(dialog).toBeVisible()
+    const cancelDialog = screen.getAllByRole('button', { name: 'Cancel' })
+    await userEvent.click(cancelDialog[1])
+    expect(screen.getByRole('radio', { name: 'Professional' })).toBeEnabled()
   })
 
 })
