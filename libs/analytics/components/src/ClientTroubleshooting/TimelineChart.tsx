@@ -36,10 +36,17 @@ import {
   cssNumber,
   toolboxDataZoomOptions
 } from '@acx-ui/components'
-import { get }                        from '@acx-ui/config'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import type { TimeStampRange }        from '@acx-ui/types'
-import { hasAccess }                  from '@acx-ui/user'
+import { get }    from '@acx-ui/config'
+import {
+  useNavigate,
+  Params,
+  Location,
+  useParams,
+  useLocation,
+  getTenantLink
+} from '@acx-ui/react-router-dom'
+import type { TimeStampRange } from '@acx-ui/types'
+import { hasAccess }           from '@acx-ui/user'
 
 import { useIncidentToggles } from '../useIncidentToggles'
 
@@ -170,7 +177,8 @@ export const useDotClick = (
   onDotClick: ((param: unknown) => void) | undefined,
   popoverRef: RefObject<HTMLDivElement> | undefined,
   navigate: CallableFunction,
-  basePath: string
+  navigationParams: Params<string>,
+  location: Location
 ) => {
   const handler = useCallback(
     function (params: { componentSubType: string; data: unknown }) {
@@ -198,10 +206,12 @@ export const useDotClick = (
       ) {
         const typedIncidentParam = (params as { data: [number, string, number, IncidentDetails] })
         const { id } = typedIncidentParam.data[3]
-        navigate(`${basePath}/analytics/incidents/${id}`)
+        const path = `analytics/incidents/${id}`
+        const to = getTenantLink(navigationParams, path, location)
+        navigate(to)
       }
     },
-    [onDotClick, navigate, basePath, popoverRef]
+    [onDotClick, navigate, popoverRef, navigationParams, location]
   )
   useEffect(() => {
     if (!eChartsRef || !eChartsRef.current) return
@@ -325,9 +335,7 @@ export function TimelineChart ({
   const { $t } = useIntl()
   const eChartsRef = useRef<ReactECharts>(null)
   const navigate = useNavigate()
-  const currentPath = useTenantLink('/')
   const toggles = useIncidentToggles()
-  const basePath = currentPath.pathname
   useImperativeHandle(chartRef, () => eChartsRef.current!)
   const chartPadding = 10
   const rowHeight = 22
@@ -344,7 +352,9 @@ export function TimelineChart ({
     chartBoundary as [number, number],
     (window: TimeStampRange) => updateBoundary(window, timewindowRef)
   )
-  useDotClick(eChartsRef, onDotClick, popoverRef, navigate, basePath)
+  const params = useParams()
+  const location = useLocation()
+  useDotClick(eChartsRef, onDotClick, popoverRef, navigate, params, location)
 
   const mappedData = useMemo(() => mapping
     .slice()
