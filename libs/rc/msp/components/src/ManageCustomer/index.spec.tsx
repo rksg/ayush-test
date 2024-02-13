@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 
 import { ToastProps }                                                                        from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
-import { MspAdministrator, MspEcData, MspEcDelegatedAdmins, MspEcTierEnum, MspUrlsInfo, SupportDelegation } from '@acx-ui/msp/utils'
+import { MspAdministrator, MspEcData, MspEcDelegatedAdmins, MspUrlsInfo, SupportDelegation } from '@acx-ui/msp/utils'
 import { AdministrationUrlsInfo }                                                            from '@acx-ui/rc/utils'
 import { Provider }                                                                          from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved, waitFor }         from '@acx-ui/test-utils'
