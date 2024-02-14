@@ -1,10 +1,7 @@
-// import { useState } from 'react'
-
 import { useEffect, useState } from 'react'
 
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
-
 
 import {
   Loader,
@@ -16,12 +13,10 @@ import {
   useGetPrivilegeGroupsQuery,
   useDeletePrivilegeGroupMutation
 } from '@acx-ui/rc/services'
-import { sortProp, defaultSort, PrivilegeGroup } from '@acx-ui/rc/utils'
-import { useTenantLink }                         from '@acx-ui/react-router-dom'
-import { filterByAccess, useUserProfileContext } from '@acx-ui/user'
-import { AccountType }                           from '@acx-ui/utils'
-
-import { fakedPrivilegeGroupList } from '../__tests__/fixtures'
+import { sortProp, defaultSort, PrivilegeGroup, CustomGroupType } from '@acx-ui/rc/utils'
+import { useTenantLink }                                          from '@acx-ui/react-router-dom'
+import { filterByAccess, useUserProfileContext }                  from '@acx-ui/user'
+import { AccountType, noDataDisplay }                             from '@acx-ui/utils'
 
 interface PrivilegeGroupsTableProps {
   isPrimeAdminUser: boolean;
@@ -46,9 +41,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
 
   useEffect(() => {
     if (privilegeGroupList) {
-      const privilegeGroup =
-        privilegeGroupList.length > 0 ? privilegeGroupList : fakedPrivilegeGroupList
-      setPrivilegeGroupData(privilegeGroup as PrivilegeGroup[])
+      setPrivilegeGroupData(privilegeGroupList as PrivilegeGroup[])
     }
   }, [privilegeGroupList])
 
@@ -74,14 +67,17 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
     },
     {
       title: $t({ defaultMessage: 'Role' }),
-      key: 'role',
-      dataIndex: 'role',
+      key: 'roleName',
+      dataIndex: 'roleName',
       filterable: true
     },
     {
       title: $t({ defaultMessage: 'Scope' }),
       key: 'scope',
-      dataIndex: 'scope'
+      dataIndex: 'scope',
+      render: function (_, row) {
+        return row.allCustomers ? $t({ defaultMessage: 'All Customers' }) : noDataDisplay
+      }
     },
     {
       title: $t({ defaultMessage: 'Group Type' }),
@@ -112,7 +108,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
     {
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows) => {
-        return (selectedRows.length === 1 && selectedRows[0].type !== 'System')
+        return (selectedRows.length === 1 && selectedRows[0].type !== CustomGroupType.SYSTEM)
       },
       onClick: (selectedRows) => {
         // show edit dialog
@@ -139,7 +135,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
     {
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedRows) => {
-        return (selectedRows.length === 1 && selectedRows[0].type !== 'System')
+        return (selectedRows.length === 1 && selectedRows[0].type !== CustomGroupType.SYSTEM)
       },
       onClick: (rows, clearSelection) => {
         showActionModal({

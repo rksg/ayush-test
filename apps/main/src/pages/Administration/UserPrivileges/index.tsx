@@ -10,7 +10,9 @@ import { MSPUtils }                from '@acx-ui/msp/utils'
 import {
   useGetAdminGroupsQuery,
   useGetAdminListQuery,
+  useGetCustomRolesQuery,
   useGetDelegationsQuery,
+  useGetPrivilegeGroupsQuery,
   useGetTenantAuthenticationsQuery,
   useGetTenantDetailsQuery
 } from '@acx-ui/rc/services'
@@ -20,12 +22,10 @@ import { useUserProfileContext }                from '@acx-ui/user'
 
 import DelegationsTable from '../Administrators/DelegationsTable'
 
-import { fakedCustomRoleList }     from './__tests__/fixtures'
-import { fakedPrivilegeGroupList } from './__tests__/fixtures'
-import CustomRoles                 from './CustomRoles'
-import PriviledgeGroups            from './PrivilegeGroups'
-import SsoGroups                   from './SsoGroups'
-import UsersTable                  from './UsersTable'
+import CustomRoles      from './CustomRoles'
+import PriviledgeGroups from './PrivilegeGroups'
+import SsoGroups        from './SsoGroups'
+import UsersTable       from './UsersTable'
 
 
 const UserPrivileges = () => {
@@ -46,15 +46,18 @@ const UserPrivileges = () => {
   const ssoGroupList = useGetAdminGroupsQuery(
     { params }, { skip: !isGroupBasedLoginEnabled })
   const thirdPartyAdminList = useGetDelegationsQuery(
-    { params }, { skip: !isGroupBasedLoginEnabled }
-  )
+    { params }, { skip: !isGroupBasedLoginEnabled })
+  const privilegeGroupList = useGetPrivilegeGroupsQuery(
+    { params }, { skip: !isGroupBasedLoginEnabled })
+
+  const customRoleList = useGetCustomRolesQuery(
+    { params }, { skip: !isGroupBasedLoginEnabled })
 
   const adminCount = adminList?.data?.length! || 0
   const ssoGroupCount = ssoGroupList?.data?.length! || 0
   const delegatedAdminCount = thirdPartyAdminList.data?.length! || 0
-  // TO DO (new API)
-  const privilegeGroupCount = fakedPrivilegeGroupList.length! || 0
-  const customRoleCount = fakedCustomRoleList.length! || 0
+  const privilegeGroupCount = privilegeGroupList.data?.length! || 0
+  const customRoleCount = customRoleList.data?.length! || 0
 
   const isVAR = userProfileData?.var && !userProfileData?.support
   const tenantType = tenantDetailsData.data?.tenantType

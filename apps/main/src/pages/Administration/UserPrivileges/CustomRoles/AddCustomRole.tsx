@@ -1,28 +1,31 @@
+import { useState } from 'react'
+
 import {
-  // Checkbox,
+  Checkbox,
   Form,
-  Input
+  Input,
+  Radio
 } from 'antd'
 import { useIntl } from 'react-intl'
 
 import {
   Descriptions,
   PageHeader,
-  Select,
   StepsForm,
   Subtitle
 } from '@acx-ui/components'
 import { useAddCustomRoleMutation, useUpdateCustomRoleMutation } from '@acx-ui/rc/services'
-import { CustomRole, getRoles }                                  from '@acx-ui/rc/utils'
+import { CustomRole }                                            from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { RolesEnum } from '@acx-ui/types'
 
 import * as UI from '../styledComponents'
+
+import PermissionSelector from './PermissionSelector'
 
 interface CustomRoleData {
   name?: string,
@@ -37,6 +40,7 @@ export function AddCustomRole () {
 
   const linkToCustomRoles = useTenantLink('/administration/userPrivileges/customRoles', 't')
   const [form] = Form.useForm()
+  const [selectedPermission, setSelectedPermission] = useState('')
   const [addCustomRole] = useAddCustomRoleMutation()
   const [updateCustomRole] = useUpdateCustomRoleMutation()
 
@@ -127,75 +131,112 @@ export function AddCustomRole () {
   }
 
   const PermissionsForm = () => {
-    const rolesList = getRoles().map((item) => ({
-      label: intl.$t(item.label),
-      value: item.value
-    })).filter(item => !(item.value === RolesEnum.DPSK_ADMIN))
 
     return <>
       <Subtitle level={3}>{ intl.$t({ defaultMessage: 'Permissions' }) }</Subtitle>
       <h5>
         {intl.$t({ defaultMessage: 'Set the permissions for this role:' })}
       </h5>
-      <div
-        style={{
-          width: 758, height: 432, backgroundColor: '#F2F2F2', padding: '20px 40px 40px 20px' }}>
-        {/* <UI.FieldLabelPermission width='270'>
-          <Checkbox style={{ backgroundColor: '#F2F2F2' }}
-          // onChange={handlePermissionChange}
-          // checked={isPermissionEnabled}
-          // value={isPermissionEnabled}
-          // disabled={isDisabled}
-          >
-            {intl.$t({ defaultMessage: 'Permission' })}
-          </Checkbox>
-          <label>Read</label>
-          <label>Create</label>
-          <label>Update</label>
-          <label>Delete</label>
-          <label>Execute</label>
-        </UI.FieldLabelPermission> */}
+      <div style={{ width: 758, height: 432, backgroundColor: '#F2F2F2',
+        padding: '20px 40px 20px 20px' }}>
 
-        <UI.FieldLabelAttributes width='660'>
-          <div>
-            {intl.$t({ defaultMessage: 'Wi-Fi' })}
-            {/* <Tooltip title={intl.$t({ defaultMessage: 'Wi-Fi' })}/> */}
-          </div>
-          <Select
-            options={rolesList}
-            // placeholder={intl.$t({ defaultMessage: 'Select Role' })}
-          />
-        </UI.FieldLabelAttributes>
+        <PermissionSelector
+          // ssoConfigured={isSsoConfigured}
+          setSelected={setSelectedPermission}
+        />
+        {selectedPermission === 'byTechnology'
+          ? <PermissionsTechForm />
+          : <PermissionsExpertiseForm />}
 
-        <UI.FieldLabelAttributes width='660'>
-          {intl.$t({ defaultMessage: 'Wired' })}
-          <Select options={rolesList} />
-        </UI.FieldLabelAttributes>
-
-        <UI.FieldLabelAttributes width='660'>
-          {intl.$t({ defaultMessage: 'SmartEdge' })}
-          <Select options={rolesList} />
-        </UI.FieldLabelAttributes>
-        <UI.FieldLabelAttributes width='660'>
-          {intl.$t({ defaultMessage: 'Guests' })}
-          <Select options={rolesList} />
-        </UI.FieldLabelAttributes>
-
-        <UI.FieldLabelAttributes width='660'>
-          {intl.$t({ defaultMessage: 'Reports' })}
-          <Select options={rolesList} />
-        </UI.FieldLabelAttributes>
-
-        <UI.FieldLabelAttributes width='660'>
-          {intl.$t({ defaultMessage: 'DPSK Managemen' })}
-          <Select options={rolesList} />
-        </UI.FieldLabelAttributes>
-
-        <UI.FieldLabelAttributes width='660'>
-          {intl.$t({ defaultMessage: 'Templates' })}
-          <Select options={rolesList} />
-        </UI.FieldLabelAttributes>
       </div></>
+  }
+
+  const PermissionsTechForm = () => {
+    return <div >
+      <UI.FieldLabelPermission width='270'>
+        <label></label>
+        <label>Read</label>
+        <label>Create</label>
+        <label>Update</label>
+        <label>Delete</label>
+      </UI.FieldLabelPermission>
+
+      <UI.FieldLabelAttributes width='660'>
+        <Checkbox style={{ width: 400 }}>
+          {intl.$t({ defaultMessage: 'Wi-Fi' })}
+        </Checkbox>
+        <Checkbox></Checkbox>
+        <Checkbox></Checkbox>
+        <Checkbox></Checkbox>
+        <Checkbox></Checkbox>
+      </UI.FieldLabelAttributes>
+
+      <UI.FieldLabelAttributes width='660'>
+        <Checkbox style={{ width: 400 }}>
+          {intl.$t({ defaultMessage: 'Wired' })}
+        </Checkbox>
+        <Checkbox></Checkbox>
+        <Checkbox></Checkbox>
+        <Checkbox></Checkbox>
+        <Checkbox></Checkbox>
+      </UI.FieldLabelAttributes>
+
+      <UI.FieldLabelAttributes width='660'>
+        <Checkbox style={{ width: 400 }}>
+          {intl.$t({ defaultMessage: 'SmartEdge' })}
+        </Checkbox>
+        <Checkbox></Checkbox>
+        <Checkbox></Checkbox>
+        <Checkbox></Checkbox>
+        <Checkbox></Checkbox>
+      </UI.FieldLabelAttributes>
+    </div>
+  }
+
+  const PermissionsExpertiseForm = () => {
+    return <div style={{ marginTop: '15px' }}>
+
+      <UI.FieldLabel2Attributes width='660'>
+        <Radio>
+          <div>{intl.$t({ defaultMessage: 'Guests Experience' })}</div>
+          <div>
+            {intl.$t({ defaultMessage:
+            'Has full control access to guest pass credentials list, all other areas are hidden' })}
+          </div>
+        </Radio>
+      </UI.FieldLabel2Attributes>
+
+      <UI.FieldLabel2Attributes width='660'>
+        <Radio>
+          <div>{intl.$t({ defaultMessage: 'Reports' })}</div>
+          <div>
+            {intl.$t({ defaultMessage:
+            'Has full control access to the reports area, all other areas are hidden' })}
+          </div>
+        </Radio>
+      </UI.FieldLabel2Attributes>
+
+      <UI.FieldLabel2Attributes width='660'>
+        <Radio>
+          <div>{intl.$t({ defaultMessage: 'DPSK Management' })}</div>
+          <div>
+            {intl.$t({ defaultMessage:
+            'Has full control access to DPSK  credentials list, all other areas are hidden' })}
+          </div>
+        </Radio>
+      </UI.FieldLabel2Attributes>
+
+      <UI.FieldLabel2Attributes width='660'>
+        <Radio>
+          <div>{intl.$t({ defaultMessage: 'Templates Management' })}</div>
+          <div>
+            {intl.$t({ defaultMessage:
+            'Has full control access to templates, all other areas are Read-Only' })}
+          </div>
+        </Radio>
+      </UI.FieldLabel2Attributes>
+
+    </div>
   }
 
   const SummaryForm = () => {
@@ -232,26 +273,6 @@ export function AddCustomRole () {
               label={intl.$t({ defaultMessage: 'SmartEdge' })}
               labelStyle={{ fontWeight: 800 }}
               children={'Create, Update, Delete, Read'} />
-
-            <Descriptions.Item
-              label={intl.$t({ defaultMessage: 'Guests' })}
-              labelStyle={{ fontWeight: 800 }}
-              children={'Read'} />
-
-            <Descriptions.Item
-              label={intl.$t({ defaultMessage: 'Reports' })}
-              labelStyle={{ fontWeight: 800 }}
-              children={'Create, Update, Delete, Read'} />
-
-            <Descriptions.Item
-              label={intl.$t({ defaultMessage: 'DPSK Management' })}
-              labelStyle={{ fontWeight: 800 }}
-              children={'Read'} />
-
-            <Descriptions.Item
-              label={intl.$t({ defaultMessage: 'Template' })}
-              labelStyle={{ fontWeight: 800 }}
-              children={'Read'} />
 
           </Descriptions>
         }/>

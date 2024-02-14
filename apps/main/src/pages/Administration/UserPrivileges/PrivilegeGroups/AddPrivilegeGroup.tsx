@@ -26,7 +26,8 @@ import RoleSelector from '../../Administrators/AdministratorsTable/AddAdministra
 interface PrivilegeGroupData {
   name?: string,
   description?: string,
-  roleName?: string
+  roleName?: string,
+  delegation?: boolean
 }
 
 export function AddPrivilegeGroup () {
@@ -49,7 +50,8 @@ export function AddPrivilegeGroup () {
       const privilegeGroupData: PrivilegeGroupData = {
         name: formValues.name,
         description: formValues.description,
-        roleName: formValues.role
+        roleName: formValues.role,
+        delegation: false
       }
       await addPrivilegeGroup({ payload: privilegeGroupData }).unwrap()
 

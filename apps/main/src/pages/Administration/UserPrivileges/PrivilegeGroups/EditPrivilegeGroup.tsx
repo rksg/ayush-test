@@ -45,7 +45,7 @@ const AdministrationTabs = () => {
       onChange={onTabChange}
     >
       <Tabs.TabPane tab={$t({ defaultMessage: 'Group Settings' })} key='groupSettings' />
-      <Tabs.TabPane tab={$t({ defaultMessage: 'Members' })} key='members' />
+      {/* <Tabs.TabPane tab={$t({ defaultMessage: 'Members' })} key='members' /> */}
     </Tabs>
   )
 }

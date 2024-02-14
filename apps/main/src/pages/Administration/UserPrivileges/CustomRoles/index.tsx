@@ -13,12 +13,10 @@ import {
   useGetCustomRolesQuery,
   useDeleteCustomRoleMutation
 } from '@acx-ui/rc/services'
-import { sortProp, defaultSort, CustomRole }     from '@acx-ui/rc/utils'
-import { useTenantLink }                         from '@acx-ui/react-router-dom'
-import { filterByAccess, useUserProfileContext } from '@acx-ui/user'
-import { AccountType }                           from '@acx-ui/utils'
-
-import { fakedCustomRoleList } from '../__tests__/fixtures'
+import { sortProp, defaultSort, CustomRole, CustomGroupType } from '@acx-ui/rc/utils'
+import { useTenantLink }                                      from '@acx-ui/react-router-dom'
+import { filterByAccess, useUserProfileContext }              from '@acx-ui/user'
+import { AccountType }                                        from '@acx-ui/utils'
 
 interface CustomRolesTableProps {
   isPrimeAdminUser: boolean;
@@ -40,8 +38,7 @@ const CustomRoles = (props: CustomRolesTableProps) => {
 
   useEffect(() => {
     if (roleList) {
-      const roleData = roleList.length > 0 ? roleList : fakedCustomRoleList
-      setCustomRoleData(roleData as CustomRole[])
+      setCustomRoleData(roleList)
     }
   }, [roleList])
 
@@ -76,7 +73,7 @@ const CustomRoles = (props: CustomRolesTableProps) => {
     {
       label: $t({ defaultMessage: 'View' }),
       visible: (selectedRows) => {
-        return (selectedRows.length === 1 && selectedRows[0].roleType === 'System')
+        return (selectedRows.length === 1 && selectedRows[0].roleType === CustomGroupType.SYSTEM)
       },
       onClick: (selectedRows) => {
         navigate({
@@ -88,7 +85,7 @@ const CustomRoles = (props: CustomRolesTableProps) => {
     {
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows) => {
-        return (selectedRows.length === 1 && selectedRows[0].roleType !== 'System')
+        return (selectedRows.length === 1 && selectedRows[0].roleType !== CustomGroupType.SYSTEM)
       },
       onClick: (selectedRows) => {
         // show edit dialog

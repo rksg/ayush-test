@@ -287,6 +287,25 @@ export interface PrivilegeGroup {
   type?: string,
   description?: string,
   role?: CustomRole,
+  roleName?: string,
   scope?: string,
-  members?: number
+  members?: number,
+  allCustomers?: boolean,
+  delegation?: boolean,
+  policies?: PrivilegePolicy[]
+}
+
+export enum PrivilegePolicyObjectType {
+  OBJ_TYPE_VENUE = 'com.ruckus.cloud.venue.model.venue'
+}
+
+export enum CustomGroupType {
+  SYSTEM = 'System',
+  CUSTOM = 'Custom'
+}
+
+export interface PrivilegePolicy
+{
+  entityInstanceId?: string,
+  objectType?: PrivilegePolicyObjectType
 }
