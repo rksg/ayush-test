@@ -18,6 +18,7 @@ import {
   Button,
   DatePicker,
   PageHeader,
+  showActionModal,
   showToast,
   StepsFormLegacy,
   StepsFormLegacyInstance,
@@ -776,24 +777,54 @@ export function ManageCustomer () {
     </>
   }
 
+  const showDataLossDialog = function (tier: RadioChangeEvent) {
+    showActionModal({
+      type: 'confirm',
+      title: intl.$t({
+        defaultMessage: 'Save'
+      }),
+      content: <><p>{intl.$t({
+        defaultMessage: `Changing Service Tier will impact available features.
+        Downgrade from Professional to Essentials may also result in data loss.
+        `
+      })}</p>
+      <p>{intl.$t({
+        defaultMessage: 'Are you sure you want to save the changes?'
+      })}</p>
+      </>,
+      okText: intl.$t({ defaultMessage: 'Save' }),
+      onCancel: () => {
+        if (tier.target.value === MspEcTierEnum.Essential) {
+          formRef.current?.setFieldValue('tier', MspEcTierEnum.Professional)
+        } else {
+          formRef.current?.setFieldValue('tier', MspEcTierEnum.Essential)
+        }
+      }
+    })
+  }
+
   const EcTierForm = () => {
     return <Form.Item
       name='tier'
-      label={intl.$t({ defaultMessage: 'Tier' })}
+      label={intl.$t({ defaultMessage: 'Service Tier' })}
       style={{ width: '300px' }}
       rules={[{ required: true }]}
       initialValue={MspEcTierEnum.Professional}
       children={
-        <Select>
-          {
-            Object.entries(MspEcTierEnum).map(([label, value]) => (
-              <Option
-                key={value}
-                value={value}>{intl.$t({ defaultMessage: '{tier}' }, { tier: label })}
-              </Option>
-            ))
-          }
-        </Select>
+        <Radio.Group>
+          <Space direction='vertical'>
+            {
+              Object.entries(MspEcTierEnum).map(([label, value]) => {
+                return <Radio
+                  onChange={showDataLossDialog}
+                  key={value}
+                  value={value}
+                  children={intl.$t({
+                    defaultMessage: '{label}' }, { label })} />
+              })
+            }
+          </Space>
+        </Radio.Group>
       }
     />
   }
