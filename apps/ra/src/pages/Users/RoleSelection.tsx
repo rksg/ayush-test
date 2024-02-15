@@ -17,13 +17,13 @@ export const RoleSelection = ({
   const { $t } = useIntl()
   return (
     <Select
-      style={{ width: 300 }}
+      style={{ width: 350 }}
       options={roles.map((role, i) => ({
         label: $t(messages[role as keyof typeof messages]),
         value: role,
         key: i
       }))}
-      placeholder={$t({ defaultMessage: 'Select Role' })}
+      placeholder={$t({ defaultMessage: 'Select a role' })}
       value={selectedValue}
       onChange={onChange}
     />

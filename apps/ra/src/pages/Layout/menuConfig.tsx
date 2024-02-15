@@ -1,5 +1,6 @@
 import { useIntl } from 'react-intl'
 
+
 import {
   getUserProfile,
   PERMISSION_VIEW_ANALYTICS,
@@ -11,7 +12,8 @@ import {
   PERMISSION_MANAGE_LABEL
 } from '@acx-ui/analytics/utils'
 import { LayoutProps } from '@acx-ui/components'
-import { Features,
+import {
+  Features,
   useIsSplitOn
 } from '@acx-ui/feature-toggle'
 import {
@@ -33,8 +35,17 @@ import {
   SwitchSolid,
   WiFi
 } from '@acx-ui/icons'
+import { useSearchParams } from '@acx-ui/react-router-dom'
+
+const legacyLink = (uri: string, search: URLSearchParams) => {
+  const selectedTenants = search.get('selectedTenants')
+  if (!selectedTenants) return uri
+  return ''.concat(uri, '?selectedTenants=', decodeURIComponent(selectedTenants))
+}
+
 export function useMenuConfig () {
   const { $t } = useIntl()
+  const [search] = useSearchParams()
   const userProfile = getUserProfile()
   const isZonesPageEnabled = useIsSplitOn(Features.RUCKUS_AI_ZONES_LIST)
   const isUsersPageEnabled = useIsSplitOn(Features.RUCKUS_AI_USERS_TOGGLE)
@@ -246,7 +257,7 @@ export function useMenuConfig () {
           { uri: '/reports', label: $t({ defaultMessage: 'Reports' }) },
           ...(hasViewAnalyticsPermissions ? [
             {
-              uri: '/analytics/occupancy',
+              uri: legacyLink('/analytics/occupancy', search),
               label: $t({ defaultMessage: 'Occupancy' }),
               openNewTab: true
             }
@@ -266,48 +277,50 @@ export function useMenuConfig () {
           children: [
             ...(hasManageMlisaPermission ? [
               {
-                uri: '/analytics/admin/onboarded',
+                uri: legacyLink('/analytics/admin/onboarded', search),
                 label: $t({ defaultMessage: 'Onboarded Systems' }),
                 openNewTab: true
               },
               {
-                uri: '/analytics/admin/users',
+                uri: isUsersPageEnabled
+                  ? '/analytics/admin/users'
+                  : legacyLink('/analytics/admin/users', search),
                 label: $t({ defaultMessage: 'Users' }),
                 openNewTab: !isUsersPageEnabled
               }
             ] : []),
             ...(hasManageLabelPermission ? [
               {
-                uri: '/analytics/admin/labels',
+                uri: legacyLink('/analytics/admin/labels', search),
                 label: $t({ defaultMessage: 'Labels' }),
                 openNewTab: true
               }
             ] : []),
             ...(hasManageMlisaPermission ? [
               {
-                uri: '/analytics/admin/resourceGroups',
+                uri: legacyLink('/analytics/admin/resourceGroups', search),
                 label: $t({ defaultMessage: 'Resource Groups' }),
                 openNewTab: true
               },
               {
-                uri: '/analytics/admin/support',
+                uri: legacyLink('/analytics/admin/support', search),
                 label: $t({ defaultMessage: 'Support' }),
                 openNewTab: true
               },
               {
-                uri: '/analytics/admin/license',
+                uri: legacyLink('/analytics/admin/license', search),
                 label: $t({ defaultMessage: 'Licenses' }),
                 openNewTab: true
               }
             ] : []),
             {
-              uri: '/analytics/admin/schedules',
+              uri: legacyLink('/analytics/admin/schedules', search),
               label: $t({ defaultMessage: 'Schedules' }),
               openNewTab: true
             },
             ...(hasViewAnalyticsPermissions && hasManageMlisaPermission ? [
               {
-                uri: '/analytics/admin/webhooks',
+                uri: legacyLink('/analytics/admin/webhooks', search),
                 label: $t({ defaultMessage: 'Webhooks' }),
                 openNewTab: true
               }

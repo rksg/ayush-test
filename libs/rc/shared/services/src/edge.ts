@@ -50,6 +50,11 @@ export type EdgesExportPayload = {
   tenantId: string
 } & SEARCH & SORTER
 
+const versionHeader = {
+  'Content-Type': 'application/vnd.ruckus.v1+json',
+  'Accept': 'application/vnd.ruckus.v1+json'
+}
+
 export const edgeApi = baseEdgeApi.injectEndpoints({
   endpoints: (build) => ({
     addEdge: build.mutation<EdgeGeneralSetting, RequestPayload>({
@@ -203,7 +208,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
     getSubInterfaces: build.query<TableResult<EdgeSubInterface>, RequestPayload>({
       query: ({ params, payload }) => {
         const { page, pageSize } = payload as { page: number, pageSize: number }
-        const req = createHttpRequest(EdgeUrlsInfo.getSubInterfaces, params)
+        const req = createHttpRequest(EdgeUrlsInfo.getSubInterfaces, params, versionHeader)
         return {
           ...req,
           params: { page, pageSize }
@@ -231,27 +236,27 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
     }),
     addSubInterfaces: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(EdgeUrlsInfo.addSubInterfaces, params)
+        const req = createHttpRequest(EdgeUrlsInfo.addSubInterfaces, params, versionHeader)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Edge', id: 'SUB_INTERFACE' }]
     }),
     updateSubInterfaces: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(EdgeUrlsInfo.updateSubInterfaces, params)
+        const req = createHttpRequest(EdgeUrlsInfo.updateSubInterfaces, params, versionHeader)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Edge', id: 'SUB_INTERFACE' }]
     }),
     deleteSubInterfaces: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(EdgeUrlsInfo.deleteSubInterfaces, params)
+        const req = createHttpRequest(EdgeUrlsInfo.deleteSubInterfaces, params, versionHeader)
         return {
           ...req
         }
@@ -448,7 +453,8 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       query: ({ params, payload }) => {
         const req = createHttpRequest(EdgeUrlsInfo.importSubInterfacesCSV, params, {
           ...ignoreErrorModal,
-          'Content-Type': undefined
+          'Content-Type': undefined,
+          'Accept': versionHeader.Accept
         })
         return {
           ...req,
@@ -726,7 +732,8 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
             'Add Edge',
             'Delete Edges',
             'Create SmartEdge cluster',
-            'Delete SmartEdge clusters'
+            'Delete SmartEdge clusters',
+            'Update SmartEdge cluster'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'CLUSTER_LIST' }]))
@@ -795,7 +802,20 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Edge', id: 'CLUSTER_DETAIL' }]
+      providesTags: [{ type: 'Edge', id: 'CLUSTER_DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Create SmartEdge cluster',
+            'Delete SmartEdge clusters',
+            'Update SmartEdge cluster'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'CLUSTER_DETAIL' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
     })
   })
 })

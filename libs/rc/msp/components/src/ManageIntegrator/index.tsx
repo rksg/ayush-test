@@ -746,7 +746,7 @@ export function ManageIntegrator () {
         <Radio.Group onChange={onChange}>
           <Space direction='vertical'>
             <Radio value={true} disabled={false}>
-              { intl.$t({ defaultMessage: 'Not Limited' }) }
+              { intl.$t({ defaultMessage: 'Not Limited (Integrator)' }) }
             </Radio>
             <UI.FieldLabelAccessPeriod width='275px'>
               <Radio style={{ marginTop: '5px' }} value={false} disabled={false}>
@@ -772,7 +772,7 @@ export function ManageIntegrator () {
                 children={<Input disabled={unlimitSelected} type='number' min={1} max={60}/>}
                 style={{ paddingRight: '20px' }}
               />
-              <label>Day(s)</label>
+              <label>{intl.$t({ defaultMessage: 'Day(s) (Installer)' })}</label>
             </UI.FieldLabelAccessPeriod>
           </Space>
         </Radio.Group>

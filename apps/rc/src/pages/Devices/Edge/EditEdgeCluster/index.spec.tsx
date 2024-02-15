@@ -13,6 +13,15 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+jest.mock('./ClusterDetails', () => ({
+  ClusterDetails: () => <div data-testid='cluster-details' />
+}))
+jest.mock('./EdgeClusterDhcp', () => ({
+  EdgeClusterDhcp: () => <div data-testid='dhcp' />
+}))
+jest.mock('./VirtualIp', () => ({
+  VirtualIp: () => <div data-testid='virtual-ip' />
+}))
 
 const { mockEdgeClusterList, mockEdgeCluster } = EdgeGeneralFixtures
 
@@ -46,7 +55,7 @@ describe('Edit Edge Cluster', () => {
         route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab' }
       })
     expect((await screen.findAllByRole('tab')).length).toBe(4)
-    expect(await screen.findByText('cluster-details')).toBeVisible()
+    expect(await screen.findByTestId('cluster-details')).toBeVisible()
   })
 
   it('should change tab correctly', async () => {
