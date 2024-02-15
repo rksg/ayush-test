@@ -6,9 +6,9 @@ import {
   Layout as LayoutComponent,
   LayoutUI
 } from '@acx-ui/components'
-import { Features, SplitProvider, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { AdminSolid }                            from '@acx-ui/icons'
-import { HomeSolid }                             from '@acx-ui/icons'
+import { Features, SplitProvider, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { AdminSolid }                                              from '@acx-ui/icons'
+import { HomeSolid }                                               from '@acx-ui/icons'
 import {
   ActivityButton,
   AlarmsButton,
@@ -42,7 +42,8 @@ function Layout () {
   const dpskBasePath = useTenantLink('/users/dpskAdmin')
   const navigate = useNavigate()
   const params = useParams()
-  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
+  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
+  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
 
   const { data } = useGetTenantDetailQuery({ params: { tenantId } })
   const { data: userProfile } = useUserProfileContext()
@@ -94,7 +95,7 @@ function Layout () {
   return (
     <LayoutComponent
       logo={<TenantNavLink to={indexPath} tenantType={'v'} children={<Logo />} />}
-      menuConfig={useMenuConfig(tenantType, hasLicense, isDogfood)}
+      menuConfig={useMenuConfig(tenantType, hasLicense, isDogfood, data?.mspEc?.parentMspId)}
       content={
         <>
           <CloudMessageBanner />

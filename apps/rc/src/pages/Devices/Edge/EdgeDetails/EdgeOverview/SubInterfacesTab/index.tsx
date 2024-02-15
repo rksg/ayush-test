@@ -26,7 +26,7 @@ export const EdgeSubInterfacesTab = (props: EdgeSubInterfacesTabProps) => {
   const navigate = useNavigate()
   const basePath = useTenantLink(`/devices/edge/${serialNumber}`)
 
-  let tabs: { title: string, id: string, mac: string, lagId?: number }[]
+  let tabs: { title: string, id: string, ifName?: string, lagId?: number }[]
 
   if(isEdgeLagEnabled) {
     const normalPorts = ports.filter(port =>
@@ -36,14 +36,14 @@ export const EdgeSubInterfacesTab = (props: EdgeSubInterfacesTabProps) => {
       .map(item => ({
         title: getEdgePortDisplayName(item),
         id: item.portId,
-        mac: item.mac
+        ifName: item.interfaceName
       }))
     tabs = [
       ...normalPorts,
       ...lags.map(item => ({
         title: item.name,
         id: item.lagId.toString(),
-        mac: item?.mac ?? '',
+        ifName: item?.name ?? '',
         lagId: item.lagId
       }))
     ]
@@ -51,7 +51,7 @@ export const EdgeSubInterfacesTab = (props: EdgeSubInterfacesTabProps) => {
     tabs = ports.map(item => ({
       title: getEdgePortDisplayName(item),
       id: item.portId,
-      mac: item.mac
+      ifName: item.interfaceName
     }))
   }
 
@@ -87,7 +87,7 @@ export const EdgeSubInterfacesTab = (props: EdgeSubInterfacesTabProps) => {
               >
                 {
                   item.lagId === undefined ?
-                    <EdgeSubInterfacesTable serialNumber={serialNumber} portMac={item.mac} /> :
+                    <EdgeSubInterfacesTable serialNumber={serialNumber} ifName={item.ifName} /> :
                     <LagSubInterfaceTable serialNumber={serialNumber} lagId={item.lagId} />
                 }
               </Tabs.TabPane>
