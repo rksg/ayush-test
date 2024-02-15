@@ -183,7 +183,7 @@ export const {
 
 const requestMethodWithPayload = ['post', 'put', 'PATCH']
 
-function commonQueryFn (apiInfo: ApiInfo, withPayload?: boolean) {
+export function commonQueryFn (apiInfo: ApiInfo, withPayload?: boolean) {
   return ({ params, payload }: RequestPayload) => {
     const req = createHttpRequest(apiInfo, params)
     const needPayload = withPayload ?? requestMethodWithPayload.includes(apiInfo.method)
