@@ -11,7 +11,7 @@ export const mockEdgeList = {
     {
       name: 'Smart Edge 1',
       deviceStatus: '2_00_Operational',
-      type: 'type 1',
+      type: 'Virtual',
       model: 'model 1',
       serialNumber: '0000000001',
       ip: '0.0.0.0',
@@ -23,7 +23,7 @@ export const mockEdgeList = {
     {
       name: 'Smart Edge 2',
       deviceStatus: '2_00_Operational',
-      type: 'type 1',
+      type: 'Virtual',
       model: 'model 1',
       serialNumber: '0000000002',
       ip: '0.0.0.0',
@@ -35,7 +35,7 @@ export const mockEdgeList = {
     {
       name: 'Smart Edge 3',
       deviceStatus: '2_00_Operational',
-      type: 'type 1',
+      type: 'Virtual',
       model: 'model 1',
       serialNumber: '0000000003',
       ip: '0.0.0.0',
@@ -47,7 +47,7 @@ export const mockEdgeList = {
     {
       name: 'Smart Edge 4',
       deviceStatus: '2_00_Operational',
-      type: 'type 1',
+      type: 'Virtual',
       model: 'model 1',
       serialNumber: '0000000004',
       ip: '0.0.0.0',
@@ -59,7 +59,7 @@ export const mockEdgeList = {
     {
       name: 'Smart Edge 5',
       deviceStatus: '1_01_NeverContactedCloud',
-      type: 'type 1',
+      type: 'Virtual',
       model: 'model 1',
       serialNumber: '0000000005',
       ip: '0.0.0.0',
@@ -161,32 +161,32 @@ export const mockEdgeClusterList = {
       clusterId: 'clusterId_1',
       name: 'Edge Cluster 1',
       virtualIp: '1.1.1.1,1.1.1.2',
-      venueId: '0000000001',
+      venueId: 'mock_venue_1',
       venueName: 'venue_1',
       clusterStatus: 'Nodes synced',
       edgeList: [
         {
           name: 'Smart Edge 1',
           deviceStatus: '2_00_Operational',
-          type: 'type 1',
+          type: 'Virtual',
           model: 'model 1',
           serialNumber: 'serialNumber-1',
           ip: '0.0.0.0',
           ports: '80',
           venueName: 'Venue 1',
-          venueId: '0000000001',
+          venueId: 'mock_venue_1',
           tags: ['Tag1', 'Tag2']
         },
         {
           name: 'Smart Edge 2',
           deviceStatus: '2_00_Operational',
-          type: 'type 1',
+          type: 'Virtual',
           model: 'model 1',
           serialNumber: 'serialNumber-2',
           ip: '0.0.0.0',
           ports: '80',
           venueName: 'Venue 1',
-          venueId: '0000000002',
+          venueId: 'mock_venue_1',
           tags: ['Tag1', 'Tag2']
         }
       ]
@@ -212,7 +212,7 @@ export const mockEdgeClusterList = {
         {
           name: 'Smart Edge 3',
           deviceStatus: '1_01_NeverContactedCloud',
-          type: 'type 1',
+          type: 'Virtual',
           model: 'model 1',
           serialNumber: '0000000005',
           ip: '0.0.0.0',
@@ -242,4 +242,51 @@ export const mockEdgeClusterList = {
       edgeList: []
     }
   ]
+}
+
+export const mockEdgeCluster = {
+  id: 'clusterId_1',
+  name: 'Edge Cluster 1',
+  smartEdges: [
+    {
+      serialNumber: 'serialNumber-1',
+      name: 'Smart Edge 1'
+    },
+    {
+      serialNumber: 'serialNumber-2',
+      name: 'Smart Edge 2'
+    }
+  ],
+  virtualIpSettings: {
+    virtualIps: [
+      {
+        virtualIp: '192.168.13.1',
+        ports: [
+          {
+            serialNumber: 'serialNumber-1',
+            portName: 'port2'
+          },
+          {
+            serialNumber: 'serialNumber-2',
+            portName: 'port2'
+          }
+        ],
+        timeoutSeconds: 6
+      },
+      {
+        virtualIp: '192.168.14.1',
+        ports: [
+          {
+            serialNumber: 'serialNumber-1',
+            portName: 'port3'
+          },
+          {
+            serialNumber: 'serialNumber-2',
+            portName: 'port3'
+          }
+        ],
+        timeoutSeconds: 6
+      }
+    ]
+  }
 }

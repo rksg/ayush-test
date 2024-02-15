@@ -13,9 +13,9 @@ import {
 import {
   getPolicyRoutePath,
   PolicyOperation,
-  PolicyType
+  PolicyType,
+  VenueApSnmpSettings
 } from '@acx-ui/rc/utils'
-import { VenueApSnmpSettings } from '@acx-ui/rc/utils'
 import {
   useParams,
   useNavigate,

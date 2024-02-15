@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
@@ -9,9 +8,7 @@ import {
   FirmwareUrlsInfo,
   SwitchFirmwareFixtures
 } from '@acx-ui/rc/utils'
-import {
-  Provider, store
-} from '@acx-ui/store'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -133,7 +130,8 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
           visible={true}
           setVisible={mockedCancel}
           onSubmit={() => { }}
-          data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+          data={switchVenue.upgradeVenueViewList.filter(
+            item => item.name === 'My-Venue') as FirmwareSwitchVenue[]} />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
@@ -180,7 +178,8 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
           visible={true}
           setVisible={mockedCancel}
           onSubmit={() => { }}
-          data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+          data={switchVenue.upgradeVenueViewList.filter(
+            item => item.name === 'My-Venue') as FirmwareSwitchVenue[]} />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
@@ -210,7 +209,8 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
           visible={true}
           setVisible={mockedCancel}
           onSubmit={() => { }}
-          data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+          data={switchVenue.upgradeVenueViewList.filter(
+            item => item.name === 'My-Venue') as FirmwareSwitchVenue[]} />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
@@ -226,7 +226,8 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
     expect(within(myVenue).getByRole('checkbox')).toBeChecked()
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
-    expect(await screen.findByText(/Please note that during the firmware update/i)).toBeInTheDocument()
+    expect(
+      await screen.findByText(/Please note that during the firmware update/i)).toBeInTheDocument()
 
     const radio09010f = screen.getByRole('radio', {
       name: /9\.0\.10f_b403 \(release\)/i
@@ -260,7 +261,8 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
           visible={true}
           setVisible={mockedCancel}
           onSubmit={() => { }}
-          data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+          data={switchVenue.upgradeVenueViewList.filter(
+            item => item.name === 'My-Venue') as FirmwareSwitchVenue[]} />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
@@ -286,35 +288,33 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
           visible={true}
           setVisible={mockedCancel}
           onSubmit={() => { }}
-          data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+          data={switchVenue.upgradeVenueViewList.filter(
+            item => item.name === 'Karen-Venue1') as FirmwareSwitchVenue[]} />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
 
-    const stepsFormSteps = screen.getByText(/skip updates/i)
-    expect(stepsFormSteps).toBeInTheDocument()
+    const dialog = await screen.findByRole('dialog')
+    expect(within(dialog).getByText(/skip updates/i)).toBeInTheDocument()
 
     // Clicks Expand button
-    const venue = await screen.findByRole('row', { name: /Karen-Venue1/i })
+    const table = within(dialog).getByRole('table')
+    const venue = await within(table).findByRole('row', { name: /Karen-Venue1/i })
     await userEvent.click(within(venue).getByTestId('arrow-right'))
+    expect(await within(table).findByTestId('arrow-expand')).toBeInTheDocument()
 
-    expect(await screen.findByTestId('arrow-expand')).toBeInTheDocument()
-
-
-    const searchBox = screen.getByRole('textbox')
+    const searchBox = within(dialog).getByRole('textbox')
     expect(searchBox).toBeInTheDocument()
     await userEvent.type(searchBox, 'mock')
-    expect(screen.getByDisplayValue(/mock/i)).toBeInTheDocument()
-    expect(await screen.findByTestId('switch-search-table')).toBeInTheDocument()
+    expect(await within(dialog).findByTestId('switch-search-table')).toBeInTheDocument()
 
-    const FEK3224R0AG = await screen.findByRole('row', { name: /FEK3224R0AG/i })
+    const FEK3224R0AG = await within(dialog).findByRole('row', { name: /FEK3224R0AG/i })
     const FEK3224R0AGCheckbox = within(FEK3224R0AG).getByRole('checkbox')
     await userEvent.click(FEK3224R0AGCheckbox)
     expect(FEK3224R0AGCheckbox).toBeChecked()
 
-    const skipButton = await screen.findByRole('button', { name: 'Skip' })
+    const skipButton = within(dialog).getByRole('button', { name: 'Skip' })
     await userEvent.click(skipButton)
     expect(await screen.findByText('Skip This Update?')).toBeInTheDocument()
-
   })
 })

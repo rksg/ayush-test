@@ -151,6 +151,7 @@ export function MultiSelectTable (props: {
   const rowActions: TableProps<(typeof dnsProxyList)[0]>['rowActions'] = [
     {
       label: intl.$t({ defaultMessage: 'Edit' }),
+      visible: (selectedRows) => selectedRows.length === 1,
       onClick: (row: DnsProxyRule[], clearSelection) => {
         setModalState({
           ...modalState,

@@ -2,11 +2,14 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader, showActionModal }                     from '@acx-ui/components'
-import { PortalPreviewModal, SimpleListTooltip, getLanguage }                                 from '@acx-ui/rc/components'
-import { initialPortalData }                                                                  from '@acx-ui/rc/components'
-import { useDeletePortalMutation, useGetEnhancedPortalProfileListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
-import { useGetPortalLangMutation }                                                           from '@acx-ui/rc/services'
+import { Button, PageHeader, Table, TableProps, Loader, showActionModal }        from '@acx-ui/components'
+import { PortalPreviewModal, SimpleListTooltip, getLanguage, initialPortalData } from '@acx-ui/rc/components'
+import {
+  useDeletePortalMutation,
+  useGetEnhancedPortalProfileListQuery,
+  useNetworkListQuery,
+  useGetPortalLangMutation
+} from '@acx-ui/rc/services'
 import {
   ServiceType,
   useTableQuery,

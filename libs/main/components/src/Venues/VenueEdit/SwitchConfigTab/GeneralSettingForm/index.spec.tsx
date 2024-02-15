@@ -76,12 +76,14 @@ describe('GeneralSettingForm', () => {
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     await waitFor(() => screen.findByText('profile02 (Regular)'))
 
-    fireEvent.click(screen.getByRole('button', { name: 'View Details' }))
-    expect(await screen.findByText('VLANs (1)')).toBeVisible()
-    expect(await screen.findByText('test-vlan')).toBeVisible()
-    expect(await screen.findByText('ACLs (1)')).toBeVisible()
-    expect(await screen.findByText('test-acl')).toBeVisible()
-    fireEvent.click(screen.getByRole('button', { name: 'OK' }))
+    await userEvent.click(screen.getByRole('button', { name: 'View Details' }))
+    const dialog = await screen.findByRole('dialog')
+    expect(await within(dialog).findByText('VLANs (1)')).toBeVisible()
+    expect(within(dialog).getByText('test-vlan')).toBeVisible()
+    expect(within(dialog).getByText('ACLs (1)')).toBeVisible()
+    expect(within(dialog).getByText('test-acl')).toBeVisible()
+    await userEvent.click(within(dialog).getByRole('button', { name: 'OK' }))
+    await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
   it('should handle regular profile change', async () => {
@@ -95,14 +97,14 @@ describe('GeneralSettingForm', () => {
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     await waitFor(() => screen.findByText('profile01 (Regular)'))
 
-    fireEvent.click(screen.getByRole('button', { name: 'View Details' }))
+    await userEvent.click(screen.getByRole('button', { name: 'View Details' }))
     expect(await screen.findByText('VLANs (0)')).toBeVisible()
-    expect(await screen.findByText('ACLs (0)')).toBeVisible()
-    fireEvent.click(screen.getByRole('button', { name: 'OK' }))
+    expect(screen.getByText('ACLs (0)')).toBeVisible()
+    await userEvent.click(screen.getByRole('button', { name: 'OK' }))
 
-    fireEvent.click(screen.getByRole('button', { name: 'Change' }))
-    fireEvent.click(await screen.findByText('No Profile'))
-    fireEvent.click(screen.getByRole('button', { name: 'OK' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Change' }))
+    await userEvent.click(await screen.findByText('No Profile'))
+    await userEvent.click(screen.getByRole('button', { name: 'OK' }))
     expect(await screen.findByText('No Profile is selected')).toBeVisible()
   })
 
