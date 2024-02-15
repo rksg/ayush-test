@@ -150,7 +150,7 @@ export function PropertyUnitBulkDrawer (props: PropertyUnitBulkDrawerProps) {
   ]
 
   return <Drawer
-    title='Edit Units'
+    title={$t({ defaultMessage: 'Edit Units' })}
     visible={visible}
     footer={footer}
     onClose={onClose}
