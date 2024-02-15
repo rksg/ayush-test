@@ -6,7 +6,6 @@ import * as config    from '@acx-ui/config'
 import { renderHook } from '@acx-ui/test-utils'
 
 import { useTenantLink } from './useTenantLink'
-
 import { getTenantLink } from '.'
 
 jest.mock('@acx-ui/config')
