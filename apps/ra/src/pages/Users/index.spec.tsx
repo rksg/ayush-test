@@ -27,6 +27,12 @@ jest.mock('@acx-ui/analytics/utils', () => ({
     userId: '111'
   }))
 }))
+
+jest.mock('./ImportSSOFileDrawer', () => ({
+  ImportSSOFileDrawer: () =>
+    <div data-testid='importSSOFileDrawer'>ImportSSOFileDrawer</div>
+}))
+
 jest.mock('./UserDrawer', () => ({
   UserDrawer: ({ type }: { type: string }) => <div data-testid='userDrawer'>{`${type}`}</div>
 }))
@@ -46,6 +52,7 @@ const mockRGResponse = () => {
     )
   )
 }
+
 const mockRbacUserResponse = (data: ManagedUser[] | undefined) => {
   mockServer.use(
     rest.get(`${rbacApiURL}/users`,
@@ -53,6 +60,20 @@ const mockRbacUserResponse = (data: ManagedUser[] | undefined) => {
     )
   )
 }
+
+const mockSSOResponse = (fileContents?: string) => {
+  mockServer.use(
+    rest.get(`${rbacApiURL}/tenantSettings`,
+      (_, res, ctx) => res(ctx.json([{
+        key: 'sso',
+        value: fileContents
+          ? JSON.stringify({ type: 'saml2', metadata: fileContents })
+          : JSON.stringify({})
+      }]))
+    )
+  )
+}
+
 const mockRefreshUserResponse = (data?: { error?: string; userId: string }) => {
   mockServer.use(rest.put(`${rbacApiURL}/users/refresh/1`, (_, res, ctx) => res(ctx.json(data))))
 }
@@ -64,12 +85,14 @@ const mockDeleteUserDetailsResponse = (data = {}) => {
 const mockDeleteInvitationResponse = (data = {}) => {
   mockServer.use(rest.delete(`${rbacApiURL}/invitations`, (_, res, ctx) => res(ctx.json(data))))
 }
+
 describe('Users Page', () => {
   beforeEach(() => {
     store.dispatch(rbacApi.util.resetApiState())
   })
   it('should render correctly', async () => {
     mockRbacUserResponse(mockMangedUsers)
+    mockSSOResponse()
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Users (5)')).toBeVisible()
@@ -78,6 +101,7 @@ describe('Users Page', () => {
   })
   it('should render empty array correctly', async () => {
     mockRbacUserResponse([])
+    mockSSOResponse()
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Users (0)')).toBeVisible()
@@ -86,6 +110,7 @@ describe('Users Page', () => {
   })
   it('should render undefined correctly', async () => {
     mockRbacUserResponse(undefined)
+    mockSSOResponse()
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Users (0)')).toBeVisible()
@@ -95,6 +120,7 @@ describe('Users Page', () => {
   it('should handle refresh user details correctly', async () => {
     mockRbacUserResponse([mockMangedUsers[0]])
     mockRefreshUserResponse({ userId: '1111' })
+    mockSSOResponse()
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByTestId('Reload')).toBeVisible()
@@ -106,6 +132,7 @@ describe('Users Page', () => {
   it('should handle refresh user details failure correctly', async () => {
     mockRbacUserResponse([mockMangedUsers[0]])
     mockRefreshUserResponse()
+    mockSSOResponse()
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByTestId('Reload')).toBeVisible()
@@ -116,6 +143,7 @@ describe('Users Page', () => {
   it('should handle delete user details correctly for internal user', async () => {
     mockRbacUserResponse([mockMangedUsers[0]])
     mockDeleteUserDetailsResponse({ data: 'ok' })
+    mockSSOResponse()
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByTestId('DeleteOutlined')).toBeVisible()
@@ -129,6 +157,7 @@ describe('Users Page', () => {
   })
   it('should handle delete user details failure correctly for internal user', async () => {
     mockRbacUserResponse([mockMangedUsers[0]])
+    mockSSOResponse()
     mockServer.use(
       rest.delete(`${rbacApiURL}/users/resourceGroup`, (_, res, ctx) => res(ctx.status(404)))
     )
@@ -146,6 +175,7 @@ describe('Users Page', () => {
   it('should handle delete invitation correctly for external user', async () => {
     mockRbacUserResponse([mockMangedUsers[2]])
     mockDeleteInvitationResponse({ data: 'ok' })
+    mockSSOResponse()
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByTestId('DeleteOutlined')).toBeVisible()
@@ -159,6 +189,7 @@ describe('Users Page', () => {
   })
   it('should open drawer to edit user', async () => {
     mockRbacUserResponse([mockMangedUsers[0]])
+    mockSSOResponse()
     mockRGResponse()
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
@@ -168,6 +199,7 @@ describe('Users Page', () => {
   })
   it('should open user drawer for add internal user correctly', async () => {
     mockRbacUserResponse([])
+    mockSSOResponse('samlFile')
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() =>
       screen.queryAllByRole('img', { name: 'loader' }))
@@ -179,6 +211,7 @@ describe('Users Page', () => {
   })
   it('should open user drawer for 3rd party user correctly', async () => {
     mockRbacUserResponse([])
+    mockSSOResponse('samlFile')
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() =>
       screen.queryAllByRole('img', { name: 'loader' }))
@@ -187,5 +220,16 @@ describe('Users Page', () => {
     await userEvent.click(userBtn)
     await userEvent.click(await screen.findByText('3rd Party'))
     expect(await screen.findByTestId('userDrawer')).toHaveTextContent('invite3rdParty')
+  })
+  it('should show update sso button correctly', async () => {
+    mockRbacUserResponse(mockMangedUsers)
+    mockSSOResponse('samlFile')
+    render(<Users />, { wrapper: Provider })
+    await waitForElementToBeRemoved(() =>
+      screen.queryAllByRole('img', { name: 'loader' }))
+    const updateSSOBtn = await screen.findByText('Configure SSO')
+    expect(updateSSOBtn).toBeVisible()
+    fireEvent.click(updateSSOBtn)
+    expect(await screen.findByTestId('importSSOFileDrawer')).toBeVisible()
   })
 })
