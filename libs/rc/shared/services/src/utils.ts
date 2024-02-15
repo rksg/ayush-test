@@ -28,21 +28,23 @@ export function latestTimeFilter (payload: unknown) {
 type SocketActivityChangedParams = Parameters<typeof onSocketActivityChanged>
 
 export async function handleCallbackWhenActivitySuccess (
-  requestArgs: SocketActivityChangedParams[0] & { callback?: () => void },
   api: SocketActivityChangedParams[1],
   activityData: Transaction,
-  targetUseCase: string
+  targetUseCase: string,
+  callback?: unknown
 ) {
   try {
+    if (!callback || typeof callback !== 'function') return
+
     const response = await api.cacheDataLoaded
 
-    if (!response || !requestArgs.callback) return
+    if (!response) return
 
     if (
       activityData.useCase === targetUseCase &&
       activityData.steps?.find(step => step.id === targetUseCase)?.status !== 'IN_PROGRESS'
     ) {
-      (requestArgs.callback as Function)()
+      callback()
     }
   } catch (error) {
     // eslint-disable-next-line no-console

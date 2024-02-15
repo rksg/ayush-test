@@ -71,7 +71,7 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
           // eslint-disable-next-line max-len
-          await handleCallbackWhenActivitySuccess(requestArgs, api, msg, 'UpdateVenueTemplateLoadBalancing')
+          await handleCallbackWhenActivitySuccess(api, msg, 'UpdateVenueTemplateLoadBalancing', requestArgs.callback)
         })
       }
     }),
@@ -87,7 +87,7 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
           // eslint-disable-next-line max-len
-          await handleCallbackWhenActivitySuccess(requestArgs, api, msg, 'UpdateVenueTemplateClientAdmissionControlSettings')
+          await handleCallbackWhenActivitySuccess(api, msg, 'UpdateVenueTemplateClientAdmissionControlSettings', requestArgs.callback)
         })
       }
     }),
