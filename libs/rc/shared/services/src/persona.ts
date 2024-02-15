@@ -237,7 +237,8 @@ export const personaApi = basePersonaApi.injectEndpoints({
         const req = createNewTableHttpRequest({
           apiInfo: PersonaUrls.searchPersonaList,
           params,
-          payload: payload as TableChangePayload
+          payload: payload as TableChangePayload,
+          headers: defaultPersonaVersioningHeaders
         })
         return {
           ...req,
