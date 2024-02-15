@@ -36,10 +36,10 @@ import {
   cssNumber,
   toolboxDataZoomOptions
 } from '@acx-ui/components'
-import { get }                        from '@acx-ui/config'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import type { TimeStampRange }        from '@acx-ui/types'
-import { hasAccess }                  from '@acx-ui/user'
+import { get }                              from '@acx-ui/config'
+import { Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import type { TimeStampRange }              from '@acx-ui/types'
+import { hasAccess }                        from '@acx-ui/user'
 
 import { useIncidentToggles } from '../useIncidentToggles'
 
@@ -170,7 +170,7 @@ export const useDotClick = (
   onDotClick: ((param: unknown) => void) | undefined,
   popoverRef: RefObject<HTMLDivElement> | undefined,
   navigate: CallableFunction,
-  basePath: string
+  basePath: Path
 ) => {
   const handler = useCallback(
     function (params: { componentSubType: string; data: unknown }) {
@@ -198,7 +198,7 @@ export const useDotClick = (
       ) {
         const typedIncidentParam = (params as { data: [number, string, number, IncidentDetails] })
         const { id } = typedIncidentParam.data[3]
-        navigate(`${basePath}/incidents/${id}`)
+        navigate({ ...basePath, pathname: `${basePath.pathname}/incidents/${id}` })
       }
     },
     [onDotClick, navigate, basePath, popoverRef]
@@ -325,7 +325,7 @@ export function TimelineChart ({
   const { $t } = useIntl()
   const eChartsRef = useRef<ReactECharts>(null)
   const navigate = useNavigate()
-  const basePath = useTenantLink('/analytics').pathname
+  const basePath = useTenantLink('/analytics')
   const toggles = useIncidentToggles()
   useImperativeHandle(chartRef, () => eChartsRef.current!)
   const chartPadding = 10
