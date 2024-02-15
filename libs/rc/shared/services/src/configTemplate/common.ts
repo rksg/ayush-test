@@ -33,7 +33,10 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
             'AddNetworkTemplateRecord',
             'UpdateNetworkTemplateRecord',
             'DeleteNetworkTemplateRecord',
-            'ApplyTemplate'
+            'ApplyTemplate',
+            'AddVenueTemplateRecord',
+            'UpdateVenueTemplateRecord',
+            'DeleteVenueTemplateRecord'
           ]
           onActivityMessageReceived(msg, activities, () => {
             // eslint-disable-next-line max-len
