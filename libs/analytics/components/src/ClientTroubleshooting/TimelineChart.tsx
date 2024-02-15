@@ -198,7 +198,7 @@ export const useDotClick = (
       ) {
         const typedIncidentParam = (params as { data: [number, string, number, IncidentDetails] })
         const { id } = typedIncidentParam.data[3]
-        navigate(`${basePath}/analytics/incidents/${id}`)
+        navigate(`${basePath}/incidents/${id}`)
       }
     },
     [onDotClick, navigate, basePath, popoverRef]
@@ -325,9 +325,8 @@ export function TimelineChart ({
   const { $t } = useIntl()
   const eChartsRef = useRef<ReactECharts>(null)
   const navigate = useNavigate()
-  const currentPath = useTenantLink('/')
+  const basePath = useTenantLink('/analytics').pathname
   const toggles = useIncidentToggles()
-  const basePath = currentPath.pathname
   useImperativeHandle(chartRef, () => eChartsRef.current!)
   const chartPadding = 10
   const rowHeight = 22
