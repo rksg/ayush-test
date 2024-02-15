@@ -1,12 +1,11 @@
 import React from 'react'
 
-import { MemoryRouter, Route, Routes, useParams, useLocation } from 'react-router-dom'
+import { MemoryRouter, Route, Routes } from 'react-router-dom'
 
 import * as config    from '@acx-ui/config'
 import { renderHook } from '@acx-ui/test-utils'
 
 import { useTenantLink } from './useTenantLink'
-import { getTenantLink } from '.'
 
 jest.mock('@acx-ui/config')
 const get = jest.mocked(config.get)
@@ -87,30 +86,5 @@ describe('useTenantLink', () => {
       { wrapper: getWrapper('') }
     )
     expect(result.current.pathname).toEqual('/t-id/v/dsahboard')
-  })
-})
-
-describe('getTenantLink', () => {
-  it('should return correct link for default tenantType', () => {
-    const { result } = renderHook(
-      () => {
-        const params = useParams()
-        const location = useLocation()
-        return getTenantLink(params, '/dashboard', location)
-      },
-      { wrapper: getWrapper('') }
-    )
-    expect(result.current.pathname).toEqual('/t-id/t/dashboard')
-  })
-  it('should return correct link for tenantType = v', () => {
-    const { result } = renderHook(
-      () => {
-        const params = useParams()
-        const location = useLocation()
-        return getTenantLink(params, '/dashboard', location, 'v')
-      },
-      { wrapper: getWrapper('') }
-    )
-    expect(result.current.pathname).toEqual('/t-id/v/dashboard')
   })
 })

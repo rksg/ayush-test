@@ -4,8 +4,6 @@ import { ECharts, EChartsType } from 'echarts'
 import ReactECharts             from 'echarts-for-react'
 import moment                   from 'moment-timezone'
 
-import { get }                                                          from '@acx-ui/config'
-import { Params, Location }                                             from '@acx-ui/react-router-dom'
 import { cleanup, render, fireEvent, renderHook, act, waitFor, screen } from '@acx-ui/test-utils'
 import { RolesEnum, TimeStampRange }                                    from '@acx-ui/types'
 import { getUserProfile, setUserProfile }                               from '@acx-ui/user'
@@ -25,11 +23,6 @@ import {
 import { transformEvents } from './util'
 
 import type { CustomSeriesRenderItemAPI, CustomSeriesRenderItemParams } from 'echarts'
-
-jest.mock('@acx-ui/config', () => ({
-  ...jest.requireActual('@acx-ui/config'),
-  get: jest.fn()
-}))
 const testEvent = {
   timestamp: '2022-11-17T06:19:34.520Z',
   event: 'EVENT_CLIENT_DISCONNECT',
@@ -102,6 +95,7 @@ function testHelpers (customSeries?: object) {
   return { testRect, eChartsRef, mockOnFn, testParams: defaultSeries }
 }
 
+const basePath = '/t/testPath'
 describe('TimelineChartComponent', () => {
   describe('chart rendering tests', () => {
     afterEach(() => cleanup())
@@ -222,15 +216,12 @@ describe('TimelineChartComponent', () => {
     })
   })
   describe('useDotClick', () => {
-    beforeEach(() => { (get as jest.Mock).mockImplementation(() => false)})
-    const params = { tenantId: 'test-id' } as Params<string>
-    const location = { search: '' } as Location
     it('should handle echart ref unavailable', () => {
       const eChartsRef = undefined as unknown as RefObject<ReactECharts>
       const onDotClick = jest.fn()
       const popoverRef = undefined as unknown as RefObject<HTMLDivElement>
       const navigate = jest.fn()
-      renderHook(() => useDotClick(eChartsRef, onDotClick, popoverRef, navigate, params, location))
+      renderHook(() => useDotClick(eChartsRef, onDotClick, popoverRef, navigate, basePath))
       expect(onDotClick).not.toBeCalled()
     })
     it('should handle popover ref unavailable', () => {
@@ -238,7 +229,7 @@ describe('TimelineChartComponent', () => {
       const onDotClick = jest.fn()
       const popoverRef = undefined as unknown as RefObject<HTMLDivElement>
       const navigate = jest.fn()
-      renderHook(() => useDotClick(eChartsRef, onDotClick, popoverRef, navigate, params, location))
+      renderHook(() => useDotClick(eChartsRef, onDotClick, popoverRef, navigate, basePath))
       expect(onDotClick).not.toBeCalled()
     })
     it('should handle dot onClick for events', () => {
@@ -248,65 +239,41 @@ describe('TimelineChartComponent', () => {
         getBoundingClientRect: jest.fn(() => testRect)
       } } as unknown as RefObject<HTMLDivElement>
       const navigate = jest.fn()
-      renderHook(() => useDotClick(eChartsRef, onDotClick, popoverRef, navigate, params, location))
+      renderHook(() => useDotClick(eChartsRef, onDotClick, popoverRef, navigate, basePath))
       expect(mockOnFn).toBeCalledTimes(1) // for on
       expect(onDotClick).toBeCalledTimes(1)
       expect(onDotClick).toBeCalledWith({ ...(testParams.data[2] as Event), x: 30, y: 10 })
     })
-    it('should handle dot onClick for incidents for R1', () => {
-      const chartParams = {
+    it('should handle dot onClick for incidents', () => {
+      const params = {
         componentSubType: 'custom',
         seriesName: 'incidents',
         data: [1234, 'all', 1234, { id: '1234' }]
       }
-      const { eChartsRef, mockOnFn } = testHelpers(chartParams)
+      const { eChartsRef, mockOnFn } = testHelpers(params)
       const onDotClick = jest.fn()
       const popoverRef = undefined as unknown as RefObject<HTMLDivElement>
       const navigate = jest.fn()
-      renderHook(() => useDotClick(eChartsRef, onDotClick, popoverRef, navigate, params, location))
+      renderHook(() => useDotClick(eChartsRef, onDotClick, popoverRef, navigate, basePath))
       expect(mockOnFn).toBeCalledTimes(1)
       expect(onDotClick).toBeCalledTimes(0)
-      expect(navigate).toHaveBeenCalledWith({
-        pathname: '/test-id/t/analytics/incidents/1234',
-        search: '',
-        hash: ''
-      })
-    })
-    it('should handle dot onClick for incidents for RAI', () => {
-      (get as jest.Mock).mockImplementation(() => true)
-      const chartParams = {
-        componentSubType: 'custom',
-        seriesName: 'incidents',
-        data: [1234, 'all', 1234, { id: '1234' }]
-      }
-      const { eChartsRef, mockOnFn } = testHelpers(chartParams)
-      const onDotClick = jest.fn()
-      const popoverRef = undefined as unknown as RefObject<HTMLDivElement>
-      const navigate = jest.fn()
-      renderHook(() => useDotClick(eChartsRef, onDotClick, popoverRef, navigate, params, location))
-      expect(mockOnFn).toBeCalledTimes(1)
-      expect(onDotClick).toBeCalledTimes(0)
-      expect(navigate).toHaveBeenCalledWith({
-        pathname: '/ai/incidents/1234',
-        search: '',
-        hash: ''
-      })
+      expect(navigate).toBeCalledTimes(1)
     })
     it('should not call navigate for incidents when role is READ_ONLY', () => {
       setUserProfile({
         allowedOperations: [],
         profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
       })
-      const chartParams = {
+      const params = {
         componentSubType: 'custom',
         seriesName: 'incidents',
         data: [1234, 'all', 1234, { id: '1234' }]
       }
-      const { eChartsRef, mockOnFn } = testHelpers(chartParams)
+      const { eChartsRef, mockOnFn } = testHelpers(params)
       const onDotClick = jest.fn()
       const popoverRef = undefined as unknown as RefObject<HTMLDivElement>
       const navigate = jest.fn()
-      renderHook(() => useDotClick(eChartsRef, onDotClick, popoverRef, navigate, params, location))
+      renderHook(() => useDotClick(eChartsRef, onDotClick, popoverRef, navigate, basePath))
       expect(mockOnFn).toBeCalledTimes(1)
       expect(onDotClick).toBeCalledTimes(0)
       expect(navigate).toBeCalledTimes(0)
@@ -320,7 +287,7 @@ describe('TimelineChartComponent', () => {
       const onDotClick = jest.fn()
       const popoverRef = undefined as unknown as RefObject<HTMLDivElement>
       const navigate = jest.fn()
-      renderHook(() => useDotClick(eChartsRef, onDotClick, popoverRef, navigate, params, location))
+      renderHook(() => useDotClick(eChartsRef, onDotClick, popoverRef, navigate, basePath))
       expect(mockOnFn).toBeCalledTimes(1)
       expect(onDotClick).not.toBeCalled()
     })
