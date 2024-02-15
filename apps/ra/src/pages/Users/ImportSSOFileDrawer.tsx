@@ -67,7 +67,7 @@ export const ImportSSOFileDrawer = (props: ImportSSOFileDrawerProps) => {
 
   useEffect(() => {
     setFileDescription(wrapFileName(samlFileName))
-  }, [samlFileName, visible])
+  }, [samlFileName])
 
   const resetFields = () => {
     form.resetFields()
@@ -78,7 +78,6 @@ export const ImportSSOFileDrawer = (props: ImportSSOFileDrawerProps) => {
 
   const onClose = () => {
     setVisible(false)
-    resetFields()
   }
 
   const beforeUpload = (file: File) => {
