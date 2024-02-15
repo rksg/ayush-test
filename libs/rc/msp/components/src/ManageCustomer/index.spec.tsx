@@ -676,6 +676,7 @@ describe('ManageCustomer', () => {
 
   it('should show dialog on service tier radio option change', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_EC_CREATE_WITH_TIER)
+    params.action = 'edit'
     render(
       <Provider>
         <ManageCustomer />
