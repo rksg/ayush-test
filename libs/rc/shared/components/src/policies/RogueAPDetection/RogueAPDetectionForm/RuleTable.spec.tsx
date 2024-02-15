@@ -1,13 +1,12 @@
 import React from 'react'
 
-import { act, fireEvent, within } from '@testing-library/react'
-import userEvent                  from '@testing-library/user-event'
-import { rest }                   from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { policyApi }                                                         from '@acx-ui/rc/services'
 import { RogueAPDetectionContextType, RogueApUrls, RogueAPRule, RogueVenue } from '@acx-ui/rc/utils'
 import { Provider, store }                                                   from '@acx-ui/store'
-import { mockServer, render, screen }                                        from '@acx-ui/test-utils'
+import { act, fireEvent, mockServer, render, screen, within }                from '@acx-ui/test-utils'
 
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 

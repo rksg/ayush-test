@@ -1,10 +1,12 @@
 import '@testing-library/jest-dom'
-import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
-import { VenueDetailHeader }                  from '@acx-ui/rc/utils'
-import { Provider }                           from '@acx-ui/store'
-import { render, screen, waitFor, fireEvent } from '@acx-ui/test-utils'
-import { RolesEnum }                          from '@acx-ui/types'
-import { getUserProfile, setUserProfile }     from '@acx-ui/user'
+import userEvent from '@testing-library/user-event'
+
+import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { VenueDetailHeader }              from '@acx-ui/rc/utils'
+import { Provider }                       from '@acx-ui/store'
+import { render, screen, waitFor }        from '@acx-ui/test-utils'
+import { RolesEnum }                      from '@acx-ui/types'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import { venueDetailHeaderData } from '../__tests__/fixtures'
 
@@ -18,7 +20,21 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+const mockedUseConfigTemplate = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useConfigTemplate: () => mockedUseConfigTemplate()
+}))
+
 describe('VenueTabs', () => {
+  beforeEach(() => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+  })
+
+  afterEach(() => {
+    mockedUseConfigTemplate.mockRestore()
+  })
+
   it('should render correctly', async () => {
     render(<Provider>
       <VenueTabs venueDetail={venueDetailHeaderData as unknown as VenueDetailHeader} />
@@ -31,7 +47,7 @@ describe('VenueTabs', () => {
       <VenueTabs venueDetail={venueDetailHeaderData as unknown as VenueDetailHeader} />
     </Provider>, { route: { params } })
     await waitFor(() => screen.findByText('Networks (1)'))
-    fireEvent.click(await screen.findByText('Networks (1)'))
+    await userEvent.click(screen.getByText('Networks (1)'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/venues/${params.venueId}/venue-details/networks`,
       hash: '',
@@ -44,7 +60,7 @@ describe('VenueTabs', () => {
     render(<Provider>
       <VenueTabs venueDetail={venueDetailHeaderData as unknown as VenueDetailHeader} />
     </Provider>, { route: { params } })
-    await screen.findByText('Services')
+    expect(await screen.findByText('Services')).toBeVisible()
   })
 
   it('should hide analytics when role is READ_ONLY', async () => {
@@ -56,5 +72,14 @@ describe('VenueTabs', () => {
       <VenueTabs venueDetail={venueDetailHeaderData as unknown as VenueDetailHeader} />
     </Provider>, { route: { params } })
     expect(screen.queryByText('AI Analytics')).toBeNull()
+  })
+
+  it('should render tabs with isTemplate equal to true', async () => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+
+    render(<Provider>
+      <VenueTabs venueDetail={venueDetailHeaderData as unknown as VenueDetailHeader} />
+    </Provider>, { route: { params } })
+    expect(await screen.findByRole('tab', { name: /networks \(1\)/i })).toBeTruthy()
   })
 })

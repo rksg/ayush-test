@@ -13,8 +13,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                from '@acx-ui/formatter'
 import {
   useInviteCustomerListQuery,
   useVarCustomerListQuery,
@@ -85,7 +85,8 @@ export function VarCustomers () {
   const { tenantId } = useParams()
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
-  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
+  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
+  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
   const mspUtils = MSPUtils()

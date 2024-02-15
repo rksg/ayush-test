@@ -149,10 +149,11 @@ describe('Notification List', () => {
         route: { params }
       })
 
-    const row1 = await screen.findByRole('row', { name: /testUser 1/i })
-    const row2 = await screen.findByRole('row', { name: /testUser 2/i })
-    await userEvent.click(within(row1).getByRole('checkbox'))
-    await userEvent.click(within(row2).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /testUser 1/i })).toBeVisible()
+    await userEvent.click(within(rows[1]).getByRole('checkbox')) //testUser 1
+    expect(within(rows[2]).getByRole('cell', { name: /testUser 2/i })).toBeVisible()
+    await userEvent.click(within(rows[2]).getByRole('checkbox')) //testUser 2
     await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
     await screen.findByText('Delete "2 Recipients"?')
     const okBtn = screen.getByRole('button', { name: 'Delete Recipients' })

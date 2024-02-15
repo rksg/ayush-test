@@ -2,11 +2,12 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { useIsSplitOn }                                       from '@acx-ui/feature-toggle'
+import { firmwareApi }                                        from '@acx-ui/rc/services'
 import {
   FirmwareUrlsInfo, SigPackUrlsInfo, SwitchFirmwareFixtures
 } from '@acx-ui/rc/utils'
 import {
-  Provider
+  Provider, store
 } from '@acx-ui/store'
 import {
   mockServer,
@@ -51,6 +52,7 @@ jest.mock('@acx-ui/rc/services', () => ({
 describe('Firmware Version Management', () => {
   let params: { tenantId: string, activeTab: string, activeSubTab: string }
   beforeEach(async () => {
+    store.dispatch(firmwareApi.util.resetApiState())
     mockServer.use(
       rest.get(
         FirmwareUrlsInfo.getUpgradePreferences.url,

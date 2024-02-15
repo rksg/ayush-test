@@ -46,12 +46,11 @@ const editPortVlans = async (
   await userEvent.click(await screen.findByRole('button', {
     name: currentStatus !== 'port' ? 'Customize' : 'Edit'
   }))
-  const dialog = await screen.findAllByRole('dialog')
-  await screen.findByText('Select Port VLANs')
+  const dialog = await screen.findByTestId('select-port-vlans')
 
   if (inputTagged) {
-    await userEvent.click(await screen.findByRole('tab', { name: 'Tagged VLANs' }))
-    const taggedTabPanel = screen.getByRole('tabpanel', { hidden: false })
+    await userEvent.click(await within(dialog).findByRole('tab', { name: 'Tagged VLANs' }))
+    const taggedTabPanel = await within(dialog).findByRole('tabpanel', { hidden: false })
     const taggedInput = await within(taggedTabPanel).findByTestId('tagged-input')
     fireEvent.change(taggedInput, { target: { value: inputTagged } })
     expect(within(taggedTabPanel).queryByText(/VLAN-ID-55/)).not.toBeInTheDocument()
@@ -63,12 +62,12 @@ const editPortVlans = async (
 
   if (inputUntagged) {
     await userEvent.click(await screen.findByRole('tab', { name: 'Untagged VLANs' }))
-    const untaggedTabPanel = screen.getByRole('tabpanel', { hidden: false })
+    const untaggedTabPanel = await within(dialog).findByRole('tabpanel', { hidden: false })
     const untaggedInput = await within(untaggedTabPanel).findByTestId('untagged-input')
     fireEvent.change(untaggedInput, { target: { value: inputUntagged } })
     await userEvent.click(await within(untaggedTabPanel).findByText(/VLAN-ID-22/))
   }
-  await userEvent.click(await within(dialog[1]).findByRole('button', { name: 'OK' }))
+  await userEvent.click(await within(dialog).findByRole('button', { name: 'OK' }))
 }
 
 const mockedSavePortsSetting = jest.fn().mockImplementation(() => ({
@@ -81,6 +80,7 @@ jest.mock('@acx-ui/rc/services', () => ({
   ]
 }))
 
+const setDrawerVisible = jest.fn()
 const initPortValue = {
   name: '',
   profileName: undefined,
@@ -124,6 +124,7 @@ describe('EditPortDrawer', () => {
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
     mockedSavePortsSetting.mockClear()
+    setDrawerVisible.mockClear()
     mockServer.use(
       rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
         (_, res, ctx) => res(ctx.json(switchDetailHeader))
@@ -193,7 +194,7 @@ describe('EditPortDrawer', () => {
         }
       })
 
-      await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loader' }))
+      await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
       await screen.findByText('Edit Port')
       await screen.findByText('Selected Port')
 
@@ -203,7 +204,8 @@ describe('EditPortDrawer', () => {
       await userEvent.click(await screen.findByText('Negotiate'))
       const budgetInput = await screen.findByTestId('poe-budget-input')
       expect(budgetInput).not.toBeDisabled()
-      await userEvent.type(budgetInput, '1000')
+
+      fireEvent.change(budgetInput, { target: { value: '1000' } })
       expect(poeClassCombobox).toBeDisabled()
       await userEvent.click(await screen.findByTestId('ipsg-checkbox'))
 
@@ -236,7 +238,6 @@ describe('EditPortDrawer', () => {
 
       await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
       await screen.findByText('Edit Port')
-      await screen.findByText('Selected Port')
       await screen.findByText('Port level override')
 
       await userEvent.click(await screen.findByRole('combobox', { name: /PoE Class/ }))
@@ -262,7 +263,7 @@ describe('EditPortDrawer', () => {
       render(<Provider>
         <EditPortDrawer
           visible={true}
-          setDrawerVisible={jest.fn()}
+          setDrawerVisible={setDrawerVisible}
           isCloudPort={false}
           isMultipleEdit={selectedPorts?.slice(0, 1)?.length > 1}
           isVenueLevel={false}
@@ -278,7 +279,7 @@ describe('EditPortDrawer', () => {
       await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
       await userEvent.click(await screen.findByRole('button', { name: 'Use Venue settings' }))
       await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
-      expect(mockedSavePortsSetting).not.toBeCalled()
+      expect(setDrawerVisible).toBeCalledTimes(1)
     })
 
     it('should close Drawer and execute onBackClick function correctly', async () => {
@@ -345,7 +346,6 @@ describe('EditPortDrawer', () => {
 
       await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
       await screen.findByText('Edit Port')
-      await screen.findByText('Selected Port')
 
       await screen.findByText('Port VLANs')
       expect(await screen.findByText('Default')).toBeVisible()
@@ -414,7 +414,24 @@ describe('EditPortDrawer', () => {
       await screen.findByText('Applied at venue')
       await editPortVlans('VLAN-ID-66', '', 'venue')
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
-      // await screen.findByText('Server Error')
+      expect(mockedSavePortsSetting).toHaveBeenLastCalledWith({
+        params: { tenantId: 'tenant-id' },
+        payload: [{
+          switchId: '58:fb:96:0e:82:8a',
+          port: {
+            ...initPortValue,
+            ignoreFields: '',
+            ipsg: false,
+            poeBudget: '',
+            poeClass: 'ZERO',
+            port: '1/1/5',
+            ports: ['1/1/5'],
+            taggedVlans: ['66'],
+            untaggedVlan: 21,
+            voiceVlan: null
+          }
+        }]
+      })
     })
 
     it('should handle untagged vlans by venue correctly', async () => {
@@ -432,7 +449,7 @@ describe('EditPortDrawer', () => {
       render(<Provider>
         <EditPortDrawer
           visible={true}
-          setDrawerVisible={jest.fn()}
+          setDrawerVisible={setDrawerVisible}
           isCloudPort={false}
           isMultipleEdit={selectedPorts?.slice(1, 2)?.length > 1}
           isVenueLevel={false}
@@ -450,6 +467,7 @@ describe('EditPortDrawer', () => {
       await screen.findByText('Selected Port')
       await screen.findByText('Applied at venue')
       await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+      expect(setDrawerVisible).toBeCalledTimes(1)
     })
   })
 
@@ -469,7 +487,7 @@ describe('EditPortDrawer', () => {
       render(<Provider>
         <EditPortDrawer
           visible={true}
-          setDrawerVisible={jest.fn()}
+          setDrawerVisible={setDrawerVisible}
           isCloudPort={false}
           isMultipleEdit={selectedPorts.length > 1}
           isVenueLevel={false}
@@ -485,9 +503,9 @@ describe('EditPortDrawer', () => {
       await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
       await screen.findByText('Edit Port')
       await screen.findByText('Selected Port')
-      const checkboxs = await screen.findAllByRole('checkbox')
-      await userEvent.click(checkboxs[0]) // Port Enable
+      await userEvent.click(await screen.findByTestId('port-enable-checkbox'))
       await userEvent.click(await screen.findByRole('button', { name: 'Close' }))
+      expect(setDrawerVisible).toBeCalledTimes(1)
     })
 
     it('should apply edit data correctly', async () => {
@@ -516,23 +534,20 @@ describe('EditPortDrawer', () => {
       await screen.findByText('Edit Port')
       await screen.findByText('Selected Port')
 
-      const checkboxs = await screen.findAllByRole('checkbox')
-      await userEvent.click(checkboxs[0]) // Port Enable
-      await userEvent.click(checkboxs[1]) // Poe Enable
-      await userEvent.click(checkboxs[5]) // Port VLANs
+      await userEvent.click(await screen.findByTestId('portVlans-override-checkbox'))
+      await userEvent.click(await screen.findByTestId('portEnable-override-checkbox'))
 
       // Edit Port VLANs
       await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
-      let dialog = await screen.findAllByRole('dialog')
-      await screen.findByText('Select Port VLANs')
-      const taggedTabPanel = screen.getByRole('tabpanel', { hidden: false })
+      const dialog = await screen.findByTestId('select-port-vlans')
+      const taggedTabPanel = await screen.findByRole('tabpanel', { hidden: false })
       await userEvent.click(await within(taggedTabPanel).findByText(/VLAN-ID-6/))
 
-      await userEvent.click(await screen.findByRole('tab', { name: 'Untagged VLANs' }))
-      const untaggedTabPanel = screen.getByRole('tabpanel', { hidden: false })
+      await userEvent.click(await within(dialog).findByRole('tab', { name: 'Untagged VLANs' }))
+      const untaggedTabPanel = await screen.findByRole('tabpanel', { hidden: false })
       await userEvent.click(await within(untaggedTabPanel).findByText(/VLAN-ID-2/))
 
-      await userEvent.click(await within(dialog[1]).findByRole('button', { name: 'OK' }))
+      await userEvent.click(await within(dialog).findByRole('button', { name: 'OK' }))
 
       await userEvent.click(await screen.findByRole('button', { name: 'Use Venue settings' }))
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
@@ -607,9 +622,10 @@ describe('EditPortDrawer', () => {
       await screen.findByText('Selected Port')
 
       await userEvent.click(await screen.findByRole('button', { name: 'Create' }))
-      const dialog = await screen.findAllByRole('dialog')
+      const dialog = await screen.findByTestId('lldp-qos-modal')
       await screen.findByText('Add LLDP QoS')
-      await userEvent.click(await within(dialog[1]).findByRole('button', { name: 'Cancel' }))
+      await userEvent.click(await within(dialog).findByRole('button', { name: 'Cancel' }))
+      await waitFor(() => expect(dialog).not.toBeVisible())
     })
 
     it('should delete LLDP correctly', async () => {
@@ -674,22 +690,21 @@ describe('EditPortDrawer', () => {
       await screen.findByText('Selected Port')
 
       await userEvent.click(await screen.findByRole('button', { name: 'Create' }))
-      const dialog = await screen.findAllByRole('dialog')
+      const dialog = await screen.findByTestId('lldp-qos-modal')
       await screen.findByText('Add LLDP QoS')
 
       await userEvent.click(await screen.findByRole('combobox', { name: 'QoS VLAN Type' }))
       await userEvent.click(await screen.findByText('Tagged'))
       await userEvent.click(await screen.findByRole('combobox', { name: 'VLAN ID' }))
       await userEvent.click(await screen.findByText('VLAN-2'))
-      const priorityInput = await within(dialog[1]).findByLabelText('Priority')
+      const priorityInput = await within(dialog).findByLabelText('Priority')
       fireEvent.change(priorityInput, { target: { value: '1' } })
-      const dscpInput = await within(dialog[1]).findByLabelText(/DSCP/)
+      const dscpInput = await within(dialog).findByLabelText(/DSCP/)
       fireEvent.change(dscpInput, { target: { value: '2' } })
 
-      await userEvent.click(await within(dialog[1]).findByRole('button', { name: 'Save' }))
-      await waitFor(() => expect(dialog[1]).not.toBeVisible())
+      await userEvent.click(await within(dialog).findByRole('button', { name: 'Save' }))
+      await waitFor(() => expect(dialog).not.toBeVisible())
       expect(await screen.findAllByRole('row')).toHaveLength(2)
-      await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     })
 
     // eslint-disable-next-line max-len
@@ -721,20 +736,20 @@ describe('EditPortDrawer', () => {
 
       // create first
       await userEvent.click(await screen.findByRole('button', { name: 'Create' }))
-      let dialog = await screen.findAllByRole('dialog')
+      const dialog = await screen.findByTestId('lldp-qos-modal')
       await screen.findByText('Add LLDP QoS')
 
-      let priorityInput = await within(dialog[1]).findByLabelText('Priority')
+      let priorityInput = await within(dialog).findByLabelText('Priority')
       fireEvent.change(priorityInput, { target: { value: '1' } })
-      const dscpInput = await within(dialog[1]).findByLabelText(/DSCP/)
+      const dscpInput = await within(dialog).findByLabelText(/DSCP/)
       fireEvent.change(dscpInput, { target: { value: '2' } })
-      await userEvent.click(await within(dialog[1]).findByRole('button', { name: 'Save' }))
+      await userEvent.click(await within(dialog).findByRole('button', { name: 'Save' }))
       await screen.findByText('LLDP QoS Application Type can not duplicate')
 
       await userEvent.click(await screen.findByRole('combobox', { name: 'Application Type' }))
       await userEvent.click(await screen.findByText('Video-conferencing'))
-      await userEvent.click(await within(dialog[1]).findByRole('button', { name: 'Save' }))
-      await waitFor(() => expect(dialog[1]).not.toBeVisible())
+      await userEvent.click(await within(dialog).findByRole('button', { name: 'Save' }))
+      await waitFor(() => expect(dialog).not.toBeVisible())
       expect(await screen.findAllByRole('row')).toHaveLength(3)
     })
 
@@ -769,25 +784,65 @@ describe('EditPortDrawer', () => {
       await userEvent.click(await screen.findByRole('button', { name: 'Edit' }) )
 
       await screen.findByText(/Edit LLDP QoS/)
-      let dialog = await screen.findAllByRole('dialog')
-      expect(await within(dialog[1]).findByRole('button', { name: 'Save' })).toBeDisabled()
+      const dialog = await screen.findByTestId('lldp-qos-modal')
+      expect(await within(dialog).findByRole('button', { name: 'Save' })).toBeDisabled()
 
-      await userEvent.click(await screen.findByRole('combobox', { name: 'QoS VLAN Type' }))
+      const qosVlanTypeCombobox = await screen.findByRole('combobox', { name: 'QoS VLAN Type' })
+      const vlanIdCombobox = await screen.findByRole('combobox', { name: 'VLAN ID' })
+      await userEvent.click(qosVlanTypeCombobox)
       await userEvent.click(await screen.findByText('Untagged'))
-      await userEvent.click(await screen.findByRole('combobox', { name: 'QoS VLAN Type' }))
+      await userEvent.click(qosVlanTypeCombobox)
       const priorityTagged = await screen.findAllByText('Priority-tagged')
       await userEvent.click(priorityTagged[1])
-      expect(await screen.findByRole('combobox', { name: 'VLAN ID' })).toBeDisabled()
-      expect(await screen.findByRole('combobox', { name: 'VLAN ID' })).toHaveValue('')
+      expect(vlanIdCombobox).toBeDisabled()
+      expect(vlanIdCombobox).toHaveValue('')
 
-      let priorityInput = await within(dialog[1]).findByLabelText('Priority')
-      priorityInput = await within(dialog[1]).findByLabelText('Priority')
+      const priorityInput = await within(dialog).findByLabelText('Priority')
       await fireEvent.change(priorityInput, { target: { value: '3' } })
 
-      expect(await within(dialog[1]).findByRole('button', { name: 'Save' })).not.toBeDisabled()
-      await userEvent.click(await within(dialog[1]).findByRole('button', { name: 'Save' }))
-      await waitFor(() => expect(dialog[1]).not.toBeVisible())
+      expect(await within(dialog).findByRole('button', { name: 'Save' })).not.toBeDisabled()
+      await userEvent.click(await within(dialog).findByRole('button', { name: 'Save' }))
+      await waitFor(() => expect(dialog).not.toBeVisible())
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+      expect(mockedSavePortsSetting).toHaveBeenLastCalledWith({
+        params: { tenantId: 'tenant-id' },
+        payload: [{
+          switchId: 'c0:c5:20:aa:32:79',
+          port: {
+            dhcpSnoopingTrust: false,
+            ignoreFields: 'egressAcl,ingressAcl',
+            ipsg: true,
+            lldpEnable: false,
+            lldpQos: [{
+              applicationType: 'GUEST_VOICE',
+              dscp: 0,
+              id: '3df095a0926741b5ac2f9f1f09ffccff',
+              priority: 3,
+              qosVlanType: 'PRIORITY_TAGGED',
+              vlanId: ''
+            }],
+            name: '',
+            poeBudget: 1000,
+            poeClass: 'ONE',
+            poeEnable: true,
+            poePriority: 2,
+            port: '5',
+            portEnable: true,
+            portProtected: true,
+            portSpeed: 'AUTO',
+            ports: ['5'],
+            profileName: undefined,
+            revert: true,
+            rstpAdminEdgePort: true,
+            stpBpduGuard: true,
+            stpRootGuard: true,
+            taggedVlans: null,
+            tags: 'aa,bb',
+            untaggedVlan: '',
+            voiceVlan: null
+          }
+        }]
+      })
     })
   })
 
@@ -825,11 +880,10 @@ describe('EditPortDrawer', () => {
       expect(await screen.findByText('VLAN-ID: 2')).toBeVisible()
 
       await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
-      const dialog = await screen.findAllByRole('dialog')
-      await screen.findByText('Select Port VLANs')
+      const dialog = await screen.findByTestId('select-port-vlans')
       expect(await screen.findByLabelText('VLAN-ID-1 (Default VLAN)')).toBeChecked()
-      await userEvent.click(await within(dialog[1]).findByRole('button', { name: 'Cancel' }))
-      await waitFor(() => expect(dialog[1]).not.toBeVisible())
+      await userEvent.click(await within(dialog).findByRole('button', { name: 'Cancel' }))
+      await waitFor(() => expect(dialog).not.toBeVisible())
     })
 
     it('should render status and vlans correctly (revert=false)', async () => {
@@ -917,7 +971,7 @@ describe('EditPortDrawer', () => {
         }
       })
 
-      await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+      await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
       /**
         Port VLANs
         Default
@@ -1003,8 +1057,7 @@ describe('EditPortDrawer', () => {
       expect(await screen.findByTestId('tagged-multi-text')).toBeVisible()
       expect(await screen.findByTestId('untagged-multi-text')).toBeVisible()
 
-      const checkboxs = await screen.findAllByRole('checkbox')
-      await userEvent.click(checkboxs[0]) // Port VLANs
+      await userEvent.click(await screen.findByTestId('portVlans-override-checkbox'))
 
       expect(await screen.findByText('Edit')).toBeVisible()
       await userEvent.click(await screen.findByRole('button', { name: 'Use Venue settings' }))

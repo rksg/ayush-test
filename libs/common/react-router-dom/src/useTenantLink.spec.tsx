@@ -1,9 +1,9 @@
 import React from 'react'
 
-import { renderHook }                  from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 
-import * as config from '@acx-ui/config'
+import * as config    from '@acx-ui/config'
+import { renderHook } from '@acx-ui/test-utils'
 
 import { useTenantLink } from './useTenantLink'
 

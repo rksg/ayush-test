@@ -3,7 +3,8 @@ import _                                    from 'lodash'
 import { defineMessage, MessageDescriptor } from 'react-intl'
 import { FormattedMessage }                 from 'react-intl'
 
-import { get } from '@acx-ui/config'
+import { get }        from '@acx-ui/config'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 import { IncidentCode }               from './constants'
 import { Incident, IncidentMetadata } from './types/incidents'
@@ -14,7 +15,7 @@ export type FormatMessageValue = React.ReactNode
   | PrimitiveType
   | FormatXMLElementFn<React.ReactNode, React.ReactNode>
 
-type FormatMessageValues = Record<string, FormatMessageValue>
+export type FormatMessageValues = Record<string, FormatMessageValue>
 
 type RootCauseChecks = Exclude<IncidentMetadata['rootCauseChecks'], undefined>
 type RootCausesResult = {
@@ -139,6 +140,7 @@ export type AirtimeArray = (AirtimeBusyChecks | AirtimeRxChecks | AirtimeTxCheck
 
 export type AirtimeParams = {
   ssidCountPerRadioSlice: number
+  recommendationId: string
 }
 
 export const htmlValues: FormatMessageValues = {
@@ -157,15 +159,16 @@ const getAirtimeBusyRootCauses = () => {
   }
 }
 export const getAirtimeBusyRecommendations = (
-  checks: Array<AirtimeBusyChecks>, _: AirtimeParams, extraValues: Record<string, Function>
+  checks: Array<AirtimeBusyChecks>, params: AirtimeParams, extraValues: FormatMessageValues
 ) => {
   const checkTrue = checkTrueParams(checks)
-
+  const recommendationId = params.recommendationId
+  const link = <TenantLink to={`/recommendations/crrm/${recommendationId}`}><FormattedMessage defaultMessage={'here'}/></TenantLink>
   const rogueAP = checkTrue.includes('isRogueDetectionEnabled')
     ? <FormattedMessage defaultMessage={'<li>Click <rogueapdrawer>here</rogueapdrawer> for a list of rogue APs for removal in your premises.</li>'} values={{ ...htmlValues, ...extraValues }}/>
     : <FormattedMessage defaultMessage={'<li>Enable rogue AP detection to search, identify, and physically remove rogue APs from your premises.</li>'} values={htmlValues}/>
   const nonWifiInterference = <FormattedMessage defaultMessage={'<li>Identify and mitigate sources of non-WiFi interference, such as microwave ovens, Bluetooth devices, and cordless phones.</li>'} values={htmlValues}/>
-  const crrmRaised = <FormattedMessage defaultMessage={'<li>Apply the AI-Driven RRM recommendation.</li>'} values={htmlValues}/>
+  const crrmRaised = <FormattedMessage defaultMessage={'<li>Click {link} to apply the AI-Driven RRM recommendation.</li>'} values={{ ...htmlValues, link }}/>
 
   const stringlist = [
     rogueAP,
@@ -234,15 +237,17 @@ const getAirtimeRxRootCauses = (checks: (AirtimeRxChecks)[]) => {
 const getAirtimeRxRecommendations = (checks: (AirtimeRxChecks)[], params: AirtimeParams) => {
   const checkTrue = checkTrueParams(checks)
   const allFalse = airtimeRxAllFalseChecks.filter(check => checkTrue.includes(check)).length === 0
-  const ssidCountPerRadioSlice = params.ssidCountPerRadioSlice
+  const { ssidCountPerRadioSlice, recommendationId } = params
+  const aiOpsLink = <TenantLink to={`/recommendations/aiOps/${recommendationId}`}>{<FormattedMessage defaultMessage={'here'}/>}</TenantLink>
+  const crrmLink = <TenantLink to={`/recommendations/crrm/${recommendationId}`}>{<FormattedMessage defaultMessage={'here'}/>}</TenantLink>
 
   const highDensityWifi = checkTrue.includes('isAclbRaised')
-    ? <FormattedMessage defaultMessage={'<li>Enable client load balancing AI Ops recommendation.</li>'} values={htmlValues}/>
+    ? <FormattedMessage defaultMessage={'<li>Click {aiOpsLink} to enable client load balancing AI Ops recommendation.</li>'} values={{ ...htmlValues, aiOpsLink }}/>
     : <FormattedMessage defaultMessage={'<li>Increase AP density to distribute the client load.</li>'} values={htmlValues}/>
   const excessiveFrame = checkTrue.includes('isHighSsidCountPerRadio')
     ? <FormattedMessage defaultMessage={'<li>There are currently an average of {ssidCountPerRadioSlice} SSIDs/WLANs being broadcasted per AP. Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less. Enabling Airtime Decongestion would be recommended as well.</li>'} values={{ ...htmlValues, ssidCountPerRadioSlice }}/>
     : <FormattedMessage defaultMessage={'<li>Enable Airtime Decongestion.</li>'} values={htmlValues}/>
-  const crrmRaisedText = <FormattedMessage defaultMessage={'<li>Apply the AI-Driven RRM recommendation.</li>'} values={htmlValues}/>
+  const crrmRaisedText = <FormattedMessage defaultMessage={'<li>Click {crrmLink} to apply the AI-Driven RRM recommendation.</li>'} values={{ ...htmlValues, crrmLink }}/>
   const channelFly = checkTrue.includes('isChannelFlyEnabled')
     ? <FormattedMessage defaultMessage={'<li>Review the channel planning, AP density and deployment.</li>'} values={htmlValues}/>
     : get('IS_MLISA_SA')
@@ -325,10 +330,11 @@ const getAirtimeTxRootCauses = (checks: (AirtimeTxChecks)[]) => {
 const getAirtimeTxRecommendations = (checks: (AirtimeTxChecks)[], params: AirtimeParams) => {
   const checkTrue = checkTrueParams(checks)
   const allFalse = airtimeTxAllFalseChecks.filter(check => checkTrue.includes(check)).length === 0
-  const ssidCountPerRadioSlice = params.ssidCountPerRadioSlice
+  const { ssidCountPerRadioSlice, recommendationId } = params
+  const link = <TenantLink to={`/recommendations/aiOps/${recommendationId}`}><FormattedMessage defaultMessage={'here'}/></TenantLink>
 
   const highDensityWifi = checkTrue.includes('isAclbRaised')
-    ? <FormattedMessage defaultMessage={'<li>Enable client load balancing AI Ops recommendation.</li>'} values={htmlValues}/>
+    ? <FormattedMessage defaultMessage={'<li>Click {link} to enable client load balancing AI Ops recommendation.</li>'} values={{ ...htmlValues, link }}/>
     : <FormattedMessage defaultMessage={'<li>Increase AP density to distribute the client load.</li>'} values={htmlValues}/>
   const excessiveFrame = checkTrue.includes('isHighSsidCountPerRadio')
     ? <FormattedMessage defaultMessage={'<li>There are currently an average of {ssidCountPerRadioSlice} SSIDs/WLANs being broadcasted per AP. Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less. Enabling Airtime Decongestion would be recommended as well.</li>'} values={{ ...htmlValues, ssidCountPerRadioSlice }}/>

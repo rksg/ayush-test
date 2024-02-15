@@ -179,15 +179,17 @@ describe('Tunnel Scope Form', () => {
     expect(await screen.findByText('Tunnel & Network Settings')).toBeVisible()
     await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
     await screen.findByText(/Enable the networks that will tunnel the traffic to the selected cluster/i)
-    await screen.findAllByRole('row', { name: /MockedNetwork/i })
+    const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
     await waitFor(() =>
       expect(stepFormRef.current.getFieldValue('activatedNetworks')).toStrictEqual([
         { id: 'network_1' },
         { id: 'network_2' }
       ]))
 
-    const switchBtn = within(await screen.findByRole('row', { name: /MockedNetwork 1/i })).getByRole('switch')
-    const switchBtn2 = within(await screen.findByRole('row', { name: /MockedNetwork 2/i })).getByRole('switch')
+    expect(within(rows[0]).getByRole('cell', { name: /MockedNetwork 1/i })).toBeVisible()
+    const switchBtn = within(rows[1]).getByRole('switch')
+    expect(within(rows[1]).getByRole('cell', { name: /MockedNetwork 2/i })).toBeVisible()
+    const switchBtn2 = within(rows[1]).getByRole('switch')
     expect(switchBtn).toBeChecked()
     expect(switchBtn2).toBeChecked()
   })
@@ -203,10 +205,10 @@ describe('Tunnel Scope Form', () => {
     expect(await screen.findByText('Tunnel & Network Settings')).toBeVisible()
     await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await screen.findAllByRole('row', { name: /MockedNetwork/i })
+    const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
     expect(stepFormRef.current.getFieldValue('activatedNetworks')).toStrictEqual(undefined)
-    await click(
-      within(await screen.findByRole('row', { name: /MockedNetwork 2/i })).getByRole('switch'))
+    expect(within(rows[1]).getByRole('cell', { name: /MockedNetwork 2/i })).toBeVisible()
+    await click(within(rows[1]).getByRole('switch'))
 
     expect(mockedSetFieldValue).toBeCalledWith('activatedNetworks', [
       { name: 'MockedNetwork 2', id: 'network_2' }
@@ -228,8 +230,9 @@ describe('Tunnel Scope Form', () => {
 
     expect(await screen.findByText('Tunnel & Network Settings')).toBeVisible()
     await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
-    await screen.findAllByRole('row', { name: /MockedNetwork/i })
-    const switchBtn = within(await screen.findByRole('row', { name: /MockedNetwork 1/i })).getByRole('switch')
+    const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
+    expect(within(rows[0]).getByRole('cell', { name: /MockedNetwork 1/i })).toBeVisible()
+    const switchBtn = within(rows[0]).getByRole('switch')
     expect(switchBtn).toBeChecked()
     await click(switchBtn)
 
@@ -286,11 +289,13 @@ describe('Tunnel Scope Form', () => {
 
       const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
       expect(rows.length).toBe(4)
-      const switchBtns = within(await screen.findByRole('row', { name: /MockedNetwork 1/i })).getAllByRole('switch')
+      expect(within(rows[0]).getByRole('cell', { name: /MockedNetwork 1/i })).toBeVisible()
+      const switchBtns = within(rows[0]).getAllByRole('switch')
       expect(switchBtns.length).toBe(1)
       expect(switchBtns[0]).toBeChecked()
 
-      const captivePortalSwitchBtns = within(await screen.findByRole('row', { name: /MockedNetwork 4/i })).getAllByRole('switch')
+      expect(within(rows[3]).getByRole('cell', { name: /MockedNetwork 4/i })).toBeVisible()
+      const captivePortalSwitchBtns = within(rows[3]).getAllByRole('switch')
       expect(captivePortalSwitchBtns.length).toBe(2)
       captivePortalSwitchBtns.forEach(item => {
         expect(item).toBeChecked()
@@ -317,8 +322,8 @@ describe('Tunnel Scope Form', () => {
       expect(rows.length).toBe(4)
 
       // when turn on DC captive portal network DMZ network should be ON by default
-      const targetRow = screen.getByRole('row', { name: /MockedNetwork 4/i })
-      const switchBtns = within(targetRow).getAllByRole('switch')
+      expect(within(rows[3]).getByRole('cell', { name: /MockedNetwork 4/i })).toBeVisible()
+      const switchBtns = within(rows[3]).getAllByRole('switch')
       switchBtns.forEach((switchBtn) => {
         expect(switchBtn).not.toBeChecked()
       })
@@ -354,8 +359,8 @@ describe('Tunnel Scope Form', () => {
       expect(rows.length).toBe(4)
 
       // when turn on DC captive portal network DMZ network should be ON by default
-      const targetRow = screen.getByRole('row', { name: /MockedNetwork 4/i })
-      const switchBtns = within(targetRow).getAllByRole('switch')
+      expect(within(rows[3]).getByRole('cell', { name: /MockedNetwork 4/i })).toBeVisible()
+      const switchBtns = within(rows[3]).getAllByRole('switch')
       switchBtns.forEach((switchBtn) => {
         expect(switchBtn).not.toBeChecked()
       })
