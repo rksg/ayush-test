@@ -376,6 +376,10 @@ export function SwitchForm () {
     }
   }
 
+  const handelSerialNumberInput = (e: React.FormEvent<HTMLInputElement>) => {
+    (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.toUpperCase()
+  }
+
   return <>
     <PageHeader
       title={editMode ?
@@ -449,7 +453,7 @@ export function SwitchForm () {
                   children={
                     <Input
                       disabled={readOnly || editMode}
-                      style={{ textTransform: 'uppercase' }}
+                      onInput={handelSerialNumberInput}
                       onBlur={() => handleChangeSerialNumber(editMode ? 'serialNumber' : 'id')}
                     />
                   }

@@ -499,6 +499,11 @@ export function StackForm () {
     }} />
   )
 
+  const handelSerialNumberInput = (e: React.FormEvent<HTMLInputElement>) => {
+    (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.toUpperCase()
+  }
+
+
   const columns: TableProps<SwitchTable>['columns'] = [
     {
       dataIndex: 'sort',
@@ -562,7 +567,7 @@ export function StackForm () {
             : <Input
               data-testid={`serialNumber${row.key}`}
               onBlur={() => handleChange(row, index)}
-              style={{ textTransform: 'uppercase' }}
+              onInput={handelSerialNumberInput}
               disabled={row.disabled}
             />
           }</Form.Item>)
