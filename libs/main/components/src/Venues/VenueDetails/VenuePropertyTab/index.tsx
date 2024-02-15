@@ -64,7 +64,8 @@ import {
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 import { exportMessageMapping }      from '@acx-ui/utils'
 
-import { PropertyUnitDrawer } from './PropertyUnitDrawer'
+import { PropertyUnitBulkDrawer } from './PropertyUnitBulkDrawer'
+import { PropertyUnitDrawer }     from './PropertyUnitDrawer'
 
 const WarningTriangle = styled(WarningTriangleSolid)
   .attrs((props: { $expired: boolean }) => props)`
@@ -138,7 +139,7 @@ export function VenuePropertyTab () {
   const [drawerState, setDrawerState] = useState<{
     isEdit: boolean,
     visible: boolean,
-    unitId?: string
+    units?: PropertyUnit[]
   }>({
     isEdit: false,
     visible: false
@@ -326,7 +327,7 @@ export function VenuePropertyTab () {
     {
       label: $t({ defaultMessage: 'Add Unit' }),
       disabled: !hasAssociation,
-      onClick: () => setDrawerState({ isEdit: false, visible: true, unitId: undefined })
+      onClick: () => setDrawerState({ isEdit: false, visible: true, units: undefined })
     },
     {
       label: $t({ defaultMessage: 'Import From File' }),
@@ -338,9 +339,16 @@ export function VenuePropertyTab () {
   const rowActions: TableProps<PropertyUnit>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
-      visible: (selectedItems => selectedItems.length <= 1),
-      onClick: ([{ id }], clearSelection) => {
-        setDrawerState({ unitId: id, isEdit: true, visible: true })
+      visible: (selectedItems => selectedItems.length <= 1 ||
+        (isConnectionMeteringEnabled && selectedItems.length > 1)),
+      onClick: (units, clearSelection) => {
+        setDrawerState({ units: units.map(u=> {return {
+          ...u,
+          trafficControl: personaMap.get(u.personaId)?.meteringProfileId ?
+            {
+              meteringProfileId: personaMap.get(u.personaId)?.meteringProfileId!!,
+              profileExpiry: personaMap.get(u.personaId)?.expirationDate!!
+            } : undefined }}), isEdit: true, visible: true })
         clearSelection()
       }
     },
@@ -572,14 +580,22 @@ export function VenuePropertyTab () {
           onClick: downloadUnit
         }}
       />
-      {venueId && drawerState.visible &&
+      {venueId && drawerState.visible && (!drawerState.units || drawerState.units.length === 1 ) &&
         <PropertyUnitDrawer
           visible={true}
           venueId={venueId}
           countryCode={venueData?.address?.countryCode}
-          unitId={drawerState?.unitId}
+          unitId={drawerState?.units?.at(0)?.id}
           isEdit={drawerState.isEdit}
-          onClose={() => setDrawerState({ isEdit: false, visible: false, unitId: undefined })}
+          onClose={() => setDrawerState({ isEdit: false, visible: false, units: undefined })}
+        />
+      }
+      {venueId && drawerState.visible && (drawerState.units && drawerState.units.length > 1 ) &&
+        <PropertyUnitBulkDrawer
+          visible={true}
+          venueId={venueId}
+          data={drawerState.units}
+          onClose={() => setDrawerState({ isEdit: false, visible: false, units: undefined })}
         />
       }
       <ImportFileDrawer

@@ -5,7 +5,8 @@ import {
   EntitlementDeviceType,
   EntitlementDeviceSubType,
   EntitlementNetworkDeviceType,
-  Entitlement
+  Entitlement,
+  TenantMspEc
 } from '@acx-ui/rc/utils'
 import { RolesEnum } from '@acx-ui/types'
 
@@ -276,6 +277,7 @@ export interface TenantDetail {
   tenantType: string;
   updatedDate?: string;
   upgradeGroup?: string;
+  mspEc?: TenantMspEc;
 }
 
 export interface MspProfile {
