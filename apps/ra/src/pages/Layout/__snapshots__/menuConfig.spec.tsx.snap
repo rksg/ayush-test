@@ -1057,7 +1057,7 @@ Array [
           },
         ],
         "openNewTab": true,
-        "uri": "/analytics/occupancy",
+        "uri": "/analytics/occupancy?selectedTenants=WyIwMDE1MDAwMDAwR2xJN1NBQVYiXQ==",
       },
     ],
     "inactiveIcon": Object {

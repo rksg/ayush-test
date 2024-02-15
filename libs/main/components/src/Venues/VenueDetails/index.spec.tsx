@@ -64,9 +64,16 @@ jest.mock('./VenueTimelineTab', () => ({
   VenueTimelineTab: () => <div data-testid={'rc-VenueTimelineTab'} title='VenueTimelineTab' />
 }))
 
+const mockedUseConfigTemplate = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useConfigTemplate: () => mockedUseConfigTemplate()
+}))
+
 describe('VenueDetails', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
 
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
@@ -138,6 +145,10 @@ describe('VenueDetails', () => {
         (req, res, ctx) => res(ctx.json({}))
       )
     )
+  })
+
+  afterEach(() => {
+    mockedUseConfigTemplate.mockRestore()
   })
 
   it('should render correctly', async () => {
@@ -254,5 +265,19 @@ describe('VenueDetails', () => {
       route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
     })
     expect(screen.queryByTestId('rc-VenueAnalyticsTab')).toBeNull()
+  })
+
+  it('should navigate to network tab correctly with isTemplate equal to true', async () => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+
+    const params = {
+      tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
+      venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
+      activeTab: 'networks'
+    }
+    render(<Provider><VenueDetails /></Provider>, {
+      route: { params, path: '/:tenantId/v/:venueId/venue-details/:activeTab' }
+    })
+    expect(screen.getAllByRole('tab')).toHaveLength(1)
   })
 })

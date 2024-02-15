@@ -4,9 +4,11 @@ import { TableResult } from '@acx-ui/rc/utils'
 import {
   computePastRange,
   transformLookupAndMappingData,
+  transformToPropertyView,
   transformVenuesData,
   TransformedMap,
   calcSLA,
+  noDataCheck,
   customSort
 } from './helpers'
 
@@ -64,6 +66,29 @@ const mockLookupAndMappingData = {
 }
 
 describe('helpers', () => {
+  describe('transformToPropertyView', () => {
+    it('should transform null correctly', () => {
+      expect(transformToPropertyView([{
+        avgConnSuccess: [null, null],
+        avgClientThroughput: [null, null],
+        avgTTC: [null, null],
+        ssidCompliance: [null, null]
+      }])).toEqual([
+        {
+          avgClientThroughput: null,
+          avgConnSuccess: null,
+          avgTTC: null,
+          guestExp: 0,
+          ssidCompliance: null
+        }
+      ])
+    })
+  })
+  describe('noDataCheck', () => {
+    it('should return true when there is no data', () => {
+      expect(noDataCheck(null)).toBe(true)
+    })
+  })
   describe('computePastRange', () => {
     it('should handle last8hours', () => {
       const startDate = '2023-12-12T00:00:00+00:00'

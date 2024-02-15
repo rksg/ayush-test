@@ -11,15 +11,16 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
-import { transformVLAN,
+import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
+import {
+  transformVLAN,
   transformAps,
   transformRadios,
   transformScheduling,
   NetworkApGroupDialog,
   NetworkVenueScheduleDialog,
   useSdLanScopedNetworks,
-  checkSdLanScopedNetworkDeactivateAction
+  checkSdLanScopedNetworkDeactivateAction, renderConfigTemplateDetailsLink
 } from '@acx-ui/rc/components'
 import {
   useAddNetworkVenueMutation,
@@ -44,7 +45,7 @@ import {
   ApGroupModalState,
   NetworkExtended,
   SchedulerTypeEnum,
-  SchedulingModalState
+  SchedulingModalState, ConfigTemplateType, useConfigTemplate, getConfigTemplatePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                    from '@acx-ui/user'
@@ -84,6 +85,7 @@ interface schedule {
 
 export function VenueNetworksTab () {
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
   const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
   const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
   const settingsId = 'venue-networks-table'
@@ -146,6 +148,7 @@ export function VenueNetworksTab () {
 
   const scheduleSlotIndexMap = useScheduleSlotIndexMap(tableData, isMapEnabled)
   const linkToAddNetwork = useTenantLink('/networks/wireless/add')
+  const linkToAddNetworkTemplate = useTenantLink(getConfigTemplatePath('networks/wireless/add'), 'v')
 
   const activateNetwork = async (checked: boolean, row: Network) => {
     if (row.allApDisabled) {
@@ -187,6 +190,14 @@ export function VenueNetworksTab () {
     return supportOweTransition && row?.isOweMaster === false && row?.owePairNetworkId !== undefined
   }
 
+  const getTenantLink = (row: Network) => {
+    return isTemplate
+      // eslint-disable-next-line max-len
+      ? renderConfigTemplateDetailsLink(ConfigTemplateType.NETWORK, row.id, row.name)
+      // eslint-disable-next-line max-len
+      : <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>{row.name}</TenantLink>
+  }
+
   // TODO: Waiting for API support
   // const actions: TableProps<Network>['actions'] = [
   //   {
@@ -205,7 +216,7 @@ export function VenueNetworksTab () {
     {
       label: $t({ defaultMessage: 'Add Network' }),
       onClick: () => {
-        navigate(`${linkToAddNetwork.pathname}`)
+        navigate(`${isTemplate ? linkToAddNetworkTemplate.pathname : linkToAddNetwork.pathname}`)
       }
     }
   ]
@@ -219,10 +230,7 @@ export function VenueNetworksTab () {
       defaultSortOrder: 'ascend',
       fixed: 'left',
       render: function (_, row) {
-        return (!!row?.isOnBoarded ?
-          <span>{row.name}</span>
-          : <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>{row.name}</TenantLink>
-        )
+        return !!row?.isOnBoarded ? <span>{row.name}</span> : getTenantLink(row)
       }
     },
     {

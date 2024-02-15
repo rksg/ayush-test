@@ -71,14 +71,20 @@ export function SwitchList ({ searchVal = '' }: { searchVal?: string }) {
       sorter: { compare: sortProp('traffic', defaultSort) }
     }
   ]
+
+  const data = results.data?.switches?.map((item: Switch, i) => ({
+    ...item,
+    rowId: i+1
+  }))
+
   return <Loader states={[results]}>
     <Table<Switch>
       columns={switchesTablecolumnHeaders}
-      dataSource={results.data?.switches as unknown as Switch[]}
+      dataSource={data as unknown as Switch[]}
       pagination={pagination}
       settingsId='switches-list-table'
       onFilterChange={updateSearchString}
-      rowKey='switchMac'
+      rowKey='rowId'
     />
   </Loader>
 }
