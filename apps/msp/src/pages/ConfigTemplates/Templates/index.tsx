@@ -12,10 +12,16 @@ import {
   showActionModal,
   Button
 } from '@acx-ui/components'
-import { DateFormatEnum, userDateTimeFormat }                                            from '@acx-ui/formatter'
-import { ConfigTemplateLink, PolicyConfigTemplateLink, renderConfigTemplateDetailsLink } from '@acx-ui/rc/components'
+import { DateFormatEnum, userDateTimeFormat } from '@acx-ui/formatter'
+import {
+  ConfigTemplateLink,
+  PolicyConfigTemplateLink,
+  ServiceConfigTemplateLink,
+  renderConfigTemplateDetailsLink
+} from '@acx-ui/rc/components'
 import {
   useDeleteAAAPolicyTemplateMutation,
+  useDeleteDpskTemplateMutation,
   useDeleteNetworkTemplateMutation,
   useDeleteVenueTemplateMutation,
   useGetConfigTemplateListQuery
@@ -27,7 +33,10 @@ import {
   useTableQuery,
   ConfigTemplate,
   ConfigTemplateType,
-  getConfigTemplateEditPath
+  getConfigTemplateEditPath,
+  ServiceType,
+  ServiceOperation,
+  serviceTypeLabelMapping
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }               from '@acx-ui/user'
@@ -220,11 +229,13 @@ function useDeleteMutation () {
   const [ deleteNetworkTemplate ] = useDeleteNetworkTemplateMutation()
   const [ deleteAaaTemplate ] = useDeleteAAAPolicyTemplateMutation()
   const [ deleteVenueTemplate ] = useDeleteVenueTemplateMutation()
+  const [ deleteDpskTemplate ] = useDeleteDpskTemplateMutation()
 
   return {
     [ConfigTemplateType.NETWORK]: deleteNetworkTemplate,
     [ConfigTemplateType.RADIUS]: deleteAaaTemplate,
-    [ConfigTemplateType.VENUE]: deleteVenueTemplate
+    [ConfigTemplateType.VENUE]: deleteVenueTemplate,
+    [ConfigTemplateType.DPSK]: deleteDpskTemplate
   }
 }
 
@@ -252,6 +263,15 @@ function getAddTemplateMenuProps (): Omit<MenuProps, 'placement'> {
           label: <PolicyConfigTemplateLink type={PolicyType.AAA} oper={PolicyOperation.CREATE}>
             {$t(policyTypeLabelMapping[PolicyType.AAA])}
           </PolicyConfigTemplateLink>
+        }]
+      }, {
+        key: 'add-service',
+        label: $t({ defaultMessage: 'Services' }),
+        children: [{
+          key: 'add-dpsk',
+          label: <ServiceConfigTemplateLink type={ServiceType.DPSK} oper={ServiceOperation.CREATE}>
+            {$t(serviceTypeLabelMapping[ServiceType.DPSK])}
+          </ServiceConfigTemplateLink>
         }]
       }
     ]

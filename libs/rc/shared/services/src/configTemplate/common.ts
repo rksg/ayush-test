@@ -26,19 +26,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       providesTags: [{ type: 'ConfigTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          const activities = [
-            'AddRadiusServerProfileTemplateRecord',
-            'UpdateRadiusServerProfileTemplateRecord',
-            'DeleteRadiusServerProfileTemplateRecord',
-            'AddNetworkTemplateRecord',
-            'UpdateNetworkTemplateRecord',
-            'DeleteNetworkTemplateRecord',
-            'ApplyTemplate',
-            'AddVenueTemplateRecord',
-            'UpdateVenueTemplateRecord',
-            'DeleteVenueTemplateRecord'
-          ]
-          onActivityMessageReceived(msg, activities, () => {
+          onActivityMessageReceived(msg, useCasesToRefreshTemplateList, () => {
             // eslint-disable-next-line max-len
             api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'ConfigTemplate', id: 'LIST' }]))
           })
@@ -196,3 +184,19 @@ export function commonQueryFn (apiInfo: ApiInfo, withPayload?: boolean) {
     }
   }
 }
+
+const useCasesToRefreshTemplateList = [
+  'AddRadiusServerProfileTemplateRecord',
+  'UpdateRadiusServerProfileTemplateRecord',
+  'DeleteRadiusServerProfileTemplateRecord',
+  'AddNetworkTemplateRecord',
+  'UpdateNetworkTemplateRecord',
+  'DeleteNetworkTemplateRecord',
+  'ApplyTemplate',
+  'AddVenueTemplateRecord',
+  'UpdateVenueTemplateRecord',
+  'DeleteVenueTemplateRecord',
+  'CREATE_POOL_TEMPLATE_RECORD',
+  'UPDATE_POOL_TEMPLATE_RECORD',
+  'DELETE_POOL_TEMPLATE_RECORD'
+]
