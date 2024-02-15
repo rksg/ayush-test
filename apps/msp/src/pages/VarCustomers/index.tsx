@@ -13,8 +13,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                from '@acx-ui/formatter'
 import {
   useInviteCustomerListQuery,
   useVarCustomerListQuery,
@@ -85,7 +85,8 @@ export function VarCustomers () {
   const { tenantId } = useParams()
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
-  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
+  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
+  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
   const mspUtils = MSPUtils()
@@ -173,9 +174,11 @@ export function VarCustomers () {
     }
 
     const PendingInvitation = () => {
+      const settingsId = 'var-invitation-table'
       const tableQuery = useTableQuery({
         useQuery: useInviteCustomerListQuery,
-        defaultPayload: invitationPayload
+        defaultPayload: invitationPayload,
+        pagination: { settingsId }
       })
       useEffect(() => {
         setInviteCount(tableQuery.data?.totalCount as number)
@@ -184,7 +187,7 @@ export function VarCustomers () {
       return (
         <Loader states={[tableQuery]}>
           <Table
-            settingsId='var-invitation-table'
+            settingsId={settingsId}
             columns={columnsPendingInvitation}
             dataSource={tableQuery.data?.data}
             pagination={tableQuery.pagination}
@@ -333,6 +336,7 @@ export function VarCustomers () {
   }
 
   const VarCustomerTable = () => {
+    const settingsId = 'var-customers-table'
     const tableQuery = useTableQuery({
       useQuery: useVarCustomerListQuery,
       defaultPayload: varCustomerPayload,
@@ -342,13 +346,14 @@ export function VarCustomers () {
       },
       search: {
         searchTargetFields: varCustomerPayload.searchTargetFields as string[]
-      }
+      },
+      pagination: { settingsId }
     })
 
     return (
       <Loader states={[tableQuery]}>
         <Table
-          settingsId='var-customers-table'
+          settingsId={settingsId}
           columns={customerColumns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

@@ -7,7 +7,7 @@ import { SubInterfaceTable } from './SubInterfaceTable'
 
 export const LagSubInterfaceTable = ({ serialNumber, lagId }:
    { serialNumber: string, lagId: number }) => {
-
+  const settingsId = 'edge-sub-interfaces-table'
   const defaultPayload = {
     fields: [
       'status','portType','subnet','ip','ipMode','vlan'
@@ -19,13 +19,14 @@ export const LagSubInterfaceTable = ({ serialNumber, lagId }:
   const tableQuery = useTableQuery<EdgePortStatus | EdgeLagStatus, RequestPayload<unknown>, unknown>({
     useQuery: useGetEdgeLagSubInterfacesStatusListQuery,
     apiParams: { serialNumber },
-    defaultPayload: defaultPayload
+    defaultPayload: defaultPayload,
+    pagination: { settingsId }
   })
 
 
   return (
     <Loader states={[tableQuery]}>
-      <SubInterfaceTable tableQuery={tableQuery} />
+      <SubInterfaceTable tableQuery={tableQuery} settingsId={settingsId} />
     </Loader>
   )
 }

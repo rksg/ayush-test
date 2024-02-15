@@ -70,6 +70,7 @@ import {
   RogueApLocation,
   ApManagementVlan,
   ApCompatibility,
+  ApCompatibilityResponse,
   VeuneApAntennaTypeSettings
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                        from '@acx-ui/store'
@@ -121,18 +122,24 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const venueList = venueListQuery.data as TableResult<Venue>
         const venueIds = venueList?.data?.map(v => v.id) || []
         const venueIdsToIncompatible:{ [key:string]: number } = {}
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const allApCompatibilitiesQuery:any = await Promise.all(venueIds.map(id => {
-          const apCompatibilitiesReq = {
-            ...createHttpRequest(WifiUrlsInfo.getApCompatibilitiesVenue, { venueId: id }),
-            body: { filters: {}, queryType: 'CHECK_VENUE' }
-          }
-          return fetchWithBQ(apCompatibilitiesReq)
-        }))
-        venueIds.forEach((id:string, index:number) => {
-          const allApCompatibilitiesData = allApCompatibilitiesQuery[index]?.data as ApCompatibility[]
-          venueIdsToIncompatible[id] = allApCompatibilitiesData[0]?.incompatible ?? 0
-        })
+        try {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const allApCompatibilitiesQuery:any = await Promise.all(venueIds.map(id => {
+            const apCompatibilitiesReq = {
+              ...createHttpRequest(WifiUrlsInfo.getApCompatibilitiesVenue, { venueId: id }),
+              body: { filters: {} }
+            }
+            return fetchWithBQ(apCompatibilitiesReq)
+          }))
+          venueIds.forEach((id:string, index:number) => {
+            const allApCompatibilitiesResponse = allApCompatibilitiesQuery[index]?.data as ApCompatibilityResponse
+            const allApCompatibilitiesData = allApCompatibilitiesResponse?.apCompatibilities as ApCompatibility[]
+            venueIdsToIncompatible[id] = allApCompatibilitiesData[0]?.incompatible ?? 0
+          })
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.error('venuesTable getApCompatibilitiesVenue error:', e)
+        }
         const aggregatedList = aggregatedVenueCompatibilitiesData(
           venueList, venueIdsToIncompatible)
 
@@ -447,9 +454,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
-    getApCompatibilitiesVenue: build.query<ApCompatibility[], RequestPayload>({
+    getApCompatibilitiesVenue: build.query<ApCompatibilityResponse, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApCompatibilitiesVenue, params)
+        const req = createHttpRequest(WifiUrlsInfo.getApCompatibilitiesVenue, params, { ...ignoreErrorModal })
         return{
           ...req,
           body: payload

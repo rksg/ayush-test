@@ -123,7 +123,6 @@ describe('RadiusAttributeGroupForm', () => {
 
     const validating = await screen.findByRole('img', { name: 'loading' })
     await waitForElementToBeRemoved(validating)
-    await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
 
     await screen.findByText('Group testGroup was added')
   })
@@ -180,8 +179,8 @@ describe('RadiusAttributeGroupForm', () => {
 
     await screen.findByRole('heading', { level: 1, name: 'Configure ' + attributeGroup.name })
 
-    const row = await screen.findByRole('row', { name: /Annex-CLI-Filter/ })
-    await userEvent.click(within(row).getByRole('radio'))
+    const rows = await screen.findAllByRole('row', { name: /Annex-CLI/ })
+    await userEvent.click(within(rows[0]).getByRole('radio')) //Annex-CLI-Filter
 
     await userEvent.click(screen.getByRole('button', { name: /Edit/i }))
     await screen.findByText('Attribute Type')
@@ -192,8 +191,7 @@ describe('RadiusAttributeGroupForm', () => {
 
     await userEvent.click(await screen.findByText('Done'))
 
-    const row1 = await screen.findByRole('row', { name: /Annex-CLI-Command/ })
-    fireEvent.click(within(row1).getByRole('radio'))
+    fireEvent.click(within(rows[1]).getByRole('radio')) //Annex-CLI-Command
     await userEvent.click(screen.getByRole('button', { name: /Delete/i }))
 
     const nameInput = await screen.findAllByRole('textbox', { name: 'Group Name' })

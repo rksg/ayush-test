@@ -17,8 +17,8 @@ import {
 
 const pagination = { pageSize: 10, defaultPageSize: 10 }
 
-export function BrandTable ({ sliceType, slaThreshold, data }:
-{ sliceType: string, slaThreshold?: Partial<Settings>, data: Response[] }) {
+export function BrandTable ({ sliceType, slaThreshold, data, isLSP }:
+{ sliceType: string, slaThreshold?: Partial<Settings>, data: Response[], isLSP?: boolean }) {
   const { $t } = useIntl()
   const thresholds = slaThreshold || getDefaultSettings()
   const thresholdP1Incidents = thresholds['sla-p1-incidents-count' as keyof typeof slaThreshold]
@@ -147,6 +147,10 @@ export function BrandTable ({ sliceType, slaThreshold, data }:
       <span>{highlightFn(row?.lsp)}</span>
   }
   ]
+  // Remove lsp column in case of LSP account
+  if(isLSP){
+    propertyCols.splice(-1)
+  }
 
   return <Table<Property | Lsp>
     columns={[

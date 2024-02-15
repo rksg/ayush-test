@@ -1,14 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import { firmwareApi }  from '@acx-ui/rc/services'
-import {
-  FirmwareUrlsInfo
-} from '@acx-ui/rc/utils'
-import {
-  Provider, store
-} from '@acx-ui/store'
+import { useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { firmwareApi }      from '@acx-ui/rc/services'
+import { FirmwareUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }  from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -17,7 +13,6 @@ import {
   waitForElementToBeRemoved,
   waitFor
 } from '@acx-ui/test-utils'
-
 
 import {
   venue,
@@ -29,7 +24,6 @@ import {
 } from '../../__tests__/fixtures'
 
 import { VenueFirmwareList } from '.'
-
 
 describe('Firmware Venues Table', () => {
   let params: { tenantId: string }
@@ -45,9 +39,7 @@ describe('Firmware Venues Table', () => {
         (req, res, ctx) => {
           const searchParams = req.url.searchParams
           if (searchParams.get('status') !== 'release') return res(ctx.json([]))
-
           if (searchParams.get('abf') !== null) return res(ctx.json([ ...availableABFList ]))
-
           return res(ctx.json([...availableVersions]))
         }
       ),
@@ -84,17 +76,17 @@ describe('Firmware Venues Table', () => {
     const row = await screen.findByRole('row', { name: /Latest-Venue/i })
     await userEvent.click(within(row).getByRole('checkbox'))
 
-    const updateButton = screen.getByRole('button', { name: /Revert Now/i })
+    const updateButton = screen.getByRole('button', { name: /Downgrade/i })
     await userEvent.click(updateButton)
 
     const confirmDialog = await screen.findByRole('dialog')
-    const continueButton = await screen.findByText('Continue')
+    const continueButton = within(confirmDialog).getByText('Continue')
     await userEvent.click(continueButton)
-    const nextButton = await screen.findByText('Next')
+    const nextButton = await within(confirmDialog).findByText('Next')
     await userEvent.click(nextButton)
-    const downgradeButton = await screen.findByText('Downgrade Firmware')
+    const downgradeButton = await within(confirmDialog).findByText('Downgrade Firmware')
     await userEvent.click(downgradeButton)
-    const closeButton = await screen.findByText('Close')
+    const closeButton = await within(confirmDialog).findByText('Close')
     await userEvent.click(closeButton)
     await waitFor(() => expect(confirmDialog).not.toBeVisible())
   })

@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { defaultSort, sortProp, formattedPath }                                                              from '@acx-ui/analytics/utils'
@@ -94,7 +96,10 @@ function ZonesList () {
       )
     }
   ]
-  const count = results.data?.zones?.length ?? 0
+  const [count, setCount] = useState(0)
+  useEffect(() => {
+    Array.isArray(results.data?.zones) && setCount(results.data?.zones?.length!)
+  }, [results.data])
   return (
     <Loader states={[results]}>
       <PageHeader
@@ -107,6 +112,7 @@ function ZonesList () {
         pagination={pagination}
         settingsId='zonesList-table'
         rowKey='id'
+        onDisplayRowChange={(data) => setCount(data.length)}
       />
     </Loader>
   )

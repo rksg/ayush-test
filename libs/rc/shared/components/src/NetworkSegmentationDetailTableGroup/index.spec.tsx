@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { apApi, nsgApi, personaApi }                            from '@acx-ui/rc/services'
-import { CommonUrlsInfo, NetworkSegmentationUrls, PersonaUrls } from '@acx-ui/rc/utils'
-import { Provider, store }                                      from '@acx-ui/store'
-import { mockServer, render, screen }                           from '@acx-ui/test-utils'
+import { apApi, nsgApi, personaApi }                             from '@acx-ui/rc/services'
+import { CommonUrlsInfo, NetworkSegmentationUrls, PersonaUrls }  from '@acx-ui/rc/utils'
+import { Provider, store }                                       from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { mockedApList,
   mockedNsgData,
@@ -67,6 +67,7 @@ describe('NetworkSegmentationDetailTableGroup', () => {
       </Provider>
     )
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await screen.findByTestId('ApsTable')
     await user.click(await screen.findByRole('tab', { name: /Dist. Switches/i }))
     await screen.findByTestId('DistSwitchesTable')

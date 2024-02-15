@@ -61,9 +61,11 @@ const DevicePolicyComponent = () => {
     id: '', isEdit: false
   })
 
+  const settingsId = 'policies-access-control-device-policy-table'
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedDeviceProfileListQuery,
-    defaultPayload
+    defaultPayload,
+    pagination: { settingsId }
   })
 
   useEffect(() => {
@@ -117,12 +119,14 @@ const DevicePolicyComponent = () => {
   const rowActions: TableProps<DevicePolicy>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
+      visible: (selectedItems => selectedItems.length > 0),
       onClick: (rows, clearSelection) => {
         doDelete(rows, clearSelection)
       }
     },
     {
       label: $t({ defaultMessage: 'Edit' }),
+      visible: (selectedItems => selectedItems.length === 1),
       onClick: ([{ id }]) => {
         setEditMode({ id: id, isEdit: true })
       }
@@ -135,7 +139,7 @@ const DevicePolicyComponent = () => {
         onlyAddMode={addModeStatus}
       />
       <Table<DevicePolicy>
-        settingsId='policies-access-control-device-policy-table'
+        settingsId={settingsId}
         columns={useColumns(networkFilterOptions, editMode, setEditMode)}
         enableApiFilter={true}
         dataSource={tableQuery.data?.data}

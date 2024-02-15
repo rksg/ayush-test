@@ -63,9 +63,11 @@ const Layer3Component = () => {
     id: '', isEdit: false
   })
 
+  const settingsId = 'policies-access-control-layer3-table'
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedL3AclProfileListQuery,
-    defaultPayload
+    defaultPayload,
+    pagination: { settingsId }
   })
 
   useEffect(() => {
@@ -119,12 +121,14 @@ const Layer3Component = () => {
   const rowActions: TableProps<L3AclPolicy>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
+      visible: (selectedItems => selectedItems.length > 0),
       onClick: (rows, clearSelection) => {
         doDelete(rows, clearSelection)
       }
     },
     {
       label: $t({ defaultMessage: 'Edit' }),
+      visible: (selectedItems => selectedItems.length === 1),
       onClick: ([{ id }]) => {
         setEditMode({ id: id, isEdit: true })
       }
@@ -137,7 +141,7 @@ const Layer3Component = () => {
         onlyAddMode={addModeStatus}
       />
       <Table<L3AclPolicy>
-        settingsId='policies-access-control-layer3-table'
+        settingsId={settingsId}
         columns={useColumns(networkFilterOptions, editMode, setEditMode)}
         enableApiFilter={true}
         dataSource={tableQuery.data?.data}

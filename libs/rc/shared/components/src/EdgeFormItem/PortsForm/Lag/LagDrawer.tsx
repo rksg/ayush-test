@@ -41,7 +41,7 @@ const defaultFormValues = {
   corePortEnabled: false,
   ipMode: EdgeIpModeEnum.DHCP,
   natEnabled: false,
-  lagEnabled: false,
+  lagEnabled: true,
   lagMembers: []
 } as Partial<EdgeLag>
 
@@ -227,7 +227,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
   }
 
   const handlePortTypeChange = (changedValue: EdgePortTypeEnum | undefined) => {
-    if (changedValue === EdgePortTypeEnum.LAN) {
+    if (changedValue === EdgePortTypeEnum.LAN || changedValue === EdgePortTypeEnum.CLUSTER) {
       form.setFieldValue('ipMode', EdgeIpModeEnum.STATIC)
     }
   }
@@ -350,6 +350,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
                           // eslint-disable-next-line max-len
                           checked={lagMembers.find(member => member.portId === item.id)?.portEnabled ?? false}
                           onChange={(checked) => handlePortEnabled(item.id, checked)}
+                          disabled={!lagEnabled}
                         />}
                         noStyle
                       />

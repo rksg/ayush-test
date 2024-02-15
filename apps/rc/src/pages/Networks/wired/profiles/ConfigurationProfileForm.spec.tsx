@@ -37,7 +37,7 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate
 }))
-
+const mockedUpdateFn = jest.fn()
 describe('Wired', () => {
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
@@ -62,7 +62,10 @@ describe('Wired', () => {
         (_, res, ctx) => res(ctx.json({}))
       ),
       rest.put(SwitchUrlsInfo.updateSwitchConfigProfile.url,
-        (_, res, ctx) => res(ctx.json({}))
+        (_, res, ctx) => {
+          mockedUpdateFn()
+          return res(ctx.json({}))
+        }
       )
     )
   })
@@ -581,14 +584,15 @@ describe('Wired', () => {
         route: { params, path: '/:tenantId/t/networks/wired/profiles/regular/:profileId/:action' }
       })
 
-    expect(await screen.findByRole('button', { name: 'Trusted Ports' })).toBeInTheDocument()
-    await userEvent.click(await screen.findByRole('button', { name: 'Trusted Ports' }))
-    await screen.findByRole('heading', { level: 3, name: 'Trusted Ports' })
+    const trustedPortsButton = await screen.findByRole('button', { name: 'Trusted Ports' })
+    expect(trustedPortsButton).toBeInTheDocument()
+    await userEvent.click(trustedPortsButton)
 
     const row = await screen.findByRole('row', { name: /ICX7150-24/i })
-    await userEvent.click(await within(row).findByRole('radio'))
-    expect(await screen.findByRole('alert')).toBeInTheDocument()
+    expect(trustedPortsButton).toBeInTheDocument()
+    await userEvent.click(row)
     const alertbar = await screen.findByRole('alert')
+    expect(alertbar).toBeInTheDocument()
     await userEvent.click(await within(alertbar).findByText('Edit'))
     const trustedPortModal = await screen.findByTestId('trustedPortModal')
     expect(trustedPortModal).toBeVisible()
@@ -599,10 +603,10 @@ describe('Wired', () => {
     const optionValues = await screen.findAllByText('1/1/2')
     await userEvent.click(optionValues[1])
     const applyTrustedPortsButton =
-      await within(trustedPortModal).findByRole('button', { name: /Apply/i })
+      await within(trustedPortModal).findByText(/Apply/i)
     await userEvent.click(applyTrustedPortsButton)
 
-    const applyButton = await screen.findByRole('button', { name: /Apply/i })
+    const applyButton = await screen.findByText(/Apply/i)
     await userEvent.click(applyButton)
   })
 
@@ -634,29 +638,30 @@ describe('Wired', () => {
 
     expect(await screen.findByRole('button', { name: 'Voice VLAN' })).toBeInTheDocument()
     await userEvent.click(await screen.findByRole('button', { name: 'Voice VLAN' }))
-    await screen.findByRole('heading', { level: 3, name: 'Voice VLAN' })
+    const tab = await screen.findByTestId('voice-vlan')
+    within(tab).getByRole('heading', { level: 3, name: 'Voice VLAN' })
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Set Voice VLAN' }))
+    await userEvent.click(await within(tab).findByRole('button', { name: 'Set Voice VLAN' }))
     expect(await screen.findByRole('dialog')).toBeInTheDocument()
     const dialog1 = await screen.findByRole('dialog')
     const row = await within(dialog1).findByText(/13/)
     await userEvent.click(row)
-    expect(await screen.findByRole('alert')).toBeInTheDocument()
-    const alertbar = await screen.findByRole('alert')
+    expect(await within(dialog1).findByRole('alert')).toBeInTheDocument()
+    const alertbar = await within(dialog1).findByRole('alert')
     await userEvent.click(await within(alertbar).findByText('Edit'))
-    const setDialog = screen.getByRole('dialog', {
+    const setDialog = await screen.findByRole('dialog', {
       name: /set voice vlan/i
     })
     await userEvent.click(within(setDialog).getByRole('button', {
       name: /set/i
     }))
     await waitFor(async () => expect(setDialog).not.toBeVisible())
-    const dialog2 = screen.getByRole('dialog')
-    await userEvent.click(within(dialog2).getByRole('button', {
+    await userEvent.click(within(dialog1).getByRole('button', {
       name: /set/i
     }))
-    await waitFor(async () => expect(dialog2).not.toBeVisible())
+    await waitFor(async () => expect(dialog1).not.toBeVisible())
     const applyButton = await screen.findByRole('button', { name: /Apply/i })
     await userEvent.click(applyButton)
+    await waitFor(() => expect(mockedUpdateFn).toBeCalled())
   })
 })

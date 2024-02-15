@@ -85,6 +85,10 @@ export const getApVersion = (venue: FirmwareVenue): string | undefined => {
   return getApFieldInVersions(venue, 'version')
 }
 
+export const getApSequence = (venue: FirmwareVenue): number | undefined => {
+  return getApFieldInVersions(venue, 'sequence')
+}
+
 // eslint-disable-next-line max-len
 function getApFieldInVersions<T extends keyof FirmwareVenueVersion> (venue: FirmwareVenue, fieldName: T): FirmwareVenueVersion[T] | undefined {
   if (!venue.versions) {
@@ -276,4 +280,8 @@ export function getActiveApModels (selectedRows: FirmwareVenue[]): string[] {
   const activeApModels = selectedRows.flatMap(venue => extractActiveApModels(venue))
 
   return [...new Set(activeApModels)]
+}
+
+export function compareABFSequence (seq1: number = 0, seq2: number = 0): number {
+  return seq1 - seq2
 }

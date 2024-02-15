@@ -79,7 +79,7 @@ export default function FacebookSetting (props:{
       name={['guestPortal','socialIdentities','facebook','config','appSecret']}
       rules={[
         { required: true },
-        { max: 255 }
+        { max: 128 }
       ]}
       initialValue=''
       label={$t({ defaultMessage: 'App Secret' })}

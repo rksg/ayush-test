@@ -333,15 +333,15 @@ export function EditPortDrawer ({
     const taggedVlansByVenue = await getTaggedVlansByVenue({ params }, true).unwrap()
     const untaggedVlansByVenue = await getUntaggedVlansByVenue({ params }, true).unwrap()
 
-    const tagged = taggedVlansByVenue.map(taggedVlans => taggedVlans.vlanId).toString()
-    const untagged = untaggedVlansByVenue.map(untaggedVlan => untaggedVlan.vlanId).toString()
+    const tagged = taggedVlansByVenue?.map(taggedVlans => taggedVlans.vlanId)?.toString()
+    const untagged = untaggedVlansByVenue?.map(untaggedVlan => untaggedVlan.vlanId)?.toString()
 
     setEditPortData(portSetting)
     setDisablePoeCapability(getPoeCapabilityDisabled([portSetting]))
-    setUseVenueSettings(portSetting.revert)
-    setLldpQosList(portSetting.lldpQos || [])
-    setVenueTaggedVlans(taggedVlansByVenue.map(taggedVlans => taggedVlans.vlanId).toString())
-    setVenueUntaggedVlan(untaggedVlansByVenue.map(untaggedVlan => untaggedVlan.vlanId).toString())
+    setUseVenueSettings(portSetting?.revert)
+    setLldpQosList(portSetting?.lldpQos || [])
+    setVenueTaggedVlans(taggedVlansByVenue?.map(taggedVlans => taggedVlans.vlanId).toString())
+    setVenueUntaggedVlan(untaggedVlansByVenue?.map(untaggedVlan => untaggedVlan.vlanId).toString())
     setInitPortVlans(getInitPortVlans( [portSetting], defaultVlan ))
     setPortEditStatus(
       checkPortEditStatusLegacy(form, portSetting, portSetting?.revert, tagged, untagged))
@@ -477,7 +477,10 @@ export function EditPortDrawer ({
         name={`${field}Checkbox`}
         valuePropName='checked'
         initialValue={false}
-        children={<Checkbox disabled={getOverrideDisabled(field)} />}
+        children={<Checkbox
+          data-testid={`${field}-override-checkbox`}
+          disabled={getOverrideDisabled(field)}
+        />}
       />}
       { extraLabel && <UI.ExtraLabel>{ labelName }</UI.ExtraLabel> }
       { content }
@@ -796,7 +799,7 @@ export function EditPortDrawer ({
               name='portVlansCheckbox'
               valuePropName='checked'
               initialValue={false}
-              children={<Checkbox />}
+              children={<Checkbox data-testid='portVlans-override-checkbox' />}
             />
           </Space>}
           <div>

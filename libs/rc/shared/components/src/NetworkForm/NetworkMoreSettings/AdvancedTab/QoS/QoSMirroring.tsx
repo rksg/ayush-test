@@ -1,13 +1,18 @@
 /* eslint-disable max-len */
+import { useState } from 'react'
+
 import { Form, Select, Space, Switch } from 'antd'
 import { useWatch }                    from 'antd/lib/form/Form'
 import { get }                         from 'lodash'
 import { useIntl }                     from 'react-intl'
 
-import { Tooltip }         from '@acx-ui/components'
-import { NetworkSaveData } from '@acx-ui/rc/utils'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { NetworkSaveData }        from '@acx-ui/rc/utils'
+import { useParams }              from '@acx-ui/react-router-dom'
 
-import * as UI from '../../../NetworkMoreSettings/styledComponents'
+
+import { ApCompatibilityToolTip, ApCompatibilityDrawer, ApCompatibilityType, InCompatibilityFeatures } from '../../../../ApCompatibilityDrawer'
+import * as UI                                                                                         from '../../../NetworkMoreSettings/styledComponents'
 
 export enum QoSMirroringScope {
     MSCS_REQUESTS_ONLY = 'MSCS_REQUESTS_ONLY',
@@ -16,6 +21,7 @@ export enum QoSMirroringScope {
 
 function QoSMirroring ({ wlanData }: { wlanData: NetworkSaveData | null }) {
   const { $t } = useIntl()
+  const params = useParams()
   const qoSMirroringScopeOptions: {
         type: QoSMirroringScope
         label: string
@@ -39,7 +45,13 @@ function QoSMirroring ({ wlanData }: { wlanData: NetworkSaveData | null }) {
         message: $t({ defaultMessage: 'Mirroring for all clients connected to this Wi-Fi network.' })
       }
     ]
+  /* eslint-disable-next-line max-len */
+  const tooltipInfo = $t({ defaultMessage: `QoS mirroring duplicates network traffic to ensure
+  quality of service for specific multimedia clients or all clients on your Wi-Fi network.
+  Ensure that APs meet the minimum required version 7.0` })
+  const supportApCompatibleCheck = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
 
+  const [ drawerVisible, setDrawerVisible ] = useState(false)
   const [
     qosMirroringEnabled,
     qosMirroringScope
@@ -59,13 +71,10 @@ function QoSMirroring ({ wlanData }: { wlanData: NetworkSaveData | null }) {
       <UI.FieldLabel width='250px'>
         <Space>
           {$t({ defaultMessage: 'QoS Mirroring' })}
-          <Tooltip.Question
-            /* eslint-disable-next-line max-len */
-            title={$t({ defaultMessage: `QoS mirroring duplicates network traffic to ensure
-            quality of service for specific multimedia clients or all clients on your Wi-Fi network.
-            Ensure that APs meet the minimum required version 7.0` })}
-            placement='right'
-            iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+          <ApCompatibilityToolTip
+            title={tooltipInfo}
+            visible={supportApCompatibleCheck}
+            onClick={() => setDrawerVisible(true)}
           />
         </Space>
         <Form.Item
@@ -94,6 +103,15 @@ function QoSMirroring ({ wlanData }: { wlanData: NetworkSaveData | null }) {
                   />
                 }
               />
+      }
+      {supportApCompatibleCheck &&
+        <ApCompatibilityDrawer
+          visible={drawerVisible}
+          type={params.networkId?ApCompatibilityType.NETWORK:ApCompatibilityType.ALONE}
+          networkId={params.networkId}
+          featureName={InCompatibilityFeatures.QOS_MIRRORING}
+          onClose={() => setDrawerVisible(false)}
+        />
       }
     </>
   )

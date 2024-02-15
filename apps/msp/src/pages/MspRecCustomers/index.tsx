@@ -53,7 +53,8 @@ export function MspRecCustomers () {
   const isAssignMultipleEcEnabled = useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS)
      && isPrimeAdmin
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
-  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
+  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
+  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
   const MAX_ALLOWED_SELECTED_EC = 200
 
   const [ecTenantId, setTenantId] = useState('')
@@ -396,12 +397,14 @@ export function MspRecCustomers () {
     const [drawerAssignEcMspAdminsVisible, setDrawerAssignEcMspAdminsVisible] = useState(false)
     const [selEcTenantIds, setSelEcTenantIds] = useState([] as string[])
     const basePath = useTenantLink('/dashboard/mspRecCustomers/edit', 'v')
+    const settingsId = 'msp-customers-table'
     const tableQuery = useTableQuery({
       useQuery: useMspCustomerListQuery,
       defaultPayload: mspPayload,
       search: {
         searchTargetFields: mspPayload.searchTargetFields as string[]
-      }
+      },
+      pagination: { settingsId }
     })
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
@@ -454,7 +457,7 @@ export function MspRecCustomers () {
         tableQuery,
         { isLoading: false, isFetching: isDeleteEcUpdating }]}>
         <Table
-          settingsId='msp-customers-table'
+          settingsId={settingsId}
           columns={columns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -475,11 +478,15 @@ export function MspRecCustomers () {
   }
 
   const IntegratorTable = () => {
+    const settingsId = 'integrator-customers-table'
     const tableQuery = useTableQuery({
       useQuery: useIntegratorCustomerListQuery,
       defaultPayload: integratorPayload,
       search: {
         searchTargetFields: integratorPayload.searchTargetFields as string[]
+      },
+      pagination: {
+        settingsId: 'integrator-customers-table'
       }
     })
 
@@ -488,7 +495,7 @@ export function MspRecCustomers () {
         tableQuery,
         { isLoading: false }]}>
         <Table
-          settingsId='integrator-customers-table'
+          settingsId={settingsId}
           columns={columns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -501,12 +508,14 @@ export function MspRecCustomers () {
   }
 
   const SupportEcTable = () => {
+    const settingsId = 'support-ec-table'
     const tableQuery = useTableQuery({
       useQuery: useSupportMspCustomerListQuery,
       defaultPayload: supportPayload,
       search: {
         searchTargetFields: supportPayload.searchTargetFields as string[]
-      }
+      },
+      pagination: { settingsId }
     })
 
     return (
@@ -514,7 +523,7 @@ export function MspRecCustomers () {
         tableQuery,
         { isLoading: false }]}>
         <Table
-          settingsId='support-ec-table'
+          settingsId={settingsId}
           columns={columns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

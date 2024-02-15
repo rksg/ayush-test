@@ -1,14 +1,13 @@
-import { waitFor } from '@testing-library/react'
-import userEvent   from '@testing-library/user-event'
-import { rest }    from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import {
   MacRegListUrlsInfo,
   NewPersonaBaseUrl,
   PersonaUrls
 } from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { Provider }                            from '@acx-ui/store'
+import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import {
   mockPersonaTableResult,

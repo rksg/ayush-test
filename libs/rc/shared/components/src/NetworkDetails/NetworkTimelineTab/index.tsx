@@ -20,9 +20,14 @@ import {
 
 const Events = () => {
   const { networkId } = useParams()
-  const tableQuery = useEventsTableQuery({ networkId: [networkId] })
+  const settingsId = 'network-event-table'
+  const tableQuery = useEventsTableQuery(
+    { networkId: [networkId] },
+    undefined,
+    { settingsId }
+  )
   return <EventTable
-    settingsId='network-event-table'
+    settingsId={settingsId}
     tableQuery={tableQuery}
     filterables={['severity', 'entity_type']}
     eventTypeMap={omit(eventTypeMapping, ['SWITCH', 'EDGE'])}
@@ -32,10 +37,14 @@ const Events = () => {
 
 const Activities = () => {
   const { networkId } = useParams()
-  const tableQuery = useActivityTableQuery({ entityType: 'NETWORK', entityId: networkId! })
+  const settingsId = 'network-activity-table'
+  const tableQuery = useActivityTableQuery(
+    { entityType: 'NETWORK', entityId: networkId! },
+    { settingsId }
+  )
 
   return <ActivityTable
-    settingsId='network-activity-table'
+    settingsId={settingsId}
     tableQuery={tableQuery}
     filterables={['status']}
     columnState={activityTableColumnState}

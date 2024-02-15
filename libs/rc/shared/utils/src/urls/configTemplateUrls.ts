@@ -3,7 +3,7 @@ import { ApiInfo } from '@acx-ui/utils'
 export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getConfigTemplates: {
     method: 'post',
-    url: '/templates',
+    url: '/templates/query',
     newApi: true
   },
   applyConfigTemplate: {
@@ -13,27 +13,27 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   },
   addNetworkTemplate: {
     method: 'post',
-    url: '/templates/wifiNetworks',
+    url: '/templates/networks',
     newApi: true
   },
   updateNetworkTemplate: {
     method: 'put',
-    url: '/templates/wifiNetworks/:networkId',
+    url: '/templates/networks/:networkId',
     newApi: true
   },
   getNetworkTemplate: {
     method: 'get',
-    url: '/templates/wifiNetworks/:networkId',
+    url: '/templates/networks/:networkId',
     newApi: true
   },
   deleteNetworkTemplate: {
     method: 'delete',
-    url: '/templates/wifiNetworks/:templateId',
+    url: '/templates/networks/:templateId',
     newApi: true
   },
   getNetworkTemplateList: {
     method: 'post',
-    url: '/templates/wifiNetworks/query',
+    url: '/templates/networks/query',
     newApi: true
   },
   addAAAPolicyTemplate: {
@@ -59,6 +59,31 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getAAAPolicyTemplateList: {
     method: 'post',
     url: '/templates/radiusServerProfiles/query',
+    newApi: true
+  },
+  addVenueTemplate: {
+    method: 'post',
+    url: '/templates/venues',
+    newApi: true
+  },
+  deleteVenueTemplate: {
+    method: 'delete',
+    url: '/templates/venues/:templateId',
+    newApi: true
+  },
+  updateVenueTemplate: {
+    method: 'put',
+    url: '/templates/venues/:venueId',
+    newApi: true
+  },
+  getVenueTemplate: {
+    method: 'get',
+    url: '/templates/venues/:venueId',
+    newApi: true
+  },
+  getVenuesTemplateList: {
+    method: 'post',
+    url: '/templates/venues/query',
     newApi: true
   }
 }
