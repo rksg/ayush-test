@@ -48,8 +48,8 @@ const getFileExtension = (fileName: string) => {
 }
 
 const wrapFileName = (fileName: string | undefined) => fileName
-  ? <Typography.Text ellipsis>
-    <FileTextOutlined />
+  ? <Typography.Text ellipsis style={{ width: 200 }}>
+    <FileTextOutlined/>
     {fileName}
   </Typography.Text>
   : null
