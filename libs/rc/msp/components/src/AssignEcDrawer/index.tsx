@@ -221,7 +221,8 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
   <Form layout='vertical' form={form} onFinish={onClose}>
     {tenantId && <div>
       <Subtitle level={4}>{$t({ defaultMessage: 'Access Period' })}</Subtitle>
-      {tenantType === AccountType.MSP_INTEGRATOR && <label>Not Limited</label>}
+      {tenantType === AccountType.MSP_INTEGRATOR && <label>
+        {$t({ defaultMessage: 'Not Limited (Integrator)' })}</label>}
       {tenantType === AccountType.MSP_INSTALLER && <UI.FieldLabelAccessPeriod width='275px'>
         <label>{$t({ defaultMessage: 'Limited To' })}</label>
         <Form.Item
@@ -240,7 +241,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
           children={<Input type='number'/>}
           style={{ marginLeft: '10px', paddingRight: '20px' }}
         />
-        <label>{$t({ defaultMessage: 'Day(s)' })}</label>
+        <label>{$t({ defaultMessage: 'Day(s) (Installer)' })}</label>
       </UI.FieldLabelAccessPeriod>}</div>}
 
 
