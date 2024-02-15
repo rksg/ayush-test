@@ -22,7 +22,7 @@ import {
   useTenantLink
 } from '@acx-ui/react-router-dom'
 
-import RoleSelector from '../../Administrators/AdministratorsTable/AddAdministratorDialog/RoleSelector'
+import CustomRoleSelector from '../CustomRoles/CustomRoleSelector'
 
 const AdministrationTabs = () => {
   const { $t } = useIntl()
@@ -57,7 +57,8 @@ const AdministrationTabs = () => {
 interface PrivilegeGroupData {
   name?: string,
   description?: string,
-  roleName?: string
+  roleName?: string,
+  delegation?: boolean
 }
 
 export function EditPrivilegeGroup () {
@@ -80,7 +81,8 @@ export function EditPrivilegeGroup () {
       const privilegeGroupData: PrivilegeGroupData = {
         name: formValues.name,
         description: formValues.description,
-        roleName: formValues.role
+        roleName: formValues.role,
+        delegation: false
       }
       await updatePrivilegeGroup({ params: { privilegeGroupId: groupId },
         payload: privilegeGroupData }).unwrap()
@@ -93,6 +95,7 @@ export function EditPrivilegeGroup () {
 
   form.setFieldValue('name', location.name)
   form.setFieldValue('description', location?.description)
+  form.setFieldValue('role', location?.roleName)
 
   const PrivilegeGroupForm = () => {
     return <StepsForm
@@ -125,7 +128,7 @@ export function EditPrivilegeGroup () {
               ]}
               children={<Input />}
             />
-            <RoleSelector />
+            <CustomRoleSelector />
             <Form.Item
               name='ownscope'
               label={intl.$t({ defaultMessage: 'Scope' })}

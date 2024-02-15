@@ -257,6 +257,11 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/roleAuthentications/customRoles/:customRoleId',
     newApi: true
   },
+  deleteCustomRole: {
+    method: 'delete',
+    url: '/roleAuthentications/customRoles/:customRoleId',
+    newApi: true
+  },
   getPrivilegeGroups: {
     method: 'get',
     url: '/roleAuthentications/privilegeGroups',

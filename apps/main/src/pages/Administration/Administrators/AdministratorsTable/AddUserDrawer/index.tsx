@@ -22,6 +22,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
+import PrivilegeGroupSelector                              from '../../../UserPrivileges/PrivilegeGroups/PrivilegeGroupSelector'
 import AuthenticationSelector, { AuthTypeRadioButtonEnum } from '../AddAdministratorDialog/AuthenticationSelector'
 import MspCustomerSelector, { ECCustomerRadioButtonEnum }  from '../AddAdministratorDialog/MspCustomersSelector'
 
@@ -239,19 +240,7 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
           </div>}
 
         {isAbacToggleEnabled
-          ? <Form.Item
-            name='role'
-            style={{ marginTop: '13px' }}
-            label={$t({ defaultMessage: 'Privilege Group' })}
-            rules={[
-              { required: true }
-            ]}
-          >
-            <Select
-              options={rolesList}
-              placeholder={$t({ defaultMessage: 'Select...' })}
-            />
-          </Form.Item>
+          ? <PrivilegeGroupSelector />
           : <Form.Item
             name='role'
             style={{ marginTop: '13px' }}

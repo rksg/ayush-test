@@ -148,7 +148,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
             numOfEntities: rows.length
           },
           onOk: () => {
-            deletePrivilegeGroup({ params, payload: rows.map(item => item.id) })
+            deletePrivilegeGroup({ params: { ...params, privilegeGroupId: rows[0].id } })
               .then(clearSelection)
           }
         })

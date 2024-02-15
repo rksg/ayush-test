@@ -659,7 +659,20 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Administration', id: 'ADMINGROUP_LIST' }]
+      providesTags: [{ type: 'Administration', id: 'CUSTOMROLE_LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'addCustomRole',
+            'updateCustomRole',
+            'deleteCustomRole'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'Administration', id: 'CUSTOMROLE_LIST' }
+            ]))
+          })
+        })
+      }
     }),
     addCustomRole: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -696,7 +709,20 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Administration', id: 'ADMINGROUP_LIST' }]
+      providesTags: [{ type: 'Administration', id: 'PRIVILEGEGROUP_LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'addPrivilegeGroup',
+            'updatePrivilegeGroup',
+            'deletePrivilegeGroup'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'Administration', id: 'PRIVILEGEGROUP_LIST' }
+            ]))
+          })
+        })
+      }
     }),
     addPrivilegeGroup: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {

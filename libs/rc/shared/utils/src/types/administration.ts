@@ -265,10 +265,11 @@ export interface CustomRole {
   id?: string,
   name?: RolesEnum,
   description?: string,
-  roleType?: string,
+  type?: string,
   frameworkRO?: boolean,
   createdDate?: string,
-  updatedDate?: string
+  updatedDate?: string,
+  scopes?: string[]
 }
 
 export interface AdminGroupLastLogins {

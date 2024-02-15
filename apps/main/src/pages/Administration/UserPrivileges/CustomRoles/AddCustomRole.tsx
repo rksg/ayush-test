@@ -29,7 +29,8 @@ import PermissionSelector from './PermissionSelector'
 
 interface CustomRoleData {
   name?: string,
-  description?: string
+  description?: string,
+  scopes?: string[]
 }
 
 export function AddCustomRole () {
@@ -52,7 +53,11 @@ export function AddCustomRole () {
       await form.validateFields()
       const roleData: CustomRoleData = {
         name: name,
-        description: description
+        description: description,
+        scopes: [
+          'wifi-profile-u',
+          'wifi-profile-r'
+        ]
       }
       if(isEditMode) {
         await updateCustomRole({ params: { customRoleId: customRoleId },

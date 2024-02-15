@@ -29,7 +29,7 @@ import {
   useTenantLink
 } from '@acx-ui/react-router-dom'
 
-import RoleSelector from '../../Administrators/AdministratorsTable/AddAdministratorDialog/RoleSelector'
+import CustomRoleSelector from '../CustomRoles/CustomRoleSelector'
 
 import { SelectCustomerDrawer } from './SelectCustomerDrawer'
 import { SelectVenuesDrawer }   from './SelectVenuesDrawer'
@@ -241,7 +241,7 @@ export function AddPrivilegeGroup () {
               ]}
               children={<Input />}
             />
-            <RoleSelector />
+            <CustomRoleSelector />
             {isOnboardedMsp ? <MspScopeForm /> : <ScopeForm />}
           </Col>
         </Row>

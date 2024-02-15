@@ -64,8 +64,8 @@ const CustomRoles = (props: CustomRolesTableProps) => {
     },
     {
       title: $t({ defaultMessage: 'Role Type' }),
-      key: 'roleType',
-      dataIndex: 'roleType'
+      key: 'type',
+      dataIndex: 'type'
     }
   ]
 
@@ -73,7 +73,7 @@ const CustomRoles = (props: CustomRolesTableProps) => {
     {
       label: $t({ defaultMessage: 'View' }),
       visible: (selectedRows) => {
-        return (selectedRows.length === 1 && selectedRows[0].roleType === CustomGroupType.SYSTEM)
+        return (selectedRows.length === 1 && selectedRows[0].type === CustomGroupType.SYSTEM)
       },
       onClick: (selectedRows) => {
         navigate({
@@ -85,7 +85,7 @@ const CustomRoles = (props: CustomRolesTableProps) => {
     {
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows) => {
-        return (selectedRows.length === 1 && selectedRows[0].roleType !== CustomGroupType.SYSTEM)
+        return (selectedRows.length === 1 && selectedRows[0].type !== CustomGroupType.SYSTEM)
       },
       onClick: (selectedRows) => {
         // show edit dialog
@@ -112,7 +112,7 @@ const CustomRoles = (props: CustomRolesTableProps) => {
     {
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedRows) => {
-        return (selectedRows.length === 1 && selectedRows[0].roleType !== 'System')
+        return (selectedRows.length === 1 && selectedRows[0].type !== CustomGroupType.SYSTEM)
       },
       onClick: (rows, clearSelection) => {
         showActionModal({
@@ -126,7 +126,7 @@ const CustomRoles = (props: CustomRolesTableProps) => {
             numOfEntities: rows.length
           },
           onOk: () => {
-            deleteCustomRole({ params, payload: rows.map(item => item.id) })
+            deleteCustomRole({ params: { ...params, customRoleId: rows[0].id } })
               .then(clearSelection)
             clearSelection()
           }

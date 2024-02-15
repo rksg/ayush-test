@@ -7,7 +7,7 @@ import {
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Drawer, Select }       from '@acx-ui/components'
+import { Drawer }               from '@acx-ui/components'
 import {
   useGetMspEcAdminQuery,
   useUpdateMspEcAdminMutation
@@ -16,9 +16,11 @@ import {
   useUpdateAdminMutation
 } from '@acx-ui/rc/services'
 import {
-  Administrator, getRoles
+  Administrator
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
+
+import PrivilegeGroupSelector from '../../../UserPrivileges/PrivilegeGroups/PrivilegeGroupSelector'
 
 interface EditUserDrawerProps {
   visible: boolean;
@@ -107,10 +109,6 @@ const EditUserDrawer = (props: EditUserDrawerProps) => {
 
   // only msp ec can edit name
   const isNameEditable = (isMspEc && isError === false && !_.isEmpty(mspEcAdmin)) ? true : false
-  const rolesList = getRoles().map((item) => ({
-    label: $t(item.label),
-    value: item.value
-  }))
 
   return (
     <Drawer
@@ -180,21 +178,7 @@ const EditUserDrawer = (props: EditUserDrawerProps) => {
         >
           {editData.email}
         </Form.Item>
-
-        <Form.Item
-          name='role'
-          style={{ marginTop: '13px' }}
-          label={$t({ defaultMessage: 'Privilege Group' })}
-          // disabled={editNameOnly === true}
-          rules={[
-            { required: true }
-          ]}
-        >
-          <Select
-            options={rolesList}
-            placeholder={$t({ defaultMessage: 'Select...' })}
-          />
-        </Form.Item>
+        <PrivilegeGroupSelector disabled={true} />
       </Form>
     </Drawer>
   )

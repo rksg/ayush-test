@@ -1,5 +1,5 @@
-import { Form, Input, Select } from 'antd'
-import { useIntl }             from 'react-intl'
+import { Form, Input } from 'antd'
+import { useIntl }     from 'react-intl'
 
 import { Drawer }                from '@acx-ui/components'
 import {
@@ -7,10 +7,11 @@ import {
   useUpdateAdminGroupsMutation
 } from '@acx-ui/rc/services'
 import {
-  getRoles,
   AdminGroup
 } from '@acx-ui/rc/utils'
 import { RolesEnum } from '@acx-ui/types'
+
+import PrivilegeGroupSelector from '../PrivilegeGroups/PrivilegeGroupSelector'
 
 interface AddGroupDrawerProps {
   visible: boolean
@@ -67,11 +68,6 @@ export const AddSsoGroupDrawer = (props: AddGroupDrawerProps) => {
     }
   }
 
-  const rolesList = getRoles().map((item) => ({
-    label: $t(item.label),
-    value: item.value
-  }))
-
   const formContent = <Form layout='vertical'form={form} >
     {isEditMode ?
       <Form.Item label={$t({ defaultMessage: 'Group Name' })}>
@@ -101,20 +97,7 @@ export const AddSsoGroupDrawer = (props: AddGroupDrawerProps) => {
         ]}
         children={<Input />}
       />}
-    <Form.Item
-      name='role'
-      style={{ marginTop: '13px' }}
-      label={$t({ defaultMessage: 'Privilege Group' })}
-      initialValue={editData?.role || ''}
-      rules={[
-        { required: true }
-      ]}
-    >
-      <Select
-        options={rolesList}
-        placeholder={$t({ defaultMessage: 'Select...' })}
-      />
-    </Form.Item>
+    <PrivilegeGroupSelector />
   </Form>
 
   return (
