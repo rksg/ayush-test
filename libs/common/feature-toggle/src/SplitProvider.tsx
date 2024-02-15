@@ -50,7 +50,7 @@ function SplitProvider (props: Readonly<{ children: React.ReactElement }>) {
         {({ isReady }) => isReady
           // bug in splitio: https://github.com/splitio/react-client/issues/13
           ? /* istanbul ignore next */ props.children
-          : null}
+          : props.children}
       </SplitTreatments>
     </SplitFactory>
   ) : null
