@@ -21,7 +21,8 @@ import {
   SwitchTable,
   getSwitchModel,
   checkVersionAtLeast09010h,
-  SwitchViewModel
+  SwitchViewModel,
+  convertInputToUppercase
 } from '@acx-ui/rc/utils'
 import {
   useParams
@@ -126,10 +127,6 @@ function AddMemberForm (props: DefaultVlanFormProps) {
 
   const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
 
-  const handelSerialNumberInput = (e: React.FormEvent<HTMLInputElement>) => {
-    (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.toUpperCase()
-  }
-
   const columns: TableProps<SwitchTable>['columns'] = [
     {
       title: $t({ defaultMessage: 'Serial Number' }),
@@ -155,7 +152,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
         ><Input
             data-testid={`serialNumber${row.key}`}
             onBlur={() => handleChange(row, index)}
-            onInput={handelSerialNumberInput}
+            onInput={convertInputToUppercase}
             disabled={row.disabled}
           />
         </Form.Item>)

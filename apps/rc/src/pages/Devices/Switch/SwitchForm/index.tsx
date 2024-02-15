@@ -41,7 +41,8 @@ import {
   redirectPreviousPage,
   LocationExtended,
   VenueMessages,
-  checkVersionAtLeast09010h
+  checkVersionAtLeast09010h,
+  convertInputToUppercase
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -376,10 +377,6 @@ export function SwitchForm () {
     }
   }
 
-  const handelSerialNumberInput = (e: React.FormEvent<HTMLInputElement>) => {
-    (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.toUpperCase()
-  }
-
   return <>
     <PageHeader
       title={editMode ?
@@ -453,7 +450,7 @@ export function SwitchForm () {
                   children={
                     <Input
                       disabled={readOnly || editMode}
-                      onInput={handelSerialNumberInput}
+                      onInput={convertInputToUppercase}
                       onBlur={() => handleChangeSerialNumber(editMode ? 'serialNumber' : 'id')}
                     />
                   }
