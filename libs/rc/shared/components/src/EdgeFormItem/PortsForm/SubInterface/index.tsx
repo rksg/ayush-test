@@ -60,6 +60,7 @@ const SubInterface = (props: SubInterfaceProps) => {
                   currentTab={currentTab}
                   ip={item.statusIp}
                   mac={item.mac}
+                  portId={item.id}
                 />
               }
               disabled={item.isLagPort}
