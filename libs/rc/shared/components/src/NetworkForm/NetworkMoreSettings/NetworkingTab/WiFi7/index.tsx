@@ -387,11 +387,11 @@ function WiFi7 () {
                 <Space>
                   {$t({ defaultMessage: 'Enable Multi-Link operation (MLO)' })}
                   <Tooltip.Question
-                    title={$t({ defaultMessage: `This feature allows a Wi-Fi 7 device to
-            utilize multiple radio channels concurrently,
-            for better throughput and increased network efficiency.
-            Most relevant in high-density environments.
-            The radios for MLO need to be active on APs` })}
+                    title={$t({ defaultMessage: `Allows Wi-Fi 7 devices to utilize multiple radio channels simultaneously.
+                      Increases network efficiency and better throughput.
+                      Most relevant in high-density environments. To enable, radios for MLO must be active on APs.
+                      Stays disabled when Wi-Fi Network is configured for DPSK3` })
+                    }
                     placement='right'
                     iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
                   />
