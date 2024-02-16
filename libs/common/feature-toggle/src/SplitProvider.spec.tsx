@@ -10,10 +10,29 @@ import { useIsTierAllowed } from './useIsTierAllowed'
 let split = require('@splitsoftware/splitio-react')
 
 const services = require('@acx-ui/rc/services')
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services')
+}))
+
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user')
+}))
 
 const tenantAccountTierMock = {
   acx_account_tier: 'Gold'
 }
+
+jest.mock('@acx-ui/analytics/utils', () => (
+  {
+    ...jest.requireActual('@acx-ui/analytics/utils'),
+    getUserProfile: jest.fn()
+  }))
+
+jest.mock('@splitsoftware/splitio-react', () => (
+  {
+    ...jest.requireActual('@splitsoftware/splitio-react'),
+    useTreatments: jest.fn()
+  }))
 
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
@@ -23,7 +42,6 @@ jest.mock('@acx-ui/user', () => ({
 }))
 
 jest.mock('@acx-ui/analytics/utils', () => ({
-  ...jest.requireActual('@acx-ui/analytics/utils'),
   getUserProfile: () => ({
     accountId: 'mockedAccountId'
   })
@@ -34,9 +52,12 @@ jest.mock('@acx-ui/rc/utils', () => ({
   isDelegationMode: jest.fn().mockReturnValue(false)
 }))
 
+jest.mock('@splitsoftware/splitio-react', () => ({
+  useTreatments: jest.fn()
+}))
+
 const splitProxyEndpoint = 'https://splitproxy.dev.ruckus.cloud/api'
 jest.mock('@splitsoftware/splitio-react', () => ({
-  ...jest.requireActual('@splitsoftware/splitio-react'),
   useTreatments: (splitNames: string[], attributes: { params: '1234test' }) => {
     const treatments: Record<string, Object> = {}
     if (attributes) {
@@ -52,8 +73,7 @@ jest.mock('@splitsoftware/splitio-react', () => ({
       })
       return treatments
     } else return { treatment: 'control', config: '' }
-  },
-  SplitSdk: jest.fn((args) => jest.requireActual('@splitsoftware/splitio-react').SplitSdk(args))
+  }
 }))
 
 function TestSplitProvider (props: { tenant: string, IS_MLISA_SA: string,
@@ -62,7 +82,7 @@ function TestSplitProvider (props: { tenant: string, IS_MLISA_SA: string,
   jest.doMock('@acx-ui/config', () => ({
     get: jest.fn().mockImplementation(name => {
       switch(name) {
-        case 'SPLIT_IO_KEY': return 'localhost'
+        case 'SPLIT_IO_KEY': return '0123456789'
         case 'SPLIT_PROXY_ENDPOINT': return props.SPLIT_PROXY_ENDPOINT
         default: return props.IS_MLISA_SA
       }
@@ -74,13 +94,13 @@ function TestSplitProvider (props: { tenant: string, IS_MLISA_SA: string,
   jest.doMock('react-router-dom', () => ({
     useParams: () => ({ tenantId: props.tenant })
   }))
+  jest.doMock('@splitsoftware/splitio-react', () => ({
+    SplitFactory: jest.fn().mockImplementation(() => 'rendered'),
+    SplitSdk: jest.fn().mockImplementation(() => 'factory1')
+  }))
   split = require('@splitsoftware/splitio-react')
   const { SplitProvider } = require('./SplitProvider')
-  return <div>
-    <SplitProvider>
-      <div>child1</div>
-    </SplitProvider>
-  </div>
+  return <div>{SplitProvider({ children: 'child1' })}</div>
 }
 
 describe('SplitProvider', () => {
@@ -95,28 +115,32 @@ describe('SplitProvider', () => {
     render(<TestSplitProvider IS_MLISA_SA=''
       tenant={tenant}
       SPLIT_PROXY_ENDPOINT={splitProxyEndpoint} />)
+    await screen.findByText('rendered')
     expect(split.SplitSdk).toHaveBeenCalledWith({
       scheduler: { featuresRefreshRate: 30 },
-      core: { authorizationKey: 'localhost', key: tenant },
+      core: { authorizationKey: '0123456789', key: tenant },
       urls: {
         auth: 'https://splitproxy.dev.ruckus.cloud/api',
         events: 'https://splitproxy.dev.ruckus.cloud/api',
         sdk: 'https://splitproxy.dev.ruckus.cloud/api'
       },
-      storage: { type: 'LOCALSTORAGE', prefix: 'ACX-local' },
+      storage: { type: 'LOCALSTORAGE', prefix: 'ACX-01234' },
       debug: false
     })
+    expect(split.SplitFactory).toHaveBeenCalledWith({ children: 'child1', factory: 'factory1' }, {})
   })
   it('provides for RA', async () => {
     render(<TestSplitProvider IS_MLISA_SA='true'
       tenant='0015000000GlI7SAAV'
       SPLIT_PROXY_ENDPOINT={''} />)
+    await screen.findByText('rendered')
     expect(split.SplitSdk).toHaveBeenCalledWith({
       scheduler: { featuresRefreshRate: 30 },
-      core: { authorizationKey: 'localhost', key: '0015000000GlI7SAAV' },
-      storage: { type: 'LOCALSTORAGE', prefix: 'MLISA-local' },
+      core: { authorizationKey: '0123456789', key: '0015000000GlI7SAAV' },
+      storage: { type: 'LOCALSTORAGE', prefix: 'MLISA-01234' },
       debug: false
     })
+    expect(split.SplitFactory).toHaveBeenCalledWith({ children: 'child1', factory: 'factory1' }, {})
   })
 })
 
