@@ -23,7 +23,7 @@ describe('ClientTroubleshootingTab', () => {
         client: {
           connectionDetailsByAp,
           connectionEvents,
-          connectionQualities,
+          connectionQualities
         }
       }
     })
