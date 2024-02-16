@@ -243,6 +243,7 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
               row: DraggableRow
             }
           }}
+          data-testid='AdminGroupTable'
         />
       </DndProvider>
       {showDialog && <AddSsoGroupDrawer

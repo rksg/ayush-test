@@ -161,6 +161,7 @@ const CustomRoles = (props: CustomRolesTableProps) => {
           // onSelect: handleRowSelectChange
         } : undefined}
         actions={filterByAccess(tableActions)}
+        data-testid='CustomRoleTable'
       />
     </Loader>
   )
