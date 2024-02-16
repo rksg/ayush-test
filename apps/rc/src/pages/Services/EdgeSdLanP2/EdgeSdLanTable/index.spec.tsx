@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 
 import { EdgeUrlsInfo, ServiceOperation, ServiceType, getServiceDetailsLink, CommonUrlsInfo, EdgeSdLanUrls, EdgeGeneralFixtures, EdgeSdLanFixtures } from '@acx-ui/rc/utils'
 import { Provider }                                                                                                                                  from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved, within }                                                                             from '@acx-ui/test-utils'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within }                                                                    from '@acx-ui/test-utils'
 
 import EdgeSdLanTable from '.'
 
@@ -67,8 +67,8 @@ describe('SD-LAN Table P2', () => {
     )
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByRole('columnheader', { name: 'Cluster' })
-    // await waitFor(() => expect(mockedGetEdgeList).toBeCalled())
+    screen.getByRole('columnheader', { name: 'Cluster' })
+    await waitFor(() => expect(mockedGetEdgeList).toBeCalled())
     const rows = await screen.findAllByRole('row', { name: /Mocked_SDLAN_/i })
     expect(rows.length).toBe(2)
     await screen.findByRole('row', { name: /Smart Edge 3/i })
@@ -76,6 +76,20 @@ describe('SD-LAN Table P2', () => {
     expect(rows[0]).toHaveTextContent(/Mocked_SDLAN_1\s*Mocked-Venue-1\s*vSE-b490\s*Smart Edge 3\s*1\s*Mocked_tunnel-1\s*Mocked_tunnel-3\s*Poor/)
     // eslint-disable-next-line max-len
     expect(rows[1]).toHaveTextContent(/Mocked_SDLAN_2\s*Mocked-Venue-2\s*vSE-b466\s*0\s*Mocked_tunnel-1\s*Good/)
+  })
+
+  it('should display network names when hover', async () => {
+    render(
+      <Provider>
+        <EdgeSdLanTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/services/edgeSdLanP2/list' }
+      }
+    )
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    const rows = await screen.findAllByRole('row', { name: /Mocked_SDLAN_/i })
+    expect(rows.length).toBe(2)
 
     const networkNumStr = await screen.findByTestId('network-names-mocked-sd-lan-1')
     await hover(networkNumStr)
