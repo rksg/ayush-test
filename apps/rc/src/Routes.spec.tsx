@@ -185,7 +185,7 @@ jest.mock('./pages/Users/Persona/PersonaGroupDetails', () => () => {
   return <div data-testid='PersonaGroupDetails' />
 })
 
-jest.mock('./pages/Policies/AccessControl/AccessControlDetail', () => () => {
+jest.mock('../../../libs/rc/msp/components/src/AccessControl/AccessControlDetail', () => () => {
   return <div data-testid='AccessControlDetail' />
 })
 
