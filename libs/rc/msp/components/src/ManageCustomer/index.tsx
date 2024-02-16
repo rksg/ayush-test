@@ -799,10 +799,10 @@ export function ManageCustomer () {
         content: modalContent,
         okText: intl.$t({ defaultMessage: 'Save' }),
         onCancel: () => {
-          if (tier.target.value === MspEcTierEnum.Essential) {
+          if (tier.target.value === MspEcTierEnum.Essentials) {
             formRef.current?.setFieldValue('tier', MspEcTierEnum.Professional)
           } else {
-            formRef.current?.setFieldValue('tier', MspEcTierEnum.Essential)
+            formRef.current?.setFieldValue('tier', MspEcTierEnum.Essentials)
           }
         }
       })
@@ -815,7 +815,6 @@ export function ManageCustomer () {
       label={intl.$t({ defaultMessage: 'Service Tier' })}
       style={{ width: '300px' }}
       rules={[{ required: true }]}
-      initialValue={MspEcTierEnum.Professional}
       children={
         <Radio.Group>
           <Space direction='vertical'>
