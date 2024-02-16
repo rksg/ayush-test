@@ -1,5 +1,6 @@
 import { PageNotFound }                             from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { AccessControlDetail, AccessControlTable }  from '@acx-ui/msp/components'
 import {
   RogueAPDetectionDetailView,
   RogueAPDetectionForm,
@@ -56,8 +57,6 @@ import { ConfigurationProfileForm }                 from './pages/Networks/wired
 import { NetworksList, NetworkTabsEnum }            from './pages/Networks/wireless'
 import NetworkDetails                               from './pages/Networks/wireless/NetworkDetails'
 import AAATable                                     from './pages/Policies/AAA/AAATable/AAATable'
-import AccessControlDetail                          from '../../../libs/rc/msp/components/src/AccessControl/AccessControlDetail'
-import AccessControlTable                           from '../../../libs/rc/msp/components/src/AccessControl/AccessControlTable/AccessControlTable'
 import AdaptivePolicyList, { AdaptivePolicyTabKey } from './pages/Policies/AdaptivePolicy'
 import AdaptivePolicyDetail                         from './pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyDetail/AdaptivePolicyDetail'
 import AdaptivePolicyForm                           from './pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyForm/AdaptivePolicyForm'

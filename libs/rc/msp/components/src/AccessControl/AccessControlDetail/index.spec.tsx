@@ -8,7 +8,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import AccessControlDetail from './index'
+import { AccessControlDetail } from './index'
 
 const aclDetail = {
   l3AclPolicy: {

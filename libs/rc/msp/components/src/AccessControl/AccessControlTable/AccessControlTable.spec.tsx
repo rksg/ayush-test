@@ -29,7 +29,7 @@ import {
   networkListResponse, queryApplication
 } from '../__tests__/fixtures'
 
-import AccessControlTable from './AccessControlTable'
+import { AccessControlTable } from './AccessControlTable'
 
 const mockTableResult = {
   totalCount: 1,

@@ -185,9 +185,10 @@ jest.mock('./pages/Users/Persona/PersonaGroupDetails', () => () => {
   return <div data-testid='PersonaGroupDetails' />
 })
 
-jest.mock('../../../libs/rc/msp/components/src/AccessControl/AccessControlDetail', () => () => {
-  return <div data-testid='AccessControlDetail' />
-})
+jest.mock('@acx-ui/msp/components', () => ({
+  ...jest.requireActual('@acx-ui/msp/components'),
+  AccessControlDetail: () => <div data-testid='AccessControlDetail' />
+}))
 
 jest.mock('./pages/Policies/MacRegistrationList/MacRegistrarionListTable', () => () => {
   return <div data-testid='MacRegistrationListsTable' />
