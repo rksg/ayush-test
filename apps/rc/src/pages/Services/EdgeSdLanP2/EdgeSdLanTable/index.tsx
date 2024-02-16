@@ -16,7 +16,7 @@ import {
   useVenuesListQuery,
   useGetEdgeListQuery,
   useDeleteEdgeSdLanMutation,
-  useGetEdgeSdLanViewDataListP2Query
+  useGetEdgeSdLanP2ViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
   ServiceOperation,
@@ -59,7 +59,7 @@ const EdgeSdLanTable = () => {
 
   const settingsId = 'services-edge-sd-lan-p2-table'
   const tableQuery = useTableQuery({
-    useQuery: useGetEdgeSdLanViewDataListP2Query,
+    useQuery: useGetEdgeSdLanP2ViewDataListQuery,
     defaultPayload: {},
     sorter: {
       sortField: 'name',

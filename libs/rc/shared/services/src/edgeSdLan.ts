@@ -308,34 +308,6 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
         const req = createHttpRequest(EdgeSdLanUrls.deactivateEdgeSdLanNetwork, params)
         return { ...req, body: payload }
       }
-    }),
-    getEdgeSdLanViewDataListP2:
-    build.query<TableResult<EdgeSdLanViewDataP2>, RequestPayload>({
-      query: ({ payload }) => {
-        const req = createHttpRequest(EdgeSdLanUrls.getEdgeSdLanViewDataList)
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      providesTags: [{ type: 'EdgeSdLan', id: 'LIST' }],
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, [
-            'Add SD-LAN',
-            'Update SD-LAN',
-            'Delete SD-LAN'
-          ], () => {
-            api.dispatch(serviceApi.util.invalidateTags([
-              { type: 'Service', id: 'LIST' }
-            ]))
-            api.dispatch(edgeSdLanApi.util.invalidateTags([
-              { type: 'EdgeSdLan', id: 'LIST' }
-            ]))
-          })
-        })
-      },
-      extraOptions: { maxRetries: 5 }
     })
   })
 })
@@ -352,7 +324,6 @@ export const {
   useGetEdgeSdLanP2Query,
   useAddEdgeSdLanP2Mutation,
   useUpdateEdgeSdLanPartialP2Mutation,
-  useGetEdgeSdLanViewDataListP2Query,
   useActivateEdgeSdLanDmzClusterMutation,
   useDeactivateEdgeSdLanDmzClusterMutation,
   useActivateEdgeSdLanDmzTunnelProfileMutation,
