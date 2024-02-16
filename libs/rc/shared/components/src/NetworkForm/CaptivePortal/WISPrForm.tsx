@@ -642,7 +642,11 @@ export function WISPrForm () {
       </GridCol>
       <GridCol col={{ span: 14 }}>
         <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL}
-          networkPortalType={GuestNetworkTypeEnum.WISPr}/>
+          networkPortalType={GuestNetworkTypeEnum.WISPr}
+          wisprWithPsk={enablePreShared}
+          // eslint-disable-next-line max-len
+          wisprWithAlwaysAccept={data?.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT}
+        />
       </GridCol>
     </GridRow>
     {!(editMode) && <GridRow>
