@@ -4,13 +4,12 @@ import { Features, useIsTierAllowed }          from '@acx-ui/feature-toggle'
 import {
   DpskNetworkType,
   DpskSaveData,
+  displayDefaultAccess,
   displayDeviceCountLimit,
   transformAdvancedDpskExpirationText,
   transformDpskNetwork
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
-
-import { displayDefaultAccess } from '../utils'
 
 import DpskInstancesTable from './DpskInstancesTable'
 
