@@ -24,16 +24,12 @@ describe('ClientTroubleshootingTab', () => {
           connectionDetailsByAp,
           connectionEvents,
           connectionQualities,
-          incidents: []
         }
       }
     })
     mockGraphqlQuery(dataApiURL, 'ClientIncidentsInfo', {
       data: {
         client: {
-          connectionDetailsByAp,
-          connectionEvents,
-          connectionQualities,
           incidents: []
         }
       }
@@ -54,6 +50,11 @@ describe('ClientTroubleshootingTab', () => {
   })
   it('should render error panel when max event error', async () => {
     mockGraphqlQuery(dataApiURL, 'ClientInfo', {
+      error: {
+        message: 'CTP:MAX_EVENTS_EXCEEDED'
+      }
+    })
+    mockGraphqlQuery(dataApiURL, 'ClientIncidentsInfo', {
       error: {
         message: 'CTP:MAX_EVENTS_EXCEEDED'
       }
