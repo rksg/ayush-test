@@ -199,7 +199,7 @@ function SettingsForm () {
 
           <Form.Item
             name={['wlan', 'isMacRegistrationList']}
-            initialValue={isMacRegistrationList}
+            initialValue={!!isMacRegistrationList}
           >
             <Radio.Group
               disabled={editMode}
