@@ -1352,6 +1352,18 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    bulkUpdateUnitProfile: build.mutation<PropertyUnit, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          PropertyUrlsInfo.bulkUpdateUnitProfile,
+          params)
+        return{
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
+    }),
     getVenueAntennaType: build.query< VeuneApAntennaTypeSettings[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getVenueAntennaType, params)
@@ -1498,6 +1510,7 @@ export const {
   useLazyGetVenueClientAdmissionControlQuery,
   useUpdateVenueClientAdmissionControlMutation,
   useGetVenueApManagementVlanQuery,
+  useBulkUpdateUnitProfileMutation,
   useLazyGetVenueApManagementVlanQuery,
   useUpdateVenueApManagementVlanMutation,
   useGetVenueAntennaTypeQuery,
