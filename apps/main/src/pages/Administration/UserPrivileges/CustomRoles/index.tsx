@@ -15,6 +15,7 @@ import {
 } from '@acx-ui/rc/services'
 import { sortProp, defaultSort, CustomRole, CustomGroupType } from '@acx-ui/rc/utils'
 import { useTenantLink }                                      from '@acx-ui/react-router-dom'
+import { RolesEnum }                                          from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext }              from '@acx-ui/user'
 import { AccountType }                                        from '@acx-ui/utils'
 
@@ -100,7 +101,8 @@ const CustomRoles = (props: CustomRolesTableProps) => {
     {
       label: $t({ defaultMessage: 'Clone' }),
       visible: (selectedRows) => {
-        return (selectedRows.length === 1)
+        return (selectedRows.length === 1 && !(selectedRows[0].type === CustomGroupType.SYSTEM &&
+          selectedRows[0].name === RolesEnum.PRIME_ADMIN))
       },
       onClick: (selectedRows) => {
         navigate({
