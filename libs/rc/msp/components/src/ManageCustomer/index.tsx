@@ -779,22 +779,21 @@ export function ManageCustomer () {
     </>
   }
 
-  const showDataLossDialog = function (tier: RadioChangeEvent) {
+  const handleServiceTierChange = function (tier: RadioChangeEvent) {
     if(isEditMode && createEcWithTierEnabled && originalTier !== tier.target.value) {
+      const modalContent = (
+        <>
+          <p>{intl.$t({ defaultMessage: `Changing Service Tier will impact available features. 
+          Downgrade from Professional to Essentials may also result in data loss.` })}</p>
+          <p>{intl.$t({ defaultMessage: 'Are you sure you want to save the changes?' })}</p>
+        </>
+      )
       showActionModal({
         type: 'confirm',
         title: intl.$t({
           defaultMessage: 'Save'
         }),
-        content: <><p>{intl.$t({
-          defaultMessage: `Changing Service Tier will impact available features.
-          Downgrade from Professional to Essentials may also result in data loss.
-          `
-        })}</p>
-        <p>{intl.$t({
-          defaultMessage: 'Are you sure you want to save the changes?'
-        })}</p>
-        </>,
+        content: modalContent,
         okText: intl.$t({ defaultMessage: 'Save' }),
         onCancel: () => {
           if (tier.target.value === MspEcTierEnum.Essential) {
@@ -820,7 +819,7 @@ export function ManageCustomer () {
             {
               Object.entries(MspEcTierEnum).map(([label, value]) => {
                 return <Radio
-                  onChange={showDataLossDialog}
+                  onChange={handleServiceTierChange}
                   key={value}
                   value={value}
                   children={intl.$t({
