@@ -28,6 +28,16 @@ describe('ClientTroubleshootingTab', () => {
         }
       }
     })
+    mockGraphqlQuery(dataApiURL, 'ClientIncidentsInfo', {
+      data: {
+        client: {
+          connectionDetailsByAp,
+          connectionEvents,
+          connectionQualities,
+          incidents: []
+        }
+      }
+    })
   })
   afterEach(() => cleanup())
   it('should render loader', () => {

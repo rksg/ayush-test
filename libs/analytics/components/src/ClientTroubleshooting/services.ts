@@ -77,22 +77,8 @@ export const api = dataApi.injectEndpoints({
     >({
       query: (payload) => ({
         document: gql`
-        query ClientInfo($mac: String, $start: DateTime, $end: DateTime, $code: [String]) {
+        query ClientInfo($mac: String, $start: DateTime, $end: DateTime) {
           client(mac: $mac, start: $start, end: $end) {
-            incidents(code: $code) {
-              id
-              path {
-                type
-                name
-              }
-              severity
-              startTime
-              sliceType
-              sliceValue
-              endTime
-              code
-              slaThreshold
-            }
             connectionQualities {
               start
               end
@@ -141,8 +127,75 @@ export const api = dataApi.injectEndpoints({
         variables: {
           mac: payload.clientMac,
           start: payload.startDate,
+          end: payload.endDate
+        }
+      }),
+      providesTags: [
+        { type: 'Monitoring', id: 'CLIENT_INFO' }
+      ],
+      transformResponse: (response: Response<ClientInfoData>) => {
+        return response.client
+      }
+    }),
+    clientIncidentsInfo: build.query<
+    ClientInfoData,
+    ClientFilter & IncidentsToggleFilter
+    >({
+      query: (payload) => ({
+        document: gql`
+        query ClientIncidentsInfo($mac: String, $start: DateTime, $end: DateTime, $code: [String]) {
+          client(mac: $mac, start: $start, end: $end) {
+            incidents(code: $code) {
+              id
+              path {
+                type
+                name
+              }
+              severity
+              startTime
+              sliceType
+              sliceValue
+              endTime
+              code
+              slaThreshold
+            }
+          }
+        }
+        `,
+        variables: {
+          mac: payload.clientMac,
+          start: payload.startDate,
           end: payload.endDate,
           code: incidentsToggle(payload)
+        }
+      }),
+      providesTags: [
+        { type: 'Monitoring', id: 'CLIENT_INFO' }
+      ],
+      transformResponse: (response: Response<ClientInfoData>) => {
+        return response.client
+      }
+    }),
+    clientConnectionInfo: build.query<ClientInfoData, ClientFilter>({
+      query: (payload) => ({
+        document: gql`
+        query ClientConnectionInfo($mac: String, $start: DateTime, $end: DateTime) {
+          client(mac: $mac, start: $start, end: $end) {
+            connectionQualities {
+              start
+              end
+              rss
+              snr
+              throughput
+              avgTxMCS
+            }
+          }
+        }
+        `,
+        variables: {
+          mac: payload.clientMac,
+          start: payload.startDate,
+          end: payload.endDate
         }
       }),
       providesTags: [
@@ -174,4 +227,9 @@ export const api = dataApi.injectEndpoints({
   })
 })
 
-export const { useClientInfoQuery, useClientPcapMutation } = api
+export const {
+  useClientInfoQuery,
+  useClientPcapMutation,
+  useClientConnectionInfoQuery,
+  useClientIncidentsInfoQuery
+} = api

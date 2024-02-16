@@ -9,12 +9,10 @@ import { WarningTriangleOutlined }                      from '@acx-ui/icons'
 import type { AnalyticsFilter }                         from '@acx-ui/utils'
 import { noDataDisplay }                                from '@acx-ui/utils'
 
-import { useIncidentToggles } from '../useIncidentToggles'
-
-import { LabelledQuality }                                       from './config'
-import { ClientInfoData, ConnectionQuality, useClientInfoQuery } from './services'
-import { ErrorContainer }                                        from './styledComponents'
-import { transformConnectionQualities }                          from './util'
+import { LabelledQuality }                                                 from './config'
+import { ClientInfoData, ConnectionQuality, useClientConnectionInfoQuery } from './services'
+import { ErrorContainer }                                                  from './styledComponents'
+import { transformConnectionQualities }                                    from './util'
 
 import { maxEventsMsg } from '.'
 
@@ -61,7 +59,6 @@ export function ClientHealth (
   })
 {
   const intl = useIntl()
-  const toggles = useIncidentToggles()
   const { $t } = intl
   const { startDate, endDate, range } = filter
 
@@ -87,8 +84,8 @@ export function ClientHealth (
     }
   }
 
-  const result = useClientInfoQuery(
-    { startDate, endDate, range, clientMac: clientMac.toUpperCase(), toggles }
+  const result = useClientConnectionInfoQuery(
+    { startDate, endDate, range, clientMac: clientMac.toUpperCase() }
   )
   const { data, error } = result
   const parsedData = calculateHealthSummary(data)
