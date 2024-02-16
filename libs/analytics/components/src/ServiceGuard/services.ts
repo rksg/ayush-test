@@ -558,7 +558,7 @@ export const transformPathToDB = (args: ServiceGuardFormDto, systemMap: SystemMa
     ...config,
     networkPaths: {
       networkNodes: config.networkPaths!.networkNodes.reduce((agg, path) => {
-        const { system, rest } = _.groupBy(
+        const { system, rest = [] } = _.groupBy(
           path, n => n.type === 'system' ? 'system' : 'rest'
         ) as { system: PathNode[], rest: PathNode[] }
         const mapping = system && systemMap[system[0].name]
