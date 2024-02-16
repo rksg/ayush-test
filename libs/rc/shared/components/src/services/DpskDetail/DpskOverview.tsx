@@ -7,7 +7,8 @@ import {
   displayDefaultAccess,
   displayDeviceCountLimit,
   transformAdvancedDpskExpirationText,
-  transformDpskNetwork
+  transformDpskNetwork,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -19,7 +20,8 @@ interface DpskOverviewProps {
 
 export function DpskOverview (props: DpskOverviewProps) {
   const intl = getIntl()
-  const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const { isTemplate } = useConfigTemplate()
+  const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA) && !isTemplate
   const { data } = props
 
   const dpskInfo = [

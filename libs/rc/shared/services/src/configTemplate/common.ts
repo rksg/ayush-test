@@ -158,6 +158,7 @@ export const {
   useUpdateNetworkTemplateMutation,
   useGetNetworkTemplateQuery,
   useDeleteNetworkTemplateMutation,
+  useGetNetworkTemplateListQuery,
   useLazyGetNetworkTemplateListQuery,
   useAddAAAPolicyTemplateMutation,
   useGetAAAPolicyTemplateQuery,

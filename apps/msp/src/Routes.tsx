@@ -18,6 +18,7 @@ import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
 import { ConfigTemplate }                          from './pages/ConfigTemplates'
+import DpskDetails                                 from './pages/ConfigTemplates/Wrappers/DpskDetails'
 import { DeviceInventory }                         from './pages/DeviceInventory'
 import { Integrators }                             from './pages/Integrators'
 import Layout, { LayoutWithConfigTemplateContext } from './pages/Layout'
@@ -122,6 +123,10 @@ function ConfigTemplatesRoutes () {
         <Route
           path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.EDIT })}
           element={<DpskForm editMode={true} />}
+        />
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })}
+          element={<DpskDetails />}
         />
       </Route>
     </Route>
