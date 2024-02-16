@@ -999,8 +999,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     addMacRegList: build.mutation<MacRegistrationPool, RequestPayload>({
       query: ({ params, payload, customHeaders }) => {
+        const headers = { ...defaultMacListVersioningHeaders, ...customHeaders }
         // eslint-disable-next-line max-len
-        const req = createHttpRequest(MacRegListUrlsInfo.createMacRegistrationPool, params, customHeaders)
+        const req = createHttpRequest(MacRegListUrlsInfo.createMacRegistrationPool, params, headers)
         return {
           ...req,
           body: JSON.stringify(payload)
