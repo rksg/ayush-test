@@ -386,6 +386,7 @@ function WiFi7 () {
               <UI.FieldLabel width='250px'>
                 <Space>
                   {$t({ defaultMessage: 'Enable Multi-Link operation (MLO)' })}
+                  {/* eslint-disable max-len */}
                   <Tooltip.Question
                     title={$t({ defaultMessage: `Allows Wi-Fi 7 devices to utilize multiple radio channels simultaneously.
                       Increases network efficiency and better throughput.
