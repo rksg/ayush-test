@@ -212,13 +212,7 @@ const ecSupport: SupportDelegation[] = [
 ]
 
 const services = require('@acx-ui/msp/services')
-jest.mock('@acx-ui/msp/services', () => ({
-  ...jest.requireActual('@acx-ui/msp/services')
-}))
 const utils = require('@acx-ui/rc/utils')
-jest.mock('@acx-ui/rc/utils', () => ({
-  ...jest.requireActual('@acx-ui/rc/utils')
-}))
 const mockedShowToast = jest.fn()
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
@@ -676,6 +670,7 @@ describe('ManageCustomer', () => {
 
   it('should show dialog on service tier radio option change', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_EC_CREATE_WITH_TIER)
+    params.action = 'edit'
     render(
       <Provider>
         <ManageCustomer />
