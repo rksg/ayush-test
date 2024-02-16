@@ -252,15 +252,18 @@ export function ManageCustomer () {
   ] = useDisableMspEcSupportMutation()
 
   useEffect(() => {
+    if (ecSupport && ecSupport.length > 0 ) {
+      setEcSupport(true)
+    }
+  }, [ecSupport])
+
+  useEffect(() => {
     if (licenseSummary) {
       checkAvailableLicense(licenseSummary)
 
       if (isEditMode && data && licenseAssignment) {
         if (ecAdministrators) {
           setMspEcAdmins(ecAdministrators)
-        }
-        if (ecSupport && ecSupport.length > 0 ) {
-          setEcSupport(true)
         }
         const assigned = licenseAssignment.filter(en => en.mspEcTenantId === mspEcTenantId)
         setAssignedLicense(assigned)
@@ -328,7 +331,7 @@ export function ManageCustomer () {
       setSubscriptionStartDate(moment())
       setSubscriptionEndDate(moment().add(30,'days'))
     }
-  }, [data, licenseSummary, licenseAssignment, ecSupport, userProfile, ecAdministrators])
+  }, [data, licenseSummary, licenseAssignment, userProfile, ecAdministrators])
 
   useEffect(() => {
     if (delegatedAdmins && Administrators) {
