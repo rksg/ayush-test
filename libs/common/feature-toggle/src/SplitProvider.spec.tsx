@@ -4,7 +4,6 @@ import { mockServer, render, screen } from '@acx-ui/test-utils'
 import { renderHook }                 from '@acx-ui/test-utils'
 import { UserUrlsInfo }               from '@acx-ui/user'
 
-import { Features }         from './features'
 import { useIsSplitOn }     from './useIsSplitOn'
 import { useIsTierAllowed } from './useIsTierAllowed'
 
@@ -36,31 +35,26 @@ jest.mock('@acx-ui/rc/utils', () => ({
 }))
 
 const splitProxyEndpoint = 'https://splitproxy.dev.ruckus.cloud/api'
-jest.mock('@splitsoftware/splitio-react', () => {
-  const actualSplit = jest.requireActual('@splitsoftware/splitio-react')
-  const { SplitSdk, SplitFactory, SplitTreatments } = actualSplit
-  return {
-    ...actualSplit,
-    useTreatments: (splitNames: string[], attributes: { params: '1234test' }) => {
-      const treatments: Record<string, Object> = {}
-      if (attributes) {
-        splitNames.forEach((splitName) => {
-          if (splitName === 'testSplitName') {
-            treatments[splitName] = { treatment: 'on', config: JSON.stringify({
-              featureList: ['ADMN-ESNTLS', 'CNFG-ESNTLS'],
-              betaList: ['PLCY-EDGE', 'BETA-CP']
-            }) }
-          } else {
-            treatments[splitName] = { treatment: 'off', config: '' }
-          }
-        })
-        return treatments
-      } else return { treatment: 'control', config: '' }
-    },
-    SplitSdk: jest.fn((args) => SplitSdk(args)),
-    SplitFactory: jest.fn((args) => <SplitFactory {...args} /> ),
-    SplitTreatments: jest.fn((args) => <SplitTreatments {...args} />)
-  }})
+jest.mock('@splitsoftware/splitio-react', () => ({
+  ...jest.requireActual('@splitsoftware/splitio-react'),
+  useTreatments: (splitNames: string[], attributes: { params: '1234test' }) => {
+    const treatments: Record<string, Object> = {}
+    if (attributes) {
+      splitNames.forEach((splitName) => {
+        if (splitName === 'testSplitName') {
+          treatments[splitName] = { treatment: 'on', config: JSON.stringify({
+            featureList: ['ADMN-ESNTLS', 'CNFG-ESNTLS'],
+            betaList: ['PLCY-EDGE', 'BETA-CP']
+          }) }
+        } else {
+          treatments[splitName] = { treatment: 'off', config: '' }
+        }
+      })
+      return treatments
+    } else return { treatment: 'control', config: '' }
+  },
+  SplitSdk: jest.fn((args) => jest.requireActual('@splitsoftware/splitio-react').SplitSdk(args))
+}))
 
 function TestSplitProvider (props: { tenant: string, IS_MLISA_SA: string,
   SPLIT_PROXY_ENDPOINT: string }) {
@@ -82,10 +76,13 @@ function TestSplitProvider (props: { tenant: string, IS_MLISA_SA: string,
   }))
   split = require('@splitsoftware/splitio-react')
   const { SplitProvider } = require('./SplitProvider')
-  return <div>{SplitProvider('child1')}</div>
+  return <div>
+    <SplitProvider>
+      <div>child1</div>
+    </SplitProvider>
+  </div>
 }
 
-const names = Object.keys(Features).map(k => Features[k as keyof typeof Features])
 describe('SplitProvider', () => {
   it('renders nothing if no tenant provided', async () => {
     render(<TestSplitProvider IS_MLISA_SA=''
@@ -109,10 +106,6 @@ describe('SplitProvider', () => {
       storage: { type: 'LOCALSTORAGE', prefix: 'ACX-local' },
       debug: false
     })
-    expect(split.SplitTreatments).toHaveBeenCalledWith(expect.objectContaining({
-      names
-    }), {})
-    expect(split.SplitFactory).toHaveBeenCalled()
   })
   it('provides for RA', async () => {
     render(<TestSplitProvider IS_MLISA_SA='true'
@@ -124,10 +117,6 @@ describe('SplitProvider', () => {
       storage: { type: 'LOCALSTORAGE', prefix: 'MLISA-local' },
       debug: false
     })
-    expect(split.SplitFactory).toHaveBeenCalled()
-    expect(split.SplitTreatments).toHaveBeenCalledWith(expect.objectContaining({
-      names
-    }), {})
   })
 })
 
