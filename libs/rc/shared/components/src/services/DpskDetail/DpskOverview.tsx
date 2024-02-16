@@ -13,11 +13,11 @@ import { getIntl } from '@acx-ui/utils'
 
 import DpskInstancesTable from './DpskInstancesTable'
 
-export interface DpskOverviewProps {
+interface DpskOverviewProps {
   data?: DpskSaveData
 }
 
-export default function DpskOverview (props: DpskOverviewProps) {
+export function DpskOverview (props: DpskOverviewProps) {
   const intl = getIntl()
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const { data } = props
