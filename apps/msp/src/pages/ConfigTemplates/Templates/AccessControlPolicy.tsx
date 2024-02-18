@@ -15,7 +15,7 @@ type AccessControlSubPolicyType =
   PolicyType.DEVICE_POLICY |
   PolicyType.APPLICATION_POLICY
 
-const INIT_STATE = {
+export const INIT_STATE = {
   [PolicyType.LAYER_2_POLICY]: false,
   [PolicyType.LAYER_3_POLICY]: false,
   [PolicyType.DEVICE_POLICY]: false,
