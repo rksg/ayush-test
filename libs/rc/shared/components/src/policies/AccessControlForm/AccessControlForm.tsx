@@ -22,7 +22,7 @@ import {
   getPolicyListRoutePath,
   useConfigTemplate,
   getConfigTemplatePath,
-  useBreadcrumb
+  useConfigTemplateBreadcrumb
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -171,7 +171,7 @@ export const AccessControlForm = (props: AccessControlFormProps) => {
     }
   }
 
-  const breadcrumb = useBreadcrumb([
+  const breadcrumb = useConfigTemplateBreadcrumb([
     { text: $t({ defaultMessage: 'Network Control' }) },
     {
       text: $t({ defaultMessage: 'Policies & Profiles' }),
