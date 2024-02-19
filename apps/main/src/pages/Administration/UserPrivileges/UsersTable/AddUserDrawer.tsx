@@ -22,9 +22,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import PrivilegeGroupSelector                              from '../../../UserPrivileges/PrivilegeGroups/PrivilegeGroupSelector'
-import AuthenticationSelector, { AuthTypeRadioButtonEnum } from '../AddAdministratorDialog/AuthenticationSelector'
-import MspCustomerSelector, { ECCustomerRadioButtonEnum }  from '../AddAdministratorDialog/MspCustomersSelector'
+import AuthenticationSelector, { AuthTypeRadioButtonEnum } from '../../Administrators/AdministratorsTable/AddAdministratorDialog/AuthenticationSelector'
+import MspCustomerSelector, { ECCustomerRadioButtonEnum }  from '../../Administrators/AdministratorsTable/AddAdministratorDialog/MspCustomersSelector'
+import PrivilegeGroupSelector                              from '../PrivilegeGroups/PrivilegeGroupSelector'
 
 interface AddUserDrawerProps {
   visible: boolean;

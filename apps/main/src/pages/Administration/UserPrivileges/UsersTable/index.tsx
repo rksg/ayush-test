@@ -27,9 +27,10 @@ import { filterByAccess, useUserProfileContext, roleStringMap } from '@acx-ui/us
 import { AccountType }                                          from '@acx-ui/utils'
 
 
-import AddUserDrawer  from '../../Administrators/AdministratorsTable/AddUserDrawer'
-import EditUserDrawer from '../../Administrators/AdministratorsTable/EditUserDrawer'
-import * as UI        from '../../Administrators/styledComponents'
+import * as UI from '../../Administrators/styledComponents'
+
+import AddUserDrawer  from './AddUserDrawer'
+import EditUserDrawer from './EditUserDrawer'
 
 interface UsersTableProps {
   currentUserMail: string | undefined;

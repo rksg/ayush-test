@@ -20,7 +20,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import PrivilegeGroupSelector from '../../../UserPrivileges/PrivilegeGroups/PrivilegeGroupSelector'
+import PrivilegeGroupSelector from '../PrivilegeGroups/PrivilegeGroupSelector'
 
 interface EditUserDrawerProps {
   visible: boolean;
