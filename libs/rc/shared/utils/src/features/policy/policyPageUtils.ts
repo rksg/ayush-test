@@ -23,9 +23,9 @@ export function generatePolicyPageHeaderTitle (isEdit: boolean, isTemplate: bool
   })
 }
 
-export function usePolicyBreadcrumb (type: PolicyType, oper: PolicyOperation) {
+export function usePolicyListBreadcrumb (type: PolicyType) {
   const { isTemplate } = useConfigTemplate()
-  const tablePath = getPolicyRoutePath({ type, oper })
+  const tablePath = getPolicyRoutePath({ type, oper: PolicyOperation.LIST })
   const { $t } = useIntl()
   const breadcrumb = useMemo(() => {
     return isTemplate
