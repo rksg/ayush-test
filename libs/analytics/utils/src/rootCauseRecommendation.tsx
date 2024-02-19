@@ -246,7 +246,7 @@ const getAirtimeRxRecommendations = (checks: (AirtimeRxChecks)[], params: Airtim
     ? <FormattedMessage defaultMessage={'<li>Click {aiOpsLink} to enable client load balancing AI Ops recommendation.</li>'} values={{ ...htmlValues, aiOpsLink }}/>
     : <FormattedMessage defaultMessage={'<li>Increase AP density to distribute the client load.</li>'} values={htmlValues}/>
   const excessiveFrame = checkTrue.includes('isHighSsidCountPerRadio')
-    ? <FormattedMessage defaultMessage={'<li>There are currently an average of {ssidCountPerRadioSlice} SSIDs/WLANs being broadcasted per AP. Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less. Enabling Airtime Decongestion would be recommended as well.</li>'} values={{ ...htmlValues, ssidCountPerRadioSlice }}/>
+    ? <FormattedMessage defaultMessage={'<li>There are currently an average of {ssidCountPerRadioSlice} SSIDs/WLANs being broadcasted per AP. Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less.</li>'} values={{ ...htmlValues, ssidCountPerRadioSlice }}/>
     : ''
   const crrmRaisedText = <FormattedMessage defaultMessage={'<li>Click {crrmLink} to apply the AI-Driven RRM recommendation.</li>'} values={{ ...htmlValues, crrmLink }}/>
   const channelFly = checkTrue.includes('isChannelFlyEnabled')
