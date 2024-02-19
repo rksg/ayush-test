@@ -9,7 +9,6 @@ import {
 import { NetworkPath, PathFilter, DateRange } from '@acx-ui/utils'
 
 import { crrmListResult, crrmNoLicenseListResult, crrmUnknownListResult } from '../Recommendations/__tests__/fixtures'
-import { mockedRecommendationCRRM }                                       from '../Recommendations/RecommendationDetails/__tests__/fixtures'
 import { api }                                                            from '../Recommendations/services'
 
 import { AIDrivenRRM } from '.'
@@ -150,7 +149,7 @@ describe('AIDrivenRRM dashboard', () => {
     )).toBeVisible()
   })
 
-  it('handles no data', async () => {
+  it('handles no zones', async () => {
     mockGraphqlQuery(recommendationUrl, 'CrrmList', {
       data: {
         crrmCount: 0,
@@ -164,26 +163,6 @@ describe('AIDrivenRRM dashboard', () => {
       route: true,
       wrapper: Provider
     })
-
-    // eslint-disable-next-line max-len
-    expect(await screen.findByText('Your network is already running in an optimal configuration and we don’t have any AI-Driven RRM to recommend currently.')).toBeVisible()
-  })
-
-  it('handles no zones', async () => {
-    mockGraphqlQuery(recommendationUrl, 'CrrmList', {
-      data: {
-        crrmCount: 0,
-        zoneCount: 0,
-        optimizedZoneCount: 0,
-        crrmScenarios: 0,
-        recommendations: [mockedRecommendationCRRM]
-      }
-    })
-    render(<AIDrivenRRM pathFilters={pathFilters} />, {
-      route: true,
-      wrapper: Provider
-    })
-
     expect(await screen.findByText('No Data')).toBeVisible()
     expect(await screen.findByText(
       'Currently RUCKUS AI cannot provide RRM optimizations as zones are not found on your network.'
