@@ -68,7 +68,7 @@ const EdgeSdLanFormP2 = (props: EdgeSdLanFormP2Props) => {
   }))
 
   const handleFinish = async (formData: EdgeSdLanFormModelP2) => {
-    onFinish(formData)
+    await onFinish(formData)
   }
 
   const initFormValues = getSdLanFormDefaultValues(editData)
