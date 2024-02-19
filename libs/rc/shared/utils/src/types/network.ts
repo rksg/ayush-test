@@ -116,6 +116,7 @@ export interface NetworkSaveData {
     bypassCPUsingMacAddressAuthentication?: boolean
     passphrase?: string
     saePassphrase?: string
+    isMacRegistrationList?: boolean
     managementFrameProtection?: string
     macAddressAuthentication?: boolean
     macRegistrationListId?: string

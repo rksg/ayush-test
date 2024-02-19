@@ -2,12 +2,13 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { AnchorLayout, StepsFormLegacy } from '@acx-ui/components'
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
-import { redirectPreviousPage }          from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }    from '@acx-ui/react-router-dom'
+import { AnchorLayout, StepsFormLegacy }           from '@acx-ui/components'
+import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
+import { usePathBasedOnConfigTemplate }            from '@acx-ui/rc/components'
+import { redirectPreviousPage, useConfigTemplate } from '@acx-ui/rc/utils'
+import { useNavigate }                             from '@acx-ui/react-router-dom'
 
-import { VenueEditContext } from '../..'
+import { VenueEditContext, createAnchorSectionItem } from '../..'
 
 import { ApSnmp }      from './ApSnmp'
 import { MdnsFencing } from './MdnsFencing/MdnsFencing'
@@ -25,7 +26,8 @@ export interface ServerSettingContext {
 export function ServerTab () {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const basePath = useTenantLink('/venues/')
+  const basePath = usePathBasedOnConfigTemplate('/venues/')
+  const { isTemplate } = useConfigTemplate()
 
   const {
     previousPath,
@@ -37,38 +39,20 @@ export function ServerTab () {
   const supportMdnsFencing = useIsSplitOn(Features.MDNS_FENCING)
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
 
-  const items = [{
-    title: $t({ defaultMessage: 'Syslog Server' }),
-    content: <>
-      <StepsFormLegacy.SectionTitle id='syslog-server'>
-        { $t({ defaultMessage: 'Syslog Server' }) }
-      </StepsFormLegacy.SectionTitle>
-      <Syslog />
-    </>
-  }]
+  const items = []
 
-  if (supportMdnsFencing) {
-    items.push({
-      title: $t({ defaultMessage: 'mDNS Fencing' }),
-      content: <>
-        <StepsFormLegacy.SectionTitle id='mdns-fencing'>
-          { $t({ defaultMessage: 'mDNS Fencing' }) }
-        </StepsFormLegacy.SectionTitle>
-        <MdnsFencing />
-      </>
-    })
+  if (!isTemplate) {
+    // eslint-disable-next-line max-len
+    items.push(createAnchorSectionItem($t({ defaultMessage: 'Syslog Server' }), 'syslog-server', <Syslog />))
   }
 
-  if (supportApSnmp) {
-    items.push({
-      title: $t({ defaultMessage: 'AP SNMP' }),
-      content: <>
-        <StepsFormLegacy.SectionTitle id='ap-snmp'>
-          { $t({ defaultMessage: 'AP SNMP' }) }
-        </StepsFormLegacy.SectionTitle>
-        <ApSnmp/>
-      </>
-    })
+  if (supportMdnsFencing) {
+    // eslint-disable-next-line max-len
+    items.push(createAnchorSectionItem($t({ defaultMessage: 'mDNS Fencing' }), 'mdns-fencing', <MdnsFencing />))
+  }
+
+  if (supportApSnmp && !isTemplate) {
+    items.push(createAnchorSectionItem($t({ defaultMessage: 'AP SNMP' }), 'ap-snmp', <ApSnmp />))
   }
 
 
