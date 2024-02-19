@@ -3,10 +3,10 @@ import { useEffect, useRef, useState } from 'react'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { PageHeader, showActionModal, StepsFormLegacy, StepsFormLegacyInstance }                                             from '@acx-ui/components'
-import { useAddApSnmpPolicyMutation, useGetApSnmpPolicyQuery, useUpdateApSnmpPolicyMutation }                                from '@acx-ui/rc/services'
-import { ApSnmpPolicy, generatePolicyPageHeaderTitle, getPolicyRoutePath, PolicyOperation, PolicyType, usePolicyBreadcrumb } from '@acx-ui/rc/utils'
-import { useTenantLink }                                                                                                     from '@acx-ui/react-router-dom'
+import { PageHeader, showActionModal, StepsFormLegacy, StepsFormLegacyInstance }                                                 from '@acx-ui/components'
+import { useAddApSnmpPolicyMutation, useGetApSnmpPolicyQuery, useUpdateApSnmpPolicyMutation }                                    from '@acx-ui/rc/services'
+import { ApSnmpPolicy, generatePolicyPageHeaderTitle, getPolicyRoutePath, PolicyOperation, PolicyType, usePolicyListBreadcrumb } from '@acx-ui/rc/utils'
+import { useTenantLink }                                                                                                         from '@acx-ui/react-router-dom'
 
 import SnmpAgentSettingForm from './SnmpAgentSettingForm'
 import * as UI              from './styledComponents'
@@ -39,7 +39,7 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
     updateSaveState({ ...saveState, ...saveData })
   }
 
-  const breadcrumb = usePolicyBreadcrumb(PolicyType.SNMP_AGENT, PolicyOperation.LIST)
+  const breadcrumb = usePolicyListBreadcrumb(PolicyType.SNMP_AGENT)
 
   useEffect(() => {
     if (data) {

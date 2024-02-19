@@ -2,14 +2,14 @@ import { useContext, useEffect, useRef } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs }                                   from '@acx-ui/components'
-import { Features, useIsTierAllowed }             from '@acx-ui/feature-toggle'
-import type { LocationExtended }                  from '@acx-ui/rc/utils'
+import { Tabs }                                     from '@acx-ui/components'
+import { Features, useIsTierAllowed }               from '@acx-ui/feature-toggle'
+import { usePathBasedOnConfigTemplate }             from '@acx-ui/rc/components'
+import { useConfigTemplate, type LocationExtended } from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
   useParams,
-  useTenantLink,
   UNSAFE_NavigationContext as NavigationContext
 } from '@acx-ui/react-router-dom'
 
@@ -22,8 +22,8 @@ function VenueEditTabs () {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
-  const enablePropertyManagement = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const basePath = useTenantLink(`/venues/${params.venueId}/edit/`)
+  const enablePropertyManagement = usePropertyManagementEnabled()
+  const baseEditPath = usePathBasedOnConfigTemplate(`/venues/${params.venueId}/edit/`)
   const {
     editContextData,
     setEditContextData,
@@ -34,20 +34,22 @@ function VenueEditTabs () {
     editAdvancedContextData,
     setPreviousPath
   } = useContext(VenueEditContext)
+
   const onTabChange = (tab: string) => {
     if (tab === 'wifi') tab = `${tab}/radio`
     if (tab === 'switch') tab = `${tab}/general`
 
     setEditContextData({} as EditContext)
     navigate({
-      ...basePath,
-      pathname: `${basePath.pathname}/${tab}`
+      ...baseEditPath,
+      pathname: `${baseEditPath.pathname}/${tab}`
     })
   }
 
   const { navigator } = useContext(NavigationContext)
   const blockNavigator = navigator as History
   const unblockRef = useRef<Function>()
+
   useEffect(() => {
     if (editContextData.isDirty) {
       unblockRef.current?.()
@@ -99,3 +101,10 @@ function VenueEditTabs () {
 }
 
 export default VenueEditTabs
+
+function usePropertyManagementEnabled () {
+  const enablePropertyManagement = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const { isTemplate } = useConfigTemplate()
+
+  return enablePropertyManagement && !isTemplate
+}
