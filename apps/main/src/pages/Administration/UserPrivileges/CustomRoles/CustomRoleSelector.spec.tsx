@@ -11,6 +11,7 @@ import {
 
 import CustomRoleSelector from './CustomRoleSelector'
 
+const services = require('@acx-ui/rc/services')
 
 describe('Custom Role selector component', () => {
 
@@ -18,6 +19,9 @@ describe('Custom Role selector component', () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
       return form
+    })
+    services.useGetCustomRolesQuery = jest.fn().mockImplementation(() => {
+      return { data: [{ name: 'Administrator' }] }
     })
 
     render(

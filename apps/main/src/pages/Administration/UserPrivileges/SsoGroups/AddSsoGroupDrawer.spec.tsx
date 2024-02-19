@@ -13,7 +13,10 @@ import {
 } from '@acx-ui/test-utils'
 import { RolesEnum } from '@acx-ui/types'
 
+import { fakedPrivilegeGroupList } from '../__tests__/fixtures'
+
 import { AddSsoGroupDrawer } from './AddSsoGroupDrawer'
+
 
 const adminGroupData =
 {
@@ -29,13 +32,13 @@ const adminGroupData =
 }
 
 const services = require('@acx-ui/rc/services')
-jest.mock('@acx-ui/rc/services', () => ({
-  ...jest.requireActual('@acx-ui/rc/services')
-}))
 
 describe('Add SSO Group Drawer', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
+    services.useGetPrivilegeGroupsQuery = jest.fn().mockImplementation(() => {
+      return { data: fakedPrivilegeGroupList }
+    })
     jest.spyOn(services, 'useAddAdminGroupsMutation')
     mockServer.use(
       rest.post(
@@ -81,7 +84,7 @@ describe('Add SSO Group Drawer', () => {
       })
 
     expect(screen.getByText('Edit SSO User Group')).toBeVisible()
-    expect(screen.getByRole('button', { name: 'Save' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Apply' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
   })
   it('should close correctly', async () => {
@@ -168,7 +171,7 @@ describe('Add SSO Group Drawer', () => {
     fireEvent.change(input, { target: { value: 'test' } })
     await userEvent.click(screen.getByRole('button', { name: 'Add Group' }))
     /* eslint-disable max-len */
-    expect( await screen.findByText('Please enter Role')).toBeVisible()
+    expect( await screen.findByText('Please enter Privilege Group')).toBeVisible()
     expect(mockedCloseDrawer).not.toHaveBeenCalledWith(false)
   })
   it('should save correctly', async () => {
@@ -196,7 +199,7 @@ describe('Add SSO Group Drawer', () => {
     const inputGroupId = screen.getByLabelText('Group ID')
     fireEvent.change(inputGroupId, { target: { value: 'testGroupId' } })
     fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Privilege Group' }))
-    await userEvent.click(screen.getByText('Prime Admin'))
+    await userEvent.click(screen.getAllByText('PRIME_ADMIN')[1])
     await userEvent.click(screen.getByRole('button', { name: 'Add Group' }))
 
     const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
@@ -225,8 +228,8 @@ describe('Add SSO Group Drawer', () => {
 
     expect(screen.getByText('Edit SSO User Group')).toBeVisible()
     fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Privilege Group' }))
-    await userEvent.click(screen.getByText('PRIME_ADMIN'))
-    await userEvent.click(screen.getByRole('button', { name: 'Save' }))
+    await userEvent.click(screen.getAllByText('PRIME_ADMIN')[1])
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
 
     const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
       data: { requestId: '456' },

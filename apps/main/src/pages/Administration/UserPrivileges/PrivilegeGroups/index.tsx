@@ -9,14 +9,20 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { useGetMspProfileQuery }    from '@acx-ui/msp/services'
+import { MSPUtils }                 from '@acx-ui/msp/utils'
 import {
   useGetPrivilegeGroupsQuery,
   useDeletePrivilegeGroupMutation
 } from '@acx-ui/rc/services'
-import { sortProp, defaultSort, PrivilegeGroup, CustomGroupType } from '@acx-ui/rc/utils'
-import { useTenantLink }                                          from '@acx-ui/react-router-dom'
-import { filterByAccess, useUserProfileContext }                  from '@acx-ui/user'
-import { AccountType, noDataDisplay }                             from '@acx-ui/utils'
+import { sortProp,
+  defaultSort,
+  PrivilegeGroup,
+  CustomGroupType
+} from '@acx-ui/rc/utils'
+import { useTenantLink }                         from '@acx-ui/react-router-dom'
+import { filterByAccess, useUserProfileContext } from '@acx-ui/user'
+import { AccountType }                           from '@acx-ui/utils'
 
 interface PrivilegeGroupsTableProps {
   isPrimeAdminUser: boolean;
@@ -27,9 +33,12 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
   const { $t } = useIntl()
   const { isPrimeAdminUser, tenantType } = props
   const params = useParams()
+  const mspUtils = MSPUtils()
   const navigate = useNavigate()
   const [privilegeGroupData, setPrivilegeGroupData] = useState([] as PrivilegeGroup[])
   const { data: userProfileData } = useUserProfileContext()
+  const { data: mspProfile } = useGetMspProfileQuery({ params })
+  const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
 
   const { data: privilegeGroupList, isLoading, isFetching }
     = useGetPrivilegeGroupsQuery({ params })
@@ -50,6 +59,19 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
       ...linkAddPriviledgePath,
       pathname: `${linkAddPriviledgePath.pathname}/create`
     })
+  }
+
+  const getPrivilegeScopes = (data: PrivilegeGroup) => {
+    // const hasEc = data.delegation === true
+    const OwnVenues = data?.policies?.length ?? 0
+    const allCustomers = data?.policyEntityDTOS?.length ?? 0
+    return isOnboardedMsp ? <>
+      <div>{$t({ defaultMessage: 'Own Account: {venueCount}' }, { venueCount:
+            OwnVenues === 0 ? 'All Venues' : OwnVenues+' venues' })} </div>
+      <div>{$t({ defaultMessage: 'MSP Account: {mspEcCount}' }, { mspEcCount:
+            allCustomers === 0 ? 'All Customers' : allCustomers+' customers' })} </div>
+    </> : $t({ defaultMessage: '{venueCount}' }, { venueCount:
+            OwnVenues === 0 ? 'All Venues' : OwnVenues+' venues' })
   }
 
   const columns:TableProps<PrivilegeGroup>['columns'] = [
@@ -76,7 +98,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
       key: 'scope',
       dataIndex: 'scope',
       render: function (_, row) {
-        return row.allCustomers ? $t({ defaultMessage: 'All Customers' }) : noDataDisplay
+        return getPrivilegeScopes(row)
       }
     },
     {

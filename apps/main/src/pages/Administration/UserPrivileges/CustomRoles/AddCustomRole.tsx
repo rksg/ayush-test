@@ -59,10 +59,7 @@ export function AddCustomRole () {
           'wifi-profile-r'
         ]
       }
-      if (action === 'view') {
-        navigate(linkToCustomRoles)
-      }
-      else if(isEditMode) {
+      if(isEditMode) {
         await updateCustomRole({ params: { customRoleId: customRoleId },
           payload: roleData }).unwrap()
       } else {
@@ -84,11 +81,6 @@ export function AddCustomRole () {
     return <StepsForm
       form={form}
       editMode={isEditMode}
-      buttonLabel={{
-        cancel: action === 'view'
-          ? undefined
-          : intl.$t({ defaultMessage: 'Cancel' })
-      }}
       onFinish={handleAddRole}
       onCancel={() => navigate(linkToCustomRoles)}
     >
@@ -108,14 +100,14 @@ export function AddCustomRole () {
           ]}
           validateFirst
           hasFeedback
-          children={<Input readOnly={action === 'view'} />}
+          children={<Input />}
         />
         <Form.Item
           name='description'
           label={intl.$t({ defaultMessage: 'Role Description' })}
           style={{ width: '300px' }}
           children={
-            <Input.TextArea rows={4} maxLength={180} readOnly={action === 'view'}/>
+            <Input.TextArea rows={4} maxLength={180} />
           }
         />
       </StepsForm.StepForm>

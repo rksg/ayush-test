@@ -6,7 +6,6 @@ import { MspUrlsInfo }            from '@acx-ui/msp/utils'
 import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }               from '@acx-ui/store'
 import {
-  fireEvent,
   mockServer,
   render,
   screen,
@@ -84,6 +83,12 @@ const userProfileContextValues = {
   isPrimeAdmin
 } as UserProfileContextProps
 
+const mockedUsedNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
+const services = require('@acx-ui/rc/services')
 
 describe('Custom Roles Table', () => {
   let params: { tenantId: string }
@@ -95,14 +100,12 @@ describe('Custom Roles Table', () => {
       tenantId: '8c36a0a9ab9d4806b060e112205add6f'
     }
 
+    services.useGetCustomRolesQuery = jest.fn().mockImplementation(() => {
+      mockReqAdminsData()
+      return { data: fakedCustomRoleLsit }
+    })
+
     mockServer.use(
-      rest.get(
-        AdministrationUrlsInfo.getCustomRoles.url,
-        (req, res, ctx) => {
-          mockReqAdminsData()
-          return res(ctx.json(fakedCustomRoleLsit))
-        }
-      ),
       rest.delete(
         AdministrationUrlsInfo.deleteCustomRole.url,
         (req, res, ctx) => res(ctx.status(202))
@@ -140,12 +143,19 @@ describe('Custom Roles Table', () => {
     expect(table).toHaveTextContent(/Description/i)
     expect(await screen.findByRole('button', { name: 'Add Role' })).toBeInTheDocument()
     await userEvent.click(await screen.findByRole('button', { name: 'Add Role' }))
-    expect(await screen.findByText('Add Admin Role')).toBeInTheDocument()
-    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
-    const row = await screen.findByRole('row', { name: /Admin Role/i })
-    await userEvent.click(within(row).getByRole('checkbox'))
-    await userEvent.click(await screen.findByRole('button', { name: 'View' }))
-    expect(await screen.findByText('Edit Admin Role')).toBeInTheDocument()
+
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/${params.tenantId}/t/administration/userPrivileges/customRoles/create`,
+      hash: '',
+      search: ''
+    })
+
+    // expect(await screen.findByText('Add Admin Role')).toBeInTheDocument()
+    // await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+    // const row = await screen.findByRole('row', { name: /Admin Role/i })
+    // await userEvent.click(within(row).getByRole('checkbox'))
+    // await userEvent.click(await screen.findByRole('button', { name: 'View' }))
+    // expect(await screen.findByText('Edit Admin Role')).toBeInTheDocument()
   })
   it('should render correctly for non prime admin', async () => {
     render(
@@ -165,8 +175,7 @@ describe('Custom Roles Table', () => {
       expect(mockReqAdminsData).toBeCalled()
     })
   })
-
-  it('should hide edit button when multiple selected', async () => {
+  it('should delete selected custom row', async () => {
     render(
       <Provider>
         <UserProfileContext.Provider
@@ -179,43 +188,43 @@ describe('Custom Roles Table', () => {
       </Provider>, {
         route: { params }
       })
-
-    const rows = await screen.findAllByRole('row')
-    expect(within(rows[3]).getByRole('cell', { name: 'IT_Admins' })).toBeVisible()
-    fireEvent.click(within(rows[3]).getByRole('checkbox')) //IT_Admins
-    expect(within(rows[3]).getByRole('checkbox')).toBeChecked()
-    expect(within(rows[2]).getByRole('cell', { name: 'test group 1' })).toBeVisible()
-    fireEvent.click(within(rows[2]).getByRole('checkbox')) //test group 1
-    expect(within(rows[2]).getByRole('checkbox')).toBeChecked()
-
-    expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
-  })
-
-  it('should delete selected row', async () => {
-    render(
-      <Provider>
-        <UserProfileContext.Provider
-          value={userProfileContextValues}
-        >
-          <CustomRoles
-            isPrimeAdminUser={true}
-          />
-        </UserProfileContext.Provider>
-      </Provider>, {
-        route: { params }
-      })
-    const row = await screen.findByRole('row', { name: /IT_Admins/i })
-    await userEvent.click(within(row).getByRole('checkbox'))
+    const row = await screen.findByRole('row', { name: /custom role/i })
+    await userEvent.click(within(row).getByRole('radio'))
     await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
-    await screen.findByText('Delete "IT_Admins"?')
-    const submitBtn = screen.getByRole('button', { name: 'Delete Group' })
+    await screen.findByText('Delete "new wi-fi custom role"?')
+    const submitBtn = screen.getByRole('button', { name: 'Delete Role' })
     await userEvent.click(submitBtn)
     await waitFor(() => {
       expect(submitBtn).not.toBeVisible()
     })
   })
+  it('should view selected system row', async () => {
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <CustomRoles
+            isPrimeAdminUser={true}
+          />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+    const customRow = await screen.findByRole('row', { name: /custom role/i })
+    await userEvent.click(within(customRow).getByRole('radio'))
+    expect(screen.queryByRole('button', { name: 'View' })).toBeNull()
+    const systemRow = await screen.findByRole('row', { name: /PRIME_ADMIN/i })
+    await userEvent.click(within(systemRow).getByRole('radio'))
+    await userEvent.click(screen.getByRole('button', { name: 'View' }))
 
-  it.skip('should delete selected row(multiple)', async () => {
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/${params.tenantId}/t/administration/userPrivileges/customRoles/view/1765e98c7b9446e2a5bdd4720e0e8912`,
+      hash: '',
+      search: ''
+    }, { state: { description: 'Prime Admin Role', id: '1765e98c7b9446e2a5bdd4720e0e8912', name: 'PRIME_ADMIN', type: 'System' } })
+  })
+  it('should edit selected custom row', async () => {
     render(
       <Provider>
         <UserProfileContext.Provider
@@ -229,16 +238,53 @@ describe('Custom Roles Table', () => {
         route: { params }
       })
 
-    const rows = await screen.findAllByRole('row')
-    await userEvent.click(within(rows[0]).getByRole('checkbox')) //abc.cheng@email.com
-    await userEvent.click(within(rows[2]).getByRole('checkbox')) //erp.cheng@email.com
-    await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
-    await screen.findByText('Delete "2 Administrators"?')
-    const submitBtn = screen.getByRole('button', { name: 'Delete Administrators' })
-    fireEvent.click(submitBtn)
-    await waitFor(() => {
-      expect(submitBtn).not.toBeVisible()
-    })
+    const systemRow = await screen.findByRole('row', { name: /PRIME_ADMIN/i })
+    await userEvent.click(within(systemRow).getByRole('radio'))
+    expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
+    const customRow = await screen.findByRole('row', { name: /custom role/i })
+    await userEvent.click(within(customRow).getByRole('radio'))
+
+    await userEvent.click(screen.getByRole('button', { name: 'Edit' }))
+
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/${params.tenantId}/t/administration/userPrivileges/customRoles/edit/df2277fb9f8c403c8b1a12ffe6ae9809`,
+      hash: '',
+      search: ''
+    }, { state: {
+      description: 'this is new custom role for wi-fi', id: 'df2277fb9f8c403c8b1a12ffe6ae9809',
+      name: 'new wi-fi custom role', scope: [ 'wifi-profile-r', 'wifi-profile-u' ], type: 'Custom'
+    } })
+  })
+  it('should clone selected row', async () => {
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <CustomRoles
+            isPrimeAdminUser={true}
+          />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    const systemRow = await screen.findByRole('row', { name: /PRIME_ADMIN/i })
+    await userEvent.click(within(systemRow).getByRole('radio'))
+    expect(screen.getByRole('button', { name: 'Clone' })).toBeVisible()
+    const customRow = await screen.findByRole('row', { name: /custom role/i })
+    await userEvent.click(within(customRow).getByRole('radio'))
+
+    await userEvent.click(screen.getByRole('button', { name: 'Clone' }))
+
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/${params.tenantId}/t/administration/userPrivileges/customRoles/clone/df2277fb9f8c403c8b1a12ffe6ae9809`,
+      hash: '',
+      search: ''
+    }, { state: {
+      description: 'this is new custom role for wi-fi', id: 'df2277fb9f8c403c8b1a12ffe6ae9809',
+      name: 'new wi-fi custom role', scope: [ 'wifi-profile-r', 'wifi-profile-u' ], type: 'Custom'
+    } })
   })
 })
 

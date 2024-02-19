@@ -307,7 +307,7 @@ export const fakedAdminGroupList = [
   }
 ]
 
-export const fakedPrivilegeGroupList = [
+export const fakedPrivilegeGroupList =
   [
     {
       id: '2765e98c7b9446e2a5bdd4720e0e8911',
@@ -364,6 +364,7 @@ export const fakedPrivilegeGroupList = [
       allCustomers: false
     },
     {
+      // id: '00bb7b958a5544898cd0b938fa800a6b',
       name: 'PG_DEV_CR_01_MSP_DG',
       description: 'This is PG creatig for MSP with delegations',
       roleName: 'ADMIN',
@@ -398,5 +399,4 @@ export const fakedPrivilegeGroupList = [
       ]
     }
   ]
-]
 

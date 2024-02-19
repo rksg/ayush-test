@@ -15,9 +15,11 @@ import {
 } from '@acx-ui/test-utils'
 import { UserProfileContext, UserProfileContextProps } from '@acx-ui/user'
 
-import { fakeUserProfile } from '../__tests__/fixtures'
+import { fakeUserProfile }         from '../__tests__/fixtures'
+import { fakedPrivilegeGroupList } from '../__tests__/fixtures'
 
 import AdminGroups from './index'
+
 
 export const fakedAdminGroupLsit = [
   {
@@ -86,6 +88,7 @@ const userProfileContextValues = {
   isPrimeAdmin
 } as UserProfileContextProps
 
+const services = require('@acx-ui/rc/services')
 
 describe('Admin Groups Table', () => {
   let params: { tenantId: string }
@@ -97,6 +100,9 @@ describe('Admin Groups Table', () => {
       tenantId: '8c36a0a9ab9d4806b060e112205add6f'
     }
 
+    services.useGetPrivilegeGroupsQuery = jest.fn().mockImplementation(() => {
+      return { data: fakedPrivilegeGroupList }
+    })
     mockServer.use(
       rest.get(
         AdministrationUrlsInfo.getAdminGroups.url,
@@ -167,7 +173,6 @@ describe('Admin Groups Table', () => {
       expect(mockReqAdminsData).toBeCalled()
     })
   })
-
   it('should hide edit button when multiple selected', async () => {
     render(
       <Provider>
@@ -192,7 +197,6 @@ describe('Admin Groups Table', () => {
 
     expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
   })
-
   it('should delete selected row', async () => {
     render(
       <Provider>
@@ -216,7 +220,6 @@ describe('Admin Groups Table', () => {
       expect(submitBtn).not.toBeVisible()
     })
   })
-
   it.skip('should delete selected row(multiple)', async () => {
     render(
       <Provider>

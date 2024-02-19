@@ -1,33 +1,27 @@
 /* eslint-disable max-len */
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
-import { rest }  from 'msw'
 
-import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }               from '@acx-ui/store'
+import { Provider } from '@acx-ui/store'
 import {
   renderHook,
   render,
-  screen,
-  mockServer
+  screen
 } from '@acx-ui/test-utils'
 
 import { fakedPrivilegeGroupList } from '../__tests__/fixtures'
 
 import PrivilegeGroupSelector from './PrivilegeGroupSelector'
 
+const services = require('@acx-ui/rc/services')
+
 describe('Role selector component', () => {
   const mockReqPrivilegeGroupData = jest.fn()
 
-  mockServer.use(
-    rest.get(
-      AdministrationUrlsInfo.getPrivilegeGroups.url,
-      (req, res, ctx) => {
-        mockReqPrivilegeGroupData()
-        return res(ctx.json(fakedPrivilegeGroupList))
-      }
-    )
-  )
+  services.useGetPrivilegeGroupsQuery = jest.fn().mockImplementation(() => {
+    mockReqPrivilegeGroupData()
+    return { data: fakedPrivilegeGroupList }
+  })
 
   it('should render the selector', async () => {
     const { result: formRef } = renderHook(() => {
