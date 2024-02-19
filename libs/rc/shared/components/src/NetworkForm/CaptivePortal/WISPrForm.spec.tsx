@@ -23,6 +23,7 @@ import {
   wisprDataForOnlyAuth,
   mockAAAPolicyListResponse
 } from '../__tests__/fixtures'
+import { MLOContext }     from '../NetworkForm'
 import NetworkFormContext from '../NetworkFormContext'
 
 import { WISPrForm } from './WISPrForm'
@@ -147,11 +148,16 @@ describe('CaptiveNetworkForm-WISPr', () => {
       <Provider>
         <NetworkFormContext.Provider
           value={{ editMode: false, cloneMode: false, data: wisprDataWPA2 }}>
-          <StepsFormLegacy>
-            <StepsFormLegacy.StepForm>
-              <WISPrForm />
-            </StepsFormLegacy.StepForm>
-          </StepsFormLegacy>
+          <MLOContext.Provider value={{
+            isDisableMLO: false,
+            disableMLO: jest.fn()
+          }}>
+            <StepsFormLegacy>
+              <StepsFormLegacy.StepForm>
+                <WISPrForm />
+              </StepsFormLegacy.StepForm>
+            </StepsFormLegacy>
+          </MLOContext.Provider>
         </NetworkFormContext.Provider>
       </Provider>,
       { route: { params } }
@@ -175,11 +181,16 @@ describe('CaptiveNetworkForm-WISPr', () => {
       <Provider>
         <NetworkFormContext.Provider
           value={{ editMode: true, cloneMode: true, data: wisprDataForAllAccept }}>
-          <StepsFormLegacy>
-            <StepsFormLegacy.StepForm>
-              <WISPrForm />
-            </StepsFormLegacy.StepForm>
-          </StepsFormLegacy>
+          <MLOContext.Provider value={{
+            isDisableMLO: false,
+            disableMLO: jest.fn()
+          }}>
+            <StepsFormLegacy>
+              <StepsFormLegacy.StepForm>
+                <WISPrForm />
+              </StepsFormLegacy.StepForm>
+            </StepsFormLegacy>
+          </MLOContext.Provider>
         </NetworkFormContext.Provider>
       </Provider>,
       { route: { params } }
@@ -199,11 +210,16 @@ describe('CaptiveNetworkForm-WISPr', () => {
       <Provider>
         <NetworkFormContext.Provider
           value={{ editMode: true, cloneMode: true, data: wisprDataForOnlyAuth }}>
-          <StepsFormLegacy>
-            <StepsFormLegacy.StepForm>
-              <WISPrForm />
-            </StepsFormLegacy.StepForm>
-          </StepsFormLegacy>
+          <MLOContext.Provider value={{
+            isDisableMLO: false,
+            disableMLO: jest.fn()
+          }}>
+            <StepsFormLegacy>
+              <StepsFormLegacy.StepForm>
+                <WISPrForm />
+              </StepsFormLegacy.StepForm>
+            </StepsFormLegacy>
+          </MLOContext.Provider>
         </NetworkFormContext.Provider>
       </Provider>,
       { route: { params } }
@@ -226,11 +242,16 @@ describe('CaptiveNetworkForm-WISPr', () => {
       <Provider>
         <NetworkFormContext.Provider
           value={{ editMode: true, cloneMode: true, data: wisprDataForOnlyAuth }}>
-          <StepsFormLegacy>
-            <StepsFormLegacy.StepForm>
-              <WISPrForm />
-            </StepsFormLegacy.StepForm>
-          </StepsFormLegacy>
+          <MLOContext.Provider value={{
+            isDisableMLO: false,
+            disableMLO: jest.fn()
+          }}>
+            <StepsFormLegacy>
+              <StepsFormLegacy.StepForm>
+                <WISPrForm />
+              </StepsFormLegacy.StepForm>
+            </StepsFormLegacy>
+          </MLOContext.Provider>
         </NetworkFormContext.Provider>
       </Provider>,
       { route: { params } }
