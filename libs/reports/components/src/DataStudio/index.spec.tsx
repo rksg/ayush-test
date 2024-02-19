@@ -22,6 +22,10 @@ const response = {
   }
 } as DataStudioResponse
 
+const response_url = {
+  redirect_url: '/api/a4rc/explorer/'
+} as DataStudioResponse
+
 jest.mock('@acx-ui/utils', () => ({
   __esModule: true,
   ...jest.requireActual('@acx-ui/utils'),
@@ -75,7 +79,7 @@ describe('DataStudio', () => {
     expect(iframe.src).toBe('http://localhost/api/a4rc/explorer/?mlisa_own_tenant_id=1234&mlisa_tenant_ids=1235&is_franchisor=false')
   })
 
-  it('should render the data studio for MLISA SA', async () => {
+  it('should render the data studio for MLISA SA with url params', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     localeContext.mockReturnValue({
       messages: { locale: 'en' },
@@ -95,6 +99,34 @@ describe('DataStudio', () => {
     const iframe = screen.getByTitle('data-studio') as HTMLIFrameElement
     // eslint-disable-next-line max-len
     expect(iframe.src).toBe('http://localhost/api/a4rc/explorer/?mlisa_own_tenant_id=1234&mlisa_tenant_ids=1235&is_franchisor=false')
+  })
+
+  it('should render the data studio for MLISA SA without url params', async () => {
+    mockServer.use(
+      rest.post(
+        ReportUrlsInfo.authenticate.url.substring(0, ReportUrlsInfo.authenticate.url.indexOf('?')),
+        (req, res, ctx) => res(ctx.json(response_url))
+      )
+    )
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    localeContext.mockReturnValue({
+      messages: { locale: 'en' },
+      lang: 'en-US',
+      setLang: () => {}
+    })
+
+    get.mockReturnValue('true')
+    render(<Provider>
+      <DataStudio/>
+    </Provider>, { route: { params } })
+
+    await waitFor(()=>{
+      expect(screen.getByTitle('data-studio')).toBeVisible()
+    })
+
+    const iframe = screen.getByTitle('data-studio') as HTMLIFrameElement
+    // eslint-disable-next-line max-len
+    expect(iframe.src).toBe('http://localhost/api/a4rc/explorer/')
   })
 
   describe('dev env', () => {

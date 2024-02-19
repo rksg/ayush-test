@@ -23,7 +23,7 @@ export interface DataStudioResponse {
 }
 
 export interface EmbeddedResponse {
-  dashboard_metadata: {
+  result: {
     uuid: string,
     dashboard_id: string,
     allowed_domains: string[]

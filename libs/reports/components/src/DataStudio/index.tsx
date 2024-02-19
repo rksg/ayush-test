@@ -5,7 +5,7 @@ import { IFrame, showActionModal }            from '@acx-ui/components'
 import { get }                                from '@acx-ui/config'
 import { useIsSplitOn, Features }             from '@acx-ui/feature-toggle'
 import { useAuthenticateMutation }            from '@acx-ui/reports/services'
-import type { DataStudioResponse, UserInfo }  from '@acx-ui/reports/services'
+import type { DataStudioResponse }            from '@acx-ui/reports/services'
 import { getUserProfile as getUserProfileR1 } from '@acx-ui/user'
 import { useLocaleContext, getIntl }          from '@acx-ui/utils'
 
@@ -73,20 +73,21 @@ export function DataStudio () {
     })
       .unwrap()
       .then((resp: DataStudioResponse) => {
-        const userInfo = resp.user_info as UserInfo
-        sessionStorage.setItem('user_info', JSON.stringify(userInfo))
+        const { redirect_url, user_info } = resp
+        if (!user_info) {
+          setUrl(redirect_url)
+        } else {
+          // store user info
+          sessionStorage.setItem('user_info', JSON.stringify(user_info))
+          const { tenant_id, is_franchisor, tenant_ids } = user_info
+          // Lets also set the params for the iframe
+          const searchParams = new URLSearchParams()
+          searchParams.append('mlisa_own_tenant_id', tenant_id)
+          searchParams.append('mlisa_tenant_ids', tenant_ids.join(','))
+          searchParams.append('is_franchisor', is_franchisor)
 
-        // Lets also set the params for the iframe
-        const searchParams = new URLSearchParams()
-        searchParams.append('mlisa_own_tenant_id', userInfo.tenant_id)
-        searchParams.append('mlisa_tenant_ids', userInfo.tenant_ids.join(','))
-        searchParams.append('is_franchisor', userInfo.is_franchisor)
-
-        const url = `${resp.redirect_url}?${searchParams.toString()}`
-        // eslint-disable-next-line no-console
-        console.log('Navigating to URL: ', url)
-
-        setUrl(url)
+          setUrl(`${resp.redirect_url}?${searchParams.toString()}`)
+        }
       })
   }, [authenticate, locale])
 
