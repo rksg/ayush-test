@@ -161,7 +161,7 @@ const EdgeSdLanTable = () => {
         return <TenantLink
           to={`/devices/edge/${row.guestEdgeId}/details/overview`}
         >
-          {_.find(edgeOptions, { key: row.guestEdgeId })?.value}
+          {row.guestEdgeName}
         </TenantLink>
       }
     },

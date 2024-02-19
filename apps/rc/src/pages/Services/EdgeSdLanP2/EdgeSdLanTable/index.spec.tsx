@@ -71,7 +71,7 @@ describe('SD-LAN Table P2', () => {
     await waitFor(() => expect(mockedGetEdgeList).toBeCalled())
     const rows = await screen.findAllByRole('row', { name: /Mocked_SDLAN_/i })
     expect(rows.length).toBe(2)
-    await screen.findByRole('row', { name: /Smart Edge 3/i })
+    screen.getByRole('row', { name: /Smart Edge 3/i })
     // eslint-disable-next-line max-len
     expect(rows[0]).toHaveTextContent(/Mocked_SDLAN_1\s*Mocked-Venue-1\s*vSE-b490\s*Smart Edge 3\s*1\s*Mocked_tunnel-1\s*Mocked_tunnel-3\s*Poor/)
     // eslint-disable-next-line max-len
