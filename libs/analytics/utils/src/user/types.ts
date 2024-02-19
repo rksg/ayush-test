@@ -46,6 +46,7 @@ export type Permissions = {
   'franchisor': boolean
 }
 
+
 export type Settings = {
   'sla-p1-incidents-count': string
   'sla-guest-experience': string
@@ -54,6 +55,7 @@ export type Settings = {
   franchisor: string
   franchisee: string
   zone: string
+  sso: string
 }
 
 export type ManagedUser = {

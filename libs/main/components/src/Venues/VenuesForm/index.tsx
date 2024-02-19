@@ -19,11 +19,9 @@ import { GoogleMapWithPreference, usePlacesAutocomplete, wifiCountryCodes
 import {
   useAddVenueMutation,
   useLazyVenuesListQuery,
-  useGetVenueQuery,
   useUpdateVenueMutation,
   useAddVenueTemplateMutation,
   useUpdateVenueTemplateMutation,
-  useGetVenueTemplateQuery,
   useLazyGetVenuesTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -33,7 +31,7 @@ import {
   checkObjectNotExists,
   generatePageHeaderTitle,
   redirectPreviousPage,
-  useBreadcrumb,
+  useConfigTemplateBreadcrumb,
   useConfigTemplate,
   whitespaceOnlyRegExp
 } from '@acx-ui/rc/utils'
@@ -46,8 +44,9 @@ import {
 import { RequestPayload }     from '@acx-ui/types'
 import { validationMessages } from '@acx-ui/utils'
 
-import { MessageMapping }   from '../MessageMapping'
-import { VenueEditContext } from '../VenueEdit'
+import { MessageMapping }      from '../MessageMapping'
+import { useGetVenueInstance } from '../venueConfigTemplateApiSwitcher'
+import { VenueEditContext }    from '../VenueEdit'
 
 interface AddressComponent {
   long_name?: string;
@@ -159,12 +158,12 @@ export function VenuesForm () {
   const [countryCode, setCountryCode] = useState('')
 
   const { action } = useParams()
-  const { data } = useGetInstance()
+  const { data } = useGetVenueInstance()
   const previousPath = usePreviousPath()
 
   // Config Template related states
   const { isTemplate } = useConfigTemplate()
-  const breadcrumb = useBreadcrumb([
+  const breadcrumb = useConfigTemplateBreadcrumb([
     { text: intl.$t({ defaultMessage: 'Venues' }), link: '/venues' }
   ])
   const pageTitle = generatePageHeaderTitle({
@@ -445,17 +444,6 @@ function useUpdateInstance () {
   const [ updateVenueTemplate ] = useUpdateVenueTemplateMutation()
 
   return isTemplate ? updateVenueTemplate : updateVenue
-}
-
-function useGetInstance () {
-  const { isTemplate } = useConfigTemplate()
-  const { tenantId, venueId } = useParams()
-  // eslint-disable-next-line max-len
-  const venueResult = useGetVenueQuery({ params: { tenantId, venueId } }, { skip: !venueId || isTemplate })
-  // eslint-disable-next-line max-len
-  const venueTemplateResult = useGetVenueTemplateQuery({ params: { venueId } }, { skip: !venueId || !isTemplate })
-
-  return isTemplate ? venueTemplateResult : venueResult
 }
 
 function useGetLazyInstances () {

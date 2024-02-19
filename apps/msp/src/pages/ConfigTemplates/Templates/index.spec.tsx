@@ -19,6 +19,11 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useLocation: () => mockedLocation
 }))
 
+jest.mock('./AccessControlPolicy', () => ({
+  ...jest.requireActual('./AccessControlPolicy'),
+  AccessControlSubPolicyDrawers: () => <div data-testid='AccessControlSubPolicyDrawers'></div>
+}))
+
 describe('ConfigTemplateList component', () => {
   const path = `/:tenantId/v/${CONFIG_TEMPLATE_PATH_PREFIX}/:activeTab`
   const params = { tenantId: '__TENANT_ID', activeTab: ConfigTemplateTabKey.TEMPLATES }
@@ -46,6 +51,27 @@ describe('ConfigTemplateList component', () => {
 
     expect(await screen.findByRole('button', { name: /Add Template/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: /Template 1/i })).toBeVisible()
+  })
+
+  it('should render appliedToTenant Drawer with data', async () => {
+    render(
+      <Provider>
+        <ConfigTemplateList />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    expect(await screen.findByRole('button', { name: /Add Template/i })).toBeVisible()
+    const row = await screen.findByRole('row', { name: /Template 1/i })
+    expect(row).toBeVisible()
+    const appliedToButton = await within(row).findByRole('button', {
+      name: /2/i
+    })
+    await userEvent.click(appliedToButton)
+    expect(await screen.findByText(/applied to ec tenants/i)).toBeVisible()
+    await userEvent.click(screen.getByText('Cancel'))
+    expect(screen.queryByText(/applied to ec tenants/i)).toBeNull()
   })
 
   it('should apply template', async () => {

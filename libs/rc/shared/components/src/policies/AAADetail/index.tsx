@@ -8,7 +8,7 @@ import {
   getPolicyDetailsLink,
   PolicyOperation,
   PolicyType,
-  useConfigTemplate, usePolicyBreadcrumb
+  useConfigTemplate, usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
@@ -20,7 +20,7 @@ export function AAAPolicyDetail () {
   const { $t } = useIntl()
   const params = useParams()
   const queryResults = useGetAAAPolicyInstance()
-  const breadcrumb = usePolicyBreadcrumb(PolicyType.AAA, PolicyOperation.LIST)
+  const breadcrumb = usePolicyListBreadcrumb(PolicyType.AAA)
 
   return (
     <>

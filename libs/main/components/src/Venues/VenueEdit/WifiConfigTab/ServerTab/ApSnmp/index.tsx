@@ -5,6 +5,7 @@ import { isEqual }                             from 'lodash'
 import { useIntl }                             from 'react-intl'
 
 import { Loader, StepsFormLegacy, showToast, showActionModal, AnchorContext } from '@acx-ui/components'
+import { ApSnmpMibsDownloadInfo }                                             from '@acx-ui/rc/components'
 import {
   useGetApSnmpPolicyListQuery,
   useGetVenueApSnmpSettingsQuery,
@@ -164,7 +165,7 @@ export function ApSnmp () {
           data-testid='snmp-select'
           defaultValue={RetrievedVenueApSnmpAgentProfileId}
           options={[
-            { label: $t({ defaultMessage: 'Select...' }), value: '' },
+            { label: $t({ defaultMessage: 'Select SNMP Agent...' }), value: '' },
             ...RetrievedVenueApSnmpAgentOptions
           ]}
           onChange={(id => {
@@ -195,5 +196,6 @@ export function ApSnmp () {
           </Button>}
       </Form.Item>}
     </Space>
+    <ApSnmpMibsDownloadInfo />
   </Loader>)
 }
