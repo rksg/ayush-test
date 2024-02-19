@@ -86,12 +86,25 @@ describe('CaptiveNetworkForm-WISPr', () => {
 
   it('should test WISPr network successfully', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    render(<Provider><NetworkFormContext.Provider
-      value={{
-        editMode: true, cloneMode: true, data: wisprDataWPA2
-      }}
-    ><StepsFormLegacy><StepsFormLegacy.StepForm><WISPrForm /></StepsFormLegacy.StepForm>
-      </StepsFormLegacy></NetworkFormContext.Provider></Provider>, { route: { params } })
+    render(
+      <Provider>
+        <NetworkFormContext.Provider
+          value={{
+            editMode: true, cloneMode: true, data: wisprDataWPA2
+          }}
+        >
+          <MLOContext.Provider value={{
+            isDisableMLO: false,
+            disableMLO: jest.fn()
+          }}>
+            <StepsFormLegacy>
+              <StepsFormLegacy.StepForm>
+                <WISPrForm />
+              </StepsFormLegacy.StepForm>
+            </StepsFormLegacy>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+      </Provider>, { route: { params } })
     await userEvent.click((await screen.findAllByTitle('Select provider'))[0])
     await userEvent.click((await screen.findAllByTitle('Skyfii'))[0])
     await userEvent.click((await screen.findAllByTitle('Select Region'))[0])
