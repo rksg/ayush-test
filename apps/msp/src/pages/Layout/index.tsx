@@ -95,7 +95,7 @@ function Layout () {
   return (
     <LayoutComponent
       logo={<TenantNavLink to={indexPath} tenantType={'v'} children={<Logo />} />}
-      menuConfig={useMenuConfig(tenantType, hasLicense, isDogfood)}
+      menuConfig={useMenuConfig(tenantType, hasLicense, isDogfood, data?.mspEc?.parentMspId)}
       content={
         <>
           <CloudMessageBanner />

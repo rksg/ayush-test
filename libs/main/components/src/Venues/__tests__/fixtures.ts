@@ -3130,6 +3130,13 @@ export const mockPropertyUnitList: NewTableResult<PropertyUnit> = {
       dpsks: [],
       personaId: 'persona-1',
       vni: 0
+    }, {
+      id: 'unit-id-2',
+      name: 'unit-2',
+      status: PropertyUnitStatus.ENABLED,
+      dpsks: [],
+      personaId: 'persona-2',
+      vni: 1
     }
   ]
 }
