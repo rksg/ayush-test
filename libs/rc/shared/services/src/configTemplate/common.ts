@@ -7,12 +7,12 @@ import {
   CommonResultWithEntityResponse,
   NetworkSaveData,
   AAAViewModalType,
-  transformNetworkListResponse,
   Network,
   ConfigTemplate,
   ConfigTemplateUrlsInfo,
   VenueExtended,
-  Venue
+  Venue,
+  transformNetwork
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi }      from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
@@ -60,7 +60,13 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
     getNetworkTemplateList: build.query<TableResult<Network>, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.getNetworkTemplateList),
       providesTags: [{ type: 'NetworkTemplate', id: 'LIST' }],
-      transformResponse: transformNetworkListResponse,
+      transformResponse (result: TableResult<Network>) {
+        result.data = result.data.map(item => ({
+          ...transformNetwork(item)
+        })) as Network[]
+        return result
+      },
+      keepUnusedDataFor: 0,
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
