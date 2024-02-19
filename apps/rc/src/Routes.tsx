@@ -1,6 +1,5 @@
 import { PageNotFound }                             from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { AccessControlDetail, AccessControlTable }  from '@acx-ui/msp/components'
 import {
   RogueAPDetectionDetailView,
   RogueAPDetectionForm,
@@ -15,7 +14,8 @@ import {
   VLANPoolForm,
   WifiCallingForm, WifiCallingConfigureForm, WifiCallingDetailView,
   SyslogDetailView, SyslogForm, DHCPForm, PortalForm, ClientIsolationForm,
-  NetworkForm
+  NetworkForm,
+  AccessControlDetail, AccessControlTable
 } from '@acx-ui/rc/components'
 import {
   getPolicyListRoutePath,

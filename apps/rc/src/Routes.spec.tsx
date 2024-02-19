@@ -185,11 +185,6 @@ jest.mock('./pages/Users/Persona/PersonaGroupDetails', () => () => {
   return <div data-testid='PersonaGroupDetails' />
 })
 
-jest.mock('@acx-ui/msp/components', () => ({
-  ...jest.requireActual('@acx-ui/msp/components'),
-  AccessControlDetail: () => <div data-testid='AccessControlDetail' />
-}))
-
 jest.mock('./pages/Policies/MacRegistrationList/MacRegistrarionListTable', () => () => {
   return <div data-testid='MacRegistrationListsTable' />
 })
@@ -210,7 +205,8 @@ jest.mock('@acx-ui/rc/components', () => ({
   PortalForm: () => <div data-testid='PortalForm' />,
   NetworkForm: () => <div data-testid='NetworkForm' />,
   AAAPolicyDetail: () => <div data-testid='AAAPolicyDetail' />,
-  NetworkDetails: () => <div data-testid='NetworkDetails' />
+  NetworkDetails: () => <div data-testid='NetworkDetails' />,
+  AccessControlDetail: () => <div data-testid='AccessControlDetail' />
 }))
 
 jest.mock('./pages/Policies/AdaptivePolicy/RadiusAttributeGroup/RadiusAttributeGroupForm/RadiusAttributeGroupForm', () => () => {
