@@ -4,20 +4,27 @@ import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, Table, TableProps }                              from '@acx-ui/components'
-import { AddModeProps, defaultNetworkPayload, ApplicationDrawer } from '@acx-ui/rc/components'
+import { Loader, Table, TableProps } from '@acx-ui/components'
 import {
   doProfileDelete,
-  useDelAppPoliciesMutation,
-  useGetEnhancedApplicationProfileListQuery,
+  useDelDevicePoliciesMutation,
+  useGetEnhancedDeviceProfileListQuery,
   useNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
-  useTableQuery, ApplicationPolicy, AclOptionType, Network
+  AclOptionType,
+  DevicePolicy,
+  Network,
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
-import { PROFILE_MAX_COUNT_APPLICATION_POLICY } from '../constants'
+import { defaultNetworkPayload }           from '../../../NetworkTable'
+import { AddModeProps }                    from '../../AccessControlForm'
+import { DeviceOSDrawer }                  from '../../AccessControlForm/DeviceOSDrawer'
+import { PROFILE_MAX_COUNT_DEVICE_POLICY } from '../constants'
+
+
 
 const defaultPayload = {
   fields: [
@@ -30,15 +37,14 @@ const defaultPayload = {
   ],
   page: 1
 }
-
-const ApplicationPolicyComponent = () => {
+const DevicePolicyComponent = () => {
   const { $t } = useIntl()
   const params = useParams()
   const [addModeStatus, setAddModeStatus] = useState(
     { enable: true, visible: false } as AddModeProps
   )
 
-  const [ deleteFn ] = useDelAppPoliciesMutation()
+  const [ deleteFn ] = useDelDevicePoliciesMutation()
 
   const [networkFilterOptions, setNetworkFilterOptions] = useState([] as AclOptionType[])
   const [networkIds, setNetworkIds] = useState([] as string[])
@@ -57,9 +63,9 @@ const ApplicationPolicyComponent = () => {
     id: '', isEdit: false
   })
 
-  const settingsId = 'policies-access-control-application-policy-table'
+  const settingsId = 'policies-access-control-device-policy-table'
   const tableQuery = useTableQuery({
-    useQuery: useGetEnhancedApplicationProfileListQuery,
+    useQuery: useGetEnhancedDeviceProfileListQuery,
     defaultPayload,
     pagination: { settingsId }
   })
@@ -95,14 +101,14 @@ const ApplicationPolicyComponent = () => {
   }, [networkTableQuery.data, networkIds])
 
   const actions = [{
-    label: $t({ defaultMessage: 'Add Application Policy' }),
-    disabled: tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_APPLICATION_POLICY,
+    label: $t({ defaultMessage: 'Add Device & OS Policy' }),
+    disabled: tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_DEVICE_POLICY,
     onClick: () => {
       setAddModeStatus({ enable: true, visible: true })
     }
   }]
 
-  const doDelete = (selectedRows: ApplicationPolicy[], callback: () => void) => {
+  const doDelete = (selectedRows: DevicePolicy[], callback: () => void) => {
     doProfileDelete(
       selectedRows,
       $t({ defaultMessage: 'Policy' }),
@@ -112,7 +118,7 @@ const ApplicationPolicyComponent = () => {
     )
   }
 
-  const rowActions: TableProps<ApplicationPolicy>['rowActions'] = [
+  const rowActions: TableProps<DevicePolicy>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedItems => selectedItems.length > 0),
@@ -131,10 +137,10 @@ const ApplicationPolicyComponent = () => {
 
   return <Loader states={[tableQuery]}>
     <Form>
-      <ApplicationDrawer
+      <DeviceOSDrawer
         onlyAddMode={addModeStatus}
       />
-      <Table<ApplicationPolicy>
+      <Table<DevicePolicy>
         settingsId={settingsId}
         columns={useColumns(networkFilterOptions, editMode, setEditMode)}
         enableApiFilter={true}
@@ -158,7 +164,7 @@ function useColumns (
   ) => void) {
   const { $t } = useIntl()
 
-  const columns: TableProps<ApplicationPolicy>['columns'] = [
+  const columns: TableProps<DevicePolicy>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'Name' }),
@@ -168,7 +174,7 @@ function useColumns (
       defaultSortOrder: 'ascend',
       fixed: 'left',
       render: function (_, row) {
-        return <ApplicationDrawer
+        return <DeviceOSDrawer
           editMode={row.id === editMode.id ? editMode : { id: '', isEdit: false }}
           setEditMode={setEditMode}
           isOnlyViewMode={true}
@@ -205,4 +211,4 @@ function useColumns (
 }
 
 
-export default ApplicationPolicyComponent
+export default DevicePolicyComponent

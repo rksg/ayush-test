@@ -3,7 +3,7 @@ import { createContext, useState } from 'react'
 import { isEmpty }   from 'lodash'
 import { IntlShape } from 'react-intl'
 
-import { showActionModal, CustomButtonProps } from '@acx-ui/components'
+import { showActionModal, CustomButtonProps, StepsFormLegacy } from '@acx-ui/components'
 import { VenueLed,
   VenueSwitchConfiguration,
   ExternalAntenna,
@@ -331,4 +331,18 @@ export function showUnsavedModal (
       buttons: (hasError ? btns.slice(0, 2) : btns) as CustomButtonProps[]
     }
   })
+}
+
+// eslint-disable-next-line max-len
+export function createAnchorSectionItem (title: string, titleId: string, content: JSX.Element, key?: string) {
+  return {
+    title,
+    ...(key ? { key } : {}),
+    content: <>
+      <StepsFormLegacy.SectionTitle id={titleId}>
+        { title }
+      </StepsFormLegacy.SectionTitle>
+      {content}
+    </>
+  }
 }
