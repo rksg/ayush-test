@@ -10,7 +10,7 @@ import { useIntl, defineMessage } from 'react-intl'
 import { SpaceWrapper } from '@acx-ui/rc/components'
 
 interface PermissionSelectorProps {
-  setSelected: (selectedAuth: string) => void
+  setSelected: (selectedPermission: PermissionRadioButtonEnum) => void
 }
 
 export enum PermissionRadioButtonEnum {
@@ -18,7 +18,7 @@ export enum PermissionRadioButtonEnum {
   byExpertise = 'byExpertise'
 }
 
-export const GetPermissionString = (type: PermissionRadioButtonEnum) => {
+const GetPermissionString = (type: PermissionRadioButtonEnum) => {
   switch (type) {
     case PermissionRadioButtonEnum.byTechnology:
       return defineMessage({ defaultMessage: 'By Technology' })
@@ -27,7 +27,7 @@ export const GetPermissionString = (type: PermissionRadioButtonEnum) => {
   }
 }
 
-export const getAuthTypes = () => {
+const getTypes = () => {
   return [
     {
       label: GetPermissionString(PermissionRadioButtonEnum.byTechnology),
@@ -48,7 +48,7 @@ const PermissionSelector = (props: PermissionSelectorProps) => {
     setSelected(e.target.value)
   }
 
-  const authTypesList = getAuthTypes().map((item) => ({
+  const typesList = getTypes().map((item) => ({
     label: $t(item.label),
     value: item.value
   }))
@@ -59,11 +59,12 @@ const PermissionSelector = (props: PermissionSelectorProps) => {
       initialValue={PermissionRadioButtonEnum.byTechnology}
     >
       <Radio.Group
+        disabled={true}
         style={{ width: '100%' }}
         onChange={onSelectModeChange}
       >
         <SpaceWrapper direction='vertical'>
-          {authTypesList.map((item) => {
+          {typesList.map((item) => {
             return (
               <React.Fragment key={item.value}>
                 <Radio

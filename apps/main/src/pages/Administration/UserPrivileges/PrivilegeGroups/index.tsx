@@ -50,7 +50,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
 
   useEffect(() => {
     if (privilegeGroupList) {
-      setPrivilegeGroupData(privilegeGroupList as PrivilegeGroup[])
+      setPrivilegeGroupData(privilegeGroupList ?? [])
     }
   }, [privilegeGroupList])
 
@@ -118,7 +118,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
     {
       label: $t({ defaultMessage: 'View' }),
       visible: (selectedRows) => {
-        return selectedRows.length === 1
+        return (selectedRows.length === 1 && selectedRows[0].type === CustomGroupType.SYSTEM)
       },
       onClick: (selectedRows) => {
         navigate({
@@ -133,9 +133,6 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
         return (selectedRows.length === 1 && selectedRows[0].type !== CustomGroupType.SYSTEM)
       },
       onClick: (selectedRows) => {
-        // show edit dialog
-        // setEditData(selectedRows[0])
-        // setEditMode(true)
         navigate({
           ...linkAddPriviledgePath,
           pathname: `${linkAddPriviledgePath.pathname}/edit/${selectedRows[0].id}`
@@ -165,8 +162,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
           customContent: {
             action: 'DELETE',
             entityName: $t({ defaultMessage: 'Group' }),
-            entityValue: rows.length === 1
-              ? rows[0].name : undefined,
+            entityValue: rows[0].name,
             numOfEntities: rows.length
           },
           onOk: () => {
@@ -195,7 +191,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
       <Table
         columns={columns}
         dataSource={privilegeGroupData}
-        rowKey='id'
+        rowKey='name'
         rowActions={isPrimeAdminUser
           ? filterByAccess(rowActions)
           : undefined}
@@ -204,6 +200,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
           // onSelect: handleRowSelectChange
         } : undefined}
         actions={filterByAccess(tableActions)}
+        data-testid='PrivilegeGroupTable'
       />
     </Loader>
   )

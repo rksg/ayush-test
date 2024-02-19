@@ -357,7 +357,7 @@ export const fakedPrivilegeGroupList =
     {
       id: '99bb7b958a5544898cd0b938fa800a5a',
       name: 'wi-fi privilege group',
-      description: 'privilege group for wi-fi ',
+      description: 'privilege group for wi-fi',
       roleName: 'new wi-fi custom role',
       type: 'Custom',
       delegation: false,

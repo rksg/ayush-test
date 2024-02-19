@@ -25,7 +25,7 @@ import {
 
 import * as UI from '../styledComponents'
 
-import PermissionSelector from './PermissionSelector'
+import PermissionSelector, { PermissionRadioButtonEnum } from './PermissionSelector'
 
 interface CustomRoleData {
   name?: string,
@@ -41,7 +41,8 @@ export function AddCustomRole () {
 
   const linkToCustomRoles = useTenantLink('/administration/userPrivileges/customRoles', 't')
   const [form] = Form.useForm()
-  const [selectedPermission, setSelectedPermission] = useState('')
+  const [selectedPermission, setSelectedPermission] = 
+    useState(PermissionRadioButtonEnum.byTechnology)
   const [addCustomRole] = useAddCustomRoleMutation()
   const [updateCustomRole] = useUpdateCustomRoleMutation()
 
@@ -146,10 +147,9 @@ export function AddCustomRole () {
         padding: '20px 40px 20px 20px' }}>
 
         <PermissionSelector
-          // ssoConfigured={isSsoConfigured}
           setSelected={setSelectedPermission}
         />
-        {selectedPermission === 'byTechnology'
+        {selectedPermission === PermissionRadioButtonEnum.byTechnology
           ? <PermissionsTechForm />
           : <PermissionsExpertiseForm />}
 
