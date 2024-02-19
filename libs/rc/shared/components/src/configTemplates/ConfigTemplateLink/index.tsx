@@ -1,5 +1,7 @@
 import { ReactNode } from 'react'
 
+import { Form } from 'antd'
+
 import {
   ConfigTemplateType,
   DpskDetailsTabKey,
@@ -20,6 +22,8 @@ import {
   useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { LinkProps, MspTenantLink, Path, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
+
+import { ApplicationDrawer, DeviceOSDrawer, Layer2Drawer, Layer3Drawer } from '../../policies'
 
 type OptionProps = {
   [key in ConfigTemplateType]?: {
@@ -102,7 +106,7 @@ export function ServiceConfigTemplateDetailsLink (props: ServiceConfigTemplateDe
 }
 
 // eslint-disable-next-line max-len
-export function renderConfigTemplateDetailsLink (type: ConfigTemplateType, id: string, name: string, option: OptionProps = {}) {
+export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, id: string, name: string, option: OptionProps = {}) {
   let activeTab = ''
   switch (type) {
     case ConfigTemplateType.RADIUS:
@@ -124,6 +128,32 @@ export function renderConfigTemplateDetailsLink (type: ConfigTemplateType, id: s
       activeTab = option[ConfigTemplateType.VENUE]?.activeTab || 'networks'
       // eslint-disable-next-line max-len
       return <ConfigTemplateLink to={`venues/${id}/venue-details/${activeTab}`} children={name} />
+    case ConfigTemplateType.ACCESS_CONTROL_SET:
+      // eslint-disable-next-line max-len
+      return <PolicyConfigTemplateDetailsLink type={PolicyType.ACCESS_CONTROL} oper={PolicyOperation.DETAIL} policyId={id} children={name} />
+    case ConfigTemplateType.LAYER_2_POLICY:
+      return <Form><Layer2Drawer
+        isOnlyViewMode={true}
+        onlyViewMode={{ id: id, viewText: name }}
+      /></Form>
+    case ConfigTemplateType.LAYER_3_POLICY:
+      return <Form><Layer3Drawer
+        isOnlyViewMode={true}
+        onlyViewMode={{ id: id, viewText: name }}
+      /></Form>
+    case ConfigTemplateType.DEVICE_POLICY:
+      return <Form><DeviceOSDrawer
+        isOnlyViewMode={true}
+        onlyViewMode={{ id: id, viewText: name }}
+      /></Form>
+    case ConfigTemplateType.APPLICATION_POLICY:
+      return <Form><ApplicationDrawer
+        isOnlyViewMode={true}
+        onlyViewMode={{
+          id: id,
+          viewText: name
+        }}
+      /></Form>
   }
 }
 

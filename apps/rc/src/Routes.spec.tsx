@@ -185,10 +185,6 @@ jest.mock('./pages/Users/Persona/PersonaGroupDetails', () => () => {
   return <div data-testid='PersonaGroupDetails' />
 })
 
-jest.mock('./pages/Policies/AccessControl/AccessControlDetail', () => () => {
-  return <div data-testid='AccessControlDetail' />
-})
-
 jest.mock('./pages/Policies/MacRegistrationList/MacRegistrarionListTable', () => () => {
   return <div data-testid='MacRegistrationListsTable' />
 })
@@ -209,7 +205,8 @@ jest.mock('@acx-ui/rc/components', () => ({
   PortalForm: () => <div data-testid='PortalForm' />,
   NetworkForm: () => <div data-testid='NetworkForm' />,
   AAAPolicyDetail: () => <div data-testid='AAAPolicyDetail' />,
-  NetworkDetails: () => <div data-testid='NetworkDetails' />
+  NetworkDetails: () => <div data-testid='NetworkDetails' />,
+  AccessControlDetail: () => <div data-testid='AccessControlDetail' />
 }))
 
 jest.mock('./pages/Policies/AdaptivePolicy/RadiusAttributeGroup/RadiusAttributeGroupForm/RadiusAttributeGroupForm', () => () => {
@@ -279,6 +276,12 @@ jest.mock('./pages/Services/EdgeSdLan/EdgeSdLanDetail', () => () => {
 
 jest.mock('./pages/Services/EdgeSdLanP2/AddEdgeSdLan', () => () => {
   return <div data-testid='AddEdgeSdLanP2' />
+})
+jest.mock('./pages/Services/EdgeSdLanP2/EditEdgeSdLan', () => () => {
+  return <div data-testid='EditEdgeSdLanP2' />
+})
+jest.mock('./pages/Services/EdgeSdLanP2/EdgeSdLanTable', () => () => {
+  return <div data-testid='EdgeSdLanTableP2' />
 })
 
 describe('RcRoutes: Devices', () => {
@@ -633,7 +636,7 @@ describe('RcRoutes: Services', () => {
       expect(screen.getByTestId('EditEdgeSdLan')).toBeVisible()
     })
     test('should navigate to Edge SD-LAN list page', async () => {
-      const path = getServiceDetailsLink({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.LIST, serviceId: 'SERVICE_ID' })
+      const path = getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.LIST })
       render(<Provider><RcRoutes /></Provider>, {
         route: {
           path: '/tenantId/t/' + path,
@@ -660,6 +663,24 @@ describe('RcRoutes: Services', () => {
         }
       })
       expect(screen.getByTestId('AddEdgeSdLanP2')).toBeVisible()
+    })
+    test('should navigate to edit Edge SD-LAN Phase2 page', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getServiceDetailsLink({ type: ServiceType.EDGE_SD_LAN_P2, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' }),
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('EditEdgeSdLanP2')).toBeVisible()
+    })
+    test('should navigate to Edge SD-LAN Phase2 list page', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN_P2, oper: ServiceOperation.LIST }),
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('EdgeSdLanTableP2')).toBeVisible()
     })
   })
 })

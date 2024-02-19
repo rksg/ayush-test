@@ -203,6 +203,7 @@ export function ManageCustomer () {
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
   const [formData, setFormData] = useState({} as Partial<EcFormData>)
   const [optionalEcAdmin, setOptionalEcAdmin] = useState(false)
+  const [originalTier, setOriginalTier] = useState('')
   const [addCustomer] = useAddCustomerMutation()
   const [updateCustomer] = useUpdateCustomerMutation()
 
@@ -291,6 +292,7 @@ export function ManageCustomer () {
           service_expiration_date: moment(data?.service_expiration_date),
           tier: data?.tier ?? MspEcTierEnum.Professional
         })
+        setOriginalTier(data?.tier ?? '')
         formRef.current?.setFieldValue(['address', 'addressLine'], data?.street_address)
         data?.is_active === 'true' ? setTrialActive(true) : setTrialActive(false)
         status === 'Trial' ? setTrialMode(true) : setTrialMode(false)
@@ -777,30 +779,31 @@ export function ManageCustomer () {
     </>
   }
 
-  const showDataLossDialog = function (tier: RadioChangeEvent) {
-    showActionModal({
-      type: 'confirm',
-      title: intl.$t({
-        defaultMessage: 'Save'
-      }),
-      content: <><p>{intl.$t({
-        defaultMessage: `Changing Service Tier will impact available features.
-        Downgrade from Professional to Essentials may also result in data loss.
-        `
-      })}</p>
-      <p>{intl.$t({
-        defaultMessage: 'Are you sure you want to save the changes?'
-      })}</p>
-      </>,
-      okText: intl.$t({ defaultMessage: 'Save' }),
-      onCancel: () => {
-        if (tier.target.value === MspEcTierEnum.Essential) {
-          formRef.current?.setFieldValue('tier', MspEcTierEnum.Professional)
-        } else {
-          formRef.current?.setFieldValue('tier', MspEcTierEnum.Essential)
+  const handleServiceTierChange = function (tier: RadioChangeEvent) {
+    if(isEditMode && createEcWithTierEnabled && originalTier !== tier.target.value) {
+      const modalContent = (
+        <>
+          <p>{intl.$t({ defaultMessage: `Changing Service Tier will impact available features. 
+          Downgrade from Professional to Essentials may also result in data loss.` })}</p>
+          <p>{intl.$t({ defaultMessage: 'Are you sure you want to save the changes?' })}</p>
+        </>
+      )
+      showActionModal({
+        type: 'confirm',
+        title: intl.$t({
+          defaultMessage: 'Save'
+        }),
+        content: modalContent,
+        okText: intl.$t({ defaultMessage: 'Save' }),
+        onCancel: () => {
+          if (tier.target.value === MspEcTierEnum.Essential) {
+            formRef.current?.setFieldValue('tier', MspEcTierEnum.Professional)
+          } else {
+            formRef.current?.setFieldValue('tier', MspEcTierEnum.Essential)
+          }
         }
-      }
-    })
+      })
+    }
   }
 
   const EcTierForm = () => {
@@ -816,7 +819,7 @@ export function ManageCustomer () {
             {
               Object.entries(MspEcTierEnum).map(([label, value]) => {
                 return <Radio
-                  onChange={showDataLossDialog}
+                  onChange={handleServiceTierChange}
                   key={value}
                   value={value}
                   children={intl.$t({
