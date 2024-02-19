@@ -89,6 +89,17 @@ function SettingsForm () {
       }
     })
   }
+  const onMacAuthTypeChange = (checked: boolean) => {
+    setData && setData({
+      ...data,
+      ...{
+        wlan: {
+          ...data?.wlan,
+          isMacRegistrationList: checked
+        }
+      }
+    })
+  }
   const onOweChange = (checked: boolean) => {
     setData && setData({
       ...data,
@@ -190,7 +201,9 @@ function SettingsForm () {
             name={['wlan', 'isMacRegistrationList']}
             initialValue={!!isMacRegistrationList}
           >
-            <Radio.Group disabled={editMode}>
+            <Radio.Group
+              disabled={editMode}
+              onChange={e => onMacAuthTypeChange(e.target.value)}>
               <Space direction='vertical'>
                 <Radio value={true} disabled={!isCloudpathBetaEnabled}>
                   { $t({ defaultMessage: 'MAC Registration List' }) }
