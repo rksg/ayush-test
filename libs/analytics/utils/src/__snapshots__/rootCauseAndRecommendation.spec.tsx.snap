@@ -3447,7 +3447,7 @@ Array [
         "id": "ru+scw",
       },
       "recommendationsValues": Object {
-        "count": 4,
+        "count": 5,
         "params": Array [
           <Memo(MemoizedFormattedMessage)
             defaultMessage={
@@ -3474,7 +3474,31 @@ Array [
               }
             }
           />,
-          "",
+          <Memo(MemoizedFormattedMessage)
+            defaultMessage={
+              Array [
+                Object {
+                  "children": Array [
+                    Object {
+                      "type": 0,
+                      "value": "Enable Airtime Decongestion.",
+                    },
+                  ],
+                  "type": 8,
+                  "value": "li",
+                },
+              ]
+            }
+            id="mBf9eC"
+            values={
+              Object {
+                "li": [Function],
+                "ol": [Function],
+                "p": [Function],
+                "ul": [Function],
+              }
+            }
+          />,
           <Memo(MemoizedFormattedMessage)
             defaultMessage={
               Array [
@@ -3662,7 +3686,7 @@ Array [
         "id": "OAy/tD",
       },
       "rootCauseValues": Object {
-        "count": 4,
+        "count": 5,
         "params": Array [
           <Memo(MemoizedFormattedMessage)
             defaultMessage={
@@ -3689,7 +3713,31 @@ Array [
               }
             }
           />,
-          "",
+          <Memo(MemoizedFormattedMessage)
+            defaultMessage={
+              Array [
+                Object {
+                  "children": Array [
+                    Object {
+                      "type": 0,
+                      "value": "Excessive number of management frames.",
+                    },
+                  ],
+                  "type": 8,
+                  "value": "li",
+                },
+              ]
+            }
+            id="k8G+Ai"
+            values={
+              Object {
+                "li": [Function],
+                "ol": [Function],
+                "p": [Function],
+                "ul": [Function],
+              }
+            }
+          />,
           <Memo(MemoizedFormattedMessage)
             defaultMessage={
               Array [

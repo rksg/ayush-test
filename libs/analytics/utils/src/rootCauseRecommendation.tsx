@@ -298,7 +298,7 @@ const getAirtimeTxRootCauses = (checks: (AirtimeTxChecks)[]) => {
   const highDensityWifi = <FormattedMessage defaultMessage={'<li>High density of Wi-Fi devices in the network.</li>'} values={htmlValues}/>
   const excessiveFrame = checkTrue.includes('isHighSsidCountPerRadio')
     ? <FormattedMessage defaultMessage={'<li>Excessive number of management frames due to too many SSIDs being broadcasted in the network.</li>'} values={htmlValues}/>
-    : ''
+    : <FormattedMessage defaultMessage={'<li>Excessive number of management frames.</li>'} values={htmlValues}/>
   const highPacket = <FormattedMessage defaultMessage={'<li>High number of packet errors leading to unnecessary retransmissions.</li>'} values={htmlValues}/>
   const highMCBC = <FormattedMessage defaultMessage={'<li>High multicast/broadcast (MC/BC) traffic on WLANs.</li>'} values={htmlValues}/>
   const highLegacy = <FormattedMessage defaultMessage={'<li>High number of legacy Wi-Fi devices.<ul><li>Definition of legacy devices - 11b, 11a, and a combination of 11a and 11b.</li></ul></li>'} values={htmlValues}/>
@@ -339,7 +339,7 @@ const getAirtimeTxRecommendations = (checks: (AirtimeTxChecks)[], params: Airtim
     : <FormattedMessage defaultMessage={'<li>Increase AP density to distribute the client load.</li>'} values={htmlValues}/>
   const excessiveFrame = checkTrue.includes('isHighSsidCountPerRadio')
     ? <FormattedMessage defaultMessage={'<li>There are currently an average of {ssidCountPerRadioSlice} SSIDs/WLANs being broadcasted per AP. Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less. Enabling Airtime Decongestion would be recommended as well.</li>'} values={{ ...htmlValues, ssidCountPerRadioSlice }}/>
-    : ''
+    : <FormattedMessage defaultMessage={'<li>Enable Airtime Decongestion.</li>'} values={htmlValues}/>
   const nonWifiInterference = <FormattedMessage defaultMessage={'<li>Identify and mitigate sources of non-WiFi interference, such as microwave ovens, Bluetooth devices, and cordless phones.</li>'} values={htmlValues}/>
   const highMCBC = <FormattedMessage defaultMessage={'<li>Enable MC/BC rate limit on WLANs or on the switch.</li>'} values={htmlValues}/>
   const highLegacyCount = <FormattedMessage defaultMessage={'<li>Remove legacy devices or upgrade them. If possible, enable OFDM-only mode on WLANs.</li>'} values={htmlValues}/>
