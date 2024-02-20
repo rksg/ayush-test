@@ -14,7 +14,8 @@ import {
   EdgeStatus,
   EdgeSdLanViewDataP2,
   EdgeSdLanSettingP2,
-  EdgeSdLanActivateNetworkPayload
+  EdgeSdLanActivateNetworkPayload,
+  EdgeSdLanToggleDmzPayload
 } from '@acx-ui/rc/utils'
 import { baseEdgeSdLanApi }  from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -308,6 +309,18 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
         const req = createHttpRequest(EdgeSdLanUrls.deactivateEdgeSdLanNetwork, params)
         return { ...req, body: payload }
       }
+    }),
+    toggleEdgeSdLanDmz: build.mutation<CommonResult, RequestPayload<EdgeSdLanToggleDmzPayload>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeSdLanUrls.toggleEdgeSdLanDmz, params)
+        return { ...req, body: payload }
+      }
+    }),
+    getEdgeSdLanIsDmz: build.query<EdgeSdLanToggleDmzPayload, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeSdLanUrls.getEdgeSdLanIsDmz, params)
+        return { ...req, body: payload }
+      }
     })
   })
 })
@@ -329,5 +342,7 @@ export const {
   useActivateEdgeSdLanDmzTunnelProfileMutation,
   useDeactivateEdgeSdLanDmzTunnelProfileMutation,
   useActivateEdgeSdLanNetworkMutation,
-  useDeactivateEdgeSdLanNetworkMutation
+  useDeactivateEdgeSdLanNetworkMutation,
+  useGetEdgeSdLanIsDmzQuery,
+  useToggleEdgeSdLanDmzMutation
 } = edgeSdLanApi

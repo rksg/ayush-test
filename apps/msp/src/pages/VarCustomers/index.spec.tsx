@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
 import { MspUrlsInfo }                                                            from '@acx-ui/msp/utils'
 import { Provider }                                                               from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
@@ -148,6 +149,7 @@ describe('VarCustomers', () => {
     }
   })
   it.skip('should render correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })

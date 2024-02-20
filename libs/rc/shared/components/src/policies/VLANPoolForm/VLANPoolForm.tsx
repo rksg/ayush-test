@@ -14,7 +14,7 @@ import {
   PolicyType,
   PolicyOperation,
   generatePolicyPageHeaderTitle,
-  usePolicyBreadcrumb
+  usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -35,7 +35,7 @@ export const VLANPoolForm = (props: VLANPoolFormProps) => {
   const isEdit = props.edit && !props.networkView
   const formRef = useRef<StepsFormLegacyInstance<VLANPoolPolicyType>>()
   const { data } = useGetVLANPoolPolicyDetailQuery({ params }, { skip: !isEdit })
-  const breadcrumb = usePolicyBreadcrumb(PolicyType.VLAN_POOL, PolicyOperation.LIST)
+  const breadcrumb = usePolicyListBreadcrumb(PolicyType.VLAN_POOL)
   const [ createVLANPoolPolicy ] = useAddVLANPoolPolicyMutation()
 
   const [ updateVLANPoolPolicy ] = useUpdateVLANPoolPolicyMutation()

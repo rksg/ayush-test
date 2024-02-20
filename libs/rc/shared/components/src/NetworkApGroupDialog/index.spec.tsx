@@ -3,14 +3,15 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useIsSplitOn }                    from '@acx-ui/feature-toggle'
+import { networkApi, policyApi, venueApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   RadioTypeEnum,
   WifiUrlsInfo,
   WlanSecurityEnum
 } from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -34,10 +35,22 @@ const venueName = 'My-Venue'
 
 describe('NetworkApGroupDialog', () => {
   beforeEach(() => {
+    store.dispatch(venueApi.util.resetApiState())
+    store.dispatch(networkApi.util.resetApiState())
+    store.dispatch(policyApi.util.resetApiState())
+
     mockServer.use(
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json({ response: [networkVenue_apgroup] }))
+      ),
+      rest.post(
+        CommonUrlsInfo.networkActivations.url,
+        (req, res, ctx) => res(ctx.json({ data: [networkVenue_apgroup] }))
+      ),
+      rest.post(
+        WifiUrlsInfo.getApGroupsList.url,
+        (req, res, ctx) => res(ctx.json({ data: [{ id: 'fake_apg_id', name: 'fake_apg_name' }] }))
       ),
       rest.get(
         WifiUrlsInfo.getVlanPools.url,
