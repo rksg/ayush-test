@@ -11,7 +11,7 @@ import { noDataDisplay }                                from '@acx-ui/utils'
 
 import { LabelledQuality }            from './config'
 import {
-  ClientInfoData,
+  ClientConnectionQualities,
   ConnectionQuality,
   useClientConnectionQualitiesQuery
 } from './services'
@@ -28,7 +28,7 @@ export const durations = (items: ConnectionQuality[] | LabelledQuality[] | undef
     .reduce((a, b) => a + b, 0)
 }
 
-const calculateHealthSummary = (data: ClientInfoData | undefined) => {
+const calculateHealthSummary = (data: ClientConnectionQualities | undefined) => {
   const emptyData = {
     totalConnectedTime: 0,
     goodConnectionPercent: 0,

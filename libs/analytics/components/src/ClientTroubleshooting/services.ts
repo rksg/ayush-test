@@ -30,12 +30,21 @@ export type ConnectionQuality = {
   avgTxMCS?: number | null
 }
 
-export type ClientInfoData = {
+export type ClientIncidentsInfo = {
+  incidents: Incident[]
+}
+
+export type ClientConnectionQualities = {
+  connectionQualities: ConnectionQuality[]
+}
+
+export type ClientConnectionInfo = {
   connectionDetailsByAp: object[]
   connectionEvents: ConnectionEvent[]
   connectionQualities: ConnectionQuality[]
-  incidents: Incident[]
 }
+
+export type ClientInfoData = ClientIncidentsInfo & ClientConnectionInfo
 interface Response <T> {
     client: T
 }
@@ -72,7 +81,7 @@ export const b64ToBlob = (b64Data: string) => {
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     clientInfo: build.query<
-    ClientInfoData,
+    ClientConnectionInfo,
     ClientFilter & IncidentsToggleFilter
     >({
       query: (payload) => ({
@@ -133,12 +142,12 @@ export const api = dataApi.injectEndpoints({
       providesTags: [
         { type: 'Monitoring', id: 'CLIENT_INFO' }
       ],
-      transformResponse: (response: Response<ClientInfoData>) => {
+      transformResponse: (response: Response<ClientConnectionInfo>) => {
         return response.client
       }
     }),
     clientIncidentsInfo: build.query<
-    ClientInfoData,
+    ClientIncidentsInfo,
     ClientFilter & IncidentsToggleFilter
     >({
       query: (payload) => ({
@@ -172,11 +181,11 @@ export const api = dataApi.injectEndpoints({
       providesTags: [
         { type: 'Monitoring', id: 'CLIENT_INFO' }
       ],
-      transformResponse: (response: Response<ClientInfoData>) => {
+      transformResponse: (response: Response<ClientIncidentsInfo>) => {
         return response.client
       }
     }),
-    clientConnectionQualities: build.query<ClientInfoData, ClientFilter>({
+    clientConnectionQualities: build.query<ClientConnectionQualities, ClientFilter>({
       query: (payload) => ({
         document: gql`
         query ClientConnectionQualities($mac: String, $start: DateTime, $end: DateTime) {
@@ -201,7 +210,7 @@ export const api = dataApi.injectEndpoints({
       providesTags: [
         { type: 'Monitoring', id: 'CLIENT_INFO' }
       ],
-      transformResponse: (response: Response<ClientInfoData>) => {
+      transformResponse: (response: Response<ClientConnectionQualities>) => {
         return response.client
       }
     }),
