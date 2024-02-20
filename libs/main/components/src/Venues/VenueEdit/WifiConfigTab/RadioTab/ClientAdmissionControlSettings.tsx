@@ -10,10 +10,16 @@ import {
   ClientAdmissionControlTypeEnum,
   ClientAdmissionControlLevelEnum
 } from '@acx-ui/rc/components'
-import { useGetVenueClientAdmissionControlQuery, useUpdateVenueClientAdmissionControlMutation } from '@acx-ui/rc/services'
-import { VenueClientAdmissionControl }                                                          from '@acx-ui/rc/utils'
+import {
+  useGetVenueClientAdmissionControlQuery,
+  useGetVenueTemplateClientAdmissionControlQuery,
+  useUpdateVenueClientAdmissionControlMutation,
+  useUpdateVenueTemplateClientAdmissionControlMutation
+} from '@acx-ui/rc/services'
+import { VenueClientAdmissionControl } from '@acx-ui/rc/utils'
 
-import { VenueEditContext } from '../..'
+import { VenueEditContext }                                                                from '../..'
+import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
 
 
 
@@ -48,9 +54,16 @@ export function ClientAdmissionControlSettings (props: { isLoadOrBandBalaningEna
   const { setReadyToScroll } = useContext(AnchorContext)
 
   const { isLoadOrBandBalaningEnabled } = props
-  const getClientAdmissionControl = useGetVenueClientAdmissionControlQuery({ params: { venueId } })
+  // eslint-disable-next-line max-len
+  const getClientAdmissionControl = useVenueConfigTemplateQueryFnSwitcher<VenueClientAdmissionControl>(
+    useGetVenueClientAdmissionControlQuery,
+    useGetVenueTemplateClientAdmissionControlQuery
+  )
   const [ updateClientAdmissionControl, { isLoading: isUpdatingClientAdmissionControl }] =
-    useUpdateVenueClientAdmissionControlMutation()
+    useVenueConfigTemplateMutationFnSwitcher(
+      useUpdateVenueClientAdmissionControlMutation,
+      useUpdateVenueTemplateClientAdmissionControlMutation
+    )
 
   useEffect(() => {
     const clientAdmissionControlData = getClientAdmissionControl?.data
