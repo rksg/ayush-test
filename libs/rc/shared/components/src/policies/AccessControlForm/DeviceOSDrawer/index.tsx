@@ -62,7 +62,8 @@ export interface DeviceOSDrawerProps {
   isOnlyViewMode?: boolean,
   onlyAddMode?: AddModeProps,
   editMode?: editModeProps,
-  setEditMode?: (editMode: editModeProps) => void
+  setEditMode?: (editMode: editModeProps) => void,
+  callBack?: () => void
 }
 
 export const GenDetailsColumn = (props: { row: DeviceOSRule }) => {
@@ -113,7 +114,8 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     isOnlyViewMode = false,
     onlyAddMode = { enable: false, visible: false } as AddModeProps,
     editMode = { id: '', isEdit: false } as editModeProps,
-    setEditMode = () => {}
+    setEditMode = () => {},
+    callBack = () => {}
   } = props
   const [visible, setVisible] = useState(onlyAddMode.enable ? onlyAddMode.visible : false)
   const [localEditMode, setLocalEdiMode] = useState(
@@ -339,6 +341,7 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         id: '', isEdit: false
       })
     }
+    callBack()
   }
 
 

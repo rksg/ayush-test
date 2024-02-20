@@ -212,13 +212,7 @@ const ecSupport: SupportDelegation[] = [
 ]
 
 const services = require('@acx-ui/msp/services')
-jest.mock('@acx-ui/msp/services', () => ({
-  ...jest.requireActual('@acx-ui/msp/services')
-}))
 const utils = require('@acx-ui/rc/utils')
-jest.mock('@acx-ui/rc/utils', () => ({
-  ...jest.requireActual('@acx-ui/rc/utils')
-}))
 const mockedShowToast = jest.fn()
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
@@ -672,6 +666,26 @@ describe('ManageCustomer', () => {
     expect(screen.queryByRole('heading', { name: 'Account Details' })).toBeNull()
     expect(screen.queryByRole('heading', { name: 'Summary' })).toBeNull()
 
+  })
+
+  it('should show dialog on service tier radio option change', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_EC_CREATE_WITH_TIER)
+    params.action = 'edit'
+    render(
+      <Provider>
+        <ManageCustomer />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByRole('radio', { name: 'Professional' })).toBeEnabled()
+    const radioBtn = screen.getByRole('radio', { name: 'Essentials' })
+    await userEvent.click(radioBtn)
+    const dialog = await screen.findByRole('dialog')
+    expect(dialog).toBeVisible()
+    const cancelDialog = screen.getAllByRole('button', { name: 'Cancel' })
+    await userEvent.click(cancelDialog[1])
+    expect(screen.getByRole('radio', { name: 'Professional' })).toBeEnabled()
   })
 
 })

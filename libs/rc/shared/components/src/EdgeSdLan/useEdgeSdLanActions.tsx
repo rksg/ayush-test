@@ -16,6 +16,8 @@ export const useEdgeSdLanActions = () => {
   const [addEdgeSdLan] = useAddEdgeSdLanP2Mutation()
   const [updateEdgeSdLan] = useUpdateEdgeSdLanPartialP2Mutation()
 
+  // TODO: waiting for backend ready
+  // const [toggleDmz] = useToggleEdgeSdLanDmzMutation()
   const [activateDmzEdgeCluster] = useActivateEdgeSdLanDmzClusterMutation()
   const [activateDmzTunnel] = useActivateEdgeSdLanDmzTunnelProfileMutation()
   const [activateNetwork] = useActivateEdgeSdLanNetworkMutation()
@@ -36,31 +38,38 @@ export const useEdgeSdLanActions = () => {
       callback: async (response: CommonResult) => {
         const serviceId = response.response?.id
         const actions = payload.isGuestTunnelEnabled
-          ? [activateDmzEdgeCluster({ params: {
-            serviceId,
-            venueId: payload.venueId,
-            edgeClusterId: payload.guestEdgeId
-          } }).unwrap(),
-          activateDmzTunnel({ params: {
-            serviceId,
-            tunnelProfileId: payload.guestTunnelProfileId
-          } }).unwrap(),
-          ...payload.guestNetworkIds.map((item) => {
-            return activateNetwork({
-              params: {
-                serviceId,
-                wifiNetworkId: item
-              },
-              payload: {
-                isGuestTunnelUtilized: true
-              }
-            }).unwrap()
-          })]
+          ? [
+            // TODO: waiting for backend ready
+            // toggleDmz({ params: {
+            //   serviceId
+            // }, payload: {
+            //   isGuestTunnelEnabled: true
+            // } }).unwrap(),
+            activateDmzEdgeCluster({ params: {
+              serviceId,
+              venueId: payload.venueId,
+              edgeClusterId: payload.guestEdgeId
+            } }).unwrap(),
+            activateDmzTunnel({ params: {
+              serviceId,
+              tunnelProfileId: payload.guestTunnelProfileId
+            } }).unwrap(),
+            ...payload.guestNetworkIds.map((item) => {
+              return activateNetwork({
+                params: {
+                  serviceId,
+                  wifiNetworkId: item
+                },
+                payload: {
+                  isGuestTunnelUtilized: true
+                }
+              }).unwrap()
+            })]
           : []
 
         try {
-          const relationActs = await Promise.all(actions)
-          callback?.(relationActs)
+          const reqResult = await Promise.all(actions)
+          callback?.(reqResult)
         } catch(error) {
           callback?.(error as CommonErrorsResult<CatchErrorDetails>)
         }
@@ -81,8 +90,16 @@ export const useEdgeSdLanActions = () => {
       params: { serviceId },
       callback: async () => {
         const actions = []
+
+        // diff `originData` vs `req.payload`
         // isGuestTunnelEnabled changed
         if (originData.isGuestTunnelEnabled !== payload.isGuestTunnelEnabled) {
+          // TODO: waiting for backend ready
+          // actions.push(toggleDmz({ params: {
+          //   serviceId
+          // }, payload: {
+          //   isGuestTunnelEnabled: payload.isGuestTunnelEnabled
+          // } }).unwrap())
           actions.push((payload.isGuestTunnelEnabled
             ? activateDmzEdgeCluster
             : deactivateDmzEdgeCluster)({ params: {
@@ -92,7 +109,6 @@ export const useEdgeSdLanActions = () => {
           } }).unwrap())
         }
 
-        // diff `originData` vs `req.payload`
         if (originData.guestTunnelProfileId !== payload.guestTunnelProfileId) {
           if (originData.guestTunnelProfileId) {
             actions.push(deactivateDmzTunnel({ params: {
