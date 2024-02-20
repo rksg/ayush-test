@@ -21,11 +21,11 @@ jest.mock('react-router-dom', () => ({
 }))
 
 const mockedUseConfigTemplate = jest.fn()
-const mockedUseBreadcrumb = jest.fn()
+const mockedUseConfigTemplateBreadcrumb = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   useConfigTemplate: () => mockedUseConfigTemplate(),
-  useBreadcrumb: () => mockedUseBreadcrumb()
+  useConfigTemplateBreadcrumb: () => mockedUseConfigTemplateBreadcrumb()
 }))
 
 describe('VenuePageHeader', () => {
@@ -68,7 +68,7 @@ describe('VenuePageHeader', () => {
   it('render correctly with isTemplate equal to true', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
-    mockedUseBreadcrumb.mockReturnValue([
+    mockedUseConfigTemplateBreadcrumb.mockReturnValue([
       {
         text: 'Configuration Templates',
         link: CONFIG_TEMPLATE_LIST_PATH,
@@ -81,6 +81,6 @@ describe('VenuePageHeader', () => {
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('link', { name: /configuration templates/i })).toBeInTheDocument()
 
-    mockedUseBreadcrumb.mockRestore()
+    mockedUseConfigTemplateBreadcrumb.mockRestore()
   })
 })

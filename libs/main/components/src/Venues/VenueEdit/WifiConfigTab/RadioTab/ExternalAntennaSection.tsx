@@ -5,21 +5,25 @@ import { Col, Form, Row, Select } from 'antd'
 import { get, uniqBy }            from 'lodash'
 import { useIntl }                from 'react-intl'
 
-import { AnchorContext, Loader }          from '@acx-ui/components'
-import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
-import { ApAntennaTypeSelector }          from '@acx-ui/rc/components'
+import { AnchorContext, Loader }                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { ApAntennaTypeSelector }                  from '@acx-ui/rc/components'
 import {
   useGetVenueAntennaTypeQuery,
   useGetVenueApCapabilitiesQuery,
   useGetVenueExternalAntennaQuery,
+  useGetVenueTemplateApCapabilitiesQuery,
+  useGetVenueTemplateExternalAntennaQuery,
   useUpdateVenueAntennaTypeMutation,
-  useUpdateVenueExternalAntennaMutation
+  useUpdateVenueExternalAntennaMutation,
+  useUpdateVenueTemplateExternalAntennaMutation
 } from '@acx-ui/rc/services'
-import { ApAntennaTypeEnum, CapabilitiesApModel, ExternalAntenna, VeuneApAntennaTypeSettings } from '@acx-ui/rc/utils'
-import { useParams }                                                                           from '@acx-ui/react-router-dom'
+import { ApAntennaTypeEnum, CapabilitiesApModel, ExternalAntenna, VeuneApAntennaTypeSettings, useConfigTemplate } from '@acx-ui/rc/utils'
+import { useParams }                                                                                              from '@acx-ui/react-router-dom'
 
-import { VenueEditContext } from '../..'
-import ApModelPlaceholder   from '../../../assets/images/aps/ap-model-placeholder.png'
+import { VenueEditContext }                                                                from '../..'
+import ApModelPlaceholder                                                                  from '../../../assets/images/aps/ap-model-placeholder.png'
+import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
 
 import { ExternalAntennaForm } from './ExternalAntennaForm'
 
@@ -46,16 +50,19 @@ export function ExternalAntennaSection () {
   const [antennaTypeModels, setAntennaTypeModels] = useState([] as VeuneApAntennaTypeSettings[])
   const [selectedApAntennaType, setSelectedApAntennaType] = useState(null as VeuneApAntennaTypeSettings | null)
 
-  const { allApModelCapabilities, isLoadingCapabilities } = useGetVenueApCapabilitiesQuery({ params }, {
-    selectFromResult ({ data, isLoading }) {
-      return {
-        allApModelCapabilities: data?.apModels,
-        isLoadingCapabilities: isLoading
-      }
-    }
-  })
-  const { data: allApExternalAntennas, isLoading: isLoadingExternalAntenna } = useGetVenueExternalAntennaQuery({ params })
-  const [updateVenueExternalAntenna, { isLoading: isUpdatingExternalAntenna }] = useUpdateVenueExternalAntennaMutation()
+  const { allApModelCapabilities, isLoadingCapabilities } = useGetVenueApCapabilitiesQueryFnSwitcher()
+
+  const { data: allApExternalAntennas, isLoading: isLoadingExternalAntenna } =
+    useVenueConfigTemplateQueryFnSwitcher<ExternalAntenna[]>(
+      useGetVenueExternalAntennaQuery,
+      useGetVenueTemplateExternalAntennaQuery
+    )
+
+  const [updateVenueExternalAntenna, { isLoading: isUpdatingExternalAntenna }] =
+    useVenueConfigTemplateMutationFnSwitcher(
+      useUpdateVenueExternalAntennaMutation,
+      useUpdateVenueTemplateExternalAntennaMutation
+    )
 
   const { data: antennaTypeSettings } = useGetVenueAntennaTypeQuery({ params }, { skip: !supportAntennaTypeSelection })
   const [updateVenueAntennaType, { isLoading: isUpdateAntennaType }] = useUpdateVenueAntennaTypeMutation()
@@ -250,4 +257,29 @@ export function ExternalAntennaSection () {
       </Row>
     </Loader>
   )
+}
+
+function useGetVenueApCapabilitiesQueryFnSwitcher () {
+  const { isTemplate } = useConfigTemplate()
+  const params = useParams()
+
+  const result = useGetVenueApCapabilitiesQuery({ params }, {
+    skip: isTemplate,
+    selectFromResult: selectApModelCapabilitiesFromResult
+  })
+  const templateResult = useGetVenueTemplateApCapabilitiesQuery({ params }, {
+    skip: !isTemplate,
+    selectFromResult: selectApModelCapabilitiesFromResult
+  })
+
+  return isTemplate ? templateResult : result
+}
+
+function selectApModelCapabilitiesFromResult (
+  { data, isLoading }: { data?: { version: string, apModels: CapabilitiesApModel[] }, isLoading: boolean }
+) {
+  return {
+    allApModelCapabilities: data?.apModels,
+    isLoadingCapabilities: isLoading
+  }
 }
