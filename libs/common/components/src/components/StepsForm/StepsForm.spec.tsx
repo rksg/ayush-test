@@ -376,9 +376,9 @@ describe('StepsForm', () => {
 
   it('supports onFinishFailed on individual step', async () => {
     const oldEnv = process.env
-    jest.spyOn(console, 'error')
+    jest.spyOn(console, 'log')
     // eslint-disable-next-line no-console
-    const logError = jest.mocked(console.error).mockImplementation(() => {})
+    const logError = jest.mocked(console.log).mockImplementation(() => {})
 
     const onFinish = jest.fn()
     const onFinish1 = jest.fn().mockRejectedValue(true)
