@@ -9,6 +9,7 @@ import {
 } from '@acx-ui/components'
 import {
   useGetConnectionMeteringByIdQuery,
+  useGetConnectionMeteringListQuery,
   useAddConnectionMeteringMutation,
   useUpdateConnectionMeteringMutation
 } from '@acx-ui/rc/services'
@@ -25,7 +26,7 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-
+import { usePersonaAsyncHeaders } from '../users/usePersonaAsyncHeaders'
 import { ConnectionMeteringSettingForm } from './ConnectionMeteringSetting/ConnectionMeteringSettingForm'
 
 
@@ -82,12 +83,18 @@ export interface ConnectingMeteringFormField extends ConnectionMetering {
   consumptionControlEnabled: boolean
 }
 
+
+
 export function ConnectionMeteringForm (props: ConnectionMeteringFormProps) {
   const { $t } = useIntl()
   const { policyId } = useParams()
   const { mode, useModalMode, modalCallback } = props
   const form = useRef<StepsFormLegacyInstance<ConnectingMeteringFormField>>()
   const originData = useRef<ConnectionMetering>()
+  const idAfterCreatedRef = useRef<string>()
+  const { data: meteringList } = useGetConnectionMeteringListQuery(
+    { payload: { pageSize: '2147483647', page: '1' } }, 
+    { skip: !useModalMode || mode === ConnectionMeteringFormMode.EDIT })
   const tablePath = mode === ConnectionMeteringFormMode.CREATE ?
     getPolicyRoutePath( { type: PolicyType.CONNECTION_METERING,
       oper: PolicyOperation.LIST }) :
@@ -98,6 +105,7 @@ export function ConnectionMeteringForm (props: ConnectionMeteringFormProps) {
     })
   const navigate = useNavigate()
   const linkToPolicies = useTenantLink(tablePath)
+  const { customHeaders } = usePersonaAsyncHeaders()
 
   const [addConnectionMetering] = useAddConnectionMeteringMutation()
   const [
@@ -105,7 +113,7 @@ export function ConnectionMeteringForm (props: ConnectionMeteringFormProps) {
     { isLoading: isUpdating }
   ] = useUpdateConnectionMeteringMutation()
   const handleAddConnectionMetering = async (submittedData: Partial<ConnectionMetering>) => {
-    return addConnectionMetering({ payload: { ...submittedData } }).unwrap()
+    return addConnectionMetering({ payload: { ...submittedData }, customHeaders }).unwrap()
   }
 
   const handleEditConnectionMetering = async (originData:ConnectionMetering|undefined,
@@ -124,7 +132,7 @@ export function ConnectionMeteringForm (props: ConnectionMeteringFormProps) {
     })
 
     if (Object.keys(patchData).length === 0) return
-    return updateConnectionMetering({ params: { id: policyId }, payload: patchData }).unwrap()
+    return updateConnectionMetering({ params: { id: policyId }, payload: patchData, customHeaders }).unwrap()
   }
 
   const onFinish = async (mode:ConnectionMeteringFormMode) => {
@@ -136,7 +144,12 @@ export function ConnectionMeteringForm (props: ConnectionMeteringFormProps) {
       } else if (mode === ConnectionMeteringFormMode.CREATE) {
         result = await handleAddConnectionMetering(data)
       }
-      useModalMode ? modalCallback?.(result) : navigate(linkToPolicies, { replace: true })
+      
+      if (useModalMode) {
+        idAfterCreatedRef.current = result?.id
+      } else {
+        navigate(linkToPolicies, { replace: true })
+      }
     } catch (error) {}
   }
 
@@ -171,6 +184,19 @@ export function ConnectionMeteringForm (props: ConnectionMeteringFormProps) {
       originData.current = connectionMetering
     }
   }, [data, isLoading])
+
+
+  // This is for the new DPSK configuration flow,
+  // in the new flow, the create API only responds with the request ID and the entity ID instead of the whole entity,
+  // when the create process completes, we should find this entity for the modal callback
+  useEffect(() => {
+    if (!idAfterCreatedRef.current || !meteringList?.data) return
+
+    const targetmetering = meteringList.data.find(metering => metering.id === idAfterCreatedRef.current)
+    if (targetmetering) {
+      modalCallback?.(targetmetering)
+    }
+  }, [idAfterCreatedRef, meteringList])
 
   const buttonLabel = {
     submit: mode === ConnectionMeteringFormMode.CREATE ?

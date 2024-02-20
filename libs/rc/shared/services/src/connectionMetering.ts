@@ -17,8 +17,8 @@ import { createHttpRequest }         from '@acx-ui/utils'
 export const connectionMeteringApi = baseConnectionMeteringApi.injectEndpoints({
   endpoints: build => ({
     addConnectionMetering: build.mutation<ConnectionMetering, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(ConnectionMeteringUrls.createConnectionMetering, params)
+      query: ({ params, payload, customHeaders }) => {
+        const req = createHttpRequest(ConnectionMeteringUrls.createConnectionMetering, params, customHeaders)
         return {
           ...req,
           body: payload
@@ -41,11 +41,25 @@ export const connectionMeteringApi = baseConnectionMeteringApi.injectEndpoints({
       transformResponse (result: NewTableResult<ConnectionMetering>) {
         return transferToTableResult<ConnectionMetering>(result)
       },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'CREATE_METERING_PROFILE',
+            'UPDATE_METERING_PROFILE',
+            'DELETE_METERING_PROFILE'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(personaApi.util.invalidateTags([
+              { type: 'ConnectionMetering', id: 'LIST' }
+            ]))
+          })
+        })
+      },
       providesTags: [{ type: 'ConnectionMetering', id: 'LIST' }]
     }),
     deleteConnectionMetering: build.mutation({
-      query: ({ params }) => {
-        const req = createHttpRequest(ConnectionMeteringUrls.deleteConnectionMetering, params)
+      query: ({ params, customHeaders }) => {
+        const req = createHttpRequest(ConnectionMeteringUrls.deleteConnectionMetering, params, customHeaders)
         return {
           ...req
         }
@@ -64,8 +78,8 @@ export const connectionMeteringApi = baseConnectionMeteringApi.injectEndpoints({
       ]
     }),
     updateConnectionMetering: build.mutation<ConnectionMetering, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(ConnectionMeteringUrls.updateConnectionMetering, params)
+      query: ({ params, payload, customHeaders }) => {
+        const req = createHttpRequest(ConnectionMeteringUrls.updateConnectionMetering, params, customHeaders)
         return {
           ...req,
           body: payload
