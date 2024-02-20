@@ -7,21 +7,26 @@ import {
   TableChangePayload,
   NewTableResult,
   transferToTableResult,
-  QosStats
+  QosStats,
+  onSocketActivityChanged,
+  onActivityMessageReceived
 } from '@acx-ui/rc/utils'
 import { baseConnectionMeteringApi } from '@acx-ui/store'
 import { RequestPayload }            from '@acx-ui/types'
 import { createHttpRequest }         from '@acx-ui/utils'
 
-
 export const connectionMeteringApi = baseConnectionMeteringApi.injectEndpoints({
   endpoints: build => ({
     addConnectionMetering: build.mutation<ConnectionMetering, RequestPayload>({
       query: ({ params, payload, customHeaders }) => {
-        const req = createHttpRequest(ConnectionMeteringUrls.createConnectionMetering, params, customHeaders)
+        const req = createHttpRequest(
+          ConnectionMeteringUrls.createConnectionMetering,
+          params,
+          customHeaders
+        )
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'ConnectionMetering', id: 'LIST' }]
@@ -49,7 +54,7 @@ export const connectionMeteringApi = baseConnectionMeteringApi.injectEndpoints({
             'DELETE_METERING_PROFILE'
           ]
           onActivityMessageReceived(msg, activities, () => {
-            api.dispatch(personaApi.util.invalidateTags([
+            api.dispatch(baseConnectionMeteringApi.util.invalidateTags([
               { type: 'ConnectionMetering', id: 'LIST' }
             ]))
           })
@@ -59,7 +64,11 @@ export const connectionMeteringApi = baseConnectionMeteringApi.injectEndpoints({
     }),
     deleteConnectionMetering: build.mutation({
       query: ({ params, customHeaders }) => {
-        const req = createHttpRequest(ConnectionMeteringUrls.deleteConnectionMetering, params, customHeaders)
+        const req = createHttpRequest(
+          ConnectionMeteringUrls.deleteConnectionMetering,
+          params,
+          customHeaders
+        )
         return {
           ...req
         }
@@ -79,10 +88,14 @@ export const connectionMeteringApi = baseConnectionMeteringApi.injectEndpoints({
     }),
     updateConnectionMetering: build.mutation<ConnectionMetering, RequestPayload>({
       query: ({ params, payload, customHeaders }) => {
-        const req = createHttpRequest(ConnectionMeteringUrls.updateConnectionMetering, params, customHeaders)
+        const req = createHttpRequest(
+          ConnectionMeteringUrls.updateConnectionMetering,
+          params,
+          customHeaders
+        )
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'ConnectionMetering' }]
