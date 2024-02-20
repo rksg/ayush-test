@@ -70,7 +70,9 @@ export function useStepsForm <T> ({
     const timeout = setTimeout(setLoading, 50, true)
     return promise
       .catch((errorInfo: ValidateErrorEntity) => {
-        currentStep?.props.onFinishFailed?.(errorInfo)
+        // eslint-disable-next-line no-console
+        const errorHandler = currentStep?.props.onFinishFailed || console.error
+        errorHandler(errorInfo)
       })
       .finally(() => {
         clearTimeout(timeout)

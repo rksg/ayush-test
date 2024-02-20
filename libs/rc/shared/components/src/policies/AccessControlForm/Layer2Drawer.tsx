@@ -49,7 +49,8 @@ export interface Layer2DrawerProps {
   isOnlyViewMode?: boolean,
   onlyAddMode?: AddModeProps,
   editMode?: editModeProps,
-  setEditMode?: (editMode: editModeProps) => void
+  setEditMode?: (editMode: editModeProps) => void,
+  callBack?: () => void
 }
 
 const RuleContentWrapper = styled.div`
@@ -85,7 +86,8 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
     isOnlyViewMode = false,
     onlyAddMode = { enable: false, visible: false } as AddModeProps,
     editMode = { id: '', isEdit: false } as editModeProps,
-    setEditMode = () => {}
+    setEditMode = () => {},
+    callBack = () => {}
   } = props
   const inputRef = useRef(null)
   const [visible, setVisible] = useState(onlyAddMode.enable ? onlyAddMode.visible : false)
@@ -285,6 +287,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
         id: '', isEdit: false
       })
     }
+    callBack()
   }
 
   const handleTagClose = (removedTag: string) => {

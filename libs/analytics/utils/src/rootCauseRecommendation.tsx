@@ -15,7 +15,7 @@ export type FormatMessageValue = React.ReactNode
   | PrimitiveType
   | FormatXMLElementFn<React.ReactNode, React.ReactNode>
 
-type FormatMessageValues = Record<string, FormatMessageValue>
+export type FormatMessageValues = Record<string, FormatMessageValue>
 
 type RootCauseChecks = Exclude<IncidentMetadata['rootCauseChecks'], undefined>
 type RootCausesResult = {
@@ -159,7 +159,7 @@ const getAirtimeBusyRootCauses = () => {
   }
 }
 export const getAirtimeBusyRecommendations = (
-  checks: Array<AirtimeBusyChecks>, params: AirtimeParams, extraValues: Record<string, Function>
+  checks: Array<AirtimeBusyChecks>, params: AirtimeParams, extraValues: FormatMessageValues
 ) => {
   const checkTrue = checkTrueParams(checks)
   const recommendationId = params.recommendationId
@@ -196,12 +196,11 @@ const airtimeRxAllFalseChecks = [
 ]
 const getAirtimeRxRootCauses = (checks: (AirtimeRxChecks)[]) => {
   const checkTrue = checkTrueParams(checks)
-  const allFalse = airtimeRxAllFalseChecks.filter(check => checkTrue.includes(check)).length === 0
-
+  const allFalse = airtimeRxAllFalseChecks.filter(check => checkTrue.includes(check)).length === 0 || (checkTrue.length === 1 && checkTrue[0] === 'isLargeMgmtFrameCount')
   const highDensityWifi = <FormattedMessage defaultMessage={'<li>High density of Wi-Fi devices in the network.</li>'} values={htmlValues}/>
   const excessiveFrame = checkTrue.includes('isHighSsidCountPerRadio')
     ? <FormattedMessage defaultMessage={'<li>Excessive number of management frames due to too many SSIDs being broadcasted in the network.</li>'} values={htmlValues}/>
-    : <FormattedMessage defaultMessage={'<li>Excessive number of management frames.</li>'} values={htmlValues}/>
+    : ''
   const highCoChannel = <FormattedMessage defaultMessage={'<li>High co-channel interference.</li>'} values={htmlValues} />
   const highLegacy = <FormattedMessage defaultMessage={'<li>High number of legacy Wi-Fi devices.<ul><li>Definition of legacy devices - 11b, 11a, and a combination of 11a and 11b.</li></ul></li>'} values={htmlValues}/>
 
@@ -236,7 +235,7 @@ const getAirtimeRxRootCauses = (checks: (AirtimeRxChecks)[]) => {
 }
 const getAirtimeRxRecommendations = (checks: (AirtimeRxChecks)[], params: AirtimeParams) => {
   const checkTrue = checkTrueParams(checks)
-  const allFalse = airtimeRxAllFalseChecks.filter(check => checkTrue.includes(check)).length === 0
+  const allFalse = airtimeRxAllFalseChecks.filter(check => checkTrue.includes(check)).length === 0 || (checkTrue.length === 1 && checkTrue[0] === 'isLargeMgmtFrameCount')
   const { ssidCountPerRadioSlice, recommendationId } = params
   const aiOpsLink = <TenantLink to={`/recommendations/aiOps/${recommendationId}`}>{<FormattedMessage defaultMessage={'here'}/>}</TenantLink>
   const crrmLink = <TenantLink to={`/recommendations/crrm/${recommendationId}`}>{<FormattedMessage defaultMessage={'here'}/>}</TenantLink>
@@ -245,8 +244,8 @@ const getAirtimeRxRecommendations = (checks: (AirtimeRxChecks)[], params: Airtim
     ? <FormattedMessage defaultMessage={'<li>Click {aiOpsLink} to enable client load balancing AI Ops recommendation.</li>'} values={{ ...htmlValues, aiOpsLink }}/>
     : <FormattedMessage defaultMessage={'<li>Increase AP density to distribute the client load.</li>'} values={htmlValues}/>
   const excessiveFrame = checkTrue.includes('isHighSsidCountPerRadio')
-    ? <FormattedMessage defaultMessage={'<li>There are currently an average of {ssidCountPerRadioSlice} SSIDs/WLANs being broadcasted per AP. Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less. Enabling Airtime Decongestion would be recommended as well.</li>'} values={{ ...htmlValues, ssidCountPerRadioSlice }}/>
-    : <FormattedMessage defaultMessage={'<li>Enable Airtime Decongestion.</li>'} values={htmlValues}/>
+    ? <FormattedMessage defaultMessage={'<li>There are currently an average of {ssidCountPerRadioSlice} SSIDs/WLANs being broadcasted per AP. Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less.</li>'} values={{ ...htmlValues, ssidCountPerRadioSlice }}/>
+    : ''
   const crrmRaisedText = <FormattedMessage defaultMessage={'<li>Click {crrmLink} to apply the AI-Driven RRM recommendation.</li>'} values={{ ...htmlValues, crrmLink }}/>
   const channelFly = checkTrue.includes('isChannelFlyEnabled')
     ? <FormattedMessage defaultMessage={'<li>Review the channel planning, AP density and deployment.</li>'} values={htmlValues}/>

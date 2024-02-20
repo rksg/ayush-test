@@ -4,8 +4,7 @@ import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, Table, TableProps }                         from '@acx-ui/components'
-import { AddModeProps, defaultNetworkPayload, Layer2Drawer } from '@acx-ui/rc/components'
+import { Loader, Table, TableProps } from '@acx-ui/components'
 import {
   doProfileDelete,
   useDelL2AclPoliciesMutation,
@@ -15,6 +14,9 @@ import {
 import { AclOptionType, L2AclPolicy, Network, useTableQuery } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess }                          from '@acx-ui/user'
 
+import { defaultNetworkPayload }           from '../../../NetworkTable'
+import { AddModeProps }                    from '../../AccessControlForm'
+import { Layer2Drawer }                    from '../../AccessControlForm/Layer2Drawer'
 import { PROFILE_MAX_COUNT_LAYER2_POLICY } from '../constants'
 
 const defaultPayload = {

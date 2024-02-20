@@ -67,7 +67,7 @@ describe('Brand 360 Table', () => {
       avgTTC: [5,10] as [number, number],
       avgClientThroughput: [5,10] as [number, number]
     }]
-    render(<BrandTable sliceType='lsp' slaThreshold={slaThreshold} data={data} />, {
+    render(<BrandTable sliceType='lsp' slaThreshold={slaThreshold} data={data}/>, {
       wrapper: Provider,
       route: {
         params: { tenantId: 't-id' }
@@ -93,7 +93,7 @@ describe('Brand 360 Table', () => {
       avgTTC: '--' as unknown as [number, number],
       avgClientThroughput: '--' as unknown as [number, number]
     }]
-    render(<BrandTable sliceType='lsp' slaThreshold={slaThreshold} data={data} />, {
+    render(<BrandTable sliceType='lsp' slaThreshold={slaThreshold} data={data}/>, {
       wrapper: Provider,
       route: {
         params: { tenantId: 't-id' }
@@ -101,5 +101,26 @@ describe('Brand 360 Table', () => {
     })
     expect(await screen.findByText('Property Count')).toBeVisible()
     expect(screen.getByText('LSP')).toBeVisible()
+  })
+  it('should render table correctly for LSP account', async () => {
+    const data = [{
+      id: '1',
+      property: 'p',
+      lsp: 'l',
+      p1Incidents: 10,
+      ssidCompliance: [10,100] as [number, number],
+      deviceCount: 2,
+      avgConnSuccess: [10,100] as [number, number],
+      avgTTC: [1,10] as [number, number],
+      avgClientThroughput: [1,10] as [number, number]
+    }]
+    render(<BrandTable sliceType='property' data={data} isLSP={true}/>, {
+      wrapper: Provider,
+      route: {
+        params: { tenantId: 't-id' }
+      }
+    })
+    expect(await screen.findByText('Property')).toBeVisible()
+    expect(screen.queryByText('LSP')).toBeNull()
   })
 })
