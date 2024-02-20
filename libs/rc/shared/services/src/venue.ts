@@ -79,6 +79,8 @@ import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
+import { handleCallbackWhenActivitySuccess } from './utils'
+
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
 }
@@ -256,7 +258,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         })
       }
     }),
-    updateVenueMesh: build.mutation<VenueLed[], RequestPayload>({
+    updateVenueMesh: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.updateVenueMesh, params)
         return {
@@ -819,7 +821,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     getVenueApCapabilities: build.query<{
       version: string,
-      apModels:CapabilitiesApModel[] }, RequestPayload>({
+      apModels: CapabilitiesApModel[] }, RequestPayload>({
         query: ({ params }) => {
           const req = createHttpRequest(WifiUrlsInfo.getVenueApCapabilities, params)
           return {
@@ -1089,20 +1091,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'Venue', id: 'LOAD_BALANCING' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
-          try {
-            const response = await api.cacheDataLoaded
-            if (response &&
-              requestArgs.callback &&
-              msg.useCase === 'UpdateVenueLoadBalancing'
-            && ((msg.steps?.find((step) => {
-              return step.id === 'UpdateVenueLoadBalancing'
-            })?.status !== 'IN_PROGRESS'))) {
-              (requestArgs.callback as Function)()
-            }
-          } catch (error) {
-            /* eslint-disable no-console */
-            console.error(error)
-          }
+          await handleCallbackWhenActivitySuccess(api, msg, 'UpdateVenueLoadBalancing', requestArgs.callback)
         })
       }
     }),
@@ -1410,20 +1399,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'Venue', id: 'ClientAdmissionControl' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
-          try {
-            const response = await api.cacheDataLoaded
-            if (response &&
-              requestArgs.callback &&
-              msg.useCase === 'UpdateVenueClientAdmissionControlSettings' &&
-              ((msg.steps?.find((step) => {
-                return step.id === 'UpdateVenueClientAdmissionControlSettings'
-              })?.status !== 'IN_PROGRESS'))) {
-              (requestArgs.callback as Function)()
-            }
-          } catch (error) {
-            /* eslint-disable no-console */
-            console.error(error)
-          }
+          await handleCallbackWhenActivitySuccess(api, msg, 'UpdateVenueClientAdmissionControlSettings', requestArgs.callback)
         })
       }
     }),
@@ -1443,6 +1419,18 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    bulkUpdateUnitProfile: build.mutation<PropertyUnit, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          PropertyUrlsInfo.bulkUpdateUnitProfile,
+          params)
+        return{
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),
     getVenueAntennaType: build.query< VeuneApAntennaTypeSettings[], RequestPayload>({
       query: ({ params }) => {
@@ -1591,6 +1579,7 @@ export const {
   useLazyGetVenueClientAdmissionControlQuery,
   useUpdateVenueClientAdmissionControlMutation,
   useGetVenueApManagementVlanQuery,
+  useBulkUpdateUnitProfileMutation,
   useLazyGetVenueApManagementVlanQuery,
   useUpdateVenueApManagementVlanMutation,
   useGetVenueAntennaTypeQuery,

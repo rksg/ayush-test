@@ -62,7 +62,8 @@ import {
   StackMember,
   isSameModelFamily,
   checkVersionAtLeast09010h,
-  getStackUnitsMinLimitation
+  getStackUnitsMinLimitation,
+  convertInputToUppercase
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -562,7 +563,7 @@ export function StackForm () {
             : <Input
               data-testid={`serialNumber${row.key}`}
               onBlur={() => handleChange(row, index)}
-              style={{ textTransform: 'uppercase' }}
+              onInput={convertInputToUppercase}
               disabled={row.disabled}
             />
           }</Form.Item>)
