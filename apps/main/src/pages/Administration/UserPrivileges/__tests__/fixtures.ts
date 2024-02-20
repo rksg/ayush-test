@@ -83,46 +83,46 @@ export const fakedAdminLsit = [
   }
 ]
 
-// export const fakeMSPAdminList = [
-//   {
-//     id: '22322506ed764da2afe726885845a359',
-//     createdDate: '2023-01-31T03:28:35.448+00:00',
-//     updatedDate: '2023-01-31T03:28:35.448+00:00',
-//     delegatedTo: 'f5ca6ac1a8cf4929ac5b78d6a1392599',
-//     type: 'MSP',
-//     status: 'ACCEPTED',
-//     delegatedBy: 'abc@email.com',
-//     delegatedToName: 'FisrtName 1551'
-//   }
-// ]
+export const fakeMSPAdminList = [
+  {
+    id: '22322506ed764da2afe726885845a359',
+    createdDate: '2023-01-31T03:28:35.448+00:00',
+    updatedDate: '2023-01-31T03:28:35.448+00:00',
+    delegatedTo: 'f5ca6ac1a8cf4929ac5b78d6a1392599',
+    type: 'MSP',
+    status: 'ACCEPTED',
+    delegatedBy: 'abc@email.com',
+    delegatedToName: 'FisrtName 1551'
+  }
+]
 
-// export const fakeMSPECAdminList = [
-//   {
-//     id: 'f126778d406547c7b0944e845e98dbb2',
-//     email: 'bbb.chengi@gmail.com',
-//     name: 'Ya',
-//     lastName: 'DEF',
-//     role: 'PRIME_ADMIN',
-//     delegateToAllECs: true,
-//     detailLevel: 'debug'
-//   },
-//   {
-//     id: '7fbc3cacb7274a6986755795e1d3be0e',
-//     email: 'aaa.chengi@gmail.com',
-//     name: 'Hi',
-//     lastName: 'ABC',
-//     role: 'PRIME_ADMIN',
-//     delegateToAllECs: true,
-//     detailLevel: 'debug'
-//   }
-// ]
+export const fakeMSPECAdminList = [
+  {
+    id: 'f126778d406547c7b0944e845e98dbb2',
+    email: 'bbb.chengi@gmail.com',
+    name: 'Ya',
+    lastName: 'DEF',
+    role: 'PRIME_ADMIN',
+    delegateToAllECs: true,
+    detailLevel: 'debug'
+  },
+  {
+    id: '7fbc3cacb7274a6986755795e1d3be0e',
+    email: 'aaa.chengi@gmail.com',
+    name: 'Hi',
+    lastName: 'ABC',
+    role: 'PRIME_ADMIN',
+    delegateToAllECs: true,
+    detailLevel: 'debug'
+  }
+]
 
-// export const fakeMSPECAdmin = {
-//   email: 'aaa.chengi@gmail.com',
-//   user_name: 'aaa.cheng@gmail.com',
-//   first_name: 'Hi',
-//   last_name: 'ABC'
-// }
+export const fakeMSPECAdmin = {
+  email: 'aaa.chengi@gmail.com',
+  user_name: 'aaa.cheng@gmail.com',
+  first_name: 'Hi',
+  last_name: 'ABC'
+}
 
 // export const fakeDelegationList = [
 //   {
