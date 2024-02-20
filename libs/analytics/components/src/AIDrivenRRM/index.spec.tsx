@@ -128,6 +128,37 @@ describe('AIDrivenRRM dashboard', () => {
     // eslint-disable-next-line max-len
     expect(await screen.findByText('There are 3 recommendations for 3 zones covering 13.9K possible RRM combinations. Currently, 1 zone is optimized.')).toBeVisible()
   })
+  it('renders unknown only', async () => {
+    mockGraphqlQuery(recommendationUrl, 'CrrmList', {
+      data: {
+        crrmCount: 0,
+        zoneCount: 0,
+        optimizedZoneCount: 0,
+        crrmScenarios: 0,
+        recommendations: crrmUnknownListResult.recommendations.filter(row => row.code === 'unknown')
+      }
+    })
+    render(<AIDrivenRRM pathFilters={pathFilters} />, {
+      route: true,
+      wrapper: Provider
+    })
+
+    expect(screen.queryByText('No Data')).toBeNull()
+    expect(screen.queryByText(
+      'Currently RUCKUS AI cannot provide RRM optimizations as zones are not found on your network.'
+    )).toBeNull()
+
+    expect(await screen.findByText('AI-Driven RRM')).toBeVisible()
+    expect(await screen.findByText('0')).toBeVisible()
+    expect(await screen.findByText('Deeps Place')).toBeVisible()
+    expect(await screen.findByText('zone-3')).toBeVisible()
+    expect(await screen.findByText('zone-4')).toBeVisible()
+    expect(await screen.findByText('Insufficient Licenses')).toBeVisible()
+    expect(await screen.findAllByText('Verification Error')).toHaveLength(2)
+
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('There are 0 recommendations for 0 zones covering 0 possible RRM combinations. Currently, 0 zones are optimized.')).toBeVisible()
+  })
 
   it('renders no data for switch path', async () => {
     const switchPathFilters = {
