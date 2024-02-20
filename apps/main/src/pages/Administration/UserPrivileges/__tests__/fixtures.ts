@@ -28,61 +28,60 @@ export const fakeUserProfile = {
   dogfood: false
 } as UserProfile
 
-// export const fakeNonPrimeAdminUserProfile = {
-//   region: '[NA]',
-//   allowedRegions: [
-//     {
-//       name: 'US',
-//       description: 'United States of America',
-//       link: 'https://dev.ruckus.cloud',
-//       current: true
-//     }
-//   ],
-//   externalId: '0032h00000LUqcoAAD',
-//   pver: 'acx-hybrid',
-//   companyName: 'Dog Company 1551',
-//   firstName: '',
-//   lastName: '',
-//   username: 'erp.cheng@email.com',
-//   role: 'ADMIN',
-//   roles: ['ADMIN'],
-//   detailLevel: DetailLevel.DEBUGGING,
-//   dateFormat: 'mm/dd/yyyy',
-//   email: 'erp.cheng@email.com',
-//   var: false,
-//   tenantId: '8c36a0a9ab9d4806b060e112205add6f',
-//   varTenantId: '8c36a0a9ab9d4806b060e112205add6f',
-//   adminId: 'f5ca6ac1a8cf4929ac5b78d6a1392599',
-//   support: false,
-//   dogfood: false
-// }
+export const fakeNonPrimeAdminUserProfile = {
+  region: '[NA]',
+  allowedRegions: [
+    {
+      name: 'US',
+      description: 'United States of America',
+      link: 'https://dev.ruckus.cloud',
+      current: true
+    }
+  ],
+  externalId: '0032h00000LUqcoAAD',
+  pver: 'acx-hybrid',
+  companyName: 'Dog Company 1551',
+  firstName: '',
+  lastName: '',
+  username: 'erp.cheng@email.com',
+  role: 'ADMIN',
+  roles: ['ADMIN'],
+  detailLevel: DetailLevel.DEBUGGING,
+  dateFormat: 'mm/dd/yyyy',
+  email: 'erp.cheng@email.com',
+  var: false,
+  tenantId: '8c36a0a9ab9d4806b060e112205add6f',
+  varTenantId: '8c36a0a9ab9d4806b060e112205add6f',
+  adminId: 'f5ca6ac1a8cf4929ac5b78d6a1392599',
+  support: false,
+  dogfood: false
+}
 
-
-// export const fakedAdminLsit = [
-//   {
-//     id: '0587cbeb13404f3b9943d21f9e1d1e3e',
-//     email: 'abc.cheng@email.com',
-//     role: 'PRIME_ADMIN',
-//     delegateToAllECs: true,
-//     detailLevel: 'debug'
-//   },
-//   {
-//     id: '0587cbeb13404f3b9943d21f9e1d1r6r',
-//     email: 'erp.cheng@email.com',
-//     role: 'ADMIN',
-//     delegateToAllECs: false,
-//     detailLevel: 'debug'
-//   },
-//   {
-//     id: 'f5ca6ac1a8cf4929ac5b78d6a1392599',
-//     email: 'dog1551@email.com',
-//     name: 'FisrtName 1551',
-//     lastName: 'LastName 1551',
-//     role: 'PRIME_ADMIN',
-//     delegateToAllECs: true,
-//     detailLevel: 'debug'
-//   }
-// ]
+export const fakedAdminLsit = [
+  {
+    id: '0587cbeb13404f3b9943d21f9e1d1e3e',
+    email: 'abc.cheng@email.com',
+    role: 'PRIME_ADMIN',
+    delegateToAllECs: true,
+    detailLevel: 'debug'
+  },
+  {
+    id: '0587cbeb13404f3b9943d21f9e1d1r6r',
+    email: 'erp.cheng@email.com',
+    role: 'ADMIN',
+    delegateToAllECs: false,
+    detailLevel: 'debug'
+  },
+  {
+    id: 'f5ca6ac1a8cf4929ac5b78d6a1392599',
+    email: 'dog1551@email.com',
+    name: 'FisrtName 1551',
+    lastName: 'LastName 1551',
+    role: 'PRIME_ADMIN',
+    delegateToAllECs: true,
+    detailLevel: 'debug'
+  }
+]
 
 // export const fakeMSPAdminList = [
 //   {

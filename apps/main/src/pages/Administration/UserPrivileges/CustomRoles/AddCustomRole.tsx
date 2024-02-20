@@ -41,7 +41,7 @@ export function AddCustomRole () {
 
   const linkToCustomRoles = useTenantLink('/administration/userPrivileges/customRoles', 't')
   const [form] = Form.useForm()
-  const [selectedPermission, setSelectedPermission] = 
+  const [selectedPermission, setSelectedPermission] =
     useState(PermissionRadioButtonEnum.byTechnology)
   const [addCustomRole] = useAddCustomRoleMutation()
   const [updateCustomRole] = useUpdateCustomRoleMutation()

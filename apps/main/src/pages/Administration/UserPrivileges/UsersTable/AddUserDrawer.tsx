@@ -161,7 +161,7 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
 
   return (
     <Drawer
-      title={$t({ defaultMessage: 'Add User' })}
+      title={$t({ defaultMessage: 'Add New User' })}
       visible={visible}
       keyboard={false}
       onClose={onClose}

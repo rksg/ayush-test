@@ -199,7 +199,8 @@ const UsersTable = (props: UsersTableProps) => {
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Administrators' }),
+            entityName:
+              rows.length === 1 ? $t({ defaultMessage: 'User' }) : $t({ defaultMessage: 'Users' }),
             entityValue: rows.length === 1
               ? rows[0].fullName !== ' ' ? rows[0].fullName : rows[0].email
               : undefined,
