@@ -9,7 +9,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
-import { renderConfigTemplateDetailsLink } from '../../configTemplates'
+import { renderConfigTemplateDetailsComponent } from '../../configTemplates'
 
 export default function AAAInstancesTable (){
   const { isTemplate } = useConfigTemplate()
@@ -40,7 +40,7 @@ export default function AAAInstancesTable (){
       render: function (_, row) {
         return isTemplate
           // eslint-disable-next-line max-len
-          ? renderConfigTemplateDetailsLink(ConfigTemplateType.NETWORK, row.networkId, row.networkName)
+          ? renderConfigTemplateDetailsComponent(ConfigTemplateType.NETWORK, row.networkId, row.networkName)
           // eslint-disable-next-line max-len
           : <TenantLink to={`/networks/wireless/${row.networkId}/network-details/aps`}>{row.networkName}</TenantLink>
       }

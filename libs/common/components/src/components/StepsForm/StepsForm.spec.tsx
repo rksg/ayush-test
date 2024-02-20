@@ -374,6 +374,64 @@ describe('StepsForm', () => {
     expect(onFinish).not.toBeCalled()
   })
 
+  it('supports onFinishFailed on individual step', async () => {
+    const oldEnv = process.env
+    jest.spyOn(console, 'error')
+    // eslint-disable-next-line no-console
+    const logError = jest.mocked(console.error).mockImplementation(() => {})
+
+    const onFinish = jest.fn()
+    const onFinish1 = jest.fn().mockRejectedValue(true)
+    const onFinish2 = jest.fn().mockRejectedValue(true)
+    const onFinishFailed = jest.fn()
+    const onFinishFailed2 = jest.fn()
+    const Component = () => {
+      return <StepsForm onFinish={onFinish} onFinishFailed={onFinishFailed}>
+        <StepsForm.StepForm title='Step 1' onFinish={onFinish1}>
+          <StepsForm.Title>Step 1</StepsForm.Title>
+          <Form.Item
+            name='field1'
+            label='Field 1'
+            rules={[{ required: true }]}
+            children={<Input />}
+          />
+        </StepsForm.StepForm>
+
+        <StepsForm.StepForm
+          title='Step 2'
+          onFinish={onFinish2}
+          onFinishFailed={onFinishFailed2}
+        >
+          <StepsForm.Title>Step 2</StepsForm.Title>
+          <Form.Item
+            name='field2'
+            label='Field 2'
+            rules={[{ required: true }]}
+            children={<Input />}
+          />
+        </StepsForm.StepForm>
+      </StepsForm>
+    }
+    render(<Component />)
+
+    await userEvent.type(screen.getByRole('textbox', { name: 'Field 1' }), 'value')
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+    expect(onFinish1).toHaveBeenCalledWith({ field1: 'value' })
+    expect(logError).toHaveBeenCalledWith(true)
+
+    await userEvent.type(screen.getByRole('textbox', { name: 'Field 2' }), 'value')
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+
+    expect(onFinish2).toHaveBeenCalledWith({ field1: 'value', field2: 'value' })
+    expect(onFinishFailed2).toBeCalledWith(true)
+
+    expect(onFinishFailed).not.toBeCalled()
+
+    process.env = oldEnv
+    jest.restoreAllMocks()
+  })
+
   it('switches formProps based on current step formProps', async () => {
     const { asFragment } = render(
       <StepsForm editMode>

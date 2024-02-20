@@ -41,7 +41,8 @@ import {
   redirectPreviousPage,
   LocationExtended,
   VenueMessages,
-  checkVersionAtLeast09010h
+  checkVersionAtLeast09010h,
+  convertInputToUppercase
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -449,7 +450,7 @@ export function SwitchForm () {
                   children={
                     <Input
                       disabled={readOnly || editMode}
-                      style={{ textTransform: 'uppercase' }}
+                      onInput={convertInputToUppercase}
                       onBlur={() => handleChangeSerialNumber(editMode ? 'serialNumber' : 'id')}
                     />
                   }

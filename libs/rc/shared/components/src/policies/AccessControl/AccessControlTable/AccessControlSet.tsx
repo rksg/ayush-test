@@ -3,8 +3,7 @@ import { useEffect, useState } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }                                                            from '@acx-ui/components'
-import { ApplicationDrawer, defaultNetworkPayload, DeviceOSDrawer, Layer2Drawer, Layer3Drawer } from '@acx-ui/rc/components'
+import { Loader, Table, TableProps } from '@acx-ui/components'
 import {
   doProfileDelete,
   useDeleteAccessControlProfilesMutation,
@@ -21,6 +20,12 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useTenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }                               from '@acx-ui/user'
+
+import { defaultNetworkPayload } from '../../../NetworkTable'
+import { ApplicationDrawer }     from '../../AccessControlForm/ApplicationDrawer'
+import { DeviceOSDrawer }        from '../../AccessControlForm/DeviceOSDrawer'
+import { Layer2Drawer }          from '../../AccessControlForm/Layer2Drawer'
+import { Layer3Drawer }          from '../../AccessControlForm/Layer3Drawer'
 
 
 const defaultPayload = {

@@ -1,0 +1,106 @@
+import { Space }   from 'antd'
+import { useIntl } from 'react-intl'
+
+import { Card, SummaryCard, Tabs } from '@acx-ui/components'
+import {
+  getPolicyDetailsLink,
+  PolicyType,
+  PolicyOperation,
+  EdgeSdLanViewDataP2
+} from '@acx-ui/rc/utils'
+import { TenantLink }    from '@acx-ui/react-router-dom'
+import { noDataDisplay } from '@acx-ui/utils'
+
+import { NetworkTable }    from './NetworkTable'
+import { SmartEdgesTable } from './SmartEdgesTable'
+import * as UI             from './styledComponents'
+import { TopologyDiagram } from './TopologyDiagram'
+
+export const DmzSdLanDetailContent = (props: {
+  data: EdgeSdLanViewDataP2
+}) => {
+  const { data } = props
+  const { $t } = useIntl()
+
+  const sdLanInfo = [{
+    title: $t({ defaultMessage: 'Venue' }),
+    content: () => ((data.venueId)
+      ? <TenantLink to={`/venues/${data.venueId}/venue-details/overview`}>
+        {data.venueName}
+      </TenantLink>
+      : noDataDisplay
+    )
+  }, {
+    title: $t({ defaultMessage: 'Cluster' }),
+    content: () => (
+      <TenantLink to={`/devices/edge/${data.edgeId}/details/overview`}>
+        {data.edgeName}
+      </TenantLink>
+    )
+  }, {
+    title: $t({ defaultMessage: 'DMZ Cluster' }),
+    content: () => (
+      <TenantLink to={`/devices/edge/${data.guestEdgeId}/details/overview`}>
+        {data.guestEdgeName}
+      </TenantLink>
+    )
+  }, {
+    title: $t({ defaultMessage: 'Tunnel Profile (AP- Cluster tunnel)' }),
+    colSpan: 6,
+    content: () => (
+      <TenantLink to={getPolicyDetailsLink({
+        type: PolicyType.TUNNEL_PROFILE,
+        oper: PolicyOperation.DETAIL,
+        policyId: data.tunnelProfileId!
+      })}>
+        {data.tunnelProfileName}
+      </TenantLink>
+    )
+  }, {
+    title: $t({ defaultMessage: 'Tunnel Profile (Cluster- DMZ Cluster tunnel)' }),
+    colSpan: 6,
+    content: () => (
+      <TenantLink to={getPolicyDetailsLink({
+        type: PolicyType.TUNNEL_PROFILE,
+        oper: PolicyOperation.DETAIL,
+        policyId: data.guestTunnelProfileId!
+      })}>
+        {data.guestTunnelProfileName}
+      </TenantLink>
+    )
+  }]
+
+  return <Space direction='vertical' size={30}>
+    <SummaryCard data={sdLanInfo} />
+    <Card>
+      <TopologyDiagram isGuestTunnelEnabled={true} />
+    </Card>
+    <Card>
+      <UI.InstancesContainer>
+        <UI.InstancesTitle level={2}>
+          {$t({ defaultMessage: 'Instances' })}
+        </UI.InstancesTitle>
+      </UI.InstancesContainer>
+      <Tabs type='third'>
+        <Tabs.TabPane
+          tab={$t(
+            { defaultMessage: 'Networks({count})' },
+            { count: data.networkIds.length }
+          )}
+          key='networks'
+        >
+          <NetworkTable
+            networkIds={data.networkIds}
+            guestNetworkIds={data.guestNetworkIds}
+          />
+        </Tabs.TabPane>
+        <Tabs.TabPane
+          tab={$t({ defaultMessage: 'SmartEdges({count})' }, { count: 2 })}
+          key='se'
+        >
+          <SmartEdgesTable sdLanData={data} />
+        </Tabs.TabPane>
+      </Tabs>
+    </Card>
+  </Space>
+}

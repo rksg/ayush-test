@@ -4,7 +4,8 @@ import { useIntl } from 'react-intl'
 import { Button, PageHeader, RangePicker } from '@acx-ui/components'
 import { useVenueDetailsHeaderQuery }      from '@acx-ui/rc/services'
 import {
-  getConfigTemplatePath, useBreadcrumb,
+  getConfigTemplatePath,
+  useConfigTemplateBreadcrumb,
   useConfigTemplate,
   VenueDetailHeader
 } from '@acx-ui/rc/utils'
@@ -45,7 +46,7 @@ function VenuePageHeader () {
   const basePath = useTenantLink(`/venues/${venueId}`)
   const templateBasePath = useTenantLink(getConfigTemplatePath(`venues/${venueId}`), 'v')
 
-  const breadcrumb = useBreadcrumb([
+  const breadcrumb = useConfigTemplateBreadcrumb([
     { text: $t({ defaultMessage: 'Venues' }), link: '/venues' }
   ])
 

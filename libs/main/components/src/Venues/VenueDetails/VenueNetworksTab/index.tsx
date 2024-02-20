@@ -11,7 +11,7 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
 import {
   transformVLAN,
   transformAps,
@@ -20,7 +20,7 @@ import {
   NetworkApGroupDialog,
   NetworkVenueScheduleDialog,
   useSdLanScopedNetworks,
-  checkSdLanScopedNetworkDeactivateAction, renderConfigTemplateDetailsLink
+  checkSdLanScopedNetworkDeactivateAction, renderConfigTemplateDetailsComponent
 } from '@acx-ui/rc/components'
 import {
   useAddNetworkVenueMutation,
@@ -192,7 +192,7 @@ export function VenueNetworksTab () {
   const getTenantLink = (row: Network) => {
     return isTemplate
       // eslint-disable-next-line max-len
-      ? renderConfigTemplateDetailsLink(ConfigTemplateType.NETWORK, row.id, row.name)
+      ? renderConfigTemplateDetailsComponent(ConfigTemplateType.NETWORK, row.id, row.name)
       // eslint-disable-next-line max-len
       : <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>{row.name}</TenantLink>
   }

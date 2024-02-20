@@ -68,11 +68,21 @@ const EditEdgeSdLan = () => {
         guestNetworkIds: formData.activatedGuestNetworks.map(network => network.id!)
       } as EdgeSdLanSettingP2
 
-      await editEdgeSdLan(data! as EdgeSdLanSettingP2, {
-        payload,
-        callback: () => {
-          navigate(linkToServiceList, { replace: true })
-        }
+      await new Promise(async (resolve, reject) => {
+        await editEdgeSdLan(data! as EdgeSdLanSettingP2, {
+          payload,
+          callback: (result) => {
+            // callback is after all RBAC related APIs sent
+            if (Array.isArray(result)) {
+              resolve(true)
+            } else {
+              reject(result)
+            }
+
+            navigate(linkToServiceList, { replace: true })
+          }
+        // need to catch basic service profile failed
+        }).catch(reject)
       })
     } catch(err) {
       // eslint-disable-next-line no-console
