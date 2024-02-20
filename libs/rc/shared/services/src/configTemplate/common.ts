@@ -18,7 +18,7 @@ import { baseConfigTemplateApi }      from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
 import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
 
-import { networkApi } from './network'
+import { networkApi } from '../network'
 
 
 export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
