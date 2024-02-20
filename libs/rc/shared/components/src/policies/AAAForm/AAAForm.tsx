@@ -21,7 +21,7 @@ import {
   PolicyOperation,
   PolicyType,
   useConfigTemplate,
-  usePolicyBreadcrumb,
+  usePolicyListBreadcrumb,
   usePolicyPreviousPath
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
@@ -44,7 +44,7 @@ export const AAAForm = (props: AAAFormProps) => {
   const isEdit = edit && !networkView
   const formRef = useRef<StepsFormLegacyInstance<AAAPolicyType>>()
   const { isTemplate } = useConfigTemplate()
-  const breadcrumb = usePolicyBreadcrumb(PolicyType.AAA, PolicyOperation.LIST)
+  const breadcrumb = usePolicyListBreadcrumb(PolicyType.AAA)
   const { data } = useGetInstance(isEdit)
   const createInstance = useAddInstance()
   const updateInstance = useUpdateInstance()
