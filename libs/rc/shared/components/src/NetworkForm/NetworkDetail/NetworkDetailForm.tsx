@@ -38,6 +38,7 @@ const { useWatch } = Form
 export function NetworkDetailForm () {
   const intl = useIntl()
   const type = useWatch<NetworkTypeEnum>('type')
+  const form = Form.useFormInstance()
   const {
     editMode,
     cloneMode,
@@ -47,8 +48,10 @@ export function NetworkDetailForm () {
     createType
   } = useContext(NetworkFormContext)
 
+  const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
+
   const [differentSSID, setDifferentSSID] = useState(false)
-  const form = Form.useFormInstance()
+
   const onChange = (e: RadioChangeEvent) => {
     setData && setData({ ...data, type: e.target.value as NetworkTypeEnum,
       enableAccountingProxy: false,
@@ -85,7 +88,7 @@ export function NetworkDetailForm () {
   }
 
   const ssidValidator = async (value: string) => {
-    if (!editMode) { return Promise.resolve() }
+    if (!editMode || isUseWifiApiV2) { return Promise.resolve() }
     const venues = _.get(data, 'venues') || []
     let payload: {
       venueId: string,
