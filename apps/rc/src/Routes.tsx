@@ -104,6 +104,7 @@ import EdgeSdLanDetail                      from './pages/Services/EdgeSdLan/Edg
 import EdgeSdLanTable                       from './pages/Services/EdgeSdLan/EdgeSdLanTable'
 import EditEdgeSdLan                        from './pages/Services/EdgeSdLan/EditEdgeSdLan'
 import AddEdgeSdLanP2                       from './pages/Services/EdgeSdLanP2/AddEdgeSdLan'
+import EdgeSdLanDetailP2                    from './pages/Services/EdgeSdLanP2/EdgeSdLanDetail'
 import EdgeSdLanTableP2                     from './pages/Services/EdgeSdLanP2/EdgeSdLanTable'
 import EditEdgeSdLanP2                      from './pages/Services/EdgeSdLanP2/EditEdgeSdLan'
 import MdnsProxyDetail                      from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
@@ -310,6 +311,11 @@ const edgeSdLanPhase2Routes = () => {
     path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN_P2,
       oper: ServiceOperation.LIST })}
     element={<EdgeSdLanTableP2 />}
+  />
+  <Route
+    path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN_P2,
+      oper: ServiceOperation.DETAIL })}
+    element={<EdgeSdLanDetailP2 />}
   />
   </>
 }

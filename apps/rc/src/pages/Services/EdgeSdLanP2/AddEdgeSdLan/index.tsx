@@ -60,11 +60,21 @@ const AddEdgeSdLanP2 = () => {
         payload.guestNetworkIds = formData.activatedGuestNetworks.map(network => network.id!)
       }
 
-      await addEdgeSdLan({
-        payload,
-        callback: () => {
-          navigate(linkToServiceList, { replace: true })
-        }
+      await new Promise(async (resolve, reject) => {
+        await addEdgeSdLan({
+          payload,
+          callback: (result) => {
+            // callback is after all RBAC related APIs sent
+            if (Array.isArray(result)) {
+              resolve(true)
+            } else {
+              reject(result)
+            }
+
+            navigate(linkToServiceList, { replace: true })
+          }
+        // need to catch basic service profile failed
+        }).catch(reject)
       })
     } catch(err) {
       // eslint-disable-next-line no-console
