@@ -14,7 +14,8 @@ import {
   VLANPoolForm,
   WifiCallingForm, WifiCallingConfigureForm, WifiCallingDetailView,
   SyslogDetailView, SyslogForm, DHCPForm, PortalForm, ClientIsolationForm,
-  NetworkForm
+  NetworkForm,
+  AccessControlDetail, AccessControlTable
 } from '@acx-ui/rc/components'
 import {
   getPolicyListRoutePath,
@@ -56,8 +57,6 @@ import { ConfigurationProfileForm }                 from './pages/Networks/wired
 import { NetworksList, NetworkTabsEnum }            from './pages/Networks/wireless'
 import NetworkDetails                               from './pages/Networks/wireless/NetworkDetails'
 import AAATable                                     from './pages/Policies/AAA/AAATable/AAATable'
-import AccessControlDetail                          from './pages/Policies/AccessControl/AccessControlDetail'
-import AccessControlTable                           from './pages/Policies/AccessControl/AccessControlTable/AccessControlTable'
 import AdaptivePolicyList, { AdaptivePolicyTabKey } from './pages/Policies/AdaptivePolicy'
 import AdaptivePolicyDetail                         from './pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyDetail/AdaptivePolicyDetail'
 import AdaptivePolicyForm                           from './pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyForm/AdaptivePolicyForm'
@@ -105,18 +104,20 @@ import EdgeSdLanDetail                      from './pages/Services/EdgeSdLan/Edg
 import EdgeSdLanTable                       from './pages/Services/EdgeSdLan/EdgeSdLanTable'
 import EditEdgeSdLan                        from './pages/Services/EdgeSdLan/EditEdgeSdLan'
 import AddEdgeSdLanP2                       from './pages/Services/EdgeSdLanP2/AddEdgeSdLan'
+import EdgeSdLanDetailP2                    from './pages/Services/EdgeSdLanP2/EdgeSdLanDetail'
+import EdgeSdLanTableP2                     from './pages/Services/EdgeSdLanP2/EdgeSdLanTable'
 import EditEdgeSdLanP2                      from './pages/Services/EdgeSdLanP2/EditEdgeSdLan'
 import MdnsProxyDetail                      from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm                        from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import MdnsProxyTable                       from './pages/Services/MdnsProxy/MdnsProxyTable/MdnsProxyTable'
 import MyServices                           from './pages/Services/MyServices'
-import AddNetworkSegmentation               from './pages/Services/NetworkSegmentation/AddNetworkSegmentation'
-import EditNetworkSegmentation              from './pages/Services/NetworkSegmentation/EditNetworkSegmentation'
-import NetworkSegmentationDetail            from './pages/Services/NetworkSegmentation/NetworkSegmentationDetail'
-import NetworkSegmentationTable             from './pages/Services/NetworkSegmentation/NetworkSegmentationTable'
 import NetworkSegAuthDetail                 from './pages/Services/NetworkSegWebAuth/NetworkSegAuthDetail'
 import NetworkSegAuthForm                   from './pages/Services/NetworkSegWebAuth/NetworkSegAuthForm'
 import NetworkSegAuthTable                  from './pages/Services/NetworkSegWebAuth/NetworkSegAuthTable'
+import AddPersonalIdentitNetwork            from './pages/Services/PersonalIdentityNetwork/AddPersonalIdentityNetwork'
+import EditPersonalIdentityNetwork          from './pages/Services/PersonalIdentityNetwork/EditPersonalIdentityNetwork'
+import PersonalIdentityNetworkDetail        from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkDetail'
+import PersonalIdentityNetworkTable         from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkTable'
 import PortalServiceDetail                  from './pages/Services/Portal/PortalDetail'
 import PortalTable                          from './pages/Services/Portal/PortalTable'
 import ResidentPortalDetail                 from './pages/Services/ResidentPortal/ResidentPortalDetail/ResidentPortalDetail'
@@ -306,6 +307,16 @@ const edgeSdLanPhase2Routes = () => {
       oper: ServiceOperation.EDIT })}
     element={<EditEdgeSdLanP2 />}
   />
+  <Route
+    path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN_P2,
+      oper: ServiceOperation.LIST })}
+    element={<EdgeSdLanTableP2 />}
+  />
+  <Route
+    path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN_P2,
+      oper: ServiceOperation.DETAIL })}
+    element={<EdgeSdLanDetailP2 />}
+  />
   </>
 }
 
@@ -396,22 +407,22 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
           oper: ServiceOperation.CREATE })}
-        element={<AddNetworkSegmentation />}
+        element={<AddPersonalIdentitNetwork />}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
           oper: ServiceOperation.LIST })}
-        element={<NetworkSegmentationTable />}
+        element={<PersonalIdentityNetworkTable />}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
           oper: ServiceOperation.DETAIL })}
-        element={<NetworkSegmentationDetail />}
+        element={<PersonalIdentityNetworkDetail />}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
           oper: ServiceOperation.EDIT })}
-        element={<EditNetworkSegmentation />}
+        element={<EditPersonalIdentityNetwork />}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,

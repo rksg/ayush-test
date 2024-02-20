@@ -149,6 +149,7 @@ export enum Features {
   WIFI_ANTENNA_TYPE_TOGGLE = 'wifi-antenna-type-selection-toggle',
   WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE = 'wifi-trunk-port-untagged-vlan-toggle',
   WIFI_VENUE_BSS_COLORING_TOGGLE = 'wifi-fr-6029-fg1-toggle',
+  WIFI_API_V2_TOGGLE = 'wifi-api-network-activations-by-query-v2-toggle',
   WISPR_ENCRYPT_MAC_IP = 'acx-ui-wispr-encrypt-mac-ip-toggle',
   WPA3_80211R = 'wifi-eda-wpa3-80211r-toggle',
   ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',

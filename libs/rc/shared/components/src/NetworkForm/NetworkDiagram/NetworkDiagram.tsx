@@ -32,6 +32,7 @@ import OpenCloudpathOnPremDiagram     from '../assets/images/network-wizard-diag
 import OpenDiagram                    from '../assets/images/network-wizard-diagrams/open.png'
 import PskDiagram                     from '../assets/images/network-wizard-diagrams/psk.png'
 import SelfSignInDiagram              from '../assets/images/network-wizard-diagrams/self-sign-in.png'
+import WISPrWithAlwaysAcceptDiagram   from '../assets/images/network-wizard-diagrams/wispr-always-accept.png'
 import WISPrWithPskDiagram            from '../assets/images/network-wizard-diagrams/wispr-psk.png'
 import WISPrDiagram                   from '../assets/images/network-wizard-diagrams/wispr.png'
 import NetworkFormContext             from '../NetworkFormContext'
@@ -63,8 +64,9 @@ interface AaaDiagramProps extends DiagramProps {
   showButtons?: boolean;
 }
 interface CaptivePortalDiagramProps extends DiagramProps {
-  networkPortalType?: GuestNetworkTypeEnum;
-  wisprWithPsk?: boolean;
+  networkPortalType?: GuestNetworkTypeEnum
+  wisprWithPsk?: boolean
+  wisprWithAlwaysAccept?: boolean
 }
 
 type NetworkDiagramProps = DefaultDiagramProps
@@ -147,7 +149,8 @@ function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
     [GuestNetworkTypeEnum.SelfSignIn]: SelfSignInDiagram,
     [GuestNetworkTypeEnum.HostApproval]: HostApprovalDiagram,
     [GuestNetworkTypeEnum.GuestPass]: GuestPassDiagram,
-    [GuestNetworkTypeEnum.WISPr]: props.wisprWithPsk ? WISPrWithPskDiagram : WISPrDiagram,
+    [GuestNetworkTypeEnum.WISPr]: props.wisprWithAlwaysAccept?
+      WISPrWithAlwaysAcceptDiagram : (props.wisprWithPsk ? WISPrWithPskDiagram : WISPrDiagram),
     [GuestNetworkTypeEnum.Cloudpath]: isCloudDeployment ?
       CaptiveCloudpathCloudDiagram : CaptiveCloudpathOnPremDiagram
   }
