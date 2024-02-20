@@ -11,9 +11,10 @@ import {
   PolicyType,
   getConfigTemplatePath,
   getPolicyDetailsLink,
-  getPolicyRoutePath
+  getPolicyRoutePath,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
-import { LinkProps, MspTenantLink, useLocation } from '@acx-ui/react-router-dom'
+import { LinkProps, MspTenantLink, Path, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { ApplicationDrawer, DeviceOSDrawer, Layer2Drawer, Layer3Drawer } from '../../policies'
 
@@ -81,7 +82,6 @@ export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, 
       // eslint-disable-next-line max-len
       return <ConfigTemplateLink to={`networks/wireless/${id}/network-details/${activeTab}`} children={name} />
     case ConfigTemplateType.VENUE:
-      // TODO: Need to add the parameters for activeSubTab
       activeTab = option[ConfigTemplateType.VENUE]?.activeTab || 'networks'
       // eslint-disable-next-line max-len
       return <ConfigTemplateLink to={`venues/${id}/venue-details/${activeTab}`} children={name} />
@@ -112,4 +112,17 @@ export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, 
         }}
       /></Form>
   }
+}
+
+export function useConfigTemplateTenantLink (to: string) {
+  return useTenantLink(getConfigTemplatePath(to), 'v')
+}
+
+// eslint-disable-next-line max-len
+export function usePathBasedOnConfigTemplate (regularPath: string, configTemplatePath?: string): Path {
+  const { isTemplate } = useConfigTemplate()
+  const baseEditPath = useTenantLink(regularPath)
+  const baseConfigTemplateEditPath = useConfigTemplateTenantLink(configTemplatePath ?? regularPath)
+
+  return isTemplate ? baseConfigTemplateEditPath : baseEditPath
 }
