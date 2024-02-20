@@ -28,7 +28,10 @@ import {
   useDeleteNetworkVenueMutation,
   useVenueNetworkListQuery,
   useVenueNetworkTableQuery,
-  useVenueDetailsHeaderQuery
+  useVenueDetailsHeaderQuery,
+  useAddNetworkVenueTemplateMutation,
+  useUpdateNetworkVenueTemplateMutation,
+  useDeleteNetworkVenueTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -105,17 +108,17 @@ export function VenueNetworksTab () {
   const params = useParams()
   const navigate = useNavigate()
   const venueDetailsQuery = useVenueDetailsHeaderQuery({ params })
-  const [updateNetworkVenue] = useUpdateNetworkVenueMutation()
+  const [updateNetworkVenue] = useUpdateInstance()
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([])
 
   const [
     addNetworkVenue,
     { isLoading: isAddNetworkUpdating }
-  ] = useAddNetworkVenueMutation()
+  ] = useAddInstance()
   const [
     deleteNetworkVenue,
     { isLoading: isDeleteNetworkUpdating }
-  ] = useDeleteNetworkVenueMutation()
+  ] = useDeleteInstance()
   const sdLanScopedNetworks = useSdLanScopedNetworks(tableQuery.data?.data.map(item => item.id))
 
   useEffect(()=>{
@@ -455,4 +458,28 @@ export function VenueNetworksTab () {
       </Form.Provider>
     </Loader>
   )
+}
+
+function useAddInstance () {
+  const { isTemplate } = useConfigTemplate()
+  const addNetworkVenue = useAddNetworkVenueMutation()
+  const addNetworkVenueTemplate = useAddNetworkVenueTemplateMutation()
+
+  return isTemplate ? addNetworkVenueTemplate : addNetworkVenue
+}
+
+function useUpdateInstance () {
+  const { isTemplate } = useConfigTemplate()
+  const updateNetworkVenue = useUpdateNetworkVenueMutation()
+  const updateNetworkVenueTemplate = useUpdateNetworkVenueTemplateMutation()
+
+  return isTemplate ? updateNetworkVenueTemplate : updateNetworkVenue
+}
+
+function useDeleteInstance () {
+  const { isTemplate } = useConfigTemplate()
+  const deleteNetworkVenue = useDeleteNetworkVenueMutation()
+  const deleteNetworkVenueTemplate = useDeleteNetworkVenueTemplateMutation()
+
+  return isTemplate ? deleteNetworkVenueTemplate : deleteNetworkVenue
 }

@@ -10,7 +10,6 @@ import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }              from '@acx-ui/store'
 import {
   act,
-  fireEvent,
   mockServer,
   render,
   screen,
@@ -48,7 +47,8 @@ jest.mock('@acx-ui/rc/components', () => ({
       <button onClick={(e)=>{e.preventDefault();onOk()}}>Apply</button>
       <button onClick={(e)=>{e.preventDefault();onCancel()}}>Cancel</button>
     </div>,
-  useSdLanScopedNetworks: jest.fn().mockReturnValue([])
+  useSdLanScopedNetworks: jest.fn().mockReturnValue([]),
+  transformVLAN: jest.fn().mockReturnValue('VLAN-1 (Default)')
 }))
 
 const params = {
@@ -62,8 +62,16 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+const mockedUseConfigTemplate = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useConfigTemplate: () => mockedUseConfigTemplate()
+}))
+
 describe('VenueNetworksTab', () => {
   beforeEach(() => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+
     act(() => {
       store.dispatch(networkApi.util.resetApiState())
       store.dispatch(venueApi.util.resetApiState())
@@ -93,6 +101,10 @@ describe('VenueNetworksTab', () => {
     )
   })
 
+  afterEach(() => {
+    mockedUseConfigTemplate.mockRestore()
+  })
+
   it('should render correctly', async () => {
     render(<Provider><VenueNetworksTab /></Provider>, {
       route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
@@ -103,6 +115,21 @@ describe('VenueNetworksTab', () => {
     expect(row).toHaveTextContent('VLAN-1 (Default)')
   })
 
+  it('should render correctly with isTemplate is true', async () => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+
+    render(<Provider><VenueNetworksTab /></Provider>, {
+      route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
+    })
+
+    const row = await screen.findByRole('row', { name: /test_1/i })
+    expect(row).toHaveTextContent('Passphrase (PSK/SAE)')
+    expect(row).toHaveTextContent('VLAN-1 (Default)')
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Add Network' }))
+    expect(mockedUsedNavigate).toHaveBeenCalled()
+  })
+
   it('should clicks add network correctly', async () => {
     render(<Provider><VenueNetworksTab /></Provider>, {
       route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
@@ -110,6 +137,7 @@ describe('VenueNetworksTab', () => {
 
     expect(await screen.findByText('Add Network')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Add Network' }))
+    expect(mockedUsedNavigate).toHaveBeenCalled()
   })
 
   it('activate Network', async () => {
@@ -136,7 +164,7 @@ describe('VenueNetworksTab', () => {
     )
 
     const toogleButton = await within(row).findByRole('switch', { checked: false })
-    fireEvent.click(toogleButton)
+    await userEvent.click(toogleButton)
 
     await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(1))
 
@@ -169,7 +197,7 @@ describe('VenueNetworksTab', () => {
     )
 
     const toogleButton = await within(row).findByRole('switch', { checked: true })
-    fireEvent.click(toogleButton)
+    await userEvent.click(toogleButton)
 
     await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(1))
 
@@ -185,10 +213,10 @@ describe('VenueNetworksTab', () => {
 
     const row = await screen.findByRole('row', { name: /test_1/i })
 
-    fireEvent.click(within(row).getByText('VLAN-1 (Default)'))
-    fireEvent.click(within(row).getByText('2.4 GHz, 5 GHz'))
-    fireEvent.click(within(row).getByText('All APs'))
-    fireEvent.click(within(row).getByText('24/7'))
+    await userEvent.click(within(row).getByText('VLAN-1 (Default)'))
+    await userEvent.click(within(row).getByText('2.4 GHz, 5 GHz'))
+    await userEvent.click(within(row).getByText('All APs'))
+    await userEvent.click(within(row).getByText('24/7'))
 
     const dialog = await screen.findByTestId('NetworkApGroupDialog')
     const dialog2 = await screen.findByTestId('NetworkVenueScheduleDialog')
