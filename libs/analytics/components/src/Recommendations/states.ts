@@ -12,4 +12,4 @@ export const states = {
   revertFailed: 'revertfailed',
   reverted: 'reverted',
   deleted: 'deleted'
-}
+} as const
