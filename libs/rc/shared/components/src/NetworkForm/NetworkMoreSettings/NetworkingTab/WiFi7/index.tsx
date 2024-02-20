@@ -15,8 +15,7 @@ import {
   MultiLinkOperationOptions,
   IsNetworkSupport6g,
   IsSecuritySupport6g,
-  NetworkTypeEnum,
-  GuestNetworkTypeEnum
+  NetworkTypeEnum
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -30,18 +29,6 @@ interface Option {
   value: boolean
   label: string
   disabled: boolean
-}
-
-const shouldMLOBeDisable = (wlan: NetworkSaveData) : boolean => {
-  const isWlanInLimitedNetworkTypes = [
-    (wlan.type === NetworkTypeEnum.PSK),
-    (wlan.type === NetworkTypeEnum.AAA),
-    (wlan.type === NetworkTypeEnum.OPEN),
-    (wlan.type === NetworkTypeEnum.CAPTIVEPORTAL && wlan.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.GuestPass),
-    (wlan.type === NetworkTypeEnum.CAPTIVEPORTAL && wlan.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr)
-  ].some(Boolean)
-
-  return !(isWlanInLimitedNetworkTypes && IsNetworkSupport6g(wlan))
 }
 
 export const getInitMloOptions =
@@ -323,11 +310,11 @@ function WiFi7 () {
   useEffect(()=>{
     if(editMode && wlanData !== null){
 
-      const mloState = shouldMLOBeDisable(wlanData)
+      const shouldMLOBeDisable = !(wlanData.type !== NetworkTypeEnum.DPSK && IsNetworkSupport6g(wlanData))
 
-      disableMLO(mloState)
+      disableMLO(shouldMLOBeDisable)
 
-      if (mloState) {
+      if (shouldMLOBeDisable) {
         const cloneData = _.cloneDeep(wlanData)
         _.set(cloneData, 'wlan.advancedCustomization.multiLinkOperationEnabled', false)
         setData && setData(cloneData)
