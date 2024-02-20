@@ -176,10 +176,10 @@ export const api = dataApi.injectEndpoints({
         return response.client
       }
     }),
-    clientConnectionInfo: build.query<ClientInfoData, ClientFilter>({
+    clientConnectionQualities: build.query<ClientInfoData, ClientFilter>({
       query: (payload) => ({
         document: gql`
-        query ClientConnectionInfo($mac: String, $start: DateTime, $end: DateTime) {
+        query ClientConnectionQualities($mac: String, $start: DateTime, $end: DateTime) {
           client(mac: $mac, start: $start, end: $end) {
             connectionQualities {
               start
@@ -230,6 +230,6 @@ export const api = dataApi.injectEndpoints({
 export const {
   useClientInfoQuery,
   useClientPcapMutation,
-  useClientConnectionInfoQuery,
+  useClientConnectionQualitiesQuery,
   useClientIncidentsInfoQuery
 } = api

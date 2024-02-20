@@ -9,10 +9,14 @@ import { WarningTriangleOutlined }                      from '@acx-ui/icons'
 import type { AnalyticsFilter }                         from '@acx-ui/utils'
 import { noDataDisplay }                                from '@acx-ui/utils'
 
-import { LabelledQuality }                                                 from './config'
-import { ClientInfoData, ConnectionQuality, useClientConnectionInfoQuery } from './services'
-import { ErrorContainer }                                                  from './styledComponents'
-import { transformConnectionQualities }                                    from './util'
+import { LabelledQuality }            from './config'
+import {
+  ClientInfoData,
+  ConnectionQuality,
+  useClientConnectionQualitiesQuery
+} from './services'
+import { ErrorContainer }               from './styledComponents'
+import { transformConnectionQualities } from './util'
 
 import { maxEventsMsg } from '.'
 
@@ -84,7 +88,7 @@ export function ClientHealth (
     }
   }
 
-  const result = useClientConnectionInfoQuery(
+  const result = useClientConnectionQualitiesQuery(
     { startDate, endDate, range, clientMac: clientMac.toUpperCase() }
   )
   const { data, error } = result
