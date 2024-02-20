@@ -5,6 +5,7 @@ import { CONFIG_TEMPLATE_LIST_PATH } from './configTemplateRouteUtils'
 import {
   generateConfigTemplateBreadcrumb,
   hasConfigTemplateAccess,
+  useConfigTemplateLazyQueryFnSwitcher,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher
 } from './configTemplateUtils'
@@ -92,7 +93,50 @@ describe('config-template-utils', () => {
       expect(mockedTemplateQueryFn).toHaveBeenCalledWith({ params: mockedParams }, { skip: true })
       expect(mockedRegularQueryFn).toHaveBeenCalledWith({ params: mockedParams }, { skip: false })
     })
+  })
 
+  describe('useConfigTemplateLazyQueryFnSwitcher', () => {
+    const mockedRegularLazyQueryFn = jest.fn()
+    const mockedTemplateLazyQueryFn = jest.fn()
+
+    beforeEach(() => {
+      mockedRegularLazyQueryFn.mockImplementation(() => 'regular')
+      mockedTemplateLazyQueryFn.mockImplementation(() => 'template')
+    })
+
+    afterEach(() => {
+      jest.clearAllMocks()
+      jest.restoreAllMocks()
+    })
+
+    it('should return template lazy query result when isTemplate is true', () => {
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+
+      const { result } = renderHook(() => useConfigTemplateLazyQueryFnSwitcher<string>(
+        mockedRegularLazyQueryFn,
+        mockedTemplateLazyQueryFn
+      ))
+
+      expect(result.current).toEqual('template')
+      expect(mockedTemplateLazyQueryFn).toHaveBeenCalled()
+      expect(mockedRegularLazyQueryFn).toHaveBeenCalled()
+    })
+
+    it('should return regular lazy query result when isTemplate is false', () => {
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+
+      const { result } = renderHook(() => useConfigTemplateLazyQueryFnSwitcher<string>(
+        mockedRegularLazyQueryFn,
+        mockedTemplateLazyQueryFn
+      ))
+
+      expect(result.current).toEqual('regular')
+      expect(mockedTemplateLazyQueryFn).toHaveBeenCalledWith()
+      expect(mockedRegularLazyQueryFn).toHaveBeenCalledWith()
+    })
+  })
+
+  describe('useConfigTemplateMutationFnSwitcher', () => {
     it('should return template mutation result when isTemplate is true', () => {
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
       const mutationFn = jest.fn().mockReturnValue('regular')
