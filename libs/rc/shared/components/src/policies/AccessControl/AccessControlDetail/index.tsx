@@ -19,7 +19,7 @@ import AccessControlNetworksDetail from './AccessControlNetworksDetail'
 import AccessControlOverview       from './AccessControlOverview'
 
 
-export default function AccessControlDetail () {
+export function AccessControlDetail () {
   const { $t } = useIntl()
   const params = useParams()
   const tablePath = getPolicyRoutePath(

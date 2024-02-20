@@ -5,6 +5,7 @@ import { isEqual }                                         from 'lodash'
 import { useIntl }                                         from 'react-intl'
 
 import { AnchorContext, Loader, StepsFormLegacy } from '@acx-ui/components'
+import { usePathBasedOnConfigTemplate }           from '@acx-ui/rc/components'
 import {
   useGetSyslogPolicyListQuery,
   useGetVenueSyslogApQuery,
@@ -22,8 +23,7 @@ import {
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
-  useParams,
-  useTenantLink
+  useParams
 } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../..'
@@ -40,7 +40,7 @@ export function Syslog () {
   const { $t } = useIntl()
   const { tenantId, venueId } = useParams()
   const navigate = useNavigate()
-  const toPolicyPath = useTenantLink('')
+  const toPolicyPath = usePathBasedOnConfigTemplate('')
   const {
     editContextData,
     setEditContextData,

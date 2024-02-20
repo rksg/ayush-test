@@ -252,15 +252,18 @@ export function ManageCustomer () {
   ] = useDisableMspEcSupportMutation()
 
   useEffect(() => {
+    if (ecSupport && ecSupport.length > 0 ) {
+      setEcSupport(true)
+    }
+  }, [ecSupport])
+
+  useEffect(() => {
     if (licenseSummary) {
       checkAvailableLicense(licenseSummary)
 
       if (isEditMode && data && licenseAssignment) {
         if (ecAdministrators) {
           setMspEcAdmins(ecAdministrators)
-        }
-        if (ecSupport && ecSupport.length > 0 ) {
-          setEcSupport(true)
         }
         const assigned = licenseAssignment.filter(en => en.mspEcTenantId === mspEcTenantId)
         setAssignedLicense(assigned)
@@ -328,7 +331,7 @@ export function ManageCustomer () {
       setSubscriptionStartDate(moment())
       setSubscriptionEndDate(moment().add(30,'days'))
     }
-  }, [data, licenseSummary, licenseAssignment, ecSupport, userProfile, ecAdministrators])
+  }, [data, licenseSummary, licenseAssignment, userProfile, ecAdministrators])
 
   useEffect(() => {
     if (delegatedAdmins && Administrators) {
@@ -796,10 +799,10 @@ export function ManageCustomer () {
         content: modalContent,
         okText: intl.$t({ defaultMessage: 'Save' }),
         onCancel: () => {
-          if (tier.target.value === MspEcTierEnum.Essential) {
+          if (tier.target.value === MspEcTierEnum.Essentials) {
             formRef.current?.setFieldValue('tier', MspEcTierEnum.Professional)
           } else {
-            formRef.current?.setFieldValue('tier', MspEcTierEnum.Essential)
+            formRef.current?.setFieldValue('tier', MspEcTierEnum.Essentials)
           }
         }
       })
@@ -812,7 +815,6 @@ export function ManageCustomer () {
       label={intl.$t({ defaultMessage: 'Service Tier' })}
       style={{ width: '300px' }}
       rules={[{ required: true }]}
-      initialValue={MspEcTierEnum.Professional}
       children={
         <Radio.Group>
           <Space direction='vertical'>

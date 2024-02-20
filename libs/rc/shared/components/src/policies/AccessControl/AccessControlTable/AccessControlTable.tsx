@@ -25,7 +25,7 @@ const defaultPayload = {
   ]
 }
 
-export default function AccessControlTable () {
+export function AccessControlTable () {
   const { $t } = useIntl()
 
   const tableQuery = useTableQuery({
