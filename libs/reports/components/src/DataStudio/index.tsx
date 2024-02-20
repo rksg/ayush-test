@@ -74,7 +74,7 @@ export function DataStudio () {
       .unwrap()
       .then((resp: DataStudioResponse) => {
         const { redirect_url, user_info } = resp
-        if (!user_info) {
+        if (!user_info) { // TODO - Added for backward compatibility. Need to remove it
           setUrl(redirect_url)
         } else {
           // store user info
